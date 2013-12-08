@@ -3925,7 +3925,6 @@ void CChar::OnTickFood()
 
 	long	lFood = Stat_GetVal(STAT_FOOD);
    	if ( Stat_GetVal(STAT_FOOD) > 0 ) lFood--;
-	else lFood++;
 
 	if ( IsTrigUsed(TRIGGER_HUNGER) )
 	{
