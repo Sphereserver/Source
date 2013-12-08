@@ -2398,7 +2398,7 @@ struct CUOHuesRec // (Hues.mul)
 
 #define LIGHT_BRIGHT	0
 #define LIGHT_DARK		30
-#define LIGHT_QTY		32
+#define LIGHT_BLACK		32
 
 // Turn off structure packing.
 #if defined _WIN32 && (!__MINGW32__)
