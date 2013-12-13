@@ -217,159 +217,6 @@ ON=@Create
    TAG.RESPOISON=8
 
 
-[ITEMDEF 0301]
-DEFNAME=i_gargish_leather_arms_female
-NAME=Gargish female leather arms
-TYPE=t_armor_leather
-FLIP=1
-//ARMOR=20
-VALUE=70
-WEIGHT=4.0
-RESOURCES=8 i_hides_cut
-SKILLMAKE=Tailoring 53.9,t_sewing_kit,Armslore 10.0
-CATEGORY=Provisions - Armor
-SUBSECTION=Leather Gargoyle Armor
-DESCRIPTION=Gargish Leather Arms (female)
-TAG.FemaleOnly=1
-TAG.GargoyleOnly=1
-TAG.REQSTR=25
-TEVENTS=t_equipitem
-DUPELIST=04047
-ON=@Create
-   HITPOINTS={36 48}
-   TAG.RESCOLD=7
-   TAG.RESENERGY=6
-   TAG.RESFIRE=6
-   TAG.RESPhysical=5
-   TAG.RESPOISON=6
-
-[ITEMDEF 0302]
-DEFNAME=i_gargish_leather_arms
-NAME=Gargish leather arms
-TYPE=t_armor_leather
-FLIP=1
-//ARMOR=20
-VALUE=70
-WEIGHT=4.0
-RESOURCES=8 i_hides_cut
-SKILLMAKE=Tailoring 53.9,t_sewing_kit,Armslore 10.0
-CATEGORY=Provisions - Armor
-SUBSECTION=Leather Gargoyle Armor
-DESCRIPTION=Gargish Leather Arms
-TAG.GargoyleOnly=1
-TAG.REQSTR=25
-TEVENTS=t_equipitem
-DUPELIST=04048
-ON=@Create
-   HITPOINTS={36 48}
-   TAG.RESCOLD=7
-   TAG.RESENERGY=6
-   TAG.RESFIRE=6
-   TAG.RESPhysical=5
-   TAG.RESPOISON=6
-
-[ITEMDEF 0303]
-DEFNAME=i_gargish_leather_chest_female
-NAME=Gargish female leather chest
-TYPE=t_armor_leather
-FLIP=1
-//ARMOR=20
-VALUE=115
-WEIGHT=4.0
-RESOURCES=8 i_hides_cut
-SKILLMAKE=Tailoring 70.5,t_sewing_kit,Armslore 10.0
-CATEGORY=Provisions - Armor
-SUBSECTION=Leather Gargoyle Armor
-DESCRIPTION=Gargish Leather Chest (female)
-TAG.FemaleOnly=1
-TAG.GargoyleOnly=1
-TAG.REQSTR=25
-TEVENTS=t_equipitem
-DUPELIST=04049
-ON=@Create
-   HITPOINTS={36 48}
-   TAG.RESCOLD=7
-   TAG.RESENERGY=6
-   TAG.RESFIRE=6
-   TAG.RESPhysical=5
-   TAG.RESPOISON=6
-
-[ITEMDEF 0304]
-DEFNAME=i_gargish_leather_chest
-NAME=Gargish leather chest
-TYPE=t_armor_leather
-FLIP=1
-//ARMOR=20
-VALUE=115
-WEIGHT=4.0
-RESOURCES=8 i_hides_cut
-SKILLMAKE=Tailoring 70.5,t_sewing_kit,Armslore 10.0
-CATEGORY=Provisions - Armor
-SUBSECTION=Leather Gargoyle Armor
-DESCRIPTION=Gargish Leather Chest
-TAG.GargoyleOnly=1
-TAG.REQSTR=25
-TEVENTS=t_equipitem
-DUPELIST=0404a
-ON=@Create
-   HITPOINTS={36 48}
-   TAG.RESCOLD=7
-   TAG.RESENERGY=6
-   TAG.RESFIRE=6
-   TAG.RESPhysical=5
-   TAG.RESPOISON=6
-
-[ITEMDEF 0305]
-DEFNAME=i_gargish_leather_leggings_female
-NAME=Gargish female leather leggings
-TYPE=t_armor_leather
-FLIP=1
-//ARMOR=20
-VALUE=86
-WEIGHT=5.0
-RESOURCES=10 i_hides_cut
-SKILLMAKE=Tailoring 66.3,t_sewing_kit,Armslore 10.0
-CATEGORY=Provisions - Armor
-SUBSECTION=Leather Gargoyle Armor
-DESCRIPTION=Gargish Leather Leggings (female)
-TAG.FemaleOnly=1
-TAG.GargoyleOnly=1
-TAG.REQSTR=20
-TEVENTS=t_equipitem
-DUPELIST=0404d
-ON=@Create
-   HITPOINTS={36 48}
-   TAG.RESCOLD=7
-   TAG.RESENERGY=6
-   TAG.RESFIRE=6
-   TAG.RESPhysical=5
-   TAG.RESPOISON=6
-
-[ITEMDEF 0306]
-DEFNAME=i_gargish_leather_leggings
-NAME=Gargish leather leggings
-TYPE=t_armor_leather
-FLIP=1
-//ARMOR=20
-VALUE=86
-WEIGHT=5.0
-RESOURCES=10 i_hides_cut
-SKILLMAKE=Tailoring 66.3,t_sewing_kit,Armslore 10.0
-CATEGORY=Provisions - Armor
-SUBSECTION=Leather Gargoyle Armor
-DESCRIPTION=Gargish Leather Leggings
-TAG.GargoyleOnly=1
-TAG.REQSTR=20
-TEVENTS=t_equipitem
-DUPELIST=0404e
-ON=@Create
-   HITPOINTS={36 48}
-   TAG.RESCOLD=7
-   TAG.RESENERGY=6
-   TAG.RESFIRE=6
-   TAG.RESPhysical=5
-   TAG.RESPOISON=6
-
 [ITEMDEF 0307]
 DEFNAME=i_gargish_plate_arms_female
 NAME=Gargish female platemail arms
@@ -578,57 +425,6 @@ ON=@Create
 CATEGORY=Miscellaneous
 SUBSECTION=Bad Tiles
 DESCRIPTION=Unused Tile 030f
-
-[ITEMDEF 0310]
-DEFNAME=i_gargish_leather_kilt_female
-NAME=Gargish female leather kilt
-TYPE=t_armor_leather
-FLIP=1
-//ARMOR=20
-VALUE=86
-WEIGHT=5.0
-RESOURCES=6 i_hides_cut
-SKILLMAKE=Tailoring 58.0,t_sewing_kit,Armslore 10.0
-CATEGORY=Provisions - Armor
-SUBSECTION=Leather Gargoyle Armor
-DESCRIPTION=Gargish Leather Kilt (female)
-TAG.FemaleOnly=1
-TAG.GargoyleOnly=1
-TAG.REQSTR=25
-TEVENTS=t_equipitem
-DUPELIST=0404b
-ON=@Create
-   HITPOINTS={36 48}
-   TAG.RESCOLD=7
-   TAG.RESENERGY=6
-   TAG.RESFIRE=6
-   TAG.RESPhysical=5
-   TAG.RESPOISON=6
-
-[ITEMDEF 0311]
-DEFNAME=i_gargish_leather_kilt
-NAME=Gargish leather kilt
-TYPE=t_armor_leather
-FLIP=1
-//ARMOR=20
-VALUE=86
-WEIGHT=5.0
-RESOURCES=6 i_hides_cut
-SKILLMAKE=Tailoring 58.0,t_sewing_kit,Armslore 10.0
-CATEGORY=Provisions - Armor
-SUBSECTION=Leather Gargoyle Armor
-DESCRIPTION=Gargish Leather Kilt
-TAG.GargoyleOnly=1
-TAG.REQSTR=25
-TEVENTS=t_equipitem
-DUPELIST=0404c
-ON=@Create
-   HITPOINTS={36 48}
-   TAG.RESCOLD=7
-   TAG.RESENERGY=6
-   TAG.RESFIRE=6
-   TAG.RESPhysical=5
-   TAG.RESPOISON=6
 
 
 [ITEMDEF 0403]
@@ -4771,39 +4567,6 @@ ON=@Create
    TAG.RESPhysical=2
    TAG.RESPOISON=4
 
-
-[ITEMDEF 04047]
-//Gargish female leather arms
-DUPEITEM=0301
-
-[ITEMDEF 04048]
-//Gargish leather arms
-DUPEITEM=0302
-
-[ITEMDEF 04049]
-//Gargish female leather chest
-DUPEITEM=0303
-
-[ITEMDEF 0404a]
-//Gargish leather chest
-DUPEITEM=0304
-
-[ITEMDEF 0404b]
-//Gargish female leather kilt
-DUPEITEM=0310
-
-[ITEMDEF 0404c]
-//Gargish leather kilt
-DUPEITEM=0311
-
-[ITEMDEF 0404d]
-//Gargish female leather leggings
-DUPEITEM=0305
-
-[ITEMDEF 0404e]
-//Gargish leather leggings
-DUPEITEM=0306
-
 [ITEMDEF 0404f]
 //Gargish female plate arms
 DUPEITEM=0307
@@ -4901,33 +4664,6 @@ DUPEITEM=0409
 DUPEITEM=040a
 
 
-[ITEMDEF 041d8]
-DEFNAME=i_gargish_leather_talons
-NAME=Gargish leather talons
-TYPE=t_armor_leather
-DYE=1
-FLIP=1
-//LAYER=layer_shoes
-//ARMOR=7
-VALUE=57
-WEIGHT=8.1
-RESOURCES=8 i_hides_cut,1 i_thread
-SKILLMAKE=Tailoring 56.8,t_sewing_kit,Armslore 10.0
-CATEGORY=Provisions - Clothes
-SUBSECTION=Footwear
-DESCRIPTION=Gargish Leather Talons
-TAG.GargoyleOnly=1
-TAG.REQSTR=10
-TEVENTS=t_equipitem
-DUPELIST=041d9
-ON=@Create
-   HITPOINTS={36 48}
-   TAG.RESPhysical=1
-
-[ITEMDEF 041d9]
-//leather talons
-DUPEITEM=041d8
-
 
 [ITEMDEF 042de]
 DEFNAME=i_gargish_plate_talons
@@ -4955,58 +4691,362 @@ ON=@Create
 //plate talons
 DUPEITEM=042de
 
+// Gargish Leather Arms
+[itemdef 0301]
+defname=i_gargish_leather_arms_f
+name=gargish leather arms
+nameloc=1020769
+type=t_armor_leather
+can=can_i_flip|can_i_repair|can_i_dye|can_i_exceptional|can_i_makersmark|can_i_retaincolor|can_i_imbue|can_i_enchant|can_i_recycle
+layer=layer_arms
+weight=4
+reqstr=25
+resources=8 i_leather
+skillmake=tailoring 53.9
+dupelist=04047
+expansion=expansion_sa
 
-[ITEMDEF 0450d]
-DEFNAME=i_gargish_leather_belt
-NAME=Gargish belt
-TYPE=t_armor_leather
-FLIP=1
-//ARMOR=13
-//LAYER=layer_half_apron
-VALUE=40
-WEIGHT=5.1
-RESOURCES=5 i_hides_cut,1 i_thread
-SKILLMAKE=Tailoring 50.0,t_sewing_kit,Armslore 38.0
-CATEGORY=Provisions - Clothes
-SUBSECTION=Miscellaneous
-DESCRIPTION=Leather Gargish Belt
-TAG.GargoyleOnly=1
-TAG.REQSTR=10
-TEVENTS=t_equipitem
-DUPELIST=0450e
-ON=@Create
-   HITPOINTS={36 48}
-   TAG.RESPhysical=1
+category=Equipment
+subsection=Armor - Gargish Leather
+description=Gargish Leather Arms (Female)
 
-[ITEMDEF 0450e]
-//gargish belt
-DUPEITEM=0450d
+on=@Create
+hitpoints={ 36 48 }
+canuse=can_u_gargoyle|can_u_female
 
+resphysical=5
+resfire=6
+rescold=7
+respoison=6
+resenergy=6
 
-[ITEMDEF 0457e]
-DEFNAME=i_gargish_leather_wings
-NAME=Gargish leather wing armor
-TYPE=t_armor_leather
-FLIP=1
-//ARMOR=20
-VALUE=70
-WEIGHT=9.1
-RESOURCES=9 i_hides_cut,1 i_ingot_iron
-SKILLMAKE=Tailoring 79.0,t_sewing_kit,Armslore 10.0
-CATEGORY=Provisions - Armor
-SUBSECTION=Leather Gargoyle Armor
-DESCRIPTION=Gargish Leather Wing Armor
-TAG.REQSTR=10
-TAG.GargoyleOnly=1
-TEVENTS=t_equipitem
-DUPELIST=0457f
-ON=@Create
-   HITPOINTS={36 48}
-   TAG.RESPhysical=1
+[itemdef 04047]
+dupeitem=0301
+nameloc=1095327
 
-[ITEMDEF 0457f]
-//gargoyle leather wing armor
-DUPEITEM=0457e
+// Gargish Leather Arms
+[itemdef 0302]
+defname=i_gargish_leather_arms
+name=gargish leather arms
+nameloc=1020770
+type=t_armor_leather
+can=can_i_flip|can_i_repair|can_i_dye|can_i_exceptional|can_i_makersmark|can_i_retaincolor|can_i_imbue|can_i_enchant|can_i_recycle
+layer=layer_arms
+weight=4
+reqstr=25
+resources=8 i_leather
+skillmake=tailoring 53.9
+dupelist=04048
+expansion=expansion_sa
 
+category=Equipment
+subsection=Armor - Gargish Leather
+description=Gargish Leather Arms
+
+on=@Create
+hitpoints={ 36 48 }
+canuse=can_u_gargoyle|can_u_male
+
+resphysical=5
+resfire=6
+rescold=7
+respoison=6
+resenergy=6
+
+[itemdef 04048]
+dupeitem=0302
+nameloc=1095328
+
+// Gargish Leather Chest
+[itemdef 0303]
+defname=i_gargish_leather_chest_f
+name=gargish leather chest
+nameloc=1020771
+type=t_armor_leather
+can=can_i_flip|can_i_repair|can_i_dye|can_i_exceptional|can_i_makersmark|can_i_retaincolor|can_i_imbue|can_i_enchant|can_i_recycle
+layer=layer_chest
+weight=4
+reqstr=25
+resources=8 i_leather
+skillmake=tailoring 70.5
+dupelist=04049
+expansion=expansion_sa
+
+category=Equipment
+subsection=Armor - Gargish Leather
+description=Gargish Leather Chest (Female)
+
+on=@Create
+hitpoints={ 36 48 }
+canuse=can_u_gargoyle|can_u_female
+
+resphysical=5
+resfire=6
+rescold=7
+respoison=6
+resenergy=6
+
+[itemdef 04049]
+dupeitem=0303
+nameloc=1095329
+
+// Gargish Leather Chest
+[itemdef 0304]
+defname=i_gargish_leather_chest
+name=gargish leather chest
+nameloc=1020772
+type=t_armor_leather
+can=can_i_flip|can_i_repair|can_i_dye|can_i_exceptional|can_i_makersmark|can_i_retaincolor|can_i_imbue|can_i_enchant|can_i_recycle
+layer=layer_chest
+weight=4
+reqstr=25
+resources=8 i_leather
+skillmake=tailoring 70.5
+dupelist=0404a
+expansion=expansion_sa
+
+category=Equipment
+subsection=Armor - Gargish Leather
+description=Gargish Leather Chest
+
+on=@Create
+hitpoints={ 36 48 }
+canuse=can_u_gargoyle|can_u_male
+
+resphysical=5
+resfire=6
+rescold=7
+respoison=6
+resenergy=6
+
+[itemdef 0404a]
+dupeitem=0304
+nameloc=1095330
+
+// Gargish Leather Leggings
+[itemdef 0305]
+defname=i_gargish_leather_leggings_f
+name=gargish leather leggings
+nameloc=1020773
+type=t_armor_leather
+can=can_i_flip|can_i_repair|can_i_dye|can_i_exceptional|can_i_makersmark|can_i_retaincolor|can_i_imbue|can_i_enchant|can_i_recycle
+layer=layer_legs
+weight=5
+reqstr=20
+resources=10 i_leather
+skillmake=tailoring 66.3
+dupelist=0404d
+expansion=expansion_sa
+
+category=Equipment
+subsection=Armor - Gargish Leather
+description=Gargish Leather Leggings (Female)
+
+on=@Create
+hitpoints={ 36 48 }
+canuse=can_u_gargoyle|can_u_female
+
+resphysical=5
+resfire=6
+rescold=7
+respoison=6
+resenergy=6
+
+[itemdef 0404d]
+dupeitem=0305
+nameloc=1095333
+
+// Gargish Leather Leggings
+[itemdef 0306]
+defname=i_gargish_leather_leggings
+name=gargish leather leggings
+nameloc=1020774
+type=t_armor_leather
+can=can_i_flip|can_i_repair|can_i_dye|can_i_exceptional|can_i_makersmark|can_i_retaincolor|can_i_imbue|can_i_enchant|can_i_recycle
+layer=layer_legs
+weight=5
+reqstr=20
+resources=10 i_leather
+skillmake=tailoring 66.3
+dupelist=0404e
+expansion=expansion_sa
+
+category=Equipment
+subsection=Armor - Gargish Leather
+description=Gargish Leather Leggings
+
+on=@Create
+hitpoints={ 36 48 }
+canuse=can_u_gargoyle|can_u_male
+
+resphysical=5
+resfire=6
+rescold=7
+respoison=6
+resenergy=6
+
+on=@ClientTooltip
+addcliloc_description
+addcliloc_wearable
+return 1
+
+[itemdef 0404e]
+dupeitem=0306
+nameloc=1095334
+
+// Gargish Leather Kilt
+[itemdef 0310]
+defname=i_gargish_leather_kilt_f
+name=gargish leather kilt
+nameloc=1020784
+type=t_armor_leather
+can=can_i_flip|can_i_repair|can_i_dye|can_i_exceptional|can_i_makersmark|can_i_retaincolor|can_i_imbue|can_i_enchant|can_i_recycle
+layer=layer_skirt
+weight=5
+reqstr=25
+resources=6 i_leather
+skillmake=tailoring 58.0
+dupelist=0404b
+expansion=expansion_sa
+
+category=Equipment
+subsection=Armor - Gargish Leather
+description=Gargish Leather Kilt (Female)
+
+on=@Create
+hitpoints={ 36 48 }
+canuse=can_u_gargoyle|can_u_female
+
+resphysical=5
+resfire=6
+rescold=7
+respoison=6
+resenergy=6
+
+[itemdef 0404b]
+dupeitem=0310
+nameloc=1095331
+
+// Gargish Leather Kilt
+[itemdef 0311]
+defname=i_gargish_leather_kilt
+name=gargish leather kilt
+nameloc=1020785
+type=t_armor_leather
+can=can_i_flip|can_i_repair|can_i_dye|can_i_exceptional|can_i_makersmark|can_i_retaincolor|can_i_imbue|can_i_enchant|can_i_recycle
+layer=layer_skirt
+weight=5
+reqstr=25
+resources=6 i_leather
+skillmake=tailoring 58.0
+dupelist=0404c
+expansion=expansion_sa
+
+category=Equipment
+subsection=Armor - Gargish Leather
+description=Gargish Leather Kilt
+
+on=@Create
+hitpoints={ 36 48 }
+canuse=can_u_gargoyle|can_u_male
+
+resphysical=5
+resfire=6
+rescold=7
+respoison=6
+resenergy=6
+
+[itemdef 0404c]
+dupeitem=0311
+nameloc=1095332
+
+// Gargish Leather Talons
+[itemdef 041d8]
+defname=i_gargish_leather_talons
+name=gargish leather talons
+nameloc=1095728
+type=t_armor_leather
+can=can_i_flip|can_i_repair|can_i_dye|can_i_exceptional|can_i_makersmark|can_i_retaincolor|can_i_imbue|can_i_enchant|can_i_recycle
+layer=layer_shoes
+weight=2
+reqstr=10
+resources=6 i_leather
+skillmake=tailoring 40.4
+dupelist=041d9
+expansion=expansion_sa
+
+category=Equipment
+subsection=Armor - Gargish Leather
+description=Gargish Leather Talons
+
+on=@Create
+hitpoints={ 36 48 }
+canuse=can_u_gargoyle|can_u_male|can_u_female
+
+[itemdef 041d9]
+dupeitem=041d8
+nameloc=1095729
+
+// Gargish Leather Wing Armor
+[itemdef 0457e]
+defname=i_gargish_leather_wing_armor
+name=gargish leather wing armor
+nameloc=1096662
+type=t_armor_leather
+can=can_i_flip|can_i_repair|can_i_dye|can_i_exceptional|can_i_makersmark|can_i_retaincolor|can_i_imbue|can_i_enchant|can_i_recycle
+layer=layer_cape
+weight=2
+reqstr=10
+resources=12 i_leather
+skillmake=tailoring 65.0
+dupelist=0457f
+expansion=expansion_sa
+
+category=Equipment
+subsection=Armor - Gargish Leather
+description=Gargish Leather Wing Armor
+
+on=@Create
+hitpoints={ 36 48 }
+canuse=can_u_gargoyle|can_u_male|can_u_female
+
+resphysical=5
+resfire=6
+rescold=7
+respoison=6
+resenergy=6
+
+[itemdef 0457f]
+dupeitem=0457e
+nameloc=1096663
+
+// Gargish Belt
+[itemdef 0450d]
+defname=i_gargish_belt
+name=gargish belt
+nameloc=1096549
+type=t_clothing
+can=can_i_flip|can_i_repair|can_i_dye|can_i_exceptional|can_i_makersmark|can_i_retaincolor|can_i_imbue|can_i_enchant|can_i_recycle
+layer=
+weight=
+reqstr=
+resources=
+skillmake=
+dupelist=0450e
+expansion=expansion_sa
+
+category=Equipment
+subsection=Armor - Gargish Leather
+description=Gargish Belt
+
+on=@Create
+hitpoints={ 36 48 }
+canuse=can_u_gargoyle|can_u_male|can_u_female
+
+[itemdef 0450e]
+dupeitem=0450d
+nameloc=1096550
+
+[eof]
 
 [EOF]
