@@ -419,3 +419,8 @@ Added NameLoc variable for items so you can set a ClilocID for using it as name 
  Anims were fixed for this as well. (still haven't set flying anims yet, be patient)
 -Added: T_WEAPON_THROWING: Treated as a bow type with RANGE Parsing, TData3/4 values.
 -Added: T_WEAPON_THROWING to sphere_defs.scp. Also added T_SOUL_FORGE and T_FURNITURE to sphere_def.scp for base pack.
+
+13-12-2013, Khaos
+-Added: EventsItem=e_youreventhere; was added to the sphere.ini and hard code. Functions as eventsplayers/pets/regions.
+ This code fires on ALL items if something is in the global event and fires after tevents and before typedef. Don't overuse
+ this. We found legitimacy in this addition with a few ideas it would be needed for.

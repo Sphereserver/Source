@@ -3830,7 +3830,7 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 			EXC_SET("NPC triggers - EVENTSPET"); // EVENTSPET (constant events of NPCs set from sphere.ini)
 			for ( size_t i = 0; i < g_Cfg.m_pEventsPetLink.GetCount(); ++i )
 			{
-				CResourceLink	*pLink = g_Cfg.m_pEventsPetLink[i];
+				CResourceLink * pLink = g_Cfg.m_pEventsPetLink[i];
 				if ( !pLink || !pLink->HasTrigger(iAction) )
 					continue;
 				CResourceLock s;

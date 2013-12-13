@@ -419,6 +419,7 @@ enum RC_TYPE
 #endif
 	RC_DUNGEONLIGHT,
 	RC_EQUIPPEDCAST,		// m_fEquippedCast
+	RC_EVENTSITEM,			// m_sEventsItem
 	RC_EVENTSPET,			// m_sEventsPet
 	RC_EVENTSPLAYER,		// m_sEventsPlayer
 	RC_EVENTSREGION,		// m_sEventsRegion
@@ -638,6 +639,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 #endif
 	{ "DUNGEONLIGHT",			{ ELEM_INT,		OFFSETOF(CResource,m_iLightDungeon),		0 }},
 	{ "EQUIPPEDCAST",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fEquippedCast),		0 }},
+	{ "EVENTSITEM",				{ ELEM_CSTRING, OFFSETOF(CResource,m_sEventsItem),			0 }},
 	{ "EVENTSPET",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sEventsPet),			0 }},
 	{ "EVENTSPLAYER",			{ ELEM_CSTRING,	OFFSETOF(CResource,m_sEventsPlayer),		0 }},
 	{ "EVENTSREGION",			{ ELEM_CSTRING,	OFFSETOF(CResource,m_sEventsRegion),		0 }},
@@ -3851,6 +3853,14 @@ bool CResource::Load( bool fResync )
 				continue;
 			pRegion->MakeRegionName();
 		}
+	}
+
+	// parse eventsitem
+	m_iEventsItemLink.Empty();
+	if ( ! m_sEventsItem.IsEmpty() )
+	{
+		CScript script("EVENTSITEM", m_sEventsItem);
+		m_iEventsItemLink.r_LoadVal(script, RES_EVENTS);
 	}
 	
 	// parse eventspet

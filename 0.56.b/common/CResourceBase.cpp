@@ -1125,6 +1125,11 @@ bool CResourceRefArray::r_LoadVal( CScript & s, RES_TYPE restype )
 				DEBUG_ERR(("'%s' already defined in sphere.ini - skipping\n", pResourceLink->GetName()));
 				continue;
 			}
+			else if ( g_Cfg.m_iEventsItemLink.ContainsPtr(pResourceLink) )
+			{
+				DEBUG_ERR(("'%s' already defined in sphere.ini - skipping\n", pResourceLink->GetName()));
+				continue;
+			}
 
 			Add( pResourceLink );
 		}

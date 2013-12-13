@@ -848,6 +848,9 @@ public:
 	CGString	m_sEventsRegion;
 	CResourceRefArray m_pEventsRegionLink;
 
+	CGString	m_sEventsItem;
+	CResourceRefArray m_iEventsItemLink;
+
 	// Third Party Tools
 	CGString	m_sStripPath;
 	bool	m_fCUOStatus;

@@ -3226,7 +3226,7 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 		EXC_SET("events");
 		size_t origEvents = m_OEvents.GetCount();
 		size_t curEvents = origEvents;
-		for ( size_t i = 0; i < curEvents; ++i )			//	2) EVENTS (could be modifyed ingame!)
+		for ( size_t i = 0; i < curEvents; ++i )			//	2) EVENTS (could be modified ingame!)
 		{
 			CResourceLink * pLink = m_OEvents[i];
 			if ( !pLink || !pLink->HasTrigger(iAction) )
@@ -3263,8 +3263,23 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 				return iRet;
 		}
 
+		// 4) EVENTSITEM triggers
+		EXC_SET("Item triggers - EVENTSITEM"); // EVENTSITEM (constant events of Items set from sphere.ini)
+		for ( size_t i = 0; i < g_Cfg.m_iEventsItemLink.GetCount(); ++i )
+		{
+			CResourceLink * pLink = g_Cfg.m_iEventsItemLink[i];
+			if ( !pLink || !pLink->HasTrigger(iAction) )
+				continue;
+			CResourceLock s;
+			if ( !pLink->ResourceLock(s) )
+				continue;
+			iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
+			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
+				return iRet;
+		}
 
-		// 4) TYPEDEF
+
+		// 5) TYPEDEF
 		EXC_SET("typedef");
 		{
 			// It has an assigned trigger type.
@@ -3298,7 +3313,7 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 		}
 
 
-		// Look up the trigger in the RES_ITEMDEF. (default)
+		// 6) Look up the trigger in the RES_ITEMDEF. (default)
 		EXC_SET("itemdef");
 		CBaseBaseDef * pResourceLink = Base_GetDef();
 		ASSERT(pResourceLink);
