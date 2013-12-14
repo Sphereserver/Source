@@ -2301,6 +2301,7 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_ABILITYPRIMARY:
 		case IC_ABILITYSECONDARY:
 		case IC_BALANCED:
+		case IC_BANE:
 		case IC_BATTLELUST:
 		case IC_BLESSED:
 		case IC_BLOODDRINKER:
@@ -2438,6 +2439,7 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_SOULCHARGEKINETIC:
 		case IC_SOULCHARGEPOISON:
 		case IC_SPELLCHANNELING:
+		case IC_SPELLCONSUMPTION:
 		case IC_SPELLFOCUSING:
 		case IC_SPLINTERINGWEAPON:
 		case IC_SUMMONING:
@@ -2626,6 +2628,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_ABILITYPRIMARY:
 		case IC_ABILITYSECONDARY:
 		case IC_BALANCED:
+		case IC_BANE:
 		case IC_BATTLELUST:
 		case IC_BLESSED:
 		case IC_BLOODDRINKER:
@@ -2763,6 +2766,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_SOULCHARGEKINETIC:
 		case IC_SOULCHARGEPOISON:
 		case IC_SPELLCHANNELING:
+		case IC_SPELLCONSUMPTION:
 		case IC_SPELLFOCUSING:
 		case IC_SPLINTERINGWEAPON:
 		case IC_SUMMONING:

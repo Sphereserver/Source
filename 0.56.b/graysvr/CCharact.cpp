@@ -2043,6 +2043,12 @@ bool CChar::Horse_Mount(CChar *pHorse) // Remove horse char and give player a ho
 		}
 	}
 
+	if ( IsStatFlag ( STATF_OnHorse ));
+	{
+			Horse_UnMount();	// unmount if already on a horse.
+			return ( false );
+	}
+
 	if ( IsTrigUsed(TRIGGER_MOUNT) )
 	{
 		CScriptTriggerArgs Args(pHorse);

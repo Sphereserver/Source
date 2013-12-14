@@ -424,10 +424,12 @@ Added NameLoc variable for items so you can set a ClilocID for using it as name 
 -Added: EventsItem=e_youreventhere; was added to the sphere.ini and hard code. Functions as eventsplayers/pets/regions.
  This code fires on ALL items if something is in the global event and fires after tevents and before typedef. Don't overuse
  this. We found legitimacy in this addition with a few ideas it would be needed for.
--Changed: attr_nodrop and attr_notrade combined in one as Attr_NoDropTrade.
- Same with the two variables are now NODROPTRADE on items.
+-Changed: attr_nodrop and attr_notrade combined in one as Attr_NoDropTrade. Same with the two variables are now NODROPTRADE on items.
 -Added: attr_artifact now takes the spot of attr_notrade
--Changed: attr_artifact items won't take fire damage on clothing unless scripted
- otherwise.
+-Changed: attr_artifact items won't take fire damage on clothing unless scripted otherwise.
 -Changed: sphere_defs.scp to reflect new attr_* edits.
 -Changed: REQEXPANSION -> EXPANSION in the Variables on Items and Chars.
+
+14-12-2013
+-Added: Char and Item variables for Bane and SpellConsumption
+-Fixed: Possible fix for dismount trigger not being called first when mounting a mount while on a mount.
