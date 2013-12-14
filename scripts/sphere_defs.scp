@@ -719,8 +719,8 @@ attr_enchanted		020000		// is enchanted
 attr_imbued		040000		// is imbued
 attr_questitem		080000	// is quest item
 attr_insured		0100000	// Is insured
-attr_nodrop			0200000	// no-drop
-attr_notrade		0400000	// no-trade
+attr_nodroptrade	0200000	// no-drop/trade
+attr_artifact		0400000	// artifact
 attr_lockeddown		0800000	// locked down
 attr_secure		01000000	// secured
 attr_reforged	02000000	// Is Runic Reforged.
@@ -1077,8 +1077,8 @@ t_spellbook_mystic      191   // SA Mysticism spellbook (should have MOREZ=677 b
 t_hoverover             192   // Hover-over item (CAN_I_HOVER can hover over blocking items)
 t_spellbook_bard        193   // SA Bard spellbook (should have MOREZ=700 by default)
 t_weapon_throwing		194	// Throwing Weapon
-t_furniture			195
-t_soul_forge			196
+t_furniture			195 // Furniture
+t_soul_forge			196 // Soul Forge
 
 [DEFNAME layers]
 layer_hand1       1

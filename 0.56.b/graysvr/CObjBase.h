@@ -371,8 +371,8 @@ public:
 #define ATTR_IMBUED			0x40000		// Is Imbued
 #define ATTR_QUESTITEM		0x80000		// Is Quest Item
 #define ATTR_INSURED		0x100000	// Is Insured
-#define ATTR_NODROP			0x200000	// No-drop
-#define ATTR_NOTRADE		0x400000	// No-trade
+#define ATTR_NODROPTRADE	0x200000	// No-drop/trade
+#define ATTR_ARTIFACT		0x400000	// Artifact
 #define ATTR_LOCKEDDOWN		0x800000	// Is Locked Down
 #define ATTR_SECURE			0x1000000	// Is Secure
 #define ATTR_REFORGED		0x2000000	// Is Runic Reforged.
@@ -2500,6 +2500,7 @@ public:
 	unsigned int m_exp;			//	character experience
 	unsigned int m_level;		//	character experience level
 	BYTE m_iVisualRange;		//  Visual Range
+	short int m_ResPhysical;
 	short int m_ResFire;
 	short int m_ResCold;
 	short int m_ResPoison;

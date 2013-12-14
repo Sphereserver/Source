@@ -2348,6 +2348,7 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_DURABILITY:
 		case IC_ENHANCEPOTIONS:
 		case IC_EPHEMERAL:
+		case IC_EXPANSION:
 		case IC_FASTERCASTRECOVERY:
 		case IC_FASTERCASTING:
 		case IC_HITAREACOLD:
@@ -2395,8 +2396,8 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_MANABURSTFREQUENCY:
 		case IC_MANABURSTKARMA:
 		case IC_MANAPHASE:
-		case IC_NODROP:
-		case IC_NOTRADE:
+		case IC_MATERIAL:
+		case IC_NODROPTRADE:
 		case IC_NPCKILLER:
 		case IC_NPCKILLERAMT:
 		case IC_NPCPROTECTION:
@@ -2414,7 +2415,6 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_REGENMANA:
 		case IC_REGENSTAM:
 		case IC_REMOVALTYPE:
-		case IC_REQEXPANSION:
 		case IC_RESCOLD:
 		case IC_RESENERGY:
 		case IC_RESFIRE:
@@ -2664,6 +2664,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_EATERFIRE:
 		case IC_EATERKINETIC:
 		case IC_EATERPOISON:
+		case IC_EXPANSION:
 		case IC_DAMENERGY:
 		case IC_DAMFIRE:
 		case IC_DAMMODIFIER:
@@ -2720,8 +2721,8 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_MANABURSTFREQUENCY:
 		case IC_MANABURSTKARMA:
 		case IC_MANAPHASE:
-		case IC_NODROP:
-		case IC_NOTRADE:
+		case IC_MATERIAL:
+		case IC_NODROPTRADE:
 		case IC_NPCKILLER:
 		case IC_NPCKILLERAMT:
 		case IC_NPCPROTECTION:
@@ -2739,7 +2740,6 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_REGENMANA:
 		case IC_REGENSTAM:
 		case IC_REMOVALTYPE:
-		case IC_REQEXPANSION:
 		case IC_RESCOLD:
 		case IC_RESENERGY:
 		case IC_RESFIRE:
@@ -4784,7 +4784,7 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	{
 	case IT_CLOTHING:
 		if ( ( uType & DAMAGE_FIRE ) &&
-			! IsAttr( ATTR_MAGIC|ATTR_NEWBIE|ATTR_MOVE_NEVER ))
+			! IsAttr( ATTR_ARTIFACT|ATTR_MAGIC|ATTR_NEWBIE|ATTR_MOVE_NEVER ))
 		{
 			// normal cloth takes special damage from fire.
 			goto forcedamage;
