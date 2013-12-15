@@ -1178,6 +1178,16 @@ bool CItemBase::r_LoadVal( CScript &s )
 	EXC_TRY("LoadVal");
 	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
+		case IBC_AMMOANIM:
+		case IBC_AMMOANIMHUE:
+		case IBC_AMMOANIMRENDER:
+		case IBC_AMMOCONT:
+		case IBC_AMMOTYPE:
+			{
+				bool fQuoted = false;
+				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
+			}
+			break;
 		case IBC_DISPID:
 			// Can't set this.
 			return( false );

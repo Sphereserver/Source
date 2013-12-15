@@ -98,6 +98,24 @@ public:
 		m_BaseDefs.DeleteKey(pszKey);
 	}
 
+	CVarDefCont * GetDefKey( LPCTSTR pszKey, bool fDef ) const
+	{
+		CVarDefCont	* pVar	= m_BaseDefs.GetKey( pszKey );
+		if ( !fDef || pVar )	return pVar;
+		if (IsItem())
+		{
+			CItemBase * pItemDef = STATIC_CAST <CItemBase*>( Base_GetDef());
+			ASSERT(pItemDef);
+			return pItemDef-> m_BaseDefs.GetKey( pszKey );
+		}
+		else
+		{
+			CCharBase * pCharDef = STATIC_CAST <CCharBase*>( Base_GetDef());
+			ASSERT(pCharDef);
+			return pCharDef-> m_BaseDefs.GetKey( pszKey );
+		}
+	}
+
 protected:
 	virtual void DupeCopy( const CObjBase * pObj )
 	{

@@ -2450,6 +2450,18 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_WEIGHTREDUCTION:
 				sVal = GetDefStr(pszKey, true);
 			break;
+
+			//On these ones, check BaseDef too if not found on dynamic
+		case IC_AMMOANIM:
+		case IC_AMMOANIMHUE:
+		case IC_AMMOANIMRENDER:
+		case IC_AMMOCONT:
+		case IC_AMMOTYPE:
+			{
+				CVarDefCont * pVar = GetDefKey(pszKey, true);
+				sVal = pVar ? pVar->GetValStr() : "";
+			}
+			break;
 		case IC_ADDSPELL:
 			pszKey	+= 8;
 			SKIP_SEPARATORS( pszKey );
@@ -2627,6 +2639,11 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 	{
 		case IC_ABILITYPRIMARY:
 		case IC_ABILITYSECONDARY:
+		case IC_AMMOANIM:
+		case IC_AMMOANIMHUE:
+		case IC_AMMOANIMRENDER:
+		case IC_AMMOCONT:
+		case IC_AMMOTYPE:
 		case IC_BALANCED:
 		case IC_BANE:
 		case IC_BATTLELUST:

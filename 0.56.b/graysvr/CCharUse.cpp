@@ -557,7 +557,7 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 	const CItemBase * pWeaponDef = pWeapon->Item_GetDef();
 
 	// determine ammo type
-	CVarDefCont * pVarAmmoType = pWeapon->GetKey("OVERRIDE.AMMOTYPE", true);
+	CVarDefCont * pVarAmmoType = pWeapon->GetDefKey("AMMOTYPE", true);
 	RESOURCE_ID_BASE rid;
 	LPCTSTR t_Str;
 
@@ -565,13 +565,11 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 	{
 		t_Str = pVarAmmoType->GetValStr();
 		rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str));
-		AmmoID = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 	}
 	else
-	{
 		rid = pWeaponDef->m_ttWeaponBow.m_idAmmo;
-		AmmoID = static_cast<ITEMID_TYPE>(pWeaponDef->m_ttWeaponBow.m_idAmmo.GetResIndex());
-	}
+
+	AmmoID = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 
 	// If there is a different ammo type on the butte currently,
 	// tell us to remove the current type first.
@@ -635,14 +633,47 @@ badalign:
 		return( true );
 	}
 
+	CVarDefCont * pCont = pWeapon->GetDefKey("AMMOCONT",true);
+
+	if (m_pPlayer && AmmoID )
+		{
+			int iFound = NULL;
+			if ( pCont )
+			{
+				//check for UID
+				CGrayUID uidCont = static_cast<DWORD>(pCont->GetValNum());
+				CItemContainer *pNewCont = dynamic_cast <CItemContainer*> (uidCont.ItemFind());
+				if (!pNewCont) //if no UID, check for ITEMID_TYPE
+				{
+					t_Str = pCont->GetValStr();
+					RESOURCE_ID_BASE rContid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str ));
+					ITEMID_TYPE ContID = static_cast<ITEMID_TYPE>(rContid.GetResIndex());
+					if (ContID)
+						pNewCont = dynamic_cast <CItemContainer*> (ContentFind( rContid ));
+				}
+
+				if (pNewCont)
+					iFound = pNewCont->ContentConsume( RESOURCE_ID( RES_ITEMDEF, AmmoID ));
+				else
+					iFound = ContentConsume( RESOURCE_ID( RES_ITEMDEF, AmmoID ));
+			}
+			else
+				iFound = ContentConsume( RESOURCE_ID( RES_ITEMDEF, AmmoID ));
+			if ( !iFound )
+			{
+				SysMessageDefault( DEFMSG_ITEMUSE_ARCHB_NOAMMO );
+				return( true );
+			}
+		}
+
 	// OK...go ahead and fire at the target
 	// Check the skill
 	bool fSuccess = Skill_UseQuick( skill, Calc_GetRandVal(40));
 
 	// determine animation parameters
-	CVarDefCont * pVarAnim = pWeapon->GetKey("OVERRIDE.AMMOANIM", true);
-	CVarDefCont * pVarAnimColor = pWeapon->GetKey("OVERRIDE.AMMOANIMHUE", true);
-	CVarDefCont * pVarAnimRender = pWeapon->GetKey("OVERRIDE.AMMOANIMRENDER", true);
+	CVarDefCont * pVarAnim = pWeapon->GetDefKey("AMMOANIM", true);
+	CVarDefCont * pVarAnimColor = pWeapon->GetDefKey("AMMOANIMHUE", true);
+	CVarDefCont * pVarAnimRender = pWeapon->GetDefKey("AMMOANIMRENDER", true);
 	ITEMID_TYPE AmmoAnim;
 	DWORD AmmoHue;
 	DWORD AmmoRender;

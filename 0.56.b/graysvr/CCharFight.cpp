@@ -3338,30 +3338,50 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			UpdateDir( pCharTarg );
 
 		// Consume the bolts/arrows
-		CVarDefCont * pValue = pWeapon->GetKey("OVERRIDE.AMMOTYPE",true);
-		CVarDefCont * pAnim  = pWeapon->GetKey("OVERRIDE.AMMOANIM",true);
-		CVarDefCont * pColor = pWeapon->GetKey("OVERRIDE.AMMOANIMHUE",true);
-		CVarDefCont * pRender = pWeapon->GetKey("OVERRIDE.AMMOANIMRENDER",true);
+		CVarDefCont * pValue = pWeapon->GetDefKey("AMMOTYPE",true);
+		CVarDefCont * pCont = pWeapon->GetDefKey("AMMOCONT",true);
+		CVarDefCont * pAnim  = pWeapon->GetDefKey("AMMOANIM",true);
+		CVarDefCont * pColor = pWeapon->GetDefKey("AMMOANIMHUE",true);
+		CVarDefCont * pRender = pWeapon->GetDefKey("AMMOANIMRENDER",true);
 		ITEMID_TYPE AmmoID;
 		ITEMID_TYPE AmmoAnim;
 		DWORD AmmoHue;
 		DWORD AmmoRender;
 		RESOURCE_ID_BASE rid;
 		LPCTSTR t_Str;
+
 		if ( pValue )
 		{
 			t_Str = pValue->GetValStr();
 			rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str ));
-			AmmoID = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 		} else
-		{
 			rid = pWeaponDef->m_ttWeaponBow.m_idAmmo;
-			AmmoID = static_cast<ITEMID_TYPE>(pWeaponDef->m_ttWeaponBow.m_idAmmo.GetResIndex());
-		}
+
+		AmmoID = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 
 		if ( AmmoID )
 		{
-			pAmmo = ContentFind( rid );
+			if ( pCont )
+			{
+				//check for UID
+				CGrayUID uidCont = static_cast<DWORD>(pCont->GetValNum());
+				CItemContainer *pNewCont = dynamic_cast <CItemContainer*> (uidCont.ItemFind());
+				if (!pNewCont) //if no UID, check for ITEMID_TYPE
+				{
+					t_Str = pCont->GetValStr();
+					RESOURCE_ID_BASE rContid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str ));
+					ITEMID_TYPE ContID = static_cast<ITEMID_TYPE>(rContid.GetResIndex());
+					if (ContID)
+						pNewCont = dynamic_cast <CItemContainer*> (ContentFind( rContid ));
+				}
+
+				if (pNewCont)
+					pAmmo = pNewCont->ContentFind( rid );
+				else
+					pAmmo = ContentFind( rid );
+			}
+			else
+				pAmmo = ContentFind( rid );
 			if ( m_pPlayer && pAmmo == NULL )
 			{
 				SysMessageDefault( DEFMSG_COMBAT_ARCH_NOAMMO );
