@@ -426,6 +426,8 @@ private:
 #define SPELLFLAG_POLY				0x2000000
 #define SPELLFLAG_TARG_DEAD			0x4000000 // allowed to targ dead chars
 #define SPELLFLAG_DAMAGE			0x8000000 // damage intended
+#define SPELLFLAG_BLESS				0x10000000	//Benefitial spells like Bless,Agility,etc.
+#define SPELLFLAG_CURSE				0x20000000	//Curses just like Weaken,Purge Magic,Curse,etc.
 
 	CGString m_sName;	// spell name
 

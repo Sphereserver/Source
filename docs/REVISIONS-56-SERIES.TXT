@@ -442,3 +442,7 @@ Added NameLoc variable for items so you can set a ClilocID for using it as name 
 15-12-2013, Khaos
 -Added: BONUSHITSMAX, BONUSMANAMAX, BONUSSTAMMAX, and REGENFOOD variables to prepare for a huge overhaul of the internal overrides and status
  bar packet.
+
+15-12-2013, XuN
+-Added: Spellflag_bless and Spellflag_curse for blessing spells like Agility, Blessing,etc and for Weaken,Curse, etc.
+-Modified: sphere_defs.scp and sphere_spells.scp to add these spellflags.

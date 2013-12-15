@@ -643,6 +643,8 @@ spellflag_area             01000000   // area effect (uses local.arearadius)
 spellflag_poly             02000000   // polymorph yourself
 spellflag_targ_dead        04000000   // target is dead (for resurrection-like spells)
 spellflag_damage           08000000   // kinda harm but deals damage to the targ, damage type is LOCAL.DamageType.
+spellflag_bless            010000000  //Benefitial spells like Bless,Agility,etc.
+spellflag_curse            020000000  //Curses just like Weaken,Purge Magic,Curse,etc.
 
 [DEFNAME mem_flags]
 memory_sawcrime      00001   // i saw them commit a crime or i was attacked criminally. i can call the guards on them.
