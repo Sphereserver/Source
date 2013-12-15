@@ -724,6 +724,7 @@ attr_artifact		0400000	// artifact
 attr_lockeddown		0800000	// locked down
 attr_secure		01000000	// secured
 attr_reforged	02000000	// Is Runic Reforged.
+attr_enhanced		attr_enchanted // Backwards Compatibility.
 
 
 [DEFNAME can_flags]
@@ -1194,6 +1195,7 @@ can_i_enchant		0100000	// can items be enchanted (runic)
 can_i_imbue			0200000	// can items be imbued (imbuing)
 can_i_recycle			0400000	// Can be recycled
 can_i_reforge		0800000	// Can be Runic Reforged.
+can_i_enhance		can_i_enchant	// Backwards Compatibility
 
 
 [DEFNAME tile_flags]

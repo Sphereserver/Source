@@ -2043,11 +2043,7 @@ bool CChar::Horse_Mount(CChar *pHorse) // Remove horse char and give player a ho
 		}
 	}
 
-	if ( IsStatFlag ( STATF_OnHorse ));
-	{
-			Horse_UnMount();	// unmount if already on a horse.
-			return ( false );
-	}
+	Horse_UnMount();	// unmount if already on a horse.
 
 	if ( IsTrigUsed(TRIGGER_MOUNT) )
 	{
@@ -2055,8 +2051,6 @@ bool CChar::Horse_Mount(CChar *pHorse) // Remove horse char and give player a ho
    		if ( OnTrigger(CTRIG_Mount, this, &Args) == TRIGRET_RET_TRUE )
 			return false;
 	}
-
-	Horse_UnMount();	// unmount if already on a horse.
 
 	CItem * pItem = pHorse->Make_Figurine(GetUID(), id);
 	if ( !pItem )
