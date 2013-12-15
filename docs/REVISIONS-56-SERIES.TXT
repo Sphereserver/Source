@@ -438,3 +438,7 @@ Added NameLoc variable for items so you can set a ClilocID for using it as name 
 -Moved: TAG.OVERRIDE.AMMOANIM , AMMOANIMHUE , AMMOANIMRENDER, AMMOTYPE to permanent variables. (ex:TAG.OVERRIDE.AMMOANIM -> AMMOANIM)
 		These can be set on Items in game or in the ITEMDEF section. (They can be set on all items but only in use on archery types)
 -Added: AMMOCONT to Items and ITEMDEF which can take the UID of a container (for specific container) or an ID (for a type of container)
+
+15-12-2013, Khaos
+-Added: BONUSHITSMAX, BONUSMANAMAX, BONUSSTAMMAX, and REGENFOOD variables to prepare for a huge overhaul of the internal overrides and status
+ bar packet.
