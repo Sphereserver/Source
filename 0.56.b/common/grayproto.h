@@ -999,7 +999,7 @@ enum NOTO_TYPE
 #define MINCLIVER_STATUS_V3			0x400000	// minimum client to receive v2 of 0x11 packet
 #define MINCLIVER_STATUS_V4			0x400010	// minimum client to receive v3 of 0x11 packet
 #define MINCLIVER_STATUS_V5			0x500000	// minimum client to receive v4 of 0x11 packet
-#define MINCLIVER_STATUS_V6			0x600018	// minimum client to receive v5 of 0x11 packet
+#define MINCLIVER_STATUS_V6			0x700300	// minimum client to receive v5 of 0x11 packet
 #define MINCLIVER_EXTRAFEATURES		0x600143	// minimum client to receive 4-byte feature mask
 #define MINCLIVER_EXTRASTARTINFO 	0x700130	// minimum client to receive extra start info
 #define MINCLIVER_NEWMOBINCOMING	0x700331	// minimun client to receive new 0x78 packet

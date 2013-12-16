@@ -439,10 +439,14 @@ Added NameLoc variable for items so you can set a ClilocID for using it as name 
 		These can be set on Items in game or in the ITEMDEF section. (They can be set on all items but only in use on archery types)
 -Added: AMMOCONT to Items and ITEMDEF which can take the UID of a container (for specific container) or an ID (for a type of container)
 
-15-12-2013, Khaos
--Added: BONUSHITSMAX, BONUSMANAMAX, BONUSSTAMMAX, and REGENFOOD variables to prepare for a huge overhaul of the internal overrides and status
- bar packet.
-
 15-12-2013, XuN
 -Added: Spellflag_bless and Spellflag_curse for blessing spells like Agility, Blessing,etc and for Weaken,Curse, etc.
 -Modified: sphere_defs.scp and sphere_spells.scp to add these spellflags.
+
+15-12-2013, Khaos
+-Added: BONUSHITSMAX, BONUSMANAMAX, BONUSSTAMMAX, and REGENFOOD variables to prepare for a huge overhaul of the internal overrides and status
+ bar packet.
+-Added: INCREASEDEFCHANCEMAX, RESPHYSICALMAX, RESFIREMAX, RESCOLDMAX, RESENERGYMAX, AND RESPOISONMAX variables for CHARACTERS ONLY. The
+ new status bar packets checks for client >= 7.0.3. Full functional now with THOSE variables and those on it. Ones added earlier for the mis-
+ informed information won't be leaving the servers since they might be for EC.
+-Changed: PlayerStatusUpdate Packet now processes the variables it uses.

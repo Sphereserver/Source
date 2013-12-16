@@ -133,8 +133,10 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 			version = 3;
 		else if (state->isClientLessVersion(MINCLIVER_STATUS_V5))
 			version = 4;
-		else
+		else if (state->isClientLessVersion(MINCLIVER_STATUS_V6))
 			version = 5;
+		else
+			version = 6;
 
 		int strength = other->Stat_GetAdjusted(STAT_STR);
 		if (strength < 0) strength = 0;
@@ -238,6 +240,51 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 
 			writeInt32(other->m_pPlayer? other->m_pPlayer->m_iTithingPoints : 0);
 		}
+
+		if (version >= 6)	// Stygian Abyss Attributes?
+		{
+			writeInt16(other->GetDefNum("RESPHYSICALMAX", true));
+			writeInt16(other->GetDefNum("RESFIREMAX", true));
+			writeInt16(other->GetDefNum("RESCOLDMAX", true));
+			writeInt16(other->GetDefNum("RESPOISONMAX", true));
+			writeInt16(other->GetDefNum("RESENERGYMAX", true));
+			writeInt16(other->GetDefNum("INCREASEDEFCHANCE", true));
+			writeInt16(other->GetDefNum("INCREASEDEFCHANCEMAX", true));
+			writeInt16(other->GetDefNum("INCREASEHITCHANCE", true));
+			writeInt16(other->GetDefNum("INCREASESWINGSPEED", true));
+			writeInt16(other->GetDefNum("INCREASEDAM", true));
+			writeInt16(other->GetDefNum("LOWERREAGENTCOST", true));
+			writeInt16(other->GetDefNum("INCREASESPELLDAM", true));
+			writeInt16(other->GetDefNum("FASTERCASTRECOVERY", true));
+			writeInt16(other->GetDefNum("FASTERCASTING", true));
+			writeInt16(other->GetDefNum("LOWERMANACOST", true));
+		}
+/* We really don't know what is going on here. RUOSI Packet Guide was way off... -Khaos
+		{
+			writeInt16(other->GetDefNum("INCREASEHITCHANCE", true));
+			writeInt16(other->GetDefNum("INCREASESWINGSPEED", true));
+			writeInt16(other->GetDefNum("INCREASEDAM", true));
+			writeInt16(other->GetDefNum("LOWERREAGENTCOST", true));
+			writeInt16(other->GetDefNum("REGENHITS", true));
+			writeInt16(other->GetDefNum("REGENSTAM", true));
+			writeInt16(other->GetDefNum("REGENMANA", true));
+			writeInt16(other->GetDefNum("REFLECTPHYSICALDAM", true));
+			writeInt16(other->GetDefNum("ENHANCEPOTIONS", true));
+			writeInt16(other->GetDefNum("INCREASEDEFCHANCE", true));
+			writeInt16(other->GetDefNum("INCREASESPELLDAM", true));
+			writeInt16(other->GetDefNum("FASTERCASTRECOVERY", true));
+			writeInt16(other->GetDefNum("FASTERCASTING", true));
+			writeInt16(other->GetDefNum("LOWERMANACOST", true));
+			writeInt16(other->GetDefNum("BONUSSTR", true));
+			writeInt16(other->GetDefNum("BONUSDEX", true));
+			writeInt16(other->GetDefNum("BONUSINT", true));
+			writeInt16(other->GetDefNum("BONUSHITS", true));
+			writeInt16(other->GetDefNum("BONUSSTAM", true));
+			writeInt16(other->GetDefNum("BONUSMANA", true));
+			writeInt16(other->GetDefNum("BONUSHITSMAX", true));
+			writeInt16(other->GetDefNum("BONUSSTAMMAX", true));
+			writeInt16(other->GetDefNum("BONUSMANAMAX", true));
+		}*/
 	}
 	else
 	{

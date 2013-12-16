@@ -2298,6 +2298,29 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 
 	switch ( index )
 	{
+		case IC_INCREASEHITCHANCE:
+		case IC_INCREASESWINGSPEED:
+		case IC_INCREASEDAM:
+		case IC_LOWERREAGENTCOST:
+		case IC_REGENHITS:
+		case IC_REGENSTAM:
+		case IC_REGENMANA:
+		case IC_REFLECTPHYSICALDAM:
+		case IC_ENHANCEPOTIONS:
+		case IC_INCREASEDEFCHANCE:
+		case IC_INCREASESPELLDAM:
+		case IC_FASTERCASTRECOVERY:
+		case IC_FASTERCASTING:
+		case IC_LOWERMANACOST:
+		case IC_BONUSSTR:
+		case IC_BONUSDEX:
+		case IC_BONUSINT:
+		case IC_BONUSHITS:
+		case IC_BONUSSTAM:
+		case IC_BONUSMANA:
+		case IC_BONUSHITSMAX:
+		case IC_BONUSSTAMMAX:
+		case IC_BONUSMANAMAX:
 		case IC_BLESSED:
 		case IC_BONUSSKILL1:
 		case IC_BONUSSKILL1AMT:
@@ -2546,6 +2569,29 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 	EXC_TRY("LoadVal");
 	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
+		case IC_INCREASEHITCHANCE:
+		case IC_INCREASESWINGSPEED:
+		case IC_INCREASEDAM:
+		case IC_LOWERREAGENTCOST:
+		case IC_REGENHITS:
+		case IC_REGENSTAM:
+		case IC_REGENMANA:
+		case IC_REFLECTPHYSICALDAM:
+		case IC_ENHANCEPOTIONS:
+		case IC_INCREASEDEFCHANCE:
+		case IC_INCREASESPELLDAM:
+		case IC_FASTERCASTRECOVERY:
+		case IC_FASTERCASTING:
+		case IC_LOWERMANACOST:
+		case IC_BONUSSTR:
+		case IC_BONUSDEX:
+		case IC_BONUSINT:
+		case IC_BONUSHITS:
+		case IC_BONUSSTAM:
+		case IC_BONUSMANA:
+		case IC_BONUSHITSMAX:
+		case IC_BONUSSTAMMAX:
+		case IC_BONUSMANAMAX:
 		case IC_AMMOANIM:
 		case IC_AMMOANIMHUE:
 		case IC_AMMOANIMRENDER:
