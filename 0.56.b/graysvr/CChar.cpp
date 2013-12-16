@@ -2189,21 +2189,33 @@ do_default:
 
 	switch (iKeyNum)
 	{
+		//Status Update Variables
 		case CHC_INCREASEHITCHANCE:
 		case CHC_INCREASESWINGSPEED:
 		case CHC_INCREASEDAM:
 		case CHC_LOWERREAGENTCOST:
+		case CHC_LOWERMANACOST:
+		case CHC_FASTERCASTRECOVERY:
+		case CHC_FASTERCASTING:
+		case CHC_INCREASEDEFCHANCE:
+		case CHC_INCREASEDEFCHANCEMAX:
+		case CHC_INCREASESPELLDAM:
+		case CHC_RESCOLDMAX:
+		case CHC_RESFIREMAX:
+		case CHC_RESENERGYMAX:
+		case CHC_RESPOISONMAX:
+		case CHC_RESPHYSICALMAX:
+		case CHC_RESPHYSICAL:
+			{
+				SetDefNum(s.GetKey(), s.GetArgVal(), false);
+				UpdateStatsFlag();
+			}
+			break;
 		case CHC_REGENHITS:
 		case CHC_REGENSTAM:
 		case CHC_REGENMANA:
 		case CHC_REFLECTPHYSICALDAM:
 		case CHC_ENHANCEPOTIONS:
-		case CHC_INCREASEDEFCHANCE:
-		case CHC_INCREASEDEFCHANCEMAX:
-		case CHC_INCREASESPELLDAM:
-		case CHC_FASTERCASTRECOVERY:
-		case CHC_FASTERCASTING:
-		case CHC_LOWERMANACOST:
 		case CHC_BONUSSTR:
 		case CHC_BONUSDEX:
 		case CHC_BONUSINT:
@@ -2213,21 +2225,11 @@ do_default:
 		case CHC_BONUSHITSMAX:
 		case CHC_BONUSSTAMMAX:
 		case CHC_BONUSMANAMAX:
-		case CHC_RESCOLDMAX:
-		case CHC_RESFIREMAX:
-		case CHC_RESENERGYMAX:
-		case CHC_RESPOISONMAX:
-			{
-				SetDefNum(s.GetKey(), s.GetArgVal(), false);
-				UpdateStatsFlag();
-			}
-			break;
 		case CHC_DMGCOLD:
 		case CHC_DMGENERGY:
 		case CHC_DMGFIRE:
 		case CHC_DMGPHYSICAL:
 		case CHC_DMGPOISON:
-		case CHC_RESPHYSICAL:
 		case CHC_FOLLOWERSLOTS:
 			{
 				bool fQuoted = false;
