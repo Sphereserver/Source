@@ -450,3 +450,6 @@ Added NameLoc variable for items so you can set a ClilocID for using it as name 
  new status bar packets checks for client >= 7.0.3. Full functional now with THOSE variables and those on it. Ones added earlier for the mis-
  informed information won't be leaving the servers since they might be for EC.
 -Changed: PlayerStatusUpdate Packet now processes the variables it uses.
+
+16-12-2013, Khaos (Script Pack)
+-Changed: Changed colors_neutral range from { 1801 1887 } to { 1801 1908 } as noted on bugtracker.

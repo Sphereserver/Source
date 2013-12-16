@@ -107,7 +107,8 @@ colors_green           {1401 1447}
 colors_orange          {1501 1547}
 colors_gray            {946 947}
 colors_pink            {1201 1247}
-colors_neutral         {1801 1887}
+//colors_neutral         { 1801 1887 }
+colors_neutral         { 1801 1908 }
 colors_snake           {2001 2018}
 colors_bird            {2101 2130}
 colors_slime           {2201 2224}
