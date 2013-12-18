@@ -220,10 +220,10 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 
 		if (version >= 4) // SE attributes
 		{
-			writeInt16(other->m_ResFire);
-			writeInt16(other->m_ResCold);
-			writeInt16(other->m_ResPoison);
-			writeInt16(other->m_ResEnergy);
+			writeInt16(other->GetDefNum("RESFIRE", true));
+			writeInt16(other->GetDefNum("RESCOLD", true));
+			writeInt16(other->GetDefNum("RESPOISON", true));
+			writeInt16(other->GetDefNum("RESENERGY", true));
 			writeInt16(other->m_pPlayer? other->m_pPlayer->m_luck : 0);
 
 			const CItem* weapon = other->m_uidWeapon.ItemFind();

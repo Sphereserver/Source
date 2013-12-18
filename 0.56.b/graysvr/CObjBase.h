@@ -2518,11 +2518,11 @@ public:
 	unsigned int m_exp;			//	character experience
 	unsigned int m_level;		//	character experience level
 	BYTE m_iVisualRange;		//  Visual Range
-	short int m_ResPhysical;
-	short int m_ResFire;
-	short int m_ResCold;
-	short int m_ResPoison;
-	short int m_ResEnergy;
+//	short int m_ResPhysical;
+//	short int m_ResFire;
+//	short int m_ResCold;
+//	short int m_ResPoison;
+//	short int m_ResEnergy;
 	//DIR_TYPE m_dirClimb;	// we are standing on a CAN_I_CLIMB or UFLAG2_CLIMBABLE, DIR_QTY = not on climbable
 	bool m_fClimbUpdated;	// FixClimbHeight() called?
 	height_t m_zClimbHeight;	// The height at the end of the climbable.

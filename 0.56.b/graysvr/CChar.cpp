@@ -225,7 +225,7 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 
 	m_exp = 0;
 	m_level = 0;
-	m_ResFire = m_ResCold = m_ResPoison = m_ResEnergy = 0;
+	//m_ResFire = m_ResCold = m_ResPoison = m_ResEnergy = 0;
 	m_atUnk.m_Arg1 = 0;
 	m_atUnk.m_Arg2 = 0;
 	m_atUnk.m_Arg3 = 0;
@@ -1470,8 +1470,13 @@ do_default:
 		case CHC_RESPHYSICALMAX:
 		case CHC_RESPOISONMAX:
 		case CHC_FOLLOWERSLOTS:
+		case CHC_RESFIRE:
+		case CHC_RESCOLD:
+		case CHC_RESPOISON:
+		case CHC_RESENERGY:
 			sVal = GetDefStr(pszKey, true);
 			break;
+
 		case CHC_ATTACKER:
 			{
 				if ( strlen( pszKey ) == 8 )
@@ -2096,18 +2101,6 @@ do_default:
 		case CHC_VISUALRANGE:
 			sVal.FormatVal(GetSight());
 			break;
-		case CHC_RESFIRE:
-			sVal.FormatVal(m_ResFire);
-			break;
-		case CHC_RESCOLD:
-			sVal.FormatVal(m_ResCold);
-			break;
-		case CHC_RESPOISON:
-			sVal.FormatVal(m_ResPoison);
-			break;
-		case CHC_RESENERGY:
-			sVal.FormatVal(m_ResEnergy);
-			break;
 		default:
 			return false;
 	}
@@ -2206,11 +2199,16 @@ do_default:
 		case CHC_RESPOISONMAX:
 		case CHC_RESPHYSICALMAX:
 		case CHC_RESPHYSICAL:
+		case CHC_RESFIRE:
+		case CHC_RESCOLD:
+		case CHC_RESPOISON:
+		case CHC_RESENERGY:
 			{
 				SetDefNum(s.GetKey(), s.GetArgVal(), false);
 				UpdateStatsFlag();
 			}
 			break;
+
 		case CHC_REGENHITS:
 		case CHC_REGENSTAM:
 		case CHC_REGENMANA:
@@ -2509,22 +2507,6 @@ do_default:
 				SetSight(bIn);
 			}
 			break;
-		case CHC_RESFIRE:
-			m_ResFire = s.GetArgVal();
-			UpdateStatsFlag();
-			break;
-		case CHC_RESCOLD:
-			m_ResCold = s.GetArgVal();
-			UpdateStatsFlag();
-			break;
-		case CHC_RESPOISON:
-			m_ResPoison = s.GetArgVal();
-			UpdateStatsFlag();
-			break;
-		case CHC_RESENERGY:
-			m_ResEnergy = s.GetArgVal();
-			UpdateStatsFlag();
-			break;
 		default:
 			return false;
 	}
@@ -2591,14 +2573,14 @@ void CChar::r_Write( CScript & s )
 	if ( m_height )
 		s.WriteKeyVal( "HEIGHT", m_height );
 
-	if ( m_ResFire )
+/*	if ( m_ResFire )
 		s.WriteKeyVal( "RESFIRE", m_ResFire);
 	if ( m_ResCold )
 		s.WriteKeyVal( "RESCOLD", m_ResCold);
 	if ( m_ResPoison )
 		s.WriteKeyVal( "RESPOISON", m_ResPoison);
 	if ( m_ResEnergy )
-		s.WriteKeyVal( "RESENERGY", m_ResEnergy);
+		s.WriteKeyVal( "RESENERGY", m_ResEnergy);*/
 
 	s.WriteKeyVal( "HITS", Stat_GetVal(STAT_STR) );
 	s.WriteKeyVal( "STAM", Stat_GetVal(STAT_DEX) );

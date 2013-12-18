@@ -2058,10 +2058,10 @@ struct CCommand	// command buffer from server to client.
 			BYTE m_curFollower;
 			BYTE m_maxFollower;
 			// new (4)
-			NWORD m_ResFire;
-			NWORD m_ResCold;
-			NWORD m_ResPoison;
-			NWORD m_ResEnergy;
+		//	NWORD m_ResFire;
+		//	NWORD m_ResCold;
+		//	NWORD m_ResPoison;
+		//	NWORD m_ResEnergy;
 			NWORD m_Luck;
 			NWORD m_minDamage;
 			NWORD m_maxDamage;
@@ -2095,10 +2095,10 @@ struct CCommand	// command buffer from server to client.
 			NWORD m_statcap;
 			BYTE m_curFollower;
 			BYTE m_maxFollower;
-			NWORD m_ResFire;
-			NWORD m_ResCold;
-			NWORD m_ResPoison;
-			NWORD m_ResEnergy;
+		//	NWORD m_ResFire;
+		//	NWORD m_ResCold;
+		//	NWORD m_ResPoison;
+		//	NWORD m_ResEnergy;
 			NWORD m_Luck;
 			NWORD m_minDamage;
 			NWORD m_maxDamage;

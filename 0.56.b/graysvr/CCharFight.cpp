@@ -2004,10 +2004,10 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		i_fireDamage += i_tDamFire;
 	}
 
-	i_poisonDamage -= (i_poisonDamage * m_ResPoison) / 100;
-	i_energyDamage -= (i_energyDamage * m_ResEnergy) / 100;
-	i_coldDamage -= (i_coldDamage * m_ResCold) / 100;
-	i_fireDamage -= (i_fireDamage * m_ResFire) / 100;
+	i_poisonDamage -= (i_poisonDamage * GetDefNum("RESPOISON", true)) / 100;
+	i_energyDamage -= (i_energyDamage * GetDefNum("RESENERGY", true)) / 100;
+	i_coldDamage -= (i_coldDamage * GetDefNum("RESCOLD", true)) / 100;
+	i_fireDamage -= (i_fireDamage * GetDefNum("RESFIRE", true)) / 100;
 
 	if ( (iDmg < 0) && 
 		 (i_coldDamage < 0) &&
@@ -2171,10 +2171,10 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		i_fireDamage = i_tDamFire;
 	}
 
-	i_poisonDamage -= (i_poisonDamage * m_ResPoison) / 100;
-	i_energyDamage -= (i_energyDamage * m_ResEnergy) / 100;
-	i_coldDamage -= (i_coldDamage * m_ResCold) / 100;
-	i_fireDamage -= (i_fireDamage * m_ResFire) / 100;
+	i_poisonDamage -= (i_poisonDamage * GetDefNum("RESPOISON", true)) / 100;
+	i_energyDamage -= (i_energyDamage * GetDefNum("RESENERGY", true)) / 100;
+	i_coldDamage -= (i_coldDamage * GetDefNum("RESCOLD", true)) / 100;
+	i_fireDamage -= (i_fireDamage * GetDefNum("RESFIRE", true)) / 100;
 
 	if ( (iDmg < 0) && 
 		 (i_coldDamage < 0) &&
