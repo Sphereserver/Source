@@ -2058,10 +2058,10 @@ struct CCommand	// command buffer from server to client.
 			BYTE m_curFollower;
 			BYTE m_maxFollower;
 			// new (4)
-		//	NWORD m_ResFire;
-		//	NWORD m_ResCold;
-		//	NWORD m_ResPoison;
-		//	NWORD m_ResEnergy;
+			NWORD m_ResFire;
+			NWORD m_ResCold;
+			NWORD m_ResPoison;
+			NWORD m_ResEnergy;
 			NWORD m_Luck;
 			NWORD m_minDamage;
 			NWORD m_maxDamage;
@@ -2095,14 +2095,30 @@ struct CCommand	// command buffer from server to client.
 			NWORD m_statcap;
 			BYTE m_curFollower;
 			BYTE m_maxFollower;
-		//	NWORD m_ResFire;
-		//	NWORD m_ResCold;
-		//	NWORD m_ResPoison;
-		//	NWORD m_ResEnergy;
+			NWORD m_ResFire;
+			NWORD m_ResCold;
+			NWORD m_ResPoison;
+			NWORD m_ResEnergy;
 			NWORD m_Luck;
 			NWORD m_minDamage;
 			NWORD m_maxDamage;
 			NDWORD m_Tithing;
+			// new {6}
+			NWORD m_ResPhysicalMax;
+			NWORD m_ResFireMax;
+			NWORD m_ResColdMax;
+			NWORD m_ResPoisonMax;
+			NWORD m_ResEnergyMax;
+			NWORD m_IncreaseDefChance;
+			NWORD m_IncreaceDefChanceMax;
+			NWORD m_IncreaseHitChance;
+			NWORD m_IncreaseSwingSpeed;
+			NWORD m_IncreaseDam;
+			NWORD m_LowerReagentCost;
+			NWORD m_IncreaseSpellDam;
+			NWORD m_FasterCastRecovery;
+			NWORD m_FasterCasting;
+			NWORD m_LowerManaCost;
 		} StatusNew;
  
 		struct // size = ? change colour of hp bar, SA

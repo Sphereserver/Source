@@ -160,8 +160,9 @@ LPCTSTR const CCharPlayer::sm_szLoadKeys[CPC_QTY+1] =
 CCharPlayer::CCharPlayer(CChar *pChar, CAccount *pAccount) : m_pAccount(pAccount)
 {
 	m_wDeaths = m_wMurders = 0;
-	m_curFollower = m_maxFollower = 0;
-	m_luck = m_iTithingPoints = 0;
+	//m_curFollower = m_maxFollower = 0;
+	//m_luck = 0;
+	m_iTithingPoints = 0;
 	m_speedMode = 0;
 	m_pflag = 0;
 	m_bKrToolbarEnabled = false;
@@ -337,9 +338,6 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 		case CPC_ACCOUNT:
 			sVal = GetAccount()->GetName();
 			return( true );
-		case CPC_CURFOLLOWER:
-			sVal.FormatVal(m_curFollower);
-			return( true );
 		case CPC_DEATHS:
 			sVal.FormatVal( m_wDeaths );
 			return( true );
@@ -360,12 +358,6 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 			return( true );
 		case CPC_LASTUSED:
 			sVal.FormatVal( - g_World.GetTimeDiff( m_timeLastUsed ) / TICK_PER_SEC );
-			return( true );
-		case CPC_LUCK:
-			sVal.FormatVal(m_luck);
-			return( true );
-		case CPC_MAXFOLLOWER:
-			sVal.FormatVal(m_maxFollower);
 			return( true );
 		case CPC_PFLAG:
 			sVal.FormatVal(m_pflag);
@@ -492,11 +484,6 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 
 	switch ( FindTableHeadSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
-		case CPC_CURFOLLOWER:
-			{
-				m_curFollower = s.GetArgVal();
-				pChar->UpdateStatsFlag();
-			} return( true );
 		case CPC_DEATHS:
 			m_wDeaths = s.GetArgVal();
 			return true;
@@ -513,16 +500,6 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 		case CPC_LASTUSED:
 			m_timeLastUsed = CServTime::GetCurrentTime() - ( s.GetArgVal() * TICK_PER_SEC );
 			return( true );
-		case CPC_LUCK:
-			{
-				m_luck = s.GetArgVal();
-				pChar->UpdateStatsFlag();
-			} return( true );
-		case CPC_MAXFOLLOWER:
-			{
-				m_maxFollower = s.GetArgVal();
-				pChar->UpdateStatsFlag();
-			} return( true );
 		case CPC_PFLAG:
 			{
 				m_pflag = s.GetArgVal();
@@ -587,18 +564,18 @@ void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s )
 
 	s.WriteKey("ACCOUNT", GetAccount()->GetName());
 
-	if ( m_curFollower )
-		s.WriteKeyVal( "CURFOLLOWER", m_curFollower );
+/*	if ( m_curFollower )
+		s.WriteKeyVal( "CURFOLLOWER", m_curFollower );*/
 	if ( m_wDeaths )
 		s.WriteKeyVal( "DEATHS", m_wDeaths );
 	if ( m_wMurders )
 		s.WriteKeyVal( "KILLS", m_wMurders );
 	if ( GetSkillClass()->GetResourceID().GetResIndex() )
 		s.WriteKey( "SKILLCLASS", GetSkillClass()->GetResourceName());
-	if ( m_luck )
+/*	if ( m_luck )
 		s.WriteKeyVal("LUCK", m_luck);
 	if ( m_maxFollower )
-		s.WriteKeyVal( "MAXFOLLOWER", m_maxFollower );
+		s.WriteKeyVal( "MAXFOLLOWER", m_maxFollower );*/
 	if ( m_pflag )
 		s.WriteKeyVal( "PFLAG", m_pflag );
 	if ( m_speedMode )

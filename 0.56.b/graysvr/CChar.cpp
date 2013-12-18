@@ -1474,6 +1474,9 @@ do_default:
 		case CHC_RESCOLD:
 		case CHC_RESPOISON:
 		case CHC_RESENERGY:
+		case CHC_LUCK:
+		case CHC_CURFOLLOWER:
+		case CHC_MAXFOLLOWER:
 			sVal = GetDefStr(pszKey, true);
 			break;
 
@@ -2203,6 +2206,9 @@ do_default:
 		case CHC_RESCOLD:
 		case CHC_RESPOISON:
 		case CHC_RESENERGY:
+		case CHC_LUCK:
+		case CHC_CURFOLLOWER:
+		case CHC_MAXFOLLOWER:
 			{
 				SetDefNum(s.GetKey(), s.GetArgVal(), false);
 				UpdateStatsFlag();

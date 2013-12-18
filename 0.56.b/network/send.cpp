@@ -208,8 +208,8 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 		{
 			if (other->m_pPlayer != NULL)
 			{
-				writeByte(other->m_pPlayer->m_curFollower);
-				writeByte(other->m_pPlayer->m_maxFollower);
+				writeByte(other->GetDefNum("CURFOLLOWER", true));
+				writeByte(other->GetDefNum("MAXFOLLOWER", true));
 			}
 			else
 			{
@@ -224,7 +224,7 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 			writeInt16(other->GetDefNum("RESCOLD", true));
 			writeInt16(other->GetDefNum("RESPOISON", true));
 			writeInt16(other->GetDefNum("RESENERGY", true));
-			writeInt16(other->m_pPlayer? other->m_pPlayer->m_luck : 0);
+			writeInt16(other->GetDefNum("LUCK", true));
 
 			const CItem* weapon = other->m_uidWeapon.ItemFind();
 			if (weapon != NULL)

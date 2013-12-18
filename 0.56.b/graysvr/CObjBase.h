@@ -2226,10 +2226,10 @@ public:
 
 	WORD m_wMurders;		// Murder count.
 	WORD m_wDeaths;		// How many times have i died ?
-	unsigned short int		m_curFollower;		// current followers
-	unsigned short int		m_maxFollower;		// maximum followers
+	//unsigned short int		m_curFollower;		// current followers
+	//unsigned short int		m_maxFollower;		// maximum followers
 	unsigned short int		m_speedMode;		// speed mode (0x0 = Normal movement, 0x1 = Fast movement, 0x2 = Slow movement, 0x3 and above = Hybrid movement)
-	short int		m_luck;				// luck
+	//short int		m_luck;				// luck
 	short int		m_iTithingPoints;	// paladin stuff
 	DWORD			m_pflag;			// PFLAG
 
