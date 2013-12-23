@@ -191,16 +191,12 @@ void CSQLite::ConvertUTF8ToString( char * strInUTF8MB, stdvstring & strOut )
 {
 	int len=(int)strlen(strInUTF8MB)+1;
 	strOut.resize(len, 0);
-
-#ifdef UNICODE
-	MultiByteToWideChar(CP_UTF8, 0, strInUTF8MB, len, &strOut[0], len);
-#else
-	WCHAR * wChar=new WCHAR[len];
+	
+	wchar_t * wChar=new wchar_t[len];
 	wChar[0]=0;
-	MultiByteToWideChar(CP_UTF8, 0, strInUTF8MB, len, wChar, len);
-	WideCharToMultiByte(CP_ACP, 0, wChar, len, &strOut[0], len, 0, 0);
+	mbstowcs(wChar,strInUTF8MB,len);
+	wcstombs(&strOut[0],wChar,len);
 	delete [] wChar;
-#endif
 }
 
 int CSQLite::ExecuteSQL( LPCTSTR strSQL )
@@ -467,7 +463,7 @@ LPCTSTR Table::GetValue(LPCTSTR lpColName)
 	if (m_iPos<0) return 0;
 	for (int i=0; i<m_iCols; i++)
 	{
-		if (!_stricmp(&m_strlstCols[i][0],lpColName))
+		if (!strcmpi(&m_strlstCols[i][0],lpColName))
 		{
 			return &m_lstRows[m_iPos][i][0];
 		}
@@ -488,7 +484,7 @@ LPCTSTR Table::operator [] (LPCTSTR lpColName)
 	if (m_iPos<0) return 0;
 	for (int i=0; i<m_iCols; i++)
 	{
-		if (!_stricmp(&m_strlstCols[i][0],lpColName))
+		if (!strcmpi(&m_strlstCols[i][0],lpColName))
 		{
 			return &m_lstRows[m_iPos][i][0];
 		}
@@ -561,13 +557,13 @@ Table * TablePtr::Detach()
 void TablePtr::Attach( Table * pTable )
 {
 	if (m_pTable) delete m_pTable;
-	m_pTable=pTable;
+		m_pTable=pTable;
 }
 
 void TablePtr::Destroy()
 {
 	if (m_pTable) delete m_pTable;
-	m_pTable=0;
+		m_pTable=0;
 }
 
 UTF8MBSTR::UTF8MBSTR()
@@ -581,7 +577,8 @@ UTF8MBSTR::UTF8MBSTR( LPCTSTR lpStr )
 {
 	if (lpStr)
 		m_iLen=ConvertStringToUTF8(lpStr, m_strUTF8_MultiByte);
-	else {
+	else 
+	{
 		m_strUTF8_MultiByte=new char[1];
 		m_strUTF8_MultiByte[0]=0;
 		m_iLen=0;
@@ -592,26 +589,24 @@ UTF8MBSTR::UTF8MBSTR( UTF8MBSTR& lpStr )
 {
 	m_iLen=lpStr.m_iLen;
 	m_strUTF8_MultiByte=new char[m_iLen+1];
-	strncpy_s(m_strUTF8_MultiByte, m_iLen+1, lpStr.m_strUTF8_MultiByte, m_iLen+1);
+	strncpy(m_strUTF8_MultiByte, lpStr.m_strUTF8_MultiByte, m_iLen+1);
 }
 
 UTF8MBSTR::~UTF8MBSTR()
 {
 	if (m_strUTF8_MultiByte)
-	{
 		delete [] m_strUTF8_MultiByte;
-	}
 }
 
 void UTF8MBSTR::operator =( LPCTSTR lpStr )
 {
 	if (m_strUTF8_MultiByte)
-	{
 		delete [] m_strUTF8_MultiByte;
-	}
+
 	if (lpStr)
 		m_iLen=ConvertStringToUTF8(lpStr, m_strUTF8_MultiByte);
-	else {
+	else 
+	{
 		m_strUTF8_MultiByte=new char[1];
 		m_strUTF8_MultiByte[0]=0;
 		m_iLen=0;
@@ -621,12 +616,11 @@ void UTF8MBSTR::operator =( LPCTSTR lpStr )
 void UTF8MBSTR::operator =( UTF8MBSTR& lpStr )
 {
 	if (m_strUTF8_MultiByte)
-	{
 		delete [] m_strUTF8_MultiByte;
-	}
+
 	m_iLen=lpStr.m_iLen;
 	m_strUTF8_MultiByte=new char[m_iLen+1];
-	strncpy_s(m_strUTF8_MultiByte, m_iLen+1, lpStr.m_strUTF8_MultiByte, m_iLen+1);
+	strncpy(m_strUTF8_MultiByte, lpStr.m_strUTF8_MultiByte, m_iLen+1);
 }
 
 UTF8MBSTR::operator char* ()
@@ -638,9 +632,7 @@ UTF8MBSTR::operator stdstring ()
 {
 	TCHAR * strRet;
 	ConvertUTF8ToString(m_strUTF8_MultiByte, m_iLen+1, strRet);
-
 	stdstring cstrRet(strRet);
-
 	delete [] strRet;
 
 	return cstrRet;
@@ -650,23 +642,13 @@ size_t UTF8MBSTR::ConvertStringToUTF8( LPCTSTR strIn, char *& strOutUTF8MB )
 {
 	size_t len=strlen(strIn);
 
-#ifdef UNICODE
-	int iRequiredSize=WideCharToMultiByte(CP_UTF8, 0, strIn, (int)len+1, 0, 0, 0, 0);
-
-	strOutUTF8MB=new char[iRequiredSize];
-	strOutUTF8MB[0]=0;
-
-	WideCharToMultiByte(CP_UTF8, 0, strIn, (int)len+1, strOutUTF8MB, iRequiredSize, 0, 0);
-#else
-	WCHAR * wChar=new WCHAR[len+1];
+	wchar_t * wChar=new wchar_t[len+1];
 	wChar[0]=0;
-	MultiByteToWideChar(CP_ACP, 0, strIn, (int)len+1, wChar, (int)len+1);
-	int iRequiredSize=WideCharToMultiByte(CP_UTF8, 0, wChar, (int)len+1, 0, 0, 0, 0);
-	strOutUTF8MB=new char[iRequiredSize];
+	mbstowcs(wChar,strIn,len+1);
+	strOutUTF8MB=new char[len+1];
 	strOutUTF8MB[0]=0;
-	WideCharToMultiByte(CP_UTF8, 0, wChar, (int)len+1, strOutUTF8MB, iRequiredSize, 0, 0);
+	wcstombs(strOutUTF8MB,wChar,len);
 	delete [] wChar;
-#endif
 
 	return len;
 }
@@ -676,14 +658,10 @@ void UTF8MBSTR::ConvertUTF8ToString( char * strInUTF8MB, size_t len, LPTSTR & st
 	strOut=new TCHAR[len];
 	strOut[0]=0;
 
-#ifdef UNICODE
-	MultiByteToWideChar(CP_UTF8, 0, strInUTF8MB, (int)len, strOut, (int)len);
-#else
-	WCHAR * wChar=new WCHAR[len];
+	wchar_t * wChar=new wchar_t[len];
 	wChar[0]=0;
-	MultiByteToWideChar(CP_UTF8, 0, strInUTF8MB, (int)len, wChar, (int)len);
-	WideCharToMultiByte(CP_ACP, 0, wChar, (int)len, strOut, (int)len, 0, 0);
+	mbstowcs(wChar,strInUTF8MB,len);
+	wcstombs(strOut,wChar,len);
 	delete [] wChar;
-#endif
 }
 
