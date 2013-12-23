@@ -162,7 +162,7 @@ CCharPlayer::CCharPlayer(CChar *pChar, CAccount *pAccount) : m_pAccount(pAccount
 	m_wDeaths = m_wMurders = 0;
 	//m_curFollower = m_maxFollower = 0;
 	//m_luck = 0;
-	m_iTithingPoints = 0;
+	//m_iTithingPoints = 0;
 	m_speedMode = 0;
 	m_pflag = 0;
 	m_bKrToolbarEnabled = false;
@@ -391,11 +391,6 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 					return( false );
 				sVal.FormatVal( Stat_GetLock( stat ));
 			} return( true );
-			
-		case CPC_TITHING:
-			sVal.FormatVal(m_iTithingPoints);
-			return( true );
-
 		default:
 			if ( FindTableSorted( pszKey, CCharNPC::sm_szLoadKeys, COUNTOF( CCharNPC::sm_szLoadKeys )-1 ) >= 0 )
 			{
@@ -534,11 +529,6 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 					return false;
 				Stat_SetLock(stat, static_cast<SKILLLOCK_TYPE>(bState));
 			} return true;
-		case CPC_TITHING:
-			{
-				m_iTithingPoints = s.GetArgVal();
-				pChar->UpdateStatsFlag();
-			} return( true );
 
 		default:
 			// Just ignore any NPC type stuff.
@@ -564,24 +554,16 @@ void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s )
 
 	s.WriteKey("ACCOUNT", GetAccount()->GetName());
 
-/*	if ( m_curFollower )
-		s.WriteKeyVal( "CURFOLLOWER", m_curFollower );*/
 	if ( m_wDeaths )
 		s.WriteKeyVal( "DEATHS", m_wDeaths );
 	if ( m_wMurders )
 		s.WriteKeyVal( "KILLS", m_wMurders );
 	if ( GetSkillClass()->GetResourceID().GetResIndex() )
 		s.WriteKey( "SKILLCLASS", GetSkillClass()->GetResourceName());
-/*	if ( m_luck )
-		s.WriteKeyVal("LUCK", m_luck);
-	if ( m_maxFollower )
-		s.WriteKeyVal( "MAXFOLLOWER", m_maxFollower );*/
 	if ( m_pflag )
 		s.WriteKeyVal( "PFLAG", m_pflag );
 	if ( m_speedMode )
 		s.WriteKeyVal("SPEEDMODE", m_speedMode);
-	if ( m_iTithingPoints )
-		s.WriteKeyVal("TITHING", m_iTithingPoints);
 	if (( GetAccount()->GetResDisp() >= RDS_KR ) && m_bKrToolbarEnabled )
 		s.WriteKeyVal("KRTOOLBARSTATUS", m_bKrToolbarEnabled);
 

@@ -447,6 +447,12 @@ bool CScriptObj::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 		pRef = &(g_Serv.m_hdb);
 		return true;
 	}
+	else if ( !strnicmp(pszKey, "LDB.", 4) )
+	{
+		pszKey += 4;
+		pRef = &(g_Serv.m_hldb);
+		return true;
+	}
 	return false;
 }
 
@@ -707,6 +713,8 @@ bool CScriptObj::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 			sVal.FormatHex( 0x00200 );
 		//else if ( dynamic_cast<CPartyDef*>(pTmpRef) )
 		//	sVal.FormatHex( 0x00400 );
+		else if (( pTmpRef == &(g_Serv.m_hldb) ) || dynamic_cast<CSQLite*>(pTmpRef) )
+			sVal.FormatHex( 0x00400 );
 		else if ( dynamic_cast<CStoneMember*>(pTmpRef) )
 			sVal.FormatHex( 0x00800 );
 		else if ( dynamic_cast<CServerDef*>(pTmpRef) )

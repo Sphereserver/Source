@@ -1477,6 +1477,7 @@ do_default:
 		case CHC_LUCK:
 		case CHC_CURFOLLOWER:
 		case CHC_MAXFOLLOWER:
+		case CHC_TITHING:
 			sVal = GetDefStr(pszKey, true);
 			break;
 
@@ -2209,6 +2210,7 @@ do_default:
 		case CHC_LUCK:
 		case CHC_CURFOLLOWER:
 		case CHC_MAXFOLLOWER:
+		case CHC_TITHING:
 			{
 				SetDefNum(s.GetKey(), s.GetArgVal(), false);
 				UpdateStatsFlag();

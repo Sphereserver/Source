@@ -148,6 +148,7 @@ enum RESDISPLAY_VERSION
 #include "../common/CQueue.h"
 #include "../common/CSectorTemplate.h"
 #include "../common/CDataBase.h"
+#include "../common/SQLite.h" //New Database
 
 #include "CResource.h"
 #include "CServRef.h"
@@ -1534,6 +1535,7 @@ public:
 	CFileObjContainer fcFileContainer;
 #endif
 	CDataBase	m_hdb;			//	SQL data base
+	CSQLite		m_hldb;			//	Local database
 
 private:
 	void ProfileDump( CTextConsole * pSrc, bool bDump = false );

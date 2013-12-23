@@ -238,7 +238,7 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 				writeInt16(other->Fight_CalcDamage(NULL, SKILL_WRESTLING, true));
 			}
 
-			writeInt32(other->m_pPlayer? other->m_pPlayer->m_iTithingPoints : 0);
+			writeInt32(other->GetDefNum("TITHING", true));
 		}
 
 		if (version >= 6)	// Stygian Abyss Attributes?
@@ -260,6 +260,7 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 			writeInt16(other->GetDefNum("LOWERMANACOST", true));
 		}
 /* We really don't know what is going on here. RUOSI Packet Guide was way off... -Khaos
+   Possible KR client status info... -Ben
 		{
 			writeInt16(other->GetDefNum("INCREASEHITCHANCE", true));
 			writeInt16(other->GetDefNum("INCREASESWINGSPEED", true));

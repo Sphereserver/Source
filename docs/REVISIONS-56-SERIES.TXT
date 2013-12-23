@@ -453,3 +453,11 @@ Added NameLoc variable for items so you can set a ClilocID for using it as name 
 
 16-12-2013, Khaos (Script Pack)
 -Changed: Changed colors_neutral range from { 1801 1887 } to { 1801 1908 } as noted on bugtracker.
+
+22-12-2013, Ben
+-Changed: LUCK, CURFOLLOWER, MAXFOLLOWER, and TITHING to work on all chars, not just players.
+-Added: Support for local database (SQLite) through LDB. reference. (No External programs required!)
+		-Syntax is similar to MySQL, but slightly different http://sqlite.org/lang.html
+		-Functions are almost the same as DB. with a few changes.
+			LDB.CONNECT "filename" to open a database file
+			LDB.AEXECUTE and LDB.AQUERY are non existent
