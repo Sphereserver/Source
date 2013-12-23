@@ -461,3 +461,4 @@ Added NameLoc variable for items so you can set a ClilocID for using it as name 
 		-Functions are almost the same as DB. with a few changes.
 			LDB.CONNECT "filename" to open a database file
 			LDB.AEXECUTE and LDB.AQUERY are non existent
+		-SQLite database manipulation program can be found here http://sqliteexpert.com/download.html

@@ -4,7 +4,6 @@
 #include "sqlite3.h"
 #include <string>
 #include <vector>
-#include <tchar.h>
 #include "CScriptObj.h"
 
 

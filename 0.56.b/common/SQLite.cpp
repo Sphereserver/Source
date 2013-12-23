@@ -106,7 +106,7 @@ Table CSQLite::QuerySQL( LPCTSTR strSQL)
 
 		if (retStrings[iPos])
 			ConvertUTF8ToString( retStrings[iPos], retTable.m_strlstCols.back() );
-		else retTable.m_strlstCols.back().push_back(_T('\0'));
+		else retTable.m_strlstCols.back().push_back('\0');
 	}
 
 	retTable.m_lstRows.resize(iRows);
@@ -119,7 +119,7 @@ Table CSQLite::QuerySQL( LPCTSTR strSQL)
 					
 			if (retStrings[iPos])
 				ConvertUTF8ToString( retStrings[iPos], retTable.m_lstRows[iRow].back() );
-			else retTable.m_lstRows[iRow].back().push_back(_T('\0'));
+			else retTable.m_lstRows[iRow].back().push_back('\0');
 
 			iPos++;
 		}
@@ -164,7 +164,7 @@ TablePtr CSQLite::QuerySQLPtr( LPCTSTR strSQL )
 
 		if (retStrings[iPos])
 			ConvertUTF8ToString( retStrings[iPos], retTable->m_strlstCols.back() );
-		else retTable->m_strlstCols.back().push_back(_T('\0'));
+		else retTable->m_strlstCols.back().push_back('\0');
 	}
 
 	retTable->m_lstRows.resize(iRows);
@@ -177,7 +177,7 @@ TablePtr CSQLite::QuerySQLPtr( LPCTSTR strSQL )
 
 			if (retStrings[iPos])
 				ConvertUTF8ToString( retStrings[iPos], retTable->m_lstRows[iRow].back() );
-			else retTable->m_lstRows[iRow].back().push_back(_T('\0'));
+			else retTable->m_lstRows[iRow].back().push_back('\0');
 
 			iPos++;
 		}
@@ -249,7 +249,7 @@ bool CSQLite::BeginTransaction()
 		m_iLastError=SQLITE_ERROR; 
 		return false;
 	}
-	m_iLastError = ExecuteSQL(_T("BEGIN TRANSACTION"));
+	m_iLastError = ExecuteSQL("BEGIN TRANSACTION");
 	return m_iLastError==SQLITE_OK;
 }
 
@@ -260,7 +260,7 @@ bool CSQLite::CommitTransaction()
 		m_iLastError=SQLITE_ERROR; 
 		return false;
 	}
-	m_iLastError = ExecuteSQL(_T("COMMIT TRANSACTION"));
+	m_iLastError = ExecuteSQL("COMMIT TRANSACTION");
 	return m_iLastError==SQLITE_OK;
 }
 
@@ -271,7 +271,7 @@ bool CSQLite::RollbackTransaction()
 		m_iLastError=SQLITE_ERROR;
 		return false;
 	}
-	m_iLastError = ExecuteSQL(_T("ROLLBACK TRANSACTION"));
+	m_iLastError = ExecuteSQL("ROLLBACK TRANSACTION");
 	return m_iLastError==SQLITE_OK;
 }
 
@@ -467,7 +467,7 @@ LPCTSTR Table::GetValue(LPCTSTR lpColName)
 	if (m_iPos<0) return 0;
 	for (int i=0; i<m_iCols; i++)
 	{
-		if (!_tcsicmp(&m_strlstCols[i][0],lpColName))
+		if (!_stricmp(&m_strlstCols[i][0],lpColName))
 		{
 			return &m_lstRows[m_iPos][i][0];
 		}
@@ -488,7 +488,7 @@ LPCTSTR Table::operator [] (LPCTSTR lpColName)
 	if (m_iPos<0) return 0;
 	for (int i=0; i<m_iCols; i++)
 	{
-		if (!_tcsicmp(&m_strlstCols[i][0],lpColName))
+		if (!_stricmp(&m_strlstCols[i][0],lpColName))
 		{
 			return &m_lstRows[m_iPos][i][0];
 		}
@@ -648,7 +648,7 @@ UTF8MBSTR::operator stdstring ()
 
 size_t UTF8MBSTR::ConvertStringToUTF8( LPCTSTR strIn, char *& strOutUTF8MB )
 {
-	size_t len=_tcslen(strIn);
+	size_t len=strlen(strIn);
 
 #ifdef UNICODE
 	int iRequiredSize=WideCharToMultiByte(CP_UTF8, 0, strIn, (int)len+1, 0, 0, 0, 0);
