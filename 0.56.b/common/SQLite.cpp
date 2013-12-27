@@ -86,7 +86,11 @@ Table CSQLite::QuerySQL( LPCTSTR strSQL)
 	int iErr=sqlite3_get_table(m_sqlite3, UTF8MBSTR(strSQL), &retStrings,
 		&iRows, &iCols, &errmsg);
 
-	if (iErr!=SQLITE_OK) m_iLastError=iErr;
+	if (iErr!=SQLITE_OK)
+	{
+		m_iLastError=iErr;
+		g_Log.Event(LOGM_NOCONTEXT|LOGL_ERROR, "SQLite query \"%s\" failed. Error:%d \n", strSQL, iErr);
+	}
 
 	sqlite3_free(errmsg);
 
@@ -144,7 +148,11 @@ TablePtr CSQLite::QuerySQLPtr( LPCTSTR strSQL )
 	int iErr=sqlite3_get_table(m_sqlite3, UTF8MBSTR(strSQL), &retStrings,
 		&iRows, &iCols, &errmsg);
 
-	if (iErr!=SQLITE_OK) m_iLastError=iErr;
+	if (iErr!=SQLITE_OK)
+	{
+		m_iLastError=iErr;
+		g_Log.Event(LOGM_NOCONTEXT|LOGL_ERROR, "SQLite query \"%s\" failed. Error:%d \n", strSQL, iErr);
+	}
 
 	sqlite3_free(errmsg);
 
@@ -191,7 +199,6 @@ void CSQLite::ConvertUTF8ToString( char * strInUTF8MB, stdvstring & strOut )
 {
 	int len=(int)strlen(strInUTF8MB)+1;
 	strOut.resize(len, 0);
-	
 	wchar_t * wChar=new wchar_t[len];
 	wChar[0]=0;
 #ifdef _WIN32
@@ -646,7 +653,6 @@ UTF8MBSTR::operator stdstring ()
 size_t UTF8MBSTR::ConvertStringToUTF8( LPCTSTR strIn, char *& strOutUTF8MB )
 {
 	size_t len=strlen(strIn);
-
 	wchar_t * wChar=new wchar_t[len+1];
 	wChar[0]=0;
 #ifdef _WIN32
@@ -657,12 +663,12 @@ size_t UTF8MBSTR::ConvertStringToUTF8( LPCTSTR strIn, char *& strOutUTF8MB )
 	WideCharToMultiByte(CP_UTF8, 0, wChar, (int)len+1, strOutUTF8MB, iRequiredSize, 0, 0);
 #else
 	mbstowcs(wChar,strIn,len+1);
-	strOutUTF8MB=new char[len+1];
+	int iRequiredSize = wcstombs(NULL,wChar,len+1);
+	strOutUTF8MB=new char[iRequiredSize+1];
 	strOutUTF8MB[0]=0;
-	wcstombs(strOutUTF8MB,wChar,len);
+	wcstombs(strOutUTF8MB,wChar,iRequiredSize+1);
 #endif
 	delete [] wChar;
-
 	return len;
 }
 
@@ -670,7 +676,6 @@ void UTF8MBSTR::ConvertUTF8ToString( char * strInUTF8MB, size_t len, LPTSTR & st
 {
 	strOut=new TCHAR[len];
 	strOut[0]=0;
-
 	wchar_t * wChar=new wchar_t[len];
 	wChar[0]=0;
 #ifdef _WIN32
