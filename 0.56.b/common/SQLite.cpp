@@ -201,13 +201,8 @@ void CSQLite::ConvertUTF8ToString( char * strInUTF8MB, stdvstring & strOut )
 	strOut.resize(len, 0);
 	wchar_t * wChar=new wchar_t[len];
 	wChar[0]=0;
-#ifdef _WIN32
-	MultiByteToWideChar(CP_UTF8, 0, strInUTF8MB, len, wChar, len);
-	WideCharToMultiByte(CP_ACP, 0, wChar, len, &strOut[0], len, 0, 0);
-#else
 	mbstowcs(wChar,strInUTF8MB,len);
 	wcstombs(&strOut[0],wChar,len);
-#endif
 	delete [] wChar;
 }
 
@@ -655,19 +650,11 @@ size_t UTF8MBSTR::ConvertStringToUTF8( LPCTSTR strIn, char *& strOutUTF8MB )
 	size_t len=strlen(strIn);
 	wchar_t * wChar=new wchar_t[len+1];
 	wChar[0]=0;
-#ifdef _WIN32
-	MultiByteToWideChar(CP_ACP, 0, strIn, (int)len+1, wChar, (int)len+1);
-	int iRequiredSize=WideCharToMultiByte(CP_UTF8, 0, wChar, (int)len+1, 0, 0, 0, 0);
-	strOutUTF8MB=new char[iRequiredSize];
-	strOutUTF8MB[0]=0;
-	WideCharToMultiByte(CP_UTF8, 0, wChar, (int)len+1, strOutUTF8MB, iRequiredSize, 0, 0);
-#else
 	mbstowcs(wChar,strIn,len+1);
 	int iRequiredSize = wcstombs(NULL,wChar,len+1);
 	strOutUTF8MB=new char[iRequiredSize+1];
 	strOutUTF8MB[0]=0;
 	wcstombs(strOutUTF8MB,wChar,iRequiredSize+1);
-#endif
 	delete [] wChar;
 	return len;
 }
@@ -678,13 +665,8 @@ void UTF8MBSTR::ConvertUTF8ToString( char * strInUTF8MB, size_t len, LPTSTR & st
 	strOut[0]=0;
 	wchar_t * wChar=new wchar_t[len];
 	wChar[0]=0;
-#ifdef _WIN32
-	MultiByteToWideChar(CP_UTF8, 0, strInUTF8MB, (int)len, wChar, (int)len);
-	WideCharToMultiByte(CP_ACP, 0, wChar, (int)len, strOut, (int)len, 0, 0);
-#else
 	mbstowcs(wChar,strInUTF8MB,len);
 	wcstombs(strOut,wChar,len);
-#endif
 	delete [] wChar;
 }
 
