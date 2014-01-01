@@ -560,6 +560,7 @@ IMSG_DEF_FONT   3
 //msg_key_blanks          "Both keys are blank."
 //msg_key_cantreach       "You can't reach it."
 //msg_key_doorlocked      "This door is locked."
+//msg_key_dupebank		  "The duplicate key is in your bank account."
 //msg_key_failc           "You fail to copy the key."
 //msg_key_isblank         "The key is a blank."
 //msg_key_nolock          "That does not have a lock."

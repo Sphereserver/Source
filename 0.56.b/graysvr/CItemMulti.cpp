@@ -256,7 +256,7 @@ void CItemMulti::Multi_Create( CChar * pChar, DWORD dwKeyCode )
 			// Put dupe key in the bank.
 			pKey = CreateDupeItem( pKey );
 			pChar->GetBank()->ContentAdd( pKey );
-			pChar->SysMessage( "The duplicate key is in your bank account" );
+			pChar->SysMessageDefault(DEFMSG_KEY_DUPEBANK);
 		}
 	}
 }
