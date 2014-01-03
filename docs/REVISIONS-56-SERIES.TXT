@@ -462,3 +462,15 @@ Added NameLoc variable for items so you can set a ClilocID for using it as name 
 			LDB.CONNECT "filename" to open a database file
 			LDB.AEXECUTE and LDB.AQUERY are non existent
 		-SQLite database manipulation program can be found here http://sqliteexpert.com/download.html
+
+02-01-2014, Khaos (Script pack)
+-Changed: This upload is containing the rework of multidef files with new naming conventions, price adjustments, etc. spheretables.scp
+ has been updated to reflect loading of the multis folder. New syntax is m_* instead of i_multi_*.
+-Added: Added variant versions of tents and evil compound with doors and signs. Wheat Cottage got doors and a sign as well.
+-Added: sphere_defs_2.scp This will now be loaded after sphere_defs.scp containing any backwards compatibility I do.
+-Fixed: Broken treasure multis should be fixed based on some old revisions I saw in an old script I had.
+-Changed: Mordaunt sent me an updated housing system to match the new house and foundation defnames.
+-TODO: Add in the new multidef info to deeds and vendors.
+-Moved: spk_ship_cmds to speech folder.
+-Fixed: New ships were using t_multi and not t_ship. I assume this might have been causing some of the alleged "bugs" with them. They
+ are now all using t_ship.

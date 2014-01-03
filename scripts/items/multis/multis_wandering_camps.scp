@@ -1,0 +1,47 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2014
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Wedneday, January 1, 2014
+//
+VERSION=0.56c
+
+[multidef 01f4]
+defname=m_wandering_healer_camp
+name=wandering healer camp
+type=t_multi
+
+category=Multis
+subsection=Wandering Camp
+description=Wandering Healer Camp
+
+multiregion=-6,-5,6,5
+
+[multidef 01f5]
+defname=m_wandering_mage_camp
+name=wandering mage camp
+type=t_multi
+
+category=Multis
+subsection=Wandering Camp
+description=Wandering Mage Camp
+
+multiregion=-6,-5,6,5
+
+[multidef 01f6]
+defname=m_wandering_bank_camp
+name=wandering bank camp
+type=t_multi
+
+category=Multis
+subsection=Wandering Camp
+description=Wandering Bank Camp
+
+multiregion=-6,-5,6,5
+
+[eof]
