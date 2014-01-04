@@ -474,3 +474,12 @@ Added NameLoc variable for items so you can set a ClilocID for using it as name 
 -Moved: spk_ship_cmds to speech folder.
 -Fixed: New ships were using t_multi and not t_ship. I assume this might have been causing some of the alleged "bugs" with them. They
  are now all using t_ship.
+
+03-01-2014, Ben
+Fixed #2256: Reworked NPC object throwing..
+->canseelos checks now applies to overrides
+->changed tag.override.rock to NPC variable THROWOBJ (can take numerical or string ID now)
+->changed tag.override.dam to NPC varialbe THROWDAM min,max (can also be "THROWDAM max" for non variating damage)
+->added THROWRANGE min,max  (can also be "THROWRANGE max" with a min of 2 by default)
+->All 3 variables are available on dynamic npc or in CHARDEF
+Fixed: AMMOANIM,AMMOANIMHUE,AMMOANIMRENDER,AMMOCONT, and AMMOTYPE no able to be read directly from SERV.ITEMDEF...

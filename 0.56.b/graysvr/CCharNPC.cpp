@@ -734,6 +734,16 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 	EXC_TRY("LoadVal");
 	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
+
+	case CNC_THROWDAM:
+	case CNC_THROWOBJ:
+	case CNC_THROWRANGE:
+		{
+			bool fQuoted = false;
+			pChar->SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
+		}
+		break;
+
 	case CNC_ACTPRI:
 		m_Act_Motivation = s.GetArgVal();
 		break;
@@ -795,6 +805,17 @@ bool CCharNPC::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 	EXC_TRY("WriteVal");
 	switch ( FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
+	
+	//On these ones, check BaseDef too if not found on dynamic
+	case CNC_THROWDAM:
+	case CNC_THROWOBJ:
+	case CNC_THROWRANGE:
+		{
+			CVarDefCont * pVar = pChar->GetDefKey(pszKey, true);
+			sVal = pVar ? pVar->GetValStr() : "";
+		}
+		break;
+
 	case CNC_ACTPRI:
 		sVal.FormatVal( m_Act_Motivation );
 		break;

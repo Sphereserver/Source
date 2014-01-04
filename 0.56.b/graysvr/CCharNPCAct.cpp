@@ -2188,49 +2188,57 @@ void CChar::NPC_Act_Fight()
 			return;
 		}
 
-		// If I am a giant. i can throw stones.
-		// NPCACT_THROWING
-/* #ifndef _ALPHASPHERE
-		if (( GetDispID() == CREID_OGRE ||
-			GetDispID() == CREID_ETTIN ||
-			GetDispID() == CREID_Cyclops ) &&
-			iDist >= 2 &&
-			iDist <= 9 &&
-			CanSeeLOS( pChar,LOS_NB_WINDOWS ) &&
-			ContentFind( RESOURCE_ID(RES_TYPEDEF,IT_AROCK), 0, 2 )) //NPCs can throw stones through a window
-		{
-			UpdateDir( pChar );
-			Skill_Start( NPCACT_THROWING );
-			return;
-		}
-#else */
-		// any special ammunition defined?
-		const CVarDefCont * pTagStorage = GetKey("OVERRIDE.ROCK", true);
-		ITEMID_TYPE id = ITEMID_NOTHING;
 
-		if ( pTagStorage )
+		// any special ammunition defined?
+
+		//check Range
+		int iRangeMin = 2;
+		int iRangeMax = 9;
+		CVarDefCont * pRange = GetDefKey("THROWRANGE",true);
+		if (pRange)
 		{
-			if ( pTagStorage->GetValNum() )
+			int RVal[2];
+			size_t iQty = Str_ParseCmds( const_cast<TCHAR*>(pRange->GetValStr()), RVal, COUNTOF(RVal));
+			switch(iQty)
 			{
-				id = static_cast<ITEMID_TYPE>(pTagStorage->GetValNum());
-			}
-		} else
-		{
-			if (( GetDispID() == CREID_OGRE || GetDispID() == CREID_ETTIN || GetDispID() == CREID_Cyclops ) &&
-			iDist >= 2 && iDist <= 9 && CanSeeLOS( pChar,LOS_NB_WINDOWS ) ) //NPCs can throw stones through a window
-			{
-				// in theory, I can throw. Do I have ammunition?
-				if ( ContentFind( RESOURCE_ID(RES_TYPEDEF,IT_AROCK), 0, 2 ) )
-					id = ITEMID_NODRAW;
+				case 1:
+					iRangeMax = RVal[0];
+					break;
+				case 2:
+					iRangeMin = RVal[0];
+					iRangeMax = RVal[1];
+					break;
 			}
 		}
-		if ( id != ITEMID_NOTHING )
+		if (iDist >= iRangeMin && iDist <= iRangeMax && CanSeeLOS( pChar,LOS_NB_WINDOWS ))//NPCs can throw through a window
 		{
-			UpdateDir( pChar );
-			Skill_Start( NPCACT_THROWING );
-			return;
+			CVarDefCont * pRock = GetDefKey("THROWOBJ",true);
+			if ( GetDispID() == CREID_OGRE || GetDispID() == CREID_ETTIN || GetDispID() == CREID_Cyclops || pRock )
+			{
+				ITEMID_TYPE id = ITEMID_NOTHING;
+				if (pRock)
+				{
+					LPCTSTR t_Str = pRock->GetValStr();
+					RESOURCE_ID_BASE rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str ));
+					ITEMID_TYPE obj = static_cast<ITEMID_TYPE>(rid.GetResIndex());
+					if ( ContentFind( RESOURCE_ID(RES_ITEMDEF,obj), 0, 2 ) )
+						id = ITEMID_NODRAW;
+				}
+				else 
+				{
+					if ( ContentFind( RESOURCE_ID(RES_TYPEDEF,IT_AROCK), 0, 2 ) )
+						id = ITEMID_NODRAW;
+				}
+
+
+				if ( id != ITEMID_NOTHING )
+				{
+					UpdateDir( pChar );
+					Skill_Start( NPCACT_THROWING );
+					return;
+				}
+			}
 		}
-// #endif
 	}
 
 	// Maybe i'll cast a spell if I can. if so maintain a distance.

@@ -958,6 +958,15 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 	EXC_TRY("WriteVal");
 	switch ( FindTableHeadSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
+		case IBC_AMMOANIM:
+		case IBC_AMMOANIMHUE:
+		case IBC_AMMOANIMRENDER:
+		case IBC_AMMOCONT:
+		case IBC_AMMOTYPE:
+			{
+				sVal = GetDefStr(pszKey, false);
+			}
+			break;
 		case IBC_DEFNAME:
 			sVal = GetResourceName();
 			break;

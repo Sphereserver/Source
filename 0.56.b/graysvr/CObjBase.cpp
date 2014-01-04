@@ -679,8 +679,13 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_WEIGHTREDUCTION:
 			sVal = GetDefStr(sm_szLoadKeys[index], true);
 			break;
-		case OC_NAMELOC: //if not found on dynamic item, look at basedef
-			sVal = GetDefNum(sm_szLoadKeys[index]) ? GetDefStr(sm_szLoadKeys[index]) : Base_GetDef()->GetDefStr(sm_szLoadKeys[index]);
+
+		//On these ones, check BaseDef too if not found on dynamic
+		case OC_NAMELOC:
+			{
+				CVarDefCont * pVar = GetDefKey(sm_szLoadKeys[index], true);
+				sVal = pVar ? pVar->GetValStr() : "";
+			}
 			break;
 		case OC_CANSEE:
 		case OC_CANSEELOS:

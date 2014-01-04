@@ -137,6 +137,13 @@ bool CCharBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 	EXC_TRY("WriteVal");
 	switch ( FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
+		case CBC_THROWDAM:
+		case CBC_THROWOBJ:
+		case CBC_THROWRANGE:
+			{
+				sVal = GetDefStr(pszKey, false);
+			}
+		break;
 		case CBC_ANIM:
 			sVal.FormatHex( m_Anims );
 			break;
@@ -226,7 +233,15 @@ bool CCharBase::r_LoadVal( CScript & s )
 		return( false );
 	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
-		// compatibility for now
+		case CBC_THROWDAM:
+		case CBC_THROWOBJ:
+		case CBC_THROWRANGE:
+			{
+				bool fQuoted = false;
+				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
+			}
+			break;
+
 		case CBC_ANIM:
 			m_Anims = s.GetArgVal();
 			break;

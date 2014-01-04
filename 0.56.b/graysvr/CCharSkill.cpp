@@ -3821,22 +3821,30 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 	ITEMID_TYPE id = ITEMID_NOTHING;
 	int iDamage = 0;
 
-	const CVarDefCont * pTagStorage = GetKey("OVERRIDE.ROCK.DAM", true);
-	if ( pTagStorage )
+	CVarDefCont * pDam = GetDefKey("THROWDAM",true);
+	if ( pDam )
 	{
-		if ( pTagStorage->GetValNum() )
-			iDamage = pTagStorage->GetValNum();
+		int DVal[2];
+		size_t iQty = Str_ParseCmds( const_cast<TCHAR*>(pDam->GetValStr()), DVal, COUNTOF(DVal));
+		switch(iQty)
+		{
+			case 1:
+				iDamage = DVal[0];
+				break;
+			case 2:
+				iDamage = DVal[0] + Calc_GetRandVal( DVal[1] - DVal[0] );
+				break;
+		}
 	}
 
-	pTagStorage = GetKey("OVERRIDE.ROCK", true);
-    if ( pTagStorage )
+	CVarDefCont * pRock = GetDefKey("THROWOBJ",true);
+    if ( pRock )
 	{
-		if ( pTagStorage->GetValNum() )
-		{
-			id = static_cast<ITEMID_TYPE>(pTagStorage->GetValNum());
-			if (!iDamage)
-				iDamage = Stat_GetVal(STAT_DEX)/4 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
-		}
+		LPCTSTR t_Str = pRock->GetValStr();
+		RESOURCE_ID_BASE rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str ));
+		id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
+		if (!iDamage)
+			iDamage = Stat_GetVal(STAT_DEX)/4 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
 	}
 	else
 	{
