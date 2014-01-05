@@ -485,4 +485,4 @@ Fixed #2256: Reworked NPC object throwing..
 Fixed: AMMOANIM,AMMOANIMHUE,AMMOANIMRENDER,AMMOCONT, and AMMOTYPE no able to be read directly from SERV.ITEMDEF...
 
 04-01-2014, Ben
-Fixed #1904: EF_WalkCheck causing some NPCs to climb impassible terrain.
+Fixed #1904: EF_WalkCheck causing some NPCs to climb impassable terrain.
