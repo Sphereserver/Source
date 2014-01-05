@@ -1175,7 +1175,15 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 	}
 
 	if ( block.m_Bottom.m_z == UO_SIZE_MIN_Z )
+	{
 		block.m_Bottom = block.m_Lowest;
+		if ( block.m_Top.m_z == block.m_Bottom.m_z )
+		{
+			block.m_Top.m_dwBlockFlags = 0;
+			block.m_Top.m_dwTile = 0;
+			block.m_Top.m_z = UO_SIZE_Z;
+		}
+	}
 }
 
 signed char CWorld::GetHeightPoint_New( const CPointBase & pt, DWORD & wBlockFlags, bool fHouseCheck )

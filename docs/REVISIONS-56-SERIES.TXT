@@ -483,3 +483,6 @@ Fixed #2256: Reworked NPC object throwing..
 ->added THROWRANGE min,max  (can also be "THROWRANGE max" with a min of 2 by default)
 ->All 3 variables are available on dynamic npc or in CHARDEF
 Fixed: AMMOANIM,AMMOANIMHUE,AMMOANIMRENDER,AMMOCONT, and AMMOTYPE no able to be read directly from SERV.ITEMDEF...
+
+04-01-2014, Ben
+Fixed #1904: EF_WalkCheck causing some NPCs to climb impassible terrain.
