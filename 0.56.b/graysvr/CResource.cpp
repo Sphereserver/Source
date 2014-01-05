@@ -3919,6 +3919,19 @@ LPCTSTR CResource::GetDefaultMsg(long lKeyNum)
 	return g_Exp.sm_szMessages[lKeyNum];
 }
 
+LPCTSTR CResource::GetDefaultMsg(LPCTSTR pszKey)
+{
+	ADDTOCALLSTACK("CResource::GetDefaultMsg");
+	for ( long l = 0; l < DEFMSG_QTY; ++l )
+	{
+		if ( !strcmpi(pszKey, g_Exp.sm_szMsgNames[l]) )
+			return g_Exp.sm_szMessages[l];
+
+	}
+	g_Log.EventError("Defmessage \"%s\" non existent\n", pszKey);
+	return "";
+}
+
 bool CResource::GenerateDefname(TCHAR *pObjectName, size_t iInputLength, LPCTSTR pPrefix, TCHAR *pOutput, bool bCheckConflict, CVarDefMap* vDefnames)
 {
 	ADDTOCALLSTACK("CResource::GenerateDefname");

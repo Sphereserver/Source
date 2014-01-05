@@ -908,6 +908,9 @@ badcmd:
 					sVal	= "0";
 			}
 			return( true );
+		case SSC_DEFMSG:
+			sVal = g_Cfg.GetDefaultMsg(pszKey);
+			return(true);
 		case SSC_EVAL:
 			sVal.FormatVal( Exp_GetVal( pszKey ));
 			return( true );
