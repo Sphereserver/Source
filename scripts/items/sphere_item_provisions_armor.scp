@@ -4704,7 +4704,6 @@ reqstr=25
 resources=8 i_leather
 skillmake=tailoring 53.9
 dupelist=04047
-expansion=expansion_sa
 
 category=Equipment
 subsection=Armor - Gargish Leather
@@ -4713,6 +4712,7 @@ description=Gargish Leather Arms (Female)
 on=@Create
 hitpoints={ 36 48 }
 canuse=can_u_gargoyle|can_u_female
+expansion=expansion_sa
 
 resphysical=5
 resfire=6
@@ -4737,7 +4737,6 @@ reqstr=25
 resources=8 i_leather
 skillmake=tailoring 53.9
 dupelist=04048
-expansion=expansion_sa
 
 category=Equipment
 subsection=Armor - Gargish Leather
@@ -4746,6 +4745,7 @@ description=Gargish Leather Arms
 on=@Create
 hitpoints={ 36 48 }
 canuse=can_u_gargoyle|can_u_male
+expansion=expansion_sa
 
 resphysical=5
 resfire=6
@@ -4770,7 +4770,6 @@ reqstr=25
 resources=8 i_leather
 skillmake=tailoring 70.5
 dupelist=04049
-expansion=expansion_sa
 
 category=Equipment
 subsection=Armor - Gargish Leather
@@ -4779,6 +4778,7 @@ description=Gargish Leather Chest (Female)
 on=@Create
 hitpoints={ 36 48 }
 canuse=can_u_gargoyle|can_u_female
+expansion=expansion_sa
 
 resphysical=5
 resfire=6
@@ -4803,7 +4803,6 @@ reqstr=25
 resources=8 i_leather
 skillmake=tailoring 70.5
 dupelist=0404a
-expansion=expansion_sa
 
 category=Equipment
 subsection=Armor - Gargish Leather
@@ -4812,6 +4811,7 @@ description=Gargish Leather Chest
 on=@Create
 hitpoints={ 36 48 }
 canuse=can_u_gargoyle|can_u_male
+expansion=expansion_sa
 
 resphysical=5
 resfire=6
@@ -4836,7 +4836,6 @@ reqstr=20
 resources=10 i_leather
 skillmake=tailoring 66.3
 dupelist=0404d
-expansion=expansion_sa
 
 category=Equipment
 subsection=Armor - Gargish Leather
@@ -4845,6 +4844,7 @@ description=Gargish Leather Leggings (Female)
 on=@Create
 hitpoints={ 36 48 }
 canuse=can_u_gargoyle|can_u_female
+expansion=expansion_sa
 
 resphysical=5
 resfire=6
@@ -4869,7 +4869,6 @@ reqstr=20
 resources=10 i_leather
 skillmake=tailoring 66.3
 dupelist=0404e
-expansion=expansion_sa
 
 category=Equipment
 subsection=Armor - Gargish Leather
@@ -4878,6 +4877,7 @@ description=Gargish Leather Leggings
 on=@Create
 hitpoints={ 36 48 }
 canuse=can_u_gargoyle|can_u_male
+expansion=expansion_sa
 
 resphysical=5
 resfire=6
@@ -4907,7 +4907,6 @@ reqstr=25
 resources=6 i_leather
 skillmake=tailoring 58.0
 dupelist=0404b
-expansion=expansion_sa
 
 category=Equipment
 subsection=Armor - Gargish Leather
@@ -4916,6 +4915,7 @@ description=Gargish Leather Kilt (Female)
 on=@Create
 hitpoints={ 36 48 }
 canuse=can_u_gargoyle|can_u_female
+expansion=expansion_sa
 
 resphysical=5
 resfire=6
@@ -4940,7 +4940,6 @@ reqstr=25
 resources=6 i_leather
 skillmake=tailoring 58.0
 dupelist=0404c
-expansion=expansion_sa
 
 category=Equipment
 subsection=Armor - Gargish Leather
@@ -4949,6 +4948,7 @@ description=Gargish Leather Kilt
 on=@Create
 hitpoints={ 36 48 }
 canuse=can_u_gargoyle|can_u_male
+expansion=expansion_sa
 
 resphysical=5
 resfire=6
@@ -4973,7 +4973,6 @@ reqstr=10
 resources=6 i_leather
 skillmake=tailoring 40.4
 dupelist=041d9
-expansion=expansion_sa
 
 category=Equipment
 subsection=Armor - Gargish Leather
@@ -4982,6 +4981,7 @@ description=Gargish Leather Talons
 on=@Create
 hitpoints={ 36 48 }
 canuse=can_u_gargoyle|can_u_male|can_u_female
+expansion=expansion_sa
 
 [itemdef 041d9]
 dupeitem=041d8
@@ -5000,7 +5000,6 @@ reqstr=10
 resources=12 i_leather
 skillmake=tailoring 65.0
 dupelist=0457f
-expansion=expansion_sa
 
 category=Equipment
 subsection=Armor - Gargish Leather
@@ -5009,6 +5008,7 @@ description=Gargish Leather Wing Armor
 on=@Create
 hitpoints={ 36 48 }
 canuse=can_u_gargoyle|can_u_male|can_u_female
+expansion=expansion_sa
 
 resphysical=5
 resfire=6
@@ -5033,7 +5033,6 @@ reqstr=
 resources=
 skillmake=
 dupelist=0450e
-expansion=expansion_sa
 
 category=Equipment
 subsection=Armor - Gargish Leather
@@ -5042,6 +5041,7 @@ description=Gargish Belt
 on=@Create
 hitpoints={ 36 48 }
 canuse=can_u_gargoyle|can_u_male|can_u_female
+expansion=expansion_sa
 
 [itemdef 0450e]
 dupeitem=0450d
