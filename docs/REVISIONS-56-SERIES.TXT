@@ -490,3 +490,6 @@ Fixed #1904: EF_WalkCheck causing some NPCs to climb impassable terrain.
 05-01-2014, Ben
 Added #1638: Defmessages are accessible with <DEFMSG.msg_name>
 			->Also not documented but available before: Defmessages can be set with "DEFMSG.msg_name new_msg"
+
+09-01-2014, RanXerox (Script pack)
+-Fixed some duplicate itemdef and defnames

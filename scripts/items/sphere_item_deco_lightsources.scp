@@ -1893,7 +1893,7 @@ DESCRIPTION=Standing Bell Lamp South (Unlit)
 ON=@Create
    MOREZ=1
 
-[ITEMDEF 04c53]
+[ITEMDEF 04c57]
 DEFNAME=i_standing_bell_lamp_s_lit
 NAME=standing bell lamp
 TYPE=t_light_lit
@@ -1909,7 +1909,7 @@ DESCRIPTION=Standing Bell Lamp South (Lit)
 ON=@Create
    MOREZ=1
 
-[ITEMDEF 04c54]
+[ITEMDEF 04c58]
 DEFNAME=i_standing_bell_lamp_e
 NAME=standing bell lamp
 TYPE=t_light_out
@@ -1924,7 +1924,7 @@ DESCRIPTION=Standing Bell Lamp East (Unlit)
 ON=@Create
    MOREZ=1
 
-[ITEMDEF 04c55]
+[ITEMDEF 04c59]
 DEFNAME=i_standing_bell_lamp_e_lit
 NAME=standing bell lamp
 TYPE=t_light_lit

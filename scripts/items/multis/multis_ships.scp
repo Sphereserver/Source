@@ -2392,7 +2392,7 @@ component=0623a,0,13
 component=0623b,0,16
 
 [multidef 045]
-defname=m_britannian_ship_damaged_n
+defname=m_britannian_ship_damaged_e
 name=Britannian Ship
 nameloc=1150100	//Britannian Ship
 type=t_ship
@@ -2439,7 +2439,7 @@ component=06204,-13,0
 component=06205,-16,0
 
 [multidef 046]
-defname=m_britannian_ship_damaged_n
+defname=m_britannian_ship_damaged_s
 name=Britannian Ship
 nameloc=1150100	//Britannian Ship
 type=t_ship
@@ -2486,7 +2486,7 @@ component=06270,0,-13
 component=06271,0,-16
 
 [multidef 047]
-defname=m_britannian_ship_damaged_n
+defname=m_britannian_ship_damaged_w
 name=Britannian Ship
 nameloc=1150100	//Britannian Ship
 type=t_ship
