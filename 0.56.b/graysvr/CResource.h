@@ -807,6 +807,7 @@ public:
 	bool m_fGuardsInstantKill;	// Will guards kill instantly or follow normal combat rules?
 	int	 m_iGuardLingerTime;	// How long do guards linger about.
 	int  m_iSnoopCriminal;		// 1 in # chance of getting criminalflagged when succesfully snooping.
+	bool m_iTradeWindowSnooping;// 1 means opening a container in trade window needs to use snooping, 0 direct open.
 	int  m_iMurderMinCount;		// amount of murders before we get title.
 	int	 m_iMurderDecayTime;	// (minutes) Roll murder counts off this often.
 	bool m_fHelpingCriminalsIsACrime;// If I help (rez, heal, etc) a criminal, do I become one too?

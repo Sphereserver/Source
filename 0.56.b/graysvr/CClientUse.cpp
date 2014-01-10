@@ -40,37 +40,43 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 			{
 				// protect from ,snoop - disallow picking from not opened containers
 				bool isInOpenedContainer = false;
-				CClient::OpenedContainerMap_t::iterator itContainerFound = m_openedContainers.find( container->GetUID().GetPrivateUID() );
-				if ( itContainerFound != m_openedContainers.end() )
+				IT_TYPE type = container->GetType();
+				if ( type == IT_EQ_TRADE_WINDOW)
 				{
-					DWORD dwTopContainerUID = (((*itContainerFound).second).first).first;
-					DWORD dwTopMostContainerUID = (((*itContainerFound).second).first).second;
-					CPointMap ptOpenedContainerPosition = ((*itContainerFound).second).second;
-					const CObjBaseTemplate * pObjTop = pItem->GetTopLevelObj();
-					
-					DWORD dwTopContainerUID_ToCheck = 0;
-					if ( container->GetContainer() )
-						dwTopContainerUID_ToCheck = container->GetContainer()->GetUID().GetPrivateUID();
-					else
-						dwTopContainerUID_ToCheck = pObjTop->GetUID().GetPrivateUID();
-
-					if ( ( dwTopMostContainerUID == pObjTop->GetUID().GetPrivateUID() ) && ( dwTopContainerUID == dwTopContainerUID_ToCheck ) )
+					isInOpenedContainer = true;
+				} else {
+					CClient::OpenedContainerMap_t::iterator itContainerFound = m_openedContainers.find( container->GetUID().GetPrivateUID() );
+					if ( itContainerFound != m_openedContainers.end() )
 					{
-						if ( pObjTop->IsChar() )
-						{
-							isInOpenedContainer = true;
-							// probably a pickup check from pack if pCharTop != this?
-						}
+						DWORD dwTopContainerUID = (((*itContainerFound).second).first).first;
+						DWORD dwTopMostContainerUID = (((*itContainerFound).second).first).second;
+						CPointMap ptOpenedContainerPosition = ((*itContainerFound).second).second;
+						const CObjBaseTemplate * pObjTop = pItem->GetTopLevelObj();
+					
+						DWORD dwTopContainerUID_ToCheck = 0;
+						if ( container->GetContainer() )
+							dwTopContainerUID_ToCheck = container->GetContainer()->GetUID().GetPrivateUID();
 						else
+							dwTopContainerUID_ToCheck = pObjTop->GetUID().GetPrivateUID();
+
+						if ( ( dwTopMostContainerUID == pObjTop->GetUID().GetPrivateUID() ) && ( dwTopContainerUID == dwTopContainerUID_ToCheck ) )
 						{
-							const CItem * pItemTop = dynamic_cast<const CItem *>(pObjTop);
-							if ( pItemTop && (pItemTop->IsType(IT_SHIP_HOLD) || pItemTop->IsType(IT_SHIP_HOLD_LOCK)) && (pItemTop->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == m_pChar->GetTopPoint().GetRegion(REGION_TYPE_MULTI)) )
+							if ( pObjTop->IsChar() )
 							{
 								isInOpenedContainer = true;
+								// probably a pickup check from pack if pCharTop != this?
 							}
-							else if ( ptOpenedContainerPosition.GetDist( pObjTop->GetTopPoint() ) <= 3 )
+							else
 							{
-								isInOpenedContainer = true;
+								const CItem * pItemTop = dynamic_cast<const CItem *>(pObjTop);
+								if ( pItemTop && (pItemTop->IsType(IT_SHIP_HOLD) || pItemTop->IsType(IT_SHIP_HOLD_LOCK)) && (pItemTop->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == m_pChar->GetTopPoint().GetRegion(REGION_TYPE_MULTI)) )
+								{
+									isInOpenedContainer = true;
+								}
+								else if ( ptOpenedContainerPosition.GetDist( pObjTop->GetTopPoint() ) <= 3 )
+								{
+									isInOpenedContainer = true;
+								}
 							}
 						}
 					}
@@ -1449,10 +1455,23 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 			continue;
 		CItemContainer * pCont = dynamic_cast <CItemContainer *>( pItemCont );
 		ASSERT(pCont);
+		if (IsTrigUsed(TRIGGER_DROPON_TRADE))
+		{
+			CScriptTriggerArgs Args1( pChar );
+			if ( pItem->OnTrigger( ITRIG_DROPON_TRADE, this , &Args1 ) == TRIGRET_RET_TRUE ) //m_pChar, &Args1
+				return( false );
+		}
 		pCont->ContentAdd( pItem );
 		return( true );
 	}
-
+	if (IsTrigUsed(TRIGGER_TRADECREATE))
+	{
+		CScriptTriggerArgs Args( pItem );
+		if ( (m_pChar->OnTrigger(CTRIG_TradeCreate, pChar, &Args) == TRIGRET_RET_TRUE ) || (pChar->OnTrigger(CTRIG_TradeCreate, m_pChar, &Args) == TRIGRET_RET_TRUE ) )
+		{
+			return ( false );
+		}
+	}
 	// Open a new one.
 	CItem* pItem1 = CItem::CreateBase( ITEMID_Bulletin1 );
 	if ( !pItem1 )
@@ -1463,7 +1482,7 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 	{
 		DEBUG_ERR(("Item 0%x must be a container type to enable player trading.\n", ITEMID_Bulletin1));
 		pItem1->Delete();
-		return( false );
+		return( false ); 
 	}
 
 	pCont1->SetType( IT_EQ_TRADE_WINDOW );
@@ -1492,6 +1511,16 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 	pChar->GetClient()->LogOpenedContainer(pCont1);
 
 	CPointMap pt( 30, 30, 9 );
+	if (IsTrigUsed(TRIGGER_DROPON_TRADE))
+	{
+		CScriptTriggerArgs Args1( pChar );
+		if ( pItem->OnTrigger( ITRIG_DROPON_TRADE, this , &Args1 ) == TRIGRET_RET_TRUE ) //m_pChar, &Args1
+		{
+			pCont1->Delete();
+			pCont2->Delete();
+			return( false );
+		}
+	}
 	pCont1->ContentAdd( pItem, pt );
 	return( true );
 }

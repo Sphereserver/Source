@@ -81,6 +81,7 @@ CResource::CResource()
 	m_iBankWMax		= 400 * WEIGHT_UNITS;
 	m_fGuardsInstantKill	= true;
 	m_iSnoopCriminal	= 500;
+	m_iTradeWindowSnooping = true;
 	m_iTrainSkillPercent	= 50;
 	m_iTrainSkillMax	= 500;
 	m_fDeadCannotSeeLiving = 0;
@@ -551,6 +552,7 @@ enum RC_TYPE
 	RC_TIMEUP,
 	RC_TOOLTIPCACHE,			// m_iTooltipCache
 	RC_TOOLTIPMODE,				// m_iTooltipMode
+	RC_TRADEWINDOWSNOOPING,		// m_iTradeWindowSnooping
 	RC_UOGSTATUS,				// m_fUOGStatus
 	RC_USEASYNCNETWORK,			// m_fUseAsyncNetwork
 	RC_USEAUTHID,				// m_fUseAuthID
@@ -771,6 +773,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "TIMEUP",					{ ELEM_VOID,	0,											0 }},
 	{ "TOOLTIPCACHE",			{ ELEM_INT,		OFFSETOF(CResource,m_iTooltipCache),		0 }},
 	{ "TOOLTIPMODE",			{ ELEM_INT,		OFFSETOF(CResource,m_iTooltipMode),			0 }},
+	{ "TRADEWINDOWSNOOPING",	{ ELEM_BOOL,	OFFSETOF(CResource,m_iTradeWindowSnooping),	0 }},
 	{ "UOGSTATUS",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUOGStatus),			0 }},
 	{ "USEASYNCNETWORK",		{ ELEM_INT,		OFFSETOF(CResource,m_fUseAsyncNetwork),		0 }},
 	{ "USEAUTHID",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUseAuthID),			0 }},	// we use authid like osi

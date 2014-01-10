@@ -493,3 +493,21 @@ Added #1638: Defmessages are accessible with <DEFMSG.msg_name>
 
 09-01-2014, RanXerox (Script pack)
 -Fixed some duplicate itemdef and defnames
+
+10-01-2014, XuN
+Changed: MaxFood is now writable.
+Added @TradeCreate trigger for chars, fired after trade windows are created:
+	SRC=The other player.
+	Argo=Item wich starts the trade.
+	return 1 stops the trade.
+Added @DropOn_Trade trigger for items:
+	Act=item adding to trade window.
+	Argo=Other player.
+	return 1 blocks the placement.
+Added @TradeDelete trigger for chars, fired before a trade window is being closed (Opossed to @TradeAccepted).
+	SRC=The other player.
+Fixed: Players can now open their containers while placed on trade windows (still cannot pickup items from them, nor them).
+Change: Players used to be able to open the containers of other players while they were inside a trade window, these behaviour is now controled in sphere.ini.
+Added: Ini option 'TradeWindowSnooping' to handle this behaviour: 0 will open the bags, 1 will call for snooping (or deny it by your scripts).
+Notes:	-For now there's still a issue causing the client to crash while someone with a trade window open closes his client or just logs off.
+		-invisible (hidden) players can open trade windows to another players (but only first player will see it, this behaviour will remain, it can be fixed with @TradeCreate).

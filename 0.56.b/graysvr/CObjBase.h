@@ -318,6 +318,7 @@ enum ITRIG_TYPE
 	ITRIG_DROPON_GROUND,		// I have been dropped on the ground here
 	ITRIG_DROPON_ITEM,		// An item has been 
 	ITRIG_DROPON_SELF,		// An item has been dropped upon me
+	ITRIG_DROPON_TRADE,		// Droping an item in a trade window
 	ITRIG_EQUIP,		// I have been equipped.
 	ITRIG_EQUIPTEST,
 	ITRIG_PICKUP_GROUND,
@@ -2325,6 +2326,7 @@ enum CTRIG_TYPE
 	CTRIG_itemDROPON_GROUND,	// I dropped an item on the ground
 	CTRIG_itemDROPON_ITEM,		// I have been dropped on this item
 	CTRIG_itemDROPON_SELF,		// I have been dropped on this item
+	CTRIG_itemDROPON_TRADE,
 	CTRIG_itemEQUIP,		// I have equipped an item
 	CTRIG_itemEQUIPTEST,
 	CTRIG_itemPICKUP_GROUND,
@@ -2413,6 +2415,8 @@ enum CTRIG_TYPE
 	CTRIG_StepStealth,		//+Made a step while being in stealth mode
 	CTRIG_ToolTip,			// someone did tool tips on me.
 	CTRIG_TradeAccepted,	// Everything went well, and we are about to exchange trade items
+	CTRIG_TradeClose,		// Fired when a Trade Window is being deleted, no returns
+	CTRIG_TradeCreate,		// Trade window is going to be created
 
 	// Packet related triggers
 	CTRIG_UserBugReport,

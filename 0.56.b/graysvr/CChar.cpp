@@ -64,6 +64,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@itemDropOn_Ground",	// I dropped an item on the ground
 	"@itemDropOn_Item",		// I have been dropped on this item
 	"@itemDropOn_Self",		// An item has been dropped on
+	"@ItemDropOn_Trade",
 	"@itemEQUIP",			// I have equipped an item
 	"@itemEQUIPTEST",
 	"@itemPICKUP_GROUND",
@@ -151,6 +152,8 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@StepStealth",		//+Made a step in stealth mode
 	"@ToolTip",			// someone did tool tips on me.
 	"@TradeAccepted",	// Everything went well, and we are about to exchange trade items
+	"@TradeClose",
+	"@TradeCreate",
 
 	"@UserBugReport",
 	"@UserChatButton",
@@ -306,7 +309,7 @@ void CChar::ClientDetach()
 {
 	ADDTOCALLSTACK("CChar::ClientDetach");
 	// Client is detaching from this CChar.
-
+	
 	// remove all trade windows.
 	for ( CItem *pItem = GetContentHead(); pItem ; )
 	{
@@ -315,7 +318,6 @@ void CChar::ClientDetach()
 			pItem->Delete();
 		pItem = pItemNext;
 	}
-
 	if ( !IsClient() )
 		return;
 
@@ -2036,6 +2038,9 @@ do_default:
 		case CHC_MANA:
 			sVal.FormatVal( Stat_GetVal(STAT_INT) );
 			break;
+		case CHC_MAXFOOD:
+			sVal.FormatVal( Stat_GetMax( STAT_FOOD ) );
+			break;
 		case CHC_MAXHITS:
 			sVal.FormatVal( Stat_GetMax(STAT_STR) );
 			break;
@@ -2241,6 +2246,9 @@ do_default:
 				bool fQuoted = false;
 				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
 			}
+			break;
+		case CHC_MAXFOOD:
+			Stat_SetMax(STAT_FOOD, s.GetArgVal());
 			break;
 		case CHC_MAXHITS:
 			Stat_SetMax(STAT_STR, s.HasArgs() ? s.GetArgVal() : 0 );

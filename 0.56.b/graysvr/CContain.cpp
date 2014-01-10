@@ -706,6 +706,14 @@ void CItemContainer::Trade_Delete()
 	CChar * pChar = dynamic_cast <CChar*> (GetParent());
 	if ( pChar == NULL )
 		return;
+	
+	pChar->SysMessagef("TradeClose");
+	if ( IsTrigUsed(TRIGGER_TRADECLOSE) )
+	{
+		CChar * pChar2 = dynamic_cast <CChar*> (GetParent());
+		CScriptTriggerArgs Args( pChar2 );
+		pChar->OnTrigger( CTRIG_TradeClose,  pChar , &Args );
+	}
 
 	if ( pChar->IsClient())
 	{
@@ -714,7 +722,7 @@ void CItemContainer::Trade_Delete()
 		cmd.prepareClose(this);
 		cmd.send(pChar->GetClient());
 	}
-
+	
 	// Drop items back in my pack.
 	CItem * pItemNext;
 	for ( CItem* pItem = GetContentHead(); pItem!=NULL; pItem=pItemNext)
@@ -722,7 +730,7 @@ void CItemContainer::Trade_Delete()
 		pItemNext = pItem->GetNext();
 		pChar->ItemBounce( pItem );
 	}
-
+	
 	// Kill my trading partner.
 	CItemContainer * pPartner = dynamic_cast <CItemContainer *> ( m_uidLink.ItemFind());
 	if ( pPartner == NULL )
