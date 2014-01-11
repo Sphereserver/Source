@@ -137,6 +137,7 @@ bool CCharBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 	EXC_TRY("WriteVal");
 	switch ( FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
+		//return as string or hex number
 		case CBC_THROWDAM:
 		case CBC_THROWOBJ:
 		case CBC_THROWRANGE:

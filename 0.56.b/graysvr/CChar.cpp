@@ -1436,21 +1436,10 @@ do_default:
 
 	switch ( iKeyNum )
 	{
-		case CHC_INCREASEHITCHANCE:
-		case CHC_INCREASESWINGSPEED:
-		case CHC_INCREASEDAM:
-		case CHC_LOWERREAGENTCOST:
-		case CHC_REGENHITS:
-		case CHC_REGENSTAM:
-		case CHC_REGENMANA:
-		case CHC_REFLECTPHYSICALDAM:
-		case CHC_ENHANCEPOTIONS:
-		case CHC_INCREASEDEFCHANCE:
-		case CHC_INCREASEDEFCHANCEMAX:
-		case CHC_INCREASESPELLDAM:
-		case CHC_FASTERCASTRECOVERY:
-		case CHC_FASTERCASTING:
-		case CHC_LOWERMANACOST:
+		//return as string or hex number
+		//	sVal = GetDefStr(pszKey, true);
+		//	break;
+		//return as decimal number
 		case CHC_BONUSSTR:
 		case CHC_BONUSDEX:
 		case CHC_BONUSINT:
@@ -1460,27 +1449,42 @@ do_default:
 		case CHC_BONUSHITSMAX:
 		case CHC_BONUSSTAMMAX:
 		case CHC_BONUSMANAMAX:
+		case CHC_CURFOLLOWER:
 		case CHC_DMGCOLD:
 		case CHC_DMGENERGY:
 		case CHC_DMGFIRE:
 		case CHC_DMGPHYSICAL:
 		case CHC_DMGPOISON:
+		case CHC_ENHANCEPOTIONS:
+		case CHC_FASTERCASTRECOVERY:
+		case CHC_FASTERCASTING:
+		case CHC_FOLLOWERSLOTS:
+		case CHC_INCREASEHITCHANCE:
+		case CHC_INCREASESWINGSPEED:
+		case CHC_INCREASEDAM:
+		case CHC_INCREASEDEFCHANCE:
+		case CHC_INCREASEDEFCHANCEMAX:
+		case CHC_INCREASESPELLDAM:
+		case CHC_LOWERMANACOST:
+		case CHC_LOWERREAGENTCOST:
+		case CHC_LUCK:
+		case CHC_MAXFOLLOWER:
+		case CHC_REFLECTPHYSICALDAM:
+		case CHC_REGENHITS:
+		case CHC_REGENSTAM:
+		case CHC_REGENMANA:
+		case CHC_RESFIRE:
+		case CHC_RESCOLD:
+		case CHC_RESPOISON:
+		case CHC_RESENERGY:
 		case CHC_RESPHYSICAL:
 		case CHC_RESCOLDMAX:
 		case CHC_RESENERGYMAX:
 		case CHC_RESFIREMAX:
 		case CHC_RESPHYSICALMAX:
 		case CHC_RESPOISONMAX:
-		case CHC_FOLLOWERSLOTS:
-		case CHC_RESFIRE:
-		case CHC_RESCOLD:
-		case CHC_RESPOISON:
-		case CHC_RESENERGY:
-		case CHC_LUCK:
-		case CHC_CURFOLLOWER:
-		case CHC_MAXFOLLOWER:
 		case CHC_TITHING:
-			sVal = GetDefStr(pszKey, true);
+			sVal.FormatVal(GetDefNum(pszKey, true));
 			break;
 
 		case CHC_ATTACKER:
@@ -2221,7 +2225,7 @@ do_default:
 				UpdateStatsFlag();
 			}
 			break;
-
+		//Set as numbers only
 		case CHC_REGENHITS:
 		case CHC_REGENSTAM:
 		case CHC_REGENMANA:
@@ -2243,8 +2247,7 @@ do_default:
 		case CHC_DMGPOISON:
 		case CHC_FOLLOWERSLOTS:
 			{
-				bool fQuoted = false;
-				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
+				SetDefNum(s.GetKey(), s.GetArgVal(), false);
 			}
 			break;
 		case CHC_MAXFOOD:

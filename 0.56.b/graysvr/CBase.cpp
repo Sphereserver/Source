@@ -35,11 +35,15 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 
 	switch ( index )
 	{
+		//return as string or hex number
 		case OBC_CATEGORY:
 		case OBC_DESCRIPTION:
-		case OBC_NAMELOC:
 		case OBC_SUBSECTION:
 			sVal = GetDefStr(sm_szLoadKeys[index]);
+			break;
+		//return as decimal number
+		case OBC_NAMELOC:
+			sVal.FormatVal(GetDefNum(sm_szLoadKeys[index],true));
 			break;
 		case OBC_ARMOR:
 		case OBC_DAM:
