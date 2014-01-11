@@ -1434,6 +1434,7 @@ public:
 protected:
 	void OnRemoveOb( CGObListRec* pObRec );	// Override this = called when removed from list.
 public:
+	bool IsItemInTrade();
 	void Trade_Status( bool fCheck );
 	void Trade_Delete();
 

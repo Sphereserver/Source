@@ -2105,13 +2105,13 @@ bool CChar::CanMove( CItem * pItem, bool fMsg ) const
 		// Can't move items from the trade window (client limitation)
 		if ( pItem->GetContainer()->IsContainer() )
 		{
-			const CItemContainer * pItemCont = dynamic_cast <const CItemContainer *> (pItem->GetContainer());
-			if ( pItemCont && pItemCont->IsType( IT_EQ_TRADE_WINDOW ) )
+			CItemContainer * pItemCont = dynamic_cast <CItemContainer *> (pItem->GetContainer());
+			if  ( pItemCont->IsItemInTrade() == true )
 			{
-				SysMessage(g_Cfg.GetDefaultMsg( DEFMSG_TRADE_CANTMOVE ));
+				SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_TRADE_CANTMOVE ) );
 				return false;
 			}
-		}
+		}	
 
 		// Can't move equipped cursed items
 		if ( pItem->IsAttr(ATTR_CURSED|ATTR_CURSED2) && pItem->IsItemEquipped() )

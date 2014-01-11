@@ -425,7 +425,7 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 		// Check that we aren't sailing off the edge of the world
 		ptFore.Move(dir);
 		ptFore.m_z = GetTopZ();
-		if ( ! ptFore.IsValidPoint() || (ptFore.m_x >= UO_SIZE_X_REAL && ( ptFore.m_map <= 1 )))
+		if ( ! ptFore.IsValidPoint())
 		{
 			// Circle the globe
 			// Fall off edge of world ?

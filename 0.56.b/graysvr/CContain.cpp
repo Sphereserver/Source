@@ -603,6 +603,19 @@ bool CItemContainer::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole *
 	return CItemVendable::r_WriteVal(pszKey, sVal, pSrc);
 }
 
+bool CItemContainer::IsItemInTrade()
+{
+	// recursively get the item that is at "top" level.
+	CItemContainer * pObj = (dynamic_cast <CItemContainer*>(this));
+	//const CObjBase* pObj = pItem->GetContainer();
+	if ( !pObj )
+		return false;
+	else if (pObj->IsType( IT_EQ_TRADE_WINDOW ))
+		return true;
+	CItemContainer * pObj2 = (dynamic_cast <CItemContainer*>(this->GetContainer()));
+	return pObj2->IsItemInTrade();
+}
+
 void CItemContainer::Trade_Status( bool fCheck )
 {
 	ADDTOCALLSTACK("CItemContainer::Trade_Status");
@@ -702,18 +715,11 @@ void CItemContainer::Trade_Delete()
 	// Called when object deleted.
 
 	ASSERT( IsType(IT_EQ_TRADE_WINDOW) );
+	
 
 	CChar * pChar = dynamic_cast <CChar*> (GetParent());
 	if ( pChar == NULL )
 		return;
-	
-	pChar->SysMessagef("TradeClose");
-	if ( IsTrigUsed(TRIGGER_TRADECLOSE) )
-	{
-		CChar * pChar2 = dynamic_cast <CChar*> (GetParent());
-		CScriptTriggerArgs Args( pChar2 );
-		pChar->OnTrigger( CTRIG_TradeClose,  pChar , &Args );
-	}
 
 	if ( pChar->IsClient())
 	{
@@ -736,9 +742,18 @@ void CItemContainer::Trade_Delete()
 	if ( pPartner == NULL )
 		return;
 
+	if ( IsTrigUsed(TRIGGER_TRADECLOSE) )
+	{
+		CChar * pChar2 = dynamic_cast <CChar*> (pPartner->GetParent());
+		CScriptTriggerArgs Args( pChar2 );
+		pChar->OnTrigger( CTRIG_TradeClose,  pChar , &Args );
+		CScriptTriggerArgs Args2( pChar );
+		pChar2->OnTrigger( CTRIG_TradeClose, pChar, &Args2);
+	}
+
 	m_uidLink.InitUID();	// unlink.
 	pPartner->m_uidLink.InitUID();
-	pPartner->Delete();
+	pPartner->Trade_Delete();
 }
 
 void CItemContainer::OnWeightChange( int iChange )
