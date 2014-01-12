@@ -93,6 +93,7 @@ bool CClient::addLoginErr(BYTE code)
 		"Unencrypted client not permitted. See the USENOCRYPT setting in " GRAY_FILE ".ini",
 		"Another character on this account is already ingame",
 		"Account is full. Cannot create a new character",
+		"Character creation blocked.",
 		"This IP is blocked",
 		"The maximum number of clients has been reached. See the CLIENTMAX setting in " GRAY_FILE ".ini",
 		"The maximum number of guests has been reached. See the GUESTSMAX setting in " GRAY_FILE ".ini",

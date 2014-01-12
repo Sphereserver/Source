@@ -504,8 +504,8 @@ Added @DropOn_Trade trigger for items:
 	Act=item adding to trade window.
 	Argo=Other player.
 	return 1 blocks the placement.
-Added @TradeDelete trigger for chars, fired before a trade window is being closed (Opossed to @TradeAccepted).
-	SRC=The other player.
+Added @TradeClose trigger for chars, fired before a trade window is being closed (Opossed to @TradeAccepted).
+	SRC=The char closing the trade window.
 Fixed: Players can now open their containers while placed on trade windows (still cannot pickup items from them, nor them).
 Change: Players used to be able to open the containers of other players while they were inside a trade window, these behaviour is now controled in sphere.ini.
 Added: Ini option 'TradeWindowSnooping' to handle this behaviour: 0 will open the bags, 1 will call for snooping (or deny it by your scripts).
@@ -514,3 +514,13 @@ Notes:	-For now there's still a issue causing the client to crash while someone 
 
 11-01-2014, Ben
 Fixed #2258: Some properties returning as hex instead of decimal.
+
+12-01-2014, XuN
+Change in @TradeClose:
+	Src is the player closing the window.
+	Argo is the other player.
+Fixed: Items being able to move while inside a container inside a trade window.
+Fixed: Containers on the ground not being able to open.
+Changed: Ships work again in Lost Lands.
+Fixed Disconnect not working correctly with trysrv in high privileged characters.
+Added return 1 to f_onchar_create, it blocks the creation and disconnects the client.

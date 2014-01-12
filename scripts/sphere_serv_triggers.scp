@@ -65,6 +65,9 @@ f_onserver_blockip
 // ARGN3 --> race (1=human, 2=elf, 3=gargoyle)
 // ARGS  --> account name
 // ARGO  --> the client creating the character
+// RETURN
+//	  0 --> normal action (create character)
+//	  1 --> denyes creation
 
 
 [FUNCTION f_onchar_delete]

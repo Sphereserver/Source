@@ -764,6 +764,7 @@ public:
 		EncNoCrypt,     // non-crypted client not allowed
 		CharIdle,       // character is already ingame
 		TooManyChars,   // account has too many characters
+		CreationBlocked,// character creation is blocked in this moments.
 		BlockedIP,      // ip is blocked
 		MaxClients,     // max clients reached
 		MaxGuests,      // max guests reached

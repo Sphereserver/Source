@@ -760,7 +760,7 @@ void CAccount::OnLogout(CClient *pClient, bool bWasChar)
 bool CAccount::Kick( CTextConsole * pSrc, bool fBlock )
 {
 	ADDTOCALLSTACK("CAccount::Kick");
-	if ( GetPrivLevel() >= pSrc->GetPrivLevel())
+	if (( GetPrivLevel() >= pSrc->GetPrivLevel()) &&  ( pSrc->GetChar() ) )
 	{
 		pSrc->SysMessageDefault(DEFMSG_ACC_PRIV);
 		return( false );
