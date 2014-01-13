@@ -924,7 +924,7 @@ bool CChar::CanSeeTrue( const CChar * pChar ) const
 	if ( pChar == NULL || pChar == this )
 		return( false );
 	// if ( pChar->IsStatFlag( STATF_Sleeping )) return( false );
-	return( pChar->GetPrivLevel() < GetPrivLevel());
+	return( pChar->GetPrivLevel() < GetPrivLevel() );
 }
 
 bool CChar::CanSeeAsDead( const CChar * pChar) const
@@ -2105,13 +2105,13 @@ bool CChar::CanMove( CItem * pItem, bool fMsg ) const
 		// Can't move items from the trade window (client limitation)
 		if ( pItem->GetContainer()->IsContainer() )
 		{
-			CItemContainer * pItemCont = dynamic_cast <CItemContainer *> (pItem->GetContainer());
-			if  ( pItemCont->IsItemInTrade() == true )
+			const CItemContainer * pItemCont = dynamic_cast <const CItemContainer *> (pItem->GetContainer());
+			if ( pItemCont && pItemCont->IsType( IT_EQ_TRADE_WINDOW ) )
 			{
-				SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_TRADE_CANTMOVE ) );
+				SysMessage(g_Cfg.GetDefaultMsg( DEFMSG_TRADE_CANTMOVE ));
 				return false;
 			}
-		}	
+		}
 
 		// Can't move equipped cursed items
 		if ( pItem->IsAttr(ATTR_CURSED|ATTR_CURSED2) && pItem->IsItemEquipped() )

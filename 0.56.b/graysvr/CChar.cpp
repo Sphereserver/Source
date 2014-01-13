@@ -39,6 +39,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@FameChange",				// Fame changed
 
 	"@GetHit",				// I just got hit.
+	"@HiddenSee",			// Can I see hidden chars?
 	"@Hit",					// I just hit someone. (TARG)
 	"@HitMiss",				// I just missed.
 	"@HitTry",				// I am trying to hit someone. starting swing.
@@ -92,6 +93,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@Mount",				// I'm trying to mount my horse (or whatever)
 	"@MurderDecay",			// One of my kills is gonna to be cleared
 	"@MurderMark",			// I am gonna to be marked as a murderer
+	"@NotoSend",			// Sending notoriety
 
 	"@NPCAcceptItem",		// (NPC only) i've been given an item i like (according to DESIRES)
 	"@NPCActFight",

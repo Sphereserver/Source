@@ -189,17 +189,20 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 	// This allows the noto attack check in the client.
 	// NOTO_GOOD = it is criminal to attack me.
 	
+	if (IsTrigUsed(TRIGGER_NOTOSEND))
+	{
+		CChar * pCharViewer2 = const_cast <CChar*>(pCharViewer);
+		CChar * pCharDef = const_cast <CChar*>(this);
+		CScriptTriggerArgs args;
+		pCharDef->OnTrigger(CTRIG_NotoSend, pCharViewer2, &args);
+		NOTO_TYPE Noto = static_cast<NOTO_TYPE>(args.m_iN1);
+		if (Noto != NOTO_INVALID )
+			return Noto;
+	}
 	NOTO_TYPE iNotoFlag = static_cast<NOTO_TYPE>(m_TagDefs.GetKeyNum("OVERRIDE.NOTO", true));
 	if ( iNotoFlag != NOTO_INVALID )
 		return iNotoFlag;
 
-	TCHAR * getNoto = Str_GetTemp(); // get the override tag for this viewer
-	sprintf(getNoto, "OVERRIDE.NOTO.0%lx", (DWORD) pCharViewer->GetUID() );
-	iNotoFlag = static_cast<NOTO_TYPE>(m_TagDefs.GetKeyNum(getNoto));
-	
-	if ( iNotoFlag != NOTO_INVALID )
-		return iNotoFlag;
-	
 	if ( fAllowIncog && IsStatFlag( STATF_Incognito ))
 	{
 		return NOTO_NEUTRAL;

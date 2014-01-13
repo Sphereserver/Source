@@ -2303,6 +2303,7 @@ enum CTRIG_TYPE
 	CTRIG_FameChange,				// Fame chaged
 
 	CTRIG_GetHit,			// I just got hit.
+	CTRIG_HiddenSee,		// Can i see hidden chars?
 	CTRIG_Hit,				// I just hit someone. (TARG)
 	CTRIG_HitMiss,			// I just missed.
 	CTRIG_HitTry,			// I am trying to hit someone. starting swing.,
@@ -2355,6 +2356,7 @@ enum CTRIG_TYPE
 	CTRIG_Mount,
 	CTRIG_MurderDecay,		// I have decayed one of my kills
 	CTRIG_MurderMark,		// I am gonna to be marked as a murder
+	CTRIG_NotoSend,			// sending notoriety
 
 	CTRIG_NPCAcceptItem,		// (NPC only) i've been given an item i like (according to DESIRES)
 	CTRIG_NPCActFight,
