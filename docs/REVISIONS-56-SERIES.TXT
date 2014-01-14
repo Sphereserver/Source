@@ -522,5 +522,20 @@ Change in @TradeClose:
 Fixed: Items being able to move while inside a container inside a trade window.
 Fixed: Containers on the ground not being able to open.
 Changed: Ships work again in Lost Lands.
-Fixed Disconnect not working correctly with trysrv in high privileged characters.
-Added return 1 to f_onchar_create, it blocks the creation and disconnects the client.
+Fixed: Disconnect not working correctly with trysrv in high privileged characters.
+Added: return 1 to f_onchar_create, it blocks the creation and disconnects the client.
+
+13-01-2014, XuN
+Removed: tag.override.noto.$uid, having one tag per 1 character viewing this is insane.
+Added: @NotoSend, this trigger will override the default color for status bar and character 'mouse hovering' color (Replacement for tag.override.noto.$uid)
+	src=The player viewing this char
+	argn1=bar/char color (0 will let the default system run)
+Note: The first 7 colors are the same as NOTO_* definitions, but you can use all your hues range (however the colors does not display like in items/chars)
+
+15-01-2014, XuN
+Fixed: Items being able to move inside containers placed in trade windows (semi-fixed before)
+Fixed: Gold function now updates automatically the status bar.
+Fixed: Move back the character data before f_onchar_create to be able to read it again.
+Added: @SeeHidden trigger (Heavy load, keep it clean) fired when a char is going to see (or not) an invisible character (just like staff see other staff members while invisible)
+	argn1=Invisible/Visible (but grayed out)
+	No returns for this trigger.

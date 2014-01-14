@@ -108,7 +108,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@NPCRestock",			// (NPC only)
 	"@NPCSeeNewPlayer",		//+(NPC only) i see u for the first time. (in 20 minutes) (check memory time)
 	"@NPCSeeWantItem",		// (NPC only) i see something good.
-	"@NPCSpecialAction",
+	"@NPCSpecialAction",	// Idle 
 
 	"@PartyDisband",		//I just disbanded my party
 	"@PartyInvite",			//SRC invited me to join a party, so I may chose
@@ -2375,6 +2375,9 @@ do_default:
 						}
 					}
 				}
+				CClient * pClient = this->GetClient();
+				if (pClient)
+					pClient->addCharStatWindow( this->GetUID() );
 			} break;
 
 		case CHC_HITPOINTS:

@@ -1381,7 +1381,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 	{
 		CClient * client = GetClient();
 		const CItem * pItemCont	= dynamic_cast <const CItem*> (pItem->GetParent());
-
+		
 		if ( pItemCont != NULL )
 		{
 			// Don't allow taking items from the bank unless we opened it here

@@ -2303,7 +2303,6 @@ enum CTRIG_TYPE
 	CTRIG_FameChange,				// Fame chaged
 
 	CTRIG_GetHit,			// I just got hit.
-	CTRIG_HiddenSee,		// Can i see hidden chars?
 	CTRIG_Hit,				// I just hit someone. (TARG)
 	CTRIG_HitMiss,			// I just missed.
 	CTRIG_HitTry,			// I am trying to hit someone. starting swing.,
@@ -2390,6 +2389,7 @@ enum CTRIG_TYPE
 	CTRIG_Rename,			// Changing my name or pets one
 
 	CTRIG_SeeCrime,			// I am seeing a crime
+	CTRIG_SeeHidden,		// I'm about to see a hidden char
 
 	// SKTRIG_QTY
 	CTRIG_SkillAbort,			// SKTRIG_ABORT

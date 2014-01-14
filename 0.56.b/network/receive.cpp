@@ -188,6 +188,9 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 	createArgs.m_VarsLocal.SetNum("EXTRASKILL.VAL", iSkillVal4 * 10);
 	createArgs.m_s1 = account->GetName();
 	createArgs.m_pO1 = client;
+	
+
+	pChar->InitPlayer(client, charname, bFemale, rtRace, wStr, wDex, wInt, prProf, skSkill1, iSkillVal1, skSkill2, iSkillVal2, skSkill3, iSkillVal3, wSkinHue, idHair, wHairHue, idBeard, wBeardHue, wShirtHue, wPantsHue, iStartLoc);
 
 	client->r_Call("f_onchar_create", pChar, &createArgs, NULL, &tr);
 	
@@ -196,8 +199,6 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 		client->addLoginErr(PacketLoginError::CreationBlocked);
 		return false;
 	}
-
-	pChar->InitPlayer(client, charname, bFemale, rtRace, wStr, wDex, wInt, prProf, skSkill1, iSkillVal1, skSkill2, iSkillVal2, skSkill3, iSkillVal3, wSkinHue, idHair, wHairHue, idBeard, wBeardHue, wShirtHue, wPantsHue, iStartLoc);
 
 	g_Log.Event( LOGM_CLIENTS_LOG, "%lx:Setup_CreateDialog acct='%s', char='%s'\n",
 		net->id(), static_cast<LPCTSTR>(account->GetName()), static_cast<LPCTSTR>(pChar->GetName()));

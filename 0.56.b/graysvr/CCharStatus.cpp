@@ -1090,9 +1090,19 @@ bool CChar::CanSee( const CObjBaseTemplate * pObj ) const
 		else if ( pChar->IsStatFlag( STATF_Insubstantial | STATF_Invisible | STATF_Hidden ))
 		{
 			// Characters can be invisible, but not to GM's (true sight ?)
-			// equal level can see each other
+			// equal level can see each other if they are staff members or they return 1 in @SeeHidden
+			int vision;
 			if ( pChar->GetPrivLevel() <= PLEVEL_Player )
 			{
+				if ( IsTrigUsed(TRIGGER_SEEHIDDEN))
+				{
+					CScriptTriggerArgs Args;
+					Args.m_iN1 = GetPrivLevel() <= pChar->GetPrivLevel();
+					CChar * pChar2 = const_cast <CChar*> (pChar);
+					CChar * this2 = const_cast <CChar*> (this);
+					this2->OnTrigger(CTRIG_SeeHidden, pChar2, &Args);
+					return (Args.m_iN1);
+				}
 				if ( GetPrivLevel() <= pChar->GetPrivLevel())
 					return( false );
 			}
@@ -2105,8 +2115,8 @@ bool CChar::CanMove( CItem * pItem, bool fMsg ) const
 		// Can't move items from the trade window (client limitation)
 		if ( pItem->GetContainer()->IsContainer() )
 		{
-			const CItemContainer * pItemCont = dynamic_cast <const CItemContainer *> (pItem->GetContainer());
-			if ( pItemCont && pItemCont->IsType( IT_EQ_TRADE_WINDOW ) )
+			CItemContainer * pItemCont = dynamic_cast <CItemContainer *> (pItem->GetContainer());
+			if ( pItemCont && pItemCont->IsItemInTrade() )
 			{
 				SysMessage(g_Cfg.GetDefaultMsg( DEFMSG_TRADE_CANTMOVE ));
 				return false;
