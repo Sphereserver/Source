@@ -39,7 +39,6 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@FameChange",				// Fame changed
 
 	"@GetHit",				// I just got hit.
-	"@HiddenSee",			// Can I see hidden chars?
 	"@Hit",					// I just hit someone. (TARG)
 	"@HitMiss",				// I just missed.
 	"@HitTry",				// I am trying to hit someone. starting swing.
@@ -126,6 +125,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 
 	"@Rename",
 	"@SeeCrime",		// I saw a crime
+	"@SeeHidden",			// Can I see hidden chars?
 
 	// SKTRIG_QTY
 	"@SkillAbort",

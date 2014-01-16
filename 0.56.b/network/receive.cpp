@@ -189,14 +189,16 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 	createArgs.m_s1 = account->GetName();
 	createArgs.m_pO1 = client;
 	
-
+	//Creating the pChar
 	pChar->InitPlayer(client, charname, bFemale, rtRace, wStr, wDex, wInt, prProf, skSkill1, iSkillVal1, skSkill2, iSkillVal2, skSkill3, iSkillVal3, wSkinHue, idHair, wHairHue, idBeard, wBeardHue, wShirtHue, wPantsHue, iStartLoc);
 
+	//Calling the function after the char creation, it can't be done before or the function won't have SRC
 	client->r_Call("f_onchar_create", pChar, &createArgs, NULL, &tr);
 	
 	if ( tr == 1 )
 	{
 		client->addLoginErr(PacketLoginError::CreationBlocked);
+		pChar->Delete();	//Delete it if function is returning 1 or the char will remain created
 		return false;
 	}
 
