@@ -539,3 +539,6 @@ Fixed: Move back the character data before f_onchar_create to be able to read it
 Added: @SeeHidden trigger (Heavy load, keep it clean) fired when a char is going to see (or not) an invisible character (just like staff see other staff members while invisible)
 	argn1=Invisible/Visible (but grayed out)
 	No returns for this trigger.
+
+17-01-2014, Ben
+Fixed #2244: SERV.ACCOUNT UNUSED xxx can now take any functions with the account being the default in the function.
