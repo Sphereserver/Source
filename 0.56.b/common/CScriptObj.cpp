@@ -1333,14 +1333,6 @@ bool CScriptObj::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 
 	index = FindTableSorted( s.GetKey(), sm_szVerbKeys, COUNTOF( sm_szVerbKeys )-1 );
 
-	if ( index < 0 )
-	{
-		CGString sVal;
-		CScriptTriggerArgs Args( s.GetArgRaw() );
-		if ( r_Call( pszKey, pSrc, &Args, &sVal ) )
-			return true;
-	}
-
 	switch (index)
 	{
 		case SSV_OBJ:

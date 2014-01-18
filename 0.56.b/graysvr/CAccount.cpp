@@ -1467,7 +1467,14 @@ bool CAccount::r_Verb( CScript &s, CTextConsole * pSrc )
 	int i = FindTableSorted( s.GetKey(), sm_szVerbKeys, COUNTOF( sm_szVerbKeys )-1 );
 	if ( i < 0 )
 	{
-		return( CScriptObj::r_Verb( s, pSrc ));
+		bool bLoad = CScriptObj::r_Verb( s, pSrc );
+		if ( !bLoad ) //try calling custom functions
+		{
+			CGString sVal;
+			CScriptTriggerArgs Args( s.GetArgRaw() );
+			bLoad = r_Call( pszKey, pSrc, &Args, &sVal );
+		}
+		return bLoad;
 	}
 
 	switch ( i )
