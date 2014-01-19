@@ -336,8 +336,7 @@ bool CListDefCont::AddElementStr(LPCTSTR pszKey)
 		return false;
 #define max maximum
 
-	if ( pszKey && *pszKey && pszKey[0] == '"' )
-		++pszKey;
+	REMOVE_QUOTES( pszKey );
 
 	m_listElements.push_back( new CListDefContStr(m_Key.GetPtr(), pszKey) );
 
@@ -409,6 +408,69 @@ void CListDefCont::RemoveAll()
 		DeleteAtIterator(it);
 		it = m_listElements.begin();
 	}
+}
+
+bool compare_insensitive (CListDefContElem * firstelem, CListDefContElem * secondelem)
+{
+	unsigned int i=0;
+	LPCTSTR first = firstelem->GetValStr();
+	LPCTSTR second = secondelem->GetValStr();
+
+	if((IsSimpleNumberString(first)) && (IsSimpleNumberString(second)))
+	{
+		int ifirst = firstelem->GetValNum();
+		int isecond = secondelem->GetValNum();
+		return ( ifirst < isecond );
+	}
+	else
+	{
+		while ( (i < strlen(first)) && (i < strlen(second)))
+		{
+			if (tolower(first[i]) < tolower(second[i])) return true;
+			else if (tolower(first[i]) > tolower(second[i])) return false;
+			++i;
+		}
+		return ( strlen(first) < strlen(second) );
+	}
+}
+
+bool compare_sensitive (CListDefContElem * firstelem, CListDefContElem * secondelem)
+{
+	unsigned int i=0;
+	LPCTSTR first = firstelem->GetValStr();
+	LPCTSTR second = secondelem->GetValStr();
+
+	if((IsSimpleNumberString(first)) && (IsSimpleNumberString(second)))
+	{
+		int ifirst = firstelem->GetValNum();
+		int isecond = secondelem->GetValNum();
+		return ( ifirst < isecond );
+	}
+	else
+	{
+		while ( (i < strlen(first)) && (i < strlen(second)))
+		{
+			if (first[i] < second[i]) return true;
+			else if (first[i] > second[i]) return false;
+			++i;
+		}
+		return ( strlen(first) < strlen(second) );
+	}
+}
+
+void CListDefCont::Sort(bool bDesc, bool bCase)
+{
+	ADDTOCALLSTACK("CListDefCont::Sort");
+	if ( !m_listElements.size() )
+		return;
+
+	if (bCase)
+		m_listElements.sort(compare_insensitive);
+	else
+		m_listElements.sort(compare_sensitive);
+
+	if (bDesc)
+		m_listElements.reverse();
 }
 
 bool CListDefCont::InsertElementNum(size_t nIndex, int iVal)
@@ -851,6 +913,62 @@ bool CListDefMap::r_LoadVal( LPCTSTR pszKey, CScript & s )
 					return pListBase->AddElementNum(Exp_GetVal(pszArg));
 				else
 					return pListBase->AddElementStr(pszArg);
+			}
+			else if (( strcmpi(ppCmds[1], "set") == 0 ) || ( strcmpi(ppCmds[1], "append") == 0 ))
+			{
+				if ( !pszArg || !(*pszArg) )
+					return false;
+
+				if (( pListBase ) && ( strcmpi(ppCmds[1], "set") == 0 ))
+				{
+					DeleteKey(ppCmds[0]);
+					pListBase = NULL;
+				}
+				
+				if ( !pListBase )
+				{
+					pListBase = new CListDefCont(ppCmds[0]);
+					m_Container.insert(pListBase);
+				}
+
+				TCHAR* ppCmd[2];
+				ppCmd[0] = const_cast<TCHAR*>(pszArg);
+				while ( Str_Parse( ppCmd[0], &(ppCmd[1]), "," ))
+				{
+					if ( IsSimpleNumberString(ppCmd[0]) )
+						pListBase->AddElementNum(Exp_GetVal(ppCmd[0]));
+					else
+						pListBase->AddElementStr(ppCmd[0]);
+					ppCmd[0] = ppCmd[1];
+				}
+				//insert last element
+				if ( IsSimpleNumberString(ppCmd[0]) )
+					return pListBase->AddElementNum(Exp_GetVal(ppCmd[0]));
+				else
+					return pListBase->AddElementStr(ppCmd[0]);
+			}
+			else if ( strcmpi(ppCmds[1], "sort") == 0 )
+			{
+				if ( !pListBase )
+					return false;
+
+				if ( pszArg && *pszArg )
+				{
+					if ( strcmpi(pszArg, "asc") == 0 )
+						pListBase->Sort();
+					else if (( strcmpi(pszArg, "i") == 0 ) || ( strcmpi(pszArg, "iasc") == 0 ))
+						pListBase->Sort(false, true);
+					else if ( strcmpi(pszArg, "desc") == 0 )
+						pListBase->Sort(true);
+					else if ( strcmpi(pszArg, "idesc") == 0 )
+						pListBase->Sort(true, true);
+					else
+						return false;
+					return true;
+				}
+				//default to asc if not specified.
+				pListBase->Sort();
+				return true;
 			}
 		}
 		else if ( pListBase )

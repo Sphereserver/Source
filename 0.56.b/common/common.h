@@ -72,6 +72,15 @@ typedef unsigned int	ERROR_CODE;
 #define GETNONWHITESPACE( pStr )	while ( ISWHITESPACE( (pStr)[0] )) { (pStr)++; }
 #define _IS_SWITCH(c)    ((c) == '-' || (c) == '/' )	// command line switch.
 
+#define REMOVE_QUOTES( x )			\
+{									\
+	GETNONWHITESPACE( x );			\
+	if ( *x == '"' )	++x;				\
+	TCHAR * psX	= const_cast<TCHAR*>(strchr( x, '"' ));	\
+	if ( psX )						\
+		*psX	= '\0';				\
+}
+
 // -----------------------------
 //	Time measurement macroses
 // -----------------------------

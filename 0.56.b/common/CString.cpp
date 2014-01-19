@@ -487,9 +487,15 @@ bool Str_Parse( TCHAR * pLine, TCHAR ** ppLine2, LPCTSTR pszSep )
 	}
 
 	TCHAR ch;
+	bool bQuotes = false;
 	for ( ; ; pLine++ )
-	{
+	{	
 		ch = *pLine;
+		if ( ch == '"' )	// quoted argument
+		{
+			bQuotes = !bQuotes;
+			continue;
+		}
 		if ( ch == '\0' )	// no args i guess.
 		{
 			if ( ppLine2 != NULL )
@@ -498,7 +504,7 @@ bool Str_Parse( TCHAR * pLine, TCHAR ** ppLine2, LPCTSTR pszSep )
 			}
 			return false;
 		}
-		if ( strchr( pszSep, ch ))
+		if ( strchr( pszSep, ch ) && (bQuotes == false))
 			break;
 	}
 

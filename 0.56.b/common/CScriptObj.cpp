@@ -629,16 +629,6 @@ bool CScriptObj::r_LoadVal( CScript & s )
 	return false;
 }
 
-#define REMOVE_QUOTES( x )			\
-{									\
-	GETNONWHITESPACE( x );			\
-	if ( *x == '"' )	++x;				\
-	TCHAR * psX	= const_cast<TCHAR*>(strchr( x, '"' ));	\
-	if ( psX )						\
-		*psX	= '\0';				\
-}
-
-
 static void StringFunction( int iFunc, LPCTSTR pszKey, CGString &sVal )
 {
 	GETNONWHITESPACE(pszKey);
@@ -1304,7 +1294,6 @@ bool CScriptObj::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 	LPCTSTR pszKey = s.GetKey();
 	
 	ASSERT( pSrc );
-
 	CScriptObj * pRef = NULL;
 	if ( r_GetRef( pszKey, pRef ))
 	{

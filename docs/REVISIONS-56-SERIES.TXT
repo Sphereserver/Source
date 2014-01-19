@@ -542,3 +542,17 @@ Added: @SeeHidden trigger (Heavy load, keep it clean) fired when a char is going
 
 17-01-2014, Ben
 Fixed #2244: SERV.ACCOUNT UNUSED xxx can now take any functions with the account being the default in the function.
+
+19-01-2014, Ben
+-Added #1607: "LIST.XXX.SET args,..." This will clear the list and set each arguments (separated by a ,) as an element of the specified LIST
+-Added: "LIST.XXX.APPEND args,..." This acts the same as SET, but will not clear the LIST. It will add to the LIST
+-Change: String parsing should now respect commas(,) as a character inside double quotes ("") instead of treating it as a separator (for most places anyways)
+		This allows situations like this:   LIST.XXX.SET value1,"value2,value3",value4  to have a result of:
+		LIST.XXX.0 = value1
+		LIST.XXX.1 = value2,value3
+		LIST.XXX.2 = value4
+-Added #1787,#2142: "LIST.XXX.SORT args"  This will re-order the the list using 'args' as order method.
+		'No args' or 'asc' - sorts case sensitive ascending
+		'i' or 'iasc' - sorts case insensitive ascending
+		'desc' - sorts case sensitive descending
+		'idesc' - sorts case insensitive descending

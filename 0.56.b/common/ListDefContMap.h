@@ -129,6 +129,7 @@ public:
 
 	bool RemoveElement(size_t nIndex);
 	void RemoveAll();
+	void Sort(bool bDesc = false, bool bCase = false);
 
 	bool InsertElementNum(size_t nIndex, int iVal);
 	bool InsertElementStr(size_t nIndex, LPCTSTR pszKey);
