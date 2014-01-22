@@ -1091,7 +1091,6 @@ bool CChar::CanSee( const CObjBaseTemplate * pObj ) const
 		{
 			// Characters can be invisible, but not to GM's (true sight ?)
 			// equal level can see each other if they are staff members or they return 1 in @SeeHidden
-			int vision;
 			if ( pChar->GetPrivLevel() <= PLEVEL_Player )
 			{
 				if ( IsTrigUsed(TRIGGER_SEEHIDDEN))

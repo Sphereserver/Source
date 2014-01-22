@@ -556,3 +556,7 @@ Fixed #2244: SERV.ACCOUNT UNUSED xxx can now take any functions with the account
 		'i' or 'iasc' - sorts case insensitive ascending
 		'desc' - sorts case sensitive descending
 		'idesc' - sorts case insensitive descending
+
+23-01-2014, XuN
+Fixed #2257: Weapons now doesn't hit from Range+1
+Added tag.override.SpellTimeout to alter default .ini setting to individual players.

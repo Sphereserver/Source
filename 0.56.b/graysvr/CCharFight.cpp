@@ -3469,7 +3469,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		int	iMinDist	= pWeaponDef ? pWeaponDef->RangeH() : 0;
 		int	iMaxDist	= CalcFightRange( NULL, pWeaponDef );
 
-		if (( dist < iMinDist ) || ( dist > iMaxDist + 1 ))
+		if (( dist < iMinDist ) || ( dist > iMaxDist ))
 		{
 			if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
 				return( WAR_SWING_READY );
