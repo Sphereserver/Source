@@ -93,22 +93,22 @@ color_spectral      17969
 
 [DEFNAME hues_range]
 colors_stone           {2498 1 2500 1 {2671 2706} 1}
-colors_skin            {1001 1057}
+colors_skin            {1002 1058}
 colors_skin_gargoyle   {1755 1779}
-colors_hair            {1102 1148}
-colors_all             { {443 443} 2 {902 902} 1 {907 907} 1 {928 928} 1 {946 947} 1 {1201 1247} 6 {1301 1347} 6 {1401 1447} 6 {1501 1547} 6 {1601 1654} 6 {1701 1747} 6 {1801 1887} 6 }
+colors_hair            {1102 1149}
+colors_all             {2 1001} //{ {443 443} 2 {902 902} 1 {907 907} 1 {928 928} 1 {946 947} 1 {1201 1247} 6 {1301 1347} 6 {1401 1447} 6 {1501 1547} 6 {1601 1654} 6 {1701 1747} 6 {1801 1887} 6 }
 colors_white           {2301 2301}
 colors_black           {2305 2305}
 colors_brown           {1110 1116}
 colors_red             {1601 1654}
 colors_blue            {1301 1354}
-colors_yellow          {1701 1747}
-colors_green           {1401 1447}
-colors_orange          {1501 1547}
+colors_yellow          {1701 1754}
+colors_green           {1401 1454}
+colors_orange          {1501 1554}
 colors_gray            {946 947}
-colors_pink            {1201 1247}
+colors_pink            {1201 1254}
 //colors_neutral         { 1801 1887 }
-colors_neutral         { 1801 1908 }
+colors_neutral         {1801 1908}
 colors_snake           {2001 2018}
 colors_bird            {2101 2130}
 colors_slime           {2201 2224}

@@ -376,6 +376,8 @@ LPCTSTR g_szServerDescription =
 #endif
 	" by www.sphereserver.com";
 
+int g_szServerBuild = 155;
+
 size_t CObjBase::sm_iCount = 0;	// UID table.
 LONGLONG llTimeProfileFrequency = 1000;	// time profiler
 

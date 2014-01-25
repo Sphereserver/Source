@@ -560,3 +560,22 @@ Fixed #2244: SERV.ACCOUNT UNUSED xxx can now take any functions with the account
 23-01-2014, XuN
 Fixed #2257: Weapons now doesn't hit from Range+1
 Added tag.override.SpellTimeout to alter default .ini setting to individual players.
+
+25-01-2014, XuN
+Added BUILD function to server, wich returns the svn's build number via <serv.build>, can be used on scripts to keep up versioning and stop the code or do different things between versions in example. (Ok, caught, Ben did it!)
+
+25-01-2014, Script-Pack (Coruja)
+Updated sphere_defs.scp (#2255)
+colors_skin {1002 1058}
+colors_hair {1102 1149}
+colors_pink {1201 1254}
+colors_blue {1301 1354}
+colors_green {1401 1454}
+colors_orange {1501 1554}
+colors_red {1601 1654}
+colors_yellow {1701 1754}
+colors_neutral {1801 1908}
+colors_snake {2001 2018}
+colors_bird {2101 2130}
+colors_slime {2201 2224}
+colors_animal {2301 2318}

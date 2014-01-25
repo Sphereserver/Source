@@ -375,6 +375,7 @@ enum RC_TYPE
 	RC_BACKUPLEVELS,		// m_iSaveBackupLevels
 	RC_BANKMAXITEMS,
 	RC_BANKMAXWEIGHT,
+	RC_BUILD,
 	RC_CANUNDRESSPETS,		// m_fCanUndressPets
 	RC_CHARTAGS,			// m_fCharTags
 	RC_CLIENTLINGER,
@@ -575,7 +576,8 @@ enum RC_TYPE
 	RC_WRAPX,
 	RC_ZEROPOINT,				// m_sZeroPoint
 	RC_QTY
-};
+}; 
+
 
 const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 {
@@ -596,6 +598,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "BACKUPLEVELS",			{ ELEM_INT,		OFFSETOF(CResource,m_iSaveBackupLevels),	0 }},
 	{ "BANKMAXITEMS",			{ ELEM_INT,		OFFSETOF(CResource,m_iBankIMax),			0 }},
 	{ "BANKMAXWEIGHT",			{ ELEM_INT,		OFFSETOF(CResource,m_iBankWMax),			0 }},
+	{ "BUILD",					{ ELEM_VOID,	0,											0 }},
 	{ "CANUNDRESSPETS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fCanUndressPets),		0 }},
 	{ "CHARTAGS",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fCharTags),			0 }},
 	{ "CLIENTLINGER",			{ ELEM_INT,		OFFSETOF(CResource,m_iClientLingerTime),	0 }},
@@ -1400,6 +1403,13 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		case RC_BANKMAXWEIGHT:
 			sVal.FormatVal( m_iBankWMax / WEIGHT_UNITS );
 			break;
+		case RC_BUILD:
+		   #ifdef __SVNREVISION__
+			sVal = __SVNREVISION__
+		   #else
+			sVal = __DATE__;
+		   #endif
+		   break;
 		case RC_CLIENTLINGER:
 			sVal.FormatVal( m_iClientLingerTime / TICK_PER_SEC );
 			break;

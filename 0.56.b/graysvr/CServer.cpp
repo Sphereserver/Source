@@ -1567,6 +1567,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 			break;
 		default:
 			return CScriptObj::r_Verb(s, pSrc);
+
 	}
 
 	if ( pszMsg && *pszMsg )
