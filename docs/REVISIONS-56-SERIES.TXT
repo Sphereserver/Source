@@ -579,3 +579,7 @@ colors_snake {2001 2018}
 colors_bird {2101 2130}
 colors_slime {2201 2224}
 colors_animal {2301 2318}
+
+25-01-2014, Ben
+-Fixed #2266: Trade Window memory not being removing.
+-Change: LIST.xxx.FINDELEM args will now search as a string if 'args' is not a number regardless if it's inside double quotes "".

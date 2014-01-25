@@ -753,7 +753,7 @@ void CItemContainer::Trade_Delete()
 
 	m_uidLink.InitUID();	// unlink.
 	pPartner->m_uidLink.InitUID();
-	pPartner->Trade_Delete();
+	pPartner->Delete();
 }
 
 void CItemContainer::OnWeightChange( int iChange )

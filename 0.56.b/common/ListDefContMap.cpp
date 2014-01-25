@@ -1119,7 +1119,7 @@ bool CListDefMap::r_Write( CTextConsole *pSrc, LPCTSTR pszString, CGString& strV
 		bool fQuoted = false;
 		LPCTSTR pszArg = s.GetArgStr(&fQuoted);
 
-		if ( fQuoted )
+		if (( fQuoted ) || (! IsSimpleNumberString(pszArg) ))
 			strVal.Format("%d", pListBase->FindValStr(pszArg, nStartIndex));
 		else
 			strVal.Format("%d", pListBase->FindValNum(Exp_GetVal(pszArg), nStartIndex));

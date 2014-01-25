@@ -374,7 +374,7 @@ LPCTSTR g_szServerDescription =
 #ifdef _DEBUG
 	"[DEBUG]"
 #endif
-	" by www.sphereserver.com";
+	" by www.spherecommunity.net";
 
 int g_szServerBuild = 155;
 
