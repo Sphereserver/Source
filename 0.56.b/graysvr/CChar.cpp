@@ -1633,7 +1633,7 @@ do_default:
 			// Get the top skill.
 			pszKey += 9;
 			{
-				int iRank = 0;
+				unsigned int iRank = 0;
 				if ( *pszKey == '.' )
 				{
 					SKIP_SEPARATORS(pszKey);

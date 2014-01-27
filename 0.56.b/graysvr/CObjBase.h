@@ -3218,7 +3218,7 @@ public:
 	static bool IsSkillMagic( SKILL_TYPE skill );
 	static bool IsSkillCraft( SKILL_TYPE skill );
 
-	SKILL_TYPE Skill_GetBest( int iRank = 0 ) const; // Which skill is the highest for character p
+	SKILL_TYPE Skill_GetBest( unsigned int iRank = 0 ) const; // Which skill is the highest for character p
 	SKILL_TYPE Skill_GetActive() const
 	{
 		return( m_Act_SkillCurrent );

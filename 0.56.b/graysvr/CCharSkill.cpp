@@ -326,12 +326,12 @@ short CChar::Stat_GetLimit( STAT_TYPE i ) const
 //----------------------------------------------------------------------
 // Skills
 
-SKILL_TYPE CChar::Skill_GetBest( int iRank ) const // Which skill is the highest for character p
+SKILL_TYPE CChar::Skill_GetBest( unsigned int iRank ) const // Which skill is the highest for character p
 {
 	ADDTOCALLSTACK("CChar::Skill_GetBest");
 	// Get the top n best skills.
 
-	if ( iRank < 0 || iRank >= g_Cfg.m_iMaxSkill )
+	if ( iRank >= g_Cfg.m_iMaxSkill )
 		iRank = 0;
 
 	DWORD * pdwSkills = new DWORD [iRank + 1];
