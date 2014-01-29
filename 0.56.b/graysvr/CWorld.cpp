@@ -1073,7 +1073,7 @@ bool CWorldClock::Advance()
 	if ( Clock_New < m_timeClock )	// should not happen! (overflow)
 	{
 		//	Either TIME changed, or system lost hour as a daylight save. Not harmless
-		g_Log.Event(LOGL_WARN, "Clock overflow (daylight change in effect?), reset from 0%lx to 0%lx\n", m_timeClock.GetTimeRaw(), Clock_New.GetTimeRaw());
+		g_Log.Event(LOGL_WARN, "Clock overflow (daylight change in effect?), reset from 0%d to 0%d\n", m_timeClock.GetTimeRaw(), Clock_New.GetTimeRaw());
 		m_timeClock = Clock_New;	// this may cause may strange things.
 		return false;
 	}
@@ -1312,7 +1312,7 @@ bool CWorld::SaveStage() // Save world state in stages.
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("stage '%d' qty '%d' time '%ld'\n", m_iSaveStage, m_SectorsQty, m_timeSave.GetTimeRaw());
+	g_Log.EventDebug("stage '%d' qty '%d' time '%d'\n", m_iSaveStage, m_SectorsQty, m_timeSave.GetTimeRaw());
 	EXC_DEBUG_END;
 
 	m_iSaveStage++;	// to avoid loops, we need to skip the current operation in world save

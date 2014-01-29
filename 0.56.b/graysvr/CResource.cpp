@@ -3845,7 +3845,7 @@ bool CResource::Load( bool fResync )
 	{
 		long total, used;
 		Triglist(total, used);
-		g_Serv.SysMessagef("Done loading scripts (%d of %d triggers used).\n", used, total);
+		g_Serv.SysMessagef("Done loading scripts (%ld of %ld triggers used).\n", used, total);
 	}
 	else
 		g_Log.Event(LOGM_INIT, "Done loading scripts.\n");

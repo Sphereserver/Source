@@ -566,6 +566,7 @@ size_t Str_ParseCmds( TCHAR * pszCmdLine, int * piCmd, size_t iMax, LPCTSTR pszS
 
 static int Str_CmpHeadI( LPCTSTR pszFind, LPCTSTR pszTable )
 {
+	TCHAR ch0 = '_';
 	for ( size_t i = 0; ; i++ )
 	{
 			//	we should always use same case as in other places. since strcmpi lowers,
@@ -574,7 +575,7 @@ static int Str_CmpHeadI( LPCTSTR pszFind, LPCTSTR pszTable )
 		TCHAR ch2 = tolower(pszTable[i]);
 		if ( ch2 == 0 )
 		{
-			if (( !isalnum(ch1))&&(ch1 != (TCHAR)"_"))
+			if (( !isalnum(ch1))&&(ch1 != ch0))
 				return 0;
 			return( ch1 - ch2 );
 		}

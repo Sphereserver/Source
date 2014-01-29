@@ -1571,7 +1571,7 @@ bool CChar::Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax )
 		else
 			pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_4 );
 
-		ASSERT(dir >= 0 && dir < COUNTOF(CPointBase::sm_szDirs));
+		ASSERT(dir >= 0 && static_cast<unsigned int>(dir) < COUNTOF(CPointBase::sm_szDirs));
 		sprintf(pszMsg, pszDef, pObj->GetName(), pObjTop->IsDisconnected()? g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT_DISC) : "", static_cast<LPCTSTR>(CPointBase::sm_szDirs[dir]));
 		ObjMessage(pszMsg, this);
 	}

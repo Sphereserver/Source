@@ -281,7 +281,7 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 											unsigned long long qwHash = ((INT64)dwHashHi << 32) + dwHashLo;
 											m_Maps[index].Seek( sizeof(DWORD)+sizeof(WORD), SEEK_CUR );
 					
-											for (int x = 0; x < dwLoop; x++)
+											for (unsigned int x = 0; x < dwLoop; x++)
 											{
 												sprintf(z, "build/map%dlegacymul/%.8d.dat", index, x);
 												if (HashFileName(z) == qwHash)

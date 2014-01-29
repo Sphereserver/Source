@@ -2440,7 +2440,7 @@ bool PacketClientVersion::onReceive(NetState* net)
 
 		DEBUG_MSG(("Getting cliver 0x%lx/0x%lx\n", version, (version&0xFFFFF0)));
 		
-		if (g_Serv.m_ClientVersion.GetClientVer() != 0 && ((version&0xFFFFF0) != g_Serv.m_ClientVersion.GetClientVer()))
+		if (g_Serv.m_ClientVersion.GetClientVer() != 0 && ((version&0xFFFFF0) != (unsigned long)g_Serv.m_ClientVersion.GetClientVer()))
 		{
 			client->addLoginErr(PacketLoginError::BadVersion);
 		}

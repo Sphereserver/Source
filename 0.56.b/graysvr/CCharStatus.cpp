@@ -1299,7 +1299,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 	
 	if ( APPROX(dist2d) > static_cast<double>(iMaxDist) )
 	{
-		WARNLOS(("( APPROX(dist2d)(%d) > ((double)iMaxDist)(%d) ) --> NOLOS\n",APPROX(dist2d),((double)iMaxDist)));
+		WARNLOS(("( APPROX(dist2d)(%f) > ((double)iMaxDist)(%f) ) --> NOLOS\n",APPROX(dist2d),((double)iMaxDist)));
 		return( CanSeeLOS_New_Failed( pptBlock, ptNow ));
 	}
 	
@@ -1638,12 +1638,12 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 						//if (( wTFlags & 0x2000|0x40 ) && ( IsSetEF(EF_NewPositionChecks) )
 						if ((( wTFlags & (UFLAG1_WALL|UFLAG1_BLOCK|UFLAG2_PLATFORM) ) || pItemDef->m_Can & CAN_I_BLOCKLOS) && !(( wTFlags & UFLAG2_WINDOW ) && ( flags & LOS_NB_WINDOWS )))
 						{
-							WARNLOS(("pItem %0x(%0x) %d,%d,%d - %d\n",pItem->GetUID(),pItem->GetDispID(),pItem->GetUnkPoint().m_x,pItem->GetUnkPoint().m_y,pItem->GetUnkPoint().m_z,Height));
+							WARNLOS(("pItem %0lx(%0x) %d,%d,%d - %d\n",(DWORD)pItem->GetUID(),pItem->GetDispID(),pItem->GetUnkPoint().m_x,pItem->GetUnkPoint().m_y,pItem->GetUnkPoint().m_z,Height));
 							min_z = pItem->GetUnkPoint().m_z;
 							max_z = minimum(Height + min_z, UO_SIZE_Z);
 							WARNLOS(("wTFlags(0%lx)\n",wTFlags));
 
-							WARNLOS(("pItem %0x(%0x) Z check: %d,%d (Now: %d) (Dest: %d).\n",(DWORD)pItem->GetUID(),pItem->GetDispID(),min_z,max_z,ptNow.m_z,ptDst.m_z));
+							WARNLOS(("pItem %0lx(%0x) Z check: %d,%d (Now: %d) (Dest: %d).\n",(DWORD)pItem->GetUID(),pItem->GetDispID(),min_z,max_z,ptNow.m_z,ptDst.m_z));
 							if (min_z <= ptNow.m_z && max_z >= ptNow.m_z)
 							{
 								if (ptNow.m_x != ptDst.m_x || ptNow.m_y != ptDst.m_y || min_z > ptDst.m_z || max_z < ptDst.m_z)

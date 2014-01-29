@@ -104,7 +104,7 @@ void TriglistPrint()
 	{
 		if ( it->m_used )
 		{
-			g_Serv.SysMessagef("Trigger %s : used %d time%s.\n", it->m_name, it->m_used, (it->m_used > 1) ? "s" : "");
+			g_Serv.SysMessagef("Trigger %s : used %ld time%s.\n", it->m_name, it->m_used, (it->m_used > 1) ? "s" : "");
 		} 
 		else
 		{

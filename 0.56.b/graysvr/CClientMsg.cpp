@@ -2573,7 +2573,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 					if (ClilocName)
 					{
 						m_TooltipData.InsertAt(0, t = new CClientTooltip(1116690));
-						t->FormatArgs("%s\t#%d\t%s", lpPrefix, ClilocName, lpSuffix);
+						t->FormatArgs("%s\t#%lu\t%s", lpPrefix, ClilocName, lpSuffix);
 					}
 					else
 					{

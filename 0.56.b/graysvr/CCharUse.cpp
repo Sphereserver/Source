@@ -637,7 +637,7 @@ badalign:
 
 	if (m_pPlayer && AmmoID )
 		{
-			int iFound = NULL;
+			int iFound = 0;
 			if ( pCont )
 			{
 				//check for UID
