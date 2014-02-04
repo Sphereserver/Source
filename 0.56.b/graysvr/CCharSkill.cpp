@@ -3444,7 +3444,21 @@ int CChar::Skill_MakeItem( SKTRIG_TYPE stage )
 	}
 	if ( stage == SKTRIG_STROKE )
 	{
-		return 0;
+		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+		{
+			Sound( 0x02a );
+		}
+		if ( m_atCreate.m_Stroke_Count <= 0 )
+			return 0;
+
+		// Keep trying and updating the animation
+		m_atCreate.m_Stroke_Count --;
+		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
+		{
+			UpdateAnimate( ANIM_ATTACK_WEAPON );	// ANIM_ATTACK_1H_DOWN
+		}
+		Skill_SetTimeout();
+		return( -SKTRIG_STROKE );	// keep active.
 	}
 	if ( stage == SKTRIG_SUCCESS )
 	{
