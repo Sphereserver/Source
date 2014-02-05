@@ -587,3 +587,7 @@ colors_animal {2301 2318}
 04-02-2014, XuN
 Fixed #2273: Crafting skills with skf_craft not working like they should (Note: skf_scripted means the script is totally custom, for everything, so skf_craft won't work with skf_scripted).
 Fixed #2267: Items in the cursor (layer_dragging) are now bounced if a target is opened to the player.
+
+05-02-2014, XuN (Script Pack)
+Fixed: changed back i_multi to the new m_ naming style in sphere_item_provisions_deed.scp.
+Updated Mordaunt's House System to version 2.3.4.
