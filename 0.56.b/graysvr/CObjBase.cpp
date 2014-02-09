@@ -64,6 +64,7 @@ CObjBase::CObjBase( bool fItem )
 	sm_iCount ++;
 	m_wHue=HUE_DEFAULT;
 	m_timeout.Init();
+	m_timestamp.Init();
 
 	//	Init some global variables
 	m_fStatusUpdate = 0;
@@ -225,7 +226,7 @@ bool CObjBase::SetNamePool( LPCTSTR pszName )
 	return true;
 }
 
-bool CObjBase::MoveNearObj( const CObjBaseTemplate * pObj, int iSteps, WORD wCan )
+bool CObjBase::MoveNearObj( const CObjBaseTemplate * pObj, int iSteps, DWORD dwCan )
 {
 	ADDTOCALLSTACK("CObjBase::MoveNearObj");
 	ASSERT( pObj );
@@ -233,7 +234,7 @@ bool CObjBase::MoveNearObj( const CObjBaseTemplate * pObj, int iSteps, WORD wCan
 		return false;
 
 	pObj = pObj->GetTopLevelObj();
-	return( MoveNear( pObj->GetTopPoint(), iSteps, wCan ) );
+	return( MoveNear( pObj->GetTopPoint(), iSteps, dwCan ) );
 }
 
 void CObjBase::r_WriteSafe( CScript & s )
@@ -268,7 +269,7 @@ void CObjBase::r_WriteSafe( CScript & s )
 	}
 }
 
-void CObjBase::SetTimeout( int iDelayInTicks )
+void CObjBase::SetTimeout( INT64 iDelayInTicks )
 {
 	ADDTOCALLSTACK("CObjBase::SetTimeout");
 	// Set delay in TICK_PER_SEC of a sec. -1 = never.
@@ -380,7 +381,7 @@ void CObjBase::SpeakUTF8Ex( const NWORD * pText, HUE_TYPE wHue, TALKMODE_TYPE mo
 	g_World.SpeakUNICODE( this, pText, wHue, mode, font, lang );
 }
 
-bool CObjBase::MoveNear( CPointMap pt, int iSteps, WORD wCan )
+bool CObjBase::MoveNear( CPointMap pt, int iSteps, DWORD dwCan )
 {
 	ADDTOCALLSTACK("CObjBase::MoveNear");
 	// Move to nearby this other object.
@@ -401,12 +402,12 @@ bool CObjBase::MoveNear( CPointMap pt, int iSteps, WORD wCan )
 
 		dir = GetDirTurn( dir, Calc_GetRandVal(3)-1 );	// stagger ?
 		// Put the item at the correct Z point
-		DWORD wBlockRet = wCan;
+		DWORD wBlockRet = dwCan;
 		if (( IsSetEF( EF_WalkCheck ) ) && ( ! IsSetEF( EF_NewPositionChecks ) ))
 			pt.m_z = g_World.GetHeightPoint_New( pt, wBlockRet, true );
 		else if ( ! IsSetEF( EF_NewPositionChecks ) )
 			pt.m_z = g_World.GetHeightPoint( pt, wBlockRet, true );
-		if ( wBlockRet &~ wCan )
+		if ( wBlockRet &~ dwCan )
 		{
 			// Hit a block, so go back to the previous valid position
 			pt = pTest;
@@ -606,6 +607,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 	bool	fZero	= false;
 	switch (index)
 	{
+		//return as string or hex number
 		case OC_ABILITYPRIMARY:
 		case OC_ABILITYSECONDARY:
 		case OC_BALANCED:
@@ -677,13 +679,12 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_SPLINTERINGWEAPON:
 		case OC_VELOCITY:
 		case OC_WEIGHTREDUCTION:
-			sVal = GetDefStr(sm_szLoadKeys[index], true);
+			sVal = GetDefStr(pszKey, true);
 			break;
-
 		//On these ones, check BaseDef too if not found on dynamic
 		case OC_NAMELOC:
 			{
-				CVarDefCont * pVar = GetDefKey(sm_szLoadKeys[index], true);
+				CVarDefCont * pVar = GetDefKey(pszKey, true);
 				sVal = pVar ? pVar->GetValStr() : "";
 			}
 			break;
@@ -1068,10 +1069,10 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			}
 			return( true );
 		case OC_TIMER:
-			sVal.FormatVal( GetTimerAdjusted());
+			sVal.FormatLLVal( GetTimerAdjusted());
 			break;
 		case OC_TIMERD:
-			sVal.FormatVal( GetTimerDAdjusted() );
+			sVal.FormatLLVal( GetTimerDAdjusted() );
 			break;
 		case OC_TRIGGER:
 			{
@@ -1117,6 +1118,9 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 
 				sVal = g_Cfg.Calc_MaptoSextant(pt);
 			} break;
+		case OC_TIMESTAMP:
+			sVal.FormatLLVal(GetTimeStamp().GetTimeRaw());
+			break;
 		case OC_VERSION:
 			sVal = GRAY_VERSION;
 			break;
@@ -1317,7 +1321,7 @@ bool CObjBase::r_LoadVal( CScript & s )
 				return( false );
 			{
 				CPointMap pt = GetTopPoint();
-				pt.m_map = s.GetArgVal();
+				pt.m_map = static_cast<unsigned char>(s.GetArgVal());
 
 				//	is the desired mapplane allowed?
 				if ( !g_MapList.m_maps[pt.m_map] )
@@ -1349,6 +1353,8 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_TIMERD:
 			SetTimeout( s.GetArgVal());
 			break;
+		case OC_TIMESTAMP:
+			SetTimeStamp( s.GetArgVal());
 		case OC_UID:
 		case OC_SERIAL:
 			// Don't set container flags through this.
@@ -1376,6 +1382,8 @@ void CObjBase::r_Write( CScript & s )
 		s.WriteKeyHex( "COLOR", GetHue());
 	if ( m_timeout.IsTimeValid() )
 		s.WriteKeyVal( "TIMER", GetTimerAdjusted());
+	if ( m_timestamp.IsTimeValid() )
+		s.WriteKeyVal( "TIMESTAMP", GetTimeStamp().GetTimeRaw());
 	if ( m_ModAr )
 		s.WriteKeyVal("MODAR", m_ModAr);
 
@@ -1439,7 +1447,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 		case OV_DAMAGE:	//	"Amount,SourceFlags,SourceCharUid" = do me some damage.
 			{
 				EXC_SET("DAMAGE");
-				int piCmd[3];
+				INT64 piCmd[3];
 				size_t iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
 				if ( iArgQty < 1 )
 					return( false );
@@ -1471,7 +1479,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 		case OV_EFFECT: // some visual effect.
 			{
 				EXC_SET("EFFECT");
-				int piCmd[7];
+				INT64 piCmd[7];
 				size_t iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
 				if ( iArgQty < 2 )
 					return( false );
@@ -1586,7 +1594,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			{
 				EXC_SET("MOVENEAR");
 				CObjBase *	pObjNear;
-				int piCmd[4];
+				INT64 piCmd[4];
 
 				size_t iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd) );
 				if ( iArgQty <= 0 )
@@ -1661,7 +1669,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			{
 				EXC_SET("RESENDTOOLTIP");
 			
-				int piCmd[2];
+				INT64 piCmd[2];
 				size_t iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd) );
 
 				bool bSendFull = false;
@@ -1706,7 +1714,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 		case OV_SOUND:
 			{
 				EXC_SET("SOUND");
-				int piCmd[2];
+				INT64 piCmd[2];
 				size_t iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
 				Sound( piCmd[0], ( iArgQty > 1 ) ? piCmd[1] : 1 );
 			}
@@ -1714,7 +1722,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 		case OV_SPELLEFFECT:	// spell, strength, noresist
 			{
 				EXC_SET("SPELLEFFECT");
-				int piCmd[4];
+				INT64 piCmd[4];
 				size_t iArgs = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
 				CItem * pItemSrc = NULL;
 				switch( iArgs )
@@ -2068,9 +2076,9 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 					CItem *pItem = dynamic_cast <CItem *>(this);
 					if ( pChar )
 					{
-						WORD wCan = pChar->GetMoveBlockFlags();
-						wBlockFlags = wCan;
-						if ( wCan & CAN_C_WALK )
+						DWORD dwCan = pChar->GetMoveBlockFlags();
+						wBlockFlags = dwCan;
+						if ( dwCan & CAN_C_WALK )
 							wBlockFlags |= CAN_I_CLIMB; // If we can walk than we can climb. Ignore CAN_C_FLY at all here
 
 						CGrayMapBlockState block( wBlockFlags, GetTopPoint().m_z, GetTopPoint().m_z + pChar->m_zClimbHeight + pChar->GetHeightMount( false ), GetTopPoint().m_z + pChar->m_zClimbHeight + 2, pChar->GetHeightMount( false ) );
@@ -2083,7 +2091,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 							if ( block.m_Top.m_z < GetTopPoint().m_z - (pChar->m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? pChar->GetHeightMount( false ) : pChar->GetHeightMount( false )/2 )) )
 								wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
 						}
-						if (( wCan != 0xFFFF ) && ( wBlockFlags != 0x0 ))
+						if (( dwCan != 0xFFFF ) && ( wBlockFlags != 0x0 ))
 						{
 							CCharBase* pCharDef = pChar->Char_GetDef();
 
@@ -2337,7 +2345,7 @@ inline bool CObjBase::CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TR
 
 			if ( iTriggerArgType == 1 ) // 3 ARGNs
 			{
-				int Arg_piCmd[3];
+				INT64 Arg_piCmd[3];
 				iResultArgs = Str_ParseCmds(ppCmdTrigger[2], Arg_piCmd, COUNTOF(Arg_piCmd), ",");
 
 				if ( iResultArgs == 3 )

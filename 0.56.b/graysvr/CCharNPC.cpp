@@ -357,7 +357,7 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 			sVal = m_Speech.ContainsResourceName(RES_SPEECH, pszKey) ? "1" : "0";
 			return( true );
 		case CPC_LASTUSED:
-			sVal.FormatVal( - g_World.GetTimeDiff( m_timeLastUsed ) / TICK_PER_SEC );
+			sVal.FormatLLVal( - g_World.GetTimeDiff( m_timeLastUsed ) / TICK_PER_SEC );
 			return( true );
 		case CPC_PFLAG:
 			sVal.FormatVal(m_pflag);

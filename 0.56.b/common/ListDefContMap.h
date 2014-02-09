@@ -27,20 +27,20 @@ public:
 	void SetKey( LPCTSTR pszKey );
 
 	virtual LPCTSTR GetValStr() const = 0;
-	virtual int GetValNum() const = 0;
+	virtual INT64 GetValNum() const = 0;
 	virtual CListDefContElem * CopySelf() const = 0;
 };
 
 class CListDefContNum: public CListDefContElem
 {
 private:
-	int m_iVal;
+	INT64 m_iVal;
 
 public:
 	static const char *m_sClassName;
 
 	explicit CListDefContNum(LPCTSTR pszKey);
-	CListDefContNum(LPCTSTR pszKey, int iVal);
+	CListDefContNum(LPCTSTR pszKey, INT64 iVal);
 	~CListDefContNum(void);
 
 private:
@@ -48,8 +48,8 @@ private:
 	CListDefContNum& operator=(const CListDefContNum& other);
 
 public:
-	int GetValNum() const;
-	void SetValNum( int iVal );
+	INT64 GetValNum() const;
+	void SetValNum( INT64 iVal );
 	LPCTSTR GetValStr() const;
 
 	bool r_LoadVal( CScript & s );
@@ -77,7 +77,7 @@ private:
 public:
 	LPCTSTR GetValStr() const;
 	void SetValStr( LPCTSTR pszVal );
-	int GetValNum() const;
+	INT64 GetValNum() const;
 
 	bool r_LoadVal( CScript & s );
 	bool r_WriteVal( LPCTSTR pKey, CGString & sVal, CTextConsole * pSrc );
@@ -114,24 +114,24 @@ public:
 	void SetKey( LPCTSTR pszKey );
 
 	CListDefContElem* GetAt(size_t nIndex) const;
-	bool SetNumAt(size_t nIndex, int iVal);
+	bool SetNumAt(size_t nIndex, INT64 iVal);
 	bool SetStrAt(size_t nIndex, LPCTSTR pszVal);
 	size_t GetCount() const;
 
 	LPCTSTR GetValStr(size_t nIndex) const;
-	int GetValNum(size_t nIndex) const;
+	INT64 GetValNum(size_t nIndex) const;
 
-	int FindValNum( int iVal, size_t nStartIndex = 0 ) const;
+	int FindValNum( INT64 iVal, size_t nStartIndex = 0 ) const;
 	int FindValStr( LPCTSTR pVal, size_t nStartIndex = 0 ) const;
 
-	bool AddElementNum(int iVal);
+	bool AddElementNum(INT64 iVal);
 	bool AddElementStr(LPCTSTR pszKey);
 
 	bool RemoveElement(size_t nIndex);
 	void RemoveAll();
 	void Sort(bool bDesc = false, bool bCase = false);
 
-	bool InsertElementNum(size_t nIndex, int iVal);
+	bool InsertElementNum(size_t nIndex, INT64 iVal);
 	bool InsertElementStr(size_t nIndex, LPCTSTR pszKey);
 
 	CListDefCont * CopySelf();
@@ -176,7 +176,7 @@ public:
 	void Empty();
 	size_t GetCount() const;
 
-	LPCTSTR FindValNum( int iVal ) const;
+	LPCTSTR FindValNum( INT64 iVal ) const;
 	LPCTSTR FindValStr( LPCTSTR pVal ) const;
 
 	CListDefCont * GetAt( size_t at );

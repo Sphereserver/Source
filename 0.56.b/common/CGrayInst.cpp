@@ -252,7 +252,7 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 									qwUOPPtr = ((INT64)dwHashHi << 32) + dwHashLo;
 									m_Maps[index].Seek( sizeof(DWORD), SEEK_CUR );
 									m_Maps[index].Read( &dwTotalFiles, sizeof(DWORD));
-									m_Maps[index].Seek( qwUOPPtr, SEEK_SET );
+									m_Maps[index].Seek( static_cast<long>(qwUOPPtr), SEEK_SET );
 									dwLoop = dwTotalFiles;
 
 									while (qwUOPPtr > 0)
@@ -294,7 +294,7 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 											}
 										}
 
-										m_Maps[index].Seek( qwUOPPtr, SEEK_SET );
+										m_Maps[index].Seek( static_cast<long>(qwUOPPtr), SEEK_SET );
 									}
 								}//End of UOP Map parsing
 								else if (index == 0) // neither file exists, map0 is required

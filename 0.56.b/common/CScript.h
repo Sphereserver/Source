@@ -89,6 +89,7 @@ public:
 	{
 		return GetArgStr( NULL );
 	}
+	long long GetArgLLVal();
 	long GetArgVal();
 	long GetArgRange();
 	DWORD GetArgFlag( DWORD dwStart, DWORD dwMask );
@@ -217,13 +218,13 @@ public:
 	bool WriteKey( LPCTSTR pszKey, LPCTSTR pszVal );
 	void _cdecl WriteKeyFormat( LPCTSTR pszKey, LPCTSTR pszFormat, ... ) __printfargs(3,4);
 
-	void WriteKeyVal( LPCTSTR pszKey, int dwVal )
+	void WriteKeyVal( LPCTSTR pszKey, INT64 dwVal )
 	{
-		WriteKeyFormat( pszKey, "%d", dwVal );
+		WriteKeyFormat( pszKey, "%lld", dwVal );
 	}
-	void WriteKeyHex( LPCTSTR pszKey, DWORD dwVal )
+	void WriteKeyHex( LPCTSTR pszKey, INT64 dwVal )
 	{
-		WriteKeyFormat( pszKey, "0%lx", dwVal );
+		WriteKeyFormat( pszKey, "0%llx", dwVal );
 	}
 
 	CScript();

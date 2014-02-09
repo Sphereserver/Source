@@ -8,6 +8,9 @@
 #include "../common/grayver.h"
 #include "../common/CFileList.h"
 #include "../network/network.h"
+#ifdef _SUBVERSION
+	#include "../common/subversion/SvnRevision.h"
+#endif
 
 CResource::CResource()
 {
@@ -1405,7 +1408,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			break;
 		case RC_BUILD:
 		   #ifdef __SVNREVISION__
-			sVal = __SVNREVISION__
+			sVal = __SVNREVISION__;
 		   #else
 			sVal = __DATE__;
 		   #endif
@@ -1482,7 +1485,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 					{
 						pszKey += 8;
 						GETNONWHITESPACE(pszKey);
-						int piVal[6];
+						INT64 piVal[6];
 
 						// year, month, day, hour, minute, second
 						size_t iQty = Str_ParseCmds(const_cast<TCHAR*>(pszKey), piVal, COUNTOF(piVal));
@@ -1543,7 +1546,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			sVal.FormatVal( g_World.m_Stones.GetCount());
 			return( true );
 		case RC_TIMEUP:
-			sVal.FormatVal( ( - g_World.GetTimeDiff( g_World.m_timeStartup )) / TICK_PER_SEC );
+			sVal.FormatLLVal( ( - g_World.GetTimeDiff( g_World.m_timeStartup )) / TICK_PER_SEC );
 			return( true );
 		case RC_VERSION:
 			sVal = g_szServerDescription;
@@ -2443,7 +2446,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 				return true;
 			}
 
-			int piNotoLevels[64];
+			INT64 piNotoLevels[64];
 			size_t i = 0, iQty = 0;
 
 			// read karma levels

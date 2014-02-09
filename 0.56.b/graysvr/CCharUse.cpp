@@ -106,14 +106,14 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 
 	// based on corpse type.
 	if ( pCorpseDef == NULL ||
-		! pCorpse->m_itCorpse.m_timeDeath.IsTimeValid() )
+		! pCorpse->GetTimeStamp().IsTimeValid() )
 	{
 		SysMessageDefault( DEFMSG_CARVE_CORPSE_2 );
-		pCorpse->m_itCorpse.m_timeDeath.Init();
+		pCorpse->SetTimeStamp(0);
 		return;
 	}
 
-	pCorpse->m_itCorpse.m_timeDeath.Init();	// been carved.
+	pCorpse->SetTimeStamp(0);	// been carved.
 
 	LPCTSTR pszMsg = NULL;
 	size_t iItems = 0;

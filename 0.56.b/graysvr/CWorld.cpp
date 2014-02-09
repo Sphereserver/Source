@@ -1030,7 +1030,7 @@ DWORD CWorldClock::GetSystemClock() // static
 #endif
 }
 
-void CWorldClock::InitTime( long lTimeBase )
+void CWorldClock::InitTime( INT64 lTimeBase )
 {
 	ADDTOCALLSTACK("CWorldClock::InitTime");
 	m_Clock_PrevSys = GetSystemClock();
@@ -1073,7 +1073,7 @@ bool CWorldClock::Advance()
 	if ( Clock_New < m_timeClock )	// should not happen! (overflow)
 	{
 		//	Either TIME changed, or system lost hour as a daylight save. Not harmless
-		g_Log.Event(LOGL_WARN, "Clock overflow (daylight change in effect?), reset from 0%d to 0%d\n", m_timeClock.GetTimeRaw(), Clock_New.GetTimeRaw());
+		g_Log.Event(LOGL_WARN, "Clock overflow (daylight change in effect?), reset from 0%lld to 0%lld\n", m_timeClock.GetTimeRaw(), Clock_New.GetTimeRaw());
 		m_timeClock = Clock_New;	// this may cause may strange things.
 		return false;
 	}
@@ -1312,7 +1312,7 @@ bool CWorld::SaveStage() // Save world state in stages.
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("stage '%d' qty '%d' time '%d'\n", m_iSaveStage, m_SectorsQty, m_timeSave.GetTimeRaw());
+	g_Log.EventDebug("stage '%d' qty '%d' time '%lld'\n", m_iSaveStage, m_SectorsQty, m_timeSave.GetTimeRaw());
 	EXC_DEBUG_END;
 
 	m_iSaveStage++;	// to avoid loops, we need to skip the current operation in world save
@@ -1903,7 +1903,7 @@ bool CWorld::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			sVal.FormatVal( m_iSaveCountID );
 			break;
 		case WC_TIME:	// "TIME"
-			sVal.FormatVal( GetCurrentTime().GetTimeRaw() );
+			sVal.FormatLLVal( GetCurrentTime().GetTimeRaw() );
 			break;
 		case WC_TITLE: // 	"TITLE",
 			sVal = (GRAY_TITLE " World Script");
@@ -1939,7 +1939,7 @@ bool CWorld::r_LoadVal( CScript &s )
 			{
 				DEBUG_WARN(( "Setting TIME while running is BAD!\n" ));
 			}
-			m_Clock.InitTime( s.GetArgVal());
+			m_Clock.InitTime( s.GetArgLLVal());
 			break;
 		case WC_VERSION: // "VERSION"
 			m_iLoadVersion = s.GetArgVal();
@@ -2305,7 +2305,7 @@ DWORD CWorld::GetGameWorldTime( CServTime basetime ) const
 	// 8 real world seconds = 1 game minute.
 	// 1 real minute = 7.5 game minutes
 	// 3.2 hours = 1 game day.
-	return( basetime.GetTimeRaw() / g_Cfg.m_iGameMinuteLength );
+	return( static_cast<unsigned long>(basetime.GetTimeRaw() / g_Cfg.m_iGameMinuteLength) );
 }
 
 CServTime CWorld::GetNextNewMoon( bool bMoonIndex ) const

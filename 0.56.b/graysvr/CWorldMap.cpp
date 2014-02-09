@@ -853,7 +853,7 @@ signed char CWorld::GetHeightPoint( const CPointBase & pt, DWORD & wBlockFlags, 
 
 	// ??? NOTE: some creatures should be taller than others !!!
 
-	WORD wCan = wBlockFlags;
+	DWORD dwCan = wBlockFlags;
 	CGrayMapBlockState block( wBlockFlags, pt.m_z, PLAYER_HEIGHT );
 
 	GetHeightPoint( pt, block, fHouseCheck );
@@ -865,20 +865,20 @@ signed char CWorld::GetHeightPoint( const CPointBase & pt, DWORD & wBlockFlags, 
 
 	if (( block.m_Lowest.m_dwBlockFlags & CAN_I_HOVER ) || ( block.m_Bottom.m_dwBlockFlags & CAN_I_HOVER ) || ( block.m_Top.m_dwBlockFlags & CAN_I_HOVER ))
 	{
-		if ( wCan & CAN_C_HOVER )
+		if ( dwCan & CAN_C_HOVER )
 			wBlockFlags = 0; // we can hover over this
 		else
 			wBlockFlags &= ~CAN_I_HOVER; // we don't have the ability to fly
 	}
 
-	if (( wBlockFlags & ( CAN_I_CLIMB|CAN_I_PLATFORM) ) && ( wCan & CAN_C_WALK ))
+	if (( wBlockFlags & ( CAN_I_CLIMB|CAN_I_PLATFORM) ) && ( dwCan & CAN_C_WALK ))
 	{
 		wBlockFlags &= ~CAN_I_CLIMB;
 		wBlockFlags |= CAN_I_PLATFORM;	// not really true but hack it anyhow.
 		return( block.m_Bottom.m_z );
 	}
 
-	if ( wCan & CAN_C_FLY )
+	if ( dwCan & CAN_C_FLY )
 		return( pt.m_z );
 
 	return( block.m_Bottom.m_z );
@@ -1189,7 +1189,7 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 signed char CWorld::GetHeightPoint_New( const CPointBase & pt, DWORD & wBlockFlags, bool fHouseCheck )
 {
 	ADDTOCALLSTACK("CWorld::GetHeightPoint_New");
-	WORD wCan = wBlockFlags;
+	DWORD dwCan = wBlockFlags;
 	CGrayMapBlockState block( wBlockFlags, pt.m_z + (PLAYER_HEIGHT / 2), pt.m_z + PLAYER_HEIGHT );
 
 	GetHeightPoint_New( pt, block, fHouseCheck );
@@ -1201,20 +1201,20 @@ signed char CWorld::GetHeightPoint_New( const CPointBase & pt, DWORD & wBlockFla
 
 	if (( block.m_Lowest.m_dwBlockFlags & CAN_I_HOVER ) || ( block.m_Bottom.m_dwBlockFlags & CAN_I_HOVER ) || ( block.m_Top.m_dwBlockFlags & CAN_I_HOVER ))
 	{
-		if ( wCan & CAN_C_HOVER )
+		if ( dwCan & CAN_C_HOVER )
 			wBlockFlags = 0; // we can hover over this
 		else
 			wBlockFlags &= ~CAN_I_HOVER; // we don't have the ability to fly
 	}
 
-	if (( wBlockFlags & ( CAN_I_CLIMB|CAN_I_PLATFORM) ) && ( wCan & CAN_C_WALK ))
+	if (( wBlockFlags & ( CAN_I_CLIMB|CAN_I_PLATFORM) ) && ( dwCan & CAN_C_WALK ))
 	{
 		wBlockFlags &= ~CAN_I_CLIMB;
 		wBlockFlags |= CAN_I_PLATFORM;	// not really true but hack it anyhow.
 		//DEBUG_MSG(("block.m_Bottom.m_z (%d)\n",block.m_Bottom.m_z));
 		return( block.m_Bottom.m_z );
 	}
-	if ( wCan & CAN_C_FLY )
+	if ( dwCan & CAN_C_FLY )
 		return( pt.m_z );
 
 	return( block.m_Bottom.m_z );
@@ -1254,7 +1254,7 @@ IT_TYPE CWorld::GetTerrainItemType( DWORD dwTerrainIndex )
 	{
 		pRes = g_World.m_TileTypes[dwTerrainIndex];
 	}
-		
+
 	if ( !pRes )
 		return IT_NORMAL;
 

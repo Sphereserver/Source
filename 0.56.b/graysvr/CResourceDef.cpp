@@ -66,7 +66,7 @@ bool CValueCurveDef::Load( TCHAR * pszDef )
 {
 	ADDTOCALLSTACK("CValueCurveDef::Load");
 	// ADV_RATE = Chance at 0, to 100.0
-	int Arg_piCmd[101];
+	INT64 Arg_piCmd[101];
 	size_t iQty = Str_ParseCmds( pszDef, Arg_piCmd, COUNTOF(Arg_piCmd));
 	m_aiValues.SetCount( iQty );
 	if ( iQty == 0 )
@@ -75,7 +75,7 @@ bool CValueCurveDef::Load( TCHAR * pszDef )
 	}
 	for ( size_t i = 0; i < iQty; i++ )
 	{
-		m_aiValues[i] = Arg_piCmd[i];
+		m_aiValues[i] = static_cast<int>(Arg_piCmd[i]);
 	}
 	return( true );
 }
@@ -334,13 +334,13 @@ bool CSkillDef::r_LoadVal( CScript &s )
 		m_AdvRate.Load( s.GetArgStr());
 		break;
 	case SKC_BONUS_DEX: // "BONUS_DEX"
-		m_StatBonus[STAT_DEX] = s.GetArgVal();
+		m_StatBonus[STAT_DEX] = static_cast<unsigned char>(s.GetArgVal());
 		break;
 	case SKC_BONUS_INT: // "BONUS_INT"
-		m_StatBonus[STAT_INT] = s.GetArgVal();
+		m_StatBonus[STAT_INT] = static_cast<unsigned char>(s.GetArgVal());
 		break;
 	case SKC_BONUS_STR: // "BONUS_STR"
-		m_StatBonus[STAT_STR] = s.GetArgVal();
+		m_StatBonus[STAT_STR] = static_cast<unsigned char>(s.GetArgVal());
 		break;
 	case SKC_DEFNAME: // "DEFNAME"
 		return SetResourceName( s.GetArgStr());
@@ -366,16 +366,16 @@ bool CSkillDef::r_LoadVal( CScript &s )
 		m_sTargetPrompt = s.GetArgStr();
 		break;
 	case SKC_BONUS_STATS: // "BONUS_STATS"
-		m_StatPercent = s.GetArgVal();
+		m_StatPercent = static_cast<unsigned char>(s.GetArgVal());
 		break;
 	case SKC_STAT_DEX: // "STAT_DEX"
-		m_Stat[STAT_DEX] = s.GetArgVal();
+		m_Stat[STAT_DEX] = static_cast<unsigned char>(s.GetArgVal());
 		break;
 	case SKC_STAT_INT: // "STAT_INT"
-		m_Stat[STAT_INT] = s.GetArgVal();
+		m_Stat[STAT_INT] = static_cast<unsigned char>(s.GetArgVal());
 		break;
 	case SKC_STAT_STR: // "STAT_STR"
-		m_Stat[STAT_STR] = s.GetArgVal();
+		m_Stat[STAT_STR] = static_cast<unsigned char>(s.GetArgVal());
 		break;
 	case SKC_TITLE: // "TITLE"
 		m_sTitle = s.GetArgStr();
@@ -497,7 +497,7 @@ bool CSkillClassDef::r_LoadVal( CScript &s )
 		m_SkillSumMax = s.GetArgVal();
 		break;
 	case SCC_STATSUM:
-		m_StatSumMax = s.GetArgVal();
+		m_StatSumMax = static_cast<WORD>(s.GetArgVal());
 		break;
 	default:
 		{
@@ -505,14 +505,14 @@ bool CSkillClassDef::r_LoadVal( CScript &s )
 			if ( i != SKILL_NONE )
 			{
 				ASSERT( i >= 0 && static_cast<size_t>(i) < COUNTOF(m_SkillLevelMax));
-				m_SkillLevelMax[i] = s.GetArgVal();
+				m_SkillLevelMax[i] = static_cast<WORD>(s.GetArgVal());
 				break;
 			}
 			i = g_Cfg.FindStatKey( s.GetKey());
 			if ( i >= 0 )
 			{
 				ASSERT( static_cast<size_t>(i) < COUNTOF(m_StatMax));
-				m_StatMax[i] = s.GetArgVal();
+				m_StatMax[i] = static_cast<WORD>(s.GetArgVal());
 				break;
 			}
 		}
@@ -750,7 +750,7 @@ bool CSpellDef::r_LoadVal( CScript &s )
 			m_Interrupt.Load( s.GetArgRaw());
 			break;
 		case SPC_MANAUSE:
-			m_wManaUse = s.GetArgVal();
+			m_wManaUse = static_cast<WORD>(s.GetArgVal());
 			break;
 		case SPC_NAME:
 			m_sName = s.GetArgStr();

@@ -703,7 +703,7 @@ bool CRegionBase::r_LoadVal( CScript & s )
 			TogRegionFlags( REGION_ANTIMAGIC_ALL, ! s.GetArgVal());
 			break;
 		case RC_MAP:
-			m_pt.m_map = s.GetArgVal();
+			m_pt.m_map = static_cast<unsigned char>(s.GetArgVal());
 			break;
 		case RC_MARK:
 		case RC_RECALLIN:

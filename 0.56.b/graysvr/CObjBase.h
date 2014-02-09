@@ -53,6 +53,7 @@ class CObjBase : public CObjBaseTemplate, public CScriptObj
 
 private:
 	CServTime m_timeout;		// when does this rot away ? or other action. 0 = never, else system time
+	CServTime m_timestamp;
 	HUE_TYPE m_wHue;			// Hue or skin color. (CItems must be < 0x4ff or so)
 
 	inline bool CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TRIGRET_TYPE & trResult);
@@ -73,17 +74,26 @@ public:
 	virtual void DeletePrepare();
 
 public:
+	CServTime GetTimeStamp() const
+	{
+		return m_timestamp;
+	}
+	void SetTimeStamp( INT64 t_time)
+	{
+		m_timestamp.InitTime(t_time);
+	}
+
 	LPCTSTR GetDefStr( LPCTSTR pszKey, bool fZero = false ) const
 	{
 		return m_BaseDefs.GetKeyStr( pszKey, fZero );
 	}
 
-	int GetDefNum( LPCTSTR pszKey, bool fZero = false ) const
+	INT64 GetDefNum( LPCTSTR pszKey, bool fZero = false ) const
 	{
 		return m_BaseDefs.GetKeyNum( pszKey, fZero );
 	}
 
-	void SetDefNum(LPCTSTR pszKey, int iVal, bool fZero = true)
+	void SetDefNum(LPCTSTR pszKey, INT64 iVal, bool fZero = true)
 	{
 		m_BaseDefs.SetNum(pszKey, iVal, fZero);
 	}
@@ -181,34 +191,34 @@ protected:
 
 public:
 	// Timer
-	virtual void SetTimeout( int iDelayInTicks );
+	virtual void SetTimeout( INT64 iDelayInTicks );
 	bool IsTimerSet() const
 	{
 		return( m_timeout.IsTimeValid());
 	}
-	int GetTimerDiff() const;	// return: < 0 = in the past ( m_timeout - CServTime::GetCurrentTime() )
+	INT64 GetTimerDiff() const;	// return: < 0 = in the past ( m_timeout - CServTime::GetCurrentTime() )
 	bool IsTimerExpired() const
 	{
 		return( GetTimerDiff() <= 0 );
 	}
 
-	int GetTimerAdjusted() const
+	INT64 GetTimerAdjusted() const
 	{
 		// RETURN: time in seconds from now.
 		if ( ! IsTimerSet())
 			return( -1 );
-		int iDiffInTicks = GetTimerDiff();
+		INT64 iDiffInTicks = GetTimerDiff();
 		if ( iDiffInTicks < 0 )
 			return( 0 );
 		return( iDiffInTicks / TICK_PER_SEC );
 	}
 
-	int GetTimerDAdjusted() const
+	INT64 GetTimerDAdjusted() const
 	{
 		// RETURN: time in seconds from now.
 		if ( ! IsTimerSet())
 			return( -1 );
-		int iDiffInTicks = GetTimerDiff();
+		INT64 iDiffInTicks = GetTimerDiff();
 		if ( iDiffInTicks < 0 )
 			return( 0 );
 		return( iDiffInTicks );
@@ -218,8 +228,8 @@ public:
 	// Location
 	virtual bool MoveTo( CPointMap pt ) = 0;	// Move to a location at top level.
 
-	virtual bool MoveNear( CPointMap pt, int iSteps = 0, WORD wCan = CAN_C_WALK );
-	virtual bool MoveNearObj( const CObjBaseTemplate * pObj, int iSteps = 0, WORD wCan = CAN_C_WALK );
+	virtual bool MoveNear( CPointMap pt, int iSteps = 0, DWORD dwCan = CAN_C_WALK );
+	virtual bool MoveNearObj( const CObjBaseTemplate * pObj, int iSteps = 0, DWORD dwCan = CAN_C_WALK );
 
 	void inline SetNamePool_Fail( TCHAR * ppTitles );
 	bool SetNamePool( LPCTSTR pszName );
@@ -563,7 +573,7 @@ public:
 		// IT_CORPSE
 		struct	// might just be a sleeping person as well
 		{
-			CServTime	m_timeDeath;	// more1=Death time of corpse object. 0=sleeping or carved
+			DWORD		m_junk1;		// more1=Death time of corpse object. 0=sleeping or carved (Now Placed inside TIMESTAMP for INT64 support)
 			CGrayUIDBase m_uidKiller;	// more2=Who killed this corpse, carved or looted it last. sleep=self.
 			CREID_TYPE	m_BaseID;		// morex,morey=The true type of the creature who's corpse this is.
 			BYTE		m_facing_dir;	// morez=corpse dir. 0x80 = on face. DIR_TYPE
@@ -628,7 +638,7 @@ public:
 		struct
 		{
 			RESOURCE_ID_BASE m_ResID;	// more1 = preconfigured book id from RES_BOOK or Time date stamp for the book/message creation. (if |0x80000000)
-			CServTime   	 m_Time;	// more2= Time date stamp for the book/message creation.
+			//CServTime   	 m_Time;	// more2= Time date stamp for the book/message creation. (Now Placed inside TIMESTAMP for INT64 support)
 		} m_itBook;
 
 		// IT_DEED
@@ -687,8 +697,8 @@ public:
 			// m_amount = memory type mask.
 			WORD m_Action;		// more1l = NPC_MEM_ACT_TYPE What sort of action is this memory about ? (1=training, 2=hire, etc)
 			WORD m_Skill;		// more1h = SKILL_TYPE = training a skill ?
-			CServTime m_timeStart;	// more2 = When did the fight start or action take place ?
-			CPointBase m_pt;		// morep = Location the memory occured.
+			DWORD m_junk2;		// more2 = When did the fight start or action take place ? (Now Placed inside TIMESTAMP for INT64 support)
+			CPointBase m_pt;	// morep = Location the memory occured.
 			// m_uidLink = what is this memory linked to. (must be valid)
 		} m_itEqMemory;
 
@@ -910,8 +920,8 @@ public:
 	}
 
 	height_t GetHeight() const;
-	int  GetDecayTime() const;
-	void SetDecayTime( int iTime = 0 );
+	INT64  GetDecayTime() const;
+	void SetDecayTime( INT64 iTime = 0 );
 	SOUND_TYPE GetDropSound( const CObjBase * pObjOn ) const;
 	bool IsTopLevelMultiLocked() const;
 	bool IsMovableType() const;
@@ -955,7 +965,7 @@ public:
 		return( iWeight );
 	}
 
-	void SetTimeout( int iDelay );
+	void SetTimeout( INT64 iDelay );
 
 	virtual void OnMoveFrom()	// Moving from current location.
 	{
@@ -1005,7 +1015,7 @@ public:
 		return m_TagDefs.GetKeyStr( pszKey );
 	}
 
-	int GetKeyNum( LPCTSTR pszKey, bool fZero = false ) const
+	INT64 GetKeyNum( LPCTSTR pszKey, bool fZero = false ) const
 	{
 		return m_TagDefs.GetKeyNum( pszKey, fZero );
 	}
@@ -1193,7 +1203,7 @@ public:
 
 	bool IsBookWritable() const
 	{
-		return( m_itBook.m_ResID.GetPrivateUID() == 0 && m_itBook.m_Time.GetTimeRaw() == 0 );
+		return( m_itBook.m_ResID.GetPrivateUID() == 0 && GetTimeStamp().GetTimeRaw() == 0 );
 	}
 	bool IsBookSystem() const	// stored in RES_BOOK
 	{
@@ -2814,7 +2824,7 @@ public:
 		return m_TagDefs.GetKeyStr( pszKey );
 	}
 
-	int GetKeyNum( LPCTSTR pszKey, bool fZero = false ) const
+	INT64 GetKeyNum( LPCTSTR pszKey, bool fZero = false ) const
 	{
 		return m_TagDefs.GetKeyNum( pszKey, fZero );
 	}
@@ -2999,14 +3009,14 @@ public:
 		FixClimbHeight();
 	}
 	bool MoveToValidSpot(DIR_TYPE dir, int iDist, int iDistStart = 1, bool bFromShip = false);
-	virtual bool MoveNearObj( const CObjBaseTemplate * pObj, int iSteps = 0, WORD wCan = CAN_C_WALK )
+	virtual bool MoveNearObj( const CObjBaseTemplate * pObj, int iSteps = 0, DWORD dwCan = CAN_C_WALK )
 	{
-		UNREFERENCED_PARAMETER(wCan);
+		UNREFERENCED_PARAMETER(dwCan);
 		return CObjBase::MoveNearObj( pObj, iSteps, GetMoveBlockFlags());
 	}
-	bool MoveNear( CPointMap pt, int iSteps = 0, WORD wCan = CAN_C_WALK )
+	bool MoveNear( CPointMap pt, int iSteps = 0, DWORD dwCan = CAN_C_WALK )
 	{
-		UNREFERENCED_PARAMETER(wCan);
+		UNREFERENCED_PARAMETER(dwCan);
 		return CObjBase::MoveNear( pt, iSteps, GetMoveBlockFlags());
 	}
 
@@ -3110,11 +3120,11 @@ public:
 		CCharBase * pCharDef = Char_GetDef();
 		ASSERT(pCharDef);
 
-		WORD wCan = pCharDef->m_Can;
+		DWORD dwCan = pCharDef->m_Can;
 		if ( IsStatFlag(STATF_Hovering) )
-			wCan |= CAN_C_HOVER;
+			dwCan |= CAN_C_HOVER;
 
-		return( wCan & CAN_C_MOVEMASK );
+		return( dwCan & CAN_C_MOVEMASK );
 	}
 
 	int FixWeirdness();
@@ -3239,7 +3249,7 @@ public:
 	}
 	unsigned short Skill_GetAdjusted( SKILL_TYPE skill ) const;
 	void Skill_SetBase( SKILL_TYPE skill, int iValue );
-	bool Skill_UseQuick( SKILL_TYPE skill, int difficulty, bool bAllowGain = true );
+	bool Skill_UseQuick( SKILL_TYPE skill, INT64 difficulty, bool bAllowGain = true );
 
 	bool Skill_CheckSuccess( SKILL_TYPE skill, int difficulty ) const;
 	bool Skill_Wait( SKILL_TYPE skilltry );

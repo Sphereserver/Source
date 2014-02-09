@@ -159,7 +159,7 @@ struct CResourceQty
 {
 private:
 	RESOURCE_ID m_rid;	// A RES_SKILL, RES_ITEMDEF, or RES_TYPEDEF
-	int m_iQty;			// How much of this ?
+	INT64 m_iQty;			// How much of this ?
 public:
 	RESOURCE_ID GetResourceID() const
 	{
@@ -178,11 +178,11 @@ public:
 	{
 		return( m_rid.GetResIndex());
 	}
-	int GetResQty() const
+	INT64 GetResQty() const
 	{
 		return( m_iQty );
 	}
-	void SetResQty( int wQty )
+	void SetResQty( INT64 wQty )
 	{
 		m_iQty = wQty;
 	}

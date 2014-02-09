@@ -148,9 +148,9 @@
 		static LPCTSTR const sm_szLoadKeys[];
 	public:
 		static const char *m_sClassName;
-		int							m_iN1;		// "ARGN" or "ARGN1" = a modifying numeric arg to the current trigger.
-		int							m_iN2;		// "ARGN2" = a modifying numeric arg to the current trigger.
-		int							m_iN3;		// "ARGN3" = a modifying numeric arg to the current trigger.
+		INT64							m_iN1;		// "ARGN" or "ARGN1" = a modifying numeric arg to the current trigger.
+		INT64							m_iN2;		// "ARGN2" = a modifying numeric arg to the current trigger.
+		INT64							m_iN3;		// "ARGN3" = a modifying numeric arg to the current trigger.
 
 		CScriptObj *				m_pO1;		// "ARGO" or "ARGO1" = object 1
 												// these can go out of date ! get deleted etc.
@@ -179,18 +179,18 @@
 		{
 		}
 
-		explicit CScriptTriggerArgs( int iVal1 ) :
+		explicit CScriptTriggerArgs( INT64 iVal1 ) :
 			m_iN1(iVal1),  m_iN2(0), m_iN3(0)
 		{
 			m_pO1 = NULL;
 		}
-		CScriptTriggerArgs( int iVal1, int iVal2, int iVal3 = 0 ) :
+		CScriptTriggerArgs( INT64 iVal1, INT64 iVal2, INT64 iVal3 = 0 ) :
 			m_iN1(iVal1), m_iN2(iVal2), m_iN3(iVal3)
 		{
 			m_pO1 = NULL;
 		}
 
-		CScriptTriggerArgs( int iVal1, int iVal2, CScriptObj * pObj ) :
+		CScriptTriggerArgs( INT64 iVal1, INT64 iVal2, CScriptObj * pObj ) :
 			m_iN1(iVal1), m_iN2(iVal2), m_iN3(0), m_pO1(pObj)
 		{
 		}
@@ -204,7 +204,7 @@
 		CScriptTriggerArgs& operator=(const CScriptTriggerArgs& other);
 
 	public:
-		void getArgNs( int *iVar1 = NULL, int *iVar2 = NULL, int *iVar3 = NULL) //Puts the ARGN's into the specified variables
+		void getArgNs( INT64 *iVar1 = NULL, INT64 *iVar2 = NULL, INT64 *iVar3 = NULL) //Puts the ARGN's into the specified variables
 		{
 			if (iVar1)
 				*iVar1 = this->m_iN1;

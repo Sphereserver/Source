@@ -140,7 +140,7 @@ bool CSector::r_LoadVal( CScript &s )
 			return( true );
 		case SC_LIGHT:
 			if ( g_Cfg.m_bAllowLightOverride )
-				m_Env.m_Light = s.GetArgVal() | LIGHT_OVERRIDE;
+				m_Env.m_Light = static_cast<unsigned char>(s.GetArgVal() | LIGHT_OVERRIDE);
 			return true;
 		case SC_RAINCHANCE:
 			SetWeatherChance( true, s.HasArgs() ? s.GetArgVal() : -1 );
@@ -864,7 +864,7 @@ bool CSector::MoveCharToSector( CChar * pChar )
 inline bool CSector::IsSectorSleeping() const
 {
 	ADDTOCALLSTACK_INTENSIVE("CSector::IsSectorSleeping");
-	long iAge = - g_World.GetTimeDiff( GetLastClientTime());
+	long long iAge = - g_World.GetTimeDiff( GetLastClientTime());
 	return( iAge > 10*60*TICK_PER_SEC );
 }
 

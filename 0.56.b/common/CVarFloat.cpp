@@ -644,11 +644,11 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 			}
 		}
 	}
-	long lVal;
+	long long lVal;
 	if ( g_Exp.m_VarGlobals.GetParseVal( pArgs, &lVal ) )
-		return( lVal );
+		return( static_cast<long>(lVal) );
 	if ( g_Exp.m_VarDefs.GetParseVal( pArgs, &lVal ) )
-		return( lVal );
+		return( static_cast<long>(lVal) );
 	return 0;
 }
 

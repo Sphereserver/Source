@@ -52,7 +52,7 @@ void CVarDefCont::SetKey( LPCTSTR pszKey )
 *
 ***************************************************************************/
 
-CVarDefContNum::CVarDefContNum( LPCTSTR pszKey, int iVal ) : CVarDefCont( pszKey ), m_iVal( iVal )
+CVarDefContNum::CVarDefContNum( LPCTSTR pszKey, INT64 iVal ) : CVarDefCont( pszKey ), m_iVal( iVal )
 {
 }
 
@@ -64,12 +64,12 @@ CVarDefContNum::~CVarDefContNum()
 {
 }
 
-int CVarDefContNum::GetValNum() const 
+INT64 CVarDefContNum::GetValNum() const 
 { 
 	return( m_iVal ); 
 }
 
-void CVarDefContNum::SetValNum( int iVal ) 
+void CVarDefContNum::SetValNum( INT64 iVal ) 
 { 
 	m_iVal = iVal;
 }
@@ -77,7 +77,7 @@ void CVarDefContNum::SetValNum( int iVal )
 inline LPCTSTR CVarDefContNum::GetValStr() const
 {
 	TemporaryString pszTmp;
-	sprintf(pszTmp, "0%x", m_iVal);
+	sprintf(pszTmp, "0%llx", m_iVal);
 	return pszTmp;
 }
 
@@ -91,7 +91,7 @@ bool CVarDefContNum::r_WriteVal( LPCTSTR pKey, CGString & sVal, CTextConsole * p
 {
 	UNREFERENCED_PARAMETER(pKey);
 	UNREFERENCED_PARAMETER(pSrc);
-	sVal.FormatVal( GetValNum() );
+	sVal.FormatLLVal( GetValNum() );
 	return( true );
 }
 
@@ -125,7 +125,7 @@ LPCTSTR CVarDefContStr::GetValStr() const
 	return( m_sVal ); 
 }
 
-inline int CVarDefContStr::GetValNum() const
+inline INT64 CVarDefContStr::GetValNum() const
 {
 	LPCTSTR pszStr = m_sVal;
 	return( Exp_GetVal(pszStr) );
@@ -177,7 +177,7 @@ LPCTSTR CVarDefMap::CVarDefContTest::GetValStr() const
 	return NULL; 
 }
 	
-int CVarDefMap::CVarDefContTest::GetValNum() const 
+INT64 CVarDefMap::CVarDefContTest::GetValNum() const 
 { 
 	return -1; 
 }
@@ -238,7 +238,7 @@ LPCTSTR CVarDefMap::FindValStr( LPCTSTR pVal ) const
 	return( NULL );
 }
 
-LPCTSTR CVarDefMap::FindValNum( int iVal ) const
+LPCTSTR CVarDefMap::FindValNum( INT64 iVal ) const
 {
 	ADDTOCALLSTACK("CVarDefMap::FindValNum");
 	for ( DefSet::const_iterator i = m_Container.begin(); i != m_Container.end(); ++i )
@@ -426,7 +426,7 @@ size_t CVarDefMap::GetCount() const
 	return m_Container.size();
 }
 
-int CVarDefMap::SetNumNew( LPCTSTR pszName, int iVal )
+int CVarDefMap::SetNumNew( LPCTSTR pszName, INT64 iVal )
 {
 	ADDTOCALLSTACK("CVarDefMap::SetNumNew");
 	CVarDefCont * pVarNum = new CVarDefContNum( pszName, iVal );
@@ -440,14 +440,14 @@ int CVarDefMap::SetNumNew( LPCTSTR pszName, int iVal )
 		return -1;
 }
 
-int CVarDefMap::SetNumOverride( LPCTSTR pszKey, int iVal )
+int CVarDefMap::SetNumOverride( LPCTSTR pszKey, INT64 iVal )
 {
 	ADDTOCALLSTACK("CVarDefMap::SetNumOverride");
 	DeleteAtKey(pszKey);
 	return SetNumNew(pszKey,iVal);
 }
 
-int CVarDefMap::SetNum( LPCTSTR pszName, int iVal, bool fZero )
+int CVarDefMap::SetNum( LPCTSTR pszName, INT64 iVal, bool fZero )
 {
 	ADDTOCALLSTACK("CVarDefMap::SetNum");
 	ASSERT(pszName);
@@ -578,7 +578,7 @@ CVarDefCont * CVarDefMap::GetKey( LPCTSTR pszKey ) const
 	return( pReturn );
 }
 
-int CVarDefMap::GetKeyNum( LPCTSTR pszKey, bool fZero  ) const
+INT64 CVarDefMap::GetKeyNum( LPCTSTR pszKey, bool fZero  ) const
 {
 	ADDTOCALLSTACK("CVarDefMap::GetKeyNum");
 	CVarDefCont * pVar = GetKey(pszKey);
@@ -614,7 +614,7 @@ CVarDefCont * CVarDefMap::GetParseKey( LPCTSTR & pszArgs ) const
 	return NULL;
 }
 
-bool CVarDefMap::GetParseVal( LPCTSTR & pszArgs, long * plVal ) const
+bool CVarDefMap::GetParseVal( LPCTSTR & pszArgs, long long * plVal ) const
 {
 	ADDTOCALLSTACK("CVarDefMap::GetParseVal");
 	CVarDefCont * pVarBase = GetParseKey( pszArgs );

@@ -858,7 +858,7 @@ void CAccount::ClearPasswordTries(bool bAll)
 	}
 	else
 	{
-		long timeCurrent = CServTime::GetCurrentTime().GetTimeRaw();
+		long long timeCurrent = CServTime::GetCurrentTime().GetTimeRaw();
 
 		for ( BlockLocalTime_t::iterator itData = m_BlockIP.begin(); itData != m_BlockIP.end(); ++itData )
 		{
@@ -1135,7 +1135,7 @@ bool CAccount::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			sVal = m_dateLastConnect.Format(NULL);
 			break;
 		case AC_LASTCONNECTTIME:
-			sVal.FormatVal( m_Last_Connect_Time );
+			sVal.FormatLLVal( m_Last_Connect_Time );
 			break;
 		case AC_LASTIP:
 			sVal = m_Last_IP.GetAddrStr();
@@ -1181,7 +1181,7 @@ bool CAccount::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 				return( true );
 			}
 		case AC_TOTALCONNECTTIME:
-			sVal.FormatVal( m_Total_Connect_Time );
+			sVal.FormatLLVal( m_Total_Connect_Time );
 			break;
 
 		default:

@@ -293,7 +293,7 @@ private:
 
 public:
 	void Init();
-	void InitTime( long lTimeBase );
+	void InitTime( INT64 lTimeBase );
 	bool Advance();
 	CServTime GetCurrentTime() const	// TICK_PER_SEC
 	{
@@ -413,7 +413,7 @@ public:
 	{
 		return m_Clock.GetCurrentTime();  // Time in TICK_PER_SEC
 	}
-	int GetTimeDiff( CServTime time ) const
+	INT64 GetTimeDiff( CServTime time ) const
 	{
 		// How long till this event
 		// negative = in the past.

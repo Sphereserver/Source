@@ -1250,13 +1250,13 @@ CItemBaseMulti::ShipSpeed CItemShip::GetShipSpeed()
 
 	pTagDef = GetTagDefs()->GetKey("OVERRIDE.SHIPSPEED.PERIOD");
 	if (pTagDef != NULL)
-		speed.period = pTagDef->GetValNum();
+		speed.period = static_cast<unsigned short>(pTagDef->GetValNum());
 	else
 		speed.period = pItemBaseMulti->m_shipSpeed.period;
 
 	pTagDef = GetTagDefs()->GetKey("OVERRIDE.SHIPSPEED.TILES");
 	if (pTagDef != NULL)
-		speed.tiles = pTagDef->GetValNum();
+		speed.tiles = static_cast<unsigned short>(pTagDef->GetValNum());
 	else
 		speed.tiles = pItemBaseMulti->m_shipSpeed.tiles;
 

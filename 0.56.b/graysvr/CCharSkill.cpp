@@ -539,7 +539,7 @@ void CChar::Skill_Decay()
 			if ( OnTrigger(CTRIG_SkillChange, this, &args) == TRIGRET_RET_TRUE )
 				return;
 
-			iSkillLevel = args.m_iN2;
+			iSkillLevel = static_cast<int>(args.m_iN2);
 		}
 
 		Skill_SetBase(skillDeduct, iSkillLevel);
@@ -600,7 +600,7 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 			difficulty = 0;
 	}
 
-	int iSkillMax = Skill_GetMax(skill);	// max advance for this skill.
+	INT64 iSkillMax = Skill_GetMax(skill);	// max advance for this skill.
 
 	// ex. ADV_RATE=2000,500,25 for ANATOMY (easy)
 	// ex. ADV_RATE=8000,2000,100 for alchemy (hard)
@@ -621,7 +621,7 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 			SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_GAINRADIUS_NOT_MET) );
 		return;
 	}
-	int iChance = pSkillDef->m_AdvRate.GetChancePercent( iSkillAdj );
+	INT64 iChance = pSkillDef->m_AdvRate.GetChancePercent( iSkillAdj );
 
 	CScriptTriggerArgs pArgs( 0 , iChance, iSkillMax);
 	if ( IsTrigUsed(TRIGGER_SKILLGAIN) )
@@ -672,7 +672,7 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 					if ( OnTrigger(CTRIG_SkillChange, this, &args) == TRIGRET_RET_TRUE )
 						return;
 
-					iSkillLevel = args.m_iN2;
+					iSkillLevel = static_cast<int>(args.m_iN2);
 				}
 				Skill_SetBase( skill, iSkillLevel );
 			}
@@ -815,7 +815,7 @@ bool CChar::Skill_CheckSuccess( SKILL_TYPE skill, int difficulty ) const
 	return( g_Cfg.Calc_SkillCheck( Skill_GetAdjusted(skill), difficulty ));
 }
 
-bool CChar::Skill_UseQuick( SKILL_TYPE skill, int difficulty, bool bAllowGain )
+bool CChar::Skill_UseQuick( SKILL_TYPE skill, INT64 difficulty, bool bAllowGain )
 {
 	ADDTOCALLSTACK("CChar::Skill_UseQuick");
 	// ARGS:
@@ -824,7 +824,7 @@ bool CChar::Skill_UseQuick( SKILL_TYPE skill, int difficulty, bool bAllowGain )
 	//	bAllowGain	= can gain skill from this?
 	// Use a skill instantly. No wait at all.
 	// No interference with other skills.
-	int result = Skill_CheckSuccess( skill, difficulty );
+	INT64 result = Skill_CheckSuccess( skill, difficulty );
 	CScriptTriggerArgs pArgs( 0 , difficulty, result);
 	TRIGRET_TYPE ret = TRIGRET_RET_DEFAULT;
 
@@ -1329,7 +1329,7 @@ CItem * CChar::Skill_NaturalResource_Create( CItem * pResBit, SKILL_TYPE skill )
 	
 	if ( tRet == TRIGRET_RET_TRUE )		return( NULL );
 
-	iAmount = Args.m_iN1;
+	iAmount = static_cast<int>(Args.m_iN1);
 	//Creating the 'id' variable with the local given through->by the trigger(s) instead on top of method
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(RES_GET_INDEX( Args.m_VarsLocal.GetKeyNum("ResourceID")));
 
@@ -3838,7 +3838,7 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 	CVarDefCont * pDam = GetDefKey("THROWDAM",true);
 	if ( pDam )
 	{
-		int DVal[2];
+		INT64 DVal[2];
 		size_t iQty = Str_ParseCmds( const_cast<TCHAR*>(pDam->GetValStr()), DVal, COUNTOF(DVal));
 		switch(iQty)
 		{

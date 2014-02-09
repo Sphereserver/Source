@@ -1708,7 +1708,7 @@ CChar * CItemCorpse::IsCorpseSleeping() const
 	CChar * pCharCorpse = m_uidLink.CharFind();
 	if ( pCharCorpse &&
 		pCharCorpse->IsStatFlag( STATF_Sleeping ) &&
-		! m_itCorpse.m_timeDeath.IsTimeValid() )
+		! GetTimeStamp().IsTimeValid() )
 	{
 		return( pCharCorpse );
 	}

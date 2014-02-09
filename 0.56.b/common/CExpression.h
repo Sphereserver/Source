@@ -106,15 +106,15 @@ public:
 		return GetRangeVals(const_cast<LPCTSTR &>(pExpr), piVals, iMaxQty );
 	}
 
-	inline int GetVal( LPTSTR &pArgs )
+	inline INT64 GetVal( LPTSTR &pArgs )
 	{
 		return GetVal(const_cast<LPCTSTR &>(pArgs));
 	}
 
 	// Evaluate using the stuff we know.
 	int GetSingle( LPCTSTR & pArgs );
-	int GetVal( LPCTSTR & pArgs );
-	int GetValMath( int lVal, LPCTSTR & pExpr );
+	INT64 GetVal( LPCTSTR & pArgs );
+	INT64 GetValMath( INT64 lVal, LPCTSTR & pExpr );
 	int GetRangeVals( LPCTSTR & pExpr, int * piVals, int iMaxQty );
 	int GetRange( LPCTSTR & pArgs );
 
@@ -134,8 +134,8 @@ extern bool IsStrEmpty( LPCTSTR pszTest );
 inline extern bool IsCharNumeric( char & Test );
 
 // Numeric formulas
-extern int Calc_GetRandVal( int iqty );
-extern int Calc_GetRandVal2( int iMin, int iMax );
+extern int Calc_GetRandVal( INT64 iqty );
+extern int Calc_GetRandVal2( INT64 iMin, INT64 iMax );
 extern int Calc_GetLog2( UINT iVal );
 extern int Calc_GetSCurve( int iValDiff, int iVariance );
 extern int Calc_GetBellCurve( int iValDiff, int iVariance );
@@ -143,7 +143,8 @@ extern int Calc_GetBellCurve( int iValDiff, int iVariance );
 extern DWORD ahextoi( LPCTSTR pArgs ); // Convert hex string to integer
 
 #define Exp_GetSingle( pa ) g_Exp.GetSingle( pa )
-#define Exp_GetVal( pa )	g_Exp.GetVal( pa )
+#define Exp_GetVal( pa )	static_cast<int>(g_Exp.GetVal( pa ))
+#define Exp_GetLLVal( pa )	g_Exp.GetVal( pa )
 #define Exp_GetRange( pa )	g_Exp.GetRange( pa )
 
 //inline int CVarDefStr::GetValNum() const

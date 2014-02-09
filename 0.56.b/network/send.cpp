@@ -1824,8 +1824,7 @@ PacketBulletinBoard::PacketBulletinBoard(const CClient* target, BBOARDF_TYPE act
 	writeStringFixedASCII(message->GetName(), lenstr);
 
 	// message time
-	CServTime time = message->m_itBook.m_Time;
-	sprintf(tempstr, "Day %lu", (g_World.GetGameWorldTime(time) / (24 * 60)) % 365);
+	sprintf(tempstr, "Day %lu", (g_World.GetGameWorldTime(message->GetTimeStamp()) / (24 * 60)) % 365);
 	lenstr = strlen(tempstr) + 1;
 
 	writeByte(lenstr);
@@ -4203,7 +4202,7 @@ bool PacketPropertyList::onSend(const CClient* client)
 bool PacketPropertyList::hasExpired(int timeout) const
 {
 	ADDTOCALLSTACK("PacketPropertyList::hasExpired");
-	return (m_time + timeout) < g_World.GetCurrentTime().GetTimeRaw();
+	return static_cast<long long>(m_time + timeout) < g_World.GetCurrentTime().GetTimeRaw();
 }
 
 

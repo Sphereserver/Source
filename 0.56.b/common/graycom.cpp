@@ -357,7 +357,7 @@ int CvtNUNICODEToSystem( TCHAR * pOut, int iSizeOutBytes, const NCHAR * pInp, in
 			}
 			else
 			{
-				pOut[iOut] = wChar;
+				pOut[iOut] = static_cast<TCHAR>(wChar);
 				iOut++;
 			}
 		}

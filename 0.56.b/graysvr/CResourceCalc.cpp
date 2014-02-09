@@ -62,13 +62,13 @@ int CResource::Calc_DropStamWhileMoving( CChar * pChar, int iWeightLoadPercent )
 
 	if ( pChar->IsStatFlag( STATF_Fly|STATF_Hovering ))	// i'm running ?
 	{
-		iWeightLoadPercent += pVal ? pVal->GetValNum() : m_iStamRunningPenalty;
+		iWeightLoadPercent += pVal ? static_cast<int>(pVal->GetValNum()) : m_iStamRunningPenalty;
 	}
 
 	// Chance to drop in Stam given a weight
 	pVal = pChar->GetKey("OVERRIDE.STAMINALOSSATWEIGHT",true);
 
-	int iChanceForStamLoss = pVal ? Calc_GetSCurve( iWeightLoadPercent - pVal->GetValNum(), 10 ) : Calc_GetSCurve( iWeightLoadPercent - m_iStaminaLossAtWeight, 10 );
+	int iChanceForStamLoss = pVal ? Calc_GetSCurve( iWeightLoadPercent - static_cast<int>(pVal->GetValNum()), 10 ) : Calc_GetSCurve( iWeightLoadPercent - m_iStaminaLossAtWeight, 10 );
 
 	int iRoll = Calc_GetRandVal(1000);
 	if ( iRoll <= iChanceForStamLoss )
@@ -105,7 +105,7 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 			{
 				if ( pTagStorage->GetValNum())
 				{
-					speed = pTagStorage->GetValNum();
+					speed = static_cast<int>(pTagStorage->GetValNum());
 				}
 				else
 				{

@@ -1503,7 +1503,7 @@ void CItemBaseMulti::SetMultiRegion( TCHAR * pArgs )
 {
 	ADDTOCALLSTACK("CItemBaseMulti::SetMultiRegion");
 	// inclusive region.
-	int piArgs[5];
+	INT64 piArgs[5];
 	size_t iQty = Str_ParseCmds( pArgs, piArgs, COUNTOF(piArgs));
 	if ( iQty <= 1 )
 		return;
@@ -1514,7 +1514,7 @@ void CItemBaseMulti::SetMultiRegion( TCHAR * pArgs )
 bool CItemBaseMulti::AddComponent( TCHAR * pArgs )
 {
 	ADDTOCALLSTACK("CItemBaseMulti::AddComponent");
-	int piArgs[4];
+	INT64 piArgs[4];
 	size_t iQty = Str_ParseCmds( pArgs, piArgs, COUNTOF(piArgs));
 	if ( iQty <= 1 )
 		return false;
@@ -1579,7 +1579,7 @@ bool CItemBaseMulti::r_LoadVal( CScript &s )
 			return false;
 
 		// SHIPSPEED x[,y]
-		int ppArgs[2];
+		INT64 ppArgs[2];
 		size_t iQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs));
 		if (iQty < 1)
 			return false;

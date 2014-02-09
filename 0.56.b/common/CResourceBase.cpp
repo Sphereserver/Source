@@ -1251,7 +1251,7 @@ bool CResourceQty::Load(LPCTSTR &pszCmds)
 	const char *orig = pszCmds;
 	GETNONWHITESPACE(pszCmds);	// Skip leading spaces.
 
-	m_iQty = INT_MIN;
+	m_iQty = LLONG_MIN;
 	if ( !IsAlpha(*pszCmds) ) // might be { or .
 	{
 		m_iQty = Exp_GetVal(pszCmds);
@@ -1272,7 +1272,7 @@ bool CResourceQty::Load(LPCTSTR &pszCmds)
 	}
 
 	GETNONWHITESPACE(pszCmds);
-	if ( m_iQty == INT_MIN )	// trailing qty?
+	if ( m_iQty == LLONG_MIN )	// trailing qty?
 	{
 		if ( *pszCmds == '\0' || *pszCmds == ',' )
 			m_iQty = 1;
@@ -1370,7 +1370,7 @@ bool CResourceQtyArray::IsResourceMatchAll( CChar * pChar ) const
 	{
 		RESOURCE_ID ridtest = GetAt(i).GetResourceID();
 
-		if ( ! pChar->IsResourceMatch( ridtest, GetAt(i).GetResQty() ))
+		if ( ! pChar->IsResourceMatch( ridtest, static_cast<unsigned long>(GetAt(i).GetResQty()) ))
 			return( false );
 	}
 
@@ -1463,19 +1463,19 @@ void CResourceQtyArray::WriteNames( TCHAR * pszArgs, size_t index ) const
 			pszArgs += sprintf( pszArgs, ", " );
 		}
 
-		int iQty = GetAt(i).GetResQty();
+		INT64 iQty = GetAt(i).GetResQty();
 		if ( iQty )
 		{
 			if ( GetAt(i).GetResType() == RES_SKILL )
 			{
-				pszArgs += sprintf( pszArgs, "%d.%d ",
+				pszArgs += sprintf( pszArgs, "%lld.%lld ",
 						iQty / 10, iQty % 10 );
 			}
 			else
-				pszArgs += sprintf( pszArgs, "%d ", iQty);
+				pszArgs += sprintf( pszArgs, "%lld ", iQty);
 		}
 
-		pszArgs += GetAt(i).WriteNameSingle( pszArgs, iQty );
+		pszArgs += GetAt(i).WriteNameSingle( pszArgs, static_cast<int>(iQty) );
 	}
 	*pszArgs = '\0';
 }

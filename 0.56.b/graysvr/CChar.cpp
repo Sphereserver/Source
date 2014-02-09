@@ -1700,7 +1700,7 @@ do_default:
 			sVal.FormatVal( m_defense + pCharDef->m_defense );
 			return( true );
 		case CHC_AGE:
-			sVal.FormatVal(( - g_World.GetTimeDiff(m_timeCreate)) / TICK_PER_SEC );
+			sVal.FormatLLVal(( - g_World.GetTimeDiff(m_timeCreate)) / TICK_PER_SEC );
 			return( true );
 		case CHC_BANKBALANCE:
 			sVal.FormatVal( GetBank()->ContentCount( RESOURCE_ID(RES_TYPEDEF,IT_GOLD)));
@@ -2013,7 +2013,7 @@ do_default:
 			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_CHARDEF, GetDispID()));
 			break;
 		case CHC_CREATE:
-			sVal.FormatHex( -( g_World.GetTimeDiff( m_timeCreate ) / TICK_PER_SEC ));
+			sVal.FormatLLVal( -( g_World.GetTimeDiff( m_timeCreate ) / TICK_PER_SEC ));
 			break;
 		case CHC_DIR:
 			sVal.FormatVal( m_dirFace );
@@ -2428,7 +2428,7 @@ do_default:
 			goto do_default;
 		case CHC_MEMORY:
 			{
-				int piCmd[2];
+				INT64 piCmd[2];
 				size_t iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd) );
 				if ( iArgQty < 2 )
 					return( false );
@@ -2550,7 +2550,7 @@ void CChar::r_Write( CScript & s )
 
 	if ( IsSetEF(EF_Size_Optimise) ) s.WriteSection("WC %s", GetResourceName());
 	else s.WriteSection("WORLDCHAR %s", GetResourceName());
-	s.WriteKeyHex( "CREATE", -( g_World.GetTimeDiff( m_timeCreate ) / TICK_PER_SEC ) );
+	s.WriteKeyVal( "CREATE", -( g_World.GetTimeDiff( m_timeCreate ) / TICK_PER_SEC ) );
 
 	CObjBase::r_Write( s );
 	if ( m_pPlayer )
@@ -2775,7 +2775,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 		case CHV_ANIM:
 			// ANIM, ANIM_TYPE action, bool fBackward = false, BYTE iFrameDelay = 1
 			{
-				int Arg_piCmd[3];		// Maximum parameters in one line
+				INT64 Arg_piCmd[3];		// Maximum parameters in one line
 				size_t Arg_Qty = Str_ParseCmds( s.GetArgRaw(), Arg_piCmd, COUNTOF(Arg_piCmd));
 
 				return UpdateAnimate(static_cast<ANIM_TYPE>(Arg_piCmd[0]), false,
@@ -2786,7 +2786,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 		case CHV_ATTACK:
 			{
 				CChar *		pSrc	= pCharSrc;
-				int piCmd[1];
+				INT64 piCmd[1];
 				if ( Str_ParseCmds( s.GetArgRaw(), piCmd, COUNTOF(piCmd)) > 0 )
 				{
 					CGrayUID	uid	= piCmd[0];
@@ -2943,7 +2943,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				ASSERT( pItem);
 				if ( s.HasArgs())	// how long to last ?
 				{
-					int iTimer = s.GetArgVal();
+					INT64 iTimer = s.GetArgVal();
 					if ( iTimer > 0 )
 						pItem->SetTimeout(iTimer);
 
@@ -2961,7 +2961,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 		case CHV_FACE:
 			{
 				CObjBase	*pTarget = pCharSrc;
-				int		piCmd[1];
+				INT64		piCmd[1];
 				if ( Str_ParseCmds(s.GetArgRaw(), piCmd, COUNTOF(piCmd)) > 0 )
 				{
 					CGrayUID uid = piCmd[0];
@@ -3243,7 +3243,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 		case CHV_SALUTE:	//	salute to player
 			{
 				CObjBase	*pTarget = pCharSrc;
-				int		piCmd[1];
+				INT64		piCmd[1];
 				if ( Str_ParseCmds(s.GetArgRaw(), piCmd, COUNTOF(piCmd)) > 0 )
 				{
 					CGrayUID uid = piCmd[0];

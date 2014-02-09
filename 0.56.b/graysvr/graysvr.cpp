@@ -42,7 +42,7 @@ bool IsTrigUsed(const char *name)
 	for ( it = g_triggers.begin(); it != g_triggers.end(); it++ )
 	{
 		if ( !strcmpi(it->m_name, name) )
-			return it->m_used; // Returns true or false for known triggers
+			return (it->m_used != 0); // Returns true or false for known triggers
 	}
 	return true; //Must return true for custom triggers
 }

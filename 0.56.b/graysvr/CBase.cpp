@@ -202,7 +202,7 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 		case OBC_ARMOR:
 		case OBC_DAM:
 			{
-				int piVal[2];
+				INT64 piVal[2];
 				size_t iQty = Str_ParseCmds( s.GetArgStr(), piVal, COUNTOF(piVal));
 				m_attackBase = piVal[0];
 				if ( iQty > 1 )
@@ -234,7 +234,7 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 			return( true );
 		case OBC_RANGE:
 			{
-				int piVal[2];
+				INT64 piVal[2];
 				size_t iQty = Str_ParseCmds( s.GetArgStr(), piVal, COUNTOF(piVal));
 				if ( iQty > 1 )
 				{

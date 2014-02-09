@@ -1122,7 +1122,7 @@ bool CItem::Stack( CItem * pItem )
 	return( true );
 }
 
-int CItem::GetDecayTime() const
+INT64 CItem::GetDecayTime() const
 {
 	ADDTOCALLSTACK("CItem::GetDecayTime");
 	// Return time in seconds that it will take to decay this item.
@@ -1158,7 +1158,7 @@ int CItem::GetDecayTime() const
 	return g_Cfg.m_iDecay_Item;
 }
 
-void CItem::SetTimeout( int iDelay )
+void CItem::SetTimeout( INT64 iDelay )
 {
 	ADDTOCALLSTACK("CItem::SetTimeout");
 	// PURPOSE:
@@ -1183,7 +1183,7 @@ void CItem::SetTimeout( int iDelay )
 	SetContainerFlags(0);
 }
 
-void CItem::SetDecayTime( int iTime )
+void CItem::SetDecayTime( INT64 iTime )
 {
 	ADDTOCALLSTACK("CItem::SetDecayTime");
 	// iTime = 0 = set default. (TICK_PER_SEC of a sec)

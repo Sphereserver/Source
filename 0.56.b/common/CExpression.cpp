@@ -63,10 +63,10 @@ DWORD ahextoi( LPCTSTR pszStr ) // Convert hex string to integer
 	return val;
 }
 
-int power(int base, int level)
+INT64 power(INT64 base, INT64 level)
 {
 	double rc = pow(static_cast<double>(base), static_cast<double>(level));
-	return static_cast<int>(rc);
+	return static_cast<INT64>(rc);
 }
 
 inline bool IsCharNumeric( char & Test )
@@ -218,7 +218,7 @@ int Calc_GetLog2( UINT iVal )
 	return( i );
 }
 
-int Calc_GetRandVal( int iqty )
+int Calc_GetRandVal( INT64 iqty )
 {
 	if ( iqty <= 0 )
 		return( 0 );
@@ -229,15 +229,15 @@ int Calc_GetRandVal( int iqty )
 	return( g_World.m_Rand.randInt() % iqty );
 }
 
-int Calc_GetRandVal2( int iMin, int iMax )
+int Calc_GetRandVal2( INT64 iMin, INT64 iMax )
 {
 	if ( iMin > iMax )
 	{
-		int tmp = iMin;
+		INT64 tmp = iMin;
 		iMin = iMax;
 		iMax = tmp;
 	}
-	return( iMin + g_World.m_Rand.randInt() % ((iMax - iMin) + 1) );
+	return( static_cast<int>(iMin + g_World.m_Rand.randInt() % ((iMax - iMin) + 1)) );
 }
 
 int Calc_GetBellCurve( int iValDiff, int iVariance )
@@ -380,7 +380,7 @@ try_dec:
 		case '[':
 		case '(': // Parse out a sub expression.
 			pszArgs ++;
-			return( GetVal( pszArgs ));
+			return( static_cast<long>(GetVal( pszArgs )));
 		case '+':
 			pszArgs++;
 			break;
@@ -446,7 +446,7 @@ try_dec:
 
 						if ( pszArgs && *pszArgs )
 						{
-							int iArgument = GetVal(pszArgs);
+							int iArgument = static_cast<long>(GetVal(pszArgs));
 							if ( iArgument <= 0 )
 							{
 								DEBUG_ERR(( "Exp_GetVal: (x)Log(%d) is %s\n", iArgument, (!iArgument) ? "infinite" : "undefined" ));
@@ -468,7 +468,7 @@ try_dec:
 									}
 									else
 									{
-										int iBase = GetVal(pszArgs);
+										int iBase = static_cast<long>(GetVal(pszArgs));
 										if ( iBase <= 0 )
 										{
 											DEBUG_ERR(( "Exp_GetVal: (%d)Log(%d) is %s\n", iBase, iArgument, (!iBase) ? "infinite" : "undefined" ));
@@ -511,7 +511,7 @@ try_dec:
 
 						if ( pszArgs && *pszArgs )
 						{
-							int iTosquare = GetVal(pszArgs);
+							int iTosquare = static_cast<long>(GetVal(pszArgs));
 
 							if (iTosquare >= 0)
 							{
@@ -577,7 +577,7 @@ try_dec:
 						if ( iCount < 2 )
 							iResult = -1;
 						else
-							iResult = Str_IndexOf(ppCmd[0],ppCmd[1],(iCount==3)?GetVal(ppCmd[2]):0);
+							iResult = Str_IndexOf(ppCmd[0],ppCmd[1],(iCount==3)?static_cast<long>(GetVal(ppCmd[2])):0);
 					} break;
 
 					case INTRINSIC_STRMATCH:
@@ -611,7 +611,7 @@ try_dec:
 						if ( iCount < 2 )
 							iResult = 0;
 						else
-							iResult = Calc_GetBellCurve( GetVal( ppCmd[0] ), GetVal( ppCmd[1] ));
+							iResult = Calc_GetBellCurve( static_cast<long>(GetVal( ppCmd[0] )), static_cast<long>(GetVal( ppCmd[1] )));
 					} break;
 
 					case INTRINSIC_STRASCII:
@@ -635,10 +635,10 @@ try_dec:
 							iResult = 0;
 						else
 						{
-							int val1 = GetVal( ppCmd[0] );
+							INT64 val1 = GetVal( ppCmd[0] );
 							if ( iCount == 2 )
 							{
-								int val2 = GetVal( ppCmd[1] );
+								INT64 val2 = GetVal( ppCmd[1] );
 								iResult = Calc_GetRandVal2( val1, val2 );
 							}
 							else
@@ -721,11 +721,11 @@ try_dec:
 		}
 
 		// Must be a symbol of some sort ?
-		long lVal;
+		long long lVal;
 		if ( m_VarGlobals.GetParseVal( pszArgs, &lVal ) )
-			return( lVal );
+			return( static_cast<long>(lVal) );
 		if ( m_VarDefs.GetParseVal( pszArgs, &lVal ) )
-			return( lVal );
+			return( static_cast<long>(lVal) );
 	}
 
 	// hard end ! Error of some sort.
@@ -737,7 +737,7 @@ try_dec:
 	return( 0 );
 }
 
-int CExpression::GetValMath( int lVal, LPCTSTR & pExpr )
+INT64 CExpression::GetValMath( INT64 lVal, LPCTSTR & pExpr )
 {
 	ADDTOCALLSTACK("CExpression::GetValMath");
 	GETNONWHITESPACE(pExpr);
@@ -791,7 +791,7 @@ int CExpression::GetValMath( int lVal, LPCTSTR & pExpr )
 		case '/':
 			pExpr++;
 			{
-				long iVal = GetVal( pExpr );
+				long long iVal = GetVal( pExpr );
 				if ( ! iVal )
 				{
 					DEBUG_ERR(( "Exp_GetVal: Divide by 0\n" ));
@@ -803,7 +803,7 @@ int CExpression::GetValMath( int lVal, LPCTSTR & pExpr )
 		case '%':
 			pExpr++;
 			{
-				long iVal = GetVal( pExpr );
+				long long iVal = GetVal( pExpr );
 				if ( ! iVal )
 				{
 					DEBUG_ERR(( "Exp_GetVal: Divide by 0\n" ));
@@ -865,7 +865,7 @@ int CExpression::GetValMath( int lVal, LPCTSTR & pExpr )
 		case '@':
 			pExpr++;
 			{
-				long iVal = GetVal( pExpr );
+				long long iVal = GetVal( pExpr );
 				if ( (lVal == 0) && (iVal < 0) )
 				{
 					DEBUG_ERR(( "Exp_GetVal: Power of zero with negative exponent is undefined\n" ));
@@ -881,7 +881,7 @@ int CExpression::GetValMath( int lVal, LPCTSTR & pExpr )
 
 int g_getval_reentrant_check = 0;
 
-int CExpression::GetVal( LPCTSTR & pExpr )
+INT64 CExpression::GetVal( LPCTSTR & pExpr )
 {
 	ADDTOCALLSTACK("CExpression::GetVal");
 	// Get a value (default decimal) that could also be an expression.
@@ -917,7 +917,7 @@ int CExpression::GetVal( LPCTSTR & pExpr )
 		g_getval_reentrant_check--;
 		return 0;
 	}
-	int lVal = GetValMath(GetSingle(pExpr), pExpr);
+	INT64 lVal = GetValMath(GetSingle(pExpr), pExpr);
 	g_getval_reentrant_check--;
 
 	return lVal;
@@ -970,7 +970,7 @@ int CExpression::GetRangeVals( LPCTSTR & pExpr, int * piVals, int iMaxQty )
 			case '>':
 			case '|':
 			case '&':
-				piVals[iQty-1] = GetValMath( piVals[iQty-1], pExpr );
+				piVals[iQty-1] = static_cast<int>(GetValMath( piVals[iQty-1], pExpr ));
 				break;
 		}
 	}

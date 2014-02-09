@@ -36,7 +36,7 @@ void CListDefContElem::SetKey( LPCTSTR pszKey )
 *
 *
 ***************************************************************************/
-CListDefContNum::CListDefContNum( LPCTSTR pszKey, int iVal ) : CListDefContElem( pszKey ), m_iVal( iVal )
+CListDefContNum::CListDefContNum( LPCTSTR pszKey, INT64 iVal ) : CListDefContElem( pszKey ), m_iVal( iVal )
 {
 }
 
@@ -48,12 +48,12 @@ CListDefContNum::~CListDefContNum()
 {
 }
 
-int CListDefContNum::GetValNum() const 
+INT64 CListDefContNum::GetValNum() const 
 { 
 	return( m_iVal ); 
 }
 
-void CListDefContNum::SetValNum( int iVal ) 
+void CListDefContNum::SetValNum( INT64 iVal ) 
 { 
 	m_iVal = iVal;
 }
@@ -61,7 +61,7 @@ void CListDefContNum::SetValNum( int iVal )
 inline LPCTSTR CListDefContNum::GetValStr() const
 {
 	TemporaryString pszTmp;
-	sprintf(pszTmp, "0%x", m_iVal);
+	sprintf(pszTmp, "0%llx", m_iVal);
 	return pszTmp;
 }
 
@@ -75,7 +75,7 @@ bool CListDefContNum::r_WriteVal( LPCTSTR pKey, CGString & sVal, CTextConsole * 
 {
 	UNREFERENCED_PARAMETER(pKey);
 	UNREFERENCED_PARAMETER(pSrc);
-	sVal.FormatVal( GetValNum() );
+	sVal.FormatLLVal( GetValNum() );
 	return( true );
 }
 
@@ -108,7 +108,7 @@ LPCTSTR CListDefContStr::GetValStr() const
 	return( m_sVal ); 
 }
 
-inline int CListDefContStr::GetValNum() const
+inline INT64 CListDefContStr::GetValNum() const
 {
 	LPCTSTR pszStr = m_sVal;
 	return( Exp_GetVal(pszStr) );
@@ -171,7 +171,7 @@ CListDefContElem* CListDefCont::GetAt(size_t nIndex) const
 	return ElementAt(nIndex);
 }
 
-bool CListDefCont::SetNumAt(size_t nIndex, int iVal)
+bool CListDefCont::SetNumAt(size_t nIndex, INT64 iVal)
 {
 	CListDefContElem* pListElem = ElementAt(nIndex);
 
@@ -249,7 +249,7 @@ LPCTSTR CListDefCont::GetValStr(size_t nIndex) const
 	return pElem->GetValStr();
 }
 
-int CListDefCont::GetValNum(size_t nIndex) const
+INT64 CListDefCont::GetValNum(size_t nIndex) const
 {
 	ADDTOCALLSTACK("CListDefCont::GetValNum");
 	CListDefContElem* pElem = ElementAt(nIndex);
@@ -290,7 +290,7 @@ int CListDefCont::FindValStr( LPCTSTR pVal, size_t nStartIndex /* = 0 */ ) const
 	return -1;
 }
 
-int CListDefCont::FindValNum( int iVal, size_t nStartIndex /* = 0 */ ) const
+int CListDefCont::FindValNum( INT64 iVal, size_t nStartIndex /* = 0 */ ) const
 {
 	ADDTOCALLSTACK("CListDefCont::FindValNum");
 
@@ -317,7 +317,7 @@ int CListDefCont::FindValNum( int iVal, size_t nStartIndex /* = 0 */ ) const
 	return -1;
 }
 
-bool CListDefCont::AddElementNum(int iVal)
+bool CListDefCont::AddElementNum(INT64 iVal)
 {
 #undef max
 	ADDTOCALLSTACK("CListDefCont::AddElementNum");
@@ -418,8 +418,8 @@ bool compare_insensitive (CListDefContElem * firstelem, CListDefContElem * secon
 
 	if((IsSimpleNumberString(first)) && (IsSimpleNumberString(second)))
 	{
-		int ifirst = firstelem->GetValNum();
-		int isecond = secondelem->GetValNum();
+		INT64 ifirst = firstelem->GetValNum();
+		INT64 isecond = secondelem->GetValNum();
 		return ( ifirst < isecond );
 	}
 	else
@@ -442,8 +442,8 @@ bool compare_sensitive (CListDefContElem * firstelem, CListDefContElem * seconde
 
 	if((IsSimpleNumberString(first)) && (IsSimpleNumberString(second)))
 	{
-		int ifirst = firstelem->GetValNum();
-		int isecond = secondelem->GetValNum();
+		INT64 ifirst = firstelem->GetValNum();
+		INT64 isecond = secondelem->GetValNum();
 		return ( ifirst < isecond );
 	}
 	else
@@ -473,7 +473,7 @@ void CListDefCont::Sort(bool bDesc, bool bCase)
 		m_listElements.reverse();
 }
 
-bool CListDefCont::InsertElementNum(size_t nIndex, int iVal)
+bool CListDefCont::InsertElementNum(size_t nIndex, INT64 iVal)
 {
 	ADDTOCALLSTACK("CListDefCont::InsertElementNum");
 	if ( nIndex >= m_listElements.size() )

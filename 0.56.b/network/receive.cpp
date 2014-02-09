@@ -1130,11 +1130,11 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 
 			if (need2wait > 0)
 			{
-				long timerow = g_World.GetCurrentTime().GetTimeRaw();
+				long long timerow = g_World.GetCurrentTime().GetTimeRaw();
 				if (need2wait > timerow)
 				{
 					TCHAR* msg = Str_GetTemp();
-					long seconds = (need2wait-timerow) / TICK_PER_SEC;
+					long seconds = static_cast<long>(need2wait-timerow) / TICK_PER_SEC;
 					sprintf(msg, g_Cfg.GetDefaultMsg(DEFMSG_TRADE_WAIT), seconds);
 					client->SysMessage(msg);
 					return true;
@@ -1241,7 +1241,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 
 			newMessage->SetAttr(ATTR_MOVE_NEVER);
 			newMessage->SetName(str);
-			newMessage->m_itBook.m_Time = CServTime::GetCurrentTime();
+			newMessage->SetTimeStamp(CServTime::GetCurrentTime().GetTimeRaw());
 			newMessage->m_sAuthor = character->GetName();
 			newMessage->m_uidLink = character->GetUID();
 

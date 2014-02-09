@@ -236,7 +236,7 @@ void CServer::SetExitFlag( int iFlag )
 	m_iExitFlag = iFlag;
 }
 
-void CServer::Shutdown( int iMinutes ) // If shutdown is initialized
+void CServer::Shutdown( INT64 iMinutes ) // If shutdown is initialized
 {
 	ADDTOCALLSTACK("CServer::Shutdown");
 	if ( iMinutes == 0 )
@@ -335,7 +335,7 @@ int CServer::PrintPercent( long iCount, long iTotal )
 	return iPercent;
 }
 
-int CServer::GetAgeHours() const
+INT64 CServer::GetAgeHours() const
 {
 	ADDTOCALLSTACK("CServer::GetAgeHours");
 	return( CServTime::GetCurrentTime().GetTimeRaw() / (60*60*TICK_PER_SEC));
@@ -350,7 +350,7 @@ LPCTSTR CServer::GetStatusString( BYTE iIndex ) const
 
 	TCHAR * pTemp = Str_GetTemp();
 	DWORD iClients = StatGet(SERV_STAT_CLIENTS);
-	int iHours = GetAgeHours() / 24;
+	INT64 iHours = GetAgeHours() / 24;
 
 	switch ( iIndex )
 	{
@@ -366,7 +366,7 @@ LPCTSTR CServer::GetStatusString( BYTE iIndex ) const
 		case 0x22: // '"'
 			{
 			// shown in the INFO page in game.
-			sprintf(pTemp, GRAY_TITLE ", Name=%s, Age=%i, Clients=%lu, Items=%lu, Chars=%lu, Mem=%luK\n",
+			sprintf(pTemp, GRAY_TITLE ", Name=%s, Age=%lld, Clients=%lu, Items=%lu, Chars=%lu, Mem=%luK\n",
 				GetName(), iHours, iClients, StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_MEM));
 			}
 			break;

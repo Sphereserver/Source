@@ -133,7 +133,7 @@ void CChar::Jail( CTextConsole * pSrc, bool fSet, int iCell )
 {
 	ADDTOCALLSTACK("CChar::Jail");
 
-	CScriptTriggerArgs Args( fSet? 1 : 0, iCell, 0);
+	CScriptTriggerArgs Args( fSet? 1 : 0, static_cast<INT64>(iCell), static_cast<INT64>(0));
 
 	if ( fSet )	// set the jailed flag.
 	{
@@ -2405,14 +2405,14 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 
 		if ( IsStatFlag( STATF_DEAD ))
 		{
-			pCorpse->m_itCorpse.m_timeDeath = CServTime::GetCurrentTime();	// death time.
+			pCorpse->SetTimeStamp(CServTime::GetCurrentTime().GetTimeRaw()); // death time.
 			pCorpse->m_itCorpse.m_uidKiller = m_Act_Targ;
 			iDecayTime = (m_pPlayer) ?
 				g_Cfg.m_iDecay_CorpsePlayer : g_Cfg.m_iDecay_CorpseNPC;
 		}
 		else	// Sleeping
 		{
-			pCorpse->m_itCorpse.m_timeDeath.Init();	// Not dead.
+			pCorpse->SetTimeStamp(0); // Not dead.
 			pCorpse->m_itCorpse.m_uidKiller = GetUID();
 			iDecayTime = -1;	// never
 		}
@@ -3892,7 +3892,7 @@ void CChar::OnTickStatusUpdate()
 		GetClient()->UpdateStats();
 
 	// process m_fStatusUpdate flags
-	int iTimeDiff = - g_World.GetTimeDiff( m_timeLastHitsUpdate );
+	INT64 iTimeDiff = - g_World.GetTimeDiff( m_timeLastHitsUpdate );
 	if ( g_Cfg.m_iHitsUpdateRate && ( iTimeDiff >= g_Cfg.m_iHitsUpdateRate ) ) // update hits for all
 	{
 		if ( m_fStatusUpdate & SU_UPDATE_HITS )
@@ -3955,7 +3955,7 @@ bool CChar::OnTick()
 	// RETURN: false = delete this.
 	EXC_TRY("Tick");
 
-	int iTimeDiff = - g_World.GetTimeDiff(m_timeLastRegen);
+	INT64 iTimeDiff = - g_World.GetTimeDiff(m_timeLastRegen);
 	if ( !iTimeDiff )
 		return true;
 

@@ -42,7 +42,7 @@ private:
 	BYTE m_ResDisp;
 	BYTE m_MaxChars;
 	
-	typedef struct { long m_First; long m_Last; long m_Delay; } TimeTriesStruct_t;
+	typedef struct { long long m_First; long long m_Last; long long m_Delay; } TimeTriesStruct_t;
 	typedef std::pair<TimeTriesStruct_t, int> BlockLocalTimePair_t;
 	typedef std::map<DWORD,BlockLocalTimePair_t> BlockLocalTime_t;
 	BlockLocalTime_t m_BlockIP;
@@ -53,11 +53,11 @@ public:
 	CLanguageID m_lang;			// UNICODE language pref. (ENU=english)
 	CGString m_sChatName;		// Chat System Name
 
-	int m_Total_Connect_Time;	// Previous total amount of time in game. (minutes) "TOTALCONNECTTIME"
+	INT64 m_Total_Connect_Time;	// Previous total amount of time in game. (minutes) "TOTALCONNECTTIME"
 
 	CSocketAddressIP m_Last_IP;	// last ip i logged in from.
 	CGTime m_dateLastConnect;	// The last date i logged in. (use localtime())
-	int  m_Last_Connect_Time;	// Amount of time spent online last time. (in minutes)
+	INT64  m_Last_Connect_Time;	// Amount of time spent online last time. (in minutes)
 
 	CSocketAddressIP m_First_IP;	// first ip i logged in from.
 	CGTime m_dateFirstConnect;	// The first date i logged in. (use localtime())
@@ -73,12 +73,12 @@ public:
 		return m_BaseDefs.GetKeyStr( pszKey, fZero );
 	}
 
-	int GetDefNum( LPCTSTR pszKey, bool fZero = false ) const
+	INT64 GetDefNum( LPCTSTR pszKey, bool fZero = false ) const
 	{
 		return m_BaseDefs.GetKeyNum( pszKey, fZero );
 	}
 
-	void SetDefNum(LPCTSTR pszKey, int iVal, bool fZero = true)
+	void SetDefNum(LPCTSTR pszKey, INT64 iVal, bool fZero = true)
 	{
 		m_BaseDefs.SetNum(pszKey, iVal, fZero);
 	}

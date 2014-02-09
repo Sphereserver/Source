@@ -288,7 +288,7 @@ bool CClient::OnTarg_UnExtract( CObjBase * pObj, const CPointMap & pt )
 		if ( ! s.ReadKeyParse())
 			return false; // this has the item count
 
-		int piCmd[4];		// Maximum parameters in one line
+		INT64 piCmd[4];		// Maximum parameters in one line
 		Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
 
 		CItem * pItem = CItem::CreateTemplate(static_cast<ITEMID_TYPE>(ATOI(s.GetKey())), NULL, m_pChar);
@@ -581,7 +581,7 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 			TCHAR szTmp[512];
 			strcpylen( szTmp, m_Targ_Text, COUNTOF(szTmp));
 
-			int piArgs[3];		// Maximum parameters in one line
+			INT64 piArgs[3];		// Maximum parameters in one line
 			Str_ParseCmds( szTmp, piArgs, COUNTOF( piArgs ));
 
 			CPointMap ptNudge(piArgs[0],piArgs[1],piArgs[2] );
@@ -687,7 +687,7 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 			TCHAR szTmp[256];
 			strcpylen( szTmp, m_Targ_Text, COUNTOF(szTmp));
 
-			int piArgs[16];		// Maximum parameters in one line
+			INT64 piArgs[16];		// Maximum parameters in one line
 			size_t iArgQty = Str_ParseCmds( szTmp, piArgs, COUNTOF( piArgs ));
 
 			signed char z = piArgs[0];	// z height is the first arg.
@@ -1200,10 +1200,10 @@ int CClient::OnSkill_Forensics( CGrayUID uid, int iSkillLevel, bool fTest )
 	}
 
 	TCHAR *pszTemp = Str_GetTemp();
-	if ( pCorpse->m_itCorpse.m_timeDeath.IsTimeValid() )
+	if ( pCorpse->GetTimeStamp().IsTimeValid() )
 	{
 		int len = sprintf( pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_FORENSICS_TIMER ),
-			pCorpse->GetName(), ( - g_World.GetTimeDiff( pCorpse->m_itCorpse.m_timeDeath )) / TICK_PER_SEC );
+			pCorpse->GetName(), ( - g_World.GetTimeDiff( pCorpse->GetTimeStamp() )) / TICK_PER_SEC );
 		if ( pName == NULL )
 		{
 			strcpy( pszTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_FORENSICS_FAILNAME ) );

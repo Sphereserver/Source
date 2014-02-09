@@ -696,7 +696,7 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			sVal.FormatVal( IsPriv( PRIV_HEARALL ));
 			break;
 		case CC_LASTEVENT:
-			sVal.FormatVal( m_timeLastEvent.GetTimeRaw() );
+			sVal.FormatLLVal( m_timeLastEvent.GetTimeRaw() );
 			break;
 		case CC_PRIVSHOW:
 			// Show my priv title.
@@ -1062,7 +1062,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			break;
 		case CV_ARROWQUEST:
 			{
-				int piVal[3];
+				INT64 piVal[3];
 				Str_ParseCmds( s.GetArgRaw(), piVal, COUNTOF(piVal));
 				addArrowQuest( piVal[0], piVal[1], piVal[2] );
 #ifdef _ALPHASPHERE
@@ -1294,7 +1294,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			break;
 		case CV_MIDILIST:
 			{
-				int piMidi[64];
+				INT64 piMidi[64];
 				size_t iQty = Str_ParseCmds( s.GetArgStr(), piMidi, COUNTOF(piMidi));
 				if ( iQty > 0 )
 				{

@@ -39,16 +39,16 @@ class CServTime
 	// A time stamp in the server/game world.
 public:
 	static const char *m_sClassName;
-	int m_lPrivateTime;
+	INT64 m_lPrivateTime;
 public:
-	int GetTimeRaw() const
+	INT64 GetTimeRaw() const
 	{
 		if ( m_lPrivateTime < 0 )
 			return 0;
 
 		return m_lPrivateTime;
 	}
-	int GetTimeDiff( const CServTime & time ) const
+	INT64 GetTimeDiff( const CServTime & time ) const
 	{
 		return( m_lPrivateTime - time.m_lPrivateTime );
 	}
@@ -56,7 +56,7 @@ public:
 	{
 		m_lPrivateTime = 0;
 	}
-	void InitTime( int lTimeBase )
+	void InitTime( INT64 lTimeBase )
 	{
 		if ( lTimeBase < 0 )
 			lTimeBase = 0;
@@ -67,7 +67,7 @@ public:
 	{
 		return( m_lPrivateTime > 0 ? true : false );
 	}
-	CServTime operator+( int iTimeDiff ) const
+	CServTime operator+( INT64 iTimeDiff ) const
 	{
 		CServTime time;
 		time.m_lPrivateTime = m_lPrivateTime + iTimeDiff;
@@ -76,7 +76,7 @@ public:
 
 		return( time );
 	}
-	CServTime operator-( int iTimeDiff ) const
+	CServTime operator-( INT64 iTimeDiff ) const
 	{
 		CServTime time;
 		time.m_lPrivateTime = m_lPrivateTime - iTimeDiff;
@@ -85,7 +85,7 @@ public:
 
 		return( time );
 	}
-	int operator-( CServTime time ) const
+	INT64 operator-( CServTime time ) const
 	{
 		return(m_lPrivateTime-time.m_lPrivateTime);
 	}
@@ -347,7 +347,7 @@ public:
 	}
 	void ClearGMHandler();
 	void SetGMHandler( CClient * pClient );
-	int GetAge() const;
+	INT64 GetAge() const;
 
 	bool r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc );
 	void r_Write( CScript & s ) const;
@@ -1455,12 +1455,12 @@ public:
 		return m_BaseDefs.GetKeyStr( pszKey, fZero );
 	}
 
-	int GetDefNum( LPCTSTR pszKey, bool fZero = false ) const
+	INT64 GetDefNum( LPCTSTR pszKey, bool fZero = false ) const
 	{
 		return m_BaseDefs.GetKeyNum( pszKey, fZero );
 	}
 
-	void SetDefNum(LPCTSTR pszKey, int iVal, bool fZero = true)
+	void SetDefNum(LPCTSTR pszKey, INT64 iVal, bool fZero = true)
 	{
 		m_BaseDefs.SetNum(pszKey, iVal, fZero);
 	}
@@ -1553,7 +1553,7 @@ public:
 	void SetServerMode( SERVMODE_TYPE mode );
 
 	void SetExitFlag( int iFlag );
-	void Shutdown( int iMinutes );
+	void Shutdown( INT64 iMinutes );
 	bool IsLoading() const
 	{
 		return( m_iModeCode > SERVMODE_Run || m_fResyncPause );
@@ -1579,7 +1579,7 @@ public:
 	virtual bool r_Verb( CScript & s, CTextConsole * pSrc );
 
 	LPCTSTR GetStatusString( BYTE iIndex = 0 ) const;
-	int GetAgeHours() const;
+	INT64 GetAgeHours() const;
 
 	bool OnConsoleCmd( CGString & sText, CTextConsole * pSrc );
 
@@ -1630,7 +1630,7 @@ extern int Sphere_MainEntryPoint( int argc, char *argv[] );
 ///////////////////////////////////////////////////////////////
 // -CGrayUID
 
-inline int CObjBase::GetTimerDiff() const
+inline INT64 CObjBase::GetTimerDiff() const
 {
 	// How long till this will expire ?
 	return( g_World.GetTimeDiff( m_timeout ));

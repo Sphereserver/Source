@@ -94,7 +94,7 @@ public:
 	LPCTSTR GetName() const { return( m_sName ); }
 	void SetName( LPCTSTR pszName );
 
-	virtual int GetAgeHours() const;
+	virtual INT64 GetAgeHours() const;
 
 	bool IsSame( const CServerDef * pServNew ) const
 	{
@@ -103,7 +103,7 @@ public:
 	}
 
 	void SetValidTime();
-	int GetTimeSinceLastValid() const;
+	INT64 GetTimeSinceLastValid() const;
 
 	virtual bool r_LoadVal( CScript & s );
 	virtual bool r_WriteVal( LPCTSTR pKey, CGString &sVal, CTextConsole * pSrc = NULL );

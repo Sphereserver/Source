@@ -581,7 +581,7 @@ colors_slime {2201 2224}
 colors_animal {2301 2318}
 
 25-01-2014, Ben
--Fixed #2266: Trade Window memory not being removing.
+-Fixed #2266: Trade Window memory not being removed.
 -Change: LIST.xxx.FINDELEM args will now search as a string if 'args' is not a number regardless if it's inside double quotes "".
 
 04-02-2014, XuN
@@ -591,3 +591,10 @@ Fixed #2267: Items in the cursor (layer_dragging) are now bounced if a target is
 05-02-2014, XuN (Script Pack)
 Fixed: changed back i_multi to the new m_ naming style in sphere_item_provisions_deed.scp.
 Updated Mordaunt's House System to version 2.3.4.
+
+02-09-2014, Ben
+-Added: New variable TIMESTAMP to dynamic items and characters. (To allow for server time to upgrade to INT64)
+-Moved: t_corpse.more1, t_book.more2, t_message.more2, t_eq_memory_obj.more2 to new TIMESTAMP
+-Added: t_forest and t_jungle to sphere_defs.scp to fix ISNEARTYPE problems
+-Fixed: <SERV.BUILD> returning date instead of revision number even though revision number is available.
+-Changed: Most Interger types to INT64 for higher time support. Tags and Vars also can hold 64bit numbers. This fixes #1447

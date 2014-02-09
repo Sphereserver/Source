@@ -659,7 +659,7 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iOtherKillers)
 					args.m_iN1 = 0;
 			}
 
-			m_pPlayer->m_wMurders = args.m_iN1;
+			m_pPlayer->m_wMurders = static_cast<long>(args.m_iN1);
 			if ( args.m_iN2 ) 
 				Noto_Criminal();
 
@@ -768,7 +768,7 @@ bool CChar::Memory_UpdateFlags( CItemMemory * pMemory )
 		return false;
 	}
 
-	int iCheckTime;
+	INT64 iCheckTime;
 	if ( wMemTypes & MEMORY_ISPAWNED )
 	{
 		StatFlag_Set( STATF_Spawned );
@@ -835,7 +835,7 @@ void CChar::Memory_AddTypes( CItemMemory * pMemory, WORD MemTypes )
 	{
 		pMemory->SetMemoryTypes( pMemory->GetMemoryTypes() | MemTypes );
 		pMemory->m_itEqMemory.m_pt = GetTopPoint();	// Where did the fight start ?
-		pMemory->m_itEqMemory.m_timeStart = CServTime::GetCurrentTime();
+		pMemory->SetTimeStamp(CServTime::GetCurrentTime().GetTimeRaw());
 		Memory_UpdateFlags( pMemory );
 	}
 }
@@ -2114,7 +2114,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 
 	if ( IsTrigUsed(TRIGGER_GETHIT) )
 	{
-		CScriptTriggerArgs Args( i_damTemp, u_damFlag, 0 );
+		CScriptTriggerArgs Args( i_damTemp, u_damFlag, static_cast<INT64>(0) );
 		if ( OnTrigger( CTRIG_GetHit, pSrc, &Args ) == TRIGRET_RET_TRUE )
 			return( 0 );
 		i_damTemp	= Args.m_iN1;
@@ -2733,7 +2733,7 @@ clearit:
 		return( true );
 	}
 
-	int iTimeDiff = - g_World.GetTimeDiff( pMemory->m_itEqMemory.m_timeStart );
+	INT64 iTimeDiff = - g_World.GetTimeDiff( pMemory->GetTimeStamp() );
 
 	// If am fully healthy then it's not much of a fight.
 	if ( iTimeDiff > 60*60*TICK_PER_SEC )
@@ -3402,7 +3402,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )
 		{
 			// just start the bow animation.
-			int iTime = Fight_GetWeaponSwingTimer();
+			INT64 iTime = Fight_GetWeaponSwingTimer();
 			if ( IsTrigUsed(TRIGGER_HITTRY) )
 			{
 				CScriptTriggerArgs	Args( iTime, 0, pWeapon );
@@ -3457,7 +3457,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	{
 		if ( IsSetCombatFlags(COMBAT_PREHIT) && ( m_atFight.m_War_Swing_State == WAR_SWING_READY ))
 		{
-			int diff = GetKeyNum("LastHit", true) - g_World.GetCurrentTime().GetTimeRaw();
+			INT64 diff = GetKeyNum("LastHit", true) - g_World.GetCurrentTime().GetTimeRaw();
 			if ( diff > 0 )
 			{
 				diff = ( diff > 50 )? 50: diff;
@@ -3488,7 +3488,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				UpdateDir(pCharTarg);
 
 			// We are swinging.
-			int iTime = Fight_GetWeaponSwingTimer();
+			INT64 iTime = Fight_GetWeaponSwingTimer();
 			if ( IsTrigUsed(TRIGGER_HITTRY) )
 			{
 				CScriptTriggerArgs Args( iTime, 0, pWeapon );

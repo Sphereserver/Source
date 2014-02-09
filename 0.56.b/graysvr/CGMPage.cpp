@@ -22,7 +22,7 @@ CGMPage::~CGMPage()
 	ClearGMHandler();
 }
 
-int CGMPage::GetAge() const
+INT64 CGMPage::GetAge() const
 {
 	ADDTOCALLSTACK("CGMPage::GetAge");
 	// How old in seconds.
@@ -101,7 +101,7 @@ bool CGMPage::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		sVal = GetAccountStatus();
 		break;
 	case GC_TIME:	// "TIME"
-		sVal.FormatHex( GetAge() );
+		sVal.FormatLLHex( GetAge() );
 		break;
 	default:
 		return( CScriptObj::r_WriteVal( pszKey, sVal, pSrc ));

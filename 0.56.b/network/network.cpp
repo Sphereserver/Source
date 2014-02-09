@@ -449,7 +449,7 @@ void HistoryIP::setBlocked(bool isBlocked, int timeout)
 		CScriptTriggerArgs args(m_ip.GetAddrStr());
 		args.m_iN1 = timeout;
 		g_Serv.r_Call("f_onserver_blockip", &g_Serv, &args);
-		timeout = args.m_iN1;
+		timeout = static_cast<long>(args.m_iN1);
 	}
 
 	m_blocked = isBlocked;
@@ -3089,7 +3089,7 @@ void NetworkInput::processData()
 			{
 				// check for timeout
 				EXC_SET("check frozen");
-				int iLastEventDiff = -g_World.GetTimeDiff( client->m_timeLastEvent );
+				INT64 iLastEventDiff = -g_World.GetTimeDiff( client->m_timeLastEvent );
 				if ( g_Cfg.m_iDeadSocketTime > 0 && iLastEventDiff > g_Cfg.m_iDeadSocketTime )
 				{
 					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Frozen client connection disconnected.\n", state->id());

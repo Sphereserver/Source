@@ -46,12 +46,12 @@ public:
 		return m_BaseDefs.GetKeyStr( pszKey, fZero );
 	}
 
-	int GetDefNum( LPCTSTR pszKey, bool fZero = false ) const
+	INT64 GetDefNum( LPCTSTR pszKey, bool fZero = false ) const
 	{
 		return m_BaseDefs.GetKeyNum( pszKey, fZero );
 	}
 
-	void SetDefNum(LPCTSTR pszKey, int iVal, bool fZero = true)
+	void SetDefNum(LPCTSTR pszKey, INT64 iVal, bool fZero = true)
 	{
 		m_BaseDefs.SetNum(pszKey, iVal, fZero);
 	}

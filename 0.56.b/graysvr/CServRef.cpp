@@ -171,7 +171,7 @@ void CServerDef::SetValidTime()
 	m_timeLastValid = CServTime::GetCurrentTime();
 }
 
-int CServerDef::GetTimeSinceLastValid() const
+INT64 CServerDef::GetTimeSinceLastValid() const
 {
 	ADDTOCALLSTACK("CServerDef::GetTimeSinceLastValid");
 	return( - g_World.GetTimeDiff( m_timeLastValid ));
@@ -313,7 +313,7 @@ bool CServerDef::r_LoadVal( CScript & s )
 			SetName( s.GetArgStr());
 			break;
 		case SC_SERVPORT:
-			m_ip.SetPort( s.GetArgVal());
+			m_ip.SetPort( static_cast<WORD>(s.GetArgVal()));
 			break;
 
 		case SC_ACCOUNTS:
@@ -337,7 +337,7 @@ bool CServerDef::r_LoadVal( CScript & s )
 			SetStat( SERV_STAT_CHARS, s.GetArgVal());
 			break;
 		case SC_TIMEZONE:
-			m_TimeZone = s.GetArgVal();
+			m_TimeZone = static_cast<char>(s.GetArgVal());
 			break;
 		case SC_URL:
 		case SC_URLLINK:
@@ -384,7 +384,7 @@ bool CServerDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 		break;
 	case SC_AGE:
 		// display the age in days.
-		sVal.FormatVal( GetAgeHours()/24 );
+		sVal.FormatLLVal( GetAgeHours()/24 );
 		break;
 	case SC_CLIENTVERSION:
 		{
@@ -393,7 +393,7 @@ bool CServerDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 		}
 		break;
 	case SC_CREATE:
-		sVal.FormatVal( g_World.GetTimeDiff(m_timeCreate) / TICK_PER_SEC );
+		sVal.FormatLLVal( g_World.GetTimeDiff(m_timeCreate) / TICK_PER_SEC );
 		break;
 	case SC_LANG:
 		sVal = m_sLang;
@@ -401,13 +401,13 @@ bool CServerDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 
 	case SC_LASTVALIDDATE:
 		if ( m_timeLastValid.IsTimeValid() )
-			sVal.FormatVal( GetTimeSinceLastValid() / ( TICK_PER_SEC * 60 ));
+			sVal.FormatLLVal( GetTimeSinceLastValid() / ( TICK_PER_SEC * 60 ));
 		else
 			sVal = "NA";
 		break;
 	case SC_LASTVALIDTIME:
 		// How many seconds ago.
-		sVal.FormatVal( m_timeLastValid.IsTimeValid() ? ( GetTimeSinceLastValid() / TICK_PER_SEC ) : -1 );
+		sVal.FormatLLVal( m_timeLastValid.IsTimeValid() ? ( GetTimeSinceLastValid() / TICK_PER_SEC ) : -1 );
 		break;
 	case SC_SERVIP:
 		sVal = m_ip.GetAddrStr();
@@ -474,7 +474,7 @@ bool CServerDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 	return false;
 }
 
-int CServerDef::GetAgeHours() const
+INT64 CServerDef::GetAgeHours() const
 {
 	ADDTOCALLSTACK("CServerDef::GetAgeHours");
 	// This is just the amount of time it has been listed.

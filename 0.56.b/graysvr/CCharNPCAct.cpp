@@ -189,7 +189,7 @@ bool CChar::NPC_Vendor_Restock(bool bForce, bool bFillStock)
 		// Restock occurs every 10 minutes of inactivity (unless
 		// region tag specifies different time)
 		CRegionWorld *region = GetRegion();
-		int restockIn = 10 * 60 * TICK_PER_SEC;
+		INT64 restockIn = 10 * 60 * TICK_PER_SEC;
 		if( region != NULL )
 		{
 			CVarDefCont *vardef = region->m_TagDefs.GetKey("RestockVendors");
@@ -1048,7 +1048,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 
 	EXC_SET("Speed counting");
 	// How fast can they move.
-	int iTickNext;
+	INT64 iTickNext;
 	if ( fRun )
 	{
 		if ( IsStatFlag( STATF_Pet ))	// pets run a little faster.
@@ -1065,7 +1065,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 	CVarDefCont * pValue = GetKey("OVERRIDE.MOVERATE",true);
 	if ( pValue ) 
 	{
-		int tTick = pValue->GetValNum();
+		INT64 tTick = pValue->GetValNum();
 		if ( tTick < 1 ) tTick=1;
 		//g_Log.EventDebug("tag found: %d\n",tTick);
 		iTickNext = ( iTickNext * tTick ) / 100;
@@ -2197,7 +2197,7 @@ void CChar::NPC_Act_Fight()
 		CVarDefCont * pRange = GetDefKey("THROWRANGE",true);
 		if (pRange)
 		{
-			int RVal[2];
+			INT64 RVal[2];
 			size_t iQty = Str_ParseCmds( const_cast<TCHAR*>(pRange->GetValStr()), RVal, COUNTOF(RVal));
 			switch(iQty)
 			{
@@ -2531,7 +2531,7 @@ void CChar::NPC_Act_Looting()
 			m_pNPC->m_Brain == NPCBRAIN_DRAGON )
 		{
 			// Only do this if it has a resource type we want...
-			if ( pCorpse->m_itCorpse.m_timeDeath.IsTimeValid() )
+			if ( pCorpse->GetTimeStamp().IsTimeValid() )
 			{
 				Use_CarveCorpse( pCorpse );
 				Skill_Start( NPCACT_LOOKING );

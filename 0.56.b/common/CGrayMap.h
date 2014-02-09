@@ -37,7 +37,7 @@ public:
 		// When in g_World.GetTime() was this last referenced.
 		m_timeRef = CServTime::GetCurrentTime();
 	}
-	int GetCacheAge() const
+	INT64 GetCacheAge() const
 	{
 		// In TICK_PER_SEC or milliseconds
 		return( CServTime::GetCurrentTime() - m_timeRef );

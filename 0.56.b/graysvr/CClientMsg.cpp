@@ -188,7 +188,7 @@ void CClient::addTime( bool bCurrent )
 
 	if ( bCurrent )
 	{
-		long lCurrentTime = (CServTime::GetCurrentTime()).GetTimeRaw();
+		long long lCurrentTime = (CServTime::GetCurrentTime()).GetTimeRaw();
 		cmd = new PacketGameTime(this, 
 								( lCurrentTime / ( 60*60*TICK_PER_SEC )) % 24,
 								( lCurrentTime / ( 60*TICK_PER_SEC )) % 60,
@@ -3025,7 +3025,7 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 
 	if ( IsTrigUsed(TRIGGER_LOGIN) )
 	{
-		CScriptTriggerArgs Args( fNoMessages, fQuickLogIn, 0 );
+		CScriptTriggerArgs Args( fNoMessages, fQuickLogIn, static_cast<INT64>(0) );
 		if ( pChar->OnTrigger( CTRIG_LogIn, pChar, &Args ) == TRIGRET_RET_TRUE )
 		{
 			m_pChar->ClientDetach();

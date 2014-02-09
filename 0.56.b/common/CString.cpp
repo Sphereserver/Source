@@ -239,6 +239,11 @@ void CGString::FormatVal( long iVal )
 	Format("%ld", iVal);
 }
 
+void CGString::FormatLLVal( long long iVal )
+{
+	Format("%lld", iVal);
+}
+
 void CGString::FormatUVal( unsigned long iVal )
 {
 	Format("%lu", iVal);
@@ -248,6 +253,12 @@ void CGString::FormatHex( DWORD dwVal )
 {
 	Format("0%lx", dwVal);
 }
+
+void CGString::FormatLLHex( unsigned long long dwVal )
+{
+	Format("0%llx", dwVal);
+}
+
 int CGString::Compare( LPCTSTR pStr ) const
 {
 	return (strcmp(m_pchData, pStr));
@@ -545,7 +556,7 @@ size_t Str_ParseCmds( TCHAR * pszCmdLine, TCHAR ** ppCmd, size_t iMax, LPCTSTR p
 	return( iQty );
 }
 
-size_t Str_ParseCmds( TCHAR * pszCmdLine, int * piCmd, size_t iMax, LPCTSTR pszSep )
+size_t Str_ParseCmds( TCHAR * pszCmdLine, INT64 * piCmd, size_t iMax, LPCTSTR pszSep )
 {
 	TCHAR * ppTmp[256];
 	if ( iMax > COUNTOF(ppTmp))

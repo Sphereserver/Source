@@ -81,7 +81,7 @@ bool CItemVendable::r_LoadVal(CScript &s)
 		m_price = s.GetArgVal();
 		return true;
 	case IVC_QUALITY:	// QUALITY
-		SetQuality( s.GetArgVal());
+		SetQuality( static_cast<WORD>(s.GetArgVal()));
 		return true;
 	}
 	return CItem::r_LoadVal(s);
@@ -192,7 +192,7 @@ LONG CItemVendable::GetVendorPrice( int iConvertFactor )
 				pItemDef = Item_GetDef();
 			}
 			lPrice = pItemDef->GetMakeValue(GetQuality());
-			m_price = -lPrice;
+			m_price = static_cast<long>(-lPrice);
 		}
 		else
 		{
@@ -206,7 +206,7 @@ LONG CItemVendable::GetVendorPrice( int iConvertFactor )
 	else if (lPrice <= 0)
 		return 0;
 	
-	return lPrice;
+	return static_cast<long>(lPrice);
 }
 
 bool CItemVendable::IsValidSaleItem( bool fBuyFromVendor ) const

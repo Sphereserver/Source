@@ -60,6 +60,14 @@ DWORD CScriptKey::GetArgFlag( DWORD dwStart, DWORD dwMask )
 		return( dwStart &~ dwMask );
 }
 
+long long CScriptKey::GetArgLLVal()
+{
+	ADDTOCALLSTACK("CScriptKey::GetArgLLVal");
+	ASSERT(m_pszKey);
+	ASSERT(m_pszArg);
+	return( Exp_GetLLVal( m_pszArg ));
+}
+
 long CScriptKey::GetArgVal()
 {
 	ADDTOCALLSTACK("CScriptKey::GetArgVal");
