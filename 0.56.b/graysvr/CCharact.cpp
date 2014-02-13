@@ -1570,7 +1570,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 			if ( (pStack->GetTopZ() + pStack->GetHeight()) >= TopCheck )
 				continue;
 
-			if (pStack->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC))
+			if (pStack->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC|ATTR_LOCKEDDOWN))
 				TopCheck = pStack->GetTopZ() + pStack->GetHeight();
 
 			if (( pStack->GetTopZ() == pItem->GetTopZ()) && (pStack->IsType(IT_TABLE)) && (pStack != pItem))
@@ -1587,7 +1587,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 			if (( pStack->GetTopZ() <= pItem->GetTopZ()) || ( pStack->GetTopZ() >= TopCheck ))
 				continue;
 
-			if (pStack->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC))
+			if (pStack->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC|ATTR_LOCKEDDOWN))
 				continue;
 
 			ptNewPlace = pStack->GetTopPoint();

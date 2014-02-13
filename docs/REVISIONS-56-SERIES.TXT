@@ -598,3 +598,12 @@ Updated Mordaunt's House System to version 2.3.4.
 -Added: t_forest and t_jungle to sphere_defs.scp to fix ISNEARTYPE problems
 -Fixed: <SERV.BUILD> returning date instead of revision number even though revision number is available.
 -Changed: Most Interger types to INT64 for higher time support. Tags and Vars also can hold 64bit numbers. This fixes #1447
+
+13-02-2014, XuN
+Fixed: Players now become instantly GuildMasters when placing a Guild Stone instead of waiting until first DClick.
+Added functionality to the ATTR_LOCKEDDOWN and ATTR_SECURED flags: locked down items should not be able to be moved, decay and be eaten by npcs (and some more default behaviour), secured items have all this checks but not the ones related to pick up and use.
+
+Script Pack:
+Modified: Iron ore now requires 0.0 Mining instead of 20.0.
+Updated: New update of Mordaunt's house system.
+Updated sphere_msgs.scp: Added ITEMUSE_SECURED, ITEMUSE_SECURE_ON and ITEMUSE_SECURE_OFF

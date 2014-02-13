@@ -691,7 +691,7 @@ bool CItemShip::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fr
 	if ( ! pSrc )
 		return( false );
 
-	if ( IsAttr(ATTR_MOVE_NEVER) || ! IsTopLevel() )
+	if ( IsAttr(ATTR_MOVE_NEVER|ATTR_LOCKEDDOWN) || ! IsTopLevel() )
 		return false;
 
 	CChar * pChar = pSrc->GetChar();

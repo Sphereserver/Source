@@ -949,7 +949,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 						CItem	*pItem = AreaItems.GetItem();
 						if ( !pItem ) break;
 						else if ( abs(pItem->GetTopZ() - pMe.m_z) > 3 ) continue;		// item is too high
-						else if ( pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_OWNED|ATTR_INVIS|ATTR_STATIC|ATTR_MAGIC) ) bClearedWay = false;
+						else if ( pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_OWNED|ATTR_INVIS|ATTR_STATIC|ATTR_MAGIC|ATTR_LOCKEDDOWN) ) bClearedWay = false;
 						else if ( !pItem->Item_GetDef()->Can(CAN_I_BLOCK) ) continue;	// this item not blocking me
 						else if ( !CanCarry(pItem) ) bClearedWay = false;
 						else
@@ -1347,7 +1347,7 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 
 	if ( IsTrigUsed(TRIGGER_NPCLOOKATITEM) )
 	{
-		if (( !pItem->IsAttr( ATTR_MOVE_NEVER ) ) && ( IsTrigUsed(TRIGGER_NPCLOOKATITEM) ))
+		if (( !pItem->IsAttr( ATTR_MOVE_NEVER|ATTR_LOCKEDDOWN|ATTR_SECURE ) ) && ( IsTrigUsed(TRIGGER_NPCLOOKATITEM) ))
 		{
 
 			CScriptTriggerArgs	Args( iDist, iWantThisItem, pItem );
@@ -2740,7 +2740,7 @@ bool CChar::NPC_Act_Food()
 #endif
 			continue;
 		}
-		if ( pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC) )
+		if ( pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC|ATTR_LOCKEDDOWN|ATTR_SECURE) )
 			continue;
 
 		if ( (iEatAmount = Food_CanEat(pItem)) > 0 )
@@ -3545,7 +3545,7 @@ void CChar::NPC_Food()
 	{
 		CItem	*pItem = AreaItems.GetItem();
 		if ( !pItem ) break;
-		if ( !CanSee(pItem) || pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC) ) continue;
+		if ( !CanSee(pItem) || pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC|ATTR_LOCKEDDOWN|ATTR_SECURE) ) continue;
 		if ( (pItem->GetTopPoint().m_z < iMyZ) || (pItem->GetTopPoint().m_z > (iMyZ + (m_height / 2))) )
 			continue;
 

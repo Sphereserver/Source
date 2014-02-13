@@ -2093,7 +2093,7 @@ bool CChar::CanMove( CItem * pItem, bool fMsg ) const
 	if ( !pItem )
 		return false;
 
-	if ( !pItem->IsAttr(ATTR_MOVE_ALWAYS) && pItem->IsAttr(ATTR_MOVE_NEVER) )
+	if ( !pItem->IsAttr(ATTR_MOVE_ALWAYS) && pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_LOCKEDDOWN) )
 		return false;
 
 	if ( pItem->IsType(IT_CORPSE))

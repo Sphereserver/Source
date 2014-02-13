@@ -1289,8 +1289,6 @@ CItem * CChar::Skill_NaturalResource_Create( CItem * pResBit, SKILL_TYPE skill )
 	ASSERT(pResBit);
 
 	// Find the ore type located here based on color.
-	//RESOURCE_ID rid	= pResGroup->GetMemberID( id );	//read down
-	//pOreDef = dynamic_cast <CRegionResourceDef *>( g_Cfg.ResourceGetDef( rid ));	//Default behaviour, modified it because i couldn't call triggers from this pOreDef
 	CRegionResourceDef * pOreDef = dynamic_cast <CRegionResourceDef *>( g_Cfg.ResourceGetDef( pResBit->m_itResource.m_rid_res ));
 	if ( pOreDef == NULL )
 	{
@@ -1298,8 +1296,7 @@ CItem * CChar::Skill_NaturalResource_Create( CItem * pResBit, SKILL_TYPE skill )
 	}
 
 	// Skill effects how much of the ore i can get all at once.
-	//ITEMID_TYPE id = static_cast<ITEMID_TYPE>(RES_GET_INDEX( pOreDef->m_ReapItem)); //Commenting out, i'm creating later this with args from @ResourceGather
-	if ( pOreDef->m_ReapItem == ITEMID_NOTHING )		//Changed 'id' topOreDef->m_ReapItem because i moved id after triggers (cannot duplicate variables :?)
+	if ( pOreDef->m_ReapItem == ITEMID_NOTHING )
 	{
 		// I intended for there to be nothing here.
 		return( NULL );

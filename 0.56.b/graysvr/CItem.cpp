@@ -534,7 +534,7 @@ bool CItem::IsMovableType() const
 	ADDTOCALLSTACK("CItem::IsMovableType");
 	if ( IsAttr( ATTR_MOVE_ALWAYS ))	// this overrides other flags.
 		return( true );
-	if ( IsAttr( ATTR_MOVE_NEVER | ATTR_STATIC | ATTR_INVIS ))
+	if ( IsAttr( ATTR_MOVE_NEVER | ATTR_STATIC | ATTR_INVIS | ATTR_LOCKEDDOWN ))
 		return( false );
 	const CItemBase * pItemDef = Item_GetDef();
 	ASSERT(pItemDef);
@@ -546,7 +546,7 @@ bool CItem::IsMovableType() const
 bool CItem::IsMovable() const
 {
 	ADDTOCALLSTACK("CItem::IsMovable");
-	if ( ! IsTopLevel() && ! IsAttr( ATTR_MOVE_NEVER ))
+	if ( ! IsTopLevel() && ! IsAttr( ATTR_MOVE_NEVER | ATTR_LOCKEDDOWN ))
 	{
 		// If it's in my pack (event though not normally movable) thats ok.
 		return( true );
@@ -1116,7 +1116,8 @@ bool CItem::Stack( CItem * pItem )
 	if ( IsAttr( ATTR_NEWBIE ) != pItem->IsAttr( ATTR_NEWBIE )) return false;
 	else if ( IsAttr( ATTR_MOVE_NEVER ) != pItem->IsAttr( ATTR_MOVE_NEVER )) return false;
 	else if ( IsAttr( ATTR_STATIC ) != pItem->IsAttr( ATTR_STATIC )) return false;
-
+	else if ( IsAttr( ATTR_LOCKEDDOWN ) != pItem->IsAttr( ATTR_LOCKEDDOWN )) return false;
+	
 	SetAmount( pItem->GetAmount() + GetAmount());
 	pItem->Delete();
 	return( true );
@@ -1147,7 +1148,7 @@ INT64 CItem::GetDecayTime() const
 			break;
 	}
 
-	if ( IsAttr(ATTR_CAN_DECAY|ATTR_STATIC|ATTR_MOVE_NEVER) || !IsMovableType() )
+	if ( IsAttr(ATTR_CAN_DECAY|ATTR_STATIC|ATTR_MOVE_NEVER|ATTR_LOCKEDDOWN|ATTR_SECURE) || !IsMovableType() )
 		return -1;
 
 	if ( IsAttr(ATTR_MAGIC) )			//	magics destroyed later
