@@ -592,7 +592,7 @@ Fixed #2267: Items in the cursor (layer_dragging) are now bounced if a target is
 Fixed: changed back i_multi to the new m_ naming style in sphere_item_provisions_deed.scp.
 Updated Mordaunt's House System to version 2.3.4.
 
-02-09-2014, Ben
+09-02-2014, Ben
 -Added: New variable TIMESTAMP to dynamic items and characters. (To allow for server time to upgrade to INT64)
 -Moved: t_corpse.more1, t_book.more2, t_message.more2, t_eq_memory_obj.more2 to new TIMESTAMP
 -Added: t_forest and t_jungle to sphere_defs.scp to fix ISNEARTYPE problems
@@ -607,3 +607,6 @@ Script Pack:
 Modified: Iron ore now requires 0.0 Mining instead of 20.0.
 Updated: New update of Mordaunt's house system.
 Updated sphere_msgs.scp: Added ITEMUSE_SECURED, ITEMUSE_SECURE_ON and ITEMUSE_SECURE_OFF
+
+15-02-2014, Ben
+-Fixed #2275: NPCs walking through multi doors

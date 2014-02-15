@@ -2517,7 +2517,7 @@ CRegionBase * CChar::CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlag
 	//ptDest.m_z += m_zClimbHeight; // If we are climbing than check z at the top of stairs
 	//CGrayMapBlockState block( wBlockFlags, ptDest.m_z, ptDest.m_z + m_zClimbHeight + PLAYER_HEIGHT + 3, ptDest.m_z + m_zClimbHeight + 2 );
 	//WARNWALK(("\t\tCGrayMapBlockState block( 0%x, %d, %d, %d );ptDest.m_z(%d) m_zClimbHeight(%d)\n",wBlockFlags, ptDest.m_z, ptDest.m_z + m_zClimbHeight + PLAYER_HEIGHT + 3, ptDest.m_z + m_zClimbHeight + 2,ptDest.m_z,m_zClimbHeight));
-	CGrayMapBlockState block( wBlockFlags, ptDest.m_z, ptDest.m_z + m_zClimbHeight + GetHeightMount( false ), ptDest.m_z + m_zClimbHeight + 2, GetHeightMount( false ) );
+	CGrayMapBlockState block( wBlockFlags, ptDest.m_z, ptDest.m_z + m_zClimbHeight + GetHeightMount( false ), ptDest.m_z + m_zClimbHeight + 3, GetHeightMount( false ) );
 	WARNWALK(("\t\tCGrayMapBlockState block( 0%x, %d, %d, %d );ptDest.m_z(%d) m_zClimbHeight(%d)\n",wBlockFlags, ptDest.m_z, ptDest.m_z + m_zClimbHeight + GetHeightMount( false ), ptDest.m_z + m_zClimbHeight + 2,ptDest.m_z,m_zClimbHeight));
 
 	if ( ! ptDest.IsValidPoint() )
@@ -2533,10 +2533,9 @@ CRegionBase * CChar::CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlag
 	if ( block.m_Top.m_dwBlockFlags )
 	{
 		wBlockFlags |= CAN_I_ROOF;	// we are covered by something.
-		//WARNWALK(("block.m_Top.m_z (%d) > ptDest.m_z (%d) - m_zClimbHeight (%d) + (block.m_Top.m_dwTile (0x%x) > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT/2 )(%d)\n",block.m_Top.m_z,ptDest.m_z,m_zClimbHeight,block.m_Top.m_dwTile,ptDest.m_z - m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT/2 )));
-		//if ( block.m_Top.m_z < ptDest.m_z - m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT/2 ) )
-		WARNWALK(("block.m_Top.m_z (%d) > ptDest.m_z (%d) - m_zClimbHeight (%d) + (block.m_Top.m_dwTile (0x%lx) > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT/2 )(%d)\n",block.m_Top.m_z,ptDest.m_z,m_zClimbHeight,block.m_Top.m_dwTile,ptDest.m_z - (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT/2 ))));
-		if ( block.m_Top.m_z < ptDest.m_z - (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? GetHeightMount( false ) : GetHeightMount( false )/2 )) )
+
+		WARNWALK(("block.m_Top.m_z (%d) > ptDest.m_z (%d) + m_zClimbHeight (%d) + (block.m_Top.m_dwTile (0x%lx) > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT/2 )(%d)\n",block.m_Top.m_z,ptDest.m_z,m_zClimbHeight,block.m_Top.m_dwTile,ptDest.m_z - (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT/2 ))));
+		if ( block.m_Top.m_z < ptDest.m_z + (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? GetHeightMount( false ) : GetHeightMount( false )/2 )) )
 			wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
 	}
 
