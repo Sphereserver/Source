@@ -610,3 +610,4 @@ Updated sphere_msgs.scp: Added ITEMUSE_SECURED, ITEMUSE_SECURE_ON and ITEMUSE_SE
 
 15-02-2014, Ben
 -Fixed #2275: NPCs walking through multi doors
+-Fixed: Targets not removing when using SELF and LAST

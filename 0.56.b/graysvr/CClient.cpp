@@ -1280,6 +1280,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				if ( pObj != NULL )
 				{
 					Event_Target(GetTargMode(), pObj->GetUID(), pObj->GetUnkPoint());
+					addTargetCancel();
 				}
 				break;
 			}
@@ -1360,6 +1361,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			{
 				ASSERT(m_pChar);
 				Event_Target(GetTargMode(), m_pChar->GetUID(), m_pChar->GetTopPoint());
+				addTargetCancel();
 				break;
 			}
 			return( false );
