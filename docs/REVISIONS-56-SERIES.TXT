@@ -611,3 +611,15 @@ Updated sphere_msgs.scp: Added ITEMUSE_SECURED, ITEMUSE_SECURE_ON and ITEMUSE_SE
 15-02-2014, Ben
 -Fixed #2275: NPCs walking through multi doors
 -Fixed: Targets not removing when using SELF and LAST
+
+16-02-2014, XuN
+Modified @StatChange: now is working properly in EVERY stat change, and not only in the stat gain/loses
+	argn1=statid (maxhits,maxmana,maxstam and maxfood are checked now too)
+	argn2=the current stat value
+	argn3=the new value
+Fixed some new variables not working.
+
+ScriptPack:
+updated sphere_events_npcs.scp: Functions ModMaxHits/Stam/Mana to work better, they also accept += and the rest of operators.
+added: sphere_attr.rar to Custom folder containing some basic behaviour for attr_secure and attr_nodroptrade (for now).
+Updated Mordaunt's house system to version 2.3.7

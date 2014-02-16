@@ -679,6 +679,8 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_SPLINTERINGWEAPON:
 		case OC_VELOCITY:
 		case OC_WEIGHTREDUCTION:
+		case OC_NIGHTSIGHT:
+		case OC_SPELLCHANNELING:
 			sVal = GetDefStr(pszKey, true);
 			break;
 		//On these ones, check BaseDef too if not found on dynamic

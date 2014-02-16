@@ -128,6 +128,18 @@ void CChar::Stat_SetMax( STAT_TYPE i, int iVal )
 	}
 	else
 	{
+		int iStatVal = Stat_GetBase(static_cast<STAT_TYPE>(i));
+		if ( IsTrigUsed(TRIGGER_STATCHANGE) )
+		{
+			CScriptTriggerArgs args;
+			args.m_iN1 = i+3;	//Only Max* stats are fired here, and we don't want to receive argn1=0 for both STR and MAXHITS in the trigger so i trick it.
+			args.m_iN2 = iStatVal;
+			args.m_iN3 = iVal;
+			if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
+				return;
+			i = static_cast<STAT_TYPE>(args.m_iN1-3);
+			iVal = args.m_iN3;
+		}
 		m_Stat[i].m_max = iVal;
 		switch ( i )
 		{
@@ -228,6 +240,18 @@ void CChar::Stat_SetBase( STAT_TYPE i, short iVal )
 	ADDTOCALLSTACK("CChar::Stat_SetBase");
 	ASSERT(i >= 0 && i < STAT_QTY);
 
+	int iStatVal = Stat_GetBase(static_cast<STAT_TYPE>(i));
+	if ( IsTrigUsed(TRIGGER_STATCHANGE) )
+	{
+		CScriptTriggerArgs args;
+		args.m_iN1 = i;
+		args.m_iN2 = iStatVal+1;
+		args.m_iN3 = iVal;
+		if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
+			return;
+		i = static_cast<STAT_TYPE>(args.m_iN1);
+		iVal = args.m_iN3;
+	}
 	switch ( i )
 	{
 		case STAT_STR:
@@ -728,15 +752,6 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 
 		if ( iRoll <= iChance )
 		{
-			if ( IsTrigUsed(TRIGGER_STATCHANGE) )
-			{
-				CScriptTriggerArgs args;
-				args.m_iN1 = i;
-				args.m_iN2 = iStatVal+1;
-				if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
-					return;
-			}
-
 			Stat_SetBase(static_cast<STAT_TYPE>(i), iStatVal + 1);
 			break;
 		}
