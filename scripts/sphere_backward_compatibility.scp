@@ -114,7 +114,9 @@ VERSION=0.56c
 //i_latticed_wall_1       i_wall_lattice_1
 //i_latticed_wall_brown   i_wall_lattice_2
 //i_wall_latticed_plaster i_wall_cloth_framed
-
+//i_fruit_cantelope	      i_fruit_cantaloupe
+//i_fruit_gourd1          i_fruit_gourd_yellow
+//i_fruit_gourd2          i_fruit_gourd_green
 
 [FUNCTION addnpc]
 IF (<ISNUM <ARGS>>)

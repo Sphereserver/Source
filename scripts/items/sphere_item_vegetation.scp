@@ -299,7 +299,7 @@ CATEGORY=Vegetation
 SUBSECTION=Plants and Flowers
 DESCRIPTION=Vines
 ON=@Create
-   FRUIT={ i_fruit_watermelon, i_fruit_pumpkin, i_fruit_pumpkin_2, i_fruit_pumpkin_3, i_fruit_pumpkin_tall, i_fruit_gourd1, i_fruit_gourd2, i_fruit_cantelope, i_fruit_honeydewmelon, i_fruit_squash }
+   FRUIT={ i_fruit_watermelon, i_fruit_pumpkin, i_fruit_pumpkin_2, i_fruit_pumpkin_3, i_fruit_pumpkin_tall, i_fruit_gourd_yellow, i_fruit_gourd_green, i_fruit_cantaloupe, i_fruit_honeydewmelon, i_fruit_squash }
 
 [ITEMDEF 0c5f]
 //vines
@@ -313,7 +313,7 @@ CATEGORY=Vegetation
 SUBSECTION=Plants and Flowers
 DESCRIPTION=Vines
 ON=@Create
-   FRUIT={ i_fruit_watermelon, i_fruit_pumpkin, i_fruit_pumpkin_2, i_fruit_pumpkin_3, i_fruit_pumpkin_tall, i_fruit_gourd1, i_fruit_gourd2, i_fruit_cantelope, i_fruit_honeydewmelon, i_fruit_squash }
+   FRUIT={ i_fruit_watermelon, i_fruit_pumpkin, i_fruit_pumpkin_2, i_fruit_pumpkin_3, i_fruit_pumpkin_tall, i_fruit_gourd_yellow, i_fruit_gourd_green, i_fruit_cantaloupe, i_fruit_honeydewmelon, i_fruit_squash }
 
 [ITEMDEF 0c60]
 //vines
@@ -326,7 +326,7 @@ CATEGORY=Vegetation
 SUBSECTION=Plants and Flowers
 DESCRIPTION=Vines
 ON=@Create
-   FRUIT={ i_fruit_watermelon, i_fruit_pumpkin, i_fruit_pumpkin_2, i_fruit_pumpkin_3, i_fruit_pumpkin_tall, i_fruit_gourd1, i_fruit_gourd2, i_fruit_cantelope, i_fruit_honeydewmelon, i_fruit_squash }
+   FRUIT={ i_fruit_watermelon, i_fruit_pumpkin, i_fruit_pumpkin_2, i_fruit_pumpkin_3, i_fruit_pumpkin_tall, i_fruit_gourd_yellow, i_fruit_gourd_green, i_fruit_cantaloupe, i_fruit_honeydewmelon, i_fruit_squash }
 
 [ITEMDEF 0c61]
 DEFNAME=i_crop_turnip1
@@ -355,7 +355,7 @@ DUPEITEM=0c62
 
 
 [ITEMDEF 0c64]
-DEFNAME=i_fruit_gourd1
+DEFNAME=i_fruit_gourd_yellow
 TYPE=t_fruit
 TDATA1=i_crop_vines1
 FLIP=1
@@ -373,7 +373,7 @@ ON=@Create
 DUPEITEM=0c64
 
 [ITEMDEF 0c66]
-DEFNAME=i_fruit_gourd2
+DEFNAME=i_fruit_gourd_green
 TYPE=t_fruit
 TDATA1=i_crop_vines1
 FLIP=1
@@ -578,7 +578,7 @@ ON=@Create
 DUPEITEM=0c77
 
 [ITEMDEF 0c79]
-DEFNAME=i_fruit_cantelope
+DEFNAME=i_fruit_cantaloupe
 TYPE=t_fruit
 TDATA1=i_crop_vines1
 FLIP=1

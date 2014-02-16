@@ -1159,6 +1159,7 @@ IMSG_DEF_FONT   3
 //charinfo_jailed          " [jailed]"
 //charinfo_logout          " [logout]"
 //charinfo_criminal        " [criminal]"
+//charinfo_summoned		   " [summoned]"
 //book_author_unknown      "unknown"
 //guild_already_member     "You are already a memberof a guild. Resign first."
 //tooltip_tag_newbie       "Newbie"

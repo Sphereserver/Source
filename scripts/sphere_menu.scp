@@ -3507,10 +3507,10 @@ ON=i_fruit_watermelon Watermellon
 ADD i_fruit_watermelon
 ON=i_fruit_turnip Turnip
 ADD i_fruit_turnip
-ON=i_fruit_gourd1 Gourd
-ADD i_fruit_gourd1
-ON=i_fruit_gourd2 Gourd
-ADD i_fruit_gourd2
+ON=i_fruit_gourd_yellow Gourd
+ADD i_fruit_gourd_yellow
+ON=i_fruit_gourd_green Gourd
+ADD i_fruit_gourd_green
 ON=i_fruit_pumpkin Pumpkin
 ADD i_fruit_pumpkin
 ON=i_fruit_onion Onion
@@ -3523,8 +3523,8 @@ ON=i_fruit_honeydewmelon Honey Melon
 ADD i_fruit_honeydewmelon
 ON=i_fruit_carrot Carrots
 ADD i_fruit_carrot
-ON=i_fruit_cantelope Cantaloupe
-ADD i_fruit_cantelope
+ON=i_fruit_cantaloupe Cantaloupe
+ADD i_fruit_cantaloupe
 ON=i_fruit_cabbage Cabbage
 ADD i_fruit_cabbage
 ON=i_fruit_corn Ear of Corn

@@ -623,3 +623,10 @@ ScriptPack:
 updated sphere_events_npcs.scp: Functions ModMaxHits/Stam/Mana to work better, they also accept += and the rest of operators.
 added: sphere_attr.rar to Custom folder containing some basic behaviour for attr_secure and attr_nodroptrade (for now).
 Updated Mordaunt's house system to version 2.3.7
+
+16-02-2014, Ben
+-Added #2270: summoned tag added to summoned creatures if CHARTAGS=1 in sphere.ini
+Script Pack:
+Corrected some defnames - i_fruit_cantelope -> i_fruit_canteloupe
+ i_fruit_gourd1 -> i_fruit_gourd_yellow
+ i_fruit_gourd2 -> i_fruit_gourd_green

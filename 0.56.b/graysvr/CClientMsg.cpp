@@ -1147,6 +1147,8 @@ void CClient::addCharName( const CChar * pChar ) // Singleclick text for a chara
 			strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SLEEPING) );
 		if ( pChar->IsStatFlag( STATF_Hallucinating ))
 			strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_HALLU) );
+		if ( pChar->LayerFind( LAYER_SPELL_Summon ))
+			strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SUMMONED) );
 
 		if ( fAllShow )
 		{
