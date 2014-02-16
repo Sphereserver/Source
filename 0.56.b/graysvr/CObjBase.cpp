@@ -623,6 +623,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_DAMFIRE:
 		case OC_DAMMODIFIER:
 		case OC_DAMPHYSICAL:
+		case OC_DECREASEHITCHANCE:
 		case OC_DAMPOISON:
 		case OC_EATERCOLD:
 		case OC_EATERDAM:
@@ -681,7 +682,8 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_WEIGHTREDUCTION:
 		case OC_NIGHTSIGHT:
 		case OC_SPELLCHANNELING:
-			sVal = GetDefStr(pszKey, true);
+			//sVal = GetDefStr(pszKey, true);
+			sVal.FormatVal(GetDefNum(pszKey, true));
 			break;
 		//On these ones, check BaseDef too if not found on dynamic
 		case OC_NAMELOC:

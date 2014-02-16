@@ -1472,9 +1472,6 @@ do_default:
 		case CHC_LUCK:
 		case CHC_MAXFOLLOWER:
 		case CHC_REFLECTPHYSICALDAM:
-		case CHC_REGENHITS:
-		case CHC_REGENSTAM:
-		case CHC_REGENMANA:
 		case CHC_RESFIRE:
 		case CHC_RESCOLD:
 		case CHC_RESPOISON:
@@ -1487,6 +1484,15 @@ do_default:
 		case CHC_RESPOISONMAX:
 		case CHC_TITHING:
 			sVal.FormatVal(GetDefNum(pszKey, true));
+			break;
+		case CHC_REGENHITS:
+			sVal.FormatVal(m_TagDefs.GetKeyNum("OVERRIDE.REGEN_0", true));
+			break;
+		case CHC_REGENSTAM:
+			sVal.FormatVal(m_TagDefs.GetKeyNum("OVERRIDE.REGEN_2", true));
+			break;
+		case CHC_REGENMANA:
+			sVal.FormatVal(m_TagDefs.GetKeyNum("OVERRIDE.REGEN_1", true));
 			break;
 
 		case CHC_ATTACKER:
@@ -2229,8 +2235,14 @@ do_default:
 			break;
 		//Set as numbers only
 		case CHC_REGENHITS:
+			m_TagDefs.SetNum("OVERRIDE.REGEN_0", s.GetArgVal(), false);
+			break;
 		case CHC_REGENSTAM:
+			m_TagDefs.SetNum("OVERRIDE.REGEN_2", s.GetArgVal(), false);
+			break;
 		case CHC_REGENMANA:
+			m_TagDefs.SetNum("OVERRIDE.REGEN_1", s.GetArgVal(), false);
+			break;
 		case CHC_REFLECTPHYSICALDAM:
 		case CHC_ENHANCEPOTIONS:
 		case CHC_BONUSSTR:
@@ -2759,6 +2771,11 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				}
 			}
 			break;
+
+		case CHV_TARGETCLOSE:
+			GetClient()->addTargetCancel();
+			break;
+
 
 		case CHV_ALLSKILLS:
 			{
