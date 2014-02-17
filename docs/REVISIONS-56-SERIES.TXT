@@ -630,3 +630,11 @@ Script Pack:
 Corrected some defnames - i_fruit_cantelope -> i_fruit_canteloupe
  i_fruit_gourd1 -> i_fruit_gourd_yellow
  i_fruit_gourd2 -> i_fruit_gourd_green
+
+17-02-2014, XuN
+Added targetcancel function to force closing a target. 
+Fixed some new variables returning hex values. 
+Added functionality to RegenHits/Mana/Stam, they use the current tag.override.regen_x values 
+
+Moved all @SkillChange triggers to CChar::Skill_SetBase, now every skill change is calling this trigger (as it should), no matter of .skill_name, .allskills, skillgains/loses and skill trains.
+Fixed serv.Regenx returning value*10

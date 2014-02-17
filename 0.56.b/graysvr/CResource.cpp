@@ -1174,7 +1174,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			int index = ATOI(pszKey+5);
 			if (( index < 0 ) || ( index >= STAT_QTY ))
 				return false;
-			sVal.FormatVal(g_Cfg.m_iRegenRate[index]);
+			sVal.FormatVal(g_Cfg.m_iRegenRate[index] / TICK_PER_SEC);
 			return true;
 		}
 

@@ -439,6 +439,16 @@ void CChar::Skill_SetBase( SKILL_TYPE skill, int iValue )
 	ADDTOCALLSTACK("CChar::Skill_SetBase");
 	ASSERT( IsSkillBase(skill));
 	if ( iValue < 0 ) iValue = 0;
+	if ( IsTrigUsed(TRIGGER_SKILLCHANGE) )
+	{
+		CScriptTriggerArgs args;
+		args.m_iN1 = static_cast<int>(skill);
+		args.m_iN2 = iValue;
+		if ( OnTrigger(CTRIG_SkillChange, this, &args) == TRIGRET_RET_TRUE )
+			return;
+
+		iValue = args.m_iN2;
+	}
 	m_Skill[skill] = iValue;
 	if ( IsClient())
 	{
@@ -554,17 +564,6 @@ void CChar::Skill_Decay()
 	if ( skillDeduct != SKILL_NONE )
 	{
 		iSkillLevel--;
-
-		if ( IsTrigUsed(TRIGGER_SKILLCHANGE) )
-		{
-			CScriptTriggerArgs args;
-			args.m_iN1 = static_cast<int>(skillDeduct);
-			args.m_iN2 = iSkillLevel;
-			if ( OnTrigger(CTRIG_SkillChange, this, &args) == TRIGRET_RET_TRUE )
-				return;
-
-			iSkillLevel = static_cast<int>(args.m_iN2);
-		}
 
 		Skill_SetBase(skillDeduct, iSkillLevel);
 	}
@@ -688,16 +687,7 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 			if ( iRoll <= iChance )
 			{
 				iSkillLevel++;
-				if ( IsTrigUsed(TRIGGER_SKILLCHANGE) )
-				{
-					CScriptTriggerArgs args;
-					args.m_iN1 = static_cast<int>(skill);
-					args.m_iN2 = iSkillLevel;
-					if ( OnTrigger(CTRIG_SkillChange, this, &args) == TRIGRET_RET_TRUE )
-						return;
 
-					iSkillLevel = static_cast<int>(args.m_iN2);
-				}
 				Skill_SetBase( skill, iSkillLevel );
 			}
 		}
