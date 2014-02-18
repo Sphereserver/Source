@@ -132,7 +132,7 @@ void CChar::Stat_SetMax( STAT_TYPE i, int iVal )
 		if ( IsTrigUsed(TRIGGER_STATCHANGE) )
 		{
 			CScriptTriggerArgs args;
-			args.m_iN1 = i+3;	//Only Max* stats are fired here, and we don't want to receive argn1=0 for both STR and MAXHITS in the trigger so i trick it.
+			args.m_iN1 = i < 3 ? i+4 : 3;	//Only Max* stats are fired here, and we don't want to receive argn1=0 for both STR and MAXHITS in the trigger so i trick it.
 			args.m_iN2 = iStatVal;
 			args.m_iN3 = iVal;
 			if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )

@@ -4029,7 +4029,7 @@ bool CChar::OnTick()
 		for ( STAT_TYPE i = STAT_STR; i <= STAT_FOOD; i = static_cast<STAT_TYPE>(i + 1) )
 		{
 			EXC_SET(g_Stat_Name[i]);
-			int iRate = g_Cfg.m_iRegenRate[i] * TICK_PER_SEC;		// in TICK_PER_SEC
+			int iRate = g_Cfg.m_iRegenRate[i];		// in TICK_PER_SEC
 
 			m_Stat[i].m_regen += iTimeDiff;
 						
