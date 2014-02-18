@@ -638,3 +638,21 @@ Added functionality to RegenHits/Mana/Stam, they use the current tag.override.re
 
 Moved all @SkillChange triggers to CChar::Skill_SetBase, now every skill change is calling this trigger (as it should), no matter of .skill_name, .allskills, skillgains/loses and skill trains.
 Fixed serv.Regenx returning value*10
+
+18-02-2014, XuN
+Regeneration Tweaks: 
+	-Moved up a check to force stop in this stat, so useless checks are avoided in a function fired in each tick (each lil improve is a win!).
+	-Added FOOD as a regen stat (RegenFood or tag.override.regen_3)
+	-ADDED RegenValStat variables (RegenValHits, etc) to work as the RegenStat variables but with tag.override.regenval_x.
+	-Removed @Hunger
+	-Removed weird check that multiplied the regen time *2 if the stat was not food, it now works with the time specified in sphere.ini
+	-Removed weird "Bonus" in HITS giving more delay than the default one, it should sustract it to be a real bonus? however, timers are handled in the trigger now and following the default ini settings.
+	-Removed tag.override.regen(val)_x: RegenValStat is now readed inside @RegenStat and RegenStat is readed before it, cannot be modified inside without the trigger bein fired in each serv.tick. RegenStat overrides ini setting now (wich is more intuitive when scripting)
+	-Added @RegenStat trigger fired after
+		-local.StatID=(0=Hits,1=Mana,2=Stam,3=Food). Writable, never higher than 3.
+		-local.Value=The amount of points being regenerated (or decreased in food's case). Writable, can be negative but 0 works like return 1
+		-local.StatLimit=by default=<MaxStat>, allow this stat to pass the limit when regenerating, or limit it lower. Stats over this value will go down in each tick until they reach their limit. This does not work with food as food shouldn't ignore its limit (0).
+		-return 1 Stop de regeneration of this stat, but not preventing future checks, to do that set the RegenHits to a very high value.
+		
+Added f_onaccount_connect to sphere_serv_triggers.scp, READ IT CAREFULLY, I switched the default return procedure here for safety, return 1 will allow the account connecting no matter you have checks or not.
+Added LowerReq to the ReqSTR check when trying to equip items for both items and chars (It checks for LowerReqs on the item and in the character too to substract to the real ReqSTR)

@@ -3912,7 +3912,7 @@ void CChar::OnTickStatusUpdate()
 	CObjBase::OnTickStatusUpdate();
 }
 
-void CChar::OnTickFood()
+void CChar::OnTickFood(int iVal)
 {
 	ADDTOCALLSTACK("CChar::OnTickFood");
 	if ( IsStatFlag(STATF_Conjured) || !Stat_GetMax(STAT_FOOD) )
@@ -3922,16 +3922,19 @@ void CChar::OnTickFood()
 	if ( IsStatFlag(STATF_Pet) && !NPC_CheckHirelingStatus() )
 		return;
 
-	long	lFood = Stat_GetVal(STAT_FOOD);
-   	if ( Stat_GetVal(STAT_FOOD) > 0 ) lFood--;
+	long lFood = Stat_GetVal(STAT_FOOD);
+   	if ( lFood - iVal < 0 )
+		lFood = iVal - lFood;
+	else
+		lFood -= iVal;
 
-	if ( IsTrigUsed(TRIGGER_HUNGER) )
+	/*if ( IsTrigUsed(TRIGGER_HUNGER) )
 	{
 		CScriptTriggerArgs Args(lFood);	// ARGN1 - new food level
 		if ( OnTrigger(CTRIG_Hunger, this, &Args) == TRIGRET_RET_TRUE )
 			return;
 		lFood = Args.m_iN1;
-	}
+	}*/
 
 	Stat_SetVal(STAT_FOOD, lFood);
 
@@ -4026,40 +4029,70 @@ bool CChar::OnTick()
 		for ( STAT_TYPE i = STAT_STR; i <= STAT_FOOD; i = static_cast<STAT_TYPE>(i + 1) )
 		{
 			EXC_SET(g_Stat_Name[i]);
+			int iRate = g_Cfg.m_iRegenRate[i] * TICK_PER_SEC;		// in TICK_PER_SEC
+
 			m_Stat[i].m_regen += iTimeDiff;
-
-			int iRate = g_Cfg.m_iRegenRate[i];		// in TICK_PER_SEC
-
-			//	No Food - Slow Regen
-			if ( (i != STAT_FOOD) && Stat_GetMax(STAT_FOOD) && !Stat_GetVal(STAT_FOOD) )
-				iRate *= 2;
-
+						
+			
 			// Regen OVERRIDE
 			int mod = 1;
-			if ( i < STAT_FOOD )
+			LPCTSTR stat;
+			switch (static_cast<STAT_TYPE>(i))
+			{
+				case STAT_STR:
+					stat = "HITS";
+					break;
+				case STAT_INT:
+					stat = "MANA";
+					break;
+				case STAT_DEX:
+					stat = "STAM";
+					break;
+				case STAT_FOOD:
+					stat = "FOOD";
+					break;
+			}
+			if ( i <= STAT_FOOD )
 			{
 				char sRegen[21];
-				sprintf(sRegen, "OVERRIDE.REGEN_%d", static_cast<int>(i));
-				iRate -= ( GetKeyNum(sRegen, true) * 10 );
-				sprintf(sRegen, "OVERRIDE.REGENVAL_%d", static_cast<int>(i));
-				mod = maximum(mod,GetKeyNum(sRegen, true));
+				sprintf(sRegen, "REGEN%s", stat);
+				iRate = ( GetDefNum(sRegen, false) ? GetDefNum(sRegen, false) * TICK_PER_SEC : iRate);
+				sprintf(sRegen, "REGENVAL%s", stat);
+				mod = maximum(mod,GetDefNum(sRegen, true));
 			}
-
-			// Metabolism Bonus
-			if ( i == STAT_STR )
-			{
-				int iRateModifier = 1 + (Stat_GetVal(STAT_DEX)/8);
-				iRate += iRate / ((iRateModifier == 0) ? 1 : iRateModifier);
-			}
+			
+			if ( iRate < 0)
+				iRate = 0;
 
 			if ( m_Stat[i].m_regen < iRate )
+			{
 				continue;
-
+			}
+			
+			int StatLimit = Stat_GetMax(i);
+			if ( IsTrigUsed(TRIGGER_REGENSTAT))
+			{
+				CScriptTriggerArgs Args;
+				Args.m_VarsLocal.SetNum("StatID",i,true);
+				Args.m_VarsLocal.SetNum("Value",mod,true);
+				Args.m_VarsLocal.SetNum("StatLimit",StatLimit,true);
+				if (OnTrigger(CTRIG_RegenStat,this,&Args) == TRIGRET_RET_TRUE)
+					continue;
+				if (Args.m_VarsLocal.GetKeyNum("StatID",true) > STAT_FOOD)
+					continue;
+				i = static_cast<STAT_TYPE>(Args.m_VarsLocal.GetKeyNum("StatID",true));
+				mod = Args.m_VarsLocal.GetKeyNum("Value",true);
+				StatLimit = Args.m_VarsLocal.GetKeyNum("StatLimit",true);
+			}
+			if ( mod == 0)
+				continue;
+			
 			m_Stat[i].m_regen = 0;
+
 			if ( i == STAT_FOOD )
-				OnTickFood();
-			else if ( Stat_GetVal(i) != Stat_GetMax(i))
-				UpdateStatVal(i, mod);
+				OnTickFood(mod);
+			else
+				UpdateStatVal(i, mod,StatLimit);
 		}
 	}
 	else

@@ -239,7 +239,7 @@ LAYER_TYPE CChar::CanEquipLayer( CItem * pItem, LAYER_TYPE layer, CChar * pCharM
 		{
 			if ( ( m_pPlayer || fTest )	// test for PCs only or if requested
 			&& pItemDef->m_ttEquippable.m_StrReq
-			&& Stat_GetAdjusted(STAT_STR) < pItemDef->m_ttEquippable.m_StrReq )
+			&& Stat_GetAdjusted(STAT_STR) < pItemDef->m_ttEquippable.m_StrReq - pItemDef->m_BaseDefs.GetKeyNum( "LOWERREQ", true ) - m_BaseDefs.GetKeyNum( "LOWERREQ", true ) )
 			{
 				if ( m_pPlayer )	// message only players
 				{

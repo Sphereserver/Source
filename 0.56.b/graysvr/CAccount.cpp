@@ -893,6 +893,16 @@ bool CAccount::CheckPassword( LPCTSTR pszPassword )
 		SetPassword( pszPassword );
 		return( true );
 	}
+	
+	CScriptTriggerArgs Args;
+	Args.m_VarsLocal.SetStrNew("Account",GetName());
+	Args.m_VarsLocal.SetStrNew("Password",pszPassword);
+	enum TRIGRET_TYPE tr = TRIGRET_RET_FALSE;
+	g_Serv.r_Call("f_onaccount_connect", &g_Serv, &Args, NULL, &tr);
+	if ( tr == TRIGRET_RET_TRUE )
+		return false;
+	if ( tr == TRIGRET_RET_HALFBAKED)
+		return true;
 
 	// Get the password.
 	if( g_Cfg.m_fMd5Passwords )

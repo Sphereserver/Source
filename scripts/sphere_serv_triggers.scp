@@ -31,6 +31,15 @@ f_onserver_save_finished
 f_onserver_exit
 f_onserver_blockip
 
+[FUNCTION f_onaccount_connect]	//Read carefully
+// The f_onaccount_login function is called before the sent password is checked.
+// local.account --> username of the account connecting.
+// local.password --> password given.
+// RETURN
+//	  0 --> Let Sphere do its password checks.
+//	  1 --> Deny access asuming the given password is wrong.
+//	  6 --> Force login, without other password checks than the made in this function.
+return 0
 
 [FUNCTION f_onaccount_create]
 // The f_onaccount_create function is called before the account is created.

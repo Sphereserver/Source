@@ -117,6 +117,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@PetDesert",		// I just went wild again
 	"@Profile",			// someone hit the profile button for me.
 	"@ReceiveItem",		// I was just handed an item (Not yet checked if i want it)
+	"@RegenStat",		//Regenerating any stat
 
 	"@RegionEnter",
 	"@RegionLeave",
@@ -1191,7 +1192,7 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 					else if (( wBeardHue >= 0x0386 ) && ( wBeardHue <= 0x038a )) ;
 					else
 						wBeardHue = 0x031d;
-					break;
+			break;
 
 				case RACETYPE_HUMAN:
 				default:
@@ -1483,16 +1484,15 @@ do_default:
 		case CHC_RESPHYSICALMAX:
 		case CHC_RESPOISONMAX:
 		case CHC_TITHING:
-			sVal.FormatVal(GetDefNum(pszKey, true));
-			break;
+		case CHC_REGENFOOD:
 		case CHC_REGENHITS:
-			sVal.FormatVal(m_TagDefs.GetKeyNum("OVERRIDE.REGEN_0", true));
-			break;
 		case CHC_REGENSTAM:
-			sVal.FormatVal(m_TagDefs.GetKeyNum("OVERRIDE.REGEN_2", true));
-			break;
 		case CHC_REGENMANA:
-			sVal.FormatVal(m_TagDefs.GetKeyNum("OVERRIDE.REGEN_1", true));
+		case CHC_REGENVALFOOD:
+		case CHC_REGENVALHITS:
+		case CHC_REGENVALSTAM:
+		case CHC_REGENVALMANA:
+			sVal.FormatVal(GetDefNum(pszKey, true));
 			break;
 
 		case CHC_ATTACKER:
@@ -2226,7 +2226,15 @@ do_default:
 		case CHC_RESENERGY:
 		case CHC_LUCK:
 		case CHC_CURFOLLOWER:
-		case CHC_MAXFOLLOWER:
+		case CHC_MAXFOLLOWER:		
+		case CHC_REGENFOOD:
+		case CHC_REGENHITS:
+		case CHC_REGENSTAM:
+		case CHC_REGENMANA:
+		case CHC_REGENVALFOOD:
+		case CHC_REGENVALHITS:
+		case CHC_REGENVALSTAM:
+		case CHC_REGENVALMANA:
 		case CHC_TITHING:
 			{
 				SetDefNum(s.GetKey(), s.GetArgVal(), false);
@@ -2234,15 +2242,6 @@ do_default:
 			}
 			break;
 		//Set as numbers only
-		case CHC_REGENHITS:
-			m_TagDefs.SetNum("OVERRIDE.REGEN_0", s.GetArgVal(), false);
-			break;
-		case CHC_REGENSTAM:
-			m_TagDefs.SetNum("OVERRIDE.REGEN_2", s.GetArgVal(), false);
-			break;
-		case CHC_REGENMANA:
-			m_TagDefs.SetNum("OVERRIDE.REGEN_1", s.GetArgVal(), false);
-			break;
 		case CHC_REFLECTPHYSICALDAM:
 		case CHC_ENHANCEPOTIONS:
 		case CHC_BONUSSTR:
