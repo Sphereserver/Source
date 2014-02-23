@@ -2583,6 +2583,27 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_AMMOANIMRENDER:
 		case IC_AMMOCONT:
 		case IC_AMMOTYPE:
+		case IC_ITEMSETAMTCUR:
+		case IC_ITEMSETAMTMAX:
+		case IC_ITEMSETCOLOR:
+		case IC_ITEMSETNAME:
+		case IC_MAKERSNAME:
+		case IC_MANAPHASE:
+		case IC_MATERIAL:
+		case IC_NPCKILLER:
+		case IC_NPCKILLERAMT:
+		case IC_NPCPROTECTION:
+		case IC_NPCPROTECTIONAMT:
+		case IC_OCOLOR:
+		case IC_OWNEDBY:
+		case IC_SUMMONING:
+		case IC_USEBESTWEAPONNSKILL:
+			{
+				bool fQuoted = false;
+				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
+			}
+			return true;
+		//Set as number only
 		case IC_BLESSED:
 		case IC_BONUSSKILL1:
 		case IC_BONUSSKILL1AMT:
@@ -2608,23 +2629,10 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_HITSPELL:
 		case IC_HITSPELLSTR:
 		case IC_INSURED:
-		case IC_ITEMSETAMTCUR:
-		case IC_ITEMSETAMTMAX:
-		case IC_ITEMSETCOLOR:
-		case IC_ITEMSETNAME:
 		case IC_LIFESPAN:
 		case IC_MAGEARMOR:
 		case IC_MAGEWEAPON:
-		case IC_MAKERSNAME:
-		case IC_MANAPHASE:
-		case IC_MATERIAL:
 		case IC_NODROPTRADE:
-		case IC_NPCKILLER:
-		case IC_NPCKILLERAMT:
-		case IC_NPCPROTECTION:
-		case IC_NPCPROTECTIONAMT:
-		case IC_OCOLOR:
-		case IC_OWNEDBY:
 		case IC_RARITY:
 		case IC_RECHARGE:
 		case IC_RECHARGEAMT:
@@ -2632,16 +2640,8 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_REMOVALTYPE:
 		case IC_SEARINGWEAPON:
 		case IC_SELFREPAIR:
-		case IC_SUMMONING:
-		case IC_USEBESTWEAPONNSKILL:
 		case IC_USESCUR:
 		case IC_USESMAX:
-			{
-				bool fQuoted = false;
-				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
-			}
-			return true;
-		//Set as number only
 		case IC_BONUSSTR:
 		case IC_BONUSDEX:
 		case IC_BONUSINT:

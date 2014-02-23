@@ -600,7 +600,8 @@ enum SKF_TYPE
 	SKF_NOMINDIST		= 0x0040,		// you can mine, fish, chop, hack on the same point you are standing on
 	SKF_NOANIM			= 0x0080,		// prevents hardcoded animation from playing
 	SKF_NOSFX			= 0x0100,		// prevents hardcoded sound from playing
-	SKF_RANGED			= 0x0200		// considered a ranged skill (combine with SKF_FIGHT)
+	SKF_RANGED			= 0x0200,		// Considered a ranged skill (combine with SKF_FIGHT)
+	SKF_GATHER			= 0x4000		// Considered a gathering skill, using SkillStrokes as SKF_CRAFT
 };
 
 struct CSkillDef : public CResourceLink // For skill def table

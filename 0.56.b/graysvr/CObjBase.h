@@ -3241,6 +3241,7 @@ public:
 	static bool IsSkillNPC( SKILL_TYPE skill );
 	static bool IsSkillMagic( SKILL_TYPE skill );
 	static bool IsSkillCraft( SKILL_TYPE skill );
+	static bool IsSkillGather( SKILL_TYPE skill );
 
 	SKILL_TYPE Skill_GetBest( unsigned int iRank = 0 ) const; // Which skill is the highest for character p
 	SKILL_TYPE Skill_GetActive() const
@@ -3269,6 +3270,8 @@ public:
 	bool Skill_Wait( SKILL_TYPE skilltry );
 	bool Skill_Start( SKILL_TYPE skill, int iDifficulty = 0 ); // calc skill progress.
 	void Skill_Fail( bool fCancel = false );
+	int Skill_Stroke();				// Strokes in crafting skills, calling for SkillStroke trig
+	int Skill_Stroke_Consuming();	// Same as skill_stroke but modified for alchemy's weird's consumption-on-stroke
 	int Skill_Stage( SKTRIG_TYPE stage );
 	TRIGRET_TYPE	Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage);
 	TRIGRET_TYPE	Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScriptTriggerArgs * pArgs); //pArgs.m_iN1 will be rewritten with skill
@@ -3297,6 +3300,7 @@ private:
 	int Skill_NaturalResource_Setup( CItem * pResBit );
 	CItem * Skill_NaturalResource_Create( CItem * pResBit, SKILL_TYPE skill );
 	void Skill_SetTimeout();
+	int Skill_GetTimeout();
 
 	int	Skill_Scripted( SKTRIG_TYPE stage );
 
@@ -3683,6 +3687,23 @@ inline bool CChar::IsSkillCraft( SKILL_TYPE skill ) // static
 		case SKILL_INSCRIPTION:
 		case SKILL_TAILORING:
 		case SKILL_TINKERING:
+			return true;
+		default:
+			return false;
+	}
+}
+
+inline bool CChar::IsSkillGather( SKILL_TYPE skill ) // static
+{
+	if (g_Cfg.IsSkillFlag(skill, SKF_SCRIPTED))
+		return false;
+	if (g_Cfg.IsSkillFlag(skill, SKF_GATHER))
+		return true;
+	switch (skill)
+	{
+		case SKILL_MINING:
+		case SKILL_FISHING:
+		case SKILL_LUMBERJACKING:
 			return true;
 		default:
 			return false;
