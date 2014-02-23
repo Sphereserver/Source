@@ -406,6 +406,7 @@ public:
 #define ATTR_SECURE			0x1000000	// Is Secure
 #define ATTR_REFORGED		0x2000000	// Is Runic Reforged.
 	DWORD	m_Attr;
+	DWORD	m_CanUse;		// Base attribute flags. can_u_all/male/female..
 
 	// NOTE: If this link is set but not valid -> then delete the whole object !
 	CGrayUID m_uidLink;		// Linked to this other object in the world. (owned, key, etc)
@@ -905,7 +906,7 @@ public:
 	void SetAnim( ITEMID_TYPE id, int iTime );
 
 	int IsWeird() const;
-
+	
 	void SetAttr( DWORD dwAttr )
 	{
 		m_Attr |= dwAttr;
@@ -917,6 +918,18 @@ public:
 	bool IsAttr( DWORD dwAttr ) const	// ATTR_DECAY
 	{
 		return(( m_Attr & dwAttr ) ? true : false );
+	}
+	void SetCanUse( DWORD dwCanUse )
+	{
+		m_CanUse |= dwCanUse;
+	}
+	void ClrCanUse( DWORD dwCanUse )
+	{
+		m_CanUse &= ~dwCanUse;
+	}
+	bool IsCanUse( DWORD dwCanUse ) const	// CanUse_None
+	{
+		return(( m_CanUse & dwCanUse ) ? true : false );
 	}
 
 	height_t GetHeight() const;

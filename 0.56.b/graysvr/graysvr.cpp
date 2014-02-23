@@ -33,11 +33,15 @@ std::vector<T_TRIGGERS> g_triggers;
 
 bool IsTrigUsed(E_TRIGGERS id)
 {
+	if ( g_Serv.IsLoading() == true)
+		return false;
 	return (( id < g_triggers.size() ) && g_triggers[id].m_used );
 }
 
 bool IsTrigUsed(const char *name)
 {
+	if ( g_Serv.IsLoading() == true)
+		return false;
 	std::vector<T_TRIGGERS>::iterator it;
 	for ( it = g_triggers.begin(); it != g_triggers.end(); it++ )
 	{

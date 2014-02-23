@@ -61,6 +61,7 @@ CItem::CItem( ITEMID_TYPE id, CItemBase * pItemDef ) : CObjBase( true )
 
 	g_Serv.StatInc(SERV_STAT_ITEMS);
 	m_Attr = 0;
+	m_CanUse = 0;
 	m_amount = 1;
 	m_containedGridIndex = 0;
 	m_dwDispIndex = ITEMID_NOTHING;
@@ -2410,6 +2411,9 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_ATTR:
 			sVal.FormatHex( m_Attr );
 			break;
+		case IC_CANUSE:
+			sVal.FormatHex( m_CanUse );
+			break;
 		case IC_CONT:
 			{
 				if ( pszKey[4] == '.' )
@@ -2701,6 +2705,9 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			return true;
 		case IC_ATTR:
 			m_Attr = s.GetArgVal();
+			return true;
+		case IC_CANUSE:
+			m_CanUse = s.GetArgVal();
 			return true;
 		case IC_CONT:	// needs special processing.
 			{

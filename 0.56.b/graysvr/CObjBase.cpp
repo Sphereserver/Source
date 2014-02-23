@@ -614,7 +614,6 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_BANE:
 		case OC_BATTLELUST:
 		case OC_BLOODDRINKER:
-		case OC_CANUSE:
 		case OC_CASTINGFOCUS:
 		case OC_DAMCHAOS:
 		case OC_DAMCOLD:
@@ -685,6 +684,8 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			//sVal = GetDefStr(pszKey, true);
 			sVal.FormatVal(GetDefNum(pszKey, true));
 			break;
+
+
 		//On these ones, check BaseDef too if not found on dynamic
 		case OC_NAMELOC:
 			{
@@ -1220,7 +1221,6 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_BANE:
 		case OC_BATTLELUST:
 		case OC_BLOODDRINKER:
-		case OC_CANUSE:
 		case OC_CASTINGFOCUS:
 		case OC_DAMCHAOS:
 		case OC_DAMCOLD:
