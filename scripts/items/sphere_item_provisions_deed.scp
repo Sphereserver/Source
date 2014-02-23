@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, February 20, 2014
+// FILE LAST UPDATED: Wednesday, October 16, 2013
 //
 VERSION=0.56c
 
@@ -308,65 +308,115 @@ DESCRIPTION=Evil Compound
 ON=@Create
    MORE=i_multi_evil_compound
 
-[ITEMDEF i_deed_ship_small_N]
+[ITEMDEF i_deed_small_ship_n]
 ID=i_deed_ship
 NAME=Deed to a small ship
-RESOURCES=i_deed,i_multi_ship_small_n
+RESOURCES=i_deed,m_small_ship_n
 CATEGORY=Provisions - Deeds
 SUBSECTION=Ship Plans
 DESCRIPTION=Small Ship
 ON=@Create
-   MORE=i_multi_ship_small_N
+   MORE=m_small_ship_n
 
-[ITEMDEF i_deed_ship_dragon_small_N]
+[ITEMDEF i_deed_small_dragon_ship_n]
 ID=i_deed_ship
 NAME=Deed to a small dragon ship
-RESOURCES=i_deed,i_multi_ship_dragon_small_n
+RESOURCES=i_deed,m_small_dragon_ship_n
 CATEGORY=Provisions - Deeds
 SUBSECTION=Ship Plans
 DESCRIPTION=Small Dragon Ship
 ON=@Create
-   MORE=i_multi_ship_dragon_small_N
+   MORE=m_small_dragon_ship_n
 
-[ITEMDEF i_deed_ship_mediui_multi_N]
+[ITEMDEF i_deed_medium_ship_n]
 ID=i_deed_ship
 NAME=Deed to a medium ship
-RESOURCES=i_deed,i_multi_ship_mediui_multi_n
+RESOURCES=i_deed,m_medium_ship_n
 CATEGORY=Provisions - Deeds
 SUBSECTION=Ship Plans
 DESCRIPTION=Medium Ship
 ON=@Create
-   MORE=i_multi_ship_mediui_multi_N
+   MORE=m_medium_ship_n
 
-[ITEMDEF i_deed_ship_dragon_mediui_multi_N]
+[ITEMDEF i_deed_medium_dragon_ship_n]
 ID=i_deed_ship
 NAME=Deed to a medium dragon ship
-RESOURCES=i_deed,i_multi_ship_dragon_mediui_multi_n
+RESOURCES=i_deed,m_medium_dragon_ship_n
 CATEGORY=Provisions - Deeds
 SUBSECTION=Ship Plans
 DESCRIPTION=Medium Dragon Ship
 ON=@Create
-   MORE=i_multi_ship_dragon_mediui_multi_N
+   MORE=m_medium_dragon_ship_n
 
-[ITEMDEF i_deed_ship_long_N]
+[ITEMDEF i_deed_large_ship_n]
 ID=i_deed_ship
 NAME=Deed to a long ship
-RESOURCES=i_deed,i_multi_ship_long_n
+RESOURCES=i_deed,m_large_ship_n
 CATEGORY=Provisions - Deeds
 SUBSECTION=Ship Plans
 DESCRIPTION=Long Ship
 ON=@Create
-   MORE=i_multi_ship_long_N
+   MORE=m_large_ship_n
 
-[ITEMDEF i_deed_ship_dragon_long_N]
+[ITEMDEF i_deed_large_dragon_ship_n]
 ID=i_deed_ship
 NAME=Deed to a long dragon ship
-RESOURCES=i_deed,i_multi_ship_dragon_long_n
+RESOURCES=i_deed,m_large_dragon_ship_n
 CATEGORY=Provisions - Deeds
 SUBSECTION=Ship Plans
 DESCRIPTION=Long Dragon Ship
 ON=@Create
-   MORE=i_multi_ship_dragon_long_N
+   MORE=m_large_dragon_ship_n
+
+[ITEMDEF i_deed_orc_ship_n]
+ID=i_deed_ship
+NAME=Deed to a long dragon ship
+RESOURCES=i_deed,m_orc_ship_n
+CATEGORY=Provisions - Deeds
+SUBSECTION=Ship Plans
+DESCRIPTION=Orc Ship
+ON=@Create
+   MORE=m_orc_ship_n
+
+[ITEMDEF i_deed_rowboat_n]
+ID=i_deed_ship
+NAME=Deed to a long dragon ship
+RESOURCES=i_deed,m_rowboat_n
+CATEGORY=Provisions - Deeds
+SUBSECTION=Ship Plans
+DESCRIPTION=Rowboat
+ON=@Create
+   MORE=m_rowboat_n
+
+[ITEMDEF i_deed_gargoyle_ship_n]
+ID=i_deed_ship
+NAME=Deed to a long dragon ship
+RESOURCES=i_deed,m_gargoyle_ship_n
+CATEGORY=Provisions - Deeds
+SUBSECTION=Ship Plans
+DESCRIPTION=Gargoyle Ship
+ON=@Create
+   MORE=m_gargoyle_ship_n
+
+[ITEMDEF i_deed_tokuno_ship_n]
+ID=i_deed_ship
+NAME=Deed to a long dragon ship
+RESOURCES=i_deed,m_tokuno_ship_n
+CATEGORY=Provisions - Deeds
+SUBSECTION=Ship Plans
+DESCRIPTION=Tokuno Ship
+ON=@Create
+   MORE=m_tokuno_ship_n
+
+[ITEMDEF i_deed_britannian_ship_n]
+ID=i_deed_ship
+NAME=Deed to a long dragon ship
+RESOURCES=i_deed,m_britannian_ship_n
+CATEGORY=Provisions - Deeds
+SUBSECTION=Ship Plans
+DESCRIPTION=baritannian Ship
+ON=@Create
+   MORE=m_britannian_ship_n
 
 [ITEMDEF i_deed_bboardw]
 ID=i_deed
