@@ -656,3 +656,30 @@ Regeneration Tweaks:
 		
 Added f_onaccount_connect to sphere_serv_triggers.scp, READ IT CAREFULLY, I switched the default return procedure here for safety, return 1 will allow the account connecting no matter you have checks or not.
 Added LowerReq to the ReqSTR check when trying to equip items for both items and chars (It checks for LowerReqs on the item and in the character too to substract to the real ReqSTR)
+
+23-02-2014, XuN
+-Modified: CanUse is now only an item property, it also returns now values in hex format to work with it as a flag variable. 
+-Sphere.ini: Added the maps 2-5 but commented out, added a few missing comments in some flags. 
+-Added a check to IsTrigUsed to avoid trigger calls while serv is loading, this will improve load times and avoid several unexpected errors. 
+-Removed SKTRIG_STROKE's checks from skills and moved to a new function to keep together all the checks giving more control to skills.
+-Added skill_stroke() wich handles the strokes left and sound for craft and gathering skills and also a new trigger.
+-Modified @SkillStart/@Start triggers, adding some locals to gathering skills (not exclusive against crafting ones, you can have both:?)
+        local.GatherItem
+-Fixed amount of strokes to each crafting skill, they were random, now they have 2 strokes by default.
+-Added @SkillStroke trigger:
+        Local.Skill=Skill ID. (Read only).
+        Local.strokes=Strokes left*     (Read/Write).
+        Local.Sound=Sound to make in this stroke if any (Read/Write).
+        Local.Delay=Delay until next stroke (10 = 1 second).
+        return 1 Abort the skill.
+        return 2* Abort the consumption of resources in this stroke.
+ 
+        *Alchemy works different so its working with some exceptions:
+                -Local.Strokes instead of going down it's going up until it reach the total strokes count, wich are equal to the amount of resources. In each stroke if no return is given resources are consumed.
+                return 2 Its only allowed in alchemy skill, returning this will let the skill continue to next step (stroke, finish...) without consuming anything in this stroke.
+-Modified @SkillStart: Local.CraftStrokeCnt is NOT writable for alchemy, since the skill works different and cannot be overriden this way, use @SkillStroke to add more Strokes if you want.
+-Fixed #2267: MakeItem function now bounces any item in layer_dragging.
+-Moved some new variables to return decimal numbers instead of strings.
+
+23-02-2014, Mordaunt (Script Pack): 
+Another update to sphere_item_provisions_deed.scp, adding new ships and moving their names to m_ too 

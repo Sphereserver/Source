@@ -1191,7 +1191,8 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 	// RETURN:
 	//   true = success.
 	//
-
+	if ( LayerFind( LAYER_DRAGGING ) )
+		ItemBounce(LayerFind( LAYER_DRAGGING));
 	if ( id <= 0 )
 		return( true );
 
