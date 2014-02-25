@@ -663,8 +663,6 @@ Added LowerReq to the ReqSTR check when trying to equip items for both items and
 -Added a check to IsTrigUsed to avoid trigger calls while serv is loading, this will improve load times and avoid several unexpected errors. 
 -Removed SKTRIG_STROKE's checks from skills and moved to a new function to keep together all the checks giving more control to skills.
 -Added skill_stroke() wich handles the strokes left and sound for craft and gathering skills and also a new trigger.
--Modified @SkillStart/@Start triggers, adding some locals to gathering skills (not exclusive against crafting ones, you can have both:?)
-        local.GatherItem
 -Fixed amount of strokes to each crafting skill, they were random, now they have 2 strokes by default.
 -Added @SkillStroke trigger:
         Local.Skill=Skill ID. (Read only).
@@ -682,4 +680,13 @@ Added LowerReq to the ReqSTR check when trying to equip items for both items and
 -Moved some new variables to return decimal numbers instead of strings.
 
 23-02-2014, Mordaunt (Script Pack): 
-Another update to sphere_item_provisions_deed.scp, adding new ships and moving their names to m_ too 
+Another update to sphere_item_provisions_deed.scp, adding new ships and moving their names to m_ too.
+
+24-02-2014, XuN
+-Fixed #2267: MakeItem function now bounces any item in layer_dragging. 
+
+25-02-2014, XuN
+Actual crafting skills (Blacksmithing, Tailoring...) now are not handled as crafting skills by the source, instead of that a SKF_CRAFT is required in their [Skill ] (Excepting Alchemy by the moment)
+WARNING: From this version a update of sphere_skills is needed (read below) or crafting skills will not work.
+Script pack:
+	-sphere_skills.scp: Added FLAGS=SKF_CRAFT to blacksmithing,tailoring,tinkering,carpentry, cooking, bowcraft and inscription.

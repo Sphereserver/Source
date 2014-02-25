@@ -2142,8 +2142,8 @@ int CChar::Skill_Cartography( SKTRIG_TYPE stage )
 	// m_Act_Cartography_Dist = the map distance.
 	// Find the blank map to write on first.
 
-	if ( stage == SKTRIG_STROKE )
-		return 0;
+	/*if ( stage == SKTRIG_STROKE )
+		return(Skill_Stroke());*/
 
 	CPointMap pnt = GetTopPoint();
 	if ( pnt.m_map <= 1 )
@@ -2559,10 +2559,10 @@ int CChar::Skill_Cooking( SKTRIG_TYPE stage )
 	// m_Act_p = my fire.
 	// How hard to cook is this ?
 
-	if ( stage == SKTRIG_STROKE )
+	/*if ( stage == SKTRIG_STROKE )
 	{
 		return ( Skill_Stroke());
-	}
+	}*/
 
 	CItem * pFoodRaw = m_Act_Targ.ItemFind();
 	if ( pFoodRaw == NULL )
@@ -3488,10 +3488,10 @@ int CChar::Skill_Bowcraft( SKTRIG_TYPE stage )
 	// m_atCreate.m_ItemID = new item we are making
 	// m_atCreate.m_Amount = amount of said item.
 
-	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+	/*if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
 	{
 		Sound( 0x055 );
-	}
+	}*/
 	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
 	{
 		UpdateAnimate( ANIM_SALUTE );
@@ -3521,10 +3521,10 @@ int CChar::Skill_Blacksmith( SKTRIG_TYPE stage )
 		m_atCreate.m_Stroke_Count = /*Calc_GetRandVal( 4 ) +*/ 2;
 	}
 
-	if ( stage == SKTRIG_STROKE )
+	/*if ( stage == SKTRIG_STROKE )
 	{
 		return( Skill_Stroke() );	// keep active.
-	}
+	}*/
 
 	return( Skill_MakeItem( stage ));
 }
@@ -3547,10 +3547,10 @@ int CChar::Skill_Carpentry( SKTRIG_TYPE stage )
 		m_atCreate.m_Stroke_Count = /*Calc_GetRandVal( 3 ) +*/ 2;
 	}
 
-	if ( stage == SKTRIG_STROKE )
+	/*if ( stage == SKTRIG_STROKE )
 	{
 		return(Skill_Stroke());
-	}
+	}*/
 
 	return( Skill_MakeItem( stage ));
 }
@@ -3905,10 +3905,13 @@ int CChar::Skill_Stroke()
 				sound = 0x02a ;
 			case SKILL_CARPENTRY:
 				sound = 0x23d ;
+			case SKILL_CARTOGRAPHY:
+				sound = 0x249;
 			case SKILL_COOKING:
+				sound = 0x225;
 			case SKILL_TINKERING:
 			default:
-				sound = 0x02a ;
+				sound;
 		}
 	}
 	if ( m_atCreate.m_Stroke_Count <= 0 )
@@ -4046,6 +4049,8 @@ int CChar::Skill_Stroke_Consuming()
 int CChar::Skill_Stage( SKTRIG_TYPE stage )
 {
 	ADDTOCALLSTACK("CChar::Skill_Stage");
+	if ( stage == SKTRIG_STROKE && g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_CRAFT ))
+		return(Skill_Stroke());
 
 	if ( g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_SCRIPTED ) )
 		return Skill_Scripted( stage );
@@ -4498,7 +4503,10 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 				m_atCreate.m_Stroke_Count = 2/*pItemDef->m_BaseResources.GetCount()*/;
 			// set crafting parameters
 			pArgs.m_VarsLocal.SetNum("CraftItemdef",pResBase.GetPrivateUID());
-			pArgs.m_VarsLocal.SetNum("CraftStrokeCnt",pItemDef->m_BaseResources.GetCount());
+			if ( skill == SKILL_ALCHEMY)
+				pArgs.m_VarsLocal.SetNum("CraftStrokeCnt",pItemDef->m_BaseResources.GetCount());
+			else
+				pArgs.m_VarsLocal.SetNum("CraftStrokeCnt",m_atCreate.m_Stroke_Count);
 			pArgs.m_VarsLocal.SetNum("CraftAmount",m_atCreate.m_Amount);
 		}
 

@@ -3677,7 +3677,7 @@ inline bool CChar::IsSkillCraft( SKILL_TYPE skill ) // static
 		return false;
 	if (g_Cfg.IsSkillFlag(skill, SKF_CRAFT))
 		return true;
-	switch (skill)
+	/*switch (skill)
 	{
 		case SKILL_ALCHEMY:
 		case SKILL_BLACKSMITHING:
@@ -3690,7 +3690,8 @@ inline bool CChar::IsSkillCraft( SKILL_TYPE skill ) // static
 			return true;
 		default:
 			return false;
-	}
+	}*/
+	return false;
 }
 
 inline bool CChar::IsSkillGather( SKILL_TYPE skill ) // static
