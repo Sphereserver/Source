@@ -17825,6 +17825,7 @@ ON=@NpcRestock
    //250 - 350 Gold. 8spider silk, 1 - 4magic items
    //Special: bottle of ichor, spider carapace, tattered scroll. level 2 Treasure Map 
 ON=@NPCSeeNewPlayer
+   RETURN 0 // This needs fixing
    //Summon pack
    IF (<FLAGS> & statf_conjured) || (<FLAGS> & statf_pet)
       RETURN 0
