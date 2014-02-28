@@ -44,7 +44,6 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@HitTry",				// I am trying to hit someone. starting swing.
 	"@HouseDesignCommit",	// I committed a new house design.
 	"@HouseDesignExit",		// I exited house design mode.
-	"@Hunger",					//+Ready to update the food level
 
 	// ITRIG_QTY
 	"@itemAfterClick",

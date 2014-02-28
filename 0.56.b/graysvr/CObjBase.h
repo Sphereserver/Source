@@ -2331,7 +2331,6 @@ enum CTRIG_TYPE
 	CTRIG_HitTry,			// I am trying to hit someone. starting swing.,
 	CTRIG_HouseDesignCommit,	// I committed a new house design
 	CTRIG_HouseDesignExit,	// I exited house design mode
-	CTRIG_Hunger,			//+Ready to update the food level
 
 	CTRIG_itemAfterClick,
 	CTRIG_itemBuy,

@@ -3928,14 +3928,6 @@ void CChar::OnTickFood(int iVal)
 	else
 		lFood -= iVal;
 
-	/*if ( IsTrigUsed(TRIGGER_HUNGER) )
-	{
-		CScriptTriggerArgs Args(lFood);	// ARGN1 - new food level
-		if ( OnTrigger(CTRIG_Hunger, this, &Args) == TRIGRET_RET_TRUE )
-			return;
-		lFood = Args.m_iN1;
-	}*/
-
 	Stat_SetVal(STAT_FOOD, lFood);
 
 	int  nFoodLevel = Food_GetLevelPercent();
@@ -4056,7 +4048,8 @@ bool CChar::OnTick()
 			{
 				char sRegen[21];
 				sprintf(sRegen, "REGEN%s", stat);
-				iRate = ( GetDefNum(sRegen, false) ? GetDefNum(sRegen, false) * TICK_PER_SEC : iRate);
+				if ( GetDefNum(sRegen, false))
+					iRate -= GetDefNum(sRegen, false) * TICK_PER_SEC;
 				sprintf(sRegen, "REGENVAL%s", stat);
 				mod = maximum(mod,GetDefNum(sRegen, true));
 			}

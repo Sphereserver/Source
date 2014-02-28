@@ -2302,6 +2302,30 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 	switch ( index )
 	{
 		//return as string or hex number
+		case IC_CRAFTEDBY:
+		case IC_ITEMSETCOLOR:
+		case IC_ITEMSETNAME:
+		case IC_MAKERSNAME:
+		case IC_MATERIAL:
+		case IC_NPCKILLER:
+		case IC_NPCKILLERAMT:
+		case IC_NPCPROTECTION:
+		case IC_NPCPROTECTIONAMT:
+		case IC_OCOLOR:
+		case IC_OWNEDBY:
+		case IC_SUMMONING:
+			sVal = GetDefStr(pszKey, true);
+			break;
+		//return as decimal number
+		case IC_BONUSSTR:
+		case IC_BONUSDEX:
+		case IC_BONUSINT:
+		case IC_BONUSHITS:
+		case IC_BONUSSTAM:
+		case IC_BONUSMANA:
+		case IC_BONUSHITSMAX:
+		case IC_BONUSSTAMMAX:
+		case IC_BONUSMANAMAX:
 		case IC_BLESSED:
 		case IC_BONUSSKILL1:
 		case IC_BONUSSKILL1AMT:
@@ -2323,70 +2347,47 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_CURSED:
 		case IC_DMGPHYSICAL:
 		case IC_DURABILITY:
+		case IC_ENHANCEPOTIONS:
 		case IC_EPHEMERAL:
+		case IC_FASTERCASTING:
+		case IC_FASTERCASTRECOVERY:
 		case IC_HITSPELL:
 		case IC_HITSPELLSTR:
 		case IC_INSURED:
-		case IC_ITEMSETAMTCUR:
-		case IC_ITEMSETAMTMAX:
-		case IC_ITEMSETCOLOR:
-		case IC_ITEMSETNAME:
-		case IC_LIFESPAN:
-		case IC_MAGEARMOR:
-		case IC_MAGEWEAPON:
-		case IC_MAKERSNAME:
-		case IC_MANAPHASE:
-		case IC_MATERIAL:
-		case IC_NODROPTRADE:
-		case IC_NPCKILLER:
-		case IC_NPCKILLERAMT:
-		case IC_NPCPROTECTION:
-		case IC_NPCPROTECTIONAMT:
-		case IC_OCOLOR:
-		case IC_OWNEDBY:
-		case IC_RARITY:
-		case IC_RECHARGE:
-		case IC_RECHARGEAMT:
-		case IC_RECHARGERATE:
-		case IC_REMOVALTYPE:
-		case IC_SEARINGWEAPON:
-		case IC_SELFREPAIR:
-		case IC_SUMMONING:
-		case IC_USEBESTWEAPONNSKILL:
-		case IC_USESCUR:
-		case IC_USESMAX:
-			sVal = GetDefStr(pszKey, true);
-			break;
-		//return as decimal number
-		case IC_BONUSSTR:
-		case IC_BONUSDEX:
-		case IC_BONUSINT:
-		case IC_BONUSHITS:
-		case IC_BONUSSTAM:
-		case IC_BONUSMANA:
-		case IC_BONUSHITSMAX:
-		case IC_BONUSSTAMMAX:
-		case IC_BONUSMANAMAX:
-		case IC_ENHANCEPOTIONS:
-		case IC_FASTERCASTRECOVERY:
-		case IC_FASTERCASTING:
 		case IC_INCREASEHITCHANCE:
 		case IC_INCREASESWINGSPEED:
 		case IC_INCREASEDAM:
 		case IC_INCREASEDEFCHANCE:
 		case IC_INCREASESPELLDAM:
+		case IC_ITEMSETAMTCUR:
+		case IC_ITEMSETAMTMAX:
+		case IC_LIFESPAN:
 		case IC_LOWERMANACOST:
 		case IC_LOWERREAGENTCOST:
 		case IC_LUCK:
+		case IC_MAGEARMOR:
+		case IC_MAGEWEAPON:
+		case IC_MANAPHASE:
+		case IC_NODROPTRADE:
+		case IC_RARITY:
+		case IC_RECHARGE:
+		case IC_RECHARGEAMT:
+		case IC_RECHARGERATE:
 		case IC_REGENHITS:
 		case IC_REGENSTAM:
 		case IC_REGENMANA:
 		case IC_REFLECTPHYSICALDAM:
+		case IC_REMOVALTYPE:
 		case IC_RESCOLD:
 		case IC_RESENERGY:
 		case IC_RESFIRE:
 		case IC_RESPHYSICAL:
 		case IC_RESPOISON:
+		case IC_SEARINGWEAPON:
+		case IC_SELFREPAIR:
+		case IC_USEBESTWEAPONNSKILL:
+		case IC_USESCUR:
+		case IC_USESMAX:
 			sVal.FormatVal(GetDefNum(pszKey,true));
 			break;
 		//On these ones, check BaseDef too if not found on dynamic
