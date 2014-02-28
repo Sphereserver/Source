@@ -3950,7 +3950,6 @@ int CChar::Skill_Stroke()
 
 int CChar::Skill_Stroke_Consuming()
 {
-	SysMessagef("Alchemy=%d",m_atCreate.m_Stroke_Count);
 	const CItemBase * pItemDef;
 	switch (Skill_GetActive())
 	{
