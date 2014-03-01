@@ -128,7 +128,7 @@ void CChar::Stat_SetMax( STAT_TYPE i, int iVal )
 	}
 	else
 	{
-		int iStatVal = Stat_GetBase(static_cast<STAT_TYPE>(i));
+		int iStatVal = Stat_GetMax(static_cast<STAT_TYPE>(i));
 		if ( IsTrigUsed(TRIGGER_STATCHANGE) )
 		{
 			CScriptTriggerArgs args;
@@ -137,7 +137,7 @@ void CChar::Stat_SetMax( STAT_TYPE i, int iVal )
 			args.m_iN3 = iVal;
 			if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
 				return;
-			i = static_cast<STAT_TYPE>(args.m_iN1-3);
+			i = static_cast<STAT_TYPE>(args.m_iN1-4);
 			iVal = args.m_iN3;
 		}
 		m_Stat[i].m_max = iVal;
@@ -245,7 +245,7 @@ void CChar::Stat_SetBase( STAT_TYPE i, short iVal )
 	{
 		CScriptTriggerArgs args;
 		args.m_iN1 = i;
-		args.m_iN2 = iStatVal+1;
+		args.m_iN2 = iStatVal;
 		args.m_iN3 = iVal;
 		if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
 			return;
@@ -787,14 +787,6 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 			int iStatVal = Stat_GetBase(static_cast<STAT_TYPE>(imin));
 			if ( iStatVal > 10 )
 			{
-				if ( IsTrigUsed(TRIGGER_STATCHANGE) )
-				{
-					CScriptTriggerArgs args;
-					args.m_iN1 = imin;
-					args.m_iN2 = iStatVal-1;
-					if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
-						return;
-				}
 				Stat_SetBase(static_cast<STAT_TYPE>(imin), iStatVal - 1);
 			}
 		}
