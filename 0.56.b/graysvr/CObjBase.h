@@ -2551,6 +2551,7 @@ public:
 //	short int m_ResEnergy;
 	//DIR_TYPE m_dirClimb;	// we are standing on a CAN_I_CLIMB or UFLAG2_CLIMBABLE, DIR_QTY = not on climbable
 	bool m_fClimbUpdated;	// FixClimbHeight() called?
+	bool m_fIgnoreNextPetCmd;	// return 1 in speech block for this pet will make it ignore target petcmds while allowing the rest to perform them
 	height_t m_zClimbHeight;	// The height at the end of the climbable.
 
 	// Saved stuff.

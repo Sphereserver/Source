@@ -99,6 +99,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 
 	// Kill me?
 	// attack me?
+	m_fIgnoreNextPetCmd = false;	// We clear this incase it's true from previous pet cmds.
 
 	if ( !pSrc || m_pPlayer || !m_pNPC )
 		return false;
@@ -110,7 +111,10 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 
 	TALKMODE_TYPE	mode	= TALKMODE_SAY;
 	if ( OnTriggerSpeech( true, pszCmd, pSrc, mode) )
+	{
+		m_fIgnoreNextPetCmd = true;
 		return true;
+	}
 
 	PC_TYPE iCmd = (PC_TYPE) FindTableSorted( pszCmd, sm_Pet_table, COUNTOF(sm_Pet_table));
 	if ( iCmd < 0 )
@@ -348,6 +352,11 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const
 	if ( ! NPC_IsOwnedBy( pSrc ))
 	{
 		return( false );	// take no commands
+	}
+	if ( m_fIgnoreNextPetCmd == true )
+	{
+		m_fIgnoreNextPetCmd = false;
+		return(false);
 	}
 
 	bool fSuccess = false;	// No they won't do it.
