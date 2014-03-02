@@ -117,6 +117,12 @@ VERSION=0.56c
 //i_fruit_cantelope	      i_fruit_cantaloupe
 //i_fruit_gourd1          i_fruit_gourd_yellow
 //i_fruit_gourd2          i_fruit_gourd_green
+//i_hair_afro			  i_hair_curly
+//i_hair_krisna			  i_hair_topknot
+//i_hair_lf				  i_hair_long_feather
+//i_hair_elven_long2	  i_hair_elven_long
+//i_hair_elven_long3	  i_hair_elven_topknot
+//i_hair_elven_long4	  i_hair_elven_buns
 
 [FUNCTION addnpc]
 IF (<ISNUM <ARGS>>)

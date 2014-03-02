@@ -690,3 +690,6 @@ Actual crafting skills (Blacksmithing, Tailoring...) now are not handled as craf
 WARNING: From this version a update of sphere_skills is needed (read below) or crafting skills will not work.
 Script pack:
 	-sphere_skills.scp: Added FLAGS=SKF_CRAFT to blacksmithing,tailoring,tinkering,carpentry, cooking, bowcraft and inscription.
+
+02-03-2014, Ben
+-Fixed #2261: (script pack) Hairs/beards using wrong names (multiple scripts updated for this)

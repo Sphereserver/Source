@@ -4155,17 +4155,17 @@ ON=i_hair_PAGEBOY Pageboy
 ADD i_hair_PAGEBOY
 ON=i_hair_BUNS Buns Hair
 ADD i_hair_BUNS
-ON=i_hair_AFRO Afro
-ADD i_hair_AFRO
-ON=i_hair_RECEDING Receeding Hair
+ON=i_hair_curly Curly
+ADD i_hair_curly
+ON=i_hair_RECEDING Receding
 ADD i_hair_RECEDING
-ON=i_hair_2_PIGTAILS Pig Tails
+ON=i_hair_2_PIGTAILS 2 Tails
 ADD i_hair_2_PIGTAILS
-ON=i_hair_KRISNA Krisna Hair
-ADD i_hair_KRISNA
-ON=i_beard_SHORT_MED Short Beard
+ON=i_hair_topknot Topknot
+ADD i_hair_topknot
+ON=i_beard_SHORT_MED Short Beard & Mustache
 ADD i_beard_SHORT_MED
-ON=i_beard_LONG_MED Medium Hair
+ON=i_beard_LONG_MED Long Beard & Mustache
 ADD i_beard_LONG_MED
 ON=i_beard_VANDYKE Vandyke
 ADD i_beard_VANDYKE

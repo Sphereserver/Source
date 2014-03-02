@@ -23,10 +23,10 @@ the DEFNAMEs below will eventually be converted to templates.
 
 
 [DEFNAME items_hair]
-random_female_hair      { i_hair_short 1 i_hair_long 1 i_hair_ponytail 1 i_hair_pageboy 1 i_hair_buns 1 i_hair_afro 1 i_hair_receding 1 i_hair_2_pigtails 1 i_hair_krisna 1 }
-random_female_elf_hair  { i_hair_elven_ml 1 i_hair_lf 1 i_hair_short1 1 i_hair_elven_flower 1 i_hair_elven_long2 1 i_hair_elven_long3 1 i_hair_elven_braid 1 i_hair_elven_long4 1 }
-random_male_hair        { i_hair_short 1 i_hair_long 1 i_hair_ponytail 1 i_hair_mohawk 1 i_hair_pageboy 1 i_hair_afro 1 i_hair_receding 1 i_hair_2_pigtails 1 i_hair_krisna 1 }
-random_male_elf_hair    { i_hair_elven_ml 1 i_hair_lf 1 i_hair_short1 1 i_hair_elven_mullet 1 i_hair_elven_long2 1 i_hair_elven_long3 1 i_hair_elven_spike 1 }
+random_female_hair      { i_hair_short 1 i_hair_long 1 i_hair_ponytail 1 i_hair_pageboy 1 i_hair_buns 1 i_hair_curly 1 i_hair_receding 1 i_hair_2_pigtails 1 i_hair_topknot 1 }
+random_female_elf_hair  { i_hair_elven_ml 1 i_hair_long_feather 1 i_hair_short1 1 i_hair_elven_flower 1 i_hair_elven_long 1 i_hair_elven_topknot 1 i_hair_elven_braid 1 i_hair_elven_buns 1 }
+random_male_hair        { i_hair_short 1 i_hair_long 1 i_hair_ponytail 1 i_hair_mohawk 1 i_hair_pageboy 1 i_hair_curly 1 i_hair_receding 1 i_hair_2_pigtails 1 i_hair_topknot 1 }
+random_male_elf_hair    { i_hair_elven_ml 1 i_hair_long_feather 1 i_hair_short1 1 i_hair_elven_mullet 1 i_hair_elven_long 1 i_hair_elven_topknot 1 i_hair_elven_spike 1 }
 random_facial_hair      { i_beard_long 1 i_beard_short 1 i_beard_goatee 1 i_beard_mustache 1 i_beard_short_med 1 i_beard_long_med 1 i_beard_vandyke 1 }
 
 random_gargoyle_male_horns        { i_horn_gargoyle_male_1 1 i_horn_gargoyle_male_2 1 i_horn_gargoyle_male_3 1 i_horn_gargoyle_male_4 1 i_horn_gargoyle_male_5 1 i_horn_gargoyle_male_6 1 i_horn_gargoyle_male_7 1 i_horn_gargoyle_male_8 1 }

@@ -401,19 +401,19 @@ ON=@TIMER
 	if <cont.npc>	// players only
 		return 1
 	endif
-	serv.newitem=i_hair_AFRO
+	serv.newitem=i_hair_curly
 	new.color=<cont.findlayer(layer_hair).color>
 	cont.equip <new.uid>
 	return 1
 
 [ITEMDEF 02047]
-DEFNAME=i_hair_afro
-NAME=afro
+DEFNAME=i_hair_curly
+NAME=Curly
 TYPE=T_HAIR
 VALUE={8 12}
 CATEGORY=Items by Professions
 SUBSECTION=Barber
-DESCRIPTION=Afro
+DESCRIPTION=Curly
 
 ON=@Create
 	ATTR=attr_newbie
@@ -433,12 +433,12 @@ ON=@TIMER
 
 [ITEMDEF 02048]
 DEFNAME=i_hair_receding
-NAME=receeding hair
+NAME=Receding
 TYPE=T_HAIR
 VALUE={8 12}
 CATEGORY=Items by Professions
 SUBSECTION=Barber
-DESCRIPTION=Receeding Hair
+DESCRIPTION=Receding
 
 ON=@Create
 	ATTR=attr_newbie
@@ -458,12 +458,12 @@ ON=@TIMER
 
 [ITEMDEF 02049]
 DEFNAME=i_hair_2_pigtails
-NAME=2 pig tails
+NAME=2 Tails
 TYPE=T_HAIR
 VALUE={8 12}
 CATEGORY=Items by Professions
 SUBSECTION=Barber
-DESCRIPTION=Two Pig Tails
+DESCRIPTION=2 Tails
 
 ON=@Create
 	ATTR=attr_newbie
@@ -482,13 +482,13 @@ ON=@TIMER
 	return 1
 
 [ITEMDEF 0204a]
-DEFNAME=i_hair_krisna
-NAME=krisna hair
+DEFNAME=i_hair_topknot
+NAME=Topknot
 TYPE=T_HAIR
 VALUE={8 12}
 CATEGORY=Items by Professions
 SUBSECTION=Barber
-DESCRIPTION=Krisna Hair
+DESCRIPTION=Topknot
 
 ON=@Create
 	ATTR=attr_newbie
@@ -508,12 +508,12 @@ ON=@TIMER
 
 [ITEMDEF 0204b]
 DEFNAME=i_beard_short_med
-NAME=medium short beard
+NAME=Short Beard & Mustache
 TYPE=T_BEARD
 VALUE={8 12}
 CATEGORY=Items by Professions
 SUBSECTION=Barber
-DESCRIPTION=Medium Short Beard
+DESCRIPTION=Short Beard & Mustache
 
 ON=@Create
 	ATTR=attr_newbie
@@ -533,12 +533,12 @@ ON=@TIMER
 
 [ITEMDEF 0204c]
 DEFNAME=i_beard_long_med
-NAME=medium long beard
+NAME=Long Beard & Mustache
 TYPE=T_BEARD
 VALUE={8 12}
 CATEGORY=Items by Professions
 SUBSECTION=Barber
-DESCRIPTION=Medium Short Beard
+DESCRIPTION=Long Beard & Mustache
 
 ON=@Create
 	ATTR=attr_newbie
@@ -596,14 +596,14 @@ ON=@Timer
 	RETURN 1
 
 [ITEMDEF 02fc0]
-DEFNAME=i_hair_LF
-NAME=long hair with feather
+DEFNAME=i_hair_long_feather
+NAME=Long Feather
 TYPE=t_hair
 VALUE=24
 WEIGHT=0.1
 CATEGORY=Hair and Horns
 SUBSECTION=Elven Hair
-DESCRIPTION=Long Hair with Feather
+DESCRIPTION=Long Feather
 ON=@Create
 	ATTR=attr_newbie
 ON=@Timer
@@ -625,13 +625,13 @@ ON=@Timer
 
 [ITEMDEF 02fc2]
 DEFNAME=i_hair_elven_mullet
-NAME=mullet hair
+NAME=Mullet
 TYPE=t_hair
 VALUE=10
 WEIGHT=0.1
 CATEGORY=Hair and Horns
 SUBSECTION=Elven Hair
-DESCRIPTION=Mullet Hair
+DESCRIPTION=Mullet
 ON=@Create
 	ATTR=attr_newbie
 ON=@Timer
@@ -652,28 +652,28 @@ ON=@Timer
 	RETURN 1
 
 [ITEMDEF 02fcd]
-DEFNAME=i_hair_elven_long2
-NAME=long elven hair
+DEFNAME=i_hair_elven_long
+NAME=Long
 TYPE=t_hair
 VALUE=17
 WEIGHT=0.1
 CATEGORY=Hair and Horns
 SUBSECTION=Elven Hair
-DESCRIPTION=Long Hair
+DESCRIPTION=Long
 ON=@Create
 	ATTR=attr_newbie
 ON=@Timer
 	RETURN 1
 
 [ITEMDEF 02fce]
-DEFNAME=i_hair_elven_long3
-NAME=long hair with topknot
+DEFNAME=i_hair_elven_topknot
+NAME=Topknot
 TYPE=t_hair
 VALUE=23
 WEIGHT=0.1
 CATEGORY=Hair and Horns
 SUBSECTION=Elven Hair
-DESCRIPTION=Long Hair with Topknot
+DESCRIPTION=Topknot
 ON=@Create
 	ATTR=attr_newbie
 ON=@Timer
@@ -681,27 +681,27 @@ ON=@Timer
 
 [ITEMDEF 02fcf]
 DEFNAME=i_hair_elven_braid
-NAME=Long hair with braid
+NAME=Long Braid
 TYPE=t_hair
 VALUE=25
 WEIGHT=0.1
 CATEGORY=Hair and Horns
 SUBSECTION=Elven Hair
-DESCRIPTION=Long with Braid
+DESCRIPTION=Long Braid
 ON=@Create
 	ATTR=attr_newbie
 ON=@Timer
 	RETURN 1
 
 [ITEMDEF 02fd0]
-DEFNAME=i_hair_elven_long4
-NAME=long hair with bun
+DEFNAME=i_hair_elven_buns
+NAME=Buns
 TYPE=t_hair
 VALUE=27
 WEIGHT=0.1
 CATEGORY=Hair and Horns
 SUBSECTION=Elven Hair
-DESCRIPTION=Long Hair with Bun
+DESCRIPTION=Buns
 ON=@Create
 	ATTR=attr_newbie
 ON=@Timer
@@ -709,13 +709,13 @@ ON=@Timer
 
 [ITEMDEF 02fd1]
 DEFNAME=i_hair_elven_spike
-NAME=spiked hair
+NAME=Spiked
 TYPE=t_hair
 VALUE=29
 WEIGHT=0.1
 CATEGORY=Hair and Horns
 SUBSECTION=Elven Hair
-DESCRIPTION=Spiked Hair
+DESCRIPTION=Spiked
 ON=@Create
 	ATTR=attr_newbie
 ON=@Timer
@@ -1102,7 +1102,7 @@ ON=@TIMER
 	if <cont.npc>	// players only
 		return 1
 	endif
-	serv.newitem=i_hair_krisna
+	serv.newitem=i_hair_topknot
 	new.color=<cont.findlayer(layer_hair).color>
 	cont.equip <new.uid>
 	return 1
