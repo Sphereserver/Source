@@ -3409,24 +3409,6 @@ int CChar::Skill_MakeItem( SKTRIG_TYPE stage )
 	{
 		return m_Act_Difficulty;	// keep the already set difficulty
 	}
-	/*if ( stage == SKTRIG_STROKE )
-	{
-		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-		{
-			Sound( 0x02a );
-		}
-		if ( m_atCreate.m_Stroke_Count <= 0 )
-			return 0;
-
-		// Keep trying and updating the animation
-		m_atCreate.m_Stroke_Count --;
-		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
-		{
-			UpdateAnimate( ANIM_ATTACK_WEAPON );	// ANIM_ATTACK_1H_DOWN
-		}
-		Skill_SetTimeout();
-		return( Skill_Stroke() );	// keep active.
-	}*/
 	if ( stage == SKTRIG_SUCCESS )
 	{
 		if ( ! Skill_MakeItem( m_atCreate.m_ItemID, m_Act_Targ, SKTRIG_SUCCESS, false, (m_atCreate.m_Amount ? m_atCreate.m_Amount : 1) ))
@@ -3479,15 +3461,6 @@ int CChar::Skill_Bowcraft( SKTRIG_TYPE stage )
 	// m_Act_Targ = the item we want to be part of this process.
 	// m_atCreate.m_ItemID = new item we are making
 	// m_atCreate.m_Amount = amount of said item.
-
-	/*if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-	{
-		Sound( 0x055 );
-	}*/
-	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
-	{
-		UpdateAnimate( ANIM_SALUTE );
-	}
 
 	return( Skill_MakeItem( stage ));
 }
@@ -3883,6 +3856,7 @@ int CChar::Skill_Act_Training( SKTRIG_TYPE stage )
 int CChar::Skill_Stroke()
 {
 	int sound;
+	int anim;
 	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
 	{
 		switch (Skill_GetActive())
@@ -3906,6 +3880,18 @@ int CChar::Skill_Stroke()
 				sound;
 		}
 	}
+	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
+	{
+		switch (Skill_GetActive())
+		{
+			case SKILL_BOWCRAFT:
+				anim = ANIM_SALUTE ;
+			case SKILL_BLACKSMITHING:
+				anim = ANIM_ATTACK_WEAPON ;
+			default:
+				anim;
+		}
+	}
 	if ( m_atCreate.m_Stroke_Count <= 0 )
 		return 0;
 	m_atCreate.m_Stroke_Count --;
@@ -3917,6 +3903,7 @@ int CChar::Skill_Stroke()
 		args.m_VarsLocal.SetNum("Strokes", m_atCreate.m_Stroke_Count);
 		args.m_VarsLocal.SetNum("Sound", sound);
 		args.m_VarsLocal.SetNum("Delay",delay);
+		args.m_VarsLocal.SetNum("Anim",anim);
 		if ( OnTrigger(CTRIG_SkillStroke, this, &args ) == TRIGRET_RET_TRUE)
 			return(-SKTRIG_ABORT);
 
@@ -3930,7 +3917,7 @@ int CChar::Skill_Stroke()
 	// Keep trying and updating the animation
 	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
 	{
-		UpdateAnimate( ANIM_ATTACK_WEAPON );	// ANIM_ATTACK_1H_DOWN
+		UpdateAnimate( static_cast<ANIM_TYPE>(anim) );	// ANIM_ATTACK_1H_DOWN
 	}
 	if ( delay < 10)
 		delay = 10;
@@ -3949,6 +3936,7 @@ int CChar::Skill_Stroke_Consuming()
 			pItemDef = CItemBase::FindItemBase( m_atCreate.m_ItemID );
 	}
 	int sound;
+	int anim;
 	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
 	{
 		switch (Skill_GetActive())
@@ -3974,6 +3962,7 @@ int CChar::Skill_Stroke_Consuming()
 		args.m_VarsLocal.SetNum("Strokes", m_atCreate.m_Stroke_Count);
 		args.m_VarsLocal.SetNum("Sound", sound);
 		args.m_VarsLocal.SetNum("Delay",delay);
+		args.m_VarsLocal.SetNum("Anim",anim);
 		tRet = OnTrigger(CTRIG_SkillStroke, this, &args );
 		if ( tRet == TRIGRET_RET_TRUE)
 			return(-SKTRIG_ABORT);
@@ -3981,12 +3970,13 @@ int CChar::Skill_Stroke_Consuming()
 		sound = args.m_VarsLocal.GetKeyNum("Sound",false);
 		m_atCreate.m_Stroke_Count = args.m_VarsLocal.GetKeyNum("Strokes",false);
 		delay = args.m_VarsLocal.GetKeyNum("Delay",true);
+		anim =args.m_VarsLocal.GetKeyNum("Anim",false);
 	}
 
 	Sound(sound);
 		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
 	{
-		UpdateAnimate( ANIM_ATTACK_WEAPON );	// ANIM_ATTACK_1H_DOWN
+		UpdateAnimate( static_cast<ANIM_TYPE>(anim) );	// ANIM_ATTACK_1H_DOWN
 	}
 	if ( delay < 10)
 		delay = 10;

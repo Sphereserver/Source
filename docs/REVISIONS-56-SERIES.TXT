@@ -693,3 +693,7 @@ Script pack:
 
 02-03-2014, Ben
 -Fixed #2261: (script pack) Hairs/beards using wrong names (multiple scripts updated for this)
+
+03-03-2014, XuN
+Added local.Anim to @SkillStroke trigger.
+Fixed wrong animations sent in each Stroke (Some are missing?).
