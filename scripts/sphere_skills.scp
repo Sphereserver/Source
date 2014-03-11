@@ -45,7 +45,7 @@ DEFNAME=SKILL_ALCHEMY
 KEY=Alchemy
 TITLE=Alchemist
 
-DELAY=3.0,1.0 // per stroke.
+DELAY=1.2		//Old value=3.0,1.0 // per stroke.
 ADV_RATE=10.0,200.0,800.0
 VALUES=1,20,100
 
@@ -191,7 +191,7 @@ KEY=Blacksmithing
 TITLE=Blacksmith
 FLAGS=SKF_CRAFT
 PROMPT_MSG=
-DELAY=1.0
+DELAY=1.2		//Old value=1.7
 STAT_STR=95
 STAT_INT=15
 STAT_DEX=25
@@ -214,7 +214,7 @@ KEY=Bowcraft
 TITLE=Bowyer
 FLAGS=SKF_CRAFT
 PROMPT_MSG=
-DELAY=2.0
+DELAY=1.2		//Old value=1.7
 STAT_STR=40
 STAT_INT=45
 STAT_DEX=70
@@ -278,7 +278,7 @@ DEFNAME=Skill_Carpentry
 KEY=Carpentry
 TITLE=Carpenter
 PROMPT_MSG=
-DELAY=2.0
+DELAY=1.2		//Old value=3.0
 STAT_STR=60
 STAT_INT=40
 STAT_DEX=30
@@ -301,7 +301,7 @@ KEY=Cartography
 TITLE=Cartographer
 FLAGS=skf_craft
 PROMPT_MSG=
-DELAY=2.0
+DELAY=3.0
 STAT_STR=15
 STAT_INT=70
 STAT_DEX=20
@@ -324,7 +324,7 @@ KEY=Cooking
 TITLE=Chef
 FLAGS=skf_craft
 PROMPT_MSG=What would you like to cook?
-DELAY=2.0
+DELAY=1.2		//Old value=1.5
 STAT_STR=25
 STAT_INT=45
 STAT_DEX=20
@@ -539,7 +539,7 @@ KEY=Inscription
 TITLE=Scribe
 PROMPT_MSG=
 FLAGS=SKF_CRAFT
-DELAY=3.0
+DELAY=1.2		//Old value=3.0
 STAT_STR=15
 STAT_INT=100
 STAT_DEX=15
@@ -755,7 +755,7 @@ KEY=Tailoring
 TITLE=Tailor
 FLAGS=SKF_CRAFT
 PROMPT_MSG=
-DELAY=3.0
+DELAY=1.2		//Old value=4.5
 STAT_STR=30
 STAT_INT=30
 STAT_DEX=60
@@ -820,7 +820,7 @@ KEY=Tinkering
 TITLE=Tinker
 FLAGS=SKF_CRAFT
 PROMPT_MSG=
-DELAY=3.0
+DELAY=1.2		//Old value=3.0
 STAT_STR=30
 STAT_INT=100
 STAT_DEX=50
