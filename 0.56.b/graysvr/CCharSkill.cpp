@@ -3883,9 +3883,6 @@ int CChar::Skill_Stroke()
 				break;
 		}
 	}
-	if ( m_atCreate.m_Stroke_Count <= 0 )
-		return 0;
-	m_atCreate.m_Stroke_Count --;
 	int delay = Skill_GetTimeout();
 	if ( IsTrigUsed(TRIGGER_SKILLSTROKE))
 	{
@@ -3912,6 +3909,9 @@ int CChar::Skill_Stroke()
 	}
 	if ( delay < 10)
 		delay = 10;
+	m_atCreate.m_Stroke_Count --;
+	if ( m_atCreate.m_Stroke_Count < 1 )
+		return( SKTRIG_SUCCESS );
 
 	SetTimeout(delay);
 	//Skill_SetTimeout();	//Old behaviour, removed to keep up dynamic delay coming in with the trigger @SkillStroke
