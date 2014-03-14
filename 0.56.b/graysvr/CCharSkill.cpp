@@ -4524,6 +4524,8 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 			m_atCreate.m_ItemID = static_cast<ITEMID_TYPE>(pResBase.GetResIndex());
 			if ( skill != SKILL_ALCHEMY)
 				m_atCreate.m_Stroke_Count = pArgs.m_VarsLocal.GetKeyNum("CraftStrokeCnt",true);
+			if ( m_atCreate.m_Stroke_Count < 1)
+				m_atCreate.m_Stroke_Count = 1;
 			m_atCreate.m_Amount = pArgs.m_VarsLocal.GetKeyNum("CraftAmount",true);
 		}
 

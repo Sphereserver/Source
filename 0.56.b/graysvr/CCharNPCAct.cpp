@@ -3208,65 +3208,6 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 	return( true );
 }
 
-bool CChar::NPC_OnTickFood( int nFoodLevel )
-{
-	ADDTOCALLSTACK("CChar::NPC_OnTickFood");
-	// Check Food usage.
-	// Are we hungry enough to take some new action ?
-	// RETURN: true = we have taken an action.
-	if ( !m_pNPC )
-		return false;
-
-	bool bMsg = false;
-	bool bPet = IsStatFlag(STATF_Pet);
-	int maxfood = Stat_GetMax(STAT_FOOD);
-
-	if ( g_Cfg.m_iHitsHungerLoss && maxfood )
-	{
-		//	hungry at 20% level and lower will decrease hits
-		if ( nFoodLevel <= maxfood/5 )
-		{
-			if ( !m_pArea || m_pArea->IsFlag(REGION_FLAG_SAFE|REGION_FLAG_ARENA) ) ;
-			else if ( m_pNPC && m_pArea->IsFlag(REGION_FLAG_UNDERGROUND|REGION_FLAG_NODECAY) ) ;
-			else
-			{
-				int loss = ( nFoodLevel ? Calc_GetRandVal2(1, g_Cfg.m_iHitsHungerLoss-1) : g_Cfg.m_iHitsHungerLoss);
-
-				UpdateStatVal( STAT_STR, -((maximum(Stat_GetMax(STAT_STR), 10) * loss)/100) );
-			}
-
-			char *pszMsg = Str_GetTemp();
-			sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_NPC), Food_GetLevelMessage(bPet, false));
-			Emote(pszMsg, GetClient());
-
-			bMsg = true;
-		}
-	}
-
-   	if ( bPet )
-   	{
-		if ( !bMsg )
-		{
-			TCHAR *pszMsg = Str_GetTemp();
-   			sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_NPC), Food_GetLevelMessage(true, false));
-   			Emote(pszMsg, GetClient());
-		}
-
-		//	pets deserts on being deadly hungry
-		if ( nFoodLevel <= 0 )
-		{
-   			SoundChar(CRESND_RAND2);
-			NPC_PetDesert();
-			return true;
-		}
-   	}
-
-	if ( IsStatFlag(STATF_Stone|STATF_Freeze|STATF_DEAD|STATF_Sleeping) )
-		return false;
-	SoundChar(CRESND_RAND2);
-	return true;
-}
-
 void CChar::NPC_OnTickAction()
 {
 	ADDTOCALLSTACK("CChar::NPC_OnTickAction");
