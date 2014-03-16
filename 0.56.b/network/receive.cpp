@@ -3165,13 +3165,19 @@ bool PacketGargoyleFly::onReceive(NetState* net)
 		g_Log.EventDebug("Unexpected flying parameters: %d, %d.\n", one, zero);
 
 #endif
-
+	
+	if ( IsTrigUsed(TRIGGER_TOGGLEFLYING) )
+	{
+		if ( character->OnTrigger(CTRIG_ToggleFlying,character,0) == TRIGRET_RET_TRUE )
+			return false;
+	}	
 	switch (character->GetDispID())
 	{
 		case CREID_GARGMAN:
 		case CREID_GARGWOMAN:
 		case CREID_GARGGHOSTMAN:
 		case CREID_GARGGHOSTWOMAN:
+		{
 			if (character->IsStatFlag(STATF_DEAD))
 				break;
 
@@ -3192,10 +3198,21 @@ bool PacketGargoyleFly::onReceive(NetState* net)
 				if (ptHover.IsValidPoint())
 					character->MoveTo(ptHover);
 			}
-
-			character->UpdateModeFlag();
+			character->UpdateMode();
+			//Sending this packet here instead of calling UpdateAnimate because of conversions, NANIM_TAKEOFF = 9 and the function is reading 9 from old ANIM_TYPE
+			//to know when the character is attacking and modoifying its animation accordingly
+			PacketActionBasic* cmd = new PacketActionBasic(character, character->IsStatFlag(STATF_Hovering) ? NANIM_TAKEOFF:NANIM_LANDING, static_cast<ANIM_TYPE_NEW>(0), 0);
+			ClientIterator it;
+			for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
+			{
+				if (!pClient->CanSee(character))
+					continue;
+				if ( pClient->GetNetState()->isClientVersion(MINCLIVER_NEWMOBILEANIMATION) )
+					cmd->send(pClient);
+			}
+			delete cmd;
 			break;
-
+		}
 		default:
 			break;
 	}
@@ -4231,7 +4248,6 @@ bool PacketCrashReport::onReceive(NetState* net)
 					versionMaj, versionMin, versionRev, versionPat);
 	return true;
 }
-
 
 /***************************************************************************
  *

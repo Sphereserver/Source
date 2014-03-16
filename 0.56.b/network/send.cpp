@@ -1605,14 +1605,14 @@ PacketAction::PacketAction(const CChar* character, ANIM_TYPE action, WORD repeat
 	writeByte(delay);
 }
 
-PacketActionBasic::PacketActionBasic(const CChar* character, ANIM_TYPE action, int subaction, int variation) : PacketSend(XCMD_NewAnimUpdate, 10, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketActionBasic::PacketActionBasic(const CChar* character, ANIM_TYPE_NEW action, ANIM_TYPE_NEW subaction, byte variation) : PacketSend(XCMD_NewAnimUpdate, 10, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketActionBasic::PacketActionBasic");
 
 	writeInt32(character->GetUID());
 	writeInt16(action);
 	writeInt16(subaction);
-	writeInt16(variation);
+	writeByte(variation);
 }
 
 /***************************************************************************

@@ -572,7 +572,7 @@ public:
 class PacketActionBasic : public PacketSend
 {
 public:
-	PacketActionBasic(const CChar* character, ANIM_TYPE action, int subaction, int variation);
+	PacketActionBasic(const CChar* character, ANIM_TYPE_NEW action, ANIM_TYPE_NEW subaction, byte variation);
 };
 
 /***************************************************************************

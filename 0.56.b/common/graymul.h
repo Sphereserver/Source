@@ -1553,6 +1553,51 @@ enum ANIM_TYPE	// not all creatures animate the same for some reason.
 
 	ANIM_QTY = 0x23
 };
+enum ANIM_TYPE_NEW	// not all creatures animate the same for some reason. http://img546.imageshack.us/img546/5439/uonewanimstable2.png
+{
+	NANIM_ATTACK		= 0x00,	// 8 SUB ANIMATIONS, VARIATION 0-*
+	NANIM_BLOCK			= 0x01,			// VARIATION 0-1
+	NANIM_BLOCK2		= 0x02,			// MONSTERS, VARIATION 0-1
+	NANIM_DEATH			= 0x03,			// VARIATION 0-1
+	NANIM_GETHIT		= 0x04,			// VARIATION 0-*
+	NANIM_IDLE			= 0x05,
+	NANIM_EAT			= 0x06,
+	NANIM_EMOTE			= 0x07,			// 2 SUB ANIMATIONS
+	NANIM_ANGER			= 0x08,
+	NANIM_TAKEOFF		= 0x09,
+	NANIM_LANDING		= 0x0a,
+	NANIM_SPELL			= 0x0b,			// 2 SUB ANIMATIONS
+	NANIM_UNKNOWN1		= 0x0c,
+	NANIM_UNKNOWN2		= 0x0d,
+	NANIM_PILLAGE		= 0x0e,			// Human/Animal (eat), Monster (pillage)
+	NANIM_RISE			= 0x0f,
+	
+	NANIM_QTY = 16,
+
+	NANIM_ATTACK_WRESTLING	= 0x00,
+	NANIM_ATTACK_BOW		= 0x01,
+	NANIM_ATTACK_CROSSBOW	= 0x02,
+	NANIM_ATTACK_BASH1H		= 0x03,
+	NANIM_ATTACK_SLASH1H	= 0x04,
+	NANIM_ATTACK_PIERCE1H	= 0x05,
+	NANIM_ATTACK_BASH2H		= 0x06,
+	NANIM_ATTACK_SLASH2H	= 0x07,
+	NANIM_ATTACK_PIERCE2H	= 0x08,
+	NANIM_ATTACK_THROWING	= 0x09,
+
+	NANIM_ATTACK_QTY = 10,
+
+	NANIM_EMOTE_BOW		= 0x00,
+	NANIM_EMOTE_SALUTE	= 0x01,
+	
+	NANIM_EMOTE_QTY = 2,
+
+	NANIM_SPELL_NORMAL	= 0x00,
+	NANIM_SPELL_SUMMON	= 0x01,
+
+	NANIM_SPELL_QTY = 2,
+
+};
 
 enum CRESND_TYPE	// Creature sound offset types.
 {	// Some creatures have no random sounds. others (humans,birds) have many sounds.

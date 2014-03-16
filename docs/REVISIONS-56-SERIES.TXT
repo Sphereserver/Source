@@ -702,3 +702,7 @@ Fixed wrong animations sent in each Stroke (Some are missing?).
 Fixed #2289:
 -Added local.HitsHungerLoss for StatID 3 (Food) in the @RegenStat trigger, this value is still a percentaje and NOT the hitpoints to lose, but setting it to 0 will disable the loss of hitpoints for this character.
 -Update: Damage received via Hunger have flags DAM_GOD|DAM_GENERAL|DAM_NOUNPARALYZE, if you want to change it just set Local.HitsHungerLoss to 0 and create your own damage there.
+
+15-03-2014, Xun & Ben
+Added support for packet 0xE2 (NewPacketAnimation), wich involves on updating some animations to a new packet and fixes most of the bugs on the gargoyles animations
+(Throwing still needs some more updates to see the weapons coming back).

@@ -3927,7 +3927,6 @@ int CChar::Skill_Stroke_Consuming()
 			pItemDef = CItemBase::FindItemBase( m_atCreate.m_ItemID );
 	}
 	int sound;
-	int anim;
 	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
 	{
 		switch (Skill_GetActive())
@@ -3946,6 +3945,7 @@ int CChar::Skill_Stroke_Consuming()
 	}
 	int delay = Skill_GetTimeout();
 	TRIGRET_TYPE tRet;
+	int anim = 0;
 	if ( IsTrigUsed(TRIGGER_SKILLSTROKE))
 	{
 		CScriptTriggerArgs args;

@@ -2438,7 +2438,8 @@ enum CTRIG_TYPE
 	CTRIG_SpellSuccess,		// The spell succeeded
 	CTRIG_SpellTargetCancel,	//  cancelled spell target
 	CTRIG_StatChange,
-	CTRIG_StepStealth,		//+Made a step while being in stealth mode
+	CTRIG_StepStealth,		//+Made a step while being in stealth 
+	CTRIG_ToggleFlying,
 	CTRIG_ToolTip,			// someone did tool tips on me.
 	CTRIG_TradeAccepted,	// Everything went well, and we are about to exchange trade items
 	CTRIG_TradeClose,		// Fired when a Trade Window is being deleted, no returns
