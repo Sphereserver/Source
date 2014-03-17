@@ -80,6 +80,18 @@ void CChar::Stat_SetMod( STAT_TYPE i, short iVal )
 {
 	ADDTOCALLSTACK("CChar::Stat_SetMod");
 	ASSERT(i >= 0 && i < STAT_QTY);
+	int iStatVal = Stat_GetMax(static_cast<STAT_TYPE>(i));
+	if ( IsTrigUsed(TRIGGER_STATCHANGE) )
+	{
+		CScriptTriggerArgs args;
+		args.m_iN1 = i;	//Only Max* stats are fired here, and we don't want to receive argn1=0 for both STR and MAXHITS in the trigger so i trick it.
+		args.m_iN2 = iStatVal;
+		args.m_iN3 = iVal;
+		if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
+			return;
+		i = static_cast<STAT_TYPE>(args.m_iN1-4);
+		iVal = args.m_iN3;
+	}
 	m_Stat[i].m_mod = iVal;
 	UpdateStatsFlag();
 }

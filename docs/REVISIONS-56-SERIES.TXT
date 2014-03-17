@@ -709,3 +709,6 @@ Added support for packet 0xE2 (NewPacketAnimation), wich involves on updating so
 
 16-03-2014, Ben
 Fixed #2285: FVAL returning wrong values in linux.
+
+17-03-2014, XuN
+Added @StatChange to ModStr/dex/int/food.
