@@ -134,7 +134,7 @@ void Packet::seek(size_t pos)
 void Packet::skip(long count)
 {
 	// ensure we can't go lower than 0
-	if (count < 0 && static_cast<size_t>(abs(count)) > m_position)
+	if (count < 0 && static_cast<size_t>(labs(count)) > m_position)
 		m_position = 0;
 	else
 		m_position += count;

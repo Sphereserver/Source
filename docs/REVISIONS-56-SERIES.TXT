@@ -706,3 +706,6 @@ Fixed #2289:
 15-03-2014, Xun & Ben
 Added support for packet 0xE2 (NewPacketAnimation), wich involves on updating some animations to a new packet and fixes most of the bugs on the gargoyles animations
 (Throwing still needs some more updates to see the weapons coming back).
+
+16-03-2014, Ben
+Fixed #2285: FVAL returning wrong values in linux.

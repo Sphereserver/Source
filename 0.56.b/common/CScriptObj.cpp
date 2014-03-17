@@ -909,8 +909,8 @@ badcmd:
 			return( true );
 		case SSC_FVAL:
 			{
-				INT64	iVal		= Exp_GetVal( pszKey );
-				sVal.Format( "%s%lli.%lli", (iVal >= 0) ? "" : "-", abs(iVal/10), abs(iVal%10) );
+				INT64 iVal = Exp_GetVal( pszKey );
+				sVal.Format( "%s%lld.%lld", (iVal >= 0) ? "" : "-", llabs(iVal/10), llabs(iVal%10) );
 				return true;
 			}
 		case SSC_HVAL:
@@ -3235,7 +3235,7 @@ bool CFileObjContainer::r_LoadVal( CScript & s )
 			break;
 
 		case CFO_GLOBALTIMEOUT:
-			iGlobalTimeout = abs(s.GetArgVal()*TICK_PER_SEC);
+			iGlobalTimeout = labs(s.GetArgVal()*TICK_PER_SEC);
 			break;
 
 		default:

@@ -70,7 +70,7 @@
 
 #ifndef sign
 	#define sign(n) (((n) < 0) ? -1 : (((n) > 0) ? 1 : 0))
-	#define abs(n) (((n) < 0) ? (-(n)) : (n))
+//	#define abs(n) (((n) < 0) ? (-(n)) : (n))
 #endif
 
 #define _cdecl
