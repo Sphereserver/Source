@@ -10,6 +10,7 @@
 #ifndef minimum					// limits.h ?
 	#define minimum(x,y)	((x)<(y)?(x):(y))
 	#define maximum(x,y)	((x)>(y)?(x):(y))
+	#define medium(x,y,z)	((x)>(y)?(x):((z)<(y)?(z):(y)))
 #endif	// minimum
 
 struct CMemBlock

@@ -712,3 +712,7 @@ Fixed #2285: FVAL returning wrong values in linux.
 
 17-03-2014, XuN
 Added @StatChange to ModStr/dex/int/food.
+
+21-03-2014, Ben
+Changed: Character creation to process 4th skill properly
+Removed: EXTRASKILL.KEY and EXTRASKILL.VAL from f_onchar_create as they are being properly processed.

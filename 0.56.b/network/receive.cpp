@@ -184,13 +184,14 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 	createArgs.m_iN2 = prProf;
 	createArgs.m_iN3 = rtRace;
 	createArgs.m_VarsLocal.SetNum("PORTRAIT", iPortrait);
-	createArgs.m_VarsLocal.SetNum("EXTRASKILL.KEY", skSkill4);
-	createArgs.m_VarsLocal.SetNum("EXTRASKILL.VAL", iSkillVal4 * 10);
+//	These locals are now useless since they are being initialized in CChar::InitPlayer()
+//	createArgs.m_VarsLocal.SetNum("EXTRASKILL.KEY", skSkill4);
+//	createArgs.m_VarsLocal.SetNum("EXTRASKILL.VAL", iSkillVal4 * 10);
 	createArgs.m_s1 = account->GetName();
 	createArgs.m_pO1 = client;
 	
 	//Creating the pChar
-	pChar->InitPlayer(client, charname, bFemale, rtRace, wStr, wDex, wInt, prProf, skSkill1, iSkillVal1, skSkill2, iSkillVal2, skSkill3, iSkillVal3, wSkinHue, idHair, wHairHue, idBeard, wBeardHue, wShirtHue, wPantsHue, iStartLoc);
+	pChar->InitPlayer(client, charname, bFemale, rtRace, wStr, wDex, wInt, prProf, skSkill1, iSkillVal1, skSkill2, iSkillVal2, skSkill3, iSkillVal3, skSkill4, iSkillVal4, wSkinHue, idHair, wHairHue, idBeard, wBeardHue, wShirtHue, wPantsHue, iStartLoc);
 
 	//Calling the function after the char creation, it can't be done before or the function won't have SRC
 	client->r_Call("f_onchar_create", pChar, &createArgs, NULL, &tr);

@@ -949,7 +949,7 @@ void CChar::SetID( CREID_TYPE id )
 	}
 }
 
-void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc  )
+void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc  )
 {
 	ADDTOCALLSTACK("CChar::InitPlayer");
 	// Create a brand new Player char.
@@ -1069,21 +1069,39 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 		Skill_SetBase(static_cast<SKILL_TYPE>(i), Calc_GetRandVal( g_Cfg.m_iMaxBaseSkill));
 	}
 
-	wStr = minimum(wStr, 80);
-	wDex = minimum(wDex, 80);
-	wInt = minimum(wInt, 80);
-	if ( (wStr + wDex + wInt) > 80 )
-		wStr = wDex = wInt  = 26;
+	//wStr = minimum(wStr, 80);
+	//wDex = minimum(wDex, 80);
+	//wInt = minimum(wInt, 80);
 
-	Stat_SetBase(STAT_STR, wStr);
-	Stat_SetBase(STAT_DEX, wDex);
-	Stat_SetBase(STAT_INT, wInt);
+	wStr = medium(10,wStr,60);
+	wDex = medium(10,wDex,60);
+	wInt = medium(10,wInt,60);
 
 	iSkillVal1 = minimum(iSkillVal1, 50);
 	iSkillVal2 = minimum(iSkillVal2, 50);
 	iSkillVal3 = minimum(iSkillVal3, 50);
-	if ( (iSkillVal1 + iSkillVal2 + iSkillVal3) > 101 )
+	iSkillVal4 = minimum(iSkillVal4, 50);
+
+	if (skSkill4 != SKILL_NONE)
+	{
+		if ( (wStr + wDex + wInt) > 90 )
+			wStr = wDex = wInt  = 30;
+
+		if ( (iSkillVal1 + iSkillVal2 + iSkillVal3 + iSkillVal4) > 121 )
+		iSkillVal4 = 1;
+	}
+	else
+	{
+		if ( (wStr + wDex + wInt) > 80 )
+			wStr = wDex = wInt  = 26;
+
+		if ( (iSkillVal1 + iSkillVal2 + iSkillVal3) > 101 )
 		iSkillVal3 = 1;
+	}
+
+	Stat_SetBase(STAT_STR, wStr);
+	Stat_SetBase(STAT_DEX, wDex);
+	Stat_SetBase(STAT_INT, wInt);
 
 	if ( IsSkillBase(skSkill1) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill1))
 		Skill_SetBase(skSkill1, iSkillVal1 * 10);
@@ -1091,6 +1109,12 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 		Skill_SetBase(skSkill2, iSkillVal2 * 10);
 	if ( IsSkillBase(skSkill3) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill3))
 		Skill_SetBase(skSkill3, iSkillVal3 * 10);
+
+	if (skSkill4 != SKILL_NONE)
+	{
+		if ( IsSkillBase(skSkill4) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill4))
+		Skill_SetBase(skSkill4, iSkillVal4 * 10);
+	}
 
 	// Set title
 	m_sTitle.Empty();
@@ -1213,7 +1237,7 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 	GetPackSafe();
 
 	// Get special equip for the starting skills.
-	for ( unsigned int i = 0; i < 4; i++ )
+	for ( unsigned int i = 0; i < 5; i++ )
 	{
 		int iSkill = INT_MAX;
 		switch ( i )
@@ -1229,6 +1253,9 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 				break;
 			case 3:
 				iSkill = skSkill3;
+				break;
+			case 4:
+				iSkill = skSkill4;
 				break;
 		}
 
