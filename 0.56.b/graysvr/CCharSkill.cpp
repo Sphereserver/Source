@@ -83,14 +83,17 @@ void CChar::Stat_SetMod( STAT_TYPE i, short iVal )
 	int iStatVal = Stat_GetMax(static_cast<STAT_TYPE>(i));
 	if ( IsTrigUsed(TRIGGER_STATCHANGE) )
 	{
-		CScriptTriggerArgs args;
-		args.m_iN1 = i;	//Only Max* stats are fired here, and we don't want to receive argn1=0 for both STR and MAXHITS in the trigger so i trick it.
-		args.m_iN2 = iStatVal;
-		args.m_iN3 = iVal;
-		if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
-			return;
-		i = static_cast<STAT_TYPE>(args.m_iN1-4);
-		iVal = args.m_iN3;
+		if (i >= STAT_STR && i <= STAT_DEX)
+		{
+			CScriptTriggerArgs args;
+			args.m_iN1 = i+8;	// Shift by 8 to indicate modSTR, modINT, modDEX
+			args.m_iN2 = iStatVal;
+			args.m_iN3 = iVal;
+			if (OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE)
+				return;
+			// do not restore argn1 to i, bad things will happen! leave i untouched. (matex)
+			iVal = args.m_iN3;
+		}
 	}
 	m_Stat[i].m_mod = iVal;
 	UpdateStatsFlag();
@@ -143,14 +146,18 @@ void CChar::Stat_SetMax( STAT_TYPE i, int iVal )
 		int iStatVal = Stat_GetMax(static_cast<STAT_TYPE>(i));
 		if ( IsTrigUsed(TRIGGER_STATCHANGE) )
 		{
-			CScriptTriggerArgs args;
-			args.m_iN1 = i < 3 ? i+4 : 3;	//Only Max* stats are fired here, and we don't want to receive argn1=0 for both STR and MAXHITS in the trigger so i trick it.
-			args.m_iN2 = iStatVal;
-			args.m_iN3 = iVal;
-			if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
-				return;
-			i = static_cast<STAT_TYPE>(args.m_iN1-4);
-			iVal = args.m_iN3;
+			// Only STR, DEX, INT, FOOD fire MaxHits, MaxMana, MaxStam, MaxFood for @StatChange
+			if (i >= STAT_STR && i <= STAT_FOOD)
+			{
+				CScriptTriggerArgs args;
+				args.m_iN1 = i + 4; // Shift by 4 to indicate MaxHits, etc..
+				args.m_iN2 = iStatVal;
+				args.m_iN3 = iVal;
+				if (OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE)
+					return;
+				// do not restore argn1 to i, bad things will happen! leave i untouched. (matex)
+				iVal = args.m_iN3;
+			}
 		}
 		m_Stat[i].m_max = iVal;
 		switch ( i )
@@ -255,14 +262,29 @@ void CChar::Stat_SetBase( STAT_TYPE i, short iVal )
 	int iStatVal = Stat_GetBase(static_cast<STAT_TYPE>(i));
 	if ( IsTrigUsed(TRIGGER_STATCHANGE) )
 	{
-		CScriptTriggerArgs args;
-		args.m_iN1 = i;
-		args.m_iN2 = iStatVal;
-		args.m_iN3 = iVal;
-		if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
-			return;
-		i = static_cast<STAT_TYPE>(args.m_iN1);
-		iVal = args.m_iN3;
+		// Only Str, Dex, Int fire @Statchange here
+		if (i >= STAT_STR && i <= STAT_FOOD)
+		{
+			CScriptTriggerArgs args;
+			args.m_iN1 = i;
+			args.m_iN2 = iStatVal;
+			args.m_iN3 = iVal;
+			if (OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE)
+				return;
+			// do not restore argn1 to i, bad things will happen! leave i untouched. (matex)
+			iVal = args.m_iN3;
+
+			if (i != STAT_FOOD && m_Stat[i].m_max < 1) // MaxFood cannot depend on something, otherwise if the Stat depends on STR, INT, DEX, fire MaxHits, MaxMana, MaxStam
+			{
+				args.m_iN1 = i+4; // Shift by 4 to indicate MaxHits, MaxMana, MaxStam
+				args.m_iN2 = iStatVal;
+				args.m_iN3 = iVal;
+				if (OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE)
+					return;
+				// do not restore argn1 to i, bad things will happen! leave i untouched. (matex)
+				iVal = args.m_iN3;
+			}
+		}
 	}
 	switch ( i )
 	{
