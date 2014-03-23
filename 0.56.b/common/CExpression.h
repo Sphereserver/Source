@@ -91,7 +91,7 @@ public:
 public:
 	// Strict G++ Prototyping produces an error when not casting char*& to const char*&
 	// So this is a rather lazy workaround
-	inline int GetSingle( LPTSTR &pArgs )
+	inline INT64 GetSingle( LPTSTR &pArgs )
 	{
 		return GetSingle(const_cast<LPCTSTR &>(pArgs));
 	}
@@ -112,7 +112,7 @@ public:
 	}
 
 	// Evaluate using the stuff we know.
-	int GetSingle( LPCTSTR & pArgs );
+	INT64 GetSingle( LPCTSTR & pArgs );
 	INT64 GetVal( LPCTSTR & pArgs );
 	INT64 GetValMath( INT64 lVal, LPCTSTR & pExpr );
 	int GetRangeVals( LPCTSTR & pExpr, int * piVals, int iMaxQty );
@@ -134,15 +134,18 @@ extern bool IsStrEmpty( LPCTSTR pszTest );
 inline extern bool IsCharNumeric( char & Test );
 
 // Numeric formulas
-extern int Calc_GetRandVal( INT64 iqty );
-extern int Calc_GetRandVal2( INT64 iMin, INT64 iMax );
+extern INT64 Calc_GetRandLLVal( INT64 iqty );
+extern INT64 Calc_GetRandLLVal2( INT64 iMin, INT64 iMax );
+extern int Calc_GetRandVal( int iqty );
+extern int Calc_GetRandVal2( int iMin, int iMax );
 extern int Calc_GetLog2( UINT iVal );
 extern int Calc_GetSCurve( int iValDiff, int iVariance );
 extern int Calc_GetBellCurve( int iValDiff, int iVariance );
 
 extern DWORD ahextoi( LPCTSTR pArgs ); // Convert hex string to integer
 
-#define Exp_GetSingle( pa ) g_Exp.GetSingle( pa )
+#define Exp_GetSingle( pa ) static_cast<int>(g_Exp.GetSingle( pa ))
+#define Exp_GetLLSingle( pa ) g_Exp.GetSingle( pa )
 #define Exp_GetVal( pa )	static_cast<int>(g_Exp.GetVal( pa ))
 #define Exp_GetLLVal( pa )	g_Exp.GetVal( pa )
 #define Exp_GetRange( pa )	g_Exp.GetRange( pa )

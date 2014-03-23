@@ -2986,7 +2986,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				ASSERT( pItem);
 				if ( s.HasArgs())	// how long to last ?
 				{
-					INT64 iTimer = s.GetArgVal();
+					INT64 iTimer = s.GetArgLLVal();
 					if ( iTimer > 0 )
 						pItem->SetTimeout(iTimer);
 

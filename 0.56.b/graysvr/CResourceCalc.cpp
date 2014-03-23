@@ -192,7 +192,7 @@ int CResource::Calc_CombatChanceToHit( CChar * pChar, SKILL_TYPE skill, CChar * 
 
 	if ( pCharTarg == NULL )
 	{
-		return( Calc_GetRandVal(31)); // must be a training dummy
+		return( Calc_GetRandVal(31) ); // must be a training dummy
 	}
 
 	if ( pChar->m_pNPC &&
@@ -205,7 +205,7 @@ int CResource::Calc_CombatChanceToHit( CChar * pChar, SKILL_TYPE skill, CChar * 
 	// Frozen targets should be easy.
 	if ( pCharTarg->IsStatFlag( STATF_Sleeping | STATF_Freeze | STATF_Stone ))
 	{
-		return( Calc_GetRandVal(10));
+		return( Calc_GetRandVal(10) );
 	}
 
 	int iSkillVal = pChar->Skill_GetAdjusted( skill );
@@ -241,7 +241,7 @@ int CResource::Calc_CombatChanceToHit( CChar * pChar, SKILL_TYPE skill, CChar * 
 	else if ( iDiff > 100 )
 		iDiff = 100;	// just means it's very hard.
 
-	return( Calc_GetRandVal(iDiff));	// always need to have some chance. );
+	return( Calc_GetRandVal(iDiff) );	// always need to have some chance. );
 }
 
 int CResource::Calc_FameKill( CChar * pKill )

@@ -794,7 +794,7 @@ bool CScriptObj::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 			if ( min >= max )
 				sVal.FormatLLVal(min);
 			else
-				sVal.FormatVal(Calc_GetRandVal2(min, max));
+				sVal.FormatLLVal(Calc_GetRandLLVal2(min, max));
 
 			return true;
 		}
@@ -2337,9 +2337,9 @@ jump_in:
 			case SK_DOSWITCH:
 				{
 					EXC_SET("dorand/doswitch");
-					int iVal = s.GetArgVal();
+					INT64 iVal = s.GetArgLLVal();
 					if ( iCmd == SK_DORAND )
-						iVal = Calc_GetRandVal(iVal);
+						iVal = Calc_GetRandLLVal(iVal);
 					for ( ; ; --iVal )
 					{
 						iRet = OnTriggerRun( s, (iVal == 0) ? TRIGRUN_SINGLE_TRUE : TRIGRUN_SINGLE_FALSE, pSrc, pArgs, pResult );

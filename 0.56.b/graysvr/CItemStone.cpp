@@ -1442,7 +1442,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 					size_t iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
 					if ( iArgQty == 2 )
 					{
-						CGrayUID pGuildUid = piCmd[0];
+						CGrayUID pGuildUid = static_cast<unsigned long>(piCmd[0]);
 						bool bWeDeclared = (piCmd[1] != 0);
 						CItem * pEnemyItem = pGuildUid.ItemFind();
 						if ( pEnemyItem && (pEnemyItem->IsType(IT_STONE_GUILD) || pEnemyItem->IsType(IT_STONE_TOWN)) )

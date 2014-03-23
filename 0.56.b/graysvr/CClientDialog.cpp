@@ -554,8 +554,8 @@ bool CDialogDef::GumpSetup( int iPage, CClient * pClient, CObjBase * pObjSrc, LP
 	m_pObj->ParseText( pszBuf, pClient->GetChar() );
 
 	Str_ParseCmds( pszBuf, iSizes, COUNTOF(iSizes) );
-	m_x		= iSizes[0];
-	m_y		= iSizes[1];
+	m_x		= static_cast<int>(iSizes[0]);
+	m_y		= static_cast<int>(iSizes[1]);
 
 	if ( OnTriggerRunVal( s, TRIGRUN_SECTION_TRUE, pClient->GetChar(), &Args ) == TRIGRET_RET_TRUE )
 		return false;

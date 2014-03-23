@@ -1135,7 +1135,7 @@ INT64 CItem::GetDecayTime() const
 		case IT_FOLIAGE:
 		case IT_CROPS: // Crops "decay" as they grow
 			return g_World.GetTimeDiff(g_World.GetNextNewMoon( ( GetTopPoint().m_map == 1 ) ? false : true ) +
-				Calc_GetRandVal(20) * g_Cfg.m_iGameMinuteLength);
+				Calc_GetRandLLVal(20) * g_Cfg.m_iGameMinuteLength);
 		case IT_MULTI:
 		case IT_SHIP:
 		case IT_MULTI_CUSTOM:

@@ -1131,7 +1131,7 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 	
 	int SpellTimeout;
 	if (m_pChar->m_TagDefs.GetKeyNum("override.spelltimeout"))
-		SpellTimeout =	m_TagDefs.GetKeyNum("override.spelltimeout");
+		SpellTimeout =	static_cast<int>(m_TagDefs.GetKeyNum("override.spelltimeout"));
 	else
 		SpellTimeout = g_Cfg.m_iSpellTimeout * TICK_PER_SEC;
 	addTarget( CLIMODE_TARG_SKILL_MAGERY, pPrompt,
@@ -1262,7 +1262,7 @@ bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )
 		if ( count > 0 )
 		{
 			// Some credit for trying.
-			m_pChar->Skill_UseQuick( SKILL_TRACKING, 20 + Calc_GetRandVal( 30 ));
+			m_pChar->Skill_UseQuick( SKILL_TRACKING, 20 + Calc_GetRandLLVal( 30 ));
 
 			ASSERT(count < COUNTOF(item));
 			addItemMenu( CLIMODE_MENU_SKILL_TRACK, item, count );
@@ -1271,7 +1271,7 @@ bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )
 		else
 		{
 			// Some credit for trying.
-			m_pChar->Skill_UseQuick( SKILL_TRACKING, 10 + Calc_GetRandVal( 30 ));
+			m_pChar->Skill_UseQuick( SKILL_TRACKING, 10 + Calc_GetRandLLVal( 30 ));
 		}
 	}
 

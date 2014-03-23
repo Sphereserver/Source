@@ -436,7 +436,7 @@ void CItemMultiCustom::AddItem(CClient * pClientSrc, ITEMID_TYPE id, short x, sh
 				if ( bFloor != pPrevComponents[i]->m_isFloor )
 					continue;
 
-				RemoveItem( NULL, pPrevComponents[i]->m_item.GetDispID(), pPrevComponents[i]->m_item.m_dx, pPrevComponents[i]->m_item.m_dy, pPrevComponents[i]->m_item.m_dz);
+				RemoveItem( NULL, pPrevComponents[i]->m_item.GetDispID(), pPrevComponents[i]->m_item.m_dx, pPrevComponents[i]->m_item.m_dy, static_cast<signed char>(pPrevComponents[i]->m_item.m_dz));
 			}
 		}
 	}
@@ -889,7 +889,7 @@ void CItemMultiCustom::ResetStructure( CClient * pClientSrc )
 			if ( !pMultiItem->m_visible )
 				continue;
 
-			AddItem(NULL, pMultiItem->GetDispID(), pMultiItem->m_dx, pMultiItem->m_dy, pMultiItem->m_dz);
+			AddItem(NULL, pMultiItem->GetDispID(), pMultiItem->m_dx, pMultiItem->m_dy, static_cast<signed char>(pMultiItem->m_dz));
 		}
 	}
 
@@ -1454,7 +1454,7 @@ unsigned char CItemMultiCustom::GetPlane( signed char z )
 
 unsigned char CItemMultiCustom::GetPlane( Component * pComponent )
 {
-	return GetPlane(pComponent->m_item.m_dz);
+	return GetPlane(static_cast<signed char>(pComponent->m_item.m_dz));
 }
 
 signed char CItemMultiCustom::GetPlaneZ( unsigned char plane )

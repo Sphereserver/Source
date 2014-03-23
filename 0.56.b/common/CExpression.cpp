@@ -218,7 +218,7 @@ int Calc_GetLog2( UINT iVal )
 	return( i );
 }
 
-int Calc_GetRandVal( INT64 iqty )
+int Calc_GetRandVal( int iqty )
 {
 	if ( iqty <= 0 )
 		return( 0 );
@@ -229,7 +229,29 @@ int Calc_GetRandVal( INT64 iqty )
 	return( g_World.m_Rand.randInt() % iqty );
 }
 
-int Calc_GetRandVal2( INT64 iMin, INT64 iMax )
+int Calc_GetRandVal2( int iMin, int iMax )
+{
+	if ( iMin > iMax )
+	{
+		int tmp = iMin;
+		iMin = iMax;
+		iMax = tmp;
+	}
+	return(iMin + g_World.m_Rand.randInt() % ((iMax - iMin) + 1) );
+}
+
+INT64 Calc_GetRandLLVal( INT64 iqty )
+{
+	if ( iqty <= 0 )
+		return( 0 );
+	if ( iqty >= LLONG_MAX )
+	{
+		return( IMULDIV( g_World.m_Rand.genrand64_int64(), (DWORD) iqty, LLONG_MAX )) ;
+	}
+	return( g_World.m_Rand.genrand64_int64() % iqty );
+}
+
+INT64 Calc_GetRandLLVal2( INT64 iMin, INT64 iMax )
 {
 	if ( iMin > iMax )
 	{
@@ -237,7 +259,7 @@ int Calc_GetRandVal2( INT64 iMin, INT64 iMax )
 		iMin = iMax;
 		iMax = tmp;
 	}
-	return( static_cast<int>(iMin + g_World.m_Rand.randInt() % ((iMax - iMin) + 1)) );
+	return(iMin + g_World.m_Rand.genrand64_int64() % ((iMax - iMin) + 1) );
 }
 
 int Calc_GetBellCurve( int iValDiff, int iVariance )
@@ -307,7 +329,7 @@ CExpression::~CExpression()
 {
 }
 
-int CExpression::GetSingle( LPCTSTR & pszArgs )
+INT64 CExpression::GetSingle( LPCTSTR & pszArgs )
 {
 	ADDTOCALLSTACK("CExpression::GetSingle");
 	// Parse just a single expression without any operators or ranges.
@@ -356,7 +378,7 @@ int CExpression::GetSingle( LPCTSTR & pszArgs )
 	{
 		// A decminal number
 try_dec:
-		long iVal = 0;
+		INT64 iVal = 0;
 		for ( ; ; pszArgs++ )
 		{
 			if ( *pszArgs == '.' )
@@ -380,7 +402,7 @@ try_dec:
 		case '[':
 		case '(': // Parse out a sub expression.
 			pszArgs ++;
-			return( static_cast<long>(GetVal( pszArgs )));
+			return(GetVal( pszArgs ));
 		case '+':
 			pszArgs++;
 			break;
@@ -419,7 +441,7 @@ try_dec:
 				Str_Parse( const_cast<TCHAR*>(pszArgs), &(pszArgsNext), ")" );
 	
 				TCHAR * ppCmd[5];
-				int iResult;
+				INT64 iResult;
 				size_t iCount;
 	
 				switch ( iIntrinsic )
@@ -460,15 +482,15 @@ try_dec:
 									iCount++; SKIP_ARGSEP(pszArgs);
 									if ( !strcmpi(pszArgs, "e") )
 									{
-										iResult = static_cast<int>(log(static_cast<double>(iArgument)));
+										iResult = static_cast<INT64>(log(static_cast<double>(iArgument)));
 									}
 									else if ( !strcmpi(pszArgs, "pi") )
 									{
-										iResult = static_cast<int>(log(static_cast<double>(iArgument)) / log(M_PI));
+										iResult = static_cast<INT64>(log(static_cast<double>(iArgument)) / log(M_PI));
 									}
 									else
 									{
-										int iBase = static_cast<long>(GetVal(pszArgs));
+										INT64 iBase = GetVal(pszArgs);
 										if ( iBase <= 0 )
 										{
 											DEBUG_ERR(( "Exp_GetVal: (%d)Log(%d) is %s\n", iBase, iArgument, (!iBase) ? "infinite" : "undefined" ));
@@ -476,13 +498,13 @@ try_dec:
 										}
 										else
 										{
-											iResult = static_cast<int>(log(static_cast<double>(iArgument)) / log(static_cast<double>(iBase)));
+											iResult = static_cast<INT64>(log(static_cast<double>(iArgument)) / log(static_cast<double>(iBase)));
 										}
 									}
 								}
 								else
 								{
-									iResult = static_cast<int>(log10(static_cast<double>(iArgument)));
+									iResult = static_cast<INT64>(log10(static_cast<double>(iArgument)));
 								}							
 							}
 						}
@@ -516,7 +538,7 @@ try_dec:
 							if (iTosquare >= 0)
 							{
 								iCount++;
-								iResult = static_cast<int>(sqrt(static_cast<double>(iTosquare)));
+								iResult = static_cast<INT64>(sqrt(static_cast<double>(iTosquare)));
 							}
 							else
 							{
@@ -531,7 +553,7 @@ try_dec:
 						if ( pszArgs && *pszArgs )
 						{
 							iCount = 1;
-							iResult = static_cast<int>(sin(static_cast<double>(GetVal(pszArgs))));
+							iResult = static_cast<INT64>(sin(static_cast<double>(GetVal(pszArgs))));
 						}
 						else
 						{
@@ -546,7 +568,7 @@ try_dec:
 						if ( pszArgs && *pszArgs )
 						{
 							iCount = 1;
-							iResult = static_cast<int>(cos(static_cast<double>(GetVal(pszArgs))));
+							iResult = static_cast<INT64>(cos(static_cast<double>(GetVal(pszArgs))));
 						}
 						else
 						{
@@ -561,7 +583,7 @@ try_dec:
 						if ( pszArgs && *pszArgs )
 						{
 							iCount = 1;
-							iResult = static_cast<int>(tan(static_cast<double>(GetVal(pszArgs))));
+							iResult = static_cast<INT64>(tan(static_cast<double>(GetVal(pszArgs))));
 						}
 						else
 						{
@@ -639,10 +661,10 @@ try_dec:
 							if ( iCount == 2 )
 							{
 								INT64 val2 = GetVal( ppCmd[1] );
-								iResult = Calc_GetRandVal2( val1, val2 );
+								iResult = Calc_GetRandLLVal2( val1, val2 );
 							}
 							else
-								iResult = Calc_GetRandVal(val1);
+								iResult = Calc_GetRandLLVal(val1);
 						}
 					} break;
 
@@ -692,8 +714,8 @@ try_dec:
 							iResult = 0;
 						else
 						{
-							int a1 = GetSingle(ppCmd[0]);
-							int a2 = GetSingle(ppCmd[1]);
+							INT64 a1 = GetSingle(ppCmd[0]);
+							INT64 a2 = GetSingle(ppCmd[1]);
 							if ( a1 < a2 ) iResult = GetSingle(ppCmd[2]);
 							else if ( a1 == a2 ) iResult = ( iCount < 4 ) ? 0 : GetSingle(ppCmd[3]);
 							else iResult = ( iCount < 5 ) ? 0 : GetSingle(ppCmd[4]);
@@ -723,9 +745,9 @@ try_dec:
 		// Must be a symbol of some sort ?
 		long long lVal;
 		if ( m_VarGlobals.GetParseVal( pszArgs, &lVal ) )
-			return( static_cast<long>(lVal) );
+			return(lVal);
 		if ( m_VarDefs.GetParseVal( pszArgs, &lVal ) )
-			return( static_cast<long>(lVal) );
+			return(lVal);
 	}
 
 	// hard end ! Error of some sort.
@@ -941,7 +963,7 @@ int CExpression::GetRangeVals( LPCTSTR & pExpr, int * piVals, int iMaxQty )
 		if ( pExpr[0] == ',' )
 			pExpr++;
 
-		piVals[iQty] = GetSingle( pExpr );
+		piVals[iQty] = static_cast<int>(GetSingle( pExpr ));
 		if ( ++iQty >= iMaxQty )
 			break;
 		if ( pExpr[0] == '-' && iQty == 1 )	// range separator. (if directly after, I know this is sort of strange)
@@ -995,7 +1017,7 @@ int CExpression::GetRange( LPCTSTR & pExpr )
 	}
 	if (iQty == 2) // It's just a simple range....pick one in range at random
 	{
-		return( Calc_GetRandVal2( minimum(lVals[0],lVals[1]), maximum(lVals[0],lVals[1]) ) );
+		return( static_cast<int>(Calc_GetRandVal2( minimum(lVals[0],lVals[1]), maximum(lVals[0],lVals[1]) )) );
 	}
 
 	// I guess it's weighted values

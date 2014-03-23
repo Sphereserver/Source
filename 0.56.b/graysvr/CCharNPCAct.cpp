@@ -2968,7 +2968,7 @@ void CChar::NPC_Act_Idle()
 
 	// just stand here for a bit.
 	Skill_Start(SKILL_NONE);
-	SetTimeout(TICK_PER_SEC * 1 + Calc_GetRandVal(TICK_PER_SEC*2));
+	SetTimeout(TICK_PER_SEC * 1 + Calc_GetRandLLVal(TICK_PER_SEC*2));
 }
 
 bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
@@ -3345,7 +3345,7 @@ void CChar::NPC_OnTickAction()
 	EXC_SET("timer expired");
 	if ( IsTimerExpired() )	// Was not reset ?
 	{
-		int timeout	= maximum((150-Stat_GetAdjusted(STAT_DEX))/2, 0);
+		INT64 timeout	= maximum((150-Stat_GetAdjusted(STAT_DEX))/2, 0);
 		timeout = Calc_GetRandVal2(timeout/2, timeout);
 		// default next brain/move tick
 		SetTimeout( TICK_PER_SEC + timeout * TICK_PER_SEC / 10 );

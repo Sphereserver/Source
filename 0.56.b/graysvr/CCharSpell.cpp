@@ -1045,7 +1045,7 @@ bool CChar::Spell_Equip_OnTick( CItem * pItem )
 		}
 
 		// We will have this effect again.
-		pItem->SetTimeout( Calc_GetRandVal(10)*TICK_PER_SEC );
+		pItem->SetTimeout( Calc_GetRandLLVal(10)*TICK_PER_SEC );
 		break;
 
 	case SPELL_Regenerate:
@@ -1072,7 +1072,7 @@ bool CChar::Spell_Equip_OnTick( CItem * pItem )
 			m_pClient->addReSync();
 		}
 		// save the effect.
-		pItem->SetTimeout( (15+Calc_GetRandVal(15))*TICK_PER_SEC );
+		pItem->SetTimeout( (15+Calc_GetRandLLVal(15))*TICK_PER_SEC );
 		break;
 
 	case SPELL_Poison:
@@ -1108,7 +1108,7 @@ bool CChar::Spell_Equip_OnTick( CItem * pItem )
 		// g_Cfg.GetSpellEffect( SPELL_Poison,
 
 		// We will have this effect again.
-		pItem->SetTimeout((5 + Calc_GetRandVal(4)) * TICK_PER_SEC);
+		pItem->SetTimeout((5 + Calc_GetRandLLVal(4)) * TICK_PER_SEC);
 
 		if (IsClient() && IsSetOF(OF_Buffs))
 		{

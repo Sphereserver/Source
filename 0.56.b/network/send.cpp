@@ -220,11 +220,11 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 
 		if (version >= 4) // SE attributes
 		{
-			writeInt16(other->GetDefNum("RESFIRE", true));
-			writeInt16(other->GetDefNum("RESCOLD", true));
-			writeInt16(other->GetDefNum("RESPOISON", true));
-			writeInt16(other->GetDefNum("RESENERGY", true));
-			writeInt16(other->GetDefNum("LUCK", true));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESFIRE", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESCOLD", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESPOISON", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESENERGY", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("LUCK", true)));
 
 			const CItem* weapon = other->m_uidWeapon.ItemFind();
 			if (weapon != NULL)
@@ -243,21 +243,21 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 
 		if (version >= 6)	// Stygian Abyss Attributes?
 		{
-			writeInt16(other->GetDefNum("RESPHYSICALMAX", true));
-			writeInt16(other->GetDefNum("RESFIREMAX", true));
-			writeInt16(other->GetDefNum("RESCOLDMAX", true));
-			writeInt16(other->GetDefNum("RESPOISONMAX", true));
-			writeInt16(other->GetDefNum("RESENERGYMAX", true));
-			writeInt16(other->GetDefNum("INCREASEDEFCHANCE", true));
-			writeInt16(other->GetDefNum("INCREASEDEFCHANCEMAX", true));
-			writeInt16(other->GetDefNum("INCREASEHITCHANCE", true));
-			writeInt16(other->GetDefNum("INCREASESWINGSPEED", true));
-			writeInt16(other->GetDefNum("INCREASEDAM", true));
-			writeInt16(other->GetDefNum("LOWERREAGENTCOST", true));
-			writeInt16(other->GetDefNum("INCREASESPELLDAM", true));
-			writeInt16(other->GetDefNum("FASTERCASTRECOVERY", true));
-			writeInt16(other->GetDefNum("FASTERCASTING", true));
-			writeInt16(other->GetDefNum("LOWERMANACOST", true));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESPHYSICALMAX", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESFIREMAX", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESCOLDMAX", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESPOISONMAX", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESENERGYMAX", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDEFCHANCE", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDEFCHANCEMAX", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEHITCHANCE", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASESWINGSPEED", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDAM", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERREAGENTCOST", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASESPELLDAM", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("FASTERCASTRECOVERY", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("FASTERCASTING", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERMANACOST", true)));
 		}
 /* We really don't know what is going on here. RUOSI Packet Guide was way off... -Khaos
    Possible KR client status info... -Ben
@@ -658,7 +658,7 @@ PacketMovementAck::PacketMovementAck(const CClient* target) : PacketSend(XCMD_Wa
 {
 	ADDTOCALLSTACK("PacketMovementAck::PacketMovementAck");
 
-	writeByte(target->GetNetState()->m_sequence);
+	writeByte(static_cast<const unsigned char>(target->GetNetState()->m_sequence));
 	writeByte(target->GetChar()->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_NOTOINVUL)));
 	push(target);
 }
@@ -2672,7 +2672,7 @@ size_t PacketVendorSellList::searchContainer(CClient* target, const CItemContain
 						writeInt16(vendItem->GetDispID());
 						writeInt16(hue);
 						writeInt16(vendItem->GetAmount());
-						writeInt16(vendSell->GetVendorPrice(convertFactor));
+						writeInt16(static_cast<WORD>(vendSell->GetVendorPrice(convertFactor)));
 
 						LPCTSTR name = vendItem->GetName();
 						int len = strlen(name) + 1;

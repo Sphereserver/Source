@@ -2228,7 +2228,8 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 				// make sure the reflected damage is between 0 and iDmg-1 or else
 				// 2 reactive armour users could get caught in an infinite loop of
 				// reflecting damage
-				iRefDam = maximum( minimum( iRefDam, iDmg - 1 ), 0 );
+				//iRefDam = maximum( minimum( iRefDam, iDmg - 1 ), 0 );
+				iRefDam = medium(0, iRefDam, iDmg - 1);
 
 				if ( iRefDam > 0 )
 				{
@@ -2427,7 +2428,7 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		! (uType & (DAMAGE_GOD|DAMAGE_ELECTRIC)))
 	{
 		CItem * pShield = LayerFind( LAYER_HAND2 );
-		if ( pShield != NULL && Skill_UseQuick( SKILL_PARRYING, Calc_GetRandVal((pSrc!=NULL) ? (pSrc->Skill_GetBase(SKILL_TACTICS)/10) : 100 )))
+		if ( pShield != NULL && Skill_UseQuick( SKILL_PARRYING, Calc_GetRandLLVal((pSrc!=NULL) ? (pSrc->Skill_GetBase(SKILL_TACTICS)/10) : 100 )))
 		{
 			// Damage the shield.
 			// Let through some damage.
@@ -3522,7 +3523,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	// We made our swing. so we must recoil.
 	m_atFight.m_War_Swing_State = WAR_SWING_EQUIPPING;
 	m_atFight.m_fMoved	= 0;
-	int iTime = Fight_GetWeaponSwingTimer();
+	INT64 iTime = static_cast<INT64>(Fight_GetWeaponSwingTimer());
 	SetTimeout(iTime/2);	// try again sooner.
 
 	// Stamina for fighting. More stamina loss for more heavy weapons

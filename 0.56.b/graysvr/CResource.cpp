@@ -1012,7 +1012,7 @@ bool CResource::r_LoadVal( CScript &s )
 					m_iMaxAccountLoginTries = 0;
 			} break;
 		case RC_MAXCHARSPERACCOUNT:
-			m_iMaxCharsPerAccount = s.GetArgVal();
+			m_iMaxCharsPerAccount = static_cast<unsigned char>(s.GetArgVal());
 			if ( m_iMaxCharsPerAccount > MAX_CHARS_PER_ACCT )
 				m_iMaxCharsPerAccount = MAX_CHARS_PER_ACCT;
 			break;
@@ -1496,7 +1496,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 						if ( datetime.GetTime() == -1 )
 							sVal.FormatVal(-1);
 						else
-							sVal.FormatUVal(datetime.GetTime());
+							sVal.FormatUVal(static_cast<unsigned long>(datetime.GetTime()));
 					}
 					else if ( !strnicmp("FORMAT", pszKey, 6) )
 					{
@@ -2272,7 +2272,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			return false;
 		}
 
-		rid.SetPrivateUID( pVarNum->GetValNum() );
+		rid.SetPrivateUID( static_cast<unsigned long>(pVarNum->GetValNum()) );
 		restype	= rid.GetResType();
 
 		CResourceDef *	pRes = NULL;
@@ -2452,7 +2452,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			// read karma levels
 			iQty = Str_ParseCmds(pScript->GetKeyBuffer(), piNotoLevels, COUNTOF(piNotoLevels));
 			for (i = 0; i < iQty; i++)
-				m_NotoKarmaLevels.SetAtGrow(i, piNotoLevels[i]);
+				m_NotoKarmaLevels.SetAtGrow(i, static_cast<int>(piNotoLevels[i]));
 
 			m_NotoKarmaLevels.SetCount(i);
 
@@ -2465,7 +2465,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			// read fame levels
 			iQty = Str_ParseCmds(pScript->GetKeyBuffer(), piNotoLevels, COUNTOF(piNotoLevels));
 			for (i = 0; i < iQty; i++)
-				m_NotoFameLevels.SetAtGrow(i, piNotoLevels[i]);
+				m_NotoFameLevels.SetAtGrow(i, static_cast<int>(piNotoLevels[i]));
 
 			m_NotoFameLevels.SetCount(i);
 
@@ -2865,7 +2865,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 					pServ->m_ip.SetHostPortStr( pScript->GetKey());
 					if ( pScript->ReadKey())
 					{
-						pServ->m_ip.SetPort( pScript->GetArgVal());
+						pServ->m_ip.SetPort( static_cast<WORD>(pScript->GetArgVal()));
 					}
 				}
 				if ( ! strcmpi( pServ->GetName(), g_Serv.GetName()))
@@ -3257,7 +3257,7 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 						return( ridinvalid );
 				}
 			}
-			rid.SetPrivateUID( pVarNum->GetValNum());
+			rid.SetPrivateUID( static_cast<unsigned long>(pVarNum->GetValNum()));
 			if ( restype != rid.GetResType())
 			{
 				switch ( restype )

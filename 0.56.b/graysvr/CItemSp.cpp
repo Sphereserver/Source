@@ -270,11 +270,11 @@ void CItem::Spawn_OnTick( bool fExec )
 {
 	ADDTOCALLSTACK("CItem::Spawn_OnTick");
 
-	int iMinutes;
+	INT64 iMinutes;
 	if ( m_itSpawnChar.m_TimeHiMin <= 0 )
-		iMinutes = Calc_GetRandVal(30) + 1;
+		iMinutes = Calc_GetRandLLVal(30) + 1;
 	else
-		iMinutes = minimum( m_itSpawnChar.m_TimeHiMin, m_itSpawnChar.m_TimeLoMin ) + Calc_GetRandVal( abs( m_itSpawnChar.m_TimeHiMin - m_itSpawnChar.m_TimeLoMin ));
+		iMinutes = minimum( m_itSpawnChar.m_TimeHiMin, m_itSpawnChar.m_TimeLoMin ) + Calc_GetRandLLVal( abs( m_itSpawnChar.m_TimeHiMin - m_itSpawnChar.m_TimeLoMin ));
 
 	if ( iMinutes <= 0 )
 		iMinutes = 1;

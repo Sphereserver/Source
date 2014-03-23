@@ -35,7 +35,7 @@ bool IsTrigUsed(E_TRIGGERS id)
 {
 	if ( g_Serv.IsLoading() == true)
 		return false;
-	return (( id < g_triggers.size() ) && g_triggers[id].m_used );
+	return (( static_cast<unsigned>(id) < g_triggers.size() ) && g_triggers[id].m_used );
 }
 
 bool IsTrigUsed(const char *name)

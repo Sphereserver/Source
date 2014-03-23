@@ -298,7 +298,7 @@ bool CChar::Use_Kindling( CItem * pKindling )
 		return false ;
 	}
 
-	if ( ! Skill_UseQuick( SKILL_CAMPING, Calc_GetRandVal(30)))
+	if ( ! Skill_UseQuick( SKILL_CAMPING, Calc_GetRandLLVal(30)))
 	{
 		SysMessageDefault( DEFMSG_ITEMUSE_KINDLING_FAIL );
 		return false;
@@ -427,7 +427,7 @@ baddumy:
 	{
 		pItem->SetAnim(static_cast<ITEMID_TYPE>(pItem->GetID() + 1), 3 * TICK_PER_SEC);
 		pItem->Sound(0x033);
-		Skill_UseQuick(skill, Calc_GetRandVal(40));
+		Skill_UseQuick(skill, Calc_GetRandLLVal(40));
 	}
 	return( true );
 }
@@ -479,7 +479,7 @@ badpickpocket:
 	}
 	else
 	{
-		if ( ! Skill_UseQuick( SKILL_STEALING, Calc_GetRandVal(40)))
+		if ( ! Skill_UseQuick( SKILL_STEALING, Calc_GetRandLLVal(40)))
 		{
 			pItem->Sound( 0x041 );
 			pItem->SetAnim( fNS ? ITEMID_PICKPOCKET_NS_FX : ITEMID_PICKPOCKET_EW_FX, 3*TICK_PER_SEC );
@@ -668,7 +668,7 @@ badalign:
 
 	// OK...go ahead and fire at the target
 	// Check the skill
-	bool fSuccess = Skill_UseQuick( skill, Calc_GetRandVal(40));
+	bool fSuccess = Skill_UseQuick( skill, Calc_GetRandLLVal(40));
 
 	// determine animation parameters
 	CVarDefCont * pVarAnim = pWeapon->GetDefKey("AMMOANIM", true);
@@ -1427,7 +1427,7 @@ bool CChar::Use_Key( CItem * pKey, CItem * pItemTarg )
 
 		// Need tinkering tools ???
 
-		if ( ! Skill_UseQuick( SKILL_TINKERING, 30+Calc_GetRandVal(40)))
+		if ( ! Skill_UseQuick( SKILL_TINKERING, 30+Calc_GetRandLLVal(40)))
 		{
 			SysMessageDefault( DEFMSG_KEY_FAILC );
 			return( false );

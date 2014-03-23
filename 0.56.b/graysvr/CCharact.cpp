@@ -2315,10 +2315,10 @@ bool CChar::OnTickEquip( CItem * pItem )
 					return( false );
 				}
 
-				int iTicks = 10 * TICK_PER_SEC;
+				INT64 iTicks = 10 * TICK_PER_SEC;
 				for ( STAT_TYPE i = STAT_STR; i <= STAT_FOOD; i = static_cast<STAT_TYPE>(i + 1) )
 				{
-					int iRegen = g_Cfg.m_iRegenRate[i];
+					INT64 iRegen = g_Cfg.m_iRegenRate[i];
 					if ( i < STAT_FOOD )
 					{
 						char sRegen[21];
@@ -3230,7 +3230,7 @@ void CChar::CheckRevealOnMove()
 		bool bReveal = false;
 
 		if ( IsStatFlag(STATF_Fly|STATF_Sleeping|STATF_Hovering) || !IsStatFlag(STATF_Hidden) ||
-			!Skill_UseQuick(SKILL_STEALTH, Calc_GetRandVal(105)) )
+			!Skill_UseQuick(SKILL_STEALTH, Calc_GetRandLLVal(105)) )
 			bReveal = true;
 		if ( IsTrigUsed(TRIGGER_STEPSTEALTH) )
 		{

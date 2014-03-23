@@ -682,7 +682,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_NIGHTSIGHT:
 		case OC_SPELLCHANNELING:
 			//sVal = GetDefStr(pszKey, true);
-			sVal.FormatVal(GetDefNum(pszKey, true));
+			sVal.FormatLLVal(GetDefNum(pszKey, true));
 			break;
 
 
@@ -1352,13 +1352,13 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_P:	// Must set the point via the CItem or CChar methods.
 			return( false );
 		case OC_TIMER:
-			SetTimeout( s.GetArgVal() * TICK_PER_SEC );
+			SetTimeout( s.GetArgLLVal() * TICK_PER_SEC );
 			break;
 		case OC_TIMERD:
-			SetTimeout( s.GetArgVal());
+			SetTimeout( s.GetArgLLVal());
 			break;
 		case OC_TIMESTAMP:
-			SetTimeStamp( s.GetArgVal());
+			SetTimeStamp( s.GetArgLLVal());
 		case OC_UID:
 		case OC_SERIAL:
 			// Don't set container flags through this.
@@ -1457,7 +1457,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 					return( false );
 				if ( iArgQty > 2 )	// Give it a new source char UID
 				{
-					CObjBaseTemplate * pObj = CGrayUID( piCmd[2] ).ObjFind();
+					CObjBaseTemplate * pObj = CGrayUID( static_cast<unsigned long>(piCmd[2]) ).ObjFind();
 					if ( pObj )
 					{
 						pObj = pObj->GetTopLevelObj();
@@ -1466,7 +1466,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				}
 				OnTakeDamage( piCmd[0],
 					pCharSrc,
-					( iArgQty > 1 ) ? piCmd[1] : ( DAMAGE_HIT_BLUNT | DAMAGE_GENERAL ));
+					( iArgQty > 1 ) ? static_cast<DAMAGE_TYPE>(piCmd[1]) : ( DAMAGE_HIT_BLUNT | DAMAGE_GENERAL ));
 			}
 			break;
 

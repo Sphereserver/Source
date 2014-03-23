@@ -960,7 +960,7 @@ void CChar::Skill_SetTimeout()
 		return;
 
 	int iSkillLevel = Skill_GetBase(skill);
-	int iDelay = pSkillDef->m_Delay.GetLinear( iSkillLevel );
+	INT64 iDelay = static_cast<INT64>(pSkillDef->m_Delay.GetLinear( iSkillLevel ));
 	SetTimeout(iDelay);
 }
 
