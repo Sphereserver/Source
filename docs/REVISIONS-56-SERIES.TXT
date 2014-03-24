@@ -722,3 +722,5 @@ Removed: EXTRASKILL.KEY and EXTRASKILL.VAL from f_onchar_create as they are bein
 2. @StatChange now receives argn1 for changes like:
 0=OStr, 1=OInt, 2=ODex, 3=Food, 4=MaxHits, 5=MaxMana, 6=MaxStam, 7=MaxFood, 8=ModStr, 9=ModInt, 10=ModDex.
 
+24-03-2014, matex
+Fixed a calculation bug in Linux that e.g. had influence on Skilldelays

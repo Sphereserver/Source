@@ -52,8 +52,8 @@
 	#define WORD 		unsigned short	// 16 bits
 	#define DWORD		unsigned long	// 32 bits
 	#define UINT		unsigned int
-	#define LONGLONG	unsigned long
-	#define LONG		unsigned long
+	#define LONGLONG	long long 	// this must be 64biz
+	#define LONG		long		// this stays 32bit!
 #endif	// BYTE
 
 #define MAKEWORD(low,high) ((WORD)(((BYTE)(low))|(((WORD)((BYTE)(high)))<<8)))
