@@ -19,7 +19,7 @@ bool CValueRangeDef::Load( TCHAR * pszDef )
 {
 	ADDTOCALLSTACK("CValueRangeDef::Load");
 	// Typically in {lo# hi#} format. is hi#,lo# is ok too ???
-	int piVal[2];
+	INT64 piVal[2];
 	int iQty = g_Exp.GetRangeVals( pszDef, piVal, COUNTOF(piVal));
 	if ( iQty< 0 ) 
 		return(false);

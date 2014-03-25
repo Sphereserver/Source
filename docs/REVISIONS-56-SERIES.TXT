@@ -724,3 +724,8 @@ Removed: EXTRASKILL.KEY and EXTRASKILL.VAL from f_onchar_create as they are bein
 
 24-03-2014, matex
 Fixed a calculation bug in Linux that e.g. had influence on Skilldelays
+
+25-03-2014, matex
+1. Fixed INT64 Expression handling.
+2. Fixed a bug that occured when DIALOGCLOSE/DIALOG was sent to older clients
+3. Fixed a minor bug in @StatChange

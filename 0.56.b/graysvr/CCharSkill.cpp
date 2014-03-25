@@ -80,7 +80,7 @@ void CChar::Stat_SetMod( STAT_TYPE i, short iVal )
 {
 	ADDTOCALLSTACK("CChar::Stat_SetMod");
 	ASSERT(i >= 0 && i < STAT_QTY);
-	int iStatVal = Stat_GetMax(static_cast<STAT_TYPE>(i));
+	int iStatVal = Stat_GetMod(static_cast<STAT_TYPE>(i));
 	if ( IsTrigUsed(TRIGGER_STATCHANGE) )
 	{
 		if (i >= STAT_STR && i <= STAT_DEX)
@@ -262,7 +262,7 @@ void CChar::Stat_SetBase( STAT_TYPE i, short iVal )
 	int iStatVal = Stat_GetBase(static_cast<STAT_TYPE>(i));
 	if ( IsTrigUsed(TRIGGER_STATCHANGE) )
 	{
-		// Only Str, Dex, Int fire @Statchange here
+		// Only Str, Dex, Int, Food fire @Statchange here
 		if (i >= STAT_STR && i <= STAT_FOOD)
 		{
 			CScriptTriggerArgs args;

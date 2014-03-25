@@ -2182,10 +2182,11 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 	CClient::OpenedGumpsMap_t::iterator itGumpFound = client->m_mapOpenedGumps.find(static_cast<int>(context));
 	if ((itGumpFound == client->m_mapOpenedGumps.end()) || ((*itGumpFound).second <= 0))
 		return true;
-	//(*itGumpFound).second--;
-	if ((itGumpFound != client->m_mapOpenedGumps.end()) && ((*itGumpFound).second > 0 ))
+	
+	// Decrement, if <= 0, delete entry.
+	(*itGumpFound).second--;
+	if ((*itGumpFound).second <= 0)
 		client->m_mapOpenedGumps.erase(itGumpFound);
-
 
 	// package up the gump response info.
 	CDialogResponseArgs resp;

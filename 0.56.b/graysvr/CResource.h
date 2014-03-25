@@ -161,13 +161,13 @@ struct CValueRangeDef
 {
 	// Simple linearity
 public:
-	int m_iLo;
-	int m_iHi;
+	INT64 m_iLo;
+	INT64 m_iHi;
 public:
 	void Init()
 	{
-		m_iLo = INT_MIN;
-		m_iHi = INT_MIN;
+		m_iLo = LLONG_MIN;
+		m_iHi = LLONG_MIN;
 	}
 	int GetRange() const
 	{

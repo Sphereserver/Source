@@ -348,7 +348,7 @@ INT64 CExpression::GetSingle( LPCTSTR & pszArgs )
 		}
 
 		LPCTSTR pStart = pszArgs;
-		DWORD val = 0;
+		ULONGLONG val = 0;
 		for (;;)
 		{
 			TCHAR ch = *pszArgs;
@@ -372,7 +372,7 @@ INT64 CExpression::GetSingle( LPCTSTR & pszArgs )
 			val += ch;
 			pszArgs ++;
 		}
-		return( val );
+		return( (INT64)val );
 	}
 	else if ( pszArgs[0] == '.' || IsDigit(pszArgs[0]))
 	{
@@ -945,7 +945,7 @@ INT64 CExpression::GetVal( LPCTSTR & pExpr )
 	return lVal;
 }
 
-int CExpression::GetRangeVals( LPCTSTR & pExpr, int * piVals, int iMaxQty )
+int CExpression::GetRangeVals(LPCTSTR & pExpr, INT64 * piVals, int iMaxQty)
 {
 	ADDTOCALLSTACK("CExpression::GetRangeVals");
 	// Get a list of values.
@@ -1000,10 +1000,10 @@ int CExpression::GetRangeVals( LPCTSTR & pExpr, int * piVals, int iMaxQty )
 	return( iQty );
 }
 
-int CExpression::GetRange( LPCTSTR & pExpr )
+INT64 CExpression::GetRange(LPCTSTR & pExpr)
 {
 	ADDTOCALLSTACK("CExpression::GetRange");
-	int lVals[256];		// Maximum elements in a list
+	INT64 lVals[256];		// Maximum elements in a list
 
 	int iQty = GetRangeVals( pExpr, lVals, COUNTOF(lVals));
 

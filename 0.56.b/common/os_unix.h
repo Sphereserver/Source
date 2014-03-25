@@ -52,7 +52,8 @@
 	#define WORD 		unsigned short	// 16 bits
 	#define DWORD		unsigned long	// 32 bits
 	#define UINT		unsigned int
-	#define LONGLONG	long long 	// this must be 64biz
+	#define LONGLONG	long long 	// this must be 64bit
+	#define ULONGLONG	unsigned long long
 	#define LONG		long		// this stays 32bit!
 #endif	// BYTE
 

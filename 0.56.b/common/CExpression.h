@@ -101,7 +101,7 @@ public:
 		return GetRange(const_cast<LPCTSTR &>(pArgs));
 	}
 
-	inline int GetRangeVals( LPTSTR &pExpr, int * piVals, int iMaxQty )
+	inline int GetRangeVals( LPTSTR &pExpr, INT64 * piVals, int iMaxQty )
 	{
 		return GetRangeVals(const_cast<LPCTSTR &>(pExpr), piVals, iMaxQty );
 	}
@@ -115,8 +115,8 @@ public:
 	INT64 GetSingle( LPCTSTR & pArgs );
 	INT64 GetVal( LPCTSTR & pArgs );
 	INT64 GetValMath( INT64 lVal, LPCTSTR & pExpr );
-	int GetRangeVals( LPCTSTR & pExpr, int * piVals, int iMaxQty );
-	int GetRange( LPCTSTR & pArgs );
+	int GetRangeVals(LPCTSTR & pExpr, INT64 * piVals, int iMaxQty);
+	INT64 GetRange(LPCTSTR & pArgs);
 
 public:
 	CExpression();
