@@ -132,7 +132,7 @@ int CChar::NPC_GetVendorMarkup( const CChar * pChar ) const
 	pVar = m_TagDefs.GetKey("VENDORMARKUP");
 	if ( pVar )
 	{
-		iHostility += pVar->GetValNum();
+		iHostility += static_cast<int>(pVar->GetValNum());
 		// add NPC's markup to hostility made by karma difference
 	}
 	else
@@ -140,7 +140,7 @@ int CChar::NPC_GetVendorMarkup( const CChar * pChar ) const
 		pVar = GetRegion()->m_TagDefs.GetKey("VENDORMARKUP");
 		if ( pVar )
 		{
-			iHostility += pVar->GetValNum();
+			iHostility += static_cast<int>(pVar->GetValNum());
 			// if NPC is unmarked, look if the region is
 		}
 		else
@@ -148,7 +148,7 @@ int CChar::NPC_GetVendorMarkup( const CChar * pChar ) const
 			// neither NPC nor REGION are marked, so look for the chardef
 			if ( pVarCharDef )
 			{
-				iHostility += pVarCharDef->GetValNum();
+				iHostility += static_cast<int>(pVarCharDef->GetValNum());
 			}
 		}
 	}
@@ -358,7 +358,7 @@ int CChar::NPC_GetTrainMax( const CChar * pStudent, SKILL_TYPE Skill ) const
 	pValue = GetKey("OVERRIDE.TRAINSKILLMAX",true);
 	if ( pValue ) 
 	{
-		iMaxAllowed = pValue->GetValNum();
+		iMaxAllowed = static_cast<int>(pValue->GetValNum());
 	} else {
 		iMaxAllowed = g_Cfg.m_iTrainSkillMax;
 	}
@@ -556,7 +556,7 @@ int CChar::NPC_WantThisItem( CItem * pItem ) const
 	size_t iRet = pCharDef->m_Desires.FindResourceMatch(pItem);
 	if ( iRet != pCharDef->m_Desires.BadIndex() )
 	{
-		return( pCharDef->m_Desires[iRet].GetResQty() );
+		return( static_cast<int>(pCharDef->m_Desires[iRet].GetResQty()) );
 	}
 
 	// i'm hungry and this is food ?

@@ -90,7 +90,7 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 	{
 		if ( pCorpseDef->m_wBloodHue != static_cast<HUE_TYPE>(-1) )
 		{
-			int iBloodLeft = pCorpse->m_TagDefs.GetKeyNum("BLOOD", true);
+			int iBloodLeft = static_cast<int>(pCorpse->m_TagDefs.GetKeyNum("BLOOD", true));
 			if ( iBloodLeft )
 			{
 				pCorpse->m_TagDefs.SetNum("BLOOD", iBloodLeft-1, true);
@@ -119,7 +119,7 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 	size_t iItems = 0;
 	for ( size_t i = 0; i < pCorpseDef->m_BaseResources.GetCount(); i++ )
 	{
-		int iQty = pCorpseDef->m_BaseResources[i].GetResQty();
+		int iQty = static_cast<int>(pCorpseDef->m_BaseResources[i].GetResQty());
 		RESOURCE_ID rid = pCorpseDef->m_BaseResources[i].GetResourceID();
 		if ( rid.GetResType() != RES_ITEMDEF )
 		{
@@ -205,7 +205,7 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 
 	if ( pCorpseDef->m_wBloodHue != static_cast<HUE_TYPE>(-1) )
 	{
-		int iBloodLeft = pCorpse->m_TagDefs.GetKeyNum("BLOOD", true);
+		int iBloodLeft = static_cast<int>(pCorpse->m_TagDefs.GetKeyNum("BLOOD", true));
 		if ( iBloodLeft )
 		{
 			pCorpse->m_TagDefs.SetNum("BLOOD", iBloodLeft-1, true);
@@ -379,7 +379,7 @@ bool CChar::Use_Train_Dummy( CItem * pItem, bool fSetup )
 	if ( pSkillTag )
 	{
 		//SysMessagef("skillcheck from TAG.%s=%d",skilltag, pSkillTag->GetValNum() );
-		skillcheck = pSkillTag->GetValNum();
+		skillcheck = static_cast<int>(pSkillTag->GetValNum());
 	} else {
 		skillcheck = g_Cfg.m_iSkillPracticeMax;
 		//SysMessagef("skillcheck from INI=%d", skillcheck );
@@ -690,12 +690,12 @@ badalign:
 	}
 
 	if ( pVarAnimColor )
-		AmmoHue = pVarAnimColor->GetValNum();
+		AmmoHue = static_cast<unsigned long>(pVarAnimColor->GetValNum());
 	else
 		AmmoHue = 0;
 
 	if ( pVarAnimRender )
-		AmmoRender = pVarAnimRender->GetValNum();
+		AmmoRender = static_cast<unsigned long>(pVarAnimRender->GetValNum());
 	else
 		AmmoRender = 0;
 	
@@ -970,7 +970,7 @@ bool CChar::Use_Repair( CItem * pItemArmor )
 
 	CResourceQty RetMainSkill = pItemDef->m_SkillMake[iRes];
 
-	int iSkillLevel = RetMainSkill.GetResQty() / 10;
+	int iSkillLevel = static_cast<int>(RetMainSkill.GetResQty()) / 10;
 	int iDifficulty = IMULDIV( iSkillLevel, iDamagePercent, 100 );
 	if ( iDifficulty < iSkillLevel/4 )
 	{

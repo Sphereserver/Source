@@ -480,12 +480,12 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 	switch ( FindTableHeadSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
 		case CPC_DEATHS:
-			m_wDeaths = s.GetArgVal();
+			m_wDeaths = static_cast<WORD>(s.GetArgVal());
 			return true;
 		case CPC_DSPEECH:
 			return( m_Speech.r_LoadVal( s, RES_SPEECH ));
 		case CPC_KILLS:
-			m_wMurders = s.GetArgVal();
+			m_wMurders = static_cast<WORD>(s.GetArgVal());
 			return true;
 		case CPC_KRTOOLBARSTATUS:
 			m_bKrToolbarEnabled = ( s.GetArgVal() != 0 );
@@ -516,7 +516,7 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 			} return true;
 		case CPC_SPEEDMODE:
 			{
-				m_speedMode = s.GetArgVal();
+				m_speedMode = static_cast<unsigned short>(s.GetArgVal());
 				pChar->UpdateSpeedMode();
 			} return true;
 		case CPC_STATLOCK:
@@ -745,7 +745,7 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 		break;
 
 	case CNC_ACTPRI:
-		m_Act_Motivation = s.GetArgVal();
+		m_Act_Motivation = static_cast<unsigned char>(s.GetArgVal());
 		break;
 	case CNC_NPC:
 		m_Brain = static_cast<NPCBRAIN_TYPE>(s.GetArgVal());
@@ -755,7 +755,7 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 		{
 			pChar->m_ptHome = pChar->GetTopPoint();
 		}
-		m_Home_Dist_Wander = s.GetArgVal();
+		m_Home_Dist_Wander = static_cast<WORD>(s.GetArgVal());
 		break;
 	case CNC_NEED:
 	case CNC_NEEDNAME:
@@ -767,7 +767,7 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 	case CNC_SPEECH:
 		return( m_Speech.r_LoadVal( s, RES_SPEECH ));
 	case CNC_SPEECHCOLOR:
-		m_SpeechHue = s.GetArgVal();
+		m_SpeechHue = static_cast<HUE_TYPE>(s.GetArgVal());
 		break;
 
 	case CNC_VENDCAP:

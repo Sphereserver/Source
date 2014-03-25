@@ -825,7 +825,6 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 
 		if ( fTranslate || IsStatFlag( STATF_OnHorse ))
 		{
-			CCharBase* pCharDef = Char_GetDef();
 			CItem * pWeapon = m_uidWeapon.ItemFind();
 			if ( pWeapon != NULL && action == ANIM_ATTACK_WEAPON )
 			{
@@ -1477,7 +1476,7 @@ void CChar::SoundChar( CRESND_TYPE type )
 			{
 				if ( pTagStorage->GetValNum() )
 				{
-					id = pTagStorage->GetValNum();
+					id = static_cast<SOUND_TYPE>(pTagStorage->GetValNum());
 				}
 			}
 
@@ -2360,7 +2359,7 @@ bool CChar::OnTickEquip( CItem * pItem )
 					if ( args.m_iN2 < 1 ) args.m_iN2 = g_Cfg.m_iMurderDecayTime;
 				}
 
-				m_pPlayer->m_wMurders = args.m_iN1;
+				m_pPlayer->m_wMurders = static_cast<WORD>(args.m_iN1);
 				if ( m_pPlayer->m_wMurders == 0 ) return( false );
 				pItem->SetTimeout(args.m_iN2);	// update it's decay time.
 				return( true );
@@ -2508,7 +2507,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 	// IsStatFlag( STATF_DEAD ) might NOT be set. (sleeping)
 
 	bool fLoot = ! IsStatFlag( STATF_Conjured );
-	WORD wFlags = m_TagDefs.GetKeyNum("DEATHFLAGS", true);
+	WORD wFlags = static_cast<WORD>(m_TagDefs.GetKeyNum("DEATHFLAGS", true));
 
 	int iDecayTime = -1;	// never default.
 	CItemCorpse * pCorpse = NULL;
@@ -3142,7 +3141,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			{
 				CScriptTriggerArgs Args(iStamReq);
 				iRet = pChar->OnTrigger(CTRIG_PersonalSpace, this, &Args);
-				iStamReq = Args.m_iN1;
+				iStamReq = static_cast<int>(Args.m_iN1);
 
 				if ( iRet == TRIGRET_RET_TRUE )
 					return NULL;
@@ -3787,7 +3786,7 @@ bool CChar::MoveToValidSpot(DIR_TYPE dir, int iDist, int iDistStart, bool bFromS
 	pt.m_z += PLAYER_HEIGHT;
 	signed char startZ = pt.m_z;
 
-	WORD wCan = GetMoveBlockFlags();	// CAN_C_SWIM
+	WORD wCan = static_cast<WORD>(GetMoveBlockFlags());	// CAN_C_SWIM
 	for ( int i=0; i<iDist; ++i )
 	{
 		if ( pt.IsValidPoint() )
@@ -4321,7 +4320,7 @@ bool CChar::OnTick()
 			EXC_SET(g_Stat_Name[i]);
 			int iRate = g_Cfg.m_iRegenRate[i];		// in TICK_PER_SEC
 
-			m_Stat[i].m_regen += iTimeDiff;
+			m_Stat[i].m_regen += static_cast<unsigned short>(iTimeDiff);
 						
 			
 			// Regen OVERRIDE
@@ -4347,9 +4346,9 @@ bool CChar::OnTick()
 				char sRegen[21];
 				sprintf(sRegen, "REGEN%s", stat);
 				if ( GetDefNum(sRegen, false))
-					iRate -= GetDefNum(sRegen, false) * TICK_PER_SEC;
+					iRate -= static_cast<int>(GetDefNum(sRegen, false)) * TICK_PER_SEC;
 				sprintf(sRegen, "REGENVAL%s", stat);
-				mod = maximum(mod,GetDefNum(sRegen, true));
+				mod = static_cast<int>(maximum(mod,GetDefNum(sRegen, true)));
 			}
 			
 			if ( iRate < 0)
@@ -4380,10 +4379,10 @@ bool CChar::OnTick()
 					i = STAT_FOOD;
 				if ( i < STAT_STR )
 					i = STAT_STR;
-				mod = Args.m_VarsLocal.GetKeyNum("Value",true);
-				StatLimit = Args.m_VarsLocal.GetKeyNum("StatLimit",true);
+				mod = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Value",true));
+				StatLimit = static_cast<int>(Args.m_VarsLocal.GetKeyNum("StatLimit",true));
 				if ( i == STAT_FOOD )
-					HitsHungerLoss = Args.m_VarsLocal.GetKeyNum("HitsHungerLoss",true);
+					HitsHungerLoss = static_cast<int>(Args.m_VarsLocal.GetKeyNum("HitsHungerLoss",true));
 			}
 			if ( mod == 0 )
 				continue;

@@ -749,12 +749,12 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 				CAccountRef pAcc = g_Accounts.Account_Find( szAccount );
 				if (pAcc)
 				{
-					DWORD tmVer = pAcc->m_TagDefs.GetKeyNum("clientversion"); pAcc->m_TagDefs.DeleteKey("clientversion");
-					DWORD tmVerReported = pAcc->m_TagDefs.GetKeyNum("reportedcliver"); pAcc->m_TagDefs.DeleteKey("reportedcliver");
+					DWORD tmVer = static_cast<unsigned long>(pAcc->m_TagDefs.GetKeyNum("clientversion")); pAcc->m_TagDefs.DeleteKey("clientversion");
+					DWORD tmVerReported = static_cast<unsigned long>(pAcc->m_TagDefs.GetKeyNum("reportedcliver")); pAcc->m_TagDefs.DeleteKey("reportedcliver");
 					DWORD tmSid = 0x7f000001;
 					if ( g_Cfg.m_fUseAuthID )
 					{
-						tmSid = pAcc->m_TagDefs.GetKeyNum("customerid");
+						tmSid = static_cast<unsigned long>(pAcc->m_TagDefs.GetKeyNum("customerid"));
 						pAcc->m_TagDefs.DeleteKey("customerid");
 					}
 

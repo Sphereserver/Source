@@ -248,7 +248,7 @@ void CClient::CharDisconnect()
 	{
 		CScriptTriggerArgs Args(iLingerTime, fCanInstaLogOut);
 		m_pChar->OnTrigger(CTRIG_LogOut, m_pChar, &Args);
-		iLingerTime = Args.m_iN1;
+		iLingerTime = static_cast<int>(Args.m_iN1);
 		fCanInstaLogOut = (Args.m_iN2 != 0);
 	}
 
@@ -404,7 +404,7 @@ void CClient::Announce( bool fArrive ) const
 			else
 			{
 				// Or save decay point if departing and remove from the loop
-				pMurders->m_itEqMurderCount.m_Decay_Balance = pMurders->GetTimerAdjusted();
+				pMurders->m_itEqMurderCount.m_Decay_Balance = static_cast<unsigned long>(pMurders->GetTimerAdjusted());
 				pMurders->SetTimeout(-1); // turn off the timer til we log in again.
 			}
 		}
@@ -954,7 +954,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 						DEBUG_ERR(("Invalid addbuff argument number %u\n",idx+1));
 						return true;
 					}
-					iArgs[idx] = g_Exp.GetVal(ppArgs[idx]);
+					iArgs[idx] = Exp_GetVal( ppArgs[idx] );
 				}
 				if (iArgs[0] < 1001 || iArgs[0] > 1048 || iArgs[0] == 0x3EB || iArgs[0] == 0x3EC ) {
 					DEBUG_ERR(("Invalid Buff Icon ID\n"));
@@ -1055,7 +1055,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				}
 
 				if (m_pPopupPacket != NULL)
-					m_pPopupPacket->addOption(entrytag, textid, Exp_GetVal(ppLocArgs[2]), Exp_GetVal(ppLocArgs[3]));
+					m_pPopupPacket->addOption(entrytag, static_cast<WORD>(textid), Exp_GetVal(ppLocArgs[2]), Exp_GetVal(ppLocArgs[3]));
 				else
 					DEBUG_ERR(("Bad AddContextEntry usage: Not used under a @ContextMenuRequest/@itemContextMenuRequest trigger!\n"));
 			}
@@ -1064,7 +1064,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			{
 				INT64 piVal[3];
 				Str_ParseCmds( s.GetArgRaw(), piVal, COUNTOF(piVal));
-				addArrowQuest( piVal[0], piVal[1], piVal[2] );
+				addArrowQuest( static_cast<int>(piVal[0]), static_cast<int>(piVal[1]), static_cast<int>(piVal[2]) );
 #ifdef _ALPHASPHERE
 				// todo: should use a proper container for these, since the arrows are lost
 				// when the client logs out, and also newer clients support multiple
@@ -1299,7 +1299,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				size_t iQty = Str_ParseCmds( s.GetArgStr(), piMidi, COUNTOF(piMidi));
 				if ( iQty > 0 )
 				{
-					addMusic( piMidi[ Calc_GetRandVal( iQty ) ] );
+					addMusic( static_cast<MIDI_TYPE>(piMidi[ Calc_GetRandVal( iQty ) ]) );
 				}
 			}
 			break;

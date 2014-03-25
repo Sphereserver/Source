@@ -1464,7 +1464,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 					}
 					pCharSrc = dynamic_cast <CChar*>(pObj);
 				}
-				OnTakeDamage( piCmd[0],
+				OnTakeDamage( static_cast<int>(piCmd[0]),
 					pCharSrc,
 					( iArgQty > 1 ) ? static_cast<DAMAGE_TYPE>(piCmd[1]) : ( DAMAGE_HIT_BLUNT | DAMAGE_GENERAL ));
 			}
@@ -1502,11 +1502,11 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				//DEBUG_ERR(("this->GetUID() 0%x pThis->GetUID() 0%x pCharSrc->GetUID() 0%x\n",(DWORD)this->GetUID(),(DWORD)pThis->GetUID(),(DWORD)pCharSrc->GetUID()));
 				pThis->Effect( static_cast<EFFECT_TYPE>(piCmd[0]), static_cast<ITEMID_TYPE>(RES_GET_INDEX(piCmd[1])),
 					pCharSrc,
-					(iArgQty >= 3)? piCmd[2] : 5,				// BYTE bSpeedSeconds = 5,
-					(iArgQty >= 4)? piCmd[3] : 1,				// BYTE bLoop = 1,
+					(iArgQty >= 3)? static_cast<unsigned char>(piCmd[2]) : 5,				// BYTE bSpeedSeconds = 5,
+					(iArgQty >= 4)? static_cast<unsigned char>(piCmd[3]) : 1,				// BYTE bLoop = 1,
 					(iArgQty >= 5)? (piCmd[4] != 0) : false,	// bool fExplode = false
-					(iArgQty >= 6)? piCmd[5] : 0,				// hue
-					(iArgQty >= 7)? piCmd[6] : 0				// render mode
+					(iArgQty >= 6)? static_cast<unsigned long>(piCmd[5]) : 0,				// hue
+					(iArgQty >= 7)? static_cast<unsigned long>(piCmd[6]) : 0				// render mode
 					);
 			}
 			break;
@@ -1608,11 +1608,11 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				if ( iArgQty < 2 )
 					piCmd[1] = 1;
 
-				CGrayUID uid = piCmd[0];
+				CGrayUID uid = static_cast<unsigned long>(piCmd[0]);
 				pObjNear = uid.ObjFind();
 				if ( !pObjNear )
 					return false;
-				MoveNearObj( pObjNear, piCmd[1] );
+				MoveNearObj( pObjNear, static_cast<int>(piCmd[1]) );
 				if ( piCmd[2] )
 					Update();
 			}
@@ -1720,7 +1720,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				EXC_SET("SOUND");
 				INT64 piCmd[2];
 				size_t iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
-				Sound( piCmd[0], ( iArgQty > 1 ) ? piCmd[1] : 1 );
+				Sound( static_cast<SOUND_TYPE>(piCmd[0]), ( iArgQty > 1 ) ? static_cast<int>(piCmd[1]) : 1 );
 			}
 			break;
 		case OV_SPELLEFFECT:	// spell, strength, noresist
@@ -1750,7 +1750,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				default:
 					break;
 				}
-				OnSpellEffect(static_cast<SPELL_TYPE>(RES_GET_INDEX(piCmd[0])), pCharSrc, piCmd[1], pItemSrc);
+				OnSpellEffect(static_cast<SPELL_TYPE>(RES_GET_INDEX(piCmd[0])), pCharSrc, static_cast<int>(piCmd[1]), pItemSrc);
 			}
 			break;
 		case OV_TAGLIST:
@@ -2069,7 +2069,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				return( false );
 			if ( s.HasArgs())
 			{
-				SetUnkZ( s.GetArgVal());
+				SetUnkZ( static_cast<signed char>(s.GetArgVal()));
 			}
 			else if ( IsTopLevel())
 			{

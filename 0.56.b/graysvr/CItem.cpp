@@ -259,7 +259,7 @@ CItem * CItem::CreateScript( ITEMID_TYPE id, CChar * pSrc ) // static
 				int iBlood = 0;
 				if ( pItemDef )
 				{
-					iBlood = pItemDef->m_TagDefs.GetKeyNum("MAXBLOOD", true);
+					iBlood = static_cast<int>(pItemDef->m_TagDefs.GetKeyNum("MAXBLOOD", true));
 				}
 				if ( !iBlood )
 					iBlood = 5;
@@ -457,7 +457,7 @@ CItem * CItem::ReadTemplate( CResourceLock & s, CObjBase * pCont ) // static
 					if ( pItem->IsItemInContainer())
 					{
 						fItemAttrib = true;
-						pItem->SetContainedLayer( pItem->GetAmount());	// set the Restock amount.
+						pItem->SetContainedLayer( static_cast<signed char>(pItem->GetAmount()));	// set the Restock amount.
 					}
 				}
 				continue;
@@ -1259,7 +1259,7 @@ SOUND_TYPE CItem::GetDropSound( const CObjBase * pObjOn ) const
 	{
 		if ( pTagStorage->GetValNum() )
 		{
-			iSnd = pTagStorage->GetValNum();
+			iSnd = static_cast<SOUND_TYPE>(pTagStorage->GetValNum());
 		}
 	}
 
@@ -1401,7 +1401,7 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 		}
 
 		if ( (iMyZ - pCharMover->GetTopZ()) <= 16 )
-			ptNewPlace.m_z = iMyZ;
+			ptNewPlace.m_z = static_cast<signed char>(iMyZ);
 		else
 		{
 			pCharMover->ItemBounce(this);
@@ -1412,11 +1412,11 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	{
 		// one floor. needs some configuration on that
 		if ( (iMyZ - ptNewPlace.m_z) <= 16 )
-			ptNewPlace.m_z = iMyZ;
+			ptNewPlace.m_z = static_cast<signed char>(iMyZ);
 	}
 
 	// Set the decay timer for this if not in a house or such.
-	int iDecayTime = GetDecayTime();
+	INT64 iDecayTime = GetDecayTime();
 	if ( iDecayTime > 0 )
 	{
 		// In a place where it will decay ?
@@ -1843,13 +1843,13 @@ height_t CItem::GetHeight() const
 	char * heightDef = Str_GetTemp();
 
 	sprintf(heightDef, "itemheight_0%x", static_cast<unsigned int>(GetDispID()));
-	tmpHeight = g_Exp.m_VarDefs.GetKeyNum(heightDef);
+	tmpHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(heightDef));
 	//DEBUG_ERR(("2 tmpHeight %d\n",tmpHeight));
 	if ( tmpHeight ) //set by a defname ([DEFNAME charheight]  height_0a)
 		return tmpHeight;
 
 	sprintf(heightDef, "itemheight_%u", static_cast<unsigned int>(GetDispID()));
-	tmpHeight = g_Exp.m_VarDefs.GetKeyNum(heightDef);
+	tmpHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(heightDef));
 	//DEBUG_ERR(("3 tmpHeight %d\n",tmpHeight));
 	if ( tmpHeight ) //set by a defname ([DEFNAME charheight]  height_10)
 		return tmpHeight;
@@ -2388,7 +2388,7 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_USEBESTWEAPONNSKILL:
 		case IC_USESCUR:
 		case IC_USESMAX:
-			sVal.FormatVal(GetDefNum(pszKey,true));
+			sVal.FormatLLVal(GetDefNum(pszKey,true));
 			break;
 		//On these ones, check BaseDef too if not found on dynamic
 		case IC_AMMOANIM:
@@ -2723,7 +2723,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_CONTGRID:
 			if ( !IsItemInContainer() )
 				return false;
-			SetContainedGridIndex(s.GetArgVal());
+			SetContainedGridIndex(static_cast<unsigned char>(s.GetArgVal()));
 			return true;
 		case IC_CONTP:
 			{
@@ -2771,25 +2771,25 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			return SetDispID(static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr())));
 		case IC_DMGCOLD:
 			if ( IsTypeWeapon() )
-				m_itWeapon.m_dmgcold = s.GetArgVal();
+				m_itWeapon.m_dmgcold = static_cast<short>(s.GetArgVal());
 			else
 				DEBUG_ERR(("Dmgcold set on a non-weapon object\n"));
 			return true;
 		case IC_DMGENERGY:
 			if ( IsTypeWeapon() )
-				m_itWeapon.m_dmgenergy = s.GetArgVal();
+				m_itWeapon.m_dmgenergy = static_cast<short>(s.GetArgVal());
 			else
 				DEBUG_ERR(("Dmgenergy set on a non-weapon object\n"));
 			return true;
 		case IC_DMGFIRE:
 			if ( IsTypeWeapon() )
-				m_itWeapon.m_dmgfire = s.GetArgVal();
+				m_itWeapon.m_dmgfire = static_cast<short>(s.GetArgVal());
 			else
 				DEBUG_ERR(("Dmgfire set on a non-weapon object\n"));
 			return true;
 		case IC_DMGPOISON:
 			if ( IsTypeWeapon() )
-				m_itWeapon.m_dmgpoison = s.GetArgVal();
+				m_itWeapon.m_dmgpoison = static_cast<short>(s.GetArgVal());
 			else
 				DEBUG_ERR(("Dmgpoison set on a non-weapon object\n"));
 			return true;
@@ -2809,7 +2809,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			}
 			else
 			{
-				m_itArmor.m_Hits_Cur = m_itArmor.m_Hits_Max = s.GetArgVal();
+				m_itArmor.m_Hits_Cur = m_itArmor.m_Hits_Max = static_cast<WORD>(s.GetArgVal());
 				UpdatePropertyFlag(AUTOTOOLTIP_FLAG_DURABILITY);
 			}
 			return true;
@@ -2821,7 +2821,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			{
 				return( false );
 			}
-			SetUnkZ( s.GetArgVal()); // GetEquipLayer()
+			SetUnkZ( static_cast<signed char>(s.GetArgVal())); // GetEquipLayer()
 			return true;
 		case IC_LINK:
 			m_uidLink = s.GetArgVal();
@@ -2861,7 +2861,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			m_itNormal.m_more2 = MAKEDWORD( s.GetArgVal(), HIWORD(m_itNormal.m_more2));
 			break;
 		case IC_MOREM:
-			m_itNormal.m_morep.m_map = s.GetArgVal();
+			m_itNormal.m_morep.m_map = static_cast<unsigned char>(s.GetArgVal());
 			break;
 		case IC_MOREP:
 			{
@@ -2906,16 +2906,16 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			}
 			return true;
 		case IC_MOREX:
-			m_itNormal.m_morep.m_x = s.GetArgVal();
+			m_itNormal.m_morep.m_x = static_cast<short>(s.GetArgVal());
 			return true;
 		case IC_MOREY:
-			m_itNormal.m_morep.m_y = s.GetArgVal();
+			m_itNormal.m_morep.m_y = static_cast<short>(s.GetArgVal());
 			return true;
 		case IC_MOREZ:
 			if ( IsTypeSpellbook() )
-				m_itSpellbook.m_baseid = s.GetArgVal();
+				m_itSpellbook.m_baseid = static_cast<WORD>(s.GetArgVal());
 			else
-				m_itNormal.m_morep.m_z = s.GetArgVal();
+				m_itNormal.m_morep.m_z = static_cast<signed char>(s.GetArgVal());
 			return true;
 		case IC_P:
 			// Loading or import ONLY ! others use the r_Verb
@@ -3384,7 +3384,7 @@ void CItem::ConvertBolttoCloth()
 
 			if ( pBaseDef->IsType( IT_CLOTH )) // Maybe this is better: pBaseDef->IsSameDispID(ITEMID_CLOTH1)
 			{
-				iOutAmount += pDefCloth->m_BaseResources[i].GetResQty();
+				iOutAmount += static_cast<int>(pDefCloth->m_BaseResources[i].GetResQty());
 				SetName(pBaseDef->GetName());
 				continue;
 			}
@@ -3629,7 +3629,7 @@ bool CItem::Use_Portculis()
 	if ( pTagStorage )
 	{
 		if ( pTagStorage->GetValNum() )
-			iSnd = pTagStorage->GetValNum();
+			iSnd = static_cast<SOUND_TYPE>(pTagStorage->GetValNum());
 		else
 			iSnd = 0x21d;
 	} else 
@@ -3755,30 +3755,8 @@ bool CItem::Use_Door( bool fJustOpen )
 	MoveTo(pt);
 
 	CVarDefCont * pTagStorage = NULL; 
-	int piVal[2];
-	int t_setFlag = 0;
-	pTagStorage = GetKey("OVERRIDE.DOORSOUND_CLOSE", true);
-	if ( pTagStorage )
-	{
-		piVal[0] = pTagStorage->GetValNum();
-		t_setFlag = 1;
-	} else
-		piVal[0] = 0;
-	pTagStorage = NULL;
-	pTagStorage = GetKey("OVERRIDE.DOORSOUND_OPEN", true);
-	if ( pTagStorage )
-	{
-		piVal[1] = pTagStorage->GetValNum();
-		t_setFlag = 1;
-	} else
-		piVal[1] = 0;
-
-	if ( t_setFlag )
-	{
-			Sound( fClosing ? piVal[0] : piVal[1] );
-			SetTimeout( fClosing ? -1 : 60*TICK_PER_SEC );
-			return( ! fClosing );
-	} 
+	SOUND_TYPE iCloseSnd = 0x00f1;
+	SOUND_TYPE iOpenSnd = 0x00ea;
 
 	switch ( id )
 	{
@@ -3788,19 +3766,28 @@ bool CItem::Use_Door( bool fJustOpen )
 		case ITEMID_DOOR_SECRET_4:
 		case ITEMID_DOOR_SECRET_5:
 		case ITEMID_DOOR_SECRET_6:
-			Sound( fClosing ? 0x002e : 0x002f );
+			iCloseSnd = 0x002e;
+			iOpenSnd = 0x002f;
 			break;
 		case ITEMID_DOOR_METAL_S:
 		case ITEMID_DOOR_BARRED:
 		case ITEMID_DOOR_METAL_L:
 		case ITEMID_DOOR_IRONGATE_1:
 		case ITEMID_DOOR_IRONGATE_2:
-			Sound( fClosing ? 0x00f3 : 0x00eb );
-			break;
-		default:
-			Sound( fClosing ? 0x00f1 : 0x00ea );
+			iCloseSnd = 0x00f3;
+			iOpenSnd = 0x00eb;
 			break;
 	}
+
+	pTagStorage = GetKey("OVERRIDE.DOORSOUND_CLOSE", true);
+	if ( pTagStorage )
+		iCloseSnd = static_cast<SOUND_TYPE>(pTagStorage->GetValNum());
+	pTagStorage = NULL;
+	pTagStorage = GetKey("OVERRIDE.DOORSOUND_OPEN", true);
+	if ( pTagStorage )
+		iOpenSnd = static_cast<SOUND_TYPE>(pTagStorage->GetValNum());
+
+	Sound( fClosing ? iCloseSnd : iOpenSnd );
 
 	// Auto close the door in n seconds.
 	SetTimeout( fClosing ? -1 : 60*TICK_PER_SEC );
@@ -3914,9 +3901,9 @@ SKILL_TYPE CItem::Weapon_GetSkill() const
 	CItemBase * pItemDef = Item_GetDef();
 	ASSERT(pItemDef);
 
-	int iSkillOverride = m_TagDefs.GetKeyNum("OVERRIDE_SKILL", true) - 1;
+	int iSkillOverride = static_cast<int>(m_TagDefs.GetKeyNum("OVERRIDE_SKILL", true) - 1);
 	if ( iSkillOverride == -1)
-		iSkillOverride = m_TagDefs.GetKeyNum("OVERRIDE.SKILL", true) - 1;
+		iSkillOverride = static_cast<int>(m_TagDefs.GetKeyNum("OVERRIDE.SKILL", true) - 1);
 	if ( iSkillOverride > SKILL_NONE && iSkillOverride < SKILL_MAX )
 		return static_cast<SKILL_TYPE>(iSkillOverride);
 
@@ -4181,7 +4168,7 @@ int CItem::Light_GetOverride(const CItemBase * pBase) const
 
 	int ribReturn = pBase->m_ttEquippable.m_Light_ID.GetResIndex();
 
-	int iBase = m_TagDefs.GetKeyNum("OVERRIDE_LIGHTID",true);
+	int iBase = static_cast<int>(m_TagDefs.GetKeyNum("OVERRIDE_LIGHTID",true));
 	if ( iBase )
 		ribReturn = iBase;
 
@@ -4448,7 +4435,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		iRet = Spell_OnTrigger( spell, SPTRIG_EFFECT, pCharSrc, &Args );
 
 	spell = static_cast<SPELL_TYPE>(Args.m_iN1);
-	iSkillLevel = Args.m_iN2;
+	iSkillLevel = static_cast<int>(Args.m_iN2);
 	pSpellDef = g_Cfg.GetSpellDef( spell );
 
 	switch ( iRet )

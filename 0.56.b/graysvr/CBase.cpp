@@ -43,7 +43,7 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 			break;
 		//return as decimal number
 		case OBC_NAMELOC:
-			sVal.FormatVal(GetDefNum(sm_szLoadKeys[index],true));
+			sVal.FormatLLVal(GetDefNum(sm_szLoadKeys[index],true));
 			break;
 		case OBC_ARMOR:
 		case OBC_DAM:
@@ -204,10 +204,10 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 			{
 				INT64 piVal[2];
 				size_t iQty = Str_ParseCmds( s.GetArgStr(), piVal, COUNTOF(piVal));
-				m_attackBase = piVal[0];
+				m_attackBase = static_cast<unsigned char>(piVal[0]);
 				if ( iQty > 1 )
 				{
-					m_attackRange = piVal[1] - m_attackBase;
+					m_attackRange = static_cast<unsigned char>(piVal[1]) - m_attackBase;
 				}
 				else
 				{
@@ -225,7 +225,7 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 		case OBC_DEFNAME2:
 			return SetResourceName( s.GetArgStr());
 		case OBC_HEIGHT:
-			m_Height	= s.GetArgVal();
+			m_Height = static_cast<height_t>(s.GetArgVal());
 			return( true );
 		case OBC_INSTANCES:
 			return( false );
@@ -251,7 +251,7 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 			m_BaseResources.Load( s.GetArgStr());
 			return( true );
 		case OBC_RESLEVEL:
-			return( SetResLevel(s.GetArgVal()) );
+			return( SetResLevel(static_cast<unsigned char>(s.GetArgVal())) );
 		case OBC_RESDISPDNHUE:
 			SetResDispDnHue(static_cast<HUE_TYPE>(s.GetArgVal()));
 			return( true );

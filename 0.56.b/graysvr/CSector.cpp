@@ -1146,7 +1146,7 @@ void CSector::OnTick(int iPulseCount)
 
 		EXC_DEBUGSUB_START;
 		CPointMap pt = GetBasePoint();
-		g_Log.EventError("item 0%lx '%s' [timer=%d, type=%d]\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetName(), pItem->GetTimerAdjusted(), static_cast<int>(pItem->GetType()));
+		g_Log.EventError("item 0%lx '%s' [timer=%d, type=%lld]\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetName(), pItem->GetTimerAdjusted(), static_cast<int>(pItem->GetType()));
 		g_Log.EventError("sector #%d [%d,%d,%d,%d]\n", GetIndex(),  pt.m_x, pt.m_y, pt.m_z, pt.m_map);
 		
 		EXC_DEBUGSUB_END;
@@ -1157,7 +1157,7 @@ void CSector::OnTick(int iPulseCount)
 		{
 			PAUSECALLSTACK;
 			CPointMap pt = GetBasePoint();
-			g_Log.EventError("CGrayError: item 0%lx '%s' [timer=%d, type=%d]\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetName(), pItem->GetTimerAdjusted(), static_cast<int>(pItem->GetType()));
+			g_Log.EventError("CGrayError: item 0%lx '%s' [timer=%lld, type=%d]\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetName(), pItem->GetTimerAdjusted(), static_cast<int>(pItem->GetType()));
 			g_Log.EventError("sector #%d [%d,%d,%d,%d]\n", GetIndex(),  pt.m_x, pt.m_y, pt.m_z, pt.m_map);
 			UNPAUSECALLSTACK;
 			EXC_CATCH_SUB(&e, "Sector");
@@ -1166,7 +1166,7 @@ void CSector::OnTick(int iPulseCount)
 		catch (...)
 		{
 			CPointMap pt = GetBasePoint();
-			g_Log.EventError("...: item 0%lx '%s' [timer=%d, type=%d]\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetName(), pItem->GetTimerAdjusted(), static_cast<int>(pItem->GetType()));\
+			g_Log.EventError("...: item 0%lx '%s' [timer=%d, type=%lld]\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetName(), pItem->GetTimerAdjusted(), static_cast<int>(pItem->GetType()));\
 			g_Log.EventError("sector #%d [%d,%d,%d,%d]\n", GetIndex(),  pt.m_x, pt.m_y, pt.m_z, pt.m_map);
 			EXC_CATCH_SUB(NULL, "Sector");
 			CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);

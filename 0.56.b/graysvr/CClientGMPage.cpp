@@ -155,7 +155,7 @@ void CClient::Cmd_GM_PageInfo()
 	SysMessagef(
 		"Current GM .PAGE Account=%s (%s) "
 		"Reason='%s' "
-		"Time=%i",
+		"Time=%lld",
 		static_cast<LPCTSTR>(m_pGMPage->GetName()),
 		static_cast<LPCTSTR>(m_pGMPage->GetAccountStatus()),
 		static_cast<LPCTSTR>(m_pGMPage->GetReason()),

@@ -64,7 +64,7 @@ static LPCTSTR const sm_szPunishMsg[] =
 
 			int iCell = 0;
 			if ( m_pPlayer && m_pPlayer->GetAccount() )
-				iCell = m_pPlayer->GetAccount()->m_TagDefs.GetKeyNum("JailCell", true);
+				iCell = static_cast<int>(m_pPlayer->GetAccount()->m_TagDefs.GetKeyNum("JailCell", true));
 
 			if ( iCell )
 			{
@@ -1489,7 +1489,7 @@ bool CChar::Spell_CanCast( SPELL_TYPE spell, bool fTest, CObjBase * pSrc, bool f
 			return( false );
 		spell = static_cast<SPELL_TYPE>(Args.m_iN1);
 	}
-	wManaUse = Args.m_iN2;
+	wManaUse = static_cast<int>(Args.m_iN2);
 
 	// The magic item must be on your person to use.
 	if ( pSrc != this )
@@ -1805,16 +1805,16 @@ bool CChar::Spell_CastDone()
 			return false;
 	}
 
-	iSkillLevel		= Args.m_iN2;
+	iSkillLevel	= static_cast<int>(Args.m_iN2);
 		
 	iT1 = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1",true)));
 	iT2 = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject2",true)));
 	iC1 = static_cast<CREID_TYPE>(Args.m_VarsLocal.GetKeyNum("CreateObject1",true) & 0xFFFF);
 
 	//Can't be < 0, so max it to 0
-	fieldWidth = maximum(0,Args.m_VarsLocal.GetKeyNum("fieldWidth",true));
-	fieldGauge = maximum(0,Args.m_VarsLocal.GetKeyNum("fieldGauge",true));
-	areaRadius = maximum(0,Args.m_VarsLocal.GetKeyNum("areaRadius",true));
+	fieldWidth = static_cast<unsigned int>(maximum(0,Args.m_VarsLocal.GetKeyNum("fieldWidth",true)));
+	fieldGauge = static_cast<unsigned int>(maximum(0,Args.m_VarsLocal.GetKeyNum("fieldGauge",true)));
+	areaRadius = static_cast<unsigned int>(maximum(0,Args.m_VarsLocal.GetKeyNum("areaRadius",true)));
 
 	// Consume the reagents/mana/scroll/charge
 	if ( ! Spell_CanCast( spell, false, pObjSrc, true ) )
@@ -2483,8 +2483,8 @@ int CChar::Spell_CastStart()
 	}
 
 	m_atMagery.m_Spell = static_cast<SPELL_TYPE>(Args.m_iN1);
-	iDifficulty = Args.m_iN2;
-	iWaitTime = Args.m_iN3;
+	iDifficulty = static_cast<int>(Args.m_iN2);
+	iWaitTime = static_cast<int>(Args.m_iN3);
 
 	if ( fWOP )
 	{
@@ -2578,8 +2578,8 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	{
 		iRet = Spell_OnTrigger( spell, SPTRIG_EFFECT, pCharSrc ? pCharSrc : this, &Args );
 		spell = static_cast<SPELL_TYPE>(Args.m_iN1);
-		iSkillLevel = Args.m_iN2;
-		iEffectMult = Args.m_iN3;
+		iSkillLevel = static_cast<int>(Args.m_iN2);
+		iEffectMult = static_cast<int>(Args.m_iN3);
 		pSpellDef = g_Cfg.GetSpellDef(spell);
 		iD1 = static_cast<DAMAGE_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("DamageType", true)));
 

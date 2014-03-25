@@ -272,7 +272,7 @@ bool CChar::NPC_StablePetSelect( CChar * pCharPlayer )
 
 	int iPetmax = 10;
 	if ( m_TagDefs.GetKey("MAXPLAYERPETS") )
-		iPetmax = m_TagDefs.GetKeyNum("MAXPLAYERPETS");
+		iPetmax = static_cast<int>(m_TagDefs.GetKeyNum("MAXPLAYERPETS"));
 
 	if ( iCount > iPetmax )
 	{
@@ -1357,7 +1357,7 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 				case  TRIGRET_RET_FALSE:	return false;
 				default:					break;
 			}
-			iWantThisItem = Args.m_iN2;
+			iWantThisItem = static_cast<int>(Args.m_iN2);
 		}
 	}
 
@@ -1764,7 +1764,7 @@ bool CChar::NPC_Act_Follow( bool fFlee, int maxDistance, bool forceDistance )
 		}
 
 		fFlee			= (Args.m_iN1 != 0);
-		maxDistance		= Args.m_iN2;
+		maxDistance		= static_cast<int>(Args.m_iN2);
 		forceDistance	= (Args.m_iN3 != 0);
 	}
 
@@ -1850,7 +1850,7 @@ bool CChar::NPC_FightArchery( CChar * pChar )
 		{
 			CVarDefCont * pWeaponRange = pWeapon->GetKey("OVERRIDE.RANGE", true); 
 			if ( pWeaponRange )
-				iMaxDist = pWeaponRange->GetValNum();
+				iMaxDist = static_cast<int>(pWeaponRange->GetValNum());
 		}
 	}
 
@@ -2156,8 +2156,8 @@ void CChar::NPC_Act_Fight()
 			default:				break;
 		}
 
-		iDist		= Args.m_iN1;
-		iMotivation	= Args.m_iN2;
+		iDist		= static_cast<int>(Args.m_iN1);
+		iMotivation	= static_cast<int>(Args.m_iN2);
 	}
 
 	if ( ! IsStatFlag(STATF_Pet))
@@ -2202,11 +2202,11 @@ void CChar::NPC_Act_Fight()
 			switch(iQty)
 			{
 				case 1:
-					iRangeMax = RVal[0];
+					iRangeMax = static_cast<int>(RVal[0]);
 					break;
 				case 2:
-					iRangeMin = RVal[0];
-					iRangeMax = RVal[1];
+					iRangeMin = static_cast<int>(RVal[0]);
+					iRangeMax = static_cast<int>(RVal[1]);
 					break;
 			}
 		}
@@ -3346,7 +3346,7 @@ void CChar::NPC_OnTickAction()
 	if ( IsTimerExpired() )	// Was not reset ?
 	{
 		INT64 timeout	= maximum((150-Stat_GetAdjusted(STAT_DEX))/2, 0);
-		timeout = Calc_GetRandVal2(timeout/2, timeout);
+		timeout = Calc_GetRandLLVal2(timeout/2, timeout);
 		// default next brain/move tick
 		SetTimeout( TICK_PER_SEC + timeout * TICK_PER_SEC / 10 );
 	}

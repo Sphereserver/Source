@@ -778,7 +778,7 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 			// Client only allows 4 steps of walk ahead.
 			if ( g_Cfg.m_iWalkBuffer > 0 )
 			{
-				int iTimeDiff = ((CurrTime - m_timeWalkStep)/10);
+				int iTimeDiff = static_cast<int>((CurrTime - m_timeWalkStep)/10);
 				int iTimeMin = m_pChar->IsStatFlag( STATF_OnHorse|STATF_Hovering )? 70 : 140; // minimum time to move 8 steps
 
 				if (m_pChar->m_pPlayer != NULL && m_pChar->m_pPlayer->m_speedMode != 0)
@@ -1111,8 +1111,8 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 	if ( !fBoss )
 	{
 		if ( ( g_Cfg.m_fPayFromPackOnly ) ?
-				m_pChar->GetPackSafe()->ContentConsume(RESOURCE_ID(RES_TYPEDEF,IT_GOLD), costtotal, true) :
-				m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF,IT_GOLD), costtotal, true)
+				m_pChar->GetPackSafe()->ContentConsume(RESOURCE_ID(RES_TYPEDEF,IT_GOLD), static_cast<int>(costtotal), true) :
+				m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF,IT_GOLD), static_cast<int>(costtotal), true)
 			)
 		{
 			pVendor->Speak("Alas, thou dost not possess sufficient gold for this purchase!");
@@ -1254,11 +1254,11 @@ do_consume:
 	if ( !fBoss )
 	{
 		if ( g_Cfg.m_fPayFromPackOnly )
-			m_pChar->GetPackSafe()->ContentConsume( RESOURCE_ID(RES_TYPEDEF,IT_GOLD), costtotal);
+			m_pChar->GetPackSafe()->ContentConsume( RESOURCE_ID(RES_TYPEDEF,IT_GOLD), static_cast<int>(costtotal));
 		else
-			m_pChar->ContentConsume( RESOURCE_ID(RES_TYPEDEF,IT_GOLD), costtotal);
+			m_pChar->ContentConsume( RESOURCE_ID(RES_TYPEDEF,IT_GOLD), static_cast<int>(costtotal));
 
-		pVendor->GetBank()->m_itEqBankBox.m_Check_Amount += costtotal;
+		pVendor->GetBank()->m_itEqBankBox.m_Check_Amount += static_cast<unsigned long>(costtotal);
 	}
 
 	//	Clear the vendor display.
@@ -1353,10 +1353,10 @@ void CClient::Event_VendorSell(CChar* pVendor, const VendorItem* items, size_t i
 			fShortfall = true;
 			break;
 		}
-		pBank->m_itEqBankBox.m_Check_Amount -= iPrice;
+		pBank->m_itEqBankBox.m_Check_Amount -= static_cast<unsigned long>(iPrice);
 
 		// give them the appropriate amount of gold.
-		iGold += iPrice;
+		iGold += static_cast<int>(iPrice);
 
 		// Take the items from player.
 		// Put items in vendor inventory.

@@ -888,7 +888,7 @@ int CItemBase::CalculateMakeValue( int iQualityLevel ) const
 		if ( pItemDef == NULL )
 			continue;
 
-		lValue += pItemDef->GetMakeValue( iQualityLevel ) * m_BaseResources[i].GetResQty();
+		lValue += pItemDef->GetMakeValue( iQualityLevel ) * static_cast<int>(m_BaseResources[i].GetResQty());
 	}
 
 	// add some value based on the skill required to create it.
@@ -903,7 +903,7 @@ int CItemBase::CalculateMakeValue( int iQualityLevel ) const
 
 		// this is the normal skill required.
 		// if iQuality is much less than iSkillNeed then something is wrong.
-		int iSkillNeed = m_SkillMake[i].GetResQty();
+		int iSkillNeed = static_cast<int>(m_SkillMake[i].GetResQty());
 		if ( iQualityLevel < iSkillNeed )
 			iQualityLevel = iSkillNeed;
 
@@ -1315,7 +1315,7 @@ bool CItemBase::r_LoadVal( CScript &s )
 			break;
 
 		case IBC_SPEED:
-			m_speed = s.GetArgVal();
+			m_speed = static_cast<unsigned char>(s.GetArgVal());
 			break;
 
 		case IBC_SKILL:		// Skill to use.
@@ -1363,7 +1363,7 @@ bool CItemBase::r_LoadVal( CScript &s )
 			// Read in the weight but it may not be decimalized correctly
 			{
 				bool fDecimal = ( strchr( s.GetArgStr(), '.' ) != NULL );
-				m_weight = s.GetArgVal();
+				m_weight = static_cast<WORD>(s.GetArgVal());
 				if ( ! fDecimal )
 				{
 					m_weight *= WEIGHT_UNITS;
@@ -1519,7 +1519,7 @@ void CItemBaseMulti::SetMultiRegion( TCHAR * pArgs )
 	if ( iQty <= 1 )
 		return;
 	m_Components.Empty();	// might be after a resync
-	m_rect.SetRect( piArgs[0], piArgs[1], piArgs[2]+1, piArgs[3]+1, piArgs[4] );
+	m_rect.SetRect( static_cast<int>(piArgs[0]), static_cast<int>(piArgs[1]), static_cast<int>(piArgs[2]+1), static_cast<int>(piArgs[3]+1), static_cast<int>(piArgs[4]) );
 }
 
 bool CItemBaseMulti::AddComponent( TCHAR * pArgs )
@@ -1529,7 +1529,7 @@ bool CItemBaseMulti::AddComponent( TCHAR * pArgs )
 	size_t iQty = Str_ParseCmds( pArgs, piArgs, COUNTOF(piArgs));
 	if ( iQty <= 1 )
 		return false;
-	return AddComponent(static_cast<ITEMID_TYPE>(RES_GET_INDEX(piArgs[0])), piArgs[1], piArgs[2], piArgs[3] );
+	return AddComponent(static_cast<ITEMID_TYPE>(RES_GET_INDEX(piArgs[0])), static_cast<short>(piArgs[1]), static_cast<short>(piArgs[2]), static_cast<signed char>(piArgs[3]) );
 }
 
 int CItemBaseMulti::GetMaxDist() const
@@ -1595,10 +1595,10 @@ bool CItemBaseMulti::r_LoadVal( CScript &s )
 		if (iQty < 1)
 			return false;
 
-		m_shipSpeed.period = ppArgs[0];
+		m_shipSpeed.period = static_cast<unsigned short>(ppArgs[0]);
 
 		if (iQty >= 2)
-			m_shipSpeed.tiles = ppArgs[1];
+			m_shipSpeed.tiles = static_cast<unsigned short>(ppArgs[1]);
 	} break;
 	case MLC_TSPEECH:
 		return( m_Speech.r_LoadVal( s, RES_SPEECH ));

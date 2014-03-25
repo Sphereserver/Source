@@ -877,13 +877,13 @@ height_t CChar::GetHeight() const
 	char * heightDef = Str_GetTemp();
 
 	sprintf(heightDef, "height_0%x", static_cast<unsigned int>(pCharDef->GetDispID()));
-	tmpHeight = g_Exp.m_VarDefs.GetKeyNum(heightDef);
+	tmpHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(heightDef));
 	//DEBUG_ERR(("2 tmpHeight %d\n",tmpHeight));
 	if ( tmpHeight ) //set by a defname ([DEFNAME charheight]  height_0a)
 		return tmpHeight;
 
 	sprintf(heightDef, "height_%u", static_cast<unsigned int>(pCharDef->GetDispID()));
-	tmpHeight = g_Exp.m_VarDefs.GetKeyNum(heightDef);
+	tmpHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(heightDef));
 	//DEBUG_ERR(("3 tmpHeight %d\n",tmpHeight));
 	if ( tmpHeight ) //set by a defname ([DEFNAME charheight]  height_10)
 		return tmpHeight;
@@ -1519,7 +1519,7 @@ do_default:
 		case CHC_REGENVALHITS:
 		case CHC_REGENVALSTAM:
 		case CHC_REGENVALMANA:
-			sVal.FormatVal(GetDefNum(pszKey, true));
+			sVal.FormatLLVal(GetDefNum(pszKey, true));
 			break;
 
 		case CHC_ATTACKER:
@@ -2210,7 +2210,7 @@ do_default:
 				i = g_Cfg.FindStatKey( pszKey+1 );
 				if ( i >= 0 )
 				{
-					Stat_SetBase(static_cast<STAT_TYPE>(i), s.GetArgVal());
+					Stat_SetBase(static_cast<STAT_TYPE>(i), static_cast<short>(s.GetArgVal()));
 					return true;
 				}
 			}
@@ -2219,7 +2219,7 @@ do_default:
 				i = g_Cfg.FindStatKey( pszKey+3 );
 				if ( i >= 0 )
 				{
-					Stat_SetMod(static_cast<STAT_TYPE>(i), s.GetArgVal());
+					Stat_SetMod(static_cast<STAT_TYPE>(i), static_cast<short>(s.GetArgVal()));
 					return true;
 				}
 			}
@@ -2437,7 +2437,7 @@ do_default:
 			UpdateStamFlag();
 			break;
 		case CHC_HEIGHT:
-			m_height = s.GetArgVal();
+			m_height = static_cast<height_t>(s.GetArgVal());
 			break;
 		case CHC_HOME:
 			if ( ! s.HasArgs())
@@ -2471,14 +2471,14 @@ do_default:
 				if ( iArgQty < 2 )
 					return( false );
 
-				CGrayUID	uid		= piCmd[0];
-				DWORD		dwFlags	= piCmd[1];
+				CGrayUID	uid		= static_cast<unsigned long>(piCmd[0]);
+				DWORD		dwFlags	= static_cast<unsigned long>(piCmd[1]);
 
 				CItemMemory * pMemory = Memory_FindObj( uid );
 				if ( pMemory != NULL )
-					pMemory->SetMemoryTypes( dwFlags );
+					pMemory->SetMemoryTypes( static_cast<WORD>(dwFlags) );
 				else
-					pMemory = Memory_AddObjTypes( uid, dwFlags );
+					pMemory = Memory_AddObjTypes( uid, static_cast<WORD>(dwFlags) );
 			}
 			break;
 		case CHC_NIGHTSIGHT:
@@ -2511,7 +2511,7 @@ do_default:
 			}
 			break;
 		case CHC_OSKIN:
-			m_prev_Hue = s.GetArgVal();
+			m_prev_Hue = static_cast<HUE_TYPE>(s.GetArgVal());
 			break;
 		case CHC_P:
 			{
@@ -2547,7 +2547,7 @@ do_default:
 			m_sTitle = s.GetArgStr();
 			break;
 		case CHC_LIGHT:
-			m_LocalLight = s.GetArgVal();
+			m_LocalLight = static_cast<unsigned char>(s.GetArgVal());
 			break;
 		case CHC_EXP:
 			m_exp = s.GetArgVal();
@@ -2558,7 +2558,7 @@ do_default:
 			break;
 		case CHC_VISUALRANGE:
 			{
-				BYTE bIn = s.GetArgVal();
+				BYTE bIn = static_cast<unsigned char>(s.GetArgVal());
 				//changed UO_MAP_VIEW_SIZE (18) to UO_MAP_VIEW_RADAR (31) because of complainments of grey leaves on big trees
 				if ( bIn > UO_MAP_VIEW_RADAR )
 				{
@@ -2823,7 +2823,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 
 				return UpdateAnimate(static_cast<ANIM_TYPE>(Arg_piCmd[0]), false,
 					( Arg_Qty > 1 )	? (Arg_piCmd[1] != 0) : false,
-					( Arg_Qty > 2 )	? Arg_piCmd[2] : 1 );
+					( Arg_Qty > 2 )	? static_cast<unsigned char>(Arg_piCmd[2]) : 1 );
 			}
 			break;
 		case CHV_ATTACK:
@@ -2832,8 +2832,8 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				INT64 piCmd[1];
 				if ( Str_ParseCmds( s.GetArgRaw(), piCmd, COUNTOF(piCmd)) > 0 )
 				{
-					CGrayUID	uid	= piCmd[0];
-					pSrc	= uid.CharFind();
+					CGrayUID uid = static_cast<unsigned long>(piCmd[0]);
+					pSrc = uid.CharFind();
 				}
 				if ( pSrc )
 					Fight_Attack( pSrc );
@@ -3007,7 +3007,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				INT64		piCmd[1];
 				if ( Str_ParseCmds(s.GetArgRaw(), piCmd, COUNTOF(piCmd)) > 0 )
 				{
-					CGrayUID uid = piCmd[0];
+					CGrayUID uid = static_cast<unsigned long>(piCmd[0]);
 					pTarget = uid.ObjFind();
 				}
 				UpdateDir(pTarget);
@@ -3289,7 +3289,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				INT64		piCmd[1];
 				if ( Str_ParseCmds(s.GetArgRaw(), piCmd, COUNTOF(piCmd)) > 0 )
 				{
-					CGrayUID uid = piCmd[0];
+					CGrayUID uid = static_cast<unsigned long>(piCmd[0]);
 					pTarget = uid.ObjFind();
 				}
 				UpdateDir(pTarget);
@@ -3575,7 +3575,7 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 			args.m_pO1 = pCharDead;
 			if ( OnTrigger(CTRIG_ExpChange, this, &args) == TRIGRET_RET_TRUE )
 				return;
-			delta = args.m_iN1;
+			delta = static_cast<int>(args.m_iN1);
 			bShowMsg = ( args.m_iN2 != 0 );
 		}
 		m_exp += delta;
@@ -3620,7 +3620,7 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 				CScriptTriggerArgs	args(delta);
 				if ( OnTrigger(CTRIG_ExpLevelChange, this, &args) == TRIGRET_RET_TRUE )
 					return;
-				delta = args.m_iN1;
+				delta = static_cast<int>(args.m_iN1);
 			}
 
 			level = m_level + delta;

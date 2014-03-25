@@ -335,7 +335,7 @@ bool CAccounts::Cmd_ListUnused(CTextConsole * pSrc, LPCTSTR pszDays, LPCTSTR psz
 		}
 
 		if ( (iDaysCur - iDaysAcc) < iDaysTest ) continue;
-		if ( dwMask && !pAccount->IsPriv(dwMask) ) continue;
+		if ( dwMask && !pAccount->IsPriv(static_cast<WORD>(dwMask)) ) continue;
 
 		iCount ++;
 		if ( pszVerb == NULL || pszVerb[0] == '\0' )
@@ -1295,7 +1295,7 @@ bool CAccount::r_LoadVal( CScript & s )
 			m_Last_IP.SetAddrStr( s.GetArgStr());
 			break;
 		case AC_MAXCHARS:
-			SetMaxChars( s.GetArgVal() );
+			SetMaxChars( static_cast<unsigned char>(s.GetArgVal()) );
 			break;
 		case AC_MD5PASSWORD:
 			SetPassword( s.GetArgStr(), true);
@@ -1310,7 +1310,7 @@ bool CAccount::r_LoadVal( CScript & s )
 			SetPassword( s.GetArgStr() );
 			break;
 		case AC_PRIV:
-			m_PrivFlags = s.GetArgVal();
+			m_PrivFlags = static_cast<WORD>(s.GetArgVal());
 			if ( m_PrivFlags & PRIV_UNUSED )
 			{
 				g_Log.EventError("Fixing PRIV field (0%x) for account %s have not supported flags set (caught by mask 0%x).\n", m_PrivFlags, GetName(), (WORD)PRIV_UNUSED);
@@ -1318,7 +1318,7 @@ bool CAccount::r_LoadVal( CScript & s )
 			}
 			break;
 		case AC_RESDISP:
-			SetResDisp(s.GetArgVal());
+			SetResDisp(static_cast<unsigned char>(s.GetArgVal()));
 			break;
 		case AC_TAG0:
 			{

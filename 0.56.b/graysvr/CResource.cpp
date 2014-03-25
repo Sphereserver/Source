@@ -1492,7 +1492,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 						if ( iQty != 6 )
 							return false;
 
-						CGTime datetime(piVal[0], piVal[1], piVal[2], piVal[3], piVal[4], piVal[5]);
+						CGTime datetime(static_cast<int>(piVal[0]), static_cast<int>(piVal[1]), static_cast<int>(piVal[2]), static_cast<int>(piVal[3]), static_cast<int>(piVal[4]), static_cast<int>(piVal[5]));
 						if ( datetime.GetTime() == -1 )
 							sVal.FormatVal(-1);
 						else

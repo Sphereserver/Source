@@ -855,7 +855,7 @@ int CChar::Food_CanEat( CObjBase * pObj ) const
 	size_t iRet = pCharDef->m_FoodType.FindResourceMatch( pObj );
 	if ( iRet != pCharDef->m_FoodType.BadIndex() )
 	{
-		return( pCharDef->m_FoodType[iRet].GetResQty()); // how bad do i want it ?
+		return( static_cast<int>(pCharDef->m_FoodType[iRet].GetResQty())); // how bad do i want it ?
 	}
 
 	// ???
@@ -1100,7 +1100,7 @@ bool CChar::CanSee( const CObjBaseTemplate * pObj ) const
 					CChar * pChar2 = const_cast <CChar*> (pChar);
 					CChar * this2 = const_cast <CChar*> (this);
 					this2->OnTrigger(CTRIG_SeeHidden, pChar2, &Args);
-					return (Args.m_iN1);
+					return (Args.m_iN1 != 0);
 				}
 				if ( GetPrivLevel() <= pChar->GetPrivLevel())
 					return( false );
@@ -2354,7 +2354,7 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 	// But in reality the client and server are not really in sync.
 	// if ( IsClient()) return( pArea );
 
-	WORD wCan = GetMoveBlockFlags();
+	WORD wCan = static_cast<WORD>(GetMoveBlockFlags());
 
 	//	Blocking dynamic items
 	if (( !IsPriv(PRIV_GM) ) && ( !IsPriv(PRIV_ALLMOVE) ))
@@ -2437,7 +2437,7 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 
 	if ( pwBlockFlags )
 	{
-		*pwBlockFlags = wBlockFlags;
+		*pwBlockFlags = static_cast<WORD>(wBlockFlags);
 	}
 
 	ptDest.m_z = z;
@@ -2451,7 +2451,7 @@ bool CChar::IsVerticalSpace( CPointMap ptDest, bool fForceMount )
 	if ( IsPriv( PRIV_GM ) || IsPriv( PRIV_ALLMOVE ) || !( ptDest.IsValidPoint() ))
 		return true;
 
-	WORD wBlockFlags = GetMoveBlockFlags();
+	WORD wBlockFlags = static_cast<WORD>(GetMoveBlockFlags());
 	if ( wBlockFlags & CAN_C_WALK )
 		wBlockFlags |= CAN_I_CLIMB;
 
@@ -2501,7 +2501,7 @@ CRegionBase * CChar::CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlag
 		return( NULL );
 	}
 
-	WORD wCan = GetMoveBlockFlags();
+	WORD wCan = static_cast<WORD>(GetMoveBlockFlags());
 	WARNWALK(("GetMoveBlockFlags() (0x%x)\n",wCan));
 	if ( !(wCan & (CAN_C_SWIM |CAN_C_WALK |CAN_C_FLY |CAN_C_RUN |CAN_C_HOVER)))
 		return NULL;  // cannot move at all, so WTF?
@@ -2528,7 +2528,7 @@ CRegionBase * CChar::CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlag
 	g_World.GetHeightPoint_New( ptDest, block, true );
 
 	// Pass along my results.
-	wBlockFlags = block.m_Bottom.m_dwBlockFlags;
+	wBlockFlags = static_cast<WORD>(block.m_Bottom.m_dwBlockFlags);
 
 	if ( block.m_Top.m_dwBlockFlags )
 	{

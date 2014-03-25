@@ -346,7 +346,7 @@ HUE_TYPE CChar::Noto_GetHue( const CChar * pCharViewer, bool fIncog ) const
 	// Represent as a text Hue.
 	CVarDefCont * sVal = GetKey( "NAME.HUE", true );
 	if ( sVal )
-		return  sVal->GetValNum();
+		return  static_cast<HUE_TYPE>(sVal->GetValNum());
 
 	switch ( Noto_GetFlag( pCharViewer, fIncog, true ))
 	{
@@ -522,7 +522,7 @@ void CChar::Noto_Fame( int iFameChange )
 		if ( retType == TRIGRET_RET_TRUE )
 			return;
 		else if ( retType != TRIGRET_RET_DEFAULT )
-			iFameChange = Args.m_iN1;
+			iFameChange = static_cast<int>(Args.m_iN1);
 	}
 
 	if ( ! iFameChange )
@@ -563,7 +563,7 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom )
 		if ( retType == TRIGRET_RET_TRUE )
 			return;
 		else if ( retType != TRIGRET_RET_DEFAULT )
-			iKarmaChange = Args.m_iN1;
+			iKarmaChange = static_cast<int>(Args.m_iN1);
 	}
 
 	if ( ! iKarmaChange )
@@ -659,7 +659,7 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iOtherKillers)
 					args.m_iN1 = 0;
 			}
 
-			m_pPlayer->m_wMurders = static_cast<long>(args.m_iN1);
+			m_pPlayer->m_wMurders = static_cast<WORD>(args.m_iN1);
 			if ( args.m_iN2 ) 
 				Noto_Criminal();
 
@@ -1554,7 +1554,7 @@ void CChar::CallGuards( CChar * pCriminal )
 			return;
 
 		if ( args.m_iN1 != rid.GetResIndex() )
-			rid = RESOURCE_ID( RES_CHARDEF, args.m_iN1 );
+			rid = RESOURCE_ID( RES_CHARDEF, static_cast<int>(args.m_iN1) );
 		if ( args.m_iN2 )
 			pGuard = NULL;
 	}
@@ -1940,25 +1940,25 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		CVarDefCont * pValue = pSrc->GetKey("COLDDAMAGE",true);
 		if ( pValue ) 
 		{
-			i_coldDamage = pValue->GetValNum();
+			i_coldDamage = static_cast<short>(pValue->GetValNum());
 			uType |= DAMAGE_COLD;
 		}
 		pValue = pSrc->GetKey("ENERGYDAMAGE",true);
 		if ( pValue ) 
 		{
-			i_energyDamage = pValue->GetValNum();
+			i_energyDamage = static_cast<short>(pValue->GetValNum());
 			uType |= DAMAGE_ENERGY;
 		}
 		pValue = pSrc->GetKey("FIREDAMAGE",true);
 		if ( pValue ) 
 		{
-			i_fireDamage = pValue->GetValNum();
+			i_fireDamage = static_cast<short>(pValue->GetValNum());
 			uType |= DAMAGE_FIRE;
 		}
 		pValue = pSrc->GetKey("POISONDAMAGE",true);
 		if ( pValue ) 
 		{
-			i_poisonDamage = pValue->GetValNum();
+			i_poisonDamage = static_cast<short>(pValue->GetValNum());
 			uType |= DAMAGE_POISON;
 		}
 	} 
@@ -2013,10 +2013,10 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		i_fireDamage += i_tDamFire;
 	}
 
-	i_poisonDamage -= (i_poisonDamage * GetDefNum("RESPOISON", true)) / 100;
-	i_energyDamage -= (i_energyDamage * GetDefNum("RESENERGY", true)) / 100;
-	i_coldDamage -= (i_coldDamage * GetDefNum("RESCOLD", true)) / 100;
-	i_fireDamage -= (i_fireDamage * GetDefNum("RESFIRE", true)) / 100;
+	i_poisonDamage -= static_cast<short>(i_poisonDamage * GetDefNum("RESPOISON", true)) / 100;
+	i_energyDamage -= static_cast<short>(i_energyDamage * GetDefNum("RESENERGY", true)) / 100;
+	i_coldDamage -= static_cast<short>(i_coldDamage * GetDefNum("RESCOLD", true)) / 100;
+	i_fireDamage -= static_cast<short>(i_fireDamage * GetDefNum("RESFIRE", true)) / 100;
 
 	if ( (iDmg < 0) && 
 		 (i_coldDamage < 0) &&
@@ -2117,8 +2117,8 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		CScriptTriggerArgs Args( i_damTemp, u_damFlag, static_cast<INT64>(0) );
 		if ( OnTrigger( CTRIG_GetHit, pSrc, &Args ) == TRIGRET_RET_TRUE )
 			return( 0 );
-		i_damTemp	= Args.m_iN1;
-		u_damFlag	= Args.m_iN2;
+		i_damTemp	= static_cast<int>(Args.m_iN1);
+		u_damFlag	= static_cast<DAMAGE_TYPE>(Args.m_iN2);
 	}
 	if ( (i_damTemp != iDmg) || (u_damFlag != uType) )
 	{
@@ -2180,10 +2180,10 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		i_fireDamage = i_tDamFire;
 	}
 
-	i_poisonDamage -= (i_poisonDamage * GetDefNum("RESPOISON", true)) / 100;
-	i_energyDamage -= (i_energyDamage * GetDefNum("RESENERGY", true)) / 100;
-	i_coldDamage -= (i_coldDamage * GetDefNum("RESCOLD", true)) / 100;
-	i_fireDamage -= (i_fireDamage * GetDefNum("RESFIRE", true)) / 100;
+	i_poisonDamage -= static_cast<short>(i_poisonDamage * GetDefNum("RESPOISON", true)) / 100;
+	i_energyDamage -= static_cast<short>(i_energyDamage * GetDefNum("RESENERGY", true)) / 100;
+	i_coldDamage -= static_cast<short>(i_coldDamage * GetDefNum("RESCOLD", true)) / 100;
+	i_fireDamage -= static_cast<short>(i_fireDamage * GetDefNum("RESFIRE", true)) / 100;
 
 	if ( (iDmg < 0) && 
 		 (i_coldDamage < 0) &&
@@ -2463,16 +2463,16 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 
 	CVarDefCont * pHitPref = pSrc->GetKey("HITPREFERENCE", true); 
 	if ( pHitPref )
-		iHitPref = pHitPref->GetValNum();	// 1 .. 8
+		iHitPref = static_cast<int>(pHitPref->GetValNum());	// 1 .. 8
 	CVarDefCont * pHitPrefChance = pSrc->GetKey("HITPREFERENCE_CHANCE", true); 
 	if ( pHitPrefChance )
-		iHitPrefChance = pHitPrefChance->GetValNum();	// 1 .. 8
+		iHitPrefChance = static_cast<int>(pHitPrefChance->GetValNum());	// 1 .. 8
 	CVarDefCont * pHitPrefPenalty = pSrc->GetKey("HITPREFERENCE_PENALTY", true); 
 	if ( pHitPrefPenalty )
-		iHitPrefPenalty = pHitPrefPenalty->GetValNum();	// 1 .. 8
+		iHitPrefPenalty = static_cast<int>(pHitPrefPenalty->GetValNum());	// 1 .. 8
 	CVarDefCont * pHitPrefBonus = pSrc->GetKey("HITPREFERENCE_BONUS", true); 
 	if ( pHitPrefBonus )
-		iHitPrefBonus = pHitPrefBonus->GetValNum();	// 1 .. 8
+		iHitPrefBonus = static_cast<int>(pHitPrefBonus->GetValNum());	// 1 .. 8
 
 	if ( IsSetCombatFlags(COMBAT_TARGETTEDHIT) && 
 		 (iHitPref != 0) && 
@@ -3173,7 +3173,7 @@ int CChar::CalcFightRange( CItem * pWeapon, CItemBase * pWeaponDef )
 	
     CVarDefCont * pCharRange = GetKey("OVERRIDE.RANGE", true); 
 	if ( pCharRange )
-		iCharRange = pCharRange->GetValNum();
+		iCharRange = static_cast<int>(pCharRange->GetValNum());
 
 	if ( pWeapon )
 	{
@@ -3181,7 +3181,7 @@ int CChar::CalcFightRange( CItem * pWeapon, CItemBase * pWeaponDef )
 
 	    CVarDefCont * pWeaponRange = pWeapon->GetKey("OVERRIDE.RANGE", true); 
 		if ( pWeaponRange )
-			iWeaponRange = pWeaponRange->GetValNum();
+			iWeaponRange = static_cast<int>(pWeaponRange->GetValNum());
 	}
 
 	if ( !pWeaponDef )
@@ -3303,7 +3303,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		// look for override TAG on the specific weapon
 		CVarDefCont * pDamTypeOverride = pWeapon->GetKey("OVERRIDE.DAMAGETYPE",true);
 		if (pDamTypeOverride)
-			iTyp = pDamTypeOverride->GetValNum();
+			iTyp = static_cast<int>(pDamTypeOverride->GetValNum());
 	}
 
 
@@ -3415,7 +3415,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
 			m_atFight.m_fMoved	= 0;
 			SetTimeout( iTime * 3 / 4 );	// try again sooner.
-			UpdateAnimate( ANIM_ATTACK_WEAPON, true, false, iTime/TICK_PER_SEC );
+			UpdateAnimate( ANIM_ATTACK_WEAPON, true, false, static_cast<unsigned char>(iTime)/TICK_PER_SEC);
 			return( WAR_SWING_SWINGING );
 		}
 
@@ -3438,7 +3438,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 		if ( pColor )
 		{
-			AmmoHue = pColor->GetValNum();
+			AmmoHue = static_cast<unsigned long>(pColor->GetValNum());
 		} else
 		{
 			AmmoHue = 0;
@@ -3446,7 +3446,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 		if ( pRender )
 		{
-			AmmoRender = pRender->GetValNum();
+			AmmoRender = static_cast<unsigned long>(pRender->GetValNum());
 		} else
 		{
 			AmmoRender = 0;
@@ -3510,7 +3510,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			else
 			{
 				SetTimeout( iTime/2 );	// try again sooner.
-				UpdateAnimate( ANIM_ATTACK_WEAPON, true, false, iTime/TICK_PER_SEC );
+				UpdateAnimate( ANIM_ATTACK_WEAPON, true, false, static_cast<unsigned char>(iTime)/TICK_PER_SEC );
 			}
 			return( WAR_SWING_SWINGING );
 		}
@@ -3551,7 +3551,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		{
 			if ( pTagStorage->GetValNum() )
 			{
-				iSnd = pTagStorage->GetValNum();
+				iSnd = static_cast<SOUND_TYPE>(pTagStorage->GetValNum());
 			}
 		}
 	}
@@ -3651,7 +3651,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 #ifdef _ALPHASPHERE
 	Memory_AddObjTypes(pCharTarg,MEMORY_WAR_TARG);
 #endif
-	iDmg	= Args.m_iN1;
+	iDmg	= static_cast<int>(Args.m_iN1);
 
 	if ( g_Cfg.IsSkillRanged(skill) )
 	{

@@ -2505,9 +2505,9 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 
 		if (bNameOnly) // if we only want to display the name (FEATURE_AOS_UPDATE_B disabled)
 		{
-			unsigned long ClilocName = pObj->GetDefNum("NAMELOC");
+			unsigned long ClilocName = static_cast<unsigned long>(pObj->GetDefNum("NAMELOC"));
 			if (!ClilocName)
-				ClilocName = pObj->Base_GetDef()->GetDefNum("NAMELOC");
+				ClilocName = static_cast<unsigned long>(pObj->Base_GetDef()->GetDefNum("NAMELOC"));
 
 			if (ClilocName)
 				m_TooltipData.InsertAt(0, new CClientTooltip(ClilocName));
@@ -2530,9 +2530,9 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 
 			if ( iRet != TRIGRET_RET_TRUE )
 			{
-				unsigned long ClilocName = pObj->GetDefNum("NAMELOC");
+				unsigned long ClilocName = static_cast<unsigned long>(pObj->GetDefNum("NAMELOC"));
 				if (!ClilocName)
-					ClilocName = pObj->Base_GetDef()->GetDefNum("NAMELOC");
+					ClilocName = static_cast<unsigned long>(pObj->Base_GetDef()->GetDefNum("NAMELOC"));
 
 				if ( pItem )
 				{
@@ -2763,7 +2763,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 								this->m_TooltipData.Add( t = new CClientTooltip( 1060659 ) ); // ~1_val~: ~2_val~
 								t->FormatArgs( "Min/max time\t%u min / %u min", pItem->m_itSpawnChar.m_TimeLoMin, pItem->m_itSpawnChar.m_TimeHiMin );
 								this->m_TooltipData.Add( t = new CClientTooltip( 1060660 ) ); // ~1_val~: ~2_val~
-								t->FormatArgs( "Time until next spawn\t%d sec", pItem->GetTimerAdjusted() );
+								t->FormatArgs( "Time until next spawn\t%lld sec", pItem->GetTimerAdjusted() );
 							} break;
 
 						case IT_SPAWN_ITEM:
@@ -2778,7 +2778,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 								this->m_TooltipData.Add( t = new CClientTooltip( 1060659 ) ); // ~1_val~: ~2_val~
 								t->FormatArgs( "Min/max time\t%u min / %u min", pItem->m_itSpawnItem.m_TimeLoMin, pItem->m_itSpawnItem.m_TimeHiMin );
 								this->m_TooltipData.Add( t = new CClientTooltip( 1060660 ) ); // ~1_val~: ~2_val~
-								t->FormatArgs( "Time until next spawn\t%d sec", pItem->GetTimerAdjusted() );
+								t->FormatArgs( "Time until next spawn\t%lld sec", pItem->GetTimerAdjusted() );
 							} break;
 
 						case IT_COMM_CRYSTAL:
@@ -3076,7 +3076,7 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	}
 	if ( IsPriv(PRIV_JAILED) )
 	{
-		m_pChar->Jail(&g_Serv, true, GetAccount()->m_TagDefs.GetKeyNum("JailCell", true));
+		m_pChar->Jail(&g_Serv, true, static_cast<int>(GetAccount()->m_TagDefs.GetKeyNum("JailCell", true)));
 	}
 	if ( g_Serv.m_timeShutdown.IsTimeValid() )
 	{

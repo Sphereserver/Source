@@ -984,7 +984,7 @@ public:
 	{
 	}
 	virtual bool MoveTo( CPointMap pt ); // Put item on the ground here.
-	bool MoveToDecay( const CPointMap & pt, int iDecayTime )
+	bool MoveToDecay( const CPointMap & pt, INT64 iDecayTime )
 	{
 		SetDecayTime( iDecayTime );
 		return MoveTo( pt );
@@ -2853,7 +2853,7 @@ public:
 		return pCharDef->m_TagDefs.GetKey( pszKey );
 	}
 
-	void SetKeyNum(LPCTSTR pszKey, int iVal)
+	void SetKeyNum(LPCTSTR pszKey, INT64 iVal)
 	{
 		m_TagDefs.SetNum(pszKey, iVal);
 	}
@@ -3301,7 +3301,7 @@ private:
 	int Skill_NaturalResource_Setup( CItem * pResBit );
 	CItem * Skill_NaturalResource_Create( CItem * pResBit, SKILL_TYPE skill );
 	void Skill_SetTimeout();
-	int Skill_GetTimeout();
+	INT64 Skill_GetTimeout();
 
 	int	Skill_Scripted( SKTRIG_TYPE stage );
 

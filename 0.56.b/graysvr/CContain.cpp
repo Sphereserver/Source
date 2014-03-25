@@ -375,7 +375,7 @@ size_t CContainer::ResourceConsumePart( const CResourceQtyArray * pResources, in
 	size_t iQtyRes = pResources->GetCount();
 	for ( size_t i = 0; i < iQtyRes; i++ )
 	{
-		int iResQty = pResources->GetAt(i).GetResQty();
+		int iResQty = static_cast<int>(pResources->GetAt(i).GetResQty());
 		if (iResQty <= 0) // not sure why this would be true
 			continue;
 
@@ -418,7 +418,7 @@ int CContainer::ResourceConsume( const CResourceQtyArray * pResources, int iRepl
 	int iQtyMin = INT_MAX;
 	for ( size_t i = 0; i < pResources->GetCount(); i++ )
 	{
-		int iResQty = pResources->GetAt(i).GetResQty();
+		int iResQty = static_cast<int>(pResources->GetAt(i).GetResQty());
 		if (iResQty <= 0) // not sure why this would be true
 			continue;
 
@@ -983,7 +983,7 @@ void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt, unsigned char grid
 			}
 
 			pItemVend->SetPlayerVendorPrice( 0 );	// unpriced yet.
-			pItemVend->SetContainedLayer( pItem->GetAmount());
+			pItemVend->SetContainedLayer( static_cast<unsigned char>(pItem->GetAmount()));
 		}
 		break;
 	case IT_GAME_BOARD:
@@ -1146,7 +1146,7 @@ bool CItemContainer::CanContainerHold( const CItem * pItem, const CChar * pCharM
 	CVarDefCont * pTagTmp = GetKey("OVERRIDE.MAXITEMS", false);
 	if ( pTagTmp )
 	{
-		tContMaxI = pTagTmp->GetValNum();
+		tContMaxI = static_cast<size_t>(pTagTmp->GetValNum());
 	}
 	if ( GetCount() >= (tContMaxI - 1) )
 	{
@@ -1183,7 +1183,7 @@ bool CItemContainer::CanContainerHold( const CItem * pItem, const CChar * pCharM
 				int iBankIMax = g_Cfg.m_iBankIMax;
 				CVarDefCont * pTagTemp = GetKey("OVERRIDE.MAXITEMS", false);
 				if ( pTagTemp )
-					iBankIMax = pTagTemp->GetValNum();
+					iBankIMax = static_cast<int>(pTagTemp->GetValNum());
 
 				if ( iBankIMax >= 0 )
 				{
@@ -1207,7 +1207,7 @@ bool CItemContainer::CanContainerHold( const CItem * pItem, const CChar * pCharM
 				int iBankWMax = g_Cfg.m_iBankWMax;
 				pTagTemp = GetKey("OVERRIDE.MAXWEIGHT", false);
 				if ( pTagTemp )
-					iBankWMax = pTagTemp->GetValNum() * WEIGHT_UNITS;
+					iBankWMax = static_cast<int>(pTagTemp->GetValNum()) * WEIGHT_UNITS;
 
 				if ( iBankWMax >= 0 )
 				{

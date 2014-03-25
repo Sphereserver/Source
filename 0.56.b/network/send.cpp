@@ -90,7 +90,7 @@ PacketCombatDamage::PacketCombatDamage(const CClient* target, DWORD damage, CGra
 		damage = 0xffff;
 
 	writeInt32(defender);
-	writeInt16(damage);
+	writeInt16(static_cast<WORD>(damage));
 	push(target);
 }
 
@@ -208,8 +208,8 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 		{
 			if (other->m_pPlayer != NULL)
 			{
-				writeByte(other->GetDefNum("CURFOLLOWER", true));
-				writeByte(other->GetDefNum("MAXFOLLOWER", true));
+				writeByte(static_cast<unsigned char>(other->GetDefNum("CURFOLLOWER", true)));
+				writeByte(static_cast<unsigned char>(other->GetDefNum("MAXFOLLOWER", true)));
 			}
 			else
 			{
@@ -238,7 +238,7 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 				writeInt16(other->Fight_CalcDamage(NULL, SKILL_WRESTLING, true));
 			}
 
-			writeInt32(other->GetDefNum("TITHING", true));
+			writeInt32(static_cast<unsigned long>(other->GetDefNum("TITHING", true)));
 		}
 
 		if (version >= 6)	// Stygian Abyss Attributes?
@@ -2930,8 +2930,8 @@ PacketCharacterList::PacketCharacterList(CClient* target, const CChar* lastChara
 
 	const CAccountRef account = target->GetAccount();
 	ASSERT(account != NULL);
-	DWORD tmVer = account->m_TagDefs.GetKeyNum("clientversion");
-	DWORD tmVerReported = account->m_TagDefs.GetKeyNum("reportedcliver");
+	DWORD tmVer = static_cast<unsigned long>(account->m_TagDefs.GetKeyNum("clientversion"));
+	DWORD tmVerReported = static_cast<unsigned long>(account->m_TagDefs.GetKeyNum("reportedcliver"));
 
 	initLength();
 
@@ -3372,8 +3372,8 @@ PacketEnableFeatures::PacketEnableFeatures(const CClient* target, DWORD flags) :
 
 	const CAccountRef account = target->GetAccount();
 	ASSERT(account != NULL);
-	DWORD tmVer = account->m_TagDefs.GetKeyNum("clientversion");
-	DWORD tmVerReported = account->m_TagDefs.GetKeyNum("reportedcliver");
+	DWORD tmVer = static_cast<unsigned long>(account->m_TagDefs.GetKeyNum("clientversion"));
+	DWORD tmVerReported = static_cast<unsigned long>(account->m_TagDefs.GetKeyNum("reportedcliver"));
 	
 	// since 6.0.14.2, feature flags are 4 bytes instead of 2.
 	if (tmVer >= MINCLIVER_EXTRAFEATURES || tmVerReported >= MINCLIVER_EXTRAFEATURES)
