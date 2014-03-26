@@ -80,7 +80,7 @@ bool CGrayMapBlockState::CheckTile( DWORD wItemBlockFlags, signed char zBottom, 
 	//  true = continue processing
 
 	signed char zTop = zBottom;
-	if ( (wItemBlockFlags & CAN_I_CLIMB) && !(wItemBlockFlags & CAN_I_PLATFORM) )
+	if ( (wItemBlockFlags & CAN_I_CLIMB) && (wItemBlockFlags & CAN_I_PLATFORM) )
 		zTop = minimum(zTop + ( zHeight / 2 ), UO_SIZE_Z);	// standing position is half way up climbable items (except platforms).
 	else
 		zTop = minimum(zTop + zHeight, UO_SIZE_Z);
