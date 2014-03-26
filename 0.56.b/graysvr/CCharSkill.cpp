@@ -109,7 +109,7 @@ short CChar::Stat_GetMod( STAT_TYPE i ) const
 void CChar::Stat_SetVal( STAT_TYPE i, int iVal )
 {
 	ADDTOCALLSTACK("CChar::Stat_SetVal");
-	if ( i > STAT_BASE_QTY )
+	if (i > STAT_BASE_QTY || i == STAT_FOOD) // Food must trigger Statchange. Redirect to Base value
 	{
 		Stat_SetBase(i, iVal);
 		return;
@@ -121,7 +121,7 @@ void CChar::Stat_SetVal( STAT_TYPE i, int iVal )
 int CChar::Stat_GetVal( STAT_TYPE i ) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetVal");
-	if ( i > STAT_BASE_QTY )
+	if ( i > STAT_BASE_QTY || i == STAT_FOOD ) // Food must trigger Statchange. Redirect to Base value
 		return Stat_GetBase(i);
 	ASSERT(i >= 0 && i < STAT_QTY); // allow for food
 	return m_Stat[i].m_val;
@@ -235,12 +235,13 @@ short CChar::Stat_GetBase( STAT_TYPE i ) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetBase");
 	ASSERT(i >= 0 && i < STAT_QTY);
-	if ( i == STAT_FOOD )
+	
+	/*if ( i == STAT_FOOD )
 	{
 		CCharBase* pCharDef = Char_GetDef();
 		ASSERT( pCharDef );
 		return pCharDef->m_MaxFood;
-	}
+	}*/
 
 	if ( i == STAT_FAME && m_Stat[i].m_base < 0 )
 		return 0;
