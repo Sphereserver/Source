@@ -1066,12 +1066,12 @@ badcmd:
 			{
 				TCHAR	*buf = Str_GetTemp();
 				REMOVE_QUOTES( pszKey );
-				sVal.FormatHex( *pszKey );
+				sVal.FormatLLHex( *pszKey );
 				strcpy( buf, sVal );
 				while ( *(++pszKey) )
 				{
 					if ( *pszKey == '"' ) break;
-					sVal.FormatHex( *pszKey );
+					sVal.FormatLLHex(*pszKey);
 					strcat( buf, " " );
 					strcat( buf, sVal );
 				}
@@ -1090,7 +1090,7 @@ badcmd:
 					return false;
 				TCHAR	*buf = Str_GetTemp();
 				REMOVE_QUOTES( ppArgs[1] );
-				sVal.FormatHex( *ppArgs[1] );
+				sVal.FormatLLHex(*ppArgs[1]);
 				strcpy( buf, sVal );
 				while ( --iPad )
 				{
@@ -1098,10 +1098,10 @@ badcmd:
 					if ( *(ppArgs[1]) )
 					{
 						++ppArgs[1];
-						sVal.FormatHex( *ppArgs[1] );
+						sVal.FormatLLHex(*ppArgs[1]);
 					}
 					else
-						sVal.FormatHex( '\0' );
+						sVal.FormatLLHex('\0');
 
 					strcat( buf, " " );
 					strcat( buf, sVal );

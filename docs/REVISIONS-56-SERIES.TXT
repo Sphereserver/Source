@@ -732,3 +732,6 @@ Fixed a calculation bug in Linux that e.g. had influence on Skilldelays
 
 26-03-2014, matex
 1. Fixed Cooking
+
+26-03-2014, matex
+1. Fixed a bug in ASC and ASCPAD with negative hex values

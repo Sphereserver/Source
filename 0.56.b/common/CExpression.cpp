@@ -516,7 +516,7 @@ try_dec:
 						if ( pszArgs && *pszArgs )
 						{
 							iCount = 1;
-							iResult = static_cast<int>(exp(static_cast<double>(GetVal(pszArgs))));
+							iResult = static_cast<INT64>(exp(static_cast<double>(GetVal(pszArgs))));
 						}
 						else
 						{
