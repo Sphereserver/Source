@@ -2597,6 +2597,10 @@ int CChar::Skill_Cooking( SKTRIG_TYPE stage )
 	{
 		return Calc_GetRandVal( 50 );
 	}
+	if (stage == SKTRIG_STROKE)
+	{
+		return 0;
+	}
 
 	// Convert uncooked food to cooked food.
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(RES_GET_INDEX( pFoodRaw->m_itFood.m_cook_id ));

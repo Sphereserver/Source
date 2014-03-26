@@ -729,3 +729,6 @@ Fixed a calculation bug in Linux that e.g. had influence on Skilldelays
 1. Fixed INT64 Expression handling.
 2. Fixed a bug that occured when DIALOGCLOSE/DIALOG was sent to older clients
 3. Fixed a minor bug in @StatChange
+
+26-03-2014, matex
+1. Fixed Cooking
