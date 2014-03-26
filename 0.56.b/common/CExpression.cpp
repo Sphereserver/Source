@@ -963,7 +963,7 @@ int CExpression::GetRangeVals(LPCTSTR & pExpr, INT64 * piVals, int iMaxQty)
 		if ( pExpr[0] == ',' )
 			pExpr++;
 
-		piVals[iQty] = static_cast<int>(GetSingle( pExpr ));
+		piVals[iQty] = GetSingle( pExpr );
 		if ( ++iQty >= iMaxQty )
 			break;
 		if ( pExpr[0] == '-' && iQty == 1 )	// range separator. (if directly after, I know this is sort of strange)
@@ -992,7 +992,7 @@ int CExpression::GetRangeVals(LPCTSTR & pExpr, INT64 * piVals, int iMaxQty)
 			case '>':
 			case '|':
 			case '&':
-				piVals[iQty-1] = static_cast<int>(GetValMath( piVals[iQty-1], pExpr ));
+				piVals[iQty-1] = GetValMath( piVals[iQty-1], pExpr );
 				break;
 		}
 	}
@@ -1017,13 +1017,13 @@ INT64 CExpression::GetRange(LPCTSTR & pExpr)
 	}
 	if (iQty == 2) // It's just a simple range....pick one in range at random
 	{
-		return( static_cast<int>(Calc_GetRandVal2( minimum(lVals[0],lVals[1]), maximum(lVals[0],lVals[1]) )) );
+		return( Calc_GetRandLLVal2( minimum(lVals[0],lVals[1]), maximum(lVals[0],lVals[1]) ));
 	}
 
 	// I guess it's weighted values
 	// First get the total of the weights
 
-	int iTotalWeight = 0;
+	INT64 iTotalWeight = 0;
 	int i = 1;
 	for ( ; i < iQty; i+=2 )
 	{
@@ -1035,7 +1035,7 @@ INT64 CExpression::GetRange(LPCTSTR & pExpr)
 	}
 
 	// Now roll the dice to see what value to pick
-	iTotalWeight = Calc_GetRandVal(iTotalWeight) + 1;
+	iTotalWeight = Calc_GetRandLLVal(iTotalWeight) + 1;
 	// Now loop to that value
 	i = 1;
 	for ( ; i<iQty; i+=2 )

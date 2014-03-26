@@ -98,7 +98,7 @@ public:
 
 	inline int GetRange( LPTSTR &pArgs )
 	{
-		return GetRange(const_cast<LPCTSTR &>(pArgs));
+		return static_cast<int>(GetRange(const_cast<LPCTSTR &>(pArgs)));
 	}
 
 	inline int GetRangeVals( LPTSTR &pExpr, INT64 * piVals, int iMaxQty )

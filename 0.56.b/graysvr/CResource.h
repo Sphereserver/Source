@@ -171,16 +171,16 @@ public:
 	}
 	int GetRange() const
 	{
-		return( m_iHi - m_iLo );
+		return( static_cast<int>(m_iHi - m_iLo) );
 	}
 	int GetLinear( int iPercent ) const
 	{	
 		// ARGS: iPercent = 0-1000
-		return( m_iLo + IMULDIV( GetRange(), iPercent, 1000 ));
+		return( static_cast<int>(m_iLo) + IMULDIV( GetRange(), iPercent, 1000 ));
 	}
 	int GetRandom() const
 	{	
-		return( m_iLo + Calc_GetRandVal( GetRange()));
+		return( static_cast<int>(m_iLo) + Calc_GetRandVal( GetRange()));
 	}
 	int GetRandomLinear( int iPercent ) const;
 	bool Load( TCHAR * pszDef );
