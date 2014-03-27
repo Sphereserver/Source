@@ -424,8 +424,9 @@ bool CClient::CanSee( const CObjBaseTemplate * pObj ) const
 {
 	ADDTOCALLSTACK("CClient::CanSee");
 	// Can player see item b
-	if ( m_pChar == NULL )
+	if ( m_pChar == NULL || pObj == NULL )
 		return( false );
+
 	if ( m_pHouseDesign && pObj->IsItem() )
 	{
 		const CItem * pItem = STATIC_CAST<const CItem *>( pObj );
