@@ -1283,6 +1283,7 @@ void CChar::UpdateMove( const CPointMap & pold, CClient * pExcludeClient, bool f
 void CChar::UpdateDir( DIR_TYPE dir )
 {
 	ADDTOCALLSTACK("CChar::UpdateDir");
+
 	if ( dir != m_dirFace && dir > DIR_INVALID && dir < DIR_QTY )
 	{
 		m_dirFace = dir;	// face victim.
@@ -1293,6 +1294,7 @@ void CChar::UpdateDir( DIR_TYPE dir )
 void CChar::UpdateDir( const CPointMap & pt )
 {
 	ADDTOCALLSTACK("CChar::UpdateDir");
+
 	// Change in direction.
 	UpdateDir( GetTopPoint().GetDir( pt ));
 }
@@ -1302,6 +1304,7 @@ void CChar::UpdateDir( const CObjBaseTemplate * pObj )
 	ADDTOCALLSTACK("CChar::UpdateDir");
 	if ( pObj == NULL )
 		return;
+
 	pObj = pObj->GetTopLevelObj();
 	if ( pObj == this )		// In our own pack.
 		return;
@@ -2446,7 +2449,7 @@ void CChar::Wake()
 	ADDTOCALLSTACK("CChar::Wake");
 	if ( ! IsStatFlag( STATF_Sleeping ))
 		return;
-	CItemCorpse * pCorpse = FindMyCorpse();
+	CItemCorpse * pCorpse = FindMyCorpse(true);
 	if ( pCorpse != NULL )
 	{
 		RaiseCorpse(pCorpse);
@@ -2598,9 +2601,6 @@ bool CChar::RaiseCorpse( CItemCorpse * pCorpse )
 	// We are creating a char from the current char and the corpse.
 	// Move the items from the corpse back onto us.
 
-	// If NPC is disconnected then reconnect them.
-	// If the player is off line then don't allow this !!!
-
 	if ( !pCorpse )
 		return false;
 
@@ -2613,8 +2613,7 @@ bool CChar::RaiseCorpse( CItemCorpse * pCorpse )
 		{
 			pItemNext = pItem->GetNext();
 			if ( pItem->IsType( IT_HAIR ) ||
-				pItem->IsType( IT_BEARD ) ||
-				pItem->IsAttr( ATTR_MOVE_NEVER ))
+				pItem->IsType( IT_BEARD ) )
 				continue;	// Hair on corpse was copied!
 			// Redress if equipped.
 			if ( pItem->GetContainedLayer())
@@ -2636,8 +2635,8 @@ bool CChar::RaiseCorpse( CItemCorpse * pCorpse )
 
 	// Corpse is now gone. 	// 0x80 = on face.
 	Update();
-	UpdateDir(static_cast<DIR_TYPE>( pCorpse->m_itCorpse.m_facing_dir &~ 0x80 ));
-	UpdateAnimate( ( pCorpse->m_itCorpse.m_facing_dir & 0x80 ) ? ANIM_DIE_FORWARD : ANIM_DIE_BACK, true, true, 2 );
+	UpdateDir(static_cast<DIR_TYPE>(pCorpse->m_itCorpse.m_facing_dir &~0x80));
+	UpdateAnimate((pCorpse->m_itCorpse.m_facing_dir & 0x80) ? ANIM_DIE_FORWARD : ANIM_DIE_BACK, true, true, 2);
 
 	pCorpse->Delete();
 

@@ -517,7 +517,7 @@ bool CChar::CheckCorpseCrime( const CItemCorpse *pCorpse, bool fLooting, bool fT
 	return true; // got flagged
 }
 
-CItemCorpse *CChar::FindMyCorpse( int iRadius ) const
+CItemCorpse *CChar::FindMyCorpse( bool ignoreLOS, int iRadius ) const
 {
 	ADDTOCALLSTACK("CChar::FindMyCorpse");
 	// If they are standing on their own corpse then res the corpse !
@@ -536,7 +536,7 @@ CItemCorpse *CChar::FindMyCorpse( int iRadius ) const
 		if ( pCorpse->m_itCorpse.m_BaseID != m_prev_id )
 			continue;
 		// not on the other side of a wall, through the floor, etc
-		if ( CanSeeLOS(pCorpse) == false )
+		if ( !ignoreLOS && CanSeeLOS(pCorpse) == false )
 			continue;
 		return pCorpse;
 	}

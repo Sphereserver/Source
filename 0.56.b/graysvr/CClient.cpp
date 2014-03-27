@@ -432,6 +432,12 @@ bool CClient::CanSee( const CObjBaseTemplate * pObj ) const
 		if (pItem != NULL && ((DWORD)pItem->GetKeyNum("FIXTURE") == (DWORD)m_pHouseDesign->GetUID()))
 			return( false );
 	}
+	else if (!IsPriv(PRIV_ALLSHOW) && pObj->IsChar())
+	{
+		const CChar *pChar = static_cast<const CChar*>(pObj);
+		if (pChar->IsDisconnected())
+			return false;
+	}
 	return( m_pChar->CanSee( pObj ));
 }
 

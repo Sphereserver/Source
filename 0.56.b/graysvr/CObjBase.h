@@ -3483,7 +3483,7 @@ public:
 	bool SetPoison( int iLevel, int iTicks, CChar * pCharSrc );
 	bool SetPoisonCure( int iLevel, bool fExtra );
 	bool CheckCorpseCrime( const CItemCorpse *pCorpse, bool fLooting, bool fTest );
-	CItemCorpse * FindMyCorpse( int iRadius = 2 ) const;
+	CItemCorpse * FindMyCorpse( bool ignoreLOS = false, int iRadius = 2) const;
 	bool MakeCorpse_Fail();
 	CItemCorpse * MakeCorpse( bool fFrontFall );
 	bool RaiseCorpse( CItemCorpse * pCorpse );
