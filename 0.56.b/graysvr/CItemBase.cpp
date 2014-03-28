@@ -923,7 +923,7 @@ int CItemBase::GetMakeValue( int iQualityLevel )
 
 	CValueRangeDef values = m_values;
 
-	if ( m_values.m_iLo == INT_MIN || m_values.m_iHi == INT_MIN )
+	if ( m_values.m_iLo == LLONG_MIN || m_values.m_iHi == LLONG_MIN )
 	{
 		values.m_iLo = CalculateMakeValue(0);		// low quality specimen
 		m_values.m_iLo = -values.m_iLo;			// negative means they will float.
@@ -932,8 +932,8 @@ int CItemBase::GetMakeValue( int iQualityLevel )
 	}
 	else
 	{
-		values.m_iLo = abs(values.m_iLo);
-		values.m_iHi = abs(values.m_iHi);
+		values.m_iLo = llabs(values.m_iLo);
+		values.m_iHi = llabs(values.m_iHi);
 	}
 
 	return values.GetLinear(iQualityLevel*10);
