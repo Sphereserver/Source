@@ -738,7 +738,14 @@ Fixed a calculation bug in Linux that e.g. had influence on Skilldelays
 2. Fixed StatChange triggering for Food
 3. Fixed a bug in the movement code, when climbing stairs with (BRIDGE|PLATFORM flags)
 4. Updating logged out characters does'nt send a packet unless ALLSHOW is on
-5. Sleeping people can be woken when logged out now
 
 28-03-2014, Ben
 Fixed #2296: Quality property not working.
+
+28-03-2014, matex
+1. Some internal values are still stored as 32bit (e.g. MORE1, ...). If they are negative their value
+is now given as 64bit hex number so calculations,comparisions etc.. work on these values now.
+2. Fixed an issue with MaxFood/Food. If MaxFood is set to 0, when read it will return the MaxFood level
+of the chardefinition
+3. Fixed: The server now only loads 1 Map, if you only use 1 Map.
+4. Fixed: NPCs moving over obstacles when EF_WALKCHECK is disabled

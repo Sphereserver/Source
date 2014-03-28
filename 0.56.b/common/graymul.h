@@ -2255,6 +2255,11 @@ public:
 	{
 		return ( GetSectorCols(map) * GetSectorRows(map) );
 	}
+
+	bool IsInitialized(int map)
+	{
+		return (m_mapsinitalized[map]);
+	}
 } g_MapList;
 
 #define UO_SIZE_X_REAL		0x1400	// 640*UO_BLOCK_SIZE = 5120 = The actual world is only this big

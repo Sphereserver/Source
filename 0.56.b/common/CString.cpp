@@ -251,6 +251,14 @@ void CGString::FormatUVal( unsigned long iVal )
 
 void CGString::FormatHex( DWORD dwVal )
 {
+	// In principle, all values in sphere logic are
+	// signed.. 
+	// If iVal is negative we MUST hexformat it as
+	// 64 bit int or reinterpreting it in a 
+	// script might completely mess up
+	long long dwVal64 = ((int)dwVal);
+	if (dwVal64 < 0)
+		return FormatLLHex(dwVal64);
 	Format("0%lx", dwVal);
 }
 

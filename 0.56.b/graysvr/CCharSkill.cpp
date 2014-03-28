@@ -184,7 +184,14 @@ int CChar::Stat_GetMax( STAT_TYPE i ) const
 	ASSERT(i >= 0 && i < STAT_QTY); // allow for food
 	if ( m_Stat[i].m_max < 1 )
 	{
-		val	= Stat_GetAdjusted(i);
+		if (i == STAT_FOOD)
+		{
+			CCharBase* pCharDef = Char_GetDef();
+			ASSERT(pCharDef);
+			val=pCharDef->m_MaxFood;
+		}
+		else
+			val	= Stat_GetAdjusted(i);
 		return (val < 0 ? (m_pPlayer ? 1 : 0) : val);
 	}
 	val	=  m_Stat[i].m_max;
@@ -235,13 +242,6 @@ short CChar::Stat_GetBase( STAT_TYPE i ) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetBase");
 	ASSERT(i >= 0 && i < STAT_QTY);
-	
-	/*if ( i == STAT_FOOD )
-	{
-		CCharBase* pCharDef = Char_GetDef();
-		ASSERT( pCharDef );
-		return pCharDef->m_MaxFood;
-	}*/
 
 	if ( i == STAT_FAME && m_Stat[i].m_base < 0 )
 		return 0;

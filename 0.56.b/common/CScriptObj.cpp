@@ -811,13 +811,13 @@ badcmd:
 		case SSC_BETWEEN:
 		case SSC_BETWEEN2:
 			{
-				INT64	iMin = Exp_GetVal(pszKey);
+				INT64	iMin = Exp_GetLLVal(pszKey);
 				SKIP_ARGSEP(pszKey);
-				INT64	iMax = Exp_GetVal(pszKey);
+				INT64	iMax = Exp_GetLLVal(pszKey);
 				SKIP_ARGSEP(pszKey);
-				INT64 iCurrent = Exp_GetVal(pszKey);
+				INT64 iCurrent = Exp_GetLLVal(pszKey);
 				SKIP_ARGSEP(pszKey);
-				INT64 iAbsMax = Exp_GetVal(pszKey);
+				INT64 iAbsMax = Exp_GetLLVal(pszKey);
 				SKIP_ARGSEP(pszKey);
 				if ( index == SSC_BETWEEN2 )
 				{
@@ -902,19 +902,19 @@ badcmd:
 			sVal = g_Cfg.GetDefaultMsg(pszKey);
 			return(true);
 		case SSC_EVAL:
-			sVal.FormatLLVal( Exp_GetVal( pszKey ));
+			sVal.FormatLLVal( Exp_GetLLVal( pszKey ));
 			return( true );
 		case SSC_UVAL:
-			sVal.FormatUVal( static_cast<unsigned long>(Exp_GetVal( pszKey )));
+			sVal.FormatUVal(static_cast<unsigned long>(Exp_GetLLVal(pszKey)));
 			return( true );
 		case SSC_FVAL:
 			{
-				INT64 iVal = Exp_GetVal( pszKey );
+				INT64 iVal = Exp_GetLLVal(pszKey);
 				sVal.Format( "%s%lld.%lld", (iVal >= 0) ? "" : "-", llabs(iVal/10), llabs(iVal%10) );
 				return true;
 			}
 		case SSC_HVAL:
-			sVal.FormatLLHex( Exp_GetVal( pszKey ));
+			sVal.FormatLLHex(Exp_GetLLVal(pszKey));
 			return( true );
 //FLOAT STUFF BEGINS HERE
 		case SSC_FEVAL: //Float EVAL
@@ -947,7 +947,7 @@ badcmd:
 		case SSC_SETBIT:
 		case SSC_CLRBIT:
 			{
-				INT64 val = Exp_GetVal(pszKey);
+				INT64 val = Exp_GetLLVal(pszKey);
 				SKIP_ARGSEP(pszKey);
 				INT64 bit = Exp_GetVal(pszKey);
 
@@ -1213,11 +1213,11 @@ badcmd:
 			} return true;
 		case SSC_MULDIV:
 			{
-				INT64	iNum	= Exp_GetVal( pszKey );
+				INT64	iNum	= Exp_GetLLVal( pszKey );
 				SKIP_ARGSEP(pszKey);
-				INT64	iMul	= Exp_GetVal( pszKey );
+				INT64	iMul	= Exp_GetLLVal( pszKey );
 				SKIP_ARGSEP(pszKey);
-				INT64	iDiv	= Exp_GetVal( pszKey );
+				INT64	iDiv	= Exp_GetLLVal( pszKey );
 
 				INT64 iRes	= IMULDIV(iNum,iMul,iDiv);
 
