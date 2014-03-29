@@ -386,7 +386,7 @@ RECT=744,1152,792,1176,2
 GROUP=Mistas
 TAG.TITLE=the city of
 TAG.GUARDOWNER=the city
-FLAGS=region_flag_guarded
+FLAGS=region_flag_guarded|region_flag_nobuilding
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_enter_serpentine_passage]

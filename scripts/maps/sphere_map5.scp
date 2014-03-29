@@ -20,7 +20,7 @@ MAP5=1280,4096,-1,5,5 //  1280 sectors of size 64x64
 
 
 [AREADEF a_sa]
-NAME=Tel Mur
+NAME=Ter Mur
 GROUP=ALLMAP
 P=751,3402,-65,5
 RECT=0,0,1280,4096,5
@@ -28,35 +28,35 @@ EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_tomb_of_kings]
 NAME=Tomb of Kings
-GROUP=Tel Mur
+GROUP=Ter Mur
 P=35,100,0,5
 RECT=3,18,181,242,5
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_underworld]
 NAME=Underworld
-GROUP=Tel Mur
+GROUP=Ter Mur
 P=1147,1090,-42,5
 RECT=1002,940,1250,1218,5
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_medusa_lair]
 NAME=Medusa's Lair
-GROUP=Tel Mur
+GROUP=Ter Mur
 P=818,924,-14,5
 RECT=766,896,850,960,5
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_medusa_lair_2]
 NAME=Medusa's Lair
-GROUP=Tel Mur
+GROUP=Ter Mur
 P=818,1093,-14,5
 RECT=766,1060,850,1126,5
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_medusa_lair_3]
 NAME=Medusa's Lair
-GROUP=Tel Mur
+GROUP=Ter Mur
 P=818,1262,-14,5
 RECT=766,1230,850,1296,5
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass

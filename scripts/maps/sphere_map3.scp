@@ -30,7 +30,7 @@ EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Luna
 P=989,520,-50,3
 RECT=945,490,1036,551,3
-FLAGS=region_flag_nobuilding|region_flag_safe|region_antimagic_all
+FLAGS=region_flag_nobuilding|region_flag_guarded
 GROUP=Malas
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
@@ -40,7 +40,7 @@ P=2049,1344,-85,3
 RECT=2042,1265,2090,1278,3
 RECT=1960,1278,2106,1413,3
 RECT=2004,1413,2040,1419,3
-FLAGS=region_flag_nobuilding|region_flag_safe|region_antimagic_all
+FLAGS=region_flag_nobuilding
 GROUP=Malas
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
@@ -72,7 +72,7 @@ EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Orc Fortress
 P=1340,1226,-90,3
 RECT=1295,1189,1395,1294,3
-FLAGS=region_flag_underground|region_flag_nobuilding
+FLAGS=region_flag_nobuilding
 GROUP=Malas
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 

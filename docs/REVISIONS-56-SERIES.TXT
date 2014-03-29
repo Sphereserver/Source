@@ -754,4 +754,6 @@ of the chardefinition
 1. Uptaded Sphere.ini description for MAPx settings (These are now mandatory as of revision 1834)
 2. Created an exception for MAP0 to load automatically even if not specified in sphere.ini (need at least 1 map to load)
 3. Fixed another instance of 64 bit handling.
-4. (Script pack) Fixed #2292: small change in teleport points for sphere_map_points0.scp and sphere_map_points1.scp
+   (Script pack)
+4. Fixed #2292: small change in teleport points for sphere_map_points0.scp and sphere_map_points1.scp
+5. #2301 Few flag and typo changes done to sphere_map(2,3,5).scp
