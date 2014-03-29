@@ -949,7 +949,7 @@ badcmd:
 			{
 				INT64 val = Exp_GetLLVal(pszKey);
 				SKIP_ARGSEP(pszKey);
-				INT64 bit = Exp_GetVal(pszKey);
+				INT64 bit = Exp_GetLLVal(pszKey);
 
 				if ( index == SSC_ISBIT )
 					sVal.FormatLLVal(val & ( INT64(1) << bit ));

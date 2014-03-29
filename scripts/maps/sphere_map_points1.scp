@@ -316,9 +316,9 @@ VERSION=0.56b
 6086,3676,15,1=5731,446,-20,1=tp_Swamp_SwampPassage_map1
 1409,3824,5,1=1124,3623,5,1=tp_jhelom_m_n_x_map1
 1419,3832,5,1=1466,4015,5,1=tp_jhelom_m_s_x_map1
-4721,3813,0,1=5904,16,61,1=tp_hythloth_out_x_ent_map1
-4722,3813,0,1=5905,16,61,1=tp_hythloth_out_x_ent_map1
-4723,3813,0,1=5906,16,61,1=tp_hythloth_out_x_ent_map1
+4721,3814,0,1=5904,16,61,1=tp_hythloth_out_x_ent_map1
+4722,3814,0,1=5905,16,61,1=tp_hythloth_out_x_ent_map1
+4723,3814,0,1=5906,16,61,1=tp_hythloth_out_x_ent_map1
 1406,3996,5,1=1414,3828,5,1=tp_jhelom_ns_m_x_map1
 5150,4062,40,1=1629,3321,0,1=tp_delucia_trinsicsw_1_map1
 5150,4063,40,1=1629,3321,0,1=tp_delucia_trinsicsw_map1

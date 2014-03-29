@@ -215,7 +215,7 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 				//	check for map files of custom maps
 				for ( int m = 0; m < 256; m++ )
 				{
-					if (g_MapList.IsInitialized(m))
+					if (g_MapList.IsInitialized(m) || (m == 0)) //Need at least a minimum of map0... (Ben)
 					{
 						int	index = g_MapList.m_mapnum[m];
 						if ( index == -1 )

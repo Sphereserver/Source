@@ -749,3 +749,9 @@ is now given as 64bit hex number so calculations,comparisions etc.. work on thes
 of the chardefinition
 3. Fixed: The server now only loads 1 Map, if you only use 1 Map.
 4. Fixed: NPCs moving over obstacles when EF_WALKCHECK is disabled
+
+29-03-2014, Ben
+1. Uptaded Sphere.ini description for MAPx settings (These are now mandatory as of revision 1834)
+2. Created an exception for MAP0 to load automatically even if not specified in sphere.ini (need at least 1 map to load)
+3. Fixed another instance of 64 bit handling.
+4. (Script pack) Fixed #2292: small change in teleport points for sphere_map_points0.scp and sphere_map_points1.scp

@@ -354,9 +354,9 @@ The Ironwood Inn
 6086,3676,15,0=5731,446,-20,0=tp_Swamp_SwampPassage
 1409,3824,5,0=1124,3623,5,0=tp_jhelom_m_n_x
 1419,3832,5,0=1466,4015,5,0=tp_jhelom_m_s_x
-4721,3813,0,0=5904,16,61,0=tp_hythloth_out_x_ent
-4722,3813,0,0=5905,16,61,0=tp_hythloth_out_x_ent
-4723,3813,0,0=5906,16,61,0=tp_hythloth_out_x_ent
+4721,3814,0,0=5904,16,61,0=tp_hythloth_out_x_ent
+4722,3814,0,0=5905,16,61,0=tp_hythloth_out_x_ent
+4723,3814,0,0=5906,16,61,0=tp_hythloth_out_x_ent
 1406,3996,5,0=1414,3828,5,0=tp_jhelom_ns_m_x
 5150,4062,40,0=1629,3321,0,0=tp_delucia_trinsicsw_1
 5150,4063,40,0=1629,3321,0,0=tp_delucia_trinsicsw
