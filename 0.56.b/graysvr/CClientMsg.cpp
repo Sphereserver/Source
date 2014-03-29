@@ -1507,12 +1507,15 @@ void CClient::SetTargMode( CLIMODE_TYPE targmode, LPCTSTR pPrompt, int iTimeout 
 	{
 		//If there's any item in LAYER_DRAGGING we remove it from view and then bounce it
 		CItem * pItem = m_pChar->LayerFind( LAYER_DRAGGING );
-		pItem->RemoveFromView();		//Removing from view to avoid seeing it in the cursor
-		m_pChar->ItemBounce(pItem);
-		// Just clear the old target mode
-		if (bSuppressCancelMessage == false)
+		if (pItem != NULL)
 		{
-			addSysMessage( g_Cfg.GetDefaultMsg(DEFMSG_TARGET_CANCEL_2) );
+			pItem->RemoveFromView();		//Removing from view to avoid seeing it in the cursor
+			m_pChar->ItemBounce(pItem);
+			// Just clear the old target mode
+			if (bSuppressCancelMessage == false)
+			{
+				addSysMessage(g_Cfg.GetDefaultMsg(DEFMSG_TARGET_CANCEL_2));
+			}
 		}
 	}
 
