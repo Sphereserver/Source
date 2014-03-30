@@ -1010,15 +1010,19 @@ size_t CRandGroupDef::GetRandMemberIndex( CChar * pCharSrc, bool bTrigger ) cons
 	for ( i = 0; i < iCount; i++ )
 	{
 		CRegionResourceDef * pOreDef = dynamic_cast <CRegionResourceDef *>( g_Cfg.ResourceGetDef( m_Members[i].GetResourceID() ) );
-		rid = pOreDef->m_ReapItem;
-		if ( rid != 0 )
+		// If no regionresource, return just some random entry!
+		if (pOreDef != NULL)
 		{
-			if ( !pCharSrc->Skill_MakeItem(static_cast<ITEMID_TYPE>(rid), UID_CLEAR, SKTRIG_SELECT ) )
-				continue;
-			if ( IsTrigUsed(TRIGGER_RESOURCETEST) )
+			rid = pOreDef->m_ReapItem;
+			if (rid != 0)
 			{
-				if ( bTrigger && pOreDef->OnTrigger( "@ResourceTest", pCharSrc, NULL ) == TRIGRET_RET_TRUE )
+				if (!pCharSrc->Skill_MakeItem(static_cast<ITEMID_TYPE>(rid), UID_CLEAR, SKTRIG_SELECT))
 					continue;
+				if (IsTrigUsed(TRIGGER_RESOURCETEST))
+				{
+					if (bTrigger && pOreDef->OnTrigger("@ResourceTest", pCharSrc, NULL) == TRIGRET_RET_TRUE)
+						continue;
+				}
 			}
 		}
 		members.Add(i);

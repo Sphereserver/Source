@@ -223,16 +223,13 @@ void CItem::Spawn_GenerateChar( CResourceDef * pDef )
 	}
 	else
 	{
+		// Try placing this char near the spawn
 		if ( !pChar->MoveNearObj(this, iDistMax ? (Calc_GetRandVal(iDistMax) + 1) : iDistMax) )
 		{
-			CCharBase *pCharBase = pChar->Char_GetDef();
-
-			if ( !pCharBase->Can(CAN_C_SWIM|CAN_C_WALK|CAN_C_FLY) )
+			// If this fails, try placing the char ON the spawn
+			if (!pChar->MoveTo(GetTopPoint()))
 			{
-				pChar->MoveTo(GetTopPoint());
-			}
-			else
-			{
+				DEBUG_ERR(("Spawner UID:0%lx is unable to place a character inside the world, deleted the character", (DWORD)(this->GetUID())));
 				isBadPlaceToSpawn = true;
 			}
 		}
