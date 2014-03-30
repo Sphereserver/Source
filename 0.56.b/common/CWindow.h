@@ -16,6 +16,7 @@ class CWindow    // similar to Std MFC class CWnd
 public:
 	static const char *m_sClassName;
 	HWND m_hWnd;
+	NOTIFYICONDATA pnid;
 
 public:
 	operator HWND () const       // cast as a HWND

@@ -1148,6 +1148,7 @@ int _cdecl main( int argc, char * argv[] )
 			}
 		}
 	}
+	NTWindow_DeleteIcon();
 
 	Sphere_ExitServer();
 	WritePidFile(true);

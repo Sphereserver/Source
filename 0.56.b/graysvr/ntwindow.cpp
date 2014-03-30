@@ -446,7 +446,6 @@ int CNTWindow::OnCreate( HWND hWnd, LPCREATESTRUCT lParam )
 
 	if ( GRAY_GetOSInfo()->dwPlatformId > VER_PLATFORM_WIN32s )
 	{
-		NOTIFYICONDATA pnid;
 		memset(&pnid,0,sizeof(pnid));
 		pnid.cbSize = sizeof(NOTIFYICONDATA);
 		pnid.hWnd   = m_hWnd;
@@ -464,15 +463,6 @@ int CNTWindow::OnCreate( HWND hWnd, LPCREATESTRUCT lParam )
 
 void CNTWindow::OnDestroy()
 {
-	if ( GRAY_GetOSInfo()->dwPlatformId > VER_PLATFORM_WIN32s )
-	{
-	    NOTIFYICONDATA pnid;
-		memset(&pnid,0,sizeof(pnid));
-		pnid.cbSize = sizeof(NOTIFYICONDATA);
-		pnid.hWnd   = m_hWnd;
-		Shell_NotifyIcon(NIM_DELETE, &pnid);
-	}
-
 	m_wndLog.OnDestroy();	// these are automatic.
 	m_wndInput.OnDestroy();
 	CWindow::OnDestroy();
@@ -945,6 +935,15 @@ bool NTWindow_Init(HINSTANCE hInstance, LPTSTR lpCmdLine, int nCmdShow)
 	return true;
 }
 
+void NTWindow_DeleteIcon()
+{
+	if ( GRAY_GetOSInfo()->dwPlatformId > VER_PLATFORM_WIN32s )
+	{
+		theApp.m_wndMain.pnid.uFlags = 0;
+		Shell_NotifyIcon(NIM_DELETE, &theApp.m_wndMain.pnid);
+	}
+}
+
 void NTWindow_Exit()
 {
 	// Unattach the window.
@@ -1003,13 +1002,9 @@ void NTWindow_SetWindowTitle( LPCTSTR pszText )
 
 	if ( GRAY_GetOSInfo()->dwPlatformId > VER_PLATFORM_WIN32s )
 	{
-		NOTIFYICONDATA pnid;
-		memset(&pnid,0,sizeof(pnid));
-		pnid.cbSize = sizeof(NOTIFYICONDATA);
-		pnid.hWnd   = theApp.m_wndMain.m_hWnd;
-		pnid.uFlags = NIF_TIP;
-		strcpylen(pnid.szTip, psTitle, COUNTOF(pnid.szTip)-1);
-		Shell_NotifyIcon(NIM_MODIFY, &pnid);
+		theApp.m_wndMain.pnid.uFlags = NIF_TIP;
+		strcpylen(theApp.m_wndMain.pnid.szTip, psTitle, COUNTOF(theApp.m_wndMain.pnid.szTip)-1);
+		Shell_NotifyIcon(NIM_MODIFY, &theApp.m_wndMain.pnid);
 	}
 }
 

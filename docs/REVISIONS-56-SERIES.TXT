@@ -757,3 +757,6 @@ of the chardefinition
    (Script pack)
 4. Fixed #2292: small change in teleport points for sphere_map_points0.scp and sphere_map_points1.scp
 5. #2301 Few flag and typo changes done to sphere_map(2,3,5).scp
+
+30-03-2014, Ben
+Fixed system tray icon not removing on exit.
