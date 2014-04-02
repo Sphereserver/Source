@@ -865,7 +865,7 @@ signed char CWorld::GetHeightPoint( const CPointBase & pt, DWORD & wBlockFlags, 
 		wBlockFlags |= CAN_I_ROOF;	// we are covered by something.
 		if (block.m_Top.m_dwTile > TERRAIN_QTY && block.m_Top.m_z != block.m_Bottom.m_z)
 		{
-			if (block.m_Top.m_z < pt.m_z + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2))
+			if (block.m_Top.m_z < block.m_Bottom.m_z + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2))
 				wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
 		}
 	}
