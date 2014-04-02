@@ -854,7 +854,7 @@ signed char CWorld::GetHeightPoint( const CPointBase & pt, DWORD & wBlockFlags, 
 	// ??? NOTE: some creatures should be taller than others !!!
 
 	DWORD dwCan = wBlockFlags;
-	CGrayMapBlockState block( wBlockFlags, pt.m_z, PLAYER_HEIGHT );
+	CGrayMapBlockState block(wBlockFlags, pt.m_z, PLAYER_HEIGHT);
 
 	GetHeightPoint( pt, block, fHouseCheck );
 
@@ -863,8 +863,11 @@ signed char CWorld::GetHeightPoint( const CPointBase & pt, DWORD & wBlockFlags, 
 	if (block.m_Top.m_dwBlockFlags)
 	{
 		wBlockFlags |= CAN_I_ROOF;	// we are covered by something.
-		if (block.m_Top.m_z < pt.m_z + PLAYER_HEIGHT )
-			wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
+		if (block.m_Top.m_dwTile > TERRAIN_QTY && block.m_Top.m_z != block.m_Bottom.m_z)
+		{
+			if (block.m_Top.m_z < pt.m_z + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2))
+				wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
+		}
 	}
 
 	if (( block.m_Lowest.m_dwBlockFlags & CAN_I_HOVER ) || ( block.m_Bottom.m_dwBlockFlags & CAN_I_HOVER ) || ( block.m_Top.m_dwBlockFlags & CAN_I_HOVER ))

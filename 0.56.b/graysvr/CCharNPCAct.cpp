@@ -1049,40 +1049,41 @@ int CChar::NPC_WalkToPoint( bool fRun )
 	EXC_SET("Speed counting");
 	// How fast can they move.
 	INT64 iTickNext;
-	if ( fRun )
-	{
-		if ( IsStatFlag( STATF_Pet ))	// pets run a little faster.
-		{
-			if ( iDex < 75 )
-				iDex = 75;
-		}
-		iTickNext = TICK_PER_SEC/4 + Calc_GetRandVal( (100-iDex)/5 ) * TICK_PER_SEC / 10;
-	}
-	else
-		iTickNext = TICK_PER_SEC + Calc_GetRandVal( (100-iDex)/3 ) * TICK_PER_SEC / 10;
 
-// TAG.OVERRIDE.MOVERATE
-	CVarDefCont * pValue = GetKey("OVERRIDE.MOVERATE",true);
-	if ( pValue ) 
+	// TAG.OVERRIDE.MOVERATE
+	INT64 tTick;
+	CVarDefCont * pValue = GetKey("OVERRIDE.MOVERATE", true);
+	if (pValue)
 	{
-		INT64 tTick = pValue->GetValNum();
-		if ( tTick < 1 ) tTick=1;
-		//g_Log.EventDebug("tag found: %d\n",tTick);
-		iTickNext = ( iTickNext * tTick ) / 100;
+		tTick = pValue->GetValNum();
 	}
 	else
 	{
-// END TAG.OVERRIDE.MOVERATE
+		// END TAG.OVERRIDE.MOVERATE
 
 		//g_Log.EventDebug("prop found: %d\n",pCharDef->m_iMoveRate);
-		iTickNext = (iTickNext * pCharDef->m_iMoveRate)/100;
+		tTick = pCharDef->m_iMoveRate;
 
-// TAG.OVERRIDE.MOVERATE
+		// TAG.OVERRIDE.MOVERATE
 	}
-// END TAG.OVERRIDE.MOVERATE
+	// END TAG.OVERRIDE.MOVERATE
 
-	if ( iTickNext < 1 )
+	if (fRun)
+	{
+		if (IsStatFlag(STATF_Pet))	// pets run a little faster.
+		{
+			if (iDex < 75)
+				iDex = 75;
+		}
+		iTickNext = TICK_PER_SEC / 4 + Calc_GetRandVal((100 - (iDex*tTick) / 100) / 5) * TICK_PER_SEC / 10;
+	}
+	else
+		iTickNext = TICK_PER_SEC + Calc_GetRandVal((100 - (iDex*tTick) / 100) / 3) * TICK_PER_SEC / 10;
+
+	if (iTickNext < 1)
 		iTickNext = 1;
+	else if (iTickNext > 50)
+		iTickNext = 50;
 
 	SetTimeout(iTickNext);
 	EXC_CATCH;

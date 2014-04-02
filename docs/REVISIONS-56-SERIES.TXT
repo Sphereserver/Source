@@ -760,3 +760,15 @@ of the chardefinition
 
 30-03-2014, Ben
 Fixed system tray icon not removing on exit.
+
+02-04-2014, matex
+1. Introduced EF_NoContextMenuLOS => Will disable LOS checks for ContextMenu Use of npcs
+2. Improved the standard Walkcheck stuff a bit (especially when dealing with landtiles)
+3. Improved the placement code when items are dropped to ground
+4. Increased standard LOS Zcheck treshold to 20
+5. Changed the meaning of MOVERATE and TAG.OVERRIDE.MOVERATE. It is now a factor that scales the amount of DEX value 
+   that should be taken into consideration for walking speed. E.g. if you only want 75% of the characters DEX value
+   to be used in walkspeed calculations, you specify MOVERATE=75. Setting this to 100 has no effect.
+6. Fixed: Backpack closing when items are dropped to corpse. (You can softscript this if you need it!)
+7. Fixed: Use 1-Unit comparisons in Distance Checking. We can't use the axiom of pythagoras here because one tile has
+   the same diagonal width as vertical and horizontal width. Doing real-world distance checkings messes up everything here!

@@ -52,10 +52,8 @@ DWORD CScriptKey::GetArgFlag( DWORD dwStart, DWORD dwMask )
 
 	if ( ! HasArgs())
 		return( dwStart ^ dwMask );
-
 	else if ( GetArgVal())
 		return( dwStart | dwMask );
-
 	else
 		return( dwStart &~ dwMask );
 }

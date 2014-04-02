@@ -1364,11 +1364,6 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 			if ( pItem->GetTopZ() >= iMyZ )
 				iMyZ = pItem->GetTopZ() + tempheight;
 		}
-		else
-		{
-			if ( pItem->GetTopPoint().m_z > iMyZ )
-				iMyZ = pItem->GetTopPoint().m_z + 1;
-		}
 	}
 
 
@@ -1408,11 +1403,17 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 			return false;
 		}
 	}
-	else
+	else if (pCharMover)
 	{
-		// one floor. needs some configuration on that
-		if ( (iMyZ - ptNewPlace.m_z) <= 16 )
-			ptNewPlace.m_z = static_cast<signed char>(iMyZ);
+		// max one floor. 
+		if (iMyZ - pCharMover->GetTopZ() >= 20)
+		{
+			// else
+			// Determine map point at that position
+			unsigned long wBlockFlags = CAN_C_WALK;
+			char pointZ = g_World.GetHeightPoint(ptNewPlace, wBlockFlags, false);
+			ptNewPlace.m_z = pointZ + 1;
+		}
 	}
 
 	// Set the decay timer for this if not in a house or such.

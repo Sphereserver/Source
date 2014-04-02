@@ -2338,8 +2338,11 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 	if ( !CanSee( uObj.ObjFind() ) )
 		return;
 
-	if ( m_pChar && !(m_pChar->CanSeeLOS( uObj.ObjFind(), 0x0 )) )
-		return;
+	if (!IsSetOF(OF_NoContextMenuLOS))
+	{
+		if (m_pChar && !(m_pChar->CanSeeLOS(uObj.ObjFind(), 0x0)))
+			return;
+	}
 
 	if (m_pPopupPacket != NULL)
 	{
@@ -2464,8 +2467,11 @@ void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do somethin
 	if ( !CanSee( uObj.ObjFind() ) )
 		return;
 
-	if ( m_pChar->CanSeeLOS( uObj.ObjFind(), 0x0 ) == false )
-		return;
+	if (!IsSetOF(OF_NoContextMenuLOS))
+	{
+		if (m_pChar->CanSeeLOS(uObj.ObjFind(), 0x0) == false)
+			return;
+	}
 
 	if ( uObj.IsItem() )
 	{

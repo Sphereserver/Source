@@ -458,10 +458,6 @@ void CChar::DropAll( CItemContainer * pCorpse, DWORD dwAttr )
 		{
 			pPack->ContentsTransfer( pCorpse, true );
 		}
-
-		//	close inventory gump of course
-		pPack->RemoveFromView();
-		pPack->Update();
 	}
 
 	// transfer equipped items to corpse or your pack (if newbie).

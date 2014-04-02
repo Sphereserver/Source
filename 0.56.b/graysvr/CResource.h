@@ -37,7 +37,7 @@ enum OF_TYPE
 	OF_FileCommands			= 0x0000080,
 	OF_NoItemNaming			= 0x0000100,
 	OF_NoHouseMuteSpeech	= 0x0000200,
-	OF_Unused0400			= 0x0000400,
+	OF_NoContextMenuLOS		= 0x0000400,
 	OF_Flood_Protection		= 0x0001000,
 	OF_Buffs				= 0x0002000,
 	OF_NoPrefix				= 0x0004000,

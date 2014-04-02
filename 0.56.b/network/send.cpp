@@ -2247,7 +2247,7 @@ PacketPaperdoll::PacketPaperdoll(const CClient* target, const CChar* character) 
 
 	unsigned int mode = 0;
 	if (character->IsStatFlag(STATF_War))
-		mode |= 0x1;
+		mode |= 0x40;
 	if (character == target->GetChar() ||
 		(g_Cfg.m_fCanUndressPets? (character->NPC_IsOwnedBy(target->GetChar())) : (target->IsPriv(PRIV_GM) && target->GetPrivLevel() > character->GetPrivLevel())) )
 		mode |= 0x2;
