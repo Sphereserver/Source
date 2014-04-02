@@ -98,7 +98,7 @@ int CPointBase::GetDistBase( const CPointBase & pt ) const // Distance between p
 	int dx = abs(m_x - pt.m_x);
 	int dy = abs(m_y - pt.m_y);
 
-	return max(dx, dy);
+	return maximum(dx, dy);
 
 	// What the heck?
 	/*double dist = sqrt(static_cast<double>((dx * dx) + (dy * dy)));
@@ -152,7 +152,7 @@ int CPointBase::GetDist3D( const CPointBase & pt ) const // Distance between poi
 	// Get the deltas and correct the Z for height first
 	int dz = GetDistZAdj(pt); // Take player height into consideration
 			
-	return max(dz, dist);
+	return maximum(dz, dist);
 	// What the heck?
 	/*double realdist = sqrt(static_cast<double>((dist * dist) + (dz * dz)));
 	
