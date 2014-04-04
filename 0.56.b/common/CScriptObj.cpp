@@ -1122,7 +1122,7 @@ badcmd:
 				size_t iQty = Str_ParseCmds(buf, Arg_ppCmd, COUNTOF(Arg_ppCmd));
 				if ( iQty < 1 )
 					return false;
-
+				
 				bool bWait = (index == SSC_SYSCMD);
 
 #ifdef _WIN32
@@ -1132,40 +1132,34 @@ badcmd:
 					Arg_ppCmd[5], Arg_ppCmd[6], Arg_ppCmd[7],
 					Arg_ppCmd[8], Arg_ppCmd[9], NULL );
 #else
-				if ( bWait )
+				// I think fork will cause problems.. we'll see.. if yes new thread + execlp is required.
+				int child_pid = fork();
+				if ( child_pid < 0 )
+				{
+					g_Log.EventError("SYSSPAWN failed when executing %s.\n", pszKey);
+					return( false );
+				}
+				else if ( child_pid == 0 )
 				{
 					int iResult = execlp( Arg_ppCmd[0], Arg_ppCmd[0], Arg_ppCmd[1], Arg_ppCmd[2],
-								Arg_ppCmd[3], Arg_ppCmd[4], Arg_ppCmd[5], Arg_ppCmd[6],
-								Arg_ppCmd[7], Arg_ppCmd[8], Arg_ppCmd[9], NULL );
-
-					if ( iResult == -1 )
-					{
-						g_Log.EventError("SYSCMD failed with error %d (\"%s\") when executing %s.\n", errno, strerror(errno), pszKey);
-						return( false );
-					}
-				}
-				else
-				{
-					// I think fork will cause problems.. we'll see.. if yes new thread + execlp is required.
-					int child_pid = fork();
-					if ( child_pid < 0 )
-					{
-						g_Log.EventError("SYSSPAWN failed when executing %s.\n", pszKey);
-						return( false );
-					}
-					else if ( child_pid == 0 )
-					{
-						int iResult = execlp( Arg_ppCmd[0], Arg_ppCmd[0], Arg_ppCmd[1], Arg_ppCmd[2],
-											Arg_ppCmd[3], Arg_ppCmd[4], Arg_ppCmd[5], Arg_ppCmd[6],
-											Arg_ppCmd[7], Arg_ppCmd[8], Arg_ppCmd[9], NULL );
+										Arg_ppCmd[3], Arg_ppCmd[4], Arg_ppCmd[5], Arg_ppCmd[6],
+										Arg_ppCmd[7], Arg_ppCmd[8], Arg_ppCmd[9], NULL );
 					
-						if ( iResult == -1 )
-							g_Log.EventError("SYSSPAWN failed with error %d (\"%s\") when executing %s.\n", errno, strerror(errno), pszKey);
-
-						exit(iResult);
-					}
+					g_Log.EventError("SYSSPAWN failed with error %d (\"%s\") when executing %s.\n", errno, strerror(errno), pszKey);
+					raise(SIGKILL);
+					g_Log.EventError("Failed errorhandling in SYSSPAWN. Server is UNSTABLE.\n", errno, strerror(errno), pszKey);
+				}
+				else if(bWait) // parent process here (do we have to wait?)
+				{
+					int status;
+					do
+					{
+						waitpid(child_pid, &status, 0);
+					} while (!WIFSIGNALED(status) && !WIFEXITED(status));
+					sVal.FormatLLHex(WEXITSTATUS(status));
 				}
 #endif
+				g_Log.EventDebug("Process execution finished\n");
 				return true;
 			}
 

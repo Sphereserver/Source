@@ -863,7 +863,9 @@ signed char CWorld::GetHeightPoint( const CPointBase & pt, DWORD & wBlockFlags, 
 	if (block.m_Top.m_dwBlockFlags)
 	{
 		wBlockFlags |= CAN_I_ROOF;	// we are covered by something.
-		if (block.m_Top.m_dwTile > TERRAIN_QTY && block.m_Top.m_z != block.m_Bottom.m_z)
+
+		// If this tile possibly blocks me, roof cannot block me
+		if (block.m_Top.m_dwBlockFlags &~(CAN_I_ROOF))
 		{
 			if (block.m_Top.m_z < block.m_Bottom.m_z + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2))
 				wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!

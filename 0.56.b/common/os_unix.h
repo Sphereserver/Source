@@ -4,6 +4,7 @@
 
 #include <pthread.h>
 #include <unistd.h>
+#include <sys/wait.h>
 #include <signal.h>
 #include <exception>
 #include <setjmp.h>
