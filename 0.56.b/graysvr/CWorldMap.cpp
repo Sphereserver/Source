@@ -864,11 +864,15 @@ signed char CWorld::GetHeightPoint( const CPointBase & pt, DWORD & wBlockFlags, 
 	{
 		wBlockFlags |= CAN_I_ROOF;	// we are covered by something.
 
-		// If this tile possibly blocks me, roof cannot block me
-		if (block.m_Top.m_dwBlockFlags &~(CAN_I_ROOF))
+		// Do not check for landtiles to block me. We pass through if statics are under them
+		if (block.m_Top.m_dwTile > TERRAIN_QTY)
 		{
-			if (block.m_Top.m_z < block.m_Bottom.m_z + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2))
-				wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
+			// If this tile possibly blocks me, roof cannot block me
+			if (block.m_Top.m_dwBlockFlags &~(CAN_I_ROOF))
+			{
+				if (block.m_Top.m_z < block.m_Bottom.m_z + PLAYER_HEIGHT)
+					wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
+			}
 		}
 	}
 
