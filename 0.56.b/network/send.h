@@ -1752,6 +1752,9 @@ public:
  ***************************************************************************/
 class PacketItemWorldNew : public PacketItemWorld
 {
+protected:
+	PacketItemWorldNew(BYTE id, size_t size, CGrayUID uid);
+
 public:
 	enum DataSource
 	{
@@ -1761,6 +1764,7 @@ public:
 	};
 
 	PacketItemWorldNew(const CClient* target, CItem* item);
+	PacketItemWorldNew(const CClient* target, CChar* mobile);
 
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
@@ -1798,7 +1802,21 @@ public:
 class PacketMoveShip : public PacketSend
 {
 public:
-	PacketMoveShip(const CItemShip* ship, CObjBase** objects, size_t objectCount, DIR_TYPE direction, BYTE speed);
+	PacketMoveShip(const CClient* target, const CItemShip* ship, CObjBase** objects, size_t objectCount, DIR_TYPE direction, BYTE speed);
+};
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xF7 : PacketContainer			multiple packets (NORMAL)
+ *
+ *
+ ***************************************************************************/
+class PacketContainer : public PacketItemWorldNew// public PacketSend
+	//friend PacketItemWorldNew
+{
+public:
+	PacketContainer(const CClient* target, CObjBase** objects, size_t objectCount);
 };
 
 #endif

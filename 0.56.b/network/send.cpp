@@ -2247,7 +2247,7 @@ PacketPaperdoll::PacketPaperdoll(const CClient* target, const CChar* character) 
 
 	unsigned int mode = 0;
 	if (character->IsStatFlag(STATF_War))
-		mode |= 0x40;
+		mode |= (target->GetNetState()->isClientVersion(MINCLIVER_AOS)) ? 0x1 : 0x40;
 	if (character == target->GetChar() ||
 		(g_Cfg.m_fCanUndressPets? (character->NPC_IsOwnedBy(target->GetChar())) : (target->IsPriv(PRIV_GM) && target->GetPrivLevel() > character->GetPrivLevel())) )
 		mode |= 0x2;
@@ -4535,6 +4535,10 @@ PacketToggleHotbar::PacketToggleHotbar(const CClient* target, bool enable) : Pac
  *
  *
  ***************************************************************************/
+PacketItemWorldNew::PacketItemWorldNew(BYTE id, size_t size, CGrayUID uid) : PacketItemWorld(id, size, uid)
+{
+}
+
 PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : PacketItemWorld(XCMD_PutNew, 26, item->GetUID())
 {
 	ADDTOCALLSTACK("PacketItemWorldNew::PacketItemWorldNew");
@@ -4582,6 +4586,35 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : Pac
 	push(target);
 }
 
+PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CChar* mobile) : PacketItemWorld(XCMD_PutNew, 26, mobile->GetUID())
+{
+	DataSource source = Character;
+	DWORD uid = mobile->GetUID();
+	CREID_TYPE id = mobile->GetDispID();
+	CPointMap p = mobile->GetTopPoint();
+	BYTE dir = mobile->m_dirFace;
+	HUE_TYPE hue = mobile->GetHue();
+
+	writeInt16(1);
+	writeByte(source);
+	writeInt32(uid);
+	writeInt16(id);
+	writeByte(dir);
+	writeInt16(1);
+	writeInt16(1);
+	writeInt16(p.m_x);
+	writeInt16(p.m_y);
+	writeByte(p.m_z);
+	writeByte(0);
+	writeInt16(hue);
+	writeByte(0);
+
+	if (target->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS))
+		writeInt16(0);
+
+	trim();
+	push(target);
+}
 
 /***************************************************************************
  *
@@ -4621,7 +4654,7 @@ PacketDisplayMapNew::PacketDisplayMapNew(const CClient* target, const CItemMap* 
  *
  *
  ***************************************************************************/
-PacketMoveShip::PacketMoveShip(const CItemShip* ship, CObjBase** objects, size_t objectCount, DIR_TYPE direction, BYTE speed) : PacketSend(XCMD_MoveShip, 18, PRI_NORMAL)
+PacketMoveShip::PacketMoveShip(const CClient* target, const CItemShip* ship, CObjBase** objects, size_t objectCount, DIR_TYPE direction, BYTE speed) : PacketSend(XCMD_MoveShip, 18, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMoveShip::PacketMoveShip");
 	ASSERT(objectCount > 0);
@@ -4649,5 +4682,92 @@ PacketMoveShip::PacketMoveShip(const CItemShip* ship, CObjBase** objects, size_t
 		writeInt16(objectLocation.m_y);
 		writeInt16(objectLocation.m_z);
 	}
+
+	push(target);
 }
 
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xF7 : PacketContainer			multiple packets (NORMAL)
+ *
+ *
+ ***************************************************************************/
+PacketContainer::PacketContainer(const CClient* target, CObjBase** objects, size_t objectCount) : PacketItemWorldNew(XCMD_PacketCont, 5, PRI_NORMAL)
+{
+	ADDTOCALLSTACK("PacketContainer::PacketContainer");
+	ASSERT(objectCount > 0);
+
+	initLength();
+	writeInt16(objectCount);
+
+	for (size_t i = 0; i < objectCount; i++)
+	{
+		CObjBase* object = objects[i];
+		if (object->IsItem())
+		{
+			CItem* item = dynamic_cast<CItem*>(object);
+			DataSource source = TileData;
+			DWORD uid = item->GetUID();
+			long amount = item->GetAmount();
+			ITEMID_TYPE id = item->GetDispID();
+			CPointMap p = item->GetTopPoint();
+			BYTE dir = DIR_N;
+			HUE_TYPE hue = item->GetHue();
+			BYTE flags = 0;
+			BYTE light = 0;
+
+			adjustItemData(target, item, id, hue, amount, p, dir, flags, light);
+
+			if (id >= ITEMID_MULTI)
+			{
+				id = static_cast<ITEMID_TYPE>(id - ITEMID_MULTI);
+				source = Multi;
+			}
+			writeByte(0xF3);
+			writeInt16(1);
+			writeByte(source);
+			writeInt32(uid);
+			writeInt16(id);
+			writeByte(dir);
+			writeInt16(static_cast<WORD>(amount));
+			writeInt16(static_cast<WORD>(amount));
+			writeInt16(p.m_x);
+			writeInt16(p.m_y);
+			writeByte(p.m_z);
+			writeByte(light);
+			writeInt16(hue);
+			writeByte(flags);
+			writeInt16(0);
+		}
+		else
+		{
+			CChar* mobile = dynamic_cast<CChar*>(object);
+			DataSource source = Character;
+			DWORD uid = mobile->GetUID();
+			CREID_TYPE id = mobile->GetDispID();
+			CPointMap p = mobile->GetTopPoint();
+			BYTE dir = mobile->m_dirFace;
+			HUE_TYPE hue = mobile->GetHue();
+
+			writeByte(0xF3);
+			writeInt16(1);
+			writeByte(source);
+			writeInt32(uid);
+			writeInt16(id);
+			writeByte(dir);
+			writeInt16(1);
+			writeInt16(1);
+			writeInt16(p.m_x);
+			writeInt16(p.m_y);
+			writeByte(p.m_z);
+			writeByte(0);
+			writeInt16(hue);
+			writeByte(0);
+			writeInt16(0);
+		}
+	}
+
+	push(target);
+}

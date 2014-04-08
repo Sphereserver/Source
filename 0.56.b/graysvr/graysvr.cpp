@@ -1149,6 +1149,10 @@ int _cdecl main( int argc, char * argv[] )
 		}
 	}
 
+#ifdef _WIN32
+	NTWindow_DeleteIcon();
+#endif
+
 	Sphere_ExitServer();
 	WritePidFile(true);
 	return( g_Serv.m_iExitFlag );
