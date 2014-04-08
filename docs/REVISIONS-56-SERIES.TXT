@@ -772,3 +772,12 @@ Fixed system tray icon not removing on exit.
 6. Fixed: Backpack closing when items are dropped to corpse. (You can softscript this if you need it!)
 7. Fixed: Use 1-Unit comparisons in Distance Checking. We can't use the axiom of pythagoras here because one tile has
    the same diagonal width as vertical and horizontal width. Doing real-world distance checkings messes up everything here!
+
+08-04-2014, matex
+1. Fixed HitsHungerloss. 
+2. Modified behaviour of DiagonalWalkChecks when dclicking items in reach
+3. If GM's add players to a party, the player is now added forcibly.
+4. Fixed a possible itemleak when dropping too many items to the ground. (e.g. via newitem)
+5. Fixed a null reference exception when DISPID of an item is set to something that wasnt defined via ITEMDEF. (e.g. change an item via set dispid)
+6. Fixed an exception when you type 'c' in the serverconsole and have more than 100 players online ;)
+7. Fixed a possible crash bug when players disconnect. Fixed players not logging out sometimes too. (this did only occur on VERY rare circumstances)

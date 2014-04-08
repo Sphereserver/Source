@@ -446,6 +446,12 @@ void CServer::ListClients( CTextConsole * pConsole ) const
 				static_cast<LPCTSTR>(pszState));
 		}
 
+		// If we have many clients, SCRIPT_MAX_LINE_LEN may be too short ;) (matex)
+		if (strlen(pszMsg) + strlen(tmpMsg) >= SCRIPT_MAX_LINE_LEN)
+		{
+			pConsole->SysMessage(pszMsg);
+			pszMsg[0] = '\0';
+		}
 		ASSERT((strlen(pszMsg) + strlen(tmpMsg)) < SCRIPT_MAX_LINE_LEN);
 		strcat(pszMsg, tmpMsg);
 	}
@@ -457,8 +463,8 @@ void CServer::ListClients( CTextConsole * pConsole ) const
 	else
 		sprintf(tmpMsg, "%s %" FMTSIZE_T "\n", g_Cfg.GetDefaultMsg( DEFMSG_HL_MANY_CLIENTS ), numClients);
 
-	pConsole->SysMessage(tmpMsg);
 	pConsole->SysMessage(pszMsg);
+	pConsole->SysMessage(tmpMsg);
 }
 
 bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )

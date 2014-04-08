@@ -3023,7 +3023,7 @@ void NetworkInput::receiveData()
 			
 		// receive data
 		EXC_SET("messages - receive");
-		size_t received = state->m_socket.Receive(m_receiveBuffer, NETWORK_BUFFERSIZE, 0);
+		int received = state->m_socket.Receive(m_receiveBuffer, NETWORK_BUFFERSIZE, 0);
 		if (received <= 0 || received > NETWORK_BUFFERSIZE)
 		{
 			state->markReadClosed();
@@ -4079,11 +4079,8 @@ size_t NetworkOutput::sendData(NetState* state, const BYTE* data, size_t length)
 			if (state->isClosing() == false)
 				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%lx:TX Error %d\n", state->id(), errorCode);
 
-#ifndef _WIN32
+			// Connection error should clear the client too
 			result = _failed_result();
-#else
-			result = 0;
-#endif
 		}
 	}
 

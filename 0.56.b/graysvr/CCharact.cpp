@@ -4355,7 +4355,8 @@ bool CChar::OnTick()
 			}
 			
 			int StatLimit = Stat_GetMax(i);
-			int HitsHungerLoss;
+
+			int HitsHungerLoss = g_Cfg.m_iHitsHungerLoss ? g_Cfg.m_iHitsHungerLoss : 0;
 			if ( IsTrigUsed(TRIGGER_REGENSTAT))
 			{
 				CScriptTriggerArgs Args;
@@ -4363,7 +4364,7 @@ bool CChar::OnTick()
 				Args.m_VarsLocal.SetNum("Value",mod,true);
 				Args.m_VarsLocal.SetNum("StatLimit",StatLimit,true);
 				if ( i == STAT_FOOD )
-					Args.m_VarsLocal.SetNum("HitsHungerLoss",g_Cfg.m_iHitsHungerLoss ? g_Cfg.m_iHitsHungerLoss : 0);
+					Args.m_VarsLocal.SetNum("HitsHungerLoss", HitsHungerLoss);
 				if (OnTrigger(CTRIG_RegenStat,this,&Args) == TRIGRET_RET_TRUE)
 				{
 					m_Stat[i].m_regen = 0;

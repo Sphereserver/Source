@@ -1174,52 +1174,52 @@ blocked:
 	while ( --iDist >= 0 )
 	{
 		DIR_TYPE dir = ptSrc.GetDir( ptDst );
-		DWORD wBlockFlags;
-		if (IsSetEF(EF_DiagonalWalkCheck))
+		if ( iDist )
 		{
-			if (dir % 2)		// test only diagonal dirs
+			DWORD wBlockFlags;
+			if (IsSetEF(EF_DiagonalWalkCheck))
 			{
-				CPointMap ptTest;
-				DIR_TYPE dirTest1 = static_cast<DIR_TYPE>(dir - 1); // get 1st ortogonal
-				DIR_TYPE dirTest2 = static_cast<DIR_TYPE>(dir + 1); // get 2nd ortogonal
-				if (dirTest2 == DIR_QTY)		// roll over
-					dirTest2 = DIR_N;
-
-				bool fBlocked = false;
-				ptTest = ptSrc;
-				ptTest.Move(dirTest1);
+				if (dir % 2)		// test only diagonal dirs
 				{
-					wBlockFlags = CAN_C_SWIM | CAN_C_WALK | CAN_C_FLY;
-					signed char z = g_World.GetHeightPoint(ptTest, wBlockFlags, true);
-					signed char zDiff = abs(z - ptTest.m_z);
-					if (zDiff > PLAYER_HEIGHT) fBlocked = true;
-					else ptTest.m_z = z;
+					CPointMap ptTest;
+					DIR_TYPE dirTest1 = static_cast<DIR_TYPE>(dir - 1); // get 1st ortogonal
+					DIR_TYPE dirTest2 = static_cast<DIR_TYPE>(dir + 1); // get 2nd ortogonal
+					if (dirTest2 == DIR_QTY)		// roll over
+						dirTest2 = DIR_N;
 
-					if (wBlockFlags & (CAN_I_BLOCK | CAN_I_DOOR))
-						fBlocked = true;
-				}
-				if (fBlocked)
-				{
+					bool fBlocked = false;
 					ptTest = ptSrc;
-					ptTest.Move(dirTest2);
+					ptTest.Move(dirTest1);
 					{
 						wBlockFlags = CAN_C_SWIM | CAN_C_WALK | CAN_C_FLY;
 						signed char z = g_World.GetHeightPoint(ptTest, wBlockFlags, true);
 						signed char zDiff = abs(z - ptTest.m_z);
-						if (zDiff > PLAYER_HEIGHT) goto blocked;
+						if (zDiff > PLAYER_HEIGHT) fBlocked = true;
 						else ptTest.m_z = z;
 
 						if (wBlockFlags & (CAN_I_BLOCK | CAN_I_DOOR))
+							fBlocked = true;
+					}
+					if (fBlocked)
+					{
+						ptTest = ptSrc;
+						ptTest.Move(dirTest2);
 						{
-							ptSrc = ptTest;
-							goto blocked;
+							wBlockFlags = CAN_C_SWIM | CAN_C_WALK | CAN_C_FLY;
+							signed char z = g_World.GetHeightPoint(ptTest, wBlockFlags, true);
+							signed char zDiff = abs(z - ptTest.m_z);
+							if (zDiff > PLAYER_HEIGHT) goto blocked;
+							else ptTest.m_z = z;
+
+							if (wBlockFlags & (CAN_I_BLOCK | CAN_I_DOOR))
+							{
+								ptSrc = ptTest;
+								goto blocked;
+							}
 						}
 					}
 				}
 			}
-		}
-		if ( iDist )
-		{
 			ptSrc.Move( dir );	// NOTE: The dir is very coarse and can change slightly.
 
 			wBlockFlags = CAN_C_SWIM | CAN_C_WALK | CAN_C_FLY;

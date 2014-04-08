@@ -1436,8 +1436,6 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 			Speak("The ground collapses!");
 			Delete();
 		}
-		// attempt to reject the move.
-		return false;
 	}
 
 	CObjBase * pOldCont = this->GetContainer();
@@ -1857,9 +1855,12 @@ height_t CItem::GetHeight() const
 
 	const CItemBase * pItemDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(GetDispID()));
 	const CItemBaseDupe * pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(GetDispID()));
-	tmpHeight = ( pDupeDef ? pDupeDef->GetHeight() : pItemDef->GetHeight() );
-	if ( tmpHeight )
-		return tmpHeight;
+	if (pItemDef != NULL)
+	{
+		tmpHeight = (pDupeDef ? pDupeDef->GetHeight() : pItemDef->GetHeight());
+		if (tmpHeight)
+			return tmpHeight;
+	}
 
 	//DEBUG_ERR(("PLAYER_HEIGHT %d\n",PLAYER_HEIGHT));
 	return 0; //if everything fails
