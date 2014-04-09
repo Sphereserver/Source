@@ -41,6 +41,7 @@ f_onserver_blockip
 //	  6 --> Force login, without other password checks than the made in this function.
 return 0
 
+
 [FUNCTION f_onaccount_create]
 // The f_onaccount_create function is called before the account is created.
 // ARGS --> username of the account being created.
@@ -64,6 +65,14 @@ return 0
 // RETURN
 //	  0 --> normal action (delete)
 //	  1 --> account not deleted
+
+
+[FUNCTION f_onaccount_pwchange]
+// The f_onaccount_pwchange function is called when the password is being changed in one account
+// ARGS --> password given
+// RETURN
+//	  0 --> normal action (change password)
+//	  1 --> block the change
 
 
 [FUNCTION f_onchar_create]

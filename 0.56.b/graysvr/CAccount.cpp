@@ -227,6 +227,20 @@ void CAccounts::Account_Add( CAccount * pAccount )
 {
 	ADDTOCALLSTACK("CAccounts::Account_Add");
 	ASSERT(pAccount != NULL);
+	if ( !g_Serv.IsLoading() )
+	{
+		CScriptTriggerArgs Args;
+		Args.Init(pAccount->GetName());
+		//Accounts are 'created' in server startup so we don't fire the function.
+		TRIGRET_TYPE tRet = TRIGRET_RET_FALSE;
+		g_Serv.r_Call("f_onaccount_create", &g_Serv, &Args, NULL, &tRet);
+		if ( tRet == TRIGRET_RET_TRUE )
+		{
+			g_Log.Event(LOGL_ERROR|LOGM_INIT, "Account '%s': Creation blocked via script\n", pAccount->GetName());
+			Account_Delete(pAccount);
+			return;
+		}
+	}
 	m_Accounts.AddSortKey(pAccount,pAccount->GetName());
 }
 
@@ -259,16 +273,6 @@ bool CAccounts::Cmd_AddNew( CTextConsole * pSrc, LPCTSTR pszName, LPCTSTR pszArg
 	if ( !CAccount::NameStrip(szName, pszName) )
 	{
 		g_Log.Event(LOGL_ERROR|LOGM_INIT, "Account '%s': BAD name\n", pszName);
-		return false;
-	}
-
-	CScriptTriggerArgs Args;
-	Args.Init(pszName);
-	Args.m_VarsLocal.SetStr("PASSWORD", false, pszArg);
-	enum TRIGRET_TYPE tr = TRIGRET_RET_FALSE;
-	g_Serv.r_Call("f_onaccount_create", &g_Serv, &Args, NULL, &tr);
-	if ( tr == TRIGRET_RET_TRUE )
-	{
 		return false;
 	}
 
@@ -939,7 +943,20 @@ bool CAccount::SetPassword( LPCTSTR pszPassword, bool isMD5Hash )
 	
 	if ( Str_Check( pszPassword ) )	// Prevents exploits
 		return false;
-
+	
+	//Accounts are 'created' in server startup so we don't fire the function.
+	if ( !g_Serv.IsLoading() )
+	{
+		CScriptTriggerArgs Args;
+		Args.Init(GetName());
+		Args.m_VarsLocal.SetStrNew("password",pszPassword);
+		TRIGRET_TYPE tRet = TRIGRET_RET_FALSE;
+		g_Serv.r_Call("f_onaccount_pwchange", &g_Serv, &Args, NULL, &tRet);
+		if ( tRet == TRIGRET_RET_TRUE )
+		{
+			return false;
+		}
+	}
 	size_t enteredPasswordLength = strlen(pszPassword);
 	if ( isMD5Hash && useMD5 ) // If it is a hash, check length and set it directly
 	{
