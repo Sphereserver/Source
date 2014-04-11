@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2009
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,18 +7,76 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: June 18, 2011
-// - Changed region flags by babidi with defnames region_flags for clearer read and editing (14-Jun-2011)
+// FILE LAST UPDATED: Friday, April 11, 2014
+//
+VERSION=0.56c
 
-VERSION=0.56b
+[COMMENT sphere_map1]
+Trammel is basically a copy of Felucca, but pvp-safe.
+To enable Haven Island region, uncomment the lines below
+choosing between old Haven (AOS/SE) or New Haven (ML+).
+Do not enable both, just choose the one that will best
+match your server.
 
-[AREADEF a_world_map1] // UO Renaissance (T2A, map0,statics0,staidx0), map #0
-NAME=Special World
-FLAGS=region_flag_safe
+
+[AREADEF a_world_map1]
+NAME=Trammel
+FLAGS=region_flag_no_pvp
 GROUP=ALLMAP
 P=1323,1624,55,1
 RECT=0,0,7168,4096,1
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+
+//[AREADEF a_old_haven_island]
+//EVENTS=r_default,r_default_water,r_default_tree,r_default_grass,r_default_rock
+//NAME=Haven Island
+//GROUP=Haven
+//FLAGS=region_flag_no_pvp|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+//P=3627,2606,0,1
+//RECT=3314,2345,3814,3095,1
+
+//[AREADEF a_old_haven_town]
+//EVENTS=r_default,r_default_water,r_default_tree,r_default_grass,r_default_rock
+//NAME=Haven
+//GROUP=Haven
+//FLAGS=region_flag_no_pvp|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+//P=3618,2587,0,1
+//RECT=3590,2460,3708,2686,1
+//RECT=3568,2552,3590,2631,1
+//RECT=3708,2558,3761,2712,1
+//RECT=3695,2686,3708,2712,1
+//RECT=3664,2608,3680,2624,1
+//RECT=3664,2640,3672,2656,1
+//RECT=3672,2648,3680,2656,1
+
+
+//[AREADEF a_new_haven_island]
+//EVENTS=r_default,r_default_water,r_default_tree,r_default_grass,r_default_rock
+//NAME=Haven Island
+//GROUP=New Haven
+//FLAGS=region_flag_no_pvp|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+//P=2606,3627,0,1
+//RECT=2345,3314,3095,4127,1
+
+//[AREADEF a_new_haven_town]
+//EVENTS=r_default,r_default_water,r_default_tree,r_default_grass,r_default_rock
+//NAME=New Haven
+//GROUP=New Haven
+//FLAGS=region_flag_no_pvp|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+//P=2574,3503,14,1
+//RECT=2480,3423,2623,3534,1
+
+//[ROOMDEF a_new_haven_inn]
+//EVENTS=r_default,r_default_water,r_default_tree,r_default_grass,r_default_rock
+//NAME=Gentle Rest Inn
+//GROUP=New Haven
+//FLAGS=region_flag_no_pvp|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_flag_insta_logout
+//RECT=2513,3493,2523,3503,1
+//RECT=2513,3503,2520,3510,1
+
+
+//==============CUSTOM=================
 
 [AREADEF a_arena1_espera]
 NAME=Arena 1 - Espera
