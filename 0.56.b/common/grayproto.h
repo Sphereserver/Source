@@ -379,6 +379,7 @@ enum EXTDATA_TYPE
 	//
 	//
 	EXTDATA_GargoyleFly		= 0x32, // client message
+	EXTDATA_WheelBoatMove	= 0x33, // client message
 	EXTDATA_QTY
 };
 
