@@ -3295,8 +3295,8 @@ bool PacketWheelBoatMove::onReceive(NetState* net)
 		static_cast<LPCTSTR>(character->GetName()), character->GetUID(), pShipItem->GetUID());
 #endif
 
-	return true;
 #endif
+	return true;
 }
 
 
