@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2009
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, September 11, 2013
+// FILE LAST UPDATED: Saturday, April 12, 2014
 //
 VERSION=0.56c
 
@@ -227,58 +227,6 @@ GROUP=Other Dungeons
 P=5504,322,0,0
 RECT=5381,262,5628,382,0
 
-[AREADEF a_xroom_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=XRoom
-GROUP=Cove
-P=2582,1118,0,0
-RECT=2581,1117,2584,1120,0
-
-[ROOMDEF a_house_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Minoc
-FLAGS=REGION_FLAG_GUARDED
-P=2484,472,0,0
-RECT=2479,463,2489,481,0
-RECT=2489,471,2497,481,0
-
-[ROOMDEF a_bank_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Bank
-GROUP=Minoc
-P=2504,552,0,0
-RECT=2495,543,2513,561,0
-
-[ROOMDEF a_house_2]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Minoc
-P=2422,498,0,0
-RECT=2417,493,2427,503,0
-
-[ROOMDEF a_house_3]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Minoc
-P=2421,483,0,0
-RECT=2416,478,2426,488,0
-
-[ROOMDEF a_house_4]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Minoc
-P=2420,472,0,0
-RECT=2415,467,2425,477,0
-
-[ROOMDEF a_house_5]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Minoc
-P=2430,440,44,0
-RECT=2426,426,2436,444,0
-RECT=2436,435,2444,444,0
-
 [AREADEF a_cave_2]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Cave
@@ -414,14 +362,6 @@ RECT=1415,3999,1434,4026,0
 RECT=1407,4007,1415,4017,0
 RECT=1434,4007,1441,4018,0
 
-[ROOMDEF a_boarding_house3_s_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Boarding House3 S
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1397,4018,0,0
-RECT=1391,4007,1401,4025,0
-
 [ROOMDEF a_watch_tower_keep_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Watch Tower & Keep
@@ -464,22 +404,6 @@ GROUP=Hythloth
 FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=4722,3815,0,0
 RECT=4717,3814,4727,3816,0
-
-[ROOMDEF a_boarding_house2_e_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Boarding House2 E
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1458,3829,0,0
-RECT=1455,3815,1465,3833,0
-
-[ROOMDEF a_boarding_house1_e_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Boarding House1 E
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1458,3805,0,0
-RECT=1455,3791,1465,3809,0
 
 [ROOMDEF a_jhelom_woodworking_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -550,47 +474,6 @@ P=1365,3734,0,0
 RECT=1351,3727,1370,3738,0
 RECT=1359,3738,1370,3745,0
 
-[ROOMDEF a_deadly_intentions_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Deadly Intentions
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1365,3754,0,0
-RECT=1350,3751,1370,3769,0
-RECT=1342,3751,1350,3762,0
-
-[ROOMDEF a_boarding_house2_w_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Boarding House2 W
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1331,3757,0,0
-RECT=1327,3743,1337,3761,0
-
-[ROOMDEF a_boarding_house1_w_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Boarding House1 W
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1317,3747,0,0
-RECT=1303,3743,1321,3753,0
-
-[ROOMDEF a_boarding_house6_nw_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Boarding House6 NW
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1331,3733,0,0
-RECT=1327,3719,1337,3737,0
-
-[ROOMDEF a_boarding_house5_nw_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Boarding House5 NW
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1315,3733,0,0
-RECT=1311,3719,1321,3737,0
-
 [AREADEF a_exit_from_s_seapua_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Exit from S-SE of Papua
@@ -614,55 +497,6 @@ GROUP=T2A Entrances & Exits
 FLAGS=REGION_FLAG_NOBUILDING
 P=5138,3665,31,0
 RECT=5134,3659,5140,3668,0
-
-[ROOMDEF a_boarding_house1_nw_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Boarding House1 NW
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1315,3693,0,0
-RECT=1303,3687,1321,3697,0
-
-[ROOMDEF a_boarding_house_n_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Boarding House N
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1322,3677,0,0
-RECT=1319,3671,1337,3682,0
-
-[ROOMDEF a_jhelom_ships_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Jhelom Ships
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1132,3662,0,0
-RECT=1127,3655,1145,3665,0
-RECT=1135,3665,1145,3673,0
-
-[ROOMDEF a_jhelom_docks_nw_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Jhelom Docks NW
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING
-P=1127,3681,-2,0
-RECT=1117,3680,1137,3698,0
-
-[ROOMDEF a_stables2_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Stables2
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING
-P=1169,3620,0,0
-RECT=1168,3591,1201,3624,0
-
-[ROOMDEF a_shop1_n_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Shop1 N
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1128,3611,0,0
-RECT=1119,3607,1137,3617,0
 
 [AREADEF a_serpents_hold_stables_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -800,14 +634,6 @@ GROUP=Papua
 FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=5756,3270,15,0
 RECT=5750,3267,5759,3278,0
-
-[ROOMDEF a_southside_stables_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Southside Stables
-GROUP=Papua
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5676,3285,11,0
-RECT=5665,3282,5679,3292,0
 
 [AREADEF a_entrance_from_s_swrinsic_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -1210,21 +1036,6 @@ P=2741,2250,0,0
 RECT=2728,2247,2737,2265,0
 RECT=2737,2247,2745,2257,0
 
-[AREADEF a_field_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Field
-GROUP=Skara Brae
-P=814,2164,0,0
-RECT=796,2152,832,2176,0
-
-[AREADEF a_house_6]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Skara Brae
-P=812,2192,0,0
-RECT=807,2183,817,2201,0
-RECT=817,2191,824,2201,0
-
 [ROOMDEF a_superior_ships_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Superior Ships
@@ -1267,22 +1078,6 @@ FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=3687,2229,20,0
 RECT=3679,2208,3695,2231,0
 
-[ROOMDEF a_shop2_s_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Shop2 S
-GROUP=Buccaneer's Den
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=2715,2213,0,0
-RECT=2711,2207,2721,2217,0
-
-[ROOMDEF a_shop3_c_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Shop3 C
-GROUP=Buccaneer's Den
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=2731,2189,0,0
-RECT=2727,2183,2738,2193,0
-
 [ROOMDEF a_pirates_den_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Pirate's Den
@@ -1320,15 +1115,6 @@ RECT=551,2199,569,2225,0
 RECT=543,2207,551,2217,0
 RECT=569,2207,577,2217,0
 
-[ROOMDEF a_warehouse_2]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=WareHouse
-GROUP=Magincia
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=3730,2157,20,0
-RECT=3727,2143,3745,2153,0
-RECT=3727,2153,3737,2161,0
-
 [ROOMDEF a_stag_lion_inn_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=The Stag & Lion Inn
@@ -1348,14 +1134,6 @@ P=3670,2144,20,0
 RECT=3663,2127,3673,2153,0
 RECT=3655,2135,3663,2145,0
 
-[ROOMDEF a_shop2_e_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Shop2 E
-GROUP=Buccaneer's Den
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=2778,2134,0,0
-RECT=2775,2127,2785,2137,0
-
 [ROOMDEF a_bloody_scab_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=The Bloody Scab
@@ -1363,22 +1141,6 @@ GROUP=Buccaneer's Den
 FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=2706,2149,0,0
 RECT=2703,2127,2713,2153,0
-
-[ROOMDEF a_shop2_c_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Shop2 C
-GROUP=Buccaneer's Den
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=2677,2155,0,0
-RECT=2671,2151,2681,2161,0
-
-[ROOMDEF a_shop1_c_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Shop1 C
-GROUP=Buccaneer's Den
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=2669,2131,0,0
-RECT=2663,2127,2673,2137,0
 
 [ROOMDEF a_mystic_treasure_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -1441,15 +1203,6 @@ P=2715,2101,0,0
 RECT=2711,2079,2729,2097,0
 RECT=2711,2097,2721,2105,0
 
-[ROOMDEF a_bath_house_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Bath House
-GROUP=Buccaneer's Den
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=2667,2093,5,0
-RECT=2655,2079,2681,2097,0
-RECT=2663,2071,2673,2079,0
-
 [ROOMDEF a_cutlass_smithing_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Cutlass Smithing
@@ -1457,62 +1210,6 @@ GROUP=Buccaneer's Den
 FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=2635,2085,10,0
 RECT=2631,2079,2641,2089,0
-
-[ROOMDEF a_farmland1_w_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Farmland1 W
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING
-P=1232,1888,0,0
-RECT=1216,1872,1248,1904,0
-
-[ROOMDEF a_farmers_house1_sw_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Farmers House1 SW
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1261,1888,0,0
-RECT=1255,1879,1265,1897,0
-
-[ROOMDEF a_house3_sw_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House3 SW
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1388,1819,29,0
-RECT=1383,1815,1393,1825,0
-
-[ROOMDEF a_house1_sw_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House1 SW
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1387,1802,29,0
-RECT=1383,1799,1393,1809,0
-
-[ROOMDEF a_farmland4_sw_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Farmland4 SW
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING
-P=1320,1815,0,0
-RECT=1311,1798,1329,1833,0
-
-[ROOMDEF a_farmland2_sw_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Farmland2 SW
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING
-P=1200,1824,0,0
-RECT=1184,1808,1215,1839,0
-
-[ROOMDEF a_farmers_house3_sw_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Farmers House3 SW
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1141,1819,0,0
-RECT=1127,1815,1145,1825,0
 
 [ROOMDEF a_britain_lookout_tower_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -1530,22 +1227,6 @@ FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=1551,1774,10,0
 RECT=1543,1759,1561,1777,0
 RECT=1561,1759,1570,1770,0
-
-[ROOMDEF a_warehouse_s_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Warehouse S
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1571,1750,15,0
-RECT=1559,1735,1585,1753,0
-
-[ROOMDEF a_britain_barracks_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Britain Barracks
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1543,1750,15,0
-RECT=1536,1735,1552,1752,0
 
 [ROOMDEF a_oaken_oar_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -1580,23 +1261,6 @@ FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=1637,1689,36,0
 RECT=1632,1687,1641,1713,0
 RECT=1640,1695,1649,1705,0
-
-[ROOMDEF a_house8_ne_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House8 NE
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1554,1685,30,0
-RECT=1537,1679,1561,1689,0
-RECT=1537,1689,1553,1697,0
-
-[ROOMDEF a_house2_e_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House2 E
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1544,1717,20,0
-RECT=1537,1703,1553,1721,0
 
 [ROOMDEF a_sage_advice_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -1649,40 +1313,6 @@ FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=1456,1681,0,0
 RECT=1450,1678,1459,1695,0
 
-[ROOMDEF a_royal_barracks_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=The Royal Barracks
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1358,1674,30,0
-RECT=1320,1671,1331,1684,0
-RECT=1331,1668,1360,1684,0
-
-[ROOMDEF a_farmers_house1_w_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Farmers House1 W
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1251,1709,0,0
-RECT=1239,1695,1257,1705,0
-RECT=1247,1705,1257,1713,0
-
-[ROOMDEF a_farmland2_w_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Farmland2 W
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING
-P=1192,1684,0,0
-RECT=1176,1672,1208,1695,0
-
-[ROOMDEF a_farmers_house2_w_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Farmers House2 W
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1198,1711,0,0
-RECT=1183,1703,1201,1721,0
-
 [ROOMDEF a_britain_guard_post_c_2_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Britain Guard Post C-2
@@ -1725,54 +1355,6 @@ FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=1448,1652,10,0
 RECT=1436,1645,1453,1655,0
 
-[ROOMDEF a_lbs_study_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=LB's Study
-GROUP=Britain
-FLAGS=REGION_FLAG_UNDERGROUND
-P=1331,1648,72,0
-RECT=1328,1645,1338,1651,0
-
-[ROOMDEF a_farmland5_w_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Farmland5 W
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING
-P=1120,1624,0,0
-RECT=1104,1608,1135,1639,0
-
-[ROOMDEF a_house7_ne_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House7 NE
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1683,1574,20,0
-RECT=1671,1567,1697,1577,0
-
-[ROOMDEF a_house5_ne_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House5 NE
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1691,1550,45,0
-RECT=1687,1543,1697,1553,0
-
-[ROOMDEF a_house6_ne_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House6 NE
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1707,1565,50,0
-RECT=1703,1551,1713,1569,0
-
-[ROOMDEF a_gazebo_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Gazebo
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING
-P=1635,1568,26,0
-RECT=1631,1558,1641,1570,0
-
 [ROOMDEF a_salty_dog_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=The Salty Dog
@@ -1781,38 +1363,6 @@ FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=1629,1587,0,0
 RECT=1607,1583,1633,1593,0
 RECT=1615,1574,1625,1583,0
-
-[ROOMDEF a_house5_e_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House5 E
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1618,1566,30,0
-RECT=1615,1559,1625,1569,0
-
-[ROOMDEF a_house3_e_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House3 E
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1651,1566,10,0
-RECT=1648,1559,1657,1569,0
-
-[ROOMDEF a_house4_ne_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House4 NE
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1651,1550,25,0
-RECT=1647,1543,1657,1553,0
-
-[ROOMDEF a_house4_e_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House4 E
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1646,1579,0,0
-RECT=1640,1575,1649,1585,0
 
 [ROOMDEF a_guildavalry_and_horse_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -1897,23 +1447,6 @@ FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=1370,1580,30,0
 RECT=1359,1570,1376,1580,0
 RECT=1368,1580,1376,1584,0
-
-[ROOMDEF a_farmers_house4_w_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Farmers House4 W
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1227,1581,0
-RECT=1223,1567,1241,1578,0
-RECT=1223,1578,1233,1585,0
-
-[ROOMDEF a_house3_ne_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House3 NE
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1636,1517,35,0
-RECT=1632,1503,1641,1521,0
 
 [ROOMDEF a_britains_councelors_guild_hall_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -2222,22 +1755,6 @@ FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=2858,853,0,0
 RECT=2855,847,2873,858,0
 RECT=2863,858,2873,865,0
-
-[AREADEF a_entrance_from_vesper_cemetary_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Entrance from Vesper Cemetary
-GROUP=T2A Entrances & Exits
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=2777,894,-23,0
-RECT=2771,890,2781,895,0
-
-[ROOMDEF a_house_7]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Yew
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=480,853,0,0
-RECT=471,839,489,857,0
 
 [AREADEF a_hallustice_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -4370,63 +3887,6 @@ P=1473,3869,0,0
 RECT=1471,3847,1490,3866,0
 RECT=1471,3865,1481,3873,0
 
-[ROOMDEF a_shop2_n_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Shop2 N
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1170,3645,0,0
-RECT=1167,3631,1177,3649,0
-RECT=1177,3631,1185,3641,0
-
-[ROOMDEF a_stables1_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Stables1
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING
-P=1120,3596,0,0
-RECT=1111,3566,1144,3601,0
-
-[ROOMDEF a_boarding_house4_s_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Boarding House4 S
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1405,4033,0,0
-RECT=1391,4031,1409,4041,0
-
-[ROOMDEF a_boarding_house1_s_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Boarding House1 S
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1432,3964,0,0
-RECT=1423,3959,1441,3969,0
-
-[ROOMDEF a_boarding_house4_nw_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Boarding House4 NW
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1330,3709,0,0
-RECT=1327,3703,1345,3713,0
-
-[ROOMDEF a_boarding_house3_nw_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Boarding House3 NW
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1330,3693,0,0
-RECT=1303,3703,1321,3713,0
-
-[ROOMDEF a_boarding_house2_nw_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Boarding House2 NW
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1336,3691,0,0
-RECT=1327,3687,1345,3697,0
-
 [ROOMDEF a_jhelom_fighting_pits_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Jhelom Fighting Pits
@@ -4507,14 +3967,6 @@ FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=1462,4026,0,0
 RECT=1447,4023,1465,4033,0
 
-[ROOMDEF a_boarding_house2_s_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Boarding House2 S
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1468,3990,-2,0
-RECT=1463,3975,1489,3993,0
-
 [ROOMDEF a_jhelom_docks_s_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Jhelom Docks S
@@ -4539,25 +3991,6 @@ FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=1427,3854,0,0
 RECT=1407,3847,1434,3858,0
 
-[ROOMDEF a_second_skin_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Second Skin
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1446,3723,0,0
-RECT=1431,3711,1450,3730,0
-RECT=1450,3711,1457,3721,0
-
-[ROOMDEF a_jhelom_city_gate_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Jhelom City Gate
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1378,3873,0,0
-RECT=1343,3862,1401,3873,0
-RECT=1391,3873,1401,3897,0
-RECT=1471,3668,1481,3720,0
-
 [ROOMDEF a_jhelom_library_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Jhelom Library
@@ -4566,89 +3999,6 @@ FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=1397,3771,0,0
 RECT=1376,3767,1394,3786,0
 RECT=1394,3767,1401,3778,0
-
-[ROOMDEF a_first_defense_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=First Defense
-GROUP=Jhelom
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1387,3710,0,0
-RECT=1391,3695,1401,3721,0
-RECT=1383,3703,1391,3714,0
-
-[ROOMDEF a_cabin4_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Cabin4
-GROUP=Cove
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=2262,1219,0,0
-RECT=2256,1215,2265,1225,0
-
-[ROOMDEF a_cabin3_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Cabin3
-GROUP=Cove
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=2230,1214,0,0
-RECT=2223,1211,2233,1221,0
-
-[ROOMDEF a_cabin2_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Cabin2
-GROUP=Cove
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_FLAG_GUARDED
-P=2243,1206,0,0
-RECT=2239,1199,2249,1209,0
-
-[ROOMDEF a_cabin1_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Cabin1
-GROUP=Cove
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_FLAG_GUARDED
-P=2235,1190,0,0
-RECT=2231,1183,2242,1193,0
-
-[ROOMDEF a_farmland_4]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Farmland
-GROUP=Cove
-FLAGS=REGION_FLAG_NOBUILDING
-P=2224,1152,0,0
-RECT=2216,1144,2232,1160,0
-
-[ROOMDEF a_cove_city_gate_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Cove City Gate
-GROUP=Cove
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=2282,1209,20,0,0
-RECT=2279,1183,2284,1233,0
-RECT=2279,1219,2293,1232,0
-RECT=2271,1195,2279,1204,0
-
-[ROOMDEF a_shop1_se_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Shop1 SE
-GROUP=Buccaneer's Den
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=2755,2221,0,0
-RECT=2751,2215,2761,2225,0
-
-[ROOMDEF a_shop1_s_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Shop1 S
-GROUP=Buccaneer's Den
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=2692,2204,0,0
-RECT=2687,2199,2698,2209,0
-
-[ROOMDEF a_shop1_e_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Shop1 E
-GROUP=Buccaneer's Den
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=2748,2116,0,0
-RECT=2743,2111,2753,2121,0
 
 [ROOMDEF a_pirates_plunder_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -4685,38 +4035,6 @@ RECT=2738,2162,2763,2171,0
 RECT=2748,2153,2755,2162,0
 RECT=2749,2171,2754,2180,0
 
-[ROOMDEF a_royal_stables_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Royal Stables
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1388,1661,30,0
-RECT=1383,1639,1395,1665,0
-
-[ROOMDEF a_lbs_guard_posts_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=LB's Guard Posts
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1411,1625,27,0
-RECT=1407,1613,1416,1638,0
-
-[ROOMDEF a_lbs_throne_room_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=LB's Throne Room
-GROUP=Britain
-FLAGS=REGION_FLAG_UNDERGROUND
-P=1347,1624,50,0
-RECT=1319,1610,1348,1641,0
-
-[ROOMDEF a_britain_guard_post_sw_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Britain Guard Post SW
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1415,1715,20,0
-RECT=1407,1711,1416,1720,0
-
 [ROOMDEF a_lord_britishs_conservatoryusic_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Lord British's Conservatory of Music
@@ -4724,14 +4042,6 @@ GROUP=Britain
 FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=1454,1568,30,0
 RECT=1435,1546,1476,1569,0
-
-[ROOMDEF a_warehouse_w_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Warehouse W
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1355,1778,15,0
-RECT=1343,1767,1361,1791,0
 
 [ROOMDEF a_chamberirtue_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -4742,87 +4052,6 @@ P=1544,1613,10,0
 RECT=1536,1582,1552,1616,0
 RECT=1552,1591,1560,1608,0
 
-[ROOMDEF a_farmland3_w_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Farmland3 W
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING
-P=1152,1576,0,0
-RECT=1136,1560,1168,1591,0
-
-[ROOMDEF a_farmland4_w_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Farmland4 W
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING
-P=1224,1604,0,0
-RECT=1208,1592,1239,1615,0
-
-[ROOMDEF a_farmland3_sw_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Farmland3 SW
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING
-P=1136,1792,0,0
-RECT=1120,1776,1151,1807,0
-
-[ROOMDEF a_farmland1_sw_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Farmland1 SW
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING
-P=1224,1724,0,0
-RECT=1208,1712,1240,1736,0
-
-[ROOMDEF a_farmers_house3_w_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Farmer's House3 W
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1158,1547,0,0
-RECT=1143,1543,1161,1553,0
-
-[ROOMDEF a_farmers_house5_w_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Farmer's House5 W
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1153,1621,0,0
-RECT=1143,1615,1161,1625,0
-
-[ROOMDEF a_house2_sw_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House2 SW
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1403,1803,29,0
-RECT=1399,1799,1409,1809,0
-
-[ROOMDEF a_house4_sw_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House4 SW
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1403,1819,29,0
-RECT=1399,1815,1409,1825,0
-
-[ROOMDEF a_farmers_house2_sw_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Farmer's House2 SW
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1199,1853,0,0
-RECT=1191,1847,1209,1857,0
-
-[ROOMDEF a_house1_n_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House1 N
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1605,1522,40,0
-RECT=1591,1511,1617,1521,0
-RECT=1599,1521,1609,1529,0
-
 [ROOMDEF a_wayfarers_inn_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=The Wayfarers Inn
@@ -4830,39 +4059,6 @@ GROUP=Britain
 FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_FLAG_INSTA_LOGOUT
 P=1598,1591,20,0
 RECT=1575,1583,1601,1601,0
-
-[ROOMDEF a_house1_ne_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House1 NE
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1662,1577,5,0
-RECT=1655,1575,1665,1585,0
-
-[ROOMDEF a_house9_ne_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House9 NE
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1671,1550,30,0
-RECT=1663,1543,1681,1553,0
-
-[ROOMDEF a_house1_e_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House1 E
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1676,1598,7,0
-RECT=1672,1583,1681,1601,0
-
-[ROOMDEF a_house2_ne_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House2 NE
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1653,1611,20,0
-RECT=1647,1599,1665,1609,0
-RECT=1647,1609,1657,1617,0
 
 [ROOMDEF a_girls_best_friend_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -4917,14 +4113,6 @@ FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_FLAG_INSTA_LOGOUT
 P=1475,1518,20,0
 RECT=1455,1511,1473,1529,0
 RECT=1473,1511,1481,1521,0
-
-[ROOMDEF a_house2_c_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House2 C
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1512,1598,10,0
-RECT=1507,1591,1515,1603,0
 
 [ROOMDEF a_quality_fletching_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -5007,22 +4195,6 @@ FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=1506,1658,27,0
 RECT=1495,1655,1509,1665,0
 RECT=1495,1665,1505,1669,0
-
-[ROOMDEF a_bunkhouse_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Bunkhouse
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_FLAG_INSTA_LOGOUT
-P=1462,1709,0,0
-RECT=1447,1703,1473,1713,0
-
-[ROOMDEF a_warehouse_c_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Warehouse C
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=1477,1726,0,0
-RECT=1471,1719,1485,1729,0
 
 [ROOMDEF a_britain_customs_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -6231,208 +5403,6 @@ RECT=2429,866,2448,911,0
 RECT=2448,879,2475,907,0
 RECT=2456,907,2475,941,0
 
-[AREADEF a_beach_house_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Beach House
-GROUP=Misc
-P=1606,3531,0,0
-RECT=1602,3526,1611,3537,0
-
-[AREADEF a_ruins_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Ruins
-GROUP=Moongates
-P=1609,3372,0,0
-RECT=1603,3366,1616,3379,0
-
-[ROOMDEF a_house_8]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Yew
-P=648,940,0,0
-RECT=639,935,657,945,0
-RECT=647,945,657,953,0
-
-[ROOMDEF a_house_9]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Yew
-P=664,1004,0,0
-RECT=656,999,673,1009,0
-RECT=664,1008,673,1017,0
-
-[ROOMDEF a_house_10]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Yew
-P=632,1036,0,0
-RECT=623,1031,641,1041,0
-
-[ROOMDEF a_house_11]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Yew
-P=624,1148,0,0
-RECT=615,1144,633,1153,0
-
-[ROOMDEF a_house_12]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Yew
-P=576,1124,0,0
-RECT=567,1119,585,1129,0
-
-[ROOMDEF a_house_13]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Yew
-P=600,1188,0,0
-RECT=591,1184,609,1193,0
-
-[ROOMDEF a_house_14]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Yew
-P=680,1204,0,0
-RECT=672,1199,689,1209,0
-
-[ROOMDEF a_house_15]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Yew
-P=556,1216,0,0
-RECT=552,1207,561,1225,0
-
-[ROOMDEF a_house_16]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Yew
-P=452,1112,0,0
-RECT=447,1103,457,1121,0
-
-[ROOMDEF a_house_17]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Yew
-P=456,1132,0,0
-RECT=447,1127,466,1137,0
-
-[ROOMDEF a_house_18]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Yew
-P=396,1224,0,0
-RECT=391,1215,402,1234,0
-
-[ROOMDEF a_house_19]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Yew
-P=332,1248,0,0
-RECT=327,1239,337,1257,0
-
-[ROOMDEF a_house_20]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Yew
-P=736,884,0,0
-RECT=727,879,745,889,0
-
-[ROOMDEF a_house_21]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Yew
-P=456,964,0,0
-RECT=447,960,465,969,0
-
-[ROOMDEF a_house_22]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Yew
-P=424,1036,0,0
-RECT=415,1031,433,1041,0
-
-[ROOMDEF a_house_23]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Yew
-P=324,1056,0,0
-RECT=319,1047,329,1065,0
-RECT=328,1056,337,1065,0
-
-[ROOMDEF a_house_24]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Yew
-P=288,984,0,0
-RECT=279,974,297,994,0
-
-[ROOMDEF a_field_2]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Field
-GROUP=Yew
-P=375,1191,0,0
-RECT=368,1175,383,1208,0
-
-[ROOMDEF a_house_25]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Magincia
-P=3682,2196,20,0
-RECT=3679,2183,3696,2208,0
-
-[ROOMDEF a_house_26]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Magincia
-P=3663,2107,0,0
-RECT=3655,2095,3672,2120,0
-RECT=3671,2095,3680,2112,0
-
-[ROOMDEF a_house_27]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Magincia
-P=3763,2111,0,0
-RECT=3759,2095,3768,2128,0
-RECT=3767,2103,3783,2119,0
-RECT=3752,2119,3759,2128,0
-
-[ROOMDEF a_house_28]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Magincia
-P=3697,2068,0,0
-RECT=3690,2055,3705,2081,0
-
-[ROOMDEF a_house_29]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Magincia
-P=3722,2088,0,0
-RECT=3715,2080,3730,2097,0
-
-[ROOMDEF a_house_30]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Minoc
-P=2484,596,0,0
-RECT=2480,591,2489,601,0
-
-[ROOMDEF a_house_31]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Minoc
-P=2497,597,0,0
-RECT=2493,592,2502,602,0
-
-[ROOMDEF a_house_32]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Minoc
-P=2509,597,0,0
-RECT=2504,592,2514,602,0
-
 [ROOMDEF a_trinsic_trail_house_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Trinsic Trail House
@@ -6446,13 +5416,6 @@ NAME=Hunting Camp
 GROUP=Misc
 P=1589,2157,0,0
 RECT=1585,2152,1593,2162,0
-
-[ROOMDEF a_white_house_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=White House
-GROUP=Misc
-P=1904,2088,0,0
-RECT=1895,2079,1914,2098,0
 
 [ROOMDEF a_guard_post_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -6509,64 +5472,6 @@ RECT=2349,899,2370,917,0
 RECT=2396,883,2428,903,0
 RECT=2444,854,2480,890,0
 RECT=2481,853,2559,904,0
-
-[ROOMDEF a_house_33]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Minoc
-P=2419,471,44,0
-RECT=2416,467,2425,477,0
-
-[ROOMDEF a_house_34]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Minoc
-P=2421,483,47,0
-RECT=2417,479,2426,488,0
-
-[ROOMDEF a_house_35]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Minoc
-P=2422,498,0,0
-RECT=2418,494,2427,503,0
-
-[ROOMDEF a_house_36]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Minoc
-P=2484,472,0,0
-RECT=2480,463,2489,481,0
-RECT=2489,472,2497,481,0
-
-[ROOMDEF a_house_37]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Minoc
-P=2504,552,0,0
-RECT=2495,544,2513,561,0
-
-[ROOMDEF a_house_38]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=House
-GROUP=Minoc
-P=2596,614,29,0
-RECT=2592,608,2602,618,0
-
-[AREADEF a_pontao]
-NAME=Pontao
-FLAGS=REGION_ANTIMAGIC_ALL|REGION_ANTIMAGIC_GATE|REGION_FLAG_NOBUILDING|REGION_FLAG_SAFE|REGION_FLAG_NO_PVP
-RECT=5232,1736,5263,1749,0
-RECT=5232,1748,5275,1779,0
-P=5264,1763,0,0
-GROUP=POD Areas
-
-[AREADEF a_mercado]
-NAME=Mercado
-FLAGS=REGION_ANTIMAGIC_ALL|REGION_ANTIMAGIC_GATE|REGION_FLAG_NOBUILDING|REGION_FLAG_SAFE|REGION_FLAG_NO_PVP
-RECT=5940,1937,5978,1981,0
-P=5941,1938
-GROUP=POD Areas
 
 [AREADEF a_Britain_Fields]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
