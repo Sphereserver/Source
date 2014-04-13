@@ -1477,6 +1477,33 @@ bool CWorld::Save( bool fForceImmediate ) // Save world state
 		if ( g_Serv.r_Call("f_onserver_save", &g_Serv, &Args, NULL, &tr) )
 			if ( tr == TRIGRET_RET_TRUE ) 
 				return false;
+
+		//Fushing before the server should fix #2306
+		//The scripts fills the clients buffer and the server flush
+		//the data during the save.
+		//Should we flush only non threaded output or force it 
+		//to flush on any conditions?
+
+#ifndef _MTNETWORK
+		if (g_NetworkOut.isActive() == false) {
+#else
+		if (g_NetworkManager.isOutputThreaded() == false) {
+#endif
+
+#ifdef _DEBUG 
+			g_Log.EventDebug("Flushing %d client(s) output data...\n", g_Serv.StatGet(SERV_STAT_CLIENTS));
+#endif
+
+#ifndef _MTNETWORK
+			g_NetworkOut.flushAll();
+#else
+			g_NetworkManager.flushAllClients();
+#endif
+
+#ifdef _DEBUG
+			g_Log.EventDebug("Done flushing clients output data\n");
+#endif
+		}
 			
 		fForceImmediate = (Args.m_iN1 != 0);
 		bSaved = SaveTry(fForceImmediate);

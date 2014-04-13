@@ -379,7 +379,6 @@ enum EXTDATA_TYPE
 	//
 	//
 	EXTDATA_GargoyleFly		= 0x32, // client message
-	EXTDATA_WheelBoatMove	= 0x33, // client message
 	EXTDATA_QTY
 };
 
@@ -980,7 +979,7 @@ enum NOTO_TYPE
 #define MINCLIVER_NOTOINVUL			0x400000	// minimum client required to view noto_invul health bar
 #define MINCLIVER_SKILLCAPS			0x400000	// minimum client to send skill caps in 0x3A packet
 #define MINCLIVER_CLOSEDIALOG		0x400040	// minimum client where close dialog does not trigger a client response
-#define MINCLIVER_ITEMGRID			0x600018	// minimum client to use grid index
+#define MINCLIVER_ITEMGRID			0x600017	// minimum client to use grid index
 
 // client versions (packets)
 #define MAXCLIVER_REVERSEIP			0x400000	// maximum client to reverse ip in 0xA8 packet

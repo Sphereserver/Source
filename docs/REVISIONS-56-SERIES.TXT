@@ -786,3 +786,7 @@ Fixed system tray icon not removing on exit.
 -Added f_onaccount_pwchange to sphere_serv_triggers.scp
 -Modified f_onaccount_create.
 Both are fire now in each account creation / password change, no matter the source (serv.account xx ingame, via console, .set password...).
+
+13-04-2014, Feeh
+Fixed #2306: No lag should be noticeable after f_onserver_save call
+Fixed #2293: Sphere should now read packets correctly from 6.0.1.7 clients
