@@ -961,20 +961,6 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0xBF.0x33 : PacketWheelBoatMove			wheel boat movement
- *
- *
- ***************************************************************************/
-class PacketWheelBoatMove : public Packet
-{
-public:
-	PacketWheelBoatMove();
-	virtual bool onReceive(NetState* net);
-};
-
-/***************************************************************************
- *
- *
  *	Packet 0xC2 : PacketPromptResponseUnicode		prompt response (unicode)
  *
  *
