@@ -1996,14 +1996,6 @@ P=2400,200,0,0
 RECT=2394,192,2409,219,0
 RECT=5710,412,5770,470,0
 
-[ROOMDEF a_wind_tavern_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Wind Tavern
-GROUP=Wind
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5223,181,5,0
-RECT=5206,158,5228,182,0
-
 [AREADEF a_minoc_cave1_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Minoc Cave1
@@ -2011,39 +2003,6 @@ GROUP=Mines & Caves
 FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=2426,177,0,0
 RECT=2406,168,2428,184,0
-
-[ROOMDEF a_mages_appetite_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Mages Appetite
-GROUP=Wind
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5345,86,25,0
-RECT=5339,70,5354,90,0
-
-[ROOMDEF a_alchemy_revisited_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Alchemy Revisited
-GROUP=Wind
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5306,92,15,0
-RECT=5290,85,5311,101,0
-
-[ROOMDEF a_wind_tailor_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Wind Tailor
-GROUP=Wind
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5202,93,5,0
-RECT=5196,82,5210,98,0
-
-[ROOMDEF a_mages_things_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Mage's Things
-GROUP=Wind
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5156,102,5,0
-RECT=5148,90,5168,101,0
-RECT=5148,100,5158,107,0
 
 [AREADEF a_entrance_nrong_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -2459,7 +2418,7 @@ RECT=5706,408,5776,473,0
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Ice Dungeon Orc Fort
 GROUP=T2A Dungeons
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
+FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=5833,328,19,0
 RECT=5799,316,5870,381,0
 
@@ -2467,7 +2426,7 @@ RECT=5799,316,5870,381,0
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Ice Dungeon Lair
 GROUP=T2A Dungeons
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
+FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=5702,305,0,0
 RECT=5649,294,5713,350,0
 
@@ -2487,7 +2446,16 @@ FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=5749,359,2,0
 RECT=5732,316,5776,372,0
 
-[AREADEF a_fire_dungeon_level_2_1]
+[AREADEF a_fire_dungeon_level_1]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Fire Dungeon Level 1
+GROUP=T2A Dungeons
+FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
+P=5790,1416,-40,0
+RECT=5663,1402,5884,1519,0
+RECT=5764,1284,5884,1408,0
+
+[AREADEF a_fire_dungeon_level_2]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Fire Dungeon Level 2
 GROUP=T2A Dungeons
@@ -2495,16 +2463,6 @@ FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=5702,1315,1,0
 RECT=5630,1284,5763,1401,0
 RECT=5630,1397,5662,1456,0
-
-[AREADEF a_fire_dungeon_level_1_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Fire Dungeon Level 1
-GROUP=T2A Dungeons
-FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5790,1416,-40,0
-RECT=5663,1402,5884,1488,0
-RECT=5727,1480,5884,1519,0
-RECT=5764,1284,5884,1408,0
 
 [AREADEF a_trinsic_passage_level_2_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -2776,7 +2734,7 @@ RECT=5378,517,5515,637,0
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Despise Level 2
 GROUP=Despise
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
+FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=5583,632,30,0
 RECT=5566,622,5591,643,0
 
@@ -2869,63 +2827,6 @@ GROUP=Covetous
 FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=5467,1809,0,0
 RECT=5400,1794,5489,1834,0
-
-[ROOMDEF a_wind_inn_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Wind Inn
-GROUP=Wind
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_FLAG_INSTA_LOGOUT
-P=5166,36,17,0
-RECT=5159,15,5184,40,0
-
-[ROOMDEF a_wind_alchemist_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Wind Alchemist
-GROUP=Wind
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5150,78,25,0
-RECT=5143,52,5159,87,0
-
-[ROOMDEF a_wind_healer_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Wind Healer
-GROUP=Wind
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5265,132,20,0
-RECT=5258,122,5267,140,0
-RECT=5267,122,5272,130,0
-
-[ROOMDEF a_wind_kitchen_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Wind Kitchen
-GROUP=Wind
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5348,62,15,0
-RECT=5340,48,5358,64,0
-
-[ROOMDEF a_seatnowledge_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Seat of Knowledge
-GROUP=Wind
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5247,185,15,0
-RECT=5236,171,5250,193,0
-
-[ROOMDEF a_learned_mage_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=The Learned Mage
-GROUP=Wind
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5238,153,15,0
-RECT=5227,124,5248,159,0
-
-[ROOMDEF a_seekers_inn_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Seekers Inn
-GROUP=Wind
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_FLAG_INSTA_LOGOUT
-P=5311,42,40,0
-RECT=5303,28,5319,43,0
 
 [ROOMDEF a_bloody_thumb_woodworking_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -4325,27 +4226,6 @@ RECT=5251,1725,5371,1748,0
 RECT=5276,1747,5371,1792,0
 RECT=5397,3083,5496,3176,0
 
-[AREADEF a_ice_dungeon_5]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Ice Dungeon
-GROUP=T2A
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5876,148,25,0
-RECT=5638,128,5896,310,0
-RECT=5638,288,5724,372,0
-RECT=5784,287,5896,387,0
-EVENTS=r_dungeon
-
-[AREADEF a_fire_dungeon_4]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Fire Dungeon
-GROUP=T2A
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5790,1416,40,0
-RECT=5627,1282,5887,1491,0
-RECT=5726,1489,5887,1521,0
-EVENTS=r_dungeon
-
 [ROOMDEF a_brit_sewers_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Brit Sewers
@@ -4375,14 +4255,6 @@ RECT=5235,3930,5303,3945,0
 RECT=5226,3938,5235,3945,0
 RECT=5127,3945,5178,4083,0
 RECT=5178,4060,5270,4083,0
-
-[AREADEF a_fire_dungeon_entrance_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Fire Dungeon Entrance
-GROUP=T2A Dungeons
-FLAGS=REGION_FLAG_NOBUILDING
-P=5758,2908,0,0
-RECT=5756,2906,5760,2911,0
 
 [AREADEF a_exit_from_desert_w_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -4672,39 +4544,6 @@ FLAGS=REGION_FLAG_NOBUILDING
 P=1122,1904,0,0
 RECT=1095,1863,1154,1935,0
 
-[AREADEF a_wrong_6]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Wrong
-GROUP=Wrong
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5825,599,0,0
-RECT=5633,511,5886,1021,0
-
-[AREADEF a_shame_entrance_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Shame Entrance
-GROUP=Shame
-FLAGS=REGION_FLAG_NOBUILDING
-P=513,1561,0,0
-RECT=510,1557,517,1562,0
-
-[AREADEF a_shame_7]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Shame
-GROUP=Shame
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5395,126,0,0
-RECT=5377,2,5634,262,0
-RECT=5635,2,5895,126,0
-
-[AREADEF a_hythloth_6]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Hythloth
-GROUP=Hythloth
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5905,22,44,0
-RECT=5898,2,6136,246,0
-
 [AREADEF a_islehe_fire_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Fire Island
@@ -4712,69 +4551,29 @@ GROUP=ALLMAP
 P=4593,3507,20,0
 RECT=4094,3000,4917,4025,0
 
-[AREADEF a_destard_5]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Destard
-GROUP=Destard
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5243,1004,0,0
-RECT=5120,770,5371,1028,0
-
-[AREADEF a_despise_6]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Despise
-GROUP=Despise
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5501,570,59,0
-RECT=5377,516,5631,1022,0
-
-[AREADEF a_deceit_6]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Deceit
-GROUP=Deceit
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5187,635,0,0
-RECT=5122,518,5370,770,0
-
 [AREADEF a_ice_isle_3]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Ice Isle
 GROUP=Cove
 P=4038,529,0,0
 RECT=3839,167,4309,773,0
-
-[AREADEF a_covetous_entrance_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Covetous Entrance
-GROUP=Covetous
-FLAGS=REGION_FLAG_NOBUILDING
-P=2499,918,0,0
-RECT=2495,914,2503,919,0
-
-[AREADEF a_covetous_7]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Covetous
-GROUP=Covetous
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_ANTIMAGIC_RECALL_IN
-P=5456,1862,0,0
-RECT=5376,1793,5577,2048,0
-RECT=5576,1791,5633,2048,0
+RAINCHANCE=100
+COLDCHANCE=100
 
 [AREADEF a_wind_courtyard_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+EVENTS=r_default,r_default_water,r_default_tree,r_default_grass
 NAME=Wind Courtyard
 GROUP=Wind
-FLAGS=REGION_FLAG_NOBUILDING
+FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=5247,24,15,0
 RECT=5201,8,5286,58,0
 RECT=5213,56,5278,99,0
-TAG.GUARDOWNER=the town
 
 [AREADEF a_wind_tunnels_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+EVENTS=r_default,r_default_water,r_default_tree,r_default_grass
 NAME=Wind Tunnels
 GROUP=Wind
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
+FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=5176,185,25,0
 RECT=5122,124,5199,162,0
 RECT=5122,160,5196,252,0
@@ -4785,16 +4584,16 @@ RECT=5284,151,5313,177,0
 RECT=5291,138,5316,156,0
 
 [AREADEF a_townWind]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+EVENTS=r_default,r_default_water,r_default_tree,r_default_grass
 NAME=Wind
 GROUP=Wind
-FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_NO_PVP|REGION_FLAG_GUARDED|REGION_FLAG_NODECAY
-P=5223,201,5,0
+FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_FLAG_NO_PVP|REGION_FLAG_GUARDED
+P=5223,190,5,0
 RECT=5121,4,5373,255,0
 TAG.GUARDOWNER=the town
 
 [AREADEF a_outside_wind_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+EVENTS=r_default,r_default_water,r_default_tree,r_default_grass
 NAME=Outside Wind
 GROUP=Wind
 FLAGS=REGION_FLAG_NOBUILDING
@@ -5009,7 +4808,7 @@ RECT=4533,855,4541,865,0
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Lycaeum
 GROUP=Moonglow
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_SAFE
+FLAGS=REGION_FLAG_NOBUILDING
 P=4310,1009,0,0
 RECT=4285,947,4336,1012,0
 
