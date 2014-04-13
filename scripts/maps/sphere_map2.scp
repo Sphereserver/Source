@@ -1,4 +1,4 @@
-//****************************************************************************
+﻿//****************************************************************************
 // SPHERE by : Menasoft ©1997-2009
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
@@ -194,11 +194,10 @@ EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_ancient_citadel]
 NAME=Ancient Citadel
-P=1516,542,85,2
-RECT=1448,496,1552,600,2
+P=1518,568,-14,2
+RECT=1488,502,1547,578,2
+FLAGS=080
 GROUP=Ilshenar Towns
-TAG.TITLE=the city of
-FLAGS=region_flag_nobuilding
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_alexandretta_bowl]
@@ -729,14 +728,6 @@ NAME=Desert Outpost
 P=1620,596,0,2
 RECT=1487,587,1550,690,2
 RECT=1750,506,1550,690,2
-FLAGS=080
-GROUP=Ilshenar
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_ancient_citadel]
-NAME=Ancient Citadel
-P=1518,568,-14,2
-RECT=1488,502,1547,578,2
 FLAGS=080
 GROUP=Ilshenar
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass

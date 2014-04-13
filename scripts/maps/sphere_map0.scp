@@ -5501,23 +5501,6 @@ FLAGS=0//(NONE)
 P=1858,876,-1,0
 RECT=1801,805,2036,871,0
 RECT=2036,870,1814,902,0
-
-[AREADEF a_Sak_teb]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Sak Teb
-GROUP=ALLMAP
-P=5766,2920,37,0
-RECT=5644,2824,5864,3030,0
-EVENTS=r_plains
-
-[AREADEF a_desert_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Desert of Compassion
-GROUP=Shrines
-FLAGS=0//(NONE)
-P=1858,876,-1,0
-RECT=1801,805,2036,871,0
-RECT=2036,870,1814,902,0
 RECT=1814,901,1959,962,0
 RECT=1942,860,2020,915,0
 RECT=1919,895,2012,928,0
