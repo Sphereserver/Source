@@ -196,8 +196,9 @@ EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Ancient Citadel
 P=1518,568,-14,2
 RECT=1488,502,1547,578,2
-FLAGS=080
 GROUP=Ilshenar Towns
+TAG.TITLE=the city of
+FLAGS=region_flag_nobuilding
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_alexandretta_bowl]
