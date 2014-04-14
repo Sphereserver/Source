@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,9 +7,9 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, November 15, 2003
-
-VERSION=0.56b
+// FILE LAST UPDATED: Monday, April 14, 2014
+//
+VERSION=0.56c
 
 [MoonGates]
 1336,1997,5,1=mg_britain_map1
@@ -202,9 +202,11 @@ VERSION=0.56b
 5786,1335,-13,1=5701,1319,13,1=tp_lava_1_2_1_map1
 5787,1335,-13,1=5702,1319,13,1=tp_lava_1_2_2_map1
 5788,1335,-13,1=5703,1319,13,1=tp_lava_1_2_3_map1
-6005,1378,-4,1=5151,4062,37,1=tp_trinsicpassage2a_delucia_map1
-6005,1379,0,1=5151,4062,37,1=tp_trinsicpassage2a_delucia_map1
-6005,1380,3,1=5151,4063,37,1=tp_trinsicpassage2a_delucia_map1
+6005,1378,0,1=5151,4062,37,1=tp_trinsicpassage_delucia1_map1
+6005,1379,0,1=5151,4062,37,1=tp_trinsicpassage_delucia2_map1
+6005,1380,0,1=5151,4063,37,1=tp_trinsicpassage_delucia3_map1
+5150,4062,40,1=6005,1378,0,1=tp_delucia_trinsicpassage1_map1
+5150,4063,40,1=6005,1379,0,1=tp_delucia_trinsicpassage2_map1
 6025,1344,-26,1=5137,3664,30,1=tp_trinsicpassage2b_WCityofDead_map1
 6025,1345,-26,1=5137,3664,30,1=tp_trinsicpassage2b_WCityofDead_map1
 6025,1346,-24,1=5137,3665,28,1=tp_trinsicpassage2b_WCityofDead_map1
@@ -320,10 +322,7 @@ VERSION=0.56b
 4722,3814,0,1=5905,16,61,1=tp_hythloth_out_x_ent_map1
 4723,3814,0,1=5906,16,61,1=tp_hythloth_out_x_ent_map1
 1406,3996,5,1=1414,3828,5,1=tp_jhelom_ns_m_x_map1
-5150,4062,40,1=1629,3321,0,1=tp_delucia_trinsicsw_1_map1
-5150,4063,40,1=1629,3321,0,1=tp_delucia_trinsicsw_map1
 5906,4069,26,1=2494,3576,5,1=tp_EDeluciaTemple_TempleIsle_map1
-
 6107,176,0,1=6115,176,0,1=tp_hythloth_passage_1_1x_map1
 6115,176,0,1=6107,176,0,1=tp_hythloth_passage_1_2x_map1
 5919,170,22,1=6083,146,-17,1=tp_hythloth_passage_2_1x_map1
@@ -333,4 +332,5 @@ VERSION=0.56b
 5972,168,0,1=5905,96,0,1=tp_hythloth_passage_3_2x_map1
 5973,168,0,1=5905,96,0,1=tp_hythloth_passage_3_3x_map1
 5905,96,0,1=5976,168,0,1=tp_hythloth_passage_3_4x_map1
+
 [EOF]

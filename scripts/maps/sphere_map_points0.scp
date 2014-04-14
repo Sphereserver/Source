@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,9 +7,9 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: June 09, 2011
-
-VERSION=0.56b
+// FILE LAST UPDATED: Monday, April 14, 2014
+//
+VERSION=0.56c
 
 [STARTS 2]	// new client (<ARGN> == 2 if new cliloc line is added)
 Yew
@@ -371,4 +371,5 @@ The Ironwood Inn
 5972,168,0,0=5905,96,0,0=tp_hythloth_passage_3_2x
 5973,168,0,0=5905,96,0,0=tp_hythloth_passage_3_3x
 5905,96,0,0=5976,168,0,0=tp_hythloth_passage_3_4x
+
 [EOF]
