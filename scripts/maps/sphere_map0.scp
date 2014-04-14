@@ -7,13 +7,11 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, April 12, 2014
+// FILE LAST UPDATED: Monday, April 14, 2014
 //
 VERSION=0.56c
 
-
 [COMMENT sphere_map0]
-
 This file (and other map files like it) define map areas (also known as
 AREADEF and ROOMDEF, and typically named a_something) using one or more
 RECT= properties that describe a rectangle.  The RECT= property uses 5 values
@@ -37,12 +35,19 @@ WARNING: NEVER edit a map file on a running server!
 // The Entire Map //
 ////////////////////
 
-[AREADEF a_world]
+[AREADEF a_felucca]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Felucca
 GROUP=ALLMAP
 P=1323,1624,55,0
 RECT=0,0,7168,4096,0
+
+[AREADEF a_felucca_lost_lands]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Lost Lands
+GROUP=ALLMAP
+P=5729,3209,-1,0
+RECT=5119,2303,6144,4095,0
 
 /////////////////
 // Territories //
@@ -242,23 +247,6 @@ FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=1934,316,0,0
 RECT=1925,307,1943,325,0
 
-[AREADEF a_exit_from_lighthouse_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Exit from Lighthouse
-GROUP=T2A Entrances & Exits
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5672,2390,60,0
-RECT=5667,2387,5672,2392,0
-
-[ROOMDEF a_sweet_dreams_inn_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Sweet Dreams Inn
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_FLAG_INSTA_LOGOUT
-P=1495,1619,20,0
-RECT=1491,1601,1500,1626,0
-RECT=1500,1609,1508,1626,0
-
 [AREADEF a_brit_mine2_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Brit Mine2
@@ -266,15 +254,6 @@ GROUP=Mines & Caves
 FLAGS=REGION_FLAG_NOBUILDING
 P=1629,1189,0,0
 RECT=1611,1175,1662,1204,0
-
-[AREADEF a_entrance_from_ninoc_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Entrance from N of Minoc
-GROUP=T2A Entrances & Exits
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=2400,200,0,0
-RECT=2394,192,2409,219,0
-RECT=5710,412,5770,470,0
 
 [AREADEF a_minoc_cave1_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -316,143 +295,71 @@ FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=5211,3629,-2,0
 RECT=5199,3606,5230,3630,0
 
-[AREADEF a_trinsic_moongate_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Trinsic Moongate
-GROUP=Moongates
-P=1828,2948,-20,0
-RECT=1825,2945,1832,2952,0
-
-[AREADEF a_magincia_moongate_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Magincia Moongate
-GROUP=Moongates
-P=3564,2140,34,0
-RECT=3561,2137,3568,2143,0
-
-[AREADEF a_skara_brae_moongate_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Skara Brae Moongate
-GROUP=Moongates
-P=643,2067,5,0
-RECT=640,2064,648,2071,0
-
-[AREADEF a_britain_moongate_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Britain Moongate
-GROUP=Moongates
-P=1336,1997,5,0
-RECT=1333,1995,1340,2001,0
-
-[AREADEF a_moonglow_moongate_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Moonglow Moongate
-GROUP=Moongates
-P=4467,1283,5,0
-RECT=4464,1280,4471,1287,0
-
-[AREADEF a_minoc_vesper_moongate_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Minoc-Vesper Moongate
-GROUP=Moongates
-P=2702,692,5,0
-RECT=2697,688,2706,697,0
-
-[AREADEF a_yew_brigand_fort_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Yew Brigand Fort
-GROUP=Yew
-FLAGS=REGION_FLAG_NOBUILDING
-P=877,1683,0,0
-RECT=834,1670,872,1704,0
-RECT=871,1678,880,1688,0
-
 [AREADEF a_jail_2]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Jail
 GROUP=Jails
-FLAGS=REGION_ANTIMAGIC_GATE|REGION_ANTIMAGIC_RECALL_OUT|REGION_ANTIMAGIC_RECALL_IN|REGION_ANTIMAGIC_ALL|REGION_FLAG_NOBUILDING|REGION_ANTIMAGIC_TELEPORT|REGION_FLAG_UNDERGROUND|REGION_FLAG_INSTA_LOGOUT|REGION_FLAG_GUARDED|REGION_FLAG_SAFE
+FLAGS=REGION_ANTIMAGIC_GATE|REGION_ANTIMAGIC_RECALL_OUT|REGION_ANTIMAGIC_RECALL_IN|REGION_ANTIMAGIC_ALL|REGION_FLAG_NOBUILDING|REGION_ANTIMAGIC_TELEPORT|REGION_FLAG_UNDERGROUND|REGION_FLAG_INSTA_LOGOUT|REGION_FLAG_SAFE
 P=5295,1187,0,0
 RECT=5269,1157,5314,1194,0
-TAG.GUARDOWNER=SPHERE Jailors
 
 [ROOMDEF jail1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Jail Cell 1
 GROUP=Jails
-FLAGS=REGION_FLAG_UNDERGROUND
 P=5276,1164,0,0
 RECT=5272,1160,5281,1169,0
 
 [ROOMDEF jail2]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Jail Cell 2
 GROUP=Jails
-FLAGS=REGION_FLAG_NOBUILDING
 P=5286,1164,0,0
 RECT=5282,1160,5291,1169,0
 
 [ROOMDEF jail3]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Jail Cell 3
 GROUP=Jails
-FLAGS=REGION_FLAG_NOBUILDING
 P=5296,1164,0,0
 RECT=5292,1160,5301,1169,0
 
 [ROOMDEF jail4]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Jail Cell 4
 GROUP=Jails
-FLAGS=REGION_FLAG_NOBUILDING
 P=5306,1164,0,0
 RECT=5302,1160,5311,1169,0
 
 [ROOMDEF jail5]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Jail Cell 5
 GROUP=Jails
-FLAGS=REGION_FLAG_NOBUILDING
 P=5276,1174,0,0
 RECT=5272,1170,5281,1179,0
 
 [ROOMDEF jail6]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Jail Cell 6
 GROUP=Jails
-FLAGS=REGION_FLAG_NOBUILDING
 P=5286,1174,0,0
 RECT=5282,1170,5291,1179,0
 
 [ROOMDEF jail7]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Jail Cell 7
 GROUP=Jails
-FLAGS=REGION_FLAG_NOBUILDING
 P=5296,1174,0,0
 RECT=5292,1170,5301,1179,0
 
 [ROOMDEF jail8]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Jail Cell 8
 GROUP=Jails
-FLAGS=REGION_FLAG_NOBUILDING
 P=5306,1174,0,0
 RECT=5302,1170,5311,1179,0
 
 [ROOMDEF jail9]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Jail Cell 9
 GROUP=Jails
-FLAGS=REGION_FLAG_NOBUILDING
 P=5283,1184,0,0
 RECT=5272,1180,5291,1191,0
 
 [ROOMDEF jail10]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Jail Cell 10
 GROUP=Jails
-FLAGS=REGION_FLAG_UNDERGROUND
 P=5304,1184,0,0
 RECT=5292,1180,5311,1191,0
 
@@ -463,22 +370,6 @@ GROUP=Yew
 FLAGS=REGION_FLAG_NOBUILDING
 P=724,1134,0,0
 RECT=711,1103,736,1136,0
-
-[AREADEF a_wrong_entrance_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Wrong Entrance
-GROUP=Wrong
-FLAGS=REGION_FLAG_NOBUILDING
-P=2041,217,14,0
-RECT=2038,213,2047,221,0
-RECT=2030,221,2055,234,0
-
-[AREADEF a_yew_moongate_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Yew Moongate
-GROUP=Moongates
-P=771,751,5,0
-RECT=765,746,778,758,0
 
 [AREADEF a_avatar_isle_cave_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -495,17 +386,9 @@ P=4024,329,0,0
 RECT=4002,310,4045,351,0
 RECT=4005,298,4027,310,0
 
-[AREADEF a_jhelom_moongate_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Jhelom Moongate
-GROUP=Moongates
-P=1498,3772,5,0
-RECT=1496,3770,1502,3776,0
-
 [AREADEF a_daemon_temple_compound_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Fire Temple
-GROUP=Hythloth
 P=4588,3567,0,0
 RECT=4561,3548,4616,3586,0
 RECT=4576,3586,4615,3625,0
@@ -526,38 +409,6 @@ GROUP=Cove
 P=2442,1117,8,0
 RECT=2423,1098,2455,1120,0
 RECT=2431,1080,2455,1099,0
-
-[AREADEF a_passage_from_sbritain_isle_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Passage from SBritain Isle
-GROUP=T2A Dungeons
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5828,463,2,0
-RECT=5807,414,5864,475,0
-
-[AREADEF a_passage_from_vesper_cemetary_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Passage from Vesper Cemetary
-GROUP=T2A Dungeons
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5683,387,1,0
-RECT=5645,374,5699,440,0
-
-[AREADEF a_passage_from_brit_sewers_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Passage from Brit Sewers
-GROUP=T2A Entrances & Exits
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=6138,1406,6,0
-RECT=6118,1387,6143,1417,0
-
-[AREADEF a_passage_from_n_minoc_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Passage from N Minoc
-GROUP=T2A Entrances & Exits
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5753,435,77,0
-RECT=5706,408,5776,473,0
 
 [AREADEF a_ice_dungeon_orc_fort_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -582,14 +433,6 @@ GROUP=T2A Dungeons
 FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=5774,149,20,0
 RECT=5663,130,5891,274,0
-
-[AREADEF a_passage_from_yew_to_lighthouse_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Passage from Yew to Lighthouse
-GROUP=T2A Entrances & Exits
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5749,359,2,0
-RECT=5732,316,5776,372,0
 
 [AREADEF a_fire_dungeon_level_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -618,14 +461,6 @@ P=5967,1409,45,0
 RECT=5938,1370,6025,1411,0
 RECT=5890,1285,6035,1370,0
 RECT=6035,1300,6048,1323,0
-
-[AREADEF a_trinsic_passage_level_1_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Trinsic Passage Level 1
-GROUP=T2A Dungeons
-FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=5900,1408,43,0
-RECT=5891,1371,5937,1414,0
 
 [AREADEF a_wrong_level_4_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -862,41 +697,24 @@ FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=5467,1809,0,0
 RECT=5400,1794,5489,1834,0
 
-[AREADEF a_nujelm_palace_garden_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Nujel'm Palace Garden
-GROUP=Nujel'm
-FLAGS=REGION_ANTIMAGIC_GATE|REGION_ANTIMAGIC_RECALL_OUT|REGION_ANTIMAGIC_RECALL_IN|REGION_ANTIMAGIC_ALL|REGION_FLAG_NOBUILDING|REGION_ANTIMAGIC_TELEPORT|REGION_FLAG_GUARDED|REGION_FLAG_SAFE
-P=3651,1304,0,0
-RECT=3634,1297,3667,1316,0
-RECT=3638,1316,3667,1328,0
-RECT=3645,1328,3667,1336,0
-
-[AREADEF a_minoc_mine_1_1]
-NAME=Minoc Mine 1
-GROUP=Mines & Caves
-FLAGS=REGION_FLAG_GUARDED|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-P=2558,499,0,0
-RECT=2556,501,2562,504,0
-RECT=2556,474,2582,501,0
-EVENTS=r_default_rock
+[ROOMDEF a_empath_abbey_1]
+EVENTS=r_default,r_default_water,r_default_tree,r_default_grass
+NAME=Empath Abbey
+GROUP=Yew
+FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_FLAG_INSTA_LOGOUT
+P=634,851,0,0
+RECT=599,807,623,833,0
+RECT=623,815,648,856,0
+RECT=647,807,672,833,0
 
 [ROOMDEF a_chamberirtue_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Chamber of Virtue
 GROUP=Britain
-FLAGS=REGION_ANTIMAGIC_GATE|REGION_ANTIMAGIC_RECALL_OUT|REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_ANTIMAGIC_TELEPORT|REGION_FLAG_UNDERGROUND|REGION_FLAG_INSTA_LOGOUT|REGION_FLAG_GUARDED|REGION_FLAG_SAFE
+FLAGS=REGION_ANTIMAGIC_GATE|REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_ANTIMAGIC_TELEPORT|REGION_FLAG_UNDERGROUND|REGION_FLAG_SAFE
 P=1544,1613,10,0
 RECT=1536,1582,1552,1616,0
 RECT=1552,1591,1560,1608,0
-
-[AREADEF a_exit_from_seaarmony_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Exit from Sea of Harmony
-GROUP=T2A Entrances & Exits
-FLAGS=REGION_FLAG_NOBUILDING
-P=5973,2700,-5,0
-RECT=5964,2687,5984,2708,0
 
 [AREADEF a_ophidian_lair_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -956,14 +774,12 @@ NAME=Terathan Keep
 GROUP=T2A
 FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=5451,3140,-60,0
-RECT=5124,1532,5371,1725,0
-RECT=5251,1725,5371,1748,0
-RECT=5276,1747,5371,1792,0
-RECT=5397,3083,5496,3176,0
+RECT=5404,3099,5481,3167,0
+RECT=5120,1530,5374,1788,0
 
-[ROOMDEF a_brit_sewers_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Brit Sewers
+[AREADEF a_brit_sewers_1]
+EVENTS=r_default,r_default_water,r_default_tree,r_default_grass
+NAME=Britain Sewers
 GROUP=Britain
 FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=6032,1499,37,0
@@ -982,7 +798,7 @@ RECT=5743,3088,5840,3332,0
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Delucia
 GROUP=Delucia
-FLAGS=REGION_FLAG_NOBUILDING
+FLAGS=REGION_FLAG_GUARDED|REGION_FLAG_NOBUILDING
 P=5272,3995,37,0
 RECT=5178,3945,5303,4060,0
 RECT=5303,3928,5314,4048,0
@@ -1035,7 +851,7 @@ RECT=2447,39,2489,67,0
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Humility
 GROUP=Shrines
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_INSTA_LOGOUT|REGION_FLAG_SAFE
+FLAGS=REGION_FLAG_NOBUILDING
 P=4273,3702,0,0
 RECT=4268,3690,4280,3703,0
 
@@ -1043,7 +859,7 @@ RECT=4268,3690,4280,3703,0
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Chaos
 GROUP=Shrines
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_INSTA_LOGOUT|REGION_FLAG_SAFE
+FLAGS=REGION_FLAG_NOBUILDING
 P=1451,855,0,0
 RECT=1446,852,1451,859,0
 
@@ -1051,7 +867,7 @@ RECT=1446,852,1451,859,0
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Honesty
 GROUP=Shrines
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_INSTA_LOGOUT|REGION_FLAG_SAFE
+FLAGS=REGION_FLAG_NOBUILDING
 P=4215,563,41,0
 RECT=4207,560,4215,568,0
 
@@ -1059,7 +875,7 @@ RECT=4207,560,4215,568,0
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Sacrifice
 GROUP=Shrines
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_INSTA_LOGOUT|REGION_FLAG_SAFE
+FLAGS=REGION_FLAG_NOBUILDING
 P=3354,299,9,0
 RECT=3349,283,3361,299,0
 
@@ -1067,7 +883,7 @@ RECT=3349,283,3361,299,0
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Valor
 GROUP=Shrines
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_INSTA_LOGOUT|REGION_FLAG_SAFE
+FLAGS=REGION_FLAG_NOBUILDING
 P=2491,3930,0,0
 RECT=2487,3926,2496,3936,0
 
@@ -1075,7 +891,7 @@ RECT=2487,3926,2496,3936,0
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Spirituality
 GROUP=Shrines
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_INSTA_LOGOUT|REGION_FLAG_SAFE
+FLAGS=REGION_FLAG_NOBUILDING
 P=1601,2489,9,0
 RECT=1588,2484,1603,2497,0
 
@@ -1083,7 +899,7 @@ RECT=1588,2484,1603,2497,0
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Justice
 GROUP=Shrines
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_INSTA_LOGOUT|REGION_FLAG_SAFE
+FLAGS=REGION_FLAG_NOBUILDING
 P=1301,639,16,0
 RECT=1295,626,1307,640,0
 
@@ -1091,7 +907,7 @@ RECT=1295,626,1307,640,0
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Honor
 GROUP=Shrines
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_INSTA_LOGOUT|REGION_FLAG_SAFE
+FLAGS=REGION_FLAG_NOBUILDING
 P=1729,3528,3,0
 RECT=1721,3524,1729,3531,0
 
@@ -1107,36 +923,30 @@ RECT=5123,1743,5171,1792,0
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Green Acres 3
 GROUP=Green Acres
-FLAGS=REGION_ANTIMAGIC_GATE|REGION_ANTIMAGIC_RECALL_OUT|REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_FLAG_INSTA_LOGOUT|REGION_FLAG_GUARDED|REGION_FLAG_SAFE
+FLAGS=REGION_ANTIMAGIC_GATE|REGION_ANTIMAGIC_RECALL_OUT|REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_FLAG_INSTA_LOGOUT|REGION_FLAG_SAFE
 P=5932,1945,0,0
 RECT=5121,2049,6143,2303,0
 RECT=5375,1535,5424,1792,0
-RECT=5423,1536,6143,1791,0
-RECT=5633,1777,6143,2049,0
-EVENTS=r_plains
-TAG.GUARDOWNER=GM
+RECT=5423,1536,6144,1791,0
+RECT=5633,1777,6144,2049,0
 
 [AREADEF a_green_acres_2_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Green Acres 2
 GROUP=Green Acres
-FLAGS=REGION_ANTIMAGIC_GATE|REGION_ANTIMAGIC_RECALL_OUT|REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_FLAG_INSTA_LOGOUT|REGION_FLAG_GUARDED|REGION_FLAG_SAFE
+FLAGS=REGION_ANTIMAGIC_GATE|REGION_ANTIMAGIC_RECALL_OUT|REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_FLAG_INSTA_LOGOUT|REGION_FLAG_SAFE
 P=5250,392,15,0
 RECT=5120,256,5376,516,0
-EVENTS=r_plains
-TAG.GUARDOWNER=GM
 
 [AREADEF a_green_acres_3]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Green Acres
 GROUP=Green Acres
-FLAGS=REGION_ANTIMAGIC_GATE|REGION_ANTIMAGIC_RECALL_OUT|REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_FLAG_INSTA_LOGOUT|REGION_FLAG_GUARDED|REGION_FLAG_SAFE
+FLAGS=REGION_ANTIMAGIC_GATE|REGION_ANTIMAGIC_RECALL_OUT|REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_FLAG_INSTA_LOGOUT|REGION_FLAG_SAFE
 P=5454,1103,0,0
 RECT=5374,1079,5631,1280,0
 RECT=5630,1023,6143,1279,0
 RECT=5887,511,6143,1024,0
-EVENTS=r_plains
-TAG.GUARDOWNER=GM
 
 [AREADEF a_yew_cave1_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -1180,7 +990,6 @@ RECT=4094,3000,4917,4025,0
 [AREADEF a_ice_isle_3]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Ice Isle
-GROUP=Cove
 P=4038,529,0,0
 RECT=3839,167,4309,773,0
 RAINCHANCE=100
@@ -1353,19 +1162,6 @@ P=3650,2519,0,0
 RECT=3588,2460,3707,2685,0
 RECT=3695,2558,3760,2705,0
 
-[AREADEF a_nujelm_palace_2]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Nujel'm Palace
-GROUP=Nujel'm
-FLAGS=REGION_ANTIMAGIC_GATE|REGION_ANTIMAGIC_RECALL_OUT|REGION_ANTIMAGIC_RECALL_IN|REGION_ANTIMAGIC_ALL|REGION_FLAG_NOBUILDING|REGION_ANTIMAGIC_TELEPORT|REGION_FLAG_UNDERGROUND|REGION_FLAG_GUARDED|REGION_FLAG_SAFE
-P=3701,1279,20,0
-RECT=3667,1215,3696,1336,0
-RECT=3667,1336,3687,1341,0
-RECT=3696,1245,3712,1335,0
-RECT=3708,1245,3715,1314,0
-RECT=3714,1260,3722,1298,0
-RECT=3696,1225,3704,1245,0
-
 [AREADEF a_nujelm_cemetary_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Nujel'm Cemetary
@@ -1412,16 +1208,15 @@ P=4546,1333,8,0
 RECT=4527,1313,4558,1336,0
 RECT=4535,1296,4558,1313,0
 
-[AREADEF a_townZoo]
+[AREADEF a_moonglow_zoo]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Moonglow Zoo
 GROUP=Moonglow
-FLAGS=REGION_ANTIMAGIC_GATE|REGION_ANTIMAGIC_RECALL_OUT|REGION_ANTIMAGIC_RECALL_IN|REGION_ANTIMAGIC_ALL|REGION_FLAG_NOBUILDING|REGION_ANTIMAGIC_DAMAGE|REGION_ANTIMAGIC_TELEPORT|REGION_FLAG_UNDERGROUND|REGION_FLAG_INSTA_LOGOUT|REGION_FLAG_GUARDED|REGION_FLAG_SAFE|REGION_FLAG_ANNOUNCE
+FLAGS=REGION_FLAG_NOBUILDING
 P=4540,1378,20,0
 RECT=4479,1375,4525,1400,0
 RECT=4487,1353,4537,1375,0
 RECT=4525,1375,4537,1393,0
-TAG.ANNOUNCEMENT=Welcome to the Zoo!
 
 [AREADEF a_minoc_mining_camp_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -1507,7 +1302,7 @@ GROUP=Cove
 FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_GUARDED
 P=2275,1210,0,0
 RECT=2203,1166,2256,1245,0
-RECT=2284,1219,2293,1235,0
+RECT=2284,1219,2292,1235,0
 RECT=2256,1181,2284,1245,0
 RECT=2256,1166,2260,1181,0
 RECT=2203,1108,2243,1166,0
@@ -1527,29 +1322,25 @@ RECT=2661,2068,2735,2107,0
 EVENTS=r_bucs_den
 
 [AREADEF a_lord_blackthornes_castle_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass,r_black_castle
 NAME=Lord Blackthorne's Castle
 GROUP=Britain
-FLAGS=REGION_ANTIMAGIC_GATE|REGION_ANTIMAGIC_RECALL_OUT|REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_FLAG_INSTA_LOGOUT|REGION_FLAG_GUARDED|REGION_FLAG_SAFE
+FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_GUARDED
 P=1523,1449,15,0
 RECT=1500,1405,1550,1478,0
-RECT=1520,1478,1527,1494,0
-EVENTS=r_black_castle
-TAG.GUARDOWNER=Lord Blackthorne\'s Personal
+RECT=1520,1468,1526,1505,0
 
 [AREADEF a_lord_britishs_castle_1]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass,r_brit_castle
 NAME=Lord British's Castle
 GROUP=Britain
-FLAGS=REGION_ANTIMAGIC_GATE|REGION_ANTIMAGIC_RECALL_OUT|REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_INSTA_LOGOUT|REGION_FLAG_GUARDED|REGION_FLAG_SAFE
+FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_GUARDED
 P=1392,1625,30,0
-RECT=1294,1679,1411,1697,0
+RECT=1294,1679,1407,1697,0
 RECT=1295,1559,1313,1577,0
-RECT=1392,1559,1410,1577,0
-RECT=1302,1577,1410,1680,0
-RECT=1313,1563,1392,1577,0
-EVENTS=r_brit_castle
-TAG.GUARDOWNER=Lord British\'s Personal
+RECT=1392,1559,1407,1577,0
+RECT=1302,1577,1399,1680,0
+RECT=1313,1566,1392,1577,0
 
 [AREADEF a_britain_graveyard_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -1623,7 +1414,7 @@ GROUP=Serpent's Hold
 P=2863,3518,8,0
 RECT=2717,3243,3196,3678,0
 
-[AREADEF a_Ocllo_territory_1]
+[AREADEF a_ocllo_territory_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Ocllo Island
 GROUP=Ocllo
@@ -1685,16 +1476,15 @@ NAME=Minoc
 GROUP=Minoc
 FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_GUARDED
 P=2466,544,0,0
-RECT=2460,559,2559,627,0
-RECT=2607,611,2628,628,0
-RECT=2413,465,2460,573,0
-RECT=2422,393,2460,465,0
-RECT=2460,538,2550,559,0
-RECT=2460,370,2541,538,0
-RECT=2582,570,2607,648,0
-RECT=2559,573,2582,628,0
+RECT=2390,366,2546,498,0
+RECT=2390,498,2531,504,0
+RECT=2390,504,2546,570,0
+RECT=2460,555,2567,628,0
+RECT=2567,574,2592,628,0	//South houses
+RECT=2580,592,2628,646,0	//South houses
+RECT=2498,627,2567,690,0	//South camp
+RECT=2548,495,2620,550,0	//East mining camp
 TAG.GUARDOWNER=the town
-EVENTS=r_default_rock,r_default_water,r_default_tree
 
 [AREADEF a_magincia_territory_1]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -1777,17 +1567,17 @@ GROUP=Mines & Caves
 P=2345,830,0,0
 RECT=2323,809,2368,851,0
 
-[AREADEF a_Britain_Fields]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Britain Fields
-GROUP=Britain
-FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_GUARDED
-P=1495,1629,10,0
-RECT=1376,1743,1245,1833,0
-RECT=1379,1766,1428,1833,0
-RECT=1376,1743,1142,1702,0
-RECT=1376,1741,1388,1756,0
-TAG.GUARDOWNER=the city
+[ROOMDEF a_covetous_passage_1]
+EVENTS=r_default,r_default_water,r_default_tree,r_default_grass
+NAME=Covetous Passage
+GROUP=Covetous
+P=2395,856,0,0
+RECT=2379,828,2412,885,0
+RECT=2349,885,2408,899,0
+RECT=2349,899,2370,917,0
+RECT=2396,883,2428,903,0
+RECT=2444,854,2480,890,0
+RECT=2481,853,2559,904,0
 
 [AREADEF a_Sak_teb]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -1801,7 +1591,6 @@ EVENTS=r_plains
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Desert of Compassion
 GROUP=Shrines
-FLAGS=0//(NONE)
 P=1858,876,-1,0
 RECT=1801,805,2036,871,0
 RECT=2036,870,1814,902,0
@@ -1825,14 +1614,6 @@ FLAGS=REGION_FLAG_NOBUILDING
 P=1162,2870,0,0
 RECT=1088,2735,1268,3026,0
 
-[AREADEF a_Rock_Ridge]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Rock Ridge
-GROUP=ALLMAP
-P=4652,3656,100,0
-RECT=4638,3637,4674,3681,0
-RECT=4639,3636,4621,3669,0
-
 [AREADEF a_Windemere_Woods]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Windemere Woods
@@ -1855,27 +1636,116 @@ GROUP=ALLMAP
 P=758,1403,0,0
 RECT=740,1406,778,1400,0
 
-// New locations
+//Islands
+
+[AREADEF a_island_ocarina]
+NAME=Ocarina Island
+GROUP=Islands
+P=2073,1973,0,0
+RECT=1997,2045,2162,1912,0
+
+[AREADEF a_island_amoeba]
+NAME=Amoeba Island
+GROUP=Islands
+P=2145,3961,6,0
+RECT=2205,4015,2091,3874,0
+
+[AREADEF a_island_bald]
+NAME=Bald Isle
+GROUP=Islands
+P=2368,3472,3,0
+RECT=2416,3360,2288,3551,0
+
+[AREADEF a_island_blanche]
+NAME=Blanche Island
+GROUP=Islands
+P=2189,1985,0,0
+RECT=2215,1957,2161,2014,0
+
+[AREADEF a_island_dot]
+NAME=Dot Island
+GROUP=Islands
+P= 1504,365,0,0
+RECT=1516,387,1494,348,0
+
+[AREADEF a_island_barrier]
+NAME=Barrier Isle
+GROUP=Islands
+P=2118,2736,10,0
+RECT=2091,2844,2164,2740,0
+RECT=2151,2748,2056,2629,0
+
+[AREADEF a_island_dragon]
+NAME=Dragon Isle
+GROUP=Islands
+P=1081,3155,0,0
+RECT=1145,3081,1003,3233,0
+
+[AREADEF a_island_eiffel]
+NAME=Eiffel Island
+GROUP=Islands
+P=1704,1996,0,0
+RECT=1785,2046,1663,1921,0
+RECT=1718,1997,1636,2053,0
+
+[AREADEF a_island_horseshoe]
+NAME=Horseshoe Island
+GROUP=Islands
+P=2118,2108,0,0
+RECT=2000,2053,2237,2215,0
+
+[AREADEF a_island_ivers_rounding]
+NAME=Iver's Rounding
+GROUP=Islands
+P=466,2067,8,0
+RECT=513,2004,425,2146,0
+
+[AREADEF a_island_justice]
+NAME=Justice Island
+GROUP=Islands
+P=1274,534,30,0
+RECT=1289,557,1255,509,0
+
+[AREADEF a_island_marble]
+NAME=Marble Island
+GROUP=Islands
+P=1916,2092,0,0
+RECT=1822,2048,1994,2164,0
+
+[AREADEF a_island_skull]
+NAME=Skull Island
+GROUP=Islands
+P=2957,2180,52,0
+RECT=3004,2110,2912,2274,0
+
+[AREADEF a_island_valor]
+NAME=Valor Island
+GROUP=Islands
+P=2481,3967,0,0
+RECT=2497,4087,2552,3864,0
+
+[AREADEF a_island_wyvern]
+NAME=Wyvern Isle
+GROUP=Islands
+P=5862,2468,45,0
+RECT=5830,2445,5883,2502,0
+
+//Age of Shadows
 
 [AREADEF a_dungeon_solen]
-NAME=Solen hive
+NAME=Solen Hive
 FLAGS=region_antimagic_recall_in|region_antimagic_gate|region_flag_nobuilding|region_flag_underground
 RECT=5640,1777,5935,2039,0
 P=5803,1920,0,0
 GROUP=Other Dungeons
-
-[ROOMDEF a_moonglow_teleport_room]
-NAME=The Moonglow Teleport Room
-FLAGS=region_flag_nobuilding|region_flag_underground
-RECT=4445,1518,4490,1574,0
-P=4467,1544,0,0
-GROUP=Moonglow
 
 [AREADEF a_minax_stronghold]
 NAME=Minax Stronghold
 FLAGS=region_flag_nobuilding
 RECT=1105,2575,1175,2620,0
 P=1140,2595,0,0
+
+//High Seas
 
 [AREADEF a_sea_market]
 NAME=Sea Market
