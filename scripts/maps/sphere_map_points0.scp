@@ -240,9 +240,11 @@ The Ironwood Inn
 5786,1335,-13,0=5701,1319,13,0=tp_lava_1_2_1
 5787,1335,-13,0=5702,1319,13,0=tp_lava_1_2_2
 5788,1335,-13,0=5703,1319,13,0=tp_lava_1_2_3
-6005,1378,-4,0=5151,4062,37,0=tp_trinsicpassage2a_delucia
-6005,1379,0,0=5151,4062,37,0=tp_trinsicpassage2a_delucia
-6005,1380,3,0=5151,4063,37,0=tp_trinsicpassage2a_delucia
+6005,1378,0,0=5151,4062,37,0=tp_trinsicpassage_delucia1
+6005,1379,0,0=5151,4062,37,0=tp_trinsicpassage_delucia2
+6005,1380,0,0=5151,4063,37,0=tp_trinsicpassage_delucia3
+5150,4062,40,0=6005,1378,0,0=tp_delucia_trinsicpassage1
+5150,4063,40,0=6005,1379,0,0=tp_delucia_trinsicpassage2
 6025,1344,-26,0=5137,3664,30,0=tp_trinsicpassage2b_WCityofDead
 6025,1345,-26,0=5137,3664,30,0=tp_trinsicpassage2b_WCityofDead
 6025,1346,-24,0=5137,3665,28,0=tp_trinsicpassage2b_WCityofDead
@@ -359,8 +361,6 @@ The Ironwood Inn
 4722,3814,0,0=5905,16,61,0=tp_hythloth_out_x_ent
 4723,3814,0,0=5906,16,61,0=tp_hythloth_out_x_ent
 1406,3996,5,0=1414,3828,5,0=tp_jhelom_ns_m_x
-5150,4062,40,0=1629,3321,0,0=tp_delucia_trinsicsw_1
-5150,4063,40,0=1629,3321,0,0=tp_delucia_trinsicsw
 5906,4069,26,0=2494,3576,5,0=tp_EDeluciaTemple_TempleIsle
 6107,176,0,0=6115,176,0,0=tp_hythloth_passage_1_1x
 6115,176,0,0=6107,176,0,0=tp_hythloth_passage_1_2x
