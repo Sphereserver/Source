@@ -1,5 +1,5 @@
 ﻿//****************************************************************************
-// SPHERE by : Menasoft ©1997-2009
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,19 +7,16 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, October 25, 2013
+// FILE LAST UPDATED: Monday, April 14, 2014
 //
 VERSION=0.56c
 
-
 [COMMENT sphere_map2]
-
 Ilshenar
+MAP2=2304,1600,-1,2,2	//900 sectors of size 64x64
 
-MAP2=2304,1600,-1,2,2 //   900 sectors of size 64x64
 
-
-[AREADEF a_lbr]
+[AREADEF a_facet_ilshenar]
 NAME=Ilshenar
 P=930,641,-80,2
 RECT=0,0,2299,1599,2
@@ -741,15 +738,7 @@ FLAGS=080
 GROUP=Ilshenar Dungeon 
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_Twisted_Weald]
-NAME=Twisted Weald
-P=2211,1262,3,2
-Rect=2100,1300,2258,1141,2
-FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_antimagic_recall_out|region_flag_underground
-GROUP=Ilshenar
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_Abyss]
+[AREADEF a_abyss]
 NAME=Abyss
 P=1729,173,103,2
 RECT=1724,159,1763,192,2

@@ -1,5 +1,5 @@
-//****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+﻿//****************************************************************************
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,19 +7,16 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, October 25, 2013
+// FILE LAST UPDATED: Monday, April 14, 2014
 //
 VERSION=0.56c
 
-
 [COMMENT sphere_map3]
-
 Malas
+MAP3=2560,2048,-1,3,3	//1280 sectors of size 64x64
 
-MAP3=2560,2048,-1,3,3 //  1280 sectors of size 64x64
 
-
-[AREADEF a_aos]
+[AREADEF a_facet_malas]
 NAME=Malas
 P=848,160,-90,3
 RECT=0,0,2554,2042,3
@@ -104,77 +101,6 @@ RECT=1049,1420,1062,1445,3
 RECT=1062,1420,1065,1431,3
 RECT=1062,1439,1065,1445,3
 FLAGS=region_flag_underground|region_flag_nobuilding
-GROUP=Malas
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_labyrinth]
-NAME=Labyrinth
-P=329,1973,2,3
-RECT=256,1792,511,2047,3
-FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_antimagic_recall_out|region_flag_underground
-GROUP=Malas
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_bedlam]
-NAME=Bedlam
-P=121,1684,0,3
-RECT=60,1580,216,1703,3
-FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_antimagic_recall_out|region_flag_underground
-GROUP=Malas
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_yomotsu_mines]
-NAME=Yomotsu Mines
-P=6,118,0,3
-RECT=1,1,129,129,3
-FLAGS=region_flag_underground|region_flag_nobuilding
-GROUP=Tokuno Islands
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_fan_dancers_dojo]
-NAME=Fan Dancer's Dojo
-P=71,337,0,3
-RECT=40,320,210,720,3
-FLAGS=region_flag_underground|region_flag_nobuilding
-GROUP=Tokuno Islands
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_samurai_start]
-NAME=Samurai Start Location
-P=392,776,-1,3
-RECT=320,690,435,790,3
-FLAGS=region_flag_nobuilding
-GROUP=Tokuno Islands
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_ninja_start]
-NAME=Ninja Start Location
-P=416,823,-1,3
-RECT=360,795,440,835,3
-FLAGS=region_flag_nobuilding
-GROUP=Tokuno Islands
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_ninja_cave]
-NAME=Ninja Cave
-P=404,1167,0,3
-RECT=360,960,460,1175,3
-FLAGS=region_flag_nobuilding
-GROUP=Tokuno Islands 
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_malas_gypsy_camp_n1]
-NAME=Malas Gypsy Camp
-P=1402,417,-90,3
-RECT=1387,408,1408,1423,3
-GROUP=Malas Gypsy Camp
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_citadel]
-NAME=The Citadel
-P=98,1890,0,3
-RECT=55,1840,200,1990,3
-FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_antimagic_recall_out|region_flag_underground
 GROUP=Malas
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 

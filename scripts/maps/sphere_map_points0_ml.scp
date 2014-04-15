@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,11 +7,11 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: March 29, 2006
+// FILE LAST UPDATED: Monday, April 14, 2014
+//
+VERSION=0.56c
 
-VERSION=0.56b
-
-[MoonGates]
+//Felucca
 
 [Teleporters]
 1714,2997,0,0=6310,892,0,0=tp_PaintedCaves_Entrance
@@ -62,7 +62,7 @@ VERSION=0.56b
 5577,3019,25,0=6303,327,81,0=tp_Paroxysmus_entrance_7
 5578,3019,25,0=6303,327,81,0=tp_Paroxysmus_entrance_8
 5579,3019,25,0=6303,327,81,0=tp_Paroxysmus_entrance_9
-6303,327,81,0=5578,3017,25,0=tp_Paroxysmus_exit_1
+6303,327,82,0=5578,3017,25,0=tp_Paroxysmus_exit_1
 6304,327,79,0=5578,3017,25,0=tp_Paroxysmus_exit_2
 
 766,1647,0,0=6172,23,0,0=tp_Sanctuary_Entrance_1
@@ -92,5 +92,22 @@ VERSION=0.56b
 
 535,992,0,0=7046,332,10,0=Elven_City_Entrance
 7046,332,10,0=535,992,0,0=Elven_City_Exit
+
+//Malas
+
+[Teleporters]
+1732,973,-75,3=328,1974,5,3=tp_labyrinth_entrance_1
+1733,973,-75,3=328,1974,5,3=tp_labyrinth_entrance_2
+1734,973,-75,3=328,1974,5,3=tp_labyrinth_entrance_3
+328,1974,5,3=1732,973,-75,3=tp_labyrinth_exit_1
+328,1973,5,3=1732,973,-75,3=tp_labyrinth_exit_2
+328,1972,5,3=1732,973,-75,3=tp_labyrinth_exit_3
+328,1975,5,3=1732,973,-75,3=tp_labyrinth_exit_4
+2068,1372,-75,3=120,1684,0,3=tp_Bedlam_Entry_1
+121,1684,0,3=2068,1372,-75,3=tp_Bedlam_exit_1
+120,1684,0,3=2068,1372,-75,3=tp_Bedlam_exit_2
+84,1673,-2,3=156,1608,22,3=tp_BedlamCemitery_Entrance_1
+156,1608,22,3=84,1673,-2,3=tp_BedlamCemitery_Exit_1
+157,1608,22,3=84,1673,-2,3=tp_BedlamCemitery_Exit_2
 
 [EOF]

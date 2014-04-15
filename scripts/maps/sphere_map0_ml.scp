@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2009
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,12 +7,25 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: June 18, 2011
-// - Changed region flags by babidi with defnames region_flags for clearer read and editing (14-Jun-2011)
+// FILE LAST UPDATED: Monday, April 14, 2014
+//
+VERSION=0.56c
 
-VERSION=0.56b
+////////////////////////////////////////
+// Felucca
+////////////////////////////////////////
 
-[AREADEF a_ml_dungeon_1]
+//Mondain's Legacy regions
+
+[AREADEF a_townHeartwood]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=The Heartwood
+GROUP=ML Cities
+FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_GUARDED
+P=7035,409,12,0
+RECT=6907,253,7166,512,0
+
+[AREADEF a_sanctuary]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Sanctuary
 GROUP=ML Dungeons
@@ -20,7 +33,7 @@ FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 P=6170,195,-10,0
 RECT=6141,0,6401,257,0
 
-[AREADEF a_ml_dungeon_2]
+[AREADEF a_prism_of_light]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Prism of Light
 FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
@@ -28,7 +41,7 @@ GROUP=ML Dungeons
 P=6475,188,-2,0
 RECT=6448,17,6656,256,0
 
-[AREADEF a_ml_dungeon_3]
+[AREADEF a_palace_paroxysmus]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Palace of Paroxysmus
 FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
@@ -36,28 +49,112 @@ GROUP=ML Dungeons
 P=6306,403,60,0
 RECT=6198,316,6563,676,0
 
-[AREADEF a_ml_dungeon_4]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=The Heartwood
-GROUP=ML Dungeons
-FLAGS=REGION_FLAG_SAFE|REGION_FLAG_NO_PVP
-P=7035,409,12,0
-RECT=6907,253,7166,512,0
-
-[AREADEF a_ml_dungeon_5]
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-NAME=Painted Caves
-FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
-GROUP=ML Dungeons
-P=6308,892,0,0
-RECT=6243,846,6315,919,0
-
-[AREADEF a_ml_dungeon_6]
+[AREADEF a_blighted_grove]
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Blighted Grove
 FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
 GROUP=ML Dungeons
 P=6500,890,2,0
 RECT=6446,814,6596,974,0
+
+[AREADEF a_painted_caves]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Painted Caves
+FLAGS=REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND
+GROUP=ML Caves
+P=6308,892,0,0
+RECT=6243,846,6315,919,0
+
+//High Seas regions
+
+[AREADEF a_sea_market]
+NAME=Sea Market
+FLAGS=REGION_FLAG_NOBUILDING|REGION_FLAG_GUARDED
+GROUP=HS Cities
+RECT=4500,2250,4600,2450,0
+P=4551,2313,-2,0
+
+////////////////////////////////////////
+// Ilshenar
+////////////////////////////////////////
+
+//Mondain's Legacy regions
+
+[AREADEF a_twisted_weald]
+NAME=Twisted Weald
+GROUP=ML Dungeons
+P=2211,1262,3,2
+RECT=2100,1300,2258,1141,2
+FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_antimagic_recall_out|region_flag_underground
+
+////////////////////////////////////////
+// Malas
+////////////////////////////////////////
+
+//Samurai Empire regions
+
+[AREADEF a_yomotsu_mines]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Yomotsu Mines
+FLAGS=region_flag_underground|region_flag_nobuilding
+GROUP=SE Caves
+P=6,118,0,3
+RECT=0,0,129,129,3
+
+[AREADEF a_ninja_cave]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Ninja Cave
+GROUP=SE Caves
+P=404,1167,0,3
+RECT=360,960,460,1175,3
+FLAGS=region_flag_nobuilding
+
+[AREADEF a_fan_dancers_dojo]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Fan Dancer's Dojo
+GROUP=SE Dungeons
+P=71,337,0,3
+RECT=40,320,210,720,3
+FLAGS=region_flag_nobuilding|region_flag_underground
+
+[AREADEF a_citadel]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Citadel
+GROUP=SE Dungeons
+P=106,1884,0,3
+RECT=65,1865,195,1990,3
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in|region_antimagic_recall_out|region_antimagic_gate
+
+[AREADEF a_samurai_start]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Samurai Start Location
+GROUP=SE
+P=392,776,-1,3
+RECT=320,690,435,790,3
+FLAGS=region_flag_nobuilding
+
+[AREADEF a_ninja_start]
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+NAME=Ninja Start Location
+GROUP=SE
+P=416,823,-1,3
+RECT=360,795,440,835,3
+FLAGS=region_flag_nobuilding
+
+//Mondain's Legacy regions
+
+[AREADEF a_labyrinth]
+NAME=Labyrinth
+P=329,1973,2,3
+Rect=256,1792,511,2047,3
+FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_antimagic_recall_out|region_flag_underground
+GROUP=ML Dungeons
+
+[AREADEF a_bedlam]
+NAME=Bedlam
+P=121,1684,0,3
+Rect=60,1580,216,1703,3
+FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_antimagic_recall_out|region_flag_underground
+GROUP=ML Dungeons
 
 [EOF]
