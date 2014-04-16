@@ -783,9 +783,22 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 		// Invis items should not block ???
 		CItemBase * pItemDef = pItem->Item_GetDef();
 		ASSERT(pItemDef);
+
+		// Get Attributes from ItemDef. If they are not set, get them from the static object (DISPID)
+		DWORD wBlockThis = pItemDef->m_Can & (CAN_I_DOOR | CAN_I_WATER | CAN_I_CLIMB | CAN_I_BLOCK | CAN_I_PLATFORM);
+		height_t zHeight = pItemDef->GetHeight();
+
+		DWORD wStaticBlockThis = 0;
+		height_t zStaticHeight = CItemBase::GetItemHeight(pItem->GetDispID(), wStaticBlockThis);
+
+		if (wBlockThis == 0)
+			wBlockThis = wStaticBlockThis;
+		if (zHeight == 0)
+			zHeight = zStaticHeight;
+
 		if ( !block.CheckTile( 
-			pItemDef->m_Can & ( CAN_I_DOOR | CAN_I_WATER | CAN_I_CLIMB | CAN_I_BLOCK | CAN_I_PLATFORM ),
-			zitem, pItemDef->GetHeight(), pItemDef->GetDispID() + TERRAIN_QTY ) )
+			wBlockThis,
+			zitem, zHeight, pItemDef->GetDispID() + TERRAIN_QTY ) )
 		{
 		}
 	}

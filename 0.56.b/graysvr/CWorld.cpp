@@ -1477,7 +1477,6 @@ bool CWorld::Save( bool fForceImmediate ) // Save world state
 		if ( g_Serv.r_Call("f_onserver_save", &g_Serv, &Args, NULL, &tr) )
 			if ( tr == TRIGRET_RET_TRUE ) 
 				return false;
-
 		//Fushing before the server should fix #2306
 		//The scripts fills the clients buffer and the server flush
 		//the data during the save.
@@ -2055,7 +2054,14 @@ void CWorld::Close()
 		//	free memory allocated by sectors
 		for ( int s = 0; s < m_SectorsQty; s++ )
 		{
+			// delete everything in sector
 			m_Sectors[s]->Close();
+		}
+		// do this in two loops because destructors of items 
+		// may access server sectors
+		for (int s = 0; s < m_SectorsQty; s++)
+		{
+			// delete the sectors
 			delete m_Sectors[s];
 			m_Sectors[s] = NULL;
 		}
