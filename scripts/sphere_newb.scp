@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,280 +7,220 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, October 6, 2013
+// FILE LAST UPDATED: Tuesday, April 15, 2014
 //
 VERSION=0.56c
-
 
 // Get the starting items for each skill.
 
 [NEWBIE MALE_DEFAULT]
 // Male Generic Starting Clothes
-ITEMNEWBIE=i_shirt_plain
+ITEM=i_shirt_plain
 COLOR=colors_all
-ITEMNEWBIE=i_pants_long
+ITEM=random_pants_human
 COLOR=colors_neutral
-ITEMNEWBIE=random_shoes
+ITEM=random_footwear_human
 COLOR=colors_neutral
-ITEMNEWBIE=i_dagger
-ITEMNEWBIE=i_candle
-ITEMNEWBIE=i_book_sm
-ITEMNEWBIE=i_gold,100
+ITEM=i_dagger
+ITEM=i_candle
+ITEM=i_gold,1000
 
 [NEWBIE FEMALE_DEFAULT]
 // Female Generic Starting Clothes
-ITEMNEWBIE=i_shirt_plain
+ITEM=i_shirt_plain
 COLOR=colors_all
-ITEMNEWBIE=i_skirt_long
+ITEM=random_skirts_human
 COLOR=colors_neutral
-ITEMNEWBIE=random_shoes
+ITEM=random_footwear_human
 COLOR=colors_neutral
-ITEMNEWBIE=i_dagger
-ITEMNEWBIE=i_candle
-ITEMNEWBIE=i_book_sm
-ITEMNEWBIE=i_gold,100
+ITEM=i_dagger
+ITEM=i_candle
+ITEM=i_gold,1000
+
 
 [NEWBIE ALCHEMY]
-// Alchemy is best skill
-ITEMNEWBIE=i_mortar_pestle
-ITEMNEWBIE=i_bottle_empty,4
-ITEMNEWBIE=i_reag_black_pearl,4
-ITEMNEWBIE=i_reag_garlic,4
-ITEMNEWBIE=i_reag_ginseng,4
-ITEMNEWBIE=i_reag_spider_silk,4
-ITEMNEWBIE=i_robe
-COLOR=colors_red
+ITEM=i_bottle_empty,4
+ITEM=i_mortar_pestle
+ITEM=i_robe
+COLOR=colors_pink
 
 [NEWBIE ANATOMY]
-// Anatomy is best skill
-ITEMNEWBIE=i_robe
+ITEM=i_bandage,3
+ITEM=i_robe
 COLOR=colors_yellow
-ITEMNEWBIE=i_bandage,3
 
 [NEWBIE ANIMALLORE]
-// Animal Lore is best skill
-ITEMNEWBIE=i_robe
-COLOR=colors_green
-ITEMNEWBIE=i_shepherds_crook
-
-[NEWBIE ITEMID]
-// Item Identification is best skill
-ITEMNEWBIE=i_staff_gnarled
-
-[NEWBIE ARMSLORE]
-// Armslore is best skill
-ITEMNEWBIE=i_sword_long
-
-[NEWBIE PARRYING]
-// Parrying is best skill
-ITEMNEWBIE=i_shield_wood
-
-[NEWBIE BEGGING]
-// Begging is best skill
-ITEMNEWBIE=i_staff_gnarled
-
-[NEWBIE BLACKSMITHING]
-// Blacksmithing is best skill
-ITEMNEWBIE={ i_hammer_sledge 1 i_tongs 1 i_hammer_smith 1 }
-ITEMNEWBIE=i_apron_half
-COLOR=colors_brown
-
-[NEWBIE BOWCRAFT]
-// Bowcraft/Fletching is best skill
-ITEMNEWBIE=i_log,14
-ITEMNEWBIE=i_feather,5
-ITEMNEWBIE=i_arrow_shaft,5
-
-[NEWBIE PEACEMAKING]
-// Peacemaking is best skill
-ITEMNEWBIE=random_instrument
-
-[NEWBIE CAMPING]
-// Camping is best skill
-ITEMNEWBIE=i_kindling,5
-ITEMNEWBIE=i_bedroll
-
-[NEWBIE CARPENTRY]
-// Carpentry is best skill
-ITEMNEWBIE=random_tool_carpentry
-ITEMNEWBIE=i_log,10
-ITEMNEWBIE=i_board,10
-ITEMNEWBIE=i_apron_half
-COLOR=colors_brown
-
-[NEWBIE CARTOGRAPHY]
-// Cartography is best skill
-ITEMNEWBIE=i_map_blank,4
-ITEMNEWBIE=i_sextant
-
-[NEWBIE COOKING]
-// Cooking is best skill
-ITEMNEWBIE={ i_fish_big_1 1 i_eggs_fresh 1 i_bird_raw 1 i_ribs_raw 1 i_dough 1 i_cookie_mix 1 i_pie_unbaked 1 i_pizza_uncooked 1 i_chicken_leg 1 i_lamb_leg_raw 1 i_flour_sack 1 }
-ITEMNEWBIE={ i_fish_big_2 1 i_eggs_fresh 1 i_bird_raw 1 i_ribs_raw 1 i_dough 1 i_cookie_mix 1 i_pie_unbaked 1 i_pizza_uncooked 1 i_chicken_leg 1 i_lamb_leg_raw 1 i_flour_sack 1 }
-ITEMNEWBIE={ i_fish_big_3 1 i_eggs_fresh 1 i_bird_raw 1 i_ribs_raw 1 i_dough 1 i_cookie_mix 1 i_pie_unbaked 1 i_pizza_uncooked 1 i_chicken_leg 1 i_lamb_leg_raw 1 i_flour_sack 1 }
-ITEMNEWBIE=i_flour_sack
-ITEMNEWBIE=i_pitcher_water
-ITEMNEWBIE=i_kindling,2
-
-[NEWBIE DetectingHidden]
-// Detecting Hidden is best skill
-ITEMNEWBIE=i_cape
-COLOR=colors_black
-
-[NEWBIE ENTICEMENT]
-// Enticement is best skill
-ITEMNEWBIE=random_instrument
-
-[NEWBIE EvaluatingIntel]
-// Evaluate Intelligence is best skill
-
-[NEWBIE HEALING]
-// Healing is best skill
-ITEMNEWBIE=i_bandage,5
-ITEMNEWBIE=i_scissors
-
-[NEWBIE FISHING]
-// Fishing is best skill
-ITEMNEWBIE=i_fishing_pole
-ITEMNEWBIE=i_hat_floppy
-COLOR=colors_brown
-
-[NEWBIE FORENSICS]
-// Forensics is best skill
-
-[NEWBIE HERDING]
-// Herding is best skill
-ITEMNEWBIE=i_shepherds_crook
-
-[NEWBIE HIDING]
-// Hiding is best skill
-ITEMNEWBIE=i_cape
-COLOR=colors_black
-
-
-[NEWBIE PROVOCATION]
-// Provocation is best skill
-ITEMNEWBIE=random_instrument
-
-[NEWBIE INSCRIPTION]
-// Inscription is best skill
-ITEMNEWBIE=i_scroll_blank,2
-ITEMNEWBIE=i_book_sm
-
-[NEWBIE LOCKPICKING]
-// Lockpicking is best skill
-ITEMNEWBIE=i_lockpick,5
-
-[NEWBIE MAGERY]
-// Magery is best skill
-ITEMNEWBIE=i_spellbook
-ITEMNEWBIE=i_reag_black_pearl,3
-ITEMNEWBIE=i_reag_blood_moss,3
-ITEMNEWBIE=i_reag_garlic,3
-ITEMNEWBIE=i_reag_ginseng,3
-ITEMNEWBIE=i_reag_nightshade,3
-ITEMNEWBIE=i_reag_sulfur_ash,3
-ITEMNEWBIE=i_reag_spider_silk,3
-ITEMNEWBIE=i_reag_mandrake_root,3
-ITEMNEWBIE=random_first_circle
-ITEMNEWBIE=random_second_circle
-ITEMNEWBIE=random_third_circle
-
-[NEWBIE MAGICRESISTANCE]
-// Resisting Spells is best skill
-
-[NEWBIE TACTICS]
-// Tactics is best skill
-
-[NEWBIE SNOOPING]
-// Snooping is best skill
-ITEMNEWBIE=i_lockpick,4
-
-[NEWBIE MUSICIANSHIP]
-// Musicianship is best skill
-ITEMNEWBIE=random_instrument
-
-[NEWBIE POISONING]
-// Poisoning is best skill
-ITEMNEWBIE=i_potion_poison,2
+ITEM=i_shepherds_crook
+ITEM=i_robe
+COLOR=colors_blue
 
 [NEWBIE ARCHERY]
-// Archery is best skill
-ITEMNEWBIE=i_bow
-ITEMNEWBIE=i_arrow,25
+ITEM=i_arrow,25
+ITEM=i_bow
 
-[NEWBIE SPIRITSPEAK]
-// Spirit Speak is best skill
-ITEMNEWBIE=i_cape
-COLOR=colors_black
+[NEWBIE ARMSLORE]
+ITEM={i_kryss 1 i_katana 1 i_club 1}
 
-[NEWBIE STEALING]
-// Steal is best skill
-ITEMNEWBIE=i_lockpick,4
+[NEWBIE BEGGING]
+ITEM=i_staff_gnarled
 
-[NEWBIE TAILORING]
-// Tailoring is best skill
-ITEMNEWBIE=i_sewing_kit
-ITEMNEWBIE=i_cloth
-COLOR=colors_neutral
-ITEMNEWBIE=i_cloth
-COLOR=colors_neutral
-ITEMNEWBIE=i_cloth
-COLOR=colors_neutral
-ITEMNEWBIE=i_cloth
-COLOR=colors_neutral
+[NEWBIE BLACKSMITHING]
+ITEM=i_tongs
+ITEM=i_pickaxe
+ITEM=i_ingot_iron,50
+ITEM=i_apron_half
+COLOR=colors_yellow
 
-[NEWBIE TAMING]
-// Animal Training is best skill
-ITEMNEWBIE=i_shepherds_crook
+[NEWBIE BOWCRAFT]
+ITEM=i_board,14
+ITEM=i_feather,5
+ITEM=i_arrow_shaft,5
 
-[NEWBIE TASTEID]
-// Taste Identification is best skill
-ITEMNEWBIE=random_potion
-ITEMNEWBIE=random_potion
-ITEMNEWBIE=random_potion
+[NEWBIE CAMPING]
+ITEM=i_bedroll
+ITEM=i_kindling,5
 
-[NEWBIE TINKERING]
-// Tinkering is best skill
-ITEMNEWBIE={ i_clock_frame 1 i_clock_parts 1 i_axle_and_gears 1 i_gears 1 i_hinge 1 i_sextant_parts 1 i_sticks 1 i_springs 1 i_tinker_tools 1 }
-ITEMNEWBIE=i_tinker_tools
-ITEMNEWBIE=i_apron_half
-COLOR=colors_brown
+[NEWBIE CARPENTRY]
+ITEM=i_board,10
+ITEM=i_saw
+ITEM=i_apron_half
+COLOR=colors_yellow
 
-[NEWBIE TRACKING]
-// Tracking is best skill
-ITEMNEWBIE=i_knife_skinning
-ITEMNEWBIE=i_boots_calf
-COLOR=colors_brown
+[NEWBIE CARTOGRAPHY]
+ITEM=i_map_blank
+ITEM=i_map_blank
+ITEM=i_map_blank
+ITEM=i_map_blank
+ITEM=i_sextant
 
-[NEWBIE VETERINARY]
-// Veterinary is best skill
-ITEMNEWBIE=i_bandage,5
-ITEMNEWBIE=i_scissors
+[NEWBIE COOKING]
+ITEM=i_kindling,2
+ITEM=i_lamb_leg_raw
+ITEM=i_chicken_leg_raw
+ITEM=i_fish_cut_raw
+ITEM=i_flour_sack
+ITEM=i_pitcher_water
 
-[NEWBIE SWORDSMANSHIP]
-// Swordsmanship is best skill
-ITEMNEWBIE=i_sword_long
+[NEWBIE DETECTINGHIDDEN]
+ITEM=i_cape
+COLOR=0455
 
-[NEWBIE MACEFIGHTING]
-// Mace Fighting is best skill
-ITEMNEWBIE=i_mace
+[NEWBIE ENTICEMENT]
+ITEM=random_instrument_human
+
+[NEWBIE EVALUATINGINTEL]
+//empty
 
 [NEWBIE FENCING]
-// Fencing is best skill
-ITEMNEWBIE=i_spear
+ITEM=i_kryss
 
-[NEWBIE WRESTLING]
-// Wrestling is best skill
-ITEMNEWBIE=i_leather_gloves
+[NEWBIE FISHING]
+ITEM=i_fishing_pole
+//COLOR=colors_yellow
+ITEM=i_hat_floppy
+COLOR=colors_yellow
+
+[NEWBIE FORENSICS]
+//empty
+
+[NEWBIE HEALING]
+ITEM=i_bandage,50
+ITEM=i_scissors
+
+[NEWBIE HERDING]
+ITEM=i_shepherds_crook
+
+[NEWBIE HIDING]
+ITEM=i_cape
+COLOR=0455
+
+[NEWBIE INSCRIPTION]
+ITEM=i_scroll_blank,2
+ITEM=i_book_lg
+
+[NEWBIE ITEMID]
+ITEM=i_staff_gnarled
+
+[NEWBIE LOCKPICKING]
+ITEM=i_lockpick,20
 
 [NEWBIE LUMBERJACKING]
-// Lumberjacking is best skill
-ITEMNEWBIE=i_hatchet
+ITEM=i_hatchet
+
+[NEWBIE MACEFIGHTING]
+ITEM=i_club
+
+[NEWBIE MAGERY]
+ITEM=random_first_circle
+ITEM=random_second_circle
+ITEM=random_second_circle
+ITEM=i_hat_wizards
+ITEM=i_robe
+COLOR=colors_blue
+ITEM=i_spellbook
+MORE1=0382a8c38		//3 spells on circle 1-4 (to enable full spellbook just set MORE1=0ffffffff and MORE2=0ffffffff)
+
+[NEWBIE MAGICRESISTANCE]
+//empty
 
 [NEWBIE MINING]
-// Mining is best skill
-ITEMNEWBIE={ i_pickaxe 1 i_shovel 1 }
+ITEM=i_pickaxe
 
+[NEWBIE MUSICIANSHIP]
+ITEM=random_instrument_human
+
+[NEWBIE PARRYING]
+ITEM=i_shield_wood
+
+[NEWBIE PEACEMAKING]
+ITEM=random_instrument_human
+
+[NEWBIE POISONING]
+ITEM=i_potion_poisonless
+ITEM=i_potion_poisonless
+
+[NEWBIE PROVOCATION]
+ITEM=random_instrument_human
+
+[NEWBIE SNOOPING]
+ITEM=i_lockpick,20
+
+[NEWBIE SPIRITSPEAK]
+ITEM=i_cape
+COLOR=0455
+
+[NEWBIE STEALING]
+ITEM=i_lockpick,20
+
+[NEWBIE SWORDSMANSHIP]
+ITEM=i_katana
+
+[NEWBIE TACTICS]
+ITEM=i_katana
+
+[NEWBIE TAILORING]
+ITEM=i_cloth_bolt
+ITEM=i_sewing_kit
+
+[NEWBIE TAMING]
+//empty
+
+[NEWBIE TASTEID]
+//empty
+
+[NEWBIE TINKERING]
+//empty
+
+[NEWBIE TRACKING]
+ITEM=i_boots_calf
+COLOR=colors_yellow
+ITEM=i_knife_skinning
+
+[NEWBIE VETERINARY]
+ITEM=i_bandage,5
+ITEM=i_scissors
+
+[NEWBIE WRESTLING]
+ITEM=i_leather_gloves
 
 [EOF]

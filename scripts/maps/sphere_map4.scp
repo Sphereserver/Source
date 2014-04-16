@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, April 14, 2014
+// FILE LAST UPDATED: Tuesday, April 15, 2014
 //
 VERSION=0.56c
 
@@ -26,6 +26,7 @@ EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 [AREADEF a_zento]
 NAME=Zento
 GROUP=Tokuno Islands
+FLAGS=region_flag_nobuilding|region_flag_guarded
 P=736,1256,30,4
 RECT=656,1192,816,1320,4
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -33,7 +34,7 @@ EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 [ROOMDEF a_zento_inn]
 NAME=Zento Inn
 GROUP=Tokuno Islands
-FLAGS=region_flag_nobuilding|region_flag_underground
+FLAGS=region_flag_nobuilding|region_flag_underground|region_flag_insta_logout
 P=686,1211,30,4
 RECT=674,1203,699,1219,4
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -49,25 +50,15 @@ EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Bushido Dojo
 GROUP=Tokuno Islands
 P=320,408,32,4
-RECT=312,380,328,391,4
-RECT=303,391,336,424,4
-RECT=311,424,329,440,4
+RECT=283,361,351,463,4
 FLAGS=region_flag_nobuilding|region_flag_underground
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_tokuno_castle]
-NAME=Tokuno Castle
+[AREADEF a_hotaka_plains]
+NAME=Hokata Plains
 GROUP=Tokuno Islands
 P=1235,771,3,4
 RECT=1223,753,1248,776,4
-FLAGS=region_flag_nobuilding|region_flag_underground
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_citadel_entrance]
-NAME=Citadel Entrance
-GROUP=Tokuno Islands
-P=1346,765,20,4
-RECT=1344,760,1349,766,4
 FLAGS=region_flag_nobuilding|region_flag_underground
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
