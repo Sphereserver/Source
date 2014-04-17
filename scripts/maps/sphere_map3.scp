@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, April 14, 2014
+// FILE LAST UPDATED: Thursday, April 17, 2014
 //
 VERSION=0.56c
 
@@ -16,6 +16,10 @@ Malas
 MAP3=2560,2048,-1,3,3	//1280 sectors of size 64x64
 
 
+////////////////////////////////////////
+// Facet
+////////////////////////////////////////
+
 [AREADEF a_facet_malas]
 NAME=Malas
 P=848,160,-90,3
@@ -23,12 +27,16 @@ RECT=0,0,2554,2042,3
 GROUP=ALLMAP
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
+////////////////////////////////////////
+// Cities and nearby regions
+////////////////////////////////////////
+
 [AREADEF a_luna]
 NAME=Luna
 P=989,520,-50,3
 RECT=945,490,1036,551,3
 FLAGS=region_flag_nobuilding|region_flag_guarded
-GROUP=Malas
+GROUP=Luna
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_umbra]
@@ -38,15 +46,19 @@ RECT=2042,1265,2090,1278,3
 RECT=1960,1278,2106,1413,3
 RECT=2004,1413,2040,1419,3
 FLAGS=region_flag_nobuilding
-GROUP=Malas
+GROUP=Umbra
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+////////////////////////////////////////
+// Dungeons
+////////////////////////////////////////
 
 [AREADEF a_doom]
 NAME=Doom
 P=2366,1268,-85,3
 RECT=256,2,512,304,3
 FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_antimagic_recall_out|region_flag_underground|region_antimagic_teleport
-GROUP=Malas
+GROUP=Doom Dungeon
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_doom_gauntlet]
@@ -54,6 +66,23 @@ NAME=Doom Gauntlet
 P=428,341,-1,3
 RECT=260,304,515,558,3
 FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_antimagic_recall_out|region_flag_underground|region_antimagic_teleport
+GROUP=Doom Dungeon
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+////////////////////////////////////////
+// Misc
+////////////////////////////////////////
+
+[AREADEF a_protected_island]
+NAME=Protected Island
+P=2104,380,-90,3
+RECT=1976,101,2448,345,3
+RECT=2051,345,2356,382,3
+RECT=2026,345,2051,370,3
+RECT=2069,382,2144,396,3
+RECT=2254,382,2352,420,3
+RECT=2222,382,2254,402,3
+FLAGS=region_flag_nobuilding
 GROUP=Malas
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
@@ -77,30 +106,17 @@ EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Crystal Cave Entrance
 P=1195,515,-90,3
 RECT=1176,509,1219,522,3
-FLAGS=region_flag_underground|region_flag_nobuilding
+FLAGS=region_flag_nobuilding|region_flag_underground
 GROUP=Malas
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_protected_island]
-NAME=Protected Island
-P=2104,380,-90,3
-RECT=1976,101,2448,345,3
-RECT=2051,345,2356,382,3
-RECT=2026,345,2051,370,3
-RECT=2069,382,2144,396,3
-RECT=2254,382,2352,420,3
-RECT=2222,382,2254,402,3
-FLAGS=region_flag_nobuilding
-GROUP=Malas
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_hanse_hotel]
+[AREADEF a_hanses_hostel]
 NAME=Hanse's Hostel
 P=1063,1435,-90,3
 RECT=1049,1420,1062,1445,3
 RECT=1062,1420,1065,1431,3
 RECT=1062,1439,1065,1445,3
-FLAGS=region_flag_underground|region_flag_nobuilding
+FLAGS=region_flag_nobuilding|region_flag_underground
 GROUP=Malas
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 

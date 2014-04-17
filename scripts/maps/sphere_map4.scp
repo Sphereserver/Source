@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, April 15, 2014
+// FILE LAST UPDATED: Thursday, April 17, 2014
 //
 VERSION=0.56c
 
@@ -16,6 +16,10 @@ Samurai Empire (SE, map4,statics4,staidx4), map #4
 MAP4=1448,1448,-1,4,4	//32760 sectors of size 8x8
 
 
+////////////////////////////////////////
+// Facet
+////////////////////////////////////////
+
 [AREADEF a_facet_tokuno_islands]
 NAME=Tokuno Islands
 GROUP=ALLMAP
@@ -23,9 +27,13 @@ P=737,1245,30,4
 RECT=0,0,1448,1448,4
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
+////////////////////////////////////////
+// Cities and nearby regions
+////////////////////////////////////////
+
 [AREADEF a_zento]
 NAME=Zento
-GROUP=Tokuno Islands
+GROUP=Zento
 FLAGS=region_flag_nobuilding|region_flag_guarded
 P=736,1256,30,4
 RECT=656,1192,816,1320,4
@@ -33,11 +41,15 @@ EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [ROOMDEF a_zento_inn]
 NAME=Zento Inn
-GROUP=Tokuno Islands
+GROUP=Zento
 FLAGS=region_flag_nobuilding|region_flag_underground|region_flag_insta_logout
 P=686,1211,30,4
 RECT=674,1203,699,1219,4
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+////////////////////////////////////////
+// Dungeons
+////////////////////////////////////////
 
 [AREADEF a_fan_dancer_dojo]
 NAME=Fan Dancer's Dojo
@@ -45,6 +57,10 @@ GROUP=Tokuno Islands
 P=977,223,23,4
 RECT=969,194,992,224,4
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+////////////////////////////////////////
+// Misc
+////////////////////////////////////////
 
 [AREADEF a_bushido_dojo]
 NAME=Bushido Dojo
@@ -55,7 +71,7 @@ FLAGS=region_flag_nobuilding|region_flag_underground
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_hotaka_plains]
-NAME=Hokata Plains
+NAME=Hotaka Plains
 GROUP=Tokuno Islands
 P=1235,771,3,4
 RECT=1223,753,1248,776,4

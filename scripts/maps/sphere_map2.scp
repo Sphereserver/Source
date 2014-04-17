@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, April 14, 2014
+// FILE LAST UPDATED: Thursday, April 17, 2014
 //
 VERSION=0.56c
 
@@ -16,95 +16,21 @@ Ilshenar
 MAP2=2304,1600,-1,2,2	//900 sectors of size 64x64
 
 
+////////////////////////////////////////
+// Facet
+////////////////////////////////////////
+
 [AREADEF a_facet_ilshenar]
 NAME=Ilshenar
 P=930,641,-80,2
 RECT=0,0,2299,1599,2
 GROUP=ALLMAP
 FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
-TAG.TITLE=the realm of
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-//==============SHRINES=================
-[AREADEF a_chaos_shrine]
-NAME=Shrine of Chaos
-P=1748,236,0,2
-RECT=1736,224,1760,248,2
-GROUP=Ilshenar Shrines
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_shrine_valor]
-NAME=Shrine of Valor
-P=539,221,-36,2
-RECT=512,200,544,232,2
-GROUP=Ilshenar Shrines
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_shrine_sacrifice]
-NAME=Shrine of Sacrifice
-P=1196,1290,-25,2
-RECT=1160,1280,1192,1296,2
-GROUP=Ilshenar Shrines
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_shrine_honesty]
-NAME=Shrine of Honesty
-P=725,1355,-61,2
-RECT=712,1344,736,1376,2
-GROUP=Ilshenar Shrines
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_shrine_compassion]
-NAME=Shrine of Compassion
-P=1223,475,-16,2
-RECT=1200,448,1232,488,2
-GROUP=Ilshenar Shrines
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_shrine_spirituality]
-NAME=Shrine of Spirituality
-P=1528,1344,0,2
-RECT=1520,1336,1536,1352,2
-GROUP=Ilshenar Shrines
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_shrine_humility]
-NAME=Shrine of Humility
-P=284,1016,0,2
-RECT=272,1008,296,1024,2
-GROUP=Ilshenar Shrines
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_shrine_honor]
-NAME=Shrine of Honor
-P=748,728,0,2
-RECT=736,712,760,744,2
-GROUP=Ilshenar Shrines
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_shrine_justice]
-NAME=Shrine of Justice
-P=984,1008,-37,2
-RECT=979,991,991,1013,2
-GROUP=Ilshenar Shrines
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_shrine_gargoyle]
-NAME=Gargoyle Shrine
-P=1104,404,0,2
-RECT=1088,384,1127,425,2
-GROUP=Ilshenar Shrines
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-////////////  END SHRINE  /////////////
-
-[AREADEF a_terort_skitas]
-NAME=Terort Skitas
-P=568,430,41,2
-RECT=528,376,624,464,2
-GROUP=Ilshenar Towns
-TAG.TITLE=the Area of
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+////////////////////////////////////////
+// Cities and nearby regions
+////////////////////////////////////////
 
 [AREADEF a_ver_lor_reg]
 NAME=Ver Lor Reg
@@ -114,8 +40,41 @@ RECT=752,576,824,704,2
 RECT=856,576,896,704,2
 RECT=904,624,928,656,2
 GROUP=Ilshenar Towns
-TAG.TITLE=the city of
 FLAGS=region_flag_nobuilding|region_flag_guarded
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_mistas]
+NAME=Mistas
+P=818,1073,-30,2
+RECT=744,984,912,1152,2
+RECT=744,1152,792,1176,2
+GROUP=Mistas
+FLAGS=region_flag_nobuilding
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+////////////////////////////////////////
+// Misc
+////////////////////////////////////////
+
+[AREADEF a_entrance_central_ilshenar1]
+NAME=Entrance to Central Ilshenar 1
+P=1141,594,-80,2
+RECT=1136,584,1152,600,2
+GROUP=Ilshenar Dungeons
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_entrance_central_ilshenar2]
+NAME=Entrance to Central Ilshenar 2
+P=1238,583,-19,2
+RECT=1232,576,1240,592,2
+GROUP=Ilshenar Misc
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_terort_skitas]
+NAME=Terort Skitas
+P=568,430,41,2
+RECT=528,376,624,464,2
+GROUP=Ilshenar Towns
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_pormir_harm]
@@ -153,20 +112,6 @@ RECT=160,736,192,768,2
 GROUP=Rat Fort
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_entrance_center_ilshenar1]
-NAME=Entrance to Central Ilshenar 1
-P=1141,594,-80,2
-RECT=1136,584,1152,600,2
-GROUP=Ilshenar Dungeons
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_entrance_center_ilshenar2]
-NAME=Entrance to Central Ilshenar 2
-P=1238,583,-19,2
-RECT=1232,576,1240,592,2
-GROUP=Ilshenar Misc
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
 [AREADEF a_montor]
 NAME=Montor
 P=1648,320,0,2
@@ -175,7 +120,14 @@ RECT=1616,200,1696,272,2
 RECT=1696,144,1736,272,2
 RECT=1736,144,1768,208,2
 GROUP=Montor
-TAG.TITLE=the city of
+FLAGS=region_flag_nobuilding
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_abyss]
+NAME=Abyss
+P=1729,173,103,2
+RECT=1724,159,1763,192,2
+GROUP=Montor
 FLAGS=region_flag_nobuilding
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
@@ -186,7 +138,6 @@ RECT=1520,368,1752,496,2
 RECT=1520,296,1576,368,2
 RECT=1752,440,1776,480,2
 GROUP=Third Dawn
-TAG.TITLE=the Area of
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_ancient_citadel]
@@ -194,7 +145,6 @@ NAME=Ancient Citadel
 P=1518,568,-14,2
 RECT=1488,502,1547,578,2
 GROUP=Ilshenar Towns
-TAG.TITLE=the city of
 FLAGS=region_flag_nobuilding
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
@@ -203,68 +153,14 @@ NAME=Alexandretta's Bowl
 P=1396,432,-17,2
 RECT=1272,352,1440,592,2
 GROUP=Ilshenar Towns
-TAG.TITLE=the Area of
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_enter_rock_dungeon]
-NAME=Entrance to Rock Dungeon
-P=1784,568,100,2
-RECT=1784,560,1792,576,2
-GROUP=UOTD Dungeons
-TAG.TITLE=the Area of
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_dungeon_rock_lvl1]
-NAME=Dungeon of Rock Level 1
-P=2187,316,-7,2
-RECT=2176,288,2200,328,2
-GROUP=Dungeon of Rock
-TAG.TITLE=the Area of
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_dungeon_rock_lvl2]
-NAME=Dungeon of Rock Level 2
-P=2188,31,-27,2
-RECT=2088,8,2248,184,2
-GROUP=Dungeon of Rock
-TAG.TITLE=the Area of
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_lenmir_anfinmotas]
 NAME=Lenmir Anfinmotas
-P=1676,852,0,2
+P=1673,876,-25,2
 RECT=1560,792,1792,912,2
 CLASS=5
 GROUP=Ilshenar Towns
-TAG.TITLE=the Area of
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_enter_spider_cave]
-NAME=Entrance to Spider Cave
-P=1418,915,-19,2
-RECT=1400,896,1440,920,2
-GROUP=UOTD Dungeons
-TAG.TITLE=the Area of
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_spider_cave_lvl1]
-NAME=Spider Cave Level 1
-P=1785,991,-28,2
-RECT=1752,952,1864,1000,2
-GROUP=Spider Cave
-TAG.TITLE=the Area of
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_spider_cave_lvl2]
-NAME=Spider Cave Level 2
-P=1491,880,10,2
-RECT=1480,864,1528,896,2
-GROUP=Spider Cave
-TAG.TITLE=the Area of
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_twin_oaks]
@@ -272,7 +168,6 @@ NAME=Twin Oaks
 P=1560,1052,0,2
 RECT=1536,1032,1584,1072,2
 GROUP=Third Dawn Towns
-TAG.TITLE=the Town of
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_reg_volon]
@@ -283,87 +178,12 @@ GROUP=Third Dawn Towns
 FLAGS=region_flag_nobuilding
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_enter_spectre_dungeon]
-NAME=Entrance Spectre Dungeon
-P=1363,1033,-8,2
-RECT=1360,1030,1366,1034,2
-GROUP=Spectre Dungeon
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_spectre_dungeon_lvl1]
-NAME=Spectre Dungeon Level 1
-P=1983,1107,-23,2
-RECT=1936,1000,2032,1120,2
-GROUP=Spectre Dungeon
-TAG.TITLE=the Area of
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_enter_blood_dungeon]
-NAME=Entrance Blood Dungeon
-P=1747,1227,-1,2
-RECT=1736,1224,1760,1240,2
-GROUP=Blood Dungeon
-//EVENTS=r_Dungeon
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_blood_dungeon]
-NAME=Blood Dungeon
-P=2114,839,-28,2
-RECT=2032,808,2200,1064,2
-GROUP=Blood Dungeon
-TAG.TITLE=the Area of
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_enter_mushroom_cave]
-NAME=Entrance Mushroom Cave
-P=1460,1329,-25,2
-RECT=1448,1320,1464,1336,2
-GROUP=Ilshenar Caves
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_mushroom_cave]
-NAME=Mushroom Cave
-P=1476,1494,-28,2
-RECT=1392,1448,1496,1568,2
-GROUP=Ilshenar Caves
-TAG.TITLE=the Area of
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
 [AREADEF a_lake_shire]
 NAME=Lake Shire
 P=1212,1144,-25,2
 RECT=1144,1072,1264,1200,2
 GROUP=Lake Shire
 FLAGS=region_flag_nobuilding
-TAG.TITLE=the city of
-TAG.GUARDOWNER=the city
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_enter_ratman_cave]
-NAME=Entrance Ratman Cave
-P=1031,1154,-24,2
-RECT=1024,1152,1032,1160,2
-GROUP=Ratman Cave
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_ratman_cave_lvl1]
-NAME=Ratman Cave Level 1
-P=1348,1511,-3,2
-RECT=1264,1448,1360,1576,2
-GROUP=Ratman Cave
-TAG.TITLE=the Area of
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_ratman_cave_lvl2]
-NAME=Ratman Cave level 2
-P=1246,1510,-28,2
-RECT=1152,1456,1256,1560,2
-GROUP=Ratman Cave
-TAG.TITLE=the Area of
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_betlem_reg]
@@ -371,26 +191,7 @@ NAME=Bet-Lem Reg
 P=1238,974,-33,2
 RECT=1232,936,1272,984,2
 GROUP=Bet-Lem Reg
-TAG.TITLE=the city of
 FLAGS=region_flag_nobuilding
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_mistas]
-NAME=Mistas
-P=818,1073,-30,2
-RECT=744,984,912,1152,2
-RECT=744,1152,792,1176,2
-GROUP=Mistas
-TAG.TITLE=the city of
-TAG.GUARDOWNER=the city
-FLAGS=region_flag_guarded|region_flag_nobuilding
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_enter_serpentine_passage]
-NAME=Entrance Serpentine Passage
-P=808,872,5,2
-RECT=800,864,816,880,2
-GROUP=Ilshenar Dungeons
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_serpentine_passage]
@@ -398,21 +199,6 @@ NAME=Serpentine Passage
 P=533,1526,-25,2
 RECT=368,1488,560,1592,2
 GROUP=Ankh Dungeon
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_ankh_dungeon_lvl2]
-NAME=Ankh Dungeon Level 1
-P=156,1484,-28,2
-RECT=0,1248,176,1592,2
-GROUP=Ankh Dungeon
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_enter_ankh_dungeon_lvl2]
-NAME=Entrance Ankh Dungeon 2
-P=576,1147,-100,2
-RECT=568,1152,584,1160,2
-GROUP=Ilshenar Dungeons
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_kirin_passage]
@@ -429,91 +215,11 @@ RECT=312,1328,320,1336,2
 GROUP=Ilshenar Dungeons
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_enter_wisp_dungeon_lvl1]
-NAME=Entrance Wisp Dungeon Level 1
-P=651,1302,-58,2
-RECT=648,1296,656,1304,2
-GROUP=Wisp Dungeon
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_enter_wisp_dungeon_lvl2]
-NAME=Entrance Wisp Dungeon Level 2
-P=350,1429,15,2
-RECT=344,1424,352,1432,2
-GROUP=Wisp Dungeon
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_wisp_dungeon_lvl1]
-NAME=Wisp Dungeon Level 1
-P=628,1524,-28,2
-RECT=616,1480,704,1576,2
-RECT=704,1544,728,1576,2
-GROUP=Wisp Dungeon
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_wisp_dungeon_lvl2]
-NAME=Wisp Dungeon Level 2
-P=899,1451,-28,2
-RECT=816,1448,912,1584,2
-GROUP=Wisp Dungeon
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_wisp_dungeon_lvl3]
-NAME=Wisp Dungeon Level 3
-P=798,1547,-28,2
-RECT=744,1504,816,1584,2
-GROUP=Wisp Dungeon
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_wisp_dungeon_lvl4]
-NAME=Wisp Dungeon Level 4
-P=750,1479,-28,2
-RECT=744,1456,800,1504,2
-GROUP=Wisp Dungeon
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_wisp_dungeon_passages]
-NAME=Wisp Dungeon Passage
-P=715,1491,-18,2
-RECT=704,1480,744,1520,2
-RECT=944,1416,1000,1456,2
-RECT=832,1424,880,1448,2
-GROUP=Wisp Dungeon
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_enter_cyclops_dungeon]
-NAME=Entrance Cyclops Dungeon
-P=907,1361,-21,2
-RECT=896,1352,912,1368,2
-GROUP=Cyclops Dungeon
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_cyclops_dungeon]
-NAME=Cyclops Dungeon
-P=1011,1508,0,2
-RECT=912,1456,1024,1584,2
-GROUP=Cyclops Dungeon
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
 [AREADEF a_lizard_passage]
 NAME=Lizard Passage
 P=285,1585,-27,2
 RECT=256,1560,336,1592,2
 GROUP=UOTD Dungeons
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_exodus_dungeon]
-NAME=Exodus Dungeon
-P=1956,116,0,2
-RECT=1832,16,2080,216,2
-GROUP=Exodus Dungeon
 FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
@@ -529,54 +235,6 @@ NAME=Nox Tereg
 P=416,1176,0,2
 RECT=344,1112,488,1240,2
 GROUP=Nox Tereg
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_enter_sorcerer_dungeon]
-NAME=Entrance to Sorcerer's Dungeon
-P=542,461,-58,2
-RECT=536,448,560,464,2
-CLASS=3
-GROUP=Terort Skitas
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_sorcerer_dungeon_lvl1]
-NAME=Sorcerer's Dungeon Level 1
-P=429,108,-28,2
-RECT=368,0,488,120,2
-GROUP=Sorcerer's Dungeon
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_sorcerer_dungeon_lvl2]
-NAME=Sorcerer's Dungeon Level 2
-P=241,27,-18,2
-RECT=200,0,368,112,2
-GROUP=Sorcerer's Dungeon
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_sorcerer_dungeon_lvl3]
-NAME=Sorcerer's Dungeon Level 3
-P=132,123,-28,2
-RECT=48,0,184,136,2
-GROUP=Sorcerer's Dungeon
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_sorcerer_dungeon_lvl4]
-NAME=Sorcerer's Dungeon Level 4
-P=237,125,-28,2
-RECT=224,112,248,144,2
-GROUP=Sorcerer's Dungeon
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_sorcerer_dungeon_passage]
-NAME=Sorcerer's Dungeon Passage
-P=266,132,-28,2
-RECT=256,120,288,152,2
-GROUP=Sorcerer's Dungeon
-FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate 
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_enter_ancient_lair]
@@ -693,20 +351,6 @@ RECT=656,648,680,680,2
 GROUP=Ilshenar Unknown
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_enter_exodus_dungeon]
-NAME=Entrance to Exodus Dungeon
-P=850,778,-80,2
-RECT=800,752,864,808,2
-GROUP=Ilshenar Dungeon
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_enter_ankh_dungeon]
-NAME=Entrance to Ankh Dungeon
-P=576,1138,-100,2
-RECT=560,1128,592,1160,2
-GROUP=Ilshenar Dungeon
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
 [AREADEF a_lizards_altar]
 NAME=Lizards Altar
 P=228,1356,-12,2
@@ -735,15 +379,288 @@ NAME=Meer Catacombs
 P=1788,75,-28,2
 RECT=1750,38,1824,96,2
 FLAGS=080
-GROUP=Ilshenar Dungeon 
+GROUP=Ilshenar Dungeon
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_abyss]
-NAME=Abyss
-P=1729,173,103,2
-RECT=1724,159,1763,192,2
-GROUP=Montor
-FLAGS=region_flag_nobuilding
+[AREADEF a_spider_cave]
+NAME=Spider Cave
+P=1785,991,-28,2
+RECT=1752,952,1864,1000,2
+GROUP=Dungeons
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_spider_valley]
+NAME=Spider Valley
+P=1491,880,10,2
+RECT=1480,864,1528,896,2
+GROUP=Spider Cave
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_ratman_cave_level_1]
+NAME=Ratman Cave Level 1
+P=1348,1511,-3,2
+RECT=1264,1448,1360,1576,2
+GROUP=Ratman Cave
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_ratman_cave_level_2]
+NAME=Ratman Cave level 2
+P=1246,1510,-28,2
+RECT=1152,1456,1256,1560,2
+GROUP=Ratman Cave
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+////////////////////////////////////////
+// Dungeons
+////////////////////////////////////////
+
+[AREADEF a_dungeon_rock_level_1]
+NAME=Rock Dungeon Level 1
+P=2187,316,-7,2
+RECT=2176,288,2200,328,2
+GROUP=Rock Dungeon
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_dungeon_rock_level_2]
+NAME=Rock Dungeon Level 2
+P=2188,31,-27,2
+RECT=2088,8,2248,184,2
+GROUP=Rock Dungeon
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_spectre_dungeon]
+NAME=Spectre Dungeon
+P=1983,1107,-18,2
+RECT=1936,1000,2032,1120,2
+GROUP=Spectre Dungeon
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_blood_dungeon_entrance]
+NAME=Blood Dungeon Entrance
+P=1747,1227,-1,2
+RECT=1736,1224,1760,1240,2
+GROUP=Blood Dungeon
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_blood_dungeon]
+NAME=Blood Dungeon
+P=2114,839,-28,2
+RECT=2032,808,2200,1064,2
+GROUP=Blood Dungeon
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_ankh_dungeon]
+NAME=Ankh Dungeon
+P=156,1484,-28,2
+RECT=0,1248,176,1592,2
+GROUP=Ankh Dungeon
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_wisp_dungeon_entrance]
+NAME=Wisp Dungeon Entrance
+P=651,1302,-58,2
+RECT=648,1296,656,1304,2
+GROUP=Wisp Dungeon
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_wisp_dungeon_level_1]
+NAME=Wisp Dungeon Level 1
+P=628,1524,-28,2
+RECT=616,1480,704,1576,2
+RECT=704,1544,728,1576,2
+GROUP=Wisp Dungeon
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_wisp_dungeon_level_2]
+NAME=Wisp Dungeon Level 2
+P=899,1451,-28,2
+RECT=816,1448,912,1584,2
+GROUP=Wisp Dungeon
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_wisp_dungeon_level_3]
+NAME=Wisp Dungeon Level 3
+P=798,1547,-28,2
+RECT=744,1504,816,1584,2
+GROUP=Wisp Dungeon
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_wisp_dungeon_level_4]
+NAME=Wisp Dungeon Level 4
+P=750,1479,-28,2
+RECT=744,1456,800,1504,2
+GROUP=Wisp Dungeon
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_wisp_dungeon_passages]
+NAME=Wisp Dungeon Passage
+P=715,1491,-18,2
+RECT=704,1480,744,1520,2
+RECT=944,1416,1000,1456,2
+RECT=832,1424,880,1448,2
+GROUP=Wisp Dungeon
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_cyclops_dungeon]
+NAME=Cyclops Dungeon
+P=1011,1508,0,2
+RECT=912,1456,1024,1584,2
+GROUP=Cyclops Dungeon
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_exodus_dungeon_entrance]
+NAME=Exodus Dungeon Entrance
+P=850,778,-80,2
+RECT=800,752,864,808,2
+GROUP=Exodus Dungeon
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_exodus_dungeon]
+NAME=Exodus Dungeon
+P=1966,117,-28,2
+RECT=1832,16,2080,216,2
+GROUP=Exodus Dungeon
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_sorcerer_dungeon_level_1]
+NAME=Sorcerer's Dungeon Level 1
+P=429,108,-28,2
+RECT=368,0,488,120,2
+GROUP=Sorcerer's Dungeon
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_sorcerer_dungeon_level_2]
+NAME=Sorcerer's Dungeon Level 2
+P=241,27,-18,2
+RECT=200,0,368,112,2
+GROUP=Sorcerer's Dungeon
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_sorcerer_dungeon_level_3]
+NAME=Sorcerer's Dungeon Level 3
+P=132,123,-28,2
+RECT=48,0,184,136,2
+GROUP=Sorcerer's Dungeon
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_sorcerer_dungeon_level_4]
+NAME=Sorcerer's Dungeon Level 4
+P=237,125,-28,2
+RECT=224,112,248,144,2
+GROUP=Sorcerer's Dungeon
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_sorcerer_dungeon_passage]
+NAME=Sorcerer's Dungeon Passage
+P=266,132,-28,2
+RECT=256,120,288,152,2
+GROUP=Sorcerer's Dungeon
+FLAGS=region_flag_underground|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate 
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+////////////////////////////////////////
+// Caves and Mines
+////////////////////////////////////////
+
+[AREADEF a_mushroom_cave]
+NAME=Mushroom Cave
+P=1476,1494,-28,2
+RECT=1392,1448,1496,1568,2
+GROUP=Mines & Caves (Ilshenar)
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+////////////////////////////////////////
+// Shrines
+////////////////////////////////////////
+
+[AREADEF a_shrine_of_virtues]
+NAME=Shrine of the Virtues
+P=1104,404,0,2
+RECT=1072,376,1136,432,2
+GROUP=Shrines (Ilshenar)
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_shrine_valor_map2]
+NAME=Shrine of Valor
+P=539,221,-36,2
+RECT=512,200,544,232,2
+GROUP=Shrines (Ilshenar)
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_shrine_chaos_map2]
+NAME=Shrine of Chaos
+P=1748,236,0,2
+RECT=1736,224,1760,248,2
+GROUP=Shrines (Ilshenar)
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_shrine_sacrifice_map2]
+NAME=Shrine of Sacrifice
+P=1196,1290,-25,2
+RECT=1160,1280,1192,1296,2
+GROUP=Shrines (Ilshenar)
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_shrine_honesty_map2]
+NAME=Shrine of Honesty
+P=725,1355,-61,2
+RECT=712,1344,736,1376,2
+GROUP=Shrines (Ilshenar)
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_shrine_compassion_map2]
+NAME=Shrine of Compassion
+P=1223,475,-16,2
+RECT=1200,448,1232,488,2
+GROUP=Shrines (Ilshenar)
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_shrine_spirituality_map2]
+NAME=Shrine of Spirituality
+P=1528,1344,0,2
+RECT=1520,1336,1536,1352,2
+GROUP=Shrines (Ilshenar)
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_shrine_humility_map2]
+NAME=Shrine of Humility
+P=284,1016,0,2
+RECT=272,1008,296,1024,2
+GROUP=Shrines (Ilshenar)
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_shrine_honor_map2]
+NAME=Shrine of Honor
+P=748,728,0,2
+RECT=736,712,760,744,2
+GROUP=Shrines (Ilshenar)
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_shrine_justice_map2]
+NAME=Shrine of Justice
+P=984,1008,-37,2
+RECT=979,991,991,1013,2
+GROUP=Shrines (Ilshenar)
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [EOF]
