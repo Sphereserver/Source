@@ -826,7 +826,8 @@ void CChar::NPC_LoadScript( bool fRestock )
 	}
 
 	CCharBase * pCharDef = Char_GetDef();
-	ReadScriptTrig(pCharDef, CTRIG_Create);
+	//ReadScriptTrig(pCharDef, CTRIG_Create);
+	OnTrigger(CTRIG_Create, this, 0);
 
 	if (( fRestock ) && ( IsTrigUsed(TRIGGER_NPCRESTOCK) ))
 		ReadScriptTrig(pCharDef, CTRIG_NPCRestock);
@@ -1470,22 +1471,7 @@ do_default:
 		//	sVal = GetDefStr(pszKey, true);
 		//	break;
 		//return as decimal number
-		case CHC_BONUSSTR:
-		case CHC_BONUSDEX:
-		case CHC_BONUSINT:
-		case CHC_BONUSHITS:
-		case CHC_BONUSSTAM:
-		case CHC_BONUSMANA:
-		case CHC_BONUSHITSMAX:
-		case CHC_BONUSSTAMMAX:
-		case CHC_BONUSMANAMAX:
 		case CHC_CURFOLLOWER:
-		case CHC_DMGCOLD:
-		case CHC_DMGENERGY:
-		case CHC_DMGFIRE:
-		case CHC_DMGPHYSICAL:
-		case CHC_DMGPOISON:
-		case CHC_ENHANCEPOTIONS:
 		case CHC_FASTERCASTRECOVERY:
 		case CHC_FASTERCASTING:
 		case CHC_FOLLOWERSLOTS:
@@ -1510,7 +1496,6 @@ do_default:
 		case CHC_RESFIREMAX:
 		case CHC_RESPHYSICALMAX:
 		case CHC_RESPOISONMAX:
-		case CHC_TITHING:
 		case CHC_REGENFOOD:
 		case CHC_REGENHITS:
 		case CHC_REGENSTAM:
@@ -1519,6 +1504,7 @@ do_default:
 		case CHC_REGENVALHITS:
 		case CHC_REGENVALSTAM:
 		case CHC_REGENVALMANA:
+		case CHC_SPELLTIMEOUT:
 			sVal.FormatLLVal(GetDefNum(pszKey, true));
 			break;
 
@@ -2262,7 +2248,7 @@ do_default:
 		case CHC_REGENVALHITS:
 		case CHC_REGENVALSTAM:
 		case CHC_REGENVALMANA:
-		case CHC_TITHING:
+		case CHC_SPELLTIMEOUT:
 			{
 				SetDefNum(s.GetKey(), s.GetArgVal(), false);
 				UpdateStatsFlag();
@@ -2270,21 +2256,6 @@ do_default:
 			break;
 		//Set as numbers only
 		case CHC_REFLECTPHYSICALDAM:
-		case CHC_ENHANCEPOTIONS:
-		case CHC_BONUSSTR:
-		case CHC_BONUSDEX:
-		case CHC_BONUSINT:
-		case CHC_BONUSHITS:
-		case CHC_BONUSSTAM:
-		case CHC_BONUSMANA:
-		case CHC_BONUSHITSMAX:
-		case CHC_BONUSSTAMMAX:
-		case CHC_BONUSMANAMAX:
-		case CHC_DMGCOLD:
-		case CHC_DMGENERGY:
-		case CHC_DMGFIRE:
-		case CHC_DMGPHYSICAL:
-		case CHC_DMGPOISON:
 		case CHC_FOLLOWERSLOTS:
 			{
 				SetDefNum(s.GetKey(), s.GetArgVal(), false);

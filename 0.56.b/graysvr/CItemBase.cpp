@@ -978,10 +978,75 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 		case IBC_AMMOANIMRENDER:
 		case IBC_AMMOCONT:
 		case IBC_AMMOTYPE:
+		case IBC_OWNEDBY:
+		case IBC_ITEMSETNAME:
+		case IBC_MAKERSNAME:
 			{
 				sVal = GetDefStr(pszKey, false);
 			}
 			break;
+		case IBC_SUMMONING:
+		case IBC_BANE:
+		case IBC_BATTLELUST:
+		case IBC_SEARINGWEAPON:
+		case IBC_HITSPELL:
+		case IBC_HITSPELLSTR:
+		case IBC_SPELLCHANNELING:
+		case IBC_USEBESTWEAPONSKILL:
+		case IBC_BONUSSKILL1:
+		case IBC_BONUSSKILL1AMT:
+		case IBC_BONUSSKILL2:
+		case IBC_BONUSSKILL2AMT:
+		case IBC_BONUSSKILL3:
+		case IBC_BONUSSKILL3AMT:
+		case IBC_BONUSSKILL4:
+		case IBC_BONUSSKILL4AMT:
+		case IBC_BONUSSKILL5:
+		case IBC_BONUSSKILL5AMT:
+		case IBC_ITEMSETAMTCUR:
+		case IBC_ITEMSETAMTMAX:
+		case IBC_ITEMSETCOLOR:
+		case IBC_OCOLOR:
+		case IBC_RARITY:
+		case IBC_LIFESPAN:
+		case IBC_BRITTLE:
+		case IBC_EPHEMERAL:
+		case IBC_MAGEARMOR:
+		case IBC_MAGEWEAPON:
+		case IBC_SELFREPAIR:
+		case IBC_DURABILITY:
+		case IBC_MATERIAL:
+		case IBC_NODROPTRADE:
+		case IBC_CHARGESCUR:
+		case IBC_CHARGESMAX:
+		case IBC_USESCUR:
+		case IBC_USESMAX:
+		case IBC_RECHARGE:
+		case IBC_RECHARGEAMT:
+		case IBC_RECHARGERATE:
+		case IBC_BONUSCRAFTING:
+		case IBC_BONUSCRAFTINGAMT:
+		case IBC_BONUSCRAFTINGEXCEP:
+		case IBC_BONUSCRAFTINGEXCEPAMT:
+		case IBC_REMOVALTYPE:
+		case IBC_MANAPHASE:
+		case IBC_NPCKILLER:
+		case IBC_NPCKILLERAMT:
+		case IBC_NPCPROTECTION:
+		case IBC_NPCPROTECTIONAMT:
+		case IBC_BONUSSTR:
+		case IBC_BONUSDEX:
+		case IBC_BONUSINT:
+		case IBC_BONUSHITS:
+		case IBC_BONUSSTAM:
+		case IBC_BONUSMANA:
+		case IBC_BONUSHITSMAX:
+		case IBC_BONUSSTAMMAX:
+		case IBC_BONUSMANAMAX:
+		{
+			sVal.FormatLLVal(GetDefNum(pszKey));
+		}break;
+
 		case IBC_DEFNAME:
 			sVal = GetResourceName();
 			break;
@@ -1004,14 +1069,30 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 				sVal = pszTemp;
 			}
 			break;
+		case IBC_ONLYELF:
+			sVal.FormatVal(( m_CanUse & CAN_U_ELF ) ? true : false );
+			break;
+		case IBC_ONLYFEMALE:
+			sVal.FormatVal(( m_CanUse & CAN_U_FEMALE ) ? true : false );
+			break;
+		case IBC_ONLYGARGOYLE:
+			sVal.FormatVal(( m_CanUse & CAN_U_GARGOYLE ) ? true : false );
+			break;
+		case IBC_ONLYHUMAN:
+			sVal.FormatVal(( m_CanUse & CAN_U_HUMAN ) ? true : false );
+			break;
+		case IBC_ONLYMALE:
+			sVal.FormatVal(( m_CanUse & CAN_U_MALE ) ? true : false );
+			break;
+
 		case IBC_DYE:
-			sVal.FormatHex(( m_Can & CAN_I_DYE ) ? true : false );
+			sVal.FormatVal(( m_Can & CAN_I_DYE ) ? true : false );
 			break;
 		case IBC_ENCHANT:
-			sVal.FormatHex(( m_Can & CAN_I_ENCHANT ) ? true : false );
+			sVal.FormatVal(( m_Can & CAN_I_ENCHANT ) ? true : false );
 			break;
 		case IBC_EXCEPTIONAL:
-			sVal.FormatHex(( m_Can & CAN_I_EXCEPTIONAL ) ? true : false );
+			sVal.FormatVal(( m_Can & CAN_I_EXCEPTIONAL ) ? true : false );
 			break;
 		case IBC_FLIP:
 			sVal.FormatHex(( m_Can & CAN_I_FLIP ) ? true : false );
@@ -1020,7 +1101,7 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 			sVal.FormatHex( GetDispID() );
 			break;
 		case IBC_IMBUE:
-			sVal.FormatHex(( m_Can & CAN_I_IMBUE ) ? true : false );
+			sVal.FormatVal(( m_Can & CAN_I_IMBUE ) ? true : false );
 			break;
 		case IBC_ISARMOR:
 			sVal.FormatVal( IsTypeArmor( m_type ) );
@@ -1029,16 +1110,16 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 			sVal.FormatVal( IsTypeWeapon( m_type ) );
 			break;
 		case IBC_MAKERSMARK:
-			sVal.FormatHex(( m_Can & CAN_I_MAKERSMARK ) ? true : false );
+			sVal.FormatVal(( m_Can & CAN_I_MAKERSMARK ) ? true : false );
 			break;
 		case IBC_RECYCLE:
-			sVal.FormatHex(( m_Can & CAN_I_RECYCLE ) ? true : false );
+			sVal.FormatVal(( m_Can & CAN_I_RECYCLE ) ? true : false );
 			break;
 		case IBC_REFORGE:
-			sVal.FormatHex(( m_Can & CAN_I_REFORGE ) ? true : false );
+			sVal.FormatVal(( m_Can & CAN_I_REFORGE ) ? true : false );
 			break;
 		case IBC_RETAINCOLOR:
-			sVal.FormatHex(( m_Can & CAN_I_RETAINCOLOR ) ? true : false );
+			sVal.FormatVal(( m_Can & CAN_I_RETAINCOLOR ) ? true : false );
 			break;
 		case IBC_SKILL:		// Skill to use.
 			{
@@ -1207,11 +1288,91 @@ bool CItemBase::r_LoadVal( CScript &s )
 		case IBC_AMMOANIMRENDER:
 		case IBC_AMMOCONT:
 		case IBC_AMMOTYPE:
+		case IBC_OWNEDBY:	//uid
+		case IBC_MAKERSNAME:	//string
+		case IBC_ITEMSETNAME:
 			{
 				bool fQuoted = false;
 				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
 			}
 			break;
+		case IBC_SUMMONING:
+		case IBC_SEARINGWEAPON:
+		case IBC_HITSPELL:
+		case IBC_HITSPELLSTR:
+		case IBC_SPELLCHANNELING:
+		case IBC_USEBESTWEAPONSKILL:
+		case IBC_BONUSSKILL1:
+		case IBC_BONUSSKILL1AMT:
+		case IBC_BONUSSKILL2:
+		case IBC_BONUSSKILL2AMT:
+		case IBC_BONUSSKILL3:
+		case IBC_BONUSSKILL3AMT:
+		case IBC_BONUSSKILL4:
+		case IBC_BONUSSKILL4AMT:
+		case IBC_BONUSSKILL5:
+		case IBC_BONUSSKILL5AMT:
+		case IBC_ITEMSETAMTCUR:
+		case IBC_ITEMSETAMTMAX:
+		case IBC_ITEMSETCOLOR:
+		case IBC_OCOLOR:
+		case IBC_RARITY:
+		case IBC_LIFESPAN:
+		case IBC_BRITTLE:
+		case IBC_EPHEMERAL:
+		case IBC_MAGEARMOR:
+		case IBC_MAGEWEAPON:
+		case IBC_SELFREPAIR:
+		case IBC_DURABILITY:
+		case IBC_MATERIAL:
+		case IBC_NODROPTRADE:
+		case IBC_CHARGESCUR:
+		case IBC_CHARGESMAX:
+		case IBC_USESCUR:
+		case IBC_USESMAX:
+		case IBC_RECHARGE:
+		case IBC_RECHARGEAMT:
+		case IBC_RECHARGERATE:
+		case IBC_BONUSCRAFTING:
+		case IBC_BONUSCRAFTINGAMT:
+		case IBC_BONUSCRAFTINGEXCEP:
+		case IBC_BONUSCRAFTINGEXCEPAMT:
+		case IBC_REMOVALTYPE:
+		case IBC_MANAPHASE:
+		case IBC_NPCKILLER:
+		case IBC_NPCKILLERAMT:
+		case IBC_NPCPROTECTION:
+		case IBC_NPCPROTECTIONAMT:
+		case IBC_BONUSSTR:
+		case IBC_BONUSDEX:
+		case IBC_BONUSINT:
+		case IBC_BONUSHITS:
+		case IBC_BONUSSTAM:
+		case IBC_BONUSMANA:
+		case IBC_BONUSHITSMAX:
+		case IBC_BONUSSTAMMAX:
+		case IBC_BONUSMANAMAX:
+		{
+			bool fQuoted = false;
+			SetDefNum(s.GetKey(), s.GetArgVal(), fQuoted);
+		}break;
+
+		case IBC_ONLYELF:
+			m_CanUse |= CAN_U_ELF ;
+			break;
+		case IBC_ONLYFEMALE:
+			m_CanUse |= CAN_U_FEMALE;
+			break;
+		case IBC_ONLYGARGOYLE:
+			m_CanUse |= CAN_U_GARGOYLE;
+			break;
+		case IBC_ONLYHUMAN:
+			m_CanUse |= CAN_U_HUMAN;
+			break;
+		case IBC_ONLYMALE:
+			m_CanUse |= CAN_U_MALE;
+			break;
+
 		case IBC_DISPID:
 			// Can't set this.
 			return( false );

@@ -37,8 +37,9 @@ public:
 
 	BYTE    m_attackBase;	// base attack for weapons/chars or AC for armor. not magic plus
 	BYTE	m_attackRange;	// variable range of attack damage.
-
+	
 	DWORD	m_Can;			// Base attribute flags. CAN_C_GHOST
+	DWORD	m_CanUse;		// CanUse flags.
 
 public:
 	LPCTSTR GetDefStr( LPCTSTR pszKey, bool fZero = false ) const
@@ -106,6 +107,14 @@ public:
 #define CAN_I_IMBUE			0x200000	// can items be imbued (imbuing)
 #define CAN_I_RECYCLE		0x400000	// Can items be recycled.
 #define CAN_I_REFORGE		0x800000	// Can items be Runic Reforged.
+
+#define CAN_U_ALL			0x000
+#define CAN_U_MALE			0x001
+#define CAN_U_FEMALE		0x002
+#define CAN_U_HUMAN			0x004
+#define CAN_U_ELF			0x008
+#define CAN_U_GARGOYLE		0x010
+#define CAN_U_NONE			0x020
 
 	// CCharBase specific defs.
 #define CAN_C_EQUIP			0x0100	// Can equip stuff. (humanoid)

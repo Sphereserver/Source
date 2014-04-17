@@ -407,6 +407,7 @@ public:
 #define ATTR_REFORGED		0x2000000	// Is Runic Reforged.
 	DWORD	m_Attr;
 	DWORD	m_CanUse;		// Base attribute flags. can_u_all/male/female..
+	DWORD	m_Can;
 
 	// NOTE: If this link is set but not valid -> then delete the whole object !
 	CGrayUID m_uidLink;		// Linked to this other object in the world. (owned, key, etc)

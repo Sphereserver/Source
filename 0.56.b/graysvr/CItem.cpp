@@ -282,9 +282,15 @@ CItem * CItem::CreateScript( ITEMID_TYPE id, CChar * pSrc ) // static
 		if ( pItemDef->ResourceLock(s))
 		{
 			if ( pSrc )
-				pItem->OnTriggerScript( s, sm_szTrigName[ITRIG_Create], pSrc );
+			{
+				//pItem->OnTriggerScript( s, sm_szTrigName[ITRIG_Create], pSrc );
+				pItem->OnTrigger(sm_szTrigName[ITRIG_Create],pSrc,0);
+			}
 			else
-				pItem->OnTriggerScript( s, sm_szTrigName[ITRIG_Create], &g_Serv );
+			{
+				//pItem->OnTriggerScript( s, sm_szTrigName[ITRIG_Create], &g_Serv );
+				pItem->OnTrigger(sm_szTrigName[ITRIG_Create],&g_Serv,0);
+			}
 		}
 	}
 
@@ -2305,6 +2311,8 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 	{
 		//return as string or hex number
 		case IC_CRAFTEDBY:
+			sVal = GetDefStr(pszKey, true);
+			break;
 		case IC_ITEMSETCOLOR:
 		case IC_ITEMSETNAME:
 		case IC_MAKERSNAME:
@@ -2315,10 +2323,13 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_NPCPROTECTIONAMT:
 		case IC_OCOLOR:
 		case IC_OWNEDBY:
-		case IC_SUMMONING:
-			sVal = GetDefStr(pszKey, true);
-			break;
+		{
+			CItem * pItem = dynamic_cast<CItem*>(this);
+			CVarDefCont * pValue = pItem->GetDefKey(pszKey, true);
+			sVal = pValue->GetValStr();
+		}break;
 		//return as decimal number
+		case IC_SUMMONING:
 		case IC_BONUSSTR:
 		case IC_BONUSDEX:
 		case IC_BONUSINT:
@@ -2347,26 +2358,12 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_CRAFTSKILLEXCEP:
 		case IC_CRAFTSKILLEXCEPAMT:
 		case IC_CURSED:
-		case IC_DMGPHYSICAL:
 		case IC_DURABILITY:
-		case IC_ENHANCEPOTIONS:
 		case IC_EPHEMERAL:
-		case IC_FASTERCASTING:
-		case IC_FASTERCASTRECOVERY:
-		case IC_HITSPELL:
-		case IC_HITSPELLSTR:
 		case IC_INSURED:
-		case IC_INCREASEHITCHANCE:
-		case IC_INCREASESWINGSPEED:
-		case IC_INCREASEDAM:
-		case IC_INCREASEDEFCHANCE:
-		case IC_INCREASESPELLDAM:
 		case IC_ITEMSETAMTCUR:
 		case IC_ITEMSETAMTMAX:
 		case IC_LIFESPAN:
-		case IC_LOWERMANACOST:
-		case IC_LOWERREAGENTCOST:
-		case IC_LUCK:
 		case IC_MAGEARMOR:
 		case IC_MAGEWEAPON:
 		case IC_MANAPHASE:
@@ -2375,23 +2372,18 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_RECHARGE:
 		case IC_RECHARGEAMT:
 		case IC_RECHARGERATE:
-		case IC_REGENHITS:
-		case IC_REGENSTAM:
-		case IC_REGENMANA:
-		case IC_REFLECTPHYSICALDAM:
 		case IC_REMOVALTYPE:
-		case IC_RESCOLD:
-		case IC_RESENERGY:
-		case IC_RESFIRE:
-		case IC_RESPHYSICAL:
-		case IC_RESPOISON:
 		case IC_SEARINGWEAPON:
 		case IC_SELFREPAIR:
-		case IC_USEBESTWEAPONNSKILL:
 		case IC_USESCUR:
 		case IC_USESMAX:
-			sVal.FormatLLVal(GetDefNum(pszKey,true));
-			break;
+		{
+			CVarDefCont * pValue = GetDefKey(pszKey, true);
+			if ( pValue )
+				sVal.FormatLLVal(static_cast<unsigned long long>(pValue->GetValNum()));
+			else
+				sVal.FormatLLVal(0);
+		}	break;
 		//On these ones, check BaseDef too if not found on dynamic
 		case IC_AMMOANIM:
 		case IC_AMMOANIMHUE:
@@ -2464,18 +2456,6 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 				}
 				sVal.FormatVal( iVal );
 			}
-			break;
-		case IC_DMGCOLD:
-			sVal.FormatHex( IsTypeWeapon() ? m_itWeapon.m_dmgcold : 0 );
-			break;
-		case IC_DMGENERGY:
-			sVal.FormatHex( IsTypeWeapon() ? m_itWeapon.m_dmgenergy : 0 );
-			break;
-		case IC_DMGFIRE:
-			sVal.FormatHex( IsTypeWeapon() ? m_itWeapon.m_dmgfire : 0 );
-			break;
-		case IC_DMGPOISON:
-			sVal.FormatHex( IsTypeWeapon() ? m_itWeapon.m_dmgpoison : 0 );
 			break;
 		case IC_DUPEITEM:
 			{
@@ -2581,6 +2561,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 	EXC_TRY("LoadVal");
 	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
+		case IC_CRAFTEDBY:
 		case IC_AMMOANIM:
 		case IC_AMMOANIMHUE:
 		case IC_AMMOANIMRENDER:
@@ -2626,11 +2607,8 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_CRAFTSKILLEXCEP:
 		case IC_CRAFTSKILLEXCEPAMT:
 		case IC_CURSED:
-		case IC_DMGPHYSICAL:
 		case IC_DURABILITY:
 		case IC_EPHEMERAL:
-		case IC_HITSPELL:
-		case IC_HITSPELLSTR:
 		case IC_INSURED:
 		case IC_LIFESPAN:
 		case IC_MAGEARMOR:
@@ -2654,26 +2632,6 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_BONUSHITSMAX:
 		case IC_BONUSSTAMMAX:
 		case IC_BONUSMANAMAX:
-		case IC_ENHANCEPOTIONS:
-		case IC_FASTERCASTRECOVERY:
-		case IC_FASTERCASTING:
-		case IC_INCREASEHITCHANCE:
-		case IC_INCREASESWINGSPEED:
-		case IC_INCREASEDAM:
-		case IC_INCREASEDEFCHANCE:
-		case IC_INCREASESPELLDAM:
-		case IC_LOWERMANACOST:
-		case IC_LOWERREAGENTCOST:
-		case IC_LUCK:
-		case IC_REGENHITS:
-		case IC_REGENSTAM:
-		case IC_REGENMANA:
-		case IC_REFLECTPHYSICALDAM:
-		case IC_RESCOLD:
-		case IC_RESENERGY:
-		case IC_RESFIRE:
-		case IC_RESPHYSICAL:
-		case IC_RESPOISON:
 			SetDefNum(s.GetKey(),s.GetArgVal(), false);
 			return true;
 		case IC_ADDCIRCLE:
@@ -2771,7 +2729,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_DISPID:
 		case IC_DISPIDDEC:
 			return SetDispID(static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr())));
-		case IC_DMGCOLD:
+		/*case IC_DMGCOLD:
 			if ( IsTypeWeapon() )
 				m_itWeapon.m_dmgcold = static_cast<short>(s.GetArgVal());
 			else
@@ -2794,7 +2752,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				m_itWeapon.m_dmgpoison = static_cast<short>(s.GetArgVal());
 			else
 				DEBUG_ERR(("Dmgpoison set on a non-weapon object\n"));
-			return true;
+			return true;*/
 		case IC_HITS:
 			{
 				int maxHits = HIWORD(m_itNormal.m_more1);

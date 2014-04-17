@@ -1129,11 +1129,10 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 	if ( !pSpellDef->m_sTargetPrompt.IsEmpty() )
 		pPrompt	= pSpellDef->m_sTargetPrompt;
 	
-	int SpellTimeout;
-	if (m_pChar->m_TagDefs.GetKeyNum("override.spelltimeout"))
-		SpellTimeout =	static_cast<int>(m_TagDefs.GetKeyNum("override.spelltimeout"));
-	else
-		SpellTimeout = g_Cfg.m_iSpellTimeout * TICK_PER_SEC;
+	int SpellTimeout = g_Cfg.m_iSpellTimeout * TICK_PER_SEC;
+	if (m_pChar->GetDefNum("SPELLTIMEOUT",true))
+		SpellTimeout =	static_cast<int>(m_pChar->GetDefNum("SPELLTIMEOT",true));
+
 	addTarget( CLIMODE_TARG_SKILL_MAGERY, pPrompt,
 		pSpellDef->IsSpellType( SPELLFLAG_TARG_XYZ ),
 		pSpellDef->IsSpellType( SPELLFLAG_HARM ),

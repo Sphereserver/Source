@@ -735,6 +735,9 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
 
+	case CNC_BONDED:
+		pChar->SetDefNum(s.GetKey(), s.GetArgVal(), false );
+		break;
 	case CNC_THROWDAM:
 	case CNC_THROWOBJ:
 	case CNC_THROWRANGE:
@@ -807,6 +810,9 @@ bool CCharNPC::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 	{
 	
 	//On these ones, check BaseDef too if not found on dynamic
+	case CNC_BONDED:
+		sVal.FormatLLVal(pChar->GetDefNum(pszKey, true));
+		break;
 	case CNC_THROWDAM:
 	case CNC_THROWOBJ:
 	case CNC_THROWRANGE:

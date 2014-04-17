@@ -607,8 +607,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 	bool	fZero	= false;
 	switch (index)
 	{
-		//return as string or hex number
-		case OC_ABILITYPRIMARY:
+		//return as string or hex numbercase OC_ABILITYPRIMARY:
 		case OC_ABILITYSECONDARY:
 		case OC_BALANCED:
 		case OC_BANE:
@@ -622,15 +621,18 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_DAMFIRE:
 		case OC_DAMMODIFIER:
 		case OC_DAMPHYSICAL:
-		case OC_DECREASEHITCHANCE:
 		case OC_DAMPOISON:
+		case OC_DECREASEHITCHANCE:
 		case OC_EATERCOLD:
 		case OC_EATERDAM:
 		case OC_EATERENERGY:
 		case OC_EATERFIRE:
 		case OC_EATERKINETIC:
 		case OC_EATERPOISON:
+		case OC_ENHANCEPOTIONS:
 		case OC_EXPANSION:
+		case OC_FASTERCASTING:
+		case OC_FASTERCASTRECOVERY:
 		case OC_HITAREACOLD:
 		case OC_HITAREAENERGY:
 		case OC_HITAREAFIRE:
@@ -649,16 +651,44 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_HITLOWERDEF:
 		case OC_HITMAGICARROW:
 		case OC_HITMANADRAIN:
+		case OC_HITSPELL:
+		case OC_HITSPELLSTR:
+		case OC_INCREASEDAM:
+		case OC_INCREASEDEFCHANCE:
+		case OC_INCREASEDEFCHANCEMAX:
 		case OC_INCREASEGOLD:
+		case OC_INCREASEHITCHANCE:
 		case OC_INCREASEKARMALOSS:
+		case OC_INCREASESPELLDAM:
+		case OC_INCREASESWINGSPEED:
 		case OC_LOWERAMMOCOST:
 		case OC_LOWERREQ:
+		case OC_LUCK:
 		case OC_MANABURST:
 		case OC_MANABURSTFREQUENCY:
 		case OC_MANABURSTKARMA:
+		case OC_NIGHTSIGHT:
 		case OC_RAGEFOCUS:
 		case OC_REACTIVEPARALYZE:
+		case OC_REFLECTPHYSICALDAM:
 		case OC_REGENFOOD:
+		case OC_REGENHITS:
+		case OC_REGENMANA:
+		case OC_REGENSTAM:
+		case OC_REGENVALFOOD:
+		case OC_REGENVALHITS:
+		case OC_REGENVALMANA:
+		case OC_REGENVALSTAM:
+		case OC_RESCOLD:
+		case OC_RESFIRE:
+		case OC_RESENERGY:
+		case OC_RESPHYSICAL:
+		case OC_RESPOISON:
+		case OC_RESCOLDMAX:
+		case OC_RESFIREMAX:
+		case OC_RESENERGYMAX:
+		case OC_RESPHYSICALMAX:
+		case OC_RESPOISONMAX:
 		case OC_RESONANCECOLD:
 		case OC_RESONANCEENERGY:
 		case OC_RESONANCEFIRE:
@@ -674,15 +704,19 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_SOULCHARGEFIRE:
 		case OC_SOULCHARGEKINETIC:
 		case OC_SOULCHARGEPOISON:
+		case OC_SPELLCHANNELING:
 		case OC_SPELLCONSUMPTION:
 		case OC_SPELLFOCUSING:
 		case OC_SPLINTERINGWEAPON:
 		case OC_VELOCITY:
-		case OC_WEIGHTREDUCTION:
-		case OC_NIGHTSIGHT:
-		case OC_SPELLCHANNELING:
-			//sVal = GetDefStr(pszKey, true);
-			sVal.FormatLLVal(GetDefNum(pszKey, true));
+		case OC_TITHING:
+			{
+			CVarDefCont * pValue = GetDefKey(pszKey, true);
+			if ( pValue )
+				sVal.FormatLLVal(static_cast<unsigned long long>(pValue->GetValNum()));
+			else
+				sVal.FormatLLVal(0);
+			}
 			break;
 
 
@@ -1230,13 +1264,17 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_DAMMODIFIER:
 		case OC_DAMPHYSICAL:
 		case OC_DAMPOISON:
+		case OC_DECREASEHITCHANCE:
 		case OC_EATERCOLD:
 		case OC_EATERDAM:
 		case OC_EATERENERGY:
 		case OC_EATERFIRE:
 		case OC_EATERKINETIC:
 		case OC_EATERPOISON:
+		case OC_ENHANCEPOTIONS:
 		case OC_EXPANSION:
+		case OC_FASTERCASTING:
+		case OC_FASTERCASTRECOVERY:
 		case OC_HITAREACOLD:
 		case OC_HITAREAENERGY:
 		case OC_HITAREAFIRE:
@@ -1255,16 +1293,44 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_HITLOWERDEF:
 		case OC_HITMAGICARROW:
 		case OC_HITMANADRAIN:
+		case OC_HITSPELL:
+		case OC_HITSPELLSTR:
+		case OC_INCREASEDAM:
+		case OC_INCREASEDEFCHANCE:
+		case OC_INCREASEDEFCHANCEMAX:
 		case OC_INCREASEGOLD:
+		case OC_INCREASEHITCHANCE:
 		case OC_INCREASEKARMALOSS:
+		case OC_INCREASESPELLDAM:
+		case OC_INCREASESWINGSPEED:
 		case OC_LOWERAMMOCOST:
 		case OC_LOWERREQ:
+		case OC_LUCK:
 		case OC_MANABURST:
 		case OC_MANABURSTFREQUENCY:
 		case OC_MANABURSTKARMA:
+		case OC_NIGHTSIGHT:
 		case OC_RAGEFOCUS:
 		case OC_REACTIVEPARALYZE:
+		case OC_REFLECTPHYSICALDAM:
 		case OC_REGENFOOD:
+		case OC_REGENHITS:
+		case OC_REGENMANA:
+		case OC_REGENSTAM:
+		case OC_REGENVALFOOD:
+		case OC_REGENVALHITS:
+		case OC_REGENVALMANA:
+		case OC_REGENVALSTAM:
+		case OC_RESCOLD:
+		case OC_RESFIRE:
+		case OC_RESENERGY:
+		case OC_RESPHYSICAL:
+		case OC_RESPOISON:
+		case OC_RESCOLDMAX:
+		case OC_RESFIREMAX:
+		case OC_RESENERGYMAX:
+		case OC_RESPHYSICALMAX:
+		case OC_RESPOISONMAX:
 		case OC_RESONANCECOLD:
 		case OC_RESONANCEENERGY:
 		case OC_RESONANCEFIRE:
@@ -1280,14 +1346,15 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_SOULCHARGEFIRE:
 		case OC_SOULCHARGEKINETIC:
 		case OC_SOULCHARGEPOISON:
+		case OC_SPELLCHANNELING:
 		case OC_SPELLCONSUMPTION:
 		case OC_SPELLFOCUSING:
 		case OC_SPLINTERINGWEAPON:
 		case OC_VELOCITY:
-		case OC_WEIGHTREDUCTION:
+		case OC_TITHING:
 			{
 				bool fQuoted = false;
-				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
+				SetDefNum(s.GetKey(), s.GetArgVal(), fQuoted);
 			}
 			break;
 
