@@ -70,7 +70,7 @@ TAG.GargoyleOnly
  - Effect:  This TAG is implemented inside the t_equipitem TYPEDEF and
             does not rely on other TYPEDEFs or EVENTs.
 
-TAG.RareItem
+Rarity
  - Purpose: When the value is 1, the item tooltip will indicate the item is
             an artifact, and tell you how many of these items exist within
             the world.
@@ -85,16 +85,16 @@ TAG.Stolen
  - Effect:  This TAG is implemented inside the t_equipitem TYPEDEF and
             does not rely on other TYPEDEFs or EVENTs.
 
-TAG.Exceptional
+Exceptional
  - Purpose: When the value is 1, the item tooltip will indicate the item is
             exceptional.
  - Values:  One or zero.
  - Effect:  This TAG is implemented inside the t_equipitem TYPEDEF and
             does not rely on other TYPEDEFs or EVENTs.
 
-TAG.CraftedBy
+CraftedBy
  - Purpose: The value of the tag will show up on the tooltip like this:
-            "crafted by <TAG.CraftedBy>"
+            "crafted by <CraftedBy>"
  - Values:  Usually the name of a person
  - Effect:  This TAG is implemented inside the t_equipitem TYPEDEF and
             does not rely on other TYPEDEFs or EVENTs.
@@ -105,124 +105,124 @@ TAG.DoNotEquip
  - Effect:  This TAG is implemented inside the t_equipitem TYPEDEF and
             does not rely on other TYPEDEFs or EVENTs.
 
-TAG.SpellChanneling
+SpellChanneling
  - Purpose: When the value is 1, allows the caster to cast Magery spells
             even when they are holding items.  In other words, it overrides
             the EquippedCast=0 setting from sphere.ini
  - Values:  One or zero.
  - Effect:  NOT IMPLEMENTED YET
 
-TAG.NightSight
+NightSight
  - Purpose: When the value is 1, the item grants permanent nightsight.
  - Values:  One or zero.
  - Effect:  This TAG is implemented inside the t_equipitem TYPEDEF and
             does not rely on other TYPEDEFs or EVENTs.
 
-TAG.DefenseChanceIncrease
+IncreaseDefChance
  - Purpose: When the value is positive, the item improves the defense of the
             person wearing it.  When negative, the item makes the person
             easier to hit (a curse of sorts).
  - Values:  Positive or negative integer.
  - Effect:  NOT IMPLEMENTED YET
 
-TAG.HitChanceIncrease
+IncreaseHitChance
  - Purpose: When the value is positive, the item improves the chance to hit
             you opponent.  When negative, the item makes it harder to hit
             your target (a curse of sorts).
  - Values:  Positive or negative integer.
  - Effect:  NOT IMPLEMENTED YET
 
-TAG.HitChanceDecrease
- - Purpose: The opposite of HitChanceIncrease.
+DecreaseHitChance
+ - Purpose: The opposite of IncreaseHitChance.
  - Values:  Positive or negative integer.
  - Effect:  NOT IMPLEMENTED YET
 
-TAG.SwingSpeedIncrease
+IncreaseSwingSpeed
  - Purpose: Increases the attack speed of your weapon.
  - Values:  Positive or negative integer.
  - Effect:  NOT IMPLEMENTED YET
 
-TAG.RESCOLD
-TAG.RESENERGY
-TAG.RESFIRE
-TAG.RESPOISON
+RESCOLD
+RESENERGY
+RESFIRE
+RESPOISON
  - Purpose: Increases the resistance to damage of the indicated type.
  - Values:  Positive or negative integer.
  - Effect:  This effect only works when the sphere.ini COMBAT_USE_RESISTANCE
             flag is enabled.  These TAGs are implemented inside the
             t_equipitem TYPEDEF and does not rely on other TYPEDEFs or EVENTs.
 
-TAG.RESPHYSICAL
+RESPHYSICAL
  - Purpose: A more flexible alternative to ARMOR= on equipable items.
  - Values:  Positive or negative integer
  - Effect:  This TAG is implemented inside the t_equipitem TYPEDEF and
             does not rely on other TYPEDEFs or EVENTs.
 
-TAG.EnhancePotions
+LowerManaCost
  - Purpose: Improves the potency of potions you craft when wearing the item.
  - Values:  Positive or negative integer.
  - Effect:  NOT IMPLEMENTED YET
 
-TAG.LowerManaCost
+LowerManaCost
  - Purpose: Reduces the amount of Mana required to cast a spell (Magery,
             Chivalry, Necromancy, Bushido, Ninjitsu and Spellweaving) or use
             a special combat move.
  - Values:  Positive or negative integer.
  - Effect:  NOT IMPLEMENTED YET
 
-TAG.LowerReagentCost
+LowerReagentCost
  - Purpose: Reduces the number of reagents used during the casting of a spell.
  - Values:  Positive or negative integer.
  - Effect:  NOT IMPLEMENTED YET
 
-TAG.LowerRequirements
+LowerReq
  - Purpose: This TAG affects the Strength Requirement on the item.
  - Values:  Positive or negative integer.
  - Effect:  For this to work, the ITEMDEF cannot have a REQSTR... instead,
             the item should have a TAG.REQSTR.
 
-TAG.SpellDamageIncrease
+IncreaseSpellDam
  - Purpose: Increases the damage of spells with spellflag_damage flag.
  - Values:  Positive or negative integer.
  - Effect:  NOT IMPLEMENTED YET
 
-TAG.GoldIncrease
+IncreaseGold
  - Purpose: Increases the gold found when looting a corpse.
  - Values:  Positive or negative integer
  - Effect:  NOT IMPLEMENTED YET
 
-TAG.ReflectPhysicalDamage
+ReflectPhysicalDam
  - Purpose: Reflects some physical damage back to the damage source.
  - Values:  Positive or negative integer.
  - Effect:  NOT IMPLEMENTED YET
 
-TAG.LUCK
+LUCK
  - Purpose: Increases (or decreases) the LUCK of the wearer.
  - Values:  Positive or negative integer.
  - Effect:  This TAG is implemented inside the t_equipitem TYPEDEF and
             does not rely on other TYPEDEFs or EVENTs.
 
-TAG.STR
-TAG.DEX
-TAG.INT
-TAG.HITS
-TAG.STAMINA
-TAG.MANA
+BonusStr
+BonusDex
+BonusINT
+BonusHits
+BonusStam
+BonusMana
  - Purpose: Increases (or decreases) the applicable Stat.
  - Values:  Positive or negative integer.
  - Effect:  This TAG is implemented inside the t_equipitem TYPEDEF and
             does not rely on other TYPEDEFs or EVENTs.
 
-TAG.HitpointRegen
-TAG.StaminaRegen
-TAG.ManaRegen
+RegenHits
+RegenStam
+RegenMana
  - Purpose: Speeds up or slows down the rate of regeneration
             of the applicable stat.
  - Values:  SMALL positive or negative integer.
  - Effect:  This TAG is implemented inside the t_equipitem TYPEDEF and
             does not rely on other TYPEDEFs or EVENTs.
 
-TAG.FasterCastRecovery
+FasterCastRecovery
  - Purpose: Increases (or decreases) the amount of MANA recovered. If
             this number is less than one, the wearer will not recover
             ANY mana!
@@ -230,23 +230,23 @@ TAG.FasterCastRecovery
  - Effect:  This TAG is implemented inside the t_equipitem TYPEDEF and
             does not rely on other TYPEDEFs or EVENTs.
 
-TAG.FasterCasting
+FasterCasting
  - Purpose: Speeds up the casting of a spell.
  - Values:  SMALL positive or negative integer.
  - Effect:  NOT IMPLEMENTED YET
 
-TAG.SelfRepair
+SelfRepair
  - Purpose: Instead of taking damage, items with this propery might
             become less damaged instead.
  - Values:  Positive or negative integer.
  - Effect:  This TAG is implemented inside the t_equipitem TYPEDEF and
             does not rely on other TYPEDEFs or EVENTs.
 
-TAG.ExtraSkill1
-TAG.ExtraSkill2
-TAG.ExtraSkill3
-TAG.ExtraSkill4
-TAG.ExtraSkill5
+BonusSkill1
+BonusSkill2
+BonusSkill3
+BonusSkill4
+BonusSkill5
  - Purpose: An item can enhance up to 5 skills when it is worn.
  - Values:  The value must be: the KEY from a skill, a comma, followed
             by the amount (including one decimal place!)
@@ -263,34 +263,34 @@ TAG.MinLevel
 
 The following tags are weapons only (NONE OF THEM ARE IMPLEMENTED YET):
 
-TAG.Balanced              - Values: MUST be one or zero
-TAG.DamageIncrease        - Values: positive or negative integer
-TAG.PhysicalDamagePercent - Values: positive ONLY
-TAG.FireDamagePercent     - Values: positive ONLY
-TAG.ColdDamagePercent     - Values: positive ONLY
-TAG.PoisonDamagePercent   - Values: positive ONLY
-TAG.EnergyDamagePercent   - Values: positive ONLY
-TAG.HitPhysicalArea       - Values: positive ONLY
-TAG.HitFireArea           - Values: positive ONLY
-TAG.HitColdArea           - Values: positive ONLY
-TAG.HitPoisonArea         - Values: positive ONLY
-TAG.HitEnergyArea         - Values: positive ONLY
-TAG.HitLowerAttack        - Values: positive or negative integer
-TAG.HitLowerDefense       - Values: positive or negative integer
-TAG.HitLifeLeech          - Values: positive or negative integer
-TAG.HitManaLeech          - Values: positive or negative integer
-TAG.HitStaminaLeech       - Values: positive or negative integer
-TAG.UseBestWeaponSkill
+Balanced              - Values: MUST be one or zero
+IncreaseDam			  - Values: positive or negative integer
+DamPhysical			  - Values: positive ONLY
+DamFire				  - Values: positive ONLY
+DamCold				  - Values: positive ONLY
+DamPoison  			  - Values: positive ONLY
+DamEnergy 			  - Values: positive ONLY
+HitAreaPhysical      - Values: positive ONLY
+HitAreaFire           - Values: positive ONLY
+HitAreaCold           - Values: positive ONLY
+HitAreaPoison         - Values: positive ONLY
+HitAreaEnergy         - Values: positive ONLY
+HitLowerAtk        - Values: positive or negative integer
+HitLowerDef       - Values: positive or negative integer
+HitLeechLife          - Values: positive or negative integer
+HitLeechMana          - Values: positive or negative integer
+HitLeechStam       - Values: positive or negative integer
+UseBestWeaponSkill
  - Purpose: If the value is 1, the tooltip will indicate the weapon is using
             the best weapon skill of the wearer.
  - Values: one or zero only
  - Effect: NOT IMPLEMENTED YET
-TAG.HitDispel             - Values: positive ONLY
-TAG.HitFireball           - Values: positive ONLY
-TAG.HitHarm               - Values: positive ONLY
-TAG.HitLightning          - Values: positive ONLY
-TAG.HitMagicArrow         - Values: positive ONLY
-TAG.MageWeaponSkill       - Values: MUST be one or zero
+HitDispel             - Values: positive ONLY
+HitFireball           - Values: positive ONLY
+HitHarm               - Values: positive ONLY
+HitLightning          - Values: positive ONLY
+HitMagicArrow         - Values: positive ONLY
+MageWeapon       - Values: MUST be one or zero
 TAG.SlayerGroup - 
 
  SPECIAL values maximum of up to two of the following list (comma separated):
@@ -310,7 +310,7 @@ TAG.SlayerGroup -
 
 The following tags are armor only:
 
-TAG.MageArmor             - Values:  One or zero.
+MageArmor             - Values:  One or zero.
 
 
 
@@ -332,7 +332,7 @@ ON=@ClientToolTip
       ENDIF
       SRC.ADDCLILOC 1060741,<dMORE2>
    ENDIF
-   IF (<TAG0.RareItem>)
+   IF (<Rarity>)
       SRC.ADDCLILOC 1061078,<INSTANCES>//"Artifact rarity: ~"
    ENDIF
    IF (<TAG0.GargoyleOnly>)
@@ -344,11 +344,11 @@ ON=@ClientToolTip
    IF (<TAG0.Stolen>)
       SRC.ADDCLILOC 1072948//"Stolen Property"
    ENDIF
-   IF (<TAG0.Exceptional>)
+   IF (<Exceptional>)
       SRC.ADDCLILOC 1018303//"Exceptional"
    ENDIF
-   IF !(<ISEMPTY <TAG.CraftedBy>>)
-      SRC.ADDCLILOC 1050043,<TAG.CraftedBy>
+   IF !(<ISEMPTY <CraftedBy>>)
+      SRC.ADDCLILOC 1050043,<CraftedBy>
    ENDIF
    IF (<TAG0.MaxLevel>)
       SRC.ADDCLILOC 1050039,Maximum Level,<dTAG.MaxLevel>
@@ -357,9 +357,9 @@ ON=@ClientToolTip
       SRC.ADDCLILOC 1053099,Minimum Level,<dTAG.MinLevel>
    ENDIF
    IF (<ISWEAPON>) || (<DEFNAME>==i_fishing_pole)
-      IF (<TAG0.UseBestWeaponSkill>)
+      IF (<UseBestWeaponSkill>)
          SRC.ADDCLILOC 1060400
-      ELSEIF (<TAG0.MageWeaponSkill>)
+      ELSEIF (<MageWeapon>)
          SRC.ADDCLILOC 1060438,<SRC.MAGERY>
       ELSEIF (<TAG0.OVERRIDE_SKILL>)
          SRC.ADDCLILOC <EVAL 1044059 + <dTAG.OVERRIDE_SKILL>>
@@ -393,201 +393,201 @@ ON=@ClientToolTip
    ENDIF
 
    SRC.ADDCLILOC 1072225,<FVAL <WEIGHT>>
-   IF (<TAG0.RESCOLD>)
-      SRC.ADDCLILOC 1060445,<dTAG.RESCOLD>
+   IF (<RESCOLD>)
+      SRC.ADDCLILOC 1060445,<RESCOLD>
    ENDIF
-   IF (<TAG0.RESENERGY>)
-      SRC.ADDCLILOC 1060446,<dTAG.RESENERGY>
+   IF (<RESENERGY>)
+      SRC.ADDCLILOC 1060446,<RESENERGY>
    ENDIF
-   IF (<TAG0.RESFIRE>)
-      SRC.ADDCLILOC 1060447,<dTAG.RESFIRE>
+   IF (<RESFIRE>)
+      SRC.ADDCLILOC 1060447,<RESFIRE>
    ENDIF
-   IF (<TAG0.RESPHYSICAL>)
-      SRC.ADDCLILOC 1060448,<dTAG.RESPHYSICAL>
+   IF (<RESPHYSICAL>)
+      SRC.ADDCLILOC 1060448,<RESPHYSICAL>
    ENDIF
-   IF (<TAG0.RESPOISON>)
-      SRC.ADDCLILOC 1060449,<dTAG.RESPOISON>
+   IF (<RESPOISON>)
+      SRC.ADDCLILOC 1060449,<RESPOISON>
    ENDIF
    IF (<DEFNAME>==i_belt_ninja_leather)
       SRC.ADDCLILOC 1060584,<dTAG0.ShurikenCount>
    ENDIF
 
    IF (<ATTR> & attr_identified)
-      IF (<TAG0.ExtraSkill1>)
-         SRC.ADDCLILOC 1060451,<TAG0.ExtraSkill1>
+      IF (<BonusSkill1>)
+         SRC.ADDCLILOC 1060451,<Serv.Skill.<BonusSkill1>.Key>,<fval <BonusSkill1Amt>>
       ENDIF
-      IF (<TAG0.ExtraSkill2>)
-         SRC.ADDCLILOC 1060452,<TAG0.ExtraSkill2>
+      IF (<BonusSkill2>)
+         SRC.ADDCLILOC 1060452,<Serv.Skill.<BonusSkill2>.Key>,<fval <BonusSkill2Amt>>
       ENDIF
-      IF (<TAG0.ExtraSkill3>)
-         SRC.ADDCLILOC 1060453,<TAG0.ExtraSkill3>
+      IF (<BonusSkill3>)
+         SRC.ADDCLILOC 1060453,<Serv.Skill.<BonusSkill3>.Key>,<fval <BonusSkill3Amt>>
       ENDIF
-      IF (<TAG0.ExtraSkill4>)
-         SRC.ADDCLILOC 1060454,<TAG0.ExtraSkill4>
+      IF (<BonusSkill4>)
+         SRC.ADDCLILOC 1060454,<Serv.Skill.<BonusSkill4>.Key>,<fval <BonusSkill4Amt>>
       ENDIF
-      IF (<TAG0.ExtraSkill5>)
-         SRC.ADDCLILOC 1060455,<TAG0.ExtraSkill5>
+      IF (<BonusSkill5>)
+         SRC.ADDCLILOC 1060455,<Serv.Skill.<BonusSkill5>.Key>,<fval <BonusSkill5Amt>>
       ENDIF
-      IF (<TAG0.Balanced>)
+      IF (<Balanced>)
          SRC.ADDCLILOC 1072792
       ENDIF
-      IF (<TAG0.SpellChanneling>)
-         SRC.ADDCLILOC 1060482,<dTAG.SpellChanneling>
+      IF (<SpellChanneling>)
+         SRC.ADDCLILOC 1060482,<SpellChanneling>
       ENDIF
-      IF (<TAG0.NightSight>)
+      IF (<NightSight>)
          SRC.ADDCLILOC 1060441
       ENDIF
-      IF (<TAG0.DamageIncrease>)
-         SRC.ADDCLILOC 1060401,<dTAG.DamageIncrease>
+      IF (<IncreaseDam>)
+         SRC.ADDCLILOC 1060401,<IncreaseDam>
       ENDIF
-      IF (<TAG0.DefenseChanceIncrease>)
-         SRC.ADDCLILOC 1060408,<dTAG.DefenseChanceIncrease>
+      IF (<IncreaseDefChance>)
+         SRC.ADDCLILOC 1060408,<IncreaseDefChance>
       ENDIF
-      IF (<TAG0.HitChanceIncrease>)
-         SRC.ADDCLILOC 1060415,<dTAG.HitChanceIncrease>
+      IF (<IncreaseHitChance>)
+         SRC.ADDCLILOC 1060415,<IncreaseHitChance>
       ENDIF
-      IF (<TAG0.HitChanceDecrease>)
-         SRC.ADDCLILOC 1042971,Hit Chance Decrease: <EVAL <TAG0.HitChanceDecrease>>%
+      IF (<DecreaseHitChance>)
+         SRC.ADDCLILOC 1042971,Hit Chance Decrease: <DecreaseHitChance>%
       ENDIF
-      IF (<TAG0.SwingSpeedIncrease>)
-         SRC.ADDCLILOC 1060486,<dTAG.SwingSpeedIncrease>
+      IF (<IncreaseSwingSpeed>)
+         SRC.ADDCLILOC 1060486,<IncreaseSwingSpeed>
       ENDIF
-      IF (<TAG0.PhysicalDamagePercent>)
-         SRC.ADDCLILOC 1060403,<dTAG.PhysicalDamagePercent>
+      IF (<DamPhysical>)
+         SRC.ADDCLILOC 1060403,<DamPhysical>
       ENDIF
-      IF (<TAG0.FireDamagePercent>)
-         SRC.ADDCLILOC 1060405,<dTAG.FireDamagePercent>
+      IF (<DamFire>)
+         SRC.ADDCLILOC 1060405,<DamFire>
       ENDIF
-      IF (<TAG0.ColdDamagePercent>)
-         SRC.ADDCLILOC 1060404,<dTAG.ColdDamagePercent>
+      IF (<DamCold>)
+         SRC.ADDCLILOC 1060404,<DamCold>
       ENDIF
-      IF (<TAG0.PoisonDamagePercent>)
-         SRC.ADDCLILOC 1060406,<dTAG.PoisonDamagePercent>
+      IF (<DamPoison>)
+         SRC.ADDCLILOC 1060406,<DamPoison>
       ENDIF
-      IF (<TAG0.EnergyDamagePercent>)
-         SRC.ADDCLILOC 1060407,<dTAG.EnergyDamagePercent>
+      IF (<DamEnergy>)
+         SRC.ADDCLILOC 1060407,<DamEnergy>
       ENDIF
-      IF (<TAG0.EnhancePotions>)
-         SRC.ADDCLILOC 1060411,<dTAG.EnhancePotions>
+      IF (<EnhancePotions>)
+         SRC.ADDCLILOC 1060411,<EnhancePotions>
       ENDIF
-      IF (<TAG0.LowerManaCost>)
-         SRC.ADDCLILOC 1060433,<dTAG.LowerManaCost>
+      IF (<LowerManaCost>)
+         SRC.ADDCLILOC 1060433,<LowerManaCost>
       ENDIF
-      IF (<TAG0.LowerReagentCost>)
-         SRC.ADDCLILOC 1060434,<dTAG.LowerReagentCost>
+      IF (<LowerReagentCost>)
+         SRC.ADDCLILOC 1060434,<LowerReagentCost>
       ENDIF
-      IF (<TAG0.LowerRequirements>)
-         SRC.ADDCLILOC 1060435,<dTAG.LowerRequirements>
+      IF (<LowerReq>)
+         SRC.ADDCLILOC 1060435,<LowerReq>
       ENDIF
-      IF (<TAG0.SpellDamageIncrease>)
-         SRC.ADDCLILOC 1060483,<dTAG.SpellDamageIncrease>
+      IF (<IncreaseSpellDam>)
+         SRC.ADDCLILOC 1060483,<IncreaseSpellDam>
       ENDIF
-      IF (<TAG0.GoldIncrease>)
-         SRC.ADDCLILOC 1060414,<dTAG.GoldIncrease>
+      IF (<IncreaseGold>)
+         SRC.ADDCLILOC 1060414,<IncreaseGold>
       ENDIF
-      IF (<TAG0.ReflectPhysicalDamage>)
-         SRC.ADDCLILOC 1060442,<dTAG.ReflectPhysicalDamage>
+      IF (<ReflectPhysicalDam>)
+         SRC.ADDCLILOC 1060442,<ReflectPhysicalDam>
       ENDIF
-      IF (<TAG0.LUCK>)
-         SRC.ADDCLILOC 1060436,<dTAG.LUCK>
+      IF (<LUCK>)
+         SRC.ADDCLILOC 1060436,<LUCK>
       ENDIF
-      IF (<TAG0.STR>)//strength bonus
-         SRC.ADDCLILOC 1060485,<dTAG.STR>
+      IF (<BonusStr>)//strength bonus
+         SRC.ADDCLILOC 1060485,<BonusStr>
       ENDIF
-      IF (<TAG0.HITS>)//hitpoint increase
-         SRC.ADDCLILOC 1060431,<dTAG.HITS>
+      IF (<BonusHits>)//hitpoint increase
+         SRC.ADDCLILOC 1060431,<BonusHits>
       ENDIF
-      IF (<TAG0.HitpointRegen>)
-         SRC.ADDCLILOC 1060444,<dTAG.HitpointRegen>
+      IF (<RegenHits>)
+         SRC.ADDCLILOC 1060444,<RegenHits>
       ENDIF
-      IF (<TAG0.DEX>)//dexterity bonus
-         SRC.ADDCLILOC 1060409,<dTAG.DEX>
+      IF (<BonusDex>)//dexterity bonus
+         SRC.ADDCLILOC 1060409,<BonusDex>
       ENDIF
-      IF (<TAG0.STAMINA>)//stamina increase
-         SRC.ADDCLILOC 1060484,<dTAG.STAMINA>
+      IF (<BonusStam>)//stamina increase
+         SRC.ADDCLILOC 1060484,<BonusStam>
       ENDIF
-      IF (<TAG0.StaminaRegen>)
-         SRC.ADDCLILOC 1060443,<dTAG.StaminaRegen>
+      IF (<RegenStam>)
+         SRC.ADDCLILOC 1060443,<RegenStam>
       ENDIF
-      IF (<TAG0.INT>)//intelligence bonus
-         SRC.ADDCLILOC 1060432,<dTAG.INT>
+      IF (<BonusINT>)//intelligence bonus
+         SRC.ADDCLILOC 1060432,<BonusINT>
       ENDIF
-      IF (<TAG0.MANA>)//mana increase
-         SRC.ADDCLILOC 1060439,<dTAG.MANA>
+      IF (<BonusMana>)//mana increase
+         SRC.ADDCLILOC 1060439,<BonusMana>
       ENDIF
-      IF (<TAG0.ManaRegen>)
-         SRC.ADDCLILOC 1060440,<dTAG.ManaRegen>
+      IF (<RegenMana>)
+         SRC.ADDCLILOC 1060440,<RegenMana>
       ENDIF
-      IF (<TAG0.FasterCastRecovery>)
-         SRC.ADDCLILOC 1060412,<dTAG.FasterCastRecovery>
+      IF (<FasterCastRecovery>)
+         SRC.ADDCLILOC 1060412,<FasterCastRecovery>
       ENDIF
-      IF (<TAG0.FasterCasting>)
-         SRC.ADDCLILOC 1060413,<dTAG.FasterCasting>
+      IF (<FasterCasting>)
+         SRC.ADDCLILOC 1060413,<FasterCasting>
       ENDIF
-      IF (<TAG0.SelfRepair>)
-         SRC.ADDCLILOC 1060450,<dTAG.SelfRepair>
+      IF (<SelfRepair>)
+         SRC.ADDCLILOC 1060450,<SelfRepair>
       ENDIF
-      IF (<TAG0.HitPhysicalArea>)
-         SRC.ADDCLILOC 1060428,<dTAG.HitPhysicalArea>
+      IF (<HitAreaPhysical>)
+         SRC.ADDCLILOC 1060428,<HitAreaPhysical>
       ENDIF
-      IF (<TAG0.HitFireArea>)
-         SRC.ADDCLILOC 1060419,<dTAG.HitFireArea>
+      IF (<HitAreaFire>)
+         SRC.ADDCLILOC 1060419,<HitAreaFire>
       ENDIF
-      IF (<TAG0.HitColdArea>)
-         SRC.ADDCLILOC 1060416,<dTAG.HitColdArea>
+      IF (<HitAreaCold>)
+         SRC.ADDCLILOC 1060416,<HitAreaCold>
       ENDIF
-      IF (<TAG0.HitPoisonArea>)
-         SRC.ADDCLILOC 1060429,<dTAG.HitPoisonArea>
+      IF (<HitAreaPoison>)
+         SRC.ADDCLILOC 1060429,<HitAreaPoison>
       ENDIF
-      IF (<TAG0.HitEnergyArea>)
-         SRC.ADDCLILOC 1060418,<dTAG.HitEnergyArea>
+      IF (<HitAreaEnergy>)
+         SRC.ADDCLILOC 1060418,<HitAreaEnergy>
       ENDIF
-      IF (<TAG0.HitLowerAttack>)
-         SRC.ADDCLILOC 1060424,<dTAG.HitLowerAttack>
+      IF (<HitLowerAtk>)
+         SRC.ADDCLILOC 1060424,<HitLowerAtk>
       ENDIF
-      IF (<TAG0.HitLowerDefense>)
-         SRC.ADDCLILOC 1060425,<dTAG.HitLowerDefense>
+      IF (<HitLowerDef>)
+         SRC.ADDCLILOC 1060425,<HitLowerDef>
       ENDIF
-      IF (<TAG0.HitLifeLeech>)
-         SRC.ADDCLILOC 1060422,<dTAG.HitLifeLeech>
+      IF (<HitLeechLife>)
+         SRC.ADDCLILOC 1060422,<HitLeechLife>
       ENDIF
-      IF (<TAG0.HitManaLeech>)
-         SRC.ADDCLILOC 1060427,<dTAG.HitManaLeech>
+      IF (<HitLeechMana>)
+         SRC.ADDCLILOC 1060427,<HitLeechMana>
       ENDIF
-      IF (<TAG0.HitStaminaLeech>)
-         SRC.ADDCLILOC 1060430,<dTAG.HitStaminaLeech>
+      IF (<HitLeechStam>)
+         SRC.ADDCLILOC 1060430,<HitLeechStam>
       ENDIF
       IF (<ISWEAPON>)
-         IF (<TAG0.HitDispel>)
-            SRC.ADDCLILOC 1060417,<dTAG.HitDispel>
+         IF (<HitDispel>)
+            SRC.ADDCLILOC 1060417,<HitDispel>
          ENDIF
-         IF (<TAG0.HitFireball>)
-            SRC.ADDCLILOC 1060420,<dTAG.HitFireball>
-            IF (<TAG0.HitFireballCharges>)
-               SRC.ADDCLILOC 1060487,<dTAG.HitFireballCharges>
+         IF (<HitFireball>)
+            SRC.ADDCLILOC 1060420,<HitFireball>
+            IF (<tag0.HitFireballCharges>)
+               SRC.ADDCLILOC 1060487,<tag.HitFireballCharges>
             ENDIF
          ENDIF
-         IF (<TAG0.HitHarm>)
-            SRC.ADDCLILOC 1060421,<dTAG.HitHarm>
-            IF (<TAG0.HitHarmCharges>)
-               SRC.ADDCLILOC 1060489,<dTAG.HitHarmCharges>
+         IF (<HitHarm>)
+            SRC.ADDCLILOC 1060421,<HitHarm>
+            IF (<tag0.HitHarmCharges>)
+               SRC.ADDCLILOC 1060489,<tag.HitHarmCharges>
             ENDIF
          ENDIF
-         IF (<TAG0.HitLightning>)
-            SRC.ADDCLILOC 1060423,<dTAG.HitLightning>
-            IF (<TAG0.HitLightningCharges>)
-               SRC.ADDCLILOC 1060491,<dTAG.HitLightningCharges>
+         IF (<HitLightning>)
+            SRC.ADDCLILOC 1060423,<HitLightning>
+            IF (<tag0.HitLightningCharges>)
+               SRC.ADDCLILOC 1060491,<tag.HitLightningCharges>
             ENDIF
          ENDIF
-         IF (<TAG0.HitMagicArrow>)
-            SRC.ADDCLILOC 1060426,<dTAG.HitMagicArrow>
-            IF (<TAG0.HitMagicArrowCharges>)
-               SRC.ADDCLILOC 1060492,<dTAG.HitMagicArrowCharges>
+         IF (<HitMagicArrow>)
+            SRC.ADDCLILOC 1060426,<HitMagicArrow>
+            IF (<tag0.HitMagicArrowCharges>)
+               SRC.ADDCLILOC 1060492,<tag.HitMagicArrowCharges>
             ENDIF
          ENDIF
       ENDIF
       IF (<ISARMOR>)
-         IF (<TAG0.MageArmor>)
+         IF (<MageArmor>)
             SRC.ADDCLILOC 1060437
          ENDIF
       ENDIF
@@ -701,7 +701,7 @@ ON=@ClientToolTip
       ENDIF
    ENDIF
    IF (<SRC.ISPLAYER>) && (<TAG0.REQSTR>)
-      LOCAL.ActualRequirements=<EVAL <TAG0.REQSTR> - <TAG0.LowerRequirements>>
+      LOCAL.ActualRequirements=<EVAL <TAG0.REQSTR> - <LowerReq>>
       IF (<LOCAL.ActualRequirements> < 0)
          LOCAL.ActualRequirements=0
       ENDIF
@@ -760,23 +760,23 @@ ON=@EquipTest
       ENDIF
    ENDIF
 
-   IF (<TAG0.MageWeaponSkill>)
+   IF (<MageWeapon>)
       //FIXME: This needs to be tested...
-      IF (<SRC.<STREAT <TAG.MageWeaponSkill>>> < <TAG0.MageWeaponSkill>)
+      IF (<SRC.<STREAT <MageWeapon>>> < <MageWeapon>)
          SRC.SYSMESSAGE @color_text You have insufficient skill to equip this item.
          RETURN 1
       ENDIF
    ENDIF
-   IF (<SRC.ISPLAYER>) && (<TAG0.REQSTR>)
-      LOCAL.ActualRequirements=<EVAL <TAG0.REQSTR> - <TAG0.LowerRequirements>>
-      IF (<LOCAL.ActualRequirements> < 0)
-         LOCAL.ActualRequirements=0
-      ENDIF
-      IF (<SRC.STR> < <LOCAL.ActualRequirements>)
-         SRC.SYSMESSAGELOC color_text,500213//"You are not strong enough to equip that."
-         RETURN 1
-      ENDIF
-   ENDIF
+   // IF (<SRC.ISPLAYER>) && (<TAG0.REQSTR>)		//ReqStr & LowerReq are now handled by the source 
+      // LOCAL.ActualRequirements=<EVAL <TAG0.REQSTR> - <LowerReq>>
+      // IF (<LOCAL.ActualRequirements> < 0)
+         // LOCAL.ActualRequirements=0
+      // ENDIF
+      // IF (<SRC.STR> < <LOCAL.ActualRequirements>)
+         // SRC.SYSMESSAGELOC color_text,500213//"You are not strong enough to equip that."
+         // RETURN 1
+      // ENDIF
+   // ENDIF
    IF (<SRC.ISPLAYER>) && (<TAG0.MaxLevel>)
       IF (<SRC.LEVEL> > <TAG0.MaxLevel>)
          SRC.SYSMESSAGE @color_text You are too high level to use this item.
@@ -791,542 +791,414 @@ ON=@EquipTest
    ENDIF
 
 ON=@Equip
-   IF (<TAG0.Balanced>)
-      SRC.TAG.Balanced=<EVAL <SRC.TAG0.Balanced> + 1>
+   IF (<Balanced>)
+      SRC.Balanced += 1
    ENDIF
-   IF (<TAG0.SpellChanneling>)
-      SRC.TAG.SpellChanneling=<EVAL <SRC.TAG0.SpellChanneling> + 1>
+   IF (<SpellChanneling>)
+      SRC.SpellChanneling += 1
    ENDIF
-   IF (<TAG0.NightSight>)
-      IF (<SRC.TAG0.NightSight>==0)
+   IF (<NightSight>)
+      IF (<SRC.NightSight>==0)
          SRC.NIGHTSIGHT 1
          //FIXME: remove nightsight spell effect first?
          //FIXME: Add nightsight buff icon?
       ENDIF
-      SRC.TAG.NightSight=<EVAL <SRC.TAG0.NightSight> + 1>
+      SRC.NightSight += 1
    ENDIF
-   IF (<TAG0.DamageIncrease>)
-      SRC.TAG.DamageIncrease=<EVAL <SRC.TAG0.DamageIncrease> + <TAG0.DamageIncrease>>
+   IF (<IncreaseDam>)
+      SRC.IncreaseDam += <IncreaseDam>
       //FIXME: should affect status bar...?
    ENDIF
-   IF (<TAG0.DefenseChanceIncrease>)
-      IF (<TAG0.DefenseChanceIncrease> < 0)
+   IF (<IncreaseDefChance>)
+      IF (<IncreaseDefChance> < 0)
          SRC.SYSMESSAGELOC color_text,1062318//"Your defense chance has been reduced!"
       ENDIF
-      SRC.TAG.DefenseChanceIncrease=<EVAL <SRC.TAG0.DefenseChanceIncrease> + <TAG0.DefenseChanceIncrease>>
+      SRC.IncreaseDefChance += <IncreaseDefChance>
    ENDIF
-   IF (<TAG0.HitChanceIncrease>)
-      IF (<TAG0.HitChanceIncrease> < 0)
+   IF (<IncreaseHitChance>)
+      IF (<IncreaseHitChance> < 0)
          SRC.SYSMESSAGELOC color_text,1062319//"Your attack chance has been reduced!"
       ENDIF
-      SRC.TAG.HitChanceIncrease=<EVAL <SRC.TAG0.HitChanceIncrease> + <TAG0.HitChanceIncrease>>
+      SRC.IncreaseHitChance += <IncreaseHitChance>
    ENDIF
-   IF (<TAG0.HitChanceDecrease>)
-      IF (<TAG0.HitChanceDecrease> > 0)
+   IF (<DecreaseHitChance>)
+      IF (<DecreaseHitChance> > 0)
          SRC.SYSMESSAGELOC color_text,1062319//"Your attack chance has been reduced!"
       ENDIF
-      SRC.TAG.HitChanceDecrease=<EVAL <SRC.TAG0.HitChanceDecrease> + <TAG0.HitChanceDecrease>>
+      SRC.DecreaseHitChance += <DecreaseHitChance>
    ENDIF
-   IF (<TAG0.SwingSpeedIncrease>)
-      SRC.TAG.SwingSpeedIncrease=<EVAL <SRC.TAG0.SwingSpeedIncrease> + <TAG0.SwingSpeedIncrease>>
+   IF (<IncreaseSwingSpeed>)
+      SRC.IncreaseSwingSpeed += <IncreaseSwingSpeed>
    ENDIF
-   IF (<TAG0.PhysicalDamagePercent>)
-      SRC.TAG.PhysicalDamagePercent=<EVAL <SRC.TAG0.PhysicalDamagePercent> + <TAG0.PhysicalDamagePercent>>
+   IF (<DamPhysical>)
+      SRC.DamPhysical += <DamPhysical>
    ENDIF
-   IF (<TAG0.FireDamagePercent>)
-      SRC.TAG.FireDamagePercent=<EVAL <SRC.TAG0.FireDamagePercent> + <TAG0.FireDamagePercent>>
+   IF (<DamFire>)
+      SRC.DamFire += <DamFire>
    ENDIF
-   IF (<TAG0.ColdDamagePercent>)
-      SRC.TAG.ColdDamagePercent=<EVAL <SRC.TAG0.ColdDamagePercent> + <TAG0.ColdDamagePercent>>
+   IF (<DamCold>)
+      SRC.DamCold += <DamCold>
    ENDIF
-   IF (<TAG0.PoisonDamagePercent>)
-      SRC.TAG.PoisonDamagePercent=<EVAL <SRC.TAG0.PoisonDamagePercent> + <TAG0.PoisonDamagePercent>>
+   IF (<DamPoison>)
+      SRC.DamPoison += <DamPoison>
    ENDIF
-   IF (<TAG0.EnergyDamagePercent>)
-      SRC.TAG.EnergyDamagePercent=<EVAL <SRC.TAG0.EnergyDamagePercent> + <TAG0.EnergyDamagePercent>>
+   IF (<DamEnergy>)
+      SRC.DamEnergy += <DamEnergy>
    ENDIF
-   IF (<TAG0.RESCOLD>)
-      SRC.RESCOLD += <TAG0.RESCOLD>
+   IF (<RESCOLD>)
+      SRC.RESCOLD += <RESCOLD>
    ENDIF
-   IF (<TAG0.RESENERGY>)
-      SRC.RESENERGY += <TAG0.RESENERGY>
+   IF (<RESENERGY>)
+      SRC.RESENERGY += <RESENERGY>
    ENDIF
-   IF (<TAG0.RESFIRE>)
-      SRC.RESFIRE += <TAG0.RESFIRE>
+   IF (<RESFIRE>)
+      SRC.RESFIRE += <RESFIRE>
    ENDIF
-   IF (<TAG0.RESPHYSICAL>)
-      SRC.TAG.RESPHYSICAL=<EVAL <SRC.TAG0.RESPHYSICAL> + <TAG0.RESPHYSICAL>>
-      SRC.MODAR += <TAG0.RESPHYSICAL>
+   IF (<RESPHYSICAL>)
+      SRC.RESPHYSICAL += <RESPHYSICAL>
+      SRC.MODAR += <RESPHYSICAL>
    ENDIF
-   IF (<TAG0.RESPOISON>)
-      SRC.RESPOISON += <TAG0.RESPOISON>
+   IF (<RESPOISON>)
+      SRC.RESPOISON += <RESPOISON>
    ENDIF
-   IF (<TAG0.EnhancePotions>)
-      SRC.TAG.EnhancePotions=<EVAL <SRC.TAG0.EnhancePotions> + <TAG0.EnhancePotions>>
+   IF (<EnhancePotions>)
+      SRC.EnhancePotions += <EnhancePotions>
    ENDIF
-   IF (<TAG0.LowerManaCost>)
-      SRC.TAG.LowerManaCost=<EVAL <SRC.TAG0.LowerManaCost> + <TAG0.LowerManaCost>>
+   IF (<LowerManaCost>)
+      SRC.LowerManaCost += <LowerManaCost>
    ENDIF
-   IF (<TAG0.LowerReagentCost>)
-      SRC.TAG.LowerReagentCost=<EVAL <SRC.TAG0.LowerReagentCost> + <TAG0.LowerReagentCost>>
+   IF (<LowerReagentCost>)
+      SRC.LowerReagentCost += <LowerReagentCost>
    ENDIF
-   IF (<TAG0.SpellDamageIncrease>)
-      SRC.TAG.SpellDamageIncrease=<EVAL <SRC.TAG0.SpellDamageIncrease> + <TAG0.SpellDamageIncrease>>
+   IF (<IncreaseSpellDam>)
+      SRC.IncreaseSpellDam += <IncreaseSpellDam>
    ENDIF
-   IF (<TAG0.GoldIncrease>)
-      SRC.TAG.GoldIncrease=<EVAL <SRC.TAG0.GoldIncrease> + <TAG0.GoldIncrease>>
+   IF (<IncreaseGold>)
+      SRC.IncreaseGold += <IncreaseGold>
    ENDIF
-   IF (<TAG0.ReflectPhysicalDamage>)
-      SRC.TAG.ReflectPhysicalDamage=<EVAL <SRC.TAG0.ReflectPhysicalDamage> + <TAG0.ReflectPhysicalDamage>>
+   IF (<ReflectPhysicalDam>)
+      SRC.ReflectPhysicalDam += <ReflectPhysicalDam>
    ENDIF
-   IF (<TAG0.LUCK>)
-      IF (<TAG0.LUCK> > 0)
+   IF (<LUCK>)
+      SRC.LUCK += <LUCK>
+      IF (<LUCK> > 0)
          SRC.SYSMESSAGELOC color_text,1079551//"Your luck just improved!"
       ELSE
          SRC.SYSMESSAGELOC color_text,1079552//"Your luck just ran out."
       ENDIF
-      SRC.LUCK += <TAG0.LUCK>
    ENDIF
-   IF (<TAG0.STR>)//strength bonus
-      SRC.MODSTR += <TAG0.STR>
+   IF (<BonusStr>)//strength bonus
+      SRC.MODSTR += <BonusStr>
    ENDIF
-   IF (<TAG0.HITS>)//hitpoint increase
-      SRC.MODMAXHITS <TAG0.HITS>
+   IF (<BonusHits>)//hitpoint increase
+      SRC.MODMAXHITS += <BonusHits>
    ENDIF
-   IF (<TAG0.HitpointRegen>)
-      SRC.TAG.OVERRIDE.REGEN_0=<EVAL <SRC.TAG0.OVERRIDE.REGEN_0> + <TAG0.HitpointRegen>>
+   IF (<RegenHits>)
+      SRC.RegenHits += <RegenHits>
    ENDIF
-   IF (<TAG0.DEX>)//dexterity bonus
-      SRC.MODDEX += <TAG0.DEX>
+   IF (<BonusDex>)//dexterity bonus
+      SRC.MODDEX += <BonusDex>
    ENDIF
-   IF (<TAG0.STAMINA>)//stamina increase
-      SRC.MODMAXSTAM <TAG0.STAMINA>
+   IF (<BonusStam>)//stamina increase
+      SRC.MODMAXSTAM += <BonusStam>
    ENDIF
-   IF (<TAG0.StaminaRegen>)
-      SRC.TAG.OVERRIDE.REGEN_2=<EVAL <SRC.TAG0.OVERRIDE.REGEN_2> + <TAG0.StaminaRegen>>
+   IF (<RegenStam>)
+      SRC.RegenStam += <RegenStam>
    ENDIF
-   IF (<TAG0.INT>)//intelligence bonus
-      SRC.MODINT += <TAG0.INT>
+   IF (<BonusINT>)//intelligence bonus
+      SRC.MODINT += <BonusINT>
    ENDIF
-   IF (<TAG0.MANA>)//mana increase
-      SRC.MODMAXMANA <TAG0.MANA>
+   IF (<BonusMana>)//mana increase
+      SRC.MODMAXMANA <BonusMana>
    ENDIF
-   IF (<TAG0.ManaRegen>)//alters the "rate" of mana regeneration
-      SRC.TAG.OVERRIDE.REGEN_1=<EVAL <SRC.TAG0.OVERRIDE.REGEN_1> + <TAG0.ManaRegen>>
+   IF (<RegenMana>)//alters the "rate" of mana regeneration
+      SRC.RegenMana += <RegenMana>
    ENDIF
-   IF (<TAG0.FasterCastRecovery>)//alters the "value" of mana regenerated
-      SRC.TAG.FasterCastRecovery=<EVAL <SRC.TAG0.FasterCastRecovery> + <TAG0.FasterCastRecovery>>
-      SRC.TAG.OVERRIDE.REGENVAL_1=<EVAL <SRC.TAG0.OVERRIDE.REGENVAL_1> + <TAG0.FasterCastRecovery>>
+   IF (<FasterCastRecovery>)//alters the "value" of mana regenerated
+      SRC.FasterCastRecovery += <FasterCastRecovery>
+      SRC.RegenValMana += <FasterCastRecovery>
    ENDIF
-   IF (<TAG0.FasterCasting>)
-      SRC.TAG.FasterCasting=<EVAL <SRC.TAG0.FasterCasting> + <TAG0.FasterCasting>>
-   ENDIF
-
-   IF (<TAG0.HitPhysicalArea>)
-      SRC.TAG.HitPhysicalArea=<EVAL <SRC.TAG0.HitPhysicalArea> + <TAG0.HitPhysicalArea>>
-   ENDIF
-   IF (<TAG0.HitFireArea>)
-      SRC.TAG.HitFireArea=<EVAL <SRC.TAG0.HitFireArea> + <TAG0.HitFireArea>>
-   ENDIF
-   IF (<TAG0.HitColdArea>)
-      SRC.TAG.HitColdArea=<EVAL <SRC.TAG0.HitColdArea> + <TAG0.HitColdArea>>
-   ENDIF
-   IF (<TAG0.HitPoisonArea>)
-      SRC.TAG.HitPoisonArea=<EVAL <SRC.TAG0.HitPoisonArea> + <TAG0.HitPoisonArea>>
-   ENDIF
-   IF (<TAG0.HitEnergyArea>)
-      SRC.TAG.HitEnergyArea=<EVAL <SRC.TAG0.HitEnergyArea> + <TAG0.HitEnergyArea>>
-   ENDIF
-   IF (<TAG0.HitLowerAttack>)
-      SRC.TAG.HitLowerAttack=<EVAL <SRC.TAG0.HitLowerAttack> + <TAG0.HitLowerAttack>>
-   ENDIF
-   IF (<TAG0.HitLowerDefense>)
-      SRC.TAG.HitLowerDefense=<EVAL <SRC.TAG0.HitLowerDefense> + <TAG0.HitLowerDefense>>
-   ENDIF
-   IF (<TAG0.HitLifeLeech>)
-      SRC.TAG.HitLifeLeech=<EVAL <SRC.TAG0.HitLifeLeech> + <TAG0.HitLifeLeech>>
-   ENDIF
-   IF (<TAG0.HitManaLeech>)
-      SRC.TAG.HitManaLeech=<EVAL <SRC.TAG0.HitManaLeech> + <TAG0.HitManaLeech>>
-   ENDIF
-   IF (<TAG0.HitStaminaLeech>)
-      SRC.TAG.HitStaminaLeech=<EVAL <SRC.TAG0.HitStaminaLeech> + <TAG0.HitStaminaLeech>>
-   ENDIF
-   IF (<TAG0.MageWeaponSkill>)
-      TRY SRC.<STREAT <TAG.MageWeaponSkill>>=<SRC.<STREAT <TAG.MageWeaponSkill>>>-<EVAL <STRARG <TAG0.MageWeaponSkill>>>
-   ENDIF
-   IF (<TAG0.HitDispel>)
-      SRC.TAG.HitDispel=<EVAL <SRC.TAG0.HitDispel> + <TAG0.HitDispel>>
-   ENDIF
-   IF (<TAG0.HitFireball>)
-      SRC.TAG.HitFireball=<EVAL <SRC.TAG0.HitFireball> + <TAG0.HitFireball>>
-      IF (<TAG0.HitFireballCharges> > 1)
-         TAG.HitFireballCharges=<EVAL <TAG0.HitFireballCharges> - 1>
-      ENDIF
-   ENDIF
-   IF (<TAG0.HitHarm>)
-      SRC.TAG.HitHarm=<EVAL <SRC.TAG0.HitHarm> + <TAG0.HitHarm>>
-      IF (<TAG0.HitHarmCharges> > 1)
-         TAG.HitHarmCharges=<EVAL <TAG0.HitHarmCharges> - 1>
-      ENDIF
-   ENDIF
-   IF (<TAG0.HitLightning>)
-      SRC.TAG.HitLightning=<EVAL <SRC.TAG0.HitLightning> + <TAG0.HitLightning>>
-      IF (<TAG0.HitLightningCharges> > 1)
-         TAG.HitLightningCharges=<EVAL <TAG0.HitLightningCharges> - 1>
-      ENDIF
-   ENDIF
-   IF (<TAG0.HitMagicArrow>)
-      SRC.TAG.HitMagicArrow=<EVAL <SRC.TAG0.HitMagicArrow> + <TAG0.HitMagicArrow>>
-      IF (<TAG0.HitMagicArrowCharges> > 1)
-         TAG.HitMagicArrowCharges=<EVAL <TAG.HitMagicArrowCharges> - 1>
-      ENDIF
+   IF (<FasterCasting>)
+      SRC.FasterCasting += <FasterCasting>
    ENDIF
 
-   IF (<TAG0.MageArmor>)
-      SRC.TAG.MageArmor=<EVAL <SRC.TAG0.MageArmor> + 1>
+   IF (<HitAreaPhysical>)
+      SRC.HitAreaPhysical += <HitAreaPhysical>
+   ENDIF
+   IF (<HitAreaFire>)
+      SRC.HitAreaFire += <HitAreaFire>
+   ENDIF
+   IF (<HitAreaCold>)
+      SRC.HitAreaCold += <HitAreaCold>
+   ENDIF
+   IF (<HitAreaPoison>)
+      SRC.HitAreaPoison += <HitAreaPoison>
+   ENDIF
+   IF (<HitAreaEnergy>)
+      SRC.HitAreaEnergy += <HitAreaEnergy>
+   ENDIF
+   IF (<HitLowerAtk>)
+      SRC.HitLowerAtk += <HitLowerAtk>
+   ENDIF
+   IF (<HitLowerDef>)
+      SRC.HitLowerDef += <HitLowerDef>
+   ENDIF
+   IF (<HitLeechLife>)
+      SRC.HitLeechLife += <HitLeechLife>
+   ENDIF
+   IF (<HitLeechMana>)
+      SRC.HitLeechMana += <HitLeechMana>
+   ENDIF
+   IF (<HitLeechStam>)
+      SRC.HitLeechStam += <HitLeechStam>
+   ENDIF
+   IF (<MageWeapon>)
+      TRY SRC.MageWeapon> += <MageWeapon>
+   ENDIF
+   IF (<HitDispel>)
+      SRC.HitDispel += <HitDispel>
+   ENDIF
+   IF (<HitFireball>)
+      SRC.HitFireball += <HitFireball>
+      IF (<tag0.HitFireballCharges> > 1)
+         tag.HitFireballCharges -= 1
+      ENDIF
+   ENDIF
+   IF (<HitHarm>)
+      SRC.HitHarm= += <HitHarm>
+      IF (<tag0.HitHarmCharges> > 1)
+         tag.HitHarmCharges -= 1
+      ENDIF
+   ENDIF
+   IF (<HitLightning>)
+      SRC.HitLightning += <HitLightning>
+      IF (<tag0.HitLightningCharges> > 1)
+         tag.HitLightningCharges -= 1
+      ENDIF
+   ENDIF
+   IF (<HitMagicArrow>)
+      SRC.HitMagicArrow += <HitMagicArrow>
+      IF (<tag0.HitMagicArrowCharges> > 1)
+         tag.HitMagicArrowCharges -= 1
+      ENDIF
    ENDIF
 
-   IF (<TAG0.ExtraSkill1>)
-      TRY SRC.<STRARG <TAG.ExtraSkill1>>=<SRC.<STRARG <TAG.ExtraSkill1>>>+<EVAL <STREAT <TAG.ExtraSkill1>>>
+   IF (<MageArmor>)
+      SRC.MageArmor=<EVAL <SRC.MageArmor> + 1>
    ENDIF
-   IF (<TAG0.ExtraSkill2>)
-      TRY SRC.<STRARG <TAG.ExtraSkill2>>=<SRC.<STRARG <TAG.ExtraSkill2>>>+<EVAL <STREAT <TAG.ExtraSkill2>>>
+
+   IF (<BonusSkill1>)
+      SRC.<BonusSkill1> +=<BonusSkill1Amt>
    ENDIF
-   IF (<TAG0.ExtraSkill3>)
-      TRY SRC.<STRARG <TAG.ExtraSkill3>>=<SRC.<STRARG <TAG.ExtraSkill3>>>+<EVAL <STREAT <TAG.ExtraSkill3>>>
+   IF (<BonusSkill2>)
+      SRC.<BonusSkill2> +=<BonusSkill2Amt>
    ENDIF
-   IF (<TAG0.ExtraSkill4>)
-      TRY SRC.<STRARG <TAG.ExtraSkill4>>=<SRC.<STRARG <TAG.ExtraSkill4>>>+<EVAL <STREAT <TAG.ExtraSkill4>>>
+   IF (<BonusSkill3>)
+      SRC.<BonusSkill3> +=<BonusSkill3Amt>
    ENDIF
-   IF (<TAG0.ExtraSkill5>)
-      TRY SRC.<STRARG <TAG.ExtraSkill5>>=<SRC.<STRARG <TAG.ExtraSkill5>>>+<EVAL <STREAT <TAG.ExtraSkill5>>>
+   IF (<BonusSkill4>)
+      SRC.<BonusSkill4> +=<BonusSkill4Amt>
+   ENDIF
+   IF (<BonusSkill5>)
+      SRC.<BonusSkill5> +=<BonusSkill5Amt>
    ENDIF
 
 ON=@UnEquip
-   IF (<TAG0.Balanced>)
-      SRC.TAG.Balanced=<EVAL <SRC.TAG0.Balanced> - 1>
-      IF (<SRC.TAG0.Balanced>==0)
-         SRC.TAG.Balanced=
-      ENDIF
+   IF (<Balanced>)
+      SRC.Balanced -=1
    ENDIF
-   IF (<TAG0.SpellChanneling>)
-      SRC.TAG.SpellChanneling=<EVAL <SRC.TAG0.SpellChanneling> - 1>
-      IF (<SRC.TAG0.SpellChanneling>==0)
-         SRC.TAG.SpellChanneling=
-      ENDIF
+   IF (<SpellChanneling>)
+      SRC.SpellChanneling -=1
    ENDIF
-   IF (<TAG0.NightSight>)
-      SRC.TAG.NightSight=<EVAL <SRC.TAG0.NightSight> - 1>
-      IF (<SRC.TAG0.NightSight>==0)
+   IF (<NightSight>)
+      SRC.NightSight -= 1
+      IF (<SRC.NightSight>==0)
          SRC.NIGHTSIGHT 0
-         SRC.TAG.NightSight=
       ENDIF
    ENDIF
-   IF (<TAG0.DamageIncrease>)
-      SRC.TAG.DamageIncrease=<EVAL <SRC.TAG0.DamageIncrease> - <TAG0.DamageIncrease>>
-      IF (<SRC.TAG0.DamageIncrease>==0)
-         SRC.TAG.DamageIncrease=
-      ENDIF
+   IF (<IncreaseDam>)
+      SRC.IncreaseDam -= <IncreaseDam>
    ENDIF
-   IF (<TAG0.DefenseChanceIncrease>)
-      SRC.TAG.DefenseChanceIncrease=<EVAL <SRC.TAG0.DefenseChanceIncrease> - <TAG0.DefenseChanceIncrease>>
-      IF (<SRC.TAG0.DefenseChanceIncrease>==0)
-         SRC.TAG.DefenseChanceIncrease=
+   IF (<IncreaseDefChance>)
+      SRC.IncreaseDefChance -= <IncreaseDefChance>
+      IF (<SRC.IncreaseDefChance>==0)
          SRC.SYSMESSAGELOC color_text,1062321//"Your defense chance has returned to normal."
       ENDIF
    ENDIF
-   IF (<TAG0.HitChanceIncrease>)
-      SRC.TAG.HitChanceIncrease=<EVAL <SRC.TAG0.HitChanceIncrease> - <TAG0.HitChanceIncrease>>
-      IF (<SRC.TAG0.HitChanceIncrease>==0)
-         SRC.TAG.HitChanceIncrease=
+   IF (<IncreaseHitChance>)
+      SRC.IncreaseHitChance -= <IncreaseHitChance>
+      IF (<SRC.IncreaseHitChance>==0)
          SRC.SYSMESSAGELOC color_text,1062320//"Your attack chance has returned to normal."
       ENDIF
    ENDIF
-   IF (<TAG0.HitChanceDecrease>)
-      SRC.TAG.HitChanceDecrease=<EVAL <SRC.TAG0.HitChanceDecrease> - <TAG0.HitChanceDecrease>>
-      IF (<SRC.TAG0.HitChanceDecrease>==0)
-         SRC.TAG.HitChanceDecrease=
+   IF (<DecreaseHitChance>)
+      SRC.DecreaseHitChance -= <DecreaseHitChance>
+      IF (<SRC.DecreaseHitChance>==0)
          SRC.SYSMESSAGELOC color_text,1062320//"Your attack chance has returned to normal."
       ENDIF
    ENDIF
-   IF (<TAG0.SwingSpeedIncrease>)
-      SRC.TAG.SwingSpeedIncrease=<EVAL <SRC.TAG0.SwingSpeedIncrease> - <TAG0.SwingSpeedIncrease>>
-      IF (<SRC.TAG0.SwingSpeedIncrease>==0)
-         SRC.TAG.SwingSpeedIncrease=
-      ENDIF
+   IF (<IncreaseSwingSpeed>)
+      SRC.IncreaseSwingSpeed -= <IncreaseSwingSpeed>
    ENDIF
-   IF (<TAG0.PhysicalDamagePercent>)
-      SRC.TAG.PhysicalDamagePercent=<EVAL <SRC.TAG0.PhysicalDamagePercent> - <TAG0.PhysicalDamagePercent>>
-      IF (<SRC.TAG0.PhysicalDamagePercent>==0)
-         SRC.TAG.PhysicalDamagePercent=
-      ENDIF
+   IF (<DamPhysical>)
+      SRC.DamPhysical -= <DamPhysical>
    ENDIF
-   IF (<TAG0.FireDamagePercent>)
-      SRC.TAG.FireDamagePercent=<EVAL <SRC.TAG0.FireDamagePercent> - <TAG0.FireDamagePercent>>
-      IF (<SRC.TAG0.FireDamagePercent>==0)
-         SRC.TAG.FireDamagePercent=
-      ENDIF
+   IF (<DamFire>)
+      SRC.DamFire -= <DamFire>
    ENDIF
-   IF (<TAG0.ColdDamagePercent>)
-      SRC.TAG.ColdDamagePercent=<EVAL <SRC.TAG0.ColdDamagePercent> - <TAG0.ColdDamagePercent>>
-      IF (<SRC.TAG0.ColdDamagePercent>==0)
-         SRC.TAG.ColdDamagePercent=
-      ENDIF
+   IF (<DamCold>)
+      SRC.DamCold -= <DamCold>
    ENDIF
-   IF (<TAG0.PoisonDamagePercent>)
-      SRC.TAG.PoisonDamagePercent=<EVAL <SRC.TAG0.PoisonDamagePercent> - <TAG0.PoisonDamagePercent>>
-      IF (<SRC.TAG0.PoisonDamagePercent>==0)
-         SRC.TAG.PoisonDamagePercent=
-      ENDIF
+   IF (<DamPoison>)
+      SRC.DamPoison -= <DamPoison>
    ENDIF
-   IF (<TAG0.EnergyDamagePercent>)
-      SRC.TAG.EnergyDamagePercent=<EVAL <SRC.TAG0.EnergyDamagePercent> - <TAG0.EnergyDamagePercent>>
-      IF (<SRC.TAG0.EnergyDamagePercent>==0)
-         SRC.TAG.EnergyDamagePercent=
-      ENDIF
+   IF (<DamEnergy>)
+      SRC.DamEnergy -= <DamEnergy>
    ENDIF
-   IF (<TAG0.RESCOLD>)
-      SRC.RESCOLD -= <TAG0.RESCOLD>
+   IF (<RESCOLD>)
+      SRC.RESCOLD -= <RESCOLD>
    ENDIF
-   IF (<TAG0.RESENERGY>)
-      SRC.RESENERGY -= <TAG0.RESENERGY>
+   IF (<RESENERGY>)
+      SRC.RESENERGY -= <RESENERGY>
    ENDIF
-   IF (<TAG0.RESFIRE>)
-      SRC.RESFIRE -= <TAG0.RESFIRE>
+   IF (<RESFIRE>)
+      SRC.RESFIRE -= <RESFIRE>
    ENDIF
-   IF (<TAG0.RESPOISON>)
-      SRC.RESPOISON -= <TAG0.RESPOISON>
+   IF (<RESPOISON>)
+      SRC.RESPOISON -= <RESPOISON>
    ENDIF
-   IF (<TAG0.RESPHYSICAL>)
-      SRC.TAG.RESPHYSICAL=<EVAL <SRC.TAG0.RESPHYSICAL> - <TAG0.RESPHYSICAL>>
-      SRC.MODAR -= <TAG0.RESPHYSICAL>
-      IF (<SRC.TAG0.RESPHYSICAL>==0)
-         SRC.TAG.RESPHYSICAL=
-         SRC.MODAR=
-      ENDIF
+   IF (<RESPHYSICAL>)
+      SRC.RESPHYSICAL -= <RESPHYSICAL>
+      SRC.MODAR -= <RESPHYSICAL>
    ENDIF
-   IF (<TAG0.EnhancePotions>)
-      SRC.TAG.EnhancePotions=<EVAL <SRC.TAG0.EnhancePotions> - <TAG0.EnhancePotions>>
-      IF (<SRC.TAG0.EnhancePotions>==0)
-         SRC.TAG.EnhancePotions=
-      ENDIF
+   IF (<EnhancePotions>)
+      SRC.EnhancePotions -= <EnhancePotions>
    ENDIF
-   IF (<TAG0.LowerManaCost>)
-      SRC.TAG.LowerManaCost=<EVAL <SRC.TAG0.LowerManaCost> - <TAG0.LowerManaCost>>
-      IF (<SRC.TAG0.LowerManaCost>==0)
-         SRC.TAG.LowerManaCost=
-      ENDIF
+   IF (<LowerManaCost>)
+      SRC.LowerManaCost -= <LowerManaCost>
    ENDIF
-   IF (<TAG0.LowerReagentCost>)
-      SRC.TAG.LowerReagentCost=<EVAL <SRC.TAG0.LowerReagentCost> - <TAG0.LowerReagentCost>>
-      IF (<SRC.TAG0.LowerReagentCost>==0)
-         SRC.TAG.LowerReagentCost=
-      ENDIF
+   IF (<LowerReagentCost>)
+      SRC.LowerReagentCost -= <LowerReagentCost>
    ENDIF
-   IF (<TAG0.SpellDamageIncrease>)
-      SRC.TAG.SpellDamageIncrease=<EVAL <SRC.TAG0.SpellDamageIncrease> - <TAG0.SpellDamageIncrease>>
-      IF (<SRC.TAG0.SpellDamageIncrease>==0)
-         SRC.TAG.SpellDamageIncrease=
-      ENDIF
+   IF (<IncreaseSpellDam>)
+      SRC.IncreaseSpellDam -= <IncreaseSpellDam>
    ENDIF
-   IF (<TAG0.GoldIncrease>)
-      SRC.TAG.GoldIncrease=<EVAL <SRC.TAG0.GoldIncrease> - <TAG0.GoldIncrease>>
-      IF (<SRC.TAG0.GoldIncrease>==0)
-         SRC.TAG.GoldIncrease=
-      ENDIF
+   IF (<IncreaseGold>)
+      SRC.IncreaseGold -= <IncreaseGold>
    ENDIF
-   IF (<TAG0.ReflectPhysicalDamage>)
-      SRC.TAG.ReflectPhysicalDamage=<EVAL <SRC.TAG0.ReflectPhysicalDamage> - <TAG0.ReflectPhysicalDamage>>
-      IF (<SRC.TAG0.ReflectPhysicalDamage>==0)
-         SRC.TAG.ReflectPhysicalDamage=
-      ENDIF
+   IF (<ReflectPhysicalDam>)
+      SRC.ReflectPhysicalDam -= <ReflectPhysicalDam>
    ENDIF
-   IF (<TAG0.LUCK>)
-      IF (<TAG0.LUCK> < 0)
+   IF (<LUCK>)
+      IF (<LUCK> < 0)
          SRC.SYSMESSAGELOC color_text,1079551//"Your luck just improved!"
       ELSE
          SRC.SYSMESSAGELOC color_text,1079552//"Your luck just ran out."
       ENDIF
-      SRC.LUCK -= <TAG0.LUCK>
+      SRC.LUCK -= <LUCK>
    ENDIF
-   IF (<TAG0.STR>)//strength bonus
-      SRC.MODSTR -= <TAG0.STR>
+   IF (<BonusStr>)//strength bonus
+      SRC.MODSTR -= <BonusStr>
    ENDIF
-   IF (<TAG0.HITS>)//hitpoint increase
-      SRC.MODMAXHITS -<TAG0.HITS>
+   IF (<BonusHits>)//hitpoint increase
+      SRC.MODMAXHITS -= <BonusHits>
    ENDIF
-   IF (<TAG0.HitpointRegen>)
-      SRC.TAG.OVERRIDE.REGEN_0=<EVAL <SRC.TAG0.OVERRIDE.REGEN_0> - <TAG0.HitpointRegen>>
-      IF (<SRC.TAG0.HitpointRegen>==0)
-         SRC.TAG.HitpointRegen=
-      ENDIF
-      IF (<SRC.TAG0.OVERRIDE.REGEN_0>==0)
-         SRC.TAG.OVERRIDE.REGEN_0=
-      ENDIF
+   IF (<RegenHits>)
+      SRC.RegenHits -= <RegenHits>
    ENDIF
-   IF (<TAG0.DEX>)//dexterity bonus
-      SRC.MODDEX -= <TAG0.DEX>
+   IF (<BonusDex>)//dexterity bonus
+      SRC.MODDEX -= <BonusDex>
    ENDIF
-   IF (<TAG0.STAMINA>)//stamina increase
-      SRC.MODMAXSTAM -<TAG0.STAMINA>
+   IF (<BonusStam>)//stamina increase
+      SRC.MODMAXSTAM -= <BonusStam>
    ENDIF
-   IF (<TAG0.StaminaRegen>)
-      SRC.TAG.OVERRIDE.REGEN_2=<EVAL <SRC.TAG0.OVERRIDE.REGEN_2> - <TAG0.StaminaRegen>>
-      IF (<SRC.TAG0.StaminaRegen>==0)
-         SRC.TAG.StaminaRegen=
-      ENDIF
-      IF (<SRC.TAG0.OVERRIDE.REGEN_2>==0)
-         SRC.TAG.OVERRIDE.REGEN_2=
-      ENDIF
+   IF (<RegenStam>)
+      SRC.RegenStam -= <RegenStam>
    ENDIF
-   IF (<TAG0.INT>)//intelligence bonus
-      SRC.MODINT -= <TAG0.INT>
+   IF (<BonusINT>)//intelligence bonus
+      SRC.MODINT -= <BonusINT>
    ENDIF
-   IF (<TAG0.MANA>)//mana increase
-      SRC.MODMAXMANA -<TAG0.MANA>
+   IF (<BonusMana>)//mana increase
+      SRC.MODMAXMANA -= <BonusMana>
    ENDIF
-   IF (<TAG0.ManaRegen>)
-      SRC.TAG.OVERRIDE.REGEN_1=<EVAL <SRC.TAG0.OVERRIDE.REGEN_1> - <TAG0.ManaRegen>>
-      IF (<SRC.TAG0.ManaRegen>==0)
-         SRC.TAG.ManaRegen=
-      ENDIF
-      IF (<SRC.TAG0.OVERRIDE.REGEN_1>==0)
-         SRC.TAG.OVERRIDE.REGEN_1=
-      ENDIF
+   IF (<RegenMana>)
+      SRC.RegenMana -= <RegenMana>
    ENDIF
-   IF (<TAG0.FasterCastRecovery>)
-      SRC.TAG.FasterCastRecovery=<EVAL <SRC.TAG0.FasterCastRecovery> - <TAG0.FasterCastRecovery>>
-      SRC.TAG.OVERRIDE.REGENVAL_1=<EVAL <SRC.TAG0.OVERRIDE.REGENVAL_1> - <TAG0.FasterCastRecovery>>
-      IF (<SRC.TAG0.FasterCastRecovery>==0)
-         SRC.TAG.FasterCastRecovery=
-      ENDIF
-      IF (<SRC.TAG.OVERRIDE.REGENVAL_1>==0)
-         SRC.TAG.OVERRIDE.REGENVAL_1=
-      ENDIF
+   IF (<FasterCastRecovery>)
+      SRC.FasterCastRecovery -= <FasterCastRecovery>
+      SRC.RegenValMana -= <FasterCastRecovery>
    ENDIF
-   IF (<TAG0.FasterCasting>)
-      SRC.TAG.FasterCasting=<EVAL <SRC.TAG0.FasterCasting> - <TAG0.FasterCasting>>
-      IF (<SRC.TAG0.FasterCasting>==0)
-         SRC.TAG.FasterCasting=
-      ENDIF
+   IF (<FasterCasting>)
+      SRC.FasterCasting -= <FasterCasting>
    ENDIF
 
-   IF (<TAG0.HitPhysicalArea>)
-      SRC.TAG.HitPhysicalArea=<EVAL <SRC.TAG0.HitPhysicalArea> - <TAG0.HitPhysicalArea>>
-      IF (<SRC.TAG0.HitPhysicalArea>==0)
-         SRC.TAG.HitPhysicalArea=
-      ENDIF
+   IF (<HitAreaPhysical>)
+      SRC.HitAreaPhysical -= <HitAreaPhysical>
    ENDIF
-   IF (<TAG0.HitFireArea>)
-      SRC.TAG.HitFireArea=<EVAL <SRC.TAG0.HitFireArea> - <TAG0.HitFireArea>>
-      IF (<SRC.TAG0.HitFireArea>==0)
-         SRC.TAG.HitFireArea=
-      ENDIF
+   IF (<HitAreaFire>)
+      SRC.HitAreaFire -= <HitAreaFire>
    ENDIF
-   IF (<TAG0.HitColdArea>)
-      SRC.TAG.HitColdArea=<EVAL <SRC.TAG0.HitColdArea> - <TAG0.HitColdArea>>
-      IF (<SRC.TAG0.HitColdArea>==0)
-         SRC.TAG.HitColdArea=
-      ENDIF
+   IF (<HitAreaCold>)
+      SRC.HitAreaCold -= <HitAreaCold>
    ENDIF
-   IF (<TAG0.HitPoisonArea>)
-      SRC.TAG.HitPoisonArea=<EVAL <SRC.TAG0.HitPoisonArea> - <TAG0.HitPoisonArea>>
-      IF (<SRC.TAG0.HitPoisonArea>==0)
-         SRC.TAG.HitPoisonArea=
-      ENDIF
+   IF (<HitAreaPoison>)
+      SRC.HitAreaPoison -= <HitAreaPoison>
    ENDIF
-   IF (<TAG0.HitEnergyArea>)
-      SRC.TAG.HitEnergyArea=<EVAL <SRC.TAG0.HitEnergyArea> - <TAG0.HitEnergyArea>>
-      IF (<SRC.TAG0.HitEnergyArea>==0)
-         SRC.TAG.HitEnergyArea=
-      ENDIF
+   IF (<HitAreaEnergy>)
+      SRC.HitAreaEnergy -= <HitAreaEnergy>
    ENDIF
-   IF (<TAG0.HitLowerAttack>)
-      SRC.TAG.HitLowerAttack=<EVAL <SRC.TAG0.HitLowerAttack> - <TAG0.HitLowerAttack>>
-      IF (<SRC.TAG0.HitLowerAttack>==0)
-         SRC.TAG.HitLowerAttack=
-      ENDIF
+   IF (<HitLowerAtk>)
+      SRC.HitLowerAtk -= <HitLowerAtk>
    ENDIF
-   IF (<TAG0.HitLowerDefense>)
-      SRC.TAG.HitLowerDefense=<EVAL <SRC.TAG0.HitLowerDefense> - <TAG0.HitLowerDefense>>
-      IF (<SRC.TAG0.HitLowerDefense>==0)
-         SRC.TAG.HitLowerDefense=
-      ENDIF
+   IF (<HitLowerDef>)
+      SRC.HitLowerDef -= <HitLowerDef>
    ENDIF
-   IF (<TAG0.HitLifeLeech>)
-      SRC.TAG.HitLifeLeech=<EVAL <SRC.TAG0.HitLifeLeech> - <TAG0.HitLifeLeech>>
-      IF (<SRC.TAG0.HitLifeLeech>==0)
-         SRC.TAG.HitLifeLeech=
-      ENDIF
+   IF (<HitLeechLife>)
+      SRC.HitLeechLife -= <HitLeechLife>
    ENDIF
-   IF (<TAG0.HitManaLeech>)
-      SRC.TAG.HitManaLeech=<EVAL <SRC.TAG0.HitManaLeech> - <TAG0.HitManaLeech>>
-      IF (<SRC.TAG0.HitManaLeech>==0)
-         SRC.TAG.HitManaLeech=
-      ENDIF
+   IF (<HitLeechMana>)
+      SRC.HitLeechMana -= <HitLeechMana>
    ENDIF
-   IF (<TAG0.HitStaminaLeech>)
-      SRC.TAG.HitStaminaLeech=<EVAL <SRC.TAG0.HitStaminaLeech> - <TAG0.HitStaminaLeech>>
-      IF (<SRC.TAG0.HitStaminaLeech>==0)
-         SRC.TAG.HitStaminaLeech=
-      ENDIF
+   IF (<HitLeechStam>)
+      SRC.HitLeechStam -= <HitLeechStam>
    ENDIF
-   IF (<TAG0.MageWeaponSkill>)
-      TRY SRC.<STREAT <TAG.MageWeaponSkill>>=<SRC.<STREAT <TAG.MageWeaponSkill>>>+<EVAL <STRARG <TAG0.MageWeaponSkill>>>
+   IF (<MageWeapon>)
+      TRY SRC.<MageWeapon> -= <MageWeapon>
    ENDIF
-   IF (<TAG0.HitDispel>)
-      SRC.TAG.HitDispel=<EVAL <SRC.TAG0.HitDispel> - <TAG0.HitDispel>>
-      IF (<SRC.TAG0.HitDispel>==0)
-         SRC.TAG.HitDispel=
-      ENDIF
+   IF (<HitDispel>)
+      SRC.HitDispel -= <HitDispel>
    ENDIF
-   IF (<TAG0.HitFireball>)
-      SRC.TAG.HitFireball=<EVAL <SRC.TAG0.HitFireball> - <TAG0.HitFireball>>
-      IF (<SRC.TAG0.HitFireball>==0)
-         SRC.TAG.HitFireball=
-      ENDIF
+   IF (<HitFireball>)
+      SRC.HitFireball -= <HitFireball>
    ENDIF
-   IF (<TAG0.HitHarm>)
-      SRC.TAG.HitHarm=<EVAL <SRC.TAG0.HitHarm> - <TAG0.HitHarm>>
-      IF (<SRC.TAG0.HitHarm>==0)
-         SRC.TAG.HitHarm=
-      ENDIF
+   IF (<HitHarm>)
+      SRC.HitHarm -= <HitHarm>
    ENDIF
-   IF (<TAG0.HitLightning>)
-      SRC.TAG.HitLightning=<EVAL <SRC.TAG0.HitLightning> - <TAG0.HitLightning>>
-      IF (<SRC.TAG0.HitLightning>==0)
-         SRC.TAG.HitLightning=
-      ENDIF
+   IF (<HitLightning>)
+      SRC.HitLightning -= <HitLightning>
    ENDIF
-   IF (<TAG0.HitMagicArrow>)
-      SRC.TAG.HitMagicArrow=<EVAL <SRC.TAG0.HitMagicArrow> - <TAG0.HitMagicArrow>>
-      IF (<SRC.TAG0.HitMagicArrow>==0)
-         SRC.TAG.HitMagicArrow=
-      ENDIF
+   IF (<HitMagicArrow>)
+      SRC.HitMagicArrow -= <HitMagicArrow>
    ENDIF
 
-   IF (<TAG0.MageArmor>)
-      SRC.TAG.MageArmor=<EVAL <SRC.TAG0.MageArmor> - 1>
-      IF (<SRC.TAG0.MageArmor>==0)
-         SRC.TAG.MageArmor=
-      ENDIF
+   IF (<MageArmor>)
+      SRC.MageArmor -= 1
    ENDIF
 
-   IF (<TAG0.ExtraSkill1>)
-      TRY SRC.<STRARG <TAG.ExtraSkill1>>=<SRC.<STRARG <TAG.ExtraSkill1>>>-<EVAL <STREAT <TAG.ExtraSkill1>>>
+   IF (<BonusSkill1>)
+      SRC.<BonusSkill1> -= <BonusSkill1Amt>
    ENDIF
-   IF (<TAG0.ExtraSkill2>)
-      TRY SRC.<STRARG <TAG.ExtraSkill2>>=<SRC.<STRARG <TAG.ExtraSkill2>>>-<EVAL <STREAT <TAG.ExtraSkill2>>>
+   IF (<BonusSkill2>)
+      SRC.<BonusSkill2> -= <BonusSkill2Amt>
    ENDIF
-   IF (<TAG0.ExtraSkill3>)
-      TRY SRC.<STRARG <TAG.ExtraSkill3>>=<SRC.<STRARG <TAG.ExtraSkill3>>>-<EVAL <STREAT <TAG.ExtraSkill3>>>
+   IF (<BonusSkill3>)
+      SRC.<BonusSkill3> -= <BonusSkill3Amt>
    ENDIF
-   IF (<TAG0.ExtraSkill4>)
-      TRY SRC.<STRARG <TAG.ExtraSkill4>>=<SRC.<STRARG <TAG.ExtraSkill4>>>-<EVAL <STREAT <TAG.ExtraSkill4>>>
+   IF (<BonusSkill4>)
+      SRC.<BonusSkill4> -= <BonusSkill4Amt>
    ENDIF
-   IF (<TAG0.ExtraSkill5>)
-      TRY SRC.<STRARG <TAG.ExtraSkill5>>=<SRC.<STRARG <TAG.ExtraSkill5>>>-<EVAL <STREAT <TAG.ExtraSkill5>>>
+   IF (<BonusSkill5>)
+      SRC.<BonusSkill5> -= <BonusSkill5Amt>
    ENDIF
 
 ON=@Damage
@@ -1340,11 +1212,11 @@ ON=@Damage
 // 1080035//"Your ~ is destroyed by the attack."
 
 //   SERV.LOG "<NAME> has <dMORE1L> of <dMORE1H> hitpoints and might take <ARGN1> damage of type <HVAL <ARGN2>> from <SRC.NAME>"
-   IF (<SRC.TAG0.SelfRepair>) && (<MORE1L> < <MORE1H>) 
-      IF (<SRC.TAG0.SelfRepair> > <DEF.MaxSelfRepair>)
+   IF (<SeldRepair>) && (<MORE1L> < <MORE1H>) 
+      IF (<SeldRepair> > <DEF.MaxSelfRepair>)
          LOCAL.Chance=<DEF.MaxSelfRepair>
       ELSE
-         LOCAL.Chance=<SRC.TAG0.SelfRepair>
+         LOCAL.Chance=<SeldRepair>
       ENDIF
       IF (<R50> < <EVAL <LOCAL.Chance>>)
          MORE1L += <EVAL <LOCAL.Chance>>

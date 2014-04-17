@@ -28,7 +28,7 @@ TEVENTS=t_equipitem
 ON=@Create
    ATTR=attr_magic|attr_identified
    COLOR=037
-   TAG.STR=<R4,7>
+   BonusStr=<R4,7>
 
 //////////////////
 ///Ring of Int////
@@ -46,7 +46,7 @@ TEVENTS=t_equipitem
 ON=@Create
    ATTR=attr_magic|attr_identified
    COLOR=055f
-   TAG.INT=<R4,7>
+   BonusINT=<R4,7>
 
 //////////////////
 ///Ring of Dex////
@@ -64,7 +64,7 @@ TEVENTS=t_equipitem
 ON=@Create
    ATTR=attr_magic|attr_identified
    COLOR=065
-   TAG.DEX=<R4,7>
+   BonusDex=<R4,7>
 
 //////////////////
 ///Ring of Bless//
@@ -82,9 +82,9 @@ TEVENTS=t_equipitem
 ON=@Create
    ATTR=attr_magic|attr_identified
    COLOR=0151
-   TAG.STR=<R4,7>
-   TAG.DEX=<R4,7>
-   TAG.INT=<R4,7>
+   BonusStr=<R4,7>
+   BonusDex=<R4,7>
+   BonusINT=<R4,7>
 
 [ITEMDEF i_ring_bless_great]
 ID=i_ring_gold
@@ -98,8 +98,8 @@ TEVENTS=t_equipitem
 ON=@Create
    ATTR=attr_magic|attr_identified
    COLOR=0151
-   TAG.STR=<R6,9>
-   TAG.DEX=<R6,9>
-   TAG.INT=<R6,9>
+   BonusStr=<R6,9>
+   BonusDex=<R6,9>
+   BonusINT=<R6,9>
 
 [EOF]

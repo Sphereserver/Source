@@ -29,7 +29,7 @@ TAG.REQSTR=35
 TEVENTS=t_equipitem
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESCOLD=1
+   RESCOLD=1
 
 [ITEMDEF 01b73]
 DEFNAME=i_shield_buckler
@@ -47,7 +47,7 @@ TAG.REQSTR=20
 TEVENTS=t_equipitem
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPOISON=1
+   RESPOISON=1
 
 [ITEMDEF 01b74]
 DEFNAME=i_shield_kite_metal
@@ -67,7 +67,7 @@ TEVENTS=t_equipitem
 DUPELIST=01b75
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESENERGY=1
+   RESENERGY=1
 
 [ITEMDEF 01b75]
 //kite shield (metal)
@@ -91,7 +91,7 @@ TEVENTS=t_equipitem
 DUPELIST=01b77
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESFIRE=1
+   RESFIRE=1
 
 [ITEMDEF 01b77]
 //heater shield
@@ -116,7 +116,7 @@ TEVENTS=t_equipitem
 DUPELIST=01b79
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESENERGY=1
+   RESENERGY=1
 
 [ITEMDEF 01b79]
 //kite shield (wooden)
@@ -138,7 +138,7 @@ TAG.REQSTR=20
 TEVENTS=t_equipitem
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESENERGY=1
+   RESENERGY=1
 
 [ITEMDEF 01b7b]
 DEFNAME=i_shield_round_metal
@@ -156,7 +156,7 @@ TAG.REQSTR=45
 TEVENTS=t_equipitem
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESFIRE=1
+   RESFIRE=1
 
 
 [ITEMDEF 01bc3]
@@ -176,7 +176,7 @@ TEVENTS=t_equipitem
 ON=@Create
    ATTR=attr_magic
    HITPOINTS={128 154}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 //ON=@EquipTest
 //   IF (<SRC.ISGM>) || (<SRC.MEMORYFINDTYPE.memory_guild.link.align>==2)
 //      RETURN 0
@@ -212,7 +212,7 @@ DUPELIST=01bc5
 ON=@Create
    ATTR=attr_magic
    HITPOINTS={128 154}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 //ON=@EquipTest
 //   IF (<src.isgm>) || (<src.memoryfindtype.memory_guild.link.align>==1)
 //      RETURN 0
@@ -252,7 +252,7 @@ DUPELIST=01bc7
 ON=@Create
    ATTR=attr_magic
    HITPOINTS={128 154}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 01bc7]
 //scale shield
@@ -277,11 +277,11 @@ TEVENTS=t_equipitem
 ON=@Create
    ATTR=attr_magic
    HITPOINTS=255
-   TAG.RareItem=1
+   Rarity=1
    TAG.HitpointIncrease=5
-   TAG.HitpointRegen=1
-   TAG.RESPhysical=1
-   TAG.RESENERGY=1
+   RegenHits=1
+   RESPHYSICAL=1
+   RESENERGY=1
 
 
 [ITEMDEF 04200]
@@ -303,7 +303,7 @@ TEVENTS=t_equipitem
 DUPELIST=04207
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESENERGY=1
+   RESENERGY=1
 
 [ITEMDEF 04201]
 DEFNAME=i_shield_gargish_kite
@@ -324,7 +324,7 @@ TEVENTS=t_equipitem
 DUPELIST=04206
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESENERGY=1
+   RESENERGY=1
 
 [ITEMDEF 04202]
 DEFNAME=i_shield_gargish_plate_small
@@ -345,7 +345,7 @@ TEVENTS=t_equipitem
 DUPELIST=0420a
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESCOLD=1
+   RESCOLD=1
 
 [ITEMDEF 04203]
 DEFNAME=i_shield_gargish_plate_medium
@@ -366,7 +366,7 @@ TEVENTS=t_equipitem
 DUPELIST=04209
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESFIRE=1
+   RESFIRE=1
 
 [ITEMDEF 04204]
 DEFNAME=i_shield_gargish_plate_large
@@ -387,7 +387,7 @@ TEVENTS=t_equipitem
 DUPELIST=04208
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESFIRE=1
+   RESFIRE=1
 
 [ITEMDEF 04205]
 DEFNAME=i_shield_gargish_stone_large
@@ -408,7 +408,7 @@ TEVENTS=t_equipitem
 DUPELIST=0420b
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPOISON=1
+   RESPOISON=1
 
 [ITEMDEF 04206]
 //Gargish kite shield
@@ -453,7 +453,7 @@ TEVENTS=t_equipitem
 DUPELIST=04229
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 04229]
 //Gargish Chaos Shield
@@ -477,7 +477,7 @@ TEVENTS=t_equipitem
 DUPELIST=0422c
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 0422c]
 //Gargish Order Shield

@@ -31,11 +31,11 @@ TEVENTS=t_equipitem
 DUPELIST=0141c
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESCOLD=7
-   TAG.RESENERGY=8
-   TAG.RESFIRE=1
-   TAG.RESPhysical=1
-   TAG.RESPOISON=7
+   RESCOLD=7
+   RESENERGY=8
+   RESFIRE=1
+   RESPHYSICAL=1
+   RESPOISON=7
 
 [ITEMDEF 0141c]
 //orc mask
@@ -62,7 +62,7 @@ TEVENTS=t_equipitem
 DUPELIST=01530
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 01516]
 DEFNAME=i_skirt_long
@@ -84,7 +84,7 @@ TAG.REQSTR=10
 TEVENTS=t_equipitem
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 01517]
 DEFNAME=i_shirt_plain
@@ -106,7 +106,7 @@ TEVENTS=t_equipitem
 DUPELIST=01518
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 01518]
 //plain shirt
@@ -133,7 +133,7 @@ TEVENTS=t_equipitem
 DUPELIST=0152f
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 0152f]
 //Short Pants
@@ -162,7 +162,7 @@ TAG.REQSTR=10
 TEVENTS=t_equipitem
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 
 [ITEMDEF 01535]
@@ -204,7 +204,7 @@ TEVENTS=t_equipitem
 DUPELIST=01538
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 01538]
 //Kilt
@@ -230,7 +230,7 @@ TEVENTS=t_equipitem
 DUPELIST=0153a
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 0153a]
 //Long Pants
@@ -256,7 +256,7 @@ TEVENTS=t_equipitem
 DUPELIST=0153c
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 0153c]
 //Half Apron
@@ -282,7 +282,7 @@ TEVENTS=t_equipitem
 DUPELIST=0153e
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 0153e]
 //Full Apron
@@ -308,10 +308,10 @@ TEVENTS=t_equipitem
 DUPELIST=01540
 ON=@Create
    HITPOINTS={36 48}
-   TAG.ResFire=3
-   TAG.ResCold=5
-   TAG.ResPoison=8
-   TAG.ResEnergy=8
+   RESFIRE=3
+   RESCOLD=5
+   RESPOISON=8
+   RESENERGY=8
 
 [ITEMDEF 01540]
 //bandana
@@ -337,7 +337,7 @@ TEVENTS=t_equipitem
 DUPELIST=01542
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 01542]
 //body sash
@@ -363,10 +363,10 @@ TEVENTS=t_equipitem
 DUPELIST=01544
 ON=@Create
    HITPOINTS={36 48}
-   TAG.ResFire=3
-   TAG.ResCold=5
-   TAG.ResPoison=8
-   TAG.ResEnergy=8
+   RESFIRE=3
+   RESCOLD=5
+   RESPOISON=8
+   RESENERGY=8
 
 [ITEMDEF 01544]
 //skullcap
@@ -392,11 +392,11 @@ TEVENTS=t_equipitem
 DUPELIST=01546
 ON=@Create
    HITPOINTS={36 48}
-   TAG.ResPhysical=5
-   TAG.ResFire=3
-   TAG.ResCold=8
-   TAG.ResPoison=4
-   TAG.ResEnergy=4
+   RESPHYSICAL=5
+   RESFIRE=3
+   RESCOLD=8
+   RESPOISON=4
+   RESENERGY=4
 
 [ITEMDEF 01546]
 //bear mask
@@ -422,11 +422,11 @@ TEVENTS=t_equipitem
 DUPELIST=01548
 ON=@Create
    HITPOINTS={36 48}
-   TAG.ResPhysical=2
-   TAG.ResFire=6
-   TAG.ResCold=8
-   TAG.ResPoison=1
-   TAG.ResEnergy=7
+   RESPHYSICAL=2
+   RESFIRE=6
+   RESCOLD=8
+   RESPOISON=1
+   RESENERGY=7
 
 [ITEMDEF 01548]
 //deer mask
@@ -453,11 +453,11 @@ TEVENTS=t_equipitem
 DUPELIST=0154a
 ON=@Create
    HITPOINTS={36 48}
-   TAG.ResPhysical=6
-   TAG.ResFire=9
-   TAG.ResCold=0
-   TAG.ResPoison=4
-   TAG.ResEnergy=5
+   RESPHYSICAL=6
+   RESFIRE=9
+   RESCOLD=0
+   RESPOISON=4
+   RESENERGY=5
 
 [ITEMDEF 0154a]
 //tribal mask
@@ -483,11 +483,11 @@ TEVENTS=t_equipitem
 DUPELIST=0154c
 ON=@Create
    HITPOINTS={36 48}
-   TAG.ResPhysical=3
-   TAG.ResFire=0
-   TAG.ResCold=6
-   TAG.ResPoison=10
-   TAG.ResEnergy=5
+   RESPHYSICAL=3
+   RESFIRE=0
+   RESCOLD=6
+   RESPOISON=10
+   RESENERGY=5
 
 [ITEMDEF 0154c]
 //tribal mask
@@ -514,7 +514,7 @@ TEVENTS=t_equipitem
 DUPELIST=0170c
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 0170c]
 //boots
@@ -540,7 +540,7 @@ TEVENTS=t_equipitem
 DUPELIST=0170e
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 0170e]
 //Sandals
@@ -566,7 +566,7 @@ TEVENTS=t_equipitem
 DUPELIST=01710
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 01710]
 //Shoes
@@ -592,7 +592,7 @@ TEVENTS=t_equipitem
 DUPELIST=01712
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 01712]
 //Thigh Boots
@@ -616,10 +616,10 @@ TAG.REQSTR=10
 TEVENTS=t_equipitem
 ON=@Create
    HITPOINTS={36 48}
-   TAG.ResFire=5
-   TAG.ResCold=9
-   TAG.ResPoison=5
-   TAG.ResEnergy=5
+   RESFIRE=5
+   RESCOLD=9
+   RESPOISON=5
+   RESENERGY=5
 
 [ITEMDEF 01714]
 DEFNAME=i_hat_wide_brim
@@ -639,10 +639,10 @@ TAG.REQSTR=10
 TEVENTS=t_equipitem
 ON=@Create
    HITPOINTS={36 48}
-   TAG.ResFire=5
-   TAG.ResCold=9
-   TAG.ResPoison=5
-   TAG.ResEnergy=5
+   RESFIRE=5
+   RESCOLD=9
+   RESPOISON=5
+   RESENERGY=5
 
 [ITEMDEF 01715]
 DEFNAME=i_cap
@@ -662,10 +662,10 @@ TAG.REQSTR=10
 TEVENTS=t_equipitem
 ON=@Create
    HITPOINTS={36 48}
-   TAG.ResFire=5
-   TAG.ResCold=9
-   TAG.ResPoison=5
-   TAG.ResEnergy=5
+   RESFIRE=5
+   RESCOLD=9
+   RESPOISON=5
+   RESENERGY=5
 
 [ITEMDEF 01716]
 DEFNAME=i_hat_straw_tall
@@ -685,10 +685,10 @@ TAG.REQSTR=10
 TEVENTS=t_equipitem
 ON=@Create
    HITPOINTS={36 48}
-   TAG.ResFire=5
-   TAG.ResCold=9
-   TAG.ResPoison=5
-   TAG.ResEnergy=5
+   RESFIRE=5
+   RESCOLD=9
+   RESPOISON=5
+   RESENERGY=5
 
 [ITEMDEF 01717]
 DEFNAME=i_hat_straw
@@ -708,10 +708,10 @@ TAG.REQSTR=10
 TEVENTS=t_equipitem
 ON=@Create
    HITPOINTS={36 48}
-   TAG.ResFire=5
-   TAG.ResCold=9
-   TAG.ResPoison=5
-   TAG.ResEnergy=5
+   RESFIRE=5
+   RESCOLD=9
+   RESPOISON=5
+   RESENERGY=5
 
 [ITEMDEF 01718]
 DEFNAME=i_hat_wizards
@@ -731,10 +731,10 @@ TAG.REQSTR=10
 TEVENTS=t_equipitem
 ON=@Create
    HITPOINTS={36 48}
-   TAG.ResFire=5
-   TAG.ResCold=9
-   TAG.ResPoison=5
-   TAG.ResEnergy=5
+   RESFIRE=5
+   RESCOLD=9
+   RESPOISON=5
+   RESENERGY=5
 
 [ITEMDEF 01719]
 DEFNAME=i_bonnet
@@ -754,10 +754,10 @@ TAG.REQSTR=10
 TEVENTS=t_equipitem
 ON=@Create
    HITPOINTS={36 48}
-   TAG.ResFire=5
-   TAG.ResCold=9
-   TAG.ResPoison=5
-   TAG.ResEnergy=5
+   RESFIRE=5
+   RESCOLD=9
+   RESPOISON=5
+   RESENERGY=5
 
 [ITEMDEF 0171a]
 DEFNAME=i_hat_feather
@@ -777,10 +777,10 @@ TAG.REQSTR=10
 TEVENTS=t_equipitem
 ON=@Create
    HITPOINTS={36 48}
-   TAG.ResFire=5
-   TAG.ResCold=9
-   TAG.ResPoison=5
-   TAG.ResEnergy=5
+   RESFIRE=5
+   RESCOLD=9
+   RESPOISON=5
+   RESENERGY=5
 
 [ITEMDEF 0171b]
 DEFNAME=i_hat_tricorne
@@ -800,10 +800,10 @@ TAG.REQSTR=10
 TEVENTS=t_equipitem
 ON=@Create
    HITPOINTS={36 48}
-   TAG.ResFire=5
-   TAG.ResCold=9
-   TAG.ResPoison=5
-   TAG.ResEnergy=5
+   RESFIRE=5
+   RESCOLD=9
+   RESPOISON=5
+   RESENERGY=5
 
 [ITEMDEF 0171c]
 DEFNAME=i_hat_jester
@@ -823,10 +823,10 @@ TAG.REQSTR=10
 TEVENTS=t_equipitem
 ON=@Create
    HITPOINTS={36 48}
-   TAG.ResFire=5
-   TAG.ResCold=9
-   TAG.ResPoison=5
-   TAG.ResEnergy=5
+   RESFIRE=5
+   RESCOLD=9
+   RESPOISON=5
+   RESENERGY=5
 
 
 [ITEMDEF 0172e]
@@ -849,7 +849,7 @@ TAG.REQSTR=10
 TEVENTS=t_equipitem
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 
 [ITEMDEF 019bc]
@@ -869,7 +869,7 @@ CATEGORY=Provisions - Clothes
 SUBSECTION=Masks
 DESCRIPTION=Costume
 TAG.REQSTR=0
-TAG.SpellChanneling=1
+SpellChanneling=1
 DUPELIST=019bd
 ON=@Create
    HITPOINTS={36 48}
@@ -898,7 +898,7 @@ TAG.REQSTR=10
 DUPELIST=01efe
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 01efe]
 //fancy shirt
@@ -923,7 +923,7 @@ TAG.REQSTR=10
 DUPELIST=01f00
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 01f00]
 //fancy dress
@@ -948,7 +948,7 @@ TAG.REQSTR=10
 DUPELIST=01f02
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 01f02]
 //plain dress
@@ -973,7 +973,7 @@ TEVENTS=t_equipitem
 DUPELIST=01f04
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 01f04]
 //robe
@@ -999,7 +999,7 @@ TAG.REQSTR=10
 DUPELIST=01f7c
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 01f7c]
 //doublet
@@ -1025,7 +1025,7 @@ TAG.REQSTR=10
 DUPELIST=01fa0
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 01fa0]
 //Jester Suit
@@ -1050,7 +1050,7 @@ TAG.REQSTR=10
 DUPELIST=01fa2
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 01fa2]
 //Tunic
@@ -1076,7 +1076,7 @@ TAG.REQSTR=10
 DUPELIST=01ffe
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 01ffe]
 //surcoat
@@ -1103,10 +1103,10 @@ TEVENTS=t_equipitem
 DUPELIST=02306
 ON=@Create
    HITPOINTS={36 48}
-   TAG.ResFire=3
-   TAG.ResCold=5
-   TAG.ResPoison=8
-   TAG.ResEnergy=8
+   RESFIRE=3
+   RESCOLD=5
+   RESPOISON=8
+   RESENERGY=8
 
 [ITEMDEF 02306]
 //flower garland
@@ -1131,7 +1131,7 @@ TAG.REQSTR=10
 DUPELIST=02308
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESCOLD=1
+   RESCOLD=1
 
 [ITEMDEF 02308]
 //fur boots
@@ -1155,7 +1155,7 @@ TAG.REQSTR=10
 DUPELIST=0230a
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESCOLD=1
+   RESCOLD=1
 
 [ITEMDEF 0230a]
 //fur cape
@@ -1179,7 +1179,7 @@ TAG.REQSTR=10
 DUPELIST=0230c
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESCOLD=1
+   RESCOLD=1
 
 [ITEMDEF 0230c]
 //fur sarong
@@ -1204,7 +1204,7 @@ TAG.REQSTR=10
 DUPELIST=0230e
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 0230e]
 //gilded dress
@@ -1229,7 +1229,7 @@ TAG.REQSTR=10
 DUPELIST=02310
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02310]
 //formal shirt
@@ -1255,7 +1255,7 @@ TAG.REQSTR=10
 DUPELIST=025eb
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 025eb]
 //checkered shirt
@@ -1280,7 +1280,7 @@ TAG.REQSTR=10
 DUPELIST=025ed
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 025ed]
 //robe 2
@@ -1307,7 +1307,7 @@ TAG.REQSTR=10
 DUPELIST=025ef
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 025ef]
 //hooded robe
@@ -1333,7 +1333,7 @@ TAG.REQSTR=10
 DUPELIST=025f1
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 025f1]
 //death shroud (unwearable)
@@ -1360,7 +1360,7 @@ TAG.REQSTR=10
 DUPELIST=025f3
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 025f3]
 //knee skirt
@@ -1387,7 +1387,7 @@ TAG.REQSTR=10
 DUPELIST=0264a
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 0264a]
 //jester pants
@@ -1414,7 +1414,7 @@ TAG.REQSTR=10
 DUPELIST=0264e
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 0264e]
 //haidate
@@ -1440,7 +1440,7 @@ TAG.REQSTR=10
 DUPELIST=02650
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02650]
 //kobakama
@@ -1466,7 +1466,7 @@ TAG.REQSTR=10
 DUPELIST=02652
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02652]
 //ninja pants
@@ -1493,7 +1493,7 @@ TAG.REQSTR=10
 DUPELIST=02656
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02656]
 //jester shoes
@@ -1520,7 +1520,7 @@ TAG.REQSTR=10
 DUPELIST=02660
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02660]
 //plain shirt 2
@@ -1546,7 +1546,7 @@ TAG.REQSTR=10
 DUPELIST=02662
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02662]
 //plain shirt 3
@@ -1572,7 +1572,7 @@ TAG.REQSTR=10
 DUPELIST=02664
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02664]
 //plain shirt 4
@@ -1598,7 +1598,7 @@ TAG.REQSTR=10
 DUPELIST=02666
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02666]
 //plain shirt 5
@@ -1624,7 +1624,7 @@ TAG.REQSTR=10
 DUPELIST=02668
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02668]
 //ninja shirt
@@ -1651,7 +1651,7 @@ TAG.REQSTR=10
 DUPELIST=0266c
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 0266c]
 //kote sleeves 1
@@ -1677,7 +1677,7 @@ TAG.REQSTR=10
 DUPELIST=0266e
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 0266e]
 //kote sleeves 2
@@ -1704,7 +1704,7 @@ TAG.REQSTR=10
 DUPELIST=02672
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02672]
 //do-maru
@@ -1730,7 +1730,7 @@ TAG.REQSTR=10
 DUPELIST=02674
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02674]
 //haramaki-do
@@ -1757,7 +1757,7 @@ TAG.REQSTR=10
 DUPELIST=0267c
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 0267c]
 //fancy dress 2
@@ -1783,7 +1783,7 @@ TAG.REQSTR=10
 DUPELIST=0267e
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 0267e]
 //fancy dress 3
@@ -1809,7 +1809,7 @@ TAG.REQSTR=10
 DUPELIST=02680
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02680]
 //long dress
@@ -1838,7 +1838,7 @@ TAG.REQSTR=10
 DUPELIST=02682
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02682]
 //Female Kimono 1 (unwearable)
@@ -1864,7 +1864,7 @@ TAG.REQSTR=10
 DUPELIST=02684
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02684]
 //hooded shroud
@@ -1891,7 +1891,7 @@ TAG.REQSTR=10
 DUPELIST=02686
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02686]
 //death shroud
@@ -1916,7 +1916,7 @@ TAG.NotGargoyle=1
 TAG.REQSTR=10
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 
 [ITEMDEF 0269d]
@@ -1939,11 +1939,11 @@ TAG.REQSTR=25
 DUPELIST=0269e
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESCOLD=9
-   TAG.RESENERGY=5
-   TAG.RESFIRE=5
-   TAG.RESPhysical=0
-   TAG.RESPOISON=5
+   RESCOLD=9
+   RESENERGY=5
+   RESFIRE=5
+   RESPHYSICAL=0
+   RESPOISON=5
 
 [ITEMDEF 0269e]
 //feathered cap
@@ -1970,11 +1970,11 @@ TAG.REQSTR=10
 DUPELIST=026a2
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESCOLD=4
-   TAG.RESENERGY=5
-   TAG.RESFIRE=1
-   TAG.RESPhysical=1
-   TAG.RESPOISON=5
+   RESCOLD=4
+   RESENERGY=5
+   RESFIRE=1
+   RESPHYSICAL=1
+   RESPOISON=5
 
 [ITEMDEF 026a2]
 //feathered mask
@@ -2001,10 +2001,10 @@ TAG.REQSTR=10
 DUPELIST=026a4
 ON=@Create
    HITPOINTS={36 48}
-   TAG.ResFire=5
-   TAG.ResCold=9
-   TAG.ResPoison=5
-   TAG.ResEnergy=5
+   RESFIRE=5
+   RESCOLD=9
+   RESPOISON=5
+   RESENERGY=5
 
 [ITEMDEF 026a4]
 //ninja hood
@@ -2028,7 +2028,7 @@ TAG.REQSTR=16
 TEVENTS=t_arcane_clothing
 ON=@Create
 	HITPOINTS={50 100}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
    TAG.ArcaneCharges=<R1,24>
 
 [ITEMDEF 026ae]
@@ -2048,7 +2048,7 @@ TAG.REQSTR=32
 TEVENTS=t_arcane_clothing
 ON=@Create
 	HITPOINTS={50 100}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
    TAG.ArcaneCharges=<R1,24>
 
 [ITEMDEF 026af]
@@ -2068,7 +2068,7 @@ TAG.REQSTR=8
 TEVENTS=t_arcane_clothing
 ON=@Create
 	HITPOINTS={50 100}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
    TAG.ArcaneCharges=<R1,24>
 
 [ITEMDEF 026b0]
@@ -2088,11 +2088,11 @@ TAG.REQSTR=10
 TEVENTS=t_arcane_clothing
 ON=@Create
 	HITPOINTS={50 100}
-   TAG.RESCOLD=3
-   TAG.RESENERGY=3
-   TAG.RESFIRE=4
-   TAG.RESPhysical=2
-   TAG.RESPOISON=3
+   RESCOLD=3
+   RESENERGY=3
+   RESFIRE=4
+   RESPHYSICAL=2
+   RESPOISON=3
    TAG.ArcaneCharges=<R1,24>
 
 
@@ -2115,7 +2115,7 @@ TAG.REQSTR=10
 DUPELIST=027cd
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02783]
 DEFNAME=i_kimono_female2
@@ -2137,7 +2137,7 @@ TAG.REQSTR=10
 DUPELIST=027ce
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 
 [ITEMDEF 0278f]
@@ -2160,10 +2160,10 @@ TAG.REQSTR=10
 DUPELIST=027da
 ON=@Create
    HITPOINTS={36 48}
-   TAG.ResFire=5
-   TAG.ResCold=9
-   TAG.ResPoison=5
-   TAG.ResEnergy=5
+   RESFIRE=5
+   RESCOLD=9
+   RESPOISON=5
+   RESENERGY=5
 
 
 [ITEMDEF 02794]
@@ -2186,7 +2186,7 @@ TAG.REQSTR=10
 DUPELIST=027df
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02795]
 //unused tile named tabi boots tall
@@ -2214,7 +2214,7 @@ TAG.REQSTR=10
 DUPELIST=027e1
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02797]
 DEFNAME=i_boots_tabi
@@ -2235,7 +2235,7 @@ TAG.REQSTR=10
 DUPELIST=027e2
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPOISON=1
+   RESPOISON=1
 
 [ITEMDEF 02798]
 DEFNAME=i_hat_kasa
@@ -2256,10 +2256,10 @@ TAG.REQSTR=10
 DUPELIST=027e3
 ON=@Create
    HITPOINTS={36 48}
-   TAG.ResFire=5
-   TAG.ResCold=9
-   TAG.ResPoison=5
-   TAG.ResEnergy=5
+   RESFIRE=5
+   RESCOLD=9
+   RESPOISON=5
+   RESENERGY=5
 
 [ITEMDEF 02799]
 DEFNAME=i_kamishimo
@@ -2281,7 +2281,7 @@ TAG.REQSTR=10
 DUPELIST=027e4
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 0279a]
 DEFNAME=i_hakama
@@ -2303,7 +2303,7 @@ TAG.REQSTR=10
 DUPELIST=027e5
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 0279b]
 DEFNAME=i_hakama_tattsuke
@@ -2325,7 +2325,7 @@ TAG.REQSTR=10
 DUPELIST=027e6
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 0279c]
 DEFNAME=i_hakama_shita
@@ -2347,7 +2347,7 @@ TAG.REQSTR=10
 DUPELIST=027e7
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 
 [ITEMDEF 027a0]
@@ -2370,7 +2370,7 @@ TAG.REQSTR=10
 DUPELIST=027eb
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 027a1]
 DEFNAME=i_jinbaori
@@ -2392,7 +2392,7 @@ TAG.REQSTR=10
 DUPELIST=027ec
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 
 [ITEMDEF 027cd]
@@ -2492,7 +2492,7 @@ ON=@Create
    ATTR=attr_magic
    COLOR=1827//tarnish
    HITPOINTS=255
-   TAG.RareItem=1
+   Rarity=1
    TAG.VirtueArmor=1
 
 [ITEMDEF 02b05]
@@ -2520,7 +2520,7 @@ TEVENTS=t_equipitem
 DUPELIST=0315f
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 
 [ITEMDEF 02fb7]
@@ -2544,7 +2544,7 @@ DUPELIST=03171
 ON=@Create
    HITPOINTS={36 48}
    //TAG.WeightReduction=30
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 
 [ITEMDEF 02fb9]
@@ -2568,7 +2568,7 @@ TEVENTS=t_equipitem
 DUPELIST=03173
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02fba]
 DEFNAME=i_elven_male_robe2
@@ -2591,7 +2591,7 @@ TEVENTS=t_equipitem
 DUPELIST=03174
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02fbb]
 //elven shirt
@@ -2625,7 +2625,7 @@ TAG.REQSTR=10
 DUPELIST=02fbe
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 02fbe]
 //i_elven_male_shirt3
@@ -2677,7 +2677,7 @@ TEVENTS=t_equipitem
 DUPELIST=03178
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 03176]
 DEFNAME=i_elven_shirt
@@ -2700,7 +2700,7 @@ TEVENTS=t_equipitem
 DUPELIST=03177
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 03177]
 //Elven shirt
@@ -2731,7 +2731,7 @@ TEVENTS=t_equipitem
 DUPELIST=02fc3
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 0317a]
 DEFNAME=i_elven_boots
@@ -2754,7 +2754,7 @@ TEVENTS=t_equipitem
 DUPELIST=02fc4
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 
 [ITEMDEF 04000]
@@ -2778,7 +2778,7 @@ TEVENTS=t_equipitem
 DUPELIST=04001
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 04001]
 //Gargish robe
@@ -2805,7 +2805,7 @@ TEVENTS=t_equipitem
 DUPELIST=04003
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 04003]
 //Gargish robe fancy
@@ -2832,7 +2832,7 @@ TEVENTS=t_equipitem
 DUPELIST=045a5
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 045a5]
 //gargoyle cloth wings
@@ -2860,7 +2860,7 @@ TEVENTS=t_equipitem
 DUPELIST=046ab
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 046ab]
 //gargish female sash
@@ -2889,7 +2889,7 @@ TEVENTS=t_equipitem
 DUPELIST=046b5
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 046b5]
 //gargish sash
@@ -2916,7 +2916,7 @@ TEVENTS=t_equipitem
 DUPELIST=04b9e
 ON=@Create
    HITPOINTS={48 64}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 04b9e]
 //Anniversary Robe
@@ -2943,7 +2943,7 @@ TEVENTS=t_equipitem
 DUPELIST=04ba0
 ON=@Create
    HITPOINTS={48 64}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 04ba0]
 //Gargish Anniversary Robe
@@ -2971,7 +2971,7 @@ TEVENTS=t_equipitem
 DUPELIST=050d9
 ON=@Create
    HITPOINTS={36 48}
-   TAG.RESPhysical=1
+   RESPHYSICAL=1
 
 [ITEMDEF 050d9]
 //Gargish half apron
@@ -2997,13 +2997,13 @@ ON=@Create
    COLOR=colors_all
    HITPOINTS={36 48}
    ATTR=attr_magic|attr_identified
-   TAG.INT=<R8,10>
-   TAG.DEX=<R3,5>
-   TAG.STR=<R3,5>
-   TAG.RESCOLD=9
-   TAG.RESENERGY=5
-   TAG.RESFIRE=5
-   TAG.RESPOISON=5
-   TAG.RESPhysical=1
+   BonusINT=<R8,10>
+   BonusDex=<R3,5>
+   BonusStr=<R3,5>
+   RESCOLD=9
+   RESENERGY=5
+   RESFIRE=5
+   RESPOISON=5
+   RESPHYSICAL=1
 
 [EOF]
