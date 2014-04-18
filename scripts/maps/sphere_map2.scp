@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, April 17, 2014
+// FILE LAST UPDATED: Friday, April 18, 2014
 //
 VERSION=0.56c
 
@@ -123,7 +123,7 @@ GROUP=Montor
 FLAGS=region_flag_nobuilding
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_abyss]
+[AREADEF a_montor_abyss]
 NAME=Abyss
 P=1729,173,103,2
 RECT=1724,159,1763,192,2

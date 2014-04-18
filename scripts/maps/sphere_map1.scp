@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, April 17, 2014
+// FILE LAST UPDATED: Friday, April 18, 2014
 //
 VERSION=0.56c
 
@@ -25,10 +25,10 @@ match your server.
 
 [AREADEF a_facet_trammel]
 NAME=Trammel
-FLAGS=region_flag_no_pvp
 GROUP=ALLMAP
 P=1323,1624,55,1
 RECT=0,0,7168,4096,1
+FLAGS=region_flag_no_pvp
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 ////////////////////////////////////////
@@ -37,28 +37,27 @@ EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_solen_hiven_map1]	//Apparently Solen Hive exists only on Trammel facet
 NAME=Solen Hive
-FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in|region_antimagic_gate
 GROUP=Dungeons
 P=5803,1920,0,1
 RECT=5640,1777,5935,2039,1
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in|region_antimagic_gate
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 ////////////////////////////////////////
 // Misc
 ////////////////////////////////////////
 
 //[AREADEF a_old_haven_island]
-//EVENTS=r_default,r_default_water,r_default_tree,r_default_grass,r_default_rock
 //NAME=Haven Island
 //GROUP=Haven
-//FLAGS=region_flag_no_pvp|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
 //P=3627,2606,0,1
 //RECT=3314,2345,3814,3095,1
+//FLAGS=region_flag_no_pvp|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+//EVENTS=r_default,r_default_water,r_default_tree,r_default_grass,r_default_rock
 
 //[AREADEF a_old_haven_town]
-//EVENTS=r_default,r_default_water,r_default_tree,r_default_grass,r_default_rock
 //NAME=Haven
 //GROUP=Haven
-//FLAGS=region_flag_no_pvp|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
 //P=3618,2587,0,1
 //RECT=3590,2460,3708,2686,1
 //RECT=3568,2552,3590,2631,1
@@ -67,30 +66,32 @@ RECT=5640,1777,5935,2039,1
 //RECT=3664,2608,3680,2624,1
 //RECT=3664,2640,3672,2656,1
 //RECT=3672,2648,3680,2656,1
+//FLAGS=region_flag_no_pvp|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+//EVENTS=r_default,r_default_water,r_default_tree,r_default_grass,r_default_rock
 
 
 //[AREADEF a_new_haven_island]
-//EVENTS=r_default,r_default_water,r_default_tree,r_default_grass,r_default_rock
 //NAME=Haven Island
 //GROUP=New Haven
-//FLAGS=region_flag_no_pvp|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
 //P=2606,3627,0,1
 //RECT=2345,3314,3095,4127,1
+//FLAGS=region_flag_no_pvp|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+//EVENTS=r_default,r_default_water,r_default_tree,r_default_grass,r_default_rock
 
 //[AREADEF a_new_haven_town]
-//EVENTS=r_default,r_default_water,r_default_tree,r_default_grass,r_default_rock
 //NAME=New Haven
 //GROUP=New Haven
-//FLAGS=region_flag_no_pvp|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
 //P=2574,3503,14,1
 //RECT=2480,3423,2623,3534,1
+//FLAGS=region_flag_no_pvp|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
+//EVENTS=r_default,r_default_water,r_default_tree,r_default_grass,r_default_rock
 
 //[ROOMDEF a_new_haven_inn]
-//EVENTS=r_default,r_default_water,r_default_tree,r_default_grass,r_default_rock
 //NAME=Gentle Rest Inn
 //GROUP=New Haven
-//FLAGS=region_flag_no_pvp|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_flag_insta_logout
 //RECT=2513,3493,2523,3503,1
 //RECT=2513,3503,2520,3510,1
+//FLAGS=region_flag_no_pvp|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_flag_insta_logout
+//EVENTS=r_default,r_default_water,r_default_tree,r_default_grass,r_default_rock
 
 [EOF]

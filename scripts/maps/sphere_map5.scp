@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, April 17, 2014
+// FILE LAST UPDATED: Friday, April 18, 2014
 //
 VERSION=0.56c
 
@@ -28,6 +28,26 @@ RECT=0,0,1280,4096,5
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 ////////////////////////////////////////
+// Cities and nearby regions
+////////////////////////////////////////
+
+[AREADEF a_royal_city]
+NAME=Royal City
+GROUP=Royal City
+P=750,3450,-20,5
+RECT=662,3316,962,3716,5
+FLAGS=region_flag_nobuild|region_flag_guarded
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_holy_city]
+NAME=Holy City
+GROUP=Holy City
+P=995,3898,-42,5
+RECT=930,3840,1180,4090,5
+FLAGS=region_flag_nobuild|region_flag_guarded
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+////////////////////////////////////////
 // Dungeons
 ////////////////////////////////////////
 
@@ -36,58 +56,39 @@ NAME=Tomb of Kings
 GROUP=Ter Mur
 P=35,100,0,5
 RECT=3,18,181,242,5
+FLAGS=region_flag_nobuild|region_antimagic_recall_in|region_antimagic_gate
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_underworld]
 NAME=Underworld
 GROUP=Ter Mur
-P=1147,1090,-42,5
-RECT=1002,940,1250,1218,5
+P=1143,1085,-37,5
+RECT=1003,935,1303,1235,5
+FLAGS=region_flag_nobuild|region_antimagic_recall_in|region_antimagic_gate
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_medusa_lair]
-NAME=Medusa's Lair
+[AREADEF a_stygian_abyss]
+NAME=Stygian Abyss
 GROUP=Ter Mur
-P=818,924,-14,5
-RECT=766,896,850,960,5
+P=520,522,31,5
+RECT=235,40,1155,1040,5
+FLAGS=region_flag_nobuild|region_antimagic_recall_in|region_antimagic_gate
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_medusa_lair_2]
+[AREADEF a_medusas_lair]
 NAME=Medusa's Lair
 GROUP=Ter Mur
-P=818,1093,-14,5
-RECT=766,1060,850,1126,5
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_medusa_lair_3]
-NAME=Medusa's Lair
-GROUP=Ter Mur
-P=818,1262,-14,5
-RECT=766,1230,850,1296,5
+P=771,928,0,5
+RECT=764,894,833,983,5
+RECT=816,749,829,765,5
+FLAGS=region_flag_nobuild|region_antimagic_recall_in|region_antimagic_gate
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_stygian_dragon_lair]
 NAME=Stygian Dragon's Lair
-P=330,159,20,5
-RECT=267,191,482,230,5
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_stygian_dragon_lair_2]
-NAME=Stygian Dragon's Lair
-P=68,368,20,5
-RECT=1,215,137,441,5
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_stygian_dragon_lair_3]
-NAME=Stygian Dragon's Lair
-P=68,563,20,5
-RECT=1,496,137,638,5
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_stygian_dragon_lair_4]
-NAME=Stygian Dragon's Lair
-P=68,775,20,5
-RECT=1,701,137,846,5
+P=433,158,0,5
+RECT=294,112,386,290,5
+FLAGS=region_flag_nobuild|region_antimagic_recall_in|region_antimagic_gate
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 ////////////////////////////////////////
