@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, October 18, 2013
+// FILE LAST UPDATED: Friday, April 18, 2014
 //
 VERSION=0.56c
 
@@ -35,7 +35,7 @@ mount_0xda	03ea4	// frenzied ostard
 mount_0xdb	03ea5	// forest ostard
 mount_0xdc	03ea6	// llama
 // LBR
-mount_0xa9  03e95 	// fire beetle
+mount_0xa9	03e95	// fire beetle
 mount_0xc3	03e97	// ethereal beetle
 mount_0xc2	03e98	// ethereal swamp dragon
 mount_0xc1	03e9a	// ethereal ridgeback
@@ -68,12 +68,12 @@ mount_0x31f	03ebe	// armored swamp dragon
 // SE
 mount_0xf3	03e94	// hiryu
 // ML
-mount_0x11c	03e92 	// armored steed (Mondains Steed, Charger of the Fallen)
-mount_0x115	03e91 	// cu sidhe
+mount_0x11c	03e92	// armored steed (Mondains Steed, Charger of the Fallen)
+mount_0x115	03e91	// cu sidhe
 mount_0x114	03e90	// reptalon
 mount_0xd5	03ec5	// polar bear (veteran's award)
 // SA
-mount_0x1b0 03ec6	// armored boura
+mount_0x1b0	03ec6	// armored boura
 mount_0x4e6	03ec7	// tiger
 mount_0x4e7	03ec8	// tigress
 
@@ -94,27 +94,27 @@ color_rock           1154
 color_spectral      17969
 
 [DEFNAME hues_range]
-colors_stone           {2498 1 2500 1 {2671 2706} 1}
+colors_all             {2 1001}
 colors_skin            {1002 1058}
-colors_skin_gargoyle   {1755 1779}
 colors_hair            {1102 1149}
-colors_all             {2 1001} //{ {443 443} 2 {902 902} 1 {907 907} 1 {928 928} 1 {946 947} 1 {1201 1247} 6 {1301 1347} 6 {1401 1447} 6 {1501 1547} 6 {1601 1654} 6 {1701 1747} 6 {1801 1887} 6 }
-colors_white           {2301 2301}
-colors_black           {2305 2305}
-colors_brown           {1110 1116}
-colors_red             {1601 1654}
+colors_pink            {1201 1254}
 colors_blue            {1301 1354}
-colors_yellow          {1701 1754}
 colors_green           {1401 1454}
 colors_orange          {1501 1554}
-colors_gray            {946 947}
-colors_pink            {1201 1254}
-//colors_neutral         { 1801 1887 }
+colors_red             {1601 1654}
+colors_yellow          {1701 1754}
 colors_neutral         {1801 1908}
 colors_snake           {2001 2018}
 colors_bird            {2101 2130}
 colors_slime           {2201 2224}
 colors_animal          {2301 2318}
+
+colors_stone           {2498 1 2500 1 {2671 2706} 1}
+colors_skin_gargoyle   {1755 1779}
+colors_white           2301
+colors_black           2305
+colors_brown           {1110 1116}
+colors_gray            {946 947}
 colors_demon           { 1106 1110 }
 colors_wyrm            { 0 1 { 1105 1110 } 1 { 34 39 } 1 }
 colors_red_drag        { color_red1 1 color_red2 1 }
@@ -729,7 +729,6 @@ attr_artifact		0400000	// artifact
 attr_lockeddown		0800000	// locked down
 attr_secure		01000000	// secured
 attr_reforged	02000000	// Is Runic Reforged.
-attr_enhanced		attr_enchanted // Backwards Compatibility.
 
 
 [DEFNAME can_flags]
@@ -1082,13 +1081,13 @@ t_multi_custom          190   // Customisable multi
 t_spellbook_mystic      191   // SA Mysticism spellbook (should have MOREZ=677 by default)
 t_hoverover             192   // Hover-over item (CAN_I_HOVER can hover over blocking items)
 t_spellbook_bard        193   // SA Bard spellbook (should have MOREZ=700 by default)
-t_weapon_throwing		194	  // Throwing Weapon
+t_weapon_throwing       194   // Throwing Weapon
 
 //Add custom types after 500 to leave room for future hardcoded types
-t_forest				500   // Forest Tiles
-t_jungle				501   // Jungle Tiles
-t_furniture				502 // Furniture
-t_soul_forge			503 // Soul Forge
+t_forest		500   // Forest Tiles
+t_jungle		501   // Jungle Tiles
+t_furniture		502   // Furniture
+t_soul_forge		503   // Soul Forge
 
 [DEFNAME layers]
 layer_hand1       1
@@ -1204,7 +1203,6 @@ can_i_enchant		0100000	// can items be enchanted (runic)
 can_i_imbue			0200000	// can items be imbued (imbuing)
 can_i_recycle			0400000	// Can be recycled
 can_i_reforge		0800000	// Can be Runic Reforged.
-can_i_enhance		can_i_enchant	// Backwards Compatibility
 
 
 [DEFNAME tile_flags]
@@ -1492,28 +1490,28 @@ buffcliloc_gargoylefly_2 1112567
 height_01 28 //DEFNAME=c_ogre
 height_02 32 //DEFNAME=c_ettin
 height_03 16 //DEFNAME=c_zombie
-height_04 25 //DEFNAME=c_gargoyle
+height_04 18 //DEFNAME=c_gargoyle
 height_05 6  //DEFNAME=c_eagle
 height_06 2  //DEFNAME=c_bird
 height_07 15 //DEFNAME=c_orc_captain
-height_08 25 //DEFNAME=c_corpser
+height_08 18 //DEFNAME=c_corpser
 height_09 35 //DEFNAME=c_demon_summoned
 height_0a 35 //DEFNAME=c_demon
 height_0b 10 //DEFNAME=c_spider_dread
 height_0c 35 //DEFNAME=c_dragon
-height_0d 20 //DEFNAME=c_elemental_air_summoned
-height_0e 20 //DEFNAME=c_elemental_earth_summoned
-height_0f 23 //DEFNAME=c_elemental_fire_summoned
+height_0d 16 //DEFNAME=c_elemental_air_summoned
+height_0e 16 //DEFNAME=c_elemental_earth_summoned
+height_0f 18 //DEFNAME=c_elemental_fire_summoned
 
-height_010 23 //DEFNAME=c_elemental_water_summoned
+height_010 18 //DEFNAME=c_elemental_water_summoned
 height_011 15 //DEFNAME=c_orc
 height_012 32 //DEFNAME=c_ettin_w_hammer
 height_013 10 //DEFNAME=c_spider_malefic
 height_014 10 //DEFNAME=c_spider_frost
 height_015 6  //DEFNAME=c_snake_giant
-height_016 23 //DEFNAME=c_gazer
+height_016 16 //DEFNAME=c_gazer
 height_017 10 //DEFNAME=c_wolf_dire
-height_018 20 //DEFNAME=c_lich
+height_018 18 //DEFNAME=c_lich
 height_019 10 //DEFNAME=c_wolf_grey
 height_01a 18 //DEFNAME=c_spectre
 height_01b 10 //DEFNAME=c_wolf_grey2
@@ -1522,10 +1520,10 @@ height_01d 12 //DEFNAME=c_gorilla
 height_01e 18 //DEFNAME=c_harpy
 height_01f 16 //DEFNAME=c_headless
 
-height_021 20 //DEFNAME=c_lizardman
+height_021 18 //DEFNAME=c_lizardman
 height_022 10 //DEFNAME=c_wolf_white
-height_023 20 //DEFNAME=c_lizardman_spear
-height_024 20 //DEFNAME=c_lizardman_mace
+height_023 18 //DEFNAME=c_lizardman_spear
+height_024 18 //DEFNAME=c_lizardman_mace
 height_025 10 //DEFNAME=c_wolf_unknown
 height_026 35 //DEFNAME=c_demon_dark
 height_027 10 //DEFNAME=c_mongbat
@@ -1557,10 +1555,10 @@ height_03f 8  //DEFNAME=c_cougar
 
 height_040 8  //DEFNAME=c_leopard
 height_041 8  //DEFNAME=c_leopard_snow
-height_042 25 //DEFNAME=c_swamp_tentacles
-height_043 22 //DEFNAME=c_gargoyle_stone
-height_044 23 //DEFNAME=c_gazer_elder
-height_045 23 //DEFNAME=c_gazer_unknown2
+height_042 18 //DEFNAME=c_swamp_tentacles
+height_043 16 //DEFNAME=c_gargoyle_stone
+height_044 16 //DEFNAME=c_gazer_elder
+height_045 16 //DEFNAME=c_gazer_unknown2
 height_046 16 //DEFNAME=c_terathan_warrior
 height_047 15 //DEFNAME=c_terathan_drone
 height_048 18 //DEFNAME=c_terathan_matriarch
@@ -1569,8 +1567,8 @@ height_04a 12 //DEFNAME=c_imp
 height_04b 28 //DEFNAME=c_cyclops
 height_04c 40 //DEFNAME=c_titan
 height_04d 16 //DEFNAME=c_kraken
-height_04e 20 //DEFNAME=c_lich_ancient
-height_04f 20 //DEFNAME=c_lich_lord
+height_04e 18 //DEFNAME=c_lich_ancient
+height_04f 18 //DEFNAME=c_lich_lord
 
 height_050 15 //DEFNAME=c_toad_giant
 height_051 5  //DEFNAME=c_bullfrog
@@ -1579,7 +1577,7 @@ height_053 28 //DEFNAME=c_ogre_lord
 height_054 28 //DEFNAME=c_ogre_lord_arctic2
 height_055 18 //DEFNAME=c_ophidian_shaman
 height_056 18 //DEFNAME=c_ophidian_warrior
-height_057 20 //DEFNAME=c_ophidian_queen
+height_057 18 //DEFNAME=c_ophidian_queen
 height_058 8  //DEFNAME=c_goat
 height_059 6  //DEFNAME=c_serpent_ice
 height_05a 6  //DEFNAME=c_serpent_lava
@@ -1599,13 +1597,13 @@ height_066 35 //DEFNAME=c_demon_exodus
 height_067 30 //DEFNAME=c_serpentine_dragon
 height_068 30 //DEFNAME=c_skeletal_dragon
 height_06a 45 //DEFNAME=c_wyrm_shadow
-height_06b 20 //DEFNAME=c_elemental_ore_agapite
-height_06c 20 //DEFNAME=c_elemental_ore_bronze
-height_06d 20 //DEFNAME=c_elemental_ore_copper
-height_06e 20 //DEFNAME=c_elemental_ore_copper_dull
-height_06f 20 //DEFNAME=c_elemental_ore_shadow
+height_06b 18 //DEFNAME=c_elemental_ore_agapite
+height_06c 18 //DEFNAME=c_elemental_ore_bronze
+height_06d 18 //DEFNAME=c_elemental_ore_copper
+height_06e 18 //DEFNAME=c_elemental_ore_copper_dull
+height_06f 18 //DEFNAME=c_elemental_ore_shadow
 
-height_070 20 //DEFNAME=c_elemental_ore_valorite
+height_070 18 //DEFNAME=c_elemental_ore_valorite
 height_071 20 //DEFNAME=c_elemental_ore_verite
 height_072 16 //DEFNAME=c_steed_dark
 height_073 16 //DEFNAME=c_steed_ethereal
@@ -1623,9 +1621,9 @@ height_07e 16 //DEFNAME=c_evilamge_lord
 height_07f 8  //DEFNAME=c_hellcat
 
 height_080 12 //DEFNAME=c_pixie
-height_081 25 //DEFNAME=c_harrower_tentacles
-height_082 22 //DEFNAME=c_gargoyle_fire
-height_083 20 //DEFNAME=c_efreet
+height_081 18 //DEFNAME=c_harrower_tentacles
+height_082 16 //DEFNAME=c_gargoyle_fire
+height_083 18 //DEFNAME=c_efreet
 height_084 15 //DEFNAME=c_kirin
 height_085 7  //DEFNAME=c_alligator_small
 height_086 9  //DEFNAME=c_dragon_komodo
@@ -1644,7 +1642,7 @@ height_091 12 //DEFNAME=c_sea_serpent_deep
 height_092 16 //DEFNAME=c_shadowlord
 height_093 16 //DEFNAME=c_skeleton_knight
 height_094 16 //DEFNAME=c_skeleton_mage
-height_095 20 //DEFNAME=c_succubus
+height_095 16 //DEFNAME=c_succubus
 height_096 8  //DEFNAME=c_sea_serpent
 height_097 4  //DEFNAME=c_dolphin
 height_098 18 //DEFNAME=c_terathan_avenger
@@ -1652,22 +1650,22 @@ height_099 12 //DEFNAME=c_ghoul
 height_09a 16 //DEFNAME=c_mummy
 height_09b 15 //DEFNAME=c_rotting_corpse
 height_09d 10 //DEFNAME=c_spider_unknown
-height_09e 23 //DEFNAME=c_elemental_acid
-height_09f 23 //DEFNAME=c_elemental_blood
+height_09e 18 //DEFNAME=c_elemental_acid
+height_09f 18 //DEFNAME=c_elemental_blood
 
-height_0a0 23 //DEFNAME=c_elemental_unknown_red
-height_0a1 20 //DEFNAME=c_elemental_ice
-height_0a2 20 //DEFNAME=c_elemental_poison
-height_0a3 20 //DEFNAME=c_elemental_snow
-height_0a4 23 //DEFNAME=c_elemental_swamp
+height_0a0 18 //DEFNAME=c_elemental_unknown_red
+height_0a1 18 //DEFNAME=c_elemental_ice
+height_0a2 18 //DEFNAME=c_elemental_poison
+height_0a3 18 //DEFNAME=c_elemental_snow
+height_0a4 16 //DEFNAME=c_elemental_swamp
 height_0a5 15 //DEFNAME=c_wisp_dark
-height_0a6 20 //DEFNAME=c_elemental_ore_gold
+height_0a6 18 //DEFNAME=c_elemental_ore_gold
 height_0a7 9  //DEFNAME=c_bear_brown
 height_0a8 12 //DEFNAME=c_shadow_fiend
 height_0aa 10 //DEFNAME=c_llama_ethereal
 height_0ab 18 //DEFNAME=c_ostard_ethereal
 height_0ac 45 //DEFNAME=c_champ_rikktor
-height_0ad 20 //DEFNAME=c_champ_mephitis
+height_0ad 18 //DEFNAME=c_champ_mephitis
 height_0ae 35 //DEFNAME=c_champ_semidar
 height_0af 36 //DEFNAME=c_champ_lord_oaks
 
@@ -1678,21 +1676,21 @@ height_0b7 16 //DEFNAME=c_savage_warrior_male
 height_0b8 16 //DEFNAME=c_savage_warrior_female
 height_0b9 16 //DEFNAME=c_savage_warrior_unmounted
 height_0ba 16 //DEFNAME=c_savage_shaman
-height_0bb 21 //DEFNAME=c_ridgeback
-height_0bc 21 //DEFNAME=c_savage_ridgeback
+height_0bb 16 //DEFNAME=c_ridgeback
+height_0bc 16 //DEFNAME=c_savage_ridgeback
 height_0bd 45 //DEFNAME=c_orc_brute
 height_0be 16 //DEFNAME=c_steed_fire
 height_0bf 15 //DEFNAME=c_kirin_ethereal
 
 height_0c0 16 //DEFNAME=c_unicorn_ethereal
-height_0c1 21 //DEFNAME=c_ridgeback_ethereal
+height_0c1 16 //DEFNAME=c_ridgeback_ethereal
 height_0c2 15 //DEFNAME=c_swamp_dragon_ethereal
 height_0c3 12 //DEFNAME=c_giant_beetle_ethereal
 height_0c4 18 //DEFNAME=c_kaze_kemono
 height_0c5 45 //DEFNAME=c_dragon_stygian_red
 height_0c6 45 //DEFNAME=c_dragon_stygian_blue
+height_0c7 18 //DEFNAME=c_rai_ju
 height_0c8 16 //DEFNAME=c_horse_tan
-height_0c7 23 //DEFNAME=c_rai_ju
 height_0c9 3  //DEFNAME=c_cat
 height_0ca 8  //DEFNAME=c_alligator
 height_0cb 7  //DEFNAME=c_pig
@@ -1731,7 +1729,7 @@ height_0f0 16 //DEFNAME=c_kappa
 height_0f1 18 //DEFNAME=c_oni
 height_0f2 9  //DEFNAME=c_deathwatch_beetle
 height_0f3 15 //DEFNAME=c_hiryu
-height_0f4 20 //DEFNAME=c_rune_beetle
+height_0f4 18 //DEFNAME=c_rune_beetle
 height_0f5 18 //DEFNAME=c_yomotsu_warrior
 height_0f6 10 //DEFNAME=c_bake_kitsune
 height_0f7 12 //DEFNAME=c_fan_dancer
@@ -1749,8 +1747,8 @@ height_0101 16 //DEFNAME=c_dread_horn
 height_0102 19 //DEFNAME=c_lady_melisande
 height_0103 25 //DEFNAME=c_monstrous_interred_grizzle
 height_0105 28 //DEFNAME=c_shimmering_effusion
-height_0106 25 //DEFNAME=c_tormented_minotaur
-height_0107 30 //DEFNAME=c_minotaur
+height_0106 18 //DEFNAME=c_tormented_minotaur
+height_0107 18 //DEFNAME=c_minotaur
 height_0108 18 //DEFNAME=c_changeling
 height_0109 25 //DEFNAME=c_hydra
 height_010a 14 //DEFNAME=c_dryad
@@ -1761,7 +1759,7 @@ height_010e 18 //DEFNAME=c_grubber
 height_010f 18 //DEFNAME=c_satyr
 
 height_0110 28 //DEFNAME=c_interred_grizzle?
-height_0111 28 //DEFNAME=c_Fetid_Essence
+height_0111 18 //DEFNAME=c_Fetid_Essence
 height_0114 18 //DEFNAME=c_reptalon
 height_0115 12 //DEFNAME=c_cu_sidhe
 height_0116 2  //DEFNAME=c_squirrel
@@ -1777,16 +1775,16 @@ height_0122 7  //DEFNAME=c_pig_big
 height_0123 15 //DEFNAME=c_horse_pack
 height_0124 10 //DEFNAME=c_llama_pack
 height_012c 15 //DEFNAME=c_crystal_elemental
-height_012d 26 //DEFNAME=c_treefellow
+height_012d 18 //DEFNAME=c_treefellow
 height_012e 8  //DEFNAME=c_skittering_hopper
-height_012f 25 //DEFNAME=c_devourer_souls
+height_012f 18 //DEFNAME=c_devourer_souls
 
-height_0130 20 //DEFNAME=c_flesh_golem
+height_0130 18 //DEFNAME=c_flesh_golem
 height_0131 14 //DEFNAME=c_gore_fiend
 height_0132 24 //DEFNAME=c_impaler
 height_0133 16 //DEFNAME=c_gibberling
 height_0134 30 //DEFNAME=c_bone_demon
-height_0135 20 //DEFNAME=c_patchwork_skeleton
+height_0135 16 //DEFNAME=c_patchwork_skeleton
 height_0136 19 //DEFNAME=c_wailing_banshee
 height_0137 24 //DEFNAME=c_shadow_knight
 height_0138 35 //DEFNAME=c_abyssmal_horror
@@ -1825,19 +1823,19 @@ height_02b6 16 //DEFNAME=c_garg_ghost_man
 height_02b7 16 //DEFNAME=c_garg_ghost_woman
 
 height_02f0 30 //DEFNAME=c_iron_golem
-height_02f1 25 //DEFNAME=c_gargoyle_enslaved
-height_02f2 28 //DEFNAME=c_gargoyle_enforcer
+height_02f1 16 //DEFNAME=c_gargoyle_enslaved
+height_02f2 18 //DEFNAME=c_gargoyle_enforcer
 height_02f3 32 //DEFNAME=c_gargoyle_destroyer
 height_02f4 16 //DEFNAME=c_exodus_overseer
-height_02f5 30 //DEFNAME=c_exodus_minion
-height_02f6 25 //DEFNAME=c_gargoyle_shop
+height_02f5 18 //DEFNAME=c_exodus_minion
+height_02f6 16 //DEFNAME=c_gargoyle_shop
 height_02fb 40 //DEFNAME=c_exodus_minionlord
 height_02fc 15 //DEFNAME=c_juka_warrior
 height_02fd 16 //DEFNAME=c_juka_mage
 height_02fe 17 //DEFNAME=c_juka_lord
 height_02ff 15 //DEFNAME=c_blackthorn_betrayer
 
-height_0300 22 //DEFNAME=c_juggernaut
+height_0300 18 //DEFNAME=c_juggernaut
 height_0301 15 //DEFNAME=c_blackthorn
 height_0302 16 //DEFNAME=c_meer_mage
 height_0303 16 //DEFNAME=c_meer_warrior
@@ -1847,12 +1845,12 @@ height_0306 16 //DEFNAME=c_dawn
 height_0307 10 //DEFNAME=c_plague_beast
 height_0308 10 //DEFNAME=c_demon_horde_minion
 height_0309 16 //DEFNAME=c_doppelganger
-height_030a 23 //DEFNAME=c_gazer_larva
+height_030a 16 //DEFNAME=c_gazer_larva
 height_030b 16 //DEFNAME=c_bogling
 height_030c 30 //DEFNAME=c_bog_thing
 height_030d 18 //DEFNAME=c_solen_worker
-height_030e 22 //DEFNAME=c_solen_warrior
-height_030f 22 //DEFNAME=c_solen_queen
+height_030e 18 //DEFNAME=c_solen_warrior
+height_030f 18 //DEFNAME=c_solen_queen
 
 height_0310 35 //DEFNAME=c_arcane_daemon
 height_0311 30 //DEFNAME=c_Moloch
@@ -1863,7 +1861,7 @@ height_0317 12 //DEFNAME=c_giant_beetle
 height_0318 30 //DEFNAME=c_chaos_daemon
 height_0319 16 //DEFNAME=c_skeletal_mount
 height_031a 15 //DEFNAME=c_swamp_dragon
-height_031b 20 //DEFNAME=c_demon_horde_medium
+height_031b 18 //DEFNAME=c_demon_horde_medium
 height_031c 40 //DEFNAME=c_demon_horde_large
 height_031d 45 //DEFNAME=c_reptile_lord
 height_031e 45 //DEFNAME=c_ancient_wyrm

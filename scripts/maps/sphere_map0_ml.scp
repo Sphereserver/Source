@@ -22,7 +22,7 @@ NAME=The Heartwood
 GROUP=ML Cities
 P=7035,409,12,0
 RECT=6907,253,7166,512,0
-FLAGS=region_flag_nobuilding|REGION_FLAG_GUARDED
+FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_sanctuary]
