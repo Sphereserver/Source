@@ -35,7 +35,7 @@ mount_0xda	03ea4	// frenzied ostard
 mount_0xdb	03ea5	// forest ostard
 mount_0xdc	03ea6	// llama
 // LBR
-mount_0xa9  03e95 // fire beetle
+mount_0xa9  03e95 	// fire beetle
 mount_0xc3	03e97	// ethereal beetle
 mount_0xc2	03e98	// ethereal swamp dragon
 mount_0xc1	03e9a	// ethereal ridgeback
@@ -68,12 +68,14 @@ mount_0x31f	03ebe	// armored swamp dragon
 // SE
 mount_0xf3	03e94	// hiryu
 // ML
-mount_0x11c	03e92 // armored steed (Mondains Steed, Charger of the Fallen)
-mount_0x115	03e91 // cu sidhe
-mount_0x114	03e90 // reptalon
+mount_0x11c	03e92 	// armored steed (Mondains Steed, Charger of the Fallen)
+mount_0x115	03e91 	// cu sidhe
+mount_0x114	03e90	// reptalon
 mount_0xd5	03ec5	// polar bear (veteran's award)
 // SA
-mount_0x1b0 03ec6 // armored boura
+mount_0x1b0 03ec6	// armored boura
+mount_0x4e6	03ec7	// tiger
+mount_0x4e7	03ec8	// tigress
 
 [DEFNAME hues]
 color_text             -1

@@ -1567,8 +1567,8 @@ enum ANIM_TYPE_NEW	// not all creatures animate the same for some reason. http:/
 	NANIM_TAKEOFF		= 0x09,
 	NANIM_LANDING		= 0x0a,
 	NANIM_SPELL			= 0x0b,			// 2 SUB ANIMATIONS
-	NANIM_UNKNOWN1		= 0x0c,
-	NANIM_UNKNOWN2		= 0x0d,
+	NANIM_UNKNOWN1		= 0x0c,			// According to RUOSI now this is StartCombat
+	NANIM_UNKNOWN2		= 0x0d,			// and this one EndCombat
 	NANIM_PILLAGE		= 0x0e,			// Human/Animal (eat), Monster (pillage)
 	NANIM_RISE			= 0x0f,
 	

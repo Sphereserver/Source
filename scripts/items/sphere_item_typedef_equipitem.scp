@@ -1212,11 +1212,11 @@ ON=@Damage
 // 1080035//"Your ~ is destroyed by the attack."
 
 //   SERV.LOG "<NAME> has <dMORE1L> of <dMORE1H> hitpoints and might take <ARGN1> damage of type <HVAL <ARGN2>> from <SRC.NAME>"
-   IF (<SeldRepair>) && (<MORE1L> < <MORE1H>) 
-      IF (<SeldRepair> > <DEF.MaxSelfRepair>)
+   IF (<SelfRepair>) && (<MORE1L> < <MORE1H>) 
+      IF (<SelfRepair> > <DEF.MaxSelfRepair>)
          LOCAL.Chance=<DEF.MaxSelfRepair>
       ELSE
-         LOCAL.Chance=<SeldRepair>
+         LOCAL.Chance=<SelfRepair>
       ENDIF
       IF (<R50> < <EVAL <LOCAL.Chance>>)
          MORE1L += <EVAL <LOCAL.Chance>>

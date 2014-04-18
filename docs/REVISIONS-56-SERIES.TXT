@@ -790,3 +790,75 @@ Both are fire now in each account creation / password change, no matter the sour
 13-04-2014, Feeh
 Fixed #2306: No lag should be noticeable after f_onserver_save call
 Fixed #2293: Sphere should now read packets correctly from 6.0.1.7 clients
+
+14/15/16-04-2014, Coruja (Script Pack)
+sphere_map0.scp: 
+-Removed: more generic non-OSI ROOMDEFs (huge cleanout) 
+-Removed: some more weird ROOMDEFs 
+-Added: missing regions for some islands 
+-Fixed: incorrect GROUP set on Fire Temple, Ice Isle 
+-Fixed: incorrect FLAGS set on Moonglow Zoo, Jail, Green Acres, shrine regions 
+-Fixed: incorrect RECT set on Lord Britsh/Blackthorne Castle 
+-Fixed: added missing 'region_flag_guarded' on Delucia 
+-Fixed: added missing RECT tile on Cove, Green Acres 3 
+-Small improvement on Britain and Mt Kendall RECT 
+-Checkmate. Revised the entire script, everything is clean, fixed and categorized now 
+
+sphere_map1.scp: 
+-Moved: Solen Hive region from map0 to map1 (apparently Solen Hive exists only on Trammel) 
+
+sphere_map_points0.scp: 
+-Fixed: Delucia Passage teleporting to incorrect position 
+
+sphere_map_points1.scp:
+-Updated to match changes of previous sphere_map_points0.scp commit 
+
+sphere_map0_ml.scp: 
+-Moved: temp moved all SE/ML/HS regions to this file. Since it have only a few regions, maybe it's better disband this file and move all regions to their correct map file (map0, map3 and map4) 
+sphere_map4.scp: 
+-Small update on Tokuno Islands regions 
+
+sphere_newb.scp: 
+-Updated all skill to match OSI default starting items and colors. 
+PS: Still need a few more additional items for professions (Warrior, Necromancer, Paladin, Samurai, Ninja) -> I can't update this for now, sphere only have support to skills on sphere_newb.scp,
+	 but not for professions (it would be great if someone give a little help with this on the source :D) 
+
+17-04-2014, XuN
+Moved tag.override.SpellTimeOut to SpellTimeOut.
+Changed: Now @Create trigger can be fired on EVENTS too. Note: be aware of the calls order (SkillClass -> added events -> ini -> chardef (for chars)),
+		you can't retrieve the <str> ie in a custom event because it's fired before the @Create in the CHARDEF (which is the one setting it), this trigger
+		doesn't have return 1 so if you set str=15 in your event it will be overwrited with the stat given in the chardef.
+
+Changed all the variables in the 'New Variables' thread to make them readable not only from items/chars but from their BaseDef. That means, no need of IncreaseSwingSpeed
+		under the @Create, you can set them like the NAME property. Added some variables too, read the post.
+
+Script Pack:
+Updated some scripts to reflect the variable's changes:
+		-items/sphere_item_artifacts.scp
+		-items/sphere_item_artifacts_minor.scp
+		-items/sphere_item_artifacts_tokuno.scp
+		-items/sphere_item_magic_jewelry.scp
+		-items/sphere_item_provisions_armor.scp
+		-items/sphere_item_provisions_clothing.scp
+		-items/sphere_item_provisions_jewelry.scp
+		-items/sphere_item_provisions_shields.scp
+		-items/sphere_item_resources.scp
+		-items/sphere_item_typedef_equipitem.scp
+		-npcs/sphere_monsters.scp
+		-npcs/sphere_monsters_custom.scp
+
+sphere_item_vegetation.scp: Commented out TDATA3=i_vanilla_bean since it does not exist.
+
+sphere_item_provisions_deeds.scp:
+		-Fixed line 64: RESOURCES=i_deed,m_stone_and_plaster_house.
+		-Changed all of the remaining i_multi_foundation_* to m_foundation_*.
+
+sphere_item_provisions_armor.scp: changed all i_leather from gargoyle leather armor to i_hides_cut (lines 4704 - 5000).
+
+For a complete change's track visit http://scripts.spherecommunity.net/
+
+18-04-2014, XuN
+-Fixed a Typo in sphere_item_typedef_equipitem.scp (SeldRepair -> SelfRepair)
+-Updated sphere_monsters.scp to add stats to c_tiger and changed changed actual c_tiger to c_tigress
+-Added item 03ec7 to sphere_item_ship_parts.scp to link it with c_tiger
+-Updated sphere_defs.scp to reflect c_tiger and c_tigress as mounts.

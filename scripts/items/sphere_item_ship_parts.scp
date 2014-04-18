@@ -984,8 +984,15 @@ SUBSECTION=Tiller
 DESCRIPTION=Tiller
 WEIGHT=0
 
+[ITEMDEF 03ec7]
+// tiger
+TYPE=t_ship_other
+CATEGORY=Ship Parts
+SUBSECTION=Mast
+DESCRIPTION=Mast (sail furled)
 
 [ITEMDEF 03ec8]
+// tigress
 TYPE=t_ship_other
 CATEGORY=Ship Parts
 SUBSECTION=Mast
