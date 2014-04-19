@@ -61,7 +61,7 @@ CItem::CItem( ITEMID_TYPE id, CItemBase * pItemDef ) : CObjBase( true )
 
 	g_Serv.StatInc(SERV_STAT_ITEMS);
 	m_Attr = 0;
-	m_CanUse = 0;
+	m_CanUse = pItemDef->m_CanUse;
 	m_amount = 1;
 	m_containedGridIndex = 0;
 	m_dwDispIndex = ITEMID_NOTHING;
@@ -1903,6 +1903,7 @@ bool CItem::SetBase( CItemBase * pItemDef )
 	}
 
 	m_type = pItemDef->GetType();	// might change the type.
+	m_Can = pItemDef->m_Can;
 	return( true );
 }
 
@@ -2309,27 +2310,39 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 
 	switch ( index )
 	{
-		//return as string or hex number
+		//return as string or hex number or NULL if not set
 		case IC_CRAFTEDBY:
-			sVal = GetDefStr(pszKey, true);
-			break;
-		case IC_ITEMSETCOLOR:
-		case IC_ITEMSETNAME:
 		case IC_MAKERSNAME:
+			sVal = GetDefStr(pszKey);
+			break;
+		//On these ones, check BaseDef if not found on dynamic
+		case IC_AMMOANIM:
+		case IC_AMMOANIMHUE:
+		case IC_AMMOANIMRENDER:
+		case IC_AMMOCONT:
+		case IC_AMMOTYPE:
+		case IC_BONUSSKILL1:
+		case IC_BONUSSKILL2:
+		case IC_BONUSSKILL3:
+		case IC_BONUSSKILL4:
+		case IC_BONUSSKILL5:
+		case IC_ITEMSETNAME:
 		case IC_MATERIAL:
 		case IC_NPCKILLER:
-		case IC_NPCKILLERAMT:
 		case IC_NPCPROTECTION:
-		case IC_NPCPROTECTIONAMT:
 		case IC_OCOLOR:
 		case IC_OWNEDBY:
-		{
-			CItem * pItem = dynamic_cast<CItem*>(this);
-			CVarDefCont * pValue = pItem->GetDefKey(pszKey, true);
-			sVal = pValue->GetValStr();
-		}break;
-		//return as decimal number
+		case IC_BONUSCRAFTING:
+		case IC_BONUSCRAFTINGEXCEP:
+		case IC_REMOVALTYPE:
 		case IC_SUMMONING:
+			{
+				CVarDefCont * pVar = GetDefKey(pszKey, true);
+				sVal = pVar ? pVar->GetValStr() : "";
+			}
+			break;
+		//return as decimal number or 0 if not set
+		//On these ones, check BaseDef if not found on dynamic
 		case IC_BONUSSTR:
 		case IC_BONUSDEX:
 		case IC_BONUSINT:
@@ -2339,30 +2352,19 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_BONUSHITSMAX:
 		case IC_BONUSSTAMMAX:
 		case IC_BONUSMANAMAX:
-		case IC_BLESSED:
-		case IC_BONUSSKILL1:
 		case IC_BONUSSKILL1AMT:
-		case IC_BONUSSKILL2:
 		case IC_BONUSSKILL2AMT:
-		case IC_BONUSSKILL3:
 		case IC_BONUSSKILL3AMT:
-		case IC_BONUSSKILL4:
 		case IC_BONUSSKILL4AMT:
-		case IC_BONUSSKILL5:
 		case IC_BONUSSKILL5AMT:
 		case IC_BRITTLE:
 		case IC_CHARGESCUR:
 		case IC_CHARGESMAX:
-		case IC_CRAFTSKILL:
-		case IC_CRAFTSKILLAMT:
-		case IC_CRAFTSKILLEXCEP:
-		case IC_CRAFTSKILLEXCEPAMT:
-		case IC_CURSED:
 		case IC_DURABILITY:
 		case IC_EPHEMERAL:
-		case IC_INSURED:
 		case IC_ITEMSETAMTCUR:
 		case IC_ITEMSETAMTMAX:
+		case IC_ITEMSETCOLOR:
 		case IC_LIFESPAN:
 		case IC_MAGEARMOR:
 		case IC_MAGEWEAPON:
@@ -2372,28 +2374,19 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_RECHARGE:
 		case IC_RECHARGEAMT:
 		case IC_RECHARGERATE:
-		case IC_REMOVALTYPE:
 		case IC_SEARINGWEAPON:
 		case IC_SELFREPAIR:
 		case IC_USESCUR:
 		case IC_USESMAX:
-		{
-			CVarDefCont * pValue = GetDefKey(pszKey, true);
-			if ( pValue )
-				sVal.FormatLLVal(static_cast<unsigned long long>(pValue->GetValNum()));
-			else
-				sVal.FormatLLVal(0);
-		}	break;
-		//On these ones, check BaseDef too if not found on dynamic
-		case IC_AMMOANIM:
-		case IC_AMMOANIMHUE:
-		case IC_AMMOANIMRENDER:
-		case IC_AMMOCONT:
-		case IC_AMMOTYPE:
+		case IC_USEBESTWEAPONSKILL:
+		case IC_BONUSCRAFTINGAMT:
+		case IC_BONUSCRAFTINGEXCEPAMT:
+		case IC_NPCKILLERAMT:
+		case IC_NPCPROTECTIONAMT:
 			{
 				CVarDefCont * pVar = GetDefKey(pszKey, true);
-				sVal = pVar ? pVar->GetValStr() : "";
-			}
+				sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
+			}	
 			break;
 		case IC_ADDSPELL:
 			pszKey	+= 8;
@@ -2561,55 +2554,48 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 	EXC_TRY("LoadVal");
 	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
+		//Set as Strings
 		case IC_CRAFTEDBY:
 		case IC_AMMOANIM:
 		case IC_AMMOANIMHUE:
 		case IC_AMMOANIMRENDER:
 		case IC_AMMOCONT:
 		case IC_AMMOTYPE:
-		case IC_ITEMSETAMTCUR:
-		case IC_ITEMSETAMTMAX:
-		case IC_ITEMSETCOLOR:
+		case IC_BONUSSKILL1:
+		case IC_BONUSSKILL2:
+		case IC_BONUSSKILL3:
+		case IC_BONUSSKILL4:
+		case IC_BONUSSKILL5:
 		case IC_ITEMSETNAME:
 		case IC_MAKERSNAME:
-		case IC_MANAPHASE:
 		case IC_MATERIAL:
 		case IC_NPCKILLER:
-		case IC_NPCKILLERAMT:
 		case IC_NPCPROTECTION:
-		case IC_NPCPROTECTIONAMT:
 		case IC_OCOLOR:
 		case IC_OWNEDBY:
 		case IC_SUMMONING:
-		case IC_USEBESTWEAPONNSKILL:
+		case IC_BONUSCRAFTING:
+		case IC_BONUSCRAFTINGEXCEP:
+		case IC_REMOVALTYPE:
 			{
 				bool fQuoted = false;
 				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
 			}
 			return true;
 		//Set as number only
-		case IC_BLESSED:
-		case IC_BONUSSKILL1:
 		case IC_BONUSSKILL1AMT:
-		case IC_BONUSSKILL2:
 		case IC_BONUSSKILL2AMT:
-		case IC_BONUSSKILL3:
 		case IC_BONUSSKILL3AMT:
-		case IC_BONUSSKILL4:
 		case IC_BONUSSKILL4AMT:
-		case IC_BONUSSKILL5:
 		case IC_BONUSSKILL5AMT:
 		case IC_BRITTLE:
 		case IC_CHARGESCUR:
 		case IC_CHARGESMAX:
-		case IC_CRAFTSKILL:
-		case IC_CRAFTSKILLAMT:
-		case IC_CRAFTSKILLEXCEP:
-		case IC_CRAFTSKILLEXCEPAMT:
-		case IC_CURSED:
 		case IC_DURABILITY:
 		case IC_EPHEMERAL:
-		case IC_INSURED:
+		case IC_ITEMSETAMTCUR:
+		case IC_ITEMSETAMTMAX:
+		case IC_ITEMSETCOLOR:
 		case IC_LIFESPAN:
 		case IC_MAGEARMOR:
 		case IC_MAGEWEAPON:
@@ -2618,11 +2604,11 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_RECHARGE:
 		case IC_RECHARGEAMT:
 		case IC_RECHARGERATE:
-		case IC_REMOVALTYPE:
 		case IC_SEARINGWEAPON:
 		case IC_SELFREPAIR:
 		case IC_USESCUR:
 		case IC_USESMAX:
+		case IC_USEBESTWEAPONSKILL:
 		case IC_BONUSSTR:
 		case IC_BONUSDEX:
 		case IC_BONUSINT:
@@ -2632,6 +2618,11 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_BONUSHITSMAX:
 		case IC_BONUSSTAMMAX:
 		case IC_BONUSMANAMAX:
+		case IC_BONUSCRAFTINGAMT:
+		case IC_BONUSCRAFTINGEXCEPAMT:
+		case IC_MANAPHASE:
+		case IC_NPCKILLERAMT:
+		case IC_NPCPROTECTIONAMT:
 			SetDefNum(s.GetKey(),s.GetArgVal(), false);
 			return true;
 		case IC_ADDCIRCLE:

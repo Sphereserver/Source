@@ -37,9 +37,7 @@ public:
 
 	BYTE    m_attackBase;	// base attack for weapons/chars or AC for armor. not magic plus
 	BYTE	m_attackRange;	// variable range of attack damage.
-	
 	DWORD	m_Can;			// Base attribute flags. CAN_C_GHOST
-	DWORD	m_CanUse;		// CanUse flags.
 
 public:
 	LPCTSTR GetDefStr( LPCTSTR pszKey, bool fZero = false ) const
@@ -461,6 +459,7 @@ private:
 public:
 	static const char *m_sClassName;
 	SKILL_TYPE m_iSkill;
+	DWORD	m_CanUse;		// CanUse flags.
 	// Not applicable to all.
 	CResourceQtyArray m_SkillMake;	// what skills to create this ? (and non-consumed items)
 

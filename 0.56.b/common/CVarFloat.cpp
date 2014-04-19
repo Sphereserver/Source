@@ -659,7 +659,7 @@ RealType CVarFloat::GetRandVal( RealType dQty )
 		return( 0 );
 	if ( dQty >= INT_MAX )
 	{
-		return( IMULDIV( g_World.m_Rand.randDblExc(), dQty, INT_MAX) );
+		return( static_cast<RealType>(IMULDIV( g_World.m_Rand.randDblExc(), dQty, INT_MAX)) );
 	}
 	return g_World.m_Rand.randDblExc(dQty);
 }

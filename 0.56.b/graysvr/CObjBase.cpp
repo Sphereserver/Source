@@ -607,8 +607,24 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 	bool	fZero	= false;
 	switch (index)
 	{
-		//return as string or hex numbercase OC_ABILITYPRIMARY:
+		//return as string or hex number or NULL if not set
+		//On these ones, check BaseDef if not found on dynamic
+		case OC_NAMELOC:
+		case OC_HITSPELL:
+		case OC_SLAYER:
+		case OC_SLAYERLESSER:
+		case OC_SLAYERMISC:
+		case OC_SLAYERSUPER:
+		case OC_ABILITYPRIMARY:
 		case OC_ABILITYSECONDARY:
+		case OC_MANABURST:
+			{
+				CVarDefCont * pVar = GetDefKey(pszKey, true);
+				sVal = pVar ? pVar->GetValStr() : "";
+			}
+			break;
+		//return as decimal number or 0 if not set
+		//On these ones, check BaseDef if not found on dynamic
 		case OC_BALANCED:
 		case OC_BANE:
 		case OC_BATTLELUST:
@@ -651,7 +667,6 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_HITLOWERDEF:
 		case OC_HITMAGICARROW:
 		case OC_HITMANADRAIN:
-		case OC_HITSPELL:
 		case OC_HITSPELLSTR:
 		case OC_INCREASEDAM:
 		case OC_INCREASEDEFCHANCE:
@@ -661,10 +676,11 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_INCREASEKARMALOSS:
 		case OC_INCREASESPELLDAM:
 		case OC_INCREASESWINGSPEED:
+		case OC_LOWERREAGENTCOST:
+		case OC_LOWERMANACOST:
 		case OC_LOWERAMMOCOST:
 		case OC_LOWERREQ:
 		case OC_LUCK:
-		case OC_MANABURST:
 		case OC_MANABURSTFREQUENCY:
 		case OC_MANABURSTKARMA:
 		case OC_NIGHTSIGHT:
@@ -694,10 +710,6 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_RESONANCEFIRE:
 		case OC_RESONANCEKINETIC:
 		case OC_RESONANCEPOISON:
-		case OC_SLAYER:
-		case OC_SLAYERLESSER:
-		case OC_SLAYERMISC:
-		case OC_SLAYERSUPER:
 		case OC_SOULCHARGE:
 		case OC_SOULCHARGECOLD:
 		case OC_SOULCHARGEENERGY:
@@ -709,23 +721,11 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_SPELLFOCUSING:
 		case OC_SPLINTERINGWEAPON:
 		case OC_VELOCITY:
-		case OC_TITHING:
-			{
-			CVarDefCont * pValue = GetDefKey(pszKey, true);
-			if ( pValue )
-				sVal.FormatLLVal(static_cast<unsigned long long>(pValue->GetValNum()));
-			else
-				sVal.FormatLLVal(0);
-			}
-			break;
-
-
-		//On these ones, check BaseDef too if not found on dynamic
-		case OC_NAMELOC:
+		case OC_WEIGHTREDUCTION:
 			{
 				CVarDefCont * pVar = GetDefKey(pszKey, true);
-				sVal = pVar ? pVar->GetValStr() : "";
-			}
+				sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
+			}	
 			break;
 		case OC_CANSEE:
 		case OC_CANSEELOS:
@@ -1249,8 +1249,21 @@ bool CObjBase::r_LoadVal( CScript & s )
 
 	switch ( index )
 	{
+		//Set as Strings
+		case OC_HITSPELL:
+		case OC_SLAYER:
+		case OC_SLAYERLESSER:
+		case OC_SLAYERMISC:
+		case OC_SLAYERSUPER:
 		case OC_ABILITYPRIMARY:
 		case OC_ABILITYSECONDARY:
+		case OC_MANABURST:
+			{
+				bool fQuoted = false;
+				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
+			}
+			return true;
+		//Set as number only
 		case OC_BALANCED:
 		case OC_BANE:
 		case OC_BATTLELUST:
@@ -1293,7 +1306,6 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_HITLOWERDEF:
 		case OC_HITMAGICARROW:
 		case OC_HITMANADRAIN:
-		case OC_HITSPELL:
 		case OC_HITSPELLSTR:
 		case OC_INCREASEDAM:
 		case OC_INCREASEDEFCHANCE:
@@ -1303,10 +1315,11 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_INCREASEKARMALOSS:
 		case OC_INCREASESPELLDAM:
 		case OC_INCREASESWINGSPEED:
+		case OC_LOWERREAGENTCOST:
+		case OC_LOWERMANACOST:
 		case OC_LOWERAMMOCOST:
 		case OC_LOWERREQ:
 		case OC_LUCK:
-		case OC_MANABURST:
 		case OC_MANABURSTFREQUENCY:
 		case OC_MANABURSTKARMA:
 		case OC_NIGHTSIGHT:
@@ -1336,10 +1349,6 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_RESONANCEFIRE:
 		case OC_RESONANCEKINETIC:
 		case OC_RESONANCEPOISON:
-		case OC_SLAYER:
-		case OC_SLAYERLESSER:
-		case OC_SLAYERMISC:
-		case OC_SLAYERSUPER:
 		case OC_SOULCHARGE:
 		case OC_SOULCHARGECOLD:
 		case OC_SOULCHARGEENERGY:
@@ -1351,17 +1360,9 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_SPELLFOCUSING:
 		case OC_SPLINTERINGWEAPON:
 		case OC_VELOCITY:
-		case OC_TITHING:
-			{
-				bool fQuoted = false;
-				SetDefNum(s.GetKey(), s.GetArgVal(), fQuoted);
-			}
-			break;
-
 		case OC_NAMELOC:
-			{
-				SetDefNum(s.GetKey(),s.GetArgVal(), false);
-			}
+		case OC_WEIGHTREDUCTION:
+			SetDefNum(s.GetKey(),s.GetArgVal(), false);
 			return true;
 		case OC_COLOR:
 			if ( ! strcmpi( s.GetArgStr(), "match_shirt" ) ||

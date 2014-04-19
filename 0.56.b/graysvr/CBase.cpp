@@ -35,8 +35,21 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 
 	switch ( index )
 	{
+		//return as string or hex number or NULL if not set
+		case OBC_CATEGORY:
+		case OBC_DESCRIPTION:
+		case OBC_SUBSECTION:
+		case OBC_HITSPELL:
+		case OBC_SLAYER:
+		case OBC_SLAYERLESSER:
+		case OBC_SLAYERMISC:
+		case OBC_SLAYERSUPER:
 		case OBC_ABILITYPRIMARY:
 		case OBC_ABILITYSECONDARY:
+		case OBC_MANABURST:
+			sVal = GetDefStr(pszKey, false);
+			break;
+		//return as decimal number or 0 if not set
 		case OBC_BALANCED:
 		case OBC_BANE:
 		case OBC_BATTLELUST:
@@ -92,7 +105,6 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 		case OBC_LOWERREAGENTCOST:
 		case OBC_LOWERREQ:
 		case OBC_LUCK:
-		case OBC_MANABURST:
 		case OBC_MANABURSTFREQUENCY:
 		case OBC_MANABURSTKARMA:
 		case OBC_NIGHTSIGHT:
@@ -122,10 +134,6 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 		case OBC_RESONANCEFIRE:
 		case OBC_RESONANCEKINETIC:
 		case OBC_RESONANCEPOISON:
-		case OBC_SLAYER:
-		case OBC_SLAYERLESSER:
-		case OBC_SLAYERMISC:
-		case OBC_SLAYERSUPER:
 		case OBC_SOULCHARGE:
 		case OBC_SOULCHARGECOLD:
 		case OBC_SOULCHARGEENERGY:
@@ -137,19 +145,12 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 		case OBC_SPLINTERINGWEAPON:
 		case OBC_VELOCITY:
 		case OBC_SPELLCHANNELING:
-		case OBC_TITHING:
-			sVal.FormatLLVal(GetDefNum(sm_szLoadKeys[index],true));
-			break;
-		//return as string or hex number
-		case OBC_CATEGORY:
-		case OBC_DESCRIPTION:
-		case OBC_SUBSECTION:
-			sVal = GetDefStr(sm_szLoadKeys[index]);
-			break;
-		//return as decimal number
 		case OBC_NAMELOC:
-			sVal.FormatLLVal(GetDefNum(sm_szLoadKeys[index],true));
+		case OBC_HITSPELLSTR:
+		case OBC_WEIGHTREDUCTION:
+			sVal.FormatLLVal(GetDefNum(pszKey, true));
 			break;
+
 		case OBC_ARMOR:
 		case OBC_DAM:
 			{
@@ -289,8 +290,21 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 
 	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
+		//Set as Strings
+		case OBC_HITSPELL:
+		case OBC_SLAYER:
+		case OBC_SLAYERLESSER:
+		case OBC_SLAYERMISC:
+		case OBC_SLAYERSUPER:
 		case OBC_ABILITYPRIMARY:
 		case OBC_ABILITYSECONDARY:
+		case OBC_MANABURST:
+			{
+				bool fQuoted = false;
+				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
+			}
+			break;
+		//Set as number only
 		case OBC_BALANCED:
 		case OBC_BANE:
 		case OBC_BATTLELUST:
@@ -346,7 +360,6 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 		case OBC_LOWERREAGENTCOST:
 		case OBC_LOWERREQ:
 		case OBC_LUCK:
-		case OBC_MANABURST:
 		case OBC_MANABURSTFREQUENCY:
 		case OBC_MANABURSTKARMA:
 		case OBC_NIGHTSIGHT:
@@ -376,10 +389,6 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 		case OBC_RESONANCEFIRE:
 		case OBC_RESONANCEKINETIC:
 		case OBC_RESONANCEPOISON:
-		case OBC_SLAYER:
-		case OBC_SLAYERLESSER:
-		case OBC_SLAYERMISC:
-		case OBC_SLAYERSUPER:
 		case OBC_SOULCHARGE:
 		case OBC_SOULCHARGECOLD:
 		case OBC_SOULCHARGEENERGY:
@@ -391,24 +400,21 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 		case OBC_SPLINTERINGWEAPON:
 		case OBC_VELOCITY:
 		case OBC_SPELLCHANNELING:
-		case OBC_TITHING:
+		case OBC_NAMELOC:
+		case OBC_HITSPELLSTR:
+		case OBC_WEIGHTREDUCTION:
 			{
 				SetDefNum(s.GetKey(),s.GetArgVal(), false);
 				return true;
 			}
-		case OBC_CATEGORY:
-		case OBC_SUBSECTION:
-		case OBC_DESCRIPTION:
+		case OBC_CATEGORY://*
+		case OBC_SUBSECTION://*
+		case OBC_DESCRIPTION://*
 			{
 				bool fQuoted = false;
 				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
 				if ( !strcmpi(GetDefStr(sm_szLoadKeys[OBC_DESCRIPTION]), "@") )
 					SetDefStr(sm_szLoadKeys[OBC_DESCRIPTION], GetDefStr(sm_szLoadKeys[OBC_SUBSECTION]));
-			}
-			return true;
-		case OBC_NAMELOC:
-			{
-				SetDefNum(s.GetKey(),s.GetArgVal(), false);
 			}
 			return true;
 		case OBC_ARMOR:

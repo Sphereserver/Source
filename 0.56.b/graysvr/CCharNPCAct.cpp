@@ -1075,10 +1075,10 @@ int CChar::NPC_WalkToPoint( bool fRun )
 			if (iDex < 75)
 				iDex = 75;
 		}
-		iTickNext = TICK_PER_SEC / 4 + Calc_GetRandVal((100 - (iDex*tTick) / 100) / 5) * TICK_PER_SEC / 10;
+		iTickNext = TICK_PER_SEC / 4 + Calc_GetRandLLVal((100 - (iDex*tTick) / 100) / 5) * TICK_PER_SEC / 10;
 	}
 	else
-		iTickNext = TICK_PER_SEC + Calc_GetRandVal((100 - (iDex*tTick) / 100) / 3) * TICK_PER_SEC / 10;
+		iTickNext = TICK_PER_SEC + Calc_GetRandLLVal((100 - (iDex*tTick) / 100) / 3) * TICK_PER_SEC / 10;
 
 	if (iTickNext < 1)
 		iTickNext = 1;

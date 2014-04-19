@@ -63,6 +63,7 @@ public:
 	static const char *m_sClassName;
 	CVarDefMap m_TagDefs;		// attach extra tags here.
 	CVarDefMap m_BaseDefs;		// New Variable storage system
+	DWORD	m_Can;
 
 	CResourceRefArray m_OEvents;
 	static size_t sm_iCount;	// how many total objects in the world ?
@@ -407,7 +408,6 @@ public:
 #define ATTR_REFORGED		0x2000000	// Is Runic Reforged.
 	DWORD	m_Attr;
 	DWORD	m_CanUse;		// Base attribute flags. can_u_all/male/female..
-	DWORD	m_Can;
 
 	// NOTE: If this link is set but not valid -> then delete the whole object !
 	CGrayUID m_uidLink;		// Linked to this other object in the world. (owned, key, etc)

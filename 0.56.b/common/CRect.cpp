@@ -767,8 +767,8 @@ int CPointBase::StepLinePath( const CPointBase & ptSrc, int iSteps )
 	if ( ! iDist2D )
 		return 0;
 
-	m_x = ptSrc.m_x + IMULDIV( iSteps, dx, iDist2D );
-	m_y = ptSrc.m_y + IMULDIV( iSteps, dy, iDist2D );
+	m_x = static_cast<short>(ptSrc.m_x + IMULDIV( iSteps, dx, iDist2D ));
+	m_y = static_cast<short>(ptSrc.m_y + IMULDIV( iSteps, dy, iDist2D ));
 	return( iDist2D );
 }
 

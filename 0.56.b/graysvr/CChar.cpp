@@ -231,7 +231,6 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 
 	m_exp = 0;
 	m_level = 0;
-	//m_ResFire = m_ResCold = m_ResPoison = m_ResEnergy = 0;
 	m_atUnk.m_Arg1 = 0;
 	m_atUnk.m_Arg2 = 0;
 	m_atUnk.m_Arg3 = 0;
@@ -1467,14 +1466,13 @@ do_default:
 
 	switch ( iKeyNum )
 	{
-		//return as string or hex number
-		//	sVal = GetDefStr(pszKey, true);
-		//	break;
-		//return as decimal number
+		//return as decimal number or 0 if not set
 		case CHC_CURFOLLOWER:
+			sVal.FormatLLVal(GetDefNum(pszKey,true));
+			break;
+		//On these ones, check BaseDef if not found on dynamic
 		case CHC_FASTERCASTRECOVERY:
 		case CHC_FASTERCASTING:
-		case CHC_FOLLOWERSLOTS:
 		case CHC_INCREASEHITCHANCE:
 		case CHC_INCREASESWINGSPEED:
 		case CHC_INCREASEDAM:
@@ -1485,7 +1483,6 @@ do_default:
 		case CHC_LOWERREAGENTCOST:
 		case CHC_LUCK:
 		case CHC_MAXFOLLOWER:
-		case CHC_REFLECTPHYSICALDAM:
 		case CHC_RESFIRE:
 		case CHC_RESCOLD:
 		case CHC_RESPOISON:
@@ -1505,9 +1502,12 @@ do_default:
 		case CHC_REGENVALSTAM:
 		case CHC_REGENVALMANA:
 		case CHC_SPELLTIMEOUT:
-			sVal.FormatLLVal(GetDefNum(pszKey, true));
+		case CHC_TITHING:
+			{
+				CVarDefCont * pVar = GetDefKey(pszKey, true);
+				sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
+			}	
 			break;
-
 		case CHC_ATTACKER:
 			{
 				if ( strlen( pszKey ) == 8 )
@@ -2248,15 +2248,14 @@ do_default:
 		case CHC_REGENVALHITS:
 		case CHC_REGENVALSTAM:
 		case CHC_REGENVALMANA:
-		case CHC_SPELLTIMEOUT:
+		case CHC_TITHING:
 			{
 				SetDefNum(s.GetKey(), s.GetArgVal(), false);
 				UpdateStatsFlag();
 			}
 			break;
 		//Set as numbers only
-		case CHC_REFLECTPHYSICALDAM:
-		case CHC_FOLLOWERSLOTS:
+		case CHC_SPELLTIMEOUT:
 			{
 				SetDefNum(s.GetKey(), s.GetArgVal(), false);
 			}

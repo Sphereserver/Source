@@ -137,14 +137,19 @@ bool CCharBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 	EXC_TRY("WriteVal");
 	switch ( FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
-		//return as string or hex number
+		//return as string or hex number or NULL if not set
 		case CBC_THROWDAM:
 		case CBC_THROWOBJ:
 		case CBC_THROWRANGE:
-			{
-				sVal = GetDefStr(pszKey, false);
-			}
-		break;
+			sVal = GetDefStr(pszKey, false);
+			break;
+		//return as decimal number or 0 if not set
+		case CBC_FOLLOWERSLOTS:
+		case CBC_MAXFOLLOWER:
+		case CBC_BONDED:
+		case CBC_TITHING:
+			sVal.FormatLLVal(GetDefNum(pszKey, true));
+			break;
 		case CBC_ANIM:
 			sVal.FormatHex( m_Anims );
 			break;
@@ -234,6 +239,7 @@ bool CCharBase::r_LoadVal( CScript & s )
 		return( false );
 	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
+		//Set as Strings
 		case CBC_THROWDAM:
 		case CBC_THROWOBJ:
 		case CBC_THROWRANGE:
@@ -241,6 +247,13 @@ bool CCharBase::r_LoadVal( CScript & s )
 				bool fQuoted = false;
 				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
 			}
+			break;
+		//Set as number only
+		case CBC_FOLLOWERSLOTS:
+		case CBC_MAXFOLLOWER:
+		case CBC_BONDED:
+		case CBC_TITHING:
+			SetDefNum(s.GetKey(), s.GetArgVal(), false);
 			break;
 
 		case CBC_ANIM:

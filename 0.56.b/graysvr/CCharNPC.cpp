@@ -160,9 +160,6 @@ LPCTSTR const CCharPlayer::sm_szLoadKeys[CPC_QTY+1] =
 CCharPlayer::CCharPlayer(CChar *pChar, CAccount *pAccount) : m_pAccount(pAccount)
 {
 	m_wDeaths = m_wMurders = 0;
-	//m_curFollower = m_maxFollower = 0;
-	//m_luck = 0;
-	//m_iTithingPoints = 0;
 	m_speedMode = 0;
 	m_pflag = 0;
 	m_bKrToolbarEnabled = false;
@@ -734,10 +731,7 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 	EXC_TRY("LoadVal");
 	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
-
-	case CNC_BONDED:
-		pChar->SetDefNum(s.GetKey(), s.GetArgVal(), false );
-		break;
+	//Set as Strings
 	case CNC_THROWDAM:
 	case CNC_THROWOBJ:
 	case CNC_THROWRANGE:
@@ -745,6 +739,11 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 			bool fQuoted = false;
 			pChar->SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
 		}
+		break;
+	//Set as numbers only
+	case CNC_BONDED:
+	case CNC_FOLLOWERSLOTS:
+		pChar->SetDefNum(s.GetKey(), s.GetArgVal(), false );
 		break;
 
 	case CNC_ACTPRI:
@@ -809,10 +808,8 @@ bool CCharNPC::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 	switch ( FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
 	
+	//return as string or hex number or NULL if not set
 	//On these ones, check BaseDef too if not found on dynamic
-	case CNC_BONDED:
-		sVal.FormatLLVal(pChar->GetDefNum(pszKey, true));
-		break;
 	case CNC_THROWDAM:
 	case CNC_THROWOBJ:
 	case CNC_THROWRANGE:
@@ -821,7 +818,15 @@ bool CCharNPC::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 			sVal = pVar ? pVar->GetValStr() : "";
 		}
 		break;
-
+	//return as decimal number or 0 if not set
+	//On these ones, check BaseDef if not found on dynamic
+	case CNC_BONDED:
+	case CNC_FOLLOWERSLOTS:
+		{
+			CVarDefCont * pVar = pChar->GetDefKey(pszKey, true);
+			sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
+		}	
+		break;
 	case CNC_ACTPRI:
 		sVal.FormatVal( m_Act_Motivation );
 		break;

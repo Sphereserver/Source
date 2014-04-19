@@ -862,3 +862,6 @@ For a complete change's track visit http://scripts.spherecommunity.net/
 -Updated sphere_monsters.scp to add stats to c_tiger and changed changed actual c_tiger to c_tigress
 -Added item 03ec7 to sphere_item_ship_parts.scp to link it with c_tiger
 -Updated sphere_defs.scp to reflect c_tiger and c_tigress as mounts.
+
+19-04-2014, Ben
+Changed: CANUSE flags can now be properly set on ITEMDEF and dynamic items (ITEMDEFs value is given to dynamic items on creation)
