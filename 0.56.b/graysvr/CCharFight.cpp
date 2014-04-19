@@ -2770,7 +2770,7 @@ void CChar::Memory_Fight_Start( const CChar * pTarg )
 		if ( pTargMemory != NULL )	// My target remembers me.
 		{
 			if ( pTargMemory->IsMemoryTypes( MEMORY_IAGGRESSOR ))
-				MemTypes = MEMORY_HARMEDBY;
+				MemTypes = MEMORY_HARMEDBY|MEMORY_AGGREIVED;
 			else if ( pTargMemory->IsMemoryTypes( MEMORY_HARMEDBY|MEMORY_SAWCRIME|MEMORY_AGGREIVED ))
 				MemTypes = MEMORY_IAGGRESSOR;
 			else
@@ -3168,28 +3168,19 @@ int CChar::CalcFightRange( CItem * pWeapon, CItemBase * pWeaponDef )
 {
 	ADDTOCALLSTACK("CChar::CalcFightRange");
 
-	int iCharRange = 0;
+	int iCharRange = RangeL();
 	int iWeaponRange = 0;
-	
-    CVarDefCont * pCharRange = GetKey("OVERRIDE.RANGE", true); 
-	if ( pCharRange )
-		iCharRange = static_cast<int>(pCharRange->GetValNum());
 
 	if ( pWeapon )
 	{
 		pWeaponDef	= pWeapon->Item_GetDef();
-
-	    CVarDefCont * pWeaponRange = pWeapon->GetKey("OVERRIDE.RANGE", true); 
-		if ( pWeaponRange )
-			iWeaponRange = static_cast<int>(pWeaponRange->GetValNum());
+		iWeaponRange = pWeapon->RangeL();
 	}
 
 	if ( !pWeaponDef )
 		return iCharRange ? iCharRange : Char_GetDef()->RangeL();
 
 	return ( maximum( (iCharRange ? iCharRange : Char_GetDef()->RangeL()) , (iWeaponRange ? iWeaponRange : pWeaponDef->RangeL())) );
-
-	//return (iCharRange ? iCharRange : Char_GetDef()->RangeL()) + (iWeaponRange ? iWeaponRange : pWeaponDef->RangeL()) - 1;
 }
 
 

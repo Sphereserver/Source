@@ -14,7 +14,7 @@ CItemBase::CItemBase( ITEMID_TYPE id ) :
 	m_weight = 0;
 	m_speed = 0;
 	m_iSkill = SKILL_NONE;
-	m_range = 1;
+	SetDefNum("RANGE",1); //m_range = 1;
 	m_type = IT_NORMAL;
 	m_layer = LAYER_NONE;
 
@@ -157,7 +157,7 @@ void CItemBase::CopyBasic( const CItemBase * pBase )
 	m_flip_id	= pBase->m_flip_id;
 	m_type		= pBase->m_type;
 	m_layer		= pBase->m_layer;
-	m_range		= pBase->m_range;
+	SetDefNum("RANGE",pBase->GetDefNum("RANGE",true)); //m_range		= pBase->m_range;
 
 	// Just applies to weapons/armor.
 	m_ttNormal.m_tData1 = pBase->m_ttNormal.m_tData1;
@@ -1367,13 +1367,15 @@ bool CItemBase::r_LoadVal( CScript &s )
 					m_Can |= CAN_I_DYE;
 				else
 					m_Can &= ~CAN_I_DYE;
-				//m_Can |= ( s.GetArgVal()) ? CAN_I_DYE : 0;
 			break;
 		case IBC_FLIP:
 			if ( ! s.HasArgs())
 				m_Can |= CAN_I_FLIP;
 			else
-				m_Can |= ( s.GetArgVal()) ? CAN_I_FLIP : 0;
+				if ( s.GetArgVal() )
+					m_Can |= CAN_I_FLIP;
+				else
+					m_Can &= ~CAN_I_FLIP;
 			break;
 		case IBC_ENCHANT:
 			if ( ! s.HasArgs())

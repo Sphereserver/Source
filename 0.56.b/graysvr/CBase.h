@@ -33,7 +33,7 @@ public:
 	CResourceRefArray	m_TEvents;			// Action or motivation type indexes. (NPC only)
 
 	CResourceQtyArray	m_BaseResources;	// RESOURCES=10 MEAT (What is this made of)
-	WORD				m_range;
+	//WORD				m_range;
 
 	BYTE    m_attackBase;	// base attack for weapons/chars or AC for armor. not magic plus
 	BYTE	m_attackRange;	// variable range of attack damage.
@@ -133,7 +133,7 @@ public:
 		m_attackRange		= 0;
 		m_Height			= 0;
 		m_Can			= CAN_C_INDOORS;	// most things can cover us from the weather.
-		m_range			= 1;
+		SetDefNum("RANGE",1); //m_range			= 1;
 		m_ResLevel		= RDS_T2A;
 		m_ResDispDnHue	= HUE_DEFAULT;
 		m_ResDispDnId = 0;
@@ -186,12 +186,14 @@ public:
 
 	BYTE	RangeL() const
 	{
-		return (m_range & 0xff);
+		return static_cast<BYTE>(GetDefNum("RANGE",true) & 0xff);
+		//return (m_range & 0xff);
 	}
 
 	BYTE	RangeH() const
 	{
-		return ((m_range>>8) & 0xff);
+		return static_cast<BYTE>((GetDefNum("RANGE",true)>>8) & 0xff);
+		//return ((m_range>>8) & 0xff);
 	}
 
 	height_t GetHeight() const

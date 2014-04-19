@@ -192,6 +192,7 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 		case OBC_NAME:
 			sVal = GetName();
 			break;
+
 		case OBC_RANGE:
 			if ( RangeH() == 0 ) sVal.Format( "%d", RangeL() );
 			else sVal.Format( "%d,%d", RangeH(), RangeL() );
@@ -202,6 +203,7 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 		case OBC_RANGEH: // but rangeh seems to be the Range Lowest value.
 			sVal.FormatHex( RangeL() );
 			break;
+
 		case OBC_RESOURCES:		// Print the resources
 			{
 				pszKey += strlen(sm_szLoadKeys[index]); // 9;
@@ -456,12 +458,16 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 				size_t iQty = Str_ParseCmds( s.GetArgStr(), piVal, COUNTOF(piVal));
 				if ( iQty > 1 )
 				{
-					m_range	 = ((piVal[0] & 0xff) << 8) & 0xff00;
-					m_range	|= (piVal[1] & 0xff);
+					INT64 iRange = ((piVal[0] & 0xff) << 8) & 0xff00;
+					iRange |= (piVal[1] & 0xff);
+					SetDefNum(s.GetKey(),iRange, false);
+					//m_range	 = ((piVal[0] & 0xff) << 8) & 0xff00;
+					//m_range	|= (piVal[1] & 0xff);
 				}
 				else
 				{
-					m_range	= static_cast<WORD>(piVal[0]);
+					SetDefNum(s.GetKey(),piVal[0], false);
+					//m_range	= static_cast<WORD>(piVal[0]);
 				}
 			}
 			return( true );

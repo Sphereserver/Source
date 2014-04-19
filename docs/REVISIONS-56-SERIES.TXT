@@ -865,6 +865,10 @@ For a complete change's track visit http://scripts.spherecommunity.net/
 
 19-04-2014, Ben
 Changed: CANUSE flags can now be properly set on ITEMDEF and dynamic items (ITEMDEFs value is given to dynamic items on creation)
+Fixed 1565: Removed TAG.OVERRIDE.RANGE from items and chars.
+			Changed RANGE so it can be read/write on items and char (Dynamic object value overrides basedef value. Highest value between weapon and char is used in combat)
+			RANGEH and RANGEL are also available as readonly variables for dynamic items and char now
+			Added FIGHTRANGE to chars to replace old RANGE (readonly and returns the highest value used for combat)
 
 19-04-2014, XuN
 -Fixed 0002310: Changed t_weapon_bow in Throwing Items (sphere_item_provisions_weapons.scp) to t_weapon_throwing.

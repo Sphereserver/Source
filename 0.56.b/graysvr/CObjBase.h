@@ -75,6 +75,16 @@ public:
 	virtual void DeletePrepare();
 
 public:
+	BYTE	RangeL() const
+	{
+		return static_cast<BYTE>(GetDefNum("RANGE",true) & 0xff);
+	}
+
+	BYTE	RangeH() const
+	{
+		return static_cast<BYTE>((GetDefNum("RANGE",true)>>8) & 0xff);
+	}
+
 	CServTime GetTimeStamp() const
 	{
 		return m_timestamp;

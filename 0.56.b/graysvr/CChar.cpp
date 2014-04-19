@@ -1553,12 +1553,6 @@ do_default:
 							}
 						}
 					}
-					//This should be a writable variable
-					/*else if( !strnicmp(pszKey, "CLEAR", 5) )
-					{
-						pszKey += 5;
-						m_lastAttackers.clear();
-					}*/
 					else
 					{
 						attackerIndex = Exp_GetVal(pszKey);
@@ -1588,7 +1582,7 @@ do_default:
 				return true;
 			}
 
-		case CHC_RANGE:
+		case CHC_FIGHTRANGE: //RANGE is now writable so this is changed to FIGHTRANGE as readable only
 			sVal.FormatVal( CalcFightRange( m_uidWeapon.ItemFind() ) );
 			return true;
 		case CHC_FAME:

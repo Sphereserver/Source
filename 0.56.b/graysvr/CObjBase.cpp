@@ -727,6 +727,18 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 				sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
 			}	
 			break;
+
+		case OC_RANGE:
+			if ( RangeH() == 0 ) sVal.Format( "%d", RangeL() );
+			else sVal.Format( "%d,%d", RangeH(), RangeL() );
+			break;
+		case OC_RANGEL:
+			sVal.FormatHex( RangeH() );
+			break;
+		case OC_RANGEH:
+			sVal.FormatHex( RangeL() );
+			break;
+
 		case OC_CANSEE:
 		case OC_CANSEELOS:
 		case OC_CANSEELOSFLAG:
@@ -1364,6 +1376,24 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_WEIGHTREDUCTION:
 			SetDefNum(s.GetKey(),s.GetArgVal(), false);
 			return true;
+
+		case OC_RANGE:
+			{
+				INT64 piVal[2];
+				size_t iQty = Str_ParseCmds( s.GetArgStr(), piVal, COUNTOF(piVal));
+				if ( iQty > 1 )
+				{
+					INT64 iRange = ((piVal[0] & 0xff) << 8) & 0xff00;
+					iRange |= (piVal[1] & 0xff);
+					SetDefNum(s.GetKey(),iRange, false);
+				}
+				else
+				{
+					SetDefNum(s.GetKey(),piVal[0], false);
+				}
+			}
+			return( true );
+
 		case OC_COLOR:
 			if ( ! strcmpi( s.GetArgStr(), "match_shirt" ) ||
 				! strcmpi( s.GetArgStr(), "match_hair" ))

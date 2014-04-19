@@ -1843,15 +1843,8 @@ bool CChar::NPC_FightArchery( CChar * pChar )
 		CItemBase *pWeaponDef = pWeapon->Item_GetDef();
 		if ( pWeaponDef != NULL )
 		{
-			iMinDist = pWeaponDef->RangeH();
-			iMaxDist = pWeaponDef->RangeL();
-		}
-
-		if ( !iMaxDist || (iMinDist == 0 && iMaxDist == 1) )
-		{
-			CVarDefCont * pWeaponRange = pWeapon->GetKey("OVERRIDE.RANGE", true); 
-			if ( pWeaponRange )
-				iMaxDist = static_cast<int>(pWeaponRange->GetValNum());
+			iMinDist = pWeapon->RangeH() ? pWeapon->RangeH() : pWeaponDef->RangeH();
+			iMaxDist = pWeapon->RangeL() ? pWeapon->RangeL() : pWeaponDef->RangeL();
 		}
 	}
 
