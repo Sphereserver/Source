@@ -936,7 +936,10 @@ public:
 
 	static CCharBase * FindCharBase( CREID_TYPE id );
 	static bool IsValidDispID( CREID_TYPE id );
-	static bool IsHumanID( CREID_TYPE id );
+	static bool IsPlayableID( CREID_TYPE id, bool bCheckGhost = false);
+	static bool IsHumanID( CREID_TYPE id, bool bCheckGhost = false );
+	static bool IsElfID( CREID_TYPE id, bool bCheckGhost = false);
+	static bool IsGargoyleID( CREID_TYPE id, bool bCheckGhost = false );
 
 	bool IsFemale() const
 	{
@@ -955,9 +958,32 @@ inline bool CCharBase::IsValidDispID( CREID_TYPE id ) //  static
 	return( id > 0 && id < CREID_QTY );
 }
 
-inline bool CCharBase::IsHumanID( CREID_TYPE id ) // static
+inline bool CCharBase::IsPlayableID( CREID_TYPE id, bool bCheckGhost)
 {
-	return( id == CREID_MAN || id == CREID_WOMAN || id == CREID_EQUIP_GM_ROBE || id == CREID_ELFMAN || id == CREID_ELFWOMAN || id == CREID_GARGMAN || id == CREID_GARGWOMAN );
+	return ( CCharBase::IsHumanID( id, bCheckGhost) || CCharBase::IsElfID( id, bCheckGhost) || CCharBase::IsGargoyleID( id, bCheckGhost));
+}
+inline bool CCharBase::IsHumanID( CREID_TYPE id, bool bCheckGhost ) // static
+{
+	if ( bCheckGhost == true)
+		return( id == CREID_MAN || id == CREID_WOMAN || id == CREID_EQUIP_GM_ROBE  || id == CREID_GHOSTMAN || id == CREID_GHOSTWOMAN);
+	else
+		return( id == CREID_MAN || id == CREID_WOMAN || id == CREID_EQUIP_GM_ROBE);
+}
+
+inline bool CCharBase::IsElfID( CREID_TYPE id, bool bCheckGhost ) // static
+{
+	if ( bCheckGhost == true)
+		return( id == CREID_ELFMAN || id == CREID_ELFWOMAN || id == CREID_ELFGHOSTMAN || id == CREID_ELFGHOSTWOMAN);
+	else
+		return( id == CREID_ELFMAN || id == CREID_ELFWOMAN );
+}
+
+inline bool CCharBase::IsGargoyleID( CREID_TYPE id, bool bCheckGhost ) // static
+{
+	if ( bCheckGhost == true)
+		return( id == CREID_GARGMAN || id == CREID_GARGWOMAN || id == CREID_GARGGHOSTMAN || id == CREID_GARGGHOSTWOMAN );
+	else
+		return( id == CREID_GARGMAN || id == CREID_GARGWOMAN );
 }
 
 #endif

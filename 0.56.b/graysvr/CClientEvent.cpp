@@ -1166,7 +1166,7 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 					}
 				case IT_HAIR:
 					// Must be added directly. can't exist in pack!
-					if ( ! m_pChar->IsHuman())
+					if ( ! m_pChar->IsPlayableCharacter())
 					{
 						pVendor->Speak("Sorry, I cannot do anything for you.");
 						continue;
@@ -2392,7 +2392,7 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 	if ( ! fPreparePacket )
 	{
 
-		if ( pChar->IsHuman() )
+		if ( pChar->IsPlayableCharacter() )
 			m_pPopupPacket->addOption(POPUP_PAPERDOLL, 6123, POPUPFLAG_COLOR, 0xFFFF);
 
 		if ( pChar == m_pChar )

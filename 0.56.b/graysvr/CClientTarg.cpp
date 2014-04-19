@@ -749,7 +749,7 @@ int CClient::OnSkill_AnimalLore( CGrayUID uid, int iSkillLevel, bool fTest )
 			if ( pItem && pItem->m_itFigurine.m_UID == uid)
 				return( 1 );
 		}
-		if ( pChar->IsHuman())
+		if ( pChar->IsPlayableCharacter())
 			return( Calc_GetRandVal(10));
 		return Calc_GetRandVal(60);
 	}

@@ -2612,7 +2612,7 @@ void CChar::NPC_Act_Runto(int iDist)
 			else
 			{
 				if ( m_Act_p.IsValidPoint() &&
-					IsHuman() &&
+					IsPlayableCharacter() &&
 					!IsStatFlag( STATF_Freeze|STATF_Stone ))
 					Spell_Teleport( m_Act_p, true, false);
 				else
@@ -2655,7 +2655,7 @@ void CChar::NPC_Act_Goto(int iDist)
 			else
 			{
 				if ( m_Act_p.IsValidPoint() &&
-					IsHuman() &&
+					IsPlayableCharacter() &&
 					!IsStatFlag( STATF_Freeze|STATF_Stone ))
 					Spell_Teleport( m_Act_p, true, false);
 				else

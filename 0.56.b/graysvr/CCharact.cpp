@@ -688,19 +688,14 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 
 	if ( action < 0 || action >= ANIM_QTY )
 		return false;
-	// Creating packet for clients 7.0.0+
-	//I mixed both functions inside this one because i don't know yet how to return the whole packet from the another function :P
 
 	ANIM_TYPE_NEW subaction;
 	BYTE variation;
-	
-	//if ( action < 0 || action >= ANIM_NEW_QTY ) // Using New anims with ID > than 9 will result on the same animation repeating always. No need to check
-	//	return false;
 
 	ANIM_TYPE_NEW action1 = static_cast<ANIM_TYPE_NEW>(-1);
-	//if ( fTranslate )			//No possible fTranslate here, all actions must be translated or some of them are going to be wrong
-	//{
-		CCharBase* pCharDef = Char_GetDef();
+	CCharBase* pCharDef = Char_GetDef();
+	if ( !IsStatFlag( STATF_OnHorse ) )	
+	{
 		CItem * pWeapon = m_uidWeapon.ItemFind();
 		if ( pWeapon != NULL && action == ANIM_ATTACK_WEAPON )
 		{
@@ -813,6 +808,7 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 		}
 		if ( IsStatFlag( STATF_OnHorse|STATF_Hovering ) )
 			variation = 1;
+	}
 
 	//Begin old client animation behaviour
 
@@ -942,7 +938,7 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 						break;
 				}
 			}
-			else if (!IsHuman())  //( GetDispID() < CREID_MAN ) Possible fix for anims not being displayed above 400
+			else if (!IsPlayableCharacter())  //( GetDispID() < CREID_MAN ) Possible fix for anims not being displayed above 400
 			{
 				// Animals have certain anims. Monsters have others.
 
@@ -2488,7 +2484,7 @@ bool CChar::MakeCorpse_Fail()
 		StatFlag_Clear( STATF_Conjured );
 		Horse_UnMount();
 	}
-	if ( IsHuman())
+	if ( IsPlayableCharacter())
 		return( false );	// conjured humans just disapear.
 	if ( !(m_TagDefs.GetKeyNum("DEATHFLAGS", true) & DEATH_NOCONJUREDEFFECT) )
 	{

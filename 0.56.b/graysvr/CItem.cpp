@@ -2396,6 +2396,9 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_AMOUNT:
 			sVal.FormatVal( GetAmount());
 			break;
+		case IC_CAN:
+			sVal.FormatHex( m_Can ) ;
+			break;
 		case IC_ATTR:
 			sVal.FormatHex( m_Attr );
 			break;
@@ -2658,6 +2661,9 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_ATTR:
 			m_Attr = s.GetArgVal();
 			return true;
+		case IC_CAN:
+			m_Can = s.GetArgVal();
+			return true;
 		case IC_CANUSE:
 			m_CanUse = s.GetArgVal();
 			return true;
@@ -2720,30 +2726,6 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_DISPID:
 		case IC_DISPIDDEC:
 			return SetDispID(static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr())));
-		/*case IC_DMGCOLD:
-			if ( IsTypeWeapon() )
-				m_itWeapon.m_dmgcold = static_cast<short>(s.GetArgVal());
-			else
-				DEBUG_ERR(("Dmgcold set on a non-weapon object\n"));
-			return true;
-		case IC_DMGENERGY:
-			if ( IsTypeWeapon() )
-				m_itWeapon.m_dmgenergy = static_cast<short>(s.GetArgVal());
-			else
-				DEBUG_ERR(("Dmgenergy set on a non-weapon object\n"));
-			return true;
-		case IC_DMGFIRE:
-			if ( IsTypeWeapon() )
-				m_itWeapon.m_dmgfire = static_cast<short>(s.GetArgVal());
-			else
-				DEBUG_ERR(("Dmgfire set on a non-weapon object\n"));
-			return true;
-		case IC_DMGPOISON:
-			if ( IsTypeWeapon() )
-				m_itWeapon.m_dmgpoison = static_cast<short>(s.GetArgVal());
-			else
-				DEBUG_ERR(("Dmgpoison set on a non-weapon object\n"));
-			return true;*/
 		case IC_HITS:
 			{
 				int maxHits = HIWORD(m_itNormal.m_more1);

@@ -892,7 +892,7 @@ LPCTSTR CChar::GetTradeTitle() const // Paperdoll title for character p (2)
 	// Incognito ?
 	// If polymorphed then use the poly name.
 	if ( IsStatFlag( STATF_Incognito ) ||
-		! IsHuman() ||
+		! IsPlayableCharacter() ||
 		( m_pNPC && pCharDef->GetTypeName() != pCharDef->GetTradeName()))
 	{
 		if ( ! IsIndividualName())
@@ -2296,7 +2296,7 @@ bool CChar::IsMountCapable() const
 	if ( IsStatFlag(STATF_DEAD) )
 		return false;
 
-	if ( IsHuman() )	// FIXME: humans can ride horses... gargoyles can't.
+	if ( IsHuman() || IsElf() )
 		return true;
 
 	if ( GetAbilityFlags() & CAN_C_MOUNT )

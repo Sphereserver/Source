@@ -598,7 +598,7 @@ int CChar::FixWeirdness()
 			}
 
 			// ??? What if magically enhanced !!!
-			if ( IsHuman() && ( GetPrivLevel() < PLEVEL_Counsel ) && !IsStatFlag( STATF_Polymorph ))
+			if ( IsPlayableCharacter() && ( GetPrivLevel() < PLEVEL_Counsel ) && !IsStatFlag( STATF_Polymorph ))
 			{
 				for ( int j = STAT_STR; j < STAT_BASE_QTY; j++ )
 				{
@@ -3327,7 +3327,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			// just eat this if it's not a client.
 			break;
 		case CHV_UNDERWEAR:
-			if ( ! IsHuman())
+			if ( ! IsPlayableCharacter())
 				return( false );
 			SetHue( GetHue() ^ HUE_UNDERWEAR );
 			RemoveFromView();

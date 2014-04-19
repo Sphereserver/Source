@@ -64,7 +64,7 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 
 	CPointMap pnt = pCorpse->GetTopLevelObj()->GetTopPoint();
 
-	bool fHumanCorpse = CCharBase::IsHumanID( pCorpse->GetCorpseType());
+	bool fHumanCorpse = CCharBase::IsPlayableID( pCorpse->GetCorpseType());
 	if ( fHumanCorpse )
 	{
 		// If it's a player corpse, put the stuff in one of these and (mabey)

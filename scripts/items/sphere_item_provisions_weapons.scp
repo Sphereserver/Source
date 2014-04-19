@@ -85,7 +85,7 @@ ON=@Create
 [ITEMDEF 08ff]
 DEFNAME=i_boomerang
 NAME=boomerang
-TYPE=t_weapon_bow
+TYPE=t_weapon_throwing
 //TDATA3=nothing is consumed... the weapon itself is thrown
 TDATA4=i_boomerang_animation
 DAM=8,12
@@ -134,7 +134,7 @@ ON=@Create
 [ITEMDEF 0901]
 DEFNAME=i_cyclone
 NAME=cyclone
-TYPE=t_weapon_bow
+TYPE=t_weapon_throwing
 //TDATA3=nothing is consumed... the weapon itself is thrown
 TDATA4=i_cyclone_animation
 DAM=13,17
@@ -327,7 +327,7 @@ DUPELIST=04069
 [ITEMDEF 090a]
 DEFNAME=i_soul_glaive
 NAME=soul glaive
-TYPE=t_weapon_bow
+TYPE=t_weapon_throwing
 //TDATA3=nothing is consumed... the weapon itself is thrown
 TDATA4=i_glaive_animation
 DAM=18,22

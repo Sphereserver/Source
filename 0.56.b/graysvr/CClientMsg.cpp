@@ -288,7 +288,7 @@ void CClient::addItem_OnGround( CItem * pItem ) // Send items (on ground)
 	}
 
 	// send corpse clothing
-	if (IsPriv(PRIV_DEBUG) == false && (pItem->GetDispID() == ITEMID_CORPSE && CCharBase::IsHumanID(pItem->GetCorpseType())) )	// cloths on corpse
+	if (IsPriv(PRIV_DEBUG) == false && (pItem->GetDispID() == ITEMID_CORPSE && CCharBase::IsPlayableID(pItem->GetCorpseType())) )	// cloths on corpse
 	{
 		CItemCorpse* pCorpse = dynamic_cast <CItemCorpse*> (pItem);
 		if (pCorpse != NULL)

@@ -743,7 +743,7 @@ int CChar::NPC_GetHostilityLevelToward( const CChar * pCharTarg ) const
 		else
 		{
 			// Not immediately hostile if looks the same as me.
-			if ( ! IsHuman() && NPC_GetAllyGroupType( GetDispID()) == NPC_GetAllyGroupType(pCharTarg->GetDispID()))
+			if ( ! IsPlayableCharacter() && NPC_GetAllyGroupType( GetDispID()) == NPC_GetAllyGroupType(pCharTarg->GetDispID()))
 			{
 				iHostility -= 51;
 			}

@@ -905,7 +905,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				StatFlag_Set( STATF_Incognito );
 				pSpell->SetName( GetName());	// Give it my name
 				SetName( pCharDef->GetTypeName());	// Give me general name for the type
-				if ( ! IsStatFlag( STATF_Polymorph ) && IsHuman())
+				if ( ! IsStatFlag( STATF_Polymorph ) && IsPlayableCharacter())
 				{
 					SetHue((HUE_UNDERWEAR|HUE_SKIN_LOW) + Calc_GetRandVal(HUE_SKIN_HIGH-HUE_SKIN_LOW));
 				}
@@ -2214,7 +2214,7 @@ bool CChar::Spell_CastDone()
 			{
 				m_atMagery.m_SummonID = pCorpse->m_itCorpse.m_BaseID;
 			}
-			else if ( CCharBase::IsHumanID( pCorpse->GetCorpseType())) 	// Must be a human corpse ?
+			else if ( CCharBase::IsPlayableID( pCorpse->GetCorpseType())) 	// Must be a human corpse ?
 			{
 				m_atMagery.m_SummonID = CREID_ZOMBIE;
 			}
@@ -2923,12 +2923,17 @@ reflectit:
 			Stat_SetVal( STAT_FOOD, Stat_GetAdjusted(STAT_FOOD) );
 			break;
 		case SPELL_Gender_Swap:		// 110 // permanently changes your gender.
-			if ( IsHuman())
+			if ( IsPlayableCharacter())
 			{
 				CCharBase * pCharDef = Char_GetDef();
 				ASSERT(pCharDef);
 
-				SetID( pCharDef->IsFemale() ? CREID_MAN : CREID_WOMAN );
+				if ( IsHuman() )
+					SetID( pCharDef->IsFemale() ? CREID_MAN : CREID_WOMAN );
+				else if ( IsElf() )
+					SetID( pCharDef->IsFemale() ? CREID_ELFMAN : CREID_ELFWOMAN );
+				else if ( IsGargoyle() )
+					SetID( pCharDef->IsFemale() ? CREID_GARGMAN : CREID_GARGWOMAN );
 				m_prev_id = GetID();
 				Update();
 			}

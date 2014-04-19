@@ -1064,22 +1064,6 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 		case IBC_CANUSE:
 			sVal.FormatHex( m_CanUse );
 			break;
-		case IBC_ONLYELF:
-			sVal.FormatVal(( m_CanUse & CAN_U_ELF ) ? true : false );
-			break;
-		case IBC_ONLYFEMALE:
-			sVal.FormatVal(( m_CanUse & CAN_U_FEMALE ) ? true : false );
-			break;
-		case IBC_ONLYGARGOYLE:
-			sVal.FormatVal(( m_CanUse & CAN_U_GARGOYLE ) ? true : false );
-			break;
-		case IBC_ONLYHUMAN:
-			sVal.FormatVal(( m_CanUse & CAN_U_HUMAN ) ? true : false );
-			break;
-		case IBC_ONLYMALE:
-			sVal.FormatVal(( m_CanUse & CAN_U_MALE ) ? true : false );
-			break;
-
 		case IBC_DYE:
 			sVal.FormatVal(( m_Can & CAN_I_DYE ) ? true : false );
 			break;
@@ -1350,22 +1334,6 @@ bool CItemBase::r_LoadVal( CScript &s )
 		case IBC_CANUSE:
 			m_CanUse = s.GetArgVal();
 			break;
-		case IBC_ONLYELF:
-			m_CanUse |= CAN_U_ELF ;
-			break;
-		case IBC_ONLYFEMALE:
-			m_CanUse |= CAN_U_FEMALE;
-			break;
-		case IBC_ONLYGARGOYLE:
-			m_CanUse |= CAN_U_GARGOYLE;
-			break;
-		case IBC_ONLYHUMAN:
-			m_CanUse |= CAN_U_HUMAN;
-			break;
-		case IBC_ONLYMALE:
-			m_CanUse |= CAN_U_MALE;
-			break;
-
 		case IBC_DISPID:
 			// Can't set this.
 			return( false );
@@ -1395,13 +1363,98 @@ bool CItemBase::r_LoadVal( CScript &s )
 			if ( ! s.HasArgs())
 				m_Can |= CAN_I_DYE;
 			else
-				m_Can |= ( s.GetArgVal()) ? CAN_I_DYE : 0;
+				if ( s.GetArgVal() )
+					m_Can |= CAN_I_DYE;
+				else
+					m_Can &= ~CAN_I_DYE;
+				//m_Can |= ( s.GetArgVal()) ? CAN_I_DYE : 0;
 			break;
 		case IBC_FLIP:
 			if ( ! s.HasArgs())
 				m_Can |= CAN_I_FLIP;
 			else
 				m_Can |= ( s.GetArgVal()) ? CAN_I_FLIP : 0;
+			break;
+		case IBC_ENCHANT:
+			if ( ! s.HasArgs())
+				m_Can |= CAN_I_ENCHANT;
+			else
+				if ( s.GetArgVal() )
+					m_Can |= CAN_I_ENCHANT;
+				else
+					m_Can &= ~CAN_I_ENCHANT;
+			break;
+		case IBC_EXCEPTIONAL:
+			if ( ! s.HasArgs())
+				m_Can |= CAN_I_EXCEPTIONAL;
+			else
+				if ( s.GetArgVal() )
+					m_Can |= CAN_I_EXCEPTIONAL;
+				else
+					m_Can &= ~CAN_I_EXCEPTIONAL;
+			break;
+		case IBC_IMBUE:
+			if ( ! s.HasArgs())
+				m_Can |= CAN_I_IMBUE;
+			else
+				if ( s.GetArgVal() )
+					m_Can |= CAN_I_IMBUE;
+				else
+					m_Can &= ~CAN_I_IMBUE;
+			break;
+		case IBC_REFORGE:
+			if ( ! s.HasArgs())
+				m_Can |= CAN_I_REFORGE;
+			else
+				if ( s.GetArgVal() )
+					m_Can |= CAN_I_REFORGE;
+				else
+					m_Can &= ~CAN_I_REFORGE;
+			break;
+		case IBC_RETAINCOLOR:
+			if ( ! s.HasArgs())
+				m_Can |= CAN_I_RETAINCOLOR;
+			else
+				if ( s.GetArgVal() )
+					m_Can |= CAN_I_RETAINCOLOR;
+				else
+					m_Can &= ~CAN_I_RETAINCOLOR;
+			break;
+		case IBC_MAKERSMARK:
+			if ( ! s.HasArgs())
+				m_Can |= CAN_I_MAKERSMARK;
+			else
+				if ( s.GetArgVal() )
+					m_Can |= CAN_I_MAKERSMARK;
+				else
+					m_Can &= ~CAN_I_MAKERSMARK;
+			break;
+		case IBC_RECYCLE:
+			if ( ! s.HasArgs())
+				m_Can |= CAN_I_RECYCLE;
+			else
+				if ( s.GetArgVal() )
+					m_Can |= CAN_I_RECYCLE;
+				else
+					m_Can &= ~CAN_I_RECYCLE;
+			break;
+		case IBC_REPAIR:
+			if ( ! s.HasArgs())
+				m_Can |= CAN_I_REPAIR;
+			else
+				if ( s.GetArgVal() )
+					m_Can |= CAN_I_REPAIR;
+				else
+					m_Can &= ~CAN_I_REPAIR;
+			break;
+		case IBC_REPLICATE:
+			if ( ! s.HasArgs())
+				m_Can |= CAN_I_REPLICATE;
+			else
+				if ( s.GetArgVal() )
+					m_Can |= CAN_I_REPLICATE;
+				else
+					m_Can &= ~CAN_I_REPLICATE;
 			break;
 		case IBC_ID:
 			{
@@ -1434,33 +1487,6 @@ bool CItemBase::r_LoadVal( CScript &s )
 			m_layer = static_cast<LAYER_TYPE>(s.GetArgVal());
 			break;
 		case IBC_PILE:
-			break;
-		case IBC_ENCHANT:
-			m_Can |= ( s.GetArgVal()) ? CAN_I_ENCHANT : 0;
-			break;
-		case IBC_EXCEPTIONAL:
-			m_Can |= ( s.GetArgVal()) ? CAN_I_EXCEPTIONAL : 0;
-			break;
-		case IBC_IMBUE:
-			m_Can |= ( s.GetArgVal()) ? CAN_I_IMBUE : 0;
-			break;
-		case IBC_REFORGE:
-			m_Can |= ( s.GetArgVal()) ? CAN_I_REFORGE : 0;
-			break;
-		case IBC_RETAINCOLOR:
-			m_Can |= ( s.GetArgVal()) ? CAN_I_RETAINCOLOR : 0;
-			break;
-		case IBC_MAKERSMARK:
-			m_Can |= ( s.GetArgVal()) ? CAN_I_MAKERSMARK : 0;
-			break;
-		case IBC_RECYCLE:
-			m_Can |= ( s.GetArgVal()) ? CAN_I_RECYCLE : 0;
-			break;
-		case IBC_REPAIR:
-			m_Can |= ( s.GetArgVal()) ? CAN_I_REPAIR : 0;
-			break;
-		case IBC_REPLICATE:
-			m_Can |= ( s.GetArgVal()) ? CAN_I_REPLICATE : 0;
 			break;
 		case IBC_REQSTR:
 			if ( ! IsTypeEquippable())

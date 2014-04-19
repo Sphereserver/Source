@@ -865,3 +865,11 @@ For a complete change's track visit http://scripts.spherecommunity.net/
 
 19-04-2014, Ben
 Changed: CANUSE flags can now be properly set on ITEMDEF and dynamic items (ITEMDEFs value is given to dynamic items on creation)
+
+19-04-2014, XuN
+-Fixed 0002310: Changed t_weapon_bow in Throwing Items (sphere_item_provisions_weapons.scp) to t_weapon_throwing.
+-Fixed 0002309: Mounted characters (humans & elfs) are not sending New Animation packet anymore.
+-Fixed 0002294: Every CAN-related property (dye, enchant, flip...) is now working in base items instead of inheriting from DispID.
+-Some internal changes related to IsHuman: changed it to IsPlayableCharacter and splitted it into IsHuman || IsElf || IsGargoyle and changed its calls.
+	-Same for IsHumanID -> IsPlayableID = (IsHumanID || IsElfID || IsGargoyleID)
+	-Fixed: Gargoyles are no longer able to ride anything.

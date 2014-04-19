@@ -2808,9 +2808,21 @@ public:
 			return( true );
 		return( IsStatFlag( STATF_SpiritSpeak | STATF_DEAD ) || IsPriv( PRIV_GM|PRIV_HEARALL ));
 	}
+	bool IsPlayableCharacter() const
+	{
+		return( IsHuman() || IsElf() || IsGargoyle() );
+	}
 	bool IsHuman() const
 	{
 		return( CCharBase::IsHumanID( GetDispID()));
+	}
+	bool IsElf() const
+	{
+		return( CCharBase::IsElfID( GetDispID()));
+	}
+	bool IsGargoyle() const
+	{
+		return( CCharBase::IsGargoyleID( GetDispID()));
 	}
 	int	 GetHealthPercent() const;
 	LPCTSTR GetTradeTitle() const; // Paperdoll title for character p (2)
