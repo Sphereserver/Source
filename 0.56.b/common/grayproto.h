@@ -1004,6 +1004,7 @@ enum NOTO_TYPE
 #define MINCLIVER_EXTRASTARTINFO 	0x700130	// minimum client to receive extra start info
 #define MINCLIVER_NEWMOBILEANIMATION 0x700000	// minimum client to receive 0xE2 packet
 #define MINCLIVER_NEWMOBINCOMING	0x700331	// minimun client to receive new 0x78 packet
+#define MINCLIVER_NEWCONTEXTMENU	0x700000	// minimun client to receive new 0xbf.14.02 packet instead of 0xbf.14.0.1
 
 enum TALKMODE_TYPE	// Modes we can talk/bark in.
 {

@@ -255,7 +255,7 @@ SKILLMAKE=Tinkering 59.0,t_tinker_tools
 CATEGORY=Provisions - Jewels and Jewelry
 SUBSECTION=Glasses
 DESCRIPTION=Elven Glasses
-TAG.REQSTR=45
+ReqStr=45
 DUPELIST=03172
 ON=@Create
    //HITPOINTS={36 48}
@@ -295,7 +295,7 @@ SKILLMAKE=Tinkering 75.0,t_tinker_tools
 CATEGORY=Provisions - Jewels and Jewelry
 SUBSECTION=Jewelry
 DESCRIPTION=Gargish Necklace
-TAG.GargoyleOnly=1
+canuse=can_u_gargoyle
 TEVENTS=t_equipitem
 
 [ITEMDEF 04211]
@@ -309,7 +309,7 @@ SKILLMAKE=Tinkering 73.5,t_tinker_tools
 CATEGORY=Provisions - Jewels and Jewelry
 SUBSECTION=Jewelry
 DESCRIPTION=Gargish Bracelet
-TAG.GargoyleOnly=1
+canuse=can_u_gargoyle
 TEVENTS=t_equipitem
 
 [ITEMDEF 04212]
@@ -323,7 +323,7 @@ SKILLMAKE=Tinkering 73.0,t_tinker_tools
 CATEGORY=Provisions - Jewels and Jewelry
 SUBSECTION=Jewelry
 DESCRIPTION=Gargoyle Ring
-TAG.GargoyleOnly=1
+canuse=can_u_gargoyle
 TEVENTS=t_equipitem
 
 [ITEMDEF 04213]
@@ -337,7 +337,7 @@ SKILLMAKE=Tinkering 72.5,t_tinker_tools
 CATEGORY=Provisions - Jewels and Jewelry
 SUBSECTION=Jewelry
 DESCRIPTION=Gargish Earrings
-TAG.GargoyleOnly=1
+canuse=can_u_gargoyle
 TEVENTS=t_equipitem
 
 
@@ -354,9 +354,8 @@ SKILLMAKE=Tinkering 59.0,t_tinker_tools
 CATEGORY=Provisions - Jewels and Jewelry
 SUBSECTION=Glasses
 DESCRIPTION=Gargish Female Glasses
-TAG.GargoyleOnly=1
-TAG.FemaleOnly=1
-TAG.REQSTR=45
+canuse=can_u_gargoyle|can_u_female
+ReqStr=45
 TEVENTS=t_equipitem
 DUPELIST=045b3
 ON=@Create
@@ -386,9 +385,9 @@ SKILLMAKE=Tinkering 59.0,t_tinker_tools
 CATEGORY=Provisions - Jewels and Jewelry
 SUBSECTION=Glasses
 DESCRIPTION=Gargish Glasses
-TAG.GargoyleOnly=1
+canuse=can_u_gargoyle
 //TAG.MaleOnly=1
-TAG.REQSTR=45
+ReqStr=45
 TEVENTS=t_equipitem
 DUPELIST=04645
 ON=@Create

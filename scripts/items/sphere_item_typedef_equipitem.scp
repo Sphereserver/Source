@@ -58,18 +58,6 @@ Known Issues:
 
 The TAGs being handled inside this TYPEDEF currently include:
 
-TAG.ElfOnly
- - Purpose: When the value is 1, only Elf bodies can equip the item.
- - Values:  One or zero.
- - Effect:  This TAG is implemented inside the t_equipitem TYPEDEF and
-            does not rely on other TYPEDEFs or EVENTs.
-
-TAG.GargoyleOnly
- - Purpose: When the value is 1, only Gargoyle bodies can equip the item.
- - Values:  One or zero.
- - Effect:  This TAG is implemented inside the t_equipitem TYPEDEF and
-            does not rely on other TYPEDEFs or EVENTs.
-
 Rarity
  - Purpose: When the value is 1, the item tooltip will indicate the item is
             an artifact, and tell you how many of these items exist within
@@ -99,9 +87,15 @@ CraftedBy
  - Effect:  This TAG is implemented inside the t_equipitem TYPEDEF and
             does not rely on other TYPEDEFs or EVENTs.
 
-TAG.DoNotEquip
- - Purpose: When the value is 1, the item cannot be equipped.
- - Values:  One or zero.
+CanUse
+ - Purpose: CanUse is a flag's variable allowing to insert different values
+			in order to give different equiping possibilities for items
+ - Values:	can_u_human
+			can_u_elf
+			can_u_gargoyle
+			can_u_female
+			can_u_all
+			can_u_none
  - Effect:  This TAG is implemented inside the t_equipitem TYPEDEF and
             does not rely on other TYPEDEFs or EVENTs.
 
@@ -179,7 +173,7 @@ LowerReq
  - Purpose: This TAG affects the Strength Requirement on the item.
  - Values:  Positive or negative integer.
  - Effect:  For this to work, the ITEMDEF cannot have a REQSTR... instead,
-            the item should have a TAG.REQSTR.
+            the item should have a ReqStr.
 
 IncreaseSpellDam
  - Purpose: Increases the damage of spells with spellflag_damage flag.
@@ -316,890 +310,887 @@ MageArmor             - Values:  One or zero.
 
 [TYPEDEF t_equipitem]
 ON=@ClientToolTip
-   //IF ((<DISPID>!=<BASEID>) || (<DISPIDDEC>>16381))
-   //   ADDCLILOC 1042971,<NAME>
-   //ELSE
-   //   ADDCLILOC <EVAL 1020000+<DISPIDDEC>>
-   //ENDIF
-   SRC.ADDCLILOC 1042971,<NAME>
-   IF !(<ATTR> & attr_identified)
-      SRC.ADDCLILOC 1041522,<DEF.HTML_REDTEXT>,#1038000,<DEF.HTML_WHITETEXT>
-   ENDIF
-   IF (<TYPE>==t_wand)
-      IF (<MOREX> > 0) && (<MOREX> <= 64)
-         LOCAL.SpellCliloc=<EVAL 3002010+<MOREX>>
-         SRC.ADDCLILOC <dLOCAL.SpellCliloc>,<dMORE2>
-      ENDIF
-      SRC.ADDCLILOC 1060741,<dMORE2>
-   ENDIF
-   IF (<Rarity>)
-      SRC.ADDCLILOC 1061078,<INSTANCES>//"Artifact rarity: ~"
-   ENDIF
-   IF (<TAG0.GargoyleOnly>)
-      SRC.ADDCLILOC 1111709//"Gargoyles Only"
-   ENDIF
-   IF (<TAG0.ElfOnly>)
-      SRC.ADDCLILOC 1075086
-   ENDIF
-   IF (<TAG0.Stolen>)
-      SRC.ADDCLILOC 1072948//"Stolen Property"
-   ENDIF
-   IF (<Exceptional>)
-      SRC.ADDCLILOC 1018303//"Exceptional"
-   ENDIF
-   IF !(<ISEMPTY <CraftedBy>>)
-      SRC.ADDCLILOC 1050043,<CraftedBy>
-   ENDIF
-   IF (<TAG0.MaxLevel>)
-      SRC.ADDCLILOC 1050039,Maximum Level,<dTAG.MaxLevel>
-   ENDIF
-   IF (<TAG0.MinLevel>)
-      SRC.ADDCLILOC 1053099,Minimum Level,<dTAG.MinLevel>
-   ENDIF
-   IF (<ISWEAPON>) || (<DEFNAME>==i_fishing_pole)
-      IF (<UseBestWeaponSkill>)
-         SRC.ADDCLILOC 1060400
-      ELSEIF (<MageWeapon>)
-         SRC.ADDCLILOC 1060438,<SRC.MAGERY>
-      ELSEIF (<TAG0.OVERRIDE_SKILL>)
-         SRC.ADDCLILOC <EVAL 1044059 + <dTAG.OVERRIDE_SKILL>>
-      ELSE
-         IF (<SKILL>==42)//Swordsmanship
-            SRC.ADDCLILOC 1061172
-         ELSEIF (<SKILL>==41)//Macefighting
-            SRC.ADDCLILOC 1061173
-         ELSEIF (<SKILL>==42)//Fencing
-            SRC.ADDCLILOC 1061174
-         ELSEIF (<SKILL>==31)//Archery
-            SRC.ADDCLILOC 1061175
-         ELSEIF (<SKILL>==57)//Throwing
-            SRC.ADDCLILOC 1112075
-         ENDIF
-      ENDIF
-      SRC.ADDCLILOC 1061168,<DAM>
-      IF (<SPEED>)
-         SRC.ADDCLILOC 1061167,<SPEED>
-      ENDIF
-      IF (<EVAL <STRARG <RANGE>>> > 1)||(<EVAL <STREAT <RANGE>>> > 1)
-         IF (<EVAL <STREAT <RANGE>>> > <EVAL <STRARG <RANGE>>>)
-            SRC.ADDCLILOC 1061169,<EVAL <STREAT <RANGE>>>
-         ELSE
-            SRC.ADDCLILOC 1061169,<EVAL <RANGE>>
-         ENDIF
-      ENDIF
-      IF (<TWOHANDS>)
-         SRC.ADDCLILOC 1061171
-      ENDIF
-   ENDIF
+//IF ((<DISPID>!=<BASEID>) || (<DISPIDDEC>>16381))
+//   ADDCLILOC 1042971,<NAME>
+//ELSE
+//   ADDCLILOC <EVAL 1020000+<DISPIDDEC>>
+//ENDIF
+SRC.ADDCLILOC 1042971,<NAME>
+IF !(<ATTR> & attr_identified)
+	SRC.ADDCLILOC 1041522,<DEF.HTML_REDTEXT>,#1038000,<DEF.HTML_WHITETEXT>
+ENDIF
+IF (<TYPE>==t_wand)
+	IF (<MOREX> > 0) && (<MOREX> <= 64)
+		LOCAL.SpellCliloc=<EVAL 3002010+<MOREX>>
+		SRC.ADDCLILOC <dLOCAL.SpellCliloc>,<dMORE2>
+	ENDIF
+	SRC.ADDCLILOC 1060741,<dMORE2>
+ENDIF
+IF (<Rarity>)
+	SRC.ADDCLILOC 1061078,<INSTANCES>//"Artifact rarity: ~"
+ENDIF
+IF (<canuse>&can_u_gargoyle) && !((<canuse>&can_u_human) || (<canuse>&can_u_elf))
+	SRC.ADDCLILOC 1111709//"Gargoyles Only"
+ENDIF
+IF (<canuse> &can_u_elf) && !((<canuse>&can_u_human) || (<canuse>&can_u_gargoyle))
+	SRC.ADDCLILOC 1075086
+ENDIF
+IF (<TAG0.Stolen>)
+	SRC.ADDCLILOC 1072948//"Stolen Property"
+ENDIF
+IF (<Exceptional>)
+	SRC.ADDCLILOC 1018303//"Exceptional"
+ENDIF
+IF !(<ISEMPTY <CraftedBy>>)
+	SRC.ADDCLILOC 1050043,<CraftedBy>
+ENDIF
+IF (<TAG0.MaxLevel>)
+	SRC.ADDCLILOC 1050039,Maximum Level,<dTAG.MaxLevel>
+ENDIF
+IF (<TAG0.MinLevel>)
+	SRC.ADDCLILOC 1053099,Minimum Level,<dTAG.MinLevel>
+ENDIF
+IF (<ISWEAPON>) || (<DEFNAME>==i_fishing_pole)
+	IF (<UseBestWeaponSkill>)
+		SRC.ADDCLILOC 1060400
+	ELSEIF (<MageWeapon>)
+		SRC.ADDCLILOC 1060438,<SRC.MAGERY>
+	ELSEIF (<TAG0.OVERRIDE_SKILL>)
+		SRC.ADDCLILOC <EVAL 1044059 + <dTAG.OVERRIDE_SKILL>>
+	ELSE
+		IF (<SKILL>==42)//Swordsmanship
+			SRC.ADDCLILOC 1061172
+		ELSEIF (<SKILL>==41)//Macefighting
+			SRC.ADDCLILOC 1061173
+		ELSEIF (<SKILL>==42)//Fencing
+			SRC.ADDCLILOC 1061174
+		ELSEIF (<SKILL>==31)//Archery
+			SRC.ADDCLILOC 1061175
+		ELSEIF (<SKILL>==57)//Throwing
+			SRC.ADDCLILOC 1112075
+		ENDIF
+	ENDIF
+	SRC.ADDCLILOC 1061168,<DAM>
+	IF (<SPEED>)
+		SRC.ADDCLILOC 1061167,<SPEED>
+	ENDIF
+	IF (<EVAL <STRARG <RANGE>>> > 1)||(<EVAL <STREAT <RANGE>>> > 1)
+		IF (<EVAL <STREAT <RANGE>>> > <EVAL <STRARG <RANGE>>>)
+			SRC.ADDCLILOC 1061169,<EVAL <STREAT <RANGE>>>
+		ELSE
+			SRC.ADDCLILOC 1061169,<EVAL <RANGE>>
+		ENDIF
+	ENDIF
+	IF (<TWOHANDS>)
+		SRC.ADDCLILOC 1061171
+	ENDIF
+ENDIF
 
-   SRC.ADDCLILOC 1072225,<FVAL <WEIGHT>>
-   IF (<RESCOLD>)
-      SRC.ADDCLILOC 1060445,<RESCOLD>
-   ENDIF
-   IF (<RESENERGY>)
-      SRC.ADDCLILOC 1060446,<RESENERGY>
-   ENDIF
-   IF (<RESFIRE>)
-      SRC.ADDCLILOC 1060447,<RESFIRE>
-   ENDIF
-   IF (<RESPHYSICAL>)
-      SRC.ADDCLILOC 1060448,<RESPHYSICAL>
-   ENDIF
-   IF (<RESPOISON>)
-      SRC.ADDCLILOC 1060449,<RESPOISON>
-   ENDIF
-   IF (<DEFNAME>==i_belt_ninja_leather)
-      SRC.ADDCLILOC 1060584,<dTAG0.ShurikenCount>
-   ENDIF
+SRC.ADDCLILOC 1072225,<FVAL <WEIGHT>>
+IF (<RESCOLD>)
+	SRC.ADDCLILOC 1060445,<RESCOLD>
+ENDIF
+IF (<RESENERGY>)
+	SRC.ADDCLILOC 1060446,<RESENERGY>
+ENDIF
+IF (<RESFIRE>)
+	SRC.ADDCLILOC 1060447,<RESFIRE>
+ENDIF
+IF (<RESPHYSICAL>)
+	SRC.ADDCLILOC 1060448,<RESPHYSICAL>
+ENDIF
+IF (<RESPOISON>)
+	SRC.ADDCLILOC 1060449,<RESPOISON>
+ENDIF
+IF (<DEFNAME>==i_belt_ninja_leather)
+	SRC.ADDCLILOC 1060584,<dTAG0.ShurikenCount>
+ENDIF
 
-   IF (<ATTR> & attr_identified)
-      IF (<BonusSkill1>)
-         SRC.ADDCLILOC 1060451,<Serv.Skill.<BonusSkill1>.Key>,<fval <BonusSkill1Amt>>
-      ENDIF
-      IF (<BonusSkill2>)
-         SRC.ADDCLILOC 1060452,<Serv.Skill.<BonusSkill2>.Key>,<fval <BonusSkill2Amt>>
-      ENDIF
-      IF (<BonusSkill3>)
-         SRC.ADDCLILOC 1060453,<Serv.Skill.<BonusSkill3>.Key>,<fval <BonusSkill3Amt>>
-      ENDIF
-      IF (<BonusSkill4>)
-         SRC.ADDCLILOC 1060454,<Serv.Skill.<BonusSkill4>.Key>,<fval <BonusSkill4Amt>>
-      ENDIF
-      IF (<BonusSkill5>)
-         SRC.ADDCLILOC 1060455,<Serv.Skill.<BonusSkill5>.Key>,<fval <BonusSkill5Amt>>
-      ENDIF
-      IF (<Balanced>)
-         SRC.ADDCLILOC 1072792
-      ENDIF
-      IF (<SpellChanneling>)
-         SRC.ADDCLILOC 1060482,<SpellChanneling>
-      ENDIF
-      IF (<NightSight>)
-         SRC.ADDCLILOC 1060441
-      ENDIF
-      IF (<IncreaseDam>)
-         SRC.ADDCLILOC 1060401,<IncreaseDam>
-      ENDIF
-      IF (<IncreaseDefChance>)
-         SRC.ADDCLILOC 1060408,<IncreaseDefChance>
-      ENDIF
-      IF (<IncreaseHitChance>)
-         SRC.ADDCLILOC 1060415,<IncreaseHitChance>
-      ENDIF
-      IF (<DecreaseHitChance>)
-         SRC.ADDCLILOC 1042971,Hit Chance Decrease: <DecreaseHitChance>%
-      ENDIF
-      IF (<IncreaseSwingSpeed>)
-         SRC.ADDCLILOC 1060486,<IncreaseSwingSpeed>
-      ENDIF
-      IF (<DamPhysical>)
-         SRC.ADDCLILOC 1060403,<DamPhysical>
-      ENDIF
-      IF (<DamFire>)
-         SRC.ADDCLILOC 1060405,<DamFire>
-      ENDIF
-      IF (<DamCold>)
-         SRC.ADDCLILOC 1060404,<DamCold>
-      ENDIF
-      IF (<DamPoison>)
-         SRC.ADDCLILOC 1060406,<DamPoison>
-      ENDIF
-      IF (<DamEnergy>)
-         SRC.ADDCLILOC 1060407,<DamEnergy>
-      ENDIF
-      IF (<EnhancePotions>)
-         SRC.ADDCLILOC 1060411,<EnhancePotions>
-      ENDIF
-      IF (<LowerManaCost>)
-         SRC.ADDCLILOC 1060433,<LowerManaCost>
-      ENDIF
-      IF (<LowerReagentCost>)
-         SRC.ADDCLILOC 1060434,<LowerReagentCost>
-      ENDIF
-      IF (<LowerReq>)
-         SRC.ADDCLILOC 1060435,<LowerReq>
-      ENDIF
-      IF (<IncreaseSpellDam>)
-         SRC.ADDCLILOC 1060483,<IncreaseSpellDam>
-      ENDIF
-      IF (<IncreaseGold>)
-         SRC.ADDCLILOC 1060414,<IncreaseGold>
-      ENDIF
-      IF (<ReflectPhysicalDam>)
-         SRC.ADDCLILOC 1060442,<ReflectPhysicalDam>
-      ENDIF
-      IF (<LUCK>)
-         SRC.ADDCLILOC 1060436,<LUCK>
-      ENDIF
-      IF (<BonusStr>)//strength bonus
-         SRC.ADDCLILOC 1060485,<BonusStr>
-      ENDIF
-      IF (<BonusHits>)//hitpoint increase
-         SRC.ADDCLILOC 1060431,<BonusHits>
-      ENDIF
-      IF (<RegenHits>)
-         SRC.ADDCLILOC 1060444,<RegenHits>
-      ENDIF
-      IF (<BonusDex>)//dexterity bonus
-         SRC.ADDCLILOC 1060409,<BonusDex>
-      ENDIF
-      IF (<BonusStam>)//stamina increase
-         SRC.ADDCLILOC 1060484,<BonusStam>
-      ENDIF
-      IF (<RegenStam>)
-         SRC.ADDCLILOC 1060443,<RegenStam>
-      ENDIF
-      IF (<BonusINT>)//intelligence bonus
-         SRC.ADDCLILOC 1060432,<BonusINT>
-      ENDIF
-      IF (<BonusMana>)//mana increase
-         SRC.ADDCLILOC 1060439,<BonusMana>
-      ENDIF
-      IF (<RegenMana>)
-         SRC.ADDCLILOC 1060440,<RegenMana>
-      ENDIF
-      IF (<FasterCastRecovery>)
-         SRC.ADDCLILOC 1060412,<FasterCastRecovery>
-      ENDIF
-      IF (<FasterCasting>)
-         SRC.ADDCLILOC 1060413,<FasterCasting>
-      ENDIF
-      IF (<SelfRepair>)
-         SRC.ADDCLILOC 1060450,<SelfRepair>
-      ENDIF
-      IF (<HitAreaPhysical>)
-         SRC.ADDCLILOC 1060428,<HitAreaPhysical>
-      ENDIF
-      IF (<HitAreaFire>)
-         SRC.ADDCLILOC 1060419,<HitAreaFire>
-      ENDIF
-      IF (<HitAreaCold>)
-         SRC.ADDCLILOC 1060416,<HitAreaCold>
-      ENDIF
-      IF (<HitAreaPoison>)
-         SRC.ADDCLILOC 1060429,<HitAreaPoison>
-      ENDIF
-      IF (<HitAreaEnergy>)
-         SRC.ADDCLILOC 1060418,<HitAreaEnergy>
-      ENDIF
-      IF (<HitLowerAtk>)
-         SRC.ADDCLILOC 1060424,<HitLowerAtk>
-      ENDIF
-      IF (<HitLowerDef>)
-         SRC.ADDCLILOC 1060425,<HitLowerDef>
-      ENDIF
-      IF (<HitLeechLife>)
-         SRC.ADDCLILOC 1060422,<HitLeechLife>
-      ENDIF
-      IF (<HitLeechMana>)
-         SRC.ADDCLILOC 1060427,<HitLeechMana>
-      ENDIF
-      IF (<HitLeechStam>)
-         SRC.ADDCLILOC 1060430,<HitLeechStam>
-      ENDIF
-      IF (<ISWEAPON>)
-         IF (<HitDispel>)
-            SRC.ADDCLILOC 1060417,<HitDispel>
-         ENDIF
-         IF (<HitFireball>)
-            SRC.ADDCLILOC 1060420,<HitFireball>
-            IF (<tag0.HitFireballCharges>)
-               SRC.ADDCLILOC 1060487,<tag.HitFireballCharges>
-            ENDIF
-         ENDIF
-         IF (<HitHarm>)
-            SRC.ADDCLILOC 1060421,<HitHarm>
-            IF (<tag0.HitHarmCharges>)
-               SRC.ADDCLILOC 1060489,<tag.HitHarmCharges>
-            ENDIF
-         ENDIF
-         IF (<HitLightning>)
-            SRC.ADDCLILOC 1060423,<HitLightning>
-            IF (<tag0.HitLightningCharges>)
-               SRC.ADDCLILOC 1060491,<tag.HitLightningCharges>
-            ENDIF
-         ENDIF
-         IF (<HitMagicArrow>)
-            SRC.ADDCLILOC 1060426,<HitMagicArrow>
-            IF (<tag0.HitMagicArrowCharges>)
-               SRC.ADDCLILOC 1060492,<tag.HitMagicArrowCharges>
-            ENDIF
-         ENDIF
-      ENDIF
-      IF (<ISARMOR>)
-         IF (<MageArmor>)
-            SRC.ADDCLILOC 1060437
-         ENDIF
-      ENDIF
-      IF (STRMATCH(*REPOND*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060472
-      ENDIF
-      IF (STRMATCH(*OGRE*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060468
-      ENDIF
-      IF (STRMATCH(*ORC*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060470
-      ENDIF
-      IF (STRMATCH(*TROLL*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060480
-      ENDIF
-      IF (STRMATCH(*UNDEAD*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060479
-      ENDIF
-      IF (STRMATCH(*ELEMENTAL*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060464
-      ENDIF
-      IF (STRMATCH(*AIRELEM*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060457
-      ENDIF
-      IF (STRMATCH(*BLOODELEM*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060459
-      ENDIF
-      IF (STRMATCH(*EARTHELEM*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060463
-      ENDIF
-      IF (STRMATCH(*FIREELEM*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060465
-      ENDIF
-      IF (STRMATCH(*POISONELEM*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060471
-      ENDIF
-      IF (STRMATCH(*SNOWELEM*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060476
-      ENDIF
-      IF (STRMATCH(*WATERELEM*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060481
-      ENDIF
-      IF (STRMATCH(*DEMON*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060460
-      ENDIF
-      IF (STRMATCH(*GARGOYLE*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060466
-      ENDIF
-      IF (STRMATCH(*FEY*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1070855
-      ENDIF
-      IF (STRMATCH(*ARACHNID*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060458
-      ENDIF
-      IF (STRMATCH(*SCORPION*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060474
-      ENDIF
-      IF (STRMATCH(*SPIDER*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060477
-      ENDIF
-      IF (STRMATCH(*TERATHAN*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060478
-      ENDIF
-      IF (STRMATCH(*REPTILE*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060473
-      ENDIF
-      IF (STRMATCH(*DRAGON*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1061284
-      ENDIF
-      IF (STRMATCH(*LIZARDMAN*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060467
-      ENDIF
-      IF (STRMATCH(*OPHIDIAN*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060469
-      ENDIF
-      IF (STRMATCH(*SNAKE*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1060475
-      ENDIF
-      IF (STRMATCH(*BEAR*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1072504
-      ENDIF
-      IF (STRMATCH(*VERMIN*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1072505
-      ENDIF
-      IF (STRMATCH(*BAT*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1072506
-      ENDIF
-      IF (STRMATCH(*MAGE*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1072507
-      ENDIF
-      IF (STRMATCH(*BEETLE*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1072508
-      ENDIF
-      IF (STRMATCH(*BIRD*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1072509
-      ENDIF
-      IF (STRMATCH(*ICE*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1072510
-      ENDIF
-      IF (STRMATCH(*FLAME*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1072511
-      ENDIF
-      IF (STRMATCH(*BOVINE*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1072512
-      ENDIF
-      IF (STRMATCH(*WOLF*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1075462
-      ENDIF
-      IF (STRMATCH(*GOBLIN*,<TAG.SlayerGroup>))
-         SRC.ADDCLILOC 1095010
-      ENDIF
-   ENDIF
-   IF (<SRC.ISPLAYER>) && (<TAG0.REQSTR>)
-      LOCAL.ActualRequirements=<EVAL <TAG0.REQSTR> - <LowerReq>>
-      IF (<LOCAL.ActualRequirements> < 0)
-         LOCAL.ActualRequirements=0
-      ENDIF
-      IF (<SRC.STR> > <LOCAL.ActualRequirements>)
-         SRC.ADDCLILOC 1061170,<dLOCAL.ActualRequirements>
-      ELSE
-         SRC.ADDCLILOC 1116690,<DEF.HTML_REDTEXT>,Required Strength: <dLOCAL.ActualRequirements>,<DEF.HTML_WHITETEXT>
-      ENDIF
-   ENDIF
-   IF (<HITPOINTS>)
-      SRC.ADDCLILOC 1060639,<MORE1L>,<MORE1H>
-   ENDIF
-   // When you RETURN 1 in this trigger, the built-in tooltip is prevented.
-   // If you remove the RETURN 1, these customizations and the built-in
-   // tooltip are merged and the order ends up... confusing.
-   RETURN 1
+IF (<ATTR> & attr_identified)
+	IF <BonusSkill1>
+		SRC.ADDCLILOC 1060451,<Serv.Skill.<BonusSkill1>.Key>,<fval <BonusSkill1Amt>>
+	ENDIF
+	IF <BonusSkill2>
+		SRC.ADDCLILOC 1060452,<Serv.Skill.<BonusSkill2>.Key>,<fval <BonusSkill2Amt>>
+	ENDIF
+	IF <BonusSkill3>
+		SRC.ADDCLILOC 1060453,<Serv.Skill.<BonusSkill3>.Key>,<fval <BonusSkill3Amt>>
+	ENDIF
+	IF <BonusSkill4>
+		SRC.ADDCLILOC 1060454,<Serv.Skill.<BonusSkill4>.Key>,<fval <BonusSkill4Amt>>
+	ENDIF
+	IF <BonusSkill5>
+		SRC.ADDCLILOC 1060455,<Serv.Skill.<BonusSkill5>.Key>,<fval <BonusSkill5Amt>>
+	ENDIF
+	IF (<Balanced>)
+		SRC.ADDCLILOC 1072792
+	ENDIF
+	IF (<SpellChanneling>)
+		SRC.ADDCLILOC 1060482,<SpellChanneling>
+	ENDIF
+	IF (<NightSight>)
+		SRC.ADDCLILOC 1060441
+	ENDIF
+	IF (<IncreaseDam>)
+		SRC.ADDCLILOC 1060401,<IncreaseDam>
+	ENDIF
+	IF (<IncreaseDefChance>)
+		SRC.ADDCLILOC 1060408,<IncreaseDefChance>
+	ENDIF
+	IF (<IncreaseHitChance>)
+		SRC.ADDCLILOC 1060415,<IncreaseHitChance>
+	ENDIF
+	IF (<DecreaseHitChance>)
+		SRC.ADDCLILOC 1042971,Hit Chance Decrease: <DecreaseHitChance>%
+	ENDIF
+	IF (<IncreaseSwingSpeed>)
+		SRC.ADDCLILOC 1060486,<IncreaseSwingSpeed>
+	ENDIF
+	IF (<DamPhysical>)
+		SRC.ADDCLILOC 1060403,<DamPhysical>
+	ENDIF
+	IF (<DamFire>)
+		SRC.ADDCLILOC 1060405,<DamFire>
+	ENDIF
+	IF (<DamCold>)
+		SRC.ADDCLILOC 1060404,<DamCold>
+	ENDIF
+	IF (<DamPoison>)
+		SRC.ADDCLILOC 1060406,<DamPoison>
+	ENDIF
+	IF (<DamEnergy>)
+		SRC.ADDCLILOC 1060407,<DamEnergy>
+	ENDIF
+	IF (<EnhancePotions>)
+		SRC.ADDCLILOC 1060411,<EnhancePotions>
+	ENDIF
+	IF (<LowerManaCost>)
+		SRC.ADDCLILOC 1060433,<LowerManaCost>
+	ENDIF
+	IF (<LowerReagentCost>)
+		SRC.ADDCLILOC 1060434,<LowerReagentCost>
+	ENDIF
+	IF (<LowerReq>)
+		SRC.ADDCLILOC 1060435,<LowerReq>
+	ENDIF
+	IF (<IncreaseSpellDam>)
+		SRC.ADDCLILOC 1060483,<IncreaseSpellDam>
+	ENDIF
+	IF (<IncreaseGold>)
+		SRC.ADDCLILOC 1060414,<IncreaseGold>
+	ENDIF
+	IF (<ReflectPhysicalDam>)
+		SRC.ADDCLILOC 1060442,<ReflectPhysicalDam>
+	ENDIF
+	IF (<LUCK>)
+		SRC.ADDCLILOC 1060436,<LUCK>
+	ENDIF
+	IF (<BonusStr>)//strength bonus
+		SRC.ADDCLILOC 1060485,<BonusStr>
+	ENDIF
+	IF (<BonusHits>)//hitpoint increase
+		SRC.ADDCLILOC 1060431,<BonusHits>
+	ENDIF
+	IF (<RegenHits>)
+		SRC.ADDCLILOC 1060444,<RegenHits>
+	ENDIF
+	IF (<BonusDex>)//dexterity bonus
+		SRC.ADDCLILOC 1060409,<BonusDex>
+	ENDIF
+	IF (<BonusStam>)//stamina increase
+		SRC.ADDCLILOC 1060484,<BonusStam>
+	ENDIF
+	IF (<RegenStam>)
+		SRC.ADDCLILOC 1060443,<RegenStam>
+	ENDIF
+	IF (<BonusINT>)//intelligence bonus
+		SRC.ADDCLILOC 1060432,<BonusINT>
+	ENDIF
+	IF (<BonusMana>)//mana increase
+		SRC.ADDCLILOC 1060439,<BonusMana>
+	ENDIF
+	IF (<RegenMana>)
+		SRC.ADDCLILOC 1060440,<RegenMana>
+	ENDIF
+	IF (<FasterCastRecovery>)
+		SRC.ADDCLILOC 1060412,<FasterCastRecovery>
+	ENDIF
+	IF (<FasterCasting>)
+		SRC.ADDCLILOC 1060413,<FasterCasting>
+	ENDIF
+	IF (<SelfRepair>)
+		SRC.ADDCLILOC 1060450,<SelfRepair>
+	ENDIF
+	IF (<HitAreaPhysical>)
+		SRC.ADDCLILOC 1060428,<HitAreaPhysical>
+	ENDIF
+	IF (<HitAreaFire>)
+		SRC.ADDCLILOC 1060419,<HitAreaFire>
+	ENDIF
+	IF (<HitAreaCold>)
+		SRC.ADDCLILOC 1060416,<HitAreaCold>
+	ENDIF
+	IF (<HitAreaPoison>)
+		SRC.ADDCLILOC 1060429,<HitAreaPoison>
+	ENDIF
+	IF (<HitAreaEnergy>)
+		SRC.ADDCLILOC 1060418,<HitAreaEnergy>
+	ENDIF
+	IF (<HitLowerAtk>)
+		SRC.ADDCLILOC 1060424,<HitLowerAtk>
+	ENDIF
+	IF (<HitLowerDef>)
+		SRC.ADDCLILOC 1060425,<HitLowerDef>
+	ENDIF
+	IF (<HitLeechLife>)
+		SRC.ADDCLILOC 1060422,<HitLeechLife>
+	ENDIF
+	IF (<HitLeechMana>)
+		SRC.ADDCLILOC 1060427,<HitLeechMana>
+	ENDIF
+	IF (<HitLeechStam>)
+		SRC.ADDCLILOC 1060430,<HitLeechStam>
+	ENDIF
+	IF (<ISWEAPON>)
+		IF (<HitDispel>)
+			SRC.ADDCLILOC 1060417,<HitDispel>
+		ENDIF
+		IF (<HitFireball>)
+			SRC.ADDCLILOC 1060420,<HitFireball>
+			IF (<tag0.HitFireballCharges>)
+				SRC.ADDCLILOC 1060487,<tag.HitFireballCharges>
+			ENDIF
+		ENDIF
+		IF (<HitHarm>)
+			SRC.ADDCLILOC 1060421,<HitHarm>
+			IF (<tag0.HitHarmCharges>)
+				SRC.ADDCLILOC 1060489,<tag.HitHarmCharges>
+			ENDIF
+		ENDIF
+		IF (<HitLightning>)
+			SRC.ADDCLILOC 1060423,<HitLightning>
+			IF (<tag0.HitLightningCharges>)
+				SRC.ADDCLILOC 1060491,<tag.HitLightningCharges>
+			ENDIF
+		ENDIF
+		IF (<HitMagicArrow>)
+			SRC.ADDCLILOC 1060426,<HitMagicArrow>
+			IF (<tag0.HitMagicArrowCharges>)
+				SRC.ADDCLILOC 1060492,<tag.HitMagicArrowCharges>
+			ENDIF
+		ENDIF
+	ENDIF
+	IF (<ISARMOR>)
+		IF (<MageArmor>)
+			SRC.ADDCLILOC 1060437
+		ENDIF
+	ENDIF
+	IF <TAG.SlayerGroup>
+		IF (STRMATCH(*REPOND*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060472
+		ENDIF
+		IF (STRMATCH(*OGRE*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060468
+		ENDIF
+		IF (STRMATCH(*ORC*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060470
+		ENDIF
+		IF (STRMATCH(*TROLL*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060480
+		ENDIF
+		IF (STRMATCH(*UNDEAD*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060479
+		ENDIF
+		IF (STRMATCH(*ELEMENTAL*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060464
+		ENDIF
+		IF (STRMATCH(*AIRELEM*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060457
+		ENDIF
+		IF (STRMATCH(*BLOODELEM*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060459
+		ENDIF
+		IF (STRMATCH(*EARTHELEM*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060463
+		ENDIF
+		IF (STRMATCH(*FIREELEM*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060465
+		ENDIF
+		IF (STRMATCH(*POISONELEM*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060471
+		ENDIF
+		IF (STRMATCH(*SNOWELEM*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060476
+		ENDIF
+		IF (STRMATCH(*WATERELEM*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060481
+		ENDIF
+		IF (STRMATCH(*DEMON*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060460
+		ENDIF
+		IF (STRMATCH(*GARGOYLE*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060466
+		ENDIF
+		IF (STRMATCH(*FEY*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1070855
+		ENDIF
+		IF (STRMATCH(*ARACHNID*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060458
+		ENDIF
+		IF (STRMATCH(*SCORPION*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060474
+		ENDIF
+		IF (STRMATCH(*SPIDER*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060477
+		ENDIF
+		IF (STRMATCH(*TERATHAN*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060478
+		ENDIF
+		IF (STRMATCH(*REPTILE*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060473
+		ENDIF
+		IF (STRMATCH(*DRAGON*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1061284
+		ENDIF
+		IF (STRMATCH(*LIZARDMAN*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060467
+		ENDIF
+		IF (STRMATCH(*OPHIDIAN*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060469
+		ENDIF
+		IF (STRMATCH(*SNAKE*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1060475
+		ENDIF
+		IF (STRMATCH(*BEAR*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1072504
+		ENDIF
+		IF (STRMATCH(*VERMIN*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1072505
+		ENDIF
+		IF (STRMATCH(*BAT*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1072506
+		ENDIF
+		IF (STRMATCH(*MAGE*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1072507
+		ENDIF
+		IF (STRMATCH(*BEETLE*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1072508
+		ENDIF
+		IF (STRMATCH(*BIRD*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1072509
+		ENDIF
+		IF (STRMATCH(*ICE*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1072510
+		ENDIF
+		IF (STRMATCH(*FLAME*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1072511
+		ENDIF
+		IF (STRMATCH(*BOVINE*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1072512
+		ENDIF
+		IF (STRMATCH(*WOLF*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1075462
+		ENDIF
+		IF (STRMATCH(*GOBLIN*,<TAG.SlayerGroup>))
+			SRC.ADDCLILOC 1095010
+		ENDIF
+	ENDIF
+ENDIF
+IF (<SRC.ISPLAYER>) && (<REQSTR>)
+	LOCAL.ActualRequirements=<EVAL <REQSTR> - <LowerReq>>
+	IF (<LOCAL.ActualRequirements> < 0)
+		LOCAL.ActualRequirements=0
+	ENDIF
+	IF (<SRC.STR> > <LOCAL.ActualRequirements>)
+		SRC.ADDCLILOC 1061170,<dLOCAL.ActualRequirements>
+	ELSE
+		SRC.ADDCLILOC 1116690,<DEF.HTML_REDTEXT>,Required Strength: <dLOCAL.ActualRequirements>,<DEF.HTML_WHITETEXT>
+	ENDIF
+ENDIF
+IF (<HITPOINTS>)
+	SRC.ADDCLILOC 1060639,<MORE1L>,<MORE1H>
+ENDIF
+// When you RETURN 1 in this trigger, the built-in tooltip is prevented.
+// If you remove the RETURN 1, these customizations and the built-in
+// tooltip are merged and the order ends up... confusing.
+RETURN 1
 
 ON=@EquipTest
-   IF (<TAG0.DoNotEquip>)
-      RETURN 1
-   ENDIF
-   IF (<SRC.ISPLAYER>) && (<TAG0.FemaleOnly>)
-      IF !(<SRC.f_isfemale>)
-         SRC.SYSMESSAGELOC color_text,1010388//"Only females can wear this."
-         RETURN 1
-      ENDIF
-   ENDIF
-   IF (<SRC.ISPLAYER>) && (<TAG0.MaleOnly>)
-      IF (<SRC.f_isfemale>)
-         SRC.SYSMESSAGELOC color_text,1063343//"Only males can wear this."
-         RETURN 1
-      ENDIF
-   ENDIF
-   IF (<SRC.ISPLAYER>) && (<TAG0.GargoyleOnly>)
-      IF !(<SRC.f_isgarg>)
-         SRC.SYSMESSAGELOC color_text,1111707//"Only gargoyles can wear this."
-         RETURN 1
-      ENDIF
-   ENDIF
-   IF (<SRC.ISPLAYER>) && (<TAG0.NotGargoyle>)
-      IF (<SRC.f_isgarg>)
-         SRC.SYSMESSAGELOC color_text,1111708//"Gargoyles can't wear this."
-         RETURN 1
-      ENDIF
-   ENDIF
-   IF (<SRC.ISPLAYER>) && (<TAG0.ElfOnly>)
-      IF !(<SRC.f_iself>)
-         SRC.SYSMESSAGELOC color_text,1072203//"Only elves may use this."
-         RETURN 1
-      ENDIF
-   ENDIF
-   IF (<SRC.ISPLAYER>) && (<TAG0.NotElf>)
-      IF (<SRC.f_iself>)
-         SRC.SYSMESSAGELOC color_text,1071936//"You cannot equip that."
-         RETURN 1
-      ENDIF
-   ENDIF
+IF (<CanUse>&can_u_none)
+	RETURN 1
+ENDIF
+IF (<SRC.IsPlayer>)
+	//Checking if the item can be equiped by gargoyles, don't uncomment the following 2 checks.
+	IF (<CanUse>&can_u_gargoyle)
+		IF !(<SRC.f_isgarg>)
+			SRC.SYSMESSAGELOC color_text,1111707//"Only gargoyles can wear this."
+			RETURN 1
+		ENDIF
+	ENDIF
+	IF !(<CanUse>&can_u_gargoyle)
+		IF (<SRC.f_isgarg>)
+			SRC.SYSMESSAGELOC color_text,1111708//"Gargoyles can't wear this."
+			RETURN 1
+		ENDIF
+	ENDIF
+	//If you want every item equipable for every character without checking for race/sex uncomment the next line (return 0).
+	//return 0
+	IF (<CanUse>&can_u_female) 	//Female item
+		IF !(<SRC.f_isfemale>)	//must be used by females.
+			SRC.SYSMESSAGELOC color_text,1010388//"Only females can wear this."
+			RETURN 1
+		ENDIF
+	ENDIF
+	IF (<CanUse>&can_u_male)	//male item
+		IF (<SRC.f_isfemale>)	//must be used by males.
+			SRC.SYSMESSAGELOC color_text,1063343//"Only males can wear this."
+			RETURN 1
+		ENDIF
+	ENDIF
+	IF (<CanUse>&can_u_elf)		//Elf item
+		IF !(<SRC.f_iself>)		// must be on elves
+			SRC.SYSMESSAGELOC color_text,1072203//"Only elves may use this."
+			RETURN 1
+		ENDIF
+	ENDIF
+	IF !(<CanUse>&can_u_elf) 	//Not Elf item
+		IF (<SRC.f_iself>)		//can't be used by elves
+			SRC.SYSMESSAGELOC color_text,1071936//"You cannot equip that."
+			RETURN 1
+		ENDIF
+	ENDIF
+ENDIF
 
-   IF (<MageWeapon>)
-      //FIXME: This needs to be tested...
-      IF (<SRC.<STREAT <MageWeapon>>> < <MageWeapon>)
-         SRC.SYSMESSAGE @color_text You have insufficient skill to equip this item.
-         RETURN 1
-      ENDIF
-   ENDIF
-   // IF (<SRC.ISPLAYER>) && (<TAG0.REQSTR>)		//ReqStr & LowerReq are now handled by the source 
-      // LOCAL.ActualRequirements=<EVAL <TAG0.REQSTR> - <LowerReq>>
-      // IF (<LOCAL.ActualRequirements> < 0)
-         // LOCAL.ActualRequirements=0
-      // ENDIF
-      // IF (<SRC.STR> < <LOCAL.ActualRequirements>)
-         // SRC.SYSMESSAGELOC color_text,500213//"You are not strong enough to equip that."
-         // RETURN 1
-      // ENDIF
-   // ENDIF
-   IF (<SRC.ISPLAYER>) && (<TAG0.MaxLevel>)
-      IF (<SRC.LEVEL> > <TAG0.MaxLevel>)
-         SRC.SYSMESSAGE @color_text You are too high level to use this item.
-         RETURN 1
-      ENDIF
-   ENDIF
-   IF (<SRC.ISPLAYER>) && (<TAG0.MinLevel>)
-      IF (<SRC.LEVEL> < <TAG0.MinLevel>)
-         SRC.SYSMESSAGE @color_text You are too low level to use this item.
-         RETURN 1
-      ENDIF
-   ENDIF
+IF (<MageWeapon>)
+	//FIXME: This needs to be tested...
+	IF (<SRC.<STREAT <MageWeapon>>> < <MageWeapon>)
+		SRC.SYSMESSAGE @color_text You have insufficient skill to equip this item.
+		RETURN 1
+	ENDIF
+ENDIF
+IF (<SRC.ISPLAYER>) && (<TAG0.MaxLevel>)
+	IF (<SRC.LEVEL> > <TAG0.MaxLevel>)
+		SRC.SYSMESSAGE @color_text You are too high level to use this item.
+		RETURN 1
+	ENDIF
+ENDIF
+IF (<SRC.ISPLAYER>) && (<TAG0.MinLevel>)
+	IF (<SRC.LEVEL> < <TAG0.MinLevel>)
+		SRC.SYSMESSAGE @color_text You are too low level to use this item.
+		RETURN 1
+	ENDIF
+ENDIF
 
 ON=@Equip
-   IF (<Balanced>)
-      SRC.Balanced += 1
-   ENDIF
-   IF (<SpellChanneling>)
-      SRC.SpellChanneling += 1
-   ENDIF
-   IF (<NightSight>)
-      IF (<SRC.NightSight>==0)
-         SRC.NIGHTSIGHT 1
-         //FIXME: remove nightsight spell effect first?
-         //FIXME: Add nightsight buff icon?
-      ENDIF
-      SRC.NightSight += 1
-   ENDIF
-   IF (<IncreaseDam>)
-      SRC.IncreaseDam += <IncreaseDam>
-      //FIXME: should affect status bar...?
-   ENDIF
-   IF (<IncreaseDefChance>)
-      IF (<IncreaseDefChance> < 0)
-         SRC.SYSMESSAGELOC color_text,1062318//"Your defense chance has been reduced!"
-      ENDIF
-      SRC.IncreaseDefChance += <IncreaseDefChance>
-   ENDIF
-   IF (<IncreaseHitChance>)
-      IF (<IncreaseHitChance> < 0)
-         SRC.SYSMESSAGELOC color_text,1062319//"Your attack chance has been reduced!"
-      ENDIF
-      SRC.IncreaseHitChance += <IncreaseHitChance>
-   ENDIF
-   IF (<DecreaseHitChance>)
-      IF (<DecreaseHitChance> > 0)
-         SRC.SYSMESSAGELOC color_text,1062319//"Your attack chance has been reduced!"
-      ENDIF
-      SRC.DecreaseHitChance += <DecreaseHitChance>
-   ENDIF
-   IF (<IncreaseSwingSpeed>)
-      SRC.IncreaseSwingSpeed += <IncreaseSwingSpeed>
-   ENDIF
-   IF (<DamPhysical>)
-      SRC.DamPhysical += <DamPhysical>
-   ENDIF
-   IF (<DamFire>)
-      SRC.DamFire += <DamFire>
-   ENDIF
-   IF (<DamCold>)
-      SRC.DamCold += <DamCold>
-   ENDIF
-   IF (<DamPoison>)
-      SRC.DamPoison += <DamPoison>
-   ENDIF
-   IF (<DamEnergy>)
-      SRC.DamEnergy += <DamEnergy>
-   ENDIF
-   IF (<RESCOLD>)
-      SRC.RESCOLD += <RESCOLD>
-   ENDIF
-   IF (<RESENERGY>)
-      SRC.RESENERGY += <RESENERGY>
-   ENDIF
-   IF (<RESFIRE>)
-      SRC.RESFIRE += <RESFIRE>
-   ENDIF
-   IF (<RESPHYSICAL>)
-      SRC.RESPHYSICAL += <RESPHYSICAL>
-      SRC.MODAR += <RESPHYSICAL>
-   ENDIF
-   IF (<RESPOISON>)
-      SRC.RESPOISON += <RESPOISON>
-   ENDIF
-   IF (<EnhancePotions>)
-      SRC.EnhancePotions += <EnhancePotions>
-   ENDIF
-   IF (<LowerManaCost>)
-      SRC.LowerManaCost += <LowerManaCost>
-   ENDIF
-   IF (<LowerReagentCost>)
-      SRC.LowerReagentCost += <LowerReagentCost>
-   ENDIF
-   IF (<IncreaseSpellDam>)
-      SRC.IncreaseSpellDam += <IncreaseSpellDam>
-   ENDIF
-   IF (<IncreaseGold>)
-      SRC.IncreaseGold += <IncreaseGold>
-   ENDIF
-   IF (<ReflectPhysicalDam>)
-      SRC.ReflectPhysicalDam += <ReflectPhysicalDam>
-   ENDIF
-   IF (<LUCK>)
-      SRC.LUCK += <LUCK>
-      IF (<LUCK> > 0)
-         SRC.SYSMESSAGELOC color_text,1079551//"Your luck just improved!"
-      ELSE
-         SRC.SYSMESSAGELOC color_text,1079552//"Your luck just ran out."
-      ENDIF
-   ENDIF
-   IF (<BonusStr>)//strength bonus
-      SRC.MODSTR += <BonusStr>
-   ENDIF
-   IF (<BonusHits>)//hitpoint increase
-      SRC.MODMAXHITS += <BonusHits>
-   ENDIF
-   IF (<RegenHits>)
-      SRC.RegenHits += <RegenHits>
-   ENDIF
-   IF (<BonusDex>)//dexterity bonus
-      SRC.MODDEX += <BonusDex>
-   ENDIF
-   IF (<BonusStam>)//stamina increase
-      SRC.MODMAXSTAM += <BonusStam>
-   ENDIF
-   IF (<RegenStam>)
-      SRC.RegenStam += <RegenStam>
-   ENDIF
-   IF (<BonusINT>)//intelligence bonus
-      SRC.MODINT += <BonusINT>
-   ENDIF
-   IF (<BonusMana>)//mana increase
-      SRC.MODMAXMANA <BonusMana>
-   ENDIF
-   IF (<RegenMana>)//alters the "rate" of mana regeneration
-      SRC.RegenMana += <RegenMana>
-   ENDIF
-   IF (<FasterCastRecovery>)//alters the "value" of mana regenerated
-      SRC.FasterCastRecovery += <FasterCastRecovery>
-      SRC.RegenValMana += <FasterCastRecovery>
-   ENDIF
-   IF (<FasterCasting>)
-      SRC.FasterCasting += <FasterCasting>
-   ENDIF
+IF (<Balanced>)
+	SRC.Balanced += 1
+ENDIF
+IF (<SpellChanneling>)
+	SRC.SpellChanneling += 1
+ENDIF
+IF (<NightSight>)
+	IF (<SRC.NightSight>==0)
+		SRC.NIGHTSIGHT 1
+		// FIXME: remove nightsight spell effect first?
+		// FIXME: Add nightsight buff icon?
+	ENDIF
+	SRC.TAG0.NightSight += 1
+ENDIF
+IF (<IncreaseDam>)
+	SRC.IncreaseDam += <IncreaseDam>
+ENDIF
+IF (<IncreaseDefChance>)
+	IF (<IncreaseDefChance> < 0)
+		SRC.SYSMESSAGELOC color_text,1062318//"Your defense chance has been reduced!"
+	ENDIF
+	SRC.IncreaseDefChance += <IncreaseDefChance>
+ENDIF
+IF (<IncreaseHitChance>)
+	IF (<IncreaseHitChance> < 0)
+		SRC.SYSMESSAGELOC color_text,1062319//"Your attack chance has been reduced!"
+	ENDIF
+	SRC.IncreaseHitChance += <IncreaseHitChance>
+ENDIF
+IF (<DecreaseHitChance>)
+	IF (<DecreaseHitChance> > 0)
+		SRC.SYSMESSAGELOC color_text,1062319//"Your attack chance has been reduced!"
+	ENDIF
+	SRC.DecreaseHitChance += <DecreaseHitChance>
+ENDIF
+IF (<IncreaseSwingSpeed>)
+	SRC.IncreaseSwingSpeed += <IncreaseSwingSpeed>
+ENDIF
+IF (<DamPhysical>)
+	SRC.DamPhysical += <DamPhysical>
+ENDIF
+IF (<DamFire>)
+	SRC.DamFire += <DamFire>
+ENDIF
+IF (<DamCold>)
+	SRC.DamCold += <DamCold>
+ENDIF
+IF (<DamPoison>)
+	SRC.DamPoison += <DamPoison>
+ENDIF
+IF (<DamEnergy>)
+	SRC.DamEnergy += <DamEnergy>
+ENDIF
+IF (<RESCOLD>)
+	SRC.RESCOLD += <RESCOLD>
+ENDIF
+IF (<RESENERGY>)
+	SRC.RESENERGY += <RESENERGY>
+ENDIF
+IF (<RESFIRE>)
+	SRC.RESFIRE += <RESFIRE>
+ENDIF
+IF (<RESPHYSICAL>)
+	SRC.RESPHYSICAL += <RESPHYSICAL>
+	SRC.MODAR += <RESPHYSICAL>
+ENDIF
+IF (<RESPOISON>)
+	SRC.RESPOISON += <RESPOISON>
+ENDIF
+IF (<EnhancePotions>)
+	SRC.EnhancePotions += <EnhancePotions>
+ENDIF
+IF (<LowerManaCost>)
+	SRC.LowerManaCost += <LowerManaCost>
+ENDIF
+IF (<LowerReagentCost>)
+	SRC.LowerReagentCost += <LowerReagentCost>
+ENDIF
+IF (<IncreaseSpellDam>)
+	SRC.IncreaseSpellDam += <IncreaseSpellDam>
+ENDIF
+IF (<IncreaseGold>)
+	SRC.IncreaseGold += <IncreaseGold>
+ENDIF
+IF (<ReflectPhysicalDam>)
+	SRC.ReflectPhysicalDam += <ReflectPhysicalDam>
+ENDIF
+IF (<LUCK>)
+	SRC.LUCK += <LUCK>
+	IF (<LUCK> > 0)
+		SRC.SYSMESSAGELOC color_text,1079551//"Your luck just improved!"
+	ELSE
+		SRC.SYSMESSAGELOC color_text,1079552//"Your luck just ran out."
+	ENDIF
+ENDIF
+IF (<BonusStr>)//strength bonus
+	SRC.MODSTR += <BonusStr>
+ENDIF
+IF (<BonusHits>)//hitpoint increase
+	SRC.MODMAXHITS += <BonusHits>
+ENDIF
+IF (<RegenHits>)
+	SRC.RegenHits += <RegenHits>
+ENDIF
+IF (<BonusDex>)//dexterity bonus
+	SRC.MODDEX += <BonusDex>
+ENDIF
+IF (<BonusStam>)//stamina increase
+	SRC.MODMAXSTAM += <BonusStam>
+ENDIF
+IF (<RegenStam>)
+	SRC.RegenStam += <RegenStam>
+ENDIF
+IF (<BonusINT>)//intelligence bonus
+	SRC.MODINT += <BonusINT>
+ENDIF
+IF (<BonusMana>)//mana increase
+	SRC.MODMAXMANA <BonusMana>
+ENDIF
+IF (<RegenMana>)//alters the "rate" of mana regeneration
+	SRC.RegenMana += <RegenMana>
+ENDIF
+IF (<FasterCastRecovery>)//alters the "value" of mana regenerated
+	SRC.FasterCastRecovery += <FasterCastRecovery>
+	SRC.RegenValMana += <FasterCastRecovery>
+ENDIF
+IF (<FasterCasting>)
+	SRC.FasterCasting += <FasterCasting>
+ENDIF
 
-   IF (<HitAreaPhysical>)
-      SRC.HitAreaPhysical += <HitAreaPhysical>
-   ENDIF
-   IF (<HitAreaFire>)
-      SRC.HitAreaFire += <HitAreaFire>
-   ENDIF
-   IF (<HitAreaCold>)
-      SRC.HitAreaCold += <HitAreaCold>
-   ENDIF
-   IF (<HitAreaPoison>)
-      SRC.HitAreaPoison += <HitAreaPoison>
-   ENDIF
-   IF (<HitAreaEnergy>)
-      SRC.HitAreaEnergy += <HitAreaEnergy>
-   ENDIF
-   IF (<HitLowerAtk>)
-      SRC.HitLowerAtk += <HitLowerAtk>
-   ENDIF
-   IF (<HitLowerDef>)
-      SRC.HitLowerDef += <HitLowerDef>
-   ENDIF
-   IF (<HitLeechLife>)
-      SRC.HitLeechLife += <HitLeechLife>
-   ENDIF
-   IF (<HitLeechMana>)
-      SRC.HitLeechMana += <HitLeechMana>
-   ENDIF
-   IF (<HitLeechStam>)
-      SRC.HitLeechStam += <HitLeechStam>
-   ENDIF
-   IF (<MageWeapon>)
-      TRY SRC.MageWeapon> += <MageWeapon>
-   ENDIF
-   IF (<HitDispel>)
-      SRC.HitDispel += <HitDispel>
-   ENDIF
-   IF (<HitFireball>)
-      SRC.HitFireball += <HitFireball>
-      IF (<tag0.HitFireballCharges> > 1)
-         tag.HitFireballCharges -= 1
-      ENDIF
-   ENDIF
-   IF (<HitHarm>)
-      SRC.HitHarm= += <HitHarm>
-      IF (<tag0.HitHarmCharges> > 1)
-         tag.HitHarmCharges -= 1
-      ENDIF
-   ENDIF
-   IF (<HitLightning>)
-      SRC.HitLightning += <HitLightning>
-      IF (<tag0.HitLightningCharges> > 1)
-         tag.HitLightningCharges -= 1
-      ENDIF
-   ENDIF
-   IF (<HitMagicArrow>)
-      SRC.HitMagicArrow += <HitMagicArrow>
-      IF (<tag0.HitMagicArrowCharges> > 1)
-         tag.HitMagicArrowCharges -= 1
-      ENDIF
-   ENDIF
+IF (<HitAreaPhysical>)
+	SRC.HitAreaPhysical += <HitAreaPhysical>
+ENDIF
+IF (<HitAreaFire>)
+	SRC.HitAreaFire += <HitAreaFire>
+ENDIF
+IF (<HitAreaCold>)
+	SRC.HitAreaCold += <HitAreaCold>
+ENDIF
+IF (<HitAreaPoison>)
+	SRC.HitAreaPoison += <HitAreaPoison>
+ENDIF
+IF (<HitAreaEnergy>)
+	SRC.HitAreaEnergy += <HitAreaEnergy>
+ENDIF
+IF (<HitLowerAtk>)
+	SRC.HitLowerAtk += <HitLowerAtk>
+ENDIF
+IF (<HitLowerDef>)
+	SRC.HitLowerDef += <HitLowerDef>
+ENDIF
+IF (<HitLeechLife>)
+	SRC.HitLeechLife += <HitLeechLife>
+ENDIF
+IF (<HitLeechMana>)
+	SRC.HitLeechMana += <HitLeechMana>
+ENDIF
+IF (<HitLeechStam>)
+	SRC.HitLeechStam += <HitLeechStam>
+ENDIF
+IF (<MageWeapon>)
+	TRY SRC.MageWeapon> += <MageWeapon>
+ENDIF
+IF (<HitDispel>)
+	SRC.HitDispel += <HitDispel>
+ENDIF
+IF (<HitFireball>)
+	SRC.HitFireball += <HitFireball>
+	IF (<tag0.HitFireballCharges> > 1)
+		tag.HitFireballCharges -= 1
+	ENDIF
+ENDIF
+IF (<HitHarm>)
+	SRC.HitHarm= += <HitHarm>
+	IF (<tag0.HitHarmCharges> > 1)
+		tag.HitHarmCharges -= 1
+	ENDIF
+ENDIF
+IF (<HitLightning>)
+	SRC.HitLightning += <HitLightning>
+	IF (<tag0.HitLightningCharges> > 1)
+		tag.HitLightningCharges -= 1
+	ENDIF
+ENDIF
+IF (<HitMagicArrow>)
+	SRC.HitMagicArrow += <HitMagicArrow>
+	IF (<tag0.HitMagicArrowCharges> > 1)
+		tag.HitMagicArrowCharges -= 1
+	ENDIF
+ENDIF
 
-   IF (<MageArmor>)
-      SRC.MageArmor=<EVAL <SRC.MageArmor> + 1>
-   ENDIF
+IF (<MageArmor>)
+	SRC.MageArmor=<EVAL <SRC.MageArmor> + 1>
+ENDIF
 
-   IF (<BonusSkill1>)
-      SRC.<BonusSkill1> +=<BonusSkill1Amt>
-   ENDIF
-   IF (<BonusSkill2>)
-      SRC.<BonusSkill2> +=<BonusSkill2Amt>
-   ENDIF
-   IF (<BonusSkill3>)
-      SRC.<BonusSkill3> +=<BonusSkill3Amt>
-   ENDIF
-   IF (<BonusSkill4>)
-      SRC.<BonusSkill4> +=<BonusSkill4Amt>
-   ENDIF
-   IF (<BonusSkill5>)
-      SRC.<BonusSkill5> +=<BonusSkill5Amt>
-   ENDIF
+IF <BonusSkill1>
+	SRC.<BonusSkill1> +=<BonusSkill1Amt>
+ENDIF
+IF <BonusSkill2>
+	SRC.<BonusSkill2> +=<BonusSkill2Amt>
+ENDIF
+IF <BonusSkill3>
+	SRC.<BonusSkill3> +=<BonusSkill3Amt>
+ENDIF
+IF <BonusSkill4>
+	SRC.<BonusSkill4> +=<BonusSkill4Amt>
+ENDIF
+IF <BonusSkill5>
+	SRC.<BonusSkill5> +=<BonusSkill5Amt>
+ENDIF
 
 ON=@UnEquip
-   IF (<Balanced>)
-      SRC.Balanced -=1
-   ENDIF
-   IF (<SpellChanneling>)
-      SRC.SpellChanneling -=1
-   ENDIF
-   IF (<NightSight>)
-      SRC.NightSight -= 1
-      IF (<SRC.NightSight>==0)
-         SRC.NIGHTSIGHT 0
-      ENDIF
-   ENDIF
-   IF (<IncreaseDam>)
-      SRC.IncreaseDam -= <IncreaseDam>
-   ENDIF
-   IF (<IncreaseDefChance>)
-      SRC.IncreaseDefChance -= <IncreaseDefChance>
-      IF (<SRC.IncreaseDefChance>==0)
-         SRC.SYSMESSAGELOC color_text,1062321//"Your defense chance has returned to normal."
-      ENDIF
-   ENDIF
-   IF (<IncreaseHitChance>)
-      SRC.IncreaseHitChance -= <IncreaseHitChance>
-      IF (<SRC.IncreaseHitChance>==0)
-         SRC.SYSMESSAGELOC color_text,1062320//"Your attack chance has returned to normal."
-      ENDIF
-   ENDIF
-   IF (<DecreaseHitChance>)
-      SRC.DecreaseHitChance -= <DecreaseHitChance>
-      IF (<SRC.DecreaseHitChance>==0)
-         SRC.SYSMESSAGELOC color_text,1062320//"Your attack chance has returned to normal."
-      ENDIF
-   ENDIF
-   IF (<IncreaseSwingSpeed>)
-      SRC.IncreaseSwingSpeed -= <IncreaseSwingSpeed>
-   ENDIF
-   IF (<DamPhysical>)
-      SRC.DamPhysical -= <DamPhysical>
-   ENDIF
-   IF (<DamFire>)
-      SRC.DamFire -= <DamFire>
-   ENDIF
-   IF (<DamCold>)
-      SRC.DamCold -= <DamCold>
-   ENDIF
-   IF (<DamPoison>)
-      SRC.DamPoison -= <DamPoison>
-   ENDIF
-   IF (<DamEnergy>)
-      SRC.DamEnergy -= <DamEnergy>
-   ENDIF
-   IF (<RESCOLD>)
-      SRC.RESCOLD -= <RESCOLD>
-   ENDIF
-   IF (<RESENERGY>)
-      SRC.RESENERGY -= <RESENERGY>
-   ENDIF
-   IF (<RESFIRE>)
-      SRC.RESFIRE -= <RESFIRE>
-   ENDIF
-   IF (<RESPOISON>)
-      SRC.RESPOISON -= <RESPOISON>
-   ENDIF
-   IF (<RESPHYSICAL>)
-      SRC.RESPHYSICAL -= <RESPHYSICAL>
-      SRC.MODAR -= <RESPHYSICAL>
-   ENDIF
-   IF (<EnhancePotions>)
-      SRC.EnhancePotions -= <EnhancePotions>
-   ENDIF
-   IF (<LowerManaCost>)
-      SRC.LowerManaCost -= <LowerManaCost>
-   ENDIF
-   IF (<LowerReagentCost>)
-      SRC.LowerReagentCost -= <LowerReagentCost>
-   ENDIF
-   IF (<IncreaseSpellDam>)
-      SRC.IncreaseSpellDam -= <IncreaseSpellDam>
-   ENDIF
-   IF (<IncreaseGold>)
-      SRC.IncreaseGold -= <IncreaseGold>
-   ENDIF
-   IF (<ReflectPhysicalDam>)
-      SRC.ReflectPhysicalDam -= <ReflectPhysicalDam>
-   ENDIF
-   IF (<LUCK>)
-      IF (<LUCK> < 0)
-         SRC.SYSMESSAGELOC color_text,1079551//"Your luck just improved!"
-      ELSE
-         SRC.SYSMESSAGELOC color_text,1079552//"Your luck just ran out."
-      ENDIF
-      SRC.LUCK -= <LUCK>
-   ENDIF
-   IF (<BonusStr>)//strength bonus
-      SRC.MODSTR -= <BonusStr>
-   ENDIF
-   IF (<BonusHits>)//hitpoint increase
-      SRC.MODMAXHITS -= <BonusHits>
-   ENDIF
-   IF (<RegenHits>)
-      SRC.RegenHits -= <RegenHits>
-   ENDIF
-   IF (<BonusDex>)//dexterity bonus
-      SRC.MODDEX -= <BonusDex>
-   ENDIF
-   IF (<BonusStam>)//stamina increase
-      SRC.MODMAXSTAM -= <BonusStam>
-   ENDIF
-   IF (<RegenStam>)
-      SRC.RegenStam -= <RegenStam>
-   ENDIF
-   IF (<BonusINT>)//intelligence bonus
-      SRC.MODINT -= <BonusINT>
-   ENDIF
-   IF (<BonusMana>)//mana increase
-      SRC.MODMAXMANA -= <BonusMana>
-   ENDIF
-   IF (<RegenMana>)
-      SRC.RegenMana -= <RegenMana>
-   ENDIF
-   IF (<FasterCastRecovery>)
-      SRC.FasterCastRecovery -= <FasterCastRecovery>
-      SRC.RegenValMana -= <FasterCastRecovery>
-   ENDIF
-   IF (<FasterCasting>)
-      SRC.FasterCasting -= <FasterCasting>
-   ENDIF
+IF (<Balanced>)
+	SRC.Balanced -=1
+ENDIF
+IF (<SpellChanneling>)
+	SRC.SpellChanneling -=1
+ENDIF
+IF (<NightSight>)
+	SRC.TAG.NightSight -= 1
+	IF (<SRC.TAG.NightSight>==0)
+		SRC.TAG.NightSight
+		SRC.NIGHTSIGHT 0
+	ENDIF
+ENDIF
+IF (<IncreaseDam>)
+	SRC.IncreaseDam -= <IncreaseDam>
+ENDIF
+IF (<IncreaseDefChance>)
+	SRC.IncreaseDefChance -= <IncreaseDefChance>
+	IF (<SRC.IncreaseDefChance>==0)
+		SRC.SYSMESSAGELOC color_text,1062321//"Your defense chance has returned to normal."
+	ENDIF
+ENDIF
+IF (<IncreaseHitChance>)
+	SRC.IncreaseHitChance -= <IncreaseHitChance>
+	IF (<SRC.IncreaseHitChance>==0)
+		SRC.SYSMESSAGELOC color_text,1062320//"Your attack chance has returned to normal."
+	ENDIF
+ENDIF
+IF (<DecreaseHitChance>)
+	SRC.DecreaseHitChance -= <DecreaseHitChance>
+	IF (<SRC.DecreaseHitChance>==0)
+		SRC.SYSMESSAGELOC color_text,1062320//"Your attack chance has returned to normal."
+	ENDIF
+ENDIF
+IF (<IncreaseSwingSpeed>)
+	SRC.IncreaseSwingSpeed -= <IncreaseSwingSpeed>
+ENDIF
+IF (<DamPhysical>)
+	SRC.DamPhysical -= <DamPhysical>
+ENDIF
+IF (<DamFire>)
+	SRC.DamFire -= <DamFire>
+ENDIF
+IF (<DamCold>)
+	SRC.DamCold -= <DamCold>
+ENDIF
+IF (<DamPoison>)
+	SRC.DamPoison -= <DamPoison>
+ENDIF
+IF (<DamEnergy>)
+	SRC.DamEnergy -= <DamEnergy>
+ENDIF
+IF (<RESCOLD>)
+	SRC.RESCOLD -= <RESCOLD>
+ENDIF
+IF (<RESENERGY>)
+	SRC.RESENERGY -= <RESENERGY>
+ENDIF
+IF (<RESFIRE>)
+	SRC.RESFIRE -= <RESFIRE>
+ENDIF
+IF (<RESPOISON>)
+	SRC.RESPOISON -= <RESPOISON>
+ENDIF
+IF (<RESPHYSICAL>)
+	SRC.RESPHYSICAL -= <RESPHYSICAL>
+	SRC.MODAR -= <RESPHYSICAL>
+ENDIF
+IF (<EnhancePotions>)
+	SRC.EnhancePotions -= <EnhancePotions>
+ENDIF
+IF (<LowerManaCost>)
+	SRC.LowerManaCost -= <LowerManaCost>
+ENDIF
+IF (<LowerReagentCost>)
+	SRC.LowerReagentCost -= <LowerReagentCost>
+ENDIF
+IF (<IncreaseSpellDam>)
+	SRC.IncreaseSpellDam -= <IncreaseSpellDam>
+ENDIF
+IF (<IncreaseGold>)
+	SRC.IncreaseGold -= <IncreaseGold>
+ENDIF
+IF (<ReflectPhysicalDam>)
+	SRC.ReflectPhysicalDam -= <ReflectPhysicalDam>
+ENDIF
+IF (<LUCK>)
+	IF (<LUCK> < 0)
+		SRC.SYSMESSAGELOC color_text,1079551//"Your luck just improved!"
+	ELSE
+		SRC.SYSMESSAGELOC color_text,1079552//"Your luck just ran out."
+	ENDIF
+	SRC.LUCK -= <LUCK>
+ENDIF
+IF (<BonusStr>)//strength bonus
+	SRC.MODSTR -= <BonusStr>
+ENDIF
+IF (<BonusHits>)//hitpoint increase
+	SRC.MODMAXHITS -= <BonusHits>
+ENDIF
+IF (<RegenHits>)
+	SRC.RegenHits -= <RegenHits>
+ENDIF
+IF (<BonusDex>)//dexterity bonus
+	SRC.MODDEX -= <BonusDex>
+ENDIF
+IF (<BonusStam>)//stamina increase
+	SRC.MODMAXSTAM -= <BonusStam>
+ENDIF
+IF (<RegenStam>)
+	SRC.RegenStam -= <RegenStam>
+ENDIF
+IF (<BonusINT>)//intelligence bonus
+	SRC.MODINT -= <BonusINT>
+ENDIF
+IF (<BonusMana>)//mana increase
+	SRC.MODMAXMANA -= <BonusMana>
+ENDIF
+IF (<RegenMana>)
+	SRC.RegenMana -= <RegenMana>
+ENDIF
+IF (<FasterCastRecovery>)
+	SRC.FasterCastRecovery -= <FasterCastRecovery>
+	SRC.RegenValMana -= <FasterCastRecovery>
+ENDIF
+IF (<FasterCasting>)
+	SRC.FasterCasting -= <FasterCasting>
+ENDIF
 
-   IF (<HitAreaPhysical>)
-      SRC.HitAreaPhysical -= <HitAreaPhysical>
-   ENDIF
-   IF (<HitAreaFire>)
-      SRC.HitAreaFire -= <HitAreaFire>
-   ENDIF
-   IF (<HitAreaCold>)
-      SRC.HitAreaCold -= <HitAreaCold>
-   ENDIF
-   IF (<HitAreaPoison>)
-      SRC.HitAreaPoison -= <HitAreaPoison>
-   ENDIF
-   IF (<HitAreaEnergy>)
-      SRC.HitAreaEnergy -= <HitAreaEnergy>
-   ENDIF
-   IF (<HitLowerAtk>)
-      SRC.HitLowerAtk -= <HitLowerAtk>
-   ENDIF
-   IF (<HitLowerDef>)
-      SRC.HitLowerDef -= <HitLowerDef>
-   ENDIF
-   IF (<HitLeechLife>)
-      SRC.HitLeechLife -= <HitLeechLife>
-   ENDIF
-   IF (<HitLeechMana>)
-      SRC.HitLeechMana -= <HitLeechMana>
-   ENDIF
-   IF (<HitLeechStam>)
-      SRC.HitLeechStam -= <HitLeechStam>
-   ENDIF
-   IF (<MageWeapon>)
-      TRY SRC.<MageWeapon> -= <MageWeapon>
-   ENDIF
-   IF (<HitDispel>)
-      SRC.HitDispel -= <HitDispel>
-   ENDIF
-   IF (<HitFireball>)
-      SRC.HitFireball -= <HitFireball>
-   ENDIF
-   IF (<HitHarm>)
-      SRC.HitHarm -= <HitHarm>
-   ENDIF
-   IF (<HitLightning>)
-      SRC.HitLightning -= <HitLightning>
-   ENDIF
-   IF (<HitMagicArrow>)
-      SRC.HitMagicArrow -= <HitMagicArrow>
-   ENDIF
+IF (<HitAreaPhysical>)
+	SRC.HitAreaPhysical -= <HitAreaPhysical>
+ENDIF
+IF (<HitAreaFire>)
+	SRC.HitAreaFire -= <HitAreaFire>
+ENDIF
+IF (<HitAreaCold>)
+	SRC.HitAreaCold -= <HitAreaCold>
+ENDIF
+IF (<HitAreaPoison>)
+	SRC.HitAreaPoison -= <HitAreaPoison>
+ENDIF
+IF (<HitAreaEnergy>)
+	SRC.HitAreaEnergy -= <HitAreaEnergy>
+ENDIF
+IF (<HitLowerAtk>)
+	SRC.HitLowerAtk -= <HitLowerAtk>
+ENDIF
+IF (<HitLowerDef>)
+	SRC.HitLowerDef -= <HitLowerDef>
+ENDIF
+IF (<HitLeechLife>)
+	SRC.HitLeechLife -= <HitLeechLife>
+ENDIF
+IF (<HitLeechMana>)
+	SRC.HitLeechMana -= <HitLeechMana>
+ENDIF
+IF (<HitLeechStam>)
+	SRC.HitLeechStam -= <HitLeechStam>
+ENDIF
+IF (<MageWeapon>)
+	TRY SRC.<MageWeapon> -= <MageWeapon>
+ENDIF
+IF (<HitDispel>)
+	SRC.HitDispel -= <HitDispel>
+ENDIF
+IF (<HitFireball>)
+	SRC.HitFireball -= <HitFireball>
+ENDIF
+IF (<HitHarm>)
+	SRC.HitHarm -= <HitHarm>
+ENDIF
+IF (<HitLightning>)
+	SRC.HitLightning -= <HitLightning>
+ENDIF
+IF (<HitMagicArrow>)
+	SRC.HitMagicArrow -= <HitMagicArrow>
+ENDIF
 
-   IF (<MageArmor>)
-      SRC.MageArmor -= 1
-   ENDIF
+IF (<MageArmor>)
+	SRC.MageArmor -= 1
+ENDIF
 
-   IF (<BonusSkill1>)
-      SRC.<BonusSkill1> -= <BonusSkill1Amt>
-   ENDIF
-   IF (<BonusSkill2>)
-      SRC.<BonusSkill2> -= <BonusSkill2Amt>
-   ENDIF
-   IF (<BonusSkill3>)
-      SRC.<BonusSkill3> -= <BonusSkill3Amt>
-   ENDIF
-   IF (<BonusSkill4>)
-      SRC.<BonusSkill4> -= <BonusSkill4Amt>
-   ENDIF
-   IF (<BonusSkill5>)
-      SRC.<BonusSkill5> -= <BonusSkill5Amt>
-   ENDIF
+IF <BonusSkill1>
+	SRC.<BonusSkill1> -= <BonusSkill1Amt>
+ENDIF
+IF <BonusSkill2>
+	SRC.<BonusSkill2> -= <BonusSkill2Amt>
+ENDIF
+IF <BonusSkill3>
+	SRC.<BonusSkill3> -= <BonusSkill3Amt>
+ENDIF
+IF <BonusSkill4>
+	SRC.<BonusSkill4> -= <BonusSkill4Amt>
+ENDIF
+IF <BonusSkill5>
+	SRC.<BonusSkill5> -= <BonusSkill5Amt>
+ENDIF
 
 ON=@Damage
 //
@@ -1212,19 +1203,19 @@ ON=@Damage
 // 1080035//"Your ~ is destroyed by the attack."
 
 //   SERV.LOG "<NAME> has <dMORE1L> of <dMORE1H> hitpoints and might take <ARGN1> damage of type <HVAL <ARGN2>> from <SRC.NAME>"
-   IF (<SelfRepair>) && (<MORE1L> < <MORE1H>) 
-      IF (<SelfRepair> > <DEF.MaxSelfRepair>)
-         LOCAL.Chance=<DEF.MaxSelfRepair>
-      ELSE
-         LOCAL.Chance=<SelfRepair>
-      ENDIF
-      IF (<R50> < <EVAL <LOCAL.Chance>>)
-         MORE1L += <EVAL <LOCAL.Chance>>
-         IF (<MORE1L> > <MORE1H>)
-            MORE1L = <MORE1H>
-         ENDIF
-      ENDIF
-   ENDIF
+IF (<SelfRepair>) && (<MORE1L> < <MORE1H>) 
+	IF (<SelfRepair> > <DEF.MaxSelfRepair>)
+		LOCAL.Chance=<DEF.MaxSelfRepair>
+	ELSE
+		LOCAL.Chance=<SelfRepair>
+	ENDIF
+	IF (<R50> < <EVAL <LOCAL.Chance>>)
+		MORE1L += <EVAL <LOCAL.Chance>>
+		IF (<MORE1L> > <MORE1H>)
+			MORE1L = <MORE1H>
+		ENDIF
+	ENDIF
+ENDIF
 
 
 [EOF]

@@ -3642,7 +3642,7 @@ PacketDisplayPopup::PacketDisplayPopup(const CClient* target, CGrayUID uid) : Pa
 	ADDTOCALLSTACK("PacketDisplayPopup::PacketDisplayPopup");
 
 	m_popupCount = 0;
-	m_isKr = target->GetNetState()->isClientKR();
+	m_isKr = target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA() || target->GetNetState()->isClientVersion(MINCLIVER_NEWCONTEXTMENU);
 
 	if (m_isKr)
 		writeInt16(2);
