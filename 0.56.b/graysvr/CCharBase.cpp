@@ -160,6 +160,9 @@ bool CCharBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 				sVal = pszTmp;
 			}
 			break;
+		case CBC_CAN:
+			sVal.FormatHex( m_Can);
+			break;
 		case CBC_BLOODCOLOR:
 			sVal.FormatHex( m_wBloodHue );
 			break;
@@ -261,6 +264,9 @@ bool CCharBase::r_LoadVal( CScript & s )
 			break;
 		case CBC_AVERSIONS:
 			m_Aversions.Load( s.GetArgStr() );
+			break;
+		case CBC_CAN:
+			m_Can = s.GetArgVal();
 			break;
 		case CBC_BLOODCOLOR:
 			m_wBloodHue = static_cast<HUE_TYPE>(s.GetArgVal());

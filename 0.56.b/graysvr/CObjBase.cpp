@@ -738,6 +738,9 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_RANGEH:
 			sVal.FormatHex( RangeL() );
 			break;
+		case OC_CAN:
+			sVal.FormatHex( m_Can );
+			break;
 
 		case OC_CANSEE:
 		case OC_CANSEELOS:
@@ -1394,6 +1397,9 @@ bool CObjBase::r_LoadVal( CScript & s )
 			}
 			return( true );
 
+		case OC_CAN:
+			m_Can = s.GetArgVal();
+			break;
 		case OC_COLOR:
 			if ( ! strcmpi( s.GetArgStr(), "match_shirt" ) ||
 				! strcmpi( s.GetArgStr(), "match_hair" ))

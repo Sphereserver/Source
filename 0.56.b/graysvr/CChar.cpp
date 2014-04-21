@@ -241,9 +241,9 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 	m_prev_Hue = HUE_DEFAULT;
 	m_prev_id = CREID_INVALID;
 	SetID( baseID );
-
 	CCharBase* pCharDef = Char_GetDef();
 	ASSERT(pCharDef);
+	m_Can = pCharDef->m_Can;
 
 	SetName( pCharDef->GetTypeName());	// set the name in case there is a name template.
 
@@ -825,8 +825,8 @@ void CChar::NPC_LoadScript( bool fRestock )
 	}
 
 	CCharBase * pCharDef = Char_GetDef();
-	//ReadScriptTrig(pCharDef, CTRIG_Create);
-	OnTrigger(CTRIG_Create, this, 0);
+	ReadScriptTrig(pCharDef, CTRIG_Create);
+	//OnTrigger(CTRIG_Create, this, 0);
 
 	if (( fRestock ) && ( IsTrigUsed(TRIGGER_NPCRESTOCK) ))
 		ReadScriptTrig(pCharDef, CTRIG_NPCRestock);
