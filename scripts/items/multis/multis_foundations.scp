@@ -22,6 +22,7 @@ multiregion=-3,-3,3,4
 component=0b98,-3,4,7
 component=0009,-3,3,7
 component=0bd2,-3,4,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -36,6 +37,7 @@ multiregion=-3,-3,3,5
 component=0b98,-3,5,7
 component=0009,-3,4,7
 component=0bd2,-3,5,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -50,6 +52,7 @@ multiregion=-3,-4,3,5
 component=0b98,-3,5,7
 component=0009,-3,4,7
 component=0bd2,-3,5,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -64,6 +67,7 @@ multiregion=-3,-4,3,6
 component=0b98,-3,6,7
 component=0009,-3,5,7
 component=0bd2,-3,6,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -78,6 +82,7 @@ multiregion=-3,-5,3,6
 component=0b98,-3,6,7
 component=0009,-3,5,7
 component=0bd2,-3,6,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -92,6 +97,7 @@ multiregion=-3,-5,3,7
 component=0b98,-3,7,7
 component=0009,-3,6,7
 component=0bd2,-3,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -108,6 +114,7 @@ multiregion=-3,-3,4,3
 component=0b98,-3,4,7
 component=0009,-3,3,7
 component=0bd2,-3,4,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -122,6 +129,7 @@ multiregion=-3,-3,4,4
 component=0b98,-3,5,7
 component=0009,-3,4,7
 component=0bd2,-3,5,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -136,6 +144,7 @@ multiregion=-3,-4,4,4
 component=0b98,-3,5,7
 component=0009,-3,4,7
 component=0bd2,-3,5,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -150,6 +159,7 @@ multiregion=-3,-4,4,5
 component=0b98,-3,6,7
 component=0009,-3,5,7
 component=0bd2,-3,6,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -164,6 +174,7 @@ multiregion=-3,-5,4,5
 component=0b98,-3,6,7
 component=0009,-3,5,7
 component=0bd2,-3,6,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -178,6 +189,7 @@ multiregion=-3,-5,4,6
 component=0b98,-3,7,7
 component=0009,-3,6,7
 component=0bd2,-3,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -193,6 +205,7 @@ multiregion=-3,-6,4,7
 component=0b98,-3,7,7
 component=0009,-3,6,7
 component=0bd2,-3,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -208,6 +221,7 @@ multiregion=-4,-3,4,3
 component=0b98,-4,4,7
 component=0009,-4,3,7
 component=0bd2,-4,4,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -222,6 +236,7 @@ multiregion=-4,-3,4,4
 component=0b98,-4,5,7
 component=0009,-4,4,7
 component=0bd2,-4,5,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -236,6 +251,7 @@ multiregion=-4,-4,4,4
 component=0b98,-4,5,7
 component=0009,-4,4,7
 component=0bd2,-4,5,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -250,6 +266,7 @@ multiregion=-4,-4,4,5
 component=0b98,-4,6,7
 component=0009,-4,5,7
 component=0bd2,-4,6,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -264,6 +281,7 @@ multiregion=-4,-5,4,5
 component=0b98,-4,6,7
 component=0009,-4,5,7
 component=0bd2,-4,6,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -278,6 +296,7 @@ multiregion=-4,-5,4,6
 component=0b98,-4,7,7
 component=0009,-4,6,7
 component=0bd2,-4,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -292,6 +311,7 @@ multiregion=-4,-6,4,6
 component=0b98,-4,7,7
 component=0009,-4,6,7
 component=0bd2,-4,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -306,6 +326,7 @@ multiregion=-4,-6,4,7
 component=0b98,-4,8,7
 component=0009,-4,7,7
 component=0bd2,-4,8,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -321,6 +342,7 @@ multiregion=-4,-3,5,3
 component=0b98,-4,4,7
 component=0009,-4,3,7
 component=0bd2,-4,4,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -335,6 +357,7 @@ multiregion=-4,-3,5,4
 component=0b98,-4,5,7
 component=0009,-4,4,7
 component=0bd2,-4,5,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -349,6 +372,7 @@ multiregion=-4,-4,5,4
 component=0b98,-4,5,7
 component=0009,-4,4,7
 component=0bd2,-4,5,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -363,6 +387,7 @@ multiregion=-4,-4,5,5
 component=0b98,-4,6,7
 component=0009,-4,5,7
 component=0bd2,-4,6,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -377,6 +402,7 @@ multiregion=-4,-5,5,5
 component=0b98,-4,6,7
 component=0009,-4,5,7
 component=0bd2,-4,6,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -391,6 +417,7 @@ multiregion=-4,-5,5,6
 component=0b98,-4,7,7
 component=0009,-4,6,7
 component=0bd2,-4,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -405,6 +432,7 @@ multiregion=-4,-6,5,6
 component=0b98,-4,7,7
 component=0009,-4,6,7
 component=0bd2,-4,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -419,6 +447,7 @@ multiregion=-4,-6,5,7
 component=0b98,-4,8,7
 component=0009,-4,7,7
 component=0bd2,-4,8,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -433,6 +462,7 @@ multiregion=-4,-7,5,8
 component=0b98,-4,8,7
 component=0009,-4,7,7
 component=0bd2,-4,8,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -448,6 +478,7 @@ multiregion=-5,-3,5,3
 component=0b98,-5,4,7
 component=0009,-5,3,7
 component=0bd2,-5,4,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -462,6 +493,7 @@ multiregion=-5,-3,5,4
 component=0b98,-5,5,7
 component=0009,-5,4,7
 component=0bd2,-5,5,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -476,6 +508,7 @@ multiregion=-5,-4,5,4
 component=0b98,-5,5,7
 component=0009,-5,4,7
 component=0bd2,-5,5,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -490,6 +523,7 @@ multiregion=-5,-4,5,5
 component=0b98,-5,6,7
 component=0009,-5,5,7
 component=0bd2,-5,6,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -504,6 +538,7 @@ multiregion=-5,-5,5,5
 component=0b98,-5,6,7
 component=0009,-5,5,7
 component=0bd2,-5,6,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -518,6 +553,7 @@ multiregion=-5,-5,5,6
 component=0b98,-5,7,7
 component=0009,-5,6,7
 component=0bd2,-5,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -532,6 +568,7 @@ multiregion=-5,-6,5,6
 component=0b98,-5,7,7
 component=0009,-5,6,7
 component=0bd2,-5,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -546,6 +583,7 @@ multiregion=-5,-6,5,7
 component=0b98,-5,8,7
 component=0009,-5,7,7
 component=0bd2,-5,8,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -560,6 +598,7 @@ multiregion=-5,-7,5,7
 component=0b98,-5,8,7
 component=0009,-5,7,7
 component=0bd2,-5,8,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -574,6 +613,7 @@ multiregion=-5,-7,5,8
 component=0b98,-5,9,7
 component=0009,-5,8,7
 component=0bd2,-5,9,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -589,6 +629,7 @@ multiregion=-5,-3,6,3
 component=0b98,-5,4,7
 component=0009,-5,3,7
 component=0bd2,-5,4,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -603,6 +644,7 @@ multiregion=-5,-3,6,4
 component=0b98,-5,5,7
 component=0009,-5,4,7
 component=0bd2,-5,5,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -617,6 +659,7 @@ multiregion=-5,-4,6,4
 component=0b98,-5,5,7
 component=0009,-5,4,7
 component=0bd2,-5,5,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -631,6 +674,7 @@ multiregion=-5,-4,6,5
 component=0b98,-5,6,7
 component=0009,-5,5,7
 component=0bd2,-5,6,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -646,6 +690,7 @@ multiregion=-5,-5,6,5
 component=0b98,-5,6,7
 component=0009,-5,5,7
 component=0bd2,-5,6,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -660,6 +705,7 @@ multiregion=-5,-5,6,6
 component=0b98,-5,7,7
 component=0009,-5,6,7
 component=0bd2,-5,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -674,6 +720,7 @@ multiregion=-5,-6,6,6
 component=0b98,-5,7,7
 component=0009,-5,6,7
 component=0bd2,-5,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -688,6 +735,7 @@ multiregion=-5,-6,6,7
 component=0b98,-5,8,7
 component=0009,-5,7,7
 component=0bd2,-5,8,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -702,6 +750,7 @@ multiregion=-5,-7,6,7
 component=0b98,-5,8,7
 component=0009,-5,7,7
 component=0bd2,-5,8,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -716,6 +765,7 @@ multiregion=-5,-7,6,8
 component=0b98,-5,9,7
 component=0009,-5,8,7
 component=0bd2,-5,9,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -730,6 +780,7 @@ multiregion=-5,-8,6,8
 component=0b98,-5,9,7
 component=0009,-5,8,7
 component=0bd2,-5,9,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -745,6 +796,7 @@ multiregion=-6,-3,6,4
 component=0b98,-6,5,7
 component=0009,-6,4,7
 component=0bd2,-6,5,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -759,6 +811,7 @@ multiregion=-6,-4,6,4
 component=0b98,-6,5,7
 component=0009,-6,4,7
 component=0bd2,-6,5,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -773,6 +826,7 @@ multiregion=-6,-4,6,5
 component=0b98,-6,6,7
 component=0009,-6,5,7
 component=0bd2,-6,6,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -787,6 +841,7 @@ multiregion=-6,-5,6,5
 component=0b98,-6,6,7
 component=0009,-6,5,7
 component=0bd2,-6,6,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -801,6 +856,7 @@ multiregion=-6,-5,6,6
 component=0b98,-6,7,7
 component=0009,-6,6,7
 component=0bd2,-6,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -815,6 +871,7 @@ multiregion=-6,-6,6,6
 component=0b98,-6,7,7
 component=0009,-6,6,7
 component=0bd2,-6,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -829,6 +886,7 @@ multiregion=-6,-6,6,7
 component=0b98,-6,8,7
 component=0009,-6,7,7
 component=0bd2,-6,8,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -843,6 +901,7 @@ multiregion=-6,-7,6,7
 component=0b98,-6,8,7
 component=0009,-6,7,7
 component=0bd2,-6,8,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -857,6 +916,7 @@ multiregion=-6,-7,6,8
 component=0b98,-6,9,7
 component=0009,-6,8,7
 component=0bd2,-6,9,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -871,6 +931,7 @@ multiregion=-6,-8,6,8
 component=0b98,-6,9,7
 component=0009,-6,8,7
 component=0bd2,-6,9,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -885,6 +946,7 @@ multiregion=-6,-8,6,9
 component=0b98,-6,10,7
 component=0009,-6,9,7
 component=0bd2,-6,10,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -900,6 +962,7 @@ multiregion=-6,-4,7,4
 component=0b98,-6,5,7
 component=0009,-6,4,7
 component=0bd2,-6,5,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -914,6 +977,7 @@ multiregion=-6,-4,7,5
 component=0b98,-6,6,7
 component=0009,-6,5,7
 component=0bd2,-6,6,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -928,6 +992,7 @@ multiregion=-6,-5,7,5
 component=0b98,-6,6,7
 component=0009,-6,5,7
 component=0bd2,-6,6,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -942,6 +1007,7 @@ multiregion=-6,-5,7,6
 component=0b98,-6,7,7
 component=0009,-6,6,7
 component=0bd2,-6,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -956,6 +1022,7 @@ multiregion=-6,-6,7,6
 component=0b98,-6,7,7
 component=0009,-6,6,7
 component=0bd2,-6,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -970,6 +1037,7 @@ multiregion=-6,-6,7,7
 component=0b98,-6,8,7
 component=0009,-6,7,7
 component=0bd2,-6,8,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -984,6 +1052,7 @@ multiregion=-6,-7,7,7
 component=0b98,-6,8,7
 component=0009,-6,7,7
 component=0bd2,-6,8,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -998,6 +1067,7 @@ multiregion=-6,-7,7,8
 component=0b98,-6,9,7
 component=0009,-6,8,7
 component=0bd2,-6,9,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1012,6 +1082,7 @@ multiregion=-6,-8,7,8
 component=0b98,-6,9,7
 component=0009,-6,8,7
 component=0bd2,-6,9,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1026,6 +1097,7 @@ multiregion=-6,-8,7,9
 component=0b98,-6,10,7
 component=0009,-6,9,7
 component=0bd2,-6,10,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1041,6 +1113,7 @@ multiregion=-7,-4,7,5
 component=0b98,-7,6,7
 component=0009,-7,5,7
 component=0bd2,-7,6,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1055,6 +1128,7 @@ multiregion=-7,-5,7,5
 component=0b98,-7,6,7
 component=0009,-7,5,7
 component=0bd2,-7,6,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1069,6 +1143,7 @@ multiregion=-7,-5,7,6
 component=0b98,-7,7,7
 component=0009,-7,6,7
 component=0bd2,-7,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1083,6 +1158,7 @@ multiregion=-7,-6,7,6
 component=0b98,-7,7,7
 component=0009,-7,6,7
 component=0bd2,-7,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1097,6 +1173,7 @@ multiregion=-7,-6,7,7
 component=0b98,-7,8,7
 component=0009,-7,7,7
 component=0bd2,-7,8,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1111,6 +1188,7 @@ multiregion=-7,-7,7,7
 component=0b98,-7,8,7
 component=0009,-7,7,7
 component=0bd2,-7,8,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1125,6 +1203,7 @@ multiregion=-7,-7,7,8
 component=0b98,-7,9,7
 component=0009,-7,8,7
 component=0bd2,-7,9,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1139,6 +1218,7 @@ multiregion=-7,-8,7,8
 component=0b98,-7,9,7
 component=0009,-7,8,7
 component=0bd2,-7,9,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1153,6 +1233,7 @@ multiregion=-7,-8,7,9
 component=0b98,-7,10,7
 component=0009,-7,9,7
 component=0bd2,-7,10,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1167,6 +1248,7 @@ multiregion=-7,-5,8,5
 component=0b98,-7,6,7
 component=0009,-7,5,7
 component=0bd2,-7,6,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1181,6 +1263,7 @@ multiregion=-7,-5,8,6
 component=0b98,-7,7,7
 component=0009,-7,6,7
 component=0bd2,-7,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1195,6 +1278,7 @@ multiregion=-7,-6,8,6
 component=0b98,-7,7,7
 component=0009,-7,6,7
 component=0bd2,-7,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1209,6 +1293,7 @@ multiregion=-7,-6,8,7
 component=0b98,-7,8,7
 component=0009,-7,7,7
 component=0bd2,-7,8,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1223,6 +1308,7 @@ multiregion=-7,-7,8,7
 component=0b98,-7,8,7
 component=0009,-7,7,7
 component=0bd2,-7,8,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1237,6 +1323,7 @@ multiregion=-7,-7,8,8
 component=0b98,-7,9,7
 component=0009,-7,8,7
 component=0bd2,-7,9,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1251,6 +1338,7 @@ multiregion=-7,-8,8,8
 component=0b98,-7,9,7
 component=0009,-7,8,7
 component=0bd2,-7,9,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1265,6 +1353,7 @@ multiregion=-7,-8,8,9
 component=0b98,-7,10,7
 component=0009,-7,9,7
 component=0bd2,-7,10,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1280,6 +1369,7 @@ multiregion=-8,-5,8,6
 component=0b98,-8,7,7
 component=0009,-8,6,7
 component=0bd2,-8,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1294,6 +1384,7 @@ multiregion=-8,-6,8,6
 component=0b98,-8,7,7
 component=0009,-8,6,7
 component=0bd2,-8,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1308,6 +1399,7 @@ multiregion=-8,-6,8,7
 component=0b98,-8,8,7
 component=0009,-8,7,7
 component=0bd2,-8,8,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1322,6 +1414,7 @@ multiregion=-8,-7,8,7
 component=0b98,-8,8,7
 component=0009,-8,7,7
 component=0bd2,-8,8,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1336,6 +1429,7 @@ multiregion=-8,-7,8,8
 component=0b98,-8,9,7
 component=0009,-8,8,7
 component=0bd2,-8,9,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1350,6 +1444,7 @@ multiregion=-8,-8,8,8
 component=0b98,-8,9,7
 component=0009,-8,8,7
 component=0bd2,-8,9,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1364,6 +1459,7 @@ multiregion=-8,-8,8,9
 component=0b98,-8,10,7
 component=0009,-8,9,7
 component=0bd2,-8,10,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1379,6 +1475,7 @@ multiregion=-8,-6,9,6
 component=0b98,-8,7,7
 component=0009,-8,6,7
 component=0bd2,-8,7,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1393,6 +1490,7 @@ multiregion=-8,-6,9,7
 component=0b98,-8,8,7
 component=0009,-8,7,7
 component=0bd2,-8,8,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1407,6 +1505,7 @@ multiregion=-8,-7,9,7
 component=0b98,-8,8,7
 component=0009,-8,7,7
 component=0bd2,-8,8,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1421,6 +1520,7 @@ multiregion=-8,-7,9,8
 component=0b98,-8,9,7
 component=0009,-8,8,7
 component=0bd2,-8,9,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1435,6 +1535,7 @@ multiregion=-8,-8,9,8
 component=0b98,-8,9,7
 component=0009,-8,8,7
 component=0bd2,-8,9,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations
@@ -1449,6 +1550,7 @@ multiregion=-8,-8,9,9
 component=0b98,-8,10,7
 component=0009,-8,9,7
 component=0bd2,-8,10,7
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=House Foundations

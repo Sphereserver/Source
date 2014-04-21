@@ -18,6 +18,7 @@ nameloc=1011303	// Stone and plaster house
 type=t_multi
 value=37000
 dupelist=065
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -38,6 +39,7 @@ nameloc=1011304	// Field stone house
 type=t_multi
 value=37000
 dupelist=067
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -58,6 +60,7 @@ nameloc=1011305	// Small brick house
 type=t_multi
 value=36750
 dupelist=069
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -78,6 +81,7 @@ nameloc=1011306	// Wooden house
 type=t_multi
 value=36750
 dupelist=06b
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -98,6 +102,7 @@ nameloc=1011307	// Wood and plaster house
 type=t_multi
 value=36750
 dupelist=06d
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -118,6 +123,7 @@ nameloc=1011308	// Thatched-roof cottage
 type=t_multi
 value=36750
 dupelist=06f
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -137,6 +143,7 @@ name=Blue Tent
 type=t_multi
 value=22000
 dupelist=071
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Tents
@@ -154,6 +161,7 @@ id=m_blue_tent
 name=Blue Tent
 type=t_multi
 value=22000
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Tents
@@ -169,6 +177,7 @@ defname=m_green_tent
 name=Green Tent
 type=t_multi
 value=22000
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Tents
@@ -187,6 +196,7 @@ id=m_green_tent
 name=Green Tent
 type=t_multi
 value=22000
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Tents
@@ -204,6 +214,7 @@ nameloc=1011309	// Brick house
 type=t_multi
 value=131500
 dupelist=075
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -227,6 +238,7 @@ nameloc=1011310	// Two-story wood and plaster house
 type=t_multi
 value=162750
 dupelist=077
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -250,6 +262,7 @@ nameloc=1011311	// Two-story stone and plaster house
 type=t_multi
 value=162000
 dupelist=079
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -273,6 +286,7 @@ nameloc=1011312	// Tower
 type=t_multi
 value=366500
 dupelist=07b
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -297,6 +311,7 @@ nameloc=1011313	// Small stone keep
 type=t_multi
 value=562750
 dupelist=07d
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -318,6 +333,7 @@ nameloc=1011314	// Castle
 type=t_multi
 value=865250
 dupelist=07f
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -344,6 +360,7 @@ name=Large house with patio
 nameloc=1011315	// Large house with patio
 type=t_multi
 value=129250
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -365,6 +382,7 @@ nameloc=1011315	// Large house with patio
 type=t_multi
 value=129250
 dupelist=08d
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -390,6 +408,7 @@ name=Marble house with patio
 nameloc=1011316	// Marble house with patio
 type=t_multi
 value=160500
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -407,6 +426,7 @@ name=Small stone tower
 nameloc=1011317	// Small stone tower
 type=t_multi
 value=73500
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -424,6 +444,7 @@ name=Two-story log cabin
 nameloc=1011318	// Two-story log cabin
 type=t_multi
 value=81750
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -442,6 +463,7 @@ name=Sandstone house with patio
 nameloc=1011320	// Sandstone house with patio
 type=t_multi
 value=76500
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -457,6 +479,7 @@ name=Two-story villa
 nameloc=1011319	// Two-story villa
 type=t_multi
 value=113750
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -475,6 +498,7 @@ name=Small Stone Workshop
 nameloc=1011321	// Small stone workshop
 type=t_multi
 value=50500
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -490,6 +514,7 @@ name=Small Marble Workshop
 nameloc=1011322	// Small marble workshop
 type=t_multi
 value=52500
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
@@ -504,6 +529,7 @@ defname=m_wheat_cottage
 name=Wheat Cottage
 type=t_multi
 value=76500
+tspeech=spk_house_cmds
 
 category=Multis
 subsection=Houses
