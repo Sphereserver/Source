@@ -4918,42 +4918,40 @@ bool CItem::OnTick()
 	{
 		case IT_LIGHT_LIT:
 			{
+				if ( m_itLight.m_charges == USHRT_MAX )//infinit charges
+					return true;
+
 				// use up the charges that this has .
 				EXC_SET("default behaviour::IT_LIGHT_LIT");
-				if ( m_itLight.m_charges > 1 )
+				if ( m_itLight.m_charges > 0 )
 				{
-					if ( m_itLight.m_charges == USHRT_MAX )
-					{
-						return true;
-					}
 					m_itLight.m_charges --;
 					SetTimeout( 10*60*TICK_PER_SEC );
 				}
 				else
 				{
 					// Torches should just go away but lanterns etc should not.
-					Emote( g_Cfg.GetDefaultMsg( DEFMSG_LIGHTSRC_BURN_OUT ) );
 					CItemBase * pItemDef = Item_GetDef();
 					ITEMID_TYPE id = static_cast<ITEMID_TYPE>(pItemDef->m_ttEquippable.m_Light_Burnout.GetResIndex());
-					if ( ! id )	// burn out and be gone.
-					{
-						return( false );
-					}
+
 					if ( id == GetID())
 					{
 						// It really has infinite charges I guess.
 						m_itLight.m_charges = USHRT_MAX;
+						return true;
 					}
+					Emote( g_Cfg.GetDefaultMsg( DEFMSG_LIGHTSRC_BURN_OUT ) );
+					if ( ! id )	// burn out and be gone.
+						return false ;
 					else
 					{
+						if ( IsAttr(ATTR_DECAY) ) //if attr_decay is set, just remove.
+							return false;
 						// Transform to the next shape.
 						m_itLight.m_charges = 0;
 						SetID(id);
-
-						if ( IsAttr(ATTR_DECAY) )
-							SetTimeout( GetDecayTime() );
+						Update();
 					}
-					Update();
 				}
 			}
 			return true;

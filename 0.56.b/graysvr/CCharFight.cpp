@@ -1656,7 +1656,7 @@ bool CChar::OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fCommandPet, bool
 	if ( Fight_IsActive() && m_Act_Targ == pCharSrc->GetUID())
 		return true;
 
-	Memory_AddObjTypes( pCharSrc, MEMORY_HARMEDBY|MEMORY_IRRITATEDBY );
+	Memory_AddObjTypes( pCharSrc, MEMORY_HARMEDBY|MEMORY_IRRITATEDBY|MEMORY_AGGREIVED );
 
 	// Are they a criminal for it ? Is attacking me a crime ?
 	if ( Noto_GetFlag(pCharSrc) == NOTO_GOOD )
@@ -2770,7 +2770,7 @@ void CChar::Memory_Fight_Start( const CChar * pTarg )
 		if ( pTargMemory != NULL )	// My target remembers me.
 		{
 			if ( pTargMemory->IsMemoryTypes( MEMORY_IAGGRESSOR ))
-				MemTypes = MEMORY_HARMEDBY|MEMORY_AGGREIVED;
+				MemTypes = MEMORY_HARMEDBY;
 			else if ( pTargMemory->IsMemoryTypes( MEMORY_HARMEDBY|MEMORY_SAWCRIME|MEMORY_AGGREIVED ))
 				MemTypes = MEMORY_IAGGRESSOR;
 			else

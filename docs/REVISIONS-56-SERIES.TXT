@@ -877,3 +877,7 @@ Fixed 1565: Removed TAG.OVERRIDE.RANGE from items and chars.
 -Some internal changes related to IsHuman: changed it to IsPlayableCharacter and splitted it into IsHuman || IsElf || IsGargoyle and changed its calls.
 	-Same for IsHumanID -> IsPlayableID = (IsHumanID || IsElfID || IsGargoyleID)
 	-Fixed: Gargoyles are no longer able to ride anything.
+
+21-04-2014, Ben
+Fixed #2014: memory_aggreived not being set on players
+Fixed #2311: t_light_lit not decaying as normal
