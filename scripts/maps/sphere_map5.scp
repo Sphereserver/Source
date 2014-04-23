@@ -36,7 +36,7 @@ NAME=Royal City
 GROUP=Royal City
 P=750,3450,-20,5
 RECT=662,3316,962,3716,5
-FLAGS=region_flag_nobuild|region_flag_guarded
+FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_holy_city]
@@ -44,7 +44,7 @@ NAME=Holy City
 GROUP=Holy City
 P=995,3898,-42,5
 RECT=930,3840,1180,4090,5
-FLAGS=region_flag_nobuild|region_flag_guarded
+FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 ////////////////////////////////////////
@@ -56,7 +56,7 @@ NAME=Tomb of Kings
 GROUP=Ter Mur
 P=35,100,0,5
 RECT=3,18,181,242,5
-FLAGS=region_flag_nobuild|region_antimagic_recall_in|region_antimagic_gate
+FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_underworld]
@@ -64,7 +64,7 @@ NAME=Underworld
 GROUP=Ter Mur
 P=1143,1085,-37,5
 RECT=1003,935,1303,1235,5
-FLAGS=region_flag_nobuild|region_antimagic_recall_in|region_antimagic_gate
+FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_stygian_abyss]
@@ -72,7 +72,7 @@ NAME=Stygian Abyss
 GROUP=Ter Mur
 P=520,522,31,5
 RECT=235,40,1155,1040,5
-FLAGS=region_flag_nobuild|region_antimagic_recall_in|region_antimagic_gate
+FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_medusas_lair]
@@ -81,14 +81,14 @@ GROUP=Ter Mur
 P=771,928,0,5
 RECT=764,894,833,983,5
 RECT=816,749,829,765,5
-FLAGS=region_flag_nobuild|region_antimagic_recall_in|region_antimagic_gate
+FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_stygian_dragon_lair]
 NAME=Stygian Dragon's Lair
 P=433,158,0,5
 RECT=294,112,386,290,5
-FLAGS=region_flag_nobuild|region_antimagic_recall_in|region_antimagic_gate
+FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 ////////////////////////////////////////
