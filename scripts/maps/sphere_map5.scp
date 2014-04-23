@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, April 18, 2014
+// FILE LAST UPDATED: Wednesday, April 23, 2014
 //
 VERSION=0.56c
 
@@ -112,6 +112,129 @@ NAME=The Great Stygian Abyss
 P=521,923,29,5
 RECT=297,547,724,971,5
 RECT=556,44,1102,715,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_raptor_island]
+NAME=Raptor Island
+P=816,3778,-42,5
+RECT=712,3765,879,3842,5
+RECT=728,3809,839,3923,5
+RECT=769,3721,972,3768,5
+RECT=808,3692,930,3732,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_atoll_bend]
+NAME=Atoll Bend
+P=1118,3408,-42,5
+RECT=1027,3311,1224,3514,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_chicken_chase]
+NAME=Chicken Chase
+P=560,3412,37,5
+RECT=448,3352,613,3480,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_fishermans_reach]
+NAME=Fishermans Reach
+P=631,3035,36,5
+RECT=547,2835,745,3102,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_gated_isle]
+NAME=Gated Isle
+P=703,3934,-31,5
+RECT=603,3836,815,4043,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_high_plain]
+NAME=High Plain
+P=863,2931,38,5
+RECT=748,2843,981,3050,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_kepetch_waste]
+NAME=Kepetch Waste
+P=447,3188,20,5
+RECT=356,3143,523,3224,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_lost_settlement]
+NAME=Lost Settlement
+P=526,3822,-44,5
+RECT=454,3708,648,3957,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_northern_steppes]
+NAME=Northern Steppes
+P=822,3063,61,5
+RECT=694,3020,954,3148,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_raptor_island]
+NAME=Raptor Island
+P=816,3778,-42,5
+RECT=712,3765,879,3829,5
+RECT=728,3809,839,3923,5
+RECT=769,3721,972,3768,5
+RECT=808,3692,930,3732,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_royal_park]
+NAME=Royal Park
+P=711,3255,-42,5
+RECT=632,3233,808,3268,5
+RECT=753,3161,990,3292,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_slith_valley]
+NAME=Slith Valley
+P=1078,3331,-42,5
+RECT=1028,3263,1221,3404,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_spider_island]
+NAME=Spider Island
+P=1115,3730,-42,5
+RECT=1063,3695,1181,3779,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_talon_point]
+NAME=Talon Point
+P=676,3831,-39,5
+RECT=632,3830,730,3885,5
+RECT=629,3786,705,3826,5
+RECT=656,3750,707,3791,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_toxic_desert]
+NAME=Toxic Desert
+P=1047,2980,62,5
+RECT=1010,2929,1156,3049,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_void_isle]
+NAME=Void Isle
+P=440,3577,38,5
+RECT=314,3473,581,3699,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_volcano]
+NAME=Volcano
+P=407,3010,-24,5
+RECT=298,2895,499,3117,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_walled_circus]
+NAME=Walled Circus
+P=370,3273,0,5
+RECT=291,3207,445,3354,5
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_waterfall_point]
+NAME=Waterfall Point
+P=661,2894,39,5
+RECT=635,2862,731,2926,5
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [EOF]

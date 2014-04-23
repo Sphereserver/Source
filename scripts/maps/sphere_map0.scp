@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, April 18, 2014
+// FILE LAST UPDATED: Wednesday, April 23, 2014
 //
 VERSION=0.56c
 
@@ -251,7 +251,7 @@ RECT=2460,555,2567,628,0
 RECT=2567,574,2592,628,0	//South houses
 RECT=2580,592,2628,646,0	//South houses
 RECT=2498,627,2567,690,0	//South camp
-RECT=2548,495,2620,550,0	//East mining camp
+RECT=2530,477,2620,550,0	//East mining camp
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 TAG.GUARDOWNER=the town
