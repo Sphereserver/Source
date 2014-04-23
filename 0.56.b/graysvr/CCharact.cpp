@@ -690,15 +690,18 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 		return false;
 
 	ANIM_TYPE_NEW subaction;
-	BYTE variation;
+	BYTE variation = 0;		//Seems to have some effect for humans/elfs vs gargoyles
 
 	ANIM_TYPE_NEW action1 = static_cast<ANIM_TYPE_NEW>(-1);
 	CCharBase* pCharDef = Char_GetDef();
-	if ( !IsStatFlag( STATF_OnHorse ) )	
+	CClient * pClient = this->GetClient();
+	if ( IsGargoyle() || pClient->GetNetState()->isClientSA() )		//Perform these checks only for Gargoyles or in Enhanced Client
 	{
 		CItem * pWeapon = m_uidWeapon.ItemFind();
 		if ( pWeapon != NULL && action == ANIM_ATTACK_WEAPON )
 		{
+			if (! IsGargoyle() )		//Set variation to 1 for non gargoyle characters (Humans and Elfs using EC) in all fighting animations.
+				variation = 1;
 			// action depends on weapon type (skill) and 2 Hand type.
 			LAYER_TYPE layer = pWeapon->Item_GetDef()->GetEquipLayer();
 			action1 = NANIM_ATTACK; //Should be NANIM_ATTACK;
@@ -782,6 +785,7 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 					break;
 				case ANIM_BLOCK:
 					action1 = NANIM_BLOCK;
+					variation = 1;
 					break;
 				case ANIM_ATTACK_UNARM:
 					action1 = NANIM_ATTACK;
@@ -797,17 +801,22 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 					break;*/
 				case ANIM_EAT:
 					action1 = NANIM_EAT;
-					break;						
-				case ANIM_DIE_BACK:
-				case ANIM_DIE_FORWARD:
-					action1 = NANIM_DEATH;
+					break;					
 					break;
 				default:
 					break;
 			}
 		}
-		if ( IsStatFlag( STATF_OnHorse|STATF_Hovering ) )
-			variation = 1;
+	}//Other new animations than work on humans, elfs and gargoyles
+	switch ( action )
+	{	
+		case ANIM_DIE_BACK:
+			variation = 1;		//Variation makes characters die back
+			action1 = NANIM_DEATH;
+			break;
+		case ANIM_DIE_FORWARD:
+			action1 = NANIM_DEATH;
+			break;
 	}
 
 	//Begin old client animation behaviour

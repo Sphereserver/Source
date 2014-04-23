@@ -279,6 +279,7 @@ KEY=Carpentry
 TITLE=Carpenter
 PROMPT_MSG=
 DELAY=1.2		//Old value=3.0
+FLAGS=skf_craft
 STAT_STR=60
 STAT_INT=40
 STAT_DEX=30

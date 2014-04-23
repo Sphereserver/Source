@@ -89,7 +89,7 @@ return 0
 
 
 [FUNCTION f_onchar_delete]
-// The f_onchar_delete function is called before client is deletes a character.
+// The f_onchar_delete function is called before a client delete his character from the Character Selection Menu.
 // SRC  --> char being deleted
 // ARGO --> the client deleting the character
 // RETURN

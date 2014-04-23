@@ -19,39 +19,35 @@ VERSION=0.56c
 [FUNCTION f_isHuman]
 IF ( (<OBODY>==c_man) || (<OBODY>==c_woman) )
    RETURN 1
-ELSE
-   RETURN 0
 ENDIF
+RETURN 0
 
 [FUNCTION f_isElf]
 IF ( (<OBODY>==c_elf_male) || (<OBODY>==c_elf_female) )
    RETURN 1
-ELSE
-   RETURN 0
 ENDIF
+RETURN 0
 
 [FUNCTION f_isGarg]
 IF ( (<OBODY>==c_gargoyle_male) || (<OBODY>==c_gargoyle_female) )
    RETURN 1
-ELSE
-   RETURN 0
 ENDIF
+RETURN 0
 
 [FUNCTION f_isFemale]
-IF ( (<OBODY>==c_woman) || (<OBODY>==c_elf_female) || (<OBODY>==c_gargoyle_female) )
-   RETURN 1
-ELSE
-   RETURN 0
-ENDIF
+if (<serv.chardef.<obody>.can>&mt_female)	//Checking on chardef directly here because if you change your body your Can flags won't be updated since they are now stored in the char itself when it creates.
+	return 1
+endif
+return 0
 
 [FUNCTION f_isCursed]
 LOCAL.CurseResult=0
 FORCHARLAYER 32
    IF (<BASEID>==i_rune_curse)
-      LOCAL.CurseResult=1
+      RETURN 1
    ENDIF
 ENDFOR
-RETURN <LOCAL.CurseResult>
+RETURN 0
 
 
 [FUNCTION MODMAXHITS]

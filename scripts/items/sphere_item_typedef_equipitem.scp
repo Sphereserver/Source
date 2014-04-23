@@ -718,6 +718,8 @@ RETURN 1
 ON=@EquipTest
 IF (<CanUse>&can_u_none)
 	RETURN 1
+ELSEIF (<CanUse>&can_u_all)
+	return 0
 ENDIF
 IF (<SRC.IsPlayer>)
 	//Checking if the item can be equiped by gargoyles, don't uncomment the following 2 checks.
@@ -726,8 +728,7 @@ IF (<SRC.IsPlayer>)
 			SRC.SYSMESSAGELOC color_text,1111707//"Only gargoyles can wear this."
 			RETURN 1
 		ENDIF
-	ENDIF
-	IF !(<CanUse>&can_u_gargoyle)
+	ELSEIF !(<CanUse>&can_u_gargoyle)
 		IF (<SRC.f_isgarg>)
 			SRC.SYSMESSAGELOC color_text,1111708//"Gargoyles can't wear this."
 			RETURN 1
@@ -735,27 +736,22 @@ IF (<SRC.IsPlayer>)
 	ENDIF
 	//If you want every item equipable for every character without checking for race/sex uncomment the next line (return 0).
 	//return 0
-	IF (<CanUse>&can_u_female) 	//Female item
+	IF ( (<CanUse>&can_u_female) && !(<CanUse>&can_u_male) ) 	//Female item
 		IF !(<SRC.f_isfemale>)	//must be used by females.
 			SRC.SYSMESSAGELOC color_text,1010388//"Only females can wear this."
 			RETURN 1
 		ENDIF
-	ENDIF
-	IF (<CanUse>&can_u_male)	//male item
+	ELSEIF ( (<CanUse>&can_u_male) && !(<CanUse>&can_u_female) )	//male item
 		IF (<SRC.f_isfemale>)	//must be used by males.
 			SRC.SYSMESSAGELOC color_text,1063343//"Only males can wear this."
 			RETURN 1
 		ENDIF
 	ENDIF
-	IF (<CanUse>&can_u_elf)		//Elf item
-		IF !(<SRC.f_iself>)		// must be on elves
+	IF ( ( (<CanUse>&can_u_human) && !(<src.f_IsHuman>) ) && !( (<CanUse>&can_u_elf) && (<src.f_IsElf>) ) )
+		SRC.SYSMESSAGELOC color_text,1071936//"You cannot equip that."
+		RETURN 1
+	ELSEIF ( ( (<CanUse>&can_u_elf) && !(<SRC.f_iself>) ) && !( (<CanUse>&can_u_human) && (<src.f_IsHuman>) ) )		//can't be used by elves
 			SRC.SYSMESSAGELOC color_text,1072203//"Only elves may use this."
-			RETURN 1
-		ENDIF
-	ENDIF
-	IF !(<CanUse>&can_u_elf) 	//Not Elf item
-		IF (<SRC.f_iself>)		//can't be used by elves
-			SRC.SYSMESSAGELOC color_text,1071936//"You cannot equip that."
 			RETURN 1
 		ENDIF
 	ENDIF
