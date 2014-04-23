@@ -695,7 +695,7 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 	ANIM_TYPE_NEW action1 = static_cast<ANIM_TYPE_NEW>(-1);
 	CCharBase* pCharDef = Char_GetDef();
 	CClient * pClient = this->GetClient();
-	if ( IsGargoyle() || pClient->GetNetState()->isClientSA() )		//Perform these checks only for Gargoyles or in Enhanced Client
+	if ( IsPlayableCharacter() )		//Perform these checks only for Gargoyles or in Enhanced Client
 	{
 		CItem * pWeapon = m_uidWeapon.ItemFind();
 		if ( pWeapon != NULL && action == ANIM_ATTACK_WEAPON )
@@ -1145,7 +1145,9 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 	{
 		if (!pClient->CanSee(this))
 			continue;
-		if ( pClient->GetNetState()->isClientVersion(MINCLIVER_NEWMOBILEANIMATION) && (action1 >= 0) )
+		if ( pClient->GetNetState()->isClientSA() )//Enhanced client always use this packet
+			cmdnew->send(pClient);
+		else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_NEWMOBILEANIMATION) && (IsGargoyle()) && (action1 >= 0) )	// On classic clients only send new packets for gargoyles
 			cmdnew->send(pClient);
 		else
 			cmd->send(pClient);
