@@ -23,14 +23,22 @@ void CScriptTriggerArgs::Init( LPCTSTR pszStr )
 		pszStr	= "";
 	// raw is left untouched for now - it'll be split the 1st time argv is accessed
 	m_s1_raw		= pszStr;
+	bool fQuote = false;
 	if ( *pszStr == '"' )
+	{
+		fQuote = true;
 		++pszStr;
+	}
+
 	m_s1	= pszStr ;
 
 	// take quote if present.
-	TCHAR * str = const_cast<TCHAR*>( strchr(m_s1.GetPtr(), '"') );
-	if ( str != NULL )
-		*str	= '\0';
+	if (fQuote)
+	{
+		TCHAR * str = const_cast<TCHAR*>( strchr(m_s1.GetPtr(), '"') );
+		if ( str != NULL )
+			*str	= '\0';
+	}
 	
 	m_iN1	= 0;
 	m_iN2	= 0;
@@ -287,6 +295,7 @@ bool CScriptTriggerArgs::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsol
 			TCHAR * pszArg = const_cast<TCHAR *>(m_s1_raw.GetPtr());
 			TCHAR * s = pszArg;
 			bool fQuotes = false;
+			bool fInerQuotes = false;
 			while ( *s )
 			{
 				// ignore leading spaces
@@ -309,6 +318,7 @@ bool CScriptTriggerArgs::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsol
 				{
 					++s;
 					fQuotes = true;
+					fInerQuotes = false;
 				}
 
 				pszArg	= s;	// arg starts here
@@ -316,15 +326,17 @@ bool CScriptTriggerArgs::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsol
 
 				while (*s)
 				{
-					if ( *s == '"' )
+					if (( *s == '"' ) && ( fQuotes ))	{	*s	= '\0';	fQuotes = false;	}
+					else if (( *s == '"' ))	{	fInerQuotes = !fInerQuotes;	}
+					/*if ( *s == '"' )
 					{
 						if ( fQuotes )	{	*s	= '\0';	fQuotes = false;	break;	}
 						*s = '\0';
 						++s;
 						fQuotes	= true;	// maintain
 						break;
-					}
-					if ( !fQuotes && (*s == ',') )
+					}*/
+					if ( !fQuotes && !fInerQuotes && (*s == ',') )
 					{ *s = '\0'; s++; break; }
 					++s;
 				}

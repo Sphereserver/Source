@@ -881,3 +881,13 @@ Fixed 1565: Removed TAG.OVERRIDE.RANGE from items and chars.
 21-04-2014, Ben
 Fixed #2014: memory_aggreived not being set on players
 Fixed #2311: t_light_lit not decaying as normal
+
+23-04-2014, Ben
+Fixed #1500: Quote causing problems for ARGS and ARGV. This is how is will work now in a simple function called TEST...
+	-.TEST "a", b, "c,d"		Output: ARGS = a	ARGV[0] = a	ARGV[1] = b	ARGV[2] = c,d
+	-.TEST "a"e, b, "c,d"		Output: ARGS = a	ARGV[0] = a	ARGV[1] = b	ARGV[2] = c,d
+	-.TEST e"a", b, "c,d"f		Output: ARGS = e"a", b, "c,d"f	ARGV[0] = e"a"	ARGV[1] = b	ARGV[2] = c,d
+	-.TEST f"a"g"h,i",b,e"c,d"	Output: ARGS = f"a"g"h,i",b,e"c,d"	ARGV[0] = f"a"g"h,i"	ARGV[1] = b	ARGV[2] = e"c,d"
+	*All ARGV will now show even if quotes are found in first argument.
+	*if quotes are found as the first character of an argument, what is found in the quote is the argument
+	*if a quote is found but not at the beginning, or no quote is found, whole string is used as argument.
