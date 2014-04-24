@@ -1520,6 +1520,11 @@ size_t CScriptObj::ParseText( TCHAR * pszResponse, CTextConsole * pSrc, int iFla
 
 	static int sm_iReentrant = 0;
 	static bool sm_fBrackets = false;	// allowed to span multi lines.
+
+	//***Qval Fix***
+	bool bQvalCondition = false;
+	TCHAR chQval = '?';
+
 	if ((iFlags & 2) == 0)
 	{
 		sm_fBrackets = false;
@@ -1572,9 +1577,18 @@ size_t CScriptObj::ParseText( TCHAR * pszResponse, CTextConsole * pSrc, int iFla
 			i += ilen;
 			continue;
 		}
+		//***Qval Fix***
+		if ( ch == chQval )
+		{
+			if ( !strnicmp( static_cast<LPCTSTR>(pszResponse) + iBegin + 1, "QVAL", 4 ) )
+				bQvalCondition = true;
+		}
 
 		if ( ch == chEnd )
 		{
+			if ( !strnicmp( static_cast<LPCTSTR>(pszResponse) + iBegin + 1, "QVAL", 4 ) && !bQvalCondition)
+				continue;
+			//***Qval Fix End***
 			sm_fBrackets = false;
 			pszResponse[i] = '\0';
 
