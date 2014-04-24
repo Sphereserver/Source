@@ -747,8 +747,17 @@ PacketContainerOpen::PacketContainerOpen(const CClient* target, const CObjBase* 
 
 	writeInt32(container->GetUID());
 	writeInt16(gump);
+	//word	Container Type (0x00 for vendors, 0x7D for spellbooks and containers)
+	WORD ContType = 0x0;
 	if (target->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS))
-		writeInt16(0);
+	{
+		CChar * pChar = static_cast<CChar*>(container->GetTopLevelObj());
+		if ( pChar && pChar->IsClient())
+			// Players cannot have Vendor Container Type so we et 0x7D. Also fixing Grid View in EC.
+			ContType = 0x7D;
+	}
+
+	writeInt16(ContType);
 
 	trim();
 	push(target);
