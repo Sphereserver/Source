@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, October 6, 2013
+// FILE LAST UPDATED: Friday, April 25, 2014
 //
 VERSION=0.56c
 
@@ -220,8 +220,8 @@ Wedachek
 Wikchichoki
 Wochickeki
 
-[NAMES NAMES_DEMON]
-80
+[NAMES NAMES_DAEMON]
+83
 Aamon
 Agalierept
 Agares
@@ -248,10 +248,12 @@ Buer
 Clauneck
 Clitheret
 Cthulhu
+Druzil
 El Chupacabra
 Eleogap
 Eliezer
 Eligor
+Eracove
 Faraii
 Fleurety
 Frimost
@@ -267,12 +269,13 @@ Hiepacth
 Huictiigara
 Humots
 Khil
+Maleki
 Marbas
 Mephistopheles
 Mersilde
 Minoson
-Molech
 Moloch
+Molech
 Morail
 Musisin
 Naberrs
@@ -292,7 +295,6 @@ Sergulath
 Sergutthy
 Sidragrosam
 Sirchade
-Starr
 Surgat
 Sustugriel
 Tarchimache
@@ -301,7 +303,14 @@ Trimasel
 Vaelfar
 Wormius
 Yog-Sothoth
+Y'reif Eci
 Zoray
+
+[NAMES NAMES_BALRON]
+3
+The Lord of the Abyss
+The Collector of Souls
+The Slayer
 
 [NAMES NAMES_ORC]
 705
@@ -1408,123 +1417,6 @@ Zalifar
 Zathrix
 Zunrek
 
-[NAMES NAMES_THE_DRAGON]
-107
-Aegnor
-Aelfric
-Ainvar
-Alcor
-Arazion
-Ardarion
-Arkanis
-Athrax
-Barghest
-Baros
-Begarin
-Beynlore
-Burat
-Cairne
-Carthon
-Chamdar
-Ciric
-Cruzado
-Cyphrak
-Daelon
-Daktar
-Darkkill
-Darvain
-D'Harun
-Dracus
-Dradar
-Draelin
-Draenor
-Durodund
-Eklor
-Elrak
-Fangorn
-Farynthane
-Feenark
-Galtor
-Gemma
-Gragus
-Irian
-Israfel
-Jaden
-Jefahn
-Kalimus
-Kallomane
-Kanax
-Kelnos
-Kharn
-Khir
-Kragon
-K'shar
-Kylnath
-Larac
-Lathis
-Lenroc
-Lonthorynthoryl
-Lorreck
-Lyticant
-Mattrick
-Mazrim
-Modrei
-Morturus
-Muktar
-Murdon
-Murron
-Myndon
-Mythran
-Mytor
-Nabius
-Nalynkal
-Nazgul
-Paorin
-Quillan
-Rendar
-Sang Qui
-Scythyn
-Shilor
-Smaug
-Sobran
-Soltak
-Sorz
-Taban
-Telzar
-Teron
-Trethovian
-Tyrnar
-Ulath
-Vandor
-Vermithrax
-Vitar
-Vlade
-Volan
-Wydstrin
-Xaelin
-Xandor
-Xarthos
-Xaxtox
-X'calak
-Xenix
-Xiltanth
-Xylor
-Xystil
-Yazad
-Yllthane
-Ylthallynon
-Ythoryn
-Zalifar
-Zathrix
-Zunrek
-
-[NAMES names_evil_mage_lord]
-4
-Kwan Li, Lord of the Mists
-Bazerion, the Wizard-Lord
-Ylthallynon, the Insane
-Xarot the Black Archmage
-
 [NAMES NAMES_EVIL_MAGE]
 151
 Aegnor
@@ -1679,713 +1571,12 @@ Zathrix
 Zejron the Wild
 Zunrek
 
-[NAMES NAMES_OGRE]
-705
-Abghat
-Adgulg
-Aghed
-Agugh
-Aguk
-Almthu
-Alog
-Ambilge
-Apaugh
-Argha
-Argigoth
-Argug
-Arpigig
-Auhgan
-Azhug
-Bagdud
-Baghig
-Bahgigoth
-Bandagh
-Barfu
-Bargulg
-Baugh
-Bidgug
-Bildud
-Bilge
-Bog
-Boghat
-Bogugh
-Borgan
-Borug
-Braugh
-Brougha
-Brugagh
-Bruigig
-Buadagh
-Buggug
-Builge
-Buimghig
-Bulgan
-Bumhug
-Buomaugh
-Buordud
-Burghed
-Buugug
-Cabugbu
-Cagan
-Carguk
-Carthurg
-Clog
-Corgak
-Crothu
-Cubub
-Cukgilug
-Curbag
-Dabub
-Dakgorim
-Dakgu
-Dalthu
-Darfu
-Deakgu
-Dergu
-Derthag
-Digdug
-Diggu
-Dilug
-Ditgurat
-Dorgarag
-Dregu
-Dretkag
-Drigka
-Drikdarok
-Drutha
-Dudagog
-Dugarod
-Dugorim
-Duiltag
-Durbag
-Eagungad
-Eggha
-Eggugat
-Egharod
-Eghuglat
-Eichelberbog
-Ekganit
-Epkagut
-Ergoth
-Ertguth
-Ewkbanok
-Fagdud
-Faghig
-Fandagh
-Farfu
-Farghed
-Fargigoth
-Farod
-Faugh
-Feldgulg
-Fidgug
-Filge
-Fodagog
-Fogugh
-Fozhug
-Frikug
-Frug
-Frukag
-Fubdagog
-Fudhagh
-Fupgugh
-Furbog
-Futgarek
-Gaakt
-Garekk
-Gelub
-Gholug
-Gilaktug
-Ginug
-Gnabadug
-Gnadug
-Gnalurg
-Gnarg
-Gnarlug
-Gnorl
-Gnorth
-Gnoth
-Gnurl
-Golag
-Golub
-Gomatug
-Gomoku
-Gorgu
-Gorlag
-Grikug
-Grug
-Grukag
-Grukk
-Grung
-Gruul
-Guag
-Gubdagog
-Gudhagh
-Gug
-Gujarek
-Gujek
-Gujjab
-Gulm
-Gulrn
-Gunaakt
-Gunag
-Gunug
-Gurukk
-Guthakug
-Guthug
-Gutjja
-Hagob
-Hagu
-Hagub
-Haguk
-Hebub
-Hegug
-Hibub
-Hig
-Hogug
-Hoknath
-Hoknuk
-Hokulk
-Holkurg
-Horknuth
-Hrolkug
-Hugagug
-Hugmug
-Hugolm
-Ig
-Igmut
-Ignatz
-Ignorg
-Igubat
-Igug
-Igurg
-Ikgnath
-Ikkath
-Inkathu
-Inkathurg
-Isagubat
-Jogug
-Jokgagu
-Jolagh
-Jorgagu
-Jregh
-Jreghug
-Jugag
-Jughog
-Jughragh
-Jukha
-Jukkhag
-Julakgh
-Kabugbu
-Kagan
-Kaghed
-Kahigig
-Karfu
-Karguk
-Karrghed
-Karrhig
-Karthurg
-Kebub
-Kegigoth
-Kegth
-Kerghug
-Kertug
-Kilug
-Klapdud
-Klog
-Klughig
-Knagh
-Knaraugh
-Knodagh
-Knorgh
-Knuguk
-Knurigig
-Kodagog
-Kog
-Kogan
-Komarod
-Korgak
-Korgulg
-Koughat
-Kraugug
-Krilge
-Krothu
-Krouthu
-Krugbu
-Krugorim
-Kubub
-Kugbu
-Kukgilug
-Kulgha
-Kupgugh
-Kurbag
-Kurmbag
-Laghed
-Lamgugh
-Mabub
-Magdud
-Malthu
-Marfu
-Margulg
-Mazhug
-Meakgu
-Mergigoth
-Milug
-Mudagog
-Mugarod
-Mughragh
-Mugorim
-Murbag
-Naghat
-Naghig
-Naguk
-Nahgigoth
-Nakgu
-Narfu
-Nargulg
-Narhbub
-Narod
-Neghed
-Nehrakgu
-Nildud
-Nodagog
-Nofhug
-Nogugh
-Nomgulg
-Noogugh
-Nugbu
-Nughilug
-Nulgha
-Numhug
-Nurbag
-Nurghed
-Oagungad
-Oakgu
-Obghat
-Oggha
-Oggugat
-Ogharod
-Oghuglat
-Oguk
-Ohomdud
-Ohulhug
-Oilug
-Okganit
-Olaghig
-Olaugh
-Olmthu
-Olodagh
-Olog
-Omaghed
-Ombilge
-Omegugh
-Omogulg
-Omugug
-Onog
-Onubub
-Onugug
-Oodagh
-Oogorim
-Oogugbu
-Oomigig
-Opathu
-Opaugh
-Opeghat
-Opilge
-Opkagut
-Opoguk
-Oquagan
-Orgha
-Orgoth
-Orgug
-Orpigig
-Ortguth
-Otugbu
-Ougha
-Ougigoth
-Ouhgan
-Owkbanok
-Paghorim
-Pahgigoth
-Pahgorim
-Pakgu
-Parfu
-Pargu
-Parhbub
-Parod
-Peghed
-Pehrakgu
-Pergu
-Perthag
-Pigdug
-Piggu
-Pitgurat
-Podagog
-Pofhug
-Pomgulg
-Poogugh
-Porgarag
-Pregu
-Pretkag
-Prigka
-Prikdarok
-Prutha
-Pughilug
-Puiltag
-Purbag
-Qog
-Quadagh
-Quilge
-Quimghig
-Quomaugh
-Quordud
-Quugug
-Raghat
-Raguk
-Rakgu
-Rarfu
-Rebub
-Rilug
-Rodagog
-Rogan
-Romarod
-Routhu
-Rugbu
-Rugorim
-Rurbag
-Rurigig
-Sabub
-Saghig
-Sahgigoth
-Sahgorim
-Sakgu
-Salthu
-Saraugug
-Sarfu
-Sargulg
-Sarhbub
-Sarod
-Sbghat
-Seakgu
-Sguk
-Shomdud
-Shulhug
-Sildud
-Silge
-Silug
-Sinsbog
-Slaghig
-Slapdud
-Slaugh
-Slodagh
-Slog
-Slughig
-Smaghed
-Smegugh
-Smogulg
-Snog
-Snubub
-Snugug
-Sodagh
-Sog
-Sogorim
-Sogugbu
-Sogugh
-Sombilge
-Somigig
-Sonagh
-Sorgulg
-Sornaraugh
-Soughat
-Spathu
-Speghat
-Spilge
-Spoguk
-Squagan
-Stugbu
-Sudagog
-Sugarod
-Sugbu
-Sugha
-Sugigoth
-Sugorim
-Suhgan
-Sulgha
-Sulmthu
-Sumhug
-Sunodagh
-Sunuguk
-Supaugh
-Supgugh
-Surbag
-Surgha
-Surghed
-Surgug
-Surpigig
-Tagdud
-Taghig
-Tandagh
-Tarfu
-Targhed
-Targigoth
-Tarod
-Taugh
-Teldgulg
-Tidgug
-Tilge
-Todagog
-Tog
-Toghat
-Togugh
-Torgan
-Torug
-Tozhug
-Traugh
-Trilug
-Trougha
-Trugagh
-Truigig
-Tuggug
-Tulgan
-Turbag
-Turge
-Ug
-Ugghra
-Uggug
-Ughat
-Ulgan
-Ulmragha
-Ulmrougha
-Umhra
-Umragig
-Umruigig
-Ungagh
-Unrugagh
-Urag
-Uraugh
-Urg
-Urgan
-Urghat
-Urgran
-Urlgan
-Urmug
-Urug
-Urulg
-Vabugbu
-Vagan
-Vagrungad
-Vagungad
-Vakgar
-Vakgu
-Vakmu
-Valthurg
-Vambag
-Vamugbu
-Varbu
-Varbuk
-Varfu
-Vargan
-Varguk
-Varkgorim
-Varthurg
-Vegum
-Vergu
-Verlgu
-Verthag
-Verthurg
-Vetorkag
-Vidarok
-Vigdolg
-Vigdug
-Viggu
-Viggulm
-Viguka
-Vitgurat
-Vitgut
-Vlog
-Vlorg
-Vorgak
-Vorgarag
-Vothug
-Vregu
-Vretkag
-Vrigka
-Vrikdarok
-Vrogak
-Vrograg
-Vrothu
-Vruhag
-Vrutha
-Vubub
-Vugub
-Vuiltag
-Vukgilug
-Vultog
-Vulug
-Vurbag
-Wakgut
-Wanug
-Wapkagut
-Waruk
-Wauktug
-Wegub
-Welub
-Wholug
-Wilaktug
-Wingloug
-Winug
-Woabadug
-Woggha
-Woggugat
-Wogharod
-Woghuglat
-Woglug
-Wokganit
-Womkug
-Womrikug
-Wonabadug
-Worthag
-Wraog
-Wrug
-Wrukag
-Wrukaog
-Wubdagog
-Wudgh
-Wudhagh
-Wudugog
-Wuglat
-Wumanok
-Wumkbanok
-Wurgoth
-Wurmha
-Wurtguth
-Wurthu
-Wutgarek
-Xaakt
-Xago
-Xagok
-Xagu
-Xaguk
-Xarlug
-Xarpug
-Xegug
-Xepug
-Xig
-Xnath
-Xnaurl
-Xnurl
-Xoknath
-Xokuk
-Xolag
-Xolkug
-Xomath
-Xomkug
-Xomoku
-Xonoth
-Xorag
-Xorakk
-Xoroku
-Xoruk
-Xothkug
-Xruul
-Xuag
-Xug
-Xugaa
-Xugag
-Xugagug
-Xugar
-Xugarf
-Xugha
-Xugor
-Xugug
-Xujarek
-Xuk
-Xulgag
-Xunaakt
-Xunag
-Xunug
-Xurek
-Xurl
-Xurug
-Xurukk
-Xutag
-Xuthakug
-Xutjja
-Yaghed
-Yagnar
-Yagnatz
-Yahg
-Yahigig
-Yakgnath
-Yakha
-Yalakgh
-Yargug
-Yegigoth
-Yegoth
-Yerghug
-Yerug
-Ymafubag
-Yokgagu
-Yokgu
-Yolmar
-Yonkathu
-Yregh
-Yroh
-Ysagubar
-Yughragh
-Yugug
-Yukgnath
-Yukha
-Yulakgh
-Yunkathu
-Zabghat
-Zabub
-Zaghig
-Zahgigoth
-Zahgorim
-Zalthu
-Zaraugug
-Zarfu
-Zargulg
-Zarhbub
-Zarod
-Zeakgu
-Zguk
-Zildud
-Zilge
-Zilug
-Zinsbog
-Zlapdud
-Zlog
-Zlughig
-Zodagh
-Zog
-Zogugbu
-Zogugh
-Zombilge
-Zonagh
-Zorfu
-Zorgulg
-Zorhgigoth
-Zornaraugh
-Zoughat
-Zudagog
-Zugarod
-Zugbu
-Zugorim
-Zuhgan
-Zulgha
-Zulmthu
-Zumhug
-Zunodagh
-Zunuguk
-Zupaugh
-Zupgugh
-Zurbag
-Zurgha
-Zurghed
-Zurgug
-Zurpigig
+[NAMES NAMES_EVIL_MAGE_LORD]
+4
+Kwan Li, Lord of the Mists
+Bazerion, the Wizard-Lord
+Ylthallynon, the Insane
+Xarot the Black Archmage
 
 [NAMES NAMES_HUMANMALE]
 1499
@@ -3888,259 +3079,6 @@ Zenon
 Zion
 Ziven
 Zorn
-
-[NAMES NAMES_ELFKIND]
-250
-Abadluan
-Abagraid
-Abaralaar
-Abeldogt
-Abenbeud
-Abeneih
-Abesanoac
-Acacils
-Acebagaan
-Acetecicr
-Acetgors
-Acirars
-Adanaih
-Adcaag
-Addorl
-Adigdias
-Adinobh
-Agacagasr
-Agasitn
-Agelahail
-Agelbalr
-Ahagataat
-Aharaac
-Aharetd
-Ahdalr
-Ahedobirr
-Ahelhaor
-Aherisn
-Alahier
-Alalagh
-Alerruar
-Alitann
-Alobins
-Analeah
-Anarand
-Anhaor
-Anididenb
-Anilanl
-Anilteat
-Anonahedb
-Anrath
-Antind
-Arabaig
-Aratnatg
-Arceog
-Arellanh
-Aresidabl
-Arganl
-Arhael
-Aritahaah
-Aritibaor
-Aroluen
-Aroreuh
-Arunibeor
-Asehliir
-Ashaid
-Aslisn
-Asrihd
-Asurruan
-Atadnaut
-Ataterelh
-Atcetb
-Ateruct
-Atlohc
-Badibl
-Begetnual
-Beranl
-Bibaad
-Bitabl
-Bohedguad
-Budeac
-Budhiol
-Bulohriet
-Carirredn
-Cehorioc
-Cilinaon
-Conaddids
-Cosalehc
-Cububaat
-Dagosseur
-Dalogedr
-Datrisl
-Dehald
-Dehrian
-Dohablaid
-Dolelsaoh
-Dorruec
-Dudlehn
-Ebodhuor
-Ebruoc
-Ecaletehh
-Ecanall
-Edgeas
-Egaluul
-Ehteas
-Elagalutb
-Elasanegr
-Eletual
-Enduen
-Enhihl
-Ennaar
-Enohill
-Eraralell
-Eribeod
-Erordeor
-Erried
-Esaloraul
-Esanaloac
-Gacinrieh
-Galabaon
-Galdunl
-Gecoglugg
-Gehuslatr
-Getudadb
-Getunl
-Ginusnaat
-Habogeng
-Hahaet
-Halalicr
-Halehial
-Hegicn
-Hehadtetl
-Helcaen
-Herabhasn
-Hidolnian
-Hidreur
-Hodabiib
-Horaob
-Hucnaod
-Huhtigt
-Hunidr
-Hutecranl
-Ibigait
-Ibiroet
-Ibriel
-Idahasorn
-Iduhahaug
-Igtalb
-Ilanegaln
-Inahaar
-Inibaan
-Inildelh
-Inusier
-Ireroliin
-Irgear
-Iseranisl
-Isterr
-Ittiog
-Labulolg
-Lacanb
-Ladaas
-Ladnors
-Lanebagt
-Lariat
-Larnaat
-Latucurd
-Lehaloer
-Lenluan
-Leshill
-Lirnaeg
-Litleat
-Lolunerd
-Lulatn
-Nagdauc
-Naguctatd
-Naheed
-Nalihatd
-Nantail
-Narubronn
-Naserhelh
-Natgouh
-Neglotn
-Nenanall
-Netabroar
-Nigteul
-Nihadb
-Nilatier
-Nodaud
-Nohabd
-Nolahaes
-Nonanarr
-Nosedt
-Noseghiad
-Nuccaer
-Nudatheth
-Nurabh
-Ocegeer
-Olareob
-Olelredn
-Olgern
-Onalarion
-Oragacurc
-Oresubitr
-Orirurl
-Orotibt
-Otadenoas
-Otesuboah
-Ralacoet
-Ralasuil
-Raloleab
-Raribhiog
-Rarsinl
-Rasadear
-Raslanb
-Rasudn
-Ratabiln
-Rateteah
-Ratuor
-Regand
-Rehenboal
-Rehleub
-Rerbien
-Rerebegr
-Retluul
-Ribodsabs
-Riderl
-Rigontidl
-Riloredr
-Rinoscear
-Rinsiod
-Rociriag
-Rorahbecn
-Roshent
-Rubadabd
-Saratitt
-Senahicn
-Sicratb
-Sihaag
-Sirsegh
-Sisotgaul
-Tadacerl
-Tadibitr
-Tanirabl
-Tarorlern
-Telorilh
-Tenitgenr
-Tibecnean
-Tiliddoan
-Tilrotn
-Tinuddaar
-Toladecl
-Tothail
-Ucoroceag
-Udanibuls
-Udenhitl
-Udigiur
-Ugabitobt
-Uneragial
-Unnais
-Urhert
 
 [NAMES NAMES_HUMANFEMALE]
 2191
@@ -6336,6 +5274,80 @@ Zulema
 Zuza
 Zuzanny
 
+[NAMES NAMES_HUMANMALE_TOKUNO]
+38
+Adai
+Akaba
+Akiosa
+Akisuke
+Arikoto
+Ashimaru
+Batsu
+Chihu
+Chihu
+Dosyaku
+Fuha
+Gakudai
+Gakudai
+Hikoza
+Kengi
+Kichizo
+Kirzahn
+Kongou
+Magosuke
+Nakai
+Naozumi
+Nasuno
+Numata
+Numata
+Numatta
+Ogino
+Riku
+Sanesue
+Sanesue
+Shinsirou
+Soutatsu
+Ukita
+Ukita
+Wajida
+Waricika
+Warimoto
+Yasuke
+Yose
+
+[NAMES NAMES_HUMANFEMALE_TOKUNO]
+30
+Aasin
+Agate
+Ahara
+Akala
+Akashi
+Akela
+Ayane
+Ayatsumi
+Chiwa
+Enji
+Haru
+Ikuha
+Iroha
+Nakai
+Niji
+Ruri
+Shino
+Suni
+Tama
+Toyoka
+Wakae
+Wakumi
+Wayo
+Wayu
+Wayu
+Yochika
+Yuki
+Yume
+Yumiha
+Zannia
+
 [NAMES NAMES_ELF_MALE]
 241
 Adaneborn
@@ -6798,79 +5810,28 @@ Unniel
 Unwing
 
 [NAMES NAMES_BIRDS]
-54
-Bittern
-Chaffinch
-Coot
-Corncrake
-Cuckoo
-Curlen
-Dunlin
-Fieldfare
-Gannet
-Glossy Ibis
-Goshawk
-Grouse
-Hoopoe
-Jackdaw
-Jay
-Kestrel
-Kingfisher
-KittiWake
-Lapwing
-Linnet
-Little Grebe
-Magpie
-Mourhen
-Nightingale
-Nighttar
-Partridge
-Peregine
-Pheasant
-Pied Wagtail
-Plover
-Quail
-Red Kite
-Redstart
-Reed Bunting
-Robin
-Rook
-Sandmartin
-Sandpiper
-Shag
-Skylark
-Snipe
-Song Thrush
-Sparrow
-Spoonbill
-Starling
-Swallow
-Tern
-Turtle Dove
-Wheatear
-Whimbell
-Woodcock
-Woodpecker
-Woodpigeon
-Wren
-
-[NAMES NAMES_TROPICAL_BIRDS]
-15
-Ani
-Aracari
-Canary
+21
+Chickadee
+Crossbill
 Cuckoo
 Finch
-Hummingbird
-I'iwi
-Jacamar
-Macaw
-Macaw
-Mynah
-Parakeet
-Parrot
-Quetzal
-Toucan
+Hawk
+Kingfisher
+Lapwing
+Nightingale
+Nuthatch
+Plover
+Skylark
+Sparrow
+Starling
+Swallow
+Swift
+Tern
+Thrush
+Towhee
+Warbler
+Woodpecker
+Wren
 
 [NAMES NAMES_EAGLES]
 12
@@ -6886,509 +5847,6 @@ Savanna Hawk
 Solitary Eagle
 White-tailed Eagle
 White-tailed Hawk
-
-[NAMES NAMES_GOBLIN]
-500
-Alegrot
-Andnon
-Andwart
-Ashbomb
-Bargebat
-Bargefilth
-Barner
-Bartgreen
-Batdeg
-Batmid
-Begle
-Beslime
-Bigrit
-Bingartle
-Bintark
-Binwipe
-Bittigrim
-Bittikil
-Bittipain
-Biwaz
-Blodgag
-Blodgru
-Blodverf
-Bloodwaz
-Bolbnacker
-Bomb
-Bombgru
-Bottom
-Boyer
-Boyker
-Bref
-Brefbok
-Brefni
-Brittlegrunt
-Brittlerock
-Brittlhurt
-Bugbitti
-Bumex
-Bumlip
-Bumrock
-Burrex
-Butt
-Buttbarge
-Buttbok
-Buttker
-Buttmid
-Buttwaz
-Buybeetle
-Buyfrad
-Buyslig
-Carclib
-Carhurt
-Chestslime
-Clibithy
-Clobbergrit
-Clutz
-Clutzottle
-Cotzu
-Daggrowl
-Dagturd
-Dagymuck
-Darkbref
-Deg
-Dergzug
-Dested
-Destu
-Destundy
-Dhakdum
-Diggybum
-Dipgree
-Dipgrit
-Dirkgan
-Dirkundy
-Dirtgrit
-Dirthurt
-Dirtmuck
-Dirtskank
-Dirtyyert
-Dug
-Dugclutz
-Dugdead
-Duggle
-Duggygrot
-Duggyyert
-Dumgree
-Dumgutt
-Edmoggy
-Erbe
-Erllip
-Erlnail
-Erlpork
-Erlsnuff
-Ert
-Exlard
-Exmorn
-Eybok
-Eylard
-Fadfoot
-Fadgood
-Fang
-Fangdeg
-Fangfoot
-Fanggle
-Fanggrime
-Farbart
-Farbyboy
-Fartyey
-Fartygrime
-Fartymuck
-Fartysnot
-Fatgrit
-Fattyey
-Fattygood
-Fattymeg
-Fattynacker
-Fattyster
-Filthnose
-Filthyert
-Filthyex
-Filthyguss
-Filthysnak
-Footungy
-Footwaste
-Fraddirk
-Fradhed
-Fradsludge
-Fragbe
-Fragdug
-Frakgutt
-Fraksnot
-Frakthe
-Frightbum
-Frightturd
-Frumsart
-Frumsludge
-Gabyee
-Gagbe
-Gagfad
-Gagly
-Gagwipe
-Ganteg
-Gartlebomb
-Ghulbutt
-Ghulerl
-Ghulwipe
-Gimpkiller
-Gitcat
-Githed
-Gitmoggy
-Gitnon
-Gitteg
-Glekun
-Glemeg
-Gleoz
-Goobarty
-Goorock
-Gorgolbottom
-Gorgolcat
-Gorgolkun
-Gorgolslime
-Grakabok
-Grakaert
-Grakaotis
-Grakapipi
-Greenblod
-Greendark
-Greenithy
-Greenrung
-Greeork
-Greeoz
-Grilldirty
-Grilldug
-Grillhorned
-Grillu
-Grimcrack
-Grimdeg
-Grimevomit
-Grimsqui
-Grimydagy
-Grimyskeg
-Grinu
-Gritdead
-Gritgreen
-Gritguck
-Grogdiggy
-Grolwaste
-Grosedark
-Groseteg
-Grotgun
-Grotrat
-Growldead
-Growley
-Growlgrot
-Growlmorn
-Growlpiss
-Grule
-Grulemoggy
-Grulldeg
-Gruntrat
-Grutbeer
-Grutderg
-Grutpuke
-Grutsarg
-Gruurt
-Guckrat
-Gun
-Gunbarrel
-Gunbrittl
-Gungag
-Gunsqui
-Guss
-Gutt
-Guttwee
-Guttwipe
-Hangwipe
-Hooert
-Hoosnot
-Hornedwee
-Humi
-Humidum
-Humihorned
-Humijohd
-Humisarg
-Hurtdagy
-Hurtfad
-Hurtnar
-Hurtsnot
-Hurtyed
-Ickywaz
-Iggrunt
-Iggybi
-Iggycrack
-Inhurt
-Insnuff
-Ithyrung
-Johdscabby
-Kargchest
-Kargkeg
-Karglard
-Kegdeg
-Kilguss
-Killy
-Killybarrel
-Killywimpy
-Kilrung
-Krulldirg
-Krullfoot
-Krullsludge
-Krullurt
-Kunlard
-Laddead
-Laddead
-Lardurt
-Leert
-Legrog
-Lencepuss
-Lerhock
-Lerhuck
-Lerhunx
-Leyert
-Lip
-Lipdiggy
-Marlbeetle
-Marlgorgol
-Marluzi
-Meanbolb
-Meanmuck
-Meanrung
-Megcrack
-Meggle
-Midcrik
-Midsluck
-Midslurp
-Miggyplop
-Miggypuss
-Miggystrong
-Miggyzar
-Moggygle
-Morfilth
-Morkslag
-Morn
-Mornkiller
-Morpump
-Moryee
-Mud
-Muddeg
-Mudugly
-Nackerzed
-Nail
-Nailgrule
-Nailhed
-Nailurt
-Narbomb
-Nargbutt
-Nargfud
-Nargstrong
-Nargwipe
-Nazvomit
-Nonfatty
-Nonsarg
-Noose
-Nooseguck
-Noosenail
-Nooseungy
-Nooseyert
-Nosebref
-Nosecat
-Noseclobber
-Noselard
-Noserung
-Ogdead
-Ork
-Orkgrule
-Orkturd
-Othguss
-Otisslip
-Ottle
-Ottledug
-Oz
-Ozmid
-Ozmoggy
-Ozzed
-Painwart
-Parjflab
-Piffnose
-Pipicat
-Pipigloop
-Pipigrot
-Pipigrot
-Pipiwart
-Pissjohd
-Pleclutz
-Plegrill
-Plopurt
-Probdug
-Probhurt
-Probnail
-Probugly
-Pukebart
-Pukebe
-Pukenon
-Pukeslip
-Pulgrule
-Pulstak
-Pulungy
-Pulwipe
-Pumpfilth
-Pumpgrule
-Pumppiff
-Pumpwee
-Punchfrum
-Punchsnot
-Puss
-Pussgit
-Pussyert
-Radher
-Ragorgol
-Rapunch
-Rarddher
-Rardsludge
-Rardsnak
-Rardwast
-Rashak
-Rat
-Rat
-Ratwart
-Rockdug
-Rotlence
-Rotturd
-Rotwert
-Rungboy
-Rungert
-Rungwert
-Sarg
-Sargflok
-Sarglad
-Sartdeg
-Scabbybug
-Scabbybum
-Scabbygrut
-Scabbyscum
-Scabfatty
-Scumlad
-Shagbuy
-Shakguss
-Shakum
-Skankdead
-Skankerl
-Skankfud
-Skin
-Skindum
-Sliggrim
-Slimebe
-Slimebe
-Slimebutt
-Slimeguck
-Slimeoth
-Slimescum
-Sludge
-Sludgebart
-Sludgedug
-Sludgegrunt
-Smellbottom
-Smellgag
-Smigburr
-Smigdeg
-Snotbottom
-Snotguck
-Snuffchest
-Snufffud
-Snuffgit
-Squiundy
-Squized
-Stakdark
-Stakfrad
-Stakmeg
-Ster
-Sterkeg
-Stikdeg
-Stikhed
-Stikvom
-Strongcotz
-Targrimy
-Tarhumi
-Tarmuck
-Teg
-Tegfang
-Tegguss
-Theithy
-Thenar
-Theoz
-Trobfad
-Trobork
-Turddiggy
-Turdfang
-Turdsludge
-Ugaggag
-Uggag
-Uggnsnot
-Uglylard
-Umgag
-Undybitti
-Undyoz
-Undypiss
-Ungysarg
-Ungysnak
-Urtscum
-Uzbref
-Uzex
-Uzidum
-Uzigrot
-Uzkilly
-Uzu
-Verfbottom
-Verfbum
-Verffud
-Verfwipe
-Vertdead
-Vertgrimy
-Vombog
-Vomitgrot
-Vomityuk
-Vomityum
-Vomungy
-Wartbum
-Wastbutt
-Wastdirt
-Wastger
-Wastgrule
-Wasthumi
-Wastotis
-Wasttoof
-Wazhed
-Wazhumi
-Wee
-Weeziggy
-Wert
-Wertkiller
-Wimpyhang
-Wimpyuz
-Wingbarrel
-Wipeex
-Wipepuss
-Wipesnak
-Wipeyed
-Yackgree
-Yedgrime
-Yeegrule
-Yert
-Yertbref
-Yertfad
-Yertgag
-Yertgrule
-Zarnbomb
-Zarnkiller
-Zedmeg
-Ziggyhorned
-Zogstik
-Zugdug
-Zughumi
 
 [NAMES NAMES_DREAD_LORD]
 43
@@ -7677,915 +6135,109 @@ Zughumi
 Aleonna
 Astri
 
-[NAMES NAMES_TROLL]
-243
-Abghar
-Adgulim
-Aghermus
-Agugug
-Agukin
-Almtug
-Alogin
-Ambiltig
-Apaugbun
-Arghar
-Argigos
-Auhgal
-Azhux
-Bagdun
-Baghig
-Bahgigol
-Bandaga
-Barfux
-Bargulga
-Bidguv
-Bildud
-Bilgez
-Bogbon
-Bogham
-Bogugh
-Borgaz
-Boruga
-Brougha
-Brugaga
-Bruigiv
-Buggug
-Builgex
-Bumhuv
-Buomaugh
-Cabugbug
-Cagal
-Cargus
-Cloggus
-Corgaval
-Crothus
-Cubum
-Dabug
-Dakgorus
-Dakgul
-Deakguv
-Dergur
-Dilug
-Ditgurasus
-Dorgarvil
-Dretkap
-Druthax
-Dugorissa
-Duiltax
-Durbar
-Eagun
-Egghaba
-Eichelberbog
-Ergost
-Ertgulch
-Ewkbano
-Fagdus
-Faghir
-Farghed
-Fargigoth
-Farod
-Faugh
-Feldgulg
-Fidgug
-Filge
-Fodagog
-Fogugh
-Fozhug
-Frikug
-Frug
-Frukag
-Fubdagog
-Fudhagh
-Fupgugh
-Furbog
-Futgarek
-Gaakt
-Garekk
-Gelub
-Gholug
-Gilaktug
-Ginug
-Gnabadug
-Gnadug
-Gnalurg
-Gnarg
-Gnarlug
-Gnorl
-Gnorth
-Gnoth
-Gnurl
-Goku
-Golag
-Golum
-Golub
-Gomatur
-Gomokun
-Gorgolun
-Grikug
-Grug
-Grukart
-Grukksin
-Gudhagis
-Gugdin
-Gulm
-Gulrn
-Gunaakt
-Gunag
-Gunug
-Guruss
-Hagon
-Hagum
-Heguga
-Hibubin
-Hrolkug
-Hugagug
-Hugmuggin
-Hugolmis
-Ignis
-Ignorgal
-Igubal
-Inkathus
-Isagubal
-Jogar
-Jorgagu
-Jreghin
-Jughoble
-Kabugbun
-Kaganal
-Karrghes
-Karrhim
-Kebuba
-Kertuska
-Klughis
-Knodager
-Koglis
-Krilge
-Krouthux
-Kugbu
-Kukgil
-Kurbag
-Laghell
-Lambug
-Mabuska
-Magdurn
-Marfur
-Margulin
-Mugarosk
-Naghas
-Naghing
-Nakgub
-Narhbub
-Nofhug
-Nogufin
-Nomgula
-Nurghex
-Oakgur
-Oghuglaf
-Olmthux
-Omugur
-Onogon
-Onubuck
-Oodaga
-Opathlyn
-Opeghar
-Opoguga
-Ortgupu
-Owkbangdo
-Pakgush
-Pegheska
-Piggup
-Preguska
-Pretkal
-Quilgeska
-Quuguck
-Rakgu
-Rarfuska
-Routhusk
-Rurigisk
-Sabubil
-Sarfusk
-Seaklo
-Shulhurg
-Sinsbogle
-Slogdop
-Snugug
-Soggle
-Sombilge
-Sorgulgas
-Speghag
-Spoguk
-Sugarok
-Surbaba
-Tagduch
-Taghag
-Targigoth
-Tarol
-Tilgest
-Todagol
-Tozhug
-Traugnik
-Truigig
-Ugmel
-Ugghal
-Umhras
-Uragnix
-Urg
-Urganus
-Urugdug
-Vabugnum
-Vagrungard
-Valthurges
-Vambat
-Varfus
-Varganz
-Vetorkaz
-Vidaros
-Vigukal
-Vlogwart
-Vregus
-Vugub
-Wakgupher
-Wanuga
-Wholugga
-Woggugar
-Wruggin
-Wumkbanor
-Xagoter
-Xagum
-Xignis
-Xuag
-Xurles
-Yahigin
-Ymafubala
-Yregh
-Zaburg
-Zarod
-Zlapdud
-Zloglin
+[NAMES NAMES_GARGOYLE_VENDOR]
+19
+Ansiraal
+Aurlem
+Betra
+Draxsom
+Fodus
+Forbrak
+ForLem
+Horffe
+Inforlem
+Invis
+Laplem
+Naxator
+Quaeven
+Sarpling
+Silamo
+Tereg
+Volesh
+Vraal
+WisSur
 
-[NAMES NAMES_Borg_Male]
-50
-Addranvan
-Addron
-Aethed
-Aetheor
-Aethir
-Aethor
-Aethyran
-Blircyn
-Caegwyn
-Caredd
-Carerraent
-Daeddyn
-Danyc
-Didoc
-Dyddyn
-Dyran
-Ginvan
-Glaedd
-Gleon
-Gleonnyn
-Gliran
-Gwigoynn
-Gwon
-Lenry
-Linvan
-Locyn
-Lonvan
-Lur
-Maennyn
-Moddry
-Rar
-Rhanvan
-Rharan
-Rhidry
-Rydd
-Sen
-Seodd
-Tenyc
-Tyllyn
-Tyrcyn
-Vaec
-Venvan
-Veonnan
-Veoryn
-Veryn
-Vudry
-Yradoc
-Yremire
-Yremyr
-Yreran
-
-[NAMES NAMES_Borg_Female]
-50
-Aloryan
-Alynoic
-Braena
-Brill
-Brodda
-Bryrka
-Calyan
-Ciryan
-Claengwen
-Clicla
-Cluniver
-Clyna
-Collyra
-Cyll
-Dealyan
-Delonna
-Dira
-Elalonna
-Gwana
-Gwolonna
-Jeana
-Jerka
-Jiryan
-Jwrka
-Jyniver
-Lynoic
-Meacla
-Merka
-Meryan
-Mibrylla
-Muniver
-Murka
-Mwryan
-Neangwen
-Nella
-Nivyan
-Nubrylla
-Rwnoic
-Ryryan
-Sabrylla
-Saengwen
-Silonna
-Sull
-Swrka
-Ysaniver
-Ysassa
-Ysoll
-Ysollyra
-Ysull
-Ysyssa
-
-[NAMES NAMES_pixie]
-22
-Ciline
-Cynthe
+[NAMES NAMES_PIXIE]
+26
 Klian
 Klistra
 Laeri
+Ciline
+Shiale
+Ourie
+Piepe
 Liera
+Sili
+Sefi
+Cynthe
 Nedra
-Os
-Oune
-Pieppe
+Hali
+Jiki
 Piku
 Rael
-Sefi
-Shendin
-Shri
-Sili
+Zanne
+Zut
 Sini
+Os
 Wienne
 Xian
 Ybri
-Zanne
-Zut 
+Calee
+Shendri
+Shri
 
-[NAMES NAMES_SAVAGE_FEMALE]
+[NAMES NAMES_SAVAGE]
+47
+Adrok
 Aicee
+Alli
 Araka
 Arda
-Bhora
-Cordee
-Evocah
-Jexa
-Khaonem
-La'Loh
-Rhunda
-Sinthe
-
-[NAMES NAMES_SAVAGE_MALE]
-Adrok
 Atar
+Atuk
+Baccu
+Bhora
 Bishor
 Bonkie
+Chaca
+Cordee
+Evocah
 Ghrom
+Groov'h
+Gruwulf
 Halex
+Hanz
+Jelak
+Jexa
 Kahl
+Karawyn
+Khaonem
+La'Loh
+Lana
+Lar
 Malen
+Masena
+Nasha
+Niha
 Ogger
+Olaufee
+Praphut
+Prie
+Rhunda
+Sabba
 Sai'ge
+Sann
+Sargaza
+ShoJo
+Sinthe
+Squee
+Usile
+Vaype
+Vek
 Yar
 
-[NAMES NAMES_DROW_MALE]
-248
-A'zraim
-Aartis Ber'Urzel
-Ac'la Kilsek
-Adinirahc Des'Astic
-Adinirahc Yogh'il'Rymmin
-Akirem
-Alak'roos 
-Ken'tlar
-AlakVrinn
-Aloclies Do'Naszh
-Alton Pharn
-Antarlas Draxel
-Apedamok Thalack
-Ardulstra Despdious
-Argaeth X'Xorlarrin
-Arkanazzt
-Asmodean Qu'Ellar
-Sar'Nav'ell
-Xandarroth
-Auro Pol' Dyrr
-Avae Soulsteeler
-Aziridine
-B'Ral
-Bailana
-Bathilde
-Boolk
-Bryony Olath'Xukuth
-Canaris Tegredir
-Comson Elg'sahl
-Cyric Ultrin D'veldrin
-Cyrik Kenafin
-Czzarre Llyncu
-D'Barl Flamehand
-D'Shair
-Dab'lezzan
-Daerde Massok
-Daeron Nuin Giliath
-Damon D'Marcus
-Dantrag Darklord
-Dardin Del'Sundin
-Darwar Ben Canaan
-Demon D'Kiakaha
-DelKalvir Arryre
-Denzil De'valdras
-Deventaraen Tindir
-Dhiamara Taan
-Djelh Thalack
-Dostrealt Pendragon
-Drani
-Drann'zeit
-Dreyanthalas
-Dronin Selk'Urahn
-Drur
-Druzya Vrak'Naernoon
-Duran
-Durdyn Hunett
-Eflarisanthos Talitharison
-Elg'cahl Phlith
-Elgalad D'Vanyee
-Elijah Fire Eyes
-Elorn Greystone
-Emowin Skyrunner
-Eshten Gero'Esten
-Eston
-Evnissyen
-Eyzana Veryn
-Ezyntari Exolus
-Faerl
-Fe'Talia De'Haaren
-Feanor Kaznok
-Filraen del Rilynt'tar
-Firkavin deathbringer
-Fisbran Baenere
-G'eldria
-Gorin Valshar
-Silasteri
-Grunten Hu' Tui
-Hellec Von Negrous
-Hilla De'Haaren
-Hotaru
-Ianen
-Imrae Shobolar
-Istolil illistyn
-Jahael 
-Jaklin
-Jaraxel Chath'Karliik
-Jaraxle Khalazza
-Jarkeel Q'uessian
-Jarlaxle Bregan
-D'aerthe
-Jayyge
-Jinko Zauvir
-Jirai Khellanos
-Jiv'undus Du'Urna
-Jolaya Kiranin
-Joulath Ai'Krellnen
-Jurzen Drembaelonshen
-Ka Oblodra
-Kaetan Dulin
-Kahamir Teken'duis
-Kahbree d' Arabani
-Kai'laende Baenre
-Dalharil De'Oloth
-Karthal Ker'rachid
-Keeshe
-Kel'D'Beck
-Kel Karak
-Khordon Despana
-Kyledor Zomorrod
-Larkis D'Khar
-Lassiter
-Lazvon Akroseke
-Lexorian Sha'sifezran
-Lirreka Nr'Uluxen
-Lordul Lorn
-Lothiniel Thalack
-Lucius N'zaarina
-Lukan N'biru
-Lunnen Noquar
-Lykrana'kalia
-Mael Havic
-Malafein U' Thorn
-Malak Darkbane
-Malns Rea'Morda
-Marse Covern
-Jalavar
-Merodach
-Miez'khal Del'Armgo
-Mithian se Mastra
-Mordryst
-Morgen den Antei
-Mourn Vramyrr
-Mumphra
-Nadal Arabani
-Nadlyl Yeogilrymmin
-Naeon Mae'Urden
-Naga'ina Spidersnake
-Nagarauch
-Nal'Sh'Dat
-Nalfienbaenre
-Nataljiet Sh'dagon
-Nekales Despana
-Niikkt D'Arvanon
-Nirto Q'tallos
-Noamuth Orbb
-Nodens Vrr'Ulhen
-Nydiroth
-Nym Noquar
-Nyxall Ta'Tiarra
-Oberon
-Olath'slyan Chath'vlos
-Onyx Bloodshade
-Orakio Starchaser
-P'ow Dei Shar
-Pen'Drae'Con Veladorn
-Perallen
-Raja D'Argon
-Rakarth Elvendroth
-Rastholin Silverthorn
-Rath'elg Har'luth
-Rel'Nyath Xolarrin
-Renor Kor'inth 
-Rhyl Mlezziir
-Riella Banere
-Ril'nn Riv'elgg
-Rilloz Bladefire
-Rislyn Stormblaze
-Sa'dor DeVille
-Sadric Banrae
-Savakamn Rilinth'sruth
-Scean'a'fein Van'kre
-Schairay Aizeem
-Shan'Del T'orgh
-Shannistryn
-SiNafay Drak'Xen
-Silex Del Lil Veldrin
-Soluafein Helviiryn
-Sorek Ultrin
-Sorn Duskryn
-Teken'duis
-Sytheril Rilynt'tar
-Szordrin Sar'Nav'ell
-Szordrin T'Sarran
-Szordrin d'quellar
-T'Ranos
-Tage Ara'Ze
-Tarraen'Glor
-Tath'riljss Kilund
-Tavaniel Dyn'Ast
-Telek dalharuk d'lloth
-Tonamie
-Tourach D'lakten
-TrUeDark FlameWielder
-Traxalias
-Trazur
-Trigud Baenre
-Trizixeter Larrenru
-Tssyrial Dalhariljadda
-Vy'lein
-Tudre Khan
-Tzimitzi Illistyn
-Tzipporah Di'Nithal'Tori
-Vairna
-Val Nanshrad
-Valas Blaeraban Druu'giir
-Naertynal
-Varika Baenre
-Vegeta
-Veldrin Vandree
-Velg'larn
-Velkyn Velve
-Velkyne Noamith
-Vendril Orbb
-Venen Darksteel
-Venorik Despana
-Vida Libriweith
-Viern Tres
-Vildailaa
-Vinixix
-Vlondrill Sylveetolsen
-Vlos Natok
-Vrix D'lorn
-Wap'ojar Jai'Aban
-Whys'par Aleta D'arlesve
-Wildreth
-Wynn
-Xanthe Nizzre
-Xylan Tar'rakus
-Xyran D'haggerath
-Ya'fa Zauviir
-Yautja S'il Melachen
-Yrinthakis Vulkyr
-Zakneifen Do'Reigan
-Zanatose Z'enibrion Everhate
-Zanatose Z'nebrion Everhate
-Zandramas Aurane
-Zedrix Hythloth
-Zendarus Ka'Ruthendle
-Zenmar Kraczon De'al
-Zgrizzak Bergith
-Zhaunil Arabani
-Zilvra Elghi'nn Velve
-Zin'ya Daer'nath
-Zirkhell R'yleh
-Zoltz Voltz
-Zool Spindaron
-Zul'Nar
-Zyle
-Zzesrut
-
-[NAMES NAMES_DROW_FEMALE]
-44
-Alesa Kaibak
-Alundra Dra'tinsir
-Amandil Numai
-Andria Vejalove
-Ardulstra Despdious
-Atma Murasaki
-Auradese Ssinss
-Bailana
-Canaris Tegredir
-Celyndil Baenre
-Chessintra Vrinn
-Dhiamara Taan
-Divia Valshar
-Dyanra Lilaeh
-Eisa Sar'Nav'ell
-Emowin Skyrunner
-Evnissyen
-Eyzana Veryn
-G'eldria
-Ginafae Esr'Razz
-Istolil Illistyn
-Jirai Khellanos
-Kali d'Claddath
-Khalia Ser'Rhal
-Kharressa Ghen'Mahrra
-Kyra De'Rauth
-Liliana Aliason
-Lykrana'kalia
-Nekales Despana
-Niikkt D'Arvanon
-Rhyl Mlezziir
-Riella Banere
-Serena Rae Xorlarrin
-Shan'Del T'orgh
-Sytheril Rilynt'tar
-Talabrina Elpragh
-Tavaniel Dyn'Ast
-Teshana Zz'Hhar
-Vairna
-Varika Baenre
-Vida Libriweith
-Zhaunil Arabani
-Zilvra Elghi'nn Velve
-Zin'ya Daer'nath
-
-[NAMES NAMES_DWARF_MALE]
-100
-Vusur
-Hafur
-Negnar
-Ninar
-Sonar
-Voignus
-Degnar
-Falin
-Dugan
-Vognus
-Refur
-Sagan
-Beran
-Goiran
-Komli
-Gloinus
-Nognus
-Megnar
-Glanus
-Bugan
-Remli
-Ganus
-Negan
-Sognar
-Nosur
-Kosil
-Vignus
-Luran
-Noiran
-Nefur
-Tilir
-Togan
-Nonus
-Besil
-Foignar
-Kilir
-Hiran
-Dinar
-Nusur
-Lagnus
-Vemli
-Sulin
-Glelin
-Risin
-Kufur
-Loran
-Nonar
-Sirin
-Vognar
-Vurin
-Benar
-Luran
-Malin
-Vinus
-Mognar
-Doignar
-Boiran
-Nili
-Loisur
-Boilir
-Minus
-Doilir
-Deli
-Gunar
-Toibur
-Mignar
-Hobur
-Mognar
-Nugnus
-Tanar
-Nolin
-Noirin
-Gemli
-Boilir
-Hulir
-Rasil
-Dilir
-Nesin
-Tugnar
-Moisin
-Vusin
-Holi
-Lifur
-Migan
-Fegan
-Gifur
-Dasil
-Koinus
-Roisin
-Dalin
-Rogan
-Glognar
-Mali
-Tenar
-Bonus
-Biran
-Minus
-Manar
-Doigan
-Goinar
-
-[NAMES NAMES_DWARF_FEMALE]
-100
-Daeniver
-Nyssa
-Lylyan
-Ysill
-Clylla
-Mena
-Dearyan
-Rillyra
-Braella
-Cillyra
-Gwolonna
-Molla
-Jeniver
-Brilla
-Gwaengwen
-Elaena
-Ysicla
-Ceassa
-Dilonna
-Clyvyan
-Merilonna
-Cyngwen
-Meraebrylla
-Lenoic
-Lana
-Alanoic
-Sossa
-Ysaessa
-Aludda
-Braniver
-Gwyna
-Raevyan
-Jeadda
-Gwillyra
-Merodda
-Jwngwen
-Cylla
-Jwbrylla
-Ysilonna
-Yswll
-Lolyan
-Elyvyan
-Merwcla
-Nira
-Rall
-Clwbrylla
-Raessa
-Clulla
-Yswlonna
-Merenoic
-Aloniver
-Ysealonna
-Jevyan
-Braebrylla
-Yseabrylla
-Gwodda
-Braella
-Cleavyan
-Merwbrylla
-Duna
-Alearyan
-Alwlyan
-Elicla
-Mell
-Ressa
-Ronoic
-Caessa
-Meroryan
-Ysyna
-Clengwen
-Ryna
-Merilonna
-Cwvyan
-Ysylonna
-Rarka
-Leassa
-Rwlonna
-Saella
-Gworyan
-Nell
-Meryngwen
-Ysalonna
-Ysillyra
-Ceallyra
-Mevyan
-Ysealonna
-Coniver
-Gwivyan
-Dilonna
-Gwaengwen
-Seana
-Alalla
-Cyll
-Jaengwen
-Breana
-Mussa
-Jarka
-Clyllyra
-Merwll
-Rella
-
-[NAMES NAMES_Controller]
+[NAMES NAMES_GOLEM_CONTROLLER]
+25
 Chujil
 Daklon
 Drakan
@@ -8597,127 +6249,19 @@ Galzan
 Hygraph
 Kronos
 Makzok
-Malkovik
-Phoseph
+Malkavik
 Noxtrag
+Phoseph
 Tavurk
 Vakel
 Vazmog
 Velis
 Yyntrix
+Zakron
+Zamog
 Zarus
 Zazik
 Zelik
-Zerras
-Zeuras
-Zilor
-
-[NAMES names_humanfemale_tokuno]
-50
-Ai
-Akane
-Ami
-Aoi
-Asuka
-Aya
-Ayaka
-Ayano
-Chihiro
-Chinatsu
-Enri
-Fuji
-Fumi
-Fumiya
-Haruka
-Hina
-Iako
-Iena
-Imari
-Isamu
-Kaeda
-Kana
-Kotone
-Mai
-Manami
-Mayu
-Miho
-Miki
-Misaki
-Miu
-Miyu
-Mizuki
-Moe
-Momoko
-Nana
-Nanako
-Nanami
-Natsuki
-Natsumi
-Reina
-Riko
-Rin
-Rina
-Saika
-Saki
-Sakura
-Shiori
-Tatsu
-Yui
-Yuuka
-
-
-[NAMES names_humanmale_tokuno]
-50
-Akako
-Akira
-Bishomon
-Chikao
-Daichi
-Daiki
-Daisuke
-Fuyu
-Genkei
-Ginjiro
-Goro
-Ichiro
-Isamu
-Ishio
-Jiro
-Jun
-Kaito
-Kazuki
-Kazuya
-Kenta
-Kouhei
-Makoto
-Mamoru
-Nagataka
-Naoki
-Naoto
-Naoko
-Nobu
-Osamu
-Ren
-Riku
-Ryouta
-Ryuu
-Seichi
-Shiro
-Shou
-Shouhei
-Shouta
-Souta
-Takahiro
-Takumi
-Takuya
-Tatsuya
-Tsubasa
-Umi
-Yemon
-Yuu
-Yuudai
-Yuuta
-Yuuto
-
+Zevras
 
 [EOF]

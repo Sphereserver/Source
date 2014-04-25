@@ -1,4 +1,4 @@
-//****************************************************************************
+﻿//****************************************************************************
 // SPHERE by : Menasoft ©1997-2007
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
@@ -88,7 +88,7 @@ CATEGORY=Animals
 SUBSECTION=Air
 DESCRIPTION=Tropical Bird
 ON=@Create
-   NAME=#NAMES_TROPICAL_BIRDS
+   NAME=#NAMES_BIRDS
    COLOR=colors_bird
    NPC=brain_animal
    FAME={1 499}
@@ -806,7 +806,6 @@ CATEGORY=Monsters
 SUBSECTION=Goblins
 DESCRIPTION=Goblin Chief
 ON=@Create
-   NAME=#NAMES_GOBLIN
    TITLE=the goblin chief
    COLOR=colors_green
    NPC=brain_monster
@@ -843,7 +842,6 @@ CATEGORY=Monsters
 SUBSECTION=Goblins
 DESCRIPTION=Goblin Shaman
 ON=@Create
-   NAME=#NAMES_GOBLIN
    TITLE=the goblin shaman
    COLOR=colors_green
    NPC=brain_monster
@@ -884,7 +882,6 @@ CATEGORY=Monsters
 SUBSECTION=Goblins
 DESCRIPTION=Goblin Lord
 ON=@Create
-   NAME=#NAMES_GOBLIN
    TITLE=the goblin lord
    COLOR=colors_green
    NPC=brain_monster
