@@ -567,7 +567,11 @@ public:
 		// IT_DOOR_OPEN
 		struct
 		{
-			int m_iSoundChange;	// tdata1= sound to open or close. SOUND_TYPE
+			SOUND_TYPE m_iSoundClose;	// tdata1(low)= sound to close. SOUND_TYPE
+			SOUND_TYPE m_iSoundOpen;	// tdata1(high)= sound to open. SOUND_TYPE
+			ITEMID_TYPE m_idSwitch; // tdata2 ID to change into when open/close
+			int m_iXChange;		// tdata3= X position to change
+			int m_iYChange;		// tdata4= Y position to change
 		} m_ttDoor;
 
 		// IT_GAME_PIECE

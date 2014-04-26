@@ -2342,6 +2342,13 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			}
 			break;
 		//return as decimal number or 0 if not set
+		case IC_DOORCLOSESOUND:
+		case IC_DOOROPENSOUND:
+		case IC_PORTCULISSOUND:
+			{
+				sVal.FormatLLVal(GetDefNum(pszKey, true));
+			}
+			break;
 		//On these ones, check BaseDef if not found on dynamic
 		case IC_BONUSSTR:
 		case IC_BONUSDEX:
@@ -2626,6 +2633,9 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_MANAPHASE:
 		case IC_NPCKILLERAMT:
 		case IC_NPCPROTECTIONAMT:
+		case IC_DOORCLOSESOUND:
+		case IC_DOOROPENSOUND:
+		case IC_PORTCULISSOUND:
 			SetDefNum(s.GetKey(),s.GetArgVal(), false);
 			return true;
 		case IC_ADDCIRCLE:
@@ -3556,8 +3566,10 @@ bool CItem::Use_Portculis()
 	MoveTo( pt );
 	Update();
 
-	SOUND_TYPE iSnd = 0;
-	CVarDefCont * pTagStorage = NULL; 
+	SOUND_TYPE iSnd = 0x21d;
+	if (GetDefNum("PORTCULISSOUND"))
+		iSnd = static_cast<SOUND_TYPE>(GetDefNum("PORTCULISSOUND"));
+	/*CVarDefCont * pTagStorage = NULL; 
 	pTagStorage = GetKey("OVERRIDE.PORTCULISSOUND", true);
 	if ( pTagStorage )
 	{
@@ -3566,7 +3578,7 @@ bool CItem::Use_Portculis()
 		else
 			iSnd = 0x21d;
 	} else 
-		iSnd = 0x21d;
+		iSnd = 0x21d;*/
 
 	Sound( iSnd );
 
@@ -3584,6 +3596,62 @@ bool CItem::IsDoorOpen() const
 {
 	ADDTOCALLSTACK("CItem::IsDoorOpen");
 	return( CItemBase::IsID_DoorOpen( GetDispID()));
+}
+
+bool CItem::Use_DoorNew( bool bJustOpen )
+{
+	ADDTOCALLSTACK("CItem::Use_DoorNew");
+
+	if (! IsTopLevel())
+		return( false );
+
+	bool bClosing = IsAttr(ATTR_OPENED);
+	if ( bJustOpen && bClosing )
+		return( true );	// links just open
+
+	CItemBase * pItemDef = Item_GetDef();
+	ITEMID_TYPE idSwitch = static_cast<ITEMID_TYPE>(m_itNormal.m_more2);
+	short sDifX = m_itNormal.m_morep.m_x;
+	short sDifY = m_itNormal.m_morep.m_y;
+	if (!idSwitch)
+	{
+		if (!pItemDef->m_ttDoor.m_idSwitch)
+			return Use_Door(bJustOpen);
+		idSwitch = pItemDef->m_ttDoor.m_idSwitch;
+		sDifX = m_itNormal.m_morep.m_x = sDifX ? sDifX : pItemDef->m_ttDoor.m_iXChange;
+		sDifY = m_itNormal.m_morep.m_y = sDifY ? sDifY : pItemDef->m_ttDoor.m_iYChange;
+	}
+	
+	//default sounds
+	SOUND_TYPE iCloseSnd = pItemDef->m_ttDoor.m_iSoundClose ? pItemDef->m_ttDoor.m_iSoundClose : 0x00f1;
+	SOUND_TYPE iOpenSnd = pItemDef->m_ttDoor.m_iSoundOpen ? pItemDef->m_ttDoor.m_iSoundOpen : 0x00ea;
+
+	//override sounds
+	if (GetDefNum("DOORCLOSESOUND"))
+		iCloseSnd = static_cast<SOUND_TYPE>(GetDefNum("DOORCLOSESOUND"));
+	if (GetDefNum("DOOROPENSOUND"))
+		iOpenSnd = static_cast<SOUND_TYPE>(GetDefNum("DOOROPENSOUND"));
+
+	CPointMap pt = GetTopPoint();
+	if (bClosing)
+	{
+		pt.m_x -= sDifX;
+		pt.m_y -= sDifY;
+	}
+	else
+	{
+		pt.m_x += sDifX;
+		pt.m_y += sDifY;
+	}
+
+	m_itNormal.m_more2 = GetDispID();
+	SetDispID(idSwitch);
+
+	MoveTo(pt);
+	Sound( bClosing ? iCloseSnd : iOpenSnd );
+	SetTimeout( bClosing ? -1 : 60*TICK_PER_SEC );
+	bClosing ? ClrAttr(ATTR_OPENED) : SetAttr(ATTR_OPENED);
+	return( ! bClosing );
 }
 
 bool CItem::Use_Door( bool fJustOpen )
@@ -3687,7 +3755,7 @@ bool CItem::Use_Door( bool fJustOpen )
 	// SetType( typelock );	// preserve the fact that it was locked.
 	MoveTo(pt);
 
-	CVarDefCont * pTagStorage = NULL; 
+	//CVarDefCont * pTagStorage = NULL; 
 	SOUND_TYPE iCloseSnd = 0x00f1;
 	SOUND_TYPE iOpenSnd = 0x00ea;
 
@@ -3712,13 +3780,19 @@ bool CItem::Use_Door( bool fJustOpen )
 			break;
 	}
 
-	pTagStorage = GetKey("OVERRIDE.DOORSOUND_CLOSE", true);
+	//override sounds
+	if (GetDefNum("DOORCLOSESOUND"))
+		iCloseSnd = static_cast<SOUND_TYPE>(GetDefNum("DOORCLOSESOUND"));
+	if (GetDefNum("DOOROPENSOUND"))
+		iOpenSnd = static_cast<SOUND_TYPE>(GetDefNum("DOOROPENSOUND"));
+
+	/*pTagStorage = GetKey("OVERRIDE.DOORSOUND_CLOSE", true);
 	if ( pTagStorage )
 		iCloseSnd = static_cast<SOUND_TYPE>(pTagStorage->GetValNum());
 	pTagStorage = NULL;
 	pTagStorage = GetKey("OVERRIDE.DOORSOUND_OPEN", true);
 	if ( pTagStorage )
-		iOpenSnd = static_cast<SOUND_TYPE>(pTagStorage->GetValNum());
+		iOpenSnd = static_cast<SOUND_TYPE>(pTagStorage->GetValNum());*/
 
 	Sound( fClosing ? iCloseSnd : iOpenSnd );
 
@@ -5010,7 +5084,8 @@ bool CItem::OnTick()
 			{
 				// Doors should close.
 				EXC_SET("default behaviour::IT_DOOR");
-				Use_Door( false );
+				//Use_Door( false );
+				Use_DoorNew( false );
 			}
 			return true;
 

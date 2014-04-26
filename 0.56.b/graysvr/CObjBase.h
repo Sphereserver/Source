@@ -416,6 +416,7 @@ public:
 #define ATTR_LOCKEDDOWN		0x800000	// Is Locked Down
 #define ATTR_SECURE			0x1000000	// Is Secure
 #define ATTR_REFORGED		0x2000000	// Is Runic Reforged.
+#define ATTR_OPENED			0x4000000	// Is Door Opened.
 	DWORD	m_Attr;
 	DWORD	m_CanUse;		// Base attribute flags. can_u_all/male/female..
 
@@ -1212,6 +1213,7 @@ public:
 
 	bool IsDoorOpen() const;
 	bool Use_Door( bool fJustOpen );
+	bool Use_DoorNew( bool bJustOpen );
 	bool Use_Portculis();
 	SOUND_TYPE Use_Music( bool fWell ) const;
 

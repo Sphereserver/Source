@@ -894,3 +894,20 @@ Fixed #1500: Quote causing problems for ARGS and ARGV. This is how is will work 
 
 24-04-2014, Ben
 Fixed #1739: ">" in QVAL's condition is now processed properly as "bigger than" instead of the end of QVAL
+
+26-04-2014, Ben
+Changed: TAG.OVERRIDE.DOORSOUND_CLOSE for DOORCLOSESOUND
+		TAG.OVERRIDE.DOORSOUND_OPEN for DOOROPENSOUND
+		TAG.OVERRIDE.PORTCULISSOUND for PORTCULISSOUND
+Fixed #2054: Should now be able to make any door work with new scripting options (default still works if no new data is found)
+	-Game Item: (if no info here, use ITEMDEF info)
+		-MORE2=0676 //ID to change into (no DEFNAME as it's only used for dispid)
+		-MOREX=-1 // X position change
+		-MOREY=1  // Y position change
+		-DOORCLOSESOUND=00f3 closing sound
+		-DOOROPENSOUND=00eb opening sound
+	-ITEMDEF: (if no info here and on game item, use default system)
+		-TDATA1=00eb00f3 //WORD open | WORD close (sounds)
+		-TDATA2=0676 //ID to change into (no DEFNAME as it's only used for dispid)
+		-TDATA3=-1 // X position change
+		-TDATA4=1  // Y position change
