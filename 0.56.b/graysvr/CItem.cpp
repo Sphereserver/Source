@@ -2310,6 +2310,13 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 
 	switch ( index )
 	{
+		//return as string or hex number or 0 if not set
+		case IC_DOORCLOSESOUND:
+		case IC_DOOROPENSOUND:
+		case IC_PORTCULISSOUND:
+		case IC_DOOROPENID:
+			GetDefStr(pszKey, true);
+			break;
 		//return as string or hex number or NULL if not set
 		case IC_CRAFTEDBY:
 		case IC_MAKERSNAME:
@@ -2342,13 +2349,6 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			}
 			break;
 		//return as decimal number or 0 if not set
-		case IC_DOORCLOSESOUND:
-		case IC_DOOROPENSOUND:
-		case IC_PORTCULISSOUND:
-			{
-				sVal.FormatLLVal(GetDefNum(pszKey, true));
-			}
-			break;
 		//On these ones, check BaseDef if not found on dynamic
 		case IC_BONUSSTR:
 		case IC_BONUSDEX:
@@ -2636,6 +2636,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_DOORCLOSESOUND:
 		case IC_DOOROPENSOUND:
 		case IC_PORTCULISSOUND:
+		case IC_DOOROPENID:
 			SetDefNum(s.GetKey(),s.GetArgVal(), false);
 			return true;
 		case IC_ADDCIRCLE:
@@ -3610,7 +3611,7 @@ bool CItem::Use_DoorNew( bool bJustOpen )
 		return( true );	// links just open
 
 	CItemBase * pItemDef = Item_GetDef();
-	ITEMID_TYPE idSwitch = static_cast<ITEMID_TYPE>(m_itNormal.m_more2);
+	ITEMID_TYPE idSwitch = static_cast<ITEMID_TYPE>(GetDefNum("DOOROPENID", true));
 	short sDifX = m_itNormal.m_morep.m_x;
 	short sDifY = m_itNormal.m_morep.m_y;
 	if (!idSwitch)
@@ -3644,7 +3645,7 @@ bool CItem::Use_DoorNew( bool bJustOpen )
 		pt.m_y += sDifY;
 	}
 
-	m_itNormal.m_more2 = GetDispID();
+	SetDefNum("DOOROPENID", GetDispID());
 	SetDispID(idSwitch);
 
 	MoveTo(pt);

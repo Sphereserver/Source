@@ -899,9 +899,10 @@ Fixed #1739: ">" in QVAL's condition is now processed properly as "bigger than" 
 Changed: TAG.OVERRIDE.DOORSOUND_CLOSE for DOORCLOSESOUND
 		TAG.OVERRIDE.DOORSOUND_OPEN for DOOROPENSOUND
 		TAG.OVERRIDE.PORTCULISSOUND for PORTCULISSOUND
+Added: DOOROPENID to Items for new door system.
 Fixed #2054: Should now be able to make any door work with new scripting options (default still works if no new data is found)
 	-Game Item: (if no info here, use ITEMDEF info)
-		-MORE2=0676 //ID to change into (no DEFNAME as it's only used for dispid)
+		-DOOROPENID=0676 //ID to change into (no DEFNAME as it's only used for dispid)
 		-MOREX=-1 // X position change
 		-MOREY=1  // Y position change
 		-DOORCLOSESOUND=00f3 closing sound
