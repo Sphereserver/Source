@@ -825,13 +825,72 @@ void CChar::NPC_LoadScript( bool fRestock )
 	}
 
 	CCharBase * pCharDef = Char_GetDef();
-	ReadScriptTrig(pCharDef, CTRIG_Create);
-	//OnTrigger(CTRIG_Create, this, 0);
 
+	// Begin @Create fix
+	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
+	LPCTSTR pszTrigName;
+	CTRIG_TYPE iAction;
+	if ( ISINTRESOURCE(CTRIG_Create))
+	{
+		iAction = (CTRIG_TYPE) GETINTRESOURCE(CTRIG_Create);
+		pszTrigName = sm_szTrigName[iAction];
+	}
+	else
+	{
+		iAction = (CTRIG_TYPE) FindTableSorted( pszTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
+	}
+
+	// 1) CHARDEF trigger
+	if ( m_pPlayer == NULL ) //	CHARDEF triggers (based on body type)
+	{
+		CChar * pChar = this->GetChar();
+		if ( pChar != NULL )
+		{
+			CGrayUID uidOldAct = pChar->m_Act_Targ;
+			pChar->m_Act_Targ = GetUID();
+			pChar->ReadScriptTrig(pCharDef, CTRIG_Create);
+			pChar->m_Act_Targ = uidOldAct;
+		}
+	}
+	//This remains untouched but moved after the chardef's section
 	if (( fRestock ) && ( IsTrigUsed(TRIGGER_NPCRESTOCK) ))
 		ReadScriptTrig(pCharDef, CTRIG_NPCRestock);
 
-	CreateNewCharCheck();
+	CreateNewCharCheck();	//This one is giving stats, etc to the char, so we can read/set them in the next triggers.
+	//
+
+	if ( m_pNPC != NULL )
+	{
+		// 2) TEVENTS
+		for ( size_t i = 0; i < pCharDef->m_TEvents.GetCount(); ++i )
+		{
+			CResourceLink * pLink = pCharDef->m_TEvents[i];
+			if ( !pLink || !pLink->HasTrigger(iAction) )
+				continue;
+			CResourceLock s;
+			if ( !pLink->ResourceLock(s) )
+				continue;
+			iRet = CScriptObj::OnTriggerScript(s, pszTrigName, this, 0);
+			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
+				return;
+		}
+
+		// 4) EVENTSPET triggers
+		for ( size_t i = 0; i < g_Cfg.m_pEventsPetLink.GetCount(); ++i )
+		{
+			CResourceLink * pLink = g_Cfg.m_pEventsPetLink[i];
+			if ( !pLink || !pLink->HasTrigger(iAction) )
+				continue;
+			CResourceLock s;
+			if ( !pLink->ResourceLock(s) )
+				continue;
+			iRet = CScriptObj::OnTriggerScript(s, pszTrigName, this, 0);
+			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
+				return;
+		}
+	}
+	// End @Create fix 
+
 }
 
 void CChar::OnWeightChange( int iChange )
