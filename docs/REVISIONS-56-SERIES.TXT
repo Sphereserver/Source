@@ -912,3 +912,6 @@ Fixed #2054: Should now be able to make any door work with new scripting options
 		-TDATA2=0676 //ID to change into (no DEFNAME as it's only used for dispid)
 		-TDATA3=-1 // X position change
 		-TDATA4=1  // Y position change
+
+29-04-2014, Ben
+-Fixed: VAR,TAG and LOCAL causing instability in the server with huge amount of data. Limit of 2048 caracters has been set.
