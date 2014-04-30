@@ -2395,6 +2395,13 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 				sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
 			}	
 			break;
+		case IC_SPELLCOUNT:
+			{
+				if ( !IsTypeSpellbook() )
+					return false;
+				sVal.FormatLLVal(GetSpellcountInBook());
+			}
+			break;
 		case IC_ADDSPELL:
 			pszKey	+= 8;
 			SKIP_SEPARATORS( pszKey );

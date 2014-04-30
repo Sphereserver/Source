@@ -2358,13 +2358,89 @@ do_default:
 				if ( strlen( pszKey ) > 8 )
 				{
 					pszKey += 8;
-					if (( *pszKey == '.' ) && ( m_lastAttackers.size() ))
+					size_t attackerIndex = m_lastAttackers.size();
+					if ( *pszKey == '.' )
 					{
 						pszKey++;
-						if( !strnicmp(pszKey, "CLEAR", 5) )
+						if  ( m_lastAttackers.size() )
 						{
-							m_lastAttackers.clear();
+							if( !strnicmp(pszKey, "CLEAR", 5) )
+							{
+								m_lastAttackers.clear();
+								return true;
+							}else if ( !strnicmp(pszKey, "DELETE", 6) )
+							{
+								if ( m_lastAttackers.size() )
+								{
+									int count = 0;
+									for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); it++)
+									{
+										size_t attackerIndex = m_lastAttackers.size();
+										LastAttackers & refAttacker = m_lastAttackers.at(count);
+										CGrayUID uid = refAttacker.charUID;
+										if ( uid.CharFind() && uid == static_cast<DWORD>(s.GetArgVal()) )
+										{
+											m_lastAttackers.erase(it);
+											break;
+										}
+										count++;
+									}
+								}
+								return true;
+							}
+						}
+						// Above must be used only when there are attackers, following one doesn't need it
+						if ( !strnicmp(pszKey, "ADD", 3 ) )
+						{
+
+							bool bAttackerExists = false;
+							CGrayUID uid = static_cast<CGrayUID>(s.GetArgVal());
+							if  ( m_lastAttackers.size() )	// Must only check for existing attackers if there are any attacker already.
+							{
+								for (std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it)
+								{
+									LastAttackers & refAttacker = *it;
+									if ( refAttacker.charUID == uid )
+									{
+										bAttackerExists = true;
+										//Found one, no actions needed so we skip
+										//break;
+										return true;
+									}
+								}
+							}
+
+							// Attacker not found, we must add it
+							//if (bAttackerExists == false)
+							//{
+								LastAttackers attacker;
+								attacker.amountDone = 0;
+								attacker.charUID = uid;
+								attacker.elapsed = 0;
+								m_lastAttackers.push_back(attacker);
+							//}
 							return true;
+						}
+						else
+						{
+							attackerIndex = Exp_GetVal(pszKey);
+						}
+
+						SKIP_SEPARATORS(pszKey);
+						if ( attackerIndex < m_lastAttackers.size() )
+						{
+							LastAttackers & refAttacker = m_lastAttackers.at(attackerIndex);
+
+							if( !strnicmp(pszKey, "DAM", 3) )
+							{
+								refAttacker.amountDone = s.GetArgVal();
+								return true;
+							}
+							else if( !strnicmp(pszKey, "ELAPSED", 7) )
+							{
+								refAttacker.elapsed = s.GetArgVal();;
+								return true;
+							}
 						}
 					}
 				}

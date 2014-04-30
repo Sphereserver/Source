@@ -915,3 +915,9 @@ Fixed #2054: Should now be able to make any door work with new scripting options
 
 29-04-2014, Ben
 -Fixed: VAR,TAG and LOCAL causing instability in the server with huge amount of data. Limit of 2048 caracters has been set.
+
+30-04-2014, XuN
+-Added SpellCount function for Spellbooks (Read Only).
+-Tweaked Attacker system:
+	Added attacker.add uid / attacker.delete uid. Self explanatory
+	Changed: attacker.elapsed/dam are now writable
