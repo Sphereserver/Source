@@ -152,7 +152,6 @@ brain_berserk          11
 brain_undead           12
 brain_dragon           13
 brain_vendor_offduty   14
-brain_towncrier        2
 
 [DEFNAME sounds]
 snd_wind1                 21
@@ -1336,19 +1335,19 @@ RDS_SA          7
 [DEFNAME talkmode_type]
 // When client or server send a speech packet these have a type
 // You can use them to send a packet or to check ARGN1 in the global speech hook
-talkmode_system      0   // Normal system message. ( server -> client && client -> server )
-talkmode_prompt      1   // Display as system prompt. ( server -> client )
-talkmode_emote       2   // *smiles* at object. ( client -> server )
-talkmode_say         3   // A chacter speaking. ( server -> client )
-talkmode_obj         4   // At Object ( server -> client )
-talkmode_nothing     5   // Does not display ( server -> client )
-talkmode_item        6   // Text labeling an item. Preceeded by "You see" ( server -> client )
-talkmode_noscroll    7   // As a status msg. Does not scroll ( server -> client )
-talkmode_whisper     8   // ;   only those close can here. ( client -> server )
-talkmode_yell        9   // ! can be heard 2 screens away. ( client -> server )
-talkmode_spell      10   // Used by spells ( server -> client )
-talkmode_guild      13   // \ guild speech ( client -> server )
-talkmode_alliance   14   // alliance speech ( client -> server )
+talkmode_system      0   // Normal system message.				(client <-> server)
+talkmode_prompt      1   // Display as system prompt.				(client <-  server)
+talkmode_emote       2   // *smiles* at object.					(client  -> server) (client shortcut: :+space)
+talkmode_say         3   // A chacter speaking. 				(client <-  server)
+talkmode_obj         4   // At Object						(client <-  server)
+talkmode_nothing     5   // Does not display					(client <-  server)
+talkmode_item        6   // Text labeling an item. Preceeded by "You see"	(client <-  server)
+talkmode_noscroll    7   // As a status msg. Does not scroll			(client <-  server)
+talkmode_whisper     8   // Only those close can hear.				(client  -> server) (client shortcut: ;+space)
+talkmode_yell        9   // Can be heard 2 screens away.			(client  -> server) (client shortcut: !+space)
+talkmode_spell      10   // Used by spells					(client <-  server)
+talkmode_guild      13   // Used by guild chat					(client  -> server) (client shortcut: \)
+talkmode_alliance   14   // Used by alliance chat				(client  -> server) (client shortcut: shift+\)
 
 [DEFNAME skill_flags]
 // These falgs are used in SKILL definitions

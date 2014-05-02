@@ -7,141 +7,143 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, April 18, 2014
+// FILE LAST UPDATED: Friday, May 2, 2014
 //
 VERSION=0.56c
 
 
-[DEFNAME backward_compability_defs]
-//i_gate_wood_2           i_fence_wood_3
-//i_bow_ruin_o          i_bow_ruin
-//i_kryss_ruin_o        i_kryss_ruin
-//brain_beserk          brain_berserk
-//loot_ORGE_LORD        loot_OGRE_LORD
-//i_axe_war_VANQUISIHNG i_axe_war_VANQ
-//i_reag_worm_heart     i_reag_wyrm_heart
-//i_candleabra          i_candelabra
-//i_candleabra_lit      i_candelabra_lit
-//i_candleabra2         i_candelabra2
-//i_candleabra2_lit     i_candelabra2_lit
-//i_spellbook_paladin          i_spellbook_chivalry
-//i_spellbook_arcanist         i_spellbook_spellweaving
-//i_scroll_blood_oat           i_scroll_blood_oath
-//i_scroll_lich_transformation i_scroll_lich_form
-//i_scroll_pain_strike         i_scroll_pain_spike
-//i_scroll_strangulation       i_scroll_strangle
-//snd_rune_beetle      snd_monster_rune_beetle
-//snd_yomotsu          snd_monster_yomotsu
-//snd_kappa            snd_monster_kappa
-//snd_crane            snd_animal_crane
-//snd_gaman            snd_monster_gaman
-//snd_tsuki_wolf       snd_monster_tsuki_wolf
-//snd_rav_lion         snd_monster_rav_lion
-//snd_oni              snd_monster_oni
-//snd_pixie            snd_monster_pixie
-//snd_centaur          snd_monster_centaur
-//snd_kirin            snd_animal_kirin
-//snd_hiryu            snd_animal_hiryu
-//i_door_portculis        i_door_portcullis
-//i_axel_and_gears        i_axle_and_gears
-//i_axel                  i_axle
-//i_sa_door_ws1           i_door_ws1
-//i_sa_door_ws2           i_door_ws2
-//i_sa_door_ws3           i_door_ws3
-//i_sa_door_gd            i_door_gargoyle
-//i_sa_door_barred        i_door_barred_2
-//i_sa_door_qdh           i_door_queen_huge
-//i_sa_door_qd            i_door_queen
-//i_sa_door_m1            i_door_m1
-//i_sa_door_m2            i_door_m2
-//i_sa_door_m3            i_door_m3
-//i_sa_door_m4            i_door_m4
-//i_sa_door_rd            i_door_ruined
-//i_reag_volcanic_ash     i_reag_grave_dust
-//i_reag_serpent_scale    i_reag_nox_crystal
-//i_marble                i_rock_marble
-//i_wall_wood             i_wall_darkwood
-//i_wall_stone_2          i_wall_stone_window
-//i_wall_brick            i_wall_smallbrick
-//i_wall_brick_2          i_wall_smallbrick_window
-//i_wall_stone_4          i_wall_largebrick
-//i_wall_stone_5          i_wall_largebrick_window
-//i_wall_stone_med_4      i_wall_largebrick
-//i_wall_stone_sm_4       i_wall_largebrick
-//i_wall_stone_7          i_wall_hugebrick
-//i_wall_log_2            i_wall_log_window
-//i_wall_wood_2           i_wall_lightwood
-//i_wall_wood_3           i_wall_lightwood_window
-//i_wall_stone_8          i_wall_hugestone
-//i_wall_marble_2         i_wall_marble_window
-//i_wall_marble_4         i_wall_marble_window
-//i_wall_marble_6         i_wall_marble_window
-//i_wall_marble_window_2  i_wall_marble_window
-//i_wall_marble_window_3  i_wall_marble_window
-//i_wall_plaster_2        i_wall_plaster_window
-//i_wall_plaster_4        i_wall_plaster
-//i_wall_sandstone_2      i_wall_sandstone_window
-//i_wall_sandstone_4      i_wall_sandstone_window
-//i_wall_hide_2           i_wall_hide_window
-//i_wall_hide_4           i_wall_hide_window
-//i_wall_stone_9          i_wall_hugebrownstone
-//i_wall_plaster_9        i_wall_plaster_sandstone
-//i_wall_plaster_10       i_wall_plaster_sandstone_window
-//i_wall_wood_7           i_wall_pallisade
-//i_wall_tent_10          i_wall_tent_darkblue
-//i_wall_tent             i_wall_tent_darkgreen
-//i_wall_sandstone_1      i_wall_sandstone_fancy
-//i_wall_sandstone_6      i_wall_cave
-//i_wall_sandstone_7      i_wall_stone_ruined
-//i_wall_marble_1         i_wall_whitemarble
-//i_wall_marble_8         i_wall_whitemarble_window
-//i_wall_marble_10        i_wall_whitemarble_window
-//i_wall_marble_12        i_wall_whitemarble_window
-//i_wall_stone_11         i_wall_hugebrick
-//i_wall_tent_2           i_wall_tent_darkgray
-//i_wall_tent_3           i_wall_tent_darkgray
-//i_wall_tent_4           i_wall_tent_patches
-//i_wall_tent_5           i_wall_tent_lightgray
-//i_wall_plaster_14       i_wall_plaster
-//i_stone_ruin            i_wall_sandstone_ruined
-//i_wall_stone_12         i_wall_stone_sandstone
-//i_wall_stone_13         i_wall_stone_sandstone
-//i_wall_stone_14         i_wall_stone_sandstone
-//i_pylon_stone           i_wall_hugebrownstone
-//i_pylon_stone_light     i_wall_hugebrick
-//i_pylon_stone_sand      i_wall_sandstone
-//i_window_skull          i_wall_largebrick_window
-//i_latticed_wall_1       i_wall_lattice_1
-//i_latticed_wall_brown   i_wall_lattice_2
-//i_wall_latticed_plaster i_wall_cloth_framed
-//i_fruit_cantelope	      i_fruit_cantaloupe
-//i_fruit_gourd1          i_fruit_gourd_yellow
-//i_fruit_gourd2          i_fruit_gourd_green
-//i_hair_afro			  i_hair_curly
-//i_hair_krisna			  i_hair_topknot
-//i_hair_lf				  i_hair_long_feather
-//i_hair_elven_long2	  i_hair_elven_long
-//i_hair_elven_long3	  i_hair_elven_topknot
-//i_hair_elven_long4	  i_hair_elven_buns
-//attr_enhanced		attr_enchanted
-//can_i_enhance		can_i_enchant
+[DEFNAME backward_compatibility_defs]
+//attr_enhanced			attr_enchanted
+//can_i_enhance			can_i_enchant
+//loot_ORGE_LORD		loot_OGRE_LORD
+//brain_beserk			brain_berserk
+//brain_towncrier		brain_human
+//snd_rune_beetle		snd_monster_rune_beetle
+//snd_yomotsu			snd_monster_yomotsu
+//snd_kappa			snd_monster_kappa
+//snd_crane			snd_animal_crane
+//snd_gaman			snd_monster_gaman
+//snd_tsuki_wolf		snd_monster_tsuki_wolf
+//snd_rav_lion			snd_monster_rav_lion
+//snd_oni			snd_monster_oni
+//snd_pixie			snd_monster_pixie
+//snd_centaur			snd_monster_centaur
+//snd_kirin			snd_animal_kirin
+//snd_hiryu			snd_animal_hiryu
+//i_gate_wood_2			i_fence_wood_3
+//i_bow_ruin_o			i_bow_ruin
+//i_kryss_ruin_o		i_kryss_ruin
+//i_axe_war_vanquishing		i_axe_war_vanq
+//i_reag_worm_heart		i_reag_wyrm_heart
+//i_candleabra			i_candelabra
+//i_candleabra_lit		i_candelabra_lit
+//i_candleabra2			i_candelabra2
+//i_candleabra2_lit		i_candelabra2_lit
+//i_spellbook_paladin		i_spellbook_chivalry
+//i_spellbook_arcanist		i_spellbook_spellweaving
+//i_scroll_blood_oat		i_scroll_blood_oath
+//i_scroll_lich_transformation	i_scroll_lich_form
+//i_scroll_pain_strike		i_scroll_pain_spike
+//i_scroll_strangulation	i_scroll_strangle
+//i_door_portculis		i_door_portcullis
+//i_axel_and_gears		i_axle_and_gears
+//i_axel			i_axle
+//i_sa_door_ws1			i_door_ws1
+//i_sa_door_ws2			i_door_ws2
+//i_sa_door_ws3			i_door_ws3
+//i_sa_door_gd			i_door_gargoyle
+//i_sa_door_barred		i_door_barred_2
+//i_sa_door_qdh			i_door_queen_huge
+//i_sa_door_qd			i_door_queen
+//i_sa_door_m1			i_door_m1
+//i_sa_door_m2			i_door_m2
+//i_sa_door_m3			i_door_m3
+//i_sa_door_m4			i_door_m4
+//i_sa_door_rd			i_door_ruined
+//i_reag_volcanic_ash		i_reag_grave_dust
+//i_reag_serpent_scale		i_reag_nox_crystal
+//i_marble			i_rock_marble
+//i_wall_wood			i_wall_darkwood
+//i_wall_stone_2		i_wall_stone_window
+//i_wall_brick			i_wall_smallbrick
+//i_wall_brick_2		i_wall_smallbrick_window
+//i_wall_stone_4		i_wall_largebrick
+//i_wall_stone_5		i_wall_largebrick_window
+//i_wall_stone_med_4		i_wall_largebrick
+//i_wall_stone_sm_4		i_wall_largebrick
+//i_wall_stone_7		i_wall_hugebrick
+//i_wall_log_2			i_wall_log_window
+//i_wall_wood_2			i_wall_lightwood
+//i_wall_wood_3			i_wall_lightwood_window
+//i_wall_stone_8		i_wall_hugestone
+//i_wall_marble_2		i_wall_marble_window
+//i_wall_marble_4		i_wall_marble_window
+//i_wall_marble_6		i_wall_marble_window
+//i_wall_marble_window_2	i_wall_marble_window
+//i_wall_marble_window_3	i_wall_marble_window
+//i_wall_plaster_2		i_wall_plaster_window
+//i_wall_plaster_4		i_wall_plaster
+//i_wall_sandstone_2		i_wall_sandstone_window
+//i_wall_sandstone_4		i_wall_sandstone_window
+//i_wall_hide_2			i_wall_hide_window
+//i_wall_hide_4			i_wall_hide_window
+//i_wall_stone_9		i_wall_hugebrownstone
+//i_wall_plaster_9		i_wall_plaster_sandstone
+//i_wall_plaster_10		i_wall_plaster_sandstone_window
+//i_wall_wood_7			i_wall_pallisade
+//i_wall_tent_10		i_wall_tent_darkblue
+//i_wall_tent			i_wall_tent_darkgreen
+//i_wall_sandstone_1		i_wall_sandstone_fancy
+//i_wall_sandstone_6		i_wall_cave
+//i_wall_sandstone_7		i_wall_stone_ruined
+//i_wall_marble_1		i_wall_whitemarble
+//i_wall_marble_8		i_wall_whitemarble_window
+//i_wall_marble_10		i_wall_whitemarble_window
+//i_wall_marble_12		i_wall_whitemarble_window
+//i_wall_stone_11		i_wall_hugebrick
+//i_wall_tent_2			i_wall_tent_darkgray
+//i_wall_tent_3			i_wall_tent_darkgray
+//i_wall_tent_4			i_wall_tent_patches
+//i_wall_tent_5			i_wall_tent_lightgray
+//i_wall_plaster_14		i_wall_plaster
+//i_stone_ruin			i_wall_sandstone_ruined
+//i_wall_stone_12		i_wall_stone_sandstone
+//i_wall_stone_13		i_wall_stone_sandstone
+//i_wall_stone_14		i_wall_stone_sandstone
+//i_pylon_stone			i_wall_hugebrownstone
+//i_pylon_stone_light		i_wall_hugebrick
+//i_pylon_stone_sand		i_wall_sandstone
+//i_window_skull		i_wall_largebrick_window
+//i_latticed_wall_1		i_wall_lattice_1
+//i_latticed_wall_brown		i_wall_lattice_2
+//i_wall_latticed_plaster	i_wall_cloth_framed
+//i_fruit_cantelope		i_fruit_cantaloupe
+//i_fruit_gourd1		i_fruit_gourd_yellow
+//i_fruit_gourd2		i_fruit_gourd_green
+//i_hair_afro			i_hair_curly
+//i_hair_krisna			i_hair_topknot
+//i_hair_lf			i_hair_long_feather
+//i_hair_elven_long2		i_hair_elven_long
+//i_hair_elven_long3		i_hair_elven_topknot
+//i_hair_elven_long4		i_hair_elven_buns
+
 
 [FUNCTION addnpc]
-IF (<ISNUM <ARGS>>)
-   ADD <ARGS>|08c000000
-ELSE
-   ADD <ARGS>
+ARGS=<QVAL (<isnum <ARGS>>)? <ARGS>|08c000000 : <DEF.<ARGS>>>
+IF (<SERV.CHARDEF.<dARGS>>)
+ ADD <ARGS>
+ return 1
 ENDIF
+SYSMESSAGE <DEFMSG.cmd_invalid>
 
 [FUNCTION tweak]
 INFO
 
-[FUNCTION brain]
-//by Darkandus
-IF !(<ARGN>)
-   RETURN <NPC>
+[FUNCTION brain] //by Darkandus
+IF (<ARGN>)
+ NPC=<ARGN>
 ELSE
-   NPC=<ARGN>
+ return <NPC>
 ENDIF
 
 [FUNCTION m]
@@ -153,59 +155,42 @@ INVUL <ARGS>
 [FUNCTION invisible]
 INVIS <ARGS>
 
-[FUNCTION static]
-//by Thomas20198701
-IF !(<ARGN>)
-   IF (<ISEMPTY <DEF.<ARGS>>>)
-      SYSMESSAGE Not a valid command or format.
-      RETURN 0
-   ENDIF
+[FUNCTION static] //by Thomas20198701
+ARGS=<DEF0.<ARGS>>
+IF (<SERV.ITEMDEF.<dARGS>>)
+ TARGETFG static_ <ARGS>
+ SYSMESSAGE <DEFMSG.where_to_place> <SERV.ITEMDEF.<ARGS>.NAME>?
+ return 1
 ENDIF
-IF !(<ISEMPTY <ARGS>>)
-   IF !(<SERV.ITEMDEF.<ARGS>>)
-      SYSMESSAGE Not a valid command or format.
-      RETURN 0
-   ENDIF
-   TARGETFG static_ <ARGS>
-   SYSMESSAGE Where would you like to place the <SERV.ITEMDEF.<ARGS>.NAME>?
-   RETURN 1
-ENDIF
-SYSMESSAGE Not a valid command or format.
-RETURN 0
+SYSMESSAGE <DEFMSG.cmd_invalid>
 
 [FUNCTION static_]
-SERV.NEWITEM=<ARGS>
+SERV.NEWITEM <ARGS>
 NEW.ATTR |= 010
-NEW.TIMER = -1
-NEW.P = <SRC.TARGP>
-ACT=<NEW.UID>
+NEW.TIMER=-1
+NEW.P=<SRC.TARGP>
+ACT=<NEW>
 
 [FUNCTION sfx]
 SOUND <ARGS>
 
 [FUNCTION music]
-IF (<ISCHAR>)
-   IF (<ISPLAYER>)
-      MIDILIST <ARGS>
-   ENDIF
+IF (<ISPLAYER>)
+ MIDILIST <ARGS>
 ENDIF
 
 [FUNCTION cliver]
-RETURN <CLIENTVERSION>
+return <CLIENTVERSION>
 
 [FUNCTION clientver]
-RETURN <CLIENTVERSION>
+return <CLIENTVERSION>
 
-[FUNCTION FOLLOW]
-SRC.SYSMESSAGE  Follow: on - Use war mode to stop following
+[FUNCTION follow]
 SERV.NEWITEM i_eq_followSrc
-IF ( !<ARGN> )
-   NEW.LINK=<UID>
-ELSE
-   NEW.LINK=<ARGN>
-ENDIF
+NEW.LINK=<QVAL (<dARGS>)? <ARGS>:<UID>>
 NEW.TIMER=2
-SRC.EQUIP <NEW.UID>
+NEW.EQUIP
+SRC.SYSMESSAGE Following: <NEW.LINK.NAME> - Use war mode to stop following
 
 [ITEMDEF i_eq_followSrc]
 ID=i_handr_1
@@ -213,28 +198,26 @@ NAME=Follower
 TYPE=t_eq_script
 LAYER=layer_special
 WEIGHT=0
+
 ON=@TargOn_Char
-   LINK=<ARGO>
+LINK=<ARGO>
+
 ON=@TargOn_Item
-   LINK=<ARGO>
+LINK=<ARGO>
+
 ON=@Timer
-   IF (!(<LINK.UID>) || !(<TOPOBJ.ISCHAR>))
-      REMOVE
-      RETURN 0
-   ENDIF
-   IF (<TOPOBJ.FLAGS> & STATF_WAR)
-      TOPOBJ.SYSMESSAGE Follow:off
-      REMOVE
-      RETURN 0
-   ENDIF
-   TOPOBJ.FACE <LINK.UID>
-   TOPOBJ.P <LINK.TOPOBJ.P>
-   TOPOBJ.UPDATE
-   TIMER 2
-   RETURN 1
+IF !(<LINK.UID>) || (<CONT.FLAGS> & statf_war)
+ CONT.SYSMESSAGE Follow: off
+ REMOVE
+ return 0
+ENDIF
+CONT.FACE <LINK>
+CONT.P=<LINK.P>
+CONT.UPDATE
+TIMER=2
+return 1
 
 [FUNCTION npccast]
-//
 // This function can be used to force a character to cast a specific
 // spell. Works on both players and NPCs. Two arguments can be given:
 //
@@ -247,29 +230,29 @@ ON=@Timer
 LOCAL.SPELL = <EVAL <ARGV[0]> &~ 0ff000000>
 LOCAL.SKILL = <EVAL (<STREAT <SERV.SPELL.<LOCAL.SPELL>.SKILLREQ>>) &~ 0ff000000>
 IF !(<LOCAL.SKILL>)
-   LOCAL.SKILL = 25
+ LOCAL.SKILL = 25
 ENDIF
 
 // Set spell target
 IF (<ARGV> > 2)
-   ACT = 0
-   ACTP = <ARGV[1]>, <ARGV[2]>, <ARGV[3]>, <ARGV[4]>
+ ACT = 0
+ ACTP = <ARGV[1]>,<ARGV[2]>,<ARGV[3]>,<ARGV[4]>
 ELSE
-   REF1 = <ARGV[1]>
-   IF !(<REF1.UID>)
-      REF1 = <ACT.UID>
-      IF !(<REF1.UID>)
-         REF1 = <UID>
-      ENDIF
-   ENDIF
-   ACT = <REF1.UID>
-   ACTP = <REF1.P>
+ REF1 = <ARGV[1]>
+ IF !(<REF1>)
+  REF1 = <ACT>
+  IF !(<REF1>)
+   REF1 = <UID>
+  ENDIF
+ ENDIF
+ ACT = <REF1>
+ ACTP = <REF1.P>
 ENDIF
 
 // Set character action
 ACTPRV = <UID>
 ACTARG1 = <LOCAL.SPELL>
 ACTION = <LOCAL.SKILL>
-RETURN 1
+return 1
 
 [EOF]
