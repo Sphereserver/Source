@@ -4452,7 +4452,7 @@ bool CChar::OnTick()
 					Fight_HitTry();
 			}
 			else if ( Skill_GetActive() == SKILL_NONE )
-				Fight_AttackNext();
+				m_Act_Targ = Fight_AttackNext();
 		}
 	}
 

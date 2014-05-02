@@ -921,3 +921,20 @@ Fixed #2054: Should now be able to make any door work with new scripting options
 -Tweaked Attacker system:
 	Added attacker.add uid / attacker.delete uid. Self explanatory
 	Changed: attacker.elapsed/dam are now writable
+
+02-05-2014, XuN
+Updated house deeds in sphere_template_vend.scp (Thx azmanomer).
+Fixed: local.anim in @SkillStroke was readable but not writable. Fixed also alchemy skill sending anim 0 instead of no anim.
+Rewrote totally the combat system for npcs ( I may have missed something but it's mostly done ):
+	memory_war_targ is no longer used for npc combats (in the source) but is still present for scripting backwards, Sphere now uses the 'Attacker' system and a new variable added to it 'Threat'.
+	added @CombatStart, @CombatEnd, @CombatAdd triggers, return 1 stops actions. (not recomendable, the actions will be called over and over obviously trying to start/add or end the combat).
+	Attacker system (Added/Changed):
+					NPC_AI_THREAT flag variable to ini enabling the use of the threat variable for choosing targets in combat (for npcs).
+		General:	Attacker.add uid	(Write)		Adds the given UID as new enemy in the attacker list for this char.
+					Attacker.Delete uid	(Write)		Remove UID from the attacker list.
+					Attacker.Target		(Read)		Returns the current best target, these are the priorities: Threat -> Distance -> LOS.
+					Attacker.ID uid		(Read)		Returns the 'n' id of the given uid (if in the attacker list, returns -1 if not).
+		From ID:	Attacker.n.Threat 	(Read/Write)Gets or Sets the Threat of this character against me, Threat is most important factor to select a target. (this gets updated even if npc_ai_threat is disabled, but its not used)
+					Attacker.n.Dam 		(Read/Write)Made it writable.
+					Attacker.n.Elapsed	(Read/Write)Made it writable.
+I'm updating the wiki with this new information also.

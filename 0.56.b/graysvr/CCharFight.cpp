@@ -2335,6 +2335,7 @@ effect_bounce:
 			{
 				refAttacker.elapsed = 0;
 				refAttacker.amountDone += maximum( 0, iDmg );
+				refAttacker.threat += maximum( 0, iDmg);
 				bAttackerExists = true;
 				break;
 			}
@@ -2346,6 +2347,7 @@ effect_bounce:
 			LastAttackers attacker;
 			attacker.amountDone = maximum( 0, iDmg );
 			attacker.charUID = pSrc->GetUID().GetPrivateUID();
+			attacker.threat = maximum( 0, iDmg);
 			attacker.elapsed = 0;
 			m_lastAttackers.push_back(attacker);
 		}
@@ -2702,6 +2704,7 @@ void CChar::Memory_Fight_Retreat( CChar * pTarg, CItemMemory * pFight )
 		// cowardice is ok if i was attacked.
 		return;
 	}
+	Attacker_Delete(pTarg);
 
 	SysMessagef( fCowardice ?
 		g_Cfg.GetDefaultMsg( DEFMSG_COWARD_1 ) :
@@ -2801,7 +2804,7 @@ void CChar::Memory_Fight_Start( const CChar * pTarg )
 		// Update the fights status
 		Memory_AddTypes( pMemory, MEMORY_FIGHT|MEMORY_WAR_TARG|MemTypes );
 	}
-
+	Attacker_Add(const_cast<CChar*>(pTarg));
 	if ( IsClient())
 	{
 		// This may be a useless command. How do i say the fight is over ?
@@ -2947,6 +2950,7 @@ void CChar::Fight_ClearAll()
 {
 	ADDTOCALLSTACK("CChar::Fight_ClearAll");
 	// clear all my active targets. Toggle out of war mode.
+	// Should I add @CombatEnd trigger here too?
 	CItem * pItem = GetContentHead();
 	for ( ; pItem != NULL; pItem = pItem->GetNext())
 	{
@@ -2954,6 +2958,7 @@ void CChar::Fight_ClearAll()
 			continue;
 		Memory_ClearTypes( STATIC_CAST <CItemMemory *>(pItem), MEMORY_WAR_TARG );
 	}
+	Attacker_Clear();
 
 	// Our target is gone.
 	StatFlag_Clear( STATF_War );
@@ -2967,58 +2972,68 @@ void CChar::Fight_ClearAll()
 	UpdateModeFlag();
 }
 
-CChar * CChar::Fight_FindBestTarget() const
+CChar * CChar::Fight_FindBestTarget()
 {
 	ADDTOCALLSTACK("CChar::Fight_FindBestTarget");
 	// If i am an NPC with no more targets then drop out of war mode.
 	// RETURN:
 	//  number of targets.
-
-	SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
-	int iClosest = INT_MAX;	// closest
+	
 	CChar * pChar = NULL;
 	CChar * pClosest = NULL;
-
-	const CItem * pItem = GetContentHead();
-	for ( ; pItem != NULL; pItem = pItem->GetNext())
+	if ( Attacker() && g_Cfg.m_iNpcAi&NPC_AI_THREAT && !m_pPlayer )
 	{
-		if ( ! pItem->IsMemoryTypes(MEMORY_WAR_TARG))
-			continue;
-		// check that the item is actually a memory item
-		const CItemMemory * pMemory = dynamic_cast <const CItemMemory *>(pItem);
-		if ( pMemory == NULL )
-			continue;
+		CChar * pChar = Attacker_FindBestTarget();
+		return pChar;
+	}
+	else
+	{
+		SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
+		int iClosest = INT_MAX;	// closest
 
-		pChar = pItem->m_uidLink.CharFind();
-		if ( pChar == NULL)
-			continue;
-
-		int iDist = GetDist(pChar);
-
-		if ( g_Cfg.IsSkillRanged( skillWeapon ) )
+		const CItem * pItem = GetContentHead();
+		int threat = 0;
+		for ( ; pItem != NULL; pItem = pItem->GetNext())
 		{
-			// archery dist is different.
-			if ( iDist < g_Cfg.m_iArcheryMinDist || iDist > g_Cfg.m_iArcheryMaxDist )
+			if ( ! pItem->IsMemoryTypes(MEMORY_WAR_TARG))
 				continue;
-			if ( m_Act_Targ == pChar->GetUID())	// alternate.
+			// check that the item is actually a memory item
+			const CItemMemory * pMemory = dynamic_cast <const CItemMemory *>(pItem);
+			if ( pMemory == NULL )
 				continue;
-			return( pChar );
-		}
-		else if ( iDist < iClosest )
-		{
-			// ??? in the npc case. can i actually reach this target ?
-			pClosest = pChar;
-			iClosest = iDist;
+
+			pChar = pItem->m_uidLink.CharFind();
+			if ( pChar == NULL)
+				continue;
+
+			int iDist = GetDist(pChar);
+
+			if ( g_Cfg.IsSkillRanged( skillWeapon ) )
+			{
+				// archery dist is different.
+				if ( iDist < g_Cfg.m_iArcheryMinDist || iDist > g_Cfg.m_iArcheryMaxDist )
+					continue;
+				if ( m_Act_Targ == pChar->GetUID())	// alternate.
+					continue;
+				return( pChar );
+			}
+			else if ( iDist < iClosest )
+			{
+				// ??? in the npc case. can i actually reach this target ?
+				pClosest = pChar;
+				iClosest = iDist;
+			}
 		}
 	}
-
 	return ( pClosest ) ? pClosest : pChar;
 }
 
-bool CChar::Fight_Clear(const CChar *pChar)
+bool CChar::Fight_Clear(const CChar *pChar, bool bForced)
 {
 	ADDTOCALLSTACK("CChar::Fight_Clear");
 	// I no longer want to attack this char.
+	if ( Attacker_Delete(const_cast<CChar*>(pChar)) == false )
+		return false;
 	if ( pChar )
 	{
 		CItemMemory *pFight = Memory_FindObj(pChar);	// My memory of the fight.
@@ -3036,7 +3051,7 @@ bool CChar::Fight_Clear(const CChar *pChar)
 	return (pChar != NULL);	// I did not know about this ?
 }
 
-bool CChar::Fight_Attack( const CChar * pCharTarg )
+bool CChar::Fight_Attack( const CChar * pCharTarg, bool toldByMaster )
 {
 	ADDTOCALLSTACK("CChar::Fight_Attack");
 	// We want to attack some one.
@@ -3053,7 +3068,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg )
 		IsStatFlag( STATF_DEAD ))
 	{
 		// Not a valid target.
-		Fight_Clear( pCharTarg );
+		Fight_Clear( pCharTarg, true );
 		return( false );
 	}
 
@@ -3071,7 +3086,8 @@ bool CChar::Fight_Attack( const CChar * pCharTarg )
 		Fight_Clear( pCharTarg );
 		return( false );
 	}
-
+	if ( Attacker_Add( const_cast<CChar*>( pCharTarg ) ) == false )
+		return( false );
 	// Record the start of the fight.
 	Memory_Fight_Start( pCharTarg );
 
@@ -3097,8 +3113,8 @@ bool CChar::Fight_Attack( const CChar * pCharTarg )
 				return true;
 		}
 	}
-
-	m_Act_Targ = pCharTarg->GetUID();
+	CChar * pTarget = Fight_FindBestTarget();
+	m_Act_Targ = pTarget->GetUID();	// pCharTarg->GetUID();
 	Skill_Start( skillWeapon );
 
 	return( true );
@@ -3128,7 +3144,7 @@ void CChar::Fight_HitTry()
 	{
 		// Might be dead ? Clear this.
 		// move to my next target.
-		Fight_AttackNext();
+		m_Act_Targ = Fight_AttackNext();
 		return;
 	}
 
@@ -3162,7 +3178,240 @@ void CChar::Fight_HitTry()
 
 	ASSERT(0);
 }
+bool CChar::Attacker_Add( CChar * pChar )
+{
+	bool bAttackerExists = false;
+	CGrayUID uid = static_cast<CGrayUID>(pChar->GetUID());
+	if  ( m_lastAttackers.size() )	// Must only check for existing attackers if there are any attacker already.
+	{
+		for (std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it)
+		{
+			LastAttackers & refAttacker = *it;
+			if ( refAttacker.charUID == uid )
+			{
+				//Found one, no actions needed so we skip
+				return true;
+			}
+		}
+	}else if ( IsTrigUsed(TRIGGER_COMBATSTART) )
+	{
+		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatStart,pChar,0);
+		if ( tRet == TRIGRET_RET_TRUE )
+			return false;
+	}
+	if ( IsTrigUsed(TRIGGER_COMBATADD) )
+	{
+		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatAdd,pChar,0);
+		if ( tRet == TRIGRET_RET_TRUE )
+			return false;
+	}
 
+		LastAttackers attacker;
+		attacker.amountDone = 0;
+		attacker.charUID = uid;
+		attacker.elapsed = 0;
+		attacker.threat = 0;
+		m_lastAttackers.push_back(attacker);
+	return true;
+}
+
+CChar * CChar::Attacker_FindBestTarget()
+{
+	ADDTOCALLSTACK("CChar::Attacker_FindBestTarget");
+	if ( !Attacker())
+		return NULL;
+	SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
+	int iClosest = INT_MAX;	// closest
+
+	CChar * pChar = NULL;
+	CChar * pClosest = NULL;
+
+	int threat = 0;
+	size_t attackerIndex = m_lastAttackers.size();
+	int count = 0;
+
+	//for ( int attacker = Attacker(); attacker < Attacker(); attacker++)
+	for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); it++)
+	{
+		LastAttackers & refAttacker = *it;
+		pChar = static_cast<CChar*>(g_World.FindUID(refAttacker.charUID));
+	
+		if ( pChar == NULL )
+			continue;
+		if ( pClosest == NULL )
+			pClosest = pChar;
+		int iDist = GetDist(pChar);
+		
+		// Main priority is the Threat
+		// but we only add it if it meets some requirements: target must not be far than view size and must be in LOS.
+
+		if ( g_Cfg.IsSkillRanged( skillWeapon ) )
+		{
+			// archery dist is different.
+			if ( iDist < g_Cfg.m_iArcheryMinDist || iDist > g_Cfg.m_iArcheryMaxDist )
+				continue;
+			if ( m_Act_Targ == pChar->GetUID())	// alternate.
+				continue;
+			//return( pChar );	// removing this line to let the rest of the code taking care of threat
+		} else if ( iDist > UO_MAP_VIEW_SIGHT )
+			continue;
+		if ( ! CanSeeLOS( pChar ) )
+			continue;
+		if ( threat < refAttacker.threat)
+		{
+			// So if we reached here ... this target has more threat than the others and meets the reqs.
+			pClosest = pChar;
+			iClosest = iDist;
+			threat = refAttacker.threat;
+
+		} 	
+		count ++;
+	}
+	return ( pClosest ) ? pClosest : pChar;
+}
+
+int CChar::Attacker_GetDam( int id)
+{
+	LastAttackers & refAttacker = m_lastAttackers.at(id);
+	return refAttacker.amountDone;
+}
+
+int CChar::Attacker_GetElapsed( int id)
+{
+	LastAttackers & refAttacker = m_lastAttackers.at(id);
+	return refAttacker.elapsed;
+}
+
+int CChar::Attacker_GetThreat( int id)
+{
+	LastAttackers & refAttacker = m_lastAttackers.at(id);
+	return refAttacker.threat ? refAttacker.threat : 0;
+}
+
+void CChar::Attacker_SetElapsed( CChar * pChar, int value)
+{
+	LastAttackers & refAttacker = m_lastAttackers.at( Attacker_GetID(pChar) );
+	refAttacker.elapsed = value;
+}
+
+void CChar::Attacker_SetElapsed( int pChar, int value)
+{
+	LastAttackers & refAttacker = m_lastAttackers.at( pChar );
+	refAttacker.elapsed = value;
+}
+
+void CChar::Attacker_SetDam( CChar * pChar, int value)
+{
+	LastAttackers & refAttacker = m_lastAttackers.at( Attacker_GetID(pChar) );
+	refAttacker.amountDone = value;
+}
+
+void CChar::Attacker_SetDam( int pChar, int value)
+{
+	LastAttackers & refAttacker = m_lastAttackers.at( pChar );
+	refAttacker.amountDone = value;
+}
+void CChar::Attacker_SetThreat( CChar * pChar, int value)
+{
+	if ( m_pPlayer )
+		return;
+	LastAttackers & refAttacker = m_lastAttackers.at( Attacker_GetID(pChar) );
+	refAttacker.threat = value;
+}
+void CChar::Attacker_SetThreat( int pChar, int value)
+{
+	if ( m_pPlayer )
+		return;
+	LastAttackers & refAttacker = m_lastAttackers.at( pChar );
+	refAttacker.threat = value;
+}
+
+void CChar::Attacker_Clear()
+{
+	m_lastAttackers.clear();
+}
+
+int CChar::Attacker_GetID( CChar * pChar )
+{
+	if ( !pChar )
+		return NULL;
+	int count = 0;
+	bool bFound = false;
+	if ( Attacker() )
+	{
+		for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); it++)
+		{
+			size_t attackerIndex = m_lastAttackers.size();
+			LastAttackers & refAttacker = m_lastAttackers.at(count);
+			CGrayUID uid = refAttacker.charUID;
+			if ( uid.CharFind() && uid == static_cast<DWORD>(pChar->GetUID()) )
+			{
+				bFound = true;
+				break;
+			}
+			count++;
+		}
+	}
+	if ( bFound == true)
+		return count;
+	return NULL;
+}
+
+int CChar::Attacker_GetID( CGrayUID pChar )
+{
+	int count = 0;
+	bool bFound = false;
+	if ( Attacker() )
+	{
+		for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); it++)
+		{
+			LastAttackers & refAttacker = m_lastAttackers.at(count);
+			CGrayUID uid = refAttacker.charUID;
+			if ( uid.CharFind() && uid == pChar )
+			{
+				bFound = true;
+				break;
+			}
+			count++;
+		}
+	}
+	if ( bFound == true)
+		return count;
+	return -1;
+}
+
+CChar * CChar::Attacker_GetUID( int index )
+{
+	LastAttackers & refAttacker = m_lastAttackers.at(index);
+	CChar * pChar = static_cast<CChar*>( static_cast<CGrayUID>( refAttacker.charUID ).CharFind() );
+	return pChar;
+}
+
+bool CChar::Attacker_Delete( CChar * pChar, bool bForced )
+{		
+	if ( IsTrigUsed(TRIGGER_COMBATEND) && bForced == false )
+	{
+		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatEnd,pChar,0);
+		if ( tRet == TRIGRET_RET_TRUE )
+			return false;
+	}
+	if ( Attacker() )
+	{
+		int count = 0;
+		for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); it++)
+		{
+			LastAttackers & refAttacker = m_lastAttackers.at(count);
+			CGrayUID uid = refAttacker.charUID;
+			if ( uid.CharFind() && uid == static_cast<DWORD>(pChar->GetUID()) )
+			{
+				m_lastAttackers.erase(it);
+				return true;
+			}
+			count++;
+		}
+	}
+	return false;
+}
 
 int CChar::CalcFightRange( CItem * pWeapon, CItemBase * pWeaponDef )
 {

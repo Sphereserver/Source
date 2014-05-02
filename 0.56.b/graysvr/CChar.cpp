@@ -23,6 +23,9 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 
 	"@Click",				// I got clicked on by someone.
 	"@ClientTooltip", // Sending tooltips to someone
+	"@CombatAdd",
+	"@CombatEnd",
+	"@CombatStart",
 	"@ContextMenuRequest",
 	"@ContextMenuSelect",
 	"@Create",				// Newly created (not in the world yet)
@@ -1611,6 +1614,15 @@ do_default:
 								attackerIndex = iAttacker;
 							}
 						}
+					}else if ( !strnicmp(pszKey, "ID", 2 ) )
+					{
+						pszKey += 3;	// ID + whitspace
+						CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind());
+						sVal.FormatVal(Attacker_GetID(pChar) ? Attacker_GetID(pChar) : -1 );
+					}else if ( !strnicmp(pszKey, "TARGET", 6 ) )
+					{
+						pszKey += 6;
+						sVal.FormatHex(Fight_FindBestTarget() ? Fight_FindBestTarget()->GetUID() : -1 );
 					}
 					else
 					{
@@ -1634,6 +1646,10 @@ do_default:
 						{
 							CGrayUID uid = refAttacker.charUID;
 							sVal.FormatHex( uid.CharFind() ? refAttacker.charUID : 0 );
+						}
+						else if ( ( !strnicmp(pszKey, "THREAT", 6 ) ) )
+						{
+							sVal.FormatVal(refAttacker.threat);
 						}
 					}
 				}
@@ -2366,26 +2382,12 @@ do_default:
 						{
 							if( !strnicmp(pszKey, "CLEAR", 5) )
 							{
-								m_lastAttackers.clear();
+								Attacker_Clear();
 								return true;
 							}else if ( !strnicmp(pszKey, "DELETE", 6) )
 							{
-								if ( m_lastAttackers.size() )
-								{
-									int count = 0;
-									for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); it++)
-									{
-										size_t attackerIndex = m_lastAttackers.size();
-										LastAttackers & refAttacker = m_lastAttackers.at(count);
-										CGrayUID uid = refAttacker.charUID;
-										if ( uid.CharFind() && uid == static_cast<DWORD>(s.GetArgVal()) )
-										{
-											m_lastAttackers.erase(it);
-											break;
-										}
-										count++;
-									}
-								}
+								CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
+								Attacker_Delete( pChar );
 								return true;
 							}
 						}
@@ -2394,31 +2396,11 @@ do_default:
 						{
 
 							bool bAttackerExists = false;
-							CGrayUID uid = static_cast<CGrayUID>(s.GetArgVal());
-							if  ( m_lastAttackers.size() )	// Must only check for existing attackers if there are any attacker already.
-							{
-								for (std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it)
-								{
-									LastAttackers & refAttacker = *it;
-									if ( refAttacker.charUID == uid )
-									{
-										bAttackerExists = true;
-										//Found one, no actions needed so we skip
-										//break;
-										return true;
-									}
-								}
-							}
-
-							// Attacker not found, we must add it
-							//if (bAttackerExists == false)
-							//{
-								LastAttackers attacker;
-								attacker.amountDone = 0;
-								attacker.charUID = uid;
-								attacker.elapsed = 0;
-								m_lastAttackers.push_back(attacker);
-							//}
+							CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
+							if (! pChar )
+								return false;
+							Fight_Attack(pChar);
+							//Attacker_Add(pChar);
 							return true;
 						}
 						else
@@ -2427,18 +2409,27 @@ do_default:
 						}
 
 						SKIP_SEPARATORS(pszKey);
-						if ( attackerIndex < m_lastAttackers.size() )
+						if ( attackerIndex < Attacker() )
 						{
-							LastAttackers & refAttacker = m_lastAttackers.at(attackerIndex);
-
+							CChar * pChar = Attacker_GetUID(attackerIndex);
 							if( !strnicmp(pszKey, "DAM", 3) )
 							{
-								refAttacker.amountDone = s.GetArgVal();
+								Attacker_SetDam( pChar, s.GetArgVal());
 								return true;
 							}
 							else if( !strnicmp(pszKey, "ELAPSED", 7) )
 							{
-								refAttacker.elapsed = s.GetArgVal();;
+								Attacker_SetElapsed( pChar , s.GetArgVal() );
+								return true;
+							}
+							else if ( !strnicmp(pszKey, "THREAT", 6 ) )
+							{
+								Attacker_SetThreat( pChar , s.GetArgVal() );
+								return true;
+							}
+							else if ( !strnicmp(pszKey, "DELETE", 6 ) )
+							{
+								Attacker_Delete( pChar );
 								return true;
 							}
 						}

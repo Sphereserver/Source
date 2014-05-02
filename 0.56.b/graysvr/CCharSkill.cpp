@@ -3937,12 +3937,14 @@ int CChar::Skill_Stroke()
 		sound = static_cast<int>(args.m_VarsLocal.GetKeyNum("Sound",false));
 		m_atCreate.m_Stroke_Count = static_cast<WORD>(args.m_VarsLocal.GetKeyNum("Strokes",false));
 		delay = args.m_VarsLocal.GetKeyNum("Delay",true);
+		anim = args.m_VarsLocal.GetKeyNum("Anim", true);
 	}
 
-	Sound(sound);
+	if ( sound )
+		Sound(sound);
 
 	// Keep trying and updating the animation
-	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
+	if ( anim && !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
 	{
 		UpdateAnimate( static_cast<ANIM_TYPE>(anim) );	// ANIM_ATTACK_1H_DOWN
 	}

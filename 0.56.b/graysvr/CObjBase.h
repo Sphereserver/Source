@@ -2323,6 +2323,9 @@ enum CTRIG_TYPE
 
 	CTRIG_Click,			// I got clicked on by someone.
 	CTRIG_ClientTooltip, // Sending tooltips for me to someone
+	CTRIG_CombatAdd,
+	CTRIG_CombatEnd,
+	CTRIG_CombatStart,
 	CTRIG_ContextMenuRequest,
 	CTRIG_ContextMenuSelect,
 	CTRIG_Create,			// Newly created (not in the world yet)
@@ -2532,6 +2535,7 @@ public:
 		DWORD	elapsed;
 		DWORD	charUID;
 		DWORD	amountDone;
+		DWORD	threat;
 	};
 	std::vector<LastAttackers> m_lastAttackers;
 
@@ -3297,6 +3301,8 @@ public:
 	bool Skill_Start( SKILL_TYPE skill, int iDifficulty = 0 ); // calc skill progress.
 	void Skill_Fail( bool fCancel = false );
 	int Skill_Stroke();				// Strokes in crafting skills, calling for SkillStroke trig
+	void Skill_Anim( SKILL_TYPE skill);
+	void Skill_Sound( SKILL_TYPE skill);
 	int Skill_Stroke_Consuming();	// Same as skill_stroke but modified for alchemy's weird's consumption-on-stroke
 	int Skill_Stage( SKTRIG_TYPE stage );
 	TRIGRET_TYPE	Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage);
@@ -3470,14 +3476,36 @@ public:
 	void Memory_Fight_Start( const CChar * pTarg );
 	bool Memory_Fight_OnTick( CItemMemory * pMemory );
 
-	bool Fight_Attack( const CChar * pCharTarg );
-	bool Fight_Clear( const CChar * pCharTarg );
+	bool Fight_Attack( const CChar * pCharTarg, bool toldByMaster = false );
+	bool Fight_Clear( const CChar * pCharTarg , bool bForced = false );
 	void Fight_ClearAll();
-	CChar * Fight_FindBestTarget() const;
+	CChar * Fight_FindBestTarget();
 	bool Fight_AttackNext();
 	void Fight_HitTry();
 	WAR_SWING_TYPE Fight_Hit( CChar * pCharTarg );
 	int  Fight_CalcDamage( const CItem * pWeapon, SKILL_TYPE skill, bool bNoRandom = false ) const;
+
+	// Attacker System
+	int	 Attacker() { return m_lastAttackers.size(); }
+	bool Attacker_Add( CChar * pChar);
+	bool Attacker_Delete( CChar * pChar, bool bForced = false  );
+	void Attacker_Clear();
+	int	 Attacker_GetDam( int attacker );
+	void  Attacker_SetDam( CChar * pChar, int value );
+	void  Attacker_SetDam( int attacker, int value );
+	CChar * Attacker_GetUID( int attacker);
+	int  Attacker_GetElapsed( int attacker );
+	void  Attacker_SetElapsed( CChar * pChar, int value );
+	void  Attacker_SetElapsed( int pChar, int value );
+	int  Attacker_GetThreat( int attacker );
+	void  Attacker_SetThreat( CChar * pChar, int value );
+	void  Attacker_SetThreat( int pChar, int value );
+	int  Attacker_GetID( CChar * pChar );
+	int  Attacker_GetID( LPCTSTR pChar );
+	int  Attacker_GetID( CGrayUID pChar );
+	int  IsAttackedBy( CChar * pChar ) { return Attacker_GetID( pChar); } 
+	CChar * Attacker_FindBestTarget();
+	//
 
 	bool Player_OnVerb( CScript &s, CTextConsole * pSrc );
 	void InitPlayer( CClient * pClient, const char * pszCharname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE iProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc  );
