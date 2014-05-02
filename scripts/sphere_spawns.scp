@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, October 24, 2013
+// FILE LAST UPDATED: Thursday, May 1, 2014
 //
 VERSION=0.56c
 
@@ -180,14 +180,11 @@ DESCRIPTION=City Animals
 ID=c_bird
 ID=c_cat
 ID=c_dog
-ID=c_rat
-ID=c_rat_sewer
 
 [SPAWN spawn_MountainAnimals]
 CATEGORY=Spawn Groups
 SUBSECTION=Animals
 DESCRIPTION=Mountain Animals
-ID=c_rat                    14
 ID=c_eagle                  13
 ID=c_goat_mountain          13
 ID=c_horse_brown_lt
@@ -203,7 +200,6 @@ ID=c_bear_grizzly           16
 CATEGORY=Spawn Groups
 SUBSECTION=Animals
 DESCRIPTION=Ice Animals
-ID=c_rat                    17
 ID=c_walrus                 15
 ID=c_leopard_snow           13
 ID=c_wolf_white             13
@@ -214,7 +210,6 @@ ID=c_ice_snake              14
 CATEGORY=Spawn Groups
 SUBSECTION=Animals
 DESCRIPTION=Plains Animals
-ID=c_rat                    14
 ID=c_rabbit                 14
 ID=c_ferret                 14
 ID=c_eagle                  13
@@ -1205,7 +1200,6 @@ ID=c_dragon_ice              1
 CATEGORY=Spawn Groups
 SUBSECTION=Monster Habitat
 DESCRIPTION=Desert Monsters
-ID=c_rat                    20
 ID=c_lava_snake             19
 ID=c_ostard_desert
 ID=c_imp                    17

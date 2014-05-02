@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, April 23, 2014
+// FILE LAST UPDATED: Thursday, May 1, 2014
 //
 VERSION=0.56c
 
@@ -185,11 +185,7 @@ TAG.GUARDOWNER=the city
 NAME=Lord British's Castle
 GROUP=Britain
 P=1392,1625,30,0
-RECT=1294,1679,1407,1697,0
-RECT=1295,1559,1313,1577,0
-RECT=1392,1559,1407,1577,0
-RECT=1302,1577,1399,1680,0
-RECT=1313,1566,1392,1577,0
+RECT=1296,1560,1407,1695,0
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass,r_brit_castle
 
@@ -615,20 +611,27 @@ P=1414,3824,0,0
 RECT=987,3353,1545,4076,0
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
+[AREADEF a_jhelom_islands]
+NAME=Jhelom Islands
+GROUP=Jhelom
+P=1383,3815,0,0
+RECT=1111,3567,1144,3588,0
+RECT=1078,3588,1202,3709,0
+RECT=1224,3592,1533,4065,0
+FLAGS=region_flag_nobuilding
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
 [AREADEF a_townJhelom]
 NAME=Jhelom
 GROUP=Jhelom
 P=1383,3815,0,0
-RECT=1302,3685,1467,3790,0
-RECT=1317,3669,1339,3685,0
-RECT=1467,3667,1518,3723,0
-RECT=1337,3790,1467,3898,0
-RECT=1467,3843,1491,3882,0
-RECT=1360,3898,1385,3919,0
+RECT=1303,3670,1492,3895,0
+RECT=1338,3895,1412,3923,0
+RECT=1383,3951,1492,4045,0
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[ROOMDEF a_jhelom_cemetery]
+[AREADEF a_jhelom_cemetery]
 NAME=Jhelom Cemetery
 GROUP=Jhelom
 P=1291,3719,0,0
@@ -636,25 +639,6 @@ RECT=1271,3711,1293,3743,0
 RECT=1279,3736,1296,3752,0
 RECT=1293,3722,1301,3736,0
 FLAGS=region_flag_nobuilding
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[ROOMDEF a_north_jhelom]
-NAME=North Jhelom
-GROUP=Jhelom
-P=1133,3623,0,0
-RECT=1092,3563,1148,3704,0
-RECT=1148,3589,1203,3678,0
-FLAGS=region_flag_nobuilding|region_flag_guarded
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_south_jhelom]
-NAME=South Jhelom
-GROUP=Jhelom
-P=1438,3999,0,0
-RECT=1396,3954,1477,4045,0
-RECT=1376,3993,1396,4045,0
-RECT=1477,3964,1528,4019,0
-FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 //Buccaneer's Den
@@ -670,11 +654,8 @@ EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Buccaneer's Den
 GROUP=Buccaneer's Den
 P=2706,2163,0,0
-RECT=2621,2068,2661,2113,0
-RECT=2646,2179,2661,2213,0
-RECT=2661,2107,2763,2267,0
-RECT=2763,2124,2786,2143,0
-RECT=2661,2068,2735,2107,0
+RECT=2612,2057,2776,2267,0
+RECT=2604,2065,2612,2254,0
 FLAGS=region_flag_nobuilding
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass,r_bucs_den
 
@@ -734,8 +715,8 @@ EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Papua
 GROUP=Papua
 P=5729,3209,-1,0
-RECT=5633,3088,5743,3329,0
-RECT=5743,3088,5840,3332,0
+RECT=5639,3095,5831,3318,0
+RECT=5831,3237,5851,3267,0
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
@@ -745,12 +726,9 @@ EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Delucia
 GROUP=Delucia
 P=5272,3995,37,0
-RECT=5178,3945,5303,4060,0
-RECT=5303,3928,5314,4048,0
-RECT=5235,3930,5303,3945,0
-RECT=5226,3938,5235,3945,0
-RECT=5127,3945,5178,4083,0
-RECT=5178,4060,5270,4083,0
+RECT=5123,3942,5314,4064,0
+RECT=5147,4064,5272,4084,0
+RECT=5235,3930,5314,3942,0
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
