@@ -2322,10 +2322,11 @@ enum CTRIG_TYPE
 	CTRIG_charTradeAccepted,
 
 	CTRIG_Click,			// I got clicked on by someone.
-	CTRIG_ClientTooltip, // Sending tooltips for me to someone
-	CTRIG_CombatAdd,
-	CTRIG_CombatEnd,
-	CTRIG_CombatStart,
+	CTRIG_ClientTooltip,	 // Sending tooltips for me to someone
+	CTRIG_CombatAdd,		// I add someone to my attacker list
+	CTRIG_CombatDelete,		// delete someone from my list
+	CTRIG_CombatEnd,		// I finished fighting
+	CTRIG_CombatStart,		// I begin fighting
 	CTRIG_ContextMenuRequest,
 	CTRIG_ContextMenuSelect,
 	CTRIG_Create,			// Newly created (not in the world yet)

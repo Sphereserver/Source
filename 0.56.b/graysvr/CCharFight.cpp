@@ -3328,6 +3328,8 @@ void CChar::Attacker_SetThreat( int pChar, int value)
 
 void CChar::Attacker_Clear()
 {
+	if ( IsTrigUsed(TRIGGER_COMBATEND) )
+		OnTrigger(CTRIG_CombatEnd,this,0);
 	m_lastAttackers.clear();
 }
 
@@ -3389,9 +3391,9 @@ CChar * CChar::Attacker_GetUID( int index )
 
 bool CChar::Attacker_Delete( CChar * pChar, bool bForced )
 {		
-	if ( IsTrigUsed(TRIGGER_COMBATEND) && bForced == false )
+	if ( IsTrigUsed(TRIGGER_COMBATDELETE) && bForced == false )
 	{
-		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatEnd,pChar,0);
+		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatDelete,pChar,0);
 		if ( tRet == TRIGRET_RET_TRUE )
 			return false;
 	}

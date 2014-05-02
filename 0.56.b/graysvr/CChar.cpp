@@ -24,6 +24,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@Click",				// I got clicked on by someone.
 	"@ClientTooltip", // Sending tooltips to someone
 	"@CombatAdd",
+	"@CombatDelete",
 	"@CombatEnd",
 	"@CombatStart",
 	"@ContextMenuRequest",
