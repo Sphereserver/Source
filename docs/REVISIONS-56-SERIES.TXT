@@ -938,3 +938,7 @@ Rewrote totally the combat system for npcs ( I may have missed something but it'
 					Attacker.n.Dam 		(Read/Write)Made it writable.
 					Attacker.n.Elapsed	(Read/Write)Made it writable.
 I'm updating the wiki with this new information also.
+
+03-05-2014, Ben
+-Fixed #2325: Corpse with morez > 0 were able to be draged
+-Fixed #1781: Rejected moves should not count as a move for fast walk detection.

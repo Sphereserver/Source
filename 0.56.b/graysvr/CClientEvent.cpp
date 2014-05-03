@@ -856,6 +856,7 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 		if ( !m_pChar->CanMoveWalkTo(pt, true, false, dir) )
 #endif
 		{
+			m_iWalkStepCount--;
 			return TRIGRET_RET_FALSE;
 		}
 
@@ -864,6 +865,7 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 
 		if (!m_pChar->MoveToChar( pt ))
 		{
+			m_iWalkStepCount--;
 			return TRIGRET_RET_FALSE;
 		}
 

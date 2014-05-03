@@ -4565,6 +4565,8 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : Pac
 	BYTE light = 0;
 
 	adjustItemData(target, item, id, hue, amount, p, dir, flags, light);
+	if (id == ITEMID_CORPSE)//dir is causing issues with corpse in this packet
+		dir = DIR_N;
 
 	if (id >= ITEMID_MULTI)
 	{
