@@ -1623,7 +1623,7 @@ do_default:
 					}else if ( !strnicmp(pszKey, "TARGET", 6 ) )
 					{
 						pszKey += 6;
-						sVal.FormatHex(Fight_FindBestTarget() ? Fight_FindBestTarget()->GetUID() : -1 );
+						sVal.FormatHex(Fight_FindBestTarget() ? static_cast<DWORD>(Fight_FindBestTarget()->GetUID()) : -1 );
 					}
 					else
 					{
@@ -2375,7 +2375,7 @@ do_default:
 				if ( strlen( pszKey ) > 8 )
 				{
 					pszKey += 8;
-					size_t attackerIndex = m_lastAttackers.size();
+					int attackerIndex = m_lastAttackers.size();
 					if ( *pszKey == '.' )
 					{
 						pszKey++;
@@ -2395,8 +2395,6 @@ do_default:
 						// Above must be used only when there are attackers, following one doesn't need it
 						if ( !strnicmp(pszKey, "ADD", 3 ) )
 						{
-
-							bool bAttackerExists = false;
 							CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
 							if (! pChar )
 								return false;
