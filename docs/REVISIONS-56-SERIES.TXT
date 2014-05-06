@@ -950,3 +950,4 @@ I'm updating the wiki with this new information also.
 	ARGO		= the item that originated the dye target
 	SRC			= who is dying the item 
 	RETURN 1	= stop internal dying/sound. hue changes made from script will take place
+	This will allow to change Dye behaviour for specific items without having to track the item id from other methods/scripts
