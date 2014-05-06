@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, October 24, 2013
+// FILE LAST UPDATED: Tuesday, May 6, 2014
 //
 VERSION=0.56c
 
@@ -3187,6 +3187,7 @@ SUBSECTION=Tailor
 DESCRIPTION=BAILS OF COTTON
 DUPELIST=0def
 WEIGHT=4
+DYE=1
 
 [ITEMDEF 0e56]
 DEFNAME=i_TREE_STUMP_AXE

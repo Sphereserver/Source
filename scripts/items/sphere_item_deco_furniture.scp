@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, September 20, 2013
+// FILE LAST UPDATED: Tuesday, May 6, 2014
 //
 VERSION=0.56c
 
@@ -72,10 +72,8 @@ DUPELIST=0b5e
 
 [ITEMDEF 0a2c]
 DEFNAME=i_bureau
-NAME=bureau
 TYPE=t_container
-//TDATA2=051
-TDATA2=0106
+TDATA2=051
 FLIP=1
 VALUE=102
 WEIGHT=21.6
@@ -112,15 +110,13 @@ DUPEITEM=0a2d
 
 [ITEMDEF 0a30]
 DEFNAME=i_bureau_2
-NAME=cherry bureau
 TYPE=t_container
-//TDATA2=048
-TDATA2=0105
+TDATA2=048
 FLIP=1
 VALUE=105
 WEIGHT=26.6
-RESOURCES=5 i_board,10 i_nails,3 i_drawer_2
-SKILLMAKE=Carpentry 85.2,t_carpentry
+RESOURCES=25 i_log
+SKILLMAKE=Carpentry 85.0,t_carpentry
 CATEGORY=Decoration - Furniture
 SUBSECTION=Bedroom Furniture
 DESCRIPTION=Chest of Drawers (Dark Wood) (SW)
@@ -269,8 +265,12 @@ DUPEITEM=0a3e
 DUPEITEM=0a3e
 
 [ITEMDEF 0a4c]
-DEFNAME=i_armoire_dk
-NAME=cherry armoire
+//dark armoire (open)
+DUPELIST=0a50
+
+[ITEMDEF 0a4d]
+//dark armoire (closed)
+DEFNAME=i_armoir_lt
 TYPE=t_container
 TDATA2=04e
 FLIP=1
@@ -280,46 +280,46 @@ RESOURCES=35 i_board,6 i_nails,4 i_hinge
 SKILLMAKE=Carpentry 84.2,t_carpentry
 CATEGORY=Decoration - Furniture
 SUBSECTION=Cabinetry
-DESCRIPTION=Armoire (cherry)
-DUPELIST=0a4d,0a50,0a51
-
-[ITEMDEF 0a4d]
-//cherry armoire
-DUPEITEM=0a4c
+DESCRIPTION=Dark Armoire
+DUPELIST=0a51
+//to-do: change to DISPID=0a4c when opened
 
 [ITEMDEF 0a4e]
-DEFNAME=i_armoire_lt
+//armoire (open)
+DUPELIST=0a52
+
+[ITEMDEF 0a4f]
+//armoire (closed)
+DEFNAME=i_armoir_dk
 TYPE=t_container
 TDATA2=04f
 FLIP=1
-VALUE=128
-WEIGHT=36.0
-RESOURCES=35 i_board,6 i_nails,4 i_hinge
-SKILLMAKE=Carpentry 84.2,t_carpentry
+WEIGHT=25
+RESOURCES=35 i_log
+SKILLMAKE=CARPENTRY 84.2, t_carpentry
 CATEGORY=Decoration - Furniture
 SUBSECTION=Cabinetry
 DESCRIPTION=Armoire
-DUPELIST=0a4f,0a52,0a53
-
-[ITEMDEF 0a4f]
-//armoire
-DUPEITEM=0a4e
+DUPELIST=0a53
+//to-do: change to DISPID=0a4e when opened
 
 [ITEMDEF 0a50]
-//cherry armoire
-DUPEITEM=0a4c
+//dark armoire (open)
+DUPELIST=0a4c
 
 [ITEMDEF 0a51]
-//cherry armoire
-DUPEITEM=0a4c
+//dark armoire (closed)
+DUPEITEM=0a4d
+//to-do: change to DISPID=0a50 when opened
 
 [ITEMDEF 0a52]
-//armoire
+//armoire (open)
 DUPEITEM=0a4e
 
 [ITEMDEF 0a53]
-//armoire
-DUPEITEM=0a4e
+//armoire (closed)
+DUPEITEM=0a4f
+//to-do: change to DISPID=0a52 when opened
 
 [ITEMDEF 0a55]
 DEFNAME=i_bedroll
@@ -700,17 +700,16 @@ DUPEITEM=0a92
 
 [ITEMDEF 0a97]
 DEFNAME=i_bookcase_full
-NAME=walnut shelving with books
 TYPE=t_container
 TDATA2=04d
 FLIP=1
 VALUE=140
 WEIGHT=94.2
-RESOURCES=1 i_bookcase,20 i_book_sm
-SKILLMAKE=Carpentry 36.5,t_carpentry
+RESOURCES=25 i_log, 20 i_book_sm
+SKILLMAKE=Carpentry 31.5,t_carpentry
 CATEGORY=Decoration - Furniture
 SUBSECTION=Bookcases
-DESCRIPTION=Bookcase (Dark Wood) (Books)
+DESCRIPTION=Bookcase (Dark Wood) (Full)
 DUPELIST=0a98,0a99,0a9a,0a9b,0a9c
 
 [ITEMDEF 0a98]
@@ -735,14 +734,13 @@ DUPEITEM=0a97
 
 [ITEMDEF 0a9d]
 DEFNAME=i_bookcase
-NAME=walnut shelving
 TYPE=t_container
 TDATA2=04d
 FLIP=1
 VALUE=35
 WEIGHT=24.2
-RESOURCES=24 i_board,2 i_nails
-SKILLMAKE=Carpentry 31.5,t_carpentry
+RESOURCES=25 i_log
+SKILLMAKE=Carpentry 31.5, t_carpentry
 CATEGORY=Decoration - Furniture
 SUBSECTION=Bookcases
 DESCRIPTION=Bookcase (Dark Wood) (Empty)
@@ -2890,97 +2888,103 @@ DUPEITEM=024ec
 
 
 [ITEMDEF 0280b]
-DEFNAME=i_chest_japanese1
+DEFNAME=i_wooden_chest_plain
+NAME=plain wooden chest
 TYPE=t_container
 TDATA2=0109
 FLIP=1
 VALUE=175
-WEIGHT=41.2
+WEIGHT=15.0
 RESOURCES=20 i_board,2 i_hinge,10 i_nails
 SKILLMAKE=Carpentry 85.3,t_carpentry
 CATEGORY=Decoration - Furniture
 SUBSECTION=Cabinetry
-DESCRIPTION=Chest 1
+DESCRIPTION=Plain Wooden Chest
 DUPELIST=0280c
 
 [ITEMDEF 0280c]
-//chest 1
+//plain wooden chest
 DUPEITEM=0280b
 
 [ITEMDEF 0280d]
-DEFNAME=i_chest_japanese2
+DEFNAME=i_wooden_chest_ornate
+NAME=ornate wooden chest
 TYPE=t_container
-TDATA2=0109
+TDATA2=010b
 FLIP=1
 VALUE=185
-WEIGHT=41.4
+WEIGHT=15.0
 RESOURCES=20 i_board,2 i_hinge,2 i_wire_iron,10 i_nails
 SKILLMAKE=Carpentry 85.3,t_carpentry
 CATEGORY=Decoration - Furniture
 SUBSECTION=Cabinetry
-DESCRIPTION=Chest 2
+DESCRIPTION=Ornate Wooden Chest
 DUPELIST=0280e
 
 [ITEMDEF 0280e]
-//chest 2
+//ornate wooden chest
 DUPEITEM=0280d
 
 [ITEMDEF 0280f]
-DEFNAME=i_chest_japanese3
+DEFNAME=i_wooden_chest_gilded
+NAME=gilded wooden chest
 TYPE=t_container
 TDATA2=010a
 FLIP=1
 VALUE=195
-WEIGHT=41.4
+WEIGHT=15.0
 RESOURCES=20 i_board,2 i_hinge,2 i_wire_gold,10 i_nails
 SKILLMAKE=Carpentry 85.3,t_carpentry
 CATEGORY=Decoration - Furniture
 SUBSECTION=Cabinetry
-DESCRIPTION=Chest 3
+DESCRIPTION=Gilded Wooden Chest
 DUPELIST=02810
 
 [ITEMDEF 02810]
-//chest 3
+//gilded wooden chest
 DUPEITEM=0280f
 
 [ITEMDEF 02811]
-DEFNAME=i_chest_japanese4
+DEFNAME=i_wooden_foot_locker
+NAME=wooden footlocker
 TYPE=t_container
-TDATA2=010b
+TDATA2=010c
 FLIP=1
 VALUE=155
-WEIGHT=31.8
+WEIGHT=15.0
 RESOURCES=15 i_board,2 i_hinge,1 i_wire_iron,6 i_nails
 SKILLMAKE=Carpentry 85.3,t_carpentry
 CATEGORY=Decoration - Furniture
 SUBSECTION=Cabinetry
-DESCRIPTION=Chest 4
+DESCRIPTION=Wooden Footlocker
 DUPELIST=02812
 
 [ITEMDEF 02812]
-//chest 4
+//wooden footlocker
 DUPEITEM=02811
 
 [ITEMDEF 02813]
-DEFNAME=i_chest_japanese5
+DEFNAME=i_wooden_chest_finished
+NAME=finished wooden chest
 TYPE=t_container
-TDATA2=010b
+TDATA2=010d
 FLIP=1
 VALUE=175
-WEIGHT=41.2
+WEIGHT=15.0
 RESOURCES=20 i_board,2 i_hinge,10 i_nails
 SKILLMAKE=Carpentry 85.3,t_carpentry
 CATEGORY=Decoration - Furniture
 SUBSECTION=Cabinetry
-DESCRIPTION=Chest 5
+DESCRIPTION=Finished Wooden Chest
 DUPELIST=02814
 
 [ITEMDEF 02814]
-//chest 5
+//finished wooden chest
 DUPEITEM=02813
 
 [ITEMDEF 02815]
-DEFNAME=i_cabinet_japanese1
+DEFNAME=i_cabinet_tall
+NAME=tall cabinet
 TYPE=t_container
 TDATA2=010c
 FLIP=1
@@ -2994,11 +2998,12 @@ DESCRIPTION=Tall Cabinet
 DUPELIST=02816
 
 [ITEMDEF 02816]
-//cabinet 1
+//tall cabinet
 DUPEITEM=02815
 
 [ITEMDEF 02817]
-DEFNAME=i_cabinet_japanese2
+DEFNAME=i_cabinet_short
+NAME=short cabinet
 TYPE=t_container
 TDATA2=010c
 FLIP=1
@@ -3012,7 +3017,7 @@ DESCRIPTION=Short Cabinet
 DUPELIST=02818
 
 [ITEMDEF 02818]
-//cabinet 2
+//short cabinet
 DUPEITEM=02817
 
 [ITEMDEF 02819]
@@ -3038,7 +3043,27 @@ SUBSECTION=Tables
 DESCRIPTION=Table 2
 
 [ITEMDEF 02857]
-DEFNAME=i_armoire_japanese1
+DEFNAME=i_armoire_red
+NAME=red armoire
+TYPE=t_container
+TDATA2=0105
+FLIP=1
+VALUE=175
+WEIGHT=31.0
+RESOURCES=15 i_board,6 i_nails,4 i_hinge
+SKILLMAKE=Carpentry 84.2,t_carpentry
+CATEGORY=Decoration - Furniture
+SUBSECTION=Cabinetry
+DESCRIPTION=Red Armoire
+DUPELIST=02858
+
+[ITEMDEF 02858]
+//red armoire
+DUPEITEM=02857
+
+[ITEMDEF 02859]
+DEFNAME=i_armoire_elegant
+NAME=elegant armoire
 TYPE=t_container
 TDATA2=0107
 FLIP=1
@@ -3048,35 +3073,18 @@ RESOURCES=15 i_board,6 i_nails,4 i_hinge
 SKILLMAKE=Carpentry 84.2,t_carpentry
 CATEGORY=Decoration - Furniture
 SUBSECTION=Cabinetry
-DESCRIPTION=Japanese Armoir 1
-DUPELIST=02858
-
-[ITEMDEF 02858]
-//japanese armoir 1
-DUPEITEM=02857
-
-[ITEMDEF 02859]
-DEFNAME=i_armoire_japanese2
-TYPE=t_container
-TDATA2=010d
-FLIP=1
-VALUE=175
-WEIGHT=31.0
-RESOURCES=15 i_board,6 i_nails,4 i_hinge
-SKILLMAKE=Carpentry 84.2,t_carpentry
-CATEGORY=Decoration - Furniture
-SUBSECTION=Cabinetry
-DESCRIPTION=Japanese Armoir 2
+DESCRIPTION=Elegant Armoire
 DUPELIST=0285a
 
 [ITEMDEF 0285a]
-//japanese armoir 2
+//elegant armoire
 DUPEITEM=02859
 
 [ITEMDEF 0285b]
-DEFNAME=i_armoire_japanese3
+DEFNAME=i_armoire_maple
+NAME=maple armoire
 TYPE=t_container
-TDATA2=010e
+TDATA2=0106
 FLIP=1
 VALUE=175
 WEIGHT=31.0
@@ -3084,17 +3092,18 @@ RESOURCES=15 i_board,6 i_nails,4 i_hinge
 SKILLMAKE=Carpentry 84.2,t_carpentry
 CATEGORY=Decoration - Furniture
 SUBSECTION=Cabinetry
-DESCRIPTION=Japanese Armoir 3
+DESCRIPTION=Maple Armoire
 DUPELIST=0285c
 
 [ITEMDEF 0285c]
-//japanese armoir 3
+//maple armoire
 DUPEITEM=0285b
 
 [ITEMDEF 0285d]
-DEFNAME=i_armoire_japanese4
+DEFNAME=i_armoire_cherry
+NAME=cherry armoire
 TYPE=t_container
-TDATA2=010e
+TDATA2=0107
 FLIP=1
 VALUE=175
 WEIGHT=31.0
@@ -3102,11 +3111,11 @@ RESOURCES=15 i_board,6 i_nails,4 i_hinge
 SKILLMAKE=Carpentry 84.2,t_carpentry
 CATEGORY=Decoration - Furniture
 SUBSECTION=Cabinetry
-DESCRIPTION=Japanese Armoir 4
+DESCRIPTION=Cherry Armoire
 DUPELIST=0285e
 
 [ITEMDEF 0285e]
-//japanese armoir 4
+//cherry armoire
 DUPEITEM=0285d
 
 [ITEMDEF 0295c]

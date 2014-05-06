@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, November 5, 2013
+// FILE LAST UPDATED: Tuesday, May 6, 2014
 //
 VERSION=0.56c
 
@@ -2127,22 +2127,26 @@ DESCRIPTION=Unused Ghost Missile 02255
 
 [ITEMDEF 02256]
 DEFNAME=i_bagball_small
-TYPE=t_normal
-VALUE=5
-WEIGHT=0.5
+TYPE=t_container
+VALUE=3
+DYE=1
+WEIGHT=1.0
+TDATA2=03D
 RESOURCES=1 i_hides_cut
-CATEGORY=Games
-SUBSECTION=Ball
-DESCRIPTION=Bagball
+CATEGORY=Provisions - Miscellaneous
+SUBSECTION=Containers
+DESCRIPTION=Bagball (small)
 
 [ITEMDEF 02257]
 DEFNAME=i_bagball_large
-TYPE=t_normal
-VALUE=10
+TYPE=t_container
+VALUE=3
+DYE=1
 WEIGHT=1.0
+TDATA2=03D
 RESOURCES=2 i_hides_cut
-CATEGORY=Games
-SUBSECTION=Ball
+CATEGORY=Provisions - Miscellaneous
+SUBSECTION=Containers
 DESCRIPTION=Bagball (large)
 
 [ITEMDEF 0225a]
@@ -2211,14 +2215,17 @@ ON=@Create
 
 [ITEMDEF 02328]
 DEFNAME=i_snowman
-TYPE=t_normal
 FLIP=1
-WEIGHT=113.5
+DYE=1
+WEIGHT=10.0
 RESOURCES=100 i_snow,1 i_fruit_carrot,12 i_reag_eye_of_newt,1 i_ribbon,1 i_hat_floppy
 CATEGORY=Decoration - Miscellaneous
 SUBSECTION=Holiday Gifts
 DESCRIPTION=Snowman
 DUPELIST=02329
+
+ON=@Create
+COLOR=colors_all
 
 [ITEMDEF 02329]
 //snowman
@@ -2226,12 +2233,11 @@ DUPEITEM=02328
 
 [ITEMDEF 0232a]
 DEFNAME=i_giftbox
-NAME=gift box
 TYPE=t_container
 TDATA2=0102
-TDATA3=100,100
+TDATA3=155,85
 FLIP=1
-WEIGHT=9.4
+WEIGHT=2.0
 RESOURCES=9 i_board,2 i_nails,1 i_paper,1 i_ribbon
 SKILLMAKE=carpentry 21.0,t_carpentry
 CATEGORY=Provisions - Miscellaneous
@@ -2239,20 +2245,25 @@ SUBSECTION=Containers
 DESCRIPTION=Gift Box
 DUPELIST=0232b
 
+ON=@Create
+COLOR=colors_all
+
 [ITEMDEF 0232b]
 //gift box
 DUPEITEM=0232a
 
 [ITEMDEF 0232c]
 DEFNAME=i_wreath
-TYPE=t_normal
 FLIP=1
-WEIGHT=10.2
+DYE=1
 RESOURCES=10 i_twig,1 i_mistletoe
 CATEGORY=Decoration - Miscellaneous
 SUBSECTION=Holiday Gifts
 DESCRIPTION=Wreath
 DUPELIST=0232d
+
+ON=@Create
+COLOR=colors_all
 
 [ITEMDEF 0232d]
 //wreath

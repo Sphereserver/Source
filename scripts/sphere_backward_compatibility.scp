@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, May 2, 2014
+// FILE LAST UPDATED: Tuesday, May 6, 2014
 //
 VERSION=0.56c
 
@@ -126,6 +126,17 @@ VERSION=0.56c
 //i_hair_elven_long2		i_hair_elven_long
 //i_hair_elven_long3		i_hair_elven_topknot
 //i_hair_elven_long4		i_hair_elven_buns
+//i_chest_japanese1		i_wooden_chest_plain
+//i_chest_japanese2		i_wooden_chest_ornate
+//i_chest_japanese3		i_wooden_chest_gilded
+//i_chest_japanese4		i_wooden_foot_locker
+//i_chest_japanese5		i_wooden_chest_finished
+//i_cabinet_japanese1		i_cabinet_tall
+//i_cabinet_japanese2		i_cabinet_short
+//i_armoire_japanese1		i_armoire_red
+//i_armoire_japanese2		i_armoire_elegant
+//i_armoire_japanese3		i_armoire_maple
+//i_armoire_japanese4		i_armoire_cherry
 
 
 [FUNCTION addnpc]
