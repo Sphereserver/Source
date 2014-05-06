@@ -942,3 +942,11 @@ I'm updating the wiki with this new information also.
 03-05-2014, Ben
 -Fixed #2325: Corpse with morez > 0 were able to be draged
 -Fixed #1781: Rejected moves should not count as a move for fast walk detection.
+
+06-05-2014, Feeh
+-Modified #2328: Dye tub now call @Dye on the dyed item
+	ARGN1		= the hue value (r/w)
+	ARGN2		= sound effect (r/w) (default 023e)
+	ARGO		= the item that originated the dye target
+	SRC			= who is dying the item 
+	RETURN 1	= stop internal dying/sound. hue changes made from script will take place

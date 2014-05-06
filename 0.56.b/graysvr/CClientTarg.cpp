@@ -2423,6 +2423,7 @@ static LPCTSTR const sm_Txt_LoomUse[] =
 		return false;
 
 	case IT_DYE_VAT:
+		{
 		// Use the dye vat on some object.
 		if ( pObjTarg == NULL )
 			return false;
@@ -2459,9 +2460,26 @@ static LPCTSTR const sm_Txt_LoomUse[] =
 				return false;
 			}
 		}
-		pObjTarg->SetHue( pItemUse->GetHue());
+
+		CScriptTriggerArgs args;
+		args.m_iN1=pItemUse->GetHue();
+		args.m_iN2=0x23e;
+		args.m_pO1 = pItemUse;
+
+		if (IsTrigUsed("@Dye"))
+		{
+			TRIGRET_TYPE iRet = pObjTarg->OnTrigger("@Dye",this->GetChar(),&args);
+			if (iRet == TRIGRET_RET_TRUE)
+				return false;
+		}
+
+		pObjTarg->Sound(args.m_iN2);
+
+		pObjTarg->SetHue( args.m_iN1 );
 		pObjTarg->Update();
 		return true;
+		}
+		break;
 
 	case IT_PITCHER_EMPTY:
 		// Fill it up with water.
