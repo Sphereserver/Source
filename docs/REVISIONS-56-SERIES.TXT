@@ -951,3 +951,19 @@ I'm updating the wiki with this new information also.
 	SRC			= who is dying the item 
 	RETURN 1	= stop internal dying/sound. hue changes made from script will take place
 	This will allow to change Dye behaviour for specific items without having to track the item id from other methods/scripts
+	
+07-05-2014, XuN
+-Updated 'guards' defname in sphere_defs.scp, guards have other ID since long time ago.
+-Added exception lines to the new Attacker_* functions so if something goes wrong... errors are more descriptive. Also fixed some exceptions appearing now.
+-Attacker.elapsed -1 means no attacker decay.
+-Fixed #2332: Range, also RangeL/RangeH not working as it should after the variables changes. Also made them return in decimal values instead of hexadecimal.
+-Made BloodColor writable.
+-Modified Guards system:
+	Modified @CallGuards trigger for players calling separatelly than NPCs.
+	This trigger will fire one time on the Player calling guards per each possible target, argn3 is set to 1 if the target is hostile, however if set to 0 nothing will happen, if this is set to 1 the character will be attacked by guards.
+-Fixed guards dissapearing after calling them. They also stick now to the attacker system (if defined) being easier to create custom guards (changing how and when are they called will come in next commits)
+-Added ini setting GuardsOnMurderers (1 by default), if set to 0 will only attack criminals, if set to 1 will attack criminals and murderers.
+-Fixed: GuardsInstantKill now set hits to 1 before hit to ensure the kill, it was acting as instant hit instead of instant kill
+-Changed: Moved the instant kill ouside the 'teleport' check, to ensure its using it everytime and not only if target.distance > 1
+-Switched 2 checks to ensure that guards are not called on guards.
+-Added a check in OnNoticeCrime() to avoid guards becoming criminals if send to attack any good character.
