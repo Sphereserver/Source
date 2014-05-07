@@ -83,6 +83,7 @@ CResource::CResource()
 	m_iBankIMax		= 1000;
 	m_iBankWMax		= 400 * WEIGHT_UNITS;
 	m_fGuardsInstantKill	= true;
+	m_fGuardsOnMurderers	= false;
 	m_iSnoopCriminal	= 500;
 	m_iTradeWindowSnooping = true;
 	m_iTrainSkillPercent	= 50;
@@ -448,6 +449,7 @@ enum RC_TYPE
 	RC_GENERICSOUNDS,		// m_fGenericSounds
 	RC_GUARDLINGER,			// m_iGuardLingerTime
 	RC_GUARDSINSTANTKILL,
+	RC_GUARDSONMURDERERS,
 	RC_GUESTSMAX,
 	RC_GUILDS,
 	RC_HEARALL,
@@ -671,6 +673,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "GENERICSOUNDS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fGenericSounds),		0 }},
 	{ "GUARDLINGER",			{ ELEM_INT,		OFFSETOF(CResource,m_iGuardLingerTime),		0 }},
 	{ "GUARDSINSTANTKILL",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fGuardsInstantKill),	0 }},
+	{ "GUARDSONMURDERERS",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fGuardsOnMurderers),	0 }},
 	{ "GUESTSMAX",				{ ELEM_INT,		OFFSETOF(CResource,m_iGuestsMax),			0 }},
 	{ "GUILDS",					{ ELEM_VOID,	0,											0 }},
 	{ "HEARALL",				{ ELEM_VOID,	0,											0 }},

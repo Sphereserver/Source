@@ -1015,6 +1015,9 @@ void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 	ASSERT(pCriminal);
 	if ( pCriminal == this )
 		return;
+	
+	if ( pCriminal->m_pNPC->m_Brain == NPCBRAIN_GUARD )
+		return;
 
 	if ( IsTrigUsed(TRIGGER_CRIMINAL) )
 	{
@@ -1476,6 +1479,8 @@ void CChar::CallGuards( CChar * pCriminal )
 
 	bool		bSearchedGuard = false;
 	CChar		*pGuard = NULL;
+	CChar		*pChar;
+	bool		bCriminal = false;
 
 	// I'm a guard, why summon someone else to do my work? :)
 	if ( !m_pPlayer && m_pNPC->m_Brain == NPCBRAIN_GUARD )
@@ -1483,50 +1488,6 @@ void CChar::CallGuards( CChar * pCriminal )
 		bSearchedGuard = true;
 		pGuard = this;
 	}
-
-	// Is there anything for guards to see ?
-	if ( !pCriminal )
-	{
-		bSearchedGuard = true;
-		CWorldSearch AreaCrime(GetTopPoint(), UO_MAP_VIEW_SIGHT);
-		CChar	*pChar;
-		while ( (pChar = AreaCrime.GetChar()) != NULL )
-		{
-			if ( pChar == this )
-				continue;
-
-			//	scan for guards also ;) it will speed up the execution a bit
-			if ( !pGuard && !pChar->m_pPlayer )
-			{
-				if ( pChar->m_pNPC->m_Brain == NPCBRAIN_GUARD )
-				{
-					pGuard = pChar;
-					continue;
-				}
-			}
-
-			// don't allow guards to be called on someone we cant disturb
-			if (CanDisturb(pChar) == false)
-				continue;
-
-			// mark person a criminal if seen him criming
-			// Only players call guards this way. NPC's flag criminal instantly.
-			if ( m_pPlayer && Memory_FindObjTypes(pChar, MEMORY_SAWCRIME) )
-				pChar->Noto_Criminal();
-
-			// not criminal or area is not guarded - we do not attack him
-			if ( !pChar->Noto_IsCriminal() || !pChar->m_pArea->IsGuarded() )
-				continue;
-
-			pCriminal = pChar;
-		}
-		if ( !pCriminal )
-			return;
-	}
-
-	// Guards can't respond if criminal is outside of the guard zone.
-	if ( !pCriminal->m_pArea->IsGuarded() )
-		return;
 
 	if ( !bSearchedGuard )
 	{
@@ -1540,42 +1501,137 @@ void CChar::CallGuards( CChar * pCriminal )
 		}
 	}
 
-	CVarDefCont * pVarDef = pCriminal->m_pArea->m_TagDefs.GetKey("OVERRIDE.GUARDS");
-	RESOURCE_ID rid = g_Cfg.ResourceGetIDType( RES_CHARDEF, (pVarDef? pVarDef->GetValStr():"GUARDS") );
-
-	if ( IsTrigUsed(TRIGGER_CALLGUARDS) )
+	// Guards can't respond if criminal is outside of the guard zone.
+	
+	CWorldSearch AreaCrime(GetTopPoint(), UO_MAP_VIEW_SIGHT);
+	// Is there anything for guards to see ?
+	if ( !pCriminal )
 	{
-		CScriptTriggerArgs args( pGuard );
-		args.m_iN1 = rid.GetResIndex();
-		args.m_iN2 = 0;
-		args.m_VarObjs.Insert( 1, pCriminal, true );
+		bSearchedGuard = true;
+		while ( (pChar = AreaCrime.GetChar()) != NULL )
+		{
+			bCriminal = false;	// Asume everyone is inocent.
+			if ( pChar == this )
+				continue;
 
-		if ( OnTrigger(CTRIG_CallGuards, pCriminal, &args) == TRIGRET_RET_TRUE )
-			return;
+			//	scan for guards also ;) it will speed up the execution a bit
+			if ( pChar->m_pNPC->m_Brain == NPCBRAIN_GUARD )
+			{
+				if ( !pGuard && !pChar->m_pPlayer )
+				{
+					pGuard = pChar;
+				}
+				continue;
+			}
 
-		if ( args.m_iN1 != rid.GetResIndex() )
-			rid = RESOURCE_ID( RES_CHARDEF, static_cast<int>(args.m_iN1) );
-		if ( args.m_iN2 )
-			pGuard = NULL;
+			// don't allow guards to be called on someone we cant disturb
+			if (CanDisturb(pChar) == false)
+				continue;
+
+			// mark person a criminal if seen him criming
+			// Only players call guards this way. NPC's flag criminal instantly.
+			if ( m_pPlayer && Memory_FindObjTypes(pChar, MEMORY_SAWCRIME) )
+				pChar->Noto_Criminal();
+			
+			if ( ( pChar->IsStatFlag( STATF_Criminal ) && pChar->m_pArea->IsGuarded() ) || ( pChar->Noto_IsEvil() &&  g_Cfg.m_fGuardsOnMurderers) )
+				bCriminal = true;
+
+			CVarDefCont * pVarDef = pChar->m_pArea->m_TagDefs.GetKey("OVERRIDE.GUARDS");
+			RESOURCE_ID rid = g_Cfg.ResourceGetIDType( RES_CHARDEF, (pVarDef? pVarDef->GetValStr():"GUARDS") );
+			if ( IsTrigUsed(TRIGGER_CALLGUARDS) )
+			{
+				CScriptTriggerArgs args( pGuard );
+				args.m_iN1 = rid.GetResIndex();
+				args.m_iN2 = 0;
+				args.m_iN3 = bCriminal;
+				args.m_VarObjs.Insert( 1, pChar, true );
+
+				if ( !OnTrigger(CTRIG_CallGuards, pChar, &args) == TRIGRET_RET_TRUE )
+					return;
+
+				if ( args.m_iN1 != rid.GetResIndex() )
+					rid = RESOURCE_ID( RES_CHARDEF, static_cast<int>(args.m_iN1) );
+				if ( args.m_iN2 > 0 )
+					pGuard = NULL;
+					
+				if ( args.m_iN3 == 0 )
+					bCriminal = false;
+				else
+					bCriminal = true;
+			}
+			if ( bCriminal == true )
+			{
+				if ( !pGuard )			//	spawn a new guard
+				{
+					if ( !rid.IsValidUID() )
+						return;
+
+					pGuard = CChar::CreateNPC(static_cast<CREID_TYPE>(rid.GetResIndex()));
+					if ( !pGuard )
+						return;
+
+					//	normal guards, just with patched color hue also acting in red areas
+					if ( pChar->m_pArea->m_TagDefs.GetKeyNum("RED", true) )
+						pGuard->m_TagDefs.SetNum("NAME.HUE", 0x21, true);
+
+					pGuard->Spell_Effect_Create(SPELL_Summon, LAYER_SPELL_Summon, 1000, g_Cfg.m_iGuardLingerTime);
+					pGuard->Spell_Teleport(pChar->GetTopPoint(), false, false);
+				}
+				pGuard->NPC_LookAtCharGuard(pChar, true);
+			}
+		}
 	}
-
-	if ( !pGuard )			//	spawn a new guard
+	else
 	{
-		if ( !rid.IsValidUID() )
+		if ( !pCriminal->m_pArea->IsGuarded() )
 			return;
+		if ( !bSearchedGuard )
+		{
+			// Is there a free guard near by ?
+			CWorldSearch AreaGuard(GetTopPoint(), UO_MAP_VIEW_RADAR);
+			while ( (pGuard = AreaGuard.GetChar()) != NULL )
+			{
+				if (( pGuard->m_pPlayer ) || ( pGuard->m_pNPC->m_Brain != NPCBRAIN_GUARD ) || pGuard->IsStatFlag(STATF_War) )
+					continue;
+				break;
+			}
+		}
 
-		pGuard = CChar::CreateNPC(static_cast<CREID_TYPE>(rid.GetResIndex()));
-		if ( !pGuard )
-			return;
+		CVarDefCont * pVarDef = pCriminal->m_pArea->m_TagDefs.GetKey("OVERRIDE.GUARDS");
+		RESOURCE_ID rid = g_Cfg.ResourceGetIDType( RES_CHARDEF, (pVarDef? pVarDef->GetValStr():"GUARDS") );
+		if ( IsTrigUsed(TRIGGER_CALLGUARDS) )
+		{
+			CScriptTriggerArgs args( pGuard );
+			args.m_iN1 = rid.GetResIndex();
+			args.m_iN2 = 0;
+			args.m_VarObjs.Insert( 1, pCriminal, true );
 
-		//	normal guards, just with patched color hue also acting in red areas
-		if ( pCriminal->m_pArea->m_TagDefs.GetKeyNum("RED", true) )
-			pGuard->m_TagDefs.SetNum("NAME.HUE", 0x21, true);
+			if ( OnTrigger(CTRIG_CallGuards, pCriminal, &args) == TRIGRET_RET_TRUE )
+				return;
 
-		pGuard->Spell_Effect_Create(SPELL_Summon, LAYER_SPELL_Summon, 1000, g_Cfg.m_iGuardLingerTime);
-		pGuard->Spell_Teleport(pCriminal->GetTopPoint(), false, false);
+			if ( args.m_iN1 != rid.GetResIndex() )
+				rid = RESOURCE_ID( RES_CHARDEF, static_cast<int>(args.m_iN1) );
+			if ( args.m_iN2 )
+				pGuard = NULL;
+		}
+		if ( !pGuard )			//	spawn a new guard
+		{
+			if ( !rid.IsValidUID() )
+				return;
+
+			pGuard = CChar::CreateNPC(static_cast<CREID_TYPE>(rid.GetResIndex()));
+			if ( !pGuard )
+				return;
+
+			//	normal guards, just with patched color hue also acting in red areas
+			if ( pCriminal->m_pArea->m_TagDefs.GetKeyNum("RED", true) )
+				pGuard->m_TagDefs.SetNum("NAME.HUE", 0x21, true);
+
+			pGuard->Spell_Effect_Create(SPELL_Summon, LAYER_SPELL_Summon, 1000, g_Cfg.m_iGuardLingerTime);
+			pGuard->Spell_Teleport(pCriminal->GetTopPoint(), false, false);
+		}
+		pGuard->NPC_LookAtCharGuard(pCriminal, true);
 	}
-	pGuard->NPC_LookAtCharGuard(pCriminal);
 }
 
 
@@ -2358,7 +2414,7 @@ effect_bounce:
 		return( 0 );
 
 	// Make blood depending on hit damage. assuming the creature has blood
-	if ( pCharDef->m_wBloodHue != static_cast<HUE_TYPE>(-1) )
+	if ( m_wBloodHue != static_cast<HUE_TYPE>(-1) )
 	{
 		ITEMID_TYPE id = ITEMID_NOTHING;
 		if ( iDmg > 10 )
@@ -2375,7 +2431,7 @@ effect_bounce:
 		{
 			CItem * pBlood = CItem::CreateBase( id );
 			ASSERT(pBlood);
-			pBlood->SetHue( pCharDef->m_wBloodHue );
+			pBlood->SetHue( m_wBloodHue );
 			pBlood->MoveToDecay( GetTopPoint(), 7*TICK_PER_SEC );
 		}
 	}
@@ -2729,7 +2785,7 @@ bool CChar::Memory_Fight_OnTick( CItemMemory * pMemory )
 	if ( pTarg == NULL )
 		return( false );	// They are gone for some reason ?
 
-	if ( GetDist(pTarg) > UO_MAP_VIEW_RADAR )
+	if ( GetDist(pTarg) > UO_MAP_VIEW_RADAR && ! Attacker_GetElapsed(Attacker_GetID(pTarg)) >= 0) //Attacker.Elapsed = -1 means no combat end.
 	{
 		Memory_Fight_Retreat( pTarg, pMemory );
 clearit:
@@ -2981,8 +3037,10 @@ CChar * CChar::Fight_FindBestTarget()
 	
 	CChar * pChar = NULL;
 	CChar * pClosest = NULL;
-	if ( Attacker() && g_Cfg.m_iNpcAi&NPC_AI_THREAT && !m_pPlayer )
+	if ( g_Cfg.m_iNpcAi&NPC_AI_THREAT && !m_pPlayer )
 	{
+		if ( !Attacker() )
+			return NULL;
 		CChar * pChar = Attacker_FindBestTarget();
 		return pChar;
 	}
@@ -3032,7 +3090,7 @@ bool CChar::Fight_Clear(const CChar *pChar, bool bForced)
 {
 	ADDTOCALLSTACK("CChar::Fight_Clear");
 	// I no longer want to attack this char.
-	if ( Attacker_Delete(const_cast<CChar*>(pChar)) == false )
+	if ( Attacker_Delete(const_cast<CChar*>(pChar), bForced) == false )
 		return false;
 	if ( pChar )
 	{
@@ -3074,7 +3132,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool toldByMaster )
 
 	if ((m_Act_Targ != pCharTarg->GetUID()) && (( IsTrigUsed(TRIGGER_ATTACK) ) || ( IsTrigUsed(TRIGGER_CHARATTACK) )))
 	{
-		if (OnTrigger(CTRIG_Attack, const_cast<CChar *>(pCharTarg)) == TRIGRET_RET_TRUE)
+		if (OnTrigger(CTRIG_Attack, const_cast<CChar *>(pCharTarg),0) == TRIGRET_RET_TRUE)
 			return false;
 	}
 
@@ -3144,7 +3202,7 @@ void CChar::Fight_HitTry()
 	{
 		// Might be dead ? Clear this.
 		// move to my next target.
-		m_Act_Targ = Fight_AttackNext();
+		Fight_AttackNext();
 		return;
 	}
 
@@ -3180,6 +3238,7 @@ void CChar::Fight_HitTry()
 }
 bool CChar::Attacker_Add( CChar * pChar )
 {
+	ADDTOCALLSTACK("CChar::Attacker_Add");
 	bool bAttackerExists = false;
 	CGrayUID uid = static_cast<CGrayUID>(pChar->GetUID());
 	if  ( m_lastAttackers.size() )	// Must only check for existing attackers if there are any attacker already.
@@ -3218,7 +3277,7 @@ bool CChar::Attacker_Add( CChar * pChar )
 CChar * CChar::Attacker_FindBestTarget()
 {
 	ADDTOCALLSTACK("CChar::Attacker_FindBestTarget");
-	if ( !Attacker())
+	if ( !Attacker() )
 		return NULL;
 	SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
 	int iClosest = INT_MAX;	// closest
@@ -3227,14 +3286,13 @@ CChar * CChar::Attacker_FindBestTarget()
 	CChar * pClosest = NULL;
 
 	int threat = 0;
-	size_t attackerIndex = m_lastAttackers.size();
 	int count = 0;
 
 	//for ( int attacker = Attacker(); attacker < Attacker(); attacker++)
 	for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); it++)
 	{
 		LastAttackers & refAttacker = *it;
-		pChar = static_cast<CChar*>(g_World.FindUID(refAttacker.charUID));
+		CChar * pChar = static_cast<CChar*>( static_cast<CGrayUID>( refAttacker.charUID ).CharFind() );
 	
 		if ( pChar == NULL )
 			continue;
@@ -3257,7 +3315,7 @@ CChar * CChar::Attacker_FindBestTarget()
 			continue;
 		if ( ! CanSeeLOS( pChar ) )
 			continue;
-		if ( threat < refAttacker.threat)
+		if ( threat < static_cast<int>(refAttacker.threat))
 		{
 			// So if we reached here ... this target has more threat than the others and meets the reqs.
 			pClosest = pChar;
@@ -3272,47 +3330,57 @@ CChar * CChar::Attacker_FindBestTarget()
 
 int CChar::Attacker_GetDam( int id)
 {
+	ADDTOCALLSTACK("CChar::Attacker_GetDam");
 	LastAttackers & refAttacker = m_lastAttackers.at(id);
 	return refAttacker.amountDone;
 }
 
 int CChar::Attacker_GetElapsed( int id)
 {
+	ADDTOCALLSTACK("CChar::Attacker_GetElapsed");
 	LastAttackers & refAttacker = m_lastAttackers.at(id);
 	return refAttacker.elapsed;
 }
 
 int CChar::Attacker_GetThreat( int id)
 {
+	ADDTOCALLSTACK("CChar::Attacker_GetThreat");
 	LastAttackers & refAttacker = m_lastAttackers.at(id);
 	return refAttacker.threat ? refAttacker.threat : 0;
 }
 
 void CChar::Attacker_SetElapsed( CChar * pChar, int value)
 {
+	ADDTOCALLSTACK("CChar::Attacker_SetElapsed(CChar)");
 	LastAttackers & refAttacker = m_lastAttackers.at( Attacker_GetID(pChar) );
 	refAttacker.elapsed = value;
 }
 
 void CChar::Attacker_SetElapsed( int pChar, int value)
 {
+	ADDTOCALLSTACK("CChar::Attacker_SetElapsed(int)");
 	LastAttackers & refAttacker = m_lastAttackers.at( pChar );
 	refAttacker.elapsed = value;
 }
 
 void CChar::Attacker_SetDam( CChar * pChar, int value)
 {
+	ADDTOCALLSTACK("CChar::Attacker_SetDam(CChar)");
 	LastAttackers & refAttacker = m_lastAttackers.at( Attacker_GetID(pChar) );
 	refAttacker.amountDone = value;
 }
 
 void CChar::Attacker_SetDam( int pChar, int value)
 {
+	ADDTOCALLSTACK("CChar::Attacker_SetDam(int)");
 	LastAttackers & refAttacker = m_lastAttackers.at( pChar );
 	refAttacker.amountDone = value;
 }
 void CChar::Attacker_SetThreat( CChar * pChar, int value)
 {
+	ADDTOCALLSTACK("CChar::Attacker_SetThreat(CChar)");
+	if ( !pChar )
+		return;
 	if ( m_pPlayer )
 		return;
 	LastAttackers & refAttacker = m_lastAttackers.at( Attacker_GetID(pChar) );
@@ -3320,6 +3388,9 @@ void CChar::Attacker_SetThreat( CChar * pChar, int value)
 }
 void CChar::Attacker_SetThreat( int pChar, int value)
 {
+	ADDTOCALLSTACK("CChar::Attacker_SetThreat(int)");
+	if ( !pChar )
+		return;
 	if ( m_pPlayer )
 		return;
 	LastAttackers & refAttacker = m_lastAttackers.at( pChar );
@@ -3328,6 +3399,7 @@ void CChar::Attacker_SetThreat( int pChar, int value)
 
 void CChar::Attacker_Clear()
 {
+	ADDTOCALLSTACK("CChar::Attacker_Clear");
 	if ( IsTrigUsed(TRIGGER_COMBATEND) )
 		OnTrigger(CTRIG_CombatEnd,this,0);
 	m_lastAttackers.clear();
@@ -3335,6 +3407,7 @@ void CChar::Attacker_Clear()
 
 int CChar::Attacker_GetID( CChar * pChar )
 {
+	ADDTOCALLSTACK("CChar::Attacker_GetID(CChar)");
 	if ( !pChar )
 		return NULL;
 	int count = 0;
@@ -3343,7 +3416,6 @@ int CChar::Attacker_GetID( CChar * pChar )
 	{
 		for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); it++)
 		{
-			size_t attackerIndex = m_lastAttackers.size();
 			LastAttackers & refAttacker = m_lastAttackers.at(count);
 			CGrayUID uid = refAttacker.charUID;
 			if ( uid.CharFind() && uid == static_cast<DWORD>(pChar->GetUID()) )
@@ -3361,6 +3433,7 @@ int CChar::Attacker_GetID( CChar * pChar )
 
 int CChar::Attacker_GetID( CGrayUID pChar )
 {
+	ADDTOCALLSTACK("CChar::Attacker_GetID(CGrayUID)");
 	int count = 0;
 	bool bFound = false;
 	if ( Attacker() )
@@ -3384,6 +3457,7 @@ int CChar::Attacker_GetID( CGrayUID pChar )
 
 CChar * CChar::Attacker_GetUID( int index )
 {
+	ADDTOCALLSTACK("CChar::Attacker_GetUID");
 	LastAttackers & refAttacker = m_lastAttackers.at(index);
 	CChar * pChar = static_cast<CChar*>( static_cast<CGrayUID>( refAttacker.charUID ).CharFind() );
 	return pChar;
@@ -3391,6 +3465,7 @@ CChar * CChar::Attacker_GetUID( int index )
 
 bool CChar::Attacker_Delete( CChar * pChar, bool bForced )
 {		
+	ADDTOCALLSTACK("CChar::Attacker_Delete");
 	if ( IsTrigUsed(TRIGGER_COMBATDELETE) && bForced == false )
 	{
 		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatDelete,pChar,0);

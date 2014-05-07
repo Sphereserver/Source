@@ -806,6 +806,7 @@ public:
 
 	// Criminal/Karma
 	bool m_fGuardsInstantKill;	// Will guards kill instantly or follow normal combat rules?
+	bool m_fGuardsOnMurderers;	// should guards be only called on criminals ?
 	int	 m_iGuardLingerTime;	// How long do guards linger about.
 	int  m_iSnoopCriminal;		// 1 in # chance of getting criminalflagged when succesfully snooping.
 	bool m_iTradeWindowSnooping;// 1 means opening a container in trade window needs to use snooping, 0 direct open.

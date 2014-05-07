@@ -17,7 +17,7 @@ defaultitem   i_gold  // If we cannot create the item, make it this.
 defaultchar   c_man   // If we cannot create the char, make it this.
 defaultseed   i_gold  // When we make a seed, make it look like this.
 defaultmsg    i_gold  // When we make a bulletin board post, use this item.
-guards        { c_h_guard 1 c_h_guard_f 1 }
+guards        { c_guard 1 c_guard_f 1 }
 deffood       { i_ham 1 i_cake 1 i_bread_loaf 1 }
 
 [DEFNAME mount_items]

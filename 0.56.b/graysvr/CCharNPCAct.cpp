@@ -1090,13 +1090,13 @@ int CChar::NPC_WalkToPoint( bool fRun )
 	return 1;
 }
 
-bool CChar::NPC_LookAtCharGuard( CChar * pChar )
+bool CChar::NPC_LookAtCharGuard( CChar * pChar, bool bFromTrigger )
 {
 	ADDTOCALLSTACK("CChar::NPC_LookAtCharGuard");
 	// Does the guard hate the target ?
 
 	//	do not waste time on invul+dead, non-criminal and jailed chars
-	if ( !pChar || pChar->IsStatFlag(STATF_INVUL|STATF_DEAD) || !pChar->Noto_IsCriminal() || pChar->IsPriv(PRIV_JAILED) )
+	if ( !pChar || pChar->IsStatFlag(STATF_INVUL|STATF_DEAD) || pChar->IsPriv(PRIV_JAILED) || !bFromTrigger )	//|| !pChar->Noto_IsCriminal()
 		return false;
 
 	static UINT const sm_szSpeakGuardJeer[] =
@@ -1137,12 +1137,16 @@ bool CChar::NPC_LookAtCharGuard( CChar * pChar )
 
 		// If we got intant kill guards enabled, allow the guards to swing immidiately
 		if ( g_Cfg.m_fGuardsInstantKill )
+		{
+			pChar->Stat_SetVal(STAT_STR, 1);
 			Fight_Hit(pChar);
+		}
 	}
 	if ( !IsStatFlag(STATF_War) || m_Act_Targ != pChar->GetUID() )
 	{
 		Speak(g_Cfg.GetDefaultMsg(sm_szSpeakGuardStrike[Calc_GetRandVal(COUNTOF(sm_szSpeakGuardStrike))]));
 		Fight_Attack(pChar);
+		Attacker_SetThreat(Attacker_GetID(pChar),10000);
 	}
 	return true;
 }
@@ -3228,7 +3232,7 @@ void CChar::NPC_OnTickAction()
 		{
 			case SKILL_NONE:
 				// We should try to do something new.
-				EXC_SET("idle");
+				EXC_SET("idle: Skill_None");
 				NPC_Act_Idle();
 				break;
 
@@ -3246,7 +3250,7 @@ void CChar::NPC_OnTickAction()
 				// just remain hidden unless we find something new to do.
 				if ( Calc_GetRandVal( Skill_GetBase(SKILL_HIDING)))
 					break;
-				EXC_SET("idle");
+				EXC_SET("idle: Hidding");
 				NPC_Act_Idle();
 				break;
 
@@ -3295,7 +3299,7 @@ void CChar::NPC_OnTickAction()
 				EXC_SET("talk");
 				if ( ! NPC_Act_Talk())
 				{
-					EXC_SET("idle");
+					EXC_SET("idle: Talk");
 					NPC_Act_Idle();	// look for something new to do.
 				}
 				break;
@@ -3311,7 +3315,7 @@ void CChar::NPC_OnTickAction()
 				EXC_SET("looking");
 				if ( NPC_LookAround( true ) )
 					break;
-				EXC_SET("idle");
+				EXC_SET("idle: Looking");
 				NPC_Act_Idle();
 				break;
 			case NPCACT_FOOD:

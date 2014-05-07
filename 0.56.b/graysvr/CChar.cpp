@@ -248,6 +248,7 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 	CCharBase* pCharDef = Char_GetDef();
 	ASSERT(pCharDef);
 	m_Can = pCharDef->m_Can;
+	m_wBloodHue = pCharDef->m_wBloodHue;	// when damaged , what color is the blood (-1) = no blood
 
 	SetName( pCharDef->GetTypeName());	// set the name in case there is a name template.
 
@@ -1582,76 +1583,86 @@ do_default:
 				sVal.FormatVal(0);
 				pszKey += 8;
 
-				if (( *pszKey == '.' ) && ( m_lastAttackers.size() ))
+				if ( *pszKey == '.' )
 				{
 					pszKey++;
-					size_t attackerIndex = m_lastAttackers.size();
-					if( !strnicmp(pszKey, "MAX", 3) )
+					if ( m_lastAttackers.size() )
 					{
-						pszKey += 3;
-						int iMaxDmg = -1, iCurDmg = 0;
-
-						for ( size_t iAttacker = 0; iAttacker < m_lastAttackers.size(); ++iAttacker )
+						size_t attackerIndex = m_lastAttackers.size();
+						if( !strnicmp(pszKey, "MAX", 3) )
 						{
-							iCurDmg = m_lastAttackers.at(iAttacker).amountDone;
-							if ( iCurDmg > iMaxDmg )
+							pszKey += 3;
+							int iMaxDmg = -1, iCurDmg = 0;
+
+							for ( size_t iAttacker = 0; iAttacker < m_lastAttackers.size(); ++iAttacker )
 							{
-								iMaxDmg = iCurDmg;
-								attackerIndex = iAttacker;
+								iCurDmg = m_lastAttackers.at(iAttacker).amountDone;
+								if ( iCurDmg > iMaxDmg )
+								{
+									iMaxDmg = iCurDmg;
+									attackerIndex = iAttacker;
+								}
+							}
+						}
+						else if( !strnicmp(pszKey, "LAST", 4) )
+						{
+							pszKey += 4;
+							DWORD dwLastTime = INT_MAX, dwCurTime = 0;
+
+							for ( size_t iAttacker = 0; iAttacker < m_lastAttackers.size(); ++iAttacker )
+							{
+								dwCurTime = m_lastAttackers.at(iAttacker).elapsed;
+								if ( dwCurTime <= dwLastTime )
+								{
+									dwLastTime = dwCurTime;
+									attackerIndex = iAttacker;
+								}
+							}
+						}
+						else
+						{
+							attackerIndex = Exp_GetVal(pszKey);
+						}
+
+						SKIP_SEPARATORS(pszKey);
+						if ( attackerIndex < m_lastAttackers.size() )
+						{
+							LastAttackers & refAttacker = m_lastAttackers.at(attackerIndex);
+
+							if( !strnicmp(pszKey, "DAM", 3) )
+							{
+								sVal.FormatVal(refAttacker.amountDone);
+							}
+							else if( !strnicmp(pszKey, "ELAPSED", 7) )
+							{
+								sVal.FormatVal(refAttacker.elapsed);
+							}
+							else if (( !strnicmp(pszKey, "UID", 3) ) || ( *pszKey == '\0' ))
+							{
+								CGrayUID uid = refAttacker.charUID;
+								sVal.FormatHex( uid.CharFind() ? refAttacker.charUID : 0 );
+							}
+							else if ( ( !strnicmp(pszKey, "THREAT", 6 ) ) )
+							{
+								sVal.FormatVal(refAttacker.threat);
 							}
 						}
 					}
-					else if( !strnicmp(pszKey, "LAST", 4) )
-					{
-						pszKey += 4;
-						DWORD dwLastTime = INT_MAX, dwCurTime = 0;
-
-						for ( size_t iAttacker = 0; iAttacker < m_lastAttackers.size(); ++iAttacker )
-						{
-							dwCurTime = m_lastAttackers.at(iAttacker).elapsed;
-							if ( dwCurTime <= dwLastTime )
-							{
-								dwLastTime = dwCurTime;
-								attackerIndex = iAttacker;
-							}
-						}
-					}else if ( !strnicmp(pszKey, "ID", 2 ) )
+					if ( !strnicmp(pszKey, "ID", 2 ) )
 					{
 						pszKey += 3;	// ID + whitspace
 						CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind());
-						sVal.FormatVal(Attacker_GetID(pChar) ? Attacker_GetID(pChar) : -1 );
+						if ( Attacker_GetID(pChar) == NULL )
+							sVal.FormatVal( -1 );
+						else
+							sVal.FormatVal(Attacker_GetID(pChar));
 					}else if ( !strnicmp(pszKey, "TARGET", 6 ) )
 					{
 						pszKey += 6;
-						sVal.FormatHex(Fight_FindBestTarget() ? static_cast<DWORD>(Fight_FindBestTarget()->GetUID()) : -1 );
-					}
-					else
-					{
-						attackerIndex = Exp_GetVal(pszKey);
-					}
-
-					SKIP_SEPARATORS(pszKey);
-					if ( attackerIndex < m_lastAttackers.size() )
-					{
-						LastAttackers & refAttacker = m_lastAttackers.at(attackerIndex);
-
-						if( !strnicmp(pszKey, "DAM", 3) )
-						{
-							sVal.FormatVal(refAttacker.amountDone);
-						}
-						else if( !strnicmp(pszKey, "ELAPSED", 7) )
-						{
-							sVal.FormatVal(refAttacker.elapsed);
-						}
-						else if (( !strnicmp(pszKey, "UID", 3) ) || ( *pszKey == '\0' ))
-						{
-							CGrayUID uid = refAttacker.charUID;
-							sVal.FormatHex( uid.CharFind() ? refAttacker.charUID : 0 );
-						}
-						else if ( ( !strnicmp(pszKey, "THREAT", 6 ) ) )
-						{
-							sVal.FormatVal(refAttacker.threat);
-						}
+						if ( Fight_FindBestTarget() )
+							sVal.FormatHex(static_cast<DWORD>(Fight_FindBestTarget()->GetUID()));
+						else
+							sVal.FormatVal(-1);
 					}
 				}
 
@@ -1661,6 +1672,9 @@ do_default:
 		case CHC_FIGHTRANGE: //RANGE is now writable so this is changed to FIGHTRANGE as readable only
 			sVal.FormatVal( CalcFightRange( m_uidWeapon.ItemFind() ) );
 			return true;
+		case CHC_BLOODCOLOR:
+			sVal.FormatHex( m_wBloodHue );
+			break;
 		case CHC_FAME:
 			// How much respect do i give this person ?
 			// Fame is never negative !
@@ -2329,6 +2343,10 @@ do_default:
 			{
 				SetDefNum(s.GetKey(), s.GetArgVal(), false);
 			}
+			break;
+			
+		case CHC_BLOODCOLOR:
+			m_wBloodHue = static_cast<HUE_TYPE>(s.GetArgVal());
 			break;
 		case CHC_MAXFOOD:
 			Stat_SetMax(STAT_FOOD, s.GetArgVal());

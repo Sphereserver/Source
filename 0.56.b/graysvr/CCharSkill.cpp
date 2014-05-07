@@ -3937,7 +3937,7 @@ int CChar::Skill_Stroke()
 		sound = static_cast<int>(args.m_VarsLocal.GetKeyNum("Sound",false));
 		m_atCreate.m_Stroke_Count = static_cast<WORD>(args.m_VarsLocal.GetKeyNum("Strokes",false));
 		delay = args.m_VarsLocal.GetKeyNum("Delay",true);
-		anim = args.m_VarsLocal.GetKeyNum("Anim", true);
+		anim = static_cast<int>(args.m_VarsLocal.GetKeyNum("Anim", true));
 	}
 
 	if ( sound )

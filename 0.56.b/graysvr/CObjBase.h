@@ -2582,6 +2582,7 @@ public:
 	// In order to revert to original Hue and body.
 	CREID_TYPE m_prev_id;		// Backup of body type for ghosts and poly
 	HUE_TYPE m_prev_Hue;	// Backup of skin color. in case of polymorph etc.
+	HUE_TYPE m_wBloodHue;	// Replicating CharDef's BloodColor on the char, or overriding it.
 
 	// Client's local light
 	BYTE m_LocalLight;
@@ -3619,7 +3620,7 @@ private:
 
 	bool NPC_LootContainer( CItemContainer * pItem );
 	void NPC_LootMemory( CItem * pItem );
-	bool NPC_LookAtCharGuard( CChar * pChar );
+	bool NPC_LookAtCharGuard( CChar * pChar, bool bFromTrigger = false );
 	bool NPC_LookAtCharHealer( CChar * pChar );
 	bool NPC_LookAtCharHuman( CChar * pChar );
 	bool NPC_LookAtCharMonster( CChar * pChar );

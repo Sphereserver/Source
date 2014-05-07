@@ -729,14 +729,48 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			break;
 
 		case OC_RANGE:
-			if ( RangeH() == 0 ) sVal.Format( "%d", RangeL() );
-			else sVal.Format( "%d,%d", RangeH(), RangeL() );
-			break;
+			{
+				unsigned char High;
+				unsigned char Low;
+				High = RangeH();
+				Low = RangeL();
+				if ( !High && !Low )
+				{
+					if (IsItem())
+					{
+						CItemBase * pItemDef = STATIC_CAST <CItemBase*>( Base_GetDef());
+						ASSERT(pItemDef);
+						High = pItemDef->RangeH();
+						Low = pItemDef->RangeL();
+					}
+					else
+					{
+						CCharBase * pCharDef = STATIC_CAST <CCharBase*>( Base_GetDef());
+						ASSERT(pCharDef);
+						High = pCharDef->RangeH();
+						Low = pCharDef->RangeL();
+					}
+				}
+				if ( High == 0 ) sVal.Format( "%d", Low );
+				else sVal.Format( "%d,%d", High, Low );
+			}break;
 		case OC_RANGEL:
-			sVal.FormatHex( RangeH() );
+			if ( RangeH() )
+				sVal.FormatVal( RangeH() );
+			else
+			{
+				CItemBase * pItemDef = STATIC_CAST <CItemBase*>( Base_GetDef());
+				sVal.FormatVal( pItemDef->RangeH());
+			}
 			break;
 		case OC_RANGEH:
-			sVal.FormatHex( RangeL() );
+			if ( RangeH() )
+				sVal.FormatVal( RangeL() );
+			else
+			{
+				CItemBase * pItemDef = STATIC_CAST <CItemBase*>( Base_GetDef());
+				sVal.FormatVal( pItemDef->RangeL());
+			}
 			break;
 		case OC_CAN:
 			sVal.FormatHex( m_Can );
