@@ -1410,8 +1410,16 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_SPLINTERINGWEAPON:
 		case OC_VELOCITY:
 		case OC_NAMELOC:
-		case OC_WEIGHTREDUCTION:
 			SetDefNum(s.GetKey(),s.GetArgVal(), false);
+			return true;
+
+		case OC_WEIGHTREDUCTION:
+			{
+				SetDefNum(s.GetKey(),s.GetArgVal(), false);
+				CItemContainer * pCont = static_cast<CItemContainer*>(this->GetParent());
+				if ( pCont )
+					pCont->FixWeight();
+			}
 			return true;
 
 		case OC_RANGE:

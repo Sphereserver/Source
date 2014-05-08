@@ -2473,9 +2473,9 @@ static LPCTSTR const sm_Txt_LoomUse[] =
 				return false;
 		}
 
-		pObjTarg->Sound(args.m_iN2);
+		pObjTarg->Sound(static_cast<int>(args.m_iN2));
 
-		pObjTarg->SetHue( args.m_iN1 );
+		pObjTarg->SetHue( static_cast<HUE_TYPE>(args.m_iN1 ));
 		pObjTarg->Update();
 		return true;
 		}

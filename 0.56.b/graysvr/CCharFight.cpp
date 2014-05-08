@@ -451,14 +451,26 @@ void CChar::Noto_Murder()
 		Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Murders, 0, g_Cfg.m_iMurderDecayTime, NULL);
 }
 
-void CChar::Noto_Criminal()
+bool CChar::Noto_Criminal( CChar * pChar)
 {
 	ADDTOCALLSTACK("CChar::Noto_Criminal");
 	// I am a criminal and the guards will be on my ass.
 	if ( IsPriv(PRIV_GM))
-		return;
+		return false;
+	int decay = g_Cfg.m_iCriminalTimer;
+	CScriptTriggerArgs Args;
+	Args.m_iN1 = decay;
+	if ( IsTrigUsed(TRIGGER_CRIMINAL) )
+	{
+		Args.m_pO1 = pChar;
+		if ( ( OnTrigger( CTRIG_Criminal, this, &Args ) ) == TRIGRET_RET_TRUE )
+			return false;
+
+		decay = static_cast<int>(Args.m_iN1);
+	}
 	if ( !IsStatFlag( STATF_Criminal) ) SysMessageDefault( DEFMSG_CRIMINAL );
-	Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Criminal, 0, g_Cfg.m_iCriminalTimer, NULL);
+	Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Criminal, 0, decay, NULL);
+	return true;
 }
 
 void CChar::Noto_ChangeDeltaMsg( int iDelta, LPCTSTR pszType )
@@ -1019,11 +1031,12 @@ void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 	if ( pCriminal->m_pNPC->m_Brain == NPCBRAIN_GUARD )
 		return;
 
-	if ( IsTrigUsed(TRIGGER_CRIMINAL) )
-	{
-		if ( ( pCriminal->OnTrigger( CTRIG_Criminal, this, NULL /*&Args*/ ) ) == TRIGRET_RET_TRUE )
-			return;
-	}
+	// Alert the guards !!!?
+	if ( ! NPC_CanSpeak())
+		return;	// I can't talk anyhow.
+
+	if ( pCriminal->Noto_Criminal( this ) == true )
+		return;
 
 	// NPCBRAIN_BESERK creatures cause criminal fault on the part of their masters.
 	if ( pCriminal->m_pNPC && pCriminal->m_pNPC->m_Brain == NPCBRAIN_BERSERK )
@@ -1064,12 +1077,6 @@ void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 		Memory_AddObjTypes( pCriminal, MEMORY_SAWCRIME );
 		OnHarmedBy( pCriminal, 1 );
 	}
-
-	// Alert the guards !!!?
-	if ( ! NPC_CanSpeak())
-		return;	// I can't talk anyhow.
-
-	pCriminal->Noto_Criminal();
 
 	if ( GetNPCBrain() != NPCBRAIN_HUMAN )
 	{
@@ -1713,6 +1720,7 @@ bool CChar::OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fCommandPet, bool
 		return true;
 
 	Memory_AddObjTypes( pCharSrc, MEMORY_HARMEDBY|MEMORY_IRRITATEDBY|MEMORY_AGGREIVED );
+	Attacker_Add(pCharSrc);
 
 	// Are they a criminal for it ? Is attacking me a crime ?
 	if ( Noto_GetFlag(pCharSrc) == NOTO_GOOD )
@@ -2785,7 +2793,7 @@ bool CChar::Memory_Fight_OnTick( CItemMemory * pMemory )
 	if ( pTarg == NULL )
 		return( false );	// They are gone for some reason ?
 
-	if ( GetDist(pTarg) > UO_MAP_VIEW_RADAR && ! Attacker_GetElapsed(Attacker_GetID(pTarg)) >= 0) //Attacker.Elapsed = -1 means no combat end.
+	if ( (GetDist(pTarg) > UO_MAP_VIEW_RADAR ) && ( Attacker_GetElapsed(Attacker_GetID(pTarg)) < 0 ) ) //Attacker.Elapsed = -1 means no combat end.
 	{
 		Memory_Fight_Retreat( pTarg, pMemory );
 clearit:

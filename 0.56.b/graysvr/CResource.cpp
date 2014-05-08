@@ -83,7 +83,7 @@ CResource::CResource()
 	m_iBankIMax		= 1000;
 	m_iBankWMax		= 400 * WEIGHT_UNITS;
 	m_fGuardsInstantKill	= true;
-	m_fGuardsOnMurderers	= false;
+	m_fGuardsOnMurderers	= true;
 	m_iSnoopCriminal	= 500;
 	m_iTradeWindowSnooping = true;
 	m_iTrainSkillPercent	= 50;

@@ -387,6 +387,7 @@ private:
 	WORD m_amount;		// Amount of items in pile. 64K max (or corpse type)
 	IT_TYPE m_type;		// What does this item do when dclicked ? defines dynamic_cast type
 	unsigned char m_containedGridIndex;	// Which grid have i been placed in ? (when in a container)
+	DWORD	m_CanUse;		// Base attribute flags. can_u_all/male/female..
 
 public:
 	// Attribute flags.
@@ -418,7 +419,6 @@ public:
 #define ATTR_REFORGED		0x2000000	// Is Runic Reforged.
 #define ATTR_OPENED			0x4000000	// Is Door Opened.
 	DWORD	m_Attr;
-	DWORD	m_CanUse;		// Base attribute flags. can_u_all/male/female..
 
 	// NOTE: If this link is set but not valid -> then delete the whole object !
 	CGrayUID m_uidLink;		// Linked to this other object in the world. (owned, key, etc)
@@ -986,7 +986,15 @@ public:
 	{
 		const CItemBase * pItemDef = Item_GetDef();
 		ASSERT(pItemDef);
+		
 		int iWeight = pItemDef->GetWeight() * GetAmount();
+		int reduction = static_cast<int>(GetDefNum("WEIGHTREDUCTION", true));
+		if ( reduction )
+		{
+			iWeight -= IMULDIV( iWeight, reduction, 100 );
+			if ( iWeight < 0)
+				iWeight = 0;
+		}
 		return( iWeight );
 	}
 
@@ -3258,7 +3266,7 @@ public:
 	LPCTSTR Noto_GetTitle() const;
 
 	void Noto_Kill(CChar * pKill, bool fPetKill = false, int iOtherKillers = 0);
-	void Noto_Criminal();
+	bool Noto_Criminal( CChar * pChar = NULL);
 	void Noto_Murder();
 	void Noto_KarmaChangeMessage( int iKarmaChange, int iLimit );
 

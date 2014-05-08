@@ -967,3 +967,8 @@ I'm updating the wiki with this new information also.
 -Changed: Moved the instant kill ouside the 'teleport' check, to ensure its using it everytime and not only if target.distance > 1
 -Switched 2 checks to ensure that guards are not called on guards.
 -Added a check in OnNoticeCrime() to avoid guards becoming criminals if send to attack any good character.
+
+08-05-2014, XuN
+Changed @Criminal trigger, now it's being called in every criminal call instead of in OnNoticeCrime(), return 1 prevents the criminal action, argn1 is how many time will the criminal status last.
+Fixed CanUse returning weird values when ITEMDEF didn't have any value.
+Added WeightReduction to item's weight calculations, so a item with 5.0 weight and 10 Weight Reduction will result in 4.5 weight stones.
