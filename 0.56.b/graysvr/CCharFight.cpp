@@ -188,17 +188,33 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 	// What is this char to the viewer ?
 	// This allows the noto attack check in the client.
 	// NOTO_GOOD = it is criminal to attack me.
-	
+	CChar * pThis = const_cast<CChar*>(this);
+	CChar * pTarget = const_cast<CChar*>(pCharViewer);
+	NOTO_TYPE Noto;
+	if ( pThis->m_notoSaves.size() )
+	{
+		return pThis->NotoSave_GetValue( pThis->NotoSave_GetID( pTarget ) );
+	}
 	if (IsTrigUsed(TRIGGER_NOTOSEND))
 	{
-		CChar * pCharViewer2 = const_cast <CChar*>(pCharViewer);
-		CChar * pCharDef = const_cast <CChar*>(this);
 		CScriptTriggerArgs args;
-		pCharDef->OnTrigger(CTRIG_NotoSend, pCharViewer2, &args);
-		NOTO_TYPE Noto = static_cast<NOTO_TYPE>(args.m_iN1);
+		pThis->OnTrigger(CTRIG_NotoSend, pTarget, &args);
+		Noto = static_cast<NOTO_TYPE>(args.m_iN1);
 		if (Noto != NOTO_INVALID )
+		{
+			pThis->NotoSave_Add( pTarget, Noto);
 			return Noto;
+		}
 	}
+
+	Noto = Noto_CalcFlag( pCharViewer, fAllowIncog, fAllowInvul);
+	pThis->NotoSave_Add(pTarget, Noto);
+	return Noto;
+}
+
+NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, bool fAllowInvul ) const
+{
+	ADDTOCALLSTACK("CChar::Noto_CalcFlag");
 	NOTO_TYPE iNotoFlag = static_cast<NOTO_TYPE>(m_TagDefs.GetKeyNum("OVERRIDE.NOTO", true));
 	if ( iNotoFlag != NOTO_INVALID )
 		return iNotoFlag;
@@ -257,6 +273,7 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 			{
 				return(NOTO_GUILD_SAME);
 			}
+			return(NOTO_GUILD_SAME);	// Shall we be green
 		}
 	}
 
@@ -449,6 +466,7 @@ void CChar::Noto_Murder()
 
 	if ( m_pPlayer && m_pPlayer->m_wMurders )
 		Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Murders, 0, g_Cfg.m_iMurderDecayTime, NULL);
+	NotoSave_Clear();
 }
 
 bool CChar::Noto_Criminal( CChar * pChar)
@@ -470,6 +488,7 @@ bool CChar::Noto_Criminal( CChar * pChar)
 	}
 	if ( !IsStatFlag( STATF_Criminal) ) SysMessageDefault( DEFMSG_CRIMINAL );
 	Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Criminal, 0, decay, NULL);
+	NotoSave_Clear();
 	return true;
 }
 
@@ -600,6 +619,7 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom )
 
 	Noto_ChangeDeltaMsg( iKarma - Stat_GetAdjusted(STAT_KARMA), g_Cfg.GetDefaultMsg( DEFMSG_NOTO_KARMA ) );
 	Stat_SetBase(STAT_KARMA,iKarma);
+	NotoSave_Clear();
 }
 
 void CChar::Noto_KarmaChangeMessage( int iKarmaChange, int iLimit )
@@ -762,6 +782,137 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iOtherKillers)
 	}
 }
 
+void CChar::NotoSave_Add( CChar * pChar, NOTO_TYPE value )
+{
+	ADDTOCALLSTACK("CChar::NotoSave_Add");
+	CGrayUID uid = static_cast<CGrayUID>(pChar->GetUID());
+	if  ( m_notoSaves.size() )	// Must only check for existing attackers if there are any attacker already.
+	{
+		for (std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); ++it)
+		{
+			NotoSaves & refNoto = *it;
+			if ( refNoto.charUID == uid )
+			{
+				//Found one, no actions needed so we skip
+				return;
+			}
+		}
+	}
+	NotoSaves refNoto;
+	refNoto.value = value;
+	refNoto.charUID = pChar->GetUID();
+	refNoto.time = 0;
+	m_notoSaves.push_back(refNoto);
+}
+	
+NOTO_TYPE CChar::NotoSave_GetValue( int id )
+{
+	ADDTOCALLSTACK("CChar::NotoSave_GetValue");
+	NotoSaves & refNotoSave = m_notoSaves.at(id);
+	return refNotoSave.value;
+}
+
+INT64 CChar::NotoSave_GetTime( int id )
+{
+	ADDTOCALLSTACK("CChar::NotoSave_GetTime");
+	NotoSaves & refNotoSave = m_notoSaves.at(id);
+	return refNotoSave.time;
+}
+
+void CChar::NotoSave_SetValue( CChar * pChar, NOTO_TYPE value )
+{
+	ADDTOCALLSTACK("CChar::NotoSave_SetValue(CChar)");
+	NotoSaves & refNotoSave = m_notoSaves.at( NotoSave_GetID(pChar) );
+	refNotoSave.value = value;
+}
+
+void CChar::NotoSave_SetValue( int pChar, NOTO_TYPE value)
+{
+	ADDTOCALLSTACK("CChar::NotoSave_SetValue(int)");
+	NotoSaves & refNotoSave = m_notoSaves.at( pChar );
+	refNotoSave.value = value;
+}
+void CChar::NotoSave_Clear()
+{
+	ADDTOCALLSTACK("CChar::NotoSave_Clear");
+	m_notoSaves.clear();
+}
+
+int CChar::NotoSave_GetID( CChar * pChar )
+{
+	ADDTOCALLSTACK("CChar::NotoSave_GetID(CChar)");
+	if ( !pChar )
+		return NULL;
+	int count = 0;
+	bool bFound = false;
+	if ( NotoSave() )
+	{
+		for ( std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); it++)
+		{
+			NotoSaves & refNotoSave = m_notoSaves.at(count);
+			CGrayUID uid = refNotoSave.charUID;
+			if ( uid.CharFind() && uid == static_cast<DWORD>(pChar->GetUID()) )
+			{
+				return count;
+			}
+			count++;
+		}
+	}
+	return NULL;
+}
+
+int CChar::NotoSave_GetID( CGrayUID pChar )
+{
+	ADDTOCALLSTACK("CChar::NotoSave_GetID(CGrayUID)");
+	int count = 0;
+	bool bFound = false;
+	if ( NotoSave() )
+	{
+		for ( std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); it++)
+		{
+			NotoSaves & refNotoSave = m_notoSaves.at(count);
+			CGrayUID uid = refNotoSave.charUID;
+			if ( uid.CharFind() && uid == pChar )
+			{
+				bFound = true;
+				break;
+			}
+			count++;
+		}
+	}
+	if ( bFound == true)
+		return count;
+	return -1;
+}
+
+CChar * CChar::NotoSave_GetUID( int index )
+{
+	ADDTOCALLSTACK("CChar::NotoSave_GetUID");
+	NotoSaves & refNotoSave = m_notoSaves.at(index);
+	CChar * pChar = static_cast<CChar*>( static_cast<CGrayUID>( refNotoSave.charUID ).CharFind() );
+	return pChar;
+}
+
+bool CChar::NotoSave_Delete( CChar * pChar, bool bForced )
+{		
+	ADDTOCALLSTACK("CChar::NotoSave_Delete");
+	if ( NotoSave() )
+	{
+		int count = 0;
+		for ( std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); it++)
+		{
+			NotoSaves & refNotoSave = m_notoSaves.at(count);
+			CGrayUID uid = refNotoSave.charUID;
+			if ( uid.CharFind() && uid == static_cast<DWORD>(pChar->GetUID()) )
+			{
+				m_notoSaves.erase(it);
+				return true;
+			}
+			count++;
+		}
+	}
+	return false;
+}
 //***************************************************************
 // Memory this char has about something in the world.
 
@@ -1028,7 +1179,7 @@ void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 	if ( pCriminal == this )
 		return;
 	
-	if ( pCriminal->m_pNPC->m_Brain == NPCBRAIN_GUARD )
+	if ( pCriminal->GetNPCBrain() == NPCBRAIN_GUARD )
 		return;
 
 	// Alert the guards !!!?
@@ -2793,7 +2944,7 @@ bool CChar::Memory_Fight_OnTick( CItemMemory * pMemory )
 	if ( pTarg == NULL )
 		return( false );	// They are gone for some reason ?
 
-	if ( (GetDist(pTarg) > UO_MAP_VIEW_RADAR ) && ( Attacker_GetElapsed(Attacker_GetID(pTarg)) < 0 ) ) //Attacker.Elapsed = -1 means no combat end.
+	if ( GetDist(pTarg) > UO_MAP_VIEW_RADAR && Attacker_GetElapsed(Attacker_GetID(pTarg)) == -1) //Attacker.Elapsed = -1 means no combat end. //Attacker.Elapsed = -1 means no combat end.
 	{
 		Memory_Fight_Retreat( pTarg, pMemory );
 clearit:
@@ -3247,7 +3398,6 @@ void CChar::Fight_HitTry()
 bool CChar::Attacker_Add( CChar * pChar )
 {
 	ADDTOCALLSTACK("CChar::Attacker_Add");
-	bool bAttackerExists = false;
 	CGrayUID uid = static_cast<CGrayUID>(pChar->GetUID());
 	if  ( m_lastAttackers.size() )	// Must only check for existing attackers if there are any attacker already.
 	{
@@ -3498,23 +3648,14 @@ bool CChar::Attacker_Delete( CChar * pChar, bool bForced )
 	return false;
 }
 
-int CChar::CalcFightRange( CItem * pWeapon, CItemBase * pWeaponDef )
+int CChar::CalcFightRange( CItem * pWeapon )
 {
 	ADDTOCALLSTACK("CChar::CalcFightRange");
 
 	int iCharRange = RangeL();
-	int iWeaponRange = 0;
+	int iWeaponRange = pWeapon ? pWeapon->RangeL() : 0;
 
-	if ( pWeapon )
-	{
-		pWeaponDef	= pWeapon->Item_GetDef();
-		iWeaponRange = pWeapon->RangeL();
-	}
-
-	if ( !pWeaponDef )
-		return iCharRange ? iCharRange : Char_GetDef()->RangeL();
-
-	return ( maximum( (iCharRange ? iCharRange : Char_GetDef()->RangeL()) , (iWeaponRange ? iWeaponRange : pWeaponDef->RangeL())) );
+	return ( maximum(iCharRange , iWeaponRange) );
 }
 
 
@@ -3636,8 +3777,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	if ( g_Cfg.IsSkillRanged(skill) )
 	{
 		// Archery type skill.
-		int	iMinDist	= pWeaponDef->RangeH();
-		int	iMaxDist	= pWeaponDef->RangeL();
+		int	iMinDist	= pWeapon ? pWeapon->RangeH() : g_Cfg.m_iArcheryMinDist;
+		int	iMaxDist	= pWeapon ? pWeapon->RangeL() : g_Cfg.m_iArcheryMaxDist;
 
 		if ( !iMaxDist || (iMinDist == 0 && iMaxDist == 1) )
 			iMaxDist	= g_Cfg.m_iArcheryMaxDist;
@@ -3792,8 +3933,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			}
 		}
 
-		int	iMinDist	= pWeaponDef ? pWeaponDef->RangeH() : 0;
-		int	iMaxDist	= CalcFightRange( NULL, pWeaponDef );
+		int	iMinDist	= pWeapon ? pWeapon->RangeH() : 0;
+		int	iMaxDist	= CalcFightRange( pWeapon );
 
 		if (( dist < iMinDist ) || ( dist > iMaxDist ))
 		{

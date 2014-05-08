@@ -4285,9 +4285,23 @@ bool CChar::OnTick()
 			for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it)
 			{
 				LastAttackers & refAttacker = *it;
-				if ( ( ++(refAttacker.elapsed) > g_Cfg.m_iAttackerTimeout ) && ( g_Cfg.m_iAttackerTimeout > 0 ) )
+				if ( ( ++(refAttacker.elapsed) > g_Cfg.m_iAttackerTimeout ) && ( g_Cfg.m_iAttackerTimeout > 0  ) )
 				{
 					m_lastAttackers.erase(it);
+					break;
+				}
+			}
+		}
+
+		EXC_SET("NOTO timeout");
+		if ( m_notoSaves.size() )
+		{
+			for ( std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); ++it)
+			{
+				NotoSaves & refNoto = *it;
+				if ( ( ++(refNoto.time) > g_Cfg.m_iNotoTimeout ) && ( g_Cfg.m_iNotoTimeout > 0 ) )
+				{
+					m_notoSaves.erase(it);
 					break;
 				}
 			}

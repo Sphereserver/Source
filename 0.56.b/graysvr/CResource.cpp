@@ -220,6 +220,8 @@ CResource::CResource()
 	m_iColorNotoGuildWar = 0x0090;		// orange (enemy guild)
 	m_iColorNotoInvul = 0x0035;			// yellow
 	m_iColorNotoNeutral = 0x03b2;		// grey (can be attacked)
+	
+	m_iNotoTimeout		= 30;			// seconds to remove this character from notoriety list.
 
 	m_iPetsInheritNotoriety = 0;
 
@@ -509,6 +511,7 @@ enum RC_TYPE
 	RC_NETWORKTHREADS,			// m_iNetworkThreads
 #endif
 	RC_NORESROBE,
+	RC_NOTOTIMEOUT,
 	RC_NOWEATHER,				// m_fNoWeather
 	RC_NPCAI,					// m_iNpcAi
 	RC_NPCNOFAMETITLE,			// m_NPCNoFameTitle
@@ -733,6 +736,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "NETWORKTHREADS",			{ ELEM_INT,		OFFSETOF(CResource,m_iNetworkThreads),		0 }},
 #endif
 	{ "NORESROBE",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fNoResRobe),			0 }},
+	{ "NOTOTIMEOUT",			{ ELEM_INT,		OFFSETOF(CResource,m_iNotoTimeout),			0 }},
 	{ "NOWEATHER",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fNoWeather),			0 }},
 	{ "NPCAI",					{ ELEM_INT,		OFFSETOF(CResource,m_iNpcAi),				0 }},
 	{ "NPCNOFAMETITLE",			{ ELEM_BOOL,	OFFSETOF(CResource,m_NPCNoFameTitle),		0 }},

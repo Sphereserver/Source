@@ -77,12 +77,14 @@ public:
 public:
 	BYTE	RangeL() const
 	{
-		return static_cast<BYTE>(GetDefNum("RANGE",true) & 0xff);
+		CVarDefCont * pRange = GetDefKey("RANGE", true);
+		return static_cast<BYTE>((pRange ? pRange->GetValNum() : 0) & 0xff);
 	}
 
 	BYTE	RangeH() const
 	{
-		return static_cast<BYTE>((GetDefNum("RANGE",true)>>8) & 0xff);
+		CVarDefCont * pRange = GetDefKey("RANGE", true);
+		return static_cast<BYTE>(((pRange ? pRange->GetValNum() : 0)>>8) & 0xff);
 	}
 
 	CServTime GetTimeStamp() const
@@ -2547,6 +2549,13 @@ public:
 		DWORD	threat;
 	};
 	std::vector<LastAttackers> m_lastAttackers;
+	
+	struct NotoSaves {
+		INT64		time;
+		DWORD		charUID;
+		NOTO_TYPE	value;
+	};
+	std::vector<NotoSaves> m_notoSaves;
 
 	static const char *m_sClassName;
 	CCharPlayer * m_pPlayer;	// May even be an off-line player !
@@ -3250,6 +3259,7 @@ private:
 
 public:
 	NOTO_TYPE Noto_GetFlag( const CChar * pChar, bool fIncog = false, bool fInvul = false ) const;
+	NOTO_TYPE Noto_CalcFlag( const CChar * pChar, bool fIncog = false, bool fInvul = false ) const;
 	HUE_TYPE Noto_GetHue( const CChar * pChar, bool fIncog = false ) const;
 	bool Noto_IsNeutral() const;
 	bool Noto_IsMurderer() const;
@@ -3269,6 +3279,17 @@ public:
 	bool Noto_Criminal( CChar * pChar = NULL);
 	void Noto_Murder();
 	void Noto_KarmaChangeMessage( int iKarmaChange, int iLimit );
+	int NotoSave() { return m_notoSaves.size() ? m_notoSaves.size() : NULL; }
+	void NotoSave_Add( CChar * pChar, NOTO_TYPE value );
+	NOTO_TYPE NotoSave_GetValue( int id );
+	INT64 NotoSave_GetTime( int id );
+	void NotoSave_SetValue( CChar * pChar, NOTO_TYPE value );
+	void NotoSave_SetValue( int pChar, NOTO_TYPE value);
+	void NotoSave_Clear();
+	int NotoSave_GetID( CChar * pChar );
+	int NotoSave_GetID( CGrayUID pChar );
+	CChar * NotoSave_GetUID( int index );
+	bool NotoSave_Delete( CChar * pChar, bool bForced );
 
 	bool IsTakeCrime( const CItem * pItem, CChar ** ppCharMark = NULL ) const;
 
@@ -3473,7 +3494,7 @@ public:
 
 private:
 	// Armor, weapons and combat ------------------------------------
-	int	CalcFightRange( CItem * pWeapon = NULL, CItemBase * pWeaponDef = NULL );
+	int	CalcFightRange( CItem * pWeapon = NULL );
 
 	SKILL_TYPE Fight_GetWeaponSkill() const;
 	void Fight_ResetWeaponSwingTimer();
