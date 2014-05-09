@@ -978,6 +978,8 @@ Added WeightReduction to item's weight calculations, so a item with 5.0 weight a
 -Created a new vector-list to handle Notoriety: instead of having 2-5+ checks per second (and nearby character), the notoriety will be saved in this list to reduce a lot the loading related to this function.
 -Added NotoTimeout to ini (default 30) to set the 'decay' for notoriety in each character for another one. However the list will be reseted in each criminal/murderer action/karma change/incognito cast.
 -Fixed some Karma messages being shown even if the trigger returned 1. Fixed #2297: Trigger's returns were working wrong and any value given to argn1 was not really being considered by sphere unless return != 0.
+-Fixed #2290: Now crafting skills cast animations and sounds when starting and in every Skill_Stroke > 1 (1 is the last, note that skill_stroke is called before the stroke ends, not before starting it).
+-Removed SKF_NOANIM check after the @SKillStroke trigger, so even if the skill have this flag, it won't pass any value to local.anim, but if you want to have animation for a specific character, then you can write it.
 
 09-05-2014, Ben
 -Improved how RangeH/L 'fix' work and making them readable by dynamic items in every situation.

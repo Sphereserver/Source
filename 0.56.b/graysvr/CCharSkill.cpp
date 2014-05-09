@@ -3875,51 +3875,67 @@ int CChar::Skill_Act_Training( SKTRIG_TYPE stage )
 
 //************************************
 // General skill stuff.
+ANIM_TYPE CChar::Skill_GetAnim( SKILL_TYPE skill )
+{
+	ANIM_TYPE anim;
+	switch ( skill )
+	{
+		case SKILL_BOWCRAFT:
+			anim = ANIM_SALUTE ;
+			break;
+		case SKILL_BLACKSMITHING:
+			anim = ANIM_ATTACK_WEAPON ;
+			break;
+		default:
+			break;
+	}
+	return anim;
+}
+
+int CChar::Skill_GetSound( SKILL_TYPE skill )
+{
+	int sound;
+	switch ( skill )
+	{
+		case SKILL_TAILORING:
+			sound = SOUND_SNIP;
+			break;
+		case SKILL_INSCRIPTION:
+			sound = 0x249 ;
+			break;
+		case SKILL_BOWCRAFT:
+			sound = 0x055 ;
+			break;
+		case SKILL_BLACKSMITHING:
+			sound = 0x02a ;
+			break;
+		case SKILL_CARPENTRY:
+			sound = 0x23d ;
+			break;
+		case SKILL_CARTOGRAPHY:
+			sound = 0x249;
+			break;
+		case SKILL_COOKING:
+		case SKILL_TINKERING:
+		default:
+			break;
+	}
+	return sound;
+}
 
 int CChar::Skill_Stroke()
 {
 	int sound;
-	int anim;
-	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+	ANIM_TYPE anim;
+	if ( m_atCreate.m_Stroke_Count > 1 )
 	{
-		switch (Skill_GetActive())
+		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
 		{
-			case SKILL_TAILORING:
-				sound = SOUND_SNIP;
-				break;
-			case SKILL_INSCRIPTION:
-				sound = 0x249 ;
-				break;
-			case SKILL_BOWCRAFT:
-				sound = 0x055 ;
-				break;
-			case SKILL_BLACKSMITHING:
-				sound = 0x02a ;
-				break;
-			case SKILL_CARPENTRY:
-				sound = 0x23d ;
-				break;
-			case SKILL_CARTOGRAPHY:
-				sound = 0x249;
-				break;
-			case SKILL_COOKING:
-			case SKILL_TINKERING:
-			default:
-				break;
+			sound = Skill_GetSound( Skill_GetActive() );
 		}
-	}
-	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
-	{
-		switch (Skill_GetActive())
+		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
 		{
-			case SKILL_BOWCRAFT:
-				anim = ANIM_SALUTE ;
-				break;
-			case SKILL_BLACKSMITHING:
-				anim = ANIM_ATTACK_WEAPON ;
-				break;
-			default:
-				break;
+			anim = Skill_GetAnim( Skill_GetActive() );
 		}
 	}
 	INT64 delay = Skill_GetTimeout();
@@ -3930,23 +3946,23 @@ int CChar::Skill_Stroke()
 		args.m_VarsLocal.SetNum("Strokes", m_atCreate.m_Stroke_Count);
 		args.m_VarsLocal.SetNum("Sound", sound);
 		args.m_VarsLocal.SetNum("Delay",delay);
-		args.m_VarsLocal.SetNum("Anim",anim ? anim : 0);
+		args.m_VarsLocal.SetNum("Anim", static_cast<INT64>(anim));
 		if ( OnTrigger(CTRIG_SkillStroke, this, &args ) == TRIGRET_RET_TRUE)
 			return(-SKTRIG_ABORT);
 
 		sound = static_cast<int>(args.m_VarsLocal.GetKeyNum("Sound",false));
 		m_atCreate.m_Stroke_Count = static_cast<WORD>(args.m_VarsLocal.GetKeyNum("Strokes",false));
 		delay = args.m_VarsLocal.GetKeyNum("Delay",true);
-		anim = static_cast<int>(args.m_VarsLocal.GetKeyNum("Anim", true));
+		anim = static_cast<ANIM_TYPE>(args.m_VarsLocal.GetKeyNum("Anim", true));
 	}
 
 	if ( sound )
 		Sound(sound);
 
 	// Keep trying and updating the animation
-	if ( anim && !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
+	if ( anim )
 	{
-		UpdateAnimate( static_cast<ANIM_TYPE>(anim) );	// ANIM_ATTACK_1H_DOWN
+		UpdateAnimate( anim );	// ANIM_ATTACK_1H_DOWN
 	}
 	if ( delay < 10)
 		delay = 10;
@@ -4568,6 +4584,12 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 			if ( m_atCreate.m_Stroke_Count < 1)
 				m_atCreate.m_Stroke_Count = 1;
 			m_atCreate.m_Amount = static_cast<WORD>(pArgs.m_VarsLocal.GetKeyNum("CraftAmount",true));
+			// Casting sound & animation when starting, Skill_Stroke() will do it the next times.
+			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+				Sound( Skill_GetSound( Skill_GetActive() ));
+
+			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
+				UpdateAnimate( Skill_GetAnim( Skill_GetActive() ) );
 		}
 
 		if ( IsSkillBase(skill) )
