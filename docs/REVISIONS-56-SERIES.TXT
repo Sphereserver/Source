@@ -972,3 +972,13 @@ I'm updating the wiki with this new information also.
 Changed @Criminal trigger, now it's being called in every criminal call instead of in OnNoticeCrime(), return 1 prevents the criminal action, argn1 is how many time will the criminal status last.
 Fixed CanUse returning weird values when ITEMDEF didn't have any value.
 Added WeightReduction to item's weight calculations, so a item with 5.0 weight and 10 Weight Reduction will result in 4.5 weight stones.
+
+09-05-2014, XuN
+-Fixed an exception when attacking blue characters.
+-Created a new vector-list to handle Notoriety: instead of having 2-5+ checks per second (and nearby character), the notoriety will be saved in this list to reduce a lot the loading related to this function.
+-Added NotoTimeout to ini (default 30) to set the 'decay' for notoriety in each character for another one. However the list will be reseted in each criminal/murderer action/karma change/incognito cast.
+-Fixed some Karma messages being shown even if the trigger returned 1. Fixed #2297: Trigger's returns were working wrong and any value given to argn1 was not really being considered by sphere unless return != 0.
+
+09-05-2014, Ben
+-Improved how RangeH/L 'fix' work and making them readable by dynamic items in every situation.
+

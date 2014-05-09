@@ -552,11 +552,10 @@ void CChar::Noto_Fame( int iFameChange )
 
 		if ( retType == TRIGRET_RET_TRUE )
 			return;
-		else if ( retType != TRIGRET_RET_DEFAULT )
-			iFameChange = static_cast<int>(Args.m_iN1);
+		iFameChange = static_cast<int>(Args.m_iN1);
 	}
-
-	if ( ! iFameChange )
+	
+	if ( ! iFameChange  )
 		return;
 
 	iFame += iFameChange;
@@ -569,7 +568,7 @@ void CChar::Noto_Fame( int iFameChange )
 	Stat_SetBase(STAT_FAME,iFame);
 }
 
-void CChar::Noto_Karma( int iKarmaChange, int iBottom )
+void CChar::Noto_Karma( int iKarmaChange, int iBottom, bool bMessage )
 {
 	ADDTOCALLSTACK("CChar::Noto_Karma");
 	// iBottom is a variable where you control at what point
@@ -577,7 +576,7 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom )
 	// take you to dread ). iBottom def. to g_Cfg.m_iMinKarma if you leave
 	// it out.
 
-	if ( ! iKarmaChange )
+	if ( iKarmaChange < 1 )
 		return;
 	if (iBottom == INT_MIN)
 		iBottom = g_Cfg.m_iMinKarma;
@@ -593,11 +592,10 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom )
 
 		if ( retType == TRIGRET_RET_TRUE )
 			return;
-		else if ( retType != TRIGRET_RET_DEFAULT )
-			iKarmaChange = static_cast<int>(Args.m_iN1);
+		iKarmaChange = static_cast<int>(Args.m_iN1);
 	}
-
-	if ( ! iKarmaChange )
+	
+	if ( iKarmaChange < 1 )
 		return;
 
 	// If we are going to loose karma and are already below bottom
@@ -619,6 +617,11 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom )
 
 	Noto_ChangeDeltaMsg( iKarma - Stat_GetAdjusted(STAT_KARMA), g_Cfg.GetDefaultMsg( DEFMSG_NOTO_KARMA ) );
 	Stat_SetBase(STAT_KARMA,iKarma);
+	if ( bMessage == true)
+	{
+		int iPrvLevel = Noto_GetLevel();
+		Noto_ChangeNewMsg( iPrvLevel );
+	}
 	NotoSave_Clear();
 }
 
@@ -626,9 +629,7 @@ void CChar::Noto_KarmaChangeMessage( int iKarmaChange, int iLimit )
 {
 	ADDTOCALLSTACK("CChar::Noto_KarmaChangeMessage");
 	// Change your title ?
-	int iPrvLevel = Noto_GetLevel();
-	Noto_Karma( iKarmaChange, iLimit );
-	Noto_ChangeNewMsg( iPrvLevel );
+	Noto_Karma( iKarmaChange, iLimit, true );
 }
 
 extern unsigned int Calc_ExpGet_Exp(unsigned int);

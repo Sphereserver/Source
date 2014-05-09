@@ -3252,7 +3252,7 @@ public:
 
 private:
 	// Noto/Karma stuff. --------------------------------
-	void Noto_Karma( int iKarma, int iBottom=INT_MIN );
+	void Noto_Karma( int iKarma, int iBottom=INT_MIN, bool bMessage = false );
 	void Noto_Fame( int iFameChange );
 	void Noto_ChangeNewMsg( int iPrv );
 	void Noto_ChangeDeltaMsg( int iDelta, LPCTSTR pszType );
