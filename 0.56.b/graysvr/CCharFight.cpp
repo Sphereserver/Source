@@ -1144,6 +1144,7 @@ CItemMemory * CChar::Memory_AddObjTypes( CGrayUID uid, WORD MemTypes )
 		return Memory_CreateObj( uid, MemTypes );
 	}
 	Memory_AddTypes( pMemory, MemTypes );
+	NotoSave_Delete( uid.CharFind(), true );
 	return( pMemory );
 }
 
@@ -3296,6 +3297,28 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool toldByMaster )
 		// Not a valid target.
 		Fight_Clear( pCharTarg, true );
 		return( false );
+	}
+
+	if ( g_Cfg.m_fAttackIsACrime == TRUE)
+	{
+		g_Log.EventDebug("IsACrime");
+		CChar * pTarg = const_cast<CChar*>(pCharTarg);
+		if ( Noto_GetFlag( pTarg ) == NOTO_GOOD )
+		{
+			g_Log.EventDebug("AttackingGoodGuys");
+			if ( IsClient())
+			{
+				g_Log.EventDebug("EvenBeingAPlayer");
+				// I decide if this is a crime.
+				pTarg->OnNoticeCrime( this, pTarg );
+			}
+			else
+			{
+				g_Log.EventDebug("EvenANPC");
+				// If it is a pet then this a crime others can report.
+				pTarg->CheckCrimeSeen( SKILL_NONE, this, NULL, NULL );
+			}
+		}
 	}
 
 	if ((m_Act_Targ != pCharTarg->GetUID()) && (( IsTrigUsed(TRIGGER_ATTACK) ) || ( IsTrigUsed(TRIGGER_CHARATTACK) )))

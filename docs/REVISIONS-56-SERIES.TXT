@@ -986,3 +986,8 @@ Added WeightReduction to item's weight calculations, so a item with 5.0 weight a
 
 09-05-2014, Feeh
 -Fixed #2326: Some mt_* CAN flags were not allowed to be assigned after char/npc creation. It should be assignable anytime from now
+
+10-05-2014, XuN
+Fixed #2334. Also forced that any character called to be a guard ( Argn1 in @CallGuards ) have brain_guard no matter what it is really.
+Fixed #2333. Also fixing @Attack trigger blocking any other actions too when returning 1.
+Added #1765 :New ini setting: AttackingIsaCrime making criminal any character without any damage, only attacking.

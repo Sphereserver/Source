@@ -805,6 +805,7 @@ public:
 	int  m_iMagicFlags;			// magic flags
 
 	// Criminal/Karma
+	bool m_fAttackIsACrime;		// Is attacking (even before hitting) a crime?
 	bool m_fGuardsInstantKill;	// Will guards kill instantly or follow normal combat rules?
 	bool m_fGuardsOnMurderers;	// should guards be only called on criminals ?
 	int	 m_iGuardLingerTime;	// How long do guards linger about.

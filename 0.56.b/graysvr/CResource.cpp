@@ -82,6 +82,7 @@ CResource::CResource()
 	m_iLightDay		= LIGHT_BRIGHT;
 	m_iBankIMax		= 1000;
 	m_iBankWMax		= 400 * WEIGHT_UNITS;
+	m_fAttackIsACrime =	true;
 	m_fGuardsInstantKill	= true;
 	m_fGuardsOnMurderers	= true;
 	m_iSnoopCriminal	= 500;
@@ -374,6 +375,7 @@ enum RC_TYPE
 	RC_ARCHERYMINDIST,		// m_iArcheryMinDist
 	RC_ARRIVEDEPARTMSG,
 	RC_ATTACKERTIMEOUT,		// m_iAttackerTimeout
+	RC_ATTACKINGISACRIME,	// m_fAttackIsACrime
 	RC_AUTONEWBIEKEYS,		// m_fAutoNewbieKeys
 	RC_AUTOPRIVFLAGS,		// m_iAutoPrivFlags
 	RC_AUTORESDISP,			// m_iAutoResDisp
@@ -599,6 +601,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "ARCHERYMINDIST",			{ ELEM_INT,		OFFSETOF(CResource,m_iArcheryMinDist),		0 }},
 	{ "ARRIVEDEPARTMSG",		{ ELEM_INT,		OFFSETOF(CResource,m_iArriveDepartMsg),		0 }},
 	{ "ATTACKERTIMEOUT",		{ ELEM_INT,		OFFSETOF(CResource,m_iAttackerTimeout),		0 }},
+	{ "ATTACKINGISACRIME",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fAttackIsACrime),		0 }},
 	{ "AUTONEWBIEKEYS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fAutoNewbieKeys),		0 }},
 	{ "AUTOPRIVFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iAutoPrivFlags),		0 }},
 	{ "AUTORESDISP",			{ ELEM_INT,		OFFSETOF(CResource,m_iAutoResDisp),			0 }},
