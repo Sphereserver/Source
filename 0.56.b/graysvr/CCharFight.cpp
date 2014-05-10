@@ -1674,13 +1674,13 @@ void CChar::CallGuards( CChar * pCriminal )
 				continue;
 
 			//	scan for guards also ;) it will speed up the execution a bit
-			if ( pChar->m_pNPC->m_Brain == NPCBRAIN_GUARD )
-			{
-				if ( !pGuard && !pChar->m_pPlayer )
+			if ( !pGuard && !pChar->m_pPlayer )
+			{	
+				if ( pChar->GetNPCBrain() == NPCBRAIN_GUARD)
 				{
 					pGuard = pChar;
+					continue;
 				}
-				continue;
 			}
 
 			// don't allow guards to be called on someone we cant disturb
@@ -1708,8 +1708,10 @@ void CChar::CallGuards( CChar * pCriminal )
 				if ( !OnTrigger(CTRIG_CallGuards, pChar, &args) == TRIGRET_RET_TRUE )
 					return;
 
-				if ( args.m_iN1 != rid.GetResIndex() )
+				if ( static_cast<int>(args.m_iN1) != rid.GetResIndex() )
+				{
 					rid = RESOURCE_ID( RES_CHARDEF, static_cast<int>(args.m_iN1) );
+				}
 				if ( args.m_iN2 > 0 )
 					pGuard = NULL;
 					
@@ -1728,6 +1730,9 @@ void CChar::CallGuards( CChar * pCriminal )
 					pGuard = CChar::CreateNPC(static_cast<CREID_TYPE>(rid.GetResIndex()));
 					if ( !pGuard )
 						return;
+
+					if ( pGuard->GetNPCBrain() != NPCBRAIN_GUARD)
+						pGuard->SetNPCBrain(NPCBRAIN_GUARD);
 
 					//	normal guards, just with patched color hue also acting in red areas
 					if ( pChar->m_pArea->m_TagDefs.GetKeyNum("RED", true) )
@@ -1781,6 +1786,9 @@ void CChar::CallGuards( CChar * pCriminal )
 			pGuard = CChar::CreateNPC(static_cast<CREID_TYPE>(rid.GetResIndex()));
 			if ( !pGuard )
 				return;
+			
+			if ( pGuard->GetNPCBrain() != NPCBRAIN_GUARD)
+				pGuard->SetNPCBrain(NPCBRAIN_GUARD);
 
 			//	normal guards, just with patched color hue also acting in red areas
 			if ( pCriminal->m_pArea->m_TagDefs.GetKeyNum("RED", true) )
