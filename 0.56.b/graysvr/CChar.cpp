@@ -36,6 +36,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@DeathCorpse",
 	"@Destroy",				//+I am nearly destroyed
 	"@Dismount",			// I am trying to get rid of my ride right now
+	//"@Dye",					// My color has been changed
 	"@EnvironChange",		// my environment changed somehow (light,weather,season,region)
 	"@ExpChange",			// EXP is going to change
 	"@ExpLevelChange",		// Experience LEVEL is going to change
@@ -3466,7 +3467,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 		case CHV_UNDERWEAR:
 			if ( ! IsPlayableCharacter())
 				return( false );
-			SetHue( GetHue() ^ HUE_UNDERWEAR );
+			SetHue( GetHue() ^ HUE_UNDERWEAR /*, false, pSrc*/ ); //call @Dye on underwear?
 			RemoveFromView();
 			Update();
 			break;

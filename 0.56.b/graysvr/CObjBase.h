@@ -181,10 +181,7 @@ public:
 
 public:
 	// Hue
-	void SetHue( HUE_TYPE wHue )
-	{
-		m_wHue = wHue;
-	}
+	void SetHue( HUE_TYPE wHue, bool bAvoidTrigger = true, CTextConsole *pSrc = NULL, CObjBase *SourceObj = NULL, long long sound = 0 );
 	HUE_TYPE GetHue() const
 	{
 		return( m_wHue );
@@ -342,6 +339,7 @@ enum ITRIG_TYPE
 	ITRIG_DROPON_ITEM,		// An item has been 
 	ITRIG_DROPON_SELF,		// An item has been dropped upon me
 	ITRIG_DROPON_TRADE,		// Droping an item in a trade window
+	//ITRIG_DYE,
 	ITRIG_EQUIP,		// I have been equipped.
 	ITRIG_EQUIPTEST,
 	ITRIG_PICKUP_GROUND,
@@ -2346,6 +2344,7 @@ enum CTRIG_TYPE
 	CTRIG_DeathCorpse,		// Corpse
 	CTRIG_Destroy,			//+I am nearly destroyed
 	CTRIG_Dismount,
+	//CTRIG_DYE,
 	CTRIG_EnvironChange,	// my environment changed somehow (light,weather,season,region)
 	CTRIG_ExpChange,		// EXP is going to change
 	CTRIG_ExpLevelChange,	// Experience LEVEL is going to change

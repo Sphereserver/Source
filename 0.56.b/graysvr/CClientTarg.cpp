@@ -2440,7 +2440,7 @@ static LPCTSTR const sm_Txt_LoomUse[] =
 			pObjTarg = pCharTarg->LayerFind( LAYER_HAIR );
 			if ( pObjTarg != NULL )
 			{
-				pObjTarg->SetHue( pItemUse->GetHue());
+				pObjTarg->SetHue( pItemUse->GetHue(), false, this->GetChar(), pItemUse, 0x23e);
 				pObjTarg->Update();
 			}
 			pObjTarg = pCharTarg->LayerFind( LAYER_BEARD );
@@ -2461,21 +2461,7 @@ static LPCTSTR const sm_Txt_LoomUse[] =
 			}
 		}
 
-		CScriptTriggerArgs args;
-		args.m_iN1=pItemUse->GetHue();
-		args.m_iN2=0x23e;
-		args.m_pO1 = pItemUse;
-
-		if (IsTrigUsed("@Dye"))
-		{
-			TRIGRET_TYPE iRet = pObjTarg->OnTrigger("@Dye",this->GetChar(),&args);
-			if (iRet == TRIGRET_RET_TRUE)
-				return false;
-		}
-
-		pObjTarg->Sound(static_cast<int>(args.m_iN2));
-
-		pObjTarg->SetHue( static_cast<HUE_TYPE>(args.m_iN1 ));
+		pObjTarg->SetHue( pItemUse->GetHue(), false, this->GetChar(), pItemUse, 0x23e );
 		pObjTarg->Update();
 		return true;
 		}

@@ -110,6 +110,53 @@ bool CObjBase::IsContainer() const
 	return( dynamic_cast <const CContainer*>(this) != NULL );
 }
 
+void CObjBase::SetHue( HUE_TYPE wHue, bool bAvoidTrigger, CTextConsole *pSrc, CObjBase *SourceObj, long long sound )
+{
+	if (g_Serv.IsLoading()) //We do not want tons of @Dye being called during world load, just set the hue then continue...
+	{
+		m_wHue = wHue;
+		return;
+	}
+
+	CScriptTriggerArgs args;
+	args.m_iN1=wHue;
+	args.m_iN2=sound;
+
+	/*	@Dye is now more universal, it is called on EVERY CObjBase color change. 
+		Sanity checks are recommended and if possible, avoid using it on universal events. */
+
+	/*	Trigger info to be added to intenal
+		LPCTSTR const CItem::sm_szTrigName	//CItem.cpp
+		LPCTSTR const CChar::sm_szTrigName	//CChar.cpp
+		enum ITRIG_TYPE						//CObjBase.h
+		enum CTRIG_TYPE						//CObjBase.h
+		ADD(DYE,					"@Dye")	//triggers.tbl
+	*/
+
+	if (!bAvoidTrigger)
+	{
+		if (IsTrigUsed("@Dye")) 
+		{
+			TRIGRET_TYPE iRet;
+
+			if (SourceObj)
+				args.m_pO1 = SourceObj;
+
+			//LPCTSTR sTrig = (IsChar() ? CChar::sm_szTrigName[CTRIG_DYE] : CItem::sm_szTrigName[ITRIG_DYE]);
+
+			iRet = OnTrigger("@Dye", pSrc, &args);
+
+			if (iRet == TRIGRET_RET_TRUE)
+				return;
+		}
+	}
+
+	if (args.m_iN2 > 0) //No sound? No checks for who can hear, packets....
+		Sound(static_cast<SOUND_TYPE>(args.m_iN2));
+
+	m_wHue = static_cast<SOUND_TYPE>(args.m_iN1);
+}
+
 int CObjBase::IsWeird() const
 {
 	ADDTOCALLSTACK_INTENSIVE("CObjBase::IsWeird");
@@ -1428,7 +1475,7 @@ bool CObjBase::r_LoadVal( CScript & s )
 				break;
 			}
 			RemoveFromView();
-			m_wHue = static_cast<HUE_TYPE>(s.GetArgVal());
+			SetHue(static_cast<HUE_TYPE>(s.GetArgVal()), false, &g_Serv); //@Dye is called from @Create/.xcolor/script command here // since we can not receive pSrc on this r_LoadVal function ARGO/SRC will be null
 			Update();
 			break;
 		case OC_EVENTS:

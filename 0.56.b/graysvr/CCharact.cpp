@@ -3854,7 +3854,7 @@ bool CChar::SetPrivLevel(CTextConsole * pSrc, LPCTSTR pszFlags)
 		{
 			pItem->SetAttr(ATTR_MOVE_NEVER|ATTR_NEWBIE|ATTR_MAGIC);
 			pItem->m_itArmor.m_spelllevel = 1000;
-			pItem->SetHue( ( PrivLevel >= PLEVEL_GM ) ? HUE_RED : HUE_BLUE_NAVY );
+			pItem->SetHue( ( PrivLevel >= PLEVEL_GM ) ? HUE_RED : HUE_BLUE_NAVY /*, false, pSrc */ ); //call @Dye on equiped gm robes after plevel change?
 			ItemEquip(pItem);
 		}
 	}

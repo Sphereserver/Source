@@ -139,7 +139,7 @@ void CClient::Event_Item_Dye( CGrayUID uid, HUE_TYPE wHue ) // Rehue an item
 		wHue |= HUE_UNDERWEAR;
 	}
 
-	pObj->SetHue(wHue);
+	pObj->SetHue(wHue, false, this->GetChar(), pObj);
 	pObj->Update();
 }
 

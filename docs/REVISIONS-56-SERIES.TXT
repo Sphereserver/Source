@@ -991,3 +991,10 @@ Added WeightReduction to item's weight calculations, so a item with 5.0 weight a
 Fixed #2334. Also forced that any character called to be a guard ( Argn1 in @CallGuards ) have brain_guard no matter what it is really.
 Fixed #2333. Also fixing @Attack trigger blocking any other actions too when returning 1.
 Added #1765 :New ini setting: AttackingIsaCrime making criminal any character without any damage, only attacking.
+
+10-05-2014, Feeh (thanks to Ben)
+Modified: @Dye is now called on more situations on both Items and Chars:
+	-Script color changes					(SRC/ARGO = Server)
+	-Dye tubs (t_dye_vat) color changes		
+	-@Create color assignment				(SRC/ARGO = Server)
+	-Staff .xcolor command					(SRC/ARGO = Server)
