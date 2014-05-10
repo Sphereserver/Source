@@ -984,3 +984,5 @@ Added WeightReduction to item's weight calculations, so a item with 5.0 weight a
 09-05-2014, Ben
 -Improved how RangeH/L 'fix' work and making them readable by dynamic items in every situation.
 
+09-05-2014, Feeh
+-Fixed #2326: Some mt_* CAN flags were not allowed to be assigned after char/npc creation. It should be assignable anytime from now
