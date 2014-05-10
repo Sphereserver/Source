@@ -1188,7 +1188,8 @@ bool CChar::NPC_LookAtCharMonster( CChar * pChar )
 		iDist > 1 )
 		return false;	// element of suprise.
 
-	Fight_Attack( pChar );
+	if ( Fight_Attack( pChar ) == false )
+		return false;
 	m_pNPC->m_Act_Motivation = iActMotivation;
 	return true;
 }
