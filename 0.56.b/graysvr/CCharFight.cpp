@@ -2953,7 +2953,8 @@ bool CChar::Memory_Fight_OnTick( CItemMemory * pMemory )
 	if ( pTarg == NULL )
 		return( false );	// They are gone for some reason ?
 
-	if ( GetDist(pTarg) > UO_MAP_VIEW_RADAR && Attacker_GetElapsed(Attacker_GetID(pTarg)) == -1) //Attacker.Elapsed = -1 means no combat end. //Attacker.Elapsed = -1 means no combat end.
+	int elapsed = Attacker_GetElapsed(Attacker_GetID(pTarg));
+	if ( GetDist(pTarg) > UO_MAP_VIEW_RADAR || ( elapsed > g_Cfg.m_iAttackerTimeout && !elapsed == -1 ) ) //Attacker.Elapsed = -1 means no combat end.
 	{
 		Memory_Fight_Retreat( pTarg, pMemory );
 clearit:
@@ -3257,6 +3258,8 @@ bool CChar::Fight_Clear(const CChar *pChar, bool bForced)
 {
 	ADDTOCALLSTACK("CChar::Fight_Clear");
 	// I no longer want to attack this char.
+	if ( ! pChar )
+		return false;
 	if ( Attacker_Delete(const_cast<CChar*>(pChar), bForced) == false )
 		return false;
 	if ( pChar )
@@ -3650,6 +3653,8 @@ CChar * CChar::Attacker_GetUID( int index )
 bool CChar::Attacker_Delete( CChar * pChar, bool bForced )
 {		
 	ADDTOCALLSTACK("CChar::Attacker_Delete");
+	if ( !pChar )
+		return false;
 	if ( IsTrigUsed(TRIGGER_COMBATDELETE) && bForced == false )
 	{
 		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatDelete,pChar,0);
