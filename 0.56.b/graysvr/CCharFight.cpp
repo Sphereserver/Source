@@ -843,9 +843,8 @@ int CChar::NotoSave_GetID( CChar * pChar )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_GetID(CChar)");
 	if ( !pChar )
-		return NULL;
+		return -1;
 	int count = 0;
-	bool bFound = false;
 	if ( NotoSave() )
 	{
 		for ( std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); it++)
@@ -859,7 +858,7 @@ int CChar::NotoSave_GetID( CChar * pChar )
 			count++;
 		}
 	}
-	return NULL;
+	return -1;
 }
 
 int CChar::NotoSave_GetID( CGrayUID pChar )
@@ -3219,7 +3218,6 @@ CChar * CChar::Fight_FindBestTarget()
 		int iClosest = INT_MAX;	// closest
 
 		const CItem * pItem = GetContentHead();
-		int threat = 0;
 		for ( ; pItem != NULL; pItem = pItem->GetNext())
 		{
 			if ( ! pItem->IsMemoryTypes(MEMORY_WAR_TARG))
@@ -3301,20 +3299,16 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool toldByMaster )
 
 	if ( g_Cfg.m_fAttackIsACrime == TRUE)
 	{
-		g_Log.EventDebug("IsACrime");
 		CChar * pTarg = const_cast<CChar*>(pCharTarg);
 		if ( Noto_GetFlag( pTarg ) == NOTO_GOOD )
 		{
-			g_Log.EventDebug("AttackingGoodGuys");
 			if ( IsClient())
 			{
-				g_Log.EventDebug("EvenBeingAPlayer");
 				// I decide if this is a crime.
 				pTarg->OnNoticeCrime( this, pTarg );
 			}
 			else
 			{
-				g_Log.EventDebug("EvenANPC");
 				// If it is a pet then this a crime others can report.
 				pTarg->CheckCrimeSeen( SKILL_NONE, this, NULL, NULL );
 			}
@@ -3599,7 +3593,7 @@ int CChar::Attacker_GetID( CChar * pChar )
 {
 	ADDTOCALLSTACK("CChar::Attacker_GetID(CChar)");
 	if ( !pChar )
-		return NULL;
+		return -1;
 	int count = 0;
 	bool bFound = false;
 	if ( Attacker() )
@@ -3618,7 +3612,7 @@ int CChar::Attacker_GetID( CChar * pChar )
 	}
 	if ( bFound == true)
 		return count;
-	return NULL;
+	return -1;
 }
 
 int CChar::Attacker_GetID( CGrayUID pChar )

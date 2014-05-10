@@ -694,7 +694,6 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 
 	ANIM_TYPE_NEW action1 = static_cast<ANIM_TYPE_NEW>(-1);
 	CCharBase* pCharDef = Char_GetDef();
-	CClient * pClient = this->GetClient();
 	if ( IsPlayableCharacter() )		//Perform these checks only for Gargoyles or in Enhanced Client
 	{
 		CItem * pWeapon = m_uidWeapon.ItemFind();

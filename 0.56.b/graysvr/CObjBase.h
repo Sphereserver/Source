@@ -3279,7 +3279,7 @@ public:
 	bool Noto_Criminal( CChar * pChar = NULL);
 	void Noto_Murder();
 	void Noto_KarmaChangeMessage( int iKarmaChange, int iLimit );
-	int NotoSave() { return m_notoSaves.size() ? m_notoSaves.size() : NULL; }
+	int NotoSave() { return m_notoSaves.size(); }
 	void NotoSave_Add( CChar * pChar, NOTO_TYPE value );
 	NOTO_TYPE NotoSave_GetValue( int id );
 	INT64 NotoSave_GetTime( int id );

@@ -1652,7 +1652,7 @@ do_default:
 					{
 						pszKey += 3;	// ID + whitspace
 						CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind());
-						if ( Attacker_GetID(pChar) == NULL )
+						if ( !Attacker_GetID(pChar) )
 							sVal.FormatVal( -1 );
 						else
 							sVal.FormatVal(Attacker_GetID(pChar));
@@ -2905,11 +2905,6 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			}
 			break;
 
-		case CHV_TARGETCLOSE:
-			GetClient()->addTargetCancel();
-			break;
-
-
 		case CHV_ALLSKILLS:
 			{
 				int iVal = s.GetArgVal();
@@ -3276,7 +3271,9 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 					}
 				}
 			} break;
-
+		case CHV_NOTOCLEAR:
+			NotoSave_Clear();
+			break;
 		case CHV_OPENPAPERDOLL:
 		{
 			CClient * pClient = NULL;
@@ -3462,6 +3459,9 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 		case CHV_SYSMESSAGELOCEX:
 		case CHV_SYSMESSAGEUA:
 			// just eat this if it's not a client.
+			break;
+		case CHV_TARGETCLOSE:
+			GetClient()->addTargetCancel();
 			break;
 		case CHV_UNDERWEAR:
 			if ( ! IsPlayableCharacter())
