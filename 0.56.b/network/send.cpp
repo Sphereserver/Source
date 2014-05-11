@@ -1458,7 +1458,7 @@ void PacketBookPageContent::addPage(const CItem* book, size_t page)
 {
 	ADDTOCALLSTACK("PacketBookPageContent::addPage");
 
-	writeInt16(page);
+	writeInt16(static_cast<WORD>(page));
 
 	// skip line count for now
 	size_t linesPos = getPosition();
@@ -1468,7 +1468,7 @@ void PacketBookPageContent::addPage(const CItem* book, size_t page)
 	if (book->IsBookSystem())
 	{
 		CResourceLock s;
-		if (g_Cfg.ResourceLock(s, RESOURCE_ID(RES_BOOK, book->m_itBook.m_ResID.GetResIndex(), page)) == true)
+		if (g_Cfg.ResourceLock(s, RESOURCE_ID(RES_BOOK, book->m_itBook.m_ResID.GetResIndex(), static_cast<int>(page))) == true)
 		{
 			while (s.ReadKey(false))
 			{
@@ -1511,11 +1511,11 @@ void PacketBookPageContent::addPage(const CItem* book, size_t page)
 
 	// seek back to write line count
 	seek(linesPos);
-	writeInt16(lines);
+	writeInt16(static_cast<WORD>(lines));
 
 	// seek further back to increment page count
 	seek(7);
-	writeInt16(++m_pages);
+	writeInt16(static_cast<WORD>(++m_pages));
 
 	// return to end
 	seek(endPos);
@@ -1823,7 +1823,7 @@ PacketBulletinBoard::PacketBulletinBoard(const CClient* target, BBOARDF_TYPE act
 		lenstr = strlen(author) + 1;
 		if (lenstr > 255) lenstr = 255;
 
-		writeByte(lenstr);
+		writeByte(static_cast<unsigned char>(lenstr));
 		writeStringFixedASCII(author, lenstr);
 	}
 

@@ -3278,9 +3278,10 @@ public:
 	bool Noto_Criminal( CChar * pChar = NULL);
 	void Noto_Murder();
 	void Noto_KarmaChangeMessage( int iKarmaChange, int iLimit );
-	int NotoSave() { return m_notoSaves.size(); }
+	int NotoSave() { return static_cast<int>(m_notoSaves.size()); }
 	void NotoSave_Add( CChar * pChar, NOTO_TYPE value );
 	NOTO_TYPE NotoSave_GetValue( int id );
+	NOTO_TYPE NotoSave_GetValue( CChar * pChar );
 	INT64 NotoSave_GetTime( int id );
 	void NotoSave_SetValue( CChar * pChar, NOTO_TYPE value );
 	void NotoSave_SetValue( int pChar, NOTO_TYPE value);
@@ -3516,7 +3517,7 @@ public:
 	int  Fight_CalcDamage( const CItem * pWeapon, SKILL_TYPE skill, bool bNoRandom = false ) const;
 
 	// Attacker System
-	int	 Attacker() { return m_lastAttackers.size(); }
+	int	 Attacker() { return static_cast<int>(m_lastAttackers.size()); }
 	bool Attacker_Add( CChar * pChar);
 	bool Attacker_Delete( CChar * pChar, bool bForced = false  );
 	void Attacker_Clear();

@@ -284,7 +284,7 @@ int CListDefCont::FindValStr( LPCTSTR pVal, size_t nStartIndex /* = 0 */ ) const
 			continue;
 
 		if ( ! strcmpi( pVal, pListStr->GetValStr()))
-			return nIndex;
+			return static_cast<int>(nIndex);
 	}
 
 	return -1;
@@ -311,7 +311,7 @@ int CListDefCont::FindValNum( INT64 iVal, size_t nStartIndex /* = 0 */ ) const
 			continue;
 
 		if ( pListNum->GetValNum() == iVal )
-			return nIndex;
+			return static_cast<int>(nIndex);
 	}
 
 	return -1;

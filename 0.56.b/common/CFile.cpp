@@ -56,7 +56,7 @@ CGString CGFile::GetMergedFileName( LPCTSTR pszBase, LPCTSTR pszName ) // static
 	if ( pszBase && pszBase[0] )
 	{
 		strcpy( szFilePath, pszBase );
-		int len = strlen( szFilePath );
+		int len = static_cast<int>(strlen( szFilePath ));
 		if ( len && szFilePath[ len-1 ] != '\\' &&
 			szFilePath[ len-1 ] != '/' )	// Might be LINUX
 		{

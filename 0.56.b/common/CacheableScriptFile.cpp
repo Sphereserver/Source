@@ -153,7 +153,7 @@ DWORD CacheableScriptFile::Seek(LONG offset, UINT origin)
 	if ( linenum <= m_fileContent->size() )
 	{
 		m_currentLine = linenum;
-		return linenum;
+		return static_cast<DWORD>(linenum);
 	}
 
 	return 0;
@@ -167,7 +167,7 @@ DWORD CacheableScriptFile::GetPosition() const
 	}
 
 	ADDTOCALLSTACK("CacheableScriptFile::GetPosition");
-	return m_currentLine;
+	return static_cast<DWORD>(m_currentLine);
 }
 
 void CacheableScriptFile::dupeFrom(CacheableScriptFile *other) 

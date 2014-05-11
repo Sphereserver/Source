@@ -651,7 +651,7 @@ size_t UTF8MBSTR::ConvertStringToUTF8( LPCTSTR strIn, char *& strOutUTF8MB )
 	wchar_t * wChar=new wchar_t[len+1];
 	wChar[0]=0;
 	mbstowcs(wChar,strIn,len+1);
-	int iRequiredSize = wcstombs(NULL,wChar,len+1);
+	int iRequiredSize = static_cast<int>(wcstombs(NULL,wChar,len+1));
 	strOutUTF8MB=new char[iRequiredSize+1];
 	strOutUTF8MB[0]=0;
 	wcstombs(strOutUTF8MB,wChar,iRequiredSize+1);

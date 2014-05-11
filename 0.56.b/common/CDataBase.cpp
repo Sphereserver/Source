@@ -683,7 +683,7 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				
 				SimpleThreadLock lock(m_connectionMutex);
 #ifndef _DBPLUGIN
-				if ( isConnected() && mysql_real_escape_string(_myData, escapedString, pszKey, strlen(pszKey)) )
+				if ( isConnected() && mysql_real_escape_string(_myData, escapedString, pszKey, static_cast<unsigned long>(strlen(pszKey))) )
 				{
 					sVal = escapedString;
 				}

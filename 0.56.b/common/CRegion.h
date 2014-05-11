@@ -152,7 +152,7 @@ public:
 		// don't care where this
 		return( m_pt );
 	}
-	signed char GetUnkZ() const
+	signed char GetUnkZ() const	// Equal to GetTopZ ?
 	{
 		return( m_pt.m_z );
 	}

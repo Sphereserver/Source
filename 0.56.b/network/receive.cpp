@@ -2092,7 +2092,7 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 		if (toskip > (packetLength * 2))
 			return true;
 
-		skip(toskip);
+		skip(static_cast<long>(toskip));
 		TCHAR text[MAX_TALK_BUFFER];
 		readStringNullASCII(text, COUNTOF(text));
 		client->Event_Talk(text, hue, mode, true);
@@ -2101,7 +2101,7 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 	{
 		NCHAR text[MAX_TALK_BUFFER];
 		readStringUNICODE(reinterpret_cast<WCHAR *>(text), packetLength, false);
-		client->Event_TalkUNICODE(text, packetLength, hue, mode, font, language);
+		client->Event_TalkUNICODE(text, static_cast<int>(packetLength), hue, mode, font, language);
 	}
 
 	return true;
@@ -2274,7 +2274,7 @@ bool PacketChatCommand::onReceive(NetState* net)
 	NCHAR text[MAX_TALK_BUFFER];
 	readStringUNICODE(reinterpret_cast<WCHAR *>(text), textLength, false);
 
-	client->Event_ChatText(text, textLength, CLanguageID(language));
+	client->Event_ChatText(text, static_cast<int>(textLength), CLanguageID(language));
 	return true;
 }
 

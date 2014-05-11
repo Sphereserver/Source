@@ -180,7 +180,7 @@ public:
 			NotifyIOError("write");
 			return false;
 		}
-		return( ret == TRUE );
+		return( ret != FALSE );
 	}
 
 	void NotifyIOError( LPCTSTR szMessage ) const
@@ -351,7 +351,7 @@ public:
 		ASSERT(pBuffer);
 		if ( IsEOF())
 			return( 0 );	// LINUX will ASSERT if we read past end.
-		return( fread( pBuffer, 1, sizemax, m_pStream ));
+		return( static_cast<DWORD>(fread( pBuffer, 1, sizemax, m_pStream )));
 	}
 	TCHAR * ReadString( TCHAR * pBuffer, size_t sizemax ) const
 	{
@@ -359,7 +359,7 @@ public:
 		ASSERT(pBuffer);
 		if ( IsEOF())
 			return( NULL );	// LINUX will ASSERT if we read past end.
-		return( fgets( pBuffer, sizemax, m_pStream ));
+		return( fgets( pBuffer, static_cast<int>(sizemax), m_pStream ));
 	}
 	bool Write( const void * pData, DWORD iLen )
 #ifndef _WIN32
@@ -387,7 +387,7 @@ public:
 	{
 		// RETURN: < 0 = failed.
 		ASSERT(pStr);
-		return( Write( pStr, strlen( pStr )));
+		return( Write( pStr, static_cast<DWORD>(strlen( pStr ))));
 	}
 
 	bool IsFileOpen() const

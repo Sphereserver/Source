@@ -575,15 +575,15 @@ PacketManager::~PacketManager(void)
 {
 	// delete standard packet handlers
 	for (size_t i = 0; i < COUNTOF(m_handlers); ++i)
-		unregisterPacket(i);
+		unregisterPacket(static_cast<unsigned int>(i));
 
 	// delete extended packet handlers
 	for (size_t i = 0; i < COUNTOF(m_extended); ++i)
-		unregisterExtended(i);
+		unregisterExtended(static_cast<unsigned int>(i));
 
 	// delete encoded packet handlers
 	for (size_t i = 0; i < COUNTOF(m_encoded); ++i)
-		unregisterEncoded(i);
+		unregisterEncoded(static_cast<unsigned int>(i));
 }
 
 void PacketManager::registerStandardPackets(void)
@@ -2659,7 +2659,7 @@ void NetworkManager::start(void)
 	ASSERT(m_stateCount == 0);
 	m_states = new NetState*[g_Cfg.m_iClientsMax];
 	for (size_t l = 0; l < g_Cfg.m_iClientsMax; l++)
-		m_states[l] = new NetState(l);
+		m_states[l] = new NetState(static_cast<long>(l));
 	m_stateCount = g_Cfg.m_iClientsMax;
 
 	DEBUGNETWORK(("Created %" FMTSIZE_T " network slots (system limit of %d clients)\n", m_stateCount, FD_SETSIZE));
@@ -3051,7 +3051,7 @@ void NetworkInput::receiveData()
 			Packet* packet = new Packet(buffer, length);
 			state->m_incoming.rawPackets.push(packet);
 			buffer += length;
-			received -= length;
+			received -= static_cast<int>(length);
 		}
 	}
 
@@ -3279,14 +3279,14 @@ bool NetworkInput::processGameClientData(NetState* state, Packet* buffer)
 			//  allow skipping the packet which we do not wish to get
 			if (client->xPacketFilter(packet->getRemainingData(), packetLength))
 			{
-				packet->skip(packetLength);
+				packet->skip(static_cast<long>(packetLength));
 				continue;
 			}
 
 			// copy data to handler
 			handler->seek();
 			handler->writeData(packet->getRemainingData(), packetLength);
-			packet->skip(packetLength);
+			packet->skip(static_cast<long>(packetLength));
 
 			// move to position 1 (no need for id) and fire onReceive()
 			handler->resize(packetLength);
@@ -3302,7 +3302,7 @@ bool NetworkInput::processGameClientData(NetState* state, Packet* buffer)
 				// todo: adjust packet filter to specify size!
 				// packet has been handled by filter but we don't know how big the packet
 				// actually is.. we can only assume the entire buffer is used.
-				packet->skip(remainingLength);
+				packet->skip(static_cast<long>(remainingLength));
 				remainingLength = 0;
 				break;
 			}
@@ -3311,7 +3311,7 @@ bool NetworkInput::processGameClientData(NetState* state, Packet* buffer)
 			// strange behaviours (it's unlikely that only 1 byte is incorrect), so
 			// it's best to just discard everything we have
 			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%lx:Unknown game packet (0x%x) received.\n", state->id(), packetId);
-			packet->skip(remainingLength);
+			packet->skip(static_cast<long>(remainingLength));
 			remainingLength = 0;
 		}
 	}
@@ -3388,7 +3388,7 @@ bool NetworkInput::processOtherClientData(NetState* state, Packet* buffer)
 				if (buffer->getRemainingLength() < iEncKrLen)
 					return false; // need more data
 
-				buffer->skip(iEncKrLen);
+				buffer->skip(static_cast<long>(iEncKrLen));
 				return true;
 			}
 
@@ -4019,7 +4019,7 @@ size_t NetworkOutput::sendData(NetState* state, const BYTE* data, size_t length)
 		// send via async winsock
 		ZeroMemory(&state->m_overlapped, sizeof(WSAOVERLAPPED));
 		state->m_overlapped.hEvent = state;
-		state->m_bufferWSA.len = length;
+		state->m_bufferWSA.len = static_cast<ULONG>(length);
 		state->m_bufferWSA.buf = reinterpret_cast<CHAR *>(const_cast<BYTE *>(data));
 
 		DWORD bytesSent;
@@ -4037,7 +4037,7 @@ size_t NetworkOutput::sendData(NetState* state, const BYTE* data, size_t length)
 #endif
 	{
 		// send via standard api
-		int sent = state->m_socket.Send(data, length);
+		int sent = state->m_socket.Send(data, static_cast<int>(length));
 		if (sent > 0)
 			result = static_cast<size_t>(sent);
 		else
@@ -4085,7 +4085,7 @@ size_t NetworkOutput::sendData(NetState* state, const BYTE* data, size_t length)
 	}
 
 	if (result > 0 && result != _failed_result())
-		CurrentProfileData.Count(PROFILE_DATA_TX, result);
+		CurrentProfileData.Count(PROFILE_DATA_TX, static_cast<DWORD>(result));
 
 	return result;
 	EXC_CATCH;

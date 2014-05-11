@@ -191,10 +191,12 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 	CChar * pThis = const_cast<CChar*>(this);
 	CChar * pTarget = const_cast<CChar*>(pCharViewer);
 	NOTO_TYPE Noto;
-	if ( pThis->m_notoSaves.size() )
+	/*if ( pThis->m_notoSaves.size() )
 	{
-		return pThis->NotoSave_GetValue( pThis->NotoSave_GetID( pTarget ) );
-	}
+		g_Log.EventDebug("blabla %d for %s\n",pThis->NotoSave_GetID( pTarget ),pTarget->GetName());
+		if ( pThis->NotoSave_GetID( pTarget ) )
+			return pThis->NotoSave_GetValue( pThis->NotoSave_GetID( pTarget ) );
+	}*/
 	if (IsTrigUsed(TRIGGER_NOTOSEND))
 	{
 		CScriptTriggerArgs args;
@@ -809,6 +811,13 @@ void CChar::NotoSave_Add( CChar * pChar, NOTO_TYPE value )
 NOTO_TYPE CChar::NotoSave_GetValue( int id )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_GetValue");
+	g_Log.EventDebug("Retrieving value for %d",id);
+	if ( !m_notoSaves.size() )
+		return NOTO_INVALID;
+	if ( static_cast<int>(m_notoSaves.size()) <= id )
+		return NOTO_INVALID;
+	if ( ! id )
+		return NOTO_INVALID;
 	NotoSaves & refNotoSave = m_notoSaves.at(id);
 	return refNotoSave.value;
 }
@@ -816,6 +825,10 @@ NOTO_TYPE CChar::NotoSave_GetValue( int id )
 INT64 CChar::NotoSave_GetTime( int id )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_GetTime");
+	if ( !m_notoSaves.size() )
+		return -1;
+	if ( static_cast<int>(m_notoSaves.size()) <= id )
+		return -1;
 	NotoSaves & refNotoSave = m_notoSaves.at(id);
 	return refNotoSave.time;
 }
@@ -823,6 +836,10 @@ INT64 CChar::NotoSave_GetTime( int id )
 void CChar::NotoSave_SetValue( CChar * pChar, NOTO_TYPE value )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_SetValue(CChar)");
+	if ( !m_notoSaves.size() )
+		return;
+	if ( ! pChar )
+		return;
 	NotoSaves & refNotoSave = m_notoSaves.at( NotoSave_GetID(pChar) );
 	refNotoSave.value = value;
 }
@@ -830,19 +847,26 @@ void CChar::NotoSave_SetValue( CChar * pChar, NOTO_TYPE value )
 void CChar::NotoSave_SetValue( int pChar, NOTO_TYPE value)
 {
 	ADDTOCALLSTACK("CChar::NotoSave_SetValue(int)");
+	if ( !m_notoSaves.size() )
+		return;
+	if ( static_cast<int>(m_notoSaves.size()) <= pChar )
+		return;
 	NotoSaves & refNotoSave = m_notoSaves.at( pChar );
 	refNotoSave.value = value;
 }
 void CChar::NotoSave_Clear()
 {
 	ADDTOCALLSTACK("CChar::NotoSave_Clear");
-	m_notoSaves.clear();
+	if ( m_notoSaves.size() )
+		m_notoSaves.clear();
 }
 
 int CChar::NotoSave_GetID( CChar * pChar )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_GetID(CChar)");
 	if ( !pChar )
+		return -1;
+	if ( !m_notoSaves.size() )
 		return -1;
 	int count = 0;
 	if ( NotoSave() )
@@ -864,8 +888,9 @@ int CChar::NotoSave_GetID( CChar * pChar )
 int CChar::NotoSave_GetID( CGrayUID pChar )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_GetID(CGrayUID)");
+	if ( !m_notoSaves.size() )
+		return -1;
 	int count = 0;
-	bool bFound = false;
 	if ( NotoSave() )
 	{
 		for ( std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); it++)
@@ -874,20 +899,21 @@ int CChar::NotoSave_GetID( CGrayUID pChar )
 			CGrayUID uid = refNotoSave.charUID;
 			if ( uid.CharFind() && uid == pChar )
 			{
-				bFound = true;
-				break;
+				return count;
 			}
 			count++;
 		}
 	}
-	if ( bFound == true)
-		return count;
 	return -1;
 }
 
 CChar * CChar::NotoSave_GetUID( int index )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_GetUID");
+	if ( !m_notoSaves.size() )
+		return NULL;
+	if ( static_cast<int>(m_notoSaves.size()) <= index )
+		return NULL;
 	NotoSaves & refNotoSave = m_notoSaves.at(index);
 	CChar * pChar = static_cast<CChar*>( static_cast<CGrayUID>( refNotoSave.charUID ).CharFind() );
 	return pChar;
@@ -896,6 +922,8 @@ CChar * CChar::NotoSave_GetUID( int index )
 bool CChar::NotoSave_Delete( CChar * pChar, bool bForced )
 {		
 	ADDTOCALLSTACK("CChar::NotoSave_Delete");
+	if ( ! pChar )
+		return false;
 	if ( NotoSave() )
 	{
 		int count = 0;
@@ -2954,7 +2982,10 @@ bool CChar::Memory_Fight_OnTick( CItemMemory * pMemory )
 		return( false );	// They are gone for some reason ?
 
 	int elapsed = Attacker_GetElapsed(Attacker_GetID(pTarg));
-	if ( GetDist(pTarg) > UO_MAP_VIEW_RADAR || ( elapsed > g_Cfg.m_iAttackerTimeout && !elapsed == -1 ) ) //Attacker.Elapsed = -1 means no combat end.
+	// Attacker.Elapsed = -1 means no combat end for this attacker.
+	// g_Cfg.m_iAttackerTimeout = 0 means attackers doesnt decay. (but cleared when the attacker is killed or the char dies)
+
+	if ( GetDist(pTarg) > UO_MAP_VIEW_RADAR || ( g_Cfg.m_iAttackerTimeout != 0 && elapsed > static_cast<int>(g_Cfg.m_iAttackerTimeout) && elapsed == -1 ) )
 	{
 		Memory_Fight_Retreat( pTarg, pMemory );
 clearit:
@@ -3470,6 +3501,8 @@ CChar * CChar::Attacker_FindBestTarget()
 	int iClosest = INT_MAX;	// closest
 
 	CChar * pChar = NULL;
+	if ( ! m_lastAttackers.size() )
+		return pChar;
 	CChar * pClosest = NULL;
 
 	int threat = 0;
@@ -3518,6 +3551,10 @@ CChar * CChar::Attacker_FindBestTarget()
 int CChar::Attacker_GetDam( int id)
 {
 	ADDTOCALLSTACK("CChar::Attacker_GetDam");
+	if ( ! m_lastAttackers.size() )
+		return -1;
+	if (  static_cast<int>(m_lastAttackers.size()) <= id )
+		return -1;
 	LastAttackers & refAttacker = m_lastAttackers.at(id);
 	return refAttacker.amountDone;
 }
@@ -3525,6 +3562,10 @@ int CChar::Attacker_GetDam( int id)
 int CChar::Attacker_GetElapsed( int id)
 {
 	ADDTOCALLSTACK("CChar::Attacker_GetElapsed");
+	if ( ! m_lastAttackers.size() )
+		return -1;
+	if ( static_cast<int>(m_lastAttackers.size()) <= id )
+		return -1;
 	LastAttackers & refAttacker = m_lastAttackers.at(id);
 	return refAttacker.elapsed;
 }
@@ -3532,6 +3573,10 @@ int CChar::Attacker_GetElapsed( int id)
 int CChar::Attacker_GetThreat( int id)
 {
 	ADDTOCALLSTACK("CChar::Attacker_GetThreat");
+	if ( ! m_lastAttackers.size() )
+		return -1;
+	if ( static_cast<int>(m_lastAttackers.size()) <= id )
+		return -1;
 	LastAttackers & refAttacker = m_lastAttackers.at(id);
 	return refAttacker.threat ? refAttacker.threat : 0;
 }
@@ -3539,6 +3584,10 @@ int CChar::Attacker_GetThreat( int id)
 void CChar::Attacker_SetElapsed( CChar * pChar, int value)
 {
 	ADDTOCALLSTACK("CChar::Attacker_SetElapsed(CChar)");
+	if ( ! pChar )
+		return;
+	if ( ! m_lastAttackers.size() )
+		return;
 	LastAttackers & refAttacker = m_lastAttackers.at( Attacker_GetID(pChar) );
 	refAttacker.elapsed = value;
 }
@@ -3546,6 +3595,10 @@ void CChar::Attacker_SetElapsed( CChar * pChar, int value)
 void CChar::Attacker_SetElapsed( int pChar, int value)
 {
 	ADDTOCALLSTACK("CChar::Attacker_SetElapsed(int)");
+	if ( ! pChar )
+		return;
+	if ( ! m_lastAttackers.size() )
+		return;
 	LastAttackers & refAttacker = m_lastAttackers.at( pChar );
 	refAttacker.elapsed = value;
 }
@@ -3553,6 +3606,10 @@ void CChar::Attacker_SetElapsed( int pChar, int value)
 void CChar::Attacker_SetDam( CChar * pChar, int value)
 {
 	ADDTOCALLSTACK("CChar::Attacker_SetDam(CChar)");
+	if ( ! pChar )
+		return;
+	if ( ! m_lastAttackers.size() )
+		return;
 	LastAttackers & refAttacker = m_lastAttackers.at( Attacker_GetID(pChar) );
 	refAttacker.amountDone = value;
 }
@@ -3560,6 +3617,10 @@ void CChar::Attacker_SetDam( CChar * pChar, int value)
 void CChar::Attacker_SetDam( int pChar, int value)
 {
 	ADDTOCALLSTACK("CChar::Attacker_SetDam(int)");
+	if ( ! pChar )
+		return;
+	if ( ! m_lastAttackers.size() )
+		return;
 	LastAttackers & refAttacker = m_lastAttackers.at( pChar );
 	refAttacker.amountDone = value;
 }
@@ -3570,6 +3631,8 @@ void CChar::Attacker_SetThreat( CChar * pChar, int value)
 		return;
 	if ( m_pPlayer )
 		return;
+	if ( ! m_lastAttackers.size() )
+		return;
 	LastAttackers & refAttacker = m_lastAttackers.at( Attacker_GetID(pChar) );
 	refAttacker.threat = value;
 }
@@ -3579,6 +3642,8 @@ void CChar::Attacker_SetThreat( int pChar, int value)
 	if ( !pChar )
 		return;
 	if ( m_pPlayer )
+		return;
+	if ( ! m_lastAttackers.size() )
 		return;
 	LastAttackers & refAttacker = m_lastAttackers.at( pChar );
 	refAttacker.threat = value;
@@ -3596,6 +3661,8 @@ int CChar::Attacker_GetID( CChar * pChar )
 {
 	ADDTOCALLSTACK("CChar::Attacker_GetID(CChar)");
 	if ( !pChar )
+		return -1;
+	if ( ! m_lastAttackers.size() )
 		return -1;
 	int count = 0;
 	bool bFound = false;
@@ -3621,8 +3688,9 @@ int CChar::Attacker_GetID( CChar * pChar )
 int CChar::Attacker_GetID( CGrayUID pChar )
 {
 	ADDTOCALLSTACK("CChar::Attacker_GetID(CGrayUID)");
+	if ( ! m_lastAttackers.size() )
+		return -1;
 	int count = 0;
-	bool bFound = false;
 	if ( Attacker() )
 	{
 		for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); it++)
@@ -3631,20 +3699,21 @@ int CChar::Attacker_GetID( CGrayUID pChar )
 			CGrayUID uid = refAttacker.charUID;
 			if ( uid.CharFind() && uid == pChar )
 			{
-				bFound = true;
-				break;
+				return count;
 			}
 			count++;
 		}
 	}
-	if ( bFound == true)
-		return count;
 	return -1;
 }
 
 CChar * CChar::Attacker_GetUID( int index )
 {
 	ADDTOCALLSTACK("CChar::Attacker_GetUID");
+	if ( ! m_lastAttackers.size() )
+		return NULL;
+	if ( static_cast<int>(m_lastAttackers.size()) <= index )
+		return NULL;
 	LastAttackers & refAttacker = m_lastAttackers.at(index);
 	CChar * pChar = static_cast<CChar*>( static_cast<CGrayUID>( refAttacker.charUID ).CharFind() );
 	return pChar;
@@ -3654,6 +3723,8 @@ bool CChar::Attacker_Delete( CChar * pChar, bool bForced )
 {		
 	ADDTOCALLSTACK("CChar::Attacker_Delete");
 	if ( !pChar )
+		return false;
+	if ( ! m_lastAttackers.size() )
 		return false;
 	if ( IsTrigUsed(TRIGGER_COMBATDELETE) && bForced == false )
 	{

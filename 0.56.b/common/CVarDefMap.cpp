@@ -438,7 +438,7 @@ int CVarDefMap::SetNumNew( LPCTSTR pszName, INT64 iVal )
 
 	DefPairResult res = m_Container.insert(pVarNum);
 	if ( res.second )
-		return std::distance(m_Container.begin(), res.first);
+		return static_cast<int>(std::distance(m_Container.begin(), res.first));
 	else
 		return -1;
 }
@@ -491,7 +491,7 @@ int CVarDefMap::SetNum( LPCTSTR pszName, INT64 iVal, bool fZero )
 		return SetNumOverride( pszName, iVal );
 	}
 
-	return std::distance(m_Container.begin(), iResult);
+	return static_cast<int>(std::distance(m_Container.begin(), iResult));
 }
 
 int CVarDefMap::SetStrNew( LPCTSTR pszName, LPCTSTR pszVal )
@@ -503,7 +503,7 @@ int CVarDefMap::SetStrNew( LPCTSTR pszName, LPCTSTR pszVal )
 
 	DefPairResult res = m_Container.insert(pVarStr);
 	if ( res.second )
-		return std::distance(m_Container.begin(), res.first);
+		return static_cast<int>(std::distance(m_Container.begin(), res.first));
 	else
 		return -1;
 }
@@ -560,7 +560,7 @@ int CVarDefMap::SetStr( LPCTSTR pszName, bool fQuoted, LPCTSTR pszVal, bool fZer
 		}
 		return SetStrOverride( pszName, pszVal );
 	}
-	return std::distance(m_Container.begin(), iResult);
+	return static_cast<int>(std::distance(m_Container.begin(), iResult) );
 }
 
 CVarDefCont * CVarDefMap::GetKey( LPCTSTR pszKey ) const

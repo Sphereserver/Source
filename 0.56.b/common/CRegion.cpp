@@ -478,7 +478,7 @@ bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pS
 					if ( pSector == NULL ) break;
 					iClients += pSector->m_Chars_Active.HasClients();
 				}
-				sVal.FormatVal(iClients);
+				sVal.FormatVal(static_cast<long>(iClients));
 				break;
 			}
 		case RC_EVENTS:
@@ -538,7 +538,7 @@ bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pS
 				pszKey += 4;
 				if ( *pszKey == '\0' )
 				{
-					sVal.FormatVal( iQty );
+					sVal.FormatVal( static_cast<long>(iQty));
 					return true;
 				}
 				SKIP_SEPARATORS( pszKey );
@@ -562,7 +562,7 @@ bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pS
 			sVal.FormatVal( IsFlag(REGION_FLAG_SAFE));
 			break;
 		case RC_TAGCOUNT:
-			sVal.FormatVal( m_TagDefs.GetCount() );
+			sVal.FormatVal( static_cast<long>(m_TagDefs.GetCount()) );
 			break;
 		case RC_TAGAT:
 			{

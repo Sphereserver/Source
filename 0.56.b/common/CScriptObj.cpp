@@ -347,7 +347,7 @@ bool CScriptTriggerArgs::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsol
 		
 		if ( *pszKey == '\0' )
 		{
-			sVal.FormatVal(iQty);
+			sVal.FormatVal(static_cast<long>(iQty));
 			return( true );
 		}
 
@@ -1006,7 +1006,7 @@ badcmd:
 				if ( !pszPos )
 					sVal.FormatVal( -1 );
 				else
-					sVal.FormatVal( pszPos - pszKey );
+					sVal.FormatVal(static_cast<long>( pszPos - pszKey ) );
 			}
 			return true;
 		case SSC_StrSub:
@@ -3114,7 +3114,7 @@ void CFileObjContainer::ResizeContainer( size_t iNewRange )
 	}
 
 	bool bDeleting = ( iNewRange < sFileList.size() );
-	int howMuch = iNewRange - sFileList.size();
+	int howMuch = static_cast<int>(iNewRange) - static_cast<int>(sFileList.size());
 	if ( howMuch < 0 )
 	{
 		howMuch = (-howMuch);

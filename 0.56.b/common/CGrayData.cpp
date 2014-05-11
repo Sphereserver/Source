@@ -115,7 +115,7 @@ bool CVerDataMul::FindVerDataBlock( VERFILE_TYPE type, DWORD id, CUOIndexRec & I
 	// search for a specific block.
 	// assume it is in sorted order.
 
-	int iHigh = GetCount()-1;
+	int iHigh = static_cast<int>(GetCount())-1;
 	if ( iHigh < 0 )
 	{
 		return( false );
