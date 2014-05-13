@@ -132,7 +132,7 @@ CResource::CResource()
 
 	m_fNoResRobe		= 0;
 	m_iLostNPCTeleport	= 0;
-	m_iExperimental		= 0;
+	m_iExperimental		= 0x181;
 	m_iDistanceYell		= UO_MAP_VIEW_RADAR;
 	m_iDistanceWhisper	= 3;
 	m_iDistanceTalk		= UO_MAP_VIEW_SIZE;
@@ -1105,7 +1105,7 @@ bool CResource::r_LoadVal( CScript &s )
 			break;
 
 		case RC_EXPERIMENTAL:
-			g_Cfg.m_iExperimental = s.GetArgVal();
+			g_Cfg.m_iExperimental = s.GetArgVal()|0x181; //testing with all walkcheck Flags
 			PrintEFOFFlags(true, false);
 			break;
 

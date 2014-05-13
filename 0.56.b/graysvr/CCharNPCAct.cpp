@@ -1206,7 +1206,7 @@ bool CChar::NPC_LookAtCharHuman( CChar * pChar )
 		return( NPC_LookAtCharMonster( pChar ));
 	}
 
-	if ( ! pChar->Noto_IsCriminal())	// not interesting.
+	if (( ! pChar->Noto_IsEvil() &&  g_Cfg.m_fGuardsOnMurderers) && (! pChar->IsStatFlag( STATF_Criminal ))) 	// not interesting.
 		return( false );
 
 	// Yell for guard if we see someone evil.
