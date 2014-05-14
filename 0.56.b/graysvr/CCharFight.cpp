@@ -193,9 +193,11 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 	NOTO_TYPE Noto;
 	/*if ( pThis->m_notoSaves.size() )
 	{
-		g_Log.EventDebug("blabla %d for %s\n",pThis->NotoSave_GetID( pTarget ),pTarget->GetName());
-		if ( pThis->NotoSave_GetID( pTarget ) )
-			return pThis->NotoSave_GetValue( pThis->NotoSave_GetID( pTarget ) );
+		int id = pThis->NotoSave_GetID( pTarget );
+		if ( id != -1 )
+		{
+			return pThis->NotoSave_GetValue( id );
+		}
 	}*/
 	if (IsTrigUsed(TRIGGER_NOTOSEND))
 	{
@@ -208,7 +210,6 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 			return Noto;
 		}
 	}
-
 	Noto = Noto_CalcFlag( pCharViewer, fAllowIncog, fAllowInvul);
 	pThis->NotoSave_Add(pTarget, Noto);
 	return Noto;
@@ -468,7 +469,7 @@ void CChar::Noto_Murder()
 
 	if ( m_pPlayer && m_pPlayer->m_wMurders )
 		Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Murders, 0, g_Cfg.m_iMurderDecayTime, NULL);
-	NotoSave_Clear();
+	NotoSave_Update();
 }
 
 bool CChar::Noto_Criminal( CChar * pChar)
@@ -490,7 +491,7 @@ bool CChar::Noto_Criminal( CChar * pChar)
 	}
 	if ( !IsStatFlag( STATF_Criminal) ) SysMessageDefault( DEFMSG_CRIMINAL );
 	Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Criminal, 0, decay, NULL);
-	NotoSave_Clear();
+	NotoSave_Update();
 	return true;
 }
 
@@ -624,7 +625,7 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom, bool bMessage )
 		int iPrvLevel = Noto_GetLevel();
 		Noto_ChangeNewMsg( iPrvLevel );
 	}
-	NotoSave_Clear();
+	NotoSave_Update();
 }
 
 void CChar::Noto_KarmaChangeMessage( int iKarmaChange, int iLimit )
@@ -788,6 +789,9 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iOtherKillers)
 void CChar::NotoSave_Add( CChar * pChar, NOTO_TYPE value )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_Add");
+	if ( !pChar )
+		return;
+	g_Log.EventDebug("Noto_Add(%s) for %s = %d",GetName(),pChar->GetName(),value);
 	CGrayUID uid = static_cast<CGrayUID>(pChar->GetUID());
 	if  ( m_notoSaves.size() )	// Must only check for existing attackers if there are any attacker already.
 	{
@@ -811,12 +815,11 @@ void CChar::NotoSave_Add( CChar * pChar, NOTO_TYPE value )
 NOTO_TYPE CChar::NotoSave_GetValue( int id )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_GetValue");
-	g_Log.EventDebug("Retrieving value for %d",id);
 	if ( !m_notoSaves.size() )
 		return NOTO_INVALID;
-	if ( static_cast<int>(m_notoSaves.size()) <= id )
-		return NOTO_INVALID;
 	if ( ! id )
+		return NOTO_INVALID;
+	if ( static_cast<int>(m_notoSaves.size()) <= id )
 		return NOTO_INVALID;
 	NotoSaves & refNotoSave = m_notoSaves.at(id);
 	return refNotoSave.value;
@@ -827,6 +830,8 @@ INT64 CChar::NotoSave_GetTime( int id )
 	ADDTOCALLSTACK("CChar::NotoSave_GetTime");
 	if ( !m_notoSaves.size() )
 		return -1;
+	if ( ! id )
+		return NOTO_INVALID;
 	if ( static_cast<int>(m_notoSaves.size()) <= id )
 		return -1;
 	NotoSaves & refNotoSave = m_notoSaves.at(id);
@@ -840,7 +845,10 @@ void CChar::NotoSave_SetValue( CChar * pChar, NOTO_TYPE value )
 		return;
 	if ( ! pChar )
 		return;
-	NotoSaves & refNotoSave = m_notoSaves.at( NotoSave_GetID(pChar) );
+	int id = NotoSave_GetID(pChar);
+	if ( ! id )
+		return;
+	NotoSaves & refNotoSave = m_notoSaves.at( id );
 	refNotoSave.value = value;
 }
 
@@ -849,16 +857,26 @@ void CChar::NotoSave_SetValue( int pChar, NOTO_TYPE value)
 	ADDTOCALLSTACK("CChar::NotoSave_SetValue(int)");
 	if ( !m_notoSaves.size() )
 		return;
+	if ( !pChar )
+		return;
 	if ( static_cast<int>(m_notoSaves.size()) <= pChar )
 		return;
 	NotoSaves & refNotoSave = m_notoSaves.at( pChar );
 	refNotoSave.value = value;
 }
+
 void CChar::NotoSave_Clear()
 {
 	ADDTOCALLSTACK("CChar::NotoSave_Clear");
 	if ( m_notoSaves.size() )
 		m_notoSaves.clear();
+}
+
+void CChar::NotoSave_Update()
+{
+	ADDTOCALLSTACK("CChar::NotoSave_Clear");
+	NotoSave_Clear();
+	Update();
 }
 
 int CChar::NotoSave_GetID( CChar * pChar )
@@ -877,11 +895,13 @@ int CChar::NotoSave_GetID( CChar * pChar )
 			CGrayUID uid = refNotoSave.charUID;
 			if ( uid.CharFind() && uid == static_cast<DWORD>(pChar->GetUID()) )
 			{
+				g_Log.EventDebug("Found noto target at id %d",count);
 				return count;
 			}
 			count++;
 		}
 	}
+	g_Log.EventDebug("Noto target not found");
 	return -1;
 }
 
@@ -1209,6 +1229,9 @@ void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 		return;
 	
 	if ( pCriminal->GetNPCBrain() == NPCBRAIN_GUARD )
+		return; 
+
+	if ( pCriminal->IsPriv(PRIV_GM) )
 		return;
 
 	// Alert the guards !!!?
@@ -1668,6 +1691,9 @@ void CChar::CallGuards( CChar * pCriminal )
 	CChar		*pGuard = NULL;
 	CChar		*pChar;
 	bool		bCriminal = false;
+
+	if ( pCriminal && pCriminal->IsPriv(PRIV_GM) )
+		return;
 
 	// I'm a guard, why summon someone else to do my work? :)
 	if ( !m_pPlayer && m_pNPC->m_Brain == NPCBRAIN_GUARD )
@@ -3588,7 +3614,10 @@ void CChar::Attacker_SetElapsed( CChar * pChar, int value)
 		return;
 	if ( ! m_lastAttackers.size() )
 		return;
-	LastAttackers & refAttacker = m_lastAttackers.at( Attacker_GetID(pChar) );
+	int id = Attacker_GetID(pChar);
+	if ( !id )
+		return;
+	LastAttackers & refAttacker = m_lastAttackers.at( id );
 	refAttacker.elapsed = value;
 }
 
@@ -3598,6 +3627,8 @@ void CChar::Attacker_SetElapsed( int pChar, int value)
 	if ( ! pChar )
 		return;
 	if ( ! m_lastAttackers.size() )
+		return;
+	if ( static_cast<int>(m_lastAttackers.size()) <= pChar )
 		return;
 	LastAttackers & refAttacker = m_lastAttackers.at( pChar );
 	refAttacker.elapsed = value;
@@ -3610,7 +3641,10 @@ void CChar::Attacker_SetDam( CChar * pChar, int value)
 		return;
 	if ( ! m_lastAttackers.size() )
 		return;
-	LastAttackers & refAttacker = m_lastAttackers.at( Attacker_GetID(pChar) );
+	int id = Attacker_GetID(pChar);
+	if ( !id )
+		return;
+	LastAttackers & refAttacker = m_lastAttackers.at( id );
 	refAttacker.amountDone = value;
 }
 
@@ -3620,6 +3654,8 @@ void CChar::Attacker_SetDam( int pChar, int value)
 	if ( ! pChar )
 		return;
 	if ( ! m_lastAttackers.size() )
+		return;
+	if ( static_cast<int>(m_lastAttackers.size()) <= pChar )
 		return;
 	LastAttackers & refAttacker = m_lastAttackers.at( pChar );
 	refAttacker.amountDone = value;
@@ -3633,7 +3669,10 @@ void CChar::Attacker_SetThreat( CChar * pChar, int value)
 		return;
 	if ( ! m_lastAttackers.size() )
 		return;
-	LastAttackers & refAttacker = m_lastAttackers.at( Attacker_GetID(pChar) );
+	int id = Attacker_GetID(pChar);
+	if ( !id )
+		return;
+	LastAttackers & refAttacker = m_lastAttackers.at( id );
 	refAttacker.threat = value;
 }
 void CChar::Attacker_SetThreat( int pChar, int value)
@@ -3644,6 +3683,8 @@ void CChar::Attacker_SetThreat( int pChar, int value)
 	if ( m_pPlayer )
 		return;
 	if ( ! m_lastAttackers.size() )
+		return;
+	if ( static_cast<int>(m_lastAttackers.size()) <= pChar )
 		return;
 	LastAttackers & refAttacker = m_lastAttackers.at( pChar );
 	refAttacker.threat = value;

@@ -642,7 +642,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			if (IsClient()) {
 				GetClient()->removeBuff(BI_INCOGNITO);
 			}
-			NotoSave_Clear();
+			NotoSave_Update();
 			break;
 		case SPELL_Invis:
 			Reveal(STATF_Invisible);

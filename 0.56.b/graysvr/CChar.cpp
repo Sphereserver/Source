@@ -1587,6 +1587,24 @@ do_default:
 				if ( *pszKey == '.' )
 				{
 					pszKey++;
+					if ( !strnicmp(pszKey, "ID", 2 ) )
+					{
+						pszKey += 2;	// ID + whitspace
+						CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind());
+						if ( !Attacker_GetID(pChar) )
+							sVal.FormatVal( -1 );
+						else
+							sVal.FormatVal(Attacker_GetID(pChar));
+						return true;
+					}else if ( !strnicmp(pszKey, "TARGET", 6 ) )
+					{
+						pszKey += 6;
+						if ( Fight_FindBestTarget() )
+							sVal.FormatHex(static_cast<DWORD>(Fight_FindBestTarget()->GetUID()));
+						else
+							sVal.FormatVal(-1);
+						return true;
+					}
 					if ( m_lastAttackers.size() )
 					{
 						size_t attackerIndex = m_lastAttackers.size();
@@ -1633,37 +1651,25 @@ do_default:
 							if( !strnicmp(pszKey, "DAM", 3) )
 							{
 								sVal.FormatVal(refAttacker.amountDone);
+								return true;
 							}
 							else if( !strnicmp(pszKey, "ELAPSED", 7) )
 							{
 								sVal.FormatVal(refAttacker.elapsed);
+								return true;
 							}
 							else if (( !strnicmp(pszKey, "UID", 3) ) || ( *pszKey == '\0' ))
 							{
 								CGrayUID uid = refAttacker.charUID;
 								sVal.FormatHex( uid.CharFind() ? refAttacker.charUID : 0 );
+								return true;
 							}
 							else if ( ( !strnicmp(pszKey, "THREAT", 6 ) ) )
 							{
 								sVal.FormatVal(refAttacker.threat);
+								return true;
 							}
 						}
-					}
-					if ( !strnicmp(pszKey, "ID", 2 ) )
-					{
-						pszKey += 3;	// ID + whitspace
-						CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind());
-						if ( !Attacker_GetID(pChar) )
-							sVal.FormatVal( -1 );
-						else
-							sVal.FormatVal(Attacker_GetID(pChar));
-					}else if ( !strnicmp(pszKey, "TARGET", 6 ) )
-					{
-						pszKey += 6;
-						if ( Fight_FindBestTarget() )
-							sVal.FormatHex(static_cast<DWORD>(Fight_FindBestTarget()->GetUID()));
-						else
-							sVal.FormatVal(-1);
 					}
 				}
 
@@ -2487,7 +2493,10 @@ do_default:
 			}
 			break;
 		case CHC_FLAGS:		// DO NOT MODIFY STATF_SaveParity, STATF_Spawned, STATF_Pet
-			m_StatFlag = ( s.GetArgVal() &~ (STATF_SaveParity|STATF_Pet|STATF_Spawned)) | ( m_StatFlag & (STATF_SaveParity|STATF_Pet|STATF_Spawned) );
+			{
+				m_StatFlag = ( s.GetArgVal() &~ (STATF_SaveParity|STATF_Pet|STATF_Spawned)) | ( m_StatFlag & (STATF_SaveParity|STATF_Pet|STATF_Spawned) );
+				NotoSave_Update();
+			}
 			break;
 		case CHC_FONT:
 			m_fonttype = static_cast<FONT_TYPE>(s.GetArgVal());
@@ -3055,6 +3064,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			if ( s.HasArgs() && ! s.GetArgVal())
 			{
 				StatFlag_Clear( STATF_Criminal );
+				NotoSave_Update();
 			}
 			else
 			{
@@ -3186,7 +3196,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			if ( pSrc )
 			{
 				m_StatFlag = s.GetArgFlag( m_StatFlag, STATF_INVUL );
-				NotoSave_Clear();
+				NotoSave_Update();
 				if ( IsSetOF( OF_Command_Sysmsgs ) )
 					pSrc->SysMessage( IsStatFlag( STATF_INVUL )? g_Cfg.GetDefaultMsg(DEFMSG_INVUL_ON) : g_Cfg.GetDefaultMsg(DEFMSG_INVUL_OFF) );
 			}
@@ -3275,6 +3285,9 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			} break;
 		case CHV_NOTOCLEAR:
 			NotoSave_Clear();
+			break;
+		case CHV_NOTOUPDATE:
+			NotoSave_Update();
 			break;
 		case CHV_OPENPAPERDOLL:
 		{
