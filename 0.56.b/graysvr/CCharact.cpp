@@ -2253,6 +2253,8 @@ bool CChar::OnTickEquip( CItem * pItem )
 	// Does it periodically do something ?
 	// REUTRN:
 	//  false = delete it.
+	if ( ! pItem )
+		return false;
 
 	switch ( pItem->GetEquipLayer())
 	{
@@ -4295,14 +4297,17 @@ bool CChar::OnTick()
 		EXC_SET("NOTO timeout");
 		if ( m_notoSaves.size() )
 		{
+			int count = 0;
 			for ( std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); ++it)
 			{
 				NotoSaves & refNoto = *it;
 				if ( ( ++(refNoto.time) > g_Cfg.m_iNotoTimeout ) && ( g_Cfg.m_iNotoTimeout > 0 ) )
 				{
-					m_notoSaves.erase(it);
+					//m_notoSaves.erase(it);
+					NotoSave_Resend( count );
 					break;
 				}
+				count++;
 			}
 		}
 

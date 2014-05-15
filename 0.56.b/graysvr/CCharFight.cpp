@@ -791,7 +791,6 @@ void CChar::NotoSave_Add( CChar * pChar, NOTO_TYPE value )
 	ADDTOCALLSTACK("CChar::NotoSave_Add");
 	if ( !pChar )
 		return;
-	g_Log.EventDebug("Noto_Add(%s) for %s = %d",GetName(),pChar->GetName(),value);
 	CGrayUID uid = static_cast<CGrayUID>(pChar->GetUID());
 	if  ( m_notoSaves.size() )	// Must only check for existing attackers if there are any attacker already.
 	{
@@ -817,7 +816,7 @@ NOTO_TYPE CChar::NotoSave_GetValue( int id )
 	ADDTOCALLSTACK("CChar::NotoSave_GetValue");
 	if ( !m_notoSaves.size() )
 		return NOTO_INVALID;
-	if ( ! id )
+	if ( id < 0 )
 		return NOTO_INVALID;
 	if ( static_cast<int>(m_notoSaves.size()) <= id )
 		return NOTO_INVALID;
@@ -830,7 +829,7 @@ INT64 CChar::NotoSave_GetTime( int id )
 	ADDTOCALLSTACK("CChar::NotoSave_GetTime");
 	if ( !m_notoSaves.size() )
 		return -1;
-	if ( ! id )
+	if ( id < 0 )
 		return NOTO_INVALID;
 	if ( static_cast<int>(m_notoSaves.size()) <= id )
 		return -1;
@@ -846,7 +845,7 @@ void CChar::NotoSave_SetValue( CChar * pChar, NOTO_TYPE value )
 	if ( ! pChar )
 		return;
 	int id = NotoSave_GetID(pChar);
-	if ( ! id )
+	if ( id < 0 )
 		return;
 	NotoSaves & refNotoSave = m_notoSaves.at( id );
 	refNotoSave.value = value;
@@ -879,6 +878,25 @@ void CChar::NotoSave_Update()
 	Update();
 }
 
+void CChar::NotoSave_Resend( int id )
+{
+	ADDTOCALLSTACK("CChar::NotoSave_Resend()");
+	if ( !m_notoSaves.size() )
+		return;
+	if ( static_cast<int>(m_notoSaves.size()) <= id )
+		return;
+	NotoSaves & refNotoSave = m_notoSaves.at( id );
+	CGrayUID uid = refNotoSave.charUID;
+	CChar * pChar = uid.CharFind();
+	if ( ! pChar )
+		return;
+	NotoSave_Delete( pChar, false );
+	CObjBase *	pObj	= pChar->GetChar();
+	pObj	= dynamic_cast <CObjBase*>( pChar->GetTopLevelObj() );
+	if (  GetDist( pObj ) < UO_MAP_VIEW_SIGHT )
+		Noto_GetFlag( pChar, true , true );
+}
+
 int CChar::NotoSave_GetID( CChar * pChar )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_GetID(CChar)");
@@ -894,14 +912,10 @@ int CChar::NotoSave_GetID( CChar * pChar )
 			NotoSaves & refNotoSave = m_notoSaves.at(count);
 			CGrayUID uid = refNotoSave.charUID;
 			if ( uid.CharFind() && uid == static_cast<DWORD>(pChar->GetUID()) )
-			{
-				g_Log.EventDebug("Found noto target at id %d",count);
 				return count;
-			}
 			count++;
 		}
 	}
-	g_Log.EventDebug("Noto target not found");
 	return -1;
 }
 
@@ -3591,6 +3605,8 @@ int CChar::Attacker_GetElapsed( int id)
 	if ( ! m_lastAttackers.size() )
 		return -1;
 	if ( static_cast<int>(m_lastAttackers.size()) <= id )
+		return -1;
+	if ( id < 0 )
 		return -1;
 	LastAttackers & refAttacker = m_lastAttackers.at(id);
 	return refAttacker.elapsed;

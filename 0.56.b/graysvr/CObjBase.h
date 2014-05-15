@@ -3287,6 +3287,7 @@ public:
 	void NotoSave_SetValue( int pChar, NOTO_TYPE value);
 	void NotoSave_Clear();
 	void NotoSave_Update();
+	void NotoSave_Resend( int id );
 	int NotoSave_GetID( CChar * pChar );
 	int NotoSave_GetID( CGrayUID pChar );
 	CChar * NotoSave_GetUID( int index );
