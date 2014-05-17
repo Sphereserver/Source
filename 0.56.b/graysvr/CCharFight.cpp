@@ -3379,8 +3379,8 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool toldByMaster )
 			else
 			{
 				// If it is a pet then this a crime others can report.
-				CChar * pCharMark = IsStatFlag(STATF_Pet) ? NPC_PetGetOwner() : NULL;
-				pTarg->CheckCrimeSeen( SKILL_NONE, pCharMark, NULL, NULL );
+				CChar * pCharMark = IsStatFlag(STATF_Pet) ? NPC_PetGetOwner() : this;
+				CheckCrimeSeen( SKILL_NONE, pCharMark, NULL, NULL );
 			}
 		}
 	}
