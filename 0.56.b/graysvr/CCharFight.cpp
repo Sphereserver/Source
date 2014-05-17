@@ -191,14 +191,14 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 	CChar * pThis = const_cast<CChar*>(this);
 	CChar * pTarget = const_cast<CChar*>(pCharViewer);
 	NOTO_TYPE Noto;
-	/*if ( pThis->m_notoSaves.size() )
+	if ( pThis->m_notoSaves.size() )
 	{
 		int id = pThis->NotoSave_GetID( pTarget );
 		if ( id != -1 )
 		{
 			return pThis->NotoSave_GetValue( id );
 		}
-	}*/
+	}
 	if (IsTrigUsed(TRIGGER_NOTOSEND))
 	{
 		CScriptTriggerArgs args;
@@ -875,7 +875,7 @@ void CChar::NotoSave_Update()
 {
 	ADDTOCALLSTACK("CChar::NotoSave_Clear");
 	NotoSave_Clear();
-	Update();
+	UpdateMode( this->GetClient() , false );
 }
 
 void CChar::NotoSave_Resend( int id )
@@ -3331,14 +3331,9 @@ bool CChar::Fight_Clear(const CChar *pChar, bool bForced)
 	// I no longer want to attack this char.
 	if ( ! pChar )
 		return false;
+
 	if ( Attacker_Delete(const_cast<CChar*>(pChar), bForced) == false )
 		return false;
-	if ( pChar )
-	{
-		CItemMemory *pFight = Memory_FindObj(pChar);	// My memory of the fight.
-		if ( pFight )
-			Memory_ClearTypes(pFight, MEMORY_FIGHT|MEMORY_WAR_TARG|MEMORY_IAGGRESSOR);
-	}
 
 	// Go to my next target.
 	pChar = Fight_FindBestTarget();
@@ -3374,7 +3369,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool toldByMaster )
 	if ( g_Cfg.m_fAttackIsACrime == TRUE)
 	{
 		CChar * pTarg = const_cast<CChar*>(pCharTarg);
-		if ( Noto_GetFlag( pTarg ) == NOTO_GOOD )
+		if ( Noto_GetFlag( pTarg ) == NOTO_GOOD && Attacker_GetID( pTarg ) < 0)
 		{
 			if ( IsClient())
 			{
@@ -3384,7 +3379,8 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool toldByMaster )
 			else
 			{
 				// If it is a pet then this a crime others can report.
-				pTarg->CheckCrimeSeen( SKILL_NONE, this, NULL, NULL );
+				CChar * pCharMark = IsStatFlag(STATF_Pet) ? NPC_PetGetOwner() : NULL;
+				pTarg->CheckCrimeSeen( SKILL_NONE, pCharMark, NULL, NULL );
 			}
 		}
 	}
@@ -3712,6 +3708,16 @@ void CChar::Attacker_Clear()
 	if ( IsTrigUsed(TRIGGER_COMBATEND) )
 		OnTrigger(CTRIG_CombatEnd,this,0);
 	m_lastAttackers.clear();
+		// Our target is gone.
+	StatFlag_Clear( STATF_War );
+
+	if ( Fight_IsActive() )
+	{
+		Skill_Start( SKILL_NONE );
+		m_Act_Targ.InitUID();
+	}
+
+	UpdateModeFlag();
 }
 
 int CChar::Attacker_GetID( CChar * pChar )
@@ -3775,36 +3781,64 @@ CChar * CChar::Attacker_GetUID( int index )
 	CChar * pChar = static_cast<CChar*>( static_cast<CGrayUID>( refAttacker.charUID ).CharFind() );
 	return pChar;
 }
+bool CChar::Attacker_Delete( int index, bool bForced )
+{
+	ADDTOCALLSTACK("CChar::Attacker_Delete(int)");
+	if ( ! m_lastAttackers.size() )
+		return false;
+	if ( index < 0 )
+		return false;
+	if ( static_cast<int>(m_lastAttackers.size()) <= index )
+		return false;
+	LastAttackers & refAttacker = m_lastAttackers.at(index);
+	CChar * pChar = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
+	if ( ! pChar )
+		return false;
+	
+	if ( IsTrigUsed(TRIGGER_COMBATDELETE) )
+	{
+		CScriptTriggerArgs Args;
+		Args.m_iN1 = static_cast<int>(bForced);
+		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatDelete,pChar,&Args);
+		if ( tRet == TRIGRET_RET_TRUE  &&  Args.m_iN1 == 1 )
+			return false;
+	}
+	std::vector<LastAttackers>::iterator it = m_lastAttackers.begin() + index;
+	CItemMemory *pFight = Memory_FindObj(pChar->GetUID());	// My memory of the fight.
+	if ( pFight )
+	{
+		Memory_ClearTypes(pFight, MEMORY_WAR_TARG);
+	}
+	m_lastAttackers.erase(it);
 
+	if ( ! m_lastAttackers.size() )
+		Attacker_Clear();
+	return true;
+}
 bool CChar::Attacker_Delete( CChar * pChar, bool bForced )
 {		
-	ADDTOCALLSTACK("CChar::Attacker_Delete");
+	ADDTOCALLSTACK("CChar::Attacker_Delete(CChar)");
 	if ( !pChar )
 		return false;
 	if ( ! m_lastAttackers.size() )
 		return false;
-	if ( IsTrigUsed(TRIGGER_COMBATDELETE) && bForced == false )
+	return Attacker_Delete( Attacker_GetID( pChar), bForced );
+}
+
+void CChar::Attacker_CheckTimeout()
+{
+	if ( m_lastAttackers.size() )
 	{
-		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatDelete,pChar,0);
-		if ( tRet == TRIGRET_RET_TRUE )
-			return false;
-	}
-	if ( Attacker() )
-	{
-		int count = 0;
-		for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); it++)
+		for ( int count = 0 ; count < static_cast<int>(m_lastAttackers.size()); count++)
 		{
 			LastAttackers & refAttacker = m_lastAttackers.at(count);
-			CGrayUID uid = refAttacker.charUID;
-			if ( uid.CharFind() && uid == static_cast<DWORD>(pChar->GetUID()) )
+			if ( ( ++(refAttacker.elapsed) > g_Cfg.m_iAttackerTimeout ) && ( g_Cfg.m_iAttackerTimeout > 0  ) )
 			{
-				m_lastAttackers.erase(it);
-				return true;
+				Attacker_Delete(count, true);//m_lastAttackers.erase(it);
+				break;
 			}
-			count++;
 		}
 	}
-	return false;
 }
 
 int CChar::CalcFightRange( CItem * pWeapon )

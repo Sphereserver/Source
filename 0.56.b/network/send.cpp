@@ -4593,6 +4593,7 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : Pac
 	writeByte(flags);
 
 	if (target->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS))
+		// 0 = World Item, 1 = Player Item ( ?? why should a item on the ground be defined as player item? and what is the difference? )
 		writeInt16(0);
 	
 	trim();

@@ -3522,7 +3522,9 @@ public:
 	int	 Attacker() { return static_cast<int>(m_lastAttackers.size()); }
 	bool Attacker_Add( CChar * pChar);
 	bool Attacker_Delete( CChar * pChar, bool bForced = false  );
+	bool Attacker_Delete( int id, bool bForced = false  );
 	void Attacker_Clear();
+	void Attacker_CheckTimeout();
 	int	 Attacker_GetDam( int attacker );
 	void  Attacker_SetDam( CChar * pChar, int value );
 	void  Attacker_SetDam( int attacker, int value );

@@ -1153,13 +1153,13 @@ badcmd:
 				}
 				else if ( child_pid == 0 )
 				{
-					int iResult = execlp( Arg_ppCmd[0], Arg_ppCmd[0], Arg_ppCmd[1], Arg_ppCmd[2],
+					/*int iResult = execlp( Arg_ppCmd[0], Arg_ppCmd[0], Arg_ppCmd[1], Arg_ppCmd[2],
 										Arg_ppCmd[3], Arg_ppCmd[4], Arg_ppCmd[5], Arg_ppCmd[6],
-										Arg_ppCmd[7], Arg_ppCmd[8], Arg_ppCmd[9], NULL );
+										Arg_ppCmd[7], Arg_ppCmd[8], Arg_ppCmd[9], NULL );*/
 					
 					g_Log.EventError("SYSSPAWN failed with error %d (\"%s\") when executing %s.\n", errno, strerror(errno), pszKey);
 					raise(SIGKILL);
-					g_Log.EventError("Failed errorhandling in SYSSPAWN. Server is UNSTABLE.\n", errno, strerror(errno), pszKey);
+					g_Log.EventError("Failed errorhandling in SYSSPAWN. Server is UNSTABLE.\n");
 				}
 				else if(bWait) // parent process here (do we have to wait?)
 				{

@@ -493,7 +493,7 @@ try_dec:
 										INT64 iBase = GetVal(pszArgs);
 										if ( iBase <= 0 )
 										{
-											DEBUG_ERR(( "Exp_GetVal: (%d)Log(%d) is %s\n", iBase, iArgument, (!iBase) ? "infinite" : "undefined" ));
+											DEBUG_ERR(( "Exp_GetVal: (%lld)Log(%d) is %s\n", iBase, iArgument, (!iBase) ? "infinite" : "undefined" ));
 											iCount = 0;
 										}
 										else

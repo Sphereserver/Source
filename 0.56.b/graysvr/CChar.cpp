@@ -1717,7 +1717,7 @@ do_default:
 							}
 							else if ( !strnicmp(pszKey, "ELAPSED", 7) )
 							{
-								sVal.FormatVal(refnoto.time);
+								sVal.FormatVal(static_cast<long>(refnoto.time));
 								return true;
 							}
 							else if (( !strnicmp(pszKey, "UID", 3) ) || ( *pszKey == '\0' ))
@@ -2465,7 +2465,7 @@ do_default:
 						{
 							if( !strnicmp(pszKey, "CLEAR", 5) )
 							{
-								Attacker_Clear();
+								Fight_ClearAll();
 								return true;
 							}else if ( !strnicmp(pszKey, "DELETE", 6) )
 							{
