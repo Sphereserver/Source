@@ -1,5 +1,5 @@
-//****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+﻿//****************************************************************************
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,13 +7,11 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, October 6, 2013
+// FILE LAST UPDATED: Monday, May 19, 2014
 //
 VERSION=0.56c
 
-
 [COMMENT sphere_terrain_types]
-
 This file contains the definition of each "Terrain" TYPEDEF (water, rock,
 dirt, grass, lava, snow, swamp, jungle, forest, acid,...)
 
@@ -27,30 +25,36 @@ of resources, check the COMMENT section of the sphere_region.scp file.
 [TYPEDEF t_water]
 TERRAIN = 0a8	0ab
 TERRAIN = 0136	0137
-TERRAIN = 064
-TERRAIN = 03ff0 03ff3
-TERRAIN = 04e
-TERRAIN = 052
+TERRAIN = 05797	0579c
+TERRAIN = 0746e	07485
+TERRAIN = 07490	074ab
+TERRAIN = 074b5	075d5
 
 [TYPEDEF t_rock]
-TERRAIN = 0e1
-TERRAIN = 00dc	00e7
-TERRAIN = 00ec	00f7
-TERRAIN = 00fc	0107
+TERRAIN = 0dc	0e7
+TERRAIN = 0ec	0f7
+TERRAIN = 0fc	0107
 TERRAIN = 010c	0117
 TERRAIN = 011e	0129
 TERRAIN = 0141	0144
+TERRAIN = 01d3	01da
+TERRAIN = 01dc	01e7
+TERRAIN = 01ec	01ef
 TERRAIN = 021f	0243
-TERRAIN = 024a	0257
-TERRAIN = 0259	026d
-TERRAIN = 022e
-TERRAIN = 0236
-TERRAIN = 0234
-TERRAIN = 023b
-TERRAIN = 0245	0249
+TERRAIN = 0245	0259
+TERRAIN = 0262	0265
+TERRAIN = 06cd	06dd
+TERRAIN = 06eb	06fe
+TERRAIN = 0709	0720
+TERRAIN = 0727	073e
+TERRAIN = 0745	075c
+TERRAIN = 07bd	07d4
+TERRAIN = 07ec	07f1
+TERRAIN = 0834	0839
+TERRAIN = 0453b 0454f
 
 [TYPEDEF t_dirt]
-TERRAIN	= 09		015		
+TERRAIN	= 09	015		
 TERRAIN	= 0150	015c
 
 [TYPEDEF t_grass]
@@ -86,57 +90,67 @@ TERRAIN = 0385	03ac
 TERRAIN = 0745	0773
 
 [TYPEDEF t_swamp]
-TERRAIN = 07dc 0808
-TERRAIN = 083b 0867
+TERRAIN = 07dc	0808
+TERRAIN = 083b	0867
 TERRAIN = 03d65
-TERRAIN = 03dc0 03df1
+TERRAIN = 03dc0	03df1
 TERRAIN = 03ef0
 
 [TYPEDEF t_sand]
-TERRAIN = 016 03e
-TERRAIN = 044 04b
+TERRAIN = 016	03e
+TERRAIN = 044	04b
+TERRAIN = 011e	012d
+TERRAIN = 0192
+TERRAIN = 01a8	01ab
+TERRAIN = 01b9	01d1
+TERRAIN = 0282	0291
+TERRAIN = 0335	0354
+TERRAIN = 0359	035c
+TERRAIN = 03b7	03ca
+TERRAIN = 05a7	05ba
+TERRAIN = 064b	066a
+TERRAIN = 066f	0672
 
 [TYPEDEF t_jungle]
-TERRAIN = 0ac 0bf
+TERRAIN = 0ac	0bf
 TERRAIN = 0ec
-TERRAIN = 0fc 0103
-TERRAIN = 0108 010b
-TERRAIN = 01f1 01f3
-TERRAIN = 026e 0271
-TERRAIN = 0276 027d
-TERRAIN = 0286 0289
-TERRAIN = 0292 0295
-TERRAIN = 0581 058a
-TERRAIN = 058d 0590
-TERRAIN = 059f 05a5
-TERRAIN = 05b3 05b9
-TERRAIN = 05f5 05f8
-TERRAIN = 0605 0610
-TERRAIN = 0615 0617
-TERRAIN = 0727 072a
-TERRAIN = 0733 073a
+TERRAIN = 0fc	0103
+TERRAIN = 0108	010b
+TERRAIN = 01f1	01f3
+TERRAIN = 026e	0271
+TERRAIN = 0276	027d
+TERRAIN = 0286	0289
+TERRAIN = 0292	0295
+TERRAIN = 0581	058a
+TERRAIN = 058d	0590
+TERRAIN = 059f	05a5
+TERRAIN = 05b3	05b9
+TERRAIN = 05f5	05f8
+TERRAIN = 0605	0610
+TERRAIN = 0615	0617
+TERRAIN = 0727	072a
+TERRAIN = 0733	073a
 
 [TYPEDEF t_forest]
-TERRAIN = 0c4 0d7
-TERRAIN = 0ed 0f3
-TERRAIN = 0f8 0fb
-TERRAIN = 015d 0168
-TERRAIN = 0324 032a
-TERRAIN = 054f 0552
-TERRAIN = 05f1 05f4
-TERRAIN = 05f9 0603
-TERRAIN = 0611 0614
-TERRAIN = 0653 0655
-TERRAIN = 065b 0662
-TERRAIN = 066b 066e
-TERRAIN = 06af 06b4
-TERRAIN = 06bb 06be
-TERRAIN = 0709 070c
-TERRAIN = 0715 071c
+TERRAIN = 0c4	0d7
+TERRAIN = 0ed	0f3
+TERRAIN = 0f8	0fb
+TERRAIN = 015d	0168
+TERRAIN = 0324	032a
+TERRAIN = 054f	0552
+TERRAIN = 05f1	05f4
+TERRAIN = 05f9	0603
+TERRAIN = 0611	0614
+TERRAIN = 0653	0655
+TERRAIN = 065b	0662
+TERRAIN = 066b	066e
+TERRAIN = 06af	06b4
+TERRAIN = 06bb	06be
+TERRAIN = 0709	070c
+TERRAIN = 0715	071c
 
 [TYPEDEF t_acid]
-TERRAIN = 02e02 02e5f
-TERRAIN = 03f45 03f50
-
+TERRAIN = 02e02	02e5f
+TERRAIN = 03f45	03f50
 
 [EOF]

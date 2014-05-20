@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, October 6, 2013
+// FILE LAST UPDATED: Monday, May 19, 2014
 //
 VERSION=0.56c
 
@@ -443,6 +443,12 @@ BONUS_STATS=25
 ADV_RATE=2.5,50.0,200.0
 VALUES=1,30,200
 
+ON=@PreStart
+	IF (<SRC.FINDLAYER.layer_horse>)
+	 SRC.SYSMESSAGE You can't fish while riding!
+	 return 1
+	ENDIF
+
 ON=@Fail
 	SRC.SYSMESSAGE You fish a while, but fail to catch anything.
 
@@ -541,6 +547,7 @@ TITLE=Scribe
 PROMPT_MSG=
 FLAGS=SKF_CRAFT
 DELAY=1.2		//Old value=3.0
+EFFECT=50
 STAT_STR=15
 STAT_INT=100
 STAT_DEX=15
@@ -553,7 +560,6 @@ VALUES=1,30,200
 
 ON=@Fail
 	SRC.SYSMESSAGE You fail to inscribe the scroll, and the scroll is ruined.
-	SRC.CONSUME 1 i_scroll_blank
 
 ON=@Abort
 	SRC.SYSMESSAGE You scribble on the scroll a bit, but fail to finish it.
@@ -973,6 +979,12 @@ BONUS_INT=0
 BONUS_STATS=20
 ADV_RATE=2.5,50.0,200.0
 VALUES=1,10,80
+
+ON=@PreStart
+	IF (<SRC.FINDLAYER.layer_horse>)
+	 SRC.SYSMESSAGE You can't mine while riding.
+	 return 1
+	ENDIF
 
 ON=@Fail
 	SRC.SYSMESSAGE You loosen some rocks but fail to find any useable ore.
