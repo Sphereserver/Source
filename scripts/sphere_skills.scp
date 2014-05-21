@@ -67,7 +67,7 @@ ON=@Abort
 [SKILL 1]
 DEFNAME=SKILL_ANATOMY
 KEY=Anatomy
-TITLE=Scholar
+TITLE=Biologist
 PROMPT_MSG=Whom shall I examine?
 
 DELAY=3.0,1.0
@@ -91,7 +91,7 @@ ON=@Abort
 [SKILL 2]
 DEFNAME=SKILL_ANIMAL_LORE
 KEY=AnimalLore
-TITLE=Scholar
+TITLE=Naturalist
 PROMPT_MSG=What animal should I look at?
 DELAY=3.0,1.0
 ADV_RATE=2.5,50.0,200.0
@@ -134,7 +134,7 @@ ON=@Abort
 [SKILL 4]
 DEFNAME=SKILL_ARMSLORE
 KEY=ArmsLore
-TITLE=Arms%s
+TITLE=Weapons Master
 PROMPT_MSG=What would you like to evaluate?
 DELAY=1.0
 STAT_STR=10
@@ -155,7 +155,7 @@ ON=@Abort
 [SKILL 5]
 DEFNAME=SKILL_Parrying
 KEY=Parrying
-TITLE=Shieldfighter
+TITLE=Duelist
 ADV_RATE=800.0,800.0,800.0
 EFFECT=0.0,90.0
 
@@ -188,7 +188,7 @@ ON=@Abort
 [SKILL 7]
 DEFNAME=SKILL_Blacksmith
 KEY=Blacksmithing
-TITLE=Blacksmith
+TITLE=Smith
 FLAGS=SKF_CRAFT
 PROMPT_MSG=
 DELAY=1.2		//Old value=1.7
@@ -234,7 +234,7 @@ ON=@Abort
 [SKILL 9]
 DEFNAME=SKILL_PEACEMAKING
 KEY=Peacemaking
-TITLE=Bard
+TITLE=Pacifier
 PROMPT_MSG=
 DELAY=2.0
 STAT_STR=0
@@ -255,7 +255,7 @@ ON=@Abort
 [SKILL 10]
 DEFNAME=Skill_Camping
 KEY=Camping
-TITLE=Camper
+TITLE=Explorer
 PROMPT_MSG=
 DELAY=6.0
 STAT_STR=30
@@ -345,7 +345,7 @@ ON=@Abort
 [SKILL 14]
 DEFNAME=Skill_DetectHidden
 KEY=DetectingHidden
-TITLE=Detective
+TITLE=Scout
 PROMPT_MSG=
 DELAY=3.0,2.0
 STAT_STR=15
@@ -366,7 +366,7 @@ ON=@Abort
 [SKILL 15]
 DEFNAME=Skill_Enticement
 KEY=Enticement
-TITLE=Bard
+TITLE=Demoralizer
 PROMPT_MSG=Whom do you wish to entice?
 DELAY=2.0
 STAT_STR=15
@@ -458,7 +458,7 @@ ON=@Abort
 [SKILL 19]
 DEFNAME=Skill_Forensics
 KEY=Forensics
-TITLE=Scholar
+TITLE=Detective
 PROMPT_MSG=What corpse would you like to examine?
 DELAY=1.0
 STAT_STR=10
@@ -501,7 +501,7 @@ ON=@Abort
 [SKILL 21]
 DEFNAME=Skill_Hiding
 KEY=Hiding
-TITLE=Rogue
+TITLE=Shade
 PROMPT_MSG=
 DELAY=2.0
 STAT_STR=20
@@ -522,7 +522,7 @@ ON=@Abort
 [SKILL 22]
 DEFNAME=SKILL_PROVOCATION
 KEY=Provocation
-TITLE=Bard
+TITLE=Rouser
 PROMPT_MSG=Whom do you wish to incite?
 DELAY=3.0
 STAT_STR=20
@@ -567,7 +567,7 @@ ON=@Abort
 [SKILL 24]
 DEFNAME=Skill_LockPick
 KEY=LockPicking
-TITLE=Locksmith
+TITLE=Infiltrator
 PROMPT_MSG=What do you want to pick?
 DELAY=3.0
 STAT_STR=20
@@ -610,7 +610,7 @@ ON=@Abort
 [SKILL 26]
 DEFNAME=Skill_MagicResist
 KEY=MagicResistance
-TITLE=Resistor
+TITLE=Mage
 PROMPT_MSG=
 EFFECT=0.0,90.0
 STAT_STR=40
@@ -625,7 +625,7 @@ ADV_RATE=10.0,200.0,800.0
 [SKILL 27]
 DEFNAME=Skill_Tactics
 KEY=Tactics
-TITLE=Warrior
+TITLE=Tactician
 STAT_STR=60
 STAT_INT=40
 STAT_DEX=70
@@ -638,7 +638,7 @@ ADV_RATE=10.0,150.0,600.0
 [SKILL 28]
 DEFNAME=Skill_Snooping
 KEY=Snooping
-TITLE=Pickpocket
+TITLE=Spy
 PROMPT_MSG=
 DELAY=2.0
 STAT_STR=30
@@ -738,7 +738,7 @@ ON=@Abort
 [SKILL 33]
 DEFNAME=Skill_Stealing
 KEY=Stealing
-TITLE=Thief
+TITLE=Pickpocket
 PROMPT_MSG=Which item will you attempt to steal?
 DELAY=2.5
 STAT_STR=40
@@ -782,7 +782,7 @@ ON=@Abort
 [SKILL 35]
 DEFNAME=Skill_Taming
 KEY=Taming
-TITLE=Animal Tamer
+TITLE=Tamer
 PROMPT_MSG=Tame which animal?
 DELAY=2.0
 STAT_STR=30
@@ -803,7 +803,7 @@ ON=@Abort
 [SKILL 36]
 DEFNAME=skill_tasteid
 KEY=TasteID
-TITLE=Food Taster
+TITLE=Praegustator
 PROMPT_MSG=What would you like to taste?
 DELAY=1.0
 STAT_STR=25
@@ -903,7 +903,7 @@ ADV_RATE=10.0,150.0,600.0
 [SKILL 41]
 DEFNAME=Skill_Macefighting
 KEY=Macefighting
-TITLE=Macefighter
+TITLE=Arms%s
 PROMPT_MSG=
 STAT_STR=100
 STAT_INT=35
@@ -1036,7 +1036,7 @@ ON=@Abort
 [SKILL 48]
 DEFNAME=SKILL_REMOVE_TRAP
 KEY=RemoveTrap
-TITLE=Jack
+TITLE=Trap Specialist
 PROMPT_MSG=Select the trap to disarm
 DELAY=7.0,3.0,2.0
 STAT_STR=20
@@ -1077,7 +1077,7 @@ ON=@Abort
 [SKILL 50]
 DEFNAME=SKILL_Focus
 KEY=Focus
-TITLE=Stoic
+TITLE=Driven
 STAT_STR=10
 STAT_INT=100
 STAT_DEX=10
@@ -1170,7 +1170,7 @@ VALUES=1,30,200
 [SKILL 57]
 DEFNAME=SKILL_THROWING
 KEY=Throwing
-TITLE=Thrower
+TITLE=Bladeweaver
 STAT_STR=40
 STAT_INT=30
 STAT_DEX=70
