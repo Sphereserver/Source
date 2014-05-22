@@ -272,7 +272,7 @@ bool CServerDef::r_LoadVal( CScript & s )
 			// m_ClientVersion.SetClientVer( s.GetArgRaw());
 			break;
 		case SC_CREATE:
-			m_timeCreate = CServTime::GetCurrentTime() + ( s.GetArgVal() * TICK_PER_SEC );
+			m_timeCreate = CServTime::GetCurrentTime() - ( s.GetArgLLVal() * TICK_PER_SEC );
 			break;
 		case SC_ADMINEMAIL:
 			if ( this != &g_Serv && !g_Serv.m_sEMail.IsEmpty() && strstr(s.GetArgStr(), g_Serv.m_sEMail) )
@@ -393,7 +393,7 @@ bool CServerDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 		}
 		break;
 	case SC_CREATE:
-		sVal.FormatLLVal( g_World.GetTimeDiff(m_timeCreate) / TICK_PER_SEC );
+		sVal.FormatLLVal( -( g_World.GetTimeDiff(m_timeCreate) / TICK_PER_SEC ));
 		break;
 	case SC_LANG:
 		sVal = m_sLang;

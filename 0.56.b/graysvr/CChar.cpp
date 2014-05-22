@@ -1867,7 +1867,7 @@ do_default:
 			sVal.FormatVal( m_defense + pCharDef->m_defense );
 			return( true );
 		case CHC_AGE:
-			sVal.FormatLLVal(( - g_World.GetTimeDiff(m_timeCreate)) / TICK_PER_SEC );
+			sVal.FormatLLVal( -( g_World.GetTimeDiff(m_timeCreate) / ( TICK_PER_SEC * 60 * 60 *24 ) )); //displayed in days
 			return( true );
 		case CHC_BANKBALANCE:
 			sVal.FormatVal( GetBank()->ContentCount( RESOURCE_ID(RES_TYPEDEF,IT_GOLD)));
@@ -2180,7 +2180,7 @@ do_default:
 			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_CHARDEF, GetDispID()));
 			break;
 		case CHC_CREATE:
-			sVal.FormatLLVal( -( g_World.GetTimeDiff( m_timeCreate ) / TICK_PER_SEC ));
+			sVal.FormatLLVal( -( g_World.GetTimeDiff(m_timeCreate) / TICK_PER_SEC ));
 			break;
 		case CHC_DIR:
 			sVal.FormatVal( m_dirFace );
@@ -2522,7 +2522,7 @@ do_default:
 			SetID(static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType( RES_CHARDEF, s.GetArgStr())));
 			break;
 		case CHC_CREATE:
-			m_timeCreate = CServTime::GetCurrentTime() - ( s.GetArgVal() * TICK_PER_SEC );
+			m_timeCreate = CServTime::GetCurrentTime() - ( s.GetArgLLVal() * TICK_PER_SEC );
 			break;
 		case CHC_DIR:
 			{

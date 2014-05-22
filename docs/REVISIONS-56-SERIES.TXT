@@ -998,3 +998,6 @@ Modified: @Dye is now called on more situations on both Items and Chars:
 	-Dye tubs (t_dye_vat) color changes		
 	-@Create color assignment				(SRC/ARGO = Server)
 	-Staff .xcolor command					(SRC/ARGO = Server)
+
+22-05-2014, Ben
+Changed: char's AGE property now returns in days instead of seconds (CREATE is already in seconds)
