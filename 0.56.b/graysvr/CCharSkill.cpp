@@ -1810,7 +1810,14 @@ int CChar::Skill_Mining( SKTRIG_TYPE stage )
 		return( -SKTRIG_FAIL );
 	}
 
-	ItemBounce( pItem );
+	if (m_atUnk.m_Arg2)
+	{
+		ItemBounce( pItem );
+	}
+	else
+	{
+		pItem->MoveToCheck( GetTopPoint(), this );	// put at my feet.
+	}
 	return 0;
 }
 
@@ -1951,7 +1958,14 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 	}
 	SysMessagef(g_Cfg.GetDefaultMsg( DEFMSG_FISHING_SUCCESS ), static_cast<LPCTSTR>(pFish->GetName()));
 
-	pFish->MoveToCheck( GetTopPoint(), this );	// put at my feet.
+	if (m_atUnk.m_Arg2)
+	{
+		ItemBounce( pFish );
+	}
+	else
+	{
+		pFish->MoveToCheck( GetTopPoint(), this );	// put at my feet.
+	}
 	return 0;
 }
 
@@ -2101,7 +2115,14 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 		return( -SKTRIG_FAIL );
 	}
 
-	ItemBounce( pItem );
+	if (m_atUnk.m_Arg2)
+	{
+		ItemBounce( pItem );
+	}
+	else
+	{
+		pItem->MoveToCheck( GetTopPoint(), this );	// put at my feet.
+	}
 	return 0;
 }
 
@@ -4368,6 +4389,21 @@ int CChar::Skill_Done()
 		return -SKTRIG_FAIL;
 	}
 
+	//ACTARG2 will override fishing/mining/lumberjacking packing/grounding resources
+	//ACTARG2 = 1 //pack resources
+	//ACTARG2 = 0 //put resources on ground
+	//override those values on both @Success triggers to change the original behavior
+	//ps: ACTARG3 is the spawned used to harvest
+	if (skill == SKILL_FISHING)
+	{
+		m_atUnk.m_Arg2=0;
+	}
+	else if (skill == SKILL_MINING || skill == SKILL_LUMBERJACKING)
+	{
+		m_atUnk.m_Arg2=1;
+	}
+
+
 	if ( IsTrigUsed(TRIGGER_SKILLSUCCESS) )
 	{
 		if ( Skill_OnCharTrigger( skill, CTRIG_SkillSuccess ) == TRIGRET_RET_TRUE )
@@ -4376,6 +4412,7 @@ int CChar::Skill_Done()
 			return -SKTRIG_ABORT;
 		}
 	}
+	
 	if ( IsTrigUsed(TRIGGER_SUCCESS) )
 	{
 		if ( Skill_OnTrigger( skill, SKTRIG_SUCCESS ) == TRIGRET_RET_TRUE )

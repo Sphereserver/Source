@@ -1001,3 +1001,9 @@ Modified: @Dye is now called on more situations on both Items and Chars:
 
 22-05-2014, Ben
 Changed: char's AGE property now returns in days instead of seconds (CREATE is already in seconds)
+
+23-05-2014, Feeh
+Changed: Harvesting skills (Fishing/Mining/Lumberjacking) can now pack or place the harvested resource at feet
+	Override ACTARG2 on either @SkillSuccess and @Success (remember that @SkillSuccess is called first)
+	ACTARG2 = 0 -> Put the resource at feet
+	ACTARG2 = 1 -> Pack the resource
