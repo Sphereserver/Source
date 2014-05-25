@@ -3254,6 +3254,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			{
 				m_StatFlag = s.GetArgFlag( m_StatFlag, STATF_INVUL );
 				NotoSave_Update();
+				ResendTooltip(false, false);
 				if ( IsSetOF( OF_Command_Sysmsgs ) )
 					pSrc->SysMessage( IsStatFlag( STATF_INVUL )? g_Cfg.GetDefaultMsg(DEFMSG_INVUL_ON) : g_Cfg.GetDefaultMsg(DEFMSG_INVUL_OFF) );
 			}

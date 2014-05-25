@@ -469,7 +469,6 @@ void CChar::Noto_Murder()
 
 	if ( m_pPlayer && m_pPlayer->m_wMurders )
 		Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Murders, 0, g_Cfg.m_iMurderDecayTime, NULL);
-	NotoSave_Update();
 }
 
 bool CChar::Noto_Criminal( CChar * pChar)
@@ -492,6 +491,7 @@ bool CChar::Noto_Criminal( CChar * pChar)
 	if ( !IsStatFlag( STATF_Criminal) ) SysMessageDefault( DEFMSG_CRIMINAL );
 	Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Criminal, 0, decay, NULL);
 	NotoSave_Update();
+	ResendTooltip(false, false);
 	return true;
 }
 
@@ -620,12 +620,13 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom, bool bMessage )
 
 	Noto_ChangeDeltaMsg( iKarma - Stat_GetAdjusted(STAT_KARMA), g_Cfg.GetDefaultMsg( DEFMSG_NOTO_KARMA ) );
 	Stat_SetBase(STAT_KARMA,iKarma);
+	NotoSave_Update();
+	//ResendTooltip(false, false);
 	if ( bMessage == true)
 	{
 		int iPrvLevel = Noto_GetLevel();
 		Noto_ChangeNewMsg( iPrvLevel );
 	}
-	NotoSave_Update();
 }
 
 void CChar::Noto_KarmaChangeMessage( int iKarmaChange, int iLimit )
@@ -696,6 +697,7 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iOtherKillers)
 			}
 
 			m_pPlayer->m_wMurders = static_cast<WORD>(args.m_iN1);
+			NotoSave_Update();
 			if ( args.m_iN2 ) 
 				Noto_Criminal();
 
@@ -875,7 +877,7 @@ void CChar::NotoSave_Update()
 {
 	ADDTOCALLSTACK("CChar::NotoSave_Clear");
 	NotoSave_Clear();
-	UpdateMode( this->GetClient() , false );
+	UpdateMode( this->GetClient() ? this->GetClient() : NULL , false );
 }
 
 void CChar::NotoSave_Resend( int id )

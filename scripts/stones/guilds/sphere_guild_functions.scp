@@ -86,6 +86,7 @@ endif
 if (!<ref2.isdspeech.<def.GUILDCFGSPEECH_NAME>>)
   ref2.dspeech +<def.GUILDCFGSPEECH_NAME>
 endif
+ref2.NotoUpdate
 
 // ------------------------------------------------------
 [FUNCTION f_guildsys_removecharfromguild]
@@ -103,6 +104,7 @@ endif
 
 ref1.resign <ref2.uid>
 f_guildsys_sendsmsg <ref1.uid>,<ref2.name> has resigned from the guild.
+ref2.NotoUpdate
 
 // ------------------------------------------------------
 [FUNCTION f_guildsys_isnameused]
@@ -244,6 +246,9 @@ elseif (<argv[2]> == 2)
   f_guildsys_sendsmsg <local.seconduid>,Your guild has received a war invitation from <uid.<local.firstuid>.name> <qval (strlen(<uid.<local.firstuid>.abbrev>)) ? [<uid.<local.firstuid>.abbrev>]:>
 endif
 
+f_stonesys_updatenoto <argv0>
+f_stonesys_updatenoto <argv1>
+
 return 1
 
 
@@ -263,6 +268,9 @@ If (<argv[2]> != 0)
   f_guildsys_sendsmsg <local.firstuid>,You are now at peace with <uid.<local.seconduid>.name> [<uid.<local.seconduid>.abbrev>]
   f_guildsys_sendsmsg <local.seconduid>,You are now at peace with <uid.<local.firstuid>.name> [<uid.<local.firstuid>.abbrev>]
 endif
+
+f_stonesys_updatenoto <argv0>
+f_stonesys_updatenoto <argv1>
 
 return 1
 

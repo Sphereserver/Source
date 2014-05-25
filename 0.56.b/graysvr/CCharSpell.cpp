@@ -2985,7 +2985,7 @@ reflectit:
 int CChar::GetSpellEffect( SPELL_TYPE spell, int iSkillLevel, int iEffectMult )
 {
 	ADDTOCALLSTACK("CChar::GetSpellEffect");
-	long	iEffect = g_Cfg.GetSpellEffect( spell, iSkillLevel );
+	int	iEffect = g_Cfg.GetSpellEffect( spell, iSkillLevel );
 	return (iEffect * iEffectMult ) / 1000;
 }
 

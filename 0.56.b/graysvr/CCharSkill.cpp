@@ -261,7 +261,7 @@ void CChar::Stat_SetBase( STAT_TYPE i, short iVal )
 	ASSERT(i >= 0 && i < STAT_QTY);
 
 	int iStatVal = Stat_GetBase(static_cast<STAT_TYPE>(i));
-	if ( IsTrigUsed(TRIGGER_STATCHANGE) )
+	if ( IsTrigUsed(TRIGGER_STATCHANGE) && ! g_Serv.IsLoading() )
 	{
 		// Only Str, Dex, Int, Food fire @Statchange here
 		if (i >= STAT_STR && i <= STAT_FOOD)
@@ -331,6 +331,8 @@ void CChar::Stat_SetBase( STAT_TYPE i, short iVal )
 	
 	m_Stat[i].m_base = iVal;
 	UpdateStatsFlag();
+	if ( !g_Serv.IsLoading() && i == STAT_KARMA )
+		NotoSave_Update();
 }
 
 short CChar::Stat_GetLimit( STAT_TYPE i ) const

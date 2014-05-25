@@ -483,6 +483,7 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 			return( m_Speech.r_LoadVal( s, RES_SPEECH ));
 		case CPC_KILLS:
 			m_wMurders = static_cast<WORD>(s.GetArgVal());
+			pChar->NotoSave_Update();
 			return true;
 		case CPC_KRTOOLBARSTATUS:
 			m_bKrToolbarEnabled = ( s.GetArgVal() != 0 );

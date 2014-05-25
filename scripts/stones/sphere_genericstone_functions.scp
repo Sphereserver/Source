@@ -149,6 +149,23 @@ endif
 return <local.typename>
 
 // ------------------------------------------------------
+
+[function f_stonesys_updatenoto]
+ref1 = <argv[0]> // The stone
+if (<ref1.IsChar>)
+	return 0
+endif
+If ((<ref1.type>!=t_stone_guild) && (<ref1.type>!=t_stone_town))
+  return 0
+endif
+for member 0 <eval <ref1.member.count> - 1>
+	ref10 = <ref1.member.<dlocal.member>>
+	if (<ref10.IsOnline>)
+		ref10.NotoUpdate
+	endif
+endfor
+
+// ------------------------------------------------------
 // -------   Hardcoded functions called by Sphere  -------
 // ------------------------------------------------------
 

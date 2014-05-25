@@ -2367,6 +2367,7 @@ bool CChar::OnTickEquip( CItem * pItem )
 				}
 
 				m_pPlayer->m_wMurders = static_cast<WORD>(args.m_iN1);
+				NotoSave_Update();
 				if ( m_pPlayer->m_wMurders == 0 ) return( false );
 				pItem->SetTimeout(args.m_iN2);	// update it's decay time.
 				return( true );
