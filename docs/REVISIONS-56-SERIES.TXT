@@ -1010,3 +1010,6 @@ Changed: Harvesting skills (Fishing/Mining/Lumberjacking) can now pack or place 
 
 26-05-2014, Ben
 Removed and made permanent EF_FixKillTrigger, EF_WalkCheck, EF_NewPositionCheck, and EF_DiagonalWalkCheck
+
+26-05-2014, matex
+Fixed a small bug in the code that adds a player forcibly when GM's add to party.

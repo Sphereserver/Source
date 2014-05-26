@@ -2586,6 +2586,12 @@ bool CClient::OnTarg_Party_Add( CChar * pChar )
 		}
 	}
 
+	if (IsPriv(PRIV_GM) && (pChar->GetClient()->GetPrivLevel() < GetPrivLevel()))
+	{
+		CPartyDef::AcceptEvent(pChar, m_pChar->GetUID(), true);
+		return;
+	}
+
 	if ( pChar->m_pParty != NULL )	// Aready in a party !
 	{
 		if ( m_pChar->m_pParty == pChar->m_pParty )	// already in this party
@@ -2628,10 +2634,7 @@ bool CClient::OnTarg_Party_Add( CChar * pChar )
 	m_pChar->SetKeyNum("PARTY_LASTINVITE", static_cast<DWORD>(pChar->GetUID()));
 	m_pChar->SetKeyNum("PARTY_LASTINVITETIME", g_World.GetCurrentTime().GetTimeRaw() + (Calc_GetRandVal2(2,5) * TICK_PER_SEC));
 
-	if (IsPriv(PRIV_GM) && (pChar->GetClient()->GetPrivLevel() < GetPrivLevel()))
-		CPartyDef::AcceptEvent(pChar, m_pChar->GetUID(), true);
-	else
-		new PacketPartyInvite(pChar->GetClient(), m_pChar);
+	new PacketPartyInvite(pChar->GetClient(), m_pChar);
 
 	// Now up to them to decide to accept.
 	return( true );
