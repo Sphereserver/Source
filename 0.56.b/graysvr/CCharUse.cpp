@@ -1336,12 +1336,8 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 		pPet->m_dirFace = m_dirFace;	// getting off ridden horse.
 	}
 	
-	if ( IsSetEF( EF_WalkCheck ) )
-	{
-		pPet->SetUnkPoint( pItem->GetTopLevelObj()->GetTopPoint() );
-	}
-	
-	//pPet->MoveNear( pItem->GetTopLevelObj()->GetTopPoint(), iPaces );
+	pPet->SetUnkPoint( pItem->GetTopLevelObj()->GetTopPoint() );
+
 	pPet->MoveToChar( pItem->GetTopLevelObj()->GetTopPoint() );
 
 

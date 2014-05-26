@@ -1859,8 +1859,8 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 		return( -SKTRIG_QTY );
 	}
 
-	
-	if ( IsSetEF(EF_NewPositionChecks) && (( m_pPlayer && g_Cfg.m_iAdvancedLos & ADVANCEDLOS_PLAYER ) || ( m_pNPC && g_Cfg.m_iAdvancedLos & ADVANCEDLOS_NPC )))
+
+	if (( m_pPlayer && g_Cfg.m_iAdvancedLos & ADVANCEDLOS_PLAYER ) || ( m_pNPC && g_Cfg.m_iAdvancedLos & ADVANCEDLOS_NPC ))
 	{
 		if ( ! CanSeeLOS( m_Act_p, NULL, 18, LOS_FISHING ))
 		{
@@ -2008,29 +2008,15 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 	}
 
 	// 3D distance check and LOS
-	if ( IsSetEF(EF_NewPositionChecks) )
+	if ( GetTopPoint().GetDist3D( m_Act_p ) > 3 )
 	{
-		if ( GetTopPoint().GetDist3D( m_Act_p ) > 3 )
-		{
-			SysMessageDefault( DEFMSG_LUMBERJACKING_REACH );
-			return( -SKTRIG_QTY );
-		}
-		if ( ! CanSeeLOS( m_Act_p, NULL, 2 ))
-		{
-			SysMessageDefault( DEFMSG_LUMBERJACKING_LOS );
-			return( -SKTRIG_QTY );
-		}
+		SysMessageDefault( DEFMSG_LUMBERJACKING_REACH );
+		return( -SKTRIG_QTY );
 	}
-	else
+	if ( ! CanSeeLOS( m_Act_p, NULL, 2 ))
 	{
-		if ( ! CanTouch(m_Act_p) || GetTopPoint().GetDist3D( m_Act_p ) > 3 )
-		{
-			if ( GetTopPoint().GetDist( m_Act_p ) > 3 )
-				SysMessageDefault( DEFMSG_LUMBERJACKING_REACH );
-			else
-				SysMessageDefault( DEFMSG_LUMBERJACKING_LOS );
-			return( -SKTRIG_QTY );
-		}
+		SysMessageDefault( DEFMSG_LUMBERJACKING_LOS );
+		return( -SKTRIG_QTY );
 	}
 
 	if ( pAxe == NULL )

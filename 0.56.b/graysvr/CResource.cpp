@@ -1105,7 +1105,7 @@ bool CResource::r_LoadVal( CScript &s )
 			break;
 
 		case RC_EXPERIMENTAL:
-			g_Cfg.m_iExperimental = s.GetArgVal()|0x181; //testing with all walkcheck Flags
+			g_Cfg.m_iExperimental = s.GetArgVal();
 			PrintEFOFFlags(true, false);
 			break;
 
@@ -3623,14 +3623,10 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		TCHAR zExperimentalFlags[512];
 		zExperimentalFlags[0] = '\0';
 
-		if ( IsSetEF(EF_DiagonalWalkCheck) ) catresname(zExperimentalFlags, "DiagonalWalkCheck");
-		if ( IsSetEF(EF_FixKillTrigger) ) catresname(zExperimentalFlags, "FixKillTrigger");
 		if ( IsSetEF(EF_ItemStacking) ) catresname(zExperimentalFlags, "ItemStacking");
 		if ( IsSetEF(EF_ItemStackDrop) ) catresname(zExperimentalFlags, "ItemStackDrop");
 		if ( IsSetEF(EF_Intrinsic_Locals) ) catresname(zExperimentalFlags, "IntrinsicLocals");
 		if ( IsSetEF(EF_Item_Strict_Comparison) ) catresname(zExperimentalFlags, "ItemStrictComparison");
-		if ( IsSetEF(EF_NewPositionChecks) ) catresname(zExperimentalFlags, "NewPositionChecks");
-		if ( IsSetEF(EF_WalkCheck) ) catresname(zExperimentalFlags, "WalkCheck");
 		if ( IsSetEF(EF_AllowTelnetPacketFilter) ) catresname(zExperimentalFlags, "TelnetPacketFilter");
 		if ( IsSetEF(EF_Script_Profiler) ) catresname(zExperimentalFlags, "ScriptProfiler");
 		if ( IsSetEF(EF_Size_Optimise) ) catresname(zExperimentalFlags, "SizeOptimize");

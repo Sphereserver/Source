@@ -1956,10 +1956,7 @@ do_default:
 				ptDst.Move( dir );
 				WORD		wBlockFlags	= 0;
 				CRegionBase	*	pArea;
-				if ( IsSetEF( EF_WalkCheck ) )
-					pArea = CheckValidMove_New( ptDst, &wBlockFlags, dir, NULL );
-				else
-					pArea = CheckValidMove( ptDst, &wBlockFlags, dir );
+				pArea = CheckValidMove( ptDst, &wBlockFlags, dir, NULL );
 				sVal.FormatHex( pArea ? pArea->GetResourceID() : 0 );
 			}
 			return true;
@@ -1991,10 +1988,7 @@ do_default:
 				else
 				{
 					DWORD		wBlockFlags	= 0;
-					if ( IsSetEF( EF_WalkCheck ) )
-						g_World.GetHeightPoint_New( ptDst, wBlockFlags, true );
-					else
-						g_World.GetHeightPoint( ptDst, wBlockFlags, true );
+					g_World.GetHeightPoint_New( ptDst, wBlockFlags, true );
 					sVal.FormatHex( wBlockFlags );
 				}
 			}

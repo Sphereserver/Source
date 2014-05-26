@@ -49,15 +49,15 @@ enum OF_TYPE
 
 enum EF_TYPE
 {
-	EF_DiagonalWalkCheck			= 0x0000001,
-	EF_FixKillTrigger				= 0x0000002,
+	EF_Unused01						= 0x0000001,
+	EF_Unused02						= 0x0000002,
 	EF_ItemStacking					= 0x0000004,
 	EF_ItemStackDrop				= 0x0000008,
 	EF_Unused010					= 0x0000010,
 	EF_Intrinsic_Locals				= 0x0000020,
 	EF_Item_Strict_Comparison		= 0x0000040,
-	EF_NewPositionChecks			= 0x0000080,
-	EF_WalkCheck					= 0x0000100,
+	EF_Unused080					= 0x0000080,
+	EF_Unused0100					= 0x0000100,
 	EF_AllowTelnetPacketFilter		= 0x0000200,
 	EF_Script_Profiler				= 0x0000400,
 	EF_Size_Optimise				= 0x0000800,

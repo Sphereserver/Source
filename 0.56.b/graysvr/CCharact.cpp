@@ -2704,10 +2704,8 @@ bool CChar::Death()
 		}
 		bool bKillermem;
 
-		if( ! IsSetEF( EF_FixKillTrigger ) )
-			bKillermem = pItem->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_AGGREIVED);
-		else
-			bKillermem = pItem->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_WAR_TARG);
+		//bKillermem = pItem->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_AGGREIVED);
+		bKillermem = pItem->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_WAR_TARG);
 
 		if (bKillermem)
 		{
@@ -2948,11 +2946,7 @@ void CChar::Flip()
 	UpdateDir( GetDirTurn( m_dirFace, 1 ));
 }
 
-#ifdef _DIAGONALWALKCHECK_PLAYERWALKONLY
-CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool fCheckOnly, DIR_TYPE dir, bool fPathFinding, bool bWalkCheck )
-#else
 CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool fCheckOnly, DIR_TYPE dir, bool fPathFinding )
-#endif
 {
 	ADDTOCALLSTACK("CChar::CanMoveWalkTo");
 
@@ -3014,32 +3008,12 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 	EXC_TRY("CanMoveWalkTo");
 
 	EXC_SET("Check Valid Move");
-#ifdef _ELLESSAR_MAP
-	pArea = CheckValidMove_New(ptDst, &wBlockFlags, dir, &ClimbHeight, fPathFinding);
-#else
-	if ( IsSetEF( EF_WalkCheck ) )
-	{
-		if (IsSetEF( EF_NewPositionChecks ))
-		{
-			pArea = CheckValidMove_New(ptDst, &wBlockFlags, dir, &ClimbHeight, fPathFinding);
 
-		}
-		else
-			pArea = CheckValidMove_New(ptDst, &wBlockFlags, dir, &ClimbHeight);
-	}
-	else
-	{
-#ifdef _DIAGONALWALKCHECK_PLAYERWALKONLY
-		pArea = CheckValidMove(ptDst, &wBlockFlags, dir, bWalkCheck);
-#else
-		pArea = CheckValidMove(ptDst, &wBlockFlags, dir);
-#endif
-	}
+	pArea = CheckValidMove(ptDst, &wBlockFlags, dir, &ClimbHeight, fPathFinding);
 
-#endif
 	if ( !pArea )
 	{
-		WARNWALK(("CheckValidMove%s failed\n", ((IsSetEF( EF_WalkCheck )) ? ("_New") : ("")) ));
+		WARNWALK(("CheckValidMove failed\n"));
 		return NULL;
 	}
 
@@ -3807,7 +3781,7 @@ bool CChar::MoveToValidSpot(DIR_TYPE dir, int iDist, int iDistStart, bool bFromS
 			// Reset Z back to start Z + PLAYER_HEIGHT so we don't climb buildings
 			pt.m_z = startZ;
 			// Set new Z so we don't end up floating or underground
-			pt.m_z = g_World.GetHeightPoint( pt, wBlockFlags, true );
+			pt.m_z = g_World.GetHeightPoint_New( pt, wBlockFlags, true );
 
 			// don't allow characters to pass through walls or other blocked
 			// paths when they're disembarking from a ship

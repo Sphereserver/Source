@@ -27,8 +27,7 @@ CItem * CWorld::CheckNaturalResource( const CPointMap & pt, IT_TYPE Type, bool f
 	if ( fTest )	// Is the resource avail at all here ?
 	{
 		EXC_SET("is item near type");
-		if (IsSetEF( EF_NewPositionChecks ) && (Type != IT_TREE) && (Type != IT_ROCK) )
-		//		if (IsSetEF( EF_NewPositionChecks ))
+		if ((Type != IT_TREE) && (Type != IT_ROCK) )
 		{
 			if ( !g_World.IsTypeNear_Top(pt, Type, 0) )
 				return NULL;
@@ -951,45 +950,36 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 			// This static is at the coordinates in question.
 			// enough room for me to stand here ?
 
-			if (IsSetEF( EF_NewPositionChecks ))
+			pItemDef = CItemBase::FindItemBase( pStatic->GetDispID() );
+			if ( pItemDef )
 			{
-				pItemDef = CItemBase::FindItemBase( pStatic->GetDispID() );
-				if ( pItemDef )
+				//DEBUG_ERR(("pItemDef->GetID(0%x) pItemDef->GetDispID(0%x) pStatic->GetDispID(0%x)\n",pItemDef->GetID(),pItemDef->GetDispID(),pStatic->GetDispID()));
+				if ( pItemDef->GetID() == pStatic->GetDispID() ) //parent item
 				{
-					//DEBUG_ERR(("pItemDef->GetID(0%x) pItemDef->GetDispID(0%x) pStatic->GetDispID(0%x)\n",pItemDef->GetID(),pItemDef->GetDispID(),pStatic->GetDispID()));
-					if ( pItemDef->GetID() == pStatic->GetDispID() ) //parent item
-					{
-						zHeight = pItemDef->GetHeight();
-						wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove
-					}
-					else //non-parent item
-					{
-						pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pStatic->GetDispID()));
-						if ( ! pDupeDef )
-						{
-							g_Log.EventDebug("Failed to get non-parent reference (static) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pStatic->GetDispID(),pStatic->m_x+pMapBlock->m_x,pStatic->m_y+pMapBlock->m_y,pStatic->m_z);
-							zHeight = pItemDef->GetHeight();
-							wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
-						}
-						else
-						{
-							zHeight = pDupeDef->GetHeight();
-							wBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove - CAN flags cannot be inherited from the parent item due to bad script pack...
-						}
-					}
+					zHeight = pItemDef->GetHeight();
+					wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove
 				}
-				else if ( pStatic->GetDispID() )
+				else //non-parent item
 				{
-					//DEBUG_ERR(("Item (0%x) has no definition in scripts.\n",pStatic->GetDispID()));
-					wBlockThis = 0;
+					pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pStatic->GetDispID()));
+					if ( ! pDupeDef )
+					{
+						g_Log.EventDebug("Failed to get non-parent reference (static) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pStatic->GetDispID(),pStatic->m_x+pMapBlock->m_x,pStatic->m_y+pMapBlock->m_y,pStatic->m_z);
+						zHeight = pItemDef->GetHeight();
+						wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
+					}
+					else
+					{
+						zHeight = pDupeDef->GetHeight();
+						wBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove - CAN flags cannot be inherited from the parent item due to bad script pack...
+					}
 				}
 			}
-			else
+			else if ( pStatic->GetDispID() )
 			{
 				wBlockThis = 0;
-				zHeight = CItemBase::GetItemHeight( pStatic->GetDispID(), wBlockThis );
 			}
-			//DEBUG_ERR(("STATIC DispID (0%x) z (%d) zHeight (%d) wBlockThis (0%x)\n",pStatic->GetDispID(),z,zHeight,wBlockThis));
+
 			block.CheckTile_Item( wBlockThis, z, zHeight, pStatic->GetDispID() + TERRAIN_QTY );
 		}
 	}
@@ -1051,45 +1041,36 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 							if ( ! block.IsUsableZ(z,PLAYER_HEIGHT))
 								continue;
 
-							if (IsSetEF( EF_NewPositionChecks ))
+							pItemDef = CItemBase::FindItemBase( pMultiItem->GetDispID() );
+							if ( pItemDef != NULL )
 							{
-								pItemDef = CItemBase::FindItemBase( pMultiItem->GetDispID() );
-								if ( pItemDef != NULL )
+								if ( pItemDef->GetID() == pMultiItem->GetDispID() ) //parent item
 								{
-									if ( pItemDef->GetID() == pMultiItem->GetDispID() ) //parent item
+									zHeight = pItemDef->GetHeight();
+									wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove
+								}
+								else //non-parent item
+								{
+									pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pMultiItem->GetDispID()));
+									if ( pDupeDef == NULL )
 									{
+										g_Log.EventDebug("Failed to get non-parent reference (multi) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pMultiItem->GetDispID(),pMultiItem->m_dx+pItem->GetTopPoint().m_x,pMultiItem->m_dy+pItem->GetTopPoint().m_y,pMultiItem->m_dz+pItem->GetTopPoint().m_z);
 										zHeight = pItemDef->GetHeight();
-										wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove
+										wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
 									}
-									else //non-parent item
+									else
 									{
-										pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pMultiItem->GetDispID()));
-										if ( pDupeDef == NULL )
-										{
-											g_Log.EventDebug("Failed to get non-parent reference (multi) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pMultiItem->GetDispID(),pMultiItem->m_dx+pItem->GetTopPoint().m_x,pMultiItem->m_dy+pItem->GetTopPoint().m_y,pMultiItem->m_dz+pItem->GetTopPoint().m_z);
-											zHeight = pItemDef->GetHeight();
-											wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
-										}
-										else
-										{
-											zHeight = pDupeDef->GetHeight();
-											wBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove - CAN flags cannot be inherited from the parent item due to bad script pack...
-										}
+										zHeight = pDupeDef->GetHeight();
+										wBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove - CAN flags cannot be inherited from the parent item due to bad script pack...
 									}
 								}
-								else if ( pMultiItem->GetDispID() )
-								{
-									DEBUG_ERR(("Item (0%x) has no definition in scripts.\n",pMultiItem->GetDispID()));
-									wBlockThis = 0;
-								}
-								//DEBUG_WARN(("wBlockThis (0%x) zHeight(%d) zitem(%d) pItem->GetTopZ()(%d) pMultiItem->m_dz(%d),pMultiItem->GetDispID()(0%x)\n",wBlockThis,zHeight,zitem,pItem->GetTopZ(),pMultiItem->m_dz,pMultiItem->GetDispID()));
 							}
-							else
+							else if ( pMultiItem->GetDispID() )
 							{
+								DEBUG_ERR(("Item (0%x) has no definition in scripts.\n",pMultiItem->GetDispID()));
 								wBlockThis = 0;
-								zHeight = CItemBase::GetItemHeight( pMultiItem->GetDispID(), wBlockThis );
 							}
-							//DEBUG_WARN(("MULTI wBlockThis (0%x)\n",wBlockThis));
+
 							block.CheckTile_Item( wBlockThis, z, zHeight, pMultiItem->GetDispID() + TERRAIN_QTY );
 						}
 					}
@@ -1123,47 +1104,36 @@ void CWorld::GetHeightPoint_New( const CPointMap & pt, CGrayMapBlockState & bloc
 		// Invis items should not block ???
 		pItemDef = CItemBase::FindItemBase( pItem->GetDispID() );
 
-		if (IsSetEF( EF_NewPositionChecks ))
+		if ( pItemDef )
 		{
-			if ( pItemDef )
+			if ( pItemDef->GetDispID() == pItem->GetDispID() )//parent item
 			{
-				if ( pItemDef->GetDispID() == pItem->GetDispID() )//parent item
-				{
-					zHeight = pItemDef->GetHeight();
-					wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove
-				}
-				else //non-parent item
-				{
-					pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pItem->GetDispID()));
-					if ( ! pDupeDef )
-					{
-						g_Log.EventDebug("Failed to get non-parent reference (dynamic) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pItem->GetDispID(),pItem->GetTopPoint().m_x,pItem->GetTopPoint().m_y,pItem->GetTopPoint().m_z);
-						zHeight = pItemDef->GetHeight();
-						wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
-					}
-					else
-					{
-						zHeight = pDupeDef->GetHeight();
-						wBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove - CAN flags cannot be inherited from the parent item due to bad script pack...
-					}
-				}
+				zHeight = pItemDef->GetHeight();
+				wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove
 			}
-			else
+			else //non-parent item
 			{
-				DEBUG_ERR(("Item (0%x) has no definition in scripts.\n",pItem->GetDispID()));
-				wBlockThis = 0;
+				pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pItem->GetDispID()));
+				if ( ! pDupeDef )
+				{
+					g_Log.EventDebug("Failed to get non-parent reference (dynamic) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pItem->GetDispID(),pItem->GetTopPoint().m_x,pItem->GetTopPoint().m_y,pItem->GetTopPoint().m_z);
+					zHeight = pItemDef->GetHeight();
+					wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
+				}
+				else
+				{
+					zHeight = pDupeDef->GetHeight();
+					wBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove - CAN flags cannot be inherited from the parent item due to bad script pack...
+				}
 			}
 		}
 		else
 		{
+			DEBUG_ERR(("Item (0%x) has no definition in scripts.\n",pItem->GetDispID()));
 			wBlockThis = 0;
-			zHeight = CItemBase::GetItemHeight( pItem->GetDispID(), wBlockThis );
 		}
 
-		//DEBUG_WARN(("DYNAMIC wBlockThis (0%x)\n",pItemDef->m_Can & CAN_I_MOVEMASK));
-		if ( !block.CheckTile_Item( wBlockThis,	z, zHeight, pItemDef->GetID() + TERRAIN_QTY) )
-		{
-		}
+		block.CheckTile_Item( wBlockThis,	z, zHeight, pItemDef->GetID() + TERRAIN_QTY);
 	}
 
 	wBlockThis = 0;

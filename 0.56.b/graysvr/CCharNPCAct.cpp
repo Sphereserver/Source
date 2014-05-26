@@ -3589,11 +3589,7 @@ void CChar::NPC_Food()
 						{
 							EXC_SET("searching grass nearby");
 							CPointMap pt;
-							if (IsSetEF( EF_NewPositionChecks )) //anti-dumbness
 								pt = g_World.FindTypeNear_Top(GetTopPoint(), IT_GRASS, minimum(iSearchDistance,m_pNPC->m_Home_Dist_Wander));
-							else
-								pt = g_World.FindItemTypeNearby(GetTopPoint(), IT_GRASS, minimum(iSearchDistance,m_pNPC->m_Home_Dist_Wander), true);
-
 							if (( pt.m_x >= 1 ) && ( pt.m_y >= 1 ))
 							{
 								// we found grass nearby, but has it already been consumed?
@@ -3605,7 +3601,6 @@ void CChar::NPC_Food()
 									pResBit->SetTimeout(60*10*TICK_PER_SEC);
 									m_Act_p = pt;
 									Skill_Start(NPCACT_GOTO);
-									//NPC_WalkToPoint((iFoodLevel < 5) ? true : false);
 									return;
 								}
 							}

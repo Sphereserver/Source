@@ -570,10 +570,7 @@ bool CChar::IsSwimming() const
 	// Is there a solid surface under us ?
 	DWORD wBlockFlags = GetMoveBlockFlags();
 	char iSurfaceZ;
-	if ( IsSetEF( EF_WalkCheck ) )
-		iSurfaceZ = g_World.GetHeightPoint_New(ptTop, wBlockFlags, true);
-	else
-		iSurfaceZ = g_World.GetHeightPoint(ptTop, wBlockFlags, true);
+	iSurfaceZ = g_World.GetHeightPoint_New(ptTop, wBlockFlags, true);
 
 	if ( (iSurfaceZ == pt.m_z) && (wBlockFlags & CAN_I_WATER) )
 		return true;
@@ -1177,45 +1174,42 @@ blocked:
 		if ( iDist )
 		{
 			DWORD wBlockFlags;
-			if (IsSetEF(EF_DiagonalWalkCheck))
+			if (dir % 2)		// test only diagonal dirs
 			{
-				if (dir % 2)		// test only diagonal dirs
-				{
-					CPointMap ptTest;
-					DIR_TYPE dirTest1 = static_cast<DIR_TYPE>(dir - 1); // get 1st ortogonal
-					DIR_TYPE dirTest2 = static_cast<DIR_TYPE>(dir + 1); // get 2nd ortogonal
-					if (dirTest2 == DIR_QTY)		// roll over
-						dirTest2 = DIR_N;
+				CPointMap ptTest;
+				DIR_TYPE dirTest1 = static_cast<DIR_TYPE>(dir - 1); // get 1st ortogonal
+				DIR_TYPE dirTest2 = static_cast<DIR_TYPE>(dir + 1); // get 2nd ortogonal
+				if (dirTest2 == DIR_QTY)		// roll over
+					dirTest2 = DIR_N;
 
-					bool fBlocked = false;
+				bool fBlocked = false;
+				ptTest = ptSrc;
+				ptTest.Move(dirTest1);
+				{
+					wBlockFlags = CAN_C_SWIM | CAN_C_WALK | CAN_C_FLY;
+					signed char z = g_World.GetHeightPoint_New(ptTest, wBlockFlags, true);
+					signed char zDiff = abs(z - ptTest.m_z);
+					if (zDiff > PLAYER_HEIGHT) fBlocked = true;
+					else ptTest.m_z = z;
+
+					if (wBlockFlags & (CAN_I_BLOCK | CAN_I_DOOR))
+						fBlocked = true;
+				}
+				if (fBlocked)
+				{
 					ptTest = ptSrc;
-					ptTest.Move(dirTest1);
+					ptTest.Move(dirTest2);
 					{
 						wBlockFlags = CAN_C_SWIM | CAN_C_WALK | CAN_C_FLY;
-						signed char z = g_World.GetHeightPoint(ptTest, wBlockFlags, true);
+						signed char z = g_World.GetHeightPoint_New(ptTest, wBlockFlags, true);
 						signed char zDiff = abs(z - ptTest.m_z);
-						if (zDiff > PLAYER_HEIGHT) fBlocked = true;
+						if (zDiff > PLAYER_HEIGHT) goto blocked;
 						else ptTest.m_z = z;
 
 						if (wBlockFlags & (CAN_I_BLOCK | CAN_I_DOOR))
-							fBlocked = true;
-					}
-					if (fBlocked)
-					{
-						ptTest = ptSrc;
-						ptTest.Move(dirTest2);
 						{
-							wBlockFlags = CAN_C_SWIM | CAN_C_WALK | CAN_C_FLY;
-							signed char z = g_World.GetHeightPoint(ptTest, wBlockFlags, true);
-							signed char zDiff = abs(z - ptTest.m_z);
-							if (zDiff > PLAYER_HEIGHT) goto blocked;
-							else ptTest.m_z = z;
-
-							if (wBlockFlags & (CAN_I_BLOCK | CAN_I_DOOR))
-							{
-								ptSrc = ptTest;
-								goto blocked;
-							}
+							ptSrc = ptTest;
+							goto blocked;
 						}
 					}
 				}
@@ -1223,7 +1217,7 @@ blocked:
 			ptSrc.Move( dir );	// NOTE: The dir is very coarse and can change slightly.
 
 			wBlockFlags = CAN_C_SWIM | CAN_C_WALK | CAN_C_FLY;
-			signed char z = g_World.GetHeightPoint( ptSrc, wBlockFlags, true );
+			signed char z = g_World.GetHeightPoint_New( ptSrc, wBlockFlags, true );
 			signed char zDiff	= abs( z - ptSrc.m_z );
 
 			if ( zDiff > PLAYER_HEIGHT ) goto blocked;
@@ -1543,7 +1537,6 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 
 						Height = ( wTFlags & UFLAG2_CLIMBABLE ) ? ( Height / 2 ) : ( Height );
 
-						//if (( wTFlags & 0x2000|0x40 ) && ( IsSetEF(EF_NewPositionChecks) )
 						if ((( wTFlags & (UFLAG1_WALL|UFLAG1_BLOCK|UFLAG2_PLATFORM) )  || ( pItemDef->m_Can & CAN_I_BLOCKLOS )) && !(( wTFlags & UFLAG2_WINDOW ) && ( flags & LOS_NB_WINDOWS )))
 						{
 							WARNLOS(("pStatic %0x %d,%d,%d - %d\n",pStatic->GetDispID(),pStatic->m_x,pStatic->m_y,pStatic->m_z,Height));
@@ -1637,7 +1630,6 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 
 						Height = ( wTFlags & UFLAG2_CLIMBABLE ) ? ( Height / 2 ) : ( Height );
 
-						//if (( wTFlags & 0x2000|0x40 ) && ( IsSetEF(EF_NewPositionChecks) )
 						if ((( wTFlags & (UFLAG1_WALL|UFLAG1_BLOCK|UFLAG2_PLATFORM) ) || pItemDef->m_Can & CAN_I_BLOCKLOS) && !(( wTFlags & UFLAG2_WINDOW ) && ( flags & LOS_NB_WINDOWS )))
 						{
 							WARNLOS(("pItem %0lx(%0x) %d,%d,%d - %d\n",(DWORD)pItem->GetUID(),pItem->GetDispID(),pItem->GetUnkPoint().m_x,pItem->GetUnkPoint().m_y,pItem->GetUnkPoint().m_z,Height));
@@ -1748,7 +1740,6 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 
 								Height = ( wTFlags & UFLAG2_CLIMBABLE ) ? ( Height / 2 ) : ( Height );
 
-								//if (( wTFlags & 0x2000|0x40 ) && ( IsSetEF(EF_NewPositionChecks) )
 								if (( ( wTFlags & (UFLAG1_WALL|UFLAG1_BLOCK|UFLAG2_PLATFORM) ) || (pItemDef->m_Can & CAN_I_BLOCKLOS)  ) && !(( wTFlags & UFLAG2_WINDOW ) && ( flags & LOS_NB_WINDOWS )))
 								{
 									WARNLOS(("pMultiItem %0x %d,%d,%d - %d\n",pMultiItem->GetDispID(),pMultiItem->m_dx,pMultiItem->m_dy,pMultiItem->m_dz,Height));
@@ -2305,148 +2296,6 @@ bool CChar::IsMountCapable() const
 	return false;
 }
 
-#ifdef _DIAGONALWALKCHECK_PLAYERWALKONLY
-CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, DIR_TYPE dir, bool bWalkCheck ) const
-#else
-CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, DIR_TYPE dir ) const
-#endif
-{
-	ADDTOCALLSTACK("CChar::CheckValidMove");
-	// Is it ok to move here ? is it blocked ?
-	// ignore other characters for now.
-	// RETURN:
-	//  The new region we may be in.
-	//  Fill in the proper ptDest.m_z value for this location. (if walking)
-	//  pwBlockFlags = what is blocking me. (can be null = don't care)
-
-	//	test diagonal dirs by two others *only* when already having a normal location
-#ifdef _DIAGONALWALKCHECK_PLAYERWALKONLY
-	if ( ( bWalkCheck || IsSetEF( EF_DiagonalWalkCheck ) ) && GetTopPoint().IsValidPoint() && (dir % 2) )
-#else
-	if ( IsSetEF( EF_DiagonalWalkCheck ) && GetTopPoint().IsValidPoint() && (dir % 2) )
-#endif
-	{
-		CPointMap ptTest;
-		DIR_TYPE dirTest1 = static_cast<DIR_TYPE>(dir - 1); // get 1st ortogonal
-		DIR_TYPE dirTest2 = static_cast<DIR_TYPE>(dir + 1); // get 2nd ortogonal
-		if ( dirTest2 == DIR_QTY )		// roll over
-			dirTest2 = DIR_N;
-
-		ptTest = GetTopPoint();
-		ptTest.Move( dirTest1 );
-		if ( !CheckValidMove( ptTest, pwBlockFlags ) )
-				return NULL;
-
-		ptTest = GetTopPoint();
-		ptTest.Move( dirTest2 );
-		if ( !CheckValidMove( ptTest, pwBlockFlags ) )
-				return NULL;
-	}
-
-	CRegionBase * pArea = ptDest.GetRegion( REGION_TYPE_MULTI | REGION_TYPE_AREA );
-	if ( pArea == NULL )
-	{
-		// Only report the missing region if the destination is within the map boundaries.
-		if ( ptDest.IsValidPoint() )
-			g_Log.Event( LOGL_WARN, "MOVE: UID(0%lx) is moving into a non-defined region (Point: %d,%d,%d,%d)\n", (DWORD)GetUID(), ptDest.m_x, ptDest.m_y, ptDest.m_z, ptDest.m_map );
-		return( NULL );
-	}
-
-	// In theory the client only lets us go valid places.
-	// But in reality the client and server are not really in sync.
-	// if ( IsClient()) return( pArea );
-
-	WORD wCan = static_cast<WORD>(GetMoveBlockFlags());
-
-	//	Blocking dynamic items
-	if (( !IsPriv(PRIV_GM) ) && ( !IsPriv(PRIV_ALLMOVE) ))
-	{
-		CWorldSearch AreaItems(ptDest);
-		for (;;)
-		{
-			CItem * pItem = AreaItems.GetItem();
-			if ( pItem == NULL )
-				break;
-
-#ifdef _DIAGONALWALKCHECK_PLAYERWALKONLY
-			CVarDefCont* pKey = NULL;
-
-			if ( m_pPlayer != NULL && ( pKey = pItem->GetKey("NoWalk", true) ) != NULL )
-			{
-				if ( pKey->GetValNum() == 1 )
-					return NULL;
-			}
-#endif
-			CItemBase * pItemDef = pItem->Item_GetDef();
-			if ( (pItem->GetTopZ() <= ptDest.m_z + PLAYER_HEIGHT) && (pItem->GetTopZ() >= ptDest.m_z) && (pItemDef->m_Can != 00) )
-			{ // it IS in my way and HAS a flag set, check further
-				if ( pItemDef->Can(CAN_I_BLOCK) && !(wCan & CAN_C_PASSWALLS) )
-				{ // item is blocking, and I cannot pass thru walls
-					return (NULL);
-				}
-				else if ( pItemDef->Can(CAN_I_DOOR) && !(wCan & CAN_C_GHOST) )
-				{ // item is a door, and I'm no ghost
-					return (NULL);
-				}
-				else if ( pItemDef->Can(CAN_I_WATER) && !(wCan & CAN_C_SWIM) )
-				{ // item is water, and I cannot swim
-					return (NULL);
-				}
-				else if ( pItemDef->Can(CAN_I_PLATFORM) && !(wCan & CAN_C_WALK) )
-				{ // item is walkable, but I cannot walk at all!
-					return (NULL);
-				}
-				else if ( pItemDef->Can(CAN_I_FIRE) && !(wCan & CAN_C_FIRE_IMMUNE) && (m_pPlayer == NULL) )
-				{ // item is fire, and I'm not immune against this
-				  // should only work for NPC, they are way too smart to do sth so silly
-					return (NULL);
-				}
-				else if ( pItemDef->Can(CAN_I_ROOF) && !(wCan & CAN_C_INDOORS) )
-				{ // item is under a roof, and I'm too large to walk there
-					return (NULL);
-				}
-				// in all other cases I may pass
-			}
-		}
-	}
-
-	DWORD wBlockFlags = wCan;
-	if ( IsStatFlag(STATF_Hovering) )
-		wBlockFlags |= CAN_C_HOVER;
-
-	signed char z = g_World.GetHeightPoint( ptDest, wBlockFlags, true );
-	if ( wCan != 0xFFFF )
-	{
-		if ( wBlockFlags &~ wCan )
-		{
-			return( NULL );
-		}
-
-		CCharBase* pCharDef = Char_GetDef();
-		ASSERT(pCharDef);
-		if ( ! pCharDef->Can( CAN_C_FLY ))
-		{
-			if ( z > ptDest.m_z + PLAYER_HEIGHT )	// Too high to climb.
-			{
-				return( NULL );
-			}
-		}
-		if ( z >= UO_SIZE_Z )
-		{
-			return( NULL );
-		}
-	}
-
-	if ( pwBlockFlags )
-	{
-		*pwBlockFlags = static_cast<WORD>(wBlockFlags);
-	}
-
-	ptDest.m_z = z;
-	return( pArea );
-
-}
-
 bool CChar::IsVerticalSpace( CPointMap ptDest, bool fForceMount )
 {
 	ADDTOCALLSTACK("CChar::IsVerticalSpace");
@@ -2466,9 +2315,9 @@ bool CChar::IsVerticalSpace( CPointMap ptDest, bool fForceMount )
 	return true;
 }
 
-CRegionBase * CChar::CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlags, DIR_TYPE dir, height_t * pClimbHeight, bool fPathFinding ) const
+CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, DIR_TYPE dir, height_t * pClimbHeight, bool fPathFinding ) const
 {
-	ADDTOCALLSTACK("CChar::CheckValidMove_New");
+	ADDTOCALLSTACK("CChar::CheckValidMove");
 	// Is it ok to move here ? is it blocked ?
 	// ignore other characters for now.
 	// RETURN:
@@ -2477,7 +2326,7 @@ CRegionBase * CChar::CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlag
 	//  pwBlockFlags = what is blocking me. (can be null = don't care)
 
 	//	test diagonal dirs by two others *only* when already having a normal location
-	if ( IsSetEF( EF_DiagonalWalkCheck ) && GetTopPoint().IsValidPoint() && !fPathFinding && (dir % 2) )
+	if ( GetTopPoint().IsValidPoint() && !fPathFinding && (dir % 2) )
 	{
 		CPointMap ptTest;
 		DIR_TYPE dirTest1 = static_cast<DIR_TYPE>(dir - 1); // get 1st ortogonal
@@ -2487,12 +2336,12 @@ CRegionBase * CChar::CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlag
 
 		ptTest = GetTopPoint();
 		ptTest.Move( dirTest1 );
-		if ( !CheckValidMove_New( ptTest, pwBlockFlags, DIR_QTY, pClimbHeight ) )
+		if ( !CheckValidMove( ptTest, pwBlockFlags, DIR_QTY, pClimbHeight ) )
 				return NULL;
 
 		ptTest = GetTopPoint();
 		ptTest.Move( dirTest2 );
-		if ( !CheckValidMove_New( ptTest, pwBlockFlags, DIR_QTY, pClimbHeight ) )
+		if ( !CheckValidMove( ptTest, pwBlockFlags, DIR_QTY, pClimbHeight ) )
 				return NULL;
 
 	}
@@ -2613,17 +2462,14 @@ CRegionBase * CChar::CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlag
 void CChar::FixClimbHeight()
 {
 	ADDTOCALLSTACK("CChar::FixClimbHeight");
-	if ( IsSetEF( EF_WalkCheck ) ) // get correct climb height (or could be stacked)
-	{
-		CPointBase pt = GetTopPoint();
-		CGrayMapBlockState block( CAN_I_CLIMB, pt.m_z , pt.m_z + GetHeightMount( false ) + 3, pt.m_z + 2, GetHeightMount( false ) );
+	CPointBase pt = GetTopPoint();
+	CGrayMapBlockState block( CAN_I_CLIMB, pt.m_z , pt.m_z + GetHeightMount( false ) + 3, pt.m_z + 2, GetHeightMount( false ) );
 
-		g_World.GetHeightPoint_New( pt, block, true );
+	g_World.GetHeightPoint_New( pt, block, true );
 
-		if ( ( block.m_Bottom.m_z == pt.m_z ) && ( block.m_dwBlockFlags & CAN_I_CLIMB ) ) // we are standing on stairs
-			m_zClimbHeight = block.m_zClimbHeight;
-		else
-			m_zClimbHeight = 0;
-	}
+	if ( ( block.m_Bottom.m_z == pt.m_z ) && ( block.m_dwBlockFlags & CAN_I_CLIMB ) ) // we are standing on stairs
+		m_zClimbHeight = block.m_zClimbHeight;
+	else
+		m_zClimbHeight = 0;
 	m_fClimbUpdated = true;
 }

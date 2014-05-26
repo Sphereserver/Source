@@ -22,18 +22,8 @@ void CPathFinder::GetChildren(CPathFinderPointRef& Point, std::list<CPathFinderP
 				continue;
 			if ( x != 0 && y != 0 ) // Diagonal
 			{
-				if ( IsSetEF( EF_DiagonalWalkCheck ) )
-				{
-					// Don't go diagonally beside a non walkable block
-					if ( m_Points[RealX - x][RealY].m_Walkable == false || m_Points[RealX][RealY - y].m_Walkable == false )
-						continue;
-				}
-				else
-				{
-					//Don't go diagonally between two non walkable blocks
-					if ( m_Points[RealX - x][RealY].m_Walkable == false && m_Points[RealX][RealY - y].m_Walkable == false )
-						continue;
-				}
+				if ( m_Points[RealX - x][RealY].m_Walkable == false || m_Points[RealX][RealY - y].m_Walkable == false )
+					continue;
 			}
 
 
@@ -244,10 +234,7 @@ void CPathFinder::FillMap()
 			{
 				pt.m_x = x + m_RealX;
 				pt.m_y = y + m_RealY;
-				if (IsSetEF( EF_NewPositionChecks ))
 					pArea = m_pChar->CanMoveWalkTo(pt, true, true, DIR_QTY, true);
-				else
-					pArea = m_pChar->CanMoveWalkTo(pt, true, true, DIR_QTY);
 
 				m_Points[x][y].m_Walkable = pArea ? PATH_WALKABLE : PATH_UNWALKABLE;
 			}

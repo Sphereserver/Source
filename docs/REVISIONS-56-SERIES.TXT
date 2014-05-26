@@ -1007,3 +1007,6 @@ Changed: Harvesting skills (Fishing/Mining/Lumberjacking) can now pack or place 
 	Override ACTARG2 on either @SkillSuccess and @Success (remember that @SkillSuccess is called first)
 	ACTARG2 = 0 -> Put the resource at feet
 	ACTARG2 = 1 -> Pack the resource
+
+26-05-2014, Ben
+Removed and made permanent EF_FixKillTrigger, EF_WalkCheck, EF_NewPositionCheck, and EF_DiagonalWalkCheck

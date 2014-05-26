@@ -3030,12 +3030,7 @@ private:
 	bool TeleportToCli( int iType, int iArgs );
 	bool TeleportToObj( int iType, TCHAR * pszArgs );
 private:
-#ifdef _DIAGONALWALKCHECK_PLAYERWALKONLY
-	CRegionBase * CheckValidMove( CPointBase & pt, WORD * pwBlockFlags, DIR_TYPE dir = DIR_QTY, bool bWalkCheck = false ) const;
-#else
-	CRegionBase * CheckValidMove( CPointBase & pt, WORD * pwBlockFlags, DIR_TYPE dir = DIR_QTY ) const;
-#endif
-	CRegionBase * CheckValidMove_New( CPointBase & ptDest, WORD * pwBlockFlags, DIR_TYPE dir, height_t * ClimbHeight, bool fPathFinding = false ) const;
+	CRegionBase * CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, DIR_TYPE dir, height_t * ClimbHeight, bool fPathFinding = false ) const;
 	void FixClimbHeight();
 	bool MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject);
 	bool MoveToRoom( CRegionBase * pNewRoom, bool fAllowReject);
@@ -3082,11 +3077,7 @@ public:
 		return CObjBase::MoveNear( pt, iSteps, GetMoveBlockFlags());
 	}
 
-#ifdef _DIAGONALWALKCHECK_PLAYERWALKONLY
-	CRegionBase * CanMoveWalkTo( CPointBase & pt, bool fCheckChars = true, bool fCheckOnly = false, DIR_TYPE dir = DIR_QTY, bool fPathFinding = false, bool bWalkCheck = false );
-#else
 	CRegionBase * CanMoveWalkTo( CPointBase & pt, bool fCheckChars = true, bool fCheckOnly = false, DIR_TYPE dir = DIR_QTY, bool fPathFinding = false );
-#endif
 	void CheckRevealOnMove();
 	bool CheckLocation( bool fStanding = false );
 

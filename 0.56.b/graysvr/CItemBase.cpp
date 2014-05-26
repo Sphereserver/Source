@@ -683,7 +683,7 @@ inline height_t CItemBase::GetItemHeightFlags( const CUOItemTypeRec2 & tiledata,
 		wBlockThis = CAN_I_DOOR;
 		return( tiledata.m_height );
 	}
-	//if (( tiledata.m_flags & UFLAG1_BLOCK ) || (( IsSetEF(EF_NewPositionChecks) ) && ( tiledata.m_flags & UFLAG1_WALL )))
+
 	if ( tiledata.m_flags & UFLAG1_BLOCK )
 	{
 		if ( tiledata.m_flags & UFLAG1_WATER )	// water
@@ -700,28 +700,16 @@ inline height_t CItemBase::GetItemHeightFlags( const CUOItemTypeRec2 & tiledata,
 		if ( ! ( tiledata.m_flags & (UFLAG2_PLATFORM|UFLAG4_ROOF|UFLAG4_HOVEROVER) ))
 			return 0;	// have no effective height if it doesn't block.
 	}
-	if ( IsSetEF( EF_WalkCheck ) )
+
+	if ( tiledata.m_flags & UFLAG4_ROOF)
 	{
-		if ( tiledata.m_flags & UFLAG4_ROOF)
-		{
-			wBlockThis |= CAN_I_BLOCK;
-		}
-		else if ( tiledata.m_flags & UFLAG2_PLATFORM )
-		{
-			wBlockThis |= CAN_I_PLATFORM;
-		}
+		wBlockThis |= CAN_I_BLOCK;
 	}
-	else
+	else if ( tiledata.m_flags & UFLAG2_PLATFORM )
 	{
-		if (tiledata.m_flags & UFLAG4_ROOF)
-		{
-			wBlockThis |= CAN_I_ROOF;
-		}
-		else if ( tiledata.m_flags & (UFLAG2_PLATFORM) )
-		{
-			wBlockThis |= CAN_I_PLATFORM;
-		}
+		wBlockThis |= CAN_I_PLATFORM;
 	}
+
 	if ( tiledata.m_flags & UFLAG2_CLIMBABLE )
 	{
 		// actual standing height is height/2

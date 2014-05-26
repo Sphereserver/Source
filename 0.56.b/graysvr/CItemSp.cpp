@@ -216,24 +216,7 @@ void CItem::Spawn_GenerateChar( CResourceDef * pDef )
 	m_itSpawnChar.m_current ++;
 	pChar->Memory_AddObjTypes(this, MEMORY_ISPAWNED);
 
-	// Move to spot "near" the spawn item.
-	if( IsSetEF( EF_NewPositionChecks ) )
-	{
-		pChar->MoveTo(GetTopPoint());
-	}
-	else
-	{
-		// Try placing this char near the spawn
-		if ( !pChar->MoveNearObj(this, iDistMax ? (Calc_GetRandVal(iDistMax) + 1) : iDistMax) )
-		{
-			// If this fails, try placing the char ON the spawn
-			if (!pChar->MoveTo(GetTopPoint()))
-			{
-				DEBUG_ERR(("Spawner UID:0%lx is unable to place a character inside the world, deleted the character", (DWORD)(this->GetUID())));
-				isBadPlaceToSpawn = true;
-			}
-		}
-	}
+	pChar->MoveTo(GetTopPoint());
 
 	if( pChar->GetRegion() == NULL )
 	{

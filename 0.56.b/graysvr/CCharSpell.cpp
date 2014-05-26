@@ -94,10 +94,7 @@ static LPCTSTR const sm_szPunishMsg[] =
 	else if ( fCheckAntiMagic )
 	{
 		CRegionBase * pArea = NULL;
-		if ( IsSetEF( EF_WalkCheck ) )
-			pArea = CheckValidMove_New( ptNew, NULL, DIR_QTY, NULL );
-		else
-			pArea = CheckValidMove( ptNew, NULL );
+		pArea = CheckValidMove( ptNew, NULL, DIR_QTY, NULL );
 
 		if ( pArea == NULL )
 		{
@@ -217,10 +214,7 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 			if (wCan != 0xFFFF)
 			{
 				DWORD wBlockFlags = 0;
-				if ( IsSetEF( EF_WalkCheck ) )
-					g_World.GetHeightPoint_New(pntTarg, wBlockFlags, true);
-				else
-					g_World.GetHeightPoint(pntTarg, wBlockFlags, true);
+				g_World.GetHeightPoint_New(pntTarg, wBlockFlags, true);
 
 				if (wBlockFlags &~ wCan)
 				{
@@ -1332,7 +1326,7 @@ void CChar::Spell_Field( CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, 
 				}
 
 				DWORD wBlockFlags = 0;
-				g_World.GetHeightPoint(ptg, wBlockFlags, true);
+				g_World.GetHeightPoint_New(ptg, wBlockFlags, true);
 				if ( wBlockFlags & ( CAN_I_BLOCK | CAN_I_DOOR ) )
 				{
 					if (ix < 0)	// field cannot extend fully to the left

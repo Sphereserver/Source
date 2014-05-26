@@ -166,21 +166,16 @@ bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBot
 	signed char zTop = zBottom;
 	
 	if ( (wItemBlockFlags & CAN_I_CLIMB) && (wItemBlockFlags & CAN_I_PLATFORM) )
-	{
-		//DEBUG_WARN(("EF_NewPositionChecks+Stairs\n"));
 		zTop = minimum(zTop + ( zHeight / 2 ), UO_SIZE_Z);	// standing position is half way up climbable items (except platforms).
-	}
 	else
 		zTop = minimum(zTop + zHeight, UO_SIZE_Z);
 
 	if ( zTop < m_Bottom.m_z )	// below something i can already step on.
 		return true;
 
-	if (IsSetEF( EF_NewPositionChecks ))
-	{
-		if ( zBottom > m_Top.m_z )	// above my head.
-			return true;
-	}
+	if ( zBottom > m_Top.m_z )	// above my head.
+		return true;
+
 	if ( zTop < m_Lowest.m_z )
 	{
 		m_Lowest.m_dwBlockFlags = wItemBlockFlags;

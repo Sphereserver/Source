@@ -850,11 +850,7 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 
 		// Check the z height here.
 		// The client already knows this but doesn't tell us.
-#ifdef _DIAGONALWALKCHECK_PLAYERWALKONLY
-		if ( !m_pChar->CanMoveWalkTo(pt, true, false, dir, false, true) )
-#else
 		if ( !m_pChar->CanMoveWalkTo(pt, true, false, dir) )
-#endif
 		{
 			m_iWalkStepCount--;
 			return TRIGRET_RET_FALSE;

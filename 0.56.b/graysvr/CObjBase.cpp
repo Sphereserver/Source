@@ -448,18 +448,7 @@ bool CObjBase::MoveNear( CPointMap pt, int iSteps, DWORD dwCan )
 		}
 
 		dir = GetDirTurn( dir, Calc_GetRandVal(3)-1 );	// stagger ?
-		// Put the item at the correct Z point
-		DWORD wBlockRet = dwCan;
-		if (( IsSetEF( EF_WalkCheck ) ) && ( ! IsSetEF( EF_NewPositionChecks ) ))
-			pt.m_z = g_World.GetHeightPoint_New( pt, wBlockRet, true );
-		else if ( ! IsSetEF( EF_NewPositionChecks ) )
-			pt.m_z = g_World.GetHeightPoint( pt, wBlockRet, true );
-		if ( wBlockRet &~ dwCan )
-		{
-			// Hit a block, so go back to the previous valid position
-			pt = pTest;
-			break;	// stopped
-		}
+
 	}
 
 	//	deny spawning outside the house, etc
@@ -2235,83 +2224,69 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			else if ( IsTopLevel())
 			{
 				DWORD wBlockFlags = 0;
-				if (IsSetEF( EF_NewPositionChecks ))
+				CChar *pChar = dynamic_cast <CChar *>(this);
+				CItem *pItem = dynamic_cast <CItem *>(this);
+				if ( pChar )
 				{
-					CChar *pChar = dynamic_cast <CChar *>(this);
-					CItem *pItem = dynamic_cast <CItem *>(this);
-					if ( pChar )
+					DWORD dwCan = pChar->GetMoveBlockFlags();
+					wBlockFlags = dwCan;
+					if ( dwCan & CAN_C_WALK )
+						wBlockFlags |= CAN_I_CLIMB; // If we can walk than we can climb. Ignore CAN_C_FLY at all here
+
+					CGrayMapBlockState block( wBlockFlags, GetTopPoint().m_z, GetTopPoint().m_z + pChar->m_zClimbHeight + pChar->GetHeightMount( false ), GetTopPoint().m_z + pChar->m_zClimbHeight + 2, pChar->GetHeightMount( false ) );
+					g_World.GetHeightPoint_New( GetTopPoint(), block, true );
+
+					wBlockFlags = block.m_Bottom.m_dwBlockFlags;
+					if ( block.m_Top.m_dwBlockFlags )
 					{
-						DWORD dwCan = pChar->GetMoveBlockFlags();
-						wBlockFlags = dwCan;
-						if ( dwCan & CAN_C_WALK )
-							wBlockFlags |= CAN_I_CLIMB; // If we can walk than we can climb. Ignore CAN_C_FLY at all here
+						wBlockFlags |= CAN_I_ROOF;	// we are covered by something.
+						if ( block.m_Top.m_z < GetTopPoint().m_z - (pChar->m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? pChar->GetHeightMount( false ) : pChar->GetHeightMount( false )/2 )) )
+							wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
+					}
+					if (( dwCan != 0xFFFF ) && ( wBlockFlags != 0x0 ))
+					{
+						CCharBase* pCharDef = pChar->Char_GetDef();
 
-						CGrayMapBlockState block( wBlockFlags, GetTopPoint().m_z, GetTopPoint().m_z + pChar->m_zClimbHeight + pChar->GetHeightMount( false ), GetTopPoint().m_z + pChar->m_zClimbHeight + 2, pChar->GetHeightMount( false ) );
-						g_World.GetHeightPoint_New( GetTopPoint(), block, true );
+						if ( ( wBlockFlags & CAN_I_DOOR ) && pCharDef->Can( CAN_C_GHOST ))
+							wBlockFlags &= ~CAN_I_BLOCK;
 
-						wBlockFlags = block.m_Bottom.m_dwBlockFlags;
-						if ( block.m_Top.m_dwBlockFlags )
+						if ( ( wBlockFlags & CAN_I_WATER ) && pCharDef->Can( CAN_C_SWIM ))
+							wBlockFlags &= ~CAN_I_BLOCK;
+
+						if ( ! pCharDef->Can( CAN_C_FLY ))
 						{
-							wBlockFlags |= CAN_I_ROOF;	// we are covered by something.
-							if ( block.m_Top.m_z < GetTopPoint().m_z - (pChar->m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? pChar->GetHeightMount( false ) : pChar->GetHeightMount( false )/2 )) )
-								wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
-						}
-						if (( dwCan != 0xFFFF ) && ( wBlockFlags != 0x0 ))
-						{
-							CCharBase* pCharDef = pChar->Char_GetDef();
-
-							if ( ( wBlockFlags & CAN_I_DOOR ) && pCharDef->Can( CAN_C_GHOST ))
-								wBlockFlags &= ~CAN_I_BLOCK;
-
-							if ( ( wBlockFlags & CAN_I_WATER ) && pCharDef->Can( CAN_C_SWIM ))
-								wBlockFlags &= ~CAN_I_BLOCK;
-
-							if ( ! pCharDef->Can( CAN_C_FLY ))
+							if ( ! ( wBlockFlags & CAN_I_CLIMB ) ) // we can climb anywhere
 							{
-								if ( ! ( wBlockFlags & CAN_I_CLIMB ) ) // we can climb anywhere
+								if ( block.m_Bottom.m_dwTile > TERRAIN_QTY )
 								{
-									if ( block.m_Bottom.m_dwTile > TERRAIN_QTY )
-									{
-										if ( block.m_Bottom.m_z > GetTopPoint().m_z + pChar->m_zClimbHeight + 2) // Too high to climb.
-											break;
-									}
-									else if ( block.m_Bottom.m_z > GetTopPoint().m_z + pChar->m_zClimbHeight + pChar->GetHeightMount( false ) + 3)
+									if ( block.m_Bottom.m_z > GetTopPoint().m_z + pChar->m_zClimbHeight + 2) // Too high to climb.
 										break;
 								}
+								else if ( block.m_Bottom.m_z > GetTopPoint().m_z + pChar->m_zClimbHeight + pChar->GetHeightMount( false ) + 3)
+									break;
 							}
-							if (( wBlockFlags & CAN_I_BLOCK ) && ( ! pCharDef->Can( CAN_C_PASSWALLS )) )
-								break;
-
-							if ( block.m_Bottom.m_z >= UO_SIZE_Z )
-								break;
 						}
-						if (( pChar->GetHeightMount( false ) + GetTopPoint().m_z >= block.m_Top.m_z ) && ( g_Cfg.m_iMountHeight ) && ( !pChar->IsPriv( PRIV_GM ) ) && ( !pChar->IsPriv( PRIV_ALLMOVE ) ))
+						if (( wBlockFlags & CAN_I_BLOCK ) && ( ! pCharDef->Can( CAN_C_PASSWALLS )) )
 							break;
-						SetTopZ(block.m_Bottom.m_z);
+
+						if ( block.m_Bottom.m_z >= UO_SIZE_Z )
+							break;
 					}
-					else if ( pItem )
-					{
-						height_t zHeight = CItemBase::GetItemHeight( pItem->GetDispID(), wBlockFlags );
-						CGrayMapBlockState block( wBlockFlags, GetTopPoint().m_z, GetTopPoint().m_z + zHeight, GetTopPoint().m_z + 2, zHeight );
-						g_World.GetHeightPoint_New( GetTopPoint(), block, true );
-						SetTopZ(block.m_Bottom.m_z);
-					}
-					else
-					{
-						g_Log.EventDebug("Failed to get reference in FIX or Z\n");
+					if (( pChar->GetHeightMount( false ) + GetTopPoint().m_z >= block.m_Top.m_z ) && ( g_Cfg.m_iMountHeight ) && ( !pChar->IsPriv( PRIV_GM ) ) && ( !pChar->IsPriv( PRIV_ALLMOVE ) ))
 						break;
-					}
+					SetTopZ(block.m_Bottom.m_z);
+				}
+				else if ( pItem )
+				{
+					height_t zHeight = CItemBase::GetItemHeight( pItem->GetDispID(), wBlockFlags );
+					CGrayMapBlockState block( wBlockFlags, GetTopPoint().m_z, GetTopPoint().m_z + zHeight, GetTopPoint().m_z + 2, zHeight );
+					g_World.GetHeightPoint_New( GetTopPoint(), block, true );
+					SetTopZ(block.m_Bottom.m_z);
 				}
 				else
 				{
-					if ( IsSetEF( EF_WalkCheck ) )
-					{
-						SetTopZ( g_World.GetHeightPoint_New( GetTopPoint(), wBlockFlags, true));
-					}
-					else
-					{
-						SetTopZ( g_World.GetHeightPoint( GetTopPoint(), wBlockFlags, true ));
-					}
+					g_Log.EventDebug("Failed to get reference in FIX or Z\n");
+					break;
 				}
 			}
 			Update();
