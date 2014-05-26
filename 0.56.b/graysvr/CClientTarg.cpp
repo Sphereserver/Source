@@ -1679,7 +1679,7 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap &
 				}
 
 				DWORD wBlockFlags = ( fShip ) ? CAN_C_SWIM : CAN_C_WALK;
-				ptn.m_z = g_World.GetHeightPoint_New( ptn, wBlockFlags, true );
+				ptn.m_z = g_World.GetHeightPoint( ptn, wBlockFlags, true );
 				if ( abs( ptn.m_z - pt.m_z ) > 4 )
 				{
 					SysMessageDefault( DEFMSG_ITEMUSE_MULTI_BUMP );
@@ -2589,7 +2589,7 @@ bool CClient::OnTarg_Party_Add( CChar * pChar )
 	if (IsPriv(PRIV_GM) && (pChar->GetClient()->GetPrivLevel() < GetPrivLevel()))
 	{
 		CPartyDef::AcceptEvent(pChar, m_pChar->GetUID(), true);
-		return;
+		return true;
 	}
 
 	if ( pChar->m_pParty != NULL )	// Aready in a party !
