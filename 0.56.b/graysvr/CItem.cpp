@@ -285,12 +285,14 @@ CItem * CItem::CreateScript( ITEMID_TYPE id, CChar * pSrc ) // static
 			if ( pSrc )
 			{
 				//pItem->OnTriggerScript( s, sm_szTrigName[ITRIG_Create], pSrc );
-				pItem->OnTrigger(sm_szTrigName[ITRIG_Create],pSrc,0);
+				//pItem->OnTrigger( ITRIG_Create, pSrc,0);
+				pItem->OnTriggerCreate(pSrc,0);
 			}
 			else
 			{
 				//pItem->OnTriggerScript( s, sm_szTrigName[ITRIG_Create], &g_Serv );
-				pItem->OnTrigger(sm_szTrigName[ITRIG_Create],&g_Serv,0);
+				//pItem->OnTrigger( ITRIG_Create, &g_Serv,0);
+				pItem->OnTriggerCreate(&g_Serv,0);
 			}
 		}
 	}
@@ -3176,6 +3178,145 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 			if ( pResourceLink->ResourceLock(s))
 			{
 				iRet = CScriptObj::OnTriggerScript( s, pszTrigName, pSrc, pArgs );
+			}
+		}
+	}
+
+	EXC_CATCH;
+
+	EXC_DEBUG_START;
+	g_Log.EventDebug("trigger '%s' action '%d' char '0%lx' [0%lx]\n", pszTrigName, iAction, (pSrc && pSrc->GetChar()) ? (DWORD)pSrc->GetChar()->GetUID() : 0, (DWORD)GetUID());
+	EXC_DEBUG_END;
+	return iRet;
+}
+
+TRIGRET_TYPE CItem::OnTriggerCreate( CTextConsole * pSrc, CScriptTriggerArgs * pArgs )
+{
+	ADDTOCALLSTACK("CItem::OnTrigger");
+	if ( !pSrc )
+		pSrc = &g_Serv;
+
+	ITRIG_TYPE iAction;
+	LPCTSTR pszTrigName = sm_szTrigName[ITRIG_Create];
+	if ( ISINTRESOURCE(pszTrigName))
+	{
+		iAction = (ITRIG_TYPE) GETINTRESOURCE(pszTrigName);
+		pszTrigName = sm_szTrigName[iAction];
+	}
+	else
+	{
+		iAction = (ITRIG_TYPE) FindTableSorted( pszTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
+	}
+
+	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
+
+	// Is there trigger code in the script file ?
+	// RETURN:
+	//   false = continue default process normally.
+	//   true = don't allow this.  (halt further processing)
+	EXC_TRY("Trigger");
+
+	CItemBase * pItemDef = Item_GetDef();
+	ASSERT(pItemDef);
+	CChar * pChar = pSrc->GetChar();
+
+	TemporaryString sCharTrigName;
+	sprintf(sCharTrigName, "@item%s", pszTrigName+1);
+
+	int iCharAction = (CTRIG_TYPE) FindTableSorted( sCharTrigName, CChar::sm_szTrigName, COUNTOF(CChar::sm_szTrigName)-1 );
+
+	// 1) Look up the trigger in the RES_ITEMDEF. (default)
+	EXC_SET("itemdef");
+	CBaseBaseDef * pResourceLink = Base_GetDef();
+	ASSERT(pResourceLink);
+	if ( pResourceLink->HasTrigger( iAction ))
+	{
+		CResourceLock s;
+		if ( pResourceLink->ResourceLock(s))
+		{
+			iRet = CScriptObj::OnTriggerScript( s, pszTrigName, pSrc, pArgs );
+		}
+	}
+
+	// 2) Triggers installed on character, sensitive to actions on all items
+	if (( IsTrigUsed(sCharTrigName) ) && ( iCharAction > XTRIG_UNKNOWN ))
+	{
+		EXC_SET("chardef");
+		if ( pChar != NULL )
+		{
+			CGrayUID uidOldAct = pChar->m_Act_Targ;
+			pChar->m_Act_Targ = GetUID();
+			iRet = pChar->OnTrigger(sCharTrigName,  pSrc, pArgs );
+			pChar->m_Act_Targ = uidOldAct;
+			if ( iRet == TRIGRET_RET_TRUE )
+				return iRet;	// Block further action.
+		}
+	}
+
+	if ( IsTrigUsed(pszTrigName) )
+	{
+		// 3) TEVENTS on the item
+		EXC_SET("tevents");
+		for ( size_t i = 0; i < pItemDef->m_TEvents.GetCount(); ++i )
+		{
+			CResourceLink * pLink = pItemDef->m_TEvents[i];
+			ASSERT(pLink);
+			if ( !pLink->HasTrigger(iAction) )
+				continue;
+			CResourceLock s;
+			if ( !pLink->ResourceLock(s) )
+				continue;
+			iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
+			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
+				return iRet;
+		}
+
+		// 4) EVENTSITEM triggers
+		EXC_SET("Item triggers - EVENTSITEM"); // EVENTSITEM (constant events of Items set from sphere.ini)
+		for ( size_t i = 0; i < g_Cfg.m_iEventsItemLink.GetCount(); ++i )
+		{
+			CResourceLink * pLink = g_Cfg.m_iEventsItemLink[i];
+			if ( !pLink || !pLink->HasTrigger(iAction) )
+				continue;
+			CResourceLock s;
+			if ( !pLink->ResourceLock(s) )
+				continue;
+			iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
+			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
+				return iRet;
+		}
+
+
+		// 5) TYPEDEF
+		EXC_SET("typedef");
+		{
+			// It has an assigned trigger type.
+			CResourceLink * pResourceLink = dynamic_cast <CResourceLink *>( g_Cfg.ResourceGetDef( RESOURCE_ID( RES_TYPEDEF, GetType() )));
+			if ( pResourceLink == NULL )
+			{
+				if ( pChar )
+				{
+					DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d] for 0%lx '%s'\n", (DWORD) GetUID(), GetName(), GetType(), (DWORD) pChar->GetUID(), pChar->GetName()));
+				}
+				else
+				{
+					DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d]\n", (DWORD) GetUID(), GetName(), GetType() ));
+				}
+				m_type = Item_GetDef()->GetType();
+				return( TRIGRET_RET_DEFAULT );
+			}
+
+			if ( pResourceLink->HasTrigger( iAction ))
+			{
+				CResourceLock s;
+				if ( pResourceLink->ResourceLock(s))
+				{
+					iRet = CScriptObj::OnTriggerScript( s, pszTrigName, pSrc, pArgs );
+					if ( iRet == TRIGRET_RET_TRUE )
+					{
+						return( iRet );	// Block further action.
+					}
+				}
 			}
 		}
 	}

@@ -1013,3 +1013,14 @@ Removed and made permanent EF_FixKillTrigger, EF_WalkCheck, EF_NewPositionCheck,
 
 26-05-2014, matex
 Fixed a small bug in the code that adds a player forcibly when GM's add to party.
+
+27-05-2014, XuN
+Changed: new order for @Create trigger in items, now the order is this; Itemdef, @ItemCreate for characters ( if proceed ), TEvents, EventsItem and Typedef
+Fixed #2350: Guards working in non-guarded areas when GuardsOnMurderes=1
+Fixed #2352: AttackingIsACrime checks making criminal when it shouldn't
+Fixed #2351: Murderers never becoming criminal (didn't need before GuardsOnMurderers).
+Fixed #2353: Wrong speech color for tillerman.
+Fixed #2349. Also improved the Attacker_GetID() functions a bit.
+Fixed #1491: region_flag_no_pvp not working fine. Also a wrong SkillUseQuick(tactics) related to it.
+Added a new function to removed chars so they are being removed from attacker list's characters of their attacker's list. There's no reason to keep a not existing character.
+Added ContextMenuLimit option to sphere.ini defining the maximum amount of options in each menu.

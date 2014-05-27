@@ -1294,6 +1294,7 @@ private:
 	#define POPUP_PETTRANSFER 48
 	#define POPUP_STABLESTABLE 51
 	#define POPUP_STABLERETRIEVE 52
+	#define POPUP_TRAINSKILL 100
 
 	PacketDisplayPopup* m_pPopupPacket;
 

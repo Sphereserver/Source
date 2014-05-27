@@ -1095,6 +1095,7 @@ public:
 
 private:
 	TRIGRET_TYPE OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScriptTriggerArgs * pArgs );
+	TRIGRET_TYPE OnTriggerCreate(CTextConsole * pSrc, CScriptTriggerArgs * pArgs );
 
 public:
 	TRIGRET_TYPE OnTrigger( ITRIG_TYPE trigger, CTextConsole * pSrc, CScriptTriggerArgs * pArgs = NULL )
@@ -3514,6 +3515,7 @@ public:
 	bool Attacker_Add( CChar * pChar);
 	bool Attacker_Delete( CChar * pChar, bool bForced = false  );
 	bool Attacker_Delete( int id, bool bForced = false  );
+	void Attacker_RemoveChar();
 	void Attacker_Clear();
 	void Attacker_CheckTimeout();
 	int	 Attacker_GetDam( int attacker );
@@ -3633,12 +3635,14 @@ private:
 
 	bool NPC_OnVerb( CScript &s, CTextConsole * pSrc = NULL );
 	void NPC_OnHirePayMore( CItem * pGold, bool fHire = false );
+public:
 	bool NPC_OnHirePay( CChar * pCharSrc, CItemMemory * pMemory, CItem * pGold );
 	bool NPC_OnHireHear( CChar * pCharSrc );
 	int	 NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill );
 	bool NPC_OnTrainPay( CChar * pCharSrc, CItemMemory * pMemory, CItem * pGold );
 	bool NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pCmd );
 	bool NPC_TrainSkill( CChar * pCharSrc, SKILL_TYPE skill, int toTrain );
+private:
 	bool NPC_CheckWalkHere( const CPointBase & pt, const CRegionBase * pArea, WORD wBlockFlags ) const;
 	void NPC_OnNoticeSnoop( CChar * pCharThief, CChar * pCharMark );
 

@@ -805,7 +805,7 @@ public:
 	int  m_iMagicFlags;			// magic flags
 
 	// Criminal/Karma
-	bool m_fAttackIsACrime;		// Is attacking (even before hitting) a crime?
+	bool m_fAttackingIsACrime;		// Is attacking (even before hitting) a crime?
 	bool m_fGuardsInstantKill;	// Will guards kill instantly or follow normal combat rules?
 	bool m_fGuardsOnMurderers;	// should guards be only called on criminals ?
 	int	 m_iGuardLingerTime;	// How long do guards linger about.
@@ -984,6 +984,7 @@ public:
 
 	int			m_iTooltipCache;			// time to cache tooltip for
 	int			m_iTooltipMode;				// tooltip mode (TOOLTIP_TYPE)
+	int			m_iContextMenuLimit;		// max amount of options per context menu
 #define AUTOTOOLTIP_FLAG_NAME          0x0001
 #define AUTOTOOLTIP_FLAG_AMOUNT        0x0002
 #define AUTOTOOLTIP_FLAG_WEIGHT        0x0004

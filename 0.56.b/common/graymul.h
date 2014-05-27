@@ -58,6 +58,7 @@ enum HUE_CODE
 
 	HUE_TEXT_DEF		= 0x03b2,	// light gray color.
 	HUE_TEXT_ITEM		= 0x0430,	// light gray (matches '0' speech hue on 2D client)
+	HUE_TEXT_TILLERMAN	= 0x03b2,	// light gray color.
 
 	HUE_DYE_HIGH		= 0x03e9,	// highest dyeable color = 1001
 
@@ -1717,6 +1718,8 @@ enum SKILL_TYPE	// List of skill numbers (things that can be done at a given tim
 	SKILL_MYSTICISM = 55,	// 55
 	SKILL_IMBUING,
 	SKILL_THROWING,
+	SKILL_DEFAULT_MAX = 57,
+	
 
 #define SKILL_SCRIPTED SKILL_SCRIPTED00
 	SKILL_SCRIPTED00,		// 58

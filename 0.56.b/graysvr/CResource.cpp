@@ -82,7 +82,7 @@ CResource::CResource()
 	m_iLightDay		= LIGHT_BRIGHT;
 	m_iBankIMax		= 1000;
 	m_iBankWMax		= 400 * WEIGHT_UNITS;
-	m_fAttackIsACrime =	true;
+	m_fAttackingIsACrime =	true;
 	m_fGuardsInstantKill	= true;
 	m_fGuardsOnMurderers	= true;
 	m_iSnoopCriminal	= 500;
@@ -244,6 +244,7 @@ CResource::CResource()
 	m_iAutoTooltipResend = AUTOTOOLTIP_FLAG_NAME|AUTOTOOLTIP_FLAG_AMOUNT|AUTOTOOLTIP_FLAG_WEIGHT|
 						   AUTOTOOLTIP_FLAG_DURABILITY|AUTOTOOLTIP_FLAG_POISON|AUTOTOOLTIP_FLAG_WANDCHARGES|
 						   AUTOTOOLTIP_FLAG_SPELLBOOK;
+	m_iContextMenuLimit = 15;
 
 	m_iMaxAccountLoginTries = 0;		// maximum bad password tries before a temp ip ban
 	m_iMaxShipPlankTeleport = UO_MAP_VIEW_SIZE;
@@ -375,7 +376,7 @@ enum RC_TYPE
 	RC_ARCHERYMINDIST,		// m_iArcheryMinDist
 	RC_ARRIVEDEPARTMSG,
 	RC_ATTACKERTIMEOUT,		// m_iAttackerTimeout
-	RC_ATTACKINGISACRIME,	// m_fAttackIsACrime
+	RC_ATTACKINGISACRIME,	// m_fAttackingIsACrime
 	RC_AUTONEWBIEKEYS,		// m_fAutoNewbieKeys
 	RC_AUTOPRIVFLAGS,		// m_iAutoPrivFlags
 	RC_AUTORESDISP,			// m_iAutoResDisp
@@ -404,6 +405,7 @@ enum RC_TYPE
 	RC_COMMANDTRIGGER,		// m_sCommandTrigger
 	RC_CONNECTINGMAX,		// m_iConnectingMax
 	RC_CONNECTINGMAXIP,		// m_iConnectingMaxIP
+	RC_CONTEXTMENULIMIT,	// m_iContextMenuLimit
 	RC_CORPSENPCDECAY,
 	RC_CORPSEPLAYERDECAY,
 	RC_CRIMINALTIMER,		// m_iCriminalTimer
@@ -601,7 +603,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "ARCHERYMINDIST",			{ ELEM_INT,		OFFSETOF(CResource,m_iArcheryMinDist),		0 }},
 	{ "ARRIVEDEPARTMSG",		{ ELEM_INT,		OFFSETOF(CResource,m_iArriveDepartMsg),		0 }},
 	{ "ATTACKERTIMEOUT",		{ ELEM_INT,		OFFSETOF(CResource,m_iAttackerTimeout),		0 }},
-	{ "ATTACKINGISACRIME",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fAttackIsACrime),		0 }},
+	{ "ATTACKINGISACRIME",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fAttackingIsACrime),		0 }},
 	{ "AUTONEWBIEKEYS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fAutoNewbieKeys),		0 }},
 	{ "AUTOPRIVFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iAutoPrivFlags),		0 }},
 	{ "AUTORESDISP",			{ ELEM_INT,		OFFSETOF(CResource,m_iAutoResDisp),			0 }},
@@ -630,6 +632,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "COMMANDTRIGGER",			{ ELEM_CSTRING,	OFFSETOF(CResource,m_sCommandTrigger),		0 }},
 	{ "CONNECTINGMAX",			{ ELEM_INT,		OFFSETOF(CResource,m_iConnectingMax),		0 }},
 	{ "CONNECTINGMAXIP",		{ ELEM_INT,		OFFSETOF(CResource,m_iConnectingMaxIP),		0 }},
+	{ "CONTEXTMENULIMIT",		{ ELEM_INT,		OFFSETOF(CResource,m_iContextMenuLimit),	0 }},
 	{ "CORPSENPCDECAY",			{ ELEM_INT,		OFFSETOF(CResource,m_iDecay_CorpseNPC),		0 }},
 	{ "CORPSEPLAYERDECAY",		{ ELEM_INT,		OFFSETOF(CResource,m_iDecay_CorpsePlayer),	0 }},
 	{ "CRIMINALTIMER",			{ ELEM_INT,		OFFSETOF(CResource,m_iCriminalTimer),		0 }},
@@ -1072,6 +1075,19 @@ bool CResource::r_LoadVal( CScript &s )
 			if ( m_iPlayerKarmaEvil > m_iPlayerKarmaNeutral )
 				m_iPlayerKarmaEvil = m_iPlayerKarmaNeutral;
 			break;
+
+		case RC_GUARDSINSTANTKILL:
+			m_fGuardsInstantKill = s.GetArgVal() ? true : false;
+			break;
+
+		case RC_GUARDSONMURDERERS:
+			m_fGuardsOnMurderers = s.GetArgVal() ? true : false;
+			break;
+
+		case RC_CONTEXTMENULIMIT:
+			m_iContextMenuLimit = s.GetArgVal();
+			break;
+
 		case RC_SCPFILES: // Get SCP files from here.
 			m_sSCPBaseDir = CGFile::GetMergedFileName( s.GetArgStr(), "" );
 			break;
@@ -1572,13 +1588,25 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		case RC_CLIENTS:		// this is handled by CServerDef as SV_CLIENTS
 			return false;
 		case RC_PLAYEREVIL:
-			sVal.FormatVal( g_Cfg.m_iPlayerKarmaEvil );
+			sVal.FormatVal( m_iPlayerKarmaEvil );
 			break;
 		case RC_PLAYERNEUTRAL:
-			sVal.FormatVal( g_Cfg.m_iPlayerKarmaNeutral );
+			sVal.FormatVal( m_iPlayerKarmaNeutral );
 			break;
 		case RC_TOOLTIPCACHE:
-			sVal.FormatVal( g_Cfg.m_iTooltipCache / (TICK_PER_SEC) );
+			sVal.FormatVal( m_iTooltipCache / (TICK_PER_SEC) );
+			break;
+
+		case RC_GUARDSINSTANTKILL:
+			sVal.FormatVal(g_Cfg.m_fGuardsInstantKill);
+			break;
+
+		case RC_GUARDSONMURDERERS:
+			sVal.FormatVal(g_Cfg.m_fGuardsOnMurderers);
+			break;
+
+		case RC_CONTEXTMENULIMIT:
+			sVal.FormatVal(g_Cfg.m_iContextMenuLimit);
 			break;
 		default:
 			return( sm_szLoadKeys[index].m_elem.GetValStr( this, sVal ));

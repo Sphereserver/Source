@@ -306,7 +306,7 @@ CChar::~CChar() // Delete character
 		m_pParty->RemoveMember( GetUID(), (DWORD) GetUID() );
 		m_pParty = NULL;
 	}
-
+	Attacker_RemoveChar();	// Removing me from enemy's attacker list (I asume that if he is on my list, I'm on his one and no one have me on their list if I dont have them)
 	DeleteAll();		// remove me early so virtuals will work.
 	ClearNPC();
 	ClearPlayer();
@@ -1589,12 +1589,9 @@ do_default:
 					pszKey++;
 					if ( !strnicmp(pszKey, "ID", 2 ) )
 					{
-						pszKey += 2;	// ID + whitspace
+						pszKey += 3;	// ID + whitspace
 						CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind());
-						if ( !Attacker_GetID(pChar) )
-							sVal.FormatVal( -1 );
-						else
-							sVal.FormatVal(Attacker_GetID(pChar));
+						sVal.FormatVal(Attacker_GetID(pChar));
 						return true;
 					}else if ( !strnicmp(pszKey, "TARGET", 6 ) )
 					{

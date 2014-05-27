@@ -3669,9 +3669,9 @@ void PacketDisplayPopup::addOption(WORD entryTag, WORD textId, WORD flags, WORD 
 {
 	ADDTOCALLSTACK("PacketDisplayPopup::addOption");
 
-	if (m_popupCount >= MAX_POPUPS)
+	if (m_popupCount >= g_Cfg.m_iContextMenuLimit)
 	{
-		DEBUG_ERR(("Bad AddContextEntry usage: Too many entries!\n"));
+		DEBUG_ERR(("Bad AddContextEntry usage: Too many entries, max = %d\n",static_cast<int>(MAX_POPUPS)));
 		return;
 	}
 

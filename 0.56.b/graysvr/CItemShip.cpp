@@ -297,7 +297,7 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 		{
 			CItem *pTiller = Multi_GetSign();
 			ASSERT(pTiller);
-			pTiller->Speak( g_Cfg.GetDefaultMsg( DEFMSG_TILLER_CANT_TURN ), HUE_TEXT_ITEM, TALKMODE_SAY, FONT_NORMAL);
+			pTiller->Speak( g_Cfg.GetDefaultMsg( DEFMSG_TILLER_CANT_TURN ), HUE_TEXT_TILLERMAN, TALKMODE_SAY, FONT_NORMAL);
 			return false;
 		}
 	}
@@ -553,9 +553,9 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 		CItem * pTiller = Multi_GetSign();
 		ASSERT(pTiller);
 		if (bTurbulent == true)
-			pTiller->Speak( g_Cfg.GetDefaultMsg( DEFMSG_TILLER_TURB_WATER ), HUE_TEXT_ITEM, TALKMODE_SAY, FONT_NORMAL);
+			pTiller->Speak( g_Cfg.GetDefaultMsg( DEFMSG_TILLER_TURB_WATER ), HUE_TEXT_TILLERMAN, TALKMODE_SAY, FONT_NORMAL);
 		else
-			pTiller->Speak( g_Cfg.GetDefaultMsg( DEFMSG_TILLER_STOPPED ), HUE_TEXT_ITEM, TALKMODE_SAY, FONT_NORMAL);
+			pTiller->Speak( g_Cfg.GetDefaultMsg( DEFMSG_TILLER_STOPPED ), HUE_TEXT_TILLERMAN, TALKMODE_SAY, FONT_NORMAL);
 		return false;
 	}
 
@@ -962,7 +962,7 @@ dodirmovechange:
 		TCHAR szText[ MAX_TALK_BUFFER ];
 		strcpy( szText, pszSpeak );
 		pChar->ParseText( szText, &g_Serv );
-		pTiller->Speak( szText, HUE_TEXT_ITEM, TALKMODE_SAY, FONT_NORMAL );
+		pTiller->Speak( szText, HUE_TEXT_TILLERMAN, TALKMODE_SAY, FONT_NORMAL );
 	}
 	return true;
 	EXC_CATCH;

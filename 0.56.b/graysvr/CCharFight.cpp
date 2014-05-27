@@ -1762,7 +1762,7 @@ void CChar::CallGuards( CChar * pCriminal )
 			if ( m_pPlayer && Memory_FindObjTypes(pChar, MEMORY_SAWCRIME) )
 				pChar->Noto_Criminal();
 			
-			if ( ( pChar->IsStatFlag( STATF_Criminal ) && pChar->m_pArea->IsGuarded() ) || ( pChar->Noto_IsEvil() &&  g_Cfg.m_fGuardsOnMurderers) )
+			if ( ( pChar->IsStatFlag( STATF_Criminal ) || ( pChar->Noto_IsEvil() &&  g_Cfg.m_fGuardsOnMurderers) ) && pChar->m_pArea->IsGuarded()  )
 				bCriminal = true;
 
 			CVarDefCont * pVarDef = pChar->m_pArea->m_TagDefs.GetKey("OVERRIDE.GUARDS");
@@ -2587,7 +2587,7 @@ effect_bounce:
 		{
 			if ( m_pArea->IsFlag(REGION_FLAG_SAFE))
 				goto effect_bounce;
-			if ( m_pArea->IsFlag(REGION_FLAG_NO_PVP) && m_pPlayer && pSrc && pSrc->m_pPlayer )
+			if ( m_pArea->IsFlag(REGION_FLAG_NO_PVP) && pSrc && (( IsStatFlag(STATF_Pet) &&  NPC_PetGetOwner() == pSrc) || (m_pPlayer && ( pSrc->m_pPlayer || pSrc->IsStatFlag(STATF_Pet)) ) ))
 				goto effect_bounce;
 		}
 		if ( IsStatFlag(STATF_Stone))	// can't hurt us anyhow.
@@ -3368,10 +3368,10 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool toldByMaster )
 		return( false );
 	}
 
-	if ( g_Cfg.m_fAttackIsACrime == TRUE)
+	if ( g_Cfg.m_fAttackingIsACrime == TRUE)
 	{
 		CChar * pTarg = const_cast<CChar*>(pCharTarg);
-		if ( Noto_GetFlag( pTarg ) == NOTO_GOOD && Attacker_GetID( pTarg ) < 0)
+		if ( pTarg->Noto_GetFlag( this ) == NOTO_GOOD || pTarg->Noto_GetFlag( this ) == NOTO_GUILD_SAME && pTarg->Attacker_GetID( this ) < 0)
 		{
 			if ( IsClient())
 			{
@@ -3730,46 +3730,27 @@ int CChar::Attacker_GetID( CChar * pChar )
 	if ( ! m_lastAttackers.size() )
 		return -1;
 	int count = 0;
-	bool bFound = false;
-	if ( Attacker() )
+	for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); it++)
 	{
-		for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); it++)
-		{
-			LastAttackers & refAttacker = m_lastAttackers.at(count);
-			CGrayUID uid = refAttacker.charUID;
-			if ( uid.CharFind() && uid == static_cast<DWORD>(pChar->GetUID()) )
-			{
-				bFound = true;
-				break;
-			}
-			count++;
-		}
+		LastAttackers & refAttacker = m_lastAttackers.at(count);
+		CGrayUID uid = refAttacker.charUID;
+		if ( ! uid )
+			continue;
+		CChar * pMe = uid.CharFind()->GetChar();
+		if ( ! pMe )
+			continue;
+		if ( pMe == pChar )
+			return count;
+	
+		count++;
 	}
-	if ( bFound == true)
-		return count;
 	return -1;
 }
 
 int CChar::Attacker_GetID( CGrayUID pChar )
 {
 	ADDTOCALLSTACK("CChar::Attacker_GetID(CGrayUID)");
-	if ( ! m_lastAttackers.size() )
-		return -1;
-	int count = 0;
-	if ( Attacker() )
-	{
-		for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); it++)
-		{
-			LastAttackers & refAttacker = m_lastAttackers.at(count);
-			CGrayUID uid = refAttacker.charUID;
-			if ( uid.CharFind() && uid == pChar )
-			{
-				return count;
-			}
-			count++;
-		}
-	}
-	return -1;
+	return Attacker_GetID( pChar.CharFind()->GetChar() );
 }
 
 CChar * CChar::Attacker_GetUID( int index )
@@ -3825,6 +3806,22 @@ bool CChar::Attacker_Delete( CChar * pChar, bool bForced )
 	if ( ! m_lastAttackers.size() )
 		return false;
 	return Attacker_Delete( Attacker_GetID( pChar), bForced );
+}
+
+void CChar::Attacker_RemoveChar()
+{
+	ADDTOCALLSTACK("CChar::Attacker_RemoveChar");
+	if ( m_lastAttackers.size() )
+	{
+		for ( int count = 0 ; count < static_cast<int>(m_lastAttackers.size()); count++)
+		{
+			LastAttackers & refAttacker = m_lastAttackers.at(count);
+			CChar * pSrc = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
+			if ( !pSrc )
+				continue;
+			pSrc->Attacker_Delete(pSrc->Attacker_GetID(this));
+		}
+	}
 }
 
 void CChar::Attacker_CheckTimeout()
@@ -4326,7 +4323,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	}
 
 	// Raise skill
-	if ( !pCharTarg->m_pArea->IsFlag(REGION_FLAG_NO_PVP) || !m_pPlayer || !pCharTarg->m_pPlayer )
+	if ( !pCharTarg->m_pArea->IsFlag(REGION_FLAG_NO_PVP) && !m_pPlayer && !pCharTarg->m_pPlayer )
 		Skill_UseQuick( SKILL_TACTICS, pCharTarg->Skill_GetBase(SKILL_TACTICS)/10 );
 
 	// Hit noise. based on weapon type.
