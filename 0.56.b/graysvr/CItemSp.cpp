@@ -206,7 +206,7 @@ void CItem::Spawn_GenerateChar( CResourceDef * pDef )
 	CREID_TYPE id = static_cast<CREID_TYPE>(rid.GetResIndex());
 
 	bool isBadPlaceToSpawn = false;
-	CChar * pChar = CChar::CreateNPC(id);
+	CChar * pChar = CChar::CreateBasic(id);
 	if( pChar == NULL )
 	{
 		return;
@@ -217,6 +217,7 @@ void CItem::Spawn_GenerateChar( CResourceDef * pDef )
 	pChar->Memory_AddObjTypes(this, MEMORY_ISPAWNED);
 
 	pChar->MoveTo(GetTopPoint());
+	pChar->NPC_LoadScript(false);
 
 	if( pChar->GetRegion() == NULL )
 	{

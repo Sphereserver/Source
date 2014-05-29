@@ -1596,8 +1596,8 @@ do_default:
 					}else if ( !strnicmp(pszKey, "TARGET", 6 ) )
 					{
 						pszKey += 6;
-						if ( Fight_FindBestTarget() )
-							sVal.FormatHex(static_cast<DWORD>(Fight_FindBestTarget()->GetUID()));
+						if ( m_Act_Targ )
+							sVal.FormatHex(static_cast<DWORD>(m_Act_Targ));
 						else
 							sVal.FormatVal(-1);
 						return true;

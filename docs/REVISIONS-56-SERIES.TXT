@@ -1024,3 +1024,9 @@ Fixed #2349. Also improved the Attacker_GetID() functions a bit.
 Fixed #1491: region_flag_no_pvp not working fine. Also a wrong SkillUseQuick(tactics) related to it.
 Added a new function to removed chars so they are being removed from attacker list's characters of their attacker's list. There's no reason to keep a not existing character.
 Added ContextMenuLimit option to sphere.ini defining the maximum amount of options in each menu.
+
+29-05-2014, XuN
+Combat target for players will be 'reseted' after attacking a character, instead of checking for the best target ... so it now gives priority to player's choices.
+Changed attacker.target also to reflect the changes and return the direct value instead of calling Fight_FindBestTarget().
+Changed the way t_spawn_char creates the characters, they are now placed and the spawnitem is asigned before calling NPC_LoadScript() so, both spawn and regions can be read in the @Create (this can simulate a @CharCreate for spawns but on the character instead of the item.)
+Changed summon to be placed also before the @Create.

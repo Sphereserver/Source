@@ -3371,7 +3371,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool toldByMaster )
 	if ( g_Cfg.m_fAttackingIsACrime == TRUE)
 	{
 		CChar * pTarg = const_cast<CChar*>(pCharTarg);
-		if ( pTarg->Noto_GetFlag( this ) == NOTO_GOOD || pTarg->Noto_GetFlag( this ) == NOTO_GUILD_SAME && pTarg->Attacker_GetID( this ) < 0)
+		if ( ( pTarg->Noto_GetFlag( this ) == NOTO_GOOD || pTarg->Noto_GetFlag( this ) == NOTO_GUILD_SAME ) && pTarg->Attacker_GetID( this ) < 0)
 		{
 			if ( IsClient())
 			{
@@ -3428,7 +3428,11 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool toldByMaster )
 				return true;
 		}
 	}
-	CChar * pTarget = Fight_FindBestTarget();
+	CChar * pTarget;
+	if ( m_pPlayer )	// We skip FindBestTarget for players, as they are requiring to attack this target.
+		pTarget = const_cast<CChar*>(pCharTarg);
+	else
+		pTarget = Fight_FindBestTarget();
 	m_Act_Targ = pTarget->GetUID();	// pCharTarg->GetUID();
 	Skill_Start( skillWeapon );
 
@@ -3734,7 +3738,7 @@ int CChar::Attacker_GetID( CChar * pChar )
 	{
 		LastAttackers & refAttacker = m_lastAttackers.at(count);
 		CGrayUID uid = refAttacker.charUID;
-		if ( ! uid )
+		if ( ! uid || !uid.CharFind() )
 			continue;
 		CChar * pMe = uid.CharFind()->GetChar();
 		if ( ! pMe )
