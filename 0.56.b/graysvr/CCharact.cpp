@@ -2738,7 +2738,26 @@ bool CChar::Death()
 	CScriptTriggerArgs args(this);
 	args.m_iN1 = killedBy;
 
-	for ( std::map<DWORD,bool>::iterator itCurrentKiller = mapKillers.begin(); itCurrentKiller != mapKillers.end(); ++itCurrentKiller)
+	for ( unsigned int count = 0; count < m_lastAttackers.size(); count++ )
+	{
+		pKiller = CGrayUID(m_lastAttackers.at(count).charUID).CharFind();
+		args.m_iN1 = Attacker();
+		if ( pKiller )
+		{
+			if ( IsTrigUsed(TRIGGER_KILL) )
+			{
+				if (pKiller->OnTrigger(CTRIG_Kill, pKiller, &args) == TRIGRET_RET_TRUE )
+					continue;
+			}
+
+			pKiller->Noto_Kill(this, IsStatFlag(STATF_Pet) , killedBy-1);
+			iKillStrLen += sprintf( pszKillStr+iKillStrLen, "%s%c'%s'", iKillers ? ", " : "", 
+				(pKiller->m_pPlayer) ? 'P':'N', (pKiller->m_pPlayer) ? pKiller->GetNameWithoutIncognito() : pKiller->GetName() );
+			++iKillers;
+
+		}
+	}
+	/*for ( std::map<DWORD,bool>::iterator itCurrentKiller = mapKillers.begin(); itCurrentKiller != mapKillers.end(); ++itCurrentKiller)
 	{
 		pKiller = CGrayUID((*itCurrentKiller).first).CharFind();
 		if ( pKiller )
@@ -2755,7 +2774,7 @@ bool CChar::Death()
 				(pKiller->m_pPlayer) ? 'P':'N', (pKiller->m_pPlayer) ? pKiller->GetNameWithoutIncognito() : pKiller->GetName() );
 			++iKillers;
 		}
-	}
+	}*/
 
 	//	No aggressor/killer detected. Try detect person last hit me  from the act target
 	if ( !pKiller )

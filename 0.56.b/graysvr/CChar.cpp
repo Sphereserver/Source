@@ -1608,7 +1608,7 @@ do_default:
 						if( !strnicmp(pszKey, "MAX", 3) )
 						{
 							pszKey += 3;
-							int iMaxDmg = -1, iCurDmg = 0;
+							INT64 iMaxDmg = -1, iCurDmg = 0;
 
 							for ( size_t iAttacker = 0; iAttacker < m_lastAttackers.size(); ++iAttacker )
 							{
@@ -1623,7 +1623,7 @@ do_default:
 						else if( !strnicmp(pszKey, "LAST", 4) )
 						{
 							pszKey += 4;
-							DWORD dwLastTime = INT_MAX, dwCurTime = 0;
+							INT64 dwLastTime = INT_MAX, dwCurTime = 0;
 
 							for ( size_t iAttacker = 0; iAttacker < m_lastAttackers.size(); ++iAttacker )
 							{
@@ -1647,12 +1647,12 @@ do_default:
 
 							if( !strnicmp(pszKey, "DAM", 3) )
 							{
-								sVal.FormatVal(refAttacker.amountDone);
+								sVal.FormatLLVal(refAttacker.amountDone);
 								return true;
 							}
 							else if( !strnicmp(pszKey, "ELAPSED", 7) )
 							{
-								sVal.FormatVal(refAttacker.elapsed);
+								sVal.FormatLLVal(refAttacker.elapsed);
 								return true;
 							}
 							else if (( !strnicmp(pszKey, "UID", 3) ) || ( *pszKey == '\0' ))
@@ -1663,7 +1663,7 @@ do_default:
 							}
 							else if ( ( !strnicmp(pszKey, "THREAT", 6 ) ) )
 							{
-								sVal.FormatVal(refAttacker.threat);
+								sVal.FormatLLVal(refAttacker.threat);
 								return true;
 							}
 						}

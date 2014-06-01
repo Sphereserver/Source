@@ -437,7 +437,7 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const
 			fSuccess = pCharTarg->OnAttackedBy( pSrc, 1, true );	// we know who told them to do this.
 			if ( fSuccess )
 			{
-				fSuccess = Fight_Attack( pCharTarg );
+				fSuccess = Fight_Attack( pCharTarg, true );
 			}
 			break;
 

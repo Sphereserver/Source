@@ -2543,10 +2543,10 @@ private:
 
 public:
 	struct LastAttackers {
-		DWORD	elapsed;
+		INT64	elapsed;
 		DWORD	charUID;
-		DWORD	amountDone;
-		DWORD	threat;
+		INT64	amountDone;
+		INT64	threat;
 	};
 	std::vector<LastAttackers> m_lastAttackers;
 	
@@ -3339,6 +3339,7 @@ public:
 	bool Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg );
 	bool Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax = SHRT_MAX );
 	bool Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly = false, int iReplicationQty = 1 );
+	bool Skill_MakeItem( ITEMID_TYPE id, ITEMID_TYPE material, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly = false, int iReplicationQty = 1 );
 	bool Skill_MakeItem_Success();
 	bool Skill_Snoop_Check( const CItemContainer * pItem );
 	void Skill_Cleanup();	 // may have just cancelled targetting.
@@ -3512,22 +3513,24 @@ public:
 
 	// Attacker System
 	int	 Attacker() { return static_cast<int>(m_lastAttackers.size()); }
-	bool Attacker_Add( CChar * pChar);
+	//bool Attacker_Add( CChar * pChar);
+	bool Attacker_Add( CChar * pChar, INT64 threat = 0);
 	bool Attacker_Delete( CChar * pChar, bool bForced = false  );
 	bool Attacker_Delete( int id, bool bForced = false  );
 	void Attacker_RemoveChar();
 	void Attacker_Clear();
 	void Attacker_CheckTimeout();
-	int	 Attacker_GetDam( int attacker );
-	void  Attacker_SetDam( CChar * pChar, int value );
-	void  Attacker_SetDam( int attacker, int value );
+	INT64 Attacker_GetDam( int attacker );
+	void  Attacker_SetDam( CChar * pChar, INT64 value );
+	void  Attacker_SetDam( int attacker, INT64 value );
 	CChar * Attacker_GetUID( int attacker);
-	int  Attacker_GetElapsed( int attacker );
-	void  Attacker_SetElapsed( CChar * pChar, int value );
-	void  Attacker_SetElapsed( int pChar, int value );
-	int  Attacker_GetThreat( int attacker );
-	void  Attacker_SetThreat( CChar * pChar, int value );
-	void  Attacker_SetThreat( int pChar, int value );
+	INT64  Attacker_GetElapsed( int attacker );
+	void  Attacker_SetElapsed( CChar * pChar, INT64 value );
+	void  Attacker_SetElapsed( int pChar, INT64 value );
+	INT64  Attacker_GetThreat( int attacker );
+	void  Attacker_SetThreat( CChar * pChar, INT64 value );
+	void  Attacker_SetThreat( int pChar, INT64 value );
+	INT64 Attacker_GetHighestThreat();
 	int  Attacker_GetID( CChar * pChar );
 	int  Attacker_GetID( LPCTSTR pChar );
 	int  Attacker_GetID( CGrayUID pChar );
