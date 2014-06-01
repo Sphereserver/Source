@@ -1224,8 +1224,12 @@ badcmd:
 				INT64	iMul	= Exp_GetLLVal( pszKey );
 				SKIP_ARGSEP(pszKey);
 				INT64	iDiv	= Exp_GetLLVal( pszKey );
+				INT64 iRes = 0;
 
-				INT64 iRes	= IMULDIV(iNum,iMul,iDiv);
+				if ( iDiv == 0 )
+					g_Log.EventWarn("MULDIV(%lld,%lld,%lld) -> Deviding by '0'\n", iNum, iMul, iDiv);
+				else
+					iRes = IMULDIV(iNum,iMul,iDiv);
 
 				if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
 					g_Log.EventDebug("SCRIPT: muldiv(%lld,%lld,%lld) -> %lld\n", iNum, iMul, iDiv, iRes);
