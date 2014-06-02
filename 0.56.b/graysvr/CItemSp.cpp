@@ -211,7 +211,6 @@ void CItem::Spawn_GenerateChar( CResourceDef * pDef )
 	{
 		return;
 	}
-	ASSERT(pChar->m_pNPC);
 
 	m_itSpawnChar.m_current ++;
 	pChar->Memory_AddObjTypes(this, MEMORY_ISPAWNED);
@@ -237,6 +236,7 @@ void CItem::Spawn_GenerateChar( CResourceDef * pDef )
 		return;
 	}
 
+	ASSERT(pChar->m_pNPC);
 	if ( iDistMax )
 	{
 		pChar->m_ptHome = GetTopPoint();
