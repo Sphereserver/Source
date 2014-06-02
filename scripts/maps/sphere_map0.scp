@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, May 1, 2014
+// FILE LAST UPDATED: Monday, Jun 2, 2014
 //
 VERSION=0.56c
 
@@ -1088,11 +1088,36 @@ EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 // Misc
 ////////////////////////////////////////
 
+[AREADEF a_orc_cave_1]
+NAME=Orc Cave Level 1
+GROUP=Orc Cave
+P=5144,1982,0,0
+RECT=5131,1945,5162,2021,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_orc_cave_2]
+NAME=Orc Cave Level 2
+GROUP=Orc Cave
+P=5354,1307,0,0
+RECT=5284,1284,5371,1388,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
+[AREADEF a_orc_cave_3]
+NAME=Orc Cave Level 3
+GROUP=Orc Cave
+P=5304,2012,0,0
+RECT=5265,1987,5363,2045,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+
 [AREADEF a_dungeon_1]
 NAME=Dungeon
 GROUP=Other Dungeons
 P=6091,1313,15,0
 RECT=6057,1285,6137,1327,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_2]
@@ -1100,6 +1125,7 @@ NAME=Dungeon
 GROUP=Other Dungeons
 P=5477,1410,0,0
 RECT=5377,1284,5624,1507,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_3]
@@ -1107,153 +1133,160 @@ NAME=Dungeon
 GROUP=Other Dungeons
 P=5248,1462,0,0
 RECT=5125,1409,5372,1516,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_4]
-NAME=Orc Cave Level 2
+NAME=Dungeon
 GROUP=Other Dungeons
-P=5354,1307,0,0
-RECT=5284,1284,5371,1388,0
+P=5132,1324,0,0
+RECT=5124,1284,5230,1390,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_5]
 NAME=Dungeon
 GROUP=Other Dungeons
-P=5132,1324,0,0
-RECT=5124,1284,5230,1390,0
+P=5296,1905,0,0
+RECT=5259,1873,5333,1937,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_6]
 NAME=Dungeon
 GROUP=Other Dungeons
-P=5296,1905,0,0
-RECT=5259,1873,5333,1937,0
+P=5230,1963,0,0
+RECT=5194,1942,5266,1984,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_7]
 NAME=Dungeon
 GROUP=Other Dungeons
-P=5230,1963,0,0
-RECT=5194,1942,5266,1984,0
+P=5217,2024,0,0
+RECT=5185,2006,5249,2042,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_8]
-NAME=Orc Cave Level 3
+NAME=Dungeon
 GROUP=Other Dungeons
-P=5304,2012,0,0
-RECT=5265,1987,5363,2045,0
+P=5185,1940,0,0
+RECT=5172,1876,5222,1919,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_9]
 NAME=Dungeon
 GROUP=Other Dungeons
-P=5217,2024,0,0
-RECT=5185,2006,5249,2042,0
+P=5144,1879,0,0
+RECT=5126,1863,5171,1917,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_10]
-NAME=Orc Cave Level 1
+NAME=Dungeon
 GROUP=Other Dungeons
-P=5144,1982,0,0
-RECT=5131,1945,5162,2021,0
+P=5305,1857,0,0
+RECT=5297,1805,5345,1863,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_11]
 NAME=Dungeon
 GROUP=Other Dungeons
-P=5185,1940,0,0
-RECT=5172,1876,5222,1919,0
+P=5221,1862,0,0
+RECT=5200,1813,5271,1865,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_12]
 NAME=Dungeon
 GROUP=Other Dungeons
-P=5144,1879,0,0
-RECT=5126,1863,5171,1917,0
+P=5164,1829,0,0
+RECT=5130,1810,5169,1847,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_13]
 NAME=Dungeon
 GROUP=Other Dungeons
-P=5305,1857,0,0
-RECT=5297,1805,5345,1863,0
+P=5268,1755,0,0
+RECT=5244,1748,5276,1780,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_14]
 NAME=Dungeon
 GROUP=Other Dungeons
-P=5221,1862,0,0
-RECT=5200,1813,5271,1865,0
+P=5212,1748,0,0
+RECT=5197,1725,5227,1763,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_15]
 NAME=Dungeon
 GROUP=Other Dungeons
-P=5164,1829,0,0
-RECT=5130,1810,5169,1847,0
+P=5187,1777,0,0
+RECT=5179,1765,5228,1788,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_16]
 NAME=Dungeon
 GROUP=Other Dungeons
-P=5268,1755,0,0
-RECT=5244,1748,5276,1780,0
+P=5954,318,0,0
+RECT=5902,263,6007,374,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_17]
 NAME=Dungeon
 GROUP=Other Dungeons
-P=5212,1748,0,0
-RECT=5197,1725,5227,1763,0
+P=5951,447,22,0
+RECT=5895,392,6008,502,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_18]
 NAME=Dungeon
 GROUP=Other Dungeons
-P=5187,1777,0,0
-RECT=5179,1765,5228,1788,0
+P=6079,447,0,0
+RECT=6027,391,6132,504,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_19]
 NAME=Dungeon
 GROUP=Other Dungeons
-P=5954,318,0,0
-RECT=5902,263,6007,374,0
+P=6078,317,0,0
+RECT=6020,260,6137,374,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_20]
 NAME=Dungeon
 GROUP=Other Dungeons
-P=5951,447,22,0
-RECT=5895,392,6008,502,0
+P=5505,446,0,0
+RECT=5380,384,5631,509,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_21]
 NAME=Dungeon
 GROUP=Other Dungeons
-P=6079,447,0,0
-RECT=6027,391,6132,504,0
+P=5504,322,0,0
+RECT=5381,262,5628,382,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_dungeon_22]
 NAME=Dungeon
 GROUP=Other Dungeons
-P=6078,317,0,0
-RECT=6020,260,6137,374,0
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_dungeon_23]
-NAME=Dungeon
-GROUP=Other Dungeons
-P=5505,446,0,0
-RECT=5380,384,5631,509,0
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_dungeon_24]
-NAME=Dungeon
-GROUP=Other Dungeons
-P=5504,322,0,0
-RECT=5381,262,5628,382,0
+P=5732,853,0,0
+RECT=5670,785,5795,1011,0
+RECT=5794,905,5868,954,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_fens_of_the_dead]
@@ -1285,12 +1318,13 @@ P=4593,3507,20,0
 RECT=4094,3000,4917,4025,0
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_daemon_temple_compound]
+[AREADEF a_fire_temple]
 NAME=Fire Temple
 P=4588,3567,0,0
 RECT=4561,3548,4616,3586,0
 RECT=4576,3586,4615,3625,0
 RECT=4616,3548,4636,3580,0
+FLAGS=region_flag_nobuilding
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_hedge_maze]

@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, April 14, 2014
+// FILE LAST UPDATED: Monday, Jun 2, 2014
 //
 VERSION=0.56c
 
@@ -259,21 +259,21 @@ The Ironwood Inn
 5918,1412,-28,0=5961,1409,60,0=tp_trinsicpassage2_trinsicpassage1
 5961,1408,60,0=5918,1411,-28,0=tp_trinsicpassage1_trinsicpassage2
 5961,1409,60,0=5918,1412,-28,0=tp_trinsicpassage1_trinsicpassage2
-6137,1409,2,0=6140,1432,4,0=tp_SewerPassage_BritSewer
-6138,1409,2,0=6141,1432,4,0=tp_SewerPassage_BritSewer
+1491,1640,24,0=6032,1499,31,0=tp_Britain_BritSewer
+1491,1642,24,0=6032,1501,31,0=tp_Britain_BritSewer
+6031,1499,42,0=1491,1640,24,0=tp_BritSewer_Britain
+6031,1501,42,0=1491,1642,24,0=tp_BritSewer_Britain
 6140,1431,4,0=6137,1408,3,0=tp_BritSewer_SewerPassage
 6141,1431,4,0=6138,1408,3,0=tp_BritSewer_SewerPassage
+6137,1409,2,0=6140,1432,4,0=tp_SewerPassage_BritSewer
+6138,1409,2,0=6141,1432,4,0=tp_SewerPassage_BritSewer
 6125,1411,15,0=6075,3332,2,0=tp_SewerPassage_Swamp
 6126,1411,15,0=6075,3332,2,0=tp_SewerPassage_Swamp
-6127,1411,15,0=6075,3332,2,0=tp_SewerPassage_Swamp 
+6127,1411,15,0=6075,3332,2,0=tp_SewerPassage_Swamp
 4496,1475,15,0=4442,1122,5,0=tp_moonglow_b_x
-6031,1499,42,0=1491,1640,24,0=tp_BritSewer_Britain_2
-6031,1501,42,0=1491,1642,24,0=tp_BritSewer_Britain_1
 512,1559,0,0=5394,126,0,0=tp_shame_out_x
 513,1559,0,0=5395,126,0,0=tp_shame_out_x
 514,1559,0,0=5396,126,0,0=tp_shame_out_x
-1491,1640,24,0=6032,1499,31,0=tp_Britain_BritSewer_2
-1491,1642,24,0=6032,1501,31,0=tp_Britain_BritSewer_1
 5341,1602,0,0=5426,3122,-68,0=tp_underkeep_terathankeep
 5468,1804,0,0=5592,1840,0,0=tp_covetous_6b_5_x_from_lake_to_3
 5468,1805,0,0=5592,1841,0,0=tp_covetous_6b_5_x_from_lake_to_3
@@ -371,5 +371,26 @@ The Ironwood Inn
 5972,168,0,0=5905,96,0,0=tp_hythloth_passage_3_2x
 5973,168,0,0=5905,96,0,0=tp_hythloth_passage_3_3x
 5905,96,0,0=5976,168,0,0=tp_hythloth_passage_3_4x
+5682,1440,0,0=5606,802,60,0=tp_fire_dungeon_to_despise
+5682,1437,0,0=5164,1009,0,0=tp_fire_dungeon_to_destard
+1013,1433,0,0=5138,2016,0,0=tp_orccave_entrance
+1013,1434,0,0=5138,2016,0,0=tp_orccave_entrance
+5139,2015,0,0=1014,1434,0,0=tp_orccave_exit
+5139,2016,0,0=1014,1434,0,0=tp_orccave_exit
+5139,2017,0,0=1014,1434,0,0=tp_orccave_exit
+5132,1946,0,0=5332,1379,0,0=tp_orccave1_orccave2
+5133,1946,0,0=5332,1379,0,0=tp_orccave1_orccave2
+5134,1946,0,0=5332,1379,0,0=tp_orccave1_orccave2
+5135,1946,0,0=5332,1379,0,0=tp_orccave1_orccave2
+5329,1831,10,0=5134,1947,0,0=tp_orccave2_orccave1
+5330,1831,10,0=5134,1947,0,0=tp_orccave2_orccave1
+5331,1831,10,0=5134,1947,0,0=tp_orccave2_orccave1
+5332,1831,10,0=5134,1947,0,0=tp_orccave2_orccave1
+5333,1831,10,0=5134,1947,0,0=tp_orccave2_orccave1
+5334,1831,10,0=5134,1947,0,0=tp_orccave2_orccave1
+5363,1289,4,0=5272,2041,4,0=tp_orccave2_orccave3
+5364,1289,4,0=5272,2041,4,0=tp_orccave2_orccave3
+5272,2043,4,0=5363,1290,4,0=tp_orccave3_orccave2
+5273,2043,4,0=5363,1290,4,0=tp_orccave3_orccave2
 
 [EOF]

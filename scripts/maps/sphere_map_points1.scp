@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, April 14, 2014
+// FILE LAST UPDATED: Monday, Jun 2, 2014
 //
 VERSION=0.56c
 
@@ -221,20 +221,21 @@ VERSION=0.56c
 5918,1412,-28,1=5961,1409,60,1=tp_trinsicpassage2_trinsicpassage1_map1
 5961,1408,60,1=5918,1411,-28,1=tp_trinsicpassage1_trinsicpassage2_map1
 5961,1409,60,1=5918,1412,-28,1=tp_trinsicpassage1_trinsicpassage2_map1
-6137,1409,2,1=6140,1432,4,1=tp_SewerPassage_Sewer_map1
-6138,1409,2,1=6140,1432,4,1=tp_SewerPassage_Sewer_map1
+1491,1640,24,1=6032,1499,31,1=tp_Britain_BritSewer_map1
+1491,1642,24,1=6032,1501,31,1=tp_Britain_BritSewer_map1
+6031,1499,42,1=1491,1640,24,1=tp_BritSewer_Britain_map1
+6031,1501,42,1=1491,1642,24,1=tp_BritSewer_Britain_map1
+6140,1431,4,1=6137,1408,3,1=tp_BritSewer_SewerPassage_map1
+6141,1431,4,1=6138,1408,3,1=tp_BritSewer_SewerPassage_map1
+6137,1409,2,1=6140,1432,4,1=tp_SewerPassage_BritSewer_map1
+6138,1409,2,1=6141,1432,4,1=tp_SewerPassage_BritSewer_map1
 6125,1411,15,1=6075,3332,2,1=tp_SewerPassage_Swamp_map1
 6126,1411,15,1=6075,3332,2,1=tp_SewerPassage_Swamp_map1
 6127,1411,15,1=6075,3332,2,1=tp_SewerPassage_Swamp_map1
-6140,1431,4,1=6137,1408,3,1=tp_BritSewer_SewerPassage_map1
 4496,1475,15,1=4442,1122,5,1=tp_moonglow_b_x_map1
-6031,1499,42,1=1491,1640,24,1=tp_BritSewer_Britain_2_map1
-6031,1501,42,1=1491,1642,24,1=tp_BritSewer_Britain_1_map1
 512,1559,0,1=5394,126,0,1=tp_shame_out_x_map1
 513,1559,0,1=5395,126,0,1=tp_shame_out_x_map1
 514,1559,0,1=5396,126,0,1=tp_shame_out_x_map1
-1491,1640,24,1=6032,1499,31,1=tp_Britain_BritSewer_2_map1
-1491,1642,24,1=6032,1501,31,1=tp_Britain_BritSewer_1_map1
 5341,1602,0,1=5426,3122,-68,1=tp_underkeep_terathankeep_map1
 5468,1804,0,1=5592,1840,0,1=tp_covetous_6b_5_x_from_lake_to_3_map1
 5468,1805,0,1=5592,1841,0,1=tp_covetous_6b_5_x_from_lake_to_3_map1
@@ -332,5 +333,26 @@ VERSION=0.56c
 5972,168,0,1=5905,96,0,1=tp_hythloth_passage_3_2x_map1
 5973,168,0,1=5905,96,0,1=tp_hythloth_passage_3_3x_map1
 5905,96,0,1=5976,168,0,1=tp_hythloth_passage_3_4x_map1
+5682,1440,0,1=5606,802,60,1=tp_fire_dungeon_to_despise_map1
+5682,1437,0,1=5164,1009,0,1=tp_fire_dungeon_to_destard_map1
+1013,1433,0,1=5138,2016,0,1=tp_orccave_entrance_map1
+1013,1434,0,1=5138,2016,0,1=tp_orccave_entrance_map1
+5139,2015,0,1=1014,1434,0,1=tp_orccave_exit_map1
+5139,2016,0,1=1014,1434,0,1=tp_orccave_exit_map1
+5139,2017,0,1=1014,1434,0,1=tp_orccave_exit_map1
+5132,1946,0,1=5332,1379,0,1=tp_orccave1_orccave2_map1
+5133,1946,0,1=5332,1379,0,1=tp_orccave1_orccave2_map1
+5134,1946,0,1=5332,1379,0,1=tp_orccave1_orccave2_map1
+5135,1946,0,1=5332,1379,0,1=tp_orccave1_orccave2_map1
+5329,1831,10,1=5134,1947,0,1=tp_orccave2_orccave1_map1
+5330,1831,10,1=5134,1947,0,1=tp_orccave2_orccave1_map1
+5331,1831,10,1=5134,1947,0,1=tp_orccave2_orccave1_map1
+5332,1831,10,1=5134,1947,0,1=tp_orccave2_orccave1_map1
+5333,1831,10,1=5134,1947,0,1=tp_orccave2_orccave1_map1
+5334,1831,10,1=5134,1947,0,1=tp_orccave2_orccave1_map1
+5363,1289,4,1=5272,2041,4,1=tp_orccave2_orccave3_map1
+5364,1289,4,1=5272,2041,4,1=tp_orccave2_orccave3_map1
+5272,2043,4,1=5363,1290,4,1=tp_orccave3_orccave2_map1
+5273,2043,4,1=5363,1290,4,1=tp_orccave3_orccave2_map1
 
 [EOF]
