@@ -90,7 +90,6 @@ class CSectorBase		// world sector
 protected:
 	int	m_index;		// sector index
 	int m_map;			// sector map
-
 private:
 	typedef std::map<long, CGrayMapBlock*>	MapBlockCache;
 	MapBlockCache							m_MapBlockCache;
@@ -98,6 +97,7 @@ public:
 	static const char *m_sClassName;
 	CObPointSortArray	m_Teleports;		//	CTeleport array
 	CRegionLinks		m_RegionLinks;		//	CRegionBase(s) in this CSector
+	DWORD			m_dwFlags;
 public:
 	CCharsActiveList		m_Chars_Active;		// CChar(s) activte in this CSector.
 	CCharsDisconnectList	m_Chars_Disconnect;	// dead NPCs, etc
@@ -138,6 +138,14 @@ public:
 	CTeleport * GetTeleport( const CPointMap & pt ) const;
 	CTeleport * GetTeleport2d( const CPointMap & pt ) const;
 	bool AddTeleport( CTeleport * pTeleport );
+
+	bool IsFlagSet( DWORD dwFlag ) const
+	{
+		return(( m_dwFlags & dwFlag) ? true : false );
+	}
+
+#define SECF_NoSleep	0x00000001
+#define SECF_InstaSleep	0x00000002
 };
 
 #endif // _INC_CSECTOR_H

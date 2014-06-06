@@ -1036,3 +1036,6 @@ Changed @Attack: added Argn1 for npcs to allow modifying the initial 'Threat'.
 Changed: Pets forced to attack (kill and attack commands) now adds 1000( plus the actual highest threat amount) to argn1 in the @Attack trigger.
 Changed: Pets changes target instantly when attack is called always if NPC_AI_THREAT is off.
 Updated sphere_defs_2.scp with m_keep.
+
+06-06-2014, Feeh
+Added: #2340 Sectors now do have flags, look at sphere_defs.scp for more info

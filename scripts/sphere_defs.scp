@@ -751,6 +751,10 @@ mt_run            02000
 mt_nodclicklos    04000   // when dclicking sth., ignore LOS checks
 mt_nodclickdist   08000   // when dclicking sth., ignore distance checks
 
+[DEFNAME sector_flags]
+secf_nosleep	01 //sector will never sleep, this flag take over secf_instasleep
+secf_instasleep	02 //sector will sleep as soon as there is no active client inside
+
 [DEFNAME alignments]
 // ranges of karma ?
 evil                  {-10000 -6001}

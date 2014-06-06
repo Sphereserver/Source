@@ -18,6 +18,8 @@ CSector::CSector()
 	m_ColdChance = 0;		// Will be snow if rain chance success.
 	SetDefaultWeatherChance();
 
+	m_dwFlags = 0;
+
 	m_fSaveParity = false;
 }
 
@@ -26,6 +28,7 @@ enum SC_TYPE
 	SC_CLIENTS,
 	SC_COLDCHANCE,
 	SC_COMPLEXITY,
+	SC_FLAGS,
 	SC_ISDARK,
 	SC_ISNIGHTTIME,
     SC_ITEMCOUNT,
@@ -44,6 +47,7 @@ LPCTSTR const CSector::sm_szLoadKeys[SC_QTY+1] =
 	"CLIENTS",
 	"COLDCHANCE",
 	"COMPLEXITY",
+	"FLAGS",
 	"ISDARK",
 	"ISNIGHTTIME",
 	"ITEMCOUNT",
@@ -86,6 +90,9 @@ bool CSector::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 				return( true );
 			}
 			sVal.FormatVal( GetCharComplexity());
+			return( true );
+		case SC_FLAGS:
+			sVal.FormatHex(m_dwFlags);
 			return( true );
 		case SC_LIGHT:
 			sVal.FormatVal(GetLight());
@@ -138,6 +145,9 @@ bool CSector::r_LoadVal( CScript &s )
 		case SC_COLDCHANCE:
 			SetWeatherChance( false, s.HasArgs() ? s.GetArgVal() : -1 );
 			return( true );
+		case SC_FLAGS:
+			m_dwFlags = s.GetArgVal();
+			return true;
 		case SC_LIGHT:
 			if ( g_Cfg.m_bAllowLightOverride )
 				m_Env.m_Light = static_cast<unsigned char>(s.GetArgVal() | LIGHT_OVERRIDE);
@@ -235,32 +245,55 @@ void CSector::r_Write()
 {
 	ADDTOCALLSTACK_INTENSIVE("CSector::r_Write");
 	if ( m_fSaveParity == g_World.m_fSaveParity )
-		return;	// already saved.
+		return; // already saved.
 	CPointMap pt = GetBasePoint();
 
 	m_fSaveParity = g_World.m_fSaveParity;
+	bool bHeaderCreated = false;
 
-	if ( g_Cfg.m_bAllowLightOverride || !g_Cfg.m_fNoWeather )
+	if ( m_dwFlags > 0)
 	{
-		if ( IsLightOverriden() || IsRainOverriden() || IsColdOverriden() )
-		{
-			g_World.m_FileWorld.WriteSection("SECTOR %d,%d,0,%d", pt.m_x, pt.m_y, pt.m_map );
-			if (GetSeason() != SEASON_Summer)
-				g_World.m_FileWorld.WriteKeyVal("SEASON", GetSeason());
-			if ( g_Cfg.m_bAllowLightOverride )
-			{
-				if ( IsLightOverriden() )
-					g_World.m_FileWorld.WriteKeyVal("LIGHT", GetLight());
-			}
-			if ( !g_Cfg.m_fNoWeather )
-			{
-				if ( IsRainOverriden() )
-					g_World.m_FileWorld.WriteKeyVal("RAINCHANCE", GetRainChance());
-				if ( IsColdOverriden() )
-					g_World.m_FileWorld.WriteKeyVal("COLDCHANCE", GetColdChance());
-			}
-		}
+		g_World.m_FileWorld.WriteSection("SECTOR %d,%d,0,%d", pt.m_x, pt.m_y, pt.m_map );
+		g_World.m_FileWorld.WriteKeyHex("FLAGS", m_dwFlags);
+		bHeaderCreated = true;
 	}
+
+	if (g_Cfg.m_bAllowLightOverride && IsLightOverriden())
+	{
+		if ( bHeaderCreated == false )
+			g_World.m_FileWorld.WriteSection("SECTOR %d,%d,0,%d", pt.m_x, pt.m_y, pt.m_map );
+
+		g_World.m_FileWorld.WriteKeyVal("LIGHT", GetLight());
+	}
+
+	if (!g_Cfg.m_fNoWeather && (IsRainOverriden() || IsColdOverriden()))
+	{
+		if ( bHeaderCreated == false )
+			g_World.m_FileWorld.WriteSection("SECTOR %d,%d,0,%d", pt.m_x, pt.m_y, pt.m_map );
+
+		if ( IsRainOverriden() )
+			g_World.m_FileWorld.WriteKeyVal("RAINCHANCE", GetRainChance());
+
+		if ( IsColdOverriden() )
+			g_World.m_FileWorld.WriteKeyVal("COLDCHANCE", GetColdChance());
+	}
+
+	if (GetSeason() != SEASON_Summer)
+	{
+		if ( bHeaderCreated == false )
+			g_World.m_FileWorld.WriteSection("SECTOR %d,%d,0,%d", pt.m_x, pt.m_y, pt.m_map );
+
+		g_World.m_FileWorld.WriteKeyVal("SEASON", GetSeason());
+	}
+
+	//g_Log.EventDebug("SECTOR %d,%d,0,%d\n", pt.m_x, pt.m_y, pt.m_map);
+	//g_Log.EventDebug("IsLightOverriden() %s\n",IsLightOverriden()?"true":"false");
+	//g_Log.EventDebug("IsRainOverriden() %s\n",IsRainOverriden()?"true":"false");
+	//g_Log.EventDebug("IsColdOverriden() %s\n",IsColdOverriden()?"true":"false");
+	//g_Log.EventDebug("SEASON %d\n",GetSeason());
+	//g_Log.EventDebug("LIGHT %d\n",GetLight());
+	//g_Log.EventDebug("RAINCHANCE %d\n",GetRainChance());
+	//g_Log.EventDebug("COLDCHANCE %d\n",GetColdChance());
 
 	// Chars in the sector.
 	CChar * pCharNext;
@@ -864,8 +897,23 @@ bool CSector::MoveCharToSector( CChar * pChar )
 inline bool CSector::IsSectorSleeping() const
 {
 	ADDTOCALLSTACK_INTENSIVE("CSector::IsSectorSleeping");
-	long long iAge = - g_World.GetTimeDiff( GetLastClientTime());
-	return( iAge > 10*60*TICK_PER_SEC );
+	if (IsFlagSet(SECF_NoSleep)) 
+	{
+		return false; //never sleep
+	}
+	else if (IsFlagSet(SECF_InstaSleep))
+	{
+		size_t clients = m_Chars_Active.HasClients();
+		if (clients > 0)
+			return false; //has at least one client, no sleep
+		else
+			return true; //no active client inside, instant sleep
+	}
+	else //default behaviour
+	{
+		long long iAge = - g_World.GetTimeDiff( GetLastClientTime());
+		return( iAge > 10*60*TICK_PER_SEC );
+	}
 }
 
 void CSector::SetSectorWakeStatus()
