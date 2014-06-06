@@ -1039,3 +1039,4 @@ Updated sphere_defs_2.scp with m_keep.
 
 06-06-2014, Feeh
 Added: #2340 Sectors now do have flags, look at sphere_defs.scp for more info
+Fixed: #2360

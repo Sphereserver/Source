@@ -216,7 +216,7 @@ void CItem::Spawn_GenerateChar( CResourceDef * pDef )
 	pChar->Memory_AddObjTypes(this, MEMORY_ISPAWNED);
 
 	pChar->MoveTo(GetTopPoint());
-	pChar->NPC_LoadScript(false);
+	pChar->NPC_LoadScript(true);
 
 	if( pChar->GetRegion() == NULL )
 	{
