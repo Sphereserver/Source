@@ -728,7 +728,7 @@ IF (<SRC.IsPlayer>)
 			SRC.SYSMESSAGELOC color_text,1111707//"Only gargoyles can wear this."
 			RETURN 1
 		ENDIF
-	ELSEIF !(<CanUse>&can_u_gargoyle)
+	ELSEIF !(<CanUse>&can_u_all)
 		IF (<SRC.f_isgarg>)
 			SRC.SYSMESSAGELOC color_text,1111708//"Gargoyles can't wear this."
 			RETURN 1

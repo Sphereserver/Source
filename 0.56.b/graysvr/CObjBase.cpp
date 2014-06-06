@@ -1260,6 +1260,44 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_TAGCOUNT:
 			sVal.FormatVal( m_TagDefs.GetCount() );
 			break;
+		case OC_PROPSAT:
+			{
+ 				pszKey += 7;	// eat the 'TAGAT'
+ 				if ( *pszKey == '.' )	// do we have an argument?
+ 				{
+ 					SKIP_SEPARATORS( pszKey );
+ 					size_t iQty = static_cast<size_t>( Exp_GetVal( pszKey ) );
+					if ( iQty >= m_BaseDefs.GetCount() )
+ 						return( false ); // trying to get non-existant tag
+
+ 					const CVarDefCont * pTagAt = m_BaseDefs.GetAt( iQty );
+ 					if ( !pTagAt )
+ 						return( false ); // trying to get non-existant tag
+
+ 					SKIP_SEPARATORS( pszKey );
+ 					if ( ! *pszKey )
+ 					{
+ 						sVal.Format("%s=%s", static_cast<LPCTSTR>(pTagAt->GetKey()), static_cast<LPCTSTR>(pTagAt->GetValStr()));
+ 						return( true );
+ 					}
+ 					else if ( !strnicmp( pszKey, "KEY", 3 )) // key?
+ 					{
+ 						sVal = static_cast<LPCTSTR>(pTagAt->GetKey());
+ 						return( true );
+ 					}
+ 					else if ( !strnicmp( pszKey, "VAL", 3 )) // val?
+ 					{
+ 						sVal = pTagAt->GetValStr();
+ 						return( true );
+ 					}
+ 				}
+
+			return( false );
+			}
+			break;
+		case OC_PROPSCOUNT:
+			sVal.FormatVal( m_BaseDefs.GetCount() );
+			break;
 		default:
 			return false;
 	}
@@ -1904,11 +1942,21 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			}
 			break;
 		case OV_TAGLIST:
-			EXC_SET("TAGLIST");
-			if ( ! strcmpi( s.GetArgStr(), "log" ))
-				pSrc = &g_Serv;
-			m_TagDefs.DumpKeys(pSrc, "TAG.");
-			break;
+			{
+				EXC_SET("TAGLIST");
+				if ( ! strcmpi( s.GetArgStr(), "log" ))
+					pSrc = &g_Serv;
+				m_TagDefs.DumpKeys(pSrc, "TAG.");
+			}break;
+			
+		case OC_PROPSLIST:
+			{
+				EXC_SET("PROPSLIST");
+				if ( ! strcmpi( s.GetArgStr(), "log" ))
+					pSrc = &g_Serv;
+				m_BaseDefs.DumpKeys(pSrc, NULL);
+			}break;
+
 		case OV_TARGET:
 			{
 				EXC_SET("TARGET");

@@ -2178,7 +2178,6 @@ int CChar::Skill_Cartography( SKTRIG_TYPE stage )
 	// m_Act_Cartography_Dist = the map distance.
 	// Find the blank map to write on first.
 
-
 	CPointMap pnt = GetTopPoint();
 	if ( pnt.m_map <= 1 )
 	{
@@ -3445,7 +3444,7 @@ int CChar::Skill_MakeItem( SKTRIG_TYPE stage )
 	// m_Act_Targ = the item we want to be part of this process.
 	// m_atCreate.m_ItemID = new item we are making
 	// m_atCreate.m_Amount = amount of said item.
-
+	
 	if ( stage == SKTRIG_START )
 	{
 		return m_Act_Difficulty;	// keep the already set difficulty
@@ -4096,8 +4095,8 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 		return Skill_Fighting(stage);
 	else if ( g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_MAGIC ) )
 		return Skill_Magery(stage);
-	else if ( g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_CRAFT ) )
-		return Skill_MakeItem(stage);
+	//else if ( g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_CRAFT ) )		// Skills must call their Skill_id() regardless of skf_craft, cartography and cooking will fail if not.
+	//	return Skill_MakeItem(stage);
 	else switch ( Skill_GetActive() )
 	{
 		case SKILL_NONE:	// idling.
