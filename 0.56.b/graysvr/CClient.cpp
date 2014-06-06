@@ -1118,6 +1118,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 									m_pChar->m_Act_Targ = pItem->GetUID();
 									SysMessagef("Bad spawn (0%lx, id=%s). Set as ACT", (DWORD)pItem->GetUID(), g_Cfg.ResourceGetName(rid));
 									fFound = true;
+									return true;
 								}
 							}
 						}
