@@ -1185,7 +1185,7 @@ blocked:
 			ptTest.Move(dirTest1);
 			{
 				wBlockFlags = CAN_C_SWIM | CAN_C_WALK | CAN_C_FLY;
-				signed char z = g_World.GetHeightPoint(ptTest, wBlockFlags, true);
+				signed char z = g_World.GetHeightPoint_Old(ptTest, wBlockFlags, true);
 				signed char zDiff = abs(z - ptTest.m_z);
 				if (zDiff > PLAYER_HEIGHT) fBlocked = true;
 				else ptTest.m_z = z;
@@ -1199,7 +1199,7 @@ blocked:
 				ptTest.Move(dirTest2);
 				{
 					wBlockFlags = CAN_C_SWIM | CAN_C_WALK | CAN_C_FLY;
-					signed char z = g_World.GetHeightPoint(ptTest, wBlockFlags, true);
+					signed char z = g_World.GetHeightPoint_Old(ptTest, wBlockFlags, true);
 					signed char zDiff = abs(z - ptTest.m_z);
 					if (zDiff > PLAYER_HEIGHT) goto blocked;
 					else ptTest.m_z = z;
@@ -1217,9 +1217,9 @@ blocked:
 			ptSrc.Move( dir );	// NOTE: The dir is very coarse and can change slightly.
 
 			wBlockFlags = CAN_C_SWIM | CAN_C_WALK | CAN_C_FLY;
-			signed char z = g_World.GetHeightPoint( ptSrc, wBlockFlags, true );
+			signed char z = g_World.GetHeightPoint_Old( ptSrc, wBlockFlags, true );
 			signed char zDiff	= abs( z - ptSrc.m_z );
-
+			
 			if ( zDiff > PLAYER_HEIGHT ) goto blocked;
 			else ptSrc.m_z	= z;
 
