@@ -1111,8 +1111,8 @@ bool CRegionResourceDef::r_LoadVal( CScript & s )
 		case RMC_REAPAMOUNT:
 			m_ReapAmount.Load( s.GetArgRaw() );
 			break;
-		case RMC_REGEN:
-			m_iRegenerateTime = s.GetArgVal();	// TICK_PER_SEC once found how long to regen this type.
+		case RMC_REGEN:	// TICK_PER_SEC once found how long to regen this type.
+			m_iRegenerateTime.Load( s.GetArgRaw() );
 			break;
 		case RMC_SKILL:
 			m_Skill.Load( s.GetArgRaw() );
@@ -1153,7 +1153,7 @@ bool CRegionResourceDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConso
 			sVal = m_ReapAmount.Write();
 			break;
 		case RMC_REGEN:
-			sVal.FormatVal( m_iRegenerateTime );
+			sVal = m_iRegenerateTime.Write();
 			break;
 		case RMC_SKILL:
 			sVal = m_Skill.Write();
@@ -1175,7 +1175,6 @@ CRegionResourceDef::CRegionResourceDef( RESOURCE_ID rid ) :
 {
 	// set defaults first.
 	m_ReapItem = ITEMID_NOTHING;
-	m_iRegenerateTime = 0;	// TICK_PER_SEC once found how long to regen this type.
 }
 
 CRegionResourceDef::~CRegionResourceDef()

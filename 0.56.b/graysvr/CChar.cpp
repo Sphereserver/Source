@@ -1985,7 +1985,7 @@ do_default:
 				else
 				{
 					DWORD		wBlockFlags	= 0;
-					g_World.GetHeightPoint( ptDst, wBlockFlags, true );
+					g_World.GetHeightPoint2( ptDst, wBlockFlags, true );
 					sVal.FormatHex( wBlockFlags );
 				}
 			}

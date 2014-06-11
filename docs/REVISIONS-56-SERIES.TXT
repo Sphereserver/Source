@@ -1041,3 +1041,6 @@ Updated sphere_defs_2.scp with m_keep.
 Added: #2340 Sectors now do have flags, look at sphere_defs.scp for more info
 Fixed: #2360
 Fixed: BADSPAWN command was not stopping when the first bad spawn was found
+
+11-06-2014, Ben
+Added #2359: REGEN in REGIONRESOURCE can now have a range as argument.

@@ -1420,7 +1420,7 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 			// else
 			// Determine map point at that position
 			unsigned long wBlockFlags = CAN_C_WALK;
-			char pointZ = g_World.GetHeightPoint(ptNewPlace, wBlockFlags, false);
+			char pointZ = g_World.GetHeightPoint2(ptNewPlace, wBlockFlags, false);
 			ptNewPlace.m_z = pointZ + 1;
 		}
 	}

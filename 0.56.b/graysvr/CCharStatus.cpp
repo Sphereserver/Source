@@ -570,7 +570,7 @@ bool CChar::IsSwimming() const
 	// Is there a solid surface under us ?
 	DWORD wBlockFlags = GetMoveBlockFlags();
 	char iSurfaceZ;
-	iSurfaceZ = g_World.GetHeightPoint(ptTop, wBlockFlags, true);
+	iSurfaceZ = g_World.GetHeightPoint2(ptTop, wBlockFlags, true);
 
 	if ( (iSurfaceZ == pt.m_z) && (wBlockFlags & CAN_I_WATER) )
 		return true;
@@ -1185,7 +1185,7 @@ blocked:
 			ptTest.Move(dirTest1);
 			{
 				wBlockFlags = CAN_C_SWIM | CAN_C_WALK | CAN_C_FLY;
-				signed char z = g_World.GetHeightPoint_Old(ptTest, wBlockFlags, true);
+				signed char z = g_World.GetHeightPoint2(ptTest, wBlockFlags, true);
 				signed char zDiff = abs(z - ptTest.m_z);
 				if (zDiff > PLAYER_HEIGHT) fBlocked = true;
 				else ptTest.m_z = z;
@@ -1199,7 +1199,7 @@ blocked:
 				ptTest.Move(dirTest2);
 				{
 					wBlockFlags = CAN_C_SWIM | CAN_C_WALK | CAN_C_FLY;
-					signed char z = g_World.GetHeightPoint_Old(ptTest, wBlockFlags, true);
+					signed char z = g_World.GetHeightPoint2(ptTest, wBlockFlags, true);
 					signed char zDiff = abs(z - ptTest.m_z);
 					if (zDiff > PLAYER_HEIGHT) goto blocked;
 					else ptTest.m_z = z;
@@ -1217,7 +1217,7 @@ blocked:
 			ptSrc.Move( dir );	// NOTE: The dir is very coarse and can change slightly.
 
 			wBlockFlags = CAN_C_SWIM | CAN_C_WALK | CAN_C_FLY;
-			signed char z = g_World.GetHeightPoint_Old( ptSrc, wBlockFlags, true );
+			signed char z = g_World.GetHeightPoint2( ptSrc, wBlockFlags, true );
 			signed char zDiff	= abs( z - ptSrc.m_z );
 			
 			if ( zDiff > PLAYER_HEIGHT ) goto blocked;
@@ -2307,7 +2307,7 @@ bool CChar::IsVerticalSpace( CPointMap ptDest, bool fForceMount )
 		wBlockFlags |= CAN_I_CLIMB;
 
 	CGrayMapBlockState block( wBlockFlags, ptDest.m_z, ptDest.m_z + m_zClimbHeight + GetHeightMount( false ), ptDest.m_z + m_zClimbHeight + 2, GetHeightMount( false ) );
-	g_World.GetHeightPoint( ptDest, block, true );
+	g_World.GetHeightPoint2( ptDest, block, true );
 
 	//DEBUG_ERR(("GetHeightMount( false ) %d  ptDest.m_z %d  block.m_Top.m_z %d\n",GetHeightMount( false )+4,ptDest.m_z,block.m_Top.m_z));
 	if ( GetHeightMount( false ) + ptDest.m_z + (( fForceMount ) ? ( 4 ) : ( 0 )) >= block.m_Top.m_z ) //4 is the height of a rideable
@@ -2376,7 +2376,7 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 		DEBUG_ERR(("Character 0%lx on %d,%d,%d wants to move into an invalid location %d,%d,%d.\n",GetUID().GetObjUID(),GetTopPoint().m_x,GetTopPoint().m_y,GetTopPoint().m_z,ptDest.m_x,ptDest.m_y,ptDest.m_z));
 		return NULL;
 	}
-	g_World.GetHeightPoint( ptDest, block, true );
+	g_World.GetHeightPoint2( ptDest, block, true );
 
 	// Pass along my results.
 	wBlockFlags = static_cast<WORD>(block.m_Bottom.m_dwBlockFlags);

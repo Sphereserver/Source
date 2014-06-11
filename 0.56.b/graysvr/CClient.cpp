@@ -1261,7 +1261,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 					CPointMap pnt = po;
 					pnt.MoveN( DIR_W, 3 );
 					DWORD wBlockFlags = m_pChar->GetMoveBlockFlags();
-					pnt.m_z = g_World.GetHeightPoint( pnt, wBlockFlags );	// ??? Get Area
+					pnt.m_z = g_World.GetHeightPoint2( pnt, wBlockFlags );	// ??? Get Area
 					m_pChar->m_dirFace = pnt.GetDir( po, m_pChar->m_dirFace ); // Face the player
 					m_pChar->Spell_Teleport( pnt, true, false );
 				}

@@ -2282,7 +2282,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 						wBlockFlags |= CAN_I_CLIMB; // If we can walk than we can climb. Ignore CAN_C_FLY at all here
 
 					CGrayMapBlockState block( wBlockFlags, GetTopPoint().m_z, GetTopPoint().m_z + pChar->m_zClimbHeight + pChar->GetHeightMount( false ), GetTopPoint().m_z + pChar->m_zClimbHeight + 2, pChar->GetHeightMount( false ) );
-					g_World.GetHeightPoint( GetTopPoint(), block, true );
+					g_World.GetHeightPoint2( GetTopPoint(), block, true );
 
 					wBlockFlags = block.m_Bottom.m_dwBlockFlags;
 					if ( block.m_Top.m_dwBlockFlags )
@@ -2328,7 +2328,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				{
 					height_t zHeight = CItemBase::GetItemHeight( pItem->GetDispID(), wBlockFlags );
 					CGrayMapBlockState block( wBlockFlags, GetTopPoint().m_z, GetTopPoint().m_z + zHeight, GetTopPoint().m_z + 2, zHeight );
-					g_World.GetHeightPoint( GetTopPoint(), block, true );
+					g_World.GetHeightPoint2( GetTopPoint(), block, true );
 					SetTopZ(block.m_Bottom.m_z);
 				}
 				else

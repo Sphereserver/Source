@@ -434,8 +434,8 @@ public:
 	}
 
 	// CSector World Map stuff.
-	void GetHeightPoint_Old( const CPointMap & pt, CGrayMapBlockState & block, bool fHouseCheck = false );
-	signed char GetHeightPoint_Old(const CPointBase & pt, DWORD & wBlockFlags, bool fHouseCheck = false); // Height of player who walked to X/Y/OLDZ
+	void GetHeightPoint2( const CPointMap & pt, CGrayMapBlockState & block, bool fHouseCheck = false );
+	signed char GetHeightPoint2(const CPointBase & pt, DWORD & wBlockFlags, bool fHouseCheck = false); // Height of player who walked to X/Y/OLDZ
 
 	void GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, bool fHouseCheck = false );
 	signed char GetHeightPoint( const CPointBase & pt, DWORD & wBlockFlags, bool fHouseCheck = false );

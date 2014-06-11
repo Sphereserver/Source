@@ -122,7 +122,7 @@ CItem * CWorld::CheckNaturalResource( const CPointMap & pt, IT_TYPE Type, bool f
 
 	// Total amount of ore here.
 	pResBit->SetAmount(pOreDef->m_Amount.GetRandom());
-	pResBit->MoveToDecay(pt, pOreDef->m_iRegenerateTime * TICK_PER_SEC);	// Delete myself in this amount of time.
+	pResBit->MoveToDecay(pt, pOreDef->m_iRegenerateTime.GetRandom() * TICK_PER_SEC);	// Delete myself in this amount of time.
 
 	EXC_SET("resourcefound");
 
@@ -990,9 +990,9 @@ signed char CWorld::GetHeightPoint( const CPointBase & pt, DWORD & wBlockFlags, 
 	return( block.m_Bottom.m_z );
 }
 
-void CWorld::GetHeightPoint_Old( const CPointMap & pt, CGrayMapBlockState & block, bool fHouseCheck )
+void CWorld::GetHeightPoint2( const CPointMap & pt, CGrayMapBlockState & block, bool fHouseCheck )
 {
-	ADDTOCALLSTACK("CWorld::GetHeightPoint_Old");
+	ADDTOCALLSTACK("CWorld::GetHeightPoint2");
 	// Height of statics at/above given coordinates
 	// do gravity here for the z.
 
@@ -1147,9 +1147,9 @@ void CWorld::GetHeightPoint_Old( const CPointMap & pt, CGrayMapBlockState & bloc
 	}
 }
 
-signed char CWorld::GetHeightPoint_Old( const CPointBase & pt, DWORD & wBlockFlags, bool fHouseCheck ) // Height of player who walked to X/Y/OLDZ
+signed char CWorld::GetHeightPoint2( const CPointBase & pt, DWORD & wBlockFlags, bool fHouseCheck ) // Height of player who walked to X/Y/OLDZ
 {
-	ADDTOCALLSTACK("CWorld::GetHeightPoint_Old");
+	ADDTOCALLSTACK("CWorld::GetHeightPoint2");
 	// Given our coords at pt including pt.m_z
 	// What is the height that gravity would put me at should i step hear ?
 	// Assume my head height is PLAYER_HEIGHT/2
@@ -1175,7 +1175,7 @@ signed char CWorld::GetHeightPoint_Old( const CPointBase & pt, DWORD & wBlockFla
 	DWORD dwCan = wBlockFlags;
 	CGrayMapBlockState block(wBlockFlags, pt.m_z, PLAYER_HEIGHT);
 
-	GetHeightPoint_Old( pt, block, fHouseCheck );
+	GetHeightPoint2( pt, block, fHouseCheck );
 
 	// Pass along my results.
 	wBlockFlags = block.m_Bottom.m_dwBlockFlags;

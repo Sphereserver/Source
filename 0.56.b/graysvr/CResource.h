@@ -289,7 +289,7 @@ public:
 
 	CValueCurveDef m_Amount;		// How is here total
 	CValueCurveDef m_Skill;			// Skill levels required to mine this.
-	int m_iRegenerateTime;			// TICK_PER_SEC once found how long to regen this type.
+	CValueCurveDef m_iRegenerateTime;			// TICK_PER_SEC once found how long to regen this type.
 
 public:
 	explicit CRegionResourceDef( RESOURCE_ID rid );
