@@ -1044,3 +1044,5 @@ Fixed: BADSPAWN command was not stopping when the first bad spawn was found
 
 11-06-2014, Ben
 Added #2359: REGEN in REGIONRESOURCE can now have a range as argument.
+Fixed #1827: Axis strip now works as case insensitive.
+Fixed #2307: REGION_FLAG_INSTA_LOGOUT will now work in ROOMDEFs

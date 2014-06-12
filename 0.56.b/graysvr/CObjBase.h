@@ -2817,6 +2817,10 @@ public:
 	{
 		return m_pArea; // What region are we in now. (for guarded message)
 	}
+	CRegionBase * GetRoom() const
+	{
+		return m_pRoom; // What room are we in now.
+	}
 	int GetSight() const
 	{
 		return static_cast<int>(m_iVisualRange);

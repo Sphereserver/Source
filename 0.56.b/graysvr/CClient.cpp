@@ -215,6 +215,11 @@ bool CClient::CanInstantLogOut() const
 		return( true );
 	if ( pArea->IsFlag( REGION_FLAG_INSTA_LOGOUT ))
 		return( true );
+
+	const CRegionBase * pRoom = m_pChar->GetRoom(); //Allows Room flag to work!
+	if ( pRoom->IsFlag( REGION_FLAG_INSTA_LOGOUT ))
+		return( true );
+
 	return( false );
 }
 
