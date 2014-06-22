@@ -217,7 +217,7 @@ bool CClient::CanInstantLogOut() const
 		return( true );
 
 	const CRegionBase * pRoom = m_pChar->GetRoom(); //Allows Room flag to work!
-	if ( pRoom->IsFlag( REGION_FLAG_INSTA_LOGOUT ))
+	if ( pRoom != NULL && pRoom->IsFlag( REGION_FLAG_INSTA_LOGOUT )) //sanity check for null rooms // Can C++ guarantee short-circuit evaluation for CRegionBase ?
 		return( true );
 
 	return( false );
