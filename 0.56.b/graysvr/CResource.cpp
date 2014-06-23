@@ -1339,6 +1339,43 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			return false;
 		} 
 
+		if (!strnicmp( pszKey, "FUNCTIONS.", 10))
+		{
+			LPCTSTR pszCmd = pszKey + 10;
+
+			if ( !strnicmp( pszCmd, "COUNT", 5 ))
+			{
+				sVal.FormatVal(static_cast<size_t>(m_Functions.GetCount()));
+				return( true );
+			}
+			else if ( m_Functions.ContainsKey(pszCmd) )
+			{
+				sVal.FormatVal(static_cast<int>(GetPrivCommandLevel(pszCmd)));
+				return true;
+			}
+
+			size_t iNumber = Exp_GetVal(pszCmd);
+			SKIP_SEPARATORS(pszCmd);
+			sVal.FormatVal(0);
+
+			if (iNumber < 0 || iNumber >= m_Functions.GetCount()) //invalid index can potentially crash the server, this check is strongly needed
+			{
+				g_Log.EventError("Invalid command index %d\n",iNumber);
+				return false;
+			}
+
+			if ( *pszCmd == '\0')
+			{
+				sVal.Format(m_Functions.GetAt(iNumber)->GetName());
+				return true;
+			}
+			else if ( !strnicmp( pszCmd, "PLEVEL", 5 ))
+			{
+				sVal.FormatVal(static_cast<int>(GetPrivCommandLevel(m_Functions.GetAt(iNumber)->GetName())));
+				return true;
+			}
+		}
+
 		if ( ( !strnicmp( pszKey, "GUILDSTONES.", 12) ) || ( !strnicmp( pszKey, "TOWNSTONES.", 11) ) )
 		{
 			bool bGuild = !strnicmp( pszKey, "GUILDSTONES.",12);

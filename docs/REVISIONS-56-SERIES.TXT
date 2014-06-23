@@ -1046,3 +1046,12 @@ Fixed: BADSPAWN command was not stopping when the first bad spawn was found
 Added #2359: REGEN in REGIONRESOURCE can now have a range as argument.
 Fixed #1827: Axis strip now works as case insensitive.
 Fixed #2307: REGION_FLAG_INSTA_LOGOUT will now work in ROOMDEFs
+
+23-06-2014, Feeh
+Fixed #2366
+Added: SERV.FUNCTIONS.x, it can display every available function and its access plevel
+		Usage:
+		SERV.FUNCTIONS.COUNT		- Return how many functions are available in your server
+		SERV.FUNCTIONS.32			- Return the 33th function (zero-based)
+		SERV.FUNCTIONS.32.PLEVEL	- Return the minimum access plevel to use this function
+		SERV.FUNCTIONS.add1			- Return the minimum access plevel to use 'add1' function
