@@ -7,18 +7,17 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, May 2, 2014
+// FILE LAST UPDATED: Monday, Jun 23, 2014
 //
 VERSION=0.56c
 
-
 [DEFNAME HARDCODED]
-defaultitem   i_gold  // If we cannot create the item, make it this.
-defaultchar   c_man   // If we cannot create the char, make it this.
-defaultseed   i_gold  // When we make a seed, make it look like this.
-defaultmsg    i_gold  // When we make a bulletin board post, use this item.
-guards        { c_guard 1 c_guard_f 1 }
-deffood       { i_ham 1 i_cake 1 i_bread_loaf 1 }
+defaultitem	i_gold  // If we cannot create the item, make it this.
+defaultchar	c_man   // If we cannot create the char, make it this.
+defaultseed	i_gold  // When we make a seed, make it look like this.
+defaultmsg	i_gold  // When we make a bulletin board post, use this item.
+guards		{ c_guard 1 c_guard_f 1 }
+deffood		{ i_fruit_grapes 1 i_ham 1 i_cheese_cut 1 i_muffin 1 i_fish_cut_cooked 1 i_ribs_cooked 1 i_bird_cooked 1 i_sausages 1 i_fruit_apple 1 i_fruit_peach 1 }
 
 [DEFNAME mount_items]
 // This contain the list of the mount/mountid the format is:

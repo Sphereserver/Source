@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,13 +7,11 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, October 6, 2013
+// FILE LAST UPDATED: Monday, Jun 23, 2014
 //
 VERSION=0.56c
 
-
 [COMMENT sphere_resource]
-
 A REGIONRESOURCE (usually named mr_something) describes how a map resource
 can be harvested by using the following properties:
 
@@ -36,7 +34,6 @@ resource.
 
 A terrain TYPEDEF (usually named t_something) is linked to terrain through
 it's TERRAIN= property.
-
 
 * REGIONRESOURCE and REGIONTYPE are defined in the sphere_region.scp file.
 * Terrain TYPEDEFs are defined in the sphere_terrain_types.scp file.
@@ -114,7 +111,7 @@ RESOURCES=10.0 mr_fish3
 RESOURCES=10.0 mr_fish4
 ON=@RegPeriodic
    // Water/Ocean boat sounds
-   SRC.SFX={025,1,026,1,027,1,010,1,011,1,012,1,013,1}
+   SRC.SOUND={025,1,026,1,027,1,010,1,011,1,012,1,013,1}
 
 
 ///////////////////////////////////////
@@ -333,7 +330,7 @@ RESOURCES=30.0 mr_iron
 RESOURCES=5.0 mr_shadow
 ON=@RegPeriodic
    // Play these sounds whether its day or night.
-   SRC.SFX={021f,1,0243,1,0244,1,0245,1}
+   SRC.SOUND={021f,1,0243,1,0244,1,0245,1}
 
 [REGIONTYPE r_spooky t_rock]
 // Iron and Shadow ore are very rarely mined in a spooky region.
@@ -341,15 +338,15 @@ RESOURCES=65.0 mr_nothing  // Usually there is nothing here.
 RESOURCES=30.0 mr_iron
 RESOURCES=5.0 mr_shadow
 ON=@Enter
-   SRC.MUSIC=midi_Approach
+   SRC.MIDILIST=midi_Approach
 ON=@CliPeriodic
-   SRC.MUSIC=midi_Approach
+   SRC.MIDILIST=midi_Approach
 
 [REGIONTYPE r_swamp t_rock]
 // There is nothing to mine in a swamp.
 RESOURCES=100.0 mr_nothing
 ON=@RegPeriodic
-   SRC.SFX={0e,10,0f,10,022,1,023,1,024,1,0267,1}
+   SRC.SOUND={0e,10,0f,10,022,1,023,1,024,1,0267,1}
 
 [REGIONTYPE r_brit t_rock]
 // Sometimes Iron can be mined in the town of Britannia.
@@ -358,9 +355,9 @@ RESOURCES=40.0 mr_iron
 ON=@Enter
    SRC.MESSAGE Welcome to Britain <SRC.NAME>!
    SRC.MESSAGE Lord British Guards are here to protect you!
-   SRC.MUSIC=midi_britain1,midi_britain2
+   SRC.MIDILIST=midi_britain1,midi_britain2
 ON=@CliPeriodic
-   SRC.MUSIC=midi_britain1,midi_britain2
+   SRC.MIDILIST=midi_britain1,midi_britain2
 
 
 /////////////////////
@@ -369,38 +366,38 @@ ON=@CliPeriodic
 
 [REGIONTYPE r_default]
 ON=@Enter
-   SRC.MUSIC=midi_britain1,midi_ForestA,midi_JungleA,midi_MountainA,midi_Plains,midi_Victory
+   SRC.MIDILIST=midi_britain1,midi_ForestA,midi_JungleA,midi_MountainA,midi_Plains,midi_Victory
 ON=@CliPeriodic
-   SRC.MUSIC=midi_britain1,midi_ForestA,midi_JungleA,midi_MountainA,midi_Plains,midi_Victory
+   SRC.MIDILIST=midi_britain1,midi_ForestA,midi_JungleA,midi_MountainA,midi_Plains,midi_Victory
 
 [REGIONTYPE r_plains]
 ON=@RegPeriodic
-   SRC.SFX={0a,1,0b,1}
+   SRC.SOUND={0a,1,0b,1}
 
 [REGIONTYPE r_ruins]
 ON=@RegPeriodic
-   SRC.SFX={0a,1,0b,1}
+   SRC.SOUND={0a,1,0b,1}
 
 [REGIONTYPE r_graveyards]
 ON=@RegPeriodic
-   SRC.SFX={0a,1,0b,1}
+   SRC.SOUND={0a,1,0b,1}
 
 [REGIONTYPE r_forests]
 ON=@RegPeriodic
    IF (<SRC.sector.ISNIGHTTIME>)
       // Play these sounds at night.
-      SRC.SFX={00,2,01,2,02,2,07d,1}
+      SRC.SOUND={00,2,01,2,02,2,07d,1}
    ELSE
       // Play these sounds during the day.
-      SRC.SFX={08,10,09,10,0219,1,07d,1}
+      SRC.SOUND={08,10,09,10,0219,1,07d,1}
    ENDIF
 
 [REGIONTYPE r_jungle]
 ON=@RegPeriodic
    IF <SRC.sector.ISNIGHTTIME>
-      SRC.SFX={0c,2,0d,2,0b3,1}
+      SRC.SOUND={0c,2,0d,2,0b3,1}
    ELSE
-      SRC.SFX={03,2,04,2,05,2,0b3,1}
+      SRC.SOUND={03,2,04,2,05,2,0b3,1}
    ENDIF
 
 
@@ -411,23 +408,23 @@ ON=@RegPeriodic
 [REGIONTYPE r_brit_castle]
 // The Castle of Lord British.
 ON=@Enter
-   SRC.MUSIC=midi_LBCastle
+   SRC.MIDILIST=midi_LBCastle
 ON=@CliPeriodic
-   SRC.MUSIC=midi_LBCastle
+   SRC.MIDILIST=midi_LBCastle
 
 [REGIONTYPE r_guard_tower]
 // A guard tower in the forest.
 ON=@Enter
-   SRC.MUSIC=midi_ForestA
+   SRC.MIDILIST=midi_ForestA
 ON=@CliPeriodic
-   SRC.MUSIC=midi_ForestA
+   SRC.MIDILIST=midi_ForestA
 
 [REGIONTYPE r_black_castle]
 // The Castle of Lord Blackthorne.
 ON=@Enter
-   SRC.MUSIC=midi_BtCastle
+   SRC.MIDILIST=midi_BtCastle
 ON=@CliPeriodic
-   SRC.MUSIC=midi_BtCastle
+   SRC.MIDILIST=midi_BtCastle
 
 [REGIONTYPE r_bucs_den]
 // The town of Buccaneer's Den.
@@ -436,141 +433,141 @@ ON=@Enter
       IF (<SRC.KILLS> > 5)
          SRC.MESSAGE Welcome to Buccaneer's Den <SRC.NAME>. You are a murderer and you feel at home here.
       ENDIF
-      SRC.MUSIC=midi_BucsDen
+      SRC.MIDILIST=midi_BucsDen
    ENDIF
    RETURN 0
 ON=@CliPeriodic
-   SRC.MUSIC=midi_BucsDen
+   SRC.MIDILIST=midi_BucsDen
 
 [REGIONTYPE r_dungeon_abyss]
 // The Abyss dungeon.
 ON=@Enter
    SRC.MESSAGE @021 As you enter <REGION.NAME> you feel as tho you are being watched...
-   SRC.MUSIC=midi_approach
+   SRC.MIDILIST=midi_approach
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 [REGIONTYPE r_dungeon_bedlam]
-ON=@enter
-   SRC.MUSIC=midi_approach
+ON=@Enter
+   SRC.MIDILIST=midi_approach
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 [REGIONTYPE r_dungeon_blighted_grove]
 ON=@Enter
-   SRC.MUSIC=midi_approach
+   SRC.MIDILIST=midi_approach
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 [REGIONTYPE r_dungeon_citadel]
 ON=@Enter
-   SRC.MUSIC=midi_approach
+   SRC.MIDILIST=midi_approach
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 [REGIONTYPE r_dungeon_doom]
 ON=@Enter
-   SRC.MUSIC=midi_approach
+   SRC.MIDILIST=midi_approach
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 [REGIONTYPE r_dungeon_fire]
 ON=@Enter
-   SRC.MUSIC=midi_approach
+   SRC.MIDILIST=midi_approach
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 [REGIONTYPE r_dungeon_exodus]
 ON=@Enter
-   SRC.MUSIC=midi_approach
+   SRC.MIDILIST=midi_approach
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 [REGIONTYPE r_dungeon_fandancerdojo]
 ON=@Enter
-   SRC.MUSIC=midi_approach
+   SRC.MIDILIST=midi_approach
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 [REGIONTYPE r_dungeon_karnaugh]
 ON=@Enter
-   SRC.MUSIC=midi_approach
+   SRC.MIDILIST=midi_approach
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 [REGIONTYPE r_dungeon_khaldun]
 ON=@Enter
-   SRC.MUSIC=midi_approach
+   SRC.MIDILIST=midi_approach
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 [REGIONTYPE r_dungeon_labyrinth]
 ON=@Enter
-   SRC.MUSIC=midi_approach
+   SRC.MIDILIST=midi_approach
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 [REGIONTYPE r_dungeon_painted_caves]
 ON=@Enter
-   SRC.MUSIC=midi_approach
+   SRC.MIDILIST=midi_approach
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 [REGIONTYPE r_dungeon_paroxysmus]
 ON=@Enter
-   SRC.MUSIC=midi_approach
+   SRC.MIDILIST=midi_approach
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 [REGIONTYPE r_dungeon_prism_of_light]
 ON=@Enter
-   SRC.MUSIC=midi_approach
+   SRC.MIDILIST=midi_approach
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 [REGIONTYPE r_solen_hive]
 ON=@Enter
-   SRC.MUSIC=midi_approach
+   SRC.MIDILIST=midi_approach
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 [REGIONTYPE r_dungeon_sorcerer]
-ON=@enter
-   SRC.MUSIC=midi_approach
+ON=@Enter
+   SRC.MIDILIST=midi_approach
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 [REGIONTYPE r_dungeon_terathan_keep]
 ON=@Enter
-   SRC.MUSIC=midi_approach
+   SRC.MIDILIST=midi_approach
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 [REGIONTYPE r_dungeon_twisted_weald]
 ON=@Enter
-   SRC.MUSIC=midi_approach
+   SRC.MIDILIST=midi_approach
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 [REGIONTYPE r_dungeon_underworld]
 ON=@Enter
-   SRC.MUSIC=midi_void
+   SRC.MIDILIST=midi_void
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 [REGIONTYPE r_dungeon_destard]
 
 [REGIONTYPE r_goblin_camp]
 ON=@Enter
-   SRC.MUSIC=midi_approach
+   SRC.MIDILIST=midi_approach
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 [REGIONTYPE r_orc_camp]
 ON=@Enter
-   SRC.MUSIC=midi_approach
+   SRC.MIDILIST=midi_approach
 ON=@RegPeriodic
-   SRC.SFX={ 021f 1 0243 1 0244 1 0245 1 }
+   SRC.SOUND={ 021f 1 0243 1 0244 1 0245 1 }
 
 
 [EOF]
