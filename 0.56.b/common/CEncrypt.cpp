@@ -699,7 +699,10 @@ void CCrypt::LoginCryptStart( DWORD dwIP, BYTE * pEvent, size_t iLen )
 			{
 				LPCTSTR sRawAccountName = reinterpret_cast<LPCTSTR>( m_Raw + 1 );
 				iAccountNameLen = Str_GetBare(pszAccountNameCheck, sRawAccountName, MAX_ACCOUNT_NAME_SIZE, ACCOUNT_NAME_VALID_CHAR);
-				pszAccountNameCheck[iAccountNameLen-1] = '\0';
+
+				// (matex) TODO: What for? We do not really need pszAccountNameCheck here do we?!
+				if (iAccountNameLen > 0)
+					pszAccountNameCheck[iAccountNameLen-1] = '\0';
 				if (sRawAccountName && (iAccountNameLen != strlen(sRawAccountName)))
 				{
 					iAccountNameLen = 0;
