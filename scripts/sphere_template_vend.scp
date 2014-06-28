@@ -1035,26 +1035,24 @@ BUY=i_scroll_blank
 [TEMPLATE VENDOR_S_SHIP]
 CATEGORY=Vendor Templates
 SUBSECTION=Sell Templates
-DESCRIPTION=Shipmaster
-SELL=i_SEXTANT,{5 20}
-SELL=i_deed_ship_small_N,{1 2}
-SELL=i_deed_ship_dragon_small_N,{1 2}
-SELL=i_deed_ship_medium_N,{1 2}
-SELL=i_deed_ship_dragon_medium_N,{1 2}
-SELL=i_deed_ship_long_N,{1 2}
-SELL=i_deed_ship_dragon_long_N,{1 2}
+DESCRIPTION=Shipwright
+SELL=i_deed_small_ship_n,20
+SELL=i_deed_small_dragon_ship_n,20
+SELL=i_deed_medium_ship_n,20
+SELL=i_deed_medium_dragon_ship_n,20
+SELL=i_deed_large_ship_n,20
+SELL=i_deed_large_dragon_ship_n,20
 
 [TEMPLATE VENDOR_B_SHIP]
 CATEGORY=Vendor Templates
 SUBSECTION=Buy Templates
-DESCRIPTION=Shipmaster
-BUY=i_SEXTANT,{5 20}
-BUY=i_deed_ship_small_N,{1 2}
-BUY=i_deed_ship_dragon_small_N,{1 2}
-BUY=i_deed_ship_medium_N,{1 2}
-BUY=i_deed_ship_dragon_medium_N,{1 2}
-BUY=i_deed_ship_long_N,{1 2}
-BUY=i_deed_ship_dragon_long_N,{1 2}
+DESCRIPTION=Shipwright
+BUY=i_deed_small_ship_n
+BUY=i_deed_small_dragon_ship_n
+BUY=i_deed_medium_ship_n
+BUY=i_deed_medium_dragon_ship_n
+BUY=i_deed_large_ship_n
+BUY=i_deed_large_dragon_ship_n
 
 [TEMPLATE VENDOR_S_INNKEEPER]
 CATEGORY=Vendor Templates
