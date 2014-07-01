@@ -1108,10 +1108,10 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 	bool fBoss = pVendor->NPC_IsOwnedBy(m_pChar);
 	if ( !fBoss )
 	{
-		if ( ( g_Cfg.m_fPayFromPackOnly ) ?
-				m_pChar->GetPackSafe()->ContentConsume(RESOURCE_ID(RES_TYPEDEF,IT_GOLD), static_cast<int>(costtotal), true) :
-				m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF,IT_GOLD), static_cast<int>(costtotal), true)
-			)
+		int iGold = m_pChar->GetPackSafe()->ContentConsume(RESOURCE_ID(RES_TYPEDEF,IT_GOLD), static_cast<int>(costtotal), true);
+		if ( !g_Cfg.m_fPayFromPackOnly && iGold)
+			iGold = m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF,IT_GOLD), static_cast<int>(costtotal), true);
+		if (iGold)
 		{
 			pVendor->Speak("Alas, thou dost not possess sufficient gold for this purchase!");
 			return;
@@ -1251,9 +1251,8 @@ do_consume:
 	//	Take the gold and add it to the vendor
 	if ( !fBoss )
 	{
-		if ( g_Cfg.m_fPayFromPackOnly )
-			m_pChar->GetPackSafe()->ContentConsume( RESOURCE_ID(RES_TYPEDEF,IT_GOLD), static_cast<int>(costtotal));
-		else
+		int iGold = m_pChar->GetPackSafe()->ContentConsume( RESOURCE_ID(RES_TYPEDEF,IT_GOLD), static_cast<int>(costtotal));
+		if ( !g_Cfg.m_fPayFromPackOnly && iGold)
 			m_pChar->ContentConsume( RESOURCE_ID(RES_TYPEDEF,IT_GOLD), static_cast<int>(costtotal));
 
 		pVendor->GetBank()->m_itEqBankBox.m_Check_Amount += static_cast<unsigned long>(costtotal);
