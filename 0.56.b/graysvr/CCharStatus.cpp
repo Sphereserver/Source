@@ -2376,7 +2376,7 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 		DEBUG_ERR(("Character 0%lx on %d,%d,%d wants to move into an invalid location %d,%d,%d.\n",GetUID().GetObjUID(),GetTopPoint().m_x,GetTopPoint().m_y,GetTopPoint().m_z,ptDest.m_x,ptDest.m_y,ptDest.m_z));
 		return NULL;
 	}
-	g_World.GetHeightPoint2( ptDest, block, true );
+	g_World.GetHeightPoint( ptDest, block, true );
 
 	// Pass along my results.
 	wBlockFlags = static_cast<WORD>(block.m_Bottom.m_dwBlockFlags);
