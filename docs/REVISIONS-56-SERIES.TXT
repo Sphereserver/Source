@@ -1055,3 +1055,9 @@ Added: SERV.FUNCTIONS.x, it can display every available function and its access 
 		SERV.FUNCTIONS.32			- Return the 33th function (zero-based)
 		SERV.FUNCTIONS.32.PLEVEL	- Return the minimum access plevel to use this function
 		SERV.FUNCTIONS.add1			- Return the minimum access plevel to use 'add1' function
+
+1-07-2014, Ben
+Updated: spherecrypt.ini with client 7.0.35
+Changed: gold will now be taken from pack first and then from bank in a purchase
+Fixed #2370: Not being able to walk up some stairs AGAIN!
+Fixed #2371: Vendor buy/sell dialogs will now display in the same order as their templates
