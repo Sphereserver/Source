@@ -146,6 +146,7 @@ protected:
 		m_wHue = pObj->GetHue();
 		// m_timeout = pObj->m_timeout;
 		m_TagDefs.Copy( &( pObj->m_TagDefs ) );
+		m_BaseDefs.Copy(&(pObj->m_BaseDefs));
 	}
 
 public:
@@ -2766,6 +2767,7 @@ public:
 public:
 	CChar( CREID_TYPE id );
 	virtual ~CChar(); // Delete character
+	bool DupeFrom( CChar * pChar, bool fNewbieItems);
 
 private:
 	CChar(const CChar& copy);

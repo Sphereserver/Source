@@ -690,6 +690,164 @@ void CChar::CreateNewCharCheck()
 		SetTimeout(1);
 	}
 }
+bool CChar::DupeFrom( CChar * pChar, bool fNewbieItems )
+{
+	// CChar part
+	m_pArea = pChar->m_pArea;
+	m_pRoom = pChar->m_pRoom;
+	m_StatFlag = pChar->m_StatFlag;
+
+	if ( g_World.m_fSaveParity )
+		StatFlag_Set(STATF_SaveParity);	// It will get saved next time.
+
+	m_dirFace = pChar->m_dirFace;
+	m_fonttype = pChar->m_fonttype;
+
+	m_defense = pChar->m_defense;
+
+	m_height = pChar->m_height;
+
+	m_ModMaxWeight = pChar->m_ModMaxWeight;
+	m_iVisualRange = pChar->m_iVisualRange;
+
+	m_exp = pChar->m_exp;
+	m_level = pChar->m_level;
+	m_atUnk.m_Arg1 = pChar->m_atUnk.m_Arg1;
+	m_atUnk.m_Arg2 = pChar->m_atUnk.m_Arg2;
+	m_atUnk.m_Arg3 = pChar->m_atUnk.m_Arg3;
+
+	m_timeLastRegen = pChar->m_timeLastRegen;
+	m_timeCreate = pChar->m_timeCreate;
+
+	m_timeLastHitsUpdate = pChar->m_timeLastHitsUpdate;
+
+	m_prev_Hue = pChar->m_prev_Hue;
+	SetHue(pChar->GetHue());
+	m_prev_id = pChar->m_prev_id;
+	SetID( pChar->GetID() );
+	m_Can = pChar->m_Can;
+	m_wBloodHue = pChar->m_wBloodHue;
+	//m_totalweight = 0;
+
+	Skill_Cleanup();
+
+	g_World.m_uidLastNewChar = GetUID();	// for script access.
+
+	size_t i = 0;
+	for ( ; i < STAT_QTY; i++ )
+	{
+		Stat_SetBase(static_cast<STAT_TYPE>(i), pChar->Stat_GetBase(static_cast<STAT_TYPE>(i)));
+		Stat_SetMod(static_cast<STAT_TYPE>(i), pChar->Stat_GetMod(static_cast<STAT_TYPE>(i)));
+		Stat_SetVal(static_cast<STAT_TYPE>(i), pChar->Stat_GetVal(static_cast<STAT_TYPE>(i)));
+		Stat_SetMax(static_cast<STAT_TYPE>(i), pChar->Stat_GetMax(static_cast<STAT_TYPE>(i)));
+		m_Stat[i].m_regen = 0;
+	}
+
+	for ( i = 0; i < g_Cfg.m_iMaxSkill; i++ )
+	{
+		m_Skill[i] = pChar->m_Skill[i];
+	}
+
+	m_LocalLight = pChar->m_LocalLight;
+	m_fClimbUpdated = pChar->m_fClimbUpdated;
+	/*if ( m_pNPC )
+	{
+		if (pChar->m_pNPC)
+			m_pNPC->m_Speech.Copy(&(pChar->m_pNPC->m_Speech));
+		else
+			m_pNPC->m_Speech.Copy(&(pChar->m_pPlayer->m_Speech));
+	}else{
+		if (pChar->m_pNPC)
+			m_pPlayer->m_Speech.Copy(&(pChar->m_pNPC->m_Speech));
+		else
+			m_pPlayer->m_Speech.Copy(&(pChar->m_pPlayer->m_Speech));
+	}*/
+	
+	FixWeirdness();
+	SetName( pChar->GetName());	// SetName after FixWeirdness, otherwise it can be replaced again.
+	// We copy tags,etc first and place it because of NPC_LoadScript and @Create trigger, so it have information before calling it
+	m_TagDefs.Copy( &( pChar->m_TagDefs ) );
+	m_BaseDefs.Copy( &( pChar->m_BaseDefs ) );
+	m_OEvents.Copy(&(pChar->m_OEvents));
+	//NPC_LoadScript( false );	//Calling it now so everything above can be accessed and overrided in the @Create
+	//Not calling NPC_LoadScript() because, in some part, it's breaking the name and looking for template names.
+	// end of CChar
+
+	// Begin copying items.
+	LAYER_TYPE layer;
+	for ( int i = 0 ; i < LAYER_QTY; i++)
+	{
+		layer = static_cast<LAYER_TYPE>(i);
+		CItem * myLayer = LayerFind(layer);
+		if ( myLayer )
+			myLayer->Delete();
+
+		if ( !pChar->LayerFind( layer ) )
+			continue;
+
+		CItem * pItem = CItem::CreateDupeItem(pChar->LayerFind( static_cast<LAYER_TYPE>(i) ),this,true);
+		pItem->LoadSetContainer(GetUID(),static_cast<LAYER_TYPE>(i));
+		if ( fNewbieItems )
+		{
+			pItem->SetAttr(ATTR_NEWBIE);
+			if (pItem->IsType(IT_CONTAINER) )
+			{
+				CItem* pItemNext;
+				for ( CItem* cItem = static_cast<CItemContainer*>(pItem)->GetContentHead() ; cItem != NULL; cItem = pItemNext )
+				{
+					pItemNext = cItem->GetNext();
+					cItem->SetAttr(ATTR_NEWBIE);
+
+					CChar * pTest = static_cast<CChar*>(static_cast<CGrayUID>(cItem->m_itNormal.m_more1).CharFind());
+					if ( pTest && pTest == pChar)
+						cItem->m_itNormal.m_more1 = this->GetUID();
+
+					CChar * pTest2 = static_cast<CChar*>(static_cast<CGrayUID>(cItem->m_itNormal.m_more2).CharFind());
+					if ( pTest2 && pTest2 == pChar)
+						cItem->m_itNormal.m_more2 = this->GetUID();
+
+					CChar * pTest3 = static_cast<CChar*>(static_cast<CGrayUID>(cItem->m_uidLink).CharFind());
+					if ( pTest3 && pTest3 == pChar)
+						cItem->m_uidLink = this->GetUID();
+				}
+			}
+		}
+		CChar * pTest = static_cast<CChar*>(static_cast<CGrayUID>(pItem->m_itNormal.m_more1).CharFind());
+		if ( pTest && pTest == pChar)
+			pItem->m_itNormal.m_more1 = this->GetUID();
+
+		CChar * pTest2 = static_cast<CChar*>(static_cast<CGrayUID>(pItem->m_itNormal.m_more2).CharFind());
+		if ( pTest2)
+		{
+			if ( pTest2 == pChar)
+				pItem->m_itNormal.m_more2 = this->GetUID();
+			else if ( pTest2->NPC_IsOwnedBy(pChar, true) )	// Mount's fix
+			{
+				if (fNewbieItems )	// Removing any mount references for the memory, so when character dies or dismounts ... no mount will appear.
+					pItem->m_itNormal.m_more2 = NULL;
+				else	// otherwise we create a full new character.
+				{
+					pItem->m_itNormal.m_more2 = NULL;	// more2 should be cleared before removing the memory or the real npc will be removed too.
+					pItem->Delete(true);
+					CChar * pChar2 = CreateNPC( pTest2->GetID());
+					pChar2->SetTopPoint( pChar->GetTopPoint() );	// Moving the mount again because the dupe will place it in the same place as the 'invisible & disconnected' original (usually far away from where the guy will be, so the duped char can't touch the mount).
+					pChar2->DupeFrom(pTest2,fNewbieItems);
+					pChar2->NPC_PetSetOwner(this);
+					Horse_Mount(pChar2);
+				}
+			}
+		}
+
+		CChar * pTest3 = static_cast<CChar*>(static_cast<CGrayUID>(pItem->m_uidLink).CharFind());
+		if ( pTest3 && pTest3 == pChar)
+			pItem->m_uidLink = this->GetUID();
+		
+	}
+	// End copying items.
+	FixWeight();
+	Update();
+	return true;
+}
 
 bool CChar::ReadScriptTrig(CCharBase * pCharDef, CTRIG_TYPE trig, bool bVendor)
 {
@@ -825,10 +983,8 @@ void CChar::NPC_LoadScript( bool fRestock )
 	ADDTOCALLSTACK("CChar::NPC_LoadScript");
 	// Create an NPC from script.
 	if ( m_pNPC == NULL )
-	{
 		// Set a default brian type til we get the real one from scripts.
 		SetNPCBrain(GetNPCBrain());	// should have a default brain. watch out for override vendor.
-	}
 
 	CCharBase * pCharDef = Char_GetDef();
 
@@ -1061,11 +1217,13 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 		if ( this->OnTrigger(CTRIG_Rename, this, &args) == TRIGRET_RET_TRUE )
 			bNameIsAccepted = false;
 	}
-
+	
 	if ( bNameIsAccepted )
 		SetName(zCharName);
 	else
+	{
 		SetNamePool( ( bFemale ) ? "#NAMES_HUMANFEMALE" : "#NAMES_HUMANMALE" );
+	}
 
 	// check skin hue
 	switch ( rtRace )
@@ -3136,8 +3294,11 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 		case CHV_DROP:	// uid
 			return ItemDrop( CGrayUID( s.GetArgVal()).ItemFind(), GetTopPoint());
 		case CHV_DUPE:	// = dupe a creature !
-			CChar::CreateNPC( GetID())->MoveNearObj( this, 1 );
-			break;
+			{
+			CChar * pChar = CreateNPC( GetID());
+			pChar->MoveTo( GetTopPoint() );
+			pChar->DupeFrom(this,s.GetArgVal() < 1 ? true : false);
+			}break;
 		case CHV_EQUIP:	// uid
 			return ItemEquip( CGrayUID( s.GetArgVal()).ItemFind());
 		case CHV_EQUIPHALO:

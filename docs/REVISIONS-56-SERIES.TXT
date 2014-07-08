@@ -1061,3 +1061,9 @@ Updated: spherecrypt.ini with client 7.0.35
 Changed: gold will now be taken from pack first and then from bank in a purchase
 Fixed #2370: Not being able to walk up some stairs AGAIN!
 Fixed #2371: Vendor buy/sell dialogs will now display in the same order as their templates
+
+08-07-2014, XuN
+Fixed, Updated and Improved the .dupe on both items and characters:
+	- Added new variable's copy for both items and chars.
+	- Duping characters now works fine: Stats, Skills, Tags, Items is copied now, by default every copied item have attr |= attr_newbie for security, using .dupe 1 will copy the items 'as they are' without mods.
+	- Using .dupe 0 will create the mount's memory (if any) empty, so when npc dies... no mount appears, .dupe 1 will create another new duped mount character.

@@ -3346,7 +3346,9 @@ void CItem::DupeCopy( const CItem * pItem )
 	m_itNormal.m_more1 = pItem->m_itNormal.m_more1;
 	m_itNormal.m_more2 = pItem->m_itNormal.m_more2;
 	m_itNormal.m_morep = pItem->m_itNormal.m_morep;
-
+	
+	m_TagDefs.Copy(&(pItem->m_TagDefs));
+	m_BaseDefs.Copy(&(pItem->m_BaseDefs));
 	m_OEvents.Copy(&(pItem->m_OEvents));
 }
 
