@@ -3761,17 +3761,16 @@ bool CItem::Use_DoorNew( bool bJustOpen )
 		return( true );	// links just open
 
 	CItemBase * pItemDef = Item_GetDef();
-	ITEMID_TYPE idSwitch = static_cast<ITEMID_TYPE>(GetDefNum("DOOROPENID", true));
-	short sDifX = m_itNormal.m_morep.m_x;
-	short sDifY = m_itNormal.m_morep.m_y;
+
+	//default or override ID
+	ITEMID_TYPE idSwitch = GetDefNum("DOOROPENID") ? static_cast<ITEMID_TYPE>(GetDefNum("DOOROPENID", true)) : pItemDef->m_ttDoor.m_idSwitch;
 	if (!idSwitch)
-	{
-		if (!pItemDef->m_ttDoor.m_idSwitch)
-			return Use_Door(bJustOpen);
-		idSwitch = pItemDef->m_ttDoor.m_idSwitch;
-		sDifX = m_itNormal.m_morep.m_x = sDifX ? sDifX : pItemDef->m_ttDoor.m_iXChange;
-		sDifY = m_itNormal.m_morep.m_y = sDifY ? sDifY : pItemDef->m_ttDoor.m_iYChange;
-	}
+		return Use_Door(bJustOpen);
+
+	//default or override locations
+	short sDifX = m_itNormal.m_morep.m_x ? m_itNormal.m_morep.m_x : pItemDef->m_ttDoor.m_iXChange;
+	short sDifY = m_itNormal.m_morep.m_y ? m_itNormal.m_morep.m_y : pItemDef->m_ttDoor.m_iYChange;
+
 	
 	//default sounds
 	SOUND_TYPE iCloseSnd = pItemDef->m_ttDoor.m_iSoundClose ? pItemDef->m_ttDoor.m_iSoundClose : 0x00f1;
