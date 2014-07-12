@@ -1991,12 +1991,11 @@ void CItem::SetAmount( unsigned int amount )
 	if (pParentCont)
 	{
 		ASSERT( IsItemEquipped() || IsItemInContainer());
-		CItemBase * pItemDef = Item_GetDef();
-		ASSERT(pItemDef);
-		pParentCont->OnWeightChange(( amount - oldamount ) * pItemDef->GetWeight());
+		pParentCont->OnWeightChange(GetWeight(amount - oldamount));
 	}
 	
 	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_AMOUNT);
+	Update();
 }
 
 void CItem::SetAmountUpdate( unsigned int amount )

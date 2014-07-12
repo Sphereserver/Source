@@ -1611,7 +1611,8 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 	else
 		amount = maximum(1, minimum(amount, iAmountMax));
 
-	int iItemWeight = ( amount == iAmountMax ) ? pItem->GetWeight() : pItem->Item_GetDef()->GetWeight() * amount;
+	//int iItemWeight = ( amount == iAmountMax ) ? pItem->GetWeight() : pItem->Item_GetDef()->GetWeight() * amount;
+	int iItemWeight =  pItem->GetWeight(amount);
 
 	// Is it too heavy to even drag ?
 	bool fDrop = false;

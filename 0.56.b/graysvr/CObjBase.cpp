@@ -1457,10 +1457,14 @@ bool CObjBase::r_LoadVal( CScript & s )
 
 		case OC_WEIGHTREDUCTION:
 			{
+				int oldweight = GetWeight();
 				SetDefNum(s.GetKey(),s.GetArgVal(), false);
-				CItemContainer * pCont = static_cast<CItemContainer*>(this->GetParent());
-				if ( pCont )
-					pCont->FixWeight();
+				CContainer * pCont = dynamic_cast <CContainer*> (GetParent());
+				if (pCont)
+				{
+					ASSERT( IsItemEquipped() || IsItemInContainer());
+					pCont->OnWeightChange(GetWeight() - oldweight);
+				}
 			}
 			return true;
 

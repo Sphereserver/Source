@@ -152,7 +152,7 @@ protected:
 public:
 	virtual bool OnTick() = 0;
 	virtual int FixWeirdness() = 0;
-	virtual int GetWeight() const = 0;
+	virtual int GetWeight(WORD amount = NULL) const = 0;
 	virtual bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg ) = 0;
 
 	virtual int IsWeird() const;
@@ -983,16 +983,16 @@ public:
 
 	virtual bool SetName( LPCTSTR pszName );
 
-	virtual int GetWeight() const
+	virtual int GetWeight(WORD amount = NULL) const
 	{
 		const CItemBase * pItemDef = Item_GetDef();
 		ASSERT(pItemDef);
 		
-		int iWeight = pItemDef->GetWeight() * GetAmount();
-		int reduction = static_cast<int>(GetDefNum("WEIGHTREDUCTION", true));
-		if ( reduction )
+		int iWeight = pItemDef->GetWeight() * (amount ? amount : GetAmount());
+		CVarDefCont * pReduction = GetDefKey("WEIGHTREDUCTION", true);
+		if (pReduction)
 		{
-			iWeight -= IMULDIV( iWeight, reduction, 100 );
+			iWeight -= static_cast<int>(IMULDIV( iWeight, pReduction->GetValNum(), 100 ));
 			if ( iWeight < 0)
 				iWeight = 0;
 		}
@@ -1469,9 +1469,9 @@ public:
 	virtual bool r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc );
 	virtual bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
 
-	virtual int GetWeight() const
+	virtual int GetWeight(WORD amount = NULL) const
 	{	// true weight == container item + contents.
-		return( CItem::GetWeight() + CContainer::GetTotalWeight());
+		return( CItem::GetWeight(amount) + CContainer::GetTotalWeight());
 	}
 	void OnWeightChange( int iChange );
 
@@ -1547,7 +1547,7 @@ private:
 public:
 	CChar * IsCorpseSleeping() const;
 
-	int GetWeight() const
+	int GetWeight(WORD amount = NULL) const
 	{
 		// GetAmount is messed up.
 		// true weight == container item + contents.
@@ -3207,7 +3207,7 @@ public:
 	TRIGRET_TYPE OnCharTrigForMemTypeLoop( CScript &s, CTextConsole * pSrc, CScriptTriggerArgs * pArgs, CGString * pResult, WORD wMemType );
 
 	void OnWeightChange( int iChange );
-	int GetWeight() const
+	int GetWeight(WORD amount = NULL) const
 	{
 		return( CContainer::GetTotalWeight());
 	}
