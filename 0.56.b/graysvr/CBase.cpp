@@ -151,6 +151,10 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 			sVal.FormatLLVal(GetDefNum(pszKey, true));
 			break;
 
+		case OBC_DEFNAME:
+			sVal = GetResourceName();
+			break;
+
 		case OBC_ARMOR:
 		case OBC_DAM:
 			{

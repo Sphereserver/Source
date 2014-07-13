@@ -1069,5 +1069,5 @@ Fixed, Updated and Improved the .dupe on both items and characters:
 	- Using .dupe 0 will create the mount's memory (if any) empty, so when npc dies... no mount appears, .dupe 1 will create another new duped mount character.
 
 12-07-2014, Ben
-Fixed #2372: Weightreduction causing errors when calculationg weight.
+Fixed #2372: Weightreduction causing errors when calculating weight.
 Fixed a small issue with updating amount on items.
