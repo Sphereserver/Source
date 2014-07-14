@@ -1991,11 +1991,10 @@ void CItem::SetAmount( unsigned int amount )
 	if (pParentCont)
 	{
 		ASSERT( IsItemEquipped() || IsItemInContainer());
-		pParentCont->OnWeightChange(GetWeight(amount - oldamount));
+		pParentCont->OnWeightChange(GetWeight(amount) - GetWeight(oldamount));
 	}
 	
 	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_AMOUNT);
-	Update();
 }
 
 void CItem::SetAmountUpdate( unsigned int amount )
@@ -2676,7 +2675,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				return( false );
 			return( true );
 		case IC_AMOUNT:
-			SetAmount( s.GetArgVal());
+			SetAmountUpdate( s.GetArgVal());
 			return true;
 		case IC_ATTR:
 			m_Attr = s.GetArgVal();
