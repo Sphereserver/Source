@@ -1679,7 +1679,7 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap &
 				}
 
 				DWORD wBlockFlags = ( fShip ) ? CAN_C_SWIM : CAN_C_WALK;
-				ptn.m_z = g_World.GetHeightPoint( ptn, wBlockFlags, true );
+				ptn.m_z = g_World.GetHeightPoint2( ptn, wBlockFlags, true ); //hm...should really use the 2nd function ? it does fixed #2373
 				if ( abs( ptn.m_z - pt.m_z ) > 4 )
 				{
 					SysMessageDefault( DEFMSG_ITEMUSE_MULTI_BUMP );

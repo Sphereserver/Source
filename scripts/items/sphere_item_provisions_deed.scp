@@ -370,7 +370,7 @@ ON=@Create
 
 [ITEMDEF i_deed_orc_ship_n]
 ID=i_deed_ship
-NAME=Deed to a long dragon ship
+NAME=Deed to a orc ship
 RESOURCES=i_deed,m_orc_ship_n
 CATEGORY=Provisions - Deeds
 SUBSECTION=Ship Plans
@@ -380,7 +380,7 @@ ON=@Create
 
 [ITEMDEF i_deed_rowboat_n]
 ID=i_deed_ship
-NAME=Deed to a long dragon ship
+NAME=Deed to a row boat
 RESOURCES=i_deed,m_rowboat_n
 CATEGORY=Provisions - Deeds
 SUBSECTION=Ship Plans
@@ -390,7 +390,7 @@ ON=@Create
 
 [ITEMDEF i_deed_gargoyle_ship_n]
 ID=i_deed_ship
-NAME=Deed to a long dragon ship
+NAME=Deed to a gargoyle ship
 RESOURCES=i_deed,m_gargoyle_ship_n
 CATEGORY=Provisions - Deeds
 SUBSECTION=Ship Plans
@@ -400,7 +400,7 @@ ON=@Create
 
 [ITEMDEF i_deed_tokuno_ship_n]
 ID=i_deed_ship
-NAME=Deed to a long dragon ship
+NAME=Deed to a tokuno ship
 RESOURCES=i_deed,m_tokuno_ship_n
 CATEGORY=Provisions - Deeds
 SUBSECTION=Ship Plans
@@ -410,7 +410,7 @@ ON=@Create
 
 [ITEMDEF i_deed_britannian_ship_n]
 ID=i_deed_ship
-NAME=Deed to a long dragon ship
+NAME=Deed to a britannian ship
 RESOURCES=i_deed,m_britannian_ship_n
 CATEGORY=Provisions - Deeds
 SUBSECTION=Ship Plans
