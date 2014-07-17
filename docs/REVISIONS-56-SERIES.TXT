@@ -1071,3 +1071,8 @@ Fixed, Updated and Improved the .dupe on both items and characters:
 12-07-2014, Ben
 Fixed #2372: Weightreduction causing errors when calculating weight.
 Fixed a small issue with updating amount on items.
+
+17-07-2014, XuN
+Fixed #2345: Wrong titles for Elder/Legendary Bushido and Ninjitsu skills, updated sphere_msgs.scp.
+Readjusted the skill ranges for skill titles according to http://www.uoguide.com/Skill_Title .
+Added SKILL_TITLES to sphere_defs.scp to adjust the range for the skill's titles.

@@ -1353,7 +1353,7 @@ talkmode_guild      13   // Used by guild chat					(client  -> server) (client s
 talkmode_alliance   14   // Used by alliance chat				(client  -> server) (client shortcut: shift+\)
 
 [DEFNAME skill_flags]
-// These falgs are used in SKILL definitions
+// These flags are used in SKILL definitions
 SKF_SCRIPTED      0001   // fully scripted, no hardcoded behaviour
 SKF_FIGHT         0002   // considered a fight skill, maintains fight active
 SKF_MAGIC         0004   // considered a magic skill
@@ -1364,6 +1364,19 @@ SKF_NOMINDIST     0040   // you can mine, fish, chop, hack on the same point you
 SKF_NOANIM        0080   // don't show hardcoded anim for this skill
 SKF_NOSFX         0100   // don't play hardcoded sound for this skill
 SKF_RANGED        0200   // considered a ranged skill (combine with SKF_FIGHT)
+
+[DEFNAME skill_titles]
+// Skill ranges for the titles
+SkillTitle_Neophyte		300	// this skill lever or higher applies this skilltitle (until a greater one is reached)
+SKILLTITLE_NOVICE		400
+SKILLTITLE_APPRENTICE	500
+SKILLTITLE_JOURNEYMAN	600
+SKILLTITLE_EXPERT		700
+SKILLTITLE_ADEPT		800
+SKILLTITLE_MASTER		900
+SKILLTITLE_GRANDMASTER	1000
+SKILLTITLE_ELDER		1100	// This works with the normal skills and Bushido/Ninjitsu too.
+SKILLTITLE_LEGENDARY	1200	// Same here
 
 [DEFNAME trigger_argtype]
 TAT_AS_ARGN   1      // Treat the arguments as ARGN1/2/3

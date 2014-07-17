@@ -862,29 +862,14 @@ int CChar::Food_CanEat( CObjBase * pObj ) const
 LPCTSTR CChar::GetTradeTitle() const // Paperdoll title for character p (2)
 {
 	ADDTOCALLSTACK("CChar::GetTradeTitle");
-	static const CValStr sm_SkillTitles[] =
-	{
-		{ "", INT_MIN },
-		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NEOPHYTE), 300 },
-		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NOVICE), 400 },
-		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_APPRENTICE), 500 },
-		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_JOURNEYMAN), 600 },
-		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_EXPERT), 700 },
-		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ADEPT), 800 },
-		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_MASTER), 900 },
-		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_GRANDMASTER), 990 },
-		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ELDER), 1090 },
-		{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_LEGENDARY), 1190 },
-		{ NULL, INT_MAX }
-	};
-
 	if ( ! m_sTitle.IsEmpty())
 		return( m_sTitle );
-
+	SKILL_TYPE skill = Skill_GetBest();
+	int len;
 	TCHAR * pTemp = Str_GetTemp();
-
 	CCharBase* pCharDef = Char_GetDef();
 	ASSERT(pCharDef);
+	bool HideSkill = false;
 
 	// Incognito ?
 	// If polymorphed then use the poly name.
@@ -897,9 +882,64 @@ LPCTSTR CChar::GetTradeTitle() const // Paperdoll title for character p (2)
 		sprintf( pTemp, "%s %s", (pCharDef->IsFemale()) ? g_Cfg.GetDefaultMsg(DEFMSG_TRADETITLE_ARTICLE_FEMALE) : g_Cfg.GetDefaultMsg(DEFMSG_TRADETITLE_ARTICLE_MALE), pCharDef->GetTradeName());
 		return( pTemp );
 	}
+	if ( skill == SKILL_NINJITSU )
+	{
+		static const CValStr sm_SkillTitles[] =
+		{
+			{ "", INT_MIN },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NEOPHYTE),	static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NEOPHYTE", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NOVICE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NOVICE", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_APPRENTICE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_APPRENTICE", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_JOURNEYMAN), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_JOURNEYMAN", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_EXPERT), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_EXPERT", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ADEPT), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_ADEPT", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_MASTER), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_MASTER", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_GRANDMASTER), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_GRANDMASTER", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ELDER_NINJITSU), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_ELDER", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_LEGENDARY_NINJITSU), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_LEGENDARY", true)) },
+			{ NULL, INT_MAX }
+		};
+		len = sprintf( pTemp, "%s ", sm_SkillTitles->FindName( Skill_GetBase(skill)));
+	}
+	else if ( skill == SKILL_BUSHIDO )
+	{
+		static const CValStr sm_SkillTitles[] =
+		{
+			{ "", INT_MIN },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NEOPHYTE),	static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NEOPHYTE", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NOVICE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NOVICE", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_APPRENTICE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_APPRENTICE", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_JOURNEYMAN), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_JOURNEYMAN", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_EXPERT), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_EXPERT", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ADEPT), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_ADEPT", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_MASTER), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_MASTER", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_GRANDMASTER), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_GRANDMASTER", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ELDER_BUSHIDO), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_ELDER", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_LEGENDARY_BUSHIDO), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_LEGENDARY", true)) },
+			{ NULL, INT_MAX }
+		};
+		len = sprintf( pTemp, "%s ", sm_SkillTitles->FindName( Skill_GetBase(skill)));
+	}
+	else
+	{	
+		static const CValStr sm_SkillTitles[] =
+		{
+			{ "", INT_MIN },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NEOPHYTE),	static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NEOPHYTE", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NOVICE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NOVICE", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_APPRENTICE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_APPRENTICE", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_JOURNEYMAN), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_JOURNEYMAN", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_EXPERT), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_EXPERT", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ADEPT), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_ADEPT", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_MASTER), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_MASTER", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_GRANDMASTER),static_cast<int>( g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_GRANDMASTER", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ELDER), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_ELDER", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_LEGENDARY), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_LEGENDARY", true)) },
+			{ NULL, INT_MAX }
+		};
+		len = sprintf( pTemp, "%s ", sm_SkillTitles->FindName( Skill_GetBase(skill)));
+	}
 
-	SKILL_TYPE skill = Skill_GetBest();
-	int len = sprintf( pTemp, "%s ", sm_SkillTitles->FindName( Skill_GetBase(skill)));
 	sprintf( pTemp+len, g_Cfg.GetSkillDef(skill)->m_sTitle, (pCharDef->IsFemale()) ? g_Cfg.GetDefaultMsg(DEFMSG_INCOGNITO_NAME_FEMALE) : g_Cfg.GetDefaultMsg(DEFMSG_INCOGNITO_NAME_MALE) );
 	return( pTemp );
 }
