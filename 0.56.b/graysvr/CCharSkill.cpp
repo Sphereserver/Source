@@ -1859,7 +1859,14 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 		return( -SKTRIG_QTY );
 	}
 
-
+	int Range;
+	const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(SKILL_FISHING);
+	if ( ! pSkillDef->m_Range )
+	{
+		g_Log.EventError("Fishing skill doesn't have a value for RANGE, defaulting to 4\n");
+		Range = 4;
+	}
+	Range = pSkillDef->m_Range;
 	if (( m_pPlayer && g_Cfg.m_iAdvancedLos & ADVANCEDLOS_PLAYER ) || ( m_pNPC && g_Cfg.m_iAdvancedLos & ADVANCEDLOS_NPC ))
 	{
 		if ( ! CanSeeLOS( m_Act_p, NULL, 18, LOS_FISHING ))
@@ -1867,7 +1874,8 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 			SysMessageDefault( DEFMSG_FISHING_LOS );
 			return( -SKTRIG_QTY );
 		}
-		if ( GetTopPoint().GetDist( m_Act_p ) > 6 ) // cast works for long distances.
+
+		if ( GetTopPoint().GetDist( m_Act_p ) > Range )	// Max distance for fishing.
 		{
 			SysMessageDefault( DEFMSG_FISHING_REACH );
 			return( -SKTRIG_QTY );
@@ -1875,7 +1883,7 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 	}
 	else
 	{
-		if ( GetTopPoint().GetDist( m_Act_p ) > 6 ) // cast works for long distances.
+		if ( GetTopPoint().GetDist( m_Act_p ) > Range ) // cast works for long distances.
 		{
 			SysMessageDefault( DEFMSG_FISHING_REACH );
 			return( -SKTRIG_QTY );
@@ -1908,19 +1916,8 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 
 	if ( stage == SKTRIG_START )
 	{
-		m_atResource.m_Stroke_Count = Calc_GetRandVal( 2 ) + 1;
-		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-		{
-			Sound( 0x027 );
-		}
-		CItem * pItemFX = CItem::CreateBase( ITEMID_FX_SPLASH );
-		pItemFX->SetType(IT_WATER_WASH);	// can't fish here.
-		pItemFX->MoveToDecay( m_Act_p, 1*TICK_PER_SEC );
-		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
-		{
-			UpdateAnimate( ANIM_ATTACK_2H_DOWN );
-		}
-
+		m_atResource.m_Stroke_Count = 1;
+		m_Act_Targ = pResBit->GetUID();
 		return( Skill_NaturalResource_Setup( pResBit ));
 	}
 
@@ -1931,25 +1928,17 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 
 		if ( m_atResource.m_Stroke_Count ) // Keep trying and updating the animation
 		{
-			--m_atResource.m_Stroke_Count;
-
+			//--m_atResource.m_Stroke_Count;
+			m_Act_Targ = pResBit->GetUID();
 			// Create little splash effect.
-			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-			{
-				Sound( 0x027 );
-			}
-			CItem * pItemFX = CItem::CreateBase( ITEMID_FX_SPLASH );
-			pItemFX->SetType(IT_WATER_WASH);	// can't fish here.
-			pItemFX->MoveToDecay( m_Act_p, 1*TICK_PER_SEC );
-
-			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
-			{
-				UpdateAnimate( ANIM_ATTACK_2H_DOWN );
-			}
-			Skill_SetTimeout();
-			return( -SKTRIG_STROKE );	// keep active.
+			int stroke = Skill_Stroke( true );
+			if ( stroke == -SKTRIG_ABORT )
+				return -SKTRIG_ABORT;
+			
+			// stroke == SKTRIG_SUCCESS will jump down
 		}
-		return 0;
+		//SetTimeout(0);
+		return SKTRIG_SUCCESS ;	// keep active.
 	}
 
 	CItem * pFish = Skill_NaturalResource_Create( pResBit, SKILL_FISHING );
@@ -1968,6 +1957,14 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 	{
 		pFish->MoveToCheck( GetTopPoint(), this );	// put at my feet.
 	}
+	m_Act_Targ = pFish->GetUID();
+
+	/*if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+		Sound( 0x364 );	// 0x027 old sound.
+	CItem * pItemFX = CItem::CreateBase( ITEMID_FX_SPLASH );
+	pItemFX->SetType(IT_WATER_WASH);	// can't fish here.
+	pItemFX->MoveToDecay( m_Act_p, 1*TICK_PER_SEC );*/
+
 	return 0;
 }
 
@@ -3894,6 +3891,15 @@ ANIM_TYPE CChar::Skill_GetAnim( SKILL_TYPE skill )
 		case SKILL_BLACKSMITHING:
 			anim = ANIM_ATTACK_WEAPON ;
 			break;
+		/*case SKILL_FISHING:
+			anim = ANIM_ATTACK_2H_DOWN;
+			break;*/
+		case SKILL_MINING:
+			anim = ANIM_ATTACK_1H_DOWN;
+			break;
+		case SKILL_LUMBERJACKING:
+			anim = ANIM_ATTACK_WEAPON;
+			break;
 		default:
 			break;
 	}
@@ -3923,6 +3929,17 @@ int CChar::Skill_GetSound( SKILL_TYPE skill )
 		case SKILL_CARTOGRAPHY:
 			sound = 0x249;
 			break;
+		/*case SKILL_FISHING:
+			sound = 0x364;
+			break;*/
+		case SKILL_MINING:
+			sound = Calc_GetRandVal(2) ? 0x125 : 0x126 ;
+			break;
+		case SKILL_LUMBERJACKING:
+			{
+			CItem * pAxe = m_Act_TargPrv.ItemFind();
+			sound = pAxe->IsType(IT_WEAPON_FENCE) ? 0x148 : 0x13e;
+			}break;
 		case SKILL_COOKING:
 		case SKILL_TINKERING:
 		default:
@@ -3931,35 +3948,46 @@ int CChar::Skill_GetSound( SKILL_TYPE skill )
 	return sound;
 }
 
-int CChar::Skill_Stroke()
+int CChar::Skill_Stroke( bool fResource )
 {
+	// fResource means decreasing m_atResource.m_Stroke_Count instead of m_atCreate.m_Stroke_Count
 	int sound;
 	ANIM_TYPE anim;
+	SKILL_TYPE skill = Skill_GetActive();
 	if ( m_atCreate.m_Stroke_Count > 1 )
 	{
-		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+		if ( !g_Cfg.IsSkillFlag( skill, SKF_NOSFX ) )
 		{
-			sound = Skill_GetSound( Skill_GetActive() );
+			sound = Skill_GetSound( skill );
 		}
-		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
+		if ( !g_Cfg.IsSkillFlag( skill, SKF_NOANIM ) )
 		{
-			anim = Skill_GetAnim( Skill_GetActive() );
+			anim = Skill_GetAnim( skill );
 		}
 	}
 	INT64 delay = Skill_GetTimeout();
 	if ( IsTrigUsed(TRIGGER_SKILLSTROKE))
 	{
 		CScriptTriggerArgs args;
-		args.m_VarsLocal.SetNum("Skill", Skill_GetActive());
-		args.m_VarsLocal.SetNum("Strokes", m_atCreate.m_Stroke_Count);
+		args.m_VarsLocal.SetNum("Skill", skill);
+		if ( fResource )
+			args.m_VarsLocal.SetNum("Strokes",m_atResource.m_Stroke_Count);
+		else
+			args.m_VarsLocal.SetNum("Strokes", m_atCreate.m_Stroke_Count);
 		args.m_VarsLocal.SetNum("Sound", sound);
 		args.m_VarsLocal.SetNum("Delay",delay);
 		args.m_VarsLocal.SetNum("Anim", static_cast<INT64>(anim));
-		if ( OnTrigger(CTRIG_SkillStroke, this, &args ) == TRIGRET_RET_TRUE)
+
+		if ( OnTrigger( CTRIG_SkillStroke, this, &args ) == TRIGRET_RET_TRUE ) 
+			return(-SKTRIG_ABORT);
+		if ( Skill_OnTrigger( skill, SKTRIG_STROKE, &args ) == TRIGRET_RET_TRUE )
 			return(-SKTRIG_ABORT);
 
 		sound = static_cast<int>(args.m_VarsLocal.GetKeyNum("Sound",false));
-		m_atCreate.m_Stroke_Count = static_cast<WORD>(args.m_VarsLocal.GetKeyNum("Strokes",false));
+		if ( fResource )
+			m_atResource.m_Stroke_Count = static_cast<WORD>(args.m_VarsLocal.GetKeyNum("Strokes",false));
+		else
+			m_atCreate.m_Stroke_Count = static_cast<WORD>(args.m_VarsLocal.GetKeyNum("Strokes",false));
 		delay = args.m_VarsLocal.GetKeyNum("Delay",true);
 		anim = static_cast<ANIM_TYPE>(args.m_VarsLocal.GetKeyNum("Anim", true));
 	}
@@ -3970,17 +3998,24 @@ int CChar::Skill_Stroke()
 	// Keep trying and updating the animation
 	if ( anim )
 	{
-		UpdateAnimate( anim );	// ANIM_ATTACK_1H_DOWN
+		UpdateAnimate( anim );
 	}
 	if ( delay < 10)
 		delay = 10;
-	m_atCreate.m_Stroke_Count --;
-	if ( m_atCreate.m_Stroke_Count < 1 )
-		return( SKTRIG_SUCCESS );
-
+	if ( fResource )
+	{
+		m_atResource.m_Stroke_Count --;
+		if ( m_atResource.m_Stroke_Count < 1 )
+			return SKTRIG_SUCCESS;
+	}else
+	{
+		m_atCreate.m_Stroke_Count --;
+		if ( m_atCreate.m_Stroke_Count < 1 )
+			return( SKTRIG_SUCCESS );
+	}
 	SetTimeout(delay);
 	//Skill_SetTimeout();	//Old behaviour, removed to keep up dynamic delay coming in with the trigger @SkillStroke
-	return( -SKTRIG_STROKE );	// keep active.
+	return( SKTRIG_STROKE );	// keep active.
 }
 
 int CChar::Skill_Stroke_Consuming()
@@ -4087,7 +4122,9 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 {
 	ADDTOCALLSTACK("CChar::Skill_Stage");
 	if ( stage == SKTRIG_STROKE && g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_CRAFT ))
-		return(Skill_Stroke());
+		return(Skill_Stroke( false ));
+	//else if ( stage == SKTRIG_STROKE && g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_GATHER ))
+	//	return(Skill_Stroke( true ));
 
 	if ( g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_SCRIPTED ) )
 		return Skill_Scripted( stage );
@@ -4547,28 +4584,12 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 		// Execute the @START trigger and pass various craft parameters there
 		CScriptTriggerArgs pArgs;
 		bool bCraftSkill = IsSkillCraft(skill);
+		bool bGatherSkill = IsSkillGather(skill);
 		RESOURCE_ID pResBase(RES_ITEMDEF, bCraftSkill? m_atCreate.m_ItemID : 0, 0);
 
 		if ( bCraftSkill == true )
 		{
 			CItemBase * pItemDef = CItemBase::FindItemBase( m_atCreate.m_ItemID );
-			/*switch(Skill_GetActive())	//Old strokes, 1 for first block of skills, rand1-2 for blacksmithing and bowcraft and custom alchemy
-			{
-				case SKILL_TINKERING:
-				case SKILL_TAILORING:
-				case SKILL_INSCRIPTION:
-				case SKILL_COOKING:
-				case SKILL_CARTOGRAPHY:
-				case SKILL_CARPENTRY:
-					m_atCreate.m_Stroke_Count = 1;
-					break;
-				case SKILL_BLACKSMITHING:
-				case SKILL_BOWCRAFT:
-					m_atCreate.m_Stroke_Count = Calc_GetRandVal(2);
-					break;
-				case SKILL_ALCHEMY:
-					break;
-			}*/
 			
 			m_atCreate.m_Stroke_Count=1;		//This matches the new strokes amount used on OSI.
 			// set crafting parameters
@@ -4579,6 +4600,8 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 				pArgs.m_VarsLocal.SetNum("CraftStrokeCnt",m_atCreate.m_Stroke_Count);
 			pArgs.m_VarsLocal.SetNum("CraftAmount",m_atCreate.m_Amount);
 		}
+		if ( bGatherSkill == true )
+			pArgs.m_VarsLocal.SetNum("GatherStrokeCnt",m_atResource.m_Stroke_Count);
 
 		if ( IsTrigUsed(TRIGGER_SKILLSTART) )
 		{
@@ -4615,6 +4638,8 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
 				UpdateAnimate( Skill_GetAnim( Skill_GetActive() ) );
 		}
+		if ( bGatherSkill == true )
+			m_atResource.m_Stroke_Count = static_cast<WORD>(pArgs.m_VarsLocal.GetKeyNum("GatherStrokeCnt",true));
 
 		if ( IsSkillBase(skill) )
 		{

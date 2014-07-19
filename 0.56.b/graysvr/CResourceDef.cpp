@@ -207,6 +207,7 @@ enum SKC_TYPE
 	SKC_KEY,
 	SKC_NAME,
 	SKC_PROMPT_MSG,
+	SKC_RANGE,
 	SKC_STAT_DEX,
 	SKC_STAT_INT,
 	SKC_STAT_STR,
@@ -231,6 +232,7 @@ LPCTSTR const CSkillDef::sm_szLoadKeys[SKC_QTY+1] =
 	"KEY",
 	"NAME",
 	"PROMPT_MSG",
+	"RANGE",
 	"STAT_DEX",
 	"STAT_INT",
 	"STAT_STR",
@@ -290,6 +292,9 @@ bool CSkillDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		break;
 	case SKC_PROMPT_MSG: // "PROMPT_MSG"
 		sVal = m_sTargetPrompt;
+		break;
+	case SKC_RANGE:
+		sVal.FormatVal(m_Range);
 		break;
 	case SKC_BONUS_STATS: // "BONUS_STATS"
 		sVal.FormatVal( m_StatPercent );
@@ -364,6 +369,9 @@ bool CSkillDef::r_LoadVal( CScript &s )
 		break;
 	case SKC_PROMPT_MSG: // "PROMPT_MSG"
 		m_sTargetPrompt = s.GetArgStr();
+		break;
+	case SKC_RANGE:
+		m_Range = s.GetArgVal();
 		break;
 	case SKC_BONUS_STATS: // "BONUS_STATS"
 		m_StatPercent = static_cast<unsigned char>(s.GetArgVal());

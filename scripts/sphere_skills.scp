@@ -431,8 +431,10 @@ ON=@Abort
 DEFNAME=Skill_Fishing
 KEY=Fishing
 TITLE=Fisher%s
+FLAGS=SKF_GATHER
 PROMPT_MSG=What water do you want to fish in?
-DELAY=2.0
+DELAY=8.0
+RANGE=4
 STAT_STR=40
 STAT_INT=30
 STAT_DEX=40
@@ -454,6 +456,16 @@ ON=@Fail
 
 ON=@Abort
 	SRC.SYSMESSAGE You pull your line back in and stop fishing.
+
+ON=@Success
+ACTARG2=1		// 1 will pack the resource, 0 place it on the ground.
+
+ON=@Start
+anim=12
+serv.newitem=i_memory_fishing_splash
+new.link=<act>
+equip=<new>
+
 
 [SKILL 19]
 DEFNAME=Skill_Forensics
@@ -1250,6 +1262,29 @@ Spellweaving=100.0
 Mysticism=100.0
 Imbuing=100.0
 Throwing=100.0
+
+
+[itemdef i_memory_fishing_splash]
+id=i_memory
+name=Fishing splash memory
+type=t_eq_script
+
+ON=@Equip
+timerd=1.5
+if (<serv.skill.fishing.delay>< 1.5)	// We don't want to fire the splash after the fish success so a check for skill's delay is needed.
+	timerd = <serv.skill.fishing.delay>-0.5
+endif
+if (<timerd>< 0)	// Also being sure the skill's delay is not 0 and we set the timer to negative, hence making it staying forever in the character.
+	timerd=0
+endif
+
+ON=@Timer
+if ( (<link>) && (<cont>) && (<cont.action>==fishing) )		// Check out if cont is still fishing, otherwise we don't want the effect.
+	link.effect 2,0352D,4,16
+	cont.sound 0364
+endif
+remove
+return 1
 
 
 [EOF]

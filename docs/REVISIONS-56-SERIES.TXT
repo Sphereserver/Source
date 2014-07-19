@@ -1076,3 +1076,12 @@ Fixed a small issue with updating amount on items.
 Fixed #2345: Wrong titles for Elder/Legendary Bushido and Ninjitsu skills, updated sphere_msgs.scp.
 Readjusted the skill ranges for skill titles according to http://www.uoguide.com/Skill_Title .
 Added SKILL_TITLES to sphere_defs.scp to adjust the range for the skill's titles.
+
+19-07-2014, XuN
+SKF_GATHER enabled, only fishing will have this flag in sphere_skills.scp, so now @Stroke and @SkillStroke can be used.
+@(Skill)Start and @(Skill)Stroke now use ACT as a reference for the worldgem.
+@(Skill)Start have local.GatherStrokeCnt ONLY for gathering skills.
+Fishing delay is now 8.0 (1 stroke), the splash animation is softcoded in sphere_skills.scp since working with timerf in the source will complicate things a little.
+In the 'long and not even started' proccess of softcoding skills ... the sounds/animations (for fishing!) will be added in the skill's triggers.
+Return 1 in @Stroke will fire @Abort.
+Added RANGE for gathering skills determining the max distance for the proccess (added RANGE=4 for fishing in sphere_skills.scp)

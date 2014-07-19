@@ -601,7 +601,7 @@ enum SKF_TYPE
 	SKF_NOANIM			= 0x0080,		// prevents hardcoded animation from playing
 	SKF_NOSFX			= 0x0100,		// prevents hardcoded sound from playing
 	SKF_RANGED			= 0x0200,		// Considered a ranged skill (combine with SKF_FIGHT)
-	SKF_GATHER			= 0x4000		// Considered a gathering skill, using SkillStrokes as SKF_CRAFT
+	SKF_GATHER			= 0x0400		// Considered a gathering skill, using SkillStrokes as SKF_CRAFT
 };
 
 struct CSkillDef : public CResourceLink // For skill def table
@@ -628,6 +628,7 @@ public:
 	CValueCurveDef	m_AdvRate;		// ADV_RATE defined "skill curve" 0 to 100 skill levels.
 	CValueCurveDef	m_Values;	// VALUES= influence for items made with 0 to 100 skill levels.
 	int			m_GainRadius; // GAINRADIUS= max. amount of skill above the necessary skill for a task to gain from it
+	int			m_Range;
 
 	DWORD			m_dwFlags;
 	DWORD			m_dwGroup;
