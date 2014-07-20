@@ -152,7 +152,7 @@ protected:
 public:
 	virtual bool OnTick() = 0;
 	virtual int FixWeirdness() = 0;
-	virtual int GetWeight(WORD amount = NULL) const = 0;
+	virtual int GetWeight(WORD amount = 0) const = 0;
 	virtual bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg ) = 0;
 
 	virtual int IsWeird() const;
@@ -983,7 +983,7 @@ public:
 
 	virtual bool SetName( LPCTSTR pszName );
 
-	virtual int GetWeight(WORD amount = NULL) const
+	virtual int GetWeight(WORD amount = 0) const
 	{
 		const CItemBase * pItemDef = Item_GetDef();
 		ASSERT(pItemDef);
@@ -1469,7 +1469,7 @@ public:
 	virtual bool r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc );
 	virtual bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
 
-	virtual int GetWeight(WORD amount = NULL) const
+	virtual int GetWeight(WORD amount = 0) const
 	{	// true weight == container item + contents.
 		return( CItem::GetWeight(amount) + CContainer::GetTotalWeight());
 	}
@@ -1547,7 +1547,7 @@ private:
 public:
 	CChar * IsCorpseSleeping() const;
 
-	int GetWeight(WORD amount = NULL) const
+	int GetWeight(WORD amount = 0) const
 	{
 		// GetAmount is messed up.
 		// true weight == container item + contents.
@@ -3207,7 +3207,7 @@ public:
 	TRIGRET_TYPE OnCharTrigForMemTypeLoop( CScript &s, CTextConsole * pSrc, CScriptTriggerArgs * pArgs, CGString * pResult, WORD wMemType );
 
 	void OnWeightChange( int iChange );
-	int GetWeight(WORD amount = NULL) const
+	int GetWeight(WORD amount = 0) const
 	{
 		return( CContainer::GetTotalWeight());
 	}
