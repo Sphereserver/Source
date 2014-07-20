@@ -1367,7 +1367,7 @@ SKF_RANGED        0200   // considered a ranged skill (combine with SKF_FIGHT)
 
 [DEFNAME skill_titles]
 // Skill ranges for the titles
-SkillTitle_Neophyte		300	// this skill lever or higher applies this skilltitle (until a greater one is reached)
+SKILLTITLE_NEOPHYTE		300	// this skill lever or higher applies this skilltitle (until a greater one is reached)
 SKILLTITLE_NOVICE		400
 SKILLTITLE_APPRENTICE	500
 SKILLTITLE_JOURNEYMAN	600

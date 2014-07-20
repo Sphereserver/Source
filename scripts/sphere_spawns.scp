@@ -2447,6 +2447,40 @@ ID=c_hellhound               2
 ID=c_demon                   2
 ID=c_fan_dancer              1
 
+[SPAWN spawn_OrcCave_level1]
+CATEGORY=Spawn Groups
+SUBSECTION=Dungeons
+DESCRIPTION=Orc Cave 1
+ID=c_a_direwolf
+ID=c_orc
+ID=c_orc_scout
+ID=c_orc_chopper
+ID=c_orc_lord
+
+[SPAWN spawn_OrcCave_level2]
+CATEGORY=Spawn Groups
+SUBSECTION=Dungeons
+DESCRIPTION=Orc Cave 2
+ID=c_corpser
+ID=c_a_direwolf
+ID=c_rat_giant
+ID=c_spider_giant
+ID=c_orc
+ID=c_orc_bomber
+ID=c_orc_chopper
+ID=c_orc_scout
+ID=c_orc_lord
+ID=c_m_orc_mage
+
+[SPAWN spawn_OrcCave_level3]
+CATEGORY=Spawn Groups
+SUBSECTION=Dungeons
+DESCRIPTION=Orc Cave 3
+ID=c_orc		3
+ID=c_orc_bomber		3
+ID=c_elem_earth		2
+ID=c_orc_brute
+
 [SPAWN spawn_FanDancerDojo_level2]
 CATEGORY=Spawn Groups
 SUBSECTION=Dungeons

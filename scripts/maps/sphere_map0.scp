@@ -1108,7 +1108,7 @@ EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 NAME=Orc Cave Level 3
 GROUP=Orc Cave
 P=5304,2012,0,0
-RECT=5265,1987,5363,2045,0
+RECT=5267,1953,5363,2045,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
