@@ -1916,28 +1916,19 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 
 	if ( stage == SKTRIG_START )
 	{
-		m_atResource.m_Stroke_Count = 1;
+		//m_atResource.m_Stroke_Count = 1;
 		m_Act_Targ = pResBit->GetUID();
 		return( Skill_NaturalResource_Setup( pResBit ));
 	}
 
 	if ( stage == SKTRIG_STROKE )
 	{
-		// Pick a "fishing" type of sound
 		UpdateDir( m_Act_p );
+		m_Act_Targ = pResBit->GetUID();
+		int stroke = Skill_Stroke( true );
+		if ( stroke == -SKTRIG_ABORT  || stroke == -SKTRIG_STROKE)
+			return stroke;
 
-		if ( m_atResource.m_Stroke_Count ) // Keep trying and updating the animation
-		{
-			//--m_atResource.m_Stroke_Count;
-			m_Act_Targ = pResBit->GetUID();
-			// Create little splash effect.
-			int stroke = Skill_Stroke( true );
-			if ( stroke == -SKTRIG_ABORT )
-				return -SKTRIG_ABORT;
-			
-			// stroke == SKTRIG_SUCCESS will jump down
-		}
-		//SetTimeout(0);
 		return SKTRIG_SUCCESS ;	// keep active.
 	}
 
@@ -3951,8 +3942,8 @@ int CChar::Skill_GetSound( SKILL_TYPE skill )
 int CChar::Skill_Stroke( bool fResource )
 {
 	// fResource means decreasing m_atResource.m_Stroke_Count instead of m_atCreate.m_Stroke_Count
-	int sound;
-	ANIM_TYPE anim;
+	int sound = -1;
+	ANIM_TYPE anim = static_cast<ANIM_TYPE>(-1);
 	SKILL_TYPE skill = Skill_GetActive();
 	if ( m_atCreate.m_Stroke_Count > 1 )
 	{
@@ -4015,7 +4006,7 @@ int CChar::Skill_Stroke( bool fResource )
 	}
 	SetTimeout(delay);
 	//Skill_SetTimeout();	//Old behaviour, removed to keep up dynamic delay coming in with the trigger @SkillStroke
-	return( SKTRIG_STROKE );	// keep active.
+	return( -SKTRIG_STROKE );	// keep active.
 }
 
 int CChar::Skill_Stroke_Consuming()

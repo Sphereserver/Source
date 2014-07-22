@@ -1364,6 +1364,7 @@ SKF_NOMINDIST     0040   // you can mine, fish, chop, hack on the same point you
 SKF_NOANIM        0080   // don't show hardcoded anim for this skill
 SKF_NOSFX         0100   // don't play hardcoded sound for this skill
 SKF_RANGED        0200   // considered a ranged skill (combine with SKF_FIGHT)
+SKF_GATHER		  0400	 // Gathering skill.
 
 [DEFNAME skill_titles]
 // Skill ranges for the titles
