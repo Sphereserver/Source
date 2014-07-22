@@ -1122,12 +1122,12 @@ bool CResource::r_LoadVal( CScript &s )
 
 		case RC_EXPERIMENTAL:
 			g_Cfg.m_iExperimental = s.GetArgVal();
-			PrintEFOFFlags(true, false);
+			//PrintEFOFFlags(true, false);
 			break;
 
 		case RC_OPTIONFLAGS:
 			g_Cfg.m_iOptionFlags = s.GetArgVal();
-			PrintEFOFFlags(false, true);
+			//PrintEFOFFlags(false, true);
 			break;
 
 		case RC_TOOLTIPCACHE:
@@ -1616,11 +1616,11 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			break;
 		case RC_EXPERIMENTAL:
 			sVal.FormatHex( g_Cfg.m_iExperimental );
-			PrintEFOFFlags(true, false, pSrc);
+			//PrintEFOFFlags(true, false, pSrc);
 			break;
 		case RC_OPTIONFLAGS:
 			sVal.FormatHex( g_Cfg.m_iOptionFlags );
-			PrintEFOFFlags(false, true, pSrc);
+			//PrintEFOFFlags(false, true, pSrc);
 			break;
 		case RC_CLIENTS:		// this is handled by CServerDef as SV_CLIENTS
 			return false;

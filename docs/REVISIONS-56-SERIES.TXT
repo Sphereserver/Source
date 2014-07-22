@@ -1085,3 +1085,8 @@ Fishing delay is now 8.0 (1 stroke), the splash animation is softcoded in sphere
 In the 'long and not even started' proccess of softcoding skills ... the sounds/animations (for fishing!) will be added in the skill's triggers.
 Return 1 in @Stroke will fire @Abort.
 Added RANGE for gathering skills determining the max distance for the proccess (added RANGE=4 for fishing in sphere_skills.scp)
+
+22-07-2014, XuN
+Removed default sysmessage when reading / writing Experimental and Option Flags directly ingame or from script.
+SKF_GATHER is a generic flag now: Skills with this flag will automatically call for @Stroke and override default behaviour (no more calls to STAGE == SKTRIG_STROKE in the skill's function).
+Added Range and SKF_GATHER to mining and lumberjacking, softcoded some code related to SKILL_STROKES of them (and fishing also) in sphere_skills.scp.

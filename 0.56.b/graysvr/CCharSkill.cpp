@@ -1730,7 +1730,15 @@ int CChar::Skill_Mining( SKTRIG_TYPE stage )
 	// Verify so we have a line of sight.
 	if ( ! CanSeeLOS( m_Act_p, NULL, 2 ))
 	{
-		if ( GetTopPoint().GetDist( m_Act_p ) > 2 )
+		int Range;
+		const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(SKILL_MINING);
+		if ( ! pSkillDef->m_Range )
+		{
+			g_Log.EventError("Mining skill doesn't have a value for RANGE, defaulting to 2\n");
+			Range = 2;
+		}
+		Range = pSkillDef->m_Range;
+		if ( GetTopPoint().GetDist( m_Act_p ) > Range )
 			SysMessageDefault( DEFMSG_MINING_REACH );
 		else
 			SysMessageDefault( DEFMSG_MINING_LOS );
@@ -1774,13 +1782,8 @@ int CChar::Skill_Mining( SKTRIG_TYPE stage )
 		return( Skill_NaturalResource_Setup( pResBit ));
 	}
 
-	if ( stage == SKTRIG_STROKE )
+	/*if ( stage == SKTRIG_STROKE )	// Useless now, strokes in SKF_GATHER are handled directly from Skill_Stage() and its code softcoded in their skill's triggers.
 	{
-		// Pick a "mining" type of sound
-		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-		{
-			Sound( ( Calc_GetRandVal(2)) ? 0x125 : 0x126 );
-		}
 		UpdateDir( m_Act_p );
 		if ( IsSetEF(EF_DamageTools) )
 		{
@@ -1792,18 +1795,13 @@ int CChar::Skill_Mining( SKTRIG_TYPE stage )
 
 		if ( m_atResource.m_Stroke_Count )
 		{
-			// Keep trying and updating the animation
-			--m_atResource.m_Stroke_Count;
-			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
-			{
-				UpdateAnimate( ANIM_ATTACK_1H_DOWN );
-			}
-			Skill_SetTimeout();
-			return( -SKTRIG_STROKE );	// keep active.
+			int stroke = Skill_Stroke( true );
+			if ( stroke == -SKTRIG_ABORT  || stroke == -SKTRIG_STROKE)
+				return stroke;
 		}
 
 		return 0;
-	}
+	}*/
 
 	CItem * pItem = Skill_NaturalResource_Create( pResBit, SKILL_MINING );
 	if ( pItem == NULL )
@@ -1921,16 +1919,19 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 		return( Skill_NaturalResource_Setup( pResBit ));
 	}
 
-	if ( stage == SKTRIG_STROKE )
+	/*if ( stage == SKTRIG_STROKE )	// Useless now, strokes in SKF_GATHER are handled directly from Skill_Stage() and its code softcoded in their skill's triggers.
 	{
 		UpdateDir( m_Act_p );
 		m_Act_Targ = pResBit->GetUID();
-		int stroke = Skill_Stroke( true );
-		if ( stroke == -SKTRIG_ABORT  || stroke == -SKTRIG_STROKE)
-			return stroke;
+		if ( m_atResource.m_Stroke_Count )
+		{
+			int stroke = Skill_Stroke( true );
+			if ( stroke == -SKTRIG_ABORT  || stroke == -SKTRIG_STROKE)
+				return stroke;
+		}
 
-		return SKTRIG_SUCCESS ;	// keep active.
-	}
+		return 0 ;	// keep active.
+	}*/
 
 	CItem * pFish = Skill_NaturalResource_Create( pResBit, SKILL_FISHING );
 	if ( pFish == NULL )
@@ -1996,7 +1997,16 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 	}
 
 	// 3D distance check and LOS
-	if ( GetTopPoint().GetDist3D( m_Act_p ) > 3 )
+	
+	int Range;
+	const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(SKILL_MINING);
+	if ( ! pSkillDef->m_Range )
+	{
+		g_Log.EventError("Lumberjacking skill doesn't have a value for RANGE, defaulting to 3\n");
+		Range = 3;
+	}
+	Range = pSkillDef->m_Range;
+	if ( GetTopPoint().GetDist3D( m_Act_p ) > Range )
 	{
 		SysMessageDefault( DEFMSG_LUMBERJACKING_REACH );
 		return( -SKTRIG_QTY );
@@ -2046,13 +2056,8 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 		return( Skill_NaturalResource_Setup( pResBit ));
 	}
 
-	if ( stage == SKTRIG_STROKE )
+	/*if ( stage == SKTRIG_STROKE )	// Useless now, strokes in SKF_GATHER are handled directly from Skill_Stage() and its code softcoded in their skill's triggers.
 	{
-		// Pick a "lumberjacking" type of sound
-		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-		{
-			Sound( (pAxe->IsType(IT_WEAPON_FENCE)) ? 0x148 : 0x13e); // 0x135, 0x148, 0x14a
-		}
 		UpdateDir( m_Act_p );
 
 		if (IsSetEF(EF_DamageTools) )
@@ -2065,17 +2070,12 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 
 		if ( m_atResource.m_Stroke_Count )
 		{
-			// Keep trying and updating the animation
-			--m_atResource.m_Stroke_Count;
-			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
-			{
-				UpdateAnimate( ANIM_ATTACK_WEAPON );
-			}
-			Skill_SetTimeout();
-			return( -SKTRIG_STROKE );	// keep active.
+			int stroke = Skill_Stroke( true );
+			if ( stroke == -SKTRIG_ABORT  || stroke == -SKTRIG_STROKE)
+				return stroke;
 		}
-		return 0;
-	}
+		return SKTRIG_SUCCESS;// keep active.
+	}*/
 
 	if ( pAxe->IsType(IT_WEAPON_FENCE) ) //dagger end
 	{
@@ -4004,6 +4004,7 @@ int CChar::Skill_Stroke( bool fResource )
 		if ( m_atCreate.m_Stroke_Count < 1 )
 			return( SKTRIG_SUCCESS );
 	}
+	g_Log.EventDebug("bla %d\n",m_atResource.m_Stroke_Count);
 	SetTimeout(delay);
 	//Skill_SetTimeout();	//Old behaviour, removed to keep up dynamic delay coming in with the trigger @SkillStroke
 	return( -SKTRIG_STROKE );	// keep active.
@@ -4114,8 +4115,11 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 	ADDTOCALLSTACK("CChar::Skill_Stage");
 	if ( stage == SKTRIG_STROKE && g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_CRAFT ))
 		return(Skill_Stroke( false ));
-	//else if ( stage == SKTRIG_STROKE && g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_GATHER ))
-	//	return(Skill_Stroke( true ));
+	else if ( stage == SKTRIG_STROKE && g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_GATHER ))
+	{
+		UpdateDir( m_Act_p );
+		return(Skill_Stroke( true ));
+	}
 
 	if ( g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_SCRIPTED ) )
 		return Skill_Scripted( stage );

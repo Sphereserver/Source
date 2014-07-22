@@ -447,8 +447,12 @@ VALUES=1,30,200
 
 ON=@PreStart
 	IF (<SRC.FINDLAYER.layer_horse>)
-	 SRC.SYSMESSAGE You can't fish while riding!
-	 return 1
+		SRC.SYSMESSAGE You can't fish while riding!
+		return 1
+	ENDIF
+	IF (<SRC.FINDLAYER.2.USESCUR>< 1)
+		SRC.SYSMESSAGE The tool is out of charges.
+		return 1
 	ENDIF
 
 ON=@Start
@@ -459,12 +463,27 @@ ON=@Start
 
 ON=@Success
 	ACTARG2=1		// 1 will pack the resource, 0 place it on the ground.
+	SRC.FINDLAYER.2.USESCUR --
 
 ON=@Fail
 	SRC.SYSMESSAGE You fish a while, but fail to catch anything.
 
 ON=@Abort
 	SRC.SYSMESSAGE You pull your line back in and stop fishing.
+
+ON=@Stroke
+	IF (<SRC.FINDLAYER.layer_horse>)
+		SRC.SYSMESSAGE You can't fish while riding!
+		return 1
+	ENDIF
+	// Damage for Fishing Poles was never active, I add it here anyway.
+	//IF ( <SERV.EXPERIMENTAL>&00002000)		// EF_DamageTools
+	//	IF (<SRC.FINDLAYER.2.HITS> > 0)
+	//		SRC.FINDLAYER.2.DAMAGE <eval <maxhits>*2>,DAM_PHYSICAL,<SRC>
+	//	ELSE
+	//		SRC.FINDLAYER.2.DESTROY
+	//	ENDIF
+	//ENDIF
 
 [ITEMDEF i_memory_fishing_splash]
 ID=i_memory
@@ -975,6 +994,8 @@ KEY=Lumberjacking
 TITLE=Lumberjack
 PROMPT_MSG=
 DELAY=1.0
+RANGE=3
+FLAGS=SKF_GATHER
 STAT_STR=85
 STAT_INT=30
 STAT_DEX=45
@@ -985,18 +1006,37 @@ BONUS_STATS=20
 ADV_RATE=2.5,50.0,200.0
 VALUES=1,10,50
 
+ON=@PreStart
+	IF (<SRC.WEAPON.USESCUR>< 1)
+		SRC.SYSMESSAGE The tool is out of charges.
+		return 1
+	ENDIF
+
+ON=@Success
+	SRC.WEAPON.USESCUR --
+	
 ON=@Fail
 	SRC.SYSMESSAGE You hack at the tree for a while, but fail to produce any useable wood.
 
 ON=@Abort
 	SRC.SYSMESSAGE You decide not to chop wood for now.
 
+ON=@Stroke
+	IF ( <SERV.EXPERIMENTAL>&00002000)		// EF_DamageTools
+		IF (<SRC.WEAPON.HITS> > 0)
+			SRC.WEAPON.DAMAGE <eval <maxhits>*2>,DAM_PHYSICAL,<SRC>
+		ELSE
+			SRC.WEAPON.DESTROY
+		ENDIF
+	ENDIF
 [SKILL 45]
 DEFNAME=SKILL_MINING
 KEY=Mining
 TITLE=Miner
 PROMPT_MSG=Where would you like to mine?
 DELAY=1.0
+RANGE=2
+FLAGS=SKF_GATHER
 STAT_STR=85
 STAT_INT=30
 STAT_DEX=45
@@ -1009,16 +1049,36 @@ VALUES=1,10,80
 
 ON=@PreStart
 	IF (<SRC.FINDLAYER.layer_horse>)
-	 SRC.SYSMESSAGE You can't mine while riding.
-	 return 1
+		SRC.SYSMESSAGE You can't mine while riding.
+		return 1
 	ENDIF
-
+	IF (<SRC.WEAPON.USESCUR>< 1)
+		SRC.SYSMESSAGE The tool is out of charges.
+		return 1
+	ENDIF
+	
+ON=@Success
+	SRC.WEAPON.USESCUR --
+	
 ON=@Fail
 	SRC.SYSMESSAGE You loosen some rocks but fail to find any useable ore.
 
 ON=@Abort
 	SRC.SYSMESSAGE You decide not to mine for now.
 
+ON=@Stroke
+	IF (<SRC.FINDLAYER.layer_horse>)
+		SRC.SYSMESSAGE You can't mine while riding.
+		return 1
+	ENDIF
+	IF ( <SERV.EXPERIMENTAL>&00002000)		// EF_DamageTools
+		IF (<SRC.WEAPON.HITS> > 0)
+			SRC.WEAPON.DAMAGE <eval <maxhits>*2>,DAM_PHYSICAL,<SRC>	// 2 of 16 chances to receive damage.
+		ELSE
+			SRC.WEAPON.DESTROY
+		ENDIF
+	ENDIF
+	
 [SKILL 46]
 DEFNAME=SKILL_MEDITATION
 KEY=Meditation
