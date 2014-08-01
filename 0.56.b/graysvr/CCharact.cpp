@@ -677,7 +677,7 @@ void CChar::UpdateStatVal( STAT_TYPE type, int iChange, int iLimit )
 	}
 }
 
-bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BYTE iFrameDelay )
+bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BYTE iFrameDelay, BYTE iAnimLen )
 {
 	ADDTOCALLSTACK("CChar::UpdateAnimate");
 	// NPC or character does a certain Animate
@@ -1137,7 +1137,7 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 		}
 
 	PacketActionBasic* cmdnew = new PacketActionBasic(this, action1, subaction, variation);
-	PacketAction* cmd = new PacketAction(this, action, 1, fBackward, iFrameDelay);
+	PacketAction* cmd = new PacketAction(this, action, 1, fBackward, iFrameDelay, iAnimLen);
 
 	ClientIterator it;
 	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())

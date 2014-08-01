@@ -3129,7 +3129,7 @@ public:
 	void UpdateManaFlag() const;
 	void UpdateStamFlag() const;
 	void UpdateHitsForOthers() const;
-	bool UpdateAnimate( ANIM_TYPE action, bool fTranslate = true, bool fBackward = false, BYTE iFrameDelay = 1 );
+	bool UpdateAnimate( ANIM_TYPE action, bool fTranslate = true, bool fBackward = false, BYTE iFrameDelay = 0, BYTE iAnimLen = 7 );
 
 	void UpdateMode(  CClient * pExcludeClient = NULL, bool fFull= false );
 	void UpdateSpeedMode();

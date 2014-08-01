@@ -21928,6 +21928,7 @@ NAME=tiger
 CAN=MT_WALK|MT_RUN
 DAM=2,12
 ARMOR=8
+SOUND=snd_animals_panther1 //No tiger sound? snd_animals_lion1 ?
 TAG.TamingSlots=1
 CATEGORY=Animals
 SUBSECTION=Wild
@@ -21951,10 +21952,11 @@ ON=@Create
 
 [CHARDEF 04e7]
 DEFNAME=c_tigress
-NAME=tiger
+NAME=tigress
 CAN=MT_WALK|MT_RUN
 DAM=2,12
 ARMOR=8
+SOUND=snd_animals_panther1 //No tiger sound? snd_animals_lion1 ?
 TAG.TamingSlots=1
 CATEGORY=Animals
 SUBSECTION=Wild

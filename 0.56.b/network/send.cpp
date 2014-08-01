@@ -1602,14 +1602,14 @@ PacketPlayMusic::PacketPlayMusic(const CClient* target, WORD musicID) : PacketSe
  *  Packet 0xE2 : PacketActionBasic			plays an animation (client > 7.0.0.0) (LOW)
  *
  ***************************************************************************/
-PacketAction::PacketAction(const CChar* character, ANIM_TYPE action, WORD repeat, bool backward, BYTE delay) : PacketSend(XCMD_CharAction, 14, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketAction::PacketAction(const CChar* character, ANIM_TYPE action, WORD repeat, bool backward, BYTE delay, BYTE len) : PacketSend(XCMD_CharAction, 14, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketAction::PacketAction");
 
 	writeInt32(character->GetUID());
 	writeInt16(action);
 	writeByte(0);
-	writeByte(character->m_dirFace);
+	writeByte(len);
 	writeInt16(repeat);
 	writeBool(backward);
 	writeBool(repeat != 1);

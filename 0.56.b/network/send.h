@@ -566,7 +566,7 @@ public:
 class PacketAction : public PacketSend
 {
 public:
-	PacketAction(const CChar* character, ANIM_TYPE action, WORD repeat, bool backward, BYTE delay);
+	PacketAction(const CChar* character, ANIM_TYPE action, WORD repeat, bool backward, BYTE delay, BYTE len);
 };
 
 class PacketActionBasic : public PacketSend

@@ -3170,7 +3170,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			return ItemBounce( CGrayUID( s.GetArgVal()).ItemFind());
 		case CHV_BOW:
 			UpdateDir( pCharSrc );
-			UpdateAnimate( ANIM_BOW, false );
+			UpdateAnimate( ANIM_BOW, false, false, 0, 0x0A );
 			break;
 
 		case CHV_CLOSEPAPERDOLL:
