@@ -1732,12 +1732,12 @@ int CChar::Skill_Mining( SKTRIG_TYPE stage )
 	{
 		int Range;
 		const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(SKILL_MINING);
+		Range = pSkillDef->m_Range;
 		if ( ! pSkillDef->m_Range )
 		{
 			g_Log.EventError("Mining skill doesn't have a value for RANGE, defaulting to 2\n");
 			Range = 2;
 		}
-		Range = pSkillDef->m_Range;
 		if ( GetTopPoint().GetDist( m_Act_p ) > Range )
 			SysMessageDefault( DEFMSG_MINING_REACH );
 		else
@@ -1859,12 +1859,12 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 
 	int Range;
 	const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(SKILL_FISHING);
+	Range = pSkillDef->m_Range;
 	if ( ! pSkillDef->m_Range )
 	{
 		g_Log.EventError("Fishing skill doesn't have a value for RANGE, defaulting to 4\n");
 		Range = 4;
 	}
-	Range = pSkillDef->m_Range;
 	if (( m_pPlayer && g_Cfg.m_iAdvancedLos & ADVANCEDLOS_PLAYER ) || ( m_pNPC && g_Cfg.m_iAdvancedLos & ADVANCEDLOS_NPC ))
 	{
 		if ( ! CanSeeLOS( m_Act_p, NULL, 18, LOS_FISHING ))
@@ -2000,12 +2000,12 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 	
 	int Range;
 	const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(SKILL_MINING);
+	Range = pSkillDef->m_Range;
 	if ( ! pSkillDef->m_Range )
 	{
 		g_Log.EventError("Lumberjacking skill doesn't have a value for RANGE, defaulting to 3\n");
 		Range = 3;
 	}
-	Range = pSkillDef->m_Range;
 	if ( GetTopPoint().GetDist3D( m_Act_p ) > Range )
 	{
 		SysMessageDefault( DEFMSG_LUMBERJACKING_REACH );
@@ -3995,16 +3995,18 @@ int CChar::Skill_Stroke( bool fResource )
 		delay = 10;
 	if ( fResource )
 	{
-		m_atResource.m_Stroke_Count --;
+		if ( m_atResource.m_Stroke_Count )
+			m_atResource.m_Stroke_Count --;
 		if ( m_atResource.m_Stroke_Count < 1 )
 			return SKTRIG_SUCCESS;
+
 	}else
 	{
-		m_atCreate.m_Stroke_Count --;
+		if ( m_atCreate.m_Stroke_Count )
+			m_atCreate.m_Stroke_Count --;
 		if ( m_atCreate.m_Stroke_Count < 1 )
 			return( SKTRIG_SUCCESS );
 	}
-	g_Log.EventDebug("bla %d\n",m_atResource.m_Stroke_Count);
 	SetTimeout(delay);
 	//Skill_SetTimeout();	//Old behaviour, removed to keep up dynamic delay coming in with the trigger @SkillStroke
 	return( -SKTRIG_STROKE );	// keep active.
