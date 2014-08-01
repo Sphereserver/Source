@@ -35,7 +35,7 @@
 class CServTime
 {
 #undef GetCurrentTime
-#define TICK_PER_SEC 100
+#define TICK_PER_SEC 10
 	// A time stamp in the server/game world.
 public:
 	static const char *m_sClassName;
