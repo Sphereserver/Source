@@ -56,14 +56,17 @@ private:
 	CServTime m_timestamp;
 	HUE_TYPE m_wHue;			// Hue or skin color. (CItems must be < 0x4ff or so)
 
-	inline bool CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TRIGRET_TYPE & trResult);
 protected:
 	CResourceRef m_BaseRef;	// Pointer to the resource that describes this type.
 public:
+	inline bool CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TRIGRET_TYPE & trResult, bool bFull);
 	static const char *m_sClassName;
 	CVarDefMap m_TagDefs;		// attach extra tags here.
 	CVarDefMap m_BaseDefs;		// New Variable storage system
 	DWORD	m_Can;
+
+	WORD	m_attackBase;	// Armor for IsArmor items, dam for weapons
+	WORD	m_attackRange;	// variable range of attack damage.
 
 	CResourceRefArray m_OEvents;
 	static size_t sm_iCount;	// how many total objects in the world ?
@@ -343,6 +346,7 @@ enum ITRIG_TYPE
 	//ITRIG_DYE,
 	ITRIG_EQUIP,		// I have been equipped.
 	ITRIG_EQUIPTEST,
+	ITRIG_MemoryEquip,
 	ITRIG_PICKUP_GROUND,
 	ITRIG_PICKUP_PACK,	// picked up from inside some container.
 	ITRIG_PICKUP_SELF,	// picked up from this container
@@ -389,6 +393,7 @@ private:
 	IT_TYPE m_type;		// What does this item do when dclicked ? defines dynamic_cast type
 	unsigned char m_containedGridIndex;	// Which grid have i been placed in ? (when in a container)
 	DWORD	m_CanUse;		// Base attribute flags. can_u_all/male/female..
+	WORD	m_weight;
 
 public:
 	// Attribute flags.
@@ -420,9 +425,9 @@ public:
 #define ATTR_REFORGED		0x2000000	// Is Runic Reforged.
 #define ATTR_OPENED			0x4000000	// Is Door Opened.
 	DWORD	m_Attr;
-
 	// NOTE: If this link is set but not valid -> then delete the whole object !
 	CGrayUID m_uidLink;		// Linked to this other object in the world. (owned, key, etc)
+
 
 	// Type specific info. IT_TYPE
 	union // 4(more1) + 4(more2) + 5(morep) = 13 bytes
@@ -988,7 +993,7 @@ public:
 		const CItemBase * pItemDef = Item_GetDef();
 		ASSERT(pItemDef);
 		
-		int iWeight = pItemDef->GetWeight() * (amount ? amount : GetAmount());
+		int iWeight = m_weight * (amount ? amount : GetAmount());
 		CVarDefCont * pReduction = GetDefKey("WEIGHTREDUCTION", true);
 		if (pReduction)
 		{
@@ -2355,6 +2360,7 @@ enum CTRIG_TYPE
 
 	CTRIG_GetHit,			// I just got hit.
 	CTRIG_Hit,				// I just hit someone. (TARG)
+	CTRIG_HitCheck,
 	CTRIG_HitMiss,			// I just missed.
 	CTRIG_HitTry,			// I am trying to hit someone. starting swing.,
 	CTRIG_HouseDesignCommit,	// I committed a new house design
@@ -2380,6 +2386,7 @@ enum CTRIG_TYPE
 	CTRIG_itemDROPON_TRADE,
 	CTRIG_itemEQUIP,		// I have equipped an item
 	CTRIG_itemEQUIPTEST,
+	CTRIG_itemMemoryEquip,
 	CTRIG_itemPICKUP_GROUND,
 	CTRIG_itemPICKUP_PACK,	// picked up from inside some container.
 	CTRIG_itemPICKUP_SELF,	// picked up from this (ACT) container.
@@ -2424,6 +2431,7 @@ enum CTRIG_TYPE
 	
 	CTRIG_PartyDisband,			//I just disbanded my party
 	CTRIG_PartyInvite,			//SRC invited me to join a party, so I may chose
+	CTRIG_PartyLeave,
 	CTRIG_PartyRemove,			//I have ben removed from the party by SRC
 
 	CTRIG_PersonalSpace,	//+i just got stepped on.

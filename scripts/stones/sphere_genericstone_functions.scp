@@ -143,7 +143,7 @@ if ( !<ref1.isitem> )
 elif ( <ref1.type> == t_stone_guild )
 	local.typename = <DEF.STONECONFIG_TYPENAME_GUILD>
 elif ( <ref1.type> == t_stone_town )
-	local.typename = <DEF.STONECONFIG_TYPENAME_GUILD>
+	local.typename = <DEF.STONECONFIG_TYPENAME_TOWN>
 endif
 
 return <local.typename>

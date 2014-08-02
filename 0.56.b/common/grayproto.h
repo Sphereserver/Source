@@ -2178,6 +2178,8 @@ struct CCommand	// command buffer from server to client.
 		} Start;
 
 		// Char mode flags
+#define CHARMODE_FREEZE		0x01
+#define CHARMODE_FEMALE		0x02
 #define CHARMODE_POISON		0x04	// green status bar. (note: see XCMD_HealthBarColor for SA)
 #define CHARMODE_FLYING		0x04	// flying (gargoyles, SA)
 #define CHARMODE_YELLOW		0x08	// yellow status bar. (note: see XCMD_HealthBarColor for SA)

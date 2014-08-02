@@ -3683,7 +3683,7 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 	}
 	int iDamage = Stat_GetVal(STAT_DEX)/3 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
 	//Override damage amount?
-	const CVarDefCont * pTagStorage = GetKey("OVERRIDE.BREATH.DAM", true);
+	const CVarDefCont * pTagStorage = GetDefKey("BREATH.DAM", true);
 	if ( pTagStorage )
 	{
 		if ( pTagStorage->GetValNum() )

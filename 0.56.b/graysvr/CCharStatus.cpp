@@ -706,12 +706,26 @@ BYTE CChar::GetModeFlag( bool fTrueSight, const CClient* pViewer ) const
 		// SA clients don't support these flags
 		if ( IsStatFlag( STATF_Poisoned ))
 			mode |= CHARMODE_POISON;
-		if ( IsStatFlag(STATF_Freeze|STATF_Sleeping|STATF_Hallucinating|STATF_Stone) )
+		if ( IsStatFlag(STATF_Sleeping|STATF_Hallucinating) )
 			mode |= CHARMODE_YELLOW;
 	}
+	if ( IsStatFlag(STATF_Freeze|STATF_Stone) )		// Is this flag being used?
+		mode |= CHARMODE_FREEZE; 
+
+	CCharBase * pCharDef = Char_GetDef();
+	if ( pCharDef->IsFemale() )
+		mode |= CHARMODE_FEMALE;
+
 	if ( IsStatFlag( STATF_War ))
 		mode |= CHARMODE_WAR;
-	if ( ! fTrueSight && IsStatFlag( STATF_Insubstantial | STATF_Invisible | STATF_Hidden | STATF_Sleeping ))	// if not me, this will not show up !
+	DWORD dwFlags = STATF_Sleeping;
+	if ( ! g_Cfg.m_iColorInvis )
+		dwFlags |= STATF_Insubstantial;
+	if ( ! g_Cfg.m_iColorHidden )
+		dwFlags |= STATF_Hidden;
+	if ( ! g_Cfg.m_iColorInvisSpell )
+		dwFlags |= STATF_Invisible;
+	if ( ! fTrueSight && IsStatFlag( dwFlags ))	// if not me, this will not show up !
 		mode |= CHARMODE_INVIS;
 	return( mode );
 }

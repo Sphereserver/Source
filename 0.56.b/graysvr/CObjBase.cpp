@@ -734,7 +734,6 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_RESCOLD:
 		case OC_RESFIRE:
 		case OC_RESENERGY:
-		case OC_RESPHYSICAL:
 		case OC_RESPOISON:
 		case OC_RESCOLDMAX:
 		case OC_RESFIREMAX:
@@ -763,7 +762,40 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 				sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
 			}	
 			break;
+			
+		case OC_RESPHYSICAL:
+			sVal.FormatVal(m_attackBase);
+			break;
+		case OC_ARMOR:
+			{
+				if ( IsChar() )
+				{
+					CChar * pChar = static_cast<CChar*>(this);
+					sVal.FormatVal( pChar->m_defense );
+					break;
+				}
+			}
+		case OC_DAM:
+			{
+				pszKey += strlen(sm_szLoadKeys[index]); // 9;
+				if ( *pszKey == '.' )
+				{
+					SKIP_SEPARATORS( pszKey );
 
+					if ( !strnicmp( pszKey, "LO", 2 ) )
+					{
+						sVal.Format( "%d", m_attackBase );
+					}
+					else if ( !strnicmp( pszKey, "HI", 2 ) )
+					{
+						sVal.Format( "%d", m_attackBase+m_attackRange );
+					}
+				}
+				else
+				{
+					sVal.Format( "%d,%d", m_attackBase, m_attackBase+m_attackRange );
+				}
+			} break;
 		case OC_RANGE:
 			{
 				if ( RangeH() == 0 ) sVal.Format( "%d", RangeL() );
@@ -1174,7 +1206,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 				if ( *pszKey )
 				{
 					TRIGRET_TYPE trReturn;
-					bool bTrigReturn = CallPersonalTrigger(const_cast<TCHAR *>(pszKey), pSrc, trReturn);
+					bool bTrigReturn = CallPersonalTrigger(const_cast<TCHAR *>(pszKey), pSrc, trReturn,false);
 					if ( bTrigReturn )
 						sVal.FormatVal(trReturn);
 
@@ -1428,7 +1460,6 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_RESCOLD:
 		case OC_RESFIRE:
 		case OC_RESENERGY:
-		case OC_RESPHYSICAL:
 		case OC_RESPOISON:
 		case OC_RESCOLDMAX:
 		case OC_RESFIREMAX:
@@ -1454,7 +1485,30 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_NAMELOC:
 			SetDefNum(s.GetKey(),s.GetArgVal(), false);
 			return true;
-
+			
+		case OC_RESPHYSICAL:
+			m_attackBase = (WORD)s.GetArgVal();
+			break;
+		case OC_ARMOR:
+			{
+				if ( IsChar() )
+					return false;
+			}
+		case OC_DAM:
+			{
+				INT64 piVal[2];
+				size_t iQty = Str_ParseCmds( s.GetArgStr(), piVal, COUNTOF(piVal));
+				m_attackBase = static_cast<unsigned char>(piVal[0]);
+				if ( iQty > 1 )
+				{
+					m_attackRange = static_cast<unsigned char>(piVal[1]) - m_attackBase;
+				}
+				else
+				{
+					m_attackRange = 0;
+				}
+			}
+			return( true );
 		case OC_WEIGHTREDUCTION:
 			{
 				int oldweight = GetWeight();
@@ -2063,7 +2117,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				if ( s.HasArgs() )
 				{
 					TRIGRET_TYPE tResult;
-					CallPersonalTrigger(s.GetArgRaw(), pSrc, tResult);
+					CallPersonalTrigger(s.GetArgRaw(), pSrc, tResult,false);
 				}
 			} break;
 		case OV_DIALOG:
@@ -2521,7 +2575,7 @@ TRIGRET_TYPE CObjBase::Spell_OnTrigger( SPELL_TYPE spell, SPTRIG_TYPE stage, CCh
 	return TRIGRET_RET_DEFAULT;
 }
 
-inline bool CObjBase::CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TRIGRET_TYPE & trResult)
+inline bool CObjBase::CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TRIGRET_TYPE & trResult, bool bFull)
 {
 	TCHAR * ppCmdTrigger[3];
 	size_t iResultArgs = Str_ParseCmds(pArgs, ppCmdTrigger, COUNTOF(ppCmdTrigger), ",");

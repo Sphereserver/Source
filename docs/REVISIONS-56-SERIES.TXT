@@ -1090,3 +1090,68 @@ Added RANGE for gathering skills determining the max distance for the proccess (
 Removed default sysmessage when reading / writing Experimental and Option Flags directly ingame or from script.
 SKF_GATHER is a generic flag now: Skills with this flag will automatically call for @Stroke and override default behaviour (no more calls to STAGE == SKTRIG_STROKE in the skill's function).
 Added Range and SKF_GATHER to mining and lumberjacking, softcoded some code related to SKILL_STROKES of them (and fishing also) in sphere_skills.scp.
+
+
+02-08-2014, XuN
+Changed tag.override.breath.dam to Breath.Dam
+Added Breath.Hue overriding the default explosion color for breaths.
+Added @PartyLeave: return 1 stops the action
+Modified Dir function, <DIR <src>> will return the dir you should have to face <src> (Same as FACE <SRC> but not turning you, just returning the DIR value).
+Added Reveal (flags): Reveal statf_hidden will reveal player if has statf_hidden, same for sleeping, insubstantial and invisible. 
+	Sum this flags to reveal more than 1 invis state (ie: statf_invisible|statf_sleeping will reveal player if any of these flags is present on him).
+	Reveal -1 will reveal everything (Even invis staff).
+
+Changed: SpellFlag_NoUnparalyze flag in s_explosion will affect explosion potions.
+Changed: Argo is now writable ( Remember that Argo can only be accessed via script and not ingame ).
+Added SysMessagef function accepting text with strings and limited to 3 args. Example: sysmessagef "Hello %s, I have a %s and %s, be aware of me!",<src.name>,<findlayer.1.name>,<findlayer.2.name>
+	It needs the text to be inside " " to create the first arg with it, but first and last quotes will be removed (only these 2).
+Changed: SkillUseQuick is now RW and not only Read because not always need a return.
+SpellEffect ( CChar::Spell_Effect_Create() ) now set as NEW the UID of the spell's rune, IE: 'spelleffect s_poison,2000,<src>' ... 'new.remove ' will remove the poison rune.
+Added @(item)MemoryEquip firing when equiping any item in memory layers (Not normal @Equip-able items), in example: paralyze rune, criminal memory ...
+	argn1 = layer on which the item will be equiped.
+	return 1 deletes the item and prevents default actions.
+Fixed 'Range' not being properly defaulted to skill's defaults when no value is in the skill.
+Fixed SKF_GATHER skills going to negative values when local.gatherstrokecnt=1.
+
+Added SKF_FIGHT to fighting skills in sphere_skills.scp.
+Fixed ADV_RATEs for parrying being too high and causing the skill to not gain.
+
+Minor changes to 0x20 packet.
+
+Modified ResPhysical to work like armor.lo. Modified Armor to be writable (only for items) and also Dam (for items and chars) and changed them from BYTE to WORD.
+Moved Weight to dynamic items too.
+Fixed bad definition of t_stone_town type in the f_stonesys_gettypename function inside sphere_genericstone_functions, should be <DEF.STONECONFIG_TYPENAME_TOWN>.
+Added ColorInvis, ColorHidden and ColorInvisSpell to sphere.ini overriding (if specified) the default color for .invis, hidding or the invis spell/potion.
+
+NOTE: The following changes are supossed to be usefull to redo the default combat system, but not using the new trigger will make the new script and the following code useless so this is not forced,
+	just a help to rewrite the actual sys without doing a whole new combat system allowing to tweak each check.
+NOTE2: These changes are in 'beta' proccess, please report any problem to bugtracker.
+NOTE3: If I was not clear enough... this makes no difference with current systems if the new trigger and dam_flag are not used.
+
+Added DAM_FIXED to sphere_defs.scp: this flag will make sphere asume that the argn1 value in @gethit is the final damage and will not do any formula calculations over it,
+	will only cast sounds,animations, blood, memories, attacker.n.% update and @GetHit trigger.
+	It also have some effects in the hit proccess (explained under).
+Changed: combat functions (hit & gethit ) to allow easy override via script with DAM_FIXED giving a better way to override the default combat system while knowing also the resulting damage
+Added sphere_combat.scp with the override of the default combat system and explanations of the new changes also.
+Added Swing Types in sphere_defs.scp for combat compatibility.
+	//  SWING_INVALID = target is invalid, searching another one.
+	//  SWING_EQUIPPING = swing made.
+	//  SWING_READY = can't take my swing right now. but i'm ready
+	//  SWING_SWINGING = taking my swing now.
+Added Swing variable for characters setting or retrieving the SWING_TYPE they currently have.
+Added FullTrigger function working like 'call' to call triggers with full support with old args and locals making possible to override default triggers with your parameters.
+	FullTrigger must be write only to avoid some problems so I added the return value in local.return, which can be readed after the trigger call.
+	Usage: FullTrigger @DClick
+Added @HitCheck trigger just in the beggining of the hit allowing to use only custom combat checks (default ones are in the supplied script) or to override the whole combat formulas.
+	- Args
+		Argn1 = SWING_TYPE. Swing will be set to this value after the trigger so you can 'jump' between swings with or without default checks.
+		Argn2 = DAM_FLAGS
+	- Returns
+		return -1 SWING_INVALID
+		return 0 default checks
+		return 1 will make Sphere return the SWING_TYPE applied in argn1, so if you are in SWING_SWINGING and you set argn1 to SWING_EQUIPPING you'll have to start the hit proccess again.
+				(Note, argn1 there will NOT set SWING to it's value).
+	- Special returns will be fired when SWING_TYPE = SWING_SWINGING & FLAGS & DAM_FIXED
+		return 0 will generate the default damage formula and flags (if not set via argn2) and then call the gethit function without DAM_FIXED applied.
+		return 2 will finish the hit function AS IT IS and will NOT call the gethit function (this asume you are creating the damage, formulas and calling .damage function).
+Note: Using new DAM_FIXED or return 1, -1 will obviously NOT call any skillgain, memory change, exp, attacker update, notoriety, actions, etc. Using this will (almost) make you to rewrite the whole system as shown in the given script.

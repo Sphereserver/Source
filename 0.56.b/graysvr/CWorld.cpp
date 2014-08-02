@@ -2311,8 +2311,15 @@ void CWorld::Explode( CChar * pSrc, CPointMap pt, int iDist, int iDamage, WORD w
 	ADDTOCALLSTACK("CWorld::Explode");
 	// Purple potions and dragons fire.
 	// degrade damage the farther away we are. ???
-
-	CItem * pItem = CItem::CreateBase(ITEMID_FX_EXPLODE_3);
+	
+	ITEMID_TYPE id = ITEMID_FX_EXPLODE_3;
+	const CVarDefCont * pAnimStorage = pSrc->GetDefKey("BREATH.ANIM", true);
+	if ( pAnimStorage )
+	{
+		if ( pAnimStorage->GetValNum() )
+			id = static_cast<ITEMID_TYPE>(pAnimStorage->GetValNum());
+	}
+	CItem * pItem = CItem::CreateBase(id);
 	if ( !pItem )
 		return;
 
@@ -2321,9 +2328,16 @@ void CWorld::Explode( CChar * pSrc, CPointMap pt, int iDist, int iDamage, WORD w
 	pItem->m_uidLink = pSrc ? (DWORD) pSrc->GetUID() : UID_CLEAR;
 	pItem->m_itExplode.m_iDamage = iDamage;
 	pItem->m_itExplode.m_wFlags = wFlags|DAMAGE_GENERAL|DAMAGE_HIT_BLUNT;
-	pItem->m_itExplode.m_iDist = iDist;
+	pItem->m_itExplode.m_iDist = iDist;	
+	HUE_TYPE hue;
+	const CVarDefCont * pHueStorage = pSrc->GetDefKey("BREATH.HUE", true);
+	if ( pHueStorage )
+	{
+		if ( pHueStorage->GetValNum() )
+			hue = static_cast<HUE_TYPE>(pHueStorage->GetValNum());
+		pItem->SetHue(hue,true);
+	}
 	pItem->MoveToDecay(pt, 1);	// almost Immediate Decay
-
 	pItem->Sound(0x207);	// sound is attached to the object so put the sound before the explosion.
 }
 

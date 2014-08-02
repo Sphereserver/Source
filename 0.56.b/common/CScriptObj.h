@@ -221,6 +221,7 @@
 		bool r_LoadVal( CScript & s );
 		bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
 		bool r_WriteVal( LPCTSTR pKey, CGString & sVal, CTextConsole * pSrc );
+		bool r_Copy( CTextConsole * pSrc );
 		LPCTSTR GetName() const
 		{
 			return "ARG";

@@ -2215,6 +2215,9 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	if ( pSrc == NULL )
 		pSrc = this;
 
+	if ( uType == DAMAGE_FIXED )
+		goto trigger_gethit;
+
 	short int i_coldDamage = 0;
 	short int i_energyDamage = 0;
 	short int i_fireDamage = 0;
@@ -2406,13 +2409,18 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	i_damTemp = iDmg + i_coldDamage + i_energyDamage + i_fireDamage + i_poisonDamage;
 	u_damFlag = uType;
 
+	iDmg = i_damTemp;
+
 	if ( IsTrigUsed(TRIGGER_GETHIT) )
 	{
+		trigger_gethit:
 		CScriptTriggerArgs Args( i_damTemp, u_damFlag, static_cast<INT64>(0) );
 		if ( OnTrigger( CTRIG_GetHit, pSrc, &Args ) == TRIGRET_RET_TRUE )
 			return( 0 );
-		i_damTemp	= static_cast<int>(Args.m_iN1);
-		u_damFlag	= static_cast<DAMAGE_TYPE>(Args.m_iN2);
+		iDmg	= static_cast<int>(Args.m_iN1);
+		uType	= static_cast<DAMAGE_TYPE>(Args.m_iN2);
+		if ( u_damFlag & DAMAGE_FIXED)
+			goto finish_damage;
 	}
 	if ( (i_damTemp != iDmg) || (u_damFlag != uType) )
 	{
@@ -2615,6 +2623,8 @@ effect_bounce:
 	// defend myself. (even though it may not have hurt me.)
 	// Don't reveal attacker if the damage has DAMAGE_NOREVEAL flag set
 	// This is set by default for poison and spell damage.
+	
+	finish_damage:
 
 	if ( ! OnAttackedBy( pSrc, iDmg, false, !(uType & DAMAGE_NOREVEAL) ))
 		return( 0 );
@@ -2922,6 +2932,10 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 
 	int iMaxCoverage = 0;	// coverage at the hit zone.
 
+	// iDmg = ( iDmg * GW_GetSCurve( iMaxCoverage - iDmg, 10 )) / 100;
+	if ( IsSetMagicFlags( MAGICF_IGNOREAR ) && ( uType & DAMAGE_MAGIC ))		// Moved from bottom to here because we don't need to check the following in this case... performance! Also, if MAGICF_IGNOREAR is set ... it makes no sense to damage the armors
+		return iDmg;
+
 	CItem * pArmorNext;
 	for ( CItem * pArmor = GetContentHead(); pArmor != NULL; pArmor = pArmorNext )
 	{
@@ -2961,17 +2975,11 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 				else
 					iMaxCoverage = maximum( iMaxCoverage, pArmor->Armor_GetDefense());
 
-//				iMaxCoverage = maximum( iMaxCoverage, pArmor->Armor_GetDefense());
-
 				pArmor->OnTakeDamage( iDmg, pSrc, uType );
 				break;
 			}
 		}
 	}
-
-	// iDmg = ( iDmg * GW_GetSCurve( iMaxCoverage - iDmg, 10 )) / 100;
-	if ( IsSetMagicFlags( MAGICF_IGNOREAR ) && ( uType & DAMAGE_MAGIC ))
-		iMaxCoverage = 0;
 
 	iDmg -= Calc_GetRandVal( iMaxCoverage );
 	return( iDmg );
@@ -3882,7 +3890,65 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	//  WAR_SWING_EQUIPPING = swing made.
 	//  WAR_SWING_READY = can't take my swing right now. but i'm ready
 	//  WAR_SWING_SWINGING = taking my swing now.
+	
+	int iTyp = DAMAGE_HIT_BLUNT;
+	CScriptTriggerArgs pArgs;
+	pArgs.m_iN1 = m_atFight.m_War_Swing_State;
+	pArgs.m_iN2 = iTyp;
+	if ( IsTrigUsed ( TRIGGER_HITCHECK ))
+	{
+		TRIGRET_TYPE tRet;
+		tRet = OnTrigger( CTRIG_HitCheck, pCharTarg, &pArgs);
+		if ( tRet == TRIGRET_RET_TRUE )
+			return (WAR_SWING_TYPE)pArgs.m_iN1;
+		else if ( tRet == -1 )
+			return WAR_SWING_INVALID;
+		m_atFight.m_War_Swing_State = (WAR_SWING_TYPE)pArgs.m_iN1;
+		iTyp = (int)pArgs.m_iN2;
 
+		if (( m_atFight.m_War_Swing_State = WAR_SWING_SWINGING) && ( iTyp & DAMAGE_FIXED ) )
+		{
+			if (tRet == 2)
+				return WAR_SWING_EQUIPPING;
+
+			if ( iTyp == DAMAGE_HIT_BLUNT )	// If type did not change in the trigger, default iTyp is set.
+			{
+				CItem	*pWeapon		= m_uidWeapon.ItemFind();
+				CItem	*pAmmo			= NULL;
+				CItemBase * pWeaponDef	= NULL;
+				if ( pWeapon )
+				{
+					pWeaponDef = pWeapon->Item_GetDef();
+					// set damage type according to weapon type
+					switch (pWeaponDef->GetType())
+					{
+						case IT_WEAPON_SWORD:
+						case IT_WEAPON_AXE:
+						case IT_WEAPON_THROWING:
+							iTyp |= DAMAGE_HIT_SLASH;
+							break;
+						case IT_WEAPON_FENCE:
+						case IT_WEAPON_BOW:
+						case IT_WEAPON_XBOW:
+							iTyp |= DAMAGE_HIT_PIERCE;
+							break;
+						default:
+							break;
+					}
+
+					// look for override TAG on the specific weapon
+					CVarDefCont * pDamTypeOverride = pWeapon->GetKey("OVERRIDE.DAMAGETYPE",true);
+					if (pDamTypeOverride)
+						iTyp = static_cast<int>(pDamTypeOverride->GetValNum());
+				}
+			}
+			if ( iTyp & DAMAGE_FIXED )
+				iTyp = iTyp &~ DAMAGE_FIXED;
+			pCharTarg->OnTakeDamage( Fight_CalcDamage( m_uidWeapon.ItemFind(), Skill_GetActive() ), this, iTyp );
+
+			return( WAR_SWING_EQUIPPING );	// Made our full swing.
+		}
+	}
 	if ( !pCharTarg || ( pCharTarg == this ) )
 		return WAR_SWING_INVALID;
 
@@ -3955,7 +4021,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	CItem	*pWeapon		= m_uidWeapon.ItemFind();
 	CItem	*pAmmo			= NULL;
 	CItemBase * pWeaponDef	= NULL;
-	int iTyp = DAMAGE_HIT_BLUNT;
 	if ( pWeapon )
 	{
 		pWeaponDef = pWeapon->Item_GetDef();

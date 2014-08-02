@@ -36,6 +36,7 @@ LPCTSTR const CItem::sm_szTrigName[ITRIG_QTY+1] =	// static
 	//"@Dye",					// My color has been changed
 	"@EQUIP",		// I have been unequipped
     "@EQUIPTEST",
+	"@MemoryEquip",
 	"@PICKUP_GROUND",	// I was picked up off the ground.
 	"@PICKUP_PACK",	// picked up from inside some container.
 	"@PICKUP_SELF", // picked up from here
@@ -74,6 +75,9 @@ CItem::CItem( ITEMID_TYPE id, CItemBase * pItemDef ) : CObjBase( true )
 	m_itWeapon.m_dmgenergy = 0;
 	m_itWeapon.m_dmgfire = 0;
 	m_itWeapon.m_dmgpoison = 0;
+	m_attackBase = pItemDef->m_attackBase;
+	m_attackRange = pItemDef->m_attackRange;
+	m_weight = pItemDef->GetWeight();
 
 	SetBase( pItemDef );
 	SetDispID( id );
@@ -2552,6 +2556,9 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_TYPE:
 			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_TYPEDEF, m_type ));
 			break;
+		case IC_WEIGHT:
+			sVal.FormatVal( m_weight );
+			break;
 		default:
 			fDoDefault = true;
 	}
@@ -2883,6 +2890,9 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			return true;
 		case IC_TYPE:
 			SetType(static_cast<IT_TYPE>(g_Cfg.ResourceGetIndexType( RES_TYPEDEF, s.GetArgStr())));
+			return true;
+		case IC_WEIGHT:
+			m_weight = (WORD)s.GetArgVal();
 			return true;
 		default:
 			return( CObjBase::r_LoadVal( s ));
@@ -4857,9 +4867,10 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		{
 			if ( RES_GET_INDEX(m_itPotion.m_Type) == SPELL_Explosion )
 			{
+				CSpellDef * pSpell = g_Cfg.GetSpellDef(SPELL_Explosion);
 				g_World.Explode( pSrc, GetTopLevelObj()->GetTopPoint(), 3,
 					g_Cfg.GetSpellEffect( SPELL_Explosion, m_itPotion.m_skillquality ),
-					DAMAGE_GENERAL | DAMAGE_HIT_BLUNT | DAMAGE_FIRE);
+pSpell->IsSpellType(SPELLFLAG_NOUNPARALYZE) ? DAMAGE_GENERAL | DAMAGE_HIT_BLUNT | DAMAGE_FIRE | DAMAGE_NOUNPARALYZE :	DAMAGE_GENERAL | DAMAGE_HIT_BLUNT | DAMAGE_FIRE  );
 				Delete();
 				return( INT_MAX );
 			}

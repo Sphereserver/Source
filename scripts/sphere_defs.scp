@@ -701,32 +701,32 @@ statf_onhorse           080000000   // mounted on horseback.
 
 [DEFNAME attr_flags]
 // apply to items
-attr_identified   00001   // this is the identified name. ???
-attr_decay        00002   // timer currently set to decay.
-attr_newbie       00004   // not lost on death or sellable ?
-attr_move_always  00008   // always movable (else default as stored in client) (even if mul says not movable) never decays !
-attr_move_never   00010   // never movable (else default as stored in client) never decays !
-attr_magic        00020   // don't set this while worn! this item is magic as apposed to marked or markable.
-attr_owned        00040   // this is owned by the town. you need to steal it. never decays !
-attr_invis        00080   // gray hidden item (to gm's or owners?)
-attr_cursed       00100
-attr_cursed2      00200   // cursed damned unholy
-attr_blessed      00400
-attr_blessed2     00800   // blessed sacred holy
-attr_forsale      01000   // for sale on a vendor.
-attr_stolen       02000   // the item is hot. m_uidlink = previous owner.
-attr_can_decay    04000   // this item can decay. but it would seem that it would not (attr_move_never etc)
-attr_static       08000   // worldforge merge marker. (not used)
+attr_identified		00001   // this is the identified name. ???
+attr_decay			00002   // timer currently set to decay.
+attr_newbie			00004   // not lost on death or sellable ?
+attr_move_always	00008   // always movable (else default as stored in client) (even if mul says not movable) never decays !
+attr_move_never		00010   // never movable (else default as stored in client) never decays !
+attr_magic			00020   // don't set this while worn! this item is magic as apposed to marked or markable.
+attr_owned			00040   // this is owned by the town. you need to steal it. never decays !
+attr_invis			00080   // gray hidden item (to gm's or owners?)
+attr_cursed			00100
+attr_cursed2		00200   // cursed damned unholy
+attr_blessed		00400
+attr_blessed2		00800   // blessed sacred holy
+attr_forsale		01000   // for sale on a vendor.
+attr_stolen			02000   // the item is hot. m_uidlink = previous owner.
+attr_can_decay		04000   // this item can decay. but it would seem that it would not (attr_move_never etc)
+attr_static			08000   // worldforge merge marker. (not used)
 attr_exceptional	010000		// is exceptional
 attr_enchanted		020000		// is enchanted
-attr_imbued		040000		// is imbued
+attr_imbued			040000		// is imbued
 attr_questitem		080000	// is quest item
 attr_insured		0100000	// Is insured
 attr_nodroptrade	0200000	// no-drop/trade
 attr_artifact		0400000	// artifact
 attr_lockeddown		0800000	// locked down
-attr_secure		01000000	// secured
-attr_reforged	02000000	// Is Runic Reforged.
+attr_secure			01000000	// secured
+attr_reforged		02000000	// Is Runic Reforged.
 
 
 [DEFNAME can_flags]
@@ -1089,7 +1089,7 @@ t_weapon_throwing       194   // Throwing Weapon
 t_forest		500   // Forest Tiles
 t_jungle		501   // Jungle Tiles
 t_furniture		502   // Furniture
-t_soul_forge		503   // Soul Forge
+t_soul_forge	503   // Soul Forge
 
 [DEFNAME layers]
 layer_hand1       1
@@ -1181,30 +1181,30 @@ dam_noreveal            04000   // damage that does not reveal the attacker.
 dam_nounparalyze        08000   // victim won't be unparalyzed
 
 [defname can_i_flags]
-can_i_door             000001   // is a door uflag4_door
-can_i_water            000002   // need to swim in it. uflag1_water
-can_i_platform         000004   // we can walk on top of it. (even tho the item itself might block) uflag2_platform
-can_i_block            000008   // need to walk thru walls or fly over. uflag1_block
-can_i_climb            000010   // step up on it, uflag2_climbable
-can_i_fire             000020   // is a fire. ussually blocks as well. uflag1_damage
-can_i_roof             000040   // we are under a roof. can't rain on us. uflag4_roof
-can_i_hover            000080   // we are hovering. uflag4_hoverover
-can_i_pile             000100   // can item be piled uflag2_stackable (*.mul)
-can_i_dye              000200   // can item be dyed uflag3_cloth? (sort of)
-can_i_flip             000400   // will flip by default.
-can_i_light            000800   // uflag3_light
-can_i_repair           001000   // is it repairable (difficulty based on value)
-can_i_replicate        002000   // things like arrows are pretty much all the same.
-can_i_dcignorelos      004000   // when dclicked, ignore los checks
-can_i_dcignoredist     008000   // when dclicked, ignore distance checks
-can_i_blocklos         010000   // blocks los, but not walking thru
-can_i_exceptional	020000		// can items be exceptional
-can_i_makersmark	040000		// can items hold makers mark
-can_i_retaincolor	080000		// can items retain material colors
-can_i_enchant		0100000	// can items be enchanted (runic)
-can_i_imbue			0200000	// can items be imbued (imbuing)
+can_i_door				000001   // is a door uflag4_door
+can_i_water				000002   // need to swim in it. uflag1_water
+can_i_platform			000004   // we can walk on top of it. (even tho the item itself might block) uflag2_platform
+can_i_block				000008   // need to walk thru walls or fly over. uflag1_block
+can_i_climb				000010   // step up on it, uflag2_climbable
+can_i_fire				000020   // is a fire. ussually blocks as well. uflag1_damage
+can_i_roof				000040   // we are under a roof. can't rain on us. uflag4_roof
+can_i_hover				000080   // we are hovering. uflag4_hoverover
+can_i_pile				000100   // can item be piled uflag2_stackable (*.mul)
+can_i_dye				000200   // can item be dyed uflag3_cloth? (sort of)
+can_i_flip				000400   // will flip by default.
+can_i_light				000800   // uflag3_light
+can_i_repair			001000   // is it repairable (difficulty based on value)
+can_i_replicate			002000   // things like arrows are pretty much all the same.
+can_i_dcignorelos		004000   // when dclicked, ignore los checks
+can_i_dcignoredist		008000   // when dclicked, ignore distance checks
+can_i_blocklos			010000   // blocks los, but not walking thru
+can_i_exceptional		020000		// can items be exceptional
+can_i_makersmark		040000		// can items hold makers mark
+can_i_retaincolor		080000		// can items retain material colors
+can_i_enchant			0100000	// can items be enchanted (runic)
+can_i_imbue				0200000	// can items be imbued (imbuing)
 can_i_recycle			0400000	// Can be recycled
-can_i_reforge		0800000	// Can be Runic Reforged.
+can_i_reforge			0800000	// Can be Runic Reforged.
 
 
 [DEFNAME tile_flags]
@@ -1245,30 +1245,30 @@ tilef_stairRight        080000000   // Well, whatever, you can climb them, so, h
 L1   <
 R1   >
 
-B      <B>
-BE      </B>
-BIG      <BIG>
-BIGE      </BIG>
-SMALL      <SMALL>
-SMALLE      </SMALL>
+B		<B>
+BE		</B>
+BIG		<BIG>
+BIGE	</BIG>
+SMALL	<SMALL>
+SMALLE	</SMALL>
 EM      <EM>
-EME      </EM>
-U      <U>
-UE      </U>
-H1      <H1>
-H1E      </H1>
-H2      <H2>
-H2E      </H2>
-H3      <H3>
-H3E      </H3>
-H4      <H4>
-H4E      </H4>
-H5      <H5>
-H5E      </H5>
-H6      <H6>
-H6E      </H6>
-A      <a
-AE      </a>
+EME		</EM>
+U		<U>
+U		</U>
+H1		<H1>
+H1E		</H1>
+H2		<H2>
+H2E		</H2>
+H3		<H3>
+H3E		</H3>
+H4		<H4>
+H4E		</H4>
+H5		<H5>
+H5E		</H5>
+H6		<H6>
+H6E		</H6>
+A		<a
+AE		</a>
 
 DIV_RIGHT   <div align="right">
 DIV_LEFT   <div align="left">
@@ -1927,12 +1927,17 @@ noto_invul           7
 // Uses new internal variable CANUSE. Script for this is in the addon's folder in the script pack.
 // Used on items for checks or npcs (mounts, golems, etc)
 [defname canuse_flags]
-can_u_all	0
-can_u_male		01
+can_u_all			0
+can_u_male			01
 can_u_female		02
-can_u_human		04
-can_u_elf		08
+can_u_human			04
+can_u_elf			08
 can_u_gargoyle		010
-can_u_none		020
+can_u_none			020
+
+[defname swing_types]
+WAR_SWING_EQUIPPING = 00			// we are recoiling our weapon.
+WAR_SWING_READY		= 01			// we can swing at any time.
+WAR_SWING_SWINGING	= 02			// we are swinging our weapon.
 
 [EOF]

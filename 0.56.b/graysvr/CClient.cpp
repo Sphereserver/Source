@@ -1390,6 +1390,32 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		case CV_SYSMESSAGE:
 			SysMessage( s.GetArgStr() );
 			break;
+		case CV_SYSMESSAGEF:
+			{
+				TCHAR * pszArgs[4];
+				size_t iArgQty = Str_ParseCmds( s.GetArgRaw(), pszArgs, COUNTOF(pszArgs) );
+				g_Log.EventDebug("SysMessagef debug: text = %s, args1 = %s, args2 = %s, args3 = %s\n",pszArgs[0],pszArgs[1],pszArgs[2] ? pszArgs[2] : "NULL", pszArgs[3] ? pszArgs[3] : "NULL");
+				if ( iArgQty < 2 )
+				{
+					g_Log.EventError("SysMessagef with less than 1 args for the given text\n");
+					return false;
+				}
+				if ( iArgQty > 4 )
+				{
+					g_Log.EventError("Too many arguments given to SysMessagef (max = text + 3\n");
+					return false;
+				}
+					#include <algorithm>
+					#include <iostream>
+					#include <string>
+					using namespace std;
+					std::string s = pszArgs[0];
+					if ( s.front() == '"' ) {
+						s.erase( 0, 1 ); // erase the first character
+						s.erase( s.size() - 1 ); // erase the last character
+					}
+					SysMessagef( s.c_str(), pszArgs[1], pszArgs[2] ? pszArgs[2] : 0, pszArgs[3] ? pszArgs[3] : 0);
+			}break;
 		case CV_SMSGU:
 		case CV_SYSMESSAGEUA:
 			{

@@ -1141,6 +1141,8 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 
 	pSpell = CItem::CreateBase( pSpellDef ? ( pSpellDef->m_idSpell ) : ITEMID_RHAND_POINT_NW );
 	ASSERT(pSpell);
+	if ( !pSpellDef )
+		pSpell->SetName("Potion Cooldown");
 
 //	if (( IsSetMagicFlags( MAGICF_STACKSTATS ) && (layer == LAYER_SPELL_STATS) ) || (layer == LAYER_NONE))
 //		layer = pSpell->Item_GetDef()->GetEquipLayer();
@@ -1207,6 +1209,7 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 	}
 
 	LayerAdd( pSpell, layer );	// Remove any competing effect first.
+	g_World.m_uidNew = pSpell->GetUID();
 	Spell_Effect_Add( pSpell );
 	return( pSpell );
 }

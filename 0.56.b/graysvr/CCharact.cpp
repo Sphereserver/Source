@@ -248,6 +248,16 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 			ItemBounce( pItem );
 			return;
 		}
+		if (( IsTrigUsed(TRIGGER_MEMORYEQUIP) ) || ( IsTrigUsed(TRIGGER_ITEMMEMORYEQUIP) ))
+		{
+			CScriptTriggerArgs pArgs;
+			pArgs.m_iN1 = layer;
+			if ( pItem->OnTrigger(ITRIG_MemoryEquip, this) == TRIGRET_RET_TRUE )
+			{
+				pItem->Delete();
+				return;
+			}
+		}
 	}
 
 	if ( layer == LAYER_SPECIAL )
@@ -1970,11 +1980,24 @@ bool CChar::Reveal( DWORD dwFlags )
 		fInvis = true;
 		//SetHue( m_prev_Hue ); <- don't want to reset to oskin!
 	}*/
-
+	
+	if ( ( dwFlags & STATF_Invisible ) && IsStatFlag( STATF_Invisible ))
+	{
+		for (CItem *pPotion = LayerFind( LAYER_FLAG_Potion ); pPotion; pPotion = pPotion->GetNext())
+		{
+			if ( ! pPotion )
+				break;
+			if  ( pPotion->GetID() == static_cast<ITEMID_TYPE>(0x20ab) ) 
+			{
+				pPotion->SetType( IT_NORMAL );	// Setting it to IT_NORMAL avoid a second call to this function
+				pPotion->Delete();
+			}
+		}
+	}
 	StatFlag_Clear(dwFlags);
 	if ( IsStatFlag(STATF_Invisible|STATF_Hidden|STATF_Insubstantial|STATF_Sleeping))
 		return false;
-
+	
 	/*if ( fInvis )
 	{
 		RemoveFromView();
@@ -1984,9 +2007,7 @@ bool CChar::Reveal( DWORD dwFlags )
 		UpdateMode(NULL, true);
 
 	if ( IsClient() )
-	{
 		GetClient()->removeBuff( BI_HIDDEN );
-	}
 	SysMessageDefault(DEFMSG_HIDING_REVEALED);
 	return true;
 }
@@ -3231,7 +3252,7 @@ void CChar::CheckRevealOnMove()
 			bReveal = true;
 		if ( IsTrigUsed(TRIGGER_STEPSTEALTH) )
 		{
-			CScriptTriggerArgs Args(bReveal);	// ARGN1 - reveal?
+			CScriptTriggerArgs Args((int)bReveal);	// ARGN1 - reveal?
 			OnTrigger(CTRIG_StepStealth, this, &Args);
 			bReveal = ( Args.m_iN1 != 0);
 		}
@@ -4454,7 +4475,8 @@ bool CChar::OnTick()
 					Fight_HitTry();
 			}
 			else if ( Skill_GetActive() == SKILL_NONE )
-				m_Act_Targ = Fight_AttackNext();
+				//m_Act_Targ = Fight_AttackNext();	//m_Act_Targ = bool?
+				Fight_AttackNext();
 		}
 	}
 

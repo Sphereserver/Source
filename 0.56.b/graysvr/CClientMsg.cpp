@@ -848,13 +848,11 @@ void CClient::GetAdjustedItemID( const CChar * pChar, const CItem * pItem, ITEMI
 	}
 
 	if ( m_pChar->IsStatFlag( STATF_Hallucinating ))
-	{
 		wHue = Calc_GetRandVal( HUE_DYE_HIGH );
-	}
 	else if ( pChar->IsStatFlag(STATF_Stone))
-	{
 		wHue = HUE_STONE;
-	}
+	else if ( pChar->IsStatFlag(STATF_Insubstantial))
+		wHue = g_Cfg.m_iColorInvis;
 	else
 	{
 		if ( pItemDef && ( GetResDisp() < pItemDef->GetResLevel() ) )
@@ -914,9 +912,13 @@ void CClient::GetAdjustedCharID( const CChar * pChar, CREID_TYPE & id, HUE_TYPE 
 	else
 	{
 		if ( pChar->IsStatFlag(STATF_Stone))	// turned to stone.
-		{
 			wHue = HUE_STONE;
-		}
+		else if ( pChar->IsStatFlag(STATF_Insubstantial))	// turned to stone.
+			wHue = g_Cfg.m_iColorInvis;
+		else if ( pChar->IsStatFlag(STATF_Hidden))	// turned to stone.
+			wHue = g_Cfg.m_iColorHidden;
+		else if ( pChar->IsStatFlag(STATF_Invisible))	// turned to stone.
+			wHue = g_Cfg.m_iColorInvisSpell;
 		else
 		{
 			wHue = pChar->GetHue();

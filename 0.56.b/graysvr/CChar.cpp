@@ -45,6 +45,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 
 	"@GetHit",				// I just got hit.
 	"@Hit",					// I just hit someone. (TARG)
+	"@HitCheck",			// Checking if I can hit my target, overriding also default checks if set to.
 	"@HitMiss",				// I just missed.
 	"@HitTry",				// I am trying to hit someone. starting swing.
 	"@HouseDesignCommit",	// I committed a new house design.
@@ -71,6 +72,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@ItemDropOn_Trade",
 	"@itemEQUIP",			// I have equipped an item
 	"@itemEQUIPTEST",
+	"@itemMemoryEquip",
 	"@itemPICKUP_GROUND",
 	"@itemPICKUP_PACK",		// picked up from inside some container.
 	"@itemPICKUP_SELF",		// picked up from this container
@@ -115,6 +117,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 
 	"@PartyDisband",		//I just disbanded my party
 	"@PartyInvite",			//SRC invited me to join a party, so I may chose
+	"@PartyLeave",
 	"@PartyRemove",			//I have ben removed from the party by SRC
 
 	"@PersonalSpace",	//+i just got stepped on.
@@ -219,6 +222,7 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 	m_pRoom = NULL;
 	m_StatFlag = 0;
 
+
 	if ( g_World.m_fSaveParity )
 	{
 		StatFlag_Set(STATF_SaveParity);	// It will get saved next time.
@@ -248,6 +252,8 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 	SetID( baseID );
 	CCharBase* pCharDef = Char_GetDef();
 	ASSERT(pCharDef);
+	m_attackBase = pCharDef->m_attackBase;
+	m_attackRange = pCharDef->m_attackRange;
 	m_Can = pCharDef->m_Can;
 	m_wBloodHue = pCharDef->m_wBloodHue;	// when damaged , what color is the blood (-1) = no blood
 
@@ -1830,6 +1836,22 @@ do_default:
 
 				return true;
 			}
+		case CHC_BREATH:
+			{
+				if( !strnicmp(pszKey, "BREATH.DAM", 10) )
+				{
+					CVarDefCont * pVar = GetDefKey(pszKey, true);
+					sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
+					return true;
+				}
+				else if(  !strnicmp(pszKey, "BREATH.HUE", 10) || !strnicmp(pszKey, "BREATH.ANIM", 11))
+				{
+					CVarDefCont * pVar = GetDefKey(pszKey, true);
+					sVal.FormatHex(pVar ? static_cast<DWORD>(pVar->GetValNum()) : 0);
+					return true;
+				}
+				return false;
+			}
 		case CHC_NOTOSAVE:
 			{
 				if ( strlen( pszKey ) == 8 )
@@ -2265,6 +2287,9 @@ do_default:
 				sVal.FormatVal( GetSkillTotal(iVal,fComp) );
 			}
 			return( true );
+		case CHC_SWING:
+			sVal.FormatVal( m_atFight.m_War_Swing_State );
+			break;
 		case CHC_TOWNABBREV:
 			{
 				LPCTSTR pszAbbrev = Guild_Abbrev(MEMORY_TOWN);
@@ -2332,8 +2357,14 @@ do_default:
 			sVal.FormatLLVal( -( g_World.GetTimeDiff(m_timeCreate) / TICK_PER_SEC ));
 			break;
 		case CHC_DIR:
-			sVal.FormatVal( m_dirFace );
-			break;
+			{
+				pszKey +=3;
+				CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind());
+				if ( pChar )
+					sVal.FormatVal( GetDir(pChar));
+				else
+					sVal.FormatVal( m_dirFace );
+			}break;
 		case CHC_EMOTEACT:
 			sVal.FormatVal( IsStatFlag( STATF_EmoteAction ));
 			break;
@@ -2372,7 +2403,12 @@ do_default:
 		case CHC_MAXSTAM:
 			sVal.FormatVal( Stat_GetMax(STAT_DEX) );
 			break;
-
+		case CHC_HIT:
+			{
+			}break;
+		case CHC_HITTRY:
+			{
+			}break;
 		case CHC_HOME:
 			sVal = m_ptHome.WriteUsed();
 			break;
@@ -2666,10 +2702,19 @@ do_default:
 					}
 				}
 				return false;
-			}
+			}break;
 		case CHC_BODY:
 			SetID(static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType( RES_CHARDEF, s.GetArgStr())));
 			break;
+		case CHC_BREATH:
+			{				
+				if( !strnicmp(pszKey, "BREATH.DAM", 10) || !strnicmp(pszKey, "BREATH.HUE", 10) || !strnicmp(pszKey, "BREATH.ANIM", 11))
+				{
+					SetDefNum(s.GetKey(), s.GetArgLLVal());
+					return true;
+				}
+				return false;
+			}break;
 		case CHC_CREATE:
 			m_timeCreate = CServTime::GetCurrentTime() - ( s.GetArgLLVal() * TICK_PER_SEC );
 			break;
@@ -2787,6 +2832,24 @@ do_default:
 		case CHC_FAME:
 		case CHC_KARMA:
 			goto do_default;
+		case CHC_SKILLUSEQUICK:
+			{
+
+				if ( s.GetArgStr() )
+				{
+					TCHAR * ppArgs[2];
+					size_t iQty = Str_ParseCmds(const_cast<TCHAR *>(s.GetArgStr()), ppArgs, COUNTOF( ppArgs ));
+					if ( iQty == 2 )
+					{
+						SKILL_TYPE iSkill = g_Cfg.FindSkillKey( ppArgs[0] );
+						if ( iSkill == SKILL_NONE )
+							return( false );
+
+						 Skill_UseQuick( iSkill, Exp_GetVal( ppArgs[1] ));
+						return true;
+					}
+				}
+			} return false;
 		case CHC_MEMORY:
 			{
 				INT64 piCmd[2];
@@ -2864,6 +2927,13 @@ do_default:
 					RemoveFromView();
 					Update();
 				}
+			}
+			break;
+		case CHC_SWING:
+			{
+				if ( s.GetArgVal() && (s.GetArgVal() < -1 || s.GetArgVal() > WAR_SWING_SWINGING ))
+					return false;
+				m_atFight.m_War_Swing_State = (WAR_SWING_TYPE)s.GetArgVal();
 			}
 			break;
 		case CHC_TITLE:
@@ -3612,6 +3682,10 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				else
 					return Spell_Resurrection( NULL, pCharSrc, true );
 			}
+		case CHV_REVEAL:
+			{
+				Reveal(static_cast<unsigned long>(s.GetArgVal()));
+			}break;
 		case CHV_SALUTE:	//	salute to player
 			{
 				CObjBase	*pTarget = pCharSrc;

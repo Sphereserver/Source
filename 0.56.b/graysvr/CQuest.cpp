@@ -459,7 +459,11 @@ bool CPartyDef::RemoveMember( CGrayUID uidRemove, CGrayUID uidCommand )
 		CScriptTriggerArgs args;
 		pCharRemove->OnTrigger(CTRIG_PartyRemove, pSrc, &args);
 	}
-
+	if (  IsTrigUsed(TRIGGER_PARTYLEAVE) )
+	{
+		if ( pCharRemove->OnTrigger(CTRIG_PartyLeave, pCharRemove, 0) == TRIGRET_RET_TRUE )
+			return false;
+	}
 	LPCTSTR pszForceMsg = ( (DWORD) uidCommand != (DWORD) uidRemove ) ? g_Cfg.GetDefaultMsg( DEFMSG_PARTY_PART_1 ) : g_Cfg.GetDefaultMsg( DEFMSG_PARTY_PART_2 );
 
 	{

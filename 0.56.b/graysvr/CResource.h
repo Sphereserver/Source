@@ -152,6 +152,7 @@ enum BODYPART_TYPE
 #define DAMAGE_HIT_PIERCE	0x0800	// spear.
 #define DAMAGE_NOREVEAL		0x4000	// Attacker is not revealed for this
 #define DAMAGE_NOUNPARALYZE	0x8000  // victim won't be unparalyzed
+#define DAMAGE_FIXED		0x10000	// already fixed damage, don't do calcs ... only create blood, anim, sounds... and update memories and attacker
 
 typedef WORD DAMAGE_TYPE;		// describe a type of damage.
 
@@ -946,6 +947,10 @@ public:
 	int		m_iColorNotoGuildWar;
 	int		m_iColorNotoInvul;
 	int		m_iColorNotoNeutral;
+	
+	int		m_iColorInvis;
+	int		m_iColorInvisSpell;
+	int		m_iColorHidden;
 
 	// notoriety inheritance
 	int     m_iPetsInheritNotoriety;

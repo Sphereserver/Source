@@ -192,9 +192,21 @@ bool CScriptTriggerArgs::r_Verb( CScript & s, CTextConsole * pSrc )
 			}
 		}
 	}
-	else if ( !strnicmp(pszKey, "ARGO.", 5) )
+	else if ( !strnicmp(pszKey, "ARGO", 4) )
 	{
-		index = AGC_O;
+		pszKey += 4;
+		if ( !strnicmp(pszKey, ".", 1) )
+			index = AGC_O;
+		else
+		{
+			pszKey ++;
+			CObjBase * pObj = static_cast<CObjBase*>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).ObjFind());
+			if (!pObj)
+				m_pO1;	// no pObj = cleaning argo
+			else
+				m_pO1 = pObj;
+			return( true );
+		}
 	}
 	else
 		index = FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1 );
@@ -1227,7 +1239,7 @@ badcmd:
 				INT64 iRes = 0;
 
 				if ( iDiv == 0 )
-					g_Log.EventWarn("MULDIV(%lld,%lld,%lld) -> Deviding by '0'\n", iNum, iMul, iDiv);
+					g_Log.EventWarn("MULDIV(%lld,%lld,%lld) -> Dividing by '0'\n", iNum, iMul, iDiv);
 				else
 					iRes = IMULDIV(iNum,iMul,iDiv);
 
@@ -2492,6 +2504,80 @@ jump_in:
 							{
 								fRes = pRef->r_Call(argRaw, pSrc, pArgs, &sVal);
 							}
+						}
+						else
+						{
+							fRes = false;
+						}
+					} else if ( !strcmpi(s.GetKey(), "FullTrigger" ) )
+					{
+						EXC_SET("call");
+						CGString sVal;
+						TCHAR * piCmd[7];
+						TCHAR *psTmp = Str_GetTemp();
+						strcpy( psTmp, s.GetArgRaw() );
+						size_t iArgQty = Str_ParseCmds( psTmp, piCmd, COUNTOF( piCmd ), " ,\t" );
+						CScriptObj *pRef = this;
+						if ( iArgQty == 2 )
+						{
+							CGrayUID uid = (int)piCmd[1];
+							if ( uid.ObjFind() )
+								pRef = uid.ObjFind();
+						}
+
+						// Parse object references, src.* is not parsed
+						// by r_GetRef so do it manually
+						//r_GetRef(const_cast<LPCTSTR &>(static_cast<LPTSTR &>(argRaw)), pRef);
+						if ( !strnicmp("SRC.", psTmp, 4) )
+						{
+							psTmp += 4;
+							pRef = pSrc->GetChar();
+						}
+
+						// Check that an object is referenced
+						if (pRef != NULL)
+						{
+							// Locate arguments for the called function
+							TRIGRET_TYPE tRet;
+							TCHAR *z = strchr(psTmp, ' ');
+
+							if( z )
+							{
+								*z = 0;
+								++z;
+								GETNONWHITESPACE(z);
+							}
+
+							if ( z && *z )
+							{
+								INT64 iN1 = pArgs->m_iN1;
+								INT64 iN2 = pArgs->m_iN2;
+								INT64 iN3 = pArgs->m_iN3;
+								CScriptObj *pO1 = pArgs->m_pO1;
+								CGString s1 = pArgs->m_s1;
+								CGString s1_raw = pArgs->m_s1;
+								pArgs->m_v.SetCount(0);
+								pArgs->Init(z);
+
+
+								//fRes = pRef->r_Call(argRaw, pSrc, pArgs, &sVal);
+								tRet = pSrc->GetChar()->OnTrigger( psTmp, pSrc, pArgs);
+
+								pArgs->m_iN1 = iN1;
+								pArgs->m_iN2 = iN2;
+								pArgs->m_iN3 = iN3;
+								pArgs->m_pO1 = pO1;
+								pArgs->m_s1 = s1;
+								pArgs->m_s1_raw = s1_raw;
+								pArgs->m_VarsLocal.SetNum("return",tRet,false);
+								pArgs->m_v.SetCount(0);
+							}
+							else
+							{
+								tRet = pSrc->GetChar()->OnTrigger( psTmp, pSrc, pArgs);
+								//fRes = pRef->r_Call(argRaw, pSrc, pArgs, &sVal);
+							}
+							fRes = tRet > 0 ? 1 : 0;
 						}
 						else
 						{

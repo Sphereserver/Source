@@ -222,6 +222,10 @@ CResource::CResource()
 	m_iColorNotoInvul = 0x0035;			// yellow
 	m_iColorNotoNeutral = 0x03b2;		// grey (can be attacked)
 	
+	m_iColorInvis = 0;
+	m_iColorInvisSpell = 0;
+	m_iColorHidden = 0;
+	
 	m_iNotoTimeout		= 30;			// seconds to remove this character from notoriety list.
 
 	m_iPetsInheritNotoriety = 0;
@@ -391,6 +395,9 @@ enum RC_TYPE
 	RC_CLIENTMAX,			// m_iClientsMax
 	RC_CLIENTMAXIP,			// m_iClientsMaxIP
 	RC_CLIENTS,
+	RC_COLORHIDDEN,
+	RC_COLORINVIS,
+	RC_COLORINVISSPELL,
 	RC_COLORNOTOCRIMINAL,	// m_iColorNotoCriminal
 	RC_COLORNOTODEFAULT,	// m_iColorNotoDefault
 	RC_COLORNOTOEVIL,		// m_iColorNotoEvil
@@ -618,6 +625,9 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "CLIENTMAX",				{ ELEM_INT,		OFFSETOF(CResource,m_iClientsMax),			0 }},
 	{ "CLIENTMAXIP",			{ ELEM_INT,		OFFSETOF(CResource,m_iClientsMaxIP),		0 }},
 	{ "CLIENTS",				{ ELEM_VOID,	0,											0 }},	// duplicate
+	{ "COLORHIDDEN",			{ ELEM_VOID,	OFFSETOF(CResource,m_iColorHidden),			0 }},
+	{ "COLORINVIS",				{ ELEM_VOID,	OFFSETOF(CResource,m_iColorInvis),			0 }},
+	{ "COLORINVISSPELL",		{ ELEM_VOID,	OFFSETOF(CResource,m_iColorInvisSpell),		0 }},
 	{ "COLORNOTOCRIMINAL",		{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoCriminal),	0 }},
 	{ "COLORNOTODEFAULT",		{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoDefault),	0 }},
 	{ "COLORNOTOEVIL",			{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoEvil),		0 }},
@@ -953,6 +963,15 @@ bool CResource::r_LoadVal( CScript &s )
 			{
 				m_iClientsMax = FD_SETSIZE-1;
 			}
+			break;
+		case RC_COLORHIDDEN:
+			m_iColorHidden = s.GetArgVal();
+			break;
+		case RC_COLORINVIS:
+			m_iColorInvis = s.GetArgVal();
+			break;
+		case RC_COLORINVISSPELL:
+			m_iColorInvisSpell = s.GetArgVal();
 			break;
 		case RC_CORPSENPCDECAY:
 			m_iDecay_CorpseNPC = s.GetArgVal()*60*TICK_PER_SEC;
@@ -1478,6 +1497,15 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		   break;
 		case RC_CLIENTLINGER:
 			sVal.FormatVal( m_iClientLingerTime / TICK_PER_SEC );
+			break;
+		case RC_COLORHIDDEN:
+			sVal.FormatHex( m_iColorHidden );
+			break;
+		case RC_COLORINVIS:
+			sVal.FormatHex( m_iColorInvis );
+			break;
+		case RC_COLORINVISSPELL:
+			sVal.FormatHex( m_iColorInvisSpell );
 			break;
 		case RC_CORPSENPCDECAY:
 			sVal.FormatVal( m_iDecay_CorpseNPC / (60*TICK_PER_SEC));
