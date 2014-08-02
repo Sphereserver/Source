@@ -1236,7 +1236,7 @@ void CChar::UpdateVisualRange()
 		GetClient()->addVisualRange( m_iVisualRange );
 }
 
-void CChar::UpdateMove( const CPointMap & pold, CClient * pExcludeClient, bool fFull )
+void CChar::UpdateMove( const CPointMap & pold, CClient * pExcludeClient, bool fFull, bool fOnlyDir )
 {
 	ADDTOCALLSTACK("CChar::UpdateMove");
 	// Who now sees this char ?
@@ -1254,14 +1254,22 @@ void CChar::UpdateMove( const CPointMap & pold, CClient * pExcludeClient, bool f
 		if ( pClient == pExcludeClient )
 			continue;	// no need to see self move.
 		EXC_SET("IF m_pClient");
-		if ( pClient == m_pClient && fFull )
+		if ( pClient == m_pClient )
 		{
-			EXC_SET("ADD map");
-			// What do i now see ?
-			pClient->addMap( (pold.IsValidPoint() ? &pold : NULL), true );
-			EXC_SET("AddPlayerView");
-			pClient->addPlayerView( pold );
-			continue;
+			if ( fFull )
+			{
+				EXC_SET("ADD map");
+				// What do i now see ?
+				pClient->addMap( (pold.IsValidPoint() ? &pold : NULL), true );
+				EXC_SET("AddPlayerView");
+				pClient->addPlayerView( pold );
+				continue;
+			} else if ( fOnlyDir )
+			{
+				EXC_SET("AddPlayerView");
+				pClient->addPlayerView( pold );
+				continue;
+			}
 		}
 		EXC_SET("Char Getting");
 		CChar * pChar = pClient->GetChar();
@@ -1299,7 +1307,7 @@ void CChar::UpdateDir( DIR_TYPE dir )
 	if ( dir != m_dirFace && dir > DIR_INVALID && dir < DIR_QTY )
 	{
 		m_dirFace = dir;	// face victim.
-		UpdateMove( GetTopPoint(), NULL, true );
+		UpdateMove( GetTopPoint(), NULL, false, true );
 	}
 }
 

@@ -3142,7 +3142,7 @@ public:
 	void UpdateMode(  CClient * pExcludeClient = NULL, bool fFull= false );
 	void UpdateSpeedMode();
 	void UpdateVisualRange();
-	void UpdateMove( const CPointMap & pold, CClient * pClientExclude = NULL, bool fFull = false );
+	void UpdateMove( const CPointMap & pold, CClient * pClientExclude = NULL, bool fFull = false, bool fOnlydir = false );
 	void UpdateDir( DIR_TYPE dir );
 	void UpdateDir( const CPointMap & pt );
 	void UpdateDir( const CObjBaseTemplate * pObj );

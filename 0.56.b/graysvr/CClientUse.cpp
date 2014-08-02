@@ -118,6 +118,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 
 	if ( pItemDef->IsTypeEquippable() && ! pItem->IsItemEquipped() && pItemDef->GetEquipLayer() )
 	{
+		pItem->RemoveFromView();
 		if ( pItem->IsType(IT_LIGHT_OUT) && pItem->IsItemInContainer())
 		{
 			if ( ! Cmd_Use_Item_MustEquip( pItem ) )

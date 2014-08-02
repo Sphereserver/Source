@@ -1123,6 +1123,9 @@ Moved Weight to dynamic items too.
 Fixed bad definition of t_stone_town type in the f_stonesys_gettypename function inside sphere_genericstone_functions, should be <DEF.STONECONFIG_TYPENAME_TOWN>.
 Added ColorInvis, ColorHidden and ColorInvisSpell to sphere.ini overriding (if specified) the default color for .invis, hidding or the invis spell/potion.
 
+Fixed items remaining on the ground on Enhanced Client when equipping them via double click.
+Fixed PacketMapChange being fired when DClicking an item and turning around (without OF_DClickNoTurn enabled). This should decrease the amount of rubberband effects.
+
 NOTE: The following changes are supossed to be usefull to redo the default combat system, but not using the new trigger will make the new script and the following code useless so this is not forced,
 	just a help to rewrite the actual sys without doing a whole new combat system allowing to tweak each check.
 NOTE2: These changes are in 'beta' proccess, please report any problem to bugtracker.
