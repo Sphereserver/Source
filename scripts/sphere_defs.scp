@@ -1254,7 +1254,9 @@ SMALLE	</SMALL>
 EM      <EM>
 EME		</EM>
 U		<U>
-U		</U>
+UE		</U>
+I		<I>
+IE		</I>
 H1		<H1>
 H1E		</H1>
 H2		<H2>
@@ -1291,7 +1293,7 @@ BFONT_DGRAY   <basefont color="#444444">
 BFONT_BLACK   <basefont color="#000011">
 BFONT_LRED   <basefont color="#ff0000">
 BFONT_RED   <basefont color="#880000">
-Bfont_DRED   <basefont color="#440000">
+BFONT_DRED   <basefont color="#440000">
 BFONT_LGREEN   <basefont color="#00ff00">
 BFONT_GREEN   <basefont color="#008800">
 BFONT_DGREEN   <basefont color="#004400">
