@@ -1267,7 +1267,7 @@ void CChar::UpdateMove( const CPointMap & pold, CClient * pExcludeClient, bool f
 			} else if ( fOnlyDir )
 			{
 				EXC_SET("AddPlayerView");
-				pClient->addPlayerView( pold );
+				pClient->addPlayerView( pold, fOnlyDir );
 				continue;
 			}
 		}

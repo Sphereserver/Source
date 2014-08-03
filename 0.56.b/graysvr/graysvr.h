@@ -1185,7 +1185,7 @@ public:
 	void addPlayerStart( CChar * pChar );
 	void addAOSPlayerSeeNoCrypt(); //sends tooltips for items in LOS
 	void addPlayerSee( const CPointMap & pt ); // Send objects the player can now see
-	void addPlayerView( const CPointMap & pt, bool playerStart = false );
+	void addPlayerView( const CPointMap & pt, bool playerStart = false, bool NotItems = false );
 	void addPlayerWarMode();
 
 	void addCharMove( const CChar * pChar );

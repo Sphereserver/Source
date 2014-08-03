@@ -1838,10 +1838,11 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 	}
 }
 
-void CClient::addPlayerView( const CPointMap & ptold, bool playerStart )
+void CClient::addPlayerView( const CPointMap & ptold, bool playerStart, bool NotItems )
 {
 	ADDTOCALLSTACK("CClient::addPlayerView");
 	// I moved = Change my point of view. Teleport etc..
+	// NotItems to not send or even do the checks, no client impact but server is not firing unnecessary loops and calls.
 
 	new PacketPlayerPosition(this);
 
@@ -1854,7 +1855,7 @@ void CClient::addPlayerView( const CPointMap & ptold, bool playerStart )
 	m_Env.SetInvalid();	// Must resend environ stuff.
 
 	// What can i see here ?
-	if ( !playerStart )
+	if ( !playerStart && !NotItems )
 		addPlayerSee( ptold );
 }
 

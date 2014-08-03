@@ -2724,6 +2724,7 @@ do_default:
 				if (dir <= DIR_INVALID || dir >= DIR_QTY)
 					dir = DIR_SE;
 				m_dirFace = dir;
+				UpdateDir( dir );
 			}
 			break;
 		case CHC_DISMOUNT:
