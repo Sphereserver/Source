@@ -2708,11 +2708,8 @@ bool CChar::Death()
 	CChar	* pKiller = NULL;
 	CItem	* pItemNext;
 	CItem	* pItem;
-	CItemMemory * pMemoryKiller = NULL;
-	int		killedBy = 0;
-	std::map<DWORD,bool> mapKillers;
 
-	for ( pItem = GetContentHead(); pItem; pItem = pItemNext, pMemoryKiller = NULL )
+	for ( pItem = GetContentHead(); pItem; pItem = pItemNext)
 	{
 		pItemNext = pItem->GetNext();
 
@@ -2732,41 +2729,13 @@ bool CChar::Death()
 		{
 			this->m_prev_id = this->GetID();
 		}
-		bool bKillermem;
-
-		//bKillermem = pItem->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_AGGREIVED);
-		bKillermem = pItem->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_WAR_TARG);
+		bool bKillermem = pItem->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_WAR_TARG);
 
 		if (bKillermem)
-		{
-			pMemoryKiller = STATIC_CAST<CItemMemory *>(pItem);
-			if ( pMemoryKiller )
-			{
-				pKiller = pMemoryKiller->m_uidLink.CharFind();
-				if ( pKiller )
-				{
-					DWORD dwKillerUID = pKiller->GetUID();
-
-					if ( !pKiller->m_pPlayer && pKiller->NPC_PetGetOwner() )
-					{
-						mapKillers[dwKillerUID] = false;
-						mapKillers[(DWORD)(pKiller->NPC_PetGetOwner()->GetUID())] = true;
-					}
-					else
-					{
-						if ( mapKillers.find(dwKillerUID) == mapKillers.end() ) // if we're already in don't override here
-							mapKillers[dwKillerUID] = false;
-					}
-				}
-			}
-			Memory_ClearTypes(pMemoryKiller, 0xFFFF);
-		}
+			Memory_ClearTypes(STATIC_CAST<CItemMemory *>(pItem), 0xFFFF);
 	}
 
-	pKiller = NULL;
-	killedBy = mapKillers.size();
 	CScriptTriggerArgs args(this);
-	args.m_iN1 = killedBy;
 
 	for ( unsigned int count = 0; count < m_lastAttackers.size(); count++ )
 	{
@@ -2780,31 +2749,13 @@ bool CChar::Death()
 					continue;
 			}
 
-			pKiller->Noto_Kill(this, IsStatFlag(STATF_Pet) , killedBy-1);
+			pKiller->Noto_Kill(this, IsStatFlag(STATF_Pet) , Attacker()-1);
 			iKillStrLen += sprintf( pszKillStr+iKillStrLen, "%s%c'%s'", iKillers ? ", " : "", 
 				(pKiller->m_pPlayer) ? 'P':'N', (pKiller->m_pPlayer) ? pKiller->GetNameWithoutIncognito() : pKiller->GetName() );
 			++iKillers;
 
 		}
 	}
-	/*for ( std::map<DWORD,bool>::iterator itCurrentKiller = mapKillers.begin(); itCurrentKiller != mapKillers.end(); ++itCurrentKiller)
-	{
-		pKiller = CGrayUID((*itCurrentKiller).first).CharFind();
-		if ( pKiller )
-		{
-			if ( IsTrigUsed(TRIGGER_KILL) )
-			{
-				if (pKiller->OnTrigger(CTRIG_Kill, pKiller, &args) == TRIGRET_RET_TRUE )
-					continue;
-			}
-
-			pKiller->Noto_Kill(this, (*itCurrentKiller).second, killedBy-1);
-
-			iKillStrLen += sprintf( pszKillStr+iKillStrLen, "%s%c'%s'", iKillers ? ", " : "", 
-				(pKiller->m_pPlayer) ? 'P':'N', (pKiller->m_pPlayer) ? pKiller->GetNameWithoutIncognito() : pKiller->GetName() );
-			++iKillers;
-		}
-	}*/
 
 	//	No aggressor/killer detected. Try detect person last hit me  from the act target
 	if ( !pKiller )

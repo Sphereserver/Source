@@ -1174,10 +1174,14 @@ TRIGRET_TYPE CChar::OnCharTrigForMemTypeLoop( CScript &s, CTextConsole * pSrc, C
 			if ( ! pItem->IsMemoryTypes(wMemType))
 				continue;
 			TRIGRET_TYPE iRet = pItem->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
-			if ( iRet != TRIGRET_ENDIF )
+			if ( iRet == TRIGRET_BREAK )
 			{
-				return( iRet );
+				EndContext = StartContext;
+				s.SeekContext( StartContext );
+				break;
 			}
+			if (( iRet != TRIGRET_ENDIF ) && ( iRet != TRIGRET_CONTINUE ))
+				return( iRet );
 			EndContext = s.GetContext();
 			s.SeekContext( StartContext );
 		}
@@ -2215,9 +2219,6 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	if ( pSrc == NULL )
 		pSrc = this;
 
-	if ( uType == DAMAGE_FIXED )
-		goto trigger_gethit;
-
 	short int i_coldDamage = 0;
 	short int i_energyDamage = 0;
 	short int i_fireDamage = 0;
@@ -2230,6 +2231,12 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	short int i_tDamElec = 0;
 	short int i_tDamCold = 0;
 	short int i_tDamFire = 0;
+
+	CItem * pActWeapon = pSrc->m_uidWeapon.ItemFind(); 
+	CCharBase * pCharDef = Char_GetDef();
+
+	if ( uType == DAMAGE_FIXED )
+		goto trigger_gethit;
 
 	if  ( IsSetCombatFlags(COMBAT_SPECIALDAMAGE) && (uType & (DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_MAGIC)) )
 	{
@@ -2368,7 +2375,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 #endif
 
 
-	CItem * pActWeapon = pSrc->m_uidWeapon.ItemFind(); 
+	//CItem * pActWeapon = pSrc->m_uidWeapon.ItemFind(); 
 	if ( (pActWeapon) && IsSetCombatFlags(COMBAT_OSIDAMAGEMOD) && (uType & (DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH)) )
 	{
 		int damMod = 0;
@@ -2505,7 +2512,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		StatFlag_Clear( STATF_Freeze );	// remove paralyze.
 	}
 
-	CCharBase * pCharDef = Char_GetDef();
+	//CCharBase * pCharDef = Char_GetDef();
 	ASSERT(pCharDef);
 
 	if ( uType & ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH ))
@@ -3914,7 +3921,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			if ( iTyp == DAMAGE_HIT_BLUNT )	// If type did not change in the trigger, default iTyp is set.
 			{
 				CItem	*pWeapon		= m_uidWeapon.ItemFind();
-				CItem	*pAmmo			= NULL;
 				CItemBase * pWeaponDef	= NULL;
 				if ( pWeapon )
 				{

@@ -29,6 +29,7 @@ TCHAR * CScriptKey::GetArgStr( bool * fQuoted )	// this could be a quoted string
 	//TCHAR * pEnd = strchr( pStr, '"' );
 	// search for last qoute sybol starting from the end
 	for (TCHAR * pEnd = pStr + strlen( pStr ) - 1; pEnd >= pStr; pEnd-- )
+	{
 		if ( *pEnd == '"' )
 		{
 			*pEnd = '\0';
@@ -36,6 +37,7 @@ TCHAR * CScriptKey::GetArgStr( bool * fQuoted )	// this could be a quoted string
 				*fQuoted = true;
 			break;
 		}
+	}
 
 	return( pStr );
 }

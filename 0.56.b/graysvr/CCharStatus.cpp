@@ -159,10 +159,14 @@ TRIGRET_TYPE CChar::OnCharTrigForLayerLoop( CScript &s, CTextConsole * pSrc, CSc
 		if ( pItem->GetEquipLayer() == layer )
 		{
 			TRIGRET_TYPE iRet = pItem->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
-			if ( iRet != TRIGRET_ENDIF )
+			if ( iRet == TRIGRET_BREAK )
 			{
-				return( iRet );
+				EndContext = StartContext;
+				s.SeekContext( StartContext );
+				break;
 			}
+			if (( iRet != TRIGRET_ENDIF ) && ( iRet != TRIGRET_CONTINUE ))
+				return( iRet );
 			EndContext = s.GetContext();
 			s.SeekContext( StartContext );
 		}
@@ -883,7 +887,6 @@ LPCTSTR CChar::GetTradeTitle() const // Paperdoll title for character p (2)
 	TCHAR * pTemp = Str_GetTemp();
 	CCharBase* pCharDef = Char_GetDef();
 	ASSERT(pCharDef);
-	bool HideSkill = false;
 
 	// Incognito ?
 	// If polymorphed then use the poly name.

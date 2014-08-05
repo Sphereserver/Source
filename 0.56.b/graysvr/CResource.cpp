@@ -1385,7 +1385,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 
 			if ( *pszCmd == '\0')
 			{
-				sVal.Format(m_Functions.GetAt(iNumber)->GetName());
+				sVal = m_Functions.GetAt(iNumber)->GetName();
 				return true;
 			}
 			else if ( !strnicmp( pszCmd, "PLEVEL", 5 ))

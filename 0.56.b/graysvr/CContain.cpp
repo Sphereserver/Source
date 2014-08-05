@@ -120,10 +120,14 @@ TRIGRET_TYPE CContainer::OnContTriggerForLoop( CScript &s, CTextConsole * pSrc, 
 			{
 				s.SeekContext( StartContext );
 				TRIGRET_TYPE iRet = pItem->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
- 				if ( iRet != TRIGRET_ENDIF )
+				if ( iRet == TRIGRET_BREAK )
 				{
-					return( iRet );
+					EndContext = StartContext;
+					s.SeekContext( StartContext );
+					break;
 				}
+ 				if (( iRet != TRIGRET_ENDIF ) && ( iRet != TRIGRET_CONTINUE ))
+					return( iRet );
 				EndContext = s.GetContext();
 			}
 			if ( iDecendLevels <= 0 )
@@ -173,10 +177,14 @@ TRIGRET_TYPE CContainer::OnGenericContTriggerForLoop( CScript &s, CTextConsole *
 		
 		s.SeekContext( StartContext );
 		TRIGRET_TYPE iRet = pItem->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
- 		if ( iRet != TRIGRET_ENDIF )
+		if ( iRet == TRIGRET_BREAK )
 		{
-			return( iRet );
+			EndContext = StartContext;
+			s.SeekContext( StartContext );
+			break;
 		}
+ 		if (( iRet != TRIGRET_ENDIF ) && ( iRet != TRIGRET_CONTINUE ))
+			return( iRet );
 		EndContext = s.GetContext();
 		if ( iDecendLevels <= 0 )
 			continue;

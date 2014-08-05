@@ -202,7 +202,7 @@ bool CScriptTriggerArgs::r_Verb( CScript & s, CTextConsole * pSrc )
 			pszKey ++;
 			CObjBase * pObj = static_cast<CObjBase*>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).ObjFind());
 			if (!pObj)
-				m_pO1;	// no pObj = cleaning argo
+				m_pO1 = NULL;	// no pObj = cleaning argo
 			else
 				m_pO1 = pObj;
 			return( true );
@@ -1693,10 +1693,14 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 			if ( !Exp_GetVal( pszCond ) )
 				break;
 			TRIGRET_TYPE iRet = OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
-			if ( iRet != TRIGRET_ENDIF )
+			if ( iRet == TRIGRET_BREAK )
 			{
-				return( iRet );
+				EndContext = StartContext;
+				s.SeekContext( StartContext );
+				break;
 			}
+			if (( iRet != TRIGRET_ENDIF ) && ( iRet != TRIGRET_CONTINUE ))
+				return( iRet );
 			EndContext = s.GetContext();
 			s.SeekContext( StartContext );
 		}
@@ -1757,10 +1761,14 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 
 				pArgs->m_VarsLocal.SetNum( sLoopVar, i, false );
 				TRIGRET_TYPE iRet = OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
-				if ( iRet != TRIGRET_ENDIF )
+				if ( iRet == TRIGRET_BREAK )
 				{
-					return( iRet );
+					EndContext = StartContext;
+					s.SeekContext( StartContext );
+					break;
 				}
+				if (( iRet != TRIGRET_ENDIF ) && ( iRet != TRIGRET_CONTINUE ))
+					return( iRet );
 				EndContext = s.GetContext();
 				s.SeekContext( StartContext );
 			}
@@ -1773,10 +1781,14 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 
 				pArgs->m_VarsLocal.SetNum( sLoopVar, i, false );
 				TRIGRET_TYPE iRet = OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
-				if ( iRet != TRIGRET_ENDIF )
+				if ( iRet == TRIGRET_BREAK )
 				{
-					return( iRet );
+					EndContext = StartContext;
+					s.SeekContext( StartContext );
+					break;
 				}
+				if (( iRet != TRIGRET_ENDIF ) && ( iRet != TRIGRET_CONTINUE ))
+					return( iRet );
 				EndContext = s.GetContext();
 				s.SeekContext( StartContext );
 			}
@@ -1813,10 +1825,14 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 					if ( pItem == NULL )
 						break;
 					TRIGRET_TYPE iRet = pItem->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
-					if ( iRet != TRIGRET_ENDIF )
+					if ( iRet == TRIGRET_BREAK )
 					{
-						return( iRet );
+						EndContext = StartContext;
+						s.SeekContext( StartContext );
+						break;
 					}
+					if (( iRet != TRIGRET_ENDIF ) && ( iRet != TRIGRET_CONTINUE ))
+						return( iRet );
 					EndContext = s.GetContext();
 					s.SeekContext( StartContext );
 				}
@@ -1839,10 +1855,14 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 					if ( ( iType & 0x20 ) && ( pChar->m_pPlayer == NULL ) )	// FORPLAYERS
 						continue;
 					TRIGRET_TYPE iRet = pChar->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
-					if ( iRet != TRIGRET_ENDIF )
+					if ( iRet == TRIGRET_BREAK )
 					{
-						return( iRet );
+						EndContext = StartContext;
+						s.SeekContext( StartContext );
+						break;
 					}
+					if (( iRet != TRIGRET_ENDIF ) && ( iRet != TRIGRET_CONTINUE ))
+						return( iRet );
 					EndContext = s.GetContext();
 					s.SeekContext( StartContext );
 				}
@@ -1899,10 +1919,14 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 
 				// Execute script on this object
 				TRIGRET_TYPE iRet = pObj->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
- 				if ( iRet != TRIGRET_ENDIF )
+				if ( iRet == TRIGRET_BREAK )
 				{
-					return( iRet );
+					EndContext = StartContext;
+					s.SeekContext( StartContext );
+					break;
 				}
+ 				if (( iRet != TRIGRET_ENDIF ) && ( iRet != TRIGRET_CONTINUE ))
+					return( iRet );
 				EndContext = s.GetContext();
 				s.SeekContext( StartContext );
 
@@ -2038,6 +2062,8 @@ TRIGRET_TYPE CScriptObj::OnTriggerScript( CScript & s, LPCTSTR pszTrigName, CTex
 enum SK_TYPE
 {
 	SK_BEGIN,
+	SK_BREAK,
+	SK_CONTINUE,
 	SK_DORAND,
 	SK_DOSWITCH,
 	SK_ELIF,
@@ -2073,6 +2099,8 @@ enum SK_TYPE
 LPCTSTR const CScriptObj::sm_szScriptKeys[SK_QTY+1] =
 {
 	"BEGIN",
+	"BREAK",
+	"CONTINUE",
 	"DORAND",
 	"DOSWITCH",
 	"ELIF",
@@ -2204,6 +2232,12 @@ jump_in:
 
 		switch ( iCmd )
 		{
+			case SK_BREAK:
+				return TRIGRET_BREAK;
+
+			case SK_CONTINUE:
+				return TRIGRET_CONTINUE;
+
 			case SK_FORITEM:		EXC_SET("foritem");		iRet = OnTriggerForLoop( s, 1, pSrc, pArgs, pResult );			break;
 			case SK_FORCHAR:		EXC_SET("forchar");		iRet = OnTriggerForLoop( s, 2, pSrc, pArgs, pResult );			break;
 			case SK_FORCLIENTS:		EXC_SET("forclients");	iRet = OnTriggerForLoop( s, 0x12, pSrc, pArgs, pResult );		break;
@@ -2379,9 +2413,7 @@ jump_in:
 			case SK_FOR:
 			case SK_WHILE:
 				if ( iRet != TRIGRET_ENDIF )
-				{
 					return iRet;
-				}
 				break;
 			case SK_DORAND:	// Do a random line in here.
 			case SK_DOSWITCH:
@@ -2417,7 +2449,7 @@ jump_in:
 					for (;;)
 					{
 						iRet = OnTriggerRun( s, fTrigger ? TRIGRUN_SECTION_TRUE : TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
-						if ( iRet < TRIGRET_ENDIF )
+						if (( iRet < TRIGRET_ENDIF ) || ( iRet >= TRIGRET_BREAK ))
 							return( iRet );
 						if ( iRet == TRIGRET_ENDIF )
 							break;

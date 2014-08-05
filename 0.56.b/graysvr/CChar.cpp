@@ -830,10 +830,10 @@ bool CChar::DupeFrom( CChar * pChar, bool fNewbieItems )
 			else if ( pTest2->NPC_IsOwnedBy(pChar, true) )	// Mount's fix
 			{
 				if (fNewbieItems )	// Removing any mount references for the memory, so when character dies or dismounts ... no mount will appear.
-					pItem->m_itNormal.m_more2 = NULL;
+					pItem->m_itNormal.m_more2 = 0;
 				else	// otherwise we create a full new character.
 				{
-					pItem->m_itNormal.m_more2 = NULL;	// more2 should be cleared before removing the memory or the real npc will be removed too.
+					pItem->m_itNormal.m_more2 = 0;	// more2 should be cleared before removing the memory or the real npc will be removed too.
 					pItem->Delete(true);
 					CChar * pChar2 = CreateNPC( pTest2->GetID());
 					pChar2->SetTopPoint( pChar->GetTopPoint() );	// Moving the mount again because the dupe will place it in the same place as the 'invisible & disconnected' original (usually far away from where the guy will be, so the duped char can't touch the mount).
