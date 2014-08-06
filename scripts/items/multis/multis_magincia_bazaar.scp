@@ -1,0 +1,108 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2014
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Wednesday, August 6, 2014
+//
+VERSION=0.56c
+
+[MULTIDEF m_magincia_commodities_stall_1]
+NAME=Magincia Commodities Stall
+ID=1801
+TYPE=t_multi
+CATEGORY=Multis
+SUBSECTION=Magincia Bazaar
+DESCRIPTION=Commodities Stall 1
+MULTIREGION=0,0,0,0
+COMPONENT=i_sign_brass 2 -2
+COMPONENT=2592 1 -2
+COMPONENT=2967 2 -2
+COMPONENT=1801 0 1
+COMPONENT=1801 1 0
+COMPONENT=1801 1 1
+COMPONENT=1802 0 2
+COMPONENT=1802 1 2
+COMPONENT=1803 2 0
+COMPONENT=1803 2 1
+COMPONENT=1804 0 -1
+COMPONENT=1804 1 -1
+COMPONENT=1805 -1 1
+COMPONENT=1805 -1 0
+COMPONENT=1806 -1 -1
+COMPONENT=1807 2 2
+COMPONENT=1808 2 -1
+COMPONENT=1809 -1 2
+COMPONENT=2867 1 1 5
+COMPONENT=2868 1 0 5
+COMPONENT=3223 1 0 11
+COMPONENT=3225 -1 -1 5
+COMPONENT=3227 -1 2 5
+
+[MULTIDEF m_magincia_commodities_stall_2]	//Samurai Empire expansion required
+NAME=Magincia Commodities Stall
+ID=9272
+TYPE=t_multi
+CATEGORY=Multis
+SUBSECTION=Magincia Bazaar
+DESCRIPTION=Commodities Stall 2
+MULTIREGION=0,0,0,0
+COMPONENT=i_sign_brass 2 -2
+COMPONENT=2592 1 -2
+COMPONENT=2967 2 -2
+COMPONENT=9253 2 -1
+COMPONENT=9254 -1 2
+COMPONENT=9255 -1 -1
+COMPONENT=9256 2 2
+COMPONENT=9266 -1 1
+COMPONENT=9266 -1 0
+COMPONENT=9268 2 1
+COMPONENT=9268 2 0
+COMPONENT=9271 0 -1
+COMPONENT=9271 1 -1
+COMPONENT=9271 1 2
+COMPONENT=9271 0 2
+COMPONENT=9272 0 1
+COMPONENT=9272 1 1
+COMPONENT=9272 1 0
+COMPONENT=2963 -1 1
+COMPONENT=2964 -1 0
+
+[MULTIDEF m_magincia_commodities_stall_3]	//Mondain's Legacy (9th age) expansion required
+NAME=Magincia Commodities Stall
+ID=16528
+TYPE=t_multi
+CATEGORY=Multis
+SUBSECTION=Magincia Bazaar
+DESCRIPTION=Commodities Stall 3
+MULTIREGION=0,0,0,0
+COMPONENT=i_sign_brass 2 -2
+COMPONENT=2592 1 -2
+COMPONENT=2967 2 -2
+COMPONENT=16527 0 1
+COMPONENT=16529 1 1
+COMPONENT=16530 1 0
+COMPONENT=16531 -1 -1
+COMPONENT=16532 0 -1
+COMPONENT=16532 1 -1
+COMPONENT=16533 2 -1
+COMPONENT=16534 2 0
+COMPONENT=16534 2 1
+COMPONENT=16535 -1 1
+COMPONENT=16535 -1 0
+COMPONENT=16536 -1 2
+COMPONENT=16537 1 2
+COMPONENT=16537 0 2
+COMPONENT=16538 2 2
+COMPONENT=4643 -1 -1
+COMPONENT=4643 -1 2
+COMPONENT=9009 -1 -1 10
+COMPONENT=9009 -1 2 10
+COMPONENT=9241 2 -1
+COMPONENT=9241 2 2
+
+[EOF]
