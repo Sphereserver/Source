@@ -1782,7 +1782,9 @@ int CChar::Skill_Mining( SKTRIG_TYPE stage )
 		return( Skill_NaturalResource_Setup( pResBit ));
 	}
 
-	/*if ( stage == SKTRIG_STROKE )	// Useless now, strokes in SKF_GATHER are handled directly from Skill_Stage() and its code softcoded in their skill's triggers.
+	// Useless now, strokes in SKF_GATHER are handled directly from Skill_Stage() and its code softcoded in their skill's triggers.
+	// However I do not remove this block because of people not updating a shit!
+	if ( stage == SKTRIG_STROKE )
 	{
 		UpdateDir( m_Act_p );
 		if ( IsSetEF(EF_DamageTools) )
@@ -1801,7 +1803,7 @@ int CChar::Skill_Mining( SKTRIG_TYPE stage )
 		}
 
 		return 0;
-	}*/
+	}
 
 	CItem * pItem = Skill_NaturalResource_Create( pResBit, SKILL_MINING );
 	if ( pItem == NULL )
@@ -1919,7 +1921,8 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 		return( Skill_NaturalResource_Setup( pResBit ));
 	}
 
-	/*if ( stage == SKTRIG_STROKE )	// Useless now, strokes in SKF_GATHER are handled directly from Skill_Stage() and its code softcoded in their skill's triggers.
+	if ( stage == SKTRIG_STROKE )	// Useless now, strokes in SKF_GATHER are handled directly from Skill_Stage() and its code softcoded in their skill's triggers.
+	// I remain this code active however for 'old code is better, updates sux, fuck u updates makers, i'll cry and tell this is not working even if its correctly working muahahaha', u know.
 	{
 		UpdateDir( m_Act_p );
 		m_Act_Targ = pResBit->GetUID();
@@ -1931,7 +1934,7 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 		}
 
 		return 0 ;	// keep active.
-	}*/
+	}
 
 	CItem * pFish = Skill_NaturalResource_Create( pResBit, SKILL_FISHING );
 	if ( pFish == NULL )
@@ -2056,7 +2059,7 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 		return( Skill_NaturalResource_Setup( pResBit ));
 	}
 
-	/*if ( stage == SKTRIG_STROKE )	// Useless now, strokes in SKF_GATHER are handled directly from Skill_Stage() and its code softcoded in their skill's triggers.
+	if ( stage == SKTRIG_STROKE )	// Useless now, strokes in SKF_GATHER are handled directly from Skill_Stage() and its code softcoded in their skill's triggers.
 	{
 		UpdateDir( m_Act_p );
 
@@ -2075,7 +2078,7 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 				return stroke;
 		}
 		return SKTRIG_SUCCESS;// keep active.
-	}*/
+	}
 
 	if ( pAxe->IsType(IT_WEAPON_FENCE) ) //dagger end
 	{
@@ -3873,7 +3876,7 @@ int CChar::Skill_Act_Training( SKTRIG_TYPE stage )
 // General skill stuff.
 ANIM_TYPE CChar::Skill_GetAnim( SKILL_TYPE skill )
 {
-	ANIM_TYPE anim;
+	ANIM_TYPE anim = (ANIM_TYPE)0;
 	switch ( skill )
 	{
 		case SKILL_BOWCRAFT:
@@ -3899,7 +3902,7 @@ ANIM_TYPE CChar::Skill_GetAnim( SKILL_TYPE skill )
 
 int CChar::Skill_GetSound( SKILL_TYPE skill )
 {
-	int sound;
+	int sound = 0;
 	switch ( skill )
 	{
 		case SKILL_TAILORING:
@@ -3988,9 +3991,8 @@ int CChar::Skill_Stroke( bool fResource )
 
 	// Keep trying and updating the animation
 	if ( anim )
-	{
 		UpdateAnimate( anim );
-	}
+
 	if ( delay < 10)
 		delay = 10;
 	if ( fResource )

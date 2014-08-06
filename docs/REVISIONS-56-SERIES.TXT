@@ -1158,3 +1158,12 @@ Added @HitCheck trigger just in the beggining of the hit allowing to use only cu
 		return 0 will generate the default damage formula and flags (if not set via argn2) and then call the gethit function without DAM_FIXED applied.
 		return 2 will finish the hit function AS IT IS and will NOT call the gethit function (this asume you are creating the damage, formulas and calling .damage function).
 Note: Using new DAM_FIXED or return 1, -1 will obviously NOT call any skillgain, memory change, exp, attacker update, notoriety, actions, etc. Using this will (almost) make you to rewrite the whole system as shown in the given script.
+
+03-08-2014, XuN
+Modified Dir and Face functions (and the not soft-coded functions) to prevent loading all items in each dir change, even if they were not send to clients they were consuming resources in the serve
+
+06-08-2014, XuN
+Fixed a problem causing Staff with gm body (03db) to stick with this corpse and blocking following commands because of the '=' automatically appearing, Update is called when setting the body value.
+Added party.create msg,uid(s) where msg is 0/1 sending default sysmessages or not (usefull when forcing groups 0 = disable ), the following args (up to 9 more) is/are the players to add to this party.
+Changed all party triggers (Except the @PartyRemove when argn1=1, which means informative remove when a @PartyDisband has been fired before and is in proccess now) returnable to stop their following code.
+Fixed crash bug introduced in last patch.

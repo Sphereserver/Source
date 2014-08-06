@@ -604,7 +604,21 @@ bool CClient::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 				return( true );
 			case CLIR_PARTY:
 				if ( !this->m_pChar->m_pParty )
-					return false;
+				{
+					LPCTSTR oldKey = pszKey;
+					if ( pszKey == ".create",7)
+						pszKey +=7;
+
+					CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind());
+					if ( !pChar )
+						return false;
+					if ( !pChar->IsClient() )
+						return false;
+					CPartyDef::AcceptEvent( pChar , this->GetChar()->GetUID(), true);
+					if ( !this->m_pChar->m_pParty )
+						return false;
+					pszKey = oldKey;	// Restoring back to real pszKey, so we don't get errors for giving an uid instead of PDV_CREATE.
+				}
 				pRef = this->m_pChar->m_pParty;
 				return true;
 			case CLIR_TARG:

@@ -411,6 +411,8 @@ void CPartyDef::AcceptMember( CChar * pChar )
 	// SendAddList( UID_CLEAR, NULL );
 
 	SendAddList( NULL );
+
+	pChar->NotoSave_Update();
 	// else
 	//	throwerror !!
 }
@@ -457,7 +459,8 @@ bool CPartyDef::RemoveMember( CGrayUID uidRemove, CGrayUID uidCommand )
 	if (( pSrc != NULL ) && ( IsTrigUsed(TRIGGER_PARTYREMOVE) ))
 	{
 		CScriptTriggerArgs args;
-		pCharRemove->OnTrigger(CTRIG_PartyRemove, pSrc, &args);
+		if ( pCharRemove->OnTrigger(CTRIG_PartyRemove, pSrc, &args)== TRIGRET_RET_TRUE )
+			return false;
 	}
 	if (  IsTrigUsed(TRIGGER_PARTYLEAVE) )
 	{
@@ -475,6 +478,7 @@ bool CPartyDef::RemoveMember( CGrayUID uidRemove, CGrayUID uidCommand )
 		SendRemoveList( pCharRemove, true );
 		DetachChar( pCharRemove );
 		pCharRemove->m_pParty = NULL;
+		pCharRemove->NotoSave_Update();
 	}
 
 	if ( m_Chars.GetCharCount() <= 1 )
@@ -513,7 +517,8 @@ bool CPartyDef::Disband( CGrayUID uidMaster )
 	if (( pMaster != NULL ) && ( IsTrigUsed(TRIGGER_PARTYDISBAND) ))
 	{
 		CScriptTriggerArgs args;
-		pMaster->OnTrigger(CTRIG_PartyDisband, pMaster, &args);
+		if ( pMaster->OnTrigger(CTRIG_PartyDisband, pMaster, &args) == TRIGRET_RET_TRUE )
+			return false;
 	}
 
 	SysMessageAll(g_Cfg.GetDefaultMsg( DEFMSG_PARTY_DISBANDED ));
@@ -535,6 +540,7 @@ bool CPartyDef::Disband( CGrayUID uidMaster )
 		}
 
 		SendRemoveList( pChar, true );
+		pChar->NotoSave_Update();
 		pChar->m_pParty = NULL;
 	}
 
@@ -641,6 +647,8 @@ bool CPartyDef::AcceptEvent( CChar * pCharAccept, CGrayUID uidInviter, bool bFor
 		// create the party now.
 		pParty = new CPartyDef( pCharInviter, pCharAccept );
 		ASSERT(pParty);
+		pCharInviter->NotoSave_Update();
+		pCharAccept->NotoSave_Update();
 		g_World.m_Parties.InsertHead( pParty );
 		pParty->SysMessageChar(pCharInviter, pszMsg);
 	}
@@ -947,6 +955,8 @@ bool CPartyDef::r_Verb( CScript & s, CTextConsole * pSrc )
 			SKIP_SEPARATORS(pszArg);
 			m_TagDefs.ClearKeys(pszArg);
 		} break;
+		case PDV_CREATE:
+			return true;
 
 		case PDV_DISBAND:
 		{

@@ -1179,6 +1179,7 @@ dam_cold                01200   // cold-based damage (matches both old and new c
 dam_energy              02000   // energy-based damage
 dam_noreveal            04000   // damage that does not reveal the attacker.
 dam_nounparalyze        08000   // victim won't be unparalyzed
+dam_fixed				010000	// damage will not be recalculated with default checks, lowering it because of armor, resistances ... 
 
 [defname can_i_flags]
 can_i_door				000001   // is a door uflag4_door

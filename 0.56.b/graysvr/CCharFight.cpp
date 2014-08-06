@@ -2426,13 +2426,8 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 			return( 0 );
 		iDmg	= static_cast<int>(Args.m_iN1);
 		uType	= static_cast<DAMAGE_TYPE>(Args.m_iN2);
-		if ( u_damFlag & DAMAGE_FIXED)
+		if ( uType & DAMAGE_FIXED)
 			goto finish_damage;
-	}
-	if ( (i_damTemp != iDmg) || (u_damFlag != uType) )
-	{
-		iDmg = i_damTemp;
-		uType = u_damFlag;
 	}
 	if ( IsSetCombatFlags(COMBAT_USE_RESISTANCE) )
 	{

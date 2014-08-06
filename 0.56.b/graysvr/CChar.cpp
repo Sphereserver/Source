@@ -1174,6 +1174,7 @@ void CChar::SetID( CREID_TYPE id )
 		if (pHand != NULL)
 			GetPackSafe()->ContentAdd(pHand);
 	}
+	Update();
 }
 
 void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc  )
