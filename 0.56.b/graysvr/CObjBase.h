@@ -2841,6 +2841,11 @@ public:
 		if ( IsClient() )
 			GetClient()->addVisualRange(m_iVisualRange);
 	}
+	
+	bool Can( WORD wCan ) const
+	{
+		return(( m_Can & wCan ) ? true : false );
+	}
 	bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg );
 	bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg, DWORD dwArgResearch );
 
@@ -3185,10 +3190,11 @@ public:
 		// What things block us ?
 		if ( IsPriv(PRIV_GM|PRIV_ALLMOVE))	// nothing blocks us.
 			return( 0xFFFF );
-		CCharBase * pCharDef = Char_GetDef();
-		ASSERT(pCharDef);
-
-		DWORD dwCan = pCharDef->m_Can;
+		//CCharBase * pCharDef = Char_GetDef();
+		//ASSERT(pCharDef);
+		
+		//DWORD dwCan = pCharDef->m_Can;
+		DWORD dwCan = m_Can;
 		if ( IsStatFlag(STATF_Hovering) )
 			dwCan |= CAN_C_HOVER;
 

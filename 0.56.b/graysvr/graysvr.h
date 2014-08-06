@@ -1569,6 +1569,8 @@ public:
 
 	bool Load();
 
+	void RegisterServerUpdate();
+
 	void SysMessage( LPCTSTR pMsg ) const;
 	void PrintTelnet( LPCTSTR pszMsg ) const;
 	void PrintStr( LPCTSTR pMsg ) const;
