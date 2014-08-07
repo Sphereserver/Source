@@ -39,7 +39,6 @@ East has a description of "North East".
 [ITEMDEF 0e8]
 DEFNAME=i_door_secret_stone_1
 TYPE=t_door
-RESOURCES=100 i_rock_plain
 CATEGORY=Buildings - Doors
 SUBSECTION=Secret Door (blue stone dungeon)
 DESCRIPTION=@ (closed)
@@ -48,7 +47,6 @@ DUPELIST=0ea,0ec,0ee,0f0,0f2,0f4,0f6
 [ITEMDEF 0e9]
 DEFNAME=i_door_secret_stone_1_o
 TYPE=t_door_open
-RESOURCES=100 i_rock_plain
 CATEGORY=Buildings - Doors
 SUBSECTION=Secret Door (blue stone dungeon)
 DESCRIPTION=@ (opened)
@@ -116,7 +114,6 @@ TYPE=t_custom_door
 TDATA1=0435//ID when opened
 TDATA2=022c//ID when closed
 //CAN=can_i_block|can_i_blocklos
-RESOURCES=10 i_canvas,1 i_log
 CATEGORY=Buildings - Doors
 SUBSECTION=Palisade Door
 DESCRIPTION=Door 1 (closed)
@@ -127,7 +124,6 @@ DEFNAME=i_door_tent2
 //TYPE=t_custom_door
 //TDATA1=022d//ID when opened
 //TDATA2=????//ID when closed
-RESOURCES=10 i_canvas,1 i_log
 CATEGORY=Buildings - Doors
 SUBSECTION=Palisade Door
 DESCRIPTION=Door 2 (opened)
@@ -138,7 +134,6 @@ DEFNAME=i_door_tent3
 //TYPE=t_custom_door
 //TDATA1=022e//ID when opened
 //TDATA2=????//ID when closed
-RESOURCES=10 i_canvas,1 i_log
 CATEGORY=Buildings - Doors
 SUBSECTION=Palisade Door
 DESCRIPTION=Door 3 (opened)
@@ -148,7 +143,6 @@ TYPE=t_custom_door
 TDATA1=0432//ID when opened
 TDATA2=022f//ID when closed
 //CAN=can_i_block|can_i_blocklos
-RESOURCES=10 i_canvas,1 i_log
 CATEGORY=Buildings - Doors
 SUBSECTION=Palisade Door
 DESCRIPTION=Door 4 (closed)
@@ -157,7 +151,6 @@ DESCRIPTION=Door 4 (closed)
 [ITEMDEF 0314]
 DEFNAME=i_door_secret_stone_2
 TYPE=t_door
-RESOURCES=100 i_rock_plain
 CATEGORY=Buildings - Doors
 SUBSECTION=Secret Door (brick dungeon)
 DESCRIPTION=@ (closed)
@@ -166,7 +159,6 @@ DUPELIST=0316,0318,031a,031c,031e,0320,0322
 [ITEMDEF 0315]
 DEFNAME=i_door_secret_stone_2_o
 TYPE=t_door_open
-RESOURCES=100 i_rock_plain
 CATEGORY=Buildings - Doors
 SUBSECTION=Secret Door (brick dungeon)
 DESCRIPTION=@ (opened)
@@ -231,7 +223,6 @@ DUPEITEM=0315
 [ITEMDEF 0324]
 DEFNAME=i_door_secret_stone_3
 TYPE=t_door
-RESOURCES=100 i_rock_plain
 CATEGORY=Buildings - Doors
 SUBSECTION=Secret Door (brown stone dungeon)
 DESCRIPTION=@ (closed)
@@ -240,7 +231,6 @@ DUPELIST=0326,0328,032a,032c,032e,0330,0332
 [ITEMDEF 0325]
 DEFNAME=i_door_secret_stone_3_o
 TYPE=t_door_open
-RESOURCES=100 i_rock_plain
 CATEGORY=Buildings - Doors
 SUBSECTION=Secret Door (brown stone dungeon)
 DESCRIPTION=@ (opened)
@@ -305,7 +295,6 @@ DUPEITEM=0325
 [ITEMDEF 0334]
 DEFNAME=i_door_secret_wood_1
 TYPE=t_door
-RESOURCES=100 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Secret Door (dark wood)
 DESCRIPTION=@ (closed)
@@ -314,7 +303,6 @@ DUPELIST=0336,0338,033a,033c,033e,0340,0342
 [ITEMDEF 0335]
 DEFNAME=i_door_secret_wood_1_o
 TYPE=t_door_open
-RESOURCES=100 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Secret Door (dark wood)
 DESCRIPTION=@ (opened)
@@ -379,7 +367,6 @@ DUPEITEM=0335
 [ITEMDEF 0344]
 DEFNAME=i_door_secret_wood_2
 TYPE=t_door
-RESOURCES=100 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Secret Door (light wood)
 DESCRIPTION=@ (closed)
@@ -388,7 +375,6 @@ DUPELIST=0346,0348,034a,034c,034e,0350,0352
 [ITEMDEF 0345]
 DEFNAME=i_door_secret_wood_2_o
 TYPE=t_door_open
-RESOURCES=100 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Secret Door (light wood)
 DESCRIPTION=@ (opened)
@@ -453,7 +439,6 @@ DUPEITEM=0345
 [ITEMDEF 0354]
 DEFNAME=i_door_secret_stone_4
 TYPE=t_door
-RESOURCES=100 i_rock_plain
 CATEGORY=Buildings - Doors
 SUBSECTION=Secret Door (gray stone dungeon)
 DESCRIPTION=@ (closed)
@@ -462,7 +447,6 @@ DUPELIST=0356,0358,035a,035c,035e,0360,0362
 [ITEMDEF 0355]
 DEFNAME=i_door_secret_stone_4_o
 TYPE=t_door_open
-RESOURCES=100 i_rock_plain
 CATEGORY=Buildings - Doors
 SUBSECTION=Secret Door (gray stone dungeon)
 DESCRIPTION=@ (opened)
@@ -530,7 +514,6 @@ DEFNAME=i_door_tent4
 TYPE=t_custom_door
 TDATA1=0432//ID when opened
 TDATA2=022f//ID when closed
-RESOURCES=10 i_cloth,1 i_log
 CATEGORY=Buildings - Doors
 SUBSECTION=Palisade Door
 DESCRIPTION=Door 4 (opened)
@@ -538,7 +521,6 @@ DESCRIPTION=Door 4 (opened)
 [ITEMDEF 0433]
 DEFNAME=i_curtainrod
 WEIGHT=1.0
-RESOURCES=1 i_log
 CATEGORY=Buildings - Doors
 SUBSECTION=Palisade Door
 DESCRIPTION=Curtain Rod
@@ -553,7 +535,6 @@ DEFNAME=i_door_tent1
 TYPE=t_custom_door
 TDATA1=0435//ID when closed
 TDATA2=022c//ID when open
-RESOURCES=10 i_canvas,1 i_log
 CATEGORY=Buildings - Doors
 SUBSECTION=Palisade Door
 DESCRIPTION=Door 1 (opened)
@@ -562,7 +543,6 @@ DESCRIPTION=Door 1 (opened)
 [ITEMDEF 0675]
 DEFNAME=i_door_metal
 TYPE=t_door
-RESOURCES=40 i_ingot_iron
 CATEGORY=Buildings - Doors
 SUBSECTION=Metal Door
 DESCRIPTION=@ (closed)
@@ -571,7 +551,6 @@ DUPELIST=0677,0679,067b,067d,067f,0681,0683
 [ITEMDEF 0676]
 DEFNAME=i_door_metal_o
 TYPE=t_door_open
-RESOURCES=40 i_ingot_iron
 CATEGORY=Buildings - Doors
 SUBSECTION=Metal Door
 DESCRIPTION=@ (opened)
@@ -636,7 +615,6 @@ DUPEITEM=0676
 [ITEMDEF 0685]
 DEFNAME=i_door_metal_bar
 TYPE=t_door
-RESOURCES=30 i_ingot_iron
 CATEGORY=Buildings - Doors
 SUBSECTION=Barred Metal Door (tall)
 DESCRIPTION=@ (closed)
@@ -645,7 +623,6 @@ DUPELIST=0687,0689,068b,068d,068f,0691,0693
 [ITEMDEF 0686]
 DEFNAME=i_door_metal_bar_o
 TYPE=t_door_open
-RESOURCES=30 i_ingot_iron
 CATEGORY=Buildings - Doors
 SUBSECTION=Barred Metal Door (tall)
 DESCRIPTION=@ (opened)
@@ -710,7 +687,6 @@ DUPEITEM=0686
 [ITEMDEF 0695]
 DEFNAME=i_door_rattan
 TYPE=t_door
-RESOURCES=15 i_plant_grasses,15 i_straw
 CATEGORY=Buildings - Doors
 SUBSECTION=Rattan Door
 DESCRIPTION=@ (closed)
@@ -783,7 +759,6 @@ DUPEITEM=0696
 [ITEMDEF 06a5]
 DEFNAME=i_door_wood
 TYPE=t_door
-RESOURCES=25 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Wooden Door (dark wood)
 DESCRIPTION=@ (closed)
@@ -792,7 +767,6 @@ DUPELIST=06a7,06a9,06ab,06ad,06af,06b1,06b3
 [ITEMDEF 06a6]
 DEFNAME=i_door_wood_o
 TYPE=t_door_open
-RESOURCES=25 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Wooden Door (dark wood)
 DESCRIPTION=@ (opened)
@@ -857,7 +831,6 @@ DUPEITEM=06a6
 [ITEMDEF 06b5]
 DEFNAME=i_door_wood_4
 TYPE=t_door
-RESOURCES=25 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Wooden Door (dark wood tall)
 DESCRIPTION=@ (closed)
@@ -866,7 +839,6 @@ DUPELIST=06b7,06b9,06bb,06bd,06bf,06c1,06c3
 [ITEMDEF 06b6]
 DEFNAME=i_door_wood_4_o
 TYPE=t_door_open
-RESOURCES=25 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Wooden Door (dark wood tall)
 DESCRIPTION=@ (opened)
@@ -931,7 +903,6 @@ DUPEITEM=06b6
 [ITEMDEF 06c5]
 DEFNAME=i_door_metal_2
 TYPE=t_door
-RESOURCES=45 i_ingot_iron
 CATEGORY=Buildings - Doors
 SUBSECTION=Metal Door (tall)
 DESCRIPTION=@ (closed)
@@ -940,7 +911,6 @@ DUPELIST=06c7,06c9,06cb,06cd,06cf,06d1,06d3
 [ITEMDEF 06c6]
 DEFNAME=i_door_metal_2_o
 TYPE=t_door_open
-RESOURCES=45 i_ingot_iron
 CATEGORY=Buildings - Doors
 SUBSECTION=Metal Door (tall)
 DESCRIPTION=@ (opened)
@@ -1005,7 +975,6 @@ DUPEITEM=06c6
 [ITEMDEF 06d5]
 DEFNAME=i_door_wood_2
 TYPE=t_door
-RESOURCES=25 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Wooden Door (light wood)
 DESCRIPTION=@ (closed)
@@ -1014,7 +983,6 @@ DUPELIST=06d7,06d9,06db,06dd,06df,06e1,06e3
 [ITEMDEF 06d6]
 DEFNAME=i_door_wood_2_o
 TYPE=t_door_open
-RESOURCES=25 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Wooden Door (light wood)
 DESCRIPTION=@ (opened)
@@ -1079,7 +1047,6 @@ DUPEITEM=06d6
 [ITEMDEF 06e5]
 DEFNAME=i_door_wood_3
 TYPE=t_door
-RESOURCES=40 i_board,2 i_ingot_iron
 CATEGORY=Buildings - Doors
 SUBSECTION=Heavy Wooden Door (dark wood)
 DESCRIPTION=@ (closed)
@@ -1088,7 +1055,6 @@ DUPELIST=06e7,06e9,06eb,06ed,06ef,06f1,06f3
 [ITEMDEF 06e6]
 DEFNAME=i_door_wood_3_o
 TYPE=t_door_open
-RESOURCES=40 i_board,2 i_ingot_iron
 CATEGORY=Buildings - Doors
 SUBSECTION=Heavy Wooden Door (dark wood)
 DESCRIPTION=@ (opened)
@@ -1153,7 +1119,6 @@ DUPEITEM=06e6
 [ITEMDEF 06f5]
 DEFNAME=i_door_portcullis
 TYPE=t_portculis
-RESOURCES=50 i_ingot_iron
 CATEGORY=Buildings - Doors
 SUBSECTION=Portcullis
 DESCRIPTION=@
@@ -1167,7 +1132,6 @@ DUPEITEM=06f5
 //FIXME: The open and closed are mixed together
 DEFNAME=i_gate_iron
 TYPE=t_door
-RESOURCES=25 i_ingot_iron
 CATEGORY=Buildings - Doors
 SUBSECTION=Iron Gate (tall)
 DESCRIPTION=@
@@ -1237,7 +1201,6 @@ DUPEITEM=0824
 //FIXME: The open and closed are mixed together
 DEFNAME=i_gate_wood
 TYPE=t_door
-RESOURCES=25 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Wooden Gate
 DESCRIPTION=@
@@ -1307,7 +1270,6 @@ DUPEITEM=0839
 //FIXME: The open and closed are mixed together
 DEFNAME=i_gate_iron_2
 TYPE=t_door
-RESOURCES=25 i_ingot_iron
 CATEGORY=Buildings - Doors
 SUBSECTION=Iron Gate
 DESCRIPTION=@
@@ -1377,7 +1339,6 @@ DUPEITEM=084c
 //FIXME: The open and closed are mixed together
 DEFNAME=i_gate_wood_3
 TYPE=t_door
-RESOURCES=25 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Wooden Gate (dark wood)
 DESCRIPTION=@
@@ -1446,7 +1407,6 @@ DUPEITEM=0866
 [ITEMDEF 01fed]
 DEFNAME=i_door_metal_bar_2
 TYPE=t_door
-RESOURCES=10 i_ingot_iron
 CATEGORY=Buildings - Doors
 SUBSECTION=Barred Metal Door
 DESCRIPTION=@ (closed)
@@ -1455,7 +1415,6 @@ DUPELIST=01fef,01ff1,01ff3,01ff5,01ff7,01ff9,01ffb
 [ITEMDEF 01fee]
 DEFNAME=i_door_metal_bar_2_o
 TYPE=t_door_open
-RESOURCES=10 i_ingot_iron
 CATEGORY=Buildings - Doors
 SUBSECTION=Barred Metal Door
 DESCRIPTION=@ (opened)
@@ -1520,7 +1479,6 @@ DUPEITEM=01fee
 [ITEMDEF 0241f]
 DEFNAME=i_door_wooden_dark_o
 TYPE=t_door_open
-RESOURCES=40 i_log
 CATEGORY=Buildings - Doors
 SUBSECTION=Dark Wooden Door
 DESCRIPTION=@ (opened)
@@ -1529,7 +1487,6 @@ DUPELIST=02421,02423
 [ITEMDEF 02420]
 DEFNAME=i_door_wooden_dark
 TYPE=t_door
-RESOURCES=40 i_log
 CATEGORY=Buildings - Doors
 SUBSECTION=Dark Wooden Door
 DESCRIPTION=@ (closed)
@@ -1555,7 +1512,6 @@ DUPEITEM=02420
 //Note: One of the two tiles this door appears to block is not actually blocked
 DEFNAME=i_door_sliding_wide
 TYPE=t_door
-RESOURCES=20 i_log,40 i_paper
 CATEGORY=Buildings - Doors
 SUBSECTION=Sliding Door 1 (double)
 DESCRIPTION=@ (closed)
@@ -1569,7 +1525,6 @@ DUPEITEM=026f4
 //Note: One of the two tiles this door appears to block is not actually blocked
 DEFNAME=i_door_sliding_2_wide
 TYPE=t_door
-RESOURCES=20 i_log,40 i_paper
 CATEGORY=Buildings - Doors
 SUBSECTION=Sliding Door 2 (double)
 DESCRIPTION=@ (closed)
@@ -1583,7 +1538,6 @@ DUPEITEM=02990
 //Note: One of the two tiles this door appears to block is not actually blocked
 DEFNAME=i_door_sliding_3_wide
 TYPE=t_door
-RESOURCES=20 i_log,40 i_paper
 CATEGORY=Buildings - Doors
 SUBSECTION=Sliding Door 3 (double)
 DESCRIPTION=@ (closed)
@@ -1596,7 +1550,6 @@ DUPEITEM=0299e
 [ITEMDEF 02a05]
 DEFNAME=i_door_sliding
 TYPE=t_door
-RESOURCES=20 i_log,20 i_paper
 CATEGORY=Buildings - Doors
 SUBSECTION=Sliding Door 1
 DESCRIPTION=@ (closed)
@@ -1605,7 +1558,6 @@ DUPELIST=02a07,02a09,02a0b
 [ITEMDEF 02a06]
 DEFNAME=i_door_sliding_o
 TYPE=t_door_open
-RESOURCES=20 i_log,20 i_paper
 CATEGORY=Buildings - Doors
 SUBSECTION=Sliding Door 1
 DESCRIPTION=@ (opened)
@@ -1638,7 +1590,6 @@ DUPEITEM=02a06
 [ITEMDEF 02a0d]
 DEFNAME=i_door_sliding_2
 TYPE=t_door
-RESOURCES=20 i_log,20 i_paper
 CATEGORY=Buildings - Doors
 SUBSECTION=Sliding Door 2
 DESCRIPTION=@ (closed)
@@ -1647,7 +1598,6 @@ DUPELIST=02a0f,02a11,02a13
 [ITEMDEF 02a0e]
 DEFNAME=i_door_sliding_2_o
 TYPE=t_door_open
-RESOURCES=20 i_log,20 i_paper
 CATEGORY=Buildings - Doors
 SUBSECTION=Sliding Door 2
 DESCRIPTION=@ (opened)
@@ -1680,7 +1630,6 @@ DUPEITEM=02a0e
 [ITEMDEF 02a15]
 DEFNAME=i_door_sliding_3
 TYPE=t_door
-RESOURCES=20 i_log,20 i_paper
 CATEGORY=Buildings - Doors
 SUBSECTION=Sliding Door 3
 DESCRIPTION=@ (closed)
@@ -1689,7 +1638,6 @@ DUPELIST=02a17,02a19,02a1b
 [ITEMDEF 02a16]
 DEFNAME=i_door_sliding_3_o
 TYPE=t_door_open
-RESOURCES=20 i_log,20 i_paper
 CATEGORY=Buildings - Doors
 SUBSECTION=Sliding Door 3
 DESCRIPTION=@ (opened)
@@ -1722,7 +1670,6 @@ DUPEITEM=02a16
 [ITEMDEF 02d46]
 DEFNAME=i_door_elven_bark
 TYPE=t_door
-RESOURCES=100 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Elven Bark Door
 DESCRIPTION=@ (closed)
@@ -1731,7 +1678,6 @@ DUPELIST=02d48,031ac,031ae
 [ITEMDEF 02d47]
 DEFNAME=i_door_elven_bark_o
 TYPE=t_door_open
-RESOURCES=100 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Elven Bark Door
 DESCRIPTION=@ (opened)
@@ -1748,7 +1694,6 @@ DUPEITEM=02d47
 [ITEMDEF 02d63]
 DEFNAME=i_door_elven_simple
 TYPE=t_door
-RESOURCES=100 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Elven Simple Door
 DESCRIPTION=@ (closed)
@@ -1757,7 +1702,6 @@ DUPELIST=02d65
 [ITEMDEF 02d64]
 DEFNAME=i_door_elven_simple_o
 TYPE=t_door_open
-RESOURCES=100 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Elven Simple Door
 DESCRIPTION=@ (opened)
@@ -1774,7 +1718,6 @@ DUPEITEM=02d64
 [ITEMDEF 02d67]
 DEFNAME=i_door_elven_ornate
 TYPE=t_door
-RESOURCES=100 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Elven Ornate Door
 DESCRIPTION=@ (closed)
@@ -1783,7 +1726,6 @@ DUPELIST=02d69,031a4,031a6
 [ITEMDEF 02d68]
 DEFNAME=i_door_elven_ornate_o
 TYPE=t_door_open
-RESOURCES=100 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Elven Ornate Door
 DESCRIPTION=@ (opened)
@@ -1800,7 +1742,6 @@ DUPEITEM=02d68
 [ITEMDEF 02d6b]
 DEFNAME=i_door_elven_plain
 TYPE=t_door
-RESOURCES=100 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Elven Plain Door
 DESCRIPTION=@ (closed)
@@ -1809,7 +1750,6 @@ DUPELIST=02d6d,031a8,031aa
 [ITEMDEF 02d6c]
 DEFNAME=i_door_elven_plain_o
 TYPE=t_door_open
-RESOURCES=100 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Elven Plain Door
 DESCRIPTION=@ (opened)
@@ -1827,7 +1767,6 @@ DUPEITEM=02d6c
 DEFNAME=i_door_moon
 NAME=moon door
 TYPE=t_door
-RESOURCES=100 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Moon Door
 DESCRIPTION=@ (closed)
@@ -1837,7 +1776,6 @@ DUPELIST=02fe4,0319c,0319e
 DEFNAME=i_door_moon_o
 NAME=moon door
 TYPE=t_door_open
-RESOURCES=100 i_board
 CATEGORY=Buildings - Doors
 SUBSECTION=Moon Door
 DESCRIPTION=@ (opened)
@@ -1935,7 +1873,6 @@ DUPEITEM=02d47
 DEFNAME=i_door_crystal
 NAME=crystal door
 TYPE=t_door
-RESOURCES=255 i_crystal_shards
 CATEGORY=Buildings - Doors
 SUBSECTION=Crystal Door
 DESCRIPTION=@ (closed)
@@ -1945,7 +1882,6 @@ DUPELIST=0367b,0367d,0367f,03681,03683,03685,03687,03689
 DEFNAME=i_door_crystal_o
 NAME=crystal door
 TYPE=t_door_open
-RESOURCES=255 i_crystal_shards
 CATEGORY=Buildings - Doors
 SUBSECTION=Crystal Door
 DESCRIPTION=@ (opened)
@@ -1955,7 +1891,6 @@ DUPELIST=0367c,0367e,03680,03682,03684,03686,03688,0368a
 DEFNAME=i_door_shadow
 NAME=door
 TYPE=t_door
-RESOURCES=40 i_ingot_iron
 CATEGORY=Buildings - Doors
 SUBSECTION=Shadow Door
 DESCRIPTION=@ (closed)
@@ -1965,7 +1900,6 @@ DUPELIST=03642,03644,0368b,0368d,0368f,03691,03693,03695,03697,03699
 DEFNAME=i_door_shadow_o
 NAME=door
 TYPE=t_door_open
-RESOURCES=40 i_ingot_iron
 CATEGORY=Buildings - Doors
 SUBSECTION=Shadow Door
 DESCRIPTION=@ (opened)

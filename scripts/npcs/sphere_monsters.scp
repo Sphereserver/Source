@@ -4930,6 +4930,7 @@ ON=@Create
    RESENERGY={40 60}
    RESFIRE={40 60}
    RESPOISON={70 80}
+   BREATH.HUE=0480
 ON=@NpcRestock
    ITEM=loot_dragon_skeletal
    ITEM=loot_ai_hard

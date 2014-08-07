@@ -14,7 +14,6 @@ VERSION=0.56c
 
 [ITEMDEF 0491]
 DEFNAME=i_floor_blue
-RESOURCES=25 i_rock_plain
 CATEGORY=Buildings - Floors
 SUBSECTION=Tile Floor (blue)
 DESCRIPTION=Tile
@@ -34,7 +33,6 @@ DUPEITEM=0491
 
 [ITEMDEF 0495]
 DEFNAME=i_floor_marble
-RESOURCES=25 i_rock_marble
 CATEGORY=Buildings - Floors
 SUBSECTION=Pavers (marble)
 DESCRIPTION=Paver
@@ -58,14 +56,12 @@ DUPEITEM=0491
 
 [ITEMDEF 049c]
 DEFNAME=i_floor_slate_grey
-RESOURCES=25 i_rock_plain
 CATEGORY=Buildings - Floors
 SUBSECTION=Tile Floor (gray slate)
 DESCRIPTION=Tile
 
 [ITEMDEF 049d]
 DEFNAME=i_paver_sandstone
-RESOURCES=25 i_rock_sandstone
 CATEGORY=Buildings - Floors
 SUBSECTION=Pavers (sandstone)
 DESCRIPTION=Paver
@@ -85,7 +81,6 @@ DUPEITEM=049d
 
 [ITEMDEF 04a1]
 DEFNAME=i_wood_plank
-RESOURCES=25 i_board
 CATEGORY=Buildings - Floors
 SUBSECTION=Wooden Planks (light)
 DESCRIPTION=Planks
@@ -105,7 +100,6 @@ DUPEITEM=04a1
 
 [ITEMDEF 04a5]
 DEFNAME=i_floor_wood
-RESOURCES=25 i_board
 CATEGORY=Buildings - Floors
 SUBSECTION=Wooden Boards
 DESCRIPTION=Boards
@@ -221,7 +215,6 @@ DUPEITEM=04a5
 
 [ITEMDEF 04c1]
 DEFNAME=i_floor_wood_primitive
-RESOURCES=25 i_log
 CATEGORY=Buildings - Floors
 SUBSECTION=Primitive Logs (green)
 DESCRIPTION=Primitive Log
@@ -357,7 +350,6 @@ DUPEITEM=04a1
 
 [ITEMDEF 04e2]
 DEFNAME=i_floor_flagstone_red
-RESOURCES=25 i_brick
 CATEGORY=Buildings - Floors
 SUBSECTION=Flagstones (dark red)
 DESCRIPTION=Flagstone
@@ -429,7 +421,6 @@ DUPEITEM=0491
 
 [ITEMDEF 04f3]
 DEFNAME=i_floor_stone_red
-RESOURCES=25 i_rock_plain
 CATEGORY=Buildings - Floors
 SUBSECTION=Tile Floor (red)
 DESCRIPTION=Tile
@@ -469,7 +460,6 @@ DUPEITEM=04f3
 
 [ITEMDEF 04fc]
 DEFNAME=i_floor_flagstone_gray
-RESOURCES=25 i_rock_plain
 CATEGORY=Buildings - Floors
 SUBSECTION=Flagstones (gray)
 DESCRIPTION=Flagstone
@@ -489,7 +479,6 @@ DUPEITEM=04fc
 
 [ITEMDEF 0500]
 DEFNAME=i_floor_sandstone
-RESOURCES=25 i_rock_sandstone
 CATEGORY=Buildings - Floors
 SUBSECTION=Flagstones (sandstone)
 DESCRIPTION=@
@@ -537,7 +526,6 @@ DUPEITEM=04c1
 
 [ITEMDEF 050b]
 DEFNAME=i_floor_wood_log
-RESOURCES=25 i_log
 CATEGORY=Buildings - Floors
 SUBSECTION=Primitive Logs (gray)
 DESCRIPTION=Primitive Log
@@ -549,7 +537,6 @@ DUPEITEM=050b
 
 [ITEMDEF 050d]
 DEFNAME=i_floor_marble_2
-RESOURCES=25 i_rock_marble
 CATEGORY=Buildings - Floors
 SUBSECTION=Tile Floor (yellow marble)
 DESCRIPTION=Tile
@@ -561,7 +548,6 @@ DUPEITEM=050d
 
 [ITEMDEF 050f]
 DEFNAME=i_floor_marble_3
-RESOURCES=25 i_rock_marble
 CATEGORY=Buildings - Floors
 SUBSECTION=Tile Floor (green)
 DESCRIPTION=Tile
@@ -573,7 +559,6 @@ DUPEITEM=050f
 
 [ITEMDEF 0511]
 DEFNAME=i_floor_marble_4
-RESOURCES=25 i_rock_marble
 CATEGORY=Buildings - Floors
 SUBSECTION=Tile Floor (white marble)
 DESCRIPTION=Tile
@@ -593,7 +578,6 @@ DUPEITEM=0511
 
 [ITEMDEF 0515]
 DEFNAME=i_floor_cobblestone
-RESOURCES=25 i_rock_plain
 CATEGORY=Buildings - Floors
 SUBSECTION=Cobblestones
 DESCRIPTION=Cobblestone
@@ -613,7 +597,6 @@ DUPEITEM=0515
 
 [ITEMDEF 0519]
 DEFNAME=i_paver_stone
-RESOURCES=25 i_rock_plain
 CATEGORY=Buildings - Floors
 SUBSECTION=Pavers (stone)
 DESCRIPTION=Paver
@@ -665,7 +648,6 @@ DUPEITEM=0519
 
 [ITEMDEF 0525]
 DEFNAME=i_floor_sandstone_2
-RESOURCES=25 i_rock_sandstone
 CATEGORY=Buildings - Floors
 SUBSECTION=Cobblestone Floor (light sandstone)
 DESCRIPTION=Cobblestone
@@ -701,7 +683,6 @@ DUPEITEM=0525
 
 [ITEMDEF 052f]
 DEFNAME=i_floor_sandstone_3
-RESOURCES=25 i_rock_sandstone
 CATEGORY=Buildings - Floors
 SUBSECTION=Cobblestone Floor (dark sandstone)
 DESCRIPTION=Cobblestone
@@ -759,7 +740,6 @@ DUPEITEM=0525
 [ITEMDEF 01383]
 DEFNAME=i_tile_stone_sand
 TYPE=t_floor
-RESOURCES=100 i_rock_plain
 CATEGORY=Buildings - Floors
 SUBSECTION=Cobblestones (sandstone)
 DESCRIPTION=Cobblestone
@@ -780,7 +760,6 @@ DUPEITEM=01383
 
 [ITEMDEF 02425]
 TYPE=t_floor
-RESOURCES=100 i_log
 CATEGORY=Buildings - Floors
 SUBSECTION=Wood Floor (light pattern)
 DESCRIPTION=Wood Floor (light pattern)
@@ -864,7 +843,6 @@ DUPEITEM=02425
 
 [ITEMDEF 02439]
 TYPE=t_floor
-RESOURCES=100 i_log
 CATEGORY=Buildings - Floors
 SUBSECTION=Wood Floor (large panel)
 DESCRIPTION=Wood Floor (large panel)
@@ -876,7 +854,6 @@ DUPEITEM=02439
 
 [ITEMDEF 0243b]
 TYPE=t_floor
-RESOURCES=100 i_log
 CATEGORY=Buildings - Floors
 SUBSECTION=Wood Floor (dark)
 DESCRIPTION=Wood Floor (dark)
@@ -978,7 +955,6 @@ DUPEITEM=0243b
 DEFNAME=i_pond
 NAME=pond
 TYPE=t_floor
-RESOURCES=100 i_log
 CATEGORY=Buildings - Floors
 SUBSECTION=Pond
 DESCRIPTION=Pond
@@ -1028,7 +1004,6 @@ DUPEITEM=02453
 DEFNAME=i_sand_raked
 NAME=sand garden
 TYPE=t_floor
-RESOURCES=100 i_log
 CATEGORY=Buildings - Floors
 SUBSECTION=Sand Garden
 DESCRIPTION=Sand
@@ -1058,7 +1033,6 @@ DUPEITEM=0245e
 DEFNAME=i_sand_with_rock_raked
 NAME=sand garden
 TYPE=t_floor
-RESOURCES=100 i_log
 CATEGORY=Buildings - Floors
 SUBSECTION=Sand Garden
 DESCRIPTION=Sand with Rock
@@ -1095,7 +1069,6 @@ DUPEITEM=0245e
 [ITEMDEF 02720]
 //Not a tile you normally place inside the game since it is offset
 TYPE=t_floor
-RESOURCES=100 i_log
 CATEGORY=Buildings - Floors
 SUBSECTION=Floor Patterns
 DESCRIPTION=Floor Pattern 1
@@ -1103,14 +1076,12 @@ DESCRIPTION=Floor Pattern 1
 [ITEMDEF 02721]
 //Not a tile you normally place inside the game since it is offset
 TYPE=t_floor
-RESOURCES=100 i_log
 CATEGORY=Buildings - Floors
 SUBSECTION=Floor Patterns
 DESCRIPTION=Floor Pattern 2
 
 [ITEMDEF 02722]
 TYPE=t_floor
-RESOURCES=100 i_board
 CATEGORY=Buildings - Floors
 SUBSECTION=Wood Floor 2
 DESCRIPTION=Wood Floor 2
@@ -1210,7 +1181,6 @@ DUPEITEM=02722
 
 [ITEMDEF 0273a]
 TYPE=t_floor
-RESOURCES=100 i_board
 CATEGORY=Buildings - Floors
 SUBSECTION=Wood Floor 3
 DESCRIPTION=Wood Floor 3
@@ -1310,7 +1280,6 @@ DUPEITEM=0273a
 
 [ITEMDEF 0286e]
 TYPE=t_normal
-RESOURCES=100 i_log
 CATEGORY=Buildings - Floors
 SUBSECTION=Wood Floor 4
 DESCRIPTION=Wood Floor 4
@@ -1410,7 +1379,6 @@ DUPEITEM=0286e
 
 [ITEMDEF 02960]
 TYPE=t_normal
-RESOURCES=100 i_board
 CATEGORY=Buildings - Floors
 SUBSECTION=Wood Floor 5
 DESCRIPTION=Wood Floor 5
@@ -1510,7 +1478,6 @@ DUPEITEM=02960
 
 [ITEMDEF 02978]
 TYPE=t_normal
-RESOURCES=100 i_board
 CATEGORY=Buildings - Floors
 SUBSECTION=Wood Floor 6
 DESCRIPTION=Wood Floor 6
@@ -1611,7 +1578,6 @@ DUPEITEM=02978
 
 [ITEMDEF 02bb5]
 DEFNAME=i_floor_tile_ornate
-RESOURCES=100 i_rock_plain
 CATEGORY=Buildings - Floors
 SUBSECTION=Elven Floor Tile (ornate)
 DESCRIPTION=Floor
@@ -1632,7 +1598,6 @@ DUPEITEM=02bb5
 
 [ITEMDEF 02bcf]
 DEFNAME=i_floor_tile_simple
-RESOURCES=100 i_board
 CATEGORY=Buildings - Floors
 SUBSECTION=Elven Floor Tile (simple)
 DESCRIPTION=Floor
@@ -1652,7 +1617,6 @@ DUPEITEM=02bcf
 
 [ITEMDEF 02d38]
 DEFNAME=i_floor_bark
-RESOURCES=100 i_log
 CATEGORY=Buildings - Floors
 SUBSECTION=Bark Floor
 DESCRIPTION=Floor
@@ -1689,7 +1653,6 @@ DUPEITEM=02bcf
 [ITEMDEF 02e01]
 NAME=thorn floor
 TYPE=t_floor
-RESOURCES=10 i_log,1 i_plant_bramble
 CATEGORY=Buildings - Floors
 SUBSECTION=Thorn Floor
 DESCRIPTION=Thorn Floor
@@ -1698,7 +1661,6 @@ DESCRIPTION=Thorn Floor
 [ITEMDEF 03004]
 DEFNAME=i_floor_black
 TYPE=t_floor
-RESOURCES=100 i_rock_plain
 CATEGORY=Buildings - Floors
 SUBSECTION=Tile Floor (black)
 DESCRIPTION=Tile
@@ -1722,7 +1684,6 @@ DEFNAME=i_floor_crystal
 TYPE=t_floor
 NAME=floor
 FLIP=1
-RESOURCES=255 i_crystal_shards
 CATEGORY=Buildings - Floors
 SUBSECTION=Pavers (crystal)
 DESCRIPTION=Paver
@@ -1778,7 +1739,6 @@ DEFNAME=i_floor_shadow
 NAME=floor
 TYPE=t_floor
 FLIP=1
-RESOURCES=100 i_rock_plain
 CATEGORY=Buildings - Floors
 SUBSECTION=Pavers (shadow)
 DESCRIPTION=Paver
@@ -2194,7 +2154,6 @@ DUPEITEM=04186
 [ITEMDEF 041af]
 DEFNAME=i_sa_floor_green_marble
 NAME=marble floor
-RESOURCES=100 i_rock_marble
 CATEGORY=Buildings - Floors
 SUBSECTION=Patterned Floor (green marble)
 DESCRIPTION=Floor
@@ -2509,7 +2468,6 @@ DUPEITEM=046cc
 [ITEMDEF 047dc]
 DEFNAME=i_paver_natural
 NAME=natural paver
-RESOURCES=100 i_rock_sandstone
 CATEGORY=Buildings - Floors
 SUBSECTION=Natural Pavers
 DESCRIPTION=Paver
