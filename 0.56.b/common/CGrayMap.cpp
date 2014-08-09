@@ -190,8 +190,7 @@ bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBot
 			return true;
 		}
 	}
-	//DEBUG_ERR(("wID 0%x zBottom %d  zHeight %d  zTop %d  m_zClimb %d  m_Bottom.m_z %d  m_Top.m_z %d\n",wID-TERRAIN_QTY,zBottom,zHeight,zTop,m_zClimb,m_Bottom.m_z,m_Top.m_z));
-	//DEBUG_ERR(("zBottom(%d) <= m_zClimb(%d) - %d\n",zBottom,m_zClimb,(zBottom <= m_zClimb)));
+
 	if ( zBottom <= ( m_zClimb + ( wItemBlockFlags & ( CAN_I_CLIMB ) ? zHeight / 2 : 0 ) ) )
 	{
 		if ( zTop >= m_Bottom.m_z )
@@ -202,11 +201,9 @@ bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBot
 					if ( m_Bottom.m_dwBlockFlags & CAN_I_PLATFORM ) //than items with CAN_I_PLATFORM
 						return ( true );
 			}
-			//DEBUG_ERR(("1wID 0%x zBottom %d  zHeight %d  zTop %d  m_zClimb %d  m_Bottom.m_z %d  m_Top.m_z %d\n",wID-TERRAIN_QTY,zBottom,zHeight,zTop,m_zClimb,m_Bottom.m_z,m_Top.m_z));
 			m_Bottom.m_dwBlockFlags = wItemBlockFlags;
 			m_Bottom.m_dwTile = dwID;
 			m_Bottom.m_z = zTop;
-			//DEBUG_ERR(("2wID 0%x zBottom %d  zHeight %d  zTop %d  m_zClimb %d  m_Bottom.m_z %d  m_Top.m_z %d\n",wID-TERRAIN_QTY,zBottom,zHeight,zTop,m_zClimb,m_Bottom.m_z,m_Top.m_z));
 
 			if ( wItemBlockFlags & CAN_I_CLIMB ) // return climb height
 				m_zClimbHeight = (( zHeight + 1 )/2); //if height is an odd number, then we need to add 1; if it isn't, this does nothing
@@ -264,6 +261,8 @@ bool CGrayMapBlockState::CheckTile_Terrain( DWORD wItemBlockFlags, signed char z
 	{
 		if ( z >= m_Bottom.m_z )
 		{
+			if ( (m_Bottom.m_dwBlockFlags & (CAN_I_PLATFORM|CAN_I_CLIMB)) && (z - m_Bottom.m_z <= 4) )
+					return true;
 			if ( z == m_Bottom.m_z )
 			{
 				if ( m_Bottom.m_dwBlockFlags & CAN_I_CLIMB ) // climbable items have the highest priority
@@ -282,8 +281,6 @@ bool CGrayMapBlockState::CheckTile_Terrain( DWORD wItemBlockFlags, signed char z
 					SetTop( wItemBlockFlags, z, dwID );
 					return true;
 				}
-				else if ( (m_Bottom.m_dwBlockFlags & (CAN_I_PLATFORM|CAN_I_CLIMB)) && (z - m_Bottom.m_z <= 4) )
-					return true;
 			}
 			else if ( z == m_z ) 
 			{ 

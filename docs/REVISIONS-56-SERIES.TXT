@@ -1162,6 +1162,10 @@ Note: Using new DAM_FIXED or return 1, -1 will obviously NOT call any skillgain,
 03-08-2014, XuN
 Modified Dir and Face functions (and the not soft-coded functions) to prevent loading all items in each dir change, even if they were not send to clients they were consuming resources in the serve
 
+04-08-2014, Ben
+Fixed #2362: Old attacker code interfering with new code.
+Added: BREAK and CONTINUE to script loops. (CONTINUE will skip to the next iteration, BREAK will exit the loop)
+
 06-08-2014, XuN
 Fixed a problem causing Staff with gm body (03db) to stick with this corpse and blocking following commands because of the '=' automatically appearing, Update is called when setting the body value.
 Added party.create msg,uid(s) where msg is 0/1 sending default sysmessages or not (usefull when forcing groups 0 = disable ), the following args (up to 9 more) is/are the players to add to this party.
@@ -1178,3 +1182,6 @@ Added #2380: Spell Fields check now the Z when creating, adjusting their positio
 Fixed #2381: Reveal not removing the memory when spell s_invisibility was casted (layer 39) (only removing potion effect (layer 44)).
 Added m_defenseBase and m_defenseRange splitting up the m_attackBase/Ranged properly between armor and damage instead of using it for everything.
 Enabled some disabled variables for KR client status bar.
+
+09-08-2014, Ben
+Fixed: Another issue with stairs...

@@ -2400,9 +2400,9 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 		ptTest.Move( dirTest2 );
 		if ( !CheckValidMove( ptTest, pwBlockFlags, DIR_QTY, pClimbHeight ) )
 				return NULL;
-
 	}
-	CRegionBase * pArea = ptDest.GetRegion( REGION_TYPE_MULTI | REGION_TYPE_AREA );
+
+	CRegionBase * pArea = ptDest.GetRegion( REGION_TYPE_MULTI | REGION_TYPE_AREA | REGION_TYPE_ROOM );
 	if ( pArea == NULL )
 	{
 		WARNWALK(("Failed to get region\n"));
@@ -2422,9 +2422,7 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 		wBlockFlags |= CAN_I_CLIMB; // If we can walk than we can climb. Ignore CAN_C_FLY at all here
 		WARNWALK(("wBlockFlags (0%x) wCan(0%x)\n",wBlockFlags,wCan));
 	}
-	//ptDest.m_z += m_zClimbHeight; // If we are climbing than check z at the top of stairs
-	//CGrayMapBlockState block( wBlockFlags, ptDest.m_z, ptDest.m_z + m_zClimbHeight + PLAYER_HEIGHT + 3, ptDest.m_z + m_zClimbHeight + 2 );
-	//WARNWALK(("\t\tCGrayMapBlockState block( 0%x, %d, %d, %d );ptDest.m_z(%d) m_zClimbHeight(%d)\n",wBlockFlags, ptDest.m_z, ptDest.m_z + m_zClimbHeight + PLAYER_HEIGHT + 3, ptDest.m_z + m_zClimbHeight + 2,ptDest.m_z,m_zClimbHeight));
+
 	CGrayMapBlockState block( wBlockFlags, ptDest.m_z, ptDest.m_z + m_zClimbHeight + GetHeightMount( false ), ptDest.m_z + m_zClimbHeight + 3, GetHeightMount( false ) );
 	WARNWALK(("\t\tCGrayMapBlockState block( 0%x, %d, %d, %d );ptDest.m_z(%d) m_zClimbHeight(%d)\n",wBlockFlags, ptDest.m_z, ptDest.m_z + m_zClimbHeight + GetHeightMount( false ), ptDest.m_z + m_zClimbHeight + 2,ptDest.m_z,m_zClimbHeight));
 
@@ -2447,7 +2445,6 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 			wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
 	}
 
-	//DEBUG_ERR(("wBlockFlags (0%x)\n",wBlockFlags));
 	if (( wCan != 0xFFFF ) && ( wBlockFlags != 0x0 ))
 	{
 		WARNWALK(("BOTTOMitemID (0%lx) TOPitemID (0%lx)\n",(block.m_Bottom.m_dwTile - TERRAIN_QTY),(block.m_Top.m_dwTile - TERRAIN_QTY)));
@@ -2474,7 +2471,6 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 		else if ( ( wBlockFlags & CAN_I_HOVER ) && (pCharDef->Can( CAN_C_HOVER ) || IsStatFlag(STATF_Hovering)))
 			wBlockFlags &= ~CAN_I_BLOCK;
 
-		//DEBUG_ERR(("wBlockFlags (0%x) pCharDef->m_Can (0%x)\n",wBlockFlags,pCharDef->m_Can));
 		if ( ! pCharDef->Can( CAN_C_FLY ))
 		{
 			if ( ! ( wBlockFlags & CAN_I_CLIMB ) ) // we can climb anywhere
@@ -2490,7 +2486,6 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 			}
 		}
 
-		//DEBUG_ERR(("wBlockFlags (0%x) pCharDef->Can( CAN_C_PASSWALLS ) (%d)\n",wBlockFlags,pCharDef->Can( CAN_C_PASSWALLS )));
 		if (( wBlockFlags & CAN_I_BLOCK ) && ( ! pCharDef->Can( CAN_C_PASSWALLS )) )
 				return NULL;
 
@@ -2508,6 +2503,7 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 	{
 		*pwBlockFlags = wBlockFlags;
 	}
+
 	if ( ( wBlockFlags & CAN_I_CLIMB ) && ( pClimbHeight ) )
 		*pClimbHeight = block.m_zClimbHeight;
 

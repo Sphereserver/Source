@@ -2355,7 +2355,6 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			}
 			else if ( IsTopLevel())
 			{
-				DWORD wBlockFlags = 0;
 				CChar *pChar = dynamic_cast <CChar *>(this);
 				CItem *pItem = dynamic_cast <CItem *>(this);
 				if ( pChar )
