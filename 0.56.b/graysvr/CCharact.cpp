@@ -2001,6 +2001,16 @@ bool CChar::Reveal( DWORD dwFlags )
 				pPotion->Delete();
 			}
 		}
+		for (CItem *pPotion = LayerFind( LAYER_SPELL_Invis ); pPotion; pPotion = pPotion->GetNext())
+		{
+			if ( ! pPotion )
+				break;
+			if  ( pPotion->GetID() == static_cast<ITEMID_TYPE>(0x20ab) ) 
+			{
+				pPotion->SetType( IT_NORMAL );	// Setting it to IT_NORMAL avoid a second call to this function
+				pPotion->Delete();
+			}
+		}
 	}
 	StatFlag_Clear(dwFlags);
 	if ( IsStatFlag(STATF_Invisible|STATF_Hidden|STATF_Insubstantial|STATF_Sleeping))
@@ -3339,7 +3349,7 @@ bool CChar::CheckLocation( bool fStanding )
 				if ( fStanding )
 					continue;
 				OnSpellEffect( SPELL_Resurrection, this, 1000, pItem );
-				return( false );
+				continue;
 			case IT_WEB:
 				if ( fStanding )
 					continue;
@@ -3361,7 +3371,7 @@ bool CChar::CheckLocation( bool fStanding )
 					OnTakeDamage( g_Cfg.GetSpellEffect( SPELL_Fire_Field, iSkillLevel ), NULL, DAMAGE_FIRE | DAMAGE_GENERAL );
 				}
 				Sound( 0x15f ); // Fire noise.
-				return( false );
+				continue;
 			case IT_SPELL:
 				{
 					SPELL_TYPE Spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pItem->m_itSpell.m_spell));
@@ -3372,20 +3382,20 @@ bool CChar::CheckLocation( bool fStanding )
 						Sound( pSpellDef->m_sound);
 					}
 				}
-				return( false );
+				continue;
 			case IT_TRAP:
 			case IT_TRAP_ACTIVE:
 				OnTakeDamage( pItem->Use_Trap(), NULL, DAMAGE_HIT_BLUNT | DAMAGE_GENERAL );
-				return( false );
+				continue;
 			case IT_SWITCH:
 				if ( pItem->m_itSwitch.m_fStep )
 				{
 					Use_Item( pItem );
 				}
-				return( false );
+				continue;
 			case IT_MOONGATE:
 			case IT_TELEPAD:
-				if ( fStanding )
+				if ( fStanding && !IsStatFlag(STATF_Freeze|STATF_Stone))
 					continue;
 				Use_MoonGate( pItem );
 				return( true );
@@ -3461,8 +3471,9 @@ bool CChar::CheckLocation( bool fStanding )
 						}
 					}
 				}
+				continue;
 			default:
-				break;
+				continue;
 		}
 	}
 

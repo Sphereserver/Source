@@ -1414,7 +1414,7 @@ void CChar::Spell_Field( CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, 
 				// Add some random element.
 				int iDuration = pSpellDef->m_Duration.GetLinear(iSkillLevel);
 
-				pSpell->MoveToDecay( ptg, iDuration + Calc_GetRandVal( iDuration/2 ));
+				pSpell->MoveToDecay( ptg, iDuration + Calc_GetRandVal( iDuration/2 ), true);
 			}
 		}
 	}

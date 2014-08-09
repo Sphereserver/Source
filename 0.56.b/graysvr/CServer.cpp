@@ -25,12 +25,7 @@
 
 #if !defined(_WIN32) || defined(_LIBEV)
 	extern LinuxEv g_NetworkEvent;
-#endif#include "graysvr.h"
-
-#define SERVER "spherecommunity.net"
-#define USER "d01b2f2f"
-#define PASSWORD "dTu96w7P5yxpfsHq"
-#define DATABASE "d01b2f2f"
+#endif
 
 
 ////////////////////////////////////////////////////////
@@ -1455,7 +1450,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 			}
 			break;
 		case SV_LISTUPDATE:
-			RegisterServerUpdate();
+			//RegisterServerUpdate();
 			break;
 		case SV_LOAD:
 			// Load a resource file.
@@ -2025,67 +2020,4 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 	EXC_DEBUG_START;
 	EXC_DEBUG_END;
 	return false;
-}
-
-
-
-
-
-void CServer::RegisterServerUpdate()
-{
-	/*if ( g_Cfg.m_fPublicList == false && StatGet(SERV_STAT_CLIENTS) <3 )
-		return;*/
-	MYSQL *connect;
-    connect=mysql_init(NULL);
-    if(!connect) 
-    {
-        g_Log.EventDebug("RegisterServer failed, couldn't init\n");
-        return;
-    }
- 
-    connect=mysql_real_connect(connect,SERVER,USER,PASSWORD,DATABASE,0,NULL,0); 
-    if (!connect)
-	{
-        g_Log.EventDebug("RegisterServer failed, couldn't connect\n");
-		return;
-	}
-
-	TCHAR * query = "SELECT * FROM register_info";
-	mysql_query(connect,query);
-	MYSQL_RES * result = mysql_store_result(connect);
-	if ( result == NULL )
-		goto forceclose;
-	MYSQL_ROW row = mysql_fetch_row(result);
-	TCHAR * pszFields = Str_GetTemp();
-	TCHAR * pszValues = Str_GetTemp();
-	TCHAR * pszPrint = Str_GetTemp();
-	TCHAR * TempStr = Str_GetTemp();
-	if  (row != NULL)
-	{
-		sprintf(pszFields,"%s",row[1]);
-		ParseText(row[2], this );
-		mysql_real_escape_string(connect, TempStr, row[2], static_cast<unsigned long>(strlen(row[2])));
-		sprintf(pszValues,"'%s'",TempStr);
-	}
-	while ( (row = mysql_fetch_row(result)) != NULL )
-	{
-		sprintf(pszPrint,",%s",row[1]);
-		strcat(pszFields, pszPrint);
-		ParseText(row[2], this );
-		mysql_real_escape_string(connect, TempStr, row[2], static_cast<unsigned long>(strlen(row[2])));
-		sprintf(pszPrint,",'%s'",TempStr);
-		strcat(pszValues, pszPrint);
-	}
-	if (result)
-		mysql_free_result(result);
-	sprintf(pszPrint,"INSERT INTO info_upload(%s) VALUES (%s)",pszFields, pszValues);
-    mysql_query(connect,pszPrint);	
-	result = mysql_store_result(connect);
-	if (result)
-		mysql_free_result(result);
-
-forceclose:
-    mysql_close(connect);
-	connect = NULL;
-    return;
 }

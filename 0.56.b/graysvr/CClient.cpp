@@ -606,7 +606,7 @@ bool CClient::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 				if ( !this->m_pChar->m_pParty )
 				{
 					LPCTSTR oldKey = pszKey;
-					if ( pszKey == ".create",7)
+					if ( !strnicmp(pszKey, ".CREATE", 7) )
 						pszKey +=7;
 
 					CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind());

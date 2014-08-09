@@ -321,7 +321,7 @@ void CItemMulti::OnMoveFrom()
 	m_pRegion->UnRealizeRegion();
 }
 
-bool CItemMulti::MoveTo( CPointMap pt ) // Put item on the ground here.
+bool CItemMulti::MoveTo( CPointMap pt, bool bForceFix ) // Put item on the ground here.
 {
 	ADDTOCALLSTACK("CItemMulti::MoveTo");
 	// Move this item to it's point in the world. (ground/top level)

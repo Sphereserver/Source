@@ -156,6 +156,26 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 			break;
 
 		case OBC_ARMOR:
+			{
+				pszKey += strlen(sm_szLoadKeys[index]); // 9;
+				if ( *pszKey == '.' )
+				{
+					SKIP_SEPARATORS( pszKey );
+
+					if ( !strnicmp( pszKey, "LO", 2 ) )
+					{
+						sVal.Format( "%d", m_defenseBase );
+					}
+					else if ( !strnicmp( pszKey, "HI", 2 ) )
+					{
+						sVal.Format( "%d", m_defenseBase+m_defenseRange );
+					}
+				}
+				else
+				{
+					sVal.Format( "%d,%d", m_defenseBase, m_defenseBase+m_defenseRange );
+				}
+			} break;
 		case OBC_DAM:
 			{
 				pszKey += strlen(sm_szLoadKeys[index]); // 9;
@@ -424,6 +444,20 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 			}
 			return true;
 		case OBC_ARMOR:
+			{
+				INT64 piVal[2];
+				size_t iQty = Str_ParseCmds( s.GetArgStr(), piVal, COUNTOF(piVal));
+				m_defenseBase = static_cast<unsigned char>(piVal[0]);
+				if ( iQty > 1 )
+				{
+					m_defenseRange = static_cast<unsigned char>(piVal[1]) - m_defenseBase;
+				}
+				else
+				{
+					m_defenseRange = 0;
+				}
+			}
+			return( true );
 		case OBC_DAM:
 			{
 				INT64 piVal[2];
@@ -514,6 +548,8 @@ void CBaseBaseDef::CopyBasic( const CBaseBaseDef * pBase )
 	// m_BaseResources = pBase->m_BaseResources;	// items might not want this.
 	m_attackBase = pBase->m_attackBase;
 	m_attackRange = pBase->m_attackRange;
+	m_defenseBase = pBase->m_defenseBase;
+	m_defenseRange = pBase->m_defenseRange;
 	m_Can = pBase->m_Can;
 }
 

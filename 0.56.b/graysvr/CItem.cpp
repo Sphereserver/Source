@@ -77,6 +77,8 @@ CItem::CItem( ITEMID_TYPE id, CItemBase * pItemDef ) : CObjBase( true )
 	m_itWeapon.m_dmgpoison = 0;
 	m_attackBase = pItemDef->m_attackBase;
 	m_attackRange = pItemDef->m_attackRange;
+	m_defenseBase = pItemDef->m_defenseBase;
+	m_defenseRange = pItemDef->m_defenseRange;
 	m_weight = pItemDef->GetWeight();
 
 	SetBase( pItemDef );
@@ -609,6 +611,13 @@ int CItem::IsWeird() const
 	// The container must be valid.
 	CObjBase * ptCont = GetContainer(); 
 	return( ( ptCont == NULL ) ? 0x2106 : ptCont->IsWeird() );
+}
+void CItem::FixZ(  unsigned long wBlockFlags )
+{
+	height_t zHeight = CItemBase::GetItemHeight( GetDispID(), wBlockFlags );
+	CGrayMapBlockState block( wBlockFlags, GetTopPoint().m_z, GetTopPoint().m_z + zHeight, GetTopPoint().m_z + 2, zHeight );
+	g_World.GetHeightPoint2( GetTopPoint(), block, true );
+	SetTopZ(block.m_Bottom.m_z);
 }
 
 CItem * CItem::SetType(IT_TYPE type)
@@ -1283,7 +1292,7 @@ SOUND_TYPE CItem::GetDropSound( const CObjBase * pObjOn ) const
 		return ( iSnd );
 }
 
-bool CItem::MoveTo( CPointMap pt ) // Put item on the ground here.
+bool CItem::MoveTo( CPointMap pt, bool bForceFix ) // Put item on the ground here.
 {
 	ADDTOCALLSTACK("CItem::MoveTo");
 	// Move this item to it's point in the world. (ground/top level)
@@ -1307,6 +1316,8 @@ bool CItem::MoveTo( CPointMap pt ) // Put item on the ground here.
 	}
 
 	SetTopPoint( pt );
+	if ( bForceFix )
+		FixZ();
 	ASSERT( IsTopLevel());	// on the ground.
 
 	Update();
@@ -4018,7 +4029,7 @@ int CItem::Armor_GetDefense() const
 	CItemBase * pItemDef = Item_GetDef();
 	ASSERT(pItemDef);
 
-	int iVal = pItemDef->m_attackBase + m_ModAr;
+	int iVal = pItemDef->m_defenseBase + m_ModAr;
 	int iRepair = Armor_GetRepairPercent();
 	iVal = IMULDIV(iVal, iRepair, 100);
 

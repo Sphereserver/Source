@@ -229,12 +229,12 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 			const CItem* weapon = other->m_uidWeapon.ItemFind();
 			if (weapon != NULL)
 			{
-				writeInt16(weapon->Item_GetDef()->m_attackBase + weapon->m_ModAr);
+				writeInt16(weapon->m_attackBase + weapon->m_ModAr);
 				writeInt16(other->Fight_CalcDamage(weapon, weapon->Weapon_GetSkill(), true));
 			}
 			else
 			{
-				writeInt16(otherDefinition->m_attackBase);
+				writeInt16(other->m_attackBase);
 				writeInt16(other->Fight_CalcDamage(NULL, SKILL_WRESTLING, true));
 			}
 
@@ -260,32 +260,33 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERMANACOST", true)));
 		}
 /* We really don't know what is going on here. RUOSI Packet Guide was way off... -Khaos
-   Possible KR client status info... -Ben
+   Possible KR client status info... -Ben*/
+		if (target->GetNetState()->isClientKR() )
 		{
-			writeInt16(other->GetDefNum("INCREASEHITCHANCE", true));
-			writeInt16(other->GetDefNum("INCREASESWINGSPEED", true));
-			writeInt16(other->GetDefNum("INCREASEDAM", true));
-			writeInt16(other->GetDefNum("LOWERREAGENTCOST", true));
-			writeInt16(other->GetDefNum("REGENHITS", true));
-			writeInt16(other->GetDefNum("REGENSTAM", true));
-			writeInt16(other->GetDefNum("REGENMANA", true));
-			writeInt16(other->GetDefNum("REFLECTPHYSICALDAM", true));
-			writeInt16(other->GetDefNum("ENHANCEPOTIONS", true));
-			writeInt16(other->GetDefNum("INCREASEDEFCHANCE", true));
-			writeInt16(other->GetDefNum("INCREASESPELLDAM", true));
-			writeInt16(other->GetDefNum("FASTERCASTRECOVERY", true));
-			writeInt16(other->GetDefNum("FASTERCASTING", true));
-			writeInt16(other->GetDefNum("LOWERMANACOST", true));
-			writeInt16(other->GetDefNum("BONUSSTR", true));
-			writeInt16(other->GetDefNum("BONUSDEX", true));
-			writeInt16(other->GetDefNum("BONUSINT", true));
-			writeInt16(other->GetDefNum("BONUSHITS", true));
-			writeInt16(other->GetDefNum("BONUSSTAM", true));
-			writeInt16(other->GetDefNum("BONUSMANA", true));
-			writeInt16(other->GetDefNum("BONUSHITSMAX", true));
-			writeInt16(other->GetDefNum("BONUSSTAMMAX", true));
-			writeInt16(other->GetDefNum("BONUSMANAMAX", true));
-		}*/
+			writeInt16((WORD)other->GetDefNum("INCREASEHITCHANCE", true));
+			writeInt16((WORD)other->GetDefNum("INCREASESWINGSPEED", true));
+			writeInt16((WORD)other->GetDefNum("INCREASEDAM", true));
+			writeInt16((WORD)other->GetDefNum("LOWERREAGENTCOST", true));
+			writeInt16((WORD)other->GetDefNum("REGENHITS", true));
+			writeInt16((WORD)other->GetDefNum("REGENSTAM", true));
+			writeInt16((WORD)other->GetDefNum("REGENMANA", true));
+			writeInt16((WORD)other->GetDefNum("REFLECTPHYSICALDAM", true));
+			writeInt16((WORD)other->GetDefNum("ENHANCEPOTIONS", true));
+			writeInt16((WORD)other->GetDefNum("INCREASEDEFCHANCE", true));
+			writeInt16((WORD)other->GetDefNum("INCREASESPELLDAM", true));
+			writeInt16((WORD)other->GetDefNum("FASTERCASTRECOVERY", true));
+			writeInt16((WORD)other->GetDefNum("FASTERCASTING", true));
+			writeInt16((WORD)other->GetDefNum("LOWERMANACOST", true));
+			writeInt16((WORD)other->GetDefNum("BONUSSTR", true));
+			writeInt16((WORD)other->GetDefNum("BONUSDEX", true));
+			writeInt16((WORD)other->GetDefNum("BONUSINT", true));
+			writeInt16((WORD)other->GetDefNum("BONUSHITS", true));
+			writeInt16((WORD)other->GetDefNum("BONUSSTAM", true));
+			writeInt16((WORD)other->GetDefNum("BONUSMANA", true));
+			writeInt16((WORD)other->GetDefNum("BONUSHITSMAX", true));
+			writeInt16((WORD)other->GetDefNum("BONUSSTAMMAX", true));
+			writeInt16((WORD)other->GetDefNum("BONUSMANAMAX", true));
+		}
 	}
 	else
 	{

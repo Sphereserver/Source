@@ -64,9 +64,12 @@ public:
 	CVarDefMap m_TagDefs;		// attach extra tags here.
 	CVarDefMap m_BaseDefs;		// New Variable storage system
 	DWORD	m_Can;
-
-	WORD	m_attackBase;	// Armor for IsArmor items, dam for weapons
+	
+	WORD	m_attackBase;	// dam for weapons
 	WORD	m_attackRange;	// variable range of attack damage.
+
+	WORD	m_defenseBase;	// Armor for IsArmor items
+	WORD	m_defenseRange;	// variable range of defense.
 
 	CResourceRefArray m_OEvents;
 	static size_t sm_iCount;	// how many total objects in the world ?
@@ -240,7 +243,7 @@ public:
 
 public:
 	// Location
-	virtual bool MoveTo( CPointMap pt ) = 0;	// Move to a location at top level.
+	virtual bool MoveTo( CPointMap pt, bool bForceFix = false ) = 0;	// Move to a location at top level.
 
 	virtual bool MoveNear( CPointMap pt, int iSteps = 0, DWORD dwCan = CAN_C_WALK );
 	virtual bool MoveNearObj( const CObjBaseTemplate * pObj, int iSteps = 0, DWORD dwCan = CAN_C_WALK );
@@ -924,6 +927,7 @@ public:
 	void SetAnim( ITEMID_TYPE id, int iTime );
 
 	int IsWeird() const;
+	void FixZ( unsigned long wBlockFlags = 0 );
 	
 	void SetAttr( DWORD dwAttr )
 	{
@@ -1009,11 +1013,11 @@ public:
 	virtual void OnMoveFrom()	// Moving from current location.
 	{
 	}
-	virtual bool MoveTo( CPointMap pt ); // Put item on the ground here.
-	bool MoveToDecay( const CPointMap & pt, INT64 iDecayTime )
+	virtual bool MoveTo( CPointMap pt, bool bForceFix = false ); // Put item on the ground here.
+	bool MoveToDecay( const CPointMap & pt, INT64 iDecayTime, bool bForceFix = false )
 	{
 		SetDecayTime( iDecayTime );
-		return MoveTo( pt );
+		return MoveTo( pt, bForceFix );
 	}
 	bool MoveToCheck( const CPointMap & pt, CChar * pCharMover = NULL );
 	virtual bool MoveNearObj( const CObjBaseTemplate * pItem, int iSteps = 0, WORD wCan = CAN_C_WALK );
@@ -1605,7 +1609,7 @@ private:
 
 public:
 	virtual bool OnTick();
-	virtual bool MoveTo( CPointMap pt ); // Put item on the ground here.
+	virtual bool MoveTo( CPointMap pt, bool bForceFix = false ); // Put item on the ground here.
 	virtual void OnMoveFrom();	// Moving from current location.
 	void OnHearRegion( LPCTSTR pszCmd, CChar * pSrc );
 	CItem * Multi_GetSign();	// or Tiller
@@ -1894,7 +1898,7 @@ private:
 
 public:
 	virtual void OnMoveFrom();
-	virtual bool MoveTo( CPointMap pt );
+	virtual bool MoveTo( CPointMap pt, bool bForceFix = false );
 
 	virtual void OnHear( LPCTSTR pszCmd, CChar * pSrc );
 	virtual void  r_Write( CScript & s );
@@ -2038,7 +2042,7 @@ private:
 
 	void SetTownName();
 	bool SetName( LPCTSTR pszName );
-	virtual bool MoveTo( CPointMap pt );
+	virtual bool MoveTo( CPointMap pt, bool bForceFix = false );
 
 	MEMORY_TYPE GetMemoryType() const;
 
@@ -2784,6 +2788,7 @@ private:
 public:
 	// Status and attributes ------------------------------------
 	int IsWeird() const;
+	void FixZ( unsigned long wBlockFlags = 0);
 	virtual void Delete(bool bforce = false);
 	virtual bool NotifyDelete();
 	bool IsStatFlag( DWORD dwStatFlag ) const
@@ -3074,7 +3079,7 @@ public:
 		return( MoveToRegion( dynamic_cast <CRegionWorld *>( GetTopPoint().GetRegion( dwType )), false));
 	}
 	bool MoveToChar( CPointMap pt );
-	bool MoveTo( CPointMap pt )
+	bool MoveTo( CPointMap pt, bool bForceFix = false )
 	{
 		m_fClimbUpdated = false; // update climb height
 		return MoveToChar( pt );

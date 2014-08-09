@@ -764,7 +764,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			break;
 			
 		case OC_RESPHYSICAL:
-			sVal.FormatVal(m_attackBase);
+			sVal.FormatVal(m_defenseBase);
 			break;
 		case OC_ARMOR:
 			{
@@ -773,7 +773,26 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 					CChar * pChar = static_cast<CChar*>(this);
 					sVal.FormatVal( pChar->m_defense );
 					break;
-				}
+				} else {
+					pszKey += strlen(sm_szLoadKeys[index]); // 9;
+					if ( *pszKey == '.' )
+					{
+						SKIP_SEPARATORS( pszKey );
+
+						if ( !strnicmp( pszKey, "LO", 2 ) )
+						{
+							sVal.Format( "%d", m_defenseBase );
+						}
+						else if ( !strnicmp( pszKey, "HI", 2 ) )
+						{
+							sVal.Format( "%d", m_defenseBase+m_defenseRange );
+						}
+					}
+					else
+					{
+						sVal.Format( "%d,%d", m_defenseBase, m_defenseBase+m_defenseRange );
+					}
+				} break;
 			}
 		case OC_DAM:
 			{
@@ -1487,12 +1506,23 @@ bool CObjBase::r_LoadVal( CScript & s )
 			return true;
 			
 		case OC_RESPHYSICAL:
-			m_attackBase = (WORD)s.GetArgVal();
+			m_defenseBase = (WORD)s.GetArgVal();
 			break;
 		case OC_ARMOR:
 			{
 				if ( IsChar() )
 					return false;
+				else
+				{
+					INT64 piVal[2];
+					size_t iQty = Str_ParseCmds( s.GetArgStr(), piVal, COUNTOF(piVal));
+					m_defenseBase = static_cast<unsigned char>(piVal[0]);
+					if ( iQty > 1 )
+						m_defenseRange = static_cast<unsigned char>(piVal[1]) - m_defenseBase;
+					else
+						m_defenseRange = 0;
+				}
+				return( true );
 			}
 		case OC_DAM:
 			{
@@ -1500,13 +1530,9 @@ bool CObjBase::r_LoadVal( CScript & s )
 				size_t iQty = Str_ParseCmds( s.GetArgStr(), piVal, COUNTOF(piVal));
 				m_attackBase = static_cast<unsigned char>(piVal[0]);
 				if ( iQty > 1 )
-				{
 					m_attackRange = static_cast<unsigned char>(piVal[1]) - m_attackBase;
-				}
 				else
-				{
 					m_attackRange = 0;
-				}
 			}
 			return( true );
 		case OC_WEIGHTREDUCTION:
@@ -2333,62 +2359,9 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				CChar *pChar = dynamic_cast <CChar *>(this);
 				CItem *pItem = dynamic_cast <CItem *>(this);
 				if ( pChar )
-				{
-					DWORD dwCan = pChar->GetMoveBlockFlags();
-					wBlockFlags = dwCan;
-					if ( dwCan & CAN_C_WALK )
-						wBlockFlags |= CAN_I_CLIMB; // If we can walk than we can climb. Ignore CAN_C_FLY at all here
-
-					CGrayMapBlockState block( wBlockFlags, GetTopPoint().m_z, GetTopPoint().m_z + pChar->m_zClimbHeight + pChar->GetHeightMount( false ), GetTopPoint().m_z + pChar->m_zClimbHeight + 2, pChar->GetHeightMount( false ) );
-					g_World.GetHeightPoint2( GetTopPoint(), block, true );
-
-					wBlockFlags = block.m_Bottom.m_dwBlockFlags;
-					if ( block.m_Top.m_dwBlockFlags )
-					{
-						wBlockFlags |= CAN_I_ROOF;	// we are covered by something.
-						if ( block.m_Top.m_z < GetTopPoint().m_z - (pChar->m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? pChar->GetHeightMount( false ) : pChar->GetHeightMount( false )/2 )) )
-							wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
-					}
-					if (( dwCan != 0xFFFF ) && ( wBlockFlags != 0x0 ))
-					{
-						CCharBase* pCharDef = pChar->Char_GetDef();
-
-						if ( ( wBlockFlags & CAN_I_DOOR ) && pCharDef->Can( CAN_C_GHOST ))
-							wBlockFlags &= ~CAN_I_BLOCK;
-
-						if ( ( wBlockFlags & CAN_I_WATER ) && pCharDef->Can( CAN_C_SWIM ))
-							wBlockFlags &= ~CAN_I_BLOCK;
-
-						if ( ! pCharDef->Can( CAN_C_FLY ))
-						{
-							if ( ! ( wBlockFlags & CAN_I_CLIMB ) ) // we can climb anywhere
-							{
-								if ( block.m_Bottom.m_dwTile > TERRAIN_QTY )
-								{
-									if ( block.m_Bottom.m_z > GetTopPoint().m_z + pChar->m_zClimbHeight + 2) // Too high to climb.
-										break;
-								}
-								else if ( block.m_Bottom.m_z > GetTopPoint().m_z + pChar->m_zClimbHeight + pChar->GetHeightMount( false ) + 3)
-									break;
-							}
-						}
-						if (( wBlockFlags & CAN_I_BLOCK ) && ( ! pCharDef->Can( CAN_C_PASSWALLS )) )
-							break;
-
-						if ( block.m_Bottom.m_z >= UO_SIZE_Z )
-							break;
-					}
-					if (( pChar->GetHeightMount( false ) + GetTopPoint().m_z >= block.m_Top.m_z ) && ( g_Cfg.m_iMountHeight ) && ( !pChar->IsPriv( PRIV_GM ) ) && ( !pChar->IsPriv( PRIV_ALLMOVE ) ))
-						break;
-					SetTopZ(block.m_Bottom.m_z);
-				}
+					pChar->FixZ();
 				else if ( pItem )
-				{
-					height_t zHeight = CItemBase::GetItemHeight( pItem->GetDispID(), wBlockFlags );
-					CGrayMapBlockState block( wBlockFlags, GetTopPoint().m_z, GetTopPoint().m_z + zHeight, GetTopPoint().m_z + 2, zHeight );
-					g_World.GetHeightPoint2( GetTopPoint(), block, true );
-					SetTopZ(block.m_Bottom.m_z);
-				}
+					pItem->FixZ();
 				else
 				{
 					g_Log.EventDebug("Failed to get reference in FIX or Z\n");

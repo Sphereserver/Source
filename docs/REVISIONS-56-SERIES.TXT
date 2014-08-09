@@ -1167,3 +1167,14 @@ Fixed a problem causing Staff with gm body (03db) to stick with this corpse and 
 Added party.create msg,uid(s) where msg is 0/1 sending default sysmessages or not (usefull when forcing groups 0 = disable ), the following args (up to 9 more) is/are the players to add to this party.
 Changed all party triggers (Except the @PartyRemove when argn1=1, which means informative remove when a @PartyDisband has been fired before and is in proccess now) returnable to stop their following code.
 Fixed crash bug introduced in last patch.
+
+08-08-2014, XuN
+Multiples items overplaced not doing their 'effects', ie: spell fields, because of returning the code after finding the first item. All of the changes related to this can be overriden in @Step and @itemStep.
+	- Paralyzed characters won't move to any t_telepad or t_moongate location if they are freezed or stoned.
+	- t_shrine was blocking the effect of any other items in its location, so now if players place any field or explotion or whatever upon it = free reskill.
+Added #2380: Spell Fields check now the Z when creating, adjusting their position to it.
+	Moved the FIX: code to FixZ() for CItem and CChar.
+	Added also a bool bForceFix to MoveTo forcing a FixZ() after the Object positioning, updated the whole pack of *::MoveTo() to accept the new bool.
+Fixed #2381: Reveal not removing the memory when spell s_invisibility was casted (layer 39) (only removing potion effect (layer 44)).
+Added m_defenseBase and m_defenseRange splitting up the m_attackBase/Ranged properly between armor and damage instead of using it for everything.
+Enabled some disabled variables for KR client status bar.

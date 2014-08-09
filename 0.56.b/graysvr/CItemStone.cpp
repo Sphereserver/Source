@@ -2201,7 +2201,7 @@ void CItemStone::SetTownName()
 	}
 }
 
-bool CItemStone::MoveTo( CPointMap pt )
+bool CItemStone::MoveTo( CPointMap pt, bool bForceFix )
 {
 	ADDTOCALLSTACK("CItemStone::MoveTo");
 	// Put item on the ground here.

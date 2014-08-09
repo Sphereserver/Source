@@ -492,6 +492,56 @@ int CChar::IsWeird() const
 
 	return( 0 );
 }
+void CChar::FixZ( unsigned long wBlockFlags)
+{
+	if (! wBlockFlags )
+		wBlockFlags = GetMoveBlockFlags();
+	DWORD dwCan = GetMoveBlockFlags();
+	if ( dwCan & CAN_C_WALK )
+		wBlockFlags |= CAN_I_CLIMB; // If we can walk than we can climb. Ignore CAN_C_FLY at all here
+
+	CGrayMapBlockState block( wBlockFlags, GetTopPoint().m_z, GetTopPoint().m_z + m_zClimbHeight + GetHeightMount( false ), GetTopPoint().m_z + m_zClimbHeight + 2, GetHeightMount( false ) );
+	g_World.GetHeightPoint2( GetTopPoint(), block, true );
+
+	wBlockFlags = block.m_Bottom.m_dwBlockFlags;
+	if ( block.m_Top.m_dwBlockFlags )
+	{
+		wBlockFlags |= CAN_I_ROOF;	// we are covered by something.
+		if ( block.m_Top.m_z < GetTopPoint().m_z - (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? GetHeightMount( false ) : GetHeightMount( false )/2 )) )
+			wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
+	}
+	if (( dwCan != 0xFFFF ) && ( wBlockFlags != 0x0 ))
+	{
+
+		if ( ( wBlockFlags & CAN_I_DOOR ) && Can( CAN_C_GHOST ))
+			wBlockFlags &= ~CAN_I_BLOCK;
+
+		if ( ( wBlockFlags & CAN_I_WATER ) && Can( CAN_C_SWIM ))
+			wBlockFlags &= ~CAN_I_BLOCK;
+
+		if ( ! Can( CAN_C_FLY ))
+		{
+			if ( ! ( wBlockFlags & CAN_I_CLIMB ) ) // we can climb anywhere
+			{
+				if ( block.m_Bottom.m_dwTile > TERRAIN_QTY )
+				{
+					if ( block.m_Bottom.m_z > GetTopPoint().m_z + m_zClimbHeight + 2) // Too high to climb.
+						return;
+				}
+				else if ( block.m_Bottom.m_z > GetTopPoint().m_z + m_zClimbHeight + GetHeightMount( false ) + 3)
+					return;
+			}
+		}
+		if (( wBlockFlags & CAN_I_BLOCK ) && ( ! Can( CAN_C_PASSWALLS )) )
+			return;
+
+		if ( block.m_Bottom.m_z >= UO_SIZE_Z )
+			return;
+	}
+	if (( GetHeightMount( false ) + GetTopPoint().m_z >= block.m_Top.m_z ) && ( g_Cfg.m_iMountHeight ) && ( !IsPriv( PRIV_GM ) ) && ( !IsPriv( PRIV_ALLMOVE ) ))
+		return;
+	SetTopZ(block.m_Bottom.m_z);
+}
 
 int CChar::FixWeirdness()
 {

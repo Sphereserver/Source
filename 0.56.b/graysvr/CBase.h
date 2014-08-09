@@ -35,8 +35,12 @@ public:
 	CResourceQtyArray	m_BaseResources;	// RESOURCES=10 MEAT (What is this made of)
 	//WORD				m_range;
 
-	BYTE    m_attackBase;	// base attack for weapons/chars or AC for armor. not magic plus
-	BYTE	m_attackRange;	// variable range of attack damage.
+	WORD    m_attackBase;	// base attack for weapons/chars. not magic plus
+	WORD	m_attackRange;	// variable range of attack damage.
+
+	WORD	m_defenseBase;
+	WORD	m_defenseRange;
+
 	DWORD	m_Can;			// Base attribute flags. CAN_C_GHOST
 
 public:
