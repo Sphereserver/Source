@@ -651,7 +651,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 				GetClient()->removeBuff(BI_PARALYZE);
 			}
 			UpdateModeFlag();
-			return;
+			break;
 
 
 		case SPELL_Chameleon:		// 106 // makes your skin match the colors of whatever is behind you.

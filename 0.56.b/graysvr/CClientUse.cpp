@@ -118,7 +118,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 
 	if ( pItemDef->IsTypeEquippable() && ! pItem->IsItemEquipped() && pItemDef->GetEquipLayer() )
 	{
-		if ( !pItem->IsTypeSpellbook() )	// items must be removed from view before equipping in EC, however spellbooks cannot be removed from view or client will crash
+		if ( !pItem->IsTypeSpellbook() && !pItem->IsItemInContainer())	// items must be removed from view before equipping in EC when on the floor, however spellbooks cannot be removed from view or client will crash
 			pItem->RemoveFromView();
 		if ( pItem->IsType(IT_LIGHT_OUT) && pItem->IsItemInContainer())
 		{
