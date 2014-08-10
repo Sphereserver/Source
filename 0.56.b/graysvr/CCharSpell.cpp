@@ -3,6 +3,7 @@
 //
 
 #include "graysvr.h"	// predef header.
+#include "../network/send.h"
 
 
 void CChar::Spell_Dispel( int iLevel )
@@ -940,7 +941,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			break;
 		case SPELL_Invis:
 			StatFlag_Set( STATF_Invisible );
-			// m_wHue = HUE_TRANSLUCENT;
+			if ( IsClient() )
+				new PacketCharacter(GetClient(), this); //updates paperdoll with less packets then GetClient()->addChar( this );
 			UpdateMove(GetTopPoint());	// Some will be seeing us for the first time !
 			if ( IsSetOF(OF_Buffs) && IsClient() )
 			{

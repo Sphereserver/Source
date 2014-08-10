@@ -1982,47 +1982,28 @@ bool CChar::Reveal( DWORD dwFlags )
 		// Try to wake me up.
 		Wake();
 	}
-	/*bool fInvis = false;
-	if (( dwFlags & STATF_Invisible ) && IsStatFlag( STATF_Invisible  ))
-	{ 
-		fInvis = true;
-		//SetHue( m_prev_Hue ); <- don't want to reset to oskin!
-	}*/
 	
 	if ( ( dwFlags & STATF_Invisible ) && IsStatFlag( STATF_Invisible ))
 	{
-		for (CItem *pPotion = LayerFind( LAYER_FLAG_Potion ); pPotion; pPotion = pPotion->GetNext())
+		CItem * pSpell = LayerFind(LAYER_SPELL_Invis);
+		if ( pSpell && pSpell->IsType(IT_SPELL) && (pSpell->m_itSpell.m_spell == SPELL_Invis))
 		{
-			if ( ! pPotion )
-				break;
-			if  ( pPotion->GetID() == static_cast<ITEMID_TYPE>(0x20ab) ) 
-			{
-				pPotion->SetType( IT_NORMAL );	// Setting it to IT_NORMAL avoid a second call to this function
-				pPotion->Delete();
-			}
+			pSpell->SetType( IT_NORMAL );	// Setting it to IT_NORMAL avoid a second call to this function
+			pSpell->Delete();
 		}
-		for (CItem *pPotion = LayerFind( LAYER_SPELL_Invis ); pPotion; pPotion = pPotion->GetNext())
+		pSpell = LayerFind(LAYER_FLAG_Potion);
+		if ( pSpell && pSpell->IsType(IT_SPELL) && (pSpell->m_itSpell.m_spell == SPELL_Invis))
 		{
-			if ( ! pPotion )
-				break;
-			if  ( pPotion->GetID() == static_cast<ITEMID_TYPE>(0x20ab) ) 
-			{
-				pPotion->SetType( IT_NORMAL );	// Setting it to IT_NORMAL avoid a second call to this function
-				pPotion->Delete();
-			}
+			pSpell->SetType( IT_NORMAL );	// Setting it to IT_NORMAL avoid a second call to this function
+			pSpell->Delete();
 		}
 	}
+
 	StatFlag_Clear(dwFlags);
 	if ( IsStatFlag(STATF_Invisible|STATF_Hidden|STATF_Insubstantial|STATF_Sleeping))
 		return false;
-	
-	/*if ( fInvis )
-	{
-		RemoveFromView();
-		Update();
-	}
-	else*/
-		UpdateMode(NULL, true);
+
+	UpdateMode(NULL, true);
 
 	if ( IsClient() )
 		GetClient()->removeBuff( BI_HIDDEN );
