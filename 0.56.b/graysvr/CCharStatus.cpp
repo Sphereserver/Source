@@ -1229,7 +1229,7 @@ blocked:
 	{
 		DIR_TYPE dir = ptSrc.GetDir( ptDst );
 		DWORD wBlockFlags;
-		if (dir % 2)		// test only diagonal dirs
+		if (dir % 2 && !IsSetEF(EF_NoDiagonalCheckLOS))		// test only diagonal dirs
 		{
 			CPointMap ptTest;
 			DIR_TYPE dirTest1 = static_cast<DIR_TYPE>(dir - 1); // get 1st ortogonal

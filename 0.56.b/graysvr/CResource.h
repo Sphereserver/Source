@@ -49,7 +49,7 @@ enum OF_TYPE
 
 enum EF_TYPE
 {
-	EF_Unused01						= 0x0000001,
+	EF_NoDiagonalCheckLOS			= 0x0000001,
 	EF_Unused02						= 0x0000002,
 	EF_ItemStacking					= 0x0000004,
 	EF_ItemStackDrop				= 0x0000008,

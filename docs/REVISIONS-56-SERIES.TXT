@@ -1185,3 +1185,8 @@ Enabled some disabled variables for KR client status bar.
 
 09-08-2014, Ben
 Fixed: Another issue with stairs...
+
+11-08-2014, matex
+Added EF_NoDiagonalCheckLOS = 00000001. Disables Diagonal Passage checks for legacy LOS. (Not advanced LOS)
+Added FACING function to objects which will give you the direction the object/npc would turn to if it looks towards SRC.
+Optionally FACING takes a location or uid as argument. This UID/location replaces SRC in that context.

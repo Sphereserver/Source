@@ -988,6 +988,46 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_EVENTS:
 			m_OEvents.WriteResourceRefList( sVal );
 			break;
+		case OC_FACING:
+			{
+				pszKey += 6;
+				SKIP_SEPARATORS(pszKey);
+				GETNONWHITESPACE(pszKey);
+
+				CObjBase *	pObj = pSrc->GetChar();
+
+				CObjBase	* pThis = this;
+				if (!IsTopLevel())
+					pThis = dynamic_cast <CObjBase*>(GetTopLevelObj());
+				if (!pThis)
+					return false;
+
+				if (*pszKey)
+				{
+					CPointMap	pt = g_Cfg.GetRegionPoint(pszKey);
+
+					if (pt.IsValidPoint())
+					{
+						if (!pThis->GetTopPoint().IsValidPoint())
+							return false;
+						else
+							sVal.FormatVal(pThis->GetTopPoint().GetDir(pt));
+						return true;
+					}
+
+					CGrayUID	uid = Exp_GetVal(pszKey);
+					SKIP_SEPARATORS(pszKey); GETNONWHITESPACE(pszKey);
+					pObj = uid.ObjFind();
+				}
+
+				if (!pObj)
+					return false;
+				if (!pObj->IsTopLevel())
+					pObj = dynamic_cast <CObjBase*>(pObj->GetTopLevelObj());
+
+				sVal.FormatVal(pThis->GetDir(pObj));
+				break;
+			}
 		case OC_ISCHAR:
 			sVal.FormatVal( IsChar());
 			break;

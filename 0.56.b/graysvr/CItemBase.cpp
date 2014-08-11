@@ -703,7 +703,7 @@ inline height_t CItemBase::GetItemHeightFlags( const CUOItemTypeRec2 & tiledata,
 
 	if ( tiledata.m_flags & UFLAG4_ROOF)
 	{
-		wBlockThis |= CAN_I_BLOCK;
+		wBlockThis |= CAN_I_ROOF;
 	}
 	else if ( tiledata.m_flags & UFLAG2_PLATFORM )
 	{
