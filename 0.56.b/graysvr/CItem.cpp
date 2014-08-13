@@ -79,7 +79,6 @@ CItem::CItem( ITEMID_TYPE id, CItemBase * pItemDef ) : CObjBase( true )
 	m_attackRange = pItemDef->m_attackRange;
 	m_defenseBase = pItemDef->m_defenseBase;
 	m_defenseRange = pItemDef->m_defenseRange;
-	m_weight = pItemDef->GetWeight();
 
 	SetBase( pItemDef );
 	SetDispID( id );
@@ -1913,6 +1912,7 @@ bool CItem::SetBase( CItemBase * pItemDef )
 	}
 
 	m_BaseRef.SetRef(pItemDef);
+	m_weight = pItemDef->GetWeight();
 
 	if (pParentCont)
 	{
@@ -3512,7 +3512,7 @@ void CItem::ConvertBolttoCloth()
 	}
 
 	SetID( ITEMID_CLOTH1 );
-	SetAmountUpdate( iOutAmount * GetAmount());
+	SetAmountUpdate(iOutAmount * GetAmount());
 }
 
 int CItem::ConsumeAmount( int iQty, bool fTest )
