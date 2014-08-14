@@ -747,7 +747,7 @@ P=5955,1352,0,0
 RECT=5889,1283,6037,1415,0
 RECT=6037,1298,6050,1325,0
 FLAGS=region_flag_nobuilding|region_flag_underground
-EVENTS=r_default,r_default_water,r_default_tree,r_default_grass,r_default_rock
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 ////////////////////////////////////////
 // Dungeons

@@ -454,6 +454,8 @@ DURATION=2*60.0,4*60.0
 MANAUSE=9
 SKILLREQ=MAGERY 30.0
 INTERRUPT=100.0,100.0
+ON=@Success
+   LOCAL.FieldWidth=3
 ON=@Effect
    LOCAL.DAMAGETYPE=(<DEF.dam_physical>|<DEF.dam_magic>)
 
@@ -473,7 +475,7 @@ DURATION=0.0
 MANAUSE=11
 SKILLREQ=MAGERY 40.0
 INTERRUPT=100.0,100.0
-ON=@Effect
+ON=@Success
    LOCAL.AREARADIUS=2
 
 [SPELL 26]
@@ -492,7 +494,7 @@ DURATION=30.0,1000.0
 MANAUSE=11
 SKILLREQ=MAGERY 40.0
 INTERRUPT=100.0,100.0
-ON=@Effect
+ON=@Success
    LOCAL.AREARADIUS=3
 
 [SPELL 27]
@@ -528,6 +530,8 @@ DURATION=2*60.0,4*60.0
 MANAUSE=11
 SKILLREQ=MAGERY 40.0
 INTERRUPT=100.0,100.0
+ON=@Success
+   LOCAL.FieldWidth=3
 ON=@Effect
    LOCAL.DAMAGETYPE=(<DEF.dam_fire>|<DEF.dam_magic>)
 
@@ -723,6 +727,8 @@ DURATION=2*60.0,4*60.0
 MANAUSE=14
 SKILLREQ=MAGERY 50.0
 INTERRUPT=100.0,100.0
+ON=@Success
+   LOCAL.FieldWidth=3
 ON=@Effect
    LOCAL.DAMAGETYPE=(<DEF.dam_poison>|<DEF.dam_magic>)
 
@@ -851,8 +857,8 @@ DURATION=0.0
 MANAUSE=20
 SKILLREQ=MAGERY 60.0
 INTERRUPT=100.0,100.0
-ON=@Effect
-   LOCAL.AREARADIUS=3
+ON=@Success
+   LOCAL.AREARADIUS=2
 
 [SPELL 47]
 DEFNAME=s_paralyzation_field
@@ -870,6 +876,8 @@ DURATION=2*60.0,3*60.0
 MANAUSE=20
 SKILLREQ=MAGERY 60.0
 INTERRUPT=100.0,100.0
+ON=@Success
+   LOCAL.FieldWidth=3
 ON=@Effect
    LOCAL.DAMAGETYPE=(<DEF.dam_general>|<DEF.dam_magic>)
 
@@ -889,8 +897,8 @@ DURATION=0.0
 MANAUSE=20
 SKILLREQ=MAGERY 60.0
 INTERRUPT=100.0,100.0
-ON=@Effect
-   LOCAL.AREARADIUS=5
+ON=@Success
+   LOCAL.AREARADIUS=<eval 1+(<MAGERY>/200)>
 
 [SPELL 49]
 DEFNAME=s_chain_lightning
@@ -908,9 +916,10 @@ DURATION=0.0
 MANAUSE=40
 SKILLREQ=MAGERY 70.0
 INTERRUPT=100.0,100.0
+ON=@Success
+   LOCAL.AREARADIUS=2
 ON=@Effect
    LOCAL.DAMAGETYPE=(<DEF.dam_energy>|<DEF.dam_magic>)
-   LOCAL.AREARADIUS=5
 
 [SPELL 50]
 DEFNAME=s_energy_field
@@ -928,6 +937,8 @@ DURATION=2*60.0,3*60.0
 MANAUSE=40
 SKILLREQ=MAGERY 70.0
 INTERRUPT=100.0,100.0
+ON=@Success
+   LOCAL.FieldWidth=3
 ON=@Effect
    LOCAL.DAMAGETYPE=(<DEF.dam_energy>|<DEF.dam_magic>)
 
@@ -1000,7 +1011,7 @@ DURATION=0.0
 MANAUSE=40
 SKILLREQ=MAGERY 70.0
 INTERRUPT=100.0,100.0
-ON=@Effect
+ON=@Success
    LOCAL.AREARADIUS=8
 
 [SPELL 55]
@@ -1019,9 +1030,10 @@ DURATION=0.0
 MANAUSE=40
 SKILLREQ=MAGERY 70.0
 INTERRUPT=100.0,100.0
+ON=@Success
+   LOCAL.AREARADIUS=2
 ON=@Effect
    LOCAL.DAMAGETYPE=(<DEF.dam_physical>|<DEF.dam_magic>)
-   LOCAL.AREARADIUS=5
 
 [SPELL 56]
 DEFNAME=s_polymorph
@@ -1058,12 +1070,10 @@ MANAUSE=50
 SKILLREQ=MAGERY 80.0
 // NOTE: does Earthquake use a duration?? IF so, no more then 30secs. This spell is more like an irradiating wave thus should have a set distance/time it can be effective
 INTERRUPT=100.0,100.0
+ON=@Success
+   LOCAL.AREARADIUS=<eval 1+(<MAGERY>/150)>
 ON=@Effect
    LOCAL.DAMAGETYPE=(<DEF.dam_physical>|<DEF.dam_magic>)
-ON=@Success
-   IF (<SRC.FLAGS> & statf_onhorse)
-      SRC.DISMOUNT
-   ENDIF
 
 [SPELL 58]
 DEFNAME=s_energy_vortex
