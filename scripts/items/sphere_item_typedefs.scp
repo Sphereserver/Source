@@ -1,4 +1,4 @@
-//****************************************************************************
+﻿//****************************************************************************
 // SPHERE by : Menasoft ©1997-2007
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
@@ -10,6 +10,16 @@
 // FILE LAST UPDATED: Thursday, October 24, 2013
 //
 VERSION=0.56c
+
+
+[TYPEDEF t_shrine]
+ON=@ContextMenuRequest
+SRC.AddContextEntry 101,3006195,<QVAL (<SRC.FLAGS> & statf_dead)? 0:1>	//Resurrect
+
+ON=@ContextMenuSelect
+IF (<ARGN>==101) && (<SRC.FLAGS> & statf_dead)
+ SRC.RESURRECT
+ENDIF
 
 
 [TYPEDEF t_landmine]
