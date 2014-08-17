@@ -1195,3 +1195,9 @@ Fixed: Paperdoll not updating body color when using invis spell
 Added EF_NoDiagonalCheckLOS = 00000001. Disables Diagonal Passage checks for legacy LOS. (Not advanced LOS)
 Added FACING function to objects which will give you the direction the object/npc would turn to if it looks towards SRC.
 Optionally FACING takes a location or uid as argument. This UID/location replaces SRC in that context.
+
+016-08-2014, Ben
+Fixed #2386: Ghosts can't pass through doors anymore
+Fixed #2385: No swing animation during combat, @HitTry doesn't fire.
+Fixed #2387: Hunger/starving causing wrong damage.
+Fixed #2380: Field spells creating items on incorrect Z. (Caused by the Fix funtion. Fix should now work better in all places)

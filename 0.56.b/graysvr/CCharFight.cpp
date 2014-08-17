@@ -2235,398 +2235,400 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	CItem * pActWeapon = pSrc->m_uidWeapon.ItemFind(); 
 	CCharBase * pCharDef = Char_GetDef();
 
-	if ( uType == DAMAGE_FIXED )
-		goto trigger_gethit;
-
-	if  ( IsSetCombatFlags(COMBAT_SPECIALDAMAGE) && (uType & (DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_MAGIC)) )
+	if (!(uType & DAMAGE_FIXED))
 	{
-		// special damage can be applied with physical and magical weapons
-		CVarDefCont * pValue = pSrc->GetKey("COLDDAMAGE",true);
-		if ( pValue ) 
+		if  ( IsSetCombatFlags(COMBAT_SPECIALDAMAGE) && (uType & (DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_MAGIC)) )
 		{
-			i_coldDamage = static_cast<short>(pValue->GetValNum());
-			uType |= DAMAGE_COLD;
-		}
-		pValue = pSrc->GetKey("ENERGYDAMAGE",true);
-		if ( pValue ) 
-		{
-			i_energyDamage = static_cast<short>(pValue->GetValNum());
-			uType |= DAMAGE_ENERGY;
-		}
-		pValue = pSrc->GetKey("FIREDAMAGE",true);
-		if ( pValue ) 
-		{
-			i_fireDamage = static_cast<short>(pValue->GetValNum());
-			uType |= DAMAGE_FIRE;
-		}
-		pValue = pSrc->GetKey("POISONDAMAGE",true);
-		if ( pValue ) 
-		{
-			i_poisonDamage = static_cast<short>(pValue->GetValNum());
-			uType |= DAMAGE_POISON;
-		}
-	} 
-	else if ( IsSetCombatFlags(COMBAT_USE_RESISTANCE) )
-	{
-		if ( uType & DAMAGE_HIT_BLUNT )
-			i_tDamCount += 1;
-		if ( uType & DAMAGE_HIT_PIERCE )
-			i_tDamCount += 1;
-		if ( uType & DAMAGE_HIT_SLASH )
-			i_tDamCount += 1;
-		if ( uType & DAMAGE_POISON )
-		{
-			i_tDamCount += 1;
-			i_tDamPois +=1;
-		}
-		if ( uType & DAMAGE_ELECTRIC )
-		{
-			i_tDamCount += 1;
-			i_tDamElec +=1;
-		}
-		if ( uType & DAMAGE_COLD )
-		{ 
-			i_tDamCount += 1;
-			i_tDamCold +=1;
-		}
-		if ( uType & DAMAGE_FIRE )
-		{
-			i_tDamCount += 1;
-			i_tDamFire +=1;
-		}
-		if ( uType & ~(DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ELECTRIC | DAMAGE_COLD | DAMAGE_FIRE) )
-			i_tDamCount += 1;
-		
-		i_tDamPois *= iDmg / i_tDamCount; 
-		i_tDamElec *= iDmg / i_tDamCount; 
-		i_tDamCold *= iDmg / i_tDamCount; 
-		i_tDamFire *= iDmg / i_tDamCount;
-
-		if ( (i_tDamPois + i_tDamElec + i_tDamCold + i_tDamFire) < iDmg )
-		{
-			iDmg -= (i_tDamPois + i_tDamElec + i_tDamCold + i_tDamFire);
+			// special damage can be applied with physical and magical weapons
+			CVarDefCont * pValue = pSrc->GetKey("COLDDAMAGE",true);
+			if ( pValue ) 
+			{
+				i_coldDamage = static_cast<short>(pValue->GetValNum());
+				uType |= DAMAGE_COLD;
+			}
+			pValue = pSrc->GetKey("ENERGYDAMAGE",true);
+			if ( pValue ) 
+			{
+				i_energyDamage = static_cast<short>(pValue->GetValNum());
+				uType |= DAMAGE_ENERGY;
+			}
+			pValue = pSrc->GetKey("FIREDAMAGE",true);
+			if ( pValue ) 
+			{
+				i_fireDamage = static_cast<short>(pValue->GetValNum());
+				uType |= DAMAGE_FIRE;
+			}
+			pValue = pSrc->GetKey("POISONDAMAGE",true);
+			if ( pValue ) 
+			{
+				i_poisonDamage = static_cast<short>(pValue->GetValNum());
+				uType |= DAMAGE_POISON;
+			}
 		} 
-		else 
+		else if ( IsSetCombatFlags(COMBAT_USE_RESISTANCE) )
 		{
-			iDmg = 0;
-		}
-
-		i_poisonDamage += i_tDamPois;
-		i_energyDamage += i_tDamElec;
-		i_coldDamage += i_tDamCold;
-		i_fireDamage += i_tDamFire;
-	}
-
-	i_poisonDamage -= static_cast<short>(i_poisonDamage * GetDefNum("RESPOISON", true)) / 100;
-	i_energyDamage -= static_cast<short>(i_energyDamage * GetDefNum("RESENERGY", true)) / 100;
-	i_coldDamage -= static_cast<short>(i_coldDamage * GetDefNum("RESCOLD", true)) / 100;
-	i_fireDamage -= static_cast<short>(i_fireDamage * GetDefNum("RESFIRE", true)) / 100;
-
-	if ( (iDmg < 0) && 
-		 (i_coldDamage < 0) &&
-		 (i_energyDamage < 0) &&
-		 (i_fireDamage < 0) &&
-		 (i_poisonDamage < 0) )	
-	{
-		//DEBUG_ERR(("resulting Damage == %d, aborting!\n",iDmg));
-		return( 0 );
-	}
-
-#ifdef _ALPHASPHERE
-	CVarDefCont * pRes = 0;
-	int nRes = 0;
+			if ( uType & DAMAGE_HIT_BLUNT )
+				i_tDamCount += 1;
+			if ( uType & DAMAGE_HIT_PIERCE )
+				i_tDamCount += 1;
+			if ( uType & DAMAGE_HIT_SLASH )
+				i_tDamCount += 1;
+			if ( uType & DAMAGE_POISON )
+			{
+				i_tDamCount += 1;
+				i_tDamPois +=1;
+			}
+			if ( uType & DAMAGE_ELECTRIC )
+			{
+				i_tDamCount += 1;
+				i_tDamElec +=1;
+			}
+			if ( uType & DAMAGE_COLD )
+			{ 
+				i_tDamCount += 1;
+				i_tDamCold +=1;
+			}
+			if ( uType & DAMAGE_FIRE )
+			{
+				i_tDamCount += 1;
+				i_tDamFire +=1;
+			}
+			if ( uType & ~(DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ELECTRIC | DAMAGE_COLD | DAMAGE_FIRE) )
+				i_tDamCount += 1;
 		
-	if ( uType & DAMAGE_HIT_BLUNT )
-	{
-		if ( uType & DAMAGE_HIT_SLASH )
-		{
-			// check for TAG.PHYSRES.SLASH
-			pRes = GetKey("PHYSRES.SLASH",true);
-			if ( pRes ) 
+			i_tDamPois *= iDmg / i_tDamCount; 
+			i_tDamElec *= iDmg / i_tDamCount; 
+			i_tDamCold *= iDmg / i_tDamCount; 
+			i_tDamFire *= iDmg / i_tDamCount;
+
+			if ( (i_tDamPois + i_tDamElec + i_tDamCold + i_tDamFire) < iDmg )
 			{
-				nRes = pRes->GetValNum();
-				if ( (nRes < -100) || (nRes > 100))
-					nRes = 0;
-				iDmg += (iDmg * (100 - nRes)) / 100;
+				iDmg -= (i_tDamPois + i_tDamElec + i_tDamCold + i_tDamFire);
+			} 
+			else 
+			{
+				iDmg = 0;
 			}
-		} else if ( uType & DAMAGE_HIT_PIERCE )
+
+			i_poisonDamage += i_tDamPois;
+			i_energyDamage += i_tDamElec;
+			i_coldDamage += i_tDamCold;
+			i_fireDamage += i_tDamFire;
+		}
+
+		i_poisonDamage -= static_cast<short>(i_poisonDamage * GetDefNum("RESPOISON", true)) / 100;
+		i_energyDamage -= static_cast<short>(i_energyDamage * GetDefNum("RESENERGY", true)) / 100;
+		i_coldDamage -= static_cast<short>(i_coldDamage * GetDefNum("RESCOLD", true)) / 100;
+		i_fireDamage -= static_cast<short>(i_fireDamage * GetDefNum("RESFIRE", true)) / 100;
+
+		if ( (iDmg < 0) && 
+			 (i_coldDamage < 0) &&
+			 (i_energyDamage < 0) &&
+			 (i_fireDamage < 0) &&
+			 (i_poisonDamage < 0) )	
 		{
-			// check for TAG.PHYSRES.PIERCE
-			pRes = GetKey("PHYSRES.PIERCE",true);
-			if ( pRes ) 
+			//DEBUG_ERR(("resulting Damage == %d, aborting!\n",iDmg));
+			return( 0 );
+		}
+
+	#ifdef _ALPHASPHERE
+		CVarDefCont * pRes = 0;
+		int nRes = 0;
+		
+		if ( uType & DAMAGE_HIT_BLUNT )
+		{
+			if ( uType & DAMAGE_HIT_SLASH )
 			{
-				nRes = pRes->GetValNum();
-				if ( (nRes < -100) || (nRes > 100))
-					nRes = 0;
-				iDmg += (iDmg * (100 - nRes)) / 100;
-			}
-		} else {
-			// check for TAG.PHYSRES.BLUNT
-			pRes = GetKey("PHYSRES.BLUNT",true);
-			if ( pRes ) 
+				// check for TAG.PHYSRES.SLASH
+				pRes = GetKey("PHYSRES.SLASH",true);
+				if ( pRes ) 
+				{
+					nRes = pRes->GetValNum();
+					if ( (nRes < -100) || (nRes > 100))
+						nRes = 0;
+					iDmg += (iDmg * (100 - nRes)) / 100;
+				}
+			} else if ( uType & DAMAGE_HIT_PIERCE )
 			{
-				nRes = pRes->GetValNum();
-				if ( (nRes < -100) || (nRes > 100))
-					nRes = 0;
-				iDmg += (iDmg * (100 - nRes)) / 100;
+				// check for TAG.PHYSRES.PIERCE
+				pRes = GetKey("PHYSRES.PIERCE",true);
+				if ( pRes ) 
+				{
+					nRes = pRes->GetValNum();
+					if ( (nRes < -100) || (nRes > 100))
+						nRes = 0;
+					iDmg += (iDmg * (100 - nRes)) / 100;
+				}
+			} else {
+				// check for TAG.PHYSRES.BLUNT
+				pRes = GetKey("PHYSRES.BLUNT",true);
+				if ( pRes ) 
+				{
+					nRes = pRes->GetValNum();
+					if ( (nRes < -100) || (nRes > 100))
+						nRes = 0;
+					iDmg += (iDmg * (100 - nRes)) / 100;
+				}
 			}
 		}
-	}
-#endif
+	#endif
 
 
-	//CItem * pActWeapon = pSrc->m_uidWeapon.ItemFind(); 
-	if ( (pActWeapon) && IsSetCombatFlags(COMBAT_OSIDAMAGEMOD) && (uType & (DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH)) )
-	{
-		int damMod = 0;
-		int damModTemp = 0;
-		//Lumberjack Bonus
-		if ( pActWeapon->IsType(IT_WEAPON_AXE) || pActWeapon->IsType(IT_WEAPON_SWORD) )
+		//CItem * pActWeapon = pSrc->m_uidWeapon.ItemFind(); 
+		if ( (pActWeapon) && IsSetCombatFlags(COMBAT_OSIDAMAGEMOD) && (uType & (DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH)) )
 		{
-			damModTemp = pSrc->Skill_GetBase(SKILL_LUMBERJACKING) / 50;
-			if (pSrc->Skill_GetBase(SKILL_LUMBERJACKING) >= 1000)
-				damModTemp += 10;
+			int damMod = 0;
+			int damModTemp = 0;
+			//Lumberjack Bonus
+			if ( pActWeapon->IsType(IT_WEAPON_AXE) || pActWeapon->IsType(IT_WEAPON_SWORD) )
+			{
+				damModTemp = pSrc->Skill_GetBase(SKILL_LUMBERJACKING) / 50;
+				if (pSrc->Skill_GetBase(SKILL_LUMBERJACKING) >= 1000)
+					damModTemp += 10;
+			}
+			damMod += damModTemp;
+
+			//Tactics Bonus
+			damModTemp = pSrc->Skill_GetBase(SKILL_TACTICS) / 16;
+			if (pSrc->Skill_GetBase(SKILL_TACTICS) >= 1000)
+				damModTemp += 6;
+			damMod += damModTemp;
+
+			//Anatomy Bonus
+			damModTemp = pSrc->Skill_GetBase(SKILL_ANATOMY) / 20;
+			if (pSrc->Skill_GetBase(SKILL_ANATOMY) >= 1000)
+				damModTemp += 5;
+			damMod += damModTemp;
+
+			//Strenght Bonus
+			damModTemp = pSrc->Stat_GetAdjusted(STAT_STR) / 3;
+			if (pSrc->Stat_GetAdjusted(STAT_STR) >= 100)
+				damModTemp += 5;
+			damMod += damModTemp;
+
+			//No cap for OSI...   100% cap on Damage Increase Items only
+			//if ( damMod > 100)
+			//	damMod=100;
+			iDmg += iDmg * (damMod / 100);
 		}
-		damMod += damModTemp;
 
-		//Tactics Bonus
-		damModTemp = pSrc->Skill_GetBase(SKILL_TACTICS) / 16;
-		if (pSrc->Skill_GetBase(SKILL_TACTICS) >= 1000)
-			damModTemp += 6;
-		damMod += damModTemp;
-
-		//Anatomy Bonus
-		damModTemp = pSrc->Skill_GetBase(SKILL_ANATOMY) / 20;
-		if (pSrc->Skill_GetBase(SKILL_ANATOMY) >= 1000)
-			damModTemp += 5;
-		damMod += damModTemp;
-
-		//Strenght Bonus
-		damModTemp = pSrc->Stat_GetAdjusted(STAT_STR) / 3;
-		if (pSrc->Stat_GetAdjusted(STAT_STR) >= 100)
-			damModTemp += 5;
-		damMod += damModTemp;
-
-		//No cap for OSI...   100% cap on Damage Increase Items only
-		//if ( damMod > 100)
-		//	damMod=100;
-		iDmg += iDmg * (damMod / 100);
+		i_damTemp = iDmg + i_coldDamage + i_energyDamage + i_fireDamage + i_poisonDamage;
+		u_damFlag = uType;
 	}
-
-	i_damTemp = iDmg + i_coldDamage + i_energyDamage + i_fireDamage + i_poisonDamage;
-	u_damFlag = uType;
-
-	iDmg = i_damTemp;
+	else
+	{
+		i_damTemp = iDmg;
+		u_damFlag = uType;
+	}
 
 	if ( IsTrigUsed(TRIGGER_GETHIT) )
 	{
-		trigger_gethit:
 		CScriptTriggerArgs Args( i_damTemp, u_damFlag, static_cast<INT64>(0) );
 		if ( OnTrigger( CTRIG_GetHit, pSrc, &Args ) == TRIGRET_RET_TRUE )
 			return( 0 );
-		iDmg	= static_cast<int>(Args.m_iN1);
-		uType	= static_cast<DAMAGE_TYPE>(Args.m_iN2);
-		if ( uType & DAMAGE_FIXED)
-			goto finish_damage;
-	}
-	if ( IsSetCombatFlags(COMBAT_USE_RESISTANCE) )
-	{
-		i_tDamCount = 1;
- 		i_tDamPois = 0;
-		i_tDamElec = 0;
-		i_tDamCold = 0;
-		i_tDamFire = 0;
-
-		if ( uType & (DAMAGE_HIT_BLUNT|DAMAGE_HIT_PIERCE|DAMAGE_HIT_SLASH) )
-			i_tDamCount += 1;
-		if ( uType & DAMAGE_POISON )
-		{
-			i_tDamCount += 1;
-			i_tDamPois +=1;
-		}
-		if ( uType & DAMAGE_ELECTRIC )
-		{
-			i_tDamCount += 1;
-			i_tDamElec +=1;
-		}
-		if ( uType & DAMAGE_COLD )
-		{
-			i_tDamCount += 1;
-			i_tDamCold +=1;
-		}
-		if ( uType & DAMAGE_FIRE )
-		{
-			i_tDamCount += 1;
-			i_tDamFire +=1;
-		}
-		if ( uType & ~(DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ELECTRIC | DAMAGE_COLD | DAMAGE_FIRE) )
-		{
-			i_tDamCount += 1;
-		}
-	
-		i_tDamPois *= iDmg / i_tDamCount; 
-		i_tDamElec *= iDmg / i_tDamCount; 
-		i_tDamCold *= iDmg / i_tDamCount; 
-		i_tDamFire *= iDmg / i_tDamCount;
-
-		if ( (i_tDamPois + i_tDamElec + i_tDamCold + i_tDamFire) < iDmg )
-		{
-			iDmg -= (i_tDamPois + i_tDamElec + i_tDamCold + i_tDamFire);
-		} 
-		else 
-		{
-			iDmg = 0;
-		}
-
-		i_poisonDamage = i_tDamPois;
-		i_energyDamage = i_tDamElec;
-		i_coldDamage = i_tDamCold;
-		i_fireDamage = i_tDamFire;
+		iDmg = static_cast<int>(Args.m_iN1);
+		uType = static_cast<DAMAGE_TYPE>(Args.m_iN2);
 	}
 
-	i_poisonDamage -= static_cast<short>(i_poisonDamage * GetDefNum("RESPOISON", true)) / 100;
-	i_energyDamage -= static_cast<short>(i_energyDamage * GetDefNum("RESENERGY", true)) / 100;
-	i_coldDamage -= static_cast<short>(i_coldDamage * GetDefNum("RESCOLD", true)) / 100;
-	i_fireDamage -= static_cast<short>(i_fireDamage * GetDefNum("RESFIRE", true)) / 100;
-
-	if ( (iDmg < 0) && 
-		 (i_coldDamage < 0) &&
-		 (i_energyDamage < 0) &&
-		 (i_fireDamage < 0) &&
-		 (i_poisonDamage < 0) )	
+	if (!(uType & DAMAGE_FIXED))
 	{
-		//DEBUG_ERR(("resulting Damage == %d, aborting!\n",iDmg));
-		return( 0 );
-	}
-	
-
-	if (( uType & ( DAMAGE_ELECTRIC | DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_FIRE | DAMAGE_MAGIC )) && (!( uType & DAMAGE_NOUNPARALYZE )))
-	{
-		if (LayerFind( LAYER_FLAG_Stuck ))
-			LayerFind( LAYER_FLAG_Stuck )->Delete();
-		StatFlag_Clear( STATF_Freeze );	// remove paralyze.
-	}
-
-	//CCharBase * pCharDef = Char_GetDef();
-	ASSERT(pCharDef);
-
-	if ( uType & ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH ))
-	{
-		// A physical blow of some sort.
-		// Try to allow the armor or shield to take some damage.
-		Reveal();
-
-		// Check for reactive armor.
-		if ( IsStatFlag(STATF_Reactive) && ! ( uType & DAMAGE_GOD ) )
+		if ( IsSetCombatFlags(COMBAT_USE_RESISTANCE) )
 		{
-			// reflect some damage back.
-			if ( !pSrc || pSrc == this ) ;
-			else if ( pSrc->m_pNPC && ( pSrc->m_pNPC->m_Brain == NPCBRAIN_GUARD )) ; // guards should not react by reactive armor
-			else if ( GetTopDist3D(pSrc) <= 2 )
+			i_tDamCount = 1;
+ 			i_tDamPois = 0;
+			i_tDamElec = 0;
+			i_tDamCold = 0;
+			i_tDamFire = 0;
+
+			if ( uType & (DAMAGE_HIT_BLUNT|DAMAGE_HIT_PIERCE|DAMAGE_HIT_SLASH) )
+				i_tDamCount += 1;
+			if ( uType & DAMAGE_POISON )
 			{
-				// Spell strength is NOT the same as MAGERY !!!???
-				int iSkillVal = Skill_GetAdjusted(SKILL_MAGERY);
-				int iEffect = g_Cfg.GetSpellEffect( SPELL_Reactive_Armor, iSkillVal );
-				int iRefDam = Calc_GetRandVal( IMULDIV( iDmg, iEffect, 1000 ));
-
-				// make sure the reflected damage is between 0 and iDmg-1 or else
-				// 2 reactive armour users could get caught in an infinite loop of
-				// reflecting damage
-				//iRefDam = maximum( minimum( iRefDam, iDmg - 1 ), 0 );
-				iRefDam = medium(0, iRefDam, iDmg - 1);
-
-				if ( iRefDam > 0 )
-				{
-					iDmg -= iRefDam;
-					pSrc->OnTakeDamage( iRefDam, this, uType );
-					pSrc->Effect( EFFECT_OBJ, ITEMID_FX_CURSE_EFFECT, this, 9, 6 );
-				}
+				i_tDamCount += 1;
+				i_tDamPois +=1;
 			}
+			if ( uType & DAMAGE_ELECTRIC )
+			{
+				i_tDamCount += 1;
+				i_tDamElec +=1;
+			}
+			if ( uType & DAMAGE_COLD )
+			{
+				i_tDamCount += 1;
+				i_tDamCold +=1;
+			}
+			if ( uType & DAMAGE_FIRE )
+			{
+				i_tDamCount += 1;
+				i_tDamFire +=1;
+			}
+			if ( uType & ~(DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ELECTRIC | DAMAGE_COLD | DAMAGE_FIRE) )
+			{
+				i_tDamCount += 1;
+			}
+	
+			i_tDamPois *= iDmg / i_tDamCount; 
+			i_tDamElec *= iDmg / i_tDamCount; 
+			i_tDamCold *= iDmg / i_tDamCount; 
+			i_tDamFire *= iDmg / i_tDamCount;
+
+			if ( (i_tDamPois + i_tDamElec + i_tDamCold + i_tDamFire) < iDmg )
+			{
+				iDmg -= (i_tDamPois + i_tDamElec + i_tDamCold + i_tDamFire);
+			} 
+			else 
+			{
+				iDmg = 0;
+			}
+
+			i_poisonDamage = i_tDamPois;
+			i_energyDamage = i_tDamElec;
+			i_coldDamage = i_tDamCold;
+			i_fireDamage = i_tDamFire;
 		}
 
-		// Armour calculations
-	    if ( ! ( uType & DAMAGE_GOD) )
-		{
-			if ( ! ( uType & DAMAGE_GENERAL ))
-			{
-				// Armour calculation for normal damage (a specific part of the body/armour is hit and damaged)
-				int iDef = Calc_GetRandVal( maximum(pCharDef->m_defense + m_ModAr, 0) );
-				iDmg = OnTakeDamageHitPoint( iDmg, pSrc, uType );
+		i_poisonDamage -= static_cast<short>(i_poisonDamage * GetDefNum("RESPOISON", true)) / 100;
+		i_energyDamage -= static_cast<short>(i_energyDamage * GetDefNum("RESENERGY", true)) / 100;
+		i_coldDamage -= static_cast<short>(i_coldDamage * GetDefNum("RESCOLD", true)) / 100;
+		i_fireDamage -= static_cast<short>(i_fireDamage * GetDefNum("RESFIRE", true)) / 100;
 
-				if ( uType & DAMAGE_MAGIC )
+		if ( (iDmg < 0) && 
+			 (i_coldDamage < 0) &&
+			 (i_energyDamage < 0) &&
+			 (i_fireDamage < 0) &&
+			 (i_poisonDamage < 0) )	
+		{
+			//DEBUG_ERR(("resulting Damage == %d, aborting!\n",iDmg));
+			return( 0 );
+		}
+	
+
+		if (( uType & ( DAMAGE_ELECTRIC | DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_FIRE | DAMAGE_MAGIC )) && (!( uType & DAMAGE_NOUNPARALYZE )))
+		{
+			if (LayerFind( LAYER_FLAG_Stuck ))
+				LayerFind( LAYER_FLAG_Stuck )->Delete();
+			StatFlag_Clear( STATF_Freeze );	// remove paralyze.
+		}
+
+		//CCharBase * pCharDef = Char_GetDef();
+		ASSERT(pCharDef);
+
+		if ( uType & ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH ))
+		{
+			// A physical blow of some sort.
+			// Try to allow the armor or shield to take some damage.
+			Reveal();
+
+			// Check for reactive armor.
+			if ( IsStatFlag(STATF_Reactive) && ! ( uType & DAMAGE_GOD ) )
+			{
+				// reflect some damage back.
+				if ( !pSrc || pSrc == this ) ;
+				else if ( pSrc->m_pNPC && ( pSrc->m_pNPC->m_Brain == NPCBRAIN_GUARD )) ; // guards should not react by reactive armor
+				else if ( GetTopDist3D(pSrc) <= 2 )
 				{
-					// Magical damage halves effectiveness of defense (or bypasses it with MAGICF_IGNOREAR)
-					if ( IsSetMagicFlags( MAGICF_IGNOREAR ) )
+					// Spell strength is NOT the same as MAGERY !!!???
+					int iSkillVal = Skill_GetAdjusted(SKILL_MAGERY);
+					int iEffect = g_Cfg.GetSpellEffect( SPELL_Reactive_Armor, iSkillVal );
+					int iRefDam = Calc_GetRandVal( IMULDIV( iDmg, iEffect, 1000 ));
+
+					// make sure the reflected damage is between 0 and iDmg-1 or else
+					// 2 reactive armour users could get caught in an infinite loop of
+					// reflecting damage
+					//iRefDam = maximum( minimum( iRefDam, iDmg - 1 ), 0 );
+					iRefDam = medium(0, iRefDam, iDmg - 1);
+
+					if ( iRefDam > 0 )
 					{
-						iDef = 0;
-					} 
-					else 
-					{
-						iDef /= 2;
+						iDmg -= iRefDam;
+						pSrc->OnTakeDamage( iRefDam, this, uType );
+						pSrc->Effect( EFFECT_OBJ, ITEMID_FX_CURSE_EFFECT, this, 9, 6 );
 					}
 				}
-
-				iDmg -= iDef;
 			}
-			else
+
+			// Armour calculations
+			if ( ! ( uType & DAMAGE_GOD) )
 			{
-				// Armour calculation for general damage (not hitting a specific body part or armour piece)
-				// MAGICF_IGNOREAR bypasses defense completely
-				if ( !IsSetMagicFlags( MAGICF_IGNOREAR ) || !(uType & DAMAGE_MAGIC) )
+				if ( ! ( uType & DAMAGE_GENERAL ))
 				{
-					iDmg -= Calc_GetRandVal( m_defense + pCharDef->m_defense );
-					// ??? take some random damage to my equipped items.
+					// Armour calculation for normal damage (a specific part of the body/armour is hit and damaged)
+					int iDef = Calc_GetRandVal( maximum(pCharDef->m_defense + m_ModAr, 0) );
+					iDmg = OnTakeDamageHitPoint( iDmg, pSrc, uType );
+
+					if ( uType & DAMAGE_MAGIC )
+					{
+						// Magical damage halves effectiveness of defense (or bypasses it with MAGICF_IGNOREAR)
+						if ( IsSetMagicFlags( MAGICF_IGNOREAR ) )
+						{
+							iDef = 0;
+						} 
+						else 
+						{
+							iDef /= 2;
+						}
+					}
+
+					iDmg -= iDef;
+				}
+				else
+				{
+					// Armour calculation for general damage (not hitting a specific body part or armour piece)
+					// MAGICF_IGNOREAR bypasses defense completely
+					if ( !IsSetMagicFlags( MAGICF_IGNOREAR ) || !(uType & DAMAGE_MAGIC) )
+					{
+						iDmg -= Calc_GetRandVal( m_defense + pCharDef->m_defense );
+						// ??? take some random damage to my equipped items.
+					}
 				}
 			}
 		}
-	}
 
 
-	if ( IsStatFlag( STATF_INVUL ))
-	{
-effect_bounce:
-		if ( iDmg )
+		if ( IsStatFlag( STATF_INVUL ))
 		{
-			Effect( EFFECT_OBJ, ITEMID_FX_GLOW, this, 9, 30, false );
+	effect_bounce:
+			if ( iDmg )
+			{
+				Effect( EFFECT_OBJ, ITEMID_FX_GLOW, this, 9, 30, false );
+			}
+			iDmg = 0;
 		}
-		iDmg = 0;
-	}
-	else if ( ! ( uType & DAMAGE_GOD ))
-	{
-		if ( m_pArea )
+		else if ( ! ( uType & DAMAGE_GOD ))
 		{
-			if ( m_pArea->IsFlag(REGION_FLAG_SAFE))
+			if ( m_pArea )
+			{
+				if ( m_pArea->IsFlag(REGION_FLAG_SAFE))
+					goto effect_bounce;
+				if ( m_pArea->IsFlag(REGION_FLAG_NO_PVP) && pSrc && (( IsStatFlag(STATF_Pet) &&  NPC_PetGetOwner() == pSrc) || (m_pPlayer && ( pSrc->m_pPlayer || pSrc->IsStatFlag(STATF_Pet)) ) ))
+					goto effect_bounce;
+			}
+			if ( IsStatFlag(STATF_Stone))	// can't hurt us anyhow.
+			{
 				goto effect_bounce;
-			if ( m_pArea->IsFlag(REGION_FLAG_NO_PVP) && pSrc && (( IsStatFlag(STATF_Pet) &&  NPC_PetGetOwner() == pSrc) || (m_pPlayer && ( pSrc->m_pPlayer || pSrc->IsStatFlag(STATF_Pet)) ) ))
-				goto effect_bounce;
+			}
 		}
-		if ( IsStatFlag(STATF_Stone))	// can't hurt us anyhow.
+
+		if ( Stat_GetVal(STAT_STR) <= 0 || IsStatFlag(STATF_DEAD) )	// Already dead.
+			return( -1 );
+
+		if ( uType & DAMAGE_FIRE )
 		{
-			goto effect_bounce;
+			if ( pCharDef->Can(CAN_C_FIRE_IMMUNE)) // immune to the fire part.
+			{
+				// If there is any other sort of damage then dish it out as well.
+				if ( ! ( uType & ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ELECTRIC | DAMAGE_COLD)))
+					return( 0 );	// No effect.
+				iDmg /= 2;
+			}
 		}
+
+		iDmg += i_coldDamage + i_energyDamage + i_fireDamage + i_poisonDamage;
 	}
-
-	if ( Stat_GetVal(STAT_STR) <= 0 || IsStatFlag(STATF_DEAD) )	// Already dead.
-		return( -1 );
-
-	if ( uType & DAMAGE_FIRE )
-	{
-		if ( pCharDef->Can(CAN_C_FIRE_IMMUNE)) // immune to the fire part.
-		{
-			// If there is any other sort of damage then dish it out as well.
-			if ( ! ( uType & ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ELECTRIC | DAMAGE_COLD)))
-				return( 0 );	// No effect.
-			iDmg /= 2;
-		}
-	}
-
-	iDmg += i_coldDamage + i_energyDamage + i_fireDamage + i_poisonDamage;
 
 	// defend myself. (even though it may not have hurt me.)
 	// Don't reveal attacker if the damage has DAMAGE_NOREVEAL flag set
 	// This is set by default for poison and spell damage.
-	
-	finish_damage:
 
 	if ( ! OnAttackedBy( pSrc, iDmg, false, !(uType & DAMAGE_NOREVEAL) ))
 		return( 0 );
@@ -3894,11 +3896,11 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	//  WAR_SWING_SWINGING = taking my swing now.
 	
 	int iTyp = DAMAGE_HIT_BLUNT;
-	CScriptTriggerArgs pArgs;
-	pArgs.m_iN1 = m_atFight.m_War_Swing_State;
-	pArgs.m_iN2 = iTyp;
 	if ( IsTrigUsed ( TRIGGER_HITCHECK ))
 	{
+		CScriptTriggerArgs pArgs;
+		pArgs.m_iN1 = m_atFight.m_War_Swing_State;
+		pArgs.m_iN2 = iTyp;
 		TRIGRET_TYPE tRet;
 		tRet = OnTrigger( CTRIG_HitCheck, pCharTarg, &pArgs);
 		if ( tRet == TRIGRET_RET_TRUE )
@@ -3906,9 +3908,9 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		else if ( tRet == -1 )
 			return WAR_SWING_INVALID;
 		m_atFight.m_War_Swing_State = (WAR_SWING_TYPE)pArgs.m_iN1;
-		iTyp = (int)pArgs.m_iN2;
+		iTyp = static_cast<int>(pArgs.m_iN2);
 
-		if (( m_atFight.m_War_Swing_State = WAR_SWING_SWINGING) && ( iTyp & DAMAGE_FIXED ) )
+		if (( m_atFight.m_War_Swing_State == WAR_SWING_SWINGING) && ( iTyp & DAMAGE_FIXED ) )
 		{
 			if (tRet == 2)
 				return WAR_SWING_EQUIPPING;

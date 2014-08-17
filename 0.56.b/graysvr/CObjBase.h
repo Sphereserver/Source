@@ -3195,11 +3195,12 @@ public:
 		// What things block us ?
 		if ( IsPriv(PRIV_GM|PRIV_ALLMOVE))	// nothing blocks us.
 			return( 0xFFFF );
-		//CCharBase * pCharDef = Char_GetDef();
-		//ASSERT(pCharDef);
 		
-		//DWORD dwCan = pCharDef->m_Can;
 		DWORD dwCan = m_Can;
+		CCharBase * pCharDef = Char_GetDef();
+		if ((pCharDef) && (pCharDef->Can(CAN_C_GHOST)))
+			dwCan |= CAN_C_GHOST;
+
 		if ( IsStatFlag(STATF_Hovering) )
 			dwCan |= CAN_C_HOVER;
 

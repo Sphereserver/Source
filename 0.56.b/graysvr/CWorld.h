@@ -440,6 +440,8 @@ public:
 	void GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, bool fHouseCheck = false );
 	signed char GetHeightPoint( const CPointBase & pt, DWORD & wBlockFlags, bool fHouseCheck = false );
 
+	void GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block);
+
 	CItemTypeDef *	GetTerrainItemTypeDef( DWORD dwIndex );
 	IT_TYPE			GetTerrainItemType( DWORD dwIndex );
 

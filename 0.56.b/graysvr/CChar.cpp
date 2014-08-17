@@ -501,13 +501,13 @@ void CChar::FixZ( unsigned long wBlockFlags)
 		wBlockFlags |= CAN_I_CLIMB; // If we can walk than we can climb. Ignore CAN_C_FLY at all here
 
 	CGrayMapBlockState block( wBlockFlags, GetTopPoint().m_z, GetTopPoint().m_z + m_zClimbHeight + GetHeightMount( false ), GetTopPoint().m_z + m_zClimbHeight + 2, GetHeightMount( false ) );
-	g_World.GetHeightPoint2( GetTopPoint(), block, true );
+	g_World.GetFixPoint( GetTopPoint(), block );
 
 	wBlockFlags = block.m_Bottom.m_dwBlockFlags;
 	if ( block.m_Top.m_dwBlockFlags )
 	{
 		wBlockFlags |= CAN_I_ROOF;	// we are covered by something.
-		if ( block.m_Top.m_z < GetTopPoint().m_z - (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? GetHeightMount( false ) : GetHeightMount( false )/2 )) )
+		if ( block.m_Top.m_z < GetTopPoint().m_z + (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? GetHeightMount( false ) : GetHeightMount( false )/2 )) )
 			wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
 	}
 	if (( dwCan != 0xFFFF ) && ( wBlockFlags != 0x0 ))
