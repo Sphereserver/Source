@@ -1201,3 +1201,10 @@ Fixed #2386: Ghosts can't pass through doors anymore
 Fixed #2385: No swing animation during combat, @HitTry doesn't fire.
 Fixed #2387: Hunger/starving causing wrong damage.
 Fixed #2380: Field spells creating items on incorrect Z. (Caused by the Fix funtion. Fix should now work better in all places)
+
+18-08-2014, XuN
+Fixed some problems with ResPhysical.
+Added @Resurrect trigger:
+	- argn1 is the hitpoints value the char will have when resurrected (RW).
+	- argo is the corpse (if any near) (R).
+Fixed some items removed from view in some circumstances.

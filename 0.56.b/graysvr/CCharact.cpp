@@ -252,7 +252,7 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 		{
 			CScriptTriggerArgs pArgs;
 			pArgs.m_iN1 = layer;
-			if ( pItem->OnTrigger(ITRIG_MemoryEquip, this) == TRIGRET_RET_TRUE )
+			if ( pItem->OnTrigger(ITRIG_MemoryEquip, this, &pArgs) == TRIGRET_RET_TRUE )
 			{
 				pItem->Delete();
 				return;
@@ -1867,7 +1867,7 @@ bool CChar::ItemDrop( CItem * pItem, const CPointMap & pt )
 	return( bDroped );
 }*/
 
-bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg )
+bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 {
 	ADDTOCALLSTACK("CChar::ItemEquip");
 	// Equip visible stuff. else throw into our pack.
@@ -1941,6 +1941,9 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg )
 
 	if ( CItemBase::IsVisibleLayer(layer) )	// visible layer ?
 		Sound(0x057);
+
+	if ( fFromDClick )
+		pItem->ResendOnEquip();
 
 	return true;
 }

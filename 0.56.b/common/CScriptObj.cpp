@@ -1165,9 +1165,16 @@ badcmd:
 				}
 				else if ( child_pid == 0 )
 				{
-					int iResult = execlp( Arg_ppCmd[0], Arg_ppCmd[0], Arg_ppCmd[1], Arg_ppCmd[2],
+				// So I finally had a reason to comment it out, this error in blocking the build to compile so I re-comment it temporally. Look at this for a complete log: http://pastebin.com/iuLE0YXL
+
+				/*../common/CScriptObj.cpp: In member function ‘virtual bool CScriptObj::r_WriteVal(const char*, CGString&, CTextConsole*)’:
+				../common/CScriptObj.cpp:1168:10: warning: unused variable ‘iResult’ [-Wunused-variable]
+				  int iResult = execlp( Arg_ppCmd[0], Arg_ppCmd[0], Arg_ppCmd[1], Arg_ppCmd[2],
+		    ^	*/
+
+				/*	int iResult = execlp( Arg_ppCmd[0], Arg_ppCmd[0], Arg_ppCmd[1], Arg_ppCmd[2],
 										Arg_ppCmd[3], Arg_ppCmd[4], Arg_ppCmd[5], Arg_ppCmd[6],
-										Arg_ppCmd[7], Arg_ppCmd[8], Arg_ppCmd[9], NULL );
+										Arg_ppCmd[7], Arg_ppCmd[8], Arg_ppCmd[9], NULL );*/
 					
 					g_Log.EventError("SYSSPAWN failed with error %d (\"%s\") when executing %s.\n", errno, strerror(errno), pszKey);
 					raise(SIGKILL);

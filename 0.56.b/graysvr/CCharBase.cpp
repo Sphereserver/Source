@@ -14,6 +14,8 @@ CCharBase::CCharBase( CREID_TYPE id ) :
 	m_trackID = ITEMID_TRACK_WISP;
 	m_soundbase = 0;
 	m_defense = 0;
+	m_defenseBase = 0;
+	m_defenseRange = 0;
 	m_Anims = 0xFFFFFF;
   	m_MaxFood = 0;			// Default value
 	m_wBloodHue = 0;

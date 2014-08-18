@@ -267,8 +267,9 @@ public:
 	virtual void Speak( LPCTSTR pText, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL );
 	virtual void SpeakUTF8( LPCTSTR pText, HUE_TYPE wHue= HUE_TEXT_DEF, TALKMODE_TYPE mode= TALKMODE_SAY, FONT_TYPE font= FONT_NORMAL, CLanguageID lang = 0 );
 	virtual void SpeakUTF8Ex( const NWORD * pText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang );
-
+	
 	void RemoveFromView( CClient * pClientExclude = NULL , bool fHardcoded = true );	// remove this item from all clients.
+	void ResendOnEquip( bool fAllClients = false );	// Fix for Enhanced Client when equipping items via DClick, these must be removed from where they are and sent again.
 	void ResendTooltip( bool bSendFull = false, bool bUseCache = false );	// force reload of tooltip for this object
 	void UpdateCanSee( PacketSend * pPacket, CClient * pClientExclude = NULL ) const;
 	void UpdateObjMessage( LPCTSTR pTextThem, LPCTSTR pTextYou, CClient * pClientExclude, HUE_TYPE wHue, TALKMODE_TYPE mode ) const;
@@ -2451,6 +2452,8 @@ enum CTRIG_TYPE
 
 	CTRIG_Rename,			// Changing my name or pets one
 
+	CTRIG_Resurrect,		// I'm going to resurrect via function or spell.
+
 	CTRIG_SeeCrime,			// I am seeing a crime
 	CTRIG_SeeHidden,		// I'm about to see a hidden char
 
@@ -3583,7 +3586,7 @@ public:
 	CItem * NPC_Shrink();
 
 	int  ItemPickup( CItem * pItem, int amount );
-	bool ItemEquip( CItem * pItem, CChar * pCharMsg = NULL );
+	bool ItemEquip( CItem * pItem, CChar * pCharMsg = NULL, bool fFromDClick = false );
 	bool ItemEquipWeapon( bool fForce );
 	bool ItemEquipArmor( bool fForce );
 	bool ItemBounce( CItem * pItem );

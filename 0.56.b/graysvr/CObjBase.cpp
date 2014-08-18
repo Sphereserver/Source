@@ -757,15 +757,13 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_SPLINTERINGWEAPON:
 		case OC_VELOCITY:
 		case OC_WEIGHTREDUCTION:
+		case OC_RESPHYSICAL:
 			{
 				CVarDefCont * pVar = GetDefKey(pszKey, true);
 				sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
 			}	
 			break;
 			
-		case OC_RESPHYSICAL:
-			sVal.FormatVal(m_defenseBase);
-			break;
 		case OC_ARMOR:
 			{
 				if ( IsChar() )
@@ -1445,6 +1443,7 @@ bool CObjBase::r_LoadVal( CScript & s )
 				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
 			}
 			return true;
+					case OC_INCREASEHITCHANCE:
 		//Set as number only
 		case OC_BALANCED:
 		case OC_BANE:
@@ -1468,8 +1467,6 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_EATERPOISON:
 		case OC_ENHANCEPOTIONS:
 		case OC_EXPANSION:
-		case OC_FASTERCASTING:
-		case OC_FASTERCASTRECOVERY:
 		case OC_HITAREACOLD:
 		case OC_HITAREAENERGY:
 		case OC_HITAREAFIRE:
@@ -1489,42 +1486,16 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_HITMAGICARROW:
 		case OC_HITMANADRAIN:
 		case OC_HITSPELLSTR:
-		case OC_INCREASEDAM:
-		case OC_INCREASEDEFCHANCE:
-		case OC_INCREASEDEFCHANCEMAX:
 		case OC_INCREASEGOLD:
-		case OC_INCREASEHITCHANCE:
 		case OC_INCREASEKARMALOSS:
-		case OC_INCREASESPELLDAM:
-		case OC_INCREASESWINGSPEED:
-		case OC_LOWERREAGENTCOST:
-		case OC_LOWERMANACOST:
 		case OC_LOWERAMMOCOST:
 		case OC_LOWERREQ:
-		case OC_LUCK:
 		case OC_MANABURSTFREQUENCY:
 		case OC_MANABURSTKARMA:
 		case OC_NIGHTSIGHT:
 		case OC_RAGEFOCUS:
 		case OC_REACTIVEPARALYZE:
 		case OC_REFLECTPHYSICALDAM:
-		case OC_REGENFOOD:
-		case OC_REGENHITS:
-		case OC_REGENMANA:
-		case OC_REGENSTAM:
-		case OC_REGENVALFOOD:
-		case OC_REGENVALHITS:
-		case OC_REGENVALMANA:
-		case OC_REGENVALSTAM:
-		case OC_RESCOLD:
-		case OC_RESFIRE:
-		case OC_RESENERGY:
-		case OC_RESPOISON:
-		case OC_RESCOLDMAX:
-		case OC_RESFIREMAX:
-		case OC_RESENERGYMAX:
-		case OC_RESPHYSICALMAX:
-		case OC_RESPOISONMAX:
 		case OC_RESONANCECOLD:
 		case OC_RESONANCEENERGY:
 		case OC_RESONANCEFIRE:
@@ -1545,9 +1516,42 @@ bool CObjBase::r_LoadVal( CScript & s )
 			SetDefNum(s.GetKey(),s.GetArgVal(), false);
 			return true;
 			
+		case OC_INCREASESWINGSPEED:
+		case OC_INCREASEDAM:
+		case OC_LOWERREAGENTCOST:
+		case OC_LOWERMANACOST:
+		case OC_FASTERCASTRECOVERY:
+		case OC_FASTERCASTING:
+		case OC_INCREASEDEFCHANCE:
+		case OC_INCREASEDEFCHANCEMAX:
+		case OC_INCREASESPELLDAM:
+		case OC_RESCOLDMAX:
+		case OC_RESFIREMAX:
+		case OC_RESENERGYMAX:
+		case OC_RESPOISONMAX:
 		case OC_RESPHYSICAL:
-			m_defenseBase = (WORD)s.GetArgVal();
-			break;
+		case OC_RESPHYSICALMAX:
+		case OC_RESFIRE:
+		case OC_RESCOLD:
+		case OC_RESPOISON:
+		case OC_RESENERGY:
+		case OC_LUCK:		
+		case OC_REGENFOOD:
+		case OC_REGENHITS:
+		case OC_REGENSTAM:
+		case OC_REGENMANA:
+		case OC_REGENVALFOOD:
+		case OC_REGENVALHITS:
+		case OC_REGENVALSTAM:
+		case OC_REGENVALMANA:
+			{
+			SetDefNum(s.GetKey(),s.GetArgVal(), false);
+			/*CChar * pChar = dynamic_cast <CChar*>(GetTopLevelObj());	// This should be used in case items with these properties updates the character in the moment without any script to make status reflect the update.
+			// Maybe too a cliver check to not send update if not needed.
+			if ( pChar )
+				pChar->UpdateStatsFlag();*/
+			return true;
+			}
 		case OC_ARMOR:
 			{
 				if ( IsChar() )
@@ -1561,6 +1565,9 @@ bool CObjBase::r_LoadVal( CScript & s )
 						m_defenseRange = static_cast<unsigned char>(piVal[1]) - m_defenseBase;
 					else
 						m_defenseRange = 0;
+				CChar * pChar = dynamic_cast <CChar*>(GetTopLevelObj());
+				if ( pChar )
+					pChar->UpdateStatsFlag();
 				}
 				return( true );
 			}
@@ -2456,6 +2463,51 @@ void CObjBase::RemoveFromView( CClient * pClientExclude, bool fHardcoded )
 			pClient->closeContainer(this);
 
 		pClient->addObjectRemove( this );
+	}
+}
+
+void CObjBase::ResendOnEquip( bool fAllClients )
+{
+	ADDTOCALLSTACK("CObjBase::RemoveFromView");
+	// Remove this item from all clients if fAllClients == true, from Enhanced Client only if not.
+	// Then resend it.
+
+	if ( IsDisconnected())
+		return;	// not in the world.
+
+	CObjBaseTemplate * pObjTop = GetTopLevelObj();
+	CItem * pItem = dynamic_cast<CItem*>(this);
+	CChar * pChar = NULL;
+
+	
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
+	{
+		if ( fAllClients == false && !pClient->GetNetState()->isClientSA() )
+			continue;
+		pChar = pClient->GetChar();
+		if ( pChar == NULL )
+			continue;
+		if ( pChar->GetTopDistSight( pObjTop ) > UO_MAP_VIEW_SIZE ) //Client does not support removing of items which are farther (will be removed from the radar on the next step, cause the server won't resend it)
+			continue;
+		if ( pItem )
+		{
+			if (( pItem->IsItemEquipped() ) && ( !pChar->IsPriv(PRIV_GM) ))
+			{
+				if (( pItem->GetEquipLayer() > LAYER_HORSE ) && ( pItem->GetEquipLayer() != LAYER_BANKBOX ) && ( pItem->GetEquipLayer() != LAYER_DRAGGING ))
+					continue;
+			}
+			
+			if ( pItem->IsTypeSpellbook() && pItem->IsItemInContainer())	// items must be removed from view before equipping in EC when on the floor, however spellbooks cannot be removed from view or client will crash
+				continue;
+		}
+
+		if (this->GetEquipLayer() == LAYER_BANKBOX)
+			pClient->closeContainer(this);
+		
+		pClient->addObjectRemove( this );
+		pClient->addItem( pItem );
+
 	}
 }
 

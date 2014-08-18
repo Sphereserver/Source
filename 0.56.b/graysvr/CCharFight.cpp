@@ -2027,7 +2027,9 @@ int CChar::CalcArmorDefense() const
 #endif
 	for ( CItem* pItem=GetContentHead(); pItem!=NULL; pItem=pItem->GetNext())
 	{
-		int iDefense = pItem->Armor_GetDefense();
+
+		CVarDefCont * pVar = pItem->GetDefKey("RESPHYSICAL", true);
+		int iDefense = pVar ? static_cast<int>(pVar->GetValNum() + pItem->m_ModAr) : pItem->Armor_GetDefense();
 
 		// IsTypeSpellable() ? ! IT_WAND
 		if (( pItem->IsType(IT_SPELL) || pItem->IsTypeArmor()) && pItem->m_itSpell.m_spell )
@@ -2047,6 +2049,8 @@ int CChar::CalcArmorDefense() const
 					break;
 			}
 		}
+		if ( pVar || iDefense <= 0 )	// If the item has ResPhysical we don't want to check the armor coverage, since the given value is the final value. Also no need to check for items with no armor... less code run.
+			continue;
 
 		// reverse of sm_ArmorLayers
 		switch ( pItem->GetEquipLayer())

@@ -420,11 +420,26 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 			return false;
 		}
 	}
-
+	int hits = IMULDIV( Stat_GetMax(STAT_STR), g_Cfg.m_iHitpointPercentOnRez, 100 );
+	if (IsTrigUsed(TRIGGER_RESURRECT) )
+	{
+		if ( !pCorpse )
+			pCorpse = FindMyCorpse();
+		CScriptTriggerArgs Args(hits,0,pCorpse);
+		if (OnTrigger(CTRIG_Resurrect,pCharSrc,&Args) == TRIGRET_RET_TRUE )
+			return false;
+		hits = (int)Args.m_iN1;
+		/*if ( Args.m_pO1 != pCorpse )//can't be set this way.
+		{
+			CItemCorpse * pCorpseTest = static_cast<CItemCorpse*>(Args.m_pO1);
+			if ( pCorpseTest )
+				pCorpse = pCorpseTest;
+		}*/
+	}
 	SetID( m_prev_id );
 	StatFlag_Clear( STATF_DEAD | STATF_Insubstantial );
 	SetHue( m_prev_Hue );
-	Stat_SetVal(STAT_STR, maximum(IMULDIV( Stat_GetMax(STAT_STR), g_Cfg.m_iHitpointPercentOnRez, 100 ),1) );
+	Stat_SetVal(STAT_STR, maximum(hits,1) );
 
 	if ( m_pPlayer )
 	{

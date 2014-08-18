@@ -6,7 +6,7 @@
 #include "CClient.h"
 #include "../network/send.h"
 
-inline bool CClient::Cmd_Use_Item_MustEquip( CItem * pItem )
+inline bool CClient::Cmd_Use_Item_MustEquip( CItem * pItem, bool fFromDClick )
 {
 	ADDTOCALLSTACK("CClient::Cmd_Use_Item_MustEquip");
 	if ( ! m_pChar->CanMove( pItem ) )
@@ -19,7 +19,7 @@ inline bool CClient::Cmd_Use_Item_MustEquip( CItem * pItem )
 		return false;
 	}
 	
-	return m_pChar->ItemEquip( pItem );
+	return m_pChar->ItemEquip( pItem, NULL , true );
 }
 
 bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
@@ -118,8 +118,6 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 
 	if ( pItemDef->IsTypeEquippable() && ! pItem->IsItemEquipped() && pItemDef->GetEquipLayer() )
 	{
-		if ( !pItem->IsTypeSpellbook() && !pItem->IsItemInContainer())	// items must be removed from view before equipping in EC when on the floor, however spellbooks cannot be removed from view or client will crash
-			pItem->RemoveFromView();
 		if ( pItem->IsType(IT_LIGHT_OUT) && pItem->IsItemInContainer())
 		{
 			if ( ! Cmd_Use_Item_MustEquip( pItem ) )

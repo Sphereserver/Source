@@ -132,6 +132,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@RegionResourceGather",
 
 	"@Rename",
+	"@Resurrect",
 	"@SeeCrime",		// I saw a crime
 	"@SeeHidden",			// Can I see hidden chars?
 
@@ -254,6 +255,8 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 	ASSERT(pCharDef);
 	m_attackBase = pCharDef->m_attackBase;
 	m_attackRange = pCharDef->m_attackRange;
+	m_defenseBase = pCharDef->m_defenseBase;
+	m_defenseRange = pCharDef->m_defenseRange;
 	m_Can = pCharDef->m_Can;
 	m_wBloodHue = pCharDef->m_wBloodHue;	// when damaged , what color is the blood (-1) = no blood
 
@@ -1767,7 +1770,6 @@ do_default:
 		case CHC_RESCOLD:
 		case CHC_RESPOISON:
 		case CHC_RESENERGY:
-		case CHC_RESPHYSICAL:
 		case CHC_RESCOLDMAX:
 		case CHC_RESENERGYMAX:
 		case CHC_RESFIREMAX:
@@ -2616,7 +2618,6 @@ do_default:
 		case CHC_RESENERGYMAX:
 		case CHC_RESPOISONMAX:
 		case CHC_RESPHYSICALMAX:
-		case CHC_RESPHYSICAL:
 		case CHC_RESFIRE:
 		case CHC_RESCOLD:
 		case CHC_RESPOISON:

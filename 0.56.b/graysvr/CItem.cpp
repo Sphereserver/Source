@@ -4029,7 +4029,7 @@ int CItem::Armor_GetDefense() const
 	CItemBase * pItemDef = Item_GetDef();
 	ASSERT(pItemDef);
 
-	int iVal = pItemDef->m_defenseBase + m_ModAr;
+	int iVal = m_defenseBase + m_ModAr;
 	int iRepair = Armor_GetRepairPercent();
 	iVal = IMULDIV(iVal, iRepair, 100);
 
