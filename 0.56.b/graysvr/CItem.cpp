@@ -615,7 +615,7 @@ void CItem::FixZ(  unsigned long wBlockFlags )
 {
 	height_t zHeight = CItemBase::GetItemHeight( GetDispID(), wBlockFlags );
 	CGrayMapBlockState block( wBlockFlags, GetTopPoint().m_z, GetTopPoint().m_z + zHeight, GetTopPoint().m_z + 2, zHeight );
-	g_World.c( GetTopPoint(), block);
+	g_World.GetFixPoint( GetTopPoint(), block);
 	SetTopZ(block.m_Bottom.m_z);
 }
 
