@@ -692,7 +692,6 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 	CItem * pItem = NULL;
 	DWORD wBlockThis = 0;
 	signed char z = 0;
-	height_t zHeight = 0;
 	int x2 = 0, y2 = 0;
 
 	// Height of statics at/above given coordinates
@@ -707,7 +706,7 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 		x2 = pMapBlock->GetOffsetX(pt.m_x);
 		y2 = pMapBlock->GetOffsetY(pt.m_y);
 		const CUOStaticItemRec * pStatic = NULL;
-		for ( size_t i = 0; i < iQty; ++i, z = 0, zHeight = 0, pStatic = NULL, pDupeDef = NULL )
+		for ( size_t i = 0; i < iQty; ++i, z = 0, pStatic = NULL, pDupeDef = NULL )
 		{
 			if ( ! pMapBlock->m_Statics.IsStaticPoint( i, x2, y2 ))
 				continue;
@@ -722,32 +721,23 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 			if ( pItemDef )
 			{
 				if ( pItemDef->GetID() == pStatic->GetDispID() ) //parent item
-				{
-					zHeight = pItemDef->GetHeight();
-					wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove
-				}
+					wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
 				else //non-parent item
 				{
 					pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pStatic->GetDispID()));
 					if ( ! pDupeDef )
 					{
 						g_Log.EventDebug("Failed to get non-parent reference (static) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pStatic->GetDispID(),pStatic->m_x+pMapBlock->m_x,pStatic->m_y+pMapBlock->m_y,pStatic->m_z);
-						zHeight = pItemDef->GetHeight();
 						wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
 					}
 					else
-					{
-						zHeight = pDupeDef->GetHeight();
-						wBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove
-					}
+						wBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK );
 				}
 			}
 			else if ( pStatic->GetDispID() )
-			{
 				wBlockThis = 0;
-			}
 
-			if ((block.m_Bottom.m_z < z) && (wBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB)))
+			if ((block.m_Bottom.m_z < z) && (z < pt.m_z+PLAYER_HEIGHT) && (wBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER)))
 			{
 				block.m_Bottom.m_dwBlockFlags = wBlockThis;
 				block.m_Bottom.m_dwTile = pStatic->GetDispID() + TERRAIN_QTY;
@@ -761,7 +751,6 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 	pItem = NULL;
 	wBlockThis = 0;
 	z = 0;
-	zHeight = 0;
 	x2 = y2 = 0;
 	iQty = 0;
 
@@ -794,7 +783,7 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 					y2 = pt.m_y - pItem->GetTopPoint().m_y;
 
 					iQty = pMulti->GetItemCount();
-					for ( size_t ii = 0; ii < iQty; ++ii, pMultiItem = NULL, z = 0, zHeight = 0 )
+					for ( size_t ii = 0; ii < iQty; ++ii, pMultiItem = NULL, z = 0 )
 					{
 						pMultiItem = pMulti->GetItem(ii);
 
@@ -813,24 +802,17 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 						if ( pItemDef != NULL )
 						{
 							if ( pItemDef->GetID() == pMultiItem->GetDispID() ) //parent item
-							{
-								zHeight = pItemDef->GetHeight();
-								wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove
-							}
+								wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
 							else //non-parent item
 							{
 								pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pMultiItem->GetDispID()));
 								if ( pDupeDef == NULL )
 								{
 									g_Log.EventDebug("Failed to get non-parent reference (multi) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pMultiItem->GetDispID(),pMultiItem->m_dx+pItem->GetTopPoint().m_x,pMultiItem->m_dy+pItem->GetTopPoint().m_y,pMultiItem->m_dz+pItem->GetTopPoint().m_z);
-									zHeight = pItemDef->GetHeight();
 									wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
 								}
 								else
-								{
-									zHeight = pDupeDef->GetHeight();
-									wBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove - CAN flags cannot be inherited from the parent item due to bad script pack...
-								}
+									wBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK );
 							}
 						}
 						else if ( pMultiItem->GetDispID() )
@@ -839,7 +821,7 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 							wBlockThis = 0;
 						}
 
-						if ((block.m_Bottom.m_z < z) && (wBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB)))
+						if ((block.m_Bottom.m_z < z) && (z < pt.m_z+PLAYER_HEIGHT) && (wBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER)))
 						{
 							block.m_Bottom.m_dwBlockFlags = wBlockThis;
 							block.m_Bottom.m_dwTile = pMultiItem->GetDispID() + TERRAIN_QTY;
@@ -856,7 +838,6 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 	pItem = NULL;
 	wBlockThis = 0;
 	x2 = y2 = iQty = 0;
-	zHeight = 0;
 	z = 0;
 
 	// Any dynamic items here ?
@@ -877,24 +858,17 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 		if ( pItemDef )
 		{
 			if ( pItemDef->GetDispID() == pItem->GetDispID() )//parent item
-			{
-				zHeight = pItemDef->GetHeight();
-				wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove
-			}
+				wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
 			else //non-parent item
 			{
 				pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pItem->GetDispID()));
 				if ( ! pDupeDef )
 				{
 					g_Log.EventDebug("Failed to get non-parent reference (dynamic) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pItem->GetDispID(),pItem->GetTopPoint().m_x,pItem->GetTopPoint().m_y,pItem->GetTopPoint().m_z);
-					zHeight = pItemDef->GetHeight();
 					wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
 				}
 				else
-				{
-					zHeight = pDupeDef->GetHeight();
-					wBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove - CAN flags cannot be inherited from the parent item due to bad script pack...
-				}
+					wBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK );
 			}
 		}
 		else
@@ -902,7 +876,7 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 			DEBUG_ERR(("Item (0%x) has no definition in scripts.\n",pItem->GetDispID()));
 			wBlockThis = 0;
 		}
-		if ((block.m_Bottom.m_z < z) && (wBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB)))
+		if ((block.m_Bottom.m_z < z) && (z < pt.m_z+PLAYER_HEIGHT) && (wBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER)))
 		{
 			block.m_Bottom.m_dwBlockFlags = wBlockThis;
 			block.m_Bottom.m_dwTile = pItemDef->GetDispID() + TERRAIN_QTY;
@@ -937,7 +911,8 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 		if (( ! wBlockThis ) || ( land.m_flags & UFLAG2_PLATFORM )) // Platform items should take precendence over non-platforms.
 			wBlockThis = CAN_I_PLATFORM;
 	}
-	if ((block.m_Bottom.m_z < pMeter->m_z) && (wBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB)))
+
+	if ((block.m_Bottom.m_z < pMeter->m_z) && (pMeter->m_z < pt.m_z+PLAYER_HEIGHT) && (wBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER)))
 	{
 		block.m_Bottom.m_dwBlockFlags = wBlockThis;
 		block.m_Bottom.m_dwTile = pMeter->m_wTerrainIndex;
