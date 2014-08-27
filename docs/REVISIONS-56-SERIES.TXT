@@ -1186,7 +1186,7 @@ Enabled some disabled variables for KR client status bar.
 09-08-2014, Ben
 Fixed: Another issue with stairs...
 
-010-08-2014, Ben
+10-08-2014, Ben
 Fixed #2383: Weight not changing after a baseid change resulting in weird weight calculations.
 Fixed #2382: Reveal causing server freeze.
 Fixed: Paperdoll not updating body color when using invis spell
@@ -1196,7 +1196,7 @@ Added EF_NoDiagonalCheckLOS = 00000001. Disables Diagonal Passage checks for leg
 Added FACING function to objects which will give you the direction the object/npc would turn to if it looks towards SRC.
 Optionally FACING takes a location or uid as argument. This UID/location replaces SRC in that context.
 
-016-08-2014, Ben
+16-08-2014, Ben
 Fixed #2386: Ghosts can't pass through doors anymore
 Fixed #2385: No swing animation during combat, @HitTry doesn't fire.
 Fixed #2387: Hunger/starving causing wrong damage.
@@ -1208,3 +1208,6 @@ Added @Resurrect trigger:
 	- argn1 is the hitpoints value the char will have when resurrected (RW).
 	- argo is the corpse (if any near) (R).
 Fixed some items removed from view in some circumstances.
+
+26-08-2014, Ben
+Fixed: SLEEP causing NPCs to die with double corpse.

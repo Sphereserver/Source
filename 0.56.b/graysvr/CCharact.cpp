@@ -2348,12 +2348,29 @@ bool CChar::OnTickEquip( CItem * pItem )
 				INT64 iTicks = 10 * TICK_PER_SEC;
 				for ( STAT_TYPE i = STAT_STR; i <= STAT_FOOD; i = static_cast<STAT_TYPE>(i + 1) )
 				{
+					LPCTSTR stat;
+					switch (i)
+					{
+						case STAT_STR:
+							stat = "HITS";
+							break;
+						case STAT_INT:
+							stat = "MANA";
+							break;
+						case STAT_DEX:
+							stat = "STAM";
+							break;
+						case STAT_FOOD:
+							stat = "FOOD";
+							break;
+					}
 					INT64 iRegen = g_Cfg.m_iRegenRate[i];
-					if ( i < STAT_FOOD )
+					if ( i <= STAT_FOOD )
 					{
 						char sRegen[21];
-						sprintf(sRegen, "OVERRIDE.REGEN_%d", static_cast<int>(i));
-						iRegen -= ( pHorse->GetKeyNum(sRegen, true) * 10 );
+						sprintf(sRegen, "REGEN%s", stat);
+						if ( GetDefNum(sRegen, false))
+							iRegen -= GetDefNum(sRegen, false) * TICK_PER_SEC;
 					}
 					iTicks = minimum(iTicks,iRegen);
 				}
@@ -2588,7 +2605,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 			iDecayTime = -1;	// never
 		}
 
-		if ( m_pPlayer )	// not being deleted.
+		if ( m_pPlayer || !IsStatFlag( STATF_DEAD ))	// not being deleted.
 			pCorpse->m_uidLink = GetUID();
 	}
 	else
@@ -2896,6 +2913,9 @@ bool CChar::OnFreezeCheck()
 
 		DeleteKey("NoMoveTill");
 	}
+
+	if (!m_pPlayer && IsStatFlag( STATF_Sleeping ))
+		return true;
 
 	// finally, check for STATF_Freeze|STATF_Stone flags
 	if ( ! IsStatFlag( STATF_Freeze|STATF_Stone ) )
