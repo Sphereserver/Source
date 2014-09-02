@@ -44,8 +44,8 @@ void CContainer::ContentAddPrivate( CItem * pItem )
 	if ( pItem->GetParent() == this )
 		return;
 
-	//CGObList::InsertHead( pItem );
-	CGObList::InsertTail( pItem );//Reversing the order in which things are added into a container
+	CGObList::InsertHead( pItem );
+	//CGObList::InsertTail( pItem );//Reversing the order in which things are added into a container
 	OnWeightChange( pItem->GetWeight());
 }
 

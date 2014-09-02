@@ -177,6 +177,10 @@ public:
 	{
 		return( STATIC_CAST <CObjBase*>( CGObListRec::GetNext()));
 	}
+	CObjBase* GetPrev() const
+	{
+		return( STATIC_CAST <CObjBase*>( CGObListRec::GetPrev()));
+	}
 	virtual LPCTSTR GetName() const	// resolve ambiguity w/CScriptObj
 	{
 		return( CObjBaseTemplate::GetName());
@@ -1027,6 +1031,10 @@ public:
 	{
 		return( STATIC_CAST <CItem*>( CObjBase::GetNext()));
 	}
+	CItem* GetPrev() const
+	{
+		return( STATIC_CAST <CItem*>( CObjBase::GetPrev()));
+	}
 	CObjBase * GetContainer() const
 	{
 		// What is this CItem contained in ?
@@ -1391,6 +1399,10 @@ public:
 	CItem* GetContentHead() const
 	{
 		return( STATIC_CAST <CItem*>( GetHead()));
+	}
+	CItem* GetContentTail() const
+	{
+		return( STATIC_CAST <CItem*>( GetTail()));
 	}
 	int FixWeight();
 

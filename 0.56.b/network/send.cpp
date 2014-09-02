@@ -1080,42 +1080,39 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 	LAYER_TYPE layer;
 	int amount;
 	CPointMap pos;
-	for (const CItem* item = container->GetContentHead(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetNext())
+	if (isShop)
 	{
-		if (isShop == false && item->IsAttr(ATTR_INVIS) && viewer->CanSee(item) == false)
-			continue;
-
-		if (filterLayers == true)
+		for (const CItem* item = container->GetContentTail(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetPrev())
 		{
-			layer = static_cast<LAYER_TYPE>(item->GetContainedLayer());
-			ASSERT(layer < LAYER_HORSE);
-			switch (layer) // don't put these on a corpse.
+			if (filterLayers == true)
 			{
-				case LAYER_NONE:
-				case LAYER_PACK: // these display strange.
-					continue;
-
-				case LAYER_NEWLIGHT:
-					continue;
-
-				default:
-					// make certain that no more than one of each layer goes out to client....crashes otherwise!!
-					if (isLayerSent[layer])
+				layer = static_cast<LAYER_TYPE>(item->GetContainedLayer());
+				ASSERT(layer < LAYER_HORSE);
+				switch (layer) // don't put these on a corpse.
+				{
+					case LAYER_NONE:
+					case LAYER_PACK: // these display strange.
 						continue;
-					isLayerSent[layer] = true;
-					break;
+
+					case LAYER_NEWLIGHT:
+						continue;
+
+					default:
+						// make certain that no more than one of each layer goes out to client....crashes otherwise!!
+						if (isLayerSent[layer])
+							continue;
+						isLayerSent[layer] = true;
+						break;
+				}
 			}
-		}
 
-		itemDefinition = item->Item_GetDef();
-		id = item->GetDispID();
-		amount = item->GetAmount();
+			itemDefinition = item->Item_GetDef();
+			id = item->GetDispID();
+			amount = item->GetAmount();
 
-		if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
-			id = static_cast<ITEMID_TYPE>(itemDefinition->GetResDispDnId());
+			if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
+				id = static_cast<ITEMID_TYPE>(itemDefinition->GetResDispDnId());
 
-		if (isShop == true)
-		{
 			const CItemVendable* vendorItem = dynamic_cast<const CItemVendable*>(item);
 			if (vendorItem == NULL || vendorItem->GetAmount() == 0 || vendorItem->IsType(IT_GOLD))
 				continue;
@@ -1123,44 +1120,112 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 			amount = minimum(g_Cfg.m_iVendorMaxSell, amount);
 			pos.m_x = m_count + 1;
 			pos.m_y = 1;
-		}
-		else
-		{
-			pos = item->GetContainedPoint();
-		}
 
-		if (viewer->IsStatFlag(STATF_Hallucinating))
-		{
-			hue = Calc_GetRandVal(HUE_DYE_HIGH);
-		}
-		else
-		{
-			hue = item->GetHue() & HUE_MASK_HI;
-
-			if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
+			if (viewer->IsStatFlag(STATF_Hallucinating))
 			{
-				if (itemDefinition->GetResDispDnHue() != HUE_DEFAULT)
-					hue = itemDefinition->GetResDispDnHue() & HUE_MASK_HI;
+				hue = Calc_GetRandVal(HUE_DYE_HIGH);
+			}
+			else
+			{
+				hue = item->GetHue() & HUE_MASK_HI;
+
+				if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
+				{
+					if (itemDefinition->GetResDispDnHue() != HUE_DEFAULT)
+						hue = itemDefinition->GetResDispDnHue() & HUE_MASK_HI;
+				}
+
+				if (hue > HUE_QTY)
+					hue &= HUE_MASK_LO; // restrict colors
 			}
 
-			if (hue > HUE_QTY)
-				hue &= HUE_MASK_LO; // restrict colors
+			// write item data
+			writeInt32(item->GetUID());
+			writeInt16(id);
+			writeByte(0);
+			writeInt16(amount);
+			writeInt16(pos.m_x);
+			writeInt16(pos.m_y);
+			if (includeGrid)	writeByte(item->GetContainedGridIndex());
+			writeInt32(container->GetUID());
+			writeInt16(hue);
+			m_count++;
+
+			// include tooltip
+			target->addAOSTooltip(item, false, isShop);
 		}
+	}
+	else
+	{
+		for (const CItem* item = container->GetContentHead(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetNext())
+		{
+			if (item->IsAttr(ATTR_INVIS) && viewer->CanSee(item) == false)
+				continue;
 
-		// write item data
-		writeInt32(item->GetUID());
-		writeInt16(id);
-		writeByte(0);
-		writeInt16(amount);
-		writeInt16(pos.m_x);
-		writeInt16(pos.m_y);
-		if (includeGrid)	writeByte(item->GetContainedGridIndex());
-		writeInt32(container->GetUID());
-		writeInt16(hue);
-		m_count++;
+			if (filterLayers == true)
+			{
+				layer = static_cast<LAYER_TYPE>(item->GetContainedLayer());
+				ASSERT(layer < LAYER_HORSE);
+				switch (layer) // don't put these on a corpse.
+				{
+					case LAYER_NONE:
+					case LAYER_PACK: // these display strange.
+						continue;
 
-		// include tooltip
-		target->addAOSTooltip(item, false, isShop);
+					case LAYER_NEWLIGHT:
+						continue;
+
+					default:
+						// make certain that no more than one of each layer goes out to client....crashes otherwise!!
+						if (isLayerSent[layer])
+							continue;
+						isLayerSent[layer] = true;
+						break;
+				}
+			}
+
+			itemDefinition = item->Item_GetDef();
+			id = item->GetDispID();
+			amount = item->GetAmount();
+
+			if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
+				id = static_cast<ITEMID_TYPE>(itemDefinition->GetResDispDnId());
+
+			pos = item->GetContainedPoint();
+
+			if (viewer->IsStatFlag(STATF_Hallucinating))
+			{
+				hue = Calc_GetRandVal(HUE_DYE_HIGH);
+			}
+			else
+			{
+				hue = item->GetHue() & HUE_MASK_HI;
+
+				if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
+				{
+					if (itemDefinition->GetResDispDnHue() != HUE_DEFAULT)
+						hue = itemDefinition->GetResDispDnHue() & HUE_MASK_HI;
+				}
+
+				if (hue > HUE_QTY)
+					hue &= HUE_MASK_LO; // restrict colors
+			}
+
+			// write item data
+			writeInt32(item->GetUID());
+			writeInt16(id);
+			writeByte(0);
+			writeInt16(amount);
+			writeInt16(pos.m_x);
+			writeInt16(pos.m_y);
+			if (includeGrid)	writeByte(item->GetContainedGridIndex());
+			writeInt32(container->GetUID());
+			writeInt16(hue);
+			m_count++;
+
+			// include tooltip
+			target->addAOSTooltip(item, false, isShop);
+		}
 	}
 
 	// write item count
