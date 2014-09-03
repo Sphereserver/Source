@@ -277,6 +277,7 @@ void SetUnixSignals( bool bSet )
 	signal( SIGSEGV,	bSet ? &Signal_Illegal_Instruction : SIG_DFL );
 	signal( SIGFPE,		bSet ? &Signal_Illegal_Instruction : SIG_DFL );
 	signal( SIGPIPE,	bSet ? SIG_IGN : SIG_DFL );
+	signal( SIGCHLD,	bSet ? SIG_IGN : SIG_DFL );
 #else
 	UNREFERENCED_PARAMETER(bSet);
 #endif
