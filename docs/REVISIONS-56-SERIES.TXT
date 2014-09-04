@@ -1211,3 +1211,6 @@ Fixed some items removed from view in some circumstances.
 
 26-08-2014, Ben
 Fixed: SLEEP causing NPCs to die with double corpse.
+
+04-09-2014, matex
+Fixed: character hue not updating when Char is revealed.
