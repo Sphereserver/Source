@@ -2006,8 +2006,8 @@ bool CChar::Reveal( DWORD dwFlags )
 	if ( IsStatFlag(STATF_Invisible|STATF_Hidden|STATF_Insubstantial|STATF_Sleeping))
 		return false;
 
-	RemoveFromView();
-	UpdateMode(NULL, true);
+	//UpdateMode(NULL, true);
+	Update();
 
 	if ( IsClient() )
 		GetClient()->removeBuff( BI_HIDDEN );

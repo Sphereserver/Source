@@ -3517,7 +3517,9 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				m_StatFlag = s.GetArgFlag( m_StatFlag, STATF_Insubstantial );
 				if ( IsSetOF( OF_Command_Sysmsgs ) )
 					pSrc->SysMessage( IsStatFlag( STATF_Insubstantial )? g_Cfg.GetDefaultMsg(DEFMSG_INVIS_ON) : g_Cfg.GetDefaultMsg(DEFMSG_INVIS_OFF) );
-				UpdateMode( NULL, true );	// invis used by GM bug requires this
+
+				//UpdateMode( NULL, true );	// invis used by GM bug requires this
+				Update();
 
 				// Update own character (turns grey)
 				if ( IsClient() )
