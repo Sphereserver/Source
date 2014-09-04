@@ -2426,6 +2426,9 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_AMOUNT:
 			sVal.FormatVal( GetAmount());
 			break;
+		case IC_BASEWEIGHT:
+			sVal.FormatVal(m_weight);
+			break;
 		case IC_CAN:
 			sVal.FormatHex( m_Can ) ;
 			break;
@@ -2567,9 +2570,6 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_TYPE:
 			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_TYPEDEF, m_type ));
 			break;
-		case IC_WEIGHT:
-			sVal.FormatVal( m_weight );
-			break;
 		default:
 			fDoDefault = true;
 	}
@@ -2697,6 +2697,9 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			return true;
 		case IC_ATTR:
 			m_Attr = s.GetArgVal();
+			return true;
+		case IC_BASEWEIGHT:
+			m_weight = (WORD)s.GetArgVal();
 			return true;
 		case IC_CAN:
 			m_Can = s.GetArgVal();
@@ -2901,9 +2904,6 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			return true;
 		case IC_TYPE:
 			SetType(static_cast<IT_TYPE>(g_Cfg.ResourceGetIndexType( RES_TYPEDEF, s.GetArgStr())));
-			return true;
-		case IC_WEIGHT:
-			m_weight = (WORD)s.GetArgVal();
 			return true;
 		default:
 			return( CObjBase::r_LoadVal( s ));

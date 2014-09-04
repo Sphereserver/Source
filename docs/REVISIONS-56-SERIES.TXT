@@ -1214,3 +1214,8 @@ Fixed: SLEEP causing NPCs to die with double corpse.
 
 04-09-2014, matex
 Fixed: character hue not updating when Char is revealed.
+
+04-09-2014, matex
+Xun made the WEIGHT property on writable on items. I renamed it BASEWEIGHT because we need
+WEIGHT not to return the weight of a single instance but also of the whole stack in scripts.
+So WEIGHT is read-only again. If you want to change the base weight, use BASEWEIGHT.
