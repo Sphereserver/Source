@@ -1346,8 +1346,10 @@ void CChar::Update( const CClient * pClientExclude ) // If character status has 
 	{
 		if ( pClient == pClientExclude )
 			continue;
+		if (pClient->GetChar() == NULL)
+			continue;
 
-		if (!pClient->CanSee(this) && pClient->GetChar() != NULL)
+		if (!pClient->CanSee(this))
 		{
 			// In the case of "INVIS" used by GM's we must use this.
 			if (GetTopPoint().GetDistSight(pClient->GetChar()->GetTopPoint()) <= UO_MAP_VIEW_SIZE)

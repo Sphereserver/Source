@@ -80,8 +80,8 @@ bool CGrayMapBlockState::CheckTile( DWORD wItemBlockFlags, signed char zBottom, 
 	//  true = continue processing
 
 	signed char zTop = zBottom;
-	if ( (wItemBlockFlags & CAN_I_CLIMB) && (wItemBlockFlags & CAN_I_PLATFORM) )
-		zTop = minimum(zTop + ( zHeight / 2 ), UO_SIZE_Z);	// standing position is half way up climbable items (except platforms).
+	if ( (wItemBlockFlags & CAN_I_CLIMB) )
+		zTop = minimum(zTop + ( zHeight / 2 ), UO_SIZE_Z);	// standing position is half way up climbable items.
 	else
 		zTop = minimum(zTop + zHeight, UO_SIZE_Z);
 
@@ -261,8 +261,8 @@ bool CGrayMapBlockState::CheckTile_Terrain( DWORD wItemBlockFlags, signed char z
 	{
 		if ( z >= m_Bottom.m_z )
 		{
-			if ( (m_Bottom.m_dwBlockFlags & (CAN_I_PLATFORM|CAN_I_CLIMB)) && (z - m_Bottom.m_z <= 4) )
-					return true;
+			/*if ( (m_Bottom.m_dwBlockFlags & (CAN_I_PLATFORM|CAN_I_CLIMB)) && (z - m_Bottom.m_z <= 4) )
+					return true;*/
 			if ( z == m_Bottom.m_z )
 			{
 				if ( m_Bottom.m_dwBlockFlags & CAN_I_CLIMB ) // climbable items have the highest priority
