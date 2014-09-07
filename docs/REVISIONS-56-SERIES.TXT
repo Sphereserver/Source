@@ -1219,3 +1219,9 @@ Fixed: character hue not updating when Char is revealed.
 Xun made the WEIGHT property on writable on items. I renamed it BASEWEIGHT because we need
 WEIGHT not to return the weight of a single instance but also of the whole stack in scripts.
 So WEIGHT is read-only again. If you want to change the base weight, use BASEWEIGHT.
+
+07-09-2014, matex
+Fixed: Armor not updating when BaseID is changed on an Item.
+Fixed: EF_FixCanSeeInClosedConts always enabled in Debug builds
+Fixed: Walking code. Only stair statictiles are priorized now near the map-surface. Platform tiles not. (players were falling through map surface)
+Fixed: Order in which NPCvendor boxes are sent to the player (display bug)
