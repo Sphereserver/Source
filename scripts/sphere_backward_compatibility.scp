@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, May 6, 2014
+// FILE LAST UPDATED: Saturday, Sept 6, 2014
 //
 VERSION=0.56c
 
@@ -520,7 +520,6 @@ ID=i_handr_1
 NAME=Follower
 TYPE=t_eq_script
 LAYER=layer_special
-WEIGHT=0
 
 ON=@TargOn_Char
 LINK=<ARGO>
@@ -533,10 +532,11 @@ IF !(<LINK.UID>) || (<CONT.FLAGS> & statf_war)
  CONT.SYSMESSAGE Follow: off
  REMOVE
  return 0
+ELIF STRCMP("'<CONT.P>'","'<LINK.P>'")
+ CONT.FACE <LINK>
+ CONT.P=<LINK.P>
+ CONT.UPDATE
 ENDIF
-CONT.FACE <LINK>
-CONT.P=<LINK.P>
-CONT.UPDATE
 TIMER=2
 return 1
 

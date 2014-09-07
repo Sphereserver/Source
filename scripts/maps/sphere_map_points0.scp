@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, Jun 6, 2014
+// FILE LAST UPDATED: Saturday, Sept 6, 2014
 //
 VERSION=0.56c
 
@@ -60,7 +60,6 @@ The Ironwood Inn
 4467,1283,5,0=mg_moonglow
 
 [Teleporters]
-5217,18,15,0=5204,74,17,0=tp_wind_e_w_x
 5490,19,-25,0=5514,10,5,0=tp_shame_1_2_x
 5514,10,5,0=5490,19,-25,0=tp_shame_2_1_x
 5875,19,-5,0=5507,162,5,0=tp_shame_5_4_x
@@ -69,6 +68,7 @@ The Ironwood Inn
 5906,16,61,0=4723,3814,-1,0=tp_hythloth_ent_out_x
 1997,81,7,0=5881,242,-1,0=tp_northcave_ice_1
 5200,71,17,0=5211,22,15,0=tp_wind_w_e_x
+5217,18,15,0=5204,74,17,0=tp_wind_e_w_x
 5394,127,0,0=512,1560,0,0=tp_shame_ent_out_x
 5395,127,0,0=513,1560,0,0=tp_shame_ent_out_x
 5396,127,0,0=514,1560,0,0=tp_shame_ent_out_x
@@ -90,9 +90,6 @@ The Ironwood Inn
 6082,144,-15,0=5919,168,22,0=tp_hythloth_3_2_x
 6082,145,-15,0=5919,169,22,0=tp_hythloth_3_2_x
 6082,146,-15,0=5919,170,22,0=tp_hythloth_3_2_x
-2041,215,14,0=5824,630,0,0=tp_wrong_out_x_ent
-2042,215,14,0=5825,630,0,0=tp_wrong_out_x_ent
-2043,215,14,0=5826,630,0,0=tp_wrong_out_x_ent
 2399,198,0,0=5753,436,80,0=tp_NMinoc_SwampPassage
 2400,198,0,0=5754,436,80,0=tp_NMinoc_SwampPassage
 5166,245,15,0=1361,883,1,0=tp_wind_ent_out_x
@@ -143,14 +140,19 @@ The Ironwood Inn
 5504,569,46,0=5574,628,37,0=tp_despise_1_ent_x
 5504,570,46,0=5574,629,37,0=tp_despise_1_ent_x
 5504,571,46,0=5574,630,37,0=tp_despise_1_ent_x
-5733,554,20,0=5825,593,0,0=tp_wrong_2_exit_to_1
-5863,525,15,0=5703,639,0,0=tp_wrong_3_to_maze_start_3
-5863,526,15,0=5703,639,0,0=tp_wrong_1_exit_to_3
-5862,527,15,0=5703,639,0,0=tp_wrong_1_exit_to_3
-5863,527,15,0=5703,639,0,0=tp_wrong_1_exit_to_3
-5868,537,15,0=5690,570,25,0=tp_wrong_1_exit_to_2
-5868,538,15,0=5690,570,25,0=tp_wrong_1_exit_to_2
-5869,538,15,0=5690,570,25,0=tp_wrong_1_exit_to_2
+2041,215,14,0=5824,630,0,0=tp_wrong_entrance
+2042,215,14,0=5825,630,0,0=tp_wrong_entrance
+2043,215,14,0=5826,630,0,0=tp_wrong_entrance
+5824,631,0,0=2041,216,14,0=tp_wrong_exit
+5825,631,0,0=2042,216,14,0=tp_wrong_exit
+5826,631,0,0=2043,216,14,0=tp_wrong_exit
+5871,531,15,0=5690,569,25,0=tp_wrong_level1_to_level2
+5827,593,0,0=5690,569,25,0=tp_wrong_level1_to_level2
+5829,593,0,0=5690,569,25,0=tp_wrong_level1_to_level2
+5867,528,15,0=5703,639,0,0=tp_wrong_level1_to_level3
+5690,569,25,0=5829,595,0,0=tp_wrong_level2_to_level1
+5732,554,20,0=5829,595,0,0=tp_wrong_level2_to_level1
+5698,662,0,0=5793,527,10,0=tp_wrong_level3_to_level1
 5216,586,-13,0=5304,533,2,0=tp_deceit_1_2_x
 5217,586,-13,0=5305,533,2,0=tp_deceit_1_2_x
 5218,586,-13,0=5306,533,2,0=tp_deceit_1_2_x
@@ -167,16 +169,12 @@ The Ironwood Inn
 5588,632,30,0=1297,1082,0,0=tp_despise_ent_out_x
 5572,633,17,0=5521,673,27,0=tp_despise_ent_2_x
 5572,634,17,0=5521,674,27,0=tp_despise_ent_2_x
-5824,631,0,0=2041,216,14,0=tp_wrong_ent_out_x
-5825,631,0,0=2042,216,14,0=tp_wrong_ent_out_x
-5826,631,0,0=2043,216,14,0=tp_wrong_ent_out_x
 5137,649,5,0=5346,578,5,0=tp_deceit_3_2_x
 5305,650,12,0=5218,760,-23,0=tp_deceit_4_3_x
 5306,650,12,0=5219,760,-23,0=tp_deceit_4_3_x
 5522,672,32,0=5573,632,22,0=tp_despise_2_ent_x
 5522,673,32,0=5573,633,22,0=tp_despise_2_ent_x
 5522,674,32,0=5573,634,22,0=tp_despise_2_ent_x
-5698,662,0,0=5793,527,10,0=tp_wrong_3_exit_to_wrong_1
 5218,761,-28,0=5305,651,7,0=tp_deceit_3_4_x
 5219,761,-28,0=5306,651,7,0=tp_deceit_3_4_x
 5386,755,-8,0=5408,858,47,0=tp_despise_2_3_x

@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, April 18, 2014
+// FILE LAST UPDATED: Saturday, Sept 6, 2014
 //
 VERSION=0.56c
 
@@ -83,6 +83,7 @@ P=745,492,-66,2
 RECT=736,480,768,504,2
 GROUP=Pormir Harm
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_stones1
 
 [AREADEF a_pormir_felwis]
 NAME=Pormir Felwis

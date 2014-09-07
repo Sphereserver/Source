@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, Jun 2, 2014
+// FILE LAST UPDATED: Saturday, Sept 6, 2014
 //
 VERSION=0.56c
 
@@ -180,6 +180,7 @@ RECT=1377,1743,1397,1756,0	//West Bridge
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass,r_brit
 TAG.GUARDOWNER=the city
+TAG.MUSIC=midi_britain1
 
 [AREADEF a_lord_british_castle]
 NAME=Lord British's Castle
@@ -187,7 +188,8 @@ GROUP=Britain
 P=1392,1625,30,0
 RECT=1296,1560,1407,1695,0
 FLAGS=region_flag_nobuilding|region_flag_guarded
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass,r_brit_castle
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_LBCastle
 
 [AREADEF a_lord_blackthornes_castle]
 NAME=Lord Blackthorne's Castle
@@ -196,7 +198,8 @@ P=1523,1449,15,0
 RECT=1500,1405,1550,1478,0
 RECT=1520,1468,1526,1505,0
 FLAGS=region_flag_nobuilding|region_flag_guarded
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass,r_black_castle
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_BtCastle
 
 [AREADEF a_britain_graveyard]
 NAME=Britain Graveyard
@@ -251,6 +254,7 @@ RECT=2530,477,2620,550,0	//East mining camp
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 TAG.GUARDOWNER=the town
+TAG.MUSIC=midi_minoc
 
 [AREADEF a_minoc_mining_camp]
 NAME=Minoc Mining Camp
@@ -280,6 +284,7 @@ RECT=2931,3485,3028,3542,0
 RECT=2891,3524,2916,3534,0
 FLAGS=region_flag_nobuilding
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_serpents
 
 //Cove
 
@@ -304,6 +309,7 @@ RECT=2203,1108,2243,1166,0
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 TAG.GUARDOWNER=the town
+TAG.MUSIC=midi_cove
 
 [AREADEF a_cove_graveyard]
 NAME=Cove Graveyard
@@ -338,6 +344,7 @@ RECT=5121,4,5373,255,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in|region_flag_no_pvp|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 TAG.GUARDOWNER=the town
+TAG.MUSIC=midi_wind
 
 [AREADEF a_wind_entrance]
 NAME=Wind Entrance
@@ -397,6 +404,7 @@ RECT=678,1160,697,1229,0
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 TAG.GUARDOWNER=the town
+TAG.MUSIC=midi_yew
 
 [AREADEF a_yew_graveyard]
 NAME=Yew Graveyard
@@ -414,7 +422,7 @@ RECT=599,807,623,833,0
 RECT=623,815,648,856,0
 RECT=647,807,672,833,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_flag_insta_logout
-EVENTS=r_default,r_default_water,r_default_tree,r_default_grass
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_yew_lich_ruin]
 NAME=Yew Lich Ruin
@@ -460,6 +468,7 @@ RECT=2828,692,2846,772,0
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 TAG.GUARDOWNER=the town
+TAG.MUSIC=midi_vesper
 
 [AREADEF a_vesper_cemetery]
 NAME=Vesper Cemetery
@@ -495,6 +504,7 @@ RECT=2055,2846,2089,2865,0
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 TAG.GUARDOWNER=the town
+TAG.MUSIC=midi_trinsic
 
 //Skara Brae
 
@@ -523,6 +533,7 @@ RECT=767,2305,804,2327,0
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 TAG.GUARDOWNER=the town
+TAG.MUSIC=midi_skarabra
 
 //Occlo
 
@@ -541,6 +552,7 @@ RECT=3588,2460,3707,2685,0
 RECT=3695,2558,3760,2705,0
 FLAGS=region_flag_nobuilding
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_ocllo
 
 //Nujel'm
 
@@ -568,6 +580,7 @@ RECT=3758,1116,3798,1175,0
 RECT=3797,1240,3822,1310,0
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_nujelm
 
 [AREADEF a_nujelm_cemetery]
 NAME=Nujel'm Cemetery
@@ -601,6 +614,7 @@ RECT=3653,2263,3696,2300,0
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 TAG.GUARDOWNER=the town
+TAG.MUSIC=midi_magincia
 
 //Jhelom
 
@@ -620,6 +634,7 @@ RECT=1078,3588,1202,3709,0
 RECT=1224,3592,1533,4065,0
 FLAGS=region_flag_nobuilding
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_jhelom
 
 [AREADEF a_townJhelom]
 NAME=Jhelom
@@ -630,6 +645,7 @@ RECT=1338,3895,1412,3923,0
 RECT=1383,3951,1492,4045,0
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_jhelom
 
 [AREADEF a_jhelom_cemetery]
 NAME=Jhelom Cemetery
@@ -657,7 +673,8 @@ P=2706,2163,0,0
 RECT=2612,2057,2776,2267,0
 RECT=2604,2065,2612,2254,0
 FLAGS=region_flag_nobuilding
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass,r_bucs_den
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_BucsDen
 
 //Moonglow
 
@@ -681,6 +698,7 @@ RECT=4459,1176,4485,1184,0
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 TAG.GUARDOWNER=the town
+TAG.MUSIC=midi_moonglow
 
 [AREADEF a_moonglow_cemetery]
 NAME=Moonglow Cemetery
@@ -760,6 +778,7 @@ P=5825,630,0,0
 RECT=5773,513,5884,636,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_wrong_level_2]
 NAME=Wrong Level 2
@@ -768,6 +787,7 @@ P=5690,568,25,0
 RECT=5641,516,5742,586,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_wrong_level_3]
 NAME=Wrong Level 3
@@ -776,6 +796,7 @@ P=5703,639,0,0
 RECT=5685,623,5722,668,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_shame_level_1]
 NAME=Shame Level 1
@@ -784,6 +805,7 @@ P=5395,126,0,0
 RECT=5379,5,5498,131,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_shame_level_2]
 NAME=Shame Level 2
@@ -792,6 +814,7 @@ P=5515,15,5,0
 RECT=5507,3,5632,126,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_shame_level_3]
 NAME=Shame Level 3
@@ -800,6 +823,7 @@ P=5516,142,25,0
 RECT=5379,133,5626,261,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_shame_level_4]
 NAME=Shame Level 4
@@ -808,6 +832,7 @@ P=5506,180,0,0
 RECT=5495,157,5520,194,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_shame_level_5]
 NAME=Shame Level 5
@@ -816,6 +841,7 @@ P=5876,22,-10,0
 RECT=5638,2,5889,122,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_hythloth_level_1]
 NAME=Hythloth Level 1
@@ -824,6 +850,7 @@ P=5906,22,44,0
 RECT=5902,15,6001,114,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_hythloth_level_2]
 NAME=Hythloth Level 2
@@ -832,6 +859,7 @@ P=5978,171,0,0
 RECT=5911,143,6002,243,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_hythloth_level_3]
 NAME=Hythloth Level 3
@@ -840,6 +868,7 @@ P=6083,148,-22,0
 RECT=6021,141,6130,235,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_hythloth_level_4]
 NAME=Hythloth Level 4
@@ -848,6 +877,7 @@ P=6059,92,22,0
 RECT=6047,28,6122,107,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_destard_level_1]
 NAME=Destard Level 1
@@ -856,6 +886,7 @@ P=5243,1004,0,0
 RECT=5121,771,5366,1025,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_destard_level_2]
 NAME=Destard Level 2
@@ -864,6 +895,7 @@ P=5144,802,5,0
 RECT=5123,794,5186,885,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_destard_level_3]
 NAME=Destard Level 3
@@ -873,6 +905,7 @@ RECT=5125,954,5154,1020,0
 RECT=5153,982,5198,1020,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_despise_level_1]
 NAME=Despise Level 1
@@ -881,6 +914,7 @@ P=5501,570,59,0
 RECT=5378,517,5515,637,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_despise_level_2]
 NAME=Despise Level 2
@@ -889,6 +923,7 @@ P=5583,632,30,0
 RECT=5566,622,5591,643,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_despise_level_3]
 NAME=Despise Level 3
@@ -897,6 +932,7 @@ P=5518,673,20,0
 RECT=5378,644,5530,767,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_despise_level_4]
 NAME=Despise Level 4
@@ -905,6 +941,7 @@ P=5405,860,45,0
 RECT=5381,774,5627,1020,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_deceit_level_1]
 NAME=Deceit Level 1
@@ -913,6 +950,7 @@ P=5187,635,0,0
 RECT=5135,526,5235,642,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_deceit_level_2]
 NAME=Deceit Level 2
@@ -921,6 +959,7 @@ P=5307,536,0,0
 RECT=5275,525,5355,634,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_deceit_level_3]
 NAME=Deceit Level 3
@@ -929,6 +968,7 @@ P=5138,653,0,0
 RECT=5124,644,5234,769,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_deceit_level_4]
 NAME=Deceit Level 4
@@ -937,6 +977,7 @@ P=5307,655,0,0
 RECT=5252,644,5339,765,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_covetous_level_1]
 NAME=Covetous Level 1
@@ -946,6 +987,7 @@ RECT=5380,1848,5421,1963,0
 RECT=5421,1848,5510,1943,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_covetous_level_2]
 NAME=Covetous Level 2
@@ -955,6 +997,7 @@ RECT=5425,1948,5624,2044,0
 RECT=5384,1964,5425,2030,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_covetous_level_3]
 NAME=Covetous Level 3
@@ -963,6 +1006,7 @@ P=5579,1925,0,0
 RECT=5532,1821,5630,1930,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_covetous_level_4]
 NAME=Covetous Level 4
@@ -971,6 +1015,7 @@ P=5539,1808,0,0
 RECT=5498,1797,5565,1821,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_covetous_level_5]
 NAME=Covetous Level 5
@@ -979,6 +1024,7 @@ P=5467,1809,0,0
 RECT=5400,1794,5489,1834,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_ice_dungeon_level_1]		//T2A
 NAME=Ice Dungeon Level 1
@@ -987,6 +1033,7 @@ P=5774,149,20,0
 RECT=5663,130,5891,274,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_ice_dungeon_level_2]		//T2A
 NAME=Ice Dungeon Level 2
@@ -995,6 +1042,7 @@ P=5833,328,19,0
 RECT=5799,316,5870,381,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_ice_dungeon_level_3]		//T2A
 NAME=Ice Dungeon Level 3
@@ -1003,6 +1051,7 @@ P=5702,305,0,0
 RECT=5649,294,5713,350,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_fire_dungeon_level_1]	//T2A
 NAME=Fire Dungeon Level 1
@@ -1012,6 +1061,7 @@ RECT=5663,1402,5884,1519,0
 RECT=5764,1284,5884,1408,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_fire_dungeon_level_2]	//T2A
 NAME=Fire Dungeon Level 2
@@ -1021,6 +1071,7 @@ RECT=5630,1284,5763,1401,0
 RECT=5630,1397,5662,1456,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 ////////////////////////////////////////
 // Lost Lands - T2A
@@ -1034,6 +1085,7 @@ RECT=5404,3099,5481,3167,0
 RECT=5120,1530,5374,1788,0
 FLAGS=region_flag_nobuilding|region_flag_underground
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_ophidian_lair]
 NAME=Ophidian Lair
@@ -1095,6 +1147,7 @@ P=5144,1982,0,0
 RECT=5131,1945,5162,2021,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_orc_cave_2]
 NAME=Orc Cave Level 2
@@ -1103,6 +1156,7 @@ P=5354,1307,0,0
 RECT=5284,1284,5371,1388,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_orc_cave_3]
 NAME=Orc Cave Level 3
@@ -1111,6 +1165,16 @@ P=5304,2012,0,0
 RECT=5267,1953,5363,2045,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
+
+[AREADEF a_khaldun]
+NAME=Khaldun
+GROUP=Khaldun
+P=5571,1302,0,0
+RECT=5381,1284,5628,1509,0
+FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
+EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_dungeon_1]
 NAME=Dungeon
@@ -1123,20 +1187,12 @@ EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 [AREADEF a_dungeon_2]
 NAME=Dungeon
 GROUP=Other Dungeons
-P=5477,1410,0,0
-RECT=5377,1284,5624,1507,0
-FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_dungeon_3]
-NAME=Dungeon
-GROUP=Other Dungeons
 P=5248,1462,0,0
 RECT=5125,1409,5372,1516,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_dungeon_4]
+[AREADEF a_dungeon_3]
 NAME=Dungeon
 GROUP=Other Dungeons
 P=5132,1324,0,0
@@ -1144,7 +1200,7 @@ RECT=5124,1284,5230,1390,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_dungeon_5]
+[AREADEF a_dungeon_4]
 NAME=Dungeon
 GROUP=Other Dungeons
 P=5296,1905,0,0
@@ -1152,7 +1208,7 @@ RECT=5259,1873,5333,1937,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_dungeon_6]
+[AREADEF a_dungeon_5]
 NAME=Dungeon
 GROUP=Other Dungeons
 P=5230,1963,0,0
@@ -1160,7 +1216,7 @@ RECT=5194,1942,5266,1984,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_dungeon_7]
+[AREADEF a_dungeon_6]
 NAME=Dungeon
 GROUP=Other Dungeons
 P=5217,2024,0,0
@@ -1168,7 +1224,7 @@ RECT=5185,2006,5249,2042,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_dungeon_8]
+[AREADEF a_dungeon_7]
 NAME=Dungeon
 GROUP=Other Dungeons
 P=5185,1940,0,0
@@ -1176,7 +1232,7 @@ RECT=5172,1876,5222,1919,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_dungeon_9]
+[AREADEF a_dungeon_8]
 NAME=Dungeon
 GROUP=Other Dungeons
 P=5144,1879,0,0
@@ -1184,7 +1240,7 @@ RECT=5126,1863,5171,1917,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_dungeon_10]
+[AREADEF a_dungeon_9]
 NAME=Dungeon
 GROUP=Other Dungeons
 P=5305,1857,0,0
@@ -1192,7 +1248,7 @@ RECT=5297,1805,5345,1863,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_dungeon_11]
+[AREADEF a_dungeon_10]
 NAME=Dungeon
 GROUP=Other Dungeons
 P=5221,1862,0,0
@@ -1200,7 +1256,7 @@ RECT=5200,1813,5271,1865,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_dungeon_12]
+[AREADEF a_dungeon_11]
 NAME=Dungeon
 GROUP=Other Dungeons
 P=5164,1829,0,0
@@ -1208,7 +1264,7 @@ RECT=5130,1810,5169,1847,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_dungeon_13]
+[AREADEF a_dungeon_12]
 NAME=Dungeon
 GROUP=Other Dungeons
 P=5268,1755,0,0
@@ -1216,7 +1272,7 @@ RECT=5244,1748,5276,1780,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_dungeon_14]
+[AREADEF a_dungeon_13]
 NAME=Dungeon
 GROUP=Other Dungeons
 P=5212,1748,0,0
@@ -1224,7 +1280,7 @@ RECT=5197,1725,5227,1763,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_dungeon_15]
+[AREADEF a_dungeon_14]
 NAME=Dungeon
 GROUP=Other Dungeons
 P=5187,1777,0,0
@@ -1232,7 +1288,7 @@ RECT=5179,1765,5228,1788,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_dungeon_16]
+[AREADEF a_dungeon_15]
 NAME=Dungeon
 GROUP=Other Dungeons
 P=5954,318,0,0
@@ -1240,7 +1296,7 @@ RECT=5902,263,6007,374,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_dungeon_17]
+[AREADEF a_dungeon_16]
 NAME=Dungeon
 GROUP=Other Dungeons
 P=5951,447,22,0
@@ -1248,7 +1304,7 @@ RECT=5895,392,6008,502,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_dungeon_18]
+[AREADEF a_dungeon_17]
 NAME=Dungeon
 GROUP=Other Dungeons
 P=6079,447,0,0
@@ -1256,7 +1312,7 @@ RECT=6027,391,6132,504,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_dungeon_19]
+[AREADEF a_dungeon_18]
 NAME=Dungeon
 GROUP=Other Dungeons
 P=6078,317,0,0
@@ -1264,7 +1320,7 @@ RECT=6020,260,6137,374,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_dungeon_20]
+[AREADEF a_dungeon_10]
 NAME=Dungeon
 GROUP=Other Dungeons
 P=5505,446,0,0
@@ -1272,7 +1328,7 @@ RECT=5380,384,5631,509,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_dungeon_21]
+[AREADEF a_dungeon_20]
 NAME=Dungeon
 GROUP=Other Dungeons
 P=5504,322,0,0
@@ -1280,7 +1336,7 @@ RECT=5381,262,5628,382,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_dungeon_22]
+[AREADEF a_dungeon_21]
 NAME=Dungeon
 GROUP=Other Dungeons
 P=5732,853,0,0

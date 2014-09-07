@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, April 18, 2014
+// FILE LAST UPDATED: Saturday, Sept 6, 2014
 //
 VERSION=0.56c
 
@@ -38,6 +38,7 @@ P=989,520,-50,3
 RECT=945,490,1036,551,3
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_tavern04
 
 [AREADEF a_umbra]
 NAME=Umbra
@@ -60,6 +61,7 @@ P=2366,1268,-85,3
 RECT=256,2,512,304,3
 FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_antimagic_recall_out|region_flag_underground|region_antimagic_teleport
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 [AREADEF a_doom_gauntlet]
 NAME=Doom Gauntlet
@@ -68,6 +70,7 @@ P=428,341,-1,3
 RECT=260,304,515,558,3
 FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate|region_antimagic_recall_out|region_flag_underground|region_antimagic_teleport
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 ////////////////////////////////////////
 // Misc

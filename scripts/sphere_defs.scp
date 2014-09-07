@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, Jun 23, 2014
+// FILE LAST UPDATED: Saturday, Sept 6, 2014
 //
 VERSION=0.56c
 
@@ -728,7 +728,6 @@ attr_lockeddown		0800000	// locked down
 attr_secure			01000000	// secured
 attr_reforged		02000000	// Is Runic Reforged.
 
-
 [DEFNAME can_flags]
 // monster "can" type flags.
 mt_male           00000
@@ -773,96 +772,112 @@ famous                {6000 10000}
 
 [DEFNAME midis]
 // midi music defs
-midi_oldult01           0
-midi_create             1
-midi_dragflit           2
-midi_oldult02           3
-midi_oldult03           4
-midi_oldult04           5
-midi_oldult05           6
-midi_oldult06           7
-midi_stones2            8
-midi_britain1           9
-midi_britain2           10
-midi_bucsden            11
-midi_jhelom             12
-midi_lbcastle           13
-midi_linelle            14
-midi_magincia           15
-midi_minoc              16
-midi_ocllo              17
-midi_samlethe           18
-midi_serpents           19
-midi_skarabra           20
-midi_trinsic            21
-midi_vesper             22
-midi_wind               23
-midi_yew                24
-midi_cave01             25
-midi_dungeon9           26
-midi_foresta            27
-midi_intown01           28
-midi_junglea            29
-midi_mountaina          30
-midi_plains             31
-midi_sailing            32
-midi_swampa             33
-midi_tavern01           34
-midi_tavern02           35
-midi_tavern03           36
-midi_tavern04           37
-midi_combat1            38
-midi_combat2            39
-midi_combat3            40
-midi_approach           41
-midi_death              42
-midi_victory            43
-midi_btcastle           44
-midi_nujelm             45
-midi_dungeon2           46
-midi_cove               47
-midi_moonglow           48
-
-midi_Zento              49
-midi_Tokunodungeon      50
-midi_Taiko              51
-midi_Dread_horn_area    52
-midi_Elf_city_1         53
-midi_Grizzle_dungeon    54
-midi_Melisandes_lair    55
-midi_Paroxysmus_lair    56
-midi_GwennoConversation 57
-midi_GoodEndGame        58
-midi_GoodVsEvil         59
-midi_GreatEarthSerpents 60
-midi_Humanoids          61
-midi_MinocNegative      62
-midi_Paws               63
-midi_SelimsBar          64
-midi_SerpentIsleCombat  65
-midi_ValoriaShips       66
-midi_theWanderer        67
-midi_Castle             68
-midi_Festival           69
-midi_Honor              70
-midi_Medieval           71
-midi_BattleOnStones     72
-midi_Docktown           73
-midi_GargoyleQueen      74
-midi_GenericCombat      75
-midi_Holycity           76
-midi_HumanLevel         77
-midi_LoginLoop          78
-midi_ForestStones       79
-midi_PrimevalLich       80
-midi_QueenPalace        81
-midi_RoyalCity          82
-midi_SlasherVeil        83
-midi_StygianAbyss       84
-midi_StygianDragon      85
-midi_Void               86
-midi_CodexShrine        87
-
+midi_oldult01			0	//loop
+midi_create			1	//loop
+midi_dragflit			2	//loop
+midi_oldult02			3	//loop
+midi_oldult03			4	//loop
+midi_oldult04			5	//loop
+midi_oldult05			6	//loop
+midi_oldult06			7	//loop
+midi_stones1			8
+midi_britain1			9	//loop
+midi_britain2			10
+midi_bucsden			11	//loop
+midi_jhelom			12
+midi_lbcastle			13
+midi_linelle			14
+midi_magincia			15	//loop
+midi_minoc			16	//loop
+midi_ocllo			17	//loop
+midi_samlethe			18	//loop
+midi_serpents			19
+midi_skarabra			20	//loop
+midi_trinsic			21	//loop
+midi_vesper			22
+midi_wind			23
+midi_yew			24	//loop
+midi_cave01			25
+midi_dungeon9			26	//loop
+midi_foresta			27	//loop
+midi_intown01			28	//loop
+midi_junglea			29	//loop
+midi_mountaina			30	//loop
+midi_plains			31	//loop
+midi_sailing			32
+midi_swampa			33	//loop
+midi_tavern01			34
+midi_tavern02			35
+midi_tavern03			36
+midi_tavern04			37	//loop
+midi_combat1			38	//loop
+midi_combat2			39	//loop
+midi_combat3			40	//loop
+midi_approach			41	//loop
+midi_death			42
+midi_victory			43
+midi_btcastle			44
+midi_nujelm			45
+midi_dungeon2			46	//loop
+midi_cove			47	//loop
+midi_moonglow			48	//loop
+//Samurai Empire
+midi_Zento			49	//loop
+midi_TokunoDungeon		50	//loop
+midi_Taiko			51	//loop
+//Mondain's Legacy
+midi_Dread_horn_area		52	//loop
+midi_Elf_city_1			53	//loop
+midi_Grizzle_dungeon		54	//loop
+midi_Melisandes_lair		55	//loop
+midi_Paroxysmus_lair		56	//loop
+midi_GwennoConversation		57
+midi_GoodEndGame		58
+midi_GoodVsEvil			59
+midi_GreatEarthSerpents		60
+midi_Humanoids			61
+midi_MinocNegative		62
+midi_Paws			63
+midi_SelimsBar			64
+midi_SerpentIsleCombat		65
+midi_ValoriaShips		66
+midi_theWanderer		67
+midi_Castle			68
+midi_Festival			69
+midi_Honor			70
+midi_Medieval			71
+midi_BattleOnStones		72
+midi_Docktown			73
+midi_GargoyleQueen		74
+midi_GenericCombat		75
+midi_HolyCity			76
+midi_HumanLevel			77
+midi_LoginLoop			78	//loop
+midi_ForestStones		79
+midi_PrimevalLich		80
+midi_QueenPalace		81
+midi_RoyalCity			82
+midi_SlasherVeil		83
+midi_StygianAbyss		84
+midi_StygianDragon		85
+midi_Void			86
+midi_CodexShrine		87
+//High Seas
+midi_AnvilStrikeInMinoc		88
+midi_ASkaranLullaby		89
+midi_BlackthornsMarch		90
+midi_DupresNightInTrinsic	91
+midi_FayaxionAndTheSix		92
+midi_FlightOfTheNexus		93
+midi_GalehavenJaunt		94
+midi_JhelomToArms		95
+midi_MidnightInYew		96
+midi_MoonglowSonata		97
+midi_NewMaginciaMarch		98
+midi_NujelmWaltz		99
+midi_SherrysSong		100
+midi_StarlightInBritain		101
+midi_TheVesperMist		102
 
 [DEFNAME needstofix]
 // need to be defined. needs and aversions

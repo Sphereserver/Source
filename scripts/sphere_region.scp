@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, Jun 24, 2014
+// FILE LAST UPDATED: Saturday, Sept 6, 2014
 //
 VERSION=0.56c
 
@@ -339,16 +339,6 @@ RESOURCES=65.0 mr_nothing  // Usually there is nothing here.
 RESOURCES=30.0 mr_iron
 RESOURCES=5.0 mr_shadow
 
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_Approach
-ENDIF
-
-ON=@CliPeriodic
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_Approach
-ENDIF
-
 [REGIONTYPE r_swamp t_rock]
 // There is nothing to mine in a swamp.
 RESOURCES=100.0 mr_nothing
@@ -361,17 +351,6 @@ SRC.SOUND={0e 10 0f 10 022 1 023 1 024 1 0267 1}
 RESOURCES=60.0 mr_nothing
 RESOURCES=40.0 mr_iron
 
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_britain1,midi_britain2
-ENDIF
-
-ON=@CliPeriodic
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_britain1,midi_britain2
-ENDIF
-
-
 /////////////////////
 // Generic Regions //
 /////////////////////
@@ -379,13 +358,17 @@ ENDIF
 [REGIONTYPE r_default]
 ON=@Enter
 IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_britain1,midi_ForestA,midi_JungleA,midi_MountainA,midi_Plains,midi_Victory
+ IF !(<isempty <TAG.MUSIC>>)
+  SRC.MIDILIST=<TAG.MUSIC>
+ ELSE
+  SRC.MIDILIST=midi_britain1,midi_ForestA,midi_JungleA,midi_MountainA,midi_Plains,midi_Victory
+ ENDIF
 ENDIF
 
-ON=@CliPeriodic
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_britain1,midi_ForestA,midi_JungleA,midi_MountainA,midi_Plains,midi_Victory
-ENDIF
+//ON=@CliPeriodic
+//IF (<SRC.ISPLAYER>)
+// SRC.MIDILIST=midi_britain1,midi_ForestA,midi_JungleA,midi_MountainA,midi_Plains,midi_Victory
+//ENDIF
 
 [REGIONTYPE r_graveyards]
 ON=@RegPeriodic
@@ -406,209 +389,5 @@ IF (<SRC.SECTOR.ISNIGHTTIME>)
 ELSE
  SRC.SOUND={03 2 04 2 05 2 0b3 1}
 ENDIF
-
-
-//////////////////////////
-// Specific Map Regions //
-//////////////////////////
-
-[REGIONTYPE r_brit_castle]
-// The Castle of Lord British.
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_LBCastle
-ENDIF
-
-ON=@CliPeriodic
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_LBCastle
-ENDIF
-
-[REGIONTYPE r_black_castle]
-// The Castle of Lord Blackthorne.
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_BtCastle
-ENDIF
-
-ON=@CliPeriodic
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_BtCastle
-ENDIF
-
-[REGIONTYPE r_bucs_den]
-// The town of Buccaneer's Den.
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_BucsDen
-ENDIF
-
-ON=@CliPeriodic
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_BucsDen
-ENDIF
-
-[REGIONTYPE r_dungeon_abyss]
-// The Abyss dungeon.
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_approach
-ENDIF
-
-ON=@RegPeriodic
-SRC.SOUND={021f 1 0243 1 0244 1 0245 1}
-
-[REGIONTYPE r_dungeon_bedlam]
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_Grizzle_dungeon
-ENDIF
-
-ON=@RegPeriodic
-SRC.SOUND={021f 1 0243 1 0244 1 0245 1}
-
-[REGIONTYPE r_dungeon_blighted_grove]
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_Melisandes_lair
-ENDIF
-
-ON=@RegPeriodic
-SRC.SOUND={021f 1 0243 1 0244 1 0245 1}
-
-[REGIONTYPE r_dungeon_citadel]
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_approach
-ENDIF
-
-ON=@RegPeriodic
-SRC.SOUND={021f 1 0243 1 0244 1 0245 1}
-
-[REGIONTYPE r_dungeon_doom]
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_approach
-ENDIF
-
-ON=@RegPeriodic
-SRC.SOUND={021f 1 0243 1 0244 1 0245 1}
-
-[REGIONTYPE r_dungeon_fire]
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_approach
-ENDIF
-
-ON=@RegPeriodic
-SRC.SOUND={021f 1 0243 1 0244 1 0245 1}
-
-[REGIONTYPE r_dungeon_exodus]
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_approach
-ENDIF
-
-ON=@RegPeriodic
-SRC.SOUND={021f 1 0243 1 0244 1 0245 1}
-
-[REGIONTYPE r_dungeon_fandancerdojo]
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_Tokunodungeon
-ENDIF
-
-ON=@RegPeriodic
-SRC.SOUND={021f 1 0243 1 0244 1 0245 1}
-
-[REGIONTYPE r_dungeon_khaldun]
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_approach
-ENDIF
-
-ON=@RegPeriodic
-SRC.SOUND={021f 1 0243 1 0244 1 0245 1}
-
-[REGIONTYPE r_dungeon_labyrinth]
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_approach
-ENDIF
-
-ON=@RegPeriodic
-SRC.SOUND={021f 1 0243 1 0244 1 0245 1}
-
-[REGIONTYPE r_dungeon_painted_caves]
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_approach
-ENDIF
-
-ON=@RegPeriodic
-SRC.SOUND={021f 1 0243 1 0244 1 0245 1}
-
-[REGIONTYPE r_dungeon_paroxysmus]
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_Paroxysmus_lair
-ENDIF
-
-ON=@RegPeriodic
-SRC.SOUND={021f 1 0243 1 0244 1 0245 1}
-
-[REGIONTYPE r_dungeon_prism_of_light]
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_approach
-ENDIF
-
-ON=@RegPeriodic
-SRC.SOUND={021f 1 0243 1 0244 1 0245 1}
-
-[REGIONTYPE r_solen_hive]
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_approach
-ENDIF
-
-ON=@RegPeriodic
-SRC.SOUND={021f 1 0243 1 0244 1 0245 1}
-
-[REGIONTYPE r_dungeon_sorcerer]
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_approach
-ENDIF
-
-ON=@RegPeriodic
-SRC.SOUND={021f 1 0243 1 0244 1 0245 1}
-
-[REGIONTYPE r_dungeon_terathan_keep]
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_approach
-ENDIF
-
-ON=@RegPeriodic
-SRC.SOUND={021f 1 0243 1 0244 1 0245 1}
-
-[REGIONTYPE r_dungeon_twisted_weald]
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_Dread_horn_area
-ENDIF
-
-ON=@RegPeriodic
-SRC.SOUND={021f 1 0243 1 0244 1 0245 1}
-
-[REGIONTYPE r_dungeon_underworld]
-ON=@Enter
-IF (<SRC.ISPLAYER>)
- SRC.MIDILIST=midi_void
-ENDIF
-
-ON=@RegPeriodic
-SRC.SOUND={021f 1 0243 1 0244 1 0245 1}
 
 [EOF]

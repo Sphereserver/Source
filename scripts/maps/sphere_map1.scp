@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, April 18, 2014
+// FILE LAST UPDATED: Saturday, Sept 6, 2014
 //
 VERSION=0.56c
 
@@ -42,6 +42,7 @@ P=5803,1920,0,1
 RECT=5640,1777,5935,2039,1
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in|region_antimagic_gate
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_dungeon9
 
 ////////////////////////////////////////
 // Misc
@@ -68,6 +69,7 @@ EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 //RECT=3672,2648,3680,2656,1
 //FLAGS=region_flag_no_pvp|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
 //EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+//TAG.MUSIC=midi_ocllo
 
 
 //[AREADEF a_new_haven_island]
@@ -85,6 +87,7 @@ EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 //RECT=2480,3423,2623,3534,1
 //FLAGS=region_flag_no_pvp|region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
 //EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+//TAG.MUSIC=midi_ocllo
 
 //[ROOMDEF a_new_haven_inn]
 //NAME=Gentle Rest Inn
