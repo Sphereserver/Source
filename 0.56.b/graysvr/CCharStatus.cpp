@@ -2451,12 +2451,16 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 
 		if ( ( wBlockFlags & CAN_I_DOOR ) && ! pCharDef->Can( CAN_C_GHOST ))
 			wBlockFlags |= CAN_I_BLOCK;
+		else if ( ( wBlockFlags & CAN_I_ROOF ) && ! pCharDef->Can( CAN_C_INDOORS ))
+			wBlockFlags |= CAN_I_BLOCK;
 		else if ( ( wBlockFlags & CAN_I_WATER ) && ! pCharDef->Can( CAN_C_SWIM ))
 			wBlockFlags |= CAN_I_BLOCK;
 		else if ( ( wBlockFlags & CAN_I_HOVER ) && ! pCharDef->Can( CAN_C_HOVER ) && ! IsStatFlag(STATF_Hovering))
 			wBlockFlags |= CAN_I_BLOCK;
 
 		if ( ( wBlockFlags & CAN_I_DOOR ) && pCharDef->Can( CAN_C_GHOST ))
+			wBlockFlags &= ~CAN_I_BLOCK;
+		else if ( ( wBlockFlags & CAN_I_ROOF ) && pCharDef->Can( CAN_C_INDOORS ))
 			wBlockFlags &= ~CAN_I_BLOCK;
 		else if ( ( wBlockFlags & CAN_I_WATER ) && pCharDef->Can( CAN_C_SWIM ))
 			wBlockFlags &= ~CAN_I_BLOCK;
