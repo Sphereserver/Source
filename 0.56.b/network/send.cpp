@@ -1082,7 +1082,8 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 	CPointMap pos;
 	if (isShop)
 	{
-		for (const CItem* item = container->GetContentTail(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetPrev())
+		//for (const CItem* item = container->GetContentTail(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetPrev())
+		for (const CItem* item = container->GetContentHead(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetNext())
 		{
 			if (filterLayers == true)
 			{

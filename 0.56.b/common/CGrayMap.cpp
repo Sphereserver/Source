@@ -261,7 +261,7 @@ bool CGrayMapBlockState::CheckTile_Terrain( DWORD wItemBlockFlags, signed char z
 	{
 		if ( z >= m_Bottom.m_z )
 		{
-			if ( (m_Bottom.m_dwBlockFlags & (CAN_I_PLATFORM|CAN_I_CLIMB)) && (z - m_Bottom.m_z <= 4) )
+			if ( (m_Bottom.m_dwBlockFlags & (CAN_I_CLIMB)) && (z - m_Bottom.m_z <= 4) )
 					return true;
 			if ( z == m_Bottom.m_z )
 			{
@@ -284,7 +284,7 @@ bool CGrayMapBlockState::CheckTile_Terrain( DWORD wItemBlockFlags, signed char z
 			}
 			else if ( z == m_z ) 
 			{ 
-				if ( (m_Bottom.m_dwBlockFlags & (CAN_I_PLATFORM|CAN_I_CLIMB)) && (z - m_Bottom.m_z <= 4) )
+				if ( (m_Bottom.m_dwBlockFlags & (CAN_I_CLIMB)) && (z - m_Bottom.m_z <= 4) )
 					return true;
 			}
 			//DEBUG_ERR(("wItemBlockFlags 0x%lx\n",wItemBlockFlags));

@@ -75,10 +75,6 @@ CItem::CItem( ITEMID_TYPE id, CItemBase * pItemDef ) : CObjBase( true )
 	m_itWeapon.m_dmgenergy = 0;
 	m_itWeapon.m_dmgfire = 0;
 	m_itWeapon.m_dmgpoison = 0;
-	m_attackBase = pItemDef->m_attackBase;
-	m_attackRange = pItemDef->m_attackRange;
-	m_defenseBase = pItemDef->m_defenseBase;
-	m_defenseRange = pItemDef->m_defenseRange;
 
 	SetBase( pItemDef );
 	SetDispID( id );
@@ -1913,6 +1909,12 @@ bool CItem::SetBase( CItemBase * pItemDef )
 
 	m_BaseRef.SetRef(pItemDef);
 	m_weight = pItemDef->GetWeight();
+	
+	// matex (moved here from constructor so armor/dam is copied too when baseid changes!)
+	m_attackBase = pItemDef->m_attackBase;
+	m_attackRange = pItemDef->m_attackRange;
+	m_defenseBase = pItemDef->m_defenseBase;
+	m_defenseRange = pItemDef->m_defenseRange;
 
 	if (pParentCont)
 	{

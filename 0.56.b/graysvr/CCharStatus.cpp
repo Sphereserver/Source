@@ -1078,9 +1078,7 @@ bool CChar::CanSee( const CObjBaseTemplate * pObj ) const
 			if ( !CanSeeInContainer( dynamic_cast <const CItemContainer*>(pObjCont) ))
 				return( false );
 
-#ifndef _DEBUG
 			if ( IsSetEF(EF_FixCanSeeInClosedConts) )
-#endif
 			{
 				// a client cannot see the contents of someone else's container, unless they
 				// have opened it first
@@ -2455,8 +2453,6 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 			wBlockFlags |= CAN_I_BLOCK;
 		else if ( ( wBlockFlags & CAN_I_WATER ) && ! pCharDef->Can( CAN_C_SWIM ))
 			wBlockFlags |= CAN_I_BLOCK;
-		else if ( ( wBlockFlags & CAN_I_ROOF ) && ! pCharDef->Can( CAN_C_INDOORS ))
-			wBlockFlags |= CAN_I_BLOCK;
 		else if ( ( wBlockFlags & CAN_I_HOVER ) && ! pCharDef->Can( CAN_C_HOVER ) && ! IsStatFlag(STATF_Hovering))
 			wBlockFlags |= CAN_I_BLOCK;
 
@@ -2465,8 +2461,6 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 		else if ( ( wBlockFlags & CAN_I_WATER ) && pCharDef->Can( CAN_C_SWIM ))
 			wBlockFlags &= ~CAN_I_BLOCK;
 		else if ( ( wBlockFlags & CAN_I_PLATFORM ) && pCharDef->Can( CAN_C_WALK ))
-			wBlockFlags &= ~CAN_I_BLOCK;
-		else if ( ( wBlockFlags & CAN_I_ROOF ) && pCharDef->Can( CAN_C_INDOORS ))
 			wBlockFlags &= ~CAN_I_BLOCK;
 		else if ( ( wBlockFlags & CAN_I_HOVER ) && (pCharDef->Can( CAN_C_HOVER ) || IsStatFlag(STATF_Hovering)))
 			wBlockFlags &= ~CAN_I_BLOCK;
