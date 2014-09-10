@@ -1225,3 +1225,7 @@ Fixed: Armor not updating when BaseID is changed on an Item.
 Fixed: EF_FixCanSeeInClosedConts always enabled in Debug builds
 Fixed: Walking code. Only stair statictiles are priorized now near the map-surface. Platform tiles not. (players were falling through map surface)
 Fixed: Order in which NPCvendor boxes are sent to the player (display bug)
+
+10-09-2014, matex
+Refactored some of the walking code. You now need NPC's and Players to have MT_INDOORS definitely for them to be able
+to go under static tiles.
