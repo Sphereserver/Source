@@ -2486,7 +2486,9 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 			}
 		}
 
-		WORD wMoveBlock = (wBlockFlags & CAN_I_MOVEMASK) &~ (CAN_I_CLIMB|CAN_I_ROOF);
+		// CAN_I_CLIMB is not releveant for moving as you would need CAN_C_FLY to negate it. All others seem to match
+		// and the above uncommented checks are redundant (even dont make sense(?))
+		WORD wMoveBlock = (wBlockFlags & CAN_I_MOVEMASK) &~ (CAN_I_CLIMB);
 		if (wMoveBlock &~ wCan)
 			return NULL;
 
