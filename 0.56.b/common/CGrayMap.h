@@ -109,7 +109,10 @@ struct CGrayMapBlockState
 	
 	height_t m_zClimbHeight;	// return item climb height here
 
-	CGrayMapBlocker m_Top;		// What would be over my head.
+	// For new walk checking
+	std::vector<CGrayMapBlocker> m_Tops;		// What would be over my head.
+	
+	CGrayMapBlocker m_Top;
 	CGrayMapBlocker m_Bottom;	// What i would be standing on.
 	CGrayMapBlocker m_Lowest;	// the lowest item we have found.	
 

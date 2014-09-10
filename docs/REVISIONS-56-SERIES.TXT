@@ -1229,3 +1229,4 @@ Fixed: Order in which NPCvendor boxes are sent to the player (display bug)
 10-09-2014, matex
 Refactored some of the walking code. You now need NPC's and Players to have MT_INDOORS definitely for them to be able
 to go under static tiles.
+Changed MT_INDOORS to MT_NOINDOORS. Think that makes more sense.

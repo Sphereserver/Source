@@ -3219,6 +3219,12 @@ public:
 		if ( IsStatFlag(STATF_Hovering) )
 			dwCan |= CAN_C_HOVER;
 
+		// Inversion of MT_INDOORS, so MT_INDOORS should be named MT_NOINDOORS now.
+		if (dwCan & CAN_C_INDOORS)
+			dwCan &= ~CAN_C_INDOORS;
+		else
+			dwCan |= CAN_C_INDOORS;
+
 		return( dwCan & CAN_C_MOVEMASK );
 	}
 

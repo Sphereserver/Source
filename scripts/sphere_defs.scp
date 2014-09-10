@@ -738,7 +738,7 @@ mt_walk           00004   // Can walk on land
 mt_passwalls      00008   // Walk through walls
 mt_fly            00010
 mt_fire_immune    00020
-mt_indoors        00040   // Can go under roof
+mt_noindoors        00040   // Can't go under roof
 mt_hover          00080   // Hovers (can follow gargoyle flight paths)
 mt_equip          00100
 mt_usehands       00200

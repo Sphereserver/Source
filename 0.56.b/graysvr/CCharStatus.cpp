@@ -2434,12 +2434,12 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 	// Pass along my results.
 	wBlockFlags = static_cast<WORD>(block.m_Bottom.m_dwBlockFlags);
 
-	if ( block.m_Top.m_dwBlockFlags )
+	if (block.m_Top.m_dwBlockFlags)
 	{
 		wBlockFlags |= CAN_I_ROOF;	// we are covered by something.
 
 		WARNWALK(("block.m_Top.m_z (%d) > ptDest.m_z (%d) + m_zClimbHeight (%d) + (block.m_Top.m_dwTile (0x%lx) > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT/2 )(%d)\n",block.m_Top.m_z,ptDest.m_z,m_zClimbHeight,block.m_Top.m_dwTile,ptDest.m_z - (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT/2 ))));
-		if ( block.m_Top.m_z < block.m_Bottom.m_z + (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? GetHeightMount( false ) : GetHeightMount( false )/2 )) )
+		if ( block.m_Top.m_z < block.m_Bottom.m_z + (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? GetHeightMount(false) : GetHeightMount(false) / 2)))
 			wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
 	}
 

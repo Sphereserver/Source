@@ -214,9 +214,16 @@ bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBot
 	else
 	{
 		// I could potentially fit under this. ( it would be above me )
-		if ( zBottom >= m_Top.m_z )
+		if ( zBottom >= m_Top.m_z ) // ignore tiles above those already considered
 		{
 			return true;
+		}
+		else if (wItemBlockFlags &~(m_dwBlockFlags)) // if this does not block me... (here CAN_I_CLIMB = CAN_C_FLY makes sense, as we cannot reach the climbable)
+		{
+			if (!(wItemBlockFlags & (CAN_I_PLATFORM | CAN_I_ROOF))) // if it is not a platform or roof, skip
+			{
+				return true;
+			}
 		}
 		m_Top.m_dwBlockFlags = wItemBlockFlags;
 		m_Top.m_dwTile = dwID;
