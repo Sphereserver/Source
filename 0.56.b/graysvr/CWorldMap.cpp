@@ -1151,7 +1151,7 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 			wBlockThis = 0;
 		}
 
-		block.CheckTile_Item( wBlockThis,	z, zHeight, pItemDef->GetID() + TERRAIN_QTY);
+		block.CheckTile_Item(wBlockThis, z, zHeight, pItem->GetDispID() + TERRAIN_QTY);
 	}
 
 	wBlockThis = 0;
