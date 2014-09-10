@@ -2439,7 +2439,7 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 		wBlockFlags |= CAN_I_ROOF;	// we are covered by something.
 
 		WARNWALK(("block.m_Top.m_z (%d) > ptDest.m_z (%d) + m_zClimbHeight (%d) + (block.m_Top.m_dwTile (0x%lx) > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT/2 )(%d)\n",block.m_Top.m_z,ptDest.m_z,m_zClimbHeight,block.m_Top.m_dwTile,ptDest.m_z - (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT/2 ))));
-		if ( block.m_Top.m_z < ptDest.m_z + (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? GetHeightMount( false ) : GetHeightMount( false )/2 )) )
+		if ( block.m_Top.m_z < block.m_Bottom.m_z + (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? GetHeightMount( false ) : GetHeightMount( false )/2 )) )
 			wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
 	}
 
@@ -2449,7 +2449,7 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 		CCharBase* pCharDef = Char_GetDef();
 		ASSERT(pCharDef);
 
-		if ( ( wBlockFlags & CAN_I_DOOR ) && ! pCharDef->Can( CAN_C_GHOST ))
+		/*if ( ( wBlockFlags & CAN_I_DOOR ) && ! pCharDef->Can( CAN_C_GHOST ))
 			wBlockFlags |= CAN_I_BLOCK;
 		else if ( ( wBlockFlags & CAN_I_ROOF ) && ! pCharDef->Can( CAN_C_INDOORS ))
 			wBlockFlags |= CAN_I_BLOCK;
@@ -2458,7 +2458,9 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 		else if ( ( wBlockFlags & CAN_I_HOVER ) && ! pCharDef->Can( CAN_C_HOVER ) && ! IsStatFlag(STATF_Hovering))
 			wBlockFlags |= CAN_I_BLOCK;
 
-		if ( ( wBlockFlags & CAN_I_DOOR ) && pCharDef->Can( CAN_C_GHOST ))
+
+		// If anything blocks us it should not be overridden by this.
+		/*if ( ( wBlockFlags & CAN_I_DOOR ) && pCharDef->Can( CAN_C_GHOST ))
 			wBlockFlags &= ~CAN_I_BLOCK;
 		else if ( ( wBlockFlags & CAN_I_ROOF ) && pCharDef->Can( CAN_C_INDOORS ))
 			wBlockFlags &= ~CAN_I_BLOCK;
@@ -2467,7 +2469,7 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 		else if ( ( wBlockFlags & CAN_I_PLATFORM ) && pCharDef->Can( CAN_C_WALK ))
 			wBlockFlags &= ~CAN_I_BLOCK;
 		else if ( ( wBlockFlags & CAN_I_HOVER ) && (pCharDef->Can( CAN_C_HOVER ) || IsStatFlag(STATF_Hovering)))
-			wBlockFlags &= ~CAN_I_BLOCK;
+			wBlockFlags &= ~CAN_I_BLOCK;*/
 
 		if ( ! pCharDef->Can( CAN_C_FLY ))
 		{
@@ -2484,8 +2486,9 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 			}
 		}
 
-		if (( wBlockFlags & CAN_I_BLOCK ) && ( ! pCharDef->Can( CAN_C_PASSWALLS )) )
-				return NULL;
+		WORD wMoveBlock = (wBlockFlags & CAN_I_MOVEMASK) &~ (CAN_I_CLIMB|CAN_I_ROOF);
+		if (wMoveBlock &~ wCan)
+			return NULL;
 
 		if ( block.m_Bottom.m_z >= UO_SIZE_Z )
 			return( NULL );

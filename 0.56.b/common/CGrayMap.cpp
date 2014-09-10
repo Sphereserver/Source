@@ -214,6 +214,10 @@ bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBot
 	else
 	{
 		// I could potentially fit under this. ( it would be above me )
+		if (!(wItemBlockFlags &~m_dwBlockFlags))
+		{	// this does not block me.
+			return true;
+		}
 		if ( zBottom < m_Top.m_z )
 		{
 			m_Top.m_dwBlockFlags = wItemBlockFlags;
