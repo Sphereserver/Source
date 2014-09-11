@@ -1082,8 +1082,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 	CPointMap pos;
 	if (isShop)
 	{
-		//for (const CItem* item = container->GetContentTail(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetPrev())
-		for (const CItem* item = container->GetContentHead(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetNext())
+		for (const CItem* item = container->GetContentTail(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetPrev())
 		{
 			if (filterLayers == true)
 			{
@@ -1994,7 +1993,7 @@ int PacketVendorBuyList::fillContainer(const CItemContainer* container, int conv
 	skip(1);
 	size_t count(0);
 
-	for (CItem* item = container->GetContentHead(); item != NULL && count < maxItems; item = item->GetNext())
+	for (CItem* item = container->GetContentTail(); item != NULL && count < maxItems; item = item->GetPrev())
 	{
 		if (item->GetAmount() == 0)
 			continue;
