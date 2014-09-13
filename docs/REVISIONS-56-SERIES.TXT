@@ -1236,5 +1236,8 @@ Built in LOCAL.ArrowHandled for @HIT, @HITMISS
 so if you set this to something different from 0 in the triggers
 the server will not BOUNCE drop the arrow to the Target's feet on MISS
 or bounce it to the Targets BP on hit. You can handle this yourself.
-If you do nothing, the arrow will be deleted of Local.ArrowHandled != 0
+If you do nothing, the arrow will be deleted if Local.ArrowHandled != 0
 You can prevent it from being deleted by moving it in the Trigger.
+
+13-09-2014, Ben
+Fixed #2397: Return 1 should now prevent the guards from coming under @callguards in all instances

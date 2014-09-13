@@ -1779,7 +1779,7 @@ void CChar::CallGuards( CChar * pCriminal )
 				args.m_iN3 = bCriminal;
 				args.m_VarObjs.Insert( 1, pChar, true );
 
-				if ( !OnTrigger(CTRIG_CallGuards, pChar, &args) == TRIGRET_RET_TRUE )
+				if ( OnTrigger(CTRIG_CallGuards, pChar, &args) == TRIGRET_RET_TRUE )
 					return;
 
 				if ( static_cast<int>(args.m_iN1) != rid.GetResIndex() )
