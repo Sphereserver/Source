@@ -720,8 +720,11 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 			pItemDef = CItemBase::FindItemBase( pStatic->GetDispID() );
 			if ( pItemDef )
 			{
-				if ( pItemDef->GetID() == pStatic->GetDispID() ) //parent item
-					wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
+				if (pItemDef->GetID() == pStatic->GetDispID()) //parent item
+				{
+					wBlockThis = (pItemDef->m_Can & CAN_I_MOVEMASK);
+					z += pItemDef->GetHeight();
+				}
 				else //non-parent item
 				{
 					pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pStatic->GetDispID()));
@@ -729,9 +732,13 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 					{
 						g_Log.EventDebug("Failed to get non-parent reference (static) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pStatic->GetDispID(),pStatic->m_x+pMapBlock->m_x,pStatic->m_y+pMapBlock->m_y,pStatic->m_z);
 						wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
+						z += pItemDef->GetHeight();
 					}
 					else
-						wBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK );
+					{
+						wBlockThis = (pDupeDef->m_Can & CAN_I_MOVEMASK);
+						z += pDupeDef->GetHeight();
+					}
 				}
 			}
 			else if ( pStatic->GetDispID() )
