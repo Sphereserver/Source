@@ -4292,6 +4292,10 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			CScriptTriggerArgs	Args ( 0, 0, pWeapon );
 			if ( OnTrigger( CTRIG_HitMiss, pCharTarg, &Args ) == TRIGRET_RET_TRUE )
 				return( WAR_SWING_EQUIPPING );
+
+			// If arrow is handled by script, do nothing with it further!
+			if (Args.m_VarsLocal.GetKeyNum("ArrowHandled") != 0)
+				pAmmo = NULL;
 		}
 		if ( pWeapon )
 			pTagStorage = pWeapon->GetKey("OVERRIDE.SOUND_MISS", true);
@@ -4395,6 +4399,10 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	{
 		if ( OnTrigger( CTRIG_Hit, pCharTarg, &Args ) == TRIGRET_RET_TRUE )
 			return( WAR_SWING_EQUIPPING );
+
+		// If arrow is handled by script, do nothing with it further!
+		if (Args.m_VarsLocal.GetKeyNum("ArrowHandled") != 0)
+			pAmmo = NULL;
 	}
 #ifdef _ALPHASPHERE
 	Memory_AddObjTypes(pCharTarg,MEMORY_WAR_TARG);

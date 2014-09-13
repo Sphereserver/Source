@@ -1230,3 +1230,11 @@ Fixed: Order in which NPCvendor boxes are sent to the player (display bug)
 Refactored some of the walking code. You now need NPC's and Players to have MT_INDOORS definitely for them to be able
 to go under static tiles.
 Changed MT_INDOORS to MT_NOINDOORS. Think that makes more sense.
+
+13-09-2014, matex
+Built in LOCAL.ArrowHandled for @HIT, @HITMISS
+so if you set this to something different from 0 in the triggers
+the server will not BOUNCE drop the arrow to the Target's feet on MISS
+or bounce it to the Targets BP on hit. You can handle this yourself.
+If you do nothing, the arrow will be deleted of Local.ArrowHandled != 0
+You can prevent it from being deleted by moving it in the Trigger.
