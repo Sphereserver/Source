@@ -4290,6 +4290,14 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( m_Act_Difficulty < 0 )
 		{
 			CScriptTriggerArgs	Args ( 0, 0, pWeapon );
+			if (g_Cfg.IsSkillRanged(skill))
+			{
+				// Get uid of the current arrow.
+				if (pAmmo)
+				{
+					Args.m_VarsLocal.SetNum("Arrow", pAmmo->GetUID());
+				}
+			}
 			if ( OnTrigger( CTRIG_HitMiss, pCharTarg, &Args ) == TRIGRET_RET_TRUE )
 				return( WAR_SWING_EQUIPPING );
 
