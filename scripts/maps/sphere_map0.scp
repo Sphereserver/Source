@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, Sept 6, 2014
+// FILE LAST UPDATED: Friday, Sept 19, 2014
 //
 VERSION=0.56c
 
@@ -1029,7 +1029,7 @@ TAG.MUSIC=midi_dungeon9
 [AREADEF a_ice_dungeon_level_1]		//T2A
 NAME=Ice Dungeon Level 1
 GROUP=Ice Dungeon
-P=5774,149,20,0
+P=5875,150,15,0
 RECT=5663,130,5891,274,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
@@ -1056,7 +1056,7 @@ TAG.MUSIC=midi_dungeon9
 [AREADEF a_fire_dungeon_level_1]	//T2A
 NAME=Fire Dungeon Level 1
 GROUP=Fire Dungeon
-P=5790,1416,-40,0
+P=5790,1416,40,0
 RECT=5663,1402,5884,1519,0
 RECT=5764,1284,5884,1408,0
 FLAGS=region_flag_nobuilding|region_flag_underground|region_antimagic_recall_in

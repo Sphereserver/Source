@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, Sept 6, 2014
+// FILE LAST UPDATED: Friday, Sept 19, 2014
 //
 VERSION=0.56c
 
@@ -90,7 +90,7 @@ color_dye_high       1000   // highest dyeable color = 1001
 color_ice            1152
 color_snow           1153
 color_rock           1154
-color_spectral      17969
+color_spectral      16385
 
 [DEFNAME hues_range]
 colors_all             {2 1001}

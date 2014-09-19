@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, April 23, 2014
+// FILE LAST UPDATED: Friday, Sept 19, 2014
 //
 VERSION=0.56c
 
@@ -38,6 +38,7 @@ P=750,3450,-20,5
 RECT=662,3316,962,3716,5
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_RoyalCity
 
 [AREADEF a_holy_city]
 NAME=Holy City
@@ -46,6 +47,7 @@ P=995,3898,-42,5
 RECT=930,3840,1180,4090,5
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_HolyCity
 
 ////////////////////////////////////////
 // Dungeons
@@ -74,6 +76,7 @@ P=520,522,31,5
 RECT=235,40,1155,1040,5
 FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_StygianAbyss
 
 [AREADEF a_medusas_lair]
 NAME=Medusa's Lair
@@ -90,6 +93,7 @@ P=433,158,0,5
 RECT=294,112,386,290,5
 FLAGS=region_flag_nobuilding|region_antimagic_recall_in|region_antimagic_gate
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_StygianDragon
 
 ////////////////////////////////////////
 // Misc
@@ -107,20 +111,11 @@ P=1180,875,0,5
 RECT=1152,834,1210,897,5
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
-[AREADEF a_stygian_abyss]
+[AREADEF a_great_stygian_abyss]
 NAME=The Great Stygian Abyss
 P=521,923,29,5
 RECT=297,547,724,971,5
 RECT=556,44,1102,715,5
-EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
-
-[AREADEF a_raptor_island]
-NAME=Raptor Island
-P=816,3778,-42,5
-RECT=712,3765,879,3842,5
-RECT=728,3809,839,3923,5
-RECT=769,3721,972,3768,5
-RECT=808,3692,930,3732,5
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
 
 [AREADEF a_atoll_bend]
@@ -218,6 +213,7 @@ NAME=Void Isle
 P=440,3577,38,5
 RECT=314,3473,581,3699,5
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.MUSIC=midi_Void
 
 [AREADEF a_volcano]
 NAME=Volcano
