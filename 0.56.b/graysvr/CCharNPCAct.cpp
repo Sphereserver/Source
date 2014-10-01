@@ -3651,22 +3651,23 @@ void CChar::NPC_AI()
     CItemMemory * pMemory = Memory_FindTypes( MEMORY_FIGHT );
 
 	//	domestic animals pooping the ground
-    if (( m_pNPC->m_Brain == NPCBRAIN_ANIMAL ) && !IsStatFlag ( STATF_Freeze | STATF_Stone | STATF_Insubstantial | STATF_Conjured) && !pMemory)
+    if (( m_pNPC->m_Brain == NPCBRAIN_ANIMAL ) && !IsStatFlag (STATF_Freeze | STATF_Stone | STATF_Insubstantial | STATF_Conjured) && !pMemory)
 	{
-		if ( Calc_GetRandVal(130) ) ;
+		if ( Calc_GetRandVal(130) );
 		else if (( npcType == CREID_HORSE1 ) || ( npcType == CREID_Bull_Brown ) || ( npcType == CREID_Pig ) || ( npcType == CREID_Llama ))
 		{
 			EXC_SET("dung pooping");
-			
-			Sound( Calc_GetRandVal(2) ? 0xe3 : 0x23f );
+
+			Sound(Calc_GetRandVal2(0x131,0x134));	//0x428 (lol)
 			Emote(g_Cfg.GetDefaultMsg(DEFMSG_NPC_ANIMAL_POOP));
 			CItem	*pDung = CItem::CreateBase( Calc_GetRandVal(2) ? ITEMID_Dung1 : ITEMID_Dung2 );
 			if ( pDung )
 			{
-				pDung->MoveToDecay(pt, Calc_GetRandVal2(10,30)*TICK_PER_SEC);
 				TCHAR * pszMsg = Str_GetTemp();
 				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ANIMAL_DUNG ), GetName());
 				pDung->SetName(pszMsg);
+				pDung->SetAttr(ATTR_MOVE_NEVER);
+				pDung->MoveToDecay(pt, Calc_GetRandVal2(10,30)*TICK_PER_SEC);
 			}
 			return;
 		}

@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, May 19, 2014
+// FILE LAST UPDATED: Wednesday, October 1, 2014
 //
 VERSION=0.56c
 
@@ -1000,7 +1000,7 @@ KEY=Lumberjacking
 TITLE=Lumberjack
 PROMPT_MSG=
 DELAY=1.0
-RANGE=3
+RANGE=2
 FLAGS=SKF_GATHER
 STAT_STR=85
 STAT_INT=30

@@ -1205,6 +1205,7 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 	// SKILL_BLACKSMITHING
 	// SKILL_BOWCRAFT
 	// SKILL_CARPENTRY
+	// SKILL_COOKING
 	// SKILL_INSCRIPTION
 	// SKILL_TAILORING:
 	// SKILL_TINKERING,
@@ -1278,6 +1279,7 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 		return( false );
 	}
 
+	//To-do: fix iReplicationQty value always returning 0/1 instead the correct replicate amount
 	iReplicationQty = ResourceConsume( &(pItemDef->m_BaseResources), iReplicationQty, stage != SKTRIG_SUCCESS, pItemDef->GetResourceID().GetResIndex() );
 	if ( ! iReplicationQty )
 	{
@@ -2006,8 +2008,8 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 	Range = pSkillDef->m_Range;
 	if ( ! pSkillDef->m_Range )
 	{
-		g_Log.EventError("Lumberjacking skill doesn't have a value for RANGE, defaulting to 3\n");
-		Range = 3;
+		g_Log.EventError("Lumberjacking skill doesn't have a value for RANGE, defaulting to 2\n");
+		Range = 2;
 	}
 	if ( GetTopPoint().GetDist3D( m_Act_p ) > Range )
 	{
@@ -2590,7 +2592,7 @@ int CChar::Skill_Cooking( SKTRIG_TYPE stage )
 	}
 	if ( ! pFoodRaw->IsType( IT_FOOD_RAW ) && ! pFoodRaw->IsType( IT_MEAT_RAW ))
 	{
-		return( -SKTRIG_ABORT );
+		return( Skill_MakeItem( stage ));
 	}
 
 	if ( stage == SKTRIG_START )
@@ -3428,6 +3430,7 @@ int CChar::Skill_MakeItem( SKTRIG_TYPE stage )
 	// SKILL_BLACKSMITHING:
 	// SKILL_BOWCRAFT:
 	// SKILL_CARPENTRY:
+	// SKILL_COOKING:
 	// SKILL_INSCRIPTION:
 	// SKILL_TAILORING:
 	// SKILL_TINKERING:
@@ -3503,7 +3506,7 @@ int CChar::Skill_Blacksmith( SKTRIG_TYPE stage )
 	// m_Act_p = the anvil.
 	// m_Act_Targ = the hammer.
 
-	m_Act_p = g_World.FindItemTypeNearby( GetTopPoint(), IT_FORGE, 3, false );
+	m_Act_p = g_World.FindItemTypeNearby( GetTopPoint(), IT_FORGE, 2, false );
 	if ( ! m_Act_p.IsValidPoint())
 	{
 		SysMessageDefault( DEFMSG_SMITHING_FORGE );
@@ -3876,23 +3879,20 @@ int CChar::Skill_Act_Training( SKTRIG_TYPE stage )
 // General skill stuff.
 ANIM_TYPE CChar::Skill_GetAnim( SKILL_TYPE skill )
 {
-	ANIM_TYPE anim = (ANIM_TYPE)0;
+	ANIM_TYPE anim = (ANIM_TYPE)-1;
 	switch ( skill )
 	{
-		case SKILL_BOWCRAFT:
-			anim = ANIM_SALUTE ;
-			break;
-		case SKILL_BLACKSMITHING:
-			anim = ANIM_ATTACK_WEAPON ;
-			break;
-		/*case SKILL_FISHING:
+		/*case SKILL_FISHING:		//softcoded
 			anim = ANIM_ATTACK_2H_DOWN;
 			break;*/
+		case SKILL_BLACKSMITHING:
+			anim = ANIM_ATTACK_WEAPON;
+			break;
 		case SKILL_MINING:
 			anim = ANIM_ATTACK_1H_DOWN;
 			break;
 		case SKILL_LUMBERJACKING:
-			anim = ANIM_ATTACK_WEAPON;
+			anim = ANIM_ATTACK_2H_WIDE;
 			break;
 		default:
 			break;
@@ -3905,37 +3905,36 @@ int CChar::Skill_GetSound( SKILL_TYPE skill )
 	int sound = 0;
 	switch ( skill )
 	{
+		/*case SKILL_FISHING:	//softcoded
+			sound = 0x364;
+			break;
+		case SKILL_TINKERING:	//old value
+			sound = 0x241;
+			break;*/
 		case SKILL_TAILORING:
-			sound = SOUND_SNIP;
+			sound = 0x248;
 			break;
 		case SKILL_INSCRIPTION:
-			sound = 0x249 ;
+			sound = 0x249;
 			break;
 		case SKILL_BOWCRAFT:
-			sound = 0x055 ;
+			sound = 0x055;
 			break;
 		case SKILL_BLACKSMITHING:
-			sound = 0x02a ;
+			sound = 0x02a;
 			break;
 		case SKILL_CARPENTRY:
-			sound = 0x23d ;
+			sound = 0x23d;
 			break;
 		case SKILL_CARTOGRAPHY:
 			sound = 0x249;
 			break;
-		/*case SKILL_FISHING:
-			sound = 0x364;
-			break;*/
 		case SKILL_MINING:
-			sound = Calc_GetRandVal(2) ? 0x125 : 0x126 ;
+			sound = Calc_GetRandVal(2) ? 0x125 : 0x126;
 			break;
 		case SKILL_LUMBERJACKING:
-			{
-			CItem * pAxe = m_Act_TargPrv.ItemFind();
-			sound = pAxe->IsType(IT_WEAPON_FENCE) ? 0x148 : 0x13e;
-			}break;
-		case SKILL_COOKING:
-		case SKILL_TINKERING:
+			sound = 0x13e;
+			break;
 		default:
 			break;
 	}
@@ -4041,15 +4040,15 @@ int CChar::Skill_Stroke_Consuming()
 	}
 	INT64 delay = Skill_GetTimeout();
 	TRIGRET_TYPE tRet;
-	int anim = 0;
+	int anim = -1;
 	if ( IsTrigUsed(TRIGGER_SKILLSTROKE))
 	{
 		CScriptTriggerArgs args;
 		args.m_VarsLocal.SetNum("Skill", Skill_GetActive());
 		args.m_VarsLocal.SetNum("Strokes", m_atCreate.m_Stroke_Count);
 		args.m_VarsLocal.SetNum("Sound", sound);
-		args.m_VarsLocal.SetNum("Delay",delay);
-		args.m_VarsLocal.SetNum("Anim",anim);
+		args.m_VarsLocal.SetNum("Delay", delay);
+		args.m_VarsLocal.SetNum("Anim", anim);
 		tRet = OnTrigger(CTRIG_SkillStroke, this, &args );
 		if ( tRet == TRIGRET_RET_TRUE)
 			return(-SKTRIG_ABORT);
@@ -4061,7 +4060,7 @@ int CChar::Skill_Stroke_Consuming()
 	}
 
 	Sound(sound);
-		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
+	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
 	{
 		UpdateAnimate( static_cast<ANIM_TYPE>(anim) );	// ANIM_ATTACK_1H_DOWN
 	}
@@ -4071,7 +4070,6 @@ int CChar::Skill_Stroke_Consuming()
 	SetTimeout(delay);
 	if ( tRet == 2)	// Return 2 in the trigger means no items consumption in the current stroke.
 	{
-		
 		++m_atCreate.m_Stroke_Count;
 		return(-SKTRIG_STROKE);
 	}
@@ -4109,8 +4107,6 @@ int CChar::Skill_Stroke_Consuming()
 	
 	++m_atCreate.m_Stroke_Count;
 	return( -SKTRIG_STROKE );	// keep active.
-
-
 }
 
 

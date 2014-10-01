@@ -1241,3 +1241,11 @@ You can prevent it from being deleted by moving it in the Trigger.
 
 13-09-2014, Ben
 Fixed #2397: Return 1 should now prevent the guards from coming under @callguards in all instances
+
+01-10-2014, Coruja
+Changed: Reduced default RANGE on Blacksmithing and Lumberjacking skills (3 -> 2 tiles).
+Changed: A little sound/anim tweak on some crafting/harvesting skills.
+Changed: Improved sound of pets pooping on the ground.
+Fixed: The pet poop now comes with ATTR=attr_move_never by default.
+Fixed: Strange walk animation when using Alchemy skill.
+Fixed: MAKEITEM refusing to craft items on Cooking skill.

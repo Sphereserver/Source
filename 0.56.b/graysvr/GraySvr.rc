@@ -47,7 +47,7 @@ BEGIN
             VALUE "FileDescription", "SphereServer by Menasoft"
             VALUE "FileVersion", "SphereServer 0.56c Nightly"
             VALUE "InternalName", "SphereSvr"
-            VALUE "LegalCopyright", "Copyright 1998-2013 by Menasoft"
+            VALUE "LegalCopyright", "Copyright 1998-2014 by Menasoft"
             VALUE "OriginalFilename", "SphereSvr.exe"
             VALUE "ProductName", "SphereServer"
             VALUE "ProductVersion", "0.56c"
@@ -119,7 +119,7 @@ BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,11,17,21,20
     LTEXT           "Sphere Server Version",IDC_ABOUT_VERSION,40,14,156,8,SS_NOPREFIX
     DEFPUSHBUTTON   "OK",IDOK,247,7,50,14,WS_GROUP
-    LTEXT           "Copyright (C) 1998-2011 Menasoft ",IDC_STATIC,40,23,119,8
+    LTEXT           "Copyright (C) 1998-2014 Menasoft ",IDC_STATIC,40,23,119,8
     LTEXT           "www.menasoft.com",IDC_ABOUT_MENASOFT_LINK,39,42,103,8,SS_NOTIFY,WS_EX_ACCEPTFILES
     LTEXT           "www.sphereserver.net",IDC_ABOUT_SPHERE_LINK,178,43,75,8,SS_NOTIFY,WS_EX_ACCEPTFILES
     LTEXT           "This program makes use of:",IDC_STATIC,38,63,91,9
