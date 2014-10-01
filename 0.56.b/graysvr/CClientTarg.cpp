@@ -2485,11 +2485,6 @@ static LPCTSTR const sm_Txt_LoomUse[] =
 		}
 		break;
 
-	case IT_POTION_EMPTY:
-	case IT_MORTAR:
-		// Alchemy targeting stuff
-		return( Cmd_Skill_Alchemy( pItemTarg ));
-
 	case IT_SEWING_KIT:
 		// Use on cloth or hides
 		if ( pItemTarg == NULL)

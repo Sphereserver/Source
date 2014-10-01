@@ -566,28 +566,15 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 			return true;
 
 		case IT_MORTAR:
-			// If we have a mortar then do alchemy.
-			addTarget( CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_MORTAR_PROMT ) );
-			return true;
-		case IT_POTION_EMPTY:
-			if ( ! m_pChar->ContentFind(RESOURCE_ID(RES_TYPEDEF,IT_MORTAR)))
 			{
-				SysMessageDefault( DEFMSG_ITEMUSE_NO_MORTAR );
-				return( false );
+				if ( IsTrigUsed(TRIGGER_SKILLMENU) )
+				{
+					CScriptTriggerArgs args("sm_alchemy");
+					if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
+						return true;
+				}
+				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_alchemy" ) );
 			}
-			addTarget( CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_MORTAR_PROMT ) );
-			return true;
-		case IT_REAGENT:
-			// Make a potion with this. (The best type we can)
-			if ( ! m_pChar->ContentFind( RESOURCE_ID(RES_TYPEDEF,IT_MORTAR)))
-			{
-				SysMessageDefault( DEFMSG_ITEMUSE_NO_MORTAR );
-				return false;
-			}
-			Cmd_Skill_Alchemy( pItem );
-			return true;
-
-			// Put up menus to better decide what to do.
 
 		case IT_TINKER_TOOLS:	// Tinker tools.
 			{
@@ -599,6 +586,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 				}
 				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_tinker" ) );
 			}
+
 		case IT_SEWING_KIT:	// IT_SEWING_KIT Sew with materials we have on hand.
 			{
 				TCHAR *pszTemp = Str_GetTemp();
@@ -1361,44 +1349,6 @@ bool CClient::Cmd_Skill_Inscription()
 			return true;
 	}
 	return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_inscription" ) );
-}
-
-bool CClient::Cmd_Skill_Alchemy( CItem * pReag )
-{
-	ADDTOCALLSTACK("CClient::Cmd_Skill_Alchemy");
-	// SKILL_ALCHEMY
-
-	if ( pReag == NULL )
-		return( false );
-
-	ASSERT(m_pChar);
-	if ( ! m_pChar->CanUse( pReag, true ))
-		return( false );
-
-	if ( ! pReag->IsType(IT_REAGENT))
-	{
-		// That is not a reagent.
-		SysMessageDefault( DEFMSG_ALCHEMY_NOT_REG );
-		return( false );
-	}
-
-	// Find bottles to put potions in.
-	if ( ! m_pChar->ContentFind(RESOURCE_ID(RES_TYPEDEF,IT_POTION_EMPTY)))
-	{
-		SysMessageDefault( DEFMSG_ALCHEMY_NOBOTTLES );
-		return( false );
-	}
-
-	m_Targ_UID = pReag->GetUID();
-
-	// Put up a menu to decide formula ?
-	if ( IsTrigUsed(TRIGGER_SKILLMENU) )
-	{
-		CScriptTriggerArgs args("sm_alchemy");
-		if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
-			return true;
-	}
-	return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_alchemy" ) );
 }
 
 bool CClient::Cmd_Skill_Cartography( int iLevel )

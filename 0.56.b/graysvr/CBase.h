@@ -297,7 +297,7 @@ enum IT_TYPE		// double click type action.
 	IT_ROCK,				// 45 = can be mined for ore.
 	IT_CARPENTRY_CHOP,	// 46 = tool of some sort.
 	IT_MULTI,				// 47 = multi part object like house or ship.
-	IT_REAGENT,			// 48 = alchemy when clicked ?
+	IT_REAGENT,			// 48
 	IT_SHIP,				// 49 = this is a SHIP MULTI
 	IT_SHIP_PLANK,		// 50
 	IT_SHIP_SIDE,			// 51 = Should extend to make a plank

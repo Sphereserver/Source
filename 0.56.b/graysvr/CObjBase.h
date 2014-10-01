@@ -2652,7 +2652,7 @@ public:
 	// Some character action in progress.
 	SKILL_TYPE	m_Act_SkillCurrent;	// Currently using a skill. Could be combat skill.
 	CGrayUID	m_Act_Targ;			// Current combat/action target
-	CGrayUID	m_Act_TargPrv;		// Targeted bottle for alchemy or previous beg target.
+	CGrayUID	m_Act_TargPrv;		// Previous target.
 	int			m_Act_Difficulty;	// -1 = fail skill. (0-100) for skill advance calc.
 	CPointBase  m_Act_p;			// Moving to this location. or location of forge we are working on.
 
@@ -3375,7 +3375,6 @@ public:
 	int Skill_Stroke( bool fResource);				// Strokes in crafting skills, calling for SkillStroke trig
 	ANIM_TYPE Skill_GetAnim( SKILL_TYPE skill);
 	int Skill_GetSound( SKILL_TYPE skill);
-	int Skill_Stroke_Consuming();	// Same as skill_stroke but modified for alchemy's weird's consumption-on-stroke
 	int Skill_Stage( SKTRIG_TYPE stage );
 	TRIGRET_TYPE	Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage);
 	TRIGRET_TYPE	Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScriptTriggerArgs * pArgs); //pArgs.m_iN1 will be rewritten with skill

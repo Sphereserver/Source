@@ -1157,9 +1157,7 @@ bool CChar::Skill_MakeItem_Success()
 	{
 		if ( pItem->IsType( IT_POTION ))
 		{
-			// Create the potion, set various properties,
-			// put in pack
-			Emote( g_Cfg.GetDefaultMsg( DEFMSG_ALCHEMY_POUR ) );
+			// Create the potion, set various properties, put in pack
 			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
 			{
 				Sound( 0x240 );	// pouring noise.
@@ -1668,44 +1666,17 @@ int CChar::Skill_Alchemy( SKTRIG_TYPE stage )
 	ADDTOCALLSTACK("CChar::Skill_Alchemy");
 	// SKILL_ALCHEMY
 	// m_atCreate.m_ItemID = potion we are making.
-	// We consume resources on each stroke.
-	// This was start in Skill_MakeItem()
-
-	const CItemBase * pPotionDef = CItemBase::FindItemBase( m_atCreate.m_ItemID );
-	if ( pPotionDef == NULL )
-	{
-		SysMessageDefault( DEFMSG_ALCHEMY_DUNNO );
-		return -SKTRIG_ABORT;
-	}
+	// m_atCreate.m_Amount = amount of said item.
 
 	if ( stage == SKTRIG_START )
 	{
-		// See if skill allows a potion made out of targ'd reagent		// Sound( 0x243 );
-		m_atCreate.m_Stroke_Count = 0; // counts up.
-		return( m_Act_Difficulty );
-	}
-	if ( stage == SKTRIG_FAIL )
-	{
-		// resources have already been consumed.
-		Emote( g_Cfg.GetDefaultMsg( DEFMSG_ALCHEMY_TOSS ) );
-		return( 0 );	// normal failure
-	}
-	if ( stage == SKTRIG_SUCCESS )
-	{
-		// Resources have already been consumed.
-		// Now deliver the goods.
-		Skill_MakeItem_Success();
-		return( 0 );
+		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+		{
+			Sound( 0x242 );
+		}
 	}
 
-	/*ASSERT( stage == SKTRIG_STROKE );
-	if ( stage != SKTRIG_STROKE )
-		return( -SKTRIG_QTY );*/
-	if ( stage == SKTRIG_STROKE )
-		return( Skill_Stroke_Consuming());
-
-	
-	return -SKTRIG_STROKE;	// keep active.
+	return( Skill_MakeItem( stage ));
 }
 
 int CChar::Skill_Mining( SKTRIG_TYPE stage )
@@ -3427,6 +3398,7 @@ int CChar::Skill_Fighting( SKTRIG_TYPE stage )
 int CChar::Skill_MakeItem( SKTRIG_TYPE stage )
 {
 	ADDTOCALLSTACK("CChar::Skill_MakeItem");
+	// SKILL_ALCHEMY:
 	// SKILL_BLACKSMITHING:
 	// SKILL_BOWCRAFT:
 	// SKILL_CARPENTRY:
@@ -3911,6 +3883,9 @@ int CChar::Skill_GetSound( SKILL_TYPE skill )
 		case SKILL_TINKERING:	//old value
 			sound = 0x241;
 			break;*/
+		case SKILL_ALCHEMY:
+			sound = 0x242;
+			break;
 		case SKILL_TAILORING:
 			sound = 0x248;
 			break;
@@ -4012,103 +3987,6 @@ int CChar::Skill_Stroke( bool fResource )
 	//Skill_SetTimeout();	//Old behaviour, removed to keep up dynamic delay coming in with the trigger @SkillStroke
 	return( -SKTRIG_STROKE );	// keep active.
 }
-
-int CChar::Skill_Stroke_Consuming()
-{
-	const CItemBase * pItemDef;
-	switch (Skill_GetActive())
-	{
-		case SKILL_ALCHEMY:
-			pItemDef = CItemBase::FindItemBase( m_atCreate.m_ItemID );
-	}
-	int sound;
-	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-	{
-		switch (Skill_GetActive())
-		{
-		case SKILL_ALCHEMY:
-			sound = 0x242;
-		default:
-			sound = 0x242 ;
-		}
-	}
-
-	if ( m_atCreate.m_Stroke_Count >= pItemDef->m_BaseResources.GetCount())
-	{
-		// done.
-		return 0;
-	}
-	INT64 delay = Skill_GetTimeout();
-	TRIGRET_TYPE tRet;
-	int anim = -1;
-	if ( IsTrigUsed(TRIGGER_SKILLSTROKE))
-	{
-		CScriptTriggerArgs args;
-		args.m_VarsLocal.SetNum("Skill", Skill_GetActive());
-		args.m_VarsLocal.SetNum("Strokes", m_atCreate.m_Stroke_Count);
-		args.m_VarsLocal.SetNum("Sound", sound);
-		args.m_VarsLocal.SetNum("Delay", delay);
-		args.m_VarsLocal.SetNum("Anim", anim);
-		tRet = OnTrigger(CTRIG_SkillStroke, this, &args );
-		if ( tRet == TRIGRET_RET_TRUE)
-			return(-SKTRIG_ABORT);
-
-		sound = static_cast<int>(args.m_VarsLocal.GetKeyNum("Sound",false));
-		m_atCreate.m_Stroke_Count = static_cast<WORD>(args.m_VarsLocal.GetKeyNum("Strokes",false));
-		delay = args.m_VarsLocal.GetKeyNum("Delay",true);
-		anim = static_cast<int>(args.m_VarsLocal.GetKeyNum("Anim",false));
-	}
-
-	Sound(sound);
-	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
-	{
-		UpdateAnimate( static_cast<ANIM_TYPE>(anim) );	// ANIM_ATTACK_1H_DOWN
-	}
-	if ( delay < 10)
-		delay = 10;
-
-	SetTimeout(delay);
-	if ( tRet == 2)	// Return 2 in the trigger means no items consumption in the current stroke.
-	{
-		++m_atCreate.m_Stroke_Count;
-		return(-SKTRIG_STROKE);
-	}
-
-	CResourceQty item = pItemDef->m_BaseResources[m_atCreate.m_Stroke_Count];
-	RESOURCE_ID rid = item.GetResourceID();
-
-	CItemBase * pReagDef = dynamic_cast <CItemBase*>( g_Cfg.ResourceGetDef( rid ));
-	if ( pReagDef == NULL )
-	{
-		return -SKTRIG_ABORT;
-	}
-
-	if ( pReagDef->IsType(IT_POTION_EMPTY) && m_Act_Difficulty < 0 ) // going to fail anyhow.
-	{
-		// NOTE: Assume the bottle is ALWAYS LAST !
-		// Don't consume the bottle.
-		return -SKTRIG_FAIL;
-	}
-
-	if ( ContentConsume( rid, static_cast<int>(item.GetResQty())))
-	{
-		SysMessagef(g_Cfg.GetDefaultMsg( DEFMSG_ALCHEMY_LACK ), static_cast<LPCTSTR>(pReagDef->GetName()));
-		return -SKTRIG_ABORT;
-	}
-
-	if ( GetTopSector()->GetCharComplexity() < 5 && pReagDef->IsType(IT_REAGENT))
-	{
-		TCHAR * pszMsg = Str_GetTemp();
-		sprintf(pszMsg, ( m_atCreate.m_Stroke_Count == 0 ) ?
-			g_Cfg.GetDefaultMsg( DEFMSG_ALCHEMY_STAGE_1 ) :
-			g_Cfg.GetDefaultMsg( DEFMSG_ALCHEMY_STAGE_2 ), static_cast<LPCTSTR>(pReagDef->GetName()));
-		Emote(pszMsg);
-	}
-	
-	++m_atCreate.m_Stroke_Count;
-	return( -SKTRIG_STROKE );	// keep active.
-}
-
 
 int CChar::Skill_Stage( SKTRIG_TYPE stage )
 {
@@ -4589,10 +4467,7 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 			m_atCreate.m_Stroke_Count=1;		//This matches the new strokes amount used on OSI.
 			// set crafting parameters
 			pArgs.m_VarsLocal.SetNum("CraftItemdef",pResBase.GetPrivateUID());
-			if ( skill == SKILL_ALCHEMY)
-				pArgs.m_VarsLocal.SetNum("CraftStrokeCnt",pItemDef->m_BaseResources.GetCount());
-			else
-				pArgs.m_VarsLocal.SetNum("CraftStrokeCnt",m_atCreate.m_Stroke_Count);
+			pArgs.m_VarsLocal.SetNum("CraftStrokeCnt",m_atCreate.m_Stroke_Count);
 			pArgs.m_VarsLocal.SetNum("CraftAmount",m_atCreate.m_Amount);
 		}
 		if ( bGatherSkill == true )
@@ -4621,8 +4496,7 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 			// read crafting parameters
 			pResBase.SetPrivateUID(static_cast<int>(pArgs.m_VarsLocal.GetKeyNum("CraftItemdef",true)));
 			m_atCreate.m_ItemID = static_cast<ITEMID_TYPE>(pResBase.GetResIndex());
-			if ( skill != SKILL_ALCHEMY)
-				m_atCreate.m_Stroke_Count = static_cast<WORD>(pArgs.m_VarsLocal.GetKeyNum("CraftStrokeCnt",true));
+			m_atCreate.m_Stroke_Count = static_cast<WORD>(pArgs.m_VarsLocal.GetKeyNum("CraftStrokeCnt",true));
 			if ( m_atCreate.m_Stroke_Count < 1)
 				m_atCreate.m_Stroke_Count = 1;
 			m_atCreate.m_Amount = static_cast<WORD>(pArgs.m_VarsLocal.GetKeyNum("CraftAmount",true));

@@ -1243,9 +1243,17 @@ You can prevent it from being deleted by moving it in the Trigger.
 Fixed #2397: Return 1 should now prevent the guards from coming under @callguards in all instances
 
 01-10-2014, Coruja
-Changed: Reduced default RANGE on Blacksmithing and Lumberjacking skills (3 -> 2 tiles).
-Changed: A little sound/anim tweak on some crafting/harvesting skills.
-Changed: Improved sound of pets pooping on the ground.
-Fixed: The pet poop now comes with ATTR=attr_move_never by default.
 Fixed: Strange walk animation when using Alchemy skill.
 Fixed: MAKEITEM refusing to craft items on Cooking skill.
+Fixed: The pet poop now comes with ATTR=attr_move_never by default.
+Changed: Improved sound of pets pooping on the ground.
+Changed: A little sound/anim tweak on some crafting/harvesting skills.
+Changed: Reduced default RANGE on Blacksmithing and Lumberjacking skills (3 -> 2 tiles).
+Changed: Alchemy skill is now a craft skill like any other. No more exclusive behaviors.
+	-The skill is now used clicking on it's tool (mortar & pestle) instead click on the reagent or empty bottle.
+	-EFFECT now can be used to control the % of lost resources on skill fail.
+	-Skill stroke behavior now works fine on alchemy (LOCAL.CraftStrokeCnt on skill @Start, and @SkillStroke on chars).
+	-Added FLAGS=skf_craft to alchemy skill (sphere_skills.scp)
+	-Added missing 't_mortar' on potions SKILLMAKE (sphere_item_provisions_potions.scp)
+	-Removed some alchemy internal messages (sphere_msgs.scp)
+	WARNING: Make sure to update your scripts following these changes, otherwise alchemy skill will not work anymore

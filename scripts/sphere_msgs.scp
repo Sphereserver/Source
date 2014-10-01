@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, October 6, 2013
+// FILE LAST UPDATED: Wednesday, October 1, 2014
 //
 VERSION=0.56c
 
@@ -41,14 +41,6 @@ IMSG_DEF_FONT   3
 
 
 [DEFMESSAGE messages]
-//alchemy_dunno				"You have no clue how to make this potion."
-//alchemy_lack				"Hmmm, you lack %s for this potion."
-//alchemy_nobottles				"You have no bottles for your potion."
-//alchemy_not_reg				"That is not a reagent."
-//alchemy_pour				"pour the completed potion into a bottle"
-//alchemy_stage_1				"start grinding some %s in the mortar"
-//alchemy_stage_2				"add %s and continue grinding"
-//alchemy_toss					"toss the failed mixture from the mortar"
 //anatomy_dex_1				"very clumsy"
 //anatomy_dex_10				"superhumanly agile"
 //anatomy_dex_2				"somewhat uncoordinated"
@@ -369,14 +361,12 @@ IMSG_DEF_FONT   3
 //itemuse_loom_remove			"You remove the previously uncompleted weave."
 //itemuse_macepick_targ  		"Where do you want to use the %s?"
 //itemuse_map_fail				"You must possess the map to get a good look at it."
-//itemuse_mortar_promt			"What reagent you like to make a potion out of?"
 //itemuse_multi_blocked   		"The structure is blocked."
 //itemuse_multi_bump			"Terrain is too bumpy to place structure here."
 //itemuse_multi_collapse  		"The structure collapses."
 //itemuse_multi_fail				"No building is allowed here."
 //itemuse_multi_intway			"%s is in your way."
 //itemuse_multi_shipw			"The ship would not be completely in the water."
-//itemuse_no_mortar			"You have no mortar and pestle."
 //itemuse_pdummy_ok			"You feel confident in your deception."
 //itemuse_pdummy_p			"You must be standing in front of or behind the dip to use it."
 //itemuse_pdummy_skill			"Try practicing on real people."
