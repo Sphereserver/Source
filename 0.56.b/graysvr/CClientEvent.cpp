@@ -623,8 +623,9 @@ void CClient::Event_Skill_Use( SKILL_TYPE skill ) // Skill is clicked on the ski
 			break;
 
 		case SKILL_CARTOGRAPHY:
-			// Menu select for map type.
-			Cmd_Skill_Cartography( 0 );
+			// EMPTY. On OSI cartography is not used clicking on the skill button anymore.
+			// This code is empty just for compatibility purposes if someone want customize
+			// the softcoded skill to enable the button again using @Select trigger.
 			break;
 
 		case SKILL_INSCRIPTION:

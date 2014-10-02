@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, October 1, 2014
+// FILE LAST UPDATED: Thursday, October 2, 2014
 //
 VERSION=0.56c
 
@@ -112,10 +112,6 @@ IMSG_DEF_FONT   3
 //bvbox_open_self				"You have %d stones in your %s"
 //cant_make					"You can't make that."
 //cant_make_res				"You can't make anything with what you have."
-//cartography_cant				"You can't use the %s where it is."
-//cartography_fail				"You have no blank parchment to draw on"
-//cartography_nomap			"You have no blank parchment to draw on"
-//cartography_wmap			"You can't seem to figure out your surroundings."
 //carve_corpse_1				"Guards can now be called on you."
 //carve_corpse_2				"You carve the corpse but find nothing usefull."
 //carve_corpse_feathers   		"You pluck the bird and get some feathers."
@@ -360,7 +356,6 @@ IMSG_DEF_FONT   3
 //itemuse_loom					"Use thread or yarn on looms"
 //itemuse_loom_remove			"You remove the previously uncompleted weave."
 //itemuse_macepick_targ  		"Where do you want to use the %s?"
-//itemuse_map_fail				"You must possess the map to get a good look at it."
 //itemuse_multi_blocked   		"The structure is blocked."
 //itemuse_multi_bump			"Terrain is too bumpy to place structure here."
 //itemuse_multi_collapse  		"The structure collapses."

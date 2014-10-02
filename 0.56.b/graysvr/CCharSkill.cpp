@@ -1157,10 +1157,16 @@ bool CChar::Skill_MakeItem_Success()
 	{
 		if ( pItem->IsType( IT_POTION ))
 		{
-			// Create the potion, set various properties, put in pack
 			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
 			{
 				Sound( 0x240 );	// pouring noise.
+			}
+		}
+		else if ( pItem->IsType( IT_MAP ))
+		{
+			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+			{
+				Sound( 0x255 );
 			}
 		}
 		else if ( *pszMsg )
@@ -2138,34 +2144,9 @@ int CChar::Skill_DetectHidden( SKTRIG_TYPE stage )
 int CChar::Skill_Cartography( SKTRIG_TYPE stage )
 {
 	ADDTOCALLSTACK("CChar::Skill_Cartography");
-	// Selected a map type and now we are making it.
-	// m_Act_Cartography_Dist = the map distance.
-	// Find the blank map to write on first.
-
-	CPointMap pnt = GetTopPoint();
-	if ( pnt.m_map <= 1 )
-	{
-		if ( pnt.m_x >= g_Cfg.m_iWrapX )	// maps don't work out here !
-		{
-			SysMessageDefault( DEFMSG_CARTOGRAPHY_WMAP );
-			return( -SKTRIG_QTY );
-		}
-	}
-
-	CItem * pItem = ContentFind( RESOURCE_ID(RES_TYPEDEF,IT_MAP_BLANK), 0 );
-	if ( pItem == NULL )
-	{
-		SysMessageDefault( DEFMSG_CARTOGRAPHY_FAIL );
-		return( -SKTRIG_QTY );
-	}
-
-	if ( ! CanUse( pItem, true ))
-	{
-		SysMessagef(g_Cfg.GetDefaultMsg( DEFMSG_CARTOGRAPHY_CANT ), static_cast<LPCTSTR>(pItem->GetName()));
-		return( -SKTRIG_QTY );
-	}
-
-	m_Act_Targ = pItem->GetUID();
+	// SKILL_CARTOGRAPHY
+	// m_atCreate.m_ItemID = map we are making.
+	// m_atCreate.m_Amount = amount of said item.
 
 	if ( stage == SKTRIG_START )
 	{
@@ -2173,42 +2154,9 @@ int CChar::Skill_Cartography( SKTRIG_TYPE stage )
 		{
 			Sound( 0x249 );
 		}
-
-		// difficulty related to m_atCartography.m_Dist ???
-
-		return( Calc_GetRandVal(100) );
-	}
-	if ( stage == SKTRIG_FAIL )
-	{
-		// consume the map sometimes ?
-		// pItem->ConsumeAmount( 1 );
-		return 0;
-	}
-	if ( stage == SKTRIG_SUCCESS )
-	{
-		pItem->ConsumeAmount( 1 );
-
-		// Get a valid region.
-		CRectMap rect;
-		rect.SetRect( pnt.m_x - m_atCartography.m_Dist,
-			pnt.m_y - m_atCartography.m_Dist,
-			pnt.m_x + m_atCartography.m_Dist,
-			pnt.m_y + m_atCartography.m_Dist,
-			pnt.m_map);
-
-		// Now create the map
-		pItem = CItem::CreateScript( ITEMID_MAP, this );
-		pItem->m_itMap.m_top = rect.m_top;
-		pItem->m_itMap.m_left = rect.m_left;
-		pItem->m_itMap.m_bottom = rect.m_bottom;
-		pItem->m_itMap.m_right = rect.m_right;
-		pItem->m_itMap.m_map = rect.m_map;
-		ItemBounce( pItem );
-		return( 0 );
 	}
 
-	ASSERT(0);
-	return( -SKTRIG_QTY );
+	return( Skill_MakeItem( stage ));
 }
 
 int CChar::Skill_Musicianship( SKTRIG_TYPE stage )

@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, October 1, 2014
+// FILE LAST UPDATED: Thursday, October 2, 2014
 //
 VERSION=0.56c
 
@@ -313,6 +313,10 @@ BONUS_INT=80
 BONUS_STATS=15
 ADV_RATE=2.5,50.0,200.0
 VALUES=1,20,80
+
+ON=@Select
+	SRC.SYSMESSAGE This skill cannot be used directly.
+	return 1
 
 ON=@Fail
 	SRC.SYSMESSAGE Thy trembling hand results in an unusable map.

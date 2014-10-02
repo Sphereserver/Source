@@ -2738,12 +2738,6 @@ public:
 			DIR_TYPE	m_PrvDir; // Previous direction of tracking target, used for when to notify player
 		} m_atTracking;
 
-		// SKILL_CARTOGRAPHY
-		struct
-		{
-			int	m_Dist;
-		} m_atCartography;
-
 		// NPCACT_FOLLOW_TARG
 		struct
 		{

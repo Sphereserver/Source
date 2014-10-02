@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED:  Friday, October 4, 2013
+// FILE LAST UPDATED: Thursday, October 2, 2014
 //
 VERSION=0.56c
 
@@ -995,42 +995,21 @@ BUY=i_fish_big_4,{4 24}
 CATEGORY=Vendor Templates
 SUBSECTION=Sell Templates
 DESCRIPTION=Mapmaker
-SELL=i_map_blank
-SELL=i_map_stock_1
-SELL=i_map_stock_2
-SELL=i_map_stock_3
-SELL=i_map_stock_4
-SELL=i_map_stock_5
-SELL=i_map_stock_6
-SELL=i_map_stock_7
-SELL=i_map_stock_8
-SELL=i_map_stock_9
-SELL=i_map_stock_10
-SELL=i_map_stock_11
-SELL=i_map_stock_12
-SELL=i_map_stock_13
-SELL=i_map_stock_14
-SELL=i_map_stock_15
-SELL=i_map_stock_16
-SELL=i_map_stock_17
-SELL=i_map_stock_18
-SELL=i_map_stock_19
-SELL=i_map_stock_20
-SELL=i_map_stock_21
-SELL=i_map_stock_22
-SELL=i_map_stock_23
-SELL=i_map_stock_24
-SELL=i_map_stock_25
-SELL=i_map_stock_26
-SELL=i_map_stock_27
-SELL=i_map_stock_28
+SELL=i_map_blank,40
+SELL=i_mapmakers_pen,20
+SELL=i_scroll_blank,40
 
 [TEMPLATE VENDOR_B_MAPMAKER]
 CATEGORY=Vendor Templates
 SUBSECTION=Buy Templates
 DESCRIPTION=Mapmaker
-BUY=i_map_blank
 BUY=i_scroll_blank
+BUY=i_mapmakers_pen
+BUY=i_map_blank
+BUY=i_map_local
+BUY=i_map_city
+BUY=i_map_sea_chart
+BUY=i_map_world
 
 [TEMPLATE VENDOR_S_SHIP]
 CATEGORY=Vendor Templates

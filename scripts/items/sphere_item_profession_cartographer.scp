@@ -81,10 +81,6 @@ DUPEITEM=03657
 DUPEITEM=03657
 
 
-//////////////////
-// Custom Items //
-//////////////////
-
 [ITEMDEF i_map_blank]
 ID=i_map
 NAME=Blank Map
@@ -97,6 +93,84 @@ DESCRIPTION=Blank Map
 ON=@Create
 	MORE1=0
 	MORE2=0
+
+
+[ITEMDEF i_mapmakers_pen]
+ID=i_pen_and_ink
+NAME=mapmaker's pen
+TYPE=t_cartography
+RESOURCES=1 i_ingot_iron
+SKILLMAKE=TINKERING 25.0, t_tinker_tools
+VALUE=7
+
+
+[ITEMDEF i_map_local]
+ID=i_map
+NAME=local map
+RESOURCES=1 i_map_blank
+SKILLMAKE=CARTOGRAPHY 0.0, t_cartography
+VALUE=3
+
+ON=@Create
+IF (<SRC.ISCHAR>)
+ LOCAL.Radius=<eval 64+((<SRC.CARTOGRAPHY>*2)/10)>
+ MORE1=<eval ((<SRC.P.X>-<LOCAL.Radius>)*010000)+(<SRC.P.Y>-<LOCAL.Radius>)>
+ MORE2=<eval ((<SRC.P.X>+<LOCAL.Radius>)*010000)+(<SRC.P.Y>+<LOCAL.Radius>)>
+ENDIF
+
+
+[ITEMDEF i_map_city]
+ID=i_map
+NAME=city map
+RESOURCES=1 i_map_blank
+SKILLMAKE=CARTOGRAPHY 25.0, t_cartography
+VALUE=3
+
+ON=@Create
+IF (<SRC.ISCHAR>)
+ LOCAL.Radius=<eval 64+((<SRC.CARTOGRAPHY>*4)/10)>
+ IF (<LOCAL.Radius> < 200)
+  LOCAL.Radius=200
+ ENDIF
+ MORE1=<eval ((<SRC.P.X>-<LOCAL.Radius>)*010000)+(<SRC.P.Y>-<LOCAL.Radius>)>
+ MORE2=<eval ((<SRC.P.X>+<LOCAL.Radius>)*010000)+(<SRC.P.Y>+<LOCAL.Radius>)>
+ENDIF
+
+
+[ITEMDEF i_map_sea_chart]
+ID=i_map
+NAME=sea chart map
+RESOURCES=1 i_map_blank
+SKILLMAKE=CARTOGRAPHY 35.0, t_cartography
+VALUE=3
+
+ON=@Create
+IF (<SRC.ISCHAR>)
+ LOCAL.Radius=<eval 64+((<SRC.CARTOGRAPHY>*10)/10)>
+ IF (<LOCAL.Radius> < 200)
+  LOCAL.Radius=200
+ ENDIF
+ MORE1=<eval ((<SRC.P.X>-<LOCAL.Radius>)*010000)+(<SRC.P.Y>-<LOCAL.Radius>)>
+ MORE2=<eval ((<SRC.P.X>+<LOCAL.Radius>)*010000)+(<SRC.P.Y>+<LOCAL.Radius>)>
+ENDIF
+
+
+[ITEMDEF i_map_world]
+ID=i_map
+NAME=world map
+RESOURCES=1 i_map_blank
+SKILLMAKE=CARTOGRAPHY 50.0, t_cartography
+VALUE=3
+
+ON=@Create
+IF (<SRC.ISCHAR>)
+ LOCAL.Radius=<eval (<SRC.CARTOGRAPHY>*20)/10>
+ MORE2=<eval ((<SRC.P.X>+<LOCAL.Radius>)*010000)+(<SRC.P.Y>+<LOCAL.Radius>)>
+ENDIF
+
+//////////////////
+// Custom Items //
+//////////////////
 
 [ITEMDEF i_map_STOCK_1]
 ID=i_map

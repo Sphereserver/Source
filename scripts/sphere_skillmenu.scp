@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, October 6, 2013
+// FILE LAST UPDATED: Thursday, October 2, 2014
 //
 VERSION=0.56c
 
@@ -17,10 +17,10 @@ VERSION=0.56c
 The sphereserver has a number of hardcoded skillmenu's, this file contains
 the softcoded component.  The prupose of each is as follows:
 
-  sm_alchemy        = Triggered by DClicking alchemy tools
+  sm_alchemy        = Triggered by DClicking a alchemy tool
   sm_summon         = Triggered by the Magery "summoning" spell
   sm_polymorph      = Triggered by the Magery Polymorph spell
-  sm_cartography    = Triggered by DClicking a blank map
+  sm_cartography    = Triggered by DClicking a cartography tool
   sm_bowcraft       = Triggered by DClicking a knife and using it on wood
   sm_bolts          = Triggered by DClicking arrows or shafts
   sm_blacksmith     = Triggered by DClicking a blacksmithing hammer
@@ -464,24 +464,22 @@ ON=i_pet_DRAGON Dragon
 TEST=MAGERY 98.0
 POLY { c_dragon_green 1 c_dragon_red 1 }
 
+
 [SKILLMENU sm_cartography]
-What sort of map do you want to draw ?
+What sort of map do you want to draw?
 
-ON=i_mapadd1 Detail Map
-TEST=CARTOGRAPHY 5.0
-DRAWMAP=200
+ON=i_mapadd1 Local Map
+MAKEITEM=i_map_local
 
-ON=i_mapadd2 Regional Map
-TEST=CARTOGRAPHY 30.0
-DRAWMAP=400
+ON=i_mapadd2 City Map
+MAKEITEM=i_map_city
 
-ON=i_mapadd3 Sea Chart
-TEST=CARTOGRAPHY 45.0
-DRAWMAP=800
+ON=i_mapadd3 Sea Chart Map
+MAKEITEM=i_map_sea_chart
 
-ON=i_mapadd4 Full World
-TEST=CARTOGRAPHY 75.0
-DRAWMAP=2048
+ON=i_mapadd4 World Map
+MAKEITEM=i_map_world
+
 
 [SKILLMENU sm_BOWCRAFT]
 // knife on wood

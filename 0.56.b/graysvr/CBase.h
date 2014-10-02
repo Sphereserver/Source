@@ -444,6 +444,7 @@ enum IT_TYPE		// double click type action.
 	IT_HOVEROVER,		// 192 = Hover-over item (CAN_C_HOVER can hover over blocking items)
 	IT_SPELLBOOK_BARD,	// 193 = Bard spellbook (should have MOREZ=700 by default)
 	IT_WEAPON_THROWING,	// 194 = Throwing Weapon
+	IT_CARTOGRAPHY,		// 195 = cartography tool
 
 	IT_QTY,
 	IT_TRIGGER = 1000	// custom triggers starts from here

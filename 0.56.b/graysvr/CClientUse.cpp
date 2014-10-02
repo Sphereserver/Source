@@ -445,25 +445,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 			SysMessageDefault( DEFMSG_ITEMUSE_TELESCOPE );
 			return true;
 		case IT_MAP:
-		case IT_MAP_BLANK:
-			if ( ! pItem->m_itMap.m_right && ! pItem->m_itMap.m_bottom )
-			{
-				if ( IsTrigUsed(TRIGGER_SKILLMENU) )
-				{
-					CScriptTriggerArgs args("sm_cartography");
-					if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
-						return true;
-				}
-				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_cartography" ) );
-			}
-			else if ( ! IsPriv(PRIV_GM) && pItem->GetTopLevelObj() != m_pChar )	// must be on your person.
-			{
-				SysMessageDefault( DEFMSG_ITEMUSE_MAP_FAIL );
-			}
-			else
-			{
-				addMap( dynamic_cast <CItemMap*>( pItem ));
-			}
+			addMap( dynamic_cast <CItemMap*>( pItem ));
 			return true;
 
 		case IT_CANNON_BALL:
@@ -576,7 +558,18 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_alchemy" ) );
 			}
 
-		case IT_TINKER_TOOLS:	// Tinker tools.
+		case IT_CARTOGRAPHY:
+			{
+				if ( IsTrigUsed(TRIGGER_SKILLMENU) )
+				{
+					CScriptTriggerArgs args("sm_cartography");
+					if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
+						return true;
+				}
+				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_cartography" ) );
+			}
+
+		case IT_TINKER_TOOLS:
 			{
 				if ( IsTrigUsed(TRIGGER_SKILLMENU) )
 				{
@@ -1349,31 +1342,6 @@ bool CClient::Cmd_Skill_Inscription()
 			return true;
 	}
 	return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_inscription" ) );
-}
-
-bool CClient::Cmd_Skill_Cartography( int iLevel )
-{
-	ADDTOCALLSTACK("CClient::Cmd_Skill_Cartography");
-	UNREFERENCED_PARAMETER(iLevel);
-	// select the map type.
-
-	ASSERT(m_pChar);
-	if ( m_pChar->Skill_Wait(SKILL_CARTOGRAPHY))
-		return( false );
-
-	if ( ! m_pChar->ContentFind( RESOURCE_ID(RES_TYPEDEF,IT_MAP_BLANK)))
-	{
-		SysMessageDefault( DEFMSG_CARTOGRAPHY_NOMAP );
-		return( false );
-	}
-
-	if ( IsTrigUsed(TRIGGER_SKILLMENU) )
-	{
-		CScriptTriggerArgs args("sm_cartography");
-		if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
-			return true;
-	}
-	return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_cartography" ) );
 }
 
 bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )

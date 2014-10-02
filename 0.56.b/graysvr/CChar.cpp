@@ -3409,6 +3409,8 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			SetDisconnected();
 			break;
 		case CHV_DRAWMAP:
+			// OBSOLETE. Cartography skill now draw maps using MAKEITEM instead DRAWMAP
+
 			// Use the cartography skill to draw a map.
 			// Already did the skill check.
 			m_atCartography.m_Dist = s.GetArgVal();
