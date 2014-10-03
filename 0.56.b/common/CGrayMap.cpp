@@ -214,20 +214,23 @@ bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBot
 	else
 	{
 		// I could potentially fit under this. ( it would be above me )
-		if ( zBottom >= m_Top.m_z ) // ignore tiles above those already considered
+/*		if ( zBottom >= m_Top.m_z ) // ignore tiles above those already considered
 		{
 			return true;
-		}
-		else if (wItemBlockFlags &~(m_dwBlockFlags)) // if this does not block me... (here CAN_I_CLIMB = CAN_C_FLY makes sense, as we cannot reach the climbable)
+		}*/
+/*		else if (wItemBlockFlags &~(m_dwBlockFlags)) // if this does not block me... (here CAN_I_CLIMB = CAN_C_FLY makes sense, as we cannot reach the climbable)
 		{
 			if (!(wItemBlockFlags & (CAN_I_PLATFORM | CAN_I_ROOF))) // if it is not a platform or roof, skip
 			{
 				return true;
 			}
+		}*/
+		if ( zBottom < m_Top.m_z )
+		{
+			m_Top.m_dwBlockFlags = wItemBlockFlags;
+			m_Top.m_dwTile = dwID;
+			m_Top.m_z = zBottom;
 		}
-		m_Top.m_dwBlockFlags = wItemBlockFlags;
-		m_Top.m_dwTile = dwID;
-		m_Top.m_z = zBottom;
 	}
 	return true;
 
@@ -269,7 +272,7 @@ bool CGrayMapBlockState::CheckTile_Terrain( DWORD wItemBlockFlags, signed char z
 	{
 		if ( z >= m_Bottom.m_z )
 		{
-			if ( (m_Bottom.m_dwBlockFlags & (CAN_I_CLIMB)) && (z - m_Bottom.m_z <= 4) )
+			if ( (m_Bottom.m_dwBlockFlags & (CAN_I_PLATFORM|CAN_I_CLIMB)) && (z - m_Bottom.m_z <= 4) )
 					return true;
 			if ( z == m_Bottom.m_z )
 			{
@@ -292,7 +295,7 @@ bool CGrayMapBlockState::CheckTile_Terrain( DWORD wItemBlockFlags, signed char z
 			}
 			else if ( z == m_z ) 
 			{ 
-				if ( (m_Bottom.m_dwBlockFlags & (CAN_I_CLIMB)) && (z - m_Bottom.m_z <= 4) )
+				if ( (m_Bottom.m_dwBlockFlags & (CAN_I_PLATFORM|CAN_I_CLIMB)) && (z - m_Bottom.m_z <= 4) )
 					return true;
 			}
 			//DEBUG_ERR(("wItemBlockFlags 0x%lx\n",wItemBlockFlags));
