@@ -1261,7 +1261,7 @@ Changed: Alchemy skill is now a craft skill like any other. No more exclusive be
 02-10-2014, Coruja
 Changed: Cartography skill is now a craft skill too. The craft now uses default MAKEITEM instead the hardcoded DRAWMAP.
 	-The skill is now used clicking on it's tool (mapmaker's pen) instead click on the skill button or blank map.
-	-Softcoded DRAWMAP behavior using @Create on map items.
+	-Removed obsolete DRAWMAP hardcoded function. The behavior is now softcoded using @Create on map items.
 	-Softcoded the client skill button behavior, it comes disabled by default (sphere_skills.scp)
 	-Added new items for maps and mapmaker's pen (items/sphere_item_profession_cartographer.scp)
 	-Added new hardcoded typedef 't_carpentry' used on the tool to open the skill menu (sphere_defs.scp)
