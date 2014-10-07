@@ -23,9 +23,9 @@
 
 // NOTE: !!! ALL Multi bytes in file ASSUME big endian !!!!
 
-#define UO_MAP_VIEW_SIGHT	12	// True max sight distance of creatures is 12
-#define UO_MAP_VIEW_SIZE	18 // Visibility for normal items
-#define UO_MAP_VIEW_RADAR	31 // Visibility for castles, keeps and boats
+#define UO_MAP_VIEW_SIGHT	14	// True max sight distance of creatures is 14
+#define UO_MAP_VIEW_SIZE	18	// Visibility for normal items
+#define UO_MAP_VIEW_RADAR	31	// Visibility for castles, keeps and boats
 
 ////////////////////////////////////////////////////////////////////////
 // Shared enum types.

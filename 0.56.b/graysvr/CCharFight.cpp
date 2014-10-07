@@ -3382,7 +3382,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	if ( g_Cfg.m_fAttackingIsACrime == TRUE)
 	{
 		CChar * pTarg = const_cast<CChar*>(pCharTarg);
-		if ( ( pTarg->Noto_GetFlag( this ) == NOTO_GOOD || pTarg->Noto_GetFlag( this ) == NOTO_GUILD_SAME ) && pTarg->Attacker_GetID( this ) < 0)
+		if ( pTarg->Noto_GetFlag( this ) == NOTO_GOOD && pTarg->Attacker_GetID( this ) < 0)
 		{
 			if ( IsClient())
 			{

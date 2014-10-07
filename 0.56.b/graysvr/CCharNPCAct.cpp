@@ -2697,16 +2697,8 @@ bool CChar::NPC_Act_Food()
 		}
 	}
 
-	if ( iFoodLevel <= 1 )
-		iSearchDistance = UO_MAP_VIEW_SIGHT;					// 12
-	else if ( iFoodLevel <= 5 )
-		iSearchDistance = (UO_MAP_VIEW_SIGHT/3) * 2;	// 8
-	else if ( iFoodLevel <= 10 )
-		iSearchDistance = UO_MAP_VIEW_SIGHT/2;			// 6
-	else if ( iFoodLevel <= 15 )
-		iSearchDistance = UO_MAP_VIEW_SIGHT/4;			// 3
-
-	//	Search for food nearby
+	// Search for food nearby
+	iSearchDistance = (UO_MAP_VIEW_SIGHT * ( 100 - iFoodLevel ) ) / 100;
 	CWorldSearch AreaItems(GetTopPoint(), minimum(iSearchDistance,m_pNPC->m_Home_Dist_Wander));
 	for (;;)
 	{
@@ -3469,13 +3461,9 @@ void CChar::NPC_Food()
 		}
 	}
 
-	if ( iFoodLevel <= 1 ) iSearchDistance = UO_MAP_VIEW_SIGHT;					// 12
-	else if ( iFoodLevel <= 5 ) iSearchDistance = (UO_MAP_VIEW_SIGHT/3) * 2;	// 8
-	else if ( iFoodLevel <= 10 ) iSearchDistance = UO_MAP_VIEW_SIGHT/2;			// 6
-	else if ( iFoodLevel <= 15 ) iSearchDistance = UO_MAP_VIEW_SIGHT/4;			// 3
-
-	//	Search for food nearby
+	// Search for food nearby
 	EXC_SET("searching nearby");
+	iSearchDistance = (UO_MAP_VIEW_SIGHT * ( 100 - iFoodLevel ) ) / 100;
 	CWorldSearch	AreaItems(GetTopPoint(), minimum(iSearchDistance,m_pNPC->m_Home_Dist_Wander));
 	for (;;)
 	{

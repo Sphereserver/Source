@@ -3570,10 +3570,6 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 	{
 		return 0;
 	}
-	/*if ( stage == SKTRIG_STROKE ) //why is this here twice???
-	{
-		return 0;
-	}*/
 
 	CChar * pChar = m_Act_Targ.CharFind();
 	if ( pChar == NULL )
@@ -3607,8 +3603,12 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 	{
 		Sound( 0x227 );
 	}
-	int iDamage = Stat_GetVal(STAT_DEX)/3 + Calc_GetRandVal( Stat_GetVal(STAT_DEX)/4 );
-	//Override damage amount?
+
+	// Set damage value
+	int iDamage = ( Stat_GetVal(STAT_STR) * 16 ) / 100;
+	if ( iDamage > 200 )
+		iDamage = 200;
+
 	const CVarDefCont * pTagStorage = GetDefKey("BREATH.DAM", true);
 	if ( pTagStorage )
 	{
@@ -3953,8 +3953,8 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 		return Skill_Fighting(stage);
 	else if ( g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_MAGIC ) )
 		return Skill_Magery(stage);
-	//else if ( g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_CRAFT ) )		// Skills must call their Skill_id() regardless of skf_craft, cartography and cooking will fail if not.
-	//	return Skill_MakeItem(stage);
+	else if ( g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_CRAFT ) )
+		return Skill_MakeItem(stage);
 	else switch ( Skill_GetActive() )
 	{
 		case SKILL_NONE:	// idling.

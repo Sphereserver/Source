@@ -1269,3 +1269,8 @@ Changed: Cartography skill is now a craft skill too. The craft now uses default 
 	-Updated cartography skillmenu (sphere_skillmenu.scp)
 	-Removed some cartography internal messages (sphere_msgs.scp)
 	WARNING: Make sure to update your scripts following these changes, otherwise cartography skill will not work anymore
+
+07-10-2014, Coruja
+Added: New formula for dragon breath damage on NPCs brain_dragon, it's now NPC_CurrentHitpoints * 0.16 (if BREATH.DAM property is set, it will override the internal damage).
+Changed: Increased NPCs view range from 12 to 14 tiles. This also affects the range to call guards.
+Fixed #2405: Players becoming criminal when attack someone on the same guild.
