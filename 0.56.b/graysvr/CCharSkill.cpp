@@ -2499,66 +2499,40 @@ int CChar::Skill_Poisoning( SKTRIG_TYPE stage )
 int CChar::Skill_Cooking( SKTRIG_TYPE stage )
 {
 	ADDTOCALLSTACK("CChar::Skill_Cooking");
-	// SKILL_COOKING
-	// m_Act_Targ = food object to cook.
-	// m_Act_p = my fire.
-	// How hard to cook is this ?
+	// m_atCreate.m_ItemID = create this item
+	// m_Act_p = the heat source
+	// m_Act_Targ = the skill tool
 
-	CItem * pFoodRaw = m_Act_Targ.ItemFind();
-	if ( pFoodRaw == NULL )
-	{
-		return( -SKTRIG_QTY );
-	}
-	if ( ! pFoodRaw->IsType( IT_FOOD_RAW ) && ! pFoodRaw->IsType( IT_MEAT_RAW ))
-	{
-		return( Skill_MakeItem( stage ));
-	}
+	int iMaxDist = 3;
 
 	if ( stage == SKTRIG_START )
 	{
-		return Calc_GetRandVal( 50 );
-	}
-	if (stage == SKTRIG_STROKE)
-	{
-		return 0;
-	}
-
-	// Convert uncooked food to cooked food.
-	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(RES_GET_INDEX( pFoodRaw->m_itFood.m_cook_id ));
-	if (id == ITEMID_NOTHING)
-	{
-		id = static_cast<ITEMID_TYPE>(pFoodRaw->Item_GetDef()->m_ttFoodRaw.m_cook_id.GetResIndex());
-		if (id == ITEMID_NOTHING)	// does not cook into anything.
+		m_Act_p = g_World.FindItemTypeNearby( GetTopPoint(), IT_FIRE, iMaxDist, false );
+		if ( ! m_Act_p.IsValidPoint())
 		{
-			return( -SKTRIG_QTY );
+			m_Act_p = g_World.FindItemTypeNearby( GetTopPoint(), IT_FORGE, iMaxDist, false );
+			if ( ! m_Act_p.IsValidPoint())
+			{
+				m_Act_p = g_World.FindItemTypeNearby( GetTopPoint(), IT_CAMPFIRE, iMaxDist, false );
+				if ( ! m_Act_p.IsValidPoint())
+				{
+					SysMessageDefault( DEFMSG_COOKING_FIRE_SOURCE );
+					return( -SKTRIG_QTY );
+				}
+			}
 		}
+		UpdateDir( m_Act_p );	// toward the fire source
 	}
 
-	CItem * pFoodCooked = NULL;
 	if ( stage == SKTRIG_SUCCESS )
 	{
-		pFoodCooked = CItem::CreateTemplate( id, NULL, this );
-		if ( pFoodCooked )
+		if ( GetTopPoint().GetDist( m_Act_p ) > iMaxDist )
 		{
-			SysMessageDefault( DEFMSG_COOKING_SUCCESS );
-			pFoodCooked->m_itFood.m_MeatType = pFoodRaw->m_itFood.m_MeatType;
-			pFoodCooked->m_itFood.m_foodval = pFoodRaw->m_itFood.m_foodval;
-			ItemBounce(pFoodCooked);
+			return( -SKTRIG_FAIL );
 		}
 	}
-	else	// SKTRIG_FAIL
-	{
-		// Burn food
-	}
 
-	pFoodRaw->ConsumeAmount();
-
-	if ( pFoodCooked == NULL )
-	{
-		return( -SKTRIG_QTY );
-	}
-
-	return( 0 );
+	return( Skill_MakeItem( stage ));
 }
 
 int CChar::Skill_Taming( SKTRIG_TYPE stage )
@@ -3426,20 +3400,28 @@ int CChar::Skill_Blacksmith( SKTRIG_TYPE stage )
 	// m_Act_p = the anvil.
 	// m_Act_Targ = the hammer.
 
-	m_Act_p = g_World.FindItemTypeNearby( GetTopPoint(), IT_FORGE, 2, false );
-	if ( ! m_Act_p.IsValidPoint())
-	{
-		SysMessageDefault( DEFMSG_SMITHING_FORGE );
-		return( -SKTRIG_QTY );
-	}
-
-	UpdateDir( m_Act_p );	// toward the forge
+	int iMaxDist = 2;
 
 	if ( stage == SKTRIG_START )
 	{
+		m_Act_p = g_World.FindItemTypeNearby( GetTopPoint(), IT_FORGE, iMaxDist, false );
+		if ( ! m_Act_p.IsValidPoint())
+		{
+			SysMessageDefault( DEFMSG_SMITHING_FORGE );
+			return( -SKTRIG_QTY );
+		}
+		UpdateDir( m_Act_p );	// toward the forge
+
 		m_atCreate.m_Stroke_Count = /*Calc_GetRandVal( 4 ) +*/ 2;
 	}
 
+	if ( stage == SKTRIG_SUCCESS )
+	{
+		if ( GetTopPoint().GetDist( m_Act_p ) > iMaxDist )
+		{
+			return( -SKTRIG_FAIL );
+		}
+	}
 
 	return( Skill_MakeItem( stage ));
 }
@@ -3953,8 +3935,8 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 		return Skill_Fighting(stage);
 	else if ( g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_MAGIC ) )
 		return Skill_Magery(stage);
-	else if ( g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_CRAFT ) )
-		return Skill_MakeItem(stage);
+	/*else if ( g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_CRAFT ) )
+		return Skill_MakeItem(stage);*/
 	else switch ( Skill_GetActive() )
 	{
 		case SKILL_NONE:	// idling.

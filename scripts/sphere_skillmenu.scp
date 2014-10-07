@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, October 2, 2014
+// FILE LAST UPDATED: Tuesday, October 7, 2014
 //
 VERSION=0.56c
 
@@ -29,7 +29,7 @@ the softcoded component.  The prupose of each is as follows:
   sm_tailor_cloth   = Triggered by DClicking a sewing kit and using it on cloth
   sm_tinker         = Triggered by DClicking tinker tools
   sm_inscription    = Triggered by DClicking a blank scroll
-  sm_cook           = NOT USED YET...
+  sm_cooking        = Triggered by DClicking a skillet, rolling pin or flour sifter
 
 
 [SKILLMENU sm_inscription]
@@ -3116,33 +3116,39 @@ MAKEITEM=i_key_iron
 ON=i_key_magic <name> (<resmake>)
 MAKEITEM=i_key_magic
 
-// End of Tinkering section
+//////////////////////////////////////////////
+// Begin Cooking Menu
 
-// Cooking section
+[SKILLMENU sm_cooking]
+Cooking
 
-[SKILLMENU sm_cook]
-// This doesn't work!
-ON=i_bread_loaf Baked Goods
-SKILLMENU=sm_cook_1
+ON=i_dough Ingredients
+SKILLMENU=sm_cook_ingredients
 
-[SKILLMENU sm_cook_1]
-// This doesn't work!
-Baked Goods
+ON=i_bread_loaf Baking
+SKILLMENU=sm_cook_baking
 
+ON=i_ribs_cooked Barbecue
+SKILLMENU=sm_cook_barbecue
+
+
+[SKILLMENU sm_cook_ingredients]
+ON=i_dough <name> (<resmake>)
+MAKEITEM=i_dough
+
+
+[SKILLMENU sm_cook_baking]
 ON=i_bread_loaf <name> (<resmake>)
 MAKEITEM=i_bread_loaf
 
-ON=i_muffins <name> (<resmake>)
-MAKEITEM=i_muffins
-
-ON=i_bread_french <name> (<resmake>)
-MAKEITEM=i_bread_french
-
 ON=i_pan_cookies <name> (<resmake>)
 MAKEITEM=i_pan_cookies
 
-ON=i_pan_cookies <name> (<resmake>)
-MAKEITEM=i_pan_cookies
+ON=i_cake <name> (<resmake>)
+MAKEITEM=i_cake
+
+ON=i_muffin_3 <name> (<resmake>)
+MAKEITEM=i_muffin_3
 
 ON=i_pie_baked <name> (<resmake>)
 MAKEITEM=i_pie_baked
@@ -3150,7 +3156,24 @@ MAKEITEM=i_pie_baked
 ON=i_pizza <name> (<resmake>)
 MAKEITEM=i_pizza
 
-ON=i_cake <name> (<resmake>)
-MAKEITEM=i_cake
+
+[SKILLMENU sm_cook_barbecue]
+ON=i_bird_cooked <name> (<resmake>)
+MAKEITEM=i_bird_cooked
+
+ON=i_chicken_leg <name> (<resmake>)
+MAKEITEM=i_chicken_leg
+
+ON=i_fish_cut_cooked <name> (<resmake>)
+MAKEITEM=i_fish_cut_cooked
+
+ON=i_eggs_fried <name> (<resmake>)
+MAKEITEM=i_eggs_fried
+
+ON=i_lamb_leg <name> (<resmake>)
+MAKEITEM=i_lamb_leg
+
+ON=i_ribs_cooked <name> (<resmake>)
+MAKEITEM=i_ribs_cooked
 
 [EOF]

@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, October 2, 2014
+// FILE LAST UPDATED: Tuesday, October 7, 2014
 //
 VERSION=0.56c
 
@@ -1100,6 +1100,7 @@ t_hoverover             192   // Hover-over item (CAN_I_HOVER can hover over blo
 t_spellbook_bard        193   // SA Bard spellbook (should have MOREZ=700 by default)
 t_weapon_throwing       194   // Throwing Weapon
 t_cartography           195   // cartography tool
+t_cooking               196   // cooking tool
 
 //Add custom types after 500 to leave room for future hardcoded types
 t_forest		500   // Forest Tiles

@@ -445,6 +445,7 @@ enum IT_TYPE		// double click type action.
 	IT_SPELLBOOK_BARD,	// 193 = Bard spellbook (should have MOREZ=700 by default)
 	IT_WEAPON_THROWING,	// 194 = Throwing Weapon
 	IT_CARTOGRAPHY,		// 195 = cartography tool
+	IT_COOKING,			// 196 = cooking tool
 
 	IT_QTY,
 	IT_TRIGGER = 1000	// custom triggers starts from here
@@ -538,15 +539,6 @@ public:
 			int		   m_StrReq;	// REQSTR= Strength required to mount
 			RESOURCE_ID_BASE m_charid;	// TDATA3= (CREID_TYPE)
 		} m_ttFigurine;
-
-		// IT_FOOD_RAW
-		// IT_MEAT_RAW
-		struct
-		{
-			RESOURCE_ID_BASE m_cook_id;		// TDATA1=Cooks into this. (ITEMID_TYPE)
-			RESOURCE_ID_BASE m_MeatType;	// TDATA2=Type of meat this is from ? (CREID_TYPE)
-			int		m_CookSkill;			// TDATA3 = how hard to cook this ? 0-100
-		} m_ttFoodRaw;
 
 		// IT_MUSICAL
 		struct

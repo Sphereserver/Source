@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, May 6, 2014
+// FILE LAST UPDATED: Tuesday, October 7, 2014
 //
 VERSION=0.56c
 
@@ -3406,14 +3406,14 @@ DEFNAME=i_banana_bunch
 TYPE=t_fruit
 //TDATA1=i_tree_banana
 FLIP=1
-WEIGHT=0.4
+WEIGHT=1.0
 RESOURCES=4 i_banana_unpeeled
 CATEGORY=Vegetation
 SUBSECTION=Fruits and Vegetables
 DESCRIPTION=Bananas (many)
 DUPELIST=01722
 ON=@Create
-   MOREM=3
+   MOREM=1
 
 [ITEMDEF 01722]
 //banana (many)
@@ -3431,7 +3431,7 @@ SUBSECTION=Fruits and Vegetables
 DESCRIPTION=Coconut
 DUPELIST=01724
 ON=@Create
-   MOREM=2
+   MOREM=1
 
 [ITEMDEF 01724]
 //coconut opened
@@ -3441,13 +3441,13 @@ DUPEITEM=01723
 DEFNAME=i_coconut_halved
 TYPE=t_fruit
 //TDATA1=i_tree_coconutpalm
-WEIGHT=0.5
+WEIGHT=1.0
 RESOURCES=1 i_fruit_coconut
 CATEGORY=Vegetation
 SUBSECTION=Fruits and Vegetables
 DESCRIPTION=Coconut (Halved)
 ON=@Create
-   MOREM=2
+   MOREM=1
 
 [ITEMDEF 01726]
 DEFNAME=i_fruit_coconut
@@ -3459,7 +3459,7 @@ CATEGORY=Vegetation
 SUBSECTION=Fruits and Vegetables
 DESCRIPTION=Coconut
 ON=@Create
-   MOREM=2
+   MOREM=1
 
 [ITEMDEF 01727]
 DEFNAME=i_fruit_dates

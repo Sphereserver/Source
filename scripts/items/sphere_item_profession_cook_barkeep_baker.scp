@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, November 5, 2013
+// FILE LAST UPDATED: Tuesday, October 7, 2014
 //
 VERSION=0.56c
 
@@ -82,7 +82,7 @@ SUBSECTION=Meat
 DESCRIPTION=Slab of Bacon
 DUPELIST=0977
 ON=@Create
-   MOREM=5
+   MOREM=3
 
 [ITEMDEF 0977]
 //slab of bacon
@@ -121,15 +121,16 @@ DESCRIPTION=Fish Steak (raw)
 [ITEMDEF 097b]
 DEFNAME=i_fish_cut_cooked
 TYPE=t_food
-VALUE=4
+VALUE=3
 WEIGHT=0.1
-RESOURCES=1 i_fish_small
-SKILLMAKE=Cooking 15.0
+REPLICATE=1
+RESOURCES=1 i_fish_cut_raw
+SKILLMAKE=Cooking 0.0
 CATEGORY=Provisions - Food
 SUBSECTION=Meat
 DESCRIPTION=Fish Steak (cooked)
 ON=@Create
-   MOREM=1
+   MOREM=3
 
 [ITEMDEF 097c]
 DEFNAME=i_cheese_wedge
@@ -142,45 +143,44 @@ CATEGORY=Provisions - Food
 SUBSECTION=Dairy
 DESCRIPTION=Cheese (wedge)
 ON=@Create
-   MOREM=1
+   MOREM=3
 
 [ITEMDEF 097d]
 DEFNAME=i_cheese_cut
 TYPE=t_food
 VALUE=18
-WEIGHT=0.9
+WEIGHT=0.1
 RESOURCES=6 i_pitcher_milk,1 i_reag_fertile_dirt
 SKILLMAKE=Cooking 55.0
 CATEGORY=Provisions - Food
 SUBSECTION=Dairy
 DESCRIPTION=Cheese (wheel with wedge removed)
 ON=@Create
-   MOREM=4
+   MOREM=3
 
 [ITEMDEF 097e]
 DEFNAME=i_cheese_wheel
 TYPE=t_food
 VALUE=20
-WEIGHT=1.0
+WEIGHT=0.1
 RESOURCES=7 i_pitcher_milk,1 i_reag_fertile_dirt
 SKILLMAKE=Cooking 55.0
 CATEGORY=Provisions - Food
 SUBSECTION=Dairy
 DESCRIPTION=Cheese (wheel)
 ON=@Create
-   MOREM=5
+   MOREM=3
 
 [ITEMDEF 097f]
 DEFNAME=i_fry_pan
-FLIP=1
+TYPE=t_cooking
 VALUE=20
 WEIGHT=4.0
 RESOURCES=4 i_ingot_iron
-SKILLMAKE=Tinkering 39.0,t_tinker_tools
-CATEGORY=Decoration - Kitchen and Dining
-SUBSECTION=Cookware
+SKILLMAKE=Tinkering 30.0,t_tinker_tools
+CATEGORY=Items by Professions
+SUBSECTION=Cook
 DESCRIPTION=Frypan
-DUPELIST=09e2
 
 
 [ITEMDEF 098c]
@@ -515,13 +515,14 @@ DEFNAME=i_eggs_fried
 TYPE=t_food
 VALUE=2
 WEIGHT=0.1
+REPLICATE=1
 RESOURCES=1 i_eggs_fresh
-SKILLMAKE=Cooking 15.0,i_fry_pan
+SKILLMAKE=Cooking 0.0
 CATEGORY=Provisions - Food
 SUBSECTION=Eggs
 DESCRIPTION=Eggs (fried)
 ON=@Create
-   MOREM=1
+   MOREM=4
 
 [ITEMDEF 09b7]
 DEFNAME=i_bird_cooked
@@ -529,8 +530,9 @@ TYPE=t_food
 FLIP=1
 VALUE=3
 WEIGHT=1.0
+REPLICATE=1
 RESOURCES=1 i_bird_raw
-SKILLMAKE=Cooking 10.0,i_pot
+SKILLMAKE=Cooking 0.0
 CATEGORY=Provisions - Food
 SUBSECTION=Meat
 DESCRIPTION=Cooked Bird
@@ -604,7 +606,7 @@ DEFNAME=i_sausages
 TYPE=t_food
 FLIP=1
 VALUE=12
-WEIGHT=0.3
+WEIGHT=1.0
 RESOURCES=1 i_fruit_garlic,1 i_ham
 SKILLMAKE=Cooking 45.0
 CATEGORY=Provisions - Food
@@ -612,7 +614,7 @@ SUBSECTION=Assembled
 DESCRIPTION=Sausages
 DUPELIST=09c1
 ON=@Create
-   MOREM=3
+   MOREM=4
 
 [ITEMDEF 09c1]
 //sausages
@@ -920,13 +922,13 @@ DEFNAME=i_cake
 TYPE=t_food
 VALUE=33
 WEIGHT=0.2
-RESOURCES=3 i_flour_bowl,1 i_eggs_fresh,1 i_sugar
-SKILLMAKE=Cooking 30.0
+RESOURCES=1 i_dough
+SKILLMAKE=Cooking 0.0
 CATEGORY=Provisions - Food
 SUBSECTION=Baked
 DESCRIPTION=Cake
 ON=@Create
-   MOREM=5
+   MOREM=10
 
 [ITEMDEF 09ea]
 DEFNAME=i_muffin
@@ -945,14 +947,14 @@ ON=@Create
 DEFNAME=i_muffin_3
 TYPE=t_food
 VALUE=21
-WEIGHT=0.6
-RESOURCES=3 i_muffin
-SKILLMAKE=Cooking 20.0,1 i_tray
+WEIGHT=1.0
+RESOURCES=1 i_dough
+SKILLMAKE=Cooking 0.0
 CATEGORY=Provisions - Food
 SUBSECTION=Baked
 DESCRIPTION=Muffin (3)
 ON=@Create
-   MOREM=3
+   MOREM=4
 
 [ITEMDEF 09ec]
 DEFNAME=i_jar_honey
@@ -1019,14 +1021,15 @@ ON=@TargOn_Item
 DEFNAME=i_ribs_cooked
 TYPE=t_food
 VALUE=4
-WEIGHT=0.3
+WEIGHT=1.0
+REPLICATE=1
 RESOURCES=1 i_ribs_raw
-SKILLMAKE=Cooking 0.1
+SKILLMAKE=Cooking 0.0
 CATEGORY=Provisions - Food
 SUBSECTION=Meat
 DESCRIPTION=Ribs (Cooked)
 ON=@Create
-   MOREM=3
+   MOREM=5
 
 [ITEMDEF 09f3]
 DEFNAME=i_pan
@@ -1232,10 +1235,10 @@ DUPELIST=01046
 [ITEMDEF 0103b]
 DEFNAME=i_bread_loaf
 TYPE=t_food
-VALUE=15
-WEIGHT=0.3
+VALUE=7
+WEIGHT=1.0
 RESOURCES=1 i_dough
-SKILLMAKE=Cooking 10.0,i_pot
+SKILLMAKE=Cooking 0.0
 CATEGORY=Provisions - Food
 SUBSECTION=Baked
 DESCRIPTION=Bread Loaf
@@ -1258,21 +1261,21 @@ ON=@Create
 [ITEMDEF 0103d]
 DEFNAME=i_dough
 TYPE=t_food_raw
-TDATA1=i_bread_loaf
 VALUE=10
-WEIGHT=0.3
-RESOURCES=1 i_pitcher_water,1 i_eggs_fresh,1 i_flour_bowl
-SKILLMAKE=Cooking 10.0,i_pot
+WEIGHT=0.5
+RESOURCES=1 i_flour_sack, 1 i_pitcher_water
+SKILLMAKE=Cooking 0.0
 CATEGORY=Provisions - Food
 SUBSECTION=Assembled
 DESCRIPTION=Dough
 
 [ITEMDEF 0103e]
 DEFNAME=i_flour_sifter
+TYPE=t_cooking
 VALUE=9
 WEIGHT=1.0
-RESOURCES=1 i_ingot_iron
-SKILLMAKE=Tinkering 40.0,t_tinker_tools
+RESOURCES=3 i_ingot_iron
+SKILLMAKE=Tinkering 50.0,t_tinker_tools
 CATEGORY=Items by Professions
 SUBSECTION=Baker
 DESCRIPTION=Flour Sifter
@@ -1292,15 +1295,15 @@ DESCRIPTION=Cookie Mix
 [ITEMDEF 01040]
 DEFNAME=i_pizza
 TYPE=t_food
-VALUE=35
-WEIGHT=0.3
-RESOURCES=1 i_pizza_uncooked
-SKILLMAKE=Cooking 10.1
+VALUE=13
+WEIGHT=1.0
+RESOURCES=1 i_dough
+SKILLMAKE=Cooking 0.0
 CATEGORY=Provisions - Food
 SUBSECTION=Baked
 DESCRIPTION=Pizza (uncooked)
 ON=@Create
-   MOREM=3
+   MOREM=6
 
 [ITEMDEF 01041]
 DEFNAME=i_quiche_baked
@@ -1331,15 +1334,14 @@ DESCRIPTION=Quiche (uncooked)
 
 [ITEMDEF 01043]
 DEFNAME=i_rolling_pin
+TYPE=t_cooking
 VALUE=8
 WEIGHT=2.0
-RESOURCES=1 i_board,1 i_axle
+RESOURCES=1 i_log
+SKILLMAKE=Tinkering 0.0,t_tinker_tools
 CATEGORY=Items by Professions
 SUBSECTION=Baker
 DESCRIPTION=Rolling Pin
-ON=@DClick
-   SRC.SKILLMENU sm_cooking
-   RETURN 1
 
 [ITEMDEF 01044]
 DEFNAME=i_spam
@@ -1434,58 +1436,64 @@ DEFNAME=i_bowl_wood_carrots
 NAME=wooden bowl of carrot soup
 TYPE=t_food
 TDATA1=i_bowl_wood
-VALUE=24
-WEIGHT=1.3
+VALUE=3
+WEIGHT=1.0
 RESOURCES=1 i_bowl_wood,3 i_fruit_carrot
 SKILLMAKE=Cooking 40.0
 CATEGORY=Provisions - Food
 SUBSECTION=Assembled
 DESCRIPTION=Bowl of Carrots
 ON=@Create
-   MOREM=1
+   MOREM=2
 
 [ITEMDEF 015fa]
 DEFNAME=i_bowl_wood_corn
 NAME=wooden bowl of corn soup
 TYPE=t_food
 TDATA1=i_bowl_wood
-VALUE=24
-WEIGHT=1.3
+VALUE=3
+WEIGHT=1.0
 RESOURCES=1 i_bowl_wood,3 i_fruit_corn
 SKILLMAKE=Cooking 40.0
 CATEGORY=Provisions - Food
 SUBSECTION=Assembled
 DESCRIPTION=Bowl of Corn
+ON=@Create
+   MOREM=2
 
 [ITEMDEF 015fb]
 DEFNAME=i_bowl_wood_lettuce
 NAME=wooden bowl of cabbage soup
 TYPE=t_food
 TDATA1=i_bowl_wood
-VALUE=24
-WEIGHT=1.3
+VALUE=3
+WEIGHT=1.0
 RESOURCES=1 i_bowl_wood,3 i_fruit_cabbage
 SKILLMAKE=Cooking 40.0
 CATEGORY=Provisions - Food
 SUBSECTION=Assembled
 DESCRIPTION=Bowl of Cabbage
+ON=@Create
+   MOREM=2
 
 [ITEMDEF 015fc]
 DEFNAME=i_bowl_wood_peas
 NAME=wooden bowl of pea soup
 TYPE=t_food
 TDATA1=i_bowl_wood
-VALUE=24
-WEIGHT=1.3
+VALUE=3
+WEIGHT=1.0
 RESOURCES=1 i_bowl_wood,3 i_fruit_peas
 SKILLMAKE=Cooking 40.0
 CATEGORY=Provisions - Food
 SUBSECTION=Assembled
 DESCRIPTION=Bowl of Peas
+ON=@Create
+   MOREM=2
 
 [ITEMDEF 015fd]
 DEFNAME=i_bowl_pewter
-VALUE=15
+VALUE=2
 WEIGHT=1.0
 RESOURCES=1 i_ingot_iron
 SKILLMAKE=Tinkering 33.0,t_tinker_tools
@@ -1498,64 +1506,75 @@ DEFNAME=i_bowl_pewter_carrots
 NAME=pewter bowl of carrot soup
 TDATA1=i_bowl_pewter
 TYPE=t_food
-WEIGHT=1.3
+VALUE=3
+WEIGHT=1.0
 RESOURCES=1 i_bowl_pewter,3 i_fruit_carrot
 SKILLMAKE=Cooking 40.0
 CATEGORY=Provisions - Food
 SUBSECTION=Assembled
 DESCRIPTION=Pewter Bowl of Carrots
+ON=@Create
+   MOREM=2
 
 [ITEMDEF 015ff]
 DEFNAME=i_bowl_pewter_corn
 NAME=pewter bowl of corn soup
 TYPE=t_food
 TDATA1=i_bowl_pewter
-VALUE=25
-WEIGHT=1.3
+VALUE=3
+WEIGHT=1.0
 RESOURCES=1 i_bowl_pewter,3 i_fruit_corn
 SKILLMAKE=Cooking 40.0
 CATEGORY=Provisions - Food
 SUBSECTION=Assembled
 DESCRIPTION=Pewter Bowl of Corn
+ON=@Create
+   MOREM=2
 
 [ITEMDEF 01600]
 DEFNAME=i_bowl_pewter_lettuce
 NAME=pewter bowl of cabbage soup
 TYPE=t_food
 TDATA1=i_bowl_pewter
-VALUE=25
-WEIGHT=1.3
+VALUE=3
+WEIGHT=1.0
 RESOURCES=1 i_bowl_pewter,3 i_fruit_cabbage
 SKILLMAKE=Cooking 40.0
 CATEGORY=Provisions - Food
 SUBSECTION=Assembled
 DESCRIPTION=Pewter Bowl of Cabbage
+ON=@Create
+   MOREM=2
 
 [ITEMDEF 01601]
 DEFNAME=i_bowl_pewter_peas
 NAME=pewter bowl of pea soup
 TYPE=t_food
 TDATA1=i_bowl_pewter
-VALUE=25
-WEIGHT=1.3
+VALUE=3
+WEIGHT=1.0
 RESOURCES=1 i_bowl_pewter,3 i_fruit_peas
 SKILLMAKE=Cooking 40.0
 CATEGORY=Provisions - Food
 SUBSECTION=Assembled
 DESCRIPTION=Pewter Bowl of Peas
+ON=@Create
+   MOREM=2
 
 [ITEMDEF 01602]
 DEFNAME=i_bowl_pewter_potatoes
 NAME=pewter bowl of potato soup
 TYPE=t_food
 TDATA1=i_bowl_pewter
-VALUE=25
-WEIGHT=1.3
+VALUE=3
+WEIGHT=1.0
 RESOURCES=1 i_bowl_pewter,3 i_fruit_potato
 SKILLMAKE=Cooking 40.0
 CATEGORY=Provisions - Food
 SUBSECTION=Assembled
 DESCRIPTION=Bowl of Potatoes
+ON=@Create
+   MOREM=2
 
 [ITEMDEF 01603]
 DEFNAME=i_bowl_pewter_lg
@@ -1573,15 +1592,15 @@ DEFNAME=i_bowl_stew_lg
 NAME=large bowl of stew
 TYPE=t_food
 TDATA1=i_bowl_wood_lg
-VALUE=46
-WEIGHT=5.0
+VALUE=3
+WEIGHT=2.0
 RESOURCES=1 i_bowl_wood_lg,1 i_pitcher_water,1 i_flour_bowl,1 i_ribs_raw
 SKILLMAKE=Cooking 40.0
 CATEGORY=Decoration - Kitchen and Dining
 SUBSECTION=Cookware
 DESCRIPTION=Bowl of Stew (looks empty)
 ON=@Create
-   MOREM=3
+   MOREM=2
 
 [ITEMDEF 01605]
 DEFNAME=i_bowl_wood_lg
@@ -1598,15 +1617,15 @@ DEFNAME=i_bowl_tomato_soup
 NAME=large bowl of tomato soup
 TYPE=t_food
 TDATA1=i_bowl_wood_lg
-VALUE=46
-WEIGHT=3.6
+VALUE=3
+WEIGHT=2.0
 RESOURCES=1 i_bowl_wood_lg,6 i_fruit_tomato,1 i_pitcher_water
 SKILLMAKE=Cooking 40.0
 CATEGORY=Provisions - Food
 SUBSECTION=Assembled
 DESCRIPTION=Tomato Soup
 ON=@Create
-   MOREM=3
+   MOREM=2
 
 [ITEMDEF 01607]
 DEFNAME=i_chicken_leg_raw
@@ -1617,75 +1636,61 @@ WEIGHT=0.1
 CATEGORY=Items by Professions
 SUBSECTION=Butcher
 DESCRIPTION=Chicken Leg
-ON=@Create
-   MOREM=2
 
 [ITEMDEF 01608]
 DEFNAME=i_chicken_leg
 TYPE=t_food
-VALUE=6
-WEIGHT=0.1
+VALUE=5
+WEIGHT=1.0
+REPLICATE=1
 RESOURCES=1 i_chicken_leg_raw
-SKILLMAKE=Cooking 15.0
+SKILLMAKE=Cooking 0.0
 CATEGORY=Provisions - Food
 SUBSECTION=Meat
 DESCRIPTION=Chicken Leg (Cooked)
 ON=@Create
-   MOREM=1
+   MOREM=4
 
 [ITEMDEF 01609]
 DEFNAME=i_lamb_leg_raw
 TYPE=t_meat_raw
 TDATA1=i_lamb_leg
-WEIGHT=0.2
+WEIGHT=1.0
 VALUE=2
 CATEGORY=Items by Professions
 SUBSECTION=Butcher
 DESCRIPTION=Leg of Lamb
-ON=@Create
-   MOREM=2
 
 [ITEMDEF 0160a]
 DEFNAME=i_lamb_leg
 TYPE=t_food
-VALUE=6
-WEIGHT=0.2
+VALUE=7
+WEIGHT=2.0
+REPLICATE=1
 RESOURCES=1 i_lamb_leg_raw
-SKILLMAKE=Cooking 10.0
+SKILLMAKE=Cooking 0.0
 CATEGORY=Provisions - Food
 SUBSECTION=Meat
 DESCRIPTION=Leg of Lamb (Cooked)
 ON=@Create
-   MOREM=2
+   MOREM=5
 
 [ITEMDEF 0160b]
 DEFNAME=i_pan_cookies
 TYPE=t_food
-TDATA1=i_tray
-VALUE=30
-WEIGHT=0.2
-RESOURCES=1 i_cookie_mix,1 i_tray
-SKILLMAKE=Cooking 30.0
+VALUE=6
+WEIGHT=1.0
+RESOURCES=1 i_dough
+SKILLMAKE=Cooking 0.0
 CATEGORY=Provisions - Food
 SUBSECTION=Baked
 DESCRIPTION=Pan of Cookies
 ON=@Create
-   MOREM=3
+   MOREM=4
 
 [ITEMDEF 0160c]
 DEFNAME=i_plate_cookies
-TYPE=t_food
-TDATA1=i_plate_dirty
-VALUE=30
-WEIGHT=0.2
 RESOURCES=1 i_cookie_mix,1 i_plate
-SKILLMAKE=Cooking 30.0
-CATEGORY=Provisions - Food
-SUBSECTION=Baked
-DESCRIPTION=Plate of Cookies
-ON=@Create
-   MOREM=3
-
 
 [ITEMDEF 0194f]
 DEFNAME=i_basket_herbs
@@ -3449,13 +3454,13 @@ NAME=baked pie
 TYPE=t_food
 VALUE=15
 WEIGHT=0.4
-RESOURCES=1 i_pie_unbaked
-SKILLMAKE=Cooking 10.1
+RESOURCES=1 i_dough
+SKILLMAKE=Cooking 0.0
 CATEGORY=Provisions - Food
 SUBSECTION=Baked
 DESCRIPTION=Pie (baked)
 ON=@Create
-   MOREM=4
+   MOREM=5
 
 
 //////////////////

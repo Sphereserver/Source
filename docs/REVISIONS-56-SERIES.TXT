@@ -1253,24 +1253,31 @@ Changed: Alchemy skill is now a craft skill like any other. No more exclusive be
 	-The skill is now used clicking on it's tool (mortar & pestle) instead click on the reagent or empty bottle.
 	-EFFECT now can be used to control the % of lost resources on skill fail.
 	-Skill stroke behavior now works fine on alchemy (LOCAL.CraftStrokeCnt on skill @Start, and @SkillStroke on chars).
-	-Added FLAGS=skf_craft to alchemy skill (sphere_skills.scp)
-	-Added missing 't_mortar' on potions SKILLMAKE (sphere_item_provisions_potions.scp)
-	-Removed some alchemy internal messages (sphere_msgs.scp)
-	WARNING: Make sure to update your scripts following these changes, otherwise alchemy skill will not work anymore
+	-[sphere_skills.scp] Added FLAGS=skf_craft to alchemy skill
+	-[sphere_item_provisions_potions.scp] Added missing 't_mortar' on potions SKILLMAKE
+	-[sphere_msgs.scp] Removed some alchemy internal messages
+	WARNING: Make sure to update your scripts following these changes, otherwise alchemy skill will not work anymore.
 
 02-10-2014, Coruja
 Changed: Cartography skill is now a craft skill too. The craft now uses default MAKEITEM instead the hardcoded DRAWMAP.
 	-The skill is now used clicking on it's tool (mapmaker's pen) instead click on the skill button or blank map.
 	-Removed obsolete DRAWMAP hardcoded function. The behavior is now softcoded using @Create on map items.
-	-Softcoded the client skill button behavior, it comes disabled by default (sphere_skills.scp)
-	-Added new items for maps and mapmaker's pen (items/sphere_item_profession_cartographer.scp)
-	-Added new hardcoded typedef 't_carpentry' used on the tool to open the skill menu (sphere_defs.scp)
-	-Updated NPC Mapmaker vendor buy/sell template list (sphere_template_vend.scp)
-	-Updated cartography skillmenu (sphere_skillmenu.scp)
-	-Removed some cartography internal messages (sphere_msgs.scp)
-	WARNING: Make sure to update your scripts following these changes, otherwise cartography skill will not work anymore
+	-[sphere_skills.scp] Softcoded the client skill button behavior, it comes disabled by default
+	-[sphere_item_profession_cartographer.scp] Added new items for maps and mapmaker's pen
+	-[sphere_defs.scp] Added new hardcoded typedef 't_carpentry' used on the tool to open the skill menu
+	-[sphere_template_vend.scp] Updated NPC Mapmaker vendor buy/sell template list
+	-[sphere_skillmenu.scp] Updated cartography skillmenu
+	-[sphere_msgs.scp] Removed some cartography internal messages
+	WARNING: Make sure to update your scripts following these changes, otherwise cartography skill will not work anymore.
 
 07-10-2014, Coruja
 Added: New formula for dragon breath damage on NPCs brain_dragon, it's now NPC_CurrentHitpoints * 0.16 (if BREATH.DAM property is set, it will override the internal damage).
-Changed: Increased NPCs view range from 12 to 14 tiles. This also affects the range to call guards.
 Fixed #2405: Players becoming criminal when attack someone on the same guild.
+Changed: Increased NPCs view range from 12 to 14 tiles. This also affects the range to call guards.
+Changed: Cooking skill is now a craft skill.
+	-The skill is now used clicking on it's tool instead click on the raw food and select a fire source (but the fire source still needed in range).
+	-[sphere_defs.scp] Added new hardcoded typedef 't_cooking' used on the tool to open the skill menu.
+	-[sphere_item_profession_cooking_barkeep_baker.scp] Added typedef t_cooking on i_fry_pan, i_flour_sifter, i_rolling_pin. Also fixed many food items using wrong MOREZ
+	-[sphere_msgs.scp] Added/Removed some cooking internal messages
+	-[sphere_skillmenu.scp] Added missing sm_cooking skillmenu
+	WARNING: Make sure to update your scripts following these changes, otherwise cooking skill will not work anymore.

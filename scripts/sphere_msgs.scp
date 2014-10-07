@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,13 +7,11 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, October 2, 2014
+// FILE LAST UPDATED: Tuesday, October 7, 2014
 //
 VERSION=0.56c
 
-
 [COMMENT sphere_msgs]
-
 By default, lines in this file are commented out because the server itself
 is handling the message.  If you want to change a message, uncomment the
 appropriate line and change it to say what you want.  If you want the message
@@ -123,6 +121,7 @@ IMSG_DEF_FONT   3
 //cmd_remove_player			"Can't remove players this way, Try 'kill','kick' or 'remove 1'"
 //cmdafk_enter				"You go into AFK mode"
 //cmdafk_leave				"You leave AFK mode"
+//cooking_fire_source			"You must be near a fire source to cook."
 //combat_arch_noammo			"You have no ammunition."
 //combat_arch_tooclose			"You are too close."
 //combat_attacko				"*You see %s attacking %s*"
@@ -184,7 +183,6 @@ IMSG_DEF_FONT   3
 //cont_full					"Too many items in that container"
 //cont_magic					"The item bounces out of the magic container"
 //cont_toosmall				"The container is too small for that"
-//cooking_success				"Mmm, smells good"
 //corpse_name					"%s of %s"
 //detecthidden_succ				"You find %s"
 //drink_cantmove				"You can't move the item."
@@ -333,9 +331,6 @@ IMSG_DEF_FONT   3
 //itemuse_dye_vat				"Which dye vat will you use this on?"
 //itemuse_fish_fail				"Use a knife to cut this up"
 //itemuse_fish_unable			"You can't move this."
-//itemuse_foodraw_promt   		"What do you want to cook this on?"
-//itemuse_foodraw_touch   		"You can't reach this."
-//itemuse_foodraw_use			"You must cook food on some sort of fire"
 //itemuse_forge				"Select ore to smelt."
 //itemuse_gameboard_fail  		"Can't open game board in a container"
 //itemuse_guildstone_new  		"What is the new name?"

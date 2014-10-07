@@ -1871,33 +1871,6 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 		}
 		return( true );
 
-	case IT_MEAT_RAW:
-	case IT_FOOD_RAW:
-		// Try to put it on some sort of fire.
-
-		switch ( m_pChar->CanTouchStatic( pt, id, pItemTarg ))
-		{
-		case IT_JUNK:
-			SysMessageDefault(DEFMSG_ITEMUSE_FOODRAW_TOUCH);
-			return true;
-		case IT_FIRE:
-		case IT_FORGE:
-		case IT_CAMPFIRE:
-			// Start cooking skill.
-			m_pChar->m_Act_Targ = m_Targ_PrvUID;
-			m_pChar->m_Act_p = pt;
-			m_pChar->Skill_Start( SKILL_COOKING );
-			return( true );
-		default:
-			if ( pCharTarg == m_pChar && m_pChar->Use_Eat(pItemUse) )
-				return true;
-
-			// static fire ?
-			SysMessageDefault(DEFMSG_ITEMUSE_FOODRAW_USE);
-			return true;
-		}
-		break;
-
 	case IT_KEY:
 		return( m_pChar->Use_Key( pItemUse, pItemTarg ));
 

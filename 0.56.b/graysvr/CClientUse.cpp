@@ -433,10 +433,6 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 			addTarget( CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_WEAPON_PROMT ), false, true );
 			return true;
 
-		case IT_MEAT_RAW:
-		case IT_FOOD_RAW:
-			addTarget(CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_FOODRAW_PROMT));
-			return true;
 		case IT_FISH:
 			SysMessageDefault( DEFMSG_ITEMUSE_FISH_FAIL );
 			return true;
@@ -567,6 +563,17 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 						return true;
 				}
 				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_cartography" ) );
+			}
+
+		case IT_COOKING:
+			{
+				if ( IsTrigUsed(TRIGGER_SKILLMENU) )
+				{
+					CScriptTriggerArgs args("sm_cooking");
+					if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
+						return true;
+				}
+				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_cooking" ) );
 			}
 
 		case IT_TINKER_TOOLS:
