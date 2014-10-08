@@ -2200,7 +2200,9 @@ int CChar::CalcArmorDefense() const
 		}
 	}
 
-	return maximum(( iDefenseTotal / 100 ) + m_ModAr, 0);
+	CVarDefCont * pVar = GetDefKey("RESPHYSICAL", true);
+	int ResPhysical = pVar ? pVar->GetValNum() : 0;
+	return maximum(( iDefenseTotal / 100 ) + m_ModAr + ResPhysical, 0);
 }
 
 int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
@@ -3014,7 +3016,7 @@ void CChar::Memory_Fight_Retreat( CChar * pTarg, CItemMemory * pFight )
 		// cowardice is ok if i was attacked.
 		return;
 	}
-	Attacker_Delete(pTarg, ATTACKER_CLEAR_DISTANCE );
+	Attacker_Delete(pTarg, false, ATTACKER_CLEAR_DISTANCE );
 
 	SysMessagef( fCowardice ?
 		g_Cfg.GetDefaultMsg( DEFMSG_COWARD_1 ) :
@@ -3856,7 +3858,7 @@ void CChar::Attacker_RemoveChar()
 			CChar * pSrc = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
 			if ( !pSrc )
 				continue;
-			pSrc->Attacker_Delete(pSrc->Attacker_GetID(this), ATTACKER_CLEAR_REMOVEDCHAR);
+			pSrc->Attacker_Delete(pSrc->Attacker_GetID(this), false, ATTACKER_CLEAR_REMOVEDCHAR);
 		}
 	}
 }

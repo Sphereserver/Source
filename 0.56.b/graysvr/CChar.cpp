@@ -1773,6 +1773,7 @@ do_default:
 		case CHC_RESCOLDMAX:
 		case CHC_RESENERGYMAX:
 		case CHC_RESFIREMAX:
+		case CHC_RESPHYSICAL:
 		case CHC_RESPHYSICALMAX:
 		case CHC_RESPOISONMAX:
 		case CHC_REGENFOOD:
@@ -2639,6 +2640,12 @@ do_default:
 				UpdateStatsFlag();
 			}
 			break;
+		case CHC_RESPHYSICAL:
+		{
+			SetDefNum(s.GetKey(), s.GetArgVal(), false);
+			m_defense = CalcArmorDefense();
+			UpdateStatsFlag();
+		}break;
 		//Set as numbers only
 		case CHC_SPELLTIMEOUT:
 			{
@@ -2707,7 +2714,7 @@ do_default:
 							}else if ( !strnicmp(pszKey, "DELETE", 6) )
 							{
 								CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
-								Attacker_Delete( pChar, ATTACKER_CLEAR_SCRIPT );
+								Attacker_Delete( pChar, false, ATTACKER_CLEAR_SCRIPT );
 								return true;
 							}
 						}
@@ -2747,7 +2754,7 @@ do_default:
 							}
 							else if ( !strnicmp(pszKey, "DELETE", 6 ) )
 							{
-								Attacker_Delete(pChar, ATTACKER_CLEAR_SCRIPT);
+								Attacker_Delete(pChar, false, ATTACKER_CLEAR_SCRIPT);
 								return true;
 							}
 						}
