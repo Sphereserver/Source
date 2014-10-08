@@ -3552,11 +3552,22 @@ public:
 	int  Fight_CalcDamage( const CItem * pWeapon, SKILL_TYPE skill, bool bNoRandom = false ) const;
 
 	// Attacker System
+
+	enum ATTACKER_CLEAR_TYPE
+	{
+		ATTACKER_CLEAR_FORCED		= 0,
+		ATTACKER_CLEAR_ELAPSED		= 1,
+		ATTACKER_CLEAR_DISTANCE		= 2,
+		ATTACKER_CLEAR_REMOVEDCHAR	= 3,
+		ATTACKER_CLEAR_SCRIPT		= 4,
+		//ATTACKER_CLEAR_DEATH		= 3,
+	};
+
 	int	 Attacker() { return static_cast<int>(m_lastAttackers.size()); }
 	//bool Attacker_Add( CChar * pChar);
 	bool Attacker_Add( CChar * pChar, INT64 threat = 0);
-	bool Attacker_Delete( CChar * pChar, bool bForced = false  );
-	bool Attacker_Delete( int id, bool bForced = false  );
+	bool Attacker_Delete(CChar * pChar, bool bForced = false, ATTACKER_CLEAR_TYPE type = ATTACKER_CLEAR_FORCED);
+	bool Attacker_Delete(int id, bool bForced = false, ATTACKER_CLEAR_TYPE type = ATTACKER_CLEAR_FORCED);
 	void Attacker_RemoveChar();
 	void Attacker_Clear();
 	void Attacker_CheckTimeout();

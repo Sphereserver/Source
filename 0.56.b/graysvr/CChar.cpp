@@ -2707,7 +2707,7 @@ do_default:
 							}else if ( !strnicmp(pszKey, "DELETE", 6) )
 							{
 								CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
-								Attacker_Delete( pChar );
+								Attacker_Delete( pChar, ATTACKER_CLEAR_SCRIPT );
 								return true;
 							}
 						}
@@ -2747,7 +2747,7 @@ do_default:
 							}
 							else if ( !strnicmp(pszKey, "DELETE", 6 ) )
 							{
-								Attacker_Delete( pChar );
+								Attacker_Delete(pChar, ATTACKER_CLEAR_SCRIPT);
 								return true;
 							}
 						}

@@ -3014,7 +3014,7 @@ void CChar::Memory_Fight_Retreat( CChar * pTarg, CItemMemory * pFight )
 		// cowardice is ok if i was attacked.
 		return;
 	}
-	Attacker_Delete(pTarg);
+	Attacker_Delete(pTarg, ATTACKER_CLEAR_DISTANCE );
 
 	SysMessagef( fCowardice ?
 		g_Cfg.GetDefaultMsg( DEFMSG_COWARD_1 ) :
@@ -3345,7 +3345,7 @@ bool CChar::Fight_Clear(const CChar *pChar, bool bForced)
 	if ( ! pChar )
 		return false;
 
-	if ( Attacker_Delete(const_cast<CChar*>(pChar), bForced) == false )
+	if ( Attacker_Delete(const_cast<CChar*>(pChar), bForced) == false, ATTACKER_CLEAR_FORCED )
 		return false;
 
 	// Go to my next target.
@@ -3736,6 +3736,7 @@ void CChar::Attacker_SetThreat( int pChar, INT64 value)
 		return;
 	LastAttackers & refAttacker = m_lastAttackers.at( pChar );
 	refAttacker.threat = value;
+	ATTACKER_CLEAR_TYPE type;
 }
 
 void CChar::Attacker_Clear()
@@ -3798,7 +3799,7 @@ CChar * CChar::Attacker_GetUID( int index )
 	CChar * pChar = static_cast<CChar*>( static_cast<CGrayUID>( refAttacker.charUID ).CharFind() );
 	return pChar;
 }
-bool CChar::Attacker_Delete( int index, bool bForced )
+bool CChar::Attacker_Delete( int index, bool bForced, ATTACKER_CLEAR_TYPE type )
 {
 	ADDTOCALLSTACK("CChar::Attacker_Delete(int)");
 	if ( ! m_lastAttackers.size() )
@@ -3816,6 +3817,7 @@ bool CChar::Attacker_Delete( int index, bool bForced )
 	{
 		CScriptTriggerArgs Args;
 		Args.m_iN1 = static_cast<int>(bForced);
+		Args.m_iN2 = (int)type;
 		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatDelete,pChar,&Args);
 		if ( tRet == TRIGRET_RET_TRUE  &&  Args.m_iN1 == 1 )
 			return false;
@@ -3832,14 +3834,15 @@ bool CChar::Attacker_Delete( int index, bool bForced )
 		Attacker_Clear();
 	return true;
 }
-bool CChar::Attacker_Delete( CChar * pChar, bool bForced )
+
+bool CChar::Attacker_Delete(CChar * pChar, bool bForced, ATTACKER_CLEAR_TYPE type)
 {		
 	ADDTOCALLSTACK("CChar::Attacker_Delete(CChar)");
 	if ( !pChar )
 		return false;
 	if ( ! m_lastAttackers.size() )
 		return false;
-	return Attacker_Delete( Attacker_GetID( pChar), bForced );
+	return Attacker_Delete( Attacker_GetID( pChar), bForced, type );
 }
 
 void CChar::Attacker_RemoveChar()
@@ -3853,7 +3856,7 @@ void CChar::Attacker_RemoveChar()
 			CChar * pSrc = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
 			if ( !pSrc )
 				continue;
-			pSrc->Attacker_Delete(pSrc->Attacker_GetID(this));
+			pSrc->Attacker_Delete(pSrc->Attacker_GetID(this), ATTACKER_CLEAR_REMOVEDCHAR);
 		}
 	}
 }
@@ -3867,7 +3870,7 @@ void CChar::Attacker_CheckTimeout()
 			LastAttackers & refAttacker = m_lastAttackers.at(count);
 			if ( ( ++(refAttacker.elapsed) > g_Cfg.m_iAttackerTimeout ) && ( g_Cfg.m_iAttackerTimeout > 0  ) )
 			{
-				Attacker_Delete(count, true);//m_lastAttackers.erase(it);
+				Attacker_Delete(count, true, ATTACKER_CLEAR_ELAPSED);	//m_lastAttackers.erase(it);
 				break;
 			}
 		}
@@ -3900,7 +3903,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	//  WAR_SWING_SWINGING = taking my swing now.
 	
 	int iTyp = DAMAGE_HIT_BLUNT;
-	if ( IsTrigUsed ( TRIGGER_HITCHECK ))
+
+	if ( IsTrigUsed( TRIGGER_HITCHECK ) )
 	{
 		CScriptTriggerArgs pArgs;
 		pArgs.m_iN1 = m_atFight.m_War_Swing_State;
