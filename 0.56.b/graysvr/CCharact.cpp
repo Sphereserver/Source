@@ -2249,7 +2249,7 @@ bool CChar::Horse_Mount(CChar *pHorse) // Remove horse char and give player a ho
 bool CChar::Horse_UnMount() // Get off a horse (Remove horse item and spawn new horse)
 {
 	ADDTOCALLSTACK("CChar::Horse_UnMount");
-	if ( ! IsStatFlag( STATF_OnHorse ))
+	if ( ! IsStatFlag( STATF_OnHorse ) || (IsStatFlag( STATF_Stone) && (!IsPriv(PRIV_GM))))
 		return( false );
 
 	CItem * pItem = LayerFind( LAYER_HORSE );

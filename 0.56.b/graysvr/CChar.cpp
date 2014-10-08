@@ -3499,7 +3499,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			if ( m_pPlayer )
 				SysMessage(s.GetArgStr());
 			else
-				NPC_OnHear(s.GetArgStr(), pSrc->GetChar());
+				NPC_OnHear(s.GetArgStr(), pSrc->GetChar(), false);
 			break;
 		case CHV_HUNGRY:	// How hungry are we ?
 			if ( pCharSrc )

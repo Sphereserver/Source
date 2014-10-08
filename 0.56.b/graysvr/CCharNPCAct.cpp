@@ -339,7 +339,7 @@ void CChar::NPC_ActStart_SpeakTo( CChar * pSrc )
 	UpdateDir(pSrc);
 }
 
-void CChar::NPC_OnHear( LPCTSTR pszCmd, CChar * pSrc )
+void CChar::NPC_OnHear( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 {
 	ADDTOCALLSTACK("CChar::NPC_OnHear");
 	// This CChar has heard you say something.
@@ -347,7 +347,7 @@ void CChar::NPC_OnHear( LPCTSTR pszCmd, CChar * pSrc )
 		return;
 
 	// Pets always have a basic set of actions.
-	if ( NPC_OnHearPetCmd(pszCmd, pSrc, false) || !NPC_CanSpeak() )
+	if ( NPC_OnHearPetCmd(pszCmd, pSrc, fAllPets) || !NPC_CanSpeak() )
 		return;
 
 	// What where we doing ?

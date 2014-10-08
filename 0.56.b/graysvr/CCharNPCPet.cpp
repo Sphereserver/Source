@@ -112,7 +112,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 	TALKMODE_TYPE	mode	= TALKMODE_SAY;
 	if ( OnTriggerSpeech( true, pszCmd, pSrc, mode) )
 	{
-		m_fIgnoreNextPetCmd = true;
+		m_fIgnoreNextPetCmd = !fAllPets;
 		return true;
 	}
 
@@ -340,7 +340,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 
 	// make some sound to confirm we heard it.
 	// Make the yes noise.
-	NPC_OnPetCommand( true, pSrc );
+	NPC_OnPetCommand( true, pSrc, fAllPets );
 	return( true );
 }
 

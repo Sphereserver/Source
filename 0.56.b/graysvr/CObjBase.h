@@ -3760,7 +3760,7 @@ public:
 	bool NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllpets );
 	bool NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const CPointMap & pt, LPCTSTR pszArgs );
 	size_t  NPC_OnHearName( LPCTSTR pszText ) const;
-	void NPC_OnHear( LPCTSTR pCmd, CChar * pSrc );
+	void NPC_OnHear( LPCTSTR pCmd, CChar * pSrc, bool fAllPets = false );
 	bool NPC_OnItemGive( CChar * pCharSrc, CItem * pItem );
 	bool NPC_SetVendorPrice( CItem * pItem, int iPrice );
 	bool OnTriggerSpeech(bool bIsPet, LPCTSTR pszText, CChar * pSrc, TALKMODE_TYPE & mode, HUE_TYPE wHue = HUE_DEFAULT);
