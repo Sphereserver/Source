@@ -901,7 +901,7 @@ bool CAccount::CheckPassword( LPCTSTR pszPassword )
 	CScriptTriggerArgs Args;
 	Args.m_VarsLocal.SetStrNew("Account",GetName());
 	Args.m_VarsLocal.SetStrNew("Password",pszPassword);
-	enum TRIGRET_TYPE tr = TRIGRET_RET_FALSE;
+	TRIGRET_TYPE tr = TRIGRET_RET_FALSE;
 	g_Serv.r_Call("f_onaccount_connect", &g_Serv, &Args, NULL, &tr);
 	if ( tr == TRIGRET_RET_TRUE )
 		return false;

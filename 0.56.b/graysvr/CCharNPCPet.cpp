@@ -340,7 +340,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 
 	// make some sound to confirm we heard it.
 	// Make the yes noise.
-	NPC_OnPetCommand( true, pSrc, fAllPets );
+	NPC_OnPetCommand( true, pSrc );
 	return( true );
 }
 

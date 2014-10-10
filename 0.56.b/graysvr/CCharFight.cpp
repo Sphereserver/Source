@@ -2201,7 +2201,7 @@ int CChar::CalcArmorDefense() const
 	}
 
 	CVarDefCont * pVar = GetDefKey("RESPHYSICAL", true);
-	int ResPhysical = pVar ? pVar->GetValNum() : 0;
+	int ResPhysical = pVar ? static_cast<int>(pVar->GetValNum()) : 0;
 	return maximum(( iDefenseTotal / 100 ) + m_ModAr + ResPhysical, 0);
 }
 
@@ -3738,7 +3738,6 @@ void CChar::Attacker_SetThreat( int pChar, INT64 value)
 		return;
 	LastAttackers & refAttacker = m_lastAttackers.at( pChar );
 	refAttacker.threat = value;
-	ATTACKER_CLEAR_TYPE type;
 }
 
 void CChar::Attacker_Clear()

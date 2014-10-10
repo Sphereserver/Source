@@ -744,11 +744,20 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 			else if ( pStatic->GetDispID() )
 				wBlockThis = 0;
 
-			if ((block.m_Bottom.m_z < z) && (z < pt.m_z+PLAYER_HEIGHT) && (wBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER)))
+			if (block.m_Bottom.m_z < z)
 			{
-				block.m_Bottom.m_dwBlockFlags = wBlockThis;
-				block.m_Bottom.m_dwTile = pStatic->GetDispID() + TERRAIN_QTY;
-				block.m_Bottom.m_z = z;
+				if ((z < pt.m_z+PLAYER_HEIGHT) && (wBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER)))
+				{
+					block.m_Bottom.m_dwBlockFlags = wBlockThis;
+					block.m_Bottom.m_dwTile = pStatic->GetDispID() + TERRAIN_QTY;
+					block.m_Bottom.m_z = z;
+				}
+				else if (block.m_Top.m_z > z)
+				{
+					block.m_Top.m_dwBlockFlags = wBlockThis;
+					block.m_Top.m_dwTile = pStatic->GetDispID() + TERRAIN_QTY;
+					block.m_Top.m_z = z;
+				}
 			}
 		}
 	}
@@ -828,11 +837,20 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 							wBlockThis = 0;
 						}
 
-						if ((block.m_Bottom.m_z < z) && (z < pt.m_z+PLAYER_HEIGHT) && (wBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER)))
+						if (block.m_Bottom.m_z < z)
 						{
-							block.m_Bottom.m_dwBlockFlags = wBlockThis;
-							block.m_Bottom.m_dwTile = pMultiItem->GetDispID() + TERRAIN_QTY;
-							block.m_Bottom.m_z = z;
+							if ((z < pt.m_z+PLAYER_HEIGHT) && (wBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER)))
+							{
+								block.m_Bottom.m_dwBlockFlags = wBlockThis;
+								block.m_Bottom.m_dwTile = pMultiItem->GetDispID() + TERRAIN_QTY;
+								block.m_Bottom.m_z = z;
+							}
+							else if (block.m_Top.m_z > z)
+							{
+								block.m_Top.m_dwBlockFlags = wBlockThis;
+								block.m_Top.m_dwTile = pMultiItem->GetDispID() + TERRAIN_QTY;
+								block.m_Top.m_z = z;
+							}
 						}
 					}
 				}
@@ -883,11 +901,21 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 			DEBUG_ERR(("Item (0%x) has no definition in scripts.\n",pItem->GetDispID()));
 			wBlockThis = 0;
 		}
-		if ((block.m_Bottom.m_z < z) && (z < pt.m_z+PLAYER_HEIGHT) && (wBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER)))
+
+		if (block.m_Bottom.m_z < z)
 		{
-			block.m_Bottom.m_dwBlockFlags = wBlockThis;
-			block.m_Bottom.m_dwTile = pItemDef->GetDispID() + TERRAIN_QTY;
-			block.m_Bottom.m_z = z;
+			if ((z < pt.m_z+PLAYER_HEIGHT) && (wBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER)))
+			{
+				block.m_Bottom.m_dwBlockFlags = wBlockThis;
+				block.m_Bottom.m_dwTile = pItemDef->GetDispID() + TERRAIN_QTY;
+				block.m_Bottom.m_z = z;
+			}
+			else if (block.m_Top.m_z > z)
+			{
+				block.m_Top.m_dwBlockFlags = wBlockThis;
+				block.m_Top.m_dwTile = pItemDef->GetDispID() + TERRAIN_QTY;
+				block.m_Top.m_z = z;
+			}
 		}
 	}
 
@@ -919,18 +947,32 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 			wBlockThis = CAN_I_PLATFORM;
 	}
 
-	if ((block.m_Bottom.m_z < pMeter->m_z) && (pMeter->m_z < pt.m_z+PLAYER_HEIGHT) && (wBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER)))
+	if (block.m_Bottom.m_z < pMeter->m_z)
 	{
-		block.m_Bottom.m_dwBlockFlags = wBlockThis;
-		block.m_Bottom.m_dwTile = pMeter->m_wTerrainIndex;
-		block.m_Bottom.m_z = pMeter->m_z;
+		if (((pMeter->m_z < pt.m_z+PLAYER_HEIGHT) && (wBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER))) || (block.m_Bottom.m_z == UO_SIZE_MIN_Z))
+		{
+			block.m_Bottom.m_dwBlockFlags = wBlockThis;
+			block.m_Bottom.m_dwTile = pMeter->m_wTerrainIndex;
+			block.m_Bottom.m_z = pMeter->m_z;
+		}
+		else if (block.m_Top.m_z > pMeter->m_z)
+		{
+			block.m_Top.m_dwBlockFlags = wBlockThis;
+			block.m_Top.m_dwTile = pMeter->m_wTerrainIndex;
+			block.m_Top.m_z = pMeter->m_z;
+		}
 	}
 
 	if ( block.m_Bottom.m_z == UO_SIZE_MIN_Z )
 	{
+		//Fail safe...  Reset to 0z with no top block;
+		block.m_Bottom.m_dwBlockFlags = 0;
+		block.m_Bottom.m_dwTile = 0;
+		block.m_Bottom.m_z = 0;
+
 		block.m_Top.m_dwBlockFlags = 0;
 		block.m_Top.m_dwTile = 0;
-		block.m_Top.m_z = pt.m_z;
+		block.m_Top.m_z = UO_SIZE_Z;
 	}
 }
 

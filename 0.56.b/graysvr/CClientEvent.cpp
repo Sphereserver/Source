@@ -926,7 +926,7 @@ void CClient::Event_CombatMode( bool fWar ) // Only for switching to combat mode
 			fCleanSkill = false;
 			DEBUG_WARN(("UserWarMode - Setting fCleanSkill to false\n"));
 		}
-		fWar = Args.m_iN3;
+		fWar = (Args.m_iN3 != 0);
 	}
 
 	m_pChar->StatFlag_Mod( STATF_War, fWar );

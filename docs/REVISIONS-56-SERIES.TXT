@@ -1281,3 +1281,7 @@ Changed: Cooking skill is now a craft skill.
 	-[sphere_msgs.scp] Added/Removed some cooking internal messages
 	-[sphere_skillmenu.scp] Added missing sm_cooking skillmenu
 	WARNING: Make sure to update your scripts following these changes, otherwise cooking skill will not work anymore.
+
+09-10-2014, Ben
+Fixed: RETURN 6 not halting scripts when inside an IF statement.
+Fixed: .fix will now default to the first terrain elevation instead of lowest Z possible.

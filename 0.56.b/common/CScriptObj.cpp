@@ -2450,7 +2450,7 @@ jump_in:
 					for (;;)
 					{
 						iRet = OnTriggerRun( s, fTrigger ? TRIGRUN_SECTION_TRUE : TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
-						if (( iRet < TRIGRET_ENDIF ) || ( iRet >= TRIGRET_BREAK ))
+						if (( iRet < TRIGRET_ENDIF ) || ( iRet >= TRIGRET_RET_HALFBAKED ))
 							return( iRet );
 						if ( iRet == TRIGRET_ENDIF )
 							break;
