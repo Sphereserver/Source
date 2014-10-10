@@ -1154,7 +1154,7 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 	{
 		if (!pClient->CanSee(this))
 			continue;
-		if ( pClient->GetNetState()->isClientSA() )//Enhanced client always use this packet
+		if (pClient->GetNetState()->isClientSA() && pClient->GetNetState()->m_reportedVersion < 6700351)	//Enhanced client always used this packet, at least until ~ 4.0.35 (6700351)
 			cmdnew->send(pClient);
 		else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_NEWMOBILEANIMATION) && (IsGargoyle()) && (action1 >= 0) )	// On classic clients only send new packets for gargoyles
 			cmdnew->send(pClient);
