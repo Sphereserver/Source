@@ -702,7 +702,7 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 	ANIM_TYPE_NEW subaction;
 	BYTE variation = 0;		//Seems to have some effect for humans/elfs vs gargoyles
 
-	ANIM_TYPE_NEW action1 = static_cast<ANIM_TYPE_NEW>(-1);
+	ANIM_TYPE_NEW action1 = static_cast<ANIM_TYPE_NEW>(action);
 	CCharBase* pCharDef = Char_GetDef();
 	if ( IsPlayableCharacter() )		//Perform these checks only for Gargoyles or in Enhanced Client
 	{

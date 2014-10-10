@@ -4157,18 +4157,27 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		{
 			// just start the bow animation.
 			INT64 iTime = Fight_GetWeaponSwingTimer();
+			ANIM_TYPE anim = ANIM_ATTACK_WEAPON;
+			unsigned char animDelay = static_cast<unsigned char>(iTime) / TICK_PER_SEC;
 			if ( IsTrigUsed(TRIGGER_HITTRY) )
 			{
 				CScriptTriggerArgs	Args( iTime, 0, pWeapon );
+				Args.m_VarsLocal.SetNum("Anim", (int)anim);
+				Args.m_VarsLocal.SetNum("AnimDelay", static_cast<unsigned char>(iTime) / TICK_PER_SEC);
 				if ( OnTrigger( CTRIG_HitTry, pCharTarg, &Args ) == TRIGRET_RET_TRUE )
 					return( WAR_SWING_READY );
 				iTime = Args.m_iN1;
+				anim = (ANIM_TYPE)Args.m_VarsLocal.GetKeyNum("Anim",false);
+				animDelay = (unsigned char)Args.m_VarsLocal.GetKeyNum("AnimDelay", true);
+				if (animDelay < 0)
+					animDelay = 0;
 			}
 
 			m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
 			m_atFight.m_fMoved	= 0;
 			SetTimeout( iTime * 3 / 4 );	// try again sooner.
-			UpdateAnimate( ANIM_ATTACK_WEAPON, true, false, static_cast<unsigned char>(iTime)/TICK_PER_SEC);
+			if ( anim >= 0)
+				UpdateAnimate( anim, true, false, animDelay);
 			return( WAR_SWING_SWINGING );
 		}
 
@@ -4243,12 +4252,20 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 			// We are swinging.
 			INT64 iTime = Fight_GetWeaponSwingTimer();
-			if ( IsTrigUsed(TRIGGER_HITTRY) )
+			ANIM_TYPE anim = ANIM_ATTACK_WEAPON;
+			unsigned char animDelay = static_cast<unsigned char>(iTime) / TICK_PER_SEC;
+			if (IsTrigUsed(TRIGGER_HITTRY))
 			{
-				CScriptTriggerArgs Args( iTime, 0, pWeapon );
-				if ( OnTrigger( CTRIG_HitTry, pCharTarg, &Args ) == TRIGRET_RET_TRUE )
-					return( WAR_SWING_READY );
+				CScriptTriggerArgs	Args(iTime, 0, pWeapon);
+				Args.m_VarsLocal.SetNum("Anim", (int)anim);
+				Args.m_VarsLocal.SetNum("AnimDelay", static_cast<unsigned char>(iTime) / TICK_PER_SEC);
+				if (OnTrigger(CTRIG_HitTry, pCharTarg, &Args) == TRIGRET_RET_TRUE)
+					return(WAR_SWING_READY);
 				iTime = Args.m_iN1;
+				anim = (ANIM_TYPE)Args.m_VarsLocal.GetKeyNum("Anim", false);
+				animDelay = (unsigned char)Args.m_VarsLocal.GetKeyNum("AnimDelay", true);
+				if (animDelay < 0)
+					animDelay = 0;
 			}
 
 			m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
@@ -4263,7 +4280,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			else
 			{
 				SetTimeout( iTime/2 );	// try again sooner.
-				UpdateAnimate( ANIM_ATTACK_WEAPON, true, false, static_cast<unsigned char>(iTime)/TICK_PER_SEC );
+				if ( anim >= 0)
+					UpdateAnimate( anim, true, false, animDelay );
 			}
 			return( WAR_SWING_SWINGING );
 		}

@@ -3059,8 +3059,10 @@ PacketCharacterList::PacketCharacterList(CClient* target, const CChar* lastChara
 			writeStringFixedASCII(static_cast<LPCTSTR>(g_Cfg.m_StartDefs[i]->m_sName), MAX_NAME_SIZE + 1);
 		}
 	}
-
-	writeInt32(g_Cfg.GetPacketFlag(true, static_cast<RESDISPLAY_VERSION>(account->GetResDisp()), maximum(account->GetMaxChars(), account->m_Chars.GetCharCount())));
+	int flags = g_Cfg.GetPacketFlag(true, static_cast<RESDISPLAY_VERSION>(account->GetResDisp()), maximum(account->GetMaxChars(), account->m_Chars.GetCharCount()));
+	if (!target->GetNetState()->getClientType())
+		flags |= 0x400;
+	writeInt32(flags);
 	
 	if (includeExtraStartInfo)
 		writeInt16(0);

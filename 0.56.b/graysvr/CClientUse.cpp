@@ -109,6 +109,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 	}
 
 	CItemBase * pItemDef = pItem->Item_GetDef();
+	bool fWasEquipped = pItem->IsItemEquipped();
 
 	if (( IsTrigUsed(TRIGGER_DCLICK) ) || ( IsTrigUsed(TRIGGER_ITEMDCLICK) ))
 	{
@@ -430,7 +431,10 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 
 		case IT_WEAPON_MACE_STAFF:
 		case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
-			addTarget( CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_WEAPON_PROMT ), false, true );
+		{
+			if (fWasEquipped || !IsSetOF(OF_NoDClickTarget))
+				addTarget(CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_WEAPON_PROMT), false, true);
+			}
 			return true;
 
 		case IT_FISH:
@@ -475,7 +479,8 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 			return true;
 
 		case IT_WEAPON_MACE_CROOK:
-			addTarget( CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_CROOK_PROMT ), false, true );
+			if (fWasEquipped || !IsSetOF(OF_NoDClickTarget))
+				addTarget( CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_CROOK_PROMT ), false, true );
 			return true;
 
 		case IT_SEED:
@@ -488,6 +493,8 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 			return true;
 
 		case IT_WEAPON_MACE_PICK:
+
+			if (fWasEquipped || !IsSetOF(OF_NoDClickTarget))
 			{	// Mine at the location. (possible crime?)
 				TCHAR *pszTemp = Str_GetTemp();
 				sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_MACEPICK_TARG ), static_cast<LPCTSTR>(pItem->GetName()));
