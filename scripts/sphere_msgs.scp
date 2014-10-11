@@ -26,16 +26,19 @@ NOTE: If the string contains a % character, your string must contain all
 
 [DEFNAME messages_settings]
 // Default color & font for SysMessage
-SMSG_DEF_COLOR   946
+SMSG_DEF_COLOR	946
 SMSG_DEF_FONT   3
+SMSG_DEF_UNICODE	0
 
 // Default color & font for Message/Say
-MSG_DEF_COLOR   0
-MSG_DEF_FONT   3
+MSG_DEF_COLOR	0
+MSG_DEF_FONT	3
+MSG_DEF_UNICODE	0
 
 // Default color & font for Messages when player click an item
-IMSG_DEF_COLOR   0
-IMSG_DEF_FONT   3
+IMSG_DEF_COLOR	0
+IMSG_DEF_FONT	3
+IMSG_DEF_UNICODE 0
 
 
 [DEFMESSAGE messages]

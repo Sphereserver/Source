@@ -2175,7 +2175,7 @@ void CWorld::Speak( const CObjBaseTemplate * pSrc, LPCTSTR pszText, HUE_TYPE wHu
 			if(!*myName) sprintf(myName, "<%s [%lx]>",pSrc->GetName(), (DWORD)pSrc->GetUID());
 		}
 		if (*myName)
-			pClient->addBarkParse( pszSpeak, pSrc, wHue, mode, font, myName );
+			pClient->addBarkParse( pszSpeak, pSrc, wHue, mode, font, false, myName );
 		else
             pClient->addBarkParse( pszSpeak, pSrc, wHue, mode, font );
 	}

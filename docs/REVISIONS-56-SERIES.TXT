@@ -1285,3 +1285,6 @@ Changed: Cooking skill is now a craft skill.
 09-10-2014, Ben
 Fixed: RETURN 6 not halting scripts when inside an IF statement.
 Fixed: .fix will now default to the first terrain elevation instead of lowest Z possible.
+
+11-10-2014, Ben
+Added #2394: SMSG_DEF_UNICODE, MSG_DEF_UNICODE, IMSG_DEF_UNICODE to sphere_msgs.scp. If set to 1, messages will be sent in unicode unless overwriten with the the mode in @hue,font,mode.

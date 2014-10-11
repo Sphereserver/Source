@@ -627,13 +627,13 @@ void CClient::addBarkLocalizedEx( int iClilocId, const CObjBaseTemplate * pSrc, 
 	new PacketMessageLocalisedEx(this, iClilocId, pSrc, wHue, mode, font, affix, pAffix, pArgs);
 }
 
-void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR name)
+void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, bool bUnicode, LPCTSTR name)
 {
 	ADDTOCALLSTACK("CClient::addBarkParse");
 	if ( !pszText )
 		return;
 
-	WORD Args[] = { wHue, font, 0 };
+	WORD Args[] = { wHue, font, (bUnicode ? 1 : 0) };
 
 	if ( *pszText == '@' )
 	{
@@ -779,15 +779,17 @@ void CClient::addObjMessage( LPCTSTR pMsg, const CObjBaseTemplate * pSrc, HUE_TY
 	{
 		HUE_TYPE pHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_COLOR"));
 		FONT_TYPE pFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_FONT"));
-		//addBarkParse(pMsg, pSrc, ( pHue ? pHue : wHue ), TALKMODE_OBJ, ( pFont ? pFont : FONT_NORMAL));
-		addBarkParse(pMsg, pSrc, (wHue != HUE_TEXT_DEF ? wHue : ( pHue ? pHue : wHue )), TALKMODE_OBJ, ( pFont ? pFont : FONT_NORMAL));
+		bool bUniode = (g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_UNICODE",true) != 0);
+
+		addBarkParse(pMsg, pSrc, (wHue != HUE_TEXT_DEF ? wHue : ( pHue ? pHue : wHue )), TALKMODE_OBJ, ( pFont ? pFont : FONT_NORMAL), bUniode);
 	} 
 	else
 	{
 		HUE_TYPE pHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_COLOR"));
 		FONT_TYPE pFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_FONT"));
-		//(pMsg, pSrc, ( pHue ? pHue : wHue), TALKMODE_ITEM, ( pFont ? pFont : FONT_NORMAL));
-		addBarkParse(pMsg, pSrc, (wHue != HUE_TEXT_DEF ? wHue : ( pHue ? pHue : wHue)), TALKMODE_ITEM, ( pFont ? pFont : FONT_NORMAL));
+		bool bUniode = (g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_UNICODE",true) != 0);
+
+		addBarkParse(pMsg, pSrc, (wHue != HUE_TEXT_DEF ? wHue : ( pHue ? pHue : wHue)), TALKMODE_ITEM, ( pFont ? pFont : FONT_NORMAL), bUniode);
 	}
 }
 
