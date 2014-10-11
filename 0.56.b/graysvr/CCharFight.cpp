@@ -4092,7 +4092,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			// ??? the bow is acting like a (poor) blunt weapon at this range?
 			SysMessageDefault( DEFMSG_COMBAT_ARCH_TOOCLOSE );
 			int iTime = Fight_GetWeaponSwingTimer();
-			UpdateAnimate( ANIM_ATTACK_1H_WIDE, false, false, iTime/TICK_PER_SEC );
+			UpdateAnimate( GenerateAnimate(ANIM_ATTACK_1H_WIDE, false, false), false, false, iTime/TICK_PER_SEC );
 			return( WAR_SWING_EQUIPPING );
 		}
 
@@ -4157,7 +4157,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		{
 			// just start the bow animation.
 			INT64 iTime = Fight_GetWeaponSwingTimer();
-			ANIM_TYPE anim = ANIM_ATTACK_WEAPON;
+			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
 			unsigned char animDelay = static_cast<unsigned char>(iTime) / TICK_PER_SEC;
 			if ( IsTrigUsed(TRIGGER_HITTRY) )
 			{
@@ -4252,7 +4252,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 			// We are swinging.
 			INT64 iTime = Fight_GetWeaponSwingTimer();
-			ANIM_TYPE anim = ANIM_ATTACK_WEAPON;
+			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
 			unsigned char animDelay = static_cast<unsigned char>(iTime) / TICK_PER_SEC;
 			if (IsTrigUsed(TRIGGER_HITTRY))
 			{
@@ -4274,7 +4274,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			if ( IsSetCombatFlags(COMBAT_PREHIT) )
 			{
 				SetKeyNum("LastHit", iTime + g_World.GetCurrentTime().GetTimeRaw());
-				UpdateAnimate( ANIM_ATTACK_WEAPON, true, false, 0 );
+				UpdateAnimate( anim, true, false, 0);
 				SetTimeout( 1 );
 			}
 			else

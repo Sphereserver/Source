@@ -2812,7 +2812,7 @@ int CChar::Skill_Herding( SKTRIG_TYPE stage )
 		{
 			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
 			{
-				UpdateAnimate(ANIM_ATTACK_WEAPON);
+				UpdateAnimate(GenerateAnimate(ANIM_ATTACK_WEAPON));
 			}
 			int iIntVal = pChar->Stat_GetAdjusted(STAT_INT) / 2;
 			return iIntVal + Calc_GetRandVal(iIntVal);

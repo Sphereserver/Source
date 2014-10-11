@@ -1552,7 +1552,7 @@ enum ANIM_TYPE	// not all creatures animate the same for some reason.
 
 	ANIM_QTY_ANI = 13,
 
-	ANIM_QTY = 0x23
+	ANIM_QTY = 0x32
 };
 enum ANIM_TYPE_NEW	// not all creatures animate the same for some reason. http://img546.imageshack.us/img546/5439/uonewanimstable2.png
 {
@@ -1571,7 +1571,7 @@ enum ANIM_TYPE_NEW	// not all creatures animate the same for some reason. http:/
 	NANIM_UNKNOWN1		= 0x0c,			// According to RUOSI now this is StartCombat
 	NANIM_UNKNOWN2		= 0x0d,			// and this one EndCombat (Maybe only for EC?)
 	NANIM_PILLAGE		= 0x0e,			// Human/Animal (eat), Monster (pillage)
-	NANIM_RISE			= 0x0f,			// Used on character creatio (Only EC)
+	NANIM_RISE			= 0x0f,			// Used on character creation (Only EC)
 	
 	NANIM_QTY = 16,
 

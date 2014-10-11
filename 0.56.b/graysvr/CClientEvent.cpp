@@ -1177,7 +1177,7 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 						m_pChar->LayerAdd(pItemNew);
 						pItemNew->m_TagDefs.SetNum("NOSAVE", 0, true);
 						pItemNew->SetTimeout( 55000*TICK_PER_SEC );	// set the grow timer.
-						pVendor->UpdateAnimate(ANIM_ATTACK_1H_WIDE);
+						pVendor->UpdateAnimate(pVendor->GenerateAnimate(ANIM_ATTACK_1H_WIDE));
 						m_pChar->Sound( SOUND_SNIP );	// snip noise.
 					}
 					continue;

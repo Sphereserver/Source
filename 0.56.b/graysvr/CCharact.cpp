@@ -687,7 +687,7 @@ void CChar::UpdateStatVal( STAT_TYPE type, int iChange, int iLimit )
 	}
 }
 
-bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BYTE iFrameDelay, BYTE iAnimLen )
+ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BYTE iFrameDelay, BYTE iAnimLen )
 {
 	ADDTOCALLSTACK("CChar::UpdateAnimate");
 	// NPC or character does a certain Animate
@@ -697,6 +697,270 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 	//   iFrameDelay = in seconds (approx), 0=fastest, 1=slower
 
 	if ( action < 0 || action >= ANIM_QTY )
+		return (ANIM_TYPE)-1;
+
+	CCharBase* pCharDef = Char_GetDef();
+
+	//Begin old client animation behaviour
+
+	if ( fBackward && iFrameDelay )	// backwards and delayed just dont work ! = invis
+		iFrameDelay = 0;
+
+	if (fTranslate || IsStatFlag(STATF_OnHorse))
+	{
+		CItem * pWeapon = m_uidWeapon.ItemFind();
+		if (pWeapon != NULL && action == ANIM_ATTACK_WEAPON)
+		{
+			// action depends on weapon type (skill) and 2 Hand type.
+			LAYER_TYPE layer = pWeapon->Item_GetDef()->GetEquipLayer();
+			switch (pWeapon->GetType())
+			{
+			case IT_WEAPON_MACE_CROOK:
+			case IT_WEAPON_MACE_PICK:
+			case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
+			case IT_WEAPON_MACE_STAFF:
+			case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
+				return (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_DOWN : ANIM_ATTACK_1H_DOWN;
+			case IT_WEAPON_SWORD:
+			case IT_WEAPON_AXE:
+				return(layer == LAYER_HAND2) ? ANIM_ATTACK_2H_WIDE : ANIM_ATTACK_1H_WIDE;
+			case IT_WEAPON_FENCE:
+				return (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_JAB : ANIM_ATTACK_1H_JAB;
+			case IT_WEAPON_THROWING:
+				return ANIM_ATTACK_1H_WIDE;
+			case IT_WEAPON_BOW:
+				return ANIM_ATTACK_BOW;
+			case IT_WEAPON_XBOW:
+				return ANIM_ATTACK_XBOW;
+			default:
+				break;
+			}
+			if ((Calc_GetRandVal(2)) && (pWeapon->GetType() != IT_WEAPON_BOW) && (pWeapon->GetType() != IT_WEAPON_XBOW) && (pWeapon->GetType() != IT_WEAPON_THROWING))
+			{
+				// add some style to the attacks.
+				if (layer == LAYER_HAND2)
+					return static_cast<ANIM_TYPE>(ANIM_ATTACK_2H_DOWN + Calc_GetRandVal(3));
+				else
+					return static_cast<ANIM_TYPE>(ANIM_ATTACK_1H_WIDE + Calc_GetRandVal(3));
+			}
+		}
+
+		if (IsStatFlag(STATF_OnHorse))	// on horse back.
+		{
+			// Horse back anims are dif.
+			switch (action)
+			{
+			case ANIM_WALK_UNARM:
+			case ANIM_WALK_ARM:
+				return ANIM_HORSE_RIDE_SLOW;
+			case ANIM_RUN_UNARM:
+			case ANIM_RUN_ARMED:
+				return ANIM_HORSE_RIDE_FAST;
+			case ANIM_STAND:
+				return ANIM_HORSE_STAND;
+			case ANIM_FIDGET1:
+			case ANIM_FIDGET_YAWN:
+				return ANIM_HORSE_SLAP;
+			case ANIM_STAND_WAR_1H:
+			case ANIM_STAND_WAR_2H:
+				return ANIM_HORSE_STAND;
+			case ANIM_ATTACK_1H_WIDE:
+			case ANIM_ATTACK_1H_JAB:
+			case ANIM_ATTACK_1H_DOWN:
+				return ANIM_HORSE_ATTACK;
+			case ANIM_ATTACK_2H_JAB:
+			case ANIM_ATTACK_2H_WIDE:
+			case ANIM_ATTACK_2H_DOWN:
+				return ANIM_HORSE_SLAP;
+			case ANIM_WALK_WAR:
+				return ANIM_HORSE_RIDE_SLOW;
+			case ANIM_CAST_DIR:
+				return ANIM_HORSE_ATTACK;
+			case ANIM_CAST_AREA:
+				return ANIM_HORSE_ATTACK_BOW;
+			case ANIM_ATTACK_BOW:
+				return ANIM_HORSE_ATTACK_BOW;
+			case ANIM_ATTACK_XBOW:
+				return ANIM_HORSE_ATTACK_XBOW;
+			case ANIM_GET_HIT:
+				return ANIM_HORSE_SLAP;
+			case ANIM_BLOCK:
+				return ANIM_HORSE_SLAP;
+			case ANIM_ATTACK_UNARM:
+				return ANIM_HORSE_ATTACK;
+			case ANIM_BOW:
+			case ANIM_SALUTE:
+			case ANIM_EAT:
+				return ANIM_HORSE_ATTACK_XBOW;
+			default:
+				return ANIM_HORSE_STAND;
+			}
+		}
+		else if (!IsPlayableCharacter())  //( GetDispID() < CREID_MAN ) Possible fix for anims not being displayed above 400
+		{
+			// Animals have certain anims. Monsters have others.
+
+			if (GetDispID() >= CREID_HORSE1)
+			{
+				// All animals have all these anims thankfully
+				switch (action)
+				{
+				case ANIM_WALK_UNARM:
+				case ANIM_WALK_ARM:
+				case ANIM_WALK_WAR:
+					return ANIM_ANI_WALK;
+				case ANIM_RUN_UNARM:
+				case ANIM_RUN_ARMED:
+					return ANIM_ANI_RUN;
+				case ANIM_STAND:
+				case ANIM_STAND_WAR_1H:
+				case ANIM_STAND_WAR_2H:
+				default:
+					return ANIM_ANI_STAND;
+
+				case ANIM_FIDGET1:
+					return ANIM_ANI_FIDGET1;
+				case ANIM_FIDGET_YAWN:
+					return ANIM_ANI_FIDGET2;
+				case ANIM_CAST_DIR:
+					return ANIM_ANI_ATTACK1;
+				case ANIM_CAST_AREA:
+					return ANIM_ANI_EAT;
+				case ANIM_GET_HIT:
+					return ANIM_ANI_GETHIT;
+
+				case ANIM_ATTACK_1H_WIDE:
+				case ANIM_ATTACK_1H_JAB:
+				case ANIM_ATTACK_1H_DOWN:
+				case ANIM_ATTACK_2H_DOWN:
+				case ANIM_ATTACK_2H_JAB:
+				case ANIM_ATTACK_2H_WIDE:
+				case ANIM_ATTACK_BOW:
+				case ANIM_ATTACK_XBOW:
+				case ANIM_ATTACK_UNARM:
+					switch (Calc_GetRandVal(2))
+					{
+					case 0: return ANIM_ANI_ATTACK1; break;
+					case 1: return ANIM_ANI_ATTACK2; break;
+					}
+
+				case ANIM_DIE_BACK:
+					return ANIM_ANI_DIE1;
+				case ANIM_DIE_FORWARD:
+					return ANIM_ANI_DIE2;
+				case ANIM_BLOCK:
+				case ANIM_BOW:
+				case ANIM_SALUTE:
+					return ANIM_ANI_SLEEP;
+				case ANIM_EAT:
+					return ANIM_ANI_EAT;
+				}
+
+				while (action != ANIM_WALK_UNARM && !(pCharDef->m_Anims & (1 << action)))
+				{
+					// This anim is not supported. Try to use one that is.
+					switch (action)
+					{
+					case ANIM_ANI_SLEEP:	// All have this.
+						return ANIM_ANI_EAT;
+					default:
+						return ANIM_WALK_UNARM;
+					}
+				}
+			}
+			else
+			{
+				// Monsters don't have all the anims.
+
+				switch (action)
+				{
+				case ANIM_CAST_DIR:
+					return ANIM_MON_Stomp;
+				case ANIM_CAST_AREA:
+					return ANIM_MON_PILLAGE;
+				case ANIM_DIE_BACK:
+					return ANIM_MON_DIE1;
+				case ANIM_DIE_FORWARD:
+					return ANIM_MON_DIE2;
+				case ANIM_GET_HIT:
+					switch (Calc_GetRandVal(3))
+					{
+					case 0: return ANIM_MON_GETHIT; break;
+					case 1: return ANIM_MON_BlockRight; break;
+					case 2: return ANIM_MON_BlockLeft; break;
+					}
+					break;
+				case ANIM_ATTACK_1H_WIDE:
+				case ANIM_ATTACK_1H_JAB:
+				case ANIM_ATTACK_1H_DOWN:
+				case ANIM_ATTACK_2H_DOWN:
+				case ANIM_ATTACK_2H_JAB:
+				case ANIM_ATTACK_2H_WIDE:
+				case ANIM_ATTACK_BOW:
+				case ANIM_ATTACK_XBOW:
+				case ANIM_ATTACK_UNARM:
+					switch (Calc_GetRandVal(3))
+					{
+					case 0: return ANIM_MON_ATTACK1; break;
+					case 1: return ANIM_MON_ATTACK2; break;
+					case 2: return ANIM_MON_ATTACK3; break;
+					}
+				default:
+					return ANIM_WALK_UNARM;
+				}
+				// NOTE: Available actions depend HEAVILY on creature type !
+				// ??? Monsters don't have all anims in common !
+				// translate these !
+				while (action != ANIM_WALK_UNARM && !(pCharDef->m_Anims & (1 << action)))
+				{
+					// This anim is not supported. Try to use one that is.
+					switch (action)
+					{
+					case ANIM_MON_ATTACK1:	// All have this.
+						DEBUG_ERR(("Anim 0%x This is wrong! Invalid SCP file data.\n", GetDispID()));
+						return ANIM_WALK_UNARM;
+
+					case ANIM_MON_ATTACK2:	// Dolphins, Eagles don't have this.
+					case ANIM_MON_ATTACK3:
+						return ANIM_MON_ATTACK1;	// ALL creatures have at least this attack.
+					case ANIM_MON_Cast2:	// Trolls, Spiders, many others don't have this.
+						return ANIM_MON_BlockRight;	// Birds don't have this !
+					case ANIM_MON_BlockRight:
+						return ANIM_MON_BlockLeft;
+					case ANIM_MON_BlockLeft:
+						return ANIM_MON_GETHIT;
+					case ANIM_MON_GETHIT:
+						if (pCharDef->m_Anims & (1 << ANIM_MON_Cast2))
+							return ANIM_MON_Cast2;
+						else
+							return ANIM_WALK_UNARM;
+
+					case ANIM_MON_Stomp:
+						return ANIM_MON_PILLAGE;
+					case ANIM_MON_PILLAGE:
+						return ANIM_MON_ATTACK3;
+					case ANIM_MON_AttackBow:
+					case ANIM_MON_AttackXBow:
+						return ANIM_MON_ATTACK3;
+					case ANIM_MON_AttackThrow:
+						return ANIM_MON_AttackXBow;
+
+					default:
+						DEBUG_ERR(("Anim Unsupported 0%x for 0%x\n", action, GetDispID()));
+						return ANIM_WALK_UNARM;
+					}
+				}
+			}
+		}
+	}
+
+	return action;
+}
+
+bool CChar::UpdateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward , BYTE iFrameDelay , BYTE iAnimLen)
+{
+
+	if (action < 0 || action >= ANIM_QTY)
 		return false;
 
 	ANIM_TYPE_NEW subaction;
@@ -704,448 +968,130 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 
 	ANIM_TYPE_NEW action1 = static_cast<ANIM_TYPE_NEW>(action);
 	CCharBase* pCharDef = Char_GetDef();
-	if ( IsPlayableCharacter() )		//Perform these checks only for Gargoyles or in Enhanced Client
+	if (IsPlayableCharacter())		//Perform these checks only for Gargoyles or in Enhanced Client
 	{
 		CItem * pWeapon = m_uidWeapon.ItemFind();
-		if ( pWeapon != NULL && action == ANIM_ATTACK_WEAPON )
+		if (pWeapon != NULL && action == ANIM_ATTACK_WEAPON)
 		{
-			if (! IsGargoyle() )		//Set variation to 1 for non gargoyle characters (Humans and Elfs using EC) in all fighting animations.
+			if (!IsGargoyle())		//Set variation to 1 for non gargoyle characters (Humans and Elfs using EC) in all fighting animations.
 				variation = 1;
 			// action depends on weapon type (skill) and 2 Hand type.
 			LAYER_TYPE layer = pWeapon->Item_GetDef()->GetEquipLayer();
 			action1 = NANIM_ATTACK; //Should be NANIM_ATTACK;
-			switch ( pWeapon->GetType() )
+			switch (pWeapon->GetType())
 			{
-				case IT_WEAPON_MACE_CROOK:
-				case IT_WEAPON_MACE_PICK:
-				case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
-				case IT_WEAPON_MACE_STAFF:
-				case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
-					subaction = ( layer == LAYER_HAND2 ) ?
-						NANIM_ATTACK_BASH2H :
-						NANIM_ATTACK_BASH1H;
-					break;
-				case IT_WEAPON_SWORD:
-				case IT_WEAPON_AXE:
-					subaction = ( layer == LAYER_HAND2 ) ?
-						NANIM_ATTACK_PIERCE2H :
-						NANIM_ATTACK_PIERCE1H;
-					break;
-				case IT_WEAPON_FENCE:
-					subaction = ( layer == LAYER_HAND2 ) ?
-						NANIM_ATTACK_SLASH2H :
-						NANIM_ATTACK_SLASH1H;
-					break;
-				case IT_WEAPON_THROWING:
-					subaction = NANIM_ATTACK_THROWING;
-					break;
-				case IT_WEAPON_BOW:
-					subaction = NANIM_ATTACK_BOW;
-					break;
-				case IT_WEAPON_XBOW:
-					subaction = NANIM_ATTACK_CROSSBOW;
-					break;
-				default:
-					break;
+			case IT_WEAPON_MACE_CROOK:
+			case IT_WEAPON_MACE_PICK:
+			case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
+			case IT_WEAPON_MACE_STAFF:
+			case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
+				subaction = (layer == LAYER_HAND2) ?
+				NANIM_ATTACK_BASH2H :
+									NANIM_ATTACK_BASH1H;
+				break;
+			case IT_WEAPON_SWORD:
+			case IT_WEAPON_AXE:
+				subaction = (layer == LAYER_HAND2) ?
+				NANIM_ATTACK_PIERCE2H :
+									  NANIM_ATTACK_PIERCE1H;
+				break;
+			case IT_WEAPON_FENCE:
+				subaction = (layer == LAYER_HAND2) ?
+				NANIM_ATTACK_SLASH2H :
+									 NANIM_ATTACK_SLASH1H;
+				break;
+			case IT_WEAPON_THROWING:
+				subaction = NANIM_ATTACK_THROWING;
+				break;
+			case IT_WEAPON_BOW:
+				subaction = NANIM_ATTACK_BOW;
+				break;
+			case IT_WEAPON_XBOW:
+				subaction = NANIM_ATTACK_CROSSBOW;
+				break;
+			default:
+				break;
 			}
-		} else {
-			switch ( action )
+		}
+		else {
+			switch (action)
 			{
-				case ANIM_ATTACK_1H_WIDE:
-					action1 = NANIM_ATTACK;
-					subaction = NANIM_ATTACK_BASH2H;
-					break;
-				case ANIM_ATTACK_1H_JAB:
-					action1 = NANIM_ATTACK;
-					subaction = NANIM_ATTACK_SLASH1H;
-					break;
-				case ANIM_ATTACK_1H_DOWN:
-					action1 = NANIM_ATTACK;
-					subaction = NANIM_ATTACK_PIERCE1H;
-					break;
-				case ANIM_ATTACK_2H_JAB:
-					action1 = NANIM_ATTACK;
-					subaction = NANIM_ATTACK_SLASH2H;
-					break;
-				case ANIM_ATTACK_2H_WIDE:
-					action1 = NANIM_ATTACK;
-					subaction = NANIM_ATTACK_BASH2H;
-					break;
-				case ANIM_ATTACK_2H_DOWN:
-					action1 = NANIM_ATTACK;
-					subaction = NANIM_ATTACK_SLASH2H;
-					break;
-				case ANIM_CAST_DIR:
-					action1 = NANIM_SPELL;
-					subaction = NANIM_SPELL_NORMAL;
-					break;
-				case ANIM_CAST_AREA:
-					action1 = NANIM_SPELL;
-					subaction = NANIM_SPELL_SUMMON;
-					break;
-				case ANIM_ATTACK_BOW:
-					subaction = NANIM_ATTACK_BOW;
-					break;
-				case ANIM_ATTACK_XBOW:
-					subaction = NANIM_ATTACK_CROSSBOW;
-					break;
-				case ANIM_GET_HIT:
-					action1 = NANIM_GETHIT;
-					break;
-				case ANIM_BLOCK:
-					action1 = NANIM_BLOCK;
-					variation = 1;
-					break;
-				case ANIM_ATTACK_UNARM:
-					action1 = NANIM_ATTACK;
-					subaction = NANIM_ATTACK_WRESTLING;
-					break;
+			case ANIM_ATTACK_1H_WIDE:
+				action1 = NANIM_ATTACK;
+				subaction = NANIM_ATTACK_BASH2H;
+				break;
+			case ANIM_ATTACK_1H_JAB:
+				action1 = NANIM_ATTACK;
+				subaction = NANIM_ATTACK_SLASH1H;
+				break;
+			case ANIM_ATTACK_1H_DOWN:
+				action1 = NANIM_ATTACK;
+				subaction = NANIM_ATTACK_PIERCE1H;
+				break;
+			case ANIM_ATTACK_2H_JAB:
+				action1 = NANIM_ATTACK;
+				subaction = NANIM_ATTACK_SLASH2H;
+				break;
+			case ANIM_ATTACK_2H_WIDE:
+				action1 = NANIM_ATTACK;
+				subaction = NANIM_ATTACK_BASH2H;
+				break;
+			case ANIM_ATTACK_2H_DOWN:
+				action1 = NANIM_ATTACK;
+				subaction = NANIM_ATTACK_SLASH2H;
+				break;
+			case ANIM_CAST_DIR:
+				action1 = NANIM_SPELL;
+				subaction = NANIM_SPELL_NORMAL;
+				break;
+			case ANIM_CAST_AREA:
+				action1 = NANIM_SPELL;
+				subaction = NANIM_SPELL_SUMMON;
+				break;
+			case ANIM_ATTACK_BOW:
+				subaction = NANIM_ATTACK_BOW;
+				break;
+			case ANIM_ATTACK_XBOW:
+				subaction = NANIM_ATTACK_CROSSBOW;
+				break;
+			case ANIM_GET_HIT:
+				action1 = NANIM_GETHIT;
+				break;
+			case ANIM_BLOCK:
+				action1 = NANIM_BLOCK;
+				variation = 1;
+				break;
+			case ANIM_ATTACK_UNARM:
+				action1 = NANIM_ATTACK;
+				subaction = NANIM_ATTACK_WRESTLING;
+				break;
 				/*case ANIM_BOW:		//I'm commenting these 2 because they are not showing properly when Hovering/Mounted, so we skip them.
-					action1 = NANIM_EMOTE;
-					subaction = NANIM_EMOTE_BOW;
-					break;
+				action1 = NANIM_EMOTE;
+				subaction = NANIM_EMOTE_BOW;
+				break;
 				case ANIM_SALUTE:
-					action1 = NANIM_EMOTE;
-					subaction = NANIM_EMOTE_SALUTE;
-					break;*/
-				case ANIM_EAT:
-					action1 = NANIM_EAT;
-					break;					
-					break;
-				default:
-					break;
+				action1 = NANIM_EMOTE;
+				subaction = NANIM_EMOTE_SALUTE;
+				break;*/
+			case ANIM_EAT:
+				action1 = NANIM_EAT;
+				break;
+				break;
+			default:
+				break;
 			}
 		}
 	}//Other new animations than work on humans, elfs and gargoyles
-	switch ( action )
-	{	
-		case ANIM_DIE_BACK:
-			variation = 1;		//Variation makes characters die back
-			action1 = NANIM_DEATH;
-			break;
-		case ANIM_DIE_FORWARD:
-			action1 = NANIM_DEATH;
-			break;
+	switch (action)
+	{
+	case ANIM_DIE_BACK:
+		variation = 1;		//Variation makes characters die back
+		action1 = NANIM_DEATH;
+		break;
+	case ANIM_DIE_FORWARD:
+		action1 = NANIM_DEATH;
+		break;
 	}
-
-	//Begin old client animation behaviour
-
-	if ( fBackward && iFrameDelay )	// backwards and delayed just dont work ! = invis
-		iFrameDelay = 0;
-
-		if ( fTranslate || IsStatFlag( STATF_OnHorse ))
-		{
-			CItem * pWeapon = m_uidWeapon.ItemFind();
-			if ( pWeapon != NULL && action == ANIM_ATTACK_WEAPON )
-			{
-				// action depends on weapon type (skill) and 2 Hand type.
-				LAYER_TYPE layer = pWeapon->Item_GetDef()->GetEquipLayer();
-				switch ( pWeapon->GetType() )
-				{
-					case IT_WEAPON_MACE_CROOK:
-					case IT_WEAPON_MACE_PICK:
-					case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
-					case IT_WEAPON_MACE_STAFF:
-					case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
-						action = ( layer == LAYER_HAND2 ) ?
-							ANIM_ATTACK_2H_DOWN :
-							ANIM_ATTACK_1H_DOWN;
-						break;
-					case IT_WEAPON_SWORD:
-					case IT_WEAPON_AXE:
-						action = ( layer == LAYER_HAND2 ) ?
-							ANIM_ATTACK_2H_WIDE :
-							ANIM_ATTACK_1H_WIDE;
-						break;
-					case IT_WEAPON_FENCE:
-						action = ( layer == LAYER_HAND2 ) ?
-							ANIM_ATTACK_2H_JAB :
-							ANIM_ATTACK_1H_JAB;
-						break;
-					case IT_WEAPON_THROWING:
-						action = ANIM_ATTACK_1H_WIDE;
-						break;
-					case IT_WEAPON_BOW:
-						action = ANIM_ATTACK_BOW;
-						break;
-					case IT_WEAPON_XBOW:
-						action = ANIM_ATTACK_XBOW;
-						break;
-					default:
-						break;
-				}
-				if (( Calc_GetRandVal( 2 ) ) && ( pWeapon->GetType() != IT_WEAPON_BOW ) && ( pWeapon->GetType() != IT_WEAPON_XBOW ) && ( pWeapon->GetType() != IT_WEAPON_THROWING ) )
-				{
-					// add some style to the attacks.
-					if ( layer == LAYER_HAND2 )
-					{
-						action = static_cast<ANIM_TYPE>(ANIM_ATTACK_2H_DOWN + Calc_GetRandVal(3));
-					}
-					else
-					{
-						action = static_cast<ANIM_TYPE>(ANIM_ATTACK_1H_WIDE + Calc_GetRandVal(3));
-					}
-				}
-			}
-
-			if ( IsStatFlag( STATF_OnHorse ))	// on horse back.
-			{
-				// Horse back anims are dif.
-				switch ( action )
-				{
-					case ANIM_WALK_UNARM:
-					case ANIM_WALK_ARM:
-						action = ANIM_HORSE_RIDE_SLOW;
-						break;
-					case ANIM_RUN_UNARM:
-					case ANIM_RUN_ARMED:
-						action = ANIM_HORSE_RIDE_FAST;
-						break;
-					case ANIM_STAND:
-						action = ANIM_HORSE_STAND;
-						break;
-					case ANIM_FIDGET1:
-					case ANIM_FIDGET_YAWN:
-						action = ANIM_HORSE_SLAP;
-						break;
-					case ANIM_STAND_WAR_1H:
-					case ANIM_STAND_WAR_2H:
-						action = ANIM_HORSE_STAND;
-						break;
-					case ANIM_ATTACK_1H_WIDE:
-					case ANIM_ATTACK_1H_JAB:
-					case ANIM_ATTACK_1H_DOWN:
-						action = ANIM_HORSE_ATTACK;
-						break;
-					case ANIM_ATTACK_2H_JAB:
-					case ANIM_ATTACK_2H_WIDE:
-					case ANIM_ATTACK_2H_DOWN:
-						action = ANIM_HORSE_SLAP;
-						break;
-					case ANIM_WALK_WAR:
-						action = ANIM_HORSE_RIDE_SLOW;
-						break;
-					case ANIM_CAST_DIR:
-						action = ANIM_HORSE_ATTACK;
-						break;
-					case ANIM_CAST_AREA:
-						action = ANIM_HORSE_ATTACK_BOW;
-						break;
-					case ANIM_ATTACK_BOW:
-						action = ANIM_HORSE_ATTACK_BOW;
-						break;
-					case ANIM_ATTACK_XBOW:
-						action = ANIM_HORSE_ATTACK_XBOW;
-						break;
-					case ANIM_GET_HIT:
-						action = ANIM_HORSE_SLAP;
-						break;
-					case ANIM_BLOCK:
-						action = ANIM_HORSE_SLAP;
-						break;
-					case ANIM_ATTACK_UNARM:
-						action = ANIM_HORSE_ATTACK;
-						break;
-					case ANIM_BOW:
-					case ANIM_SALUTE:
-					case ANIM_EAT:
-						action = ANIM_HORSE_ATTACK_XBOW;
-						break;
-					default:
-						action = ANIM_HORSE_STAND;
-						break;
-				}
-			}
-			else if (!IsPlayableCharacter())  //( GetDispID() < CREID_MAN ) Possible fix for anims not being displayed above 400
-			{
-				// Animals have certain anims. Monsters have others.
-
-				if ( GetDispID() >= CREID_HORSE1 )
-				{
-					// All animals have all these anims thankfully
-					switch ( action )
-					{
-						case ANIM_WALK_UNARM:
-						case ANIM_WALK_ARM:
-						case ANIM_WALK_WAR:
-							action = ANIM_ANI_WALK;
-							break;
-						case ANIM_RUN_UNARM:
-						case ANIM_RUN_ARMED:
-							action = ANIM_ANI_RUN;
-							break;
-						case ANIM_STAND:
-						case ANIM_STAND_WAR_1H:
-						case ANIM_STAND_WAR_2H:
-						default:
-							action = ANIM_ANI_STAND;
-							break;
-
-						case ANIM_FIDGET1:
-							action = ANIM_ANI_FIDGET1;
-							break;
-						case ANIM_FIDGET_YAWN:
-							action = ANIM_ANI_FIDGET2;
-							break;
-						case ANIM_CAST_DIR:
-							action = ANIM_ANI_ATTACK1;
-							break;
-						case ANIM_CAST_AREA:
-							action = ANIM_ANI_EAT;
-							break;
-						case ANIM_GET_HIT:
-							action = ANIM_ANI_GETHIT;
-							break;
-
-						case ANIM_ATTACK_1H_WIDE:
-						case ANIM_ATTACK_1H_JAB:
-						case ANIM_ATTACK_1H_DOWN:
-						case ANIM_ATTACK_2H_DOWN:
-						case ANIM_ATTACK_2H_JAB:
-						case ANIM_ATTACK_2H_WIDE:
-						case ANIM_ATTACK_BOW:
-						case ANIM_ATTACK_XBOW:
-						case ANIM_ATTACK_UNARM:
-							switch ( Calc_GetRandVal(2))
-							{
-								case 0: action = ANIM_ANI_ATTACK1; break;
-								case 1: action = ANIM_ANI_ATTACK2; break;
-							}
-							break;
-
-						case ANIM_DIE_BACK:
-							action = ANIM_ANI_DIE1;
-							break;
-						case ANIM_DIE_FORWARD:
-							action = ANIM_ANI_DIE2;
-							break;
-						case ANIM_BLOCK:
-						case ANIM_BOW:
-						case ANIM_SALUTE:
-							action = ANIM_ANI_SLEEP;
-							break;
-						case ANIM_EAT:
-							action = ANIM_ANI_EAT;
-							break;
-					}
-
-					while ( action != ANIM_WALK_UNARM && ! ( pCharDef->m_Anims & (1<<action)))
-					{
-						// This anim is not supported. Try to use one that is.
-						switch ( action )
-						{
-							case ANIM_ANI_SLEEP:	// All have this.
-								action = ANIM_ANI_EAT;
-								break;
-							default:
-								action = ANIM_WALK_UNARM;
-								break;
-						}
-					}
-				}
-				else
-				{
-					// Monsters don't have all the anims.
-
-					switch ( action )
-					{
-						case ANIM_CAST_DIR:
-							action = ANIM_MON_Stomp;
-							break;
-						case ANIM_CAST_AREA:
-							action = ANIM_MON_PILLAGE;
-							break;
-						case ANIM_DIE_BACK:
-							action = ANIM_MON_DIE1;
-							break;
-						case ANIM_DIE_FORWARD:
-							action = ANIM_MON_DIE2;
-							break;
-						case ANIM_GET_HIT:
-							switch ( Calc_GetRandVal(3))
-							{
-							case 0: action = ANIM_MON_GETHIT; break;
-							case 1: action = ANIM_MON_BlockRight; break;
-							case 2: action = ANIM_MON_BlockLeft; break;
-							}
-							break;
-						case ANIM_ATTACK_1H_WIDE:
-						case ANIM_ATTACK_1H_JAB:
-						case ANIM_ATTACK_1H_DOWN:
-						case ANIM_ATTACK_2H_DOWN:
-						case ANIM_ATTACK_2H_JAB:
-						case ANIM_ATTACK_2H_WIDE:
-						case ANIM_ATTACK_BOW:
-						case ANIM_ATTACK_XBOW:
-						case ANIM_ATTACK_UNARM:
-							switch ( Calc_GetRandVal(3))
-							{
-								case 0: action = ANIM_MON_ATTACK1; break;
-								case 1: action = ANIM_MON_ATTACK2; break;
-								case 2: action = ANIM_MON_ATTACK3; break;
-							}
-							break;
-						default:
-							action = ANIM_WALK_UNARM;
-							break;
-					}
-					// NOTE: Available actions depend HEAVILY on creature type !
-					// ??? Monsters don't have all anims in common !
-					// translate these !
-					while ( action != ANIM_WALK_UNARM && ! ( pCharDef->m_Anims & (1<<action)))
-					{
-						// This anim is not supported. Try to use one that is.
-						switch ( action )
-						{
-							case ANIM_MON_ATTACK1:	// All have this.
-								DEBUG_ERR(( "Anim 0%x This is wrong! Invalid SCP file data.\n", GetDispID()));
-								action = ANIM_WALK_UNARM;
-								break;
-
-							case ANIM_MON_ATTACK2:	// Dolphins, Eagles don't have this.
-							case ANIM_MON_ATTACK3:
-								action = ANIM_MON_ATTACK1;	// ALL creatures have at least this attack.
-								break;
-							case ANIM_MON_Cast2:	// Trolls, Spiders, many others don't have this.
-								action = ANIM_MON_BlockRight;	// Birds don't have this !
-								break;
-							case ANIM_MON_BlockRight:
-								action = ANIM_MON_BlockLeft;
-								break;
-							case ANIM_MON_BlockLeft:
-								action = ANIM_MON_GETHIT;
-								break;
-							case ANIM_MON_GETHIT:
-								if ( pCharDef->m_Anims & (1<<ANIM_MON_Cast2))
-									action = ANIM_MON_Cast2;
-								else
-									action = ANIM_WALK_UNARM;
-								break;
-
-							case ANIM_MON_Stomp:
-								action = ANIM_MON_PILLAGE;
-								break;
-							case ANIM_MON_PILLAGE:
-								action = ANIM_MON_ATTACK3;
-								break;
-							case ANIM_MON_AttackBow:
-							case ANIM_MON_AttackXBow:
-								action = ANIM_MON_ATTACK3;
-								break;
-							case ANIM_MON_AttackThrow:
-								action = ANIM_MON_AttackXBow;
-								break;
-
-							default:
-								DEBUG_ERR(( "Anim Unsupported 0%x for 0%x\n", action, GetDispID()));
-								action = ANIM_WALK_UNARM;
-								break;
-						}
-					}
-				}
-			}
-		}
-
 	PacketActionBasic* cmdnew = new PacketActionBasic(this, action1, subaction, variation);
 	PacketAction* cmd = new PacketAction(this, action, 1, fBackward, iFrameDelay, iAnimLen);
 
@@ -1156,15 +1102,14 @@ bool CChar::UpdateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BY
 			continue;
 		if (pClient->GetNetState()->isClientSA() && pClient->GetNetState()->m_reportedVersion < 6700351)	//Enhanced client always used this packet, at least until ~ 4.0.35 (6700351)
 			cmdnew->send(pClient);
-		else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_NEWMOBILEANIMATION) && (IsGargoyle()) && (action1 >= 0) )	// On classic clients only send new packets for gargoyles
+		else if (pClient->GetNetState()->isClientVersion(MINCLIVER_NEWMOBILEANIMATION) && (IsGargoyle()) && (action1 >= 0))	// On classic clients only send new packets for gargoyles
 			cmdnew->send(pClient);
 		else
 			cmd->send(pClient);
 	}
 	delete cmdnew;
-	delete cmd;
-
-	return( true );
+	delete cmd;	
+	return true;
 }
 
 void CChar::UpdateMode( CClient * pExcludeClient, bool fFull )
