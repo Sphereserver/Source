@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, Sept 6, 2014
+// FILE LAST UPDATED: Saturday, October 11, 2014
 //
 VERSION=0.56c
 
@@ -63,9 +63,12 @@ The Ironwood Inn
 5490,19,-25,0=5514,10,5,0=tp_shame_1_2_x
 5514,10,5,0=5490,19,-25,0=tp_shame_2_1_x
 5875,19,-5,0=5507,162,5,0=tp_shame_5_4_x
-5904,16,61,0=4721,3814,-1,0=tp_hythloth_ent_out_x
-5905,16,61,0=4722,3814,-1,0=tp_hythloth_ent_out_x
-5906,16,61,0=4723,3814,-1,0=tp_hythloth_ent_out_x
+5904,16,64,0=4721,3813,0,0=tp_hythloth_ent_out_x
+5905,16,64,0=4722,3813,0,0=tp_hythloth_ent_out_x
+5906,16,64,0=4723,3813,0,0=tp_hythloth_ent_out_x
+4721,3813,10,0=5904,16,64,0=tp_hythloth_out_x_ent
+4722,3813,10,0=5905,16,64,0=tp_hythloth_out_x_ent
+4723,3813,10,0=5906,16,64,0=tp_hythloth_out_x_ent
 1997,81,7,0=5881,242,-1,0=tp_northcave_ice_1
 5200,71,17,0=5211,22,15,0=tp_wind_w_e_x
 5217,18,15,0=5204,74,17,0=tp_wind_e_w_x
@@ -355,9 +358,6 @@ The Ironwood Inn
 6086,3676,15,0=5731,446,-20,0=tp_Swamp_SwampPassage
 1409,3824,5,0=1124,3623,5,0=tp_jhelom_m_n_x
 1419,3832,5,0=1466,4015,5,0=tp_jhelom_m_s_x
-4721,3814,0,0=5904,16,61,0=tp_hythloth_out_x_ent
-4722,3814,0,0=5905,16,61,0=tp_hythloth_out_x_ent
-4723,3814,0,0=5906,16,61,0=tp_hythloth_out_x_ent
 1406,3996,5,0=1414,3828,5,0=tp_jhelom_ns_m_x
 5906,4069,26,0=2494,3576,5,0=tp_EDeluciaTemple_TempleIsle
 6107,176,0,0=6115,176,0,0=tp_hythloth_passage_1_1x

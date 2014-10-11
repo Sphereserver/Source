@@ -1288,3 +1288,8 @@ Fixed: .fix will now default to the first terrain elevation instead of lowest Z 
 
 11-10-2014, Ben
 Added #2394: SMSG_DEF_UNICODE, MSG_DEF_UNICODE, IMSG_DEF_UNICODE to sphere_msgs.scp. If set to 1, messages will be sent in unicode unless overwriten with the the mode in @hue,font,mode.
+
+11-10-2014, Coruja
+[sphere_defs.scp] Added new BFONT_* colors to use on HTML texts. Values already match most colors used on OSI dialogs.
+[sphere_map0.scp] Fixed duplicated a_dungeon_10 AREADEF (the last one was renamed to a_dungeon_19).
+[sphere_map_points0/1.scp] Fixed Hythloth entrance teleport.

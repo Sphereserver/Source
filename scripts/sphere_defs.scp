@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, October 7, 2014
+// FILE LAST UPDATED: Saturday, October 11, 2014
 //
 VERSION=0.56c
 
@@ -1259,79 +1259,79 @@ tilef_door              020000000   // Okay...
 tilef_stairBack         040000000   // Don't we have stairs that go forward or left too? This could cover both...
 tilef_stairRight        080000000   // Well, whatever, you can climb them, so, hey... Good use for a
 
-[DEFNAME def_html] // useful with htmlgumps
-L1   <
-R1   >
+[DEFNAME def_html]	// useful with htmlgumps
+L1		<
+R1		>
 
-B		<B>
-BE		</B>
-BIG		<BIG>
-BIGE	</BIG>
-SMALL	<SMALL>
-SMALLE	</SMALL>
-EM      <EM>
-EME		</EM>
-U		<U>
-UE		</U>
-I		<I>
-IE		</I>
-H1		<H1>
-H1E		</H1>
-H2		<H2>
-H2E		</H2>
-H3		<H3>
-H3E		</H3>
-H4		<H4>
-H4E		</H4>
-H5		<H5>
-H5E		</H5>
-H6		<H6>
-H6E		</H6>
+B		<b>
+BE		</b>
+BIG		<big>
+BIGE		</big>
+SMALL		<small>
+SMALLE		</small>
+EM		<em>
+EME		</em>
+U		<u>
+UE		</u>
+I		<i>
+IE		</i>
+H1		<h1>
+H1E		</h1>
+H2		<h2>
+H2E		</h2>
+H3		<h3>
+H3E		</h3>
+H4		<h4>
+H4E		</h4>
+H5		<h5>
+H5E		</h5>
+H6		<h6>
+H6E		</h6>
 A		<a
 AE		</a>
+BR		<br>
+CENTER		<center>
+CENTERE		</center>
+DIV_LEFT	<div align="left">
+DIV_RIGHT	<div align="right">
+DIV_END		</div>
 
-DIV_RIGHT   <div align="right">
-DIV_LEFT   <div align="left">
-DIV_END      </DIV>
-CENTER      <CENTER>
-CENTERE      </CENTER>
-BR      <BR>
-BRE      </BR>
+BFONT		<basefont
+BFONTE		</basefont>
+BFONT_SIZE1	<basefont size="1">
+BFONT_SIZE2	<basefont size="2">
+BFONT_SIZE3	<basefont size="3">
+BFONT_SIZE4	<basefont size="4">
+BFONT_SIZE5	<basefont size="5">
+BFONT_SIZE7	<basefont size="7">
 
-BFONT_SIZE1   <basefont SIZE="1">
-BFONT_SIZE2   <basefont SIZE="2">
-BFONT_SIZE3   <basefont SIZE="3">
-BFONT_SIZE4   <basefont SIZE="4">
-BFONT_SIZE5   <basefont SIZE="5">
-BFONT_SIZE7   <basefont SIZE="7">
-BFONT_white   <basefont color="#ffffff">
-BFONT_LGRAY   <basefont color="#aaaaaa">
-BFONT_GRAY   <basefont color="#888888">
-BFONT_DGRAY   <basefont color="#444444">
-BFONT_BLACK   <basefont color="#000011">
-BFONT_LRED   <basefont color="#ff0000">
-BFONT_RED   <basefont color="#880000">
-BFONT_DRED   <basefont color="#440000">
-BFONT_LGREEN   <basefont color="#00ff00">
-BFONT_GREEN   <basefont color="#008800">
-BFONT_DGREEN   <basefont color="#004400">
-BFONT_LBLUE   <basefont color="#0000ff">
-BFONT_BLUE   <basefont color="#000088">
-BFONT_DBLUE   <basefont color="#000044">
-BFONT_LYELLOW   <basefont color="#ffff88">
-BFONT_YELLOW   <basefont color="#ffff00">
-BFONT_DYELLOW   <basefont color="#888800">
-BFONT_LPURPLE   <basefont color="#ff88ff">
-BFONT_PURPLE   <basefont color="#ff00ff">
-BFONT_DPURPLE   <basefont color="#880088">
-BFONT_LCYAN   <basefont color="#88ffff">
-BFONT_CYAN   <basefont color="#00ffff">
-BFONT_DCYAN   <basefont color="#008888">
-BFONT      <BASEFONT
-BFONTE      </BASEFONT>
-
-HTML_REDTEXT   <basefont color="red" />
-HTML_WHITETEXT <basefont color="white" />
+BFONT_BLACK		<basefont color="#000008">
+BFONT_WHITE		<basefont color="#ffffff">
+BFONT_LIME		<basefont color="#00ff00">
+BFONT_RED		<basefont color="#ff0000">
+BFONT_DRED		<basefont color="#8b0000">
+BFONT_YELLOW		<basefont color="#ffff00">
+BFONT_DYELLOW		<basefont color="#8b8b00">
+BFONT_CYAN		<basefont color="#00ffff">
+BFONT_DCYAN		<basefont color="#008b8b">
+BFONT_LGRAY		<basefont color="#d3d3d3">
+BFONT_GRAY		<basefont color="#808080">
+BFONT_DGRAY		<basefont color="#a9a9a9">
+BFONT_LGREEN		<basefont color="#90ee90">
+BFONT_GREEN		<basefont color="#008000">
+BFONT_DGREEN		<basefont color="#006400">
+BFONT_LORANGE		<basefont color="#ffc600">
+BFONT_ORANGE		<basefont color="#ffa500">
+BFONT_DORANGE		<basefont color="#ff8c00">
+BFONT_LBLUE		<basefont color="#add8e6">
+BFONT_BLUE		<basefont color="#0000ff">
+BFONT_DBLUE		<basefont color="#00008b">
+BFONT_LSLATEBLUE	<basefont color="#ceceff">
+BFONT_SLATEBLUE		<basefont color="#8484ff">
+BFONT_DSLATEBLUE	<basefont color="#483d8b">
+BFONT_LPURPLE		<basefont color="#8968cd">
+BFONT_PURPLE		<basefont color="#800080">
+BFONT_DPURPLE		<basefont color="#551a8b">
 
 [DEFNAME profession_ids]
 // ARGN2 in f_oncreate_char

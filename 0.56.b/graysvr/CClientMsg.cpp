@@ -779,17 +779,17 @@ void CClient::addObjMessage( LPCTSTR pMsg, const CObjBaseTemplate * pSrc, HUE_TY
 	{
 		HUE_TYPE pHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_COLOR"));
 		FONT_TYPE pFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_FONT"));
-		bool bUniode = (g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_UNICODE",true) != 0);
+		bool bUnicode = (g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_UNICODE",true) != 0);
 
-		addBarkParse(pMsg, pSrc, (wHue != HUE_TEXT_DEF ? wHue : ( pHue ? pHue : wHue )), TALKMODE_OBJ, ( pFont ? pFont : FONT_NORMAL), bUniode);
+		addBarkParse(pMsg, pSrc, (wHue != HUE_TEXT_DEF ? wHue : ( pHue ? pHue : wHue )), TALKMODE_OBJ, ( pFont ? pFont : FONT_NORMAL), bUnicode);
 	} 
 	else
 	{
 		HUE_TYPE pHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_COLOR"));
 		FONT_TYPE pFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_FONT"));
-		bool bUniode = (g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_UNICODE",true) != 0);
+		bool bUnicode = (g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_UNICODE",true) != 0);
 
-		addBarkParse(pMsg, pSrc, (wHue != HUE_TEXT_DEF ? wHue : ( pHue ? pHue : wHue)), TALKMODE_ITEM, ( pFont ? pFont : FONT_NORMAL), bUniode);
+		addBarkParse(pMsg, pSrc, (wHue != HUE_TEXT_DEF ? wHue : ( pHue ? pHue : wHue)), TALKMODE_ITEM, ( pFont ? pFont : FONT_NORMAL), bUnicode);
 	}
 }
 

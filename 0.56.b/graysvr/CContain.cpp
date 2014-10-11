@@ -800,28 +800,38 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 	} sm_ContSize[] =
 	{
 		{ GUMP_RESERVED, 40, 50, 100, 100 },		// default.
-		{ GUMP_SECURE_TRADE, 1, 1, 66, 26 },
 		{ GUMP_CORPSE, 20, 85, 80, 185 },
-		{ GUMP_PACK, 44, 65, 142, 150 },	// Open backpack
-		{ GUMP_BAG, 29, 34, 93, 119 },		// Leather Bag
+		{ GUMP_PACK, 44, 65, 142, 150 },			// Open backpack
+		{ GUMP_BAG, 29, 34, 93, 119 },				// Leather Bag
+		{ GUMP_BARREL, 33, 36, 98, 139 },			// Barrel
+		{ GUMP_BASKET_SQ, 19, 47, 138, 114 },		// Square picknick Basket
+		{ GUMP_BOX_WOOD, 16, 51, 140, 115 },		// small wood box with a lock
+		{ GUMP_BASKET_RO, 33, 36,  98, 134 },		// Round Basket
 		{ GUMP_CHEST_GO_SI, 18, 105, 118, 169 },	// Gold and Silver Chest.
+		{ GUMP_BOX_WOOD_OR, 16, 51, 140, 115 },		// Small wood box (ornate)(no lock)
+		{ GUMP_CRATE, 20, 10, 126, 91 },			// Wood Crate
+		{ GUMP_DRAWER_DK, 16, 17, 110, 85 },
 		{ GUMP_CHEST_WO_GO, 18, 105, 118, 169 },	// Wood with gold trim.
-		{ GUMP_CHEST_SI, 18, 105, 118, 169 },	// silver chest.
-		{ GUMP_BARREL, 33, 36, 98, 139 },		// Barrel
-		{ GUMP_CRATE, 20, 10, 126, 91 },	// Wood Crate
-		{ GUMP_BASKET_SQ, 19, 47, 138, 114 },	// Square picknick Basket
-		{ GUMP_BASKET_RO, 33, 36,  98, 134 }, // Round Basket
+		{ GUMP_CHEST_SI, 18, 105, 118, 169 },		// silver chest.
+		{ GUMP_BOX_GO_LO, 16, 51, 140, 115 },		// Gold/Brass box with a lock.
+		{ GUMP_SHIP_HOLD, 46, 74, 152, 175 },
+		{ GUMP_BOOK_SHELF, 76, 12, 96, 59 },
 		{ GUMP_CABINET_DK, 24, 96, 91, 143 },
 		{ GUMP_CABINET_LT, 24, 96, 91, 143 },
-		{ GUMP_BOOK_SHELF, 76, 12, 96, 59 },
-		{ GUMP_BOX_WOOD, 16, 51, 140, 115 },	// small wood box with a lock
-		{ GUMP_BOX_WOOD_OR, 16, 51, 140, 115 }, // Small wood box (ornate)(no lock)
-		{ GUMP_BOX_GO_LO, 16, 51, 140, 115 }, // Gold/Brass box with a lock.
-		{ GUMP_DRAWER_DK, 16, 17, 110, 85 },
 		{ GUMP_DRAWER_LT, 16, 17, 110, 85 },
-		{ GUMP_SHIP_HOLD, 46, 74, 152, 175 },
-
-		{ GUMP_GAME_BOARD,	 4, 10, 220, 185 },	// Chess or checker board.
+		{ GUMP_GIFT_BOX, 35, 10, 155, 85 },
+		{ GUMP_ARMOIRE_RED, 10, 10, 150, 95 },
+		{ GUMP_ARMOIRE_MAPLE, 10, 10, 150, 95 },
+		{ GUMP_ARMOIRE_CHERRY, 10, 10, 150, 95 },
+		{ GUMP_BASKET_TALL, 10, 10, 116, 71 },
+		{ GUMP_CHEST_WOOD_PLAIN, 10, 10, 150, 95 },
+		{ GUMP_CHEST_WOOD_GILDED, 10, 10, 150, 95 },
+		{ GUMP_CHEST_WOOD_ORNATE, 10, 10, 150, 95 },
+		{ GUMP_TALL_CABINET, 10, 10, 150, 95 },
+		{ GUMP_CHEST_WOOD_FINISH, 10, 10, 150, 95 },
+		{ GUMP_HEART_SHAPED, 56, 30, 102, 74},
+		{ GUMP_SECURE_TRADE, 1, 1, 66, 26 },
+		{ GUMP_GAME_BOARD,	 4, 10, 220, 185 },		// Chess or checker board.
 		{ GUMP_GAME_BACKGAM, 4, 10, 220, 185 },
 	};
 

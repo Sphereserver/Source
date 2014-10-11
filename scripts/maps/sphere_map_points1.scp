@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, Jun 6, 2014
+// FILE LAST UPDATED: Saturday, October 11, 2014
 //
 VERSION=0.56c
 
@@ -26,9 +26,12 @@ VERSION=0.56c
 5490,19,-25,1=5514,10,5,1=tp_shame_1_2_x_map1
 5514,10,5,1=5490,19,-25,1=tp_shame_2_1_x_map1
 5875,19,-5,1=5507,162,5,1=tp_shame_5_4_x_map1
-5904,16,61,1=4721,3814,-1,1=tp_hythloth_ent_out_x_map1
-5905,16,61,1=4722,3814,-1,1=tp_hythloth_ent_out_x_map1
-5906,16,61,1=4723,3814,-1,1=tp_hythloth_ent_out_x_map1
+5904,16,64,1=4721,3813,0,1=tp_hythloth_ent_out_x_map1
+5905,16,64,1=4722,3813,0,1=tp_hythloth_ent_out_x_map1
+5906,16,64,1=4723,3813,0,1=tp_hythloth_ent_out_x_map1
+4721,3813,10,1=5904,16,64,1=tp_hythloth_out_x_ent_map1
+4722,3813,10,1=5905,16,64,1=tp_hythloth_out_x_ent_map1
+4723,3813,10,1=5906,16,64,1=tp_hythloth_out_x_ent_map1
 1997,81,7,1=5881,242,-1,1=tp_northcave_ice_1_map1
 5200,71,17,1=5211,22,15,1=tp_wind_w_e_x_map1
 5394,127,0,1=512,1560,0,1=tp_shame_ent_out_x_map1
@@ -319,9 +322,6 @@ VERSION=0.56c
 6086,3676,15,1=5731,446,-20,1=tp_Swamp_SwampPassage_map1
 1409,3824,5,1=1124,3623,5,1=tp_jhelom_m_n_x_map1
 1419,3832,5,1=1466,4015,5,1=tp_jhelom_m_s_x_map1
-4721,3814,0,1=5904,16,61,1=tp_hythloth_out_x_ent_map1
-4722,3814,0,1=5905,16,61,1=tp_hythloth_out_x_ent_map1
-4723,3814,0,1=5906,16,61,1=tp_hythloth_out_x_ent_map1
 1406,3996,5,1=1414,3828,5,1=tp_jhelom_ns_m_x_map1
 5906,4069,26,1=2494,3576,5,1=tp_EDeluciaTemple_TempleIsle_map1
 6107,176,0,1=6115,176,0,1=tp_hythloth_passage_1_1x_map1
