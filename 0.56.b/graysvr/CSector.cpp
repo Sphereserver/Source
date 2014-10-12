@@ -956,13 +956,13 @@ void CSector::RespawnDeadNPCs()
 		if ( ! pChar->IsStatFlag( STATF_DEAD ))
 			continue;
 
+		// Restock them with npc stuff.
+		pChar->NPC_LoadScript(true);
+
 		// Res them back to their "home".
 		int iDist = pChar->m_pNPC->m_Home_Dist_Wander;
 		pChar->MoveNear( pChar->m_ptHome, ( iDist < SHRT_MAX ) ? iDist : 4 );
 		pChar->Spell_Resurrection();
-
-		// Restock them with npc stuff.
-		pChar->NPC_LoadScript(true);
 	}
 }
 

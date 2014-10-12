@@ -1293,3 +1293,7 @@ Added #2394: SMSG_DEF_UNICODE, MSG_DEF_UNICODE, IMSG_DEF_UNICODE to sphere_msgs.
 [sphere_defs.scp] Added new BFONT_* colors to use on HTML texts. Values already match most colors used on OSI dialogs.
 [sphere_map0.scp] Fixed duplicated a_dungeon_10 AREADEF (the last one was renamed to a_dungeon_19).
 [sphere_map_points0/1.scp] Fixed Hythloth entrance teleport.
+
+12-10-2014, Ben
+Fixed #2416: @Enter region trigger will now fire after NPC stats are set in all instances.
+Fixed: local.return not being set in FULLTRIGGER if no args were specified.

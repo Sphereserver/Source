@@ -2544,7 +2544,7 @@ jump_in:
 						}
 					} else if ( !strcmpi(s.GetKey(), "FullTrigger" ) )
 					{
-						EXC_SET("call");
+						EXC_SET("FullTrigger");
 						CGString sVal;
 						TCHAR * piCmd[7];
 						TCHAR *psTmp = Str_GetTemp();
@@ -2592,8 +2592,6 @@ jump_in:
 								pArgs->m_v.SetCount(0);
 								pArgs->Init(z);
 
-
-								//fRes = pRef->r_Call(argRaw, pSrc, pArgs, &sVal);
 								tRet = pSrc->GetChar()->OnTrigger( psTmp, pSrc, pArgs);
 
 								pArgs->m_iN1 = iN1;
@@ -2602,14 +2600,13 @@ jump_in:
 								pArgs->m_pO1 = pO1;
 								pArgs->m_s1 = s1;
 								pArgs->m_s1_raw = s1_raw;
-								pArgs->m_VarsLocal.SetNum("return",tRet,false);
 								pArgs->m_v.SetCount(0);
 							}
 							else
 							{
 								tRet = pSrc->GetChar()->OnTrigger( psTmp, pSrc, pArgs);
-								//fRes = pRef->r_Call(argRaw, pSrc, pArgs, &sVal);
 							}
+							pArgs->m_VarsLocal.SetNum("return",tRet,false);
 							fRes = tRet > 0 ? 1 : 0;
 						}
 						else
