@@ -418,7 +418,7 @@ baddumy:
 		{
 			return true;
 		}
-		UpdateAnimate(GenerateAnimate(ANIM_ATTACK_WEAPON));
+		UpdateAnimate(ANIM_ATTACK_WEAPON);
 		m_Act_TargPrv = m_uidWeapon;
 		m_Act_Targ = pItem->GetUID();
 		Skill_Start( NPCACT_TRAINING );
@@ -483,7 +483,7 @@ badpickpocket:
 		{
 			pItem->Sound( 0x041 );
 			pItem->SetAnim( fNS ? ITEMID_PICKPOCKET_NS_FX : ITEMID_PICKPOCKET_EW_FX, 3*TICK_PER_SEC );
-			UpdateAnimate(GenerateAnimate(ANIM_ATTACK_WEAPON));
+			UpdateAnimate(ANIM_ATTACK_WEAPON);
 		}
 		else
 		{
@@ -618,7 +618,7 @@ badalign:
 		{
 			return true;
 		}
-		UpdateAnimate(GenerateAnimate(ANIM_ATTACK_WEAPON));
+		UpdateAnimate(ANIM_ATTACK_WEAPON);
 		m_Act_TargPrv = m_uidWeapon;
 		m_Act_Targ = pButte->GetUID();
 		Skill_Start( NPCACT_TRAINING );
@@ -955,7 +955,7 @@ bool CChar::Use_Repair( CItem * pItemArmor )
 	}
 
 	UpdateDir( m_Act_p );
-	UpdateAnimate(GenerateAnimate(ANIM_ATTACK_1H_WIDE));
+	UpdateAnimate(ANIM_ATTACK_1H_WIDE);
 
 	// quarter the skill to make it.
 	// + more damaged items should be harder to repair.

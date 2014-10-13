@@ -689,7 +689,7 @@ void CChar::UpdateStatVal( STAT_TYPE type, int iChange, int iLimit )
 
 ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BYTE iFrameDelay, BYTE iAnimLen )
 {
-	ADDTOCALLSTACK("CChar::UpdateAnimate");
+	ADDTOCALLSTACK("CChar::GenerateAnimate");
 	// NPC or character does a certain Animate
 	// Translate the animation based on creature type.
 	// ARGS:
@@ -720,18 +720,24 @@ ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackw
 			case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
 			case IT_WEAPON_MACE_STAFF:
 			case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
-				return (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_DOWN : ANIM_ATTACK_1H_DOWN;
+				action = (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_DOWN : ANIM_ATTACK_1H_DOWN;
+				break;
 			case IT_WEAPON_SWORD:
 			case IT_WEAPON_AXE:
-				return(layer == LAYER_HAND2) ? ANIM_ATTACK_2H_WIDE : ANIM_ATTACK_1H_WIDE;
+				action = (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_WIDE : ANIM_ATTACK_1H_WIDE;
+				break;
 			case IT_WEAPON_FENCE:
-				return (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_JAB : ANIM_ATTACK_1H_JAB;
+				action = (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_JAB : ANIM_ATTACK_1H_JAB;
+				break;
 			case IT_WEAPON_THROWING:
-				return ANIM_ATTACK_1H_WIDE;
+				action = ANIM_ATTACK_1H_WIDE;
+				break;
 			case IT_WEAPON_BOW:
-				return ANIM_ATTACK_BOW;
+				action = ANIM_ATTACK_BOW;
+				break;
 			case IT_WEAPON_XBOW:
-				return ANIM_ATTACK_XBOW;
+				action = ANIM_ATTACK_XBOW;
+				break;
 			default:
 				break;
 			}
@@ -739,9 +745,9 @@ ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackw
 			{
 				// add some style to the attacks.
 				if (layer == LAYER_HAND2)
-					return static_cast<ANIM_TYPE>(ANIM_ATTACK_2H_DOWN + Calc_GetRandVal(3));
+					action = static_cast<ANIM_TYPE>(ANIM_ATTACK_2H_DOWN + Calc_GetRandVal(3));
 				else
-					return static_cast<ANIM_TYPE>(ANIM_ATTACK_1H_WIDE + Calc_GetRandVal(3));
+					action = static_cast<ANIM_TYPE>(ANIM_ATTACK_1H_WIDE + Calc_GetRandVal(3));
 			}
 		}
 
@@ -957,11 +963,17 @@ ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackw
 	return action;
 }
 
-bool CChar::UpdateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward , BYTE iFrameDelay , BYTE iAnimLen)
+bool CChar::UpdateAnimate(ANIM_TYPE action, bool fConvert, bool fBackward , BYTE iFrameDelay , BYTE iAnimLen)
 {
+	// action = Given AnimID
+	// fConvert, if not false will call GenerateAnimate to act like old behaviour and translate the animation when mounted.
+
 
 	if (action < 0 || action >= ANIM_QTY)
 		return false;
+
+	if (fConvert)
+		action = GenerateAnimate(action, true);
 
 	ANIM_TYPE_NEW subaction;
 	BYTE variation = 0;		//Seems to have some effect for humans/elfs vs gargoyles
@@ -2640,7 +2652,7 @@ bool CChar::RaiseCorpse( CItemCorpse * pCorpse )
 	// Corpse is now gone. 	// 0x80 = on face.
 	Update();
 	UpdateDir(static_cast<DIR_TYPE>(pCorpse->m_itCorpse.m_facing_dir &~0x80));
-	UpdateAnimate((pCorpse->m_itCorpse.m_facing_dir & 0x80) ? ANIM_DIE_FORWARD : ANIM_DIE_BACK, true, true, 2);
+	UpdateAnimate((pCorpse->m_itCorpse.m_facing_dir & 0x80) ? ANIM_DIE_FORWARD : ANIM_DIE_BACK,true, true, true, 2);
 
 	pCorpse->Delete();
 

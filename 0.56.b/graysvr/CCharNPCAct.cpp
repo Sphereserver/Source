@@ -3777,8 +3777,8 @@ void CChar::NPC_AI()
 						if ( iDist > 1 )
 						{
 							UpdateDir(pChar);
-							UpdateAnimate(ANIM_FIDGET_YAWN, false);
-							pChar->UpdateAnimate(ANIM_ANI_EAT, false);
+							UpdateAnimate(ANIM_FIDGET_YAWN);
+							pChar->UpdateAnimate(ANIM_ANI_EAT);
 							pChar->Stat_SetVal(STAT_FOOD, iFood + Calc_GetRandVal2(1, iMaxFood - iFood));
 							char *z = Str_GetTemp();
 							sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_STABLEMASTER_FEED), pChar->GetName());
