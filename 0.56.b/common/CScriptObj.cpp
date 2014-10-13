@@ -2592,7 +2592,7 @@ jump_in:
 								pArgs->m_v.SetCount(0);
 								pArgs->Init(z);
 
-								tRet = pSrc->GetChar()->OnTrigger( psTmp, pSrc, pArgs);
+								tRet = pRef->OnTrigger( psTmp, pSrc, pArgs);
 
 								pArgs->m_iN1 = iN1;
 								pArgs->m_iN2 = iN2;
@@ -2604,7 +2604,7 @@ jump_in:
 							}
 							else
 							{
-								tRet = pSrc->GetChar()->OnTrigger( psTmp, pSrc, pArgs);
+								tRet = pRef->OnTrigger( psTmp, pSrc, pArgs);
 							}
 							pArgs->m_VarsLocal.SetNum("return",tRet,false);
 							fRes = tRet > 0 ? 1 : 0;
