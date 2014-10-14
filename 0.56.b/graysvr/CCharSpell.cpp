@@ -1731,9 +1731,16 @@ bool CChar::Spell_Unequip( LAYER_TYPE layer )
 	CItem * pItemPrev = LayerFind( layer );
 	if ( pItemPrev != NULL )
 	{
-		if ( ! CanMove( pItemPrev ))
+		if ( IsSetMagicFlags(MAGICF_NOCASTFROZENHANDS) && IsStatFlag( STATF_Freeze ))
+		{
+			SysMessageDefault( DEFMSG_SPELL_TRY_FROZENHANDS );
 			return( false );
-		if ( ! pItemPrev->IsTypeSpellbook() && ! pItemPrev->IsType(IT_WAND))
+		}
+		else if ( ! CanMove( pItemPrev ))
+		{
+			return( false );
+		}
+		else if ( ! pItemPrev->IsTypeSpellbook() && ! pItemPrev->IsType(IT_WAND) && ! pItemPrev->GetDefKey("SPELLCHANNELING",true))
 		{
 			ItemBounce( pItemPrev );
 		}
@@ -1851,7 +1858,7 @@ bool CChar::Spell_CastDone()
 			if ( iT1 && iT2 )
 			{
 				if ( !fieldWidth )
-					fieldWidth = 7;
+					fieldWidth = 3;
 				if ( !fieldGauge )
 					fieldGauge = 1;
 
@@ -1900,17 +1907,17 @@ bool CChar::Spell_CastDone()
 		{
 			switch ( spell )
 			{
-			case SPELL_Wall_of_Stone: 	iT1 = ITEMID_STONE_WALL;		iT2 = ITEMID_STONE_WALL;		break;
-			case SPELL_Fire_Field: 		iT1 = ITEMID_FX_FIRE_F_EW; 		iT2 = ITEMID_FX_FIRE_F_NS;		break;
-			case SPELL_Poison_Field:	iT1 = static_cast<ITEMID_TYPE>(0x3915);		iT2 = ITEMID_FX_POISON_F_NS;	break;
-			case SPELL_Paralyze_Field:	iT1 = ITEMID_FX_PARA_F_EW;		iT2 = ITEMID_FX_PARA_F_NS;		break;
-			case SPELL_Energy_Field:	iT1 = ITEMID_FX_ENERGY_F_EW;	iT2 = ITEMID_FX_ENERGY_F_NS;	break;
+			case SPELL_Wall_of_Stone: 	iT1 = ITEMID_STONE_WALL;				iT2 = ITEMID_STONE_WALL;		break;
+			case SPELL_Fire_Field: 		iT1 = ITEMID_FX_FIRE_F_EW; 				iT2 = ITEMID_FX_FIRE_F_NS;		break;
+			case SPELL_Poison_Field:	iT1 = static_cast<ITEMID_TYPE>(0x3915);	iT2 = ITEMID_FX_POISON_F_NS;	break;
+			case SPELL_Paralyze_Field:	iT1 = ITEMID_FX_PARA_F_EW;				iT2 = ITEMID_FX_PARA_F_NS;		break;
+			case SPELL_Energy_Field:	iT1 = ITEMID_FX_ENERGY_F_EW;			iT2 = ITEMID_FX_ENERGY_F_NS;	break;
 			default: break;
 			}
 		}	
 
 		if ( !fieldWidth )
-			fieldWidth = 7;
+			fieldWidth = 3;
 		if ( !fieldGauge )
 			fieldGauge = 1;
 
@@ -1922,16 +1929,15 @@ bool CChar::Spell_CastDone()
 		{
 			switch ( spell )
 			{
-			case SPELL_Arch_Cure:		areaRadius = 5;					break;
-			case SPELL_Arch_Prot:		areaRadius = 5;					break;
-			case SPELL_Explosion:		areaRadius = 2;					break;
-			case SPELL_Mass_Curse:		areaRadius = 5;					break;
-			case SPELL_Reveal:			areaRadius = UO_MAP_VIEW_SIGHT;	break;
-			case SPELL_Chain_Lightning: areaRadius = 5;					break;
-			case SPELL_Mass_Dispel:		areaRadius = 15;				break;
-			case SPELL_Meteor_Swarm:	areaRadius = 4;					break;
-			case SPELL_Earthquake:		areaRadius = UO_MAP_VIEW_SIGHT;	break; // GetTopPoint()
-			default: areaRadius = 4; break;
+			case SPELL_Arch_Cure:		areaRadius = 2;						break;
+			case SPELL_Arch_Prot:		areaRadius = 3;						break;
+			case SPELL_Mass_Curse:		areaRadius = 2;						break;
+			case SPELL_Reveal:			areaRadius = 1+(iSkillLevel/200);	break;
+			case SPELL_Chain_Lightning: areaRadius = 2;						break;
+			case SPELL_Mass_Dispel:		areaRadius = 8;						break;
+			case SPELL_Meteor_Swarm:	areaRadius = 2;						break;
+			case SPELL_Earthquake:		areaRadius = 1+(iSkillLevel/150);	break;
+			default: areaRadius = 4;										break;
 			}
 		}
 
@@ -1997,11 +2003,21 @@ bool CChar::Spell_CastDone()
 	// Magery
 	// 1st Circle
 	case SPELL_Create_Food:
-		if ( !pObj )
 		{
 			RESOURCE_ID food = g_Cfg.ResourceGetIDType( RES_ITEMDEF, "DEFFOOD" );
 			CItem * pItem = CItem::CreateScript((iT1 ? iT1 : static_cast<ITEMID_TYPE>(food.GetResIndex())), this );
-			pItem->MoveToCheck( m_Act_p, this );
+			if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_CHAR|SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
+			{
+				pItem->MoveToCheck( m_Act_p, this );
+			}
+			else
+			{
+				TCHAR * pMsg = Str_GetTemp();
+				sprintf(pMsg, g_Cfg.GetDefaultMsg( DEFMSG_SPELL_CREATE_FOOD ), pItem->GetName());
+				SysMessage(pMsg);
+				CItemContainer * pPack = GetPackSafe();
+				pPack->ContentAdd( pItem );
+			}
 		}
 		break;
 
@@ -2435,10 +2451,6 @@ int CChar::Spell_CastStart()
 			return(-1);
 	}
 
-	// Animate casting.
-	if ( !pSpellDef->IsSpellType(SPELLFLAG_NO_CASTANIM) && !IsSetMagicFlags(MAGICF_NOANIM) )
-		UpdateAnimate( (pSpellDef->IsSpellType(SPELLFLAG_DIR_ANIM)) ? ANIM_CAST_DIR : ANIM_CAST_AREA );
-
 	bool fWOP = ( GetPrivLevel() >= PLEVEL_Counsel ) ? g_Cfg.m_fWordsOfPowerStaff : g_Cfg.m_fWordsOfPowerPlayer;
 	if ( !NPC_CanSpeak() || IsStatFlag(STATF_Insubstantial) )
 		fWOP = false;
@@ -2470,16 +2482,6 @@ int CChar::Spell_CastStart()
 		}
 	}
 
-	// Attempt to Unequip stuff before casting.
-	// Except not wands and spell books !
-	if ( !g_Cfg.m_fEquippedCast && !fAllowEquip )
-	{
-		if ( !Spell_Unequip(LAYER_HAND1) )
-			return( -1 );
-		if ( !Spell_Unequip(LAYER_HAND2) )
-			return( -1 );
-	}
-
 	int iWaitTime = IsPriv(PRIV_GM) ? 1 : pSpellDef->m_CastTime.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(iSkill)));
 
 	CScriptTriggerArgs Args(static_cast<int>(m_atMagery.m_Spell), iDifficulty, pItem);
@@ -2496,6 +2498,19 @@ int CChar::Spell_CastStart()
 		if ( Spell_OnTrigger(static_cast<SPELL_TYPE>(Args.m_iN1), SPTRIG_START, this, &Args) == TRIGRET_RET_TRUE )
 			return -1;
 	}
+
+	// Attempt to unequip stuff before casting (except wands, spellbooks and items with SPELLCHANNELING property set)
+	if ( !g_Cfg.m_fEquippedCast && !fAllowEquip )
+	{
+		if ( !Spell_Unequip(LAYER_HAND1) )
+			return( -1 );
+		if ( !Spell_Unequip(LAYER_HAND2) )
+			return( -1 );
+	}
+
+	// Animate casting.
+	if ( !pSpellDef->IsSpellType(SPELLFLAG_NO_CASTANIM) && !IsSetMagicFlags(MAGICF_NOANIM) )
+		UpdateAnimate( (pSpellDef->IsSpellType(SPELLFLAG_DIR_ANIM)) ? ANIM_CAST_DIR : ANIM_CAST_AREA );
 
 	m_atMagery.m_Spell = static_cast<SPELL_TYPE>(Args.m_iN1);
 	iDifficulty = static_cast<int>(Args.m_iN2);

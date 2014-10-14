@@ -1297,3 +1297,13 @@ Added #2394: SMSG_DEF_UNICODE, MSG_DEF_UNICODE, IMSG_DEF_UNICODE to sphere_msgs.
 12-10-2014, Ben
 Fixed #2416: @Enter region trigger will now fire after NPC stats are set in all instances.
 Fixed: local.return not being set in FULLTRIGGER if no args were specified.
+
+14-10-2014, Coruja
+Added: New MAGICF_NOCASTFROZENHANDS setting on sphere.ini. If enabled, this will prevent cast spells if the char got paralyzed holding something on hands.
+Added: Missing behavior for SPELLCHANNELING item property. It's now working fine, items using this property won't get unequiped when casting spells.
+Fixed: Triggers @Start (spell trigger) and @SpellCast (char trigger) unequiping weapons and playing the spell cast animation even when the cast got denied using 'return 1'.
+Changed: Updated width/radius internal values for area/field spells (nothing really changed, just hardcoded values already set on sphere_spells.scp to be the default internal value if there's no value defined on scripts to override it).
+Changed: Create Food spell is now target-based. Using SPELLFLAG_TARG_* the food will be created on ground at target location, otherwise it will be created on caster backpack.
+[sphere_msgs.scp]: Added new messages for 'spell_create_food' and 'spell_try_frozenhands'.
+[sphere_spells.scp]: Removed target flags on Create Food spell. It will now create the item on backpack by default.
+[sphere_dialog.scp]: Added missing description for 'nodispose' on help guide.

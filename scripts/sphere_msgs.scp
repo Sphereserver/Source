@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, October 7, 2014
+// FILE LAST UPDATED: Tuesday, October 14, 2014
 //
 VERSION=0.56c
 
@@ -876,6 +876,7 @@ IMSG_DEF_UNICODE 0
 //spell_alcohol_hic				"*Hic*"
 //spell_animdead_fail			"The corpse stirs for a moment then falls!"
 //spell_animdead_nc			"That is not a corpse!"
+//spell_create_food			"You magically create food in your backpack: %s"
 //spell_dispellf_wt				"That is not a field!"
 //spell_enchant_activate   		"Magic items must be on your person to activate."
 //spell_enchant_lack			"This item lacks any enchantment."
@@ -905,6 +906,7 @@ IMSG_DEF_UNICODE 0
 //spell_tele_jailed_2			"You feel you should be ashamed of your actions."
 //spell_try_am					"An anti-magic field disturbs the spells."
 //spell_try_dead				"This is beyond your ability."
+//spell_try_frozenhands			"You cannot cast spells while your hands are frozen."
 //spell_try_nobook				"You don't have a spellbook handy."
 //spell_try_nomana				"You lack sufficient mana for this spell"
 //spell_try_noregs				"You lack %s for this spell"

@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, October 6, 2013
+// FILE LAST UPDATED: Tuesday, October 14, 2014
 //
 VERSION=0.56c
 
@@ -15,7 +15,7 @@ VERSION=0.56c
 dorigin x,y                                     // sets a dynamic origin point
 nomove                                          // The gump cannot be moved around.
 noclose                                         // The gump cannot be closed with a right click.
-nodispose
+nodispose                                       // The gump cannot be closed by gump-closing macro.
 page id                                         // For multi tab dialogs.
 checkertrans x,y,width,height                   // add a transparent layer (only for clients >= 3)
 resizepic x,y,backgroundgump,width,height       // can come first if multi page. puts up some background gump
@@ -45,9 +45,9 @@ checkbox x,y,gumpcheck,gumpuncheck,starting_state,checkid   // Add a checkbox
 // NOTE: low button id's are reserved for page tabs.
 // button id 0 is reserved for the CANCEL command
 // TRYP arg3 INPDLG=arg1 arg2
-//	arg1=ITEM/CHAR property associated with this button
-//	arg2=formating for output/input (max length/max value)
-//	arg3= minimum privelege needed to change this, 255=never,admin=6,developer=5,gm=4,seer=3,couns=2
+//	arg1 = ITEM/CHAR property associated with this button
+//	arg2 = formating for output/input (max length/max value)
+//	arg3 = minimum privelege needed to change this (couns=2, seer=3, gm=4, developer=5, admin=6, never=255)
 
 [DIALOG d_CHARPROP1]// prop sheet.
 70, 70        // this is always the size.
