@@ -679,11 +679,6 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 				//  m_prev_id != GetID()
 				// poly back to orig form.
 				SetID( m_prev_id );
-				// set back to original stats as well.
-				Stat_AddMod( STAT_STR, -pSpell->m_itSpell.m_PolyStr );
-				Stat_AddMod( STAT_DEX, -pSpell->m_itSpell.m_PolyDex );
-				Stat_SetVal(STAT_STR,  minimum( Stat_GetVal(STAT_STR), Stat_GetMax(STAT_STR) ));
-				Stat_SetVal(STAT_DEX,  minimum( Stat_GetVal(STAT_DEX), Stat_GetMax(STAT_DEX) ));
 				Update();
 				StatFlag_Clear( STATF_Polymorph );
 				if (IsClient()) {
@@ -2853,8 +2848,6 @@ reflectit:
 		case SPELL_Polymorph:
 			{
 				CREID_TYPE creid = m_atMagery.m_SummonID;
-	#define SPELL_MAX_POLY_STAT 150
-
 				CItem * pSpell = Spell_Effect_Create( SPELL_Polymorph, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Polymorph, iSkillLevel,
 					GetSpellDuration( spell, iSkillLevel, iEffectMult ), pCharSrc );
 				SetID(creid);
@@ -2866,36 +2859,6 @@ reflectit:
 				if ( IsStatFlag( STATF_Incognito ) )
 				{
 					SetName( pCharDef->GetTypeName() );
-				}
-
-				// set to creature type stats.
-				if ( pCharDef->m_Str )
-				{
-					int iChange = pCharDef->m_Str - Stat_GetBase(STAT_STR);
-					if ( iChange > SPELL_MAX_POLY_STAT )
-						iChange = SPELL_MAX_POLY_STAT;
-					if ( iChange + Stat_GetBase(STAT_STR) < 0 )
-						iChange = -Stat_GetBase(STAT_STR);
-					Stat_AddMod( STAT_STR, iChange );
-					pSpell->m_itSpell.m_PolyStr = iChange;
-				}
-				else
-				{
-					pSpell->m_itSpell.m_PolyStr = 0;
-				}
-				if ( pCharDef->m_Dex )
-				{
-					int iChange = pCharDef->m_Dex - Stat_GetBase(STAT_DEX);
-					if ( iChange > SPELL_MAX_POLY_STAT )
-						iChange = SPELL_MAX_POLY_STAT;
-					if ( iChange + Stat_GetBase(STAT_DEX) < 0 )
-						iChange = -Stat_GetBase(STAT_DEX);
-					Stat_AddMod( STAT_DEX, iChange );
-					pSpell->m_itSpell.m_PolyDex = iChange;
-				}
-				else
-				{
-					pSpell->m_itSpell.m_PolyDex = 0;
 				}
 				Update();		// show everyone I am now a new type
 			}

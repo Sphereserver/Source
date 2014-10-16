@@ -532,8 +532,6 @@ public:
 		// IT_LAVA
 		struct
 		{
-			short m_PolyStr;	// more1l=polymorph effect of this. (on strength)
-			short m_PolyDex;	// more1h=polymorph effect of this. (on dex)
 			int  m_spellcharges; // more2=not sure how used here..
 			WORD m_spell;		// morex=SPELL_TYPE = The magic spell cast on this. (daemons breath)(boots of strength) etc
 			WORD m_spelllevel;	// morey=0-1000=level of the spell.
@@ -3761,7 +3759,7 @@ public:
 	bool NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllpets );
 	bool NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const CPointMap & pt, LPCTSTR pszArgs );
 	size_t  NPC_OnHearName( LPCTSTR pszText ) const;
-	void NPC_OnHear( LPCTSTR pCmd, CChar * pSrc, bool fAllPets = false );
+	void NPC_OnHear( LPCTSTR pCmd, CChar * pSrc );
 	bool NPC_OnItemGive( CChar * pCharSrc, CItem * pItem );
 	bool NPC_SetVendorPrice( CItem * pItem, int iPrice );
 	bool OnTriggerSpeech(bool bIsPet, LPCTSTR pszText, CChar * pSrc, TALKMODE_TYPE & mode, HUE_TYPE wHue = HUE_DEFAULT);

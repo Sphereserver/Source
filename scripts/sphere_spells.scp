@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, October 14, 2014
+// FILE LAST UPDATED: Thursday, October 16, 2014
 //
 VERSION=0.56c
 
@@ -1041,14 +1041,23 @@ CAST_TIME=2.0
 RESOURCES=i_reag_blood_moss,i_reag_mandrake_root,i_reag_spider_silk
 RUNE_ITEM=i_rune_polymorph
 SCROLL_ITEM=i_scroll_polymorph
-FLAGS=spellflag_fx_targ|spellflag_playeronly
+FLAGS=spellflag_playeronly|spellflag_noprecast
 EFFECT_ID=0
 EFFECT=0
 DURATION=5*60.0,8*60.0
 MANAUSE=40
 SKILLREQ=MAGERY 70.0
-// NOTE: This is a Mages true form of attack/defence at higher levels. Due to the level I would suggest having decent levels to the duration. Have incognito and polymorph match in duration as they are often used in conjunction
 INTERRUPT=100.0,100.0
+ON=@Select
+   IF (<FLAGS> & statf_polymorph)
+    IF (<MANA> < <SERV.SPELL.s_polymorph.MANAUSE>)
+     SYSMESSAGE <DEFMSG.spell_try_nomana>
+    ELSE
+     MANA -= <SERV.SPELL.s_polymorph.MANAUSE>
+     FINDID.<SERV.SPELL.s_polymorph.RUNE_ITEM>.REMOVE
+    ENDIF
+    return 1
+   ENDIF
 
 [SPELL 57]
 DEFNAME=s_earthquake

@@ -1311,3 +1311,5 @@ Changed: Create Food spell is now target-based. Using SPELLFLAG_TARG_* the food 
 16-10-2014, Coruja
 Fixed #1860: Spell cast behavior now check for spellbook/mana/reags before check for anti-magic region.
 Changed: return 6 on @SpellCast trigger now will skip anti-magic region check too.
+Changed: Polymorph spell now doesn't change char status anymore. If needed, this behavior can be softcoded using @Success on Polymorph spell (ACTARG2 [read/write] is the new body ID)
+[sphere_spells.scp]: Added missing spellflag_noprecast and cancel functionality for polymorph spell. If used while already polymorphed, it will remove the polymorph effect.
