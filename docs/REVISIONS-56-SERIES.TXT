@@ -1307,3 +1307,7 @@ Changed: Create Food spell is now target-based. Using SPELLFLAG_TARG_* the food 
 [sphere_msgs.scp]: Added new messages for 'spell_create_food' and 'spell_try_frozenhands'.
 [sphere_spells.scp]: Removed target flags on Create Food spell. It will now create the item on backpack by default.
 [sphere_dialog.scp]: Added missing description for 'nodispose' on help guide.
+
+16-10-2014, Coruja
+Fixed #1860: Spell cast behavior now check for spellbook/mana/reags before check for anti-magic region.
+Changed: return 6 on @SpellCast trigger now will skip anti-magic region check too.

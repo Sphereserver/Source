@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, October 11, 2014
+// FILE LAST UPDATED: Thursday, October 16, 2014
 //
 VERSION=0.56c
 
@@ -580,6 +580,7 @@ RECT=3758,1116,3798,1175,0
 RECT=3797,1240,3822,1310,0
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.GUARDOWNER=the town
 TAG.MUSIC=midi_nujelm
 
 [AREADEF a_nujelm_cemetery]
@@ -645,6 +646,7 @@ RECT=1338,3895,1412,3923,0
 RECT=1383,3951,1492,4045,0
 FLAGS=region_flag_nobuilding|region_flag_guarded
 EVENTS=r_default,r_default_rock,r_default_water,r_default_tree,r_default_grass
+TAG.GUARDOWNER=the town
 TAG.MUSIC=midi_jhelom
 
 [AREADEF a_jhelom_cemetery]

@@ -1442,9 +1442,7 @@ bool CChar::Spell_CanCast( SPELL_TYPE spell, bool fTest, CObjBase * pSrc, bool f
 	ADDTOCALLSTACK("CChar::Spell_CanCast");
 	// ARGS:
 	//  pSrc = possible scroll or wand source.
-	// Do we have enough mana to start ?
-	if ( spell <= SPELL_NONE ||
-		pSrc == NULL )
+	if ( spell <= SPELL_NONE || pSrc == NULL )
 		return( false );
 
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
@@ -1453,20 +1451,7 @@ bool CChar::Spell_CanCast( SPELL_TYPE spell, bool fTest, CObjBase * pSrc, bool f
 	if ( pSpellDef->IsSpellType( SPELLFLAG_DISABLED ))
 		return( false );
 
-	// if ( ! fTest || m_pNPC )
-	if ( fCheckAntiMagic )
-	{
-		if ( ! IsPriv(PRIV_GM) && m_pArea && m_pArea->CheckAntiMagic( spell ))
-		{
-			if ( fFailMsg )
-				SysMessageDefault( DEFMSG_MAGERY_6 ); // An anti-magic field disturbs the spells.
-			m_Act_Difficulty = -1;	// Give very little credit for failure !
-			return( false );
-		}
-	}
-
 	int wManaUse = pSpellDef->m_wManaUse;
-
 
 	CScriptTriggerArgs Args( spell, wManaUse, pSrc );
 	if ( fTest )
@@ -1506,9 +1491,9 @@ bool CChar::Spell_CanCast( SPELL_TYPE spell, bool fTest, CObjBase * pSrc, bool f
 	}
 	wManaUse = static_cast<int>(Args.m_iN2);
 
-	// The magic item must be on your person to use.
 	if ( pSrc != this )
 	{
+		// Cast spell using magic items (wand/scroll)
 		CItem * pItem = dynamic_cast <CItem*> (pSrc);
 		if ( !pItem )
 			return false;
@@ -1519,7 +1504,7 @@ bool CChar::Spell_CanCast( SPELL_TYPE spell, bool fTest, CObjBase * pSrc, bool f
 			return( false );
 		}
 		CObjBaseTemplate * pObjTop = pSrc->GetTopLevelObj();
-		if ( pObjTop != this )
+		if ( pObjTop != this )		// magic items must be on your person to use.
 		{
 			if ( fFailMsg )
 				SysMessageDefault( DEFMSG_SPELL_ENCHANT_ACTIVATE );
@@ -1530,12 +1515,11 @@ bool CChar::Spell_CanCast( SPELL_TYPE spell, bool fTest, CObjBase * pSrc, bool f
 			// Must have charges.
 			if ( pItem->m_itWeapon.m_spellcharges <= 0 )
 			{
-				// ??? May explode !!
 				if ( fFailMsg )
 					SysMessageDefault( DEFMSG_SPELL_WAND_NOCHARGE );
 				return false;
 			}
-			wManaUse = 0;	// magic items need no mana.
+			wManaUse = 0;
 			if ( ! fTest && pItem->m_itWeapon.m_spellcharges != 255 )
 			{
 				pItem->m_itWeapon.m_spellcharges --;
@@ -1559,8 +1543,7 @@ bool CChar::Spell_CanCast( SPELL_TYPE spell, bool fTest, CObjBase * pSrc, bool f
 
 		if ( m_pPlayer )
 		{
-			if ( IsStatFlag( STATF_DEAD|STATF_Sleeping ) ||
-				! pSpellDef->m_SkillReq.IsResourceMatchAll(this))
+			if ( IsStatFlag( STATF_DEAD|STATF_Sleeping ) || ! pSpellDef->m_SkillReq.IsResourceMatchAll(this))
 			{
 				if ( fFailMsg )
 					SysMessageDefault( DEFMSG_SPELL_TRY_DEAD );
@@ -1581,16 +1564,44 @@ bool CChar::Spell_CanCast( SPELL_TYPE spell, bool fTest, CObjBase * pSrc, bool f
 					SysMessageDefault( DEFMSG_SPELL_TRY_NOTYOURBOOK );
 				return( false );
 			}
+
+			// check for reagents
+			if ( g_Cfg.m_fReagentsRequired && ! m_pNPC && pSrc == this )
+			{
+				const CResourceQtyArray * pRegs = &(pSpellDef->m_Reags);
+				CItemContainer * pPack = GetPack();
+				size_t iMissing = pPack->ResourceConsumePart( pRegs, 1, 100, fTest );
+				if ( iMissing != pRegs->BadIndex() )
+				{
+					if ( fFailMsg )
+					{
+						CResourceDef * pReagDef = g_Cfg.ResourceGetDef( pRegs->GetAt(iMissing).GetResourceID() );
+						SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_SPELL_TRY_NOREGS ), pReagDef ? pReagDef->GetName() : g_Cfg.GetDefaultMsg( DEFMSG_SPELL_TRY_THEREG ) );
+					}
+					return( false );
+				}
+			}
 		}
 	}
 
+	if ( fCheckAntiMagic )
+	{
+		if ( ! IsPriv(PRIV_GM) && m_pArea && m_pArea->CheckAntiMagic( spell ))
+		{
+			if ( fFailMsg )
+				SysMessageDefault( DEFMSG_MAGERY_6 ); // An anti-magic field disturbs the spells.
+			m_Act_Difficulty = -1;	// Give very little credit for failure !
+			return( false );
+		}
+	}
+
+	// Check for mana
 	if ( Stat_GetVal(STAT_INT) < wManaUse )
 	{
 		if ( fFailMsg )
 			SysMessageDefault( DEFMSG_SPELL_TRY_NOMANA );
 		return( false );
 	}
-
 	if ( ! fTest && wManaUse )
 	{
 		// Consume mana.
@@ -1601,37 +1612,6 @@ bool CChar::Spell_CanCast( SPELL_TYPE spell, bool fTest, CObjBase * pSrc, bool f
 		UpdateStatVal( STAT_INT, -wManaUse );
 	}
 
-	if ( m_pNPC ||	// NPC's don't need regs.
-		pSrc != this )	// wands and scrolls have there own reags source.
-		return( true );
-
-	// Check for regs ?
-	if ( g_Cfg.m_fReagentsRequired )
-	{
-		CItemContainer * pPack = GetPack();
-		if ( pPack )
-		{
-			const CResourceQtyArray * pRegs = &(pSpellDef->m_Reags);
-			size_t iMissing = pPack->ResourceConsumePart( pRegs, 1, 100, fTest );
-			if ( iMissing != pRegs->BadIndex() )
-			{
-				if ( fFailMsg )
-				{
-					CResourceDef * pReagDef = g_Cfg.ResourceGetDef( pRegs->GetAt(iMissing).GetResourceID() );
-					SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_SPELL_TRY_NOREGS ), pReagDef ? pReagDef->GetName() : g_Cfg.GetDefaultMsg( DEFMSG_SPELL_TRY_THEREG ) );
-				}
-				return( false );
-			}
-		}
-		else
-		{
-			if( fFailMsg )
-			{
-				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TRY_NOREGS), g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TRY_THEREG));
-			}
-			return false;
-		}
-	}
 	return( true );
 }
 
@@ -2006,7 +1986,7 @@ bool CChar::Spell_CastDone()
 		{
 			RESOURCE_ID food = g_Cfg.ResourceGetIDType( RES_ITEMDEF, "DEFFOOD" );
 			CItem * pItem = CItem::CreateScript((iT1 ? iT1 : static_cast<ITEMID_TYPE>(food.GetResIndex())), this );
-			if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_CHAR|SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
+			if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
 			{
 				pItem->MoveToCheck( m_Act_p, this );
 			}
