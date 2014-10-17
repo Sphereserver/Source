@@ -3141,7 +3141,7 @@ void CChar::Memory_Fight_Start( const CChar * pTarg )
 		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKO), GetName(), pTarg->GetName());
 
 		// Don't bother telling me who i just attacked.
-		UpdateObjMessage(z, NULL, pTarg->GetClient(), HUE_RED, TALKMODE_EMOTE);
+		UpdateObjMessage(z, NULL, pTarg->GetClient(), HUE_RED, TALKMODE_EMOTE, FONT_NORMAL);
 	}
 
 	if ( pTarg->IsClient() && pTarg->CanSee(this))

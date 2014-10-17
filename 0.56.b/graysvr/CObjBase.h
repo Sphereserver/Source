@@ -276,7 +276,7 @@ public:
 	void ResendOnEquip( bool fAllClients = false );	// Fix for Enhanced Client when equipping items via DClick, these must be removed from where they are and sent again.
 	void ResendTooltip( bool bSendFull = false, bool bUseCache = false );	// force reload of tooltip for this object
 	void UpdateCanSee( PacketSend * pPacket, CClient * pClientExclude = NULL ) const;
-	void UpdateObjMessage( LPCTSTR pTextThem, LPCTSTR pTextYou, CClient * pClientExclude, HUE_TYPE wHue, TALKMODE_TYPE mode ) const;
+	void UpdateObjMessage( LPCTSTR pTextThem, LPCTSTR pTextYou, CClient * pClientExclude, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, bool bUnicode = false ) const;
 
 	TRIGRET_TYPE OnHearTrigger(CResourceLock &s, LPCTSTR pCmd, CChar *pSrc, TALKMODE_TYPE &mode, HUE_TYPE wHue = HUE_DEFAULT);
 
@@ -2871,6 +2871,8 @@ public:
 	{
 		// Can i understand player ghost speak ?
 		if ( m_pNPC && m_pNPC->m_Brain == NPCBRAIN_HEALER )
+			return( true );
+		if ( g_Cfg.m_iMediumCanHearGhosts && ( Skill_GetBase( SKILL_SPIRITSPEAK ) >= g_Cfg.m_iMediumCanHearGhosts ))
 			return( true );
 		return( IsStatFlag( STATF_SpiritSpeak | STATF_DEAD ) || IsPriv( PRIV_GM|PRIV_HEARALL ));
 	}

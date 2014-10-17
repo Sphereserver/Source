@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, October 11, 2014
+// FILE LAST UPDATED: Friday, October 17, 2014
 //
 VERSION=0.56c
 
@@ -112,7 +112,8 @@ The Ironwood Inn
 5705,147,-45,0=5705,306,7,0=tp_ice_lair_1
 5706,305,12,0=5706,146,-45,0=tp_lair_ice_2
 5706,306,12,0=5706,147,-45,0=tp_lair_ice_1
-5753,324,21,0=5670,2391,40,0=tp_Passagetolighthouse_lighthouse_1
+5753,325,10,0=5670,2391,40,0=tp_Passagetolighthouse_lighthouse
+5670,2391,40,0=5753,325,10,0=tp_lighthouse_Passagetolighthouse
 5748,362,3,0=312,786,-24,0=tp_Passagetolighthouse_Yew
 5750,362,5,0=312,786,-24,0=tp_Passagetolighthouse_Yew
 5749,363,2,0=312,786,-24,0=tp_Passagetolighthouse_Yew
@@ -331,7 +332,6 @@ The Ironwood Inn
 5207,2322,25,0=5877,147,25,0=tp_ice_north_3
 5207,2323,25,0=5876,147,25,0=tp_ice_north_2
 5203,2327,25,0=5876,147,25,0=tp_ice_north_1
-5670,2391,40,0=5753,325,3,0=tp_lighthouse_Passagetolighthouse_1
 1175,2635,0,0=5242,1006,0,0=tp_destard_out_x_ent
 1176,2635,0,0=5243,1006,0,0=tp_destard_out_x_ent
 1177,2635,0,0=5244,1006,0,0=tp_destard_out_x_ent

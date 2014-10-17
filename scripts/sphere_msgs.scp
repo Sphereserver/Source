@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, October 14, 2014
+// FILE LAST UPDATED: Friday, October 17, 2014
 //
 VERSION=0.56c
 
@@ -39,6 +39,11 @@ MSG_DEF_UNICODE	0
 IMSG_DEF_COLOR	0
 IMSG_DEF_FONT	3
 IMSG_DEF_UNICODE 0
+
+// Default color & font for Emote
+EMOTE_DEF_COLOR	34
+EMOTE_DEF_FONT	3
+EMOTE_DEF_UNICODE	0
 
 
 [DEFMESSAGE messages]

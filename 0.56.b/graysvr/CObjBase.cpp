@@ -404,7 +404,11 @@ void CObjBase::Emote( LPCTSTR pText, CClient * pClientExclude, bool fForcePosses
 		strcpy(pszYou, pszThem);
 	}
 
-	pObjTop->UpdateObjMessage(pszThem, pszYou, pClientExclude, HUE_RED, TALKMODE_EMOTE);
+	HUE_TYPE pHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_COLOR"));
+	FONT_TYPE pFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_FONT"));
+	bool bUnicode = (g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_UNICODE",true) != 0);
+
+	pObjTop->UpdateObjMessage(pszThem, pszYou, pClientExclude, pHue, TALKMODE_EMOTE, pFont, bUnicode);
 }
 
 void CObjBase::Speak( LPCTSTR pText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font )
@@ -465,10 +469,10 @@ bool CObjBase::MoveNear( CPointMap pt, int iSteps, DWORD dwCan )
 	return MoveTo(pt);
 }
 
-void CObjBase::UpdateObjMessage( LPCTSTR pTextThem, LPCTSTR pTextYou, CClient * pClientExclude, HUE_TYPE wHue, TALKMODE_TYPE mode ) const
+void CObjBase::UpdateObjMessage( LPCTSTR pTextThem, LPCTSTR pTextYou, CClient * pClientExclude, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, bool bUnicode ) const
 {
 	ADDTOCALLSTACK("CObjBase::UpdateObjMessage");
-	// Show everyone a msg coming form this object.
+	// Show everyone a msg coming from this object.
 
 	ClientIterator it;
 	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
@@ -478,7 +482,7 @@ void CObjBase::UpdateObjMessage( LPCTSTR pTextThem, LPCTSTR pTextYou, CClient * 
 		if ( ! pClient->CanSee( this ))
 			continue;
 
-		pClient->addBarkParse(( pClient->GetChar() == this )? pTextYou : pTextThem, this, wHue, mode, FONT_NORMAL );
+		pClient->addBarkParse(( pClient->GetChar() == this )? pTextYou : pTextThem, this, wHue, mode, font, bUnicode );
 	}
 }
 
@@ -1875,7 +1879,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			{
 				EXC_SET("MESSAGE or MSG");
 				if ( pCharSrc == NULL )
-					UpdateObjMessage(s.GetArgStr(), s.GetArgStr(), NULL, HUE_TEXT_DEF, IsChar() ? TALKMODE_EMOTE : TALKMODE_ITEM);
+					UpdateObjMessage(s.GetArgStr(), s.GetArgStr(), NULL, HUE_TEXT_DEF, IsChar() ? TALKMODE_EMOTE : TALKMODE_ITEM, FONT_NORMAL);
 				else
 					pCharSrc->ObjMessage(s.GetArgStr(), this);
 			}

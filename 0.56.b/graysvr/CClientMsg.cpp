@@ -775,14 +775,14 @@ void CClient::addObjMessage( LPCTSTR pMsg, const CObjBaseTemplate * pSrc, HUE_TY
 			strcpy(m_zLastObjMessage, pMsg);
 	}
 	
-	if ( pSrc == m_pChar ) // Shouldn't this be ( pSrc->IsChar() )?
+	if ( pSrc->IsChar() )
 	{
 		HUE_TYPE pHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_COLOR"));
 		FONT_TYPE pFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_FONT"));
 		bool bUnicode = (g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_UNICODE",true) != 0);
 
 		addBarkParse(pMsg, pSrc, (wHue != HUE_TEXT_DEF ? wHue : ( pHue ? pHue : wHue )), TALKMODE_OBJ, ( pFont ? pFont : FONT_NORMAL), bUnicode);
-	} 
+	}
 	else
 	{
 		HUE_TYPE pHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_COLOR"));
@@ -1132,18 +1132,18 @@ void CClient::addCharName( const CChar * pChar ) // Singleclick text for a chara
 
 	if ( g_Cfg.m_fCharTags || fAllShow )
 	{
-		if ( pChar->m_pArea && pChar->m_pArea->IsGuarded() && pChar->m_pNPC )
+		if ( pChar->m_pNPC )
 		{
+			if ( pChar->m_pArea && pChar->m_pArea->IsGuarded() )
+				strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_NPC) );
 			if ( pChar->IsStatFlag( STATF_Pet ))
 				strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_TAME) );
-			else
-				strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_NPC) );
 		}
 		if ( pChar->IsStatFlag( STATF_INVUL ) && ! pChar->IsStatFlag( STATF_Incognito ) && ! pChar->IsPriv( PRIV_PRIV_NOSHOW ))
 			strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_INVUL) );
 		if ( pChar->IsStatFlag( STATF_Stone ))
 			strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_STONE) );
-		else if ( pChar->IsStatFlag( STATF_Freeze ))
+		if ( pChar->IsStatFlag( STATF_Freeze ))
 			strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_FROZEN) );
 		if ( pChar->IsStatFlag( STATF_Insubstantial | STATF_Invisible | STATF_Hidden ))
 			strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_HIDDEN) );
