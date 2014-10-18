@@ -1553,7 +1553,9 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 #endif
 		case ISV_TOGGLEABBREVIATION:
 			{
-				CGrayUID pMemberUid = ( s.HasArgs() ) ? s.GetArgVal() : pMember->GetLinkUID();
+				CGrayUID pMemberUid = pMember->GetLinkUID();
+				if ( s.HasArgs() )
+					pMemberUid = s.GetArgVal();
 				CChar * pMemberChar = pMemberUid.CharFind();
 				if ( pMemberChar )
 				{

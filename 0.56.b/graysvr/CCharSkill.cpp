@@ -4391,9 +4391,7 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 		RESOURCE_ID pResBase(RES_ITEMDEF, bCraftSkill? m_atCreate.m_ItemID : 0, 0);
 
 		if ( bCraftSkill == true )
-		{
-			CItemBase * pItemDef = CItemBase::FindItemBase( m_atCreate.m_ItemID );
-			
+		{		
 			m_atCreate.m_Stroke_Count=1;		//This matches the new strokes amount used on OSI.
 			// set crafting parameters
 			pArgs.m_VarsLocal.SetNum("CraftItemdef",pResBase.GetPrivateUID());

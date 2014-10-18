@@ -2848,7 +2848,7 @@ reflectit:
 		case SPELL_Polymorph:
 			{
 				CREID_TYPE creid = m_atMagery.m_SummonID;
-				CItem * pSpell = Spell_Effect_Create( SPELL_Polymorph, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Polymorph, iSkillLevel,
+				Spell_Effect_Create( SPELL_Polymorph, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Polymorph, iSkillLevel,
 					GetSpellDuration( spell, iSkillLevel, iEffectMult ), pCharSrc );
 				SetID(creid);
 

@@ -979,7 +979,6 @@ bool CChar::UpdateAnimate(ANIM_TYPE action, bool fConvert, bool fBackward , BYTE
 	BYTE variation = 0;		//Seems to have some effect for humans/elfs vs gargoyles
 
 	ANIM_TYPE_NEW action1 = static_cast<ANIM_TYPE_NEW>(action);
-	CCharBase* pCharDef = Char_GetDef();
 	if (IsPlayableCharacter())		//Perform these checks only for Gargoyles or in Enhanced Client
 	{
 		CItem * pWeapon = m_uidWeapon.ItemFind();

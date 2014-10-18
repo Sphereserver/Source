@@ -633,7 +633,7 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 	if ( !pszText )
 		return;
 
-	WORD Args[] = { wHue, font, (bUnicode ? 1 : 0) };
+	WORD Args[] = { wHue, font, (bUnicode ? (WORD)1 : (WORD)0) };
 
 	if ( *pszText == '@' )
 	{

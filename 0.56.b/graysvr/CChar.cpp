@@ -3269,7 +3269,6 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			{
 				INT64 Arg_piCmd[3];		// Maximum parameters in one line
 				size_t Arg_Qty = Str_ParseCmds(s.GetArgRaw(), Arg_piCmd, COUNTOF(Arg_piCmd));
-				g_Log.EventDebug("Anim args = %d: %u, %u, %u\n", (int)Arg_Qty, Arg_piCmd[0], Arg_piCmd[1], Arg_piCmd[2]);
 				return UpdateAnimate(static_cast<ANIM_TYPE>(Arg_piCmd[0]), false, false,
 					(Arg_Qty > 1) ? static_cast<unsigned char>(Arg_piCmd[1]) : 1,
 					(Arg_Qty > 2) ? static_cast<unsigned char>(Arg_piCmd[2]) : 1);
