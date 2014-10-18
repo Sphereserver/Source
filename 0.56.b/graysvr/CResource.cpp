@@ -90,6 +90,7 @@ CResource::CResource()
 	m_iTrainSkillPercent	= 50;
 	m_iTrainSkillMax	= 500;
 	m_fDeadCannotSeeLiving = 0;
+	m_iMediumCanHearGhosts	= 1000;
 #ifdef _ALPHASPHERE
 	m_iTrainSkillCost	= 1;
 #endif
@@ -500,6 +501,7 @@ enum RC_TYPE
 	RC_MAXSIZEPERTICK,			// m_iNetMaxLengthPerTick
 	RC_MAXSKILL,
 	RC_MD5PASSWORDS,			// m_fMd5Passwords
+	RC_MEDIUMCANHEARGHOSTS,		// m_iMediumCanHearGhosts
 	RC_MINCHARDELETETIME,
 	RC_MINKARMA,				// m_iMinKarma
 	RC_MONSTERFEAR,				// m_fMonsterFear
@@ -610,7 +612,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "ARCHERYMINDIST",			{ ELEM_INT,		OFFSETOF(CResource,m_iArcheryMinDist),		0 }},
 	{ "ARRIVEDEPARTMSG",		{ ELEM_INT,		OFFSETOF(CResource,m_iArriveDepartMsg),		0 }},
 	{ "ATTACKERTIMEOUT",		{ ELEM_INT,		OFFSETOF(CResource,m_iAttackerTimeout),		0 }},
-	{ "ATTACKINGISACRIME",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fAttackingIsACrime),		0 }},
+	{ "ATTACKINGISACRIME",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fAttackingIsACrime),	0 }},
 	{ "AUTONEWBIEKEYS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fAutoNewbieKeys),		0 }},
 	{ "AUTOPRIVFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iAutoPrivFlags),		0 }},
 	{ "AUTORESDISP",			{ ELEM_INT,		OFFSETOF(CResource,m_iAutoResDisp),			0 }},
@@ -730,6 +732,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "MAXSIZEPERTICK",			{ ELEM_INT,		OFFSETOF(CResource,m_iNetMaxLengthPerTick),	0 }},
 	{ "MAXSKILL",				{ ELEM_INT,		OFFSETOF(CResource,m_iMaxSkill),			0 }},
 	{ "MD5PASSWORDS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fMd5Passwords),		0 }},
+	{ "MEDIUMCANHEARGHOSTS",	{ ELEM_INT,		OFFSETOF(CResource,m_iMediumCanHearGhosts),	0 }},
 	{ "MINCHARDELETETIME",		{ ELEM_INT,		OFFSETOF(CResource,m_iMinCharDeleteTime),	0 }},
 	{ "MINKARMA",				{ ELEM_INT,		OFFSETOF(CResource,m_iMinKarma),			0 }},
 	{ "MONSTERFEAR",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fMonsterFear),			0 }},

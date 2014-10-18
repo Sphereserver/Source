@@ -2872,7 +2872,9 @@ public:
 		// Can i understand player ghost speak ?
 		if ( m_pNPC && m_pNPC->m_Brain == NPCBRAIN_HEALER )
 			return( true );
-		return( IsStatFlag( STATF_SpiritSpeak | STATF_DEAD ) || IsPriv( PRIV_GM|PRIV_HEARALL ));
+		if ( Skill_GetBase( SKILL_SPIRITSPEAK ) >= g_Cfg.m_iMediumCanHearGhosts )
+			return( true );
+		return( IsStatFlag( STATF_SpiritSpeak|STATF_DEAD ) || IsPriv( PRIV_GM|PRIV_HEARALL ));
 	}
 	bool IsPlayableCharacter() const
 	{

@@ -791,7 +791,8 @@ public:
 	bool m_fInitHiddenSkills;	// Hidden skills will be initialised at char creation
 	int  m_iTrainSkillPercent;	// How much can NPC's train up to ?
 	int	 m_iTrainSkillMax;
-	int m_fDeadCannotSeeLiving;
+	int  m_fDeadCannotSeeLiving;
+	int  m_iMediumCanHearGhosts;	// At this Spirit Speak skill level players can understand ghosts speech instead hear 'oOOoO ooO'
 #ifdef _ALPHASPHERE
 	int m_iTrainSkillCost;
 #endif
