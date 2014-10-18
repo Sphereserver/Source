@@ -839,6 +839,7 @@ bool CClient::r_LoadVal( CScript & s )
 			if ( GetPrivLevel() >= PLEVEL_GM )
 			{
 				GetAccount()->TogPrivFlags( PRIV_GM, s.GetArgStr() );
+				m_pChar->ResendTooltip();
 				if ( IsSetOF( OF_Command_Sysmsgs ) )
 					m_pChar->SysMessage( IsPriv(PRIV_GM)? "GM ON" : "GM OFF" );
 			}
@@ -864,6 +865,7 @@ bool CClient::r_LoadVal( CScript & s )
 				{
 					GetAccount()->SetPrivFlags( PRIV_PRIV_NOSHOW );
 				}
+				m_pChar->ResendTooltip();
 				if ( IsSetOF( OF_Command_Sysmsgs ) )
 					m_pChar->SysMessage( IsPriv(PRIV_PRIV_NOSHOW)? "Privshow OFF" : "Privshow ON" );
 			}

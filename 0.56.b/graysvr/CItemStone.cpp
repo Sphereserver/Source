@@ -1552,9 +1552,8 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 			break;
 #endif
 		case ISV_TOGGLEABBREVIATION:
-			if ( s.HasArgs())
 			{
-				CGrayUID pMemberUid = s.GetArgVal();
+				CGrayUID pMemberUid = ( s.HasArgs() ) ? s.GetArgVal() : pMember->GetLinkUID();
 				CChar * pMemberChar = pMemberUid.CharFind();
 				if ( pMemberChar )
 				{
@@ -1562,18 +1561,9 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 					if ( pMemberGuild )
 					{
 						pMemberGuild->ToggleAbbrev();
+						pMemberChar->ResendTooltip();
 					}
 				}
-			}
-			else
-			{
-				if ( pMember == NULL )
-					break;
-				pMember->ToggleAbbrev();
-#ifndef _NEWGUILDSYSTEM
-				if ( pClient != NULL )
-					SetupMenu( pClient );
-#endif
 			}
 			break;
 #ifndef _NEWGUILDSYSTEM

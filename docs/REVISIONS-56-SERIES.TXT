@@ -1315,6 +1315,7 @@ Changed: Polymorph spell now doesn't change char status anymore. If needed, this
 [sphere_spells.scp]: Added missing spellflag_noprecast and cancel functionality for polymorph spell. If used while already polymorphed, it will remove the polymorph effect.
 
 17-10-2014, Coruja
+Fixed: Functions GM, PRIVSET and TOGGLEABBREVIATION not updating the char tooltip correctly.
 Fixed: MSG_DEF_COLOR def on sphere_msgs.scp not working when the char click on itself.
 Fixed: Char flag [stone] overriding [frozen] and [tame] overriding [npc]. Also fixed [tame] only showing inside guarded regions.
 [sphere_msgs.scp]: Added new defs to customize EMOTE color/font/unicode. These changes are global, and EMOTE still not support @color,font,unicode on individual messages yet.

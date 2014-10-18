@@ -3832,6 +3832,7 @@ bool CChar::SetPrivLevel(CTextConsole * pSrc, LPCTSTR pszFlags)
 	}
 
 	Update();
+	ResendTooltip();
 	return true;
 }
 

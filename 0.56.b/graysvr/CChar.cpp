@@ -2807,6 +2807,7 @@ do_default:
 			{
 				m_StatFlag = ( s.GetArgVal() &~ (STATF_SaveParity|STATF_Pet|STATF_Spawned)) | ( m_StatFlag & (STATF_SaveParity|STATF_Pet|STATF_Spawned) );
 				NotoSave_Update();
+				//ResendTooltip();
 			}
 			break;
 		case CHC_FONT:
@@ -3499,7 +3500,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			if ( m_pPlayer )
 				SysMessage(s.GetArgStr());
 			else
-				NPC_OnHear(s.GetArgStr(), pSrc->GetChar(), false);
+				NPC_OnHear(s.GetArgStr(), pSrc->GetChar());
 			break;
 		case CHV_HUNGRY:	// How hungry are we ?
 			if ( pCharSrc )
