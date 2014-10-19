@@ -1128,6 +1128,19 @@ void CClient::addCharName( const CChar * pChar ) // Singleclick text for a chara
 	else
 		strcpy( pszTemp, pChar->GetName() );
 
+	if ( pChar->m_pNPC && g_Cfg.m_fVendorTradeTitle )
+	{
+		if ( pChar->LayerFind(LAYER_VENDOR_STOCK) )
+		{
+			LPCTSTR title = pChar->GetTradeTitle();
+			if ( *title )
+			{
+				strcat( pszTemp, " " );
+				strcat( pszTemp, title );
+			}
+		}
+	}
+
 	bool fAllShow = IsPriv(PRIV_DEBUG|PRIV_ALLSHOW);
 
 	if ( g_Cfg.m_fCharTags || fAllShow )

@@ -1321,3 +1321,7 @@ Fixed: MSG_DEF_COLOR def on sphere_msgs.scp not working when the char click on i
 Fixed: Char flag [stone] overriding [frozen] and [tame] overriding [npc]. Also fixed [tame] only showing inside guarded regions.
 [sphere_msgs.scp]: Added new defs to customize EMOTE color/font/unicode. These changes are global, and EMOTE still not support @color,font,unicode on individual messages yet.
 [sphere_map_points[0/1].scp]: Fixed 'Lighthouse' teleport not working.
+
+18-10-2014, Coruja
+Added: New VendorTradeTitle feature on sphere.ini. If enabled, it will show the job title on vendor names (eg: Alan the Carpenter).
+Changed: Corpses now will be created with TAG.OVERRIDE.MAXWEIGHT already set (value is always the same as char MAXWEIGHT). This will prevent overweight problems if someone drop many heavy items on a player corpse and then resurrect the player just to make him get stuck.

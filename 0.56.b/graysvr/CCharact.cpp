@@ -2600,6 +2600,8 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 	if ( fLoot && !(wFlags & DEATH_NOLOOTDROP) && !(wFlags & DEATH_NOCORPSE) )
 	{
 		DropAll( pCorpse );
+		// To prevent get incorrect value, we must get MaxWeight only after drop all items
+		pCorpse->SetKeyNum("OVERRIDE.MAXWEIGHT", g_Cfg.Calc_MaxCarryWeight(this) / 10 );
 	}
 	if ( pCorpse )
 	{
