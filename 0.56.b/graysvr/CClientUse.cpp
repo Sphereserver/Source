@@ -211,6 +211,10 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 						return false;
 					}
 				}
+
+				const CItemCorpse * pCorpseItem = dynamic_cast <const CItemCorpse *>(pPack);
+				if ( m_pChar->CheckCorpseCrime( pCorpseItem, true, true ) )
+					SysMessageDefault(DEFMSG_LOOT_CRIMINAL_ACT);
 			}
 			return true;
 

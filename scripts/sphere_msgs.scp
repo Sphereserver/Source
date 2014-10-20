@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, October 17, 2014
+// FILE LAST UPDATED: Monday, October 20, 2014
 //
 VERSION=0.56c
 
@@ -1094,6 +1094,7 @@ EMOTE_DEF_UNICODE	0
 //cant_add_spellbook			"Can't add this to the spellbook"
 //just_been_poisoned			"You have been poisoned!"
 //loot_item_from				"looting %s from %s"
+//loot_criminal_act			"Looting this corpse will be a criminal act!"
 //select_potion_target			"Where do you want to throw the potion?"
 //item_in_use					"The item is in use"
 //skillmenu_text_tracking  		"Tracking"

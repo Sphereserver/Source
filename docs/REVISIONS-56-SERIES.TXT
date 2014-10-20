@@ -1325,3 +1325,6 @@ Fixed: Char flag [stone] overriding [frozen] and [tame] overriding [npc]. Also f
 18-10-2014, Coruja
 Added: New VendorTradeTitle feature on sphere.ini. If enabled, it will show the job title on vendor names (eg: Alan the Carpenter).
 Changed: Corpses now will be created with TAG.OVERRIDE.MAXWEIGHT already set (value is always the same as char MAXWEIGHT). This will prevent overweight problems if someone drop many heavy items on a player corpse and then resurrect the player just to make him get stuck.
+
+20-10-2014, Coruja
+[sphere_msgs.scp]: Added new message 'loot_criminal_act' when opening corpses to warn that looting items will be a criminal action.
