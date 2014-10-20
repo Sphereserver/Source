@@ -689,7 +689,7 @@ void CChar::UpdateStatVal( STAT_TYPE type, int iChange, int iLimit )
 
 ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackward, BYTE iFrameDelay, BYTE iAnimLen )
 {
-	ADDTOCALLSTACK("CChar::GenerateAnimate");
+	ADDTOCALLSTACK("CChar::UpdateAnimate");
 	// NPC or character does a certain Animate
 	// Translate the animation based on creature type.
 	// ARGS:
@@ -720,24 +720,18 @@ ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackw
 			case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
 			case IT_WEAPON_MACE_STAFF:
 			case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
-				action = (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_DOWN : ANIM_ATTACK_1H_DOWN;
-				break;
+				return (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_DOWN : ANIM_ATTACK_1H_DOWN;
 			case IT_WEAPON_SWORD:
 			case IT_WEAPON_AXE:
-				action = (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_WIDE : ANIM_ATTACK_1H_WIDE;
-				break;
+				return(layer == LAYER_HAND2) ? ANIM_ATTACK_2H_WIDE : ANIM_ATTACK_1H_WIDE;
 			case IT_WEAPON_FENCE:
-				action = (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_JAB : ANIM_ATTACK_1H_JAB;
-				break;
+				return (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_JAB : ANIM_ATTACK_1H_JAB;
 			case IT_WEAPON_THROWING:
-				action = ANIM_ATTACK_1H_WIDE;
-				break;
+				return ANIM_ATTACK_1H_WIDE;
 			case IT_WEAPON_BOW:
-				action = ANIM_ATTACK_BOW;
-				break;
+				return ANIM_ATTACK_BOW;
 			case IT_WEAPON_XBOW:
-				action = ANIM_ATTACK_XBOW;
-				break;
+				return ANIM_ATTACK_XBOW;
 			default:
 				break;
 			}
@@ -745,9 +739,9 @@ ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackw
 			{
 				// add some style to the attacks.
 				if (layer == LAYER_HAND2)
-					action = static_cast<ANIM_TYPE>(ANIM_ATTACK_2H_DOWN + Calc_GetRandVal(3));
+					return static_cast<ANIM_TYPE>(ANIM_ATTACK_2H_DOWN + Calc_GetRandVal(3));
 				else
-					action = static_cast<ANIM_TYPE>(ANIM_ATTACK_1H_WIDE + Calc_GetRandVal(3));
+					return static_cast<ANIM_TYPE>(ANIM_ATTACK_1H_WIDE + Calc_GetRandVal(3));
 			}
 		}
 
@@ -963,22 +957,17 @@ ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackw
 	return action;
 }
 
-bool CChar::UpdateAnimate(ANIM_TYPE action, bool fConvert, bool fBackward , BYTE iFrameDelay , BYTE iAnimLen)
+bool CChar::UpdateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward , BYTE iFrameDelay , BYTE iAnimLen)
 {
-	// action = Given AnimID
-	// fConvert, if not false will call GenerateAnimate to act like old behaviour and translate the animation when mounted.
-
 
 	if (action < 0 || action >= ANIM_QTY)
 		return false;
-
-	if (fConvert)
-		action = GenerateAnimate(action, true);
 
 	ANIM_TYPE_NEW subaction;
 	BYTE variation = 0;		//Seems to have some effect for humans/elfs vs gargoyles
 
 	ANIM_TYPE_NEW action1 = static_cast<ANIM_TYPE_NEW>(action);
+	CCharBase* pCharDef = Char_GetDef();
 	if (IsPlayableCharacter())		//Perform these checks only for Gargoyles or in Enhanced Client
 	{
 		CItem * pWeapon = m_uidWeapon.ItemFind();
@@ -2600,8 +2589,6 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 	if ( fLoot && !(wFlags & DEATH_NOLOOTDROP) && !(wFlags & DEATH_NOCORPSE) )
 	{
 		DropAll( pCorpse );
-		// To prevent get incorrect value, we must get MaxWeight only after drop all items
-		pCorpse->SetKeyNum("OVERRIDE.MAXWEIGHT", g_Cfg.Calc_MaxCarryWeight(this) / WEIGHT_UNITS );
 	}
 	if ( pCorpse )
 	{
@@ -2653,7 +2640,7 @@ bool CChar::RaiseCorpse( CItemCorpse * pCorpse )
 	// Corpse is now gone. 	// 0x80 = on face.
 	Update();
 	UpdateDir(static_cast<DIR_TYPE>(pCorpse->m_itCorpse.m_facing_dir &~0x80));
-	UpdateAnimate((pCorpse->m_itCorpse.m_facing_dir & 0x80) ? ANIM_DIE_FORWARD : ANIM_DIE_BACK,true, true, true, 2);
+	UpdateAnimate((pCorpse->m_itCorpse.m_facing_dir & 0x80) ? ANIM_DIE_FORWARD : ANIM_DIE_BACK, true, true, 2);
 
 	pCorpse->Delete();
 
@@ -3833,7 +3820,6 @@ bool CChar::SetPrivLevel(CTextConsole * pSrc, LPCTSTR pszFlags)
 	}
 
 	Update();
-	ResendTooltip();
 	return true;
 }
 
