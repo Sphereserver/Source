@@ -3471,8 +3471,9 @@ bool CItem::IsValidLockUID() const
 void CItem::ConvertBolttoCloth()
 {
 	ADDTOCALLSTACK("CItem::ConvertBolttoCloth");
+	// Cutting bolts of cloth with scissors will convert it to his RESOURCES (usually cloth)
 
-	//we need to check all cloth_bolt items
+	// We need to check all cloth_bolt items
 	bool correctID = false;
 	for (int i = static_cast<int>(ITEMID_CLOTH_BOLT1); i <= static_cast<int>(ITEMID_CLOTH_BOLT8); i++)
 		if ( IsSameDispID(static_cast<ITEMID_TYPE>(i) ))
@@ -3481,40 +3482,40 @@ void CItem::ConvertBolttoCloth()
 	if ( !correctID )
 		return;
 
-	// Bolts of cloth are treated as 10 single pieces of cloth
-	// Convert it to 10 pieces of cloth, then consume the amount we want later
-	int iOutAmount = 0;
+	// Prevent the action if there's no resources to be created
 	CItemBase * pDefCloth = Item_GetDef();
+	if ( ! pDefCloth || ! pDefCloth->m_BaseResources.GetCount() )
+		return;
 
-	if ( pDefCloth )
+	// Start the conversion
+	int iOutAmount = GetAmount();
+	CItemContainer * pCont = dynamic_cast <CItemContainer*> ( GetContainer() );
+	Delete();
+
+	for ( size_t i = 0; i < pDefCloth->m_BaseResources.GetCount(); i++ )
 	{
-		for ( size_t i = 0; i < pDefCloth->m_BaseResources.GetCount(); i++ )
+		RESOURCE_ID rid = pDefCloth->m_BaseResources[i].GetResourceID();
+		if ( rid.GetResType() != RES_ITEMDEF )
+			continue;
+
+		const CItemBase * pBaseDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(rid.GetResIndex()));
+		if ( pBaseDef == NULL )
+			continue;
+
+		CItem * pItemNew = CItem::CreateTemplate( pBaseDef->GetID() );
+		ASSERT(pItemNew);
+		pItemNew->SetAmount( iOutAmount * pDefCloth->m_BaseResources[i].GetResQty() );
+		if ( pItemNew->IsType( IT_CLOTH ))
+			pItemNew->SetHue( GetHue() );
+		if ( pCont )
 		{
-			RESOURCE_ID rid = pDefCloth->m_BaseResources[i].GetResourceID();
-			if ( rid.GetResType() != RES_ITEMDEF )
-				continue;
-
-			const CItemBase * pBaseDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(rid.GetResIndex()));
-			if ( pBaseDef == NULL )
-				continue;
-
-			if ( pBaseDef->IsType( IT_CLOTH )) // Maybe this is better: pBaseDef->IsSameDispID(ITEMID_CLOTH1)
-			{
-				iOutAmount += static_cast<int>(pDefCloth->m_BaseResources[i].GetResQty());
-				SetName(pBaseDef->GetName());
-				continue;
-			}
+			pCont->ContentAdd( pItemNew );
+		}
+		else
+		{
+			pItemNew->MoveToDecay(GetTopPoint(), g_Cfg.m_iDecay_Item);
 		}
 	}
-
-
-	if ( iOutAmount == 0 )
-	{
-		iOutAmount += 1;
-	}
-
-	SetID( ITEMID_CLOTH1 );
-	SetAmountUpdate(iOutAmount * GetAmount());
 }
 
 int CItem::ConsumeAmount( int iQty, bool fTest )
@@ -5094,13 +5095,6 @@ bool CItem::IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg )
 
 			switch ( index )
 			{
-				case ITEMID_CLOTH1:
-					if ( IsType(IT_CLOTH) || IsType(IT_CLOTH_BOLT))
-					{
-						ConvertBolttoCloth();
-						return( true );
-					}
-					break;
 				case ITEMID_LEATHER_1:
 				case ITEMID_HIDES:
 					if ( IsType( IT_HIDE ) || IsType( IT_LEATHER ))
@@ -5110,9 +5104,10 @@ bool CItem::IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg )
 					}
 					break;
 				case ITEMID_LOG_1:
-				case ITEMID_LUMBER1:
-					if ( IsType(IT_LOG) || IsType(IT_LUMBER))
+				case ITEMID_BOARD1:
+					if ( IsType(IT_LOG) || IsType(IT_BOARD))
 					{
+						// We should be able to use boards in place of logs.
 						return( true );
 					}
 					break;

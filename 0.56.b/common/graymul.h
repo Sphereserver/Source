@@ -868,7 +868,7 @@ enum ITEMID_TYPE	// InsideUO is great for this stuff.
 	ITEMID_SHAFTS1		= 0x1bd4,
 	ITEMID_SHAFTS3		= 0x1bd5,
 	ITEMID_SHAFTSX		= 0x1bd6,
-	ITEMID_LUMBER1		= 0x1bd7,	// boards
+	ITEMID_BOARD1		= 0x1bd7,	// boards
 
 	ITEMID_LOG_1		= 0x1bdd,
 	ITEMID_LOG_2		= 0x1bde,

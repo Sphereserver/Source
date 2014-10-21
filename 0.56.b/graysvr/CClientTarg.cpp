@@ -2198,22 +2198,6 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 		}
 
 	case IT_SCISSORS:
-		// cut hair as well ?
-		if ( pCharTarg != NULL )
-		{
-			// Make this a crime ?
-			if ( pCharTarg != m_pChar && ! IsPriv(PRIV_GM))
-				return( false );
-
-			pObjTarg = pCharTarg->LayerFind( LAYER_BEARD );
-			if ( pObjTarg != NULL )
-				pObjTarg->Delete();
-			pObjTarg = pCharTarg->LayerFind( LAYER_HAIR );
-			if ( pObjTarg != NULL )
-				pObjTarg->Delete();
-			m_pChar->Sound( SOUND_SNIP );	// snip noise.
-			return true;
-		}
 		if ( pItemTarg != NULL )
 		{
 			if ( ! m_pChar->CanUse( pItemTarg, true ))
@@ -2231,7 +2215,6 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 					m_pChar->Sound( SOUND_SNIP );	// snip noise.
 					return( true );
 				case IT_CLOTH:
-					pItemTarg->ConvertBolttoCloth();
 					iOutQty = pItemTarg->GetAmount();
 					break;
 				case IT_CLOTHING:
@@ -2242,7 +2225,7 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 					// IT_LEATHER
 					// Cut up the hides and create strips of leather
 					iOutID = static_cast<ITEMID_TYPE>(RES_GET_INDEX(pItemTarg->Item_GetDef()->m_ttNormal.m_tData1));
-					if (!pItemTarg->Item_GetDef()->m_ttNormal.m_tData1)
+					if ( ! iOutID )
 						iOutID = ITEMID_LEATHER_1;
 					iOutQty = pItemTarg->GetAmount();
 					break;
@@ -2256,8 +2239,8 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 				pItemNew->SetHue( pItemTarg->GetHue());
 				pItemNew->SetAmount( iOutQty );
 				m_pChar->ItemBounce( pItemNew );
-				pItemTarg->Delete();
 				m_pChar->Sound( SOUND_SNIP );	// snip noise.
+				pItemTarg->Delete();
 				return( true );
 			}
 		}
@@ -2479,9 +2462,7 @@ static LPCTSTR const sm_Txt_LoomUse[] =
 				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_tailor_leather" ) );
 			}
 			case IT_CLOTH:
-			case IT_CLOTH_BOLT:
 			{
-				pItemTarg->ConvertBolttoCloth();
 				if ( IsTrigUsed(TRIGGER_SKILLMENU) )
 				{
 					CScriptTriggerArgs args("sm_tailor_cloth");

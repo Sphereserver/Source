@@ -1327,4 +1327,7 @@ Added: New VendorTradeTitle feature on sphere.ini. If enabled, it will show the 
 Changed: Corpses now will be created with TAG.OVERRIDE.MAXWEIGHT already set (value is always the same as char MAXWEIGHT). This will prevent overweight problems if someone drop many heavy items on a player corpse and then resurrect the player just to make him get stuck.
 
 20-10-2014, Coruja
+Changed: Scissors won't cut hair/beard anymore. Now proper items are needed to do it, like items usually found on NPC Barber (hair restyling, hair dye, etc).
+Changed: Sewing Kit can't be used directly on bolts of cloth anymore. To use the bolts of cloth we must cut it using scissors first.
+Fixed #2421: Using scissors on bolts of cloth now will convert it properly to cloth.
 [sphere_msgs.scp]: Added new message 'loot_criminal_act' when opening corpses to warn that looting items will be a criminal action.

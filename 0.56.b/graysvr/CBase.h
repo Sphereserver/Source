@@ -411,7 +411,7 @@ enum IT_TYPE		// double click type action.
 	IT_BELLOWS,			// 159
 	IT_HIDE,			// 160 = hides are cured to make leather.
 	IT_CLOTH_BOLT,		// 161 = must be cut up to make cloth squares.
-	IT_LUMBER,			// 162 = logs are plained into decent lumber
+	IT_BOARD,			// 162 = logs are plained into decent lumber
 	IT_PITCHER,			// 163
 	IT_PITCHER_EMPTY,	// 164
 	IT_DYE_VAT,			// 165
