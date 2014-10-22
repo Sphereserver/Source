@@ -1338,7 +1338,7 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 
 		if ((iCurFollower + iFollowerSlotsNeeded) > iMaxFollower )
 		{
-			SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_PETSLOTS_TRY_UNSHRINK) );
+			SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_PETSLOTS_TRY_CONTROL) );
 			pPet->Delete();
 			return NULL;
 		}
