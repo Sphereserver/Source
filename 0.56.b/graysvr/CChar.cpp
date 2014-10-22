@@ -316,7 +316,8 @@ CChar::~CChar() // Delete character
 		m_pParty = NULL;
 	}
 	Attacker_RemoveChar();	// Removing me from enemy's attacker list (I asume that if he is on my list, I'm on his one and no one have me on their list if I dont have them)
-	DeleteAll();		// remove me early so virtuals will work.
+	NPC_PetClearOwners();	// Clear follower slots on pet owner
+	DeleteAll();			// Remove me early so virtuals will work
 	ClearNPC();
 	ClearPlayer();
 	g_Serv.StatDec( SERV_STAT_CHARS );

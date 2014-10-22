@@ -244,32 +244,23 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 			}
 		}
 
-#ifdef _ALPHASPHERE_PETS
-		if (IsSetEF(EF_PetSlots))
+		if ( IsSetEF(EF_PetSlots) && !IsPriv(PRIV_GM) )
 		{
-			// if we cannot control the creature it will not be tame - what might be somewhat risky :)
 			CVarDefCont * pTagStorage = pChar->GetKey("FOLLOWERSLOTS", true);
-			unsigned short int iFollowerSlotsNeeded = pTagStorage ? ((unsigned short int)pTagStorage->GetValNum()) : 1;
-			if ((iFollowerSlotsNeeded + m_pPlayer->m_curFollower) > m_pPlayer->m_maxFollower )
+			short int iFollowerSlotsNeeded = pTagStorage ? pTagStorage->GetValNum() : 1;
+			short int iCurFollower = GetDefNum("CURFOLLOWER", true);
+			short int iMaxFollower = GetDefNum("MAXFOLLOWER", true);
+
+			if ((iCurFollower + iFollowerSlotsNeeded) > iMaxFollower )
 			{
-				SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_SUMMON_NO_SLOTS_FREE) );
-			} else
-			{
-				pChar->NPC_PetSetOwner( this );
-				// now increase curfollowers property
-				m_pPlayer->m_curFollower += iFollowerSlotsNeeded;
-				// send an update packet for the stats
-				CClient * pClient = this->GetClient();
-				if (pClient)
-					pClient->addCharStatWindow( this->GetUID() );
+				SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_PETSLOTS_TRY_SUMMON) );
+				pChar->Delete();
+				return NULL;
 			}
-		} else {
-			pChar->NPC_PetSetOwner( this );
 		}
 
-#else
 		pChar->NPC_PetSetOwner( this );
-#endif
+
 		int skill;
 		const CSpellDef *pSpellDef = g_Cfg.GetSpellDef( CChar::IsSkillMagic(m_Act_SkillCurrent)? m_atMagery.m_Spell : SPELL_Summon );
 		if (!pSpellDef || !pSpellDef->GetPrimarySkill(&skill, NULL))

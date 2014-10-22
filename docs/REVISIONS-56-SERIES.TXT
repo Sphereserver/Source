@@ -1331,3 +1331,7 @@ Changed: Scissors won't cut hair/beard anymore. Now proper items are needed to d
 Changed: Sewing Kit can't be used directly on bolts of cloth anymore. To use the bolts of cloth we must cut it using scissors first.
 Fixed #2421: Using scissors on bolts of cloth now will convert it properly to cloth.
 [sphere_msgs.scp]: Added new message 'loot_criminal_act' when opening corpses to warn that looting items will be a criminal action.
+
+22-10-2014, Coruja
+Added: Missing functionality of EF_PetSlots feature on sphere.ini. It's working now, but still need some testing and final tweaks.
+[sphere_msgs.scp]: Added new messages for petslots_try_*

@@ -2067,6 +2067,8 @@ CItem * CChar::NPC_Shrink()
 		return NULL;
 	}
 
+	NPC_PetClearOwners();	// Clear follower slots on pet owner
+
 	CItem * pItem = Make_Figurine(UID_CLEAR, ITEMID_NOTHING);
 	if ( !pItem )
 		return NULL;
@@ -2177,6 +2179,10 @@ bool CChar::Horse_Mount(CChar *pHorse) // Remove horse char and give player a ho
    		if ( OnTrigger(CTRIG_Mount, this, &Args) == TRIGRET_RET_TRUE )
 			return false;
 	}
+
+	// set a new owner if it is not us (check first to prevent friends taking ownership)
+	if (pHorse->NPC_IsOwnedBy(this, false) == false)
+		pHorse->NPC_PetSetOwner( this );
 
 	CItem * pItem = pHorse->Make_Figurine(GetUID(), id);
 	if ( !pItem )

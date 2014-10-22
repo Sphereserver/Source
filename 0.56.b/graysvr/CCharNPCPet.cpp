@@ -133,11 +133,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 
 	if ( ! pSrc->IsClient())
 		return( false );
-#ifdef _ALPHASPHERE_PETS
-	CClient * pClient;
-	CVarDefCont * pTagStorage;
-	unsigned short int iFollowerSlotsNeeded;
-#endif
+
 	switch ( iCmd )
 	{
 		case PC_ATTACK:
@@ -177,24 +173,6 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 			break;
 		case PC_RELEASE:
 			Skill_Start( SKILL_NONE );
-#ifdef _ALPHASPHERE_PETS
-			if (IsSetEF(EF_PetSlots))
-			{
-				pTagStorage = this->GetKey("FOLLOWERSLOTS", true);
-				iFollowerSlotsNeeded = pTagStorage ? ((unsigned short int)pTagStorage->GetValNum()) : 1;
-				// pet's owner is pSrc
-				if ( pSrc->m_pPlayer->m_curFollower >= iFollowerSlotsNeeded )
-				{
-		  			pSrc->m_pPlayer->m_curFollower -= iFollowerSlotsNeeded;
-				} else
-				{
-					pSrc->m_pPlayer->m_curFollower = 0;
-				}
-				pClient = pSrc->GetClient();
-				if (pClient)
-					pClient->addCharStatWindow( this->GetUID() );
-			}
-#endif
 			NPC_PetClearOwners();
 			SoundChar( CRESND_RAND2 );	// No noise
 			return( true );
@@ -387,38 +365,20 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const
 				break;
 			if ( pCharTarg->IsClient() )
 			{
-	#ifdef _ALPHASPHERE_PETS
-				if (IsSetEF(EF_PetSlots))
+				if ( IsSetEF(EF_PetSlots) && !pSrc->IsPriv(PRIV_GM) )
 				{
+					CVarDefCont * pTagStorage = GetKey("FOLLOWERSLOTS", true);
+					short int iFollowerSlotsNeeded = pTagStorage ? pTagStorage->GetValNum() : 1;
+					short int iCurFollower = pCharTarg->GetDefNum("CURFOLLOWER", true);
+					short int iMaxFollower = pCharTarg->GetDefNum("MAXFOLLOWER", true);
 
-					CVarDefCont * pTagStorage = this->GetKey("FOLLOWERSLOTS", true);
-					unsigned short int iFollowerSlotsNeeded = pTagStorage ? ((unsigned short int)pTagStorage->GetValNum()) : 1;
-					// transferrer is pSrc
-					// transferree is pCharTarg
-					if ((iFollowerSlotsNeeded + pCharTarg->m_pPlayer->m_curFollower) > pCharTarg->m_pPlayer->m_maxFollower )
+					if ((iCurFollower + iFollowerSlotsNeeded) > iMaxFollower )
 					{
-						SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_TRANSFER_NO_SLOTS_FREE) );
+						pSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_PETSLOTS_TRY_SUMMON) );
 						break;
 					}
-		  			pCharTarg->m_pPlayer->m_curFollower += iFollowerSlotsNeeded;
-					// send an update packet for the stats
-					CClient * pClient = pCharTarg->GetClient();
-					if (pClient)
-						pClient->addCharStatWindow( this->GetUID() );
-
-					// free a follower slot at the transferrer
-					if ( pSrc->m_pPlayer->m_curFollower >= iFollowerSlotsNeeded )
-					{
-		  				pSrc->m_pPlayer->m_curFollower -= iFollowerSlotsNeeded;
-					} else
-					{
-						pSrc->m_pPlayer->m_curFollower = 0;
-					}
-					pClient = pSrc->GetClient();
-					if (pClient)
-						pClient->addCharStatWindow( this->GetUID() );
 				}
-	#endif
+
 				fSuccess = NPC_PetSetOwner( pCharTarg );
 			}
 			break;
@@ -526,10 +486,32 @@ void CChar::NPC_PetClearOwners()
 			pCharRider->Horse_UnMount();
 	}
 
+	if (IsSetEF(EF_PetSlots))
+	{
+		CItemMemory * pPetMemory = Memory_FindTypes( MEMORY_IPET );
+		if ( pPetMemory != NULL )
+		{
+			CChar * pPetOwner = pPetMemory->m_uidLink.CharFind();
+
+			CVarDefCont * pTagStorage = GetKey("FOLLOWERSLOTS", true);
+			short int iFollowerSlotsNeeded = pTagStorage ? pTagStorage->GetValNum() : 1;
+			short int iCurFollower = pPetOwner->GetDefNum("CURFOLLOWER", true);
+			short int iSetFollower = iCurFollower - iFollowerSlotsNeeded;
+			if ( iSetFollower < 0 )
+				iSetFollower = 0;
+
+			// Send an update packet for the stats
+			pPetOwner->SetDefNum("CURFOLLOWER", iSetFollower);
+			CClient * pClient = pPetOwner->GetClient();
+			if (pClient)
+				pClient->addCharStatWindow( pPetOwner->GetUID() );
+		}
+	}
+
 	Memory_ClearTypes(MEMORY_IPET|MEMORY_FRIEND);
 }
 
-bool CChar::NPC_PetSetOwner( const CChar * pChar )
+bool CChar::NPC_PetSetOwner( CChar * pChar )
 {
 	ADDTOCALLSTACK("CChar::NPC_PetSetOwner");
 	// If previous owner was OWNER_SPAWN then remove it from spawn count
@@ -546,13 +528,13 @@ bool CChar::NPC_PetSetOwner( const CChar * pChar )
 		NPC_PetClearOwners();
 		return false;
 	}
-   NPC_PetClearOwners();
+	NPC_PetClearOwners();
 	// We get some of the noto of our owner.
 	// ??? If I am a pet. I have noto of my master.
 
 	m_ptHome.InitPoint();	// No longer homed.
 	Memory_AddObjTypes( pChar, MEMORY_IPET );
-   NPC_Act_Idle();
+	NPC_Act_Idle();
 	if ( NPC_IsVendor())
 	{
 		// Clear my cash total.
@@ -560,6 +542,23 @@ bool CChar::NPC_PetSetOwner( const CChar * pChar )
 		pBank->m_itEqBankBox.m_Check_Amount = 0;
 		StatFlag_Set( STATF_INVUL );
 	}
+
+	if (IsSetEF(EF_PetSlots))
+	{
+		CVarDefCont * pTagStorage = GetKey("FOLLOWERSLOTS", true);
+		short int iFollowerSlotsNeeded = pTagStorage ? pTagStorage->GetValNum() : 1;
+		short int iCurFollower = pChar->GetDefNum("CURFOLLOWER", true);
+		short int iSetFollower = iCurFollower + iFollowerSlotsNeeded;
+		if ( iSetFollower > 255 )
+			iSetFollower = 255;		// Max value that clients can show on char status
+
+		// Send an update packet for the stats
+		pChar->SetDefNum("CURFOLLOWER", iSetFollower);
+		CClient * pClient = pChar->GetClient();
+		if (pClient)
+			pClient->addCharStatWindow( pChar->GetUID() );
+	}
+
 	return( true );
 }
 

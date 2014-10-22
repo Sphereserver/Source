@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, October 20, 2014
+// FILE LAST UPDATED: Wednesday, October 22, 2014
 //
 VERSION=0.56c
 
@@ -1163,6 +1163,10 @@ EMOTE_DEF_UNICODE	0
 //tooltip_tag_destination 			"Destination"
 //looting_crime				"looting"
 //provoking_crime				"provoking"
+//petslots_try_control				"You have too many followers to control that creature."
+//petslots_try_taming				"You have too many followers to tame that creature."
+//petslots_try_summon				"You have too many followers to summon that creature."
+//petslots_try_transfer				"The designated new owner have too many followers to control that creature."
 //tiller_turb_water				"Turbulent Waters Cap'n"
 //tiller_stopped				"Ar, we've stopped sir."
 //tiller_cant_turn				"Ar, can't turn sir."
