@@ -1079,6 +1079,9 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 
 	CItemVendable* pItem;
 	INT64 costtotal = 0;
+	short int iFollowerSlotsNeeded = 0;
+	short int iCurFollower = m_pChar->GetDefNum("CURFOLLOWER", true);
+	short int iMaxFollower = m_pChar->GetDefNum("MAXFOLLOWER", true);
 
 	//	Check if the vendor really has so much items
 	for (size_t i = 0; i < itemCount; ++i)
@@ -1092,7 +1095,7 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 
 		if ((items[i].m_amount <= 0) || (items[i].m_amount > pItem->GetAmount()))
 		{
-			pVendor->Speak("Alas, I don't have all those goods in stock. Let me know if there is something else thou wouldst buy.");
+			pVendor->Speak("Your order cannot be fulfilled, please try again.");
 			Event_VendorBuy_Cheater( 0x4 );
 			return;
 		}
@@ -1100,9 +1103,29 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 		costtotal += (items[i].m_amount * items[i].m_price);
 		if ( costtotal > MAX_COST )
 		{
-			pVendor->Speak("Alas, I am not allowed to operate such huge sums.");
+			pVendor->Speak("Your order cannot be fulfilled, please try again.");
 			Event_VendorBuy_Cheater( 0x5 );
 			return;
+		}
+
+		// If it's a pet, check if we have follower slots to control it
+		if ( pItem->GetType() != IT_FIGURINE )
+			continue;
+		if ( IsSetEF(EF_PetSlots) && !IsPriv(PRIV_GM) )
+		{
+			CREID_TYPE id = pItem->m_itFigurine.m_ID;
+			CChar * pPet =  m_pChar->CreateNPC( id );
+			ASSERT(pPet);
+
+			CVarDefCont * pTagStorage = pPet->GetKey("FOLLOWERSLOTS", true);
+			iFollowerSlotsNeeded += items[i].m_amount * (pTagStorage ? pTagStorage->GetValNum() : 1);
+			pPet->Delete();
+
+			if ((iCurFollower + iFollowerSlotsNeeded) > iMaxFollower)
+			{
+				m_pChar->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_PETSLOTS_TRY_CONTROL) );
+				return;
+			}
 		}
 	}
 
@@ -1115,14 +1138,14 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 			iGold = m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF,IT_GOLD), static_cast<int>(costtotal), true);
 		if (iGold)
 		{
-			pVendor->Speak("Alas, thou dost not possess sufficient gold for this purchase!");
+			pVendor->Speak("Begging thy pardon, but thou canst not afford that.");
 			return;
 		}
 	}
 
 	if ( costtotal <= 0 )
 	{
-		pVendor->Speak("You have bought nothing. But feel free to browse");
+		pVendor->Speak("Thou hast bought nothing!");
 		return;
 	}
 
@@ -1159,7 +1182,7 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 					}
 					goto do_consume;
 				case IT_BEARD:
-					if (( m_pChar->GetDispID() != CREID_MAN ) && ( m_pChar->GetDispID() != CREID_EQUIP_GM_ROBE ))
+					if (( m_pChar->GetDispID() != CREID_MAN ) && !m_pChar->IsPriv(PRIV_GM))
 					{
 						pVendor->Speak("Sorry, I cannot do anything for you.");
 						continue;

@@ -1335,3 +1335,7 @@ Fixed #2421: Using scissors on bolts of cloth now will convert it properly to cl
 22-10-2014, Coruja
 Added: Missing functionality of EF_PetSlots feature on sphere.ini. It's working now, but still need some testing and final tweaks.
 [sphere_msgs.scp]: Added new messages for petslots_try_*
+
+23-10-2014, Coruja
+Fixed: Minor EF_PetSlots issues. Now everything is working fine and it's ready to use.
+Changed: NPCs using BRAIN=brain_animal_trainer won't give food to players anymore (but still able to feed pets nearby).

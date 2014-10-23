@@ -3697,12 +3697,14 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		TCHAR zOptionFlags[512];
 		zOptionFlags[0] = '\0';
 
+		if ( IsSetOF(OF_NoDClickTarget) ) catresname(zOptionFlags, "NoDClickTarget");
 		if ( IsSetOF(OF_Command_Sysmsgs) ) catresname(zOptionFlags, "CommandSysmessages");
 		if ( IsSetOF(OF_OSIMultiSight) ) catresname(zOptionFlags, "OSIMultiSight");
 		if ( IsSetOF(OF_Items_AutoName) ) catresname(zOptionFlags, "ItemsAutoName");
 		if ( IsSetOF(OF_FileCommands) ) catresname(zOptionFlags, "FileCommands");
 		if ( IsSetOF(OF_NoItemNaming) ) catresname(zOptionFlags, "NoItemNaming");
 		if ( IsSetOF(OF_NoHouseMuteSpeech) ) catresname(zOptionFlags, "NoHouseMuteSpeech");
+		if ( IsSetOF(OF_NoContextMenuLOS) ) catresname(zOptionFlags, "NoContextMenuLOS");
 		if ( IsSetOF(OF_Flood_Protection) ) catresname(zOptionFlags, "FloodProtection");
 		if ( IsSetOF(OF_Buffs) ) catresname(zOptionFlags, "Buffs");
 		if ( IsSetOF(OF_NoPrefix) ) catresname(zOptionFlags, "NoPrefix");
@@ -3722,6 +3724,7 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		TCHAR zExperimentalFlags[512];
 		zExperimentalFlags[0] = '\0';
 
+		if ( IsSetEF(EF_NoDiagonalCheckLOS) ) catresname(zExperimentalFlags, "NoDiagonalCheckLOS");
 		if ( IsSetEF(EF_ItemStacking) ) catresname(zExperimentalFlags, "ItemStacking");
 		if ( IsSetEF(EF_ItemStackDrop) ) catresname(zExperimentalFlags, "ItemStackDrop");
 		if ( IsSetEF(EF_Intrinsic_Locals) ) catresname(zExperimentalFlags, "IntrinsicLocals");

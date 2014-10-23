@@ -1603,6 +1603,22 @@ bool CClient::OnTarg_Pet_Stable( CChar * pCharPet )
 		return( false );
 	}
 
+	if (IsSetEF(EF_PetSlots))
+	{
+		CVarDefCont * pTagStorage = pCharPet->GetKey("FOLLOWERSLOTS", true);
+		short int iFollowerSlotsNeeded = pTagStorage ? pTagStorage->GetValNum() : 1;
+		short int iCurFollower = m_pChar->GetDefNum("CURFOLLOWER", true);
+		short int iSetFollower = iCurFollower - iFollowerSlotsNeeded;
+		if ( iSetFollower < 0 )
+			iSetFollower = 0;
+
+		// Send an update packet for the stats
+		m_pChar->SetDefNum("CURFOLLOWER", iSetFollower);
+		CClient * pClient = m_pChar->GetClient();
+		if (pClient)
+			pClient->addCharStatWindow( m_pChar->GetUID() );
+	}
+
 	pCharMaster->GetBank()->ContentAdd( pPetItem );
 
 	TCHAR *pszMsg = Str_GetTemp();

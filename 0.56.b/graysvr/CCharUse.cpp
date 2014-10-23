@@ -1287,25 +1287,19 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 {
 	ADDTOCALLSTACK("CChar::Use_Figurine");
 	// NOTE: The figurine is NOT destroyed.
+	int iCreateNewNpc = 0;
 	if ( pItem == NULL )
 		return NULL;
 
-	if ( pItem->m_uidLink.IsValidUID() &&
-		pItem->m_uidLink.IsChar() &&
-		pItem->m_uidLink != GetUID() &&
-		! IsPriv( PRIV_GM ))
+	if ( pItem->m_uidLink.IsValidUID() && pItem->m_uidLink.IsChar() && pItem->m_uidLink != GetUID() && ! IsPriv( PRIV_GM ))
 	{
 		SysMessageDefault( DEFMSG_FIGURINE_NOTYOURS );
 		return( NULL );
 	}
 
+	// Create a new NPC if there's no one linked to this figurine 
 	CChar * pPet = pItem->m_itFigurine.m_UID.CharFind();
-	if ( pPet != NULL && pPet->IsDisconnected())
-	{
-		// Pull the creature out of idle space.
-		pPet->StatFlag_Clear( STATF_Ridden );
-	}
-	else
+	if ( pPet == NULL )
 	{
 		CREID_TYPE id = pItem->m_itFigurine.m_ID;
 		if ( ! id )
@@ -1317,8 +1311,7 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 				return NULL;
 			}
 		}
-
-		// I guess we need to create a new one ? (support old versions.)
+		iCreateNewNpc = 1;
 		pPet = CreateNPC( id );
 		ASSERT(pPet);
 		pPet->SetName( pItem->GetName());
@@ -1329,31 +1322,39 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 		}
 	}
 
-	if ( IsSetEF(EF_PetSlots) && !IsPriv(PRIV_GM) )
+	if ( ! iPaces )
 	{
-		CVarDefCont * pTagStorage = pPet->GetKey("FOLLOWERSLOTS", true);
-		short int iFollowerSlotsNeeded = pTagStorage ? pTagStorage->GetValNum() : 1;
-		short int iCurFollower = GetDefNum("CURFOLLOWER", true);
-		short int iMaxFollower = GetDefNum("MAXFOLLOWER", true);
-
-		if ((iCurFollower + iFollowerSlotsNeeded) > iMaxFollower )
+		pPet->m_dirFace = m_dirFace;	// getting off ridden horse.
+	}
+	else
+	{
+		if ( IsSetEF(EF_PetSlots) && !IsPriv(PRIV_GM) )
 		{
-			SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_PETSLOTS_TRY_CONTROL) );
-			pPet->Delete();
-			return NULL;
+			CVarDefCont * pTagStorage = pPet->GetKey("FOLLOWERSLOTS", true);
+			short int iFollowerSlotsNeeded = pTagStorage ? pTagStorage->GetValNum() : 1;
+			short int iCurFollower = GetDefNum("CURFOLLOWER", true);
+			short int iMaxFollower = GetDefNum("MAXFOLLOWER", true);
+
+			if ((iCurFollower + iFollowerSlotsNeeded) > iMaxFollower )
+			{
+				SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_PETSLOTS_TRY_CONTROL) );
+				if ( iCreateNewNpc )
+					pPet->Delete();
+				return NULL;
+			}
 		}
 	}
 
-	pPet->NPC_PetSetOwner( this );
+	if ( pPet->IsDisconnected())
+	{
+		// Pull the creature out of idle space.
+		pPet->StatFlag_Clear( STATF_Ridden );
+	}
+
 	pItem->m_itFigurine.m_UID.InitUID();
-
-	if ( ! iPaces )
-		pPet->m_dirFace = m_dirFace;	// getting off ridden horse.
-	
 	pPet->SetUnkPoint( pItem->GetTopLevelObj()->GetTopPoint() );
-
 	pPet->MoveToChar( pItem->GetTopLevelObj()->GetTopPoint() );
-
+	pPet->NPC_PetSetOwner( this );
 	pPet->Update();
 	pPet->Skill_Start( SKILL_NONE );	// was NPCACT_RIDDEN
 

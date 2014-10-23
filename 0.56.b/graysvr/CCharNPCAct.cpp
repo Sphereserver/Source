@@ -3744,26 +3744,6 @@ void CChar::NPC_AI()
 
 					int iDist = GetDist(pChar);
 
-					//	gives some food for player to feed his animals
-					if ( pChar->IsClient() )
-					{
-						if (( iDist < 3 ) && !Calc_GetRandVal(50))
-						{
-							RESOURCE_ID food = g_Cfg.ResourceGetIDType(RES_ITEMDEF, "RANDOM_VEGGIE");
-							CItem * pItem = CItem::CreateScript(static_cast<ITEMID_TYPE>(food.GetResIndex()));
-							if ( pItem )
-							{
-								UpdateDir(pChar);
-								pItem->SetAmount(Calc_GetRandVal2(3, 10));
-								pChar->ItemBounce(pItem);
-								TCHAR * z = Str_GetTemp();
-								sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_STABLEMASTER_FOOD), pItem->GetName(), pChar->GetName());
-								Speak(z);
-								bActed = true;
-							}
-						}
-					}
-
 					if (( !pChar->m_pNPC ) ||
 						( pChar->m_pNPC->m_Brain != NPCBRAIN_ANIMAL ) ||
 						( pChar->IsStatFlag(STATF_Stone|STATF_Hidden|STATF_Conjured|STATF_Ridden) ))

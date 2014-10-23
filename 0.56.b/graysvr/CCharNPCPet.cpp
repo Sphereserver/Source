@@ -374,7 +374,7 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const
 
 					if ((iCurFollower + iFollowerSlotsNeeded) > iMaxFollower )
 					{
-						pSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_PETSLOTS_TRY_SUMMON) );
+						pSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_PETSLOTS_TRY_TRANSFER) );
 						break;
 					}
 				}
@@ -516,19 +516,15 @@ bool CChar::NPC_PetSetOwner( CChar * pChar )
 	ADDTOCALLSTACK("CChar::NPC_PetSetOwner");
 	// If previous owner was OWNER_SPAWN then remove it from spawn count
 	if ( IsStatFlag( STATF_Spawned ))
-	{
 		Memory_ClearTypes( MEMORY_ISPAWNED );
-	}
+
+	// Clear previous owner before set the new owner
+	NPC_PetClearOwners();
 
 	// m_pNPC may not be set yet if this is a conjured creature.
-
 	if ( m_pPlayer || pChar == this || pChar == NULL )
-	{
-		// Clear all owners ?
-		NPC_PetClearOwners();
 		return false;
-	}
-	NPC_PetClearOwners();
+
 	// We get some of the noto of our owner.
 	// ??? If I am a pet. I have noto of my master.
 
