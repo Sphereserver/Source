@@ -3743,7 +3743,7 @@ public:
 
 	void NPC_PetDesert();	
 	void NPC_PetClearOwners();
-	bool NPC_PetSetOwner( const CChar * pChar );
+	bool NPC_PetSetOwner( CChar * pChar );
 	CChar * NPC_PetGetOwner() const;
 	bool NPC_IsOwnedBy( const CChar * pChar, bool fAllowGM = true ) const;
 	bool NPC_CanSpeak() const;

@@ -917,7 +917,7 @@ void CClient::Event_CombatMode( bool fWar ) // Only for switching to combat mode
 		CScriptTriggerArgs Args;
 		Args.m_iN1 = m_pChar->IsStatFlag(STATF_War) ? 1 : 0;
 		Args.m_iN2 = 1;
-		Args.m_iN3 = fWar;
+		Args.m_iN3 = 0;
 		if (m_pChar->OnTrigger(CTRIG_UserWarmode, m_pChar, &Args) == TRIGRET_RET_TRUE)
 			return;
 
@@ -926,7 +926,9 @@ void CClient::Event_CombatMode( bool fWar ) // Only for switching to combat mode
 			fCleanSkill = false;
 			DEBUG_WARN(("UserWarMode - Setting fCleanSkill to false\n"));
 		}
-		fWar = (Args.m_iN3 != 0);
+
+		if ( Args.m_iN3 != 0 && Args.m_iN3 < 3)
+			fWar = Args.m_iN3 -=1;
 	}
 
 	m_pChar->StatFlag_Mod( STATF_War, fWar );
