@@ -367,8 +367,7 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const
 			{
 				if ( IsSetEF(EF_PetSlots) && !pSrc->IsPriv(PRIV_GM) )
 				{
-					CVarDefCont * pTagStorage = GetKey("FOLLOWERSLOTS", true);
-					short int iFollowerSlotsNeeded = pTagStorage ? pTagStorage->GetValNum() : 1;
+					short int iFollowerSlotsNeeded = max(GetDefNum("FOLLOWERSLOTS", true),1);
 					short int iCurFollower = pCharTarg->GetDefNum("CURFOLLOWER", true);
 					short int iMaxFollower = pCharTarg->GetDefNum("MAXFOLLOWER", true);
 
@@ -493,8 +492,7 @@ void CChar::NPC_PetClearOwners()
 		{
 			CChar * pPetOwner = pPetMemory->m_uidLink.CharFind();
 
-			CVarDefCont * pTagStorage = GetKey("FOLLOWERSLOTS", true);
-			short int iFollowerSlotsNeeded = pTagStorage ? pTagStorage->GetValNum() : 1;
+			short int iFollowerSlotsNeeded = max(GetDefNum("FOLLOWERSLOTS", true),1);
 			short int iCurFollower = pPetOwner->GetDefNum("CURFOLLOWER", true);
 			short int iSetFollower = iCurFollower - iFollowerSlotsNeeded;
 			if ( iSetFollower < 0 )
@@ -541,8 +539,7 @@ bool CChar::NPC_PetSetOwner( CChar * pChar )
 
 	if (IsSetEF(EF_PetSlots))
 	{
-		CVarDefCont * pTagStorage = GetKey("FOLLOWERSLOTS", true);
-		short int iFollowerSlotsNeeded = pTagStorage ? pTagStorage->GetValNum() : 1;
+		short int iFollowerSlotsNeeded = max(GetDefNum("FOLLOWERSLOTS", true),1);
 		short int iCurFollower = pChar->GetDefNum("CURFOLLOWER", true);
 		short int iSetFollower = iCurFollower + iFollowerSlotsNeeded;
 		if ( iSetFollower > 255 )

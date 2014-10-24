@@ -1330,8 +1330,7 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 	{
 		if ( IsSetEF(EF_PetSlots) && !IsPriv(PRIV_GM) )
 		{
-			CVarDefCont * pTagStorage = pPet->GetKey("FOLLOWERSLOTS", true);
-			short int iFollowerSlotsNeeded = pTagStorage ? pTagStorage->GetValNum() : 1;
+			short int iFollowerSlotsNeeded = max(pPet->GetDefNum("FOLLOWERSLOTS", true),1);
 			short int iCurFollower = GetDefNum("CURFOLLOWER", true);
 			short int iMaxFollower = GetDefNum("MAXFOLLOWER", true);
 

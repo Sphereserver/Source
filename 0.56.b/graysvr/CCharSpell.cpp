@@ -246,8 +246,7 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 
 		if ( IsSetEF(EF_PetSlots) && !IsPriv(PRIV_GM) )
 		{
-			CVarDefCont * pTagStorage = pChar->GetKey("FOLLOWERSLOTS", true);
-			short int iFollowerSlotsNeeded = pTagStorage ? pTagStorage->GetValNum() : 1;
+			short int iFollowerSlotsNeeded = max(pChar->GetDefNum("FOLLOWERSLOTS", true),1);
 			short int iCurFollower = GetDefNum("CURFOLLOWER", true);
 			short int iMaxFollower = GetDefNum("MAXFOLLOWER", true);
 

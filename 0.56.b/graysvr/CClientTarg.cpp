@@ -1605,8 +1605,7 @@ bool CClient::OnTarg_Pet_Stable( CChar * pCharPet )
 
 	if (IsSetEF(EF_PetSlots))
 	{
-		CVarDefCont * pTagStorage = pCharPet->GetKey("FOLLOWERSLOTS", true);
-		short int iFollowerSlotsNeeded = pTagStorage ? pTagStorage->GetValNum() : 1;
+		short int iFollowerSlotsNeeded = max(pCharPet->GetDefNum("FOLLOWERSLOTS", true),1);
 		short int iCurFollower = m_pChar->GetDefNum("CURFOLLOWER", true);
 		short int iSetFollower = iCurFollower - iFollowerSlotsNeeded;
 		if ( iSetFollower < 0 )
