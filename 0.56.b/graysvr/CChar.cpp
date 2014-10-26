@@ -1400,6 +1400,9 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 		Skill_SetBase(skSkill4, iSkillVal4 * 10);
 	}
 
+	// Set max pet followers slots
+	SetDefNum("MAXFOLLOWER", 5);
+
 	// Set title
 	m_sTitle.Empty();
 

@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, October 22, 2014
+// FILE LAST UPDATED: Sunday, October 26, 2014
 //
 VERSION=0.56c
 
@@ -132,8 +132,8 @@ EMOTE_DEF_UNICODE	0
 //cooking_fire_source			"You must be near a fire source to cook."
 //combat_arch_noammo			"You have no ammunition."
 //combat_arch_tooclose			"You are too close."
-//combat_attacko				"*You see %s attacking %s*"
-//combat_attacks				"*%s is attacking you*"
+//combat_attack_inito			"is attacking %s!"
+//combat_attack_inits			"is attacking you!"
 //combat_hit_arm1o				"You hit %ss left arm!"
 //combat_hit_arm1s				"%s hits your left arm!"
 //combat_hit_arm2o				"You hit %ss right arm!"
@@ -756,17 +756,19 @@ EMOTE_DEF_UNICODE	0
 //npc_pet_thanks				"Thank thee"
 //npc_pet_wage_cost			"I will work for %d gold"
 //npc_pet_weak				"I'm too weak to carry that. "
-//npc_stablemaster_fail			"It doesn't seem to want to go."
 //npc_stablemaster_feed			"feed the %s"
-//npc_stablemaster_food			"Here are some %s for your pets, %s. Feed them with care!"
 //npc_stablemaster_full			"I'm sorry the stables are full"
-//npc_stablemaster_los			"I can't seem to see your pet"
-//npc_stablemaster_nopets  		"Sorry I have no stabled animals for you"
-//npc_stablemaster_rem			"Please remember my name is %s. Tell me to 'Retrieve' when you want your pet back."
-//npc_stablemaster_select		"Select a pet to stable"
-//npc_stablemaster_targ_stable 	"What pet would you like to stable here"
-//npc_stablemaster_toomany		"I'm sorry you have too many pets stabled here already. Tell me to 'retrieve' if you want them."
-//npc_stablemaster_treatwell   	"Treat them well"
+//npc_stablemaster_toomany		"You have too many pets in the stables!"
+//npc_stablemaster_targ			"Which animal wouldst thou like to stable here?"
+//npc_stablemaster_targ_success		"Your pet has been stabled."
+//npc_stablemaster_targ_fail		"You can't stable that!"
+//npc_stablemaster_targ_los		"That is too far away."
+//npc_stablemaster_targ_owner		"You do not own that pet!"
+//npc_stablemaster_targ_summon		"I can not stable summoned creatures."
+//npc_stablemaster_targ_unload		"You need to unload your pet."
+//npc_stablemaster_claim   		"Here you go... and good day to you!"
+//npc_stablemaster_claim_nopets  	"But I have no animals stabled with me at the moment!"
+//npc_stablemaster_claim_follower	"%s remained in the stables because you have too many followers."
 //npc_text_murd_1				"Thy conscience is clear."
 //npc_text_murd_2				"Although thou hast committed murder in the past, the guards will still protect you."
 //npc_text_murd_3				"Your soul is black with guilt. Because thou hast murdered, the guards shall smite thee."

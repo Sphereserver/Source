@@ -1328,19 +1328,28 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 	}
 	else
 	{
-		if ( IsSetEF(EF_PetSlots) && !IsPriv(PRIV_GM) )
+		if ( IsSetEF(EF_PetSlots) )
 		{
 			short int iFollowerSlotsNeeded = max(pPet->GetDefNum("FOLLOWERSLOTS", true),1);
 			short int iCurFollower = GetDefNum("CURFOLLOWER", true);
 			short int iMaxFollower = GetDefNum("MAXFOLLOWER", true);
+			short int iSetFollower = iCurFollower + iFollowerSlotsNeeded;
+			if ( iSetFollower > 255 )
+				iSetFollower = 255;
 
-			if ((iCurFollower + iFollowerSlotsNeeded) > iMaxFollower )
+			if ((iCurFollower + iFollowerSlotsNeeded) > iMaxFollower && !IsPriv(PRIV_GM) )
 			{
 				SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_PETSLOTS_TRY_CONTROL) );
 				if ( iCreateNewNpc )
 					pPet->Delete();
-				return NULL;
+				return false;
 			}
+
+			// Send an update packet for the stats
+			SetDefNum("CURFOLLOWER", iSetFollower);
+			CClient * pClient = GetClient();
+			if (pClient)
+				pClient->addCharStatWindow( GetUID() );
 		}
 	}
 

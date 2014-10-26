@@ -1580,26 +1580,45 @@ bool CClient::OnTarg_Pet_Stable( CChar * pCharPet )
 	if ( pCharMaster == NULL )
 		return( false );
 
-	if ( pCharPet == NULL ||
-		! pCharPet->NPC_IsOwnedBy( m_pChar ) ||
-		pCharPet->m_pPlayer ||
-		pCharMaster == pCharPet )
+	if ( pCharPet == NULL || pCharPet->m_pPlayer || pCharMaster == pCharPet )
 	{
-		SysMessageDefault( DEFMSG_STABLEMASTER_SELECT );
+		pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_TARG_FAIL ) );
 		return( false );
 	}
 
-	if ( ! pCharMaster->CanSee(pCharPet))
+	if ( ! pCharMaster->CanSeeLOS( pCharPet ))
 	{
-		pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_LOS ) );
+		pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_TARG_LOS ) );
 		return( false );
 	}
 
-	// Shink the pet and put it in the bank box of the stable master.
+	if ( ! pCharPet->NPC_IsOwnedBy( m_pChar ))
+	{
+		pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_TARG_OWNER ) );
+		return( false );
+	}
+
+	if ( pCharPet->IsStatFlag(STATF_Conjured))
+	{
+		pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_TARG_SUMMON ) );
+		return( false );
+	}
+
+	CItemContainer * pPack = pCharPet->GetPack();
+	if ( pPack )
+	{
+		if ( ! pPack->IsEmpty() )
+		{
+			pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_TARG_UNLOAD ) );
+			return( false );
+		}
+	}
+
+	// Shrink the pet and put it in the bank box of the stable master.
 	CItem * pPetItem = pCharPet->Make_Figurine( m_pChar->GetUID());
 	if ( pPetItem == NULL )
 	{
-		pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_FAIL ) );
+		pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_TARG_FAIL ) );
 		return( false );
 	}
 
@@ -1619,10 +1638,7 @@ bool CClient::OnTarg_Pet_Stable( CChar * pCharPet )
 	}
 
 	pCharMaster->GetBank()->ContentAdd( pPetItem );
-
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_STABLEMASTER_REM), static_cast<LPCTSTR>(pCharMaster->GetName()));
-	pCharMaster->Speak(pszMsg);
+	pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_CLAIM ) );
 	return true;
 }
 

@@ -3133,23 +3133,13 @@ void CChar::Memory_Fight_Start( const CChar * pTarg )
 			return;
 	}
 
-	char	*z = NULL;
-	if ( GetTopSector()->GetCharComplexity() < 7 )
-	{
-		// too busy for this.
-		z = Str_GetTemp();
-		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKO), GetName(), pTarg->GetName());
-
-		// Don't bother telling me who i just attacked.
-		UpdateObjMessage(z, NULL, pTarg->GetClient(), HUE_RED, TALKMODE_EMOTE, FONT_NORMAL);
-	}
+	char *z = Str_GetTemp();
+	sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACK_INITO), pTarg->GetName());
 
 	if ( pTarg->IsClient() && pTarg->CanSee(this))
-	{
-		if ( !z ) z = Str_GetTemp();
-		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKS), GetName());
-		pTarg->GetClient()->addObjMessage(z, this, HUE_RED);
-	}
+		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACK_INITS) );
+
+	Emote(z, GetClient());
 }
 
 //********************************************************

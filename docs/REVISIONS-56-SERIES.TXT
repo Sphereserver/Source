@@ -1339,3 +1339,12 @@ Added: Missing functionality of EF_PetSlots feature on sphere.ini. It's working 
 23-10-2014, Coruja
 Fixed: Minor EF_PetSlots issues. Now everything is working fine and it's ready to use.
 Changed: NPCs using BRAIN=brain_animal_trainer won't give food to players anymore (but still able to feed pets nearby).
+
+26-10-2014, Coruja
+Changed: Many improvements on pet stables behavior.
+	-Also the max limit of pets that the NPC can hold for a player now is based on player skills (Animal Taming + Animal Lore + Veterinary). Usually it can hold 2~8 pets.
+	-If TAG.MAXPLAYERPETS is set on the NPC, it will override the formula and will be default value for all players.
+Added: Account character creation now will create characters with MAXFOLLOWERS=5 already set.
+Fixed: House customization engine creating doors using wrong type 't_door' instead 't_door_locked'.
+Fixed: *Someone is attacking you* message now is true emote message instead just a normal message with * * added manually.
+[sphere_msgs.scp] Changed some "combat_attack*" and "stablemaster_*" defmsg to new defs/texts. I HIGHLY recommend update it, since the old 'combat_attack*' and 'stablemaster_*' defmsgs won't be used anymore.

@@ -254,7 +254,6 @@ bool CChar::NPC_StablePetSelect( CChar * pCharPlayer )
 		return( false );
 
 	// Might have too many pets already ?
-
 	int iCount = 0;
 	CItemContainer * pBank = GetBank();
 	if ( pBank->GetCount() >= MAX_ITEMS_CONT )
@@ -263,26 +262,48 @@ bool CChar::NPC_StablePetSelect( CChar * pCharPlayer )
 		return( false );
 	}
 
+	// Calculate the max limit of pets that the NPC can hold for the player
+	double iSkillTaming = pCharPlayer->Skill_GetAdjusted(SKILL_TAMING);
+	double iSkillAnimalLore = pCharPlayer->Skill_GetAdjusted(SKILL_ANIMALLORE);
+	double iSkillVeterinary = pCharPlayer->Skill_GetAdjusted(SKILL_VETERINARY);
+	double iSkillSum = iSkillTaming + iSkillAnimalLore + iSkillVeterinary;
+
+	int iPetMax;
+	if ( iSkillSum >= 240.0 )
+		iPetMax = 5;
+	else if ( iSkillSum >= 200.0 )
+		iPetMax = 4;
+	else if ( iSkillSum >= 160.0 )
+		iPetMax = 3;
+	else
+		iPetMax = 2;
+
+	if ( iSkillTaming >= 100.0 )
+		iPetMax += (int)((iSkillTaming - 90.0) / 10);
+
+	if ( iSkillAnimalLore >= 100.0 )
+		iPetMax += (int)((iSkillAnimalLore - 90.0) / 10);
+
+	if ( iSkillVeterinary >= 100.0 )
+		iPetMax += (int)((iSkillVeterinary - 90.0) / 10);
+
+	if ( m_TagDefs.GetKey("MAXPLAYERPETS") )
+		iPetMax = static_cast<int>(m_TagDefs.GetKeyNum("MAXPLAYERPETS"));
+
 	CItem* pItem = pBank->GetContentHead();
 	for ( ; pItem != NULL ; pItem = pItem->GetNext())
 	{
 		if ( pItem->IsType( IT_FIGURINE ) && pItem->m_uidLink == pCharPlayer->GetUID())
 			iCount++;
 	}
-
-	int iPetmax = 10;
-	if ( m_TagDefs.GetKey("MAXPLAYERPETS") )
-		iPetmax = static_cast<int>(m_TagDefs.GetKeyNum("MAXPLAYERPETS"));
-
-	if ( iCount > iPetmax )
+	if ( iCount >= iPetMax )
 	{
 		Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_TOOMANY ) );
 		return( false );
 	}
 
 	pCharPlayer->m_pClient->m_Targ_PrvUID = GetUID();
-	pCharPlayer->m_pClient->addTarget( CLIMODE_TARG_PET_STABLE, g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_TARGSTABLE ) );
-
+	pCharPlayer->m_pClient->addTarget( CLIMODE_TARG_PET_STABLE, g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_TARG ) );
 	return( true );
 }
 
@@ -299,27 +320,36 @@ bool CChar::NPC_StablePetRetrieve( CChar * pCharPlayer )
 
 	int iCount = 0;
 	CItem* pItem = GetBank()->GetContentHead();
-	while ( pItem!=NULL )
+	while ( pItem != NULL )
 	{
 		CItem * pItemNext = pItem->GetNext();
 		if ( pItem->IsType( IT_FIGURINE ) && pItem->m_uidLink == pCharPlayer->GetUID())
 		{
-			if ( pCharPlayer->Use_Figurine( pItem, 2 ))
+			if ( ! pCharPlayer->Use_Figurine( pItem, 2 ))
 			{
-				pItem->Delete();
+				iCount = -1;
+				break;
 			}
+
+			pItem->Delete();
 			iCount++;
 		}
 		pItem = pItemNext;
 	}
 
-	if ( ! iCount )
+	if ( iCount == -1 )
 	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_NOPETS ) );
+		TCHAR *pszTemp = Str_GetTemp();
+		sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_CLAIM_FOLLOWER ), pItem->GetName());
+		Speak( pszTemp );
+	}
+	else if ( iCount == 0 )
+	{
+		Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_CLAIM_NOPETS ) );
 	}
 	else
 	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_TREATWELL ) );
+		Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_CLAIM ) );
 	}
 
 	return( true );

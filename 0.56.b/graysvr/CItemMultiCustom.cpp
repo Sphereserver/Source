@@ -311,7 +311,12 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 		pItem->m_Attr = ATTR_MOVE_NEVER;
 		pItem->GetTagDefs()->SetNum("FIXTURE", (DWORD)GetUID());
 
-		if ( pItem->IsType(IT_TELEPAD) )
+		if ( pItem->IsType(IT_DOOR) )
+		{
+			// house doors are locked by default
+			pItem->SetType(IT_DOOR_LOCKED);
+		}
+		else if ( pItem->IsType(IT_TELEPAD) )
 		{
 			// link telepads
 			for ( ComponentsContainer::iterator j = i+1; j != i; ++j )
