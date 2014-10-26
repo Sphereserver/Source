@@ -880,6 +880,26 @@ void CChar::NotoSave_Update()
 	UpdateMode( this->GetClient() ? this->GetClient() : NULL , false );
 }
 
+void CChar::NotoSave_CheckTimeout()
+{
+	ADDTOCALLSTACK("CChar::NotoSave_CheckTimeout");
+	if (m_notoSaves.size())
+	{
+		int count = 0;
+		for (std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); ++it)
+		{
+			NotoSaves & refNoto = *it;
+			if ((++(refNoto.time) > g_Cfg.m_iNotoTimeout) && (g_Cfg.m_iNotoTimeout > 0))
+			{
+				//m_notoSaves.erase(it);
+				NotoSave_Resend(count);
+				break;
+			}
+			count++;
+		}
+	}
+}
+
 void CChar::NotoSave_Resend( int id )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_Resend()");
@@ -3284,12 +3304,9 @@ CChar * CChar::Fight_FindBestTarget()
 	// If i am an NPC with no more targets then drop out of war mode.
 	// RETURN:
 	//  number of targets.
-	
-	CChar * pChar = NULL;
-	CChar * pClosest = NULL;
-	if ( g_Cfg.m_iNpcAi&NPC_AI_THREAT && !m_pPlayer && Attacker() )
-		return Attacker_FindBestTarget();
-	else
+	if ( Attacker() )
+		return Attacker_FindBestTarget((g_Cfg.m_iNpcAi&NPC_AI_THREAT && !m_pPlayer));
+	/*else
 	{
 		SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
 		int iClosest = INT_MAX;	// closest
@@ -3326,8 +3343,8 @@ CChar * CChar::Fight_FindBestTarget()
 				iClosest = iDist;
 			}
 		}
-	}
-	return ( pClosest ) ? pClosest : pChar;
+	}*/
+	return NULL;
 }
 
 bool CChar::Fight_Clear(const CChar *pChar, bool bForced)
@@ -3337,7 +3354,7 @@ bool CChar::Fight_Clear(const CChar *pChar, bool bForced)
 	if ( ! pChar )
 		return false;
 
-	if ( Attacker_Delete(const_cast<CChar*>(pChar), bForced) == false, ATTACKER_CLEAR_FORCED )
+	if (Attacker_Delete(const_cast<CChar*>(pChar), bForced, ATTACKER_CLEAR_FORCED) == false)
 		return false;
 
 	// Go to my next target.
@@ -3544,7 +3561,7 @@ bool CChar::Attacker_Add( CChar * pChar, INT64 threat )
 	return true;
 }
 
-CChar * CChar::Attacker_FindBestTarget()
+CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 {
 	ADDTOCALLSTACK("CChar::Attacker_FindBestTarget");
 	if ( !Attacker() )
@@ -3585,7 +3602,7 @@ CChar * CChar::Attacker_FindBestTarget()
 			continue;
 		if ( ! CanSeeLOS( pChar ) )
 			continue;
-		if ( threat < refAttacker.threat)
+		if ( bUseThreat && threat < refAttacker.threat)
 		{
 			// So if we reached here ... this target has more threat than the others and meets the reqs.
 			pClosest = pChar;
@@ -3861,7 +3878,7 @@ void CChar::Attacker_CheckTimeout()
 			LastAttackers & refAttacker = m_lastAttackers.at(count);
 			if ( ( ++(refAttacker.elapsed) > g_Cfg.m_iAttackerTimeout ) && ( g_Cfg.m_iAttackerTimeout > 0  ) )
 			{
-				Attacker_Delete(count, true, ATTACKER_CLEAR_ELAPSED);	//m_lastAttackers.erase(it);
+				Attacker_Delete(count, true, ATTACKER_CLEAR_ELAPSED);
 				break;
 			}
 		}
@@ -4153,7 +4170,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			{
 				CScriptTriggerArgs	Args( iTime, 0, pWeapon );
 				Args.m_VarsLocal.SetNum("Anim", (int)anim);
-				Args.m_VarsLocal.SetNum("AnimDelay", static_cast<unsigned char>(iTime) / TICK_PER_SEC);
+				Args.m_VarsLocal.SetNum("AnimDelay", animDelay);
 				if ( OnTrigger( CTRIG_HitTry, pCharTarg, &Args ) == TRIGRET_RET_TRUE )
 					return( WAR_SWING_READY );
 				iTime = Args.m_iN1;
@@ -4248,7 +4265,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			{
 				CScriptTriggerArgs	Args(iTime, 0, pWeapon);
 				Args.m_VarsLocal.SetNum("Anim", (int)anim);
-				Args.m_VarsLocal.SetNum("AnimDelay", static_cast<unsigned char>(iTime) / TICK_PER_SEC);
+				Args.m_VarsLocal.SetNum("AnimDelay", animDelay);
 				if (OnTrigger(CTRIG_HitTry, pCharTarg, &Args) == TRIGRET_RET_TRUE)
 					return(WAR_SWING_READY);
 				iTime = Args.m_iN1;

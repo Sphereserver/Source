@@ -3045,6 +3045,8 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	}
 	//Resend buff icons
 	resendBuffs();
+
+	// Send Notoriety Status from all nearby characters.
 	m_pChar->NotoSave_Update();
 
 	if ( IsTrigUsed(TRIGGER_LOGIN) )

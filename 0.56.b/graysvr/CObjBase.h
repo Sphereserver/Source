@@ -3326,6 +3326,7 @@ public:
 	int NotoSave_GetID( CGrayUID pChar );
 	CChar * NotoSave_GetUID( int index );
 	bool NotoSave_Delete( CChar * pChar, bool bForced );
+	void NotoSave_CheckTimeout();
 
 	bool IsTakeCrime( const CItem * pItem, CChar ** ppCharMark = NULL ) const;
 
@@ -3587,7 +3588,7 @@ public:
 	int  Attacker_GetID( LPCTSTR pChar );
 	int  Attacker_GetID( CGrayUID pChar );
 	int  IsAttackedBy( CChar * pChar ) { return Attacker_GetID( pChar); } 
-	CChar * Attacker_FindBestTarget();
+	CChar * Attacker_FindBestTarget( bool bUseThreat = false );
 	//
 
 	bool Player_OnVerb( CScript &s, CTextConsole * pSrc );

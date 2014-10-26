@@ -720,18 +720,18 @@ ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackw
 			case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
 			case IT_WEAPON_MACE_STAFF:
 			case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
-				return (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_DOWN : ANIM_ATTACK_1H_DOWN;
+				action = (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_DOWN : ANIM_ATTACK_1H_DOWN;
 			case IT_WEAPON_SWORD:
 			case IT_WEAPON_AXE:
-				return(layer == LAYER_HAND2) ? ANIM_ATTACK_2H_WIDE : ANIM_ATTACK_1H_WIDE;
+				action = (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_WIDE : ANIM_ATTACK_1H_WIDE;
 			case IT_WEAPON_FENCE:
-				return (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_JAB : ANIM_ATTACK_1H_JAB;
+				action = (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_JAB : ANIM_ATTACK_1H_JAB;
 			case IT_WEAPON_THROWING:
-				return ANIM_ATTACK_1H_WIDE;
+				action = ANIM_ATTACK_1H_WIDE;
 			case IT_WEAPON_BOW:
-				return ANIM_ATTACK_BOW;
+				action = ANIM_ATTACK_BOW;
 			case IT_WEAPON_XBOW:
-				return ANIM_ATTACK_XBOW;
+				action = ANIM_ATTACK_XBOW;
 			default:
 				break;
 			}
@@ -739,9 +739,9 @@ ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackw
 			{
 				// add some style to the attacks.
 				if (layer == LAYER_HAND2)
-					return static_cast<ANIM_TYPE>(ANIM_ATTACK_2H_DOWN + Calc_GetRandVal(3));
+					action = static_cast<ANIM_TYPE>(ANIM_ATTACK_2H_DOWN + Calc_GetRandVal(3));
 				else
-					return static_cast<ANIM_TYPE>(ANIM_ATTACK_1H_WIDE + Calc_GetRandVal(3));
+					action = static_cast<ANIM_TYPE>(ANIM_ATTACK_1H_WIDE + Calc_GetRandVal(3));
 			}
 		}
 
@@ -965,7 +965,8 @@ bool CChar::UpdateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward , BY
 
 	ANIM_TYPE_NEW subaction;
 	BYTE variation = 0;		//Seems to have some effect for humans/elfs vs gargoyles
-
+	if (fTranslate)
+		action = GenerateAnimate( action, true, fBackward);
 	ANIM_TYPE_NEW action1 = static_cast<ANIM_TYPE_NEW>(action);
 	CCharBase* pCharDef = Char_GetDef();
 	if (IsPlayableCharacter())		//Perform these checks only for Gargoyles or in Enhanced Client
@@ -4238,21 +4239,7 @@ bool CChar::OnTick()
 		Attacker_CheckTimeout();
 
 		EXC_SET("NOTO timeout");
-		if ( m_notoSaves.size() )
-		{
-			int count = 0;
-			for ( std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); ++it)
-			{
-				NotoSaves & refNoto = *it;
-				if ( ( ++(refNoto.time) > g_Cfg.m_iNotoTimeout ) && ( g_Cfg.m_iNotoTimeout > 0 ) )
-				{
-					//m_notoSaves.erase(it);
-					NotoSave_Resend( count );
-					break;
-				}
-				count++;
-			}
-		}
+		NotoSave_CheckTimeout();
 
 		if ( IsClient() )
 		{
