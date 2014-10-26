@@ -1697,12 +1697,14 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 			if ( iRet == TRIGRET_BREAK )
 			{
 				EndContext = StartContext;
-				s.SeekContext( StartContext );
 				break;
 			}
 			if (( iRet != TRIGRET_ENDIF ) && ( iRet != TRIGRET_CONTINUE ))
 				return( iRet );
-			EndContext = s.GetContext();
+			if ( iRet == TRIGRET_CONTINUE )
+				EndContext = StartContext;
+			else
+				EndContext = s.GetContext();
 			s.SeekContext( StartContext );
 		}
 	}
@@ -1765,12 +1767,15 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 				if ( iRet == TRIGRET_BREAK )
 				{
 					EndContext = StartContext;
-					s.SeekContext( StartContext );
 					break;
 				}
 				if (( iRet != TRIGRET_ENDIF ) && ( iRet != TRIGRET_CONTINUE ))
 					return( iRet );
-				EndContext = s.GetContext();
+
+				if ( iRet == TRIGRET_CONTINUE )
+					EndContext = StartContext;
+				else
+					EndContext = s.GetContext();
 				s.SeekContext( StartContext );
 			}
 		else
@@ -1785,14 +1790,17 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 				if ( iRet == TRIGRET_BREAK )
 				{
 					EndContext = StartContext;
-					s.SeekContext( StartContext );
 					break;
-				}
+				} 
 				if (( iRet != TRIGRET_ENDIF ) && ( iRet != TRIGRET_CONTINUE ))
 					return( iRet );
-				EndContext = s.GetContext();
+
+				if ( iRet == TRIGRET_CONTINUE )
+					EndContext = StartContext;
+				else
+					EndContext = s.GetContext();
 				s.SeekContext( StartContext );
-			}
+			} 
 	}
 
 	if ( (iType & 1) || (iType & 2) )
@@ -1829,12 +1837,14 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 					if ( iRet == TRIGRET_BREAK )
 					{
 						EndContext = StartContext;
-						s.SeekContext( StartContext );
 						break;
 					}
 					if (( iRet != TRIGRET_ENDIF ) && ( iRet != TRIGRET_CONTINUE ))
 						return( iRet );
-					EndContext = s.GetContext();
+					if ( iRet == TRIGRET_CONTINUE )
+						EndContext = StartContext;
+					else
+						EndContext = s.GetContext();
 					s.SeekContext( StartContext );
 				}
 			}
@@ -1859,12 +1869,14 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 					if ( iRet == TRIGRET_BREAK )
 					{
 						EndContext = StartContext;
-						s.SeekContext( StartContext );
 						break;
 					}
 					if (( iRet != TRIGRET_ENDIF ) && ( iRet != TRIGRET_CONTINUE ))
 						return( iRet );
-					EndContext = s.GetContext();
+					if ( iRet == TRIGRET_CONTINUE )
+						EndContext = StartContext;
+					else
+						EndContext = s.GetContext();
 					s.SeekContext( StartContext );
 				}
 			}
@@ -1923,12 +1935,14 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 				if ( iRet == TRIGRET_BREAK )
 				{
 					EndContext = StartContext;
-					s.SeekContext( StartContext );
 					break;
 				}
  				if (( iRet != TRIGRET_ENDIF ) && ( iRet != TRIGRET_CONTINUE ))
 					return( iRet );
-				EndContext = s.GetContext();
+				if ( iRet == TRIGRET_CONTINUE )
+					EndContext = StartContext;
+				else
+					EndContext = s.GetContext();
 				s.SeekContext( StartContext );
 
 				// Acquire the total instances that exist for this item if we can
@@ -1948,9 +1962,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 	{
 toomanyloops:
 		if ( LoopsMade >= g_Cfg.m_iMaxLoopTimes )
-		{
 			g_Log.EventError("Terminating loop cycle since it seems being dead-locked (%d iterations already passed)\n", LoopsMade);
-		}
 	}
 
 	if ( EndContext.m_lOffset <= StartContext.m_lOffset )
@@ -1958,14 +1970,11 @@ toomanyloops:
 		// just skip to the end.
 		TRIGRET_TYPE iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 		if ( iRet != TRIGRET_ENDIF )
-		{
 			return( iRet );
-		}
 	}
 	else
-	{
 		s.SeekContext( EndContext );
-	}
+
 	return( TRIGRET_ENDIF );
 }
 

@@ -1197,12 +1197,14 @@ TRIGRET_TYPE CChar::OnCharTrigForMemTypeLoop( CScript &s, CTextConsole * pSrc, C
 			if ( iRet == TRIGRET_BREAK )
 			{
 				EndContext = StartContext;
-				s.SeekContext( StartContext );
 				break;
 			}
 			if (( iRet != TRIGRET_ENDIF ) && ( iRet != TRIGRET_CONTINUE ))
 				return( iRet );
-			EndContext = s.GetContext();
+			if ( iRet == TRIGRET_CONTINUE )
+				EndContext = StartContext;
+			else
+				EndContext = s.GetContext();
 			s.SeekContext( StartContext );
 		}
 	}
@@ -1211,14 +1213,10 @@ TRIGRET_TYPE CChar::OnCharTrigForMemTypeLoop( CScript &s, CTextConsole * pSrc, C
 		// just skip to the end.
 		TRIGRET_TYPE iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 		if ( iRet != TRIGRET_ENDIF )
-		{
 			return( iRet );
-		}
 	}
 	else
-	{
 		s.SeekContext( EndContext );
-	}
 	return( TRIGRET_ENDIF );
 }
 

@@ -123,12 +123,14 @@ TRIGRET_TYPE CContainer::OnContTriggerForLoop( CScript &s, CTextConsole * pSrc, 
 				if ( iRet == TRIGRET_BREAK )
 				{
 					EndContext = StartContext;
-					s.SeekContext( StartContext );
 					break;
 				}
  				if (( iRet != TRIGRET_ENDIF ) && ( iRet != TRIGRET_CONTINUE ))
 					return( iRet );
-				EndContext = s.GetContext();
+				if ( iRet == TRIGRET_CONTINUE )
+					EndContext = StartContext;
+				else
+					EndContext = s.GetContext();
 			}
 			if ( iDecendLevels <= 0 )
 				continue;
@@ -155,14 +157,10 @@ TRIGRET_TYPE CContainer::OnContTriggerForLoop( CScript &s, CTextConsole * pSrc, 
 		CScriptObj * pScript = dynamic_cast <CScriptObj *> (this);
 		TRIGRET_TYPE iRet = pScript->OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 		if ( iRet != TRIGRET_ENDIF )
-		{
 			return( iRet );
-		}
 	}
 	else
-	{
 		s.SeekContext( EndContext );
-	}
 	return( TRIGRET_ENDIF );
 }
 
@@ -180,12 +178,14 @@ TRIGRET_TYPE CContainer::OnGenericContTriggerForLoop( CScript &s, CTextConsole *
 		if ( iRet == TRIGRET_BREAK )
 		{
 			EndContext = StartContext;
-			s.SeekContext( StartContext );
 			break;
 		}
  		if (( iRet != TRIGRET_ENDIF ) && ( iRet != TRIGRET_CONTINUE ))
 			return( iRet );
-		EndContext = s.GetContext();
+		if ( iRet == TRIGRET_CONTINUE )
+			EndContext = StartContext;
+		else
+			EndContext = s.GetContext();
 		if ( iDecendLevels <= 0 )
 			continue;
 		CItemContainer * pCont = dynamic_cast <CItemContainer*>(pItem);
@@ -210,14 +210,10 @@ TRIGRET_TYPE CContainer::OnGenericContTriggerForLoop( CScript &s, CTextConsole *
 		CScriptObj * pScript = dynamic_cast <CScriptObj *> (this);
 		TRIGRET_TYPE iRet = pScript->OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 		if ( iRet != TRIGRET_ENDIF )
-		{
 			return( iRet );
-		}
 	}
 	else
-	{
 		s.SeekContext( EndContext );
-	}
 	return( TRIGRET_ENDIF );
 }
 
