@@ -721,17 +721,23 @@ ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackw
 			case IT_WEAPON_MACE_STAFF:
 			case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
 				action = (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_DOWN : ANIM_ATTACK_1H_DOWN;
+				break;
 			case IT_WEAPON_SWORD:
 			case IT_WEAPON_AXE:
 				action = (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_WIDE : ANIM_ATTACK_1H_WIDE;
+				break;
 			case IT_WEAPON_FENCE:
 				action = (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_JAB : ANIM_ATTACK_1H_JAB;
+				break;
 			case IT_WEAPON_THROWING:
 				action = ANIM_ATTACK_1H_WIDE;
+				break;
 			case IT_WEAPON_BOW:
 				action = ANIM_ATTACK_BOW;
+				break;
 			case IT_WEAPON_XBOW:
 				action = ANIM_ATTACK_XBOW;
+				break;
 			default:
 				break;
 			}
