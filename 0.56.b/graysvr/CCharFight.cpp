@@ -4163,7 +4163,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			// just start the bow animation.
 			INT64 iTime = Fight_GetWeaponSwingTimer();
 			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
-			unsigned char animDelay = static_cast<unsigned char>(iTime);
+			unsigned char animDelay = static_cast<unsigned char>(iTime) / TICK_PER_SEC;
 			if ( IsTrigUsed(TRIGGER_HITTRY) )
 			{
 				CScriptTriggerArgs	Args( iTime, 0, pWeapon );
@@ -4258,7 +4258,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			// We are swinging.
 			INT64 iTime = Fight_GetWeaponSwingTimer();
 			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
-			unsigned char animDelay = static_cast<unsigned char>(iTime);
+			unsigned char animDelay = static_cast<unsigned char>(iTime) / TICK_PER_SEC;
 			if (IsTrigUsed(TRIGGER_HITTRY))
 			{
 				CScriptTriggerArgs	Args(iTime, 0, pWeapon);
