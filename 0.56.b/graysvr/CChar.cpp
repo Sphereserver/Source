@@ -2709,27 +2709,26 @@ do_default:
 					if ( *pszKey == '.' )
 					{
 						pszKey++;
-						if  ( m_lastAttackers.size() )
+						if( !strnicmp(pszKey, "CLEAR", 5) )
 						{
-							if( !strnicmp(pszKey, "CLEAR", 5) )
-							{
+							if (m_lastAttackers.size())
 								Fight_ClearAll();
-								return true;
-							}else if ( !strnicmp(pszKey, "DELETE", 6) )
+							return true;
+						}else if ( !strnicmp(pszKey, "DELETE", 6) )
+						{
+							if (m_lastAttackers.size())
 							{
 								CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
-								Attacker_Delete( pChar, false, ATTACKER_CLEAR_SCRIPT );
-								return true;
+								Attacker_Delete(pChar, false, ATTACKER_CLEAR_SCRIPT);
 							}
+							return true;
 						}
-						// Above must be used only when there are attackers, following one doesn't need it
 						if ( !strnicmp(pszKey, "ADD", 3 ) )
 						{
 							CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
 							if (! pChar )
 								return false;
 							Fight_Attack(pChar);
-							//Attacker_Add(pChar);
 							return true;
 						}
 						else
