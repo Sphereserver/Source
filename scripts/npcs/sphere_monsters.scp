@@ -1,5 +1,5 @@
 ﻿//****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2014
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, Sept 19, 2014
+// FILE LAST UPDATED: Tuesday, October 28, 2014
 //
 VERSION=0.56c
 
@@ -15232,7 +15232,7 @@ CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP|MT_MOUNT
 DESIRES=r_civilization,t_coin,t_gold,t_gem,t_potion
 AVERSIONS=t_trap,e_carnivores3
 FOODTYPE=t_food,t_drink,t_fruit,t_grain
-MAXFOOD=30
+MAXFOOD=20
 RESOURCES=i_flesh_head_2, i_flesh_torso, i_flesh_right_arm, i_flesh_left_arm, i_flesh_left_leg, i_flesh_right_leg
 BLOODCOLOR=colors_blood
 MOVERATE=100
@@ -15324,7 +15324,7 @@ CAN=MT_WALK|MT_RUN|MT_FEMALE|MT_USEHANDS|MT_EQUIP|MT_MOUNT
 DESIRES=r_civilization,t_coin,t_gold,t_gem,t_potion
 AVERSIONS=t_trap,e_carnivores3
 FOODTYPE=t_food,t_drink,t_fruit,t_grain
-MAXFOOD=30
+MAXFOOD=20
 RESOURCES=i_flesh_head_2, i_flesh_torso, i_flesh_right_arm, i_flesh_left_arm, i_flesh_left_leg, i_flesh_right_leg
 BLOODCOLOR=colors_blood
 MOVERATE=100
@@ -15711,7 +15711,7 @@ CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP|MT_MOUNT
 DESIRES=r_civilization,t_coin,t_gold,t_gem,t_potion
 AVERSIONS=t_trap,e_carnivores3
 FOODTYPE=t_food,t_drink,t_fruit,t_grain
-MAXFOOD=30
+MAXFOOD=20
 RESOURCES=i_flesh_head_2, i_flesh_torso, i_flesh_right_arm, i_flesh_left_arm, i_flesh_left_leg, i_flesh_right_leg, i_servered_elf_ears
 BLOODCOLOR=colors_blood
 MOVERATE=100
@@ -15801,7 +15801,7 @@ CAN=MT_WALK|MT_RUN|MT_FEMALE|MT_USEHANDS|MT_EQUIP|MT_MOUNT
 DESIRES=r_civilization,t_coin,t_gold,t_gem,t_potion
 AVERSIONS=t_trap,e_carnivores3
 FOODTYPE=t_food,t_drink,t_fruit,t_grain
-MAXFOOD=30
+MAXFOOD=20
 RESOURCES=i_flesh_head_2, i_flesh_torso, i_flesh_right_arm, i_flesh_left_arm, i_flesh_left_leg, i_flesh_right_leg, i_servered_elf_ears
 BLOODCOLOR=colors_blood
 MOVERATE=100
@@ -15944,7 +15944,7 @@ CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
 DESIRES=t_coin,t_gold,e_notoriety,t_potion
 AVERSIONS=t_trap,t_eerie_stuff
 FOODTYPE=t_food,t_drink,t_fruit,t_grain
-MAXFOOD=35
+MAXFOOD=30
 RESOURCES=i_flesh_head_2, i_flesh_torso, i_flesh_right_arm, i_flesh_left_arm, i_flesh_left_leg, i_flesh_right_leg
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
@@ -16032,7 +16032,7 @@ CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP|MT_FEMALE
 DESIRES=t_coin,t_gold,e_notoriety,t_potion
 AVERSIONS=t_trap,t_eerie_stuff
 FOODTYPE=t_food,t_drink,t_fruit,t_grain
-MAXFOOD=35
+MAXFOOD=20
 RESOURCES=i_flesh_head_2, i_flesh_torso, i_flesh_right_arm, i_flesh_left_arm, i_flesh_left_leg, i_flesh_right_leg
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default

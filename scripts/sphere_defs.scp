@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, October 11, 2014
+// FILE LAST UPDATED: Tuesday, October 28, 2014
 //
 VERSION=0.56c
 
@@ -1308,10 +1308,13 @@ BFONT_SIZE7	<basefont size="7">
 BFONT_BLACK		<basefont color="#000008">
 BFONT_WHITE		<basefont color="#ffffff">
 BFONT_LIME		<basefont color="#00ff00">
+BFONT_LRED		<basefont color="#ffcccc">
 BFONT_RED		<basefont color="#ff0000">
 BFONT_DRED		<basefont color="#8b0000">
+BFONT_LYELLOW		<basefont color="#ffffc8">
 BFONT_YELLOW		<basefont color="#ffff00">
 BFONT_DYELLOW		<basefont color="#8b8b00">
+BFONT_LCYAN		<basefont color="#e0ffff">
 BFONT_CYAN		<basefont color="#00ffff">
 BFONT_DCYAN		<basefont color="#008b8b">
 BFONT_LGRAY		<basefont color="#d3d3d3">

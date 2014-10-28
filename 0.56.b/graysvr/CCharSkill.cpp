@@ -1246,20 +1246,13 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 	}
 
 	if ( !SkillResourceTest( &(pItemDef->m_SkillMake) ) )
-	{
 		return( false );
-	}
-	if ( fSkillOnly ) return true;
-	if ( pItemDef->Can( CAN_I_REPLICATE ))
-	{
-		// For arrows/bolts, how many do they want ?
-		// Set the quantity that they want to make.
-		if ( pItemTarg != NULL )
-		{
-			iReplicationQty = pItemTarg->GetAmount();
-		}
-	}
+	if ( fSkillOnly )
+		return( true );
 
+	iReplicationQty = ResourceConsume( &(pItemDef->m_BaseResources), iReplicationQty, stage != SKTRIG_SUCCESS, pItemDef->GetResourceID().GetResIndex() );
+	if ( ! iReplicationQty )
+		return( false );
 
 	// test or consume the needed resources.
 	if ( stage == SKTRIG_FAIL )
@@ -1282,14 +1275,6 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 		ResourceConsumePart( &(pItemDef->m_BaseResources), iReplicationQty, iConsumePercent, false, pItemDef->GetResourceID().GetResIndex() );
 		return( false );
 	}
-
-	//To-do: fix iReplicationQty value always returning 0/1 instead the correct replicate amount
-	iReplicationQty = ResourceConsume( &(pItemDef->m_BaseResources), iReplicationQty, stage != SKTRIG_SUCCESS, pItemDef->GetResourceID().GetResIndex() );
-	if ( ! iReplicationQty )
-	{
-		return( false );
-	}
-
 
 	if ( stage == SKTRIG_START )
 	{

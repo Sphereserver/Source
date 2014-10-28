@@ -1108,10 +1108,10 @@ bool CRegionWorld::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 
 				// ELSE - We're trying to retrieve a property from the region.
 				pszKey += 7;
-				if ( pRegionTemp )
+				if ( pRegionTemp && m_pt.GetRegion( REGION_TYPE_MULTI ) )
 					return pRegionTemp->r_WriteVal( pszKey, sVal, pSrc );
 
-				return false;
+				return( this->r_WriteVal( pszKey, sVal, pSrc ));
 			}
 		default:
 			return( CRegionBase::r_WriteVal( pszKey, sVal, pSrc ));

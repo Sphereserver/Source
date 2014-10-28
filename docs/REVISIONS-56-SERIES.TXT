@@ -1348,3 +1348,9 @@ Added: Account character creation now will create characters with MAXFOLLOWERS=5
 Fixed: House customization engine creating doors using wrong type 't_door' instead 't_door_locked'.
 Fixed: *Someone is attacking you* message now is true emote message instead just a normal message with * * added manually.
 [sphere_msgs.scp] Changed some "combat_attack*" and "stablemaster_*" defmsg to new defs/texts. I HIGHLY recommend update it, since the old 'combat_attack*' and 'stablemaster_*' defmsgs won't be used anymore.
+
+28-10-2014, Coruja
+Fixed: Function REGION.REGION.* returning wrong parent region if used on regions which is already the parent region.
+Fixed: Function MAKEITEM and some crafting skills always crafting itens using amount=1 instead follow the item replication rule.
+[sphere_defs.scp] Added html color defs for BFONT_LRED, BFONT_LYELLOW and BFONT_LCYAN.
+[sphere_monsters.scp] Changed human/elf/gargoyle MAXFOOD to 20 (OSI default value).
