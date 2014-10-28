@@ -2512,8 +2512,14 @@ do_default:
 			sVal.FormatVal( IsStatFlag( STATF_Stone ));
 			break;
 		case CHC_TITLE:
-			sVal = m_sTitle;
-			break;
+			{
+				if (strlen(pszKey) == 5)
+				{
+					sVal = m_sTitle; //GetTradeTitle
+				}
+				else
+					sVal = GetTradeTitle();
+			}break;
 		case CHC_LIGHT:
 			sVal.FormatHex(m_LocalLight);
 			break;

@@ -4160,6 +4160,13 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 		if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )
 		{
+			if (dist > iMaxDist)
+				return WAR_SWING_READY;
+
+			Reveal();
+			if (!IsSetCombatFlags(COMBAT_NODIRCHANGE))
+				UpdateDir(pCharTarg);
+
 			// just start the bow animation.
 			INT64 iTime = Fight_GetWeaponSwingTimer();
 			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
@@ -4182,7 +4189,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			m_atFight.m_fMoved	= 0;
 			SetTimeout( iTime * 3 / 4 );	// try again sooner.
 			if ( anim >= 0)
-				UpdateAnimate( anim,false, true, animDelay);
+				UpdateAnimate( anim,false, false, animDelay);
 			return( WAR_SWING_SWINGING );
 		}
 
@@ -4279,14 +4286,14 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			if ( IsSetCombatFlags(COMBAT_PREHIT) )
 			{
 				SetKeyNum("LastHit", iTime + g_World.GetCurrentTime().GetTimeRaw());
-				UpdateAnimate( anim, false, true, 0);
+				UpdateAnimate( anim, false, false, 0);
 				SetTimeout( 1 );
 			}
 			else
 			{
 				SetTimeout( iTime/2 );	// try again sooner.
 				if ( anim >= 0)
-					UpdateAnimate( anim, false, true, animDelay );
+					UpdateAnimate( anim, false, false, animDelay );
 			}
 			return( WAR_SWING_SWINGING );
 		}
