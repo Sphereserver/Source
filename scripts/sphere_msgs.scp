@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, October 26, 2014
+// FILE LAST UPDATED: Wednesday, October 29, 2014
 //
 VERSION=0.56c
 
@@ -132,8 +132,8 @@ EMOTE_DEF_UNICODE	0
 //cooking_fire_source			"You must be near a fire source to cook."
 //combat_arch_noammo			"You have no ammunition."
 //combat_arch_tooclose			"You are too close."
-//combat_attack_inito			"is attacking %s!"
-//combat_attack_inits			"is attacking you!"
+//combat_attacko			"*%s is attacking %s!*"
+//combat_attacks			"*%s is attacking you!*"
 //combat_hit_arm1o				"You hit %ss left arm!"
 //combat_hit_arm1s				"%s hits your left arm!"
 //combat_hit_arm2o				"You hit %ss right arm!"

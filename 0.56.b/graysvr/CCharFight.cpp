@@ -3151,13 +3151,24 @@ void CChar::Memory_Fight_Start( const CChar * pTarg )
 			return;
 	}
 
-	char *z = Str_GetTemp();
-	sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACK_INITO), pTarg->GetName());
+	HUE_TYPE pHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_COLOR"));
+	FONT_TYPE pFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_FONT"));
+	bool bUnicode = (g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_UNICODE",true) != 0);
+
+	char *z = NULL;
+	if ( GetTopSector()->GetCharComplexity() < 7 )
+	{
+		z = Str_GetTemp();
+		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKO), GetName(), pTarg->GetName());
+		UpdateObjMessage(z, NULL, pTarg->GetClient(), pHue, TALKMODE_EMOTE, pFont, bUnicode);
+	}
 
 	if ( pTarg->IsClient() && pTarg->CanSee(this))
-		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACK_INITS) );
-
-	Emote(z, GetClient());
+	{
+		if ( !z ) z = Str_GetTemp();
+		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKS), GetName());
+		pTarg->GetClient()->addBarkParse(z, this, pHue, TALKMODE_EMOTE, pFont, bUnicode);
+	}
 }
 
 //********************************************************
