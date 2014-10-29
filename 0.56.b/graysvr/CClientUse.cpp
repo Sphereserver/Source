@@ -31,6 +31,9 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 	if ( pItem == NULL )
 		return false;
 
+	if (pItem->m_Can & CAN_I_FORCEDC)
+		fTestTouch = false;
+
 	if ( fTestTouch )
 	{
 		if( !fScript ) 

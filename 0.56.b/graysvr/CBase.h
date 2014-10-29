@@ -109,6 +109,7 @@ public:
 #define CAN_I_IMBUE			0x200000	// can items be imbued (imbuing)
 #define CAN_I_RECYCLE		0x400000	// Can items be recycled.
 #define CAN_I_REFORGE		0x800000	// Can items be Runic Reforged.
+#define CAN_I_FORCEDC		0x1000000	// Can force DClick skipping other checks (LOS,Distance, Cont...).
 
 #define CAN_U_ALL			0x000
 #define CAN_U_MALE			0x001

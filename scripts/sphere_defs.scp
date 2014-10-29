@@ -1199,30 +1199,31 @@ dam_nounparalyze        08000   // victim won't be unparalyzed
 dam_fixed				010000	// damage will not be recalculated with default checks, lowering it because of armor, resistances ... 
 
 [defname can_i_flags]
-can_i_door				000001   // is a door uflag4_door
-can_i_water				000002   // need to swim in it. uflag1_water
-can_i_platform			000004   // we can walk on top of it. (even tho the item itself might block) uflag2_platform
-can_i_block				000008   // need to walk thru walls or fly over. uflag1_block
-can_i_climb				000010   // step up on it, uflag2_climbable
-can_i_fire				000020   // is a fire. ussually blocks as well. uflag1_damage
-can_i_roof				000040   // we are under a roof. can't rain on us. uflag4_roof
-can_i_hover				000080   // we are hovering. uflag4_hoverover
-can_i_pile				000100   // can item be piled uflag2_stackable (*.mul)
-can_i_dye				000200   // can item be dyed uflag3_cloth? (sort of)
-can_i_flip				000400   // will flip by default.
-can_i_light				000800   // uflag3_light
-can_i_repair			001000   // is it repairable (difficulty based on value)
-can_i_replicate			002000   // things like arrows are pretty much all the same.
-can_i_dcignorelos		004000   // when dclicked, ignore los checks
-can_i_dcignoredist		008000   // when dclicked, ignore distance checks
-can_i_blocklos			010000   // blocks los, but not walking thru
+can_i_door				000001		// is a door uflag4_door
+can_i_water				000002		// need to swim in it. uflag1_water
+can_i_platform			000004		// we can walk on top of it. (even tho the item itself might block) uflag2_platform
+can_i_block				000008		// need to walk thru walls or fly over. uflag1_block
+can_i_climb				000010		// step up on it, uflag2_climbable
+can_i_fire				000020		// is a fire. ussually blocks as well. uflag1_damage
+can_i_roof				000040		// we are under a roof. can't rain on us. uflag4_roof
+can_i_hover				000080		// we are hovering. uflag4_hoverover
+can_i_pile				000100		// can item be piled uflag2_stackable (*.mul)
+can_i_dye				000200		// can item be dyed uflag3_cloth? (sort of)
+can_i_flip				000400		// will flip by default.
+can_i_light				000800		// uflag3_light
+can_i_repair			001000		// is it repairable (difficulty based on value)
+can_i_replicate			002000		// things like arrows are pretty much all the same.
+can_i_dcignorelos		004000		// when dclicked, ignore los checks
+can_i_dcignoredist		008000		// when dclicked, ignore distance checks
+can_i_blocklos			010000		// blocks los, but not walking thru
 can_i_exceptional		020000		// can items be exceptional
 can_i_makersmark		040000		// can items hold makers mark
 can_i_retaincolor		080000		// can items retain material colors
-can_i_enchant			0100000	// can items be enchanted (runic)
-can_i_imbue				0200000	// can items be imbued (imbuing)
-can_i_recycle			0400000	// Can be recycled
-can_i_reforge			0800000	// Can be Runic Reforged.
+can_i_enchant			0100000		// can items be enchanted (runic)
+can_i_imbue				0200000		// can items be imbued (imbuing)
+can_i_recycle			0400000		// Can be recycled
+can_i_reforge			0800000		// Can be Runic Reforged.
+can_i_forcedc			01000000	// Items with this flag wont perform any check when being DClicked. 
 
 
 [DEFNAME tile_flags]
