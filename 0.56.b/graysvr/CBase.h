@@ -135,6 +135,8 @@ public:
 		m_dwDispIndex		= 0;	// Assume nothing til told differently.
 		m_attackBase		= 0;
 		m_attackRange		= 0;
+		m_defenseBase		= 0;
+		m_defenseRange		= 0;
 		m_Height			= 0;
 		m_Can			= CAN_C_INDOORS;	// most things can cover us from the weather.
 		SetDefNum("RANGE",1); //m_range			= 1;
