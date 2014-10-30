@@ -1117,7 +1117,7 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 			CChar * pPet =  m_pChar->CreateNPC( id );
 			ASSERT(pPet);
 
-			iFollowerSlotsNeeded = max(pPet->GetDefNum("FOLLOWERSLOTS", true),1);
+			iFollowerSlotsNeeded = maximum(pPet->GetDefNum("FOLLOWERSLOTS", true),1);
 			pPet->Delete();
 
 			if ((iCurFollower + iFollowerSlotsNeeded) > iMaxFollower)
