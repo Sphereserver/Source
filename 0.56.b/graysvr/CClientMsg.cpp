@@ -1786,23 +1786,68 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 	AreaItems.SetSearchSquare(true);
 	DWORD	dSeeItems = 0;
 
-	for (;;)
+	if (this->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS))
 	{
-		CItem *pItem = AreaItems.GetItem();
-		if ( !pItem )
-			break;
-		if ( !CanSee(pItem) )
-			continue;
-
-		if (fOsiSight)
+		for (;;)
 		{
-			if (( !pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) ) || ( pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true) ) || ( pItem->IsTypeMulti() ) || (( pItem->m_uidLink.IsValidUID() ) && ( pItem->m_uidLink.IsItem() ) && ( pItem->m_uidLink.ItemFind()->IsTypeMulti() ))
-				|| ((( ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion ) || ( ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist )) && ( !pItem->IsTypeMulti() ) && ( pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion )))
+			CItem *pItem = AreaItems.GetItem();
+			if (!pItem)
+				break;
+			if (!CanSee(pItem))
+				continue;
+
+			if (fOsiSight)
 			{
-				if ((( m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= tViewDist ) && ( ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist )) || (( ptold.GetDistSight(pItem->GetTopPoint()) > UO_MAP_VIEW_RADAR ) && ( pItem->IsTypeMulti() ))
-					|| ((( ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion ) || ( ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist )) && ( !pItem->IsTypeMulti() ) && ( pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion )))
+				if ((ptold.GetDistSight(pItem->GetTopPoint()) > UO_MAP_VIEW_RADAR) && (pItem->IsTypeMulti()))  //Item is a Multi in Radar view
 				{
-					if ( dSeeItems < g_Cfg.m_iMaxItemComplexity*30 )
+					if (dSeeItems < g_Cfg.m_iMaxItemComplexity * 30)
+					{
+						CItemMulti * pMulti = dynamic_cast<CItemMulti*>(pItem);
+						CObjBase * ppObjs[MAX_MULTI_CONTENT];
+						DWORD	dMultiItems = 0;
+						dMultiItems = pMulti->Multi_ListObjs(ppObjs);
+						dSeeItems += dMultiItems;
+						new PacketContainer(this, ppObjs, dMultiItems);
+					}
+					else
+						break;
+				}
+				else if (((m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= tViewDist) && (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist)) //Item just came in to view
+					&& ((pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true)) //Item has the alwayssend tag set to true
+					|| (!pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_HOUSE)) //Item is not in a house multi (Ships are ok)
+					|| ((pItem->m_uidLink.IsValidUID()) && (pItem->m_uidLink.IsItem()) && (pItem->m_uidLink.ItemFind()->IsTypeMulti())) //Item is linked to a multi
+					|| (pItem->IsTypeMulti())) //Item is a multi
+					|| (((ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion) || (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist))
+					&& (!pItem->IsTypeMulti()) && (pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion))) //Item is in same multi as me
+				{
+					if (dSeeItems < g_Cfg.m_iMaxItemComplexity * 30)
+					{
+						++dSeeItems;
+						addItem_OnGround(pItem);
+					}
+					else
+						break;
+				}
+			}
+			else
+			{
+				if ((ptold.GetDistSight(pItem->GetTopPoint()) > UO_MAP_VIEW_RADAR) && (pItem->IsTypeMulti()))
+				{
+					if (dSeeItems < g_Cfg.m_iMaxItemComplexity * 30)
+					{
+						CItemMulti * pMulti = dynamic_cast<CItemMulti*>(pItem);
+						CObjBase * ppObjs[MAX_MULTI_CONTENT];
+						DWORD	dMultiItems = 0;
+						dMultiItems = pMulti->Multi_ListObjs(ppObjs);
+						dSeeItems += dMultiItems;
+						new PacketContainer(this, ppObjs, dMultiItems);
+					}
+					else
+						break;
+				}
+				if ((m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= tViewDist) && (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist))
+				{
+					if (dSeeItems < g_Cfg.m_iMaxItemComplexity * 30)
 					{
 						++dSeeItems;
 						addItem_OnGround(pItem);
@@ -1812,37 +1857,68 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 				}
 			}
 		}
-		else
+	}
+	else
+	{
+		for (;;)
 		{
-			if ((( m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= tViewDist ) && ( ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist )) || (( ptold.GetDistSight(pItem->GetTopPoint()) > UO_MAP_VIEW_RADAR ) && ( pItem->IsTypeMulti() )))
+			CItem *pItem = AreaItems.GetItem();
+			if (!pItem)
+				break;
+			if (!CanSee(pItem))
+				continue;
+
+			if (fOsiSight)
 			{
-				if ( dSeeItems < g_Cfg.m_iMaxItemComplexity*30 )
+				if (((m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= tViewDist) && (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist)) //Item just came in to view
+					&& ((pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true)) //Item has the alwayssend tag set to true
+					|| (!pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_HOUSE)) //Item is not in a house multi (Ships are ok)
+					|| ((pItem->m_uidLink.IsValidUID()) && (pItem->m_uidLink.IsItem()) && (pItem->m_uidLink.ItemFind()->IsTypeMulti())) //Item is linked to a multi
+					|| (pItem->IsTypeMulti())) //Item is a multi
+					|| (((ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion) || (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist))
+					&& (!pItem->IsTypeMulti()) && (pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion))) //Item is in same multi as me
 				{
-					++dSeeItems;
-					addItem_OnGround(pItem);
+					if (dSeeItems < g_Cfg.m_iMaxItemComplexity * 30)
+					{
+						++dSeeItems;
+						addItem_OnGround(pItem);
+					}
+					else
+						break;
 				}
-				else
-					break;
+			}
+			else
+			{
+				if (((m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= tViewDist) && (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist)) || ((ptold.GetDistSight(pItem->GetTopPoint()) > UO_MAP_VIEW_RADAR) && (pItem->IsTypeMulti())))
+				{
+					if (dSeeItems < g_Cfg.m_iMaxItemComplexity * 30)
+					{
+						++dSeeItems;
+						addItem_OnGround(pItem);
+					}
+					else
+						break;
+				}
 			}
 		}
 	}
 
-	//	Characters around
-	CWorldSearch AreaChars(m_pChar->GetTopPoint(), UO_MAP_VIEW_SIZE);
+	CWorldSearch AreaChars(m_pChar->GetTopPoint(), UO_MAP_VIEW_RADAR);
 	AreaChars.SetAllShow(fAllShow);
 	AreaChars.SetSearchSquare(true);
-	DWORD	dSeeChars(0);
+	DWORD	dSeeChars = 0;
+
 	for (;;)
 	{
 		CChar	*pChar = AreaChars.GetChar();
-		if ( !pChar )
+		if (!pChar)
 			break;
-		if (( m_pChar == pChar ) || !CanSee(pChar) )
+		if ((m_pChar == pChar) || !CanSee(pChar))
 			continue;
 
-		if ( ptold.GetDistSight( pChar->GetTopPoint()) > tViewDist )
+		if (ptold.GetDistSight(pChar->GetTopPoint()) > tViewDist)
 		{
-			if ( dSeeChars < g_Cfg.m_iMaxCharComplexity*5 )
+			if (dSeeChars < g_Cfg.m_iMaxCharComplexity * 5)
 			{
 				++dSeeChars;
 				addChar(pChar);

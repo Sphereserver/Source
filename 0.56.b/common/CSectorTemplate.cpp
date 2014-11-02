@@ -250,7 +250,13 @@ CRegionBase * CSectorBase::GetRegion( const CPointBase & pt, DWORD dwType ) cons
 		ASSERT( pRegion->GetResourceID().IsValidUID());
 		if ( pRegion->GetResourceID().IsItem())
 		{
-			if ( ! ( dwType & REGION_TYPE_MULTI ))
+			CItemShip * pShipItem = dynamic_cast <CItemShip *>(pRegion->GetResourceID().ItemFind());
+			if (pShipItem)
+			{
+				if (!(dwType & REGION_TYPE_SHIP))
+					continue;
+			}
+			if (!(dwType & REGION_TYPE_HOUSE))
 				continue;
 		}
 		else if ( pRegion->GetResourceID().GetResType() == RES_AREA )
@@ -266,6 +272,7 @@ CRegionBase * CSectorBase::GetRegion( const CPointBase & pt, DWORD dwType ) cons
 
 		if ( ! pRegion->m_pt.IsSameMap(pt.m_map))
 			continue;
+
 		if ( ! pRegion->IsInside2d( pt ))
 			continue;
 		return( pRegion );

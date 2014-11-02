@@ -10,6 +10,10 @@
 CItemMulti::CItemMulti( ITEMID_TYPE id, CItemBase * pItemDef ) :	// CItemBaseMulti
 	CItem( id, pItemDef )
 {
+	CItemBaseMulti * pItemBase = static_cast<CItemBaseMulti*>(Base_GetDef());
+	m_shipSpeed.period = pItemBase->m_shipSpeed.period;
+	m_shipSpeed.tiles = pItemBase->m_shipSpeed.tiles;
+	m_SpeedMode = pItemBase->m_SpeedMode;
 	m_pRegion = NULL;
 }
 
@@ -321,11 +325,11 @@ void CItemMulti::OnMoveFrom()
 	m_pRegion->UnRealizeRegion();
 }
 
-bool CItemMulti::MoveTo( CPointMap pt, bool bForceFix ) // Put item on the ground here.
+bool CItemMulti::MoveTo(CPointMap pt, bool bForceFix, bool bUpdate) // Put item on the ground here.
 {
 	ADDTOCALLSTACK("CItemMulti::MoveTo");
 	// Move this item to it's point in the world. (ground/top level)
-	if ( ! CItem::MoveTo(pt))
+	if ( ! CItem::MoveTo(pt, bForceFix, bUpdate))
 		return false;
 
 	// Multis need special region info to track when u are inside them.
@@ -516,3 +520,54 @@ void CItemMulti::DupeCopy( const CItem * pItem )
 	CItem::DupeCopy(pItem);
 }
 
+
+size_t CItemMulti::Multi_ListObjs(CObjBase ** ppObjList)
+{
+	ADDTOCALLSTACK("CItemMulti::Multi_ListObjs");
+	// List all the objects in the structure.
+
+	if (!IsTopLevel())
+		return 0;
+
+	int iMaxDist = Multi_GetMaxDist();
+
+	// always list myself first. All other items must see my new region !
+	size_t iCount = 0;
+	ppObjList[iCount++] = this;
+
+	CWorldSearch AreaChar(GetTopPoint(), iMaxDist);
+	AreaChar.SetAllShow(true);
+	AreaChar.SetSearchSquare(true);
+	while (iCount < MAX_MULTI_CONTENT)
+	{
+		CChar * pChar = AreaChar.GetChar();
+		if (pChar == NULL)
+			break;
+		if (!m_pRegion->IsInside2d(pChar->GetTopPoint()))
+			continue;
+		if (pChar->IsDisconnected() && pChar->m_pNPC)
+			continue;
+
+		ppObjList[iCount++] = pChar;
+	}
+
+	CWorldSearch AreaItem(GetTopPoint(), iMaxDist);
+	AreaItem.SetSearchSquare(true);
+	while (iCount < MAX_MULTI_CONTENT)
+	{
+		CItem * pItem = AreaItem.GetItem();
+		if (pItem == NULL)
+			break;
+		if (pItem == this)	// already listed.
+			continue;
+		if (!Multi_IsPartOf(pItem))
+		{
+			if (!m_pRegion->IsInside2d(pItem->GetTopPoint()))
+				continue;
+			if (!pItem->IsMovable())
+				continue;
+		}
+		ppObjList[iCount++] = pItem;
+	}
+	return(iCount);
+}

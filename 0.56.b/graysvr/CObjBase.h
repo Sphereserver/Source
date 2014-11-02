@@ -247,7 +247,7 @@ public:
 
 public:
 	// Location
-	virtual bool MoveTo( CPointMap pt, bool bForceFix = false ) = 0;	// Move to a location at top level.
+	virtual bool MoveTo(CPointMap pt, bool bForceFix = false, bool bUpdate = true) = 0;	// Move to a location at top level.
 
 	virtual bool MoveNear( CPointMap pt, int iSteps = 0, DWORD dwCan = CAN_C_WALK );
 	virtual bool MoveNearObj( const CObjBaseTemplate * pObj, int iSteps = 0, DWORD dwCan = CAN_C_WALK );
@@ -737,6 +737,7 @@ public:
 			BYTE m_DirMove;		// DIR_TYPE
 			BYTE m_DirFace;
 			// uidLink = my IT_SHIP_TILLER or IT_SIGN_GUMP,
+			CGrayUIDBase m_Pilot;
 		} m_itShip;
 
 		// IT_SHIP_PLANK
@@ -1016,11 +1017,11 @@ public:
 	virtual void OnMoveFrom()	// Moving from current location.
 	{
 	}
-	virtual bool MoveTo( CPointMap pt, bool bForceFix = false ); // Put item on the ground here.
-	bool MoveToDecay( const CPointMap & pt, INT64 iDecayTime, bool bForceFix = false )
+	virtual bool MoveTo(CPointMap pt, bool bForceFix = false, bool bUpdate = true); // Put item on the ground here.
+	bool MoveToDecay(const CPointMap & pt, INT64 iDecayTime, bool bForceFix = false, bool bUpdate = true)
 	{
 		SetDecayTime( iDecayTime );
-		return MoveTo( pt, bForceFix );
+		return MoveTo( pt, bForceFix, bUpdate );
 	}
 	bool MoveToCheck( const CPointMap & pt, CChar * pCharMover = NULL );
 	virtual bool MoveNearObj( const CObjBaseTemplate * pItem, int iSteps = 0, WORD wCan = CAN_C_WALK );
@@ -1575,6 +1576,9 @@ public:
 	}
 };
 
+#define MAX_MULTI_LIST_OBJS 128
+#define MAX_MULTI_CONTENT 1024
+
 class CItemMulti : public CItem
 {
 	// IT_MULTI IT_SHIP
@@ -1601,6 +1605,14 @@ protected:
 
 public:
 	int Multi_GetMaxDist() const;
+	size_t  Multi_ListObjs(CObjBase ** ppObjList);
+	struct ShipSpeed // speed of a ship
+	{
+		unsigned short period;	// time between movement
+		unsigned short tiles;	// distance to move
+	};
+	ShipSpeed m_shipSpeed; // Speed of ships (IT_SHIP)
+	BYTE m_SpeedMode;
 
 protected:
 	virtual void OnComponentCreate( const CItem * pComponent )
@@ -1620,7 +1632,7 @@ private:
 
 public:
 	virtual bool OnTick();
-	virtual bool MoveTo( CPointMap pt, bool bForceFix = false ); // Put item on the ground here.
+	virtual bool MoveTo(CPointMap pt, bool bForceFix = false, bool bUpdate = true); // Put item on the ground here.
 	virtual void OnMoveFrom();	// Moving from current location.
 	void OnHearRegion( LPCTSTR pszCmd, CChar * pSrc );
 	CItem * Multi_GetSign();	// or Tiller
@@ -1750,6 +1762,8 @@ private:
 
 	CGrayUID m_uidHold;
 	std::vector<CGrayUID> m_uidPlanks;
+	CServTime m_NextMove;
+
 
 	int Ship_GetFaceOffset() const
 	{
@@ -1759,9 +1773,8 @@ private:
 	bool Ship_CanMoveTo( const CPointMap & pt ) const;
 	bool Ship_SetMoveDir( DIR_TYPE dir );
 	bool Ship_MoveDelta( CPointBase pdelta );
-	bool Ship_Face( DIR_TYPE dir );
-	bool Ship_Move( DIR_TYPE dir, int distance );
 	bool Ship_OnMoveTick();
+	double Ship_GetMovePeriod();
 
 	virtual bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
 	virtual void r_Write( CScript & s );
@@ -1772,9 +1785,11 @@ private:
 	virtual void OnComponentCreate( const CItem * pComponent );
 
 public:
+	bool Ship_Face(DIR_TYPE dir);
+	bool Ship_Move(DIR_TYPE dir, int distance);
 	static const char *m_sClassName;
 	CItemShip( ITEMID_TYPE id, CItemBase * pItemDef );
-	virtual ~CItemShip() { };
+	virtual ~CItemShip();
 
 private:
 	CItemShip(const CItemShip& copy);
@@ -1786,7 +1801,7 @@ public:
 	CItemContainer * GetShipHold();
 	size_t GetShipPlankCount();
 	CItem * GetShipPlank(size_t index);
-	CItemBaseMulti::ShipSpeed GetShipSpeed();
+	//CItemBaseMulti::ShipSpeed GetShipSpeed();
 };
 
 
@@ -1909,7 +1924,7 @@ private:
 
 public:
 	virtual void OnMoveFrom();
-	virtual bool MoveTo( CPointMap pt, bool bForceFix = false );
+	virtual bool MoveTo(CPointMap pt, bool bForceFix = false, bool bUpdate = true);
 
 	virtual void OnHear( LPCTSTR pszCmd, CChar * pSrc );
 	virtual void  r_Write( CScript & s );
@@ -2053,7 +2068,7 @@ private:
 
 	void SetTownName();
 	bool SetName( LPCTSTR pszName );
-	virtual bool MoveTo( CPointMap pt, bool bForceFix = false );
+	virtual bool MoveTo(CPointMap pt, bool bForceFix = false, bool bUpdate = true);
 
 	MEMORY_TYPE GetMemoryType() const;
 
@@ -3088,11 +3103,14 @@ public:
 	{
 		return( MoveToRegion( dynamic_cast <CRegionWorld *>( GetTopPoint().GetRegion( dwType )), false));
 	}
-	bool MoveToChar( CPointMap pt );
-	bool MoveTo( CPointMap pt, bool bForceFix = false )
+	bool MoveToChar(CPointMap pt, bool bForceFix = false);
+	bool MoveTo(CPointMap pt, bool bForceFix = false, bool bUpdate = true)
 	{
-		m_fClimbUpdated = false; // update climb height
-		return MoveToChar( pt );
+		if (bUpdate)
+			m_fClimbUpdated = false; // update climb height
+		else
+			m_fClimbUpdated = true; // update climb height
+		return MoveToChar( pt, bForceFix );
 	}
 	virtual void SetTopZ( signed char z )
 	{

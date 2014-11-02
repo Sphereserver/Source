@@ -3,11 +3,17 @@
 //
 
 #include "graysvr.h"	// predef header.
+#include "../network/send.h"
 
 /////////////////////////////////////////////////////////////////////////////
 
 CItemShip::CItemShip( ITEMID_TYPE id, CItemBase * pItemDef ) : CItemMulti( id, pItemDef )
 {
+}
+
+CItemShip::~CItemShip()
+{
+	g_Serv.ShipTimers_Delete(this);
 }
 
 bool CItem::Ship_Plank( bool fOpen )
@@ -58,7 +64,8 @@ void CItemShip::Ship_Stop()
 	ADDTOCALLSTACK("CItemShip::Ship_Stop");
 	// Make sure we have stopped.
 	m_itShip.m_fSail = 0;
-	SetTimeout( -1 );
+	g_Serv.ShipTimers_Delete(this);
+	//SetTimeout( -1 );
 }
 
 bool CItemShip::Ship_SetMoveDir( DIR_TYPE dir )
@@ -87,11 +94,12 @@ bool CItemShip::Ship_SetMoveDir( DIR_TYPE dir )
 	m_itShip.m_DirMove = dir;
 	m_itShip.m_fSail = iSpeed;
 	GetTopSector()->SetSectorWakeStatus();	// may get here b4 my client does.
-	SetTimeout(( m_itShip.m_fSail == 1 ) ? GetShipSpeed().period : (GetShipSpeed().period / 5));
+	CItemMulti * pItemMulti = dynamic_cast<CItemMulti*>(this);
+	g_Serv.ShipTimers_Add(this);
+	m_NextMove = CServTime::GetCurrentTime() + maximum(1, (m_itShip.m_fSail == 1) ? pItemMulti->m_shipSpeed.period : (pItemMulti->m_shipSpeed.period / 2));
 	return( true );
 }
 
-#define MAX_MULTI_LIST_OBJS 128
 
 size_t CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 {
@@ -195,24 +203,85 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 			continue;
 		}
 
-		pObj->MoveTo( pt );
-		if ( pObj->IsChar() && !pObj->IsDisconnected() )
+		pObj->MoveTo(pt, false, false);
+	}
+	CItemBaseMulti *pItemBaseMulti = const_cast<CItemBaseMulti*>(Multi_GetDef());
+	BYTE speed = pItemBaseMulti->m_SpeedMode;
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
+	{
+		if (pClient->CanSee(this) && pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS))
 		{
-			ASSERT( m_pRegion->m_iLinkedSectors );
-			if (pt.GetDist(ptOld) == 1)
+			CPointMap ptdir = GetTopPoint();
+			ptdir += pdelta;
+
+			new PacketMoveShip(pClient, this, ppObjs, iCount, GetTopPoint().GetDir(ptdir), speed);
+		}
+		CWorldSearch AreaItems(GetTopPoint(), UO_MAP_VIEW_RADAR);
+		AreaItems.SetAllShow(pClient->IsPriv(PRIV_ALLSHOW));
+		AreaItems.SetSearchSquare(true);
+		CChar * tMe = pClient->GetChar();
+		CRegionWorld * pClientRegion = tMe->GetRegion();
+		BYTE tViewDist;
+		if (tMe)
+			tViewDist = tMe->GetSight();
+		else
+			tViewDist = UO_MAP_VIEW_SIZE;
+		for (;;)
+		{
+			CItem *pItem = AreaItems.GetItem();
+			if (!pItem)
+				break;
+			if (!pClient->CanSee(pItem))
+				continue;
+
+			if (pClientRegion->GetResourceID().GetObjUID() == this->GetUID()) //Client is on the ship
 			{
-				// if they only move one space, they need a full
-				// remove+update so they don't appear to be walking
-				pObj->RemoveFromView();
-				pObj->Update();
+				CPointMap pt = tMe->GetTopPoint();
+				CPointMap ptOld(pt);
+				ptOld -= pdelta;
+				ptOld.m_map = tMe->GetTopPoint().m_map;
+				if ((pItem->GetTopPoint().GetDistSight(pt) < tViewDist) && (pItem->GetTopPoint().GetDistSight(ptOld) >= tViewDist))
+					pClient->addItem(pItem);
 			}
 			else
 			{
-				// if they move more than one space, we only need
-				// to send movement updates
-				CChar *pChar = dynamic_cast<CChar*>( pObj );
-				if (pChar)
-					pChar->UpdateMove(ptOld, NULL, true);
+				CPointMap pt = pItem->GetTopPoint();
+				CPointMap ptOld(pt);
+				ptOld -= pdelta;
+				ptOld.m_map = pItem->GetTopPoint().m_map;
+				if ((tMe->GetTopPoint().GetDistSight(pt) < tViewDist) && (tMe->GetTopPoint().GetDistSight(ptOld) >= tViewDist))
+					pClient->addItem(pItem);
+			}
+		}
+		CWorldSearch AreaChars(GetTopPoint(), UO_MAP_VIEW_RADAR);
+		AreaChars.SetAllShow(pClient->IsPriv(PRIV_ALLSHOW));
+		AreaChars.SetSearchSquare(true);
+		for (;;)
+		{
+			CChar *pChar = AreaChars.GetChar();
+			if (!pChar)
+				break;
+			if (!pClient->CanSee(pChar))
+				continue;
+
+			if (pClientRegion->GetResourceID().GetObjUID() == this->GetUID()) //Client is on the ship
+			{
+				CPointMap pt = tMe->GetTopPoint();
+				CPointMap ptOld(pt);
+				ptOld -= pdelta;
+				ptOld.m_map = tMe->GetTopPoint().m_map;
+				if ((pChar->GetTopPoint().GetDistSight(pt) <= tViewDist) && (pChar->GetTopPoint().GetDistSight(ptOld) > tViewDist))
+					pClient->addChar(pChar);
+			}
+			else
+			{
+				CPointMap pt = pChar->GetTopPoint();
+				CPointMap ptOld(pt);
+				ptOld -= pdelta;
+				ptOld.m_map = pChar->GetTopPoint().m_map;
+				if ((tMe->GetTopPoint().GetDistSight(pt) <= tViewDist) && (tMe->GetTopPoint().GetDistSight(ptOld) > tViewDist))
+					pClient->addChar(pChar);
 			}
 		}
 	}
@@ -562,6 +631,29 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 	return true;
 }
 
+double CItemShip::Ship_GetMovePeriod()
+{
+	ADDTOCALLSTACK("CItemShip::Ship_GetMovePeriod");			
+	/*Intervals:
+		*drift forward
+		* fast | 0.25 | 0.25
+		* slow | 0.50 | 0.50
+		*
+	*/
+	CItemMulti * pItemMulti = dynamic_cast<CItemMulti*>(this);
+	switch (pItemMulti->m_shipSpeed.period)
+	{
+		case 0:
+		case 1:
+			return 8;
+		case 2:
+			return 4;
+		default:
+			break;
+	}
+	return pItemMulti->m_shipSpeed.period;
+}
+
 bool CItemShip::Ship_OnMoveTick()
 {
 	ADDTOCALLSTACK("CItemShip::Ship_OnMoveTick");
@@ -573,24 +665,25 @@ bool CItemShip::Ship_OnMoveTick()
 
 	// Calculate the leading point.
 	DIR_TYPE dir = static_cast<DIR_TYPE>(m_itShip.m_DirMove);
-	CItemBaseMulti::ShipSpeed shSpeed = GetShipSpeed();
+	CItemMulti * pItemMulti = dynamic_cast<CItemMulti*>(this);
 
-	if ( ! Ship_Move( dir, shSpeed.tiles ))
+	if (!Ship_Move(dir, pItemMulti->m_shipSpeed.tiles))
 	{
 		Ship_Stop();
 		return( true );
 	}
-
-	SetTimeout(maximum(1, ( m_itShip.m_fSail == 1 ) ? shSpeed.period : (shSpeed.period / 2)));
-	return( true );
+	m_NextMove = CServTime::GetCurrentTime() + maximum(1, (m_itShip.m_fSail == 1) ? pItemMulti->m_shipSpeed.period : (pItemMulti->m_shipSpeed.period / 2));
+	//m_NextMove = CServTime::GetCurrentTime() + Ship_GetMovePeriod();
+	//SetTimeout(maximum(1, ( m_itShip.m_fSail == 1 ) ? pItemMulti->m_shipSpeed.period : (pItemMulti->m_shipSpeed.period / 2)));
+	return(true);
 }
 
 bool CItemShip::OnTick()
 {
 	ADDTOCALLSTACK("CItemShip::OnTick");
-
 	// Ships move on their tick.
-	Ship_OnMoveTick();
+	if (m_NextMove <= CServTime::GetCurrentTime())
+		Ship_OnMoveTick();
 	return true;
 }
 
@@ -735,7 +828,8 @@ bool CItemShip::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fr
 			if ( ! s.HasArgs())
 				return( false );
 			m_itShip.m_DirMove = GetDirStr( s.GetArgStr());
-			return Ship_Move(static_cast<DIR_TYPE>(m_itShip.m_DirMove), GetShipSpeed().tiles );
+			CItemMulti * pItemMulti = dynamic_cast<CItemMulti*>(this);
+			return Ship_Move(static_cast<DIR_TYPE>(m_itShip.m_DirMove), pItemMulti->m_shipSpeed.tiles);
 		}
 
 		case SHV_SHIPGATE:
@@ -984,6 +1078,8 @@ void CItemShip::r_Write( CScript & s )
 		for ( size_t i = 0; i < m_uidPlanks.size(); i++ )
 			s.WriteKeyHex("PLANK", m_uidPlanks.at(i));
 	}
+	if (m_itShip.m_Pilot)
+		s.WriteKeyHex("PILOT", m_itShip.m_Pilot);
 }
 
 enum IMCS_TYPE
@@ -991,16 +1087,20 @@ enum IMCS_TYPE
 	IMCS_HATCH,
 	IMCS_PLANKS,
 	IMCS_SHIPSPEED,
+	IMCS_SPEEDMODE,
 	IMCS_TILLER,
+	IMCS_PILOT,
 	IMCS_QTY
 };
 
-LPCTSTR const CItemShip::sm_szLoadKeys[IMCS_QTY+1] = // static
+LPCTSTR const CItemShip::sm_szLoadKeys[IMCS_QTY + 1] = // static
 {
 	"HATCH",
 	"PLANKS",
 	"SHIPSPEED",
+	"SPEEDMODE",
 	"TILLER",
+	"PILOT",
 	NULL
 };
 
@@ -1018,6 +1118,14 @@ bool CItemShip::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 
 	switch (index)
 	{
+		case IMCS_PILOT:
+		{
+			if (m_itShip.m_Pilot)
+				sVal.FormatHex(m_itShip.m_Pilot);
+			else
+				sVal.FormatVal(0);
+		} break;
+
 		case IMCS_HATCH:
 		{
 			pszKey += 5;
@@ -1035,28 +1143,51 @@ bool CItemShip::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		} break;
 
 		case IMCS_SHIPSPEED:
-		{
+		{	/*
+			* Intervals:
+			*       drift forward
+			* fast | 0.25|   0.25
+			* slow | 0.50|   0.50
+			*
+			* Speed:
+			*       drift forward
+			* fast |  0x4|    0x4
+			* slow |  0x3|    0x3
+			*
+			* Tiles (per interval):
+			*       drift forward
+			* fast |    1|      1
+			* slow |    1|      1
+			*
+			* 'walking' in piloting mode has a 1s interval, speed 0x2
+			*/
 			pszKey += 9;
-			CItemBaseMulti::ShipSpeed shSpeed = GetShipSpeed();
+			CItemMulti * pItemMulti = dynamic_cast<CItemMulti*>(this);
 
 			if (*pszKey == '.')
 			{
 				pszKey++;
-				if ( !strcmpi(pszKey, "TILES"))
+				if (!strcmpi(pszKey, "TILES"))
 				{
-					sVal.FormatVal(shSpeed.tiles);
+					sVal.FormatVal(pItemMulti->m_shipSpeed.tiles);
 					break;
 				}
 				else if (!strcmpi(pszKey, "PERIOD"))
 				{
-					sVal.FormatVal(shSpeed.period);
+					sVal.FormatVal(pItemMulti->m_shipSpeed.period);
 					break;
 				}
 				return false;
 			}
 
-			sVal.Format("%d,%d", shSpeed.period, shSpeed.tiles);
+			sVal.Format("%d,%d", pItemMulti->m_shipSpeed.period, pItemMulti->m_shipSpeed.tiles);
 		} break;
+
+		case IMCS_SPEEDMODE:
+		{
+			CItemMulti * pItemMulti = dynamic_cast<CItemMulti*>(this);
+			sVal.FormatVal(pItemMulti->m_SpeedMode);
+		}	break;
 
 		case IMCS_TILLER:
 		{
@@ -1085,7 +1216,9 @@ bool CItemShip::r_LoadVal( CScript & s  )
 {
 	ADDTOCALLSTACK("CItemShip::r_LoadVal");
 	EXC_TRY("LoadVal");
-	if ( g_Serv.IsLoading() )
+	LPCTSTR	pszKey = s.GetKey();
+	IMCS_TYPE index = (IMCS_TYPE)FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
+	if (g_Serv.IsLoading())
 	{
 		if ( s.IsKey("HATCH") )
 		{
@@ -1103,9 +1236,61 @@ bool CItemShip::r_LoadVal( CScript & s  )
 			m_uidPlanks.push_back( uid );
 			return true;
 		}
+		else if (s.IsKey("PILOT"))
+		{
+			m_itShip.m_Pilot.SetObjUID(s.GetArgVal());
+		}
 	}
 
-	return CItemMulti::r_LoadVal(s);
+	switch (index)
+	{
+		case IMCS_SPEEDMODE:
+		{
+			CItemMulti *pItemMulti = dynamic_cast<CItemMulti*>(static_cast<CItem*>(this));
+			BYTE speed = s.GetArgVal();// = ( ( s.GetArgVal() ) < (1) ? (1) : ( ( s.GetArgVal())  > (4) ? (4) : ( s.GetArgVal() ) ) );
+			if (speed > 4)
+				speed = 4;
+			else if (speed < 1)
+				speed = 1;	//Max = 4, Min = 1.
+			pItemMulti->m_SpeedMode = speed;
+			return true;
+		}
+
+		case IMCS_SHIPSPEED:
+		{
+			pszKey += 9;
+			CItemBaseMulti::ShipSpeed speed;
+			if (*pszKey == '.')
+			{
+				pszKey++;
+				CItemMulti *pItemMulti = dynamic_cast<CItemMulti*>(static_cast<CItem*>(this));
+				if (!strcmpi(pszKey, "TILES"))
+				{
+					pItemMulti->m_shipSpeed.tiles = s.GetArgVal();
+					return true;
+				}
+				else if (!strcmpi(pszKey, "PERIOD"))
+				{
+					pItemMulti->m_shipSpeed.period = s.GetArgVal();
+					return true;
+				}
+				INT64 piVal[2];
+				size_t iQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
+				if (iQty == 2)
+				{
+					pItemMulti->m_shipSpeed.period = static_cast<unsigned char>(piVal[0]);
+					pItemMulti->m_shipSpeed.tiles = static_cast<unsigned char>(piVal[1]);
+					return true;
+				}
+				else
+					return false;
+			}
+		} break;
+		default:
+			return CItemMulti::r_LoadVal(s);
+	}
+
+	//return CItemMulti::r_LoadVal(s);
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
@@ -1233,33 +1418,24 @@ void CItemShip::OnComponentCreate( const CItem * pComponent )
 	return;
 }
 
-CItemBaseMulti::ShipSpeed CItemShip::GetShipSpeed()
+/*CItemBaseMulti::ShipSpeed CItemShip::GetShipSpeed()
 {
 	ADDTOCALLSTACK("CItemShip::GetShipSpeed");
 	// Determine the ship's speed from its TAGs and CItemBaseMulti
+
 	CItemBaseMulti::ShipSpeed speed;
 	const CItemBaseMulti *pItemBaseMulti = Multi_GetDef();
+
+	speed.period = pItemBaseMulti->m_shipSpeed.period;
+	speed.tiles = pItemBaseMulti->m_shipSpeed.tiles;
+
 	if (pItemBaseMulti == NULL)
 	{
 		speed.period = 1 * TICK_PER_SEC;
 		speed.tiles = 2;
 		return speed;
 	}
-	
-	CVarDefCont *pTagDef;
-
-	pTagDef = GetTagDefs()->GetKey("OVERRIDE.SHIPSPEED.PERIOD");
-	if (pTagDef != NULL)
-		speed.period = static_cast<unsigned short>(pTagDef->GetValNum());
-	else
-		speed.period = pItemBaseMulti->m_shipSpeed.period;
-
-	pTagDef = GetTagDefs()->GetKey("OVERRIDE.SHIPSPEED.TILES");
-	if (pTagDef != NULL)
-		speed.tiles = static_cast<unsigned short>(pTagDef->GetValNum());
-	else
-		speed.tiles = pItemBaseMulti->m_shipSpeed.tiles;
 
 	return speed;
-}
+}*/
 

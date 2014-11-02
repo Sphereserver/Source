@@ -728,6 +728,9 @@ int Sphere_OnTick()
 	EXC_SET("service");
 	g_Service.OnTick();
 #endif
+	EXC_SET("ships_tick");
+	g_Serv.ShipTimers_Tick();
+
 	EXC_SET("world");
 	g_World.OnTick();
 
@@ -762,6 +765,54 @@ int Sphere_OnTick()
 	EXC_DEBUG_START;
 	EXC_DEBUG_END;
 	return g_Serv.m_iExitFlag;
+}
+void CServer::ShipTimers_Tick()
+{
+	ADDTOCALLSTACK("CServer::ShipTimers_Tick");
+	if (!m_ShipTimers.size())
+		return;
+
+	for (unsigned int count = 0; count < m_ShipTimers.size(); count++)
+	{
+		CItemShip * pShip = static_cast<CItemShip*>(m_ShipTimers.at(count).ship);
+		if (!pShip)
+		{
+			std::vector<ShipTimers>::iterator it = m_ShipTimers.begin() + count;
+			m_ShipTimers.erase(it);
+			continue;
+		}
+		pShip->OnTick();
+	}
+}
+
+void CServer::ShipTimers_Add(CItemShip * ship)
+{
+	ADDTOCALLSTACK("CServer::ShipTimers_Add");
+	if (!ship)
+		return;
+	ShipTimers pShip;
+	pShip.ship = ship;
+	m_ShipTimers.push_back(pShip);
+}
+
+void CServer::ShipTimers_Delete(CItemShip * ship)
+{
+	ADDTOCALLSTACK("CServer::ShipTimers_Delete");
+	if (!ship)
+		return;
+	if (!m_ShipTimers.size())
+		return;
+	for (int count = 0; count < static_cast<int>(m_ShipTimers.size()); count++)
+	{
+		ShipTimers & refship = m_ShipTimers.at(count);
+		if (!refship.ship)
+			continue;
+		if (refship.ship == ship)
+		{
+			std::vector<ShipTimers>::iterator it = m_ShipTimers.begin() + count;
+			m_ShipTimers.erase(it);
+		}
+	}
 }
 
 //*****************************************************

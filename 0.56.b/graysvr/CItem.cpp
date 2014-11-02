@@ -1287,7 +1287,7 @@ SOUND_TYPE CItem::GetDropSound( const CObjBase * pObjOn ) const
 		return ( iSnd );
 }
 
-bool CItem::MoveTo( CPointMap pt, bool bForceFix ) // Put item on the ground here.
+bool CItem::MoveTo(CPointMap pt, bool bForceFix, bool bUpdate) // Put item on the ground here.
 {
 	ADDTOCALLSTACK("CItem::MoveTo");
 	// Move this item to it's point in the world. (ground/top level)
@@ -1315,7 +1315,8 @@ bool CItem::MoveTo( CPointMap pt, bool bForceFix ) // Put item on the ground her
 		FixZ();
 	ASSERT( IsTopLevel());	// on the ground.
 
-	Update();
+	if ( bUpdate )
+		Update();
 	return( true );
 }
 

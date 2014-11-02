@@ -92,7 +92,9 @@ public:
 
 #define REGION_TYPE_AREA  1
 #define REGION_TYPE_ROOM  2
-#define REGION_TYPE_MULTI 4
+#define REGION_TYPE_HOUSE 4
+#define REGION_TYPE_SHIP  8
+#define REGION_TYPE_MULTI 12
 	CRegionBase * GetRegion( DWORD dwType ) const;
 	size_t GetRegions( DWORD dwType, CRegionLinks & rlinks ) const;
 

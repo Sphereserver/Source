@@ -3677,7 +3677,7 @@ bool CChar::MoveToRoom( CRegionBase * pNewRoom, bool fAllowReject)
 	return true;
 }
 
-bool CChar::MoveToChar( CPointMap pt )
+bool CChar::MoveToChar(CPointMap pt, bool bForceFix)
 {
 	ADDTOCALLSTACK("CChar::MoveToChar");
 	// Same as MoveTo
@@ -3732,7 +3732,7 @@ bool CChar::MoveToChar( CPointMap pt )
 		}
 	}
 
-	if ( !m_fClimbUpdated )
+	if ( !m_fClimbUpdated || bForceFix )
 		FixClimbHeight();
 
 	return true;
@@ -3766,7 +3766,7 @@ bool CChar::MoveToValidSpot(DIR_TYPE dir, int iDist, int iDistStart, bool bFromS
 			// Reset Z back to start Z + PLAYER_HEIGHT so we don't climb buildings
 			pt.m_z = startZ;
 			// Set new Z so we don't end up floating or underground
-			pt.m_z = g_World.GetHeightPoint2( pt, wBlockFlags, true );
+			pt.m_z = g_World.GetHeightPoint( pt, wBlockFlags, true );
 
 			// don't allow characters to pass through walls or other blocked
 			// paths when they're disembarking from a ship

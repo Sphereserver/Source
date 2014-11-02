@@ -837,6 +837,7 @@ public:
 	DWORD m_dwRegionFlags;	// Base region flags (REGION_FLAG_GUARDED etc)
 	CResourceRefArray m_Speech;	// Speech fragment list (other stuff we know)
 	ShipSpeed m_shipSpeed; // Speed of ships (IT_SHIP)
+	BYTE m_SpeedMode;
 
 public:
 	explicit CItemBaseMulti( CItemBase* pBase );

@@ -774,7 +774,7 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 		LONGLONG	CurrTime	= GetTickCount();
 		m_iWalkStepCount++;
 		// Move in this dir.
-		if ( ( m_iWalkStepCount % 7 ) == 0 )	// we have taken 8 steps ? direction changes don't count. (why we do this check also for gm?)
+		if ( ( m_iWalkStepCount % 7 ) == 0 )	// we have taken 8 steps ? direction changes don't count. (why we do this check also for gm?) <-- GM checks are on for the debug line only, maybe?
 		{
 			// Client only allows 4 steps of walk ahead.
 			if ( g_Cfg.m_iWalkBuffer > 0 )

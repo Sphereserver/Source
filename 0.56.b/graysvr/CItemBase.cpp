@@ -1033,6 +1033,38 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 		case IBC_BONUSMANAMAX:
 			sVal.FormatLLVal(GetDefNum(pszKey, true));
 			break;
+		case IBC_SPEEDMODE:
+		{
+			if (!IsType(IT_SHIP))
+				return false;
+			CItemBaseMulti * pItemMulti = dynamic_cast<CItemBaseMulti*>(dynamic_cast<CItemBase*>(this));
+			sVal.FormatVal(pItemMulti->m_SpeedMode);
+		}break;
+		case IBC_SHIPSPEED:
+		{
+			if (!IsType(IT_SHIP))
+				return false;
+			pszKey += 9;
+			CItemBaseMulti * pItemMulti = dynamic_cast<CItemBaseMulti*>(dynamic_cast<CItemBase*>(this));
+
+			if (*pszKey == '.')
+			{
+				pszKey++;
+				if (!strcmpi(pszKey, "TILES"))
+				{
+					sVal.FormatVal(pItemMulti->m_shipSpeed.tiles);
+					break;
+				}
+				else if (!strcmpi(pszKey, "PERIOD"))
+				{
+					sVal.FormatVal(pItemMulti->m_shipSpeed.period);
+					break;
+				}
+				return false;
+			}
+
+			sVal.Format("%d,%d", pItemMulti->m_shipSpeed.period, pItemMulti->m_shipSpeed.tiles);
+		} break;
 		case IBC_DISPID:
 			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_ITEMDEF, GetDispID()));
 			break;
@@ -1251,6 +1283,7 @@ bool CItemBase::r_LoadVal( CScript &s )
 {
 	ADDTOCALLSTACK("CItemBase::r_LoadVal");
 	EXC_TRY("LoadVal");
+	LPCTSTR	pszKey = s.GetKey();
 	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
 		//Set as Strings
@@ -1322,6 +1355,48 @@ bool CItemBase::r_LoadVal( CScript &s )
 		case IBC_BONUSMANAMAX:
 			SetDefNum(s.GetKey(), s.GetArgVal(), false);
 			break;
+		case IBC_SPEEDMODE:
+		{
+			if (!IsType(IT_SHIP))
+				return false;
+			CItemBaseMulti *pItemMulti = dynamic_cast<CItemBaseMulti*>(dynamic_cast<CItemBase*>(this));
+			BYTE speed = s.GetArgVal();// = ( ( s.GetArgVal() ) < (1) ? (1) : ( ( s.GetArgVal())  > (4) ? (4) : ( s.GetArgVal() ) ) );
+			if (speed > 4)
+				speed = 4;
+			else if (speed < 1)
+				speed = 1;	//Max = 4, Min = 1.
+			pItemMulti->m_SpeedMode = speed;
+		}break;
+		case IBC_SHIPSPEED:
+		{
+			pszKey += 9;
+			CItemBaseMulti::ShipSpeed speed;
+			if (*pszKey == '.')
+			{
+				pszKey++;
+				CItemBaseMulti *pItemMulti = dynamic_cast<CItemBaseMulti*>(dynamic_cast<CItemBase*>(this));
+				if (!strcmpi(pszKey, "TILES"))
+				{
+					pItemMulti->m_shipSpeed.tiles = s.GetArgVal();
+					return true;
+				}
+				else if (!strcmpi(pszKey, "PERIOD"))
+				{
+					pItemMulti->m_shipSpeed.tiles = s.GetArgVal();
+					return true;
+				}
+				INT64 piVal[2];
+				size_t iQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
+				if (iQty == 2)
+				{
+					pItemMulti->m_shipSpeed.period = static_cast<unsigned char>(piVal[0]);
+					pItemMulti->m_shipSpeed.tiles = static_cast<unsigned char>(piVal[1]);
+					return true;
+				}
+				else
+					return false;
+			}
+		} break;
 		case IBC_CANUSE:
 			m_CanUse = s.GetArgVal();
 			break;

@@ -1385,3 +1385,26 @@ Changed Read mode for 'Title', now giving it a parameter will return the 'Trade 
 29-10-2014, XuN
 Added can_i_forcedc (sphere_defs.scp), adding this flag to an item will allow it to be DClickable in every situation: from one side of the map to another, or even in another map, weared by another character, or GMs too, no checks at all.
  NOTE: Player's cant DClick what they don't see but they will be able to do it with the LastObject macro, or by knowing the UID and using 3rd party programs, be aware of that.
+
+02-11-2014, XuN
+Fixed GetNPCBrain() not working as it should and returning wrong brain (in internal usages) and ignoring the Brain used in CHARDEFS in some cases.
+Added Ignore value to Attackers: Setting it to 1 will make the character ignore this target (mostly used by NPCs), when looking for target.
+		@CombatAdd has now 2 arguments:
+				Argn1 = Initial Threat (If used).
+				Argn2 = Setting it to 1 make this enemy to be added as Ignored. (Setting it to 1 for a player in every NPCs will make this player be 'invisible' for them, good to create a faction system and such things).
+
+02-11-2014, XuN, Ben, Feeh (and tons of help from Karma).
+Ship's patch:
+Added Packet 0xF6 (New Ship's Movement): This packet is affecting ships on client > 7.0.8d (High Seas ones), regardless of the multi files, patched ship's or not patched ones... it's a client's packet.
+Added Packet 0xF3 (Packet Container): Used to send tons of items/chars at once in one only packet, used to send items and chars inside multis (Houses and Ships). Clients > 7.0.0 (Stygian Abyss).
+Added ShipSpeed and SpeedMode for [Multidef ] definitions:
+			ShipSpeed=2,1 (Period,Tiles): Period (in Tenths of second) tell the ship the delay until it moves again, tiles means the tiles moving (Default and suggested is 1, others won't work because of ... (read next line)).
+			SpeedMode=(0x01 = one tile, 0x02 = rowboat, 0x03 = slow, 0x04 = fast). This modes have no sense until we have MultiThreading and can change the ticks per sec from 10 to 100 to make ships to move each 0.25seconds (which we cannot now).
+Updated multis_ships.scp with these new values.
+Fixed ship's planks not working.
+Updated the Update and Move (and their related functions) to send the minimal updates required, hence making less rubberband effects.
+Fixed some issues with EC and ships making visual strange effects, items staying behind the ship.
+Fixed some problems when turning the ships.
+Some more minor tweaks related to ships.
+
+NOTE: Mouse Wheel Movement packet is NOT included in this commit.
