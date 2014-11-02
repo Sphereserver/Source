@@ -203,7 +203,7 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 			continue;
 		}
 
-		pObj->MoveTo(pt, false, 0, MINCLIVER_HIGHSEAS);
+		pObj->MoveTo(pt, pObj->IsChar() ? true : false, 0, MINCLIVER_HIGHSEAS);
 	}
 	CItemBaseMulti *pItemBaseMulti = const_cast<CItemBaseMulti*>(Multi_GetDef());
 	BYTE speed = pItemBaseMulti->m_SpeedMode;

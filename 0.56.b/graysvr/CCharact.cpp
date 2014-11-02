@@ -3736,11 +3736,16 @@ bool CChar::MoveToChar(CPointMap pt, bool bForceFix, int iCliverMin, int iCliver
 		}
 	}
 
-	if (GetClient() && GetClient()->GetNetState()->isClientVersion(iCliverMin) && GetClient()->GetNetState()->isClientLessVersion(iCliverMax))
-			return true;
+	if (GetClient() && GetClient()->GetNetState()->isClientVersion(iCliverMin) && !GetClient()->GetNetState()->isClientLessVersion(iCliverMax))
+		return true;
+	/*else if (m_pArea->GetRegionFlags() & REGION_FLAG_SHIP)
+		Update();*/
 
-	if ( !m_fClimbUpdated || bForceFix )
+	if (!m_fClimbUpdated || bForceFix)
+	{
 		FixClimbHeight();
+		Update();
+	}
 		
 	return true;
 }
