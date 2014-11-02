@@ -1130,7 +1130,7 @@ void CClient::addCharName( const CChar * pChar ) // Singleclick text for a chara
 
 	if ( pChar->m_pNPC && g_Cfg.m_fVendorTradeTitle )
 	{
-		if ( pChar->GetNPCBrain(true) == NPCBRAIN_HUMAN )
+		if ( pChar->GetNPCBrain() == NPCBRAIN_HUMAN )
 		{
 			LPCTSTR title = pChar->GetTradeTitle();
 			if ( *title )

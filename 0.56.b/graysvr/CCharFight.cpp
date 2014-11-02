@@ -2154,48 +2154,6 @@ int CChar::CalcArmorDefense() const
 					ArmorRegionMax[ ARMOR_FEET ] = maximum( ArmorRegionMax[ ARMOR_FEET ], iDefense );
 				}
 				break;
-
-//			case LAYER_HELM:		// 6
-//				ArmorRegionMax[ ARMOR_HEAD ] = maximum( ArmorRegionMax[ ARMOR_HEAD ], iDefense );
-//				break;
-//			case LAYER_COLLAR:	// 10 = gorget or necklace.
-//				ArmorRegionMax[ ARMOR_NECK ] = maximum( ArmorRegionMax[ ARMOR_NECK ], iDefense );
-//				break;
-//			case LAYER_SHIRT:
-//			case LAYER_CHEST:	// 13 = armor chest
-//			case LAYER_TUNIC:	// 17 = jester suit
-//				ArmorRegionMax[ ARMOR_CHEST ] = maximum( ArmorRegionMax[ ARMOR_CHEST ], iDefense );
-//				ArmorRegionMax[ ARMOR_BACK ] = maximum( ArmorRegionMax[ ARMOR_BACK ], iDefense );
-//				break;
-//			case LAYER_ARMS:		// 19 = armor
-//				ArmorRegionMax[ ARMOR_ARMS ] = maximum( ArmorRegionMax[ ARMOR_ARMS ], iDefense );
-//				break;
-//			case LAYER_PANTS:
-//			case LAYER_SKIRT:
-//			case LAYER_HALF_APRON:
-//				ArmorRegionMax[ ARMOR_LEGS ] = maximum( ArmorRegionMax[ ARMOR_LEGS ], iDefense );
-//				break;
-//			case LAYER_SHOES:
-//				ArmorRegionMax[ ARMOR_FEET ] = maximum( ArmorRegionMax[ ARMOR_FEET ], iDefense );
-//				break;
-//			case LAYER_GLOVES:	// 7
-//				ArmorRegionMax[ ARMOR_HANDS ] = maximum( ArmorRegionMax[ ARMOR_HANDS ], iDefense );
-//				break;
-//			case LAYER_CAPE:		// 20 = cape
-//				ArmorRegionMax[ ARMOR_BACK ] = maximum( ArmorRegionMax[ ARMOR_BACK ], iDefense );
-//				ArmorRegionMax[ ARMOR_ARMS ] = maximum( ArmorRegionMax[ ARMOR_ARMS ], iDefense );
-//				break;
-//			case LAYER_ROBE:		// 22 = robe over all.
-//				ArmorRegionMax[ ARMOR_CHEST ] = maximum( ArmorRegionMax[ ARMOR_CHEST ], iDefense );
-//				ArmorRegionMax[ ARMOR_BACK ] = maximum( ArmorRegionMax[ ARMOR_BACK ], iDefense );
-//				ArmorRegionMax[ ARMOR_ARMS ] = maximum( ArmorRegionMax[ ARMOR_ARMS ], iDefense );
-//				ArmorRegionMax[ ARMOR_LEGS ] = maximum( ArmorRegionMax[ ARMOR_LEGS ], iDefense );
-//				break;
-//			case LAYER_LEGS:
-//				ArmorRegionMax[ ARMOR_LEGS ] = maximum( ArmorRegionMax[ ARMOR_LEGS ], iDefense );
-//				ArmorRegionMax[ ARMOR_FEET ] = maximum( ArmorRegionMax[ ARMOR_FEET ], iDefense );
-//				break;
-
 			case LAYER_HAND2:
 				// Shield effect.
 				if ( pItem->IsType( IT_SHIELD ))

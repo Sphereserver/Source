@@ -1411,3 +1411,6 @@ NOTE: Mouse Wheel Movement packet is NOT included in this commit.
 
 Fixed #1820: Combat_PreHit not working with Archery.
 Fixed #1621: StatLocks not working, fixed and improved the whole statgain system.
+
+02-11-2014, Ben
+Changed: ARGN2 in @Abort and @SkillAbort (and other Skill triggers) will be the spell number if magery is used
