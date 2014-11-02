@@ -742,6 +742,9 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 		if ( IsStatFlag( STATF_Polymorph ) && i != STAT_INT )
 			continue;
 
+		if ( !Stat_GetLock((STAT_TYPE)i) == SKILLLOCK_UP)
+			continue;
+
 		int iStatVal = Stat_GetBase(static_cast<STAT_TYPE>(i));
 		if ( iStatVal <= 0 )	// some odd condition
 			continue;
@@ -765,71 +768,82 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 		if (pSkillDef->m_StatPercent)
 			iChance = ( iChance * pSkillDef->m_StatBonus[i] * pSkillDef->m_StatPercent ) / 10000;
 
+		if (iChance == 0)
+			continue;
 		iRoll = Calc_GetRandVal(1000);
 
-#ifdef _DEBUG
-		if ( IsPriv( PRIV_DETAIL ) &&
-			GetPrivLevel() >= PLEVEL_GM &&
-			( g_Cfg.m_wDebugFlags & DEBUGF_ADVANCE_STATS ))
-		{
-			SysMessagef( "%s Difficult=%d Gain Chance=%d.%d%% Roll=%d%%",
-				(LPCTSTR) g_Stat_Name[i], difficulty, iChance/10, iChance%10, iRoll/10 );
-		}
-#endif
-
-		if ( iRoll <= iChance )
+		bool decrease = Stat_Decrease((STAT_TYPE)i, skill);
+		if ( iRoll <= iChance && decrease )
 		{
 			Stat_SetBase(static_cast<STAT_TYPE>(i), iStatVal + 1);
 			break;
 		}
 	}
+}
+
+bool CChar::Stat_Decrease(STAT_TYPE stat, SKILL_TYPE skill)
+{
+	// Stat to decrease
+	// Skill = is this being called from Skill_Gain? if so we check this skill's bonuses.
 
 	// Check for stats degrade.
-	int iStatSumAvg = Stat_GetLimit( STAT_QTY );
+	if (IsPriv(PRIV_GM))	// Faking the stat_gain, return true will allow stat to raise but the GM won't lose stat points
+		return true;
+	int iStatSumAvg = Stat_GetLimit(STAT_QTY);
+	int iStatSum = Stat_GetSum() + 1;	// +1 here assuming we are going to have +1 stat at some point thus we are calling this function
+	const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(skill);
 
-	if ( m_pPlayer && iStatSum > iStatSumAvg && !IsPriv( PRIV_GM ) )
+	if (iStatSum < iStatSumAvg)	//No need to lower any stat.
+		return true;
+	int iminval;
+	if (skill)
+		iminval = Stat_GetMax(stat);
+	else
+		iminval = Stat_GetAdjusted(stat);
+
+	if (m_pPlayer && iStatSum > iStatSumAvg)
 	{
 		// We are at a point where our skills can degrade a bit.
 		// In theory magical enhancements make us lazy !
 
-		int iStatSumMax = iStatSumAvg + iStatSumAvg/4;
-		int iChanceForLoss = Calc_GetSCurve( iStatSumMax - iStatSum, ( iStatSumMax - iStatSumAvg ) / 4 );
-		iRoll = Calc_GetRandVal(1000);
+		int iStatSumMax = iStatSumAvg + iStatSumAvg / 4;
+		int iChanceForLoss = Calc_GetSCurve(iStatSumMax - iStatSum, (iStatSumMax - iStatSumAvg) / 4);
+		int iRoll = Calc_GetRandVal(1000);
 
-#ifdef _DEBUG
-		if ( IsPriv( PRIV_DETAIL ) &&
-			GetPrivLevel() >= PLEVEL_GM &&
-			( g_Cfg.m_wDebugFlags & DEBUGF_ADVANCE_STATS ))
-		{
-			SysMessagef( "Loss Diff=%d Chance=%d.%d%% Roll=%d%%",
-				iStatSumMax - iStatSum,
-				iChanceForLoss/10, iChanceForLoss%10, iRoll/10 );
-		}
-#endif
-
-		if ( iRoll < iChanceForLoss )
+		if (iRoll < iChanceForLoss)
 		{
 			// Find the stat that was used least recently and degrade it.
-			int imin = STAT_STR;
-			int iminval = INT_MAX;
-			for ( int i=STAT_STR; i<STAT_BASE_QTY; i++ )
+			int imin = -1;
+			int ival = 0;
+			for (int i = STAT_STR; i<STAT_BASE_QTY; i++)
 			{
-				if ( iminval > pSkillDef->m_StatBonus[i] )
+				if ((STAT_TYPE)i == stat)
+					continue;
+				if (!Stat_GetLock((STAT_TYPE)i) == SKILLLOCK_DOWN)
+					continue;
+				if (skill)
+					ival = pSkillDef->m_StatBonus[i];
+				else
+					ival = Stat_GetBase((STAT_TYPE)i);
+				if ( iminval > ival )
 				{
 					imin = i;
-					iminval = pSkillDef->m_StatBonus[i];
+					iminval = ival;
 				}
 			}
 
+			if (imin < 0)
+				return false;
 			int iStatVal = Stat_GetBase(static_cast<STAT_TYPE>(imin));
-			if ( iStatVal > 10 )
+			if (iStatVal > 10)
 			{
 				Stat_SetBase(static_cast<STAT_TYPE>(imin), iStatVal - 1);
+				return true;
 			}
 		}
 	}
+	return false;
 }
-
 
 bool CChar::Skill_CheckSuccess( SKILL_TYPE skill, int difficulty ) const
 {
@@ -1880,7 +1894,7 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 
 	if ( stage == SKTRIG_START )
 	{
-		//m_atResource.m_Stroke_Count = 1;
+		m_atResource.m_Stroke_Count = 1;
 		m_Act_Targ = pResBit->GetUID();
 		return( Skill_NaturalResource_Setup( pResBit ));
 	}

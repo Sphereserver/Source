@@ -3075,6 +3075,25 @@ public:
 
 	short	Stat_GetLimit( STAT_TYPE i ) const;
 
+	void Stat_Experience(STAT_TYPE stat, int difficulty);
+
+	bool Stat_Decrease( STAT_TYPE stat, SKILL_TYPE skill = (SKILL_TYPE)NULL);
+
+	SKILLLOCK_TYPE Stat_GetLock(STAT_TYPE stat)
+	{
+		if (!m_pPlayer)
+			return SKILLLOCK_UP;	// Always raising status for NPCs.
+		return m_pPlayer->Stat_GetLock(stat);
+	};
+
+	void Stat_SetLock(STAT_TYPE stat, SKILLLOCK_TYPE state)
+	{
+		if (!m_pPlayer)
+			return;
+		return m_pPlayer->Stat_SetLock(stat,state);
+	};
+
+
 	// Location and movement ------------------------------------
 private:
 	bool TeleportToCli( int iType, int iArgs );

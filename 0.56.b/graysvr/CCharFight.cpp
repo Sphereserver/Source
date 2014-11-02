@@ -4124,6 +4124,16 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	SKILL_TYPE skill = Skill_GetActive();
 	if ( g_Cfg.IsSkillRanged(skill) )
 	{
+		if (IsSetCombatFlags(COMBAT_PREHIT) && (m_atFight.m_War_Swing_State == WAR_SWING_READY))
+		{
+			INT64 diff = GetKeyNum("LastHit", true) - g_World.GetCurrentTime().GetTimeRaw();
+			if (diff > 0)
+			{
+				diff = (diff > 50) ? 50 : diff;
+				SetTimeout(diff);
+				return(WAR_SWING_READY);
+			}
+		}
 		// Archery type skill.
 		int	iMinDist	= pWeapon ? pWeapon->RangeH() : g_Cfg.m_iArcheryMinDist;
 		int	iMaxDist	= pWeapon ? pWeapon->RangeL() : g_Cfg.m_iArcheryMaxDist;

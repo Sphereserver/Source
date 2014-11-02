@@ -1408,3 +1408,6 @@ Fixed some problems when turning the ships.
 Some more minor tweaks related to ships.
 
 NOTE: Mouse Wheel Movement packet is NOT included in this commit.
+
+Fixed #1820: Combat_PreHit not working with Archery.
+Fixed #1621: StatLocks not working, fixed and improved the whole statgain system.
