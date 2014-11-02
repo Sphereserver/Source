@@ -7,9 +7,9 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wedneday, January 1, 2014
+// FILE LAST UPDATED: Sunday, November 2, 2014
 //
-VERSION=0.56c
+VERSION=56c
 
 [multidef 0]
 // Face N
@@ -21,6 +21,8 @@ value=14000
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -42,6 +44,8 @@ value=14000
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -63,6 +67,8 @@ value=14000
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -84,6 +90,8 @@ value=14000
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -109,6 +117,8 @@ tspeech=spk_ship_cmds
 category=Multis
 subsection=Ships
 description=Small Dragon Ship
+SpeedMode=3
+ShipSpeed=5,1
 
 multiregion=-2,-5,2,5
 component=03e4e,1, 4, 0
@@ -126,6 +136,8 @@ value=14500
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -151,6 +163,8 @@ tspeech=spk_ship_cmds
 category=Multis
 subsection=Ships
 description=Small Dragon Ship
+SpeedMode=3
+ShipSpeed=5,1
 
 multiregion=-2,-5,2,5
 component=03e4b,0, -4
@@ -168,6 +182,8 @@ value=14500
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -189,6 +205,8 @@ value=16000
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -210,6 +228,8 @@ value=16000
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -231,6 +251,8 @@ value=16000
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -252,6 +274,8 @@ value=16000
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -273,6 +297,8 @@ value=16500
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -294,6 +320,8 @@ value=16500
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -315,6 +343,8 @@ value=16500
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -336,6 +366,8 @@ value=16500
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -357,6 +389,8 @@ value=18000
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -378,6 +412,8 @@ value=18000
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -399,6 +435,8 @@ value=18000
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -420,6 +458,8 @@ value=18000
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -441,6 +481,8 @@ value=18500
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -462,6 +504,8 @@ value=18500
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -484,6 +528,8 @@ value=18500
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -505,6 +551,8 @@ value=18500
 height=3
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -526,6 +574,8 @@ value=14000
 height=14
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -571,6 +621,8 @@ value=14000
 height=14
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -617,6 +669,8 @@ value=14000
 height=14
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -663,6 +717,8 @@ value=14000
 height=14
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -709,6 +765,8 @@ value=59500
 height=14
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -755,6 +813,8 @@ value=59500
 height=14
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -801,6 +861,8 @@ value=59500
 height=14
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -847,6 +909,8 @@ value=59500
 height=14
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -893,6 +957,8 @@ value=59500
 height=14
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=-1,1
 
 category=Multis
 subsection=Ships
@@ -939,6 +1005,8 @@ value=59500
 height=14
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=-1,1
 
 category=Multis
 subsection=Ships
@@ -985,6 +1053,8 @@ value=59500
 height=14
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=-1,1
 
 category=Multis
 subsection=Ships
@@ -1031,6 +1101,8 @@ value=59500
 height=14
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=-1,1
 
 category=Multis
 subsection=Ships
@@ -1076,6 +1148,8 @@ value=200000
 height=16
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -1127,6 +1201,8 @@ value=200000
 height=16
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -1178,6 +1254,8 @@ value=200000
 height=16
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -1229,6 +1307,8 @@ value=200000
 height=16
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -1280,6 +1360,8 @@ value=200000
 height=16
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -1331,6 +1413,8 @@ value=200000
 height=16
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -1382,6 +1466,8 @@ value=200000
 height=16
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -1433,6 +1519,8 @@ value=200000
 height=16
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -1484,6 +1572,8 @@ value=200000
 height=16
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=-1,1
 
 category=Multis
 subsection=Ships
@@ -1535,6 +1625,8 @@ value=200000
 height=16
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=-1,1
 
 category=Multis
 subsection=Ships
@@ -1585,6 +1677,8 @@ value=200000
 height=16
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=-1,1
 
 category=Multis
 subsection=Ships
@@ -1636,6 +1730,8 @@ value=200000
 height=16
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=-1,1
 
 category=Multis
 subsection=Ships
@@ -1686,6 +1782,8 @@ value=150000
 height=7
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -1719,6 +1817,8 @@ value=150000
 height=7
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -1752,6 +1852,8 @@ value=150000
 height=7
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -1785,6 +1887,8 @@ value=150000
 height=7
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -1818,6 +1922,8 @@ value=150000
 height=7
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -1851,6 +1957,8 @@ value=150000
 height=7
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -1884,6 +1992,8 @@ value=150000
 height=7
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -1917,6 +2027,8 @@ value=150000
 height=7
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -1950,6 +2062,8 @@ value=150000
 height=7
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=-1,1
 
 category=Multis
 subsection=Ships
@@ -1983,6 +2097,8 @@ value=150000
 height=7
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=-1,1
 
 category=Multis
 subsection=Ships
@@ -2016,6 +2132,8 @@ value=150000
 height=7
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=-1,1
 
 category=Multis
 subsection=Ships
@@ -2049,6 +2167,8 @@ value=150000
 height=7
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=-1,1
 
 category=Multis
 subsection=Ships
@@ -2082,6 +2202,8 @@ value=20000
 height=5
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=1
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -2101,6 +2223,8 @@ type=t_ship
 value=20000
 height=5
 can=can_i_block
+SpeedMode=1
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -2122,6 +2246,8 @@ type=t_ship
 value=20000
 height=5
 can=can_i_block
+SpeedMode=1
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -2143,6 +2269,8 @@ type=t_ship
 value=20000
 height=5
 can=can_i_block
+SpeedMode=1
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -2165,6 +2293,8 @@ value=200000
 height=18
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -2212,6 +2342,8 @@ can=can_i_block
 height=18
 value=200000
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -2259,6 +2391,8 @@ value=200000
 height=18
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -2306,6 +2440,8 @@ value=200000
 height=18
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=4
+ShipSpeed=2,1
 
 category=Multis
 subsection=Ships
@@ -2353,6 +2489,8 @@ value=200000
 height=18
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -2400,6 +2538,8 @@ value=200000
 height=18
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -2447,6 +2587,8 @@ value=200000
 height=18
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
@@ -2494,6 +2636,8 @@ value=200000
 height=18
 can=can_i_block
 tspeech=spk_ship_cmds
+SpeedMode=3
+ShipSpeed=5,1
 
 category=Multis
 subsection=Ships
