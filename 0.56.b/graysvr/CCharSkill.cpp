@@ -3849,7 +3849,7 @@ int CChar::Skill_Stroke( bool fResource )
 		}
 	}
 	INT64 delay = Skill_GetTimeout();
-	if ( IsTrigUsed(TRIGGER_SKILLSTROKE))
+	if ( IsTrigUsed(TRIGGER_SKILLSTROKE) || (IsTrigUsed(TRIGGER_STROKE)) )
 	{
 		CScriptTriggerArgs args;
 		args.m_VarsLocal.SetNum("Skill", skill);

@@ -2823,7 +2823,7 @@ bool CChar::NPC_Act_Food()
 	else
 	{
 
-		NPCBRAIN_TYPE	brain = GetNPCBrain(true);
+		NPCBRAIN_TYPE	brain = GetNPCBrain();
 		if ( brain == NPCBRAIN_ANIMAL )						// animals eat grass always
 			bSearchGrass = true;
 		//else if (( brain == NPCBRAIN_HUMAN ) && !iFood )	// human eat grass if starving nearly to death
@@ -3566,7 +3566,7 @@ void CChar::NPC_Food()
 					// no food around, but maybe i am ok with grass?
 	else
 	{
-		NPCBRAIN_TYPE	brain = GetNPCBrain(true);
+		NPCBRAIN_TYPE	brain = GetNPCBrain();
 		if ( brain == NPCBRAIN_ANIMAL )						// animals eat grass always
 			bSearchGrass = true;
 		else if (( brain == NPCBRAIN_HUMAN ) && !iFood )	// human eat grass if starving nearly dead
@@ -3846,7 +3846,7 @@ void CChar::NPC_AI()
 		} // switch brain
 
 		if ( bActed ) ;
-		else if ( GetNPCBrain(true) == NPCBRAIN_HUMAN )
+		else if ( GetNPCBrain() == NPCBRAIN_HUMAN )
 		{
 			//	equip/unequip lightsource if not equipped
 			EXC_SET("light source");

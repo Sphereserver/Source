@@ -1282,9 +1282,25 @@ Changed: Cooking skill is now a craft skill.
 	-[sphere_skillmenu.scp] Added missing sm_cooking skillmenu
 	WARNING: Make sure to update your scripts following these changes, otherwise cooking skill will not work anymore.
 
+08-10-2014, XuN
+Added Argn3 value in @UserWarMode telling Sphere to remove Attacker list after execution.
+Added a description of deletion in argn1 for @CombatDelete:
+		0 = Forced (Blocked attack, default uncategorized actions...)
+		1 = Max fight time has reached (Elapsed)
+		2 = Distance/LOS
+		3 = The character is no longer existing
+		4 = Forced via attacker.delete methods (ingame/script)
+Fixed ResPhysical no showing the correct values in the Status gump.
+Fixed Stoned players being able to dismount. 
+
 09-10-2014, Ben
 Fixed: RETURN 6 not halting scripts when inside an IF statement.
 Fixed: .fix will now default to the first terrain elevation instead of lowest Z possible.
+
+10-10-2014, XuN
+Added local.anim and local.animDelay (this last one only working for classic clients) to @HitTry, so animations can be disabled and fired later in @hit (to remove the odd behaviour with new animation packets, which doesn't have delay).
+Added OF_NODClickTarget to ini, enabling this will not make the cursor appear as a target when double clicking weapons to equip them.
+
 
 11-10-2014, Ben
 Added #2394: SMSG_DEF_UNICODE, MSG_DEF_UNICODE, IMSG_DEF_UNICODE to sphere_msgs.scp. If set to 1, messages will be sent in unicode unless overwriten with the the mode in @hue,font,mode.
@@ -1340,6 +1356,10 @@ Added: Missing functionality of EF_PetSlots feature on sphere.ini. It's working 
 Fixed: Minor EF_PetSlots issues. Now everything is working fine and it's ready to use.
 Changed: NPCs using BRAIN=brain_animal_trainer won't give food to players anymore (but still able to feed pets nearby).
 
+23-10-2014, XuN
+Changed Argn3 in @UserWarMode to force a war/peace status ( 0 = do nothing, 1 = force peace, 2 = force war).
+NOTE: Argn3 is no longer deleting Attacker's lists, to do so use attacker.clear.
+
 26-10-2014, Coruja
 Changed: Many improvements on pet stables behavior.
 	-Also the max limit of pets that the NPC can hold for a player now is based on player skills (Animal Taming + Animal Lore + Veterinary). Usually it can hold 2~8 pets.
@@ -1349,8 +1369,19 @@ Fixed: House customization engine creating doors using wrong type 't_door' inste
 Fixed: EMOTE_DEF_* defs not working on attack messages (*Someone is attacking you!*).
 [sphere_msgs.scp] Changed 'stablemaster_*' defmsg to new defs/texts. I HIGHLY recommend update it, since the old 'stablemaster_*' defmsgs won't be used anymore.
 
+27-10-2014, XuN
+Attacker.clear can be used now even if character doesn't have a Attacker list, so no error is log in console.
+
 28-10-2014, Coruja
 Fixed: Function REGION.REGION.* returning wrong parent region if used on regions which is already the parent region.
 Fixed: Function MAKEITEM and some crafting skills always crafting itens using amount=1 instead follow the item replication rule.
 [sphere_defs.scp] Added html color defs for BFONT_LRED, BFONT_LYELLOW and BFONT_LCYAN.
 [sphere_monsters.scp] Changed human/elf/gargoyle MAXFOOD to 20 (OSI default value).
+
+28-10-2014, XuN
+Fixed #2396: Attacking aborted when target is out of range, even if COMBAT_StayInRange is disabled.
+Changed Read mode for 'Title', now giving it a parameter will return the 'Trade Title' (Grandmaster Swordsmanship, Journeyman bowcraft, etc) instead of the custom title. (Example of usage: <title 1>).
+
+29-10-2014, XuN
+Added can_i_forcedc (sphere_defs.scp), adding this flag to an item will allow it to be DClickable in every situation: from one side of the map to another, or even in another map, weared by another character, or GMs too, no checks at all.
+ NOTE: Player's cant DClick what they don't see but they will be able to do it with the LastObject macro, or by knowing the UID and using 3rd party programs, be aware of that.

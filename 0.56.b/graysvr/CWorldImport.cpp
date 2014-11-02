@@ -629,7 +629,7 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 				case 0x04:
 				case 0x40:	pChar->SetNPCBrain( NPCBRAIN_GUARD ); break;
 				case 0x08:	pChar->SetNPCBrain( NPCBRAIN_BANKER ); break;
-				default:	pChar->SetNPCBrain( pChar->GetNPCBrain()); break;
+				default:	pChar->SetNPCBrain( pChar->GetNPCBrain( false )); break;
 				}
 			}
 			continue;

@@ -2573,6 +2573,7 @@ public:
 		DWORD	charUID;
 		INT64	amountDone;
 		INT64	threat;
+		bool	ignore;
 	};
 	std::vector<LastAttackers> m_lastAttackers;
 	
@@ -3131,7 +3132,7 @@ public:
 	bool SetPlayerAccount( CAccount * pAccount );
 	bool SetPlayerAccount( LPCTSTR pszAccount );
 	bool SetNPCBrain( NPCBRAIN_TYPE NPCBrain );
-	NPCBRAIN_TYPE GetNPCBrain( bool fDefault = false ) const; // return 1 for animal, 2 for monster, 3 for NPC humans and PCs
+	NPCBRAIN_TYPE GetNPCBrain( bool fDefault = true ) const; // return 1 for animal, 2 for monster, 3 for NPC humans and PCs
 	void ClearNPC();
 	void ClearPlayer();
 
@@ -3582,7 +3583,11 @@ public:
 	void  Attacker_SetElapsed( int pChar, INT64 value );
 	INT64  Attacker_GetThreat( int attacker );
 	void  Attacker_SetThreat( CChar * pChar, INT64 value );
-	void  Attacker_SetThreat( int pChar, INT64 value );
+	void  Attacker_SetThreat(int pChar, INT64 value);
+	bool Attacker_GetIgnore(int pChar);
+	bool Attacker_GetIgnore(CChar * pChar);
+	void Attacker_SetIgnore(int pChar, bool fIgnore);
+	void Attacker_SetIgnore(CChar * pChar, bool fIgnore);
 	INT64 Attacker_GetHighestThreat();
 	int  Attacker_GetID( CChar * pChar );
 	int  Attacker_GetID( LPCTSTR pChar );

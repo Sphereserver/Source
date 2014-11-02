@@ -268,13 +268,18 @@ bool CItemBase::IsTypeWeapon( IT_TYPE type )  // static
 		case IT_WEAPON_MACE_CROOK:
 		case IT_WEAPON_MACE_PICK:
 		case IT_WEAPON_AXE:
-		case IT_WEAPON_BOW:
 		case IT_WEAPON_XBOW:
-		case IT_WEAPON_THROWING:
+		case IT_WEAPON_THROWING:	
+		case IT_WEAPON_MACE_SMITH:	
+		case IT_WEAPON_MACE_SHARP:
+		case IT_WEAPON_SWORD:
+		case IT_WEAPON_FENCE:
+		case IT_WEAPON_BOW:
+		case IT_WAND:
 			return( true );
 
 		default:
-			return( type >= IT_WEAPON_MACE_SMITH && type <= IT_WAND );
+			return( false );
 	}
 }
 

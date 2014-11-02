@@ -3464,9 +3464,13 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 		}
 	}
 	CChar * pTarget = const_cast<CChar*>(pCharTarg);
-	if ( ! m_pPlayer && ! btoldByMaster && g_Cfg.m_iNpcAi&NPC_AI_THREAT )	// We call for FindBestTarget when this CChar is not a player, was not commanded to attack and if NPC_AI_THREAT is on, otherwise it directly attack.
+	if (!m_pPlayer && !btoldByMaster)	// We call for FindBestTarget when this CChar is not a player and was not commanded to attack, otherwise it attack directly.
+	{
 		pTarget = Fight_FindBestTarget();
-	m_Act_Targ =  pCharTarg->GetUID();
+		if (!pTarget)
+			return false;
+	}
+	m_Act_Targ =  pTarget->GetUID();
 	Skill_Start( skillWeapon );
 
 	return( true );
@@ -3551,22 +3555,29 @@ bool CChar::Attacker_Add( CChar * pChar, INT64 threat )
 		if ( tRet == TRIGRET_RET_TRUE )
 			return false;
 	}
+	CScriptTriggerArgs Args;
+	bool fIgnore = false;
+	Args.m_iN1 = threat;
+	Args.m_iN2 = fIgnore;
 	if ( IsTrigUsed(TRIGGER_COMBATADD) )
 	{
-		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatAdd,pChar,0);
+		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatAdd,pChar,&Args);
 		if ( tRet == TRIGRET_RET_TRUE )
 			return false;
+		threat = Args.m_iN1;
+		fIgnore = Args.m_iN2;
 	}
 
-		LastAttackers attacker;
-		attacker.amountDone = 0;
-		attacker.charUID = uid;
-		attacker.elapsed = 0;
-		if ( m_pPlayer )
-			attacker.threat = 0;
-		else
-			attacker.threat = threat;
-		m_lastAttackers.push_back(attacker);
+	LastAttackers attacker;
+	attacker.amountDone = 0;
+	attacker.charUID = uid;
+	attacker.elapsed = 0;
+	if ( m_pPlayer )
+		attacker.threat = 0;
+	else
+		attacker.threat = threat;
+	attacker.ignore = fIgnore;
+	m_lastAttackers.push_back(attacker);
 	return true;
 }
 
@@ -3579,9 +3590,9 @@ CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 	int iClosest = INT_MAX;	// closest
 
 	CChar * pChar = NULL;
+	CChar * pClosest = NULL;
 	if ( ! m_lastAttackers.size() )
 		return pChar;
-	CChar * pClosest = NULL;
 
 	INT64 threat = 0;
 	int count = 0;
@@ -3592,6 +3603,8 @@ CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 		CChar * pChar = static_cast<CChar*>( static_cast<CGrayUID>( refAttacker.charUID ).CharFind() );
 	
 		if ( pChar == NULL )
+			continue;
+		if (refAttacker.ignore)
 			continue;
 		if ( pClosest == NULL )
 			pClosest = pChar;
@@ -3607,10 +3620,13 @@ CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 				continue;
 			if ( m_Act_Targ == pChar->GetUID())	// alternate.
 				continue;
-		} else if ( iDist > UO_MAP_VIEW_SIGHT )
+		} 
+		if ( iDist > UO_MAP_VIEW_SIGHT )
 			continue;
+
 		if ( ! CanSeeLOS( pChar ) )
 			continue;
+
 		if ( bUseThreat && threat < refAttacker.threat)
 		{
 			// So if we reached here ... this target has more threat than the others and meets the reqs.
@@ -3618,7 +3634,13 @@ CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 			iClosest = iDist;
 			threat = refAttacker.threat;
 
-		} 	
+		}
+		else if (iDist < iClosest)
+		{
+			// ??? in the npc case. can i actually reach this target ?
+			pClosest = pChar;
+			iClosest = iDist;
+		}
 		count ++;
 	}
 	return ( pClosest ) ? pClosest : pChar;
@@ -3676,21 +3698,16 @@ INT64 CChar::Attacker_GetHighestThreat()
 void CChar::Attacker_SetElapsed( CChar * pChar, INT64 value)
 {
 	ADDTOCALLSTACK("CChar::Attacker_SetElapsed(CChar)");
-	if ( ! pChar )
-		return;
-	if ( ! m_lastAttackers.size() )
-		return;
-	int id = Attacker_GetID(pChar);
-	if ( !id )
-		return;
-	LastAttackers & refAttacker = m_lastAttackers.at( id );
-	refAttacker.elapsed = value;
+
+	return Attacker_SetElapsed( Attacker_GetID(pChar), value);
+
 }
+
 
 void CChar::Attacker_SetElapsed( int pChar, INT64 value)
 {
 	ADDTOCALLSTACK("CChar::Attacker_SetElapsed(int)");
-	if ( ! pChar )
+	if (pChar < 0)
 		return;
 	if ( ! m_lastAttackers.size() )
 		return;
@@ -3703,21 +3720,15 @@ void CChar::Attacker_SetElapsed( int pChar, INT64 value)
 void CChar::Attacker_SetDam( CChar * pChar, INT64 value)
 {
 	ADDTOCALLSTACK("CChar::Attacker_SetDam(CChar)");
-	if ( ! pChar )
-		return;
-	if ( ! m_lastAttackers.size() )
-		return;
-	int id = Attacker_GetID(pChar);
-	if ( !id )
-		return;
-	LastAttackers & refAttacker = m_lastAttackers.at( id );
-	refAttacker.amountDone = value;
+
+	return Attacker_SetDam( Attacker_GetID(pChar), value );
 }
+
 
 void CChar::Attacker_SetDam( int pChar, INT64 value)
 {
 	ADDTOCALLSTACK("CChar::Attacker_SetDam(int)");
-	if ( ! pChar )
+	if (pChar < 0)
 		return;
 	if ( ! m_lastAttackers.size() )
 		return;
@@ -3726,34 +3737,68 @@ void CChar::Attacker_SetDam( int pChar, INT64 value)
 	LastAttackers & refAttacker = m_lastAttackers.at( pChar );
 	refAttacker.amountDone = value;
 }
-void CChar::Attacker_SetThreat( CChar * pChar, INT64 value)
+
+void CChar::Attacker_SetThreat(CChar * pChar, INT64 value)
 {
 	ADDTOCALLSTACK("CChar::Attacker_SetThreat(CChar)");
-	if ( !pChar )
-		return;
-	if ( m_pPlayer )
-		return;
-	if ( ! m_lastAttackers.size() )
-		return;
-	int id = Attacker_GetID(pChar);
-	if ( !id )
-		return;
-	LastAttackers & refAttacker = m_lastAttackers.at( id );
-	refAttacker.threat = value;
+
+	return Attacker_SetThreat(Attacker_GetID(pChar), value);
 }
-void CChar::Attacker_SetThreat( int pChar, INT64 value)
+
+
+void CChar::Attacker_SetThreat(int pChar, INT64 value)
 {
 	ADDTOCALLSTACK("CChar::Attacker_SetThreat(int)");
-	if ( !pChar )
+	if (pChar < 0)
 		return;
-	if ( m_pPlayer )
+	if (m_pPlayer)
 		return;
-	if ( ! m_lastAttackers.size() )
+	if (!m_lastAttackers.size())
 		return;
-	if ( static_cast<int>(m_lastAttackers.size()) <= pChar )
+	if (static_cast<int>(m_lastAttackers.size()) <= pChar)
 		return;
-	LastAttackers & refAttacker = m_lastAttackers.at( pChar );
+	LastAttackers & refAttacker = m_lastAttackers.at(pChar);
 	refAttacker.threat = value;
+}
+
+void CChar::Attacker_SetIgnore(CChar * pChar, bool fIgnore)
+{
+	ADDTOCALLSTACK("CChar::Attacker_SetIgnore(CChar)");
+
+	return Attacker_SetIgnore(Attacker_GetID(pChar), fIgnore);
+}
+
+
+void CChar::Attacker_SetIgnore(int pChar, bool fIgnore)
+{
+	ADDTOCALLSTACK("CChar::Attacker_SetIgnore(int)");
+	if (pChar < 0)
+		return;
+	if (!m_lastAttackers.size())
+		return;
+	if (static_cast<int>(m_lastAttackers.size()) <= pChar)
+		return;
+	LastAttackers & refAttacker = m_lastAttackers.at(pChar);
+	refAttacker.ignore = fIgnore;
+}
+
+bool CChar::Attacker_GetIgnore(CChar * pChar)
+{
+	ADDTOCALLSTACK("CChar::Attacker_GetIgnore(CChar)");
+	return Attacker_GetIgnore(Attacker_GetID(pChar));
+}
+
+bool CChar::Attacker_GetIgnore(int id)
+{
+	ADDTOCALLSTACK("CChar::Attacker_GetIgnore(int)");
+	if (!m_lastAttackers.size())
+		return false;
+	if (static_cast<int>(m_lastAttackers.size()) <= id)
+		return false;
+	if (id < 0)
+		return false;
+	LastAttackers & refAttacker = m_lastAttackers.at(id);
+	return refAttacker.elapsed;
 }
 
 void CChar::Attacker_Clear()

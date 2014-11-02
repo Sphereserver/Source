@@ -1044,7 +1044,7 @@ void CChar::NPC_LoadScript( bool fRestock )
 	// Create an NPC from script.
 	if ( m_pNPC == NULL )
 		// Set a default brian type til we get the real one from scripts.
-		SetNPCBrain(GetNPCBrain());	// should have a default brain. watch out for override vendor.
+		SetNPCBrain(GetNPCBrain( false ));	// should have a default brain. watch out for override vendor.
 
 	CCharBase * pCharDef = Char_GetDef();
 
@@ -1883,9 +1883,14 @@ do_default:
 								sVal.FormatHex( uid.CharFind() ? refAttacker.charUID : 0 );
 								return true;
 							}
-							else if ( ( !strnicmp(pszKey, "THREAT", 6 ) ) )
+							else if ((!strnicmp(pszKey, "THREAT", 6)))
 							{
 								sVal.FormatLLVal(refAttacker.threat);
+								return true;
+							}
+							else if ((!strnicmp(pszKey, "IGNORE", 6)))
+							{
+								sVal.FormatVal(refAttacker.ignore ? 1:0);
 								return true;
 							}
 						}
@@ -2761,9 +2766,15 @@ do_default:
 								Attacker_SetThreat( pChar , s.GetArgVal() );
 								return true;
 							}
-							else if ( !strnicmp(pszKey, "DELETE", 6 ) )
+							else if (!strnicmp(pszKey, "DELETE", 6))
 							{
 								Attacker_Delete(pChar, false, ATTACKER_CLEAR_SCRIPT);
+								return true;
+							}
+							else if (!strnicmp(pszKey, "IGNORE", 6))
+							{
+								bool fIgnore = s.GetArgVal() < 1 ? 0 : 1;
+								Attacker_SetIgnore(pChar, fIgnore);
 								return true;
 							}
 						}
