@@ -325,11 +325,11 @@ void CItemMulti::OnMoveFrom()
 	m_pRegion->UnRealizeRegion();
 }
 
-bool CItemMulti::MoveTo(CPointMap pt, bool bForceFix, bool bUpdate) // Put item on the ground here.
+bool CItemMulti::MoveTo(CPointMap pt, bool bForceFix, int iCliverMin, int iCliverMax) // Put item on the ground here.
 {
 	ADDTOCALLSTACK("CItemMulti::MoveTo");
 	// Move this item to it's point in the world. (ground/top level)
-	if ( ! CItem::MoveTo(pt, bForceFix, bUpdate))
+	if ( ! CItem::MoveTo(pt, bForceFix, iCliverMin, iCliverMax))
 		return false;
 
 	// Multis need special region info to track when u are inside them.

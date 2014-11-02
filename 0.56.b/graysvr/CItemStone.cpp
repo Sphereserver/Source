@@ -2193,7 +2193,7 @@ void CItemStone::SetTownName()
 	}
 }
 
-bool CItemStone::MoveTo(CPointMap pt, bool bForceFix, bool bUpdate)
+bool CItemStone::MoveTo(CPointMap pt, bool bForceFix, int iCliverMin, int iCliverMax)
 {
 	ADDTOCALLSTACK("CItemStone::MoveTo");
 	// Put item on the ground here.
@@ -2201,7 +2201,7 @@ bool CItemStone::MoveTo(CPointMap pt, bool bForceFix, bool bUpdate)
 	{
 		SetTownName();
 	}
-	return CItem::MoveTo(pt, bForceFix, bUpdate);
+	return CItem::MoveTo(pt, bForceFix, iCliverMin, iCliverMax);
 }
 
 bool CItemStone::SetName( LPCTSTR pszName )

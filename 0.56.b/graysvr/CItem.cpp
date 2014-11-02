@@ -1287,7 +1287,7 @@ SOUND_TYPE CItem::GetDropSound( const CObjBase * pObjOn ) const
 		return ( iSnd );
 }
 
-bool CItem::MoveTo(CPointMap pt, bool bForceFix, bool bUpdate) // Put item on the ground here.
+bool CItem::MoveTo(CPointMap pt, bool bForceFix, int iCliverMin, int iCliverMax) // Put item on the ground here.
 {
 	ADDTOCALLSTACK("CItem::MoveTo");
 	// Move this item to it's point in the world. (ground/top level)
@@ -1315,8 +1315,7 @@ bool CItem::MoveTo(CPointMap pt, bool bForceFix, bool bUpdate) // Put item on th
 		FixZ();
 	ASSERT( IsTopLevel());	// on the ground.
 
-	if ( bUpdate )
-		Update();
+	Update(NULL, iCliverMin, iCliverMax );
 	return( true );
 }
 
@@ -3387,7 +3386,7 @@ void CItem::SetAnim( ITEMID_TYPE id, int iTime )
 	Update();
 }
 
-void CItem::Update( const CClient * pClientExclude )
+void CItem::Update(const CClient * pClientExclude, int iCliverMin, int iCliverMax)
 {
 	ADDTOCALLSTACK("CItem::Update");
 	// Send this new item to all that can see it.
@@ -3396,6 +3395,10 @@ void CItem::Update( const CClient * pClientExclude )
 	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if ( pClient == pClientExclude )
+			continue;
+		if (!pClient->GetNetState()->isClientVersion(iCliverMin))
+			continue;
+		if (!pClient->GetNetState()->isClientLessVersion(iCliverMax))
 			continue;
 		if ( ! pClient->CanSee( this ))
 			continue;
