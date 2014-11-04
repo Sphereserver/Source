@@ -3235,10 +3235,10 @@ public:
 		
 		return( dir );
 	}
-	DWORD GetMoveBlockFlags() const
+	DWORD GetMoveBlockFlags(bool bIgnoreGM = false) const
 	{
 		// What things block us ?
-		if ( IsPriv(PRIV_GM|PRIV_ALLMOVE))	// nothing blocks us.
+		if ( IsPriv(PRIV_GM|PRIV_ALLMOVE) && !bIgnoreGM)	// nothing blocks us.
 			return( 0xFFFF );
 		
 		DWORD dwCan = m_Can;

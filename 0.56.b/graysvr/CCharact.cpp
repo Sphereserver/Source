@@ -3379,7 +3379,7 @@ bool CChar::CheckLocation( bool fStanding )
 				return( true );
 			case IT_SHIP_PLANK:
 				// a plank is a teleporter off the ship.
-				if ( ! fStanding && ! IsStatFlag( STATF_Fly|STATF_Hovering ))
+				if ( !fStanding && !IsStatFlag( STATF_Hovering ))
 				{
 					// Find some place to go. (in direction of plank)
 					if ( MoveToValidSpot(m_dirFace, g_Cfg.m_iMaxShipPlankTeleport, 1, true) )
@@ -3761,14 +3761,14 @@ bool CChar::MoveToValidSpot(DIR_TYPE dir, int iDist, int iDistStart, bool bFromS
 	pt.m_z += PLAYER_HEIGHT;
 	signed char startZ = pt.m_z;
 
-	WORD wCan = static_cast<WORD>(GetMoveBlockFlags());	// CAN_C_SWIM
+	WORD wCan = static_cast<WORD>(GetMoveBlockFlags(true));	// CAN_C_SWIM
 	for ( int i=0; i<iDist; ++i )
 	{
 		if ( pt.IsValidPoint() )
 		{
 			// Don't allow boarding of other ships (they may be locked)
-			CRegionBase * pRegionBase = pt.GetRegion( REGION_TYPE_MULTI );
-			if ( pRegionBase && pRegionBase->IsFlag( REGION_FLAG_SHIP ) )
+			CRegionBase * pRegionBase = pt.GetRegion( REGION_TYPE_SHIP);
+			if ( pRegionBase)
 			{
 				pt.Move( dir );
 				continue;
