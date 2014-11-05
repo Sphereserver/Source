@@ -2684,6 +2684,9 @@ bool CChar::Death()
 			return true;
 	}
 
+	// Forgot who owns me. dismount my master if ridden.
+	NPC_PetClearOwners();
+
 	// I am dead and we need to give credit for the kill to my attacker(s).
 	TCHAR * pszKillStr = Str_GetTemp();
 	int iKillStrLen = sprintf(pszKillStr, g_Cfg.GetDefaultMsg(DEFMSG_KILLED_BY), (m_pPlayer)?'P':'N', GetNameWithoutIncognito() );
@@ -2751,7 +2754,6 @@ bool CChar::Death()
 	}
 
 	// record the kill event for posterity.
-
 	iKillStrLen += sprintf( pszKillStr+iKillStrLen, ( iKillers ) ? ".\n" : "accident.\n" );
 	if ( m_pPlayer )
 		g_Log.Event(LOGL_EVENT|LOGM_KILLS, "%s", pszKillStr);
@@ -2759,10 +2761,8 @@ bool CChar::Death()
 	if ( m_pParty )
 		m_pParty->SysMessageAll( pszKillStr );
 
-	NPC_PetClearOwners();	// Forgot who owns me. dismount my master if ridden.
 	Reveal();
 	SoundChar( CRESND_DIE );
-	//Spell_Dispel(100);		// Get rid of all spell effects.
 
 	// Only players should loose stats upon death.
 	if ( m_pPlayer )
