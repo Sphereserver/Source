@@ -1417,3 +1417,7 @@ Fixed #1820: Combat_PreHit not working with Archery.
 Fixed #1621: StatLocks not working, fixed and improved the whole statgain system.
 Updated spherecrypt.ini
 Changed .shrink now can have a value which will automatically bounce the figurine.
+
+05-11-2014, Ben
+Removed previous changes: (ARGN2 in @Abort and @SkillAbort (and other Skill triggers) will be the spell number if magery is used)
+Replaced with LOCAL.SPELL (read only) as ARGN2 was already in use by some of the skill triggers.
