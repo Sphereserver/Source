@@ -4806,10 +4806,11 @@ PacketContainer::PacketContainer(const CClient* target, CObjBase** objects, size
 			adjustItemData(target, item, id, hue, amount, p, dir, flags, light);
 
 			if (id >= ITEMID_MULTI)
-			{
 				id = static_cast<ITEMID_TYPE>(id - ITEMID_MULTI);
+
+			if (item->IsTypeMulti())
 				source = Multi;
-			}
+
 			writeByte(0xF3);
 			writeInt16(1);
 			writeByte(source);

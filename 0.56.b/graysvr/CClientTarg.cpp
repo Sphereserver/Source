@@ -298,8 +298,7 @@ bool CClient::OnTarg_UnExtract( CObjBase * pObj, const CPointMap & pt )
 		CPointMap ptOffset( static_cast<WORD>(piCmd[0]), static_cast<WORD>(piCmd[1]), static_cast<signed char>(piCmd[2]) );
 		ptOffset += pt;
 		ptOffset.m_map = pt.m_map;
-		pItem->MoveTo( ptOffset );
-		pItem->Update();
+		pItem->MoveToUpdate( ptOffset );
 		iItemCount --;
 	}
 
@@ -702,7 +701,7 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 					ASSERT(pItem);
 					pItem->SetAttr( ATTR_MOVE_NEVER );
 					CPointMap ptCur( mx, my, z, pt.m_map);
-					pItem->MoveTo( ptCur );
+					pItem->MoveToUpdate( ptCur );
 					iCount++;
 				}
 			}
@@ -1771,7 +1770,7 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap &
 
 	pItemNew->SetAttr( dwAttr & ( ATTR_MAGIC | ATTR_INVIS ));
 	pItemNew->SetHue( wHue );
-	pItemNew->MoveTo( pt );
+	pItemNew->MoveToUpdate( pt );
 
 	CItemMulti * pMultiItem = dynamic_cast <CItemMulti*>(pItemNew);
 	if ( pMultiItem )
@@ -1897,7 +1896,7 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 			CPointMap ptBlock;
 			if ( m_pChar->CanSeeLOS( pt, &ptBlock, UO_MAP_VIEW_SIZE, LOS_NB_WINDOWS ))	// Get the block point; flag means that we can throw an explosion potion outta a window
 				ptBlock = pt;
-			pItemUse->MoveTo( ptBlock );	// leave the decay as it is.
+			pItemUse->MoveToUpdate( ptBlock );	// leave the decay as it is.
 			pItemUse->Effect( EFFECT_BOLT, pItemUse->GetDispID(), m_pChar, 7, 0, false );
 		}
 		return( true );

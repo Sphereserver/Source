@@ -1817,6 +1817,12 @@ class PacketContainer : public PacketItemWorldNew// public PacketSend
 {
 public:
 	PacketContainer(const CClient* target, CObjBase** objects, size_t objectCount);
+
+	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
+	static bool CanSendTo(const NetState* state)
+	{
+		return state->isClientVersion(MINCLIVER_HIGHSEAS);
+	}
 };
 
 #endif

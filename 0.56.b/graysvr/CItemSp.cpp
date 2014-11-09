@@ -868,14 +868,14 @@ void CItemCommCrystal::OnMoveFrom()
 		pSector->RemoveListenItem();
 }
 
-bool CItemCommCrystal::MoveTo(CPointMap pt, bool bForceFix, int iCliverMin, int iCliverMax ) // Put item on the ground here.
+bool CItemCommCrystal::MoveTo(CPointMap pt, bool bForceFix ) // Put item on the ground here.
 {
 	ADDTOCALLSTACK("CItemCommCrystal::MoveTo");
 	// Move this item to it's point in the world. (ground/top level)
 	CSector * pSector = pt.GetSector();
 	ASSERT(pSector);
 	pSector->AddListenItem();
-	return CItem::MoveTo(pt, bForceFix, iCliverMin, iCliverMax);
+	return CItem::MoveTo(pt, bForceFix);
 }
 
 void CItemCommCrystal::OnHear( LPCTSTR pszCmd, CChar * pSrc )

@@ -1609,7 +1609,7 @@ bool CChar::Use_Seed( CItem * pSeed, CPointMap * pPoint )
 	CItem * pPlant = CItem::CreateScript( idReset, this );
 	ASSERT( pPlant );
 
-	pPlant->MoveTo(pt);
+	pPlant->MoveToUpdate(pt);
 	if ( pPlant->IsType(IT_CROPS) || pPlant->IsType(IT_FOLIAGE))
 	{
 		pPlant->m_itCrop.m_ReapFruitID = pSeed->GetID();

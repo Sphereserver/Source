@@ -332,7 +332,7 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 			}
 		}
 
-		pItem->MoveTo(pt);
+		pItem->MoveToUpdate(pt);
 	}
 
 	rectNew.OffsetRect(GetTopPoint().m_x, GetTopPoint().m_y);

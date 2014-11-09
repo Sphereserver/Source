@@ -1282,7 +1282,7 @@ void CChar::UpdateDir( const CObjBaseTemplate * pObj )
 	UpdateDir( pObj->GetTopPoint());
 }
 
-void CChar::Update(const CClient * pClientExclude, int iCliverMin , int iCliverMax ) // If character status has been changed (Polymorph), resend him
+void CChar::Update(const CClient * pClientExclude ) // If character status has been changed (Polymorph), resend him
 {
 	ADDTOCALLSTACK("CChar::Update");
 	// Or I changed looks.
@@ -1295,10 +1295,6 @@ void CChar::Update(const CClient * pClientExclude, int iCliverMin , int iCliverM
 	ClientIterator it;
 	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
-		if (!pClient->GetNetState()->isClientVersion(iCliverMin))
-			continue;
-		if (!pClient->GetNetState()->isClientLessVersion(iCliverMax))
-			continue;
 		if ( pClient == pClientExclude )
 			continue;
 		if (pClient->GetChar() == NULL)
@@ -1722,7 +1718,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 
 			ptNewPlace = pStack->GetTopPoint();
 			ptNewPlace.m_z -= Itemheight;
-			pStack->MoveTo(ptNewPlace);
+			pStack->MoveToUpdate(ptNewPlace);
 		}
 	}
 
@@ -3681,7 +3677,7 @@ bool CChar::MoveToRoom( CRegionBase * pNewRoom, bool fAllowReject)
 	return true;
 }
 
-bool CChar::MoveToChar(CPointMap pt, bool bForceFix, int iCliverMin, int iCliverMax)
+bool CChar::MoveToChar(CPointMap pt, bool bForceFix)
 {
 	ADDTOCALLSTACK("CChar::MoveToChar");
 	// Same as MoveTo
@@ -3736,16 +3732,8 @@ bool CChar::MoveToChar(CPointMap pt, bool bForceFix, int iCliverMin, int iCliver
 		}
 	}
 
-	if (GetClient() && GetClient()->GetNetState()->isClientVersion(iCliverMin) && !GetClient()->GetNetState()->isClientLessVersion(iCliverMax))
-		return true;
-	/*else if (m_pArea->GetRegionFlags() & REGION_FLAG_SHIP)
-		Update();*/
-
 	if (!m_fClimbUpdated || bForceFix)
-	{
 		FixClimbHeight();
-		Update();
-	}
 		
 	return true;
 }

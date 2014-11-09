@@ -158,6 +158,7 @@ void CImportFile::ImportFix()
 
 			// Make sure the top level object is placed correctly.
 			m_pCurSer->m_pObj->MoveTo( m_pCurSer->m_pObj->GetTopPoint());
+			m_pCurSer->m_pObj->Update();
 			if ( ! m_pCurSer->m_pObj->IsContainer())
 				delete m_pCurSer;
 			continue;

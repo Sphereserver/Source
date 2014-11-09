@@ -247,7 +247,7 @@ public:
 
 public:
 	// Location
-	virtual bool MoveTo(CPointMap pt, bool bForceFix = false, int iCliverMin = 0, int iCliverMax = INT_MAX) = 0;	// Move to a location at top level.
+	virtual bool MoveTo(CPointMap pt, bool bForceFix = false) = 0;	// Move to a location at top level.
 
 	virtual bool MoveNear( CPointMap pt, int iSteps = 0, DWORD dwCan = CAN_C_WALK );
 	virtual bool MoveNearObj( const CObjBaseTemplate * pObj, int iSteps = 0, DWORD dwCan = CAN_C_WALK );
@@ -282,7 +282,7 @@ public:
 
 	bool IsContainer() const;
 
-	virtual void Update(const CClient * pClientExclude = NULL, int iCliverMin = 0, int iCliverMax = INT_MAX)	// send this new item to clients.
+	virtual void Update(const CClient * pClientExclude = NULL)	// send this new item to clients.
 		= 0;
 	virtual void Flip()
 		= 0;
@@ -1017,11 +1017,17 @@ public:
 	virtual void OnMoveFrom()	// Moving from current location.
 	{
 	}
-	virtual bool MoveTo(CPointMap pt, bool bForceFix = false, int iCliverMin = 0, int iCliverMax = INT_MAX); // Put item on the ground here.
-	bool MoveToDecay(const CPointMap & pt, INT64 iDecayTime, bool bForceFix = false, int iCliverMin = 0, int iCliverMax = INT_MAX)
+	virtual bool MoveTo(CPointMap pt, bool bForceFix = false); // Put item on the ground here.
+	bool MoveToUpdate(CPointMap pt, bool bForceFix = false)
+	{
+		bool bReturn = MoveTo(pt, bForceFix);
+		Update();
+		return bReturn;
+	}
+	bool MoveToDecay(const CPointMap & pt, INT64 iDecayTime, bool bForceFix = false)
 	{
 		SetDecayTime( iDecayTime );
-		return MoveTo( pt, bForceFix, iCliverMin, iCliverMax );
+		return MoveToUpdate( pt, bForceFix);
 	}
 	bool MoveToCheck( const CPointMap & pt, CChar * pCharMover = NULL );
 	virtual bool MoveNearObj( const CObjBaseTemplate * pItem, int iSteps = 0, WORD wCan = CAN_C_WALK );
@@ -1095,7 +1101,7 @@ public:
 		m_TagDefs.DeleteKey(pszKey);
 	}
 
-	void  Update( const CClient * pClientExclude = NULL, int iCliverMin = 0, int iCliverMax = INT_MAX );		// send this new item to everyone.
+	void  Update( const CClient * pClientExclude = NULL );		// send this new item to everyone.
 	void  Flip();
 	bool  LoadSetContainer( CGrayUID uid, LAYER_TYPE layer );
 
@@ -1632,7 +1638,7 @@ private:
 
 public:
 	virtual bool OnTick();
-	virtual bool MoveTo(CPointMap pt, bool bForceFix = false, int iCliverMin = 0, int iCliverMax = INT_MAX); // Put item on the ground here.
+	virtual bool MoveTo(CPointMap pt, bool bForceFix = false); // Put item on the ground here.
 	virtual void OnMoveFrom();	// Moving from current location.
 	void OnHearRegion( LPCTSTR pszCmd, CChar * pSrc );
 	CItem * Multi_GetSign();	// or Tiller
@@ -1924,7 +1930,7 @@ private:
 
 public:
 	virtual void OnMoveFrom();
-	virtual bool MoveTo(CPointMap pt, bool bForceFix = false, int iCliverMin = 0, int iCliverMax = INT_MAX);
+	virtual bool MoveTo(CPointMap pt, bool bForceFix = false);
 
 	virtual void OnHear( LPCTSTR pszCmd, CChar * pSrc );
 	virtual void  r_Write( CScript & s );
@@ -2068,7 +2074,7 @@ private:
 
 	void SetTownName();
 	bool SetName( LPCTSTR pszName );
-	virtual bool MoveTo(CPointMap pt, bool bForceFix = false, int iCliverMin = 0, int iCliverMax = INT_MAX);
+	virtual bool MoveTo(CPointMap pt, bool bForceFix = false);
 
 	MEMORY_TYPE GetMemoryType() const;
 
@@ -3122,11 +3128,11 @@ public:
 	{
 		return( MoveToRegion( dynamic_cast <CRegionWorld *>( GetTopPoint().GetRegion( dwType )), false));
 	}
-	bool MoveToChar(CPointMap pt, bool bForceFix = false, int iCliverMin = 0, int iCliverMax = INT_MAX);
-	bool MoveTo(CPointMap pt, bool bForceFix = false, int iCliverMin = 0, int iCliverMax = INT_MAX)
+	bool MoveToChar(CPointMap pt, bool bForceFix = false);
+	bool MoveTo(CPointMap pt, bool bForceFix = false)
 	{
 		m_fClimbUpdated = false; // update climb height
-		return MoveToChar( pt, bForceFix, iCliverMin, iCliverMax );
+		return MoveToChar( pt, bForceFix);
 	}
 	virtual void SetTopZ( signed char z )
 	{
@@ -3202,7 +3208,7 @@ public:
 	void UpdateDir( const CPointMap & pt );
 	void UpdateDir( const CObjBaseTemplate * pObj );
 	void UpdateDrag( CItem * pItem, CObjBase * pCont = NULL, CPointMap * pp = NULL );
-	void Update(const CClient * pClientExclude = NULL, int iCliverMin = 0, int iCliverMax = INT_MAX);
+	void Update(const CClient * pClientExclude = NULL);
 
 public:
 	LPCTSTR GetPronoun() const;	// he

@@ -466,7 +466,13 @@ bool CObjBase::MoveNear( CPointMap pt, int iSteps, DWORD dwCan )
 			return( false );
 	}
 
-	return MoveTo(pt);
+	if ( MoveTo(pt) )
+	{
+		if (IsItem())
+			Update();
+		return true;
+	}
+	return false;
 }
 
 void CObjBase::UpdateObjMessage( LPCTSTR pTextThem, LPCTSTR pTextYou, CClient * pClientExclude, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, bool bUnicode ) const
@@ -1655,6 +1661,8 @@ bool CObjBase::r_LoadVal( CScript & s )
 					return false;
 
 				MoveTo(pt);
+				if (IsItem())
+					Update();
 			}
 			break;
 		case OC_MODAR:
@@ -1962,6 +1970,8 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 		case OV_P:
 			EXC_SET("P or MOVETO");
 			MoveTo( g_Cfg.GetRegionPoint( s.GetArgStr()));
+			if (IsItem())
+				Update();
 			break;
 		case OV_PROMPTCONSOLE:
 		case OV_PROMPTCONSOLEU:

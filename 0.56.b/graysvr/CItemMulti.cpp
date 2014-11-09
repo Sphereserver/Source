@@ -192,7 +192,7 @@ bool CItemMulti::Multi_CreateComponent( ITEMID_TYPE id, int dx, int dy, int dz, 
 		pItem->m_itContainer.m_lock_complexity = 10000;	// never pickable.
 	}
 
-	pItem->MoveTo( pt );
+	pItem->MoveToUpdate( pt );
 	OnComponentCreate( pItem );
 	return( fNeedKey );
 }
@@ -325,11 +325,11 @@ void CItemMulti::OnMoveFrom()
 	m_pRegion->UnRealizeRegion();
 }
 
-bool CItemMulti::MoveTo(CPointMap pt, bool bForceFix, int iCliverMin, int iCliverMax) // Put item on the ground here.
+bool CItemMulti::MoveTo(CPointMap pt, bool bForceFix) // Put item on the ground here.
 {
 	ADDTOCALLSTACK("CItemMulti::MoveTo");
 	// Move this item to it's point in the world. (ground/top level)
-	if ( ! CItem::MoveTo(pt, bForceFix, iCliverMin, iCliverMax))
+	if ( ! CItem::MoveTo(pt, bForceFix))
 		return false;
 
 	// Multis need special region info to track when u are inside them.
@@ -501,6 +501,7 @@ bool CItemMulti::r_LoadVal( CScript & s  )
 		if ( ! IsTopLevel())
 		{
 			MoveTo( GetTopPoint()); // Put item on the ground here.
+			Update();
 		}
 		ASSERT( m_pRegion );
 		CScript script( s.GetKey()+7, s.GetArgStr());

@@ -1287,7 +1287,7 @@ SOUND_TYPE CItem::GetDropSound( const CObjBase * pObjOn ) const
 		return ( iSnd );
 }
 
-bool CItem::MoveTo(CPointMap pt, bool bForceFix, int iCliverMin, int iCliverMax) // Put item on the ground here.
+bool CItem::MoveTo(CPointMap pt, bool bForceFix) // Put item on the ground here.
 {
 	ADDTOCALLSTACK("CItem::MoveTo");
 	// Move this item to it's point in the world. (ground/top level)
@@ -1313,9 +1313,7 @@ bool CItem::MoveTo(CPointMap pt, bool bForceFix, int iCliverMin, int iCliverMax)
 	SetTopPoint( pt );
 	if ( bForceFix )
 		FixZ();
-	ASSERT( IsTopLevel());	// on the ground.
 
-	Update(NULL, iCliverMin, iCliverMax );
 	return( true );
 }
 
@@ -2927,7 +2925,7 @@ bool CItem::r_Load( CScript & s ) // Load an item from script
 	{
 		if ( GetTopPoint().IsCharValid())
 		{
-			MoveTo( GetTopPoint());
+			MoveToUpdate( GetTopPoint());
 		}
 	}
 
@@ -3386,7 +3384,7 @@ void CItem::SetAnim( ITEMID_TYPE id, int iTime )
 	Update();
 }
 
-void CItem::Update(const CClient * pClientExclude, int iCliverMin, int iCliverMax)
+void CItem::Update(const CClient * pClientExclude)
 {
 	ADDTOCALLSTACK("CItem::Update");
 	// Send this new item to all that can see it.
@@ -3395,10 +3393,6 @@ void CItem::Update(const CClient * pClientExclude, int iCliverMin, int iCliverMa
 	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		if ( pClient == pClientExclude )
-			continue;
-		if (!pClient->GetNetState()->isClientVersion(iCliverMin))
-			continue;
-		if (!pClient->GetNetState()->isClientLessVersion(iCliverMax))
 			continue;
 		if ( ! pClient->CanSee( this ))
 			continue;
@@ -3741,8 +3735,7 @@ bool CItem::Use_Portculis()
 	if ( pt.m_z == GetTopZ())
 		return false;
 
-	MoveTo( pt );
-	Update();
+	MoveToUpdate( pt );
 
 	SOUND_TYPE iSnd = 0x21d;
 	if (GetDefNum("PORTCULISSOUND"))
@@ -3824,7 +3817,7 @@ bool CItem::Use_DoorNew( bool bJustOpen )
 	SetDefNum("DOOROPENID", GetDispID());
 	SetDispID(idSwitch);
 
-	MoveTo(pt);
+	MoveToUpdate(pt);
 	Sound( bClosing ? iCloseSnd : iOpenSnd );
 	SetTimeout( bClosing ? -1 : 60*TICK_PER_SEC );
 	bClosing ? ClrAttr(ATTR_OPENED) : SetAttr(ATTR_OPENED);
@@ -3930,7 +3923,7 @@ bool CItem::Use_Door( bool fJustOpen )
 
 	SetDispID(static_cast<ITEMID_TYPE>(id + doordir));
 	// SetType( typelock );	// preserve the fact that it was locked.
-	MoveTo(pt);
+	MoveToUpdate(pt);
 
 	//CVarDefCont * pTagStorage = NULL; 
 	SOUND_TYPE iCloseSnd = 0x00f1;
