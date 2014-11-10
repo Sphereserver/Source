@@ -19,7 +19,7 @@ int CResource::Calc_MaxCarryWeight( const CChar * pChar ) const
 	//  Weight in tenths of stones i should be able to carry.
 
 	ASSERT(pChar);
-	signed int iQty = 40 + pChar->Stat_GetAdjusted(STAT_STR) * 3.5 + pChar->m_ModMaxWeight;
+	signed int iQty = 40 + ( pChar->Stat_GetAdjusted(STAT_STR) * 35 / 10 ) + pChar->m_ModMaxWeight;
 	if ( iQty < 0 )
 		iQty = 0;
 	if ( m_iFeatureML & FEATURE_ML_UPDATE && pChar->IsHuman())
