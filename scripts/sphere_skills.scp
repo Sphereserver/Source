@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, October 2, 2014
+// FILE LAST UPDATED: Monday, November 10, 2014
 //
 VERSION=0.56c
 
@@ -900,8 +900,8 @@ ON=@Abort
 DEFNAME=Skill_Tracking
 KEY=Tracking
 TITLE=Ranger
-PROMPT_MSG=
-DELAY=4.0
+PROMPT_MSG=What do you wish to track?
+DELAY=2.5
 STAT_STR=25
 STAT_INT=50
 STAT_DEX=50
@@ -911,11 +911,15 @@ BONUS_INT=50
 BONUS_STATS=25
 ADV_RATE=2.5,50.0,200.0
 
+ON=@Stroke
+	SRC.ARROWQUEST <ACT.P.X>,<ACT.P.Y>,38
+
 ON=@Fail
 	SRC.SYSMESSAGE Tracking failed.
 
 ON=@Abort
 	SRC.SYSMESSAGE You stop tracking.
+	SRC.ARROWQUEST 0,0,38
 
 [SKILL 39]
 DEFNAME=Skill_Vet

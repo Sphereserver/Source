@@ -1424,3 +1424,18 @@ Replaced with LOCAL.SPELL (read only) as ARGN2 was already in use by some of the
 
 09-11-2014, Ben
 Fixed #1644: Corpses will now move with ships.
+
+10-11-2014, Coruja
+Fixed: SPELLTIMEOUT char property not working correctly.
+Added: support for some human/elf racial traits (only used if FeatureML is enabled on sphere.ini)
+	-Tracking skill: humans always have a minimum of 20.0 tracking skill, and elves are more difficult to be tracked.
+	-Max weight: humans can always carry an aditional 60 stones of max weight.
+Changed: Some internal improvements on Tracking skill
+	-Improved search distance.
+	-Ghosts can't be tracked anymore.
+	-Spyglass is no longer required to use Tracking skill inside ships/boats.
+	-Triggers @Stroke / @SkillStroke now are called at each tracking stroke.
+	-Removed the redundant skillmenu button "Track anything that moves".
+	-New formula to check tracking difficult when trying to track players. It will use the char skills (Tracking, Detecting Hidden) vs target skills (Hiding, Stealth).
+	-[sphere_msgs.scp]: Updated some 'tracking_*' messages. Also merged all 'skillmenu_text_*' (only used on tracking skillmenu) into 'tracking_*'.
+	-[sphere_skills.scp]: Added OSI-like support for ARROWQUESTS on tracking skill (softcoded). OSI uses only the arrow to track (with no messages) but I will leave the old messages as it is for compatibility purposes with old clients.

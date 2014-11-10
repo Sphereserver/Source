@@ -19,12 +19,12 @@ int CResource::Calc_MaxCarryWeight( const CChar * pChar ) const
 	//  Weight in tenths of stones i should be able to carry.
 
 	ASSERT(pChar);
-	//signed int iQty = pChar->Stat_GetAdjusted(STAT_STR) * 3.5 * WEIGHT_UNITS + ( 40 * WEIGHT_UNITS ) + ( pChar->m_ModMaxWeight * WEIGHT_UNITS );
-	signed int iQty = pChar->Stat_GetAdjusted(STAT_STR) * 35 + ( 40 * WEIGHT_UNITS ) + ( pChar->m_ModMaxWeight * WEIGHT_UNITS );
+	signed int iQty = 40 + pChar->Stat_GetAdjusted(STAT_STR) * 3.5 + pChar->m_ModMaxWeight;
 	if ( iQty < 0 )
 		iQty = 0;
-	return( iQty );
-//	return ( pChar->Stat_GetAdjusted(STAT_STR) * 4 * WEIGHT_UNITS + ( 30 * WEIGHT_UNITS ) );
+	if ( m_iFeatureML & FEATURE_ML_UPDATE && pChar->IsHuman())
+		iQty += 60;		//Humans can always carry +60 stones (racial traits)
+	return( iQty * WEIGHT_UNITS );
 }
 
 int CResource::Calc_WalkThroughChar( CChar * pCharMove, CChar * pCharObstacle )

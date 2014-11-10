@@ -1606,7 +1606,7 @@ bool CChar::Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax )
 	}
 
 	DIR_TYPE dir = GetDir( pObjTop );
-	if (( dirPrv != dir ) || ! Calc_GetRandVal(10))
+	if ( dirPrv != dir )
 	{
 		dirPrv = dir;
 
@@ -1656,10 +1656,16 @@ int CChar::Skill_Tracking( SKTRIG_TYPE stage )
 	}
 	if ( stage == SKTRIG_STROKE )
 	{
-		int iSkillLevel = Skill_GetAdjusted(SKILL_TRACKING);
-		if ( ! Skill_Tracking( m_Act_Targ, m_atTracking.m_PrvDir, iSkillLevel/20 + 10 ))
+		if ( Skill_Stroke( false ) == UINT_MAX)
 			return( -SKTRIG_ABORT );
-		Skill_SetTimeout();		// next update.
+
+		int iSkillLevel = Skill_GetAdjusted(SKILL_TRACKING);
+		if ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE && IsHuman() )
+			iSkillLevel = maximum( iSkillLevel, 20.0 );			// humans always have a 20.0 minimum skill (racial traits)
+
+		if ( ! Skill_Tracking( m_Act_Targ, m_atTracking.m_PrvDir, iSkillLevel/10 + 10 ))
+			return( -SKTRIG_ABORT );
+		Skill_SetTimeout();			// next update.
 		return( -SKTRIG_STROKE );	// keep it active.
 	}
 
