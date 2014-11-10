@@ -3262,7 +3262,7 @@ bool PacketWheelBoatMove::onReceive(NetState* net)
 
 	DIR_TYPE facing = static_cast<DIR_TYPE>(readByte()); //new boat facing, yes client send it
 	DIR_TYPE moving = static_cast<DIR_TYPE>(readByte()); //the boat movement
-	byte speed = readByte(); //(0 = Stop Movement, 1 = One Tile Movement, 2 = Normal Movement) ***These speeds are NOT the same as 0xF6 packet
+	BYTE speed = readByte(); //(0 = Stop Movement, 1 = One Tile Movement, 2 = Normal Movement) ***These speeds are NOT the same as 0xF6 packet
 
 	if (area && area->IsFlag(REGION_FLAG_SHIP))
 	{

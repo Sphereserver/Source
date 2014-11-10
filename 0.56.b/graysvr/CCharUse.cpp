@@ -1330,9 +1330,9 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 	{
 		if ( IsSetEF(EF_PetSlots) )
 		{
-			short int iFollowerSlotsNeeded = maximum(pPet->GetDefNum("FOLLOWERSLOTS", true),1);
-			short int iCurFollower = GetDefNum("CURFOLLOWER", true);
-			short int iMaxFollower = GetDefNum("MAXFOLLOWER", true);
+			short int iFollowerSlotsNeeded = static_cast<short>(maximum(pPet->GetDefNum("FOLLOWERSLOTS", true),1));
+			short int iCurFollower = static_cast<short>(GetDefNum("CURFOLLOWER", true));
+			short int iMaxFollower = static_cast<short>(GetDefNum("MAXFOLLOWER", true));
 			short int iSetFollower = iCurFollower + iFollowerSlotsNeeded;
 			if ( iSetFollower > 255 )
 				iSetFollower = 255;

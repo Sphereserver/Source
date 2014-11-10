@@ -1359,8 +1359,8 @@ bool CItemBase::r_LoadVal( CScript &s )
 		{
 			if (!IsType(IT_SHIP))
 				return false;
-			CItemBaseMulti *pItemMulti = dynamic_cast<CItemBaseMulti*>(dynamic_cast<CItemBase*>(this));
-			BYTE speed = s.GetArgVal();// = ( ( s.GetArgVal() ) < (1) ? (1) : ( ( s.GetArgVal())  > (4) ? (4) : ( s.GetArgVal() ) ) );
+			CItemBaseMulti *pItemMulti = dynamic_cast<CItemBaseMulti*>(this);
+			BYTE speed = static_cast<unsigned char>(s.GetArgVal());
 			if (speed > 4)
 				speed = 4;
 			else if (speed < 1)
@@ -1370,19 +1370,18 @@ bool CItemBase::r_LoadVal( CScript &s )
 		case IBC_SHIPSPEED:
 		{
 			pszKey += 9;
-			CItemBaseMulti::ShipSpeed speed;
 			if (*pszKey == '.')
 			{
 				pszKey++;
 				CItemBaseMulti *pItemMulti = dynamic_cast<CItemBaseMulti*>(dynamic_cast<CItemBase*>(this));
 				if (!strcmpi(pszKey, "TILES"))
 				{
-					pItemMulti->m_shipSpeed.tiles = s.GetArgVal();
+					pItemMulti->m_shipSpeed.tiles = static_cast<unsigned short>(s.GetArgVal());
 					return true;
 				}
 				else if (!strcmpi(pszKey, "PERIOD"))
 				{
-					pItemMulti->m_shipSpeed.tiles = s.GetArgVal();
+					pItemMulti->m_shipSpeed.tiles = static_cast<unsigned short>(s.GetArgVal());
 					return true;
 				}
 				INT64 piVal[2];

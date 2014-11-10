@@ -3523,7 +3523,7 @@ bool CChar::Attacker_Add( CChar * pChar, INT64 threat )
 		if ( tRet == TRIGRET_RET_TRUE )
 			return false;
 		threat = Args.m_iN1;
-		fIgnore = Args.m_iN2;
+		fIgnore = (Args.m_iN2 != 0);
 	}
 
 	LastAttackers attacker;
@@ -3756,7 +3756,7 @@ bool CChar::Attacker_GetIgnore(int id)
 	if (id < 0)
 		return false;
 	LastAttackers & refAttacker = m_lastAttackers.at(id);
-	return refAttacker.elapsed;
+	return (refAttacker.elapsed != 0);
 }
 
 void CChar::Attacker_Clear()

@@ -928,7 +928,7 @@ void CClient::Event_CombatMode( bool fWar ) // Only for switching to combat mode
 		}
 
 		if ( Args.m_iN3 != 0 && Args.m_iN3 < 3)
-			fWar = Args.m_iN3 -=1;
+			fWar = (Args.m_iN3 == 1 ? false : true);
 	}
 
 	m_pChar->StatFlag_Mod( STATF_War, fWar );
@@ -1080,8 +1080,8 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 	CItemVendable* pItem;
 	INT64 costtotal = 0;
 	short int iFollowerSlotsNeeded = 0;
-	short int iCurFollower = m_pChar->GetDefNum("CURFOLLOWER", true);
-	short int iMaxFollower = m_pChar->GetDefNum("MAXFOLLOWER", true);
+	short int iCurFollower = static_cast<short>(m_pChar->GetDefNum("CURFOLLOWER", true));
+	short int iMaxFollower = static_cast<short>(m_pChar->GetDefNum("MAXFOLLOWER", true));
 
 	//	Check if the vendor really has so much items
 	for (size_t i = 0; i < itemCount; ++i)
@@ -1117,7 +1117,7 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 			CChar * pPet =  m_pChar->CreateNPC( id );
 			ASSERT(pPet);
 
-			iFollowerSlotsNeeded = maximum(pPet->GetDefNum("FOLLOWERSLOTS", true),1);
+			iFollowerSlotsNeeded = static_cast<short>(maximum(pPet->GetDefNum("FOLLOWERSLOTS", true),1));
 			pPet->Delete();
 
 			if ((iCurFollower + iFollowerSlotsNeeded) > iMaxFollower)
@@ -2138,7 +2138,7 @@ bool CClient::Event_DoubleClick( CGrayUID uid, bool fMacro, bool fTestTouch, boo
 		return false;
 
 	CObjBase * pObj = uid.ObjFind();
-	if (!pObj || (fTestTouch && !m_pChar->CanSee(pObj)) && (!pObj->m_Can & CAN_I_FORCEDC))
+	if (!pObj || ((fTestTouch && !m_pChar->CanSee(pObj)) && !(pObj->m_Can & CAN_I_FORCEDC)))
 	{
 		addObjectRemoveCantSee( uid, "the target" );
 		return false;

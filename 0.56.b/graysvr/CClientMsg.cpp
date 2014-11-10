@@ -1812,12 +1812,12 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 						break;
 				}
 				if (((m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= tViewDist) && (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist)) //Item just came in to view
-					&& ((pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true)) //Item has the alwayssend tag set to true
+					&& (((pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true)) //Item has the alwayssend tag set to true
 					|| (!pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_HOUSE)) //Item is not in a house multi (Ships are ok)
 					|| ((pItem->m_uidLink.IsValidUID()) && (pItem->m_uidLink.IsItem()) && (pItem->m_uidLink.ItemFind()->IsTypeMulti())) //Item is linked to a multi
 					|| (pItem->IsTypeMulti())) //Item is a multi
 					|| (((ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion) || (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist))
-					&& (!pItem->IsTypeMulti()) && (pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion))) //Item is in same multi as me
+					&& (!pItem->IsTypeMulti()) && (pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion)))) //Item is in same multi as me
 				{
 					if (dSeeItems < g_Cfg.m_iMaxItemComplexity * 30)
 					{
@@ -1869,12 +1869,12 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 			if (fOsiSight)
 			{
 				if (((m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= tViewDist) && (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist)) //Item just came in to view
-					&& ((pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true)) //Item has the alwayssend tag set to true
+					&& (((pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true)) //Item has the alwayssend tag set to true
 					|| (!pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_HOUSE)) //Item is not in a house multi (Ships are ok)
 					|| ((pItem->m_uidLink.IsValidUID()) && (pItem->m_uidLink.IsItem()) && (pItem->m_uidLink.ItemFind()->IsTypeMulti())) //Item is linked to a multi
 					|| (pItem->IsTypeMulti())) //Item is a multi
 					|| (((ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion) || (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist))
-					&& (!pItem->IsTypeMulti()) && (pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion))) //Item is in same multi as me
+					&& (!pItem->IsTypeMulti()) && (pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion)))) //Item is in same multi as me
 				{
 					if (dSeeItems < g_Cfg.m_iMaxItemComplexity * 30)
 					{

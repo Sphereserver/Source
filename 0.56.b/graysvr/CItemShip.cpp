@@ -220,7 +220,6 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 		}
 
 		CChar * tMe = pClient->GetChar();
-		CRegionWorld * pClientRegion = tMe->GetRegion();
 		BYTE tViewDist = tMe->GetSight();
 
 		for ( size_t i = 0; i < iCount; i++ )

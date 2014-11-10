@@ -3502,7 +3502,7 @@ void CItem::ConvertBolttoCloth()
 
 		CItem * pItemNew = CItem::CreateTemplate( pBaseDef->GetID() );
 		ASSERT(pItemNew);
-		pItemNew->SetAmount( iOutAmount * pDefCloth->m_BaseResources[i].GetResQty() );
+		pItemNew->SetAmount( iOutAmount * static_cast<int>(pDefCloth->m_BaseResources[i].GetResQty()) );
 		if ( pItemNew->IsType( IT_CLOTH ))
 			pItemNew->SetHue( GetHue() );
 		if ( pCont )
