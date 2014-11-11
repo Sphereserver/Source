@@ -737,11 +737,13 @@ BYTE CChar::GetLightLevel() const
 	ADDTOCALLSTACK("CChar::GetLightLevel");
 	// Get personal light level.
 
-	if ( IsStatFlag( STATF_DEAD ) || IsPriv(PRIV_DEBUG))	// dead don't need light.
+	if ( IsStatFlag( STATF_DEAD ) || IsPriv(PRIV_DEBUG))		// dead don't need light.
 		return( LIGHT_BRIGHT + 1 );
 	if ( IsStatFlag( STATF_Sleeping ) && ! IsPriv( PRIV_GM ))	// eyes closed.
 		return( LIGHT_DARK/2 );
 	if ( IsStatFlag( STATF_NightSight ))
+		return( LIGHT_BRIGHT );
+	if ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE && IsElf())		// elves always have nightsight enabled (racial traits)
 		return( LIGHT_BRIGHT );
 	return( GetTopSector()->GetLight());
 }
