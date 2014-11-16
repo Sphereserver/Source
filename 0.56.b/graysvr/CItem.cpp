@@ -1413,11 +1413,13 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 		}
 
 		if ( (iMyZ - pCharMover->GetTopZ()) <= 16 )
+		{
 			ptNewPlace.m_z = static_cast<signed char>(iMyZ);
+		}
 		else
 		{
-			pCharMover->ItemBounce(this);
-			return false;
+			//Once we reach the stack max height, put the item on player feet
+			ptNewPlace.m_z = pCharMover->GetTopZ();
 		}
 	}
 	else if (pCharMover)
