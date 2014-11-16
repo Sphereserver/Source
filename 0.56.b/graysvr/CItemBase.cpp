@@ -1037,7 +1037,7 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 		{
 			if (!IsType(IT_SHIP))
 				return false;
-			CItemBaseMulti * pItemMulti = dynamic_cast<CItemBaseMulti*>(dynamic_cast<CItemBase*>(this));
+			CItemBaseMulti * pItemMulti = dynamic_cast<CItemBaseMulti*>(this);
 			sVal.FormatVal(pItemMulti->m_SpeedMode);
 		}break;
 		case IBC_SHIPSPEED:
@@ -1045,7 +1045,7 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 			if (!IsType(IT_SHIP))
 				return false;
 			pszKey += 9;
-			CItemBaseMulti * pItemMulti = dynamic_cast<CItemBaseMulti*>(dynamic_cast<CItemBase*>(this));
+			CItemBaseMulti * pItemMulti = dynamic_cast<CItemBaseMulti*>(this);
 
 			if (*pszKey == '.')
 			{
@@ -1730,8 +1730,9 @@ CItemBaseMulti::CItemBaseMulti( CItemBase* pBase ) :
 {
 	m_dwRegionFlags = REGION_FLAG_NODECAY | REGION_ANTIMAGIC_TELEPORT | REGION_ANTIMAGIC_RECALL_IN | REGION_FLAG_NOBUILDING;
 	m_rect.SetRectEmpty();
-	m_shipSpeed.period = 1 * TICK_PER_SEC;
-	m_shipSpeed.tiles = 2;
+	m_shipSpeed.period = (1 * TICK_PER_SEC) / 2;
+	m_shipSpeed.tiles = 1;
+	m_SpeedMode = 3;
 	// copy the stuff from the pBase
 	CopyTransfer(pBase);
 }

@@ -769,19 +769,16 @@ int Sphere_OnTick()
 void CServer::ShipTimers_Tick()
 {
 	ADDTOCALLSTACK("CServer::ShipTimers_Tick");
-	if (!m_ShipTimers.size())
-		return;
-
 	for (unsigned int count = 0; count < m_ShipTimers.size(); count++)
 	{
 		CItemShip * pShip = static_cast<CItemShip*>(m_ShipTimers.at(count).ship);
-		if (!pShip)
+		if (pShip)
 		{
-			std::vector<ShipTimers>::iterator it = m_ShipTimers.begin() + count;
-			m_ShipTimers.erase(it);
+			pShip->OnTick();
 			continue;
 		}
-		pShip->OnTick();
+		std::vector<ShipTimers>::iterator it = m_ShipTimers.begin() + count;
+		m_ShipTimers.erase(it);
 	}
 }
 

@@ -9,7 +9,6 @@
 
 CItemShip::CItemShip( ITEMID_TYPE id, CItemBase * pItemDef ) : CItemMulti( id, pItemDef )
 {
-	m_SpeedMode = 1;
 }
 
 CItemShip::~CItemShip()
@@ -96,6 +95,7 @@ bool CItemShip::Ship_SetMoveDir( DIR_TYPE dir )
 	m_itShip.m_fSail = iSpeed;
 	GetTopSector()->SetSectorWakeStatus();	// may get here b4 my client does.
 	CItemMulti * pItemMulti = dynamic_cast<CItemMulti*>(this);
+	pItemMulti->m_SpeedMode = (iSpeed == 1 ? 3 : 4);
 	g_Serv.ShipTimers_Add(this);
 	m_NextMove = CServTime::GetCurrentTime() + maximum(1, (m_itShip.m_fSail == 1) ? pItemMulti->m_shipSpeed.period : (pItemMulti->m_shipSpeed.period / 2));
 	return( true );
@@ -113,7 +113,7 @@ size_t CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 		return 0;
 
 	int iMaxDist = Multi_GetMaxDist();
-	height_t iShipHeight = Item_GetDef()->GetHeight();
+	height_t iShipHeight = Item_GetDef()->GetHeight()+PLAYER_HEIGHT;
 	if ( iShipHeight < 3 )
 		iShipHeight	= 3;
 
@@ -206,21 +206,29 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 
 		pObj->MoveTo(pt);
 	}
-	CItemBaseMulti *pItemBaseMulti = const_cast<CItemBaseMulti*>(Multi_GetDef());
-	BYTE speed = pItemBaseMulti->m_SpeedMode;
+
 	ClientIterator it;
 	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
-		if (pClient->CanSee(this) && pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS))
+		CChar * tMe = pClient->GetChar();
+		BYTE tViewDist = tMe->GetSight();
+
+		if (pClient->CanSee(this) && (pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA()))
 		{
 			CPointMap ptdir = GetTopPoint();
 			ptdir += pdelta;
 
-			new PacketMoveShip(pClient, this, ppObjs, iCount, GetTopPoint().GetDir(ptdir), speed);
-		}
+			new PacketMoveShip(pClient, this, ppObjs, iCount, static_cast<DIR_TYPE>(m_itShip.m_DirMove), static_cast<DIR_TYPE>(m_itShip.m_DirFace), Multi_GetDef()->m_SpeedMode);
 
-		CChar * tMe = pClient->GetChar();
-		BYTE tViewDist = tMe->GetSight();
+			//Client is also on Ship
+			if (tMe->GetRegion()->GetResourceID().GetObjUID() == GetUID())
+			{
+				CPointMap pt = tMe->GetTopPoint();
+				pt -= pdelta;
+				pClient->addPlayerSeeShip( pt );
+				continue;
+			}
+		}
 
 		for ( size_t i = 0; i < iCount; i++ )
 		{
@@ -233,7 +241,7 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 			if (pObj->IsItem())
 			{
 				CItem *pItem = dynamic_cast <CItem *>(pObj);
-				if ((tMe->GetTopPoint().GetDistSight(pt) < tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) >= tViewDist) || (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HIGHSEAS))))
+				if ((tMe->GetTopPoint().GetDistSight(pt) < tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) >= tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA())))
 					pClient->addItem(pItem);
 			}
 			else
@@ -241,121 +249,20 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 				CChar *pChar = dynamic_cast <CChar *>(pObj);
 				if (pClient == pChar->GetClient())
 				{
-					if (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HIGHSEAS))
-						pClient->addPlayerView( pt, false, true );
+					pClient->addPlayerView( ptOld, true);
 				}
-				else if ((tMe->GetTopPoint().GetDistSight(pt) <= tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) > tViewDist) || (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HIGHSEAS))))
+				else if ((tMe->GetTopPoint().GetDistSight(pt) <= tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) > tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA())))
 				{
-					if ((pt.GetDist(ptOld) >= 1) && (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HIGHSEAS)) && (pChar->GetTopPoint().GetDistSight(ptOld) < tViewDist))
+					if ((pt.GetDist(ptOld) > 1) && (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HIGHSEAS)) && (pChar->GetTopPoint().GetDistSight(ptOld) < tViewDist))
 						pClient->addCharMove( pChar );
 					else
+					{
+						pClient->addObjectRemove( pChar );
 						pClient->addChar(pChar);
+					}
 				}
 			}
 		}
-
-		//Client is on the ship
-/*		if (pClientRegion->GetResourceID().GetObjUID() == this->GetUID())
-		{
-			CPointMap pt = tMe->GetTopPoint();
-			pt -= pdelta;
-			pt.m_map = tMe->GetTopPoint().m_map;
-			pClient->addPlayerView( pt, false, true );
-		}*/
-
-	/*	BYTE tViewDist;
-		if (tMe)
-			tViewDist = tMe->GetSight();
-		else
-			tViewDist = UO_MAP_VIEW_SIZE;
-
-		CWorldSearch AreaChars(GetTopPoint(), UO_MAP_VIEW_RADAR);
-		AreaChars.SetAllShow(pClient->IsPriv(PRIV_ALLSHOW));
-		AreaChars.SetSearchSquare(true);
-		for (;;)
-		{
-			CChar *pChar = AreaChars.GetChar();
-			if (!pChar)
-				break;
-			if (!pClient->CanSee(pChar))
-				continue;
-			//bool bAddChar = false;
-			if (pClientRegion->GetResourceID().GetObjUID() == this->GetUID()) //Client is on the ship
-			{
-				CPointMap pt = tMe->GetTopPoint();
-				CPointMap ptOld(pt);
-				ptOld -= pdelta;
-				ptOld.m_map = tMe->GetTopPoint().m_map;
-				if ((pChar->GetTopPoint().GetDistSight(pt) <= tViewDist) && ((pChar->GetTopPoint().GetDistSight(ptOld) > tViewDist) || (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HIGHSEAS))))
-				{
-					if ((pt.GetDist(ptOld) >= 1) && (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HIGHSEAS)))
-					{
-						if ( pClient == pChar->GetClient() ) 
-							pClient->addPlayerView( ptOld, false, true );
-						else if (pChar->GetTopPoint().GetDistSight(ptOld) < tViewDist)
-							pClient->addCharMove( pChar );
-						else
-							pClient->addChar(pChar);
-					}
-					else
-					pClient->addPlayerView( ptOld, false, true );
-					//pClient->addChar(pChar);
-				}
-			}
-			else
-			{
-				CPointMap pt = pChar->GetTopPoint();
-				CPointMap ptOld(pt);
-				ptOld -= pdelta;
-				ptOld.m_map = pChar->GetTopPoint().m_map;
-				if ((tMe->GetTopPoint().GetDistSight(pt) <= tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) > tViewDist) || (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HIGHSEAS))))
-				{
-					if ((pt.GetDist(ptOld) >= 1) && (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HIGHSEAS)))
-					{
-						if ( pClient == pChar->GetClient() ) 
-							pClient->addPlayerView( ptOld, false, true );
-						else if (tMe->GetTopPoint().GetDistSight(ptOld) < tViewDist)
-							pClient->addCharMove( pChar );
-						else
-							pClient->addChar(pChar);
-					}
-					else
-					pClient->addPlayerView( ptOld, false, true );
-					//pClient->addChar(pChar);
-				}
-			}
-		}
-
-		CWorldSearch AreaItems(GetTopPoint(), UO_MAP_VIEW_RADAR);
-		AreaItems.SetAllShow(pClient->IsPriv(PRIV_ALLSHOW));
-		AreaItems.SetSearchSquare(true);
-		for (;;)
-		{
-			CItem *pItem = AreaItems.GetItem();
-			if (!pItem)
-				break;
-			if (!pClient->CanSee(pItem))
-				continue;
-
-			if (pClientRegion->GetResourceID().GetObjUID() == this->GetUID()) //Client is on the ship
-			{
-				CPointMap pt = tMe->GetTopPoint();
-				CPointMap ptOld(pt);
-				ptOld -= pdelta;
-				ptOld.m_map = tMe->GetTopPoint().m_map;
-				if ((pItem->GetTopPoint().GetDistSight(pt) < tViewDist) && ((pItem->GetTopPoint().GetDistSight(ptOld) >= tViewDist) || (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HIGHSEAS))))
-					pClient->addItem(pItem);
-			}
-			else
-			{
-				CPointMap pt = pItem->GetTopPoint();
-				CPointMap ptOld(pt);
-				ptOld -= pdelta;
-				ptOld.m_map = pItem->GetTopPoint().m_map;
-				if ((tMe->GetTopPoint().GetDistSight(pt) < tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) >= tViewDist) || (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HIGHSEAS))))
-					pClient->addItem(pItem);
-			}
-		}*/
 	}
 
 	return( true );
@@ -745,8 +652,6 @@ bool CItemShip::Ship_OnMoveTick()
 		return( true );
 	}
 	m_NextMove = CServTime::GetCurrentTime() + maximum(1, (m_itShip.m_fSail == 1) ? pItemMulti->m_shipSpeed.period : (pItemMulti->m_shipSpeed.period / 2));
-	//m_NextMove = CServTime::GetCurrentTime() + Ship_GetMovePeriod();
-	//SetTimeout(maximum(1, ( m_itShip.m_fSail == 1 ) ? pItemMulti->m_shipSpeed.period : (pItemMulti->m_shipSpeed.period / 2)));
 	return(true);
 }
 
@@ -1486,25 +1391,4 @@ void CItemShip::OnComponentCreate( const CItem * pComponent )
 	CItemMulti::OnComponentCreate( pComponent );
 	return;
 }
-
-/*CItemBaseMulti::ShipSpeed CItemShip::GetShipSpeed()
-{
-	ADDTOCALLSTACK("CItemShip::GetShipSpeed");
-	// Determine the ship's speed from its TAGs and CItemBaseMulti
-
-	CItemBaseMulti::ShipSpeed speed;
-	const CItemBaseMulti *pItemBaseMulti = Multi_GetDef();
-
-	speed.period = pItemBaseMulti->m_shipSpeed.period;
-	speed.tiles = pItemBaseMulti->m_shipSpeed.tiles;
-
-	if (pItemBaseMulti == NULL)
-	{
-		speed.period = 1 * TICK_PER_SEC;
-		speed.tiles = 2;
-		return speed;
-	}
-
-	return speed;
-}*/
 

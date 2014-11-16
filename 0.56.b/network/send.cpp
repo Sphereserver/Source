@@ -4739,7 +4739,7 @@ PacketDisplayMapNew::PacketDisplayMapNew(const CClient* target, const CItemMap* 
  *
  *
  ***************************************************************************/
-PacketMoveShip::PacketMoveShip(const CClient* target, const CItemShip* ship, CObjBase** objects, size_t objectCount, DIR_TYPE direction, BYTE speed) : PacketSend(XCMD_MoveShip, 18, PRI_NORMAL)
+PacketMoveShip::PacketMoveShip(const CClient* target, const CItemShip* ship, CObjBase** objects, size_t objectCount, DIR_TYPE movedirection, DIR_TYPE boatdirection, BYTE speed) : PacketSend(XCMD_MoveShip, 18, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMoveShip::PacketMoveShip");
 	ASSERT(objectCount > 0);
@@ -4748,8 +4748,8 @@ PacketMoveShip::PacketMoveShip(const CClient* target, const CItemShip* ship, COb
 	initLength();
 	writeInt32(ship->GetUID());
 	writeByte(speed);
-	writeByte(direction);
-	writeByte(direction); // unknown
+	writeByte(movedirection);
+	writeByte(boatdirection);
 	writeInt16(shipLocation.m_x);
 	writeInt16(shipLocation.m_y);
 	writeInt16(shipLocation.m_z);

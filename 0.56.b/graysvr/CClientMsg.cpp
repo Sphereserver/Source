@@ -1786,7 +1786,7 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 	AreaItems.SetSearchSquare(true);
 	DWORD	dSeeItems = 0;
 
-	if (this->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS))
+	if (GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || GetNetState()->isClientSA())
 	{
 		for (;;)
 		{
@@ -1927,7 +1927,114 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 	}
 }
 
-void CClient::addPlayerView( const CPointMap & ptold, bool playerStart, bool NotItems )
+void CClient::addPlayerSeeShip( const CPointMap & ptold )
+{
+	ADDTOCALLSTACK("CClient::addPlayerSee");
+	// Adjust to my new location, what do I now see here?
+	bool fAllShow = IsPriv(PRIV_ALLSHOW);
+	bool fOsiSight = IsSetOF(OF_OSIMultiSight);
+	BYTE tViewDist = m_pChar->GetSight();
+
+	//	Items on the ground
+	CWorldSearch AreaItems(m_pChar->GetTopPoint(), UO_MAP_VIEW_RADAR);
+	AreaItems.SetAllShow(fAllShow);
+	AreaItems.SetSearchSquare(true);
+	DWORD	dSeeItems = 0;
+
+	for (;;)
+	{
+		CItem *pItem = AreaItems.GetItem();
+		if (!pItem)
+			break;
+
+		if (!CanSee(pItem))
+			continue;
+
+		if (fOsiSight)
+		{
+			if ((ptold.GetDistSight(pItem->GetTopPoint()) > UO_MAP_VIEW_RADAR) && (pItem->IsTypeMulti()))  //Item is a Multi in Radar view
+			{
+				if (dSeeItems < g_Cfg.m_iMaxItemComplexity * 30)
+				{
+					CItemMulti * pMulti = dynamic_cast<CItemMulti*>(pItem);
+					CObjBase * ppObjs[MAX_MULTI_CONTENT];
+					DWORD	dMultiItems = 0;
+					dMultiItems = pMulti->Multi_ListObjs(ppObjs);
+					new PacketContainer(this, ppObjs, dMultiItems);
+				}
+				else
+					break;
+			}
+			if (((m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= tViewDist) && (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist)) //Item just came in to view
+				&& ((pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true)) //Item has the alwayssend tag set to true
+				|| (!pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_HOUSE)) //Item is not in a house multi (Ships are ok)
+				|| ((pItem->m_uidLink.IsValidUID()) && (pItem->m_uidLink.IsItem()) && (pItem->m_uidLink.ItemFind()->IsTypeMulti())) //Item is linked to a multi
+				|| (pItem->IsTypeMulti()))) //Item is a multi
+			{
+				if (dSeeItems < g_Cfg.m_iMaxItemComplexity * 30)
+				{
+					++dSeeItems;
+					addItem_OnGround(pItem);
+				}
+				else
+					break;
+			}
+		}
+		else
+		{
+			if ((ptold.GetDistSight(pItem->GetTopPoint()) > UO_MAP_VIEW_RADAR) && (pItem->IsTypeMulti()))
+			{
+				if (dSeeItems < g_Cfg.m_iMaxItemComplexity * 30)
+				{
+					CItemMulti * pMulti = dynamic_cast<CItemMulti*>(pItem);
+					CObjBase * ppObjs[MAX_MULTI_CONTENT];
+					DWORD	dMultiItems = 0;
+					dMultiItems = pMulti->Multi_ListObjs(ppObjs);
+					new PacketContainer(this, ppObjs, dMultiItems);
+				}
+				else
+					break;
+			}
+			if ((m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= tViewDist) && (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist))
+			{
+				if (dSeeItems < g_Cfg.m_iMaxItemComplexity * 30)
+				{
+					++dSeeItems;
+					addItem_OnGround(pItem);
+				}
+				else
+					break;
+			}
+		}
+	}
+
+	CWorldSearch AreaChars(m_pChar->GetTopPoint(), tViewDist);
+	AreaChars.SetAllShow(fAllShow);
+	AreaChars.SetSearchSquare(true);
+	DWORD	dSeeChars = 0;
+
+	for (;;)
+	{
+		CChar	*pChar = AreaChars.GetChar();
+		if (!pChar)
+			break;
+		if (m_pChar == pChar)
+			continue;
+
+		if (ptold.GetDistSight(pChar->GetTopPoint()) > tViewDist)
+		{
+			if (dSeeChars < g_Cfg.m_iMaxCharComplexity * 5)
+			{
+				++dSeeChars;
+				addChar(pChar);
+			}
+			else
+				break;
+		}
+	}
+}
+
+void CClient::addPlayerView( const CPointMap & ptold, bool playerStart )
 {
 	ADDTOCALLSTACK("CClient::addPlayerView");
 	// I moved = Change my point of view. Teleport etc..
@@ -1943,8 +2050,7 @@ void CClient::addPlayerView( const CPointMap & ptold, bool playerStart, bool Not
 
 	m_Env.SetInvalid();	// Must resend environ stuff.
 
-	// What can i see here ?
-	if ( !playerStart && !NotItems )
+	if ( !playerStart )
 		addPlayerSee( ptold );
 }
 

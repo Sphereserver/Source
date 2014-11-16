@@ -1440,3 +1440,7 @@ Changed: Some internal improvements on Tracking skill
 	-New OSI formula to check tracking difficulty when trying to track players. It will use the char skills (Tracking, Detecting Hidden) vs target skills (Hiding, Stealth).
 	-[sphere_msgs.scp]: Updated some 'tracking_*' messages. Also merged all 'skillmenu_text_*' (only used on tracking skillmenu) into 'tracking_*'.
 	-[sphere_skills.scp]: Added OSI-like support for ARROWQUESTS on tracking skill (softcoded). OSI uses only the arrow to track (with no messages) but I will leave the old messages as it is for compatibility purposes with old clients.
+
+16-11-2014, Ben
+Fixed: Added Items on ships with .add will now move with the ship.
+Fixed: Ships should now move alot smoother with SA+ clients and back to normal with older clients
