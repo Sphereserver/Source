@@ -1137,6 +1137,7 @@ bool CItem::Stack( CItem * pItem )
 	else if ( IsAttr( ATTR_LOCKEDDOWN ) != pItem->IsAttr( ATTR_LOCKEDDOWN )) return false;
 	
 	SetAmount( pItem->GetAmount() + GetAmount());
+	ResendTooltip(true,false);
 	pItem->Delete();
 	return( true );
 }
@@ -1356,7 +1357,7 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 			// ITRIG_STACKON
 			if ( Stack( pItem ))
 			{
-				iMyZ = 100;
+				iMyZ = pItem->GetTopZ();
 				break;
 			}
 		}
@@ -1430,7 +1431,7 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 			// else
 			// Determine map point at that position
 			unsigned long wBlockFlags = CAN_C_WALK;
-			char pointZ = g_World.GetHeightPoint2(ptNewPlace, wBlockFlags, false);
+			char pointZ = g_World.GetHeightPoint2(ptNewPlace, wBlockFlags, true);
 			ptNewPlace.m_z = pointZ + 1;
 		}
 	}
