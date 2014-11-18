@@ -2356,7 +2356,7 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 	CGrayUID uObj = uid;
 	CChar *pChar = uObj.CharFind();
 
-	if ( !CanSee( uObj.ObjFind() ) )
+	if ( !CanSee(uObj.ObjFind()) || m_pChar->IsStatFlag(STATF_DEAD))
 		return;
 
 	if (!IsSetOF(OF_NoContextMenuLOS))
@@ -2448,12 +2448,20 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 			{
 				m_pPopupPacket->addOption(POPUP_PETGUARD, 6107, POPUPFLAG_COLOR, 0xFFFF);
 				m_pPopupPacket->addOption(POPUP_PETFOLLOW, 6108, POPUPFLAG_COLOR, 0xFFFF);
-				m_pPopupPacket->addOption(POPUP_PETDROP, 6109, POPUPFLAG_COLOR, 0xFFFF);
+				if ( pChar->GetPack())
+					m_pPopupPacket->addOption(POPUP_PETDROP, 6109, POPUPFLAG_COLOR, 0xFFFF);
 				m_pPopupPacket->addOption(POPUP_PETKILL, 6111, POPUPFLAG_COLOR, 0xFFFF);
 				m_pPopupPacket->addOption(POPUP_PETSTOP, 6112, POPUPFLAG_COLOR, 0xFFFF);
 				m_pPopupPacket->addOption(POPUP_PETSTAY, 6114, POPUPFLAG_COLOR, 0xFFFF);
 				m_pPopupPacket->addOption(POPUP_PETFRIEND, 6110, POPUPFLAG_COLOR, 0xFFFF);
 				m_pPopupPacket->addOption(POPUP_PETTRANSFER, 6113, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETRELEASE, 6118, POPUPFLAG_COLOR, 0xFFFF);
+			}
+			else if ( pChar->Memory_FindObjTypes( m_pChar, MEMORY_FRIEND ) != NULL )
+			{
+				m_pPopupPacket->addOption(POPUP_PETFOLLOW, 6108, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETSTOP, 6112, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETSTAY, 6114, POPUPFLAG_COLOR, 0xFFFF);
 			}
 		}
 
@@ -2518,7 +2526,7 @@ void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do somethin
 
 	CChar *pChar = uObj.CharFind();
 
-	if (( pChar->m_pNPC ) && pChar->NPC_IsOwnedBy( m_pChar, false ))
+	if ( pChar->m_pNPC )
 	{
 		switch ( EntryTag )
 		{
@@ -2552,6 +2560,10 @@ void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do somethin
 
 			case POPUP_PETTRANSFER:
 				pChar->NPC_OnHearPetCmd( "transfer", m_pChar, false );
+				break;
+
+			case POPUP_PETRELEASE:
+				pChar->NPC_OnHearPetCmd( "release", m_pChar, false );
 				break;
 		}
 	}

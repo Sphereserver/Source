@@ -1444,3 +1444,9 @@ Changed: Some internal improvements on Tracking skill
 16-11-2014, Ben
 Fixed: Added Items on ships with .add will now move with the ship.
 Fixed: Ships should now move alot smoother with SA+ clients and back to normal with older clients
+
+18-11-2014, Coruja
+Fixed: Pet tooltip menu showing to dead players.
+Fixed: Pet tooltip menu showing 'Drop' button when the pet has no backpack access.
+Fixed: Added missing 'Release' button on pet tooltip menu.
+Changed: Pet friends now have limited access to pets commands instead full access. Friends now can only use follow / stop / stay commands and open the pet backpack (if avaible).

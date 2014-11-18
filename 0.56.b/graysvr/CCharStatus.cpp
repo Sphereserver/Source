@@ -2280,7 +2280,7 @@ bool CChar::IsTakeCrime( const CItem * pItem, CChar ** ppCharMark ) const
 		return( false );	// i guess it's not a crime.
 	}
 
-	if ( pCharMark->NPC_IsOwnedBy( this ))	// He let's you
+	if ( pCharMark->NPC_IsOwnedBy( this ) || pCharMark->Memory_FindObjTypes( this, MEMORY_FRIEND ) != NULL )	// He let's you
 		return( false );
 
 	// Pack animal has no owner ?

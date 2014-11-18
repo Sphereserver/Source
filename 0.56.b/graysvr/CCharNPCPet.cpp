@@ -94,20 +94,16 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 		"STAY",
 		"STOCK",
 		"STOP",
-		"TRANSFER"
+		"TRANSFER",
+		"RELEASE"
 	};
 
 	// Kill me?
 	// attack me?
 	m_fIgnoreNextPetCmd = false;	// We clear this incase it's true from previous pet cmds.
 
-	if ( !pSrc || m_pPlayer || !m_pNPC )
+	if ( !pSrc->IsClient() || m_pPlayer || !m_pNPC )
 		return false;
-
-	if ( ! NPC_IsOwnedBy( pSrc, true ))
-	{
-		return( false );	// take no commands
-	}
 
 	TALKMODE_TYPE	mode	= TALKMODE_SAY;
 	if ( OnTriggerSpeech( true, pszCmd, pSrc, mode) )
@@ -122,7 +118,20 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 		if ( ! strnicmp( pszCmd, sm_Pet_table[PC_PRICE], 5 ))
 			iCmd = PC_PRICE;
 		else
-			return( false );
+			return false;
+	}
+
+	if ( iCmd == PC_FOLLOW || iCmd == PC_STAY || iCmd == PC_STOP )
+	{
+		// Pet friends can use only these commands
+		if ( ! NPC_IsOwnedBy( pSrc, true ) && Memory_FindObjTypes( pSrc, MEMORY_FRIEND ) == NULL )
+			return false;
+	}
+	else
+	{
+		// All others commands are avaible only to pet owner
+		if ( ! NPC_IsOwnedBy( pSrc, true ) )
+			return false;
 	}
 
 	CCharBase * pCharDef = Char_GetDef();
@@ -130,9 +139,6 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 	bool fTargAllowGround = false;
 	bool fMayBeCrime = false;
 	LPCTSTR pTargPrompt = NULL;
-
-	if ( ! pSrc->IsClient())
-		return( false );
 
 	switch ( iCmd )
 	{
@@ -327,10 +333,19 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const
 	ADDTOCALLSTACK("CChar::NPC_OnHearPetCmdTarg");
 	// Pet commands that required a target.
 
-	if ( ! NPC_IsOwnedBy( pSrc ))
+	if ( iCmd == PC_FOLLOW || iCmd == PC_STAY || iCmd == PC_STOP )
 	{
-		return( false );	// take no commands
+		// Pet friends can use only these commands
+		if ( ! NPC_IsOwnedBy( pSrc ) && Memory_FindObjTypes( pSrc, MEMORY_FRIEND ) == NULL )
+			return false;
 	}
+	else
+	{
+		// All others commands are avaible only to pet owner
+		if ( ! NPC_IsOwnedBy( pSrc, true ) )
+			return false;
+	}
+
 	if ( m_fIgnoreNextPetCmd == true )
 	{
 		m_fIgnoreNextPetCmd = false;

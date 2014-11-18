@@ -322,7 +322,7 @@ bool CChar::NPC_IsOwnedBy( const CChar * pChar, bool fAllowGM ) const
 	if ( m_pNPC->m_Brain == NPCBRAIN_BERSERK )	// i cannot be commanded.
 		return( false );
 
-	return( Memory_FindObjTypes( pChar, MEMORY_IPET|MEMORY_FRIEND ) != NULL );
+	return( Memory_FindObjTypes( pChar, MEMORY_IPET ) != NULL );
 }
 
 CChar * CChar::NPC_PetGetOwner() const
