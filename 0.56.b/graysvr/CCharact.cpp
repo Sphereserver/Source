@@ -1788,6 +1788,10 @@ bool CChar::ItemBounce( CItem * pItem )
 		}
 		pszWhere = g_Cfg.GetDefaultMsg( DEFMSG_FEET );
 		ItemDrop( pItem, GetTopPoint());
+
+		// Maybe this update should be at CItem:MoveToCheck() ?
+		pItem->RemoveFromView();
+		pItem->Update();
 	}
 
 	SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_ITEMPLACE ), pItem->GetName(), pszWhere );
