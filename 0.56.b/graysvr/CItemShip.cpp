@@ -129,13 +129,16 @@ size_t CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 		CChar * pChar = AreaChar.GetChar();
 		if ( pChar == NULL )
 			break;
-		if ( ! m_pRegion->IsInside2d( pChar->GetTopPoint()))
+		if ( !m_pRegion->IsInside2d( pChar->GetTopPoint()))
 			continue;
 		if ( pChar->IsDisconnected() && pChar->m_pNPC )
 			continue;
 
+		//Sea npcs were being dragged by the boat until they swim out
+		//Should we add other checks than relative Z?
+		//What about pItem below?
 		int zdiff = pChar->GetTopZ() - GetTopZ();
-		if ( zdiff < -3 || zdiff > iShipHeight )
+		if (zdiff < 2 || zdiff > iShipHeight /*|| pChar->GetTopZ() <= GetTopZ()*/)
 			continue;
 
 		ppObjList[iCount++] = pChar;
@@ -158,7 +161,7 @@ size_t CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 				continue;
 
 			int zdiff = pItem->GetTopZ() - GetTopZ();
-			if ( zdiff < -3 || zdiff > iShipHeight )
+			if (zdiff < 2 || zdiff > iShipHeight /*|| pItem->GetTopZ() <= GetTopZ()*/)
 				continue;
 		}
 		ppObjList[iCount++] = pItem;
