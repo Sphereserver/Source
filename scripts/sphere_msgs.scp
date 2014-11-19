@@ -824,7 +824,7 @@ EMOTE_DEF_UNICODE	0
 //party_select					"Select a person to join your party."
 //party_targ_who				"Who would you like to add to your party?"
 //party_nonpcadd				"The creature ignores your offer"
-//party_add_notleader			"You may only add members to the party if you are the leader."
+//party_notleader			"You may only add members to the party if you are the leader."
 //party_is_full					"You may only have 10 in your party."
 //party_already_in_this			"This person is already in your party!"
 //party_already_in				"This person is already in a party!"

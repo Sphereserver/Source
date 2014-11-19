@@ -113,9 +113,7 @@ size_t CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 		return 0;
 
 	int iMaxDist = Multi_GetMaxDist();
-	height_t iShipHeight = Item_GetDef()->GetHeight()+PLAYER_HEIGHT;
-	if ( iShipHeight < 3 )
-		iShipHeight	= 3;
+	height_t iShipHeight = GetTopZ() + maximum(3,Item_GetDef()->GetHeight());
 
 	// always list myself first. All other items must see my new region !
 	size_t iCount = 0;
@@ -129,16 +127,13 @@ size_t CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 		CChar * pChar = AreaChar.GetChar();
 		if ( pChar == NULL )
 			break;
-		if ( !m_pRegion->IsInside2d( pChar->GetTopPoint()))
+		if ( ! m_pRegion->IsInside2d( pChar->GetTopPoint()))
 			continue;
 		if ( pChar->IsDisconnected() && pChar->m_pNPC )
 			continue;
 
-		//Sea npcs were being dragged by the boat until they swim out
-		//Should we add other checks than relative Z?
-		//What about pItem below?
-		int zdiff = pChar->GetTopZ() - GetTopZ();
-		if (zdiff < 2 || zdiff > iShipHeight /*|| pChar->GetTopZ() <= GetTopZ()*/)
+		int zdiff = pChar->GetTopZ() - iShipHeight;
+		if ( zdiff < -2 || zdiff > PLAYER_HEIGHT )
 			continue;
 
 		ppObjList[iCount++] = pChar;
@@ -160,8 +155,8 @@ size_t CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 			if ( ! pItem->IsMovable() && !pItem->IsType(IT_CORPSE))
 				continue;
 
-			int zdiff = pItem->GetTopZ() - GetTopZ();
-			if (zdiff < 2 || zdiff > iShipHeight /*|| pItem->GetTopZ() <= GetTopZ()*/)
+			int zdiff = pItem->GetTopZ() - iShipHeight;
+			if ( zdiff < -2 || zdiff > PLAYER_HEIGHT )
 				continue;
 		}
 		ppObjList[iCount++] = pItem;
