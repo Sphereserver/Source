@@ -1770,15 +1770,8 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 	// Adjust to my new location, what do I now see here?
 	bool fAllShow = IsPriv(PRIV_ALLSHOW);
 	bool fOsiSight = IsSetOF(OF_OSIMultiSight);
+	BYTE tViewDist = m_pChar->GetSight();
 	CRegionBase * pCurrentCharRegion = m_pChar->GetTopPoint().GetRegion(REGION_TYPE_MULTI);
-
-	CChar * tMe = GetChar();
-	BYTE tViewDist;
-	if ( tMe )
-		tViewDist = tMe->GetSight();
-	else
-		// dunno if this _can_ happen, but to be on the safe side ... Nazghul
-		tViewDist = UO_MAP_VIEW_SIZE;
 
 	//	Items on the ground
 	CWorldSearch AreaItems(m_pChar->GetTopPoint(), UO_MAP_VIEW_RADAR);
@@ -1807,17 +1800,18 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 						DWORD	dMultiItems = 0;
 						dMultiItems = pMulti->Multi_ListObjs(ppObjs);
 						new PacketContainer(this, ppObjs, dMultiItems);
+						addItem_OnGround(pItem);
 					}
 					else
 						break;
 				}
-				if (((m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= tViewDist) && (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist)) //Item just came in to view
-					&& (((pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true)) //Item has the alwayssend tag set to true
+				if ((((m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= tViewDist) && (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist)) //Item just came in to view
+					&& ((pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true)) //Item has the alwayssend tag set to true
 					|| (!pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_HOUSE)) //Item is not in a house multi (Ships are ok)
 					|| ((pItem->m_uidLink.IsValidUID()) && (pItem->m_uidLink.IsItem()) && (pItem->m_uidLink.ItemFind()->IsTypeMulti())) //Item is linked to a multi
-					|| (pItem->IsTypeMulti())) //Item is a multi
-					|| (((ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion) || (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist))
-					&& (!pItem->IsTypeMulti()) && (pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion)))) //Item is in same multi as me
+					|| (pItem->IsTypeMulti()))) //Item is a multi
+					|| (((ptold.GetRegion(REGION_TYPE_HOUSE) != pCurrentCharRegion) || (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist))
+					&& (!pItem->IsTypeMulti()) && (pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_HOUSE) == pCurrentCharRegion))) //Item is in same multi as me
 				{
 					if (dSeeItems < g_Cfg.m_iMaxItemComplexity * 30)
 					{
@@ -1830,7 +1824,7 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 			}
 			else
 			{
-				if ((ptold.GetDistSight(pItem->GetTopPoint()) > UO_MAP_VIEW_RADAR) && (pItem->IsTypeMulti()))
+				if ((ptold.GetDistSight(pItem->GetTopPoint()) > UO_MAP_VIEW_RADAR) && (pItem->IsTypeMulti()))  //Item is a Multi in Radar view
 				{
 					if (dSeeItems < g_Cfg.m_iMaxItemComplexity * 30)
 					{
@@ -1839,11 +1833,12 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 						DWORD	dMultiItems = 0;
 						dMultiItems = pMulti->Multi_ListObjs(ppObjs);
 						new PacketContainer(this, ppObjs, dMultiItems);
+						addItem_OnGround(pItem);
 					}
 					else
 						break;
 				}
-				if ((m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= tViewDist) && (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist))
+				if ((m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= tViewDist) && (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist)) //Item just came in to view
 				{
 					if (dSeeItems < g_Cfg.m_iMaxItemComplexity * 30)
 					{
@@ -1868,13 +1863,14 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 
 			if (fOsiSight)
 			{
-				if (((m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= tViewDist) && (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist)) //Item just came in to view
-					&& (((pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true)) //Item has the alwayssend tag set to true
+				if ((((m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= tViewDist) && (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist)) //Item just came in to view
+					&& ((pItem->m_TagDefs.GetKeyNum("ALWAYSSEND", true)) //Item has the alwayssend tag set to true
 					|| (!pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_HOUSE)) //Item is not in a house multi (Ships are ok)
 					|| ((pItem->m_uidLink.IsValidUID()) && (pItem->m_uidLink.IsItem()) && (pItem->m_uidLink.ItemFind()->IsTypeMulti())) //Item is linked to a multi
-					|| (pItem->IsTypeMulti())) //Item is a multi
-					|| (((ptold.GetRegion(REGION_TYPE_MULTI) != pCurrentCharRegion) || (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist))
-					&& (!pItem->IsTypeMulti()) && (pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pCurrentCharRegion)))) //Item is in same multi as me
+					|| (pItem->IsTypeMulti()))) //Item is a multi
+					|| (((ptold.GetRegion(REGION_TYPE_HOUSE) != pCurrentCharRegion) || (ptold.GetDistSight(pItem->GetTopPoint()) > tViewDist))
+					&& (!pItem->IsTypeMulti()) && (pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_HOUSE) == pCurrentCharRegion)) //Item is in same multi as me
+					|| ((ptold.GetDistSight(pItem->GetTopPoint()) > UO_MAP_VIEW_RADAR) && (pItem->IsTypeMulti())))  //Item is a Multi in Radar view
 				{
 					if (dSeeItems < g_Cfg.m_iMaxItemComplexity * 30)
 					{
@@ -1961,6 +1957,7 @@ void CClient::addPlayerSeeShip( const CPointMap & ptold )
 					DWORD	dMultiItems = 0;
 					dMultiItems = pMulti->Multi_ListObjs(ppObjs);
 					new PacketContainer(this, ppObjs, dMultiItems);
+					addItem_OnGround(pItem);
 				}
 				else
 					break;
@@ -1991,6 +1988,7 @@ void CClient::addPlayerSeeShip( const CPointMap & ptold )
 					DWORD	dMultiItems = 0;
 					dMultiItems = pMulti->Multi_ListObjs(ppObjs);
 					new PacketContainer(this, ppObjs, dMultiItems);
+					addItem_OnGround(pItem);
 				}
 				else
 					break;
