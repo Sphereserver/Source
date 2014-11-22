@@ -2424,15 +2424,14 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 			switch ( pChar->m_pNPC->m_Brain )
 			{
 				case NPCBRAIN_BANKER:
-					{
-						m_pPopupPacket->addOption(POPUP_BANKBOX, 6105, POPUPFLAG_COLOR, 0xFFFF);
-						m_pPopupPacket->addOption(POPUP_BANKBALANCE, 6124, POPUPFLAG_COLOR, 0xFFFF);
-						break;
-					}
+					m_pPopupPacket->addOption(POPUP_BANKBOX, 6105, POPUPFLAG_COLOR, 0xFFFF);
+					m_pPopupPacket->addOption(POPUP_BANKBALANCE, 6124, POPUPFLAG_COLOR, 0xFFFF);
+					break;
 
 				case NPCBRAIN_STABLE:
 					m_pPopupPacket->addOption(POPUP_STABLESTABLE, 6126, POPUPFLAG_COLOR, 0xFFFF);
 					m_pPopupPacket->addOption(POPUP_STABLERETRIEVE, 6127, POPUPFLAG_COLOR, 0xFFFF);
+					break;
 
 				case NPCBRAIN_VENDOR:
 				case NPCBRAIN_HEALER:
@@ -2571,10 +2570,7 @@ void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do somethin
 	switch ( EntryTag )
 	{
 		case POPUP_PAPERDOLL:
-			if ( m_pChar == pChar )
-				Event_DoubleClick(m_pChar->GetUID(), true, false);
-			else
-				m_pChar->Use_Obj(pChar, false, false);
+			m_pChar->GetClient()->addCharPaperdoll( pChar );
 			break;
 
 		case POPUP_BACKPACK:
@@ -2583,12 +2579,12 @@ void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do somethin
 
 		case POPUP_BANKBOX:
 			if ( pChar->m_pNPC->m_Brain == NPCBRAIN_BANKER )
-				addBankOpen( m_pChar );
+				pChar->NPC_OnHear("bank", m_pChar);
 			break;
 
 		case POPUP_BANKBALANCE:
 			if ( pChar->m_pNPC->m_Brain == NPCBRAIN_BANKER )
-				SysMessagef( "You have %d gold piece(s) in your bankbox", m_pChar->GetBank()->ContentCount( RESOURCE_ID(RES_TYPEDEF,IT_GOLD) ) );
+				pChar->NPC_OnHear("balance", m_pChar);
 			break;
 
 		case POPUP_VENDORBUY:

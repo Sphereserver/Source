@@ -1454,3 +1454,7 @@ Changed: Pet friends now have limited access to pets commands instead full acces
 18-11-2014, Ben
 Changed evelation at which items are considered to be part of a ship. (-2 to +15 from top of deck).
 Fixed: party_add_notleader defmessage was wrong -> party_notleader is correct.
+
+22-11-2014, Coruja
+Added: Wisdom racial trait on elves (they always have +20 max mana). It works only if FEATURE_ML_UPDATE is enabled on sphere.ini
+Changed: 'Open Bankbox' / 'Check Balance' context menu buttons on NPC Banker (brain_banker) now will make the NPC hear 'bank'/'balance' words instead call hardcoded functions to open bank or check balance. In other words: now both context menu buttons and spoken commands are consistent and can be softcoded.

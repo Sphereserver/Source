@@ -192,6 +192,12 @@ int CChar::Stat_GetMax( STAT_TYPE i ) const
 		}
 		else
 			val	= Stat_GetAdjusted(i);
+
+		if ( i == STAT_INT )
+		{
+			if ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE && IsElf() )
+				val += 20;		// elves always have +20 max mana (racial traits)
+		}
 		return (val < 0 ? (m_pPlayer ? 1 : 0) : val);
 	}
 	val	=  m_Stat[i].m_max;
@@ -235,7 +241,6 @@ short CChar::Stat_GetAdjusted( STAT_TYPE i ) const
 			val = g_Cfg.m_iMaxKarma;
 	}
 	return val;
-
 }
 
 short CChar::Stat_GetBase( STAT_TYPE i ) const

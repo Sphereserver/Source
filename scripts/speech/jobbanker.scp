@@ -29,7 +29,7 @@ ON=*occupation*
 	ENDIF
 
 ON=*Balance*
-	SAY=You have <SRC.BANKBALANCE> gold in your account.
+	SAY Thy current bank balance is <SRC.BANKBALANCE> gold.
 
 ON=*Bank*
 	IF ( <COMPLEXITY.HIGH> || <COMPLEXITY.MEDIUM> )
