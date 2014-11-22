@@ -432,31 +432,39 @@ void CClient::Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, u
 			// dropped on top of a non container item.
 			// can i pile them ?
 			// Still in same container.
-
 			ASSERT(pItemOn);
-			pObjOn = pItemOn->GetContainer();
-			pt = pItemOn->GetUnkPoint();
 
-			if ( ! pItem->Stack( pItemOn ))
+			if (pItemOn->IsTypeMulti() && (GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || GetNetState()->isClientSA()))
 			{
-				if ( pItemOn->IsTypeSpellbook() )
-				{
-					if ( pItemOn->AddSpellbookScroll( pItem ))
-					{
-						SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_CANT_ADD_SPELLBOOK ) );
-						Event_Item_Drop_Fail( pItem );
-						return;
-					}
-					// We only need to add a sound here if there is no
-					// scroll left to bounce back.
-					if (pItem->IsDeleted())
-						addSound( 0x057, pItemOn );	// add to inv sound.
-					Event_Item_Drop_Fail( pItem );
-					return; // We can't drop any remaining scrolls
-				}
+				pt.m_x += pItemOn->GetTopPoint().m_x;
+				pt.m_y += pItemOn->GetTopPoint().m_y;
+				pt.m_z = pItemOn->GetTopPoint().m_z + pItemOn->GetHeight();
+			}
+			else
+			{
+				pObjOn = pItemOn->GetContainer();
+				pt = pItemOn->GetUnkPoint();
 
-				// Just drop on top of the current item.
-				// Client probably doesn't allow this anyhow.
+				if ( ! pItem->Stack( pItemOn ))
+				{
+					if ( pItemOn->IsTypeSpellbook() )
+					{
+						if ( pItemOn->AddSpellbookScroll( pItem ))
+						{
+							SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_CANT_ADD_SPELLBOOK ) );
+							Event_Item_Drop_Fail( pItem );
+							return;
+						}
+						// We only need to add a sound here if there is no
+						// scroll left to bounce back.
+						if (pItem->IsDeleted())
+							addSound( 0x057, pItemOn );	// add to inv sound.
+						Event_Item_Drop_Fail( pItem );
+						return; // We can't drop any remaining scrolls
+					}
+					// Just drop on top of the current item.
+					// Client probably doesn't allow this anyhow.
+				}
 			}
 		}
 	}
@@ -508,7 +516,6 @@ void CClient::Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, u
 				// on ground
 				m_pChar->UpdateDrag( pItem, NULL, &pt );
 				m_pChar->ItemDrop( pItem, pt );
-
 				return;
 			}
 		}

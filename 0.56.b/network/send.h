@@ -1802,7 +1802,7 @@ public:
 class PacketMoveShip : public PacketSend
 {
 public:
-	PacketMoveShip(const CClient* target, const CItemShip* ship, CObjBase** objects, size_t objectCount, DIR_TYPE movedirection, DIR_TYPE boatdirection, BYTE speed);
+	PacketMoveShip(const CClient* target, const CItemShip* ship, CObjBase** objects, size_t objectCount, BYTE movedirection, BYTE boatdirection, BYTE speed);
 };
 
 /***************************************************************************

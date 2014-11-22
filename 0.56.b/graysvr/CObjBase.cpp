@@ -2419,9 +2419,9 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				CChar *pChar = dynamic_cast <CChar *>(this);
 				CItem *pItem = dynamic_cast <CItem *>(this);
 				if ( pChar )
-					pChar->FixZ();
+					SetTopZ(pChar->GetFixZ(GetTopPoint()));
 				else if ( pItem )
-					pItem->FixZ();
+					SetTopZ(pItem->GetFixZ(GetTopPoint()));
 				else
 				{
 					g_Log.EventDebug("Failed to get reference in FIX or Z\n");

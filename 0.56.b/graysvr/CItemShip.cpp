@@ -65,7 +65,6 @@ void CItemShip::Ship_Stop()
 	// Make sure we have stopped.
 	m_itShip.m_fSail = 0;
 	g_Serv.ShipTimers_Delete(this);
-	//SetTimeout( -1 );
 }
 
 bool CItemShip::Ship_SetMoveDir( DIR_TYPE dir )
@@ -113,7 +112,7 @@ size_t CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 		return 0;
 
 	int iMaxDist = Multi_GetMaxDist();
-	height_t iShipHeight = GetTopZ() + maximum(3,Item_GetDef()->GetHeight());
+	int iShipHeight = GetTopZ() + maximum(3,Item_GetDef()->GetHeight());
 
 	// always list myself first. All other items must see my new region !
 	size_t iCount = 0;
@@ -211,52 +210,55 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 		CChar * tMe = pClient->GetChar();
 		BYTE tViewDist = tMe->GetSight();
 
-		if (pClient->CanSee(this) && (pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA()))
+		if (pClient->CanSee(this))
 		{
-			CPointMap ptdir = GetTopPoint();
-			ptdir += pdelta;
-
-			new PacketMoveShip(pClient, this, ppObjs, iCount, static_cast<DIR_TYPE>(m_itShip.m_DirMove), static_cast<DIR_TYPE>(m_itShip.m_DirFace), Multi_GetDef()->m_SpeedMode);
-
-			//Client is also on Ship
-			if (tMe->GetRegion()->GetResourceID().GetObjUID() == GetUID())
+			if (pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA())
 			{
-				CPointMap pt = tMe->GetTopPoint();
-				pt -= pdelta;
-				pClient->addPlayerSeeShip( pt );
-				continue;
-			}
-		}
+				CPointMap ptdir = GetTopPoint();
+				ptdir += pdelta;
 
-		for ( size_t i = 0; i < iCount; i++ )
-		{
-			CObjBase * pObj = ppObjs[i];
-			CPointMap pt = pObj->GetTopPoint();
-			CPointMap ptOld(pt);
-			ptOld -= pdelta;
-			ptOld.m_map = tMe->GetTopPoint().m_map;
+				new PacketMoveShip(pClient, this, ppObjs, iCount, m_itShip.m_DirMove, m_itShip.m_DirFace, Multi_GetDef()->m_SpeedMode);
 
-			if (pObj->IsItem())
-			{
-				CItem *pItem = dynamic_cast <CItem *>(pObj);
-				if ((tMe->GetTopPoint().GetDistSight(pt) < tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) >= tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA())))
-					pClient->addItem(pItem);
-			}
-			else
-			{
-				CChar *pChar = dynamic_cast <CChar *>(pObj);
-				if (pClient == pChar->GetClient())
+				//Client is also on Ship
+				if (tMe->GetRegion()->GetResourceID().GetObjUID() == GetUID())
 				{
-					pClient->addPlayerView( ptOld, true);
+					CPointMap pt = tMe->GetTopPoint();
+					pt -= pdelta;
+					pClient->addPlayerSeeShip( pt );
+					continue;
 				}
-				else if ((tMe->GetTopPoint().GetDistSight(pt) <= tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) > tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA())))
+			}
+
+			for ( size_t i = 0; i < iCount; i++ )
+			{
+				CObjBase * pObj = ppObjs[i];
+				CPointMap pt = pObj->GetTopPoint();
+				CPointMap ptOld(pt);
+				ptOld -= pdelta;
+				ptOld.m_map = tMe->GetTopPoint().m_map;
+
+				if (pObj->IsItem())
 				{
-					if ((pt.GetDist(ptOld) > 1) && (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HIGHSEAS)) && (pChar->GetTopPoint().GetDistSight(ptOld) < tViewDist))
-						pClient->addCharMove( pChar );
-					else
+					CItem *pItem = dynamic_cast <CItem *>(pObj);
+					if ((tMe->GetTopPoint().GetDistSight(pt) < tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) >= tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA())))
+						pClient->addItem(pItem);
+				}
+				else
+				{
+					CChar *pChar = dynamic_cast <CChar *>(pObj);
+					if (pClient == pChar->GetClient())
 					{
-						pClient->addObjectRemove( pChar );
-						pClient->addChar(pChar);
+						pClient->addPlayerView( ptOld, true);
+					}
+					else if ((tMe->GetTopPoint().GetDistSight(pt) <= tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) > tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA())))
+					{
+						if ((pt.GetDist(ptOld) > 1) && (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HIGHSEAS)) && (pChar->GetTopPoint().GetDistSight(ptOld) < tViewDist))
+							pClient->addCharMove( pChar );
+						else
+						{
+							pClient->addObjectRemove( pChar );
+							pClient->addChar(pChar);
+						}
 					}
 				}
 			}
@@ -275,7 +277,7 @@ bool CItemShip::Ship_CanMoveTo( const CPointMap & pt ) const
 
 	DWORD wBlockFlags = CAN_I_WATER;
 
-	g_World.GetHeightPoint( pt, wBlockFlags, true );
+	g_World.GetHeightPoint2( pt, wBlockFlags, true );
 	if ( wBlockFlags & CAN_I_WATER )
 		return true;
 

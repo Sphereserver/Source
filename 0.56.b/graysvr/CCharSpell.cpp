@@ -39,6 +39,8 @@ bool CChar::Spell_Teleport( CPointBase ptNew, bool fTakePets, bool fCheckAntiMag
 	if ( ! ptNew.IsCharValid())
 		return false;
 
+	ptNew.m_z = GetFixZ(ptNew);
+
 	if ( g_Cfg.m_iMountHeight )
 	{
 		if ( ! IsVerticalSpace( ptNew, false ) )

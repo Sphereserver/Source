@@ -3049,16 +3049,6 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			return( NULL );
 	}
 
-	/*if (	IsStatFlag(STATF_OnHorse)
-		&&	( wBlockFlags & CAN_I_ROOF )
-		&&	g_Cfg.m_iMountHeight
-		&&	!pArea->IsFlag(REGION_FLAG_UNDERGROUND)
-		&&	! IsPriv(PRIV_GM) ) // but ok in dungeons
-	{
-		SysMessageDefault( DEFMSG_MOUNT_CEILING );
-		return( NULL );
-	}*/
-
 	EXC_SET("Creature bumping");
 	// Bump into other creatures ?
 	if ( ! IsStatFlag( STATF_DEAD | STATF_Sleeping | STATF_Insubstantial ) && fCheckChars )

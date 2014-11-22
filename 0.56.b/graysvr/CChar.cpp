@@ -496,7 +496,7 @@ int CChar::IsWeird() const
 
 	return( 0 );
 }
-void CChar::FixZ( unsigned long wBlockFlags)
+signed char CChar::GetFixZ( CPointMap pt, unsigned long wBlockFlags)
 {
 	if (! wBlockFlags )
 		wBlockFlags = GetMoveBlockFlags();
@@ -504,14 +504,14 @@ void CChar::FixZ( unsigned long wBlockFlags)
 	if ( dwCan & CAN_C_WALK )
 		wBlockFlags |= CAN_I_CLIMB; // If we can walk than we can climb. Ignore CAN_C_FLY at all here
 
-	CGrayMapBlockState block( wBlockFlags, GetTopPoint().m_z, GetTopPoint().m_z + m_zClimbHeight + GetHeightMount( false ), GetTopPoint().m_z + m_zClimbHeight + 2, GetHeightMount( false ) );
-	g_World.GetFixPoint( GetTopPoint(), block );
+	CGrayMapBlockState block( wBlockFlags, pt.m_z, pt.m_z + m_zClimbHeight + GetHeightMount( false ), pt.m_z + m_zClimbHeight + 2, GetHeightMount( false ) );
+	g_World.GetFixPoint( pt, block );
 
 	wBlockFlags = block.m_Bottom.m_dwBlockFlags;
 	if ( block.m_Top.m_dwBlockFlags )
 	{
 		wBlockFlags |= CAN_I_ROOF;	// we are covered by something.
-		if ( block.m_Top.m_z < GetTopPoint().m_z + (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? GetHeightMount( false ) : GetHeightMount( false )/2 )) )
+		if ( block.m_Top.m_z < pt.m_z + (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? GetHeightMount( false ) : GetHeightMount( false )/2 )) )
 			wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
 	}
 	if (( dwCan != 0xFFFF ) && ( wBlockFlags != 0x0 ))
@@ -529,22 +529,22 @@ void CChar::FixZ( unsigned long wBlockFlags)
 			{
 				if ( block.m_Bottom.m_dwTile > TERRAIN_QTY )
 				{
-					if ( block.m_Bottom.m_z > GetTopPoint().m_z + m_zClimbHeight + 2) // Too high to climb.
-						return;
+					if ( block.m_Bottom.m_z > pt.m_z + m_zClimbHeight + 2) // Too high to climb.
+						return pt.m_z;
 				}
-				else if ( block.m_Bottom.m_z > GetTopPoint().m_z + m_zClimbHeight + GetHeightMount( false ) + 3)
-					return;
+				else if ( block.m_Bottom.m_z > pt.m_z + m_zClimbHeight + GetHeightMount( false ) + 3)
+					return pt.m_z;
 			}
 		}
 		if (( wBlockFlags & CAN_I_BLOCK ) && ( ! Can( CAN_C_PASSWALLS )) )
-			return;
+			return pt.m_z;
 
 		if ( block.m_Bottom.m_z >= UO_SIZE_Z )
-			return;
+			return pt.m_z;
 	}
-	if (( GetHeightMount( false ) + GetTopPoint().m_z >= block.m_Top.m_z ) && ( g_Cfg.m_iMountHeight ) && ( !IsPriv( PRIV_GM ) ) && ( !IsPriv( PRIV_ALLMOVE ) ))
-		return;
-	SetTopZ(block.m_Bottom.m_z);
+	if (( GetHeightMount( false ) + pt.m_z >= block.m_Top.m_z ) && ( g_Cfg.m_iMountHeight ) && ( !IsPriv( PRIV_GM ) ) && ( !IsPriv( PRIV_ALLMOVE ) ))
+		return pt.m_z;
+	return(block.m_Bottom.m_z);
 }
 
 int CChar::FixWeirdness()

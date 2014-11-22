@@ -607,12 +607,13 @@ int CItem::IsWeird() const
 	CObjBase * ptCont = GetContainer(); 
 	return( ( ptCont == NULL ) ? 0x2106 : ptCont->IsWeird() );
 }
-void CItem::FixZ(  unsigned long wBlockFlags )
+
+signed char CItem::GetFixZ( CPointMap pt, unsigned long wBlockFlags )
 {
 	height_t zHeight = CItemBase::GetItemHeight( GetDispID(), wBlockFlags );
-	CGrayMapBlockState block( wBlockFlags, GetTopPoint().m_z, GetTopPoint().m_z + zHeight, GetTopPoint().m_z + 2, zHeight );
-	g_World.GetFixPoint( GetTopPoint(), block);
-	SetTopZ(block.m_Bottom.m_z);
+	CGrayMapBlockState block( wBlockFlags, pt.m_z, pt.m_z + zHeight, pt.m_z + 2, zHeight );
+	g_World.GetFixPoint( pt, block);
+	return(block.m_Bottom.m_z);
 }
 
 CItem * CItem::SetType(IT_TYPE type)
@@ -1313,7 +1314,7 @@ bool CItem::MoveTo(CPointMap pt, bool bForceFix) // Put item on the ground here.
 
 	SetTopPoint( pt );
 	if ( bForceFix )
-		FixZ();
+		SetTopZ(GetFixZ(GetTopPoint()));
 
 	return( true );
 }
@@ -1423,18 +1424,9 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 			ptNewPlace.m_z = pCharMover->GetTopZ();
 		}
 	}
-	else if (pCharMover)
-	{
-		// max one floor. 
-		if (iMyZ - pCharMover->GetTopZ() >= 20)
-		{
-			// else
-			// Determine map point at that position
-			unsigned long wBlockFlags = CAN_C_WALK;
-			char pointZ = g_World.GetHeightPoint(ptNewPlace, wBlockFlags, true);
-			ptNewPlace.m_z = pointZ + 1;
-		}
-	}
+
+	unsigned long wBlockFlags = CAN_C_WALK;
+	ptNewPlace.m_z = GetFixZ(ptNewPlace, wBlockFlags );
 
 	// Set the decay timer for this if not in a house or such.
 	INT64 iDecayTime = GetDecayTime();
@@ -1445,8 +1437,6 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 		if ( pRegion != NULL && pRegion->IsFlag( REGION_FLAG_NODECAY ))	// No decay here in my house/boat
 			iDecayTime = -1;
 	}
-
-	// MoveToDecay(ptNewPlace, iDecayTime);
 
 	if ( iItemCount > g_Cfg.m_iMaxItemComplexity )
 	{

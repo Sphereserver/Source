@@ -2361,10 +2361,10 @@ bool CChar::IsVerticalSpace( CPointMap ptDest, bool fForceMount )
 	if ( wBlockFlags & CAN_C_WALK )
 		wBlockFlags |= CAN_I_CLIMB;
 
-	CGrayMapBlockState block( wBlockFlags, ptDest.m_z, ptDest.m_z + m_zClimbHeight + GetHeightMount( false ), ptDest.m_z + m_zClimbHeight + 2, GetHeightMount( false ) );
-	g_World.GetHeightPoint2( ptDest, block, true );
 
-	//DEBUG_ERR(("GetHeightMount( false ) %d  ptDest.m_z %d  block.m_Top.m_z %d\n",GetHeightMount( false )+4,ptDest.m_z,block.m_Top.m_z));
+	CGrayMapBlockState block( wBlockFlags, ptDest.m_z, ptDest.m_z + m_zClimbHeight + GetHeightMount( false ), ptDest.m_z + m_zClimbHeight + 2, GetHeightMount( false ) );
+	g_World.GetHeightPoint( ptDest, block, true );
+
 	if ( GetHeightMount( false ) + ptDest.m_z + (( fForceMount ) ? ( 4 ) : ( 0 )) >= block.m_Top.m_z ) //4 is the height of a rideable
 		return false;
 	return true;

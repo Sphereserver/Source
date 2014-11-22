@@ -723,7 +723,7 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 				if (pItemDef->GetID() == pStatic->GetDispID()) //parent item
 				{
 					wBlockThis = (pItemDef->m_Can & CAN_I_MOVEMASK);
-					z += pItemDef->GetHeight();
+					z += ((wBlockThis & CAN_I_CLIMB) ? pItemDef->GetHeight()/2 : pItemDef->GetHeight());
 				}
 				else //non-parent item
 				{
@@ -732,12 +732,12 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 					{
 						g_Log.EventDebug("Failed to get non-parent reference (static) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pStatic->GetDispID(),pStatic->m_x+pMapBlock->m_x,pStatic->m_y+pMapBlock->m_y,pStatic->m_z);
 						wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
-						z += pItemDef->GetHeight();
+						z += ((wBlockThis & CAN_I_CLIMB) ? pItemDef->GetHeight()/2 : pItemDef->GetHeight());
 					}
 					else
 					{
 						wBlockThis = (pDupeDef->m_Can & CAN_I_MOVEMASK);
-						z += pDupeDef->GetHeight();
+						z += ((wBlockThis & CAN_I_CLIMB) ? pDupeDef->GetHeight()/2 : pDupeDef->GetHeight());
 					}
 				}
 			}
@@ -797,7 +797,6 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 				{
 					x2 = pt.m_x - pItem->GetTopPoint().m_x;
 					y2 = pt.m_y - pItem->GetTopPoint().m_y;
-
 					iQty = pMulti->GetItemCount();
 					for ( size_t ii = 0; ii < iQty; ++ii, pMultiItem = NULL, z = 0 )
 					{
@@ -818,7 +817,10 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 						if ( pItemDef != NULL )
 						{
 							if ( pItemDef->GetID() == pMultiItem->GetDispID() ) //parent item
+							{
 								wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
+								z += ((wBlockThis & CAN_I_CLIMB) ? pItemDef->GetHeight()/2 : pItemDef->GetHeight());
+							}
 							else //non-parent item
 							{
 								pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pMultiItem->GetDispID()));
@@ -826,9 +828,13 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 								{
 									g_Log.EventDebug("Failed to get non-parent reference (multi) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pMultiItem->GetDispID(),pMultiItem->m_dx+pItem->GetTopPoint().m_x,pMultiItem->m_dy+pItem->GetTopPoint().m_y,pMultiItem->m_dz+pItem->GetTopPoint().m_z);
 									wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
+									z += ((wBlockThis & CAN_I_CLIMB) ? pItemDef->GetHeight()/2 : pItemDef->GetHeight());
 								}
 								else
+								{
 									wBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK );
+									z += ((wBlockThis & CAN_I_CLIMB) ? pDupeDef->GetHeight()/2 : pDupeDef->GetHeight());
+								}
 							}
 						}
 						else if ( pMultiItem->GetDispID() )
@@ -883,7 +889,10 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 		if ( pItemDef )
 		{
 			if ( pItemDef->GetDispID() == pItem->GetDispID() )//parent item
+			{
 				wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
+				z += ((wBlockThis & CAN_I_CLIMB) ? pItemDef->GetHeight()/2 : pItemDef->GetHeight());
+			}
 			else //non-parent item
 			{
 				pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pItem->GetDispID()));
@@ -891,9 +900,13 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 				{
 					g_Log.EventDebug("Failed to get non-parent reference (dynamic) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pItem->GetDispID(),pItem->GetTopPoint().m_x,pItem->GetTopPoint().m_y,pItem->GetTopPoint().m_z);
 					wBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
+					z += ((wBlockThis & CAN_I_CLIMB) ? pItemDef->GetHeight()/2 : pItemDef->GetHeight());
 				}
 				else
+				{
 					wBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK );
+					z += ((wBlockThis & CAN_I_CLIMB) ? pDupeDef->GetHeight()/2 : pDupeDef->GetHeight());
+				}
 			}
 		}
 		else

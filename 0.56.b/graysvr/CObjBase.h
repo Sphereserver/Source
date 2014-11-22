@@ -931,7 +931,7 @@ public:
 	void SetAnim( ITEMID_TYPE id, int iTime );
 
 	int IsWeird() const;
-	void FixZ( unsigned long wBlockFlags = 0 );
+	signed char GetFixZ(CPointMap pt, unsigned long wBlockFlags = 0 );
 	
 	void SetAttr( DWORD dwAttr )
 	{
@@ -2817,7 +2817,7 @@ private:
 public:
 	// Status and attributes ------------------------------------
 	int IsWeird() const;
-	void FixZ( unsigned long wBlockFlags = 0);
+	signed char GetFixZ( CPointMap pt, unsigned long wBlockFlags = 0);
 	virtual void Delete(bool bforce = false);
 	virtual bool NotifyDelete();
 	bool IsStatFlag( DWORD dwStatFlag ) const
