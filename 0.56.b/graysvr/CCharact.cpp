@@ -4046,6 +4046,7 @@ bool CChar::CHAR_OnTickFood( int nFoodLevel , int HitsHungerLoss )
 	if ( IsStatFlag(STATF_INVUL|STATF_DEAD|STATF_Sleeping|STATF_Stone|STATF_Spawned))
 		return false;
 
+	bool bPet = IsStatFlag(STATF_Pet);
 	char *pszMsg = Str_GetTemp();
 	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_LOOKS), Food_GetLevelMessage(bPet, false));
 	CItem *pMountItem = Horse_GetMountItem();
