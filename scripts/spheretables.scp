@@ -33,7 +33,6 @@ As a general rule:
 // sphere.ini and spheretable.scp are automatic.
 // All the other scripts we want to load.
 scripts/sphere_defs.scp
-scripts/sphere_defs_2.scp
 scripts/sphere_types.scp
 scripts/sphere_book.scp
 scripts/sphere_backward_compatibility.scp

@@ -885,8 +885,9 @@ midi_TheVesperMist		102
 // area types.
 r_guardpost           r_brit
 r_docks               r_brit
-r_desert              r_plains
 r_foliage             r_jungle
+r_desert              t_junk
+r_plains			  t_junk
 r_civilization        t_junk
 r_caves               t_junk
 r_stables             t_junk
