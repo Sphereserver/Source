@@ -639,6 +639,7 @@ private:
 protected:
 	static void ReplaceItemBase( CItemBase * pOld, CResourceDef * pNew );
 public:
+	static void GetItemTiledataFlags( DWORD & wBlockThis, ITEMID_TYPE id );
 	static height_t GetItemHeightFlags( const CUOItemTypeRec2 & tile, DWORD & wBlockThis );
 	static void GetItemSpecificFlags( const CUOItemTypeRec2 & tile, DWORD & wBlockThis, IT_TYPE type, ITEMID_TYPE id );
 	static bool IsTypeArmor( IT_TYPE type );

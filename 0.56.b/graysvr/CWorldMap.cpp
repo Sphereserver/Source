@@ -742,7 +742,7 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 				}
 			}
 			else if ( pStatic->GetDispID() )
-				wBlockThis = 0;
+				CItemBase::GetItemTiledataFlags(wBlockThis,pStatic->GetDispID());
 
 			if (block.m_Bottom.m_z < z)
 			{
@@ -838,10 +838,7 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 							}
 						}
 						else if ( pMultiItem->GetDispID() )
-						{
-							DEBUG_ERR(("Item (0%x) has no definition in scripts.\n",pMultiItem->GetDispID()));
-							wBlockThis = 0;
-						}
+							CItemBase::GetItemTiledataFlags(wBlockThis,pMultiItem->GetDispID());
 
 						if (block.m_Bottom.m_z < z)
 						{
@@ -909,11 +906,8 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 				}
 			}
 		}
-		else
-		{
-			DEBUG_ERR(("Item (0%x) has no definition in scripts.\n",pItem->GetDispID()));
-			wBlockThis = 0;
-		}
+		else if (pItem->GetDispID())
+			CItemBase::GetItemTiledataFlags(wBlockThis,pItem->GetDispID());
 
 		if (block.m_Bottom.m_z < z)
 		{
@@ -1056,9 +1050,7 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 				}
 			}
 			else if ( pStatic->GetDispID() )
-			{
-				wBlockThis = 0;
-			}
+				CItemBase::GetItemTiledataFlags(wBlockThis,pStatic->GetDispID());
 
 			block.CheckTile_Item( wBlockThis, z, zHeight, pStatic->GetDispID() + TERRAIN_QTY );
 		}
@@ -1146,10 +1138,7 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 								}
 							}
 							else if ( pMultiItem->GetDispID() )
-							{
-								DEBUG_ERR(("Item (0%x) has no definition in scripts.\n",pMultiItem->GetDispID()));
-								wBlockThis = 0;
-							}
+								CItemBase::GetItemTiledataFlags(wBlockThis,pMultiItem->GetDispID());
 
 							block.CheckTile_Item( wBlockThis, z, zHeight, pMultiItem->GetDispID() + TERRAIN_QTY );
 						}
@@ -1207,11 +1196,8 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 				}
 			}
 		}
-		else
-		{
-			DEBUG_ERR(("Item (0%x) has no definition in scripts.\n",pItem->GetDispID()));
-			wBlockThis = 0;
-		}
+		else if (pItem->GetDispID())
+			CItemBase::GetItemTiledataFlags(wBlockThis,pItem->GetDispID());
 
 		block.CheckTile_Item(wBlockThis, z, zHeight, pItem->GetDispID() + TERRAIN_QTY);
 	}

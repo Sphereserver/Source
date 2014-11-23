@@ -680,6 +680,36 @@ inline void CItemBase::GetItemSpecificFlags( const CUOItemTypeRec2 & tiledata, D
 	}
 }
 
+void CItemBase::GetItemTiledataFlags( DWORD & wBlockThis, ITEMID_TYPE id ) // static
+{
+	ADDTOCALLSTACK("CItemBase::GetItemTiledataFlags");
+
+	CUOItemTypeRec2 tiledata;
+	memset( &tiledata, 0, sizeof(tiledata));
+	if ( ! CItemBase::GetItemData( id, &tiledata ))
+	{
+		wBlockThis = 0;
+		return;
+	}
+
+	if ( tiledata.m_flags & UFLAG4_DOOR )
+		wBlockThis |= CAN_I_DOOR;
+	if ( tiledata.m_flags & UFLAG1_WATER )
+		wBlockThis |= CAN_I_WATER;
+	if ( tiledata.m_flags & UFLAG2_PLATFORM )
+		wBlockThis |= CAN_I_PLATFORM;
+	if ( tiledata.m_flags & UFLAG1_BLOCK )
+		wBlockThis |= CAN_I_BLOCK;
+	if ( tiledata.m_flags & UFLAG2_CLIMBABLE )
+		wBlockThis |= CAN_I_CLIMB;
+	if ( tiledata.m_flags & UFLAG1_DAMAGE )
+		wBlockThis |= CAN_I_FIRE;
+	if ( tiledata.m_flags & UFLAG4_ROOF )
+		wBlockThis |= CAN_I_ROOF;
+	if ( tiledata.m_flags & UFLAG4_HOVEROVER )
+		wBlockThis |= CAN_I_HOVER;
+}
+
 inline height_t CItemBase::GetItemHeightFlags( const CUOItemTypeRec2 & tiledata, DWORD & wBlockThis ) // static
 {
 	ADDTOCALLSTACK("CItemBase::GetItemHeightFlags");
