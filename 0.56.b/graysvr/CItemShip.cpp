@@ -247,9 +247,7 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 				{
 					CChar *pChar = dynamic_cast <CChar *>(pObj);
 					if (pClient == pChar->GetClient())
-					{
 						pClient->addPlayerView( ptOld, true);
-					}
 					else if ((tMe->GetTopPoint().GetDistSight(pt) <= tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) > tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA())))
 					{
 						if ((pt.GetDist(ptOld) > 1) && (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HIGHSEAS)) && (pChar->GetTopPoint().GetDistSight(ptOld) < tViewDist))
@@ -332,9 +330,6 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 	DIR_TYPE dirTmp;
 	for ( int i = -3; i < 3; ++i )
 	{
-		//if (i == 0) // We don't need to check forwards <--- apparently we do!
-		//	continue;
-
 		dirTmp = GetDirTurn(static_cast<DIR_TYPE>(m_itShip.m_DirFace), i);
 		ptTmp = rect.GetRectCorner(dirTmp);
 		ptTmp.m_z = GetTopZ();
@@ -357,42 +352,6 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 	{
 		CObjBase *pObj = ppObjs[i];
 
-		if( pObj->IsItem() )
-		{
-			CItem * pItem = STATIC_CAST<CItem*>(pObj);
-			//	change to new view of this ship
-			if ( pItem == this )
-			{
-				m_pRegion->UnRealizeRegion();
-				pItem->SetID(idnew);
-				// Adjust the region to be the new shape/area.
-				MultiRealizeRegion();
-				pItem->Update();
-				//	create all needed components
-				DWORD privateUID = Multi_GetSign()->m_itKey.m_lockUID.GetPrivateUID();
-				for ( size_t j = 0; j < pMultiNew->m_Components.GetCount(); j++ )
-				{
-					const CItemBaseMulti::CMultiComponentItem & component = pMultiNew->m_Components.ElementAt(j);
-
-					Multi_CreateComponent(static_cast<ITEMID_TYPE>(component.m_id),
-										  component.m_dx,
-										  component.m_dy,
-										  component.m_dz,
-										  privateUID);
-				}
-				continue;
-			}
-			else if ( Multi_IsPartOf(pItem) )
-			{
-				//	this will be deleted later
-			}
-		}
-		else if( pObj->IsChar() )
-		{
-			CChar *pChar = STATIC_CAST<CChar*>(pObj);
-			pChar->m_dirFace = GetDirTurn(pChar->m_dirFace, iTurn);
-			pChar->RemoveFromView();
-		}
 		CPointMap pt = pObj->GetTopPoint();
 		
 		int iTmp;
@@ -413,35 +372,47 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 				ydiff = iTmp;
 				break;
 			default: // u turn.
-				xdiff = -xdiff;
-				ydiff = -ydiff;
+				//no change
 				break;
 		}
 		pt.m_x = GetTopPoint().m_x + xdiff;
 		pt.m_y = GetTopPoint().m_y + ydiff;
 		pObj->MoveTo(pt);
-		if ( !pObj->IsDisconnected() )
-			pObj->Update();
-	}
 
-	//	delete old components
-	for ( size_t j = iCount - 1; j > 0; j-- )
-	{
-		if ( !ppObjs[j]->IsItem() )
-			continue;
-
-		CItem * pItem = dynamic_cast<CItem*>( ppObjs[j] );
-		if ( !Multi_IsPartOf( pItem ) )
-			continue;
-
-		if ( pItem->IsContainer() )
+		if( pObj->IsItem() )
 		{
-			CItemContainer * pItemCont = dynamic_cast<CItemContainer*>( pItem );
-			pItemCont->ContentsTransfer( GetShipHold(), false );
+			CItem * pItem = STATIC_CAST<CItem*>(pObj);
+			//	change to new view of this ship
+			if ( pItem == this )
+			{
+				m_pRegion->UnRealizeRegion();
+				SetID(idnew);
+				MultiRealizeRegion();
+			}
+			else if ( Multi_IsPartOf(pItem) )
+			{
+				for ( size_t j = 0; j < pMultiNew->m_Components.GetCount(); j++ )
+				{
+					const CItemBaseMulti::CMultiComponentItem & component = pMultiNew->m_Components.ElementAt(j);
+					if ((xdiff == component.m_dx) && (ydiff == component.m_dy) && ((pItem->GetTopZ()-GetTopZ()) == component.m_dz))
+						pItem->SetDispID(component.m_id);
+				}
+			}
 		}
-
-		pItem->Delete();
+		else if( pObj->IsChar() )
+		{
+			CChar *pChar = STATIC_CAST<CChar*>(pObj);
+			pChar->m_dirFace = GetDirTurn(pChar->m_dirFace, iTurn);
+			pChar->RemoveFromView();
+		}
 	}
+
+	for ( size_t i = 0; i < iCount; i++ )
+	{
+		CObjBase * pObj = ppObjs[i];
+		pObj->Update();
+	}
+
 	m_itShip.m_DirFace = dir;
 	return true;
 }
