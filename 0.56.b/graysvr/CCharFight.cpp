@@ -2185,18 +2185,15 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 {
 	ADDTOCALLSTACK("CChar::OnTakeDamage");
 	// Someone hit us.
-	// uType =
-	//	DAMAGE_GOD		 0x01	// Nothing can block this.
-	//	DAMAGE_HIT_BLUNT 0x02	// Physical hit of some sort.
-	//	DAMAGE_MAGIC	 0x04	// Magic blast of some sort. (we can be immune to magic to some extent)
-	//	DAMAGE_POISON	 0x08	// Or biological of some sort ? (HARM spell)
-	//	DAMAGE_FIRE		 0x10	// Fire damage of course.  (Some creatures are immune to fire)
-	//	DAMAGE_ELECTRIC  0x20	// lightning.
-	//	DAMAGE_NOREVEAL	 0x40	// Attacker is not revealed for this
-	//	DAMAGE_GENERAL	 0x80	// All over damage. As apposed to hitting just one point.
-	//
-	// RETURN: damage done.
-	//  -1 = already dead = invalid target. 0 = no damage. INT_MAX = killed.
+	// uType: damage flags
+	//  DAMAGE_GOD
+	//  DAMAGE_HIT_BLUNT
+	//  DAMAGE_MAGIC
+	//  ...
+	// RETURN: damage done
+	//  -1		= already dead / invalid target.
+	//  0		= no damage.
+	//  INT_MAX	= killed.
 
 	if ( pSrc == NULL )
 		pSrc = this;
@@ -2260,7 +2257,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 				i_tDamCount += 1;
 				i_tDamPois +=1;
 			}
-			if ( uType & DAMAGE_ELECTRIC )
+			if ( uType & DAMAGE_ENERGY )
 			{
 				i_tDamCount += 1;
 				i_tDamElec +=1;
@@ -2275,7 +2272,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 				i_tDamCount += 1;
 				i_tDamFire +=1;
 			}
-			if ( uType & ~(DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ELECTRIC | DAMAGE_COLD | DAMAGE_FIRE) )
+			if ( uType & ~(DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ENERGY | DAMAGE_COLD | DAMAGE_FIRE) )
 				i_tDamCount += 1;
 		
 			i_tDamPois *= iDmg / i_tDamCount; 
@@ -2429,7 +2426,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 				i_tDamCount += 1;
 				i_tDamPois +=1;
 			}
-			if ( uType & DAMAGE_ELECTRIC )
+			if ( uType & DAMAGE_ENERGY )
 			{
 				i_tDamCount += 1;
 				i_tDamElec +=1;
@@ -2444,7 +2441,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 				i_tDamCount += 1;
 				i_tDamFire +=1;
 			}
-			if ( uType & ~(DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ELECTRIC | DAMAGE_COLD | DAMAGE_FIRE) )
+			if ( uType & ~(DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ENERGY | DAMAGE_COLD | DAMAGE_FIRE) )
 			{
 				i_tDamCount += 1;
 			}
@@ -2485,7 +2482,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		}
 	
 
-		if (( uType & ( DAMAGE_ELECTRIC | DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_FIRE | DAMAGE_MAGIC )) && (!( uType & DAMAGE_NOUNPARALYZE )))
+		if (( uType & ( DAMAGE_ENERGY | DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_FIRE | DAMAGE_MAGIC )) && (!( uType & DAMAGE_NOUNPARALYZE )))
 		{
 			if (LayerFind( LAYER_FLAG_Stuck ))
 				LayerFind( LAYER_FLAG_Stuck )->Delete();
@@ -2599,7 +2596,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 			if ( pCharDef->Can(CAN_C_FIRE_IMMUNE)) // immune to the fire part.
 			{
 				// If there is any other sort of damage then dish it out as well.
-				if ( ! ( uType & ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ELECTRIC | DAMAGE_COLD)))
+				if ( ! ( uType & ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ENERGY | DAMAGE_COLD)))
 					return( 0 );	// No effect.
 				iDmg /= 2;
 			}
@@ -2717,7 +2714,7 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 
 	if ( IsStatFlag(STATF_HasShield) &&
 		(uType & ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH )) &&
-		! (uType & (DAMAGE_GOD|DAMAGE_ELECTRIC)))
+		! (uType & (DAMAGE_GOD|DAMAGE_ENERGY)))
 	{
 		CItem * pShield = LayerFind( LAYER_HAND2 );
 		if ( pShield != NULL && Skill_UseQuick( SKILL_PARRYING, Calc_GetRandLLVal((pSrc!=NULL) ? (pSrc->Skill_GetBase(SKILL_TACTICS)/10) : 100 )))
@@ -2804,7 +2801,7 @@ int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 //		iHitArea = (BODYPART_TYPE)( iHitArea + 1 );
 //	}
 
-	if ( (uType & ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH |DAMAGE_FIRE|DAMAGE_ELECTRIC)) &&
+	if ( (uType & ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH |DAMAGE_FIRE|DAMAGE_ENERGY)) &&
 		! (uType & (DAMAGE_GENERAL|DAMAGE_GOD)))
 	{
 

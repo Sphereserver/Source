@@ -2686,20 +2686,20 @@ reflectit:
 			{
 				switch ( spell )
 				{
-					case SPELL_Harm:			iD1 = DAMAGE_MAGIC | DAMAGE_POISON | DAMAGE_GENERAL | DAMAGE_NOREVEAL;		break;
-					case SPELL_Mind_Blast:		iD1 = DAMAGE_MAGIC | DAMAGE_POISON | DAMAGE_GENERAL | DAMAGE_NOREVEAL;		break;
-					case SPELL_Explosion:		iD1 = DAMAGE_MAGIC | DAMAGE_HIT_BLUNT | DAMAGE_GENERAL | DAMAGE_NOREVEAL;	break;
-					case SPELL_Energy_Bolt:		iD1 = DAMAGE_MAGIC | DAMAGE_HIT_PIERCE | DAMAGE_NOREVEAL;					break;
-					case SPELL_Magic_Arrow:		iD1 = DAMAGE_MAGIC | DAMAGE_HIT_PIERCE | DAMAGE_NOREVEAL;					break;
-					case SPELL_Fireball:		iD1 = DAMAGE_MAGIC | DAMAGE_HIT_BLUNT | DAMAGE_FIRE | DAMAGE_NOREVEAL;		break;
-					case SPELL_Fire_Bolt:		iD1 = DAMAGE_MAGIC | DAMAGE_HIT_BLUNT | DAMAGE_FIRE | DAMAGE_NOREVEAL;		break;
-					case SPELL_Fire_Field:		iD1 = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_GENERAL | DAMAGE_NOREVEAL;		break;
-					case SPELL_Flame_Strike:	iD1 = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_GENERAL | DAMAGE_NOREVEAL;		break;
-					case SPELL_Meteor_Swarm:	iD1 = DAMAGE_MAGIC | DAMAGE_HIT_BLUNT | DAMAGE_FIRE | DAMAGE_NOREVEAL;		break;
-					case SPELL_Earthquake:		iD1 = DAMAGE_MAGIC | DAMAGE_HIT_BLUNT | DAMAGE_GENERAL | DAMAGE_NOREVEAL;	break;
-					case SPELL_Lightning:		iD1 = DAMAGE_MAGIC | DAMAGE_ELECTRIC | DAMAGE_GENERAL | DAMAGE_NOREVEAL;	break;
-					case SPELL_Chain_Lightning:	iD1 = DAMAGE_MAGIC | DAMAGE_ELECTRIC | DAMAGE_GENERAL | DAMAGE_NOREVEAL;	break;
-					default:					iD1 = DAMAGE_MAGIC | DAMAGE_GENERAL | DAMAGE_NOREVEAL;						break;
+					case SPELL_Magic_Arrow:		iD1 = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_NOREVEAL;		break;
+					case SPELL_Fireball:		iD1 = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_NOREVEAL;		break;
+					case SPELL_Fire_Field:		iD1 = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_NOREVEAL;		break;
+					case SPELL_Explosion:		iD1 = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_NOREVEAL;		break;
+					case SPELL_Flame_Strike:	iD1 = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_NOREVEAL;		break;
+					case SPELL_Meteor_Swarm:	iD1 = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_NOREVEAL;		break;
+					case SPELL_Fire_Bolt:		iD1 = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_NOREVEAL;		break;
+					case SPELL_Harm:			iD1 = DAMAGE_MAGIC | DAMAGE_COLD | DAMAGE_NOREVEAL;		break;
+					case SPELL_Mind_Blast:		iD1 = DAMAGE_MAGIC | DAMAGE_COLD | DAMAGE_NOREVEAL;		break;
+					case SPELL_Lightning:		iD1 = DAMAGE_MAGIC | DAMAGE_ENERGY | DAMAGE_NOREVEAL;	break;
+					case SPELL_Energy_Bolt:		iD1 = DAMAGE_MAGIC | DAMAGE_ENERGY | DAMAGE_NOREVEAL;	break;
+					case SPELL_Chain_Lightning:	iD1 = DAMAGE_MAGIC | DAMAGE_ENERGY | DAMAGE_NOREVEAL;	break;
+					case SPELL_Earthquake:		iD1 = DAMAGE_MAGIC | DAMAGE_GENERAL | DAMAGE_NOREVEAL;	break;
+					default:					iD1 = DAMAGE_MAGIC | DAMAGE_GENERAL | DAMAGE_NOREVEAL;	break;
 				}
 			}
 

@@ -1183,21 +1183,17 @@ g_btn_gray_apply_press   5205
 dam_god                 00001   // unblockable "god" damage
 dam_physical            00002   // some sort of physical damage (as opposed to magical)
 dam_magic               00004   // some sort of magical damage
-dam_poison              00008   // poisonous or biological (harm spell) damage
+dam_poison              00008   // poison-based damage
 dam_fire                00010   // fire-based damage
-dam_lightning           00020   // electrical damage (lightning)
-dam_drain               00040   // draining damage
+dam_energy              00020   // energy-based damage
 dam_general             00080   // damage that hits the entire body, rather than just one part of it
 dam_acidic              00100   // acidic damage (will destroy armor)
-dam_cold_old            00200   // cold-based damage (old flag, should update to dam_cold_new)
+dam_cold                00200   // cold-based damage
 dam_slash               00400   // damage done by slashing (swords, etc)
 dam_pierce              00800   // damage done with spear and such.
-dam_cold_new            01000   // cold-based damage
-dam_cold                01200   // cold-based damage (matches both old and new cold damage flag)
-dam_energy              02000   // energy-based damage
 dam_noreveal            04000   // damage that does not reveal the attacker.
 dam_nounparalyze        08000   // victim won't be unparalyzed
-dam_fixed				010000	// damage will not be recalculated with default checks, lowering it because of armor, resistances ... 
+dam_fixed               010000	// damage will not be recalculated with default checks, lowering it because of armor, resistances ...
 
 [defname can_i_flags]
 can_i_door				000001		// is a door uflag4_door

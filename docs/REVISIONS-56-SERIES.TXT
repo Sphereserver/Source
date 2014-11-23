@@ -1458,3 +1458,8 @@ Fixed: party_add_notleader defmessage was wrong -> party_notleader is correct.
 22-11-2014, Coruja
 Added: Wisdom racial trait on elves (they always have +20 max mana). It works only if FEATURE_ML_UPDATE is enabled on sphere.ini
 Changed: 'Open Bankbox' / 'Check Balance' context menu buttons on NPC Banker (brain_banker) now will make the NPC hear 'bank'/'balance' words instead call hardcoded functions to open bank or check balance. In other words: now both context menu buttons and spoken commands are consistent and can be softcoded.
+
+23-11-2014, Coruja
+Fixed: @GetHit trigger not returning some ARGN2 values (like dam_fixed).
+Changed: Updated some damage flags used internally on spells.
+[sphere_defs.scp]: Updated [DEFNAME dam_flags] section to match the correct internal flag list.

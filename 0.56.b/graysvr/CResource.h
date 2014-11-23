@@ -144,7 +144,6 @@ enum BODYPART_TYPE
 #define DAMAGE_MAGIC		0x0004	// Magic blast of some sort. (we can be immune to magic to some extent)
 #define DAMAGE_POISON		0x0008	// Or biological of some sort ? (HARM spell)
 #define DAMAGE_FIRE			0x0010	// Fire damage of course.  (Some creatures are immune to fire)
-#define DAMAGE_ELECTRIC		0x0020	// lightning.
 #define DAMAGE_ENERGY		0x0020	// lightning.
 #define DAMAGE_GENERAL		0x0080	// All over damage. As apposed to hitting just one point.
 #define DAMAGE_ACIDIC		0x0100	// damages armor
@@ -155,7 +154,7 @@ enum BODYPART_TYPE
 #define DAMAGE_NOUNPARALYZE	0x8000  // victim won't be unparalyzed
 #define DAMAGE_FIXED		0x10000	// already fixed damage, don't do calcs ... only create blood, anim, sounds... and update memories and attacker
 
-typedef WORD DAMAGE_TYPE;		// describe a type of damage.
+typedef DWORD DAMAGE_TYPE;		// describe a type of damage.
 
 ///////////////////////////////////////
 
