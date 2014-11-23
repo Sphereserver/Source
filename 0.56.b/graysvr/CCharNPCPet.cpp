@@ -793,30 +793,23 @@ void CChar::NPC_PetDesert()
 {
 	ADDTOCALLSTACK("CChar::NPC_PetDesert");
 	CChar * pCharOwn = NPC_PetGetOwner();
+	if ( !pCharOwn )
+		return;
 
-	// Are we a pet at all?
-	if ( pCharOwn )
+	if ( IsTrigUsed(TRIGGER_PETDESERT) )
 	{
-		// How happy are we with being a pet ?
-		if ( ! pCharOwn->CanSee(this))
-		{
-			pCharOwn->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DESERTED), GetName());
-		}
-
-		if ( IsTrigUsed(TRIGGER_PETDESERT) )
-		{
-			if ( OnTrigger( CTRIG_PetDesert, pCharOwn, NULL ) == TRIGRET_RET_TRUE )
-				return;
-		}
-
-		NPC_PetClearOwners();
-
-		TCHAR	*pszMsg = Str_GetTemp();
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DECIDE_MASTER), GetName());
-		Speak(pszMsg);
-
-		// free to do as i wish !
-		Skill_Start( SKILL_NONE );
+		if ( OnTrigger( CTRIG_PetDesert, pCharOwn, NULL ) == TRIGRET_RET_TRUE )
+			return;
 	}
-}
 
+	NPC_PetClearOwners();
+	if ( ! pCharOwn->CanSee(this))
+		pCharOwn->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DESERTED), GetName());
+
+	TCHAR	*pszMsg = Str_GetTemp();
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DECIDE_MASTER), GetName());
+	Speak(pszMsg);
+
+	// free to do as i wish !
+	Skill_Start( SKILL_NONE );
+}

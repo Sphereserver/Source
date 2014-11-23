@@ -4008,33 +4008,6 @@ void CChar::OnTickStatusUpdate()
 	CObjBase::OnTickStatusUpdate();
 }
 
-void CChar::OnTickFood(int iVal)
-{
-	ADDTOCALLSTACK("CChar::OnTickFood");
-	if ( IsStatFlag(STATF_Conjured) || !Stat_GetMax(STAT_FOOD) )
-		return;	// No need for food.
-
-	// This may be money instead of food
-	if ( IsStatFlag(STATF_Pet) && !NPC_CheckHirelingStatus() )
-		return;
-
-	long lFood = Stat_GetVal(STAT_FOOD);
-   	if ( lFood - iVal < 0 )
-		lFood = iVal - lFood;
-	else
-		lFood -= iVal;
-
-	Stat_SetVal(STAT_FOOD, lFood);
-
-	int  nFoodLevel = Food_GetLevelPercent();
-	if ( nFoodLevel < 40) 	// start looking for food at 40%
- 	{
-		// Tell everyone we look hungry.
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_HUNGER), Food_GetLevelMessage(false, false));
-		CHAR_OnTickFood(nFoodLevel);
-	}
-}
-
 void CChar::OnTickFood(int iVal, int HitsHungerLoss)
 {
 	ADDTOCALLSTACK("CChar::OnTickFood");
@@ -4045,12 +4018,9 @@ void CChar::OnTickFood(int iVal, int HitsHungerLoss)
 	if ( IsStatFlag(STATF_Pet) && !NPC_CheckHirelingStatus() )
 		return;
 
-	long lFood = Stat_GetVal(STAT_FOOD);
-   	if ( lFood - iVal < 0 )
-		lFood = iVal - lFood;
-	else
-		lFood -= iVal;
-
+	long lFood = Stat_GetVal(STAT_FOOD) - iVal;
+	if (lFood < 0)
+		lFood = 0;
 	Stat_SetVal(STAT_FOOD, lFood);
 
 	int  nFoodLevel = Food_GetLevelPercent();
@@ -4062,72 +4032,6 @@ void CChar::OnTickFood(int iVal, int HitsHungerLoss)
 	}
 }
 
-bool CChar::CHAR_OnTickFood( int nFoodLevel )
-{
-	ADDTOCALLSTACK("CChar::CHAR_OnTickFood");
-	// Check Food usage.
-	// Are we hungry enough to take some new action ?
-	// RETURN: true = we have taken an action.
-
-	//if ( !m_pNPC )	//Why should this onle be fired on NPCs ? 
-	//	return false;
-
-	bool bMsg = false;
-	bool bPet = IsStatFlag(STATF_Pet);
-	int maxfood = Stat_GetMax(STAT_FOOD);
-
-	if ( g_Cfg.m_iHitsHungerLoss && maxfood )
-	{
-		//	hungry at 20% level and lower will decrease hits
-		if ( nFoodLevel <= 20 )
-		{
-			if ( !m_pArea || m_pArea->IsFlag(REGION_FLAG_SAFE|REGION_FLAG_ARENA) ) ;
-			else if ( m_pNPC && m_pArea->IsFlag(REGION_FLAG_UNDERGROUND|REGION_FLAG_NODECAY) ) ;
-			else
-			{
-				int loss = ( nFoodLevel ? Calc_GetRandVal2(1, g_Cfg.m_iHitsHungerLoss-1) : g_Cfg.m_iHitsHungerLoss);
-				int hp = MulDiv(Stat_GetMax(STAT_STR),loss,100);
-				if ( hp < 1)
-					hp = 1 ;
-				OnTakeDamage( hp , this, DAMAGE_GOD|DAMAGE_GENERAL|DAMAGE_NOUNPARALYZE );
-				//UpdateStatVal( STAT_STR, -((maximum(Stat_GetMax(STAT_STR), 10) * loss)/100) );
-			}
-
-			if ( m_pNPC )
-			{
-				char *pszMsg = Str_GetTemp();
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_NPC), Food_GetLevelMessage(bPet, false));
-				Emote(pszMsg, GetClient());
-				bMsg = true;
-			}
-
-		}
-	}
-
-   	if ( bPet )
-   	{
-		if ( !bMsg )
-		{
-			TCHAR *pszMsg = Str_GetTemp();
-   			sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_NPC), Food_GetLevelMessage(true, false));
-   			Emote(pszMsg, GetClient());
-		}
-
-		//	pets deserts on being deadly hungry
-		if ( nFoodLevel <= 0 )
-		{
-   			SoundChar(CRESND_RAND2);
-			NPC_PetDesert();
-			return true;
-		}
-   	}
-
-	if ( IsStatFlag(STATF_Stone|STATF_Freeze|STATF_DEAD|STATF_Sleeping) )
-		return false;
-	SoundChar(CRESND_RAND2);
-	return true;
-}
-
 bool CChar::CHAR_OnTickFood( int nFoodLevel , int HitsHungerLoss )
 {
 	ADDTOCALLSTACK("CChar::CHAR_OnTickFood");
@@ -4135,62 +4039,31 @@ bool CChar::CHAR_OnTickFood( int nFoodLevel , int HitsHungerLoss )
 	// Are we hungry enough to take some new action ?
 	// RETURN: true = we have taken an action.
 
-	//if ( !m_pNPC )	//Why should this onle be fired on NPCs ? 
-	//	return false;
+	if ( HitsHungerLoss <= 0 || !Stat_GetMax(STAT_FOOD))
+		return false;
+	if ( m_pArea->IsFlag(REGION_FLAG_SAFE))
+		return false;
+	if ( IsStatFlag(STATF_INVUL|STATF_DEAD|STATF_Sleeping|STATF_Stone|STATF_Spawned))
+		return false;
 
-	bool bMsg = false;
-	bool bPet = IsStatFlag(STATF_Pet);
-	int maxfood = Stat_GetMax(STAT_FOOD);
+	char *pszMsg = Str_GetTemp();
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_LOOKS), Food_GetLevelMessage(bPet, false));
+	CItem *pMountItem = Horse_GetMountItem();
+	if ( pMountItem )
+		pMountItem->Emote(pszMsg);
+	else
+		Emote(pszMsg);
 
-	if ( HitsHungerLoss && maxfood )
+	if ( nFoodLevel <= 0 )
 	{
-		//	hungry at 20% level and lower will decrease hits
-		if ( nFoodLevel <= 20 )
-		{
-			if ( !m_pArea || m_pArea->IsFlag(REGION_FLAG_SAFE|REGION_FLAG_ARENA) ) ;
-			else if ( m_pNPC && m_pArea->IsFlag(REGION_FLAG_UNDERGROUND|REGION_FLAG_NODECAY) ) ;
-			else
-			{
-				int hp = MulDiv(Stat_GetMax(STAT_STR),HitsHungerLoss,100);
-				if ( hp < 1)
-					hp = 1 ;
-				OnTakeDamage( hp , this, DAMAGE_GOD|DAMAGE_GENERAL|DAMAGE_NOUNPARALYZE );
-				//UpdateStatVal( STAT_STR, -((maximum(Stat_GetMax(STAT_STR), 10) * loss)/100) );
-			}
-
-			if ( m_pNPC )
-			{
-				char *pszMsg = Str_GetTemp();
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_NPC), Food_GetLevelMessage(bPet, false));
-				Emote(pszMsg, GetClient());
-				bMsg = true;
-			}
-
-		}
+		OnTakeDamage(HitsHungerLoss, this, DAMAGE_FIXED);
+		SoundChar(CRESND_RAND2);
+		if ( bPet )
+			NPC_PetDesert();
+		return true;
 	}
 
-   	if ( bPet )
-   	{
-		if ( !bMsg )
-		{
-			TCHAR *pszMsg = Str_GetTemp();
-   			sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_NPC), Food_GetLevelMessage(true, false));
-   			Emote(pszMsg, GetClient());
-		}
-
-		//	pets deserts on being deadly hungry
-		if ( nFoodLevel <= 0 )
-		{
-   			SoundChar(CRESND_RAND2);
-			NPC_PetDesert();
-			return true;
-		}
-   	}
-
-	if ( IsStatFlag(STATF_Stone|STATF_Freeze|STATF_DEAD|STATF_Sleeping) )
-		return false;
-	SoundChar(CRESND_RAND2);
-	return true;
+	return false;
 }
 
 bool CChar::OnTick()
@@ -4270,7 +4143,6 @@ bool CChar::OnTick()
 			int iRate = g_Cfg.m_iRegenRate[i];		// in TICK_PER_SEC
 
 			m_Stat[i].m_regen += static_cast<unsigned short>(iTimeDiff);
-						
 			
 			// Regen OVERRIDE
 			int mod = 1;
@@ -4279,6 +4151,8 @@ bool CChar::OnTick()
 			{
 				case STAT_STR:
 					stat = "HITS";
+					if ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE && IsHuman() )
+						iRate /= 3;		// Humans always have +2 hitpoint regeneration (racial traits)
 					break;
 				case STAT_INT:
 					stat = "MANA";
@@ -4295,18 +4169,15 @@ bool CChar::OnTick()
 				char sRegen[21];
 				sprintf(sRegen, "REGEN%s", stat);
 				if ( GetDefNum(sRegen, false))
-					iRate -= static_cast<int>(GetDefNum(sRegen, false)) * TICK_PER_SEC;
+					iRate = static_cast<int>(GetDefNum(sRegen, false)) * TICK_PER_SEC;
 				sprintf(sRegen, "REGENVAL%s", stat);
 				mod = static_cast<int>(maximum(mod,GetDefNum(sRegen, true)));
 			}
-			
 			if ( iRate < 0)
 				iRate = 0;
 
 			if ( m_Stat[i].m_regen < iRate )
-			{
 				continue;
-			}
 			
 			int StatLimit = Stat_GetMax(i);
 

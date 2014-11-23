@@ -1460,6 +1460,13 @@ Added: Wisdom racial trait on elves (they always have +20 max mana). It works on
 Changed: 'Open Bankbox' / 'Check Balance' context menu buttons on NPC Banker (brain_banker) now will make the NPC hear 'bank'/'balance' words instead call hardcoded functions to open bank or check balance. In other words: now both context menu buttons and spoken commands are consistent and can be softcoded.
 
 23-11-2014, Coruja
+Added: Tough racial trait on humans (they always have +2 hitpoint regeneration)
 Fixed: @GetHit trigger not returning some ARGN2 values (like dam_fixed).
 Changed: Updated some damage flags used internally on spells.
+Changed: RegenHits/RegenMana/RegenStam char properties now will override default Regen[0/1/2] values on sphere.ini instead decrease it.
+Changed: Optimized hunger/starving engine
+	-Fixed FOOD property returning to 1 after reach 0.
+	-Fixed hunger message not showing on mounted pets.
+	-Fixed @PetDesert trigger showing the pet desert message even if the trigger is using return 1 to prevent the action.
+	-Changed starving damage flags (dam_god|dam_general|dam_nounparalyze to dam_fixed)
 [sphere_defs.scp]: Updated [DEFNAME dam_flags] section to match the correct internal flag list.

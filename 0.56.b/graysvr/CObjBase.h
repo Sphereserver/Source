@@ -3779,7 +3779,6 @@ private:
 	void NPC_ActStart_SpeakTo( CChar * pSrc );
 
 	void NPC_OnTickAction();
-	bool CHAR_OnTickFood( int nHungerPercent );
 	bool CHAR_OnTickFood( int nHungerPercent , int HitsHungerLoss);
 
 public:
@@ -3819,7 +3818,6 @@ public:
 	bool OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fPetsCommand = false, bool fShouldReveal = true );
 
 	bool OnTickEquip( CItem * pItem );
-	void OnTickFood( int iVal );
 	void OnTickFood( int iVal, int HitsHungerLoss );
 	void OnTickStatusUpdate();
 	bool OnTick();
