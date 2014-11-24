@@ -1284,7 +1284,9 @@ do_consume:
 	{
 		int iGold = m_pChar->GetPackSafe()->ContentConsume( RESOURCE_ID(RES_TYPEDEF,IT_GOLD), static_cast<int>(costtotal));
 		if ( !g_Cfg.m_fPayFromPackOnly && iGold)
-			m_pChar->ContentConsume( RESOURCE_ID(RES_TYPEDEF,IT_GOLD), static_cast<int>(costtotal));
+			m_pChar->ContentConsume( RESOURCE_ID(RES_TYPEDEF,IT_GOLD), iGold);
+			//m_pChar->ContentConsume( RESOURCE_ID(RES_TYPEDEF,IT_GOLD), static_cast<int>(costtotal));
+
 
 		pVendor->GetBank()->m_itEqBankBox.m_Check_Amount += static_cast<unsigned long>(costtotal);
 	}
