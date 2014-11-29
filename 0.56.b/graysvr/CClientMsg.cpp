@@ -862,9 +862,9 @@ void CClient::GetAdjustedItemID( const CChar * pChar, const CItem * pItem, ITEMI
 				wHue = pItemDef->GetResDispDnHue();
 
 		if (( wHue & HUE_MASK_HI ) > HUE_QTY )
-			wHue &= HUE_MASK_LO | HUE_TRANSLUCENT;
+			wHue &= HUE_MASK_LO | HUE_UNDERWEAR | HUE_TRANSLUCENT;
 		else
-			wHue &= HUE_MASK_HI | HUE_TRANSLUCENT;
+			wHue &= HUE_MASK_HI | HUE_UNDERWEAR | HUE_TRANSLUCENT;
 	}
 
 	if ( pItemDef && ( GetResDisp() < pItemDef->GetResLevel() ) )

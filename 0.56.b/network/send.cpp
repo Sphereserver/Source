@@ -2350,9 +2350,14 @@ PacketPaperdoll::PacketPaperdoll(const CClient* target, const CChar* character) 
 							guildMember->GetTitle()[0]? guildMember->GetTitle() : character->GetTradeTitle());
 		}
 		
-
 		if (len <= 0)
-			sprintf(text, "%s, %s", character->Noto_GetTitle(), character->GetTradeTitle());
+		{
+			const char *title = character->GetTradeTitle();
+			if ( title[0] )
+				sprintf(text, "%s, %s", character->Noto_GetTitle(), title);
+			else
+				sprintf(text, "%s", character->Noto_GetTitle());
+		}
 
 		writeStringFixedASCII(text, 60);
 	}

@@ -1470,3 +1470,10 @@ Changed: Optimized hunger/starving engine
 	-Fixed @PetDesert trigger showing the pet desert message even if the trigger is using return 1 to prevent the action.
 	-Changed starving damage flags (dam_god|dam_general|dam_nounparalyze to dam_fixed)
 [sphere_defs.scp]: Updated [DEFNAME dam_flags] section to match the correct internal flag list.
+
+29-11-2014, Coruja
+Added: FEATURE_AOS_DAMAGE on sphere.ini now will display to pet owners the damage caused by pets.
+Fixed: .DUPE function on items not duping the item timer.
+Fixed: NPCs showing wrong color on chars on some specific cases.
+Fixed: Paperdolls showing the "," after the char name even when there's no title to display.
+Changed: only players can have skill titles on paperdoll now.

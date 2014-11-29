@@ -3350,6 +3350,7 @@ void CItem::DupeCopy( const CItem * pItem )
 
 	m_dwDispIndex = pItem->m_dwDispIndex;
 	SetBase( pItem->Item_GetDef() );
+	SetTimeout( pItem->GetTimerDiff() );
 	m_type = pItem->m_type;
 	m_amount = pItem->m_amount;
 	m_Attr  = pItem->m_Attr;

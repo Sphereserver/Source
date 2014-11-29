@@ -2678,6 +2678,15 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 			m_pClient->addShowDamage( iDmg, (DWORD)GetUID() );
 		if ( pSrc->IsClient() && (GetUID() != pSrc->GetUID()) )
 			pSrc->m_pClient->addShowDamage( iDmg, (DWORD)GetUID() );
+		else
+		{
+			CChar * pSrcOwner = pSrc->NPC_PetGetOwner();
+			if ( pSrcOwner != NULL )
+			{
+				if ( pSrcOwner->IsClient() )
+					pSrcOwner->m_pClient->addShowDamage( iDmg, (DWORD)GetUID() );
+			}
+		}
 	}
 
 	if ( Stat_GetVal(STAT_STR) <= 0 )

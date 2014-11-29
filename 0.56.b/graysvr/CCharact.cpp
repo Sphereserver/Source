@@ -2344,7 +2344,7 @@ bool CChar::OnTickEquip( CItem * pItem )
 						char sRegen[21];
 						sprintf(sRegen, "REGEN%s", stat);
 						if ( GetDefNum(sRegen, false))
-							iRegen -= GetDefNum(sRegen, false) * TICK_PER_SEC;
+							iRegen = GetDefNum(sRegen, false) * TICK_PER_SEC;
 					}
 					iTicks = minimum(iTicks,iRegen);
 				}

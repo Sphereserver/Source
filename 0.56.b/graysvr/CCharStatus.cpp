@@ -882,23 +882,27 @@ LPCTSTR CChar::GetTradeTitle() const // Paperdoll title for character p (2)
 	ADDTOCALLSTACK("CChar::GetTradeTitle");
 	if ( ! m_sTitle.IsEmpty())
 		return( m_sTitle );
-	SKILL_TYPE skill = Skill_GetBest();
+
 	int len;
 	TCHAR * pTemp = Str_GetTemp();
-	CCharBase* pCharDef = Char_GetDef();
+	CCharBase * pCharDef = Char_GetDef();
 	ASSERT(pCharDef);
 
 	// Incognito ?
 	// If polymorphed then use the poly name.
-	if ( IsStatFlag( STATF_Incognito ) ||
-		! IsPlayableCharacter() ||
-		( m_pNPC && pCharDef->GetTypeName() != pCharDef->GetTradeName()))
+	if ( IsStatFlag( STATF_Incognito ) || ! IsPlayableCharacter() || ( m_pNPC && pCharDef->GetTypeName() != pCharDef->GetTradeName()) )
 	{
 		if ( ! IsIndividualName())
 			return( "" );	// same as type anyhow.
 		sprintf( pTemp, "%s %s", (pCharDef->IsFemale()) ? g_Cfg.GetDefaultMsg(DEFMSG_TRADETITLE_ARTICLE_FEMALE) : g_Cfg.GetDefaultMsg(DEFMSG_TRADETITLE_ARTICLE_MALE), pCharDef->GetTradeName());
 		return( pTemp );
 	}
+
+	// Only players can have skill titles
+	if ( ! m_pPlayer )
+		return( pTemp );
+
+	SKILL_TYPE skill = Skill_GetBest();
 	if ( skill == SKILL_NINJITSU )
 	{
 		static const CValStr sm_SkillTitles[] =
