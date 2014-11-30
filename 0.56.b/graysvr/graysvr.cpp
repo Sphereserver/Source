@@ -769,16 +769,22 @@ int Sphere_OnTick()
 void CServer::ShipTimers_Tick()
 {
 	ADDTOCALLSTACK("CServer::ShipTimers_Tick");
-	for (unsigned int count = 0; count < m_ShipTimers.size(); count++)
+	std::vector<CItemShip *>::iterator it;
+	for ( it = m_ShipTimers.begin(); it != m_ShipTimers.end(); ) 
 	{
-		CItemShip * pShip = static_cast<CItemShip*>(m_ShipTimers.at(count).ship);
-		if (pShip)
+		CItemShip * pShip = *it;
+		if (pShip && pShip->m_itShip.m_fSail != 0)
 		{
 			pShip->OnTick();
-			continue;
+			++it;
 		}
-		std::vector<ShipTimers>::iterator it = m_ShipTimers.begin() + count;
-		m_ShipTimers.erase(it);
+		else if ( m_ShipTimers.size() == 1 )
+		{
+			m_ShipTimers.pop_back();
+			break;
+		}
+		else
+			it = m_ShipTimers.erase(it);
 	}
 }
 
@@ -787,28 +793,28 @@ void CServer::ShipTimers_Add(CItemShip * ship)
 	ADDTOCALLSTACK("CServer::ShipTimers_Add");
 	if (!ship)
 		return;
-	ShipTimers pShip;
-	pShip.ship = ship;
-	m_ShipTimers.push_back(pShip);
+	m_ShipTimers.push_back(ship);
 }
 
 void CServer::ShipTimers_Delete(CItemShip * ship)
 {
 	ADDTOCALLSTACK("CServer::ShipTimers_Delete");
-	if (!ship)
-		return;
-	if (!m_ShipTimers.size())
-		return;
-	for (int count = 0; count < static_cast<int>(m_ShipTimers.size()); count++)
+	std::vector<CItemShip *>::iterator it;
+	for ( it = m_ShipTimers.begin(); it != m_ShipTimers.end(); ++it) 
 	{
-		ShipTimers & refship = m_ShipTimers.at(count);
-		if (!refship.ship)
-			continue;
-		if (refship.ship == ship)
-		{
-			std::vector<ShipTimers>::iterator it = m_ShipTimers.begin() + count;
-			m_ShipTimers.erase(it);
+		CItemShip * pShip = *it;
+		if (pShip == ship)
+		{	
+			if ( m_ShipTimers.size() == 1 )
+			{
+				m_ShipTimers.pop_back();
+				break;
+			}
+			else
+				it = m_ShipTimers.erase(it);
 		}
+		else
+			++it;
 	}
 }
 

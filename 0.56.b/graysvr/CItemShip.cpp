@@ -64,7 +64,6 @@ void CItemShip::Ship_Stop()
 	ADDTOCALLSTACK("CItemShip::Ship_Stop");
 	// Make sure we have stopped.
 	m_itShip.m_fSail = 0;
-	g_Serv.ShipTimers_Delete(this);
 }
 
 bool CItemShip::Ship_SetMoveDir( DIR_TYPE dir )
@@ -345,6 +344,8 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 		}
 	}
 
+	const CItemBaseMulti * pMultiOld = Multi_GetDef( GetID() );
+
 	// Reorient everything on the deck
 	CObjBase * ppObjs[MAX_MULTI_LIST_OBJS+1];
 	size_t iCount = Ship_ListObjs( ppObjs );
@@ -354,35 +355,33 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 
 		CPointMap pt = pObj->GetTopPoint();
 		
-		int iTmp;
-		int xdiff = GetTopPoint().m_x - pt.m_x;
-		int ydiff = GetTopPoint().m_y - pt.m_y;
+		int xdiff = pt.m_x - GetTopPoint().m_x;
+		int ydiff = pt.m_y - GetTopPoint().m_y;
+		int xd = xdiff;
+		int yd = ydiff;
 		switch ( iTurn )
 		{
 			case 2: // right
 			case (2-DIR_QTY):
-				iTmp = xdiff;
-				xdiff = ydiff;
-				ydiff = -iTmp;
+				xd = -ydiff;
+				yd = xdiff;
 				break;
 			case -2: // left.
 			case (DIR_QTY-2):
-				iTmp = xdiff;
-				xdiff = -ydiff;
-				ydiff = iTmp;
+				xd = ydiff;
+				yd = -xdiff;
 				break;
 			default: // u turn.
-				//no change
+				xd = -ydiff;
+				yd = -xdiff;
 				break;
 		}
-		pt.m_x = GetTopPoint().m_x + xdiff;
-		pt.m_y = GetTopPoint().m_y + ydiff;
-		pObj->MoveTo(pt);
+		pt.m_x = GetTopPoint().m_x + xd;
+		pt.m_y = GetTopPoint().m_y + yd;
 
 		if( pObj->IsItem() )
 		{
 			CItem * pItem = STATIC_CAST<CItem*>(pObj);
-			//	change to new view of this ship
 			if ( pItem == this )
 			{
 				m_pRegion->UnRealizeRegion();
@@ -391,11 +390,16 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 			}
 			else if ( Multi_IsPartOf(pItem) )
 			{
-				for ( size_t j = 0; j < pMultiNew->m_Components.GetCount(); j++ )
+				for ( size_t j = 0; j < pMultiOld->m_Components.GetCount(); j++ )
 				{
-					const CItemBaseMulti::CMultiComponentItem & component = pMultiNew->m_Components.ElementAt(j);
+					const CItemBaseMulti::CMultiComponentItem & component = pMultiOld->m_Components.ElementAt(j);
 					if ((xdiff == component.m_dx) && (ydiff == component.m_dy) && ((pItem->GetTopZ()-GetTopZ()) == component.m_dz))
-						pItem->SetDispID(component.m_id);
+					{
+						const CItemBaseMulti::CMultiComponentItem & componentnew = pMultiNew->m_Components.ElementAt(j);
+						pItem->SetDispID(componentnew.m_id);
+						pt.m_x = GetTopPoint().m_x + componentnew.m_dx;
+						pt.m_y = GetTopPoint().m_y + componentnew.m_dy;
+					}
 				}
 			}
 		}
@@ -405,6 +409,7 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 			pChar->m_dirFace = GetDirTurn(pChar->m_dirFace, iTurn);
 			pChar->RemoveFromView();
 		}
+		pObj->MoveTo(pt);
 	}
 
 	for ( size_t i = 0; i < iCount; i++ )

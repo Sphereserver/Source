@@ -31,8 +31,8 @@ description=Small Ship
 multiregion=-2,-5,2,5
 component=03e4e,1, 4	// tiller.
 component=i_ship_hatch_n,0,-4	// hatch
-component=03eb2,2,0		// plank
-component=03eb1,-2,0	// plank
+component=03eb2,2,0		// plank right
+component=03eb1,-2,0	// plank left
 
 [multidef 01]
 // Face E
@@ -77,8 +77,8 @@ description=Small Ship
 multiregion=-2,-5,2,5
 component=03e4b,0, -4
 component=i_ship_hatch_s,0,  4
-component=03eb2,2,  0
 component=03eb1,-2, 0
+component=03eb2,2,  0
 
 [multidef 03]
 // Face W
@@ -100,8 +100,8 @@ description=Small Ship
 multiregion=-5,-2,5,2
 component=03e50,4, 0
 component=i_ship_hatch_w,-4,0
-component=03e85,0, 2
 component=03e8a,0,-2
+component=03e85,0, 2
 
 [multidef 04]
 // Face N
@@ -121,10 +121,10 @@ SpeedMode=3
 ShipSpeed=5,1
 
 multiregion=-2,-5,2,5
-component=03e4e,1, 4, 0
-component=i_ship_hatch_n,0,-4, 0
-component=03eb2,2, 0, 0
-component=03eb1,-2, 0, 0
+component=03e4e,1, 4, 
+component=i_ship_hatch_n,0,-4
+component=03eb2,2, 0
+component=03eb1,-2, 0
 
 [multidef 05]
 // Face E
