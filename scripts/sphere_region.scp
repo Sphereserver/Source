@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, Sept 6, 2014
+// FILE LAST UPDATED: Sunday, Nov 30, 2014
 //
 VERSION=0.56c
 
@@ -345,11 +345,6 @@ RESOURCES=100.0 mr_nothing
 
 ON=@RegPeriodic
 SRC.SOUND={0e 10 0f 10 022 1 023 1 024 1 0267 1}
-
-[REGIONTYPE r_brit t_rock]
-// Sometimes Iron can be mined in the town of Britannia.
-RESOURCES=60.0 mr_nothing
-RESOURCES=40.0 mr_iron
 
 /////////////////////
 // Generic Regions //

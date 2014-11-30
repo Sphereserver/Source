@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, October 28, 2014
+// FILE LAST UPDATED: Sunday, Nov 30, 2014
 //
 VERSION=0.56c
 
@@ -883,11 +883,11 @@ midi_TheVesperMist		102
 // need to be defined. needs and aversions
 // none 0
 // area types.
-r_guardpost           r_brit
-r_docks               r_brit
+r_guardpost           t_junk
+r_docks               t_junk
 r_foliage             r_jungle
 r_desert              t_junk
-r_plains			  t_junk
+r_plains              t_junk
 r_civilization        t_junk
 r_caves               t_junk
 r_stables             t_junk
