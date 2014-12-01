@@ -94,6 +94,7 @@ bool CItemShip::Ship_SetMoveDir( DIR_TYPE dir )
 	GetTopSector()->SetSectorWakeStatus();	// may get here b4 my client does.
 	CItemMulti * pItemMulti = dynamic_cast<CItemMulti*>(this);
 	pItemMulti->m_SpeedMode = (iSpeed == 1 ? 3 : 4);
+	g_Serv.ShipTimers_Delete(this);
 	g_Serv.ShipTimers_Add(this);
 	m_NextMove = CServTime::GetCurrentTime() + maximum(1, (m_itShip.m_fSail == 1) ? pItemMulti->m_shipSpeed.period : (pItemMulti->m_shipSpeed.period / 2));
 	return( true );
