@@ -28,7 +28,7 @@ typedef CServerDef * CServerRef;
 enum OF_TYPE
 {
 	OF_NoDClickTarget		= 0x0000001,
-	OF_Unused0002			= 0x0000002,
+	OF_NoSmoothSailing		= 0x0000002,
 	OF_Unused0004			= 0x0000004,
 	OF_Command_Sysmsgs		= 0x0000008,
 	OF_Unused0010			= 0x0000010,

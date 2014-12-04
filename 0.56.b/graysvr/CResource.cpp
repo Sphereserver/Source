@@ -3698,6 +3698,7 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		zOptionFlags[0] = '\0';
 
 		if ( IsSetOF(OF_NoDClickTarget) ) catresname(zOptionFlags, "NoDClickTarget");
+		if ( IsSetOF(OF_NoSmoothSailing) ) catresname(zOptionFlags, "NoSmoothSailing");
 		if ( IsSetOF(OF_Command_Sysmsgs) ) catresname(zOptionFlags, "CommandSysmessages");
 		if ( IsSetOF(OF_OSIMultiSight) ) catresname(zOptionFlags, "OSIMultiSight");
 		if ( IsSetOF(OF_Items_AutoName) ) catresname(zOptionFlags, "ItemsAutoName");

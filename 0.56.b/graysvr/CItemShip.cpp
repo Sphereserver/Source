@@ -96,7 +96,10 @@ bool CItemShip::Ship_SetMoveDir( DIR_TYPE dir )
 	pItemMulti->m_SpeedMode = (iSpeed == 1 ? 3 : 4);
 	g_Serv.ShipTimers_Delete(this);
 	g_Serv.ShipTimers_Add(this);
-	m_NextMove = CServTime::GetCurrentTime() + maximum(1, (m_itShip.m_fSail == 1) ? pItemMulti->m_shipSpeed.period : (pItemMulti->m_shipSpeed.period / 2));
+	if (IsSetOF(OF_NoSmoothSailing))
+		m_NextMove = CServTime::GetCurrentTime() + maximum(1, (m_itShip.m_fSail == 1) ? pItemMulti->m_shipSpeed.period * 2 : (pItemMulti->m_shipSpeed.period));
+	else
+		m_NextMove = CServTime::GetCurrentTime() + maximum(1, (m_itShip.m_fSail == 1) ? pItemMulti->m_shipSpeed.period : (pItemMulti->m_shipSpeed.period / 2));
 	return( true );
 }
 
@@ -202,60 +205,84 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 		}
 
 		pObj->MoveTo(pt);
-	}
 
-	ClientIterator it;
-	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
-	{
-		CChar * tMe = pClient->GetChar();
-		BYTE tViewDist = tMe->GetSight();
-
-		if (pClient->CanSee(this))
+		if (IsSetOF(OF_NoSmoothSailing))
 		{
-			if (pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA())
+			if ( pObj->IsChar() && !pObj->IsDisconnected() )
 			{
-				CPointMap ptdir = GetTopPoint();
-				ptdir += pdelta;
-
-				new PacketMoveShip(pClient, this, ppObjs, iCount, m_itShip.m_DirMove, m_itShip.m_DirFace, Multi_GetDef()->m_SpeedMode);
-
-				//Client is also on Ship
-				if (tMe->GetRegion()->GetResourceID().GetObjUID() == GetUID())
+				ASSERT( m_pRegion->m_iLinkedSectors );
+				if (pt.GetDist(ptOld) == 1)
 				{
-					CPointMap pt = tMe->GetTopPoint();
-					pt -= pdelta;
-					pClient->addPlayerSeeShip( pt );
-					continue;
-				}
-			}
-
-			for ( size_t i = 0; i < iCount; i++ )
-			{
-				CObjBase * pObj = ppObjs[i];
-				CPointMap pt = pObj->GetTopPoint();
-				CPointMap ptOld(pt);
-				ptOld -= pdelta;
-				ptOld.m_map = tMe->GetTopPoint().m_map;
-
-				if (pObj->IsItem())
-				{
-					CItem *pItem = dynamic_cast <CItem *>(pObj);
-					if ((tMe->GetTopPoint().GetDistSight(pt) < tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) >= tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA())))
-						pClient->addItem(pItem);
+					pObj->RemoveFromView();
+					pObj->Update();
 				}
 				else
 				{
-					CChar *pChar = dynamic_cast <CChar *>(pObj);
-					if (pClient == pChar->GetClient())
-						pClient->addPlayerView( ptOld, true);
-					else if ((tMe->GetTopPoint().GetDistSight(pt) <= tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) > tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA())))
+					CChar *pChar = dynamic_cast<CChar*>( pObj );
+					pChar->UpdateMove(ptOld, NULL, true);
+				}
+			}
+			else
+				pObj->Update();
+		}
+
+	}
+
+	if (!IsSetOF(OF_NoSmoothSailing))
+	{
+		ClientIterator it;
+		for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
+		{
+			CChar * tMe = pClient->GetChar();
+			BYTE tViewDist = tMe->GetSight();
+
+			if (pClient->CanSee(this))
+			{
+				if (pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA())
+				{
+					CPointMap ptdir = GetTopPoint();
+					ptdir += pdelta;
+
+					new PacketMoveShip(pClient, this, ppObjs, iCount, m_itShip.m_DirMove, m_itShip.m_DirFace, Multi_GetDef()->m_SpeedMode);
+
+					//Client is also on Ship
+					if (tMe->GetRegion()->GetResourceID().GetObjUID() == GetUID())
 					{
-						if ((pt.GetDist(ptOld) > 1) && (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HIGHSEAS)) && (pChar->GetTopPoint().GetDistSight(ptOld) < tViewDist))
-							pClient->addCharMove( pChar );
-						else
+						CPointMap pt = tMe->GetTopPoint();
+						pt -= pdelta;
+						pClient->addPlayerSeeShip( pt );
+						continue;
+					}
+				}
+
+				for ( size_t i = 0; i < iCount; i++ )
+				{
+					CObjBase * pObj = ppObjs[i];
+					CPointMap pt = pObj->GetTopPoint();
+					CPointMap ptOld(pt);
+					ptOld -= pdelta;
+					ptOld.m_map = tMe->GetTopPoint().m_map;
+
+					if (pObj->IsItem())
+					{
+						CItem *pItem = dynamic_cast <CItem *>(pObj);
+						if ((tMe->GetTopPoint().GetDistSight(pt) < tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) >= tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA())))
+							pClient->addItem(pItem);
+					}
+					else
+					{
+						CChar *pChar = dynamic_cast <CChar *>(pObj);
+						if (pClient == pChar->GetClient())
+							pClient->addPlayerView( ptOld );
+						else if ((tMe->GetTopPoint().GetDistSight(pt) <= tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) > tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA())))
 						{
-							pClient->addObjectRemove( pChar );
-							pClient->addChar(pChar);
+							if ((pt.GetDist(ptOld) > 1) && (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HIGHSEAS)) && (pChar->GetTopPoint().GetDistSight(ptOld) < tViewDist))
+								pClient->addCharMove( pChar );
+							else
+							{
+								pClient->addObjectRemove( pChar );
+								pClient->addChar(pChar);
+							}
 						}
 					}
 				}
@@ -373,13 +400,12 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 				yd = -xdiff;
 				break;
 			default: // u turn.
-				xd = -ydiff;
-				yd = -xdiff;
+				xd = -xdiff;
+				yd = -ydiff;
 				break;
 		}
 		pt.m_x = GetTopPoint().m_x + xd;
 		pt.m_y = GetTopPoint().m_y + yd;
-
 		if( pObj->IsItem() )
 		{
 			CItem * pItem = STATIC_CAST<CItem*>(pObj);
@@ -628,7 +654,10 @@ bool CItemShip::Ship_OnMoveTick()
 		Ship_Stop();
 		return( true );
 	}
-	m_NextMove = CServTime::GetCurrentTime() + maximum(1, (m_itShip.m_fSail == 1) ? pItemMulti->m_shipSpeed.period : (pItemMulti->m_shipSpeed.period / 2));
+	if (IsSetOF(OF_NoSmoothSailing))
+		m_NextMove = CServTime::GetCurrentTime() + maximum(1, (m_itShip.m_fSail == 1) ? pItemMulti->m_shipSpeed.period * 2 : (pItemMulti->m_shipSpeed.period));
+	else
+		m_NextMove = CServTime::GetCurrentTime() + maximum(1, (m_itShip.m_fSail == 1) ? pItemMulti->m_shipSpeed.period : (pItemMulti->m_shipSpeed.period / 2));
 	return(true);
 }
 

@@ -1477,3 +1477,6 @@ Fixed: .DUPE function on items not duping the item timer.
 Fixed: NPCs showing wrong color on chars on some specific cases.
 Fixed: Paperdolls showing the "," after the char name even when there's no title to display.
 Changed: only players can have skill titles on paperdoll now.
+
+04-12-2014, Ben
+Added: OF_NoSmoothSailing in sphere.ini to disable smooth sailing and keep old behaviour
