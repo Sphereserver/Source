@@ -102,14 +102,20 @@ public:
 		m_timestamp.InitTime(t_time);
 	}
 
-	LPCTSTR GetDefStr( LPCTSTR pszKey, bool fZero = false ) const
+	LPCTSTR GetDefStr( LPCTSTR pszKey, bool fZero = false, bool fDef = false ) const
 	{
-		return m_BaseDefs.GetKeyStr( pszKey, fZero );
+		CVarDefCont	* pVar = GetDefKey( pszKey, fDef );
+		if ( pVar == NULL )
+			return (fZero ? "0" : "");
+		return pVar->GetValStr();
 	}
 
-	INT64 GetDefNum( LPCTSTR pszKey, bool fZero = false ) const
+	INT64 GetDefNum( LPCTSTR pszKey, bool fZero = false, bool fDef = false ) const
 	{
-		return m_BaseDefs.GetKeyNum( pszKey, fZero );
+		CVarDefCont	* pVar = GetDefKey( pszKey, fDef );
+		if ( pVar == NULL )
+			return (fZero ? 0 : NULL);
+		return pVar->GetValNum();
 	}
 
 	void SetDefNum(LPCTSTR pszKey, INT64 iVal, bool fZero = true)

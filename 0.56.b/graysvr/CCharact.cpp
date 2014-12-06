@@ -1769,6 +1769,8 @@ bool CChar::ItemBounce( CItem * pItem )
 
 		pPack->ContentAdd( pItem ); // Add it to pack
 		Sound( pItem->GetDropSound( pPack ));
+		pItem->RemoveFromView();
+		pItem->Update();
 	}
 	else
 	{

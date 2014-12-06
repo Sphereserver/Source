@@ -192,7 +192,7 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 	for ( size_t i = 0; i < iCount; i++ )
 	{
 		CObjBase * pObj = ppObjs[i];
-		ASSERT(pObj);
+		if (!pObj) continue;
 		CPointMap pt = pObj->GetTopPoint();
 		CPointMap ptOld(pt);
 
@@ -206,83 +206,64 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 
 		pObj->MoveTo(pt);
 
-		if (IsSetOF(OF_NoSmoothSailing))
+	}
+
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
+	{
+		CChar * tMe = pClient->GetChar();
+		BYTE tViewDist = tMe->GetSight();
+
+		if (pClient->CanSee(this))
 		{
-			if ( pObj->IsChar() && !pObj->IsDisconnected() )
+
+			if ((pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA()) && !IsSetOF(OF_NoSmoothSailing))
 			{
-				ASSERT( m_pRegion->m_iLinkedSectors );
-				if (pt.GetDist(ptOld) == 1)
+				CPointMap ptdir = GetTopPoint();
+				ptdir += pdelta;
+
+				new PacketMoveShip(pClient, this, ppObjs, iCount, m_itShip.m_DirMove, m_itShip.m_DirFace, Multi_GetDef()->m_SpeedMode);
+
+				//Client is also on Ship
+				if (tMe->GetRegion()->GetResourceID().GetObjUID() == GetUID())
 				{
-					pObj->RemoveFromView();
-					pObj->Update();
+					CPointMap pt = tMe->GetTopPoint();
+					pt -= pdelta;
+					pClient->addPlayerSeeShip( pt );
+					if (pClient->GetNetState()->isClientSA())
+						new PacketPlayerPosition(pClient);
+					continue;
+				}
+			}
+
+			for ( size_t i = 0; i < iCount; i++ )
+			{
+				CObjBase * pObj = ppObjs[i];
+				if (!pObj) continue;
+				CPointMap pt = pObj->GetTopPoint();
+				CPointMap ptOld(pt);
+				ptOld -= pdelta;
+				ptOld.m_map = tMe->GetTopPoint().m_map;
+
+				if (pObj->IsItem())
+				{
+					CItem *pItem = dynamic_cast <CItem *>(pObj);
+					if ((tMe->GetTopPoint().GetDistSight(pt) < tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) >= tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA()) || IsSetOF(OF_NoSmoothSailing)))
+						pClient->addItem(pItem);
 				}
 				else
 				{
-					CChar *pChar = dynamic_cast<CChar*>( pObj );
-					pChar->UpdateMove(ptOld, NULL, true);
-				}
-			}
-			else
-				pObj->Update();
-		}
-
-	}
-
-	if (!IsSetOF(OF_NoSmoothSailing))
-	{
-		ClientIterator it;
-		for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
-		{
-			CChar * tMe = pClient->GetChar();
-			BYTE tViewDist = tMe->GetSight();
-
-			if (pClient->CanSee(this))
-			{
-				if (pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA())
-				{
-					CPointMap ptdir = GetTopPoint();
-					ptdir += pdelta;
-
-					new PacketMoveShip(pClient, this, ppObjs, iCount, m_itShip.m_DirMove, m_itShip.m_DirFace, Multi_GetDef()->m_SpeedMode);
-
-					//Client is also on Ship
-					if (tMe->GetRegion()->GetResourceID().GetObjUID() == GetUID())
+					CChar *pChar = dynamic_cast <CChar *>(pObj);
+					if (pClient == pChar->GetClient())
+						pClient->addPlayerView( ptOld );
+					else if ((tMe->GetTopPoint().GetDistSight(pt) <= tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) > tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA()) || IsSetOF(OF_NoSmoothSailing)))
 					{
-						CPointMap pt = tMe->GetTopPoint();
-						pt -= pdelta;
-						pClient->addPlayerSeeShip( pt );
-						continue;
-					}
-				}
-
-				for ( size_t i = 0; i < iCount; i++ )
-				{
-					CObjBase * pObj = ppObjs[i];
-					CPointMap pt = pObj->GetTopPoint();
-					CPointMap ptOld(pt);
-					ptOld -= pdelta;
-					ptOld.m_map = tMe->GetTopPoint().m_map;
-
-					if (pObj->IsItem())
-					{
-						CItem *pItem = dynamic_cast <CItem *>(pObj);
-						if ((tMe->GetTopPoint().GetDistSight(pt) < tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) >= tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA())))
-							pClient->addItem(pItem);
-					}
-					else
-					{
-						CChar *pChar = dynamic_cast <CChar *>(pObj);
-						if (pClient == pChar->GetClient())
-							pClient->addPlayerView( ptOld );
-						else if ((tMe->GetTopPoint().GetDistSight(pt) <= tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) > tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA())))
+						if ((pt.GetDist(ptOld) > 1) && (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HIGHSEAS)) && (pChar->GetTopPoint().GetDistSight(ptOld) < tViewDist))
+							pClient->addCharMove( pChar );
+						else
 						{
-							if ((pt.GetDist(ptOld) > 1) && (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HIGHSEAS)) && (pChar->GetTopPoint().GetDistSight(ptOld) < tViewDist))
-								pClient->addCharMove( pChar );
-							else
-							{
-								pClient->addObjectRemove( pChar );
-								pClient->addChar(pChar);
-							}
+							pClient->addObjectRemove( pChar );
+							pClient->addChar(pChar);
 						}
 					}
 				}

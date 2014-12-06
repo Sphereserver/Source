@@ -208,8 +208,8 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 		{
 			if (other->m_pPlayer != NULL)
 			{
-				writeByte(static_cast<unsigned char>(other->GetDefNum("CURFOLLOWER", true)));
-				writeByte(static_cast<unsigned char>(other->GetDefNum("MAXFOLLOWER", true)));
+				writeByte(static_cast<unsigned char>(other->GetDefNum("CURFOLLOWER", true, true)));
+				writeByte(static_cast<unsigned char>(other->GetDefNum("MAXFOLLOWER", true, true)));
 			}
 			else
 			{
@@ -220,11 +220,11 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 
 		if (version >= 4) // SE attributes
 		{
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESFIRE", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESCOLD", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESPOISON", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESENERGY", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("LUCK", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESFIRE", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESCOLD", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESPOISON", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESENERGY", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("LUCK", true, true)));
 
 			const CItem* weapon = other->m_uidWeapon.ItemFind();
 			if (weapon != NULL)
@@ -238,54 +238,54 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 				writeInt16(other->Fight_CalcDamage(NULL, SKILL_WRESTLING, true));
 			}
 
-			writeInt32(static_cast<unsigned long>(other->GetDefNum("TITHING", true)));
+			writeInt32(static_cast<unsigned long>(other->GetDefNum("TITHING", true, true)));
 		}
 
 		if (version >= 6)	// Stygian Abyss Attributes?
 		{
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESPHYSICALMAX", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESFIREMAX", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESCOLDMAX", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESPOISONMAX", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESENERGYMAX", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDEFCHANCE", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDEFCHANCEMAX", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEHITCHANCE", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASESWINGSPEED", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDAM", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERREAGENTCOST", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASESPELLDAM", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("FASTERCASTRECOVERY", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("FASTERCASTING", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERMANACOST", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESPHYSICALMAX", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESFIREMAX", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESCOLDMAX", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESPOISONMAX", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESENERGYMAX", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDEFCHANCE", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDEFCHANCEMAX", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEHITCHANCE", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASESWINGSPEED", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDAM", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERREAGENTCOST", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASESPELLDAM", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("FASTERCASTRECOVERY", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("FASTERCASTING", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERMANACOST", true, true)));
 		}
 /* We really don't know what is going on here. RUOSI Packet Guide was way off... -Khaos
    Possible KR client status info... -Ben*/
 		if (target->GetNetState()->isClientKR() )
 		{
-			writeInt16((WORD)other->GetDefNum("INCREASEHITCHANCE", true));
-			writeInt16((WORD)other->GetDefNum("INCREASESWINGSPEED", true));
-			writeInt16((WORD)other->GetDefNum("INCREASEDAM", true));
-			writeInt16((WORD)other->GetDefNum("LOWERREAGENTCOST", true));
-			writeInt16((WORD)other->GetDefNum("REGENHITS", true));
-			writeInt16((WORD)other->GetDefNum("REGENSTAM", true));
-			writeInt16((WORD)other->GetDefNum("REGENMANA", true));
-			writeInt16((WORD)other->GetDefNum("REFLECTPHYSICALDAM", true));
-			writeInt16((WORD)other->GetDefNum("ENHANCEPOTIONS", true));
-			writeInt16((WORD)other->GetDefNum("INCREASEDEFCHANCE", true));
-			writeInt16((WORD)other->GetDefNum("INCREASESPELLDAM", true));
-			writeInt16((WORD)other->GetDefNum("FASTERCASTRECOVERY", true));
-			writeInt16((WORD)other->GetDefNum("FASTERCASTING", true));
-			writeInt16((WORD)other->GetDefNum("LOWERMANACOST", true));
-			writeInt16((WORD)other->GetDefNum("BONUSSTR", true));
-			writeInt16((WORD)other->GetDefNum("BONUSDEX", true));
-			writeInt16((WORD)other->GetDefNum("BONUSINT", true));
-			writeInt16((WORD)other->GetDefNum("BONUSHITS", true));
-			writeInt16((WORD)other->GetDefNum("BONUSSTAM", true));
-			writeInt16((WORD)other->GetDefNum("BONUSMANA", true));
-			writeInt16((WORD)other->GetDefNum("BONUSHITSMAX", true));
-			writeInt16((WORD)other->GetDefNum("BONUSSTAMMAX", true));
-			writeInt16((WORD)other->GetDefNum("BONUSMANAMAX", true));
+			writeInt16((WORD)other->GetDefNum("INCREASEHITCHANCE", true, true));
+			writeInt16((WORD)other->GetDefNum("INCREASESWINGSPEED", true, true));
+			writeInt16((WORD)other->GetDefNum("INCREASEDAM", true, true));
+			writeInt16((WORD)other->GetDefNum("LOWERREAGENTCOST", true, true));
+			writeInt16((WORD)other->GetDefNum("REGENHITS", true, true));
+			writeInt16((WORD)other->GetDefNum("REGENSTAM", true, true));
+			writeInt16((WORD)other->GetDefNum("REGENMANA", true, true));
+			writeInt16((WORD)other->GetDefNum("REFLECTPHYSICALDAM", true, true));
+			writeInt16((WORD)other->GetDefNum("ENHANCEPOTIONS", true, true));
+			writeInt16((WORD)other->GetDefNum("INCREASEDEFCHANCE", true, true));
+			writeInt16((WORD)other->GetDefNum("INCREASESPELLDAM", true, true));
+			writeInt16((WORD)other->GetDefNum("FASTERCASTRECOVERY", true, true));
+			writeInt16((WORD)other->GetDefNum("FASTERCASTING", true, true));
+			writeInt16((WORD)other->GetDefNum("LOWERMANACOST", true, true));
+			writeInt16((WORD)other->GetDefNum("BONUSSTR", true, true));
+			writeInt16((WORD)other->GetDefNum("BONUSDEX", true, true));
+			writeInt16((WORD)other->GetDefNum("BONUSINT", true, true));
+			writeInt16((WORD)other->GetDefNum("BONUSHITS", true, true));
+			writeInt16((WORD)other->GetDefNum("BONUSSTAM", true, true));
+			writeInt16((WORD)other->GetDefNum("BONUSMANA", true, true));
+			writeInt16((WORD)other->GetDefNum("BONUSHITSMAX", true, true));
+			writeInt16((WORD)other->GetDefNum("BONUSSTAMMAX", true, true));
+			writeInt16((WORD)other->GetDefNum("BONUSMANAMAX", true, true));
 		}
 	}
 	else

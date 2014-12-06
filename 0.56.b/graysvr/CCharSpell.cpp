@@ -248,9 +248,9 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 
 		if ( IsSetEF(EF_PetSlots) && !IsPriv(PRIV_GM) )
 		{
-			short int iFollowerSlotsNeeded = static_cast<short>(maximum(pChar->GetDefNum("FOLLOWERSLOTS", true),1));
-			short int iCurFollower = static_cast<short>(GetDefNum("CURFOLLOWER", true));
-			short int iMaxFollower = static_cast<short>(GetDefNum("MAXFOLLOWER", true));
+			short int iFollowerSlotsNeeded = static_cast<short>(maximum(pChar->GetDefNum("FOLLOWERSLOTS", true, true),1));
+			short int iCurFollower = static_cast<short>(GetDefNum("CURFOLLOWER", true, true));
+			short int iMaxFollower = static_cast<short>(GetDefNum("MAXFOLLOWER", true, true));
 
 			if ((iCurFollower + iFollowerSlotsNeeded) > iMaxFollower )
 			{

@@ -382,9 +382,9 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const
 			{
 				if ( IsSetEF(EF_PetSlots) && !pSrc->IsPriv(PRIV_GM) )
 				{
-					short int iFollowerSlotsNeeded = static_cast<short>(maximum(GetDefNum("FOLLOWERSLOTS", true),1));
-					short int iCurFollower = static_cast<short>(pCharTarg->GetDefNum("CURFOLLOWER", true));
-					short int iMaxFollower = static_cast<short>(pCharTarg->GetDefNum("MAXFOLLOWER", true));
+					short int iFollowerSlotsNeeded = static_cast<short>(maximum(GetDefNum("FOLLOWERSLOTS", true, true),1));
+					short int iCurFollower = static_cast<short>(pCharTarg->GetDefNum("CURFOLLOWER", true, true));
+					short int iMaxFollower = static_cast<short>(pCharTarg->GetDefNum("MAXFOLLOWER", true, true));
 
 					if ((iCurFollower + iFollowerSlotsNeeded) > iMaxFollower )
 					{
@@ -507,8 +507,8 @@ void CChar::NPC_PetClearOwners()
 		{
 			CChar * pPetOwner = pPetMemory->m_uidLink.CharFind();
 
-			short int iFollowerSlotsNeeded = static_cast<short>(maximum(GetDefNum("FOLLOWERSLOTS", true),1));
-			short int iCurFollower = static_cast<short>(pPetOwner->GetDefNum("CURFOLLOWER", true));
+			short int iFollowerSlotsNeeded = static_cast<short>(maximum(GetDefNum("FOLLOWERSLOTS", true, true),1));
+			short int iCurFollower = static_cast<short>(pPetOwner->GetDefNum("CURFOLLOWER", true, true));
 			short int iSetFollower = iCurFollower - iFollowerSlotsNeeded;
 			if ( iSetFollower < 0 )
 				iSetFollower = 0;
@@ -554,8 +554,8 @@ bool CChar::NPC_PetSetOwner( CChar * pChar )
 
 	if (IsSetEF(EF_PetSlots))
 	{
-		short int iFollowerSlotsNeeded = static_cast<short>(maximum(GetDefNum("FOLLOWERSLOTS", true),1));
-		short int iCurFollower = static_cast<short>(pChar->GetDefNum("CURFOLLOWER", true));
+		short int iFollowerSlotsNeeded = static_cast<short>(maximum(GetDefNum("FOLLOWERSLOTS", true, true),1));
+		short int iCurFollower = static_cast<short>(pChar->GetDefNum("CURFOLLOWER", true, true));
 		short int iSetFollower = iCurFollower + iFollowerSlotsNeeded;
 		if ( iSetFollower > 255 )
 			iSetFollower = 255;		// Max value that clients can show on char status

@@ -1480,3 +1480,8 @@ Changed: only players can have skill titles on paperdoll now.
 
 04-12-2014, Ben
 Added: OF_NoSmoothSailing in sphere.ini to disable smooth sailing and keep old behaviour
+
+06-12-2014, Ben
+Fixed: Crash caused by 2 handed weapons no updating properly
+Fixed: EF_PetSlots not checking chardef for FOLLOWERSLOTS
+Fixed: possible more ship errors...

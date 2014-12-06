@@ -1087,8 +1087,8 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 	CItemVendable* pItem;
 	INT64 costtotal = 0;
 	short int iFollowerSlotsNeeded = 0;
-	short int iCurFollower = static_cast<short>(m_pChar->GetDefNum("CURFOLLOWER", true));
-	short int iMaxFollower = static_cast<short>(m_pChar->GetDefNum("MAXFOLLOWER", true));
+	short int iCurFollower = static_cast<short>(m_pChar->GetDefNum("CURFOLLOWER", true, true));
+	short int iMaxFollower = static_cast<short>(m_pChar->GetDefNum("MAXFOLLOWER", true, true));
 
 	//	Check if the vendor really has so much items
 	for (size_t i = 0; i < itemCount; ++i)
@@ -1124,7 +1124,7 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 			CChar * pPet =  m_pChar->CreateNPC( id );
 			ASSERT(pPet);
 
-			iFollowerSlotsNeeded = static_cast<short>(maximum(pPet->GetDefNum("FOLLOWERSLOTS", true),1));
+			iFollowerSlotsNeeded = static_cast<short>(maximum(pPet->GetDefNum("FOLLOWERSLOTS", true, true),1));
 			pPet->Delete();
 
 			if ((iCurFollower + iFollowerSlotsNeeded) > iMaxFollower)

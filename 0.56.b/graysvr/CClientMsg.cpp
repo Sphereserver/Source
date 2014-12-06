@@ -865,6 +865,7 @@ void CClient::GetAdjustedItemID( const CChar * pChar, const CItem * pItem, ITEMI
 			wHue &= HUE_MASK_LO | HUE_UNDERWEAR | HUE_TRANSLUCENT;
 		else
 			wHue &= HUE_MASK_HI | HUE_UNDERWEAR | HUE_TRANSLUCENT;
+
 	}
 
 	if ( pItemDef && ( GetResDisp() < pItemDef->GetResLevel() ) )
@@ -2704,9 +2705,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 
 		if (bNameOnly) // if we only want to display the name (FEATURE_AOS_UPDATE_B disabled)
 		{
-			unsigned long ClilocName = static_cast<unsigned long>(pObj->GetDefNum("NAMELOC"));
-			if (!ClilocName)
-				ClilocName = static_cast<unsigned long>(pObj->Base_GetDef()->GetDefNum("NAMELOC"));
+			unsigned long ClilocName = static_cast<unsigned long>(pObj->GetDefNum("NAMELOC", false, true));
 
 			if (ClilocName)
 				m_TooltipData.InsertAt(0, new CClientTooltip(ClilocName));
@@ -2729,9 +2728,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 
 			if ( iRet != TRIGRET_RET_TRUE )
 			{
-				unsigned long ClilocName = static_cast<unsigned long>(pObj->GetDefNum("NAMELOC"));
-				if (!ClilocName)
-					ClilocName = static_cast<unsigned long>(pObj->Base_GetDef()->GetDefNum("NAMELOC"));
+				unsigned long ClilocName = static_cast<unsigned long>(pObj->GetDefNum("NAMELOC", false, true));
 
 				if ( pItem )
 				{

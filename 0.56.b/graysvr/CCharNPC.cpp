@@ -815,17 +815,15 @@ bool CCharNPC::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 	case CNC_THROWOBJ:
 	case CNC_THROWRANGE:
 		{
-			CVarDefCont * pVar = pChar->GetDefKey(pszKey, true);
-			sVal = pVar ? pVar->GetValStr() : "";
+			sVal = pChar->GetDefStr(pszKey, false, true);
 		}
 		break;
 	//return as decimal number or 0 if not set
 	//On these ones, check BaseDef if not found on dynamic
 	case CNC_BONDED:
 	case CNC_FOLLOWERSLOTS:
-		{
-			CVarDefCont * pVar = pChar->GetDefKey(pszKey, true);
-			sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
+		{	
+			sVal.FormatLLVal(pChar->GetDefNum(pszKey, true, true));
 		}	
 		break;
 	case CNC_ACTPRI:
