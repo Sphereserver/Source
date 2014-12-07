@@ -1920,12 +1920,16 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 void CChar::EatAnim( LPCTSTR pszName, int iQty )
 {
 	ADDTOCALLSTACK("CChar::EatAnim");
-	Stat_SetVal( STAT_FOOD, Stat_GetVal(STAT_FOOD) + iQty );
+	int iFood = Stat_GetVal(STAT_FOOD) + iQty;
+	int iStam = Stat_GetVal(STAT_DEX) + Calc_GetRandVal2(3,6) + iQty / 5;
+	Stat_SetVal( STAT_FOOD, minimum(iFood, Stat_GetMax(STAT_FOOD)) );
+	Stat_SetVal( STAT_DEX, minimum(iStam, Stat_GetMax(STAT_DEX)) );
 
 	static const SOUND_TYPE sm_EatSounds[] = { 0x03a, 0x03b, 0x03c };
-
 	Sound( sm_EatSounds[ Calc_GetRandVal( COUNTOF(sm_EatSounds)) ] );
-	UpdateAnimate( ANIM_EAT );
+
+	if ( !IsStatFlag(STATF_OnHorse))
+		UpdateAnimate( ANIM_EAT );
 
 	TCHAR * pszMsg = Str_GetTemp();
 	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_EATSOME), static_cast<LPCTSTR>(pszName));
@@ -4041,9 +4045,9 @@ bool CChar::CHAR_OnTickFood( int nFoodLevel , int HitsHungerLoss )
 	// Are we hungry enough to take some new action ?
 	// RETURN: true = we have taken an action.
 
-	if ( HitsHungerLoss <= 0 || !Stat_GetMax(STAT_FOOD))
+	if ( HitsHungerLoss <= 0 )
 		return false;
-	if ( m_pArea->IsFlag(REGION_FLAG_SAFE))
+	if ( !m_pArea || m_pArea->IsFlag(REGION_FLAG_SAFE))
 		return false;
 	if ( IsStatFlag(STATF_INVUL|STATF_DEAD|STATF_Sleeping|STATF_Stone|STATF_Spawned))
 		return false;

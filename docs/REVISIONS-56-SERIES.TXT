@@ -1485,3 +1485,7 @@ Added: OF_NoSmoothSailing in sphere.ini to disable smooth sailing and keep old b
 Fixed: Crash caused by 2 handed weapons no updating properly
 Fixed: EF_PetSlots not checking chardef for FOLLOWERSLOTS
 Fixed: possible more ship errors...
+
+07-12-2014, Coruja
+Added: Eating foods now will recover stamina too (OSI default gain: rand(3,6) + FoodRestoredByItem/5)
+Fixed: Console error when ridden pets get hunger.
