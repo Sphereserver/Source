@@ -335,21 +335,19 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 
 	// Check that we can fit into this space.
 	CPointMap ptTmp;
-	DIR_TYPE dirTmp;
-	for ( int i = -3; i < 3; ++i )
+	for ( ptTmp.m_x = rect.m_left; ptTmp.m_x < rect.m_right; ptTmp.m_x++ )
 	{
-		dirTmp = GetDirTurn(static_cast<DIR_TYPE>(m_itShip.m_DirFace), i);
-		ptTmp = rect.GetRectCorner(dirTmp);
-		ptTmp.m_z = GetTopZ();
-
-		// If the ship already overlaps a point then we must
-		// already be allowed there.
-		if((! ptTmp.IsValidPoint()) || ( !m_pRegion->IsInside2d(ptTmp) && !Ship_CanMoveTo(ptTmp) ))
+		for ( ptTmp.m_y = rect.m_top; ptTmp.m_y < rect.m_bottom; ptTmp.m_y++ )
 		{
-			CItem *pTiller = Multi_GetSign();
-			ASSERT(pTiller);
-			pTiller->Speak( g_Cfg.GetDefaultMsg( DEFMSG_TILLER_CANT_TURN ), HUE_TEXT_TILLERMAN, TALKMODE_SAY, FONT_NORMAL);
-			return false;
+			// If the ship already overlaps a point then we must
+			// already be allowed there.
+			if((! ptTmp.IsValidPoint()) || ( !m_pRegion->IsInside2d(ptTmp) && !Ship_CanMoveTo(ptTmp) ))
+			{
+				CItem *pTiller = Multi_GetSign();
+				ASSERT(pTiller);
+				pTiller->Speak( g_Cfg.GetDefaultMsg( DEFMSG_TILLER_CANT_TURN ), HUE_TEXT_TILLERMAN, TALKMODE_SAY, FONT_NORMAL);
+				return false;
+			}
 		}
 	}
 
