@@ -174,7 +174,7 @@ void CItem::Spawn_GenerateItem( CResourceDef * pDef )
 		}
 	}
 
-	// pItem->m_uidLink = GetUID();	// This might be dangerous ?
+	pItem->SetKeyNum("SpawnItem", static_cast<DWORD>(GetUID()));	// This might be dangerous ?
 	pItem->SetDecayTime( g_Cfg.m_iDecay_Item );	// It will decay eventually to be replaced later.
 	pItem->MoveNearObj( this, iDistMax );
 }

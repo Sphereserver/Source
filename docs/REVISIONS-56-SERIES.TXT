@@ -1492,3 +1492,4 @@ Fixed: Console error when ridden pets get hunger.
 
 14-12-2014, Ben
 Fixed #2437: Ships were able to trun onto other ships in certain conditions.
+Added #2429: TAG.SpawnItem will now contain the spawngem's uid for items that are spawned.
