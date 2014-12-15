@@ -1622,6 +1622,12 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 				{
 					pszKey += 5;
 					SKIP_SEPARATORS(pszKey);
+					if (!strnicmp("GMTFORMAT",pszKey,9))
+					{
+						pszKey += 9;
+						GETNONWHITESPACE( pszKey );
+						sVal = CGTime::GetCurrentTime().FormatGmt(pszKey);
+					}
 					if (!strnicmp("FORMAT",pszKey,6))
 					{
 						pszKey += 6;
