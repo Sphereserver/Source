@@ -335,13 +335,17 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 
 	// Check that we can fit into this space.
 	CPointMap ptTmp;
+	ptTmp.m_z = GetTopPoint().m_z;
+	ptTmp.m_map = rect.m_map;
 	for ( ptTmp.m_x = rect.m_left; ptTmp.m_x < rect.m_right; ptTmp.m_x++ )
 	{
 		for ( ptTmp.m_y = rect.m_top; ptTmp.m_y < rect.m_bottom; ptTmp.m_y++ )
 		{
+			if (m_pRegion->IsInside2d(ptTmp))
+				continue;
 			// If the ship already overlaps a point then we must
 			// already be allowed there.
-			if((! ptTmp.IsValidPoint()) || ( !m_pRegion->IsInside2d(ptTmp) && !Ship_CanMoveTo(ptTmp) ))
+			if((! ptTmp.IsValidPoint()) || (!Ship_CanMoveTo(ptTmp) ))
 			{
 				CItem *pTiller = Multi_GetSign();
 				ASSERT(pTiller);
@@ -819,9 +823,13 @@ anchored:
 				pszSpeak = g_Cfg.GetDefaultMsg( DEFMSG_TILLER_ANCHOR_IS_DOWN );
 				break;
 			}
+			DIR_TYPE DirMove = static_cast<DIR_TYPE>(m_itShip.m_DirMove);
 			m_itShip.m_DirMove = GetDirTurn( DirFace, DirMoveChange );
 			if (! Ship_Face(static_cast<DIR_TYPE>(m_itShip.m_DirMove)) )
+			{
+				m_itShip.m_DirMove = DirMove;
 				return false;
+			}
 			break;
 		}
 
