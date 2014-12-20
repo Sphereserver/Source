@@ -212,6 +212,9 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		CChar * tMe = pClient->GetChar();
+		if ( tMe == NULL )
+			continue;
+
 		BYTE tViewDist = tMe->GetSight();
 
 		if (pClient->CanSee(this))

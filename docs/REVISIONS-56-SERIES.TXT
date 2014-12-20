@@ -1499,3 +1499,6 @@ Added: SERV.RTIME.GMTFORMAT. Works exactly like RTIME.FORMAT but returns GMT tim
 
 17-12-2014, Ben
 Fixed #2437 & #2440: More ship movement issues.
+
+20-12-2014, Ben
+Fixed #2442: More Ship errors.
