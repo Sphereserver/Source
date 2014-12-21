@@ -1500,5 +1500,7 @@ Added: SERV.RTIME.GMTFORMAT. Works exactly like RTIME.FORMAT but returns GMT tim
 17-12-2014, Ben
 Fixed #2437 & #2440: More ship movement issues.
 
-20-12-2014, Ben
+21-12-2014, Ben
 Fixed #2442: More Ship errors.
+Fixed #2444: better detection of valid .add arguments.
+Added: d_add dialog will now be used, if it exist, for .add instead of menu_additem

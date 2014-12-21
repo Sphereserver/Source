@@ -127,6 +127,9 @@ private:
 	CExpression& operator=(const CExpression& other);
 } g_Exp;
 
+extern bool IsValidDef( LPCTSTR pszTest );
+extern bool IsValidGameObjDef( LPCTSTR pszTest );
+
 extern bool IsSimpleNumberString( LPCTSTR pszTest );
 extern bool IsStrNumericDec( LPCTSTR pszTest );
 extern bool IsStrNumeric( LPCTSTR pszTest );
@@ -149,18 +152,5 @@ extern DWORD ahextoi( LPCTSTR pArgs ); // Convert hex string to integer
 #define Exp_GetVal( pa )	static_cast<int>(g_Exp.GetVal( pa ))
 #define Exp_GetLLVal( pa )	g_Exp.GetVal( pa )
 #define Exp_GetRange( pa )	g_Exp.GetRange( pa )
-
-//inline int CVarDefStr::GetValNum() const
-//{
-//	LPCTSTR pszStr = m_sVal;
-//	return( Exp_GetVal(pszStr));
-//}
-//
-//inline LPCTSTR CVarDefNum::GetValStr() const
-//{
-//	TCHAR * pszTmp = Str_GetTemp();
-//	sprintf(pszTmp, "0%x", m_iVal);
-//	return pszTmp;
-//}
 
 #endif	// _INC_CEXPRSSION_H

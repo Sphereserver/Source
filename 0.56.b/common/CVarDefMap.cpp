@@ -599,6 +599,18 @@ LPCTSTR CVarDefMap::GetKeyStr( LPCTSTR pszKey, bool fZero  ) const
 	return pVar->GetValStr();
 }
 
+CVarDefCont * CVarDefMap::CheckParseKey( LPCTSTR & pszArgs ) const
+{
+	ADDTOCALLSTACK("CVarDefMap::CheckParseKey");
+	TCHAR szTag[ EXPRESSION_MAX_KEY_LEN ];
+	GetIdentifierString( szTag, pszArgs );
+	CVarDefCont * pVar = GetKey(szTag);
+	if ( pVar )
+		return( pVar );
+
+	return NULL;
+}
+
 CVarDefCont * CVarDefMap::GetParseKey( LPCTSTR & pszArgs ) const
 {
 	ADDTOCALLSTACK("CVarDefMap::GetParseKey");

@@ -155,6 +155,7 @@ public:
 	INT64 GetKeyNum( LPCTSTR pszKey, bool fZero = false ) const;
 	LPCTSTR GetKeyStr( LPCTSTR pszKey, bool fZero = false ) const;
 	CVarDefCont * GetParseKey( LPCTSTR & pArgs ) const;
+	CVarDefCont * CheckParseKey( LPCTSTR & pszArgs ) const;
 	bool GetParseVal( LPCTSTR & pArgs, long long * plVal ) const;
 
 	void DumpKeys( CTextConsole * pSrc, LPCTSTR pszPrefix = NULL ) const;

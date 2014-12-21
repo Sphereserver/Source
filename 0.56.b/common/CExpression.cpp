@@ -128,7 +128,6 @@ bool IsStrNumeric( LPCTSTR pszTest )
 	return true;
 }
 
-
 bool IsSimpleNumberString( LPCTSTR pszTest )
 {
 	// is this a string or a simple numeric expression ?
@@ -201,6 +200,35 @@ static size_t GetIdentifierString( TCHAR * szTag, LPCTSTR pszArgs )
 
 	szTag[i] = '\0';
 	return i;
+}
+
+bool IsValidDef( LPCTSTR pszTest )
+{
+	CVarDefCont * pVarBase = g_Exp.m_VarDefs.CheckParseKey( pszTest );
+	if ( pVarBase == NULL )
+	{
+		//check VAR.X also
+		pVarBase = g_Exp.m_VarGlobals.CheckParseKey( pszTest );
+		if ( pVarBase == NULL )
+			return false;
+	}
+	return true;
+}
+
+bool IsValidGameObjDef( LPCTSTR pszTest )
+{
+	CVarDefCont * pVarBase = g_Exp.m_VarDefs.CheckParseKey( pszTest );
+	if ( pVarBase == NULL )
+		return false;
+	TCHAR ch = *pVarBase->GetValStr();
+	if (( ! ch ) || ( ch == '<'))
+		return false;
+
+	RESOURCE_ID rid = g_Cfg.ResourceGetID( RES_QTY, pszTest);
+	if (( rid.GetResType() != RES_CHARDEF ) && ( rid.GetResType() != RES_ITEMDEF ) && ( rid.GetResType() != RES_SPAWN ) && ( rid.GetResType() != RES_TEMPLATE ))
+		return false;
+
+	return true;
 }
 
 /////////////////////////////////////////////////////////////////////////

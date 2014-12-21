@@ -944,9 +944,14 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			{
 				// FindItemName ???
 				TCHAR * pszArgs = s.GetArgStr();
-				RESOURCE_ID rid = g_Cfg.ResourceGetID( RES_ITEMDEF, const_cast<LPCTSTR &>(reinterpret_cast<LPTSTR &>(pszArgs)));
+				if ( !IsValidGameObjDef( static_cast<LPCTSTR>(pszArgs) ) )
+				{
+					g_Log.EventWarn("Invalid ADD Argument %s\r", pszArgs);
+					return true;
+				}
 
-				if ( rid.GetResType() == RES_CHARDEF )
+				RESOURCE_ID rid = g_Cfg.ResourceGetID( RES_QTY, const_cast<LPCTSTR &>(reinterpret_cast<LPTSTR &>(pszArgs)));
+				if (( rid.GetResType() == RES_CHARDEF ) || ( rid.GetResType() == RES_SPAWN ))
 				{
 					m_Targ_PrvUID.InitUID();
 					return Cmd_CreateChar(static_cast<CREID_TYPE>(rid.GetResIndex()), SPELL_Summon, false );
@@ -957,7 +962,10 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			}
 			else
 			{
-				Menu_Setup( g_Cfg.ResourceGetIDType( RES_MENU, "MENU_ADDITEM"));
+				if ( IsValidDef( "d_add" ) )
+					Dialog_Setup( CLIMODE_DIALOG, g_Cfg.ResourceGetIDType(RES_DIALOG, "d_add"), 0, this->GetChar() );
+				else
+					Menu_Setup( g_Cfg.ResourceGetIDType( RES_MENU, "MENU_ADDITEM"));	
 			}
 			break;
 		case CV_ADDBUFF:
