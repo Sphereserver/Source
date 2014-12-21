@@ -1454,8 +1454,11 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 					break;
 
 				case RACETYPE_GARGOYLE:
+					//these need to be checked...
 					if (( wHairHue >= 0x031d ) && ( wHairHue <= 0x0326 )) ;
 					else if (( wHairHue >= 0x0386 ) && ( wHairHue <= 0x038a )) ;
+					else if (( wHairHue >= 0x06e0 ) && ( wHairHue <= 0x0711 )) ;//new ones or the only one?
+					else if (( wHairHue >= 0x0763 ) && ( wHairHue <= 0x076b )) ;
 					else
 						wHairHue = 0x031d;
 					break;
@@ -1499,8 +1502,11 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 			switch ( rtRace )
 			{
 				case RACETYPE_GARGOYLE:
+					//these need to be checked...
 					if (( wBeardHue >= 0x031d ) && ( wBeardHue <= 0x0326 )) ;
 					else if (( wBeardHue >= 0x0386 ) && ( wBeardHue <= 0x038a )) ;
+					else if (( wBeardHue >= 0x06e0 ) && ( wBeardHue <= 0x0711 )) ;//new ones or the only one?
+					else if (( wBeardHue >= 0x0763 ) && ( wBeardHue <= 0x076b )) ;
 					else
 						wBeardHue = 0x031d;
 			break;
