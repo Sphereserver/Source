@@ -800,7 +800,7 @@ void CServer::ShipTimers_Delete(CItemShip * ship)
 {
 	ADDTOCALLSTACK("CServer::ShipTimers_Delete");
 	std::vector<CItemShip *>::iterator it;
-	for ( it = m_ShipTimers.begin(); it != m_ShipTimers.end(); ++it) 
+	for ( it = m_ShipTimers.begin(); it != m_ShipTimers.end(); ) 
 	{
 		CItemShip * pShip = *it;
 		if (pShip == ship)
