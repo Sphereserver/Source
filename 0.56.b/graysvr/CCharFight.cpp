@@ -4012,11 +4012,17 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	//	I am on ship. Should be able to combat only inside the ship to avoid free sea and
 	//	ground characters hunting
-	if ( !IsSetCombatFlags(COMBAT_ALLOWHITFROMSHIP) && m_pArea && m_pArea->IsFlag(REGION_FLAG_SHIP) )
+	if ( !IsSetCombatFlags(COMBAT_ALLOWHITFROMSHIP) && ( m_pArea != pCharTarg->m_pArea ))
 	{
-		if ( m_pArea != pCharTarg->m_pArea )
+		if ( m_pArea && m_pArea->IsFlag(REGION_FLAG_SHIP) )
 		{
 			SysMessageDefault( DEFMSG_COMBAT_OUTSIDESHIP );
+			Skill_Start( SKILL_NONE );
+			return( WAR_SWING_INVALID );
+		}
+		if ( pCharTarg->m_pArea && pCharTarg->m_pArea->IsFlag(REGION_FLAG_SHIP) )
+		{
+			SysMessageDefault( DEFMSG_COMBAT_INSIDESHIP );
 			Skill_Start( SKILL_NONE );
 			return( WAR_SWING_INVALID );
 		}
@@ -4026,6 +4032,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	{
 		if ( (pCharTarg->m_pNPC && pCharTarg->IsStatFlag(STATF_Ridden) ) || !CanSeeLOS(pCharTarg, (g_Cfg.IsSkillRanged(Skill_GetActive()) ? LOS_NB_WINDOWS : 0x0) ) ) //Allow archery through a window
 		{
+			g_Log.EventDebug("did not pass LOS\r");
 			if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
 				return( WAR_SWING_READY );
 

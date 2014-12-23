@@ -184,6 +184,7 @@ EMOTE_DEF_UNICODE	0
 //combat_hit_neck1s			"%s hits you in the throat!"
 //combat_hit_neck2o			"You smash %s in the throat!"
 //combat_hit_neck2s			"%s smashes you in the throat!"
+//combat_insideship				"You cannot hit characters inside the ship."
 //combat_misso				"%s missed you."
 //combat_misss					"You miss %s."
 //combat_outsideship			"You cannot hit characters outside the ship."

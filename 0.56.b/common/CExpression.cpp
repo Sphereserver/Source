@@ -217,16 +217,19 @@ bool IsValidDef( LPCTSTR pszTest )
 
 bool IsValidGameObjDef( LPCTSTR pszTest )
 {
-	CVarDefCont * pVarBase = g_Exp.m_VarDefs.CheckParseKey( pszTest );
-	if ( pVarBase == NULL )
-		return false;
-	TCHAR ch = *pVarBase->GetValStr();
-	if (( ! ch ) || ( ch == '<'))
-		return false;
+	if (!IsSimpleNumberString(pszTest))
+	{
+		CVarDefCont * pVarBase = g_Exp.m_VarDefs.CheckParseKey( pszTest );
+		if ( pVarBase == NULL )
+			return false;
+		TCHAR ch = *pVarBase->GetValStr();
+		if (( ! ch ) || ( ch == '<'))
+			return false;
 
-	RESOURCE_ID rid = g_Cfg.ResourceGetID( RES_QTY, pszTest);
-	if (( rid.GetResType() != RES_CHARDEF ) && ( rid.GetResType() != RES_ITEMDEF ) && ( rid.GetResType() != RES_SPAWN ) && ( rid.GetResType() != RES_TEMPLATE ))
-		return false;
+		RESOURCE_ID rid = g_Cfg.ResourceGetID( RES_QTY, pszTest);
+		if (( rid.GetResType() != RES_CHARDEF ) && ( rid.GetResType() != RES_ITEMDEF ) && ( rid.GetResType() != RES_SPAWN ) && ( rid.GetResType() != RES_TEMPLATE ))
+			return false;
+	}
 
 	return true;
 }

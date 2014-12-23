@@ -1505,3 +1505,7 @@ Fixed #2442: More Ship errors.
 Fixed #2444: better detection of valid .add arguments.
 Added: d_add dialog will now be used, if it exist, for .add instead of menu_additem
 Fixed #2441: Gargoyle horn color not bing set properly.
+
+23-12-2014, Ben
+Fixed: Minor bug in .add command since the last update that didn't allow numeric arguments.
+Fixed #2450: when COMBAT_ALLOWHITFROMSHIP is disabled, you can no longer attack someone inside a ship while outside.
