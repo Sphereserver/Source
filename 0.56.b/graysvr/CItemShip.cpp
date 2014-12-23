@@ -248,6 +248,9 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 				ptOld -= pdelta;
 				ptOld.m_map = tMe->GetTopPoint().m_map;
 
+				if ((tMe->GetTopPoint().GetDistSight(pt) >= tViewDist) && (tMe->GetTopPoint().GetDistSight(ptOld) < tViewDist))
+					pClient->addObjectRemove( pObj );
+
 				if (pObj->IsItem())
 				{
 					CItem *pItem = dynamic_cast <CItem *>(pObj);

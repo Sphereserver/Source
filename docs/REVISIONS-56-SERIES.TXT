@@ -1509,3 +1509,4 @@ Fixed #2441: Gargoyle horn color not bing set properly.
 23-12-2014, Ben
 Fixed: Minor bug in .add command since the last update that didn't allow numeric arguments.
 Fixed #2450: when COMBAT_ALLOWHITFROMSHIP is disabled, you can no longer attack someone inside a ship while outside.
+Fixed #2447: Ships not updating properly when leaving the screen.
