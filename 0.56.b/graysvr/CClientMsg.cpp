@@ -2828,12 +2828,219 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 					if ( pItem->IsAttr( ATTR_LOCKEDDOWN ) )
 						this->m_TooltipData.Add( new CClientTooltip( 501643 ) ); // Locked Down
 					if ( pItem->IsAttr( ATTR_SECURE ) )
-						this->m_TooltipData.Add( new CClientTooltip( 501644 ) ); // Secure(d) "Locked Down and Secured"
+						this->m_TooltipData.Add( new CClientTooltip( 501644 ) ); // Locked Down & Secured
 
-					if ( ( pItem->GetAmount() != 1 ) && ( pItem->GetType() != IT_CORPSE ) ) // Negative amount?
+					if ( ( pItem->GetAmount() != 1 ) && ( pItem->GetType() != IT_CORPSE ) )
 					{
 						this->m_TooltipData.Add( t = new CClientTooltip( 1060663 ) ); // ~1_val~: ~2_val~
 						t->FormatArgs( "%s\t%u", g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_AMOUNT), pItem->GetAmount() );
+					}
+
+					if ( pItem->IsAttr( ATTR_EXCEPTIONAL ))
+						this->m_TooltipData.Add( new CClientTooltip( 1060636 ) ); // exceptional
+
+					int ArtifactRarity = pItem->GetDefNum("RARITY", true);
+					if ( ArtifactRarity > 0 )
+					{
+						this->m_TooltipData.Add( t = new CClientTooltip( 1061078 ) ); // artifact rarity ~1_val~
+						t->FormatArgs( "%d", ArtifactRarity );
+					}
+
+					int UsesRemaining = pItem->GetDefNum("USESMAX", true) - pItem->GetDefNum("USESCUR", true);
+					if ( UsesRemaining > 0 )
+					{
+						this->m_TooltipData.Add( t = new CClientTooltip( 1060584 ) ); // uses remaining: ~1_val~
+						t->FormatArgs( "%d", UsesRemaining );
+					}
+
+					if ( pItem->IsTypeArmorWeapon())
+					{
+						if ( pItem->GetDefNum("BALANCED", true))
+							this->m_TooltipData.Add( new CClientTooltip( 1072792 ) ); // balanced
+
+						int DamageIncrease = pItem->GetDefNum("INCREASEDAM", true);
+						if ( DamageIncrease != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060401 ) ); // damage increase ~1_val~%
+							t->FormatArgs( "%d", DamageIncrease );
+						}
+
+						int DefenceChanceIncrease = pItem->GetDefNum("INCREASEDEFCHANCE", true);
+						if ( DefenceChanceIncrease != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060408 ) ); // defense chance increase ~1_val~%
+							t->FormatArgs( "%d", DefenceChanceIncrease );
+						}
+
+						int DexterityBonus = pItem->GetDefNum("BONUSDEX", true);
+						if ( DexterityBonus != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060409 ) ); // dexterity bonus ~1_val~
+							t->FormatArgs( "%d", DexterityBonus );
+						}
+
+						int EnhancePotions = pItem->GetDefNum("ENHANCEPOTIONS", true);
+						if ( EnhancePotions != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060411 ) ); // enhance potions ~1_val~%
+							t->FormatArgs( "%d", EnhancePotions );
+						}
+
+						int FasterCastRecovery = pItem->GetDefNum("FASTERCASTRECOVERY", true);
+						if ( FasterCastRecovery != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060412 ) ); // faster cast recovery ~1_val~
+							t->FormatArgs( "%d", FasterCastRecovery );
+						}
+
+						int FasterCasting = pItem->GetDefNum("FASTERCASTING", true);
+						if ( FasterCasting != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060413 ) ); // faster casting ~1_val~
+							t->FormatArgs( "%d", FasterCasting );
+						}
+
+						int HitChanceIncrease = pItem->GetDefNum("INCREASEHITCHANCE", true);
+						if ( HitChanceIncrease != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060415 ) ); // hit chance increase ~1_val~%
+							t->FormatArgs( "%d", HitChanceIncrease );
+						}
+
+						int HitPointIncrease = pItem->GetDefNum("BONUSHITS", true);
+						if ( HitPointIncrease != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060431 ) ); // hit point increase ~1_val~%
+							t->FormatArgs( "%d", HitPointIncrease );
+						}
+
+						int IntelligenceBonus = pItem->GetDefNum("BONUSINT", true);
+						if ( IntelligenceBonus != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060432 ) ); // intelligence bonus ~1_val~
+							t->FormatArgs( "%d", IntelligenceBonus );
+						}
+
+						int LowerManaCost = pItem->GetDefNum("LOWERMANACOST", true);
+						if ( LowerManaCost != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060433 ) ); // lower mana cost ~1_val~%
+							t->FormatArgs( "%d", LowerManaCost );
+						}
+
+						int LowerReagentCost = pItem->GetDefNum("LOWERREAGENTCOST", true);
+						if ( LowerReagentCost != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060434 ) ); // lower reagent cost ~1_val~%
+							t->FormatArgs( "%d", LowerReagentCost );
+						}
+
+						int LowerRequirements = pItem->GetDefNum("LOWERREQ", true);
+						if ( LowerRequirements != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060435 ) ); // lower requirements ~1_val~%
+							t->FormatArgs( "%d", LowerRequirements );
+						}
+
+						int Luck = pItem->GetDefNum("LUCK", true);
+						if ( Luck != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060436 ) ); // luck ~1_val~
+							t->FormatArgs( "%d", Luck );
+						}
+
+						if ( pItem->GetDefNum("MAGEARMOR", true))
+							this->m_TooltipData.Add( new CClientTooltip( 1060437 ) ); // mage armor
+
+						int MageWeapon = pItem->GetDefNum("MAGEWEAPON", true);
+						if ( MageWeapon != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060438 ) ); // mage weapon -~1_val~ skill
+							t->FormatArgs( "%d", MageWeapon );
+						}
+
+						int ManaIncrease = pItem->GetDefNum("BONUSMANA", true);
+						if ( ManaIncrease != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060439 ) ); // mana increase ~1_val~
+							t->FormatArgs( "%d", ManaIncrease );
+						}
+
+						int ManaRegeneration = pItem->GetDefNum("REGENMANA", true);
+						if ( ManaRegeneration != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060440 ) ); // mana regeneration ~1_val~
+							t->FormatArgs( "%d", ManaRegeneration );
+						}
+
+						if ( pItem->GetDefNum("NIGHTSIGHT", true))
+							this->m_TooltipData.Add( new CClientTooltip( 1060441 ) ); // night sight
+
+						int ReflectPhysicalDamage = pItem->GetDefNum("REFLECTPHYSICALDAM", true);
+						if ( ReflectPhysicalDamage != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060442 ) ); // reflect physical damage ~1_val~%
+							t->FormatArgs( "%d", ReflectPhysicalDamage );
+						}
+
+						int StaminaRegeneration = pItem->GetDefNum("REGENSTAM", true);
+						if ( StaminaRegeneration != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060443 ) ); // stamina regeneration ~1_val~
+							t->FormatArgs( "%d", StaminaRegeneration );
+						}
+
+						int HitPointRegeneration = pItem->GetDefNum("REGENHITS", true);
+						if ( HitPointRegeneration != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060444 ) ); // hit point regeneration ~1_val~
+							t->FormatArgs( "%d", HitPointRegeneration );
+						}
+
+						int SelfRepair = pItem->GetDefNum("SELFREPAIR", true);
+						if ( SelfRepair != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060450 ) ); // self repair ~1_val~
+							t->FormatArgs( "%d", SelfRepair );
+						}
+
+						if ( pItem->GetDefNum("SPELLCHANNELING", true))
+							this->m_TooltipData.Add( new CClientTooltip( 1060482 ) ); // spell channeling
+
+						int SpellDamageIncrease = pItem->GetDefNum("INCREASESPELLDAM", true);
+						if ( SpellDamageIncrease != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060483 ) ); // spell damage increase ~1_val~%
+							t->FormatArgs( "%d", SpellDamageIncrease );
+						}
+
+						int StaminaIncrease = pItem->GetDefNum("BONUSSTAM", true);
+						if ( StaminaIncrease != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060484 ) ); // stamina increase ~1_val~
+							t->FormatArgs( "%d", StaminaIncrease );
+						}
+
+						int StrengthBonus = pItem->GetDefNum("BONUSSTR", true);
+						if ( StrengthBonus != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060485 ) ); // strength bonus ~1_val~
+							t->FormatArgs( "%d", StrengthBonus );
+						}
+
+						int SwingSpeedIncrease = pItem->GetDefNum("INCREASESWINGSPEED", true);
+						if ( SwingSpeedIncrease != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1060486 ) ); // swing speed increase ~1_val~%
+							t->FormatArgs( "%d", SwingSpeedIncrease );
+						}
+
+						int IncreasedKarmaLoss = pItem->GetDefNum("INCREASEKARMALOSS", true);
+						if ( IncreasedKarmaLoss != 0 )
+						{
+							this->m_TooltipData.Add( t = new CClientTooltip( 1075210 ) ); // increased karma loss ~1val~%
+							t->FormatArgs( "%d", IncreasedKarmaLoss );
+						}
 					}
 
 					// Some type specific default stuff
@@ -2856,52 +3063,273 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 						case IT_ARMOR:
 						case IT_CLOTHING:
 						case IT_SHIELD:
-							this->m_TooltipData.Add( t = new CClientTooltip( 1060658 ) ); // ~1_val~: ~2_val~
-							t->FormatArgs( "%s\t%d", g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_ARMOR), pItem->Armor_GetDefense() );
-							this->m_TooltipData.Add( t = new CClientTooltip( 1061170 ) ); // strength requirement ~1_val~
-							t->FormatArgs( "%d", pItem->Item_GetDef()->m_ttEquippable.m_StrReq );
-							this->m_TooltipData.Add( t = new CClientTooltip( 1060639 ) ); // durability ~1_val~ / ~2_val~
-							t->FormatArgs( "%u\t%u", pItem->m_itArmor.m_Hits_Cur, pItem->m_itArmor.m_Hits_Max );
+							{
+								int PhysicalResist = pItem->GetDefNum("RESPHYSICAL", true);
+								if ( PhysicalResist != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060448 ) ); // physical resist ~1_val~%
+									t->FormatArgs( "%d", PhysicalResist );
+								}
+
+								int FireResist = pItem->GetDefNum("RESFIRE", true);
+								if ( FireResist != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060447 ) ); // fire resist ~1_val~%
+									t->FormatArgs( "%d", FireResist );
+								}
+
+								int ColdResist = pItem->GetDefNum("RESCOLD", true);
+								if ( ColdResist != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060445 ) ); // cold resist ~1_val~%
+									t->FormatArgs( "%d", ColdResist );
+								}
+
+								int PoisonResist = pItem->GetDefNum("RESPOISON", true);
+								if ( PoisonResist != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060449 ) ); // poison resist ~1_val~%
+									t->FormatArgs( "%d", PoisonResist );
+								}
+
+								int EnergyResist = pItem->GetDefNum("RESENERGY", true);
+								if ( EnergyResist != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060446 ) ); // energy resist ~1_val~%
+									t->FormatArgs( "%d", EnergyResist );
+								}
+
+								int ArmorRating = pItem->Armor_GetDefense();
+								if ( ArmorRating != 0 )
+								{
+									// Obsolete AR was replaced by physical/fire/cold/poison/energy resist since AOS
+									// and doesn't even have proper tooltips. It's just there for backward compatibility
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060658 ) ); // ~1_val~: ~2_val~
+									t->FormatArgs( "%s\t%d", g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_ARMOR), ArmorRating );
+								}
+
+								this->m_TooltipData.Add( t = new CClientTooltip( 1061170 ) ); // strength requirement ~1_val~
+								t->FormatArgs( "%d", pItem->Item_GetDef()->m_ttEquippable.m_StrReq );
+
+								this->m_TooltipData.Add( t = new CClientTooltip( 1060639 ) ); // durability ~1_val~ / ~2_val~
+								t->FormatArgs( "%u\t%u", pItem->m_itArmor.m_Hits_Cur, pItem->m_itArmor.m_Hits_Max );
+							}
 							break;
 
 						case IT_WEAPON_MACE_SMITH:
 						case IT_WEAPON_MACE_SHARP:
 						case IT_WEAPON_MACE_STAFF:
 						case IT_WEAPON_MACE_CROOK:
+						case IT_WEAPON_MACE_PICK:
 						case IT_WEAPON_SWORD:
 						case IT_WEAPON_FENCE:
 						case IT_WEAPON_BOW:
-						case IT_WAND:
 						case IT_WEAPON_AXE:
 						case IT_WEAPON_XBOW:
 						case IT_WEAPON_THROWING:
-							if ( pItem->GetType() == IT_WAND )
 							{
-								this->m_TooltipData.Add( t = new CClientTooltip( 1054132 ) ); // [charges: ~1_charges~]
-								t->FormatArgs( "%d", pItem->m_itWeapon.m_spellcharges );
-							}
-							else
-							{
+								if ( pItem->m_itWeapon.m_poison_skill )
+									this->m_TooltipData.Add( new CClientTooltip( 1017383 ) ); // poisoned
+
+								if ( pItem->GetDefNum("USEBESTWEAPONSKILL", true))
+									this->m_TooltipData.Add( new CClientTooltip( 1060400 ) ); // use best weapon skill
+
+								int HitColdArea = pItem->GetDefNum("HITAREACOLD", true);
+								if ( HitColdArea != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060416 ) ); // hit cold area ~1_val~%
+									t->FormatArgs( "%d", HitColdArea );
+								}
+
+								int HitDispel = pItem->GetDefNum("HITDISPEL", true);
+								if ( HitDispel != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060417 ) ); // hit dispel ~1_val~%
+									t->FormatArgs( "%d", HitDispel );
+								}
+
+								int HitEnergyArea = pItem->GetDefNum("HITAREAENERGY", true);
+								if ( HitEnergyArea != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060418 ) ); // hit energy area ~1_val~%
+									t->FormatArgs( "%d", HitEnergyArea );
+								}
+
+								int HitFireArea = pItem->GetDefNum("HITAREAFIRE", true);
+								if ( HitFireArea != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060419 ) ); // hit fire area ~1_val~%
+									t->FormatArgs( "%d", HitFireArea );
+								}
+
+								int HitFireball = pItem->GetDefNum("HITFIREBALL", true);
+								if ( HitFireball != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060420 ) ); // hit fireball ~1_val~%
+									t->FormatArgs( "%d", HitFireball );
+								}
+
+								int HitHarm = pItem->GetDefNum("HITHARM", true);
+								if ( HitHarm != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060421 ) ); // hit harm ~1_val~%
+									t->FormatArgs( "%d", HitHarm );
+								}
+
+								int HitLifeLeech = pItem->GetDefNum("HITLEECHLIFE", true);
+								if ( HitLifeLeech != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060422 ) ); // hit life leech ~1_val~%
+									t->FormatArgs( "%d", HitLifeLeech );
+								}
+
+								int HitLightning = pItem->GetDefNum("HITLIGHTNING", true);
+								if ( HitLightning != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060422 ) ); // hit lightning ~1_val~%
+									t->FormatArgs( "%d", HitLightning );
+								}
+
+								int HitLowerAttack = pItem->GetDefNum("HITLOWERATK", true);
+								if ( HitLowerAttack != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060424 ) ); // hit lower attack ~1_val~%
+									t->FormatArgs( "%d", HitLowerAttack );
+								}
+
+								int HitLowerDefense = pItem->GetDefNum("HITLOWERDEF", true);
+								if ( HitLowerDefense != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060425 ) ); // hit lower defense ~1_val~%
+									t->FormatArgs( "%d", HitLowerDefense );
+								}
+
+								int HitMagicArrow = pItem->GetDefNum("HITMAGICARROW", true);
+								if ( HitMagicArrow != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060426 ) ); // hit magic arrow ~1_val~%
+									t->FormatArgs( "%d", HitMagicArrow );
+								}
+
+								int HitManaLeech = pItem->GetDefNum("HITLEECHMANA", true);
+								if ( HitManaLeech != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060427 ) ); // hit mana leech ~1_val~%
+									t->FormatArgs( "%d", HitManaLeech );
+								}
+
+								int HitPhysicalArea = pItem->GetDefNum("HITAREAPHYSICAL", true);
+								if ( HitPhysicalArea != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060428 ) ); // hit physical area ~1_val~%
+									t->FormatArgs( "%d", HitPhysicalArea );
+								}
+
+								int HitPoisonArea = pItem->GetDefNum("HITAREAPOISON", true);
+								if ( HitPoisonArea != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060429 ) ); // hit poison area ~1_val~%
+									t->FormatArgs( "%d", HitPoisonArea );
+								}
+
+								int HitStaminaLeech = pItem->GetDefNum("HITLEECHSTAM", true);
+								if ( HitStaminaLeech != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060430 ) ); // hit stamina leech ~1_val~%
+									t->FormatArgs( "%d", HitStaminaLeech );
+								}
+
+								int PhysicalDamage = pItem->GetDefNum("DAMPHYSICAL", true);
+								if ( PhysicalDamage != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060403 ) ); // physical damage ~1_val~%
+									t->FormatArgs( "%d", PhysicalDamage );
+								}
+
+								int FireDamage = pItem->GetDefNum("DAMFIRE", true);
+								if ( FireDamage != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060405 ) ); // fire damage ~1_val~%
+									t->FormatArgs( "%d", FireDamage );
+								}
+
+								int ColdDamage = pItem->GetDefNum("DAMCOLD", true);
+								if ( ColdDamage != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060404 ) ); // cold damage ~1_val~%
+									t->FormatArgs( "%d", ColdDamage );
+								}
+
+								int PoisonDamage = pItem->GetDefNum("DAMPOISON", true);
+								if ( PoisonDamage != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060406 ) ); // poison damage ~1_val~%
+									t->FormatArgs( "%d", PoisonDamage );
+								}
+
+								int EnergyDamage = pItem->GetDefNum("DAMENERGY", true);
+								if ( EnergyDamage != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060407 ) ); // energy damage ~1_val~%
+									t->FormatArgs( "%d", EnergyDamage );
+								}
+
+								int ChaosDamage = pItem->GetDefNum("DAMCHAOS", true);
+								if ( ChaosDamage != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1072846 ) ); // chaos damage ~1_val~%
+									t->FormatArgs( "%d", ChaosDamage );
+								}
+
+								int DirectDamage = pItem->GetDefNum("DAMDIRECT", true);
+								if ( DirectDamage != 0 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1079978 ) ); // direct damage: ~1_PERCENT~%
+									t->FormatArgs( "%d", DirectDamage );
+								}
+
+								this->m_TooltipData.Add( t = new CClientTooltip( 1061168 ) ); // weapon damage ~1_val~ - ~2_val~
+								t->FormatArgs( "%d\t%d", pItem->m_attackBase + pItem->m_ModAr, ( pItem->Weapon_GetAttack(true) ) );
+
+								CItemBase * pItemDef = dynamic_cast<CItemBase *>(pItem->Base_GetDef());
+								this->m_TooltipData.Add( t = new CClientTooltip( 1061167 ) ); // weapon speed ~1_val~
+								t->FormatArgs( "%d", pItemDef->GetSpeed() );
+
+								int Range = pItem->RangeL();
+								if ( Range > 1 )
+								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1061169 ) ); // range ~1_val~
+									t->FormatArgs( "%d", Range );
+								}
+							
+								this->m_TooltipData.Add( t = new CClientTooltip( 1061170 ) ); // strength requirement ~1_val~
+								t->FormatArgs( "%d", pItem->Item_GetDef()->m_ttEquippable.m_StrReq - pItem->GetDefNum("LOWERREQ", true));
+
 								if ( pItem->Item_GetDef()->GetEquipLayer() == LAYER_HAND2 )
-									this->m_TooltipData.Add( new CClientTooltip( 1061171 ) );
+									this->m_TooltipData.Add( new CClientTooltip( 1061171 ) ); // two-handed weapon
 								else
-									this->m_TooltipData.Add( new CClientTooltip( 1061824 ) );
+									this->m_TooltipData.Add( new CClientTooltip( 1061824 ) ); // one-handed weapon
+
+								if ( !pItem->GetDefNum("USEBESTWEAPONSKILL", true))
+								{
+									switch ( pItem->Item_GetDef()->m_iSkill )
+									{
+										case SKILL_SWORDSMANSHIP:	this->m_TooltipData.Add( new CClientTooltip( 1061172 ) );	break; // skill required: swordsmanship
+										case SKILL_MACEFIGHTING:	this->m_TooltipData.Add( new CClientTooltip( 1061173 ) );	break; // skill required: mace fighting
+										case SKILL_FENCING:			this->m_TooltipData.Add( new CClientTooltip( 1061174 ) );	break; // skill required: fencing
+										case SKILL_ARCHERY:			this->m_TooltipData.Add( new CClientTooltip( 1061175 ) );	break; // skill required: archery
+										default:					break;
+									}
+								}
+
+								this->m_TooltipData.Add( t = new CClientTooltip( 1060639 ) ); // durability ~1_val~ / ~2_val~
+								t->FormatArgs( "%u\t%u", pItem->m_itWeapon.m_Hits_Cur, pItem->m_itWeapon.m_Hits_Max );
 							}
-
-							this->m_TooltipData.Add( t = new CClientTooltip( 1061168 ) ); // weapon damage ~1_val~ - ~2_val~
-							t->FormatArgs( "%d\t%d", pItem->Item_GetDef()->m_attackBase + pItem->m_ModAr, ( pItem->Weapon_GetAttack(true) ) );
-							this->m_TooltipData.Add( t = new CClientTooltip( 1061170 ) ); // strength requirement ~1_val~
-							t->FormatArgs( "%d", pItem->Item_GetDef()->m_ttEquippable.m_StrReq );
-							this->m_TooltipData.Add( t = new CClientTooltip( 1060639 ) ); // durability ~1_val~ / ~2_val~
-							t->FormatArgs( "%u\t%u", pItem->m_itWeapon.m_Hits_Cur, pItem->m_itWeapon.m_Hits_Max );
-
-							if ( pItem->m_itWeapon.m_poison_skill )
-								this->m_TooltipData.Add( new CClientTooltip( 1017383 ) ); // Poisoned
 							break;
 
-						case IT_WEAPON_MACE_PICK:
-							this->m_TooltipData.Add( t = new CClientTooltip( 1060639 ) ); // durability ~1_val~ / ~2_val~
-							t->FormatArgs( "%u\t%u", pItem->m_itWeapon.m_Hits_Cur, pItem->m_itWeapon.m_Hits_Max );
+						case IT_WAND:
+							this->m_TooltipData.Add( t = new CClientTooltip( 1054132 ) ); // [charges: ~1_charges~]
+							t->FormatArgs( "%d", pItem->m_itWeapon.m_spellcharges );
 							break;
 
 						case IT_TELEPAD:

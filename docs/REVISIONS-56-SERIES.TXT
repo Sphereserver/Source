@@ -1510,3 +1510,10 @@ Fixed #2441: Gargoyle horn color not bing set properly.
 Fixed: Minor bug in .add command since the last update that didn't allow numeric arguments.
 Fixed #2450: when COMBAT_ALLOWHITFROMSHIP is disabled, you can no longer attack someone inside a ship while outside.
 Fixed #2447: Ships not updating properly when leaving the screen.
+
+24-12-2014, Coruja
+Fixed: Added missing 'invalid command/format' message when type '.add' command using invalid arguments.
+Fixed: Weapons wrongly using DAM property from the ITEMDEF even when it have a custom DAM property set on the created item.
+Added: New tooltips on weapons/armors to show many item properties like DAM[physical/fire/...], RES[physical/fire/...], BONUS[str/dex/int/hits/stam/mana], LUCK, etc.
+Changed: Weapons/armors won't decrease their damage/armor value based on item durability anymore (if someone still need it, this can be softcoded using @Damage trigger on weapons/armors to change their DAM/ARMOR values).
+Changed: Tooltips now will auto update when item/char properties got changed.

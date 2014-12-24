@@ -2610,7 +2610,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				bool fQuoted = false;
 				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
 			}
-			return true;
+			break;
 		//Set as number only
 		case IC_BONUSSKILL1AMT:
 		case IC_BONUSSKILL2AMT:
@@ -2657,7 +2657,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_PORTCULISSOUND:
 		case IC_DOOROPENID:
 			SetDefNum(s.GetKey(),s.GetArgVal(), false);
-			return true;
+			break;
 		case IC_ADDCIRCLE:
 			{
 				TCHAR	*ppVal[2];
@@ -2690,7 +2690,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			return true;
 		case IC_ATTR:
 			m_Attr = s.GetArgVal();
-			return true;
+			break;
 		case IC_BASEWEIGHT:
 			m_weight = (WORD)s.GetArgVal();
 			return true;
@@ -2870,19 +2870,19 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				m_itNormal.m_morep = pt;
 				// m_itNormal.m_morep = g_Cfg.GetRegionPoint( s.GetArgStr() );
 			}
-			return true;
+			break;
 		case IC_MOREX:
 			m_itNormal.m_morep.m_x = static_cast<short>(s.GetArgVal());
 			return true;
 		case IC_MOREY:
 			m_itNormal.m_morep.m_y = static_cast<short>(s.GetArgVal());
-			return true;
+			break;
 		case IC_MOREZ:
 			if ( IsTypeSpellbook() )
 				m_itSpellbook.m_baseid = static_cast<WORD>(s.GetArgVal());
 			else
 				m_itNormal.m_morep.m_z = static_cast<signed char>(s.GetArgVal());
-			return true;
+			break;
 		case IC_P:
 			// Loading or import ONLY ! others use the r_Verb
 			if ( ! IsDisconnected() && ! IsItemInContainer())
@@ -2897,10 +2897,11 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			return true;
 		case IC_TYPE:
 			SetType(static_cast<IT_TYPE>(g_Cfg.ResourceGetIndexType( RES_TYPEDEF, s.GetArgStr())));
-			return true;
+			break;
 		default:
 			return( CObjBase::r_LoadVal( s ));
 	}
+	ResendTooltip();
 	return true;
 	EXC_CATCH;
 
@@ -4020,21 +4021,12 @@ int CItem::Armor_GetDefense() const
 	if ( ! IsTypeArmor())
 		return 0;
 
-	CItemBase * pItemDef = Item_GetDef();
-	ASSERT(pItemDef);
-
 	int iVal = m_defenseBase + m_ModAr;
-	int iRepair = Armor_GetRepairPercent();
-	iVal = IMULDIV(iVal, iRepair, 100);
 
-	// Add any magical effect.
 	if ( IsAttr(ATTR_MAGIC) )
-	{
-		iRepair = g_Cfg.GetSpellEffect(SPELL_Enchant, m_itArmor.m_spelllevel);
-		iVal += iRepair;	// may even be a negative effect ?
-		if ( iVal < 0 )
-			iVal = 0;
-	}
+		iVal += g_Cfg.GetSpellEffect(SPELL_Enchant, m_itArmor.m_spelllevel);	// may even be a negative effect ?
+	if ( iVal < 0 )
+		iVal = 0;
 	return iVal;
 }
 
@@ -4046,21 +4038,16 @@ int CItem::Weapon_GetAttack(bool bNoRandom) const
 	if ( ! IsTypeWeapon())	// anything can act as a weapon.
 		return 1;
 
-	CItemBase * pItemDef = Item_GetDef();
-	ASSERT(pItemDef);
-
-	int iVal = pItemDef->m_attackBase + m_ModAr;
+	int iVal = m_attackBase + m_ModAr;
 	if ( bNoRandom ) 
-		iVal += pItemDef->m_attackRange;
+		iVal += m_attackRange;
 	else
-		iVal += Calc_GetRandVal(pItemDef->m_attackRange );
-	iVal = IMULDIV( iVal, Armor_GetRepairPercent(), 100 );
+		iVal += Calc_GetRandVal(m_attackRange);
+
 	if ( IsAttr(ATTR_MAGIC) && ! IsType(IT_WAND))
-	{
 		iVal += g_Cfg.GetSpellEffect( SPELL_Enchant, m_itArmor.m_spelllevel );
-		if ( iVal < 0 )
-			iVal = 0;
-	}
+	if ( iVal < 0 )
+		iVal = 0;
 	return( iVal );
 }
 

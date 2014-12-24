@@ -1452,9 +1452,9 @@ bool CObjBase::r_LoadVal( CScript & s )
 				bool fQuoted = false;
 				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
 			}
-			return true;
-					case OC_INCREASEHITCHANCE:
+			break;
 		//Set as number only
+		case OC_INCREASEHITCHANCE:
 		case OC_BALANCED:
 		case OC_BANE:
 		case OC_BATTLELUST:
@@ -1524,7 +1524,7 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_VELOCITY:
 		case OC_NAMELOC:
 			SetDefNum(s.GetKey(),s.GetArgVal(), false);
-			return true;
+			break;
 			
 		case OC_INCREASESWINGSPEED:
 		case OC_INCREASEDAM:
@@ -1555,31 +1555,29 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_REGENVALSTAM:
 		case OC_REGENVALMANA:
 			{
-			SetDefNum(s.GetKey(),s.GetArgVal(), false);
-			/*CChar * pChar = dynamic_cast <CChar*>(GetTopLevelObj());	// This should be used in case items with these properties updates the character in the moment without any script to make status reflect the update.
-			// Maybe too a cliver check to not send update if not needed.
-			if ( pChar )
-				pChar->UpdateStatsFlag();*/
-			return true;
+				SetDefNum(s.GetKey(),s.GetArgVal(), false);
+				/*CChar * pChar = dynamic_cast <CChar*>(GetTopLevelObj());	// This should be used in case items with these properties updates the character in the moment without any script to make status reflect the update.
+				// Maybe too a cliver check to not send update if not needed.
+				if ( pChar )
+					pChar->UpdateStatsFlag();*/
+				break;
 			}
 		case OC_ARMOR:
 			{
 				if ( IsChar() )
 					return false;
+
+				INT64 piVal[2];
+				size_t iQty = Str_ParseCmds( s.GetArgStr(), piVal, COUNTOF(piVal));
+				m_defenseBase = static_cast<unsigned char>(piVal[0]);
+				if ( iQty > 1 )
+					m_defenseRange = static_cast<unsigned char>(piVal[1]) - m_defenseBase;
 				else
-				{
-					INT64 piVal[2];
-					size_t iQty = Str_ParseCmds( s.GetArgStr(), piVal, COUNTOF(piVal));
-					m_defenseBase = static_cast<unsigned char>(piVal[0]);
-					if ( iQty > 1 )
-						m_defenseRange = static_cast<unsigned char>(piVal[1]) - m_defenseBase;
-					else
-						m_defenseRange = 0;
+					m_defenseRange = 0;
 				CChar * pChar = dynamic_cast <CChar*>(GetTopLevelObj());
 				if ( pChar )
 					pChar->UpdateStatsFlag();
-				}
-				return( true );
+				break;
 			}
 		case OC_DAM:
 			{
@@ -1591,7 +1589,7 @@ bool CObjBase::r_LoadVal( CScript & s )
 				else
 					m_attackRange = 0;
 			}
-			return( true );
+			break;
 		case OC_WEIGHTREDUCTION:
 			{
 				int oldweight = GetWeight();
@@ -1620,14 +1618,13 @@ bool CObjBase::r_LoadVal( CScript & s )
 					SetDefNum(s.GetKey(),piVal[0], false);
 				}
 			}
-			return( true );
+			break;
 
 		case OC_CAN:
 			m_Can = s.GetArgVal();
 			break;
 		case OC_COLOR:
-			if ( ! strcmpi( s.GetArgStr(), "match_shirt" ) ||
-				! strcmpi( s.GetArgStr(), "match_hair" ))
+			if ( ! strcmpi( s.GetArgStr(), "match_shirt" ) || ! strcmpi( s.GetArgStr(), "match_hair" ))
 			{
 				CChar * pChar = dynamic_cast <CChar*>(GetTopLevelObj());
 				if ( pChar )
@@ -1698,6 +1695,7 @@ bool CObjBase::r_LoadVal( CScript & s )
 		default:
 			return false;
 	}
+	ResendTooltip();
 	return true;
 	EXC_CATCH;
 
