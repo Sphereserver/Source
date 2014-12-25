@@ -216,41 +216,44 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 			continue;
 
 		BYTE tViewDist = tMe->GetSight();
-
-		if (pClient->CanSee(this))
+		for ( size_t i = 0; i < iCount; i++ )
 		{
+			CObjBase * pObj = ppObjs[i];
+			if (!pObj) continue; //no object anymore? skip!
+			CPointMap pt = pObj->GetTopPoint();
+			CPointMap ptOld(pt);
+			ptOld -= pdelta;
 
-			if ((pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA()) && !IsSetOF(OF_NoSmoothSailing))
+			//Remove objects that just moved out of sight
+			if ((tMe->GetTopPoint().GetDistSight(pt) >= tViewDist) && (tMe->GetTopPoint().GetDistSight(ptOld) < tViewDist))
 			{
-				CPointMap ptdir = GetTopPoint();
-				ptdir += pdelta;
-
-				new PacketMoveShip(pClient, this, ppObjs, iCount, m_itShip.m_DirMove, m_itShip.m_DirFace, Multi_GetDef()->m_SpeedMode);
-
-				//Client is also on Ship
-				if (tMe->GetRegion()->GetResourceID().GetObjUID() == GetUID())
-				{
-					CPointMap pt = tMe->GetTopPoint();
-					pt -= pdelta;
-					pClient->addPlayerSeeShip( pt );
-					if (pClient->GetNetState()->isClientSA())
-						new PacketPlayerPosition(pClient);
-					continue;
-				}
+				pClient->addObjectRemove( pObj );
+				continue; //no need to keep going. skip!
 			}
 
-			for ( size_t i = 0; i < iCount; i++ )
+			if (pClient->CanSee(pObj))
 			{
-				CObjBase * pObj = ppObjs[i];
-				if (!pObj) continue;
-				CPointMap pt = pObj->GetTopPoint();
-				CPointMap ptOld(pt);
-				ptOld -= pdelta;
-				ptOld.m_map = tMe->GetTopPoint().m_map;
+				if (pObj == this) //This is the ship (usually the first item in the list)
+				{
+					if ((pClient->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || pClient->GetNetState()->isClientSA()) && !IsSetOF(OF_NoSmoothSailing))
+					{
+						CPointMap ptdir = GetTopPoint();
+						ptdir += pdelta;
 
-				if ((tMe->GetTopPoint().GetDistSight(pt) >= tViewDist) && (tMe->GetTopPoint().GetDistSight(ptOld) < tViewDist))
-					pClient->addObjectRemove( pObj );
+						new PacketMoveShip(pClient, this, ppObjs, iCount, m_itShip.m_DirMove, m_itShip.m_DirFace, Multi_GetDef()->m_SpeedMode);
 
+						//Client is on Ship
+						if (tMe->GetRegion()->GetResourceID().GetObjUID() == GetUID())
+						{
+							CPointMap pt = tMe->GetTopPoint();
+							pt -= pdelta;
+							pClient->addPlayerSeeShip( pt );
+							if (pClient->GetNetState()->isClientSA())
+								new PacketPlayerPosition(pClient);
+							break; //skip to next client
+						}
+					}
+				}
 				if (pObj->IsItem())
 				{
 					CItem *pItem = dynamic_cast <CItem *>(pObj);

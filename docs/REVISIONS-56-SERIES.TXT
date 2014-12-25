@@ -1517,3 +1517,6 @@ Fixed: Weapons wrongly using DAM property from the ITEMDEF even when it have a c
 Added: New tooltips on weapons/armors to show many item properties like DAM[physical/fire/...], RES[physical/fire/...], BONUS[str/dex/int/hits/stam/mana], LUCK, etc.
 Changed: Weapons/armors won't decrease their damage/armor value based on item durability anymore (if someone still need it, this can be softcoded using @Damage trigger on weapons/armors to change their DAM/ARMOR values).
 Changed: Tooltips now will auto update when item/char properties got changed.
+
+25-12-2014, Ben
+Fixed #2447: Again...  Ships not updating characters properly when leaving the screen.
