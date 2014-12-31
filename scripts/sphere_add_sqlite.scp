@@ -1,0 +1,514 @@
+////////////////////////////////////////////////////////////////////////////////////////////
+//New .add dialog (SQLite version)
+//Author: Xun
+//Edited by: Ben
+//First you have to check that you have this in your sphere.ini:
+//
+//[RESOURCELIST]
+// ITEMDEF
+// CHARDEF
+//
+//To rebuild the database, type .f_add_rebuild
+//To see the dialog type .add
+////////////////////////////////////////////////////////////////////////////////////////////
+
+[DEFNAME adddef]
+DB_File = scripts/adddialog.db
+Item_DB = sphere_items
+Char_DB = sphere_chars
+
+
+[function f_add_rebuild]
+f_add_clear
+f_add_setup
+
+[function f_add_setup]
+if !(<ldb.connected>)
+	ldb.connect "<def.DB_File>"
+endif
+if (<ldb.connected>)
+	ldb.execute CREATE TABLE '<def.Item_DB>' ('id' TEXT PRIMARY KEY NOT NULL,'defname' TEXT, 'name' TEXT,'category' TEXT,'subsection' TEXT,'description' TEXT)
+	ldb.execute CREATE TABLE '<def.Char_DB>' ('id' TEXT PRIMARY KEY NOT NULL,'defname' TEXT, 'name' TEXT,'category' TEXT,'subsection' TEXT,'description' TEXT)
+	local.hour=<serv.rticks>
+	LDB.EXECUTE BEGIN
+	for 0 <eval <serv.deflist.itemdef.count>-1>
+		local.item=<serv.deflist.itemdef.<dlocal._for>>
+		if (<local.item>)
+			local.name=<serv.itemdef.<local.item>.name>
+			local.defname=<qval <isempty <serv.itemdef.<local.item>.defname>>?NULL:<serv.itemdef.<local.item>.defname>>
+			local.category=<qval <isempty <serv.itemdef.<local.item>.category>>?Uncategorized:<serv.itemdef.<local.item>.category>>
+			local.subsection=<qval <isempty <serv.itemdef.<local.item>.subsection>>?Uncategorized:<serv.itemdef.<local.item>.subsection>>
+			local.description=<qval <isempty <serv.itemdef.<local.item>.description>>?Undefined:<serv.itemdef.<local.item>.description>>
+			ldb.QUERY INSERT INTO '<def.Item_DB>' ('id','defname','name','category','subsection','description') VALUES ("<local.item>","<local.defname>","<local.name>","<local.category>","<local.subsection>","<local.description>")
+		endif
+	endfor
+	for 0 <eval <serv.deflist.chardef.count>-1>
+		local.char=<serv.deflist.chardef.<dlocal._for>>
+		if (<local.char>)
+			local.name=<serv.chardef.<local.char>.name>
+			local.defname=<qval <isempty <serv.chardef.<local.char>.defname>>?NULL:<serv.chardef.<local.char>.defname>>
+			local.category=<qval <isempty <serv.chardef.<local.char>.category>>?Uncategorized:<serv.chardef.<local.char>.category>>
+			local.subsection=<qval <isempty <serv.chardef.<local.char>.subsection>>?Uncategorized:<serv.chardef.<local.char>.subsection>>
+			local.description=<qval <isempty <serv.chardef.<local.char>.description>>?Uncategorized:<serv.chardef.<local.char>.description>>
+			ldb.QUERY INSERT INTO '<def.char_DB>' ('id','defname','name','category','subsection','description') VALUES ("<local.char>","<local.defname>","<local.name>","<local.category>","<local.subsection>","<local.description>")
+		endif
+	endfor
+	LDB.EXECUTE COMMIT
+	serv.log Output done in <eval <serv.rticks>-<local.hour>> seconds.
+ldb.close
+endif
+
+
+[function f_add_clear]
+if !(<ldb.connected>)
+	ldb.connect "<def.DB_File>"
+endif
+if (<ldb.connected>)
+ldb.EXECUTE DROP TABLE IF EXISTS '<def.Item_DB>'
+ldb.EXECUTE DROP TABLE IF EXISTS '<def.Char_DB>'
+ldb.close
+endif
+
+
+[function f_add_search]
+LDB.Query "SELECT description FROM <ctag.add_mode> WHERE description LIKE '%<ARGS>%'"
+IF (<LDB.Row.Numrows>)
+ctag.add_search = <ARGS>
+ctag.add_search_max = <eval <LDB.Row.Numrows>-1>
+ctag.add_nosearch
+ENDIF
+
+dialog d_Add
+
+[function f_add_gererate_search]
+if !(<isempty <ctag.add_nosearch>>)
+	return 1
+endif
+LDB.Query "SELECT category,subsection,rowid FROM <ctag.add_mode> WHERE description LIKE '%<ctag.add_search>%'"
+local.cat = <ldb.row.<dctag0.add_search_id>.category>
+local.sub = <ldb.row.<dctag0.add_search_id>.subsection>
+local.rowid = <ldb.row.<dctag0.add_search_id>.rowid>
+
+LDB.Query "SELECT category FROM <ctag.add_mode> GROUP BY category"
+IF (<LDB.Row.Numrows>)
+	for 0 <eval <LDB.Row.Numrows>-1>
+		if (!strcmp(<ldb.row.<dlocal._for>.category>,<local.cat>))
+			ctag.add_cat = <local._for>
+			ctag.add_page = <local._for>/14
+			break
+		endif
+	endfor
+	LDB.query "SELECT subsection FROM <ctag.add_mode> WHERE category = '<local.cat>' GROUP BY subsection"
+	IF (<LDB.Row.Numrows>)
+		for 0 <eval <LDB.Row.Numrows>-1>
+			if (!strcmp(<ldb.row.<dlocal._for>.subsection>,<local.sub>))
+				ctag.add_sub = <local._for>
+				ctag.add_cat_page = <local._for>/14
+				break
+			endif
+		endfor
+		LDB.query "SELECT rowid FROM <ctag.add_mode> WHERE subsection = '<local.sub>'"
+		IF (<LDB.Row.Numrows>)
+			for 0 <eval <LDB.Row.Numrows>-1>
+				if (<ldb.row.<dlocal._for>.rowid> == <dlocal.rowid>)
+					ctag.add_show = <local.rowid>
+					ctag.add_sub_page = <local._for>/14
+					break
+				endif
+			endfor
+		endif
+	endif
+endif
+
+[function f_add_generate_main]
+//Img
+resizepic 0 0 9200 230 137   // background border
+gumppictiled 10 10 210 117 2624   // darker background
+checkertrans 10 10 210 117   // transparency layer
+//Modes
+dtext 90 30 0480 Items
+LDB.Query "SELECT id from <def.Item_DB> WHERE ROWID = 1"
+button 50 30 4005 4007 <qval <LDB.Row.NumRows>?1:0> 0 1		//No references in list? no click on buttons
+
+dtext 90 90 0480 Npcs
+LDB.Query "SELECT id from <def.Char_DB> WHERE ROWID = 1"
+button 50 90 4005 4007 <qval <LDB.Row.NumRows>?1:0> 0 2
+
+[function f_add_generate_background]
+if !(<isempty <ctag.add_show>>)
+	resizepic 0 0 9200 800 587   // background border
+	gumppictiled 10 10 780 567 2624   // darker background
+	gumppictiled 10 32 780 5 5058   // 1 grey separators - start here
+	gumppictiled 230 37 5 400 5058   // 1
+	gumppictiled 510 37 5 400 5058   // 2
+	gumppictiled 10 32 510 5 5058   // 4 
+	gumppictiled 10 432 780 5 5058   // 5
+	gumppictiled 120 432 5 150 5058   // 5
+	checkertrans 10 10 780 567   // transparency layer
+elseif !(<isempty <ctag.add_sub>>)		//Dynamic gump, more info = more gump, no modules, no different dialogs for the same.
+	resizepic 0 0 9200 800 437   // background border
+	gumppictiled 10 10 780 417 2624   // darker background
+	gumppictiled 10 32 780 5 5058   // 1 grey separators - start here
+	gumppictiled 230 37 5 400 5058   // 1
+	gumppictiled 510 37 5 400 5058   // 2
+	gumppictiled 10 32 510 5 5058   // 4 
+	checkertrans 10 10 780 417   // transparency layer
+elseif !(<isempty <ctag.add_cat>>)
+	resizepic 0 0 9200 530 437   // background/border
+	gumppictiled 10 10 510 417 2624   // darker background
+	gumppictiled 10 32 510 5 5058   // 1 grey separators - start here
+	gumppictiled 230 37 5 400 5058   // 2
+	checkertrans 10 10 510 417   // transparency layer
+else
+	resizepic 0 0 9200 250 437   // background/border
+	gumppictiled 10 10 230 417 2624   // darker background
+	gumppictiled 10 32 230 5 5058   // 1 grey separators - start here
+	checkertrans 10 10 230 417   // transparency layer
+endif
+
+[function f_Add_generate_topbar]
+if (STRMATCH("<def.Item_DB>","<ctag.add_mode>")==1)
+	local.header = Items
+else
+	local.header = Npcs
+endif
+dtext 40 10 0480 <local.header> 
+button 10 10 4014 4045 1 0 3		//Change between items/npcs
+dtext 170 10 0480 Search
+button 140 10 4011 4012 1 0 10		//Change between items/npcs
+
+if !(<isempty <ctag.add_search>>)
+	if (<ctag0.add_search_id> < <ctag.add_search_max>)
+		dtext 400 10 0480 Search Next
+		button 475 10 4005 4007 1 0 11
+	endif
+	if (<ctag0.add_search_id> > 0)
+		dtext 270 10 0480 Search Previous
+		button 238 10 4014 4045 1 0 12
+	endif
+endif
+
+IF (!<isempty <ctag.add_sub>> && <isempty <ctag.add_nosearch>>)
+	dtext 600 10 0480 (<eval <ctag0.add_search_id>+1>/<eval <ctag0.add_search_max>+1>)
+endif
+
+[function f_add_generate_categories]
+LDB.Query "SELECT category FROM <ctag.add_mode> GROUP BY category"
+local.cx=41
+local.cy=70
+local.header=<LDB.Row.<dctag.add_cat>.category>
+if (<eval STRLEN(<local.header>)>>25)
+	local.header=<strsub 0 25 <local.header>>
+endif
+dtext 10 45 0480 <qval !<isempty <ctag.add_cat>>?<local.header> (<eval <ctag0.add_cat>+1>/<dLDB.Row.Numrows>):>
+local.index=<eval 14*<ctag0.add_page>>//We get FOR data from items_per_page*page_number
+for 0 13
+	local.num=<local.index>+<local._for>
+	if !(<isempty <LDB.ROW.<dlocal.num>.category>>)
+		local.text=<ldb.row.<dlocal.num>.category>
+		if (<eval STRLEN(<local.text>)>>28)
+			local.text=<strsub 0 28 <local.text>>
+		endif
+		if (!<isempty <ctag.add_cat>> && (<ctag0.add_cat>==<local.num>))
+			dtext <dlocal.cx> <dlocal.cy> 0380 <local.text>
+		else
+			dtext <dlocal.cx> <dlocal.cy> 0480 <local.text>
+		endif
+		button <eval <local.cx>-30> <dlocal.cy> 4005 4007 1 0 <eval 100+<dlocal._for>>
+		local.cy +=23
+	endif
+endfor
+if (<LDB.Row.Numrows>)
+	IF (<LDB.Row.Numrows> > <eval <local.index>+13>)
+		button 200 400 4005 4007 1 0 4
+		dtext 130 400 0480 Next Page
+	endif
+endif
+if (<ctag0.add_page>> 0)
+	button 10 400 4014 4045 1 0 5
+	dtext 40 400 0480 Previous Page
+endif
+
+
+[function f_add_generate_subsections]
+IF !(<isempty <ctag.add_cat>>)
+	local.sx=266
+	local.sy=70
+	local.cat=<LDB.Row.<dctag.add_cat>.category>
+	LDB.query "SELECT subsection FROM <ctag.add_mode> WHERE category = '<local.cat>' GROUP BY subsection"
+	local.header=<LDB.Row.<dctag.add_sub>.subsection>
+	if (<eval STRLEN(<local.header>)>>35)
+		local.header=<strsub 0 35 <local.header>>
+	endif
+	dtext 236 45 0480 <qval !<isempty <ctag.add_sub>>?<local.header> (<eval <ctag0.add_sub>+1>/<dLDB.Row.NumRows>):>
+	local.index=<eval 14*<ctag.add_cat_page>>
+	for 0 13
+		local.num=<local.index>+<local._for>
+		if !(<isempty <LDB.ROW.<dlocal.num>.subsection>>)
+			local.text=<ldb.row.<dlocal.num>.subsection>
+			if (<eval STRLEN(<local.text>)>>38)
+				local.text=<strsub 0 38 <local.text>>
+			endif
+			if (!<isempty <ctag.add_sub>> && (<ctag0.add_sub>==<local.num>))
+				dtext <dlocal.sx> <dlocal.sy> 0380 <local.text>
+			else
+				dtext <dlocal.sx> <dlocal.sy> 0480 <local.text>
+			endif
+			button <eval <dlocal.sx>-30> <dlocal.sy> 4005 4007 1 0 <eval 200+<dlocal._for>>
+			local.sy +=23
+		endif
+	endfor
+	if <LDB.Row.Numrows>
+		IF (<LDB.Row.Numrows> > <eval <local.index>+13>)
+			button 480 400 4005 4007 1 0 6
+			dtext 410 400 0480 Next Page	
+		endif
+	endif
+	if (<ctag0.add_cat_page>> 0)
+		button 236 400 4014 4045 1 0 7
+		dtext 271 400 0480 Previous Page
+	endif
+endif
+
+[function f_Add_generate_descriptions]
+IF !(<isempty <ctag.add_sub>>)
+	local.dx=546
+	local.dy=70
+	if (<ctag0.add_sub_page>)
+		local.index=<eval 14*<ctag.add_sub_page>>
+	else
+		local.index=0
+	endif
+	local.sub=<LDB.Row.<dctag.add_sub>.subsection>
+	LDB.query "SELECT rowid,description FROM <ctag.add_mode> WHERE subsection = '<local.sub>'"
+	dtext 516 45 0480 Page (<eval <ctag0.add_sub_page>+1>/<eval (<ldb.row.numrows>/14)+1>)
+	for 0 13
+		local.num=<local.index>+<local._for>
+		local.desc=<ldb.row.<dlocal.num>.description>
+		local.rowid=<ldb.row.<dlocal.num>.rowid>
+		if (<dlocal.num>< <ldb.row.numrows>)
+			if (!<isempty <ctag.add_show>> && (<ctag0.add_show>==<local.rowid>))
+				dtext <dlocal.dx> <dlocal.dy> 0380 <local.desc>
+			else
+				dtext <dlocal.dx> <dlocal.dy> 0480 <local.desc>
+			endif
+			button 760 <dlocal.dy> 4005 4007 1 0 <eval 100000+<dlocal.rowid>>
+			button 516 <dlocal.dy> 4011 4012 1 0 <eval 200000+<dlocal.rowid>>
+			local.dy +=23
+		endif
+	endfor
+	if (<ldb.row.numrows>)
+		IF (<ldb.row.numrows> > <eval <local.index>+14>)
+			button 760 400 4005 4007 1 0 8
+			dtext 690 400 0480 Next Page
+		endif				
+	endif
+	if (<ctag0.add_sub_page>)
+		button 515 400 4014 4045 1 0 9
+		dtext 550 400 0480 Previous page
+	endif
+endif
+
+[function f_add_generate_views]
+IF !(<isempty <ctag.add_show>>)
+	LDB.query "SELECT id FROM <ctag.add_mode> WHERE rowid = '<dctag.add_show>'"
+	LOCAL.id = <ldb.row.0.id>
+	if (!strcmp("<def.Item_DB>","<ctag.add_mode>"))
+		if (<isnum <local.id>>)
+			dtext 126 440 0480 ID: <LOCAL.id> <qval <serv.itemdef.<LOCAL.id>.defname>?(<serv.itemdef.<LOCAL.id>.defname>):>
+		else
+			dtext 126 440 0480 ID: <LOCAL.id>
+		endif
+		dtext 126 460 0480 Name: <serv.itemdef.<LOCAL.id>.name>
+		dtext 126 480 0480 Type: <serv.itemdef.<LOCAL.id>.type>
+		if !(<isempty <serv.itemdef.<LOCAL.id>.tevents>>)
+			dtext 126 500 0480 Tevents: <serv.itemdef.<LOCAL.id>.tevents>
+		endif
+		local.y=440
+		if !(<isempty <serv.itemdef.<LOCAL.id>.skillmake>>)
+			dtext 366 <dlocal.y> 0480 Skillmake: <serv.itemdef.<LOCAL.id>.skillmake>
+			local.y +=20
+		endif
+		if !(<isempty <serv.itemdef.<LOCAL.id>.resources>>)
+			dtext 366 <dlocal.y> 0480 Resources: <serv.itemdef.<LOCAL.id>.resources>
+			local.y +=20
+		endif
+		if (<isnum <local.id>>)
+			tilepic 30 440 <LOCAL.id>
+		else
+			tilepic 30 440 <serv.itemdef.<LOCAL.id>.id>
+		endif
+		button 126 554 4005 4007 1 0 <eval 100000+<ctag.add_show>>
+		dtext 156 554 0480 Create
+	else
+		dtext 126 440 0480 ID: <LOCAL.id>
+		dtext 126 460 0480 Name: <serv.chardef.<LOCAL.id>.name>
+		dtext 126 480 0480 //Tevents: <serv.chardef.<LOCAL.id>.tevents>
+		dtext 126 500 0480 
+		local.y=440
+		tilepic 30 440 <serv.chardef.<LOCAL.id>.icon>
+		button 126 554 4005 4007 1 0 <eval 100000+<ctag.add_show>>
+		dtext 156 554 0480 Create
+		dtext 626 440 0480 Create spawn
+		dtext 600 460 0480 Amount
+		dtextentry 680 460 20 20 33 1 1 
+		dtext 600 480 0480 Min Time
+		dtextentry 680 480 20 20 33 2 5 
+		dtext 600 500 0480 Max Time
+		dtextentry 680 500 20 20 33 3 15 
+		dtext 600 520 0480 Max Distance
+		dtextentry 680 520 20 20 33 4 15 
+		button 600 554 4005 4007 1 0 <eval 300000+<ctag.add_show>>
+		dtext 630 554 0480 Create Spawn
+	endif
+endif
+
+[dialog d_add]
+6,32
+ldb.close
+ldb.connect "<def.DB_File>"
+IF (<isempty <ctag.add_mode>>)
+	f_add_generate_main				//Dialog shown when no item or npc view is selected yet.
+else
+	if (!<isempty <ctag.add_search>>)
+		f_add_gererate_search
+	endif
+	f_add_generate_background		//Dynamic background increasing/decreasing according to the amount of menus we are seeing.
+	f_add_generate_topbar			//Displaying top bar
+	f_add_generate_categories		//Filling categories menu (if selected items or npcs)
+	f_add_generate_subsections		//Filling subsections menu (if looking into any)
+	f_add_generate_descriptions		//Final list of items or npcs of the selected category+subsection
+	f_add_generate_views			//Showing detailed information about the selected item or npc
+endif
+
+[DIALOG d_add BUTTON]
+ON=1
+ctag.add_mode=<def.Item_DB>
+ctag.add_nosearch=1
+dialog d_add
+
+ON=2
+ctag.add_mode=<def.Char_DB>
+ctag.add_nosearch=1
+dialog d_Add
+
+ON=3
+ctag.add_show
+ctag.add_page
+ctag.add_mode
+ctag.add_cat
+ctag.add_sub
+ctag.add_cat_page
+ctag.add_sub_page
+ctag.add_search
+ctag.add_search_id
+ctag.add_search_max
+ctag.add_nosearch
+dialog d_add
+
+ON=4
+ctag0.add_page +=1
+ctag.add_nosearch=1
+dialog d_add
+ON=5
+ctag0.add_page -=1
+ctag.add_nosearch=1
+dialog d_add
+
+ON=6
+ctag0.add_cat_page +=1
+ctag.add_nosearch=1
+dialog d_add
+ON=7
+ctag0.add_cat_page -=1
+ctag.add_nosearch=1
+dialog d_add
+
+ON=8
+ctag0.add_sub_page +=1
+ctag.add_nosearch=1
+dialog d_add
+ON=9
+ctag0.add_sub_page -=1
+ctag.add_nosearch=1
+dialog d_add
+
+ON=10
+sysmessage=Type the text to search.
+promptconsole f_add_search
+
+ON=11
+ctag0.add_search_id +=1
+ctag.add_nosearch
+dialog d_add
+
+ON=12
+ctag0.add_search_id -=1
+ctag.add_nosearch
+dialog d_add
+
+
+ON=100 115	//categories
+if (<ctag0.add_page>)
+	local.index=<eval 14*<ctag.add_page>>
+else
+	local.index=0
+endif
+local.num=<eval (<argn>-100)+<local.index>>
+ctag.add_cat=<local.num>
+ctag.add_cat_page
+ctag.add_sub
+ctag.add_sub_page
+ctag.add_show
+ctag.add_nosearch=1
+dialog d_Add
+
+ON=200 215	//subsections
+if (<ctag0.add_cat_page>)
+	local.index=<eval 14*<ctag.add_cat_page>>
+else
+	local.index=0
+endif
+local.num=<eval (<argn>-200)+<local.index>>
+ctag.add_sub=<local.num>
+ctag.add_sub_page
+ctag.add_show
+ctag.add_nosearch=1
+dialog d_Add
+
+ON=100000 199999  //Add item
+LDB.query "SELECT id FROM <ctag.add_mode> WHERE rowid = '<eval <argn>-100000>'"
+local.id=<ldb.row.0.id>
+if (STRMATCH("<def.Item_DB>","<ctag.add_mode>")==1)
+	if (<serv.itemdef.<local.id>.id>)
+		add <local.id>
+	endif
+elseif (STRMATCH("<def.Char_DB>","<ctag.add_mode>")==1)
+	if (<serv.chardef.<local.id>>)
+		addnpc <local.id>
+	endif
+endif
+
+ON=200000 299999 //Show info
+ctag.add_show=<eval <argn>-200000>
+ctag.add_nosearch=1
+dialog d_add
+
+
+ON=300000 399999
+LDB.query "SELECT id FROM <ctag.add_mode> WHERE rowid = '<eval <argn>-300000>'"
+local.id=<ldb.row.0.id>
+targetfg f_createspawn t_spawn_char,<local.id>,<argtxt[1]>,<argtxt[2]>,<argtxt[3]>,<argtxt[4]>
+sysmessage=Where do you want to place the spawn?
+
+
+[function f_createspawn]
+serv.newitem=i_worldgem_bit
+new.type=<argv[0]>
+new.more=<argv[1]>
+new.amount=<argv[2]>
+new.morep=<argv[3]>,<argv[4]>,<argv[5]>
+new.attr=0b0
+new.p=<targp>
+new.timer=1
+[EOF]

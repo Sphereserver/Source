@@ -1524,3 +1524,4 @@ Fixed #2447: Again...  Ships not updating characters properly when leaving the s
 31-12-2014, Ben
 Added: "BREAK" function under @create and @npcrestock to return to normal script interpratation after an ITEM= line since any lines under it was designed to modify the item. (any BUY or SELL line will also break ITEM loop)
 Changed #2451: Items will now be allowed to be "locked down" to ships and still move with the ship.
+Added: new .ADD dialog to replace old add menu. (old menu still available in the scripts by removing d_add dialog, but it is full of errors)
