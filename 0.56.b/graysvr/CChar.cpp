@@ -927,7 +927,6 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 	// RETURN:
 	//  true = default return. (mostly ignored).
 	bool fFullInterp		= false;
-	bool fIgnoreAttributes	= bVendor;
 
 	CItem * pItem = NULL;
 	while ( s.ReadKeyParse() )
@@ -951,6 +950,8 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 							if ( pItem )
 								pItem->m_TagDefs.SetNum("NOSAVE", 1);
 						}
+						pItem = NULL;
+						continue;
 					}
 			}
 		}
@@ -967,7 +968,7 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 					}
 				case ITC_NEWBIESWAP:
 					{
-						if ( !pItem || fIgnoreAttributes )
+						if ( !pItem )
 							continue;
 
 						if ( pItem->IsAttr( ATTR_NEWBIE ) )
@@ -986,9 +987,6 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 				case ITC_CONTAINER:
 				case ITC_ITEMNEWBIE:
 					{
-						// Possible loot/equipped item.
-						fIgnoreAttributes = true;
-
 						if ( IsStatFlag( STATF_Conjured ) && iCmd != ITC_ITEMNEWBIE ) // This check is not needed.
 							break; // conjured creates have no loot.
 
@@ -1001,20 +999,19 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 							pItem->SetAttr(ATTR_NEWBIE);
 						}
 
-						if ( pItem->IsItemInContainer() || pItem->IsItemEquipped())
-							fIgnoreAttributes = false;
+						if ( !pItem->IsItemInContainer() && !pItem->IsItemEquipped())
+							pItem = NULL;
 						continue;
 					}
+
+				case ITC_BREAK:
 				case ITC_BUY:
 				case ITC_SELL:
-					fIgnoreAttributes = true;
+					pItem = NULL;
 					continue;
 			}
 
 		}
-
-		if ( fIgnoreAttributes )	// some item creation failure.
-			continue;
 
 		if ( pItem != NULL )
 		{
@@ -1022,6 +1019,8 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 				pItem->r_Verb( s, &g_Serv );
 			else
 				pItem->r_LoadVal( s );
+
+			pItem = NULL;
 		}
 		else
 		{

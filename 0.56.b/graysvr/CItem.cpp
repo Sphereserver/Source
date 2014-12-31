@@ -386,6 +386,7 @@ CItem * CItem::CreateHeader( TCHAR * pArg, CObjBase * pCont, bool fDupeCheck, CC
 
 LPCTSTR const CItem::sm_szTemplateTable[ITC_QTY+1] =
 {
+	"BREAK",
 	"BUY",
 	"CONTAINER",
 	"FULLINTERP",

@@ -380,6 +380,7 @@ enum ITRIG_TYPE
 
 enum ITC_TYPE	// Item Template commands
 {
+	ITC_BREAK,
 	ITC_BUY,
 	ITC_CONTAINER,
 	ITC_FULLINTERP,

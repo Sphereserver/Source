@@ -1520,3 +1520,6 @@ Changed: Tooltips now will auto update when item/char properties got changed.
 
 25-12-2014, Ben
 Fixed #2447: Again...  Ships not updating characters properly when leaving the screen.
+
+31-12-2014, Ben
+Added: "BREAK" function under @create and @npcrestock to return to normal script interpratation after an ITEM= line since any lines under it was designed to modify the item. (any BUY or SELL line will also break ITEM loop)
