@@ -900,6 +900,25 @@ r_jail                t_junk
 r_darkness            t_junk
 r_light               t_junk
 r_sewers              t_junk
+//no longer used?
+r_goblin_camp				t_junk
+r_dungeon_terathan_keep		t_junk
+r_dungeon_bedlam			t_junk
+r_dungeon_blighted_grove	t_junk
+r_dungeon_citadel			t_junk
+r_dungeon_prism_of_light	t_junk
+r_dungeon_twisted_weald		t_junk
+r_orc_camp					t_junk
+r_ruins						t_junk
+r_dungeon_doom				t_junk
+r_dungeon_paroxysmus		t_junk
+r_dungeon_exodus			t_junk
+r_dungeon_khaldun			t_junk
+r_dungeon_destard			t_junk
+r_dungeon_fire				t_junk
+r_dungeon_abyss				t_junk
+r_dungeon_labyrinth			t_junk
+r_black_castle				t_junk
 // item types
 t_eerie_stuff         t_junk
 t_magic               t_junk

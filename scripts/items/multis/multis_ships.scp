@@ -212,7 +212,7 @@ category=Multis
 subsection=Ships
 description=Medium Ship
 
-multiregion=-2,-6,2,6
+multiregion=-2,-5,2,6
 component=03e4e,1, 5, 0
 component=i_ship_hatch_n,0,-4, 0
 component=03eb2,2, 0, 0
@@ -235,7 +235,7 @@ category=Multis
 subsection=Ships
 description=Medium Ship
 
-multiregion=-6,-2,6,2
+multiregion=-6,-2,5,2
 component=03e55,-5,0, 0
 component=i_ship_hatch_e,4, 0, 0
 component=03e85,0, 2, 0
@@ -281,7 +281,7 @@ category=Multis
 subsection=Ships
 description=Medium Ship
 
-multiregion=-6,-2,6,2
+multiregion=-5,-2,6,2
 component=03e50,5, 0,0
 component=i_ship_hatch_w,-4,0,0
 component=03e85,0, 2,0
@@ -304,7 +304,7 @@ category=Multis
 subsection=Ships
 description=Medium Dragon Ship
 
-multiregion=-2,-6,2,6
+multiregion=-2,-5,2,6
 component=03e4e,1, 5, 0
 component=i_ship_hatch_n,0,-4, 0
 component=03eb2,2, 0, 0
@@ -327,7 +327,7 @@ category=Multis
 subsection=Ships
 description=Medium Dragon Ship
 
-multiregion=-6,-2,6,2
+multiregion=-6,-2,5,2
 component=i_ship_tillerman,-5,0, 0
 component=i_ship_hatch_e,4, 0, 0
 component=03e87,0, 2, 0
@@ -373,7 +373,7 @@ category=Multis
 subsection=Ships
 description=Medium Dragon Ship
 
-multiregion=-6,-2,6,2
+multiregion=-5,-2,6,2
 component=03e50,5, 0
 component=i_ship_hatch_w,-4,0
 component=03e87,0, 2
@@ -396,7 +396,7 @@ category=Multis
 subsection=Ships
 description=Large Ship
 
-multiregion=-2,-7,2,7
+multiregion=-2,-6,2,6
 component=03e4e,1, 5, 0
 component=i_ship_hatch_n,0,-5, 0
 component=03eb2,2, -1, 0
@@ -419,7 +419,7 @@ category=Multis
 subsection=Ships
 description=Large Ship
 
-multiregion=-7,-2,7,2
+multiregion=-6,-2,6,2
 component=03e55,-5,0, 0
 component=i_ship_hatch_e,5, 0, 0
 component=03e85,1, 2, 0
@@ -442,7 +442,7 @@ category=Multis
 subsection=Ships
 description=Large Ship
 
-multiregion=-2,-7,2,5
+multiregion=-2,-6,2,6
 component=03e4b,0, -5,0
 component=i_ship_hatch_s,0, 5,0
 component=03eb2,2, 1,0
@@ -465,7 +465,7 @@ category=Multis
 subsection=Ships
 description=Large Ship
 
-multiregion=-7,-2,7,2
+multiregion=-6,-2,6,2
 component=03e50,5, 0,0
 component=i_ship_hatch_w,-5,0,0
 component=03e85,-1, 2,0
@@ -488,7 +488,7 @@ category=Multis
 subsection=Ships
 description=Large Dragon Ship
 
-multiregion=-2,-7,2,7
+multiregion=-2,-6,2,6
 component=03e4e,1, 5, 0
 component=i_ship_hatch_n,0,-5, 0
 component=03eb2,2, -1, 0
@@ -511,7 +511,7 @@ category=Multis
 subsection=Ships
 description=Large Dragon Ship
 
-multiregion=-7,-2,7,2
+multiregion=-6,-2,6,2
 component=03e55,-5,0, 0
 component=i_ship_hatch_e,5, 0, 0
 component=03e85,1, 2, 0
@@ -535,7 +535,7 @@ category=Multis
 subsection=Ships
 description=Large Dragon Ship
 
-multiregion=-2,-7,2,5
+multiregion=-2,-6,2,6
 component=03e4b,0, -5,0
 component=i_ship_hatch_s,0, 5,0
 component=03eb2,2, 1,0
@@ -558,7 +558,7 @@ category=Multis
 subsection=Ships
 description=Large Dragon Ship
 
-multiregion=-7,-2,7,2
+multiregion=-6,-2,6,2
 component=03e50,5, 0,0
 component=i_ship_hatch_w,-5,0,0
 component=03e85,-1, 2,0
@@ -581,7 +581,7 @@ category=Multis
 subsection=Ships
 description=Orc Ship
 
-multiregion=-8,-9,8,12
+multiregion=-3,-8,3,12
 component=014fa,2,1,14
 component=014fa,-2,1,14
 component=014fa,2,-3,14
@@ -628,7 +628,7 @@ category=Multis
 subsection=Ships
 description=Orc Ship
 
-multiregion=-12,-8,9,8
+multiregion=-12,-3,8,3
 component=07bb4,0,0
 component=014fa,-1,2,14
 component=014fa,-1,-2,14
@@ -676,7 +676,7 @@ category=Multis
 subsection=Ships
 description=Orc Ship
 
-multiregion=-8,-12,8,9
+multiregion=-3,-12,3,8
 component=075d8,0,0
 component=014fa,-2,-1,14
 component=014fa,2,-1,14
@@ -724,7 +724,7 @@ category=Multis
 subsection=Ships
 description=Orc Ship
 
-multiregion=-9,-8,12,8
+multiregion=-8,-3,12,3
 component=077cc,0,0
 component=014fa,1,-2,14
 component=014fa,1,2,14
@@ -772,7 +772,7 @@ category=Multis
 subsection=Ships
 description=Orc Ship (Damaged)
 
-multiregion=-8,-9,8,12
+multiregion=-3,-8,3,12
 component=07e01,0,0
 component=014fa,2,1,14
 component=014fa,-2,1,14
@@ -820,7 +820,7 @@ category=Multis
 subsection=Ships
 description=Orc Ship (Damaged)
 
-multiregion=-12,-8,9,8
+multiregion=-12,-3,8,3
 component=07ec9,0,0
 component=014fa,-1,2,14
 component=014fa,-1,-2,14
@@ -868,7 +868,7 @@ category=Multis
 subsection=Ships
 description=Orc Ship (Damaged)
 
-multiregion=-8,-12,8,9
+multiregion=-3,-12,3,8
 component=07c71,0,0
 component=014fa,-2,-1,14
 component=014fa,2,-1,14
@@ -916,7 +916,7 @@ category=Multis
 subsection=Ships
 description=Orc Ship (Damaged)
 
-multiregion=-9,-8,12,8
+multiregion=-8,-3,12,3
 component=07d39,0,0
 component=014fa,1,-2,14
 component=014fa,1,2,14
@@ -964,7 +964,7 @@ category=Multis
 subsection=Ships
 description=Orc Ship (Destroyed)
 
-multiregion=-7,-9,8,12
+multiregion=-3,-8,3,12
 component=08121,0,0
 component=014fa,2,1,14
 component=014fa,-2,1,14
@@ -1012,7 +1012,7 @@ category=Multis
 subsection=Ships
 description=Orc Ship (Destroyed)
 
-multiregion=-12,-7,9,8
+multiregion=-12,-3,8,3
 component=081e9,0,0
 component=014fa,-1,2,14
 component=014fa,-1,-2,14
@@ -1060,7 +1060,7 @@ category=Multis
 subsection=Ships
 description=Orc Ship (Destroyed)
 
-multiregion=-7,-12,7,9
+multiregion=-3,-12,3,8
 component=07f91,0,0
 component=014fa,-2,-1,14
 component=014fa,2,-1,14
@@ -1108,7 +1108,7 @@ category=Multis
 subsection=Ships
 description=Orc Ship (Destroyed)
 
-multiregion=-9,-7,12,7
+multiregion=-8,-3,12,3
 component=08059,0,0
 component=014fa,1,-2,14
 component=014fa,1,2,14
@@ -1155,7 +1155,7 @@ category=Multis
 subsection=Ships
 description=Gargoyle Ship
 
-multiregion=-4,-14,3,9
+multiregion=-3,-12,3,9
 component=08575,0,0
 component=014fa,2,-1,16
 component=014fa,-2,-1,16
@@ -1208,7 +1208,7 @@ category=Multis
 subsection=Ships
 description=Gargoyle Ship
 
-multiregion=-9,-4,14,3
+multiregion=-9,-3,12,3
 component=086a4,0,0
 component=014fa,1,2,16
 component=014fa,1,-2,16
@@ -1261,7 +1261,7 @@ category=Multis
 subsection=Ships
 description=Gargoyle Ship
 
-multiregion=-3,-9,4,14
+multiregion=-3,-9,3,12
 component=08319,0,0
 component=014fa,-2,1,16
 component=014fa,2,1,16
@@ -1314,7 +1314,7 @@ category=Multis
 subsection=Ships
 description=Gargoyle Ship
 
-multiregion=-14,-3,9,4
+multiregion=-12,-3,9,3
 component=08447,0,0
 component=014fa,-1,-2,16
 component=014fa,-1,2,16
@@ -1367,7 +1367,7 @@ category=Multis
 subsection=Ships
 description=Gargoyle Ship (Damaged)
 
-multiregion=-4,-14,3,9
+multiregion=-3,-12,3,9
 component=09910,0,0
 component=014fa,2,-1,16
 component=014fa,-2,-1,16
@@ -1420,7 +1420,7 @@ category=Multis
 subsection=Ships
 description=Gargoyle Ship (Damaged)
 
-multiregion=-9,-4,14,3
+multiregion=-9,-3,12,3
 component=087ad,0,0
 component=014fa,1,2,16
 component=014fa,1,-2,16
@@ -1473,7 +1473,7 @@ category=Multis
 subsection=Ships
 description=Gargoyle Ship (Damaged)
 
-multiregion=-3,-9,4,14
+multiregion=-3,-9,3,12
 component=04ad7,0,0
 component=014fa,-2,1,16
 component=014fa,2,1,16
@@ -1526,7 +1526,7 @@ category=Multis
 subsection=Ships
 description=Gargoyle Ship (Damaged)
 
-multiregion=-14,-3,9,4
+multiregion=-12,-3,9,3
 component=08b56,0,0
 component=014fa,-1,-2,16
 component=014fa,-1,2,16
@@ -1579,7 +1579,7 @@ category=Multis
 subsection=Ships
 description=Gargoyle Ship (Destroyed)
 
-multiregion=-3,-14,3,9
+multiregion=-3,-12,3,9
 component=08db2,0,0
 component=014fa,2,-1,16
 component=014fa,-2,-1,16
@@ -1632,7 +1632,7 @@ category=Multis
 subsection=Ships
 description=Gargoyle Ship (Destroyed)
 
-multiregion=-9,-3,14,3
+multiregion=-9,-3,12,3
 component=08c6f,0,0
 component=014fa,1,2,16
 component=014fa,1,-2,16
@@ -1684,7 +1684,7 @@ category=Multis
 subsection=Ships
 description=Gargoyle Ship (Destroyed)
 
-multiregion=-3,-9,3,14
+multiregion=-3,-9,3,12
 component=08ece,0,0
 component=014fa,-2,1,16
 component=014fa,2,1,16
@@ -1737,7 +1737,7 @@ category=Multis
 subsection=Ships
 description=Gargoyle Ship (Destroyed)
 
-multiregion=-14,-3,9,3
+multiregion=-12,-3,9,3
 component=09004,0,0
 component=014fa,-1,-2,16
 component=014fa,-1,2,16
@@ -1789,7 +1789,7 @@ category=Multis
 subsection=Ships
 description=Tokuno Ship
 
-multiregion=-3,-10,3,11
+multiregion=-3,-9,3,10
 component=092cb,0,0
 component=014fa,2,-2,7
 component=014fa,-2,-2,7
@@ -1824,7 +1824,7 @@ category=Multis
 subsection=Ships
 description=Tokuno Ship
 
-multiregion=-11,-3,10,3
+multiregion=-10,-3,9,3
 component=092f9,0,0
 component=014fa,2,2,7
 component=014fa,2,-2,7
@@ -1859,7 +1859,7 @@ category=Multis
 subsection=Ships
 description=Tokuno Ship
 
-multiregion=-3,-11,3,10
+multiregion=-3,-10,3,9
 component=0926f,0,0
 component=014fa,-2,2,7
 component=014fa,2,2,7
@@ -1894,7 +1894,7 @@ category=Multis
 subsection=Ships
 description=Tokuno Ship
 
-multiregion=-10,-3,11,3
+multiregion=-9,-3,10,3
 component=0929d,0,0
 component=014fa,-2,-2,7
 component=014fa,-2,2,7
@@ -1929,7 +1929,7 @@ category=Multis
 subsection=Ships
 description=Tokuno Ship (Damaged)
 
-multiregion=-3,-10,3,11
+multiregion=-3,-19,3,10
 component=095a7,0,0
 component=014fa,2,-2,7
 component=014fa,-2,-2,7
@@ -1964,7 +1964,7 @@ category=Multis
 subsection=Ships
 description=Tokuno Ship (Damaged)
 
-multiregion=-11,-3,10,3
+multiregion=-10,-3,9,3
 component=095d5,0,0
 component=014fa,2,2,7
 component=014fa,2,-2,7
@@ -1999,7 +1999,7 @@ category=Multis
 subsection=Ships
 description=Tokuno Ship (Damaged)
 
-multiregion=-3,-11,3,10
+multiregion=-3,-10,3,9
 component=0954b,0,0
 component=014fa,-2,2,7
 component=014fa,2,2,7
@@ -2034,7 +2034,7 @@ category=Multis
 subsection=Ships
 description=Tokuno Ship (Damaged)
 
-multiregion=-10,-3,11,3
+multiregion=-9,-3,10,3
 component=09579,0,0
 component=014fa,-2,-2,7
 component=014fa,-2,2,7
@@ -2069,7 +2069,7 @@ category=Multis
 subsection=Ships
 description=Tokuno Ship (Destroyed)
 
-multiregion=-3,-10,3,11
+multiregion=-3,-9,3,10
 component=09869,0,0
 component=014fa,2,-2,7
 component=014fa,-2,-2,7
@@ -2104,7 +2104,7 @@ category=Multis
 subsection=Ships
 description=Tokuno Ship (Destroyed)
 
-multiregion=-11,-3,10,3
+multiregion=-10,-3,9,3
 component=095d5,0,0
 component=014fa,2,2,7
 component=014fa,2,-2,7
@@ -2139,7 +2139,7 @@ category=Multis
 subsection=Ships
 description=Tokuno Ship (Destroyed)
 
-multiregion=-3,-11,3,10
+multiregion=-3,-10,3,9
 component=0989b,0,0
 component=014fa,-2,2,7
 component=014fa,2,2,7
@@ -2174,7 +2174,7 @@ category=Multis
 subsection=Ships
 description=Tokuno Ship (Destroyed)
 
-multiregion=-10,-3,11,3
+multiregion=-9,-3,10,3
 component=098cd,0,0
 component=014fa,-2,-2,7
 component=014fa,-2,2,7
@@ -2300,7 +2300,7 @@ category=Multis
 subsection=Ships
 description=Britannian Ship
 
-multiregion=-5,-17,5,18
+multiregion=-4,-16,4,17
 component=058a5,0,0
 component=05ce3,0,-3
 component=014fa,-3,-2,18
@@ -2349,7 +2349,7 @@ category=Multis
 subsection=Ships
 description=Britannian Ship
 
-multiregion=-18,-5,17,5
+multiregion=-17,-4,16,4
 component=05791,0,0
 component=05cad,3,0
 component=014fa,2,-3,18
@@ -2398,7 +2398,7 @@ category=Multis
 subsection=Ships
 description=Britannian Ship
 
-multiregion=-5,-18,5,17
+multiregion=-4,-17,5,16
 component=059b9,0,0
 component=05d19,0,3
 component=014fa,3,2,18
@@ -2447,7 +2447,7 @@ category=Multis
 subsection=Ships
 description=Britannian Ship
 
-multiregion=-17,-5,18,5
+multiregion=-16,-4,17,4
 component=05acd,0,0
 component=05d4f,-3,0
 component=014fa,-2,3,18
@@ -2496,7 +2496,7 @@ category=Multis
 subsection=Ships
 description=Britannian Ship (Damaged)
 
-multiregion=-5,-17,5,18
+multiregion=-4,-16,4,17
 component=05ea5,0,0
 component=062e3,0,-3
 component=014fa,-3,-2,18
@@ -2545,7 +2545,7 @@ category=Multis
 subsection=Ships
 description=Britannian Ship (Damaged)
 
-multiregion=-18,-5,17,5
+multiregion=-17,-4,16,4
 component=05d91,0,0
 component=062ad,3,0
 component=014fa,2,-3,18
@@ -2594,7 +2594,7 @@ category=Multis
 subsection=Ships
 description=Britannian Ship (Damaged)
 
-multiregion=-5,-18,5,17
+multiregion=-4,-17,4,16
 component=05fb9,0,0
 component=06319,0,3
 component=014fa,3,2,18
@@ -2643,7 +2643,7 @@ category=Multis
 subsection=Ships
 description=Britannian Ship (Damaged)
 
-multiregion=-17,-5,18,5
+multiregion=-16,-4,17,4
 component=060cd,0,0
 component=0634f,-3,0
 component=014fa,-2,3,18

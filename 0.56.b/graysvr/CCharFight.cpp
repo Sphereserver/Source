@@ -4032,7 +4032,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	{
 		if ( (pCharTarg->m_pNPC && pCharTarg->IsStatFlag(STATF_Ridden) ) || !CanSeeLOS(pCharTarg, (g_Cfg.IsSkillRanged(Skill_GetActive()) ? LOS_NB_WINDOWS : 0x0) ) ) //Allow archery through a window
 		{
-			g_Log.EventDebug("did not pass LOS\r");
 			if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
 				return( WAR_SWING_READY );
 
