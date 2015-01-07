@@ -1019,8 +1019,6 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 				pItem->r_Verb( s, &g_Serv );
 			else
 				pItem->r_LoadVal( s );
-
-			pItem = NULL;
 		}
 		else
 		{
