@@ -423,6 +423,12 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 					}
 				}
 			}
+
+			if ( IsTrigUsed(TRIGGER_SHIPTURN) )
+			{
+				CScriptTriggerArgs Args( dir );
+				pItem->OnTrigger( ITRIG_Ship_Turn, &g_Serv, &Args );
+			}
 		}
 		else if( pObj->IsChar() )
 		{

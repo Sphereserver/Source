@@ -366,6 +366,7 @@ enum ITRIG_TYPE
 	ITRIG_PICKUP_SELF,	// picked up from this container
 	ITRIG_PICKUP_STACK,	// picked up from a stack (ARGO)
 	ITRIG_Sell,
+	ITRIG_Ship_Turn,
 	ITRIG_SPELLEFFECT,		// cast some spell on me.
 	ITRIG_STEP,			// I have been walked on. (or shoved)
 	ITRIG_TARGON_CANCEL,
