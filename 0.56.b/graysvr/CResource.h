@@ -27,24 +27,24 @@ typedef CServerDef * CServerRef;
 // option flags
 enum OF_TYPE
 {
-	OF_NoDClickTarget		= 0x0000001,
-	OF_NoSmoothSailing		= 0x0000002,
-	OF_Unused0004			= 0x0000004,
-	OF_Command_Sysmsgs		= 0x0000008,
-	OF_Unused0010			= 0x0000010,
-	OF_OSIMultiSight		= 0x0000020,
-	OF_Items_AutoName		= 0x0000040,
-	OF_FileCommands			= 0x0000080,
-	OF_NoItemNaming			= 0x0000100,
-	OF_NoHouseMuteSpeech	= 0x0000200,
-	OF_NoContextMenuLOS		= 0x0000400,
-	OF_Flood_Protection		= 0x0001000,
-	OF_Buffs				= 0x0002000,
-	OF_NoPrefix				= 0x0004000,
-	OF_DyeType				= 0x0008000,
-	OF_DrinkIsFood			= 0x0010000,
-	OF_DClickNoTurn			= 0x0020000,
-	OF_Specific				= 0x1000000
+	OF_NoDClickTarget			= 0x0000001,
+	OF_NoSmoothSailing			= 0x0000002,
+	OF_ScaleDamageByDurability	= 0x0000004,
+	OF_Command_Sysmsgs			= 0x0000008,
+	OF_Unused0010				= 0x0000010,
+	OF_OSIMultiSight			= 0x0000020,
+	OF_Items_AutoName			= 0x0000040,
+	OF_FileCommands				= 0x0000080,
+	OF_NoItemNaming				= 0x0000100,
+	OF_NoHouseMuteSpeech		= 0x0000200,
+	OF_NoContextMenuLOS			= 0x0000400,
+	OF_Flood_Protection			= 0x0001000,
+	OF_Buffs					= 0x0002000,
+	OF_NoPrefix					= 0x0004000,
+	OF_DyeType					= 0x0008000,
+	OF_DrinkIsFood				= 0x0010000,
+	OF_DClickNoTurn				= 0x0020000,
+	OF_Specific					= 0x1000000
 };
 
 enum EF_TYPE

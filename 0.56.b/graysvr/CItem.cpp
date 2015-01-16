@@ -4024,9 +4024,13 @@ int CItem::Armor_GetDefense() const
 		return 0;
 
 	int iVal = m_defenseBase + m_ModAr;
-
+	if ( IsSetOF(OF_ScaleDamageByDurability) && m_itArmor.m_Hits_Cur > 0 && m_itArmor.m_Hits_Cur < m_itArmor.m_Hits_Max )
+	{
+		int iRepairPercent = 50 + ((50 * m_itArmor.m_Hits_Cur) / m_itArmor.m_Hits_Max);
+		iVal = IMULDIV( iVal, iRepairPercent, 100 );
+	}
 	if ( IsAttr(ATTR_MAGIC) )
-		iVal += g_Cfg.GetSpellEffect(SPELL_Enchant, m_itArmor.m_spelllevel);	// may even be a negative effect ?
+		iVal += g_Cfg.GetSpellEffect( SPELL_Enchant, m_itArmor.m_spelllevel );
 	if ( iVal < 0 )
 		iVal = 0;
 	return iVal;
@@ -4046,11 +4050,16 @@ int CItem::Weapon_GetAttack(bool bNoRandom) const
 	else
 		iVal += Calc_GetRandVal(m_attackRange);
 
+	if ( IsSetOF(OF_ScaleDamageByDurability) && m_itArmor.m_Hits_Cur > 0 && m_itArmor.m_Hits_Cur < m_itArmor.m_Hits_Max )
+	{
+		int iRepairPercent = 50 + ((50 * m_itArmor.m_Hits_Cur) / m_itArmor.m_Hits_Max);
+		iVal = IMULDIV( iVal, iRepairPercent, 100 );
+	}
 	if ( IsAttr(ATTR_MAGIC) && ! IsType(IT_WAND))
 		iVal += g_Cfg.GetSpellEffect( SPELL_Enchant, m_itArmor.m_spelllevel );
 	if ( iVal < 0 )
 		iVal = 0;
-	return( iVal );
+	return iVal;
 }
 
 SKILL_TYPE CItem::Weapon_GetSkill() const
@@ -4641,7 +4650,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 	if ( pCharSrc && (!pCharSrc->IsPriv(PRIV_GM) && pCharSrc->GetRegion()->CheckAntiMagic(spell)) )
 	{
-		pCharSrc->SysMessage("An anti-magic field disturbs this spell.");
+		pCharSrc->SysMessageDefault( DEFMSG_SPELL_TRY_AM );
 		return false;
 	}
 

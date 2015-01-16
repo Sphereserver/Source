@@ -448,6 +448,13 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 		// If items are magical then remove effect here.
 		Spell_Effect_Remove(pItem);
 	}
+
+	if ( pItem->GetDefNum("NIGHTSIGHT", true, true))
+	{
+		StatFlag_Mod( STATF_NightSight, 0 );
+		if ( IsClient() )
+			m_pClient->addLight();
+	}
 }
 
 void CChar::DropAll( CItemContainer * pCorpse, DWORD dwAttr )
@@ -1914,6 +1921,13 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 	if ( fFromDClick )
 		pItem->ResendOnEquip();
 
+	if ( pItem->GetDefNum("NIGHTSIGHT", true, true))
+	{
+		StatFlag_Mod( STATF_NightSight, 1 );
+		if ( IsClient() )
+			m_pClient->addLight();
+	}
+
 	return true;
 }
 
@@ -2255,7 +2269,7 @@ bool CChar::OnTickEquip( CItem * pItem )
 	ADDTOCALLSTACK("CChar::OnTickEquip");
 	// A timer expired for an item we are carrying.
 	// Does it periodically do something ?
-	// REUTRN:
+	// RETURN:
 	//  false = delete it.
 	if ( ! pItem )
 		return false;
@@ -2369,6 +2383,12 @@ bool CChar::OnTickEquip( CItem * pItem )
 
 				return( bHorseTick );
 			}
+
+		case LAYER_FLAG_Criminal:
+			// update char notoriety when criminal timer goes off
+			StatFlag_Clear( STATF_Criminal );
+			NotoSave_Update();
+			return( false );
 
 		case LAYER_FLAG_Murders:
 			// decay the murder count.

@@ -1145,8 +1145,17 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 
 	pSpell = CItem::CreateBase( pSpellDef ? ( pSpellDef->m_idSpell ) : ITEMID_RHAND_POINT_NW );
 	ASSERT(pSpell);
-	if ( !pSpellDef )
-		pSpell->SetName("Potion Cooldown");
+
+	switch ( layer )
+	{
+		case LAYER_FLAG_Criminal:		pSpell->SetName("Criminal Timer");			break;
+		case LAYER_FLAG_Potion:			pSpell->SetName("Potion Cooldown");			break;
+		case LAYER_FLAG_Drunk:			pSpell->SetName("Drunk Effect");			break;
+		case LAYER_FLAG_ClientLinger:	pSpell->SetName("Client Linger");			break;
+		case LAYER_FLAG_Hallucination:	pSpell->SetName("Hallucination Effect");	break;
+		case LAYER_FLAG_Murders:		pSpell->SetName("Murder Decay");			break;
+		default:						break;
+	}
 
 //	if (( IsSetMagicFlags( MAGICF_STACKSTATS ) && (layer == LAYER_SPELL_STATS) ) || (layer == LAYER_NONE))
 //		layer = pSpell->Item_GetDef()->GetEquipLayer();
@@ -1876,7 +1885,7 @@ bool CChar::Spell_CastDone()
 			{
 			case SPELL_Wall_of_Stone: 	iT1 = ITEMID_STONE_WALL;				iT2 = ITEMID_STONE_WALL;		break;
 			case SPELL_Fire_Field: 		iT1 = ITEMID_FX_FIRE_F_EW; 				iT2 = ITEMID_FX_FIRE_F_NS;		break;
-			case SPELL_Poison_Field:	iT1 = static_cast<ITEMID_TYPE>(0x3915);	iT2 = ITEMID_FX_POISON_F_NS;	break;
+			case SPELL_Poison_Field:	iT1 = ITEMID_FX_POISON_F_EW;			iT2 = ITEMID_FX_POISON_F_NS;	break;
 			case SPELL_Paralyze_Field:	iT1 = ITEMID_FX_PARA_F_EW;				iT2 = ITEMID_FX_PARA_F_NS;		break;
 			case SPELL_Energy_Field:	iT1 = ITEMID_FX_ENERGY_F_EW;			iT2 = ITEMID_FX_ENERGY_F_NS;	break;
 			default: break;

@@ -1528,3 +1528,12 @@ Added: new .ADD dialog to replace old add menu. (old menu still available in the
 
 09-01-2015, Ben
 Added: Item trigger @Ship_turn with ARGN being the direction the ship is turning. It fires on all items on a ship, including the ship itself.
+
+16-01-2015, Coruja
+Added: Support for NIGHTSIGHT property on items. Items with NIGHTSIGHT=1 will automatically enable/disable a permanent nightsight effect on equip/unequip
+Added: New optional flag OF_ScaleDamageByDurability on sphere.ini to make weapons/armors lose DAM/AR if the item get damaged. The value is based on current item durability, so the damage can be reverted if the item get repaired.
+Fixed: Tooltips not updating when some char properties (criminal/kills/flags/invul) are changed
+Fixed: Guards on 'red regions' (regions with TAG.RED=1 set) always using name hue 021 instead ColorNotoEvil set on sphere.ini
+Fixed: All item memories different from spells/potions getting wrongly named as 'Potion Cooldown'
+Fixed: Function BADSPAWN not looping through inactive spawns (spawn item with TIMER=-1 set)
+Changed: Item tooltips now can read properties set directly on ITEMDEF too

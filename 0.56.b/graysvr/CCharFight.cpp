@@ -491,7 +491,6 @@ bool CChar::Noto_Criminal( CChar * pChar)
 	if ( !IsStatFlag( STATF_Criminal) ) SysMessageDefault( DEFMSG_CRIMINAL );
 	Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Criminal, 0, decay, NULL);
 	NotoSave_Update();
-	ResendTooltip(false, false);
 	return true;
 }
 
@@ -621,7 +620,6 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom, bool bMessage )
 	Noto_ChangeDeltaMsg( iKarma - Stat_GetAdjusted(STAT_KARMA), g_Cfg.GetDefaultMsg( DEFMSG_NOTO_KARMA ) );
 	Stat_SetBase(STAT_KARMA,iKarma);
 	NotoSave_Update();
-	//ResendTooltip(false, false);
 	if ( bMessage == true)
 	{
 		int iPrvLevel = Noto_GetLevel();
@@ -877,7 +875,8 @@ void CChar::NotoSave_Update()
 {
 	ADDTOCALLSTACK("CChar::NotoSave_Clear");
 	NotoSave_Clear();
-	UpdateMode( this->GetClient() ? this->GetClient() : NULL , false );
+	UpdateMode( NULL , false );
+	ResendTooltip();
 }
 
 void CChar::NotoSave_CheckTimeout()
@@ -1828,7 +1827,7 @@ void CChar::CallGuards( CChar * pCriminal )
 
 					//	normal guards, just with patched color hue also acting in red areas
 					if ( pChar->m_pArea->m_TagDefs.GetKeyNum("RED", true) )
-						pGuard->m_TagDefs.SetNum("NAME.HUE", 0x21, true);
+						pGuard->m_TagDefs.SetNum("NAME.HUE", g_Cfg.m_iColorNotoEvil, true);
 
 					pGuard->Spell_Effect_Create(SPELL_Summon, LAYER_SPELL_Summon, 1000, g_Cfg.m_iGuardLingerTime);
 					pGuard->Spell_Teleport(pChar->GetTopPoint(), false, false);
@@ -1884,7 +1883,7 @@ void CChar::CallGuards( CChar * pCriminal )
 
 			//	normal guards, just with patched color hue also acting in red areas
 			if ( pCriminal->m_pArea->m_TagDefs.GetKeyNum("RED", true) )
-				pGuard->m_TagDefs.SetNum("NAME.HUE", 0x21, true);
+				pGuard->m_TagDefs.SetNum("NAME.HUE", g_Cfg.m_iColorNotoEvil, true);
 
 			pGuard->Spell_Effect_Create(SPELL_Summon, LAYER_SPELL_Summon, 1000, g_Cfg.m_iGuardLingerTime);
 			pGuard->Spell_Teleport(pCriminal->GetTopPoint(), false, false);
