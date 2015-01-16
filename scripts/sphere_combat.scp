@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2014
+// SPHERE by : Menasoft ©1997-2015
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, August 2nd, 2014
+// FILE LAST UPDATED: Friday, Jan 16, 2015
 //
 VERSION=0.56c
 
@@ -414,7 +414,7 @@ if (<serv.CombatFlags>&00008)	// Combat_Use_Resistance
 		local.damcount ++
 		local.temppoison ++
 	endif
-	if (<argn2>&dam_lightning)
+	if (<argn2>&dam_energy)
 		local.damcount ++
 		local.tempenergy ++
 	endif

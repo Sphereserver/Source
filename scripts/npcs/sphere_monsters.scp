@@ -1,5 +1,5 @@
 ﻿//****************************************************************************
-// SPHERE by : Menasoft ©1997-2014
+// SPHERE by : Menasoft ©1997-2015
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, October 28, 2014
+// FILE LAST UPDATED: Friday, Jan 16, 2015
 //
 VERSION=0.56c
 
@@ -9710,7 +9710,7 @@ CATEGORY=Animals
 SUBSECTION=Tame
 DESCRIPTION=Cat
 ON=@Create
-   COLOR={ colors_animal 1 color_none 1 }
+   COLOR=colors_animal
    NPC=brain_animal
    FAME={1 499}
    KARMA={-1 -499}
@@ -10390,6 +10390,7 @@ SUBSECTION=Tame
 DESCRIPTION=Dog
 ON=@Create
    NPC=brain_animal
+   COLOR=colors_animal
    FAME={1 499}
    KARMA={-1 -499}
    STR={27 37}
@@ -11485,7 +11486,7 @@ ON=@GetHit
    IF (<HITS> < <EVAL <MAXHITS>/3>) && !(<R5>)
       SRC.EFFECT 1,1
       SRC.SOUND snd_spell_lightning
-      SRC.DAMAGE <R15,25> <DEF.dam_lightning> <UID>
+      SRC.DAMAGE <R15,25> <DEF.dam_energy> <UID>
    ENDIF
 
 [CHARDEF 0f6]
@@ -15227,7 +15228,7 @@ NAME=human
 ICON=i_pet_man
 //SOUND=
 CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP|MT_MOUNT
-//DAM=
+DAM=1,4
 //ARMOR=
 DESIRES=r_civilization,t_coin,t_gold,t_gem,t_potion
 AVERSIONS=t_trap,e_carnivores3
@@ -15319,7 +15320,7 @@ NAME=human
 ICON=i_pet_woman
 //SOUND=
 CAN=MT_WALK|MT_RUN|MT_FEMALE|MT_USEHANDS|MT_EQUIP|MT_MOUNT
-//DAM=
+DAM=1,4
 //ARMOR=
 DESIRES=r_civilization,t_coin,t_gold,t_gem,t_potion
 AVERSIONS=t_trap,e_carnivores3
@@ -15706,7 +15707,7 @@ NAME=elf
 ICON=i_pet_man
 //SOUND=
 CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP|MT_MOUNT
-//DAM=
+DAM=1,4
 //ARMOR=
 DESIRES=r_civilization,t_coin,t_gold,t_gem,t_potion
 AVERSIONS=t_trap,e_carnivores3
@@ -15796,7 +15797,7 @@ NAME=elf
 ICON=i_pet_woman
 //SOUND=
 CAN=MT_WALK|MT_RUN|MT_FEMALE|MT_USEHANDS|MT_EQUIP|MT_MOUNT
-//DAM=
+DAM=1,4
 //ARMOR=
 DESIRES=r_civilization,t_coin,t_gold,t_gem,t_potion
 AVERSIONS=t_trap,e_carnivores3
@@ -15939,7 +15940,7 @@ NAME=gargoyle
 ICON=i_pet_gargoyle_male
 //SOUND=
 CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP
-//DAM=
+DAM=1,4
 //ARMOR=
 DESIRES=t_coin,t_gold,e_notoriety,t_potion
 AVERSIONS=t_trap,t_eerie_stuff
@@ -16027,7 +16028,7 @@ NAME=gargoyle
 ICON=i_pet_gargoyle_female
 //SOUND=
 CAN=MT_WALK|MT_RUN|MT_USEHANDS|MT_EQUIP|MT_FEMALE
-//DAM=
+DAM=1,4
 //ARMOR=
 DESIRES=t_coin,t_gold,e_notoriety,t_potion
 AVERSIONS=t_trap,t_eerie_stuff
@@ -21350,6 +21351,7 @@ ON=@NPCRestock
 [CHARDEF 03db]
 DEFNAME=c_man_gm
 NAME=GM
+DAM=1,4
 CAN=MT_WALK|MT_RUN|MT_SWIM|MT_USEHANDS|MT_EQUIP|MT_GHOST
 CATEGORY=Civilized
 SUBSECTION=Other Bodies

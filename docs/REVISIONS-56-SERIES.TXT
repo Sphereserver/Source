@@ -1537,3 +1537,10 @@ Fixed: Guards on 'red regions' (regions with TAG.RED=1 set) always using name hu
 Fixed: All item memories different from spells/potions getting wrongly named as 'Potion Cooldown'
 Fixed: Function BADSPAWN not looping through inactive spawns (spawn item with TIMER=-1 set)
 Changed: Item tooltips now can read properties set directly on ITEMDEF too
+[sphere_msgs.scp]: Updated some messages (magery_6, msg_corpse_of, npc_pet_decide_master, spell_try_am)
+[sphere_combat.scp]: Updated obsolete 'dam_lightning' to 'dam_energy'
+[sphere_skills.scp]: Improved ARROWQUEST position on Tracking skill
+[sphere_map_points5.scp]: Updated Ter Mur moongate list
+[sphere_monsters.scp]:
+	-Added missing DAM on c_man, c_woman, c_elf_male, c_elf_female, c_gargoyle_male, c_gargoyle_female, c_man_gm
+	-Fixed COLOR on c_cat, c_dog
