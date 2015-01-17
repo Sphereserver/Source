@@ -151,6 +151,56 @@ public:
 		}
 	}
 
+
+	LPCTSTR GetKeyStr( LPCTSTR pszKey, bool fZero = false, bool fDef = false ) const
+	{
+		CVarDefCont	* pVar = GetKey( pszKey, fDef );
+		if ( pVar == NULL )
+			return (fZero ? "0" : "");
+		return pVar->GetValStr();
+	}
+
+	INT64 GetKeyNum( LPCTSTR pszKey, bool fZero = false, bool fDef = false ) const
+	{
+		CVarDefCont	* pVar = GetKey( pszKey, fDef );
+		if ( pVar == NULL )
+			return (fZero ? 0 : NULL);
+		return pVar->GetValNum();
+	}
+
+	CVarDefCont * GetKey( LPCTSTR pszKey, bool fDef ) const
+	{
+		CVarDefCont	* pVar	= m_TagDefs.GetKey( pszKey );
+		if ( !fDef || pVar )	return pVar;
+		if (IsItem())
+		{
+			CItemBase * pItemDef = STATIC_CAST <CItemBase*>( Base_GetDef());
+			ASSERT(pItemDef);
+			return pItemDef-> m_TagDefs.GetKey( pszKey );
+		}
+		else
+		{
+			CCharBase * pCharDef = STATIC_CAST <CCharBase*>( Base_GetDef());
+			ASSERT(pCharDef);
+			return pCharDef-> m_TagDefs.GetKey( pszKey );
+		}
+	}
+
+	void SetKeyNum(LPCTSTR pszKey, INT64 iVal)
+	{
+		m_TagDefs.SetNum(pszKey, iVal);
+	}
+
+	void SetKeyStr(LPCTSTR pszKey, LPCTSTR pszVal)
+	{
+		m_TagDefs.SetStr(pszKey, false, pszVal);
+	}
+
+	void DeleteKey(LPCTSTR pszKey)
+	{
+		m_TagDefs.DeleteKey(pszKey);
+	}
+
 protected:
 	virtual void DupeCopy( const CObjBase * pObj )
 	{
@@ -1073,40 +1123,6 @@ public:
 	void SetContainedGridIndex(unsigned char index)
 	{
 		m_containedGridIndex = index;
-	}
-
-	LPCTSTR GetKeyStr( LPCTSTR pszKey ) const
-	{
-		return m_TagDefs.GetKeyStr( pszKey );
-	}
-
-	INT64 GetKeyNum( LPCTSTR pszKey, bool fZero = false ) const
-	{
-		return m_TagDefs.GetKeyNum( pszKey, fZero );
-	}
-
-	CVarDefCont * GetKey( LPCTSTR pszKey, bool fDef ) const
-	{
-		CVarDefCont	* pVar	= m_TagDefs.GetKey( pszKey );
-		if ( !fDef || pVar )	return pVar;
-		CItemBase * pCharDef = Item_GetDef();
-		ASSERT(pCharDef);
-		return pCharDef->m_TagDefs.GetKey( pszKey );
-	}
-
-	void SetKeyNum(LPCTSTR pszKey, int iVal)
-	{
-		m_TagDefs.SetNum(pszKey, iVal);
-	}
-
-	void SetKeyStr(LPCTSTR pszKey, LPCTSTR pszVal)
-	{
-		m_TagDefs.SetStr(pszKey, false, pszVal);
-	}
-
-	void DeleteKey(LPCTSTR pszKey)
-	{
-		m_TagDefs.DeleteKey(pszKey);
 	}
 
 	void  Update( const CClient * pClientExclude = NULL );		// send this new item to everyone.
@@ -2944,40 +2960,6 @@ public:
 		return( pCharDef->GetDispID());
 	}
 	void SetID( CREID_TYPE id );
-
-	LPCTSTR GetKeyStr( LPCTSTR pszKey ) const
-	{
-		return m_TagDefs.GetKeyStr( pszKey );
-	}
-
-	INT64 GetKeyNum( LPCTSTR pszKey, bool fZero = false ) const
-	{
-		return m_TagDefs.GetKeyNum( pszKey, fZero );
-	}
-
-	CVarDefCont * GetKey( LPCTSTR pszKey, bool fDef ) const
-	{
-		CVarDefCont	* pVar	= m_TagDefs.GetKey( pszKey );
-		if ( !fDef || pVar )	return pVar;
-		CCharBase * pCharDef = Char_GetDef();
-		ASSERT(pCharDef);
-		return pCharDef->m_TagDefs.GetKey( pszKey );
-	}
-
-	void SetKeyNum(LPCTSTR pszKey, INT64 iVal)
-	{
-		m_TagDefs.SetNum(pszKey, iVal);
-	}
-
-	void SetKeyStr(LPCTSTR pszKey, LPCTSTR pszVal)
-	{
-		m_TagDefs.SetStr(pszKey, false, pszVal);
-	}
-
-	void DeleteKey(LPCTSTR pszKey)
-	{
-		m_TagDefs.DeleteKey(pszKey);
-	}
 
 	LPCTSTR GetName() const
 	{

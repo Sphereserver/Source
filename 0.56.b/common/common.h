@@ -45,6 +45,7 @@
 #define IsDigit(c) isdigit((unsigned char)c)
 #define IsSpace(c) isspace((unsigned char)c)
 #define IsAlpha(c) isalpha((unsigned char)c)
+#define IsNegative(c) ((c < 0)?1:0)
 
 typedef THREAD_ENTRY_RET ( _cdecl * PTHREAD_ENTRY_PROC )(void *);
 
@@ -56,7 +57,7 @@ typedef THREAD_ENTRY_RET ( _cdecl * PTHREAD_ENTRY_PROC )(void *);
 #define SCRIPT_MAX_LINE_LEN 4096	// default size.
 
 #define IMULDIVDOWN(a,b,c) (((a)*(b))/(c))
-#define IMULDIV(a,b,c) ((((LONGLONG)(a)*(LONGLONG)(b))+(c / 2))/(c))
+#define IMULDIV(a,b,c) (((((LONGLONG)(a)*(LONGLONG)(b))+(c / 2))/(c))-(IsNegative((LONGLONG)(a)*(LONGLONG)(b))))
 
 #ifndef MAKEDWORD
 	#define MAKEDWORD(low, high) ((DWORD)(((WORD)(low)) | (((DWORD)((WORD)(high))) << 16)))

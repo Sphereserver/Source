@@ -6,6 +6,7 @@
 #include "graysvr.h"	// predef header.
 #include "../common/grayver.h"	// sphere version
 #include "../network/network.h"
+#include "../network/send.h"
 
 #if !defined( _WIN32 )
 #include <sys/time.h>
@@ -2415,6 +2416,22 @@ void CWorld::OnTick()
 	TIME_PROFILE_INIT;
 	if ( IsSetSpecific )
 		TIME_PROFILE_START;
+
+	if ( g_Cfg.m_iFeatureSA & FEATURE_SA_MOVEMENT )
+	{
+		if ( m_timeSync <= GetCurrentTime())
+		{
+			m_timeSync = GetCurrentTime() + SYNC_TICK_PERIOD;
+			ClientIterator it;
+			for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
+			{
+				CChar * tMe = pClient->GetChar();
+				if ( tMe == NULL )
+					continue;
+				new PacketTimeSyncRequest(pClient);
+			}
+		}
+	}
 
 	if ( m_timeSector <= GetCurrentTime())
 	{

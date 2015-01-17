@@ -71,7 +71,8 @@ enum EF_TYPE
 #ifndef _MTNETWORK
 	EF_NetworkOutThread				= 0x0800000,
 #endif
-    EF_Specific						= 0x1000000	// Specific behaviour, not completly tested
+    EF_Specific						= 0x1000000,	// Specific behaviour, not completly tested
+	EF_UltimaLive					= 0x2000000		//very Experimental!!!
 };
 
 enum MAGICFLAGS_TYPE

@@ -155,9 +155,10 @@ size_t CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 			if ( ! m_pRegion->IsInside2d( pItem->GetTopPoint()))
 				continue;
 
-			//I guess we can allow items to be locked on the ships and still move...
+			//I guess we can allow items to be locked on the ships and still move... but disallow attr_static from moving
 			//if ( ! pItem->IsMovable() && !pItem->IsType(IT_CORPSE))
-			//	continue;
+			if ( IsAttr(ATTR_STATIC) )
+				continue;
 
 			int zdiff = pItem->GetTopZ() - iShipHeight;
 			if ( zdiff < -2 || zdiff > PLAYER_HEIGHT )

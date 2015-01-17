@@ -1187,8 +1187,6 @@ bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )
 			return true;
 		}
 
-		bool fGM = IsPriv(PRIV_GM);
-
 		static const NPCBRAIN_TYPE sm_Track_Brain[] =
 		{
 			NPCBRAIN_QTY,	// not used here.

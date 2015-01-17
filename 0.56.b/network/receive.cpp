@@ -235,7 +235,7 @@ bool PacketMovementReq::onReceive(NetState* net)
 	return true;
 }
 
-void PacketMovementReq::doMovement(NetState* net, BYTE direction, short sequence, DWORD crypt)
+void PacketMovementReq::doMovement(NetState* net, BYTE direction, short sequence, DWORD crypt, INT64 iTime1, INT64 iTime2)
 {
 	ADDTOCALLSTACK("PacketMovementReq::doMovement");
 
@@ -245,14 +245,19 @@ void PacketMovementReq::doMovement(NetState* net, BYTE direction, short sequence
 	TRIGRET_TYPE canMoveThere(TRIGRET_RET_TRUE);
 
 	// check crypt key
-	if (net->isClientVersion(MINCLIVER_CHECKWALKCODE))
+	if (net->isClientVersion(MINCLIVER_CHECKWALKCODE) && (crypt != 0))
 		canMoveThere = client->Event_WalkingCheck(crypt)? TRIGRET_RET_TRUE : TRIGRET_RET_FALSE;
 
-// check sequence
-//	if (canMoveThere == TRIGRET_RET_TRUE && net->m_sequence == 0 && sequence != 0)
-//		canMoveThere = TRIGRET_RET_FALSE;
+	//Check Timing
+	if (iTime1 && iTime2)
+	{
+		bool fRun = ( direction & 0x80 ) == 0x80;
+		INT64 iTiming = iTime2 - iTime1;
+		if ( (fRun && (iTiming > 200)) || (!fRun && (iTiming > 300)) )
+			canMoveThere = TRIGRET_RET_FALSE;
+	}
 
-// check sequence (old method)
+	// check sequence
 	if (canMoveThere == TRIGRET_RET_TRUE && sequence != net->m_sequence)
 		canMoveThere = net->m_sequence == 0? TRIGRET_RET_DEFAULT : TRIGRET_RET_FALSE;
 
@@ -819,6 +824,28 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 	}
 
 	client->Event_VendorBuy(vendor, items, itemCount);
+	return true;
+}
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0x3F : PacketStaticUpdate		Ultima live and (God Client?)
+ *
+ *
+ ***************************************************************************/
+PacketStaticUpdate::PacketStaticUpdate() : Packet(0)
+{
+}
+
+bool PacketStaticUpdate::onReceive(NetState* net)
+{
+	ADDTOCALLSTACK("PacketStaticUpdate::onReceive");
+	/*skip(12);
+    BYTE UlCmd = readByte();*/
+	TemporaryString dump;
+	this->dump(dump);
+	g_Log.EventDebug("%lx:Parsing %s", net->id(), static_cast<LPCTSTR>(dump));
 	return true;
 }
 
@@ -3262,7 +3289,7 @@ bool PacketWheelBoatMove::onReceive(NetState* net)
 
 	DIR_TYPE facing = static_cast<DIR_TYPE>(readByte()); //new boat facing, yes client send it
 	DIR_TYPE moving = static_cast<DIR_TYPE>(readByte()); //the boat movement
-	BYTE speed = readByte(); //(0 = Stop Movement, 1 = One Tile Movement, 2 = Normal Movement) ***These speeds are NOT the same as 0xF6 packet
+	skip(1); //BYTE speed = readByte(); //(0 = Stop Movement, 1 = One Tile Movement, 2 = Normal Movement) ***These speeds are NOT the same as 0xF6 packet
 
 	if (area && area->IsFlag(REGION_FLAG_SHIP))
 	{
@@ -4271,14 +4298,38 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketMovementReqNew::onReceive");
 
 	skip(2);
-	skip(17);
-	short sequence = readByte();
-	BYTE direction = readByte();
-	DWORD mode = readInt32();
-	if (mode == 2)
-		direction |= 0x80;
+	short steps = readByte();
+	INT64 iTime1 = readInt64();
+	INT64 iTime2 = readInt64(); //these should be used for speed control somehow... (in micro-seconds)
+	while(steps)
+	{
+		short sequence = readByte();
+		BYTE direction = readByte();
+		DWORD mode = readInt32();
+		if (mode == 2)
+			direction |= 0x80;
 
-	doMovement(net, direction, sequence, 0);
+		doMovement(net, direction, sequence, 0, iTime1, iTime2);
+		steps--;
+	}
+	return true;
+}
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xF1 : PacketTimeSyncReply				time sync reply (KR/SA)
+ *
+ *
+ ***************************************************************************/
+PacketTimeSyncReply::PacketTimeSyncReply() : Packet(9)
+{
+}
+
+bool PacketTimeSyncReply::onReceive(NetState* net)
+{
+	ADDTOCALLSTACK("PacketTimeSyncReply::onReceive");
+	//INT64 iTime = readInt64();
 	return true;
 }
 

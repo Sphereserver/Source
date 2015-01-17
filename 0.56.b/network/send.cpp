@@ -1332,6 +1332,86 @@ bool PacketItemContents::onSend(const CClient* client)
 	return client->CanSee(m_container.ItemFind());
 }
 
+/***************************************************************************
+ *
+ *
+ *	Packet 0x3F : PacketQueryClient			Query Client for block info (NORMAL)
+ *
+ *
+ ***************************************************************************/
+PacketQueryClient::PacketQueryClient(CClient* target, BYTE bCmd) : PacketSend(XCMD_StaticUpdate, 15, PRI_NORMAL)
+{
+	ADDTOCALLSTACK("PacketQueryClient::PacketQueryClient");
+	initLength();
+	switch (bCmd)
+	{
+		case 0x01:
+		{
+			//Update Map Definitions Command
+			int length = 2 * 9; //map count * 9
+            int count = length / 7;
+            int padding = 0;
+            if (length - (count * 7) > 0)
+            {
+                count++;
+                padding = (count * 7) - length; 
+            }
+
+			writeInt32(0);
+			writeInt32(4);
+			writeInt16(0);
+			writeByte(0x01);
+			writeByte(0);
+
+			for (int i = 0; i < 2; i++)
+			{
+				writeByte(i);
+				writeInt16(g_MapList.GetX(i));
+				writeInt16(g_MapList.GetY(i));
+				writeInt16(g_MapList.GetX(i));
+				writeInt16(g_MapList.GetY(i));
+            }
+
+            for (int i = 0; i < padding; i++)
+                writeByte(0);
+			
+		}
+		case 0x02:
+		{
+			//Login Complete Command
+			writeInt32(1);
+			writeInt32(4);
+			writeInt16(0);
+			writeByte(0x02);
+			writeByte(0);
+			writeStringFixedASCII(g_Serv.GetName(),28);
+		}
+		case 0x03:
+		{
+			//Refresh Client View Command
+			writeInt32(0);
+			writeInt32(0);
+			writeInt16(0);
+			writeByte(0x03);
+			writeByte(0);
+		}
+		case 0xFF:
+		{
+			//Query Client Command
+			BYTE bMap = target->GetChar()->GetTopMap();
+			CPointMap pt = target->GetChar()->GetTopPoint();
+			DWORD dwBlockId = (pt.m_x * (g_MapList.GetY( bMap ) / UO_BLOCK_SIZE)) + pt.m_y;
+			writeInt32(dwBlockId);
+			writeInt32(0);
+			writeInt16(0);
+			writeByte(0xFF);
+			writeByte(target->GetChar()->GetTopMap());
+		}
+	}
+
+	push(target);
+}
+
 
 /***************************************************************************
  *
@@ -4610,6 +4690,35 @@ PacketToggleHotbar::PacketToggleHotbar(const CClient* target, bool enable) : Pac
 	ADDTOCALLSTACK("PacketToggleHotbar::PacketToggleHotbar");
 
 	writeInt16(enable? 0x01 : 0x00);
+
+	push(target);
+}
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xF2 : PacketTimeSyncRequest		time sync request (HIGH)
+ *
+ *
+ ***************************************************************************/
+PacketTimeSyncRequest::PacketTimeSyncRequest(const CClient* target) : PacketSend(XCMD_TSyncRequest, 25, PRI_NORMAL)
+{
+	ADDTOCALLSTACK("PacketTimeSyncRequest::PacketTimeSyncRequest");
+	time_t ltime;
+    time(&ltime);
+
+#ifdef WIN32
+	SYSTEMTIME st;
+	GetSystemTime(&st);
+	INT64 llTime = ((INT64)(ltime) * 1000) + st.wMilliseconds;
+#else
+	struct timeval tim; 
+	gettimeofday(&tim, NULL);    
+	INT64 llTime = ((INT64)(tim.tv_sec) * 1000) + tim.tv_usec;
+#endif
+	writeInt64(llTime-100);
+	writeInt64(llTime);
+	writeInt64(llTime+100);	//No idea if different values make a difference. I didn't notice anything different when all values were the same.
 
 	push(target);
 }

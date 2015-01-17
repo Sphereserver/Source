@@ -1544,3 +1544,10 @@ Changed: Item tooltips now can read properties set directly on ITEMDEF too
 [sphere_monsters.scp]:
 	-Added missing DAM on c_man, c_woman, c_elf_male, c_elf_female, c_gargoyle_male, c_gargoyle_female, c_man_gm
 	-Fixed COLOR on c_cat, c_dog
+
+16-01-2015, Ben
+Fixed: MULDIV rounding up negative numbers when they should be rounding down.
+Fixed #2457: TAG.ALWAYSSEND will now be checked on ITEMDEF too.
+Fixed #2458: Made attr_static not movable with ships.
+Fixed #2456: Archery Butte not working properly.
+Some changes to FEATURE_SA_MOVEMENT (This seems to affect speedhacking, would require some more testing) (possible fix for #2435 for SA+ clients)

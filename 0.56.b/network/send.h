@@ -392,6 +392,20 @@ public:
 /***************************************************************************
  *
  *
+ *	Packet 0x3F : PacketQueryClient			Query Client for block info (NORMAL)
+ *
+ *
+ ***************************************************************************/
+class PacketQueryClient : public PacketSend
+{
+public:
+	PacketQueryClient(CClient* target, BYTE bCmd = 0xFF);
+
+};
+
+/***************************************************************************
+ *
+ *
  *	Packet 0x4F : PacketGlobalLight			sets global light level (NORMAL)
  *
  *
@@ -1740,6 +1754,25 @@ public:
 	static bool CanSendTo(const NetState* state)
 	{
 		return state->isClientKR();
+	}
+};
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xF2 : PacketTimeSyncRequest		time sync request (NORMAL)
+ *
+ *
+ ***************************************************************************/
+class PacketTimeSyncRequest : public PacketSend
+{
+public:
+	PacketTimeSyncRequest(const CClient* target);
+
+	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
+	static bool CanSendTo(const NetState* state)
+	{
+		return state->isClientVersion(MINCLIVER_SA) || state->isClientSA() || state->isClientKR();
 	}
 };
 

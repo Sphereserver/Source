@@ -63,6 +63,7 @@ public:
 	void writeInt16(const WORD value); // write 16-bit integer (2 bytes)
 	void writeInt32(const DWORD value); // write 32-bit integer (4 bytes)
 	void writeInt64(const DWORD hi, const DWORD lo); // write 64-bit integer (8 bytes)
+	void writeInt64(const INT64 value); // write 64-bit integer (8 bytes)
 	void writeStringASCII(const char* value, bool terminate = true); // write ascii string until null terminator found
 	void writeStringASCII(const WCHAR* value, bool terminate = true); // write ascii string until null terminator found
 	void writeStringFixedASCII(const char* value, size_t size, bool terminate = false); // write fixed-length ascii string
@@ -88,6 +89,7 @@ public:
 	BYTE readByte(void); // read 8-bit integer (1 byte)
 	WORD readInt16(void); // read 16-bit integer (2 bytes)
 	DWORD readInt32(void); // read 32-bit integer (4 bytes)
+	INT64 readInt64(void); // read 64-bit integer (8 bytes)
 	void readStringASCII(char* buffer, size_t length, bool includeNull = true); // read fixed-length ascii string
 	void readStringASCII(WCHAR* buffer, size_t length, bool includeNull = true); // read fixed-length ascii string
 	void readStringUNICODE(char* buffer, size_t bufferSize, size_t length, bool includeNull = true); // read fixed length unicode string

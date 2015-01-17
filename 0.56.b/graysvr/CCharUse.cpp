@@ -625,46 +625,38 @@ badalign:
 		return true;
 	}
 
-	if ( m_pPlayer &&
-		AmmoID &&
-		ContentConsume( RESOURCE_ID( RES_ITEMDEF, AmmoID )))
-	{
-		SysMessageDefault( DEFMSG_ITEMUSE_ARCHB_NOAMMO );
-		return( true );
-	}
-
 	CVarDefCont * pCont = pWeapon->GetDefKey("AMMOCONT",true);
 
 	if (m_pPlayer && AmmoID )
+	{
+		int iFound = 1;
+		if ( pCont )
 		{
-			int iFound = 0;
-			if ( pCont )
+			//check for UID
+			CGrayUID uidCont = static_cast<DWORD>(pCont->GetValNum());
+			CItemContainer *pNewCont = dynamic_cast <CItemContainer*> (uidCont.ItemFind());
+			if (!pNewCont) //if no UID, check for ITEMID_TYPE
 			{
-				//check for UID
-				CGrayUID uidCont = static_cast<DWORD>(pCont->GetValNum());
-				CItemContainer *pNewCont = dynamic_cast <CItemContainer*> (uidCont.ItemFind());
-				if (!pNewCont) //if no UID, check for ITEMID_TYPE
-				{
-					t_Str = pCont->GetValStr();
-					RESOURCE_ID_BASE rContid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str ));
-					ITEMID_TYPE ContID = static_cast<ITEMID_TYPE>(rContid.GetResIndex());
-					if (ContID)
-						pNewCont = dynamic_cast <CItemContainer*> (ContentFind( rContid ));
-				}
-
-				if (pNewCont)
-					iFound = pNewCont->ContentConsume( RESOURCE_ID( RES_ITEMDEF, AmmoID ));
-				else
-					iFound = ContentConsume( RESOURCE_ID( RES_ITEMDEF, AmmoID ));
+				t_Str = pCont->GetValStr();
+				RESOURCE_ID_BASE rContid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str ));
+				ITEMID_TYPE ContID = static_cast<ITEMID_TYPE>(rContid.GetResIndex());
+				if (ContID)
+					pNewCont = dynamic_cast <CItemContainer*> (ContentFind( rContid ));
 			}
+
+			if (pNewCont)
+				iFound = pNewCont->ContentConsume( RESOURCE_ID( RES_ITEMDEF, AmmoID ));
 			else
 				iFound = ContentConsume( RESOURCE_ID( RES_ITEMDEF, AmmoID ));
-			if ( !iFound )
-			{
-				SysMessageDefault( DEFMSG_ITEMUSE_ARCHB_NOAMMO );
-				return( true );
-			}
 		}
+		else
+			iFound = ContentConsume( RESOURCE_ID( RES_ITEMDEF, AmmoID ));
+		if ( iFound )
+		{
+			SysMessageDefault( DEFMSG_ITEMUSE_ARCHB_NOAMMO );
+			return( true );
+		}
+	}
 
 	// OK...go ahead and fire at the target
 	// Check the skill

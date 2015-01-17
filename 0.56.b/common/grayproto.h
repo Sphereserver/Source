@@ -171,6 +171,7 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_Skill			= 0x3a,
 	XCMD_VendorBuy		= 0x3b,
 	XCMD_Content		= 0x3c,
+	XCMD_StaticUpdate	= 0x3f,
 	//	0x40
 	XCMD_LightPoint		= 0x4e,
 	XCMD_Light			= 0x4f,
@@ -299,7 +300,8 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_NewSeed				= 0xef,
 	//	0xF0
 	XCMD_WalkNew		= 0xf0,
-	XCMD_WalkUnknown	= 0xf1,
+	XCMD_TSyncReply		= 0xf1,
+	XCMD_TSyncRequest	= 0xf2,
 	XCMD_PutNew			= 0xf3,
 	XCMD_CrashReport    = 0xf4,
 	XCMD_MapDisplayNew	= 0xf5,
@@ -1229,10 +1231,10 @@ struct CEvent	// event buffer from client to server..
 
 		struct // size = 9
 		{
-			BYTE m_Cmd;		// 0   = 0xF1  XCMD_WalkUnknown
+			BYTE m_Cmd;		// 0   = 0xF1  XCMD_TSyncRequest
 			NDWORD m_unk1;	// 1-4 = 00 00 01 22
 			NDWORD m_unk2;	// 5-8 = AE .. E1 0E
-		} WalkUnknown;
+		} TSyncRequest;
 
 		struct	// size = >3	// user typed in text.
 		{
@@ -3291,6 +3293,17 @@ struct CCommand	// command buffer from server to client.
 			BYTE m_Cmd;				// 0 = 0xEA
 			NWORD m_Enable;			// 1 - 2 = enable
 		} ToggleHotbar;
+
+		struct // XCMD_TSyncReply
+		{
+			BYTE m_Cmd;				// 0 = 0xF2
+			NDWORD m_unk1;			// 1 - 4
+			NDWORD m_unk2;			// 5 - 8
+			NDWORD m_unk3;			// 9 - 12
+			NDWORD m_unk4;			// 13 - 16
+			NDWORD m_unk5;			// 17 - 20
+			NDWORD m_unk6;			// 21 - 24
+		} TSyncReply;
 
 		struct	// XCMD_MapDisplayNew, size = 21
 		{

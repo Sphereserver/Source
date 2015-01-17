@@ -606,6 +606,7 @@ void PacketManager::registerStandardPackets(void)
 	registerPacket(XCMD_CharStatReq, new PacketCharStatusReq());				// status request
 	registerPacket(XCMD_Skill, new PacketSkillLockChange());					// change skill lock
 	registerPacket(XCMD_VendorBuy, new PacketVendorBuyReq());					// buy items from vendor
+	registerPacket(XCMD_StaticUpdate, new PacketStaticUpdate());				// UltimaLive Packet
 	registerPacket(XCMD_MapEdit, new PacketMapEdit());							// edit map pins
 	registerPacket(XCMD_CharPlay, new PacketCharPlay());						// select character
 	registerPacket(XCMD_BookPage, new PacketBookPageEdit());					// edit book content
@@ -656,7 +657,7 @@ void PacketManager::registerStandardPackets(void)
 	registerPacket(XCMD_MacroEquipItem, new PacketEquipItemMacro());			//
 	registerPacket(XCMD_MacroUnEquipItem, new PacketUnEquipItemMacro());		//
 	registerPacket(XCMD_WalkNew, new PacketMovementReqNew());					// movement request (SA)
-	registerPacket(XCMD_WalkUnknown, new PacketUnknown(9));						//
+	registerPacket(XCMD_TSyncReply, new PacketTimeSyncReply());						//
 	registerPacket(XCMD_CrashReport, new PacketCrashReport());					//
 	registerPacket(XCMD_CreateHS, new PacketCreateHS());						// create character (HS)
 
