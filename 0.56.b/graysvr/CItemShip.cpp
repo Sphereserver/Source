@@ -427,7 +427,7 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 
 			if ( IsTrigUsed(TRIGGER_SHIPTURN) )
 			{
-				CScriptTriggerArgs Args( dir );
+				CScriptTriggerArgs Args( dir, sm_Ship_FaceDir[ iFaceOffset ] );
 				pItem->OnTrigger( ITRIG_Ship_Turn, &g_Serv, &Args );
 			}
 		}

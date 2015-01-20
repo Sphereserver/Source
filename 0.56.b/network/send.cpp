@@ -4,6 +4,10 @@
 #include "../common/zlib/zlib.h"
 #pragma warning(default:4096)
 
+#ifndef _WIN32
+#include <sys/time.h>
+#endif
+
 /***************************************************************************
  *
  *
