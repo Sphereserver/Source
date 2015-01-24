@@ -207,6 +207,7 @@ CChar * CChar::CreateNPC( CREID_TYPE baseID )	// static
 	CChar * pChar = CreateBasic(baseID);
 	ASSERT(pChar);
 	pChar->NPC_LoadScript(true);
+	pChar->NPC_CreateTrigger();
 
 	return pChar;
 }
@@ -938,21 +939,27 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 
 		if ( bVendor )
 		{
-			switch ( iCmd )
+			if (iCmd != -1)
 			{
-				case ITC_BUY:
-				case ITC_SELL:
-					{
-						CItemContainer * pCont = GetBank((iCmd == ITC_SELL) ? LAYER_VENDOR_STOCK : LAYER_VENDOR_BUYS );
-						if ( pCont )
+				switch ( iCmd )
+				{
+					case ITC_BUY:
+					case ITC_SELL:
 						{
-							pItem = CItem::CreateHeader(s.GetArgRaw(), pCont, false);
-							if ( pItem )
-								pItem->m_TagDefs.SetNum("NOSAVE", 1);
+							CItemContainer * pCont = GetBank((iCmd == ITC_SELL) ? LAYER_VENDOR_STOCK : LAYER_VENDOR_BUYS );
+							if ( pCont )
+							{
+								pItem = CItem::CreateHeader(s.GetArgRaw(), pCont, false);
+								if ( pItem )
+									pItem->m_TagDefs.SetNum("NOSAVE", 1);
+							}
+							pItem = NULL;
+							continue;
 						}
+					default:
 						pItem = NULL;
 						continue;
-					}
+				}
 			}
 		}
 		else
@@ -1045,20 +1052,6 @@ void CChar::NPC_LoadScript( bool fRestock )
 
 	CCharBase * pCharDef = Char_GetDef();
 
-	// Begin @Create fix
-	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
-	LPCTSTR pszTrigName;
-	CTRIG_TYPE iAction;
-	if ( ISINTRESOURCE(CTRIG_Create))
-	{
-		iAction = (CTRIG_TYPE) GETINTRESOURCE(CTRIG_Create);
-		pszTrigName = sm_szTrigName[iAction];
-	}
-	else
-	{
-		iAction = (CTRIG_TYPE) FindTableSorted( pszTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
-	}
-
 	// 1) CHARDEF trigger
 	if ( m_pPlayer == NULL ) //	CHARDEF triggers (based on body type)
 	{
@@ -1076,7 +1069,17 @@ void CChar::NPC_LoadScript( bool fRestock )
 		ReadScriptTrig(pCharDef, CTRIG_NPCRestock);
 
 	CreateNewCharCheck();	//This one is giving stats, etc to the char, so we can read/set them in the next triggers.
-	//
+}
+
+void CChar::NPC_CreateTrigger()
+{
+	ADDTOCALLSTACK("CChar::NPC_CreateTrigger");
+
+	CCharBase * pCharDef = Char_GetDef();
+
+	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
+	LPCTSTR pszTrigName = "@Create";
+	CTRIG_TYPE iAction = (CTRIG_TYPE) FindTableSorted( pszTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
 
 	if ( m_pNPC != NULL )
 	{
@@ -1108,8 +1111,6 @@ void CChar::NPC_LoadScript( bool fRestock )
 				return;
 		}
 	}
-	// End @Create fix 
-
 }
 
 void CChar::OnWeightChange( int iChange )

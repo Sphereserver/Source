@@ -4761,6 +4761,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 					return( false );
 				pChar->NPC_LoadScript(false);
 				pChar->RaiseCorpse(pCorpse);
+				pChar->NPC_CreateTrigger(); //Removed from NPC_LoadScript() and triggered after char placement
 			}
 		}
 		break;

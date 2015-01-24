@@ -1551,3 +1551,11 @@ Fixed #2457: TAG.ALWAYSSEND will now be checked on ITEMDEF too.
 Fixed #2458: Made attr_static not movable with ships.
 Fixed #2456: Archery Butte not working properly.
 Some changes to FEATURE_SA_MOVEMENT (This seems to affect speedhacking, would require some more testing) (possible fix for #2435 for SA+ clients)
+
+24-01-2015, Ben
+Fixed: Undefined keyword 'ITEM' error when restocking vendors.
+Modified: Order of @Create triggers to satify all situations.
+	1 - CHARDEF's @Create runs first with @NPCRestock that follows (character does not have a position yet)
+	2 - The character is placed in the world (This should fire @Enter in the appropriate region, and unlike before, the character is fully created)
+	3 - TEVENTS @Create is fired (character now has a position)
+	4 - EVENTSPET @Create is fired

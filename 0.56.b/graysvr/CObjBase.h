@@ -3631,6 +3631,7 @@ public:
 	bool ReadScriptTrig(CCharBase * pCharDef, CTRIG_TYPE trig, bool bVendor = false);
 	bool ReadScript(CResourceLock &s, bool bVendor = false);
 	void NPC_LoadScript( bool fRestock );
+	void NPC_CreateTrigger();
 
 	// Mounting and figurines
 	bool Horse_Mount( CChar * pHorse ); // Remove horse char and give player a horse item
