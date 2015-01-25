@@ -1063,6 +1063,12 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 		case IBC_BONUSMANAMAX:
 			sVal.FormatLLVal(GetDefNum(pszKey, true));
 			break;
+
+
+		case IBC_MAXAMOUNT:
+			sVal.FormatVal(GetMaxAmount());
+			break;
+
 		case IBC_SPEEDMODE:
 		{
 			if (!IsType(IT_SHIP))
@@ -1384,6 +1390,10 @@ bool CItemBase::r_LoadVal( CScript &s )
 		case IBC_BONUSSTAMMAX:
 		case IBC_BONUSMANAMAX:
 			SetDefNum(s.GetKey(), s.GetArgVal(), false);
+			break;
+		case IBC_MAXAMOUNT:
+			if (!SetMaxAmount(s.GetArgVal()))
+				return false;
 			break;
 		case IBC_SPEEDMODE:
 		{
@@ -2125,4 +2135,28 @@ CItemBaseDupe * CItemBaseDupe::GetDupeRef( ITEMID_TYPE id ) // static
 		return( pBaseDupe );	// this is just a dupeitem
 
 	return( NULL); //we suspect item is loaded
+}
+
+
+WORD CItemBase::GetMaxAmount()
+{
+	ADDTOCALLSTACK("CItemBase::GetMaxAmount");
+
+	if (!IsStackableType())
+		return 0;
+
+	return static_cast<WORD>(GetDefNum("MaxAmount", false) ? GetDefNum("MaxAmount", false) : INT_MAX);
+};
+
+bool CItemBase::SetMaxAmount(unsigned short amount)
+{
+	ADDTOCALLSTACK("CItemBase::SetMaxAmount");
+
+	if (!IsStackableType())
+		return false;
+
+	if (amount > USHRT_MAX)
+		amount = USHRT_MAX;
+	SetDefNum("MaxAmount", amount, false);
+	return true;
 }

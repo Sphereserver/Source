@@ -713,7 +713,7 @@ int CItem::FixWeirdness()
 
 	if ( IsMovableType() )
 	{
-		if ( pItemDef->IsType(IT_WATER) || pItemDef->Can(CAN_I_WATER) )
+		if ( IsType(IT_WATER) || Can(CAN_I_WATER) )
 			SetAttr(ATTR_MOVE_NEVER);
 	}
 
@@ -1111,8 +1111,8 @@ bool CItem::IsStackable( const CItem * pItem ) const
 		return false;
 
 	// total should not add up to > 64K !!!
-	if ( pItem->GetAmount() > ( USHRT_MAX - GetAmount() - 1))
-		return false;
+	/*if ( pItem->GetAmount() > ( USHRT_MAX - GetAmount()))
+		return false;*/
 
 	return true;
 }
@@ -1123,6 +1123,7 @@ bool CItem::Stack( CItem * pItem )
 	// RETURN:
 	//  true = the item got stacked. (it is gone)
 	//  false = the item will not stack. (do somethjing else with it)
+	// pItem is the item stacking on.
 	//
 
 	if ( pItem == this )
@@ -1133,15 +1134,32 @@ bool CItem::Stack( CItem * pItem )
 	if (!m_TagDefs.Compare( &( pItem->m_TagDefs ) ))
 		return false ;
 
+	if (!m_BaseDefs.CompareAll(&(pItem->m_BaseDefs)))
+		return false;
+
 	// Lost newbie status.
 	if ( IsAttr( ATTR_NEWBIE ) != pItem->IsAttr( ATTR_NEWBIE )) return false;
 	else if ( IsAttr( ATTR_MOVE_NEVER ) != pItem->IsAttr( ATTR_MOVE_NEVER )) return false;
 	else if ( IsAttr( ATTR_STATIC ) != pItem->IsAttr( ATTR_STATIC )) return false;
 	else if ( IsAttr( ATTR_LOCKEDDOWN ) != pItem->IsAttr( ATTR_LOCKEDDOWN )) return false;
-	
-	SetAmount( pItem->GetAmount() + GetAmount());
-	ResendTooltip(true,false);
-	pItem->Delete();
+	unsigned int amount = pItem->GetAmount() + GetAmount();
+	if (amount > pItem->GetMaxAmount())
+	{
+		amount = pItem->GetMaxAmount() - pItem->GetAmount();
+		pItem->SetAmount(pItem->GetAmount() + amount);
+		pItem->Update();
+		SetAmount(GetAmount() - amount);
+		//Update();
+		ResendTooltip();
+		pItem->ResendTooltip();
+		return false;
+	}
+	else
+	{
+		SetAmount(pItem->GetAmount() + GetAmount());
+		ResendTooltip();
+		pItem->Delete();
+	}
 	return( true );
 }
 
@@ -1983,7 +2001,6 @@ void CItem::SetAmount( unsigned int amount )
 		return;
 
 	m_amount = amount;
-
 	// sometimes the diff graphics for the types are not in the client.
 	if ( IsType(IT_ORE))
 	{
@@ -2005,6 +2022,30 @@ void CItem::SetAmount( unsigned int amount )
 	}
 	
 	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_AMOUNT);
+}
+
+
+WORD CItem::GetMaxAmount()
+{
+	ADDTOCALLSTACK("CItem::GetMaxAmount");
+
+	if (!IsStackableType())
+		return 0;
+
+	CVarDefCont * pMax = GetDefKey("MaxAmount", false);
+	return static_cast<WORD>(pMax ? pMax->GetValNum() : INT_MAX);
+};
+
+bool CItem::SetMaxAmount(unsigned short amount)
+{
+	ADDTOCALLSTACK("CItem::SetMaxAmount");
+	if (!IsStackableType())
+		return false;
+
+	if (amount > USHRT_MAX)
+		amount = USHRT_MAX;
+	SetDefNum("MaxAmount", amount, false);
+	return true;
 }
 
 void CItem::SetAmountUpdate( unsigned int amount )
@@ -2406,6 +2447,11 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 				sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
 			}	
 			break;
+		case IC_MAXAMOUNT:
+			{
+				sVal.FormatVal(GetMaxAmount() );
+
+			}break;
 		case IC_SPELLCOUNT:
 			{
 				if ( !IsTypeSpellbook() )
@@ -2659,6 +2705,10 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_PORTCULISSOUND:
 		case IC_DOOROPENID:
 			SetDefNum(s.GetKey(),s.GetArgVal(), false);
+			break;
+		case IC_MAXAMOUNT:
+			if (!SetMaxAmount(s.GetArgVal()))
+				return false;
 			break;
 		case IC_ADDCIRCLE:
 			{
@@ -3977,10 +4027,7 @@ bool CItem::Armor_IsRepairable() const
 	// SKILL_TAILORING (leather)
 	//
 
-	CItemBase * pItemDef = Item_GetDef();
-	ASSERT(pItemDef);
-
-	if ( pItemDef->Can( CAN_I_REPAIR ))
+	if ( Can( CAN_I_REPAIR ))
 		return( true );
 
 	switch ( m_type )

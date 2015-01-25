@@ -1559,3 +1559,12 @@ Modified: Order of @Create triggers to satify all situations.
 	2 - The character is placed in the world (This should fire @Enter in the appropriate region, and unlike before, the character is fully created)
 	3 - TEVENTS @Create is fired (character now has a position)
 	4 - EVENTSPET @Create is fired
+
+24-01-2015, XuN
+Stackable items with different 'new variables' like ResPoison, UsesCur, etc cannot be stacked anymore.
+Added MaxAmount variable to stackable items with a default value of 65535 (not using this means no changes). This affect both Itemdefs and already created items (which can differ if you set to).
+Droping on self/backpack and bouncing stackable items now makes Sphere trying to reach MaxAmount,
+	so if you have one pile of 50k of gold and you drop another 50k you'll end with one stack with 65535 coins and another one with 34465,
+	obviously, if you set [itemdef i_gold] to MaxAmount=50000 this will not happen.
+Maximum value of MaxAmount keeps being unsigned short, the same, 65535 because of client limitation.
+Non stackable items doesn't have MaxAmount

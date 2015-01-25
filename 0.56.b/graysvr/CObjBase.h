@@ -455,7 +455,7 @@ public:
 
 private:
 	ITEMID_TYPE m_dwDispIndex;		// The current display type. ITEMID_TYPE
-	WORD m_amount;		// Amount of items in pile. 64K max (or corpse type)
+	INT64 m_amount;		// Amount of items in pile. 64K max (or corpse type)
 	IT_TYPE m_type;		// What does this item do when dclicked ? defines dynamic_cast type
 	unsigned char m_containedGridIndex;	// Which grid have i been placed in ? (when in a container)
 	DWORD	m_CanUse;		// Base attribute flags. can_u_all/male/female..
@@ -1032,6 +1032,15 @@ public:
 
 	bool  IsStackableException() const;
 	bool  IsStackable( const CItem * pItem ) const;
+	bool  IsStackableType() const
+	{
+		return(Can(CAN_I_PILE));
+	}
+
+	bool Can(WORD wCan) const
+	{
+		return((m_Can & wCan) ? true : false);
+	}
 	virtual bool  IsSameType( const CObjBase * pObj ) const;
 	bool  Stack( CItem * pItem );
 	int ConsumeAmount( int iQty = 1, bool fTest = false );
@@ -1046,6 +1055,8 @@ public:
 		m_amount = static_cast<WORD>(id);	// m_corpse_DispID
 	}
 	void SetAmount( unsigned int amount );
+	WORD GetMaxAmount();
+	bool SetMaxAmount( unsigned short amount);
 	void SetAmountUpdate( unsigned int amount );
 	WORD GetAmount() const { return( m_amount ); }
 
