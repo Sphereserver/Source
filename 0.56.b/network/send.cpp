@@ -4720,8 +4720,8 @@ PacketTimeSyncRequest::PacketTimeSyncRequest(const CClient* target) : PacketSend
 	gettimeofday(&tim, NULL);    
 	INT64 llTime = ((INT64)(tim.tv_sec) * 1000) + tim.tv_usec;
 #endif
-	writeInt64(llTime-100);
 	writeInt64(llTime);
+	writeInt64(llTime+100);
 	writeInt64(llTime+100);	//No idea if different values make a difference. I didn't notice anything different when all values were the same.
 
 	push(target);
