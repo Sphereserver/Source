@@ -469,6 +469,9 @@ ON=@Start
 ON=@Success
 	ACTARG2=1		// 1 will pack the resource, 0 place it on the ground.
 	SRC.FINDLAYER.2.USESCUR --
+	IF (<SRC.FINDLAYER.2.USESCUR>==0)
+		SRC.FINDLAYER.2.DESTROY 1
+	ENDIF
 
 ON=@Fail
 	SRC.SYSMESSAGE You fish a while, but fail to catch anything.
@@ -1029,6 +1032,10 @@ ON=@PreStart
 
 ON=@Success
 	SRC.WEAPON.USESCUR --
+	IF (<SRC.WEAPON.USESCUR>==0)
+		SRC.WEAPON.DESTROY 1
+	ENDIF
+
 	
 ON=@Fail
 	SRC.SYSMESSAGE You hack at the tree for a while, but fail to produce any useable wood.
@@ -1041,9 +1048,10 @@ ON=@Stroke
 		IF (<SRC.WEAPON.HITS> > 0)
 			SRC.WEAPON.DAMAGE <eval <maxhits>*2>,DAM_PHYSICAL,<SRC>
 		ELSE
-			SRC.WEAPON.DESTROY
+			SRC.WEAPON.DESTROY 1
 		ENDIF
 	ENDIF
+
 [SKILL 45]
 DEFNAME=SKILL_MINING
 KEY=Mining
@@ -1071,9 +1079,13 @@ ON=@PreStart
 		SRC.SYSMESSAGE The tool is out of charges.
 		return 1
 	ENDIF
-	
+
 ON=@Success
 	SRC.WEAPON.USESCUR --
+	IF (<SRC.WEAPON.USESCUR>==0)
+		SRC.WEAPON.DESTROY 1
+	ENDIF
+
 	
 ON=@Fail
 	SRC.SYSMESSAGE You loosen some rocks but fail to find any useable ore.

@@ -58,6 +58,7 @@ TEVENTS=t_equipitem
 DUPELIST=04068
 ON=@Create
    HITPOINTS={36 48}
+   UsesMax=150
 
 [ITEMDEF 08fe]
 DEFNAME=i_bloodblade
@@ -540,7 +541,6 @@ SPEED=44
 VALUE=24
 WEIGHT=5.0
 TWOHANDS=N
-USESCUR=50
 RESOURCES=4 i_ingot_iron,1 i_log
 SKILLMAKE=Tinkering 40.0,t_tinker_tools
 CATEGORY=Provisions - Weapons
@@ -725,6 +725,7 @@ TEVENTS=t_equipitem
 DUPELIST=0f44
 ON=@Create
    HITPOINTS={36 48}
+   UsesMax=150
 
 [ITEMDEF 0f44]
 //hatchet
@@ -751,6 +752,7 @@ TEVENTS=t_equipitem
 DUPELIST=0f46
 ON=@Create
    HITPOINTS={36 48}
+   UsesMax=150
 
 [ITEMDEF 0f46]
 //Executioner Axe
@@ -777,6 +779,7 @@ TEVENTS=t_equipitem
 DUPELIST=0f48
 ON=@Create
    HITPOINTS={36 48}
+   UsesMax=150
 
 [ITEMDEF 0f48]
 //battle axe
@@ -803,6 +806,7 @@ TEVENTS=t_equipitem
 DUPELIST=0f4a
 ON=@Create
    HITPOINTS={36 48}
+   UsesMax=150
 
 [ITEMDEF 0f4a]
 //axe
@@ -829,6 +833,7 @@ TEVENTS=t_equipitem
 DUPELIST=0f4c
 ON=@Create
    HITPOINTS={36 48}
+   UsesMax=150
 
 [ITEMDEF 0f4c]
 //double axe
@@ -855,6 +860,7 @@ TEVENTS=t_equipitem
 DUPELIST=0f4e
 ON=@Create
    HITPOINTS={36 48}
+   UsesMax=150
 
 [ITEMDEF 0f4e]
 //bardiche
@@ -1072,6 +1078,7 @@ TEVENTS=t_equipitem
 DUPELIST=013b0
 ON=@Create
    HITPOINTS={36 48}
+   UsesMax=150
 
 [ITEMDEF 013b0]
 //War Axe
@@ -1336,6 +1343,7 @@ TEVENTS=t_equipitem
 DUPELIST=013fb
 ON=@Create
    HITPOINTS={36 48}
+   UsesMax=150
 
 [ITEMDEF 013fb]
 //Large Battle Axe
@@ -1549,6 +1557,7 @@ TEVENTS=t_equipitem
 DUPELIST=0143b
 ON=@Create
    HITPOINTS={36 48}
+   UsesMax={25 75}
 
 [ITEMDEF 0143b]
 //Maul
@@ -1564,7 +1573,6 @@ SPEED=35
 VALUE=50
 WEIGHT=9.0
 TWOHANDS=N
-USESCUR=50
 RESOURCES=15 i_ingot_iron,1 i_board
 SKILLMAKE=Blacksmithing 34.2
 CATEGORY=Provisions - Weapons
@@ -1602,6 +1610,7 @@ TEVENTS=t_equipitem
 DUPELIST=0143f
 ON=@Create
    HITPOINTS={36 48}
+   UsesMax=150
 
 [ITEMDEF 0143f]
 //halberd
@@ -1654,6 +1663,7 @@ TEVENTS=t_equipitem
 DUPELIST=01443
 ON=@Create
    HITPOINTS={36 48}
+   UsesMax=150
 
 [ITEMDEF 01443]
 //two handed axe
@@ -1717,6 +1727,7 @@ TEVENTS=t_equipitem
 DUPELIST=026c4
 ON=@Create
    HITPOINTS={36 48}
+   UsesMax=150
 
 [ITEMDEF 026bb]
 DEFNAME=i_bone_harvester
@@ -2687,6 +2698,7 @@ TEVENTS=t_equipitem
 DUPELIST=02d34
 ON=@Create
    HITPOINTS={36 48}
+   UsesMax=150
 
 [ITEMDEF 02d29]
 DEFNAME=i_elven_machete
@@ -2873,6 +2885,7 @@ TEVENTS=t_equipitem
 DUPELIST=048b1
 ON=@Create
    HITPOINTS={36 48}
+   UsesMax=150
 
 [ITEMDEF 048b1]
 //gargish battle axe
@@ -2900,6 +2913,7 @@ TEVENTS=t_equipitem
 DUPELIST=048b3
 ON=@Create
    HITPOINTS={36 48}
+   UsesMax=150
 
 [ITEMDEF 048b3]
 //gargish axe
@@ -2927,6 +2941,7 @@ TEVENTS=t_equipitem
 DUPELIST=048b5
 ON=@Create
    HITPOINTS={36 48}
+   UsesMax=150
 
 [ITEMDEF 048b5]
 //gargish bardiche
@@ -3144,6 +3159,7 @@ TEVENTS=t_equipitem
 DUPELIST=048c5
 ON=@Create
    HITPOINTS={36 48}
+   UsesMax=150
 
 [ITEMDEF 048c5]
 //Gargish scythe

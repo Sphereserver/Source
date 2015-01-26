@@ -2366,23 +2366,46 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			RemoveFromView();
 			Update();
 			break;
-		case OV_DCLICK:
-			EXC_SET("DCLICK");
-			if ( ! pCharSrc )
-				return( false );
-			if ( s.HasArgs() )
+		case OV_CLICK:
+			EXC_SET("CLICK");
+
+			if (!pCharSrc)
+				return(false);
+
+			if (!pCharSrc->IsClient())
+				return false;
+
+			if (s.HasArgs())
 			{
 				CGrayUID uid = s.GetArgVal();
 
-				if (( ! uid.ObjFind()) || ( ! this->IsChar() ))
-					return( false );
+				if ((!uid.ObjFind()) || (!this->IsChar()))
+					return(false);
 
 				CChar *pChar = dynamic_cast <CChar *> (this);
 
-				return pChar->Use_Obj( uid.ObjFind(), true, true );
+				pCharSrc->GetClient()->Event_SingleClick(uid);
 			}
 			else
-				return pCharSrc->Use_Obj( this, true, true );
+				pCharSrc->GetClient()->Event_SingleClick(this->GetUID());
+
+		case OV_DCLICK:
+			EXC_SET("DCLICK");
+			if (!pCharSrc)
+				return(false);
+			if (s.HasArgs())
+			{
+				CGrayUID uid = s.GetArgVal();
+
+				if ((!uid.ObjFind()) || (!this->IsChar()))
+					return(false);
+
+				CChar *pChar = dynamic_cast <CChar *> (this);
+
+				return pChar->Use_Obj(uid.ObjFind(), true, true);
+			}
+			else
+				return pCharSrc->Use_Obj(this, true, true);
 
 		case OV_USEITEM:
 			EXC_SET("USEITEM");

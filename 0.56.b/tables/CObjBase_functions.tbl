@@ -4,6 +4,7 @@
 //	Prefix:	OV_
 //
 
+ADD(CLICK,			"CLICK")
 ADD(DAMAGE,			"DAMAGE")
 ADD(DCLICK,			"DCLICK")
 ADD(DIALOG,			"DIALOG")

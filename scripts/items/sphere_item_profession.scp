@@ -58,13 +58,16 @@ SPEED=40
 VALUE=20
 WEIGHT=1.2
 TWOHANDS=Y
-USESCUR=50
 RESOURCES=1 i_log_bamboo,1 i_thread,1 i_fishhook
 SKILLMAKE=Carpentry 68.4,t_carpentry
 CATEGORY=Items by Professions
 SUBSECTION=Fisherman
 DESCRIPTION=Fishing Pole
 DUPELIST=0dc0
+
+
+ON=@Create
+UsesMax={25 75}
 
 [ITEMDEF 0dc0]
 //fishing pole
@@ -234,6 +237,9 @@ CATEGORY=Items by Professions
 SUBSECTION=Bard
 DESCRIPTION=Drum
 
+ON=@Create
+UsesMax={350 450}
+
 [ITEMDEF 0e9d]
 DEFNAME=i_tambourine
 TYPE=T_MUSICAL
@@ -245,6 +251,9 @@ SKILLMAKE=TINKERING 50.0,MUSICIANSHIP 65.0,t_tinker_tools
 CATEGORY=Items by Professions
 SUBSECTION=Bard
 DESCRIPTION=Tambourine
+
+ON=@Create
+UsesMax={350 450}
 
 [ITEMDEF 0e9e]
 DEFNAME=i_tambourine_tas
@@ -258,6 +267,9 @@ CATEGORY=Items by Professions
 SUBSECTION=Bard
 DESCRIPTION=Tambourine Tassle
 
+ON=@Create
+UsesMax={350 450}
+
 
 [ITEMDEF 0eb1]
 DEFNAME=i_HARP_LARGE
@@ -269,6 +281,9 @@ SKILLMAKE=TINKERING 56.5,MUSICIANSHIP 65.0,t_tinker_tools
 CATEGORY=Items by Professions
 SUBSECTION=Bard
 DESCRIPTION=Standing Harp
+
+ON=@Create
+UsesMax={350 450}
 
 [ITEMDEF 0eb2]
 DEFNAME=i_lyre
@@ -282,6 +297,9 @@ CATEGORY=Items by Professions
 SUBSECTION=Bard
 DESCRIPTION=Lap Harp
 
+ON=@Create
+UsesMax={350 450}
+
 [ITEMDEF 0eb3]
 DEFNAME=i_lute
 TYPE=T_MUSICAL
@@ -294,6 +312,9 @@ CATEGORY=Items by Professions
 SUBSECTION=Bard
 DESCRIPTION=Lute
 DUPELIST=0eb4
+
+ON=@Create
+UsesMax={350 450}
 
 [ITEMDEF 0eb4]
 //lute
@@ -438,7 +459,6 @@ TYPE=t_weapon_mace_pick
 FLIP=1
 VALUE=20
 WEIGHT=6.0
-USESCUR=50
 RESOURCES=4 i_ingot_iron,2 i_log
 SKILLMAKE=Tinkering 20.0,t_tinker_tools
 CATEGORY=Items by Professions
@@ -447,6 +467,7 @@ DESCRIPTION=Shovel
 DUPELIST=0f3a
 ON=@Create
    HITPOINTS={150 250}
+   UsesMax=50
 
 [ITEMDEF 0f3a]
 //shovel
@@ -2742,6 +2763,9 @@ SUBSECTION=Musician
 DESCRIPTION=Bamboo Flute
 DUPELIST=02807
 
+ON=@Create
+UsesMax={350 450}
+
 [ITEMDEF 02807]
 //bamboo flute
 DUPEITEM=02805
@@ -2985,6 +3009,9 @@ SUBSECTION=Musician
 DESCRIPTION=Aud-Char
 DUPELIST=0403c
 
+ON=@Create
+UsesMax={350 450}
+
 [ITEMDEF 0403c]
 //aud-char
 DUPEITEM=0403b
@@ -3024,6 +3051,9 @@ SUBSECTION=Musician
 DESCRIPTION=Gargish Harp
 DUPELIST=041fd
 
+ON=@Create
+UsesMax={350 450}
+
 [ITEMDEF 041fd]
 //Gargoyle Harp
 DUPEITEM=041fc
@@ -3045,6 +3075,9 @@ SUBSECTION=Musician
 DESCRIPTION=Gargish Lute
 DUPELIST=0420d
 
+ON=@Create
+UsesMax={350 450}
+
 [ITEMDEF 0420d]
 //Gargish Lute
 DUPEITEM=0420c
@@ -3065,6 +3098,9 @@ CATEGORY=Items by Professions
 SUBSECTION=Musician
 DESCRIPTION=Musical Instrument
 DUPELIST=04245
+
+ON=@Create
+UsesMax={350 450}
 
 [ITEMDEF 04245]
 //Musical Instrument
@@ -3304,6 +3340,9 @@ SUBSECTION=Musician
 DESCRIPTION=Drum (gargoyle)
 DUPELIST=04581
 
+ON=@Create
+UsesMax={350 450}
+
 [ITEMDEF 04581]
 //gargoyle drum
 DUPEITEM=04580
@@ -3324,6 +3363,9 @@ CATEGORY=Items by Professions
 SUBSECTION=Musician
 DESCRIPTION=Gargish Flute
 DUPELIST=045a7
+
+ON=@Create
+UsesMax={350 450}
 
 [ITEMDEF 045a7]
 //Gargish Flute

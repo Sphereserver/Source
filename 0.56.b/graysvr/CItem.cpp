@@ -2684,7 +2684,6 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_SEARINGWEAPON:
 		case IC_SELFREPAIR:
 		case IC_USESCUR:
-		case IC_USESMAX:
 		case IC_USEBESTWEAPONSKILL:
 		case IC_BONUSSTR:
 		case IC_BONUSDEX:
@@ -2706,6 +2705,16 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_DOOROPENID:
 			SetDefNum(s.GetKey(),s.GetArgVal(), false);
 			break;
+
+		case IC_USESMAX:
+		{
+			INT64 amount = s.GetArgLLVal();
+			SetDefNum(s.GetKey(), amount, false);
+			CVarDefCont * pVar = GetDefKey("Usescur", true);
+			if (!pVar)
+				SetDefNum("UsesCur", amount, false);
+		}	break;
+
 		case IC_MAXAMOUNT:
 			if (!SetMaxAmount(s.GetArgVal()))
 				return false;
@@ -3042,8 +3051,12 @@ bool CItem::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from s
 			SetDecayTime( s.GetArgVal());
 			break;
 		case CIV_DESTROY:	//remove this object now.
+		{
+			if (s.GetArgVal())
+				Emote(g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DESTROYED));
 			Delete(true);
-			return( true );
+			return(true);
+		}
 		case CIV_DROP:
 			{
 				CObjBaseTemplate * pObjTop = GetTopLevelObj();

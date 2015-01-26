@@ -1568,3 +1568,11 @@ Droping on self/backpack and bouncing stackable items now makes Sphere trying to
 	obviously, if you set [itemdef i_gold] to MaxAmount=50000 this will not happen.
 Maximum value of MaxAmount keeps being unsigned short, the same, 65535 because of client limitation.
 Non stackable items doesn't have MaxAmount
+
+
+26-01-2015, XuN
+Added 'click' function, doesn't need explanation I think.
+Setting UsesMax will raise UsesCur too if UsesCur is 0.
+Added UsesMax to tools from sphere_item_profession.scp and lumberjacking items (axes/polearms) in sphere_item_provisions_weapons.scp
+Using Destroy 1 will make the item emote it's destruction.
+Updated Lumberjacking,Fishing and Mining in sphere_skills.scp reflecthing Destroy changes.
