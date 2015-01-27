@@ -37,6 +37,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@Destroy",				//+I am nearly destroyed
 	"@Dismount",			// I am trying to get rid of my ride right now
 	//"@Dye",					// My color has been changed
+	"@Eat",
 	"@EnvironChange",		// my environment changed somehow (light,weather,season,region)
 	"@ExpChange",			// EXP is going to change
 	"@ExpLevelChange",		// Experience LEVEL is going to change
@@ -46,6 +47,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@GetHit",				// I just got hit.
 	"@Hit",					// I just hit someone. (TARG)
 	"@HitCheck",			// Checking if I can hit my target, overriding also default checks if set to.
+	"@HitIgnore",			// I'm going to avoid a target (attacker.n.ignore=1) , should I un-ignore him?.
 	"@HitMiss",				// I just missed.
 	"@HitTry",				// I am trying to hit someone. starting swing.
 	"@HouseDesignCommit",	// I committed a new house design.

@@ -3429,9 +3429,9 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	CChar * pTarget = const_cast<CChar*>(pCharTarg);
 	if (!m_pPlayer && !btoldByMaster)	// We call for FindBestTarget when this CChar is not a player and was not commanded to attack, otherwise it attack directly.
 	{
-		pTarget = Fight_FindBestTarget();
-		if (!pTarget)
-			return false;
+		CChar * pCharTest = Fight_FindBestTarget();
+		if (pCharTest)
+			pTarget = pCharTest;
 	}
 	m_Act_Targ =  pTarget->GetUID();
 	Skill_Start( skillWeapon );
@@ -3558,7 +3558,6 @@ CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 		return pChar;
 
 	INT64 threat = 0;
-	int count = 0;
 
 	for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); it++)
 	{
@@ -3568,7 +3567,18 @@ CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 		if ( pChar == NULL )
 			continue;
 		if (refAttacker.ignore)
-			continue;
+		{
+			bool bIgnore = true;
+			if (IsTrigUsed(TRIGGER_HITIGNORE))
+			{
+				CScriptTriggerArgs Args;
+				Args.m_iN1 = bIgnore;
+				OnTrigger(CTRIG_HitIgnore, pChar, &Args);
+				bIgnore = Args.m_iN1;
+			}
+			if ( bIgnore )
+				continue;
+		}
 		if ( pClosest == NULL )
 			pClosest = pChar;
 		int iDist = GetDist(pChar);
@@ -3604,7 +3614,6 @@ CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 			pClosest = pChar;
 			iClosest = iDist;
 		}
-		count ++;
 	}
 	return ( pClosest ) ? pClosest : pChar;
 }
@@ -3841,15 +3850,16 @@ bool CChar::Attacker_Delete( int index, bool bForced, ATTACKER_CLEAR_TYPE type )
 	if ( IsTrigUsed(TRIGGER_COMBATDELETE) )
 	{
 		CScriptTriggerArgs Args;
-		Args.m_iN1 = static_cast<int>(bForced);
+		Args.m_iN1 = 0;
 		Args.m_iN2 = (int)type;
 		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatDelete,pChar,&Args);
-		if ( tRet == TRIGRET_RET_TRUE  &&  Args.m_iN1 == 1 )
+		if ( tRet == TRIGRET_RET_TRUE  ||  Args.m_iN1 == 1 )
 			return false;
+		bForced = Args.m_iN1;
 	}
 	std::vector<LastAttackers>::iterator it = m_lastAttackers.begin() + index;
 	CItemMemory *pFight = Memory_FindObj(pChar->GetUID());	// My memory of the fight.
-	if ( pFight )
+	if ( pFight && bForced == true )
 	{
 		Memory_ClearTypes(pFight, MEMORY_WAR_TARG);
 	}
@@ -3888,6 +3898,7 @@ void CChar::Attacker_RemoveChar()
 
 void CChar::Attacker_CheckTimeout()
 {
+	ADDTOCALLSTACK("CChar::Attacker_CheckTimeout");
 	if ( m_lastAttackers.size() )
 	{
 		for ( int count = 0 ; count < static_cast<int>(m_lastAttackers.size()); count++)

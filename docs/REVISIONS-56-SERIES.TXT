@@ -1576,3 +1576,8 @@ Setting UsesMax will raise UsesCur too if UsesCur is 0.
 Added UsesMax to tools from sphere_item_profession.scp and lumberjacking items (axes/polearms) in sphere_item_provisions_weapons.scp
 Using Destroy 1 will make the item emote it's destruction.
 Updated Lumberjacking,Fishing and Mining in sphere_skills.scp reflecthing Destroy changes.
+
+27-01-2015, XuN
+Updated @CombatDelete trigger with a new argn1 value, now it's telling Sphere to remove or keep 1/0 the attacker's memories when removing him from the list.
+Added @HitIgnore trigger firing when one character is going to avoid an ignored target in the target selection: argn1=1 keep him ignored, argn2= un-ignore target (so character can attack him again).
+Added @Eat trigger, read wiki for more info: http://wiki.sphere.torfo.org/index.php/@Eat

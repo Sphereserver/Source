@@ -2423,6 +2423,7 @@ enum CTRIG_TYPE
 	CTRIG_Destroy,			//+I am nearly destroyed
 	CTRIG_Dismount,
 	//CTRIG_DYE,
+	CTRIG_Eat,
 	CTRIG_EnvironChange,	// my environment changed somehow (light,weather,season,region)
 	CTRIG_ExpChange,		// EXP is going to change
 	CTRIG_ExpLevelChange,	// Experience LEVEL is going to change
@@ -2432,6 +2433,7 @@ enum CTRIG_TYPE
 	CTRIG_GetHit,			// I just got hit.
 	CTRIG_Hit,				// I just hit someone. (TARG)
 	CTRIG_HitCheck,
+	CTRIG_HitIgnore,
 	CTRIG_HitMiss,			// I just missed.
 	CTRIG_HitTry,			// I am trying to hit someone. starting swing.,
 	CTRIG_HouseDesignCommit,	// I committed a new house design

@@ -1934,11 +1934,6 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 void CChar::EatAnim( LPCTSTR pszName, int iQty )
 {
 	ADDTOCALLSTACK("CChar::EatAnim");
-	int iFood = Stat_GetVal(STAT_FOOD) + iQty;
-	int iStam = Stat_GetVal(STAT_DEX) + Calc_GetRandVal2(3,6) + iQty / 5;
-	Stat_SetVal( STAT_FOOD, minimum(iFood, Stat_GetMax(STAT_FOOD)) );
-	Stat_SetVal( STAT_DEX, minimum(iStam, Stat_GetMax(STAT_DEX)) );
-
 	static const SOUND_TYPE sm_EatSounds[] = { 0x03a, 0x03b, 0x03c };
 	Sound( sm_EatSounds[ Calc_GetRandVal( COUNTOF(sm_EatSounds)) ] );
 
@@ -1948,6 +1943,51 @@ void CChar::EatAnim( LPCTSTR pszName, int iQty )
 	TCHAR * pszMsg = Str_GetTemp();
 	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_EATSOME), static_cast<LPCTSTR>(pszName));
 	Emote(pszMsg);
+
+	int iHits = 0;
+	int iMana = 0;
+	int iFood = iQty;
+	int iStam = Calc_GetRandVal2(3, 6) + iQty / 5;
+	bool bIgnoreMax = false;
+	if (IsTrigUsed(TRIGGER_EAT))
+	{
+		CScriptTriggerArgs Args;
+		Args.m_iN1 = bIgnoreMax;
+		Args.m_VarsLocal.SetNumNew("Hits", iHits);
+		Args.m_VarsLocal.SetNumNew("Mana", iMana);
+		Args.m_VarsLocal.SetNumNew("Food", iFood);
+		Args.m_VarsLocal.SetNumNew("Stam", iStam);
+		if (OnTrigger(CTRIG_Eat, this, &Args) == TRIGRET_RET_TRUE)
+			return;
+		bIgnoreMax = Args.m_iN1 ? true : false;
+		iHits = Args.m_VarsLocal.GetKeyNum("Hits", true) + Stat_GetVal(STAT_STR);
+		iMana = Args.m_VarsLocal.GetKeyNum("Mana", true) + Stat_GetVal(STAT_INT);
+		iStam = Args.m_VarsLocal.GetKeyNum("Stam", true) + Stat_GetVal(STAT_DEX);
+		iFood = Args.m_VarsLocal.GetKeyNum("Food", true) + Stat_GetVal(STAT_FOOD);
+
+	}
+	if (bIgnoreMax)
+	{
+		if (iHits)
+			Stat_SetVal(STAT_STR, Stat_GetMax(STAT_STR));
+		if (iStam)
+			Stat_SetVal(STAT_DEX, Stat_GetMax(STAT_DEX));
+		if (iMana)
+			Stat_SetVal(STAT_INT, Stat_GetMax(STAT_INT));
+		if (iFood)
+			Stat_SetVal(STAT_FOOD, Stat_GetMax(STAT_FOOD));
+	}
+	else
+	{
+		if (iHits)
+			Stat_SetVal(STAT_STR, minimum(iHits, Stat_GetMax(STAT_STR)));
+		if (iStam)
+			Stat_SetVal(STAT_DEX, minimum(iStam, Stat_GetMax(STAT_DEX)));
+		if (iMana)
+			Stat_SetVal(STAT_INT, minimum(iMana, Stat_GetMax(STAT_INT)));
+		if (iFood)
+			Stat_SetVal(STAT_FOOD, minimum(iFood, Stat_GetMax(STAT_FOOD)));
+	}
 }
 
 bool CChar::Reveal( DWORD dwFlags )
