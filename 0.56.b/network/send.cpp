@@ -933,6 +933,22 @@ PacketDropAccepted::PacketDropAccepted(const CClient* target) : PacketSend(XCMD_
 /***************************************************************************
  *
  *
+ *	Packet 0x2C : PacketDeathMenu			display death menu/effect (NORMAL)
+ *
+ *
+ ***************************************************************************/
+PacketDeathMenu::PacketDeathMenu(const CClient* target, Reason reason) : PacketSend(XCMD_DeathMenu, 2, PRI_NORMAL)
+{
+	ADDTOCALLSTACK("PacketDeathMenu::PacketDeathMenu");
+
+	writeByte(reason);
+	push(target);
+}
+
+
+/***************************************************************************
+ *
+ *
  *	Packet 0x2E : PacketItemEquipped		sends equipped item  (NORMAL)
  *
  *

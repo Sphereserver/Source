@@ -1581,3 +1581,13 @@ Updated Lumberjacking,Fishing and Mining in sphere_skills.scp reflecthing Destro
 Updated @CombatDelete trigger with a new argn1 value, now it's telling Sphere to remove or keep 1/0 the attacker's memories when removing him from the list.
 Added @HitIgnore trigger firing when one character is going to avoid an ignored target in the target selection: argn1=1 keep him ignored, argn2= un-ignore target (so character can attack him again).
 Added @Eat trigger, read wiki for more info: http://wiki.sphere.torfo.org/index.php/@Eat
+
+28-01-2015, Coruja
+Added: Support for packet 02c to display char death animation (the famous "You are dead" black screen)
+Changed: Min account plevel to bypass MinCharDeleteTime setting on sphere.ini changed from 3 (Seer) to 2 (Counselor)
+Changed: return 1 on f_onchar_delete function (sphere_serv_triggers.scp) to deny char exclusion now will show a proper message ("couldn't carry out the request" instead "character is not old enough")
+Changed: Some tooltips behavior below
+	-Items amount value now will show directly on item name instead a new tooltip line
+	-Added missing tooltips for Insured (attr_insured), Quest Item (attr_questitem) and Crafted by [CharName] (CRAFTEDBY property)
+	-Added weight tooltip on all movable items if FEATURE_ML_UPDATE feature is enabled on sphere.ini (although it's not a ML feature, OSI started using this tooltip only on ML)
+[sphere_msgs.scp]: Removed 'tooltip_tag_amount' text

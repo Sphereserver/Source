@@ -2737,7 +2737,10 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 					else
 					{
 						m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
-						t->FormatArgs(" \t%s\t ", pObj->GetName()); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
+						if ( ( pItem->GetAmount() != 1 ) && ( pItem->GetType() != IT_CORPSE ) )
+							t->FormatArgs("%d \t%s\t ", pItem->GetAmount(), pObj->GetName()); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
+						else
+							t->FormatArgs(" \t%s\t ", pObj->GetName()); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 					}
 				}
 				else if ( pChar )
@@ -2817,23 +2820,39 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 
 				if ( pItem )
 				{
-					if ( pItem->IsAttr( ATTR_BLESSED ) )
-						this->m_TooltipData.Add( new CClientTooltip( 1038021 ) ); // Blessed
-					if ( pItem->IsAttr( ATTR_CURSED ) )
-						this->m_TooltipData.Add( new CClientTooltip( 1049643 ) ); // Cursed
-					if ( pItem->IsAttr( ATTR_NEWBIE ) )
-						this->m_TooltipData.Add( new CClientTooltip( 1070722, g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_NEWBIE) ) ); // ~1_NOTHING~
-					if ( pItem->IsAttr( ATTR_MAGIC ) )
-						this->m_TooltipData.Add( new CClientTooltip( 3010064 ) ); // Magic
 					if ( pItem->IsAttr( ATTR_LOCKEDDOWN ) )
 						this->m_TooltipData.Add( new CClientTooltip( 501643 ) ); // Locked Down
 					if ( pItem->IsAttr( ATTR_SECURE ) )
 						this->m_TooltipData.Add( new CClientTooltip( 501644 ) ); // Locked Down & Secured
+					if ( pItem->IsAttr( ATTR_BLESSED ) )
+						this->m_TooltipData.Add( new CClientTooltip( 1038021 ) ); // Blessed
+					if ( pItem->IsAttr( ATTR_CURSED ) )
+						this->m_TooltipData.Add( new CClientTooltip( 1049643 ) ); // Cursed
+					if ( pItem->IsAttr( ATTR_INSURED ) )
+						this->m_TooltipData.Add( new CClientTooltip( 1061682 ) ); // <b>Insured</b>
+					if ( pItem->IsAttr( ATTR_QUESTITEM ) )
+						this->m_TooltipData.Add( new CClientTooltip( 1072351 ) ); // Quest Item
+					if ( pItem->IsAttr( ATTR_MAGIC ) )
+						this->m_TooltipData.Add( new CClientTooltip( 3010064 ) ); // Magic
+					if ( pItem->IsAttr( ATTR_NEWBIE ) )
+						this->m_TooltipData.Add( new CClientTooltip( 1070722, g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_NEWBIE) ) ); // ~1_NOTHING~
 
-					if ( ( pItem->GetAmount() != 1 ) && ( pItem->GetType() != IT_CORPSE ) )
+					if ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE )
 					{
-						this->m_TooltipData.Add( t = new CClientTooltip( 1060663 ) ); // ~1_val~: ~2_val~
-						t->FormatArgs( "%s\t%u", g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_AMOUNT), pItem->GetAmount() );
+						if ( pItem->IsMovable() )
+						{
+							INT64 Weight = pItem->GetWeight() / WEIGHT_UNITS;
+							this->m_TooltipData.Add( t = new CClientTooltip( Weight == 1 ? 1072788 : 1072789 ) ); // Weight: ~1_WEIGHT~ stone / Weight: ~1_WEIGHT~ stones
+							t->FormatArgs( "%lld", Weight );
+						}
+					}
+
+					CGrayUID uid( pItem->GetDefNum("CRAFTEDBY", true) );
+					CChar * pCraftsman = uid.CharFind();
+					if ( pCraftsman )
+					{
+						this->m_TooltipData.Add( t = new CClientTooltip( 1050043 ) ); // crafted by ~1_NAME~
+						t->FormatArgs( "%s", pCraftsman->GetName() );
 					}
 
 					if ( pItem->IsAttr( ATTR_EXCEPTIONAL ))
@@ -3049,13 +3068,12 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 						case IT_CONTAINER_LOCKED:
 							this->m_TooltipData.Add( new CClientTooltip( 3005142 ) ); // Locked
 						case IT_CONTAINER:
-						case IT_CORPSE:
 						case IT_TRASH_CAN:
 							if ( pItem->IsContainer() )
 							{
 								const CContainer * pContainer = dynamic_cast <const CContainer *> ( pItem );
 								this->m_TooltipData.Add( t = new CClientTooltip( 1050044 ) );
-								t->FormatArgs( "%" FMTSIZE_T "\t%d.%d", pContainer->GetCount(), pContainer->GetTotalWeight() / WEIGHT_UNITS, pContainer->GetTotalWeight() % WEIGHT_UNITS ); // ~1_COUNT~ items, ~2_WEIGHT~ stones
+								t->FormatArgs( "%" FMTSIZE_T "\t%d", pContainer->GetCount(), pContainer->GetTotalWeight() / WEIGHT_UNITS ); // ~1_COUNT~ items, ~2_WEIGHT~ stones
 							}
 							break;
 
@@ -3810,7 +3828,7 @@ BYTE CClient::Setup_Delete( unsigned int iSlot ) // Deletion of character
 	if ( g_Cfg.m_iMinCharDeleteTime &&
 		(- g_World.GetTimeDiff( pChar->m_timeCreate )) < g_Cfg.m_iMinCharDeleteTime )
 	{
-		if ( GetPrivLevel() < PLEVEL_Seer )
+		if ( GetPrivLevel() < PLEVEL_Counsel )
 		{
 			return PacketDeleteError::NotOldEnough;
 		}
@@ -3823,7 +3841,7 @@ BYTE CClient::Setup_Delete( unsigned int iSlot ) // Deletion of character
 	pChar->r_Call("f_onchar_delete", pChar, &Args, NULL, &tr);
 	if ( tr == TRIGRET_RET_TRUE )
 	{
-		return PacketDeleteError::NotOldEnough;
+		return PacketDeleteError::InvalidRequest;
 	}
 
 	pChar->Delete();

@@ -320,7 +320,27 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0x2E : PacketItemEquipped		sends equipped item  (NORMAL)
+ *	Packet 0x2C : PacketDeathMenu			display death menu/effect (NORMAL)
+ *
+ *
+ ***************************************************************************/
+class PacketDeathMenu : public PacketSend
+{
+public:
+	enum Reason
+	{
+		ServerSent = 0x00,
+		Resurrect = 0x01,
+		Ghost = 0x02
+	};
+
+	PacketDeathMenu(const CClient* target, Reason reason);
+};
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0x2E : PacketItemEquipped		sends equipped item (NORMAL)
  *
  *
  ***************************************************************************/
@@ -432,9 +452,11 @@ public:
 		NoCharacter = 0x01,
 		CharacterExists = 0x02,
 		Other = 0x03,
+		Other2 = 0x04,
 		CharacterInWorld = 0x05,
-		LoginProblem = 0x06,
+		SyncError = 0x06,
 		Idle = 0x07,
+		CouldntAttachServer = 0x08,
 		CharacterTransfer = 0x09,
 		InvalidName = 0x0A
 	};
@@ -803,12 +825,14 @@ class PacketDeleteError : public PacketSend
 public:
 	enum Reason
 	{
-		BadPass      = 0x00, // incorrect password
-		NotExist     = 0x01, // character does not exist
-		InUse        = 0x02, // character is being played right now
-		NotOldEnough = 0x03, // character is not old enough to delete
+		BadPass        = 0x00, // incorrect password
+		NotExist       = 0x01, // character does not exist
+		InUse          = 0x02, // character is being played right now
+		NotOldEnough   = 0x03, // character is not old enough to delete
+		BackupQueue    = 0x04, // character is currently queued for backup
+		InvalidRequest = 0x05, // couldn't carry out the request
 
-		Success      = 0xFF  // no error
+		Success        = 0xFF  // no error
 	};
 
 	PacketDeleteError(const CClient* target, Reason reason);

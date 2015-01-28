@@ -1158,7 +1158,6 @@ EMOTE_DEF_UNICODE	0
 //book_author_unknown			"unknown"
 //guild_already_member			"You are already a memberof a guild. Resign first."
 //tooltip_tag_newbie			"Newbie"
-//tooltip_tag_amount			"Amount"
 //tooltip_tag_armor				"Armor"
 //tooltip_tag_destination 			"Destination"
 //looting_crime				"looting"
