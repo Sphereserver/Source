@@ -1312,7 +1312,7 @@ public:
 	LPCTSTR Armor_GetRepairDesc() const;
 	bool Armor_IsRepairable() const;
 	int Armor_GetDefense() const;
-	int Weapon_GetAttack(bool bNoRandom = false) const;
+	int Weapon_GetAttack(bool bGetRange = true) const;
 	SKILL_TYPE Weapon_GetSkill() const;
 
 	void Spawn_OnTick( bool fExec );
@@ -3595,7 +3595,7 @@ public:
 	bool Fight_AttackNext();
 	void Fight_HitTry();
 	WAR_SWING_TYPE Fight_Hit( CChar * pCharTarg );
-	int  Fight_CalcDamage( const CItem * pWeapon, SKILL_TYPE skill, bool bNoRandom = false ) const;
+	int  Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom = false, bool bGetMax = true ) const;
 
 	// Attacker System
 
@@ -3817,7 +3817,6 @@ public:
 
 	// Outside events that occur to us.
 	int  OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType );
-	int  OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType );
 	void OnHarmedBy( CChar * pCharSrc, int iHarmQty );
 	bool OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fPetsCommand = false, bool fShouldReveal = true );
 

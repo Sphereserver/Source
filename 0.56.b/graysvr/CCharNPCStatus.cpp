@@ -614,7 +614,7 @@ int CChar::NPC_GetWeaponUseScore( CItem * pWeapon )
 		// How much damage could i do with this ?
 	}
 
-	int iDmg = Fight_CalcDamage( pWeapon, skill );
+	int iDmg = Fight_CalcDamage( pWeapon );
 	int iSkillLevel = Skill_GetAdjusted( skill );
 
 	return( iSkillLevel + iDmg * 50 );

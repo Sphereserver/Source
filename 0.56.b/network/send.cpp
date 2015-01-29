@@ -231,16 +231,8 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 			writeInt16(static_cast<WORD>(other->GetDefNum("LUCK", true, true)));
 
 			const CItem* weapon = other->m_uidWeapon.ItemFind();
-			if (weapon != NULL)
-			{
-				writeInt16(weapon->m_attackBase + weapon->m_ModAr);
-				writeInt16(other->Fight_CalcDamage(weapon, weapon->Weapon_GetSkill(), true));
-			}
-			else
-			{
-				writeInt16(other->m_attackBase);
-				writeInt16(other->Fight_CalcDamage(NULL, SKILL_WRESTLING, true));
-			}
+			writeInt16(other->Fight_CalcDamage(weapon, true, false));
+			writeInt16(other->Fight_CalcDamage(weapon, true, true));
 
 			writeInt32(static_cast<unsigned long>(other->GetDefNum("TITHING", true, true)));
 		}

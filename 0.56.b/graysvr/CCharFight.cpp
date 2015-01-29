@@ -1997,14 +1997,14 @@ bool CChar::OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fCommandPet, bool
 	return( true );
 }
 
-static const LAYER_TYPE sm_ArmorLayerHead[] = { LAYER_HELM, LAYER_NONE };		// ARMOR_HEAD,
-static const LAYER_TYPE sm_ArmorLayerNeck[] = { LAYER_COLLAR, LAYER_NONE };		// ARMOR_NECK,
-static const LAYER_TYPE sm_ArmorLayerBack[] = { LAYER_SHIRT, LAYER_CHEST, LAYER_TUNIC, LAYER_CAPE, LAYER_ROBE, LAYER_NONE };	// ARMOR_BACK,
-static const LAYER_TYPE sm_ArmorLayerChest[] = { LAYER_SHIRT, LAYER_CHEST, LAYER_TUNIC, LAYER_ROBE, LAYER_NONE };		// ARMOR_CHEST
-static const LAYER_TYPE sm_ArmorLayerArms[] = { LAYER_ARMS, LAYER_CAPE, LAYER_ROBE, LAYER_NONE };		// ARMOR_ARMS,
-static const LAYER_TYPE sm_ArmorLayerHands[] = { LAYER_GLOVES,	LAYER_NONE };	// ARMOR_HANDS
-static const LAYER_TYPE sm_ArmorLayerLegs[] = { LAYER_PANTS, LAYER_SKIRT, LAYER_HALF_APRON, LAYER_ROBE, LAYER_LEGS, LAYER_NONE };	// ARMOR_LEGS,
-static const LAYER_TYPE sm_ArmorLayerFeet[] = { LAYER_SHOES, LAYER_LEGS, LAYER_NONE };	// ARMOR_FEET,
+static const LAYER_TYPE sm_ArmorLayerHead[] = { LAYER_HELM };															// ARMOR_HEAD
+static const LAYER_TYPE sm_ArmorLayerNeck[] = { LAYER_COLLAR };															// ARMOR_NECK
+static const LAYER_TYPE sm_ArmorLayerBack[] = { LAYER_SHIRT, LAYER_CHEST, LAYER_TUNIC, LAYER_CAPE, LAYER_ROBE };		// ARMOR_BACK
+static const LAYER_TYPE sm_ArmorLayerChest[] = { LAYER_SHIRT, LAYER_CHEST, LAYER_TUNIC, LAYER_ROBE };					// ARMOR_CHEST
+static const LAYER_TYPE sm_ArmorLayerArms[] = { LAYER_ARMS, LAYER_CAPE, LAYER_ROBE };									// ARMOR_ARMS
+static const LAYER_TYPE sm_ArmorLayerHands[] = { LAYER_GLOVES };														// ARMOR_HANDS
+static const LAYER_TYPE sm_ArmorLayerLegs[] = { LAYER_PANTS, LAYER_SKIRT, LAYER_HALF_APRON, LAYER_ROBE, LAYER_LEGS };	// ARMOR_LEGS
+static const LAYER_TYPE sm_ArmorLayerFeet[] = { LAYER_SHOES, LAYER_LEGS };												// ARMOR_FEET
 
 struct CArmorLayerType
 {
@@ -2014,14 +2014,17 @@ struct CArmorLayerType
 
 static const CArmorLayerType sm_ArmorLayers[ARMOR_QTY] =	// layers covering the armor zone.
 {
-	{ 10,	sm_ArmorLayerHead },	// ARMOR_HEAD,
-	{ 5,	sm_ArmorLayerNeck },	// ARMOR_NECK,
-	{ 10,	sm_ArmorLayerBack },	// ARMOR_BACK,
-	{ 30,	sm_ArmorLayerChest },	// ARMOR_CHEST
-	{ 10,	sm_ArmorLayerArms },	// ARMOR_ARMS,
-	{ 10,	sm_ArmorLayerHands },	// ARMOR_HANDS
-	{ 20,	sm_ArmorLayerLegs },	// ARMOR_LEGS,
-	{ 5,	sm_ArmorLayerFeet }		// ARMOR_FEET,
+	// OSI doesn't damage ARMOR_BACK and ARMOR_FEET at all.
+	// But for backward compatibility, I decreased ARMOR_CHEST (-10%) and increased
+	// ARMOR_BACK (+5%) and ARMOR_FEET (+5%) just to keep them getting some damage
+	{ 15,	sm_ArmorLayerHead },	// ARMOR_HEAD
+	{ 7,	sm_ArmorLayerNeck },	// ARMOR_NECK
+	{ 5,	sm_ArmorLayerBack },	// ARMOR_BACK
+	{ 25,	sm_ArmorLayerChest },	// ARMOR_CHEST
+	{ 14,	sm_ArmorLayerArms },	// ARMOR_ARMS
+	{ 7,	sm_ArmorLayerHands },	// ARMOR_HANDS
+	{ 22,	sm_ArmorLayerLegs },	// ARMOR_LEGS
+	{ 5,	sm_ArmorLayerFeet }		// ARMOR_FEET
 };
 
 int CChar::CalcArmorDefense() const
@@ -2184,11 +2187,14 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 {
 	ADDTOCALLSTACK("CChar::OnTakeDamage");
 	// Someone hit us.
+	// iDmg already defined by Fight_CalcDamage(), here we just apply armor related calculations
+	//
 	// uType: damage flags
 	//  DAMAGE_GOD
 	//  DAMAGE_HIT_BLUNT
 	//  DAMAGE_MAGIC
 	//  ...
+	//
 	// RETURN: damage done
 	//  -1		= already dead / invalid target.
 	//  0		= no damage.
@@ -2197,421 +2203,179 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	if ( pSrc == NULL )
 		pSrc = this;
 
-	short int i_coldDamage = 0;
-	short int i_energyDamage = 0;
-	short int i_fireDamage = 0;
-	short int i_poisonDamage = 0;
-	int i_damTemp = 0;
-	DAMAGE_TYPE u_damFlag = 0;
-
-	short int i_tDamCount = 1;
-	short int i_tDamPois = 0;
-	short int i_tDamElec = 0;
-	short int i_tDamCold = 0;
-	short int i_tDamFire = 0;
-
-	CItem * pActWeapon = pSrc->m_uidWeapon.ItemFind(); 
-	CCharBase * pCharDef = Char_GetDef();
-
-	if (!(uType & DAMAGE_FIXED))
+	if ( IsStatFlag(STATF_DEAD))	// already dead
+		return( -1 );
+	if ( ! ( uType & DAMAGE_GOD ))
 	{
-		if  ( IsSetCombatFlags(COMBAT_SPECIALDAMAGE) && (uType & (DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_MAGIC)) )
+		if ( IsStatFlag(STATF_INVUL|STATF_Stone))
 		{
-			// special damage can be applied with physical and magical weapons
-			CVarDefCont * pValue = pSrc->GetKey("COLDDAMAGE",true);
-			if ( pValue ) 
-			{
-				i_coldDamage = static_cast<short>(pValue->GetValNum());
-				uType |= DAMAGE_COLD;
-			}
-			pValue = pSrc->GetKey("ENERGYDAMAGE",true);
-			if ( pValue ) 
-			{
-				i_energyDamage = static_cast<short>(pValue->GetValNum());
-				uType |= DAMAGE_ENERGY;
-			}
-			pValue = pSrc->GetKey("FIREDAMAGE",true);
-			if ( pValue ) 
-			{
-				i_fireDamage = static_cast<short>(pValue->GetValNum());
-				uType |= DAMAGE_FIRE;
-			}
-			pValue = pSrc->GetKey("POISONDAMAGE",true);
-			if ( pValue ) 
-			{
-				i_poisonDamage = static_cast<short>(pValue->GetValNum());
-				uType |= DAMAGE_POISON;
-			}
-		} 
-		else if ( IsSetCombatFlags(COMBAT_USE_RESISTANCE) )
+effect_bounce:
+			Effect( EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 16 );
+			return( 0 );
+		}
+		if ( (uType & DAMAGE_FIRE) && Can(CAN_C_FIRE_IMMUNE) )
+			goto effect_bounce;
+		if ( m_pArea )
 		{
-			if ( uType & DAMAGE_HIT_BLUNT )
-				i_tDamCount += 1;
-			if ( uType & DAMAGE_HIT_PIERCE )
-				i_tDamCount += 1;
-			if ( uType & DAMAGE_HIT_SLASH )
-				i_tDamCount += 1;
-			if ( uType & DAMAGE_POISON )
-			{
-				i_tDamCount += 1;
-				i_tDamPois +=1;
-			}
-			if ( uType & DAMAGE_ENERGY )
-			{
-				i_tDamCount += 1;
-				i_tDamElec +=1;
-			}
-			if ( uType & DAMAGE_COLD )
-			{ 
-				i_tDamCount += 1;
-				i_tDamCold +=1;
-			}
-			if ( uType & DAMAGE_FIRE )
-			{
-				i_tDamCount += 1;
-				i_tDamFire +=1;
-			}
-			if ( uType & ~(DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ENERGY | DAMAGE_COLD | DAMAGE_FIRE) )
-				i_tDamCount += 1;
-		
-			i_tDamPois *= iDmg / i_tDamCount; 
-			i_tDamElec *= iDmg / i_tDamCount; 
-			i_tDamCold *= iDmg / i_tDamCount; 
-			i_tDamFire *= iDmg / i_tDamCount;
+			if ( m_pArea->IsFlag(REGION_FLAG_SAFE))
+				goto effect_bounce;
+			if ( m_pArea->IsFlag(REGION_FLAG_NO_PVP) && pSrc && (( IsStatFlag(STATF_Pet) &&  NPC_PetGetOwner() == pSrc) || (m_pPlayer && ( pSrc->m_pPlayer || pSrc->IsStatFlag(STATF_Pet)) ) ))
+				goto effect_bounce;
+		}
+	}
 
-			if ( (i_tDamPois + i_tDamElec + i_tDamCold + i_tDamFire) < iDmg )
-			{
-				iDmg -= (i_tDamPois + i_tDamElec + i_tDamCold + i_tDamFire);
-			} 
-			else 
-			{
-				iDmg = 0;
-			}
-
-			i_poisonDamage += i_tDamPois;
-			i_energyDamage += i_tDamElec;
-			i_coldDamage += i_tDamCold;
-			i_fireDamage += i_tDamFire;
+	// Check parrying block chance
+	if ( !(uType & DAMAGE_GOD) )
+	{
+		// Legacy pre-SE formula
+		CItem * pItemHit = NULL;
+		int ParryChance = 0;
+		if ( IsStatFlag(STATF_HasShield) )	// parry using shield
+		{
+			pItemHit = LayerFind(LAYER_HAND2);
+			ParryChance = Skill_GetBase(SKILL_PARRYING) / 40;
+		}
+		else if ( LayerFind(LAYER_HAND1) )	// parry using weapon
+		{
+			pItemHit = LayerFind(LAYER_HAND1);
+			ParryChance = Skill_GetBase(SKILL_PARRYING) / 80;
 		}
 
-		i_poisonDamage -= static_cast<short>(i_poisonDamage * GetDefNum("RESPOISON", true)) / 100;
-		i_energyDamage -= static_cast<short>(i_energyDamage * GetDefNum("RESENERGY", true)) / 100;
-		i_coldDamage -= static_cast<short>(i_coldDamage * GetDefNum("RESCOLD", true)) / 100;
-		i_fireDamage -= static_cast<short>(i_fireDamage * GetDefNum("RESFIRE", true)) / 100;
+		if ( Skill_GetBase(SKILL_PARRYING) >= 1000 )
+			ParryChance += 5;
 
-		if ( (iDmg < 0) && 
-			 (i_coldDamage < 0) &&
-			 (i_energyDamage < 0) &&
-			 (i_fireDamage < 0) &&
-			 (i_poisonDamage < 0) )	
+		int DexMod = 100;
+		if ( Stat_GetVal(STAT_DEX) < 80 )
+			DexMod -= (80 - Stat_GetVal(STAT_DEX));
+
+		ParryChance *= DexMod / 100;
+		if ( ParryChance > Calc_GetRandVal(100) )
 		{
-			//DEBUG_ERR(("resulting Damage == %d, aborting!\n",iDmg));
+			Effect( EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 16 );
+			if ( IsPriv(PRIV_DETAIL) )
+				SysMessageDefault( DEFMSG_COMBAT_PARRY );
+			if ( pItemHit != NULL )
+				pItemHit->OnTakeDamage( iDmg, pSrc, uType );
+
 			return( 0 );
 		}
 
-	#ifdef _ALPHASPHERE
-		CVarDefCont * pRes = 0;
-		int nRes = 0;
-		
-		if ( uType & DAMAGE_HIT_BLUNT )
+		// Sphere parrying chance (custom)
+		/*CItem * pShield = LayerFind( LAYER_HAND2 );
+		if ( pShield != NULL && Skill_UseQuick( SKILL_PARRYING, Calc_GetRandLLVal((pSrc!=NULL) ? (pSrc->Skill_GetBase(SKILL_TACTICS)/10) : 100 )))
 		{
-			if ( uType & DAMAGE_HIT_SLASH )
-			{
-				// check for TAG.PHYSRES.SLASH
-				pRes = GetKey("PHYSRES.SLASH",true);
-				if ( pRes ) 
-				{
-					nRes = pRes->GetValNum();
-					if ( (nRes < -100) || (nRes > 100))
-						nRes = 0;
-					iDmg += (iDmg * (100 - nRes)) / 100;
-				}
-			} else if ( uType & DAMAGE_HIT_PIERCE )
-			{
-				// check for TAG.PHYSRES.PIERCE
-				pRes = GetKey("PHYSRES.PIERCE",true);
-				if ( pRes ) 
-				{
-					nRes = pRes->GetValNum();
-					if ( (nRes < -100) || (nRes > 100))
-						nRes = 0;
-					iDmg += (iDmg * (100 - nRes)) / 100;
-				}
-			} else {
-				// check for TAG.PHYSRES.BLUNT
-				pRes = GetKey("PHYSRES.BLUNT",true);
-				if ( pRes ) 
-				{
-					nRes = pRes->GetValNum();
-					if ( (nRes < -100) || (nRes > 100))
-						nRes = 0;
-					iDmg += (iDmg * (100 - nRes)) / 100;
-				}
-			}
-		}
-	#endif
+			// Damage the shield.
+			// Let through some damage.
+			int iDefense = Calc_GetRandVal( pShield->Armor_GetDefense() / 2 );
+			if ( pShield->OnTakeDamage( minimum( iDmg, iDefense ), pSrc, uType ))
+				SysMessageDefault( DEFMSG_COMBAT_PARRY );
 
-
-		//CItem * pActWeapon = pSrc->m_uidWeapon.ItemFind(); 
-		if ( (pActWeapon) && IsSetCombatFlags(COMBAT_OSIDAMAGEMOD) && (uType & (DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH)) )
-		{
-			int damMod = 0;
-			int damModTemp = 0;
-			//Lumberjack Bonus
-			if ( pActWeapon->IsType(IT_WEAPON_AXE) || pActWeapon->IsType(IT_WEAPON_SWORD) )
-			{
-				damModTemp = pSrc->Skill_GetBase(SKILL_LUMBERJACKING) / 50;
-				if (pSrc->Skill_GetBase(SKILL_LUMBERJACKING) >= 1000)
-					damModTemp += 10;
-			}
-			damMod += damModTemp;
-
-			//Tactics Bonus
-			damModTemp = pSrc->Skill_GetBase(SKILL_TACTICS) / 16;
-			if (pSrc->Skill_GetBase(SKILL_TACTICS) >= 1000)
-				damModTemp += 6;
-			damMod += damModTemp;
-
-			//Anatomy Bonus
-			damModTemp = pSrc->Skill_GetBase(SKILL_ANATOMY) / 20;
-			if (pSrc->Skill_GetBase(SKILL_ANATOMY) >= 1000)
-				damModTemp += 5;
-			damMod += damModTemp;
-
-			//Strenght Bonus
-			damModTemp = pSrc->Stat_GetAdjusted(STAT_STR) / 3;
-			if (pSrc->Stat_GetAdjusted(STAT_STR) >= 100)
-				damModTemp += 5;
-			damMod += damModTemp;
-
-			//No cap for OSI...   100% cap on Damage Increase Items only
-			//if ( damMod > 100)
-			//	damMod=100;
-			iDmg += iDmg * (damMod / 100);
-		}
-
-		i_damTemp = iDmg + i_coldDamage + i_energyDamage + i_fireDamage + i_poisonDamage;
-		u_damFlag = uType;
+			iDmg -= iDefense; // damage absorbed by shield
+		}*/
 	}
-	else
+
+	CCharBase * pCharDef = Char_GetDef();
+	ASSERT(pCharDef);
+
+	// MAGICF_IGNOREAR bypasses defense completely
+	if ( (uType & DAMAGE_MAGIC) && IsSetMagicFlags(MAGICF_IGNOREAR) )
+		uType |= DAMAGE_FIXED;
+
+	// Apply armor calculation
+	if ( !(uType & DAMAGE_FIXED) )
 	{
-		i_damTemp = iDmg;
-		u_damFlag = uType;
+		if  ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+		{
+			// AOS elemental combat
+			float iPhysicalDamage = iDmg * static_cast<float>(pSrc->GetDefNum("DAMPHYSICAL",true)) / 100;
+			float iFireDamage = iDmg * static_cast<float>(pSrc->GetDefNum("DAMFIRE",true)) / 100;
+			float iColdDamage = iDmg * static_cast<float>(pSrc->GetDefNum("DAMCOLD",true)) / 100;
+			float iPoisonDamage = iDmg * static_cast<float>(pSrc->GetDefNum("DAMPOISON",true)) / 100;
+			float iEnergyDamage = iDmg * static_cast<float>(pSrc->GetDefNum("DAMENERGY",true)) / 100;
+
+			if ( iPhysicalDamage == 0 )		// if DAMPHYSICAL is not set, let's assume it as the remaining value
+				iPhysicalDamage = iDmg - (iFireDamage + iColdDamage + iPoisonDamage + iEnergyDamage);
+
+			iPhysicalDamage = iPhysicalDamage * (100 - GetDefNum("RESPHYSICAL", true)) / 100;
+			iFireDamage = iFireDamage * (100 - GetDefNum("RESFIRE", true)) / 100;
+			iColdDamage = iColdDamage * (100 - GetDefNum("RESCOLD", true)) / 100;
+			iPoisonDamage = iPoisonDamage * (100 - GetDefNum("RESPOISON", true)) / 100;
+			iEnergyDamage = iEnergyDamage * (100 - GetDefNum("RESENERGY", true)) / 100;
+
+			iDmg = static_cast<int>(iPhysicalDamage + iFireDamage + iColdDamage + iPoisonDamage + iEnergyDamage);
+		}
+		else
+		{
+			// pre-AOS armor rating (AR)
+			int iArmorRating = pCharDef->m_defense + m_defense;
+
+			int iArMax = iArmorRating * Calc_GetRandVal2(7,35) / 100;
+			int iArMin = iArMax / 2;
+
+			int iDef = Calc_GetRandVal2( iArMin, (iArMax - iArMin) + 1 );
+			if ( uType & DAMAGE_MAGIC )		// magical damage halves effectiveness of defense
+				iDef /= 2;
+
+			iDmg -= iDef;
+		}
 	}
+
+	// Make some notoriety checks
+	// Don't reveal attacker if the damage has DAMAGE_NOREVEAL flag set (this is set by default for poison and spell damage)
+	if ( ! OnAttackedBy( pSrc, iDmg, false, !(uType & DAMAGE_NOREVEAL) ))
+		return( 0 );
 
 	if ( IsTrigUsed(TRIGGER_GETHIT) )
 	{
-		CScriptTriggerArgs Args( i_damTemp, u_damFlag, static_cast<INT64>(0) );
+		CScriptTriggerArgs Args( iDmg, uType, static_cast<INT64>(0) );
 		if ( OnTrigger( CTRIG_GetHit, pSrc, &Args ) == TRIGRET_RET_TRUE )
 			return( 0 );
 		iDmg = static_cast<int>(Args.m_iN1);
 		uType = static_cast<DAMAGE_TYPE>(Args.m_iN2);
 	}
 
-	if (!(uType & DAMAGE_FIXED))
+	// 40% chance to damage an equipped item
+	if ( (40 > Calc_GetRandVal(100)) && ! pCharDef->Can(CAN_C_NONHUMANOID) )
 	{
-		if ( IsSetCombatFlags(COMBAT_USE_RESISTANCE) )
+		int iHitRoll = Calc_GetRandVal( 100 );
+		BODYPART_TYPE iHitArea = ARMOR_HEAD;
+		while ( iHitArea < (ARMOR_QTY - 1) )
 		{
-			i_tDamCount = 1;
- 			i_tDamPois = 0;
-			i_tDamElec = 0;
-			i_tDamCold = 0;
-			i_tDamFire = 0;
-
-			if ( uType & (DAMAGE_HIT_BLUNT|DAMAGE_HIT_PIERCE|DAMAGE_HIT_SLASH) )
-				i_tDamCount += 1;
-			if ( uType & DAMAGE_POISON )
-			{
-				i_tDamCount += 1;
-				i_tDamPois +=1;
-			}
-			if ( uType & DAMAGE_ENERGY )
-			{
-				i_tDamCount += 1;
-				i_tDamElec +=1;
-			}
-			if ( uType & DAMAGE_COLD )
-			{
-				i_tDamCount += 1;
-				i_tDamCold +=1;
-			}
-			if ( uType & DAMAGE_FIRE )
-			{
-				i_tDamCount += 1;
-				i_tDamFire +=1;
-			}
-			if ( uType & ~(DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ENERGY | DAMAGE_COLD | DAMAGE_FIRE) )
-			{
-				i_tDamCount += 1;
-			}
-	
-			i_tDamPois *= iDmg / i_tDamCount; 
-			i_tDamElec *= iDmg / i_tDamCount; 
-			i_tDamCold *= iDmg / i_tDamCount; 
-			i_tDamFire *= iDmg / i_tDamCount;
-
-			if ( (i_tDamPois + i_tDamElec + i_tDamCold + i_tDamFire) < iDmg )
-			{
-				iDmg -= (i_tDamPois + i_tDamElec + i_tDamCold + i_tDamFire);
-			} 
-			else 
-			{
-				iDmg = 0;
-			}
-
-			i_poisonDamage = i_tDamPois;
-			i_energyDamage = i_tDamElec;
-			i_coldDamage = i_tDamCold;
-			i_fireDamage = i_tDamFire;
+			iHitRoll -= sm_ArmorLayers[iHitArea].m_wCoverage;
+			if ( iHitRoll < 0 )
+				break;
+			iHitArea = static_cast<BODYPART_TYPE>( iHitArea + 1 );
 		}
 
-		i_poisonDamage -= static_cast<short>(i_poisonDamage * GetDefNum("RESPOISON", true)) / 100;
-		i_energyDamage -= static_cast<short>(i_energyDamage * GetDefNum("RESENERGY", true)) / 100;
-		i_coldDamage -= static_cast<short>(i_coldDamage * GetDefNum("RESCOLD", true)) / 100;
-		i_fireDamage -= static_cast<short>(i_fireDamage * GetDefNum("RESFIRE", true)) / 100;
-
-		if ( (iDmg < 0) && 
-			 (i_coldDamage < 0) &&
-			 (i_energyDamage < 0) &&
-			 (i_fireDamage < 0) &&
-			 (i_poisonDamage < 0) )	
+		LAYER_TYPE iHitLayer = LAYER_NONE;
+		switch ( iHitArea )
 		{
-			//DEBUG_ERR(("resulting Damage == %d, aborting!\n",iDmg));
-			return( 0 );
-		}
-	
-
-		if (( uType & ( DAMAGE_ENERGY | DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_FIRE | DAMAGE_MAGIC )) && (!( uType & DAMAGE_NOUNPARALYZE )))
-		{
-			if (LayerFind( LAYER_FLAG_Stuck ))
-				LayerFind( LAYER_FLAG_Stuck )->Delete();
-			StatFlag_Clear( STATF_Freeze );	// remove paralyze.
+			case ARMOR_HEAD:	iHitLayer = sm_ArmorLayerHead[Calc_GetRandVal(COUNTOF(sm_ArmorLayerHead))];		break;
+			case ARMOR_NECK:	iHitLayer = sm_ArmorLayerNeck[Calc_GetRandVal(COUNTOF(sm_ArmorLayerNeck))];		break;
+			case ARMOR_BACK:	iHitLayer = sm_ArmorLayerBack[Calc_GetRandVal(COUNTOF(sm_ArmorLayerBack))];		break;
+			case ARMOR_CHEST:	iHitLayer = sm_ArmorLayerChest[Calc_GetRandVal(COUNTOF(sm_ArmorLayerChest))];	break;
+			case ARMOR_ARMS:	iHitLayer = sm_ArmorLayerArms[Calc_GetRandVal(COUNTOF(sm_ArmorLayerArms))];		break;
+			case ARMOR_HANDS:	iHitLayer = sm_ArmorLayerHands[Calc_GetRandVal(COUNTOF(sm_ArmorLayerHands))];	break;
+			case ARMOR_LEGS:	iHitLayer = sm_ArmorLayerLegs[Calc_GetRandVal(COUNTOF(sm_ArmorLayerLegs))];		break;
+			case ARMOR_FEET:	iHitLayer = sm_ArmorLayerFeet[Calc_GetRandVal(COUNTOF(sm_ArmorLayerFeet))];		break;
+			default:			break;
 		}
 
-		//CCharBase * pCharDef = Char_GetDef();
-		ASSERT(pCharDef);
-
-		if ( uType & ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH ))
-		{
-			// A physical blow of some sort.
-			// Try to allow the armor or shield to take some damage.
-			Reveal();
-
-			// Check for reactive armor.
-			if ( IsStatFlag(STATF_Reactive) && ! ( uType & DAMAGE_GOD ) )
-			{
-				// reflect some damage back.
-				if ( !pSrc || pSrc == this ) ;
-				else if ( pSrc->m_pNPC && ( pSrc->m_pNPC->m_Brain == NPCBRAIN_GUARD )) ; // guards should not react by reactive armor
-				else if ( GetTopDist3D(pSrc) <= 2 )
-				{
-					// Spell strength is NOT the same as MAGERY !!!???
-					int iSkillVal = Skill_GetAdjusted(SKILL_MAGERY);
-					int iEffect = g_Cfg.GetSpellEffect( SPELL_Reactive_Armor, iSkillVal );
-					int iRefDam = Calc_GetRandVal( IMULDIV( iDmg, iEffect, 1000 ));
-
-					// make sure the reflected damage is between 0 and iDmg-1 or else
-					// 2 reactive armour users could get caught in an infinite loop of
-					// reflecting damage
-					//iRefDam = maximum( minimum( iRefDam, iDmg - 1 ), 0 );
-					iRefDam = medium(0, iRefDam, iDmg - 1);
-
-					if ( iRefDam > 0 )
-					{
-						iDmg -= iRefDam;
-						pSrc->OnTakeDamage( iRefDam, this, uType );
-						pSrc->Effect( EFFECT_OBJ, ITEMID_FX_CURSE_EFFECT, this, 9, 6 );
-					}
-				}
-			}
-
-			// Armour calculations
-			if ( ! ( uType & DAMAGE_GOD) )
-			{
-				if ( ! ( uType & DAMAGE_GENERAL ))
-				{
-					// Armour calculation for normal damage (a specific part of the body/armour is hit and damaged)
-					int iDef = Calc_GetRandVal( maximum(pCharDef->m_defense + m_ModAr, 0) );
-					iDmg = OnTakeDamageHitPoint( iDmg, pSrc, uType );
-
-					if ( uType & DAMAGE_MAGIC )
-					{
-						// Magical damage halves effectiveness of defense (or bypasses it with MAGICF_IGNOREAR)
-						if ( IsSetMagicFlags( MAGICF_IGNOREAR ) )
-						{
-							iDef = 0;
-						} 
-						else 
-						{
-							iDef /= 2;
-						}
-					}
-
-					iDmg -= iDef;
-				}
-				else
-				{
-					// Armour calculation for general damage (not hitting a specific body part or armour piece)
-					// MAGICF_IGNOREAR bypasses defense completely
-					if ( !IsSetMagicFlags( MAGICF_IGNOREAR ) || !(uType & DAMAGE_MAGIC) )
-					{
-						iDmg -= Calc_GetRandVal( m_defense + pCharDef->m_defense );
-						// ??? take some random damage to my equipped items.
-					}
-				}
-			}
-		}
-
-
-		if ( IsStatFlag( STATF_INVUL ))
-		{
-	effect_bounce:
-			if ( iDmg )
-			{
-				Effect( EFFECT_OBJ, ITEMID_FX_GLOW, this, 9, 30, false );
-			}
-			iDmg = 0;
-		}
-		else if ( ! ( uType & DAMAGE_GOD ))
-		{
-			if ( m_pArea )
-			{
-				if ( m_pArea->IsFlag(REGION_FLAG_SAFE))
-					goto effect_bounce;
-				if ( m_pArea->IsFlag(REGION_FLAG_NO_PVP) && pSrc && (( IsStatFlag(STATF_Pet) &&  NPC_PetGetOwner() == pSrc) || (m_pPlayer && ( pSrc->m_pPlayer || pSrc->IsStatFlag(STATF_Pet)) ) ))
-					goto effect_bounce;
-			}
-			if ( IsStatFlag(STATF_Stone))	// can't hurt us anyhow.
-			{
-				goto effect_bounce;
-			}
-		}
-
-		if ( Stat_GetVal(STAT_STR) <= 0 || IsStatFlag(STATF_DEAD) )	// Already dead.
-			return( -1 );
-
-		if ( uType & DAMAGE_FIRE )
-		{
-			if ( pCharDef->Can(CAN_C_FIRE_IMMUNE)) // immune to the fire part.
-			{
-				// If there is any other sort of damage then dish it out as well.
-				if ( ! ( uType & ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_POISON | DAMAGE_ENERGY | DAMAGE_COLD)))
-					return( 0 );	// No effect.
-				iDmg /= 2;
-			}
-		}
-
-		iDmg += i_coldDamage + i_energyDamage + i_fireDamage + i_poisonDamage;
+		CItem * pItemHit = LayerFind( iHitLayer );
+		if ( pItemHit != NULL )
+			pItemHit->OnTakeDamage( iDmg, pSrc, uType );
 	}
 
-	// defend myself. (even though it may not have hurt me.)
-	// Don't reveal attacker if the damage has DAMAGE_NOREVEAL flag set
-	// This is set by default for poison and spell damage.
+	// Remove stuck/paralyze effect
+	if ( !(uType & DAMAGE_NOUNPARALYZE) )
+	{
+		StatFlag_Clear( STATF_Freeze );
+		if (LayerFind( LAYER_FLAG_Stuck ))
+			LayerFind( LAYER_FLAG_Stuck )->Delete();
+	}
 
-	if ( ! OnAttackedBy( pSrc, iDmg, false, !(uType & DAMAGE_NOREVEAL) ))
-		return( 0 );
-
-	if ( pSrc && pSrc != this ) // record to last attackers
+	// Update attacker list
+	if ( pSrc && pSrc != this )
 	{
 		bool bAttackerExists = false;
 		for (std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it)
@@ -2627,49 +2391,66 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 			}
 		}
 
-		// Attacker not found
 		if (bAttackerExists == false)
 		{
 			LastAttackers attacker;
-			attacker.amountDone = maximum( 0, iDmg );
 			attacker.charUID = pSrc->GetUID().GetPrivateUID();
-			attacker.threat = maximum( 0, iDmg);
 			attacker.elapsed = 0;
+			attacker.amountDone = maximum( 0, iDmg );
+			attacker.threat = maximum( 0, iDmg);
 			m_lastAttackers.push_back(attacker);
 		}
 	}
 
-	// Did it hurt ?
-	if ( iDmg <= 0 )
-		return( 0 );
-
-	// Make blood depending on hit damage. assuming the creature has blood
-	if ( m_wBloodHue != static_cast<HUE_TYPE>(-1) )
+	// A physical blow of some sort.
+	if (uType & (DAMAGE_HIT_BLUNT|DAMAGE_HIT_PIERCE|DAMAGE_HIT_SLASH))
 	{
-		ITEMID_TYPE id = ITEMID_NOTHING;
-		if ( iDmg > 10 )
+		// Check if Reactive Armor will reflect some damage back
+		if ( IsStatFlag(STATF_Reactive) && ! (uType & DAMAGE_GOD) )
 		{
-			id = static_cast<ITEMID_TYPE>(ITEMID_BLOOD1 + Calc_GetRandVal(ITEMID_BLOOD6-ITEMID_BLOOD1));
+			if ( !pSrc || pSrc == this )
+				return( -1 );
+			else if ( pSrc->m_pNPC && ( pSrc->m_pNPC->m_Brain == NPCBRAIN_GUARD ))	// Reactive Armor doesn't make effect on guards
+				return( -1 );
+			else if ( GetTopDist3D(pSrc) < 2 )
+			{
+				int iReactiveDamage = iDmg / 5;
+				if ( iReactiveDamage < 1 )
+					iReactiveDamage = 1;
+
+				iDmg -= iReactiveDamage;
+				pSrc->OnTakeDamage( iReactiveDamage, this, uType );
+				pSrc->Sound( 0x1F1 );
+				pSrc->Effect( EFFECT_OBJ, ITEMID_FX_CURSE_EFFECT, this, 10, 16 );
+			}
 		}
-		else if ( Calc_GetRandVal( iDmg ) > 5 )
+
+		// Make blood effects
+		if ( m_wBloodHue != static_cast<HUE_TYPE>(-1) )
 		{
-			id = ITEMID_BLOOD_SPLAT;	// minor hit.
-		}
-		if ( id &&
-			! IsStatFlag( STATF_Conjured ) &&
-			( uType & ( DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH )))	// A blow of some sort.
-		{
-			CItem * pBlood = CItem::CreateBase( id );
-			ASSERT(pBlood);
-			pBlood->SetHue( m_wBloodHue );
-			pBlood->MoveToDecay( GetTopPoint(), 7*TICK_PER_SEC );
+			static const ITEMID_TYPE sm_Blood[] = { ITEMID_BLOOD1, ITEMID_BLOOD2, ITEMID_BLOOD3, ITEMID_BLOOD4, ITEMID_BLOOD5, ITEMID_BLOOD6, ITEMID_BLOOD_SPLAT };
+			int iBloodQty = g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE ? Calc_GetRandVal2(4,5) : Calc_GetRandVal2(1,2);
+
+			for ( int i = 0; i < iBloodQty; i++ )
+			{
+				ITEMID_TYPE iBloodID = sm_Blood[Calc_GetRandVal(COUNTOF(sm_Blood))];
+				CItem * pBlood = CItem::CreateBase( iBloodID );
+				ASSERT(pBlood);
+
+				pBlood->SetHue( m_wBloodHue );
+				pBlood->MoveNear( GetTopPoint(), 1 );
+				pBlood->SetDecayTime( 5*TICK_PER_SEC );
+			}
 		}
 	}
 
+	if ( iDmg <= 0 )
+		return( 0 );
+
+	// Apply damage
 	UpdateStatVal( STAT_STR, -iDmg );
-	// always send updates to src
 	if ( pSrc->IsClient() )
-		pSrc->GetClient()->addHitsUpdate( GetUID() );
+		pSrc->GetClient()->addHitsUpdate( GetUID() );	// always send updates to src
 
 	if ( IsAosFlagEnabled( FEATURE_AOS_DAMAGE ) )
 	{
@@ -2700,279 +2481,13 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 			if ( pCharRider )
 				pCharRider->Horse_UnMount();
 		}
-		return( -1 );	// INT_MAX ?
+		return( INT_MAX );
 	}
 
 	SoundChar( CRESND_GETHIT );
 	if ( m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )	// Not interrupt my swing.
-	{
 		UpdateAnimate( ANIM_GET_HIT );
-	}
-	return( iDmg );
-}
 
-int CChar::OnTakeDamageHitPoint( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
-{
-	ADDTOCALLSTACK("CChar::OnTakeDamageHitPoint");
-	// ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH )
-	// Point strike type damage.
-	// Deflect some damage with shield or weapon ?
-
-	ASSERT( ! ( uType & DAMAGE_GENERAL ));
-
-	if ( IsStatFlag(STATF_HasShield) &&
-		(uType & ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH )) &&
-		! (uType & (DAMAGE_GOD|DAMAGE_ENERGY)))
-	{
-		CItem * pShield = LayerFind( LAYER_HAND2 );
-		if ( pShield != NULL && Skill_UseQuick( SKILL_PARRYING, Calc_GetRandLLVal((pSrc!=NULL) ? (pSrc->Skill_GetBase(SKILL_TACTICS)/10) : 100 )))
-		{
-			// Damage the shield.
-			// Let through some damage.
-			int iDefense = Calc_GetRandVal( pShield->Armor_GetDefense() / 2 );
-			if ( pShield->OnTakeDamage( minimum( iDmg, iDefense ), pSrc, uType ))
-			{
-				SysMessageDefault( DEFMSG_COMBAT_PARRY );
-			}
-			iDmg -= iDefense; // damage absorbed by shield
-		}
-	}
-
-	// Assumes humanoid type body. Orcs, Headless, trolls, humans etc.
-	// ??? If not humanoid ??
-	CCharBase * pCharDef = Char_GetDef();
-	ASSERT(pCharDef);
-
-	if ( pCharDef->Can( CAN_C_NONHUMANOID ))
-	{
-		// ??? we may want some sort of message ?
-		return( iDmg );
-	}
-
-	// Where was the hit ?
-	int iHitRoll = Calc_GetRandVal( 100 ); // determine area of body hit
-	BODYPART_TYPE iHitArea=ARMOR_HEAD;
-
-	int iHitPref = 0;
-	int iHitPrefChance = pSrc->Skill_GetBase(SKILL_TACTICS);
-	int iHitPrefPenalty = 30;	// means: percent
-	int iHitPrefBonus = 30;		// means: percent
-
-	CVarDefCont * pHitPref = pSrc->GetKey("HITPREFERENCE", true); 
-	if ( pHitPref )
-		iHitPref = static_cast<int>(pHitPref->GetValNum());	// 1 .. 8
-	CVarDefCont * pHitPrefChance = pSrc->GetKey("HITPREFERENCE_CHANCE", true); 
-	if ( pHitPrefChance )
-		iHitPrefChance = static_cast<int>(pHitPrefChance->GetValNum());	// 1 .. 8
-	CVarDefCont * pHitPrefPenalty = pSrc->GetKey("HITPREFERENCE_PENALTY", true); 
-	if ( pHitPrefPenalty )
-		iHitPrefPenalty = static_cast<int>(pHitPrefPenalty->GetValNum());	// 1 .. 8
-	CVarDefCont * pHitPrefBonus = pSrc->GetKey("HITPREFERENCE_BONUS", true); 
-	if ( pHitPrefBonus )
-		iHitPrefBonus = static_cast<int>(pHitPrefBonus->GetValNum());	// 1 .. 8
-
-	if ( IsSetCombatFlags(COMBAT_TARGETTEDHIT) && 
-		 (iHitPref != 0) && 
-		 (uType & ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH )) && 
-		 ! (uType & (DAMAGE_GENERAL|DAMAGE_GOD)) ) {
-		if ( Calc_GetRandVal( 1100 ) < iHitPrefChance ) {
-			while (iHitPref > ARMOR_QTY)	// gt8 - 8 to get a valid bodypart number +1
-				iHitPref -= ARMOR_QTY;
-			iHitArea = static_cast<BODYPART_TYPE>(iHitPref - 1);	// 1->0, 2->1, ... 8->7
-			iDmg += (iDmg * iHitPrefBonus) / 100;
-		} else {
-			iDmg -= (iDmg * iHitPrefPenalty) / 100;
-			pSrc->SysMessage(g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_TARGET_MISSED ));
-			while ( iHitArea<ARMOR_QTY-1 )
-			{
-				iHitRoll -= sm_ArmorLayers[iHitArea].m_wCoverage;
-				if ( iHitRoll < 0 )
-					break;
-				iHitArea = static_cast<BODYPART_TYPE>( iHitArea + 1 );
-			}
-		}
-	} else {
-		while ( iHitArea < (ARMOR_QTY - 1) )
-		{
-			iHitRoll -= sm_ArmorLayers[iHitArea].m_wCoverage;
-			if ( iHitRoll < 0 )
-				break;
-			iHitArea = static_cast<BODYPART_TYPE>( iHitArea + 1 );
-		}
-	}
-
-//	while ( iHitArea<ARMOR_QTY-1 )
-//	{
-//		iHitRoll -= sm_ArmorLayers[iHitArea].m_wCoverage;
-//		if ( iHitRoll < 0 )
-//			break;
-//		iHitArea = (BODYPART_TYPE)( iHitArea + 1 );
-//	}
-
-	if ( (uType & ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH |DAMAGE_FIRE|DAMAGE_ENERGY)) &&
-		! (uType & (DAMAGE_GENERAL|DAMAGE_GOD)))
-	{
-
-		static LPCTSTR const sm_Hit_Head1[][2] =
-		{
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD1S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD1O ) },
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD2S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD2O ) },
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD3S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD3O ) }
-		};
-		static LPCTSTR const sm_Hit_Head2[][2] =
-		{
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD4S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD4O ) },
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD5S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD5O ) },
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD6S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HEAD6O ) }
-		};
-		static LPCTSTR const sm_Hit_Chest1[][2] =
-		{
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST1S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST1O ) },
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST2S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST2O ) },
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST3S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST3O ) }
-		};
-		static LPCTSTR const sm_Hit_Chest2[][2] =
-		{
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST4S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST4O ) },
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST5S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST5O ) },
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST6S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_CHEST6O ) }
-		};
-		static LPCTSTR const sm_Hit_Arm[][2] =
-		{
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_ARM1S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_ARM1O ) },
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_ARM2S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_ARM2O ) },
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_ARM3S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_ARM3O ) }
-		};
-		static LPCTSTR const sm_Hit_Legs[][2] =
-		{
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_LEGS1S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_LEGS1O ) },
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_LEGS2S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_LEGS2O ) },
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_LEGS3S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_LEGS3O ) }
-		};
-		static LPCTSTR const sm_Hit_Hands[][2] =	// later include exclusion of left hand if have shield
-		{
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HAND1S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HAND1O ) },
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HAND2S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HAND2O ) },
-			{ g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HAND3S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_HAND3O ) }
-		};
-		static LPCTSTR const sm_Hit_Neck1[2] =
-		{
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_NECK1S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_NECK1O )
-		};
-		static LPCTSTR const sm_Hit_Neck2[2] =
-		{
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_NECK2S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_NECK2O )
-		};
-		static LPCTSTR const sm_Hit_Back[2] =
-		{
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_BACK1S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_BACK1O )
-		};
-		static LPCTSTR const sm_Hit_Feet[2] =
-		{
-			g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_FEET1S ), g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_HIT_FEET1O )
-		};
-
-		int iMsg = Calc_GetRandVal(3);
-		LPCTSTR const * ppMsg;
-		switch ( iHitArea )
-		{
-			case ARMOR_HEAD:
-				ppMsg = (iDmg>10) ? sm_Hit_Head2[iMsg] : sm_Hit_Head1[iMsg];
-				break;
-			case ARMOR_NECK:
-				ppMsg = (iDmg>10) ? sm_Hit_Neck2 : sm_Hit_Neck1;
-				break;
-			case ARMOR_BACK:
-				ppMsg = sm_Hit_Back;
-				break;
-			case ARMOR_CHEST:
-				ppMsg = (iDmg>10) ? sm_Hit_Chest2[iMsg] : sm_Hit_Chest1[iMsg];
-				break;
-			case ARMOR_ARMS:
-				ppMsg = sm_Hit_Arm[iMsg];
-				break;
-			case ARMOR_HANDS:
-				ppMsg = sm_Hit_Hands[iMsg];
-				break;
-			case ARMOR_LEGS:
-				ppMsg = sm_Hit_Legs[iMsg];
-				break;
-			case ARMOR_FEET:
-				ppMsg = sm_Hit_Feet;
-				break;
-			default:
-				ASSERT(0);
-				ppMsg = NULL;
-				break;
-		}
-
-		if ( pSrc != this && ppMsg != NULL )
-		{
-			if ( IsPriv(PRIV_DETAIL))
-			{
-				SysMessagef( ppMsg[0], ( pSrc == NULL ) ? "It" : static_cast<LPCTSTR>(pSrc->GetName()));
-			}
-			if ( pSrc != NULL && pSrc->IsPriv(PRIV_DETAIL))
-			{
-				pSrc->SysMessagef( ppMsg[1], static_cast<LPCTSTR>(GetName()));
-			}
-		}
-	}
-
-	// Do damage to my armor. (what if it is empty ?)
-
-	int iMaxCoverage = 0;	// coverage at the hit zone.
-
-	// iDmg = ( iDmg * GW_GetSCurve( iMaxCoverage - iDmg, 10 )) / 100;
-	if ( IsSetMagicFlags( MAGICF_IGNOREAR ) && ( uType & DAMAGE_MAGIC ))		// Moved from bottom to here because we don't need to check the following in this case... performance! Also, if MAGICF_IGNOREAR is set ... it makes no sense to damage the armors
-		return iDmg;
-
-	CItem * pArmorNext;
-	for ( CItem * pArmor = GetContentHead(); pArmor != NULL; pArmor = pArmorNext )
-	{
-		pArmorNext = pArmor->GetNext();
-
-		if ( pArmor->IsType( IT_SPELL ) && pArmor->m_itSpell.m_spell )
-		{
-			SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pArmor->m_itSpell.m_spell));
-			switch ( spell )
-			{
-				case SPELL_Steelskin:		// turns your skin into steel, giving a boost to your AR.
-				case SPELL_Stoneskin:		// turns your skin into stone, giving a boost to your AR.
-				case SPELL_Arch_Prot:
-				case SPELL_Protection:
-					// Effect of protection spells are general.
-					iMaxCoverage = maximum( iMaxCoverage, g_Cfg.GetSpellEffect( spell, pArmor->m_itSpell.m_spelllevel ));
-					continue;
-				default:
-					break;
-			}
-		}
-
-		LAYER_TYPE layer = pArmor->GetEquipLayer();
-		if ( ! CItemBase::IsVisibleLayer( layer ))
-			continue;
-
-		const CArmorLayerType * pArmorLayer = &sm_ArmorLayers[iHitArea];
-
-		for ( size_t i = 0; pArmorLayer->m_pLayers[i] != LAYER_NONE; i++ ) // layers covering the armor zone.
-		{
-			if ( pArmorLayer->m_pLayers[i] == layer )
-			{
-				// This piece of armor takes damage.
-
-				if (IsSetCombatFlags(COMBAT_STACKARMOR))
-					iMaxCoverage += pArmor->Armor_GetDefense();
-				else
-					iMaxCoverage = maximum( iMaxCoverage, pArmor->Armor_GetDefense());
-
-				pArmor->OnTakeDamage( iDmg, pSrc, uType );
-				break;
-			}
-		}
-	}
-
-	iDmg -= Calc_GetRandVal( iMaxCoverage );
 	return( iDmg );
 }
 
@@ -3174,51 +2689,82 @@ bool CChar::Fight_IsActive() const
 	return g_Cfg.IsSkillFlag( iSkillActive, SKF_FIGHT );
 }
 
-int CChar::Fight_CalcDamage( const CItem * pWeapon, SKILL_TYPE skill, bool bNoRandom ) const
+int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax ) const
 {
 	ADDTOCALLSTACK("CChar::Fight_CalcDamage");
-	// STR bonus on close combat weapons.
-	// and DEX bonus on archery weapons
-	// A random value of the bonus is added (0-10%)
 
-	if ( m_pNPC &&
-		m_pNPC->m_Brain == NPCBRAIN_GUARD &&
-		g_Cfg.m_fGuardsInstantKill )
-	{
+	if ( m_pNPC && m_pNPC->m_Brain == NPCBRAIN_GUARD && g_Cfg.m_fGuardsInstantKill )
 		return( 20000 );	// swing made.
-	}
 
-	int iDmg = 1;
+	CChar * pChar = GetChar();
+	ASSERT(pChar);
 
-	if (!IsSetCombatFlags(COMBAT_OSIDAMAGEMOD))
-	{
-		int iDmgAdj;
-		if ( !g_Cfg.IsSkillRanged(skill) )
-			iDmgAdj = bNoRandom ? Stat_GetAdjusted(STAT_STR) : Calc_GetRandVal( Stat_GetAdjusted(STAT_STR));
-		else
-			iDmgAdj = bNoRandom ? Stat_GetAdjusted(STAT_DEX) : Calc_GetRandVal( Stat_GetAdjusted(STAT_DEX));
-		iDmg += iDmgAdj / 10;
-	}
-
+	int iDmgMin = 0;
+	int iDmgMax = 0;
 	if ( pWeapon != NULL )
 	{
-		iDmg += pWeapon->Weapon_GetAttack(bNoRandom);
+		iDmgMin = pWeapon->Weapon_GetAttack(false);
+		iDmgMax = pWeapon->Weapon_GetAttack(true);
 	}
 	else
 	{
-		// Pure wrestling damage.
-		// Base type attack for our body. claws/etc
-		CCharBase * pCharDef = Char_GetDef();
-		ASSERT(pCharDef);
-
-		iDmg += pCharDef->m_attackBase;
-		if ( bNoRandom )
-			iDmg += pCharDef->m_attackRange;
-		else
-			iDmg += Calc_GetRandVal( pCharDef->m_attackRange );
+		iDmgMin = pChar->m_attackBase;
+		iDmgMax = pChar->m_attackBase + pChar->m_attackRange;
 	}
 
-	return( iDmg );
+	int iDmgBonus = min(GetDefNum("INCREASEDAM", true, true), 100);		//Damage Increase is capped at 100%
+	if (IsSetCombatFlags(COMBAT_OSIDAMAGEMOD))
+	{
+		// AOS damage bonus
+		iDmgBonus += Skill_GetBase(SKILL_TACTICS) / 16;
+		if (Skill_GetBase(SKILL_TACTICS) >= 1000)
+			iDmgBonus += 6;	//6.25
+
+		iDmgBonus += Skill_GetBase(SKILL_ANATOMY) / 20;
+		if (Skill_GetBase(SKILL_ANATOMY) >= 1000)
+			iDmgBonus += 5;
+
+		CItem * pActWeapon = m_uidWeapon.ItemFind();
+		if (pActWeapon && pActWeapon->IsType(IT_WEAPON_AXE))
+		{
+			iDmgBonus += Skill_GetBase(SKILL_LUMBERJACKING) / 50;
+			if (Skill_GetBase(SKILL_LUMBERJACKING) >= 1000)
+				iDmgBonus += 10;
+		}
+
+		iDmgBonus += Stat_GetAdjusted(STAT_STR) * 30 / 100;
+		if (Stat_GetAdjusted(STAT_STR) >= 100)
+			iDmgBonus += 5;
+
+		// pre-AOS damage bonus
+		/*iDmgBonus += (Skill_GetBase(SKILL_TACTICS) - 500) / 10;
+
+		iDmgBonus += Skill_GetBase(SKILL_ANATOMY) / 50;
+		if (Skill_GetBase(SKILL_ANATOMY) >= 1000)
+			iDmgBonus += 10;
+
+		CItem * pActWeapon = m_uidWeapon.ItemFind();
+		if (pActWeapon && pActWeapon->IsType(IT_WEAPON_AXE))
+		{
+			iDmgBonus += Skill_GetBase(SKILL_LUMBERJACKING) / 50;
+			if (Skill_GetBase(SKILL_LUMBERJACKING) >= 1000)
+				iDmgBonus += 10;
+		}
+
+		iDmgBonus += Stat_GetAdjusted(STAT_STR) / 5;*/
+	}
+	else
+	{
+		// Sphere damage bonus (custom)
+		int iDmgBonus = Stat_GetAdjusted(STAT_STR) / 10;
+	}
+	iDmgMin += iDmgMin * iDmgBonus / 100;
+	iDmgMax += iDmgMax * iDmgBonus / 100;
+
+	if ( bNoRandom )
+		return( bGetMax ? iDmgMax : iDmgMin );
+	else
+		return( Calc_GetRandVal2(iDmgMin, iDmgMax) );
 }
 
 void CChar::Fight_ResetWeaponSwingTimer()
@@ -3991,7 +3537,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			}
 			if ( iTyp & DAMAGE_FIXED )
 				iTyp = iTyp &~ DAMAGE_FIXED;
-			pCharTarg->OnTakeDamage( Fight_CalcDamage( m_uidWeapon.ItemFind(), Skill_GetActive() ), this, iTyp );
+			pCharTarg->OnTakeDamage( Fight_CalcDamage( m_uidWeapon.ItemFind() ), this, iTyp );
 
 			return( WAR_SWING_EQUIPPING );	// Made our full swing.
 		}
@@ -4451,7 +3997,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	// We hit...
 	// Calculate base damage.
-	int	iDmg = Fight_CalcDamage( pWeapon, skill );
+	int	iDmg = Fight_CalcDamage( pWeapon );
 
 	//if ( iDmg ) // use OnTakeDamage below instead.
 	//	pCharTarg->OnHarmedBy( this, iDmg );

@@ -95,15 +95,13 @@ enum COMBATFLAGS_TYPE
 	COMBAT_NODIRCHANGE			= 0x0000001,	// not rotate player when fighting
 	COMBAT_FACECOMBAT			= 0x0000002,	// allow faced combat only
 	COMBAT_PREHIT				= 0x0000004,	// allow prehit for close combat. first hit is instant (delay 0.1sec)
-	COMBAT_USE_RESISTANCE		= 0x0000008,	// use character props RES* against oldfashioned damage types
-	COMBAT_SPECIALDAMAGE		= 0x0000010,	// use character tags TAG.*DAMAGE to apply additional damage
+	COMBAT_ELEMENTAL_ENGINE		= 0x0000008,	// use DAM*/RES* to split damage/resist into Physical/Fire/Cold/Poison/Energy (AOS) instead use old AR (pre-AOS)
 	COMBAT_DCLICKSELF_UNMOUNTS	= 0x0000020,	// unmount horse when dclicking self while in warmode
 	COMBAT_ALLOWHITFROMSHIP		= 0x0000040,	// allow attacking opponents from ships
 	COMBAT_OSIDAMAGEMOD			= 0x0000080,	// modify weapon damage OSI-style (taking anatomy, tactics, lumberjacking into account)
-	COMBAT_ARCHERYCANMOVE		= 0x0000100,	// firing bow while moving
+	COMBAT_ARCHERYCANMOVE		= 0x0000100,	// allow firing bow while moving
 	COMBAT_STAYINRANGE			= 0x0000200,	// must be in range at the end of the swing or the hit will miss
-	COMBAT_STACKARMOR			= 0x0001000,	// If a region is covered by more than one armor part, all AR will count
-	COMBAT_TARGETTEDHIT			= 0x0002000		// Allows setting of preferred hit area by TAG.HITPREFERENCE
+	COMBAT_STACKARMOR			= 0x0001000		// if a region is covered by more than one armor part, all AR will count
 };
 
 enum TOOLTIPMODE_TYPE

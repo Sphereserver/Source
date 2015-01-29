@@ -4096,7 +4096,7 @@ int CItem::Armor_GetDefense() const
 	return iVal;
 }
 
-int CItem::Weapon_GetAttack(bool bNoRandom) const
+int CItem::Weapon_GetAttack(bool bGetRange) const
 {
 	ADDTOCALLSTACK("CItem::Weapon_GetAttack");
 	// Get the base attack for the weapon plus magic modifiers.
@@ -4105,10 +4105,8 @@ int CItem::Weapon_GetAttack(bool bNoRandom) const
 		return 1;
 
 	int iVal = m_attackBase + m_ModAr;
-	if ( bNoRandom ) 
+	if ( bGetRange )
 		iVal += m_attackRange;
-	else
-		iVal += Calc_GetRandVal(m_attackRange);
 
 	if ( IsSetOF(OF_ScaleDamageByDurability) && m_itArmor.m_Hits_Cur > 0 && m_itArmor.m_Hits_Cur < m_itArmor.m_Hits_Max )
 	{
@@ -4878,8 +4876,8 @@ LPCTSTR CItem::Armor_GetRepairDesc() const
 int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 {
 	ADDTOCALLSTACK("CItem::OnTakeDamage");
-	// Break stuff.
-	// Explode potions. freeze and break ? scrolls get wet ?
+	// This will damage the item durability, break stuff, explode potions, etc.
+	// Any chance to do/avoid the damage must be checked before OnTakeDamage().
 	//
 	// pSrc = The source of the damage. May not be the person wearing the item.
 	//
@@ -4901,8 +4899,7 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	switch ( GetType())
 	{
 	case IT_CLOTHING:
-		if ( ( uType & DAMAGE_FIRE ) &&
-			! IsAttr( ATTR_ARTIFACT|ATTR_MAGIC|ATTR_NEWBIE|ATTR_MOVE_NEVER ))
+		if ( ( uType & DAMAGE_FIRE ) &&	! IsAttr( ATTR_ARTIFACT|ATTR_MAGIC|ATTR_NEWBIE|ATTR_MOVE_NEVER ))
 		{
 			// normal cloth takes special damage from fire.
 			goto forcedamage;
@@ -4933,8 +4930,8 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 			{
 				CSpellDef * pSpell = g_Cfg.GetSpellDef(SPELL_Explosion);
 				g_World.Explode( pSrc, GetTopLevelObj()->GetTopPoint(), 3,
-					g_Cfg.GetSpellEffect( SPELL_Explosion, m_itPotion.m_skillquality ),
-pSpell->IsSpellType(SPELLFLAG_NOUNPARALYZE) ? DAMAGE_GENERAL | DAMAGE_HIT_BLUNT | DAMAGE_FIRE | DAMAGE_NOUNPARALYZE :	DAMAGE_GENERAL | DAMAGE_HIT_BLUNT | DAMAGE_FIRE  );
+								 g_Cfg.GetSpellEffect( SPELL_Explosion, m_itPotion.m_skillquality ),
+								 pSpell->IsSpellType(SPELLFLAG_NOUNPARALYZE) ? DAMAGE_GENERAL|DAMAGE_HIT_BLUNT|DAMAGE_FIRE|DAMAGE_NOUNPARALYZE : DAMAGE_GENERAL|DAMAGE_HIT_BLUNT|DAMAGE_FIRE  );
 				Delete();
 				return( INT_MAX );
 			}
@@ -4944,14 +4941,16 @@ pSpell->IsSpellType(SPELLFLAG_NOUNPARALYZE) ? DAMAGE_GENERAL | DAMAGE_HIT_BLUNT 
 	case IT_WEB:
 		if ( ! ( uType & (DAMAGE_FIRE|DAMAGE_HIT_BLUNT|DAMAGE_HIT_SLASH|DAMAGE_GOD)))
 		{
-			if ( pSrc ) pSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_WEB_NOEFFECT ) );
+			if ( pSrc )
+				pSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_WEB_NOEFFECT ) );
 			return( 0 );
 		}
 
 		iDmg = Calc_GetRandVal( iDmg ) + 1;
 		if ( static_cast<unsigned int>(iDmg) > m_itWeb.m_Hits_Cur || ( uType & DAMAGE_FIRE ))
 		{
-			if ( pSrc ) pSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_WEB_DESTROY ) );
+			if ( pSrc )
+				pSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_WEB_DESTROY ) );
 			if ( Calc_GetRandVal( 2 ) || ( uType & DAMAGE_FIRE ))
 			{
 				Delete();
@@ -4962,7 +4961,8 @@ pSpell->IsSpellType(SPELLFLAG_NOUNPARALYZE) ? DAMAGE_GENERAL | DAMAGE_HIT_BLUNT 
 			return( 2 );
 		}
 
-		if ( pSrc ) pSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_WEB_WEAKEN ) );
+		if ( pSrc )
+			pSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_WEB_WEAKEN ) );
 		m_itWeb.m_Hits_Cur -= iDmg;
 		return( 1 );
 
@@ -4973,16 +4973,7 @@ pSpell->IsSpellType(SPELLFLAG_NOUNPARALYZE) ? DAMAGE_GENERAL | DAMAGE_HIT_BLUNT 
 	// Break armor etc..
 	if ( IsTypeArmorWeapon() && ( uType & ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_GOD|DAMAGE_MAGIC|DAMAGE_FIRE )))
 	{
-		// Server option to slow the rate ???
-		if ( Calc_GetRandVal( m_itArmor.m_Hits_Max * 16 ) > iDmg )
-		{
-			return 1;
-		}
-
 forcedamage:
-
-		// describe the damage to the item.
-
 		CChar * pChar = dynamic_cast <CChar*> ( GetTopLevelObj());
 
 		if ( m_itArmor.m_Hits_Cur <= 1 )
@@ -4994,22 +4985,28 @@ forcedamage:
 		}
 
 		int previousDefense = Armor_GetDefense();
+		int previousDamage = Weapon_GetAttack();
 
 		--m_itArmor.m_Hits_Cur;
-
-		if (pChar != NULL && IsItemEquipped() && previousDefense != Armor_GetDefense())
-		{
-			// this item's armor rating has been reduced, update the
-			// client's total defense rating
-			pChar->m_defense = pChar->CalcArmorDefense();
-			pChar->UpdateStatsFlag();
-		}
-
 		UpdatePropertyFlag(AUTOTOOLTIP_FLAG_DURABILITY);
 
-		TCHAR *pszMsg = Str_GetTemp();
-		if ( pSrc )	// tell hitter they scored !
+		if (pChar != NULL && IsItemEquipped() )
 		{
+			if ( previousDefense != Armor_GetDefense() )
+			{
+				pChar->m_defense = pChar->CalcArmorDefense();
+				pChar->UpdateStatsFlag();
+			}
+			else if ( previousDamage != Weapon_GetAttack() )
+			{
+				pChar->UpdateStatsFlag();
+			}
+		}
+
+		TCHAR *pszMsg = Str_GetTemp();
+		if ( pSrc )
+		{
+			// Tell hitter they scored !
 			if ( pChar && pChar != pSrc )
 				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEM_DMG_DAMAGE1 ), static_cast<LPCTSTR>(pChar->GetName()), static_cast<LPCTSTR>(GetName()));
 			else

@@ -652,6 +652,10 @@ enum ITEMID_TYPE	// InsideUO is great for this stuff.
 	ITEMID_FURS			= 0x11fa,
 
 	ITEMID_BLOOD1		= 0x122a,
+	ITEMID_BLOOD2		= 0x122b,
+	ITEMID_BLOOD3		= 0x122c,
+	ITEMID_BLOOD4		= 0x122d,
+	ITEMID_BLOOD5		= 0x122e,
 	ITEMID_BLOOD6		= 0x122f,
 
 	ITEMID_ROCK_B_LO	= 0x134f,	// boulder.
