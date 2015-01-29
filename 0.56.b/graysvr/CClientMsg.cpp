@@ -2865,7 +2865,14 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 						t->FormatArgs( "%lld", ArtifactRarity );
 					}
 
-					INT64 UsesRemaining = pItem->GetDefNum("USESMAX", true, true) - pItem->GetDefNum("USESCUR", true, true);
+					/*INT64 UsesRemaining = pItem->GetDefNum("USESMAX", true, true) - pItem->GetDefNum("USESCUR", true, true);	// UsesMax = 50, UsesCur = 49 -> UsesRemaining = 1? can't be or I don't understand it.
+					if ( UsesRemaining > 0 )
+					{
+					this->m_TooltipData.Add( t = new CClientTooltip( 1060584 ) ); // uses remaining: ~1_val~
+					t->FormatArgs( "%lld", UsesRemaining );
+					}*/
+
+					INT64 UsesRemaining = pItem->GetDefNum("USESCUR", true, true);
 					if ( UsesRemaining > 0 )
 					{
 						this->m_TooltipData.Add( t = new CClientTooltip( 1060584 ) ); // uses remaining: ~1_val~
