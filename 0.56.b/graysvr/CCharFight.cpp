@@ -2715,7 +2715,7 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 		iDmgMax = pChar->m_attackBase + pChar->m_attackRange;
 	}
 
-	int iDmgBonus = min(GetDefNum("INCREASEDAM", true, true), 100);		//Damage Increase is capped at 100%
+	int iDmgBonus = minimum(GetDefNum("INCREASEDAM", true, true), 100);		//Damage Increase is capped at 100%
 	if (IsSetCombatFlags(COMBAT_OSIDAMAGEMOD))
 	{
 		// AOS damage bonus
