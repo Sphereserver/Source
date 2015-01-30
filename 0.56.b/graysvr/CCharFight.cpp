@@ -876,7 +876,7 @@ void CChar::NotoSave_Clear()
 
 void CChar::NotoSave_Update()
 {
-	ADDTOCALLSTACK("CChar::NotoSave_Clear");
+	ADDTOCALLSTACK("CChar::NotoSave_Update");
 	NotoSave_Clear();
 	UpdateMode( NULL , false );
 	ResendTooltip();
@@ -2186,7 +2186,7 @@ int CChar::CalcArmorDefense() const
 	return maximum(( iDefenseTotal / 100 ) + m_ModAr + ResPhysical, 0);
 }
 
-int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
+int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType, int iDmgPhysical, int iDmgFire, int iDmgCold, int iDmgPoison, int iDmgEnergy )
 {
 	ADDTOCALLSTACK("CChar::OnTakeDamage");
 	// Someone hit us.
@@ -2290,14 +2290,14 @@ effect_bounce:
 		if  ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 		{
 			// AOS elemental combat
-			float iPhysicalDamage = iDmg * static_cast<float>(pSrc->GetDefNum("DAMPHYSICAL",true)) / 100;
-			float iFireDamage = iDmg * static_cast<float>(pSrc->GetDefNum("DAMFIRE",true)) / 100;
-			float iColdDamage = iDmg * static_cast<float>(pSrc->GetDefNum("DAMCOLD",true)) / 100;
-			float iPoisonDamage = iDmg * static_cast<float>(pSrc->GetDefNum("DAMPOISON",true)) / 100;
-			float iEnergyDamage = iDmg * static_cast<float>(pSrc->GetDefNum("DAMENERGY",true)) / 100;
+			if ( iDmgPhysical == 0 )		// if physical damage is not set, let's assume it as the remaining value
+				iDmgPhysical = 100 - (iDmgFire + iDmgCold + iDmgPoison + iDmgEnergy);
 
-			if ( iPhysicalDamage == 0 )		// if DAMPHYSICAL is not set, let's assume it as the remaining value
-				iPhysicalDamage = iDmg - (iFireDamage + iColdDamage + iPoisonDamage + iEnergyDamage);
+			float iPhysicalDamage = iDmg * static_cast<float>(iDmgPhysical) / 100;
+			float iFireDamage = iDmg * static_cast<float>(iDmgFire) / 100;
+			float iColdDamage = iDmg * static_cast<float>(iDmgCold) / 100;
+			float iPoisonDamage = iDmg * static_cast<float>(iDmgPoison) / 100;
+			float iEnergyDamage = iDmg * static_cast<float>(iDmgEnergy) / 100;
 
 			iPhysicalDamage = iPhysicalDamage * (100 - GetDefNum("RESPHYSICAL", true)) / 100;
 			iFireDamage = iFireDamage * (100 - GetDefNum("RESFIRE", true)) / 100;
@@ -2422,7 +2422,7 @@ effect_bounce:
 					iReactiveDamage = 1;
 
 				iDmg -= iReactiveDamage;
-				pSrc->OnTakeDamage( iReactiveDamage, this, uType );
+				pSrc->OnTakeDamage( iReactiveDamage, this, uType, iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy );
 				pSrc->Sound( 0x1F1 );
 				pSrc->Effect( EFFECT_OBJ, ITEMID_FX_CURSE_EFFECT, this, 10, 16 );
 			}
@@ -3540,7 +3540,17 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			}
 			if ( iTyp & DAMAGE_FIXED )
 				iTyp = iTyp &~ DAMAGE_FIXED;
-			pCharTarg->OnTakeDamage( Fight_CalcDamage( m_uidWeapon.ItemFind() ), this, iTyp );
+
+			pCharTarg->OnTakeDamage(
+				Fight_CalcDamage( m_uidWeapon.ItemFind() ),
+				this,
+				iTyp,
+				GetDefNum("DAMPHYSICAL",true),
+				GetDefNum("DAMFIRE",true),
+				GetDefNum("DAMCOLD",true),
+				GetDefNum("DAMPOISON",true),
+				GetDefNum("DAMENERGY",true)
+			);
 
 			return( WAR_SWING_EQUIPPING );	// Made our full swing.
 		}
@@ -4113,7 +4123,16 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		}
 	}
 #endif
-	iDmg = pCharTarg->OnTakeDamage( iDmg, this, iTyp );
+	iDmg = pCharTarg->OnTakeDamage(
+			iDmg,
+			this,
+			iTyp,
+			GetDefNum("DAMPHYSICAL",true),
+			GetDefNum("DAMFIRE",true),
+			GetDefNum("DAMCOLD",true),
+			GetDefNum("DAMPOISON",true),
+			GetDefNum("DAMENERGY",true)
+		   );
 	if ( iDmg > 0 )
 	{
 		// Is we do no damage we get no experience!

@@ -4873,7 +4873,7 @@ LPCTSTR CItem::Armor_GetRepairDesc() const
 	}
 }
 
-int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
+int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType, int iDmgPhysical, int iDmgFire, int iDmgCold, int iDmgPoison, int iDmgEnergy )
 {
 	ADDTOCALLSTACK("CItem::OnTakeDamage");
 	// This will damage the item durability, break stuff, explode potions, etc.
@@ -5047,6 +5047,23 @@ bool CItem::OnExplosion()
 	if ( ! m_itExplode.m_wFlags )
 		return( true );
 
+	// AOS damage types (used by COMBAT_ELEMENTAL_ENGINE)
+	int iDmgPhysical = 0;
+	int iDmgFire = 0;
+	int iDmgCold = 0;
+	int iDmgPoison = 0;
+	int iDmgEnergy = 0;
+	if ( m_itExplode.m_wFlags & DAMAGE_FIRE )
+		iDmgFire = 100;
+	else if ( m_itExplode.m_wFlags & DAMAGE_COLD )
+		iDmgCold = 100;
+	else if ( m_itExplode.m_wFlags & DAMAGE_POISON )
+		iDmgPoison = 100;
+	else if ( m_itExplode.m_wFlags & DAMAGE_ENERGY )
+		iDmgEnergy = 100;
+	else
+		iDmgPhysical = 100;
+
 	CChar * pSrc = m_uidLink.CharFind();
 
 	CWorldSearch AreaChars( GetTopPoint(), m_itExplode.m_iDist );
@@ -5058,7 +5075,7 @@ bool CItem::OnExplosion()
 		if ( GetTopDist3D( pChar ) > m_itExplode.m_iDist )
 			continue;
 		pChar->Effect( EFFECT_OBJ, ITEMID_FX_EXPLODE_1, pSrc, 9, 6 );
-		pChar->OnTakeDamage( m_itExplode.m_iDamage, pSrc, m_itExplode.m_wFlags );
+		pChar->OnTakeDamage( m_itExplode.m_iDamage, pSrc, m_itExplode.m_wFlags, iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy );
 	}
 
 	// Damage objects near by.
@@ -5322,7 +5339,7 @@ bool CItem::OnTick()
 					if ( m_itPotion.m_tick <= 1 )
 					{
 						// Set it off.
-						OnTakeDamage( 1, m_uidLink.CharFind(), DAMAGE_GENERAL | DAMAGE_FIRE );
+						OnTakeDamage( 1, m_uidLink.CharFind(), DAMAGE_FIRE, 0, 100, 0, 0, 0 );
 					}
 					else
 					{

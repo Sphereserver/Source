@@ -1110,7 +1110,7 @@ bool CChar::Spell_Equip_OnTick( CItem * pItem )
 			SysMessagef(g_Cfg.GetDefaultMsg( DEFMSG_SPELL_YOUFEEL ), static_cast<LPCTSTR>(sm_Poison_Message[iLevel]));
 
 			int iDmg = IMULDIV( Stat_GetMax(STAT_STR), iLevel * 2, 100 );
-			OnTakeDamage( maximum( sm_iPoisonMax[iLevel], iDmg ), pItem->m_uidLink.CharFind(), DAMAGE_POISON | DAMAGE_GENERAL | DAMAGE_NOREVEAL );
+			OnTakeDamage( maximum( sm_iPoisonMax[iLevel], iDmg ), pItem->m_uidLink.CharFind(), DAMAGE_POISON|DAMAGE_NOREVEAL, 0, 0, 0, 100, 0 );
 		}
 
 		pItem->m_itSpell.m_spelllevel -= 50;	// gets weaker too.
@@ -2702,6 +2702,27 @@ reflectit:
 	{
 		if ( pSpellDef->IsSpellType(SPELLFLAG_DAMAGE) )
 		{
+			int iDmg = GetSpellEffect(spell, iSkillLevel, iEffectMult);
+			if (IsSetMagicFlags(MAGICF_OSIFORMULAS))
+			{
+				// Evaluating Intelligence mult
+				iDmg *= ((pCharSrc->Skill_GetBase(SKILL_EVALINT) * 3) / 1000) + 1;
+
+				// Spell Damage Increase bonus
+				int DamageBonus = pCharSrc->GetDefNum("INCREASESPELLDAM",true);
+				if ( m_pPlayer && pCharSrc->m_pPlayer && DamageBonus > 15 )		// Spell Damage Increase is capped at 15% on PvP
+					DamageBonus = 15;
+
+				// INT bonus
+				DamageBonus += pCharSrc->Stat_GetVal(STAT_INT) / 10;
+
+				// Inscription bonus
+				if ( pCharSrc->Skill_GetBase(SKILL_INSCRIPTION) >= 1000 )
+					DamageBonus += 10;
+
+				iDmg += iDmg * DamageBonus / 100;
+			}
+
 			if ( !iD1 )
 			{
 				switch ( spell )
@@ -2723,7 +2744,24 @@ reflectit:
 				}
 			}
 
-			OnTakeDamage(GetSpellEffect(spell, iSkillLevel, iEffectMult), pCharSrc, iD1);
+			// AOS damage types (used by COMBAT_ELEMENTAL_ENGINE)
+			int iDmgPhysical = 0;
+			int iDmgFire = 0;
+			int iDmgCold = 0;
+			int iDmgPoison = 0;
+			int iDmgEnergy = 0;
+			if ( iD1 & DAMAGE_FIRE )
+				iDmgFire = 100;
+			else if ( iD1 & DAMAGE_COLD )
+				iDmgCold = 100;
+			else if ( iD1 & DAMAGE_POISON )
+				iDmgPoison = 100;
+			else if ( iD1 & DAMAGE_ENERGY )
+				iDmgEnergy = 100;
+			else
+				iDmgPhysical = 100;
+
+			OnTakeDamage(iDmg, pCharSrc, iD1, iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy);
 		}
 
 		switch ( spell )

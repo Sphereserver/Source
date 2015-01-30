@@ -1592,9 +1592,28 @@ Changed: Some tooltips behavior below
 	-Added weight tooltip on all movable items if FEATURE_ML_UPDATE feature is enabled on sphere.ini (although it's not a ML feature, OSI started using this tooltip only on ML)
 [sphere_msgs.scp]: Removed 'tooltip_tag_amount' text
 
+29-01-2015, Coruja
+Changed: Major improvement on combat engine (damage/resist calculations)
+	-COMBAT_SPECIALDAMAGE and COMBAT_USE_RESISTANCE settings on sphere.ini are now a single COMBAT_ELEMENTAL_ENGINE which does the same thing (but now unified).
+	-COMBAT_ELEMENTAL_ENGINE now totally overrides pre-AOS AR calculations with AOS damage/resist types instead use both at the same time.
+	-Fixed formula for AR calculation
+	-Fixed formula for char damage calculation. If unarmed (wrestling) the base damage will be the char DAM (usually 1-4), and using weapons the base damage will be the weapon damage. This base damage can be increased with some bonuses (if COMBAT_OSIDAMAGEMOD is enabled, it will use OSI bonus calculation, otherwise it will use sphere default bonus [STR/10]).
+	-On AOS+ clients, the char status menu now will show exactly the damage range that the char can deal (including all bonuses)
+	-New blood effects
+	-Old [Physical/Fire/Cold/Poison/Energy]Damage properties got removed and replaced with the new DAM[Physical/Fire/Cold/Poison/Energy].
+[Sphere.ini]: Removed COMBAT_TARGETTEDHIT, COMBAT_SPECIALDAMAGE and COMBAT_USE_RESISTANCE settings, and added COMBAT_ELEMENTAL_ENGINE
+[sphere_msgs.scp]: Removed all "combat_hit_*" messages.
+
 30-01-2015, XuN
 Improved how Notoriety is checked for pets with PetsInheritNotoriety flags in the ini, now the notoriety is redirected instantly to pet's owner to avoid some checks and speed up the code. (Nothing has changed, it's just an improvement)
 Updated fonts on sphere_item_typedef_equipitem.scp for 'unidentified' value on tooltips.
 Splitted stats regens from CChar::OnTick() to CChar::Stats_Regen()
 Re-Added old polymorph stats boost under MAGICF_POLYMORPHSTATS (0800) in sphere.ini.
 Added MaxPolyStats to ini to override old hardcoded value, this limits the amount of stats gained through polymorph spell (default 150).
+
+30-01-2015, Coruja
+Added: 5 new optional arguments on DAMAGE function to make it compatible with COMBAT_ELEMENTAL_ENGINE feature
+	Sintax: DAMAGE value, dam_flag, source, physical(%), fire(%), cold(%), poison(%), energy(%)
+	Example: DAMAGE 50,dam_general,012345,70,30,0,0,0 will split 50 damage into 70% physical damage + 30% fire damage
+Added: Internal support for COMBAT_ELEMENTAL_ENGINE on spells, explosion potion, etc
+Added: New OSI formula to calculate spell damage if MAGICF_OSIFORMULAS feature is enabled

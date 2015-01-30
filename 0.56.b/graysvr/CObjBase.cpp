@@ -1777,10 +1777,10 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 
 	switch (index)
 	{
-		case OV_DAMAGE:	//	"Amount,SourceFlags,SourceCharUid" = do me some damage.
+		case OV_DAMAGE:	//	"Dmg, SourceFlags, SourceCharUid, DmgPhysical(%), DmgFire(%), DmgCold(%), DmgPoison(%), DmgEnergy(%)" = do me some damage.
 			{
 				EXC_SET("DAMAGE");
-				INT64 piCmd[3];
+				INT64 piCmd[8];
 				size_t iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
 				if ( iArgQty < 1 )
 					return( false );
@@ -1788,14 +1788,18 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				{
 					CObjBaseTemplate * pObj = CGrayUID( static_cast<unsigned long>(piCmd[2]) ).ObjFind();
 					if ( pObj )
-					{
 						pObj = pObj->GetTopLevelObj();
-					}
 					pCharSrc = dynamic_cast <CChar*>(pObj);
 				}
 				OnTakeDamage( static_cast<int>(piCmd[0]),
 					pCharSrc,
-					( iArgQty > 1 ) ? static_cast<DAMAGE_TYPE>(piCmd[1]) : ( DAMAGE_HIT_BLUNT | DAMAGE_GENERAL ));
+					(iArgQty >= 1)? static_cast<DAMAGE_TYPE>(piCmd[1]) : DAMAGE_HIT_BLUNT|DAMAGE_GENERAL,
+					(iArgQty >= 3)? static_cast<int>(piCmd[3]) : 0,		// physical damage %
+					(iArgQty >= 4)? static_cast<int>(piCmd[4]) : 0,		// fire damage %
+					(iArgQty >= 5)? static_cast<int>(piCmd[5]) : 0,		// cold damage %
+					(iArgQty >= 6)? static_cast<int>(piCmd[6]) : 0,		// poison damage %
+					(iArgQty >= 7)? static_cast<int>(piCmd[7]) : 0		// energy damage %
+				);
 			}
 			break;
 
@@ -1831,11 +1835,11 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				//DEBUG_ERR(("this->GetUID() 0%x pThis->GetUID() 0%x pCharSrc->GetUID() 0%x\n",(DWORD)this->GetUID(),(DWORD)pThis->GetUID(),(DWORD)pCharSrc->GetUID()));
 				pThis->Effect( static_cast<EFFECT_TYPE>(piCmd[0]), static_cast<ITEMID_TYPE>(RES_GET_INDEX(piCmd[1])),
 					pCharSrc,
-					(iArgQty >= 3)? static_cast<unsigned char>(piCmd[2]) : 5,				// BYTE bSpeedSeconds = 5,
-					(iArgQty >= 4)? static_cast<unsigned char>(piCmd[3]) : 1,				// BYTE bLoop = 1,
-					(iArgQty >= 5)? (piCmd[4] != 0) : false,	// bool fExplode = false
-					(iArgQty >= 6)? static_cast<unsigned long>(piCmd[5]) : 0,				// hue
-					(iArgQty >= 7)? static_cast<unsigned long>(piCmd[6]) : 0				// render mode
+					(iArgQty >= 3)? static_cast<unsigned char>(piCmd[2]) : 5,		// BYTE bSpeedSeconds = 5,
+					(iArgQty >= 4)? static_cast<unsigned char>(piCmd[3]) : 1,		// BYTE bLoop = 1,
+					(iArgQty >= 5)? (piCmd[4] != 0) : false,						// bool fExplode = false
+					(iArgQty >= 6)? static_cast<unsigned long>(piCmd[5]) : 0,		// hue
+					(iArgQty >= 7)? static_cast<unsigned long>(piCmd[6]) : 0		// render mode
 					);
 			}
 			break;

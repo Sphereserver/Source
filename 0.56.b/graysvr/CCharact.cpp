@@ -3405,7 +3405,7 @@ bool CChar::CheckLocation( bool fStanding )
 					{
 						iSkillLevel /= 2;
 					}
-					OnTakeDamage( g_Cfg.GetSpellEffect( SPELL_Fire_Field, iSkillLevel ), NULL, DAMAGE_FIRE | DAMAGE_GENERAL );
+					OnTakeDamage( g_Cfg.GetSpellEffect( SPELL_Fire_Field, iSkillLevel ), NULL, DAMAGE_FIRE|DAMAGE_GENERAL, 0, 100, 0, 0, 0 );
 				}
 				Sound( 0x15f ); // Fire noise.
 				continue;
