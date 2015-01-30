@@ -1591,3 +1591,10 @@ Changed: Some tooltips behavior below
 	-Added missing tooltips for Insured (attr_insured), Quest Item (attr_questitem) and Crafted by [CharName] (CRAFTEDBY property)
 	-Added weight tooltip on all movable items if FEATURE_ML_UPDATE feature is enabled on sphere.ini (although it's not a ML feature, OSI started using this tooltip only on ML)
 [sphere_msgs.scp]: Removed 'tooltip_tag_amount' text
+
+30-01-2015, XuN
+Improved how Notoriety is checked for pets with PetsInheritNotoriety flags in the ini, now the notoriety is redirected instantly to pet's owner to avoid some checks and speed up the code. (Nothing has changed, it's just an improvement)
+Updated fonts on sphere_item_typedef_equipitem.scp for 'unidentified' value on tooltips.
+Splitted stats regens from CChar::OnTick() to CChar::Stats_Regen()
+Re-Added old polymorph stats boost under MAGICF_POLYMORPHSTATS (0800) in sphere.ini.
+Added MaxPolyStats to ini to override old hardcoded value, this limits the amount of stats gained through polymorph spell (default 150).

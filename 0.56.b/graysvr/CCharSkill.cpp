@@ -785,6 +785,93 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 		}
 	}
 }
+bool CChar::Stats_Regen(INT64 iTimeDiff)
+{
+	// Calling regens in all stats and checking REGEN%s/REGEN%sVAL where %s is hits/stam... to check values/delays
+	// Food decay called here too.
+	// calling @RegenStat for each stat if proceed.
+	// iTimeDiff is the next tick the stats are going to regen.
+
+	ADDTOCALLSTACK("CChar::Stats_Regen");
+	for (STAT_TYPE i = STAT_STR; i <= STAT_FOOD; i = static_cast<STAT_TYPE>(i + 1))
+	{
+		int iRate = g_Cfg.m_iRegenRate[i];		// in TICK_PER_SEC
+
+		m_Stat[i].m_regen += static_cast<unsigned short>(iTimeDiff);
+
+		// Regen OVERRIDE
+		int mod = 1;
+		LPCTSTR stat;
+		switch (static_cast<STAT_TYPE>(i))
+		{
+		case STAT_STR:
+			stat = "HITS";
+			if (g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE && IsHuman())
+				iRate /= 3;		// Humans always have +2 hitpoint regeneration (racial traits)
+			break;
+		case STAT_INT:
+			stat = "MANA";
+			break;
+		case STAT_DEX:
+			stat = "STAM";
+			break;
+		case STAT_FOOD:
+			stat = "FOOD";
+			break;
+		}
+		if (i <= STAT_FOOD)
+		{
+			char sRegen[21];
+			sprintf(sRegen, "REGEN%s", stat);
+			if (GetDefNum(sRegen, false))
+				iRate = static_cast<int>(GetDefNum(sRegen, false)) * TICK_PER_SEC;
+			sprintf(sRegen, "REGENVAL%s", stat);
+			mod = static_cast<int>(maximum(mod, GetDefNum(sRegen, true)));
+		}
+		if (iRate < 0)
+			iRate = 0;
+
+		if (m_Stat[i].m_regen < iRate)
+			continue;
+
+		int StatLimit = Stat_GetMax(i);
+
+		int HitsHungerLoss = g_Cfg.m_iHitsHungerLoss ? g_Cfg.m_iHitsHungerLoss : 0;
+		if (IsTrigUsed(TRIGGER_REGENSTAT))
+		{
+			CScriptTriggerArgs Args;
+			Args.m_VarsLocal.SetNum("StatID", i, true);
+			Args.m_VarsLocal.SetNum("Value", mod, true);
+			Args.m_VarsLocal.SetNum("StatLimit", StatLimit, true);
+			if (i == STAT_FOOD)
+				Args.m_VarsLocal.SetNum("HitsHungerLoss", HitsHungerLoss);
+			if (OnTrigger(CTRIG_RegenStat, this, &Args) == TRIGRET_RET_TRUE)
+			{
+				m_Stat[i].m_regen = 0;
+				continue;
+			}
+			i = static_cast<STAT_TYPE>(Args.m_VarsLocal.GetKeyNum("StatID", true));
+			if (i > STAT_FOOD)
+				i = STAT_FOOD;
+			if (i < STAT_STR)
+				i = STAT_STR;
+			mod = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Value", true));
+			StatLimit = static_cast<int>(Args.m_VarsLocal.GetKeyNum("StatLimit", true));
+			if (i == STAT_FOOD)
+				HitsHungerLoss = static_cast<int>(Args.m_VarsLocal.GetKeyNum("HitsHungerLoss", true));
+		}
+		if (mod == 0)
+			continue;
+
+		m_Stat[i].m_regen = 0;
+
+		if (i == STAT_FOOD)
+			OnTickFood(mod, HitsHungerLoss);
+		else
+			UpdateStatVal(i, mod, StatLimit);
+	}
+	return true;
+}
 
 bool CChar::Stat_Decrease(STAT_TYPE stat, SKILL_TYPE skill)
 {
@@ -1683,14 +1770,6 @@ int CChar::Skill_Alchemy( SKTRIG_TYPE stage )
 	// SKILL_ALCHEMY
 	// m_atCreate.m_ItemID = potion we are making.
 	// m_atCreate.m_Amount = amount of said item.
-
-	if ( stage == SKTRIG_START )
-	{
-		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-		{
-			Sound( 0x242 );
-		}
-	}
 
 	return( Skill_MakeItem( stage ));
 }

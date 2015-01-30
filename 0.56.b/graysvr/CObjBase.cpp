@@ -2366,6 +2366,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			RemoveFromView();
 			Update();
 			break;
+
 		case OV_CLICK:
 			EXC_SET("CLICK");
 
@@ -2388,6 +2389,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			}
 			else
 				pCharSrc->GetClient()->Event_SingleClick(this->GetUID());
+			return true;
 
 		case OV_DCLICK:
 			EXC_SET("DCLICK");

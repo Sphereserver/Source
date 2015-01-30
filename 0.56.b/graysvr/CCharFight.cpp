@@ -193,11 +193,14 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 	NOTO_TYPE Noto;
 	if ( pThis->m_notoSaves.size() )
 	{
-		int id = pThis->NotoSave_GetID( pTarget );
+		int id = -1;
+		if (pThis->m_pNPC && pThis->NPC_PetGetOwner())	// If I'm a pet and have owner I redirect noto to him.
+			pThis = pThis->NPC_PetGetOwner();
+
+		id = pThis->NotoSave_GetID(pTarget);
+
 		if ( id != -1 )
-		{
 			return pThis->NotoSave_GetValue( id );
-		}
 	}
 	if (IsTrigUsed(TRIGGER_NOTOSEND))
 	{
@@ -2979,7 +2982,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 		if (pCharTest)
 			pTarget = pCharTest;
 	}
-	m_Act_Targ =  pTarget->GetUID();
+	m_Act_Targ = pTarget->GetUID();
 	Skill_Start( skillWeapon );
 
 	return( true );

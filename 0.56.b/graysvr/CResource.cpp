@@ -131,6 +131,7 @@ CResource::CResource()
 	m_iSpeedScaleFactor 	= 15000;
 	m_iCombatFlags		= 0;
 	m_iMagicFlags		= 0;
+	m_iMaxPolyStats		= 150;
 
 	m_fNoResRobe		= 0;
 	m_iLostNPCTeleport	= 0;
@@ -496,6 +497,7 @@ enum RC_TYPE
 	RC_MAXLOOPTIMES,			// m_iMaxLoopTimes
 	RC_MAXPACKETSPERTICK,		// m_iNetMaxPacketsPerTick
 	RC_MAXPINGS,				// m_iNetMaxPings
+	RC_MAXPOLYSTATS,			// m_iMaxPolyStats
 	RC_MAXQUEUESIZE,			// m_iNetMaxQueueSize
 	RC_MAXSECTORCOMPLEXITY,		// m_iMaxSectorComplexity
 	RC_MAXSHIPPLANKTELEPORT,	// m_iMaxShipPlankTeleport
@@ -728,6 +730,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "MAXLOOPTIMES",			{ ELEM_INT,		OFFSETOF(CResource,m_iMaxLoopTimes),		0 }},
 	{ "MAXPACKETSPERTICK",		{ ELEM_INT,		OFFSETOF(CResource,m_iNetMaxPacketsPerTick),0 }},
 	{ "MAXPINGS",				{ ELEM_INT,		OFFSETOF(CResource,m_iNetMaxPings),			0 }},
+	{ "MAXPOLYSTATS",			{ ELEM_INT,		OFFSETOF(CResource,m_iMaxPolyStats),		0 }},
 	{ "MAXQUEUESIZE",			{ ELEM_INT,		OFFSETOF(CResource,m_iNetMaxQueueSize),		0 }},
 	{ "MAXSECTORCOMPLEXITY",	{ ELEM_INT,		OFFSETOF(CResource,m_iMaxSectorComplexity),	0 }},
 	{ "MAXSHIPPLANKTELEPORT",	{ ELEM_INT,		OFFSETOF(CResource,m_iMaxShipPlankTeleport),0 }},

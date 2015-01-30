@@ -87,7 +87,8 @@ enum MAGICFLAGS_TYPE
 	MAGICF_NOFIELDSOVERWALLS	= 0x0000080,	// prevent fields from being formed over blocking objects.
 	MAGICF_NOANIM				= 0x0000100,	// auto spellflag_no_anim on all spells
 	MAGICF_OSIFORMULAS			= 0x0000200,	// calculated damage and duration based on OSI formulas
-	MAGICF_NOCASTFROZENHANDS	= 0x0000400		// can't cast spells if got paralyzed holding something on hands
+	MAGICF_NOCASTFROZENHANDS	= 0x0000400,		// can't cast spells if got paralyzed holding something on hands
+	MAGICF_POLYMORPHSTATS		= 0x0000800		// Polymorph spells give out stats based on base chars (old behaviour backwards).
 };
 
 enum COMBATFLAGS_TYPE
@@ -1012,6 +1013,7 @@ public:
 	bool		m_NPCNoFameTitle;
 
 	bool		m_bAgree;
+	int			m_iMaxPolyStats;
 
 	// End INI file options.
 	

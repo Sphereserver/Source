@@ -590,6 +590,8 @@ public:
 		// IT_LAVA
 		struct
 		{
+			short m_PolyStr;	// more1l=polymorph effect of this. (on strength)
+			short m_PolyDex;	// more1h=polymorph effect of this. (on dex)
 			int  m_spellcharges; // more2=not sure how used here..
 			WORD m_spell;		// morex=SPELL_TYPE = The magic spell cast on this. (daemons breath)(boots of strength) etc
 			WORD m_spelllevel;	// morey=0-1000=level of the spell.
@@ -3087,6 +3089,7 @@ public:
 	void Stat_Experience(STAT_TYPE stat, int difficulty);
 
 	bool Stat_Decrease( STAT_TYPE stat, SKILL_TYPE skill = (SKILL_TYPE)NULL);
+	bool Stats_Regen(INT64 iTimeDiff);
 
 	SKILLLOCK_TYPE Stat_GetLock(STAT_TYPE stat)
 	{
