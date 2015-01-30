@@ -72,10 +72,6 @@ CItem::CItem( ITEMID_TYPE id, CItemBase * pItemDef ) : CObjBase( true )
 	m_itNormal.m_more1 = 0;
 	m_itNormal.m_more2 = 0;
 	m_itNormal.m_morep.ZeroPoint();
-	m_itWeapon.m_dmgcold = 0;
-	m_itWeapon.m_dmgenergy = 0;
-	m_itWeapon.m_dmgfire = 0;
-	m_itWeapon.m_dmgpoison = 0;
 
 	SetBase( pItemDef );
 	SetDispID( id );
@@ -2227,18 +2223,6 @@ void CItem::r_Write( CScript & s )
 	}
 	else
 		s.WriteKey("P", GetTopPoint().WriteUsed());
-
-	if ( IsTypeWeapon() )
-	{
-		if ( m_itWeapon.m_dmgcold )
-			s.WriteKeyHex( "DMGCOLD", m_itWeapon.m_dmgcold );
-		if ( m_itWeapon.m_dmgenergy )
-			s.WriteKeyHex( "DMGENERGY", m_itWeapon.m_dmgenergy );
-		if ( m_itWeapon.m_dmgfire )
-			s.WriteKeyHex( "DMGFIRE", m_itWeapon.m_dmgfire );
-		if ( m_itWeapon.m_dmgpoison )
-			s.WriteKeyHex( "DMGPOISON", m_itWeapon.m_dmgpoison );
-	}
 }
 
 bool CItem::LoadSetContainer( CGrayUID uid, LAYER_TYPE layer )

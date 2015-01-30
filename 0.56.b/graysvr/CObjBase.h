@@ -562,10 +562,6 @@ public:
 			WORD m_spelllevel;		// morey=level of the spell. (0-1000)
 			BYTE m_poison_skill;	// morez=0-100 = Is the weapon poisoned ?
 			BYTE m_nonused;			// morem
-			short int m_dmgcold;
-			short int m_dmgenergy;
-			short int m_dmgfire;
-			short int m_dmgpoison;
 		} m_itWeapon;
 
 		// IT_ARMOR
