@@ -2715,7 +2715,7 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 		iDmgMax = pChar->m_attackBase + pChar->m_attackRange;
 	}
 
-	int iDmgBonus = minimum(GetDefNum("INCREASEDAM", true, true), 100);		//Damage Increase is capped at 100%
+	int iDmgBonus = minimum(static_cast<int>(GetDefNum("INCREASEDAM", true, true)), 100);		//Damage Increase is capped at 100%
 	if (IsSetCombatFlags(COMBAT_OSIDAMAGEMOD))
 	{
 		// AOS damage bonus
@@ -3123,7 +3123,7 @@ CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 				CScriptTriggerArgs Args;
 				Args.m_iN1 = bIgnore;
 				OnTrigger(CTRIG_HitIgnore, pChar, &Args);
-				bIgnore = Args.m_iN1;
+				bIgnore = Args.m_iN1 ? true : false;
 			}
 			if ( bIgnore )
 				continue;
@@ -3404,7 +3404,7 @@ bool CChar::Attacker_Delete( int index, bool bForced, ATTACKER_CLEAR_TYPE type )
 		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatDelete,pChar,&Args);
 		if ( tRet == TRIGRET_RET_TRUE  ||  Args.m_iN1 == 1 )
 			return false;
-		bForced = Args.m_iN1;
+		bForced = Args.m_iN1 ? true : false;
 	}
 	std::vector<LastAttackers>::iterator it = m_lastAttackers.begin() + index;
 	CItemMemory *pFight = Memory_FindObj(pChar->GetUID());	// My memory of the fight.
@@ -3545,11 +3545,11 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				Fight_CalcDamage( m_uidWeapon.ItemFind() ),
 				this,
 				iTyp,
-				GetDefNum("DAMPHYSICAL",true),
-				GetDefNum("DAMFIRE",true),
-				GetDefNum("DAMCOLD",true),
-				GetDefNum("DAMPOISON",true),
-				GetDefNum("DAMENERGY",true)
+				static_cast<int>(GetDefNum("DAMPHYSICAL",true)),
+				static_cast<int>(GetDefNum("DAMFIRE",true)),
+				static_cast<int>(GetDefNum("DAMCOLD",true)),
+				static_cast<int>(GetDefNum("DAMPOISON",true)),
+				static_cast<int>(GetDefNum("DAMENERGY",true))
 			);
 
 			return( WAR_SWING_EQUIPPING );	// Made our full swing.
@@ -4127,11 +4127,11 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			iDmg,
 			this,
 			iTyp,
-			GetDefNum("DAMPHYSICAL",true),
-			GetDefNum("DAMFIRE",true),
-			GetDefNum("DAMCOLD",true),
-			GetDefNum("DAMPOISON",true),
-			GetDefNum("DAMENERGY",true)
+			static_cast<int>(GetDefNum("DAMPHYSICAL",true)),
+			static_cast<int>(GetDefNum("DAMFIRE",true)),
+			static_cast<int>(GetDefNum("DAMCOLD",true)),
+			static_cast<int>(GetDefNum("DAMPOISON",true)),
+			static_cast<int>(GetDefNum("DAMENERGY",true))
 		   );
 	if ( iDmg > 0 )
 	{

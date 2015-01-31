@@ -1392,7 +1392,7 @@ bool CItemBase::r_LoadVal( CScript &s )
 			SetDefNum(s.GetKey(), s.GetArgVal(), false);
 			break;
 		case IBC_MAXAMOUNT:
-			if (!SetMaxAmount(s.GetArgVal()))
+			if (!SetMaxAmount(static_cast<unsigned short>(s.GetArgVal())))
 				return false;
 			break;
 		case IBC_SPEEDMODE:

@@ -1960,10 +1960,10 @@ void CChar::EatAnim( LPCTSTR pszName, int iQty )
 		if (OnTrigger(CTRIG_Eat, this, &Args) == TRIGRET_RET_TRUE)
 			return;
 		bIgnoreMax = Args.m_iN1 ? true : false;
-		iHits = Args.m_VarsLocal.GetKeyNum("Hits", true) + Stat_GetVal(STAT_STR);
-		iMana = Args.m_VarsLocal.GetKeyNum("Mana", true) + Stat_GetVal(STAT_INT);
-		iStam = Args.m_VarsLocal.GetKeyNum("Stam", true) + Stat_GetVal(STAT_DEX);
-		iFood = Args.m_VarsLocal.GetKeyNum("Food", true) + Stat_GetVal(STAT_FOOD);
+		iHits = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Hits", true)) + Stat_GetVal(STAT_STR);
+		iMana = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Mana", true)) + Stat_GetVal(STAT_INT);
+		iStam = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Stam", true)) + Stat_GetVal(STAT_DEX);
+		iFood = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Food", true)) + Stat_GetVal(STAT_FOOD);
 
 	}
 	if (bIgnoreMax)

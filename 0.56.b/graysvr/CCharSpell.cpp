@@ -2709,7 +2709,7 @@ reflectit:
 				iDmg *= ((pCharSrc->Skill_GetBase(SKILL_EVALINT) * 3) / 1000) + 1;
 
 				// Spell Damage Increase bonus
-				int DamageBonus = pCharSrc->GetDefNum("INCREASESPELLDAM",true);
+				int DamageBonus = static_cast<int>(pCharSrc->GetDefNum("INCREASESPELLDAM",true));
 				if ( m_pPlayer && pCharSrc->m_pPlayer && DamageBonus > 15 )		// Spell Damage Increase is capped at 15% on PvP
 					DamageBonus = 15;
 

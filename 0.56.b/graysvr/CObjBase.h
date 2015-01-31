@@ -455,7 +455,7 @@ public:
 
 private:
 	ITEMID_TYPE m_dwDispIndex;		// The current display type. ITEMID_TYPE
-	INT64 m_amount;		// Amount of items in pile. 64K max (or corpse type)
+	WORD m_amount;		// Amount of items in pile. 64K max (or corpse type)
 	IT_TYPE m_type;		// What does this item do when dclicked ? defines dynamic_cast type
 	unsigned char m_containedGridIndex;	// Which grid have i been placed in ? (when in a container)
 	DWORD	m_CanUse;		// Base attribute flags. can_u_all/male/female..

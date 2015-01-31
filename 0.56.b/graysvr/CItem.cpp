@@ -2700,7 +2700,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		}	break;
 
 		case IC_MAXAMOUNT:
-			if (!SetMaxAmount(s.GetArgVal()))
+			if (!SetMaxAmount(static_cast<unsigned short>(s.GetArgVal())))
 				return false;
 			break;
 		case IC_ADDCIRCLE:
