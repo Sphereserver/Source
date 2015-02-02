@@ -1727,10 +1727,13 @@ void CClient::Event_Talk_Common(TCHAR * szText) // PC speech
 	// Guards are special
 	// They can't hear u if your dead.
 	bool fGhostSpeak = m_pChar->IsSpeakAsGhost();
-	if ( ! fGhostSpeak && ( FindStrWord( szText, "GUARD" ) > 0 || FindStrWord( szText, "GUARDS" ) > 0))
-	{
+
+	LPCTSTR pszCallWord = g_Exp.m_VarDefs.GetKeyStr("guardcall");
+	if (pszCallWord == "")
+		pszCallWord = "GUARD,GUARDS";
+
+	if ( ! fGhostSpeak && FindStrWord( szText, pszCallWord ) > 0)
 		m_pChar->CallGuards(NULL);
-	}
 
 	// Are we in a region that can hear ?
 	if ( m_pChar->m_pArea->GetResourceID().IsItem())
