@@ -95,6 +95,7 @@ CResource::CResource()
 	m_iTrainSkillCost	= 1;
 #endif
 	m_iSkillPracticeMax	= 300;
+	m_iPacketDeathAnimation = true;
 	m_fCharTags			= true;
 	m_fVendorTradeTitle	= true;
 	m_iVendorMaxSell	= 30;
@@ -539,8 +540,9 @@ enum RC_TYPE
 #endif
 	RC_NTSERVICE,				// m_fUseNTService
 	RC_OPTIONFLAGS,				// m_iOptionFlags
-	RC_OVERSKILLMULTIPLY,		//	m_iOverSkillMultiply
-	RC_PAYFROMPACKONLY,			//	m_fPayFromPackOnly
+	RC_OVERSKILLMULTIPLY,		// m_iOverSkillMultiply
+	RC_PACKETDEATHANIMATION,	// m_iPacketDeathAnimation
+	RC_PAYFROMPACKONLY,			// m_fPayFromPackOnly
 	RC_PETSINHERITNOTORIETY,	// m_iPetsInheritNotoriety
 	RC_PLAYEREVIL,				// m_iPlayerKarmaEvil
 	RC_PLAYERNEUTRAL,			// m_iPlayerKarmaNeutral
@@ -773,6 +775,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "NTSERVICE",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUseNTService),			0 }},
 	{ "OPTIONFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iOptionFlags),				0 }},
 	{ "OVERSKILLMULTIPLY",		{ ELEM_INT,		OFFSETOF(CResource,m_iOverSkillMultiply),		0 }},
+	{ "PACKETDEATHANIMATION",	{ ELEM_BOOL,	OFFSETOF(CResource, m_iPacketDeathAnimation),	0 }},
 	{ "PAYFROMPACKONLY",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fPayFromPackOnly),			0 }},
 	{ "PETSINHERITNOTORIETY",	{ ELEM_INT,		OFFSETOF(CResource,m_iPetsInheritNotoriety),	0 }},
 	{ "PLAYEREVIL",				{ ELEM_INT,		OFFSETOF(CResource,m_iPlayerKarmaEvil),			0 }},
@@ -1093,11 +1096,13 @@ bool CResource::r_LoadVal( CScript &s )
 				}
 			}
 			break;
+
 		case RC_PLAYEREVIL:	// How much bad karma makes a player evil?
 			m_iPlayerKarmaEvil = s.GetArgVal();
 			if ( m_iPlayerKarmaNeutral < m_iPlayerKarmaEvil )
 				m_iPlayerKarmaNeutral = m_iPlayerKarmaEvil;
 			break;
+
 		case RC_PLAYERNEUTRAL:	// How much bad karma makes a player neutral?
 			m_iPlayerKarmaNeutral = s.GetArgVal();
 			if ( m_iPlayerKarmaEvil > m_iPlayerKarmaNeutral )
@@ -1119,23 +1124,32 @@ bool CResource::r_LoadVal( CScript &s )
 		case RC_SCPFILES: // Get SCP files from here.
 			m_sSCPBaseDir = CGFile::GetMergedFileName( s.GetArgStr(), "" );
 			break;
+
 		case RC_SECURE:
 			m_fSecure = (s.GetArgVal() != 0);
 			if ( !g_Serv.IsLoading() )
 				g_Serv.SetSignals();
 			break;
+
+		case RC_PACKETDEATHANIMATION:
+			m_iPacketDeathAnimation = s.GetArgVal() > 0 ? true : false;
+			break;
+
 		case RC_SKILLPRACTICEMAX:
 			m_iSkillPracticeMax = s.GetArgVal();
 			break;
+
 		case RC_SAVEPERIOD:
 			m_iSavePeriod = s.GetArgVal()*60*TICK_PER_SEC;
 			break;
+
 		case RC_SECTORSLEEP:
 			{
 				int sleep = s.GetArgVal();
 				m_iSectorSleepMask = sleep ? (( 1 << sleep) - 1) : 0;
 			}
 			break;
+
 		case RC_SAVEBACKGROUND:
 			m_iSaveBackgroundTime = s.GetArgVal() * 60 * TICK_PER_SEC;
 			break;
