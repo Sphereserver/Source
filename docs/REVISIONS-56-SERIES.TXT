@@ -1617,3 +1617,8 @@ Added: 5 new optional arguments on DAMAGE function to make it compatible with CO
 	Example: DAMAGE 50,dam_general,012345,70,30,0,0,0 will split 50 damage into 70% physical damage + 30% fire damage
 Added: Internal support for COMBAT_ELEMENTAL_ENGINE on spells, explosion potion, etc
 Added: New OSI formula to calculate spell damage if MAGICF_OSIFORMULAS feature is enabled
+
+04-02-2015, Ben
+Added: guardcall defname to sphere_def.scp in the [DEFNAME HARDCODED] section to allow an override of the words used to call guards. (multiple words can be defined) 
+Fixed #2473: Can't get on other ships from your ship anymore.
+Fixed #2467: Orc ship north missing 1 component.

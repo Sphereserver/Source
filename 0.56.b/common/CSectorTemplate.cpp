@@ -256,7 +256,7 @@ CRegionBase * CSectorBase::GetRegion( const CPointBase & pt, DWORD dwType ) cons
 				if (!(dwType & REGION_TYPE_SHIP))
 					continue;
 			}
-			if (!(dwType & REGION_TYPE_HOUSE))
+			else if (!(dwType & REGION_TYPE_HOUSE))
 				continue;
 		}
 		else if ( pRegion->GetResourceID().GetResType() == RES_AREA )
@@ -293,7 +293,13 @@ size_t CSectorBase::GetRegions( const CPointBase & pt, DWORD dwType, CRegionLink
 		ASSERT( pRegion->GetResourceID().IsValidUID());
 		if ( pRegion->GetResourceID().IsItem())
 		{
-			if ( ! ( dwType & REGION_TYPE_MULTI ))
+			CItemShip * pShipItem = dynamic_cast <CItemShip *>(pRegion->GetResourceID().ItemFind());
+			if (pShipItem)
+			{
+				if (!(dwType & REGION_TYPE_SHIP))
+					continue;
+			}
+			else if (!(dwType & REGION_TYPE_HOUSE))
 				continue;
 		}
 		else if ( pRegion->GetResourceID().GetResType() == RES_AREA )

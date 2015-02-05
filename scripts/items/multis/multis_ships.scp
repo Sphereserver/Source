@@ -582,6 +582,7 @@ subsection=Ships
 description=Orc Ship
 
 multiregion=-3,-8,3,12
+component=079c0,0,0
 component=014fa,2,1,14
 component=014fa,-2,1,14
 component=014fa,2,-3,14
