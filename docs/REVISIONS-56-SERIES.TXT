@@ -1622,3 +1622,6 @@ Added: New OSI formula to calculate spell damage if MAGICF_OSIFORMULAS feature i
 Added: guardcall defname to sphere_def.scp in the [DEFNAME HARDCODED] section to allow an override of the words used to call guards. (multiple words can be defined) 
 Fixed #2473: Can't get on other ships from your ship anymore.
 Fixed #2467: Orc ship north missing 1 component.
+
+07-02-2015, Ben
+Added: Outgoing Packet Filtering using keyword OUTPACKETx=function_name in sphere.ini (works exactly like PACKETx=function_name but for outgoing packets)

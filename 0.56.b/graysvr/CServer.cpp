@@ -168,6 +168,7 @@ CServer::CServer() : CServerDef( GRAY_TITLE, CSocketAddressIP( SOCKET_LOCAL_ADDR
 	SetServerMode( SERVMODE_Loading );
 
 	memset(m_PacketFilter, 0, sizeof(m_PacketFilter));
+	memset(m_OutPacketFilter, 0, sizeof(m_OutPacketFilter));
 }
 
 CServer::~CServer()

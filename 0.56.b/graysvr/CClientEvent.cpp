@@ -2876,3 +2876,52 @@ bool CClient::xPacketFilter( const BYTE * pData, size_t iLen )
 	EXC_CATCH;
 	return false;
 }
+
+bool CClient::xOutPacketFilter( const BYTE * pData, size_t iLen )
+{
+	ADDTOCALLSTACK("CClient::xOutPacketFilter");
+
+	EXC_TRY("Outgoing packet filter");
+	if ( iLen > 0 && g_Serv.m_OutPacketFilter[pData[0]][0] )
+	{
+		CScriptTriggerArgs Args(pData[0]);
+		enum TRIGRET_TYPE trigReturn;
+		TCHAR idx[5];
+
+		Args.m_s1 = GetPeerStr();
+		Args.m_pO1 = this;
+		Args.m_VarsLocal.SetNum("CONNECTIONTYPE", GetConnectType());
+
+		size_t bytes = iLen;
+		size_t bytestr = minimum(bytes, SCRIPT_MAX_LINE_LEN);
+		TCHAR *zBuf = Str_GetTemp();
+
+		Args.m_VarsLocal.SetNum("NUM", bytes);
+		memcpy(zBuf, &(pData[0]), bytestr);
+		zBuf[bytestr] = 0;
+		Args.m_VarsLocal.SetStr("STR", true, zBuf, true);
+		if ( m_pAccount )
+		{
+			Args.m_VarsLocal.SetStr("ACCOUNT", false, m_pAccount->GetName());
+			if ( m_pChar )
+			{
+				Args.m_VarsLocal.SetNum("CHAR", m_pChar->GetUID());
+			}
+		}
+
+		//	Fill locals [0..X] to the first X bytes of the packet
+		for ( size_t i = 0; i < bytes; ++i )
+		{
+			sprintf(idx, "%" FMTSIZE_T, i);
+			Args.m_VarsLocal.SetNum(idx, static_cast<int>(pData[i]));
+		}
+
+		//	Call the filtering function
+		if ( g_Serv.r_Call(g_Serv.m_OutPacketFilter[pData[0]], &g_Serv, &Args, NULL, &trigReturn) )
+			if ( trigReturn == TRIGRET_RET_TRUE )
+				return true;
+	}
+
+	EXC_CATCH;
+	return false;
+}

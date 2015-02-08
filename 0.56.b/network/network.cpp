@@ -3945,6 +3945,12 @@ bool NetworkOutput::sendPacketData(NetState* state, PacketSend* packet)
 		return true;
 	}
 
+	if (client->xOutPacketFilter(packet->getData(), packet->getLength()) == true)
+	{
+		delete packet;
+		return true;
+	}
+
 	EXC_SET("prepare data");
 	BYTE* sendBuffer = NULL;
 	size_t sendBufferLength = 0;

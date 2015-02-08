@@ -2390,7 +2390,7 @@ bool CClient::addShopMenuBuy( CChar * pVendor )
 
 	//	since older clients like 2.0.3 will crash without extra packets, let's provide
 	//	some empty packets specialy for them
-	addShopItems(pVendor, LAYER_VENDOR_EXTRA, false);
+	//addShopItems(pVendor, LAYER_VENDOR_EXTRA, false);
 
 	addOpenGump( pVendor, GUMP_VENDOR_RECT );
 	addCharStatWindow( m_pChar->GetUID());	// Make sure the gold total has been updated.

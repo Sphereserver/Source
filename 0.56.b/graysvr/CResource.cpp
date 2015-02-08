@@ -947,6 +947,24 @@ bool CResource::r_LoadVal( CScript &s )
 			else
 				g_Log.EventError("Packet filtering index %d out of range [0..254]\n", index);
 		}
+		else if ( s.IsKeyHead("OUTPACKET", 9) )	//	OUTPACKETx=<function name to execute upon packet>
+		{
+			int index = ATOI(s.GetKey() + 9);
+			if (( index >= 0 ) && ( index < 255 ))
+			{
+				char *args = s.GetArgRaw();
+				if ( !args || ( strlen(args) >= 31 ))
+					g_Log.EventError("Invalid function name for outgoing packet filtering (limit is 30 chars).\n");
+				else
+				{
+					strcpy(g_Serv.m_OutPacketFilter[index], args);
+					DEBUG_MSG(("OUTGOING PACKET FILTER: Hooked packet 0x%x with function %s.\n", index, args));
+					return true;
+				}
+			}
+			else
+				g_Log.EventError("Outgoing packet filtering index %d out of range [0..254]\n", index);
+		}
 
 		return(false);
 	}

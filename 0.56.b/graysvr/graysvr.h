@@ -1130,6 +1130,7 @@ public:
 
 	bool xProcessClientSetup( CEvent * pEvent, size_t iLen );
 	bool xPacketFilter(const BYTE * pEvent, size_t iLen = 0);
+	bool xOutPacketFilter(const BYTE * pEvent, size_t iLen = 0);
 	bool xCanEncLogin(bool bCheckCliver = false);	// Login crypt check
 	// Low level push world data to the client.
 
@@ -1535,6 +1536,7 @@ public:
 	void ShipTimers_Delete(CItemShip * ship);
 
 	char	m_PacketFilter[255][32];	// list of packet filtering functions
+	char	m_OutPacketFilter[255][32];	// list of outgoing packet filtering functions
 
 	CFileObj	fhFile;			//	file script object
 #ifdef _NEW_FILE_COLLECTION
