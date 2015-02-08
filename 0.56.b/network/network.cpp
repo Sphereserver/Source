@@ -2178,6 +2178,13 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 		}
 		else
 		{
+
+			if (client->xOutPacketFilter(packet->getData(), packet->getLength()) == true)
+			{
+				delete packet;
+				return true;
+			}
+
 			if (client->GetConnectType() == CONNECT_GAME)
 			{
 				// game clients require encryption
