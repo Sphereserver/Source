@@ -167,7 +167,11 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 		else
 			writeInt32(other->GetPackSafe()->ContentCount(RESOURCE_ID(RES_TYPEDEF,IT_GOLD)));
 		
-		writeInt16(other->m_defense + otherDefinition->m_defense);
+		if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESPHYSICAL", true, true)));
+		else
+			writeInt16(other->m_defense + otherDefinition->m_defense);
+
 		writeInt16(other->GetTotalWeight() / WEIGHT_UNITS);
 
 		if (version >= 5) // ML attributes

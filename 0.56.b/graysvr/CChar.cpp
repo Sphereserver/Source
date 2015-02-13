@@ -1776,16 +1776,16 @@ do_default:
 		case CHC_LOWERREAGENTCOST:
 		case CHC_LUCK:
 		case CHC_MAXFOLLOWER:
-		case CHC_RESFIRE:
-		case CHC_RESCOLD:
-		case CHC_RESPOISON:
-		case CHC_RESENERGY:
-		case CHC_RESCOLDMAX:
-		case CHC_RESENERGYMAX:
-		case CHC_RESFIREMAX:
 		case CHC_RESPHYSICAL:
 		case CHC_RESPHYSICALMAX:
+		case CHC_RESFIRE:
+		case CHC_RESFIREMAX:
+		case CHC_RESCOLD:
+		case CHC_RESCOLDMAX:
+		case CHC_RESPOISON:
 		case CHC_RESPOISONMAX:
+		case CHC_RESENERGY:
+		case CHC_RESENERGYMAX:
 		case CHC_REGENFOOD:
 		case CHC_REGENHITS:
 		case CHC_REGENSTAM:
@@ -2635,15 +2635,16 @@ do_default:
 		case CHC_INCREASEDEFCHANCE:
 		case CHC_INCREASEDEFCHANCEMAX:
 		case CHC_INCREASESPELLDAM:
-		case CHC_RESCOLDMAX:
-		case CHC_RESFIREMAX:
-		case CHC_RESENERGYMAX:
-		case CHC_RESPOISONMAX:
+		case CHC_RESPHYSICAL:
 		case CHC_RESPHYSICALMAX:
 		case CHC_RESFIRE:
+		case CHC_RESFIREMAX:
 		case CHC_RESCOLD:
+		case CHC_RESCOLDMAX:
 		case CHC_RESPOISON:
+		case CHC_RESPOISONMAX:
 		case CHC_RESENERGY:
+		case CHC_RESENERGYMAX:
 		case CHC_LUCK:
 		case CHC_CURFOLLOWER:
 		case CHC_MAXFOLLOWER:		
@@ -2661,12 +2662,6 @@ do_default:
 				UpdateStatsFlag();
 			}
 			break;
-		case CHC_RESPHYSICAL:
-		{
-			SetDefNum(s.GetKey(), s.GetArgVal(), false);
-			m_defense = CalcArmorDefense();
-			UpdateStatsFlag();
-		}break;
 		//Set as numbers only
 		case CHC_SPELLTIMEOUT:
 			{

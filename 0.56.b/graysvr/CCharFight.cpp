@@ -1756,7 +1756,7 @@ void CChar::CallGuards( CChar * pCriminal )
 
 	// Guards can't respond if criminal is outside of the guard zone.
 	
-	CWorldSearch AreaCrime(GetTopPoint(), UO_MAP_VIEW_SIGHT);
+	CWorldSearch AreaCrime(GetTopPoint(), UO_MAP_VIEW_SIZE);
 	// Is there anything for guards to see ?
 	if ( !pCriminal )
 	{
@@ -2050,9 +2050,7 @@ int CChar::CalcArmorDefense() const
 #endif
 	for ( CItem* pItem=GetContentHead(); pItem!=NULL; pItem=pItem->GetNext())
 	{
-
-		CVarDefCont * pVar = pItem->GetDefKey("RESPHYSICAL", true);
-		int iDefense = pVar ? static_cast<int>(pVar->GetValNum() + pItem->m_ModAr) : pItem->Armor_GetDefense();
+		int iDefense = pItem->Armor_GetDefense();
 
 		// IsTypeSpellable() ? ! IT_WAND
 		if (( pItem->IsType(IT_SPELL) || pItem->IsTypeArmor()) && pItem->m_itSpell.m_spell )
@@ -2072,7 +2070,7 @@ int CChar::CalcArmorDefense() const
 					break;
 			}
 		}
-		if ( pVar || iDefense <= 0 )	// If the item has ResPhysical we don't want to check the armor coverage, since the given value is the final value. Also no need to check for items with no armor... less code run.
+		if ( iDefense <= 0 )
 			continue;
 
 		// reverse of sm_ArmorLayers
@@ -2181,9 +2179,7 @@ int CChar::CalcArmorDefense() const
 		}
 	}
 
-	CVarDefCont * pVar = GetDefKey("RESPHYSICAL", true);
-	int ResPhysical = pVar ? static_cast<int>(pVar->GetValNum()) : 0;
-	return maximum(( iDefenseTotal / 100 ) + m_ModAr + ResPhysical, 0);
+	return maximum(( iDefenseTotal / 100 ) + m_ModAr, 0);
 }
 
 int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType, int iDmgPhysical, int iDmgFire, int iDmgCold, int iDmgPoison, int iDmgEnergy )
@@ -2197,6 +2193,9 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType, int iDmgPhys
 	//  DAMAGE_HIT_BLUNT
 	//  DAMAGE_MAGIC
 	//  ...
+	//
+	// iDmg[Physical/Fire/Cold/Poison/Energy]: % of each type to split the damage into
+	//  Eg: iDmgPhysical=70 + iDmgCold=30 will split iDmg value into 70% physical + 30% cold
 	//
 	// RETURN: damage done
 	//  -1		= already dead / invalid target.
@@ -2287,7 +2286,7 @@ effect_bounce:
 	// Apply armor calculation
 	if ( !(uType & DAMAGE_FIXED) )
 	{
-		if  ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+		if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 		{
 			// AOS elemental combat
 			if ( iDmgPhysical == 0 )		// if physical damage is not set, let's assume it as the remaining value

@@ -2865,13 +2865,6 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 						t->FormatArgs( "%lld", ArtifactRarity );
 					}
 
-					/*INT64 UsesRemaining = pItem->GetDefNum("USESMAX", true, true) - pItem->GetDefNum("USESCUR", true, true);	// UsesMax = 50, UsesCur = 49 -> UsesRemaining = 1? can't be or I don't understand it.
-					if ( UsesRemaining > 0 )
-					{
-					this->m_TooltipData.Add( t = new CClientTooltip( 1060584 ) ); // uses remaining: ~1_val~
-					t->FormatArgs( "%lld", UsesRemaining );
-					}*/
-
 					INT64 UsesRemaining = pItem->GetDefNum("USESCUR", true, true);
 					if ( UsesRemaining > 0 )
 					{
@@ -3664,8 +3657,8 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	//	gms should login with invul and without allshow flag set
 	if ( GetPrivLevel() >= PLEVEL_Counsel )
 	{
-		if ( IsPriv(PRIV_ALLSHOW) ) ClearPrivFlags(PRIV_ALLSHOW);
-		if ( !pChar->IsStatFlag(STATF_INVUL) ) pChar->StatFlag_Set(STATF_INVUL);
+		ClearPrivFlags(PRIV_ALLSHOW);
+		pChar->StatFlag_Set(STATF_INVUL);
 	}
 
 	addPlayerStart( pChar );
@@ -3679,11 +3672,18 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	{
 		GetClient()->addBuff( BI_HIDDEN , 1075655, 1075656, 0 );
 	}
-	//Resend buff icons
+	// Resend buff icons
 	resendBuffs();
 
-	// Send Notoriety Status from all nearby characters.
-	m_pChar->NotoSave_Update();
+	// Clear notoriety status from all nearby characters
+	CWorldSearch AreaChars(m_pChar->GetTopPoint(), UO_MAP_VIEW_SIZE);
+	for (;;)
+	{
+		CChar * pCharNear = AreaChars.GetChar();
+		if ( pCharNear == NULL )
+			break;
+		pCharNear->NotoSave_Clear();
+	}
 
 	if ( IsTrigUsed(TRIGGER_LOGIN) )
 	{
@@ -3698,7 +3698,8 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 		fQuickLogIn	= (Args.m_iN2 != 0);
 	}
 
-	pChar->SetKeyNum("LastHit", 0);
+	if ( IsSetCombatFlags(COMBAT_PREHIT) )
+		pChar->SetKeyNum("LastHit", 0);
 
 	if ( !fQuickLogIn )
 	{
@@ -3726,8 +3727,7 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 		}
 	}
 
-	if ( GetAccount()->m_TagDefs.GetKey("LastLogged") )
-		GetAccount()->m_TagDefs.DeleteKey("LastLogged");
+	GetAccount()->m_TagDefs.DeleteKey("LastLogged");
 
 	if ( IsPriv(PRIV_GM_PAGE) && g_World.m_GMPages.GetCount() > 0 )
 	{

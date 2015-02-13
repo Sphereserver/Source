@@ -344,6 +344,28 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 			default:
 				break;
 		}
+
+		if ( pItem->IsTypeArmorWeapon() )
+		{
+			SetDefNum("DAMPHYSICAL", static_cast<int>(GetDefNum("DAMPHYSICAL", true) + pItem->GetDefNum("DAMPHYSICAL", true, true)));
+			SetDefNum("DAMFIRE", static_cast<int>(GetDefNum("DAMFIRE", true) + pItem->GetDefNum("DAMFIRE", true, true)));
+			SetDefNum("DAMCOLD", static_cast<int>(GetDefNum("DAMCOLD", true) + pItem->GetDefNum("DAMCOLD", true, true)));
+			SetDefNum("DAMPOISON", static_cast<int>(GetDefNum("DAMPOISON", true) + pItem->GetDefNum("DAMPOISON", true, true)));
+			SetDefNum("DAMENERGY", static_cast<int>(GetDefNum("DAMENERGY", true) + pItem->GetDefNum("DAMENERGY", true, true)));
+
+			SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) + pItem->GetDefNum("RESPHYSICAL", true, true)));
+			SetDefNum("RESFIRE", static_cast<int>(GetDefNum("RESFIRE", true) + pItem->GetDefNum("RESFIRE", true, true)));
+			SetDefNum("RESCOLD", static_cast<int>(GetDefNum("RESCOLD", true) + pItem->GetDefNum("RESCOLD", true, true)));
+			SetDefNum("RESPOISON", static_cast<int>(GetDefNum("RESPOISON", true) + pItem->GetDefNum("RESPOISON", true, true)));
+			SetDefNum("RESENERGY", static_cast<int>(GetDefNum("RESENERGY", true) + pItem->GetDefNum("RESENERGY", true, true)));
+		}
+
+		if ( pItem->GetDefNum("NIGHTSIGHT", true, true))
+		{
+			StatFlag_Mod( STATF_NightSight, 1 );
+			if ( IsClient() )
+				m_pClient->addLight();
+		}
 	}
 
 	pItem->Update();
@@ -445,15 +467,30 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 				break;
 		}
 
+		if ( pItem->IsTypeArmorWeapon() )
+		{
+			SetDefNum("DAMPHYSICAL", static_cast<int>(GetDefNum("DAMPHYSICAL", true) - pItem->GetDefNum("DAMPHYSICAL", true, true)));
+			SetDefNum("DAMFIRE", static_cast<int>(GetDefNum("DAMFIRE", true) - pItem->GetDefNum("DAMFIRE", true, true)));
+			SetDefNum("DAMCOLD", static_cast<int>(GetDefNum("DAMCOLD", true) - pItem->GetDefNum("DAMCOLD", true, true)));
+			SetDefNum("DAMPOISON", static_cast<int>(GetDefNum("DAMPOISON", true) - pItem->GetDefNum("DAMPOISON", true, true)));
+			SetDefNum("DAMENERGY", static_cast<int>(GetDefNum("DAMENERGY", true) - pItem->GetDefNum("DAMENERGY", true, true)));
+
+			SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) - pItem->GetDefNum("RESPHYSICAL", true, true)));
+			SetDefNum("RESFIRE", static_cast<int>(GetDefNum("RESFIRE", true) - pItem->GetDefNum("RESFIRE", true, true)));
+			SetDefNum("RESCOLD", static_cast<int>(GetDefNum("RESCOLD", true) - pItem->GetDefNum("RESCOLD", true, true)));
+			SetDefNum("RESPOISON", static_cast<int>(GetDefNum("RESPOISON", true) - pItem->GetDefNum("RESPOISON", true, true)));
+			SetDefNum("RESENERGY", static_cast<int>(GetDefNum("RESENERGY", true) - pItem->GetDefNum("RESENERGY", true, true)));
+		}
+
+		if ( pItem->GetDefNum("NIGHTSIGHT", true, true))
+		{
+			StatFlag_Mod( STATF_NightSight, 0 );
+			if ( IsClient() )
+				m_pClient->addLight();
+		}
+
 		// If items are magical then remove effect here.
 		Spell_Effect_Remove(pItem);
-	}
-
-	if ( pItem->GetDefNum("NIGHTSIGHT", true, true))
-	{
-		StatFlag_Mod( STATF_NightSight, 0 );
-		if ( IsClient() )
-			m_pClient->addLight();
 	}
 }
 
@@ -1920,13 +1957,6 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 
 	if ( fFromDClick )
 		pItem->ResendOnEquip();
-
-	if ( pItem->GetDefNum("NIGHTSIGHT", true, true))
-	{
-		StatFlag_Mod( STATF_NightSight, 1 );
-		if ( IsClient() )
-			m_pClient->addLight();
-	}
 
 	return true;
 }

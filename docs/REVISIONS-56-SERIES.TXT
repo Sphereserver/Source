@@ -1625,3 +1625,10 @@ Fixed #2467: Orc ship north missing 1 component.
 
 07-02-2015, Ben
 Added: Outgoing Packet Filtering using keyword OUTPACKETx=function_name in sphere.ini (works exactly like PACKETx=function_name but for outgoing packets)
+
+13-02-2015, Coruja
+Changed: Increased the area radius to call guards [14 -> 18 tiles].
+Changed: RESPHYSICAL won't be merged with AR anymore, now both properties can have independent values. Sphere will choose the property to display on client status gump based on COMBAT_ELEMENTAL_ENGINE setting on sphere.ini (enabled = RESPHYSICAL / disabled = AR).
+Added: Weapons and armors now will automatically set DAM*/RES* char properties on equip/unequip.
+Fixed: Login internal behavior adding TAG.LastHit=0 on chars even when COMBAT_PREHIT is disabled. This tag is only used by COMBAT_PREHIT, so if it's disabled the tag won't be added anymore.
+Fixed #2391: Nearby char names showing wrong notoriety color on client login.
