@@ -1632,3 +1632,11 @@ Changed: RESPHYSICAL won't be merged with AR anymore, now both properties can ha
 Added: Weapons and armors now will automatically set DAM*/RES* char properties on equip/unequip.
 Fixed: Login internal behavior adding TAG.LastHit=0 on chars even when COMBAT_PREHIT is disabled. This tag is only used by COMBAT_PREHIT, so if it's disabled the tag won't be added anymore.
 Fixed #2391: Nearby char names showing wrong notoriety color on client login.
+
+15-02-2015, Coruja
+[sphere_defs.scp]: Added missing defs for 'colors_metal' and 'colors_bright'
+[sphere_template.scp]: Added missing 'random_talisman' template
+[sphere_skills.scp]: Removed USESMAX behavior from Fishing skill (I dont know why, but OSI doesn't seems to use the 'Uses Remaining' behavior on this skill)
+[items/*]: Added missing USESMAX property on skill tools items (and removed from i_pole_fishing)
+[towns/sphere_town_dlg_master.scp]: Fixed console error [replaced function f_stonesys_iswarring -> f_townsys_iswarring]
+[towns/sphere_town_functions.scp]: Fixed console error [replaced typedef t_town_town -> t_stone_town]

@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2015
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, October 18, 2013
+// FILE LAST UPDATED: Sunday, Feb 15, 2015
 //
 VERSION=0.56c
 
@@ -551,6 +551,7 @@ TEVENTS=t_equipitem
 DUPELIST=0e86
 ON=@Create
    HITPOINTS={36 48}
+   UsesMax=50
 
 [ITEMDEF 0e86]
 //pickaxe
@@ -1051,6 +1052,7 @@ TEVENTS=t_equipitem
 DUPELIST=0fb5
 ON=@Create
    HITPOINTS={36 48}
+   UsesMax={25 75}
 
 [ITEMDEF 0fb5]
 //sledge hammer

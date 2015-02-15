@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2014
+// SPHERE by : Menasoft ©1997-2015
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, Nov 30, 2014
+// FILE LAST UPDATED: Sunday, Feb 15, 2015
 //
 VERSION=0.56c
 
@@ -82,7 +82,6 @@ mount_0x4e7	03ec8	// tigress
 [DEFNAME hues]
 color_text             -1
 color_none              0
-color_metal             0
 color_red1             32
 color_red2             33
 color_cyan             88
@@ -110,7 +109,9 @@ colors_snake           {2001 2018}
 colors_bird            {2101 2130}
 colors_slime           {2201 2224}
 colors_animal          {2301 2318}
+colors_metal           {2401 2430}
 
+colors_bright          {062 1 071 1 03 9 0d 9 013 9 01c 9 021 9 030 9 037 9 03a 9 044 9 059 9}
 colors_stone           {2498 1 2500 1 {2671 2706} 1}
 colors_skin_gargoyle   {1755 1779}
 colors_white           2301

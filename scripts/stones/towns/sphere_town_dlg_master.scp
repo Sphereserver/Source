@@ -53,7 +53,7 @@ else
 endif
 
 If (<def0.TOWNSCONFIG_ALLOW_CHANGEALIGN> || <src.isgm>)
-	If (<f_stonesys_iswarring>)
+	If (<f_townsys_iswarring>)
 	  gumppic 20 100 4020
 	  dhtmlgump 55 100 450 30 0 0 Change alignment. N/A DURING WARs // Town Type
 	elif (<tag0.changealign_time> <= <serv.time>)

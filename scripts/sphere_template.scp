@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2015
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, October 23, 2013
+// FILE LAST UPDATED: Sunday, Feb 15, 2015
 //
 VERSION=0.56c
 
@@ -95,6 +95,9 @@ random_dresses         { i_dress_full 1 i_dress_plain 1 i_dress_gilded 1 i_dress
 
 //layer_cape  
 random_capes_all       { i_cape 1 i_cape_fur 1 }
+
+//layer_talisman
+random_talisman        { i_talisman1 1 i_talisman2 1 i_talisman3 1 i_talisman4 1 }
 
 [DEFNAME items_random_wearables]
 random_jewelry         { random_necklace 1 random_bracelets 1 random_earrings 1 random_rings 1 }

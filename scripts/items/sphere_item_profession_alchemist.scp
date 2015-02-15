@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2015
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, September 20, 2013
+// FILE LAST UPDATED: Sunday, Feb 15, 2015
 //
 VERSION=0.56c
 
@@ -225,6 +225,8 @@ SKILLMAKE=Tinkering 23.3,t_tinker_tools
 CATEGORY=Items by Professions
 SUBSECTION=Alchemist
 DESCRIPTION=Mortar and Pestle
+ON=@Create
+   UsesMax={25 75}
 
 
 [ITEMDEF 0efb]

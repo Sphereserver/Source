@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2015
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, November 5, 2013
+// FILE LAST UPDATED: Sunday, Feb 15, 2015
 //
 VERSION=0.56c
 
@@ -64,10 +64,6 @@ CATEGORY=Items by Professions
 SUBSECTION=Fisherman
 DESCRIPTION=Fishing Pole
 DUPELIST=0dc0
-
-
-ON=@Create
-UsesMax={25 75}
 
 [ITEMDEF 0dc0]
 //fishing pole
@@ -662,6 +658,8 @@ CATEGORY=Items by Professions
 SUBSECTION=Scribe
 DESCRIPTION=Pen & Ink
 DUPELIST=0fc0
+ON=@Create
+   UsesMax={25 75}
 
 [ITEMDEF 0fc0]
 //pen and ink
@@ -858,6 +856,8 @@ CATEGORY=Items by Professions
 SUBSECTION=Carpenter
 DESCRIPTION=Dovetail Saw
 DUPELIST=01029
+ON=@Create
+   UsesMax={25 75}
 
 [ITEMDEF 01029]
 //dovetail saw
@@ -875,6 +875,8 @@ CATEGORY=Items by Professions
 SUBSECTION=Carpenter
 DESCRIPTION=Hammer
 DUPELIST=0102b
+ON=@Create
+   UsesMax={25 75}
 
 [ITEMDEF 0102b]
 //hammer
@@ -892,6 +894,8 @@ CATEGORY=Items by Professions
 SUBSECTION=Carpenter
 DESCRIPTION=Moulding Planes
 DUPELIST=0102d
+ON=@Create
+   UsesMax={25 75}
 
 [ITEMDEF 0102d]
 //moulding planes
@@ -909,6 +913,8 @@ CATEGORY=Items by Professions
 SUBSECTION=Carpenter
 DESCRIPTION=Nails
 DUPELIST=0102f
+ON=@Create
+   UsesMax={25 75}
 
 [ITEMDEF 0102f]
 //nails
@@ -926,6 +932,8 @@ CATEGORY=Items by Professions
 SUBSECTION=Carpenter
 DESCRIPTION=Jointing Plane
 DUPELIST=01031
+ON=@Create
+   UsesMax={25 75}
 
 [ITEMDEF 01031]
 //jointing plane
@@ -943,6 +951,8 @@ CATEGORY=Items by Professions
 SUBSECTION=Carpenter
 DESCRIPTION=Smoothing Plane
 DUPELIST=01033
+ON=@Create
+   UsesMax={25 75}
 
 [ITEMDEF 01033]
 //smoothing plane
@@ -960,6 +970,8 @@ CATEGORY=Items by Professions
 SUBSECTION=Carpenter
 DESCRIPTION=Saw
 DUPELIST=01035
+ON=@Create
+   UsesMax={25 75}
 
 [ITEMDEF 01035]
 //saw
@@ -1224,6 +1236,8 @@ SKILLMAKE=Tinkering 21.4,t_tinker_tools
 CATEGORY=Items by Professions
 SUBSECTION=Carpenter
 DESCRIPTION=Draw Knife
+ON=@Create
+   UsesMax={25 75}
 
 [ITEMDEF 010e5]
 DEFNAME=i_froe
@@ -1235,6 +1249,8 @@ SKILLMAKE=Tinkering 29.7,t_tinker_tools
 CATEGORY=Items by Professions
 SUBSECTION=Carpenter
 DESCRIPTION=Froe
+ON=@Create
+   UsesMax={25 75}
 
 [ITEMDEF 010e6]
 DEFNAME=i_inshave
@@ -1246,6 +1262,8 @@ SKILLMAKE=Tinkering 31.2,t_tinker_tools
 CATEGORY=Items by Professions
 SUBSECTION=Carpenter
 DESCRIPTION=Inshave
+ON=@Create
+   UsesMax={25 75}
 
 [ITEMDEF 010e7]
 DEFNAME=i_scorp
@@ -1257,7 +1275,8 @@ SKILLMAKE=Tinkering 26.3.2,t_tinker_tools
 CATEGORY=Items by Professions
 SUBSECTION=Carpenter
 DESCRIPTION=Scorp
-
+ON=@Create
+   UsesMax={25 75}
 
 [ITEMDEF 012a5]
 DEFNAME=i_cards_tarot
@@ -1296,7 +1315,6 @@ DUPEITEM=012a5
 //tarot
 DUPEITEM=012a5
 
-
 [ITEMDEF 012b3]
 DEFNAME=i_mallet_and_chisel
 TYPE=t_masonry_tool
@@ -1306,7 +1324,8 @@ RESOURCES=2 i_ingot_iron,1 i_board
 CATEGORY=Items by Professions
 SUBSECTION=Mason
 DESCRIPTION=Mallet and Chisel
-
+ON=@Create
+   UsesMax={25 75}
 
 [ITEMDEF 01370]
 DEFNAME=i_brush_horse
@@ -2691,6 +2710,8 @@ SKILLMAKE=TINKERING 35.0,t_tinker_tools
 CATEGORY=Items by Professions
 SUBSECTION=Tinker
 DESCRIPTION=Tinker Tools
+ON=@Create
+   UsesMax={25 75}
 
 [ITEMDEF 01ebd]
 DEFNAME=i_wheat_sheaf

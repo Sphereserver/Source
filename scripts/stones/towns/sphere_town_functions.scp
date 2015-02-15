@@ -14,7 +14,7 @@ VERSION=0.56b
 [FUNCTION f_townsys_recruitguy]
 ref1 = <args>
 
-If (<ref1.type> != t_town_town)
+If (<ref1.type> != t_stone_town)
   return 1
 elif ((<ref1.masteruid> != <uid>) && (<ref1.memberfromuid.<uid>.priv> != <def0.STONEPRIV_MEMBER>) && (!<isgm>))
   sysmessage @038a Only town members can recruit new players.

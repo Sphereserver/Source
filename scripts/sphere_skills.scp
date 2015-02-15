@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, Jan 16, 2015
+// FILE LAST UPDATED: Sunday, Feb 15, 2015
 //
 VERSION=0.56c
 
@@ -455,10 +455,6 @@ ON=@PreStart
 		SRC.SYSMESSAGE You can't fish while riding!
 		return 1
 	ENDIF
-	IF (<SRC.FINDLAYER.2.USESCUR>< 1)
-		SRC.SYSMESSAGE The tool is out of charges.
-		return 1
-	ENDIF
 
 ON=@Start
 	ANIM 12
@@ -468,10 +464,6 @@ ON=@Start
 
 ON=@Success
 	ACTARG2=1		// 1 will pack the resource, 0 place it on the ground.
-	SRC.FINDLAYER.2.USESCUR --
-	IF (<SRC.FINDLAYER.2.USESCUR>==0)
-		SRC.FINDLAYER.2.DESTROY 1
-	ENDIF
 
 ON=@Fail
 	SRC.SYSMESSAGE You fish a while, but fail to catch anything.
