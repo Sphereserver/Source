@@ -976,12 +976,12 @@ enum NOTO_TYPE
 
 // client versions (behaviours)
 #define MINCLIVER_CHECKWALKCODE		0x126000	// minimum client to allow checking walking crypt-codes
-#define MAXCLIVER_EXTRASHOPLAYER	0x300000	// maximum client to send layer_vendor_extra
 #define MINCLIVER_PADCHARLIST		0x300001	// minimum client to pad character list to at least 5 characters
 #define MINCLIVER_AUTOASYNC			0x400000	// minimum client to auto-enable async networking
 #define MINCLIVER_NOTOINVUL			0x400000	// minimum client required to view noto_invul health bar
 #define MINCLIVER_SKILLCAPS			0x400000	// minimum client to send skill caps in 0x3A packet
 #define MINCLIVER_CLOSEDIALOG		0x400040	// minimum client where close dialog does not trigger a client response
+#define MAXCLIVER_EXTRASHOPLAYER	0x600017	// maximum client to send layer_vendor_extra
 #define MINCLIVER_ITEMGRID			0x600017	// minimum client to use grid index
 
 // client versions (packets)
@@ -1142,7 +1142,6 @@ struct CEvent	// event buffer from client to server..
 {
 #define MAX_BUFFER			15360	// Buffer Size (For socket operations)
 #define MAX_ITEMS_CONT		256		// Max items in a container. (arbitrary)
-#define MAX_ITEMS_VENDOR	115		// Max items for client not to crash (arbitary)
 #define MAX_MENU_ITEMS		64		// number of items in a menu. (arbitrary)
 #define MAX_CHARS_PER_ACCT	7
 

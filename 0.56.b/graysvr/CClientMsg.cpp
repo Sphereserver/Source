@@ -2352,12 +2352,12 @@ int CClient::addShopItems(CChar * pVendor, LAYER_TYPE layer, bool bReal)
 
 	int iConvertFactor = pVendor->NPC_GetVendorMarkup(m_pChar );
 	PacketVendorBuyList* cmd = new PacketVendorBuyList();
-	int count = cmd->fillContainer(pContainer, iConvertFactor, bReal? 115 : 0);
+	int count = cmd->fillContainer(pContainer, iConvertFactor, bReal? MAX_ITEMS_CONT : 0);
 	cmd->push(this);
 
 	// Send a warning if the vendor somehow has more stock than the allowed limit
-	if ( pContainer->GetCount() > minimum(MAX_ITEMS_VENDOR, MAX_ITEMS_CONT) )
-		g_Log.Event( LOGL_WARN, "Vendor 0%lx '%s' has exceeded their stock limit! (%d/%d items)\n", static_cast<DWORD>(pVendor->GetUID()), static_cast<LPCTSTR>(pVendor->GetName()), pContainer->GetCount(), minimum(MAX_ITEMS_VENDOR, MAX_ITEMS_CONT));
+	if ( pContainer->GetCount() > MAX_ITEMS_CONT )
+		g_Log.Event( LOGL_WARN, "Vendor 0%lx '%s' has exceeded their stock limit! (%d/%d items)\n", static_cast<DWORD>(pVendor->GetUID()), static_cast<LPCTSTR>(pVendor->GetName()), pContainer->GetCount(), MAX_ITEMS_CONT);
 
 	return count;
 }
@@ -2388,9 +2388,10 @@ bool CClient::addShopMenuBuy( CChar * pVendor )
 	if ( iTotal <= 0 )
 		return false;
 
-	//	since older clients like 2.0.3 will crash without extra packets, let's provide
+	//	since older clients will crash without extra packets, let's provide
 	//	some empty packets specialy for them
-	//addShopItems(pVendor, LAYER_VENDOR_EXTRA, false);
+	if ( GetNetState()->isClientLessVersion(MAXCLIVER_EXTRASHOPLAYER) )
+		addShopItems(pVendor, LAYER_VENDOR_EXTRA, false);
 
 	addOpenGump( pVendor, GUMP_VENDOR_RECT );
 	addCharStatWindow( m_pChar->GetUID());	// Make sure the gold total has been updated.
