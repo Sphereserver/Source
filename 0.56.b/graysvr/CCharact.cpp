@@ -4185,13 +4185,12 @@ bool CChar::OnTick()
 	if ( iTimeDiff >= TICK_PER_SEC )	// don't bother with < 1 sec times.
 	{
 		// decay equipped items (spells)
-		CItem* pItemNext = NULL;
 		CItem* pItem = GetContentHead();
+		int iCount = 0 ;
 
-		for ( ; pItem != NULL; pItem = pItemNext )
+		for ( ; pItem != NULL; pItem = GetAt(++iCount) )
 		{
 			EXC_TRYSUB("Ticking items");
-			pItemNext = pItem->GetNext();
 
 			// always check the validity of the memory objects
 			if ( pItem->IsType(IT_EQ_MEMORY_OBJ) && !pItem->m_uidLink.ObjFind() )
