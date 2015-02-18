@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, Feb 15, 2015
+// FILE LAST UPDATED: Wednesday, Feb 18, 2015
 //
 VERSION=0.56c
 
@@ -750,7 +750,7 @@ DEFNAME=Skill_Archery
 KEY=Archery
 TITLE=Archer
 PROMPT_MSG=
-FLAGS=SKF_FIGHT
+FLAGS=SKF_FIGHT|SKF_RANGED
 DELAY=2.0,0.1
 STAT_STR=40
 STAT_INT=30
@@ -1279,7 +1279,7 @@ VALUES=1,30,200
 DEFNAME=SKILL_THROWING
 KEY=Throwing
 TITLE=Bladeweaver
-FLAGS=SKF_FIGHT
+FLAGS=SKF_FIGHT|SKF_RANGED
 STAT_STR=40
 STAT_INT=30
 STAT_DEX=70

@@ -4763,7 +4763,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		{
 			if ( ! IsType(IT_RUNE) && ! IsType(IT_TELEPAD) )
 			{
-				pCharSrc->SysMessage( "That item is not a recall rune." );
+				pCharSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_SPELL_RECALL_NOTRUNE) );
 				return false;
 			}
 			if ( GetTopLevelObj() != pCharSrc )

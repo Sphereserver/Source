@@ -3368,8 +3368,33 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 							}
 							break;
 
-						case IT_BOOK:
-							// Author?
+						case IT_RUNE:
+							{
+								const CPointMap pt = pItem->m_itTelepad.m_pntMark;
+								if ( !pt.IsValidPoint() )
+									break;
+
+								LPCTSTR regionName = g_Cfg.GetDefaultMsg(DEFMSG_RUNE_LOCATION_UNK);
+								if ( pt.GetRegion(REGION_TYPE_AREA) )
+									regionName = pt.GetRegion(REGION_TYPE_AREA)->GetName();
+								bool regionMulti = pt.GetRegion(REGION_TYPE_MULTI);
+
+								if ( pt.m_map == 0 )
+									this->m_TooltipData.Add( t = new CClientTooltip( regionMulti? 1062452 : 1060805 ) ); // ~1_val~ (Felucca)[(House)]
+								else if ( pt.m_map == 1 )
+									this->m_TooltipData.Add( t = new CClientTooltip( regionMulti? 1062453 : 1060806 ) ); // ~1_val~ (Trammel)[(House)]
+								else if ( pt.m_map == 3 )
+									this->m_TooltipData.Add( t = new CClientTooltip( regionMulti? 1062454 : 1060804 ) ); // ~1_val~ (Malas)[(House)]
+								else if ( pt.m_map == 4 )
+									this->m_TooltipData.Add( t = new CClientTooltip( regionMulti? 1063260 : 1063259 ) ); // ~1_val~ (Tokuno Islands)[(House)]
+								else if ( pt.m_map == 5 )
+									this->m_TooltipData.Add( t = new CClientTooltip( regionMulti? 1113206 : 1113205 ) ); // ~1_val~ (Ter Mur)[(House)]
+								else
+									// There's no proper clilocs for Ilshenar (map2) and custom facets (map > 5), so let's use a generic cliloc
+									this->m_TooltipData.Add( t = new CClientTooltip( 1042971 ) ); // ~1_NOTHING~
+
+								t->FormatArgs( "%s %s", g_Cfg.GetDefaultMsg(DEFMSG_RUNE_TO), regionName );
+							}
 							break;
 
 						case IT_SPELLBOOK:

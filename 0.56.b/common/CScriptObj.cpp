@@ -1463,7 +1463,7 @@ bool CScriptObj::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 						pChar->Update();
 					else
 					{
-						DEBUG_ERR(("NEWNPC failed on UID:0%lx, could not move to world", (DWORD)pIdentity->GetUID()));
+						DEBUG_ERR(("NEWNPC failed on UID:0%lx, could not move to world\n", (DWORD)pIdentity->GetUID()));
 						pChar->Delete();
 						g_World.m_uidNew = (DWORD)0;
 						return false;

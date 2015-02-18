@@ -1430,6 +1430,7 @@ TAT_AS_ARGO   3      // Treat the arguments as ARGO
 
 [DEFNAME misc_own]
 empty_cliloc      1042971
+empty_cliloc2     1070722
 
 [DEFNAME los_flags]
 los_nb_local_terrain   00001   // Terrain inside a region I am standing in does not block LOS

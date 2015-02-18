@@ -1979,8 +1979,6 @@ PacketBulletinBoard::PacketBulletinBoard(const CClient* target, BBOARDF_TYPE act
 	else
 	{
 		LPCTSTR author = message->m_sAuthor;
-		if (target->IsPriv(PRIV_GM))
-			author = target->GetChar()->GetName();
 
 		lenstr = strlen(author) + 1;
 		if (lenstr > 255) lenstr = 255;

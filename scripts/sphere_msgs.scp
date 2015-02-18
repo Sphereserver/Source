@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2014
+// SPHERE by : Menasoft ©1997-2015
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, November 10, 2014
+// FILE LAST UPDATED: Wednesday, Feb 18, 2015
 //
 VERSION=0.56c
 
@@ -324,7 +324,7 @@ EMOTE_DEF_UNICODE	0
 //itemuse_pitcher_targ			"Where do you want to use the %s?"
 //itemuse_port_locked			"You can't move the gate."
 //itemuse_potion_fail			"You can't move the item."
-//itemuse_rune_name			"What is the new name of the rune ?"
+//itemuse_rune_name			"Please enter a description for this marked object."
 //itemuse_scissors_use			"Use scissors on hair or cloth to cut"
 //itemuse_sewkit_promt			"What do you want to use the %s on?"
 //itemuse_sextant				"I am in %s, %s"
@@ -598,6 +598,7 @@ EMOTE_DEF_UNICODE	0
 //msg_targ_link2				"What do you want to link it to ?"
 //msg_targ_links				"These items are now linked."
 //msg_targ_pc					"Pick other corner:"
+//msg_targ_unexpected			"Unexpected target info"
 //msg_tingling					"You feel a tingling sensation."
 //msg_toofar_vendor			"Too far away from the Vendor"
 //msg_trade_cantmove			"You cannot move items that are in trade windows."
@@ -832,6 +833,7 @@ EMOTE_DEF_UNICODE	0
 //snooping_someone			"peeking into"
 //snooping_your				"attempting to peek into"
 //spell_alcohol_hic				"*Hic*"
+//spell_alcohol_sober				"You feel sober."
 //spell_animdead_fail			"The corpse stirs for a moment then falls!"
 //spell_animdead_nc			"That is not a corpse!"
 //spell_create_food			"You magically create food in your backpack: %s"
@@ -922,7 +924,8 @@ EMOTE_DEF_UNICODE	0
 //tracking_result_disc			" disconnected"
 //tracking_unable				"You cannot locate your target"
 //tracking_end					"You have lost your quarry."
-//rune_to						"Rune to: "
+//rune_to						"a recall rune for"
+//rune_location_unk					"an unknown location"
 //key_to						"Key to: "
 //stone_for					"Stone for the "
 //rune_name					"Rune"

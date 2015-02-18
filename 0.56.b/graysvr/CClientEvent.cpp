@@ -174,7 +174,7 @@ void CClient::Event_Book_Title( CGrayUID uid, LPCTSTR pszTitle, LPCTSTR pszAutho
 	CItemMessage * pBook = dynamic_cast <CItemMessage *> (uid.ItemFind());
 	if ( !m_pChar->CanTouch(pBook) )
 	{
-		SysMessage("you can't reach it");
+		SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_REACH_FAIL) );
 		return;
 	}
 	if ( !pBook->IsBookWritable() )
@@ -2276,7 +2276,7 @@ void CClient::Event_Target(DWORD context, CGrayUID uid, CPointMap pt, BYTE flags
 	{
 		// unexpected context
 		if (context != 0 && (pt.m_x != -1 || uid.GetPrivateUID() != 0))
-			SysMessage("Unexpected target info");
+			SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_TARG_UNEXPECTED) );
 
 		return;
 	}
@@ -2379,7 +2379,7 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 
 	if (m_pPopupPacket != NULL)
 	{
-		DEBUG_ERR(("New popup packet being formed before previous one has been released."));
+		DEBUG_ERR(("New popup packet being formed before previous one has been released.\n"));
 
 		delete m_pPopupPacket;
 		m_pPopupPacket = NULL;

@@ -1640,3 +1640,15 @@ Fixed #2391: Nearby char names showing wrong notoriety color on client login.
 [items/*]: Added missing USESMAX property on skill tools items (and removed from i_pole_fishing)
 [towns/sphere_town_dlg_master.scp]: Fixed console error [replaced function f_stonesys_iswarring -> f_townsys_iswarring]
 [towns/sphere_town_functions.scp]: Fixed console error [replaced typedef t_town_town -> t_stone_town]
+
+18-02-2015, Coruja
+Fixed: Added missing newline break (\n) on some console error messages.
+Fixed: Bulletin Board showing wrong author name on messages when the reader have GM=1 privileges.
+Added: Items with LUCK property now will set char LUCK on equip/unequip.
+Added: Missing tooltip info for recall runes.
+[sphere_msgs.scp]:
+	-Added new messages 'msg_targ_unexpected', 'rune_location_unk'
+	-Updated texts for 'itemuse_rune_name', 'rune_to'
+[sphere_skills.scp]:
+	-Added missing SKF_RANGED flag on Archery and Throwing skills.
+	WARNING: Make sure to update your scripts following this change to prevent some problems on these skills. Previously sphere was internally setting SKF_RANGED on these skills, but now it's 100% on script-side.

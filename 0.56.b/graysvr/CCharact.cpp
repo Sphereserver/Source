@@ -360,6 +360,10 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 			SetDefNum("RESENERGY", static_cast<int>(GetDefNum("RESENERGY", true) + pItem->GetDefNum("RESENERGY", true, true)));
 		}
 
+		INT64 iLuck = pItem->GetDefNum("LUCK", true, true);
+		if ( iLuck != 0 )
+			SetDefNum("LUCK", static_cast<int>(GetDefNum("LUCK", true) + iLuck));
+
 		if ( pItem->GetDefNum("NIGHTSIGHT", true, true))
 		{
 			StatFlag_Mod( STATF_NightSight, 1 );
@@ -481,6 +485,10 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 			SetDefNum("RESPOISON", static_cast<int>(GetDefNum("RESPOISON", true) - pItem->GetDefNum("RESPOISON", true, true)));
 			SetDefNum("RESENERGY", static_cast<int>(GetDefNum("RESENERGY", true) - pItem->GetDefNum("RESENERGY", true, true)));
 		}
+
+		INT64 iLuck = pItem->GetDefNum("LUCK", true, true);
+		if ( iLuck != 0 )
+			SetDefNum("LUCK", static_cast<int>(GetDefNum("LUCK", true) - iLuck));
 
 		if ( pItem->GetDefNum("NIGHTSIGHT", true, true))
 		{
