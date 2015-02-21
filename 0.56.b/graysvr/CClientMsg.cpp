@@ -2390,7 +2390,7 @@ bool CClient::addShopMenuBuy( CChar * pVendor )
 
 	//	since older clients will crash without extra packets, let's provide
 	//	some empty packets specialy for them
-	if ( GetNetState()->isClientLessVersion(MAXCLIVER_EXTRASHOPLAYER) )
+	//if ( GetNetState()->isClientLessVersion(MAXCLIVER_EXTRASHOPLAYER) )
 		addShopItems(pVendor, LAYER_VENDOR_EXTRA, false);
 
 	addOpenGump( pVendor, GUMP_VENDOR_RECT );
@@ -2425,12 +2425,12 @@ bool CClient::addShopMenuSell( CChar * pVendor )
 	CItemContainer * pContainer2 = pVendor->GetBank( LAYER_VENDOR_STOCK );
 	addItem( pContainer2 );
 
-	if ( GetNetState()->isClientLessVersion(MAXCLIVER_EXTRASHOPLAYER) )
-	{
+	//if ( GetNetState()->isClientLessVersion(MAXCLIVER_EXTRASHOPLAYER) )
+	//{
 		// This avoid client crashes
 		CItemContainer * pContainer3 = pVendor->GetBank( LAYER_VENDOR_EXTRA );
 		addItem( pContainer3 );
-	}
+	//}
 
 	if ( pVendor->IsStatFlag( STATF_Pet ))	// Player vendor.
 	{
