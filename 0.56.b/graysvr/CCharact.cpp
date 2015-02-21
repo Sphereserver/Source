@@ -1470,51 +1470,51 @@ void CChar::SoundChar( CRESND_TYPE type )
 		CItem * pWeapon = m_uidWeapon.ItemFind();
 		if ( pWeapon != NULL )
 		{
-			// weapon type strike noise based on type of weapon and how hard hit.
-			switch ( pWeapon->GetType() )
-			{
-				case IT_WEAPON_MACE_CROOK:
-				case IT_WEAPON_MACE_PICK:
-				case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
-				case IT_WEAPON_MACE_STAFF:
-					// 0x233 = blunt01 (miss?)
-					id = 0x233;
-					break;
-				case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
-					// 0x232 = axe01 swing. (miss?)
-					id = 0x232;
-					break;
-				case IT_WEAPON_THROWING:
-				case IT_WEAPON_SWORD:
-				case IT_WEAPON_AXE:
-					if ( pWeapon->Item_GetDef()->GetEquipLayer() == LAYER_HAND2 )
-					{
-						// 0x236 = hvyswrd1 = (heavy strike)
-						// 0x237 = hvyswrd4 = (heavy strike)
-						id = Calc_GetRandVal( 2 ) ? 0x236 : 0x237;
-						break;
-					}
-				case IT_WEAPON_FENCE:
-					// 0x23b = sword1
-					// 0x23c = sword7
-					id = Calc_GetRandVal( 2 ) ? 0x23b : 0x23c;
-					break;
-				case IT_WEAPON_BOW:
-				case IT_WEAPON_XBOW:
-					// 0x234 = xbow ( hit)
-					id = 0x234;
-					break;
-				default:
-					break;
-			}
-
 			CVarDefCont * pTagStorage = NULL; 
 			pTagStorage = pWeapon->GetKey("OVERRIDE.SOUND_HIT", true);
 			if ( pTagStorage )
 			{
 				if ( pTagStorage->GetValNum() )
-				{
 					id = static_cast<SOUND_TYPE>(pTagStorage->GetValNum());
+			}
+			else
+			{
+				// weapon type strike noise based on type of weapon and how hard hit.
+				switch ( pWeapon->GetType() )
+				{
+					case IT_WEAPON_MACE_CROOK:
+					case IT_WEAPON_MACE_PICK:
+					case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
+					case IT_WEAPON_MACE_STAFF:
+						// 0x233 = blunt01 (miss?)
+						id = 0x233;
+						break;
+					case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
+						// 0x232 = axe01 swing. (miss?)
+						id = 0x232;
+						break;
+					case IT_WEAPON_THROWING:
+					case IT_WEAPON_SWORD:
+					case IT_WEAPON_AXE:
+						if ( pWeapon->Item_GetDef()->GetEquipLayer() == LAYER_HAND2 )
+						{
+							// 0x236 = hvyswrd1 = (heavy strike)
+							// 0x237 = hvyswrd4 = (heavy strike)
+							id = Calc_GetRandVal( 2 ) ? 0x236 : 0x237;
+							break;
+						}
+					case IT_WEAPON_FENCE:
+						// 0x23b = sword1
+						// 0x23c = sword7
+						id = Calc_GetRandVal( 2 ) ? 0x23b : 0x23c;
+						break;
+					case IT_WEAPON_BOW:
+					case IT_WEAPON_XBOW:
+						// 0x234 = xbow (hit)
+						id = 0x234;
+						break;
+					default:
+						break;
 				}
 			}
 

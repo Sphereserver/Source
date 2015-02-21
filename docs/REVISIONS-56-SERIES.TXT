@@ -1652,3 +1652,8 @@ Added: Missing tooltip info for recall runes.
 [sphere_skills.scp]:
 	-Added missing SKF_RANGED flag on Archery and Throwing skills.
 	WARNING: Make sure to update your scripts following this change to prevent some problems on these skills. Previously sphere was internally setting SKF_RANGED on these skills, but now it's 100% on script-side.
+
+21-02-2015, Coruja
+Fixed: NPCs flagging their owner criminal when attack an innocent only if the NPC can speak or have NPC=brain_berserk set.
+[sphere_item_profession_cook_barkeep_baker.scp]: Added missing t_cooking on all SKILLMAKE=Cooking lines.
+[sphere_skillmenu.scp]: Added missing title on skillmenu sm_cook_ingredients, sm_cook_baking, sm_cook_barbecue

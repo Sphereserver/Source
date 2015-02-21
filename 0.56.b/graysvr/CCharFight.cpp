@@ -680,7 +680,7 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iOtherKillers)
 		if ( pKill->m_pNPC )
 			return;
 	}
-	else if ( NotoThem < NOTO_NEUTRAL && NotoThem != NOTO_GUILD_SAME )
+	else if ( NotoThem < NOTO_GUILD_SAME )
 	{
 		ASSERT( m_pPlayer );
 		// I'm a murderer !
@@ -1269,27 +1269,18 @@ void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 		return;
 	
 	if ( pCriminal->GetNPCBrain() == NPCBRAIN_GUARD )
-		return; 
+		return;
 
 	if ( pCriminal->IsPriv(PRIV_GM) )
 		return;
 
-	// Alert the guards !!!?
-	if ( ! NPC_CanSpeak())
-		return;	// I can't talk anyhow.
-
 	if ( pCriminal->Noto_Criminal( this ) == true )
 		return;
 
-	// NPCBRAIN_BESERK creatures cause criminal fault on the part of their masters.
-	if ( pCriminal->m_pNPC && pCriminal->m_pNPC->m_Brain == NPCBRAIN_BERSERK )
-	{
-		CChar * pOwner = pCriminal->NPC_PetGetOwner();
-		if ( pOwner != NULL && pOwner != this )
-		{
-			OnNoticeCrime( pOwner, pCharMark );
-		}
-	}
+	// Make my owner criminal too (if I have one)
+	CChar * pOwner = pCriminal->NPC_PetGetOwner();
+	if ( pOwner != NULL && pOwner != this )
+		OnNoticeCrime( pOwner, pCharMark );
 
 	if ( m_pPlayer )
 	{
@@ -1310,9 +1301,6 @@ void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 			return;
 		if ( fMyMaster )	// I won't rat you out.
 			return;
-		// Or if the target is evil ?
-
-		// Or if I am evil.
 	}
 	else
 	{
@@ -1321,17 +1309,15 @@ void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 		OnHarmedBy( pCriminal, 1 );
 	}
 
-	if ( GetNPCBrain() != NPCBRAIN_HUMAN )
-	{
-		// Good monsters don't call for guards outside guarded areas.
-		if ( ! m_pArea || ! m_pArea->IsGuarded())
-			return;
-	}
+	if ( ! NPC_CanSpeak())
+		return;	// I can't talk anyhow.
+
+	// Don't call for guards outside guarded areas.
+	if ( ! m_pArea || ! m_pArea->IsGuarded())
+		return;
 
 	if ( m_pNPC->m_Brain != NPCBRAIN_GUARD )
-	{
 		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_GENERIC_CRIM ) );
-	}
 
 	// Find a guard.
 	CallGuards( pCriminal );
@@ -1349,7 +1335,7 @@ bool CChar::CheckCrimeSeen( SKILL_TYPE SkillToSee, CChar * pCharMark, const CObj
 	bool fSeen = false;
 
 	// Who notices ?
-	CWorldSearch AreaChars( GetTopPoint(), UO_MAP_VIEW_SIGHT );
+	CWorldSearch AreaChars( GetTopPoint(), UO_MAP_VIEW_SIZE );
 	for (;;)
 	{
 		CChar * pChar = AreaChars.GetChar();
@@ -1485,23 +1471,16 @@ int CChar::Skill_Snooping( SKTRIG_TYPE stage )
 	// 0-100 = difficulty = percent chance of failure.
 
 	if ( stage == SKTRIG_STROKE )
-	{
-		return 0;
-	}
+		return( 0 );
 
 	// Assume the container is not locked.
 	CItemContainer * pCont = dynamic_cast <CItemContainer *>(m_Act_Targ.ItemFind());
 	if ( pCont == NULL )
-	{
 		return( -SKTRIG_QTY );
-	}
 
 	CChar * pCharMark;
 	if ( ! IsTakeCrime( pCont, &pCharMark ) || pCharMark == NULL )
-	{
-		// Not a crime really.
-		return( 0 );
-	}
+		return( 0 );	// Not a crime really.
 
 	if ( ! CanTouch( pCont ))
 	{
@@ -1526,21 +1505,15 @@ int CChar::Skill_Snooping( SKTRIG_TYPE stage )
 			return( 0 );
 
 		// return the difficulty.
-
 		return( pCharMark->Stat_GetAdjusted(STAT_DEX));
 	}
 
 	if ( fForceFail )
-	{
 		stage = SKTRIG_FAIL;
-	}
 
 	// did anyone see this ?
-
 	if ( CheckCrimeSeen( SKILL_SNOOPING, pCharMark, pCont, (stage == SKTRIG_FAIL)? g_Cfg.GetDefaultMsg( DEFMSG_SNOOPING_YOUR ) : g_Cfg.GetDefaultMsg( DEFMSG_SNOOPING_SOMEONE ) ))
-	{
 		Noto_KarmaChangeMessage( -10, -500 );
-	}
 
 	//
 	// View the container.
@@ -1548,9 +1521,7 @@ int CChar::Skill_Snooping( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_SUCCESS )
 	{
 		if ( IsClient())
-		{
 			m_pClient->addContainerSetup( pCont );
-		}
 	}
 	return( 0 );
 }
@@ -1566,9 +1537,7 @@ int CChar::Skill_Stealing( SKTRIG_TYPE stage )
 	//
 
 	if ( stage == SKTRIG_STROKE )
-	{
-		return 0;
-	}
+		return( 0 );
 
 	CItem * pItem = m_Act_Targ.ItemFind();
 	CChar * pCharMark = NULL;
@@ -1640,8 +1609,7 @@ cantsteal:
 		SysMessageDefault( DEFMSG_STEALING_REACH );
 		return( -SKTRIG_ABORT );
 	}
-	if ( ! CanMove( pItem ) ||
-		! CanCarry( pItem ))
+	if ( ! CanMove( pItem ) || ! CanCarry( pItem ))
 	{
 		SysMessageDefault( DEFMSG_STEALING_HEAVY );
 		return( -SKTRIG_ABORT );
@@ -1651,7 +1619,6 @@ cantsteal:
 		SysMessageDefault( DEFMSG_STEALING_NONEED );
 
 		// Just pick it up ?
-
 		return( -SKTRIG_QTY );
 	}
 	if ( m_pArea->IsFlag(REGION_FLAG_SAFE))
@@ -1689,9 +1656,8 @@ cantsteal:
 		// stealing off the ground should always succeed.
 		// it's just a matter of getting caught.
 		if ( stage == SKTRIG_START )
-		{
-			return 1;	// town stuff on the ground is too easy.
-		}
+			return( 1 );	// town stuff on the ground is too easy.
+
 		fGround = true;
 	}
 
@@ -1714,9 +1680,8 @@ cantsteal:
 
 	// You should only be able to go down to -1000 karma by stealing.
 	if ( CheckCrimeSeen( SKILL_STEALING, pCharMark, pItem, (stage == SKTRIG_FAIL)? g_Cfg.GetDefaultMsg( DEFMSG_STEALING_YOUR ) : g_Cfg.GetDefaultMsg( DEFMSG_STEALING_SOMEONE ) ))
-	{
 		Noto_KarmaChangeMessage( -100, -1000 );
-	}
+
 	return( 0 );
 }
 
@@ -1919,9 +1884,7 @@ void CChar::OnHarmedBy( CChar * pCharSrc, int iHarmQty )
 	}
 
 	if ( NPC_IsOwnedBy(pCharSrc, false) )
-	{
 		NPC_PetDesert();
-	}
 
 	// TORFO patch: war mode to other
 	if ( IsClient() )
@@ -1933,9 +1896,7 @@ void CChar::OnHarmedBy( CChar * pCharSrc, int iHarmQty )
 	// I will Auto-Defend myself.
 	Fight_Attack(pCharSrc);
 	if ( !fFightActive )	// auto defend puts us in war mode.
-	{
 		UpdateModeFlag();
-	}
 }
 
 bool CChar::OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fCommandPet, bool fShouldReveal)
@@ -2522,9 +2483,7 @@ void CChar::Memory_Fight_Retreat( CChar * pTarg, CItemMemory * pFight )
 
 	// Lose some fame.
 	if ( fCowardice )
-	{
 		Noto_Fame( -1 );
-	}
 }
 
 bool CChar::Memory_Fight_OnTick( CItemMemory * pMemory )
@@ -2607,14 +2566,10 @@ void CChar::Memory_Fight_Start( const CChar * pTarg )
 		if ( fMemPrvType )
 			return;
 		if ( pMemory->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_SAWCRIME|MEMORY_AGGREIVED))
-		{
-			// I am defending myself rightly.
-			MemTypes = 0;
-		}
+			MemTypes = 0;	// I am defending myself rightly.
 		else
-		{
 			MemTypes = MEMORY_IAGGRESSOR;
-		}
+
 		// Update the fights status
 		Memory_AddTypes( pMemory, MEMORY_FIGHT|MEMORY_WAR_TARG|MemTypes );
 	}
@@ -2670,7 +2625,7 @@ bool CChar::Fight_IsActive() const
 	if ( ! IsStatFlag(STATF_War))
 		return( false );
 
-	SKILL_TYPE iSkillActive		= Skill_GetActive();
+	SKILL_TYPE iSkillActive = Skill_GetActive();
 	switch ( iSkillActive )
 	{
 		case SKILL_ARCHERY:
@@ -2772,12 +2727,10 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 void CChar::Fight_ResetWeaponSwingTimer()
 {
 	ADDTOCALLSTACK("CChar::Fight_ResetWeaponSwingTimer");
+	// The target or the weapon might have changed.
+	// So restart the skill
 	if ( Fight_IsActive())
-	{
-		// The target or the weapon might have changed.
-		// So restart the skill
-		Skill_Start( Fight_GetWeaponSkill() );
-	}
+		Skill_Start( Fight_GetWeaponSkill());
 }
 
 int CChar::Fight_GetWeaponSwingTimer()
@@ -2896,12 +2849,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	// RETURN:
 	//  true = new attack is accepted.
 
-	if ( pCharTarg == NULL ||
-		pCharTarg == this ||
-		! CanSee(pCharTarg) ||
-		pCharTarg->IsStatFlag( STATF_DEAD ) ||
-		pCharTarg->IsDisconnected() ||
-		IsStatFlag( STATF_DEAD ))
+	if ( pCharTarg == NULL || pCharTarg == this || ! CanSee(pCharTarg) || pCharTarg->IsStatFlag( STATF_DEAD ) || pCharTarg->IsDisconnected() || IsStatFlag( STATF_DEAD ))
 	{
 		// Not a valid target.
 		Fight_Clear( pCharTarg, true );
@@ -2939,9 +2887,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 		threat = Args.m_iN1;
 	}
 
-	if ( GetPrivLevel() <= PLEVEL_Guest &&
-		pCharTarg->m_pPlayer &&
-		pCharTarg->GetPrivLevel() > PLEVEL_Guest )
+	if ( GetPrivLevel() <= PLEVEL_Guest && pCharTarg->m_pPlayer && pCharTarg->GetPrivLevel() > PLEVEL_Guest )
 	{
 		SysMessageDefault( DEFMSG_GUEST );
 		Fight_Clear( pCharTarg );
@@ -2954,7 +2900,6 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 
 	// I am attacking. (or defending)
 	StatFlag_Set( STATF_War );
-
 
 	// Skill interruption ?
 	SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
@@ -3060,7 +3005,8 @@ bool CChar::Attacker_Add( CChar * pChar, INT64 threat )
 				return true;
 			}
 		}
-	}else if ( IsTrigUsed(TRIGGER_COMBATSTART) )
+	}
+	else if ( IsTrigUsed(TRIGGER_COMBATSTART) )
 	{
 		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatStart,pChar,0);
 		if ( tRet == TRIGRET_RET_TRUE )
@@ -3220,7 +3166,6 @@ void CChar::Attacker_SetElapsed( CChar * pChar, INT64 value)
 	ADDTOCALLSTACK("CChar::Attacker_SetElapsed(CChar)");
 
 	return Attacker_SetElapsed( Attacker_GetID(pChar), value);
-
 }
 
 
@@ -3815,20 +3760,14 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		}
 
 		if ( pColor )
-		{
 			AmmoHue = static_cast<unsigned long>(pColor->GetValNum());
-		} else
-		{
+		else
 			AmmoHue = 0;
-		}
 
 		if ( pRender )
-		{
 			AmmoRender = static_cast<unsigned long>(pRender->GetValNum());
-		} else
-		{
+		else
 			AmmoRender = 0;
-		}
 
 		pCharTarg->Effect( EFFECT_BOLT, AmmoAnim, this, 5, 16, false, AmmoHue, AmmoRender );
 	}
@@ -3949,9 +3888,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( pTagStorage )
 		{
 			if ( pTagStorage->GetValNum() )
-			{
 				iSnd = static_cast<SOUND_TYPE>(pTagStorage->GetValNum());
-			}
 		}
 	}
 
@@ -3989,13 +3926,9 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			Sound( sm_Snd_Miss[ Calc_GetRandVal( COUNTOF( sm_Snd_Miss )) ] );
 
 		if ( IsPriv(PRIV_DETAIL))
-		{
 			SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_MISSS ), static_cast<LPCTSTR>(pCharTarg->GetName()));
-		}
 		if ( pCharTarg->IsPriv(PRIV_DETAIL))
-		{
 			pCharTarg->SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_COMBAT_MISSO ), static_cast<LPCTSTR>(GetName()));
-		}
 
 		return( WAR_SWING_EQUIPPING );	// Made our full swing. (tho we missed)
 	}
@@ -4019,10 +3952,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	if ( g_Cfg.IsSkillRanged(skill) )
 	{
 		// Get uid of the current arrow.
-		if ( pAmmo )
-		{			
+		if ( pAmmo )		
 			Args.m_VarsLocal.SetNum("Arrow", pAmmo->GetUID());
-		}
 	}
 
 	if ( IsTrigUsed(TRIGGER_SKILLSUCCESS) )
@@ -4077,8 +4008,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	if ( pWeapon != NULL )
 	{
 		// poison weapon ?
-		if ( pWeapon->m_itWeapon.m_poison_skill &&
-			Calc_GetRandVal( 100 ) < pWeapon->m_itWeapon.m_poison_skill )
+		if ( pWeapon->m_itWeapon.m_poison_skill && Calc_GetRandVal( 100 ) < pWeapon->m_itWeapon.m_poison_skill )
 		{
 			// Poison delivered.
 			BYTE iPoisonDeliver = Calc_GetRandVal(pWeapon->m_itWeapon.m_poison_skill);
@@ -4098,10 +4028,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		// Base type attack for our body. claws/etc
 		// intrinsic attacks ?
 		// Poisonous bite/sting ?
-		if ( m_pNPC &&
-			m_pNPC->m_Brain == NPCBRAIN_MONSTER &&
-			Skill_GetBase(SKILL_POISONING) > 300 &&
-			Calc_GetRandVal( 1000 ) < Skill_GetBase(SKILL_POISONING))
+		if ( m_pNPC && m_pNPC->m_Brain == NPCBRAIN_MONSTER && Skill_GetBase(SKILL_POISONING) > 300 && Calc_GetRandVal( 1000 ) < Skill_GetBase(SKILL_POISONING))
 		{
 			// Poison delivered.
 			int iSkill = Skill_GetAdjusted( SKILL_POISONING );

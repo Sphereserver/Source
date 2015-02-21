@@ -3133,11 +3133,15 @@ SKILLMENU=sm_cook_barbecue
 
 
 [SKILLMENU sm_cook_ingredients]
+Ingredients
+
 ON=i_dough <name> (<resmake>)
 MAKEITEM=i_dough
 
 
 [SKILLMENU sm_cook_baking]
+Baking
+
 ON=i_bread_loaf <name> (<resmake>)
 MAKEITEM=i_bread_loaf
 
@@ -3158,6 +3162,8 @@ MAKEITEM=i_pizza
 
 
 [SKILLMENU sm_cook_barbecue]
+Barbecue
+
 ON=i_bird_cooked <name> (<resmake>)
 MAKEITEM=i_bird_cooked
 
