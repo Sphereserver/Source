@@ -981,7 +981,6 @@ enum NOTO_TYPE
 #define MINCLIVER_NOTOINVUL			0x400000	// minimum client required to view noto_invul health bar
 #define MINCLIVER_SKILLCAPS			0x400000	// minimum client to send skill caps in 0x3A packet
 #define MINCLIVER_CLOSEDIALOG		0x400040	// minimum client where close dialog does not trigger a client response
-#define MAXCLIVER_EXTRASHOPLAYER	0x600017	// maximum client to send layer_vendor_extra
 #define MINCLIVER_ITEMGRID			0x600017	// minimum client to use grid index
 
 // client versions (packets)

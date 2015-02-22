@@ -1657,3 +1657,6 @@ Added: Missing tooltip info for recall runes.
 Fixed: NPCs flagging their owner criminal when attack an innocent only if the NPC can speak or have NPC=brain_berserk set.
 [sphere_item_profession_cook_barkeep_baker.scp]: Added missing t_cooking on all SKILLMAKE=Cooking lines.
 [sphere_skillmenu.scp]: Added missing title on skillmenu sm_cook_ingredients, sm_cook_baking, sm_cook_barbecue
+
+22-02-2015, Coruja
+Fixed #2479: Combat damage bonus not being calculated correctly when COMBAT_OSIDAMAGEMOD is disabled.

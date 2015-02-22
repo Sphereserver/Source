@@ -2713,7 +2713,7 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 	else
 	{
 		// Sphere damage bonus (custom)
-		int iDmgBonus = Stat_GetAdjusted(STAT_STR) / 10;
+		iDmgBonus += Stat_GetAdjusted(STAT_STR) / 10;
 	}
 	iDmgMin += iDmgMin * iDmgBonus / 100;
 	iDmgMax += iDmgMax * iDmgBonus / 100;

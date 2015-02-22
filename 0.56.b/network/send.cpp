@@ -749,7 +749,7 @@ PacketContainerOpen::PacketContainerOpen(const CClient* target, const CObjBase* 
 	writeInt32(container->GetUID());
 	writeInt16(gump);
 	//word	Container Type (0x00 for vendors, 0x7D for spellbooks and containers)
-	if (target->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS))
+	if (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA())
 	{
 		WORD ContType = 0x7D;
 		// 0x7D WORD fixes grid view in EC, it must be sent to any no-player's vendor's container to see it
