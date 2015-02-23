@@ -3405,9 +3405,9 @@ public:
 	}
 	unsigned short Skill_GetAdjusted( SKILL_TYPE skill ) const;
 	void Skill_SetBase( SKILL_TYPE skill, int iValue );
-	bool Skill_UseQuick( SKILL_TYPE skill, INT64 difficulty, bool bAllowGain = true );
+	bool Skill_UseQuick( SKILL_TYPE skill, INT64 difficulty, bool bAllowGain = true, bool bUseBellCurve = true );
 
-	bool Skill_CheckSuccess( SKILL_TYPE skill, int difficulty ) const;
+	bool Skill_CheckSuccess( SKILL_TYPE skill, int difficulty, bool bUseBellCurve = true ) const;
 	bool Skill_Wait( SKILL_TYPE skilltry );
 	bool Skill_Start( SKILL_TYPE skill, int iDifficulty = 0 ); // calc skill progress.
 	void Skill_Fail( bool fCancel = false );

@@ -1463,22 +1463,22 @@ enum ANIM_TYPE	// not all creatures animate the same for some reason.
 	ANIM_RUN_UNARM		= 0x02,	// Run (unarmed)
 	ANIM_RUN_ARMED		= 0x03,	// Run (armed)
 
-	ANIM_STAND			= 0x04,		// armed or unarmed.
+	ANIM_STAND			= 0x04,	// armed or unarmed.
 
-	ANIM_FIDGET1		= 0x05,		// Look around
-	ANIM_FIDGET_YAWN	= 0x06,		// Fidget, Yawn
+	ANIM_FIDGET1		= 0x05,	// Look around
+	ANIM_FIDGET_YAWN	= 0x06,	// Fidget, Yawn
 
 	ANIM_STAND_WAR_1H	= 0x07,	// Stand for 1 hand attack.
 	ANIM_STAND_WAR_2H	= 0x08,	// Stand for 2 hand attack.
 
-	ANIM_ATTACK_WEAPON	= 0x09,	// 1H generic melee swing, Any weapon.
-	ANIM_ATTACK_1H_WIDE	= 0x09,	// 1H sword type
-	ANIM_ATTACK_1H_JAB	= 0x0a,	// 1H fencing jab - fencing type.
-	ANIM_ATTACK_1H_DOWN	= 0x0b,	// 1H overhead mace - mace type
+	ANIM_ATTACK_WEAPON		= 0x09,	// 1H generic melee swing, any weapon.
+	ANIM_ATTACK_1H_SLASH	= 0x09,
+	ANIM_ATTACK_1H_PIERCE	= 0x0a,
+	ANIM_ATTACK_1H_BASH		= 0x0b,
 
-	ANIM_ATTACK_2H_DOWN = 0x0c,	// 2H mace jab
-	ANIM_ATTACK_2H_WIDE = 0x0d,	// 2H generic melee swing
-	ANIM_ATTACK_2H_JAB	= 0x0e,	// 2H spear jab
+	ANIM_ATTACK_2H_BASH		= 0x0c,
+	ANIM_ATTACK_2H_SLASH	= 0x0d,
+	ANIM_ATTACK_2H_PIERCE	= 0x0e,
 
 	ANIM_WALK_WAR		= 0x0f,	// Walk (warmode)
 
@@ -1493,7 +1493,7 @@ enum ANIM_TYPE	// not all creatures animate the same for some reason.
 	ANIM_DIE_FORWARD	= 0x16,	// (Die onto face)
 
 	ANIM_BLOCK			= 0x1e,	// Dodge, Shield Block
-	ANIM_ATTACK_UNARM 	= 0x1f,	// Punch - attack while walking ?
+	ANIM_ATTACK_WRESTLE	= 0x1f,	// Punch - attack while walking ?
 
 	ANIM_BOW			= 0x20, // =32
 	ANIM_SALUTE			= 0x21,
@@ -1582,12 +1582,12 @@ enum ANIM_TYPE_NEW	// not all creatures animate the same for some reason. http:/
 	NANIM_ATTACK_WRESTLING	= 0x00,
 	NANIM_ATTACK_BOW		= 0x01,
 	NANIM_ATTACK_CROSSBOW	= 0x02,
-	NANIM_ATTACK_BASH1H		= 0x03,
-	NANIM_ATTACK_SLASH1H	= 0x04,
-	NANIM_ATTACK_PIERCE1H	= 0x05,
-	NANIM_ATTACK_BASH2H		= 0x06,
-	NANIM_ATTACK_SLASH2H	= 0x07,
-	NANIM_ATTACK_PIERCE2H	= 0x08,
+	NANIM_ATTACK_1H_BASH	= 0x03,
+	NANIM_ATTACK_1H_SLASH	= 0x04,
+	NANIM_ATTACK_1H_PIERCE	= 0x05,
+	NANIM_ATTACK_2H_BASH	= 0x06,
+	NANIM_ATTACK_2H_SLASH	= 0x07,
+	NANIM_ATTACK_2H_PIERCE	= 0x08,
 	NANIM_ATTACK_THROWING	= 0x09,
 
 	NANIM_ATTACK_QTY = 10,

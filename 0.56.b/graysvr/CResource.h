@@ -1188,7 +1188,6 @@ public:
 	int Calc_WalkThroughChar( CChar * pCharMove, CChar * pCharObstacle );
 	int Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon );
 	int Calc_CombatChanceToHit( CChar * pChar, SKILL_TYPE skill, CChar * pCharTarg, CItem * pWeapon );
-	bool Calc_SkillCheck( int iSkillLevel, int iDifficulty );
 	int  Calc_StealingItem( CChar * pCharThief, CItem * pItem, CChar * pCharMark );
 	bool Calc_CrimeSeen( CChar * pCharThief, CChar * pCharViewer, SKILL_TYPE SkillToSee, bool fBonus );
 	int Calc_FameKill( CChar * pKill );

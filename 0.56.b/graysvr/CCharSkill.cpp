@@ -937,34 +937,40 @@ bool CChar::Stat_Decrease(STAT_TYPE stat, SKILL_TYPE skill)
 	return false;
 }
 
-bool CChar::Skill_CheckSuccess( SKILL_TYPE skill, int difficulty ) const
+bool CChar::Skill_CheckSuccess( SKILL_TYPE skill, int difficulty, bool bUseBellCurve ) const
 {
 	ADDTOCALLSTACK("CChar::Skill_CheckSuccess");
 	// PURPOSE:
 	//  Check a skill for success or fail.
 	//  DO NOT give experience here.
 	// ARGS:
-	//  difficulty = 0-100 = The point at which the equiv skill level has a 50% chance of success.
+	//  difficulty		= 0-100 = The point at which the equiv skill level has a 50% chance of success.
+	//	bUseBellCurve	= check skill success chance using bell curve or a simple percent check?
 	// RETURN:
 	//	true = success in skill.
-	//
 
-	if ( ! IsSkillBase(skill) || IsPriv( PRIV_GM ))
-		return( true );
+	if ( !IsSkillBase(skill) || difficulty < 0 )	// auto failure.
+		return( false );
 
-	return( g_Cfg.Calc_SkillCheck( Skill_GetAdjusted(skill), difficulty ));
+	difficulty *= 10;
+	int iSuccessChance = difficulty;
+	if ( bUseBellCurve )
+		iSuccessChance = Calc_GetSCurve( Skill_GetAdjusted(skill) - difficulty, SKILL_VARIANCE );
+
+	return( iSuccessChance >= Calc_GetRandVal(1000) );
 }
 
-bool CChar::Skill_UseQuick( SKILL_TYPE skill, INT64 difficulty, bool bAllowGain )
+bool CChar::Skill_UseQuick( SKILL_TYPE skill, INT64 difficulty, bool bAllowGain, bool bUseBellCurve )
 {
 	ADDTOCALLSTACK("CChar::Skill_UseQuick");
 	// ARGS:
-	//	skill		= skill to use
-	//  difficulty	= 0-100
-	//	bAllowGain	= can gain skill from this?
+	//	skill			= skill to use
+	//  difficulty		= 0-100
+	//	bAllowGain		= can gain skill from this?
+	//	bUseBellCurve	= check skill success chance using bell curve or a simple percent check?
 	// Use a skill instantly. No wait at all.
 	// No interference with other skills.
-	INT64 result = Skill_CheckSuccess( skill, static_cast<int>(difficulty) );
+	INT64 result = Skill_CheckSuccess( skill, static_cast<int>(difficulty), bUseBellCurve );
 	CScriptTriggerArgs pArgs( 0 , difficulty, result);
 	TRIGRET_TYPE ret = TRIGRET_RET_DEFAULT;
 
@@ -3874,16 +3880,16 @@ ANIM_TYPE CChar::Skill_GetAnim( SKILL_TYPE skill )
 	switch ( skill )
 	{
 		/*case SKILL_FISHING:		//softcoded
-			anim = ANIM_ATTACK_2H_DOWN;
+			anim = ANIM_ATTACK_2H_BASH;
 			break;*/
 		case SKILL_BLACKSMITHING:
-			anim = ANIM_ATTACK_WEAPON;
+			anim = ANIM_ATTACK_1H_SLASH;
 			break;
 		case SKILL_MINING:
-			anim = ANIM_ATTACK_1H_DOWN;
+			anim = ANIM_ATTACK_1H_BASH;
 			break;
 		case SKILL_LUMBERJACKING:
-			anim = ANIM_ATTACK_2H_WIDE;
+			anim = ANIM_ATTACK_2H_SLASH;
 			break;
 		default:
 			break;

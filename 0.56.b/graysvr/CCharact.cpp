@@ -767,22 +767,22 @@ ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackw
 			LAYER_TYPE layer = pWeapon->Item_GetDef()->GetEquipLayer();
 			switch (pWeapon->GetType())
 			{
-			case IT_WEAPON_MACE_CROOK:
-			case IT_WEAPON_MACE_PICK:
-			case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
+			case IT_WEAPON_MACE_CROOK:	// sheperds crook
+			case IT_WEAPON_MACE_SMITH:	// smith/sledge hammer
 			case IT_WEAPON_MACE_STAFF:
 			case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
-				action = (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_DOWN : ANIM_ATTACK_1H_DOWN;
+				action = (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_BASH : ANIM_ATTACK_1H_BASH;
 				break;
 			case IT_WEAPON_SWORD:
 			case IT_WEAPON_AXE:
-				action = (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_WIDE : ANIM_ATTACK_1H_WIDE;
+			case IT_WEAPON_MACE_PICK:	// pickaxe
+				action = (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_SLASH : ANIM_ATTACK_1H_SLASH;
 				break;
 			case IT_WEAPON_FENCE:
-				action = (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_JAB : ANIM_ATTACK_1H_JAB;
+				action = (layer == LAYER_HAND2) ? ANIM_ATTACK_2H_PIERCE : ANIM_ATTACK_1H_PIERCE;
 				break;
 			case IT_WEAPON_THROWING:
-				action = ANIM_ATTACK_1H_WIDE;
+				action = ANIM_ATTACK_1H_SLASH;
 				break;
 			case IT_WEAPON_BOW:
 				action = ANIM_ATTACK_BOW;
@@ -793,14 +793,15 @@ ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackw
 			default:
 				break;
 			}
-			if ((Calc_GetRandVal(2)) && (pWeapon->GetType() != IT_WEAPON_BOW) && (pWeapon->GetType() != IT_WEAPON_XBOW) && (pWeapon->GetType() != IT_WEAPON_THROWING))
+			// Temporary disabled - it's causing weird animations on some weapons
+			/*if ((Calc_GetRandVal(2)) && (pWeapon->GetType() != IT_WEAPON_BOW) && (pWeapon->GetType() != IT_WEAPON_XBOW) && (pWeapon->GetType() != IT_WEAPON_THROWING))
 			{
 				// add some style to the attacks.
 				if (layer == LAYER_HAND2)
-					action = static_cast<ANIM_TYPE>(ANIM_ATTACK_2H_DOWN + Calc_GetRandVal(3));
+					action = static_cast<ANIM_TYPE>(ANIM_ATTACK_2H_BASH + Calc_GetRandVal(3));
 				else
-					action = static_cast<ANIM_TYPE>(ANIM_ATTACK_1H_WIDE + Calc_GetRandVal(3));
-			}
+					action = static_cast<ANIM_TYPE>(ANIM_ATTACK_1H_SLASH + Calc_GetRandVal(3));
+			}*/
 		}
 
 		if (IsStatFlag(STATF_OnHorse))	// on horse back.
@@ -822,13 +823,13 @@ ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackw
 			case ANIM_STAND_WAR_1H:
 			case ANIM_STAND_WAR_2H:
 				return ANIM_HORSE_STAND;
-			case ANIM_ATTACK_1H_WIDE:
-			case ANIM_ATTACK_1H_JAB:
-			case ANIM_ATTACK_1H_DOWN:
+			case ANIM_ATTACK_1H_SLASH:
+			case ANIM_ATTACK_1H_PIERCE:
+			case ANIM_ATTACK_1H_BASH:
 				return ANIM_HORSE_ATTACK;
-			case ANIM_ATTACK_2H_JAB:
-			case ANIM_ATTACK_2H_WIDE:
-			case ANIM_ATTACK_2H_DOWN:
+			case ANIM_ATTACK_2H_BASH:
+			case ANIM_ATTACK_2H_SLASH:
+			case ANIM_ATTACK_2H_PIERCE:
 				return ANIM_HORSE_SLAP;
 			case ANIM_WALK_WAR:
 				return ANIM_HORSE_RIDE_SLOW;
@@ -844,7 +845,7 @@ ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackw
 				return ANIM_HORSE_SLAP;
 			case ANIM_BLOCK:
 				return ANIM_HORSE_SLAP;
-			case ANIM_ATTACK_UNARM:
+			case ANIM_ATTACK_WRESTLE:
 				return ANIM_HORSE_ATTACK;
 			case ANIM_BOW:
 			case ANIM_SALUTE:
@@ -887,15 +888,15 @@ ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackw
 				case ANIM_GET_HIT:
 					return ANIM_ANI_GETHIT;
 
-				case ANIM_ATTACK_1H_WIDE:
-				case ANIM_ATTACK_1H_JAB:
-				case ANIM_ATTACK_1H_DOWN:
-				case ANIM_ATTACK_2H_DOWN:
-				case ANIM_ATTACK_2H_JAB:
-				case ANIM_ATTACK_2H_WIDE:
+				case ANIM_ATTACK_1H_SLASH:
+				case ANIM_ATTACK_1H_PIERCE:
+				case ANIM_ATTACK_1H_BASH:
+				case ANIM_ATTACK_2H_BASH:
+				case ANIM_ATTACK_2H_SLASH:
+				case ANIM_ATTACK_2H_PIERCE:
 				case ANIM_ATTACK_BOW:
 				case ANIM_ATTACK_XBOW:
-				case ANIM_ATTACK_UNARM:
+				case ANIM_ATTACK_WRESTLE:
 					switch (Calc_GetRandVal(2))
 					{
 					case 0: return ANIM_ANI_ATTACK1; break;
@@ -948,15 +949,15 @@ ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackw
 					case 2: return ANIM_MON_BlockLeft; break;
 					}
 					break;
-				case ANIM_ATTACK_1H_WIDE:
-				case ANIM_ATTACK_1H_JAB:
-				case ANIM_ATTACK_1H_DOWN:
-				case ANIM_ATTACK_2H_DOWN:
-				case ANIM_ATTACK_2H_JAB:
-				case ANIM_ATTACK_2H_WIDE:
+				case ANIM_ATTACK_1H_SLASH:
+				case ANIM_ATTACK_1H_PIERCE:
+				case ANIM_ATTACK_1H_BASH:
+				case ANIM_ATTACK_2H_BASH:
+				case ANIM_ATTACK_2H_PIERCE:
+				case ANIM_ATTACK_2H_SLASH:
 				case ANIM_ATTACK_BOW:
 				case ANIM_ATTACK_XBOW:
-				case ANIM_ATTACK_UNARM:
+				case ANIM_ATTACK_WRESTLE:
 					switch (Calc_GetRandVal(3))
 					{
 					case 0: return ANIM_MON_ATTACK1; break;
@@ -1043,20 +1044,14 @@ bool CChar::UpdateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward , BY
 			case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
 			case IT_WEAPON_MACE_STAFF:
 			case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
-				subaction = (layer == LAYER_HAND2) ?
-				NANIM_ATTACK_BASH2H :
-									NANIM_ATTACK_BASH1H;
+				subaction = (layer == LAYER_HAND2) ? NANIM_ATTACK_2H_BASH : NANIM_ATTACK_1H_BASH;
 				break;
 			case IT_WEAPON_SWORD:
 			case IT_WEAPON_AXE:
-				subaction = (layer == LAYER_HAND2) ?
-				NANIM_ATTACK_PIERCE2H :
-									  NANIM_ATTACK_PIERCE1H;
+				subaction = (layer == LAYER_HAND2) ? NANIM_ATTACK_2H_PIERCE : NANIM_ATTACK_1H_PIERCE;
 				break;
 			case IT_WEAPON_FENCE:
-				subaction = (layer == LAYER_HAND2) ?
-				NANIM_ATTACK_SLASH2H :
-									 NANIM_ATTACK_SLASH1H;
+				subaction = (layer == LAYER_HAND2) ? NANIM_ATTACK_2H_SLASH : NANIM_ATTACK_1H_SLASH;
 				break;
 			case IT_WEAPON_THROWING:
 				subaction = NANIM_ATTACK_THROWING;
@@ -1074,29 +1069,29 @@ bool CChar::UpdateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward , BY
 		else {
 			switch (action)
 			{
-			case ANIM_ATTACK_1H_WIDE:
+			case ANIM_ATTACK_1H_SLASH:
 				action1 = NANIM_ATTACK;
-				subaction = NANIM_ATTACK_BASH2H;
+				subaction = NANIM_ATTACK_2H_BASH;
 				break;
-			case ANIM_ATTACK_1H_JAB:
+			case ANIM_ATTACK_1H_PIERCE:
 				action1 = NANIM_ATTACK;
-				subaction = NANIM_ATTACK_SLASH1H;
+				subaction = NANIM_ATTACK_1H_SLASH;
 				break;
-			case ANIM_ATTACK_1H_DOWN:
+			case ANIM_ATTACK_1H_BASH:
 				action1 = NANIM_ATTACK;
-				subaction = NANIM_ATTACK_PIERCE1H;
+				subaction = NANIM_ATTACK_1H_PIERCE;
 				break;
-			case ANIM_ATTACK_2H_JAB:
+			case ANIM_ATTACK_2H_PIERCE:
 				action1 = NANIM_ATTACK;
-				subaction = NANIM_ATTACK_SLASH2H;
+				subaction = NANIM_ATTACK_2H_SLASH;
 				break;
-			case ANIM_ATTACK_2H_WIDE:
+			case ANIM_ATTACK_2H_SLASH:
 				action1 = NANIM_ATTACK;
-				subaction = NANIM_ATTACK_BASH2H;
+				subaction = NANIM_ATTACK_2H_BASH;
 				break;
-			case ANIM_ATTACK_2H_DOWN:
+			case ANIM_ATTACK_2H_BASH:
 				action1 = NANIM_ATTACK;
-				subaction = NANIM_ATTACK_SLASH2H;
+				subaction = NANIM_ATTACK_2H_SLASH;
 				break;
 			case ANIM_CAST_DIR:
 				action1 = NANIM_SPELL;
@@ -1119,7 +1114,7 @@ bool CChar::UpdateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward , BY
 				action1 = NANIM_BLOCK;
 				variation = 1;
 				break;
-			case ANIM_ATTACK_UNARM:
+			case ANIM_ATTACK_WRESTLE:
 				action1 = NANIM_ATTACK;
 				subaction = NANIM_ATTACK_WRESTLING;
 				break;

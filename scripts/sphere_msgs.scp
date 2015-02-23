@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, Feb 18, 2015
+// FILE LAST UPDATED: Monday, Feb 23, 2015
 //
 VERSION=0.56c
 
@@ -138,7 +138,7 @@ EMOTE_DEF_UNICODE	0
 //combat_misso				"%s missed you."
 //combat_misss					"You miss %s."
 //combat_outsideship			"You cannot hit characters outside the ship."
-//combat_parry				"You parry the blow"
+//combat_parry				"Your attack was parried!"
 //cont_full					"Too many items in that container"
 //cont_magic					"The item bounces out of the magic container"
 //cont_toosmall				"The container is too small for that"

@@ -947,7 +947,7 @@ bool CChar::Use_Repair( CItem * pItemArmor )
 	}
 
 	UpdateDir( m_Act_p );
-	UpdateAnimate(ANIM_ATTACK_1H_WIDE);
+	UpdateAnimate(ANIM_ATTACK_1H_SLASH);
 
 	// quarter the skill to make it.
 	// + more damaged items should be harder to repair.

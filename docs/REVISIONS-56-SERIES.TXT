@@ -1660,3 +1660,11 @@ Fixed: NPCs flagging their owner criminal when attack an innocent only if the NP
 
 22-02-2015, Coruja
 Fixed #2479: Combat damage bonus not being calculated correctly when COMBAT_OSIDAMAGEMOD is disabled.
+
+23-02-2015, Coruja
+Changed: Now only players can have damage bonus. NPCs will always use the damage value set on DAM property.
+Fixed: Summoned NPCs incorrectly giving karma gain/loss on death.
+Fixed: @GetHit not inheriting ARGN2 value from @Hit.
+Fixed: Parrying skill not calling @UseQuick / @SkillUseQuick triggers.
+Fixed #2478: Some weapons using wrong swing animation.
+[sphere_msgs.scp]: Updated 'combat_parry' message.

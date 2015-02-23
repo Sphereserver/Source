@@ -95,7 +95,7 @@ MSG(COMBAT_INSIDESHIP,				"combat_insideship",				"You cannot hit characters ins
 MSG(COMBAT_MISSO,					"combat_misso",						"%s missed you.")
 MSG(COMBAT_MISSS,					"combat_misss",						"You miss %s.")
 MSG(COMBAT_OUTSIDESHIP,				"combat_outsideship",				"You cannot hit characters outside the ship.")
-MSG(COMBAT_PARRY,					"combat_parry",						"You parry the blow")
+MSG(COMBAT_PARRY,					"combat_parry",						"Your attack was parried!")
 MSG(CONT_FULL,						"cont_full",						"Too many items in that container")
 MSG(CONT_MAGIC,						"cont_magic",						"The item bounces out of the magic container")
 MSG(CONT_TOOSMALL,					"cont_toosmall",					"The container is too small for that")

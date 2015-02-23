@@ -713,18 +713,17 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iOtherKillers)
 		int iFameChange = g_Cfg.Calc_FameKill(pKill) / (iOtherKillers + 1);
 		int iKarmaChange = g_Cfg.Calc_KarmaKill(pKill, NotoThem) / (iOtherKillers + 1);
 
-		Noto_Karma(iKarmaChange);
-
-		// no real fame for letting your pets do the work! and killing summoned pets as well
+		// no real fame/karma/exp for letting your pets do the work! and killing summoned pets as well
 		if ( !fPetKill && pKill->IsStatFlag(STATF_Conjured) )
 			fPetKill = true;
 	
 		if ( !fPetKill )							
 		{
 			Noto_Fame(iFameChange);
+			Noto_Karma(iKarmaChange);
 
 			//	count change of experience
-			if ( g_Cfg.m_bExperienceSystem && ( g_Cfg.m_iExperienceMode&EXP_MODE_RAISE_COMBAT ))
+			if ( g_Cfg.m_bExperienceSystem && ( g_Cfg.m_iExperienceMode & EXP_MODE_RAISE_COMBAT ))
 			{
 				// default delta = exp/10 (same as death loss), divided for each killer proportionaly
 				int change = pKill->m_exp;
@@ -2212,29 +2211,16 @@ effect_bounce:
 			DexMod -= (80 - Stat_GetVal(STAT_DEX));
 
 		ParryChance *= DexMod / 100;
-		if ( ParryChance > Calc_GetRandVal(100) )
+		if ( Skill_UseQuick( SKILL_PARRYING, ParryChance, true, false ))
 		{
 			Effect( EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 16 );
 			if ( IsPriv(PRIV_DETAIL) )
-				SysMessageDefault( DEFMSG_COMBAT_PARRY );
+				pSrc->SysMessageDefault( DEFMSG_COMBAT_PARRY );
 			if ( pItemHit != NULL )
 				pItemHit->OnTakeDamage( iDmg, pSrc, uType );
 
 			return( 0 );
 		}
-
-		// Sphere parrying chance (custom)
-		/*CItem * pShield = LayerFind( LAYER_HAND2 );
-		if ( pShield != NULL && Skill_UseQuick( SKILL_PARRYING, Calc_GetRandLLVal((pSrc!=NULL) ? (pSrc->Skill_GetBase(SKILL_TACTICS)/10) : 100 )))
-		{
-			// Damage the shield.
-			// Let through some damage.
-			int iDefense = Calc_GetRandVal( pShield->Armor_GetDefense() / 2 );
-			if ( pShield->OnTakeDamage( minimum( iDmg, iDefense ), pSrc, uType ))
-				SysMessageDefault( DEFMSG_COMBAT_PARRY );
-
-			iDmg -= iDefense; // damage absorbed by shield
-		}*/
 	}
 
 	CCharBase * pCharDef = Char_GetDef();
@@ -2669,54 +2655,59 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 		iDmgMax = pChar->m_attackBase + pChar->m_attackRange;
 	}
 
-	int iDmgBonus = minimum(static_cast<int>(GetDefNum("INCREASEDAM", true, true)), 100);		//Damage Increase is capped at 100%
-	if (IsSetCombatFlags(COMBAT_OSIDAMAGEMOD))
+	if ( m_pPlayer )	// only players can have damage bonus
 	{
-		// AOS damage bonus
-		iDmgBonus += Skill_GetBase(SKILL_TACTICS) / 16;
-		if (Skill_GetBase(SKILL_TACTICS) >= 1000)
-			iDmgBonus += 6;	//6.25
-
-		iDmgBonus += Skill_GetBase(SKILL_ANATOMY) / 20;
-		if (Skill_GetBase(SKILL_ANATOMY) >= 1000)
-			iDmgBonus += 5;
-
-		CItem * pActWeapon = m_uidWeapon.ItemFind();
-		if (pActWeapon && pActWeapon->IsType(IT_WEAPON_AXE))
+		int iDmgBonus = minimum(static_cast<int>(GetDefNum("INCREASEDAM", true, true)), 100);		// Damage Increase is capped at 100%
+		if (IsSetCombatFlags(COMBAT_OSIDAMAGEMOD))
 		{
-			iDmgBonus += Skill_GetBase(SKILL_LUMBERJACKING) / 50;
-			if (Skill_GetBase(SKILL_LUMBERJACKING) >= 1000)
+			// AOS damage bonus
+			iDmgBonus += Skill_GetBase(SKILL_TACTICS) / 16;
+			if (Skill_GetBase(SKILL_TACTICS) >= 1000)
+				iDmgBonus += 6;	//6.25
+
+			iDmgBonus += Skill_GetBase(SKILL_ANATOMY) / 20;
+			if (Skill_GetBase(SKILL_ANATOMY) >= 1000)
+				iDmgBonus += 5;
+
+			CItem * pActWeapon = m_uidWeapon.ItemFind();
+			if (pActWeapon && pActWeapon->IsType(IT_WEAPON_AXE))
+			{
+				iDmgBonus += Skill_GetBase(SKILL_LUMBERJACKING) / 50;
+				if (Skill_GetBase(SKILL_LUMBERJACKING) >= 1000)
+					iDmgBonus += 10;
+			}
+
+			iDmgBonus += Stat_GetAdjusted(STAT_STR) * 30 / 100;
+			if (Stat_GetAdjusted(STAT_STR) >= 100)
+				iDmgBonus += 5;
+
+			// pre-AOS damage bonus
+			/*iDmgBonus += (Skill_GetBase(SKILL_TACTICS) - 500) / 10;
+
+			iDmgBonus += Skill_GetBase(SKILL_ANATOMY) / 50;
+			if (Skill_GetBase(SKILL_ANATOMY) >= 1000)
 				iDmgBonus += 10;
+
+			CItem * pActWeapon = m_uidWeapon.ItemFind();
+			if (pActWeapon && pActWeapon->IsType(IT_WEAPON_AXE))
+			{
+				iDmgBonus += Skill_GetBase(SKILL_LUMBERJACKING) / 50;
+				if (Skill_GetBase(SKILL_LUMBERJACKING) >= 1000)
+					iDmgBonus += 10;
+			}
+
+			iDmgBonus += Stat_GetAdjusted(STAT_STR) / 5;*/
 		}
-
-		iDmgBonus += Stat_GetAdjusted(STAT_STR) * 30 / 100;
-		if (Stat_GetAdjusted(STAT_STR) >= 100)
-			iDmgBonus += 5;
-
-		// pre-AOS damage bonus
-		/*iDmgBonus += (Skill_GetBase(SKILL_TACTICS) - 500) / 10;
-
-		iDmgBonus += Skill_GetBase(SKILL_ANATOMY) / 50;
-		if (Skill_GetBase(SKILL_ANATOMY) >= 1000)
-			iDmgBonus += 10;
-
-		CItem * pActWeapon = m_uidWeapon.ItemFind();
-		if (pActWeapon && pActWeapon->IsType(IT_WEAPON_AXE))
+		else
 		{
-			iDmgBonus += Skill_GetBase(SKILL_LUMBERJACKING) / 50;
-			if (Skill_GetBase(SKILL_LUMBERJACKING) >= 1000)
-				iDmgBonus += 10;
+			// Sphere damage bonus (custom)
+			int iBonus = Stat_GetAdjusted(STAT_STR) / 10;
+			iDmgMin += iBonus;
+			iDmgMax += iBonus;
 		}
-
-		iDmgBonus += Stat_GetAdjusted(STAT_STR) / 5;*/
+		iDmgMin += iDmgMin * iDmgBonus / 100;
+		iDmgMax += iDmgMax * iDmgBonus / 100;
 	}
-	else
-	{
-		// Sphere damage bonus (custom)
-		iDmgBonus += Stat_GetAdjusted(STAT_STR) / 10;
-	}
-	iDmgMin += iDmgMin * iDmgBonus / 100;
-	iDmgMax += iDmgMax * iDmgBonus / 100;
 
 	if ( bNoRandom )
 		return( bGetMax ? iDmgMax : iDmgMin );
@@ -3646,7 +3637,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			// ??? the bow is acting like a (poor) blunt weapon at this range?
 			SysMessageDefault( DEFMSG_COMBAT_ARCH_TOOCLOSE );
 			int iTime = Fight_GetWeaponSwingTimer();
-			UpdateAnimate(GenerateAnimate(ANIM_ATTACK_1H_WIDE, false, false), false, false, iTime / TICK_PER_SEC);
+			UpdateAnimate(GenerateAnimate(ANIM_ATTACK_1H_SLASH, false, false), false, false, iTime / TICK_PER_SEC);
 			return( WAR_SWING_EQUIPPING );
 		}
 
@@ -3985,7 +3976,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 #ifdef _ALPHASPHERE
 	Memory_AddObjTypes(pCharTarg,MEMORY_WAR_TARG);
 #endif
-	iDmg	= static_cast<int>(Args.m_iN1);
+	iDmg = static_cast<int>(Args.m_iN1);
+	iTyp = static_cast<int>(Args.m_iN2);
 
 	if ( g_Cfg.IsSkillRanged(skill) )
 	{

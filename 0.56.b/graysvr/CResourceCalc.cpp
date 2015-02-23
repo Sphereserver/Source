@@ -343,35 +343,6 @@ int CResource::Calc_KarmaScale( int iKarma, int iKarmaChange )
 }
 
 //********************************
-// Skill Checks and Stat changes.
-
-bool CResource::Calc_SkillCheck( int iSkillLevel, int iDifficulty )
-{
-	ADDTOCALLSTACK("CResource::Calc_SkillCheck");
-	// Chance to complete skill check given skill x and difficulty y
-	// ARGS:
-	//  iSkillLevel = 0-1000
-	//  difficulty = 0-100
-	// RETURN:
-	//  true = success check.
-
-	if ( iDifficulty < 0 || iSkillLevel < 0 )	// auto failure.
-		return( false );
-
-	int iChanceForSuccess = Calc_GetSCurve( iSkillLevel - ( iDifficulty * 10 ), SKILL_VARIANCE );
-	int iRoll = Calc_GetRandVal(1000);
-
-	return( iRoll <= iChanceForSuccess );
-}
-
-//Chance to rise in Stat
-//	food ?
-
-//Chance to rise in Skill
-
-//Chance to decay in Skill or Stats
-
-//********************************
 // Stealing
 
 int CResource::Calc_StealingItem( CChar * pCharThief, CItem * pItem, CChar * pCharMark )
