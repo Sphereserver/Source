@@ -4750,7 +4750,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			int iDifficulty = Use_LockPick( pCharSrc, true, false );
 			if ( iDifficulty < 0 )
 				return( false );
-			bool fSuccess = pCharSrc->Skill_CheckSuccess( SKILL_MAGERY, iSkillLevel, iDifficulty );
+			bool fSuccess = pCharSrc->Skill_CheckSuccess( SKILL_MAGERY, iDifficulty );
 			Use_LockPick( pCharSrc, false, ! fSuccess );
 			return fSuccess;
 		}

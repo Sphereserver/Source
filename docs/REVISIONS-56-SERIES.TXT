@@ -1668,3 +1668,9 @@ Fixed: @GetHit not inheriting ARGN2 value from @Hit.
 Fixed: Parrying skill not calling @UseQuick / @SkillUseQuick triggers.
 Fixed #2478: Some weapons using wrong swing animation.
 [sphere_msgs.scp]: Updated 'combat_parry' message.
+
+25-02-2015, Ben
+Fixed #2477: PacketDeathAnimation causing errors.
+Fixed: New ARGN2 in @Hit not being set to the proper value.
+Fixed #2484: GMs not always succeeding at skills.
+Fixed: Unlock spell using spell level as difficulty.

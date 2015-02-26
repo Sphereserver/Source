@@ -949,6 +949,9 @@ bool CChar::Skill_CheckSuccess( SKILL_TYPE skill, int difficulty, bool bUseBellC
 	// RETURN:
 	//	true = success in skill.
 
+	if  (IsPriv( PRIV_GM ))
+		return( true );
+
 	if ( !IsSkillBase(skill) || difficulty < 0 )	// auto failure.
 		return( false );
 

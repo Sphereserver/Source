@@ -3938,7 +3938,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	//if ( iDmg ) // use OnTakeDamage below instead.
 	//	pCharTarg->OnHarmedBy( this, iDmg );
 
-	CScriptTriggerArgs	Args( iDmg, 0, pWeapon );
+	CScriptTriggerArgs	Args( iDmg, iTyp, pWeapon );
 
 	if ( g_Cfg.IsSkillRanged(skill) )
 	{

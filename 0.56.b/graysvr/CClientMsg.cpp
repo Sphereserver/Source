@@ -3374,7 +3374,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 								LPCTSTR regionName = g_Cfg.GetDefaultMsg(DEFMSG_RUNE_LOCATION_UNK);
 								if ( pt.GetRegion(REGION_TYPE_AREA) )
 									regionName = pt.GetRegion(REGION_TYPE_AREA)->GetName();
-								bool regionMulti = pt.GetRegion(REGION_TYPE_MULTI);
+								bool regionMulti = (pt.GetRegion(REGION_TYPE_MULTI) != NULL);
 
 								if ( pt.m_map == 0 )
 									this->m_TooltipData.Add( t = new CClientTooltip( regionMulti? 1062452 : 1060805 ) ); // ~1_val~ (Felucca)[(House)]
