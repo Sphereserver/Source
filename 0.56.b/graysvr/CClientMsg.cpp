@@ -633,6 +633,50 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 	if ( !pszText )
 		return;
 
+	HUE_TYPE defaultHue = HUE_TEXT_DEF;
+	FONT_TYPE defaultFont = FONT_NORMAL;
+	int defaultUnicode = 0;
+
+	switch ( mode )
+	{
+		case TALKMODE_SYSTEM:
+		{
+			defaultHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_COLOR"));
+			defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_FONT"));
+			defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_UNICODE",true) != 0);
+			break;
+		}
+		case TALKMODE_EMOTE:
+		{
+			defaultHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_COLOR"));
+			defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_FONT"));
+			defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_UNICODE",true) != 0);
+			break;
+		}
+		case TALKMODE_SAY:
+		{
+			defaultHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("SAY_DEF_COLOR"));
+			defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("SAY_DEF_FONT"));
+			defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("SAY_DEF_UNICODE",true) != 0);
+			break;
+		}
+		case TALKMODE_OBJ:
+		{
+			defaultHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_COLOR"));
+			defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_FONT"));
+			defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_UNICODE",true) != 0);
+			break;
+		}
+		case TALKMODE_ITEM:
+		{
+			if ( !pSrc->IsChar() )		// Don't override color on char names to prevent conflict with notoriety color
+				defaultHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_COLOR"));
+			defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_FONT"));
+			defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_UNICODE",true) != 0);
+			break;
+		}
+	}
+
 	WORD Args[] = { wHue, font, (bUnicode ? (WORD)1 : (WORD)0) };
 
 	if ( *pszText == '@' )
@@ -668,6 +712,12 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 			Args[1]	= FONT_NORMAL;
 	}
 
+	if ( Args[0] == HUE_TEXT_DEF )
+		Args[0] = defaultHue;
+	if ( Args[1] == FONT_NORMAL )
+		Args[1] = defaultFont;
+	if ( Args[2] == 0 )
+		Args[2] = defaultUnicode;
 
 	if ( m_BarkBuffer.IsEmpty())
 	{
@@ -760,7 +810,7 @@ void CClient::addBark( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_TYPE 
 	new PacketMessageASCII(this, pszText, pSrc, wHue, mode, font);
 }
 
-void CClient::addObjMessage( LPCTSTR pMsg, const CObjBaseTemplate * pSrc, HUE_TYPE wHue ) // The message when an item is clicked
+void CClient::addObjMessage( LPCTSTR pMsg, const CObjBaseTemplate * pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode ) // The message when an item is clicked
 {
 	ADDTOCALLSTACK("CClient::addObjMessage");
 	if ( !pMsg )
@@ -774,23 +824,8 @@ void CClient::addObjMessage( LPCTSTR pMsg, const CObjBaseTemplate * pSrc, HUE_TY
 		if ( strlen(pMsg) < SCRIPT_MAX_LINE_LEN )
 			strcpy(m_zLastObjMessage, pMsg);
 	}
-	
-	if ( pSrc->IsChar() )
-	{
-		HUE_TYPE pHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_COLOR"));
-		FONT_TYPE pFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_FONT"));
-		bool bUnicode = (g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_UNICODE",true) != 0);
 
-		addBarkParse(pMsg, pSrc, (wHue != HUE_TEXT_DEF ? wHue : ( pHue ? pHue : wHue )), TALKMODE_OBJ, ( pFont ? pFont : FONT_NORMAL), bUnicode);
-	}
-	else
-	{
-		HUE_TYPE pHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_COLOR"));
-		FONT_TYPE pFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_FONT"));
-		bool bUnicode = (g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_UNICODE",true) != 0);
-
-		addBarkParse(pMsg, pSrc, (wHue != HUE_TEXT_DEF ? wHue : ( pHue ? pHue : wHue)), TALKMODE_ITEM, ( pFont ? pFont : FONT_NORMAL), bUnicode);
-	}
+	addBarkParse(pMsg, pSrc, wHue, mode);
 }
 
 void CClient::addEffect( EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate * pDst, const CObjBaseTemplate * pSrc, BYTE bSpeedSeconds, BYTE bLoop, bool fExplode, DWORD color, DWORD render )
@@ -1092,7 +1127,7 @@ void CClient::addItemName( const CItem * pItem )
 		wHue = static_cast<HUE_TYPE>(Args.m_VarsLocal.GetKeyNum("ClickMsgHue", true));
 	}
 
-	addObjMessage(szName, pItem, wHue);
+	addObjMessage( szName, pItem, wHue, TALKMODE_ITEM );
 }
 
 void CClient::addCharName( const CChar * pChar ) // Singleclick text for a character
@@ -1222,7 +1257,7 @@ void CClient::addCharName( const CChar * pChar ) // Singleclick text for a chara
 		wHue = static_cast<HUE_TYPE>(Args.m_VarsLocal.GetKeyNum("ClickMsgHue", true));
 	}
 
-	addObjMessage( pszTemp, pChar, wHue );
+	addObjMessage( pszTemp, pChar, wHue, TALKMODE_ITEM );
 }
 
 void CClient::addPlayerStart( CChar * pChar )

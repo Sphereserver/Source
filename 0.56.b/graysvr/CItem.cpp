@@ -4873,6 +4873,16 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType, int iDmgPhys
 	if ( iDmg <= 0 )
 		return( 0 );
 
+	INT64 iSelfRepair = GetDefNum("SELFREPAIR", true, true);
+	if ( iSelfRepair > Calc_GetRandVal(10) )
+	{
+		m_itArmor.m_Hits_Cur += 2;
+		if ( m_itArmor.m_Hits_Cur > m_itArmor.m_Hits_Max )
+			m_itArmor.m_Hits_Cur = m_itArmor.m_Hits_Max;
+
+		return( 0 );
+	}
+
 	if (( IsTrigUsed(TRIGGER_DAMAGE) ) || ( IsTrigUsed(TRIGGER_ITEMDAMAGE) ))
 	{
 		CScriptTriggerArgs Args(iDmg, static_cast<int>(uType));

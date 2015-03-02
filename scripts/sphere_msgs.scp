@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, Feb 23, 2015
+// FILE LAST UPDATED: Monday, Mar 2, 2015
 //
 VERSION=0.56c
 
@@ -17,32 +17,39 @@ is handling the message.  If you want to change a message, uncomment the
 appropriate line and change it to say what you want.  If you want the message
 to not be sent at all, then set the value to "".
 
-After making a change, tis script needs to be reloaded, at which point sphere
+After making a change, this script needs to be reloaded, at which point sphere
 will replace default message with the one you modified.
 
 NOTE: If the string contains a % character, your string must contain all
-		those characters too.
+      those characters too.
 
 
 [DEFNAME messages_settings]
-// Default color & font for SysMessage
-SMSG_DEF_COLOR	946
-SMSG_DEF_FONT   3
+// Default settings for SysMessage
+SMSG_DEF_COLOR		946
+SMSG_DEF_FONT   	3
 SMSG_DEF_UNICODE	0
 
-// Default color & font for Message/Say
-MSG_DEF_COLOR	0
-MSG_DEF_FONT	3
-MSG_DEF_UNICODE	0
+// Default settings for Message
+MSG_DEF_COLOR		946
+MSG_DEF_FONT		3
+MSG_DEF_UNICODE		0
 
-// Default color & font for Messages when player click an item
-IMSG_DEF_COLOR	0
-IMSG_DEF_FONT	3
-IMSG_DEF_UNICODE 0
+// Default settings for Message when player click on items/chars
+// Note: IMSG_DEF_COLOR is not used on chars names to prevent conflict with notoriety colors
+IMSG_DEF_COLOR		946
+IMSG_DEF_FONT		3
+IMSG_DEF_UNICODE	0
 
-// Default color & font for Emote
-EMOTE_DEF_COLOR	34
-EMOTE_DEF_FONT	3
+// Default settings for Say
+// Note: these settings will not override player speech settings
+SAY_DEF_COLOR		946
+SAY_DEF_FONT		3
+SAY_DEF_UNICODE		0
+
+// Default settings for Emote
+EMOTE_DEF_COLOR		34
+EMOTE_DEF_FONT		3
 EMOTE_DEF_UNICODE	0
 
 
@@ -847,6 +854,7 @@ EMOTE_DEF_UNICODE	0
 //spell_poison_2				"very ill"
 //spell_poison_3				"extremely sick"
 //spell_poison_4				"deathly sick"
+//spell_reactivearmor_nullify			"Your reactive armor spell has been nullified."
 //spell_recall_blank				"The recall rune is blank."
 //spell_recall_fadec				"The recall rune fades completely."
 //spell_recall_faded				"The recall rune's magic has faded"

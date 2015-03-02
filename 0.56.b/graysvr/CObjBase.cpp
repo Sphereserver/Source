@@ -404,11 +404,7 @@ void CObjBase::Emote( LPCTSTR pText, CClient * pClientExclude, bool fForcePosses
 		strcpy(pszYou, pszThem);
 	}
 
-	HUE_TYPE pHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_COLOR"));
-	FONT_TYPE pFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_FONT"));
-	bool bUnicode = (g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_UNICODE",true) != 0);
-
-	pObjTop->UpdateObjMessage(pszThem, pszYou, pClientExclude, pHue, TALKMODE_EMOTE, pFont, bUnicode);
+	pObjTop->UpdateObjMessage(pszThem, pszYou, pClientExclude, HUE_TEXT_DEF, TALKMODE_EMOTE);
 }
 
 void CObjBase::Speak( LPCTSTR pText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font )
@@ -1889,7 +1885,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			{
 				EXC_SET("MESSAGE or MSG");
 				if ( pCharSrc == NULL )
-					UpdateObjMessage(s.GetArgStr(), s.GetArgStr(), NULL, HUE_TEXT_DEF, IsChar() ? TALKMODE_EMOTE : TALKMODE_ITEM, FONT_NORMAL);
+					UpdateObjMessage(s.GetArgStr(), s.GetArgStr(), NULL, HUE_TEXT_DEF, TALKMODE_OBJ);
 				else
 					pCharSrc->ObjMessage(s.GetArgStr(), this);
 			}

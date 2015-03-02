@@ -342,7 +342,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 
 		case IT_SHIP_TILLER:
 			// dclick on tiller man.
-			pItem->Speak( g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_TILLERMAN ), HUE_TEXT_TILLERMAN, TALKMODE_SAY, FONT_NORMAL );
+			pItem->Speak( g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_TILLERMAN ), HUE_TEXT_DEF, TALKMODE_SAY, FONT_NORMAL );
 			return true;
 
 			// A menu or such other action ( not instantanious)
