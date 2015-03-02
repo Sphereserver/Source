@@ -1032,7 +1032,7 @@ void CClient::addItemName( const CItem * pItem )
 	if ( pCont != NULL )
 	{
 		// ??? Corpses show hair as an item !!
-		len += sprintf( szName+len, " (%" FMTSIZE_T " items)", pCont->GetCount());
+		len += sprintf( szName+len, g_Cfg.GetDefaultMsg(DEFMSG_CONT_ITEMS), pCont->GetCount(), pCont->GetTotalWeight() / WEIGHT_UNITS);
 	}
 
 	// obviously damaged ?

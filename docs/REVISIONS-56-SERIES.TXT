@@ -1678,4 +1678,4 @@ Fixed: Unlock spell using spell level as difficulty.
 02-03-2015, Coruja
 Added: Internal support for SELFREPAIR property os items.
 Fixed: Some internal messages using wrong message type (eg: items names incorrectly using 'talkmode_obj' instead 'talkmode_item', etc).
-[sphere_msgs.scp]: Updated 'messages_settings' header.
+[sphere_msgs.scp]: Updated 'messages_settings' header, added new message 'cont_items'.

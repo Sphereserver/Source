@@ -146,6 +146,7 @@ EMOTE_DEF_UNICODE	0
 //combat_misss					"You miss %s."
 //combat_outsideship			"You cannot hit characters outside the ship."
 //combat_parry				"Your attack was parried!"
+//cont_items					" (%d items, %d stones)"
 //cont_full					"Too many items in that container"
 //cont_magic					"The item bounces out of the magic container"
 //cont_toosmall				"The container is too small for that"
