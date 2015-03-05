@@ -2482,8 +2482,11 @@ do_default:
 			sVal = m_ptHome.WriteUsed();
 			break;
 		case CHC_NIGHTSIGHT:
-			sVal.FormatVal( IsStatFlag( STATF_NightSight ));
-			break;
+			{
+				//sVal.FormatVal(IsStatFlag(STATF_NightSight));
+				CVarDefCont * pVar = GetDefKey(pszKey, true);
+				sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
+				}break;
 		case CHC_NOTOGETFLAG:
 			{
 				pszKey += 11;
@@ -2948,15 +2951,10 @@ do_default:
 			break;
 		case CHC_NIGHTSIGHT:
 			{
-				bool fNightsight;
-				if ( s.HasArgs())
-				{
-					fNightsight = ( s.GetArgVal() != 0 );
-				}
-				else
-				{
-					fNightsight = ! IsStatFlag(STATF_NightSight);
-				}
+				long fNightsight = s.GetArgVal();
+				if (!fNightsight)	// Keep old 'switch' from 0 to 1 and viceversa behaviour while no args are given.
+					 fNightsight = !IsStatFlag(STATF_NightSight);
+				SetDefNum(s.GetKey(), fNightsight, false);
 				StatFlag_Mod( STATF_NightSight, fNightsight );
 				if ( IsClient() )
 					m_pClient->addLight();

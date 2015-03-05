@@ -1679,3 +1679,10 @@ Fixed: Unlock spell using spell level as difficulty.
 Added: Internal support for SELFREPAIR property os items.
 Fixed: Some internal messages using wrong message type (eg: items names incorrectly using 'talkmode_obj' instead 'talkmode_item', etc).
 [sphere_msgs.scp]: Updated 'messages_settings' header, added new message 'cont_items'.
+
+05-03-2015,XuN
+Fixed Packet 0xBF.0x1C (Cast Spell) crashing server when spell does not exists (prevents crashing shard when casting packet sent directly from injection, etc and there's no spell).
+Updated sphereCrypt.ini with clients up to 7.0.43.
+Added 'stacking' behaviour to NightSight property to allow more than 1 item apply it's value and not removing the nightsight effect when unequipping (this will fix #2475), 
+old behaviour (.nightsight (no value) to switch from 0 to 1 and viceversa) keeps working, be aware of not using both methods or problems will come.
+Fixed #02488: Pets inheriting Notoriety from Masters even if .ini's value say to not do.

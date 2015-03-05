@@ -194,7 +194,7 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 	if ( pThis->m_notoSaves.size() )
 	{
 		int id = -1;
-		if (pThis->m_pNPC && pThis->NPC_PetGetOwner())	// If I'm a pet and have owner I redirect noto to him.
+		if (pThis->m_pNPC && pThis->NPC_PetGetOwner() && g_Cfg.m_iPetsInheritNotoriety != 0)	// If I'm a pet and have owner I redirect noto to him.
 			pThis = pThis->NPC_PetGetOwner();
 
 		id = pThis->NotoSave_GetID(pTarget);

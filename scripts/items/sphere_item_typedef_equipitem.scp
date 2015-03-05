@@ -970,7 +970,7 @@ IF (<HitMagicArrow>)
 ENDIF
 
 IF (<MageArmor>)
-	SRC.MageArmor=<EVAL <SRC.MageArmor> + 1>
+	SRC.tag.MageArmor=<EVAL <SRC.tag.MageArmor> + 1>
 ENDIF
 
 IF <BonusSkill1>
@@ -1169,7 +1169,7 @@ IF (<HitMagicArrow>)
 ENDIF
 
 IF (<MageArmor>)
-	SRC.MageArmor -= 1
+	SRC.tag.MageArmor -= 1
 ENDIF
 
 IF <BonusSkill1>

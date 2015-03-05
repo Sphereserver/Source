@@ -3023,6 +3023,8 @@ bool PacketSpellSelect::onReceive(NetState* net)
 
 	skip(2); // unknown
 	SPELL_TYPE spell = static_cast<SPELL_TYPE>(readInt16());
+	if (!spell)
+		 return false;
 
 	if (IsSetMagicFlags(MAGICF_PRECAST))
 	{
