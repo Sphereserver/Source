@@ -2898,8 +2898,8 @@ bool CChar::Death()
 	if ( m_pPlayer )
 	{
 		// Display death animation to client ("You are dead")
-		if ( g_Cfg.m_iPacketDeathAnimation)
-			new PacketDeathMenu( GetClient(), PacketDeathMenu::ServerSent );
+		if ( g_Cfg.m_iPacketDeathAnimation )
+			new PacketDeathMenu( GetClient(), PacketDeathMenu::Ghost );
 
 		SetHue( HUE_DEFAULT );	// Get all pale.
 

@@ -184,9 +184,6 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 	createArgs.m_iN2 = prProf;
 	createArgs.m_iN3 = rtRace;
 	createArgs.m_VarsLocal.SetNum("PORTRAIT", iPortrait);
-//	These locals are now useless since they are being initialized in CChar::InitPlayer()
-//	createArgs.m_VarsLocal.SetNum("EXTRASKILL.KEY", skSkill4);
-//	createArgs.m_VarsLocal.SetNum("EXTRASKILL.VAL", iSkillVal4 * 10);
 	createArgs.m_s1 = account->GetName();
 	createArgs.m_pO1 = client;
 	
@@ -1569,6 +1566,9 @@ bool PacketCreateKR::onReceive(NetState* net)
 	switch (profession)
 	{
 		case PROFESSION_WARRIOR:
+			strength = 45;
+			dexterity = 35;
+			intelligence = 10;
 			skill1 = SKILL_SWORDSMANSHIP;
 			skillval1 = 30;
 			skill2 = SKILL_TACTICS;
@@ -1579,6 +1579,9 @@ bool PacketCreateKR::onReceive(NetState* net)
 			skillval4 = 30;
 			break;
 		case PROFESSION_MAGE:
+			strength = 25;
+			dexterity = 20;
+			intelligence = 45;
 			skill1 = SKILL_MAGERY;
 			skillval1 = 30;
 			skill2 = SKILL_EVALINT;
@@ -1589,6 +1592,9 @@ bool PacketCreateKR::onReceive(NetState* net)
 			skillval4 = 30;
 			break;
 		case PROFESSION_BLACKSMITH:
+			strength = 60;
+			dexterity = 10;
+			intelligence = 10;
 			skill1 = SKILL_BLACKSMITHING;
 			skillval1 = 30;
 			skill2 = SKILL_MINING;
@@ -1599,6 +1605,9 @@ bool PacketCreateKR::onReceive(NetState* net)
 			skillval4 = 30;
 			break;
 		case PROFESSION_NECROMANCER:
+			strength = 25;
+			dexterity = 20;
+			intelligence = 45;
 			skill1 = SKILL_NECROMANCY;
 			skillval1 = 30;
 			skill2 = SKILL_SPIRITSPEAK;
@@ -1609,6 +1618,9 @@ bool PacketCreateKR::onReceive(NetState* net)
 			skillval4 = 30;
 			break;
 		case PROFESSION_PALADIN:
+			strength = 45;
+			dexterity = 20;
+			intelligence = 25;
 			skill1 = SKILL_CHIVALRY;
 			skillval1 = 30;
 			skill2 = SKILL_SWORDSMANSHIP;
@@ -1619,6 +1631,9 @@ bool PacketCreateKR::onReceive(NetState* net)
 			skillval4 = 30;
 			break;
 		case PROFESSION_SAMURAI:
+			strength = 40;
+			dexterity = 30;
+			intelligence = 10;
 			skill1 = SKILL_BUSHIDO;
 			skillval1 = 30;
 			skill2 = SKILL_SWORDSMANSHIP;
@@ -1629,13 +1644,16 @@ bool PacketCreateKR::onReceive(NetState* net)
 			skillval4 = 30;
 			break;
 		case PROFESSION_NINJA:
+			strength = 40;
+			dexterity = 30;
+			intelligence = 10;
 			skill1 = SKILL_NINJITSU;
 			skillval1 = 30;
 			skill2 = SKILL_FENCING;
 			skillval2 = 30;
 			skill3 = SKILL_HIDING;
 			skillval3 = 30;
-			skill4 = SKILL_PARRYING;
+			skill4 = SKILL_STEALTH;
 			skillval4 = 30;
 			break;
 		case PROFESSION_ADVANCED:

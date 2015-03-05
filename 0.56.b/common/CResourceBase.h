@@ -81,6 +81,14 @@ enum RES_TYPE	// all the script resource blocks we know how to deal with !
 #define RES_DIALOG_BUTTON			2
 #define RES_NEWBIE_MALE_DEFAULT		(10000+1)	// just an unused number for the range.
 #define RES_NEWBIE_FEMALE_DEFAULT	(10000+2)
+#define RES_NEWBIE_PROF_ADVANCED	(10000+3)
+#define RES_NEWBIE_PROF_WARRIOR		(10000+4)
+#define RES_NEWBIE_PROF_MAGE		(10000+5)
+#define RES_NEWBIE_PROF_BLACKSMITH	(10000+6)
+#define RES_NEWBIE_PROF_NECROMANCER	(10000+7)
+#define RES_NEWBIE_PROF_PALADIN		(10000+8)
+#define RES_NEWBIE_PROF_SAMURAI		(10000+9)
+#define RES_NEWBIE_PROF_NINJA		(10000+10)
 
 struct RESOURCE_ID_BASE : public CGrayUIDBase
 {

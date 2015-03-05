@@ -225,16 +225,6 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 	if ( iNotoFlag != NOTO_INVALID )
 		return iNotoFlag;
 
-	if ( fAllowIncog && IsStatFlag( STATF_Incognito ))
-	{
-		return NOTO_NEUTRAL;
-	}
-
-	if ( fAllowInvul && IsStatFlag( STATF_INVUL ) )
-	{
-		return NOTO_INVUL;
-	}
-
 	if ( this != pCharViewer )
 	{
 		if ( g_Cfg.m_iPetsInheritNotoriety != 0 )
@@ -271,28 +261,39 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 				}
 			}
 		}
+	}
+
+	if ( fAllowInvul && IsStatFlag(STATF_INVUL))
+		return NOTO_INVUL;
+	if ( fAllowIncog && IsStatFlag(STATF_Incognito))
+		return NOTO_NEUTRAL;
+	if ( IsStatFlag(STATF_Criminal))	// criminal to everyone.
+		return NOTO_CRIMINAL;
+	if ( m_pArea && m_pArea->IsFlag(REGION_FLAG_ARENA))
+		return NOTO_NEUTRAL;			// everyone is neutral here.
+	if ( Noto_IsEvil())
+		return NOTO_EVIL;
+	if ( Noto_IsNeutral())
+		return NOTO_NEUTRAL;
+
+	if ( this != pCharViewer ) // Am I checking myself?
+	{
+		// If they saw me commit a crime or I am their aggressor then
+		// criminal to just them.
+		CItemMemory * pMemory = pCharViewer->Memory_FindObjTypes( this, MEMORY_SAWCRIME|MEMORY_AGGREIVED );
+		if ( pMemory != NULL )
+			return( NOTO_CRIMINAL );
 
 		// Are we in the same party ?
 		if ( m_pParty && m_pParty == pCharViewer->m_pParty )
 		{
 			if ( m_pParty->GetLootFlag(this))
-			{
-				return(NOTO_GUILD_SAME);
-			}
-			return(NOTO_GUILD_SAME);	// Shall we be green
+				return(NOTO_GUILD_SAME)
 		}
-	}
 
-	if ( Noto_IsEvil())
-	{
-		return( NOTO_EVIL );
-	}
-
-	if ( this != pCharViewer ) // Am I checking myself?
-	{
 		// Check the guild stuff
-		CItemStone * pMyTown = Guild_Find(MEMORY_TOWN);
 		CItemStone * pMyGuild = Guild_Find(MEMORY_GUILD);
+		CItemStone * pMyTown = Guild_Find(MEMORY_TOWN);
 		if ( pMyGuild || pMyTown )
 		{
 			CItemStone * pViewerGuild = pCharViewer->Guild_Find(MEMORY_GUILD);
@@ -305,58 +306,20 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 					if ( pViewerGuild && pViewerGuild->IsPrivMember(pCharViewer))
 					{
 						if ( pViewerGuild == pMyGuild ) // Same guild?
-							return NOTO_GUILD_SAME; // return green
+							return NOTO_GUILD_SAME;
 						if ( pMyGuild->IsAlliedWith(pViewerGuild))
 							return NOTO_GUILD_SAME;
-						// Are we in different guilds but at war? (not actually a crime right?)
-						if ( pMyGuild->IsAtWarWith(pViewerGuild))
-							return NOTO_GUILD_WAR; // return orange
 					}
-					if ( pMyGuild->IsAtWarWith(pViewerTown))
-						return NOTO_GUILD_WAR; // return orange
+					if ( pMyGuild->IsAtWarWith(pViewerGuild))
+						return NOTO_GUILD_WAR; 
 				}
 				if ( pMyTown && pMyTown->IsPrivMember(this))
 				{
-					if ( pViewerGuild && pViewerGuild->IsPrivMember(pCharViewer))
-					{
-						if ( pMyTown->IsAtWarWith(pViewerGuild))
-							return NOTO_GUILD_WAR; // return orange
-					}
 					if ( pMyTown->IsAtWarWith(pViewerTown))
-						return NOTO_GUILD_WAR; // return orange
+						return NOTO_GUILD_WAR;
 				}
 			}
 		}
-	}
-
-	if ( IsStatFlag( STATF_Criminal ))	// criminal to everyone.
-	{
-		return( NOTO_CRIMINAL );
-	}
-
-	if ( this != pCharViewer ) // Am I checking myself?
-	{
-		if ( NPC_IsOwnedBy( pCharViewer, false ))	// All pets are neutral to their owners.
-			return( NOTO_NEUTRAL );
-
-		// If they saw me commit a crime or I am their aggressor then
-		// criminal to just them.
-		CItemMemory * pMemory = pCharViewer->Memory_FindObjTypes( this, MEMORY_SAWCRIME | MEMORY_AGGREIVED );
-		if ( pMemory != NULL )
-		{
-			return( NOTO_CRIMINAL );
-		}
-	}
-
-	if ( m_pArea && m_pArea->IsFlag(REGION_FLAG_ARENA))
-	{
-		// everyone is neutral here.
-		return( NOTO_NEUTRAL );
-	}
-
-	if ( Noto_IsNeutral() || m_TagDefs.GetKeyNum("NOTO.PERMAGREY", true))
-	{
-		return( NOTO_NEUTRAL );
 	}
 
 	return( NOTO_GOOD );
@@ -2167,7 +2130,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType, int iDmgPhys
 
 	if ( IsStatFlag(STATF_DEAD))	// already dead
 		return( -1 );
-	if ( ! ( uType & DAMAGE_GOD ))
+	if ( !(uType & DAMAGE_GOD))
 	{
 		if ( IsStatFlag(STATF_INVUL|STATF_Stone))
 		{
@@ -2187,7 +2150,7 @@ effect_bounce:
 	}
 
 	// Check parrying block chance
-	if ( !(uType & DAMAGE_GOD) )
+	if ( !(uType & DAMAGE_GOD) && (pSrc != this) )
 	{
 		// Legacy pre-SE formula
 		CItem * pItemHit = NULL;
@@ -2324,7 +2287,7 @@ effect_bounce:
 	}
 
 	// Update attacker list
-	if ( pSrc && pSrc != this )
+	if ( pSrc != this )
 	{
 		bool bAttackerExists = false;
 		for (std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it)
@@ -2334,7 +2297,7 @@ effect_bounce:
 			{
 				refAttacker.elapsed = 0;
 				refAttacker.amountDone += maximum( 0, iDmg );
-				refAttacker.threat += maximum( 0, iDmg);
+				refAttacker.threat += maximum( 0, iDmg );
 				bAttackerExists = true;
 				break;
 			}
@@ -2346,7 +2309,7 @@ effect_bounce:
 			attacker.charUID = pSrc->GetUID().GetPrivateUID();
 			attacker.elapsed = 0;
 			attacker.amountDone = maximum( 0, iDmg );
-			attacker.threat = maximum( 0, iDmg);
+			attacker.threat = maximum( 0, iDmg );
 			m_lastAttackers.push_back(attacker);
 		}
 	}
@@ -2355,7 +2318,7 @@ effect_bounce:
 	if (uType & (DAMAGE_HIT_BLUNT|DAMAGE_HIT_PIERCE|DAMAGE_HIT_SLASH))
 	{
 		// Check if Reactive Armor will reflect some damage back
-		if ( IsStatFlag(STATF_Reactive) && ! (uType & DAMAGE_GOD) )
+		if ( IsStatFlag(STATF_Reactive) && !(uType & DAMAGE_GOD) )
 		{
 			if ( !pSrc || pSrc == this )
 				return( -1 );
@@ -4009,7 +3972,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		}
 
 		// damage the weapon ?
-		pWeapon->OnTakeDamage( iDmg/4, pCharTarg );
+		if ( 40 > Calc_GetRandVal(100) )
+			pWeapon->OnTakeDamage( iDmg, pCharTarg );
 	}
 	else
 	{

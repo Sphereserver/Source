@@ -3308,10 +3308,28 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 				iPage = RACETYPE_ELF;
 			else if ( ! strcmpi( pArg2, "GARGOYLE" ))
 				iPage = RACETYPE_GARGOYLE;
+
 			if ( ! strcmpi( pszName, "MALE_DEFAULT" ))
 				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_MALE_DEFAULT, iPage ));
 			else if ( ! strcmpi( pszName, "FEMALE_DEFAULT" ))
 				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_FEMALE_DEFAULT, iPage ));
+
+			if ( ! strcmpi( pszName, "PROFESSION_ADVANCED" ))
+				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_PROF_ADVANCED, iPage ));
+			else if ( ! strcmpi( pszName, "PROFESSION_WARRIOR" ))
+				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_PROF_WARRIOR, iPage ));
+			else if ( ! strcmpi( pszName, "PROFESSION_MAGE" ))
+				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_PROF_MAGE, iPage ));
+			else if ( ! strcmpi( pszName, "PROFESSION_BLACKSMITH" ))
+				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_PROF_BLACKSMITH, iPage ));
+			else if ( ! strcmpi( pszName, "PROFESSION_NECROMANCER" ))
+				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_PROF_NECROMANCER, iPage ));
+			else if ( ! strcmpi( pszName, "PROFESSION_PALADIN" ))
+				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_PROF_PALADIN, iPage ));
+			else if ( ! strcmpi( pszName, "PROFESSION_SAMURAI" ))
+				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_PROF_SAMURAI, iPage ));
+			else if ( ! strcmpi( pszName, "PROFESSION_NINJA" ))
+				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_PROF_NINJA, iPage ));
 		}
 		break;
 	case RES_AREA:

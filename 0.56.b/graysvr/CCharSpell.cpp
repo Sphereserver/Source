@@ -2703,24 +2703,29 @@ reflectit:
 		if ( pSpellDef->IsSpellType(SPELLFLAG_DAMAGE) )
 		{
 			int iDmg = GetSpellEffect(spell, iSkillLevel, iEffectMult);
-			if (IsSetMagicFlags(MAGICF_OSIFORMULAS))
+			if ( IsSetMagicFlags(MAGICF_OSIFORMULAS) )
 			{
-				// Evaluating Intelligence mult
-				iDmg *= ((pCharSrc->Skill_GetBase(SKILL_EVALINT) * 3) / 1000) + 1;
+				if (pCharSrc == NULL)
+					iDmg *= ((iSkillLevel * 3) / 1000) + 1;
+				else
+				{
+					// Evaluating Intelligence mult
+					iDmg *= ((pCharSrc->Skill_GetBase(SKILL_EVALINT) * 3) / 1000) + 1;
 
-				// Spell Damage Increase bonus
-				int DamageBonus = static_cast<int>(pCharSrc->GetDefNum("INCREASESPELLDAM",true));
-				if ( m_pPlayer && pCharSrc->m_pPlayer && DamageBonus > 15 )		// Spell Damage Increase is capped at 15% on PvP
-					DamageBonus = 15;
+					// Spell Damage Increase bonus
+					int DamageBonus = static_cast<int>(pCharSrc->GetDefNum("INCREASESPELLDAM",true));
+					if ( m_pPlayer && pCharSrc->m_pPlayer && DamageBonus > 15 )		// Spell Damage Increase is capped at 15% on PvP
+						DamageBonus = 15;
 
-				// INT bonus
-				DamageBonus += pCharSrc->Stat_GetVal(STAT_INT) / 10;
+					// INT bonus
+					DamageBonus += pCharSrc->Stat_GetVal(STAT_INT) / 10;
 
-				// Inscription bonus
-				if ( pCharSrc->Skill_GetBase(SKILL_INSCRIPTION) >= 1000 )
-					DamageBonus += 10;
+					// Inscription bonus
+					if ( pCharSrc->Skill_GetBase(SKILL_INSCRIPTION) >= 1000 )
+						DamageBonus += 10;
 
-				iDmg += iDmg * DamageBonus / 100;
+					iDmg += iDmg * DamageBonus / 100;
+				}
 			}
 
 			if ( !iD1 )
