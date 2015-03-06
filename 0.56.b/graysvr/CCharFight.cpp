@@ -288,7 +288,7 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 		if ( m_pParty && m_pParty == pCharViewer->m_pParty )
 		{
 			if ( m_pParty->GetLootFlag(this))
-				return(NOTO_GUILD_SAME)
+				return(NOTO_GUILD_SAME);
 		}
 
 		// Check the guild stuff
@@ -2326,14 +2326,29 @@ effect_bounce:
 				return( -1 );
 			else if ( GetTopDist3D(pSrc) < 2 )
 			{
-				int iReactiveDamage = iDmg / 5;
-				if ( iReactiveDamage < 1 )
-					iReactiveDamage = 1;
+				// pre-AOS formula
+				CItem * pReactiveMemory = LayerFind(LAYER_SPELL_Reactive);
+				if ( pReactiveMemory->m_itSpell.m_spelllevel > 0 )
+				{
+					if ( pReactiveMemory->m_itSpell.m_spelllevel > iDmg )
+					{
+						int iDmgReactive = iDmg / 5;
+						if ( iDmgReactive < 1 )
+							iDmgReactive = 1;
 
-				iDmg -= iReactiveDamage;
-				pSrc->OnTakeDamage( iReactiveDamage, this, uType, iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy );
-				pSrc->Sound( 0x1F1 );
-				pSrc->Effect( EFFECT_OBJ, ITEMID_FX_CURSE_EFFECT, this, 10, 16 );
+						pReactiveMemory->m_itSpell.m_spelllevel -= iDmg;
+						iDmg = 0;
+
+						pSrc->OnTakeDamage( iDmgReactive, this, uType, iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy );
+						pSrc->Sound( 0x1F1 );
+						pSrc->Effect( EFFECT_OBJ, ITEMID_FX_CURSE_EFFECT, this, 10, 16 );
+					}
+					else
+					{
+						pReactiveMemory->Delete();
+						SysMessageDefault( DEFMSG_SPELL_REACTIVEARMOR_NULLIFY );
+					}
+				}
 			}
 		}
 
