@@ -548,7 +548,7 @@ void CItemMultiCustom::AddRoof(CClient * pClientSrc, ITEMID_TYPE id, short x, sh
 	}
 
 	if ( pCharSrc != NULL )
-		z += pCharSrc->GetTopZ();
+		z += GetPlaneZ(GetPlane(pCharSrc->GetTopZ() - GetTopZ()));
 
 	AddItem(pClientSrc, id, x, y, z);
 }
@@ -978,7 +978,7 @@ size_t CItemMultiCustom::GetComponentsAt(short x, short y, signed char z, Compon
 		if ( pComponent->m_item.m_dx != x || pComponent->m_item.m_dy != y )
 			continue;
 
-		if ( z != -128 && pComponent->m_item.m_dz != z )
+		if ( z != -128 && GetPlane(pComponent->m_item.m_dz) != GetPlane(z) )
 			continue;
 
 		pComponents[count++] = pComponent;

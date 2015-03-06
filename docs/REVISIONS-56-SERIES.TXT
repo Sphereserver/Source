@@ -1695,3 +1695,7 @@ Fixed: Ally/enemy notoriety not working on townstones.
 Fixed: DAMAGE function making the char parry damages caused by itself.
 Fixed: Console error when using SPELLEFFECT function without a valid SRC.
 [sphere_newb.scp]: Added new templates for professions and race variants on skills.
+
+06-03-2015, Coruja
+Fixed: DAMAGE function not causing any damage on items when the function is called without a valid damage flag set (ARGN2).
+Fixed: Roofs not working properly on AOS house customization menu.

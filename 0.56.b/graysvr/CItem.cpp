@@ -4893,7 +4893,7 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType, int iDmgPhys
 	switch ( GetType())
 	{
 	case IT_CLOTHING:
-		if ( ( uType & DAMAGE_FIRE ) &&	! IsAttr( ATTR_ARTIFACT|ATTR_MAGIC|ATTR_NEWBIE|ATTR_MOVE_NEVER ))
+		if ( uType & DAMAGE_FIRE )
 		{
 			// normal cloth takes special damage from fire.
 			goto forcedamage;
@@ -4965,7 +4965,7 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType, int iDmgPhys
 	}
 
 	// Break armor etc..
-	if ( IsTypeArmorWeapon() && ( uType & ( DAMAGE_HIT_BLUNT | DAMAGE_HIT_PIERCE | DAMAGE_HIT_SLASH | DAMAGE_GOD|DAMAGE_MAGIC|DAMAGE_FIRE )))
+	if ( IsTypeArmorWeapon())
 	{
 forcedamage:
 		CChar * pChar = dynamic_cast <CChar*> ( GetTopLevelObj());
@@ -4998,7 +4998,7 @@ forcedamage:
 		}
 
 		TCHAR *pszMsg = Str_GetTemp();
-		if ( pSrc )
+		if ( pSrc != NULL )
 		{
 			// Tell hitter they scored !
 			if ( pChar && pChar != pSrc )
