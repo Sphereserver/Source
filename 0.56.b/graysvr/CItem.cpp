@@ -64,7 +64,7 @@ CItem::CItem( ITEMID_TYPE id, CItemBase * pItemDef ) : CObjBase( true )
 
 	g_Serv.StatInc(SERV_STAT_ITEMS);
 	m_Attr = 0;
-	m_CanUse = pItemDef->m_CanUse;
+	m_CanUse = 0;
 	m_amount = 1;
 	m_containedGridIndex = 0;
 	m_dwDispIndex = ITEMID_NOTHING;
@@ -93,6 +93,11 @@ bool CItem::NotifyDelete()
 
 void CItem::Delete(bool bforce)
 {
+	if (IsTriggerActive("@UNEQUIP"))
+	{
+		g_Log.EventError("Removing items in @UnEquip trigger is not allowed\n");
+		return;
+	}
 	if (( NotifyDelete() == false ) && !bforce)
 		return;
 
@@ -3103,6 +3108,7 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	{
 		iAction = (ITRIG_TYPE) FindTableSorted( pszTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
 	}
+	SetTriggerActive(pszTrigName);
 
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
@@ -3132,7 +3138,7 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 			iRet = pChar->OnTrigger(sCharTrigName,  pSrc, pArgs );
 			pChar->m_Act_Targ = uidOldAct;
 			if ( iRet == TRIGRET_RET_TRUE )
-				return iRet;	// Block further action.
+				goto stopandret;//return iRet;	// Block further action.
 		}
 	}
 
@@ -3154,7 +3160,7 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 
 			iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
 			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
-				return iRet;
+				goto stopandret;//return iRet;
 
 			curEvents = m_OEvents.GetCount();
 			if ( curEvents < origEvents ) // the event has been deleted, modify the counter for other trigs to work
@@ -3177,7 +3183,7 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 				continue;
 			iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
 			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
-				return iRet;
+				goto stopandret;//return iRet;
 		}
 
 		// 4) EVENTSITEM triggers
@@ -3192,7 +3198,7 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 				continue;
 			iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
 			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
-				return iRet;
+				goto stopandret;//return iRet;
 		}
 
 
@@ -3212,7 +3218,8 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 					DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d]\n", (DWORD) GetUID(), GetName(), GetType() ));
 				}
 				m_type = Item_GetDef()->GetType();
-				return( TRIGRET_RET_DEFAULT );
+				iRet = TRIGRET_RET_DEFAULT;
+				goto stopandret;//return( TRIGRET_RET_DEFAULT );
 			}
 
 			if ( pResourceLink->HasTrigger( iAction ))
@@ -3223,7 +3230,7 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 					iRet = CScriptObj::OnTriggerScript( s, pszTrigName, pSrc, pArgs );
 					if ( iRet == TRIGRET_RET_TRUE )
 					{
-						return( iRet );	// Block further action.
+						goto stopandret;// return(iRet);	// Block further action.
 					}
 				}
 			}
@@ -3243,7 +3250,11 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 			}
 		}
 	}
-
+stopandret:
+	{
+		SetTriggerActive((LPCTSTR)0);
+		return iRet;
+	}
 	EXC_CATCH;
 
 	EXC_DEBUG_START;

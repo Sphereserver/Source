@@ -55,6 +55,7 @@ private:
 	CServTime m_timeout;		// when does this rot away ? or other action. 0 = never, else system time
 	CServTime m_timestamp;
 	HUE_TYPE m_wHue;			// Hue or skin color. (CItems must be < 0x4ff or so)
+	LPCTSTR m_RunningTrigger;
 
 protected:
 	CResourceRef m_BaseRef;	// Pointer to the resource that describes this type.
@@ -77,8 +78,9 @@ public:
 	{
 		return( &m_TagDefs );
 	}
-
 	virtual void DeletePrepare();
+	bool IsTriggerActive(LPCTSTR trig) ;
+	void SetTriggerActive(LPCTSTR trig = NULL); 
 
 public:
 	BYTE	RangeL() const
@@ -494,6 +496,8 @@ public:
 	// NOTE: If this link is set but not valid -> then delete the whole object !
 	CGrayUID m_uidLink;		// Linked to this other object in the world. (owned, key, etc)
 
+	bool IsTriggerActive(LPCTSTR trig) { return static_cast<CObjBase*>(const_cast<CItem*>(this))->IsTriggerActive(trig); }
+	void SetTriggerActive(LPCTSTR trig = NULL) { static_cast<CObjBase*>(const_cast<CItem*>(this))->SetTriggerActive(trig); }
 
 	// Type specific info. IT_TYPE
 	union // 4(more1) + 4(more2) + 5(morep) = 13 bytes
@@ -2683,6 +2687,8 @@ public:
 	CREID_TYPE m_prev_id;		// Backup of body type for ghosts and poly
 	HUE_TYPE m_prev_Hue;	// Backup of skin color. in case of polymorph etc.
 	HUE_TYPE m_wBloodHue;	// Replicating CharDef's BloodColor on the char, or overriding it.
+	bool IsTriggerActive(LPCTSTR trig) { return static_cast<CObjBase*>(const_cast<CChar*>(this))->IsTriggerActive(trig); }
+	void SetTriggerActive(LPCTSTR trig = NULL) { static_cast<CObjBase*>(const_cast<CChar*>(this))->SetTriggerActive(trig); }
 
 	// Client's local light
 	BYTE m_LocalLight;
