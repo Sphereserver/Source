@@ -1707,3 +1707,11 @@ Fixed #2481: Usage of ResendToolTip in the @*ToolTip triggers crashing server.
 Fixed CanUse receiving wrong value when value = 0 or no value.
 
 07-03-2015, Coruja
+Fixed: Fame/Karma gain/loss not working on some specific cases.
+Fixed: SnoopCriminal setting on sphere.ini not working correctly. Now it works using a 0%~100% chance instead random values.
+Fixed: Parrying skill blocking magic damages.
+Fixed: MAGICF_OSIFORMULAS incorrectly using MANA instead INT value on spell damage calculation.
+Changed: Armor/Weapons with ATTR=attr_magic set will not show +5,+10,+15,... on names anymore. Now users are able to softcode custom names on magic items without problems.
+Changed: Some internal improvements on Snooping skill.
+[Sphere.ini]: Updated SnoopCriminal description/value.
+[sphere_msgs.scp]: Updated 'snooping_*' messages.
