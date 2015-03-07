@@ -2718,7 +2718,7 @@ reflectit:
 						DamageBonus = 15;
 
 					// INT bonus
-					DamageBonus += pCharSrc->Stat_GetVal(STAT_INT) / 10;
+					DamageBonus += pCharSrc->Stat_GetAdjusted(STAT_INT) / 10;
 
 					// Inscription bonus
 					if ( pCharSrc->Skill_GetBase(SKILL_INSCRIPTION) >= 1000 )

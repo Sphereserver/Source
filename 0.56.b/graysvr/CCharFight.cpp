@@ -510,8 +510,18 @@ void CChar::Noto_Fame( int iFameChange )
 		return;
 
 	int iFame = maximum(Stat_GetAdjusted(STAT_FAME), 0);
-
 	iFameChange = g_Cfg.Calc_FameScale( iFame, iFameChange );
+
+	if ( iFameChange > 0 )
+	{
+		if ( iFame + iFameChange > g_Cfg.m_iMaxFame )
+			iFameChange = g_Cfg.m_iMaxFame - iFame;
+	}
+	else
+	{
+		if ( iFame + iFameChange < 0 )
+			iFameChange = 0;
+	}
 
 	if ( IsTrigUsed(TRIGGER_FAMECHANGE) )
 	{
@@ -522,18 +532,13 @@ void CChar::Noto_Fame( int iFameChange )
 			return;
 		iFameChange = static_cast<int>(Args.m_iN1);
 	}
-	
-	if ( ! iFameChange  )
+
+	if ( ! iFameChange )
 		return;
 
 	iFame += iFameChange;
-	if ( iFame < 0 )
-		iFame = 0;
-	if ( iFame > g_Cfg.m_iMaxFame)
-		iFame = g_Cfg.m_iMaxFame; // Maximum reached
-
 	Noto_ChangeDeltaMsg( iFame - Stat_GetAdjusted(STAT_FAME), g_Cfg.GetDefaultMsg( DEFMSG_NOTO_FAME ) );
-	Stat_SetBase(STAT_FAME,iFame);
+	Stat_SetBase(STAT_FAME, iFame);
 }
 
 void CChar::Noto_Karma( int iKarmaChange, int iBottom, bool bMessage )
@@ -544,14 +549,21 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom, bool bMessage )
 	// take you to dread ). iBottom def. to g_Cfg.m_iMinKarma if you leave
 	// it out.
 
-	if ( iKarmaChange < 1 )
-		return;
-	if (iBottom == INT_MIN)
-		iBottom = g_Cfg.m_iMinKarma;
-
 	int	iKarma = Stat_GetAdjusted(STAT_KARMA);
-
 	iKarmaChange = g_Cfg.Calc_KarmaScale( iKarma, iKarmaChange );
+
+	if ( iKarmaChange > 0 )
+	{
+		if ( iKarma + iKarmaChange > g_Cfg.m_iMaxKarma )
+			iKarmaChange = g_Cfg.m_iMaxKarma - iKarma;
+	}
+	else
+	{
+		if (iBottom == INT_MIN)
+			iBottom = g_Cfg.m_iMinKarma;
+		if ( iKarma + iKarmaChange < iBottom )
+			iKarmaChange = iBottom - iKarma;
+	}
 
 	if ( IsTrigUsed(TRIGGER_KARMACHANGE) )
 	{
@@ -562,42 +574,19 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom, bool bMessage )
 			return;
 		iKarmaChange = static_cast<int>(Args.m_iN1);
 	}
-	
-	if ( iKarmaChange < 1 )
-		return;
 
-	// If we are going to loose karma and are already below bottom
-	// then return.
-	if (( iKarma <= iBottom ) && ( iKarmaChange < 0 ))
+	if ( ! iKarmaChange )
 		return;
 
 	iKarma += iKarmaChange;
-	if ( iKarmaChange < 0 )
-	{
-		if ( iKarma < iBottom )
-			iKarma = iBottom;
-	}
-	else
-	{
-		if ( iKarma > g_Cfg.m_iMaxKarma )
-			iKarma = g_Cfg.m_iMaxKarma;
-	}
-
 	Noto_ChangeDeltaMsg( iKarma - Stat_GetAdjusted(STAT_KARMA), g_Cfg.GetDefaultMsg( DEFMSG_NOTO_KARMA ) );
-	Stat_SetBase(STAT_KARMA,iKarma);
+	Stat_SetBase(STAT_KARMA, iKarma);
 	NotoSave_Update();
-	if ( bMessage == true)
+	if ( bMessage == true )
 	{
 		int iPrvLevel = Noto_GetLevel();
 		Noto_ChangeNewMsg( iPrvLevel );
 	}
-}
-
-void CChar::Noto_KarmaChangeMessage( int iKarmaChange, int iLimit )
-{
-	ADDTOCALLSTACK("CChar::Noto_KarmaChangeMessage");
-	// Change your title ?
-	Noto_Karma( iKarmaChange, iLimit, true );
 }
 
 extern unsigned int Calc_ExpGet_Exp(unsigned int);
@@ -1355,14 +1344,10 @@ bool CChar::CheckCrimeSeen( SKILL_TYPE SkillToSee, CChar * pCharMark, const CObj
 		if ( SkillToSee == SKILL_SNOOPING )
 		{
 			// Off chance of being a criminal. (hehe)
-			if ( ! Calc_GetRandVal( g_Cfg.m_iSnoopCriminal ))
-			{
+			if ( Calc_GetRandVal(100) < g_Cfg.m_iSnoopCriminal )
 				pChar->OnNoticeCrime( this, pCharMark );
-			}
 			if ( pChar->m_pNPC )
-			{
 				pChar->NPC_OnNoticeSnoop( this, pCharMark );
-			}
 		}
 		else
 		{
@@ -1387,7 +1372,7 @@ bool CChar::Skill_Snoop_Check( const CItemContainer * pItem )
 	{
 		CItemContainer * pItemCont = dynamic_cast <CItemContainer *> (pItem->GetContainer());
 			if  ( ( pItemCont->IsItemInTrade() == true )  && ( g_Cfg.m_iTradeWindowSnooping == false ) )
-			return( false );
+				return( false );
 	}
 
 	if ( ! IsPriv(PRIV_GM))
@@ -1444,46 +1429,46 @@ int CChar::Skill_Snooping( SKTRIG_TYPE stage )
 	if ( ! IsTakeCrime( pCont, &pCharMark ) || pCharMark == NULL )
 		return( 0 );	// Not a crime really.
 
-	if ( ! CanTouch( pCont ))
+	if ( GetTopDist3D( pCharMark ) > 1 )
 	{
 		SysMessageDefault( DEFMSG_SNOOPING_REACH );
 		return( -SKTRIG_QTY );
 	}
 
-	if ( GetTopDist3D( pCharMark ) > 2 )
+	if ( !CanTouch( pCont ))
 	{
-		SysMessageDefault( DEFMSG_SNOOPING_MARK );
+		SysMessageDefault( DEFMSG_SNOOPING_CANT );
 		return( -SKTRIG_QTY );
 	}
 
-	PLEVEL_TYPE plevel = GetPrivLevel();
-	bool fForceFail = ( plevel < pCharMark->GetPrivLevel());
 	if ( stage == SKTRIG_START )
 	{
-		if ( fForceFail )
-			return( -SKTRIG_FAIL );
-
-		if ( plevel >= PLEVEL_Counsel && plevel > pCharMark->GetPrivLevel())	// i'm higher priv.
-			return( 0 );
+		PLEVEL_TYPE plevel = GetPrivLevel();
+		if ( plevel < pCharMark->GetPrivLevel())
+		{
+			SysMessageDefault( DEFMSG_SNOOPING_CANT );
+			return( -SKTRIG_QTY );
+		}
 
 		// return the difficulty.
-		return( pCharMark->Stat_GetAdjusted(STAT_DEX));
+		return( (Skill_GetAdjusted(SKILL_SNOOPING) < Calc_GetRandVal(1000))? 100 : 0 );
 	}
 
-	if ( fForceFail )
-		stage = SKTRIG_FAIL;
-
 	// did anyone see this ?
-	if ( CheckCrimeSeen( SKILL_SNOOPING, pCharMark, pCont, (stage == SKTRIG_FAIL)? g_Cfg.GetDefaultMsg( DEFMSG_SNOOPING_YOUR ) : g_Cfg.GetDefaultMsg( DEFMSG_SNOOPING_SOMEONE ) ))
-		Noto_KarmaChangeMessage( -10, -500 );
+	CheckCrimeSeen( SKILL_SNOOPING, pCharMark, pCont, g_Cfg.GetDefaultMsg( DEFMSG_SNOOPING_ATTEMPTING ) );
+	Noto_Karma( -4, INT_MIN, true );
 
-	//
-	// View the container.
-	//
+	if ( stage == SKTRIG_FAIL )
+	{
+		SysMessageDefault( DEFMSG_SNOOPING_FAILED );
+		if ( Skill_GetAdjusted(SKILL_HIDING) / 2 < Calc_GetRandVal(1000) )
+			Reveal();
+	}
+
 	if ( stage == SKTRIG_SUCCESS )
 	{
 		if ( IsClient())
-			m_pClient->addContainerSetup( pCont );
+			m_pClient->addContainerSetup( pCont );	// open the container
 	}
 	return( 0 );
 }
@@ -1642,7 +1627,7 @@ cantsteal:
 
 	// You should only be able to go down to -1000 karma by stealing.
 	if ( CheckCrimeSeen( SKILL_STEALING, pCharMark, pItem, (stage == SKTRIG_FAIL)? g_Cfg.GetDefaultMsg( DEFMSG_STEALING_YOUR ) : g_Cfg.GetDefaultMsg( DEFMSG_STEALING_SOMEONE ) ))
-		Noto_KarmaChangeMessage( -100, -1000 );
+		Noto_Karma( -100, -1000, true );
 
 	return( 0 );
 }
@@ -2150,7 +2135,7 @@ effect_bounce:
 	}
 
 	// Check parrying block chance
-	if ( !(uType & DAMAGE_GOD) && (pSrc != this) )
+	if ( !(uType & DAMAGE_GOD|DAMAGE_MAGIC) && (pSrc != this) )
 	{
 		// Legacy pre-SE formula
 		CItem * pItemHit = NULL;
@@ -2287,7 +2272,7 @@ effect_bounce:
 	}
 
 	// Update attacker list
-	if ( pSrc != this )
+	if ( pSrc && pSrc != this )
 	{
 		bool bAttackerExists = false;
 		for (std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it)

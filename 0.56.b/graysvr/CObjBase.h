@@ -3360,7 +3360,6 @@ public:
 	void Noto_Kill(CChar * pKill, bool fPetKill = false, int iOtherKillers = 0);
 	bool Noto_Criminal( CChar * pChar = NULL);
 	void Noto_Murder();
-	void Noto_KarmaChangeMessage( int iKarmaChange, int iLimit );
 	int NotoSave() { return static_cast<int>(m_notoSaves.size()); }
 	void NotoSave_Add( CChar * pChar, NOTO_TYPE value );
 	NOTO_TYPE NotoSave_GetValue( int id );

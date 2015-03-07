@@ -1705,3 +1705,5 @@ Added IsTriggerActive() and SetTriggerActive() functions to CObjBase keeping tra
 Fixed using Remove in @UnEquip triggers crashing the server.
 Fixed #2481: Usage of ResendToolTip in the @*ToolTip triggers crashing server.
 Fixed CanUse receiving wrong value when value = 0 or no value.
+
+07-03-2015, Coruja

@@ -1602,9 +1602,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 	if (fSingular) // m_corpse_DispID is m_amount
 	{
 		if ( ! IsIndividualName())
-		{
 			len += strcpylen( pTemp+len, pItemDef->GetArticleAndSpace());
-		}
 	}
 	else
 	{
@@ -1645,47 +1643,20 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 		if ( fTitleSet )
 		{
 			if ( fSingular && !IsSetOF(OF_NoPrefix) ) 
-			{
 				len = strcpylen( pTemp, Str_GetArticleAndSpace(pszTitle));
-			}
 			len += strcpylen( pTemp+len, pszTitle );
 		}
 
 		if ( IsAttr(ATTR_MAGIC))
 		{
-			if ( m_itWeapon.m_spelllevel && IsTypeArmorWeapon() && ! IsType(IT_WAND))
+			if ( !pszTitle )
 			{
-				// A weapon, (Not a wand)
-				if ( ! pszTitle )
-				{
-					if ( !IsSetOF(OF_NoPrefix) )
-						pszTitle = "a ";
-					else
-						pszTitle = "";
+				pszTitle = IsSetOF(OF_NoPrefix) ? "" : "a ";
+				len = strcpylen( pTemp, pszTitle );
+			}
 
-					len = strcpylen( pTemp, pszTitle );
-				}
-				len += sprintf( pTemp+len, "%c%d ", ( m_itWeapon.m_spelllevel<0 ) ? '-':'+', abs( g_Cfg.GetSpellEffect( SPELL_Enchant, m_itWeapon.m_spelllevel )));
-			}
-			else
-			{
-				// Don't put "magic" in front of "magic key"
-				if ( strnicmp( pszName, "MAGIC", 5 ) != 0 )
-				{
-					if ( ! pszTitle )
-					{
-						if ( !IsSetOF(OF_NoPrefix) )
-						{
-							pszTitle = "a ";
-						} else
-						{
-							pszTitle = "";
-						}
-						len = strcpylen( pTemp, pszTitle );
-					}
-					len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_MAGIC ) );
-				}
-			}
+			if ( !IsTypeArmorWeapon() && (strnicmp( pszName, "MAGIC", 5 ) != 0))		// don't put "magic" prefix on armor/weapons and names already starting with "magic"
+				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_MAGIC ) );
 		}
 	}
 
@@ -1707,25 +1678,17 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 			break;
 		case IT_KEY:
 			if ( ! m_itKey.m_lockUID.IsValidUID())
-			{
 				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_BLANK ) );
-			}
 			break;
 		case IT_RUNE:
 			if ( ! m_itRune.m_pntMark.IsCharValid())
-			{
 				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_BLANK ) );
-			}
 			else if ( ! m_itRune.m_Strength )
-			{
 				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_FADED ) );
-			}
 			break;
 		case IT_TELEPAD:
 			if ( ! m_itTelepad.m_pntMark.IsValidPoint())
-			{
 				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_BLANK ) );
-			}
 			break;
 		default:
 			break;

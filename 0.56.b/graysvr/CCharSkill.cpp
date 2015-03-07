@@ -322,11 +322,7 @@ void CChar::Stat_SetBase( STAT_TYPE i, short iVal )
 			iVal = maximum(g_Cfg.m_iMinKarma, minimum(g_Cfg.m_iMaxKarma, iVal));
 			break;
 		case STAT_FAME:
-			if ( iVal < 0 )
-			{
-				DEBUG_ERR(( "ID=0%x,UID=0%lx Fame set out of range %d\n", GetBaseID(), (DWORD) GetUID(), iVal ));
-				iVal = 0;
-			}
+			iVal = maximum(0, minimum(g_Cfg.m_iMaxFame, iVal));
 			break;
 		case STAT_FOOD:
 			break;

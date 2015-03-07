@@ -85,7 +85,7 @@ CResource::CResource()
 	m_fAttackingIsACrime =	true;
 	m_fGuardsInstantKill	= true;
 	m_fGuardsOnMurderers	= true;
-	m_iSnoopCriminal	= 500;
+	m_iSnoopCriminal	= 1000;
 	m_iTradeWindowSnooping = true;
 	m_iTrainSkillPercent	= 50;
 	m_iTrainSkillMax	= 500;
@@ -1086,7 +1086,7 @@ bool CResource::r_LoadVal( CScript &s )
 		case RC_MAXKARMA:
 			m_iMaxKarma = s.GetArgVal();
 			if (m_iMaxKarma < m_iMinKarma)
-				m_iMinKarma = m_iMaxKarma - 1;
+				m_iMaxKarma = m_iMinKarma;
 			break;
 		case RC_MINCHARDELETETIME:
 			m_iMinCharDeleteTime = s.GetArgVal()*60*TICK_PER_SEC;
@@ -1094,7 +1094,7 @@ bool CResource::r_LoadVal( CScript &s )
 		case RC_MINKARMA:
 			m_iMinKarma = s.GetArgVal();
 			if (m_iMinKarma > m_iMaxKarma)
-				m_iMaxKarma = m_iMinKarma + 1;
+				m_iMinKarma = m_iMaxKarma;
 			break;
 		case RC_MURDERDECAYTIME:
 			m_iMurderDecayTime = s.GetArgVal() * TICK_PER_SEC;
