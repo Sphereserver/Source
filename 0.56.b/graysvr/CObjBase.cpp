@@ -2614,6 +2614,7 @@ void CObjBase::OnTickStatusUpdate()
 void CObjBase::ResendTooltip(bool bSendFull, bool bUseCache)
 {
 	ADDTOCALLSTACK("CObjBase::ResendTooltip");
+
 	// Send tooltip packet to all nearby clients
 	m_fStatusUpdate &= ~SU_UPDATE_TOOLTIP;
 
@@ -2625,11 +2626,6 @@ void CObjBase::ResendTooltip(bool bSendFull, bool bUseCache)
 	if (bUseCache == false)
 		FreePropertyList();
 
-	if (IsTriggerActive("@CLIENTTOOLTIP") )// Sending this when sending it inside *ToolTip trigger will cause a loop.
-	{
-		//g_Log.EventError("ResendTooltip can't be called under @*ToolTip triggers\n"); // It's being called 'a lot', i'm not sure it is safe to return here or if resendtooltip was being called so much.
-		return;
-	}
 	CChar * pChar = NULL;
 
 	ClientIterator it;
@@ -2655,18 +2651,17 @@ void CObjBase::DeletePrepare()
 
 bool CObjBase::IsTriggerActive(LPCTSTR trig)
 {
-	/*if (trig)
-	{
-		TCHAR * text = NULL;
-		sprintf(text, "Last trigger used = %s\n", trig);
-		ADDTOCALLSTACK(text);
-	}*/
-	bool bActive = m_RunningTrigger == trig ? true : false;
-	return bActive;
+	return m_RunningTrigger == trig ? true : false;
 }
 
 void CObjBase::SetTriggerActive(LPCTSTR trig)
 {
+	if (trig)
+	{
+		char *text = Str_GetTemp();
+		sprintf(text, "Trigger: %s", trig);
+		ADDTOCALLSTACK(text);
+	}
 	m_RunningTrigger = trig ? trig : NULL;
 }
 

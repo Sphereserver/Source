@@ -246,13 +246,13 @@ void PacketMovementReq::doMovement(NetState* net, BYTE direction, short sequence
 		canMoveThere = client->Event_WalkingCheck(crypt)? TRIGRET_RET_TRUE : TRIGRET_RET_FALSE;
 
 	//Check Timing
-	if (iTime1 && iTime2)
+	/*if (iTime1 && iTime2) // Not working properly!
 	{
 		bool fRun = ( direction & 0x80 ) == 0x80;
 		INT64 iTiming = iTime2 - iTime1;
 		if ( (fRun && (iTiming > 200)) || (!fRun && (iTiming > 300)) )
 			canMoveThere = TRIGRET_RET_FALSE;
-	}
+	}*/
 
 	// check sequence
 	if (canMoveThere == TRIGRET_RET_TRUE && sequence != net->m_sequence)

@@ -3935,6 +3935,10 @@ bool CChar::SetPrivLevel(CTextConsole * pSrc, LPCTSTR pszFlags)
 TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScriptTriggerArgs * pArgs )
 {
 	ADDTOCALLSTACK("CChar::OnTrigger");
+
+	if (IsTriggerActive(pszTrigName)) //This should protect any char trigger from infinite loop
+		return TRIGRET_RET_DEFAULT;
+
 	// Attach some trigger to the cchar. (PC or NPC)
 	// RETURN: true = block further action.
 	CCharBase* pCharDef = Char_GetDef();

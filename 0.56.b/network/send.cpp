@@ -751,13 +751,13 @@ PacketContainerOpen::PacketContainerOpen(const CClient* target, const CObjBase* 
 	//word	Container Type (0x00 for vendors, 0x7D for spellbooks and containers)
 	if (target->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA())
 	{
-		WORD ContType = 0x0;
+		WORD ContType = 0x7D;
 		// 0x7D WORD fixes grid view in EC, it must be sent to any no-player's vendor's container to see it
 		// However I don't really know what is the purpose on sending 0x0 since you will not see items in grid view (maybe some kind of OSI's vendor menu?)
 		// The three following lines activate it, just need to know if there is really any need of sending it.
-		/*CChar * pChar = static_cast<CChar*>(container->GetTopLevelObj());
-		if ( pChar && pChar->NPC_IsVendor() && pChar->IsStatFlag(STATF_Pet) )
-			ContType = 0x7D;*/
+		CChar * pChar = static_cast<CChar*>(container->GetTopLevelObj());
+		if ( pChar && pChar->NPC_IsVendor() )
+			ContType = 0x00;
 
 		writeInt16(ContType);
 	}

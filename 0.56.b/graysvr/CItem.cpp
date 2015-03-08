@@ -93,11 +93,7 @@ bool CItem::NotifyDelete()
 
 void CItem::Delete(bool bforce)
 {
-	if (IsTriggerActive("@UNEQUIP"))
-	{
-		g_Log.EventError("Removing items in @UnEquip trigger is not allowed\n");
-		return;
-	}
+
 	if (( NotifyDelete() == false ) && !bforce)
 		return;
 
@@ -3058,6 +3054,10 @@ bool CItem::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from s
 TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScriptTriggerArgs * pArgs )
 {
 	ADDTOCALLSTACK("CItem::OnTrigger");
+
+	if (IsTriggerActive(pszTrigName)) //This should protect any item trigger from infinite loop
+		return TRIGRET_RET_DEFAULT;
+
 	if ( !pSrc )
 		pSrc = &g_Serv;
 
