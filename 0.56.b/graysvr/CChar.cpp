@@ -4135,6 +4135,8 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 			bShowMsg = ( args.m_iN2 != 0 );
 		}
 		m_exp += delta;
+		if (m_exp < 0)
+			m_exp = 0;
 
 		if ( m_pClient && bShowMsg )
 		{
@@ -4186,6 +4188,8 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 					(m_pNPC ? "NPC" : "Player" ), GetName(), m_level, delta, level));
 			}
 			m_level = level;
+			if (m_level < 0)
+				m_level = 0;
 
 			if ( m_pClient )
 			{
