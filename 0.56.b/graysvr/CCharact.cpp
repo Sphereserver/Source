@@ -2895,9 +2895,9 @@ bool CChar::Death()
 			Noto_Fame( -Stat_GetAdjusted(STAT_FAME)/10 );
 
 		//	experience could go down
-		if ( g_Cfg.m_bExperienceSystem && ( g_Cfg.m_iExperienceMode&EXP_MODE_ALLOW_DOWN ))
+		if ( g_Cfg.m_bExperienceSystem)
 		{
-			ChangeExperience(-(static_cast<int>(m_exp)/10));
+			ChangeExperience(-(static_cast<int>(m_exp)/10),pKiller);
 		}
 	}
 

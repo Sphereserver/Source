@@ -4096,27 +4096,33 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 		DEFMSG_EXP_CHANGE_8
 	};
 
-	if ( delta || pCharDead )//	zero call will sync the exp level
+	if (delta != 0)
 	{
-		if ( delta < 0 )
+		if (delta < 0 && !(g_Cfg.m_iExperienceMode&EXP_MODE_ALLOW_DOWN))		
+			return;
+		if (pCharDead != NULL)
 		{
-			if ( !(g_Cfg.m_iExperienceMode&EXP_MODE_ALLOW_DOWN) )	// do not allow changes to minus
+			if (!g_Cfg.m_iExperienceKoefPVP && pCharDead->m_pPlayer)
 				return;
-								// limiting delta to current level? check if delta goes out of level
-			if ( g_Cfg.m_bLevelSystem && g_Cfg.m_iExperienceMode&EXP_MODE_DOWN_NOLEVEL )
-			{
-				unsigned int exp = Calc_ExpGet_Exp(m_level);
-				if ( m_exp + delta < exp )
-					delta = m_exp - exp;
-			}
+
+			if (!g_Cfg.m_iExperienceKoefPVM && pCharDead->m_pNPC)
+				return;
 		}
 
-		if ( g_Cfg.m_wDebugFlags&DEBUGF_EXP )
+
+		// limiting delta to current level? check if delta goes out of level
+		if (g_Cfg.m_bLevelSystem && g_Cfg.m_iExperienceMode&EXP_MODE_DOWN_NOLEVEL)
+		{
+			unsigned int exp = Calc_ExpGet_Exp(m_level);
+			if (m_exp + delta < exp)
+				delta = m_exp - exp;
+		}
+
+		if (g_Cfg.m_wDebugFlags&DEBUGF_EXP)
 		{
 			DEBUG_ERR(("%s %s experience change (was %u, delta %d, now %u)\n",
-				(m_pNPC ? "NPC" : "Player" ), GetName(), m_exp, delta, m_exp+delta));
+				(m_pNPC ? "NPC" : "Player" ), GetName(), m_exp, delta, m_exp + delta));
 		}
-		
 		bool bShowMsg = (m_pClient != NULL);
 
 		if ( IsTrigUsed(TRIGGER_EXPCHANGE) )
@@ -4130,7 +4136,7 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 		}
 		m_exp += delta;
 
-		if ( m_pClient && bShowMsg && delta )
+		if ( m_pClient && bShowMsg )
 		{
 			int iWord = 0;
 			int absval = abs(delta);
