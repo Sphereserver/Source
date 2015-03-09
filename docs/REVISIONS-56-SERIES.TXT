@@ -1720,3 +1720,7 @@ Changed: Some internal improvements on Snooping skill.
 Added: Items with INCREASEDAM / INCREASEDEFCHANCE / INCREASEHITCHANCE now will set these properties on char on equip/unequip.
 Fixed: NPCs (monsters) being flagged criminal when they attack an innocent player.
 Changed: Updated minimum client version required to use some new packets.
+
+09-03-2015, Staff_Stanic
+Fixed: if the value of ExperienceKoefPVM or ExperienceKoefPVP is 0, not just the gain of experience will be disabled, but also the loss (if is allowed experience to go down).
+Suppose a case that ExperienceKoefPVP=0, players will not gain experience killing npcs, consequently players will not lose experience when killed by npcs.
