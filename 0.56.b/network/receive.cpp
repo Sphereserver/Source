@@ -1560,9 +1560,8 @@ bool PacketCreateKR::onReceive(NetState* net)
 	HUE_TYPE beardhue = static_cast<HUE_TYPE>(readInt16());
 	ITEMID_TYPE beardid = static_cast<ITEMID_TYPE>(readInt16());
 	
-	// The new creation packet does not contain skills and values if
-	// a profession is selected, so here we must translate the selected
-	// profession -> skills
+	// Since client 7.0.16.0 the new creation packet does not contain skills and values if
+	// a profession is selected, so here we must translate the selected profession -> skills
 	switch (profession)
 	{
 		case PROFESSION_WARRIOR:

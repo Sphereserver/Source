@@ -360,6 +360,18 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 			SetDefNum("RESENERGY", static_cast<int>(GetDefNum("RESENERGY", true) + pItem->GetDefNum("RESENERGY", true, true)));
 		}
 
+		INT64 iDamageIncrease = pItem->GetDefNum("INCREASEDAM", true, true);
+		if ( iDamageIncrease != 0 )
+			SetDefNum("INCREASEDAM", static_cast<int>(GetDefNum("INCREASEDAM", true) + iDamageIncrease));
+
+		INT64 iDefenseChanceIncrease = pItem->GetDefNum("INCREASEDEFCHANCE", true, true);
+		if ( iDefenseChanceIncrease != 0 )
+			SetDefNum("INCREASEDEFCHANCE", static_cast<int>(GetDefNum("INCREASEDEFCHANCE", true) + iDefenseChanceIncrease));
+
+		INT64 iHitChanceIncrease = pItem->GetDefNum("INCREASEHITCHANCE", true, true);
+		if ( iHitChanceIncrease != 0 )
+			SetDefNum("INCREASEHITCHANCE", static_cast<int>(GetDefNum("INCREASEHITCHANCE", true) + iHitChanceIncrease));
+
 		INT64 iLuck = pItem->GetDefNum("LUCK", true, true);
 		if ( iLuck != 0 )
 			SetDefNum("LUCK", static_cast<int>(GetDefNum("LUCK", true) + iLuck));
@@ -485,6 +497,18 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 			SetDefNum("RESPOISON", static_cast<int>(GetDefNum("RESPOISON", true) - pItem->GetDefNum("RESPOISON", true, true)));
 			SetDefNum("RESENERGY", static_cast<int>(GetDefNum("RESENERGY", true) - pItem->GetDefNum("RESENERGY", true, true)));
 		}
+
+		INT64 iDamageIncrease = pItem->GetDefNum("INCREASEDAM", true, true);
+		if ( iDamageIncrease != 0 )
+			SetDefNum("INCREASEDAM", static_cast<int>(GetDefNum("INCREASEDAM", true) - iDamageIncrease));
+
+		INT64 iDefenseChanceIncrease = pItem->GetDefNum("INCREASEDEFCHANCE", true, true);
+		if ( iDefenseChanceIncrease != 0 )
+			SetDefNum("INCREASEDEFCHANCE", static_cast<int>(GetDefNum("INCREASEDEFCHANCE", true) - iDefenseChanceIncrease));
+
+		INT64 iHitChanceIncrease = pItem->GetDefNum("INCREASEHITCHANCE", true, true);
+		if ( iHitChanceIncrease != 0 )
+			SetDefNum("INCREASEHITCHANCE", static_cast<int>(GetDefNum("INCREASEHITCHANCE", true) - iHitChanceIncrease));
 
 		INT64 iLuck = pItem->GetDefNum("LUCK", true, true);
 		if ( iLuck != 0 )

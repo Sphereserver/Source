@@ -437,11 +437,11 @@ void CChar::Noto_Murder()
 		Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Murders, 0, g_Cfg.m_iMurderDecayTime, NULL);
 }
 
-bool CChar::Noto_Criminal( CChar * pChar)
+bool CChar::Noto_Criminal( CChar * pChar )
 {
 	ADDTOCALLSTACK("CChar::Noto_Criminal");
 	// I am a criminal and the guards will be on my ass.
-	if ( IsPriv(PRIV_GM))
+	if ( IsPriv(PRIV_GM) || m_pNPC )
 		return false;
 	int decay = g_Cfg.m_iCriminalTimer;
 	CScriptTriggerArgs Args;
@@ -454,7 +454,9 @@ bool CChar::Noto_Criminal( CChar * pChar)
 
 		decay = static_cast<int>(Args.m_iN1);
 	}
-	if ( !IsStatFlag( STATF_Criminal) ) SysMessageDefault( DEFMSG_CRIMINAL );
+	if ( !IsStatFlag( STATF_Criminal) )
+		SysMessageDefault( DEFMSG_CRIMINAL );
+
 	Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Criminal, 0, decay, NULL);
 	NotoSave_Update();
 	return true;

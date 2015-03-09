@@ -967,12 +967,12 @@ enum NOTO_TYPE
 };
 
 // client versions (expansions)
-#define MINCLIVER_LBR				0x300000	// minimum client to activate LBR packets
-#define MINCLIVER_AOS				0x300080	// minimum client to activate AOS packets
-#define MINCLIVER_SE				0x400010	// minimum client to activate SE packets
-#define MINCLIVER_ML				0x500000	// minimum client to activate ML packets
-#define MINCLIVER_SA				0x700000	// minimum client to activate SA packets
-#define MINCLIVER_HIGHSEAS			0x70008D	// minimum client to activate High Seas packets
+#define MINCLIVER_LBR				0x300070	// minimum client to activate LBR packets (3.0.7b)
+#define MINCLIVER_AOS				0x300080	// minimum client to activate AOS packets (3.0.8z)
+#define MINCLIVER_SE				0x400050	// minimum client to activate SE packets (4.0.5a)
+#define MINCLIVER_ML				0x500000	// minimum client to activate ML packets (5.0.0a)
+#define MINCLIVER_SA				0x700000	// minimum client to activate SA packets (7.0.0.0)
+#define MINCLIVER_HIGHSEAS			0x700090	// minimum client to activate HS packets (7.0.9.0)
 
 // client versions (behaviours)
 #define MINCLIVER_CHECKWALKCODE		0x126000	// minimum client to allow checking walking crypt-codes
@@ -987,26 +987,26 @@ enum NOTO_TYPE
 #define MAXCLIVER_REVERSEIP			0x400000	// maximum client to reverse ip in 0xA8 packet
 #define MINCLIVER_CUSTOMMULTI		0x400000	// minimum client to receive custom multi packets
 #define MINCLIVER_DAMAGE			0x400000	// minimum client to receive 0xBF.0x22 packet
-#define MINCLIVER_SPELLBOOK			0x400000	// minimum client to receive 0xBF.0x1B packet
+#define MINCLIVER_SPELLBOOK			0x400000	// minimum client to receive 0xBF.0x1B packet (4.0.0a)
 #define MINCLIVER_TOOLTIP			0x400000	// minimum client to receive tooltip packets
 #define MINCLIVER_STATLOCKS			0x400010	// minimum client to receive 0xBF.0x19.0x02 packet
 #define MINCLIVER_TOOLTIPHASH		0x400050	// minimum client to receive 0xDC packet
-#define MINCLIVER_NEWDAMAGE			0x400070	// minimum client to receive 0x0B packet
+#define MINCLIVER_NEWDAMAGE			0x400070	// minimum client to receive 0x0B packet (4.0.7a)
 #define MINCLIVER_NEWBOOK			0x500000	// minimum client to receive 0xD4 packet
-#define MINCLIVER_COMPRESSDIALOG	0x500000	// minimum client to receive 0xDD packet
-#define MINCLIVER_BUFFS				0x500030	// minimum client to receive buff packets
-#define MINCLIVER_NEWMAPDISPLAY		0x700080	// minimum client to receive 0xF5 packet
-#define MINCLIVER_SMOOTHSHIP		0x70008D	// minimum client to receive 0xF6 packet
+#define MINCLIVER_COMPRESSDIALOG	0x500000	// minimum client to receive 0xDD packet (5.0.0a)
+#define MINCLIVER_BUFFS				0x500030	// minimum client to receive buff packets (5.0.2b)
+#define MINCLIVER_SMOOTHSHIP		0x700090	// minimum client to receive 0xF6 packet
 #define MINCLIVER_STATUS_V2			0x300080	// minimum client to receive v1 of 0x11 packet
 #define MINCLIVER_STATUS_V3			0x400000	// minimum client to receive v2 of 0x11 packet
 #define MINCLIVER_STATUS_V4			0x400010	// minimum client to receive v3 of 0x11 packet
-#define MINCLIVER_STATUS_V5			0x500000	// minimum client to receive v4 of 0x11 packet
-#define MINCLIVER_STATUS_V6			0x700300	// minimum client to receive v5 of 0x11 packet
-#define MINCLIVER_EXTRAFEATURES		0x600143	// minimum client to receive 4-byte feature mask
-#define MINCLIVER_EXTRASTARTINFO 	0x700130	// minimum client to receive extra start info
-#define MINCLIVER_NEWMOBILEANIMATION 0x700000	// minimum client to receive 0xE2 packet
-#define MINCLIVER_NEWMOBINCOMING	0x700331	// minimun client to receive new 0x78 packet
-#define MINCLIVER_NEWCONTEXTMENU	0x700000	// minimun client to receive new 0xbf.14.02 packet instead of 0xbf.14.0.1
+#define MINCLIVER_STATUS_V5			0x500000	// minimum client to receive v4 of 0x11 packet (5.0.0a)
+#define MINCLIVER_STATUS_V6			0x700300	// minimum client to receive v5 of 0x11 packet (7.0.30.0)
+#define MINCLIVER_EXTRAFEATURES		0x600142	// minimum client to receive 4-byte feature mask (6.0.14.2)
+#define MINCLIVER_NEWCONTEXTMENU	0x700000	// minimun client to receive 0xBF.0x14.0x02 packet instead of 0xbf.0x14.0x01
+#define MINCLIVER_NEWMOBILEANIMATION 0x700000	// minimum client to receive 0xE2 packet (7.0.0.0)
+#define MINCLIVER_NEWMOBINCOMING	0x700000	// minimun client to receive 0x78 packet (7.0.0.0)
+#define MINCLIVER_NEWMAPDISPLAY		0x700080	// minimum client to receive 0xF5 packet (7.0.13.0)
+#define MINCLIVER_EXTRASTARTINFO 	0x700130	// minimum client to receive extra start info (7.0.13.0)
 
 enum TALKMODE_TYPE	// Modes we can talk/bark in.
 {
