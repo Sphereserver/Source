@@ -1725,3 +1725,8 @@ Changed: Updated minimum client version required to use some new packets.
 Fixed: if the value of ExperienceKoefPVM or ExperienceKoefPVP is 0, not just the gain of experience will be disabled, but also the loss (if is allowed experience to go down).
 Suppose a case that ExperienceKoefPVP=0, players will not gain experience killing npcs, consequently players will not lose experience when killed by npcs.
 Fixed: not allow experience or level go to negative.
+
+13-03-2015, Coruja
+Fixed: Infinite loop when someone with Reactive Armor hit itself.
+Fixed: Some items properties being saved as 0 value (when set it to 0) instead remove it at all.
+Added: FASTERCASTING, INCREASESPELLDAM, INCREASESWINGSPEED gain/loss when equip/unequip items.

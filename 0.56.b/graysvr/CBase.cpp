@@ -430,7 +430,7 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 		case OBC_HITSPELLSTR:
 		case OBC_WEIGHTREDUCTION:
 			{
-				SetDefNum(s.GetKey(),s.GetArgVal(), false);
+				SetDefNum(s.GetKey(),s.GetArgVal());
 				return true;
 			}
 		case OBC_CATEGORY://*

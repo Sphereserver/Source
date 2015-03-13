@@ -1551,7 +1551,7 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_REGENVALSTAM:
 		case OC_REGENVALMANA:
 			{
-				SetDefNum(s.GetKey(),s.GetArgVal(), false);
+				SetDefNum(s.GetKey(),s.GetArgVal());
 				/*CChar * pChar = dynamic_cast <CChar*>(GetTopLevelObj());	// This should be used in case items with these properties updates the character in the moment without any script to make status reflect the update.
 				// Maybe too a cliver check to not send update if not needed.
 				if ( pChar )

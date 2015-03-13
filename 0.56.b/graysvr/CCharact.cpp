@@ -368,9 +368,21 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 		if ( iDefenseChanceIncrease != 0 )
 			SetDefNum("INCREASEDEFCHANCE", static_cast<int>(GetDefNum("INCREASEDEFCHANCE", true) + iDefenseChanceIncrease));
 
+		INT64 iFasterCasting = pItem->GetDefNum("FASTERCASTING", true, true);
+		if ( iFasterCasting != 0 )
+			SetDefNum("FASTERCASTING", static_cast<int>(GetDefNum("FASTERCASTING", true) + iFasterCasting));
+
 		INT64 iHitChanceIncrease = pItem->GetDefNum("INCREASEHITCHANCE", true, true);
 		if ( iHitChanceIncrease != 0 )
 			SetDefNum("INCREASEHITCHANCE", static_cast<int>(GetDefNum("INCREASEHITCHANCE", true) + iHitChanceIncrease));
+
+		INT64 iSpellDamageIncrease = pItem->GetDefNum("INCREASESPELLDAM", true, true);
+		if ( iSpellDamageIncrease != 0 )
+			SetDefNum("INCREASESPELLDAM", static_cast<int>(GetDefNum("INCREASESPELLDAM", true) + iSpellDamageIncrease));
+
+		INT64 iSwingSpeedIncrease = pItem->GetDefNum("INCREASESWINGSPEED", true, true);
+		if ( iSwingSpeedIncrease != 0 )
+			SetDefNum("INCREASESWINGSPEED", static_cast<int>(GetDefNum("INCREASESWINGSPEED", true) + iSwingSpeedIncrease));
 
 		INT64 iLuck = pItem->GetDefNum("LUCK", true, true);
 		if ( iLuck != 0 )
@@ -506,9 +518,21 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 		if ( iDefenseChanceIncrease != 0 )
 			SetDefNum("INCREASEDEFCHANCE", static_cast<int>(GetDefNum("INCREASEDEFCHANCE", true) - iDefenseChanceIncrease));
 
+		INT64 iFasterCasting = pItem->GetDefNum("FASTERCASTING", true, true);
+		if ( iFasterCasting != 0 )
+			SetDefNum("FASTERCASTING", static_cast<int>(GetDefNum("FASTERCASTING", true) - iFasterCasting));
+
 		INT64 iHitChanceIncrease = pItem->GetDefNum("INCREASEHITCHANCE", true, true);
 		if ( iHitChanceIncrease != 0 )
 			SetDefNum("INCREASEHITCHANCE", static_cast<int>(GetDefNum("INCREASEHITCHANCE", true) - iHitChanceIncrease));
+
+		INT64 iSpellDamageIncrease = pItem->GetDefNum("INCREASESPELLDAM", true, true);
+		if ( iSpellDamageIncrease != 0 )
+			SetDefNum("INCREASESPELLDAM", static_cast<int>(GetDefNum("INCREASESPELLDAM", true) - iSpellDamageIncrease));
+
+		INT64 iSwingSpeedIncrease = pItem->GetDefNum("INCREASESWINGSPEED", true, true);
+		if ( iSwingSpeedIncrease != 0 )
+			SetDefNum("INCREASESWINGSPEED", static_cast<int>(GetDefNum("INCREASESWINGSPEED", true) - iSwingSpeedIncrease));
 
 		INT64 iLuck = pItem->GetDefNum("LUCK", true, true);
 		if ( iLuck != 0 )

@@ -522,7 +522,7 @@ void CChar::Noto_Fame( int iFameChange )
 	else
 	{
 		if ( iFame + iFameChange < 0 )
-			iFameChange = 0;
+			iFameChange = -iFame;
 	}
 
 	if ( IsTrigUsed(TRIGGER_FAMECHANGE) )
@@ -2273,9 +2273,9 @@ effect_bounce:
 			LayerFind( LAYER_FLAG_Stuck )->Delete();
 	}
 
-	// Update attacker list
 	if ( pSrc && pSrc != this )
 	{
+		// Update attacker list
 		bool bAttackerExists = false;
 		for (std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it)
 		{
@@ -2299,47 +2299,45 @@ effect_bounce:
 			attacker.threat = maximum( 0, iDmg );
 			m_lastAttackers.push_back(attacker);
 		}
-	}
 
-	// A physical blow of some sort.
-	if (uType & (DAMAGE_HIT_BLUNT|DAMAGE_HIT_PIERCE|DAMAGE_HIT_SLASH))
-	{
-		// Check if Reactive Armor will reflect some damage back
-		if ( IsStatFlag(STATF_Reactive) && !(uType & DAMAGE_GOD) )
+		// A physical blow of some sort.
+		if (uType & (DAMAGE_HIT_BLUNT|DAMAGE_HIT_PIERCE|DAMAGE_HIT_SLASH))
 		{
-			if ( !pSrc || pSrc == this )
-				return( -1 );
-			else if ( pSrc->m_pNPC && ( pSrc->m_pNPC->m_Brain == NPCBRAIN_GUARD ))	// Reactive Armor doesn't make effect on guards
-				return( -1 );
-			else if ( GetTopDist3D(pSrc) < 2 )
+			// Check if Reactive Armor will reflect some damage back
+			if ( IsStatFlag(STATF_Reactive) && !(uType & DAMAGE_GOD) )
 			{
-				int iReactiveDamage = iDmg / 5;
-				if ( iReactiveDamage < 1 )
-					iReactiveDamage = 1;
+				if ( pSrc->m_pNPC && ( pSrc->m_pNPC->m_Brain == NPCBRAIN_GUARD ))	// Reactive Armor doesn't make effect against guards
+					return( -1 );
+				else if ( GetTopDist3D(pSrc) < 2 )
+				{
+					int iReactiveDamage = iDmg / 5;
+					if ( iReactiveDamage < 1 )
+						iReactiveDamage = 1;
 
-				iDmg -= iReactiveDamage;
-				pSrc->OnTakeDamage( iReactiveDamage, this, uType, iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy );
-				pSrc->Sound( 0x1F1 );
-				pSrc->Effect( EFFECT_OBJ, ITEMID_FX_CURSE_EFFECT, this, 10, 16 );
+					iDmg -= iReactiveDamage;
+					pSrc->OnTakeDamage( iReactiveDamage, this, uType, iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy );
+					pSrc->Sound( 0x1F1 );
+					pSrc->Effect( EFFECT_OBJ, ITEMID_FX_CURSE_EFFECT, this, 10, 16 );
+				}
 			}
 		}
+	}
 
-		// Make blood effects
-		if ( m_wBloodHue != static_cast<HUE_TYPE>(-1) )
+	// Make blood effects
+	if ( m_wBloodHue != static_cast<HUE_TYPE>(-1) )
+	{
+		static const ITEMID_TYPE sm_Blood[] = { ITEMID_BLOOD1, ITEMID_BLOOD2, ITEMID_BLOOD3, ITEMID_BLOOD4, ITEMID_BLOOD5, ITEMID_BLOOD6, ITEMID_BLOOD_SPLAT };
+		int iBloodQty = g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE ? Calc_GetRandVal2(4,5) : Calc_GetRandVal2(1,2);
+
+		for ( int i = 0; i < iBloodQty; i++ )
 		{
-			static const ITEMID_TYPE sm_Blood[] = { ITEMID_BLOOD1, ITEMID_BLOOD2, ITEMID_BLOOD3, ITEMID_BLOOD4, ITEMID_BLOOD5, ITEMID_BLOOD6, ITEMID_BLOOD_SPLAT };
-			int iBloodQty = g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE ? Calc_GetRandVal2(4,5) : Calc_GetRandVal2(1,2);
+			ITEMID_TYPE iBloodID = sm_Blood[Calc_GetRandVal(COUNTOF(sm_Blood))];
+			CItem * pBlood = CItem::CreateBase( iBloodID );
+			ASSERT(pBlood);
 
-			for ( int i = 0; i < iBloodQty; i++ )
-			{
-				ITEMID_TYPE iBloodID = sm_Blood[Calc_GetRandVal(COUNTOF(sm_Blood))];
-				CItem * pBlood = CItem::CreateBase( iBloodID );
-				ASSERT(pBlood);
-
-				pBlood->SetHue( m_wBloodHue );
-				pBlood->MoveNear( GetTopPoint(), 1 );
-				pBlood->SetDecayTime( 5*TICK_PER_SEC );
-			}
+			pBlood->SetHue( m_wBloodHue );
+			pBlood->MoveNear( GetTopPoint(), 1 );
+			pBlood->SetDecayTime( 5*TICK_PER_SEC );
 		}
 	}
 
