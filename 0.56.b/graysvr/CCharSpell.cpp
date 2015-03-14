@@ -776,6 +776,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
 				iStatEffect = 15 + (Skill_GetBase(SKILL_INSCRIPTION)/200);
+				pSpell->m_itSpell.m_spelllevel = iStatEffect;
+
 				SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) + iStatEffect));
 				SetDefNum("RESFIRE", static_cast<int>(GetDefNum("RESFIRE", true) - 5));
 				SetDefNum("RESCOLD", static_cast<int>(GetDefNum("RESCOLD", true) - 5));
