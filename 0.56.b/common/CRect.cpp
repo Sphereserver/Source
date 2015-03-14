@@ -111,16 +111,11 @@ int CPointBase::GetDist( const CPointBase & pt ) const // Distance between point
 {
 	ADDTOCALLSTACK("CPointBase::GetDist");
 	// Get the basic 2d distance.
-	if ( !pt.IsValidPoint() )
-	{
-#ifndef _NIGHTLYBUILD
-		DEBUG_ERR(("GetDist::InvalidPoint -> '%s'\n", pt.WriteUsed()));
-#endif
+	if ( !pt.IsValidPoint())
 		return( SHRT_MAX );
-	}
+	if ( ! IsSameMap( pt.m_map ))
+		return( SHRT_MAX );
 
-	if ( ! IsSameMap( pt.m_map ))	// as far apart as possible
-		return( SHRT_MAX );
 	return( GetDistBase( pt ));
 }
 
@@ -134,9 +129,9 @@ int CPointBase::GetDistSightBase( const CPointBase & pt ) const // Distance betw
 int CPointBase::GetDistSight( const CPointBase & pt ) const // Distance between points based on UO sight
 {
 	ADDTOCALLSTACK("CPointBase::GetDistSight");
-	if ( !pt.IsValidPoint() )
+	if ( !pt.IsValidPoint())
 		return( SHRT_MAX );
-	else if ( ! IsSameMap( pt.m_map ))
+	if ( ! IsSameMap( pt.m_map ))
 		return( SHRT_MAX );
 
 	return( GetDistSightBase( pt ));

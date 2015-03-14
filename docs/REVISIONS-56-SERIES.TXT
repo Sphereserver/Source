@@ -1730,3 +1730,14 @@ Fixed: not allow experience or level go to negative.
 Fixed: Infinite loop when someone with Reactive Armor hit itself.
 Fixed: Some items properties being saved as 0 value (when set it to 0) instead remove it at all.
 Added: FASTERCASTING, INCREASESPELLDAM, INCREASESWINGSPEED gain/loss when equip/unequip items.
+
+14-03-2015, Coruja
+Fixed: 'GetDist::InvalidPoint' console error when function ISNEARTYPE try search something out of the map bounds.
+Fixed: Spells with SPELLFLAG_AREA + SPELLFLAG_DAMAGE flags causing damage to nearby items on ground.
+Added: LOWERREAGENTCOST / FASTERCASTING behavior when casting spells.
+Added: New Reactive Armor spell behavior if COMBAT_ELEMENTAL_ENGINE feature is enabled, now it will increase RESPHYSICAL and decrease RESFIRE/RESCOLD/RESPOISON/RESENERGY.
+Added: New Mana Drain / Mana Vampire spell effect if MAGICF_OSIFORMULAS feature is enabled.
+[sphere_spells]: Updated FLAGS/EFFECT/EFFECT_ID values on Mana Drain / Mana Vampire / Enchantment spells.
+[sphere_defs.scp]: Updated 'snd_spell_reactive_armor' value.
+[sphere_skills.scp]: Removed duplicated @Fail message on Magery skill.
+[sphere_item_magic_weapon.scp]: Updated all magic weapons properties to the correct values.

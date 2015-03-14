@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, Feb 18, 2015
+// FILE LAST UPDATED: Saturday, Mar 14, 2015
 //
 VERSION=0.56c
 
@@ -646,9 +646,6 @@ BONUS_STATS=15
 ADV_RATE=10.0,200.0,800.0
 VALUES=1,20,80
 //DELAY=1.0 // based on skill and difficulty.
-
-ON=@Fail
-	SRC.SYSMESSAGE The spell fizzles.
 
 ON=@Abort
 	SRC.SYSMESSAGE You stop casting the spell.

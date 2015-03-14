@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2014
+// SPHERE by : Menasoft ©1997-2015
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, October 16, 2014
+// FILE LAST UPDATED: Saturday, Mar 14, 2015
 //
 VERSION=0.56c
 
@@ -577,8 +577,8 @@ CAST_TIME=1.3
 RESOURCES=i_reag_black_pearl,i_reag_mandrake_root,i_reag_spider_silk
 RUNE_ITEM=i_rune_mana_drain
 SCROLL_ITEM=i_scroll_mana_drain
-FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_resist|spellflag_targ_noself|spellflag_nounparalyze
-EFFECT_ID=i_fx_curse
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_resist|spellflag_targ_noself
+EFFECT_ID=i_fx_vortex
 EFFECT=0
 DURATION=0.0
 MANAUSE=11
@@ -984,7 +984,7 @@ CAST_TIME=2.0
 RESOURCES=i_reag_black_pearl,i_reag_blood_moss,i_reag_mandrake_root,i_reag_spider_silk
 RUNE_ITEM=i_rune_mana_vampire
 SCROLL_ITEM=i_scroll_mana_vampire
-FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_resist|spellflag_targ_noself|spellflag_nounparalyze
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_resist|spellflag_targ_noself
 EFFECT_ID=i_fx_curse
 EFFECT=0
 DURATION=0.0
@@ -1450,7 +1450,7 @@ FLAGS=SPELLFLAG_TARG_OBJ | SPELLFLAG_FX_TARG | SPELLFLAG_GOOD | SPELLFLAG_PLAYER
 RUNE_ITEM=i_RUNE_ALCHEM_3
 MANAUSE=200
 SKILLREQ=MAGERY 200.0
-EFFECT=1,15
+EFFECT=1,9
 
 ///////////////////////
 // Necromancy Spells //

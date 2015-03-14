@@ -592,7 +592,18 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			break;
 
 		case SPELL_Reactive_Armor:
-			StatFlag_Clear( STATF_Reactive );
+			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+			{
+				SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) - iStatEffect));
+				SetDefNum("RESFIRE", static_cast<int>(GetDefNum("RESFIRE", true) + 5));
+				SetDefNum("RESCOLD", static_cast<int>(GetDefNum("RESCOLD", true) + 5));
+				SetDefNum("RESPOISON", static_cast<int>(GetDefNum("RESPOISON", true) + 5));
+				SetDefNum("RESENERGY", static_cast<int>(GetDefNum("RESENERGY", true) + 5));
+			}
+			else
+			{
+				StatFlag_Clear( STATF_Reactive );
+			}
 			if (IsClient()) {
 				GetClient()->removeBuff(BI_REACTIVEARMOR);
 			}
@@ -762,7 +773,19 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			}
 			break;
 		case SPELL_Reactive_Armor:
-			StatFlag_Set( STATF_Reactive );
+			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+			{
+				iStatEffect = 15 + (Skill_GetBase(SKILL_INSCRIPTION)/200);
+				SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) + iStatEffect));
+				SetDefNum("RESFIRE", static_cast<int>(GetDefNum("RESFIRE", true) - 5));
+				SetDefNum("RESCOLD", static_cast<int>(GetDefNum("RESCOLD", true) - 5));
+				SetDefNum("RESPOISON", static_cast<int>(GetDefNum("RESPOISON", true) - 5));
+				SetDefNum("RESENERGY", static_cast<int>(GetDefNum("RESENERGY", true) - 5));
+			}
+			else
+			{
+				StatFlag_Set( STATF_Reactive );
+			}
 			if ( IsSetOF(OF_Buffs) && IsClient() )
 			{
 				GetClient()->removeBuff(BI_REACTIVEARMOR);
@@ -1284,13 +1307,17 @@ void CChar::Spell_Area( CPointMap pntTarg, int iDist, int iSkillLevel )
 		}
 		pChar->OnSpellEffect( spelltype, this, iSkillLevel, NULL );
 	}
-	CWorldSearch AreaItem( pntTarg, iDist );
-	for (;;)
+
+	if ( !pSpellDef->IsSpellType( SPELLFLAG_DAMAGE ))	// prevent damage nearby items on ground
 	{
-		CItem * pItem = AreaItem.GetItem();
-		if ( pItem == NULL )
-			break;
-		pItem->OnSpellEffect( spelltype, this, iSkillLevel, NULL );
+		CWorldSearch AreaItem( pntTarg, iDist );
+		for (;;)
+		{
+			CItem * pItem = AreaItem.GetItem();
+			if ( pItem == NULL )
+				break;
+			pItem->OnSpellEffect( spelltype, this, iSkillLevel, NULL );
+		}
 	}
 }
 
@@ -1575,17 +1602,20 @@ bool CChar::Spell_CanCast( SPELL_TYPE spell, bool fTest, CObjBase * pSrc, bool f
 			// check for reagents
 			if ( g_Cfg.m_fReagentsRequired && ! m_pNPC && pSrc == this )
 			{
-				const CResourceQtyArray * pRegs = &(pSpellDef->m_Reags);
-				CItemContainer * pPack = GetPack();
-				size_t iMissing = pPack->ResourceConsumePart( pRegs, 1, 100, fTest );
-				if ( iMissing != pRegs->BadIndex() )
+				if ( GetDefNum("LOWERREAGENTCOST", true, true) <= Calc_GetRandVal(100))
 				{
-					if ( fFailMsg )
+					const CResourceQtyArray * pRegs = &(pSpellDef->m_Reags);
+					CItemContainer * pPack = GetPack();
+					size_t iMissing = pPack->ResourceConsumePart( pRegs, 1, 100, fTest );
+					if ( iMissing != pRegs->BadIndex() )
 					{
-						CResourceDef * pReagDef = g_Cfg.ResourceGetDef( pRegs->GetAt(iMissing).GetResourceID() );
-						SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_SPELL_TRY_NOREGS ), pReagDef ? pReagDef->GetName() : g_Cfg.GetDefaultMsg( DEFMSG_SPELL_TRY_THEREG ) );
+						if ( fFailMsg )
+						{
+							CResourceDef * pReagDef = g_Cfg.ResourceGetDef( pRegs->GetAt(iMissing).GetResourceID() );
+							SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_SPELL_TRY_NOREGS ), pReagDef ? pReagDef->GetName() : g_Cfg.GetDefaultMsg( DEFMSG_SPELL_TRY_THEREG ) );
+						}
+						return( false );
 					}
-					return( false );
 				}
 			}
 		}
@@ -2150,32 +2180,7 @@ bool CChar::Spell_CastDone()
 
 	case SPELL_Mana_Drain:
 	case SPELL_Mana_Vamp:
-		// Take the mana from the target.
-		if ( pObj->IsChar() && this != pObj )
-		{
-			CChar * pChar = dynamic_cast <CChar*> ( pObj );
-			ASSERT( pChar );
-			if ( ! pChar->IsStatFlag( STATF_Reflection ))
-			{
-				int iMax = pChar->Stat_GetAdjusted(STAT_INT);
-				int iDiff = Stat_GetAdjusted(STAT_INT) - iMax;
-				if ( iDiff < 0 )
-					iDiff = 0;
-				else
-					iDiff = Calc_GetRandVal( iDiff );
-				iDiff += Calc_GetRandVal( 25 );
-				if ( pChar->OnSpellEffect( spell, this, iDiff, NULL ) == false )
-					break;
-
-				if ( spell == SPELL_Mana_Vamp )
-				{
-					// Give some back to me.
-					UpdateStatVal( STAT_INT, minimum( iDiff, Stat_GetAdjusted(STAT_INT)));
-				}
-				break;
-			}
-		}
-		if ( ! Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
+		if ( !Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
 			return( false );
 		break;
 
@@ -2470,6 +2475,9 @@ int CChar::Spell_CastStart()
 	}
 
 	int iWaitTime = IsPriv(PRIV_GM) ? 1 : pSpellDef->m_CastTime.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(iSkill)));
+	iWaitTime -= GetDefNum("FASTERCASTING", true, true) * 2;	//correct value is 0.25, but sphere can handle only 0.2
+	if ( iWaitTime < 1 )
+		iWaitTime = 1;
 
 	CScriptTriggerArgs Args(static_cast<int>(m_atMagery.m_Spell), iDifficulty, pItem);
 	Args.m_iN3 = iWaitTime;
@@ -2799,17 +2807,17 @@ reflectit:
 			break;
 
 		case SPELL_Night_Sight:
-			Spell_Effect_Create( SPELL_Night_Sight, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Night_Sight, iSkillLevel,
+			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Night_Sight, iSkillLevel,
 					GetSpellDuration( spell, iSkillLevel, iEffectMult ), pCharSrc );
 			break;
 
 		case SPELL_Reactive_Armor:
-			Spell_Effect_Create( SPELL_Reactive_Armor, LAYER_SPELL_Reactive, iSkillLevel,
+			Spell_Effect_Create( spell, LAYER_SPELL_Reactive, iSkillLevel,
 					GetSpellDuration( spell, iSkillLevel, iEffectMult ), pCharSrc );
 			break;
 
 		case SPELL_Magic_Reflect:
-			Spell_Effect_Create( SPELL_Magic_Reflect, LAYER_SPELL_Magic_Reflect, iSkillLevel,
+			Spell_Effect_Create( spell, LAYER_SPELL_Magic_Reflect, iSkillLevel,
 					GetSpellDuration( spell, iSkillLevel, iEffectMult ), pCharSrc );
 			break;
 
@@ -2852,12 +2860,12 @@ reflectit:
 			break;
 
 		case SPELL_Invis:
-			Spell_Effect_Create( SPELL_Invis, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Invis, iSkillLevel,
+			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Invis, iSkillLevel,
 				GetSpellDuration( spell, iSkillLevel, iEffectMult ), pCharSrc );
 			break;
 
 		case SPELL_Incognito:
-			Spell_Effect_Create( SPELL_Incognito, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Incognito, iSkillLevel,
+			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Incognito, iSkillLevel,
 				GetSpellDuration( spell, iSkillLevel, iEffectMult ), pCharSrc );
 			break;
 
@@ -2871,12 +2879,50 @@ reflectit:
 			break;
 
 		case SPELL_Mana_Drain:
+			{
+				if ( IsSetMagicFlags(MAGICF_OSIFORMULAS) )
+				{
+					// AOS formula
+					iSkillLevel = (400 + Skill_GetBase(SKILL_EVALINT) - pCharSrc->Skill_GetBase(SKILL_MAGICRESISTANCE)) / 10;
+					if ( iSkillLevel < 0 )
+						iSkillLevel = 0;
+				}
+				else
+				{
+					// Pre-AOS formula
+					iSkillLevel = Calc_GetRandVal2(1, minimum(Stat_GetVal(STAT_INT), 100));
+				}
+				UpdateStatVal( STAT_INT, -iSkillLevel );
+			}
+			break;
+
 		case SPELL_Mana_Vamp:
-			UpdateStatVal( STAT_INT, -iSkillLevel );
+			{
+				int iMax = Stat_GetVal(STAT_INT);
+				if ( IsSetMagicFlags(MAGICF_OSIFORMULAS) )
+				{
+					// AOS formula
+					iSkillLevel = (pCharSrc->Skill_GetBase(SKILL_EVALINT) - Skill_GetBase(SKILL_MAGICRESISTANCE)) / 10;
+					if ( !m_pPlayer )
+						iSkillLevel /= 2;
+
+					if ( iSkillLevel < 0 )
+						iSkillLevel = 0;
+					else if ( iSkillLevel > iMax )
+						iSkillLevel = iMax;
+				}
+				else
+				{
+					// Pre-AOS formula
+					iSkillLevel = iMax;
+				}
+				UpdateStatVal( STAT_INT, -iSkillLevel );
+				pCharSrc->UpdateStatVal( STAT_INT, +iSkillLevel );
+			}
 			break;
 
 		case SPELL_Meteor_Swarm:
-			Effect( EFFECT_OBJ, ITEMID_FX_EXPLODE_3, this, 9, 6 );
+			Effect( EFFECT_BOLT, ITEMID_FX_FIRE_BALL, pCharSrc, 9, 6 );
 			break;
 	
 		case SPELL_Lightning:
@@ -2896,7 +2942,7 @@ reflectit:
 
 		case SPELL_Hallucination:
 			{
-			CItem * pItem = Spell_Effect_Create( SPELL_Hallucination, LAYER_FLAG_Hallucination, iSkillLevel, 10*TICK_PER_SEC, pCharSrc );
+			CItem * pItem = Spell_Effect_Create( spell, LAYER_FLAG_Hallucination, iSkillLevel, 10*TICK_PER_SEC, pCharSrc );
 			pItem->m_itSpell.m_spellcharges = Calc_GetRandVal(30);
 			}
 			break;
@@ -2905,7 +2951,7 @@ reflectit:
 				CREID_TYPE creid = m_atMagery.m_SummonID;
 				int SPELL_MAX_POLY_STAT = g_Cfg.m_iMaxPolyStats;
 
-				CItem * pSpell = Spell_Effect_Create(SPELL_Polymorph, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Polymorph, iSkillLevel,
+				CItem * pSpell = Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Polymorph, iSkillLevel,
 					GetSpellDuration( spell, iSkillLevel, iEffectMult ), pCharSrc );
 				SetID(creid);
 
