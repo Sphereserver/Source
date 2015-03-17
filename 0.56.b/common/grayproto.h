@@ -1004,7 +1004,7 @@ enum NOTO_TYPE
 #define MINCLIVER_EXTRAFEATURES		0x600142	// minimum client to receive 4-byte feature mask (6.0.14.2)
 #define MINCLIVER_NEWCONTEXTMENU	0x700000	// minimun client to receive 0xBF.0x14.0x02 packet instead of 0xbf.0x14.0x01
 #define MINCLIVER_NEWMOBILEANIMATION 0x700000	// minimum client to receive 0xE2 packet (7.0.0.0)
-#define MINCLIVER_NEWMOBINCOMING	0x700000	// minimun client to receive 0x78 packet (7.0.0.0)
+#define MINCLIVER_NEWMOBINCOMING	0x700331	// minimun client to receive 0x78 packet (7.0.0.0)
 #define MINCLIVER_NEWMAPDISPLAY		0x700080	// minimum client to receive 0xF5 packet (7.0.13.0)
 #define MINCLIVER_EXTRASTARTINFO 	0x700130	// minimum client to receive extra start info (7.0.13.0)
 

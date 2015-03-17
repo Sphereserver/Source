@@ -345,55 +345,7 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 				break;
 		}
 
-		if ( pItem->IsTypeArmorWeapon() )
-		{
-			SetDefNum("DAMPHYSICAL", static_cast<int>(GetDefNum("DAMPHYSICAL", true) + pItem->GetDefNum("DAMPHYSICAL", true, true)));
-			SetDefNum("DAMFIRE", static_cast<int>(GetDefNum("DAMFIRE", true) + pItem->GetDefNum("DAMFIRE", true, true)));
-			SetDefNum("DAMCOLD", static_cast<int>(GetDefNum("DAMCOLD", true) + pItem->GetDefNum("DAMCOLD", true, true)));
-			SetDefNum("DAMPOISON", static_cast<int>(GetDefNum("DAMPOISON", true) + pItem->GetDefNum("DAMPOISON", true, true)));
-			SetDefNum("DAMENERGY", static_cast<int>(GetDefNum("DAMENERGY", true) + pItem->GetDefNum("DAMENERGY", true, true)));
-
-			SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) + pItem->GetDefNum("RESPHYSICAL", true, true)));
-			SetDefNum("RESFIRE", static_cast<int>(GetDefNum("RESFIRE", true) + pItem->GetDefNum("RESFIRE", true, true)));
-			SetDefNum("RESCOLD", static_cast<int>(GetDefNum("RESCOLD", true) + pItem->GetDefNum("RESCOLD", true, true)));
-			SetDefNum("RESPOISON", static_cast<int>(GetDefNum("RESPOISON", true) + pItem->GetDefNum("RESPOISON", true, true)));
-			SetDefNum("RESENERGY", static_cast<int>(GetDefNum("RESENERGY", true) + pItem->GetDefNum("RESENERGY", true, true)));
-		}
-
-		INT64 iDamageIncrease = pItem->GetDefNum("INCREASEDAM", true, true);
-		if ( iDamageIncrease != 0 )
-			SetDefNum("INCREASEDAM", static_cast<int>(GetDefNum("INCREASEDAM", true) + iDamageIncrease));
-
-		INT64 iDefenseChanceIncrease = pItem->GetDefNum("INCREASEDEFCHANCE", true, true);
-		if ( iDefenseChanceIncrease != 0 )
-			SetDefNum("INCREASEDEFCHANCE", static_cast<int>(GetDefNum("INCREASEDEFCHANCE", true) + iDefenseChanceIncrease));
-
-		INT64 iFasterCasting = pItem->GetDefNum("FASTERCASTING", true, true);
-		if ( iFasterCasting != 0 )
-			SetDefNum("FASTERCASTING", static_cast<int>(GetDefNum("FASTERCASTING", true) + iFasterCasting));
-
-		INT64 iHitChanceIncrease = pItem->GetDefNum("INCREASEHITCHANCE", true, true);
-		if ( iHitChanceIncrease != 0 )
-			SetDefNum("INCREASEHITCHANCE", static_cast<int>(GetDefNum("INCREASEHITCHANCE", true) + iHitChanceIncrease));
-
-		INT64 iSpellDamageIncrease = pItem->GetDefNum("INCREASESPELLDAM", true, true);
-		if ( iSpellDamageIncrease != 0 )
-			SetDefNum("INCREASESPELLDAM", static_cast<int>(GetDefNum("INCREASESPELLDAM", true) + iSpellDamageIncrease));
-
-		INT64 iSwingSpeedIncrease = pItem->GetDefNum("INCREASESWINGSPEED", true, true);
-		if ( iSwingSpeedIncrease != 0 )
-			SetDefNum("INCREASESWINGSPEED", static_cast<int>(GetDefNum("INCREASESWINGSPEED", true) + iSwingSpeedIncrease));
-
-		INT64 iLuck = pItem->GetDefNum("LUCK", true, true);
-		if ( iLuck != 0 )
-			SetDefNum("LUCK", static_cast<int>(GetDefNum("LUCK", true) + iLuck));
-
-		if ( pItem->GetDefNum("NIGHTSIGHT", true, true))
-		{
-			StatFlag_Mod( STATF_NightSight, 1 );
-			if ( IsClient() )
-				m_pClient->addLight();
-		}
+		
 	}
 
 	pItem->Update();
@@ -2009,6 +1961,56 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 	if ( fFromDClick )
 		pItem->ResendOnEquip();
 
+	if (pItem->IsTypeArmorWeapon())
+	{
+		SetDefNum("DAMPHYSICAL", static_cast<int>(GetDefNum("DAMPHYSICAL", true) + pItem->GetDefNum("DAMPHYSICAL", true, true)));
+		SetDefNum("DAMFIRE", static_cast<int>(GetDefNum("DAMFIRE", true) + pItem->GetDefNum("DAMFIRE", true, true)));
+		SetDefNum("DAMCOLD", static_cast<int>(GetDefNum("DAMCOLD", true) + pItem->GetDefNum("DAMCOLD", true, true)));
+		SetDefNum("DAMPOISON", static_cast<int>(GetDefNum("DAMPOISON", true) + pItem->GetDefNum("DAMPOISON", true, true)));
+		SetDefNum("DAMENERGY", static_cast<int>(GetDefNum("DAMENERGY", true) + pItem->GetDefNum("DAMENERGY", true, true)));
+
+		SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) + pItem->GetDefNum("RESPHYSICAL", true, true)));
+		SetDefNum("RESFIRE", static_cast<int>(GetDefNum("RESFIRE", true) + pItem->GetDefNum("RESFIRE", true, true)));
+		SetDefNum("RESCOLD", static_cast<int>(GetDefNum("RESCOLD", true) + pItem->GetDefNum("RESCOLD", true, true)));
+		SetDefNum("RESPOISON", static_cast<int>(GetDefNum("RESPOISON", true) + pItem->GetDefNum("RESPOISON", true, true)));
+		SetDefNum("RESENERGY", static_cast<int>(GetDefNum("RESENERGY", true) + pItem->GetDefNum("RESENERGY", true, true)));
+	}
+
+	INT64 iDamageIncrease = pItem->GetDefNum("INCREASEDAM", true, true);
+	if (iDamageIncrease != 0)
+		SetDefNum("INCREASEDAM", static_cast<int>(GetDefNum("INCREASEDAM", true) + iDamageIncrease));
+
+	INT64 iDefenseChanceIncrease = pItem->GetDefNum("INCREASEDEFCHANCE", true, true);
+	if (iDefenseChanceIncrease != 0)
+		SetDefNum("INCREASEDEFCHANCE", static_cast<int>(GetDefNum("INCREASEDEFCHANCE", true) + iDefenseChanceIncrease));
+
+	INT64 iFasterCasting = pItem->GetDefNum("FASTERCASTING", true, true);
+	if (iFasterCasting != 0)
+		SetDefNum("FASTERCASTING", static_cast<int>(GetDefNum("FASTERCASTING", true) + iFasterCasting));
+
+	INT64 iHitChanceIncrease = pItem->GetDefNum("INCREASEHITCHANCE", true, true);
+	if (iHitChanceIncrease != 0)
+		SetDefNum("INCREASEHITCHANCE", static_cast<int>(GetDefNum("INCREASEHITCHANCE", true) + iHitChanceIncrease));
+
+	INT64 iSpellDamageIncrease = pItem->GetDefNum("INCREASESPELLDAM", true, true);
+	if (iSpellDamageIncrease != 0)
+		SetDefNum("INCREASESPELLDAM", static_cast<int>(GetDefNum("INCREASESPELLDAM", true) + iSpellDamageIncrease));
+
+	INT64 iSwingSpeedIncrease = pItem->GetDefNum("INCREASESWINGSPEED", true, true);
+	if (iSwingSpeedIncrease != 0)
+		SetDefNum("INCREASESWINGSPEED", static_cast<int>(GetDefNum("INCREASESWINGSPEED", true) + iSwingSpeedIncrease));
+
+	INT64 iLuck = pItem->GetDefNum("LUCK", true, true);
+	if (iLuck != 0)
+		SetDefNum("LUCK", static_cast<int>(GetDefNum("LUCK", true) + iLuck));
+
+	if (pItem->GetDefNum("NIGHTSIGHT", true, true))
+	{
+		StatFlag_Mod(STATF_NightSight, 1);
+		if (IsClient())
+			m_pClient->addLight();
+	}
+
 	return true;
 }
 
@@ -2920,9 +2922,7 @@ bool CChar::Death()
 
 		//	experience could go down
 		if ( g_Cfg.m_bExperienceSystem)
-		{
 			ChangeExperience(-(static_cast<int>(m_exp)/10),pKiller);
-		}
 	}
 
 	// create the corpse item.
