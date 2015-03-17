@@ -3279,7 +3279,8 @@ private:
 	// Contents/Carry stuff. ---------------------------------
 	void ContentAdd( CItem * pItem )
 	{
-		LayerAdd( pItem, LAYER_QTY );
+		ItemEquip(pItem);
+		//LayerAdd( pItem, LAYER_QTY );
 	}
 protected:
 	void OnRemoveOb( CGObListRec* pObRec );	// Override this = called when removed from list.
