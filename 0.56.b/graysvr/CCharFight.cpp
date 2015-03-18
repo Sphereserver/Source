@@ -2166,8 +2166,16 @@ effect_bounce:
 			Effect( EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 16 );
 			if ( IsPriv(PRIV_DETAIL) )
 				pSrc->SysMessageDefault( DEFMSG_COMBAT_PARRY );
-			if ( pItemHit != NULL )
-				pItemHit->OnTakeDamage( iDmg, pSrc, uType );
+
+			int chanceDamage = g_Cfg.m_iItemDamageCombat;
+			if ((pItemHit != NULL) && (chanceDamage))
+			{
+				if (g_Cfg.m_iItemDamageCombatIncrease)
+					chanceDamage += (pItemHit->m_itArmor.m_Hits_Max - pItemHit->m_itArmor.m_Hits_Cur);
+
+				if (chanceDamage >= Calc_GetRandVal(100))
+					pItemHit->OnTakeDamage( iDmg, pSrc, uType );
+			}
 
 			return( 0 );
 		}
@@ -2233,8 +2241,8 @@ effect_bounce:
 		uType = static_cast<DAMAGE_TYPE>(Args.m_iN2);
 	}
 
-	// 40% chance to damage an equipped item
-	if ( (40 > Calc_GetRandVal(100)) && ! pCharDef->Can(CAN_C_NONHUMANOID) )
+	int chanceDamage = g_Cfg.m_iItemDamageCombat;
+	if (!pCharDef->Can(CAN_C_NONHUMANOID) && (chanceDamage))
 	{
 		int iHitRoll = Calc_GetRandVal( 100 );
 		BODYPART_TYPE iHitArea = ARMOR_HEAD;
@@ -2261,8 +2269,14 @@ effect_bounce:
 		}
 
 		CItem * pItemHit = LayerFind( iHitLayer );
-		if ( pItemHit != NULL )
-			pItemHit->OnTakeDamage( iDmg, pSrc, uType );
+		if ( pItemHit != NULL)
+		{
+			if (g_Cfg.m_iItemDamageCombatIncrease)
+				chanceDamage += (pItemHit->m_itArmor.m_Hits_Max - pItemHit->m_itArmor.m_Hits_Cur);
+
+			if (chanceDamage >= Calc_GetRandVal(100))
+				pItemHit->OnTakeDamage( iDmg, pSrc, uType );
+		}
 	}
 
 	// Remove stuck/paralyze effect
@@ -3957,8 +3971,15 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		}
 
 		// damage the weapon ?
-		if ( 40 > Calc_GetRandVal(100) )
-			pWeapon->OnTakeDamage( iDmg, pCharTarg );
+		int chanceDamage = g_Cfg.m_iItemDamageCombat;
+		if (chanceDamage)
+		{
+			if (g_Cfg.m_iItemDamageCombatIncrease)
+				chanceDamage += (pWeapon->m_itArmor.m_Hits_Max - pWeapon->m_itArmor.m_Hits_Cur);
+			
+			if (chanceDamage >= Calc_GetRandVal(100))
+				pWeapon->OnTakeDamage( iDmg, pCharTarg );
+		}
 	}
 	else
 	{

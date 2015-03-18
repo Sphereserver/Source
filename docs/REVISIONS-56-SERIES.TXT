@@ -1741,3 +1741,10 @@ Added: New Mana Drain / Mana Vampire spell effect if MAGICF_OSIFORMULAS feature 
 [sphere_defs.scp]: Updated 'snd_spell_reactive_armor' value.
 [sphere_skills.scp]: Removed duplicated @Fail message on Magery skill.
 [sphere_item_magic_weapon.scp]: Updated all magic weapons properties to the correct values.
+
+15-03-2015, Staff_Stanic
+Added: ARGN2=0 ARGN2=0 will disable automatic message when @ExpLevelChange.
+
+17-03-2015, Staff_Stanic
+[Sphere.ini] Added: ItemDamageCombat - chance of a item be damaged during a combat (PvP or PvM).
+[Sphere.ini] Added: ItemDamageCombatIncrease - the difference of total and current durability of a item will increase the probability of this same item be damaged? If yes, the probability of a item be damaged during a combat will be given by: (ItemDamageCombat + Item_Total_Durability - Item_Current_Durability)%
