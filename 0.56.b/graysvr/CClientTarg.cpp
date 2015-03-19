@@ -21,7 +21,7 @@ bool CClient::OnTarg_Obj_Set( CObjBase * pObj )
 
 	if ( pObj == NULL )
 	{
-		SysMessage( "No object specified?" );
+		SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_TARG_UNEXPECTED) );
 		return( false );
 	}
 
@@ -359,7 +359,7 @@ bool CClient::OnTarg_Item_Link( CObjBase * pObj2 )
 
 	if ( pObj2 == NULL )
 	{
-		SysMessage( "Must select a dynamic object." );
+		SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_TARG_DYNAMIC) );
 		return( false );
 	}
 
@@ -1813,14 +1813,14 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 	CItem * pItemUse = m_Targ_UID.ItemFind();
 	if ( pItemUse == NULL )
 	{
-		SysMessage( "Targetted item is gone?" );
+		SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_TARG_GONE) );
 		return false;
 	}
 	if ( pItemUse->GetParent() != m_tmUseItem.m_pParent )
 	{
 		// Watch out for cheating.
 		// Is the source item still in the same place as it was.
-		SysMessage( "Targetted item moved?" );
+		SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_TARG_MOVED));
 		return false;
 	}
 

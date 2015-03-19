@@ -3711,12 +3711,12 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 				}
 				if ( redNew != redOld )
 				{
-					SysMessagef("You have %s the red region.", ( redNew ? "entered" : "left" ));
+					SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_REGION_REDDEF), (redNew ? DEFMSG_REGION_REDENTER : DEFMSG_REGION_REDLEFT));
 				}
-				else if ( redNew && ( redNew == redOld ))
+				/*else if ( redNew && ( redNew == redOld ))
 				{
 					SysMessage("You are still in the red region.");
-				}
+				}*/
 				if ( pNewArea->IsFlag(REGION_FLAG_NO_PVP) != m_pArea->IsFlag(REGION_FLAG_NO_PVP))
 				{
 					SysMessageDefault(( pNewArea->IsFlag(REGION_FLAG_NO_PVP)) ? DEFMSG_REGION_PVPSAFE : DEFMSG_REGION_PVPNOT );

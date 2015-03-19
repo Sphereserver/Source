@@ -2672,7 +2672,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			{
 				if ( pCharSrc->GetPrivLevel() <= PLEVEL_Guest )
 				{
-					pCharSrc->SysMessage( "The guest curse strikes you." );
+					pCharSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_ACC_GUESTHIT) );
 					goto reflectit;
 				}
 			}

@@ -4743,7 +4743,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			if ( GetTopLevelObj() != pCharSrc )
 			{
 				// Prevent people from remarking GM teleport pads if they can't pick it up.
-				pCharSrc->SysMessage( "The rune must be on your person to mark." );
+				pCharSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_SPELL_MARK_CONT) );
 				return false;
 			}
 		}

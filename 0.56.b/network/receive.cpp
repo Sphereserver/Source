@@ -779,7 +779,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 		allowsell.InitTime(vardef->GetValNum() + (itemCount * 3));
 		if (g_World.GetCurrentTime() < allowsell)
 		{
-			client->SysMessage("You are buying too fast.");
+			client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_BUYFAST));
 			return true;
 		}
 	}

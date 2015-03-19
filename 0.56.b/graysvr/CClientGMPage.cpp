@@ -137,7 +137,7 @@ void CClient::Cmd_GM_PageMenu( unsigned int iEntryStart )
 
 	if ( count <= 0 )
 	{
-		SysMessage( "No GM pages queued. Use .page ?" );
+		SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_GMPAGES_NONE) );
 		return;
 	}
 
@@ -153,9 +153,7 @@ void CClient::Cmd_GM_PageInfo()
 	ASSERT( m_pGMPage );
 
 	SysMessagef(
-		"Current GM .PAGE Account=%s (%s) "
-		"Reason='%s' "
-		"Time=%lld",
+		g_Cfg.GetDefaultMsg(DEFMSG_GMPAGES_CURRENT),
 		static_cast<LPCTSTR>(m_pGMPage->GetName()),
 		static_cast<LPCTSTR>(m_pGMPage->GetAccountStatus()),
 		static_cast<LPCTSTR>(m_pGMPage->GetReason()),

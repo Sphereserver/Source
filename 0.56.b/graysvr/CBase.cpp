@@ -148,6 +148,8 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 		case OBC_NAMELOC:
 		case OBC_HITSPELLSTR:
 		case OBC_WEIGHTREDUCTION:
+		case OBC_COMBATBONUSSTAT:
+		case OBC_COMBATBONUSPERCENT:
 			sVal.FormatLLVal(GetDefNum(pszKey, true));
 			break;
 
@@ -429,6 +431,8 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 		case OBC_NAMELOC:
 		case OBC_HITSPELLSTR:
 		case OBC_WEIGHTREDUCTION:
+		case OBC_COMBATBONUSSTAT:
+		case OBC_COMBATBONUSPERCENT:
 			{
 				SetDefNum(s.GetKey(),s.GetArgVal());
 				return true;

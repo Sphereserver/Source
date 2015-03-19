@@ -1745,6 +1745,44 @@ Added: New Mana Drain / Mana Vampire spell effect if MAGICF_OSIFORMULAS feature 
 15-03-2015, Staff_Stanic
 Added: ARGN2=0 ARGN2=0 will disable automatic message when @ExpLevelChange.
 
+17-03-2015, XuN
+Fixed #2493: Reverted MINCLIVER_NEWMOBINCOMING back to 0x700331. 
+Fixed items with Res* and DMG* giving values again when save+restart, stat's additions should be placed on ItemEquip and not in LayerAdd. 
+Fixed items being 'dropped' on player's characters when they are created instead of equipping (changed LayerAdd to ItemEquip in CChar::ContentAdd(), may cause some other issues?) 
+
 17-03-2015, Staff_Stanic
 [Sphere.ini] Added: ItemDamageCombat - chance of a item be damaged during a combat (PvP or PvM).
 [Sphere.ini] Added: ItemDamageCombatIncrease - the difference of total and current durability of a item will increase the probability of this same item be damaged? If yes, the probability of a item be damaged during a combat will be given by: (ItemDamageCombat + Item_Total_Durability - Item_Current_Durability)%
+
+18-03-2015, XuN
+[add-on\mordaunts_housing_system]
+Added to [REGIONTYPE r_houses] the following code to prevent the dialog being used in other houses skipping permissions:
+	ON=@Exit
+		src.dialogclose d_house_menu
+		src.events -e_house_player_events
+
+19-03-2015, XuN
+Added CombatBonusStat and CombatBonusPercent properties for weapons and chars changing the default formula for damage ( having weapon equipped will override char settings, regardless of weapon having them or not)
+	CombatBonusStat stores the stat id. STR = 0, INT = 1, DEX = 2
+	CombatBonusPercent stores the percentaje of stat applied onto the bonus calculations, value can be negative but total bonus cannot be lower than 1.
+[sphere_msgs.scp]
+Added these lines:
+	//msg_acc_passclear			"Password has been cleared."
+	//msg_acc_passclear_relog	"Log out, then back in to set the new password.""
+	//msg_acc_acceptpass		"Password has been set."
+	//msg_acc_invalidpass		"Invalid password."
+	//msg_acc_guesthit			"The guest curse strikes you."
+	//msg_region_reddef			"You have %s the red region."
+	//msg_region_redenter		"entered"
+	//msg_region_redleft		"left"
+	//itemuse_dye_reach1		"You can't reach it."
+	//msg_gmpages_none			"No GM pages queued. Use .page ?"
+	//msg_gmpages_current		"Current GM .PAGE Account=%s (%s) Reason='%s' Time=%lld."
+	//npc_vendor_cantbuy		"You cannot buy that."
+	//npc_vendor_cantsell		"You cannot sell that."
+	//msg_targ_dynamic			"Must select a dynamic object."
+	//msg_targ_moved			"Targetted item moved?"
+	//msg_targ_gone				"Targetted item is gone?"
+	//spell_mark_cont			"The rune must be on your person to mark."
+	//npc_vendor_sellfast		"You are selling too fast."
+	//npc_vendor_sellmuch		"You cannot sell so much."

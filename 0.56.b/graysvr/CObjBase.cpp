@@ -739,6 +739,8 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_REGENVALSTAM:
 		case OC_RESCOLD:
 		case OC_RESFIRE:
+		case OC_COMBATBONUSSTAT:
+		case OC_COMBATBONUSPERCENT:
 		case OC_RESENERGY:
 		case OC_RESPOISON:
 		case OC_RESCOLDMAX:
@@ -1519,6 +1521,8 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_SPLINTERINGWEAPON:
 		case OC_VELOCITY:
 		case OC_NAMELOC:
+		case OC_COMBATBONUSSTAT:
+		case OC_COMBATBONUSPERCENT:
 			SetDefNum(s.GetKey(),s.GetArgVal(), false);
 			break;
 			

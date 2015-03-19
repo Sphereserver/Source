@@ -110,7 +110,7 @@ void CClient::Event_Item_Dye( CGrayUID uid, HUE_TYPE wHue ) // Rehue an item
 
 	if ( !m_pChar->CanTouch(pObj) )
 	{
-		SysMessage("You can't reach it");
+		SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_DYE_REACH));
 		return;
 	}
 	if ( GetTargMode() != CLIMODE_DYE )
@@ -1009,7 +1009,7 @@ bool CClient::Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode)
 	}
 
 	if ( !m_bAllowCommand && !m_bAllowSay )
-		SysMessage("You can't use this command.");
+		SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_ACC_PRIV));
 
 	if ( m_bAllowCommand )
 	{
@@ -1070,7 +1070,7 @@ void CClient::Event_VendorBuy_Cheater( int iCode )
 	g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%lx:Cheater '%s' is submitting illegal buy packet (%s)\n", GetSocketID(),
 		GetAccount()->GetName(),
 		sm_BuyPacketCheats[iCode]);
-	SysMessage("You cannot buy that.");
+	SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTBUY));
 }
 
 void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t itemCount)
@@ -1314,7 +1314,7 @@ void CClient::Event_VendorSell_Cheater( int iCode )
 	g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%lx:Cheater '%s' is submitting illegal sell packet (%s)\n", GetSocketID(),
 		GetAccount()->GetName(),
 		sm_SellPacketCheats[iCode]);
-	SysMessage("You cannot sell that.");
+	SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTSELL));
 }
 
 void CClient::Event_VendorSell(CChar* pVendor, const VendorItem* items, size_t itemCount)
@@ -1639,7 +1639,7 @@ void CClient::Event_PromptResp( LPCTSTR pszText, size_t len, DWORD context1, DWO
 
 		default:
 			// DEBUG_ERR(( "%x:Unrequested Prompt mode %d\n", m_Socket.GetSocket(), PrvTargMode ));
-			SysMessage( "Unexpected prompt info" );
+			SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_PROMPT_UNEXPECTED) );
 			return;
 	}
 

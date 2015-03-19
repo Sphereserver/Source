@@ -2659,9 +2659,28 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 		else
 		{
 			// Sphere damage bonus (custom)
-			int iBonus = Stat_GetAdjusted(STAT_STR) / 10;
+			int iBonus = 0;	
+			
+			// This properties allows backwards compat with bows using dex instead of str but with the plus that it can give int to staffs or whatever ppl may want and any amount of % bonus.
+			//The reason to use it instead of modifying @Hit trigger is to reflect damage in paperdoll
+
+			CObjBase * pObj = pWeapon ? pWeapon->GetUID().ObjFind() : this->GetUID().ObjFind();	// Do I have a weapon or should I use my properties?
+			STAT_TYPE statBonus = static_cast<STAT_TYPE>(pObj->GetDefNum("COMBATBONUSSTAT"));
+			if (!statBonus)
+				iBonus = Stat_GetAdjusted(STAT_STR) / 10;	// default damage
+
+			else if (statBonus >= STAT_STR && statBonus <= STAT_DEX)
+			{
+				int percentBonus = static_cast<int>(pObj->GetDefNum("COMBATBONUSPERCENT"));
+				iBonus = IMULDIV(Stat_GetAdjusted(statBonus), percentBonus != 0 ? percentBonus : 1, 100);
+			}
+
 			iDmgMin += iBonus;
 			iDmgMax += iBonus;
+			if (iDmgMin < 0)
+				iDmgMin = 0;
+			if (iDmgMax < 1)
+				iDmgMax = 1;
 		}
 		iDmgMin += iDmgMin * iDmgBonus / 100;
 		iDmgMax += iDmgMax * iDmgBonus / 100;
