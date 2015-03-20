@@ -474,7 +474,7 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 			}
 			else
 			{
-				m_defense = CalcArmorDefense();
+				m_defense = static_cast<WORD>(CalcArmorDefense());
 			}
 		}
 	}
@@ -501,7 +501,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 
 	SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pSpell->m_itSpell.m_spell));
 
-	short iStatEffect = g_Cfg.GetSpellEffect( spell, pSpell->m_itSpell.m_spelllevel );
+	short iStatEffect = static_cast<short>(g_Cfg.GetSpellEffect(spell, pSpell->m_itSpell.m_spelllevel));
 
 	switch ( spell )
 	{
@@ -637,7 +637,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			if (IsClient()) {
 				GetClient()->removeBuff(BI_ARCHPROTECTION);
 			}
-			m_defense = CalcArmorDefense();
+			m_defense = static_cast<WORD>(CalcArmorDefense());
 			break;
 		case SPELL_Protection:
 			if (IsClient()) {
@@ -645,7 +645,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			}
 		case SPELL_Steelskin:		// 114 // turns your skin into steel, giving a boost to your AR.
 		case SPELL_Stoneskin:		// 115 // turns your skin into stone, giving a boost to your AR.
-			m_defense = CalcArmorDefense();
+			m_defense = static_cast<WORD>(CalcArmorDefense());
 			break;
 		case SPELL_Incognito:
 			StatFlag_Clear( STATF_Incognito );
@@ -752,7 +752,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 	if ( !pSpellDef || !spell )
 		return;
 
-	short iStatEffect = g_Cfg.GetSpellEffect( spell, pSpell->m_itSpell.m_spelllevel );
+	short iStatEffect = static_cast<short>(g_Cfg.GetSpellEffect(spell, pSpell->m_itSpell.m_spelllevel));
 
 	//Buffs related variables:
 	int iBuffPercent;
@@ -964,7 +964,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				GetClient()->removeBuff(BI_PROTECTION);
 				GetClient()->addBuff(BI_PROTECTION, 1075814, 1070722, static_cast<WORD>(pSpell->GetTimerAdjusted()) );
 			}
-			m_defense = CalcArmorDefense();
+			m_defense = static_cast<WORD>(CalcArmorDefense());
 			break;
 		case SPELL_Arch_Prot:
 			if ( IsSetOF(OF_Buffs) && IsClient() )
@@ -975,7 +975,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 		case SPELL_Steelskin:		// 114 // turns your skin into steel, giving a boost to your AR.
 		case SPELL_Stoneskin:		// 115 // turns your skin into stone, giving a boost to your AR.
 
-			m_defense = CalcArmorDefense();
+			m_defense = static_cast<WORD>(CalcArmorDefense());
 			break;
 		case SPELL_Invis:
 			StatFlag_Set( STATF_Invisible );
@@ -1202,8 +1202,8 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 		pSpell->SetAttr(ATTR_MAGIC);
 	}
 	pSpell->SetType(IT_SPELL);
-	pSpell->m_itSpell.m_spell = spell;
-	pSpell->m_itSpell.m_spelllevel = iSkillLevel;	// 0 - 1000
+	pSpell->m_itSpell.m_spell = static_cast<WORD>(spell);
+	pSpell->m_itSpell.m_spelllevel = static_cast<WORD>(iSkillLevel);	// 0 - 1000
 	pSpell->m_itSpell.m_spellcharges = 1;
 
 	if ( iDuration <= 0 )	// use default script duration.
@@ -1372,13 +1372,13 @@ void CChar::Spell_Field( CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, 
 				CPointMap ptg = pntTarg;
 				if ( dx > dy )
 				{
-					ptg.m_y += ix;
-					ptg.m_x += iy;
+					ptg.m_y += static_cast<short>(ix);
+					ptg.m_x += static_cast<short>(iy);
 				}
 				else
 				{
-					ptg.m_x += ix;
-					ptg.m_y += iy;
+					ptg.m_x += static_cast<short>(ix);
+					ptg.m_y += static_cast<short>(iy);
 				}
 
 				DWORD wBlockFlags = 0;
@@ -1407,12 +1407,12 @@ void CChar::Spell_Field( CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, 
 			// Where is this ?
 			CPointMap ptg = pntTarg;
 			if ( dx > dy ) {
-				ptg.m_y += ix;
-				ptg.m_x += iy;
+				ptg.m_y += static_cast<short>(ix);
+				ptg.m_x += static_cast<short>(iy);
 			}
 			else {
-				ptg.m_x += ix;
-				ptg.m_y += iy;
+				ptg.m_x += static_cast<short>(ix);
+				ptg.m_y += static_cast<short>(iy);
 			}
 
 			// Check for direct cast on a creature.
@@ -1459,8 +1459,8 @@ void CChar::Spell_Field( CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, 
 				ASSERT(pSpell);
 				pSpell->SetType(IT_SPELL);
 				pSpell->SetAttr(ATTR_MAGIC);
-				pSpell->m_itSpell.m_spell = m_atMagery.m_Spell;
-				pSpell->m_itSpell.m_spelllevel = iSkillLevel;
+				pSpell->m_itSpell.m_spell = static_cast<WORD>(m_atMagery.m_Spell);
+				pSpell->m_itSpell.m_spelllevel = static_cast<WORD>(iSkillLevel);
 				pSpell->m_itSpell.m_spellcharges = 1;
 				pSpell->m_uidLink = GetUID();	// Link it back to you
 
@@ -2476,7 +2476,7 @@ int CChar::Spell_CastStart()
 		}
 	}
 
-	int iWaitTime = IsPriv(PRIV_GM) ? 1 : pSpellDef->m_CastTime.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(iSkill)));
+	INT64 iWaitTime = IsPriv(PRIV_GM) ? 1 : pSpellDef->m_CastTime.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(iSkill)));
 	iWaitTime -= GetDefNum("FASTERCASTING", true, true) * 2;	//correct value is 0.25, but sphere can handle only 0.2
 	if ( iWaitTime < 1 )
 		iWaitTime = 1;
@@ -2975,8 +2975,8 @@ reflectit:
 							iChange = SPELL_MAX_POLY_STAT;
 						if (iChange + Stat_GetBase(STAT_STR) < 0)
 							iChange = -Stat_GetBase(STAT_STR);
-						Stat_AddMod(STAT_STR, iChange);
-						pSpell->m_itSpell.m_PolyStr = iChange;
+						Stat_AddMod(STAT_STR, static_cast<short>(iChange));
+						pSpell->m_itSpell.m_PolyStr = static_cast<short>(iChange);
 					}
 					else
 					{

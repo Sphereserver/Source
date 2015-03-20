@@ -875,7 +875,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 					pChar = GetUID().CharFind();
 
 					if ( pChar )
-						sVal.FormatVal( bCanSee ? pChar->CanSee(pObj) : pChar->CanSeeLOS(pt, NULL, pChar->GetVisualRange(), flags) );
+						sVal.FormatVal(bCanSee ? pChar->CanSee(pObj) : pChar->CanSeeLOS(pt, NULL, pChar->GetVisualRange(), static_cast<WORD>(flags)));
 					else
 						sVal.FormatVal(0);
 
@@ -883,7 +883,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 				else if ( !pChar )		// no char -> no see
 					sVal.FormatVal(0);
 				else					// standart way src TO current object
-					sVal.FormatVal( bCanSee ? pChar->CanSee(this) : pChar->CanSeeLOS(this, flags) );
+					sVal.FormatVal(bCanSee ? pChar->CanSee(this) : pChar->CanSeeLOS(this, static_cast<WORD>(flags)));
 			}
 			break;
 		case OC_COLOR:
@@ -1669,7 +1669,7 @@ bool CObjBase::r_LoadVal( CScript & s )
 				CChar * pChar = dynamic_cast <CChar*>(GetTopLevelObj());
 				if ( pChar && pChar->IsChar() )
 				{
-					pChar->m_defense = pChar->CalcArmorDefense();
+					pChar->m_defense = static_cast<WORD>(pChar->CalcArmorDefense());
 					pChar->UpdateStatsFlag();
 				}
 			}

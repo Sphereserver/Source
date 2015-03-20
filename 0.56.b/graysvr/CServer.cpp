@@ -1392,7 +1392,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 					break;
 				// IMPFLAGS_ITEMS
 				if ( ! g_World.Export( Arg_ppCmd[0], pSrc->GetChar(),
-					(Arg_Qty >= 2)? ATOI(Arg_ppCmd[1]) : IMPFLAGS_ITEMS,
+					(Arg_Qty >= 2) ? static_cast<WORD>(ATOI(Arg_ppCmd[1])) : IMPFLAGS_ITEMS,
 					(Arg_Qty >= 3)? ATOI(Arg_ppCmd[2]) : SHRT_MAX ))
 				{
 					pSrc->SysMessage( "Export failed\n" );
@@ -1441,7 +1441,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 				}
 				// IMPFLAGS_ITEMS
 				if ( ! g_World.Import( Arg_ppCmd[0], pSrc->GetChar(),
-					(Arg_Qty>=2)?ATOI(Arg_ppCmd[1]) : IMPFLAGS_BOTH,
+					(Arg_Qty >= 2) ? static_cast<WORD>(ATOI(Arg_ppCmd[1])) : IMPFLAGS_BOTH,
 					(Arg_Qty>=3)?ATOI(Arg_ppCmd[2]) : SHRT_MAX ))
 					pSrc->SysMessage( "Import failed\n" );
 			}
@@ -1653,7 +1653,7 @@ bool CServer::CommandLine( int argc, TCHAR * argv[] )
 				continue;
 #endif
 			case 'P':
-				m_ip.SetPort(ATOI(pArg+1));
+				m_ip.SetPort(static_cast<WORD>(ATOI(pArg + 1)));
 				continue;
 			case 'N':
 				// Set the system name.

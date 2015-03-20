@@ -1068,10 +1068,7 @@ public:
 	virtual bool SetName( LPCTSTR pszName );
 
 	virtual int GetWeight(WORD amount = 0) const
-	{
-		const CItemBase * pItemDef = Item_GetDef();
-		ASSERT(pItemDef);
-		
+	{		
 		int iWeight = m_weight * (amount ? amount : GetAmount());
 		CVarDefCont * pReduction = GetDefKey("WEIGHTREDUCTION", true);
 		if (pReduction)
@@ -1613,6 +1610,7 @@ public:
 
 	int GetWeight(WORD amount = 0) const
 	{
+		UNREFERENCED_PARAMETER(amount);
 		// GetAmount is messed up.
 		// true weight == container item + contents.
 		return( 1 + CContainer::GetTotalWeight());
@@ -3295,6 +3293,7 @@ public:
 	void OnWeightChange( int iChange );
 	int GetWeight(WORD amount = 0) const
 	{
+		UNREFERENCED_PARAMETER(amount);
 		return( CContainer::GetTotalWeight());
 	}
 	int GetWeightLoadPercent( int iWeight ) const;

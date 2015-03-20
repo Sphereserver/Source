@@ -715,7 +715,7 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 		if ( pMemory )
 		{
 			pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_SPEAK_TRAIN;
-			pMemory->m_itEqMemory.m_Skill = i;
+			pMemory->m_itEqMemory.m_Skill = static_cast<WORD>(i);
 		}
 		return true;
 	}
@@ -1222,7 +1222,7 @@ bool CChar::NPC_LookAtCharMonster( CChar * pChar )
 
 	if ( Fight_Attack( pChar ) == false )
 		return false;
-	m_pNPC->m_Act_Motivation = iActMotivation;
+	m_pNPC->m_Act_Motivation = static_cast<unsigned char>(iActMotivation);
 	return true;
 }
 
@@ -2702,7 +2702,7 @@ bool CChar::NPC_Act_Food()
 	if ( iFoodLevel > 40 )
 		return false;							// and it is at least 60% hungry
 
-	m_pNPC->m_Act_Motivation = ( 50 - ( iFoodLevel/2 ));
+	m_pNPC->m_Act_Motivation = static_cast<unsigned char>((50 - (iFoodLevel / 2)));
 
 	int		iEatAmount = 1;
 	int		iSearchDistance = 2;

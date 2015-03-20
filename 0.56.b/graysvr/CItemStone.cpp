@@ -332,7 +332,7 @@ CStoneMember::CStoneMember( CItemStone * pStone, CGrayUID uid, STONEPRIV_TYPE iT
 		CChar * pChar = uid.CharFind();
 		if ( pChar != NULL )
 		{
-			pChar->Memory_AddObjTypes( pStone, pStone->GetMemoryType());
+			pChar->Memory_AddObjTypes(pStone, static_cast<WORD>(pStone->GetMemoryType()));
 			if ( pStone->IsTopLevel())
 			{
 				pChar->m_ptHome = pStone->GetTopPoint();	// Our new home.
@@ -373,7 +373,7 @@ CStoneMember::~CStoneMember()
 		CChar * pChar = GetLinkUID().CharFind();
 		if ( pChar )
 		{
-			pChar->Memory_ClearTypes( pStone->GetMemoryType()); 	// Make them forget they were ever in this guild
+			pChar->Memory_ClearTypes(static_cast<WORD>(pStone->GetMemoryType())); 	// Make them forget they were ever in this guild
 		}
 	}
 }

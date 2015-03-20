@@ -241,7 +241,7 @@ void CItem::Spawn_GenerateChar( CResourceDef * pDef )
 	if ( iDistMax )
 	{
 		pChar->m_ptHome = GetTopPoint();
-		pChar->m_pNPC->m_Home_Dist_Wander = iDistMax;
+		pChar->m_pNPC->m_Home_Dist_Wander = static_cast<WORD>(iDistMax);
 	}
 	pChar->Update();
 }

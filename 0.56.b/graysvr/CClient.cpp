@@ -1011,7 +1011,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				for (size_t i = 0; i < COUNTOF(Args) && Args[i] != NULL; ++i)
 					ArgsCount++;
 
-				addBuff( iArgs[0], iArgs[1], iArgs[2], iArgs[3], const_cast<LPCTSTR *>(reinterpret_cast<LPTSTR *>(Args)), ArgsCount);
+				addBuff(static_cast<WORD>(iArgs[0]), iArgs[1], iArgs[2], static_cast<short>(iArgs[3]), const_cast<LPCTSTR *>(reinterpret_cast<LPTSTR *>(Args)), ArgsCount);
 			}
 			break;
 		case CV_REMOVEBUFF:
@@ -1092,7 +1092,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				}
 
 				if (m_pPopupPacket != NULL)
-					m_pPopupPacket->addOption(entrytag, static_cast<WORD>(textid), Exp_GetVal(ppLocArgs[2]), Exp_GetVal(ppLocArgs[3]));
+					m_pPopupPacket->addOption(static_cast<WORD>(entrytag), static_cast<WORD>(textid), static_cast<WORD>(Exp_GetVal(ppLocArgs[2])), static_cast<WORD>(Exp_GetVal(ppLocArgs[3])));
 				else
 					DEBUG_ERR(("Bad AddContextEntry usage: Not used under a @ContextMenuRequest/@itemContextMenuRequest trigger!\n"));
 			}

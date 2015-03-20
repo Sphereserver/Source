@@ -751,7 +751,7 @@ bool CWebPageDef::ServPagePost( CClient * pClient, LPCTSTR pszURLArgs, TCHAR * p
 				{
 					TCHAR *pszData = Str_GetTemp();
 					HtmlDeCode( pszData, pszNum );
-					resp.AddText( iNum, pszData );
+					resp.AddText(static_cast<WORD>(iNum), pszData);
 				}
 				break;
 		}

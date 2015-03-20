@@ -147,9 +147,9 @@ bool CItemMulti::Multi_CreateComponent( ITEMID_TYPE id, int dx, int dy, int dz, 
 	ASSERT(pItem);
 
 	CPointMap pt = GetTopPoint();
-	pt.m_x += dx;
-	pt.m_y += dy;
-	pt.m_z += dz;
+	pt.m_x += static_cast<signed short>(dx);
+	pt.m_y += static_cast<signed short>(dy);
+	pt.m_z += static_cast<signed char>(dz);
 
 	bool fNeedKey = false;
 

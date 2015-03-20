@@ -546,7 +546,7 @@ BYTE CSector::GetLightCalc( bool fQuickSet ) const
 		return m_Env.m_Light;
 
 	if ( IsInDungeon() )
-		return g_Cfg.m_iLightDungeon;
+		return static_cast<unsigned char>(g_Cfg.m_iLightDungeon);
 
 	int localtime = GetLocalTime();
 
@@ -567,7 +567,7 @@ BYTE CSector::GetLightCalc( bool fQuickSet ) const
 		if ( iTargLight < LIGHT_BRIGHT ) iTargLight = LIGHT_BRIGHT;
 		if ( iTargLight > LIGHT_DARK ) iTargLight = LIGHT_DARK;
 
-		return iTargLight;
+		return static_cast<unsigned char>(iTargLight);
 	}
 
 	int hour = ( localtime / ( 60)) % 24;
@@ -632,7 +632,7 @@ static const BYTE sm_FeluccaPhaseBrightness[] =
 	if ( iTargLight > LIGHT_DARK ) iTargLight = LIGHT_DARK;
 
 	if ( fQuickSet || m_Env.m_Light == iTargLight )		// Initializing the sector
-		return iTargLight;
+		return static_cast<unsigned char>(iTargLight);
 
 	// Gradual transition to global light level.
 	if ( m_Env.m_Light > iTargLight )
@@ -697,7 +697,7 @@ void CSector::SetDefaultWeatherChance()
 {
 	ADDTOCALLSTACK("CSector::SetDefaultWeatherChance");
 	CPointMap pt = GetBasePoint();
-	int iPercent = IMULDIV( pt.m_y, 100, g_MapList.GetY(pt.m_map) );	// 100 = south
+	BYTE iPercent = IMULDIV( pt.m_y, 100, g_MapList.GetY(pt.m_map) );	// 100 = south
 	if ( iPercent < 50 )
 	{
 		// Anywhere north of the Britain Moongate is a good candidate for snow
@@ -794,11 +794,11 @@ void CSector::SetWeatherChance( bool fRain, int iChance )
 	}
 	else if ( fRain )
 	{
-		m_RainChance = iChance | LIGHT_OVERRIDE;
+		m_RainChance = static_cast<unsigned char>(iChance | LIGHT_OVERRIDE);
 	}
 	else
 	{
-		m_ColdChance = iChance | LIGHT_OVERRIDE;
+		m_ColdChance = static_cast<unsigned char>(iChance | LIGHT_OVERRIDE);
 	}
 
 	// Recalc the weather immediatly.

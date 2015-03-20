@@ -1602,7 +1602,7 @@ bool CItemBase::r_LoadVal( CScript &s )
 			break;
 		
 		case IBC_RESDISPDNID:
-			SetResDispDnId(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr()));
+			SetResDispDnId(static_cast<WORD>(g_Cfg.ResourceGetIndexType(RES_ITEMDEF, s.GetArgStr())));
 			break;
 
 		case IBC_SPEED:

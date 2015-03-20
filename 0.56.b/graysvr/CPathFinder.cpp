@@ -83,8 +83,8 @@ CPathFinder::CPathFinder(CChar *pChar, CPointMap ptTarget)
 	pt = m_pChar->GetTopPoint();
 	m_RealX = pt.m_x - (PATH_SIZE / 2);
 	m_RealY = pt.m_y - (PATH_SIZE / 2);
-	m_Target.m_x -= m_RealX;
-	m_Target.m_y -= m_RealY;
+	m_Target.m_x -= static_cast<short>(m_RealX);
+	m_Target.m_y -= static_cast<short>(m_RealY);
 
 	EXC_SET("FillMap");
 
@@ -143,7 +143,7 @@ int CPathFinder::FindPath() //A* algorithm
 			while ( PathRef.m_Point->GetParent() ) //Rebuild path + save
 			{
 				PathRef.m_Point = const_cast<CPathFinderPoint*>(PathRef.m_Point->GetParent());
-				m_LastPath.push_front( CPointMap(PathRef.m_Point->m_x+m_RealX,PathRef.m_Point->m_y+m_RealY,0,PathRef.m_Point->m_map) );
+				m_LastPath.push_front(CPointMap(static_cast<WORD>(PathRef.m_Point->m_x + m_RealX), static_cast<WORD>(PathRef.m_Point->m_y + m_RealY), 0, PathRef.m_Point->m_map));
 			}
 			Clear();
 			return PATH_FOUND;
@@ -232,14 +232,14 @@ void CPathFinder::FillMap()
 			}
 			else
 			{
-				pt.m_x = x + m_RealX;
-				pt.m_y = y + m_RealY;
+				pt.m_x = static_cast<short>(x + static_cast<short>(m_RealX);
+				pt.m_y = static_cast<short>(y + m_RealY);
 					pArea = m_pChar->CanMoveWalkTo(pt, true, true, DIR_QTY, true);
 
 				m_Points[x][y].m_Walkable = pArea ? PATH_WALKABLE : PATH_UNWALKABLE;
 			}
 
-			m_Points[x][y].Set(x,y,pt.m_z,pt.m_map);
+			m_Points[x][y].Set(static_cast<WORD>(x), static_cast<WORD>(y), pt.m_z, pt.m_map);
 		}
 	}
 

@@ -518,7 +518,7 @@ bool CDialogDef::GumpSetup( int iPage, CClient * pClient, CObjBase * pObjSrc, LP
 	m_pObj			= pObjSrc;
 	m_iOriginX		= 0;
 	m_iOriginY		= 0;
-	m_iPage			= iPage;
+	m_iPage = static_cast<WORD>(iPage);
 	m_bNoDispose	= false;
 
 	CScriptTriggerArgs	Args(iPage, 0, pObjSrc);
@@ -854,7 +854,7 @@ bool CMenuItem::ParseLine( TCHAR * pszArgs, CScriptObj * pObjBase, CTextConsole 
 		CItemBase * pItemBase = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, pszArgStart )));
 		if ( pItemBase != NULL )
 		{
-			m_id = pItemBase->GetDispID();
+			m_id = static_cast<WORD>(pItemBase->GetDispID());
 			pObjBase = pItemBase;
 		}
 		else

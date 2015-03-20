@@ -231,7 +231,7 @@ void CItemMultiCustom::SwitchToLevel( CClient * pClientSrc, int iLevel )
 	if ( pChar != NULL )
 	{
 		CPointMap pt(GetTopPoint());
-		pt.m_z += GetPlaneZ(iLevel);
+		pt.m_z += static_cast<unsigned char>(GetPlaneZ(iLevel));
 
 		CPointMap ptOld = pChar->GetTopPoint();
 		pChar->MoveToChar(pt);
@@ -447,12 +447,12 @@ void CItemMultiCustom::AddItem(CClient * pClientSrc, ITEMID_TYPE id, short x, sh
 	}
 
 	Component * pComponent = new Component;
-	pComponent->m_item.m_wTileID = id;
+	pComponent->m_item.m_wTileID = static_cast<WORD>(id);
 	pComponent->m_item.m_dx = x;
 	pComponent->m_item.m_dy = y;
 	pComponent->m_item.m_dz = z;
 	pComponent->m_item.m_visible = !bFixture;
-	pComponent->m_isStair = iStairID;
+	pComponent->m_isStair = static_cast<short>(iStairID);
 	pComponent->m_isFloor = bFloor;
 
 	m_designWorking.m_vectorComponents.push_back(pComponent);
@@ -656,7 +656,7 @@ bool CItemMultiCustom::RemoveStairs(Component * pStairComponent)
 			m_designWorking.m_iRevision++;
 
 			if (bReplaceDirt)
-				AddItem(NULL, ITEMID_DIRT_TILE, x, y, z);
+				AddItem(NULL, ITEMID_DIRT_TILE, static_cast<short>(x), static_cast<short>(y), z);
 		}
 		else
 		{
@@ -800,7 +800,7 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 					continue;
 				}
 
-				wPlaneBuffer[index] = pComp->m_item.GetDispID();
+				wPlaneBuffer[index] = static_cast<WORD>(pComp->m_item.GetDispID());
 				bFoundItems = true;
 				iItemCount++;
 				iMaxIndex = maximum(iMaxIndex, index);
@@ -978,7 +978,7 @@ size_t CItemMultiCustom::GetComponentsAt(short x, short y, signed char z, Compon
 		if ( pComponent->m_item.m_dx != x || pComponent->m_item.m_dy != y )
 			continue;
 
-		if ( z != -128 && GetPlane(pComponent->m_item.m_dz) != GetPlane(z) )
+		if ( z != -128 && GetPlane(static_cast<unsigned char>(pComponent->m_item.m_dz)) != GetPlane(z) )
 			continue;
 
 		pComponents[count++] = pComponent;
@@ -998,8 +998,8 @@ const CPointMap CItemMultiCustom::GetComponentPoint(int dx, int dy, int dz) cons
 	ADDTOCALLSTACK("CItemMultiCustom::GetComponentPoint");
 	// return the real world location from the given offset
 	CPointMap ptBase(GetTopPoint());
-	ptBase.m_x += dx;
-	ptBase.m_y += dy;
+	ptBase.m_x += static_cast<signed short>(dx);
+	ptBase.m_y += static_cast<signed short>(dy);
 	ptBase.m_z += dz;
 
 	return ptBase;
@@ -1175,9 +1175,9 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 
 			AddItem(NULL,
 					static_cast<ITEMID_TYPE>(Exp_GetVal(ppArgs[0])),
-					Exp_GetVal(ppArgs[1]),
-					Exp_GetVal(ppArgs[2]),
-					Exp_GetVal(ppArgs[3]));
+					static_cast<short>(Exp_GetVal(ppArgs[1])),
+					static_cast<short>(Exp_GetVal(ppArgs[2])),
+					static_cast<signed char>(Exp_GetVal(ppArgs[3])));
 		} break;
 
 		case IMCV_ADDMULTI:
@@ -1195,9 +1195,9 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 			// design mode, the pieces need to be added individually
 			AddStairs(NULL,
 					id,
-					Exp_GetVal(ppArgs[1]),
-					Exp_GetVal(ppArgs[2]),
-					Exp_GetVal(ppArgs[3]),
+					static_cast<short>(Exp_GetVal(ppArgs[1])),
+					static_cast<short>(Exp_GetVal(ppArgs[2])),
+					static_cast<signed char>(Exp_GetVal(ppArgs[3])),
 					(sm_mapValidItems.find(id) == sm_mapValidItems.end()? 0 : -1));
 		} break;
 
@@ -1237,8 +1237,8 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 
 			RemoveItem(NULL,
 					static_cast<ITEMID_TYPE>(Exp_GetVal(ppArgs[0])),
-					Exp_GetVal(ppArgs[1]),
-					Exp_GetVal(ppArgs[2]),
+					static_cast<short>(Exp_GetVal(ppArgs[1])),
+					static_cast<short>(Exp_GetVal(ppArgs[2])),
 					Exp_GetVal(ppArgs[3]));
 		} break;
 
@@ -1421,8 +1421,8 @@ bool CItemMultiCustom::r_LoadVal( CScript & s  )
 
 			AddItem(NULL,
 					static_cast<ITEMID_TYPE>(ATOI(ppArgs[0])),
-					ATOI(ppArgs[1]),
-					ATOI(ppArgs[2]),
+					static_cast<short>(ATOI(ppArgs[1])),
+					static_cast<short>(ATOI(ppArgs[2])),
 					ATOI(ppArgs[3]),
 					ATOI(ppArgs[4]));
 			return true;

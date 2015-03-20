@@ -976,7 +976,7 @@ bool CChar::Use_Repair( CItem * pItemArmor )
 	bool fSuccess = Skill_UseQuick(static_cast<SKILL_TYPE>(RetMainSkill.GetResIndex()), iDifficulty );
 	if ( fSuccess )
 	{
-		pItemArmor->m_itArmor.m_Hits_Cur = iTotalHits;
+		pItemArmor->m_itArmor.m_Hits_Cur = static_cast<WORD>(iTotalHits);
 		pszText = g_Cfg.GetDefaultMsg( DEFMSG_REPAIR_1 );
 	}
 	else
@@ -1201,7 +1201,7 @@ void CChar::Use_Drink( CItem * pItem )
 			pDrunkLayer->m_itSpell.m_spellcharges += 10;
 			if ( pDrunkLayer->m_itSpell.m_spelllevel < 500 )
 			{
-				pDrunkLayer->m_itSpell.m_spelllevel += iStrength;
+				pDrunkLayer->m_itSpell.m_spelllevel += static_cast<WORD>(iStrength);
 			}
 			else
 			{

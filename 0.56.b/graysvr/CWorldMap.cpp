@@ -397,7 +397,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	{
 		for ( int y = rect.m_top; y < rect.m_bottom; ++y, pMeter = NULL )
 		{
-			ptTest = CPointMap( x, y, pt.m_z, pt.m_map);
+			ptTest = CPointMap(static_cast<WORD>(x), static_cast<WORD>(y), pt.m_z, pt.m_map);
 			pMeter = GetMapMeter(ptTest);
 			if ( !pMeter )
 				continue;
@@ -520,7 +520,7 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 	{
 		for ( int y = rect.m_top; y < rect.m_bottom; y++, pMeter = NULL )
 		{
-			CPointMap ptTest( x, y, pt.m_z, pt.m_map);
+			CPointMap ptTest(static_cast<WORD>(x), static_cast<WORD>(y), pt.m_z, pt.m_map);
 			pMeter = GetMapMeter(ptTest);
 
 			if ( !pMeter )
@@ -562,7 +562,7 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 	{
 		for ( int y = rect.m_top; y < rect.m_bottom; y += UO_BLOCK_SIZE, pMapBlock = NULL )
 		{
-			CPointMap ptTest( x, y, pt.m_z, pt.m_map);
+			CPointMap ptTest(static_cast<WORD>(x), static_cast<WORD>(y), pt.m_z, pt.m_map);
 			pMapBlock = GetMapBlock( ptTest );
 
 			if ( !pMapBlock )
@@ -619,7 +619,7 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 		{
 			for (int y = rect.m_top; y < rect.m_bottom; y++)
 			{
-				CPointMap ptTest(x, y, pt.m_z, pt.m_map);
+				CPointMap ptTest(static_cast<WORD>(x), static_cast<WORD>(y), pt.m_z, pt.m_map);
 
 				CRegionLinks rlinks;
 				size_t iRegionQty = ptTest.GetRegions(REGION_TYPE_MULTI, rlinks);

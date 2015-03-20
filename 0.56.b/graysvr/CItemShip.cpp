@@ -44,7 +44,7 @@ bool CItem::Ship_Plank( bool fOpen )
 	if ( IsType(IT_SHIP_PLANK) && (oldType == IT_SHIP_SIDE || oldType == IT_SHIP_SIDE_LOCKED) )
 	{
 		// Save the original Type of the plank if it used to be a ship side
-		m_itShipPlank.m_itSideType = oldType;
+		m_itShipPlank.m_itSideType = static_cast<WORD>(oldType);
 	}
 	else if ( oldType == IT_SHIP_PLANK )
 	{
@@ -89,8 +89,8 @@ bool CItemShip::Ship_SetMoveDir( DIR_TYPE dir )
 		}
 	}
 
-	m_itShip.m_DirMove = dir;
-	m_itShip.m_fSail = iSpeed;
+	m_itShip.m_DirMove = static_cast<unsigned char>(dir);
+	m_itShip.m_fSail = static_cast<unsigned char>(iSpeed);
 	GetTopSector()->SetSectorWakeStatus();	// may get here b4 my client does.
 	CItemMulti * pItemMulti = dynamic_cast<CItemMulti*>(this);
 	pItemMulti->m_SpeedMode = (iSpeed == 1 ? 3 : 4);
@@ -218,7 +218,7 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 		if ( tMe == NULL )
 			continue;
 
-		BYTE tViewDist = tMe->GetSight();
+		BYTE tViewDist = static_cast<unsigned char>(tMe->GetSight());
 		for ( size_t i = 0; i < iCount; i++ )
 		{
 			CObjBase * pObj = ppObjs[i];
@@ -348,10 +348,10 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 	// Check that we can fit into this space.
 	CPointMap ptTmp;
 	ptTmp.m_z = GetTopPoint().m_z;
-	ptTmp.m_map = rect.m_map;
-	for ( ptTmp.m_x = rect.m_left; ptTmp.m_x < rect.m_right; ptTmp.m_x++ )
+	ptTmp.m_map = static_cast<unsigned char>(rect.m_map);
+	for (ptTmp.m_x = static_cast<short>(rect.m_left); ptTmp.m_x < static_cast<short>(rect.m_right); ptTmp.m_x++)
 	{
-		for ( ptTmp.m_y = rect.m_top; ptTmp.m_y < rect.m_bottom; ptTmp.m_y++ )
+		for (ptTmp.m_y = static_cast<short>(rect.m_top); ptTmp.m_y < static_cast<short>(rect.m_bottom); ptTmp.m_y++)
 		{
 			if (m_pRegion->IsInside2d(ptTmp))
 				continue;
@@ -399,8 +399,8 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 				yd = -ydiff;
 				break;
 		}
-		pt.m_x = GetTopPoint().m_x + xd;
-		pt.m_y = GetTopPoint().m_y + yd;
+		pt.m_x = static_cast<short>(GetTopPoint().m_x + xd);
+		pt.m_y = static_cast<short>(GetTopPoint().m_y + yd);
 		if( pObj->IsItem() )
 		{
 			CItem * pItem = STATIC_CAST<CItem*>(pObj);
@@ -446,7 +446,7 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 		pObj->Update();
 	}
 
-	m_itShip.m_DirFace = dir;
+	m_itShip.m_DirFace = static_cast<unsigned char>(dir);
 	return true;
 }
 
@@ -513,7 +513,7 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 				ptTest.m_y = ptFore.m_y; // align y coordinate
 				for (int x = ptLeft.m_x; x <= ptRight.m_x; x++)
 				{
-					ptTest.m_x = x;
+					ptTest.m_x = static_cast<short>(x);
 					SPAWNSHIPTRACK(ptTest, 0x40)
 					if (Ship_CanMoveTo(ptTest) == false)
 					{
@@ -529,7 +529,7 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 				ptTest.m_y = ptFore.m_y;
 				for (int x = ptRight.m_x; x <= ptLeft.m_x; x++)
 				{
-					ptTest.m_x = x;
+					ptTest.m_x = static_cast<short>(x);
 					SPAWNSHIPTRACK(ptTest, 0x40)
 					if (Ship_CanMoveTo(ptTest) == false)
 					{
@@ -552,7 +552,7 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 				ptTest.m_x = ptFore.m_x; // align x coordinate
 				for (int y = ptLeft.m_y; y <= ptRight.m_y; y++)
 				{
-					ptTest.m_y = y;
+					ptTest.m_y = static_cast<short>(y);
 					SPAWNSHIPTRACK(ptTest, 0xe0)
 					if (Ship_CanMoveTo(ptTest) == false)
 					{
@@ -568,7 +568,7 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 				ptTest.m_x = ptFore.m_x;
 				for (int y = ptRight.m_y; y <= ptLeft.m_y; y++)
 				{
-					ptTest.m_y = y;
+					ptTest.m_y = static_cast<short>(y);
 					SPAWNSHIPTRACK(ptTest, 0xe0)
 					if (Ship_CanMoveTo(ptTest) == false)
 					{
@@ -811,7 +811,7 @@ bool CItemShip::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fr
 			// Does NOT protect against exploits !
 			if ( ! s.HasArgs())
 				return( false );
-			m_itShip.m_DirMove = GetDirStr( s.GetArgStr());
+			m_itShip.m_DirMove = static_cast<unsigned char>(GetDirStr(s.GetArgStr()));
 			CItemMulti * pItemMulti = dynamic_cast<CItemMulti*>(this);
 			return Ship_Move(static_cast<DIR_TYPE>(m_itShip.m_DirMove), pItemMulti->m_shipSpeed.tiles);
 		}
@@ -842,10 +842,10 @@ anchored:
 				break;
 			}
 			DIR_TYPE DirMove = static_cast<DIR_TYPE>(m_itShip.m_DirMove);
-			m_itShip.m_DirMove = GetDirTurn( DirFace, DirMoveChange );
+			m_itShip.m_DirMove = static_cast<unsigned char>(GetDirTurn(DirFace, DirMoveChange));
 			if (! Ship_Face(static_cast<DIR_TYPE>(m_itShip.m_DirMove)) )
 			{
-				m_itShip.m_DirMove = DirMove;
+				m_itShip.m_DirMove = static_cast<unsigned char>(DirMove);
 				return false;
 			}
 			break;

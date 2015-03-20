@@ -33,7 +33,7 @@ void CChar::Action_StartSpecial( CREID_TYPE id )
 				ASSERT(pItem);
 				pItem->SetType( IT_FIRE );
 				pItem->m_itSpell.m_spell = SPELL_Fire_Field;
-				pItem->m_itSpell.m_spelllevel = 100 + Calc_GetRandVal(500);
+				pItem->m_itSpell.m_spelllevel = static_cast<WORD>(100 + Calc_GetRandVal(500));
 				pItem->m_itSpell.m_spellcharges = 1;
 				pItem->m_uidLink = GetUID();	// Link it back to you
 				pItem->MoveToDecay( GetTopPoint(), 30*TICK_PER_SEC + Calc_GetRandVal(60*TICK_PER_SEC));
@@ -111,7 +111,7 @@ void CChar::Stat_SetVal( STAT_TYPE i, int iVal )
 	ADDTOCALLSTACK("CChar::Stat_SetVal");
 	if (i > STAT_BASE_QTY || i == STAT_FOOD) // Food must trigger Statchange. Redirect to Base value
 	{
-		Stat_SetBase(i, iVal);
+		Stat_SetBase(i, static_cast<short>(iVal));
 		return;
 	}
 	ASSERT(i >= 0 && i < STAT_QTY); // allow for food
@@ -231,14 +231,14 @@ short CChar::Stat_GetAdjusted( STAT_TYPE i ) const
 		if ( val < 0 )
 			val = 0;
 		else if ( val > g_Cfg.m_iMaxFame )
-			val = g_Cfg.m_iMaxFame;
+			val = static_cast<short>(g_Cfg.m_iMaxFame);
 	}
 	else if ( i == STAT_KARMA )
 	{
 		if ( val < g_Cfg.m_iMinKarma )
-			val = g_Cfg.m_iMinKarma;
+			val = static_cast<short>(g_Cfg.m_iMinKarma);
 		else if ( val > g_Cfg.m_iMaxKarma )
-			val = g_Cfg.m_iMaxKarma;
+			val = static_cast<short>(g_Cfg.m_iMaxKarma);
 	}
 	return val;
 }
@@ -319,10 +319,10 @@ void CChar::Stat_SetBase( STAT_TYPE i, short iVal )
 			}
 			break;
 		case STAT_KARMA:		// m_iMinKarma to m_iMaxKarma
-			iVal = maximum(g_Cfg.m_iMinKarma, minimum(g_Cfg.m_iMaxKarma, iVal));
+			iVal = static_cast<short>(maximum(g_Cfg.m_iMinKarma, minimum(g_Cfg.m_iMaxKarma, iVal)));
 			break;
 		case STAT_FAME:
-			iVal = maximum(0, minimum(g_Cfg.m_iMaxFame, iVal));
+			iVal = static_cast<short>(maximum(0, minimum(g_Cfg.m_iMaxFame, iVal)));
 			break;
 		case STAT_FOOD:
 			break;
@@ -366,7 +366,7 @@ short CChar::Stat_GetLimit( STAT_TYPE i ) const
 			if ( iStatLevel < iStatMax )
 				iStatMax = iStatLevel;
 		}
-		return( iStatMax );
+		return(static_cast<short>(iStatMax));
 	}
 	else
 	{
@@ -381,7 +381,7 @@ short CChar::Stat_GetLimit( STAT_TYPE i ) const
 		if ( (pTagStorage = GetKey(sStatName, true)) != NULL )
 			iStatMax = static_cast<int>(pTagStorage->GetValNum());
 
-		return iStatMax;
+		return static_cast<short>(iStatMax);
 	}
 }
 
@@ -776,7 +776,7 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 		bool decrease = Stat_Decrease((STAT_TYPE)i, skill);
 		if ( iRoll <= iChance && decrease )
 		{
-			Stat_SetBase(static_cast<STAT_TYPE>(i), iStatVal + 1);
+			Stat_SetBase(static_cast<STAT_TYPE>(i), static_cast<short>(iStatVal + 1));
 			break;
 		}
 	}
@@ -925,7 +925,7 @@ bool CChar::Stat_Decrease(STAT_TYPE stat, SKILL_TYPE skill)
 			int iStatVal = Stat_GetBase(static_cast<STAT_TYPE>(imin));
 			if (iStatVal > 10)
 			{
-				Stat_SetBase(static_cast<STAT_TYPE>(imin), iStatVal - 1);
+				Stat_SetBase(static_cast<STAT_TYPE>(imin), static_cast<short>(iStatVal - 1));
 				return true;
 			}
 		}
@@ -1109,7 +1109,7 @@ bool CChar::Skill_MakeItem_Success()
 
 	TCHAR *pszMsg = Str_GetTemp();
 
-	int iSkillLevel = Skill_GetBase( Skill_GetActive());	// primary skill value.
+	WORD iSkillLevel = Skill_GetBase( Skill_GetActive());	// primary skill value.
 	if ( m_atCreate.m_Amount != 1 )
 	{
 		if ( pItem->IsType( IT_SCROLL ))
@@ -1232,7 +1232,7 @@ bool CChar::Skill_MakeItem_Success()
 		}
 
 		if (pItemVend != NULL) // Check that the item is vendable before setting quality
-			pItemVend->SetQuality(quality);
+			pItemVend->SetQuality(static_cast<WORD>(quality));
 
 		if (( iSkillLevel > 999 && ( quality > 175 )) && ( !IsSetOF(OF_NoItemNaming)))
 		{
@@ -1399,14 +1399,14 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 
 		m_Act_Targ = uidTarg;	// targetted item to start the make process.
 		m_atCreate.m_ItemID = id;
-		m_atCreate.m_Amount = iReplicationQty;
+		m_atCreate.m_Amount = static_cast<WORD>(iReplicationQty);
 
 		return Skill_Start(static_cast<SKILL_TYPE>(RetMainSkill.GetResIndex()), static_cast<int>(RetMainSkill.GetResQty() / 10));
 	}
 
 	if ( stage == SKTRIG_SUCCESS )
 	{
-		m_atCreate.m_Amount = iReplicationQty; // how much resources we really consumed
+		m_atCreate.m_Amount = static_cast<WORD>(iReplicationQty); // how much resources we really consumed
 		return( Skill_MakeItem_Success() );
 	}
 
@@ -2693,7 +2693,7 @@ int CChar::Skill_Taming( SKTRIG_TYPE stage )
 			iDifficulty += 50;
 		}
 
-		m_atTaming.m_Stroke_Count = Calc_GetRandVal( 4 ) + 2;
+		m_atTaming.m_Stroke_Count = static_cast<WORD>(Calc_GetRandVal(4) + 2);
 		return( iDifficulty );
 	}
 

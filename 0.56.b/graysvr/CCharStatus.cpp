@@ -1382,11 +1382,11 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 			{
 				CPointMap ptEnd = path.at(path.size() - 1);
 				if ( ptEnd.m_x != dx || ptEnd.m_y != dy || ptEnd.m_z != dz )
-					path.push_back(CPointMap(dx,dy,dz,ptSrc.m_map));
+					path.push_back(CPointMap(static_cast<WORD>(dx), static_cast<WORD>(dy), dz, ptSrc.m_map));
 			}
 			else
 			{
-				path.push_back(CPointMap(dx,dy,dz,ptSrc.m_map));
+				path.push_back(CPointMap(static_cast<WORD>(dx), static_cast<WORD>(dy), dz, ptSrc.m_map));
 			}
 			WARNLOS(("PATH X:%d Y:%d Z:%d\n",dx,dy,dz));
 

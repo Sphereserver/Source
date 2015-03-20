@@ -41,7 +41,7 @@ DWORD ahextoi( LPCTSTR pszStr ) // Convert hex string to integer
 	DWORD val = 0;
 	for (;;)
 	{
-		TCHAR ch = toupper(*pszStr);
+		TCHAR ch = static_cast<TCHAR>(toupper(*pszStr));
 		if ( IsDigit(ch) )
 			ch -= '0';
 		else if ( bHex && ( ch >= 'A' ) && ( ch <= 'F' ))
@@ -387,7 +387,7 @@ INT64 CExpression::GetSingle( LPCTSTR & pszArgs )
 				ch -= '0';
 			else
 			{
-				ch = tolower(ch);
+				ch = static_cast<TCHAR>(tolower(ch));
 				if ( ch > 'f' || ch <'a' )
 				{
 					if ( ch == '.' && pStart[0] != '0' )	// ok i'm confused. it must be decimal.

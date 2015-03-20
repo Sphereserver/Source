@@ -846,8 +846,8 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		int tmp_MaxY = (pItemDef->m_ttContainer.m_dwMaxXY & 0xFFFF);
 		DEBUG_WARN(("Custom container gump id %d for 0%x\n", gump, GetDispID()));
 		return( CPointMap(
-			tmp_MinX + Calc_GetRandVal( tmp_MaxX - tmp_MinX ),
-			tmp_MinY + Calc_GetRandVal( tmp_MaxY - tmp_MinY ),
+			static_cast<WORD>(tmp_MinX + Calc_GetRandVal(tmp_MaxX - tmp_MinX)),
+			static_cast<WORD>(tmp_MinY + Calc_GetRandVal(tmp_MaxY - tmp_MinY)),
 			0 ));
 	}
 
@@ -865,8 +865,8 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 	}
 
 	return( CPointMap(
-		sm_ContSize[i].m_minx + Calc_GetRandVal( sm_ContSize[i].m_maxx - sm_ContSize[i].m_minx ),
-		sm_ContSize[i].m_miny + Calc_GetRandVal( sm_ContSize[i].m_maxy - sm_ContSize[i].m_miny ),
+		static_cast<WORD>(sm_ContSize[i].m_minx + Calc_GetRandVal(sm_ContSize[i].m_maxx - sm_ContSize[i].m_minx)),
+		static_cast<WORD>(sm_ContSize[i].m_miny + Calc_GetRandVal(sm_ContSize[i].m_maxy - sm_ContSize[i].m_miny)),
 		0 ));
 }
 

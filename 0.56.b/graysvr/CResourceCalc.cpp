@@ -105,7 +105,7 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 			{
 				if ( pTagStorage->GetValNum())
 				{
-					speed = static_cast<int>(pTagStorage->GetValNum());
+					speed = static_cast<unsigned char>(pTagStorage->GetValNum());
 				}
 				else
 				{

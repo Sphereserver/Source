@@ -246,6 +246,8 @@ void PacketMovementReq::doMovement(NetState* net, BYTE direction, short sequence
 		canMoveThere = client->Event_WalkingCheck(crypt)? TRIGRET_RET_TRUE : TRIGRET_RET_FALSE;
 
 	//Check Timing
+	UNREFERENCED_PARAMETER(iTime1);	//Remove these unreferenced parameters when enabling again the following iTiming code
+	UNREFERENCED_PARAMETER(iTime2);
 	/*if (iTime1 && iTime2) // Not working properly!
 	{
 		bool fRun = ( direction & 0x80 ) == 0x80;
@@ -609,6 +611,7 @@ bool PacketDeathStatus::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketDeathStatus::onReceive");  
 
+	UNREFERENCED_PARAMETER(net);
 	return false; //Let's just disable this packet, it's causing too many issues.
 
 	/*CClient* client = net->getClient();
@@ -4350,6 +4353,7 @@ PacketTimeSyncReply::PacketTimeSyncReply() : Packet(9)
 bool PacketTimeSyncReply::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketTimeSyncReply::onReceive");
+	UNREFERENCED_PARAMETER(net);
 	//INT64 iTime = readInt64();
 	return true;
 }

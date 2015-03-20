@@ -241,7 +241,7 @@ public:
 	}
 
 	CGrayMapBlock(int bx, int by, int map) :
-		CPointSort(bx * UO_BLOCK_SIZE, by * UO_BLOCK_SIZE)
+		CPointSort(static_cast<WORD>(bx)* UO_BLOCK_SIZE, static_cast<WORD>(by) * UO_BLOCK_SIZE)
 	{
 		sm_iCount++;
 		m_map = map;

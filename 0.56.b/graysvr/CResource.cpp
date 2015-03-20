@@ -1305,7 +1305,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 					case 4:
 						if ( IsDigit(ppVal[3][0]) )
 						{
-							pt.m_map = ATOI(ppVal[3]);
+							pt.m_map = static_cast<unsigned char>(ATOI(ppVal[3]));
 						}
 					case 3:
 						if ( IsDigit(ppVal[2][0]) || (( iArgs == 4 ) && ( ppVal[2][0] == '-' )) )
@@ -1313,13 +1313,13 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 							pt.m_z = ( iArgs == 4 ) ? ATOI(ppVal[2]) : 0;
 							if ( iArgs == 3 )
 							{
-								pt.m_map = ATOI(ppVal[2]);
+								pt.m_map = static_cast<unsigned char>(ATOI(ppVal[2]));
 							}
 						}
 					case 2:
-						pt.m_y = ATOI(ppVal[1]);
+						pt.m_y = static_cast<short>(ATOI(ppVal[1]));
 					case 1:
-						pt.m_x = ATOI(ppVal[0]);
+						pt.m_x = static_cast<short>(ATOI(ppVal[0]));
 					case 0:
 						break;
 				}

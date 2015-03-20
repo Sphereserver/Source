@@ -24,7 +24,7 @@ CCharBase::CCharBase( CREID_TYPE id ) :
 	m_Dex = 0;
 	m_Int = 0;
 
-	m_iMoveRate = g_Cfg.m_iMoveRate;
+	m_iMoveRate = static_cast<short>(g_Cfg.m_iMoveRate);
 
 	if ( IsValidDispID(id))
 	{
@@ -317,7 +317,7 @@ bool CCharBase::r_LoadVal( CScript & s )
 			m_iMoveRate = static_cast<short>(s.GetArgVal());
 			break;
 		case CBC_RESDISPDNID:
-			SetResDispDnId(g_Cfg.ResourceGetIndexType( RES_CHARDEF, s.GetArgStr()));
+			SetResDispDnId(static_cast<WORD>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, s.GetArgStr())));
 			break;
 		case CBC_SOUND:
 			m_soundbase = static_cast<SOUND_TYPE>(s.GetArgVal());

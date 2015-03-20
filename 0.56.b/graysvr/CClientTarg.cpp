@@ -434,7 +434,7 @@ int CClient::Cmd_Extract( CScript * pScript, CRectMap &rect, int & zlowest )
 	{
 		for ( int my = rect.m_top; my <= rect.m_bottom; my++)
 		{
-			CPointMap ptCur( mx, my, 0, rect.m_map );
+			CPointMap ptCur(static_cast<WORD>(mx), static_cast<WORD>(my), 0, static_cast<unsigned char>(rect.m_map));
 			const CGrayMapBlock * pBlock = g_World.GetMapBlock( ptCur );
 			if ( pBlock == NULL )
 				continue;
@@ -700,7 +700,7 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 					CItem * pItem = CItem::CreateTemplate(static_cast<ITEMID_TYPE>(RES_GET_INDEX(piArgs[iArg])), NULL, m_pChar);
 					ASSERT(pItem);
 					pItem->SetAttr( ATTR_MOVE_NEVER );
-					CPointMap ptCur( mx, my, z, pt.m_map);
+					CPointMap ptCur(static_cast<WORD>(mx), static_cast<WORD>(my), z, pt.m_map);
 					pItem->MoveToUpdate( ptCur );
 					iCount++;
 				}
@@ -1689,7 +1689,7 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap &
 		int x = rect.m_left;
 		for ( ; x <rect.m_right; ++x )
 		{
-			ptn.m_x = x;
+			ptn.m_x = static_cast<short>(x);
 			int y = rect.m_top;
 			for ( ; y < rect.m_bottom; ++y )
 			{

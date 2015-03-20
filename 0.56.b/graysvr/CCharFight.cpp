@@ -17,14 +17,14 @@ CItemStone * CChar::Guild_Find( MEMORY_TYPE MemType ) const
 	//  MemType == MEMORY_GUILD or MEMORY_TOWN
 	if ( ! m_pPlayer )
 		return( NULL );
-	CItemMemory * pMyGMem = Memory_FindTypes( MemType );
+	CItemMemory * pMyGMem = Memory_FindTypes(static_cast<WORD>(MemType));
 	if ( ! pMyGMem )
 		return( NULL );
 	CItemStone * pMyStone = dynamic_cast <CItemStone*>( pMyGMem->m_uidLink.ItemFind());
 	if ( pMyStone == NULL )
 	{
 		// Some sort of mislink ! fix it.
-		const_cast <CChar*>(this)->Memory_ClearTypes( MemType ); 	// Make them forget they were ever in this guild....again!
+		const_cast <CChar*>(this)->Memory_ClearTypes(static_cast<WORD>(MemType)); 	// Make them forget they were ever in this guild....again!
 		return( NULL );
 	}
 	return( pMyStone );
@@ -41,7 +41,7 @@ CStoneMember * CChar::Guild_FindMember( MEMORY_TYPE MemType ) const
 	if ( pMember == NULL )
 	{
 		// Some sort of mislink ! fix it.
-		const_cast <CChar*>(this)->Memory_ClearTypes( MemType ); 	// Make them forget they were ever in this guild....again!
+		const_cast <CChar*>(this)->Memory_ClearTypes(static_cast<WORD>(MemType)); 	// Make them forget they were ever in this guild....again!
 		return( NULL );
 	}
 	return( pMember );
@@ -540,7 +540,7 @@ void CChar::Noto_Fame( int iFameChange )
 
 	iFame += iFameChange;
 	Noto_ChangeDeltaMsg( iFame - Stat_GetAdjusted(STAT_FAME), g_Cfg.GetDefaultMsg( DEFMSG_NOTO_FAME ) );
-	Stat_SetBase(STAT_FAME, iFame);
+	Stat_SetBase(STAT_FAME, static_cast<short>(iFame));
 }
 
 void CChar::Noto_Karma( int iKarmaChange, int iBottom, bool bMessage )
@@ -582,7 +582,7 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom, bool bMessage )
 
 	iKarma += iKarmaChange;
 	Noto_ChangeDeltaMsg( iKarma - Stat_GetAdjusted(STAT_KARMA), g_Cfg.GetDefaultMsg( DEFMSG_NOTO_KARMA ) );
-	Stat_SetBase(STAT_KARMA, iKarma);
+	Stat_SetBase(STAT_KARMA, static_cast<short>(iKarma));
 	NotoSave_Update();
 	if ( bMessage == true )
 	{
@@ -1960,7 +1960,7 @@ int CChar::CalcArmorDefense() const
 #endif
 	for ( CItem* pItem=GetContentHead(); pItem!=NULL; pItem=pItem->GetNext())
 	{
-		int iDefense = pItem->Armor_GetDefense();
+		WORD iDefense = static_cast<WORD>(pItem->Armor_GetDefense());
 
 		// IsTypeSpellable() ? ! IT_WAND
 		if (( pItem->IsType(IT_SPELL) || pItem->IsTypeArmor()) && pItem->m_itSpell.m_spell )
@@ -3614,7 +3614,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			// ??? the bow is acting like a (poor) blunt weapon at this range?
 			SysMessageDefault( DEFMSG_COMBAT_ARCH_TOOCLOSE );
 			int iTime = Fight_GetWeaponSwingTimer();
-			UpdateAnimate(GenerateAnimate(ANIM_ATTACK_1H_SLASH, false, false), false, false, iTime / TICK_PER_SEC);
+			UpdateAnimate(GenerateAnimate(ANIM_ATTACK_1H_SLASH, false, false), false, false, static_cast<unsigned char>(iTime / TICK_PER_SEC));
 			return( WAR_SWING_EQUIPPING );
 		}
 
@@ -3980,7 +3980,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( pWeapon->m_itWeapon.m_poison_skill && Calc_GetRandVal( 100 ) < pWeapon->m_itWeapon.m_poison_skill )
 		{
 			// Poison delivered.
-			BYTE iPoisonDeliver = Calc_GetRandVal(pWeapon->m_itWeapon.m_poison_skill);
+			BYTE iPoisonDeliver = static_cast<unsigned char>(Calc_GetRandVal(pWeapon->m_itWeapon.m_poison_skill));
 
 			pCharTarg->SetPoison( 10 * iPoisonDeliver, iPoisonDeliver / 5, this );
 

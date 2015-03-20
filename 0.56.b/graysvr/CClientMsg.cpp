@@ -401,10 +401,11 @@ bool CClient::addContainerSetup( const CItemContainer * pContainer ) // Send Bac
 	// open the container with the proper GUMP.
 	CItemBase * pItemDef = pContainer->Item_GetDef();
 	GUMP_TYPE gump = pItemDef->IsTypeContainer();
-	if ( gump <= GUMP_RESERVED )
-	{
+	if (!pItemDef)
 		return false;
-	}
+
+	if ( gump <= GUMP_RESERVED )
+		return false;
 
 	OpenPacketTransaction transaction(this, PacketSend::PRI_NORMAL);
 
@@ -503,7 +504,7 @@ void CClient::addLight( int iLight )
 
 	if ( iLight == m_Env.m_Light )
 		return;
-	m_Env.m_Light = iLight;
+	m_Env.m_Light = static_cast<unsigned char>(iLight);
 
 	new PacketGlobalLight(this, iLight);
 }
@@ -699,7 +700,7 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 				s++;
 				continue;
 			}
-			Args[i] = Exp_GetVal( s );
+			Args[i] = static_cast<WORD>(Exp_GetVal(s));
 			i++;
 
 			if ( *s == ',' )
@@ -709,15 +710,15 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 		}
 		pszText++;
 		if ( Args[1] > FONT_QTY )
-			Args[1]	= FONT_NORMAL;
+			Args[1] = static_cast<WORD>(FONT_NORMAL);
 	}
 
 	if ( Args[0] == HUE_TEXT_DEF )
-		Args[0] = defaultHue;
+		Args[0] = static_cast<WORD>(defaultHue);
 	if ( Args[1] == FONT_NORMAL )
-		Args[1] = defaultFont;
+		Args[1] = static_cast<WORD>(defaultFont);
 	if ( Args[2] == 0 )
-		Args[2] = defaultUnicode;
+		Args[2] = static_cast<WORD>(defaultUnicode);
 
 	if ( m_BarkBuffer.IsEmpty())
 	{
@@ -1806,7 +1807,7 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 	// Adjust to my new location, what do I now see here?
 	bool fAllShow = IsPriv(PRIV_ALLSHOW);
 	bool fOsiSight = IsSetOF(OF_OSIMultiSight);
-	BYTE tViewDist = m_pChar->GetSight();
+	BYTE tViewDist = static_cast<unsigned char>(m_pChar->GetSight());
 	CRegionBase * pCurrentCharRegion = m_pChar->GetTopPoint().GetRegion(REGION_TYPE_MULTI);
 
 	//	Items on the ground
@@ -1965,7 +1966,7 @@ void CClient::addPlayerSeeShip( const CPointMap & ptold )
 	// Adjust to my new location, what do I now see here?
 	bool fAllShow = IsPriv(PRIV_ALLSHOW);
 	bool fOsiSight = IsSetOF(OF_OSIMultiSight);
-	BYTE tViewDist = m_pChar->GetSight();
+	BYTE tViewDist = static_cast<unsigned char>(m_pChar->GetSight());
 
 	//	Items on the ground
 	CWorldSearch AreaItems(m_pChar->GetTopPoint(), UO_MAP_VIEW_RADAR);
@@ -3612,7 +3613,7 @@ void CClient::addSpeedMode( int speedMode )
 {
 	ADDTOCALLSTACK("CClient::addSpeedMode");
 
-	new PacketSpeedMode(this, speedMode);
+	new PacketSpeedMode(this, static_cast<unsigned char>(speedMode));
 }
 
 void CClient::addVisualRange( BYTE visualRange )
@@ -3670,7 +3671,7 @@ void CClient::SendPacket( TCHAR * pszKey )
 		else if ( toupper(*pszKey) == 'W' )
 		{
 			++pszKey;
-			WORD iVal = Exp_GetVal(pszKey);
+			WORD iVal = static_cast<WORD>(Exp_GetVal(pszKey));
 
 			packet->writeInt16(iVal);
 		}
@@ -3678,7 +3679,7 @@ void CClient::SendPacket( TCHAR * pszKey )
 		{
 			if ( toupper(*pszKey) == 'B' )
 				pszKey++;
-			BYTE iVal = Exp_GetVal(pszKey);
+			BYTE iVal = static_cast<unsigned char>(Exp_GetVal(pszKey));
 
 			packet->writeByte(iVal);
 		}
@@ -3970,7 +3971,7 @@ BYTE CClient::Setup_ListReq( const char * pszAccName, const char * pszPassword, 
 		return PacketLoginError::Blocked; //Setup_Start() returns false only when login blocked by Return 1 in @Login
 	} */
 
-	new PacketEnableFeatures(this, g_Cfg.GetPacketFlag(false, static_cast<RESDISPLAY_VERSION>(pAcc->GetResDisp()), maximum(pAcc->GetMaxChars(), pAcc->m_Chars.GetCharCount())));
+	new PacketEnableFeatures(this, g_Cfg.GetPacketFlag(false, static_cast<RESDISPLAY_VERSION>(pAcc->GetResDisp()), static_cast<unsigned char>(maximum(pAcc->GetMaxChars(), pAcc->m_Chars.GetCharCount()))));
 	new PacketCharacterList(this, pCharLast);
 
 	m_Targ_Mode = CLIMODE_SETUP_CHARLIST;

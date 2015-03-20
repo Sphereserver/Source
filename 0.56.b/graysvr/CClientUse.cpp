@@ -208,6 +208,8 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_TRASH_CAN:
 			{
 				CItemContainer * pPack = dynamic_cast <CItemContainer *>(pItem);
+				if (!pPack)
+					return false;
 				if ( ! m_pChar->Skill_Snoop_Check( pPack ))
 				{
 					if( !addContainerSetup(pPack) ) {
@@ -673,7 +675,7 @@ void CClient::Cmd_EditItem( CObjBase * pObj, int iSelect )
 		m_tmMenu.m_Item[count] = pItem->GetUID();
 		item[count].m_sText = pItem->GetName();
 		ITEMID_TYPE idi = pItem->GetDispID();
-		item[count].m_id = idi;
+		item[count].m_id = static_cast<WORD>(idi);
 		item[count].m_color = 0;
 
 		if ( !pItem->IsType( IT_EQ_MEMORY_OBJ ) )
@@ -1250,7 +1252,7 @@ bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )
 			}
 
 			count ++;
-			item[count].m_id = pCharDef->m_trackID;
+			item[count].m_id = static_cast<WORD>(pCharDef->m_trackID);
 			item[count].m_color = 0;
 			item[count].m_sText = pChar->GetName();
 			m_tmMenu.m_Item[count] = pChar->GetUID();

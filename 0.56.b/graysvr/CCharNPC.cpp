@@ -257,7 +257,7 @@ SKILLLOCK_TYPE CCharPlayer::Skill_GetLock( SKILL_TYPE skill ) const
 void CCharPlayer::Skill_SetLock( SKILL_TYPE skill, SKILLLOCK_TYPE state )
 {
 	ASSERT( skill >= 0 && static_cast<size_t>(skill) < COUNTOF(m_SkillLock));
-	m_SkillLock[skill] = state;
+	m_SkillLock[skill] = static_cast<unsigned char>(state);
 }
 
 STAT_TYPE CCharPlayer::Stat_GetLockType( LPCTSTR pszKey ) const
@@ -295,7 +295,7 @@ SKILLLOCK_TYPE CCharPlayer::Stat_GetLock( STAT_TYPE stat ) const
 void CCharPlayer::Stat_SetLock( STAT_TYPE stat, SKILLLOCK_TYPE state )
 {
 	ASSERT( stat >= 0 && static_cast<size_t>(stat) < COUNTOF(m_StatLock));
-	m_StatLock[stat] = state;
+	m_StatLock[stat] = static_cast<unsigned char>(state);
 }
 
 bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )

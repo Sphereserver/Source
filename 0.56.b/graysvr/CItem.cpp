@@ -1425,7 +1425,7 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 
 				if (bValid)
 				{
-					iMyZ = ptNewPlace.m_z + i;
+					iMyZ = static_cast<short>(ptNewPlace.m_z + i);
 					break;
 				}
 			}
@@ -1960,7 +1960,7 @@ void CItem::SetAmount( unsigned int amount )
 	if ( oldamount == amount )
 		return;
 
-	m_amount = amount;
+	m_amount = static_cast<WORD>(amount);
 	// sometimes the diff graphics for the types are not in the client.
 	if ( IsType(IT_ORE))
 	{
@@ -1978,7 +1978,7 @@ void CItem::SetAmount( unsigned int amount )
 	if (pParentCont)
 	{
 		ASSERT( IsItemEquipped() || IsItemInContainer());
-		pParentCont->OnWeightChange(GetWeight(amount) - GetWeight(oldamount));
+		pParentCont->OnWeightChange(GetWeight(static_cast<WORD>(amount)) - GetWeight(static_cast<WORD>(oldamount)));
 	}
 	
 	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_AMOUNT);
@@ -2745,9 +2745,9 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 					{
 						default:
 						case 2:
-							pt.m_y = ATOI(ppVal[1]);
+							pt.m_y = static_cast<short>(ATOI(ppVal[1]));
 						case 1:
-							pt.m_x = ATOI(ppVal[0]);
+							pt.m_x = static_cast<short>(ATOI(ppVal[0]));
 						case 0:
 							break;
 					}
@@ -2856,7 +2856,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 						case 4:	// m_map
 							if ( IsDigit(ppVal[3][0]))
 							{
-								pt.m_map = ATOI(ppVal[3]);
+								pt.m_map = static_cast<unsigned char>(ATOI(ppVal[3]));
 							}
 						case 3: // m_z
 							if ( IsDigit(ppVal[2][0]) || ppVal[2][0] == '-' )
@@ -2864,9 +2864,9 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 								pt.m_z = ATOI(ppVal[2]);
 							}
 						case 2:
-							pt.m_y = ATOI(ppVal[1]);
+							pt.m_y = static_cast<short>(ATOI(ppVal[1]));
 						case 1:
-							pt.m_x = ATOI(ppVal[0]);
+							pt.m_x = static_cast<short>(ATOI(ppVal[0]));
 						case 0:
 							break;
 					}
@@ -3720,7 +3720,7 @@ void CItem::Flip()
 
 	if ( IsType( IT_CORPSE ))
 	{
-		m_itCorpse.m_facing_dir = GetDirTurn(static_cast<DIR_TYPE>(m_itCorpse.m_facing_dir), 1 );
+		m_itCorpse.m_facing_dir = static_cast<unsigned char>(GetDirTurn(static_cast<DIR_TYPE>(m_itCorpse.m_facing_dir), 1));
 		Update();
 		return;
 	}
@@ -3806,8 +3806,8 @@ bool CItem::Use_DoorNew( bool bJustOpen )
 		return Use_Door(bJustOpen);
 
 	//default or override locations
-	short sDifX = m_itNormal.m_morep.m_x ? m_itNormal.m_morep.m_x : pItemDef->m_ttDoor.m_iXChange;
-	short sDifY = m_itNormal.m_morep.m_y ? m_itNormal.m_morep.m_y : pItemDef->m_ttDoor.m_iYChange;
+	short sDifX = m_itNormal.m_morep.m_x ? m_itNormal.m_morep.m_x : static_cast<short>(pItemDef->m_ttDoor.m_iXChange);
+	short sDifY = m_itNormal.m_morep.m_y ? m_itNormal.m_morep.m_y : static_cast<short>(pItemDef->m_ttDoor.m_iYChange);
 
 	
 	//default sounds
@@ -4158,7 +4158,7 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 			{
 				for (int y = ptCoords.m_y - iVisibility; y <= (ptCoords.m_y + iVisibility); y += 2)
 				{
-					CPointMap ptCur(x, y, ptCoords.m_z);
+					CPointMap ptCur(static_cast<WORD>(x), static_cast<WORD>(y), ptCoords.m_z);
 					pMeter = g_World.GetMapMeter( ptCur );
 					if ( pMeter == NULL )
 						continue;
@@ -4637,8 +4637,8 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			SetAttr(ATTR_MAGIC);
 			if ( ! m_itWeapon.m_spell || ( pCharSrc && pCharSrc->IsPriv( PRIV_GM )))
 			{
-				m_itWeapon.m_spell = spell;
-				m_itWeapon.m_spelllevel = iSkillLevel;
+				m_itWeapon.m_spell = static_cast<WORD>(spell);
+				m_itWeapon.m_spelllevel = static_cast<WORD>(iSkillLevel);
 				m_itWeapon.m_spellcharges = 0;
 			}
 
@@ -4962,7 +4962,7 @@ forcedamage:
 		{
 			if ( previousDefense != Armor_GetDefense() )
 			{
-				pChar->m_defense = pChar->CalcArmorDefense();
+				pChar->m_defense = static_cast<WORD>(pChar->CalcArmorDefense());
 				pChar->UpdateStatsFlag();
 			}
 			else if ( previousDamage != Weapon_GetAttack() )

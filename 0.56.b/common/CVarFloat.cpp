@@ -251,7 +251,7 @@ RealType CVarFloat::GetSingle( LPCTSTR & pArgs )
 		break;
 	}*/
 	bool IsNum = false;
-    for( TCHAR ch = tolower(*pArgs); ch; ch = tolower(*(++pArgs)) )
+	for (TCHAR ch = static_cast<TCHAR>(tolower(*pArgs)); ch; ch = static_cast<TCHAR>(tolower(*(++pArgs))))
     {
         if (( IsDigit( ch ) ) || ( ch == '.' ) || ( ch == ',' ))
         {

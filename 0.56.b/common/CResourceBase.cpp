@@ -559,7 +559,7 @@ bool	CRegionBase::MakeRegionName()
 		// collapse multiple spaces together
 		if ( ch == '_' && *(pszDef-1) == '_' )
 			continue;
-		*pszDef	= tolower(ch);
+		*pszDef = static_cast<TCHAR>(tolower(ch));
 		pszDef++;
 	}
 	*pszDef	= '_';

@@ -283,7 +283,7 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 			else if ( pItem->IsTypeArmor())
 			{
 				// Shield of some sort.
-				m_defense = CalcArmorDefense();
+				m_defense = static_cast<WORD>(CalcArmorDefense());
 				StatFlag_Set( STATF_HasShield );
 				UpdateStatsFlag();
 			}
@@ -303,7 +303,7 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 		case LAYER_SKIRT:
 		case LAYER_LEGS:
 			// If armor or clothing = change in defense rating.
-			m_defense = CalcArmorDefense();
+			m_defense = static_cast<WORD>(CalcArmorDefense());
 			UpdateStatsFlag();
 			break;
 
@@ -382,7 +382,7 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 			else if ( pItem->IsTypeArmor())
 			{
 				// Shield
-				m_defense = CalcArmorDefense();
+				m_defense = static_cast<WORD>(CalcArmorDefense());
 				StatFlag_Clear( STATF_HasShield );
 				UpdateStatsFlag();
 			}
@@ -404,7 +404,7 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 		case LAYER_ROBE:		// 22 = robe over all.
 		case LAYER_SKIRT:
 		case LAYER_LEGS:
-			m_defense = CalcArmorDefense();
+			m_defense = static_cast<WORD>(CalcArmorDefense());
 			UpdateStatsFlag();
 			break;
 
@@ -574,7 +574,7 @@ void CChar::UnEquipAllItems( CItemContainer * pDest, bool bLeaveHands )
 					CItem * pDupe = CItem::CreateDupeItem( pItem );
 					pDest->ContentAdd( pDupe );	// add content
 					// Equip layer only matters on a corpse.
-					pDupe->SetContainedLayer( layer );
+					pDupe->SetContainedLayer(static_cast<unsigned char>(layer));
 				}
 				continue;
 			case LAYER_DRAGGING:
@@ -598,7 +598,7 @@ void CChar::UnEquipAllItems( CItemContainer * pDest, bool bLeaveHands )
 			if ( pDest->IsType(IT_CORPSE))
 			{
 				// Equip layer only matters on a corpse.
-				pItem->SetContainedLayer( layer );
+				pItem->SetContainedLayer(static_cast<unsigned char>(layer));
 			}
 		}
 		else
@@ -747,7 +747,7 @@ ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackw
 	// ARGS:
 	//   fBackward = make the anim go in reverse.
 	//   iFrameDelay = in seconds (approx), 0=fastest, 1=slower
-
+	UNREFERENCED_PARAMETER(iAnimLen);
 	if ( action < 0 || action >= ANIM_QTY )
 		return (ANIM_TYPE)-1;
 
@@ -1640,7 +1640,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 		amount = maximum(1, minimum(amount, iAmountMax));
 
 	//int iItemWeight = ( amount == iAmountMax ) ? pItem->GetWeight() : pItem->Item_GetDef()->GetWeight() * amount;
-	int iItemWeight =  pItem->GetWeight(amount);
+	int iItemWeight = pItem->GetWeight(static_cast<WORD>(amount));
 
 	// Is it too heavy to even drag ?
 	bool fDrop = false;
@@ -2480,6 +2480,8 @@ bool CChar::OnTickEquip( CItem * pItem )
 						case STAT_FOOD:
 							stat = "FOOD";
 							break;
+						default:
+							continue;
 					}
 					INT64 iRegen = g_Cfg.m_iRegenRate[i];
 					if ( i <= STAT_FOOD )
@@ -2711,7 +2713,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 		pCorpse->SetHue( GetHue());
 		pCorpse->SetCorpseType( GetDispID() );
 		pCorpse->m_itCorpse.m_BaseID = m_prev_id;	// id the corpse type here !
-		pCorpse->m_itCorpse.m_facing_dir = m_dirFace;
+		pCorpse->m_itCorpse.m_facing_dir = static_cast<unsigned char>(m_dirFace);
 		pCorpse->SetAttr(ATTR_INVIS);	// Don't display til ready.
 
 		if ( IsStatFlag( STATF_DEAD ))
@@ -2744,7 +2746,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 	{
 		dir = static_cast<DIR_TYPE>( dir | 0x80 );
 		if ( pCorpse )
-			pCorpse->m_itCorpse.m_facing_dir = dir;
+			pCorpse->m_itCorpse.m_facing_dir = static_cast<unsigned char>(dir);
 	}
 
 	// Death anim. default is to fall backwards. lie face up.

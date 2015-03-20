@@ -1703,7 +1703,7 @@ bool CChar::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 				SKIP_SEPARATORS(pszKey);
 				return( true );
 			case CHR_MEMORYFINDTYPE:	// FInd a type of memory.
-				pRef = Memory_FindTypes( Exp_GetSingle( pszKey ));
+				pRef = Memory_FindTypes(static_cast<WORD>(Exp_GetSingle(pszKey)));
 				SKIP_SEPARATORS(pszKey);
 				return( true );
 			case CHR_MEMORYFIND:	// Find a memory of a UID
@@ -3028,7 +3028,7 @@ do_default:
 				if (!fNightsight)	// Keep old 'switch' from 0 to 1 and viceversa behaviour while no args are given.
 					 fNightsight = !IsStatFlag(STATF_NightSight);
 				SetDefNum(s.GetKey(), fNightsight, false);
-				StatFlag_Mod( STATF_NightSight, fNightsight );
+				StatFlag_Mod( STATF_NightSight, fNightsight > 0 ? true : false );
 				if ( IsClient() )
 					m_pClient->addLight();
 			}

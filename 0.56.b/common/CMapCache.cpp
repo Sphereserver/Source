@@ -57,7 +57,7 @@ bool CMapCache::Init(int maxX, int maxY, int map, signed char mapDefaultHeight)
 		{
 			for ( int j = 0; j < maxY; j++ )
 			{
-				CPointMap pt(i, j, 0, map);
+				CPointMap pt(static_cast<WORD>(i), static_cast<WORD>(j), 0, static_cast<unsigned char>(map));
 				point.m_baseZ = UO_SIZE_Z;
 				point.m_tileBlock = 0;
 
