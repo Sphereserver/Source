@@ -752,12 +752,12 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 		iStatSum += iStatVal;
 
 		int iStatMax = Stat_GetLimit(static_cast<STAT_TYPE>(i));
-		if ( iStatVal >= iStatMax )
+		if ( iStatVal > iStatMax )
 			continue;	// nothing grows past this. (even for NPC's)
 
 		// You will tend toward these stat vals if you use this skill a lot.
 		int iStatTarg = pSkillDef->m_Stat[i];
-		if ( iStatVal >= iStatTarg )
+		if ( iStatVal > iStatTarg )
 			continue;		// you've got higher stats than this skill is good for.
 
 		// ??? Building stats should consume food !!

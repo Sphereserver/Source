@@ -38,8 +38,8 @@ bool GetDeltaStr( CPointMap & pt, TCHAR * pszDir )
 
 	if ( IsDigit( chDir ) || chDir == '-' )
 	{
-		pt.m_x += Exp_GetVal( ppCmd[0] );
-		pt.m_y += iTmp;
+		pt.m_x += static_cast<short>(Exp_GetVal(ppCmd[0]));
+		pt.m_y += static_cast<short>(iTmp);
 		pt.m_z += Exp_GetVal( ppCmd[2] );
 	}
 	else	// a direction by name.

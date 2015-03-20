@@ -621,6 +621,7 @@ void CClient::Event_Skill_Use( SKILL_TYPE skill ) // Skill is clicked on the ski
 		case SKILL_PEACEMAKING:
 		case SKILL_DETECTINGHIDDEN:
 		case SKILL_MEDITATION:
+		case SKILL_IMBUING:
 			// These start/stop automatically.
 			m_pChar->Skill_Start(skill);
 			return;
@@ -1144,7 +1145,7 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 			iGold = m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF,IT_GOLD), static_cast<int>(costtotal), true);
 		if (iGold)
 		{
-			pVendor->Speak("Begging thy pardon, but thou canst not afford that.");
+			pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_NOMONEY1));
 			return;
 		}
 	}

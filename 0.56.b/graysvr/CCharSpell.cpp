@@ -2989,8 +2989,8 @@ reflectit:
 							iChange = SPELL_MAX_POLY_STAT;
 						if (iChange + Stat_GetBase(STAT_DEX) < 0)
 							iChange = -Stat_GetBase(STAT_DEX);
-						Stat_AddMod(STAT_DEX, iChange);
-						pSpell->m_itSpell.m_PolyDex = iChange;
+						Stat_AddMod(STAT_DEX, static_cast<short>(iChange));
+						pSpell->m_itSpell.m_PolyDex = static_cast<short>(iChange);
 					}
 					else
 					{

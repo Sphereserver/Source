@@ -513,7 +513,7 @@ void CClient::addTargetVerb( LPCTSTR pszCmd, LPCTSTR pszArg )
 
 	m_Targ_Text.Format( "%s%s%s", pszCmd, ( pszArg[0] && pszCmd[0] ) ? " " : "", pszArg );
 	TCHAR * pszMsg = Str_GetTemp();
-	sprintf(pszMsg, "Select object to set/command '%s'", static_cast<LPCTSTR>(m_Targ_Text));
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_TARGET_COMMAND), static_cast<LPCTSTR>(m_Targ_Text));
 	addTarget(CLIMODE_TARG_OBJ_SET, pszMsg);
 }
 

@@ -1265,12 +1265,15 @@ void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 	if ( ! NPC_CanSpeak())
 		return;	// I can't talk anyhow.
 
-	// Don't call for guards outside guarded areas.
-	if ( ! m_pArea || ! m_pArea->IsGuarded())
-		return;
+	if (GetNPCBrain() != NPCBRAIN_HUMAN)
+	{
+		// Good monsters don't call for guards outside guarded areas.
+		if (!m_pArea || !m_pArea->IsGuarded())
+			return;
+	}
 
-	if ( m_pNPC->m_Brain != NPCBRAIN_GUARD )
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_GENERIC_CRIM ) );
+	if (m_pNPC->m_Brain != NPCBRAIN_GUARD)
+		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_CRIM));
 
 	// Find a guard.
 	CallGuards( pCriminal );
@@ -1897,7 +1900,8 @@ bool CChar::OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fCommandPet, bool
 		else
 		{
 			// If it is a pet then this a crime others can report.
-			pCharSrc->CheckCrimeSeen( SKILL_NONE, this, NULL, NULL );
+			CChar * pCharMark = IsStatFlag(STATF_Pet) ? NPC_PetGetOwner() : this;
+			CheckCrimeSeen(SKILL_NONE, pCharMark, NULL, NULL);
 		}
 	}
 

@@ -767,7 +767,8 @@ EMOTE_DEF_UNICODE	0
 //npc_vendor_cantafford			"I cannot afford any more at the moment"
 //npc_vendor_hyare				"Here you are, %s"
 //npc_vendor_no_goods			"Sorry I have no goods to sell"
-//npc_vendor_nomoney			"Alas I have run out of money."
+//npc_vendor_nomoney			"Alas I have run out of money.
+//npc_vendor_nomoney1			"Begging thy pardon, but thou canst not afford that."
 //npc_vendor_nothing_buy   		"You have nothing I'm interested in"
 //npc_vendor_nothing_sell 		"Sorry I have nothing of interest to you."
 //npc_vendor_offduty			"Sorry, I'm currently off-duty. Come back when my shop is open."
@@ -930,6 +931,7 @@ EMOTE_DEF_UNICODE	0
 //taming_tamed					"%s cannot be tamed."
 //taming_ymaster				"You are your own master."
 //target_promt					"What do you want to use this on?"
+//target_command				"Select object to set/command '%s'."
 //tasteid_char					"Try tasting some item."
 //tasteid_result				"It tastes like %s."
 //tasteid_self					"Yummy!"

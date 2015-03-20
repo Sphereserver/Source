@@ -674,7 +674,7 @@ int CChar::FixWeirdness()
 					int iStatMax = Stat_GetLimit(static_cast<STAT_TYPE>(j));
 					if ( Stat_GetAdjusted(static_cast<STAT_TYPE>(j)) > iStatMax*g_Cfg.m_iOverSkillMultiply )
 					{
-						Stat_SetBase(static_cast<STAT_TYPE>(j), iStatMax);
+						Stat_SetBase(static_cast<STAT_TYPE>(j), static_cast<short>(iStatMax));
 					}
 				}
 			}
@@ -2671,7 +2671,7 @@ do_default:
 				else if (iVal < SHRT_MIN)
 					iVal = SHRT_MIN;
 
-				Stat_SetBase(static_cast<STAT_TYPE>(i), iVal);
+				Stat_SetBase(static_cast<STAT_TYPE>(i), static_cast<short>(iVal));
 				return true;
 			}
 

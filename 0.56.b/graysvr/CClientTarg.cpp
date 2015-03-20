@@ -1693,7 +1693,7 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap &
 			int y = rect.m_top;
 			for ( ; y < rect.m_bottom; ++y )
 			{
-				ptn.m_y = y;
+				ptn.m_y = static_cast<short>(y);
 
 				if ( !ptn.IsValidPoint() )
 				{

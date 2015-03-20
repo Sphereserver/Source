@@ -232,7 +232,7 @@ void CPathFinder::FillMap()
 			}
 			else
 			{
-				pt.m_x = static_cast<short>(x + static_cast<short>(m_RealX);
+				pt.m_x = static_cast<short>(x + static_cast<short>(m_RealX));
 				pt.m_y = static_cast<short>(y + m_RealY);
 					pArea = m_pChar->CanMoveWalkTo(pt, true, true, DIR_QTY, true);
 

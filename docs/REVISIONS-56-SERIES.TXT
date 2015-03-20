@@ -1786,3 +1786,8 @@ Added these lines:
 	//spell_mark_cont			"The rune must be on your person to mark."
 	//npc_vendor_sellfast		"You are selling too fast."
 	//npc_vendor_sellmuch		"You cannot sell so much."
+
+Fixed StatCap not allowing stats to go to the statcap itself, but 1 point lesser (STATCAP=255 allowed only 254 stat points).
+Added few more msgs to sphere_msgs.scp:
+	//npc_vendor_nomoney1			"Begging thy pardon, but thou canst not afford that."
+	//target_command				"Select object to set/command '%s'."

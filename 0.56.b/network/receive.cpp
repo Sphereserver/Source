@@ -1906,7 +1906,7 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 	}
 	else if (itemCount >= MAX_ITEMS_CONT)
 	{
-		client->SysMessage("You cannot sell so much.");
+		client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELLMUCH));
 		return true;
 	}
 
@@ -1918,7 +1918,7 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 		allowsell.InitTime(vardef->GetValNum() + (itemCount * 3));
 		if (g_World.GetCurrentTime() < allowsell)
 		{
-			client->SysMessage("You are selling too fast.");
+			client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELLFAST));
 			return true;
 		}
 	}
