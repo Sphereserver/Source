@@ -59,7 +59,7 @@ void CClient::resendBuffs()
 			continue;
 
 		iStatEffect = g_Cfg.GetSpellEffect(static_cast<SPELL_TYPE>(RES_GET_INDEX(pSpell->m_itSpell.m_spell)), pSpell->m_itSpell.m_spelllevel);
-		iTimerEffect = pSpell->GetTimerAdjusted();
+		iTimerEffect = static_cast<short>(pSpell->GetTimerAdjusted());
 		
 		// TO-DO: Fix buff icons not showing correct timer value on client login
 		// Strangely the buff works fine when added (cast spell), but on resend (client login)

@@ -1521,8 +1521,6 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_SPLINTERINGWEAPON:
 		case OC_VELOCITY:
 		case OC_NAMELOC:
-		case OC_COMBATBONUSSTAT:
-		case OC_COMBATBONUSPERCENT:
 			SetDefNum(s.GetKey(),s.GetArgVal(), false);
 			break;
 			
@@ -1554,12 +1552,19 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_REGENVALHITS:
 		case OC_REGENVALSTAM:
 		case OC_REGENVALMANA:
+		case OC_COMBATBONUSSTAT:
+		case OC_COMBATBONUSPERCENT:
 			{
 				SetDefNum(s.GetKey(),s.GetArgVal());
-				/*CChar * pChar = dynamic_cast <CChar*>(GetTopLevelObj());	// This should be used in case items with these properties updates the character in the moment without any script to make status reflect the update.
+
+				// This should be used in case items with these properties updates the character in the moment without any script to make status reflect the update.
 				// Maybe too a cliver check to not send update if not needed.
-				if ( pChar )
-					pChar->UpdateStatsFlag();*/
+				if (IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE))
+				{
+					CChar * pChar = dynamic_cast <CChar*>(GetTopLevelObj());
+					if (pChar)
+						pChar->UpdateStatsFlag();
+				}
 				break;
 			}
 		case OC_ARMOR:
@@ -1588,6 +1593,9 @@ bool CObjBase::r_LoadVal( CScript & s )
 					m_attackRange = static_cast<unsigned char>(piVal[1]) - m_attackBase;
 				else
 					m_attackRange = 0;
+				CChar * pChar = dynamic_cast <CChar*>(GetTopLevelObj());
+				if (pChar)
+					pChar->UpdateStatsFlag();
 			}
 			break;
 		case OC_WEIGHTREDUCTION:

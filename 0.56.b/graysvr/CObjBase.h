@@ -3386,8 +3386,9 @@ public:
 	static bool IsSkillBase( SKILL_TYPE skill );
 	static bool IsSkillNPC( SKILL_TYPE skill );
 	static bool IsSkillMagic( SKILL_TYPE skill );
-	static bool IsSkillCraft( SKILL_TYPE skill );
-	static bool IsSkillGather( SKILL_TYPE skill );
+	static bool IsSkillCraft(SKILL_TYPE skill);
+	static bool IsSkillGather(SKILL_TYPE skill);
+	static bool IsSkillFight(SKILL_TYPE skill);
 
 	SKILL_TYPE Skill_GetBest( unsigned int iRank = 0 ) const; // Which skill is the highest for character p
 	SKILL_TYPE Skill_GetActive() const
@@ -3886,7 +3887,7 @@ inline bool CChar::IsSkillCraft( SKILL_TYPE skill ) // static
 	return false;
 }
 
-inline bool CChar::IsSkillGather( SKILL_TYPE skill ) // static
+inline bool CChar::IsSkillGather(SKILL_TYPE skill) // static
 {
 	if (g_Cfg.IsSkillFlag(skill, SKF_SCRIPTED))
 		return false;
@@ -3894,12 +3895,32 @@ inline bool CChar::IsSkillGather( SKILL_TYPE skill ) // static
 		return true;
 	switch (skill)
 	{
-		case SKILL_MINING:
-		case SKILL_FISHING:
-		case SKILL_LUMBERJACKING:
-			return true;
-		default:
-			return false;
+	case SKILL_MINING:
+	case SKILL_FISHING:
+	case SKILL_LUMBERJACKING:
+		return true;
+	default:
+		return false;
+	}
+}
+
+inline bool CChar::IsSkillFight(SKILL_TYPE skill) // static
+{
+	if (g_Cfg.IsSkillFlag(skill, SKF_SCRIPTED))
+		return false;
+	if (g_Cfg.IsSkillFlag(skill, SKF_FIGHT))
+		return true;
+	switch (skill)
+	{
+	case SKILL_SWORDSMANSHIP:
+	case SKILL_MACEFIGHTING:
+	case SKILL_FENCING:
+	case SKILL_WRESTLING:
+	case SKILL_ARCHERY:
+	case SKILL_THROWING:
+		return true;
+	default:
+		return false;
 	}
 }
 

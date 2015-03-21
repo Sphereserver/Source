@@ -267,12 +267,12 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 		return NOTO_INVUL;
 	if ( fAllowIncog && IsStatFlag(STATF_Incognito))
 		return NOTO_NEUTRAL;
-	if ( IsStatFlag(STATF_Criminal))	// criminal to everyone.
-		return NOTO_CRIMINAL;
 	if ( m_pArea && m_pArea->IsFlag(REGION_FLAG_ARENA))
 		return NOTO_NEUTRAL;			// everyone is neutral here.
 	if ( Noto_IsEvil())
 		return NOTO_EVIL;
+	if (IsStatFlag(STATF_Criminal))	// criminal to everyone.
+		return NOTO_CRIMINAL;
 	if ( Noto_IsNeutral())
 		return NOTO_NEUTRAL;
 
@@ -2239,7 +2239,7 @@ effect_bounce:
 		uType = static_cast<DAMAGE_TYPE>(Args.m_iN2);
 	}
 
-	int iDamageChance = Args.m_VarsLocal.GetKeyNum("ItemDamageChance");
+	int iDamageChance = static_cast<int>(Args.m_VarsLocal.GetKeyNum("ItemDamageChance"));
 	if ( (iDamageChance > Calc_GetRandVal(100)) && !pCharDef->Can(CAN_C_NONHUMANOID) )
 	{
 		int iHitRoll = Calc_GetRandVal(100);
@@ -3971,7 +3971,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		}
 
 		// damage the weapon ?
-		int iDamageChance = Args.m_VarsLocal.GetKeyNum("ItemDamageChance");
+		int iDamageChance = static_cast<int>(Args.m_VarsLocal.GetKeyNum("ItemDamageChance"));
 		if ( iDamageChance > Calc_GetRandVal(100) )
 			pWeapon->OnTakeDamage( iDmg, pCharTarg );
 	}

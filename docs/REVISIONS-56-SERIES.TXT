@@ -1803,3 +1803,7 @@ Changed: Some improvements on buff packets (now it can handle more args correctl
 Changed: Some improvements on exp/level gain/loss code.
 Changed: Softcoded ItemDamageCombat / ItemDamageCombatIncrease .ini settings, the chance to get items damaged on combat now can be fully scripted using LOCAL.ItemDamageChance (value range: 0~100) on triggers @Hit (weapon) / @GetHit (armor).
 [sphere_defs.scp] Updated 'buffcliloc_reactivearmor_2' value.
+
+21-03-2015, XuN
+Now skill changes (on lumberjacking,tactics and anatomy when COMBATF_OSIDAMAGEMOD is enabled) and DAM value applied on weapons and the new CombatBonusStat and CombatBonusPercente are updating the status window to reflect the dam changes.
+Changed Notoriety checks to make PK players prevail over Criminal players.

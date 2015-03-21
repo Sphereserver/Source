@@ -493,6 +493,22 @@ void CChar::Skill_SetBase( SKILL_TYPE skill, int iValue )
 		// Update the skills list
 		m_pClient->addSkillWindow(skill);
 	}
+	bool bUpdate = false;
+	if (IsSetCombatFlags(COMBAT_OSIDAMAGEMOD))
+	{
+		switch (skill)
+		{
+		case SKILL_ANATOMY:
+		case SKILL_LUMBERJACKING:
+		case SKILL_TACTICS:
+			//case SKILL_MAGICRESISTANCE:	// If resistances are going to be updated to AOS too this should be uncommented when so.
+			bUpdate = true;
+		default:
+			break;
+		}
+		if (bUpdate)
+			UpdateStatsFlag();
+	}
 }
 
 int CChar::Skill_GetMax( SKILL_TYPE skill ) const
