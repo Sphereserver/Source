@@ -237,7 +237,7 @@ private:
 	CGrayUID m_container;
 
 public:
-	PacketContainerOpen(const CClient* target, const CObjBase* container, GUMP_TYPE gump);
+	PacketContainerOpen(const CClient* target, const CObjBase* container, GUMP_TYPE gump, bool IsVendorGump = false);
 
 	virtual bool onSend(const CClient* client);
 };

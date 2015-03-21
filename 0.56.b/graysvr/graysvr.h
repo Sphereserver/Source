@@ -1177,7 +1177,7 @@ public:
 	void removeBuff (const WORD IconId);
 	void resendBuffs();
 
-	void addOpenGump( const CObjBase * pCont, GUMP_TYPE gump );
+	void addOpenGump( const CObjBase * pCont, GUMP_TYPE gump, bool IsVendorGump = false );
 	void addContents( const CItemContainer * pCont, bool fCorpseEquip = false, bool fCorpseFilter = false, bool fShop = false); // Send items
 	bool addContainerSetup( const CItemContainer * pCont ); // Send Backpack (with items)
 

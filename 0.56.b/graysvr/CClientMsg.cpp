@@ -407,12 +407,12 @@ void CClient::addContents( const CItemContainer * pContainer, bool fCorpseEquip,
 
 
 
-void CClient::addOpenGump( const CObjBase * pContainer, GUMP_TYPE gump )
+void CClient::addOpenGump( const CObjBase * pContainer, GUMP_TYPE gump, bool IsVendorGump )
 {
 	ADDTOCALLSTACK("CClient::addOpenGump");
 	// NOTE: if pContainer has not already been sent to the client
 	//  this will crash client.
-	new PacketContainerOpen(this, pContainer, gump);
+	new PacketContainerOpen(this, pContainer, gump, IsVendorGump);
 }
 
 bool CClient::addContainerSetup( const CItemContainer * pContainer ) // Send Backpack (with items)
@@ -2451,7 +2451,7 @@ bool CClient::addShopMenuBuy( CChar * pVendor )
 	//	let's provide some empty packets specialy for them
 	addShopItems(pVendor, LAYER_VENDOR_EXTRA, false);
 
-	addOpenGump( pVendor, GUMP_VENDOR_RECT );
+	addOpenGump( pVendor, GUMP_VENDOR_RECT, true );
 	addCharStatWindow( m_pChar->GetUID());	// Make sure the gold total has been updated.
 	
 	return( true );

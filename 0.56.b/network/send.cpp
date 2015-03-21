@@ -740,7 +740,7 @@ bool PacketDragAnimation::canSendTo(const NetState* state) const
  *
  *
  ***************************************************************************/
-PacketContainerOpen::PacketContainerOpen(const CClient* target, const CObjBase* container, GUMP_TYPE gump) : PacketSend(XCMD_ContOpen, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL), m_container(container->GetUID())
+PacketContainerOpen::PacketContainerOpen(const CClient* target, const CObjBase* container, GUMP_TYPE gump, bool IsVendorGump) : PacketSend(XCMD_ContOpen, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL), m_container(container->GetUID())
 {
 	ADDTOCALLSTACK("PacketContainerOpen::PacketContainerOpen");
 
@@ -749,14 +749,7 @@ PacketContainerOpen::PacketContainerOpen(const CClient* target, const CObjBase* 
 	//word	Container Type (0x00 for vendors, 0x7D for spellbooks and containers)
 	if (target->GetNetState()->isClientVersion(MINCLIVER_HS) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA())
 	{
-		WORD ContType = 0x7D;
-		// 0x7D WORD fixes grid view in EC, it must be sent to any no-player's vendor's container to see it
-		// However I don't really know what is the purpose on sending 0x0 since you will not see items in grid view (maybe some kind of OSI's vendor menu?)
-		// The three following lines activate it, just need to know if there is really any need of sending it.
-		CChar * pChar = static_cast<CChar*>(container->GetTopLevelObj());
-		if ( pChar && pChar->NPC_IsVendor() )
-			ContType = 0x00;
-
+		WORD ContType = IsVendorGump ? 0x30 : 0x7D;
 		writeInt16(ContType);
 	}
 

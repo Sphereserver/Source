@@ -1793,6 +1793,8 @@ Added few more msgs to sphere_msgs.scp:
 	//target_command				"Select object to set/command '%s'."
 
 20-03-2015, Coruja
+Fixed: Console error / client crash when opening some specific gump types on HS clients >= 7.0.9.0.
+Fixed: Vendor menu not working on enhanced clients.
 Fixed: Added missing buff icon on Meditation skill.
 Fixed: Minimum client version required to use some new packets.
 Fixed: Reactive Armor spell changing RESPHYSICAL to an incorrect value when COMBAT_ELEMENTAL_ENGINE is enabled.
