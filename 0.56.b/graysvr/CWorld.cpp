@@ -1048,9 +1048,9 @@ void CWorldClock::Init()
 bool CWorldClock::Advance()
 {
 	ADDTOCALLSTACK("CWorldClock::Advance");
-	DWORD Clock_Sys = GetSystemClock();	// get the system time.
+	unsigned long Clock_Sys = GetSystemClock();	// get the system time.
 
-	int iTimeSysDiff = Clock_Sys - m_Clock_PrevSys;
+	unsigned long iTimeSysDiff = Clock_Sys - m_Clock_PrevSys;
 	iTimeSysDiff = IMULDIVDOWN( TICK_PER_SEC, iTimeSysDiff, CLOCKS_PER_SEC );
 
 	if ( !iTimeSysDiff )

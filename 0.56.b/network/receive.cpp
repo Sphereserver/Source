@@ -1413,7 +1413,7 @@ bool PacketMenuChoice::onReceive(NetState* net)
 
 	if (context != client->GetTargMode() || serial != client->m_tmMenu.m_UID)
 	{
-		client->SysMessage("Unexpected menu info");
+		client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MENU_UNEXPECTED));
 		return true;
 	}
 

@@ -2627,9 +2627,23 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 					iDmgBonus += 10;
 			}
 
-			iDmgBonus += Stat_GetAdjusted(STAT_STR) * 30 / 100;
 			if (Stat_GetAdjusted(STAT_STR) >= 100)
 				iDmgBonus += 5;
+
+			int iBonus = 0;
+			CObjBase * pObj = pWeapon ? pWeapon->GetUID().ObjFind() : this->GetUID().ObjFind();	// Do I have a weapon or should I use my properties?
+			STAT_TYPE statBonus = static_cast<STAT_TYPE>(pObj->GetDefNum("COMBATBONUSSTAT"));
+			if (!statBonus)
+				iBonus = Stat_GetAdjusted(STAT_STR) *30 / 100;	// default damage
+
+			else if (statBonus >= STAT_STR && statBonus <= STAT_DEX)
+			{
+				int percentBonus = static_cast<int>(pObj->GetDefNum("COMBATBONUSPERCENT"));
+				iBonus = IMULDIV(Stat_GetAdjusted(statBonus), percentBonus != 0 ? percentBonus : 1, 100);
+			}
+
+			iDmgMin += iBonus;
+			iDmgMax += iBonus;
 
 			// pre-AOS damage bonus
 			/*iDmgBonus += (Skill_GetBase(SKILL_TACTICS) - 500) / 10;
@@ -2669,11 +2683,15 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 
 			iDmgMin += iBonus;
 			iDmgMax += iBonus;
-			if (iDmgMin < 0)
-				iDmgMin = 0;
-			if (iDmgMax < 1)
-				iDmgMax = 1;
 		}
+
+		if (iDmgMin < 0)
+			iDmgMin = 0;
+		if (iDmgMax < 1 && iDmgMin >= iDmgMax)
+			iDmgMax = iDmgMin + 1;
+		else if (iDmgMax < 1)
+			iDmgMax = 1;
+
 		iDmgMin += iDmgMin * iDmgBonus / 100;
 		iDmgMax += iDmgMax * iDmgBonus / 100;
 	}
