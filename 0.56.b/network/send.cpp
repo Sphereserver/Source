@@ -129,18 +129,16 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 		writeBool(canRename);
 
 		unsigned char version(0);
-		if (state->isClientLessVersion(MINCLIVER_STATUS_V2))
-			version = 1;
-		else if (state->isClientLessVersion(MINCLIVER_STATUS_V3))
-			version = 2;
-		else if (state->isClientLessVersion(MINCLIVER_STATUS_V4))
-			version = 3;
-		else if (state->isClientLessVersion(MINCLIVER_STATUS_V5))
-			version = 4;
-		else if (state->isClientLessVersion(MINCLIVER_STATUS_V6))
-			version = 5;
-		else
+		if (state->isClientVersion(MINCLIVER_STATUS_V6))
 			version = 6;
+		else if (state->isClientVersion(MINCLIVER_STATUS_V5))
+			version = 5;
+		else if (state->isClientVersion(MINCLIVER_STATUS_V4))
+			version = 4;
+		else if (state->isClientVersion(MINCLIVER_STATUS_V3))
+			version = 3;
+		else if (state->isClientVersion(MINCLIVER_STATUS_V2))
+			version = 2;
 
 		int strength = other->Stat_GetAdjusted(STAT_STR);
 		if (strength < 0) strength = 0;
@@ -212,7 +210,7 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 			writeInt16(statcap);
 		}
 
-		if (version >= 3) // AOS attributes
+		if (version >= 3) // Renaissance attributes
 		{
 			if (other->m_pPlayer != NULL)
 			{
@@ -226,7 +224,7 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 			}
 		}
 
-		if (version >= 4) // SE attributes
+		if (version >= 4) // AOS attributes
 		{
 			writeInt16(static_cast<WORD>(other->GetDefNum("RESFIRE", true, true)));
 			writeInt16(static_cast<WORD>(other->GetDefNum("RESCOLD", true, true)));
@@ -241,7 +239,7 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 			writeInt32(static_cast<unsigned long>(other->GetDefNum("TITHING", true, true)));
 		}
 
-		if (version >= 6)	// Stygian Abyss Attributes?
+		if (version >= 6)	// SA attributes
 		{
 			writeInt16(static_cast<WORD>(other->GetDefNum("RESPHYSICALMAX", true, true)));
 			writeInt16(static_cast<WORD>(other->GetDefNum("RESFIREMAX", true, true)));
@@ -749,7 +747,7 @@ PacketContainerOpen::PacketContainerOpen(const CClient* target, const CObjBase* 
 	writeInt32(container->GetUID());
 	writeInt16(static_cast<WORD>(gump));
 	//word	Container Type (0x00 for vendors, 0x7D for spellbooks and containers)
-	if (target->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA())
+	if (target->GetNetState()->isClientVersion(MINCLIVER_HS) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA())
 	{
 		WORD ContType = 0x7D;
 		// 0x7D WORD fixes grid view in EC, it must be sent to any no-player's vendor's container to see it
@@ -1730,7 +1728,7 @@ PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetT
 	writeInt16(0); // y
 	writeInt16(0); // z
 
-	if (target->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS))
+	if (target->GetNetState()->isClientVersion(MINCLIVER_HS))
 	{
 		writeInt16(0);
 		writeInt16(0); // hue
@@ -3582,7 +3580,7 @@ PacketArrowQuest::PacketArrowQuest(const CClient* target, int x, int y, int id) 
 	writeInt16(static_cast<WORD>(x));
 	writeInt16(static_cast<WORD>(y));
 
-	if (target->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || target->GetNetState()->isClientSA())
+	if (target->GetNetState()->isClientVersion(MINCLIVER_HS) || target->GetNetState()->isClientSA())
 		writeInt32(id);
 	
 	trim();
@@ -4619,34 +4617,52 @@ PacketBuff::PacketBuff(const CClient* target, const WORD iconId, const DWORD cli
 
 	writeInt32(character->GetUID());
 	writeInt16(iconId);
-	writeInt16(0x01); // show (count?)
+	writeInt16(0x1);	// show
 
 	writeInt32(0);
 	writeInt16(iconId);
-	writeInt16(0x01); // show
+	writeInt16(0x1);	// show
+
 	writeInt32(0);
-	writeInt16(time);
+	writeInt16(maximum(time, 0));	//simple countdown without automatic remove
 	writeInt16(0);
 	writeByte(0);
+
 	writeInt32(clilocOne);
 	writeInt32(clilocTwo);
-	writeInt32(0);
-	writeInt16(0x01);
-	writeInt16(0);
 
-	writeInt16(9);
-
-	for (size_t i = 0; i < argCount; i++)
+	if ( argCount )
 	{
-		if (i > 0)
+		writeInt32(0);
+		writeInt16(0x1);		// show icon
+		writeInt16(0);
+
+		for (size_t i = 0; i < argCount; i++)
+		{
 			writeCharUNICODE('\t');
+			writeStringUNICODE(args[i], false);
+		}
+		writeCharUNICODE('\t');
+		writeCharUNICODE('\0');
 
-		writeStringUNICODE(args[i], false);
+		writeInt16(0x1);
+		writeInt16(0);
 	}
+	else
+	{
+		// Original code - it leaves empty clilocTwo exactly as it is
+		//writeInt32(0);
+		//writeInt32(0);
+		//writeInt16(0);
 
-	writeCharUNICODE('\t');
-	writeCharUNICODE('\0');
+		// Workaround - it fills empty clilocTwo with an whitespace just to make it show ' ' instead '~1_SOMETHING~'
+		// This is a Sphere custom behavior, since it uses ~1_NOTHING~ clilocs which are not really used on OSI
+		writeInt32(0);
+		writeInt16(0x1);
+		writeInt16(0);
 
+		writeStringUNICODE("\t ", true);
+	}
 	push(target);
 }
 
@@ -4661,9 +4677,7 @@ PacketBuff::PacketBuff(const CClient* target, const WORD iconId) : PacketSend(XC
 
 	writeInt32(character->GetUID());
 	writeInt16(iconId);
-	writeInt16(0x00); // hide
-
-	writeInt32(0);
+	writeInt16(0);		// hide icon
 
 	push(target);
 }
@@ -4772,7 +4786,7 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : Pac
 		id = static_cast<ITEMID_TYPE>(id - ITEMID_MULTI);
 		source = Multi;
 	}
-	else if (target->GetNetState()->isClientLessVersion(MINCLIVER_HIGHSEAS) && id >= ITEMID_MULTI_SA)
+	else if (target->GetNetState()->isClientLessVersion(MINCLIVER_HS) && id >= ITEMID_MULTI_SA)
 	{
 		id = ITEMID_WorldGem;
 	}
@@ -4791,7 +4805,7 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : Pac
 	writeInt16(hue);
 	writeByte(flags);
 
-	if (target->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS))
+	if (target->GetNetState()->isClientVersion(MINCLIVER_HS))
 		// 0 = World Item, 1 = Player Item ( ?? why should a item on the ground be defined as player item? and what is the difference? )
 		writeInt16(0);
 	
@@ -4822,7 +4836,7 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CChar* mobile) : P
 	writeInt16(hue);
 	writeByte(0);
 
-	if (target->GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS))
+	if (target->GetNetState()->isClientVersion(MINCLIVER_HS))
 		writeInt16(0);
 
 	trim();

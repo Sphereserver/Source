@@ -1791,3 +1791,13 @@ Fixed StatCap not allowing stats to go to the statcap itself, but 1 point lesser
 Added few more msgs to sphere_msgs.scp:
 	//npc_vendor_nomoney1			"Begging thy pardon, but thou canst not afford that."
 	//target_command				"Select object to set/command '%s'."
+
+20-03-2015, Coruja
+Fixed: Added missing buff icon on Meditation skill.
+Fixed: Minimum client version required to use some new packets.
+Fixed: Reactive Armor spell changing RESPHYSICAL to an incorrect value when COMBAT_ELEMENTAL_ENGINE is enabled.
+Added: ADDBUFF function now can handle up to 5 args to support newest clilocs.
+Changed: Some improvements on buff packets (now it can handle more args correctly).
+Changed: Some improvements on exp/level gain/loss code.
+Changed: Softcoded ItemDamageCombat / ItemDamageCombatIncrease .ini settings, the chance to get items damaged on combat now can be fully scripted using LOCAL.ItemDamageChance (value range: 0~100) on triggers @Hit (weapon) / @GetHit (armor).
+[sphere_defs.scp] Updated 'buffcliloc_reactivearmor_2' value.

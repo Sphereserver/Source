@@ -2170,16 +2170,8 @@ effect_bounce:
 			Effect( EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 16 );
 			if ( IsPriv(PRIV_DETAIL) )
 				pSrc->SysMessageDefault( DEFMSG_COMBAT_PARRY );
-
-			int chanceDamage = g_Cfg.m_iItemDamageCombat;
-			if ((pItemHit != NULL) && (chanceDamage))
-			{
-				if (g_Cfg.m_iItemDamageCombatIncrease)
-					chanceDamage += (pItemHit->m_itArmor.m_Hits_Max - pItemHit->m_itArmor.m_Hits_Cur);
-
-				if (chanceDamage >= Calc_GetRandVal(100))
-					pItemHit->OnTakeDamage( iDmg, pSrc, uType );
-			}
+			if ( pItemHit != NULL )
+				pItemHit->OnTakeDamage( iDmg, pSrc, uType );
 
 			return( 0 );
 		}
@@ -2236,19 +2228,21 @@ effect_bounce:
 	if ( ! OnAttackedBy( pSrc, iDmg, false, !(uType & DAMAGE_NOREVEAL) ))
 		return( 0 );
 
+	CScriptTriggerArgs Args( iDmg, uType, static_cast<INT64>(0) );
+	Args.m_VarsLocal.SetNum("ItemDamageChance", 40);
+
 	if ( IsTrigUsed(TRIGGER_GETHIT) )
 	{
-		CScriptTriggerArgs Args( iDmg, uType, static_cast<INT64>(0) );
 		if ( OnTrigger( CTRIG_GetHit, pSrc, &Args ) == TRIGRET_RET_TRUE )
 			return( 0 );
 		iDmg = static_cast<int>(Args.m_iN1);
 		uType = static_cast<DAMAGE_TYPE>(Args.m_iN2);
 	}
 
-	int chanceDamage = g_Cfg.m_iItemDamageCombat;
-	if (!pCharDef->Can(CAN_C_NONHUMANOID) && (chanceDamage))
+	int iDamageChance = Args.m_VarsLocal.GetKeyNum("ItemDamageChance");
+	if ( (iDamageChance > Calc_GetRandVal(100)) && !pCharDef->Can(CAN_C_NONHUMANOID) )
 	{
-		int iHitRoll = Calc_GetRandVal( 100 );
+		int iHitRoll = Calc_GetRandVal(100);
 		BODYPART_TYPE iHitArea = ARMOR_HEAD;
 		while ( iHitArea < (ARMOR_QTY - 1) )
 		{
@@ -2273,14 +2267,8 @@ effect_bounce:
 		}
 
 		CItem * pItemHit = LayerFind( iHitLayer );
-		if ( pItemHit != NULL)
-		{
-			if (g_Cfg.m_iItemDamageCombatIncrease)
-				chanceDamage += (pItemHit->m_itArmor.m_Hits_Max - pItemHit->m_itArmor.m_Hits_Cur);
-
-			if (chanceDamage >= Calc_GetRandVal(100))
-				pItemHit->OnTakeDamage( iDmg, pSrc, uType );
-		}
+		if ( pItemHit != NULL )
+			pItemHit->OnTakeDamage( iDmg, pSrc, uType );
 	}
 
 	// Remove stuck/paralyze effect
@@ -3920,13 +3908,9 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	//	pCharTarg->OnHarmedBy( this, iDmg );
 
 	CScriptTriggerArgs	Args( iDmg, iTyp, pWeapon );
-
-	if ( g_Cfg.IsSkillRanged(skill) )
-	{
-		// Get uid of the current arrow.
-		if ( pAmmo )		
-			Args.m_VarsLocal.SetNum("Arrow", pAmmo->GetUID());
-	}
+	Args.m_VarsLocal.SetNum("ItemDamageChance", 100);
+	if ( pAmmo )
+		Args.m_VarsLocal.SetNum("Arrow", pAmmo->GetUID());
 
 	if ( IsTrigUsed(TRIGGER_SKILLSUCCESS) )
 	{
@@ -3960,16 +3944,9 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	iDmg = static_cast<int>(Args.m_iN1);
 	iTyp = static_cast<int>(Args.m_iN2);
 
-	if ( g_Cfg.IsSkillRanged(skill) )
-	{
-		// There's a chance that the arrow will stick in the target
-		if ( pAmmo && !Calc_GetRandVal(2))
-		{
-			// int pAmmo->OnTakeDamage( 2+iDmg, pCharTarg, DAMAGE_HIT_BLUNT )
-
-			pCharTarg->ItemBounce( pAmmo );
-		}
-	}
+	// There's a chance that the arrow will stick in the target
+	if ( pAmmo && !Calc_GetRandVal(2))
+		pCharTarg->ItemBounce( pAmmo );
 
 	// Raise skill
 	if ( ! (pCharTarg->m_pArea->IsFlag(REGION_FLAG_NO_PVP) && m_pPlayer && pCharTarg->m_pPlayer))
@@ -3980,7 +3957,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	if ( pWeapon != NULL )
 	{
-		// poison weapon ?
+		// poisoned weapon ?
 		if ( pWeapon->m_itWeapon.m_poison_skill && Calc_GetRandVal( 100 ) < pWeapon->m_itWeapon.m_poison_skill )
 		{
 			// Poison delivered.
@@ -3994,15 +3971,9 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		}
 
 		// damage the weapon ?
-		int chanceDamage = g_Cfg.m_iItemDamageCombat;
-		if (chanceDamage)
-		{
-			if (g_Cfg.m_iItemDamageCombatIncrease)
-				chanceDamage += (pWeapon->m_itArmor.m_Hits_Max - pWeapon->m_itArmor.m_Hits_Cur);
-			
-			if (chanceDamage >= Calc_GetRandVal(100))
-				pWeapon->OnTakeDamage( iDmg, pCharTarg );
-		}
+		int iDamageChance = Args.m_VarsLocal.GetKeyNum("ItemDamageChance");
+		if ( iDamageChance > Calc_GetRandVal(100) )
+			pWeapon->OnTakeDamage( iDmg, pCharTarg );
 	}
 	else
 	{

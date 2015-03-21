@@ -594,7 +594,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 		case SPELL_Reactive_Armor:
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
-				SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) - iStatEffect));
+				SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) - pSpell->m_itSpell.m_spelllevel));
 				SetDefNum("RESFIRE", static_cast<int>(GetDefNum("RESFIRE", true) + 5));
 				SetDefNum("RESCOLD", static_cast<int>(GetDefNum("RESCOLD", true) + 5));
 				SetDefNum("RESPOISON", static_cast<int>(GetDefNum("RESPOISON", true) + 5));
@@ -753,11 +753,12 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 		return;
 
 	short iStatEffect = static_cast<short>(g_Cfg.GetSpellEffect(spell, pSpell->m_itSpell.m_spelllevel));
+	short iTimerEffect = static_cast<short>(pSpell->GetTimerAdjusted());
 
 	//Buffs related variables:
 	int iBuffPercent;
-	TCHAR NumBuff[3][4];
-	LPCTSTR pNumBuff[3] = { NumBuff[0], NumBuff[1], NumBuff[2] };
+	TCHAR NumBuff[5][6];
+	LPCTSTR pNumBuff[5] = { NumBuff[0], NumBuff[1], NumBuff[2], NumBuff[3], NumBuff[4] };
 	//------------------------
 
 	switch ( spell )
@@ -791,7 +792,18 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			if ( IsSetOF(OF_Buffs) && IsClient() )
 			{
 				GetClient()->removeBuff(BI_REACTIVEARMOR);
-				GetClient()->addBuff(BI_REACTIVEARMOR, 1075812, 1070722, static_cast<WORD>(pSpell->GetTimerAdjusted()));
+				if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+				{
+					ITOA(iStatEffect, NumBuff[0], 10);
+					for ( int idx = 1; idx < 5; ++idx )
+						ITOA(5, NumBuff[idx], 10);
+
+					GetClient()->addBuff(BI_REACTIVEARMOR, 1075812, 1075813, iTimerEffect, pNumBuff, 5);
+				}
+				else
+				{
+					GetClient()->addBuff(BI_REACTIVEARMOR, 1075812, 1070722, iTimerEffect);
+				}
 			}
 			break;
 		case SPELL_Night_Sight:
@@ -802,7 +814,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				if (IsSetOF(OF_Buffs))
 				{
 					GetClient()->removeBuff(BI_NIGHTSIGHT);
-					GetClient()->addBuff(BI_NIGHTSIGHT, 1075643, 1075644, static_cast<WORD>(pSpell->GetTimerAdjusted()));
+					GetClient()->addBuff(BI_NIGHTSIGHT, 1075643, 1075644, iTimerEffect);
 				}
 			}
 			break;
@@ -813,7 +825,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				GetClient()->removeBuff(BI_CLUMSY);
 				iBuffPercent = GetStatPercentage( this, STAT_DEX, iStatEffect );
 				ITOA(iBuffPercent, NumBuff[0], 10);
-				GetClient()->addBuff(BI_CLUMSY, 1075831, 1075832, static_cast<WORD>(pSpell->GetTimerAdjusted()), pNumBuff, 1);
+				GetClient()->addBuff(BI_CLUMSY, 1075831, 1075832, iTimerEffect, pNumBuff, 1);
 			}
 			break;
 		case SPELL_Particle_Form:	// 112 // turns you into an immobile, but untargetable particle system for a while.
@@ -832,7 +844,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				GetClient()->removeBuff(BI_FEEBLEMIND);
 				iBuffPercent = GetStatPercentage( this, STAT_INT, iStatEffect );
 				ITOA(iBuffPercent, NumBuff[0], 10);
-				GetClient()->addBuff(BI_FEEBLEMIND, 1075833, 1075834, static_cast<WORD>(pSpell->GetTimerAdjusted()), pNumBuff, 1);
+				GetClient()->addBuff(BI_FEEBLEMIND, 1075833, 1075834, iTimerEffect, pNumBuff, 1);
 			}
 			break;
 		case SPELL_Weaken:
@@ -843,7 +855,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				GetClient()->removeBuff(BI_WEAKEN);
 				iBuffPercent = GetStatPercentage( this, STAT_STR, iStatEffect );
 				ITOA(iBuffPercent, NumBuff[0], 10);
-				GetClient()->addBuff(BI_WEAKEN, 1075837, 1075838, static_cast<WORD>(pSpell->GetTimerAdjusted()), pNumBuff, 1);
+				GetClient()->addBuff(BI_WEAKEN, 1075837, 1075838, iTimerEffect, pNumBuff, 1);
 			}
 
 			UpdateHitsFlag();
@@ -863,7 +875,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 						ITOA(iBuffPercent, NumBuff[idx], 10);
 					}
 
-					GetClient()->addBuff(BI_CURSE, 1075835, 1075840, static_cast<WORD>(pSpell->GetTimerAdjusted()), pNumBuff, STAT_BASE_QTY);
+					GetClient()->addBuff(BI_CURSE, 1075835, 1075840, iTimerEffect, pNumBuff, STAT_BASE_QTY);
 				}
 
 				UpdateHitsFlag();
@@ -875,7 +887,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				GetClient()->removeBuff(BI_AGILITY);
 				iBuffPercent = GetStatPercentage( this, STAT_DEX, iStatEffect );
 				ITOA(iBuffPercent, NumBuff[0], 10);
-				GetClient()->addBuff(BI_AGILITY, 1075841, 1075842, static_cast<WORD>(pSpell->GetTimerAdjusted()), pNumBuff, 1);
+				GetClient()->addBuff(BI_AGILITY, 1075841, 1075842, iTimerEffect, pNumBuff, 1);
 			}
 			break;
 		case SPELL_Cunning:
@@ -885,7 +897,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				GetClient()->removeBuff(BI_CUNNING);
 				iBuffPercent = GetStatPercentage( this, STAT_INT, iStatEffect );
 				ITOA(iBuffPercent, NumBuff[0], 10);
-				GetClient()->addBuff(BI_CUNNING, 1075843, 1075844, static_cast<WORD>(pSpell->GetTimerAdjusted()), pNumBuff, 1);
+				GetClient()->addBuff(BI_CUNNING, 1075843, 1075844, iTimerEffect, pNumBuff, 1);
 			}
 			break;
 		case SPELL_Strength:
@@ -896,7 +908,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					GetClient()->removeBuff(BI_STRENGTH);
 					iBuffPercent = GetStatPercentage( this, STAT_STR, iStatEffect );
 					ITOA(iBuffPercent, NumBuff[0], 10);
-					GetClient()->addBuff(BI_STRENGTH, 1075845, 1075846, static_cast<WORD>(pSpell->GetTimerAdjusted()), pNumBuff, 1);
+					GetClient()->addBuff(BI_STRENGTH, 1075845, 1075846, iTimerEffect, pNumBuff, 1);
 				}
 
 				UpdateHitsFlag();
@@ -915,7 +927,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 						ITOA(iBuffPercent, NumBuff[idx], 10);
 					}
 
-					GetClient()->addBuff(BI_BLESS, 1075847, 1075848, static_cast<WORD>(pSpell->GetTimerAdjusted()), pNumBuff, STAT_BASE_QTY);
+					GetClient()->addBuff(BI_BLESS, 1075847, 1075848, iTimerEffect, pNumBuff, STAT_BASE_QTY);
 				}
 
 				UpdateHitsFlag();
@@ -946,7 +958,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				if ( IsSetOF(OF_Buffs) && IsClient() )
 				{
 					GetClient()->removeBuff(BI_INCOGNITO);
-					GetClient()->addBuff(BI_INCOGNITO, 1075819, 1075820, static_cast<WORD>(pSpell->GetTimerAdjusted()));
+					GetClient()->addBuff(BI_INCOGNITO, 1075819, 1075820, iTimerEffect);
 				}
 			}
 			break;
@@ -955,14 +967,14 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			if ( IsSetOF(OF_Buffs) && IsClient() )
 			{
 				GetClient()->removeBuff(BI_MAGICREFLECTION);
-				GetClient()->addBuff(BI_MAGICREFLECTION, 1075817, 1070722, static_cast<WORD>(pSpell->GetTimerAdjusted()) );
+				GetClient()->addBuff(BI_MAGICREFLECTION, 1075817, 1070722, iTimerEffect);
 			}
 			break;
 		case SPELL_Protection:
 			if ( IsSetOF(OF_Buffs) && IsClient() )
 			{
 				GetClient()->removeBuff(BI_PROTECTION);
-				GetClient()->addBuff(BI_PROTECTION, 1075814, 1070722, static_cast<WORD>(pSpell->GetTimerAdjusted()) );
+				GetClient()->addBuff(BI_PROTECTION, 1075814, 1070722, iTimerEffect);
 			}
 			m_defense = static_cast<WORD>(CalcArmorDefense());
 			break;
@@ -970,7 +982,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			if ( IsSetOF(OF_Buffs) && IsClient() )
 			{
 				GetClient()->removeBuff(BI_ARCHPROTECTION);
-				GetClient()->addBuff(BI_ARCHPROTECTION, 1075816, 1070722, static_cast<WORD>(pSpell->GetTimerAdjusted()));
+				GetClient()->addBuff(BI_ARCHPROTECTION, 1075816, 1070722, iTimerEffect);
 			}
 		case SPELL_Steelskin:		// 114 // turns your skin into steel, giving a boost to your AR.
 		case SPELL_Stoneskin:		// 115 // turns your skin into stone, giving a boost to your AR.
@@ -985,7 +997,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			if ( IsSetOF(OF_Buffs) && IsClient() )
 			{
 				GetClient()->removeBuff(BI_INVISIBILITY);
-				GetClient()->addBuff(BI_INVISIBILITY, 1075825, 1075826, static_cast<WORD>(pSpell->GetTimerAdjusted()));
+				GetClient()->addBuff(BI_INVISIBILITY, 1075825, 1075826, iTimerEffect);
 			}
 			break;
 		case SPELL_Paralyze:
@@ -994,7 +1006,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			if ( IsSetOF(OF_Buffs) && IsClient() )
 			{
 				GetClient()->removeBuff(BI_PARALYZE);
-				GetClient()->addBuff(BI_PARALYZE, 1075827, 1075828, static_cast<WORD>(pSpell->GetTimerAdjusted()));
+				GetClient()->addBuff(BI_PARALYZE, 1075827, 1075828, iTimerEffect);
 			}
 			UpdateModeFlag();
 			break;
@@ -1003,7 +1015,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			if ( IsSetOF(OF_Buffs) && IsClient() )
 			{
 				GetClient()->removeBuff(BI_POLYMORPH);
-				GetClient()->addBuff(BI_POLYMORPH, 1075824, 1070722, static_cast<WORD>(pSpell->GetTimerAdjusted()));
+				GetClient()->addBuff(BI_POLYMORPH, 1075824, 1070722, iTimerEffect);
 			}
 			break;
 		case SPELL_Summon:

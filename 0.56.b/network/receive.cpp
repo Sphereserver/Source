@@ -3244,7 +3244,7 @@ bool PacketGargoyleFly::onReceive(NetState* net)
 			{
 				// begin hovering
 				character->StatFlag_Set(STATF_Hovering);
-				client->addBuff(BI_GARGOYLEFLY,1112193,1112567,0);
+				client->addBuff(BI_GARGOYLEFLY, 1112193, 1112567);
 
 				// float player up to the hover Z
 				CPointMap ptHover = g_World.FindItemTypeNearby(character->GetTopPoint(), IT_HOVEROVER, 0, false, false);
@@ -3260,7 +3260,7 @@ bool PacketGargoyleFly::onReceive(NetState* net)
 			{
 				if (!pClient->CanSee(character))
 					continue;
-				if ( pClient->GetNetState()->isClientVersion(MINCLIVER_NEWMOBILEANIMATION) )
+				if ( pClient->GetNetState()->isClientVersion(MINCLIVER_NEWMOBILEANIM))
 					cmd->send(pClient);
 			}
 			delete cmd;

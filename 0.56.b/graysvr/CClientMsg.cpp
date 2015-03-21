@@ -30,48 +30,61 @@ void CClient::resendBuffs()
 	// These checks are in addBuff too, but it would be useless to call it so many times
 	if ( !IsSetOF(OF_Buffs) )
 		return;
-	if ( !IsResClient(RDS_AOS))
-		return;
 	if ( PacketBuff::CanSendTo(GetNetState()) == false )
 		return;
 
-	CContainer* Cont = dynamic_cast<CContainer*>(GetChar());
+	// Skills
+	CChar* pChar = GetChar();
+	ASSERT(pChar);
+
+	if ( pChar->IsStatFlag( STATF_Hidden ) )
+		addBuff( BI_HIDDEN, 1075655, 1075656 );
+
+	// Spells
+	CContainer* Cont = dynamic_cast<CContainer*>(pChar);
 	ASSERT(Cont);
 
-	CItem* pSpell = 0;
-	TCHAR NumBuff[3][4];
-	LPCTSTR pNumBuff[3] = { NumBuff[0], NumBuff[1], NumBuff[2] };
+	TCHAR NumBuff[5][6];
+	LPCTSTR pNumBuff[5] = { NumBuff[0], NumBuff[1], NumBuff[2], NumBuff[3], NumBuff[4] };
 	int iBuffPercent = 0;
 	int iStatEffect = 0;
+	short iTimerEffect = 0;
 
 	for ( size_t i = 0; i < Cont->GetCount(); ++i )
 	{
-		pSpell = Cont->GetAt(i);
+		CItem* pSpell = Cont->GetAt(i);
 		if ( !pSpell )
 			continue;
 		if ( !(pSpell->IsType(IT_SPELL)) )
 			continue;
+
 		iStatEffect = g_Cfg.GetSpellEffect(static_cast<SPELL_TYPE>(RES_GET_INDEX(pSpell->m_itSpell.m_spell)), pSpell->m_itSpell.m_spelllevel);
+		iTimerEffect = pSpell->GetTimerAdjusted();
+		
+		// TO-DO: Fix buff icons not showing correct timer value on client login
+		// Strangely the buff works fine when added (cast spell), but on resend (client login)
+		// it always use timer=0 even if the timer value is correct and added properly
+
 		switch( pSpell->m_itSpell.m_spell )
 		{
 		case SPELL_Night_Sight:
-			addBuff( BI_NIGHTSIGHT,1075643, 1075644, static_cast<WORD>(pSpell->GetTimerAdjusted()) );
+			addBuff( BI_NIGHTSIGHT,1075643, 1075644, iTimerEffect );
 			break;
 		case SPELL_Clumsy:
 			iBuffPercent = GetStatPercentage( GetChar(), STAT_DEX, iStatEffect );
 			ITOA(iBuffPercent, NumBuff[0], 10);
-			addBuff( BI_CLUMSY, 1075831, 1075832, static_cast<WORD>(pSpell->GetTimerAdjusted()), pNumBuff, 1 );
+			addBuff( BI_CLUMSY, 1075831, 1075832, iTimerEffect, pNumBuff, 1 );
 			break;
 		case SPELL_Weaken:
 
 			iBuffPercent = GetStatPercentage( GetChar(), STAT_STR, iStatEffect );
 			ITOA(iBuffPercent, NumBuff[0], 10);
-			addBuff( BI_WEAKEN, 1075837, 1075838, static_cast<WORD>(pSpell->GetTimerAdjusted()), pNumBuff, 1 );
+			addBuff( BI_WEAKEN, 1075837, 1075838, iTimerEffect, pNumBuff, 1 );
 			break;
 		case SPELL_Feeblemind:
 			iBuffPercent = GetStatPercentage( GetChar(), STAT_INT, iStatEffect );
 			ITOA(iBuffPercent, NumBuff[0], 10);
-			addBuff( BI_FEEBLEMIND, 1075833, 1075834, static_cast<WORD>(pSpell->GetTimerAdjusted()), pNumBuff, 1  );
+			addBuff( BI_FEEBLEMIND, 1075833, 1075834, iTimerEffect, pNumBuff, 1  );
 			break;
 		case SPELL_Curse:
 		{
@@ -80,23 +93,23 @@ void CClient::resendBuffs()
 				iBuffPercent = GetStatPercentage( GetChar(), static_cast<STAT_TYPE>(idx), iStatEffect );
 				ITOA(iBuffPercent, NumBuff[idx], 10);
 			}
-			addBuff( BI_CURSE, 1075835, 1075840, static_cast<WORD>(pSpell->GetTimerAdjusted()), pNumBuff, STAT_BASE_QTY );
+			addBuff( BI_CURSE, 1075835, 1075840, iTimerEffect, pNumBuff, STAT_BASE_QTY );
 			break;
 		}
 		case SPELL_Strength:
 			iBuffPercent = GetStatPercentage( GetChar(), STAT_STR, iStatEffect );
 			ITOA(iBuffPercent, NumBuff[0], 10);
-			addBuff( BI_STRENGTH, 0x106A85, 0x106A86, static_cast<WORD>(pSpell->GetTimerAdjusted()), pNumBuff, 1 );
+			addBuff( BI_STRENGTH, 0x106A85, 0x106A86, iTimerEffect, pNumBuff, 1 );
 			break;
 		case SPELL_Agility:
 			iBuffPercent = GetStatPercentage( GetChar(), STAT_DEX, iStatEffect );
 			ITOA(iBuffPercent, NumBuff[0], 10);
-			addBuff( BI_AGILITY, 0x106A85, 0x106A86, static_cast<WORD>(pSpell->GetTimerAdjusted()), pNumBuff, 1 );
+			addBuff( BI_AGILITY, 0x106A85, 0x106A86, iTimerEffect, pNumBuff, 1 );
 			break;
 		case SPELL_Cunning:
 			iBuffPercent = GetStatPercentage( GetChar(), STAT_INT, iStatEffect );
 			ITOA(iBuffPercent, NumBuff[0], 10);
-			addBuff( BI_CUNNING, 0x106A85, 0x106A86, static_cast<WORD>(pSpell->GetTimerAdjusted()), pNumBuff, 1 );
+			addBuff( BI_CUNNING, 0x106A85, 0x106A86, iTimerEffect, pNumBuff, 1 );
 			break;
 		case SPELL_Bless:
 		{
@@ -105,32 +118,46 @@ void CClient::resendBuffs()
 				iBuffPercent = GetStatPercentage( GetChar(), static_cast<STAT_TYPE>(idx), iStatEffect );
 				ITOA(iBuffPercent, NumBuff[idx], 10);
 			}
-			addBuff( BI_BLESS, 1075847, 1075848, static_cast<WORD>(pSpell->GetTimerAdjusted()), pNumBuff, STAT_BASE_QTY );
+			addBuff( BI_BLESS, 1075847, 1075848, iTimerEffect, pNumBuff, STAT_BASE_QTY );
 			break;
 		}
 		case SPELL_Reactive_Armor:
-			addBuff( BI_REACTIVEARMOR, 1075812, 1070722, static_cast<WORD>(pSpell->GetTimerAdjusted()) );
+		{
+			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+			{
+				iBuffPercent = pSpell->m_itSpell.m_spelllevel;
+				ITOA(iBuffPercent, NumBuff[0], 10);
+				for ( int idx = 1; idx < 5; ++idx )
+					ITOA(5, NumBuff[idx], 10);
+
+				addBuff( BI_REACTIVEARMOR, 1075812, 1075813, iTimerEffect, pNumBuff, 5 );
+			}
+			else
+			{
+				addBuff( BI_REACTIVEARMOR, 1075812, 1070722, iTimerEffect );
+			}
 			break;
+		}
 		case SPELL_Protection:
-			addBuff( BI_PROTECTION, 1075814, 1070722, static_cast<WORD>(pSpell->GetTimerAdjusted()) );
+			addBuff( BI_PROTECTION, 1075814, 1070722, iTimerEffect );
 			break;
 		case SPELL_Arch_Prot:
-			addBuff( BI_ARCHPROTECTION, 1075816, 1070722, static_cast<WORD>(pSpell->GetTimerAdjusted()) );
+			addBuff( BI_ARCHPROTECTION, 1075816, 1070722, iTimerEffect );
 			break;
 		case SPELL_Poison:
-			addBuff( BI_POISON, 1017383, 1070722, static_cast<WORD>(pSpell->GetTimerAdjusted()) );
+			addBuff( BI_POISON, 1017383, 1070722, iTimerEffect );
 			break;
 		case SPELL_Incognito:
-			addBuff( BI_INCOGNITO, 1075819, 1075820, static_cast<WORD>(pSpell->GetTimerAdjusted()) );
+			addBuff( BI_INCOGNITO, 1075819, 1075820, iTimerEffect );
 			break;
 		case SPELL_Paralyze:
-			addBuff( BI_PARALYZE, 1075827, 1075828, static_cast<WORD>(pSpell->GetTimerAdjusted()) );
+			addBuff( BI_PARALYZE, 1075827, 1075828, iTimerEffect );
 			break;
 		case SPELL_Magic_Reflect:
-			addBuff( BI_MAGICREFLECTION, 1075817, 1070722, static_cast<WORD>(pSpell->GetTimerAdjusted()) );
+			addBuff( BI_MAGICREFLECTION, 1075817, 1070722, iTimerEffect );
 			break;
 		case SPELL_Invis:
-			addBuff( BI_INVISIBILITY, 1075825, 1075826, static_cast<WORD>(pSpell->GetTimerAdjusted()) );
+			addBuff( BI_INVISIBILITY, 1075825, 1075826, iTimerEffect );
 			break;
 		//case SPELL_Mass_Curse:
 		//	break;
@@ -146,8 +173,6 @@ void CClient::addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD Cli
 	ADDTOCALLSTACK("CClient::addBuff");
 	if ( !IsSetOF(OF_Buffs) )
 		return;
-	if ( !IsResClient(RDS_AOS))
-		return;
 	if ( PacketBuff::CanSendTo(GetNetState()) == false )
 		return;
 
@@ -158,8 +183,6 @@ void CClient::removeBuff (const WORD IconId)
 {
 	ADDTOCALLSTACK("CClient::removeBuff");
 	if ( !IsSetOF(OF_Buffs) )
-		return;
-	if ( !IsResClient(RDS_AOS))
 		return;
 	if ( PacketBuff::CanSendTo(GetNetState()) == false )
 		return;
@@ -1816,7 +1839,7 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 	AreaItems.SetSearchSquare(true);
 	DWORD	dSeeItems = 0;
 
-	if (GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || GetNetState()->isClientSA())
+	if (GetNetState()->isClientVersion(MINCLIVER_HS) || GetNetState()->isClientSA())
 	{
 		for (;;)
 		{
@@ -2305,7 +2328,7 @@ void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
 	// New AOS spellbook packet required by client 4.0.0 and above.
 	// Old packet is still required if both FEATURE_AOS_TOOLTIP and FEATURE_AOS_UPDATE aren't sent.
 	//
-	if ( PacketSpellbookContent::CanSendTo(GetNetState()) && IsResClient( RDS_AOS ) && IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) ) // IsResClient( RDS_AOS ) && g_Cfg.m_iFeatureAOS
+	if ( PacketSpellbookContent::CanSendTo(GetNetState()) && GetNetState()->isClientVersion(MINCLIVER_SPELLBOOK) && IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) )
 	{
 		// Handle new AOS spellbook stuff (old packets no longer work)
 		new PacketSpellbookContent(this, pBook, offset);
@@ -3726,11 +3749,6 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	// Gump memory cleanup, we don't want them from logged out players
 	m_mapOpenedGumps.clear();
 
-	// Resend hiding buff if hidden
-	if ( m_pChar->IsStatFlag( STATF_Hidden ) )
-	{
-		GetClient()->addBuff( BI_HIDDEN , 1075655, 1075656, 0 );
-	}
 	// Resend buff icons
 	resendBuffs();
 

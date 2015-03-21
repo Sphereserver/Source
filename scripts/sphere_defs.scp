@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, Mar 14, 2015
+// FILE LAST UPDATED: Friday, Mar 20, 2015
 //
 VERSION=0.56c
 
@@ -1501,51 +1501,51 @@ bufficon_gargoyleberserk       1052
 bufficon_gargoylefly           1054
 
 [DEFNAME buff_clilocs]
-buffcliloc_empty 1070722
-buffcliloc_curse_1 1075835
-buffcliloc_curse_2 1075840
-buffcliloc_masscurse_1 1075839
-buffcliloc_masscurse_2 1075840
-buffcliloc_weaken_1 1075837
-buffcliloc_weaken_2 1075838
-buffcliloc_masscurse_1 1075839
-buffcliloc_masscurse_2 1075840
-buffcliloc_agility_1 1075841
-buffcliloc_agility_2 1075842
-buffcliloc_cunning_1 1075843
-buffcliloc_cunning_2 1075844
-buffcliloc_strength_1 1075845
-buffcliloc_strength_2 1075846
-buffcliloc_bless_1 1075847
-buffcliloc_bless_2 1075848
-buffcliloc_reactivearmor_1 1075812
-buffcliloc_reactivearmor_2 1070722 //empty
-buffcliloc_protection_1 1075814
-buffcliloc_protection_2 1070722 //empty
-buffcliloc_archprotection 1075816
-buffcliloc_archprotection 1070722 //empty
-buffcliloc_invisibility_1 1075825
-buffcliloc_invisibility_2 1075826
-buffcliloc_paralyze_1 1075827
-buffcliloc_paralyze_2 1075828
-buffcliloc_magicreflection_1 1075817
-buffcliloc_magicreflection_1 1070722 //empty
-buffcliloc_clumsy_1 1075831
-buffcliloc_clumsy_2 1075832
-buffcliloc_feeblemind_1 1075833
-buffcliloc_feeblemind_1 1075834
-buffcliloc_incognito_1 1075819
-buffcliloc_incognito_2 1075820
-buffcliloc_polymorph_1 1075824
-buffcliloc_polymorph_2 1070722 //empty
-buffcliloc_poison_1 1017383
-buffcliloc_poison_2 1070722
-buffcliloc_nightsight_1 1075643
-buffcliloc_nightsight_2 1075644
-buffcliloc_hidden_1 1075655
-buffcliloc_hidden_2 1075656
-buffcliloc_gargoylefly_1 1112193
-buffcliloc_gargoylefly_2 1112567
+buffcliloc_empty               1070722
+buffcliloc_curse_1             1075835
+buffcliloc_curse_2             1075840
+buffcliloc_masscurse_1         1075839
+buffcliloc_masscurse_2         1075840
+buffcliloc_weaken_1            1075837
+buffcliloc_weaken_2            1075838
+buffcliloc_masscurse_1         1075839
+buffcliloc_masscurse_2         1075840
+buffcliloc_agility_1           1075841
+buffcliloc_agility_2           1075842
+buffcliloc_cunning_1           1075843
+buffcliloc_cunning_2           1075844
+buffcliloc_strength_1          1075845
+buffcliloc_strength_2          1075846
+buffcliloc_bless_1             1075847
+buffcliloc_bless_2             1075848
+buffcliloc_reactivearmor_1     1075812
+buffcliloc_reactivearmor_2     1075813
+buffcliloc_protection_1        1075814
+buffcliloc_protection_2        1070722 //empty
+buffcliloc_archprotection      1075816
+buffcliloc_archprotection      1070722 //empty
+buffcliloc_invisibility_1      1075825
+buffcliloc_invisibility_2      1075826
+buffcliloc_paralyze_1          1075827
+buffcliloc_paralyze_2          1075828
+buffcliloc_magicreflection_1   1075817
+buffcliloc_magicreflection_1   1070722 //empty
+buffcliloc_clumsy_1            1075831
+buffcliloc_clumsy_2            1075832
+buffcliloc_feeblemind_1        1075833
+buffcliloc_feeblemind_1        1075834
+buffcliloc_incognito_1         1075819
+buffcliloc_incognito_2         1075820
+buffcliloc_polymorph_1         1075824
+buffcliloc_polymorph_2         1070722 //empty
+buffcliloc_poison_1            1017383
+buffcliloc_poison_2            1070722
+buffcliloc_nightsight_1        1075643
+buffcliloc_nightsight_2        1075644
+buffcliloc_hidden_1            1075655
+buffcliloc_hidden_2            1075656
+buffcliloc_gargoylefly_1       1112193
+buffcliloc_gargoylefly_2       1112567
 
 [DEFNAME charheight]
 height_01 28 //DEFNAME=c_ogre

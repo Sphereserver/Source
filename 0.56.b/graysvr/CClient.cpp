@@ -971,58 +971,47 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			break;
 		case CV_ADDBUFF:
 			{
-				if ( !s.HasArgs() ) 
-				{
-					DEBUG_ERR(("No AddBuff arguments\n"));
-					break;
-				}
-				TCHAR * ppArgs[7];
-				int iArgs[4];
-
+				TCHAR * ppArgs[9];
 				size_t ArgCount = Str_ParseCmds( s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
-				if ( ArgCount < 5 )
+				if ( ArgCount < 4 )
 				{
-					DEBUG_ERR(("Too few addbuff arguments\n"));
+					DEBUG_ERR(("Too few AddBuff arguments\n"));
 					break;
 				}
 
-				for (unsigned int idx = 0; idx != 4; ++idx) {
-					if (!IsStrNumeric(ppArgs[idx]) || IsStrEmpty(ppArgs[idx])) {
-						DEBUG_ERR(("Invalid addbuff argument number %u\n",idx+1));
+				int iArgs[4];
+				for ( unsigned int idx = 0; idx < 4; ++idx ) {
+					if ( !IsStrNumeric(ppArgs[idx]))
+					{
+						DEBUG_ERR(("Invalid AddBuff argument number %u\n", idx+1));
 						return true;
 					}
 					iArgs[idx] = Exp_GetVal( ppArgs[idx] );
 				}
-				if (iArgs[0] < 1001 || iArgs[0] > 1048 || iArgs[0] == 0x3EB || iArgs[0] == 0x3EC ) {
-					DEBUG_ERR(("Invalid Buff Icon ID\n"));
-					break;
-				}
-				if (strlen(ppArgs[4]) > 3) {
-					DEBUG_ERR(("Invalid addbuff argument number 5\n"));
+				if ( iArgs[0] < 1001 || iArgs[0] > 1048 || iArgs[0] == 0x3EB || iArgs[0] == 0x3EC ) {
+					DEBUG_ERR(("Invalid AddBuff icon ID\n"));
 					break;
 				}
 
-				TCHAR* Args[3];
+				LPCTSTR Args[5];
 				Args[0] = ppArgs[4];
 				Args[1] = ppArgs[5];
 				Args[2] = ppArgs[6];
+				Args[3] = ppArgs[7];
+				Args[4] = ppArgs[8];
 
 				size_t ArgsCount = 0;
 				for (size_t i = 0; i < COUNTOF(Args) && Args[i] != NULL; ++i)
 					ArgsCount++;
 
-				addBuff(static_cast<WORD>(iArgs[0]), iArgs[1], iArgs[2], static_cast<short>(iArgs[3]), const_cast<LPCTSTR *>(reinterpret_cast<LPTSTR *>(Args)), ArgsCount);
+				addBuff(iArgs[0], iArgs[1], iArgs[2], iArgs[3], Args, ArgsCount);
 			}
 			break;
 		case CV_REMOVEBUFF:
 			{
-				if ( !s.HasArgs() ) {
-					DEBUG_ERR(("No removebuff arguments.\n"));
-					break;
-				}
 				long IconId = s.GetArgVal();
 				if (IconId < 1001 || IconId > 1048 || IconId == 0x3EB || IconId == 0x3EC) {
-					DEBUG_ERR(("Invalid Buff Icon ID\n"));
+					DEBUG_ERR(("Invalid RemoveBuff icon ID\n"));
 					break;
 				}
 				removeBuff(static_cast<WORD>(IconId));

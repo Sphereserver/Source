@@ -434,7 +434,7 @@ void CClient::Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, u
 			// Still in same container.
 			ASSERT(pItemOn);
 
-			if (pItemOn->IsTypeMulti() && (GetNetState()->isClientVersion(MINCLIVER_HIGHSEAS) || GetNetState()->isClientSA()))
+			if (pItemOn->IsTypeMulti() && (GetNetState()->isClientVersion(MINCLIVER_HS) || GetNetState()->isClientSA()))
 			{
 				pt.m_x += pItemOn->GetTopPoint().m_x;
 				pt.m_y += pItemOn->GetTopPoint().m_y;
