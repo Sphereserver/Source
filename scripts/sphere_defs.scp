@@ -1447,58 +1447,150 @@ los_nc_multi           00400   // Do not allow LOS path checking to go through (
 los_fishing            00800   // Do not allow LOS path checking to go through objects or terrain which do not represent water
 los_nc_water           01000   // Do not allow LOS path checking to go through water.
 
+
+[defname passive_buff_icons]
+
+passivebufficon_hidingandorstealth	1012
+passivebufficon_activemeditation	1013
+passivebufficon_incognito			1032
+passivebufficon_disguised			1033
+passivebufficon_polymorph			1035
+passivebufficon_gargoylefly			1054
+passivebufficon_despair				1060
+
+
+[defname debuff_icons]
+
+debufficon_Dismount				1001
+debufficon_DeathStrike			1006
+debufficon_EvilOmen				1007
+debufficon_HealingThrottle		1008
+debufficon_StaminaThrottle		1009
+debufficon_BloodOathCurse		1015
+debufficon_CorpseSkin			1016
+debufficon_MindRot				1017
+debufficon_PainSpike			1018
+debufficon_Strangle				1019
+debufficon_ThunderStorm			1022
+debufficon_EssenceOfWind		1023
+debufficon_MortalStrike			1027
+debufficon_Paralyze				1037
+debufficon_Poison				1038
+debufficon_Bleed				1039
+debufficon_Clumsy				1040
+debufficon_Feeblemind			1041
+debufficon_Weaken				1042
+debufficon_Curse				1043
+debufficon_MassCurse			1044
+debufficon_Sleep				1049
+debufficon_SpellPlague			1051
+debufficon_Tribulation			1059
+
+// new 'stats'
+debufficon_HitLowerAttack		1063
+debufficon_HitLowerDefense		1064
+debufficon_SpellFocusing		1071
+debufficon_RageFocusing			1072
+debufficon_ForceArrow			1076
+debufficon_Disarm				1077
+debufficon_TalonStrike			1080
+debufficon_PhysicAttack			1081	//stractics say PhychicAttack?
+
+debufficon_EnemyOfOne			1084
+debufficon_FandancerFanFire		1105
+debufficon_Rage					1106
+debufficon_Webbing				1107
+debufficon_MedusaStone			1108
+debufficon_DragonSlasherFear	1109
+debufficon_AuraOfNausea			1110
+debufficon_HowlOfCacophony		1111
+debufficon_GazeDespair			1112
+debufficon_HiryuPhysicalResistance	1113
+debufficon_RuneBeetleCorruption	1114
+debufficon_BloodWormAnemia		1115
+debufficon_RotwormBloodDisease	1116
+debufficon_SkillUseDelay		1117
+debufficon_FactionStatLoss		1118
+debufficon_HeatOfBattle			1119
+debufficon_CriminalStatus		1120
+debufficon_ArmorPierce			1121
+debufficon_SplinteringEffect	1122
+debufficon_SwingSpeedSwing		1123
+
+
+// these should exists according to stratics, but I couldn't find them
+//debufficon_ArmorCorrupt
+//debufficon_Entangle
+//debufficon_FallingWalls
+//debufficon_Criminal
+
 [DEFNAME buff_icons]
-bufficon_dismountprevention    1001
-bufficon_norearm               1002
-bufficon_nightsight            1005
-bufficon_deathstrike           1006
-bufficon_evilomen              1007
-bufficon_healingthrottle       1008
-bufficon_staminathrottle       1009
-bufficon_divinefury            1010
-bufficon_enemyofone            1011
-bufficon_hidingandorstealth    1012
-bufficon_activemeditation      1013
-bufficon_bloodoathcaster       1014
-bufficon_bloodoathcurse        1015
-bufficon_corpseskin            1016
-bufficon_mindrot               1017
-bufficon_painspike             1018
-bufficon_strangle              1019
-bufficon_giftofrenewal         1020
-bufficon_attuneweapon          1021
-bufficon_thunderstorm          1022
-bufficon_essenceofwind         1023
-bufficon_etherealvoyage        1024
-bufficon_giftoflife            1025
-bufficon_arcaneempowerment     1026
-bufficon_mortalstrike          1027
-bufficon_reactivearmor         1028
-bufficon_protection            1029
-bufficon_archprotection        1030
-bufficon_magicreflection       1031
-bufficon_incognito             1032
-bufficon_disguised             1033
-bufficon_animalform            1034
-bufficon_polymorph             1035
-bufficon_invisibility          1036
-bufficon_paralyze              1037
-bufficon_poison                1038
-bufficon_bleed                 1039
-bufficon_clumsy                1040
-bufficon_feeblemind            1041
-bufficon_weaken                1042
-bufficon_curse                 1043
-bufficon_masscurse             1044
-bufficon_agility               1045
-bufficon_cunning               1046
-bufficon_strength              1047
-bufficon_bless                 1048
-bufficon_sleep                 1049
-bufficon_stoneform             1050
-bufficon_spellplague           1051
-bufficon_gargoyleberserk       1052
-bufficon_gargoylefly           1054
+bufficon_NoRearm				1002
+bufficon_NightSight				1005
+bufficon_DivineFury				1010
+bufficon_EnemyOfOne				1011
+bufficon_BloodOathCaster		1014
+bufficon_GiftOfRenewal			1020
+bufficon_AttuneWeapon			1021
+bufficon_EtherealVoyage			1024
+bufficon_FiftOfFife				1025
+bufficon_ArcaneEmpowerment		1026		//same as 1061
+bufficon_ReactiveArmor			1028
+bufficon_Protection				1029
+bufficon_ArchProtection			1030
+bufficon_MagicReflection		1031
+bufficon_AnimalForm				1034
+bufficon_Invisibility			1036
+bufficon_Agility				1045
+bufficon_Cunning				1046
+bufficon_Strength				1047
+bufficon_Bless					1048
+bufficon_StoneForm				1050
+bufficon_GargoyleBerserk		1052
+
+//Bard Mastery Buff
+bufficon_Inspire				1055
+bufficon_Invigorate				1056
+bufficon_Resilience				1057
+bufficon_Perseverance			1058
+bufficon_Despair				1068
+
+bufficon_RageFocusing			1073
+bufficon_Warding				1074
+bufficon_Yribulation			1075
+bufficon_Surge					1078
+bufficon_Feit					1079
+bufficon_Consecrate				1082
+bufficon_GrapesOfWrath			1083
+bufficon_HorrificBeast			1085
+bufficon_LichForm				1086
+bufficon_VampiricEmbrace		1087
+bufficon_CurseWeapon			1088
+bufficon_ReaperForm				1089
+bufficon_InmolatingWeapon		1090
+bufficon_Enchant				1091
+bufficon_HonorableExecution		1092		//same as 1125
+bufficon_Confidence				1093
+bufficon_Evasion				1094
+bufficon_CounterAttack			1095
+bufficon_LightningStrike		1096
+bufficon_MomentumStrike			1097
+bufficon_OrangePetals			1098
+bufficon_ROTPetals				1099		//RoseOfTrinsic petals
+bufficon_PoisonImmunity			1100
+bufficon_Veterinary				1101
+bufficon_Perfection				1102
+bufficon_Honored				1103
+bufficon_ManaPhase				1104
+bufficon_WraithForm				1124
+bufficon_CityTradeDeal			1126
+bufficon_ArcaneEmpowerment		1061
+bufficon_FishBuff				1062
+bufficon_HitDualWield			1065
+bufficon_Block					1066
+bufficon_DefenseMastery			1067
+bufficon_HealingEffect			1069
+bufficon_SpellFocusing			1070
 
 [DEFNAME buff_clilocs]
 buffcliloc_empty               1070722

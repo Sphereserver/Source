@@ -313,6 +313,9 @@ void NetState::detectAsyncMode(void)
 	ADDTOCALLSTACK("NetState::detectAsyncMode");
 	bool wasAsync = isAsyncMode();
 
+	// Disabled because of unstability.
+	setAsyncMode(false);
+	return;
 	// is async mode enabled?
 	if ( !g_Cfg.m_fUseAsyncNetwork || !isInUse() )
 		setAsyncMode(false);

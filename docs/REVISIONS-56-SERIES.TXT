@@ -1815,3 +1815,14 @@ Changed variable times in world time handler to avoid some overflow-recycle mess
 Changed: ADDBUFF function now can handle up to 7 args.
 Changed: Minor changes on COMBATBONUSSTAT / COMBATBONUSPERCENT formulas to better compatibility with damage calculation formulas.
 [sphere_dialog.scp] Huge optimization on dialog d_hair_dye
+
+23-03-2014, XuN
+Changed everything related to spawns to new class CItemSpawn having everything from spawns more concentrated and prepared for future improvements.
+Increased BuffIcons limit up to 1126
+
+[sphere_defs.scp]
+Added new buff definitions.
+To have it a bit more organizated keept buffs as bufficon_*, changed debuffs to debufficon_* and passives to passivebufficon_*
+
+[sphere_backwards_compatibility.scp]
+Added definitions for old bufficon_* entries that have been changed to new debufficon_* or passivebufficon_*

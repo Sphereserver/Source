@@ -450,6 +450,40 @@ snd_crane					snd_animal_crane
 snd_kirin					snd_animal_kirin
 snd_hiryu					snd_animal_hiryu
 
+//bufficons changed to passiveicon
+
+bufficon_deathstrike			debufficon_deathstrike
+bufficon_evilomen				debufficon_evilomen
+bufficon_healingthrottle		debufficon_healingthrottle
+bufficon_staminathrottle		debufficon_staminathrottle
+bufficon_bloodoathcurse			debufficon_bloodoathcurse
+bufficon_corpseskin				debufficon_corpseskin
+bufficon_mindrot				debufficon_mindrot
+bufficon_painspike				debufficon_painspike
+bufficon_strangle				debufficon_strangle
+bufficon_thunderstorm			debufficon_thunderstorm
+bufficon_essenceofwind			debufficon_essenceofwind	
+bufficon_mortalstrike			debufficon_mortalstrike
+bufficon_paralyze				debufficon_paralyze
+bufficon_poison					debufficon_poison	
+bufficon_bleed					debufficon_bleed
+bufficon_clumsy					debufficon_clumsy	
+bufficon_feeblemind				debufficon_feeblemind
+bufficon_weaken					debufficon_weaken
+bufficon_curse					debufficon_curse
+bufficon_masscurse				debufficon_masscurse
+bufficon_sleep					debufficon_sleep
+bufficon_spellplague			debufficon_spellplague
+bufficon_dismountprevention		debufficon_dismount
+bufficon_tribulation			debufficon_tribulation
+bufficon_hidingandorstealth		passivebufficon_hidingandorstealth
+bufficon_activemeditation		passivebufficon_activemeditation
+bufficon_incognito				passivebufficon_incognito
+bufficon_disguised				passivebufficon_disguised
+bufficon_polymorph				passivebufficon_polymorph
+bufficon_gargoylefly			passivebufficon_gargoylefly
+
+
 
 [FUNCTION addnpc]
 ARGS=<QVAL (<isnum <ARGS>>)? <ARGS>|08c000000 : <DEF.<ARGS>>>
