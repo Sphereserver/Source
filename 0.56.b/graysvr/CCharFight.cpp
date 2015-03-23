@@ -265,14 +265,14 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 
 	if ( fAllowInvul && IsStatFlag(STATF_INVUL))
 		return NOTO_INVUL;
+	if (IsStatFlag(STATF_Criminal))		// criminal to everyone.
+		return NOTO_CRIMINAL;
 	if ( fAllowIncog && IsStatFlag(STATF_Incognito))
 		return NOTO_NEUTRAL;
 	if ( m_pArea && m_pArea->IsFlag(REGION_FLAG_ARENA))
 		return NOTO_NEUTRAL;			// everyone is neutral here.
 	if ( Noto_IsEvil())
 		return NOTO_EVIL;
-	if (IsStatFlag(STATF_Criminal))	// criminal to everyone.
-		return NOTO_CRIMINAL;
 	if ( Noto_IsNeutral())
 		return NOTO_NEUTRAL;
 
@@ -336,14 +336,14 @@ HUE_TYPE CChar::Noto_GetHue( const CChar * pCharViewer, bool fIncog ) const
 
 	switch ( Noto_GetFlag( pCharViewer, fIncog, true ))
 	{
-		case NOTO_GOOD:			return g_Cfg.m_iColorNotoGood;		// Blue
-		case NOTO_GUILD_SAME:	return g_Cfg.m_iColorNotoGuildSame; // Green (same guild)
-		case NOTO_NEUTRAL:		return g_Cfg.m_iColorNotoNeutral;	// Grey 1 (someone that can be attacked)
-		case NOTO_CRIMINAL:		return g_Cfg.m_iColorNotoCriminal;	// Grey 2 (criminal)
-		case NOTO_GUILD_WAR:	return g_Cfg.m_iColorNotoGuildWar;	// Orange (enemy guild)
-		case NOTO_INVUL:		return g_Cfg.m_iColorNotoInvul;		// Yellow
-		case NOTO_EVIL:			return g_Cfg.m_iColorNotoEvil;		// Red
-		default:				return g_Cfg.m_iColorNotoDefault;	// Grey
+		case NOTO_GOOD:			return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoGood);		// Blue
+		case NOTO_GUILD_SAME:	return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoGuildSame);	// Green (same guild)
+		case NOTO_NEUTRAL:		return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoNeutral);	// Grey (someone that can be attacked)
+		case NOTO_CRIMINAL:		return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoCriminal);	// Grey (criminal)
+		case NOTO_GUILD_WAR:	return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoGuildWar);	// Orange (enemy guild)
+		case NOTO_EVIL:			return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoEvil);		// Red
+		case NOTO_INVUL:		return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoInvul);		// Yellow
+		default:				return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoDefault);	// Grey
 	}
 }
 
@@ -2589,20 +2589,23 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 	if ( m_pNPC && m_pNPC->m_Brain == NPCBRAIN_GUARD && g_Cfg.m_fGuardsInstantKill )
 		return( 20000 );	// swing made.
 
-	CChar * pChar = GetChar();
-	ASSERT(pChar);
-
 	int iDmgMin = 0;
 	int iDmgMax = 0;
+	STAT_TYPE iStatBonus;
+	long long iStatBonusPercent;
 	if ( pWeapon != NULL )
 	{
 		iDmgMin = pWeapon->Weapon_GetAttack(false);
 		iDmgMax = pWeapon->Weapon_GetAttack(true);
+		iStatBonus = static_cast<STAT_TYPE>(pWeapon->GetDefNum("COMBATBONUSSTAT"));
+		iStatBonusPercent = pWeapon->GetDefNum("COMBATBONUSPERCENT");
 	}
 	else
 	{
-		iDmgMin = pChar->m_attackBase;
-		iDmgMax = pChar->m_attackBase + pChar->m_attackRange;
+		iDmgMin = m_attackBase;
+		iDmgMax = m_attackBase + m_attackRange;
+		iStatBonus = static_cast<STAT_TYPE>(GetDefNum("COMBATBONUSSTAT"));
+		iStatBonusPercent = GetDefNum("COMBATBONUSPERCENT");
 	}
 
 	if ( m_pPlayer )	// only players can have damage bonus
@@ -2619,8 +2622,7 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 			if (Skill_GetBase(SKILL_ANATOMY) >= 1000)
 				iDmgBonus += 5;
 
-			CItem * pActWeapon = m_uidWeapon.ItemFind();
-			if (pActWeapon && pActWeapon->IsType(IT_WEAPON_AXE))
+			if (pWeapon != NULL && pWeapon->IsType(IT_WEAPON_AXE))
 			{
 				iDmgBonus += Skill_GetBase(SKILL_LUMBERJACKING) / 50;
 				if (Skill_GetBase(SKILL_LUMBERJACKING) >= 1000)
@@ -2630,20 +2632,12 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 			if (Stat_GetAdjusted(STAT_STR) >= 100)
 				iDmgBonus += 5;
 
-			int iBonus = 0;
-			CObjBase * pObj = pWeapon ? pWeapon->GetUID().ObjFind() : this->GetUID().ObjFind();	// Do I have a weapon or should I use my properties?
-			STAT_TYPE statBonus = static_cast<STAT_TYPE>(pObj->GetDefNum("COMBATBONUSSTAT"));
-			if (!statBonus)
-				iBonus = Stat_GetAdjusted(STAT_STR) *30 / 100;	// default damage
+			if (!iStatBonus)
+				iStatBonus = static_cast<STAT_TYPE>(STAT_STR);
+			if (!iStatBonusPercent)
+				iStatBonusPercent = 30;
+			iDmgBonus += Stat_GetAdjusted(iStatBonus) * iStatBonusPercent / 100;
 
-			else if (statBonus >= STAT_STR && statBonus <= STAT_DEX)
-			{
-				int percentBonus = static_cast<int>(pObj->GetDefNum("COMBATBONUSPERCENT"));
-				iBonus = IMULDIV(Stat_GetAdjusted(statBonus), percentBonus != 0 ? percentBonus : 1, 100);
-			}
-
-			iDmgMin += iBonus;
-			iDmgMax += iBonus;
 
 			// pre-AOS damage bonus
 			/*iDmgBonus += (Skill_GetBase(SKILL_TACTICS) - 500) / 10;
@@ -2652,46 +2646,31 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 			if (Skill_GetBase(SKILL_ANATOMY) >= 1000)
 				iDmgBonus += 10;
 
-			CItem * pActWeapon = m_uidWeapon.ItemFind();
-			if (pActWeapon && pActWeapon->IsType(IT_WEAPON_AXE))
+			if (pWeapon != NULL && pWeapon->IsType(IT_WEAPON_AXE))
 			{
 				iDmgBonus += Skill_GetBase(SKILL_LUMBERJACKING) / 50;
 				if (Skill_GetBase(SKILL_LUMBERJACKING) >= 1000)
 					iDmgBonus += 10;
 			}
 
-			iDmgBonus += Stat_GetAdjusted(STAT_STR) / 5;*/
+			if (!iStatBonus)
+				iStatBonus = static_cast<STAT_TYPE>(STAT_STR);
+			if (!iStatBonusPercent)
+				iStatBonusPercent = 20;
+			iDmgBonus += Stat_GetAdjusted(iStatBonus) * iStatBonusPercent / 100;*/
 		}
 		else
 		{
 			// Sphere damage bonus (custom)
-			int iBonus = 0;	
-			
-			// This properties allows backwards compat with bows using dex instead of str but with the plus that it can give int to staffs or whatever ppl may want and any amount of % bonus.
-			//The reason to use it instead of modifying @Hit trigger is to reflect damage in paperdoll
+			if (!iStatBonus)
+				iStatBonus = static_cast<STAT_TYPE>(STAT_STR);
+			if (!iStatBonusPercent)
+				iStatBonusPercent = 10;
+			int iDmgBonus = Stat_GetAdjusted(iStatBonus) * iStatBonusPercent / 100;
 
-			CObjBase * pObj = pWeapon ? pWeapon->GetUID().ObjFind() : this->GetUID().ObjFind();	// Do I have a weapon or should I use my properties?
-			STAT_TYPE statBonus = static_cast<STAT_TYPE>(pObj->GetDefNum("COMBATBONUSSTAT"));
-			if (!statBonus)
-				iBonus = Stat_GetAdjusted(STAT_STR) / 10;	// default damage
-
-			else if (statBonus >= STAT_STR && statBonus <= STAT_DEX)
-			{
-				int percentBonus = static_cast<int>(pObj->GetDefNum("COMBATBONUSPERCENT"));
-				iBonus = IMULDIV(Stat_GetAdjusted(statBonus), percentBonus != 0 ? percentBonus : 1, 100);
-			}
-
-			iDmgMin += iBonus;
-			iDmgMax += iBonus;
+			iDmgMin += iDmgBonus;
+			iDmgMax += iDmgBonus;
 		}
-
-		if (iDmgMin < 0)
-			iDmgMin = 0;
-		if (iDmgMax < 1 && iDmgMin >= iDmgMax)
-			iDmgMax = iDmgMin + 1;
-		else if (iDmgMax < 1)
-			iDmgMax = 1;
-
 		iDmgMin += iDmgMin * iDmgBonus / 100;
 		iDmgMax += iDmgMax * iDmgBonus / 100;
 	}
@@ -3955,12 +3934,10 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		// If arrow is handled by script, do nothing with it further!
 		if (Args.m_VarsLocal.GetKeyNum("ArrowHandled") != 0)
 			pAmmo = NULL;
+
+		iDmg = static_cast<int>(Args.m_iN1);
+		iTyp = static_cast<int>(Args.m_iN2);
 	}
-#ifdef _ALPHASPHERE
-	Memory_AddObjTypes(pCharTarg,MEMORY_WAR_TARG);
-#endif
-	iDmg = static_cast<int>(Args.m_iN1);
-	iTyp = static_cast<int>(Args.m_iN2);
 
 	// There's a chance that the arrow will stick in the target
 	if ( pAmmo && !Calc_GetRandVal(2))

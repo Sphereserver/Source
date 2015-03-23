@@ -971,16 +971,12 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			break;
 		case CV_ADDBUFF:
 			{
-				TCHAR * ppArgs[9];
-				size_t ArgCount = Str_ParseCmds( s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
-				if ( ArgCount < 4 )
-				{
-					DEBUG_ERR(("Too few AddBuff arguments\n"));
-					break;
-				}
+				TCHAR * ppArgs[11];
+				Str_ParseCmds( s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
 
 				int iArgs[4];
-				for ( unsigned int idx = 0; idx < 4; ++idx ) {
+				for ( int idx = 0; idx < 4; ++idx )
+				{
 					if ( !IsStrNumeric(ppArgs[idx]))
 					{
 						DEBUG_ERR(("Invalid AddBuff argument number %u\n", idx+1));
@@ -988,21 +984,20 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 					}
 					iArgs[idx] = Exp_GetVal( ppArgs[idx] );
 				}
-				if ( iArgs[0] < 1001 || iArgs[0] > 1048 || iArgs[0] == 0x3EB || iArgs[0] == 0x3EC ) {
+				if ( iArgs[0] < 1001 || iArgs[0] > 1054 || iArgs[0] == 0x3EB || iArgs[0] == 0x3EC )
+				{
 					DEBUG_ERR(("Invalid AddBuff icon ID\n"));
 					break;
 				}
 
-				LPCTSTR Args[5];
-				Args[0] = ppArgs[4];
-				Args[1] = ppArgs[5];
-				Args[2] = ppArgs[6];
-				Args[3] = ppArgs[7];
-				Args[4] = ppArgs[8];
-
+				LPCTSTR Args[7];
 				size_t ArgsCount = 0;
-				for (size_t i = 0; i < COUNTOF(Args) && Args[i] != NULL; ++i)
-					ArgsCount++;
+				for ( int i = 0; i < 7; ++i )
+				{
+					Args[i] = ppArgs[i + 4];
+					if ( Args[i] != NULL )
+						ArgsCount++;
+				}
 
 				addBuff(iArgs[0], iArgs[1], iArgs[2], iArgs[3], Args, ArgsCount);
 			}
@@ -1010,7 +1005,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		case CV_REMOVEBUFF:
 			{
 				long IconId = s.GetArgVal();
-				if (IconId < 1001 || IconId > 1048 || IconId == 0x3EB || IconId == 0x3EC) {
+				if (IconId < 1001 || IconId > 1054 || IconId == 0x3EB || IconId == 0x3EC) {
 					DEBUG_ERR(("Invalid RemoveBuff icon ID\n"));
 					break;
 				}
