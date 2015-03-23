@@ -1314,18 +1314,6 @@ public:
 	int Weapon_GetAttack(bool bGetRange = true) const;
 	SKILL_TYPE Weapon_GetSkill() const;
 
-	void Spawn_OnTick( bool fExec );
-	void Spawn_KillChildren();
-	CCharBase * Spawn_SetTrackID();
-	void Spawn_GenerateItem( CResourceDef * pDef );
-	void Spawn_GenerateChar( CResourceDef * pDef );
-
-	inline CCharBase * Spawn_TryChar( CREID_TYPE &id );
-	inline CItemBase * Spawn_TryItem( ITEMID_TYPE &id );
-	CResourceDef * Spawn_FixDef();
-
-	int Spawn_GetName( TCHAR * pszOut ) const;
-
 	bool IsMemoryTypes( WORD wType ) const
 	{
 		// MEMORY_FIGHT
@@ -1356,6 +1344,30 @@ public:
 
 	virtual void Delete(bool bforce = false);
 	virtual bool NotifyDelete();
+};
+
+class CItemSpawn : public CItem
+{
+	
+public:
+	void OnTick( bool fExec );
+	void KillChildren();
+	CCharBase * SetTrackID();
+	void GenerateItem( CResourceDef * pDef );
+	void GenerateChar( CResourceDef * pDef );
+
+	inline CCharBase * TryChar( CREID_TYPE &id );
+	inline CItemBase * TryItem( ITEMID_TYPE &id );
+	CResourceDef * FixDef();
+
+	int GetName(TCHAR * pszOut) const;
+
+	struct SpawnObjs
+	{
+		CGrayUID uid;
+	};
+
+	std::vector<SpawnObjs> m_SpawnObjs;
 };
 
 class CItemVendable : public CItem
@@ -2710,7 +2722,8 @@ public:
 
 	// Some character action in progress.
 	SKILL_TYPE	m_Act_SkillCurrent;	// Currently using a skill. Could be combat skill.
-	CGrayUID	m_Act_Targ;			// Current combat/action target
+	CGrayUID	m_Act_Targ;			// Current caction target
+	CGrayUID	m_Fight_Targ;			// Current combat target
 	CGrayUID	m_Act_TargPrv;		// Previous target.
 	int			m_Act_Difficulty;	// -1 = fail skill. (0-100) for skill advance calc.
 	CPointBase  m_Act_p;			// Moving to this location. or location of forge we are working on.
@@ -2787,7 +2800,7 @@ public:
 		struct
 		{
 			WAR_SWING_TYPE	m_War_Swing_State;	// We are in the war mode swing.
-			// m_Act_Targ = who are we currently attacking?
+			//CGrayUID		m_Act_Targ;			// = who are we currently attacking?
 			WORD			m_fMoved;
 		} m_atFight;
 

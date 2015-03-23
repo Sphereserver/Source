@@ -987,8 +987,10 @@ void CSector::Restock()
 	for ( ; pItem; pItem = pItemNext )
 	{
 		pItemNext = pItem->GetNext();
-		if ( pItem->IsType(IT_SPAWN_ITEM) || pItem->IsType(IT_SPAWN_CHAR) )
-			pItem->Spawn_OnTick( true );
+		if (pItem->IsType(IT_SPAWN_ITEM) || pItem->IsType(IT_SPAWN_CHAR))
+		{
+			static_cast<CItemSpawn*>(pItem)->OnTick(true);
+		}
 	}
 }
 

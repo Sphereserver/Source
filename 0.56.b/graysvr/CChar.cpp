@@ -1898,7 +1898,7 @@ do_default:
 					{
 						pszKey += 6;
 						if ( m_Act_Targ )
-							sVal.FormatHex(static_cast<DWORD>(m_Act_Targ));
+							sVal.FormatHex(static_cast<DWORD>(m_Fight_Targ));
 						else
 							sVal.FormatVal(-1);
 						return true;

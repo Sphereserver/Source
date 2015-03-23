@@ -107,7 +107,10 @@ CItem::~CItem()
 	switch ( m_type )
 	{
 		case IT_SPAWN_CHAR:
-			Spawn_KillChildren();
+			{
+				CItemSpawn *pSpawn = static_cast<CItemSpawn*>(this);
+				pSpawn->KillChildren();
+			}
 			break;
 		case IT_FIGURINE:
 		case IT_EQ_HORSE:
@@ -888,8 +891,11 @@ int CItem::FixWeirdness()
 	
 		case IT_SPAWN_CHAR:
 		case IT_SPAWN_ITEM:
-			Spawn_FixDef();
-			Spawn_SetTrackID();
+			{
+				CItemSpawn *pSpawn = static_cast<CItemSpawn*>(this);
+				pSpawn->FixDef();
+				pSpawn->SetTrackID();
+			}
 			break;
 	
 		case IT_CONTAINER_LOCKED:
@@ -2814,8 +2820,9 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			if ( !g_Serv.IsLoading( )
 				&& ( IsType( IT_SPAWN_CHAR ) || IsType( IT_SPAWN_ITEM ) ) )
 			{
-				Spawn_FixDef();
-				Spawn_SetTrackID();
+				CItemSpawn *pSpawn = static_cast<CItemSpawn*>(this);
+				pSpawn->FixDef();
+				pSpawn->SetTrackID();
 				RemoveFromView();
 				Update();
 			}
@@ -5327,7 +5334,7 @@ bool CItem::OnTick()
 		case IT_SPAWN_ITEM:	// Spawn an item.
 			{
 				EXC_SET("default behaviour::IT_SPAWN");
-				Spawn_OnTick( true );
+				static_cast<CItemSpawn*>(this)->OnTick(true);
 			}
 			return true;
 

@@ -7,9 +7,9 @@
 
 /////////////////////////////////////////////////////////////////////////////
 
-inline CCharBase * CItem::Spawn_TryChar( CREID_TYPE &id )
+inline CCharBase * CItemSpawn::TryChar( CREID_TYPE &id )
 {
-	ADDTOCALLSTACK("CItem::Spawn_TryChar");
+	ADDTOCALLSTACK("CItem::TryChar");
 		CCharBase * pCharDef = CCharBase::FindCharBase( id );
 		if ( pCharDef )
 		{
@@ -19,9 +19,9 @@ inline CCharBase * CItem::Spawn_TryChar( CREID_TYPE &id )
 		return NULL;
 }
 
-inline CItemBase * CItem::Spawn_TryItem( ITEMID_TYPE &id )
+inline CItemBase * CItemSpawn::TryItem(ITEMID_TYPE &id)
 {
-	ADDTOCALLSTACK("CItem::Spawn_TryItem");
+	ADDTOCALLSTACK("CItem::TryItem");
 		CItemBase * pItemDef = CItemBase::FindItemBase( id );
 		if ( pItemDef )
 		{
@@ -31,9 +31,9 @@ inline CItemBase * CItem::Spawn_TryItem( ITEMID_TYPE &id )
 		return NULL;
 }
 
-CResourceDef * CItem::Spawn_FixDef()
+CResourceDef * CItemSpawn::FixDef()
 {
-	ADDTOCALLSTACK("CItem::Spawn_FixDef");
+	ADDTOCALLSTACK("CItem::FixDef");
 	// Get a proper RESOURCE_ID from the id provided.
 	// RETURN: true = ok.
 
@@ -50,7 +50,7 @@ CResourceDef * CItem::Spawn_FixDef()
 		ITEMID_TYPE id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 		if ( id < ITEMID_TEMPLATE )
 		{
-			return( Spawn_TryItem( id ) );
+			return( TryItem( id ) );
 		}
 		else
 		{
@@ -62,7 +62,7 @@ CResourceDef * CItem::Spawn_FixDef()
 				m_itSpawnItem.m_ItemID = rid;
 				return( STATIC_CAST <CResourceDef *>( pDef ));
 			} //if fails
-			return( Spawn_TryItem( id ) );
+			return( TryItem( id ) );
 		}
 	}
 	else
@@ -70,7 +70,7 @@ CResourceDef * CItem::Spawn_FixDef()
 		CREID_TYPE id = static_cast<CREID_TYPE>(rid.GetResIndex());
 		if ( id < SPAWNTYPE_START )
 		{
-			return( Spawn_TryChar( id ));
+			return( TryChar( id ));
 		}
 		else
 		{
@@ -82,14 +82,14 @@ CResourceDef * CItem::Spawn_FixDef()
 				m_itSpawnChar.m_CharID = rid;
 				return( STATIC_CAST <CResourceDef *>( pDef ));
 			} //if fails
-			return( Spawn_TryChar( id ));
+			return( TryChar( id ));
 		}
 	}
 }
 
-int CItem::Spawn_GetName( TCHAR * pszOut ) const
+int CItemSpawn::GetName(TCHAR * pszOut) const
 {
-	ADDTOCALLSTACK("CItem::Spawn_GetName");
+	ADDTOCALLSTACK("CItem::GetName");
 	RESOURCE_ID_BASE rid;
 	if ( IsType(IT_SPAWN_ITEM))
 	{
@@ -116,9 +116,9 @@ int CItem::Spawn_GetName( TCHAR * pszOut ) const
 
 
 
-void CItem::Spawn_GenerateItem( CResourceDef * pDef )
+void CItemSpawn::GenerateItem(CResourceDef * pDef)
 {
-	ADDTOCALLSTACK("CItem::Spawn_GenerateItem");
+	ADDTOCALLSTACK("CItem::GenerateItem");
 	// Count how many items are here already.
 	// This could be in a container.
 
@@ -181,9 +181,9 @@ void CItem::Spawn_GenerateItem( CResourceDef * pDef )
 
 
 
-void CItem::Spawn_GenerateChar( CResourceDef * pDef )
+void CItemSpawn::GenerateChar(CResourceDef * pDef)
 {
-	ADDTOCALLSTACK("CItem::Spawn_GenerateChar");
+	ADDTOCALLSTACK("CItem::GenerateChar");
 	if ( !IsTopLevel() || ( m_itSpawnChar.m_current >= GetAmount() ) || ( GetTopSector()->GetCharComplexity() > g_Cfg.m_iMaxCharComplexity ))
 		return;
 
@@ -244,13 +244,18 @@ void CItem::Spawn_GenerateChar( CResourceDef * pDef )
 		pChar->m_pNPC->m_Home_Dist_Wander = static_cast<WORD>(iDistMax);
 	}
 	pChar->Update();
+
+	/*SpawnObjs pRef;
+	pRef.uid = pChar->GetUID();
+
+	m_SpawnObjs.push_back(pRef)*/;
 }
 
 
 
-void CItem::Spawn_OnTick( bool fExec )
+void CItemSpawn::OnTick(bool fExec)
 {
-	ADDTOCALLSTACK("CItem::Spawn_OnTick");
+	ADDTOCALLSTACK("CItem::OnTick");
 
 	INT64 iMinutes;
 	if ( m_itSpawnChar.m_TimeHiMin <= 0 )
@@ -267,7 +272,7 @@ void CItem::Spawn_OnTick( bool fExec )
 	if ( ! fExec )
 		return;
 
-	CResourceDef * pDef = Spawn_FixDef();
+	CResourceDef * pDef = FixDef();
 	if ( !pDef )
 	{
 		RESOURCE_ID_BASE rid = ( IsType(IT_SPAWN_ITEM) ? m_itSpawnItem.m_ItemID : m_itSpawnChar.m_CharID);
@@ -276,14 +281,14 @@ void CItem::Spawn_OnTick( bool fExec )
 	}
 
 	if ( IsType(IT_SPAWN_ITEM) )
-		Spawn_GenerateItem(pDef);
+		GenerateItem(pDef);
 	else
-		Spawn_GenerateChar(pDef);
+		GenerateChar(pDef);
 }
 
-void CItem::Spawn_KillChildren()
+void CItemSpawn::KillChildren()
 {
-	ADDTOCALLSTACK("CItem::Spawn_KillChildren");
+	ADDTOCALLSTACK("CItem::KillChildren");
 	// kill all creatures spawned from this !
 	int iCurrent = m_itSpawnChar.m_current;
 
@@ -310,12 +315,12 @@ void CItem::Spawn_KillChildren()
 		}
 	}
 	m_itSpawnChar.m_current = 0;	// Should not be necessary
-	Spawn_OnTick(false);
+	OnTick(false);
 }
 
-CCharBase * CItem::Spawn_SetTrackID()
+CCharBase * CItemSpawn::SetTrackID()
 {
-	ADDTOCALLSTACK("CItem::Spawn_SetTrackID");
+	ADDTOCALLSTACK("CItem::SetTrackID");
 	if ( ! IsType(IT_SPAWN_CHAR))
 		return NULL;
 	CCharBase * pCharDef = NULL;

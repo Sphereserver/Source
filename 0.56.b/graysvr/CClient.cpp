@@ -984,8 +984,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 					}
 					iArgs[idx] = Exp_GetVal( ppArgs[idx] );
 				}
-				if ( iArgs[0] < 1001 || iArgs[0] > 1054 || iArgs[0] == 0x3EB || iArgs[0] == 0x3EC )
-				{
+				if (iArgs[0] < BI_START || iArgs[0] > BI_QTY/* || iArgs[0] == 0x3EB || iArgs[0] == 0x3EC*/) {	// 0x3eb and 0x3ec among some others does not exists now, which doesn't mean they won't fill them and, since nothing happens when wrong id is sent, we can let them be sent.
 					DEBUG_ERR(("Invalid AddBuff icon ID\n"));
 					break;
 				}
@@ -1005,7 +1004,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		case CV_REMOVEBUFF:
 			{
 				long IconId = s.GetArgVal();
-				if (IconId < 1001 || IconId > 1054 || IconId == 0x3EB || IconId == 0x3EC) {
+				if (IconId < BI_START || IconId > BI_QTY/* || IconId == 0x3EB || IconId == 0x3EC*/) {
 					DEBUG_ERR(("Invalid RemoveBuff icon ID\n"));
 					break;
 				}
@@ -1122,10 +1121,11 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 
 							if ( pItem->IsType(IT_SPAWN_ITEM) || pItem->IsType(IT_SPAWN_CHAR) )
 							{
-								CResourceDef	*pDef = pItem->Spawn_FixDef();
+								CItemSpawn *pSpawn = static_cast<CItemSpawn*>(pItem);
+								CResourceDef	*pDef = pSpawn->FixDef();
 								if ( !pDef )
 								{
-									RESOURCE_ID_BASE	rid = ( pItem->IsType(IT_SPAWN_ITEM) ? pItem->m_itSpawnItem.m_ItemID : pItem->m_itSpawnChar.m_CharID);
+									RESOURCE_ID_BASE	rid = ( pSpawn->IsType(IT_SPAWN_ITEM) ? pSpawn->m_itSpawnItem.m_ItemID : pSpawn->m_itSpawnChar.m_CharID);
 
 									CPointMap	pt = pItem->GetTopPoint();
 									m_pChar->Spell_Teleport(pt, true, false);

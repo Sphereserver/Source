@@ -325,15 +325,18 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 				SysMessageDefault( DEFMSG_ITEMUSE_SPAWNCHAR_RSET );
 				fReset	= true;
 			}
-			pItem->Spawn_KillChildren();
+			static_cast<CItemSpawn*>(pItem)->KillChildren();
 			if ( fReset )
 				pItem->SetTimeout( TICK_PER_SEC );
 			}
 			return true;
 
 		case IT_SPAWN_ITEM:
-			SysMessageDefault( DEFMSG_ITEMUSE_SPAWNITEM_TRIG );
-			pItem->Spawn_OnTick( true );
+			{
+				SysMessageDefault(DEFMSG_ITEMUSE_SPAWNITEM_TRIG);
+				CItemSpawn *pSpawn = static_cast<CItemSpawn*>(pItem);
+				pSpawn->OnTick(true);
+			}
 			return true;
 
 		case IT_SHRINE:

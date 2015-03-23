@@ -1108,7 +1108,8 @@ void CClient::addItemName( const CItem * pItem )
 			case IT_SPAWN_CHAR:
 			case IT_SPAWN_ITEM:
 				{
-					len += pItem->Spawn_GetName( szName + len );
+					CItemSpawn *pSpawn = static_cast<CItemSpawn*>(const_cast<CItem*>(pItem));
+					len += pSpawn->GetName( szName + len );
 				}
 				break;
 
