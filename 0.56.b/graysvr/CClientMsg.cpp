@@ -139,8 +139,19 @@ void CClient::resendBuffs()
 			break;
 		}
 		case SPELL_Protection:
-			addBuff( BI_PROTECTION, 1075814, 1070722, iTimerEffect );
+		{
+			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+			{
+				ITOA(static_cast<int>(-pSpell->m_itSpell.m_PolyStr), NumBuff[0], 10);
+				ITOA(static_cast<int>(-pSpell->m_itSpell.m_PolyDex/10), NumBuff[1], 10);
+				addBuff(BI_PROTECTION, 1075814, 1075815, iTimerEffect, pNumBuff, 2);
+			}
+			else
+			{
+				addBuff( BI_PROTECTION, 1075814, 1070722, iTimerEffect );
+			}
 			break;
+		}
 		case SPELL_Arch_Prot:
 			addBuff( BI_ARCHPROTECTION, 1075816, 1070722, iTimerEffect );
 			break;
@@ -154,6 +165,24 @@ void CClient::resendBuffs()
 			addBuff( BI_PARALYZE, 1075827, 1075828, iTimerEffect );
 			break;
 		case SPELL_Magic_Reflect:
+		{
+			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+			{
+				iBuffPercent = pSpell->m_itSpell.m_spelllevel;
+				ITOA(-iBuffPercent, NumBuff[0], 10);
+				for ( int idx = 1; idx < 5; ++idx )
+					ITOA(10, NumBuff[idx], 10);
+
+				addBuff( BI_MAGICREFLECTION, 1075817, 1075818, iTimerEffect, pNumBuff, 5 );
+			}
+			else
+			{
+				addBuff( BI_MAGICREFLECTION, 1075817, 1070722, iTimerEffect );
+			}
+			break;
+		}
+
+
 			addBuff( BI_MAGICREFLECTION, 1075817, 1070722, iTimerEffect );
 			break;
 		case SPELL_Invis:

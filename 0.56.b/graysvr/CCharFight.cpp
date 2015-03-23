@@ -2321,7 +2321,7 @@ effect_bounce:
 						iReactiveDamage = 1;
 
 					iDmg -= iReactiveDamage;
-					pSrc->OnTakeDamage( iReactiveDamage, this, uType, iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy );
+					pSrc->OnTakeDamage( iReactiveDamage, this, static_cast<DAMAGE_TYPE>(DAMAGE_FIXED), iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy );
 					pSrc->Sound( 0x1F1 );
 					pSrc->Effect( EFFECT_OBJ, ITEMID_FX_CURSE_EFFECT, this, 10, 16 );
 				}

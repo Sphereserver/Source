@@ -617,10 +617,20 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 					GetClient()->removeBuff(BI_NIGHTSIGHT);
 				}
 			}
-
 			return;
 		case SPELL_Magic_Reflect:
-			StatFlag_Clear( STATF_Reflection );
+			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+			{
+				SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) + pSpell->m_itSpell.m_spelllevel));
+				SetDefNum("RESFIRE", static_cast<int>(GetDefNum("RESFIRE", true) - 10));
+				SetDefNum("RESCOLD", static_cast<int>(GetDefNum("RESCOLD", true) - 10));
+				SetDefNum("RESPOISON", static_cast<int>(GetDefNum("RESPOISON", true) - 10));
+				SetDefNum("RESENERGY", static_cast<int>(GetDefNum("RESENERGY", true) - 10));
+			}
+			else
+			{
+				StatFlag_Clear( STATF_Reflection );
+			}
 			if (IsClient()) {
 				GetClient()->removeBuff(BI_MAGICREFLECTION);
 			}
@@ -640,12 +650,23 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			m_defense = static_cast<WORD>(CalcArmorDefense());
 			break;
 		case SPELL_Protection:
+		case SPELL_Steelskin:		// 114 // turns your skin into steel, giving a boost to your AR.
+		case SPELL_Stoneskin:		// 115 // turns your skin into stone, giving a boost to your AR.
+			Sound( 0x1ed );
+			Effect( EFFECT_OBJ, ITEMID_FX_SPARKLE, this, 9, 20 );
+			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+			{
+				SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) + pSpell->m_itSpell.m_PolyStr));
+				SetDefNum("FASTERCASTING", static_cast<int>(GetDefNum("FASTERCASTING", true) + 2));
+				Skill_SetBase(static_cast<SKILL_TYPE>(SKILL_MAGICRESISTANCE), Skill_GetBase(static_cast<SKILL_TYPE>(SKILL_MAGICRESISTANCE)) + pSpell->m_itSpell.m_PolyDex);
+			}
+			else
+			{
+				m_defense = static_cast<WORD>(CalcArmorDefense());
+			}
 			if (IsClient()) {
 				GetClient()->removeBuff(BI_PROTECTION);
 			}
-		case SPELL_Steelskin:		// 114 // turns your skin into steel, giving a boost to your AR.
-		case SPELL_Stoneskin:		// 115 // turns your skin into stone, giving a boost to your AR.
-			m_defense = static_cast<WORD>(CalcArmorDefense());
 			break;
 		case SPELL_Incognito:
 			StatFlag_Clear( STATF_Incognito );
@@ -757,8 +778,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 
 	//Buffs related variables:
 	int iBuffPercent;
-	TCHAR NumBuff[5][6];
-	LPCTSTR pNumBuff[5] = { NumBuff[0], NumBuff[1], NumBuff[2], NumBuff[3], NumBuff[4] };
+	TCHAR NumBuff[7][8];
+	LPCTSTR pNumBuff[7] = { NumBuff[0], NumBuff[1], NumBuff[2], NumBuff[3], NumBuff[4], NumBuff[5], NumBuff[6] };
 	//------------------------
 
 	switch ( spell )
@@ -963,20 +984,75 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			}
 			break;
 		case SPELL_Magic_Reflect:
-			StatFlag_Set( STATF_Reflection );
+			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+			{
+				iStatEffect = 25 - (Skill_GetBase(SKILL_INSCRIPTION)/200);
+				pSpell->m_itSpell.m_spelllevel = iStatEffect;
+
+				SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) - iStatEffect));
+				SetDefNum("RESFIRE", static_cast<int>(GetDefNum("RESFIRE", true) + 10));
+				SetDefNum("RESCOLD", static_cast<int>(GetDefNum("RESCOLD", true) + 10));
+				SetDefNum("RESPOISON", static_cast<int>(GetDefNum("RESPOISON", true) + 10));
+				SetDefNum("RESENERGY", static_cast<int>(GetDefNum("RESENERGY", true) + 10));
+			}
+			else
+			{
+				StatFlag_Set( STATF_Reflection );
+			}
 			if ( IsSetOF(OF_Buffs) && IsClient() )
 			{
 				GetClient()->removeBuff(BI_MAGICREFLECTION);
-				GetClient()->addBuff(BI_MAGICREFLECTION, 1075817, 1070722, iTimerEffect);
+				if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+				{
+					ITOA(-iStatEffect, NumBuff[0], 10);
+					for ( int idx = 1; idx < 5; ++idx )
+						ITOA(10, NumBuff[idx], 10);
+
+					GetClient()->addBuff(BI_MAGICREFLECTION, 1075817, 1075818, iTimerEffect, pNumBuff, 5);
+				}
+				else
+				{
+					GetClient()->addBuff(BI_MAGICREFLECTION, 1075817, 1070722, iTimerEffect);
+				}
 			}
 			break;
 		case SPELL_Protection:
-			if ( IsSetOF(OF_Buffs) && IsClient() )
 			{
-				GetClient()->removeBuff(BI_PROTECTION);
-				GetClient()->addBuff(BI_PROTECTION, 1075814, 1070722, iTimerEffect);
+				int iPhysicalResist = 0;
+				int iMagicResist = 0;
+				if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+				{
+					iStatEffect = minimum(75, (Skill_GetBase(SKILL_EVALINT) + Skill_GetBase(SKILL_MEDITATION) + Skill_GetBase(SKILL_INSCRIPTION))/40);
+					iPhysicalResist = 15 - (Skill_GetBase(SKILL_INSCRIPTION) / 200);
+					iMagicResist = 350 - (Skill_GetBase(SKILL_INSCRIPTION) / 20);
+
+					pSpell->m_itSpell.m_spelllevel = iStatEffect;
+					pSpell->m_itSpell.m_PolyStr = iPhysicalResist;
+					pSpell->m_itSpell.m_PolyDex = iMagicResist;
+
+					SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) - iPhysicalResist));
+					SetDefNum("FASTERCASTING", static_cast<int>(GetDefNum("FASTERCASTING", true) - 2));
+					Skill_SetBase(static_cast<SKILL_TYPE>(SKILL_MAGICRESISTANCE), Skill_GetBase(static_cast<SKILL_TYPE>(SKILL_MAGICRESISTANCE)) - iMagicResist);
+				}
+				else
+				{
+					m_defense = static_cast<WORD>(CalcArmorDefense());
+				}
+				if ( IsSetOF(OF_Buffs) && IsClient() )
+				{
+					GetClient()->removeBuff(BI_PROTECTION);
+					if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+					{
+						ITOA(-iPhysicalResist, NumBuff[0], 10);
+						ITOA(-iMagicResist/10, NumBuff[1], 10);
+						GetClient()->addBuff(BI_PROTECTION, 1075814, 1075815, iTimerEffect, pNumBuff, 2);
+					}
+					else
+					{
+						GetClient()->addBuff(BI_PROTECTION, 1075814, 1070722, iTimerEffect);
+					}
+				}
 			}
-			m_defense = static_cast<WORD>(CalcArmorDefense());
 			break;
 		case SPELL_Arch_Prot:
 			if ( IsSetOF(OF_Buffs) && IsClient() )
@@ -1239,8 +1315,18 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 					iDuration = ((pCharSrc->Skill_GetBase(SKILL_EVALINT) / 50) + 1) * 6; 
 					break;
 
-				case SPELL_Invis:		
-					iDuration = static_cast<int>(1.2) * (pCharSrc->Skill_GetBase(SKILL_MAGERY) / 100); 
+				case SPELL_Protection:
+					{
+						iDuration = pCharSrc->Skill_GetBase(SKILL_MAGERY) * 2;
+						if ( iDuration < 150 )
+							iDuration = 150;
+						else if ( iDuration > 2400 )
+							iDuration = 2400;
+					}
+					break;
+
+				case SPELL_Invis:
+					iDuration = static_cast<int>(pCharSrc->Skill_GetBase(SKILL_MAGERY) * 1.2);
 					break;
 
 				case SPELL_Paralyze:	

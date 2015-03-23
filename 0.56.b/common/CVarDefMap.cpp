@@ -681,7 +681,7 @@ void CVarDefMap::DumpKeys( CTextConsole * pSrc, LPCTSTR pszPrefix ) const
 	for ( DefSet::const_iterator i = m_Container.begin(); i != m_Container.end(); ++i )
 	{
 		const CVarDefCont * pVar = (*i);
-		pSrc->SysMessagef("%s%s=%s\n", static_cast<LPCTSTR>(pszPrefix), static_cast<LPCTSTR>(pVar->GetKey()), static_cast<LPCTSTR>(pVar->GetValStr()));
+		pSrc->SysMessagef(pSrc->GetChar()? "%s%s=%s" : "%s%s=%s\n", static_cast<LPCTSTR>(pszPrefix), static_cast<LPCTSTR>(pVar->GetKey()), static_cast<LPCTSTR>(pVar->GetValStr()));
 	}
 }
 
