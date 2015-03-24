@@ -241,6 +241,7 @@ MSG(ITEMUSE_CBALL_PROMT,			"itemuse_cball_promt",				"What do you want to use th
 MSG(ITEMUSE_COTTON_CREATE,			"itemuse_cotton_create",			"You create some thread.")
 MSG(ITEMUSE_CROOK_PROMT,			"itemuse_crook_promt",				"What would you like to herd?")
 MSG(ITEMUSE_CROOK_TRY,				"itemuse_crook_try",				"Try just picking up inanimate objects")
+MSG(ITEMUSE_CROOK_TARGET,			"itemuse_crook_target",				"Where do you want them to go ?")
 MSG(ITEMUSE_DYE_FAIL,				"itemuse_dye_fail",					"The dye just drips off this.")
 MSG(ITEMUSE_DYE_NOHAIR,				"itemuse_dye_nohair",				"You have no hair to dye!")
 MSG(ITEMUSE_DYE_REACH,				"itemuse_dye_reach",				"You must have the item in your backpack or on your person.")

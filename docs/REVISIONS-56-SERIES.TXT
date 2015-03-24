@@ -1832,3 +1832,13 @@ Fixed: HS clients not parsing correctly text lists like TAGLIST/CTAGLIST/VARLIST
 Fixed: Sphere crashing when COMBAT_ELEMENTAL_ENGINE is disabled and 2 chars with Reactive Armor attack each other causing an infinite loop when reflect the damage.
 Added: New Magic Reflection and Protection spell behavior if COMBAT_ELEMENTAL_ENGINE feature is enabled.
 Added: Support for RESDISP/RESLEVEL 8 on accounts, it's the default RESDISP for High Seas expansion (clients >= 7.0.9.0).
+
+24-03-2015, XuN
+Fixed some code from PacketWheelBoatMove (Move ships with mouse) and enabled it via 'Pilot' variable in ships holding the value of character and one memory item (acting like a horse)
+Added few checks for Combat_NoDirChange
+
+Scripts:
+ Added t_pilot to sphere_defs.scp
+ Updated \items\sphere_item_ship_parts_*.scp adding t_pilot.	//It seems that britannian and orcish ships got their items changed and they look empty now, i did not change this atm.
+ Added \Add-On\HighSeas\Ships\HS_Pilot.scp with behaviour for t_pilot and memory item for mouse sailing.
+ Added //itemuse_crook_target			"Where do you want them to go ?" to sphere_msgs.scp

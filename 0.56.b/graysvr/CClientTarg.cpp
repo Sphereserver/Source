@@ -1957,7 +1957,7 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 			SysMessageDefault( DEFMSG_ITEMUSE_CROOK_TRY );
 			return( false );
 		}
-		addTarget( CLIMODE_TARG_SKILL_HERD_DEST, "Where do you want them to go ?", true );
+		addTarget(CLIMODE_TARG_SKILL_HERD_DEST, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_CROOK_TARGET), true);
 		return( true );
 
 	case IT_WEAPON_MACE_SMITH:		// Can be used for smithing.

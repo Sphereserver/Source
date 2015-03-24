@@ -290,6 +290,7 @@ EMOTE_DEF_UNICODE	0
 //itemuse_cotton_create   		"You create some thread."
 //itemuse_crook_promt			"What would you like to herd?"
 //itemuse_crook_try				"Try just picking up inanimate objects"
+//itemuse_crook_target			"Where do you want them to go ?"
 //itemuse_dye_fail				"The dye just drips off this."
 //itemuse_dye_nohair			"You have no hair to dye!"
 //itemuse_dye_reach				"You must have the item in your backpack or on your person."
