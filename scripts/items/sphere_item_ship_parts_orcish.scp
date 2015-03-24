@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, March 12, 2011
+// FILE LAST UPDATED: Tuesday, March 24, 2015
 //
 VERSION=0.56b
 
@@ -11031,7 +11031,7 @@ TYPE=t_normal
 [ITEMDEF 075bd]
 // OrcShipShipsWheel SO
 DEFNAME=i_orcshipshipswheel_so_2
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 075be]
 // OrcShipShipsWheel SO
@@ -11046,7 +11046,7 @@ TYPE=t_normal
 [ITEMDEF 077b1]
 // OrcShipShipsWheel WE
 DEFNAME=i_orcshipshipswheel_we_2
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 077b2]
 // OrcShipShipsWheel WE
@@ -11061,7 +11061,7 @@ TYPE=t_normal
 [ITEMDEF 079a5]
 // OrcShipShipsWheel NO
 DEFNAME=i_orcshipshipswheel_no_2
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 079a6]
 // OrcShipShipsWheel NO
@@ -11076,7 +11076,7 @@ TYPE=t_normal
 [ITEMDEF 07b9a]
 // OrcShipsWheel EAST
 DEFNAME=i_orcshipswheel_east_2
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 07b9b]
 // OrcShipsWheel EAST

@@ -1037,7 +1037,7 @@ public:
 	void GetAdjustedCharID( const CChar * pChar, CREID_TYPE & id, HUE_TYPE &wHue ) const;
 	void GetAdjustedItemID( const CChar * pChar, const CItem * pItem, ITEMID_TYPE & id, HUE_TYPE &wHue ) const;
 
-	void Event_Attack( CGrayUID uid );
+	void Event_Attack(CGrayUID uid);
 	void Event_Book_Title( CGrayUID uid, LPCTSTR pszTitle, LPCTSTR pszAuthor );
 	void Event_BugReport( const TCHAR * pszText, int len, BUGREPORT_TYPE type, CLanguageID lang = 0 );
 	void Event_ChatButton(const NCHAR * pszName); // Client's chat button was pressed

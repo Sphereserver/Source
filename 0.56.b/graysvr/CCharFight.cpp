@@ -1825,7 +1825,7 @@ void CChar::OnHarmedBy( CChar * pCharSrc, int iHarmQty )
 	bool fFightActive = Fight_IsActive();
 	Memory_AddObjTypes(pCharSrc, MEMORY_HARMEDBY);
 
-	if ( fFightActive && m_Act_Targ.CharFind() )
+	if (fFightActive && m_Fight_Targ.CharFind())
 	{
 		// In war mode already
 		if ( m_pPlayer )
@@ -1883,7 +1883,7 @@ bool CChar::OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fCommandPet, bool
 	}
 
 	// Am i already attacking the source anyhow
-	if ( Fight_IsActive() && m_Act_Targ == pCharSrc->GetUID())
+	if (Fight_IsActive() && m_Fight_Targ == pCharSrc->GetUID())
 		return true;
 
 	Memory_AddObjTypes( pCharSrc, MEMORY_HARMEDBY|MEMORY_IRRITATEDBY|MEMORY_AGGREIVED );
@@ -2470,7 +2470,7 @@ void CChar::Memory_Fight_Start( const CChar * pTarg )
 	// This is just the "Intent" to fight. Maybe No damage done yet.
 
 	ASSERT(pTarg);
-	if ( Fight_IsActive() && m_Act_Targ == pTarg->GetUID())
+	if (Fight_IsActive() && m_Fight_Targ == pTarg->GetUID())
 	{
 		// quick check that things are ok.
 		return;
@@ -2722,7 +2722,7 @@ void CChar::Fight_ClearAll()
 	if ( Fight_IsActive() )
 	{
 		Skill_Start( SKILL_NONE );
-		m_Act_Targ.InitUID();
+		m_Fight_Targ.InitUID();
 	}
 
 	UpdateModeFlag();
@@ -2835,7 +2835,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	if ( btoldByMaster )
 		threat = 1000 + Attacker_GetHighestThreat();
 
-	if ((m_Act_Targ != pCharTarg->GetUID()) && (( IsTrigUsed(TRIGGER_ATTACK) ) || ( IsTrigUsed(TRIGGER_CHARATTACK) )))
+	if ((m_Fight_Targ != pCharTarg->GetUID()) && ((IsTrigUsed(TRIGGER_ATTACK)) || (IsTrigUsed(TRIGGER_CHARATTACK))))
 	{
 		CScriptTriggerArgs Args;
 		Args.m_iN1 = threat;
@@ -2862,7 +2862,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
 	SKILL_TYPE skillActive = Skill_GetActive();
 
-	if ( skillActive == skillWeapon && m_Act_Targ == pCharTarg->GetUID() )
+	if (skillActive == skillWeapon && m_Fight_Targ == pCharTarg->GetUID())
 		return true;
 
 	if ( IsSkillMagic(skillActive) )
@@ -2883,7 +2883,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 		if (pCharTest)
 			pTarget = pCharTest;
 	}
-	m_Act_Targ = pTarget->GetUID();
+	m_Fight_Targ = pTarget->GetUID();
 	Skill_Start( skillWeapon );
 
 	return( true );
@@ -2908,7 +2908,7 @@ void CChar::Fight_HitTry()
 	ASSERT( Fight_IsActive());
 	ASSERT( m_atFight.m_War_Swing_State == WAR_SWING_READY || m_atFight.m_War_Swing_State == WAR_SWING_SWINGING );
 
-	CChar * pCharTarg = m_Act_Targ.CharFind();
+	CChar * pCharTarg = m_Fight_Targ.CharFind();
 	if ( pCharTarg == NULL )
 	{
 		// Might be dead ? Clear this.
@@ -2932,14 +2932,16 @@ void CChar::Fight_HitTry()
 			{
 				SKILL_TYPE skill = Skill_GetActive();
 				Skill_Cleanup();	// Smooth transition = not a cancel of skill.
-				Skill_Start( skill );
+				Skill_Start(skill);
 			}
 			return;
 		case WAR_SWING_READY:	// probably too far away. can't take my swing right now.
 			// Try for a diff target ?
 			Fight_AttackNext();
+			pCharTarg->Speak("Attacking me now rdy");
 			return;
 		case WAR_SWING_SWINGING:	// must come back here again to complete.
+			pCharTarg->Speak("Attacking me now or not ...");
 			return;
 		default:
 			break;
@@ -3042,7 +3044,7 @@ CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 			// archery dist is different.
 			if ( iDist < g_Cfg.m_iArcheryMinDist || iDist > g_Cfg.m_iArcheryMaxDist )
 				continue;
-			if ( m_Act_Targ == pChar->GetUID())	// alternate.
+			if (m_Fight_Targ == pChar->GetUID())	// alternate.
 				continue;
 		} 
 		if ( iDist > UO_MAP_VIEW_SIGHT )
@@ -3235,7 +3237,7 @@ void CChar::Attacker_Clear()
 	if ( Fight_IsActive() )
 	{
 		Skill_Start( SKILL_NONE );
-		m_Act_Targ.InitUID();
+		m_Fight_Targ.InitUID();
 	}
 
 	UpdateModeFlag();

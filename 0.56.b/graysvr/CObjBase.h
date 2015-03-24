@@ -1661,8 +1661,8 @@ public:
 	size_t  Multi_ListObjs(CObjBase ** ppObjList);
 	struct ShipSpeed // speed of a ship
 	{
-		unsigned short period;	// time between movement
-		unsigned short tiles;	// distance to move
+		unsigned char period;	// time between movement
+		unsigned char tiles;	// distance to move
 	};
 	ShipSpeed m_shipSpeed; // Speed of ships (IT_SHIP)
 	BYTE m_SpeedMode;
@@ -1824,10 +1824,9 @@ private:
 	}
 	size_t  Ship_ListObjs( CObjBase ** ppObjList );
 	bool Ship_CanMoveTo( const CPointMap & pt ) const;
-	bool Ship_SetMoveDir( DIR_TYPE dir );
 	bool Ship_MoveDelta( CPointBase pdelta );
 	bool Ship_OnMoveTick();
-	double Ship_GetMovePeriod();
+	unsigned char Ship_GetMovePeriod();
 
 	virtual bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
 	virtual void r_Write( CScript & s );
@@ -1838,6 +1837,7 @@ private:
 	virtual void OnComponentCreate( const CItem * pComponent );
 
 public:
+	bool Ship_SetMoveDir(DIR_TYPE dir, BYTE speed = 0, bool bWheelMove = false);
 	bool Ship_Face(DIR_TYPE dir);
 	bool Ship_Move(DIR_TYPE dir, int distance);
 	static const char *m_sClassName;

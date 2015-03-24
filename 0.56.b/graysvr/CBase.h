@@ -449,6 +449,7 @@ enum IT_TYPE		// double click type action.
 	IT_WEAPON_THROWING,	// 194 = Throwing Weapon
 	IT_CARTOGRAPHY,		// 195 = cartography tool
 	IT_COOKING,			// 196 = cooking tool
+	IT_PILOT,			// 197 = ship's pilot (PacketWheelMove)
 
 	IT_QTY,
 	IT_TRIGGER = 1000	// custom triggers starts from here

@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, March 12, 2011
+// FILE LAST UPDATED: Tuesday, March 24, 2015
 //
 VERSION=0.56b
 
@@ -6329,7 +6329,7 @@ TYPE=t_normal
 [ITEMDEF 061d6]
 // BritanianShip Wheel 
 DEFNAME=i_britanianship_wheel
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 061d7]
 // BritanianShip PropsD
@@ -6559,7 +6559,7 @@ TYPE=t_normal
 [ITEMDEF 0620c]
 // BritanianShip Wheel 
 DEFNAME=i_britanianship_wheel_2
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 0620d]
 // BritanianShip PropsD
@@ -6789,7 +6789,7 @@ TYPE=t_normal
 [ITEMDEF 06242]
 // BritanianShip Wheel 
 DEFNAME=i_britanianship_wheel_3
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 06243]
 // BritanianShip PropsD
@@ -7019,7 +7019,7 @@ TYPE=t_normal
 [ITEMDEF 06278]
 // BritanianShip Wheel 
 DEFNAME=i_britanianship_wheel_4
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 06279]
 // BritanianShip PropsD
@@ -9860,7 +9860,7 @@ TYPE=t_normal
 [ITEMDEF 05bd6]
 // BrittanianMainHull W
 DEFNAME=i_brittanianmainhull_w_11
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 05bd7]
 // BrittanianMainHull W
@@ -10130,7 +10130,7 @@ TYPE=t_normal
 [ITEMDEF 05c0c]
 // BrittanianMainHull W
 DEFNAME=i_brittanianmainhull_w_65
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 05c0d]
 // BrittanianMainHull W
@@ -10400,7 +10400,7 @@ TYPE=t_normal
 [ITEMDEF 05c42]
 // BrittanianMainHull W
 DEFNAME=i_brittanianmainhull_w_119
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 05c43]
 // BrittanianMainHull W
@@ -10670,7 +10670,7 @@ TYPE=t_normal
 [ITEMDEF 05c78]
 // BritShipMainHull WES
 DEFNAME=i_britshipmainhull_wes_9
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 05c79]
 // BritShipMainHull WES

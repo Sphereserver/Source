@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, March 12, 2011
+// FILE LAST UPDATED: Tuesday, March 24, 2015
 //
 VERSION=0.56b
 
@@ -10599,119 +10599,119 @@ TYPE=t_normal
 [ITEMDEF 09311]
 // TokunoShipsWheel SOU
 DEFNAME=i_tokunoshipswheel_sou
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 09312]
 // TokunoShipsWheel SOU
 DEFNAME=i_tokunoshipswheel_sou_2
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 09313]
 // TokunoShipsWheel WES
 DEFNAME=i_tokunoshipswheel_wes
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 09314]
 // TokunoShipsWheel WES
 DEFNAME=i_tokunoshipswheel_wes_2
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 09315]
 // TokunoShipsWheel NOR
 DEFNAME=i_tokunoshipswheel_nor
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 09316]
 // TokunoShipsWheel NOR
 DEFNAME=i_tokunoshipswheel_nor_2
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 09317]
 // TokunoShipsWheel EAS
 DEFNAME=i_tokunoshipswheel_eas
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 09318]
 // TokunoShipsWheel EAS
 DEFNAME=i_tokunoshipswheel_eas_2
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 095ed]
 // TokunoShipsWheel D1 
 DEFNAME=i_tokunoshipswheel_d
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 095ee]
 // TokunoShipsWheel D1 
 DEFNAME=i_tokunoshipswheel_d_2
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 095ef]
 // TokunoShipsWheel D1 
 DEFNAME=i_tokunoshipswheel_d_3
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 095f0]
 // TokunoShipsWheel D1 
 DEFNAME=i_tokunoshipswheel_d_4
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 095f1]
 // TokunoShipsWheel D1 
 DEFNAME=i_tokunoshipswheel_d_5
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 095f2]
 // TokunoShipsWheel D1 
 DEFNAME=i_tokunoshipswheel_d_6
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 095f3]
 // TokunoShipsWheel D1 
 DEFNAME=i_tokunoshipswheel_d_7
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 095f4]
 // TokunoShipsWheel D1 
 DEFNAME=i_tokunoshipswheel_d_8
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 098e9]
 // TokunoShipsWheel D1 
 DEFNAME=i_tokunoshipswheel_d_9
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 098ea]
 // TokunoShipsWheel D1 
 DEFNAME=i_tokunoshipswheel_d_10
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 098eb]
 // TokunoShipsWheel D2 
 DEFNAME=i_tokunoshipswheel_d_11
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 098ec]
 // TokunoShipsWheel D2 
 DEFNAME=i_tokunoshipswheel_d_12
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 098ed]
 // TokunoShipsWheel D2 
 DEFNAME=i_tokunoshipswheel_d_13
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 098ee]
 // TokunoShipsWheel D2 
 DEFNAME=i_tokunoshipswheel_d_14
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 098ef]
 // TokunoShipsWheel D2 
 DEFNAME=i_tokunoshipswheel_d_15
-TYPE=t_normal
+TYPE=t_pilot
 
 [ITEMDEF 098f0]
 // TokunoShipsWheel D2 
 DEFNAME=i_tokunoshipswheel_d_16
-TYPE=t_normal
+TYPE=t_pilot

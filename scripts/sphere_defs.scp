@@ -1125,6 +1125,7 @@ t_spellbook_bard        193   // SA Bard spellbook (should have MOREZ=700 by def
 t_weapon_throwing       194   // Throwing Weapon
 t_cartography           195   // cartography tool
 t_cooking               196   // cooking tool
+t_pilot					197   // t_pilot (PacketWheelBoatMove)
 
 //Add custom types after 500 to leave room for future hardcoded types
 t_forest		500   // Forest Tiles

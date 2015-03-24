@@ -2210,7 +2210,8 @@ void CChar::NPC_Act_Fight()
 			iDist <= 8 &&
 			CanSeeLOS( pChar,LOS_NB_WINDOWS )) //Dragon can breath through a window
 		{
-			UpdateDir( pChar );
+			if (!IsSetCombatFlags(COMBAT_NODIRCHANGE))
+				UpdateDir( pChar );
 			Skill_Start( NPCACT_BREATH );
 			return;
 		}
@@ -2260,7 +2261,8 @@ void CChar::NPC_Act_Fight()
 
 				if ( id != ITEMID_NOTHING )
 				{
-					UpdateDir( pChar );
+					if (!IsSetCombatFlags(COMBAT_NODIRCHANGE))
+						UpdateDir( pChar );
 					Skill_Start( NPCACT_THROWING );
 					return;
 				}

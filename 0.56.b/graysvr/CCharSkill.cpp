@@ -3673,7 +3673,8 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 	}
 
 	m_Act_p = pChar->GetTopPoint();
-	UpdateDir( m_Act_p );
+	if (!IsSetCombatFlags(COMBAT_NODIRCHANGE))
+		UpdateDir( m_Act_p );
 
 	if ( stage == SKTRIG_START )
 	{
@@ -3757,7 +3758,8 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 	}
 
 	m_Act_p = pChar->GetTopPoint();
-	UpdateDir( m_Act_p );
+	if (!IsSetCombatFlags(COMBAT_NODIRCHANGE))
+		UpdateDir( m_Act_p );
 
 	if ( stage == SKTRIG_START )
 	{

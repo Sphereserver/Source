@@ -3313,7 +3313,8 @@ bool PacketWheelBoatMove::onReceive(NetState* net)
 
 	DIR_TYPE facing = static_cast<DIR_TYPE>(readByte()); //new boat facing, yes client send it
 	DIR_TYPE moving = static_cast<DIR_TYPE>(readByte()); //the boat movement
-	skip(1); //BYTE speed = readByte(); //(0 = Stop Movement, 1 = One Tile Movement, 2 = Normal Movement) ***These speeds are NOT the same as 0xF6 packet
+	//skip(1);
+	BYTE speed = readByte(); //(0 = Stop Movement, 1 = One Tile Movement, 2 = Normal Movement) ***These speeds are NOT the same as 0xF6 packet
 
 	if (area && area->IsFlag(REGION_FLAG_SHIP))
 	{
@@ -3325,10 +3326,13 @@ bool PacketWheelBoatMove::onReceive(NetState* net)
 			//	ship_face = pShipItem->Ship_Face()
 
 			//Ship_* need to be private? there is another way to ask the ship to move?
-			pShipItem->Ship_Move(static_cast<DIR_TYPE>((moving - pShipItem->m_itShip.m_DirFace)), pShipItem->m_shipSpeed.tiles);
+			//pShipItem->Ship_Move(static_cast<DIR_TYPE>((moving - pShipItem->m_itShip.m_DirFace)), pShipItem->m_shipSpeed.tiles);
 
-			if (facing == DIR_N || facing == DIR_E || facing == DIR_S || facing == DIR_W) //boat cannot face intermediate directions
-				pShipItem->Ship_Face(static_cast<DIR_TYPE>(facing&-2));
+			if ((facing == DIR_N || facing == DIR_E || facing == DIR_S || facing == DIR_W) && pShipItem->m_itShip.m_DirFace != facing) //boat cannot face intermediate directions
+				pShipItem->Ship_Face(moving);
+
+			if (pShipItem->Ship_SetMoveDir(facing, speed, true))//pShipItem->m_itShip.m_DirMove = static_cast<unsigned char>(facing);
+				pShipItem->Ship_Move(moving, speed);
 		}
 		else
 		{

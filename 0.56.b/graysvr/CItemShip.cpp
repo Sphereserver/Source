@@ -9,6 +9,7 @@
 
 CItemShip::CItemShip( ITEMID_TYPE id, CItemBase * pItemDef ) : CItemMulti( id, pItemDef )
 {
+	m_NextMove = CServTime::GetCurrentTime();
 }
 
 CItemShip::~CItemShip()
@@ -66,31 +67,33 @@ void CItemShip::Ship_Stop()
 	m_itShip.m_fSail = 0;
 }
 
-bool CItemShip::Ship_SetMoveDir( DIR_TYPE dir )
+bool CItemShip::Ship_SetMoveDir(DIR_TYPE dir, BYTE speed, bool bWheelMove)
 {
 	ADDTOCALLSTACK("CItemShip::Ship_SetMoveDir");
 	// Set the direction we will move next time we get a tick.
-	int iSpeed = 1;
+	// Called from Packet 0xBF.0x32 : PacketWheelBoatMove to check if ship can move while setting dir and checking times in the proccess, otherwise for each click with mouse it will do 1 move.
+
+	m_itShip.m_DirMove = static_cast<unsigned char>(dir); // we set new direction regardless of click limitations, so click in another direction means changing dir but makes not more moves until ship's timer moves it.
+	g_Log.EventDebug("Moving %d\n", speed);
+	if (bWheelMove && m_NextMove > CServTime::GetCurrentTime())
+
+		return false;
+	
+	unsigned char iSpeed = speed ? speed : 1;
 	if ( m_itShip.m_DirMove == dir && m_itShip.m_fSail != 0 )
 	{
-		if ( m_itShip.m_DirFace == m_itShip.m_DirMove &&
-			m_itShip.m_fSail == 1 )
-		{
+		if ( m_itShip.m_DirFace == m_itShip.m_DirMove && m_itShip.m_fSail == 1 )
 			iSpeed = 2;
-		}
-		else return( false );
+		/*else
+			return(false); */ // no need to return, pSpeed different than 1 or 2 is managed in m_SpeedMode to be 3 or 4, so it's safe to let it pass.
 	}
 
 	if ( ! IsAttr(ATTR_MAGIC ))	// make sound.
 	{
 		if ( ! Calc_GetRandVal(10))
-		{
 			Sound( Calc_GetRandVal(2)?0x12:0x13 );
-		}
 	}
-
-	m_itShip.m_DirMove = static_cast<unsigned char>(dir);
-	m_itShip.m_fSail = static_cast<unsigned char>(iSpeed);
+	m_itShip.m_fSail = iSpeed > 2 ? 2 : iSpeed;	//checking here that packet is legit from client and not modified by 3rd party tools to send speed > 2.
 	GetTopSector()->SetSectorWakeStatus();	// may get here b4 my client does.
 	CItemMulti * pItemMulti = dynamic_cast<CItemMulti*>(this);
 	pItemMulti->m_SpeedMode = (iSpeed == 1 ? 3 : 4);
@@ -614,7 +617,7 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 	return true;
 }
 
-double CItemShip::Ship_GetMovePeriod()
+unsigned char CItemShip::Ship_GetMovePeriod()
 {
 	ADDTOCALLSTACK("CItemShip::Ship_GetMovePeriod");			
 	/*Intervals:
@@ -1073,22 +1076,22 @@ void CItemShip::r_Write( CScript & s )
 enum IMCS_TYPE
 {
 	IMCS_HATCH,
+	IMCS_PILOT,
 	IMCS_PLANKS,
 	IMCS_SHIPSPEED,
 	IMCS_SPEEDMODE,
 	IMCS_TILLER,
-	IMCS_PILOT,
 	IMCS_QTY
 };
 
 LPCTSTR const CItemShip::sm_szLoadKeys[IMCS_QTY + 1] = // static
 {
 	"HATCH",
+	"PILOT",
 	"PLANKS",
 	"SHIPSPEED",
 	"SPEEDMODE",
 	"TILLER",
-	"PILOT",
 	NULL
 };
 
@@ -1272,6 +1275,18 @@ bool CItemShip::r_LoadVal( CScript & s  )
 				else
 					return false;
 			}
+		} break;
+		case IMCS_PILOT:
+		{
+			CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
+			if (pChar)
+				m_itShip.m_Pilot = pChar->GetUID() ;
+			else
+			{
+				m_itShip.m_Pilot.InitUID();
+				Ship_Stop();
+			}
+			return 1;
 		} break;
 		default:
 			return CItemMulti::r_LoadVal(s);
