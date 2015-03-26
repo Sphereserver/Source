@@ -1850,3 +1850,11 @@ Fixed: Dispel, Dispel Field and Mass Dispell spells incorrectly removing nearby 
 Fixed: Flamestrike spell missing some animation frames.
 Added: Missing Protection spell behavior (spell disturb chance) if COMBAT_ELEMENTAL_ENGINE is enabled.
 Added: New effect calculation on buff (Agility, Cunning, Strength, Bless) and debuff (Clumsy, Feeblemind, Weaken, Curse) spells if MAGICF_OSIFORMULAS is enabled.
+
+
+26-03-2015, XuN
+Added 5 more args to .effect function to give support to packet 0c7, new values are: EffectID,ExplodeID,SoundID,UID,Type. Seems to work only on EC.
+Added Bonded property for npcs with very basic functionality, setting it to 1 doesn't let NPCs die.
+Removed some debug msgs.
+Changed some more m_Act_Targ to m_Fight_Targ.
+Corpses retrieve killer's uid now from Attacker_GetLast() instead of on ACT.

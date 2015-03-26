@@ -2716,10 +2716,10 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 		pCorpse->m_itCorpse.m_facing_dir = static_cast<unsigned char>(m_dirFace);
 		pCorpse->SetAttr(ATTR_INVIS);	// Don't display til ready.
 
-		if ( IsStatFlag( STATF_DEAD ))
+		if (IsStatFlag(STATF_DEAD) || (m_pNPC && m_pNPC->m_bonded == 1))
 		{
 			pCorpse->SetTimeStamp(CServTime::GetCurrentTime().GetTimeRaw()); // death time.
-			pCorpse->m_itCorpse.m_uidKiller = m_Act_Targ;
+			pCorpse->m_itCorpse.m_uidKiller = Attacker_GetLast()->GetUID();
 			iDecayTime = (m_pPlayer) ?
 				g_Cfg.m_iDecay_CorpsePlayer : g_Cfg.m_iDecay_CorpseNPC;
 		}
@@ -2730,7 +2730,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 			iDecayTime = -1;	// never
 		}
 
-		if ( m_pPlayer || !IsStatFlag( STATF_DEAD ))	// not being deleted.
+		if (m_pPlayer || !IsStatFlag(STATF_DEAD) || (m_pNPC && m_pNPC->m_bonded == 1))	// not being deleted.
 			pCorpse->m_uidLink = GetUID();
 	}
 	else
@@ -2822,7 +2822,7 @@ bool CChar::Death()
 	if ( IsStatFlag(STATF_DEAD|STATF_INVUL) )
 		return true;
 
-	if ( m_pNPC )
+	if ( m_pNPC && m_pNPC->m_bonded == 0 )
 	{
 		//	leave no corpse if for some reason creature dies while mounted
 		if ( IsStatFlag(STATF_Ridden) )
@@ -2899,7 +2899,7 @@ bool CChar::Death()
 	//	No aggressor/killer detected. Try detect person last hit me  from the act target
 	if ( !pKiller )
 	{
-		CObjBase * ob = g_World.FindUID(m_Act_Targ);
+		CObjBase * ob = g_World.FindUID(m_Fight_Targ);
 		if ( ob )
 			pKiller = STATIC_CAST <CChar *>(ob);
 	}
@@ -2930,9 +2930,20 @@ bool CChar::Death()
 	// create the corpse item.
 	StatFlag_Set(STATF_DEAD);
 	StatFlag_Clear(STATF_Stone|STATF_Freeze|STATF_Hidden|STATF_Sleeping|STATF_Hovering);
-	Stat_SetVal(STAT_STR, 0);
+
+	if (m_pPlayer || (m_pNPC && m_pNPC->m_bonded == 0))
+	{
+		Stat_SetVal(STAT_STR, 0);
+		//return true;
+	}
 
 	Spell_Dispel(100);		// Get rid of all spell effects. (moved here to prevent double @Destroy trigger)
+
+
+	//	clear list of attackers
+	m_lastAttackers.clear();
+	if (m_pNPC && m_pNPC->m_bonded == 1)
+		return true;
 
 	//	bugfix: no need to call @DeathCorpse since no corpse is created
 	CItemCorpse * pCorpse = MakeCorpse(Calc_GetRandVal(2) != 0);
@@ -2941,9 +2952,6 @@ bool CChar::Death()
    		CScriptTriggerArgs Args(pCorpse);
    		OnTrigger(CTRIG_DeathCorpse, this, &Args);
 	}
-
-	//	clear list of attackers
-	m_lastAttackers.clear();
 
 	if ( m_pPlayer )
 	{
@@ -3011,7 +3019,6 @@ bool CChar::Death()
 			SetDisconnected();	// Respawn the NPC later
 			return true;
 		}
-
 		// Makes no sense to link the corpse to something that is not going to be valid.
 		if ( pCorpse && pCorpse->m_uidLink == GetUID())
 			pCorpse->m_uidLink.InitUID();

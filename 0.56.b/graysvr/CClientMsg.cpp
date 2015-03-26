@@ -875,7 +875,7 @@ void CClient::addObjMessage( LPCTSTR pMsg, const CObjBaseTemplate * pSrc, HUE_TY
 	addBarkParse(pMsg, pSrc, wHue, mode);
 }
 
-void CClient::addEffect( EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate * pDst, const CObjBaseTemplate * pSrc, BYTE bSpeedSeconds, BYTE bLoop, bool fExplode, DWORD color, DWORD render )
+void CClient::addEffect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate * pDst, const CObjBaseTemplate * pSrc, BYTE bSpeedSeconds, BYTE bLoop, bool fExplode, DWORD color, DWORD render, WORD effectid, DWORD explodeid, WORD explodesound, DWORD effectuid, byte type)
 {
 	ADDTOCALLSTACK("CClient::addEffect");
 	// bSpeedSeconds = seconds = 0=very fast, 7=slow.
@@ -888,7 +888,9 @@ void CClient::addEffect( EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTempl
 		return;
 
 	PacketSend* cmd(NULL);
-	if (color || render)
+	if (effectid || explodeid)
+		cmd = new PacketEffect(this, motion, id, pDst, pSrc, bSpeedSeconds, bLoop, fExplode, color, render, effectid, explodeid, explodesound, effectuid, type);
+	else if (color || render)
 		cmd = new PacketEffect(this, motion, id, pDst, pSrc, bSpeedSeconds, bLoop, fExplode, color, render);
 	else
 		cmd = new PacketEffect(this, motion, id, pDst, pSrc, bSpeedSeconds, bLoop, fExplode);

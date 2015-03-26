@@ -2078,4 +2078,20 @@ WAR_SWING_EQUIPPING = 00			// we are recoiling our weapon.
 WAR_SWING_READY		= 01			// we can swing at any time.
 WAR_SWING_SWINGING	= 02			// we are swinging our weapon.
 
+
+[defname expansions]
+EXPANSION_T2A			= 0
+EXPANSION_RENAISSANCE	= 1
+EXPANSION_THIRDDAWN		= 2
+EXPANSION_LBR			= 3
+EXPANSION_AOS			= 4
+EXPANSION_SE			= 5
+EXPANSION_ML			= 6
+EXPANSION_SA			= 7
+EXPANSION_HS			= 8
+
+[defname theme_packs]
+THEME_GOTHIC		01
+THEME_RUSTIC		02
+
 [EOF]

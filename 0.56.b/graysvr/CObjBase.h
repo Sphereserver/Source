@@ -314,7 +314,7 @@ public:
 	bool SetNamePool( LPCTSTR pszName );
 
 	void Sound( SOUND_TYPE id, int iRepeat = 1 ) const; // Play sound effect from this location.
-	void Effect( EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBase * pSource = NULL, BYTE bspeedseconds = 5, BYTE bloop = 1, bool fexplode = false, DWORD color = 0, DWORD render = 0 ) const;
+	void Effect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBase * pSource = NULL, BYTE bspeedseconds = 5, BYTE bloop = 1, bool fexplode = false, DWORD color = 0, DWORD render = 0, WORD effectid = 0, WORD explodeid = 0, WORD explodesound = 0, DWORD effectuid = 0, byte type = 0) const;
 
 	void r_WriteSafe( CScript & s );
 
@@ -2307,6 +2307,7 @@ public:
 	NPCBRAIN_TYPE m_Brain;	// For NPCs: Number of the assigned basic AI block
 	WORD	m_Home_Dist_Wander;	// Distance to allow to "wander".
 	BYTE    m_Act_Motivation;		// 0-100 (100=very greatly) how bad do i want to do the current action.
+	short m_bonded;		// Bonded Pet
 
 	// We respond to what we here with this.
 	CResourceRefArray m_Speech;	// Speech fragment list (other stuff we know)
@@ -3629,7 +3630,8 @@ public:
 
 	int	 Attacker() { return static_cast<int>(m_lastAttackers.size()); }
 	//bool Attacker_Add( CChar * pChar);
-	bool Attacker_Add( CChar * pChar, INT64 threat = 0);
+	bool Attacker_Add(CChar * pChar, INT64 threat = 0);
+	CChar * Attacker_GetLast();
 	bool Attacker_Delete(CChar * pChar, bool bForced = false, ATTACKER_CLEAR_TYPE type = ATTACKER_CLEAR_FORCED);
 	bool Attacker_Delete(int id, bool bForced = false, ATTACKER_CLEAR_TYPE type = ATTACKER_CLEAR_FORCED);
 	void Attacker_RemoveChar();

@@ -3277,7 +3277,7 @@ bool PacketGargoyleFly::onReceive(NetState* net)
 /***************************************************************************
  *
  *
- *	Packet 0xBF.0x32 : PacketWheelBoatMove			gargoyle toggle flying
+ *	Packet 0xBF.0x33 : PacketWheelBoatMove			gargoyle toggle flying
  *
  *
  ***************************************************************************/

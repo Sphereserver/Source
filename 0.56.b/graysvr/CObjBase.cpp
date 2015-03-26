@@ -343,7 +343,7 @@ void CObjBase::Sound( SOUND_TYPE id, int iOnce ) const // Play sound effect for 
 	}
 }
 
-void CObjBase::Effect( EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBase * pSource, BYTE bSpeedSeconds, BYTE bLoop, bool fExplode, DWORD color, DWORD render ) const
+void CObjBase::Effect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBase * pSource, BYTE bSpeedSeconds, BYTE bLoop, bool fExplode, DWORD color, DWORD render, WORD effectid, WORD explodeid, WORD explodesound, DWORD effectuid, byte type) const
 {
 	ADDTOCALLSTACK("CObjBase::Effect");
 	// show for everyone near by.
@@ -357,7 +357,7 @@ void CObjBase::Effect( EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBase * pSou
 	{
 		if ( ! pClient->CanSee( this ))
 			continue;
-		pClient->addEffect( motion, id, this, pSource, bSpeedSeconds, bLoop, fExplode, color, render );
+		pClient->addEffect(motion, id, this, pSource, bSpeedSeconds, bLoop, fExplode, color, render, effectid, explodeid, explodesound, effectuid, type);
 	}
 }
 
@@ -1824,7 +1824,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 		case OV_EFFECT: // some visual effect.
 			{
 				EXC_SET("EFFECT");
-				INT64 piCmd[7];
+				INT64 piCmd[12];
 				size_t iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
 				if ( iArgQty < 2 )
 					return( false );
@@ -1847,7 +1847,12 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 					(iArgQty >= 4)? static_cast<unsigned char>(piCmd[3]) : 1,		// BYTE bLoop = 1,
 					(iArgQty >= 5)? (piCmd[4] != 0) : false,						// bool fExplode = false
 					(iArgQty >= 6)? static_cast<unsigned long>(piCmd[5]) : 0,		// hue
-					(iArgQty >= 7)? static_cast<unsigned long>(piCmd[6]) : 0		// render mode
+					(iArgQty >= 7)? static_cast<unsigned long>(piCmd[6]) : 0,		// render mode,		
+					(iArgQty >= 8) ? static_cast<WORD>(piCmd[7]) : 0,				// EffectID	//New Packet 0xc7
+					(iArgQty >= 9) ? static_cast<WORD>(piCmd[8]) : 0,				// ExplodeID
+					(iArgQty >= 10) ? static_cast<WORD>(piCmd[9]) : 0,				// ExplodeSound
+					(iArgQty >= 11) ? static_cast<DWORD>(piCmd[10]) : 0,			// EffectUID
+					(iArgQty >= 12) ? static_cast<unsigned char>(piCmd[11]) : 0		// Type
 					);
 			}
 			break;
@@ -2391,12 +2396,8 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			if (s.HasArgs())
 			{
 				CGrayUID uid = s.GetArgVal();
-
 				if ((!uid.ObjFind()) || (!this->IsChar()))
 					return(false);
-
-				CChar *pChar = dynamic_cast <CChar *> (this);
-
 				pCharSrc->GetClient()->Event_SingleClick(uid);
 			}
 			else

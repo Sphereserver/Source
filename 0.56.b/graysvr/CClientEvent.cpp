@@ -1730,7 +1730,7 @@ void CClient::Event_Talk_Common(TCHAR * szText) // PC speech
 	bool fGhostSpeak = m_pChar->IsSpeakAsGhost();
 
 	LPCTSTR pszCallWord = g_Exp.m_VarDefs.GetKeyStr("guardcall");
-	if (pszCallWord == "")
+	if (!strnicmp(szText, "", 0))
 		pszCallWord = "GUARD,GUARDS";
 
 	if ( ! fGhostSpeak && FindStrWord( szText, pszCallWord ) > 0)

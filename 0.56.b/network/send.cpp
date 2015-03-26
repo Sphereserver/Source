@@ -1857,6 +1857,22 @@ PacketEffect::PacketEffect(const CClient* target, EFFECT_TYPE motion, ITEMID_TYP
 	push(target);
 }
 
+PacketEffect::PacketEffect(const CClient* target, EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate* dst, const CObjBaseTemplate* src, BYTE speed, BYTE loop, bool explode, DWORD hue, DWORD render, WORD effectid, DWORD explodeid, WORD explodesound, DWORD effectuid, byte type) : PacketSend(XCMD_EffectParticle, 49, PRI_NORMAL)
+{
+	ADDTOCALLSTACK("PacketEffect::PacketEffect(3)");
+
+	writeBasicEffect(motion, id, dst, src, speed, loop, explode);
+	writeHuedEffect(hue, render);
+
+	writeInt16(effectid);
+	writeInt16(explodeid);
+	writeInt16(explodesound);
+	writeInt32(effectuid);
+	writeByte(type == 0 ? 0xFF : 0x03 );	// (0xFF or 0x03)
+	writeInt16(0x0);
+	push(target);
+}
+
 void PacketEffect::writeBasicEffect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate* dst, const CObjBaseTemplate* src, BYTE speed, BYTE loop, bool explode)
 {
 	ADDTOCALLSTACK("PacketEffect::writeBasicEffect");
@@ -2840,7 +2856,7 @@ size_t PacketVendorSellList::searchContainer(CClient* target, const CItemContain
 
 						writeInt32(vendItem->GetUID());
 						writeInt16(static_cast<WORD>(vendItem->GetDispID()));
-						writeInt16(hue);
+						writeInt16(static_cast<WORD>(hue));
 						writeInt16(vendItem->GetAmount());
 						writeInt16(static_cast<WORD>(vendSell->GetVendorPrice(convertFactor)));
 
@@ -3958,12 +3974,31 @@ PacketEnableMapDiffs::PacketEnableMapDiffs(const CClient* target) : PacketExtend
 
 
 /***************************************************************************
- *
- *
- *	Packet 0xBF.0x19.0x02 : PacketStatLocks		update lock status of stats (NORMAL)
- *
- *
- ***************************************************************************/
+*
+*
+*	Packet 0xBF.0x19.0x00 : OldBondedStats				Set bonded status	(NORMAL)
+*
+*
+***************************************************************************/
+
+PacketBondedStatus::PacketBondedStatus(const CChar * pChar) : PacketExtended(EXTDATA_Stats_Enable, 12, PRI_NORMAL)
+{
+	ADDTOCALLSTACK("PacketBondedStatus::PacketBondedStatus");
+	if (!pChar->m_pNPC)
+		return;
+	writeByte(0x00);
+	writeInt16(pChar->GetUID());
+	writeByte(pChar->m_pNPC->m_bonded);
+}
+
+
+/***************************************************************************
+*
+*
+*	Packet 0xBF.0x19.0x02 : PacketStatLocks		update lock status of stats (NORMAL)
+*
+*
+***************************************************************************/
 PacketStatLocks::PacketStatLocks(const CClient* target, const CChar* character) : PacketExtended(EXTDATA_Stats_Enable, 12, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketStatLocks::PacketStatLocks");

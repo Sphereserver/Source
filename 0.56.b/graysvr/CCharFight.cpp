@@ -2141,7 +2141,7 @@ effect_bounce:
 	}
 
 	// Check parrying block chance
-	if ( !(uType & DAMAGE_GOD|DAMAGE_MAGIC) && (pSrc != this) )
+	if ( !(uType & (DAMAGE_GOD|DAMAGE_MAGIC)) && (pSrc != this) )
 	{
 		// Legacy pre-SE formula
 		CItem * pItemHit = NULL;
@@ -2408,14 +2408,14 @@ void CChar::Memory_Fight_Retreat( CChar * pTarg, CItemMemory * pFight )
 	int iMyDistFromBattle = GetTopPoint().GetDist( pFight->m_itEqMemory.m_pt );
 	int iHisDistFromBattle = pTarg->GetTopPoint().GetDist( pFight->m_itEqMemory.m_pt );
 
-	bool fCowardice = ( iMyDistFromBattle > iHisDistFromBattle );
+	bool fCowardice = (iMyDistFromBattle > iHisDistFromBattle);
+	Attacker_Delete(pTarg, false, ATTACKER_CLEAR_DISTANCE);
 
 	if ( fCowardice && ! pFight->IsMemoryTypes( MEMORY_IAGGRESSOR ))
 	{
 		// cowardice is ok if i was attacked.
 		return;
 	}
-	Attacker_Delete(pTarg, false, ATTACKER_CLEAR_DISTANCE );
 
 	SysMessagef( fCowardice ?
 		g_Cfg.GetDefaultMsg( DEFMSG_COWARD_1 ) :
@@ -2442,7 +2442,7 @@ bool CChar::Memory_Fight_OnTick( CItemMemory * pMemory )
 	// Attacker.Elapsed = -1 means no combat end for this attacker.
 	// g_Cfg.m_iAttackerTimeout = 0 means attackers doesnt decay. (but cleared when the attacker is killed or the char dies)
 
-	if ( GetDist(pTarg) > UO_MAP_VIEW_RADAR || ( g_Cfg.m_iAttackerTimeout != 0 && elapsed > static_cast<int>(g_Cfg.m_iAttackerTimeout) && elapsed == -1 ) )
+	if ( GetDist(pTarg) > UO_MAP_VIEW_RADAR || ( g_Cfg.m_iAttackerTimeout != 0 && elapsed > static_cast<INT64>(g_Cfg.m_iAttackerTimeout) && elapsed >= 0 ) )
 	{
 		Memory_Fight_Retreat( pTarg, pMemory );
 clearit:
@@ -2513,8 +2513,8 @@ void CChar::Memory_Fight_Start( const CChar * pTarg )
 		// Update the fights status
 		Memory_AddTypes( pMemory, MEMORY_FIGHT|MEMORY_WAR_TARG|MemTypes );
 	}
-	Attacker_Add(const_cast<CChar*>(pTarg));
-	if ( IsClient())
+	//Attacker_Add(const_cast<CChar*>(pTarg));
+	if ( IsClient() && m_Fight_Targ == pTarg->GetUID() && !IsSetCombatFlags(COMBAT_NODIRCHANGE))
 	{
 		// This may be a useless command. How do i say the fight is over ?
 		// This causes the funny turn to the target during combat !
@@ -2788,6 +2788,9 @@ bool CChar::Fight_Clear(const CChar *pChar, bool bForced)
 		return false;
 
 	// Go to my next target.
+	if (m_Fight_Targ = pChar->GetUID())
+		m_Fight_Targ.InitUID();
+
 	pChar = Fight_FindBestTarget();
 	if ( pChar )
 		Fight_Attack(pChar);
@@ -2949,10 +2952,8 @@ void CChar::Fight_HitTry()
 		case WAR_SWING_READY:	// probably too far away. can't take my swing right now.
 			// Try for a diff target ?
 			Fight_AttackNext();
-			pCharTarg->Speak("Attacking me now rdy");
 			return;
 		case WAR_SWING_SWINGING:	// must come back here again to complete.
-			pCharTarg->Speak("Attacking me now or not ...");
 			return;
 		default:
 			break;
@@ -3129,6 +3130,24 @@ INT64 CChar::Attacker_GetHighestThreat()
 			highThreat = refAttacker.threat;
 	}
 	return highThreat;
+}
+
+CChar * CChar::Attacker_GetLast()
+{
+	INT64 dwLastTime = INT_MAX, dwCurTime = 0;
+
+	CChar * retChar = NULL;
+	for (size_t iAttacker = 0; iAttacker < m_lastAttackers.size(); ++iAttacker)
+	{
+		LastAttackers & refAttacker = m_lastAttackers.at(iAttacker);
+		dwCurTime = refAttacker.elapsed;
+		if (dwCurTime <= dwLastTime)
+		{
+			dwLastTime = dwCurTime;
+			retChar = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
+		}
+	}
+	return retChar;
 }
 
 void CChar::Attacker_SetElapsed( CChar * pChar, INT64 value)
@@ -3327,7 +3346,11 @@ bool CChar::Attacker_Delete( int index, bool bForced, ATTACKER_CLEAR_TYPE type )
 		Memory_ClearTypes(pFight, MEMORY_WAR_TARG);
 	}
 	m_lastAttackers.erase(it);
-
+	if (m_Fight_Targ == pChar->GetUID())
+	{
+		m_Fight_Targ.InitUID();
+		Fight_AttackNext();
+	}
 	if ( ! m_lastAttackers.size() )
 		Attacker_Clear();
 	return true;
