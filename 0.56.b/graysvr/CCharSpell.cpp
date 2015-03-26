@@ -500,8 +500,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 	// m_itWeapon, m_itArmor, m_itSpell
 
 	SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pSpell->m_itSpell.m_spell));
-
-	short iStatEffect = static_cast<short>(g_Cfg.GetSpellEffect(spell, pSpell->m_itSpell.m_spelllevel));
+	short iStatEffect = static_cast<short>(pSpell->m_itSpell.m_spelllevel);
 
 	switch ( spell )
 	{
@@ -534,18 +533,21 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			if (IsClient()) {
 				GetClient()->removeBuff(BI_WEAKEN);
 			}
-
-			UpdateHitsFlag();
 			break;
 		case SPELL_Curse:
 			{
+				if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) && m_pPlayer )
+				{
+					SetDefNum("RESFIREMAX", static_cast<int>(GetDefNum("RESFIREMAX", true) + 10));
+					SetDefNum("RESCOLDMAX", static_cast<int>(GetDefNum("RESCOLDMAX", true) + 10));
+					SetDefNum("RESPOISONMAX", static_cast<int>(GetDefNum("RESPOISONMAX", true) + 10));
+					SetDefNum("RESENERGYMAX", static_cast<int>(GetDefNum("RESENERGYMAX", true) + 10));
+				}
 				for (int i = STAT_STR; i < STAT_BASE_QTY; i++ )
 					Stat_AddMod(static_cast<STAT_TYPE>(i), iStatEffect);
 				if (IsClient()) {
 					GetClient()->removeBuff(BI_CURSE);
 				}
-
-				UpdateHitsFlag();
 			}
 			break;
 		case SPELL_Agility:
@@ -565,8 +567,6 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			if (IsClient()) {
 				GetClient()->removeBuff(BI_STRENGTH);
 			}
-
-			UpdateHitsFlag();
 			break;
 		case SPELL_Bless:
 			{
@@ -575,8 +575,6 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 				if (IsClient()) {
 					GetClient()->removeBuff(BI_BLESS);
 				}
-
-				UpdateHitsFlag();
 			}
 			break;
 
@@ -658,7 +656,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			{
 				SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) + pSpell->m_itSpell.m_PolyStr));
 				SetDefNum("FASTERCASTING", static_cast<int>(GetDefNum("FASTERCASTING", true) + 2));
-				Skill_SetBase(static_cast<SKILL_TYPE>(SKILL_MAGICRESISTANCE), Skill_GetBase(static_cast<SKILL_TYPE>(SKILL_MAGICRESISTANCE)) + pSpell->m_itSpell.m_PolyDex);
+				Skill_SetBase(SKILL_MAGICRESISTANCE, minimum(Skill_GetMax(SKILL_MAGICRESISTANCE), Skill_GetBase(SKILL_MAGICRESISTANCE) + pSpell->m_itSpell.m_PolyDex));
 			}
 			else
 			{
@@ -743,7 +741,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			break;
 
 		case SPELL_Trance:			// 111 // temporarily increases your meditation skill.
-			Skill_SetBase( SKILL_MEDITATION, Skill_GetBase( SKILL_MEDITATION ) - iStatEffect );
+			Skill_SetBase(SKILL_MEDITATION, Skill_GetBase(SKILL_MEDITATION) - g_Cfg.GetSpellEffect(spell, iStatEffect));
 			break;
 
 		case SPELL_Shield:			// 113 // erects a temporary force field around you. Nobody approaching will be able to get within 1 tile of you, though you can move close to them if you wish.
@@ -767,6 +765,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 	if ( !pSpell || !pSpell->IsTypeSpellable() || pSpell->IsType(IT_WAND) )
 		return;
 
+	CChar *pCaster = static_cast<CChar*>(pSpell->m_uidLink.CharFind());
 	SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pSpell->m_itSpell.m_spell));
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
 
@@ -797,7 +796,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 		case SPELL_Reactive_Armor:
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
-				iStatEffect = 15 + (Skill_GetBase(SKILL_INSCRIPTION)/200);
+				iStatEffect = 15 + (Skill_GetBase(SKILL_INSCRIPTION) / 200);
 				pSpell->m_itSpell.m_spelllevel = iStatEffect;
 
 				SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) + iStatEffect));
@@ -840,15 +839,20 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			}
 			break;
 		case SPELL_Clumsy:
-			Stat_AddMod( STAT_DEX, -iStatEffect );
-			if ( IsSetOF(OF_Buffs) && IsClient() )
 			{
-				GetClient()->removeBuff(BI_CLUMSY);
-				iBuffPercent = GetStatPercentage( this, STAT_DEX, iStatEffect );
-				ITOA(iBuffPercent, NumBuff[0], 10);
-				GetClient()->addBuff(BI_CLUMSY, 1075831, 1075832, iTimerEffect, pNumBuff, 1);
-			}
-			break;
+				if ( pCaster != NULL && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
+				{
+					iStatEffect = 8 + (pCaster->Skill_GetBase(SKILL_EVALINT) / 100) - (Skill_GetBase(SKILL_MAGICRESISTANCE) / 100);
+					pSpell->m_itSpell.m_spelllevel = iStatEffect;
+				}
+				Stat_AddMod( STAT_DEX, -iStatEffect );
+				if ( IsSetOF(OF_Buffs) && IsClient() )
+				{
+					ITOA(iStatEffect, NumBuff[0], 10);
+					GetClient()->removeBuff(BI_CLUMSY);
+					GetClient()->addBuff(BI_CLUMSY, 1075831, 1075832, iTimerEffect, pNumBuff, 1);
+				}
+			} break;
 		case SPELL_Particle_Form:	// 112 // turns you into an immobile, but untargetable particle system for a while.
 		case SPELL_Stone:
 			StatFlag_Set( STATF_Stone );
@@ -858,100 +862,133 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			StatFlag_Set( STATF_Hallucinating );
 			UpdateModeFlag();
 		case SPELL_Feeblemind:
-			// NOTE: Allow stats to go negative !
-			Stat_AddMod( STAT_INT, -iStatEffect );
-			if ( IsSetOF(OF_Buffs) && IsClient() )
 			{
-				GetClient()->removeBuff(BI_FEEBLEMIND);
-				iBuffPercent = GetStatPercentage( this, STAT_INT, iStatEffect );
-				ITOA(iBuffPercent, NumBuff[0], 10);
-				GetClient()->addBuff(BI_FEEBLEMIND, 1075833, 1075834, iTimerEffect, pNumBuff, 1);
-			}
-			break;
+				if ( pCaster != NULL && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
+				{
+					iStatEffect = 8 + (pCaster->Skill_GetBase(SKILL_EVALINT) / 100) - (Skill_GetBase(SKILL_MAGICRESISTANCE) / 100);
+					pSpell->m_itSpell.m_spelllevel = iStatEffect;
+				}
+				Stat_AddMod( STAT_INT, -iStatEffect );
+				if ( IsSetOF(OF_Buffs) && IsClient() )
+				{
+					ITOA(iStatEffect, NumBuff[0], 10);
+					GetClient()->removeBuff(BI_FEEBLEMIND);
+					GetClient()->addBuff(BI_FEEBLEMIND, 1075833, 1075834, iTimerEffect, pNumBuff, 1);
+				}
+			} break;
 		case SPELL_Weaken:
-			// NOTE: Allow stats to go negative !
-			Stat_AddMod( STAT_STR, -iStatEffect );
-			if ( IsSetOF(OF_Buffs) && IsClient() )
 			{
-				GetClient()->removeBuff(BI_WEAKEN);
-				iBuffPercent = GetStatPercentage( this, STAT_STR, iStatEffect );
-				ITOA(iBuffPercent, NumBuff[0], 10);
-				GetClient()->addBuff(BI_WEAKEN, 1075837, 1075838, iTimerEffect, pNumBuff, 1);
-			}
-
-			UpdateHitsFlag();
-			break;
+				if ( pCaster != NULL && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
+				{
+					iStatEffect = 8 + (pCaster->Skill_GetBase(SKILL_EVALINT) / 100) - (Skill_GetBase(SKILL_MAGICRESISTANCE) / 100);
+					pSpell->m_itSpell.m_spelllevel = iStatEffect;
+				}
+				Stat_AddMod( STAT_STR, -iStatEffect );
+				if ( IsSetOF(OF_Buffs) && IsClient() )
+				{
+					ITOA(iStatEffect, NumBuff[0], 10);
+					GetClient()->removeBuff(BI_WEAKEN);
+					GetClient()->addBuff(BI_WEAKEN, 1075837, 1075838, iTimerEffect, pNumBuff, 1);
+				}
+			} break;
 		case SPELL_Curse:
-			// NOTE: Allow stats to go negative !
 			{
+				if ( pCaster != NULL && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
+				{
+					iStatEffect = 8 + (pCaster->Skill_GetBase(SKILL_EVALINT) / 100) - (Skill_GetBase(SKILL_MAGICRESISTANCE) / 100);
+					pSpell->m_itSpell.m_spelllevel = iStatEffect;
+				}
+				if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) && m_pPlayer )		// Curse also decrease max resistances on players
+				{
+					SetDefNum("RESFIREMAX", static_cast<int>(GetDefNum("RESFIREMAX", true) - 10));
+					SetDefNum("RESCOLDMAX", static_cast<int>(GetDefNum("RESCOLDMAX", true) - 10));
+					SetDefNum("RESPOISONMAX", static_cast<int>(GetDefNum("RESPOISONMAX", true) - 10));
+					SetDefNum("RESENERGYMAX", static_cast<int>(GetDefNum("RESENERGYMAX", true) - 10));
+				}
 				for ( int i = STAT_STR; i < STAT_BASE_QTY; i++ )
 					Stat_AddMod(static_cast<STAT_TYPE>(i), -iStatEffect);
 
 				if ( IsSetOF(OF_Buffs) && IsClient() )
 				{
 					GetClient()->removeBuff(BI_CURSE);
-					for ( int idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
+					for ( int idx = STAT_STR; idx < STAT_BASE_QTY; ++idx )
+						ITOA(iStatEffect, NumBuff[idx], 10);
+					if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 					{
-						iBuffPercent = GetStatPercentage( this, static_cast<STAT_TYPE>(idx), iStatEffect );
-						ITOA(iBuffPercent, NumBuff[idx], 10);
+						for ( int idx = 3; idx < 7; ++idx )
+							ITOA(10, NumBuff[idx], 10);
+
+						GetClient()->addBuff(BI_CURSE, 1075835, 1075836, iTimerEffect, pNumBuff, 7);
 					}
-
-					GetClient()->addBuff(BI_CURSE, 1075835, 1075840, iTimerEffect, pNumBuff, STAT_BASE_QTY);
+					else
+					{
+						GetClient()->addBuff(BI_CURSE, 1075835, 1075840, iTimerEffect, pNumBuff, 3);
+					}
 				}
-
-				UpdateHitsFlag();
 			} break;
 		case SPELL_Agility:
-			Stat_AddMod( STAT_DEX, +iStatEffect );
-			if ( IsSetOF(OF_Buffs) && IsClient() )
 			{
-				GetClient()->removeBuff(BI_AGILITY);
-				iBuffPercent = GetStatPercentage( this, STAT_DEX, iStatEffect );
-				ITOA(iBuffPercent, NumBuff[0], 10);
-				GetClient()->addBuff(BI_AGILITY, 1075841, 1075842, iTimerEffect, pNumBuff, 1);
-			}
-			break;
+				if ( pCaster != NULL && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
+				{
+					iStatEffect = 1 + (pCaster->Skill_GetBase(SKILL_EVALINT) / 100);
+					pSpell->m_itSpell.m_spelllevel = iStatEffect;
+				}
+				Stat_AddMod( STAT_DEX, +iStatEffect );
+				if ( IsSetOF(OF_Buffs) && IsClient() )
+				{
+					ITOA(iStatEffect, NumBuff[0], 10);
+					GetClient()->removeBuff(BI_AGILITY);
+					GetClient()->addBuff(BI_AGILITY, 1075841, 1075842, iTimerEffect, pNumBuff, 1);
+				}
+			} break;
 		case SPELL_Cunning:
-			Stat_AddMod( STAT_INT, +iStatEffect );
-			if ( IsSetOF(OF_Buffs) && IsClient() )
 			{
-				GetClient()->removeBuff(BI_CUNNING);
-				iBuffPercent = GetStatPercentage( this, STAT_INT, iStatEffect );
-				ITOA(iBuffPercent, NumBuff[0], 10);
-				GetClient()->addBuff(BI_CUNNING, 1075843, 1075844, iTimerEffect, pNumBuff, 1);
-			}
-			break;
+				if ( pCaster != NULL && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
+				{
+					iStatEffect = 1 + (pCaster->Skill_GetBase(SKILL_EVALINT) / 100);
+					pSpell->m_itSpell.m_spelllevel = iStatEffect;
+				}
+				Stat_AddMod( STAT_INT, +iStatEffect );
+				if ( IsSetOF(OF_Buffs) && IsClient() )
+				{
+					ITOA(iStatEffect, NumBuff[0], 10);
+					GetClient()->removeBuff(BI_CUNNING);
+					GetClient()->addBuff(BI_CUNNING, 1075843, 1075844, iTimerEffect, pNumBuff, 1);
+				}
+			} break;
 		case SPELL_Strength:
 			{
+				if ( pCaster != NULL && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
+				{
+					iStatEffect = 1 + (pCaster->Skill_GetBase(SKILL_EVALINT) / 100);
+					pSpell->m_itSpell.m_spelllevel = iStatEffect;
+				}
 				Stat_AddMod( STAT_STR, +iStatEffect );
 				if ( IsSetOF(OF_Buffs) && IsClient() )
 				{
+					ITOA(iStatEffect, NumBuff[0], 10);
 					GetClient()->removeBuff(BI_STRENGTH);
-					iBuffPercent = GetStatPercentage( this, STAT_STR, iStatEffect );
-					ITOA(iBuffPercent, NumBuff[0], 10);
 					GetClient()->addBuff(BI_STRENGTH, 1075845, 1075846, iTimerEffect, pNumBuff, 1);
 				}
-
-				UpdateHitsFlag();
 			} break;
 		case SPELL_Bless:
 			{
+				if ( pCaster != NULL && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
+				{
+					iStatEffect = 1 + (pCaster->Skill_GetBase(SKILL_EVALINT) / 100);
+					pSpell->m_itSpell.m_spelllevel = iStatEffect;
+				}
 				for ( int i = STAT_STR; i < STAT_BASE_QTY; i++ )
 					Stat_AddMod(static_cast<STAT_TYPE>(i), iStatEffect);
 
 				if ( IsSetOF(OF_Buffs) && IsClient() )
 				{
-					GetClient()->removeBuff(BI_BLESS);
-					for ( int idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
-					{
-						iBuffPercent = GetStatPercentage( this, static_cast<STAT_TYPE>(idx), iStatEffect );
-						ITOA(iBuffPercent, NumBuff[idx], 10);
-					}
+					for ( int idx = STAT_STR; idx < STAT_BASE_QTY; ++idx)
+						ITOA(iStatEffect, NumBuff[idx], 10);
 
+					GetClient()->removeBuff(BI_BLESS);
 					GetClient()->addBuff(BI_BLESS, 1075847, 1075848, iTimerEffect, pNumBuff, STAT_BASE_QTY);
 				}
-
-				UpdateHitsFlag();
 			} break;
 		case SPELL_Ale:		// 90 = drunkeness ?
 		case SPELL_Wine:	// 91 = mild drunkeness ?
@@ -973,9 +1010,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				pSpell->SetName( GetName());	// Give it my name
 				SetName( pCharDef->GetTypeName());	// Give me general name for the type
 				if ( ! IsStatFlag( STATF_Polymorph ) && IsPlayableCharacter())
-				{
 					SetHue((HUE_UNDERWEAR|HUE_SKIN_LOW) + Calc_GetRandVal(HUE_SKIN_HIGH-HUE_SKIN_LOW));
-				}
+
 				if ( IsSetOF(OF_Buffs) && IsClient() )
 				{
 					GetClient()->removeBuff(BI_INCOGNITO);
@@ -986,7 +1022,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 		case SPELL_Magic_Reflect:
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
-				iStatEffect = 25 - (Skill_GetBase(SKILL_INSCRIPTION)/200);
+				iStatEffect = 25 - (Skill_GetBase(SKILL_INSCRIPTION) / 200);
 				pSpell->m_itSpell.m_spelllevel = iStatEffect;
 
 				SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) - iStatEffect));
@@ -1022,9 +1058,9 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				int iMagicResist = 0;
 				if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 				{
-					iStatEffect = minimum(75, (Skill_GetBase(SKILL_EVALINT) + Skill_GetBase(SKILL_MEDITATION) + Skill_GetBase(SKILL_INSCRIPTION))/40);
+					iStatEffect = minimum(75, (Skill_GetBase(SKILL_EVALINT) + Skill_GetBase(SKILL_MEDITATION) + Skill_GetBase(SKILL_INSCRIPTION)) / 40);
 					iPhysicalResist = 15 - (Skill_GetBase(SKILL_INSCRIPTION) / 200);
-					iMagicResist = 350 - (Skill_GetBase(SKILL_INSCRIPTION) / 20);
+					iMagicResist = minimum(Skill_GetBase(SKILL_MAGICRESISTANCE), 350 - (Skill_GetBase(SKILL_INSCRIPTION) / 20));
 
 					pSpell->m_itSpell.m_spelllevel = iStatEffect;
 					pSpell->m_itSpell.m_PolyStr = iPhysicalResist;
@@ -1032,7 +1068,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 
 					SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) - iPhysicalResist));
 					SetDefNum("FASTERCASTING", static_cast<int>(GetDefNum("FASTERCASTING", true) - 2));
-					Skill_SetBase(static_cast<SKILL_TYPE>(SKILL_MAGICRESISTANCE), Skill_GetBase(static_cast<SKILL_TYPE>(SKILL_MAGICRESISTANCE)) - iMagicResist);
+					Skill_SetBase(SKILL_MAGICRESISTANCE, Skill_GetBase(SKILL_MAGICRESISTANCE) - iMagicResist);
 				}
 				else
 				{
@@ -1062,7 +1098,6 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			}
 		case SPELL_Steelskin:		// 114 // turns your skin into steel, giving a boost to your AR.
 		case SPELL_Stoneskin:		// 115 // turns your skin into stone, giving a boost to your AR.
-
 			m_defense = static_cast<WORD>(CalcArmorDefense());
 			break;
 		case SPELL_Invis:
@@ -1305,14 +1340,15 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 			{
 				switch ( spell )
 				{
-				case SPELL_Clumsy: 
+				case SPELL_Clumsy:
 				case SPELL_Feeblemind:
 				case SPELL_Weaken:
 				case SPELL_Agility:
 				case SPELL_Cunning:
 				case SPELL_Strength:
-				case SPELL_Bless:		
-					iDuration = ((pCharSrc->Skill_GetBase(SKILL_EVALINT) / 50) + 1) * 6; 
+				case SPELL_Bless:
+				case SPELL_Curse:
+					iDuration = (((6 * pCharSrc->Skill_GetBase(SKILL_EVALINT)) / 50) + 1) * TICK_PER_SEC;
 					break;
 
 				case SPELL_Protection:
@@ -1331,15 +1367,14 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 
 				case SPELL_Paralyze:	
 					{
-						iDuration = (pCharSrc->Skill_GetBase(SKILL_EVALINT) / 100) - (this->Skill_GetBase(SKILL_MAGICRESISTANCE) / 100);
-						if ( this->m_pNPC )
+						iDuration = (pCharSrc->Skill_GetBase(SKILL_EVALINT) / 100) - (Skill_GetBase(SKILL_MAGICRESISTANCE) / 100);
+						if ( m_pNPC )
 							iDuration *= 3;
 					} 
 					break;
 
-				case SPELL_Curse:		
 				default: 
-					iDuration = pSpellDef->m_Duration.GetLinear(iSkillLevel); break;
+					iDuration = pSpellDef->m_Duration.GetLinear(iSkillLevel);
 					break;
 				}
 			}
@@ -1351,9 +1386,7 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 	pSpell->SetDecayTime( iDuration );
 
 	if ( pSrc )
-	{
 		pSpell->m_uidLink = pSrc->GetUID();
-	}
 
 	LayerAdd( pSpell, layer );	// Remove any competing effect first.
 	g_World.m_uidNew = pSpell->GetUID();
@@ -2266,7 +2299,7 @@ bool CChar::Spell_CastDone()
 			else
 			{
 				// Burn person at location.
-				pObj->Effect( EFFECT_OBJ, iT1, pObj, 6, 15 );
+				pObj->Effect( EFFECT_OBJ, iT1, pObj, 10, 30 );
 				if ( ! Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
 					return( false );
 			}

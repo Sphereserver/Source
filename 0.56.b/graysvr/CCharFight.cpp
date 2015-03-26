@@ -2867,8 +2867,19 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 
 	if ( IsSkillMagic(skillActive) )
 	{
+		if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+		{
+			CItem *pProtectionSpell = LayerFind(LAYER_SPELL_Protection);
+			if ( pProtectionSpell != NULL )
+			{
+				int iChance = pProtectionSpell->m_itSpell.m_spelllevel;
+				if ( iChance > Calc_GetRandVal(100) )
+					return true;
+			}
+		}
+
 		int skill;
-		const CSpellDef* pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
+		const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
 		if ( pSpellDef != NULL && pSpellDef->GetPrimarySkill(&skill, NULL) )
 		{
 			int iInterrupt = pSpellDef->m_Interrupt.GetLinear( Skill_GetBase(static_cast<SKILL_TYPE>(skill)) );

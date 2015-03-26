@@ -1667,18 +1667,6 @@ inline CChar * CGrayUIDBase::CharFind() const
 //////////////////////////////////////////////////////////////////////////
 // Buff Icons
 
-inline int GetStatPercentage( const CChar* Char, STAT_TYPE Stat, const int Difference )
-{
-	int Percentage = ((Difference*100) / (Char->Stat_GetBase(Stat) == 0 ? 1 : Char->Stat_GetBase(Stat)));
-	if (Percentage < 0)
-		Percentage = -(Percentage);
-	if (Percentage > 0x3E7)
-		Percentage = 0x3E7;
-	if ( Percentage == 0 )
-		Percentage = 1;
-	return Percentage;
-}
-
 enum BUFF_ICONS
 {
 	BI_START,

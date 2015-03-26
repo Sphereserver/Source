@@ -4685,8 +4685,6 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	case SPELL_Mass_Dispel:
 		switch ( GetType())
 		{
-			case IT_CAMPFIRE:
-			case IT_FIRE:
 			case IT_SPELL: // ??? compare the strength of the spells ?
 			{
 				if ( IsTopLevel())

@@ -1842,3 +1842,11 @@ Scripts:
  Updated \items\sphere_item_ship_parts_*.scp adding t_pilot.	//It seems that britannian and orcish ships got their items changed and they look empty now, i did not change this atm.
  Added \Add-On\HighSeas\Ships\HS_Pilot.scp with behaviour for t_pilot and memory item for mouse sailing.
  Added //itemuse_crook_target			"Where do you want them to go ?" to sphere_msgs.scp
+
+26-03-2015, Coruja
+Fixed: IDLE clients on login / character selection screen being disconnect on the server-side without display any feedback to client, making it freeze on a infinite 'Connecting...' screen. Now IDLE clients will get an 'timeout' message and will be able to press ok and try again without get stuck.
+Fixed: PacketDeathAnimation feature not working correctly on some specific clients.
+Fixed: Dispel, Dispel Field and Mass Dispell spells incorrectly removing nearby items with typedef t_fire / t_campfire set.
+Fixed: Flamestrike spell missing some animation frames.
+Added: Missing Protection spell behavior (spell disturb chance) if COMBAT_ELEMENTAL_ENGINE is enabled.
+Added: New effect calculation on buff (Agility, Cunning, Strength, Bless) and debuff (Clumsy, Feeblemind, Weaken, Curse) spells if MAGICF_OSIFORMULAS is enabled.

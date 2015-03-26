@@ -74,9 +74,7 @@ bool CItemShip::Ship_SetMoveDir(DIR_TYPE dir, BYTE speed, bool bWheelMove)
 	// Called from Packet 0xBF.0x32 : PacketWheelBoatMove to check if ship can move while setting dir and checking times in the proccess, otherwise for each click with mouse it will do 1 move.
 
 	m_itShip.m_DirMove = static_cast<unsigned char>(dir); // we set new direction regardless of click limitations, so click in another direction means changing dir but makes not more moves until ship's timer moves it.
-	g_Log.EventDebug("Moving %d\n", speed);
 	if (bWheelMove && m_NextMove > CServTime::GetCurrentTime())
-
 		return false;
 	
 	unsigned char iSpeed = speed ? speed : 1;

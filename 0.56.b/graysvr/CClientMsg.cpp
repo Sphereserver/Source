@@ -71,53 +71,51 @@ void CClient::resendBuffs()
 			addBuff( BI_NIGHTSIGHT,1075643, 1075644, iTimerEffect );
 			break;
 		case SPELL_Clumsy:
-			iBuffPercent = GetStatPercentage( GetChar(), STAT_DEX, iStatEffect );
-			ITOA(iBuffPercent, NumBuff[0], 10);
+			ITOA(iStatEffect, NumBuff[0], 10);
 			addBuff( BI_CLUMSY, 1075831, 1075832, iTimerEffect, pNumBuff, 1 );
 			break;
 		case SPELL_Weaken:
-
-			iBuffPercent = GetStatPercentage( GetChar(), STAT_STR, iStatEffect );
-			ITOA(iBuffPercent, NumBuff[0], 10);
+			ITOA(iStatEffect, NumBuff[0], 10);
 			addBuff( BI_WEAKEN, 1075837, 1075838, iTimerEffect, pNumBuff, 1 );
 			break;
 		case SPELL_Feeblemind:
-			iBuffPercent = GetStatPercentage( GetChar(), STAT_INT, iStatEffect );
-			ITOA(iBuffPercent, NumBuff[0], 10);
+			ITOA(iStatEffect, NumBuff[0], 10);
 			addBuff( BI_FEEBLEMIND, 1075833, 1075834, iTimerEffect, pNumBuff, 1  );
 			break;
 		case SPELL_Curse:
 		{
-			for ( int idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
+			for ( int idx = STAT_STR; idx < STAT_BASE_QTY; ++idx )
+				ITOA(iStatEffect, NumBuff[idx], 10);
+			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
-				iBuffPercent = GetStatPercentage( GetChar(), static_cast<STAT_TYPE>(idx), iStatEffect );
-				ITOA(iBuffPercent, NumBuff[idx], 10);
+				for ( int idx = 3; idx < 7; ++idx )
+					ITOA(10, NumBuff[idx], 10);
+
+				GetClient()->addBuff(BI_CURSE, 1075835, 1075836, iTimerEffect, pNumBuff, 7);
 			}
-			addBuff( BI_CURSE, 1075835, 1075840, iTimerEffect, pNumBuff, STAT_BASE_QTY );
+			else
+			{
+				GetClient()->addBuff(BI_CURSE, 1075835, 1075840, iTimerEffect, pNumBuff, 3);
+			}
 			break;
 		}
 		case SPELL_Strength:
-			iBuffPercent = GetStatPercentage( GetChar(), STAT_STR, iStatEffect );
-			ITOA(iBuffPercent, NumBuff[0], 10);
+			ITOA(iStatEffect, NumBuff[0], 10);
 			addBuff( BI_STRENGTH, 0x106A85, 0x106A86, iTimerEffect, pNumBuff, 1 );
 			break;
 		case SPELL_Agility:
-			iBuffPercent = GetStatPercentage( GetChar(), STAT_DEX, iStatEffect );
-			ITOA(iBuffPercent, NumBuff[0], 10);
+			ITOA(iStatEffect, NumBuff[0], 10);
 			addBuff( BI_AGILITY, 0x106A85, 0x106A86, iTimerEffect, pNumBuff, 1 );
 			break;
 		case SPELL_Cunning:
-			iBuffPercent = GetStatPercentage( GetChar(), STAT_INT, iStatEffect );
-			ITOA(iBuffPercent, NumBuff[0], 10);
+			ITOA(iStatEffect, NumBuff[0], 10);
 			addBuff( BI_CUNNING, 0x106A85, 0x106A86, iTimerEffect, pNumBuff, 1 );
 			break;
 		case SPELL_Bless:
 		{
 			for ( int idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
-			{
-				iBuffPercent = GetStatPercentage( GetChar(), static_cast<STAT_TYPE>(idx), iStatEffect );
-				ITOA(iBuffPercent, NumBuff[idx], 10);
-			}
+				ITOA(iStatEffect, NumBuff[idx], 10);
+
 			addBuff( BI_BLESS, 1075847, 1075848, iTimerEffect, pNumBuff, STAT_BASE_QTY );
 			break;
 		}
@@ -181,10 +179,6 @@ void CClient::resendBuffs()
 			}
 			break;
 		}
-
-
-			addBuff( BI_MAGICREFLECTION, 1075817, 1070722, iTimerEffect );
-			break;
 		case SPELL_Invis:
 			addBuff( BI_INVISIBILITY, 1075825, 1075826, iTimerEffect );
 			break;
@@ -4142,9 +4136,7 @@ BYTE CClient::LogIn( LPCTSTR pszAccName, LPCTSTR pszPassword, CGString & sMsg )
 	size_t iLen1 = strlen( pszAccName );
 	size_t iLen2 = strlen( pszPassword );
 	size_t iLen3 = Str_GetBare( szTmp, pszAccName, MAX_NAME_SIZE );
-	if ( iLen1 == 0 ||
-		iLen1 != iLen3 ||
-		iLen1 > MAX_NAME_SIZE )	// a corrupt message.
+	if ( iLen1 == 0 || iLen1 != iLen3 || iLen1 > MAX_NAME_SIZE )	// a corrupt message.
 	{
 		TCHAR szVersion[ 256 ];
 		sMsg.Format( g_Cfg.GetDefaultMsg( DEFMSG_ACC_WCLI ), static_cast<LPCTSTR>(m_Crypt.WriteClientVer( szVersion )));
@@ -4162,13 +4154,9 @@ BYTE CClient::LogIn( LPCTSTR pszAccName, LPCTSTR pszPassword, CGString & sMsg )
 
 	TCHAR szName[ MAX_ACCOUNT_NAME_SIZE ];
 	if ( !CAccount::NameStrip(szName, pszAccName) || Str_Check(pszAccName) )
-	{
 		return( PacketLoginError::BadAccount );
-	}
 	else if ( Str_Check(pszPassword) )
-	{
 		return( PacketLoginError::BadPassword );
-	}
 
 	bool fGuestAccount = ! strnicmp( pszAccName, "GUEST", 5 );
 	if ( fGuestAccount )
@@ -4205,11 +4193,10 @@ BYTE CClient::LogIn( LPCTSTR pszAccName, LPCTSTR pszPassword, CGString & sMsg )
 	}
 
 	bool fAutoCreate = ( g_Serv.m_eAccApp == ACCAPP_Free || g_Serv.m_eAccApp == ACCAPP_GuestAuto || g_Serv.m_eAccApp == ACCAPP_GuestTrial );
-
 	CAccountRef pAccount = g_Accounts.Account_FindCreate(pszAccName, fAutoCreate);
 	if ( ! pAccount )
 	{
-		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:ERR Login NO Account '%s'\n", GetSocketID(), pszAccName);
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s' does not exist\n", GetSocketID(), pszAccName);
 		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_ACC_UNK), pszAccName);
 		return PacketLoginError::Invalid;
 	}

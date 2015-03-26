@@ -1009,7 +1009,7 @@ void NetworkIn::tick(void)
 				int iLastEventDiff = -g_World.GetTimeDiff( client->m_client->m_timeLastEvent );
 				if ( g_Cfg.m_iDeadSocketTime && iLastEventDiff > g_Cfg.m_iDeadSocketTime )
 				{
-					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Frozen client connection disconnected.\n", client->m_id);
+					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Frozen client disconnected.\n", client->m_id);
 					client->markReadClosed();
 				}
 			}
@@ -3104,8 +3104,8 @@ void NetworkInput::processData()
 				INT64 iLastEventDiff = -g_World.GetTimeDiff( client->m_timeLastEvent );
 				if ( g_Cfg.m_iDeadSocketTime > 0 && iLastEventDiff > g_Cfg.m_iDeadSocketTime )
 				{
-					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Frozen client connection disconnected.\n", state->id());
-					state->markReadClosed();
+					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Frozen client disconnected.\n", state->id());
+					state->m_client->addLoginErr( PacketLoginError::Other );		//state->markReadClosed();
 				}
 			}
 
