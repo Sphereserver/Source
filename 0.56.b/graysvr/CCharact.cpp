@@ -2719,14 +2719,17 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 		if (IsStatFlag(STATF_DEAD) || (m_pNPC && m_pNPC->m_bonded == 1))
 		{
 			pCorpse->SetTimeStamp(CServTime::GetCurrentTime().GetTimeRaw()); // death time.
-			pCorpse->m_itCorpse.m_uidKiller = Attacker_GetLast()->GetUID();
+			if (Attacker_GetLast())
+				const_cast<CGrayUIDBase&>(pCorpse->m_itCorpse.m_uidKiller) = Attacker_GetLast()->GetUID();
+			else
+				pCorpse->m_itCorpse.m_uidKiller.InitUID();
 			iDecayTime = (m_pPlayer) ?
 				g_Cfg.m_iDecay_CorpsePlayer : g_Cfg.m_iDecay_CorpseNPC;
 		}
 		else	// Sleeping
 		{
 			pCorpse->SetTimeStamp(0); // Not dead.
-			pCorpse->m_itCorpse.m_uidKiller = GetUID();
+			pCorpse->m_itCorpse.m_uidKiller = static_cast<CGrayUIDBase>(GetUID());
 			iDecayTime = -1;	// never
 		}
 
@@ -2835,9 +2838,6 @@ bool CChar::Death()
 			return true;
 	}
 
-	// Forgot who owns me. dismount my master if ridden.
-	NPC_PetClearOwners();
-
 	// I am dead and we need to give credit for the kill to my attacker(s).
 	TCHAR * pszKillStr = Str_GetTemp();
 	int iKillStrLen = sprintf(pszKillStr, g_Cfg.GetDefaultMsg(DEFMSG_KILLED_BY), (m_pPlayer)?'P':'N', GetNameWithoutIncognito() );
@@ -2944,6 +2944,9 @@ bool CChar::Death()
 	m_lastAttackers.clear();
 	if (m_pNPC && m_pNPC->m_bonded == 1)
 		return true;
+
+	// Forgot who owns me. dismount my master if ridden.
+	NPC_PetClearOwners();
 
 	//	bugfix: no need to call @DeathCorpse since no corpse is created
 	CItemCorpse * pCorpse = MakeCorpse(Calc_GetRandVal(2) != 0);
