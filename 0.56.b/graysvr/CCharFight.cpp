@@ -1238,7 +1238,18 @@ void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 	if ( m_pPlayer )
 	{
 		// I have the option of attacking the criminal. or calling the guards.
-		Memory_AddObjTypes( pCriminal, MEMORY_SAWCRIME );
+		bool bCriminal = true;
+		if (IsTrigUsed(TRIGGER_SEECRIME))
+		{
+			CScriptTriggerArgs Args;
+			Args.m_iN1 = pCriminal->GetUID();
+			Args.m_iN2 = pCharMark->GetUID();
+			Args.m_iN3 = bCriminal;
+			OnTrigger(CTRIG_SeeCrime, this, &Args);
+			bCriminal = Args.m_iN3 ? true : false;
+		}
+		if (bCriminal)
+			Memory_AddObjTypes( pCriminal, MEMORY_SAWCRIME );
 		return;
 	}
 
@@ -1886,7 +1897,7 @@ bool CChar::OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fCommandPet, bool
 	if (Fight_IsActive() && m_Fight_Targ == pCharSrc->GetUID())
 		return true;
 
-	Memory_AddObjTypes( pCharSrc, MEMORY_HARMEDBY|MEMORY_IRRITATEDBY|MEMORY_AGGREIVED );
+	Memory_AddObjTypes( pCharSrc, MEMORY_HARMEDBY|MEMORY_IRRITATEDBY );
 	Attacker_Add(pCharSrc);
 
 	// Are they a criminal for it ? Is attacking me a crime ?
@@ -2446,7 +2457,7 @@ bool CChar::Memory_Fight_OnTick( CItemMemory * pMemory )
 	{
 		Memory_Fight_Retreat( pTarg, pMemory );
 clearit:
-		Memory_ClearTypes( pMemory, MEMORY_FIGHT|MEMORY_IAGGRESSOR );
+		Memory_ClearTypes( pMemory, MEMORY_FIGHT|MEMORY_IAGGRESSOR|MEMORY_AGGREIVED );
 		return( true );
 	}
 
@@ -2819,7 +2830,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	if ( g_Cfg.m_fAttackingIsACrime == TRUE)
 	{
 		CChar * pTarg = const_cast<CChar*>(pCharTarg);
-		if ( pTarg->Noto_GetFlag( this ) == NOTO_GOOD && pTarg->Attacker_GetID( this ) < 0)
+		if ( pTarg->Noto_GetFlag( this ) == NOTO_GOOD )
 		{
 			if ( IsClient())
 			{

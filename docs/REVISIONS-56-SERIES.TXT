@@ -1858,3 +1858,14 @@ Added Bonded property for npcs with very basic functionality, setting it to 1 do
 Removed some debug msgs.
 Changed some more m_Act_Targ to m_Fight_Targ.
 Corpses retrieve killer's uid now from Attacker_GetLast() instead of on ACT.
+
+27-03-2015, XuN
+Changed DClick of t_ship_plank using SetDispID() instead of SetID() so they are threated as ship parts and 'fliped' with the rest of the ship.
+Changed the 'Undefined symbol '' ' output format, now also prints what was the problem exactly in some situations. IE: if (<local.hello==1) // missing '>' will print 21:15:ERROR:(s_add.scp,21)Undefined symbol '' ['<local.hello==)']
+[sphere_spells.scp]: Added missing '>' to local.damagetype in s_explosion.
+Added another block of code for @SeeCrime, now it fires also when a 3rd part sees a crime (I'm seeing Player X attacking Player Y while Y is 'good'), to decide if mark as 'bad guy' the aggresor for this character.
+	argn1 = attacker
+	argn2 = victim
+	argn3 = 1=criminal / 0='turn eyes away'
+Fighting Memory will also remove flag MEMORY_AGGREIVED when expiring (NEED feedback on this) to avoid blue-innocent player becoming criminal when the fight memory of the attacker expires (if he attacked back).
+Being attacked is not giving MEMORY_AGGREIVED to memory item, I might be attacked but it may not have to do anything with me being aggreived ... they may have been attacked by me first (Need feedback on this too).

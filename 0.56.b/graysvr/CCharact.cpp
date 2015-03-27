@@ -2942,6 +2942,7 @@ bool CChar::Death()
 
 	//	clear list of attackers
 	m_lastAttackers.clear();
+	Skill_Cleanup();
 	if (m_pNPC && m_pNPC->m_bonded == 1)
 		return true;
 

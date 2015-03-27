@@ -367,6 +367,7 @@ INT64 CExpression::GetSingle( LPCTSTR & pszArgs )
 	ASSERT(pszArgs);
 	GETNONWHITESPACE( pszArgs );
 
+	LPCTSTR orig = pszArgs;
 	if (pszArgs[0]=='.') pszArgs++;
 
 	if ( pszArgs[0] == '0' )	// leading '0' = hex value.
@@ -423,6 +424,7 @@ try_dec:
 	}
 	else if ( ! _ISCSYMF(pszArgs[0]))
 	{
+	#pragma region maths
 		// some sort of math op ?
 
 		switch ( pszArgs[0] )
@@ -456,8 +458,10 @@ try_dec:
 		case '\0':
 			return( 0 );
 		}
+#pragma endregion maths
 	}
 	else
+	#pragma region intrinsics
 	{
 		// Symbol or intrinsinc function ?
 
@@ -780,13 +784,16 @@ try_dec:
 		if ( m_VarDefs.GetParseVal( pszArgs, &lVal ) )
 			return(lVal);
 	}
+#pragma endregion intrinsics
 
 	// hard end ! Error of some sort.
 	TCHAR szTag[ EXPRESSION_MAX_KEY_LEN ];
 	size_t i = GetIdentifierString( szTag, pszArgs );
 	pszArgs += i;	// skip it.
-
-	DEBUG_ERR(( "Undefined symbol '%s'\n", szTag ));
+	if (strlen(orig)> 1)
+		DEBUG_ERR(("Undefined symbol '%s' ['%s']\n", szTag, orig));
+	else
+		DEBUG_ERR(("Undefined symbol '%s'\n", szTag));
 	return( 0 );
 }
 

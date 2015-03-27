@@ -799,7 +799,7 @@ MANAUSE=20
 SKILLREQ=MAGERY 60.0
 INTERRUPT=100.0,100.0
 ON=@Effect
-   LOCAL.DAMAGETYPE=(<DEF.dam_general|<DEF.dam_magic>)
+   LOCAL.DAMAGETYPE=(<DEF.dam_general>|<DEF.dam_magic>)
 
 [SPELL 44]
 // NOTE: Used primarily to regain mana while fighting or cast helpful spells without incurring attack. Duration should reflect the non-offensive use of this spell

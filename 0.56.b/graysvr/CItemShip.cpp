@@ -40,7 +40,7 @@ bool CItem::Ship_Plank( bool fOpen )
 	}
 
 	IT_TYPE oldType = GetType();
-	SetID( idState );
+	SetDispID( idState );
 
 	if ( IsType(IT_SHIP_PLANK) && (oldType == IT_SHIP_SIDE || oldType == IT_SHIP_SIDE_LOCKED) )
 	{
