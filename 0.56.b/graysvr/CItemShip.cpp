@@ -40,7 +40,7 @@ bool CItem::Ship_Plank( bool fOpen )
 	}
 
 	IT_TYPE oldType = GetType();
-	SetDispID( idState );
+	SetID( idState );
 
 	if ( IsType(IT_SHIP_PLANK) && (oldType == IT_SHIP_SIDE || oldType == IT_SHIP_SIDE_LOCKED) )
 	{
@@ -419,7 +419,7 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 					if ((xdiff == component.m_dx) && (ydiff == component.m_dy) && ((pItem->GetTopZ()-GetTopZ()) == component.m_dz))
 					{
 						const CItemBaseMulti::CMultiComponentItem & componentnew = pMultiNew->m_Components.ElementAt(j);
-						pItem->SetDispID(componentnew.m_id);
+						pItem->SetID(componentnew.m_id);
 						pt.m_x = GetTopPoint().m_x + componentnew.m_dx;
 						pt.m_y = GetTopPoint().m_y + componentnew.m_dy;
 					}

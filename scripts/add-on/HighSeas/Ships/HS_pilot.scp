@@ -20,6 +20,9 @@ if ( <ref1.more1> == <src> )
 		ref1.pilot=0
 	else
 		ref1.pilot=<src>
+		if (<src.FindLayer.layer_horse>)
+			src.Dismount
+		endif
 		serv.newitem = i_memory_ship_pilot
 		new.equip
 	endif

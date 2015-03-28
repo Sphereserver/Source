@@ -948,6 +948,7 @@ DUPELIST=014f9
 DEFNAME=i_rope
 FLIP=1
 WEIGHT=2
+TYPE=t_rope
 CATEGORY=Decoration - Miscellaneous
 SUBSECTION=Nautical
 DESCRIPTION=Rope (W)

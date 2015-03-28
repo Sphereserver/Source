@@ -1243,6 +1243,7 @@ public:
 			case IT_SHIP_SIDE:
 			case IT_SHIP_PLANK:
 			case IT_SHIP_HOLD:
+			//case IT_ROPE:
 				return( true );
 			default:
 				return( IsTypeLocked() );

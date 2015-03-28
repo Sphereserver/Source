@@ -576,6 +576,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=2,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -624,6 +625,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=2,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -672,6 +674,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=2,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -720,6 +723,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=2,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -768,6 +772,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=3
 ShipSpeed=5,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -816,6 +821,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=3
 ShipSpeed=5,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -864,6 +870,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=3
 ShipSpeed=5,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -912,6 +919,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=3
 ShipSpeed=5,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -960,6 +968,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=-1,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1008,6 +1017,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=-1,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1056,6 +1066,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=-1,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1104,6 +1115,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=-1,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1151,6 +1163,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=2,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1204,6 +1217,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=2,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1257,6 +1271,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=2,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1310,6 +1325,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=2,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1363,6 +1379,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=3
 ShipSpeed=5,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1416,6 +1433,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=3
 ShipSpeed=5,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1469,6 +1487,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=3
 ShipSpeed=5,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1522,6 +1541,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=3
 ShipSpeed=5,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1575,6 +1595,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=-1,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1628,6 +1649,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=-1,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1680,6 +1702,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=-1,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1733,6 +1756,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=-1,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1780,12 +1804,13 @@ name=Tokuno Ship
 nameloc=1116749	//Tokuno Ship
 type=t_ship
 value=150000
-height=7
+height=17
 can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=2,1
 
+Expansion=EXPANSION_HS
 category=Multis
 subsection=Ships
 description=Tokuno Ship
@@ -1815,11 +1840,12 @@ name=Tokuno Ship
 nameloc=1116749	//Tokuno Ship
 type=t_ship
 value=150000
-height=7
+height=17
 can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=2,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1850,11 +1876,12 @@ name=Tokuno Ship
 nameloc=1116749	//Tokuno Ship
 type=t_ship
 value=150000
-height=7
+height=17
 can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=2,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1885,11 +1912,12 @@ name=Tokuno Ship
 nameloc=1116749	//Tokuno Ship
 type=t_ship
 value=150000
-height=7
+height=17
 can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=2,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1920,11 +1948,12 @@ name=Tokuno Ship
 nameloc=1116749	//Tokuno Ship
 type=t_ship
 value=150000
-height=7
+height=17
 can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=3
 ShipSpeed=5,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1955,11 +1984,12 @@ name=Tokuno Ship
 nameloc=1116749	//Tokuno Ship
 type=t_ship
 value=150000
-height=7
+height=17
 can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=3
 ShipSpeed=5,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -1990,11 +2020,12 @@ name=Tokuno Ship
 nameloc=1116749	//Tokuno Ship
 type=t_ship
 value=150000
-height=7
+height=17
 can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=3
 ShipSpeed=5,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -2025,11 +2056,12 @@ name=Tokuno Ship
 nameloc=1116749	//Tokuno Ship
 type=t_ship
 value=150000
-height=7
+height=17
 can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=3
 ShipSpeed=5,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -2060,11 +2092,12 @@ name=Tokuno Ship
 nameloc=1116749	//Tokuno Ship
 type=t_ship
 value=150000
-height=7
+height=17
 can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=-1,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -2095,11 +2128,12 @@ name=Tokuno Ship
 nameloc=1116749	//Tokuno Ship
 type=t_ship
 value=150000
-height=7
+height=17
 can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=-1,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -2130,11 +2164,12 @@ name=Tokuno Ship
 nameloc=1116749	//Tokuno Ship
 type=t_ship
 value=150000
-height=7
+height=17
 can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=-1,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -2165,11 +2200,12 @@ name=Tokuno Ship
 nameloc=1116749	//Tokuno Ship
 type=t_ship
 value=150000
-height=7
+height=17
 can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=-1,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -2205,6 +2241,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=1
 ShipSpeed=5,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -2226,6 +2263,7 @@ height=5
 can=can_i_block
 SpeedMode=1
 ShipSpeed=5,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -2249,6 +2287,7 @@ height=5
 can=can_i_block
 SpeedMode=1
 ShipSpeed=5,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -2272,6 +2311,7 @@ height=5
 can=can_i_block
 SpeedMode=1
 ShipSpeed=5,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -2296,6 +2336,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=2,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -2345,6 +2386,7 @@ value=200000
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=2,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -2394,6 +2436,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=2,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -2443,6 +2486,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=4
 ShipSpeed=2,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -2492,6 +2536,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=3
 ShipSpeed=5,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -2541,6 +2586,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=3
 ShipSpeed=5,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -2590,6 +2636,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=3
 ShipSpeed=5,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships
@@ -2639,6 +2686,7 @@ can=can_i_block
 tspeech=spk_ship_cmds
 SpeedMode=3
 ShipSpeed=5,1
+Expansion=EXPANSION_HS
 
 category=Multis
 subsection=Ships

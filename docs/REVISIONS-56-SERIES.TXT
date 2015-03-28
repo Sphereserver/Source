@@ -1869,3 +1869,21 @@ Added another block of code for @SeeCrime, now it fires also when a 3rd part see
 	argn3 = 1=criminal / 0='turn eyes away'
 Fighting Memory will also remove flag MEMORY_AGGREIVED when expiring (NEED feedback on this) to avoid blue-innocent player becoming criminal when the fight memory of the attacker expires (if he attacked back).
 Being attacked is not giving MEMORY_AGGREIVED to memory item, I might be attacked but it may not have to do anything with me being aggreived ... they may have been attacked by me first (Need feedback on this too).
+
+28-03-2015, XuN
+[sphere_defs.scp]:
+	Added Expansion definitions.
+	Added t_rope
+[items/sphere_item_unsorted]:
+	Added t_rope to i_rope
+[multis_ships.scp]:
+	Changed Height from all Tokuno ships from 7 to 17.
+	Added Expansion=EXPANSION_HS to all HS ships.
+[add-on/HighSeas/Ships/HS_pilot.scp]:
+	Added mount check to t_pilot to prevent the memory item being bounced to pack.
+
+Added t_rope working like t_ship_plank but making no changes on ID, by default it doesn't have any 'I'm in ship' checks when steping them for two reasons, ropes should be in ships and this way they can be used in houses to go out?
+Added <TEXTF > function returning formatted text, example:
+	[defname exampledef]
+	test=Hello %s, I'll teach you for %d coins.
+	message=<textf "<def.test>",<src.name>,15> // Quotes are A MUST.

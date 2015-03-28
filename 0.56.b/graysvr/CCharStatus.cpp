@@ -1920,6 +1920,7 @@ bool CChar::CanTouch( const CObjBase * pObj ) const
 			case IT_SHIP_SIDE_LOCKED:
 			case IT_SHIP_PLANK:
 			case IT_ARCHERY_BUTTE:	// use from distance.
+			case IT_ROPE:
 				if ( IsStatFlag( STATF_Sleeping | STATF_Freeze | STATF_Stone ))
 					break;
 				return( GetTopDist3D( pItem->GetTopLevelObj()) <= UO_MAP_VIEW_SIZE );

@@ -902,6 +902,38 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 				else sVal.FormatVal( pChar->IsClient() ? (pChar->GetClient()->m_TagDefs.GetCount()) : 0 );
 			}
 			break;
+		case OC_TEXTF:
+			{
+				TCHAR * key = const_cast<TCHAR*>(pszKey);
+				key += 5;
+				TCHAR * pszArgs[4];
+				size_t iArgQty = Str_ParseCmds(key , pszArgs, COUNTOF(pszArgs));
+				if (iArgQty < 2)
+				{
+					g_Log.EventError("SysMessagef with less than 1 args for the given text\n");
+					return false;
+				}
+				if (iArgQty > 4)
+				{
+					g_Log.EventError("Too many arguments given to SysMessagef (max = text + 3\n");
+					return false;
+				}
+				//strip quotes if any
+				if (*pszArgs[0] == '"')
+					pszArgs[0]++;
+				byte count = 0;
+				for (TCHAR * pEnd = pszArgs[0] + strlen(pszArgs[0]) - 1; pEnd >= pszArgs[0]; pEnd--)
+				{
+					if (*pEnd == '"')
+					{
+						*pEnd = '\0';
+						break;
+					}
+					count++;
+				}
+				sVal.Format(pszArgs[0], pszArgs[1], pszArgs[2] ? pszArgs[2] : 0, pszArgs[3] ? pszArgs[3] : 0);
+				return true;
+			}break;
 		case OC_DIALOGLIST:
 			{
 				pszKey += 10;

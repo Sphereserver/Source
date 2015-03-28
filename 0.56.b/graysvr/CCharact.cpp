@@ -3533,17 +3533,26 @@ bool CChar::CheckLocation( bool fStanding )
 				if ( fStanding && !IsStatFlag(STATF_Freeze|STATF_Stone))
 					continue;
 				Use_MoonGate( pItem );
-				return( true );
+				return(true);
 			case IT_SHIP_PLANK:
 				// a plank is a teleporter off the ship.
-				if ( !fStanding && !IsStatFlag( STATF_Hovering ))
+				if (!fStanding && !IsStatFlag(STATF_Hovering))
 				{
 					// Find some place to go. (in direction of plank)
-					if ( MoveToValidSpot(m_dirFace, g_Cfg.m_iMaxShipPlankTeleport, 1, true) )
+					if (MoveToValidSpot(m_dirFace, g_Cfg.m_iMaxShipPlankTeleport, 1, true))
 					{
-						pItem->SetTimeout(5*TICK_PER_SEC);	// autoclose it behind us.
+						pItem->SetTimeout(5 * TICK_PER_SEC);	// autoclose it behind us.
 						return true;
 					}
+				}
+				continue;
+			case IT_ROPE:
+				// a plank is a teleporter off the ship.
+				if (!fStanding && !IsStatFlag(STATF_Hovering))
+				{
+					// Find some place to go. (in direction of plank)
+					if (MoveToValidSpot(m_dirFace, g_Cfg.m_iMaxShipPlankTeleport, 1, true))
+						return true;
 				}
 				continue;
 
