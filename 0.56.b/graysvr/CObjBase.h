@@ -1349,7 +1349,11 @@ public:
 
 class CItemSpawn : public CItem
 {
-	
+private:
+	static LPCTSTR const sm_szLoadKeys[];
+	static LPCTSTR const sm_szVerbKeys[];
+	CGrayUID m_obj[UCHAR_MAX];
+
 public:
 	void OnTick( bool fExec );
 	void KillChildren();
@@ -1360,15 +1364,21 @@ public:
 	inline CCharBase * TryChar( CREID_TYPE &id );
 	inline CItemBase * TryItem( ITEMID_TYPE &id );
 	CResourceDef * FixDef();
-
+	void AddObj(CGrayUID uid);
+	bool DelObj(CGrayUID uid);
+	bool DelObj(unsigned char index);
+	unsigned char GetCount();
+	CGrayUID GetAt(unsigned char index);
+	unsigned char GetFirstEmpty();
 	int GetName(TCHAR * pszOut) const;
 
-	struct SpawnObjs
-	{
-		CGrayUID uid;
-	};
+	virtual bool r_WriteVal(LPCTSTR pszKey, CGString & s, CTextConsole * pSrc);
+	virtual bool  r_LoadVal(CScript & s);
+	virtual bool  r_Verb(CScript & s, CTextConsole * pSrc); // Execute command from script
+	
+	CItemSpawn(ITEMID_TYPE id = ITEMID_WorldGem, CItemBase * pItemDef = NULL);
+	virtual ~CItemSpawn();
 
-	std::vector<SpawnObjs> m_SpawnObjs;
 };
 
 class CItemVendable : public CItem
@@ -3105,6 +3115,7 @@ public:
 
 	bool Stat_Decrease( STAT_TYPE stat, SKILL_TYPE skill = (SKILL_TYPE)NULL);
 	bool Stats_Regen(INT64 iTimeDiff);
+	unsigned short Stats_GetRegenVal(STAT_TYPE iStat, bool bGetTicks);
 
 	SKILLLOCK_TYPE Stat_GetLock(STAT_TYPE stat)
 	{
@@ -3217,6 +3228,7 @@ public:
 	void UpdateModeFlag();
 	void UpdateManaFlag() const;
 	void UpdateStamFlag() const;
+	void UpdateRegenTimers( STAT_TYPE iStat, short iVal);
 	void UpdateHitsForOthers() const;
 	ANIM_TYPE GenerateAnimate(ANIM_TYPE action, bool fTranslate = true, bool fBackward = false, BYTE iFrameDelay = 0, BYTE iAnimLen = 7);
 	bool UpdateAnimate(ANIM_TYPE action, bool fTranslate = true, bool fBackward = false, BYTE iFrameDelay = 0, BYTE iAnimLen = 7);

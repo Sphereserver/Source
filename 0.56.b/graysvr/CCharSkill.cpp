@@ -799,49 +799,23 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 }
 bool CChar::Stats_Regen(INT64 iTimeDiff)
 {
+	ADDTOCALLSTACK("CChar::Stats_Regen");
 	// Calling regens in all stats and checking REGEN%s/REGEN%sVAL where %s is hits/stam... to check values/delays
 	// Food decay called here too.
 	// calling @RegenStat for each stat if proceed.
 	// iTimeDiff is the next tick the stats are going to regen.
-
-	ADDTOCALLSTACK("CChar::Stats_Regen");
 	for (STAT_TYPE i = STAT_STR; i <= STAT_FOOD; i = static_cast<STAT_TYPE>(i + 1))
 	{
-		int iRate = g_Cfg.m_iRegenRate[i];		// in TICK_PER_SEC
+		int iRate = Stats_GetRegenVal(i, true);
 
 		m_Stat[i].m_regen += static_cast<unsigned short>(iTimeDiff);
 
 		// Regen OVERRIDE
-		int mod = 1;
-		LPCTSTR stat;
-		switch (static_cast<STAT_TYPE>(i))
-		{
-		case STAT_STR:
-			stat = "HITS";
-			if (g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE && IsHuman())
-				iRate /= 3;		// Humans always have +2 hitpoint regeneration (racial traits)
-			break;
-		case STAT_INT:
-			stat = "MANA";
-			break;
-		case STAT_DEX:
-			stat = "STAM";
-			break;
-		case STAT_FOOD:
-			stat = "FOOD";
-			break;
-		}
-		if (i <= STAT_FOOD)
-		{
-			char sRegen[21];
-			sprintf(sRegen, "REGEN%s", stat);
-			if (GetDefNum(sRegen, false))
-				iRate = static_cast<int>(GetDefNum(sRegen, false)) * TICK_PER_SEC;
-			sprintf(sRegen, "REGENVAL%s", stat);
-			mod = static_cast<int>(maximum(mod, GetDefNum(sRegen, true)));
-		}
+		int mod = Stats_GetRegenVal(i,false);
 		if (iRate < 0)
 			iRate = 0;
+		if (i == STAT_STR && g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE && IsHuman())
+			mod += 2;		// Humans always have +2 hitpoint regeneration (racial traits)
 
 		if (m_Stat[i].m_regen < iRate)
 			continue;
@@ -883,6 +857,46 @@ bool CChar::Stats_Regen(INT64 iTimeDiff)
 			UpdateStatVal(i, mod, StatLimit);
 	}
 	return true;
+}
+unsigned short CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool bGetTicks)
+{
+	ADDTOCALLSTACK("CChar::Stats_GetRegenVal");
+	// Return regen rates and regen val for the given stat.
+	// bGetTicks = true returns the regen ticks
+	// bGetTicks = false returns the values of regeneration.
+	int iRate = g_Cfg.m_iRegenRate[iStat];		// in TICK_PER_SEC
+	LPCTSTR stat;
+	switch (static_cast<STAT_TYPE>(iStat))
+	{
+	case STAT_STR:
+		stat = "HITS";
+		break;
+	case STAT_INT:
+		stat = "MANA";
+		break;
+	case STAT_DEX:
+		stat = "STAM";
+		break;
+	case STAT_FOOD:
+		stat = "FOOD";
+		break;
+	}
+	if (iStat <= STAT_FOOD)
+	{
+		char sRegen[21];
+		if (bGetTicks == true)
+		{
+			sprintf(sRegen, "REGEN%s", stat);
+			if (GetDefNum(sRegen, false))
+				iRate -= static_cast<int>(GetDefNum(sRegen, false)) * TICK_PER_SEC;
+			return iRate;
+		}
+		else {
+			sprintf(sRegen, "REGENVAL%s", stat);
+			return static_cast<int>(maximum(1, GetDefNum(sRegen, true)));
+		}
+	}
+	return -1;
 }
 
 bool CChar::Stat_Decrease(STAT_TYPE stat, SKILL_TYPE skill)

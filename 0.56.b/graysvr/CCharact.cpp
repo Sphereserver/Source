@@ -682,6 +682,13 @@ void CChar::UpdateStamFlag() const
 		GetClient()->addUpdateStamFlag();
 }
 
+void CChar::UpdateRegenTimers(STAT_TYPE iStat, short iVal)
+{
+	ADDTOCALLSTACK("CChar::UpdateRegenTimers");
+	short iDiff = Stats_GetRegenVal(iStat, true) - (iVal * TICK_PER_SEC);
+	m_Stat[iStat].m_regen = iDiff;
+}
+
 void CChar::UpdateHitsForOthers() const
 {
 	ADDTOCALLSTACK("CChar::UpdateHitsForOthers");

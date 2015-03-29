@@ -2701,6 +2701,24 @@ do_default:
 	switch (iKeyNum)
 	{
 		//Status Update Variables
+		case CHC_REGENHITS:
+		{
+			SetDefNum(s.GetKey(), s.GetArgVal(), false);
+			UpdateRegenTimers(STAT_STR, s.GetArgVal());
+			UpdateStatsFlag();
+		}break;
+		case CHC_REGENSTAM:
+		{
+			SetDefNum(s.GetKey(), s.GetArgVal(), false);
+			UpdateRegenTimers(STAT_DEX, s.GetArgVal());
+			UpdateStatsFlag();
+		}break;
+		case CHC_REGENMANA:
+		{
+			SetDefNum(s.GetKey(), s.GetArgVal(), false);
+			UpdateRegenTimers(STAT_INT, s.GetArgVal());
+			UpdateStatsFlag();
+		}break;
 		case CHC_INCREASEHITCHANCE:
 		case CHC_INCREASESWINGSPEED:
 		case CHC_INCREASEDAM:
@@ -2725,9 +2743,6 @@ do_default:
 		case CHC_CURFOLLOWER:
 		case CHC_MAXFOLLOWER:		
 		case CHC_REGENFOOD:
-		case CHC_REGENHITS:
-		case CHC_REGENSTAM:
-		case CHC_REGENMANA:
 		case CHC_REGENVALFOOD:
 		case CHC_REGENVALHITS:
 		case CHC_REGENVALSTAM:

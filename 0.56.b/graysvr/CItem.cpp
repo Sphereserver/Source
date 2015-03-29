@@ -64,7 +64,7 @@ CItem::CItem( ITEMID_TYPE id, CItemBase * pItemDef ) : CObjBase( true )
 
 	g_Serv.StatInc(SERV_STAT_ITEMS);
 	m_Attr = 0;
-	m_CanUse = 0;
+	m_CanUse = pItemDef->m_CanUse;
 	m_amount = 1;
 	m_containedGridIndex = 0;
 	m_dwDispIndex = ITEMID_NOTHING;
@@ -201,6 +201,9 @@ CItem * CItem::CreateBase( ITEMID_TYPE id )	// static
 		case IT_SCRIPT:
 			pItem = new CItemScript( id, pItemDef );
 			break;
+		case IT_SPAWN_CHAR:
+		case IT_SPAWN_ITEM:
+			pItem = new CItemSpawn(id ,pItemDef);
 		default:
 			if ( pItemDef->GetMakeValue(0))
 				pItem = new CItemVendable( id, pItemDef );
@@ -2566,7 +2569,12 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_TYPEDEF, m_type ));
 			break;
 		default:
-			fDoDefault = true;
+			{
+				/*CItemSpawn * pSpawn = static_cast<CItemSpawn*>(this);
+				if (pSpawn && (GetType() == IT_SPAWN_CHAR || GetType() == IT_SPAWN_ITEM))
+					return pSpawn->r_WriteVal(pszKey, sVal, pSrc);*/
+				fDoDefault = true;
+			}
 	}
 	if ( fDoDefault )
 		return( CObjBase::r_WriteVal( pszKey, sVal, pSrc ));

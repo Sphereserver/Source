@@ -1887,3 +1887,8 @@ Added <TEXTF > function returning formatted text, example:
 	[defname exampledef]
 	test=Hello %s, I'll teach you for %d coins.
 	message=<textf "<def.test>",<src.name>,15> // Quotes are A MUST.
+
+29-03-2015, XuN
+Fixed humans not regenerating hitpoints
+Changed Stats Regens to automatically update the timer of next tick instead of waiting for old value when changing it via RegenHits/Stam/Mana.
+Fixed CanUse not inheriting from itemdefs to items

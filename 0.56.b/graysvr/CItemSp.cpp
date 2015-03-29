@@ -9,7 +9,7 @@
 
 inline CCharBase * CItemSpawn::TryChar( CREID_TYPE &id )
 {
-	ADDTOCALLSTACK("CItem::TryChar");
+	ADDTOCALLSTACK("CitemSpawn:TryChar");
 		CCharBase * pCharDef = CCharBase::FindCharBase( id );
 		if ( pCharDef )
 		{
@@ -21,7 +21,7 @@ inline CCharBase * CItemSpawn::TryChar( CREID_TYPE &id )
 
 inline CItemBase * CItemSpawn::TryItem(ITEMID_TYPE &id)
 {
-	ADDTOCALLSTACK("CItem::TryItem");
+	ADDTOCALLSTACK("CitemSpawn:TryItem");
 		CItemBase * pItemDef = CItemBase::FindItemBase( id );
 		if ( pItemDef )
 		{
@@ -33,7 +33,7 @@ inline CItemBase * CItemSpawn::TryItem(ITEMID_TYPE &id)
 
 CResourceDef * CItemSpawn::FixDef()
 {
-	ADDTOCALLSTACK("CItem::FixDef");
+	ADDTOCALLSTACK("CitemSpawn:FixDef");
 	// Get a proper RESOURCE_ID from the id provided.
 	// RETURN: true = ok.
 
@@ -89,7 +89,7 @@ CResourceDef * CItemSpawn::FixDef()
 
 int CItemSpawn::GetName(TCHAR * pszOut) const
 {
-	ADDTOCALLSTACK("CItem::GetName");
+	ADDTOCALLSTACK("CitemSpawn:GetName");
 	RESOURCE_ID_BASE rid;
 	if ( IsType(IT_SPAWN_ITEM))
 	{
@@ -118,7 +118,7 @@ int CItemSpawn::GetName(TCHAR * pszOut) const
 
 void CItemSpawn::GenerateItem(CResourceDef * pDef)
 {
-	ADDTOCALLSTACK("CItem::GenerateItem");
+	ADDTOCALLSTACK("CitemSpawn:GenerateItem");
 	// Count how many items are here already.
 	// This could be in a container.
 
@@ -183,7 +183,7 @@ void CItemSpawn::GenerateItem(CResourceDef * pDef)
 
 void CItemSpawn::GenerateChar(CResourceDef * pDef)
 {
-	ADDTOCALLSTACK("CItem::GenerateChar");
+	ADDTOCALLSTACK("CitemSpawn:GenerateChar");
 	if ( !IsTopLevel() || ( m_itSpawnChar.m_current >= GetAmount() ) || ( GetTopSector()->GetCharComplexity() > g_Cfg.m_iMaxCharComplexity ))
 		return;
 
@@ -245,17 +245,14 @@ void CItemSpawn::GenerateChar(CResourceDef * pDef)
 	}
 	pChar->Update();
 
-	/*SpawnObjs pRef;
-	pRef.uid = pChar->GetUID();
-
-	m_SpawnObjs.push_back(pRef)*/;
+	AddObj(pChar->GetUID());
 }
 
 
 
 void CItemSpawn::OnTick(bool fExec)
 {
-	ADDTOCALLSTACK("CItem::OnTick");
+	ADDTOCALLSTACK("CitemSpawn:OnTick");
 
 	INT64 iMinutes;
 	if ( m_itSpawnChar.m_TimeHiMin <= 0 )
@@ -288,7 +285,7 @@ void CItemSpawn::OnTick(bool fExec)
 
 void CItemSpawn::KillChildren()
 {
-	ADDTOCALLSTACK("CItem::KillChildren");
+	ADDTOCALLSTACK("CitemSpawn:KillChildren");
 	// kill all creatures spawned from this !
 	int iCurrent = m_itSpawnChar.m_current;
 
@@ -320,7 +317,7 @@ void CItemSpawn::KillChildren()
 
 CCharBase * CItemSpawn::SetTrackID()
 {
-	ADDTOCALLSTACK("CItem::SetTrackID");
+	ADDTOCALLSTACK("CitemSpawn:SetTrackID");
 	if ( ! IsType(IT_SPAWN_CHAR))
 		return NULL;
 	CCharBase * pCharDef = NULL;
@@ -340,6 +337,124 @@ CCharBase * CItemSpawn::SetTrackID()
 			SetHue( HUE_RED_DARK );	// Indicate to GM's that it is invis.
 	}
 	return( pCharDef );
+}
+
+void CItemSpawn::AddObj(CGrayUID uid)
+{
+	if (!uid)
+		return;
+	g_Log.EventDebug("Adding uid = 0x%lx", uid);
+	m_obj[GetFirstEmpty()] = uid;
+}
+
+bool CItemSpawn::DelObj(CGrayUID uid)
+{
+	unsigned char max = GetFirstEmpty();
+	for (unsigned char i = 0; i < UCHAR_MAX; i++)
+	{
+		if (m_obj[i] == uid)
+		{
+			unsigned char fixed = i;
+			for ( ; fixed < max; i++)
+			{
+				m_obj[fixed] = m_obj[fixed + 1];
+			}
+			m_obj[fixed + 1];
+			return true;
+		}
+	}
+	return false;
+}
+
+bool CItemSpawn::DelObj(unsigned char index)
+{
+	return DelObj(GetAt(index));
+}
+
+CGrayUID CItemSpawn::GetAt(unsigned char index)
+{
+	if (index > UCHAR_MAX)
+		return NULL;
+	if (!m_obj[index])
+		return NULL;
+	return m_obj[index];
+}
+
+unsigned char CItemSpawn::GetFirstEmpty()
+{
+	for (unsigned char i = 0; i < UCHAR_MAX; i++)
+	{
+		CGrayUID uid = m_obj[i].IsValidUID();
+		if (!uid)
+			return i;
+	}
+	return NULL;
+}
+
+unsigned char CItemSpawn::GetCount()
+{
+	return (GetFirstEmpty() < UCHAR_MAX ? GetFirstEmpty() : UCHAR_MAX);
+}
+CItemSpawn::CItemSpawn(ITEMID_TYPE id, CItemBase * pItemDef) :	// CItemBaseMulti
+CItem(id, pItemDef)
+{
+	ADDTOCALLSTACK("CItemSpawn::CItemSpawn");
+}
+
+CItemSpawn::~CItemSpawn()
+{
+	ADDTOCALLSTACK("CItemSpawn::~CItemSpawn");
+}
+
+enum SPAWN_TYPE
+{
+	SPAWN_SPAWNED,
+	SPAWN_QTY
+};
+
+LPCTSTR const CItemSpawn::sm_szLoadKeys[SPAWN_QTY + 1] = // static
+{
+	"SPAWNED",
+	NULL
+};
+
+bool CItemSpawn::r_WriteVal(LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc)
+{
+	ADDTOCALLSTACK("CItemSpawn::r_WriteVal");
+
+	int index = FindTableSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
+	
+	g_Log.EventDebug("Accessing %s\n",pszKey);
+	switch (index)
+	{
+		case SPAWN_SPAWNED:
+		{
+			if (strlen(pszKey) == 7)
+			{
+				sVal.FormatVal(static_cast<long>(GetCount()));
+				return true;
+			}
+			pszKey += 7;
+
+			if (*pszKey == '.')
+			{
+				pszKey++;
+				unsigned char index = Exp_GetSingle(pszKey);
+				if (GetAt(index))
+					return m_obj[index].ObjFind()->r_WriteVal(pszKey, sVal, pSrc);
+				return false;
+			}
+		}
+		default:
+			break;
+	}
+	return true;
+}
+
+bool CItemSpawn::r_LoadVal(CScript & s)
+{
+	g_Log.EventDebug("Accessing %s\n", s.GetArgStr());
+	return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////
