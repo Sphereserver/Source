@@ -314,7 +314,7 @@ public:
 	bool SetNamePool( LPCTSTR pszName );
 
 	void Sound( SOUND_TYPE id, int iRepeat = 1 ) const; // Play sound effect from this location.
-	void Effect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBase * pSource = NULL, BYTE bspeedseconds = 5, BYTE bloop = 1, bool fexplode = false, DWORD color = 0, DWORD render = 0, WORD effectid = 0, WORD explodeid = 0, WORD explodesound = 0, DWORD effectuid = 0, byte type = 0) const;
+	void Effect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBase * pSource = NULL, BYTE bspeedseconds = 5, BYTE bloop = 1, bool fexplode = false, DWORD color = 0, DWORD render = 0, WORD effectid = 0, WORD explodeid = 0, WORD explodesound = 0, DWORD effectuid = 0, BYTE type = 0) const;
 
 	void r_WriteSafe( CScript & s );
 
@@ -1364,21 +1364,8 @@ public:
 	inline CCharBase * TryChar( CREID_TYPE &id );
 	inline CItemBase * TryItem( ITEMID_TYPE &id );
 	CResourceDef * FixDef();
-	void AddObj(CGrayUID uid);
-	bool DelObj(CGrayUID uid);
-	bool DelObj(unsigned char index);
-	unsigned char GetCount();
-	CGrayUID GetAt(unsigned char index);
 	unsigned char GetFirstEmpty();
 	int GetName(TCHAR * pszOut) const;
-
-	virtual bool r_WriteVal(LPCTSTR pszKey, CGString & s, CTextConsole * pSrc);
-	virtual bool  r_LoadVal(CScript & s);
-	virtual bool  r_Verb(CScript & s, CTextConsole * pSrc); // Execute command from script
-	
-	CItemSpawn(ITEMID_TYPE id = ITEMID_WorldGem, CItemBase * pItemDef = NULL);
-	virtual ~CItemSpawn();
-
 };
 
 class CItemVendable : public CItem

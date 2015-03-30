@@ -201,9 +201,9 @@ CItem * CItem::CreateBase( ITEMID_TYPE id )	// static
 		case IT_SCRIPT:
 			pItem = new CItemScript( id, pItemDef );
 			break;
-		case IT_SPAWN_CHAR:
+		/*case IT_SPAWN_CHAR:
 		case IT_SPAWN_ITEM:
-			pItem = new CItemSpawn(id ,pItemDef);
+			pItem = new CItemSpawn(id ,pItemDef);*/
 		default:
 			if ( pItemDef->GetMakeValue(0))
 				pItem = new CItemVendable( id, pItemDef );

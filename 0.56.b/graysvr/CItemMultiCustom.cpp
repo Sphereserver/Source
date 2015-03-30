@@ -272,7 +272,7 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 	// remove all existing dynamic item fixtures
 	CWorldSearch Area(GetTopPoint(), GetDesignArea().GetWidth());
 	Area.SetSearchSquare(true);
-	CItem * pItem;
+	CItem * pItem ;
 	for (;;)
 	{
 		pItem = Area.GetItem();
@@ -294,10 +294,16 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 		rectNew.UnionPoint((*i)->m_item.m_dx, (*i)->m_item.m_dy);
 		if ( (*i)->m_item.m_visible )
 			continue;
-
+		CItem * pItemOld = Area.GetItem();
 		// replace the doors and teleporters with real items
+
+		if (pItemOld->GetTopPoint().m_x == (*i)->m_item.m_dx && pItemOld->GetTopPoint().m_y == (*i)->m_item.m_dy && pItemOld->GetTopPoint().m_z == (*i)->m_item.m_dz && (*i)->m_item.GetDispID() == pItemOld->GetDispID())
+			continue;
 		CItem * pItem = CItem::CreateScript((*i)->m_item.GetDispID());
 		if ( pItem == NULL )
+			continue;
+
+		if ((DWORD)pItemOld->GetTagDefs()->GetKeyNum("FIXTURE") != (DWORD)GetUID())
 			continue;
 
 		CPointMap pt(GetTopPoint());

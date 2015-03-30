@@ -245,7 +245,7 @@ void CItemSpawn::GenerateChar(CResourceDef * pDef)
 	}
 	pChar->Update();
 
-	AddObj(pChar->GetUID());
+	//AddObj(pChar->GetUID());
 }
 
 
@@ -339,123 +339,6 @@ CCharBase * CItemSpawn::SetTrackID()
 	return( pCharDef );
 }
 
-void CItemSpawn::AddObj(CGrayUID uid)
-{
-	if (!uid)
-		return;
-	g_Log.EventDebug("Adding uid = 0x%lx", uid);
-	m_obj[GetFirstEmpty()] = uid;
-}
-
-bool CItemSpawn::DelObj(CGrayUID uid)
-{
-	unsigned char max = GetFirstEmpty();
-	for (unsigned char i = 0; i < UCHAR_MAX; i++)
-	{
-		if (m_obj[i] == uid)
-		{
-			unsigned char fixed = i;
-			for ( ; fixed < max; i++)
-			{
-				m_obj[fixed] = m_obj[fixed + 1];
-			}
-			m_obj[fixed + 1];
-			return true;
-		}
-	}
-	return false;
-}
-
-bool CItemSpawn::DelObj(unsigned char index)
-{
-	return DelObj(GetAt(index));
-}
-
-CGrayUID CItemSpawn::GetAt(unsigned char index)
-{
-	if (index > UCHAR_MAX)
-		return NULL;
-	if (!m_obj[index])
-		return NULL;
-	return m_obj[index];
-}
-
-unsigned char CItemSpawn::GetFirstEmpty()
-{
-	for (unsigned char i = 0; i < UCHAR_MAX; i++)
-	{
-		CGrayUID uid = m_obj[i].IsValidUID();
-		if (!uid)
-			return i;
-	}
-	return NULL;
-}
-
-unsigned char CItemSpawn::GetCount()
-{
-	return (GetFirstEmpty() < UCHAR_MAX ? GetFirstEmpty() : UCHAR_MAX);
-}
-CItemSpawn::CItemSpawn(ITEMID_TYPE id, CItemBase * pItemDef) :	// CItemBaseMulti
-CItem(id, pItemDef)
-{
-	ADDTOCALLSTACK("CItemSpawn::CItemSpawn");
-}
-
-CItemSpawn::~CItemSpawn()
-{
-	ADDTOCALLSTACK("CItemSpawn::~CItemSpawn");
-}
-
-enum SPAWN_TYPE
-{
-	SPAWN_SPAWNED,
-	SPAWN_QTY
-};
-
-LPCTSTR const CItemSpawn::sm_szLoadKeys[SPAWN_QTY + 1] = // static
-{
-	"SPAWNED",
-	NULL
-};
-
-bool CItemSpawn::r_WriteVal(LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc)
-{
-	ADDTOCALLSTACK("CItemSpawn::r_WriteVal");
-
-	int index = FindTableSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
-	
-	g_Log.EventDebug("Accessing %s\n",pszKey);
-	switch (index)
-	{
-		case SPAWN_SPAWNED:
-		{
-			if (strlen(pszKey) == 7)
-			{
-				sVal.FormatVal(static_cast<long>(GetCount()));
-				return true;
-			}
-			pszKey += 7;
-
-			if (*pszKey == '.')
-			{
-				pszKey++;
-				unsigned char index = Exp_GetSingle(pszKey);
-				if (GetAt(index))
-					return m_obj[index].ObjFind()->r_WriteVal(pszKey, sVal, pSrc);
-				return false;
-			}
-		}
-		default:
-			break;
-	}
-	return true;
-}
-
-bool CItemSpawn::r_LoadVal(CScript & s)
-{
-	g_Log.EventDebug("Accessing %s\n", s.GetArgStr());
-	return true;
-}
 
 /////////////////////////////////////////////////////////////////////////////
 
