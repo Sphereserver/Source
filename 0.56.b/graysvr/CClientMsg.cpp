@@ -137,22 +137,28 @@ void CClient::resendBuffs()
 			break;
 		}
 		case SPELL_Protection:
+		case SPELL_Arch_Prot:
 		{
+			WORD BuffIcon = BI_PROTECTION;
+			unsigned long BuffCliloc = 1075814;
+			if ( pSpell->m_itSpell.m_spell == SPELL_Arch_Prot )
+			{
+				BuffIcon = BI_ARCHPROTECTION;
+				BuffCliloc = 1075816;
+			}
+
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
 				ITOA(static_cast<int>(-pSpell->m_itSpell.m_PolyStr), NumBuff[0], 10);
 				ITOA(static_cast<int>(-pSpell->m_itSpell.m_PolyDex/10), NumBuff[1], 10);
-				addBuff(BI_PROTECTION, 1075814, 1075815, iTimerEffect, pNumBuff, 2);
+				addBuff(BuffIcon, BuffCliloc, 1075815, iTimerEffect, pNumBuff, 2);
 			}
 			else
 			{
-				addBuff( BI_PROTECTION, 1075814, 1070722, iTimerEffect );
+				addBuff( BuffIcon, BuffCliloc, 1070722, iTimerEffect );
 			}
 			break;
 		}
-		case SPELL_Arch_Prot:
-			addBuff( BI_ARCHPROTECTION, 1075816, 1070722, iTimerEffect );
-			break;
 		case SPELL_Poison:
 			addBuff( BI_POISON, 1017383, 1070722, iTimerEffect );
 			break;

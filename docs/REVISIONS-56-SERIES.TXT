@@ -1794,7 +1794,6 @@ Added few more msgs to sphere_msgs.scp:
 
 20-03-2015, Coruja
 Fixed: Console error / client crash when opening some specific gump types on HS clients >= 7.0.9.0.
-Fixed: Vendor menu not working on enhanced clients.
 Fixed: Added missing buff icon on Meditation skill.
 Fixed: Minimum client version required to use some new packets.
 Fixed: Reactive Armor spell changing RESPHYSICAL to an incorrect value when COMBAT_ELEMENTAL_ENGINE is enabled.
@@ -1892,3 +1891,14 @@ Added <TEXTF > function returning formatted text, example:
 Fixed humans not regenerating hitpoints
 Changed Stats Regens to automatically update the timer of next tick instead of waiting for old value when changing it via RegenHits/Stam/Mana.
 Fixed CanUse not inheriting from itemdefs to items
+
+31-03-2015, Coruja
+Fixed: Arch Protection spell not working correctly with COMBAT_ELEMENTAL_ENGINE enabled.
+Fixed: Resurrection spell not displaying correct EFFECT_ID / SOUND.
+Added: MAGICF_OSIFORMULAS behavior on more spells.
+Changed: Small improvements on drunkness effect (ale, wine, liquor).
+[sphere.ini]: Moved EF_PetSlots setting (experimental flag) to OF_PetSlots (optional flag).
+[sphere_admin.scp]: Added missing 'admin_resdisp_8' def.
+[sphere_msgs.scp]:
+	-Changed IMSG_DEF_UNICODE to 1 (to match internal client behavior, which always show item/char names using unicode by default).
+	-Removed useless 'spell_alcohol_sober' msg.

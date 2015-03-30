@@ -1119,7 +1119,7 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 		// If it's a pet, check if we have follower slots to control it
 		if ( pItem->GetType() != IT_FIGURINE )
 			continue;
-		if ( IsSetEF(EF_PetSlots) && !IsPriv(PRIV_GM) )
+		if ( IsSetOF(OF_PetSlots) && !IsPriv(PRIV_GM) )
 		{
 			CREID_TYPE id = pItem->m_itFigurine.m_ID;
 			CChar * pPet =  m_pChar->CreateNPC( id );

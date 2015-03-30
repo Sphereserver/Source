@@ -3514,7 +3514,7 @@ CChar * Spell_Summon( CREID_TYPE id, CPointMap pt, bool fPet );
 	bool Spell_Equip_OnTick( CItem * pItem );
 
 	void Spell_Bolt( CObjBase * pObj, ITEMID_TYPE idBolt, int iSkill );
-	void Spell_Field( CPointMap pt, ITEMID_TYPE idEW, ITEMID_TYPE idNS, unsigned int fieldWidth, unsigned int fieldGauge, int iSkill );
+	void Spell_Field( CPointMap pt, ITEMID_TYPE idEW, ITEMID_TYPE idNS, unsigned int fieldWidth, unsigned int fieldGauge, int iSkill, CChar * pCharSrc = NULL );
 	void Spell_Area( CPointMap pt, int iDist, int iSkill );
 	bool Spell_TargCheck_Face();
 	bool Spell_TargCheck();
@@ -3531,7 +3531,7 @@ public:
 	bool Spell_Teleport( CPointBase pt, bool fTakePets = false, bool fCheckAntiMagic = true, ITEMID_TYPE iEffect = ITEMID_TEMPLATE, SOUND_TYPE iSound = 0x01fe );
 	bool Spell_CanCast( SPELL_TYPE spell, bool fTest, CObjBase * pSrc, bool fFailMsg, bool fCheckAntiMagic = true );
 	int	GetSpellEffect( SPELL_TYPE spell, int iSkillLevel, int iEffectMult );
-	int	GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult );
+	int	GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult, CChar * pCharSrc = NULL );
 	// Memories about objects in the world. -------------------
 private:
 	bool Memory_OnTick( CItemMemory * pMemory );

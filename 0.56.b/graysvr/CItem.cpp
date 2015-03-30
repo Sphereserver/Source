@@ -4697,7 +4697,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			{
 				if ( IsTopLevel())
 				{
-					CItem * pItem = CItem::CreateScript( ITEMID_FX_SPELL_FAIL, pCharSrc );
+					CItem * pItem = CItem::CreateScript( ITEMID_FX_TELE_VANISH, pCharSrc );
 					pItem->MoveToDecay( GetTopPoint(), 2*TICK_PER_SEC );
 				}
 				Delete();

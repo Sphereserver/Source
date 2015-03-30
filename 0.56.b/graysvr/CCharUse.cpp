@@ -1320,7 +1320,7 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 	}
 	else
 	{
-		if ( IsSetEF(EF_PetSlots) )
+		if ( IsSetOF(OF_PetSlots) )
 		{
 			short int iFollowerSlotsNeeded = static_cast<short>(maximum(pPet->GetDefNum("FOLLOWERSLOTS", true, true),1));
 			short int iCurFollower = static_cast<short>(GetDefNum("CURFOLLOWER", true, true));

@@ -3760,6 +3760,7 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		if ( IsSetOF(OF_NoSmoothSailing) ) catresname(zOptionFlags, "NoSmoothSailing");
 		if ( IsSetOF(OF_ScaleDamageByDurability) ) catresname(zOptionFlags, "ScaleDamageByDurability");
 		if ( IsSetOF(OF_Command_Sysmsgs) ) catresname(zOptionFlags, "CommandSysmessages");
+		if ( IsSetEF(OF_PetSlots) ) catresname(zOptionFlags, "PetSlots");
 		if ( IsSetOF(OF_OSIMultiSight) ) catresname(zOptionFlags, "OSIMultiSight");
 		if ( IsSetOF(OF_Items_AutoName) ) catresname(zOptionFlags, "ItemsAutoName");
 		if ( IsSetOF(OF_FileCommands) ) catresname(zOptionFlags, "FileCommands");
@@ -3794,7 +3795,6 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		if ( IsSetEF(EF_Script_Profiler) ) catresname(zExperimentalFlags, "ScriptProfiler");
 		if ( IsSetEF(EF_Size_Optimise) ) catresname(zExperimentalFlags, "SizeOptimize");
 		if ( IsSetEF(EF_DamageTools) ) catresname(zExperimentalFlags, "DamageTools");
-		if ( IsSetEF(EF_PetSlots) ) catresname(zExperimentalFlags, "PetSlots");
 		if ( IsSetEF(EF_UsePingServer) ) catresname(zExperimentalFlags, "UsePingServer");
 		if ( IsSetEF(EF_FixCanSeeInClosedConts) ) catresname(zExperimentalFlags, "FixCanSeeInClosedConts");
 #ifndef _MTNETWORK

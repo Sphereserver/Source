@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, Mar 2, 2015
+// FILE LAST UPDATED: Monday, Mar 30, 2015
 //
 VERSION=0.56c
 
@@ -39,7 +39,7 @@ MSG_DEF_UNICODE		0
 // Note: IMSG_DEF_COLOR is not used on chars names to prevent conflict with notoriety colors
 IMSG_DEF_COLOR		946
 IMSG_DEF_FONT		3
-IMSG_DEF_UNICODE	0
+IMSG_DEF_UNICODE	1
 
 // Default settings for Say
 // Note: these settings will not override player speech settings
@@ -768,7 +768,7 @@ EMOTE_DEF_UNICODE	0
 //npc_vendor_cantafford			"I cannot afford any more at the moment"
 //npc_vendor_hyare				"Here you are, %s"
 //npc_vendor_no_goods			"Sorry I have no goods to sell"
-//npc_vendor_nomoney			"Alas I have run out of money.
+//npc_vendor_nomoney			"Alas I have run out of money."
 //npc_vendor_nomoney1			"Begging thy pardon, but thou canst not afford that."
 //npc_vendor_nothing_buy   		"You have nothing I'm interested in"
 //npc_vendor_nothing_sell 		"Sorry I have nothing of interest to you."
@@ -862,7 +862,6 @@ EMOTE_DEF_UNICODE	0
 //snooping_failed				"You failed to peek into the container."
 //snooping_reach				"That is too far away."
 //spell_alcohol_hic				"*Hic*"
-//spell_alcohol_sober			"You feel sober."
 //spell_animdead_fail			"The corpse stirs for a moment then falls!"
 //spell_animdead_nc				"That is not a corpse!"
 //spell_create_food				"You magically create food in your backpack: %s"

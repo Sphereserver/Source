@@ -380,7 +380,7 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const
 				break;
 			if ( pCharTarg->IsClient() )
 			{
-				if ( IsSetEF(EF_PetSlots) && !pSrc->IsPriv(PRIV_GM) )
+				if ( IsSetOF(OF_PetSlots) && !pSrc->IsPriv(PRIV_GM) )
 				{
 					short int iFollowerSlotsNeeded = static_cast<short>(maximum(GetDefNum("FOLLOWERSLOTS", true, true),1));
 					short int iCurFollower = static_cast<short>(pCharTarg->GetDefNum("CURFOLLOWER", true, true));
@@ -500,7 +500,7 @@ void CChar::NPC_PetClearOwners()
 			pCharRider->Horse_UnMount();
 	}
 
-	if (IsSetEF(EF_PetSlots))
+	if (IsSetOF(OF_PetSlots))
 	{
 		CItemMemory * pPetMemory = Memory_FindTypes( MEMORY_IPET );
 		if ( pPetMemory != NULL )
@@ -552,7 +552,7 @@ bool CChar::NPC_PetSetOwner( CChar * pChar )
 		StatFlag_Set( STATF_INVUL );
 	}
 
-	if (IsSetEF(EF_PetSlots))
+	if (IsSetOF(OF_PetSlots))
 	{
 		short int iFollowerSlotsNeeded = static_cast<short>(maximum(GetDefNum("FOLLOWERSLOTS", true, true),1));
 		short int iCurFollower = static_cast<short>(pChar->GetDefNum("CURFOLLOWER", true, true));

@@ -1621,7 +1621,7 @@ bool CClient::OnTarg_Pet_Stable( CChar * pCharPet )
 		return( false );
 	}
 
-	if (IsSetEF(EF_PetSlots))
+	if (IsSetOF(OF_PetSlots))
 	{
 		short int iFollowerSlotsNeeded = static_cast<short>(maximum(pCharPet->GetDefNum("FOLLOWERSLOTS", true, true),1));
 		short int iCurFollower = static_cast<short>(m_pChar->GetDefNum("CURFOLLOWER", true, true));
