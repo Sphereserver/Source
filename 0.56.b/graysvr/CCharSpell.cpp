@@ -739,7 +739,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 	if ( !pSpellDef || !spell )
 		return;
 
-	short iStatEffect = static_cast<short>(g_Cfg.GetSpellEffect(spell, pSpell->m_itSpell.m_spelllevel));
+	short iStatEffect = static_cast<short>(pSpell->m_itSpell.m_spelllevel);
 	short iTimerEffect = static_cast<short>(pSpell->GetTimerAdjusted());
 
 	//Buffs related variables:
@@ -1287,7 +1287,7 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 	}
 	pSpell->SetType(IT_SPELL);
 	pSpell->m_itSpell.m_spell = static_cast<WORD>(spell);
-	pSpell->m_itSpell.m_spelllevel = static_cast<WORD>(iSkillLevel);	// 0 - 1000
+	pSpell->m_itSpell.m_spelllevel = static_cast<WORD>(g_Cfg.GetSpellEffect(spell, iSkillLevel));
 	pSpell->m_itSpell.m_spellcharges = 1;
 
 	CChar * pCharSrc = dynamic_cast<CChar*>(pSrc);
@@ -3035,10 +3035,7 @@ int CChar::GetSpellEffect( SPELL_TYPE spell, int iSkillLevel, int iEffectMult )
 int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult, CChar * pCharSrc )
 {
 	ADDTOCALLSTACK("CChar::GetSpellDuration");
-	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
-	ASSERT(pSpellDef);
-
-	int iDuration;
+	int iDuration = -1;
 	if ( IsSetMagicFlags(MAGICF_OSIFORMULAS) && pCharSrc != NULL )
 	{
 		switch ( spell )
@@ -3051,16 +3048,16 @@ int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult,
 			case SPELL_Strength:
 			case SPELL_Bless:
 			case SPELL_Curse:
-				iDuration = (((6 * pCharSrc->Skill_GetBase(SKILL_EVALINT)) / 50) + 1) * TICK_PER_SEC;
+				iDuration = 1 + ((6 * pCharSrc->Skill_GetBase(SKILL_EVALINT)) / 50);
 				break;
 
 			case SPELL_Protection:
 				{
-					iDuration = pCharSrc->Skill_GetBase(SKILL_MAGERY) * 2;
-					if ( iDuration < 150 )
-						iDuration = 150;
-					else if ( iDuration > 2400 )
-						iDuration = 2400;
+					iDuration = (2 * pCharSrc->Skill_GetBase(SKILL_MAGERY)) / 10;
+					if ( iDuration < 15 )
+						iDuration = 15;
+					else if ( iDuration > 240 )
+						iDuration = 240;
 				}
 				break;
 
@@ -3070,18 +3067,18 @@ int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult,
 
 			case SPELL_Arch_Prot:
 				{
-					iDuration = pCharSrc->Skill_GetBase(SKILL_MAGERY) * 120 / 100;
-					if ( iDuration > 1440 )
-						iDuration = 1440;
+					iDuration = pCharSrc->Skill_GetBase(SKILL_MAGERY) * 12 / 100;
+					if ( iDuration > 144 )
+						iDuration = 144;
 				}
 				break;
 
 			case SPELL_Fire_Field:
-				iDuration = (15 + ((pCharSrc->Skill_GetBase(SKILL_MAGERY) / 5) / 4)) * TICK_PER_SEC;
+				iDuration = 15 + ((pCharSrc->Skill_GetBase(SKILL_MAGERY) / 5) / 4);
 				break;
 
 			case SPELL_Blade_Spirit:
-				iDuration = 1200;
+				iDuration = 120;
 				break;
 
 			case SPELL_Paralyze:
@@ -3093,19 +3090,19 @@ int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult,
 				break;
 
 			case SPELL_Poison_Field:
-				iDuration = 30 + (pCharSrc->Skill_GetBase(SKILL_MAGERY) / 5);
+				iDuration = 3 + (pCharSrc->Skill_GetBase(SKILL_MAGERY) / 50);
 				break;
 
 			case SPELL_Invis:
-				iDuration = pCharSrc->Skill_GetBase(SKILL_MAGERY) * 120 / 100;
+				iDuration = pCharSrc->Skill_GetBase(SKILL_MAGERY) * 12 / 100;
 				break;
 
 			case SPELL_Paralyze_Field:
-				iDuration = 30 + (pCharSrc->Skill_GetBase(SKILL_MAGERY) / 3);
+				iDuration = 3 + (pCharSrc->Skill_GetBase(SKILL_MAGERY) / 30);
 				break;
 
 			case SPELL_Energy_Field:
-				iDuration = (15 + ((pCharSrc->Skill_GetBase(SKILL_MAGERY) / 5) / 7)) * TICK_PER_SEC;
+				iDuration = 15 + ((pCharSrc->Skill_GetBase(SKILL_MAGERY) / 5) / 7);
 				break;
 
 			case SPELL_Vortex:
@@ -3118,18 +3115,20 @@ int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult,
 			case SPELL_Earth_Elem:
 			case SPELL_Fire_Elem:
 			case SPELL_Water_Elem:
-				iDuration = ((2 * pCharSrc->Skill_GetBase(SKILL_MAGERY)) / 5) * TICK_PER_SEC;
+				iDuration = (2 * pCharSrc->Skill_GetBase(SKILL_MAGERY)) / 5;
 				break;
 
-			default: 
+			default:
 				break;
 		}
 	}
 
-	if ( !iDuration )
-		iDuration = pSpellDef->m_Duration.GetLinear(iSkillLevel);
-	if ( iDuration < 1 )
-		iDuration = 1;
+	if ( iDuration == -1 )
+	{
+		const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
+		ASSERT(pSpellDef);
+		iDuration = pSpellDef->m_Duration.GetLinear(iSkillLevel) / 10;
+	}
 
-	return (iDuration * iEffectMult) / 1000;
+	return ((iDuration * iEffectMult) / 1000) * TICK_PER_SEC;
 }

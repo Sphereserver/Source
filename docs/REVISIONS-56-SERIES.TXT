@@ -1910,3 +1910,7 @@ Fixed: SYSCMD never could return an exit value and was hanging sometimes.
 Fixed NPCs not moving to current fight target.
 Added scripts/items/sphere_item_provisions_logs.scp with different log types.
 Changed scripts/items/sphere_item_provisions.scp: Moved i_log(s) / i_board(s) to scripts/items/sphere_item_provisions_logs.scp
+
+01-04-2015, Coruja
+Fixed: Buff/Debuff spells not working correctly when MAGICF_OSIFORMULAS is disabled.
+[sphere_item_provisions_logs.scp]: Fixed some boards using wrong itemdef.
