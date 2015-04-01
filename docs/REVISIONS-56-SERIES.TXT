@@ -1902,3 +1902,6 @@ Changed: Small improvements on drunkness effect (ale, wine, liquor).
 [sphere_msgs.scp]:
 	-Changed IMSG_DEF_UNICODE to 1 (to match internal client behavior, which always show item/char names using unicode by default).
 	-Removed useless 'spell_alcohol_sober' msg.
+
+01-04-2015, matex
+Fixed: SYSCMD never could return an exit value and was hanging sometimes.

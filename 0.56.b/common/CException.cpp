@@ -263,6 +263,11 @@ void SetExceptionTranslator()
 		UNPAUSECALLSTACK;
 		throw CGrayError( LOGL_FATAL, sig, strsignal(sig) );
 	}
+
+	void _cdecl Signal_Children(int sig = 0)
+	{
+		while (waitpid((pid_t)(-1), 0, WNOHANG) > 0) {}
+	}
 #endif
 
 void SetUnixSignals( bool bSet )
@@ -277,7 +282,7 @@ void SetUnixSignals( bool bSet )
 	signal( SIGSEGV,	bSet ? &Signal_Illegal_Instruction : SIG_DFL );
 	signal( SIGFPE,		bSet ? &Signal_Illegal_Instruction : SIG_DFL );
 	signal( SIGPIPE,	bSet ? SIG_IGN : SIG_DFL );
-	signal( SIGCHLD,	bSet ? SIG_IGN : SIG_DFL );
+	signal( SIGCHLD,	bSet ? &Signal_Children : SIG_DFL );
 #else
 	UNREFERENCED_PARAMETER(bSet);
 #endif
