@@ -1179,7 +1179,8 @@ badcmd:
 					int status;
 					do
 					{
-						waitpid(child_pid, &status, 0);
+						if( waitpid(child_pid, &status, 0) == -1)
+							break;
 					} while (!WIFSIGNALED(status) && !WIFEXITED(status));
 					sVal.FormatLLHex(WEXITSTATUS(status));
 				}
