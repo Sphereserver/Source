@@ -1,0 +1,244 @@
+//****************************************************************************
+// SPHERE by : Menasoft ©1997-2007
+// www.sphereserver.net
+// All SPHERE script files and formats are copyright Menasoft & Partners.
+// This file may be freely edited for personal use, but may not be distributed
+// in whole or in part, in any format without express written permission from
+// Menasoft & Partners.  All donations and contributions
+// become the property of Menasoft & Partners.
+//****************************************************************************
+// FILE LAST UPDATED: Tuesday, March 31, 2015
+//
+VERSION=0.56c
+
+
+[COMMENT sphere_item_provisions_log]
+
+In order to actually chop logs, a REGIONRESOURCE needs to exist for it, and a
+REGIONTYPE needs a REGION= entry to that REGIONRESOURCE... also that same
+REGIONTYPE must be associated to the t_tree Terrain TYPEDEF.
+
+For more information on how wood is choped, check the COMMENT section of the
+sphere_region.scp file.
+
+
+[DEFNAME colors_resources_wood]
+color_o_ash        0157
+color_o_oak        04a6
+color_o_yew        04a8
+color_o_bloodwood  04aa
+color_o_frostwood  04ab
+color_o_heartwood  04a9
+
+
+[ITEMDEF 01bd7]
+DEFNAME=i_board
+TYPE=t_board
+VALUE=2
+WEIGHT=1.0
+REPLICATE=1
+RESOURCES=1 i_log
+SKILLMAKE=Carpentry 0.1,t_carpentry
+CATEGORY=Resources
+SUBSECTION=Wood (boards)
+DESCRIPTION=Board
+DUPELIST=01bd8,01bd9,01bda,01bdb,01bdc
+
+[ITEMDEF 01bd8]
+DUPEITEM=01bd7
+DESCRIPTION=Boards (3)
+
+[ITEMDEF 01bd9]
+DUPEITEM=01bd7
+DESCRIPTION=Boards (8)
+
+[ITEMDEF 01bda]
+//board
+DUPEITEM=01bd7
+
+[ITEMDEF 01bdb]
+DUPEITEM=01bd7
+DESCRIPTION=Boards (3)
+
+[ITEMDEF 01bdc]
+DUPEITEM=01bd7
+DESCRIPTION=Boards (8)
+
+[ITEMDEF 01bdd]
+DEFNAME=i_log
+NAME=log%s
+TYPE=t_log
+VALUE=1
+WEIGHT=2.0
+CATEGORY=Resources
+SUBSECTION=Wood (logs)
+DESCRIPTION=Log
+DUPELIST=01bde,01bdf,01be0,01be1,01be2
+
+[ITEMDEF 01bde]
+DUPEITEM=01bdd
+DESCRIPTION=Logs (3)
+
+[ITEMDEF 01bdf]
+DUPEITEM=01bdd
+DESCRIPTION=Logs (Many)
+
+[ITEMDEF 01be0]
+//log
+DUPEITEM=01bdd
+
+[ITEMDEF 01be1]
+DUPEITEM=01bdd
+DESCRIPTION=Logs (3)
+
+[ITEMDEF 01be2]
+DUPEITEM=01bdd
+DESCRIPTION=Logs (Many)
+
+
+[ITEMDEF i_log_ash]
+ID=i_log
+NAME=ash log%s
+TYPE=t_log
+VALUE=2
+WEIGHT=2.0
+CATEGORY=Resources
+SUBSECTION=Wood
+DESCRIPTION=Ash Log
+ON=@Create
+   COLOR=color_o_ash
+
+[ITEMDEF i_board_ash]
+ID=i_board
+NAME=ash board%s
+TYPE=t_board
+VALUE=5
+WEIGHT=1.0
+CATEGORY=Resources
+SUBSECTION=Boards
+DESCRIPTION=Ash Board
+ON=@Create
+   COLOR=color_o_ash
+
+[ITEMDEF i_log_oak]
+ID=i_log
+NAME=oak log%s
+TYPE=t_log
+VALUE=2
+WEIGHT=2.0
+CATEGORY=Resources
+SUBSECTION=Wood
+DESCRIPTION=Oak Log
+ON=@Create
+   COLOR=color_o_oak
+
+[ITEMDEF i_board_oak]
+ID=i_board
+NAME=oak board%s
+TYPE=t_board
+VALUE=5
+WEIGHT=1
+CATEGORY=Resources
+SUBSECTION=Boards
+DESCRIPTION=Oak Board
+ON=@Create
+   COLOR=color_o_oak
+
+[ITEMDEF i_log_yew]
+ID=i_log
+NAME=yew log%s
+TYPE=t_log
+VALUE=2
+WEIGHT=2.0
+CATEGORY=Resources
+SUBSECTION=Wood
+DESCRIPTION=Yew Log
+ON=@Create
+   COLOR=color_o_yew
+
+[ITEMDEF i_board_yew]
+ID=i_board
+NAME=Yew board%s
+TYPE=t_board
+VALUE=5
+WEIGHT=1
+CATEGORY=Resources
+SUBSECTION=Boards
+DESCRIPTION=Yew Board
+ON=@Create
+   COLOR=color_o_yew
+
+[ITEMDEF i_log_heartwood]
+ID=i_log
+NAME=heartwoodlog%s
+TYPE=t_log
+VALUE=2
+WEIGHT=2.0
+CATEGORY=Resources
+SUBSECTION=Wood
+DESCRIPTION=Heartwood Log
+ON=@Create
+   COLOR=color_o_heartwood
+
+[ITEMDEF i_board_oak]
+ID=i_board
+NAME=heartwood board%s
+TYPE=t_board
+VALUE=5
+WEIGHT=1
+CATEGORY=Resources
+SUBSECTION=Boards
+DESCRIPTION=Heartwood Board
+ON=@Create
+   COLOR=color_o_heartwood
+
+[ITEMDEF i_log_frostwood]
+ID=i_log
+NAME=frostwood log%s
+TYPE=t_log
+VALUE=2
+WEIGHT=2.0
+CATEGORY=Resources
+SUBSECTION=Wood
+DESCRIPTION=Frostwood Log
+ON=@Create
+   COLOR=color_o_frostwood
+
+[ITEMDEF i_board_frostwood]
+ID=i_board
+NAME=frostwood board%s
+TYPE=t_board
+VALUE=5
+WEIGHT=1
+CATEGORY=Resources
+SUBSECTION=Boards
+DESCRIPTION=Frostwood Board
+ON=@Create
+   COLOR=color_o_frostwood
+
+[ITEMDEF i_log_bloodwood]
+ID=i_log
+NAME=bloodwood log%s
+TYPE=t_log
+VALUE=2
+WEIGHT=2.0
+CATEGORY=Resources
+SUBSECTION=Wood
+DESCRIPTION=Bloodwood Log
+ON=@Create
+   COLOR=color_o_bloodwood
+
+[ITEMDEF i_board_oak]
+ID=i_board
+NAME=bloodwood board%s
+TYPE=t_board
+VALUE=5
+WEIGHT=1
+CATEGORY=Resources
+SUBSECTION=Boards
+DESCRIPTION=Bloodwood Board
+ON=@Create
+   COLOR=color_o_bloodwood
+
+
+[EOF]

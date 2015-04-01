@@ -2907,8 +2907,10 @@ bool CChar::Death()
 	if ( !pKiller )
 	{
 		CObjBase * ob = g_World.FindUID(m_Fight_Targ);
-		if ( ob )
+		if (ob)
 			pKiller = STATIC_CAST <CChar *>(ob);
+		else
+			pKiller = this;	// Should NEVER reach this... but setting it incase of.
 	}
 
 	// record the kill event for posterity.
@@ -4385,7 +4387,6 @@ bool CChar::OnTick()
 					Fight_HitTry();
 			}
 			else if ( Skill_GetActive() == SKILL_NONE )
-				//m_Act_Targ = Fight_AttackNext();	//m_Act_Targ = bool?
 				Fight_AttackNext();
 		}
 	}

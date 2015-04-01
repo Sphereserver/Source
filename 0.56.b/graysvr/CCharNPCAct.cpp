@@ -1782,7 +1782,7 @@ bool CChar::NPC_Act_Follow( bool fFlee, int maxDistance, bool forceDistance )
 	// Follow our target or owner. (m_Act_Targ) we may be fighting.
 	// false = can't follow any more. give up.
 	EXC_TRY("NPC_Act_Follow")
-	CChar * pChar = m_Act_Targ.CharFind();
+		CChar * pChar = Fight_IsActive() ? m_Fight_Targ.CharFind() : m_Act_Targ.CharFind();
 	if ( pChar == NULL )
 	{
 		// free to do as i wish !
@@ -2154,7 +2154,7 @@ void CChar::NPC_Act_Fight()
 		}
 	}
 
-	CChar * pChar = m_Act_Targ.CharFind();
+	CChar * pChar = m_Fight_Targ.CharFind();
 	if ( pChar == NULL || ! pChar->IsTopLevel()) // target is not valid anymore ?
 		return;
 	int iDist = GetDist( pChar );

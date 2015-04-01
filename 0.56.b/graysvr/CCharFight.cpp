@@ -2388,7 +2388,7 @@ effect_bounce:
 		// We will die from this...make sure the killer is set correctly...if we don't do this, the person we are currently
 		// attacking will get credit for killing us.
 		// Killed by a guard looks here !
-		m_Act_Targ = pSrc->GetUID();
+		m_Fight_Targ = pSrc->GetUID();
 		if (IsStatFlag( STATF_Ridden )) // Dead Horse?
 		{
 			CChar *pCharRider = Horse_GetMountChar();
@@ -2785,6 +2785,8 @@ CChar * CChar::Fight_FindBestTarget()
 			}
 		}
 	}*/
+	else if (m_Fight_Targ.CharFind())
+		return m_Fight_Targ.CharFind();
 	return NULL;
 }
 
@@ -3028,7 +3030,7 @@ CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 	SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
 	int iClosest = INT_MAX;	// closest
 
-	CChar * pChar = NULL;
+	CChar * pChar = m_Fight_Targ.CharFind();
 	CChar * pClosest = NULL;
 	if ( ! m_lastAttackers.size() )
 		return pChar;
