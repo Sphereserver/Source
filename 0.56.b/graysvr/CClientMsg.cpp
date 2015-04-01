@@ -881,7 +881,7 @@ void CClient::addObjMessage( LPCTSTR pMsg, const CObjBaseTemplate * pSrc, HUE_TY
 	addBarkParse(pMsg, pSrc, wHue, mode);
 }
 
-void CClient::addEffect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate * pDst, const CObjBaseTemplate * pSrc, BYTE bSpeedSeconds, BYTE bLoop, bool fExplode, DWORD color, DWORD render, WORD effectid, DWORD explodeid, WORD explodesound, DWORD effectuid, byte type)
+void CClient::addEffect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate * pDst, const CObjBaseTemplate * pSrc, BYTE bSpeedSeconds, BYTE bLoop, bool fExplode, DWORD color, DWORD render, WORD effectid, DWORD explodeid, WORD explodesound, DWORD effectuid, BYTE type)
 {
 	ADDTOCALLSTACK("CClient::addEffect");
 	// bSpeedSeconds = seconds = 0=very fast, 7=slow.

@@ -1857,7 +1857,7 @@ PacketEffect::PacketEffect(const CClient* target, EFFECT_TYPE motion, ITEMID_TYP
 	push(target);
 }
 
-PacketEffect::PacketEffect(const CClient* target, EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate* dst, const CObjBaseTemplate* src, BYTE speed, BYTE loop, bool explode, DWORD hue, DWORD render, WORD effectid, DWORD explodeid, WORD explodesound, DWORD effectuid, byte type) : PacketSend(XCMD_EffectParticle, 49, PRI_NORMAL)
+PacketEffect::PacketEffect(const CClient* target, EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate* dst, const CObjBaseTemplate* src, BYTE speed, BYTE loop, bool explode, DWORD hue, DWORD render, WORD effectid, DWORD explodeid, WORD explodesound, DWORD effectuid, BYTE type) : PacketSend(XCMD_EffectParticle, 49, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketEffect::PacketEffect(3)");
 

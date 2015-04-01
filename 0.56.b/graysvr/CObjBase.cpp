@@ -343,7 +343,7 @@ void CObjBase::Sound( SOUND_TYPE id, int iOnce ) const // Play sound effect for 
 	}
 }
 
-void CObjBase::Effect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBase * pSource, BYTE bSpeedSeconds, BYTE bLoop, bool fExplode, DWORD color, DWORD render, WORD effectid, WORD explodeid, WORD explodesound, DWORD effectuid, byte type) const
+void CObjBase::Effect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBase * pSource, BYTE bSpeedSeconds, BYTE bLoop, bool fExplode, DWORD color, DWORD render, WORD effectid, WORD explodeid, WORD explodesound, DWORD effectuid, BYTE type) const
 {
 	ADDTOCALLSTACK("CObjBase::Effect");
 	// show for everyone near by.
@@ -921,7 +921,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 				//strip quotes if any
 				if (*pszArgs[0] == '"')
 					pszArgs[0]++;
-				byte count = 0;
+				BYTE count = 0;
 				for (TCHAR * pEnd = pszArgs[0] + strlen(pszArgs[0]) - 1; pEnd >= pszArgs[0]; pEnd--)
 				{
 					if (*pEnd == '"')
