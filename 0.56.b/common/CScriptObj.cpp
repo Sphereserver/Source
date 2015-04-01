@@ -1157,7 +1157,7 @@ badcmd:
 					Arg_ppCmd[8], Arg_ppCmd[9], NULL );
 #else
 				// I think fork will cause problems.. we'll see.. if yes new thread + execlp is required.
-				int child_pid = fork();
+				int child_pid = vfork();
 				if ( child_pid < 0 )
 				{
 					g_Log.EventError("SYSSPAWN failed when executing %s.\n", pszKey);
