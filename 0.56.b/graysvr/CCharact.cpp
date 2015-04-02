@@ -2320,6 +2320,11 @@ bool CChar::Horse_Mount(CChar *pHorse) // Remove horse char and give player a ho
 		SysMessageDefault(DEFMSG_MOUNT_DONTOWN);
 		return false;
 	}
+	if (pHorse->m_pNPC->m_bonded)
+	{
+		SysMessageDefault(DEFMSG_MOUNT_BONDED_DEAD_CANTMOUNT);
+		return false;
+	}
 
 	if ( g_Cfg.m_iMountHeight )
 	{
@@ -2450,9 +2455,13 @@ bool CChar::OnTickEquip( CItem * pItem )
 			// Give my horse a tick. (It is still in the game !)
 			// NOTE: What if my horse dies (poisoned?)
 			{
+				CChar * pHorse = pItem->m_itFigurine.m_UID.CharFind();
+				if (pHorse == NULL)
+					return(false);
+				return pHorse->OnTick();
 				// NPCs with just an item equipped is fine
 				// but still give ticks just in case
-				if ( m_pNPC )
+				/*if ( m_pNPC )
 				{
 					pItem->SetTimeout( 10 * TICK_PER_SEC );
 					return( true );
@@ -2513,7 +2522,7 @@ bool CChar::OnTickEquip( CItem * pItem )
 				if ( !bHorseTick )
 					pHorse->Delete();
 
-				return( bHorseTick );
+				return( bHorseTick );*/
 			}
 
 		case LAYER_FLAG_Criminal:
@@ -2831,8 +2840,8 @@ bool CChar::Death()
 
 	if ( IsStatFlag(STATF_DEAD|STATF_INVUL) )
 		return true;
-
-	if ( m_pNPC && m_pNPC->m_bonded == 0 )
+	bool isBonded = m_pNPC && m_pNPC->m_bonded == 1;
+	if ( m_pNPC && !isBonded )
 	{
 		//	leave no corpse if for some reason creature dies while mounted
 		if ( IsStatFlag(STATF_Ridden) )
@@ -2940,7 +2949,7 @@ bool CChar::Death()
 	StatFlag_Set(STATF_DEAD);
 	StatFlag_Clear(STATF_Stone|STATF_Freeze|STATF_Hidden|STATF_Sleeping|STATF_Hovering);
 
-	if (m_pPlayer || (m_pNPC && m_pNPC->m_bonded == 0))
+	if (m_pPlayer || !isBonded)
 	{
 		Stat_SetVal(STAT_STR, 0);
 		//return true;
@@ -2952,7 +2961,7 @@ bool CChar::Death()
 	//	clear list of attackers
 	m_lastAttackers.clear();
 	Skill_Cleanup();
-	if (m_pNPC && m_pNPC->m_bonded == 1)
+	if ( isBonded )
 		return true;
 
 	// Forgot who owns me. dismount my master if ridden.
@@ -4272,7 +4281,7 @@ bool CChar::OnTick()
 	// Get a timer tick when our timer expires.
 	// RETURN: false = delete this.
 	EXC_TRY("Tick");
-
+	bool isBonded = (IsStatFlag(STATF_DEAD) && (m_pNPC && m_pNPC->m_bonded == 1));
 	INT64 iTimeDiff = - g_World.GetTimeDiff(m_timeLastRegen);
 	if ( !iTimeDiff )
 		return true;
@@ -4320,31 +4329,35 @@ bool CChar::OnTick()
 		}
 
 		// NOTE: Summon flags can kill our hp here. check again.
-		if ( Stat_GetVal(STAT_STR) <= 0 )	// We can only die on our own tick.
+		if (!isBonded)	// isBonded marks this character as Already dead, but we don't want to stop actions here for them, either regenerating stats.
 		{
-			m_timeLastRegen = CServTime::GetCurrentTime();
-			EXC_SET("death");
-			return Death();
+			if (Stat_GetVal(STAT_STR) <= 0)	// We can only die on our own tick.
+			{
+				m_timeLastRegen = CServTime::GetCurrentTime();
+				EXC_SET("death");
+				return Death();
+			}
+			if (IsStatFlag(STATF_DEAD))	// We are dead, don't update anything.
+			{
+				m_timeLastRegen = CServTime::GetCurrentTime();
+				return true;
+			}
+			Stats_Regen(iTimeDiff);
 		}
-		if ( IsStatFlag( STATF_DEAD ) )	// We are dead, don't update anything.
-		{
-			m_timeLastRegen = CServTime::GetCurrentTime();
-			return true;
-		}
-		Stats_Regen(iTimeDiff);
 	}
 	else
 	{
 		// Check this all the time.
-		if ( Stat_GetVal(STAT_STR) <= 0 )	// We can only die on our own tick.
+		if (Stat_GetVal(STAT_STR) <= 0 && !isBonded)	// We can only die on our own tick, if we are not already dead (isBonded)
 		{
 			EXC_SET("death");
 			return Death();
 		}
 	}
 
-	if ( IsStatFlag(STATF_DEAD) )
+	if (IsStatFlag(STATF_DEAD) && !isBonded)
 		return true;
+
 	if ( IsDisconnected() )		// mounted horses can still get a tick.
 	{
 		m_timeLastRegen = CServTime::GetCurrentTime();
@@ -4369,7 +4382,7 @@ bool CChar::OnTick()
 			NPC_OnTickAction();
 
 			//	Some NPC AI actions
-			if (( g_Cfg.m_iNpcAi&NPC_AI_FOOD ) && !( g_Cfg.m_iNpcAi&NPC_AI_INTFOOD ))
+			if (( g_Cfg.m_iNpcAi&NPC_AI_FOOD ) && !( g_Cfg.m_iNpcAi&NPC_AI_INTFOOD  || isBonded ))
 				NPC_Food();
 			if ( g_Cfg.m_iNpcAi&NPC_AI_EXTRA )
 				NPC_AI();
@@ -4379,7 +4392,7 @@ bool CChar::OnTick()
 	{
 		// Hit my current target. (if i'm ready)
 		EXC_SET("combat hit try");
-		if ( IsStatFlag(STATF_War) )
+		if (IsStatFlag(STATF_War) && !isBonded)	// No fighting for bonded dead pets
 		{
 			if ( Fight_IsActive() )
 			{

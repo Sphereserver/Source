@@ -1914,3 +1914,27 @@ Changed scripts/items/sphere_item_provisions.scp: Moved i_log(s) / i_board(s) to
 01-04-2015, Coruja
 Fixed: Buff/Debuff spells not working correctly when MAGICF_OSIFORMULAS is disabled.
 [sphere_item_provisions_logs.scp]: Fixed some boards using wrong itemdef.
+
+02-04-2015, XuN
+Added Repair function (Called on Repareid item, must be called with a character as SRC, who is going to perform the repair action).
+Added Smelt function ( called on Smelted item, must be called with a character as SRC. ARGS=forge or another ore pile to smelt, if no ARGS is given it will search automatically for nearest forge if any ).
+Changed @StatGain trigger is not being fired anymore with any stat changes from the @Create trigger.
+Fixed local.CreateObject1 & 2 in @Success trigger for field spells causing the new items to do not use the same placement checks as default items.
+Updated behaviour of Bonded Pets ONLY when they are DEAD:
+	-They act as normal for everything, excepting they cannot die.
+	-Follow any master's command, excepting fighting ones.
+	-Doesn't regenerate stats.
+	-NPCs won't die if they have bonded=1, if they are dead already and bonded is set to 0 they will die in next ticks.
+	-Stam required to step over them is 0.
+	-Food doesn't decay.
+Fixed: Pets following when recalling/teleporting/gate travelling should be more consistent.
+Changed: Mounted items calls now CChar::OnTick() on the mounted character instead of doing the tick on it's own, so they regenerate stats and everything like any other character in a more realistic way.
+Fixed STATSUM and STAT_STR/DEX/INT from SkillClasses not being readed correctly (or at all) in some cases, this should permanently stop the need of custom statcaps. This is how StatGain works today (** = what was fixed):
+	-Only INT can be gained when Polymorphed.
+	-Stats with any StatLock different than UP can't increase.
+	-StatCap <= StatSum stops the execution. **
+	-STAT_* > STAT_VALUE from SkillClass = ignore this stat **
+	-STAT_* > STAT_VALUE for this Stat in the performed Skill = ignore this stat.
+	-Then the checks for %chances are made.
+[sphere_msgs.scp]:
+	Added //msg_bonded_dead_cantmount			"The creature is dead and cannot be mounted."

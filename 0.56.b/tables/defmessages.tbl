@@ -500,6 +500,7 @@ MSG(MOUNT_CEILING,					"msg_mount_ceiling",				"The ceiling is too low for you!"
 MSG(MOUNT_DIST,						"msg_mount_dist",					"You can't reach the creature.")
 MSG(MOUNT_DONTOWN,					"msg_mount_dontown",				"You dont own that horse.")
 MSG(MOUNT_UNABLE,					"msg_mount_unable",					"You are not physically capable of riding a horse.")
+MSG(MOUNT_BONDED_DEAD_CANTMOUNT,	"msg_bonded_dead_cantmount",		"The creature is dead and cannot be mounted.")
 MSG(MURDERER,						"msg_murderer",						"Murderer!")
 MSG(NOSPELLBOOK,					"msg_nospellbook",					"You have no spellbook")
 MSG(NOTO_CHANGE_0,					"msg_noto_change_0",				"You have %s %s %s.")

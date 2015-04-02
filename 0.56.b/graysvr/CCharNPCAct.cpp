@@ -1086,20 +1086,10 @@ int CChar::NPC_WalkToPoint( bool fRun )
 	INT64 tTick;
 	CVarDefCont * pValue = GetKey("OVERRIDE.MOVERATE", true);
 	if (pValue)
-	{
-		tTick = pValue->GetValNum();
-	}
+		tTick = pValue->GetValNum();	//Taking value from tag.override.moverate
 	else
-	{
-		// END TAG.OVERRIDE.MOVERATE
-
-		//g_Log.EventDebug("prop found: %d\n",pCharDef->m_iMoveRate);
-		tTick = pCharDef->m_iMoveRate;
-
-		// TAG.OVERRIDE.MOVERATE
-	}
+		tTick = pCharDef->m_iMoveRate;	//no tag.override.moverate, we get default moverate (created from ini's one).
 	// END TAG.OVERRIDE.MOVERATE
-
 	if (fRun)
 	{
 		if (IsStatFlag(STATF_Pet))	// pets run a little faster.
@@ -1765,7 +1755,7 @@ void CChar::NPC_Act_Guard()
 		// protect the target if they're in a fight
 		if ( pChar->Fight_IsActive())
 		{
-			if ( Fight_Attack( pChar->m_Act_Targ.CharFind() ))
+			if ( Fight_Attack( pChar->m_Fight_Targ.CharFind() ))
 				return;
 		}
 	}
@@ -1773,7 +1763,7 @@ void CChar::NPC_Act_Guard()
 	NPC_LookAtChar( pChar, 1 );
 
 	// target is out of range or doesn't need protecting, so just follow for now
-	NPC_Act_Follow();
+	NPC_Act_Follow(GetDist(pChar) > 3);
 }
 
 bool CChar::NPC_Act_Follow( bool fFlee, int maxDistance, bool forceDistance )
@@ -1781,8 +1771,9 @@ bool CChar::NPC_Act_Follow( bool fFlee, int maxDistance, bool forceDistance )
 	ADDTOCALLSTACK("CChar::NPC_Act_Follow");
 	// Follow our target or owner. (m_Act_Targ) we may be fighting.
 	// false = can't follow any more. give up.
+
 	EXC_TRY("NPC_Act_Follow")
-		CChar * pChar = Fight_IsActive() ? m_Fight_Targ.CharFind() : m_Act_Targ.CharFind();
+	CChar * pChar = Fight_IsActive() ? m_Fight_Targ.CharFind() : m_Act_Targ.CharFind();
 	if ( pChar == NULL )
 	{
 		// free to do as i wish !
@@ -1847,12 +1838,13 @@ bool CChar::NPC_Act_Follow( bool fFlee, int maxDistance, bool forceDistance )
 	}
 
 	EXC_SET("Fleeing");
+	bool fRun = dist > 3;
 	if ( fFlee )
 	{
 		CPointMap ptOld = m_Act_p;
 		m_Act_p = GetTopPoint();
 		m_Act_p.Move( GetDirTurn( m_Act_p.GetDir( ptOld ), 4 + 1 - Calc_GetRandVal(3)));
-		NPC_WalkToPoint( dist < Calc_GetRandVal(10));
+		NPC_WalkToPoint( dist > 3);
 		m_Act_p = ptOld;	// last known point of the enemy.
 		return( true );
 	}

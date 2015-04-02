@@ -364,7 +364,7 @@ bool CChar::Spell_Recall( CItem * pRune, bool fGate )
 	}
 	else
 	{
-		if ( ! Spell_Teleport( pRune->m_itRune.m_pntMark, false, true, ITEMID_NOTHING ))
+		if ( ! Spell_Teleport( pRune->m_itRune.m_pntMark, true, true, ITEMID_NOTHING ))
 			return( false );
 	}
 
@@ -1363,7 +1363,7 @@ void CChar::Spell_Area( CPointMap pntTarg, int iDist, int iSkillLevel )
 	}
 }
 
-void CChar::Spell_Field( CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, unsigned int fieldWidth, unsigned int fieldGauge, int iSkillLevel, CChar * pCharSrc )
+void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, unsigned int fieldWidth, unsigned int fieldGauge, int iSkillLevel, CChar * pCharSrc, ITEMID_TYPE idnewEW, ITEMID_TYPE idnewNS)
 {
 	ADDTOCALLSTACK("CChar::Spell_Field");
 	// Cast the field spell to here.
@@ -1374,6 +1374,7 @@ void CChar::Spell_Field( CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, 
 	// fieldWidth = width of the field (looking from char's point of view)
 	// fieldGauge = thickness of the field
 	// iSkillLevel = 0-1000
+	// idnewEW and idnewNS are the overriders created in @Success trigger, passed as another arguments because checks are made using default items
 
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
 	ASSERT(pSpellDef);
@@ -1384,7 +1385,7 @@ void CChar::Spell_Field( CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, 
 	// get the dir of the field.
 	int dx = abs( pntTarg.m_x - GetTopPoint().m_x );
 	int dy = abs( pntTarg.m_y - GetTopPoint().m_y );
-	ITEMID_TYPE id = ( dx > dy ) ? idNS : idEW;
+	ITEMID_TYPE id = (dx > dy) ? idnewNS ? idnewNS : idNS: idnewEW ? idnewEW : idEW;
 
 	int minX = static_cast<int>((fieldWidth - 1) / 2) - (fieldWidth - 1);
 	int maxX = minX + (fieldWidth - 1);
@@ -1866,9 +1867,18 @@ bool CChar::Spell_CastDone()
 		iSkillLevel = Skill_GetAdjusted(static_cast<SKILL_TYPE>(iSkill));
 	}
 
+	switch (spell)
+	{
+		case SPELL_Wall_of_Stone: 	iT1 = ITEMID_STONE_WALL;				iT2 = ITEMID_STONE_WALL;		break;
+		case SPELL_Fire_Field: 		iT1 = ITEMID_FX_FIRE_F_EW; 				iT2 = ITEMID_FX_FIRE_F_NS;		break;
+		case SPELL_Poison_Field:	iT1 = ITEMID_FX_POISON_F_EW;			iT2 = ITEMID_FX_POISON_F_NS;	break;
+		case SPELL_Paralyze_Field:	iT1 = ITEMID_FX_PARA_F_EW;				iT2 = ITEMID_FX_PARA_F_NS;		break;
+		case SPELL_Energy_Field:	iT1 = ITEMID_FX_ENERGY_F_EW;			iT2 = ITEMID_FX_ENERGY_F_NS;	break;
+		default: break;
+	}
 	CScriptTriggerArgs	Args( spell, iSkillLevel, pObjSrc );
-	Args.m_VarsLocal.SetNum("CreateObject1",0);
-	Args.m_VarsLocal.SetNum("CreateObject2",0);
+	Args.m_VarsLocal.SetNum("CreateObject1",iT1);
+	Args.m_VarsLocal.SetNum("CreateObject2",iT2);
 
 	Args.m_VarsLocal.SetNum("fieldWidth",0);
 	Args.m_VarsLocal.SetNum("fieldGauge",0);
@@ -1887,9 +1897,10 @@ bool CChar::Spell_CastDone()
 	}
 
 	iSkillLevel	= static_cast<int>(Args.m_iN2);
-		
-	iT1 = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1",true)));
-	iT2 = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject2",true)));
+
+	//Setting new IDs as another variables to pass as different arguments to the field function.
+	ITEMID_TYPE it1test = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1", true)));
+	ITEMID_TYPE it2test = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject2", true)));
 	iC1 = static_cast<CREID_TYPE>(Args.m_VarsLocal.GetKeyNum("CreateObject1",true) & 0xFFFF);
 
 	//Can't be < 0, so max it to 0
@@ -1962,25 +1973,12 @@ bool CChar::Spell_CastDone()
 	}
 	else if ( pSpellDef->IsSpellType(SPELLFLAG_FIELD) )
 	{
-		if ( !iT1 || !iT2 )
-		{
-			switch ( spell )
-			{
-			case SPELL_Wall_of_Stone: 	iT1 = ITEMID_STONE_WALL;				iT2 = ITEMID_STONE_WALL;		break;
-			case SPELL_Fire_Field: 		iT1 = ITEMID_FX_FIRE_F_EW; 				iT2 = ITEMID_FX_FIRE_F_NS;		break;
-			case SPELL_Poison_Field:	iT1 = ITEMID_FX_POISON_F_EW;			iT2 = ITEMID_FX_POISON_F_NS;	break;
-			case SPELL_Paralyze_Field:	iT1 = ITEMID_FX_PARA_F_EW;				iT2 = ITEMID_FX_PARA_F_NS;		break;
-			case SPELL_Energy_Field:	iT1 = ITEMID_FX_ENERGY_F_EW;			iT2 = ITEMID_FX_ENERGY_F_NS;	break;
-			default: break;
-			}
-		}	
-
 		if ( !fieldWidth )
 			fieldWidth = 3;
 		if ( !fieldGauge )
 			fieldGauge = 1;
 
-		Spell_Field( m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel, this );
+		Spell_Field( m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel, this, it1test, it2test );
 	}
 	else if ( pSpellDef->IsSpellType(SPELLFLAG_AREA) )
 	{

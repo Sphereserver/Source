@@ -549,6 +549,7 @@ EMOTE_DEF_UNICODE	0
 //msg_mount_dist				"You can't reach the creature."
 //msg_mount_dontown				"You dont own that horse."
 //msg_mount_unable				"You are not physically capable of riding a horse."
+//msg_bonded_dead_cantmount		"The creature is dead and cannot be mounted."
 //msg_murderer					"Murderer!"
 //msg_nospellbook				"You have no spellbook"
 //msg_noto_change_0				"You have %s %s %s."

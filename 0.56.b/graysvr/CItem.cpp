@@ -2399,6 +2399,7 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_BONUSCRAFTINGEXCEPAMT:
 		case IC_NPCKILLERAMT:
 		case IC_NPCPROTECTIONAMT:
+		case IC_QUESTITEM:
 			{
 				CVarDefCont * pVar = GetDefKey(pszKey, true);
 				sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
@@ -2665,6 +2666,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_DOOROPENSOUND:
 		case IC_PORTCULISSOUND:
 		case IC_DOOROPENID:
+		case IC_QUESTITEM:
 			SetDefNum(s.GetKey(),s.GetArgVal(), false);
 			break;
 
@@ -3054,6 +3056,18 @@ bool CItem::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from s
 				return( false );
 			pCharSrc->Use_Obj( this, s.HasArgs() ? (s.GetArgVal() != 0) : true, true );
 			break;
+		case CIV_REPAIR:
+			if (!pCharSrc)
+				return false;
+			return pCharSrc->Use_Repair(this);
+		case CIV_SMELT:
+		{
+			if (!pCharSrc)
+				return false;
+			CItem * pTarg = static_cast<CItem*>(static_cast<CGrayUID>(s.GetArgVal()).ItemFind());
+			return pCharSrc->Skill_Mining_Smelt(this, pTarg ? pTarg : NULL);
+		}
+
 		default:
 			return false;
 	}

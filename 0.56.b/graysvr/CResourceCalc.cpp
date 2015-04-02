@@ -35,7 +35,8 @@ int CResource::Calc_WalkThroughChar( CChar * pCharMove, CChar * pCharObstacle )
 	//  Stamina penalty
 	//  -1 = i can't push through.
 	//  0 = no penalty , just walk through. ie. a human past a bird or really small.
-
+	if (pCharObstacle->m_pNPC && pCharObstacle->m_pNPC->m_bonded == 1 && pCharObstacle->IsStatFlag(STATF_DEAD))	//Bonded pets should be pushed away when they are dead.
+		return 0;
 	if ( !pCharMove || !pCharObstacle )
 		return -1;
 	return ( pCharMove->Stat_GetAdjusted(STAT_DEX) / 5 );		// 20%

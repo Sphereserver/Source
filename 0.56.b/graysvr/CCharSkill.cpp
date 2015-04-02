@@ -81,7 +81,7 @@ void CChar::Stat_SetMod( STAT_TYPE i, short iVal )
 	ADDTOCALLSTACK("CChar::Stat_SetMod");
 	ASSERT(i >= 0 && i < STAT_QTY);
 	int iStatVal = Stat_GetMod(static_cast<STAT_TYPE>(i));
-	if ( IsTrigUsed(TRIGGER_STATCHANGE) )
+	if ( IsTrigUsed(TRIGGER_STATCHANGE) && !IsTriggerActive("CREATE"))
 	{
 		if (i >= STAT_STR && i <= STAT_DEX)
 		{
@@ -144,7 +144,7 @@ void CChar::Stat_SetMax( STAT_TYPE i, int iVal )
 	else
 	{
 		int iStatVal = Stat_GetMax(static_cast<STAT_TYPE>(i));
-		if ( IsTrigUsed(TRIGGER_STATCHANGE) )
+		if (IsTrigUsed(TRIGGER_STATCHANGE) && !IsTriggerActive("CREATE"))
 		{
 			// Only STR, DEX, INT, FOOD fire MaxHits, MaxMana, MaxStam, MaxFood for @StatChange
 			if (i >= STAT_STR && i <= STAT_FOOD)
@@ -266,7 +266,7 @@ void CChar::Stat_SetBase( STAT_TYPE i, short iVal )
 	ASSERT(i >= 0 && i < STAT_QTY);
 
 	int iStatVal = Stat_GetBase(static_cast<STAT_TYPE>(i));
-	if ( IsTrigUsed(TRIGGER_STATCHANGE) && ! g_Serv.IsLoading() )
+	if (IsTrigUsed(TRIGGER_STATCHANGE) && !g_Serv.IsLoading() && !IsTriggerActive("CREATE"))
 	{
 		// Only Str, Dex, Int, Food fire @Statchange here
 		if (i >= STAT_STR && i <= STAT_FOOD)
@@ -359,6 +359,7 @@ short CChar::Stat_GetLimit( STAT_TYPE i ) const
 			iStatMax = static_cast<int>(pTagStorage->GetValNum());
 		else
 			iStatMax = pSkillClass->m_StatMax[i];
+
 
 		if ( m_pPlayer->Stat_GetLock(i) >= SKILLLOCK_DOWN )
 		{
@@ -750,7 +751,8 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 	////////////////////////////////////////////////////////
 	// Dish out any stat gains - even for failures.
 
-	int iStatSum = 0;
+	int iStatSum = Stat_GetSum();
+	int iStatCap = Stat_GetLimit(STAT_QTY);
 
 	// Stat effects are unrelated to advance in skill !
 	for ( int i=STAT_STR; i<STAT_BASE_QTY; i++ )
@@ -765,15 +767,16 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 		int iStatVal = Stat_GetBase(static_cast<STAT_TYPE>(i));
 		if ( iStatVal <= 0 )	// some odd condition
 			continue;
-		iStatSum += iStatVal;
+
+		if (iStatSum >= iStatCap)	//We have already reached our stat cap
+			break;
 
 		int iStatMax = Stat_GetLimit(static_cast<STAT_TYPE>(i));
-		if ( iStatVal > iStatMax )
+		if ( iStatVal >= iStatMax )
 			continue;	// nothing grows past this. (even for NPC's)
-
 		// You will tend toward these stat vals if you use this skill a lot.
 		int iStatTarg = pSkillDef->m_Stat[i];
-		if ( iStatVal > iStatTarg )
+		if ( iStatVal >= iStatTarg )
 			continue;		// you've got higher stats than this skill is good for.
 
 		// ??? Building stats should consume food !!
@@ -790,6 +793,8 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 		iRoll = Calc_GetRandVal(1000);
 
 		bool decrease = Stat_Decrease((STAT_TYPE)i, skill);
+		if (decrease)
+			iStatSum = Stat_GetSum();
 		if ( iRoll <= iChance && decrease )
 		{
 			Stat_SetBase(static_cast<STAT_TYPE>(i), static_cast<short>(iStatVal + 1));
@@ -2413,7 +2418,7 @@ int CChar::Skill_Enticement( SKTRIG_TYPE stage )
 				}
 
 				pChar->m_Act_p = GetTopPoint();
-				pChar->NPC_WalkToPoint( ( pChar->m_Act_p.GetDist(pChar->GetTopPoint()) > 6) );
+				pChar->NPC_WalkToPoint( ( pChar->m_Act_p.GetDist(pChar->GetTopPoint()) > 3) );
 
 				return 0;
 			}
@@ -3669,7 +3674,7 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 	ADDTOCALLSTACK("CChar::Skill_Act_Breath");
 	// NPCACT_BREATH
 	// A Dragon I assume.
-	// m_Act_Targ = my target.
+	// m_Fight_Targ = my target.
 
 	if ( stage == SKTRIG_STROKE )
 	{
@@ -3680,7 +3685,7 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 		return 0;
 	}
 
-	CChar * pChar = m_Act_Targ.CharFind();
+	CChar * pChar = m_Fight_Targ.CharFind();
 	if ( pChar == NULL )
 	{
 		return -SKTRIG_QTY;
@@ -3759,13 +3764,13 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 {
 	ADDTOCALLSTACK("CChar::Skill_Act_Throwing");
 	// NPCACT_THROWING
-	// m_Act_Targ = my target.
+	// m_Fight_Targ = my target.
 
 	if ( stage == SKTRIG_STROKE )
 	{
 		return 0;
 	}
-	CChar * pChar = m_Act_Targ.CharFind();
+	CChar * pChar = m_Fight_Targ.CharFind();
 	if ( pChar == NULL )
 	{
 		return( -SKTRIG_QTY );

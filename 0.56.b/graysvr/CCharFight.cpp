@@ -2822,7 +2822,8 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	// RETURN:
 	//  true = new attack is accepted.
 
-	if ( pCharTarg == NULL || pCharTarg == this || ! CanSee(pCharTarg) || pCharTarg->IsStatFlag( STATF_DEAD ) || pCharTarg->IsDisconnected() || IsStatFlag( STATF_DEAD ))
+	bool isBondedTarget = (pCharTarg->IsStatFlag(STATF_DEAD) && (pCharTarg->m_pNPC && pCharTarg->m_pNPC->m_bonded == 1));
+	if ( pCharTarg == NULL || pCharTarg == this || ! CanSee(pCharTarg) || pCharTarg->IsStatFlag( STATF_DEAD ) || pCharTarg->IsDisconnected() || IsStatFlag( STATF_DEAD ) || isBondedTarget)
 	{
 		// Not a valid target.
 		Fight_Clear( pCharTarg, true );
@@ -2943,8 +2944,16 @@ void CChar::Fight_HitTry()
 		Fight_AttackNext();
 		return;
 	}
+	//bool isBondedTarget = (pCharTarg->IsStatFlag(STATF_DEAD) && (pCharTarg->m_pNPC && pCharTarg->m_pNPC->m_bonded == 1));
+	bool isBondedTarget = pCharTarg->IsStatFlag(STATF_DEAD);	// Bonded targets are the unique able to reach this point, so there's no need to recheck again they are bonded?
 
-
+	if (isBondedTarget)
+	{
+		// Might be dead ? Clear this.
+		// move to my next target.
+		Fight_AttackNext();
+		return;
+	}
 	// Try to hit my target. I'm ready.
 	switch ( Fight_Hit( pCharTarg ))
 	{
@@ -3041,13 +3050,14 @@ CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 	{
 		LastAttackers & refAttacker = *it;
 		CChar * pChar = static_cast<CChar*>( static_cast<CGrayUID>( refAttacker.charUID ).CharFind() );
-	
-		if ( pChar == NULL )
+
+		bool isBondedTarget = (pChar->IsStatFlag(STATF_DEAD) && (pChar->m_pNPC && pChar->m_pNPC->m_bonded == 1));
+		if ( pChar == NULL && isBondedTarget )
 			continue;
-		if (refAttacker.ignore)
+		if ( refAttacker.ignore )
 		{
 			bool bIgnore = true;
-			if (IsTrigUsed(TRIGGER_HITIGNORE))
+			if ( IsTrigUsed( TRIGGER_HITIGNORE ) )
 			{
 				CScriptTriggerArgs Args;
 				Args.m_iN1 = bIgnore;
