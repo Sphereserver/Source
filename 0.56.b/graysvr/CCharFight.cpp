@@ -2822,7 +2822,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	// RETURN:
 	//  true = new attack is accepted.
 
-	bool isBondedTarget = (pCharTarg->IsStatFlag(STATF_DEAD) && (pCharTarg->m_pNPC && pCharTarg->m_pNPC->m_bonded == 1));
+	bool isBondedTarget = (pCharTarg && pCharTarg->IsStatFlag(STATF_DEAD) && (pCharTarg->m_pNPC && pCharTarg->m_pNPC->m_bonded == 1));
 	if ( pCharTarg == NULL || pCharTarg == this || ! CanSee(pCharTarg) || pCharTarg->IsStatFlag( STATF_DEAD ) || pCharTarg->IsDisconnected() || IsStatFlag( STATF_DEAD ) || isBondedTarget)
 	{
 		// Not a valid target.

@@ -2320,7 +2320,7 @@ bool CChar::Horse_Mount(CChar *pHorse) // Remove horse char and give player a ho
 		SysMessageDefault(DEFMSG_MOUNT_DONTOWN);
 		return false;
 	}
-	if (pHorse->m_pNPC->m_bonded)
+	if (pHorse->m_pNPC->m_bonded == 1 && pHorse->IsStatFlag(STATF_DEAD))
 	{
 		SysMessageDefault(DEFMSG_MOUNT_BONDED_DEAD_CANTMOUNT);
 		return false;
@@ -4286,51 +4286,52 @@ bool CChar::OnTick()
 	if ( !iTimeDiff )
 		return true;
 
-	if ( iTimeDiff >= TICK_PER_SEC )	// don't bother with < 1 sec times.
+	if (!isBonded)
 	{
-		// decay equipped items (spells)
-		CItem* pItem = GetContentHead();
-		int iCount = 0 ;
-
-		for ( ; pItem != NULL; pItem = GetAt(++iCount) )
+		if (iTimeDiff >= TICK_PER_SEC)	// don't bother with < 1 sec times.
 		{
-			EXC_TRYSUB("Ticking items");
+			// decay equipped items (spells)
+			CItem* pItem = GetContentHead();
+			int iCount = 0;
 
-			// always check the validity of the memory objects
-			if ( pItem->IsType(IT_EQ_MEMORY_OBJ) && !pItem->m_uidLink.ObjFind() )
+			for (; pItem != NULL; pItem = GetAt(++iCount))
 			{
-				pItem->Delete();
-				continue;
+				EXC_TRYSUB("Ticking items");
+
+				// always check the validity of the memory objects
+				if (pItem->IsType(IT_EQ_MEMORY_OBJ) && !pItem->m_uidLink.ObjFind())
+				{
+					pItem->Delete();
+					continue;
+				}
+
+				pItem->OnTickStatusUpdate();
+				if (!pItem->IsTimerSet() || !pItem->IsTimerExpired())
+					continue;
+				else if (!OnTickEquip(pItem))
+					pItem->Delete();
+				EXC_CATCHSUB("Char");
 			}
 
-			pItem->OnTickStatusUpdate();
-			if ( !pItem->IsTimerSet() || !pItem->IsTimerExpired() )
-				continue;
-			else if ( !OnTickEquip(pItem) )
-				pItem->Delete();
-			EXC_CATCHSUB("Char");
-		}
+			EXC_SET("last attackers");
+			Attacker_CheckTimeout();
 
-		EXC_SET("last attackers");
-		Attacker_CheckTimeout();
+			EXC_SET("NOTO timeout");
+			NotoSave_CheckTimeout();
 
-		EXC_SET("NOTO timeout");
-		NotoSave_CheckTimeout();
+			if (IsClient())
+			{
+				// Players have a silly "always run" flag that gets stuck on.
+				if (-g_World.GetTimeDiff(GetClient()->m_timeLastEventWalk) > TICK_PER_SEC)
+					StatFlag_Clear(STATF_Fly);
 
-		if ( IsClient() )
-		{
-			// Players have a silly "always run" flag that gets stuck on.
-			if ( -g_World.GetTimeDiff(GetClient()->m_timeLastEventWalk) > TICK_PER_SEC )
-				StatFlag_Clear(STATF_Fly);
+				// Check targeting timeout, if set
+				if (GetClient()->m_Targ_Timeout.IsTimeValid() && g_World.GetTimeDiff(GetClient()->m_Targ_Timeout) <= 0)
+					GetClient()->addTargetCancel();
+			}
 
-			// Check targeting timeout, if set
-			if ( GetClient()->m_Targ_Timeout.IsTimeValid() && g_World.GetTimeDiff(GetClient()->m_Targ_Timeout) <= 0 )
-				GetClient()->addTargetCancel();
-		}
-
-		// NOTE: Summon flags can kill our hp here. check again.
-		if (!isBonded)	// isBonded marks this character as Already dead, but we don't want to stop actions here for them, either regenerating stats.
-		{
+			// NOTE: Summon flags can kill our hp here. check again.
+			// isBonded marks this character as Already dead, but we don't want to stop actions here for them, either regenerating stats.
 			if (Stat_GetVal(STAT_STR) <= 0)	// We can only die on our own tick.
 			{
 				m_timeLastRegen = CServTime::GetCurrentTime();
@@ -4344,19 +4345,19 @@ bool CChar::OnTick()
 			}
 			Stats_Regen(iTimeDiff);
 		}
-	}
-	else
-	{
-		// Check this all the time.
-		if (Stat_GetVal(STAT_STR) <= 0 && !isBonded)	// We can only die on our own tick, if we are not already dead (isBonded)
+		else
 		{
-			EXC_SET("death");
-			return Death();
+			// Check this all the time.
+			if (Stat_GetVal(STAT_STR) <= 0 )	// We can only die on our own tick, if we are not already dead (isBonded)
+			{
+				EXC_SET("death");
+				return Death();
+			}
 		}
-	}
 
-	if (IsStatFlag(STATF_DEAD) && !isBonded)
-		return true;
+		if (IsStatFlag(STATF_DEAD))
+			return true;
+	}
 
 	if ( IsDisconnected() )		// mounted horses can still get a tick.
 	{

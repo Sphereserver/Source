@@ -1928,7 +1928,7 @@ bool CChar::Spell_CastDone()
 			if ( iT1 && iT2 )
 			{
 				if ( !fieldWidth )
-					fieldWidth = 3;
+					fieldWidth = 5;
 				if ( !fieldGauge )
 					fieldGauge = 1;
 
