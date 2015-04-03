@@ -139,6 +139,8 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 			version = 3;
 		else if (state->isClientVersion(MINCLIVER_STATUS_V2))
 			version = 2;
+		else
+			version = 1;
 
 		int strength = other->Stat_GetAdjusted(STAT_STR);
 		if (strength < 0) strength = 0;
@@ -160,10 +162,10 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 		writeInt16(static_cast<WORD>(other->Stat_GetVal(STAT_INT)));
 		writeInt16(static_cast<WORD>(other->Stat_GetMax(STAT_INT)));
 
-		if ( !g_Cfg.m_fPayFromPackOnly )
-			writeInt32(other->ContentCount(RESOURCE_ID(RES_TYPEDEF,IT_GOLD)));
-		else
+		if ( g_Cfg.m_fPayFromPackOnly )
 			writeInt32(other->GetPackSafe()->ContentCount(RESOURCE_ID(RES_TYPEDEF,IT_GOLD)));
+		else
+			writeInt32(other->ContentCount(RESOURCE_ID(RES_TYPEDEF,IT_GOLD)));
 		
 		if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			writeInt16(static_cast<WORD>(other->GetDefNum("RESPHYSICAL", true, true)));
@@ -746,10 +748,11 @@ PacketContainerOpen::PacketContainerOpen(const CClient* target, const CObjBase* 
 
 	writeInt32(container->GetUID());
 	writeInt16(static_cast<WORD>(gump));
-	//word	Container Type (0x00 for vendors, 0x7D for spellbooks and containers)
+
+	// HS clients needs an extra 'container type' byte (0x00 for vendors, 0x7D for spellbooks/containers)
 	if (target->GetNetState()->isClientVersion(MINCLIVER_HS) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA())
 	{
-		WORD ContType = IsVendorGump ? 0x30 : 0x7D;
+		WORD ContType = IsVendorGump ? 0x00 : 0x7D;
 		writeInt16(ContType);
 	}
 

@@ -2802,8 +2802,7 @@ bool CChar::RaiseCorpse( CItemCorpse * pCorpse )
 		for ( CItem * pItem = pCorpse->GetContentHead(); pItem != NULL; pItem = pItemNext )
 		{
 			pItemNext = pItem->GetNext();
-			if ( pItem->IsType( IT_HAIR ) ||
-				pItem->IsType( IT_BEARD ) )
+			if ( pItem->IsType( IT_HAIR ) || pItem->IsType( IT_BEARD ) )
 				continue;	// Hair on corpse was copied!
 			// Redress if equipped.
 			if ( pItem->GetContainedLayer())
@@ -2826,7 +2825,7 @@ bool CChar::RaiseCorpse( CItemCorpse * pCorpse )
 	// Corpse is now gone. 	// 0x80 = on face.
 	Update();
 	UpdateDir(static_cast<DIR_TYPE>(pCorpse->m_itCorpse.m_facing_dir &~0x80));
-	UpdateAnimate((pCorpse->m_itCorpse.m_facing_dir & 0x80) ? ANIM_DIE_FORWARD : ANIM_DIE_BACK, true, true, 2);
+	UpdateAnimate((pCorpse->m_itCorpse.m_facing_dir & 0x80) ? ANIM_DIE_FORWARD : ANIM_DIE_BACK, true, true);
 
 	pCorpse->Delete();
 

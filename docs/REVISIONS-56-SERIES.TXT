@@ -1938,3 +1938,7 @@ Fixed STATSUM and STAT_STR/DEX/INT from SkillClasses not being readed correctly 
 	-Then the checks for %chances are made.
 [sphere_msgs.scp]:
 	Added //msg_bonded_dead_cantmount			"The creature is dead and cannot be mounted."
+
+03-04-2015, Coruja
+Fixed: EXP/LEVEL going < 0 on chars when the property value is changed by scripts using @ExpChange / @ExpLevelChange triggers.
+Fixed: CUSTOMIZE function not hiding correctly all dynamic items on multi when entering on customization mode.

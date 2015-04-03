@@ -115,21 +115,6 @@ void CItemMultiCustom::BeginCustomize(CClient * pClientSrc)
 		it->second = 0;
 	}
 
-	// hide dynamic item fixtures
-	CWorldSearch Area(GetTopPoint(), GetDesignArea().GetWidth());
-	Area.SetSearchSquare(true);
-	for (;;)
-	{
-		CItem * pItem = Area.GetItem();
-		if ( pItem == NULL )
-			break;
-
-		if ( (DWORD)pItem->GetTagDefs()->GetKeyNum("FIXTURE") != (DWORD)GetUID() )
-			continue;
-
-		pClientSrc->addObjectRemove(pItem);
-	}
-
 	// copy the working design to revert
 	CopyDesign(&m_designWorking, &m_designRevert);
 
@@ -144,6 +129,19 @@ void CItemMultiCustom::BeginCustomize(CClient * pClientSrc)
 
 	// send the latest building design
 	SendStructureTo(pClientSrc);
+
+	// hide dynamic items
+	CWorldSearch Area(GetTopPoint(), GetDesignArea().GetWidth());
+	Area.SetSearchSquare(true);
+	for (;;)
+	{
+		CItem * pItem = Area.GetItem();
+		if ( pItem == NULL )
+			break;
+
+		if ( pItem->GetUID() != GetUID() )
+			pClientSrc->addObjectRemove(pItem);
+	}
 
 	// move client to building and hide it
 	CChar * pChar = pClientSrc->GetChar();
@@ -294,11 +292,13 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 		rectNew.UnionPoint((*i)->m_item.m_dx, (*i)->m_item.m_dy);
 		if ( (*i)->m_item.m_visible )
 			continue;
-		CItem * pItemOld = Area.GetItem();
-		// replace the doors and teleporters with real items
 
+		// don't add the same item on same position if it already exists
+		CItem * pItemOld = Area.GetItem();
 		if (pItemOld->GetTopPoint().m_x == (*i)->m_item.m_dx && pItemOld->GetTopPoint().m_y == (*i)->m_item.m_dy && pItemOld->GetTopPoint().m_z == (*i)->m_item.m_dz && (*i)->m_item.GetDispID() == pItemOld->GetDispID())
 			continue;
+
+		// replace the doors and teleporters with real items
 		CItem * pItem = CItem::CreateScript((*i)->m_item.GetDispID());
 		if ( pItem == NULL )
 			continue;

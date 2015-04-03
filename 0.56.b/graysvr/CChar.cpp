@@ -4100,21 +4100,6 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 {
 	ADDTOCALLSTACK("CChar::ChangeExperience");
 	// Calculate experience changes
-	if (delta < 0)
-	{
-		if (!(g_Cfg.m_iExperienceMode & EXP_MODE_ALLOW_DOWN))
-			return;
-
-		if (g_Cfg.m_bLevelSystem && (g_Cfg.m_iExperienceMode & EXP_MODE_DOWN_NOLEVEL))
-		{
-			unsigned int ExpMin = Calc_ExpGet_Exp(m_level);
-			if (m_exp + delta < ExpMin)
-				delta = m_exp - ExpMin;
-		}
-	}
-	if (delta == 0 || (m_exp + delta < 0))
-		return;
-
 	if (pCharDead != NULL)
 	{
 		if ((pCharDead->m_pPlayer) && !(g_Cfg.m_iExperienceKoefPVP))	// does PvP allow exp changes?
@@ -4134,24 +4119,34 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 		bShowMsg = (args.m_iN2 != 0);
 	}
 
-	if (g_Cfg.m_wDebugFlags & DEBUGF_EXP)
+	if (delta < 0 && !(g_Cfg.m_iExperienceMode & EXP_MODE_ALLOW_DOWN))
+		return;
+	if (static_cast<int>(m_exp) + delta < 0)
+		delta = -static_cast<int>(m_exp);
+	if (g_Cfg.m_bLevelSystem && (g_Cfg.m_iExperienceMode & EXP_MODE_DOWN_NOLEVEL))
 	{
-		DEBUG_ERR(("%s %s experience change (was %u, delta %d, now %u)\n",
-			(m_pNPC ? "NPC" : "Player"), GetName(), m_exp, delta, m_exp + delta));
+		unsigned int ExpMin = Calc_ExpGet_Exp(m_level);
+		if (m_exp + delta < ExpMin)
+			delta = m_exp - ExpMin;
 	}
+	if (delta == 0)
+		return;
+
+	if (g_Cfg.m_wDebugFlags & DEBUGF_EXP)
+		DEBUG_ERR(("%s %s experience change (was %u, delta %d, now %u)\n", (m_pNPC ? "NPC" : "Player"), GetName(), m_exp, delta, m_exp + delta));
 
 	m_exp += delta;
 
-	if (m_pClient && bShowMsg)
+	if (bShowMsg)
 	{
 		static UINT const keyWords[] =
 		{
-			DEFMSG_EXP_CHANGE_1,		// 0
+			DEFMSG_EXP_CHANGE_1,
 			DEFMSG_EXP_CHANGE_2,
 			DEFMSG_EXP_CHANGE_3,
 			DEFMSG_EXP_CHANGE_4,
 			DEFMSG_EXP_CHANGE_5,
-			DEFMSG_EXP_CHANGE_6,		// 5
+			DEFMSG_EXP_CHANGE_6,
 			DEFMSG_EXP_CHANGE_7,
 			DEFMSG_EXP_CHANGE_8
 		};
@@ -4185,8 +4180,6 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 		return;
 
 	delta = Calc_ExpGet_Level(m_exp) - m_level;
-	if (delta == 0 || (m_level + delta < 0))
-		return;
 
 	bShowMsg = (m_pClient != NULL);
 	if (IsTrigUsed(TRIGGER_EXPLEVELCHANGE))
@@ -4198,15 +4191,15 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 		bShowMsg = (args.m_iN2 != 0);
 	}
 
+	if (delta == 0 || (static_cast<int>(m_level) + delta < 0))
+		return;
+
 	if (g_Cfg.m_wDebugFlags & DEBUGF_LEVEL)
-	{
-		DEBUG_ERR(("%s %s level change (was %u, delta %d, now %u)\n",
-			(m_pNPC ? "NPC" : "Player"), GetName(), m_level, delta, m_level + delta));
-	}
+		DEBUG_ERR(("%s %s level change (was %u, delta %d, now %u)\n", (m_pNPC ? "NPC" : "Player"), GetName(), m_level, delta, m_level + delta));
 
 	m_level += delta;
 
-	if (m_pClient && bShowMsg)
+	if (bShowMsg)
 	{
 		m_pClient->SysMessagef((abs(delta) == 1) ? g_Cfg.GetDefaultMsg(DEFMSG_EXP_LVLCHANGE_0) : g_Cfg.GetDefaultMsg(DEFMSG_EXP_LVLCHANGE_1),
 			(delta > 0) ? g_Cfg.GetDefaultMsg(DEFMSG_EXP_LVLCHANGE_GAIN) : g_Cfg.GetDefaultMsg(DEFMSG_EXP_LVLCHANGE_LOST));
