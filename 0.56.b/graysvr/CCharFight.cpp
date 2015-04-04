@@ -3051,8 +3051,8 @@ CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 		LastAttackers & refAttacker = *it;
 		CChar * pChar = static_cast<CChar*>( static_cast<CGrayUID>( refAttacker.charUID ).CharFind() );
 
-		bool isBondedTarget = (pChar->IsStatFlag(STATF_DEAD) && (pChar->m_pNPC && pChar->m_pNPC->m_bonded == 1));
-		if ( pChar == NULL && isBondedTarget )
+		bool isBondedTarget = (pChar && pChar->IsStatFlag(STATF_DEAD) && (pChar->m_pNPC && pChar->m_pNPC->m_bonded == 1));
+		if ( pChar == NULL || isBondedTarget )
 			continue;
 		if ( refAttacker.ignore )
 		{
