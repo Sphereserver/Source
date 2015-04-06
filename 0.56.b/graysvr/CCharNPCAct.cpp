@@ -681,7 +681,7 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 		return( false );
 
 	// Check the NPC is capable of teaching
-	if ( (m_pNPC->m_Brain < NPCBRAIN_HUMAN) || (m_pNPC->m_Brain > NPCBRAIN_THIEF) )
+	if ( (m_pNPC->m_Brain < NPCBRAIN_HUMAN) || (m_pNPC->m_Brain > NPCBRAIN_THIEF) || (m_pNPC->m_Brain == NPCBRAIN_GUARD) )
 		return( false );
 
 	// Check the NPC isn't busy fighting

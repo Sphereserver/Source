@@ -494,25 +494,21 @@ void CChar::Skill_SetBase( SKILL_TYPE skill, int iValue )
 		// Update the skills list
 		m_pClient->addSkillWindow(skill);
 	}
-	bool bUpdate = false;
 	if (IsSetCombatFlags(COMBAT_OSIDAMAGEMOD))
 	{
 		switch (skill)
 		{
-		case SKILL_ANATOMY:
-		case SKILL_LUMBERJACKING:
-		case SKILL_TACTICS:
-			//case SKILL_MAGICRESISTANCE:	// If resistances are going to be updated to AOS too this should be uncommented when so.
-			bUpdate = true;
-		default:
-			break;
+			case SKILL_ANATOMY:
+			case SKILL_LUMBERJACKING:
+			case SKILL_TACTICS:
+				UpdateStatsFlag();
+			default:
+				break;
 		}
-		if (bUpdate)
-			UpdateStatsFlag();
 	}
 }
 
-int CChar::Skill_GetMax( SKILL_TYPE skill ) const
+int CChar::Skill_GetMax( SKILL_TYPE skill, bool ignoreLock ) const
 {
 	ADDTOCALLSTACK("CChar::Skill_GetMax");
 	const CVarDefCont * pTagStorage = NULL;
@@ -539,11 +535,14 @@ int CChar::Skill_GetMax( SKILL_TYPE skill ) const
 		else
 			iSkillMax = pSkillClass->m_SkillLevelMax[skill];
 		
-		if ( m_pPlayer->Skill_GetLock(skill) >= SKILLLOCK_DOWN )
+		if ( !ignoreLock )
 		{
-			int iSkillLevel = Skill_GetBase(skill);
-			if ( iSkillLevel < iSkillMax )
-				iSkillMax = iSkillLevel;
+			if ( m_pPlayer->Skill_GetLock(skill) >= SKILLLOCK_DOWN )
+			{
+				int iSkillLevel = Skill_GetBase(skill);
+				if ( iSkillLevel < iSkillMax )
+					iSkillMax = iSkillLevel;
+			}
 		}
 
 		return( iSkillMax );

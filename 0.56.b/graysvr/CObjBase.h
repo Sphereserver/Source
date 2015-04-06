@@ -3415,7 +3415,7 @@ public:
 		ASSERT( IsSkillBase(skill));
 		return( m_Skill[skill] );
 	}
-	int Skill_GetMax( SKILL_TYPE skill ) const;
+	int Skill_GetMax( SKILL_TYPE skill, bool ignoreLock = false ) const;
 	int Skill_GetSum() const;
 	SKILLLOCK_TYPE Skill_GetLock( SKILL_TYPE skill ) const
 	{

@@ -616,7 +616,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			{
 				SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) + pSpell->m_itSpell.m_PolyStr));
 				SetDefNum("FASTERCASTING", static_cast<int>(GetDefNum("FASTERCASTING", true) + 2));
-				Skill_SetBase(SKILL_MAGICRESISTANCE, minimum(Skill_GetMax(SKILL_MAGICRESISTANCE), Skill_GetBase(SKILL_MAGICRESISTANCE) + pSpell->m_itSpell.m_PolyDex));
+				Skill_SetBase(SKILL_MAGICRESISTANCE, minimum(Skill_GetMax(SKILL_MAGICRESISTANCE, true), Skill_GetBase(SKILL_MAGICRESISTANCE) + pSpell->m_itSpell.m_PolyDex));
 			}
 			else
 			{
@@ -3060,7 +3060,7 @@ int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult,
 				break;
 
 			case SPELL_Wall_of_Stone:
-				iDuration = 100;
+				iDuration = 10;
 				break;
 
 			case SPELL_Arch_Prot:
@@ -3104,7 +3104,7 @@ int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult,
 				break;
 
 			case SPELL_Vortex:
-				iDuration = 900;
+				iDuration = 90;
 				break;
 
 			case SPELL_Summon:
