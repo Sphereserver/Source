@@ -1942,3 +1942,8 @@ Fixed STATSUM and STAT_STR/DEX/INT from SkillClasses not being readed correctly 
 03-04-2015, Coruja
 Fixed: EXP/LEVEL going < 0 on chars when the property value is changed by scripts using @ExpChange / @ExpLevelChange triggers.
 Fixed: CUSTOMIZE function not hiding correctly all dynamic items on multi when entering on customization mode.
+
+06-04-2015, Coruja
+Fixed: NPC Guards (brain_guard) incorrectly teaching skills to players.
+Fixed: Protection spell not returning the Magic Resistance skill to correct value if this skill was set to lock/down on the skill menu (when COMBAT_ELEMENTAL_ENGINE is enabled).
+Fixed: Mana Drain, Wall of Stone and Energy Vortex spells using wrong EFFECT / DURATION if MAGICF_OSIFORMULAS is enabled.

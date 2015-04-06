@@ -2817,7 +2817,7 @@ reflectit:
 				if ( IsSetMagicFlags(MAGICF_OSIFORMULAS) )
 				{
 					// AOS formula
-					iSkillLevel = (400 + Skill_GetBase(SKILL_EVALINT) - pCharSrc->Skill_GetBase(SKILL_MAGICRESISTANCE)) / 10;
+					iSkillLevel = (400 + pCharSrc->Skill_GetBase(SKILL_EVALINT) - Skill_GetBase(SKILL_MAGICRESISTANCE)) / 10;
 					if ( iSkillLevel < 0 )
 						iSkillLevel = 0;
 				}
