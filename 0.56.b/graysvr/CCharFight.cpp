@@ -2250,7 +2250,7 @@ effect_bounce:
 		uType = static_cast<DAMAGE_TYPE>(Args.m_iN2);
 	}
 
-	int iDamageChance = static_cast<int>(Args.m_VarsLocal.GetKeyNum("ItemDamageChance"));
+	int iDamageChance = static_cast<int>(Args.m_VarsLocal.GetKeyNum("ItemDamageChance"),true);
 	if ( (iDamageChance > Calc_GetRandVal(100)) && !pCharDef->Can(CAN_C_NONHUMANOID) )
 	{
 		int iHitRoll = Calc_GetRandVal(100);
@@ -4025,7 +4025,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		}
 
 		// damage the weapon ?
-		int iDamageChance = static_cast<int>(Args.m_VarsLocal.GetKeyNum("ItemDamageChance"));
+		int iDamageChance = static_cast<int>(Args.m_VarsLocal.GetKeyNum("ItemDamageChance",true));
 		if ( iDamageChance > Calc_GetRandVal(100) )
 			pWeapon->OnTakeDamage( iDmg, pCharTarg );
 	}

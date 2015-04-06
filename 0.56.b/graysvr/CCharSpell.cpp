@@ -1363,7 +1363,7 @@ void CChar::Spell_Area( CPointMap pntTarg, int iDist, int iSkillLevel )
 	}
 }
 
-void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, unsigned int fieldWidth, unsigned int fieldGauge, int iSkillLevel, CChar * pCharSrc, ITEMID_TYPE idnewEW, ITEMID_TYPE idnewNS)
+void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, unsigned int fieldWidth, unsigned int fieldGauge, int iSkillLevel, CChar * pCharSrc, ITEMID_TYPE idnewEW, ITEMID_TYPE idnewNS, int iDuration)
 {
 	ADDTOCALLSTACK("CChar::Spell_Field");
 	// Cast the field spell to here.
@@ -1393,7 +1393,8 @@ void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, u
 	int minY = static_cast<int>((fieldGauge - 1) / 2) - (fieldGauge - 1);
 	int maxY = minY+(fieldGauge - 1);
 
-	int iDuration = GetSpellDuration( m_atMagery.m_Spell, iSkillLevel, 1000, pCharSrc );
+	if (iDuration <= 0)
+		iDuration = GetSpellDuration( m_atMagery.m_Spell, iSkillLevel, 1000, pCharSrc );
 
 	if ( IsSetMagicFlags( MAGICF_NOFIELDSOVERWALLS ) )
 	{
@@ -1883,6 +1884,7 @@ bool CChar::Spell_CastDone()
 	Args.m_VarsLocal.SetNum("fieldWidth",0);
 	Args.m_VarsLocal.SetNum("fieldGauge",0);
 	Args.m_VarsLocal.SetNum("areaRadius",0);
+	Args.m_VarsLocal.SetNum("duration", GetSpellDuration(spell, iSkillLevel, 1000, this));
 
 	if ( IsTrigUsed(TRIGGER_SPELLSUCCESS) )
 	{
@@ -1907,6 +1909,7 @@ bool CChar::Spell_CastDone()
 	fieldWidth = static_cast<unsigned int>(maximum(0,Args.m_VarsLocal.GetKeyNum("fieldWidth",true)));
 	fieldGauge = static_cast<unsigned int>(maximum(0,Args.m_VarsLocal.GetKeyNum("fieldGauge",true)));
 	areaRadius = static_cast<unsigned int>(maximum(0,Args.m_VarsLocal.GetKeyNum("areaRadius",true)));
+	int iDuration = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("duration", true)));
 
 	// Consume the reagents/mana/scroll/charge
 	if ( ! Spell_CanCast( spell, false, pObjSrc, true ) )
@@ -1932,7 +1935,7 @@ bool CChar::Spell_CastDone()
 				if ( !fieldGauge )
 					fieldGauge = 1;
 
-				Spell_Field( m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel, this );
+				Spell_Field(m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel, this, it1test, it2test, iDuration);
 			}
 		}
 		else if ( pSpellDef->IsSpellType( SPELLFLAG_AREA ) )
@@ -1978,7 +1981,7 @@ bool CChar::Spell_CastDone()
 		if ( !fieldGauge )
 			fieldGauge = 1;
 
-		Spell_Field( m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel, this, it1test, it2test );
+		Spell_Field( m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel, this, it1test, it2test, iDuration );
 	}
 	else if ( pSpellDef->IsSpellType(SPELLFLAG_AREA) )
 	{

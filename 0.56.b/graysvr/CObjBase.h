@@ -3514,7 +3514,7 @@ CChar * Spell_Summon( CREID_TYPE id, CPointMap pt, bool fPet );
 	bool Spell_Equip_OnTick( CItem * pItem );
 
 	void Spell_Bolt( CObjBase * pObj, ITEMID_TYPE idBolt, int iSkill );
-	void Spell_Field(CPointMap pt, ITEMID_TYPE idEW, ITEMID_TYPE idNS, unsigned int fieldWidth, unsigned int fieldGauge, int iSkill, CChar * pCharSrc = NULL, ITEMID_TYPE idnewEW = static_cast<ITEMID_TYPE>(NULL), ITEMID_TYPE idnewNS = static_cast<ITEMID_TYPE>(NULL));
+	void Spell_Field(CPointMap pt, ITEMID_TYPE idEW, ITEMID_TYPE idNS, unsigned int fieldWidth, unsigned int fieldGauge, int iSkill, CChar * pCharSrc = NULL, ITEMID_TYPE idnewEW = static_cast<ITEMID_TYPE>(NULL), ITEMID_TYPE idnewNS = static_cast<ITEMID_TYPE>(NULL), int iDuration = 0);
 	void Spell_Area( CPointMap pt, int iDist, int iSkill );
 	bool Spell_TargCheck_Face();
 	bool Spell_TargCheck();

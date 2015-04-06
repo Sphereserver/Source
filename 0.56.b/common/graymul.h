@@ -1755,13 +1755,13 @@ enum SKILL_TYPE	// List of skill numbers (things that can be done at a given tim
 	NPCACT_LOOKING,			// 104 = just look around intently.
 	NPCACT_FLEE,			// 105 = Run away from target. m_Act_Targ
 	NPCACT_TALK,			// 106 = Talking to my target. m_Act_Targ
-	NPCACT_TALK_FOLLOW,		// 107 = m_Act_Targ
+	NPCACT_TALK_FOLLOW,		// 107 = m_Act_Targ / m_Fight_Targ.
 	NPCACT_GUARD_TARG,		// 108 = Guard a targetted object. m_Act_Targ
 	NPCACT_GO_HOME,			// 109 =
-	NPCACT_BREATH,			// 110 = Using breath weapon. on m_Act_Targ
+	NPCACT_BREATH,			// 110 = Using breath weapon. on m_Fight_Targ.
 	NPCACT_RIDDEN,			// 111 = Being ridden or shrunk as figurine.
 	NPCACT_LOOTING,			// 112 = Looting a corpse. m_Act_Targ
-	NPCACT_THROWING,		// 113 = Throwing a stone at m_Act_Targ.
+	NPCACT_THROWING,		// 113 = Throwing a stone at m_Fight_Targ.
 	NPCACT_TRAINING,		// 114 = using a training dummy etc.
 	NPCACT_Napping,			// 115 = just snoozong a little bit, but not sleeping.
 	NPCACT_FOOD,			// 116 = Searching for food
