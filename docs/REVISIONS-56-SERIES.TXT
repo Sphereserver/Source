@@ -1947,3 +1947,15 @@ Fixed: CUSTOMIZE function not hiding correctly all dynamic items on multi when e
 Fixed: NPC Guards (brain_guard) incorrectly teaching skills to players.
 Fixed: Protection spell not returning the Magic Resistance skill to correct value if this skill was set to lock/down on the skill menu (when COMBAT_ELEMENTAL_ENGINE is enabled).
 Fixed: Mana Drain, Wall of Stone and Energy Vortex spells using wrong EFFECT / DURATION if MAGICF_OSIFORMULAS is enabled.
+
+08-04-2015, XuN
+Changes in @Effect/@SpellEffect triggers for spells:
+	Local.CreateObject1 affects now overrides the effect id.
+	Added Local.EffectColor, local.EffectRender and local.EffectExplode allowing to override the values of the sent effect.
+
+Added Local.EffectColor to @Success/@SpellSuccess to change the color of field spells.
+
+Reordered how effects are called (now they are all together inside SpellEffect()) to have better access to them.
+Removed some Effect() calls to prevent two effects being sent in some spells.
+Removed Effect_Bolt(), its now handled by SPELLFLAG_FX_BOLT inside SpellEffect().
+*Any of this changes are affecting lightning spells, since client ignores everything related to lightnings (.effect 1,1).

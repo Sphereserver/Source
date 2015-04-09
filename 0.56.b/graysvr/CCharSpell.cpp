@@ -1303,26 +1303,6 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 	return( pSpell );
 }
 
-void CChar::Spell_Bolt( CObjBase * pObjTarg, ITEMID_TYPE idBolt, int iSkillLevel )
-{
-	ADDTOCALLSTACK("CChar::Spell_Bolt");
-	// I am casting a bolt spell.
-	// ARGS:
-	// iSkillLevel = 0-1000
-	//
-
-	if ( pObjTarg == NULL )
-		return;
-
-	bool fExplode = true;
-	if ( g_Cfg.GetSpellDef(m_atMagery.m_Spell)->IsSpellType(SPELLFLAG_GOOD) )
-		fExplode = false;
-
-	pObjTarg->Effect( EFFECT_BOLT, idBolt, this, 5, 1, fExplode );
-	// Take damage !
-	pObjTarg->OnSpellEffect( m_atMagery.m_Spell, this, iSkillLevel, NULL );
-}
-
 void CChar::Spell_Area( CPointMap pntTarg, int iDist, int iSkillLevel )
 {
 	ADDTOCALLSTACK("CChar::Spell_Area");
@@ -1363,7 +1343,7 @@ void CChar::Spell_Area( CPointMap pntTarg, int iDist, int iSkillLevel )
 	}
 }
 
-void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, unsigned int fieldWidth, unsigned int fieldGauge, int iSkillLevel, CChar * pCharSrc, ITEMID_TYPE idnewEW, ITEMID_TYPE idnewNS, int iDuration)
+void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, unsigned int fieldWidth, unsigned int fieldGauge, int iSkillLevel, CChar * pCharSrc, ITEMID_TYPE idnewEW, ITEMID_TYPE idnewNS, int iDuration, HUE_TYPE iColor)
 {
 	ADDTOCALLSTACK("CChar::Spell_Field");
 	// Cast the field spell to here.
@@ -1507,6 +1487,7 @@ void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, u
 				pSpell->m_itSpell.m_spelllevel = static_cast<WORD>(iSkillLevel);
 				pSpell->m_itSpell.m_spellcharges = 1;
 				pSpell->m_uidLink = GetUID();	// Link it back to you
+				pSpell->SetHue(iColor,false,this);
 
 				// Add some random element.
 				pSpell->MoveToDecay( ptg, iDuration, true);
@@ -1829,14 +1810,16 @@ bool CChar::Spell_CastDone()
 	// ex. magery skill goes up FAR less if we use a scroll or magic device !
 	//
 
-	if ( ! Spell_TargCheck())
-		return( false );
+	if (!Spell_TargCheck())
+		return(false);
 
-	CObjBase * pObj		= m_Act_Targ.ObjFind();	// dont always need a target.
-	CObjBase * pObjSrc	= m_Act_TargPrv.ObjFind();
-    ITEMID_TYPE iT1 = ITEMID_NOTHING;
-    ITEMID_TYPE iT2 = ITEMID_NOTHING;
+	CObjBase * pObj = m_Act_Targ.ObjFind();	// dont always need a target.
+	CObjBase * pObjSrc = m_Act_TargPrv.ObjFind();
+	ITEMID_TYPE iT1 = ITEMID_NOTHING;
+	ITEMID_TYPE iT2 = ITEMID_NOTHING;
 	CREID_TYPE iC1 = CREID_INVALID;
+	DWORD iColor = HUE_DEFAULT;
+	DWORD iRender = 0;
 
 	unsigned int fieldWidth = 0;
 	unsigned int fieldGauge = 0;
@@ -1844,22 +1827,22 @@ bool CChar::Spell_CastDone()
 
 	SPELL_TYPE spell = m_atMagery.m_Spell;
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
-	if ( pSpellDef == NULL )
-		return( false );
+	if (pSpellDef == NULL)
+		return(false);
 
 	int iSkill, iDifficulty;
 	if (!pSpellDef->GetPrimarySkill(&iSkill, &iDifficulty))
-		return( false );
+		return(false);
 
 	int iSkillLevel;
-	if ( pObjSrc != this )
+	if (pObjSrc != this)
 	{
 		// Get the strength of the item. IT_SCROLL or IT_WAND
 		CItem * pItem = dynamic_cast <CItem*>(pObjSrc);
-		if ( pItem == NULL )
-			return( false );
-		if ( ! pItem->m_itWeapon.m_spelllevel )
-			iSkillLevel = Calc_GetRandVal( 500 );
+		if (pItem == NULL)
+			return(false);
+		if (!pItem->m_itWeapon.m_spelllevel)
+			iSkillLevel = Calc_GetRandVal(500);
 		else
 			iSkillLevel = pItem->m_itWeapon.m_spelllevel;
 	}
@@ -1870,175 +1853,178 @@ bool CChar::Spell_CastDone()
 
 	switch (spell)
 	{
-		case SPELL_Wall_of_Stone: 	iT1 = ITEMID_STONE_WALL;				iT2 = ITEMID_STONE_WALL;		break;
-		case SPELL_Fire_Field: 		iT1 = ITEMID_FX_FIRE_F_EW; 				iT2 = ITEMID_FX_FIRE_F_NS;		break;
-		case SPELL_Poison_Field:	iT1 = ITEMID_FX_POISON_F_EW;			iT2 = ITEMID_FX_POISON_F_NS;	break;
-		case SPELL_Paralyze_Field:	iT1 = ITEMID_FX_PARA_F_EW;				iT2 = ITEMID_FX_PARA_F_NS;		break;
-		case SPELL_Energy_Field:	iT1 = ITEMID_FX_ENERGY_F_EW;			iT2 = ITEMID_FX_ENERGY_F_NS;	break;
-		default: break;
+	case SPELL_Wall_of_Stone: 	iT1 = ITEMID_STONE_WALL;				iT2 = ITEMID_STONE_WALL;		break;
+	case SPELL_Fire_Field: 		iT1 = ITEMID_FX_FIRE_F_EW; 				iT2 = ITEMID_FX_FIRE_F_NS;		break;
+	case SPELL_Poison_Field:	iT1 = ITEMID_FX_POISON_F_EW;			iT2 = ITEMID_FX_POISON_F_NS;	break;
+	case SPELL_Paralyze_Field:	iT1 = ITEMID_FX_PARA_F_EW;				iT2 = ITEMID_FX_PARA_F_NS;		break;
+	case SPELL_Energy_Field:	iT1 = ITEMID_FX_ENERGY_F_EW;			iT2 = ITEMID_FX_ENERGY_F_NS;	break;
+	default: break;
 	}
-	CScriptTriggerArgs	Args( spell, iSkillLevel, pObjSrc );
-	Args.m_VarsLocal.SetNum("CreateObject1",iT1);
-	Args.m_VarsLocal.SetNum("CreateObject2",iT2);
+	CScriptTriggerArgs	Args(spell, iSkillLevel, pObjSrc);
+	Args.m_VarsLocal.SetNum("CreateObject1", iT1,false);
+	Args.m_VarsLocal.SetNum("CreateObject2", iT2, false);
 
-	Args.m_VarsLocal.SetNum("fieldWidth",0);
-	Args.m_VarsLocal.SetNum("fieldGauge",0);
-	Args.m_VarsLocal.SetNum("areaRadius",0);
-	Args.m_VarsLocal.SetNum("duration", GetSpellDuration(spell, iSkillLevel, 1000, this));
+	Args.m_VarsLocal.SetNum("fieldWidth", 0);
+	Args.m_VarsLocal.SetNum("fieldGauge", 0);
+	Args.m_VarsLocal.SetNum("areaRadius", 0);
+	Args.m_VarsLocal.SetNum("duration", GetSpellDuration(spell, iSkillLevel, 1000, this),true);
 
-	if ( IsTrigUsed(TRIGGER_SPELLSUCCESS) )
+	if (IsTrigUsed(TRIGGER_SPELLSUCCESS))
 	{
-		if ( OnTrigger( CTRIG_SpellSuccess, this, &Args ) == TRIGRET_RET_TRUE )
+		if (OnTrigger(CTRIG_SpellSuccess, this, &Args) == TRIGRET_RET_TRUE)
 			return false;
 	}
 
-	if ( IsTrigUsed(TRIGGER_SUCCESS) )
+	if (IsTrigUsed(TRIGGER_SUCCESS))
 	{
-		if ( Spell_OnTrigger( spell, SPTRIG_SUCCESS, this, &Args ) == TRIGRET_RET_TRUE )
+		if (Spell_OnTrigger(spell, SPTRIG_SUCCESS, this, &Args) == TRIGRET_RET_TRUE)
 			return false;
 	}
 
-	iSkillLevel	= static_cast<int>(Args.m_iN2);
+	iSkillLevel = static_cast<int>(Args.m_iN2);
 
 	//Setting new IDs as another variables to pass as different arguments to the field function.
 	ITEMID_TYPE it1test = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1", true)));
 	ITEMID_TYPE it2test = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject2", true)));
-	iC1 = static_cast<CREID_TYPE>(Args.m_VarsLocal.GetKeyNum("CreateObject1",true) & 0xFFFF);
+	iC1 = static_cast<CREID_TYPE>(Args.m_VarsLocal.GetKeyNum("CreateObject1", true) & 0xFFFF);
 
 	//Can't be < 0, so max it to 0
-	fieldWidth = static_cast<unsigned int>(maximum(0,Args.m_VarsLocal.GetKeyNum("fieldWidth",true)));
-	fieldGauge = static_cast<unsigned int>(maximum(0,Args.m_VarsLocal.GetKeyNum("fieldGauge",true)));
-	areaRadius = static_cast<unsigned int>(maximum(0,Args.m_VarsLocal.GetKeyNum("areaRadius",true)));
-	int iDuration = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("duration", true)));
+	fieldWidth = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("fieldWidth", true)));
+	fieldGauge = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("fieldGauge", true)));
+	areaRadius = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("areaRadius", true)));
+	unsigned int iDuration = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("duration", true)));
+	iColor = static_cast<DWORD>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor", true)));
 
 	// Consume the reagents/mana/scroll/charge
-	if ( ! Spell_CanCast( spell, false, pObjSrc, true ) )
-		return( false );
+	if (!Spell_CanCast(spell, false, pObjSrc, true))
+		return(false);
 
-	if ( pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) )
+	if (pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED))
 	{
-		if ( pSpellDef->IsSpellType(SPELLFLAG_SUMMON) )
+		if (pSpellDef->IsSpellType(SPELLFLAG_SUMMON))
 		{
-			if ( iC1 )
+			if (iC1)
 			{
 				m_atMagery.m_SummonID = iC1;
 				m_atMagery.m_fSummonPet = true;
-				Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
+				Spell_Summon(m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0);
 			}
-		} 
-		else if ( pSpellDef->IsSpellType(SPELLFLAG_FIELD) )
+		}
+		else if (pSpellDef->IsSpellType(SPELLFLAG_FIELD))
 		{
-			if ( iT1 && iT2 )
+			if (iT1 && iT2)
 			{
-				if ( !fieldWidth )
+				if (!fieldWidth)
 					fieldWidth = 5;
-				if ( !fieldGauge )
+				if (!fieldGauge)
 					fieldGauge = 1;
 
-				Spell_Field(m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel, this, it1test, it2test, iDuration);
+				Spell_Field(m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel, this, it1test, it2test, iDuration, iColor);
 			}
 		}
-		else if ( pSpellDef->IsSpellType( SPELLFLAG_AREA ) )
+		else if (pSpellDef->IsSpellType(SPELLFLAG_AREA))
 		{
-			if ( !areaRadius )
+			if (!areaRadius)
 				areaRadius = 4;
 
-			if ( !pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
+			if (!pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ | SPELLFLAG_TARG_XYZ))
 				Spell_Area(GetTopPoint(), areaRadius, iSkillLevel);
 			else
-				Spell_Area( m_Act_p, areaRadius, iSkillLevel);
+				Spell_Area(m_Act_p, areaRadius, iSkillLevel);
 		}
-		else if ( pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) )
+		/*else if (pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT))
 		{
-			if ( !iT1 )
+			if (!iT1)
 				iT1 = pSpellDef->m_idEffect;
 
-			Spell_Bolt( pObj, iT1, iSkillLevel );
-		}
-		else if ( pSpellDef->IsSpellType(SPELLFLAG_POLY) )
+			Spell_Bolt(pObj, iT1, iSkillLevel);
+		}*/
+		else if (pSpellDef->IsSpellType(SPELLFLAG_POLY))
 		{
 			return(false);
 		}
 		else
 		{
-			if ( pObj )
+			if (pObj)
 			{
-				pObj->OnSpellEffect( spell, this, iSkillLevel, dynamic_cast <CItem*>( pObjSrc ));
+				pObj->OnSpellEffect(spell, this, iSkillLevel, dynamic_cast <CItem*>(pObjSrc));
 			}
 		}
 	}
-	else if ( pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) )
+	/*else if (pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT))
 	{
-		if ( !iT1 )
+		if (it1test)
+			iT1 = it1test;
+		else if (!iT1)
 			iT1 = pSpellDef->m_idEffect;
 
-		Spell_Bolt( pObj, iT1, iSkillLevel );
-	}
-	else if ( pSpellDef->IsSpellType(SPELLFLAG_FIELD) )
+		Spell_Bolt(pObj, iT1, iSkillLevel);
+	}*/
+	else if (pSpellDef->IsSpellType(SPELLFLAG_FIELD))
 	{
-		if ( !fieldWidth )
+		if (!fieldWidth)
 			fieldWidth = 3;
-		if ( !fieldGauge )
+		if (!fieldGauge)
 			fieldGauge = 1;
 
-		Spell_Field( m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel, this, it1test, it2test, iDuration );
+		Spell_Field(m_Act_p, iT1, iT2, fieldWidth, fieldGauge, iSkillLevel, this, it1test, it2test, iDuration, iColor);
 	}
-	else if ( pSpellDef->IsSpellType(SPELLFLAG_AREA) )
+	else if (pSpellDef->IsSpellType(SPELLFLAG_AREA))
 	{
-		if ( !areaRadius )
+		if (!areaRadius)
 		{
-			switch ( spell )
+			switch (spell)
 			{
 			case SPELL_Arch_Cure:		areaRadius = 2;						break;
 			case SPELL_Arch_Prot:		areaRadius = 3;						break;
 			case SPELL_Mass_Curse:		areaRadius = 2;						break;
-			case SPELL_Reveal:			areaRadius = 1+(iSkillLevel/200);	break;
+			case SPELL_Reveal:			areaRadius = 1 + (iSkillLevel / 200);	break;
 			case SPELL_Chain_Lightning: areaRadius = 2;						break;
 			case SPELL_Mass_Dispel:		areaRadius = 8;						break;
 			case SPELL_Meteor_Swarm:	areaRadius = 2;						break;
-			case SPELL_Earthquake:		areaRadius = 1+(iSkillLevel/150);	break;
+			case SPELL_Earthquake:		areaRadius = 1 + (iSkillLevel / 150);	break;
 			default: areaRadius = 4;										break;
 			}
 		}
 
-		if ( !pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
+		if (!pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ | SPELLFLAG_TARG_XYZ))
 			Spell_Area(GetTopPoint(), areaRadius, iSkillLevel);
 		else
-			Spell_Area( m_Act_p, areaRadius, iSkillLevel);
+			Spell_Area(m_Act_p, areaRadius, iSkillLevel);
 
 	}
-	else if ( pSpellDef->IsSpellType(SPELLFLAG_SUMMON) )
+	else if (pSpellDef->IsSpellType(SPELLFLAG_SUMMON))
 	{
-		if ( spell == SPELL_Summon )
+		if (spell == SPELL_Summon)
 		{
-			if ( iC1 )
+			if (iC1)
 				m_atMagery.m_SummonID = iC1;
-			Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
+			Spell_Summon(m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0);
 		}
-		else 
+		else
 		{
-			if ( !iC1 )
+			if (!iC1)
 			{
-				switch ( spell )
+				switch (spell)
 				{
-					case SPELL_Blade_Spirit:	m_atMagery.m_SummonID = CREID_BLADES;		break;
-					case SPELL_Vortex:			m_atMagery.m_SummonID = CREID_VORTEX;		break;
-					case SPELL_Air_Elem:		m_atMagery.m_SummonID = CREID_AIR_ELEM;		break;
-					case SPELL_Daemon:			m_atMagery.m_SummonID = CREID_DAEMON;		break;
-					case SPELL_Earth_Elem:		m_atMagery.m_SummonID = CREID_EARTH_ELEM;	break;
-					case SPELL_Fire_Elem:		m_atMagery.m_SummonID = CREID_FIRE_ELEM;	break;
-					case SPELL_Water_Elem:		m_atMagery.m_SummonID = CREID_WATER_ELEM;	break;
-					case SPELL_Summon_Undead:
-						switch (Calc_GetRandVal(15))
-						{
-							case 1:				m_atMagery.m_SummonID = CREID_LICH;			break;
-							case 3:
-							case 5:
-							case 7:
-							case 9:				m_atMagery.m_SummonID = CREID_SKELETON;		break;
-							default:			m_atMagery.m_SummonID = CREID_ZOMBIE;		break;
-						}
-					default: break;
+				case SPELL_Blade_Spirit:	m_atMagery.m_SummonID = CREID_BLADES;		break;
+				case SPELL_Vortex:			m_atMagery.m_SummonID = CREID_VORTEX;		break;
+				case SPELL_Air_Elem:		m_atMagery.m_SummonID = CREID_AIR_ELEM;		break;
+				case SPELL_Daemon:			m_atMagery.m_SummonID = CREID_DAEMON;		break;
+				case SPELL_Earth_Elem:		m_atMagery.m_SummonID = CREID_EARTH_ELEM;	break;
+				case SPELL_Fire_Elem:		m_atMagery.m_SummonID = CREID_FIRE_ELEM;	break;
+				case SPELL_Water_Elem:		m_atMagery.m_SummonID = CREID_WATER_ELEM;	break;
+				case SPELL_Summon_Undead:
+					switch (Calc_GetRandVal(15))
+					{
+					case 1:				m_atMagery.m_SummonID = CREID_LICH;			break;
+					case 3:
+					case 5:
+					case 7:
+					case 9:				m_atMagery.m_SummonID = CREID_SKELETON;		break;
+					default:			m_atMagery.m_SummonID = CREID_ZOMBIE;		break;
+					}
+				default: break;
 				}
 			}
 			else
@@ -2048,246 +2034,238 @@ bool CChar::Spell_CastDone()
 			Spell_Summon(m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0);
 		}
 	}
-	/*else if ( pSpellDef->IsSpellType(SPELLFLAG_POLY) )
-	{
-		if ( iC1 )
-			m_atMagery.m_SummonID = iC1;
-
-		if ( ! Spell_SimpleEffect( pObj, pObjSrc, (SPELL_TYPE)SPELL_Polymorph, iSkillLevel ) )
-			return( false );
-	}*/
 	else
-	switch ( spell )
 	{
-	
-	// Magery
-	case SPELL_Create_Food:
+		iT1 = it1test;	// Set iT1 to it1test here because spell_field() needed both values to be passed.
+
+		switch (spell)
 		{
-			RESOURCE_ID food = g_Cfg.ResourceGetIDType( RES_ITEMDEF, "DEFFOOD" );
-			CItem * pItem = CItem::CreateScript((iT1 ? iT1 : static_cast<ITEMID_TYPE>(food.GetResIndex())), this );
-			if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
+
+			// Magery
+			case SPELL_Create_Food:
 			{
-				pItem->MoveToCheck( m_Act_p, this );
-			}
-			else
-			{
-				TCHAR * pMsg = Str_GetTemp();
-				sprintf(pMsg, g_Cfg.GetDefaultMsg( DEFMSG_SPELL_CREATE_FOOD ), pItem->GetName());
-				SysMessage(pMsg);
-				CItemContainer * pPack = GetPackSafe();
-				pPack->ContentAdd( pItem );
-			}
-		}
-		break;
-
-	case SPELL_Magic_Trap:
-	case SPELL_Magic_Untrap:
-		/* Create the trap object and link it to the target. 
-		   A container is diff from door or stationary object */
-		break;
-
-	case SPELL_Telekin:	// Act as DClick on the object.
-		Use_Obj( pObj, false );
-		break;
-
-	case SPELL_Teleport:
-		Spell_Teleport( m_Act_p );
-		break;
-
-	case SPELL_Recall:
-		if ( !Spell_Recall(dynamic_cast <CItem*> (pObj), false) )
-			return(false);
-		break;
-
-	case SPELL_Dispel_Field:
-		{
-			CItem * pItem = dynamic_cast <CItem*> (pObj);
-			if ( pItem == NULL || pItem->IsAttr(ATTR_MOVE_NEVER) || (!pItem->IsType(IT_CAMPFIRE) && !pItem->IsType(IT_SPELL) && !pItem->IsType(IT_FIRE)) )
-			{
-				SysMessageDefault( DEFMSG_SPELL_DISPELLF_WT );
-				return( false );
-			}
-			pItem->OnSpellEffect( SPELL_Dispel_Field, this, iSkillLevel, NULL );
-			break;
-		}
-
-	case SPELL_Mind_Blast:
-		if ( pObj->IsChar())
-		{
-			CChar * pChar = dynamic_cast <CChar*> ( pObj );
-			ASSERT( pChar );
-			int iDiff = ( Stat_GetAdjusted(STAT_INT) - pChar->Stat_GetAdjusted(STAT_INT) ) / 2;
-			if ( iDiff < 0 )
-			{
-				pChar = this;	// spell revereses !
-				iDiff = -iDiff;
-			}
-			int iMax = pChar->Stat_GetMax(STAT_STR) / 2;
-			pChar->OnSpellEffect( spell, this, minimum( iDiff, iMax ), NULL );
-		}
-		break;
-
-	/*case SPELL_Summon: //not needed with SPELLFLAG_SUMMON
-		{
-			if ( iC1 )
-				m_atMagery.m_SummonID = iC1;
-
-			Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
-			break;
-		}*/
-
-	case SPELL_Flame_Strike:
-		{
-			// Display spell.
-			if ( !iT1 )
-				iT1 = ITEMID_FX_FLAMESTRIKE;
-
-			if ( pObj == NULL )
-			{
-				CItem * pItem = CItem::CreateBase( iT1 );
-				ASSERT(pItem);
-				pItem->SetType( IT_SPELL );
-				pItem->m_itSpell.m_spell = SPELL_Flame_Strike;
-				pItem->MoveToDecay( m_Act_p, 2*TICK_PER_SEC );
-			}
-			else
-			{
-				// Burn person at location.
-				pObj->Effect( EFFECT_OBJ, iT1, pObj, 10, 30 );
-				if ( ! Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
-					return( false );
-			}
-		break;
-		}
-
-	case SPELL_Gate_Travel:
-		if ( !Spell_Recall(dynamic_cast <CItem*> (pObj), true) )
-			return( false );
-		break;
-
-	case SPELL_Polymorph:
-		// This has a menu select for client.
-		if ( GetPrivLevel() < PLEVEL_Seer )
-		{
-			if ( pObj != this )
-				return( false );
-		}
-		if ( ! Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
-			return( false );
-		break;
-
-
-	// Necromancy
-	// These're the old spells from Sphere.
-	// IDs from 65 to 69.
-/*	case SPELL_Summon_Undead: //not needed with SPELLFLAG_SUMMON
-		switch (Calc_GetRandVal(15))
-		{
-		case 1:
-			m_atMagery.m_SummonID = CREID_LICH;
-			break;
-		case 3:
-		case 5:
-		case 7:
-		case 9:
-			m_atMagery.m_SummonID = CREID_SKELETON;
-			break;
-		default:
-			m_atMagery.m_SummonID = CREID_ZOMBIE;
-			break;
-		}
-		m_atMagery.m_fSummonPet = true;
-		Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
-		break;
-*/
-	case SPELL_Animate_Dead:
-		{
-			CItemCorpse * pCorpse = dynamic_cast <CItemCorpse*> (pObj);
-			if ( pCorpse == NULL )
-			{
-				SysMessageDefault( DEFMSG_SPELL_ANIMDEAD_NC );
-				return( false );
-			}
-			if ( IsPriv( PRIV_GM ))
-			{
-				m_atMagery.m_SummonID = pCorpse->m_itCorpse.m_BaseID;
-			}
-			else if ( CCharBase::IsPlayableID( pCorpse->GetCorpseType())) 	// Must be a human corpse ?
-			{
-				m_atMagery.m_SummonID = CREID_ZOMBIE;
-			}
-			else
-			{
-				m_atMagery.m_SummonID = pCorpse->GetCorpseType();
-			}
-			m_atMagery.m_fSummonPet = true;
-
-			if ( ! pCorpse->IsTopLevel())
-			{
-				return( false );
-			}
-			CChar * pChar = Spell_Summon( m_atMagery.m_SummonID, pCorpse->GetTopPoint(), true );
-			ASSERT( pChar );
-			if ( ! pChar->RaiseCorpse( pCorpse ))
-			{
-				SysMessageDefault( DEFMSG_SPELL_ANIMDEAD_FAIL );
-				pChar->Delete();
+				RESOURCE_ID food = g_Cfg.ResourceGetIDType(RES_ITEMDEF, "DEFFOOD");
+				CItem * pItem = CItem::CreateScript((iT1 ? iT1 : static_cast<ITEMID_TYPE>(food.GetResIndex())), this);
+				if (pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ | SPELLFLAG_TARG_XYZ))
+				{
+					pItem->MoveToCheck(m_Act_p, this);
+				}
+				else
+				{
+					TCHAR * pMsg = Str_GetTemp();
+					sprintf(pMsg, g_Cfg.GetDefaultMsg(DEFMSG_SPELL_CREATE_FOOD), pItem->GetName());
+					SysMessage(pMsg);
+					CItemContainer * pPack = GetPackSafe();
+					pPack->ContentAdd(pItem);
+				}
 			}
 			break;
-		}
 
-	case SPELL_Bone_Armor:
-		{
-			CItemCorpse * pCorpse = dynamic_cast <CItemCorpse*> (pObj);
-			if ( pCorpse == NULL )
-			{
-				SysMessage( "That is not a corpse!" );
-				return( false );
-			}
-			if ( ! pCorpse->IsTopLevel() ||
-				pCorpse->GetCorpseType() != CREID_SKELETON ) 	// Must be a skeleton corpse
-			{
-				SysMessage( "The body stirs for a moment" );
-				return( false );
-			}
-			// Dump any stuff on corpse
-			pCorpse->ContentsDump( pCorpse->GetTopPoint());
-			pCorpse->Delete();
+			case SPELL_Magic_Trap:
+			case SPELL_Magic_Untrap:
+				/* Create the trap object and link it to the target.
+				   A container is diff from door or stationary object */
+				break;
 
-			static const ITEMID_TYPE sm_Item_Bone[] =
-			{
-				ITEMID_BONE_ARMS,
-				ITEMID_BONE_ARMOR,
-				ITEMID_BONE_GLOVES,
-				ITEMID_BONE_HELM,
-				ITEMID_BONE_LEGS
-			};
+			case SPELL_Telekin:	// Act as DClick on the object.
+				Use_Obj(pObj, false);
+				break;
 
-			int iGet = 0;
-			for ( size_t i = 0; i < COUNTOF(sm_Item_Bone); i++ )
+			case SPELL_Teleport:
+				Spell_Teleport(m_Act_p);
+				break;
+
+			case SPELL_Recall:
+				if (!Spell_Recall(dynamic_cast <CItem*> (pObj), false))
+					return(false);
+				break;
+
+			case SPELL_Dispel_Field:
 			{
-				if ( ! Calc_GetRandVal( 2+iGet ))
-					break;
-				CItem * pItem = CItem::CreateScript(static_cast<ITEMID_TYPE>(sm_Item_Bone[i]), this );
-				pItem->MoveToCheck( m_Act_p, this );
-				iGet++;
-			}
-			if ( ! iGet )
-			{
-				SysMessage( "The bones shatter into dust!" );
+				CItem * pItem = dynamic_cast <CItem*> (pObj);
+				if (pItem == NULL || pItem->IsAttr(ATTR_MOVE_NEVER) || (!pItem->IsType(IT_CAMPFIRE) && !pItem->IsType(IT_SPELL) && !pItem->IsType(IT_FIRE)))
+				{
+					SysMessageDefault(DEFMSG_SPELL_DISPELLF_WT);
+					return(false);
+				}
+				pItem->OnSpellEffect(SPELL_Dispel_Field, this, iSkillLevel, NULL);
 				break;
 			}
+
+			case SPELL_Mind_Blast:
+				if (pObj->IsChar())
+				{
+					CChar * pChar = dynamic_cast <CChar*> (pObj);
+					ASSERT(pChar);
+					int iDiff = (Stat_GetAdjusted(STAT_INT) - pChar->Stat_GetAdjusted(STAT_INT)) / 2;
+					if (iDiff < 0)
+					{
+						pChar = this;	// spell revereses !
+						iDiff = -iDiff;
+					}
+					int iMax = pChar->Stat_GetMax(STAT_STR) / 2;
+					pChar->OnSpellEffect(spell, this, minimum(iDiff, iMax), NULL);
+				}
+				break;
+
+				/*case SPELL_Summon: //not needed with SPELLFLAG_SUMMON
+					{
+					if ( iC1 )
+					m_atMagery.m_SummonID = iC1;
+
+					Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
+					break;
+					}*/
+
+			case SPELL_Flame_Strike:
+			{
+				// Display spell.
+				if (!iT1)
+					iT1 = ITEMID_FX_FLAMESTRIKE;
+
+				if (pObj == NULL)
+				{
+					CItem * pItem = CItem::CreateBase(iT1);
+					ASSERT(pItem);
+					pItem->SetType(IT_SPELL);
+					pItem->m_itSpell.m_spell = SPELL_Flame_Strike;
+					pItem->MoveToDecay(m_Act_p, 2 * TICK_PER_SEC);
+				}
+				else
+				{
+					// Burn person at location.
+					//pObj->Effect(EFFECT_OBJ, iT1, pObj, 10, 30, false, iColor, iRender);
+					if (!Spell_SimpleEffect(pObj, pObjSrc, spell, iSkillLevel))
+						return(false);
+				}
+				break;
+			}
+
+			case SPELL_Gate_Travel:
+				if (!Spell_Recall(dynamic_cast <CItem*> (pObj), true))
+					return(false);
+				break;
+
+			case SPELL_Polymorph:
+				// This has a menu select for client.
+				if (GetPrivLevel() < PLEVEL_Seer)
+				{
+					if (pObj != this)
+						return(false);
+				}
+				if (!Spell_SimpleEffect(pObj, pObjSrc, spell, iSkillLevel))
+					return(false);
+				break;
+
+
+				// Necromancy
+				// These're the old spells from Sphere.
+				// IDs from 65 to 69.
+				/*	case SPELL_Summon_Undead: //not needed with SPELLFLAG_SUMMON
+						switch (Calc_GetRandVal(15))
+						{
+						case 1:
+						m_atMagery.m_SummonID = CREID_LICH;
+						break;
+						case 3:
+						case 5:
+						case 7:
+						case 9:
+						m_atMagery.m_SummonID = CREID_SKELETON;
+						break;
+						default:
+						m_atMagery.m_SummonID = CREID_ZOMBIE;
+						break;
+						}
+						m_atMagery.m_fSummonPet = true;
+						Spell_Summon( m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0 );
+						break;
+						*/
+			case SPELL_Animate_Dead:
+			{
+				CItemCorpse * pCorpse = dynamic_cast <CItemCorpse*> (pObj);
+				if (pCorpse == NULL)
+				{
+					SysMessageDefault(DEFMSG_SPELL_ANIMDEAD_NC);
+					return(false);
+				}
+				if (IsPriv(PRIV_GM))
+				{
+					m_atMagery.m_SummonID = pCorpse->m_itCorpse.m_BaseID;
+				}
+				else if (CCharBase::IsPlayableID(pCorpse->GetCorpseType())) 	// Must be a human corpse ?
+				{
+					m_atMagery.m_SummonID = CREID_ZOMBIE;
+				}
+				else
+				{
+					m_atMagery.m_SummonID = pCorpse->GetCorpseType();
+				}
+				m_atMagery.m_fSummonPet = true;
+
+				if (!pCorpse->IsTopLevel())
+				{
+					return(false);
+				}
+				CChar * pChar = Spell_Summon(m_atMagery.m_SummonID, pCorpse->GetTopPoint(), true);
+				ASSERT(pChar);
+				if (!pChar->RaiseCorpse(pCorpse))
+				{
+					SysMessageDefault(DEFMSG_SPELL_ANIMDEAD_FAIL);
+					pChar->Delete();
+				}
+				break;
+			}
+
+			case SPELL_Bone_Armor:
+			{
+				CItemCorpse * pCorpse = dynamic_cast <CItemCorpse*> (pObj);
+				if (pCorpse == NULL)
+				{
+					SysMessage("That is not a corpse!");
+					return(false);
+				}
+				if (!pCorpse->IsTopLevel() ||
+					pCorpse->GetCorpseType() != CREID_SKELETON) 	// Must be a skeleton corpse
+				{
+					SysMessage("The body stirs for a moment");
+					return(false);
+				}
+				// Dump any stuff on corpse
+				pCorpse->ContentsDump(pCorpse->GetTopPoint());
+				pCorpse->Delete();
+
+				static const ITEMID_TYPE sm_Item_Bone[] =
+				{
+					ITEMID_BONE_ARMS,
+					ITEMID_BONE_ARMOR,
+					ITEMID_BONE_GLOVES,
+					ITEMID_BONE_HELM,
+					ITEMID_BONE_LEGS
+				};
+
+				int iGet = 0;
+				for (size_t i = 0; i < COUNTOF(sm_Item_Bone); i++)
+				{
+					if (!Calc_GetRandVal(2 + iGet))
+						break;
+					CItem * pItem = CItem::CreateScript(static_cast<ITEMID_TYPE>(sm_Item_Bone[i]), this);
+					pItem->MoveToCheck(m_Act_p, this);
+					iGet++;
+				}
+				if (!iGet)
+				{
+					SysMessage("The bones shatter into dust!");
+					break;
+				}
+			}
+			break;
+
+			default:
+				if (!Spell_SimpleEffect(pObj, pObjSrc, spell, iSkillLevel))
+					return(false);
+				break;
 		}
-		break;
-
-	case SPELL_Fire_Bolt:
-		Spell_Bolt( pObj, ITEMID_FX_FIRE_BOLT, iSkillLevel );
-		break;
-
-	default:
-		if ( ! Spell_SimpleEffect( pObj, pObjSrc, spell, iSkillLevel ) )
-			return( false );
-		break;
 	}
 
 	if ( g_Cfg.m_fHelpingCriminalsIsACrime && pSpellDef->IsSpellType(SPELLFLAG_GOOD) && pObj != NULL && pObj->IsChar() && pObj != this )
@@ -2323,9 +2301,9 @@ bool CChar::Spell_CastDone()
 void CChar::Spell_CastFail()
 {
 	ADDTOCALLSTACK("CChar::Spell_CastFail");
-
+	ITEMID_TYPE iT1 = ITEMID_FX_SPELL_FAIL;
 	CScriptTriggerArgs	Args( m_atMagery.m_Spell, 0, m_Act_TargPrv.ObjFind() );
-
+	Args.m_VarsLocal.SetNum("CreateObject1",iT1);
 	if ( IsTrigUsed(TRIGGER_SPELLFAIL) )
 	{
 		if ( OnTrigger( CTRIG_SpellFail, this, &Args ) == TRIGRET_RET_TRUE )
@@ -2338,8 +2316,12 @@ void CChar::Spell_CastFail()
 			return;
 	}
 
+	HUE_TYPE iColor = static_cast<HUE_TYPE>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor", true)));
+	DWORD iRender = static_cast<DWORD>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectRender", true)));
 
-	Effect( EFFECT_OBJ, ITEMID_FX_SPELL_FAIL, this, 1, 30 );
+	iT1 = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1", true)));
+	if (iT1)
+		Effect(EFFECT_OBJ, iT1, this, 1, 30, false, iColor, iRender);
 	Sound( SOUND_SPELL_FIZZLE );
 
 	if ( IsClient() )
@@ -2521,8 +2503,17 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
 
+	if (pSpellDef == NULL)
+		return(false);
+
+	bool fExplode = false;
+	if (pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) && !pSpellDef->IsSpellType(SPELLFLAG_GOOD))	// Bolt (chasing) spells have explode = 1 by default (if not good spell).
+		fExplode = true;
+
 	CScriptTriggerArgs Args(static_cast<int>(spell), iSkillLevel, pSourceItem);
-	Args.m_VarsLocal.SetNum("DamageType",0);
+	Args.m_VarsLocal.SetNum("DamageType", 0);
+	Args.m_VarsLocal.SetNum("CreateObject1", pSpellDef->m_idEffect);
+	Args.m_VarsLocal.SetNum("Explode", fExplode);
 	Args.m_iN3 = iEffectMult;
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
@@ -2557,9 +2548,13 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			default:				break;
 		}
 	}
+	HUE_TYPE iColor = static_cast<HUE_TYPE>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor", true)));
+	DWORD iRender = static_cast<DWORD>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectRender", true)));
+	fExplode = static_cast<BOOL>(Args.m_VarsLocal.GetKeyNum("EffectExplode", true));
+	ITEMID_TYPE iT1 = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1", true)));
 
-	if ( pSpellDef == NULL )
-		return( false );
+	if (iT1 > ITEMID_QTY)
+		iT1 = pSpellDef->m_idEffect;
 
 	// Most spells don't work on ghosts.
 	if ( IsStatFlag(STATF_DEAD) && (!(spell == SPELL_Resurrection) || pSpellDef->IsSpellType(SPELLFLAG_TARG_DEAD)) )
@@ -2602,7 +2597,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 		if ( IsStatFlag(STATF_INVUL) )
 		{
-			Effect( EFFECT_OBJ, ITEMID_FX_GLOW, this, 9, 30, false );
+			Effect(EFFECT_OBJ, ITEMID_FX_GLOW, this, 9, 30, false, iColor, iRender);
 			return false;
 		}
 
@@ -2631,7 +2626,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				{
 					StatFlag_Clear( STATF_Reflection );
 reflectit:
-					Effect( EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 5, false );
+					Effect(EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 5, false, iColor, iRender);
 					if ( pCharSrc != NULL )
 						pCharSrc->OnSpellEffect( spell, NULL, iSkillLevel/2, pSourceItem );
 					return false;
@@ -2643,8 +2638,10 @@ reflectit:
 			return false;
 	}
 
-	if ( pSpellDef->IsSpellType(SPELLFLAG_FX_TARG) && pSpellDef->m_idEffect )
-		Effect( EFFECT_OBJ, pSpellDef->m_idEffect, this, 0, 15 ); // 9, 14
+	if (pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) && iT1)
+		Effect(EFFECT_BOLT, iT1, pCharSrc, 5, 1, fExplode, iColor, iRender);
+	if ( pSpellDef->IsSpellType(SPELLFLAG_FX_TARG) && iT1 )
+		Effect(EFFECT_OBJ, iT1, this, 0, 15, fExplode, iColor, iRender); // 9, 14
 
 	iSkillLevel = iSkillLevel/2 + Calc_GetRandVal(iSkillLevel/2);	// randomize the effect.
 
@@ -2761,7 +2758,7 @@ reflectit:
 		case SPELL_Poison:
 		case SPELL_Poison_Field:
 			if ( !fPotion )
-				Effect(EFFECT_OBJ, ITEMID_FX_CURSE_EFFECT, this, 0, 15);
+				Effect(EFFECT_OBJ, iT1/*ITEMID_FX_CURSE_EFFECT*/, this, 0, 15, fExplode, iColor, iRender);
 			SetPoison( iSkillLevel, iSkillLevel/50, pCharSrc );
 			break;
 
@@ -2793,7 +2790,7 @@ reflectit:
 		case SPELL_Reveal:
 			if ( ! Reveal())
 				break;
-			Effect( EFFECT_OBJ, ITEMID_FX_BLESS_EFFECT, this, 0, 15 );
+			Effect(EFFECT_OBJ, iT1/* ITEMID_FX_BLESS_EFFECT*/, this, 0, 15, fExplode, iColor, iRender);
 			break;
 
 		case SPELL_Invis:
@@ -2859,20 +2856,20 @@ reflectit:
 			break;
 
 		case SPELL_Meteor_Swarm:
-			Effect( EFFECT_BOLT, ITEMID_FX_FIRE_BALL, pCharSrc, 9, 6 );
+			Effect(EFFECT_BOLT, iT1/*ITEMID_FX_FIRE_BALL*/, pCharSrc, 9, 6, fExplode, iColor, iRender);
 			break;
 	
 		case SPELL_Lightning:
 		case SPELL_Chain_Lightning:
 			GetTopSector()->LightFlash();
-			Effect( EFFECT_LIGHTNING, ITEMID_NOTHING, pCharSrc );
+			Effect(EFFECT_LIGHTNING, ITEMID_NOTHING, pCharSrc, false);
 			break;
 
 		case SPELL_Resurrection:
 			return Spell_Resurrection( NULL, pCharSrc );
 
 		case SPELL_Light:
-			Effect( EFFECT_OBJ, ITEMID_FX_HEAL_EFFECT, this, 9, 6 );
+			Effect(EFFECT_OBJ, iT1/*ITEMID_FX_HEAL_EFFECT*/, this, 9, 6, fExplode, iColor, iRender);
 			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_NEWLIGHT, iSkillLevel,
 				GetSpellDuration( spell, iSkillLevel, iEffectMult, pCharSrc ), pCharSrc );
 			break;
