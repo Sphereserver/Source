@@ -611,12 +611,8 @@ bool PacketDeathStatus::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketDeathStatus::onReceive");  
 
-	UNREFERENCED_PARAMETER(net);
-	return false; //Let's just disable this packet, it's causing too many issues.
-
-	/*CClient* client = net->getClient();
+	CClient* client = net->getClient();
 	ASSERT(client);
-
 	CChar* ghost = client->GetChar();
 	if (ghost == NULL)
 		return false;
@@ -637,7 +633,7 @@ bool PacketDeathStatus::onReceive(NetState* net)
 	skip(3); // unknown
 
 	client->Event_CombatMode(manifest);
-	return true;*/
+	return true;
 }
 
 

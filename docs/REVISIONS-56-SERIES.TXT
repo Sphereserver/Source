@@ -1950,7 +1950,7 @@ Fixed: Mana Drain, Wall of Stone and Energy Vortex spells using wrong EFFECT / D
 
 08-04-2015, XuN
 Changes in @Effect/@SpellEffect triggers for spells:
-	Local.CreateObject1 affects now overrides the effect id.
+	Local.CreateObject1 overrides the effect id.
 	Added Local.EffectColor, local.EffectRender and local.EffectExplode allowing to override the values of the sent effect.
 
 Added Local.EffectColor to @Success/@SpellSuccess to change the color of field spells.
@@ -1959,3 +1959,8 @@ Reordered how effects are called (now they are all together inside SpellEffect()
 Removed some Effect() calls to prevent two effects being sent in some spells.
 Removed Effect_Bolt(), its now handled by SPELLFLAG_FX_BOLT inside SpellEffect().
 *Any of this changes are affecting lightning spells, since client ignores everything related to lightnings (.effect 1,1).
+
+Changed @SpellCast / @Start trigger for characters / spells:
+	- Added local.WOP=0/1 to disable/enable WOP for this character / spell.
+	- Added local.WOPColor (default = SERV.WOPColor) to change Word of Power's color for this character / spell .
+	- Added local.WOPFont (default = SERV.WOPFont) to change WOP's font for this character / spell .
