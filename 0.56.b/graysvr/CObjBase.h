@@ -2415,6 +2415,8 @@ enum CTRIG_TYPE
 	CTRIG_charAttack,		// Here starts @charXXX section
 	CTRIG_charClick,
 	CTRIG_charClientTooltip,
+	CTRIG_charContextMenuRequest,
+	CTRIG_charContextMenuSelect,
 	CTRIG_charDClick,
 	CTRIG_charTradeAccepted,
 

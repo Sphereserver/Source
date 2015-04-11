@@ -18,6 +18,8 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@charAttack",		// Here starts @charXXX section
 	"@charClick",
 	"@charClientTooltip",
+	"@charContextMenuRequest",
+	"@charContextMenuSelect",
 	"@charDClick",
 	"@charTradeAccepted",
 
@@ -3700,8 +3702,8 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				long amount = s.GetArgVal();
 				while ( amount > 0 )
 				{
-					CItem *pItem = CItem::CreateBase(ITEMID_GOLD_C1);
-					pItem->SetAmount( minimum(amount, 65000) );
+					CItem *pItem = CItem::CreateScript(ITEMID_GOLD_C1, this);
+					pItem->SetAmount( minimum(amount, pItem->GetMaxAmount()) );
 					amount -= pItem->GetAmount();
 					GetPackSafe()->ContentAdd(pItem);
 				}

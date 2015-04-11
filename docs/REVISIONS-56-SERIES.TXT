@@ -1967,3 +1967,8 @@ Changed @SpellCast / @Start trigger for characters / spells:
 
 11-04-2015, Coruja
 Fixed: Some spell formulas incorrectly using the skill value from target instead caster.
+
+11-04-2015, XuN
+Added char* definitions for both ContextMenuRequest and ContextMenuSelect (@charContextMenuSelect/Request).
+Fixed NewGold not calling @Create if any new pile was created.
+Fixed NewGold not taking care of MaxAmount.
