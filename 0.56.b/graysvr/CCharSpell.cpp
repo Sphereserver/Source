@@ -763,7 +763,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 		case SPELL_Reactive_Armor:
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
-				iStatEffect = 15 + (Skill_GetBase(SKILL_INSCRIPTION) / 200);
+				iStatEffect = 15 + (pCaster->Skill_GetBase(SKILL_INSCRIPTION) / 200);
 				pSpell->m_itSpell.m_spelllevel = iStatEffect;
 
 				SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) + iStatEffect));
@@ -978,7 +978,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 		case SPELL_Magic_Reflect:
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
-				iStatEffect = 25 - (Skill_GetBase(SKILL_INSCRIPTION) / 200);
+				iStatEffect = 25 - (pCaster->Skill_GetBase(SKILL_INSCRIPTION) / 200);
 				pSpell->m_itSpell.m_spelllevel = iStatEffect;
 
 				SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) - iStatEffect));
@@ -1015,8 +1015,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				int iMagicResist = 0;
 				if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 				{
-					iStatEffect = minimum(75, (Skill_GetBase(SKILL_EVALINT) + Skill_GetBase(SKILL_MEDITATION) + Skill_GetBase(SKILL_INSCRIPTION)) / 40);
-					iPhysicalResist = 15 - (Skill_GetBase(SKILL_INSCRIPTION) / 200);
+					iStatEffect = minimum(75, (pCaster->Skill_GetBase(SKILL_EVALINT) + pCaster->Skill_GetBase(SKILL_MEDITATION) + pCaster->Skill_GetBase(SKILL_INSCRIPTION)) / 40);
+					iPhysicalResist = 15 - (pCaster->Skill_GetBase(SKILL_INSCRIPTION) / 200);
 					iMagicResist = minimum(Skill_GetBase(SKILL_MAGICRESISTANCE), 350 - (Skill_GetBase(SKILL_INSCRIPTION) / 20));
 
 					pSpell->m_itSpell.m_spelllevel = iStatEffect;
@@ -3082,7 +3082,7 @@ int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult,
 				break;
 
 			case SPELL_Fire_Field:
-				iDuration = 15 + ((pCharSrc->Skill_GetBase(SKILL_MAGERY) / 5) / 4);
+				iDuration = (15 + (pCharSrc->Skill_GetBase(SKILL_MAGERY) / 5)) / 4;
 				break;
 
 			case SPELL_Blade_Spirit:
@@ -3094,11 +3094,13 @@ int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult,
 					iDuration = (pCharSrc->Skill_GetBase(SKILL_EVALINT) / 10) - (Skill_GetBase(SKILL_MAGICRESISTANCE) / 10);
 					if ( m_pNPC )
 						iDuration *= 3;
+					if ( iDuration < 0 )
+						iDuration = 0;
 				} 
 				break;
 
 			case SPELL_Poison_Field:
-				iDuration = 3 + (pCharSrc->Skill_GetBase(SKILL_MAGERY) / 50);
+				iDuration = 3 + (pCharSrc->Skill_GetBase(SKILL_MAGERY) / 25);
 				break;
 
 			case SPELL_Invis:
@@ -3110,7 +3112,7 @@ int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult,
 				break;
 
 			case SPELL_Energy_Field:
-				iDuration = 15 + ((pCharSrc->Skill_GetBase(SKILL_MAGERY) / 5) / 7);
+				iDuration = (15 + (pCharSrc->Skill_GetBase(SKILL_MAGERY) / 5)) / 7;
 				break;
 
 			case SPELL_Vortex:

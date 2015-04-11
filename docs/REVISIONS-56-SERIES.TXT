@@ -1964,3 +1964,6 @@ Changed @SpellCast / @Start trigger for characters / spells:
 	- Added local.WOP=0/1 to disable/enable WOP for this character / spell.
 	- Added local.WOPColor (default = SERV.WOPColor) to change Word of Power's color for this character / spell .
 	- Added local.WOPFont (default = SERV.WOPFont) to change WOP's font for this character / spell .
+
+11-04-2015, Coruja
+Fixed: Some spell formulas incorrectly using the skill value from target instead caster.
