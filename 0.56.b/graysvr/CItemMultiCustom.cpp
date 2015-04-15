@@ -270,7 +270,7 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 	// remove all existing dynamic item fixtures
 	CWorldSearch Area(GetTopPoint(), GetDesignArea().GetWidth());
 	Area.SetSearchSquare(true);
-	CItem * pItem ;
+	CItem * pItem;
 	for (;;)
 	{
 		pItem = Area.GetItem();
@@ -287,15 +287,14 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 	rectNew.SetRectEmpty();
 	rectNew.m_map = GetTopMap();
 
-	for ( ComponentsContainer::iterator i = m_designMain.m_vectorComponents.begin(); i != m_designMain.m_vectorComponents.end(); ++i)
+	for ( ComponentsContainer::iterator i = m_designMain.m_vectorComponents.begin(); i != m_designMain.m_vectorComponents.end(); ++i )
 	{
 		rectNew.UnionPoint((*i)->m_item.m_dx, (*i)->m_item.m_dy);
 		if ( (*i)->m_item.m_visible )
 			continue;
 
 		// don't add the same item on same position if it already exists
-		CItem * pItemOld = Area.GetItem();
-		if (pItemOld->GetTopPoint().m_x == (*i)->m_item.m_dx && pItemOld->GetTopPoint().m_y == (*i)->m_item.m_dy && pItemOld->GetTopPoint().m_z == (*i)->m_item.m_dz && (*i)->m_item.GetDispID() == pItemOld->GetDispID())
+		if ( GetComponentAt((*i)->m_item.m_dx, (*i)->m_item.m_dy, (*i)->m_item.m_dz) == (*i)->m_item.GetDispID())
 			continue;
 
 		// replace the doors and teleporters with real items
@@ -963,6 +962,31 @@ size_t CItemMultiCustom::GetFixtureCount(DesignDetails * pDesign)
 	}
 
 	return count;
+}
+
+ITEMID_TYPE CItemMultiCustom::GetComponentAt(short x, short y, signed char z, DesignDetails * pDesign)
+{
+	ADDTOCALLSTACK("CItemMultiCustom::GetComponentsAt");
+	// find a single component located at the given position
+
+	if ( pDesign == NULL )
+		pDesign = &m_designMain;
+
+	Component * pComponent;
+	for ( size_t i = 0; i < pDesign->m_vectorComponents.size(); i++ )
+	{
+		pComponent = pDesign->m_vectorComponents.at(i);
+
+		if ( pComponent->m_item.m_dx != x || pComponent->m_item.m_dy != y )
+			continue;
+
+		if ( z != -128 && GetPlane(static_cast<unsigned char>(pComponent->m_item.m_dz)) != GetPlane(z) )
+			continue;
+
+		return pComponent->m_item.GetDispID();
+	}
+
+	return ITEMID_NOTHING;
 }
 
 size_t CItemMultiCustom::GetComponentsAt(short x, short y, signed char z, Component ** pComponents, DesignDetails * pDesign)

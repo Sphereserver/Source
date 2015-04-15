@@ -643,24 +643,11 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 		return;
 
 	difficulty *= 10;
-
 	int iSkillLevel = Skill_GetBase( skill );
-	if ( difficulty < 0 )
-	{
-		// failure. Give a little experience for failure at low levels.
-		if ( iSkillLevel < 300 )
-		{
-			difficulty = (( minimum( -difficulty, iSkillLevel )) / 2 ) - 8;
 
-			if ( difficulty <= 0 )
-				difficulty = 1;
-		}
-		else
-		{
-			difficulty = 0;
-		}
-	}
-	if ( difficulty > 1000 )
+	if ( difficulty < 1 )
+		difficulty = 1;
+	else if ( difficulty > 1000 )
 		difficulty = 1000;
 
 	if ( m_pPlayer )

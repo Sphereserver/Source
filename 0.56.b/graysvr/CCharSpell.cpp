@@ -584,6 +584,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			}
 			return;
 		case SPELL_Magic_Reflect:
+			StatFlag_Clear( STATF_Reflection );
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
 				SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) + pSpell->m_itSpell.m_spelllevel));
@@ -591,10 +592,6 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 				SetDefNum("RESCOLD", static_cast<int>(GetDefNum("RESCOLD", true) - 10));
 				SetDefNum("RESPOISON", static_cast<int>(GetDefNum("RESPOISON", true) - 10));
 				SetDefNum("RESENERGY", static_cast<int>(GetDefNum("RESENERGY", true) - 10));
-			}
-			else
-			{
-				StatFlag_Clear( STATF_Reflection );
 			}
 			if (IsClient()) {
 				GetClient()->removeBuff(BI_MAGICREFLECTION);
@@ -976,6 +973,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			}
 			break;
 		case SPELL_Magic_Reflect:
+			StatFlag_Set( STATF_Reflection );
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
 				iStatEffect = 25 - (pCaster->Skill_GetBase(SKILL_INSCRIPTION) / 200);
@@ -986,10 +984,6 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				SetDefNum("RESCOLD", static_cast<int>(GetDefNum("RESCOLD", true) + 10));
 				SetDefNum("RESPOISON", static_cast<int>(GetDefNum("RESPOISON", true) + 10));
 				SetDefNum("RESENERGY", static_cast<int>(GetDefNum("RESENERGY", true) + 10));
-			}
-			else
-			{
-				StatFlag_Set( STATF_Reflection );
 			}
 			if ( IsSetOF(OF_Buffs) && IsClient() )
 			{
@@ -3152,8 +3146,8 @@ int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult,
 					iDuration = (pCharSrc->Skill_GetBase(SKILL_EVALINT) / 10) - (Skill_GetBase(SKILL_MAGICRESISTANCE) / 10);
 					if ( m_pNPC )
 						iDuration *= 3;
-					if ( iDuration < 0 )
-						iDuration = 0;
+					if ( iDuration < 1 )
+						iDuration = 1;
 				} 
 				break;
 
