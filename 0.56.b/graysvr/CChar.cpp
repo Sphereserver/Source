@@ -3764,11 +3764,16 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			break;
 
 		case CHV_POISON:
-			{
-				int iSkill = s.GetArgVal();
-				SetPoison( iSkill, iSkill/50, pSrc->GetChar());
-			}
-			break;
+		{		
+			int iSkill = s.GetArgVal();
+			int iTicks = iSkill / 50; 
+			INT64		piCmd[2];
+			if (Str_ParseCmds(s.GetArgRaw(), piCmd, COUNTOF(piCmd)) > 1)
+				iTicks = piCmd[1];
+
+			SetPoison(iSkill, iTicks, pSrc->GetChar());
+		}
+		break;
 
 		case CHV_POLY:	// result of poly spell script choice. (casting a spell)
 			{

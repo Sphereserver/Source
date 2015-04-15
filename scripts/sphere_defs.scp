@@ -1126,6 +1126,7 @@ t_weapon_throwing       194   // Throwing Weapon
 t_cartography           195   // cartography tool
 t_cooking               196   // cooking tool
 t_pilot					197   // t_pilot (PacketWheelBoatMove)
+t_rope					198	  // almost the same as a ship plank, but not lockable by default.
 
 //Add custom types after 500 to leave room for future hardcoded types
 t_forest		500   // Forest Tiles
@@ -1244,7 +1245,7 @@ can_i_enchant			0100000		// can items be enchanted (runic)
 can_i_imbue				0200000		// can items be imbued (imbuing)
 can_i_recycle			0400000		// Can be recycled
 can_i_reforge			0800000		// Can be Runic Reforged.
-can_i_forcedc			01000000	// Items with this flag wont perform any check when being DClicked. 
+can_i_forcedc			01000000	// Items with this flag will not perform any check before @DClick trigger. 
 
 
 [DEFNAME tile_flags]

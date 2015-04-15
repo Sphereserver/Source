@@ -324,7 +324,8 @@ public:
 	virtual bool r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc );
 	virtual bool r_Verb( CScript & s, CTextConsole * pSrc );	// some command on this object as a target
 
-	void Emote( LPCTSTR pText, CClient * pClientExclude = NULL, bool fPossessive = false );
+	void Emote(LPCTSTR pText, CClient * pClientExclude = NULL, bool fPossessive = false);
+	void Emote2(LPCTSTR pText, LPCTSTR pText2, CClient * pClientExclude = NULL, bool fPossessive = false);
 
 	virtual void Speak( LPCTSTR pText, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL );
 	virtual void SpeakUTF8( LPCTSTR pText, HUE_TYPE wHue= HUE_TEXT_DEF, TALKMODE_TYPE mode= TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL, CLanguageID lang = 0 );
@@ -3512,7 +3513,7 @@ private:
 	void Spell_Dispel( int iskilllevel );
 CChar * Spell_Summon( CREID_TYPE id, CPointMap pt, bool fPet );
 	bool Spell_Recall( CItem * pRune, bool fGate );
-	CItem * Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSkillLevel, int iDuration, CObjBase * pSrc = NULL );
+	CItem * Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSkillLevel, int iDuration, CObjBase * pSrc = NULL, bool bEquip = true );
 	bool Spell_Equip_OnTick( CItem * pItem );
 
 	void Spell_Field(CPointMap pt, ITEMID_TYPE idEW, ITEMID_TYPE idNS, unsigned int fieldWidth, unsigned int fieldGauge, int iSkill, CChar * pCharSrc = NULL, ITEMID_TYPE idnewEW = static_cast<ITEMID_TYPE>(NULL), ITEMID_TYPE idnewNS = static_cast<ITEMID_TYPE>(NULL), int iDuration = 0, HUE_TYPE iColor = HUE_DEFAULT);

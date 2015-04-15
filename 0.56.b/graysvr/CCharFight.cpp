@@ -3964,7 +3964,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	//	pCharTarg->OnHarmedBy( this, iDmg );
 
 	CScriptTriggerArgs	Args( iDmg, iTyp, pWeapon );
-	Args.m_VarsLocal.SetNum("ItemDamageChance", 100);
+	Args.m_VarsLocal.SetNum("ItemDamageChance", 40);
 	if ( pAmmo )
 		Args.m_VarsLocal.SetNum("Arrow", pAmmo->GetUID());
 
@@ -4012,7 +4012,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	if ( pWeapon != NULL )
 	{
 		// poisoned weapon ?
-		if ( pWeapon->m_itWeapon.m_poison_skill && Calc_GetRandVal( 100 ) < pWeapon->m_itWeapon.m_poison_skill )
+		if ( !IsSetCombatFlags(COMBAT_NOPOISONHIT) && pWeapon->m_itWeapon.m_poison_skill && Calc_GetRandVal( 100 ) < pWeapon->m_itWeapon.m_poison_skill )
 		{
 			// Poison delivered.
 			BYTE iPoisonDeliver = static_cast<unsigned char>(Calc_GetRandVal(pWeapon->m_itWeapon.m_poison_skill));
@@ -4034,7 +4034,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		// Base type attack for our body. claws/etc
 		// intrinsic attacks ?
 		// Poisonous bite/sting ?
-		if ( m_pNPC && m_pNPC->m_Brain == NPCBRAIN_MONSTER && Skill_GetBase(SKILL_POISONING) > 300 && Calc_GetRandVal( 1000 ) < Skill_GetBase(SKILL_POISONING))
+		if ( !IsSetCombatFlags(COMBAT_NOPOISONHIT) &&  m_pNPC && m_pNPC->m_Brain == NPCBRAIN_MONSTER && Skill_GetBase(SKILL_POISONING) > 300 && Calc_GetRandVal(1000) < Skill_GetBase(SKILL_POISONING))
 		{
 			// Poison delivered.
 			int iSkill = Skill_GetAdjusted( SKILL_POISONING );

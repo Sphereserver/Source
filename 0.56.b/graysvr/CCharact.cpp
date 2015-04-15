@@ -2598,7 +2598,7 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 	ADDTOCALLSTACK("CChar::SetPoison");
 	// SPELL_Poison
 	// iSkill = 0-1000 = how bad the poison is
-	// iTicks = how long to last.
+	// iTicks = how long to last. Should be 0 with MAGIFC_OSIFORMULAS enabled to calculate defaults
 	// Physical attack of poisoning.
 
 	if ( IsStatFlag( STATF_Conjured ))
@@ -2606,13 +2606,12 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 		// conjured creatures cannot be poisoned.
 		return false;
 	}
-
 	CItem * pPoison;
 	if ( IsStatFlag( STATF_Poisoned ))
 	{
 		// strengthen the poison ?
 		pPoison = LayerFind( LAYER_FLAG_Poison );
-		if ( pPoison)
+		if (pPoison && !IsSetMagicFlags(MAGICF_OSIFORMULAS))
 		{
 			pPoison->m_itSpell.m_spellcharges += iTicks;
 		}
@@ -2625,8 +2624,47 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 	StatFlag_Clear( STATF_Freeze );	// remove paralyze.
 
 	// Might be a physical vs. Magical attack.
-	pPoison = Spell_Effect_Create( SPELL_Poison, LAYER_FLAG_Poison, iSkill, (1+Calc_GetRandVal(2))*TICK_PER_SEC, pCharSrc );
-	pPoison->m_itSpell.m_spellcharges = iTicks;	// how long to last.
+	pPoison = Spell_Effect_Create( SPELL_Poison, LAYER_FLAG_Poison, iSkill, (1+Calc_GetRandVal(2))*TICK_PER_SEC, pCharSrc, false );
+
+	if (IsSetMagicFlags(MAGICF_OSIFORMULAS))
+	{
+		// If caster have more than 100.0 in magery and poisoning and it's distance is lesser than 3 tiles, he has a 10% change to inflict lethal poison
+		if (pCharSrc->Skill_GetBase(SKILL_MAGERY) > 1000 && pCharSrc->Skill_GetBase(SKILL_POISONING) > 1000 && GetDist(pCharSrc) < 3 && Calc_GetRandVal(10) == 1)
+		{
+			pPoison->m_itSpell.m_pattern = IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(16, 33), 100);
+			pPoison->m_itSpell.m_spelllevel = 4;
+			pPoison->m_itSpell.m_spellcharges = 80;	//1 min / 20 sec
+		}
+		else if (iSkill <= 600)	// Lesser
+		{
+			pPoison->m_itSpell.m_spelllevel = 0;
+			pPoison->m_itSpell.m_spellcharges = 30;
+		}
+		else if (iSkill < 851) // Normal
+		{
+			pPoison->m_itSpell.m_pattern = IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(5, 10), 100);
+			pPoison->m_itSpell.m_spelllevel = 1;
+			pPoison->m_itSpell.m_spellcharges = 30;
+		}
+		else if (iSkill < 1000) // Greater
+		{
+			pPoison->m_itSpell.m_pattern = IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(7, 15), 100);
+			pPoison->m_itSpell.m_spelllevel = 2;
+			pPoison->m_itSpell.m_spellcharges = 60;
+		}
+		else	// Deadly.
+		{
+			pPoison->m_itSpell.m_pattern = IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(15, 30), 100);
+			pPoison->m_itSpell.m_spelllevel = 3;
+			pPoison->m_itSpell.m_spellcharges = 60;
+		}
+		if (iTicks > 0)
+			pPoison->m_itSpell.m_spellcharges = iTicks;
+	}
+	else
+		pPoison->m_itSpell.m_spellcharges = iTicks;	// how long to last.
+
+	LayerAdd(pPoison, LAYER_FLAG_Poison);	// Creating after setting the whole memory
 	UpdateStatsFlag();
 	return( true );
 }

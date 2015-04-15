@@ -1972,3 +1972,53 @@ Fixed: Some spell formulas incorrectly using the skill value from target instead
 Added char* definitions for both ContextMenuRequest and ContextMenuSelect (@charContextMenuSelect/Request).
 Fixed NewGold not calling @Create if any new pile was created.
 Fixed NewGold not taking care of MaxAmount.
+
+15-04-2015, XuN
+Added to sphere_msgs.scp:	(emotes for poison seems to have different values for poisoned character and the other ones)
+for poisoned characters:
+	//spell_osipoison_lesser		"feel a bit nauseous"
+	//spell_osipoison_standard		"feel disorientated and nauseous!"
+	//spell_osipoison_greater		"begin to feel pain throughout your body!"
+	//spell_osipoison_deadly		"feel extremely weak and are in severe pain!"
+	//spell_osipoison_lethal		"are in extreme pain, and require immediate aid!"
+for viewers:
+	//spell_osipoison_lesser1		"looks ill."
+	//spell_osipoison_standard1		"looks extremely ill."
+	//spell_osipoison_greater1		"stumbles around in confusion and pain."
+	//spell_osipoison_deadly1		"is wracked with extreme pain."
+	//spell_osipoison_lethal1		"begins to spasm uncontrollably."
+
+CHANGED Poison function:
+	By default it accepts 1 parameter (skill level)
+	It can now have a second parameter for duration ticks (If not given, ticks are calculated as always = SkillLevel /50 ).
+
+Added new behaviour for poison spell under MAGIFC_OSIFORMULAS:
+	Poison Level = (Magery + Poisoning) /2:	(Stored in MoreY)
+		Lesser (0):		Level <= 65.0
+		Standard (1):	Level <= 85.0
+		Greater (2):	Level < 100.0
+		Deadly (3):		Level > 100.0
+	Poison can be Lethal also with a 10% chances if the magery and poisoning of the poisoner are greather than 100.0 and distance < 3 tiles.
+	Tick Period: 
+		Lesser =		2 seconds.
+		Standard =		3 seconds.
+		Greater =		4 seconds
+		Deadly/Lethal = 5 seconds.
+	Duration:(More2) (if poison spell is called from POISON function, this values will be applied only if argn2 == 0, if set to another value then the given value will be used)
+		Lesser =		30 seconds.
+		Standard =		30 seconds.
+		Greather =		60 seconds.
+		Deadly =		60 seconds.
+		Lethal =		80 seconds.
+	Damage:(Currently values for poisons > Lesser are calculated on SpellEffect (MoreZ), so the same damage is dealed in each tick, AFAIK this is how it works)
+		Lesser =		4-7% current hp.
+		Standard =		5-10% max hp.
+		Greater =		7-15% max hp.
+		Deadly =		15-30% max hp.
+		Lethal =		16-33% max hp
+
+Added new ini flag COMBAT_NOPOISONHIT :Disables old (55i like) poisoning style: Poisoning > 30.0 && (RAND(100.0)> Poisoning) for monsters OR weapon.morez && (RAND(100) < weapon.morez ) for poisoned weapons.
+INFORMATION: These have been unchanged, i'm writing here however for information of how is the poison's strenght calculated.
+	Poison applied using weapon: src.poison <eval <weapon.morez>*10>,<eval <weapon.morez>/5> (so morez*10 = poison damage and morez/5 = ticks)
+	Poison applied by monsters: src.poison <eval <r<Poisoning>>>, <r<eval <Poisoning>/50>>	(so strength is a rand of the poisoning skill and ticks are poisoning skill / 50
+	Poisoned food has not been altered either, but here is the formula too: src.poison <eval <morez>*10>,1+<eval <morez>/50> (so the food's morez*10 is the strenght and ticks = morez /50 too).

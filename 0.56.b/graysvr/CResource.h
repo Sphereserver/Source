@@ -101,7 +101,8 @@ enum COMBATFLAGS_TYPE
 	COMBAT_OSIDAMAGEMOD			= 0x0000080,	// modify weapon damage OSI-style (taking anatomy, tactics, lumberjacking into account)
 	COMBAT_ARCHERYCANMOVE		= 0x0000100,	// allow firing bow while moving
 	COMBAT_STAYINRANGE			= 0x0000200,	// must be in range at the end of the swing or the hit will miss
-	COMBAT_STACKARMOR			= 0x0001000		// if a region is covered by more than one armor part, all AR will count
+	COMBAT_STACKARMOR			= 0x0001000,		// if a region is covered by more than one armor part, all AR will count
+	COMBAT_NOPOISONHIT			= 0x0002000		// Uses old (55i like) poisoning style: Poisoning > 30.0 && (RAND(100.0)> Poisoning) for monsters OR weapon.morez && (RAND(100) < weapon.morez ) for poisoned weapons.
 };
 
 enum TOOLTIPMODE_TYPE
