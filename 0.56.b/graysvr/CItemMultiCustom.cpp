@@ -293,16 +293,9 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 		if ( (*i)->m_item.m_visible )
 			continue;
 
-		// don't add the same item on same position if it already exists
-		if ( GetComponentAt((*i)->m_item.m_dx, (*i)->m_item.m_dy, (*i)->m_item.m_dz) == (*i)->m_item.GetDispID())
-			continue;
-
 		// replace the doors and teleporters with real items
 		CItem * pItem = CItem::CreateScript((*i)->m_item.GetDispID());
 		if ( pItem == NULL )
-			continue;
-
-		if ((DWORD)pItemOld->GetTagDefs()->GetKeyNum("FIXTURE") != (DWORD)GetUID())
 			continue;
 
 		CPointMap pt(GetTopPoint());
@@ -962,31 +955,6 @@ size_t CItemMultiCustom::GetFixtureCount(DesignDetails * pDesign)
 	}
 
 	return count;
-}
-
-ITEMID_TYPE CItemMultiCustom::GetComponentAt(short x, short y, signed char z, DesignDetails * pDesign)
-{
-	ADDTOCALLSTACK("CItemMultiCustom::GetComponentsAt");
-	// find a single component located at the given position
-
-	if ( pDesign == NULL )
-		pDesign = &m_designMain;
-
-	Component * pComponent;
-	for ( size_t i = 0; i < pDesign->m_vectorComponents.size(); i++ )
-	{
-		pComponent = pDesign->m_vectorComponents.at(i);
-
-		if ( pComponent->m_item.m_dx != x || pComponent->m_item.m_dy != y )
-			continue;
-
-		if ( z != -128 && GetPlane(static_cast<unsigned char>(pComponent->m_item.m_dz)) != GetPlane(z) )
-			continue;
-
-		return pComponent->m_item.GetDispID();
-	}
-
-	return ITEMID_NOTHING;
 }
 
 size_t CItemMultiCustom::GetComponentsAt(short x, short y, signed char z, Component ** pComponents, DesignDetails * pDesign)

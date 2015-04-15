@@ -2022,3 +2022,7 @@ INFORMATION: These have been unchanged, i'm writing here however for information
 	Poison applied using weapon: src.poison <eval <weapon.morez>*10>,<eval <weapon.morez>/5> (so morez*10 = poison damage and morez/5 = ticks)
 	Poison applied by monsters: src.poison <eval <r<Poisoning>>>, <r<eval <Poisoning>/50>>	(so strength is a rand of the poisoning skill and ticks are poisoning skill / 50
 	Poisoned food has not been altered either, but here is the formula too: src.poison <eval <morez>*10>,1+<eval <morez>/50> (so the food's morez*10 is the strenght and ticks = morez /50 too).
+
+15-04-2015, Coruja
+Fixed: Some skills only rising until 30.0% on specific situations.
+Changed: Some small changes on Magic Reflection spell.
