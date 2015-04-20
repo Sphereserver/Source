@@ -378,6 +378,47 @@ void CTimedFunctionHandler::Stop( CGrayUID uid, LPCTSTR funcname )
 	}
 }
 
+TRIGRET_TYPE CTimedFunctionHandler::Loop(LPCTSTR funcname, int LoopsMade, CScriptLineContext StartContext, CScriptLineContext EndContext, CScript &s, CTextConsole * pSrc, CScriptTriggerArgs * pArgs, CGString * pResult)
+{
+	ADDTOCALLSTACK("CTimedFunctionHandler::Loop");
+	bool endLooping = false;
+	for (int tick = 0; tick < TICK_PER_SEC && endLooping == false; tick++)
+	{
+		std::vector<TimedFunction *>::iterator it;
+		for (it = m_timedFunctions[tick].begin(); it != m_timedFunctions[tick].end() && endLooping == false;)
+		{
+			++LoopsMade;
+			if (g_Cfg.m_iMaxLoopTimes && (LoopsMade >= g_Cfg.m_iMaxLoopTimes))
+			{
+				g_Log.EventError("Terminating loop cycle since it seems being dead-locked (%d iterations already passed)\n", LoopsMade);
+				return TRIGRET_ENDIF;
+			}
+
+			TimedFunction* tf = *it;
+			if (!strcmpi(tf->funcname, funcname))
+			{
+				CObjBase * pObj = tf->uid.ObjFind();
+				TRIGRET_TYPE iRet = pObj->OnTriggerRun(s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult);
+				if (iRet == TRIGRET_BREAK)
+				{
+					EndContext = StartContext;
+					endLooping = true;
+					break;
+				}
+				if ((iRet != TRIGRET_ENDIF) && (iRet != TRIGRET_CONTINUE))
+					return(iRet);
+				if (iRet == TRIGRET_CONTINUE)
+					EndContext = StartContext;
+				else
+					EndContext = s.GetContext();
+				s.SeekContext(StartContext);
+			}
+			++it;
+		}
+	}
+	return TRIGRET_ENDIF;
+}
+
 void CTimedFunctionHandler::Add( CGrayUID uid, int numSeconds, LPCTSTR funcname )
 {
 	ADDTOCALLSTACK("CTimedFunctionHandler::Add");

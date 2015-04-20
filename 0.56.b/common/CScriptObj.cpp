@@ -1959,6 +1959,21 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 		}
 	}
 
+	if (iType & 0x100)	// FORTIMERF
+	{
+		TCHAR * ppArgs[1];
+
+		if (Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs), " \t,") >= 1)
+		{			
+			char funcname[1024];
+			strcpy(funcname, ppArgs[0]);
+
+			TRIGRET_TYPE iRet = g_World.m_TimedFunctions.Loop(funcname, LoopsMade, StartContext, EndContext, s, pSrc, pArgs, pResult);
+			if ((iRet != TRIGRET_ENDIF) && (iRet != TRIGRET_CONTINUE))
+				return(iRet);
+		}
+	}
+
 	if ( g_Cfg.m_iMaxLoopTimes )
 	{
 toomanyloops:
@@ -2099,6 +2114,7 @@ enum SK_TYPE
 	SK_FORITEM,
 	SK_FOROBJ,
 	SK_FORPLAYERS,		// not necessary to be online
+	SK_FORTIMERF,
 	SK_IF,
 	SK_RETURN,
 	SK_WHILE,
@@ -2136,6 +2152,7 @@ LPCTSTR const CScriptObj::sm_szScriptKeys[SK_QTY+1] =
 	"FORITEMS",
 	"FOROBJS",
 	"FORPLAYERS",
+	"FORTIMERF",
 	"IF",
 	"RETURN",
 	"WHILE",
@@ -2227,6 +2244,7 @@ jump_in:
 				case SK_FORITEM:
 				case SK_FOROBJ:
 				case SK_FORPLAYERS:
+				case SK_FORTIMERF:
 				case SK_DORAND:
 				case SK_DOSWITCH:
 				case SK_BEGIN:
@@ -2257,6 +2275,7 @@ jump_in:
 			case SK_FOR:			EXC_SET("for");			iRet = OnTriggerForLoop( s, 4, pSrc, pArgs, pResult );			break;
 			case SK_WHILE:			EXC_SET("while");		iRet = OnTriggerForLoop( s, 8, pSrc, pArgs, pResult );			break;
 			case SK_FORINSTANCE:	EXC_SET("forinstance");	iRet = OnTriggerForLoop( s, 0x40, pSrc, pArgs, pResult );		break;
+			case SK_FORTIMERF:		EXC_SET("fortimerf");	iRet = OnTriggerForLoop(s, 0x100, pSrc, pArgs, pResult);			break;
 			case SK_FORCHARLAYER:
 			case SK_FORCHARMEMORYTYPE:
 				{
@@ -2421,6 +2440,7 @@ jump_in:
 			case SK_FOROBJ:
 			case SK_FORPLAYERS:
 			case SK_FORINSTANCE:
+			case SK_FORTIMERF:
 			case SK_FOR:
 			case SK_WHILE:
 				if ( iRet != TRIGRET_ENDIF )

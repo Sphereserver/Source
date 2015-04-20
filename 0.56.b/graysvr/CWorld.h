@@ -336,6 +336,7 @@ class CTimedFunctionHandler
 		void Add( CGrayUID uid, int numSeconds, LPCTSTR funcname );
 		void Erase( CGrayUID uid );
 		void Stop( CGrayUID uid, LPCTSTR funcname );
+		TRIGRET_TYPE Loop(LPCTSTR funcname, int LoopsMade, CScriptLineContext StartContext, CScriptLineContext EndContext, CScript &s, CTextConsole * pSrc, CScriptTriggerArgs * pArgs, CGString * pResult);
 		int IsTimer( CGrayUID uid, LPCTSTR funcname );
 };
 
