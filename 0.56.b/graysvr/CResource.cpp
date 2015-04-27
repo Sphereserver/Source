@@ -217,20 +217,21 @@ CResource::CResource()
 	m_sZeroPoint= "1323,1624,0";
 	m_bAllowBuySellAgent = false;
 
-	m_iColorNotoCriminal = 0x03b2;		// grey (criminal)
-	m_iColorNotoDefault = 0x03b2;		// grey (if not any other)
-	m_iColorNotoEvil = 0x0022;			// red
-	m_iColorNotoGood = 0x0059;			// blue
-	m_iColorNotoGuildSame = 0x003f;		// green
-	m_iColorNotoGuildWar = 0x0090;		// orange (enemy guild)
-	m_iColorNotoInvul = 0x0035;			// yellow
-	m_iColorNotoNeutral = 0x03b2;		// grey (can be attacked)
+	m_iColorNotoGood = 0x59;				// blue
+	m_iColorNotoGuildSame = 0x3f;			// green
+	m_iColorNotoNeutral = 0x3b2;			// grey (can be attacked)
+	m_iColorNotoCriminal = 0x3b2;			// grey (criminal)
+	m_iColorNotoGuildWar = 0x90;			// orange (enemy guild)
+	m_iColorNotoEvil = 0x22;				// red
+	m_iColorNotoInvul = 0x35;				// yellow
+	m_iColorNotoInvulGameMaster = 0x0b;		// purple
+	m_iColorNotoDefault = 0x03b2;			// grey (if not any other)
 	
 	m_iColorInvis = 0;
 	m_iColorInvisSpell = 0;
 	m_iColorHidden = 0;
 	
-	m_iNotoTimeout		= 30;			// seconds to remove this character from notoriety list.
+	m_iNotoTimeout = 30;					// seconds to remove this character from notoriety list.
 
 	m_iPetsInheritNotoriety = 0;
 
@@ -409,6 +410,7 @@ enum RC_TYPE
 	RC_COLORNOTOGUILDSAME,	// m_iColorNotoGuildSame
 	RC_COLORNOTOGUILDWAR,	// m_iColorNotoGuildWar
 	RC_COLORNOTOINVUL,		// m_iColorNotoInvul
+	RC_COLORNOTOINVULGAMEMASTER,	// m_iColorNotoInvulGameMaster
 	RC_COLORNOTONEUTRAL,	// m_iColorNotoNeutral
 	RC_COMBATFLAGS,			// m_iCombatFlags
 	RC_COMMANDLOG,
@@ -643,6 +645,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "COLORNOTOGUILDSAME",		{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoGuildSame),	0 }},
 	{ "COLORNOTOGUILDWAR",		{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoGuildWar),	0 }},
 	{ "COLORNOTOINVUL",			{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoInvul),		0 }},
+	{ "COLORNOTOINVULGAMEMASTER",{ ELEM_INT,	OFFSETOF(CResource,m_iColorNotoInvulGameMaster),	0 }},
 	{ "COLORNOTONEUTRAL",		{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoNeutral),	0 }},
 	{ "COMBATFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iCombatFlags),			0 }},
 	{ "COMMANDLOG",				{ ELEM_INT,		OFFSETOF(CResource,m_iCommandLog),			0 }},

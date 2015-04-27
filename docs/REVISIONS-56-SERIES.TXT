@@ -2026,3 +2026,13 @@ INFORMATION: These have been unchanged, i'm writing here however for information
 15-04-2015, Coruja
 Fixed: Some skills only rising until 30.0% on specific situations.
 Changed: Some small changes on Magic Reflection spell.
+
+27-04-2015, Coruja
+Fixed: Guilds not display notoriety correctly on players with recruit access level.
+Fixed: Magic Reflection effect only working on spells with SPELLFLAG_RESIST set. Now only spells with direct target (SPELLFLAG_TARG_CHAR) can be reflected.
+Fixed: Spells with SPELLFLAG_HARM flag not flagging the caster criminal when it got resisted/reflected by the target.
+Changed: Some improvements on Magic Resistance (skill) effect.
+[Sphere.ini]: Added new ColorNotoInvulGameMaster setting to tweak the name notoriety color on invul Game Master chars (purple by default).
+[sphere_spells.scp]:
+	-Added missing DURATION on Mana Drain spell.
+	-Updated SPELLFLAG_RESIST / SPELLFLAG_TARG_NOSELF on some spells.

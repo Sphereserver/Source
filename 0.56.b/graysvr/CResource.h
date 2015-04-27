@@ -942,14 +942,15 @@ public:
 	int		m_iDefaultCommandLevel;
 
 	//	color noto flag
-	int		m_iColorNotoCriminal;
-	int		m_iColorNotoDefault;
-	int		m_iColorNotoEvil;
 	int		m_iColorNotoGood;
 	int		m_iColorNotoGuildSame;
-	int		m_iColorNotoGuildWar;
-	int		m_iColorNotoInvul;
 	int		m_iColorNotoNeutral;
+	int		m_iColorNotoCriminal;
+	int		m_iColorNotoGuildWar;
+	int		m_iColorNotoEvil;
+	int		m_iColorNotoInvul;
+	int		m_iColorNotoInvulGameMaster;
+	int		m_iColorNotoDefault;
 	
 	int		m_iColorInvis;
 	int		m_iColorInvisSpell;

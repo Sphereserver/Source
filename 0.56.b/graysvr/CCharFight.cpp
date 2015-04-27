@@ -278,8 +278,7 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 
 	if ( this != pCharViewer ) // Am I checking myself?
 	{
-		// If they saw me commit a crime or I am their aggressor then
-		// criminal to just them.
+		// If they saw me commit a crime or I am their aggressor then criminal to just them.
 		CItemMemory * pMemory = pCharViewer->Memory_FindObjTypes( this, MEMORY_SAWCRIME|MEMORY_AGGREIVED );
 		if ( pMemory != NULL )
 			return( NOTO_CRIMINAL );
@@ -293,31 +292,29 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 
 		// Check the guild stuff
 		CItemStone * pMyGuild = Guild_Find(MEMORY_GUILD);
-		CItemStone * pMyTown = Guild_Find(MEMORY_TOWN);
-		if ( pMyGuild || pMyTown )
+		if ( pMyGuild )
 		{
 			CItemStone * pViewerGuild = pCharViewer->Guild_Find(MEMORY_GUILD);
-			CItemStone * pViewerTown = pCharViewer->Guild_Find(MEMORY_TOWN);
-			// Are we both in a guild?
-			if ( pViewerGuild || pViewerTown )
+			if ( pViewerGuild )
 			{
-				if ( pMyGuild && pMyGuild->IsPrivMember(this))
-				{
-					if ( pViewerGuild && pViewerGuild->IsPrivMember(pCharViewer))
-					{
-						if ( pViewerGuild == pMyGuild ) // Same guild?
-							return NOTO_GUILD_SAME;
-						if ( pMyGuild->IsAlliedWith(pViewerGuild))
-							return NOTO_GUILD_SAME;
-					}
-					if ( pMyGuild->IsAtWarWith(pViewerGuild))
-						return NOTO_GUILD_WAR; 
-				}
-				if ( pMyTown && pMyTown->IsPrivMember(this))
-				{
-					if ( pMyTown->IsAtWarWith(pViewerTown))
-						return NOTO_GUILD_WAR;
-				}
+				if ( pViewerGuild == pMyGuild )
+					return NOTO_GUILD_SAME;
+				if ( pMyGuild->IsAlliedWith(pViewerGuild))
+					return NOTO_GUILD_SAME;
+				if ( pMyGuild->IsAtWarWith(pViewerGuild))
+					return NOTO_GUILD_WAR;
+			}
+		}
+
+		// Check the town stuff
+		CItemStone * pMyTown = Guild_Find(MEMORY_TOWN);
+		if ( pMyTown )
+		{
+			CItemStone * pViewerTown = pCharViewer->Guild_Find(MEMORY_TOWN);
+			if ( pViewerTown )
+			{
+				if ( pMyTown->IsAtWarWith(pViewerTown))
+					return NOTO_GUILD_WAR;
 			}
 		}
 	}
@@ -342,7 +339,7 @@ HUE_TYPE CChar::Noto_GetHue( const CChar * pCharViewer, bool fIncog ) const
 		case NOTO_CRIMINAL:		return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoCriminal);	// Grey (criminal)
 		case NOTO_GUILD_WAR:	return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoGuildWar);	// Orange (enemy guild)
 		case NOTO_EVIL:			return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoEvil);		// Red
-		case NOTO_INVUL:		return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoInvul);		// Yellow
+		case NOTO_INVUL:		return IsPriv(PRIV_GM)? static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoInvulGameMaster) : static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoInvul);		// Purple / Yellow
 		default:				return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoDefault);	// Grey
 	}
 }
