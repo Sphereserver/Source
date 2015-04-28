@@ -1239,10 +1239,12 @@ void CClient::addCharName( const CChar * pChar ) // Singleclick text for a chara
 	{
 		if ( pChar->m_pNPC )
 		{
-			if ( pChar->m_pArea && pChar->m_pArea->IsGuarded() )
+			if ( pChar->IsPlayableCharacter())
 				strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_NPC) );
-			if ( pChar->IsStatFlag( STATF_Pet ))
-				strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_TAME) );
+			if ( pChar->IsStatFlag( STATF_Conjured ))
+				strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SUMMONED) );
+			else if ( pChar->IsStatFlag( STATF_Pet ))
+				strcat( pszTemp, (pChar->m_pNPC->m_bonded == 1) ? g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_BONDED) : g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_TAME) );
 		}
 		if ( pChar->IsStatFlag( STATF_INVUL ) && ! pChar->IsStatFlag( STATF_Incognito ) && ! pChar->IsPriv( PRIV_PRIV_NOSHOW ))
 			strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_INVUL) );
@@ -1256,8 +1258,6 @@ void CClient::addCharName( const CChar * pChar ) // Singleclick text for a chara
 			strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SLEEPING) );
 		if ( pChar->IsStatFlag( STATF_Hallucinating ))
 			strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_HALLU) );
-		if ( pChar->LayerFind( LAYER_SPELL_Summon ))
-			strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SUMMONED) );
 
 		if ( fAllShow )
 		{
@@ -1268,25 +1268,15 @@ void CClient::addCharName( const CChar * pChar ) // Singleclick text for a chara
 		}
 	}
 	if ( ! fAllShow && pChar->Skill_GetActive() == NPCACT_Napping )
-	{
 		strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_AFK) );
-	}
 	if ( pChar->GetPrivLevel() <= PLEVEL_Guest )
-	{
 		strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_GUEST) );
-	}
 	if ( pChar->IsPriv( PRIV_JAILED ))
-	{
 		strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_JAILED) );
-	}
 	if ( pChar->IsDisconnected())
-	{
 		strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_LOGOUT) );
-	}
 	if (( fAllShow || pChar == m_pChar ) && pChar->IsStatFlag( STATF_Criminal ))
-	{
 		strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_CRIMINAL) );
-	}
 	if ( fAllShow || ( IsPriv(PRIV_GM) && ( g_Cfg.m_wDebugFlags & DEBUGF_NPC_EMOTE )))
 	{
 		strcat( pszTemp, " [" );

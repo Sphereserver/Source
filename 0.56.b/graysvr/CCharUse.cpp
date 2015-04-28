@@ -1326,8 +1326,6 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 			short int iCurFollower = static_cast<short>(GetDefNum("CURFOLLOWER", true, true));
 			short int iMaxFollower = static_cast<short>(GetDefNum("MAXFOLLOWER", true, true));
 			short int iSetFollower = iCurFollower + iFollowerSlotsNeeded;
-			if ( iSetFollower > 255 )
-				iSetFollower = 255;
 
 			if ((iCurFollower + iFollowerSlotsNeeded) > iMaxFollower && !IsPriv(PRIV_GM) )
 			{

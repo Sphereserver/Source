@@ -557,8 +557,6 @@ bool CChar::NPC_PetSetOwner( CChar * pChar )
 		short int iFollowerSlotsNeeded = static_cast<short>(maximum(GetDefNum("FOLLOWERSLOTS", true, true),1));
 		short int iCurFollower = static_cast<short>(pChar->GetDefNum("CURFOLLOWER", true, true));
 		short int iSetFollower = iCurFollower + iFollowerSlotsNeeded;
-		if ( iSetFollower > 255 )
-			iSetFollower = 255;		// Max value that clients can show on char status
 
 		// Send an update packet for the stats
 		pChar->SetDefNum("CURFOLLOWER", iSetFollower);

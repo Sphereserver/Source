@@ -2036,3 +2036,10 @@ Changed: Some improvements on Magic Resistance (skill) effect.
 [sphere_spells.scp]:
 	-Added missing DURATION on Mana Drain spell.
 	-Updated SPELLFLAG_RESIST / SPELLFLAG_TARG_NOSELF on some spells.
+
+28-04-2015, Coruja
+Fixed: Mounts not creating the corpse when it die while ridden.
+Fixed: Corpses not setting MORE2 (last attacker UID) correctly when created.
+Fixed: NPCs only showing [npc] tag on name when inside an region with guards.
+Changed: Removed max limit of CURFOLLOWER=255 on OF_PetSlots feature.
+[sphere_msgs.scp]: Added new 'charinfo_bonded' message to show [bonded] tag on chars with BONDED=1 set (it will override the [tame] tag by default).

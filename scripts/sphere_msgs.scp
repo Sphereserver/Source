@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, Mar 30, 2015
+// FILE LAST UPDATED: Tuesday, Apr 28, 2015
 //
 VERSION=0.56c
 
@@ -1136,6 +1136,7 @@ EMOTE_DEF_UNICODE	0
 //clock_21_to_24				"o'clock at night"
 //clock_24_to_12				"o'clock in the morning"
 //charinfo_tame					" [tame]"
+//charinfo_bonded				" [bonded]"
 //charinfo_npc					" [npc]"
 //charinfo_invul				" [invul]"
 //charinfo_stone				" [stone]"

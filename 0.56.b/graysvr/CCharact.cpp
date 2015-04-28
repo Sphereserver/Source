@@ -2774,11 +2774,10 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 		{
 			pCorpse->SetTimeStamp(CServTime::GetCurrentTime().GetTimeRaw()); // death time.
 			if (Attacker_GetLast())
-				const_cast<CGrayUIDBase&>(pCorpse->m_itCorpse.m_uidKiller) = Attacker_GetLast()->GetUID();
+				pCorpse->m_itCorpse.m_uidKiller = static_cast<CGrayUIDBase>(Attacker_GetLast()->GetUID());
 			else
 				pCorpse->m_itCorpse.m_uidKiller.InitUID();
-			iDecayTime = (m_pPlayer) ?
-				g_Cfg.m_iDecay_CorpsePlayer : g_Cfg.m_iDecay_CorpseNPC;
+			iDecayTime = (m_pPlayer) ? g_Cfg.m_iDecay_CorpsePlayer : g_Cfg.m_iDecay_CorpseNPC;
 		}
 		else	// Sleeping
 		{
@@ -2877,13 +2876,6 @@ bool CChar::Death()
 
 	if ( IsStatFlag(STATF_DEAD|STATF_INVUL) )
 		return true;
-	bool isBonded = m_pNPC && m_pNPC->m_bonded == 1;
-	if ( m_pNPC && !isBonded )
-	{
-		//	leave no corpse if for some reason creature dies while mounted
-		if ( IsStatFlag(STATF_Ridden) )
-			StatFlag_Set(STATF_Conjured);
-	}
 
 	if ( IsTrigUsed(TRIGGER_DEATH) )
 	{
@@ -2918,9 +2910,8 @@ bool CChar::Death()
 		// Sets OBODY value to BODY if LAYER_Flag_Wool is found on an NPC
 		// Fixes issue with woolly sheep giving wool resource when corpse is carved after being shorn.
 		if ( (pItem->GetEquipLayer() == LAYER_FLAG_Wool) && (m_pNPC) )
-		{
 			this->m_prev_id = this->GetID();
-		}
+
 		bool bKillermem = pItem->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_WAR_TARG);
 
 		if (bKillermem)
@@ -2954,7 +2945,7 @@ bool CChar::Death()
 	{
 		CObjBase * ob = g_World.FindUID(m_Fight_Targ);
 		if (ob)
-			pKiller = STATIC_CAST <CChar *>(ob);
+			pKiller = static_cast<CChar *>(ob);
 		else
 			pKiller = this;	// Should NEVER reach this... but setting it incase of.
 	}
@@ -2970,22 +2961,11 @@ bool CChar::Death()
 	Reveal();
 	SoundChar( CRESND_DIE );
 
-	// Only players should loose stats upon death.
-	if ( m_pPlayer )
-	{
-		m_pPlayer->m_wDeaths++;
-		if ( !(m_TagDefs.GetKeyNum("DEATHFLAGS", true) & DEATH_NOFAMECHANGE) )
-			Noto_Fame( -Stat_GetAdjusted(STAT_FAME)/10 );
-
-		//	experience could go down
-		if ( g_Cfg.m_bExperienceSystem)
-			ChangeExperience(-(static_cast<int>(m_exp)/10),pKiller);
-	}
-
 	// create the corpse item.
 	StatFlag_Set(STATF_DEAD);
 	StatFlag_Clear(STATF_Stone|STATF_Freeze|STATF_Hidden|STATF_Sleeping|STATF_Hovering);
 
+	bool isBonded = (m_pNPC && m_pNPC->m_bonded == 1);
 	if (m_pPlayer || !isBonded)
 	{
 		Stat_SetVal(STAT_STR, 0);
@@ -2993,11 +2973,8 @@ bool CChar::Death()
 	}
 
 	Spell_Dispel(100);		// Get rid of all spell effects. (moved here to prevent double @Destroy trigger)
-
-
-	//	clear list of attackers
-	m_lastAttackers.clear();
 	Skill_Cleanup();
+
 	if ( isBonded )
 		return true;
 
@@ -3012,14 +2989,25 @@ bool CChar::Death()
    		OnTrigger(CTRIG_DeathCorpse, this, &Args);
 	}
 
+	//	clear list of attackers
+	m_lastAttackers.clear();
+
 	if ( m_pPlayer )
 	{
 		// Display death animation to client ("You are dead")
-		/*if ( g_Cfg.m_iPacketDeathAnimation )
+		if ( g_Cfg.m_iPacketDeathAnimation )
 		{
 			new PacketDeathMenu( GetClient(), PacketDeathMenu::ServerSent );
 			new PacketDeathMenu( GetClient(), PacketDeathMenu::Ghost );
-		}*/
+		}
+
+		m_pPlayer->m_wDeaths++;
+		if ( !(m_TagDefs.GetKeyNum("DEATHFLAGS", true) & DEATH_NOFAMECHANGE) )
+			Noto_Fame( -Stat_GetAdjusted(STAT_FAME)/10 );
+
+		// Experience could go down
+		if ( g_Cfg.m_bExperienceSystem)
+			ChangeExperience(-(static_cast<int>(m_exp)/10),pKiller);
 
 		SetHue( HUE_DEFAULT );	// Get all pale.
 
@@ -4318,11 +4306,11 @@ bool CChar::OnTick()
 	// Get a timer tick when our timer expires.
 	// RETURN: false = delete this.
 	EXC_TRY("Tick");
-	bool isBonded = (IsStatFlag(STATF_DEAD) && (m_pNPC && m_pNPC->m_bonded == 1));
 	INT64 iTimeDiff = - g_World.GetTimeDiff(m_timeLastRegen);
 	if ( !iTimeDiff )
 		return true;
 
+	bool isBonded = (IsStatFlag(STATF_DEAD) && (m_pNPC && m_pNPC->m_bonded == 1));
 	if (!isBonded)
 	{
 		if (iTimeDiff >= TICK_PER_SEC)	// don't bother with < 1 sec times.

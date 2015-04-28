@@ -1838,7 +1838,6 @@ bool CChar::NPC_Act_Follow( bool fFlee, int maxDistance, bool forceDistance )
 	}
 
 	EXC_SET("Fleeing");
-	bool fRun = dist > 3;
 	if ( fFlee )
 	{
 		CPointMap ptOld = m_Act_p;
