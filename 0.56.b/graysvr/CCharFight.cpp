@@ -182,7 +182,7 @@ bool CChar::Noto_IsNeutral() const
 	return( iKarma<0 );
 }
 
-NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool fAllowInvul ) const
+NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool fAllowInvul, bool bOnlyColor ) const
 {
 	ADDTOCALLSTACK("CChar::Noto_GetFlag");
 	// What is this char to the viewer ?
@@ -191,6 +191,7 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 	CChar * pThis = const_cast<CChar*>(this);
 	CChar * pTarget = const_cast<CChar*>(pCharViewer);
 	NOTO_TYPE Noto;
+	NOTO_TYPE color;
 	if ( pThis->m_notoSaves.size() )
 	{
 		int id = -1;
@@ -200,21 +201,22 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 		id = pThis->NotoSave_GetID(pTarget);
 
 		if ( id != -1 )
-			return pThis->NotoSave_GetValue( id );
+			return pThis->NotoSave_GetValue( id, bOnlyColor );
 	}
 	if (IsTrigUsed(TRIGGER_NOTOSEND))
 	{
 		CScriptTriggerArgs args;
 		pThis->OnTrigger(CTRIG_NotoSend, pTarget, &args);
 		Noto = static_cast<NOTO_TYPE>(args.m_iN1);
-		if (Noto != NOTO_INVALID )
+		color = static_cast<NOTO_TYPE>(args.m_iN2);
+		if (Noto > NOTO_INVALID && Noto <= NOTO_INVUL) // if Notoriety is between NOTO_GOOD and NOTO_INVUL its ok
 		{
-			pThis->NotoSave_Add( pTarget, Noto);
+			pThis->NotoSave_Add( pTarget, Noto, color);
 			return Noto;
 		}
 	}
 	Noto = Noto_CalcFlag( pCharViewer, fAllowIncog, fAllowInvul);
-	pThis->NotoSave_Add(pTarget, Noto);
+	pThis->NotoSave_Add(pTarget, Noto, color);
 	return Noto;
 }
 
@@ -279,7 +281,7 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 	if ( this != pCharViewer ) // Am I checking myself?
 	{
 		// If they saw me commit a crime or I am their aggressor then criminal to just them.
-		CItemMemory * pMemory = pCharViewer->Memory_FindObjTypes( this, MEMORY_SAWCRIME|MEMORY_AGGREIVED );
+		CItemMemory * pMemory = pCharViewer->Memory_FindObjTypes(this, MEMORY_SAWCRIME | MEMORY_AGGREIVED | MEMORY_HARMEDBY);
 		if ( pMemory != NULL )
 			return( NOTO_CRIMINAL );
 
@@ -739,20 +741,24 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iOtherKillers)
 	}
 }
 
-void CChar::NotoSave_Add( CChar * pChar, NOTO_TYPE value )
+void CChar::NotoSave_Add( CChar * pChar, NOTO_TYPE value, NOTO_TYPE color  )
 {
+	// pChar is retrieving my notoriety, I'm going to store what I have to send him on my list.
+	// value is the notoriety value I have for him
+	// color (if specified) is the color override sent in packets.
 	ADDTOCALLSTACK("CChar::NotoSave_Add");
 	if ( !pChar )
 		return;
 	CGrayUID uid = static_cast<CGrayUID>(pChar->GetUID());
-	if  ( m_notoSaves.size() )	// Must only check for existing attackers if there are any attacker already.
+	if  ( m_notoSaves.size() )	// Checking if I already have him in the list, only if there 's any list.
 	{
 		for (std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); ++it)
 		{
 			NotoSaves & refNoto = *it;
 			if ( refNoto.charUID == uid )
 			{
-				//Found one, no actions needed so we skip
+				// Found him, no actions needed so I forget about him...
+				// or should I update 'value' ...?: refNoto.value = value;
 				return;
 			}
 		}
@@ -761,11 +767,14 @@ void CChar::NotoSave_Add( CChar * pChar, NOTO_TYPE value )
 	refNoto.value = value;
 	refNoto.charUID = pChar->GetUID();
 	refNoto.time = 0;
+	refNoto.color = color;
 	m_notoSaves.push_back(refNoto);
 }
 	
-NOTO_TYPE CChar::NotoSave_GetValue( int id )
+NOTO_TYPE CChar::NotoSave_GetValue( int id, bool bGetColor )
 {
+	// Retrieves the stored notoriety this character has for selected ID player
+	// bGetcolor retrieves only color value (for movement packets updating it)
 	ADDTOCALLSTACK("CChar::NotoSave_GetValue");
 	if ( !m_notoSaves.size() )
 		return NOTO_INVALID;
@@ -774,7 +783,10 @@ NOTO_TYPE CChar::NotoSave_GetValue( int id )
 	if ( static_cast<int>(m_notoSaves.size()) <= id )
 		return NOTO_INVALID;
 	NotoSaves & refNotoSave = m_notoSaves.at(id);
-	return refNotoSave.value;
+	if (bGetColor && refNotoSave.color >= NOTO_INVALID )	// retrieving color if requested... only if a color is greater than 0 (to avoid possible crashes).
+		return refNotoSave.color;
+	else
+		return refNotoSave.value;
 }
 
 INT64 CChar::NotoSave_GetTime( int id )
@@ -834,14 +846,17 @@ void CChar::NotoSave_Update()
 
 void CChar::NotoSave_CheckTimeout()
 {
+	// called from CChar::OnTick() to update the timers and refresh the list when expired.
 	ADDTOCALLSTACK("CChar::NotoSave_CheckTimeout");
+	if (g_Cfg.m_iNotoTimeout <= 0)	// No value = no expiration.
+		return;
 	if (m_notoSaves.size())
 	{
 		int count = 0;
 		for (std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); ++it)
 		{
 			NotoSaves & refNoto = *it;
-			if ((++(refNoto.time) > g_Cfg.m_iNotoTimeout) && (g_Cfg.m_iNotoTimeout > 0))
+			if (++(refNoto.time) > g_Cfg.m_iNotoTimeout)	// updating timer while checking ini's value.
 			{
 				//m_notoSaves.erase(it);
 				NotoSave_Resend(count);
@@ -1215,7 +1230,10 @@ void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 	ADDTOCALLSTACK("CChar::OnNoticeCrime");
 	// I noticed a crime.
 	ASSERT(pCriminal);
-	if ( pCriminal == this )
+	if (pCriminal == this)
+		return;
+
+	if (pCriminal == pCharMark)
 		return;
 	
 	if ( pCriminal->GetNPCBrain() == NPCBRAIN_GUARD )
@@ -1239,11 +1257,10 @@ void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 		if (IsTrigUsed(TRIGGER_SEECRIME))
 		{
 			CScriptTriggerArgs Args;
-			Args.m_iN1 = pCriminal->GetUID();
-			Args.m_iN2 = pCharMark->GetUID();
-			Args.m_iN3 = bCriminal;
-			OnTrigger(CTRIG_SeeCrime, this, &Args);
-			bCriminal = Args.m_iN3 ? true : false;
+			Args.m_iN1 = bCriminal; 
+			Args.m_pO1 = const_cast<CChar*>(pCharMark);
+			OnTrigger(CTRIG_SeeCrime, pCriminal, &Args);
+			bCriminal = Args.m_iN1 ? true : false;
 		}
 		if (bCriminal)
 			Memory_AddObjTypes( pCriminal, MEMORY_SAWCRIME );
@@ -1299,6 +1316,10 @@ bool CChar::CheckCrimeSeen( SKILL_TYPE SkillToSee, CChar * pCharMark, const CObj
 	bool fSeen = false;
 
 	// Who notices ?
+
+	if (m_pNPC && m_pNPC->m_Brain == NPCBRAIN_GUARD) // guards only fight for justice, they can't commit a crime!!?
+		return false;
+
 	CWorldSearch AreaChars( GetTopPoint(), UO_MAP_VIEW_SIZE );
 	for (;;)
 	{
@@ -1312,24 +1333,6 @@ bool CChar::CheckCrimeSeen( SKILL_TYPE SkillToSee, CChar * pCharMark, const CObj
 
 		bool fYour = ( pCharMark == pChar );
 
-		if ( IsTrigUsed(TRIGGER_SEECRIME) )
-		{
-			CScriptTriggerArgs Args( pAction );
-			Args.m_iN1	= SkillToSee;
-			Args.m_iN2	= pItem ? (DWORD) pItem->GetUID() : 0;
-			Args.m_pO1	= pCharMark;
-			int iRet	= TRIGRET_RET_DEFAULT;
-
-			iRet = pChar->OnTrigger( CTRIG_SeeCrime, this, &Args );
-
-			if ( iRet == TRIGRET_RET_TRUE )
-				continue;
-			else if ( iRet == TRIGRET_RET_DEFAULT )
-			{
-				if ( ! g_Cfg.Calc_CrimeSeen( this, pChar, SkillToSee, fYour ))
-					continue;
-			}
-		}
 
 		char *z = Str_GetTemp();
 		if ( pAction != NULL )
@@ -1356,6 +1359,24 @@ bool CChar::CheckCrimeSeen( SKILL_TYPE SkillToSee, CChar * pCharMark, const CObj
 		// They are not a criminal til someone calls the guards !!!
 		if ( SkillToSee == SKILL_SNOOPING )
 		{
+			if (IsTrigUsed(TRIGGER_SEESNOOP))
+			{
+				CScriptTriggerArgs Args(pAction);
+				Args.m_iN1 = SkillToSee ? SkillToSee : pCharMark->Skill_GetActive();;
+				Args.m_iN2 = pItem ? (DWORD)pItem->GetUID() : 0;
+				Args.m_pO1 = pCharMark;
+				int iRet = TRIGRET_RET_DEFAULT;
+
+				iRet = pChar->OnTrigger(CTRIG_SeeSnoop, this, &Args);
+
+				if (iRet == TRIGRET_RET_TRUE)
+					continue;
+				else if (iRet == TRIGRET_RET_DEFAULT)
+				{
+					if (!g_Cfg.Calc_CrimeSeen(this, pChar, SkillToSee, fYour))
+						continue;
+				}
+			}
 			// Off chance of being a criminal. (hehe)
 			if ( Calc_GetRandVal(100) < g_Cfg.m_iSnoopCriminal )
 				pChar->OnNoticeCrime( this, pCharMark );
@@ -1900,17 +1921,17 @@ bool CChar::OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fCommandPet, bool
 	// Are they a criminal for it ? Is attacking me a crime ?
 	if ( Noto_GetFlag(pCharSrc) == NOTO_GOOD )
 	{
-		if ( IsClient())
+		/*if ( IsClient())
 		{
 			// I decide if this is a crime.
 			OnNoticeCrime( pCharSrc, this );
 		}
 		else
-		{
+		{*/
 			// If it is a pet then this a crime others can report.
 			CChar * pCharMark = IsStatFlag(STATF_Pet) ? NPC_PetGetOwner() : this;
-			CheckCrimeSeen(SKILL_NONE, pCharMark, NULL, NULL);
-		}
+			pCharSrc->CheckCrimeSeen(Skill_GetActive(), pCharMark, NULL, NULL);
+		//}
 	}
 
 	if ( ! fCommandPet )
@@ -2782,7 +2803,7 @@ CChar * CChar::Fight_FindBestTarget()
 			}
 		}
 	}*/
-	else if (m_Fight_Targ.CharFind())
+	else if (m_Fight_Targ.CharFind() != NULL)
 		return m_Fight_Targ.CharFind();
 	return NULL;
 }
@@ -2832,17 +2853,17 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 		CChar * pTarg = const_cast<CChar*>(pCharTarg);
 		if ( pTarg->Noto_GetFlag( this ) == NOTO_GOOD )
 		{
-			if ( IsClient())
+			/*if ( IsClient())
 			{
 				// I decide if this is a crime.
 				pTarg->OnNoticeCrime( this, pTarg );
 			}
 			else
-			{
+			{*/
 				// If it is a pet then this a crime others can report.
 				CChar * pCharMark = IsStatFlag(STATF_Pet) ? NPC_PetGetOwner() : this;
-				CheckCrimeSeen( SKILL_NONE, pCharMark, NULL, NULL );
-			}
+				CheckCrimeSeen( SKILL_NONE, pTarg, NULL, NULL );
+			//}
 		}
 	}
 	INT64 threat = 0;

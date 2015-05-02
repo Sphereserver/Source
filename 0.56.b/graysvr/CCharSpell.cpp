@@ -727,7 +727,6 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 	short iTimerEffect = static_cast<short>(pSpell->GetTimerAdjusted());
 
 	//Buffs related variables:
-	int iBuffPercent;
 	TCHAR NumBuff[7][8];
 	LPCTSTR pNumBuff[7] = { NumBuff[0], NumBuff[1], NumBuff[2], NumBuff[3], NumBuff[4], NumBuff[5], NumBuff[6] };
 	//------------------------
@@ -1870,7 +1869,6 @@ bool CChar::Spell_CastDone()
 	ITEMID_TYPE iT2 = ITEMID_NOTHING;
 	CREID_TYPE iC1 = CREID_INVALID;
 	DWORD iColor = HUE_DEFAULT;
-	DWORD iRender = 0;
 
 	unsigned int fieldWidth = 0;
 	unsigned int fieldGauge = 0;

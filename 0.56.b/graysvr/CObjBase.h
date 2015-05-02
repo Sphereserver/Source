@@ -2538,6 +2538,7 @@ enum CTRIG_TYPE
 
 	CTRIG_SeeCrime,			// I am seeing a crime
 	CTRIG_SeeHidden,		// I'm about to see a hidden char
+	CTRIG_SeeSnoop,			// I see someone Snooping something.
 
 	// SKTRIG_QTY
 	CTRIG_SkillAbort,			// SKTRIG_ABORT
@@ -2650,9 +2651,10 @@ public:
 	std::vector<LastAttackers> m_lastAttackers;
 	
 	struct NotoSaves {
-		INT64		time;
-		DWORD		charUID;
-		NOTO_TYPE	value;
+		INT64		time;		// Update timer
+		DWORD		charUID;	// Character viewing me
+		NOTO_TYPE	value;		// Notoriety type
+		NOTO_TYPE	color;		// Color sent on movement packets
 	};
 	std::vector<NotoSaves> m_notoSaves;
 
@@ -3357,7 +3359,7 @@ private:
 	void Noto_ChangeDeltaMsg( int iDelta, LPCTSTR pszType );
 
 public:
-	NOTO_TYPE Noto_GetFlag( const CChar * pChar, bool fIncog = false, bool fInvul = false ) const;
+	NOTO_TYPE Noto_GetFlag( const CChar * pChar, bool fIncog = false, bool fInvul = false, bool bGetColor = false ) const;
 	NOTO_TYPE Noto_CalcFlag( const CChar * pChar, bool fIncog = false, bool fInvul = false ) const;
 	HUE_TYPE Noto_GetHue( const CChar * pChar, bool fIncog = false ) const;
 	bool Noto_IsNeutral() const;
@@ -3378,8 +3380,8 @@ public:
 	bool Noto_Criminal( CChar * pChar = NULL);
 	void Noto_Murder();
 	int NotoSave() { return static_cast<int>(m_notoSaves.size()); }
-	void NotoSave_Add( CChar * pChar, NOTO_TYPE value );
-	NOTO_TYPE NotoSave_GetValue( int id );
+	void NotoSave_Add( CChar * pChar, NOTO_TYPE value, NOTO_TYPE color = NOTO_INVALID );
+	NOTO_TYPE NotoSave_GetValue( int id, bool bGetColor = false );
 	NOTO_TYPE NotoSave_GetValue( CChar * pChar );
 	INT64 NotoSave_GetTime( int id );
 	void NotoSave_SetValue( CChar * pChar, NOTO_TYPE value );

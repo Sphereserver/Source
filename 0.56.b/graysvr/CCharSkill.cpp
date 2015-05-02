@@ -2517,7 +2517,7 @@ int CChar::Skill_Provocation(SKTRIG_TYPE stage)
 			if ( pCharProv->Noto_GetFlag(this) == NOTO_GOOD )
 			{
 				// lose some karma for this.
-				CheckCrimeSeen(SKILL_NONE, NULL, pCharProv, g_Cfg.GetDefaultMsg( DEFMSG_PROVOKING_CRIME ));
+				CheckCrimeSeen(SKILL_PROVOCATION, NULL, pCharProv, g_Cfg.GetDefaultMsg( DEFMSG_PROVOKING_CRIME ));
 				return -SKTRIG_ABORT;
 			}
 
@@ -2525,7 +2525,7 @@ int CChar::Skill_Provocation(SKTRIG_TYPE stage)
 			// but skill still succeed.
 			if ( pCharTarg->Noto_GetFlag(this) == NOTO_GOOD )
 			{
-				CheckCrimeSeen(SKILL_NONE, NULL, pCharTarg, "provoking");
+				CheckCrimeSeen(SKILL_PROVOCATION, NULL, pCharTarg, "provoking");
 			}
 
 			pCharProv->Fight_Attack(pCharTarg); // Make the actual provoking.
