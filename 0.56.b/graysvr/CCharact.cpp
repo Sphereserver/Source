@@ -3006,8 +3006,8 @@ bool CChar::Death()
 			Noto_Fame( -Stat_GetAdjusted(STAT_FAME)/10 );
 
 		// Experience could go down
-		if ( g_Cfg.m_bExperienceSystem)
-			ChangeExperience(-(static_cast<int>(m_exp)/10),pKiller);
+		//if (g_Cfg.m_bExperienceSystem && (g_Cfg.m_iExperienceMode&EXP_MODE_ALLOW_DOWN))	//Checks are already made in the ChangeExperience(), no reason to double check something.
+		ChangeExperience(-(static_cast<int>(m_exp)/10),pKiller);
 
 		SetHue( HUE_DEFAULT );	// Get all pale.
 

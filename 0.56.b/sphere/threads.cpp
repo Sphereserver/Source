@@ -361,6 +361,7 @@ bool AbstractThread::checkStuck()
 		{
 			//	TODO:
 			//g_Log.Event(LOGL_CRIT, "'%s' thread hang, restarting...\n", m_name);
+			static_cast<AbstractSphereThread*>(this)->printStackTrace();
 			terminate(false);
 			start();
 			return true;

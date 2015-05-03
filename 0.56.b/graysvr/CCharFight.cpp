@@ -191,7 +191,7 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 	CChar * pThis = const_cast<CChar*>(this);
 	CChar * pTarget = const_cast<CChar*>(pCharViewer);
 	NOTO_TYPE Noto;
-	NOTO_TYPE color;
+	NOTO_TYPE color = NOTO_INVALID;
 	if ( pThis->m_notoSaves.size() )
 	{
 		int id = -1;
@@ -211,10 +211,12 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 		color = static_cast<NOTO_TYPE>(args.m_iN2);
 		if (Noto > NOTO_INVALID && Noto <= NOTO_INVUL) // if Notoriety is between NOTO_GOOD and NOTO_INVUL its ok
 		{
+			g_Log.EventDebug("Setting color = %d\n", (int)color);
 			pThis->NotoSave_Add( pTarget, Noto, color);
 			return Noto;
 		}
 	}
+	g_Log.EventDebug("Setting color = %d - notrigger\n",(int)color);
 	Noto = Noto_CalcFlag( pCharViewer, fAllowIncog, fAllowInvul);
 	pThis->NotoSave_Add(pTarget, Noto, color);
 	return Noto;
@@ -758,15 +760,18 @@ void CChar::NotoSave_Add( CChar * pChar, NOTO_TYPE value, NOTO_TYPE color  )
 			if ( refNoto.charUID == uid )
 			{
 				// Found him, no actions needed so I forget about him...
-				// or should I update 'value' ...?: refNoto.value = value;
+				// or should I update data ?
+
+				//refNoto.value = value;
+				//refNoto.color = color;
 				return;
 			}
 		}
 	}
 	NotoSaves refNoto;
-	refNoto.value = value;
 	refNoto.charUID = pChar->GetUID();
 	refNoto.time = 0;
+	refNoto.value = value;
 	refNoto.color = color;
 	m_notoSaves.push_back(refNoto);
 }
@@ -2268,7 +2273,7 @@ effect_bounce:
 		uType = static_cast<DAMAGE_TYPE>(Args.m_iN2);
 	}
 
-	int iDamageChance = static_cast<int>(Args.m_VarsLocal.GetKeyNum("ItemDamageChance"),true);
+	int iDamageChance = static_cast<int>(Args.m_VarsLocal.GetKeyNum("ItemDamageChance",true));
 	if ( (iDamageChance > Calc_GetRandVal(100)) && !pCharDef->Can(CAN_C_NONHUMANOID) )
 	{
 		int iHitRoll = Calc_GetRandVal(100);

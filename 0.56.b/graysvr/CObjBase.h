@@ -2651,10 +2651,10 @@ public:
 	std::vector<LastAttackers> m_lastAttackers;
 	
 	struct NotoSaves {
-		INT64		time;		// Update timer
 		DWORD		charUID;	// Character viewing me
-		NOTO_TYPE	value;		// Notoriety type
 		NOTO_TYPE	color;		// Color sent on movement packets
+		INT64		time;		// Update timer
+		NOTO_TYPE	value;		// Notoriety type
 	};
 	std::vector<NotoSaves> m_notoSaves;
 

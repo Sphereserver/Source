@@ -784,69 +784,69 @@ ENDIF
 IF (<SpellChanneling>)
 	SRC.SpellChanneling += 1
 ENDIF
-IF (<NightSight>)
-	IF (<SRC.NightSight>==0)
-		SRC.NIGHTSIGHT 1
+// IF (<NightSight>)
+	// IF (<SRC.NightSight>==0)
+		// SRC.NIGHTSIGHT 1
 		// FIXME: remove nightsight spell effect first?
 		// FIXME: Add nightsight buff icon?
-	ENDIF
-	SRC.TAG0.NightSight += 1
-ENDIF
-IF (<IncreaseDam>)
-	SRC.IncreaseDam += <IncreaseDam>
-ENDIF
-IF (<IncreaseDefChance>)
-	IF (<IncreaseDefChance> < 0)
-		SRC.SYSMESSAGELOC color_text,1062318//"Your defense chance has been reduced!"
-	ENDIF
-	SRC.IncreaseDefChance += <IncreaseDefChance>
-ENDIF
-IF (<IncreaseHitChance>)
-	IF (<IncreaseHitChance> < 0)
-		SRC.SYSMESSAGELOC color_text,1062319//"Your attack chance has been reduced!"
-	ENDIF
-	SRC.IncreaseHitChance += <IncreaseHitChance>
-ENDIF
+	// ENDIF
+	// SRC.TAG0.NightSight += 1
+// ENDIF
+// IF (<IncreaseDam>)
+	// SRC.IncreaseDam += <IncreaseDam>
+// ENDIF
+// IF (<IncreaseDefChance>)
+	// IF (<IncreaseDefChance> < 0)
+		// SRC.SYSMESSAGELOC color_text,1062318//"Your defense chance has been reduced!"
+	// ENDIF
+	// SRC.IncreaseDefChance += <IncreaseDefChance>
+// ENDIF
+// IF (<IncreaseHitChance>)
+	// IF (<IncreaseHitChance> < 0)
+		// SRC.SYSMESSAGELOC color_text,1062319//"Your attack chance has been reduced!"
+	// ENDIF
+	// SRC.IncreaseHitChance += <IncreaseHitChance>
+// ENDIF
 IF (<DecreaseHitChance>)
 	IF (<DecreaseHitChance> > 0)
 		SRC.SYSMESSAGELOC color_text,1062319//"Your attack chance has been reduced!"
 	ENDIF
 	SRC.DecreaseHitChance += <DecreaseHitChance>
 ENDIF
-IF (<IncreaseSwingSpeed>)
-	SRC.IncreaseSwingSpeed += <IncreaseSwingSpeed>
-ENDIF
-IF (<DamPhysical>)
-	SRC.DamPhysical += <DamPhysical>
-ENDIF
-IF (<DamFire>)
-	SRC.DamFire += <DamFire>
-ENDIF
-IF (<DamCold>)
-	SRC.DamCold += <DamCold>
-ENDIF
-IF (<DamPoison>)
-	SRC.DamPoison += <DamPoison>
-ENDIF
-IF (<DamEnergy>)
-	SRC.DamEnergy += <DamEnergy>
-ENDIF
-IF (<RESCOLD>)
-	SRC.RESCOLD += <RESCOLD>
-ENDIF
-IF (<RESENERGY>)
-	SRC.RESENERGY += <RESENERGY>
-ENDIF
-IF (<RESFIRE>)
-	SRC.RESFIRE += <RESFIRE>
-ENDIF
-IF (<RESPHYSICAL>)
-	SRC.RESPHYSICAL += <RESPHYSICAL>
-	SRC.MODAR += <RESPHYSICAL>
-ENDIF
-IF (<RESPOISON>)
-	SRC.RESPOISON += <RESPOISON>
-ENDIF
+// IF (<IncreaseSwingSpeed>)
+	// SRC.IncreaseSwingSpeed += <IncreaseSwingSpeed>
+// ENDIF
+// IF (<DamPhysical>)
+	// SRC.DamPhysical += <DamPhysical>
+// ENDIF
+// IF (<DamFire>)
+	// SRC.DamFire += <DamFire>
+// ENDIF
+// IF (<DamCold>)
+	// SRC.DamCold += <DamCold>
+// ENDIF
+// IF (<DamPoison>)
+	// SRC.DamPoison += <DamPoison>
+// ENDIF
+// IF (<DamEnergy>)
+	// SRC.DamEnergy += <DamEnergy>
+// ENDIF
+// IF (<RESCOLD>)
+	// SRC.RESCOLD += <RESCOLD>
+// ENDIF
+// IF (<RESENERGY>)
+	// SRC.RESENERGY += <RESENERGY>
+// ENDIF
+// IF (<RESFIRE>)
+	// SRC.RESFIRE += <RESFIRE>
+// ENDIF
+// IF (<RESPHYSICAL>)
+	// SRC.RESPHYSICAL += <RESPHYSICAL>
+	// SRC.MODAR += <RESPHYSICAL>
+// ENDIF
+// IF (<RESPOISON>)
+	// SRC.RESPOISON += <RESPOISON>
+// ENDIF
 IF (<EnhancePotions>)
 	SRC.EnhancePotions += <EnhancePotions>
 ENDIF
@@ -856,23 +856,23 @@ ENDIF
 IF (<LowerReagentCost>)
 	SRC.LowerReagentCost += <LowerReagentCost>
 ENDIF
-IF (<IncreaseSpellDam>)
-	SRC.IncreaseSpellDam += <IncreaseSpellDam>
-ENDIF
+// IF (<IncreaseSpellDam>)
+	// SRC.IncreaseSpellDam += <IncreaseSpellDam>
+// ENDIF
 IF (<IncreaseGold>)
 	SRC.IncreaseGold += <IncreaseGold>
 ENDIF
 IF (<ReflectPhysicalDam>)
 	SRC.ReflectPhysicalDam += <ReflectPhysicalDam>
 ENDIF
-IF (<LUCK>)
-	SRC.LUCK += <LUCK>
-	IF (<LUCK> > 0)
-		SRC.SYSMESSAGELOC color_text,1079551//"Your luck just improved!"
-	ELSE
-		SRC.SYSMESSAGELOC color_text,1079552//"Your luck just ran out."
-	ENDIF
-ENDIF
+// IF (<LUCK>)
+	// SRC.LUCK += <LUCK>
+	// IF (<LUCK> > 0)
+		// SRC.SYSMESSAGELOC color_text,1079551//"Your luck just improved!"
+	// ELSE
+		// SRC.SYSMESSAGELOC color_text,1079552//"Your luck just ran out."
+	// ENDIF
+// ENDIF
 IF (<BonusStr>)//strength bonus
 	SRC.MODSTR += <BonusStr>
 ENDIF
@@ -904,9 +904,9 @@ IF (<FasterCastRecovery>)//alters the "value" of mana regenerated
 	SRC.FasterCastRecovery += <FasterCastRecovery>
 	SRC.RegenValMana += <FasterCastRecovery>
 ENDIF
-IF (<FasterCasting>)
-	SRC.FasterCasting += <FasterCasting>
-ENDIF
+// IF (<FasterCasting>)
+	// SRC.FasterCasting += <FasterCasting>
+// ENDIF
 
 IF (<HitAreaPhysical>)
 	SRC.HitAreaPhysical += <HitAreaPhysical>
@@ -996,68 +996,68 @@ ENDIF
 IF (<SpellChanneling>)
 	SRC.SpellChanneling -=1
 ENDIF
-IF (<NightSight>)
-	SRC.TAG.NightSight -= 1
-	IF (<SRC.TAG.NightSight>==0)
-		SRC.TAG.NightSight
-		SRC.NIGHTSIGHT 0
-	ENDIF
-ENDIF
-IF (<IncreaseDam>)
-	SRC.IncreaseDam -= <IncreaseDam>
-ENDIF
+// IF (<NightSight>)
+	// SRC.TAG.NightSight -= 1
+	// IF (<SRC.TAG.NightSight>==0)
+		// SRC.TAG.NightSight
+		// SRC.NIGHTSIGHT 0
+	// ENDIF
+// ENDIF
+// IF (<IncreaseDam>)
+	// SRC.IncreaseDam -= <IncreaseDam>
+// ENDIF
 IF (<IncreaseDefChance>)
 	SRC.IncreaseDefChance -= <IncreaseDefChance>
 	IF (<SRC.IncreaseDefChance>==0)
 		SRC.SYSMESSAGELOC color_text,1062321//"Your defense chance has returned to normal."
 	ENDIF
 ENDIF
-IF (<IncreaseHitChance>)
-	SRC.IncreaseHitChance -= <IncreaseHitChance>
-	IF (<SRC.IncreaseHitChance>==0)
-		SRC.SYSMESSAGELOC color_text,1062320//"Your attack chance has returned to normal."
-	ENDIF
-ENDIF
+// IF (<IncreaseHitChance>)
+	// SRC.IncreaseHitChance -= <IncreaseHitChance>
+	// IF (<SRC.IncreaseHitChance>==0)
+		// SRC.SYSMESSAGELOC color_text,1062320//"Your attack chance has returned to normal."
+	// ENDIF
+// ENDIF
 IF (<DecreaseHitChance>)
 	SRC.DecreaseHitChance -= <DecreaseHitChance>
 	IF (<SRC.DecreaseHitChance>==0)
 		SRC.SYSMESSAGELOC color_text,1062320//"Your attack chance has returned to normal."
 	ENDIF
 ENDIF
-IF (<IncreaseSwingSpeed>)
-	SRC.IncreaseSwingSpeed -= <IncreaseSwingSpeed>
-ENDIF
-IF (<DamPhysical>)
-	SRC.DamPhysical -= <DamPhysical>
-ENDIF
-IF (<DamFire>)
-	SRC.DamFire -= <DamFire>
-ENDIF
-IF (<DamCold>)
-	SRC.DamCold -= <DamCold>
-ENDIF
-IF (<DamPoison>)
-	SRC.DamPoison -= <DamPoison>
-ENDIF
-IF (<DamEnergy>)
-	SRC.DamEnergy -= <DamEnergy>
-ENDIF
-IF (<RESCOLD>)
-	SRC.RESCOLD -= <RESCOLD>
-ENDIF
-IF (<RESENERGY>)
-	SRC.RESENERGY -= <RESENERGY>
-ENDIF
-IF (<RESFIRE>)
-	SRC.RESFIRE -= <RESFIRE>
-ENDIF
-IF (<RESPOISON>)
-	SRC.RESPOISON -= <RESPOISON>
-ENDIF
-IF (<RESPHYSICAL>)
-	SRC.RESPHYSICAL -= <RESPHYSICAL>
-	SRC.MODAR -= <RESPHYSICAL>
-ENDIF
+// IF (<IncreaseSwingSpeed>)
+	// SRC.IncreaseSwingSpeed -= <IncreaseSwingSpeed>
+// ENDIF
+// IF (<DamPhysical>)
+	// SRC.DamPhysical -= <DamPhysical>
+// ENDIF
+// IF (<DamFire>)
+	// SRC.DamFire -= <DamFire>
+// ENDIF
+// IF (<DamCold>)
+	// SRC.DamCold -= <DamCold>
+// ENDIF
+// IF (<DamPoison>)
+	// SRC.DamPoison -= <DamPoison>
+// ENDIF
+// IF (<DamEnergy>)
+	// SRC.DamEnergy -= <DamEnergy>
+// ENDIF
+// IF (<RESCOLD>)
+	// SRC.RESCOLD -= <RESCOLD>
+// ENDIF
+// IF (<RESENERGY>)
+	// SRC.RESENERGY -= <RESENERGY>
+// ENDIF
+// IF (<RESFIRE>)
+	// SRC.RESFIRE -= <RESFIRE>
+// ENDIF
+// IF (<RESPOISON>)
+	// SRC.RESPOISON -= <RESPOISON>
+// ENDIF
+// IF (<RESPHYSICAL>)
+	// SRC.RESPHYSICAL -= <RESPHYSICAL>
+	// SRC.MODAR -= <RESPHYSICAL>
+// ENDIF
 IF (<EnhancePotions>)
 	SRC.EnhancePotions -= <EnhancePotions>
 ENDIF
@@ -1076,14 +1076,14 @@ ENDIF
 IF (<ReflectPhysicalDam>)
 	SRC.ReflectPhysicalDam -= <ReflectPhysicalDam>
 ENDIF
-IF (<LUCK>)
-	IF (<LUCK> < 0)
-		SRC.SYSMESSAGELOC color_text,1079551//"Your luck just improved!"
-	ELSE
-		SRC.SYSMESSAGELOC color_text,1079552//"Your luck just ran out."
-	ENDIF
-	SRC.LUCK -= <LUCK>
-ENDIF
+// IF (<LUCK>)
+	// IF (<LUCK> < 0)
+		// SRC.SYSMESSAGELOC color_text,1079551//"Your luck just improved!"
+	// ELSE
+		// SRC.SYSMESSAGELOC color_text,1079552//"Your luck just ran out."
+	// ENDIF
+	// SRC.LUCK -= <LUCK>
+// ENDIF
 IF (<BonusStr>)//strength bonus
 	SRC.MODSTR -= <BonusStr>
 ENDIF
@@ -1115,9 +1115,9 @@ IF (<FasterCastRecovery>)
 	SRC.FasterCastRecovery -= <FasterCastRecovery>
 	SRC.RegenValMana -= <FasterCastRecovery>
 ENDIF
-IF (<FasterCasting>)
-	SRC.FasterCasting -= <FasterCasting>
-ENDIF
+// IF (<FasterCasting>)
+	// SRC.FasterCasting -= <FasterCasting>
+// ENDIF
 
 IF (<HitAreaPhysical>)
 	SRC.HitAreaPhysical -= <HitAreaPhysical>

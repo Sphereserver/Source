@@ -2048,6 +2048,12 @@ do_default:
 								sVal.FormatHex( uid.CharFind() ? refnoto.charUID : 0 );
 								return true;
 							}
+							else if (!strnicmp(pszKey, "COLOR", 5))
+							{
+								sVal.FormatVal(refnoto.color);
+								return true;
+							}
+							return false;
 						}
 					}
 				}
@@ -3116,6 +3122,7 @@ do_default:
 			break;
 		case CHC_LEVEL:
 			m_level = s.GetArgVal();
+			ChangeExperience();
 			break;
 		case CHC_VISUALRANGE:
 			{
@@ -4083,6 +4090,9 @@ unsigned int Calc_ExpGet_Level(unsigned int exp)
 	unsigned int level = 0; // current level
 	unsigned int req = g_Cfg.m_iLevelNextAt; // required xp for next level
 
+	if (req < 1)	//Must do this check in case ini's LevelNextAt is not set or server will freeze because exp will never decrease in the while.
+		return 0;
+
 	while (exp >= req)
 	{
 		// reduce xp and raise level
@@ -4107,113 +4117,122 @@ unsigned int Calc_ExpGet_Level(unsigned int exp)
 void CChar::ChangeExperience(int delta, CChar *pCharDead)
 {
 	ADDTOCALLSTACK("CChar::ChangeExperience");
-	// Calculate experience changes
-	if (pCharDead != NULL)
-	{
-		if ((pCharDead->m_pPlayer) && !(g_Cfg.m_iExperienceKoefPVP))	// does PvP allow exp changes?
-			return;
-		if ((pCharDead->m_pNPC) && !(g_Cfg.m_iExperienceKoefPVM))		// does PvM allow exp changes?
-			return;
-	}
 
-	bool bShowMsg = (m_pClient != NULL);
-	if (IsTrigUsed(TRIGGER_EXPCHANGE))
-	{
-		CScriptTriggerArgs	args(delta, bShowMsg);
-		args.m_pO1 = pCharDead;
-		if (OnTrigger(CTRIG_ExpChange, this, &args) == TRIGRET_RET_TRUE)
-			return;
-		delta = static_cast<int>(args.m_iN1);
-		bShowMsg = (args.m_iN2 != 0);
-	}
-
-	if (delta < 0 && !(g_Cfg.m_iExperienceMode & EXP_MODE_ALLOW_DOWN))
-		return;
-	if (static_cast<int>(m_exp) + delta < 0)
-		delta = -static_cast<int>(m_exp);
-	if (g_Cfg.m_bLevelSystem && (g_Cfg.m_iExperienceMode & EXP_MODE_DOWN_NOLEVEL))
-	{
-		unsigned int ExpMin = Calc_ExpGet_Exp(m_level);
-		if (m_exp + delta < ExpMin)
-			delta = m_exp - ExpMin;
-	}
-	if (delta == 0)
+	if (!g_Cfg.m_iExperienceMode)
 		return;
 
-	if (g_Cfg.m_wDebugFlags & DEBUGF_EXP)
-		DEBUG_ERR(("%s %s experience change (was %u, delta %d, now %u)\n", (m_pNPC ? "NPC" : "Player"), GetName(), m_exp, delta, m_exp + delta));
-
-	m_exp += delta;
-
-	if (bShowMsg)
+	static UINT const keyWords[] =
 	{
-		static UINT const keyWords[] =
+		DEFMSG_EXP_CHANGE_1,		// 0
+		DEFMSG_EXP_CHANGE_2,
+		DEFMSG_EXP_CHANGE_3,
+		DEFMSG_EXP_CHANGE_4,
+		DEFMSG_EXP_CHANGE_5,
+		DEFMSG_EXP_CHANGE_6,		// 5
+		DEFMSG_EXP_CHANGE_7,
+		DEFMSG_EXP_CHANGE_8
+	};
+
+	if (delta != 0 || pCharDead)//	zero call will sync the exp level
+	{
+		if (delta < 0)
 		{
-			DEFMSG_EXP_CHANGE_1,
-			DEFMSG_EXP_CHANGE_2,
-			DEFMSG_EXP_CHANGE_3,
-			DEFMSG_EXP_CHANGE_4,
-			DEFMSG_EXP_CHANGE_5,
-			DEFMSG_EXP_CHANGE_6,
-			DEFMSG_EXP_CHANGE_7,
-			DEFMSG_EXP_CHANGE_8
-		};
+			if (!(g_Cfg.m_iExperienceMode&EXP_MODE_ALLOW_DOWN))	// do not allow changes to minus
+				return;
+			// limiting delta to current level? check if delta goes out of level
+			if (g_Cfg.m_bLevelSystem && g_Cfg.m_iExperienceMode&EXP_MODE_DOWN_NOLEVEL)
+			{
+				unsigned int exp = Calc_ExpGet_Exp(m_level);
+				if (m_exp + delta < exp)
+					delta = m_exp - exp;
+			}
+		}
 
-		int iWord = 0;
-		int absval = abs(delta);
-		int maxval = (g_Cfg.m_bLevelSystem && g_Cfg.m_iLevelNextAt) ? maximum(g_Cfg.m_iLevelNextAt, 1000) : 1000;
+		if (g_Cfg.m_wDebugFlags&DEBUGF_EXP)
+		{
+			DEBUG_ERR(("%s %s experience change (was %u, delta %d, now %u)\n",
+				(m_pNPC ? "NPC" : "Player"), GetName(), m_exp, delta, m_exp + delta));
+		}
 
-		if (absval >= maxval)					// 100%
-			iWord = 7;
-		else if (absval >= (maxval * 2) / 3)	//  66%
-			iWord = 6;
-		else if (absval >= maxval / 2)			//  50%
-			iWord = 5;
-		else if (absval >= maxval / 3)			//  33%
-			iWord = 4;
-		else if (absval >= maxval / 5)			//  20%
-			iWord = 3;
-		else if (absval >= maxval / 7)			//  14%
-			iWord = 2;
-		else if (absval >= maxval / 14)			//   7%
-			iWord = 1;
+		bool bShowMsg = (m_pClient != NULL);
 
-		m_pClient->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_EXP_CHANGE_0),
-			(delta > 0) ? g_Cfg.GetDefaultMsg(DEFMSG_EXP_CHANGE_GAIN) : g_Cfg.GetDefaultMsg(DEFMSG_EXP_CHANGE_LOST),
-			g_Cfg.GetDefaultMsg(keyWords[iWord]));
+		if (IsTrigUsed(TRIGGER_EXPCHANGE))
+		{
+			CScriptTriggerArgs	args(delta, bShowMsg);
+			args.m_pO1 = pCharDead;
+			if (OnTrigger(CTRIG_ExpChange, this, &args) == TRIGRET_RET_TRUE)
+				return;
+			delta = static_cast<int>(args.m_iN1);
+			bShowMsg = (args.m_iN2 != 0);
+		}
+		m_exp += delta;
+		
+		if (m_exp < 0)
+			m_exp = 0;
+
+		if (m_pClient && bShowMsg && delta)
+		{
+			int iWord = 0;
+			int absval = abs(delta);
+			int maxval = (g_Cfg.m_bLevelSystem && g_Cfg.m_iLevelNextAt) ? maximum(g_Cfg.m_iLevelNextAt, 1000) : 1000;
+
+			if (absval >= maxval)				// 100%
+				iWord = 7;
+			else if (absval >= (maxval * 2) / 3)	//  66%
+				iWord = 6;
+			else if (absval >= maxval / 2)		//  50%
+				iWord = 5;
+			else if (absval >= maxval / 3)		//  33%
+				iWord = 4;
+			else if (absval >= maxval / 5)		//  20%
+				iWord = 3;
+			else if (absval >= maxval / 7)		//  14%
+				iWord = 2;
+			else if (absval >= maxval / 14)		//   7%
+				iWord = 1;
+
+			m_pClient->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_EXP_CHANGE_0),
+				(delta > 0) ? g_Cfg.GetDefaultMsg(DEFMSG_EXP_CHANGE_GAIN) : g_Cfg.GetDefaultMsg(DEFMSG_EXP_CHANGE_LOST),
+				g_Cfg.GetDefaultMsg(keyWords[iWord]));
+		}
 	}
 
-	// Calculate level changes
-	if (!g_Cfg.m_bLevelSystem)
-		return;
-
-	if (delta == 0 || (static_cast<int>(m_level)+delta < 0))
-		return;
-
-	delta = Calc_ExpGet_Level(m_exp) - m_level;
-
-	bShowMsg = (m_pClient != NULL);
-	if (IsTrigUsed(TRIGGER_EXPLEVELCHANGE))
+	if (g_Cfg.m_bLevelSystem)
 	{
-		CScriptTriggerArgs	args(delta, bShowMsg);
-		if (OnTrigger(CTRIG_ExpLevelChange, this, &args) == TRIGRET_RET_TRUE)
-			return;
-		delta = static_cast<int>(args.m_iN1);
-		bShowMsg = (args.m_iN2 != 0);
-	}
+		unsigned int level = Calc_ExpGet_Level(m_exp);
 
-	if (delta == 0 || (static_cast<int>(m_level) + delta < 0))
-		return;
+		if (level != m_level)
+		{
+			delta = level - m_level;
 
-	if (g_Cfg.m_wDebugFlags & DEBUGF_LEVEL)
-		DEBUG_ERR(("%s %s level change (was %u, delta %d, now %u)\n", (m_pNPC ? "NPC" : "Player"), GetName(), m_level, delta, m_level + delta));
+			bool bShowMsg = (m_pClient != NULL);
 
-	m_level += delta;
+			if (IsTrigUsed(TRIGGER_EXPLEVELCHANGE))
+			{
+				CScriptTriggerArgs	args(delta);
+				if (OnTrigger(CTRIG_ExpLevelChange, this, &args) == TRIGRET_RET_TRUE)
+					return;
+				delta = static_cast<int>(args.m_iN1);
+				bShowMsg = (args.m_iN2 != 0);
+			}
 
-	if (bShowMsg)
-	{
-		m_pClient->SysMessagef((abs(delta) == 1) ? g_Cfg.GetDefaultMsg(DEFMSG_EXP_LVLCHANGE_0) : g_Cfg.GetDefaultMsg(DEFMSG_EXP_LVLCHANGE_1),
-			(delta > 0) ? g_Cfg.GetDefaultMsg(DEFMSG_EXP_LVLCHANGE_GAIN) : g_Cfg.GetDefaultMsg(DEFMSG_EXP_LVLCHANGE_LOST));
+			level = m_level + delta;
+			if (g_Cfg.m_wDebugFlags&DEBUGF_LEVEL)
+			{
+				DEBUG_ERR(("%s %s level change (was %u, delta %d, now %u)\n",
+					(m_pNPC ? "NPC" : "Player"), GetName(), m_level, delta, level));
+			}
+			m_level = level;
+
+			if (m_level < 0)
+				m_level = 0;
+
+			if (m_pClient && bShowMsg)
+			{
+				m_pClient->SysMessagef((abs(delta) == 1) ? g_Cfg.GetDefaultMsg(DEFMSG_EXP_LVLCHANGE_0) : g_Cfg.GetDefaultMsg(DEFMSG_EXP_LVLCHANGE_1),
+					(delta > 0) ? g_Cfg.GetDefaultMsg(DEFMSG_EXP_LVLCHANGE_GAIN) : g_Cfg.GetDefaultMsg(DEFMSG_EXP_LVLCHANGE_LOST));
+			}
+		}
 	}
 }
 
