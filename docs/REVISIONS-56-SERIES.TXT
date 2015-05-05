@@ -2061,4 +2061,9 @@ Fixed some compiling warnings.
 03-05-2015, XuN
 When a thread is hang it will now release the stack trace to be able to follow what caused the freeze.
 Some fixes on experience and level system blocking changes on some circunstances and an infinite loop freezing server.
-Updated sphere_item_typedef_equipitem.scp commenting from @Equip and @UnEquip the variables we are already setting from the source
+Updated sphere_item_typedef_equipitem.scp commenting from @Equip and @UnEquip the variables we are already setting from the source.
+
+05-05-2015, XuN
+Removed 'glow effect' from parrying in the source and added it under @UseQuick in parrying skill in sphere_skills.scp
+Fixed @Eat not setting values correctly in some cases.
+Fixed argn2 on @NotoSend not working as intended (notice that PetsInheritNotoriety may affect and block this).

@@ -211,15 +211,17 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 		color = static_cast<NOTO_TYPE>(args.m_iN2);
 		if (Noto > NOTO_INVALID && Noto <= NOTO_INVUL) // if Notoriety is between NOTO_GOOD and NOTO_INVUL its ok
 		{
-			g_Log.EventDebug("Setting color = %d\n", (int)color);
 			pThis->NotoSave_Add( pTarget, Noto, color);
-			return Noto;
+			goto NotoReturn;
 		}
 	}
-	g_Log.EventDebug("Setting color = %d - notrigger\n",(int)color);
 	Noto = Noto_CalcFlag( pCharViewer, fAllowIncog, fAllowInvul);
 	pThis->NotoSave_Add(pTarget, Noto, color);
-	return Noto;
+NotoReturn:
+	if (bOnlyColor && color != 0)
+		return color;
+	else
+		return Noto;
 }
 
 NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, bool fAllowInvul ) const
@@ -334,6 +336,20 @@ HUE_TYPE CChar::Noto_GetHue( const CChar * pCharViewer, bool fIncog ) const
 	CVarDefCont * sVal = GetKey( "NAME.HUE", true );
 	if ( sVal )
 		return  static_cast<HUE_TYPE>(sVal->GetValNum());
+
+	CChar * pThis = const_cast<CChar*>(this);
+	CChar * pTarget = const_cast<CChar*>(pCharViewer);
+	if (pThis->m_notoSaves.size())
+	{
+		int id = -1;
+		if (pThis->m_pNPC && pThis->NPC_PetGetOwner() && g_Cfg.m_iPetsInheritNotoriety != 0)	// If I'm a pet and have owner I redirect noto to him.
+			pThis = pThis->NPC_PetGetOwner();
+
+		id = pThis->NotoSave_GetID(pTarget);
+
+		if (id != -1)
+			return pThis->NotoSave_GetValue(id, true);
+	}
 
 	switch ( Noto_GetFlag( pCharViewer, fIncog, true ))
 	{
@@ -762,8 +778,8 @@ void CChar::NotoSave_Add( CChar * pChar, NOTO_TYPE value, NOTO_TYPE color  )
 				// Found him, no actions needed so I forget about him...
 				// or should I update data ?
 
-				//refNoto.value = value;
-				//refNoto.color = color;
+				refNoto.value = value;
+				refNoto.color = color;
 				return;
 			}
 		}
@@ -788,7 +804,7 @@ NOTO_TYPE CChar::NotoSave_GetValue( int id, bool bGetColor )
 	if ( static_cast<int>(m_notoSaves.size()) <= id )
 		return NOTO_INVALID;
 	NotoSaves & refNotoSave = m_notoSaves.at(id);
-	if (bGetColor && refNotoSave.color >= NOTO_INVALID )	// retrieving color if requested... only if a color is greater than 0 (to avoid possible crashes).
+	if (bGetColor && refNotoSave.color != 0 )	// retrieving color if requested... only if a color is greater than 0 (to avoid possible crashes).
 		return refNotoSave.color;
 	else
 		return refNotoSave.value;
@@ -2201,7 +2217,7 @@ effect_bounce:
 		ParryChance *= DexMod / 100;
 		if ( Skill_UseQuick( SKILL_PARRYING, ParryChance, true, false ))
 		{
-			Effect( EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 16 );
+			//Effect( EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 16 ); called in @UseQuick on parrying skill
 			if ( IsPriv(PRIV_DETAIL) )
 				pSrc->SysMessageDefault( DEFMSG_COMBAT_PARRY );
 			if ( pItemHit != NULL )

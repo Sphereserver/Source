@@ -2056,29 +2056,23 @@ void CChar::EatAnim( LPCTSTR pszName, int iQty )
 		iFood = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Food", true)) + Stat_GetVal(STAT_FOOD);
 
 	}
-	if (bIgnoreMax)
+	if (!bIgnoreMax)
 	{
-		if (iHits)
-			Stat_SetVal(STAT_STR, Stat_GetMax(STAT_STR));
-		if (iStam)
-			Stat_SetVal(STAT_DEX, Stat_GetMax(STAT_DEX));
-		if (iMana)
-			Stat_SetVal(STAT_INT, Stat_GetMax(STAT_INT));
-		if (iFood)
-			Stat_SetVal(STAT_FOOD, Stat_GetMax(STAT_FOOD));
+			iHits = minimum(iHits, Stat_GetMax(STAT_STR));
+			iStam = minimum(iStam, Stat_GetMax(STAT_DEX));
+			iMana = minimum(iMana, Stat_GetMax(STAT_INT));
+			iFood = minimum(iFood, Stat_GetMax(STAT_FOOD));
 	}
-	else
-	{
-		if (iHits)
-			Stat_SetVal(STAT_STR, minimum(iHits, Stat_GetMax(STAT_STR)));
-		if (iStam)
-			Stat_SetVal(STAT_DEX, minimum(iStam, Stat_GetMax(STAT_DEX)));
-		if (iMana)
-			Stat_SetVal(STAT_INT, minimum(iMana, Stat_GetMax(STAT_INT)));
-		if (iFood)
-			Stat_SetVal(STAT_FOOD, minimum(iFood, Stat_GetMax(STAT_FOOD)));
-	}
+	if (iHits)
+		Stat_SetVal(STAT_STR, iHits);
+	if (iStam)
+		Stat_SetVal(STAT_DEX, iStam);
+	if (iMana)
+		Stat_SetVal(STAT_INT, iMana);
+	if (iFood)
+		Stat_SetVal(STAT_FOOD, iFood);
 }
+	
 
 bool CChar::Reveal( DWORD dwFlags )
 {
@@ -2283,6 +2277,7 @@ CItem * CChar::Horse_GetMountItem() const
 
 CChar * CChar::Horse_GetMountChar() const
 {
+	// Gets my riding character, if i'm being mounted.
 	ADDTOCALLSTACK("CChar::Horse_GetMountChar");
 	CItem * pItem = Horse_GetMountItem();
 	if ( pItem == NULL )
@@ -2974,6 +2969,12 @@ bool CChar::Death()
 
 	Spell_Dispel(100);		// Get rid of all spell effects. (moved here to prevent double @Destroy trigger)
 	Skill_Cleanup();
+
+	CChar * pRider = Horse_GetMountChar();
+	if (pRider)
+	{
+		pRider->Horse_UnMount();
+	}
 
 	if ( isBonded )
 		return true;
@@ -4310,8 +4311,8 @@ bool CChar::OnTick()
 	if ( !iTimeDiff )
 		return true;
 
-	bool isBonded = (IsStatFlag(STATF_DEAD) && (m_pNPC && m_pNPC->m_bonded == 1));
-	if (!isBonded)
+	bool isDeadAndBonded = (IsStatFlag(STATF_DEAD) && (m_pNPC && m_pNPC->m_bonded == 1));
+	if (!isDeadAndBonded)
 	{
 		if (iTimeDiff >= TICK_PER_SEC)	// don't bother with < 1 sec times.
 		{
@@ -4408,7 +4409,7 @@ bool CChar::OnTick()
 			NPC_OnTickAction();
 
 			//	Some NPC AI actions
-			if (( g_Cfg.m_iNpcAi&NPC_AI_FOOD ) && !( g_Cfg.m_iNpcAi&NPC_AI_INTFOOD  || isBonded ))
+			if ((g_Cfg.m_iNpcAi&NPC_AI_FOOD) && !(g_Cfg.m_iNpcAi&NPC_AI_INTFOOD || isDeadAndBonded))
 				NPC_Food();
 			if ( g_Cfg.m_iNpcAi&NPC_AI_EXTRA )
 				NPC_AI();
@@ -4418,7 +4419,7 @@ bool CChar::OnTick()
 	{
 		// Hit my current target. (if i'm ready)
 		EXC_SET("combat hit try");
-		if (IsStatFlag(STATF_War) && !isBonded)	// No fighting for bonded dead pets
+		if (IsStatFlag(STATF_War) && !isDeadAndBonded)	// No fighting for bonded dead pets
 		{
 			if ( Fight_IsActive() )
 			{
