@@ -1273,7 +1273,7 @@ bool CChar::Spell_Equip_OnTick( CItem * pItem )
 				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_SPELL_YOUFEEL), static_cast<LPCTSTR>(sm_Poison_Message[iLevel]));
 			}
 
-			OnTakeDamage(maximum(sm_iPoisonMax[iLevel], iDmg), pItem->m_uidLink.CharFind(), DAMAGE_POISON | DAMAGE_NOREVEAL, 0, 0, 0, 100, 0);
+			OnTakeDamage(maximum(sm_iPoisonMax[iLevel], iDmg), pItem->m_uidLink.CharFind(), DAMAGE_MAGIC | DAMAGE_POISON | DAMAGE_NOREVEAL, 0, 0, 0, 100, 0);
 
 			// g_Cfg.GetSpellEffect( SPELL_Poison,
 
@@ -2817,7 +2817,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		case SPELL_Poison_Field:
 			if ( !fPotion )
 				Effect(EFFECT_OBJ, iT1/*ITEMID_FX_CURSE_EFFECT*/, this, 0, 15, fExplode, iColor, iRender);
-			SetPoison( (pCharSrc->Skill_GetBase(SKILL_MAGERY) + pCharSrc->Skill_GetBase(SKILL_POISONING)) / 2,0, pCharSrc);
+			SetPoison((pCharSrc->Skill_GetBase(SKILL_MAGERY) + pCharSrc->Skill_GetBase(SKILL_POISONING)) / 2, iSkillLevel / 50, pCharSrc);
 			break;
 
 		case SPELL_Cure:

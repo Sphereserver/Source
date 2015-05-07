@@ -2616,11 +2616,12 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 	SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_JUST_BEEN_POISONED ) );
 
 	// Release if paralyzed ?
-	StatFlag_Clear( STATF_Freeze );	// remove paralyze.
+	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(SPELL_Poison);
+	if (!pSpellDef->IsSpellType(SPELLFLAG_NOUNPARALYZE))
+		StatFlag_Clear( STATF_Freeze );	// remove paralyze.
 
 	// Might be a physical vs. Magical attack.
-	pPoison = Spell_Effect_Create( SPELL_Poison, LAYER_FLAG_Poison, iSkill, (1+Calc_GetRandVal(2))*TICK_PER_SEC, pCharSrc, false );
-
+	pPoison = Spell_Effect_Create(SPELL_Poison, LAYER_FLAG_Poison, iSkill, 1 + Calc_GetRandVal(2)*TICK_PER_SEC, pCharSrc, false );
 	if (IsSetMagicFlags(MAGICF_OSIFORMULAS))
 	{
 		// If caster have more than 100.0 in magery and poisoning and it's distance is lesser than 3 tiles, he has a 10% change to inflict lethal poison
@@ -2657,7 +2658,9 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 			pPoison->m_itSpell.m_spellcharges = iTicks;
 	}
 	else
+	{
 		pPoison->m_itSpell.m_spellcharges = iTicks;	// how long to last.
+	}
 
 	LayerAdd(pPoison, LAYER_FLAG_Poison);	// Creating after setting the whole memory
 	UpdateStatsFlag();
@@ -2968,6 +2971,7 @@ bool CChar::Death()
 	}
 
 	Spell_Dispel(100);		// Get rid of all spell effects. (moved here to prevent double @Destroy trigger)
+	SetPoisonCure(0, true);
 	Skill_Cleanup();
 
 	CChar * pRider = Horse_GetMountChar();

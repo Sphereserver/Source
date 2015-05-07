@@ -2067,3 +2067,13 @@ Updated sphere_item_typedef_equipitem.scp commenting from @Equip and @UnEquip th
 Removed 'glow effect' from parrying in the source and added it under @UseQuick in parrying skill in sphere_skills.scp
 Fixed @Eat not setting values correctly in some cases.
 Fixed argn2 on @NotoSend not working as intended (notice that PetsInheritNotoriety may affect and block this).
+
+07-05-2015, XuN
+Updated sphere_serv_triggers.scp with some information/comments and values for newly created characters.
+Added Notoriety values changed via @NotoSend to be sent in character's names: 
+	-argn2 has priority over anything else, if it's value is 0, lesser or not present at all then argn1 will be used, if there's no argn1 either then default checks will be made.
+	-argn2 values from 1 to 7 will read color hues from ini ones (NOTO_GOOD,NOTO_CRIMINAL...NOTO_INVUL,etc).
+Poison spell and habilities based on it are now affected by SPELLFLAG_NoUnparalyze (if set).
+Fixed some errors appearing when a character dies while poisoned conflicting with PacketDeathAnimation.
+Poison damage has now DAM_MAGIC flag set.
+Uncommented EFFECT value for Poison spell in sphere_spells.scp

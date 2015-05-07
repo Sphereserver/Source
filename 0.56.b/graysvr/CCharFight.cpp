@@ -339,19 +339,9 @@ HUE_TYPE CChar::Noto_GetHue( const CChar * pCharViewer, bool fIncog ) const
 
 	CChar * pThis = const_cast<CChar*>(this);
 	CChar * pTarget = const_cast<CChar*>(pCharViewer);
-	if (pThis->m_notoSaves.size())
-	{
-		int id = -1;
-		if (pThis->m_pNPC && pThis->NPC_PetGetOwner() && g_Cfg.m_iPetsInheritNotoriety != 0)	// If I'm a pet and have owner I redirect noto to him.
-			pThis = pThis->NPC_PetGetOwner();
 
-		id = pThis->NotoSave_GetID(pTarget);
-
-		if (id != -1)
-			return pThis->NotoSave_GetValue(id, true);
-	}
-
-	switch ( Noto_GetFlag( pCharViewer, fIncog, true ))
+	NOTO_TYPE color = Noto_GetFlag(pCharViewer, fIncog, true,true);
+	switch ( color )
 	{
 		case NOTO_GOOD:			return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoGood);		// Blue
 		case NOTO_GUILD_SAME:	return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoGuildSame);	// Green (same guild)
@@ -360,7 +350,7 @@ HUE_TYPE CChar::Noto_GetHue( const CChar * pCharViewer, bool fIncog ) const
 		case NOTO_GUILD_WAR:	return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoGuildWar);	// Orange (enemy guild)
 		case NOTO_EVIL:			return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoEvil);		// Red
 		case NOTO_INVUL:		return IsPriv(PRIV_GM)? static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoInvulGameMaster) : static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoInvul);		// Purple / Yellow
-		default:				return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoDefault);	// Grey
+		default:				return color > NOTO_INVUL ? color : static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoDefault);	// Grey
 	}
 }
 

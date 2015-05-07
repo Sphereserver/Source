@@ -87,6 +87,15 @@ return 0
 //	  0 --> normal action (create character)
 //	  1 --> denyes creation
 
+//IF (<ARGN3>==2)	//Uncomment this code to disable the racial bonus of MaxMana +20 for Elfs
+//	MaxMana
+//ENDIF
+ResPhysicalMax = 70
+ResFireMax = 70
+ResColdMax = 70
+ResEnergyMax = 70
+ResPoisonMax = 70
+IncreaseDefChanceMax = 70
 
 [FUNCTION f_onchar_delete]
 // The f_onchar_delete function is called before a client delete his character from the Character Selection Menu.
@@ -100,6 +109,7 @@ return 0
 [FUNCTION f_onserver_start]
 // The f_onserver_start function is called on server startup.
 
+//Serv.ServIP ip.address //Add your public IP here (not domain) if you are behind a router.
 
 [FUNCTION f_onserver_save]
 // The f_onserver_save function is called before server is going to save.
@@ -108,6 +118,8 @@ return 0
 // RETURN
 //	  0 --> normal action (save)
 //	  1 --> denyes save
+
+//Serv.SaveStatics //Uncomment this line if you are building your server, so static items are saved also with normal saves, comment it again in live servers to speed up the save proccess (and manually type .serv.savestatics when adding new static items, or deleting them).
 
 
 [FUNCTION f_onserver_save_ok]
