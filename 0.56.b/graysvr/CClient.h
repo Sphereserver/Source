@@ -83,7 +83,6 @@ private:
 public:
 	static bool AcceptEvent( CChar * pCharAccept, CGrayUID uidInviter, bool bForced = false );
 	static bool DeclineEvent( CChar * pCharDecline, CGrayUID uidInviter );
-	static void SysMessageStatic( CChar * pChar, LPCTSTR pText );
 
 	bool IsPartyFull() const
 	{
@@ -115,7 +114,6 @@ public:
 	// bool MessageMember( CGrayUID uidDst, CGrayUID uidSrc, const NCHAR * pText, int ilenmsg );
 	// Sysmessage sending wrappers
 	void SysMessageAll( LPCTSTR pText );
-	void SysMessageChar( CChar * pChar, LPCTSTR pText ) { CPartyDef::SysMessageStatic( pChar, pText); };
 
 	// Commands
 	bool Disband( CGrayUID uidMaster );

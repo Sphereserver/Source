@@ -2645,12 +2645,14 @@ bool PacketPartyMessage::onReceive(NetState* net)
 		} break;
 
 		case PARTYMSG_Option:
+		{
 			// set the loot flag
 			if (character->m_pParty == NULL)
 				return false;
 
 			character->m_pParty->SetLootFlag(character, readBool());
-			break;
+			character->NotoSave_Update();
+		} break;
 
 		case PARTYMSG_Accept:
 		{

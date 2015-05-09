@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, Apr 28, 2015
+// FILE LAST UPDATED: Saturday, May 8, 2015
 //
 VERSION=0.56c
 
@@ -788,24 +788,23 @@ EMOTE_DEF_UNICODE	0
 //npc_vendor_buyfast			"You are buying too fast."
 //npc_vendor_sellfast			"You are selling too fast."
 //npc_vendor_sellmuch			"You cannot sell so much."
-//party_added					"You have been added to the party"
-//party_decline_1				"%s does not wish to join your party"
-//party_decline_2				"You notify %s that you do not wish to join the party"
+//party_added					"You have been added to the party."
+//party_decline_1				"%s: Does not wish to join the party."
+//party_decline_2				"You notify %s that you do not wish to join the party."
 //party_disbanded				"Your party has disbanded."
-//party_invite					"You have invited %s to join your party."
-//party_invite_targ				"You have been invited to join %s's party. Type /accept to join or /decline to decline offer."
-//party_joined					"%s has joined the party"
-//party_leave_1					"%s has %s your party"
-//party_leave_2					"You have %s the party"
-//party_loot_allow				"You have chosen to allow your party to loot your corpse"
-//party_loot_block				"You have chosen to prevent your party from looting your corpse"
+//party_invite					"You have invited %s to join the party."
+//party_invite_targ				"%s: You are invited to join the party. Type /accept to join or /decline to decline the offer."
+//party_joined					"%s: joined the party."
+//party_leave_1					"%s has been removed from your party."
+//party_leave_2					"You have been removed from the party."
+//party_leave_last_person		"The last person has left the party..."
+//party_loot_allow				"You have chosen to allow your party to loot your corpse."
+//party_loot_block				"You have chosen to prevent your party from looting your corpse."
 //party_msg						"[PARTY]: %s"
-//party_no_self_add				"[PARTY]: You cannot add yourself to a party"
-//party_part_1					"been removed from"
-//party_part_2					"left"
-//party_select					"Select a person to join your party."
+//party_no_self_add				"You cannot add yourself to a party."
+//party_select					"You may only add living things to your party!"
 //party_targ_who				"Who would you like to add to your party?"
-//party_nonpcadd				"The creature ignores your offer"
+//party_nonpcadd				"The creature ignores your offer."
 //party_notleader				"You may only add members to the party if you are the leader."
 //party_is_full					"You may only have 10 in your party."
 //party_already_in_this			"This person is already in your party!"

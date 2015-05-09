@@ -2429,9 +2429,6 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 		if ( pChar->IsPlayableCharacter() )
 			m_pPopupPacket->addOption(POPUP_PAPERDOLL, 6123, POPUPFLAG_COLOR, 0xFFFF);
 
-		if ( pChar == m_pChar )
-			m_pPopupPacket->addOption(POPUP_BACKPACK, 6145, POPUPFLAG_COLOR, 0xFFFF);
-
 		if ( pChar->m_pNPC )
 		{
 			switch ( pChar->m_pNPC->m_Brain )
@@ -2476,7 +2473,21 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 				m_pPopupPacket->addOption(POPUP_PETSTAY, 6114, POPUPFLAG_COLOR, 0xFFFF);
 			}
 		}
-
+		else if ( pChar == m_pChar )
+			m_pPopupPacket->addOption(POPUP_BACKPACK, 6145, POPUPFLAG_COLOR, 0xFFFF);
+		else
+		{
+			if ( m_pChar->m_pParty == NULL && pChar->m_pParty == NULL )
+				m_pPopupPacket->addOption(POPUP_PARTY_ADD, 197, POPUPFLAG_COLOR, 0xFFFF);
+			else if ( m_pChar->m_pParty != NULL && m_pChar->m_pParty->IsPartyMaster(m_pChar) )
+			{
+				if ( m_pChar->m_pParty == NULL )
+					m_pPopupPacket->addOption(POPUP_PARTY_ADD, 197, POPUPFLAG_COLOR, 0xFFFF);
+				else if ( pChar->m_pParty == m_pChar->m_pParty )
+					m_pPopupPacket->addOption(POPUP_PARTY_REMOVE, 198, POPUPFLAG_COLOR, 0xFFFF);
+			}
+		}
+		
 		if (( Args.m_iN1 != 1 ) && ( IsTrigUsed(TRIGGER_CONTEXTMENUREQUEST) ))
 		{
 			Args.m_iN1 = 2;
@@ -2588,6 +2599,15 @@ void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do somethin
 
 		case POPUP_BACKPACK:
 			m_pChar->Use_Obj(m_pChar->LayerFind( LAYER_PACK ), false, false );
+			break;
+
+		case POPUP_PARTY_ADD:
+			m_pChar->GetClient()->OnTarg_Party_Add( pChar );
+			break;
+
+		case POPUP_PARTY_REMOVE:
+			if ( m_pChar->m_pParty != NULL )
+				m_pChar->m_pParty->RemoveMember( pChar->GetUID(), m_pChar->GetUID() );
 			break;
 
 		case POPUP_BANKBOX:

@@ -2077,3 +2077,9 @@ Poison spell and habilities based on it are now affected by SPELLFLAG_NoUnparaly
 Fixed some errors appearing when a character dies while poisoned conflicting with PacketDeathAnimation.
 Poison damage has now DAM_MAGIC flag set.
 Uncommented EFFECT value for Poison spell in sphere_spells.scp
+
+08-05-2015, Coruja
+Added: New 'Add/Remove Party Member' missing popup button when click on another player to invite/remove him from an party.
+Changed: Some updates/optimizations on party engine.
+[sphere_msgs.scp]: Updated 'party_*' messages.
+[sphere_defs.scp]: Added missing 'attr_opened' value on [DEFNAME attr_flags] list.

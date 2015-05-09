@@ -505,7 +505,7 @@ bool CAccount::NameStrip( TCHAR * pszNameOut, LPCTSTR pszNameInp )
 		return false;
 	if ( !strcmpi(pszNameOut, "EOF") || !strcmpi(pszNameOut, "ACCOUNT") )
 		return false;
-	if ( FindTableSorted(pszNameOut, g_Accounts.sm_szVerbKeys, COUNTOF(g_Accounts.sm_szVerbKeys)-1) >= 0 )
+	if ( FindTableSorted(pszNameOut, CAccounts::sm_szVerbKeys, COUNTOF(CAccounts::sm_szVerbKeys)-1) >= 0 )
 		return false;
 	if ( g_Cfg.IsObscene(pszNameOut) )
 		return false;
@@ -533,12 +533,11 @@ PLEVEL_TYPE CAccount::GetPrivLevelText( LPCTSTR pszFlags ) // static
 	if ( level >= 0 )
 		return static_cast<PLEVEL_TYPE>(level);
 
-	if ( ! strnicmp( pszFlags, "CO", 2 ))
-		return PLEVEL_Counsel;
-
 	level = Exp_GetVal( pszFlags );
-	if ( level < 0 || level > PLEVEL_QTY )
-		return PLEVEL_Player;
+	if ( level < PLEVEL_Guest )
+		return PLEVEL_Guest;
+	if ( level > PLEVEL_Owner )
+		return PLEVEL_Owner;
 
 	return static_cast<PLEVEL_TYPE>(level);
 }

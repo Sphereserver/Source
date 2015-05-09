@@ -2534,19 +2534,19 @@ bool CClient::OnTarg_Party_Add( CChar * pChar )
 
 	if ( pChar == NULL )
 	{
-		CPartyDef::SysMessageStatic( m_pChar, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_SELECT ));
+		SysMessageDefault( DEFMSG_PARTY_SELECT );
 		return( false );
 	}
 
 	if ( pChar == m_pChar )
 	{
-		CPartyDef::SysMessageStatic( m_pChar, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_NOSELFADD ));
+		SysMessageDefault( DEFMSG_PARTY_NOSELFADD );
 		return( false );
 	}
 
 	if ( !pChar->IsClient() )
 	{
-		CPartyDef::SysMessageStatic(m_pChar, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_NONPCADD ));
+		SysMessageDefault( DEFMSG_PARTY_NONPCADD );
 		return( false );
 	}
 
@@ -2554,13 +2554,13 @@ bool CClient::OnTarg_Party_Add( CChar * pChar )
 	{
 		if ( !(m_pChar->m_pParty->IsPartyMaster(m_pChar)) )
 		{
-			CPartyDef::SysMessageStatic(m_pChar, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_ADD_NOTLEADER ));
+			SysMessageDefault( DEFMSG_PARTY_ADD_NOTLEADER );
 			return( false );
 		}
 
 		if ( m_pChar->m_pParty->IsPartyFull() )
 		{
-			CPartyDef::SysMessageStatic(m_pChar, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_IS_FULL ));
+			SysMessageDefault( DEFMSG_PARTY_IS_FULL );
 			return( false );
 		}
 	}
@@ -2575,24 +2575,24 @@ bool CClient::OnTarg_Party_Add( CChar * pChar )
 	{
 		if ( m_pChar->m_pParty == pChar->m_pParty )	// already in this party
 		{
-			CPartyDef::SysMessageStatic(m_pChar, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_ALREADY_IN_THIS ));
+			SysMessageDefault( DEFMSG_PARTY_ALREADY_IN_THIS );
 			return( true );
 		}
 
-		CPartyDef::SysMessageStatic(m_pChar, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_ALREADY_IN ));
+		SysMessageDefault( DEFMSG_PARTY_ALREADY_IN );
 		return( false );
 	}
 
 	if ( pChar->GetKeyNum("PARTY_AUTODECLINEINVITE", true) )
 	{
-		CPartyDef::SysMessageStatic(m_pChar, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_AUTODECLINE ));
+		SysMessageDefault( DEFMSG_PARTY_AUTODECLINE );
 		return( false );
 	}
 
 	CVarDefCont * pTagInvitetime = m_pChar->m_TagDefs.GetKey("PARTY_LASTINVITETIME");
 	if ( pTagInvitetime && ( g_World.GetCurrentTime().GetTimeRaw() < pTagInvitetime->GetValNum() ) )
 	{
-		CPartyDef::SysMessageStatic(m_pChar, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_ADD_TOO_FAST ));
+		SysMessageDefault( DEFMSG_PARTY_ADD_TOO_FAST );
 		return( false );
 	}
 
@@ -2605,10 +2605,10 @@ bool CClient::OnTarg_Party_Add( CChar * pChar )
 
 	TCHAR * sTemp = Str_GetTemp();
 	sprintf(sTemp, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_INVITE ), static_cast<LPCTSTR>(pChar->GetName()));
-	CPartyDef::SysMessageStatic( m_pChar, sTemp );
+	m_pChar->SysMessage( sTemp );
 	sTemp = Str_GetTemp();
 	sprintf(sTemp, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_INVITE_TARG ), static_cast<LPCTSTR>(m_pChar->GetName()));
-	CPartyDef::SysMessageStatic( pChar, sTemp );
+	pChar->SysMessage( sTemp );
 
 	m_pChar->SetKeyNum("PARTY_LASTINVITE", static_cast<DWORD>(pChar->GetUID()));
 	m_pChar->SetKeyNum("PARTY_LASTINVITETIME", g_World.GetCurrentTime().GetTimeRaw() + (Calc_GetRandVal2(2,5) * TICK_PER_SEC));

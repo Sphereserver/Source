@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, Mar 20, 2015
+// FILE LAST UPDATED: Saturday, May 8, 2015
 //
 VERSION=0.56c
 
@@ -731,6 +731,7 @@ attr_artifact		0400000	// artifact
 attr_lockeddown		0800000	// locked down
 attr_secure			01000000	// secured
 attr_reforged		02000000	// Is Runic Reforged.
+attr_opened			04000000	// Is Door Opened (only used when DOOROPENID is set on the door)
 
 [DEFNAME can_flags]
 // monster "can" type flags.
