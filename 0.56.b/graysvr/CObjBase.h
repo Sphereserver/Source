@@ -1336,7 +1336,8 @@ public:
 
 	static CItem * CreateBase( ITEMID_TYPE id );
 	static CItem * CreateHeader( TCHAR * pArg, CObjBase * pCont = NULL, bool fDupeCheck = false, CChar * pSrc = NULL );
-	static CItem * CreateScript( ITEMID_TYPE id, CChar * pSrc = NULL );
+	static CItem * CreateScript(ITEMID_TYPE id, CChar * pSrc = NULL);
+	CItem * GenerateScript(CChar * pSrc = NULL);
 	static CItem * CreateDupeItem( const CItem * pItem, CChar * pSrc = NULL, bool fSetNew = false );
 	static CItem * CreateTemplate( ITEMID_TYPE id, CObjBase* pCont = NULL, CChar * pSrc = NULL );
 

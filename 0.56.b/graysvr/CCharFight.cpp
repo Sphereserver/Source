@@ -3093,8 +3093,11 @@ CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 				OnTrigger(CTRIG_HitIgnore, pChar, &Args);
 				bIgnore = Args.m_iN1 ? true : false;
 			}
-			if ( bIgnore )
+			if (bIgnore)
+			{
+				pChar = NULL;
 				continue;
+			}
 		}
 		if ( pClosest == NULL )
 			pClosest = pChar;

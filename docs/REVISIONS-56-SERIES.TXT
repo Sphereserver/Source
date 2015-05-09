@@ -2083,3 +2083,9 @@ Added: New 'Add/Remove Party Member' missing popup button when click on another 
 Changed: Some updates/optimizations on party engine.
 [sphere_msgs.scp]: Updated 'party_*' messages.
 [sphere_defs.scp]: Added missing 'attr_opened' value on [DEFNAME attr_flags] list.
+
+09-05-2015, XuN
+Fixed: Ignored 'attackers' will not be chosen as targets anymore, even if they are the only enemies on the list.
+Added: Field spells will fire @Create for their itemdefs/events, also @ItemCreate for characters with a 'tag.BadLoc' which will be true if they are going to be placed above any character.
+	If tag keeps at 1 after the @Create trigger the field will be removed like it's been doing recently.
+	Since fields will not be placed until they are allowed to (to avoid 'ghost' walls dissapearing), items will have a 'tag.pos' with the placement position.

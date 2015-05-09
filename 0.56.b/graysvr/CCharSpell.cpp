@@ -1527,10 +1527,12 @@ void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, u
 				pItem->OnSpellEffect( m_atMagery.m_Spell, this, iSkillLevel, NULL );
 			}
 
-			if ( fGoodLoc )
-			{
-				CItem * pSpell = CItem::CreateScript( id, this );
+			//if ( fGoodLoc )
+			//{
+				CItem * pSpell = CItem::CreateBase( id );
 				ASSERT(pSpell);
+				pSpell->m_TagDefs.SetNum("BadLoc",!fGoodLoc,true);
+				pSpell->m_TagDefs.SetStr("Pos",false, ptg.WriteUsed(),false);
 				pSpell->SetType(IT_SPELL);
 				pSpell->SetAttr(ATTR_MAGIC);
 				pSpell->m_itSpell.m_spell = static_cast<WORD>(m_atMagery.m_Spell);
@@ -1538,10 +1540,18 @@ void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, u
 				pSpell->m_itSpell.m_spellcharges = 1;
 				pSpell->m_uidLink = GetUID();	// Link it back to you
 				pSpell->SetHue(iColor,false,this);
+				pSpell->GenerateScript(this);
+				if (!pSpell)
+					break;
+				if (pSpell->m_TagDefs.GetKeyNum("BadLoc", true))
+				{
+					pSpell->Delete(true);
+					break;
+				}
 
 				// Add some random element.
 				pSpell->MoveToDecay( ptg, iDuration, true);
-			}
+		//	}
 		}
 	}
 }
