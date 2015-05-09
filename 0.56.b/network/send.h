@@ -403,7 +403,7 @@ private:
 	int m_count;
 
 public:
-	PacketItemContents(CClient* target, const CItemContainer* container, bool isShop, bool filterLayers); // standard content
+	PacketItemContents(CClient* target, const CItemContainer* container, bool isShop, bool filterLayers, bool bExtra); // standard content
 	PacketItemContents(const CClient* target, const CItem* spellbook); // spellbook spells
 	PacketItemContents(const CClient* target, const CItemContainer* spellbook); // custom spellbook spells
 	virtual bool onSend(const CClient* client);

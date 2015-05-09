@@ -1070,7 +1070,7 @@ PacketCloseVendor::PacketCloseVendor(const CClient* target, const CChar* vendor)
  *
  *
  ***************************************************************************/
-PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* container, bool isShop, bool filterLayers) : PacketSend(XCMD_Content, 5, PRI_NORMAL), m_container(container->GetUID())
+PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* container, bool isShop, bool filterLayers, bool bExtra) : PacketSend(XCMD_Content, 5, PRI_NORMAL), m_container(container->GetUID())
 {
 	ADDTOCALLSTACK("PacketItemContents::PacketItemContents");
 
@@ -1078,171 +1078,180 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 	const CItemBase* itemDefinition;
 	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA());
 
-	initLength();
-	skip(2);
-
-	bool isLayerSent[LAYER_HORSE];
-	memset(isLayerSent, 0, sizeof(isLayerSent));
-
-	m_count = 0;
-	ITEMID_TYPE id;
-	HUE_TYPE hue;
-	LAYER_TYPE layer;
-	int amount;
-	CPointMap pos;
-	if (isShop)
+	if (!bExtra)
 	{
-		for (const CItem* item = container->GetContentTail(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetPrev())
+		initLength();
+		skip(2);
+
+		bool isLayerSent[LAYER_HORSE];
+		memset(isLayerSent, 0, sizeof(isLayerSent));
+
+		m_count = 0;
+		ITEMID_TYPE id;
+		HUE_TYPE hue;
+		LAYER_TYPE layer;
+		int amount;
+		CPointMap pos;
+
+		if (isShop)
 		{
-			if (filterLayers == true)
+			for (const CItem* item = container->GetContentTail(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetPrev())
 			{
-				layer = static_cast<LAYER_TYPE>(item->GetContainedLayer());
-				ASSERT(layer < LAYER_HORSE);
-				switch (layer) // don't put these on a corpse.
+				if (filterLayers == true)
 				{
-					case LAYER_NONE:
-					case LAYER_PACK: // these display strange.
-						continue;
-
-					case LAYER_NEWLIGHT:
-						continue;
-
-					default:
-						// make certain that no more than one of each layer goes out to client....crashes otherwise!!
-						if (isLayerSent[layer])
+					layer = static_cast<LAYER_TYPE>(item->GetContainedLayer());
+					ASSERT(layer < LAYER_HORSE);
+					switch (layer) // don't put these on a corpse.
+					{
+						case LAYER_NONE:
+						case LAYER_PACK: // these display strange.
 							continue;
-						isLayerSent[layer] = true;
-						break;
+
+						case LAYER_NEWLIGHT:
+							continue;
+
+						default:
+							// make certain that no more than one of each layer goes out to client....crashes otherwise!!
+							if (isLayerSent[layer])
+								continue;
+							isLayerSent[layer] = true;
+							break;
+					}
 				}
-			}
 
-			itemDefinition = item->Item_GetDef();
-			id = item->GetDispID();
-			amount = item->GetAmount();
-
-			if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
-				id = static_cast<ITEMID_TYPE>(itemDefinition->GetResDispDnId());
-
-			const CItemVendable* vendorItem = dynamic_cast<const CItemVendable*>(item);
-			if (vendorItem == NULL || vendorItem->GetAmount() == 0 || vendorItem->IsType(IT_GOLD))
-				continue;
-
-			amount = minimum(g_Cfg.m_iVendorMaxSell, amount);
-			pos.m_x = static_cast<signed short>(m_count + 1);
-			pos.m_y = 1;
-
-			if (viewer->IsStatFlag(STATF_Hallucinating))
-			{
-				hue = static_cast<HUE_TYPE>(Calc_GetRandVal(HUE_DYE_HIGH));
-			}
-			else
-			{
-				hue = item->GetHue() & HUE_MASK_HI;
+				itemDefinition = item->Item_GetDef();
+				id = item->GetDispID();
+				amount = item->GetAmount();
 
 				if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
+					id = static_cast<ITEMID_TYPE>(itemDefinition->GetResDispDnId());
+
+				const CItemVendable* vendorItem = dynamic_cast<const CItemVendable*>(item);
+				if (vendorItem == NULL || vendorItem->GetAmount() == 0 || vendorItem->IsType(IT_GOLD))
+					continue;
+
+				amount = minimum(g_Cfg.m_iVendorMaxSell, amount);
+				pos.m_x = static_cast<signed short>(m_count + 1);
+				pos.m_y = 1;
+
+				if (viewer->IsStatFlag(STATF_Hallucinating))
 				{
-					if (itemDefinition->GetResDispDnHue() != HUE_DEFAULT)
-						hue = itemDefinition->GetResDispDnHue() & HUE_MASK_HI;
+					hue = static_cast<HUE_TYPE>(Calc_GetRandVal(HUE_DYE_HIGH));
+				}
+				else
+				{
+					hue = item->GetHue() & HUE_MASK_HI;
+
+					if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
+					{
+						if (itemDefinition->GetResDispDnHue() != HUE_DEFAULT)
+							hue = itemDefinition->GetResDispDnHue() & HUE_MASK_HI;
+					}
+
+					if (hue > HUE_QTY)
+						hue &= HUE_MASK_LO; // restrict colors
 				}
 
-				if (hue > HUE_QTY)
-					hue &= HUE_MASK_LO; // restrict colors
+				// write item data
+				writeInt32(item->GetUID());
+				writeInt16(static_cast<WORD>(id));
+				writeByte(0);
+				writeInt16(static_cast<WORD>(amount));
+				writeInt16(pos.m_x);
+				writeInt16(pos.m_y);
+				if (includeGrid)	writeByte(item->GetContainedGridIndex());
+				writeInt32(container->GetUID());
+				writeInt16(static_cast<WORD>(hue));
+				m_count++;
+
+				// include tooltip
+				//target->addAOSTooltip(item, false, true);
 			}
-
-			// write item data
-			writeInt32(item->GetUID());
-			writeInt16(static_cast<WORD>(id));
-			writeByte(0);
-			writeInt16(static_cast<WORD>(amount));
-			writeInt16(pos.m_x);
-			writeInt16(pos.m_y);
-			if (includeGrid)	writeByte(item->GetContainedGridIndex());
-			writeInt32(container->GetUID());
-			writeInt16(static_cast<WORD>(hue));
-			m_count++;
-
-			// include tooltip
-			target->addAOSTooltip(item, false, isShop);
 		}
-	}
-	else
-	{
-		for (const CItem* item = container->GetContentHead(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetNext())
+		else
 		{
-			if (item->IsAttr(ATTR_INVIS) && viewer->CanSee(item) == false)
-				continue;
-
-			if (filterLayers == true)
+			for (const CItem* item = container->GetContentHead(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetNext())
 			{
-				layer = static_cast<LAYER_TYPE>(item->GetContainedLayer());
-				ASSERT(layer < LAYER_HORSE);
-				switch (layer) // don't put these on a corpse.
+				if (item->IsAttr(ATTR_INVIS) && viewer->CanSee(item) == false)
+					continue;
+
+				if (filterLayers == true)
 				{
-					case LAYER_NONE:
-					case LAYER_PACK: // these display strange.
-						continue;
-
-					case LAYER_NEWLIGHT:
-						continue;
-
-					default:
-						// make certain that no more than one of each layer goes out to client....crashes otherwise!!
-						if (isLayerSent[layer])
+					layer = static_cast<LAYER_TYPE>(item->GetContainedLayer());
+					ASSERT(layer < LAYER_HORSE);
+					switch (layer) // don't put these on a corpse.
+					{
+						case LAYER_NONE:
+						case LAYER_PACK: // these display strange.
 							continue;
-						isLayerSent[layer] = true;
-						break;
+
+						case LAYER_NEWLIGHT:
+							continue;
+
+						default:
+							// make certain that no more than one of each layer goes out to client....crashes otherwise!!
+							if (isLayerSent[layer])
+								continue;
+							isLayerSent[layer] = true;
+							break;
+					}
 				}
-			}
 
-			itemDefinition = item->Item_GetDef();
-			id = item->GetDispID();
-			amount = item->GetAmount();
-
-			if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
-				id = static_cast<ITEMID_TYPE>(itemDefinition->GetResDispDnId());
-
-			pos = item->GetContainedPoint();
-
-			if (viewer->IsStatFlag(STATF_Hallucinating))
-			{
-				hue = static_cast<HUE_TYPE>(Calc_GetRandVal(HUE_DYE_HIGH));
-			}
-			else
-			{
-				hue = item->GetHue() & HUE_MASK_HI;
+				itemDefinition = item->Item_GetDef();
+				id = item->GetDispID();
+				amount = item->GetAmount();
 
 				if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
+					id = static_cast<ITEMID_TYPE>(itemDefinition->GetResDispDnId());
+
+				pos = item->GetContainedPoint();
+
+				if (viewer->IsStatFlag(STATF_Hallucinating))
 				{
-					if (itemDefinition->GetResDispDnHue() != HUE_DEFAULT)
-						hue = itemDefinition->GetResDispDnHue() & HUE_MASK_HI;
+					hue = static_cast<HUE_TYPE>(Calc_GetRandVal(HUE_DYE_HIGH));
+				}
+				else
+				{
+					hue = item->GetHue() & HUE_MASK_HI;
+
+					if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
+					{
+						if (itemDefinition->GetResDispDnHue() != HUE_DEFAULT)
+							hue = itemDefinition->GetResDispDnHue() & HUE_MASK_HI;
+					}
+
+					if (hue > HUE_QTY)
+						hue &= HUE_MASK_LO; // restrict colors
 				}
 
-				if (hue > HUE_QTY)
-					hue &= HUE_MASK_LO; // restrict colors
+				// write item data
+				writeInt32(item->GetUID());
+				writeInt16(static_cast<WORD>(id));
+				writeByte(0);
+				writeInt16(static_cast<WORD>(amount));
+				writeInt16(pos.m_x);
+				writeInt16(pos.m_y);
+				if (includeGrid)	writeByte(item->GetContainedGridIndex());
+				writeInt32(container->GetUID());
+				writeInt16(hue);
+				m_count++;
+
+				// include tooltip
+				target->addAOSTooltip(item, false, false);
 			}
-
-			// write item data
-			writeInt32(item->GetUID());
-			writeInt16(static_cast<WORD>(id));
-			writeByte(0);
-			writeInt16(static_cast<WORD>(amount));
-			writeInt16(pos.m_x);
-			writeInt16(pos.m_y);
-			if (includeGrid)	writeByte(item->GetContainedGridIndex());
-			writeInt32(container->GetUID());
-			writeInt16(hue);
-			m_count++;
-
-			// include tooltip
-			target->addAOSTooltip(item, false, isShop);
 		}
-	}
 
 	// write item count
 	size_t l = getPosition();
 	seek(3);
 	writeInt16(static_cast<WORD>(m_count));
 	seek(l);
+	}
+	else
+	{
+		writeInt16(5);
+		writeInt16(0);
+	}
 
 	push(target);
 }
@@ -4605,7 +4614,7 @@ PacketPropertyListVersion::PacketPropertyListVersion(const CClient* target, cons
 	writeInt32(version);
 
 	if (target != NULL)
-		push(target, false);
+		push(target);
 }
 
 bool PacketPropertyListVersion::onSend(const CClient* client)

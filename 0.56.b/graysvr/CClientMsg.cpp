@@ -415,7 +415,7 @@ void CClient::addItem( CItem * pItem )
 	}
 }
 
-void CClient::addContents( const CItemContainer * pContainer, bool fCorpseEquip, bool fCorpseFilter, bool fShop) // Send Backpack (with items)
+void CClient::addContents( const CItemContainer * pContainer, bool fCorpseEquip, bool fCorpseFilter, bool fShop, bool bExtra) // Send Backpack (with items)
 {
 	ADDTOCALLSTACK("CClient::addContents");
 	// NOTE: We needed to send the header for this FIRST !!!
@@ -423,13 +423,9 @@ void CClient::addContents( const CItemContainer * pContainer, bool fCorpseEquip,
 	// 0 = contents.
 
 	if (fCorpseEquip == true)
-	{
 		new PacketCorpseEquipment(this, pContainer);
-	}
 	else
-	{
-		new PacketItemContents(this, pContainer, fShop, fCorpseFilter);
-	}
+		new PacketItemContents(this, pContainer, fShop, fCorpseFilter, bExtra);
 
 	return;
 }
@@ -2428,13 +2424,31 @@ int CClient::addShopItems(CChar * pVendor, LAYER_TYPE layer, bool bReal)
 		return( -1 );
 
 	addItem(pContainer);
+	int count = 0;
 	if ( bReal )
+	{
 		addContents(pContainer, false, false, true);
+		for (const CItem* item = pContainer->GetContentTail(); item != NULL && count < MAX_ITEMS_CONT; item = item->GetPrev())
+		{
+			addAOSTooltip(item, false, true);
+			count++;
+		}
+		if (GetNetState()->isClientSA())
+		{
+			addContents(pContainer, false, false, false, true);
+			PacketVendorBuyList* cmd = new PacketVendorBuyList();
+			cmd->fillContainer(pContainer, 0, 0);
+			cmd->push(this);
+		}
+	}
 
-	int iConvertFactor = pVendor->NPC_GetVendorMarkup(m_pChar );
-	PacketVendorBuyList* cmd = new PacketVendorBuyList();
-	int count = cmd->fillContainer(pContainer, iConvertFactor, bReal? MAX_ITEMS_CONT : 0);
-	cmd->push(this);
+	if (!GetNetState()->isClientSA())
+	{
+		int iConvertFactor = pVendor->NPC_GetVendorMarkup(m_pChar );
+		PacketVendorBuyList* cmd = new PacketVendorBuyList();
+		count = cmd->fillContainer(pContainer, iConvertFactor, bReal? MAX_ITEMS_CONT : 0);
+		cmd->push(this);
+	}
 
 	// Send a warning if the vendor somehow has more stock than the allowed limit
 	if ( pContainer->GetCount() > MAX_ITEMS_CONT )
@@ -2450,7 +2464,7 @@ bool CClient::addShopMenuBuy( CChar * pVendor )
 	if ( !pVendor || !pVendor->NPC_IsVendor() )
 		return false;
 
-	OpenPacketTransaction transaction(this, PacketSend::PRI_LOW);
+	OpenPacketTransaction transaction(this, PacketSend::PRI_HIGH);
 
 	//	non-player vendors could be restocked on-the-fly
 	if ( !pVendor->IsStatFlag(STATF_Pet) )
@@ -2460,13 +2474,8 @@ bool CClient::addShopMenuBuy( CChar * pVendor )
 
 	addChar(pVendor);
 
-	int iTotal = 0;
 	int iRes = addShopItems(pVendor, LAYER_VENDOR_STOCK);
 	if ( iRes < 0 )
-		return false;
-
-	iTotal += iRes;
-	if ( iTotal <= 0 )
 		return false;
 
 	//	classic clients will crash without extra packets,
@@ -3612,27 +3621,34 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 
 	if (propertyList->isEmpty() == false)
 	{
-		switch (g_Cfg.m_iTooltipMode)
+		if (bShop && GetNetState()->isClientSA())
 		{
-			case TOOLTIPMODE_SENDVERSION:
-				if (bRequested == false && bShop == false)
-				{
-					// send property list version (client will send a request for the full tooltip if needed)
-					if ( PacketPropertyListVersion::CanSendTo(GetNetState()) == false )
-						new PacketPropertyListVersionOld(this, pObj, propertyList->getVersion());
-					else
-						new PacketPropertyListVersion(this, pObj, propertyList->getVersion());
+			new PacketPropertyListVersion(this, pObj, propertyList->getVersion());
+		}
+		else
+		{
+			switch (g_Cfg.m_iTooltipMode)
+			{
+				case TOOLTIPMODE_SENDVERSION:
+					if (bRequested == false && bShop == false)
+					{
+						// send property list version (client will send a request for the full tooltip if needed)
+						if ( PacketPropertyListVersion::CanSendTo(GetNetState()) == false )
+							new PacketPropertyListVersionOld(this, pObj, propertyList->getVersion());
+						else
+							new PacketPropertyListVersion(this, pObj, propertyList->getVersion());
 
+						break;
+					}
+
+					// fall through to send full list
+
+				case TOOLTIPMODE_SENDFULL:
+				default:
+					// send full property list
+					new PacketPropertyList(this, propertyList);
 					break;
-				}
-
-				// fall through to send full list
-
-			case TOOLTIPMODE_SENDFULL:
-			default:
-				// send full property list
-				new PacketPropertyList(this, propertyList);
-				break;
+			}
 		}
 	}
 	
