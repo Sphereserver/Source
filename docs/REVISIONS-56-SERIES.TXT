@@ -2089,3 +2089,7 @@ Fixed: Ignored 'attackers' will not be chosen as targets anymore, even if they a
 Added: Field spells will fire @Create for their itemdefs/events, also @ItemCreate for characters with a 'tag.BadLoc' which will be true if they are going to be placed above any character.
 	If tag keeps at 1 after the @Create trigger the field will be removed like it's been doing recently.
 	Since fields will not be placed until they are allowed to (to avoid 'ghost' walls dissapearing), items will have a 'tag.pos' with the placement position.
+
+09-05-2015, Coruja
+Added: New updated Swing Speed combat formula. It's almost the same as the previous formula (pre-AOS) but more accurate and with support to Swing Speed Increase property (INCREASESWINGSPEED).
+[sphere.ini]: Updated 'SpeedScaleFactor' setting to the recommended value for the new Swing Speed formula [15000 -> 80000]. Although the old (or any other value) can be used, it's HIGHLY recommended update it to get better results.

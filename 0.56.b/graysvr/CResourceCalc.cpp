@@ -84,76 +84,54 @@ int CResource::Calc_DropStamWhileMoving( CChar * pChar, int iWeightLoadPercent )
 int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 {
 	ADDTOCALLSTACK("CResource::Calc_CombatAttackSpeed");
-	// Combat: Speed of the attack
-	// based on dex and weight of the weapon.
-	// ? my tactics ?
-	// ? my skill with weapon ?
-	// ? How much weight i'm carrying ?
+	// Combat: Calculate the swing speed value on chars
 	// RETURN: 
 	//  Time in tenths of a sec. (for entire swing, not just time to hit)
 
 	ASSERT(pChar);
-
-	if ( pWeapon != NULL )
-	{
-		CItemBase * pItemDef = dynamic_cast <CItemBase *> (pWeapon->Base_GetDef());
-		if ( pItemDef )
-		{
-			BYTE speed;
-			CVarDefCont * pTagStorage = NULL; 
-			pTagStorage = pWeapon->GetKey("OVERRIDE.SPEED", true);
-			if ( pTagStorage )
-			{
-				if ( pTagStorage->GetValNum())
-				{
-					speed = static_cast<unsigned char>(pTagStorage->GetValNum());
-				}
-				else
-				{
-					speed = pItemDef->GetSpeed();
-				}
-			}
-			else
-			{
-				speed = pItemDef->GetSpeed();
-			}
-
-			if ( speed )
-			{
-				int iWaitTime = (TICK_PER_SEC * g_Cfg.m_iSpeedScaleFactor) / (maximum( (pChar->Stat_GetAdjusted(STAT_DEX) + 100), 1 ) * speed);
-				return (iWaitTime > 5 ? iWaitTime : 5);
-			}
-		}
-	}
-	if ( pChar->m_pNPC &&
-		pChar->m_pNPC->m_Brain == NPCBRAIN_GUARD &&
-		m_fGuardsInstantKill )
+	if ( pChar->m_pNPC && pChar->m_pNPC->m_Brain == NPCBRAIN_GUARD && m_fGuardsInstantKill )
 		return( 1 );
 
-	// Base speed is just your DEX range=40 to 0
-	int iWaitTime = IMULDIV( 100 - pChar->Stat_GetAdjusted(STAT_DEX), 40, 100 );
-	if ( iWaitTime < 5 )	// no-one needs to be this fast.
-		iWaitTime = 5;
-	else
-		iWaitTime += 5;
-
-	// Speed of the weapon as well effected by strength (minor).
-
+	int iBaseSpeed = 50;	//Wrestling speed
+	int iSwingSpeedIncrease = pChar->GetDefNum("INCREASESWINGSPEED", true);
 	if ( pWeapon != NULL )
 	{
-		int iWeaponWait = (pWeapon->GetWeight() * 10 ) / ( 4 * WEIGHT_UNITS );	// tenths of a stone.
-		if ( pWeapon->GetEquipLayer() == LAYER_HAND2 )	// 2 handed is slower
+		iBaseSpeed = pWeapon->GetDefNum("OVERRIDE.SPEED");
+		if ( iBaseSpeed == NULL )
 		{
-			iWeaponWait += iWaitTime/2;
+			CItemBase * pItemDef = dynamic_cast<CItemBase *>(pWeapon->Base_GetDef());
+			if ( pItemDef )
+				iBaseSpeed = pItemDef->GetSpeed();
 		}
-		iWaitTime += iWeaponWait;
-	}
-	else
-	{
-		iWaitTime += 2;
 	}
 
-	return( iWaitTime );
+	//ML formula		(doesn't use m_iSpeedScaleFactor and it's only compatible with ML speed format eg. 0.25 ~ 5.00 instead 0 ~ 50)
+	/*int iSwingSpeed = ((iBaseSpeed * 4) - (pChar->Stat_GetVal(STAT_DEX) / 30)) * (100 / (100 + iSwingSpeedIncrease));
+	if ( iSwingSpeed < 5 )
+		iSwingSpeed = 5;
+	iSwingSpeed = (iSwingSpeed / 4) * TICK_PER_SEC;
+	return iSwingSpeed;*/
+
+	//SE formula		(default m_iSpeedScaleFactor = 80000)
+	int iSwingSpeed = maximum(1, iBaseSpeed * (100 + iSwingSpeedIncrease) / 100);
+	iSwingSpeed = (g_Cfg.m_iSpeedScaleFactor / ((pChar->Stat_GetVal(STAT_DEX) + 100) * iSwingSpeed)) - 2;
+	if ( iSwingSpeed < 5 )
+		iSwingSpeed = 5;
+	iSwingSpeed = (iSwingSpeed / 4) * TICK_PER_SEC;
+	return iSwingSpeed;
+
+	//AOS formula		(default m_iSpeedScaleFactor = 40000)
+	/*int iSwingSpeed = (pChar->Stat_GetVal(STAT_DEX) + 100) * iBaseSpeed;
+	iSwingSpeed = maximum(1, iSwingSpeed * (100 + iSwingSpeedIncrease) / 100);
+	iSwingSpeed = static_cast<int>(floor(g_Cfg.m_iSpeedScaleFactor / iSwingSpeed)) / 2;
+	if ( iSwingSpeed < 12 )		//1.25
+		iSwingSpeed = 12;
+	return iSwingSpeed;*/
+	
+	//Legacy formula	(default m_iSpeedScaleFactor = 15000)
+	/*int iSwingSpeed = maximum(1, (pChar->Stat_GetVal(STAT_DEX) + 100) * iBaseSpeed);
+	iSwingSpeed = (g_Cfg.m_iSpeedScaleFactor * TICK_PER_SEC) / iSwingSpeed;
+	return iSwingSpeed;*/
 }
 
 int CResource::Calc_CombatChanceToHit( CChar * pChar, SKILL_TYPE skill, CChar * pCharTarg, CItem * pWeapon )
