@@ -1192,7 +1192,6 @@ public:
 	int  Calc_StealingItem( CChar * pCharThief, CItem * pItem, CChar * pCharMark );
 	bool Calc_CrimeSeen( CChar * pCharThief, CChar * pCharViewer, SKILL_TYPE SkillToSee, bool fBonus );
 	int Calc_FameKill( CChar * pKill );
-	int Calc_FameScale( int iFame, int iFameChange );
 	int Calc_KarmaKill( CChar * pKill, NOTO_TYPE NotoThem );
 	int Calc_KarmaScale( int iKarma, int iKarmaChange );
 	LPCTSTR Calc_MaptoSextant( CPointMap pntCoords );

@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2015
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, October 6, 2013
+// FILE LAST UPDATED: Sunday, May 10, 2015
 //
 VERSION=0.56c
 
@@ -88,14 +88,9 @@ return 0
 //	  1 --> denyes creation
 
 //IF (<ARGN3>==2)	//Uncomment this code to disable the racial bonus of MaxMana +20 for Elfs
-//	MaxMana
+// MaxMana
 //ENDIF
-ResPhysicalMax = 70
-ResFireMax = 70
-ResColdMax = 70
-ResEnergyMax = 70
-ResPoisonMax = 70
-IncreaseDefChanceMax = 70
+
 
 [FUNCTION f_onchar_delete]
 // The f_onchar_delete function is called before a client delete his character from the Character Selection Menu.
@@ -110,6 +105,7 @@ IncreaseDefChanceMax = 70
 // The f_onserver_start function is called on server startup.
 
 //Serv.ServIP ip.address //Add your public IP here (not domain) if you are behind a router.
+
 
 [FUNCTION f_onserver_save]
 // The f_onserver_save function is called before server is going to save.
@@ -148,6 +144,5 @@ IncreaseDefChanceMax = 70
 // server.
 // ARGS  --> IP being blocked
 // ARGN1 --> Time to block the IP for in tenths of a second (writable)
-
 
 [EOF]

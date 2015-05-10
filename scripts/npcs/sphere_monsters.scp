@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, Jan 16, 2015
+// FILE LAST UPDATED: Sunday, May 10, 2015
 //
 VERSION=0.56c
 
@@ -15240,9 +15240,18 @@ MOVERATE=100
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
 TEVENTS=e_Human_HearUnk
+MAXFOLLOWER=5
+RESPHYSICALMAX=70
+RESFIREMAX=70
+RESCOLDMAX=70
+RESPOISONMAX=70
+RESENERGYMAX=70
+INCREASEDEFCHANCEMAX=70
+
 CATEGORY=Civilized
 SUBSECTION=Miscellaneous
 DESCRIPTION=Human Male
+
 ON=@Create
    NAME=#NAMES_HUMANMALE
    COLOR=colors_skin
@@ -15332,9 +15341,18 @@ MOVERATE=100
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
 TEVENTS=e_Human_HearUnk
+MAXFOLLOWER=5
+RESPHYSICALMAX=70
+RESFIREMAX=70
+RESCOLDMAX=70
+RESPOISONMAX=70
+RESENERGYMAX=70
+INCREASEDEFCHANCEMAX=70
+
 CATEGORY=Civilized
 SUBSECTION=Miscellaneous
 DESCRIPTION=Human Female
+
 ON=@Create
    NAME=#NAMES_HUMANFEMALE
    COLOR=colors_skin
@@ -15719,12 +15737,21 @@ MOVERATE=100
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
 TEVENTS=e_Human_HearUnk
-CATEGORY=Civilized
-SUBSECTION=Miscellaneous
-DESCRIPTION=Elf Male
 RESLEVEL=5
 RESDISPDNID=c_man
 RESDISPDNHUE=0410
+MAXFOLLOWER=5
+RESPHYSICALMAX=70
+RESFIREMAX=70
+RESCOLDMAX=70
+RESPOISONMAX=70
+RESENERGYMAX=70
+INCREASEDEFCHANCEMAX=70
+
+CATEGORY=Civilized
+SUBSECTION=Miscellaneous
+DESCRIPTION=Elf Male
+
 ON=@Create
    NAME=#NAMES_ELF_MALE
    COLOR=colors_skin
@@ -15809,12 +15836,21 @@ MOVERATE=100
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
 TEVENTS=e_Human_HearUnk
-CATEGORY=Civilized
-SUBSECTION=Miscellaneous
-DESCRIPTION=Elf Female
 RESLEVEL=5
 RESDISPDNID=c_woman
 RESDISPDNHUE=0410
+MAXFOLLOWER=5
+RESPHYSICALMAX=70
+RESFIREMAX=70
+RESCOLDMAX=70
+RESPOISONMAX=70
+RESENERGYMAX=70
+INCREASEDEFCHANCEMAX=70
+
+CATEGORY=Civilized
+SUBSECTION=Miscellaneous
+DESCRIPTION=Elf Female
+
 ON=@Create
    NAME=#NAMES_ELF_FEMALE
    COLOR=colors_skin
@@ -15950,12 +15986,21 @@ RESOURCES=i_flesh_head_2, i_flesh_torso, i_flesh_right_arm, i_flesh_left_arm, i_
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
 TEVENTS=e_human_hearunk
-CATEGORY=Civilized
-SUBSECTION=Miscellaneous
-DESCRIPTION=Gargoyle Male
 RESLEVEL=7
 RESDISPDNID=c_man
 RESDISPDNHUE=0410
+MAXFOLLOWER=5
+RESPHYSICALMAX=70
+RESFIREMAX=70
+RESCOLDMAX=70
+RESPOISONMAX=70
+RESENERGYMAX=70
+INCREASEDEFCHANCEMAX=70
+
+CATEGORY=Civilized
+SUBSECTION=Miscellaneous
+DESCRIPTION=Gargoyle Male
+
 ON=@Create
    NAME=#NAMES_GARGOYLEMALE
    COLOR=colors_skin_gargoyle
@@ -16038,12 +16083,21 @@ RESOURCES=i_flesh_head_2, i_flesh_torso, i_flesh_right_arm, i_flesh_left_arm, i_
 TSPEECH=spk_human_prime
 TSPEECH=spk_human_default
 TEVENTS=e_human_hearunk
-CATEGORY=Civilized
-SUBSECTION=Miscellaneous
-DESCRIPTION=Gargoyle Female
 RESLEVEL=5
 RESDISPDNID=c_woman
 RESDISPDNHUE=0410
+MAXFOLLOWER=5
+RESPHYSICALMAX=70
+RESFIREMAX=70
+RESCOLDMAX=70
+RESPOISONMAX=70
+RESENERGYMAX=70
+INCREASEDEFCHANCEMAX=70
+
+CATEGORY=Civilized
+SUBSECTION=Miscellaneous
+DESCRIPTION=Gargoyle Female
+
 ON=@Create
    NAME=#NAMES_GARGOYLEFEMALE
    COLOR=colors_skin_gargoyle

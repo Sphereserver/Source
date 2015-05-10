@@ -62,15 +62,12 @@ int CResource::Calc_DropStamWhileMoving( CChar * pChar, int iWeightLoadPercent )
 	CVarDefCont * pVal = pChar->GetKey("OVERRIDE.RUNNINGPENALTY",true);
 
 	if ( pChar->IsStatFlag( STATF_Fly|STATF_Hovering ))	// i'm running ?
-	{
 		iWeightLoadPercent += pVal ? static_cast<int>(pVal->GetValNum()) : m_iStamRunningPenalty;
-	}
 
 	// Chance to drop in Stam given a weight
 	pVal = pChar->GetKey("OVERRIDE.STAMINALOSSATWEIGHT",true);
 
 	int iChanceForStamLoss = pVal ? Calc_GetSCurve( iWeightLoadPercent - static_cast<int>(pVal->GetValNum()), 10 ) : Calc_GetSCurve( iWeightLoadPercent - m_iStaminaLossAtWeight, 10 );
-
 	int iRoll = Calc_GetRandVal(1000);
 	if ( iRoll <= iChanceForStamLoss )
 		return 1;
@@ -109,7 +106,7 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 	/*int iSwingSpeed = ((iBaseSpeed * 4) - (pChar->Stat_GetVal(STAT_DEX) / 30)) * (100 / (100 + iSwingSpeedIncrease));
 	if ( iSwingSpeed < 5 )
 		iSwingSpeed = 5;
-	iSwingSpeed = (iSwingSpeed / 4) * TICK_PER_SEC;
+	iSwingSpeed = (iSwingSpeed * TICK_PER_SEC) / 4;
 	return iSwingSpeed;*/
 
 	//SE formula		(default m_iSpeedScaleFactor = 80000)
@@ -117,13 +114,13 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 	iSwingSpeed = (g_Cfg.m_iSpeedScaleFactor / ((pChar->Stat_GetVal(STAT_DEX) + 100) * iSwingSpeed)) - 2;
 	if ( iSwingSpeed < 5 )
 		iSwingSpeed = 5;
-	iSwingSpeed = (iSwingSpeed / 4) * TICK_PER_SEC;
+	iSwingSpeed = (iSwingSpeed * TICK_PER_SEC) / 4;
 	return iSwingSpeed;
 
 	//AOS formula		(default m_iSpeedScaleFactor = 40000)
 	/*int iSwingSpeed = (pChar->Stat_GetVal(STAT_DEX) + 100) * iBaseSpeed;
 	iSwingSpeed = maximum(1, iSwingSpeed * (100 + iSwingSpeedIncrease) / 100);
-	iSwingSpeed = static_cast<int>(floor(g_Cfg.m_iSpeedScaleFactor / iSwingSpeed)) / 2;
+	iSwingSpeed = ((g_Cfg.m_iSpeedScaleFactor * TICK_PER_SEC) / iSwingSpeed) / 2;
 	if ( iSwingSpeed < 12 )		//1.25
 		iSwingSpeed = 12;
 	return iSwingSpeed;*/
@@ -232,25 +229,10 @@ int CResource::Calc_FameKill( CChar * pKill )
 
 	// Check if the victim is a PC, then higher gain/loss.
 	if ( pKill->m_pPlayer )
-	{
 		iFameChange /= 10;
-	}
 	else
-	{
 		iFameChange /= 200;
-	}
 
-	return( iFameChange );
-}
-
-int CResource::Calc_FameScale( int iFame, int iFameChange )
-{
-	ADDTOCALLSTACK("CResource::Calc_FameScale");
-	UNREFERENCED_PARAMETER(iFame);
-	// Scale the fame based on the current level.
-	// Scale the fame gain at higher levels.
-	//if ( iFameChange > 0 && iFameChange < iFame/32 )
-	//	return 0;
 	return( iFameChange );
 }
 
@@ -260,7 +242,6 @@ int CResource::Calc_KarmaKill( CChar * pKill, NOTO_TYPE NotoThem )
 	// Karma change on kill ?
 
 	int iKarmaChange = -pKill->Stat_GetAdjusted(STAT_KARMA);
-
 	if ( NotoThem >= NOTO_CRIMINAL )
 	{
 		// No bad karma for killing a criminal or my aggressor.
@@ -274,9 +255,7 @@ int CResource::Calc_KarmaKill( CChar * pKill, NOTO_TYPE NotoThem )
 		// If killing a 'good' PC we should always loose at least
 		// 500 karma
 		if ( iKarmaChange < 0 && iKarmaChange >= -5000 )
-		{
 			iKarmaChange = -5000;
-		}
 
 		iKarmaChange /= 10;
 	}
@@ -284,9 +263,7 @@ int CResource::Calc_KarmaKill( CChar * pKill, NOTO_TYPE NotoThem )
 	{
 		// Always loose at least 20 karma if you kill a 'good' NPC
 		if ( iKarmaChange < 0 && iKarmaChange >= -1000 )
-		{
 			iKarmaChange = -1000;
-		}
 
 		iKarmaChange /= 20;	// Not as harsh penalty as with player chars.
 	}
@@ -298,7 +275,6 @@ int CResource::Calc_KarmaScale( int iKarma, int iKarmaChange )
 {
 	ADDTOCALLSTACK("CResource::Calc_KarmaScale");
 	// Scale the karma based on the current level.
-
 	// Should be harder to gain karma than to loose it.
 
 	if ( iKarma > 0 )
@@ -308,10 +284,6 @@ int CResource::Calc_KarmaScale( int iKarma, int iKarmaChange )
 			iKarmaChange *= 2;	// counts worse against you.
 		else
 			iKarmaChange /= 2;	// counts less for you.
-	}
-	else
-	{
-		// Your a bad guy.
 	}
 
 	// Scale the karma at higher levels.
@@ -348,17 +320,12 @@ int CResource::Calc_StealingItem( CChar * pCharThief, CItem * pItem, CChar * pCh
 	
 	// int iDifficulty = iDexMark/2 + (iSkillMark/5) + Calc_GetRandVal(iDexMark/2) + IMULDIV( iWeightItem, 4, WEIGHT_UNITS );
 	// Melt mod:
-    	int iDifficulty = (iSkillMark/5) + Calc_GetRandVal(iDexMark/2) + IMULDIV( iWeightItem, 4, WEIGHT_UNITS );
+    int iDifficulty = (iSkillMark/5) + Calc_GetRandVal(iDexMark/2) + IMULDIV( iWeightItem, 4, WEIGHT_UNITS );
 	
 	if ( pItem->IsItemEquipped())
-	{
-		// This is REALLY HARD to do.
-		iDifficulty += iDexMark/2 + pCharMark->Stat_GetAdjusted(STAT_INT);
-	}
+		iDifficulty += iDexMark/2 + pCharMark->Stat_GetAdjusted(STAT_INT);		// This is REALLY HARD to do.
 	if ( pCharThief->IsStatFlag( STATF_War )) // all keyed up.
-	{
 		iDifficulty += Calc_GetRandVal( iDexMark/2 );
-	}
 	
 	// return( iDifficulty );
 	// Melt mod:
@@ -385,19 +352,14 @@ bool CResource::Calc_CrimeSeen( CChar * pCharThief, CChar * pCharViewer, SKILL_T
 		if ( pCharViewer->GetPrivLevel() < pCharThief->GetPrivLevel())
 			return( false );	// never seen
 		if ( pCharViewer->GetPrivLevel() > pCharThief->GetPrivLevel())
-			return( true );	// always seen.
+			return( true );		// always seen.
 	}
 
 	int iChanceToSee = ( pCharViewer->Stat_GetAdjusted(STAT_DEX) + pCharViewer->Stat_GetAdjusted(STAT_INT)) * 50;
 	if ( SkillToSee != SKILL_NONE )
-	{
-		// Snooping or stealing.
-		iChanceToSee = 1000+(pCharViewer->Skill_GetBase(SkillToSee) - pCharThief->Skill_GetBase(SkillToSee));
-	}
+		iChanceToSee = 1000+(pCharViewer->Skill_GetBase(SkillToSee) - pCharThief->Skill_GetBase(SkillToSee));	// snooping or stealing.
 	else
-	{
 		iChanceToSee += 400;
-	}
 
 	// the targets chance of seeing.
 	if ( fBonus )
@@ -425,25 +387,20 @@ LPCTSTR CResource::Calc_MaptoSextant( CPointMap pntCoords )
 	ADDTOCALLSTACK("CResource::Calc_MaptoSextant");
 	// Conversion from map square to degrees, minutes
 	char *z = Str_GetTemp();
-	CPointMap	zeroPoint;
-
+	CPointMap zeroPoint;
 	zeroPoint.Read(strcpy(z, g_Cfg.m_sZeroPoint));
 
-	long lLat =  (pntCoords.m_y - zeroPoint.m_y) * 360 * 60 / g_MapList.GetY(zeroPoint.m_map);
+	long lLat = (pntCoords.m_y - zeroPoint.m_y) * 360 * 60 / g_MapList.GetY(zeroPoint.m_map);
 	long lLong;
 	if ( pntCoords.m_map <= 1 )
 		lLong = (pntCoords.m_x - zeroPoint.m_x) * 360 * 60 / UO_SIZE_X_REAL;
 	else
 		lLong = (pntCoords.m_x - zeroPoint.m_x) * 360 * 60 / g_MapList.GetX(pntCoords.m_map);
-	int iLatDeg =  lLat / 60;
-	int iLatMin  = lLat % 60;
-	int iLongDeg = lLong / 60;
-	int iLongMin = lLong % 60;
 
 	TCHAR * pTemp = Str_GetTemp();
-	sprintf( pTemp, "%io%i'%s, %io%i'%s",
-		abs(iLatDeg),  abs(iLatMin),  (lLat <= 0) ? "N" : "S",
-		abs(iLongDeg), abs(iLongMin), (lLong >= 0) ? "E" : "W");
+	sprintf( pTemp, "%io %i'%s, %io %i'%s",
+		abs(lLat / 60),  abs(lLat % 60),  (lLat <= 0) ? "N" : "S",
+		abs(lLong / 60), abs(lLong % 60), (lLong >= 0) ? "E" : "W");
 
 	return pTemp;
 }

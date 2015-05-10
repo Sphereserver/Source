@@ -271,7 +271,7 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 
 	if ( fAllowInvul && IsStatFlag(STATF_INVUL))
 		return NOTO_INVUL;
-	if (IsStatFlag(STATF_Criminal))		// criminal to everyone.
+	if ( IsStatFlag(STATF_Criminal))	// criminal to everyone.
 		return NOTO_CRIMINAL;
 	if ( fAllowIncog && IsStatFlag(STATF_Incognito))
 		return NOTO_NEUTRAL;
@@ -519,8 +519,6 @@ void CChar::Noto_Fame( int iFameChange )
 		return;
 
 	int iFame = maximum(Stat_GetAdjusted(STAT_FAME), 0);
-	iFameChange = g_Cfg.Calc_FameScale( iFame, iFameChange );
-
 	if ( iFameChange > 0 )
 	{
 		if ( iFame + iFameChange > g_Cfg.m_iMaxFame )
