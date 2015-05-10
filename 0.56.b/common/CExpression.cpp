@@ -797,6 +797,11 @@ try_dec:
 						}
 					} break;
 
+					case INTRINSIC_ABS:
+					{
+						iResult = llabs(GetVal(pszArgs));
+					} break;
+
 					default:
 						iCount = 0;
 						iResult = 0;

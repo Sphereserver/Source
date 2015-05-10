@@ -2095,3 +2095,6 @@ Added: New updated Swing Speed combat formula. It's almost the same as the previ
 [sphere.ini]: Updated 'SpeedScaleFactor' setting to the recommended value for the new Swing Speed formula [15000 -> 80000]. Although the old (or any other value) can be used, it's HIGHLY recommended update it to get better results.
 [npcs/sphere_monsters.scp]: Added MAXFOLLOWER, RESPHYSICALMAX, RESFIREMAX, RESCOLDMAX, RESPOISONMAX, RESENERGYMAX properties on playable chars (c_man, c_woman, c_elf_male, c_elf_female, c_gargoyle_male, c_gargoyle_female).
 [sphere_serv_triggers.scp]: Removed RES*MAX from f_onchar_create (it was moved directly to chardefs).
+
+10-05-2015, Ben
+Added: ABS() intrinsic function wich returns the absolute of any number ( <eval abs(5)> = 5, <eval abs(-5)> = 5 )

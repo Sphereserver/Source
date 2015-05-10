@@ -28,7 +28,8 @@ enum DEFMSG_TYPE
 
 enum INTRINSIC_TYPE
 {
-	INTRINSIC_COS = 0,
+	INTRINSIC_ABS = 0,
+	INTRINSIC_COS,
 	INTRINSIC_ID,
 	INTRINSIC_ISNUMBER,
 	INTRINSIC_ISOBSCENE,
@@ -52,6 +53,7 @@ enum INTRINSIC_TYPE
 
 static LPCTSTR const sm_IntrinsicFunctions[INTRINSIC_QTY+1] =
 {
+	"ABS",		// absolute
 	"COS",		// cosinus
 	"ID",		// ID(x) = truncate the type portion of an Id
 	"ISNUMBER",		// ISNUMBER(var)
