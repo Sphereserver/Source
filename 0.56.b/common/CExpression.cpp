@@ -63,6 +63,46 @@ DWORD ahextoi( LPCTSTR pszStr ) // Convert hex string to integer
 	return val;
 }
 
+INT64 ahextoi64( LPCTSTR pszStr ) // Convert hex string to INT64
+{
+	if ( pszStr == NULL )
+		return 0;
+	bool bHex = false;
+
+	GETNONWHITESPACE(pszStr);
+
+	if ( *pszStr == '0' )
+	{
+		if (*++pszStr != '.')
+			bHex = true;
+		pszStr--;
+	}
+
+	INT64 val = 0;
+	for (;;)
+	{
+		TCHAR ch = static_cast<TCHAR>(toupper(*pszStr));
+		if ( IsDigit(ch) )
+			ch -= '0';
+		else if ( bHex && ( ch >= 'A' ) && ( ch <= 'F' ))
+		{
+			ch -= 'A' - 10;
+		}
+		else if ( !bHex && ( ch == '.' ) )
+		{
+			pszStr++;
+			continue;
+		}
+		else
+			break;
+
+		val *= ( bHex ? 0x10 : 10 );
+		val += ch;
+		pszStr ++;
+	}
+	return val;
+}
+
 INT64 power(INT64 base, INT64 level)
 {
 	double rc = pow(static_cast<double>(base), static_cast<double>(level));

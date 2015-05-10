@@ -44,6 +44,7 @@ class CGString
 		void _cdecl Format( LPCTSTR pStr, ... ) __printfargs(2,3);
 		void FormatVal( long iVal );
 		void FormatLLVal( long long iVal );
+		void FormatULLVal( unsigned long long iVal );
 		void FormatUVal( unsigned long iVal );
 		void FormatHex( DWORD dwVal );
 		void FormatLLHex( unsigned long long dwVal );

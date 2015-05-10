@@ -784,7 +784,7 @@ bool CScriptObj::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 			if ( r_WriteVal(arg, sVal, pSrc) )
 			{
 				if ( *sVal != '-' )
-					sVal.FormatVal(ahextoi(sVal));
+					sVal.FormatLLVal(ahextoi64(sVal));
 
 				return true;
 			}
@@ -929,7 +929,7 @@ badcmd:
 			sVal.FormatLLVal( Exp_GetLLVal( pszKey ));
 			return( true );
 		case SSC_UVAL:
-			sVal.FormatUVal(static_cast<unsigned long>(Exp_GetLLVal(pszKey)));
+			sVal.FormatULLVal(static_cast<unsigned long long>(Exp_GetLLVal(pszKey)));
 			return( true );
 		case SSC_FVAL:
 			{
@@ -944,9 +944,6 @@ badcmd:
 		case SSC_FEVAL: //Float EVAL
 			sVal.FormatVal( ATOI( pszKey ) );
 			break;
-		/*case SSC_FFVAL: //Float FVAL doesn't make sense
-			sVal.FormatVal( ATOI( pszKey ) );
-			break;*/
 		case SSC_FHVAL: //Float HVAL
 			sVal.FormatHex( ATOI( pszKey ) );
 			break;
