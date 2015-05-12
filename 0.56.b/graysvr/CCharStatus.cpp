@@ -748,12 +748,11 @@ BYTE CChar::GetLightLevel() const
 	return( GetTopSector()->GetLight());
 }
 
-CItem * CChar::GetSpellbook( SPELL_TYPE iSpell ) const
+CItem * CChar::GetSpellbook( SPELL_TYPE iSpell ) const	// Retrieves a spellbook from the magic school given in iSpell
 {
 	ADDTOCALLSTACK("CChar::GetSpellbook");
 	CItem	*pBook = NULL;
 	int		i = iSpell;
-
 	//	search for suitable book in hands first
 	pBook = GetContentHead();
 	for ( ; pBook != NULL; pBook = pBook->GetNext() )

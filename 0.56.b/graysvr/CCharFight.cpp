@@ -337,9 +337,6 @@ HUE_TYPE CChar::Noto_GetHue( const CChar * pCharViewer, bool fIncog ) const
 	if ( sVal )
 		return  static_cast<HUE_TYPE>(sVal->GetValNum());
 
-	CChar * pThis = const_cast<CChar*>(this);
-	CChar * pTarget = const_cast<CChar*>(pCharViewer);
-
 	NOTO_TYPE color = Noto_GetFlag(pCharViewer, fIncog, true,true);
 	switch ( color )
 	{
@@ -2813,7 +2810,7 @@ bool CChar::Fight_Clear(const CChar *pChar, bool bForced)
 		return false;
 
 	// Go to my next target.
-	if (m_Fight_Targ = pChar->GetUID())
+	if (m_Fight_Targ == pChar->GetUID())
 		m_Fight_Targ.InitUID();
 
 	pChar = Fight_FindBestTarget();
@@ -2855,7 +2852,6 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 			else
 			{*/
 				// If it is a pet then this a crime others can report.
-				CChar * pCharMark = IsStatFlag(STATF_Pet) ? NPC_PetGetOwner() : this;
 				CheckCrimeSeen( SKILL_NONE, pTarg, NULL, NULL );
 			//}
 		}
@@ -2919,7 +2915,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	CChar * pTarget = const_cast<CChar*>(pCharTarg);
 	if (!m_pPlayer && !btoldByMaster)	// We call for FindBestTarget when this CChar is not a player and was not commanded to attack, otherwise it attack directly.
 		pTarget = Fight_FindBestTarget();
-	m_Fight_Targ = pTarget ? pTarget->GetUID() : NULL;
+	m_Fight_Targ = pTarget ? pTarget->GetUID() : static_cast<CGrayUID>(-1);
 	Skill_Start( skillWeapon );
 
 	return( true );
@@ -3320,7 +3316,7 @@ bool CChar::Attacker_GetIgnore(int id)
 	if (id < 0)
 		return false;
 	LastAttackers & refAttacker = m_lastAttackers.at(id);
-	return (refAttacker.elapsed != 0);
+	return (refAttacker.ignore != 0);
 }
 
 void CChar::Attacker_Clear()

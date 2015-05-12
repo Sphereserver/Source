@@ -1274,12 +1274,16 @@ public:
 	}
 
 	void ConvertBolttoCloth();
+
+	// Spells
+	SKILL_TYPE GetSpellBookSkill();
 	SPELL_TYPE GetScrollSpell() const;
 	bool IsSpellInBook( SPELL_TYPE spell ) const;
 	int GetSpellcountInBook() const;
 	int  AddSpellbookScroll( CItem * pItem );
 	int AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate );
 
+	//Doors
 	bool IsDoorOpen() const;
 	bool Use_Door( bool fJustOpen );
 	bool Use_DoorNew( bool bJustOpen );
@@ -3429,7 +3433,9 @@ public:
 			return( SKILLLOCK_UP );
 		return( m_pPlayer->Skill_GetLock(skill));
 	}
-	unsigned short Skill_GetAdjusted( SKILL_TYPE skill ) const;
+	unsigned short Skill_GetAdjusted(SKILL_TYPE skill) const;
+	SKILL_TYPE Skill_GetMagicRandom(unsigned short iMinValue = 0);
+	SKILL_TYPE Skill_GetMagicBest();
 	void Skill_SetBase( SKILL_TYPE skill, int iValue );
 	bool Skill_UseQuick( SKILL_TYPE skill, INT64 difficulty, bool bAllowGain = true, bool bUseBellCurve = true );
 
@@ -3514,8 +3520,10 @@ private:
 	int Skill_Act_Looting( SKTRIG_TYPE stage );
 
 	void Spell_Dispel( int iskilllevel );
-CChar * Spell_Summon( CREID_TYPE id, CPointMap pt, bool fPet );
-	bool Spell_Recall( CItem * pRune, bool fGate );
+	CChar * Spell_Summon( CREID_TYPE id, CPointMap pt, bool fPet );
+	bool Spell_Recall(CItem * pRune, bool fGate);
+	SPELL_TYPE Spell_GetIndex(SKILL_TYPE skill = SKILL_NONE);	//gets first spell for the magic skill given.
+	SPELL_TYPE Spell_GetMax(SKILL_TYPE skill = SKILL_NONE);	//gets first spell for the magic skill given.
 	CItem * Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSkillLevel, int iDuration, CObjBase * pSrc = NULL, bool bEquip = true );
 	bool Spell_Equip_OnTick( CItem * pItem );
 
@@ -3788,7 +3796,7 @@ private:
 	int  NPC_WalkToPoint( bool fRun = false );
 	bool NPC_FightMagery( CChar * pChar );
 	bool NPC_FightArchery( CChar * pChar );
-	bool NPC_FightMayCast() const;
+	bool NPC_FightMayCast(bool fCheckSkill = true) const;
 
 	bool NPC_Act_Follow( bool fFlee = false, int maxDistance = 1, bool forceDistance = false );
 	void NPC_Act_Guard();
@@ -3863,27 +3871,6 @@ inline bool CChar::IsSkillBase( SKILL_TYPE skill ) // static
 	return( IS_SKILL_BASE(skill));
 }
 
-inline bool CChar::IsSkillMagic( SKILL_TYPE skill ) // static
-{
-	if (g_Cfg.IsSkillFlag(skill, SKF_SCRIPTED))
-		return false;
-	if (g_Cfg.IsSkillFlag(skill, SKF_MAGIC))
-		return true;
-	switch(skill)
-	{
-		case SKILL_MAGERY:
-		case SKILL_NECROMANCY:
-		case SKILL_CHIVALRY:
-		case SKILL_BUSHIDO:
-		case SKILL_NINJITSU:
-		case SKILL_SPELLWEAVING:
-		case SKILL_MYSTICISM:
-			return true;
-		default:
-			return false;
-	}
-}
-
 inline bool CChar::IsSkillCraft( SKILL_TYPE skill ) // static
 {
 	if (g_Cfg.IsSkillFlag(skill, SKF_SCRIPTED))
@@ -3938,6 +3925,27 @@ inline bool CChar::IsSkillFight(SKILL_TYPE skill) // static
 	case SKILL_WRESTLING:
 	case SKILL_ARCHERY:
 	case SKILL_THROWING:
+		return true;
+	default:
+		return false;
+	}
+}
+
+inline bool CChar::IsSkillMagic(SKILL_TYPE skill) // static
+{
+	if (g_Cfg.IsSkillFlag(skill, SKF_SCRIPTED))
+		return false;
+	if (g_Cfg.IsSkillFlag(skill, SKF_MAGIC))
+		return true;
+	switch (skill)
+	{
+	case SKILL_MAGERY:
+	case SKILL_NECROMANCY:
+	case SKILL_MYSTICISM:
+	case SKILL_SPELLWEAVING:
+	case SKILL_CHIVALRY:
+	//case SKILL_BUSHIDO:
+	//case SKILL_NINJITSU:
 		return true;
 	default:
 		return false;

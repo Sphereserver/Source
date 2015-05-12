@@ -1199,7 +1199,7 @@ bool CChar::NPC_LookAtCharMonster( CChar * pChar )
 	int iActMotivation = NPC_GetAttackMotivation( pChar );
 	if ( iActMotivation <= 0 )
 		return( false );
-	if ( Fight_IsActive() && m_Fight_Targ == pChar->GetUID())	// same targ.
+	if ( Fight_IsActive() && m_Act_Targ == pChar->GetUID())	// same targ.
 		return( false );
 	if ( iActMotivation < m_pNPC->m_Act_Motivation )
 		return( false );
@@ -1903,8 +1903,7 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 	// or i can throw or use archery ?
 	// RETURN:
 	//  false = revert to melee type fighting.
-
-	if ( ! NPC_FightMayCast())
+	if ( ! NPC_FightMayCast( false ))	// not checking skill here since it will do a search later and it's an expensive function.
 		return( false );
 	CChar	*pMageryTarget = pChar;
 
@@ -1924,10 +1923,15 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 	// A creature with a greater amount of mana will have a greater
 	// chance of casting
 	int iStatInt = Stat_GetAdjusted(STAT_INT);
-	int iSkillVal = Skill_GetBase(SKILL_MAGERY);
+	SKILL_TYPE skill = Skill_GetMagicRandom(300);
+	if (skill == SKILL_NONE)
+		return false;
+	int iSkillVal = Skill_GetBase(skill);
 	int mana	= Stat_GetVal(STAT_INT);
 	int iChance = iSkillVal +
-		(( mana >= ( iStatInt / 2 )) ? mana : ( iStatInt - mana ));
+		((mana >= (iStatInt / 2)) ? mana : (iStatInt - mana));
+	//g_Log.EventDebug("NPC_FightMagery chance = %d: Skill = %s [%d], int =%d [%d]\n",iChance,g_Cfg.GetSkillKey(skill),iSkillVal,iStatInt,mana);
+
 	if ( Calc_GetRandVal( iChance ) < 400 )
 	{
 		// we failed this test, but we could be casting next time
@@ -1945,35 +1949,38 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 
 	// select proper spell.
 	// defensive spells ???
-	int imaxspell = minimum(( iSkillVal / 12 ) * 8, SPELL_BASE_QTY ) +1;
+	int i = Spell_GetIndex(skill) - 1;	// Where to start the loop at
+	int imaxspell = minimum(IMULDIV(Skill_GetBase(skill), Spell_GetMax(skill) - i, Skill_GetMax(skill)) + i, Spell_GetMax(skill));
+	// Minimum between:
+	// a) IMULDIV(Current skill's value, Highest spell for this skill, Max skill value) <-- this automatically adjusts your current skill's value to the amount of spells this skill has to get what you can cast.
+	// b) Highest spell for this skill
 
 	// does the creature have a spellbook.
-	CItem * pSpellbook = GetSpellbook();
-	int i;
+	CItem * pSpellbook = GetSpellbook(Spell_GetIndex(skill));	//Gets an spellbook for the selected magic school
 
-	CVarDefCont	*	pVar	= GetKey( "CASTSPELLS", true );
+	/*CVarDefCont	*	pVar	= GetKey( "CASTSPELLS", true ); // What was this meant to be? there's no reference for this in any part of the code or scripts so no need to check something not working.
 
 	if ( pVar )
-		imaxspell	= i = GETINTRESOURCE( pVar->GetValNum() );
-	else
+		imaxspell = GETINTRESOURCE( pVar->GetValNum() );
+	else */if (skill == SKILL_MAGERY)	// Old random search for magery skill, no sense to call a random for skills with 6 spells like bushido?
 		i = Calc_GetRandVal( imaxspell );
 
-	int skill;
-	int SkillMask = 0;
-	for (SPELL_TYPE SpellBase = (SPELL_TYPE)0;)
+	//g_Log.EventDebug("Checking spells for %s from %d to %d (%d)\n",g_Cfg.GetSkillKey(skill), i, imaxspell, Spell_GetMax(skill));
 	for ( ; ; i++ )
 	{
 		if ( i > imaxspell )	// didn't find a spell.
-			return( false );
+			return(false);
 
 		SPELL_TYPE spell = static_cast<SPELL_TYPE>(i);
 		const CSpellDef * pSpellDef = g_Cfg.GetSpellDef( spell );
 		if ( pSpellDef == NULL )
 			continue;
-		if ( !pSpellDef->GetPrimarySkill( &skill, NULL ))
-			skill = SKILL_MAGERY;
-
-		if ( pSpellDef->IsSpellType(SPELLFLAG_DISABLED|SPELLFLAG_PLAYERONLY) ) continue;
+		int skilltest = static_cast<int>(skill);
+		//if ( !pSpellDef->GetPrimarySkill( &skilltest, NULL ))
+		//	skill = SKILL_MAGERY;
+		
+		//g_Log.EventDebug("NPC_FightMagery loop %d, spell = %d\n", i, spell);
+		if (pSpellDef->IsSpellType(SPELLFLAG_DISABLED | SPELLFLAG_PLAYERONLY)) continue;
 
 		if ( pSpellbook )
 		{
@@ -2087,7 +2094,9 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 		}
 		else
 		{
-			if ( !pVar && !pSpellDef->IsSpellType( SPELLFLAG_HARM ))
+			//g_Log.EventDebug("Selecting spell without book %d\n",spell);
+			continue;
+			if ( /*!pVar &&*/ !pSpellDef->IsSpellType( SPELLFLAG_HARM ))
 				continue;
 
 			// less chance for berserker spells
@@ -2103,6 +2112,7 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 			continue;
 
 		m_atMagery.m_Spell = spell;
+		//g_Log.EventDebug("%s Selected spell %d\n",GetName(), spell);
 		break;	// I like this spell.
 	}
 
@@ -3242,15 +3252,19 @@ void CChar::NPC_OnTickAction()
 
 	if ( !m_pNPC )
 		return;
-
-	SKILL_TYPE iSkillActive	= Skill_GetActive();
+	SKILL_TYPE iSkillActive = Skill_GetActive();
 	if ( g_Cfg.IsSkillFlag( iSkillActive, SKF_SCRIPTED ) )
 	{
 		// SCRIPTED SKILL OnTickAction
 	}
-	else if (g_Cfg.IsSkillFlag(iSkillActive, SKF_FIGHT) && Fight_IsActive())
+	else if (g_Cfg.IsSkillFlag(iSkillActive, SKF_FIGHT))
 	{
 		EXC_SET("fighting");
+		NPC_Act_Fight();
+	}
+	else if (g_Cfg.IsSkillFlag(iSkillActive, SKF_MAGIC))
+	{
+		EXC_SET("fighting-magic");
 		NPC_Act_Fight();
 	}
 	else

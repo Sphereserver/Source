@@ -424,6 +424,60 @@ SKILL_TYPE CChar::Skill_GetBest( unsigned int iRank ) const // Which skill is th
 	return static_cast<SKILL_TYPE>(LOWORD( dwSkillTmp ));
 }
 
+SKILL_TYPE CChar::Skill_GetMagicRandom(unsigned short iVal)
+{
+	// Retrieves a random magic skill, if iVal is set it will only select from the ones with value > iVal
+	ADDTOCALLSTACK("CChar::Skill_GetMagicRandom");
+	SKILL_TYPE skills[SKILL_QTY];
+	char count = 0;
+	for ( char i = 0; i < SKILL_QTY; i++)
+	{
+		SKILL_TYPE skill = static_cast<SKILL_TYPE>(i);
+		const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(skill);
+		if (!pSkillDef)
+			continue;
+		if (IsSkillMagic(skill))
+		{
+			if (Skill_GetBase(skill) < iVal)
+			{
+				continue;
+			}
+			skills[++count] = skill;
+		}
+	}
+	if (count > 0)
+	{
+		char rand = Calc_GetRandVal2(1, count);
+		return skills[rand];
+	}
+	return SKILL_NONE;
+}
+
+SKILL_TYPE CChar::Skill_GetMagicBest()
+{
+	ADDTOCALLSTACK("CChar::Skill_GetMagicBest");
+	SKILL_TYPE skill = SKILL_NONE;
+	int value = 0;
+	for (char i = 0; i < SKILL_QTY; i++)
+	{
+		SKILL_TYPE test = static_cast<SKILL_TYPE>(i);
+		const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(skill);
+		if (!pSkillDef)
+			continue;
+
+		if (IsSkillMagic(skill))
+		{
+			int iVal = Skill_GetBase(test);
+			if (iVal > value)
+			{
+				skill = test;
+				value = iVal;
+			}
+		}
+	}
+	return skill;
+}
+
 unsigned short CChar::Skill_GetAdjusted( SKILL_TYPE skill ) const
 {
 	ADDTOCALLSTACK("CChar::Skill_GetAdjusted");

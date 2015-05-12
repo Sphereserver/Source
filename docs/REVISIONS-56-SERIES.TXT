@@ -2099,6 +2099,22 @@ Added: New updated Swing Speed combat formula. It's almost the same as the previ
 10-05-2015, Ben
 Added: ABS() intrinsic function wich returns the absolute of any number ( <eval abs(5)> = 5, <eval abs(-5)> = 5 )
 
-
+12-05-2015, XuN
 Receiving 0 damage will not generate blood anymore.
 Improved the code for 'Attacker'.
+
+Updated/improved/cleaned Spells:
+
+-Added internal definitions for all spells
+-Added support for spells with id 1000 to 1055 for custom spells and other old spells, reflected changes in sphere_spells.scp*
+-t_spellbook_extra works with values 1000+
+-Changed NPCs formulas to make them able to cast spells from other books than MAGERY one, selected from skills with SKF_MAGIC**:
+-Fixed the formula to select the maximum spell NPCs can cast because any npc with magery > 10.0 could cast all spells, now maxspell is calculated like this (using magery as example) :
+	maxspell = MULDIV(Skill_GetValue(magery),Spells_GetMax(magery),Skill_GetMax(magery)). To get a real progression for skill's capabilities this adjusts automatically to each skill's max spells, so 78.2 necromancy will let npcs cast up to spell 12 and 71.4 magery will let npc cast up to spell 37 for example.
+		Skill_GetValue() returns the current value for this skill,
+		Spells_GetMax() returns the total amount of spells for this skill (64 for magery, 17 for necromancy...),
+		SkillGetMax() returns the maximum amount of this skill (Based on skillclass for players and 100.0 (or tag.override.skillcap_&skill if present) for NPCs)
+-NOTE: This has not been changed, and it's ONLY for magery as it was before (since other skills was not being checked): spells are selected in a FOR loop so, for magery and to avoid big loops each time a spell must be selected, first spell being checked is <r<maxspell>>. So if maxspell = 50 it will choose spells between <r50> and 50.
+
+*[sphere_spells.scp]: Changed ID for spell number 64 to 1000 and so on with the next ones until spell 99.
+**[sphere_skills]: Added SKF_MAGIC to MAGERY,NECROMANCY,SPELLWEAVING,MYSTICISM and CHIVALRY

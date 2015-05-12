@@ -285,12 +285,13 @@ bool CChar::NPC_CanSpeak() const
 	return( pCharDef != NULL && pCharDef->m_Speech.GetCount() > 0 );
 }
 
-bool CChar::NPC_FightMayCast() const
+bool CChar::NPC_FightMayCast(bool fCheckSkill) const
 {
 	ADDTOCALLSTACK("CChar::NPC_FightMayCast");
 	// This NPC could cast spells if they wanted to ?
 	// check mana and anti-magic
-	if ( Skill_GetBase(SKILL_MAGERY) < 300 )
+	// Dont check for skill if !fCheckSkill
+	if (fCheckSkill && !const_cast<CChar*>(this)->Skill_GetMagicRandom(300))
 		return false;
 	if ( m_pArea && m_pArea->IsFlag(REGION_ANTIMAGIC_DAMAGE|REGION_FLAG_SAFE) )
 		return false;
@@ -883,8 +884,9 @@ int CChar::NPC_GetAttackMotivation( CChar * pChar, int iMotivation ) const
 		return( -1 );	// I'm dead.
 	// Is the target interesting ?
 	if ( pChar->m_pArea->IsFlag( REGION_FLAG_SAFE ))	// universal
-		return( 0 );
-
+		return(0);
+	if (pChar->IsStatFlag(STATF_DEAD) && (pChar->m_pNPC && pChar->m_pNPC->m_bonded == 1))
+		return 0;
 	// If the area is guarded then think better of this.
 	if ( pChar->m_pArea->IsGuarded() && m_pNPC->m_Brain != NPCBRAIN_GUARD )		// too smart for this.
 	{
