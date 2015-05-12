@@ -4430,8 +4430,16 @@ bool CChar::OnTick()
 				if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )
 					Fight_HitTry();
 			}
-			else if ( Skill_GetActive() == SKILL_NONE )
-				Fight_AttackNext();
+			else if (Skill_GetActive() == SKILL_NONE)
+			{
+				if (!Fight_AttackNext())
+				{
+					Skill_Start(SKILL_NONE);
+					StatFlag_Clear(STATF_War);
+					m_Fight_Targ.InitUID();
+				}
+				
+			}
 		}
 	}
 

@@ -1199,7 +1199,7 @@ bool CChar::NPC_LookAtCharMonster( CChar * pChar )
 	int iActMotivation = NPC_GetAttackMotivation( pChar );
 	if ( iActMotivation <= 0 )
 		return( false );
-	if ( Fight_IsActive() && m_Act_Targ == pChar->GetUID())	// same targ.
+	if ( Fight_IsActive() && m_Fight_Targ == pChar->GetUID())	// same targ.
 		return( false );
 	if ( iActMotivation < m_pNPC->m_Act_Motivation )
 		return( false );
@@ -1959,6 +1959,8 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 		i = Calc_GetRandVal( imaxspell );
 
 	int skill;
+	int SkillMask = 0;
+	for (SPELL_TYPE SpellBase = (SPELL_TYPE)0;)
 	for ( ; ; i++ )
 	{
 		if ( i > imaxspell )	// didn't find a spell.
@@ -2146,8 +2148,19 @@ void CChar::NPC_Act_Fight()
 	}
 
 	CChar * pChar = m_Fight_Targ.CharFind();
-	if ( pChar == NULL || ! pChar->IsTopLevel()) // target is not valid anymore ?
+	if (pChar == NULL || !pChar->IsTopLevel()) // target is not valid anymore ?
 		return;
+
+	if (Attacker_GetIgnore(pChar))
+	{
+		if (!Fight_FindBestTarget())
+		{
+			Skill_Start(SKILL_NONE);
+			StatFlag_Clear(STATF_War);
+			m_Fight_Targ.InitUID();
+			return;
+		}
+	}
 	int iDist = GetDist( pChar );
 
 	if ( m_pNPC->m_Brain == NPCBRAIN_GUARD &&
@@ -3235,7 +3248,7 @@ void CChar::NPC_OnTickAction()
 	{
 		// SCRIPTED SKILL OnTickAction
 	}
-	else if ( g_Cfg.IsSkillFlag( iSkillActive, SKF_FIGHT ) )
+	else if (g_Cfg.IsSkillFlag(iSkillActive, SKF_FIGHT) && Fight_IsActive())
 	{
 		EXC_SET("fighting");
 		NPC_Act_Fight();

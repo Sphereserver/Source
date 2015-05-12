@@ -2098,3 +2098,7 @@ Added: New updated Swing Speed combat formula. It's almost the same as the previ
 
 10-05-2015, Ben
 Added: ABS() intrinsic function wich returns the absolute of any number ( <eval abs(5)> = 5, <eval abs(-5)> = 5 )
+
+
+Receiving 0 damage will not generate blood anymore.
+Improved the code for 'Attacker'.

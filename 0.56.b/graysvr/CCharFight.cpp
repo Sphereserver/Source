@@ -2367,6 +2367,9 @@ effect_bounce:
 		}
 	}
 
+	if (iDmg <= 0)
+		return(0);
+
 	// Make blood effects
 	if ( m_wBloodHue != static_cast<HUE_TYPE>(-1) )
 	{
@@ -2384,9 +2387,6 @@ effect_bounce:
 			pBlood->SetDecayTime( 5*TICK_PER_SEC );
 		}
 	}
-
-	if ( iDmg <= 0 )
-		return( 0 );
 
 	// Apply damage
 	UpdateStatVal( STAT_STR, -iDmg );
@@ -2562,21 +2562,6 @@ void CChar::Memory_Fight_Start( const CChar * pTarg )
 	{
 		if ( m_pNPC && m_pNPC->m_Brain == NPCBRAIN_BERSERK ) // it will attack everything.
 			return;
-	}
-
-	char *z = NULL;
-	if ( GetTopSector()->GetCharComplexity() < 7 )
-	{
-		z = Str_GetTemp();
-		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKO), GetName(), pTarg->GetName());
-		UpdateObjMessage(z, NULL, pTarg->GetClient(), HUE_TEXT_DEF, TALKMODE_EMOTE);
-	}
-
-	if ( pTarg->IsClient() && pTarg->CanSee(this))
-	{
-		if ( !z ) z = Str_GetTemp();
-		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKS), GetName());
-		pTarg->GetClient()->addBarkParse(z, this, HUE_TEXT_DEF, TALKMODE_EMOTE);
 	}
 }
 
@@ -2896,9 +2881,9 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	}
 	if ( Attacker_Add( const_cast<CChar*>( pCharTarg ), threat ) == false )
 		return( false );
-	// Record the start of the fight.
-	Memory_Fight_Start( pCharTarg );
 
+	if (Attacker_GetIgnore(const_cast<CChar*>(pCharTarg)))
+		return false;
 	// I am attacking. (or defending)
 	StatFlag_Set( STATF_War );
 
@@ -2933,12 +2918,8 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	}
 	CChar * pTarget = const_cast<CChar*>(pCharTarg);
 	if (!m_pPlayer && !btoldByMaster)	// We call for FindBestTarget when this CChar is not a player and was not commanded to attack, otherwise it attack directly.
-	{
-		CChar * pCharTest = Fight_FindBestTarget();
-		if (pCharTest)
-			pTarget = pCharTest;
-	}
-	m_Fight_Targ = pTarget->GetUID();
+		pTarget = Fight_FindBestTarget();
+	m_Fight_Targ = pTarget ? pTarget->GetUID() : NULL;
 	Skill_Start( skillWeapon );
 
 	return( true );
@@ -2964,21 +2945,29 @@ void CChar::Fight_HitTry()
 	ASSERT( m_atFight.m_War_Swing_State == WAR_SWING_READY || m_atFight.m_War_Swing_State == WAR_SWING_SWINGING );
 
 	CChar * pCharTarg = m_Fight_Targ.CharFind();
-	if ( pCharTarg == NULL )
+	if (pCharTarg == NULL)
 	{
 		// Might be dead ? Clear this.
 		// move to my next target.
-		Fight_AttackNext();
+		if (!Fight_AttackNext())
+		{
+			Skill_Start(SKILL_NONE);
+			StatFlag_Clear(STATF_War);
+			m_Fight_Targ.InitUID();
+		}
 		return;
 	}
-	//bool isBondedTarget = (pCharTarg->IsStatFlag(STATF_DEAD) && (pCharTarg->m_pNPC && pCharTarg->m_pNPC->m_bonded == 1));
-	bool isBondedTarget = pCharTarg->IsStatFlag(STATF_DEAD);	// Bonded targets are the unique able to reach this point, so there's no need to recheck again they are bonded?
-
+	bool isBondedTarget = pCharTarg->IsStatFlag(STATF_DEAD);	// Bonded targets are the unique npcs able to be attacked, it they were not bonded the would be dead and not exist anymore... no need of more checks. Dead players are in the same group, must be skipped.
 	if (isBondedTarget)
 	{
 		// Might be dead ? Clear this.
 		// move to my next target.
-		Fight_AttackNext();
+		if (!Fight_AttackNext())
+		{
+			Skill_Start(SKILL_NONE);
+			StatFlag_Clear(STATF_War);
+			m_Fight_Targ.InitUID();
+		}
 		return;
 	}
 	// Try to hit my target. I'm ready.
@@ -3055,6 +3044,28 @@ bool CChar::Attacker_Add( CChar * pChar, INT64 threat )
 		attacker.threat = threat;
 	attacker.ignore = fIgnore;
 	m_lastAttackers.push_back(attacker);
+
+
+	// Record the start of the fight.
+	Memory_Fight_Start(pChar);
+	char *z = NULL;
+
+	if (!attacker.ignore)
+	{
+		if (GetTopSector()->GetCharComplexity() < 7)
+		{
+			z = Str_GetTemp();
+			sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKO), GetName(), pChar->GetName());
+			UpdateObjMessage(z, NULL, pChar->GetClient(), HUE_TEXT_DEF, TALKMODE_EMOTE);
+		}
+
+		if (pChar->IsClient() && pChar->CanSee(this))
+		{
+			if (!z) z = Str_GetTemp();
+			sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKS), GetName());
+			pChar->GetClient()->addBarkParse(z, this, HUE_TEXT_DEF, TALKMODE_EMOTE);
+		}
+	}
 	return true;
 }
 
@@ -3066,7 +3077,7 @@ CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 	SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
 	int iClosest = INT_MAX;	// closest
 
-	CChar * pChar = m_Fight_Targ.CharFind();
+	CChar * pChar = NULL;
 	CChar * pClosest = NULL;
 	if ( ! m_lastAttackers.size() )
 		return pChar;
@@ -3078,9 +3089,13 @@ CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 		LastAttackers & refAttacker = *it;
 		CChar * pChar = static_cast<CChar*>( static_cast<CGrayUID>( refAttacker.charUID ).CharFind() );
 
-		bool isBondedTarget = (pChar && pChar->IsStatFlag(STATF_DEAD) && (pChar->m_pNPC && pChar->m_pNPC->m_bonded == 1));
-		if ( pChar == NULL || isBondedTarget )
+		if ( pChar == NULL )
 			continue;
+		if (pChar && pChar->IsStatFlag(STATF_DEAD) && (pChar->m_pNPC && pChar->m_pNPC->m_bonded == 1))	//Is the target bonded and dead? not a fighting target then.
+		{
+			pChar = NULL;
+			continue;
+		}
 		if ( refAttacker.ignore )
 		{
 			bool bIgnore = true;
