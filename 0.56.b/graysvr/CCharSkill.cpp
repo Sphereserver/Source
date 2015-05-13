@@ -442,7 +442,8 @@ SKILL_TYPE CChar::Skill_GetMagicRandom(unsigned short iVal)
 			{
 				continue;
 			}
-			skills[++count] = skill;
+			++count;
+			skills[static_cast<SKILL_TYPE>(count)] = skill;
 		}
 	}
 	if (count > 0)

@@ -3660,8 +3660,8 @@ int CItem::GetSpellcountInBook() const
 SKILL_TYPE CItem::GetSpellBookSkill()
 {
 	ADDTOCALLSTACK("CItem::GetSpellBookSkill");
-	ASSERT(IsTypeSpellbook())
-		switch (GetType())
+	ASSERT(IsTypeSpellbook());
+	switch (GetType())
 	{
 		case IT_SPELLBOOK:
 			return SKILL_MAGERY;
