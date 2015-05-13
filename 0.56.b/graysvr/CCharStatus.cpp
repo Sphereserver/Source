@@ -748,37 +748,100 @@ BYTE CChar::GetLightLevel() const
 	return( GetTopSector()->GetLight());
 }
 
-CItem * CChar::GetSpellbook( SPELL_TYPE iSpell ) const	// Retrieves a spellbook from the magic school given in iSpell
+CItem * CChar::GetSpellbook(SPELL_TYPE iSpell) const	// Retrieves a spellbook from the magic school given in iSpell
 {
 	ADDTOCALLSTACK("CChar::GetSpellbook");
 	CItem	*pBook = NULL;
 	int		i = iSpell;
 	//	search for suitable book in hands first
 	pBook = GetContentHead();
-	for ( ; pBook != NULL; pBook = pBook->GetNext() )
+	for (; pBook != NULL; pBook = pBook->GetNext())
 	{
-		if ( pBook->IsTypeSpellbook() )
+		if (pBook->IsTypeSpellbook())
 		{
-			if (( i > pBook->m_itSpellbook.m_baseid ) && ( i - ( pBook->m_itSpellbook.m_baseid + 1 ) < 96 ))
+			if ((i > pBook->m_itSpellbook.m_baseid) && (i - (pBook->m_itSpellbook.m_baseid + 1) < 96))
 				return pBook;
 		}
 	}
 
 	//	then search in the top level of the pack
 	CItemContainer *pPack = GetPack();
-	if ( pPack )
+	if (pPack)
 	{
 		pBook = pPack->GetContentHead();
-		for ( ; pBook != NULL; pBook = pBook->GetNext() )
+		for (; pBook != NULL; pBook = pBook->GetNext())
 		{
-			if ( pBook->IsTypeSpellbook() )
+			if (pBook->IsTypeSpellbook())
 			{
-				if (( i > pBook->m_itSpellbook.m_baseid ) && ( i - ( pBook->m_itSpellbook.m_baseid + 1 ) < 96 ))
+				if ((i > pBook->m_itSpellbook.m_baseid) && (i - (pBook->m_itSpellbook.m_baseid + 1) < 96))
 					return pBook;
 			}
 		}
 	}
 
+	return NULL;
+}
+
+int CChar::GetSpellbookExtra(CItem * pBooks[], int count) const	// Retrieves a spellbook from the magic school given in iSpell
+{
+	ADDTOCALLSTACK("CChar::GetSpellbook");
+	CItem	*pBook = NULL;
+	//	search for suitable book in hands first
+	pBook = GetContentHead();
+	for (; pBook != NULL; pBook = pBook->GetNext())
+	{
+		if (pBook->GetType()==IT_SPELLBOOK_EXTRA)
+		{
+			if (pBook->m_itSpellbook.m_baseid)
+				pBooks[++count] = pBook;
+		}
+	}
+
+	//	then search in the top level of the pack
+	CItemContainer *pPack = GetPack();
+	if (pPack)
+	{
+		pBook = pPack->GetContentHead();
+		for (; pBook != NULL; pBook = pBook->GetNext())
+		{
+			if (pBook->GetType() == IT_SPELLBOOK_EXTRA)
+			{
+				if (pBook->m_itSpellbook.m_baseid)
+					pBooks[++count] = pBook;
+			}
+		}
+	}
+	return count;
+}
+
+CItem * CChar::GetSpellbookRandom(SPELL_TYPE iSpell) const	// Retrieves a spellbook from the magic school given in iSpell
+{
+	ADDTOCALLSTACK("CChar::GetSpellbook");
+	CItem	*pBook = NULL;
+	CItem *pBooks[SKILL_QTY];
+	int		i = iSpell;
+	//	search for suitable book in hands first
+	char count = 0;
+	for (char i = 0; i < SKILL_QTY; i++)
+	{
+		SKILL_TYPE skill = static_cast<SKILL_TYPE>(i);
+		const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(skill);
+		if (!pSkillDef)
+			continue;
+		if (IsSkillMagic(skill) && (Skill_GetBase(skill) > 1))	//only selecting skills with value > 0.1
+		{
+			pBook = GetSpellbook(const_cast<CChar*>(this)->Spell_GetIndex(skill));
+			if (pBook)
+				pBooks[++count] = pBook;
+		}
+	}
+	int test = GetSpellbookExtra(pBooks,count); //Add extra spellbooks to the list. 
+	count += test;
+	if (count > 0)
+	{
+		char rand = Calc_GetRandVal2(1, count);
+		return pBooks[rand];
+	}
 	return NULL;
 }
 

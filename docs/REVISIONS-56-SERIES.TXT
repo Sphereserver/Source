@@ -2099,7 +2099,7 @@ Added: New updated Swing Speed combat formula. It's almost the same as the previ
 10-05-2015, Ben
 Added: ABS() intrinsic function wich returns the absolute of any number ( <eval abs(5)> = 5, <eval abs(-5)> = 5 )
 
-12-05-2015, XuN
+13-05-2015, XuN
 Receiving 0 damage will not generate blood anymore.
 Improved the code for 'Attacker'.
 
@@ -2116,5 +2116,17 @@ Updated/improved/cleaned Spells:
 		SkillGetMax() returns the maximum amount of this skill (Based on skillclass for players and 100.0 (or tag.override.skillcap_&skill if present) for NPCs)
 -NOTE: This has not been changed, and it's ONLY for magery as it was before (since other skills was not being checked): spells are selected in a FOR loop so, for magery and to avoid big loops each time a spell must be selected, first spell being checked is <r<maxspell>>. So if maxspell = 50 it will choose spells between <r50> and 50.
 
-*[sphere_spells.scp]: Changed ID for spell number 64 to 1000 and so on with the next ones until spell 99.
+[sphere_defs.scp]:
+	-added spellflag_heal             040000000  // spell used to heal hitpoints or resurrect
+	-added LAYER_* definitions for all spells that need a layer item to handle their behaviour (behaviours not added).
+*[sphere_spells.scp]: 
+	-Changed ID for spell number 64 to 1000 and so on with the next ones until spell 99.
+	-Added spellflag_heal to s_heal,s_greater_heal,s_close_wounds,s_noble_sacrifice,s_gift_of_life,
+	-Added flags to Spellweaving spells.
 **[sphere_skills]: Added SKF_MAGIC to MAGERY,NECROMANCY,SPELLWEAVING,MYSTICISM and CHIVALRY
+-Added NPC_AI setting: 
+	// NPC_AI_STRICTCAST		01000	NPC's will only select spells they really have in their spellbook. Old behaviour let them to select any spell with SPELLFLAG_HARM if they have magery enough to cast it regardless of spellbook.
+FIXED i_spellbook_spellweaving was MOREZ=0600, it should be 600
+FIXED argn2 for @SpellSelect couldn't be overriden for spells casted from T_WAND or T_SCROLL. ARGN2 is also set to the proper mana value (0 for T_WAND and RequiredMana /2 for I_SCROLL) for reading purposes.
+Updated comment for t_spellbook_extra       186   // some spellbook for script purposes (MOREZ=basic offset, should 1000 or more) in sphere_defs.scp
+	Added morex for t_spellbook_extra to set the max amount of spells for this book, so morez = first spell and morex = last spell , for example morey=1000, morez=1016 will hold spells from 1000 to 1016

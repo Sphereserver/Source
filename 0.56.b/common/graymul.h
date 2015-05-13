@@ -1837,6 +1837,39 @@ enum LAYER_TYPE		// defined by UO. Only one item can be in a slot.
 	LAYER_FLAG_Bandage,			// 53 = Bandages go here for healing
 
 	LAYER_AUCTION,				// Auction layer
+
+	//Necro
+	LAYER_SPELL_Curse_Weapon,
+	LAYER_SPELL_Corpse_Skin,
+	LAYER_SPELL_Evil_Omen,
+	LAYER_SPELL_Pain_Spike,
+	LAYER_SPELL_Mind_Rot,
+	LAYER_SPELL_Strangle,
+
+	//Ninjitsu
+	//LAYER_SPELL_Surprise_Attack,
+
+	//Chivalry
+	LAYER_SPELL_Consecrate_Weapon,
+	LAYER_SPELL_Divine_Fury,
+	LAYER_SPELL_Enemy_Of_One,
+
+	//SpellWeaving
+	LAYER_SPELL_Attunement,
+	LAYER_SPELL_Gift_Of_Renewal,
+	LAYER_SPELL_Inmolating_Weapon,
+	LAYER_SPELL_Thunderstorm,
+	LAYER_SPELL_Arcane_Empowerment,
+	LAYER_SPELL_Ethereal_Voyage,
+	LAYER_SPELL_Gift_Of_Life,
+	LAYER_SPELL_Dryad_Allure,
+	LAYER_SPELL_Essence_Of_Wind,
+
+	//Mysticism
+	LAYER_SPELL_Sleep,
+	LAYER_SPELL_Bombard,
+	LAYER_SPELL_Spell_Plague,
+	LAYER_SPELL_Nether_Cyclone,
 	
 	LAYER_QTY
 };
@@ -1957,7 +1990,7 @@ enum SPELL_TYPE	// List of spell numbers in spell book.
 	SPELL_Noble_Sacrifice,
 	SPELL_Remove_Curse,
 	SPELL_Sacred_Journey,
-	SPELL_CHIVALRY_QTY = 110,
+	SPELL_CHIVALRY_QTY = 210,
 
 	//Bushido
 	SPELL_Honorable_Execution = 401,

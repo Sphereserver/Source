@@ -1905,7 +1905,6 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 	//  false = revert to melee type fighting.
 	if ( ! NPC_FightMayCast( false ))	// not checking skill here since it will do a search later and it's an expensive function.
 		return( false );
-	CChar	*pMageryTarget = pChar;
 
 	int iDist = GetTopDist3D( pChar );
 	if ( iDist > ((UO_MAP_VIEW_SIGHT*3)/4))	// way too far away . close in.
@@ -1920,52 +1919,90 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 		return( false );
 	}
 
+	// does the creature have a spellbook.
+	CItem * pSpellbook = GetSpellbookRandom();	//Gets a random spellbook from the ones I may have.
+	CItem * pWand = LayerFind(LAYER_HAND1);		//Try to get a working wand.
+	if (pWand)
+	{
+		if (pWand->GetType() != IT_WAND || pWand->m_itWeapon.m_spellcharges <= 0)// If the item is really a wand and have it charges it's a valid wand, if not ... we get rid of it.
+			pWand = NULL;
+	}
+	if (g_Cfg.m_iNpcAi&NPC_AI_STRICTCAST && !(pWand || pSpellbook))
+	{
+		//g_Log.EventDebug("No book or wand, I can't cast anything\n");
+		return false;
+	}
+
 	// A creature with a greater amount of mana will have a greater
 	// chance of casting
 	int iStatInt = Stat_GetAdjusted(STAT_INT);
-	SKILL_TYPE skill = Skill_GetMagicRandom(300);
-	if (skill == SKILL_NONE)
-		return false;
+
+	// Skill used is selected from 
+	//a) found spellbook
+	//b) Skill_GetMagicRandom()
+	SKILL_TYPE skill = pSpellbook ? pSpellbook->GetSpellBookSkill() : Skill_GetMagicRandom();
+	int i;	// Where to start the loop at
+
+	// Minimum between:
+	// a) IMULDIV(Current skill's value, Highest spell for this skill, Max skill value) <-- this automatically adjusts your current skill's value to the amount of spells this skill has to get what you can cast.
+	// b) Highest spell for this skill
+	int imaxspell;
+	if (skill == SKILL_NONE)	// Only t_spellbook_extra may have SKILL_NONE, which represents spells 1000+
+	{
+		if (!pSpellbook && !(pSpellbook->GetType() == IT_SPELLBOOK_EXTRA))
+			return false;
+
+		i = pSpellbook->m_itSpellbook.m_baseid;
+		SPELL_TYPE spell = static_cast<SPELL_TYPE>(i);
+		const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
+		if (pSpellDef == NULL)
+		{
+			g_Log.EventError("Invalid index %d for spellbook\n",spell);
+			return false;
+		}
+		if (!pSpellDef->m_SkillReq.IsValidIndex(0))
+		{
+			g_Log.EventError("Invalid SKILLREQ value or no value for spell %d\n", spell);
+			return false;
+		}
+		int skilltest = pSpellDef->m_SkillReq[0].GetResIndex();
+		if (!skilltest)
+		{
+			skilltest = SKILL_MAGERY;
+		}
+		skill = static_cast<SKILL_TYPE>(skilltest);
+		imaxspell = IMULDIV(Skill_GetBase(skill), pSpellbook->m_itSpellbook.m_maxspells - i, Skill_GetMax(skill)) + i;
+		if (imaxspell < i)	// some roundups with lower skill values and books with 1-2 spells can cause imaxspell to be lower than i
+			imaxspell = i;
+	}
+	else
+	{
+		i = Spell_GetIndex(skill) - 1;
+		imaxspell = minimum(IMULDIV(Skill_GetBase(skill), Spell_GetMax(skill) - i, Skill_GetMax(skill)) + i, Spell_GetMax(skill));
+	}
 	int iSkillVal = Skill_GetBase(skill);
 	int mana	= Stat_GetVal(STAT_INT);
 	int iChance = iSkillVal +
 		((mana >= (iStatInt / 2)) ? mana : (iStatInt - mana));
-	//g_Log.EventDebug("NPC_FightMagery chance = %d: Skill = %s [%d], int =%d [%d]\n",iChance,g_Cfg.GetSkillKey(skill),iSkillVal,iStatInt,mana);
 
-	if ( Calc_GetRandVal( iChance ) < 400 )
+
+	i = Calc_GetRandVal2(i, imaxspell);
+
+	if (Calc_GetRandVal(iChance) < iSkillVal / 4)
 	{
 		// we failed this test, but we could be casting next time
 		// back off from the target a bit
-		if ( mana > ( iStatInt / 3 ) && Calc_GetRandVal( iStatInt ))
+		if (mana > (iStatInt / 3) && Calc_GetRandVal(iStatInt))
 		{
-			if ( iDist < 4 || iDist > 8  )	// Here is fine?
+			if (iDist < 4 || iDist > 8)	// Here is fine?
 			{
-				NPC_Act_Follow( false, Calc_GetRandVal( 3 ) + 2, true );
+				NPC_Act_Follow(false, Calc_GetRandVal(3) + 2, true);
 			}
-			return( true );
+			return(true);
 		}
-		return( false );
+		return(false);
 	}
-
-	// select proper spell.
-	// defensive spells ???
-	int i = Spell_GetIndex(skill) - 1;	// Where to start the loop at
-	int imaxspell = minimum(IMULDIV(Skill_GetBase(skill), Spell_GetMax(skill) - i, Skill_GetMax(skill)) + i, Spell_GetMax(skill));
-	// Minimum between:
-	// a) IMULDIV(Current skill's value, Highest spell for this skill, Max skill value) <-- this automatically adjusts your current skill's value to the amount of spells this skill has to get what you can cast.
-	// b) Highest spell for this skill
-
-	// does the creature have a spellbook.
-	CItem * pSpellbook = GetSpellbook(Spell_GetIndex(skill));	//Gets an spellbook for the selected magic school
-
-	/*CVarDefCont	*	pVar	= GetKey( "CASTSPELLS", true ); // What was this meant to be? there's no reference for this in any part of the code or scripts so no need to check something not working.
-
-	if ( pVar )
-		imaxspell = GETINTRESOURCE( pVar->GetValNum() );
-	else */if (skill == SKILL_MAGERY)	// Old random search for magery skill, no sense to call a random for skills with 6 spells like bushido?
-		i = Calc_GetRandVal( imaxspell );
-
-	//g_Log.EventDebug("Checking spells for %s from %d to %d (%d)\n",g_Cfg.GetSkillKey(skill), i, imaxspell, Spell_GetMax(skill));
+	CObjBase *pTarg = pChar;
 	for ( ; ; i++ )
 	{
 		if ( i > imaxspell )	// didn't find a spell.
@@ -1976,113 +2013,158 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 		if ( pSpellDef == NULL )
 			continue;
 		int skilltest = static_cast<int>(skill);
-		//if ( !pSpellDef->GetPrimarySkill( &skilltest, NULL ))
-		//	skill = SKILL_MAGERY;
+		if ( !pSpellDef->GetPrimarySkill( &skilltest, NULL ))
+			skill = SKILL_MAGERY;
 		
-		//g_Log.EventDebug("NPC_FightMagery loop %d, spell = %d\n", i, spell);
 		if (pSpellDef->IsSpellType(SPELLFLAG_DISABLED | SPELLFLAG_PLAYERONLY)) continue;
-
-		if ( pSpellbook )
+		if ( pSpellbook || pWand )
 		{
-			if ( ! pSpellbook->IsSpellInBook(spell))
+			if (!(pWand && pWand->m_itWeapon.m_spell == spell) && !(pSpellbook && pSpellbook->IsSpellInBook(spell)))
 				continue;
 
 			if ( ! pSpellDef->IsSpellType( SPELLFLAG_HARM ))
 			{
-				if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_CHAR) && pSpellDef->IsSpellType(SPELLFLAG_GOOD) )
+				if (pSpellDef->IsSpellType(SPELLFLAG_GOOD))
 				{
-					//	help self or friends if needed. support 3 friends + self for castings
-					bool	bSpellSuits = false;
-					CChar	*pFriend[4];
-					int		iFriendIndex = 0;
-					CChar	*pTarget = NULL;
-
-					//	since i scan the surface near me for this code, i need to be sure that it is neccessary
-					if (( spell != SPELL_Heal ) && ( spell != SPELL_Great_Heal ) && ( spell != SPELL_Reactive_Armor ) &&
-						( spell != SPELL_Cure ) && ( spell != SPELL_Protection ) && ( spell != SPELL_Bless ) &&
-						( spell != SPELL_Magic_Reflect )) continue;
-
-					pFriend[0] = this;
-					pFriend[1] = pFriend[2] = pFriend[3] = NULL;
-					iFriendIndex = 1;
-
-					if ( g_Cfg.m_iNpcAi&NPC_AI_COMBAT )
+					if (pSpellDef->IsSpellType(SPELLFLAG_TARG_CHAR))
 					{
-						//	search for the neariest friend in combat
-						CWorldSearch AreaChars(GetTopPoint(), UO_MAP_VIEW_SIGHT);
-						for (;;)
-						{
-							pTarget = AreaChars.GetChar();
-							if ( !pTarget )
-								break;
+						//	help self or friends if needed. support 3 friends + self for castings
+						bool	bSpellSuits = false;
+						CChar	*pFriend[4];
+						int		iFriendIndex = 0;
+						CChar	*pTarget = NULL;
 
-							CItemMemory *pMemory = pTarget->Memory_FindObj(pChar);
-							if ( pMemory && pMemory->IsMemoryTypes(MEMORY_FIGHT|MEMORY_HARMEDBY|MEMORY_IRRITATEDBY) )
+						//	since i scan the surface near me for this code, i need to be sure that it is neccessary
+						if ((spell != SPELL_Heal)
+							&& (spell != SPELL_Great_Heal)
+							&& (spell != SPELL_Reactive_Armor)
+							&& (spell != SPELL_Cure)
+							&& (spell != SPELL_Protection)
+							&& (spell != SPELL_Bless)
+							&& (spell != SPELL_Magic_Reflect)
+							&& (spell != SPELL_Gift_of_Renewal)
+							&& (spell != SPELL_Cleansing_Winds)
+							) continue;
+
+						pFriend[0] = this;
+						pFriend[1] = pFriend[2] = pFriend[3] = NULL;
+						iFriendIndex = 1;
+
+						if (g_Cfg.m_iNpcAi&NPC_AI_COMBAT)
+						{
+							//	search for the neariest friend in combat
+							CWorldSearch AreaChars(GetTopPoint(), UO_MAP_VIEW_SIGHT);
+							for (;;)
 							{
-								pFriend[iFriendIndex++] = pTarget;
-								if ( iFriendIndex >= 4 ) break;
+								pTarget = AreaChars.GetChar();
+								if (!pTarget)
+									break;
+
+								CItemMemory *pMemory = pTarget->Memory_FindObj(pChar);
+								if (pMemory && pMemory->IsMemoryTypes(MEMORY_FIGHT | MEMORY_HARMEDBY | MEMORY_IRRITATEDBY))
+								{
+									pFriend[iFriendIndex++] = pTarget;
+									if (iFriendIndex >= 4) break;
+								}
 							}
 						}
-					}
 
-					//	i cannot cast this on self. ok, then friends only
-					if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_NOSELF) )
-					{
-						pFriend[0] = pFriend[1];
-						pFriend[1] = pFriend[2];
-						pFriend[2] = pFriend[3];
-						pFriend[3] = NULL;
-					}
-					for ( iFriendIndex = 0; iFriendIndex < 4; iFriendIndex++)
-					{
-						pTarget = pFriend[iFriendIndex];
-						if ( !pTarget ) break;
-						//	check if the target need that
-						switch ( spell )
+						//	i cannot cast this on self. ok, then friends only
+						if (pSpellDef->IsSpellType(SPELLFLAG_TARG_NOSELF))
 						{
+							pFriend[0] = pFriend[1];
+							pFriend[1] = pFriend[2];
+							pFriend[2] = pFriend[3];
+							pFriend[3] = NULL;
+						}
+						for (iFriendIndex = 0; iFriendIndex < 4; iFriendIndex++)
+						{
+							pTarget = pFriend[iFriendIndex];
+							if (!pTarget) break;
+							//	check if the target need that
+							switch (spell)
+							{
 							case SPELL_Heal:
 							case SPELL_Great_Heal:
-								if ( pTarget->Stat_GetVal(STAT_STR) < pTarget->Stat_GetAdjusted(STAT_STR)/3 ) bSpellSuits = true;
+								if (pTarget->Stat_GetVal(STAT_STR) < pTarget->Stat_GetAdjusted(STAT_STR) / 3) bSpellSuits = true;
+								break;
+							case SPELL_Gift_of_Renewal:
+								if (pTarget->Stat_GetVal(STAT_STR) < pTarget->Stat_GetAdjusted(STAT_STR) / 2) bSpellSuits = true;
 								break;
 							case SPELL_Reactive_Armor:
-								if ( pTarget->LayerFind(LAYER_SPELL_Reactive) == NULL ) bSpellSuits = true;
+								if (pTarget->LayerFind(LAYER_SPELL_Reactive) == NULL) bSpellSuits = true;
 								break;
 							case SPELL_Cure:
-								if ( pTarget->LayerFind(LAYER_FLAG_Poison) != NULL ) bSpellSuits = true;
+								if (pTarget->LayerFind(LAYER_FLAG_Poison) != NULL) bSpellSuits = true;
 								break;
 							case SPELL_Protection:
-								if ( pTarget->LayerFind(LAYER_SPELL_Protection) == NULL ) bSpellSuits = true;
+								if (pTarget->LayerFind(LAYER_SPELL_Protection) == NULL) bSpellSuits = true;
 								break;
 							case SPELL_Bless:
-								if ( pTarget->LayerFind(LAYER_SPELL_STATS) == NULL ) bSpellSuits = true;
+								if (pTarget->LayerFind(LAYER_SPELL_STATS) == NULL) bSpellSuits = true;
 								break;
 							case SPELL_Magic_Reflect:
-								if ( pTarget->LayerFind(LAYER_SPELL_Magic_Reflect) == NULL ) bSpellSuits = true;
+								if (pTarget->LayerFind(LAYER_SPELL_Magic_Reflect) == NULL) bSpellSuits = true;
 								break;
+							default:
+								break;
+							}
+
+							if (bSpellSuits) break;
+						}
+						if (bSpellSuits && Spell_CanCast(spell, true, this, false))
+						{
+							pTarg = pTarget;
+							m_atMagery.m_Spell = spell;
+							break;
+						}
+						continue;
+					}
+					else if (pSpellDef->IsSpellType(SPELLFLAG_TARG_ITEM))
+					{
+						//	spell is good, but must be targeted at an item
+						switch (spell)
+						{
+						case SPELL_Immolating_Weapon:
+							pTarg = m_uidWeapon.ObjFind();
+							if (pTarg)
+								break;
+						}
+					}
+					else //Good spells that cannot be targeted
+					{
+						bool bSpellSuits = false;
+						switch (spell)
+						{	
+							//No spells added ATM until they are created, good example spell to here = SPELL_Healing_Stone
 							default:
 								break;
 						}
 
-						if ( bSpellSuits ) break;
+						if (bSpellSuits) break;
+						if (bSpellSuits && Spell_CanCast(spell, true, this, false))
+						{
+							pTarg = this;
+							m_atMagery.m_Spell = spell;
+							break;
+						}
 					}
-					if ( bSpellSuits && Spell_CanCast(spell, true, this, false) )
-					{
-						pMageryTarget = pTarget;
-						m_atMagery.m_Spell = spell;
-						break;
-					}
-					continue;
 				}
 				else if ( pSpellDef->IsSpellType(SPELLFLAG_SUMMON) )
 				{
 					//	spell is good, but does not harm. the target should obey me. hoping sphere can do this ;)
-					switch ( spell )
+					switch ( spell )	// Maybe we should allow every summon by default excepting SPELLFLAG_PLAYER_ONLY ? in this case this point wouldn't be reached.
 					{
 						case SPELL_Air_Elem:
 						case SPELL_Daemon:
 						case SPELL_Earth_Elem:
 						case SPELL_Fire_Elem:
 						case SPELL_Water_Elem:
+						case SPELL_Summon_Familiar:
+						case SPELL_Summon_Fey:
+						case SPELL_Summon_Fiend:
+						case SPELL_Animated_Weapon:
+						case SPELL_Rising_Collossus:
 						case SPELL_Summon_Undead:
 							break;
 						default:
@@ -2094,8 +2176,6 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 		}
 		else
 		{
-			//g_Log.EventDebug("Selecting spell without book %d\n",spell);
-			continue;
 			if ( /*!pVar &&*/ !pSpellDef->IsSpellType( SPELLFLAG_HARM ))
 				continue;
 
@@ -2108,11 +2188,9 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 				continue;
 		}
 
-		if ( ! Spell_CanCast( spell, true, this, false ))
+		if ( ! Spell_CanCast( spell, true, pWand ? static_cast<CObjBase*>(pWand) : this, false ))
 			continue;
-
 		m_atMagery.m_Spell = spell;
-		//g_Log.EventDebug("%s Selected spell %d\n",GetName(), spell);
 		break;	// I like this spell.
 	}
 
@@ -2130,9 +2208,9 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 
 	Reveal();
 
-	m_Act_Targ = pMageryTarget->GetUID();
-	m_Act_TargPrv = GetUID();	// I'm casting this directly.
-	m_Act_p = pMageryTarget->GetTopPoint();
+	m_Act_Targ = pTarg->GetUID();
+	m_Act_TargPrv = pWand ? pWand->GetUID() : GetUID();	// I'm using a wand ... or casting this directly?.
+	m_Act_p = pTarg->GetTopPoint();
 
 	// Calculate the difficulty
 	return Skill_Start(static_cast<SKILL_TYPE>(skill));

@@ -37,7 +37,7 @@ SUBSECTION=Books
 DESCRIPTION=Spellweaving Book
 ON=@Create
    ATTR=attr_magic|attr_newbie
-   MOREZ=0600
+   MOREZ=600
    //MORE1=0ffff
 
 [ITEMDEF 02d51]

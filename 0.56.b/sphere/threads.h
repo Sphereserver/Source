@@ -11,6 +11,7 @@
 #include "../sphere/strings.h"
 #include "../sphere/ProfileData.h"
 #include <list>
+#include <thread>
 
 
 // keep track of callstack on windows release builds
@@ -40,7 +41,7 @@
 #endif
 
 // Interface for threads. Almost always should be used instead of any implementing classes
-class IThread
+class IThread : public std::thread
 {
 public:
 	enum Priority

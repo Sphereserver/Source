@@ -969,7 +969,9 @@ bool PacketCharPlay::onReceive(NetState* net)
 	skip(4); // ip
 
 	CClient* client = net->getClient();
-	ASSERT(client);
+	if (!client)	//Sometimes seems to happen? returning here to avoid console errors because of assert
+		return false;
+	//ASSERT(client);
 
 	BYTE err = client->Setup_Play(slot);
 

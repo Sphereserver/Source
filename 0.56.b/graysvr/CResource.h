@@ -429,6 +429,7 @@ private:
 #define SPELLFLAG_DAMAGE			0x8000000 // damage intended
 #define SPELLFLAG_BLESS				0x10000000	//Benefitial spells like Bless,Agility,etc.
 #define SPELLFLAG_CURSE				0x20000000	//Curses just like Weaken,Purge Magic,Curse,etc.
+#define SPELLFLAG_HEAL				0x40000000	// Healing spell
 
 	CGString m_sName;	// spell name
 
@@ -915,7 +916,8 @@ public:
 #define NPC_AI_LOOTING			0x00100
 #define	NPC_AI_MOVEOBSTACLES	0x00200
 #define NPC_AI_PERSISTENTPATH	0x00400		// 
-#define NPC_AI_THREAT		0x00800
+#define NPC_AI_THREAT			0x00800
+#define NPC_AI_STRICTCAST		0x01000		// NPC's will only select spells they really have in their spellbook. Old behaviour always let them to select them if spellflag & SPELLFLAG_HARM 
 	int		m_iNpcAi;
 
 	//	Experience system

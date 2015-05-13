@@ -3716,8 +3716,8 @@ int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
 		m_itSpellbook.m_spells1 |= (1 << i);
 	else if ( i < 64 )
 		m_itSpellbook.m_spells2 |= (1 << (i-32));
-	else if ( i < 96 )
-		m_itSpellbook.m_spells3 |= (1 << (i-64));
+	//else if ( i < 96 )
+	//	m_itSpellbook.m_spells3 |= (1 << (i-64));	//not used anymore?
 	else
 		return 3;
 

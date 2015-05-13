@@ -1629,6 +1629,19 @@ bool CChar::Spell_CanCast( SPELL_TYPE spell, bool fTest, CObjBase * pSrc, bool f
 
 	int wManaUse = pSpellDef->m_wManaUse;
 
+	if (pSrc != this)
+	{
+		CItem * pItem = dynamic_cast <CItem*> (pSrc);
+		if (pItem)
+		{
+			if (pItem->GetType() == IT_WAND)
+				wManaUse = 0;
+			else if(pItem->GetType() == IT_SCROLL)
+				wManaUse /= 2;
+		}
+	}
+
+
 	CScriptTriggerArgs Args( spell, wManaUse, pSrc );
 	if ( fTest )
 		Args.m_iN3 |= 0x0001;
@@ -1695,7 +1708,7 @@ bool CChar::Spell_CanCast( SPELL_TYPE spell, bool fTest, CObjBase * pSrc, bool f
 					SysMessageDefault( DEFMSG_SPELL_WAND_NOCHARGE );
 				return false;
 			}
-			wManaUse = 0;
+			//wManaUse = 0;
 			if ( ! fTest && pItem->m_itWeapon.m_spellcharges != 255 )
 			{
 				pItem->m_itWeapon.m_spellcharges --;
@@ -1704,7 +1717,7 @@ bool CChar::Spell_CanCast( SPELL_TYPE spell, bool fTest, CObjBase * pSrc, bool f
 		}
 		else	// Scroll
 		{
-			wManaUse /= 2;
+			//wManaUse /= 2;
 			if ( ! fTest )
 			{
 				 pItem->ConsumeAmount();

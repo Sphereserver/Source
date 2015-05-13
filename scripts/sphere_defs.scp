@@ -648,8 +648,9 @@ spellflag_area             01000000   // area effect (uses local.arearadius)
 spellflag_poly             02000000   // polymorph yourself
 spellflag_targ_dead        04000000   // target is dead (for resurrection-like spells)
 spellflag_damage           08000000   // kinda harm but deals damage to the targ, damage type is LOCAL.DamageType.
-spellflag_bless            010000000  //Benefitial spells like Bless,Agility,etc.
-spellflag_curse            020000000  //Curses just like Weaken,Purge Magic,Curse,etc.
+spellflag_bless            010000000  // Benefitial spells like Bless,Agility,etc.
+spellflag_curse            020000000  // Curses just like Weaken,Purge Magic,Curse,etc.
+spellflag_heal             040000000  // spell used to heal hitpoints
 
 [DEFNAME mem_flags]
 memory_sawcrime      00001   // i saw them commit a crime or i was attacked criminally. i can call the guards on them.
@@ -1115,7 +1116,7 @@ t_dirt                  182   // a patch of dirt where i can plant something
 t_script                183
 t_spellbook_necro       184   // AOS Necromancy spellbook (should have MOREZ=100 by default)
 t_spellbook_pala        185   // AOS Paladin spellbook (should have MOREZ=200 by default)
-t_spellbook_extra       186   // some spellbook for script purposes (MOREZ=basic offset)
+t_spellbook_extra       186   // some spellbook for script purposes (MOREZ=basic offset, should 1000 or more)
 t_spellbook_bushido     187   // SE Bushido spellbook (should have MOREZ=400 by default)
 t_spellbook_ninjitsu    188   // SE Ninjitsu spellbook (should have MOREZ=500 by default)
 t_spellbook_arcanist    189   // ML Spellweaver spellbook (should have MOREZ=600 by default)
@@ -1197,6 +1198,36 @@ layer_flag_stuck            51   // in a trap or web.
 layer_flag_murders          52   // how many murders do we have ? and decay timer.
 layer_flag_bandage          53   // bandages go here for healing
 layer_auction               54   // layer for script purposes to equip container on character (like auction system)
+
+//Necromancy
+LAYER_SPELL_Curse_Weapon	55
+LAYER_SPELL_Corpse_Skin		56
+LAYER_SPELL_Evil_Omen		57
+LAYER_SPELL_Pain_Spike		58
+LAYER_SPELL_Mind_Rot		59
+LAYER_SPELL_Strangle		60
+
+//Chivalry
+LAYER_SPELL_Consecrate_Weapon	61
+LAYER_SPELL_Divine_Fury		62
+LAYER_SPELL_Enemy_Of_One	63
+
+//SpellWeaving
+LAYER_SPELL_Attunement		64
+LAYER_SPELL_Gift_Of_Renewal	65
+LAYER_SPELL_Inmolating_Weapon 66
+LAYER_SPELL_Thunderstorm	67
+LAYER_SPELL_Arcane_Empowerment 68
+LAYER_SPELL_Ethereal_Voyage	69
+LAYER_SPELL_Gift_Of_Life	70
+LAYER_SPELL_Dryad_Allure	71
+LAYER_SPELL_Essence_Of_Wind	72
+
+//Mysticism
+LAYER_SPELL_Sleep			73
+LAYER_SPELL_Bombard			74
+LAYER_SPELL_Spell_Plague	75
+LAYER_SPELL_Nether_Cyclone	76
 
 [DEFNAME def_gumps]
 // name the gumps.
