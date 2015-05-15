@@ -2032,10 +2032,10 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 						bool	bSpellSuits = false;
 						CChar	*pFriend[4];
 						int		iFriendIndex = 0;
-						CChar	*pTarget = NULL;
+						CChar	*pTarget = pChar;
 
 						//	since i scan the surface near me for this code, i need to be sure that it is neccessary
-						if ((spell != SPELL_Heal)
+						/*if ((spell != SPELL_Heal)	//Since only SpellFlag_Good can pass to here, and they are supossed to be good, why to deny npcs casting them? 
 							&& (spell != SPELL_Great_Heal)
 							&& (spell != SPELL_Reactive_Armor)
 							&& (spell != SPELL_Cure)
@@ -2044,7 +2044,7 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 							&& (spell != SPELL_Magic_Reflect)
 							&& (spell != SPELL_Gift_of_Renewal)
 							&& (spell != SPELL_Cleansing_Winds)
-							) continue;
+							) continue;*/
 
 						pFriend[0] = this;
 						pFriend[1] = pFriend[2] = pFriend[3] = NULL;
@@ -2112,7 +2112,7 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 
 							if (bSpellSuits) break;
 						}
-						if (bSpellSuits && Spell_CanCast(spell, true, this, false))
+						if (bSpellSuits && Spell_CanCast(spell, true, pWand ? static_cast<CObjBase*>(pWand) : this, false))
 						{
 							pTarg = pTarget;
 							m_atMagery.m_Spell = spell;
@@ -2131,18 +2131,31 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 								break;
 						}
 					}
-					else //Good spells that cannot be targeted
+					if (pSpellDef->IsSpellType(SPELLFLAG_HEAL)) //Good spells that cannot be targeted
 					{
-						bool bSpellSuits = false;
+						bool bSpellSuits = true;
 						switch (spell)
 						{	
 							//No spells added ATM until they are created, good example spell to here = SPELL_Healing_Stone
+						case SPELL_Healing_Stone:
+						{
+							CItem * pStone = GetBackpackItem(ITEMID_HEALING_STONE);
+							if (!pStone)
+								break;
+							if ((pStone->m_itNormal.m_morep.m_z == 0) && (Stat_GetAdjusted(STAT_STR) < pStone->m_itNormal.m_more2) && (pStone->m_itNormal.m_more1 >= pStone->m_itNormal.m_more2))
+							{
+								Use_Obj(pStone, false);
+								return true; // we are not casting any spell but suceeded at using the stone created by this one, we are done now.
+							}
+							bSpellSuits = false;
+							continue;	// Already have a stone, no need of more
+						}
 							default:
 								break;
 						}
 
-						if (bSpellSuits) break;
-						if (bSpellSuits && Spell_CanCast(spell, true, this, false))
+						if (!bSpellSuits) break;
+						if (bSpellSuits && Spell_CanCast(spell, true, pWand ? static_cast<CObjBase*>(pWand) : this, false))
 						{
 							pTarg = this;
 							m_atMagery.m_Spell = spell;
@@ -2171,11 +2184,12 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 							continue;
 					}
 				}
-
 			}
 		}
 		else
 		{
+			if (g_Cfg.m_iNpcAi&NPC_AI_STRICTCAST)
+				return false;
 			if ( /*!pVar &&*/ !pSpellDef->IsSpellType( SPELLFLAG_HARM ))
 				continue;
 

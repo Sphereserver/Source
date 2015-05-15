@@ -4315,8 +4315,47 @@ bool CChar::OnTick()
 	if ( !iTimeDiff )
 		return true;
 
+	//Bonded pets that are Dead have a different behaviours
 	bool isDeadAndBonded = (IsStatFlag(STATF_DEAD) && (m_pNPC && m_pNPC->m_bonded == 1));
-	if (!isDeadAndBonded)
+
+	// We make items and notoriety / attackers to tick, but nothing more.
+	if (isDeadAndBonded)
+	{
+		if (iTimeDiff >= TICK_PER_SEC)	// don't bother with < 1 sec times.
+		{
+			// decay equipped items (spells)
+			CItem* pItem = GetContentHead();
+			int iCount = 0;
+
+			for (; pItem != NULL; pItem = GetAt(++iCount))
+			{
+				EXC_TRYSUB("Ticking items");
+
+				// always check the validity of the memory objects
+				if (pItem->IsType(IT_EQ_MEMORY_OBJ) && !pItem->m_uidLink.ObjFind())
+				{
+					pItem->Delete();
+					continue;
+				}
+
+				pItem->OnTickStatusUpdate();
+				if (!pItem->IsTimerSet() || !pItem->IsTimerExpired())
+					continue;
+				else if (!OnTickEquip(pItem))
+					pItem->Delete();
+				EXC_CATCHSUB("Char");
+			}
+
+			EXC_SET("last attackers");
+			Attacker_CheckTimeout();
+
+			EXC_SET("NOTO timeout");
+			NotoSave_CheckTimeout();
+
+			m_timeLastRegen = CServTime::GetCurrentTime();
+		}
+	}
+	else
 	{
 		if (iTimeDiff >= TICK_PER_SEC)	// don't bother with < 1 sec times.
 		{

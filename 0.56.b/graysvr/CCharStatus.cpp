@@ -130,6 +130,22 @@ CItemContainer * CChar::GetBank( LAYER_TYPE layer )
 	return( pBankBox );
 }
 
+CItem * CChar::GetBackpackItem(ITEMID_TYPE id)
+{
+	ADDTOCALLSTACK("CChar::GetBackpackItem");
+	CItemContainer	*pPack = GetPack();
+	if (pPack)
+	{
+		for (CItem *pItem = pPack->GetContentHead(); pItem != NULL; pItem = pItem->GetNext())
+		{
+			// i have some food personaly, so no need to search for something
+			if (pItem->GetID() == id)
+				return pItem;
+		}
+	}
+	return NULL;
+}
+
 CItem * CChar::LayerFind( LAYER_TYPE layer ) const
 {
 	ADDTOCALLSTACK("CChar::LayerFind");
@@ -782,7 +798,7 @@ CItem * CChar::GetSpellbook(SPELL_TYPE iSpell) const	// Retrieves a spellbook fr
 	return NULL;
 }
 
-int CChar::GetSpellbookExtra(CItem * pBooks[], int count) const	// Retrieves a spellbook from the magic school given in iSpell
+int CChar::GetSpellbookExtra(CItem * pBooks[], int &count) const	// Retrieves a spellbook from the magic school given in iSpell
 {
 	ADDTOCALLSTACK("CChar::GetSpellbook");
 	CItem	*pBook = NULL;
@@ -818,9 +834,9 @@ CItem * CChar::GetSpellbookRandom(SPELL_TYPE iSpell) const	// Retrieves a spellb
 {
 	ADDTOCALLSTACK("CChar::GetSpellbook");
 	CItem	*pBook = NULL;
-	CItem *pBooks[SKILL_QTY];
+	CItem *pBooks[static_cast<int>(SKILL_QTY)];
 	//	search for suitable book in hands first
-	char count = 0;
+	int count = 0;
 	for (char i = 0; i < SKILL_QTY; i++)
 	{
 		SKILL_TYPE skill = static_cast<SKILL_TYPE>(i);
@@ -831,14 +847,10 @@ CItem * CChar::GetSpellbookRandom(SPELL_TYPE iSpell) const	// Retrieves a spellb
 		{
 			pBook = GetSpellbook(const_cast<CChar*>(this)->Spell_GetIndex(skill));
 			if (pBook)
-			{
-				count++;
-				pBooks[static_cast<SKILL_TYPE>(count)] = pBook;
-			}
+				pBooks[++count] = pBook;
 		}
 	}
-	int test = GetSpellbookExtra(pBooks,count); //Add extra spellbooks to the list. 
-	count += test;
+	GetSpellbookExtra(pBooks,count); //Add extra spellbooks to the list. 
 	if (count > 0)
 	{
 		char rand = Calc_GetRandVal2(1, count);

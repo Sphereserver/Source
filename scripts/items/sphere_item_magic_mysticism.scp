@@ -275,6 +275,55 @@ WEIGHT=0.1
 CATEGORY=Magic
 SUBSECTION=Mysticism
 DESCRIPTION=Healing Stone
+
+//morex = Healing Amount: The total energy stored for healing.
+//morey = Healing Power : The maximum energy that can be used each time.
+//morez = Total Healing : The maximum amount of energy the stone can store.
+//morem = Cooldown 0/1 : Each time it's used morem will be set to 1 (it canno't be used) until 2 seconds pass.
+
+ON=@Create
+attr=attr_blessed
+if (<src.IsChar>)	//SRC Should be a character always, but its better to be sure.
+	morez=<eval <src.Mysticism>/12> + (<src.Focus>/50 + <src.Imbuing>/50)>
+	morex=<morez>
+	morey=<morez>/3
+endif
+
+ON=@DClick
+if (<morem>>0)	// It's on cooldown, we cannot use it.
+	return 1
+endif
+if (<morex> < <morey>)	// Healing Amount is lesser than Healing Power, we cannot use it.
+	return 1
+endif
+if (<src.hits>> = <src.maxhits>)	// We have max HP, no need of use it.
+	return 1
+endif
+morex -= <morey>
+src.hits +=<morey>
+if (<src.hits> > <src.maxhits>)
+	src.hits=<src.maxhits>
+endif
+morem = 1
+timerf 2,morem=0
+if (<timer> < 0)	// Is timer stopped?
+	timer = 1	// activate it again
+endif
+return 1
+
+ON=@Timer
+local.restore = <eval <morez>/15>	// Each 15 seconds the stone replenish totally its energy, so the energy restored in 1 second = total energy / 15
+morex += <local.restore>
+if (<morex> < <morez> )	// Stone still not reached it Total Healing
+	timer = 1
+else	// Healing Amount is equal or higher than Total Healing
+	if (<morex> > <morez>)	// Stone passed the Total Healing
+		morex = <morez>		// so Healing Amount reverted to it's limit.
+	endif
+	timer = -1	//	Reached the Total Healing value, no need to continue ticking.
+endif
+return 1
+
 ON=@DropOn_Char
    RETURN 1
 ON=@DropOn_Ground

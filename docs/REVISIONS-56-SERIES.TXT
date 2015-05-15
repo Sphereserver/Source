@@ -2130,3 +2130,12 @@ FIXED i_spellbook_spellweaving was MOREZ=0600, it should be 600
 FIXED argn2 for @SpellSelect couldn't be overriden for spells casted from T_WAND or T_SCROLL. ARGN2 is also set to the proper mana value (0 for T_WAND and RequiredMana /2 for I_SCROLL) for reading purposes.
 Updated comment for t_spellbook_extra       186   // some spellbook for script purposes (MOREZ=basic offset, should 1000 or more) in sphere_defs.scp
 	Added morex for t_spellbook_extra to set the max amount of spells for this book, so morez = first spell and morex = last spell , for example morey=1000, morez=1016 will hold spells from 1000 to 1016
+
+Added spellflag_poly on sphere_spells.scp, also added support on the source to make them working: 
+	-Lich Form
+	-Wraith Form
+	-Horrific Beast
+	-Vampiric Embrace
+	-Stone Form
+	-Reaper Form
+Added some code for s_healing_stone and i_healing_stone in both sphere_spells.scp and sphere_item_magic_mysticism.scp

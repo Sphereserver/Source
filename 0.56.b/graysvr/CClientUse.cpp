@@ -1091,15 +1091,15 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 			// pPrompt = sm_Txt_Summon;
 			break;
 		case SPELL_Summon:
+		{
+			if (IsTrigUsed(TRIGGER_SKILLMENU))
 			{
-				if ( IsTrigUsed(TRIGGER_SKILLMENU) )
-				{
-					CScriptTriggerArgs args("sm_summon");
-					if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
-						return true;
-				}
-				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_summon" ) );
+				CScriptTriggerArgs args("sm_summon");
+				if (m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE)
+					return true;
 			}
+			return Cmd_Skill_Menu(g_Cfg.ResourceGetIDType(RES_SKILLMENU, "sm_summon"));
+		}
 		case SPELL_Mark:
 			// pPrompt = "Select rune to mark.";
 			break;
@@ -1128,7 +1128,16 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 		case SPELL_Bone_Armor: // Skeleton corpse to bone armor
 			// pPrompt = "Chose a skeleton";
 			break;
-
+		case SPELL_Summon_Familiar:
+		{
+			if (IsTrigUsed(TRIGGER_SKILLMENU))
+			{
+				CScriptTriggerArgs args("sm_summon_familiar");
+				if (m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE)
+					return true;
+			}
+			return Cmd_Skill_Menu(g_Cfg.ResourceGetIDType(RES_SKILLMENU, "sm_summon_familiar"));
+		}
 		default:
 			break;
 	}

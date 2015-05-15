@@ -94,7 +94,7 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 	if ( pWeapon != NULL )
 	{
 		iBaseSpeed = pWeapon->GetDefNum("OVERRIDE.SPEED");
-		if ( iBaseSpeed == NULL )
+		if ( iBaseSpeed <= 0)
 		{
 			CItemBase * pItemDef = dynamic_cast<CItemBase *>(pWeapon->Base_GetDef());
 			if ( pItemDef )

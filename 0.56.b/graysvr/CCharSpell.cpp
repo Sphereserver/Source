@@ -536,8 +536,58 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 	// m_itWeapon, m_itArmor, m_itSpell
 
 	SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pSpell->m_itSpell.m_spell));
+	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
 	short iStatEffect = static_cast<short>(pSpell->m_itSpell.m_spelllevel);
+	if (pSpellDef->IsSpellType(SPELLFLAG_POLY))
+	{
+		BUFF_ICONS iBuffIcon = BI_START;
+		switch (spell)
+		{
+		case SPELL_BeastForm:		// 107 // polymorphs you into an animal for a while.
+		case SPELL_Monster_Form:	// 108 // polymorphs you into a monster for a while.
+		case SPELL_Polymorph:
+			iBuffIcon = BI_POLYMORPH;
+			break;
+		case SPELL_Lich_Form:
+			iBuffIcon = BI_LICHFORM;
+			break;
+		case SPELL_Wraith_Form:
+			iBuffIcon = BI_WRAITHFORM;
+			break;
+		case SPELL_Horrific_Beast:
+			iBuffIcon = BI_HORRIFICBEAST;
+			break;
+		case SPELL_Vampiric_Embrace:
+			iBuffIcon = BI_VAMPIRICEMBRACE;
+			break;
+		case SPELL_Stone_Form:
+			iBuffIcon = BI_STONEFORM;
+			break;
+		case SPELL_Reaper_Form:
+			iBuffIcon = BI_REAPERFORM;
+			break;
+		default:
+			break;
+		}
 
+			//  m_prev_id != GetID()
+			// poly back to orig form.
+			SetID(m_prev_id);
+			// set back to original stats as well.
+			if (IsSetMagicFlags(MAGICF_POLYMORPHSTATS))
+			{
+				Stat_AddMod(STAT_STR, -pSpell->m_itSpell.m_PolyStr);
+				Stat_AddMod(STAT_DEX, -pSpell->m_itSpell.m_PolyDex);
+				Stat_SetVal(STAT_STR, minimum(Stat_GetVal(STAT_STR), Stat_GetMax(STAT_STR)));
+				Stat_SetVal(STAT_DEX, minimum(Stat_GetVal(STAT_DEX), Stat_GetMax(STAT_DEX)));
+			}
+			Update();
+			StatFlag_Clear(STATF_Polymorph);
+			if (IsClient())
+				GetClient()->removeBuff(iBuffIcon);
+		UpdateStatsFlag();
+		return;
+	}
 	switch ( spell )
 	{
 		case SPELL_Clumsy:
@@ -707,27 +757,6 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 
 		case SPELL_Chameleon:		// 106 // makes your skin match the colors of whatever is behind you.
 			break;
-		case SPELL_BeastForm:		// 107 // polymorphs you into an animal for a while.
-		case SPELL_Monster_Form:	// 108 // polymorphs you into a monster for a while.
-		case SPELL_Polymorph:
-			{
-				//  m_prev_id != GetID()
-				// poly back to orig form.
-				SetID(m_prev_id);
-				// set back to original stats as well.
-				if (IsSetMagicFlags(MAGICF_POLYMORPHSTATS))
-				{
-					Stat_AddMod(STAT_STR, -pSpell->m_itSpell.m_PolyStr);
-					Stat_AddMod(STAT_DEX, -pSpell->m_itSpell.m_PolyDex);
-					Stat_SetVal(STAT_STR, minimum(Stat_GetVal(STAT_STR), Stat_GetMax(STAT_STR)));
-					Stat_SetVal(STAT_DEX, minimum(Stat_GetVal(STAT_DEX), Stat_GetMax(STAT_DEX)));
-				}
-				Update();
-				StatFlag_Clear( STATF_Polymorph );
-				if (IsClient())
-					GetClient()->removeBuff(BI_POLYMORPH);
-			}
-			return;
 		case SPELL_Summon:
 			// Delete the creature completely.
 			// ?? Drop anything it might have had ?
@@ -787,6 +816,99 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 	TCHAR NumBuff[7][8];
 	LPCTSTR pNumBuff[7] = { NumBuff[0], NumBuff[1], NumBuff[2], NumBuff[3], NumBuff[4], NumBuff[5], NumBuff[6] };
 	//------------------------
+	if (pSpellDef->IsSpellType(SPELLFLAG_POLY))
+	{
+		BUFF_ICONS iBuffIcon = BI_START;
+		switch (spell)
+		{
+			case SPELL_BeastForm:		// 107 // polymorphs you into an animal for a while.
+			case SPELL_Monster_Form:	// 108 // polymorphs you into a monster for a while.
+			case SPELL_Polymorph:
+				iBuffIcon = BI_POLYMORPH;
+				break;
+			case SPELL_Lich_Form:
+				m_atMagery.m_SummonID = CREID_LICH;
+				iBuffIcon = BI_LICHFORM;
+				break;
+			case SPELL_Wraith_Form:
+				m_atMagery.m_SummonID = CREID_SPECTRE;
+				iBuffIcon = BI_WRAITHFORM;
+				break;
+			case SPELL_Horrific_Beast:
+				m_atMagery.m_SummonID = CREID_Horrific_Beast;
+				iBuffIcon = BI_HORRIFICBEAST; 
+				break;
+			case SPELL_Vampiric_Embrace:
+				m_atMagery.m_SummonID = CREID_Vampire_Bat;
+				iBuffIcon = BI_VAMPIRICEMBRACE; 
+				break;
+			case SPELL_Stone_Form:
+				m_atMagery.m_SummonID = CREID_Stone_Form;
+				iBuffIcon = BI_STONEFORM; 
+				break;
+			case SPELL_Reaper_Form:
+				m_atMagery.m_SummonID = CREID_Stone_Form;
+				iBuffIcon = BI_REAPERFORM; 
+				break;
+			default:
+				break;
+		}
+
+		int SPELL_MAX_POLY_STAT = g_Cfg.m_iMaxPolyStats;
+		SetID(m_atMagery.m_SummonID);
+
+		CCharBase * pCharDef = Char_GetDef();
+		ASSERT(pCharDef);
+
+		// re-apply our incognito name
+		if (IsStatFlag(STATF_Incognito))
+			SetName(pCharDef->GetTypeName());
+
+		// set to creature type stats
+		if (IsSetMagicFlags(MAGICF_POLYMORPHSTATS))
+		{
+			if (pCharDef->m_Str)
+			{
+				int iChange = pCharDef->m_Str - Stat_GetBase(STAT_STR);
+				if (iChange > SPELL_MAX_POLY_STAT)
+					iChange = SPELL_MAX_POLY_STAT;
+				if (iChange + Stat_GetBase(STAT_STR) < 0)
+					iChange = -Stat_GetBase(STAT_STR);
+				Stat_AddMod(STAT_STR, static_cast<short>(iChange));
+				pSpell->m_itSpell.m_PolyStr = static_cast<short>(iChange);
+			}
+			else
+			{
+				pSpell->m_itSpell.m_PolyStr = 0;
+			}
+			if (pCharDef->m_Dex)
+			{
+				int iChange = pCharDef->m_Dex - Stat_GetBase(STAT_DEX);
+				if (iChange > SPELL_MAX_POLY_STAT)
+					iChange = SPELL_MAX_POLY_STAT;
+				if (iChange + Stat_GetBase(STAT_DEX) < 0)
+					iChange = -Stat_GetBase(STAT_DEX);
+				Stat_AddMod(STAT_DEX, static_cast<short>(iChange));
+				pSpell->m_itSpell.m_PolyDex = static_cast<short>(iChange);
+			}
+			else
+			{
+				pSpell->m_itSpell.m_PolyDex = 0;
+			}
+		}
+		Update();		// show everyone I am now a new type
+
+		StatFlag_Set(STATF_Polymorph);
+		if (IsSetOF(OF_Buffs) && IsClient())
+		{
+			if (!iBuffIcon)
+				return;
+			GetClient()->removeBuff(iBuffIcon);
+			GetClient()->addBuff(iBuffIcon, 1075824, 1070722, iTimerEffect);
+		}
+		return;
+	}
+	
 
 	switch ( spell )
 	{
@@ -1131,14 +1253,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			}
 			UpdateModeFlag();
 			break;
-		case SPELL_Polymorph:
-			StatFlag_Set( STATF_Polymorph );
-			if ( IsSetOF(OF_Buffs) && IsClient() )
-			{
-				GetClient()->removeBuff(BI_POLYMORPH);
-				GetClient()->addBuff(BI_POLYMORPH, 1075824, 1070722, iTimerEffect);
-			}
-			break;
+		
 		case SPELL_Summon:
 			// LAYER_SPELL_Summon
 			StatFlag_Set( STATF_Conjured );
@@ -1370,7 +1485,6 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 
 	CItem * pSpell;
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
-
 	pSpell = CItem::CreateBase( pSpellDef ? ( pSpellDef->m_idSpell ) : ITEMID_RHAND_POINT_NW );
 	ASSERT(pSpell);
 
@@ -1401,10 +1515,10 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 	if ( pSrc )
 		pSpell->m_uidLink = pSrc->GetUID();
 
+	g_World.m_uidNew = pSpell->GetUID();
+	Spell_Effect_Add(pSpell);
 	if (bEquip)
 		LayerAdd( pSpell, layer );	// Remove any competing effect first.
-	g_World.m_uidNew = pSpell->GetUID();
-	Spell_Effect_Add( pSpell );
 	return( pSpell );
 }
 
@@ -1613,7 +1727,7 @@ void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, u
 	}
 }
 
-bool CChar::Spell_CanCast( SPELL_TYPE spell, bool fTest, CObjBase * pSrc, bool fFailMsg, bool fCheckAntiMagic )
+bool CChar::Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool fFailMsg, bool fCheckAntiMagic )
 {
 	ADDTOCALLSTACK("CChar::Spell_CanCast");
 	// ARGS:
@@ -1959,6 +2073,8 @@ bool CChar::Spell_CastDone()
 	if (pSpellDef == NULL)
 		return(false);
 
+	bool bIsSpellField = pSpellDef->IsSpellType(SPELLFLAG_FIELD);
+
 	int iSkill, iDifficulty;
 	if (!pSpellDef->GetPrimarySkill(&iSkill, &iDifficulty))
 		return(false);
@@ -1980,23 +2096,27 @@ bool CChar::Spell_CastDone()
 		iSkillLevel = Skill_GetAdjusted(static_cast<SKILL_TYPE>(iSkill));
 	}
 
-	switch (spell)
-	{
-	case SPELL_Wall_of_Stone: 	iT1 = ITEMID_STONE_WALL;				iT2 = ITEMID_STONE_WALL;		break;
-	case SPELL_Fire_Field: 		iT1 = ITEMID_FX_FIRE_F_EW; 				iT2 = ITEMID_FX_FIRE_F_NS;		break;
-	case SPELL_Poison_Field:	iT1 = ITEMID_FX_POISON_F_EW;			iT2 = ITEMID_FX_POISON_F_NS;	break;
-	case SPELL_Paralyze_Field:	iT1 = ITEMID_FX_PARA_F_EW;				iT2 = ITEMID_FX_PARA_F_NS;		break;
-	case SPELL_Energy_Field:	iT1 = ITEMID_FX_ENERGY_F_EW;			iT2 = ITEMID_FX_ENERGY_F_NS;	break;
-	default: break;
-	}
 	CScriptTriggerArgs	Args(spell, iSkillLevel, pObjSrc);
-	Args.m_VarsLocal.SetNum("CreateObject1", iT1,false);
-	Args.m_VarsLocal.SetNum("CreateObject2", iT2, false);
-
 	Args.m_VarsLocal.SetNum("fieldWidth", 0);
 	Args.m_VarsLocal.SetNum("fieldGauge", 0);
 	Args.m_VarsLocal.SetNum("areaRadius", 0);
-	Args.m_VarsLocal.SetNum("duration", GetSpellDuration(spell, iSkillLevel, 1000, this),true);
+	Args.m_VarsLocal.SetNum("duration", GetSpellDuration(spell, iSkillLevel, 1000, this), true);
+
+	if (bIsSpellField)
+	{
+		switch (spell)	// Only setting ids and locals for field spells
+		{
+		case SPELL_Wall_of_Stone: 	iT1 = ITEMID_STONE_WALL;				iT2 = ITEMID_STONE_WALL;		break;
+		case SPELL_Fire_Field: 		iT1 = ITEMID_FX_FIRE_F_EW; 				iT2 = ITEMID_FX_FIRE_F_NS;		break;
+		case SPELL_Poison_Field:	iT1 = ITEMID_FX_POISON_F_EW;			iT2 = ITEMID_FX_POISON_F_NS;	break;
+		case SPELL_Paralyze_Field:	iT1 = ITEMID_FX_PARA_F_EW;				iT2 = ITEMID_FX_PARA_F_NS;		break;
+		case SPELL_Energy_Field:	iT1 = ITEMID_FX_ENERGY_F_EW;			iT2 = ITEMID_FX_ENERGY_F_NS;	break;
+		default: break;
+		}
+
+		Args.m_VarsLocal.SetNum("CreateObject1", iT1, false);
+		Args.m_VarsLocal.SetNum("CreateObject2", iT2, false);
+	}
 
 	if (IsTrigUsed(TRIGGER_SPELLSUCCESS))
 	{
@@ -2012,14 +2132,21 @@ bool CChar::Spell_CastDone()
 
 	iSkillLevel = static_cast<int>(Args.m_iN2);
 
-	//Setting new IDs as another variables to pass as different arguments to the field function.
-	ITEMID_TYPE it1test = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1", true)));
-	ITEMID_TYPE it2test = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject2", true)));
-	iC1 = static_cast<CREID_TYPE>(Args.m_VarsLocal.GetKeyNum("CreateObject1", true) & 0xFFFF);
+	ITEMID_TYPE it1test;
+	ITEMID_TYPE it2test;
 
-	//Can't be < 0, so max it to 0
-	fieldWidth = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("fieldWidth", true)));
-	fieldGauge = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("fieldGauge", true)));
+	if (bIsSpellField)
+	{
+		//Setting new IDs as another variables to pass as different arguments to the field function.
+		it1test = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1", true)));
+		it2test = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject2", true)));
+		//Can't be < 0, so max it to 0
+		fieldWidth = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("fieldWidth", true)));
+		fieldGauge = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("fieldGauge", true)));
+
+	}
+
+	iC1 = static_cast<CREID_TYPE>(Args.m_VarsLocal.GetKeyNum("CreateObject1", true) & 0xFFFF);
 	areaRadius = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("areaRadius", true)));
 	unsigned int iDuration = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("duration", true)));
 	iColor = static_cast<DWORD>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor", true)));
@@ -2039,7 +2166,7 @@ bool CChar::Spell_CastDone()
 				Spell_Summon(m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0);
 			}
 		}
-		else if (pSpellDef->IsSpellType(SPELLFLAG_FIELD))
+		else if (bIsSpellField)
 		{
 			if (iT1 && iT2)
 			{
@@ -2061,13 +2188,6 @@ bool CChar::Spell_CastDone()
 			else
 				Spell_Area(m_Act_p, areaRadius, iSkillLevel);
 		}
-		/*else if (pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT))
-		{
-			if (!iT1)
-				iT1 = pSpellDef->m_idEffect;
-
-			Spell_Bolt(pObj, iT1, iSkillLevel);
-		}*/
 		else if (pSpellDef->IsSpellType(SPELLFLAG_POLY))
 		{
 			return(false);
@@ -2080,16 +2200,7 @@ bool CChar::Spell_CastDone()
 			}
 		}
 	}
-	/*else if (pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT))
-	{
-		if (it1test)
-			iT1 = it1test;
-		else if (!iT1)
-			iT1 = pSpellDef->m_idEffect;
-
-		Spell_Bolt(pObj, iT1, iSkillLevel);
-	}*/
-	else if (pSpellDef->IsSpellType(SPELLFLAG_FIELD))
+	else if (bIsSpellField)
 	{
 		if (!fieldWidth)
 			fieldWidth = 3;
@@ -2104,15 +2215,17 @@ bool CChar::Spell_CastDone()
 		{
 			switch (spell)
 			{
-			case SPELL_Arch_Cure:		areaRadius = 2;						break;
-			case SPELL_Arch_Prot:		areaRadius = 3;						break;
-			case SPELL_Mass_Curse:		areaRadius = 2;						break;
+			case SPELL_Arch_Cure:		areaRadius = 2;							break;
+			case SPELL_Arch_Prot:		areaRadius = 3;							break;
+			case SPELL_Mass_Curse:		areaRadius = 2;							break;
 			case SPELL_Reveal:			areaRadius = 1 + (iSkillLevel / 200);	break;
-			case SPELL_Chain_Lightning: areaRadius = 2;						break;
-			case SPELL_Mass_Dispel:		areaRadius = 8;						break;
-			case SPELL_Meteor_Swarm:	areaRadius = 2;						break;
+			case SPELL_Chain_Lightning: areaRadius = 2;							break;
+			case SPELL_Mass_Dispel:		areaRadius = 8;							break;
+			case SPELL_Meteor_Swarm:	areaRadius = 2;							break;
 			case SPELL_Earthquake:		areaRadius = 1 + (iSkillLevel / 150);	break;
-			default: areaRadius = 4;										break;
+			case SPELL_Poison_Strike:	areaRadius = 2;							break;
+			case SPELL_Wither:			areaRadius = 4;							break;
+			default: areaRadius = 4;											break;
 			}
 		}
 
@@ -2146,13 +2259,14 @@ bool CChar::Spell_CastDone()
 				case SPELL_Summon_Undead:
 					switch (Calc_GetRandVal(15))
 					{
-					case 1:				m_atMagery.m_SummonID = CREID_LICH;			break;
+					case 1:					m_atMagery.m_SummonID = CREID_LICH;			break;
 					case 3:
 					case 5:
 					case 7:
-					case 9:				m_atMagery.m_SummonID = CREID_SKELETON;		break;
-					default:			m_atMagery.m_SummonID = CREID_ZOMBIE;		break;
+					case 9:					m_atMagery.m_SummonID = CREID_SKELETON;		break;
+					default:				m_atMagery.m_SummonID = CREID_ZOMBIE;		break;
 					}
+				case SPELL_Vengeful_Spirit:	m_atMagery.m_SummonID = CREID_Revenant;		break;
 				default: break;
 				}
 			}
@@ -2276,6 +2390,12 @@ bool CChar::Spell_CastDone()
 				break;
 
 			case SPELL_Polymorph:
+			case SPELL_Wraith_Form:
+			case SPELL_Horrific_Beast:
+			case SPELL_Lich_Form:
+			case SPELL_Vampiric_Embrace:
+			case SPELL_Stone_Form:
+			case SPELL_Reaper_Form:
 				// This has a menu select for client.
 				if (GetPrivLevel() < PLEVEL_Seer)
 				{
@@ -3000,55 +3120,17 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			}
 			break;
 
+		case SPELL_Wraith_Form:
+		case SPELL_Horrific_Beast:
+		case SPELL_Lich_Form:
+		case SPELL_Vampiric_Embrace:
+		case SPELL_Stone_Form:
+		case SPELL_Reaper_Form:
 		case SPELL_Polymorph:
 			{
-				CREID_TYPE creid = m_atMagery.m_SummonID;
-				int SPELL_MAX_POLY_STAT = g_Cfg.m_iMaxPolyStats;
 
-				CItem * pSpell = Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Polymorph, iSkillLevel,
+				Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Polymorph, iSkillLevel,
 					GetSpellDuration( spell, iSkillLevel, iEffectMult, pCharSrc ), pCharSrc );
-				SetID(creid);
-
-				CCharBase * pCharDef = Char_GetDef();
-				ASSERT(pCharDef);
-			
-				// re-apply our incognito name
-				if ( IsStatFlag( STATF_Incognito ) )
-					SetName( pCharDef->GetTypeName() );
-
-				// set to creature type stats
-				if (IsSetMagicFlags(MAGICF_POLYMORPHSTATS))
-				{
-					if (pCharDef->m_Str)
-					{
-						int iChange = pCharDef->m_Str - Stat_GetBase(STAT_STR);
-						if (iChange > SPELL_MAX_POLY_STAT)
-							iChange = SPELL_MAX_POLY_STAT;
-						if (iChange + Stat_GetBase(STAT_STR) < 0)
-							iChange = -Stat_GetBase(STAT_STR);
-						Stat_AddMod(STAT_STR, static_cast<short>(iChange));
-						pSpell->m_itSpell.m_PolyStr = static_cast<short>(iChange);
-					}
-					else
-					{
-						pSpell->m_itSpell.m_PolyStr = 0;
-					}
-					if (pCharDef->m_Dex)
-					{
-						int iChange = pCharDef->m_Dex - Stat_GetBase(STAT_DEX);
-						if (iChange > SPELL_MAX_POLY_STAT)
-							iChange = SPELL_MAX_POLY_STAT;
-						if (iChange + Stat_GetBase(STAT_DEX) < 0)
-							iChange = -Stat_GetBase(STAT_DEX);
-						Stat_AddMod(STAT_DEX, static_cast<short>(iChange));
-						pSpell->m_itSpell.m_PolyDex = static_cast<short>(iChange);
-					}
-					else
-					{
-						pSpell->m_itSpell.m_PolyDex = 0;
-					}
-				}
-				Update();		// show everyone I am now a new type
 			}
 			break;
 

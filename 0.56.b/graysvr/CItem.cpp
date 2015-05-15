@@ -246,7 +246,7 @@ CItem * CItem::CreateScript(ITEMID_TYPE id, CChar * pSrc) // static
 
 	CItem * pItem = CreateBase(id);
 	ASSERT(pItem);
-	pItem->GenerateScript();
+	pItem->GenerateScript(pSrc);
 	return pItem;
 }
 
@@ -3090,6 +3090,7 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 {
 	ADDTOCALLSTACK("CItem::OnTrigger");
 
+	return TRIGRET_RET_DEFAULT;
 	if (IsTriggerActive(pszTrigName)) //This should protect any item trigger from infinite loop
 		return TRIGRET_RET_DEFAULT;
 
@@ -3669,8 +3670,6 @@ SKILL_TYPE CItem::GetSpellBookSkill()
 			return SKILL_NECROMANCY;
 		case IT_SPELLBOOK_PALA:
 			return SKILL_CHIVALRY;
-		case IT_SPELLBOOK_EXTRA:
-			return SKILL_NONE; // SKILL_NONE returns 1000+ index in CChar::Spell_GetIndex()
 		case IT_SPELLBOOK_BUSHIDO:
 			return SKILL_BUSHIDO;
 		case IT_SPELLBOOK_NINJITSU:
@@ -3680,10 +3679,11 @@ SKILL_TYPE CItem::GetSpellBookSkill()
 		case IT_SPELLBOOK_MYSTIC:
 			return SKILL_MYSTICISM;
 		case IT_SPELLBOOK_BARD:
+		case IT_SPELLBOOK_EXTRA:
 		default:
 			break;
 	}
-	return SKILL_NONE;
+	return SKILL_NONE;// SKILL_NONE returns 1000+ index in CChar::Spell_GetIndex()
 
 }
 int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )

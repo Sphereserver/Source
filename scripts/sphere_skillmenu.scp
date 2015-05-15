@@ -17,19 +17,20 @@ VERSION=0.56c
 The sphereserver has a number of hardcoded skillmenu's, this file contains
 the softcoded component.  The prupose of each is as follows:
 
-  sm_alchemy        = Triggered by DClicking a alchemy tool
-  sm_summon         = Triggered by the Magery "summoning" spell
-  sm_polymorph      = Triggered by the Magery Polymorph spell
-  sm_cartography    = Triggered by DClicking a cartography tool
-  sm_bowcraft       = Triggered by DClicking a knife and using it on wood
-  sm_bolts          = Triggered by DClicking arrows or shafts
-  sm_blacksmith     = Triggered by DClicking a blacksmithing hammer
-  sm_carpentry      = Triggered by DClicking a carpentry tool
-  sm_tailor_leather = Triggered by DClicking a sewing kit and using it on leather
-  sm_tailor_cloth   = Triggered by DClicking a sewing kit and using it on cloth
-  sm_tinker         = Triggered by DClicking tinker tools
-  sm_inscription    = Triggered by DClicking a blank scroll
-  sm_cooking        = Triggered by DClicking a skillet, rolling pin or flour sifter
+  sm_alchemy			= Triggered by DClicking a alchemy tool
+  sm_summon				= Triggered by the Magery "summoning" spell
+  sm_summon_familiar	= Triggered by the Necromancy "Summon Familiar" spell
+  sm_polymorph			= Triggered by the Magery Polymorph spell
+  sm_cartography		= Triggered by DClicking a cartography tool
+  sm_bowcraft			= Triggered by DClicking a knife and using it on wood
+  sm_bolts				= Triggered by DClicking arrows or shafts
+  sm_blacksmith			= Triggered by DClicking a blacksmithing hammer
+  sm_carpentry			= Triggered by DClicking a carpentry tool
+  sm_tailor_leather		= Triggered by DClicking a sewing kit and using it on leather
+  sm_tailor_cloth		= Triggered by DClicking a sewing kit and using it on cloth
+  sm_tinker				= Triggered by DClicking tinker tools
+  sm_inscription		= Triggered by DClicking a blank scroll
+  sm_cooking			= Triggered by DClicking a skillet, rolling pin or flour sifter
 
 
 [SKILLMENU sm_inscription]
@@ -428,6 +429,28 @@ ON=i_pet_snake <name>
 TEST=MAGERY 25.0
 SUMMON=c_Snake
 
+[SKILLMENU sm_Summon_Familiar]
+What do you want to summon ?
+
+ON=i_pet_demon_horde <name>
+TEST=NECROMANCY 30.0,SPIRITSPEAK 30.0
+SUMMON=c_demon_horde_minion
+
+ON=i_pet_wisp <name>
+TEST=NECROMANCY 50.0,SPIRITSPEAK 50.0
+SUMMON=c_wisp_dark	//Should be c_wisp_shadow ?
+
+ON=i_pet_wolf_grey <name>
+TEST=NECROMANCY 60.0,SPIRITSPEAK 60.0
+SUMMON=c_wolf_dark
+
+//ON=i_pet_death_adder <name>
+//TEST=NECROMANCY 80.0,SPIRITSPEAK 80.0
+//SUMMON=c_Death_adder
+
+ON=i_pet_vampirebat <name>
+TEST=NECROMANCY 100.0,SPIRITSPEAK 100.0
+SUMMON=c_vampire_bat
 
 [SKILLMENU sm_polymorph]
 What do you want to polymorph into?
@@ -456,13 +479,13 @@ on=i_pet_croc <name>
 test=magery 65.0
 poly c_alligator
 
-ON=i_PET_DAEMON Daemon
+ON=i_PET_DEMON Demon
 TEST=MAGERY 85.0
-POLY c_DAEMON
+POLY c_DEMON
 
 ON=i_pet_DRAGON Dragon
 TEST=MAGERY 98.0
-POLY { c_dragon_green 1 c_dragon_red 1 }
+POLY { c_dragon 1 c_dragon_red 1 }
 
 
 [SKILLMENU sm_cartography]

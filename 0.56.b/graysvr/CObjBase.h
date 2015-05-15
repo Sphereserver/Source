@@ -3325,7 +3325,7 @@ public:
 	bool CanCarry( const CItem * pItem ) const;
 
 	CItem * GetSpellbook(SPELL_TYPE iSpell = SPELL_Clumsy) const;
-	int GetSpellbookExtra(CItem * pBooks[], int count) const;
+	int GetSpellbookExtra(CItem * pBooks[], int &count) const;
 	CItem * GetSpellbookRandom(SPELL_TYPE iSpell = SPELL_Clumsy) const;
 	CItemContainer * GetPack() const
 	{
@@ -3336,6 +3336,7 @@ public:
 	{
 		return( GetBank(LAYER_PACK));
 	}
+	CItem * GetBackpackItem(ITEMID_TYPE item);
 	void AddGoldToPack( int iAmount, CItemContainer * pPack=NULL );
 
 //private:
@@ -3545,7 +3546,7 @@ public:
 	bool OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, CItem * pSourceItem );
 	bool Spell_Resurrection(CItemCorpse * pCorpse = NULL, CChar * pCharSrc = NULL, bool bNoFail = false);
 	bool Spell_Teleport( CPointBase pt, bool fTakePets = false, bool fCheckAntiMagic = true, ITEMID_TYPE iEffect = ITEMID_TEMPLATE, SOUND_TYPE iSound = 0x01fe );
-	bool Spell_CanCast( SPELL_TYPE spell, bool fTest, CObjBase * pSrc, bool fFailMsg, bool fCheckAntiMagic = true );
+	bool Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool fFailMsg, bool fCheckAntiMagic = true );
 	int	GetSpellEffect( SPELL_TYPE spell, int iSkillLevel, int iEffectMult );
 	int	GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult, CChar * pCharSrc = NULL );
 	// Memories about objects in the world. -------------------

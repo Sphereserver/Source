@@ -1133,6 +1133,7 @@ enum ITEMID_TYPE	// InsideUO is great for this stuff.
 	ITEMID_CORPSE_7,	// 'wolf corpse'
 	ITEMID_CORPSE_8,	// 'corpse of rabbit'
 
+	ITEMID_HEALING_STONE= 0x4078,
 	ITEMID_DOOR_WALLSET3= 0x409b,
 	ITEMID_DOOR_GARGOYLE= 0x410c,
 	ITEMID_DOOR_WALLSET2= 0x41c2,
@@ -1431,26 +1432,32 @@ enum CREID_TYPE		// enum the creature art work. (dont allow any others !) also k
 	CREID_GARGGHOSTWOMAN	= 0x02B7,
 
 	//	new monsters lies between this range
-	CREID_IRON_GOLEM	= 0x02f0,		// LBR
+	CREID_IRON_GOLEM		= 0x02f0,		// LBR
 	//..
-	CREID_SWAMP_DRAGON1 = 0x031a,		// LBR
-	CREID_REPTILE_LORD	= 0x031d,		// LBR
-	CREID_ANCIENT_WYRM	= 0x031e,		// LBR
-	CREID_SWAMP_DRAGON2	= 0x031f,		// LBR
+	CREID_SWAMP_DRAGON1		= 0x031a,		// LBR
+	CREID_REPTILE_LORD		= 0x031d,		// LBR
+	CREID_ANCIENT_WYRM		= 0x031e,		// LBR
+	CREID_SWAMP_DRAGON2		= 0x031f,		// LBR
 	//..
-	CREID_EQUIP_GM_ROBE = 0x03db,
+	CREID_EQUIP_GM_ROBE		= 0x03db,
 	//..
 	CREID_MULTICOLORED_HORDE_DAEMON = 0x03e7,		// LBR
 
-	CREID_QTY			= 0x0800,	// Max number of base character types, based on art work.
+	CREID_Revenant			= 0x2ee,
+	CREID_Horrific_Beast	= 0x2ea,
+	CREID_Stone_Form		= 0x2c1,
+	CREID_Vampire_Bat		= 0x13d,
+	CREID_Reaper_Form		= 0xe6,
+
+	CREID_QTY				= 0x0800,	// Max number of base character types, based on art work.
 
 	// re-use artwork to make other types on NPC's
-	NPCID_SCRIPT		= 0x801,
+	NPCID_SCRIPT			= 0x801,
 
-	NPCID_SCRIPT2 = 0x4000,	// Safe area for server specific NPC defintions.
-	NPCID_Qty = 0x8000,		// Spawn types start here.
+	NPCID_SCRIPT2			= 0x4000,	// Safe area for server specific NPC defintions.
+	NPCID_Qty				= 0x8000,		// Spawn types start here.
 
-	SPAWNTYPE_START  = 0x8001
+	SPAWNTYPE_START			= 0x8001
 };
 
 enum ANIM_TYPE	// not all creatures animate the same for some reason.

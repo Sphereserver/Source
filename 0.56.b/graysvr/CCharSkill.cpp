@@ -449,7 +449,7 @@ SKILL_TYPE CChar::Skill_GetMagicRandom(unsigned short iVal)
 	if (count > 0)
 	{
 		char rand = Calc_GetRandVal2(1, count);
-		return skills[rand];
+		return skills[static_cast<SKILL_TYPE>(rand)];
 	}
 	return SKILL_NONE;
 }
