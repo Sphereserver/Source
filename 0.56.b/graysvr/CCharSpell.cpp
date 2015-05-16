@@ -485,7 +485,6 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 	SetHue( m_prev_Hue );
 	StatFlag_Clear( STATF_DEAD | STATF_Insubstantial );
 	Stat_SetVal(STAT_STR, maximum(hits, 1));
-	Update();
 
 	if ( m_pPlayer )
 	{
@@ -513,6 +512,8 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 		}
 
 	}
+
+	Update();
 
 	CSpellDef *pSpellDef = g_Cfg.GetSpellDef( SPELL_Resurrection );
 	Effect( EFFECT_OBJ, pSpellDef->m_idEffect, this, 10, 16 );

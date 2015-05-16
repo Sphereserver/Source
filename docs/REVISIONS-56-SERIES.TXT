@@ -2139,3 +2139,7 @@ Added spellflag_poly on sphere_spells.scp, also added support on the source to m
 	-Stone Form
 	-Reaper Form
 Added some code for s_healing_stone and i_healing_stone in both sphere_spells.scp and sphere_item_magic_mysticism.scp
+
+
+16-05-2015, Ben
+Fixed #2510: deathshroud not removing on resurrection in all cases.
