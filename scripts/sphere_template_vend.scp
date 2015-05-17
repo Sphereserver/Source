@@ -1533,11 +1533,11 @@ CATEGORY=Vendor Templates
 SUBSECTION=Sell Templates
 DESCRIPTION=Chain Armourer
 SELL=i_chainmail_coif,{10 15}
-COLOR=color_metal
+COLOR=colors_metal
 SELL=i_chainmail_tunic,{10 15}
-COLOR=color_metal
+COLOR=colors_metal
 SELL=i_chainmail_leggings,{10 15}
-COLOR=color_metal
+COLOR=colors_metal
 
 [TEMPLATE VENDOR_B_ARMORER_CHAIN]
 CATEGORY=Vendor Templates

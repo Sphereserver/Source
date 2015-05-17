@@ -681,7 +681,7 @@ CATEGORY=Items by Professions
 SUBSECTION=Tailor
 DESCRIPTION=Sewing Needle
 ON=@Create
-   COLOR=color_metal
+   COLOR=colors_metal
 
 [ITEMDEF i_velvet]
 ID=i_flesh_entrails
