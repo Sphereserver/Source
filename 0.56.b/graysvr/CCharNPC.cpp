@@ -793,7 +793,7 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 		break;
 	case CNC_SPELLADD:
 	{
-		UCHAR count = 0;
+		unsigned char count = 0;
 		INT64 * ppCmd[255];
 		Str_ParseCmds(s.GetArgStr(), ppCmd[255], count, NULL);
 		if (count < 0)
