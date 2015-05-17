@@ -2219,6 +2219,13 @@ bool CItem::LoadSetContainer( CGrayUID uid, LAYER_TYPE layer )
 		return( false );	// not valid object.
 	}
 
+
+	if ( IsTypeSpellbook() && pObjCont->GetTopLevelObj()->IsChar())	// Intercepting the spell's addition here for NPCs, they store the spells on vector <Spells>m_spells for better access from their AI.
+	{
+		CChar * pChar = dynamic_cast <CObjBase*>(pObjCont->GetTopLevelObj())->GetUID().CharFind();// ? dynamic_cast <CObjBase*>(GetTopLevelObj())->GetUID().CharFind()->m_pNPC : NULL;
+		if (pChar->m_pNPC)
+			pChar->NPC_AddSpellsFromBook(this);
+	}
 	if ( pObjCont->IsItem())
 	{
 		// layer is not used here of course.
@@ -2232,7 +2239,7 @@ bool CItem::LoadSetContainer( CGrayUID uid, LAYER_TYPE layer )
 	}
 	else
 	{
-		CChar * pChar = dynamic_cast <CChar *> (pObjCont);
+		CChar * pChar = dynamic_cast <CChar *> (pObjCont); 
 		if ( pChar != NULL )
 		{
 			// equip the item
@@ -2713,9 +2720,12 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			}
 		case IC_ADDSPELL:
 			// Add this spell to the i_spellbook.
-			if ( AddSpellbookSpell(static_cast<SPELL_TYPE>(RES_GET_INDEX(s.GetArgVal())), false ))
-				return( false );
-			return( true );
+			{
+				SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(s.GetArgVal()));
+				if (AddSpellbookSpell(spell, false))
+					return(false);
+				return(true);
+			}
 		case IC_AMOUNT:
 			SetAmountUpdate( s.GetArgVal());
 			return true;
@@ -3721,6 +3731,12 @@ int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
 	else
 		return 3;
 
+	if (GetTopLevelObj()->IsChar())	// Intercepting the spell's addition here for NPCs, they store the spells on vector <Spells>m_spells for better access from their AI.
+	{
+		CCharNPC * pNPC = dynamic_cast <CObjBase*>(GetTopLevelObj())->GetUID().CharFind()->m_pNPC;// ? dynamic_cast <CObjBase*>(GetTopLevelObj())->GetUID().CharFind()->m_pNPC : NULL;
+		if (pNPC)
+			pNPC->Spells_Add(spell);
+	}
 	// update the spellbook
 	if ( fUpdate)
 	{

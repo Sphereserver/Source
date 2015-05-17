@@ -2327,6 +2327,17 @@ public:
 	CPointMap m_nextPt;							// where the array(^^) wants to go, if changed, recount the path
 	CServTime	m_timeRestock;		//	when last restock happened in sell/buy container
 
+	struct Spells {
+		SPELL_TYPE	id;
+	};
+	std::vector<Spells> m_spells;	// Spells stored in this NPC
+
+	int Spells_GetCount();
+	SPELL_TYPE Spells_GetAt(char id);
+	bool Spells_DelAt(char id);
+	bool Spells_Add(SPELL_TYPE spell);
+	int Spells_FindSpell(SPELL_TYPE spell);
+
 public:
 	void r_WriteChar( CChar * pChar, CScript & s );
 	bool r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & s );
@@ -2444,6 +2455,7 @@ enum CTRIG_TYPE
 	CTRIG_Dismount,
 	//CTRIG_DYE,
 	CTRIG_Eat,
+	CTRIG_EffectAdd,
 	CTRIG_EnvironChange,	// my environment changed somehow (light,weather,season,region)
 	CTRIG_ExpChange,		// EXP is going to change
 	CTRIG_ExpLevelChange,	// Experience LEVEL is going to change
@@ -3549,6 +3561,7 @@ public:
 	bool Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool fFailMsg, bool fCheckAntiMagic = true );
 	int	GetSpellEffect( SPELL_TYPE spell, int iSkillLevel, int iEffectMult );
 	int	GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult, CChar * pCharSrc = NULL );
+	LAYER_TYPE GetSpellLayer(SPELL_TYPE spell);	// Layer for buffs/debuffs
 	// Memories about objects in the world. -------------------
 private:
 	bool Memory_OnTick( CItemMemory * pMemory );
@@ -3797,10 +3810,13 @@ private:
 	bool NPC_LookAtChar( CChar * pChar, int iDist );
 	bool NPC_LookAtItem( CItem * pItem, int iDist );
 	bool NPC_LookAround( bool fForceCheckItems = false );
-	int  NPC_WalkToPoint( bool fRun = false );
-	bool NPC_FightMagery( CChar * pChar );
+	int  NPC_WalkToPoint(bool fRun = false);
+	bool NPC_FightMagery(CChar * pChar);
+	bool NPC_FightCast(CObjBase * &pChar ,CObjBase * pSrc, SPELL_TYPE &spell, SKILL_TYPE skill = SKILL_NONE);
 	bool NPC_FightArchery( CChar * pChar );
 	bool NPC_FightMayCast(bool fCheckSkill = true) const;
+	bool NPC_FightFindSpells(SPELL_TYPE &spells);
+	bool NPC_GetAllSpellbookSpells();
 
 	bool NPC_Act_Follow( bool fFlee = false, int maxDistance = 1, bool forceDistance = false );
 	void NPC_Act_Guard();
@@ -3826,6 +3842,7 @@ public:
 	void NPC_Pathfinding();		//	NPC thread AI - pathfinding
 	void NPC_Food();			//	NPC thread AI - search for food
 	void NPC_AI();				//	NPC thread AI - some general operations
+	bool NPC_AddSpellsFromBook(CItem * pBook);
 
 	void NPC_PetDesert();	
 	void NPC_PetClearOwners();

@@ -1864,7 +1864,7 @@ enum LAYER_TYPE		// defined by UO. Only one item can be in a slot.
 	//SpellWeaving
 	LAYER_SPELL_Attunement,
 	LAYER_SPELL_Gift_Of_Renewal,
-	LAYER_SPELL_Inmolating_Weapon,
+	LAYER_SPELL_Immolating_Weapon,
 	LAYER_SPELL_Thunderstorm,
 	LAYER_SPELL_Arcane_Empowerment,
 	LAYER_SPELL_Ethereal_Voyage,

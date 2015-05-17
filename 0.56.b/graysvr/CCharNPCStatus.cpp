@@ -291,6 +291,8 @@ bool CChar::NPC_FightMayCast(bool fCheckSkill) const
 	// This NPC could cast spells if they wanted to ?
 	// check mana and anti-magic
 	// Dont check for skill if !fCheckSkill
+	if (!m_pNPC)
+		return false;
 	if (fCheckSkill && !const_cast<CChar*>(this)->Skill_GetMagicRandom(300))
 		return false;
 	if ( m_pArea && m_pArea->IsFlag(REGION_ANTIMAGIC_DAMAGE|REGION_FLAG_SAFE) )

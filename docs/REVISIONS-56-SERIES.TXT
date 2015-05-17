@@ -2143,3 +2143,40 @@ Added some code for s_healing_stone and i_healing_stone in both sphere_spells.sc
 
 16-05-2015, Ben
 Fixed #2510: deathshroud not removing on resurrection in all cases.
+
+17-05-2015, XuN
+Updated @NPCActFight:
+	Added - local.skill // Setting this to any skill will make the NPC begin this skill
+	Added - local.spell // For magic skills this will be the casted spell
+	Added - ACT // This will refer to the target, must be set since the trigger is using SRC for the first enemy
+	Added - return 2 // The code above will only work when return = 2
+Removed NPC_AI_STRICTCAST and all the invented casts from npcs.This can be reverted applying a trigger for npcs like this:
+	ON=@NPCActFight
+	if (<magery> > 0)
+		local.spell=<r1,64>
+		while (<local.spell> < 64)
+			if (<CanCast <local.spell>>)
+				local.skill=magery
+				return 2
+			else
+				local.spell ++
+			endif
+		endwhile
+	endif	//same for the other magic skills.
+
+Added vector list storing all spells that npcs can cast and removed tons of lines of code to increase the performance of CPU when NPCs cast some spells.
+WARNING:
+	Added LAYER variable to spells, ALL SPHERE_SPELLS.SCP MUST BE UPDATED or spells with some effect, like polymorphs, summons, stat spells, and all that have a determinated duration will stop working
+	[sphere_spells.scp]	//Seriously, this script must be updated.
+		-Added LAYER=layer_spell_* to all magery, necromancy, spellweaving,chivalry and mysticism spells, ie LAYER=layer_spell_stats for s_bless,s_cunning, etc
+Changed default formulas to make spells work with LAYER instead of hardcoded checks, this will help making custom spells by giving the customization enough to handle every possible effect.
+
+Changed: MemoryEquip won't be called anymore for the memories of spell's effects.
+Added character trigger @EffectAdd: This will be called when any type of effect memory is being added, like stat changes for s_bless, s_cunning... s_weaken ...
+	Argo = memory item
+	argn1 = spellid
+returns: 
+	return 0: Let default checks to happen.
+	return 1: Blocks any action and stops everything, also deletes the memory (Blocking any changes, this will cause also the effect to do not have duration)
+	return 2: Let the memory exist but block default checks, perfect to override default effects and do some custom stuff.
+To simulate something like '@EffectEnd' just apply an event with @Timer to the memory since the 'default changes' are happening after @UnEquip and, at this point, the item must be removed in any case... so preventing this must be done before (@Timer fits perfectly).

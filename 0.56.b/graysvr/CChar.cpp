@@ -40,6 +40,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@Dismount",			// I am trying to get rid of my ride right now
 	//"@Dye",					// My color has been changed
 	"@Eat",
+	"@EffectAdd",
 	"@EnvironChange",		// my environment changed somehow (light,weather,season,region)
 	"@ExpChange",			// EXP is going to change
 	"@ExpLevelChange",		// Experience LEVEL is going to change
@@ -3283,6 +3284,10 @@ bool CChar::r_Load( CScript & s ) // Load a character from script
 	ADDTOCALLSTACK("CChar::r_Load");
 	CScriptObj::r_Load(s);
 
+	if (m_pNPC)
+	{
+		NPC_GetAllSpellbookSpells();
+	}
 	// Init the STATF_SaveParity flag.
 	// StatFlag_Mod( STATF_SaveParity, g_World.m_fSaveParity );
 

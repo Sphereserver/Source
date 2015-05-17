@@ -1215,7 +1215,7 @@ LAYER_SPELL_Enemy_Of_One	63
 //SpellWeaving
 LAYER_SPELL_Attunement		64
 LAYER_SPELL_Gift_Of_Renewal	65
-LAYER_SPELL_Inmolating_Weapon 66
+LAYER_SPELL_Immolating_Weapon 66
 LAYER_SPELL_Thunderstorm	67
 LAYER_SPELL_Arcane_Empowerment 68
 LAYER_SPELL_Ethereal_Voyage	69

@@ -248,14 +248,18 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 			ItemBounce( pItem );
 			return;
 		}
-		if (( IsTrigUsed(TRIGGER_MEMORYEQUIP) ) || ( IsTrigUsed(TRIGGER_ITEMMEMORYEQUIP) ))
+
+		if (!pItem->IsTypeSpellable() && !pItem->m_itSpell.m_spell && !pItem->IsType(IT_WAND))	// can this item have a spell effect ? If so we do not send 
 		{
-			CScriptTriggerArgs pArgs;
-			pArgs.m_iN1 = layer;
-			if ( pItem->OnTrigger(ITRIG_MemoryEquip, this, &pArgs) == TRIGRET_RET_TRUE )
+			if ((IsTrigUsed(TRIGGER_MEMORYEQUIP)) || (IsTrigUsed(TRIGGER_ITEMMEMORYEQUIP)))
 			{
-				pItem->Delete();
-				return;
+				CScriptTriggerArgs pArgs;
+				pArgs.m_iN1 = layer;
+				if (pItem->OnTrigger(ITRIG_MemoryEquip, this, &pArgs) == TRIGRET_RET_TRUE)
+				{
+					pItem->Delete();
+					return;
+				}
 			}
 		}
 	}

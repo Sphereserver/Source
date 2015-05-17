@@ -561,6 +561,7 @@ enum SPC_TYPE
 	SPC_FLAGS,
 	SPC_GROUP,
 	SPC_INTERRUPT,
+	SPC_LAYER,
 	SPC_MANAUSE,
 	SPC_NAME,
 	SPC_PROMPT_MSG,
@@ -583,6 +584,7 @@ LPCTSTR const CSpellDef::sm_szLoadKeys[SPC_QTY+1] =
 	"FLAGS",
 	"GROUP",
 	"INTERRUPT",
+	"LAYER",
 	"MANAUSE",
 	"NAME",
 	"PROMPT_MSG",
@@ -604,6 +606,7 @@ CSpellDef::CSpellDef( SPELL_TYPE id ) :
 	m_idSpell = ITEMID_NOTHING;
 	m_idScroll = ITEMID_NOTHING;
 	m_idEffect = ITEMID_NOTHING;
+	m_idLayer = LAYER_NONE;
 	m_wManaUse = 0;
 	m_CastTime.Init();
 	m_Interrupt.Init();
@@ -648,6 +651,9 @@ bool CSpellDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			break;
 		case SPC_INTERRUPT:
 			sVal = m_Interrupt.Write();
+			break;
+		case SPC_LAYER:
+			sVal.FormatVal(m_idLayer);
 			break;
 		case SPC_MANAUSE:
 			sVal.FormatVal( m_wManaUse );
@@ -756,6 +762,9 @@ bool CSpellDef::r_LoadVal( CScript &s )
 			break;
 		case SPC_INTERRUPT:
 			m_Interrupt.Load( s.GetArgRaw());
+			break;
+		case SPC_LAYER:
+			m_idLayer = static_cast<LAYER_TYPE>(s.GetArgVal());
 			break;
 		case SPC_MANAUSE:
 			m_wManaUse = static_cast<WORD>(s.GetArgVal());

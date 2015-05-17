@@ -534,42 +534,76 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 	if ( pSpell->IsType(IT_WAND))	// equipped wands do not confer effect.
 		return;
 
+	SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pSpell->m_itSpell.m_spell));
 	// m_itWeapon, m_itArmor, m_itSpell
 
-	SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pSpell->m_itSpell.m_spell));
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
 	short iStatEffect = static_cast<short>(pSpell->m_itSpell.m_spelllevel);
-	if (pSpellDef->IsSpellType(SPELLFLAG_POLY))
-	{
-		BUFF_ICONS iBuffIcon = BI_START;
-		switch (spell)
+
+	LAYER_TYPE layer = GetSpellLayer(spell);
+
+	switch (layer)	// Spell effects that are common for the same layer fits here
 		{
-		case SPELL_BeastForm:		// 107 // polymorphs you into an animal for a while.
-		case SPELL_Monster_Form:	// 108 // polymorphs you into a monster for a while.
-		case SPELL_Polymorph:
-			iBuffIcon = BI_POLYMORPH;
+		case LAYER_NONE:
 			break;
-		case SPELL_Lich_Form:
-			iBuffIcon = BI_LICHFORM;
+		case LAYER_FLAG_Poison:
+			StatFlag_Clear(STATF_Poisoned);
+			UpdateModeFlag();
+			if (IsClient())
+				GetClient()->removeBuff(BI_POISON);
 			break;
-		case SPELL_Wraith_Form:
-			iBuffIcon = BI_WRAITHFORM;
-			break;
-		case SPELL_Horrific_Beast:
-			iBuffIcon = BI_HORRIFICBEAST;
-			break;
-		case SPELL_Vampiric_Embrace:
-			iBuffIcon = BI_VAMPIRICEMBRACE;
-			break;
-		case SPELL_Stone_Form:
-			iBuffIcon = BI_STONEFORM;
-			break;
-		case SPELL_Reaper_Form:
-			iBuffIcon = BI_REAPERFORM;
-			break;
-		default:
-			break;
+		case LAYER_SPELL_Summon:
+		{
+			// Delete the creature completely.
+			// ?? Drop anything it might have had ?
+			if (!g_Serv.IsLoading())
+			{
+				const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(SPELL_Teleport);
+				ASSERT(pSpellDef);
+
+				CItem * pEffect = CItem::CreateBase(ITEMID_FX_TELE_VANISH);
+				ASSERT(pEffect);
+				pEffect->SetAttr(ATTR_MAGIC | ATTR_MOVE_NEVER | ATTR_CAN_DECAY); // why is this movable ?
+				pEffect->MoveToDecay(GetTopPoint(), 2 * TICK_PER_SEC);
+				pEffect->Sound(pSpellDef->m_sound);
+			}
+			if (m_pPlayer)	// summoned players ? thats odd.
+				return;
+			if (!IsStatFlag(STATF_DEAD)) // Fix for double @Destroy trigger
+				Delete();
+			return;
 		}
+		case LAYER_SPELL_Polymorph:
+		{
+			BUFF_ICONS iBuffIcon = BI_START;
+			switch (spell)
+			{
+			case SPELL_BeastForm:		// 107 // polymorphs you into an animal for a while.
+			case SPELL_Monster_Form:	// 108 // polymorphs you into a monster for a while.
+			case SPELL_Polymorph:
+				iBuffIcon = BI_POLYMORPH;
+				break;
+			case SPELL_Lich_Form:
+				iBuffIcon = BI_LICHFORM;
+				break;
+			case SPELL_Wraith_Form:
+				iBuffIcon = BI_WRAITHFORM;
+				break;
+			case SPELL_Horrific_Beast:
+				iBuffIcon = BI_HORRIFICBEAST;
+				break;
+			case SPELL_Vampiric_Embrace:
+				iBuffIcon = BI_VAMPIRICEMBRACE;
+				break;
+			case SPELL_Stone_Form:
+				iBuffIcon = BI_STONEFORM;
+				break;
+			case SPELL_Reaper_Form:
+				iBuffIcon = BI_REAPERFORM;
+				break;
+			default:
+				break;
+			}
 
 			//  m_prev_id != GetID()
 			// poly back to orig form.
@@ -586,10 +620,49 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			StatFlag_Clear(STATF_Polymorph);
 			if (IsClient())
 				GetClient()->removeBuff(iBuffIcon);
-		UpdateStatsFlag();
-		return;
+			UpdateStatsFlag();
+			return;
+		}
+		case LAYER_SPELL_Night_Sight:
+		{
+			StatFlag_Clear(STATF_NightSight);
+			if (IsClient())
+			{
+				m_pClient->addLight();
+				if (IsSetOF(OF_Buffs))
+					GetClient()->removeBuff(BI_NIGHTSIGHT);
+			}
+			return;
+		}
+
+		case LAYER_SPELL_Incognito:
+			StatFlag_Clear(STATF_Incognito);
+			SetName(pSpell->GetName());	// restore your name
+			if (!IsStatFlag(STATF_Polymorph))
+			{
+				SetHue(m_prev_Hue);
+			}
+			pSpell->SetName("");	// clear the name from the item (might be a worn item)
+			if (IsClient())
+				GetClient()->removeBuff(BI_INCOGNITO);
+			NotoSave_Update();
+			break;
+		case LAYER_SPELL_Invis:
+			Reveal(STATF_Invisible);
+			if (IsClient())
+				GetClient()->removeBuff(BI_INVISIBILITY);
+			return;
+		case LAYER_SPELL_Paralyze:
+			StatFlag_Clear(STATF_Freeze);
+			if (IsClient())
+				GetClient()->removeBuff(BI_PARALYZE);
+			UpdateModeFlag();
+			break;
+		default:
+			break;
 	}
-	switch ( spell )
+
+	switch ( spell ) // The rest of the effects are handled directly by each spell.
 	{
 		case SPELL_Clumsy:
 			Stat_AddMod(STAT_DEX, iStatEffect);
@@ -676,14 +749,6 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 				GetClient()->removeBuff(BI_REACTIVEARMOR);
 			return;
 		case SPELL_Night_Sight:
-			StatFlag_Clear( STATF_NightSight );
-			if ( IsClient())
-			{
-				m_pClient->addLight();
-				if (IsSetOF(OF_Buffs))
-					GetClient()->removeBuff(BI_NIGHTSIGHT);
-			}
-			return;
 		case SPELL_Magic_Reflect:
 			StatFlag_Clear( STATF_Reflection );
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
@@ -697,13 +762,8 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			if (IsClient())
 				GetClient()->removeBuff(BI_MAGICREFLECTION);
 			return;
-		case SPELL_Poison:
-		case SPELL_Poison_Field:
-			StatFlag_Clear( STATF_Poisoned );
-			UpdateModeFlag();
-			if (IsClient())
-				GetClient()->removeBuff(BI_POISON);
-			break;
+		case SPELL_Steelskin:		// 114 // turns your skin into steel, giving a boost to your AR.
+		case SPELL_Stoneskin:		// 115 // turns your skin into stone, giving a boost to your AR.
 		case SPELL_Protection:
 		case SPELL_Arch_Prot:
 			Sound( 0x1ed );
@@ -726,57 +786,10 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 					GetClient()->removeBuff(BI_ARCHPROTECTION);
 			}
 			break;
-		case SPELL_Steelskin:		// 114 // turns your skin into steel, giving a boost to your AR.
-		case SPELL_Stoneskin:		// 115 // turns your skin into stone, giving a boost to your AR.
-			m_defense = static_cast<WORD>(CalcArmorDefense());
-			break;
-		case SPELL_Incognito:
-			StatFlag_Clear( STATF_Incognito );
-			SetName( pSpell->GetName());	// restore your name
-			if ( ! IsStatFlag( STATF_Polymorph ))
-			{
-				SetHue( m_prev_Hue );
-			}
-			pSpell->SetName( "" );	// clear the name from the item (might be a worn item)
-			if (IsClient())
-				GetClient()->removeBuff(BI_INCOGNITO);
-			NotoSave_Update();
-			break;
-		case SPELL_Invis:
-			Reveal(STATF_Invisible);
-			if (IsClient())
-				GetClient()->removeBuff(BI_INVISIBILITY);
-			return;
-		case SPELL_Paralyze:
-		case SPELL_Paralyze_Field:
-			StatFlag_Clear( STATF_Freeze );
-			if (IsClient())
-				GetClient()->removeBuff(BI_PARALYZE);
-			UpdateModeFlag();
-			break;
 
 
 		case SPELL_Chameleon:		// 106 // makes your skin match the colors of whatever is behind you.
 			break;
-		case SPELL_Summon:
-			// Delete the creature completely.
-			// ?? Drop anything it might have had ?
-			if ( ! g_Serv.IsLoading())
-			{
-				const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(SPELL_Teleport);
-				ASSERT(pSpellDef);
-
-				CItem * pEffect = CItem::CreateBase( ITEMID_FX_TELE_VANISH );
-				ASSERT(pEffect);
-				pEffect->SetAttr(ATTR_MAGIC|ATTR_MOVE_NEVER|ATTR_CAN_DECAY); // why is this movable ?
-				pEffect->MoveToDecay( GetTopPoint(), 2*TICK_PER_SEC );
-				pEffect->Sound( pSpellDef->m_sound  );
-			}
-			if ( m_pPlayer )	// summoned players ? thats odd.
-				return;
-			if ( !IsStatFlag(STATF_DEAD) ) // Fix for double @Destroy trigger
-				Delete();
-			return;
 
 		case SPELL_Trance:			// 111 // temporarily increases your meditation skill.
 			Skill_SetBase(SKILL_MEDITATION, Skill_GetBase(SKILL_MEDITATION) - g_Cfg.GetSpellEffect(spell, iStatEffect));
@@ -813,116 +826,194 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 	short iStatEffect = static_cast<short>(pSpell->m_itSpell.m_spelllevel);
 	short iTimerEffect = static_cast<short>(pSpell->GetTimerAdjusted());
 
+	if (IsTrigUsed(TRIGGER_EFFECTADD))
+	{
+		CScriptTriggerArgs Args;
+		Args.m_pO1 = pSpell;
+		Args.m_iN1 = spell;
+		TRIGRET_TYPE iRet = OnTrigger(CTRIG_EffectAdd, this, &Args);
+		if (iRet == TRIGRET_RET_TRUE)	// Return 1: We don't want nothing to happen, removing memory also.
+		{
+			pSpell->Delete(true);
+			return;
+		}
+		else if (iRet == static_cast<TRIGRET_TYPE>(2))	// return 1: we want the memory to be equipped but we want custom things to happen: don't remove memory but stop here,
+			return;
+	}
 	//Buffs related variables:
 	TCHAR NumBuff[7][8];
 	LPCTSTR pNumBuff[7] = { NumBuff[0], NumBuff[1], NumBuff[2], NumBuff[3], NumBuff[4], NumBuff[5], NumBuff[6] };
 	//------------------------
-	if (pSpellDef->IsSpellType(SPELLFLAG_POLY))
+
+	LAYER_TYPE layer = GetSpellLayer(spell);
+	switch (layer)
 	{
-		BUFF_ICONS iBuffIcon = BI_START;
-		switch (spell)
+		case LAYER_NONE:
+			break;
+		case LAYER_SPELL_Polymorph:
 		{
-			case SPELL_BeastForm:		// 107 // polymorphs you into an animal for a while.
-			case SPELL_Monster_Form:	// 108 // polymorphs you into a monster for a while.
-			case SPELL_Polymorph:
-				iBuffIcon = BI_POLYMORPH;
-				break;
-			case SPELL_Lich_Form:
-				m_atMagery.m_SummonID = CREID_LICH;
-				iBuffIcon = BI_LICHFORM;
-				break;
-			case SPELL_Wraith_Form:
-				m_atMagery.m_SummonID = CREID_SPECTRE;
-				iBuffIcon = BI_WRAITHFORM;
-				break;
-			case SPELL_Horrific_Beast:
-				m_atMagery.m_SummonID = CREID_Horrific_Beast;
-				iBuffIcon = BI_HORRIFICBEAST; 
-				break;
-			case SPELL_Vampiric_Embrace:
-				m_atMagery.m_SummonID = CREID_Vampire_Bat;
-				iBuffIcon = BI_VAMPIRICEMBRACE; 
-				break;
-			case SPELL_Stone_Form:
-				m_atMagery.m_SummonID = CREID_Stone_Form;
-				iBuffIcon = BI_STONEFORM; 
-				break;
-			case SPELL_Reaper_Form:
-				m_atMagery.m_SummonID = CREID_Stone_Form;
-				iBuffIcon = BI_REAPERFORM; 
-				break;
-			default:
-				break;
+			BUFF_ICONS iBuffIcon = BI_START;
+			switch (spell)
+			{
+				case SPELL_BeastForm:		// 107 // polymorphs you into an animal for a while.
+				case SPELL_Monster_Form:	// 108 // polymorphs you into a monster for a while.
+				case SPELL_Polymorph:
+					iBuffIcon = BI_POLYMORPH;
+					break;
+				case SPELL_Lich_Form:
+					m_atMagery.m_SummonID = CREID_LICH;
+					iBuffIcon = BI_LICHFORM;
+					break;
+				case SPELL_Wraith_Form:
+					m_atMagery.m_SummonID = CREID_SPECTRE;
+					iBuffIcon = BI_WRAITHFORM;
+					break;
+				case SPELL_Horrific_Beast:
+					m_atMagery.m_SummonID = CREID_Horrific_Beast;
+					iBuffIcon = BI_HORRIFICBEAST;
+					break;
+				case SPELL_Vampiric_Embrace:
+					m_atMagery.m_SummonID = CREID_Vampire_Bat;
+					iBuffIcon = BI_VAMPIRICEMBRACE;
+					break;
+				case SPELL_Stone_Form:
+					m_atMagery.m_SummonID = CREID_Stone_Form;
+					iBuffIcon = BI_STONEFORM;
+					break;
+				case SPELL_Reaper_Form:
+					m_atMagery.m_SummonID = CREID_Stone_Form;
+					iBuffIcon = BI_REAPERFORM;
+					break;
+				default:
+					break;
+			}
+
+			int SPELL_MAX_POLY_STAT = g_Cfg.m_iMaxPolyStats;
+			SetID(m_atMagery.m_SummonID);
+
+			CCharBase * pCharDef = Char_GetDef();
+			ASSERT(pCharDef);
+
+			// re-apply our incognito name
+			if (IsStatFlag(STATF_Incognito))
+				SetName(pCharDef->GetTypeName());
+
+			// set to creature type stats
+			if (IsSetMagicFlags(MAGICF_POLYMORPHSTATS))
+			{
+				if (pCharDef->m_Str)
+				{
+					int iChange = pCharDef->m_Str - Stat_GetBase(STAT_STR);
+					if (iChange > SPELL_MAX_POLY_STAT)
+						iChange = SPELL_MAX_POLY_STAT;
+					if (iChange + Stat_GetBase(STAT_STR) < 0)
+						iChange = -Stat_GetBase(STAT_STR);
+					Stat_AddMod(STAT_STR, static_cast<short>(iChange));
+					pSpell->m_itSpell.m_PolyStr = static_cast<short>(iChange);
+				}
+				else
+				{
+					pSpell->m_itSpell.m_PolyStr = 0;
+				}
+				if (pCharDef->m_Dex)
+				{
+					int iChange = pCharDef->m_Dex - Stat_GetBase(STAT_DEX);
+					if (iChange > SPELL_MAX_POLY_STAT)
+						iChange = SPELL_MAX_POLY_STAT;
+					if (iChange + Stat_GetBase(STAT_DEX) < 0)
+						iChange = -Stat_GetBase(STAT_DEX);
+					Stat_AddMod(STAT_DEX, static_cast<short>(iChange));
+					pSpell->m_itSpell.m_PolyDex = static_cast<short>(iChange);
+				}
+				else
+				{
+					pSpell->m_itSpell.m_PolyDex = 0;
+				}
+			}
+			Update();		// show everyone I am now a new type
+
+			StatFlag_Set(STATF_Polymorph);
+			if (IsSetOF(OF_Buffs) && IsClient())
+			{
+				if (!iBuffIcon)
+					return;
+				GetClient()->removeBuff(iBuffIcon);
+				GetClient()->addBuff(iBuffIcon, 1075824, 1070722, iTimerEffect);
+			}
+			return;
 		}
-
-		int SPELL_MAX_POLY_STAT = g_Cfg.m_iMaxPolyStats;
-		SetID(m_atMagery.m_SummonID);
-
-		CCharBase * pCharDef = Char_GetDef();
-		ASSERT(pCharDef);
-
-		// re-apply our incognito name
-		if (IsStatFlag(STATF_Incognito))
-			SetName(pCharDef->GetTypeName());
-
-		// set to creature type stats
-		if (IsSetMagicFlags(MAGICF_POLYMORPHSTATS))
-		{
-			if (pCharDef->m_Str)
-			{
-				int iChange = pCharDef->m_Str - Stat_GetBase(STAT_STR);
-				if (iChange > SPELL_MAX_POLY_STAT)
-					iChange = SPELL_MAX_POLY_STAT;
-				if (iChange + Stat_GetBase(STAT_STR) < 0)
-					iChange = -Stat_GetBase(STAT_STR);
-				Stat_AddMod(STAT_STR, static_cast<short>(iChange));
-				pSpell->m_itSpell.m_PolyStr = static_cast<short>(iChange);
-			}
-			else
-			{
-				pSpell->m_itSpell.m_PolyStr = 0;
-			}
-			if (pCharDef->m_Dex)
-			{
-				int iChange = pCharDef->m_Dex - Stat_GetBase(STAT_DEX);
-				if (iChange > SPELL_MAX_POLY_STAT)
-					iChange = SPELL_MAX_POLY_STAT;
-				if (iChange + Stat_GetBase(STAT_DEX) < 0)
-					iChange = -Stat_GetBase(STAT_DEX);
-				Stat_AddMod(STAT_DEX, static_cast<short>(iChange));
-				pSpell->m_itSpell.m_PolyDex = static_cast<short>(iChange);
-			}
-			else
-			{
-				pSpell->m_itSpell.m_PolyDex = 0;
-			}
-		}
-		Update();		// show everyone I am now a new type
-
-		StatFlag_Set(STATF_Polymorph);
-		if (IsSetOF(OF_Buffs) && IsClient())
-		{
-			if (!iBuffIcon)
-				return;
-			GetClient()->removeBuff(iBuffIcon);
-			GetClient()->addBuff(iBuffIcon, 1075824, 1070722, iTimerEffect);
-		}
-		return;
-	}
-	
-
-	switch ( spell )
-	{
-		case SPELL_Poison:
-		case SPELL_Poison_Field:
-			StatFlag_Set( STATF_Poisoned );
+		case LAYER_FLAG_Poison:
+			StatFlag_Set(STATF_Poisoned);
 			UpdateModeFlag();
-			if ( IsSetOF(OF_Buffs) && IsClient() )
+			if (IsSetOF(OF_Buffs) && IsClient())
 			{
 				GetClient()->removeBuff(BI_POISON);
 				GetClient()->addBuff(BI_POISON, 1017383, 1070722, 2);
 			}
 			break;
+		case LAYER_SPELL_Night_Sight:
+			StatFlag_Set(STATF_NightSight);
+			if (IsClient())
+			{
+				m_pClient->addLight();
+				if (IsSetOF(OF_Buffs))
+				{
+					GetClient()->removeBuff(BI_NIGHTSIGHT);
+					GetClient()->addBuff(BI_NIGHTSIGHT, 1075643, 1075644, iTimerEffect);
+				}
+			}
+			break;
+		case LAYER_SPELL_Incognito:
+			if (!IsStatFlag(STATF_Incognito))
+			{
+				const CCharBase * pCharDef = Char_GetDef();
+				ASSERT(pCharDef);
+				StatFlag_Set(STATF_Incognito);
+				pSpell->SetName(GetName());	// Give it my name
+				SetName(pCharDef->GetTypeName());	// Give me general name for the type
+				if (!IsStatFlag(STATF_Polymorph) && IsPlayableCharacter())
+					SetHue((HUE_UNDERWEAR | HUE_SKIN_LOW) + Calc_GetRandVal(HUE_SKIN_HIGH - HUE_SKIN_LOW));
+
+				if (IsSetOF(OF_Buffs) && IsClient())
+				{
+					GetClient()->removeBuff(BI_INCOGNITO);
+					GetClient()->addBuff(BI_INCOGNITO, 1075819, 1075820, iTimerEffect);
+				}
+			}
+			break;
+		case LAYER_SPELL_Invis:
+			StatFlag_Set(STATF_Invisible);
+			if (IsClient())
+				new PacketCharacter(GetClient(), this); //updates paperdoll with less packets then GetClient()->addChar( this );
+			UpdateMove(GetTopPoint());	// Some will be seeing us for the first time !
+			if (IsSetOF(OF_Buffs) && IsClient())
+			{
+				GetClient()->removeBuff(BI_INVISIBILITY);
+				GetClient()->addBuff(BI_INVISIBILITY, 1075825, 1075826, iTimerEffect);
+			}
+			break;
+		case LAYER_SPELL_Paralyze:
+			StatFlag_Set(STATF_Freeze);
+			if (IsSetOF(OF_Buffs) && IsClient())
+			{
+				GetClient()->removeBuff(BI_PARALYZE);
+				GetClient()->addBuff(BI_PARALYZE, 1075827, 1075828, iTimerEffect);
+			}
+			UpdateModeFlag();
+			break;
+
+		case LAYER_SPELL_Summon:
+			// LAYER_SPELL_Summon
+			StatFlag_Set(STATF_Conjured);
+			break;
+		default:
+			break;
+	}
+	
+	
+
+	switch ( spell )
+	{
 		case SPELL_Reactive_Armor:
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
@@ -953,18 +1044,6 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				else
 				{
 					GetClient()->addBuff(BI_REACTIVEARMOR, 1075812, 1070722, iTimerEffect);
-				}
-			}
-			break;
-		case SPELL_Night_Sight:
-			StatFlag_Set( STATF_NightSight );
-			if ( IsClient())
-			{
-				m_pClient->addLight();
-				if (IsSetOF(OF_Buffs))
-				{
-					GetClient()->removeBuff(BI_NIGHTSIGHT);
-					GetClient()->addBuff(BI_NIGHTSIGHT, 1075643, 1075644, iTimerEffect);
 				}
 			}
 			break;
@@ -1134,24 +1213,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				}
 				UpdateStatVal( STAT_INT, -iStatEffect );
 			} break;
-		case SPELL_Incognito:
-			if ( ! IsStatFlag( STATF_Incognito ))
-			{
-				const CCharBase * pCharDef = Char_GetDef();
-				ASSERT(pCharDef);
-				StatFlag_Set( STATF_Incognito );
-				pSpell->SetName( GetName());	// Give it my name
-				SetName( pCharDef->GetTypeName());	// Give me general name for the type
-				if ( ! IsStatFlag( STATF_Polymorph ) && IsPlayableCharacter())
-					SetHue((HUE_UNDERWEAR|HUE_SKIN_LOW) + Calc_GetRandVal(HUE_SKIN_HIGH-HUE_SKIN_LOW));
-
-				if ( IsSetOF(OF_Buffs) && IsClient() )
-				{
-					GetClient()->removeBuff(BI_INCOGNITO);
-					GetClient()->addBuff(BI_INCOGNITO, 1075819, 1075820, iTimerEffect);
-				}
-			}
-			break;
+		
 		case SPELL_Magic_Reflect:
 			StatFlag_Set( STATF_Reflection );
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
@@ -1182,6 +1244,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				}
 			}
 			break;
+		case SPELL_Steelskin:		// 114 // turns your skin into steel, giving a boost to your AR.
+		case SPELL_Stoneskin:		// 115 // turns your skin into stone, giving a boost to your AR.
 		case SPELL_Protection:
 		case SPELL_Arch_Prot:
 			{
@@ -1228,37 +1292,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					}
 				}
 			}
-			break;
-		case SPELL_Steelskin:		// 114 // turns your skin into steel, giving a boost to your AR.
-		case SPELL_Stoneskin:		// 115 // turns your skin into stone, giving a boost to your AR.
-			m_defense = static_cast<WORD>(CalcArmorDefense());
-			break;
-		case SPELL_Invis:
-			StatFlag_Set( STATF_Invisible );
-			if ( IsClient() )
-				new PacketCharacter(GetClient(), this); //updates paperdoll with less packets then GetClient()->addChar( this );
-			UpdateMove(GetTopPoint());	// Some will be seeing us for the first time !
-			if ( IsSetOF(OF_Buffs) && IsClient() )
-			{
-				GetClient()->removeBuff(BI_INVISIBILITY);
-				GetClient()->addBuff(BI_INVISIBILITY, 1075825, 1075826, iTimerEffect);
-			}
-			break;
-		case SPELL_Paralyze:
-		case SPELL_Paralyze_Field:
-			StatFlag_Set( STATF_Freeze );
-			if ( IsSetOF(OF_Buffs) && IsClient() )
-			{
-				GetClient()->removeBuff(BI_PARALYZE);
-				GetClient()->addBuff(BI_PARALYZE, 1075827, 1075828, iTimerEffect);
-			}
-			UpdateModeFlag();
-			break;
+			break; 
 		
-		case SPELL_Summon:
-			// LAYER_SPELL_Summon
-			StatFlag_Set( STATF_Conjured );
-			break;
 
 		case SPELL_Chameleon:		// 106 // makes your skin match the colors of whatever is behind you.
 		case SPELL_BeastForm:		// 107 // polymorphs you into an animal for a while.
@@ -1275,6 +1310,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 		default:
 			return;
 	}
+
 	UpdateStatsFlag();
 }
 
@@ -3226,6 +3262,55 @@ int CChar::GetSpellEffect( SPELL_TYPE spell, int iSkillLevel, int iEffectMult )
 	ADDTOCALLSTACK("CChar::GetSpellEffect");
 	int	iEffect = g_Cfg.GetSpellEffect( spell, iSkillLevel );
 	return (iEffect * iEffectMult ) / 1000;
+}
+
+// Quick retrieve of the LAYER_TYPE for the given spell
+LAYER_TYPE CChar::GetSpellLayer(SPELL_TYPE spell)
+{
+	ADDTOCALLSTACK("CChar::GetSpellEffect");
+	CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
+	ASSERT(pSpellDef);
+	if (pSpellDef->IsSpellType(SPELLFLAG_POLY))
+		return LAYER_SPELL_Polymorph;
+	if (pSpellDef->IsSpellType(SPELLFLAG_SUMMON))
+		return LAYER_SPELL_Summon;
+	switch (spell)
+	{
+		case SPELL_Cunning:
+		case SPELL_Strength:
+		case SPELL_Agility:
+		case SPELL_Bless:
+		case SPELL_Weaken:
+		case SPELL_Clumsy:
+		case SPELL_Feeblemind:
+			return LAYER_SPELL_STATS;			// 32 = Stats effecting spell. These cancel each other out.
+		case SPELL_Reactive_Armor:
+			return LAYER_SPELL_Reactive;
+		case SPELL_Night_Sight:
+		case SPELL_Light:
+			return LAYER_SPELL_Night_Sight;
+		case SPELL_Protection:
+		case SPELL_Arch_Prot:
+			return LAYER_SPELL_Protection;
+		case SPELL_Incognito:
+			return LAYER_SPELL_Incognito;
+		case SPELL_Magic_Reflect:
+			return LAYER_SPELL_Magic_Reflect;
+		case SPELL_Paralyze:
+		case SPELL_Paralyze_Field:
+			return LAYER_SPELL_Paralyze;		// or turned to stone.
+		case SPELL_Invis:
+		case SPELL_Ethereal_Voyage:
+			return LAYER_SPELL_Invis;
+		case SPELL_Poison:
+		case SPELL_Poison_Field:
+			return LAYER_FLAG_Poison;
+		default:
+			break;
+	}
+	if (pSpellDef->m_idLayer)
+		return pSpellDef->m_idLayer;
+	return LAYER_NONE;
 }
 
 int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult, CChar * pCharSrc )

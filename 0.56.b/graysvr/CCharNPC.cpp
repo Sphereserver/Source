@@ -791,6 +791,20 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 				pBank->m_itEqBankBox.m_Check_Amount = s.GetArgVal();
 		}
 		break;
+	case CNC_SPELLADD:
+	{
+		UCHAR count = 0;
+		INT64 * ppCmd[255];
+		Str_ParseCmds(s.GetArgStr(), ppCmd[255], count, NULL);
+		if (count < 0)
+			return false;
+		for (UCHAR i = 0; i < count; i++)
+		{
+			if (!ppCmd[i])
+				break;
+			Spells_Add(static_cast<SPELL_TYPE>(*ppCmd[i]));
+		}
+	}
 
 	default:
 		// Just ignore any player type stuff.

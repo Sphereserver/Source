@@ -446,6 +446,7 @@ public:
 	ITEMID_TYPE m_idScroll;		// The scroll graphic item for this.
 	ITEMID_TYPE m_idEffect;		// Animation effect ID
 	WORD m_wManaUse;			// How much mana does it need.
+	LAYER_TYPE m_idLayer;		// Where the layer buff/debuff/data is stored.
 
 	CValueCurveDef	m_CastTime;		// In TICK_PER_SEC.
 	CValueCurveDef	m_Effect;		// Damage or effect level based on skill of caster.100% magery
@@ -917,7 +918,6 @@ public:
 #define	NPC_AI_MOVEOBSTACLES	0x00200
 #define NPC_AI_PERSISTENTPATH	0x00400		// 
 #define NPC_AI_THREAT			0x00800
-#define NPC_AI_STRICTCAST		0x01000		// NPC's will only select spells they really have in their spellbook. Old behaviour always let them to select them if spellflag & SPELLFLAG_HARM 
 	int		m_iNpcAi;
 
 	//	Experience system

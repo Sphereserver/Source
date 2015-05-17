@@ -1896,99 +1896,187 @@ bool CChar::NPC_FightArchery( CChar * pChar )
 	return( true );
 }
 
-bool CChar::NPC_FightMagery( CChar * pChar )
+// Retrieves all the spells this character has to spells[x] list
+int CCharNPC::Spells_GetCount()
 {
-	ADDTOCALLSTACK("CChar::NPC_FightMagery");
-	// cast a spell if i can ?
-	// or i can throw or use archery ?
-	// RETURN:
-	//  false = revert to melee type fighting.
-	if ( ! NPC_FightMayCast( false ))	// not checking skill here since it will do a search later and it's an expensive function.
-		return( false );
+	ADDTOCALLSTACK("CCharNPC::Spells_GetAll");
+	if (m_spells.empty())
+		return -1;
+	return m_spells.size();
 
-	int iDist = GetTopDist3D( pChar );
-	if ( iDist > ((UO_MAP_VIEW_SIGHT*3)/4))	// way too far away . close in.
-		return( false );
-
-	if ( iDist <= 1 &&
-		Skill_GetBase(SKILL_TACTICS) > 200 &&
-		! Calc_GetRandVal(2))
+	// This code was meant to check if found spells does really exist
+	int count = 0;
+	int real = 0;
+	SPELL_TYPE spell = SPELL_NONE;
+	for (;;)
 	{
-		// Within striking distance.
-		// Stand and fight for a bit.
-		return( false );
+		if (count >= m_spells.size())
+			break;
+		Spells refSpell = m_spells.at(count);
+		if (!refSpell.id)
+		{
+			count++;
+			continue;
+		}
+		g_Log.EventDebug("Found spell %d at loop %d (%d)\n",refSpell.id,count,real);
+		count++;
+		real++;
+	}
+	return count;
+}
+
+// Retrieve the spell stored at index = n
+SPELL_TYPE CCharNPC::Spells_GetAt(char id)
+{
+	ADDTOCALLSTACK("CCharNPC::Spells_GetAt");
+	if (m_spells.empty())
+		return SPELL_NONE;
+	if (id >= m_spells.size())
+		return SPELL_NONE;
+	Spells refSpell = m_spells.at(id);
+	if (refSpell.id)
+		return refSpell.id;
+	return SPELL_NONE;
+}
+
+// Delete the spell at the given index
+bool CCharNPC::Spells_DelAt(char id)
+{
+	ADDTOCALLSTACK("CCharNPC::Spells_DelAt");
+	if (m_spells.empty())
+		return false;
+	Spells refSpell = m_spells.at(id);
+	if (refSpell.id)
+	{
+		std::vector<Spells>::iterator it = m_spells.begin() + id;
+		m_spells.erase(it);
+		return refSpell.id;
+	}
+	return false;
+}
+
+// Add this spell to this NPC's list
+bool CCharNPC::Spells_Add(SPELL_TYPE spell)
+{
+	ADDTOCALLSTACK("CCharNPC::Spells_Add");
+	if (Spells_FindSpell(spell) >= 0)
+		return false;
+	CSpellDef * pSpell = g_Cfg.GetSpellDef(spell);
+	if (!pSpell)
+		return false;
+	Spells refSpell;
+	refSpell.id = spell;
+	m_spells.push_back(refSpell);
+	return true;
+}
+
+// Retrieves the indexed id for the given spell, if found.
+int CCharNPC::Spells_FindSpell(SPELL_TYPE spellID)
+{
+	ADDTOCALLSTACK("CCharNPC::Spells_FindSpell");
+	if (m_spells.empty())
+		return -1;
+
+	int count = 0;
+	while (count < m_spells.size())
+	{
+		Spells spell = m_spells.at(count);
+		if (spell.id == spellID)
+			return count;
+		count++;
+	}
+	return -1;
+}
+
+bool CChar::NPC_GetAllSpellbookSpells()	// Retrieves a spellbook from the magic school given in iSpell
+{
+	ADDTOCALLSTACK("CChar::GetSpellbook");
+	//	search for suitable book in hands first
+	int count = 0;
+	//	search for suitable book in hands first
+	CItem * pBook = GetContentHead();
+	for (; pBook != NULL; pBook = pBook->GetNext())
+	{
+		if (pBook->IsTypeSpellbook())
+		{
+			if (!NPC_AddSpellsFromBook(pBook))
+				continue;
+		}
 	}
 
-	// does the creature have a spellbook.
-	CItem * pSpellbook = GetSpellbookRandom();	//Gets a random spellbook from the ones I may have.
+	//	then search in the top level of the pack
+	CItemContainer *pPack = GetPack();
+	if (pPack)
+	{
+		pBook = pPack->GetContentHead();
+		for (; pBook != NULL; pBook = pBook->GetNext())
+		{
+			if (pBook->IsTypeSpellbook())
+			{
+				if (!NPC_AddSpellsFromBook(pBook))
+					continue;
+			}
+		}
+	}
+	return true;
+}
+
+bool CChar::NPC_AddSpellsFromBook(CItem * pBook)
+{
+	if (!m_pNPC)
+		return false;
+	SKILL_TYPE skill = pBook->GetSpellBookSkill();
+	int index = Spell_GetIndex(skill);
+	int max = Spell_GetMax(skill);
+	for (int i = 0; i <= max; i++)
+	{
+		SPELL_TYPE spell = static_cast<SPELL_TYPE>(i);
+		if (pBook->IsSpellInBook(spell))
+			m_pNPC->Spells_Add(spell);
+	}
+	return true;
+}
+
+// cast a spell if i can ?
+// or i can throw or use archery ?
+// RETURN:
+//  false = revert to melee type fighting.
+bool CChar::NPC_FightMagery(CChar * pChar)
+{
+	ADDTOCALLSTACK("CChar::NPC_FightMagery");
+	if (!NPC_FightMayCast(false))	// not checking skill here since it will do a search later and it's an expensive function.
+		return(false);
+
+	int count = m_pNPC->Spells_GetCount();
 	CItem * pWand = LayerFind(LAYER_HAND1);		//Try to get a working wand.
+	CObjBase * pTarg = pChar;
 	if (pWand)
 	{
 		if (pWand->GetType() != IT_WAND || pWand->m_itWeapon.m_spellcharges <= 0)// If the item is really a wand and have it charges it's a valid wand, if not ... we get rid of it.
 			pWand = NULL;
 	}
-	if (g_Cfg.m_iNpcAi&NPC_AI_STRICTCAST && !(pWand || pSpellbook))
-	{
-		//g_Log.EventDebug("No book or wand, I can't cast anything\n");
+	if (count < 1 && !pWand)
 		return false;
-	}
 
-	// A creature with a greater amount of mana will have a greater
-	// chance of casting
-	int iStatInt = Stat_GetAdjusted(STAT_INT);
+	int iDist = GetTopDist3D(pChar);
+	if (iDist >((UO_MAP_VIEW_SIGHT * 3) / 4))	// way too far away . close in.
+		return(false);
 
-	// Skill used is selected from 
-	//a) found spellbook
-	//b) Skill_GetMagicRandom()
-	SKILL_TYPE skill = pSpellbook ? pSpellbook->GetSpellBookSkill() : Skill_GetMagicRandom();
-	int i;	// Where to start the loop at
-
-	// Minimum between:
-	// a) IMULDIV(Current skill's value, Highest spell for this skill, Max skill value) <-- this automatically adjusts your current skill's value to the amount of spells this skill has to get what you can cast.
-	// b) Highest spell for this skill
-	int imaxspell;
-	if (skill == SKILL_NONE)	// Only t_spellbook_extra may have SKILL_NONE, which represents spells 1000+
+	if (iDist <= 1 &&
+		Skill_GetBase(SKILL_TACTICS) > 200 &&
+		!Calc_GetRandVal(2))
 	{
-		if (!pSpellbook && !(pSpellbook->GetType() == IT_SPELLBOOK_EXTRA))
-			return false;
-
-		i = pSpellbook->m_itSpellbook.m_baseid;
-		SPELL_TYPE spell = static_cast<SPELL_TYPE>(i);
-		const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
-		if (pSpellDef == NULL)
-		{
-			g_Log.EventError("Invalid index %d for spellbook\n",spell);
-			return false;
-		}
-		if (!pSpellDef->m_SkillReq.IsValidIndex(0))
-		{
-			g_Log.EventError("Invalid SKILLREQ value or no value for spell %d\n", spell);
-			return false;
-		}
-		int skilltest = pSpellDef->m_SkillReq[0].GetResIndex();
-		if (!skilltest)
-		{
-			skilltest = SKILL_MAGERY;
-		}
-		skill = static_cast<SKILL_TYPE>(skilltest);
-		imaxspell = IMULDIV(Skill_GetBase(skill), pSpellbook->m_itSpellbook.m_maxspells - i, Skill_GetMax(skill)) + i;
-		if (imaxspell < i)	// some roundups with lower skill values and books with 1-2 spells can cause imaxspell to be lower than i
-			imaxspell = i;
+		// Within striking distance.
+		// Stand and fight for a bit.
+		return(false);
 	}
-	else
-	{
-		i = Spell_GetIndex(skill) - 1;
-		imaxspell = minimum(IMULDIV(Skill_GetBase(skill), Spell_GetMax(skill) - i, Skill_GetMax(skill)) + i, Spell_GetMax(skill));
-	}
-	int iSkillVal = Skill_GetBase(skill);
-	int mana	= Stat_GetVal(STAT_INT);
-	int iChance = iSkillVal +
-		((mana >= (iStatInt / 2)) ? mana : (iStatInt - mana));
+	int skill = SKILL_NONE;
+	int iStatInt = Stat_GetBase(STAT_INT);
+	int mana = Stat_GetVal(STAT_INT);
+	int iChance = ((mana >= (iStatInt / 2)) ? mana : (iStatInt - mana));
 
-
-	i = Calc_GetRandVal2(i, imaxspell);
-
-	if (Calc_GetRandVal(iChance) < iSkillVal / 4)
+	CObjBase * pSrc = this;
+	if (Calc_GetRandVal(iChance) < iStatInt / 4)
 	{
 		// we failed this test, but we could be casting next time
 		// back off from the target a bit
@@ -2002,220 +2090,52 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 		}
 		return(false);
 	}
-	CObjBase *pTarg = pChar;
-	for ( ; ; i++ )
+	int i = 0;
+	if (pWand)
+		i = Calc_GetRandVal2(0, count);	//chance between all spells + wand
+	else
+		i = Calc_GetRandVal2(0, count-1);
+
+	//g_Log.EventDebug("Starting check cast at %d out of %d\n", i, count);
+	if (i > count)	// if i > count then we use wand to cast.
 	{
-		if ( i > imaxspell )	// didn't find a spell.
-			return(false);
-
-		SPELL_TYPE spell = static_cast<SPELL_TYPE>(i);
-		const CSpellDef * pSpellDef = g_Cfg.GetSpellDef( spell );
-		if ( pSpellDef == NULL )
-			continue;
-		int skilltest = static_cast<int>(skill);
-		if ( !pSpellDef->GetPrimarySkill( &skilltest, NULL ))
-			skill = SKILL_MAGERY;
-		
-		if (pSpellDef->IsSpellType(SPELLFLAG_DISABLED | SPELLFLAG_PLAYERONLY)) continue;
-		if ( pSpellbook || pWand )
-		{
-			if (!(pWand && pWand->m_itWeapon.m_spell == spell) && !(pSpellbook && pSpellbook->IsSpellInBook(spell)))
-				continue;
-
-			if ( ! pSpellDef->IsSpellType( SPELLFLAG_HARM ))
-			{
-				if (pSpellDef->IsSpellType(SPELLFLAG_GOOD))
-				{
-					if (pSpellDef->IsSpellType(SPELLFLAG_TARG_CHAR))
-					{
-						//	help self or friends if needed. support 3 friends + self for castings
-						bool	bSpellSuits = false;
-						CChar	*pFriend[4];
-						int		iFriendIndex = 0;
-						CChar	*pTarget = pChar;
-
-						//	since i scan the surface near me for this code, i need to be sure that it is neccessary
-						/*if ((spell != SPELL_Heal)	//Since only SpellFlag_Good can pass to here, and they are supossed to be good, why to deny npcs casting them? 
-							&& (spell != SPELL_Great_Heal)
-							&& (spell != SPELL_Reactive_Armor)
-							&& (spell != SPELL_Cure)
-							&& (spell != SPELL_Protection)
-							&& (spell != SPELL_Bless)
-							&& (spell != SPELL_Magic_Reflect)
-							&& (spell != SPELL_Gift_of_Renewal)
-							&& (spell != SPELL_Cleansing_Winds)
-							) continue;*/
-
-						pFriend[0] = this;
-						pFriend[1] = pFriend[2] = pFriend[3] = NULL;
-						iFriendIndex = 1;
-
-						if (g_Cfg.m_iNpcAi&NPC_AI_COMBAT)
-						{
-							//	search for the neariest friend in combat
-							CWorldSearch AreaChars(GetTopPoint(), UO_MAP_VIEW_SIGHT);
-							for (;;)
-							{
-								pTarget = AreaChars.GetChar();
-								if (!pTarget)
-									break;
-
-								CItemMemory *pMemory = pTarget->Memory_FindObj(pChar);
-								if (pMemory && pMemory->IsMemoryTypes(MEMORY_FIGHT | MEMORY_HARMEDBY | MEMORY_IRRITATEDBY))
-								{
-									pFriend[iFriendIndex++] = pTarget;
-									if (iFriendIndex >= 4) break;
-								}
-							}
-						}
-
-						//	i cannot cast this on self. ok, then friends only
-						if (pSpellDef->IsSpellType(SPELLFLAG_TARG_NOSELF))
-						{
-							pFriend[0] = pFriend[1];
-							pFriend[1] = pFriend[2];
-							pFriend[2] = pFriend[3];
-							pFriend[3] = NULL;
-						}
-						for (iFriendIndex = 0; iFriendIndex < 4; iFriendIndex++)
-						{
-							pTarget = pFriend[iFriendIndex];
-							if (!pTarget) break;
-							//	check if the target need that
-							switch (spell)
-							{
-							case SPELL_Heal:
-							case SPELL_Great_Heal:
-								if (pTarget->Stat_GetVal(STAT_STR) < pTarget->Stat_GetAdjusted(STAT_STR) / 3) bSpellSuits = true;
-								break;
-							case SPELL_Gift_of_Renewal:
-								if (pTarget->Stat_GetVal(STAT_STR) < pTarget->Stat_GetAdjusted(STAT_STR) / 2) bSpellSuits = true;
-								break;
-							case SPELL_Reactive_Armor:
-								if (pTarget->LayerFind(LAYER_SPELL_Reactive) == NULL) bSpellSuits = true;
-								break;
-							case SPELL_Cure:
-								if (pTarget->LayerFind(LAYER_FLAG_Poison) != NULL) bSpellSuits = true;
-								break;
-							case SPELL_Protection:
-								if (pTarget->LayerFind(LAYER_SPELL_Protection) == NULL) bSpellSuits = true;
-								break;
-							case SPELL_Bless:
-								if (pTarget->LayerFind(LAYER_SPELL_STATS) == NULL) bSpellSuits = true;
-								break;
-							case SPELL_Magic_Reflect:
-								if (pTarget->LayerFind(LAYER_SPELL_Magic_Reflect) == NULL) bSpellSuits = true;
-								break;
-							default:
-								break;
-							}
-
-							if (bSpellSuits) break;
-						}
-						if (bSpellSuits && Spell_CanCast(spell, true, pWand ? static_cast<CObjBase*>(pWand) : this, false))
-						{
-							pTarg = pTarget;
-							m_atMagery.m_Spell = spell;
-							break;
-						}
-						continue;
-					}
-					else if (pSpellDef->IsSpellType(SPELLFLAG_TARG_ITEM))
-					{
-						//	spell is good, but must be targeted at an item
-						switch (spell)
-						{
-						case SPELL_Immolating_Weapon:
-							pTarg = m_uidWeapon.ObjFind();
-							if (pTarg)
-								break;
-						}
-					}
-					if (pSpellDef->IsSpellType(SPELLFLAG_HEAL)) //Good spells that cannot be targeted
-					{
-						bool bSpellSuits = true;
-						switch (spell)
-						{	
-							//No spells added ATM until they are created, good example spell to here = SPELL_Healing_Stone
-						case SPELL_Healing_Stone:
-						{
-							CItem * pStone = GetBackpackItem(ITEMID_HEALING_STONE);
-							if (!pStone)
-								break;
-							if ((pStone->m_itNormal.m_morep.m_z == 0) && (Stat_GetAdjusted(STAT_STR) < pStone->m_itNormal.m_more2) && (pStone->m_itNormal.m_more1 >= pStone->m_itNormal.m_more2))
-							{
-								Use_Obj(pStone, false);
-								return true; // we are not casting any spell but suceeded at using the stone created by this one, we are done now.
-							}
-							bSpellSuits = false;
-							continue;	// Already have a stone, no need of more
-						}
-							default:
-								break;
-						}
-
-						if (!bSpellSuits) break;
-						if (bSpellSuits && Spell_CanCast(spell, true, pWand ? static_cast<CObjBase*>(pWand) : this, false))
-						{
-							pTarg = this;
-							m_atMagery.m_Spell = spell;
-							break;
-						}
-					}
-				}
-				else if ( pSpellDef->IsSpellType(SPELLFLAG_SUMMON) )
-				{
-					//	spell is good, but does not harm. the target should obey me. hoping sphere can do this ;)
-					switch ( spell )	// Maybe we should allow every summon by default excepting SPELLFLAG_PLAYER_ONLY ? in this case this point wouldn't be reached.
-					{
-						case SPELL_Air_Elem:
-						case SPELL_Daemon:
-						case SPELL_Earth_Elem:
-						case SPELL_Fire_Elem:
-						case SPELL_Water_Elem:
-						case SPELL_Summon_Familiar:
-						case SPELL_Summon_Fey:
-						case SPELL_Summon_Fiend:
-						case SPELL_Animated_Weapon:
-						case SPELL_Rising_Collossus:
-						case SPELL_Summon_Undead:
-							break;
-						default:
-							continue;
-					}
-				}
-			}
-		}
-		else
-		{
-			if (g_Cfg.m_iNpcAi&NPC_AI_STRICTCAST)
-				return false;
-			if ( /*!pVar &&*/ !pSpellDef->IsSpellType( SPELLFLAG_HARM ))
-				continue;
-
-			// less chance for berserker spells
-			if ( pSpellDef->IsSpellType( SPELLFLAG_SUMMON ) && Calc_GetRandVal( 2 ))
-				continue;
-
-			// less chance for field spells as well
-			if ( pSpellDef->IsSpellType( SPELLFLAG_FIELD ) && Calc_GetRandVal( 4 ))
-				continue;
-		}
-
-		if ( ! Spell_CanCast( spell, true, pWand ? static_cast<CObjBase*>(pWand) : this, false ))
-			continue;
-		m_atMagery.m_Spell = spell;
-		break;	// I like this spell.
+		SPELL_TYPE spell = static_cast<SPELL_TYPE>(pWand->m_itWeapon.m_spell);
+		const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
+		if (!pSpellDef)	// wand check failed ... we go on melee, next cast try might select another type of spell :)
+			return false;
+		pSrc = pWand;
+		if (NPC_FightCast(pTarg, pWand, spell))
+			goto BeginCast;	//if can cast this spell we jump the for() and go directly to it's casting.
 	}
 
+	for (; i < count; i++)
+	{
+		SPELL_TYPE spell = m_pNPC->Spells_GetAt(i);
+		//g_Log.EventDebug("Checks for spell %d on loop %d\n",spell,count);
+		const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
+		if (!pSpellDef)	//If it reached here it should exist, checking anyway.
+			continue;
+
+		int iSkillReq = 0;
+		if (!pSpellDef->GetPrimarySkill(&skill, &iSkillReq))
+			skill = SKILL_MAGERY;
+
+		if (Skill_GetBase(static_cast<SKILL_TYPE>(skill)) < iSkillReq)
+			continue;
+		if (NPC_FightCast(pTarg, this, spell, static_cast<SKILL_TYPE>(skill)))
+			goto BeginCast;	//if can cast this spell we jump the for() and go directly to it's casting.
+	}
+	return false;	// No castable spell found, go back on melee.
+
+	BeginCast:	//Start casting
 	// KRJ - give us some distance
 	// if the opponent is using melee
 	// the bigger the disadvantage we have in hitpoints, the further we will go
-	if ( mana > iStatInt / 3 && Calc_GetRandVal( iStatInt << 1 ))
+	if (mana > iStatInt / 3 && Calc_GetRandVal(iStatInt << 1))
 	{
-		if ( iDist < 4 || iDist > 8  )	// Here is fine?
+		if (iDist < 4 || iDist > 8)	// Here is fine?
 		{
-			NPC_Act_Follow( false, 5, true );
+			NPC_Act_Follow(false, 5, true);
 		}
 	}
 	else NPC_Act_Follow();
@@ -2223,11 +2143,228 @@ bool CChar::NPC_FightMagery( CChar * pChar )
 	Reveal();
 
 	m_Act_Targ = pTarg->GetUID();
-	m_Act_TargPrv = pWand ? pWand->GetUID() : GetUID();	// I'm using a wand ... or casting this directly?.
+	m_Act_TargPrv = pSrc->GetUID();	// I'm using a wand ... or casting this directly?.
 	m_Act_p = pTarg->GetTopPoint();
 
 	// Calculate the difficulty
-	return Skill_Start(static_cast<SKILL_TYPE>(skill));
+	return Skill_Start(static_cast<SKILL_TYPE>(skill)); 
+}
+
+// I'm able to use magery
+// test if I can cast this spell
+// Specific behaviours for each spell and spellflag
+bool CChar::NPC_FightCast(CObjBase * &pTarg, CObjBase * pSrc, SPELL_TYPE &spell, SKILL_TYPE skill)
+{
+	ADDTOCALLSTACK("CChar::NPC_FightCast");
+	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
+	if (skill == SKILL_NONE)
+	{
+		int iSkillTest = 0;
+		if (!pSpellDef->GetPrimarySkill(&iSkillTest, NULL))
+			iSkillTest = SKILL_MAGERY;
+		skill = static_cast<SKILL_TYPE>(iSkillTest);
+	}
+	if (pSpellDef->IsSpellType(SPELLFLAG_DISABLED | SPELLFLAG_PLAYERONLY))
+		return false;
+	//g_Log.EventDebug("FightCast spell check = %d\n",spell);
+
+	if (!pSpellDef->IsSpellType(SPELLFLAG_HARM))
+	{
+		if (pSpellDef->IsSpellType(SPELLFLAG_GOOD))
+		{
+			if (pSpellDef->IsSpellType(SPELLFLAG_TARG_CHAR) && pTarg->IsChar())
+			{
+				//	help self or friends if needed. support 3 friends + self for castings
+				bool	bSpellSuits = false;
+				CChar	*pFriend[4];
+				int		iFriendIndex = 0;
+				CChar	*pTarget = pTarg->GetUID().CharFind();
+
+				//	since i scan the surface near me for this code, i need to be sure that it is neccessary
+				/*if ((spell != SPELL_Heal)	//Since only SpellFlag_Good can pass to here, and they are supossed to be good, why to deny npcs casting them?
+					&& (spell != SPELL_Great_Heal)
+					&& (spell != SPELL_Reactive_Armor)
+					&& (spell != SPELL_Cure)
+					&& (spell != SPELL_Protection)
+					&& (spell != SPELL_Bless)
+					&& (spell != SPELL_Magic_Reflect)
+					&& (spell != SPELL_Gift_of_Renewal)
+					&& (spell != SPELL_Cleansing_Winds)
+					) continue;*/
+
+				pFriend[0] = this;
+				pFriend[1] = pFriend[2] = pFriend[3] = NULL;
+				iFriendIndex = 1;
+
+				if (g_Cfg.m_iNpcAi&NPC_AI_COMBAT )
+				{
+					//	search for the neariest friend in combat
+					CWorldSearch AreaChars(GetTopPoint(), UO_MAP_VIEW_SIGHT);
+					for (;;)
+					{
+						pTarget = AreaChars.GetChar();
+						if (!pTarget)
+							break;
+
+						CItemMemory *pMemory = pTarget->Memory_FindObj(pTarg);
+						if (pMemory && pMemory->IsMemoryTypes(MEMORY_FIGHT | MEMORY_HARMEDBY | MEMORY_IRRITATEDBY))
+						{
+							pFriend[iFriendIndex++] = pTarget;
+							if (iFriendIndex >= 4) break;
+						}
+					}
+				}
+
+				//	i cannot cast this on self. ok, then friends only
+				if (pSpellDef->IsSpellType(SPELLFLAG_TARG_NOSELF))
+				{
+					pFriend[0] = pFriend[1];
+					pFriend[1] = pFriend[2];
+					pFriend[2] = pFriend[3];
+					pFriend[3] = NULL;
+				}
+				for (iFriendIndex = 0; iFriendIndex < 4; iFriendIndex++)
+				{
+					pTarget = pFriend[iFriendIndex];
+					if (!pTarget) break;
+					//	check if the target need that
+					switch (spell)
+					{
+						case SPELL_Heal:
+						case SPELL_Great_Heal:
+							if (pTarget->Stat_GetVal(STAT_STR) < pTarget->Stat_GetAdjusted(STAT_STR) / 3) bSpellSuits = true;
+							break;
+						case SPELL_Gift_of_Renewal:
+							if (pTarget->Stat_GetVal(STAT_STR) < pTarget->Stat_GetAdjusted(STAT_STR) / 2) bSpellSuits = true;
+							break;
+						/*case SPELL_Reactive_Armor:
+							if (pTarget->LayerFind(LAYER_SPELL_Reactive) == NULL) bSpellSuits = true;
+							break;
+						case SPELL_Cure:
+							if (pTarget->LayerFind(LAYER_FLAG_Poison) != NULL) bSpellSuits = true;
+							break;
+						case SPELL_Protection:
+							if (pTarget->LayerFind(LAYER_SPELL_Protection) == NULL) bSpellSuits = true;
+							break;
+						case SPELL_Bless:
+							if (pTarget->LayerFind(LAYER_SPELL_STATS) == NULL) bSpellSuits = true;
+							break;
+						case SPELL_Magic_Reflect:
+							if (pTarget->LayerFind(LAYER_SPELL_Magic_Reflect) == NULL) bSpellSuits = true;
+							break;*/
+						default:
+							break;
+					}
+					if (bSpellSuits) break;
+
+					LAYER_TYPE layer = GetSpellLayer(spell);
+					if (!layer == LAYER_NONE)
+					{
+						if (pTarget->LayerFind(layer))
+						{
+							bSpellSuits = true;
+							break;
+						}
+					}
+
+				}
+				if (bSpellSuits && Spell_CanCast(spell, true, pSrc, false))
+				{
+					pTarg = pTarget;
+					m_atMagery.m_Spell = spell;
+					goto TestCast;
+				}
+				return false;
+			}
+			else if (pSpellDef->IsSpellType(SPELLFLAG_TARG_ITEM))
+			{
+				//	spell is good, but must be targeted at an item
+				switch (spell)
+				{
+				case SPELL_Immolating_Weapon:
+					pTarg = m_uidWeapon.ObjFind();
+					if (pTarg)
+						break;
+				}
+			}
+			if (pSpellDef->IsSpellType(SPELLFLAG_HEAL)) //Good spells that cannot be targeted
+			{
+				bool bSpellSuits = true;
+				switch (spell)
+				{
+					//No spells added ATM until they are created, good example spell to here = SPELL_Healing_Stone
+				case SPELL_Healing_Stone:
+				{
+					CItem * pStone = GetBackpackItem(ITEMID_HEALING_STONE);
+					if (!pStone)
+						break;
+					if ((pStone->m_itNormal.m_morep.m_z == 0) && (Stat_GetAdjusted(STAT_STR) < pStone->m_itNormal.m_more2) && (pStone->m_itNormal.m_more1 >= pStone->m_itNormal.m_more2))
+					{
+						Use_Obj(pStone, false);
+						return true; // we are not casting any spell but suceeded at using the stone created by this one, we are done now.
+					}
+					return false;	// Already have a stone, no need of more
+				}
+				default:
+					break;
+				}
+
+				if (!bSpellSuits) return false;
+				if (bSpellSuits && Spell_CanCast(spell, true, pSrc, false))
+				{
+					pTarg = this;
+					m_atMagery.m_Spell = spell;
+					goto TestCast;
+				}
+			}
+		}
+		else if (pSpellDef->IsSpellType(SPELLFLAG_SUMMON))
+		{
+			goto TestCast;	// if flag is present ... we leave the rest at the incoming code
+
+			//	spell is good, but does not harm. the target should obey me. hoping sphere can do this ;)
+			switch (spell)	// Maybe we should allow every summon by default excepting SPELLFLAG_PLAYER_ONLY ? in this case this point wouldn't be reached.
+			{
+			case SPELL_Air_Elem:
+			case SPELL_Daemon:
+			case SPELL_Earth_Elem:
+			case SPELL_Fire_Elem:
+			case SPELL_Water_Elem:
+			case SPELL_Summon_Familiar:
+			case SPELL_Summon_Fey:
+			case SPELL_Summon_Fiend:
+			case SPELL_Animated_Weapon:
+			case SPELL_Rising_Collossus:
+			case SPELL_Summon_Undead:
+				goto TestCast;
+			default:
+				return false;
+			}
+		}
+	}
+	else
+	{
+		/*if (g_Cfg.m_iNpcAi&NPC_AI_STRICTCAST)
+			return false;*/
+		//if ( /*!pVar &&*/ !pSpellDef->IsSpellType(SPELLFLAG_HARM))
+		//	return false;
+
+		// less chance for berserker spells
+		/*if (pSpellDef->IsSpellType(SPELLFLAG_SUMMON) && Calc_GetRandVal(2))
+			return false;
+
+		// less chance for field spells as well
+		if (pSpellDef->IsSpellType(SPELLFLAG_FIELD) && Calc_GetRandVal(4))
+			return false;*/
+	}
+
+	TestCast:
+	if (!Spell_CanCast(spell, true, pSrc, false))
+		return false;
+	//g_Log.EventDebug("FightCast spell end check = %d\n", spell);
+	m_atMagery.m_Spell = spell;
+
+	return true;
 }
 
 void CChar::NPC_Act_Fight()
@@ -2281,16 +2418,31 @@ void CChar::NPC_Act_Fight()
 	bool		fSkipHardcoded	= false;
 	if ( IsTrigUsed(TRIGGER_NPCACTFIGHT) )
 	{
+		CGrayUID m_oldAct = m_Act_Targ;
 		CScriptTriggerArgs Args( iDist, iMotivation );
 		switch ( OnTrigger( CTRIG_NPCActFight, pChar, &Args ) )
 		{
 			case TRIGRET_RET_TRUE:	return;
 			case TRIGRET_RET_FALSE:	fSkipHardcoded	= true;	break;
+			case static_cast<TRIGRET_TYPE>(2):
+			{
+				SKILL_TYPE iSkillforced = static_cast<SKILL_TYPE>(Args.m_VarsLocal.GetKeyNum("skill", false));
+				if (iSkillforced)
+				{
+					SPELL_TYPE iSpellforced = static_cast<SPELL_TYPE>(Args.m_VarsLocal.GetKeyNum("spell", false));
+					if (IsSkillMagic(iSkillforced))
+					{
+						m_atMagery.m_Spell = iSpellforced;
+						Skill_Start(iSkillforced);
+						return;
+					}
+				}
+			}
 			default:				break;
 		}
 
 		iDist		= static_cast<int>(Args.m_iN1);
-		iMotivation	= static_cast<int>(Args.m_iN2);
+		iMotivation = static_cast<int>(Args.m_iN2);
 	}
 
 	if ( ! IsStatFlag(STATF_Pet))
