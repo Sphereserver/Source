@@ -798,7 +798,7 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 		Str_ParseCmds(s.GetArgStr(), ppCmd[255], count, NULL);
 		if (count < 0)
 			return false;
-		for (UCHAR i = 0; i < count; i++)
+		for (unsigned char i = 0; i < count; i++)
 		{
 			if (!ppCmd[i])
 				break;

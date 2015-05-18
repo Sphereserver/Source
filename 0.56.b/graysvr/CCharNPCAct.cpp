@@ -2431,11 +2431,10 @@ void CChar::NPC_Act_Fight()
 				{
 					SPELL_TYPE iSpellforced = static_cast<SPELL_TYPE>(Args.m_VarsLocal.GetKeyNum("spell", false));
 					if (IsSkillMagic(iSkillforced))
-					{
 						m_atMagery.m_Spell = iSpellforced;
-						Skill_Start(iSkillforced);
-						return;
-					}
+
+					Skill_Start(iSkillforced);
+					return;
 				}
 			}
 			default:				break;
