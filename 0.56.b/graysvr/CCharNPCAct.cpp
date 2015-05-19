@@ -1905,9 +1905,8 @@ int CCharNPC::Spells_GetCount()
 	return m_spells.size();
 
 	// This code was meant to check if found spells does really exist
-	int count = 0;
+	unsigned int count = 0;
 	int real = 0;
-	SPELL_TYPE spell = SPELL_NONE;
 	for (;;)
 	{
 		if (count >= m_spells.size())
@@ -1926,7 +1925,7 @@ int CCharNPC::Spells_GetCount()
 }
 
 // Retrieve the spell stored at index = n
-SPELL_TYPE CCharNPC::Spells_GetAt(char id)
+SPELL_TYPE CCharNPC::Spells_GetAt(unsigned char id)
 {
 	ADDTOCALLSTACK("CCharNPC::Spells_GetAt");
 	if (m_spells.empty())
@@ -1940,7 +1939,7 @@ SPELL_TYPE CCharNPC::Spells_GetAt(char id)
 }
 
 // Delete the spell at the given index
-bool CCharNPC::Spells_DelAt(char id)
+bool CCharNPC::Spells_DelAt(unsigned char id)
 {
 	ADDTOCALLSTACK("CCharNPC::Spells_DelAt");
 	if (m_spells.empty())
@@ -1950,7 +1949,7 @@ bool CCharNPC::Spells_DelAt(char id)
 	{
 		std::vector<Spells>::iterator it = m_spells.begin() + id;
 		m_spells.erase(it);
-		return refSpell.id;
+		return true;
 	}
 	return false;
 }
@@ -1977,7 +1976,7 @@ int CCharNPC::Spells_FindSpell(SPELL_TYPE spellID)
 	if (m_spells.empty())
 		return -1;
 
-	int count = 0;
+	unsigned int count = 0;
 	while (count < m_spells.size())
 	{
 		Spells spell = m_spells.at(count);
@@ -2026,7 +2025,6 @@ bool CChar::NPC_AddSpellsFromBook(CItem * pBook)
 	if (!m_pNPC)
 		return false;
 	SKILL_TYPE skill = pBook->GetSpellBookSkill();
-	int index = Spell_GetIndex(skill);
 	int max = Spell_GetMax(skill);
 	for (int i = 0; i <= max; i++)
 	{
@@ -2298,7 +2296,7 @@ bool CChar::NPC_FightCast(CObjBase * &pTarg, CObjBase * pSrc, SPELL_TYPE &spell,
 					CItem * pStone = GetBackpackItem(ITEMID_HEALING_STONE);
 					if (!pStone)
 						break;
-					if ((pStone->m_itNormal.m_morep.m_z == 0) && (Stat_GetAdjusted(STAT_STR) < pStone->m_itNormal.m_more2) && (pStone->m_itNormal.m_more1 >= pStone->m_itNormal.m_more2))
+					if ((pStone->m_itNormal.m_morep.m_z == 0) && (Stat_GetVal(STAT_STR) < static_cast<int>(pStone->m_itNormal.m_more2)) && (pStone->m_itNormal.m_more1 >= pStone->m_itNormal.m_more2))
 					{
 						Use_Obj(pStone, false);
 						return true; // we are not casting any spell but suceeded at using the stone created by this one, we are done now.

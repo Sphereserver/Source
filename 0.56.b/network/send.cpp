@@ -1877,7 +1877,7 @@ PacketEffect::PacketEffect(const CClient* target, EFFECT_TYPE motion, ITEMID_TYP
 	writeHuedEffect(hue, render);
 
 	writeInt16(effectid);
-	writeInt16(explodeid);
+	writeInt16(static_cast<WORD>(explodeid));
 	writeInt16(explodesound);
 	writeInt32(effectuid);
 	writeByte(type == 0 ? 0xFF : 0x03 );	// (0xFF or 0x03)
@@ -3999,8 +3999,8 @@ PacketBondedStatus::PacketBondedStatus(const CChar * pChar) : PacketExtended(EXT
 	if (!pChar->m_pNPC)
 		return;
 	writeByte(0x00);
-	writeInt16(pChar->GetUID());
-	writeByte(pChar->m_pNPC->m_bonded);
+	writeInt32(pChar->GetUID());
+	writeByte(static_cast<BYTE>(pChar->m_pNPC->m_bonded));
 }
 
 

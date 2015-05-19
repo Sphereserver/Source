@@ -854,7 +854,7 @@ CItem * CChar::GetSpellbookRandom(SPELL_TYPE iSpell) const	// Retrieves a spellb
 	if (count > 0)
 	{
 		char rand = Calc_GetRandVal2(1, count);
-		return pBooks[rand];
+		return pBooks[static_cast<int>(rand)];
 	}
 	return NULL;
 }

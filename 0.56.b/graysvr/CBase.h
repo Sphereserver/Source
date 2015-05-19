@@ -834,8 +834,8 @@ public:
 	};
 	struct ShipSpeed // speed of a ship
 	{
-		unsigned short period;	// time between movement
-		unsigned short tiles;	// distance to move
+		unsigned char period;	// time between movement
+		unsigned char tiles;	// distance to move
 	};
 
 	CGTypedArray<CMultiComponentItem,CMultiComponentItem&> m_Components;

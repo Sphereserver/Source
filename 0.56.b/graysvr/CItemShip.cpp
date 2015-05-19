@@ -1254,20 +1254,20 @@ bool CItemShip::r_LoadVal( CScript & s  )
 				CItemMulti *pItemMulti = dynamic_cast<CItemMulti*>(this);
 				if (!strcmpi(pszKey, "TILES"))
 				{
-					pItemMulti->m_shipSpeed.tiles = static_cast<unsigned short>(s.GetArgVal());
+					pItemMulti->m_shipSpeed.tiles = static_cast<unsigned char>(s.GetArgVal());
 					return true;
 				}
 				else if (!strcmpi(pszKey, "PERIOD"))
 				{
-					pItemMulti->m_shipSpeed.period = static_cast<unsigned short>(s.GetArgVal());
+					pItemMulti->m_shipSpeed.period = static_cast<unsigned char>(s.GetArgVal());
 					return true;
 				}
 				INT64 piVal[2];
 				size_t iQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
 				if (iQty == 2)
 				{
-					pItemMulti->m_shipSpeed.period = static_cast<unsigned short>(piVal[0]);
-					pItemMulti->m_shipSpeed.tiles = static_cast<unsigned short>(piVal[1]);
+					pItemMulti->m_shipSpeed.period = static_cast<unsigned char>(piVal[0]);
+					pItemMulti->m_shipSpeed.tiles = static_cast<unsigned char>(piVal[1]);
 					return true;
 				}
 				else

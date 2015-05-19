@@ -745,7 +745,7 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 	//Set as numbers only
 	case CNC_BONDED:
 		{
-			m_bonded = s.GetArgVal();
+			m_bonded = static_cast<short>(s.GetArgVal());
 		}	break;
 	case CNC_FOLLOWERSLOTS:
 		pChar->SetDefNum(s.GetKey(), s.GetArgVal(), false );

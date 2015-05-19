@@ -1416,12 +1416,12 @@ bool CItemBase::r_LoadVal( CScript &s )
 				CItemBaseMulti *pItemMulti = dynamic_cast<CItemBaseMulti*>(dynamic_cast<CItemBase*>(this));
 				if (!strcmpi(pszKey, "TILES"))
 				{
-					pItemMulti->m_shipSpeed.tiles = static_cast<unsigned short>(s.GetArgVal());
+					pItemMulti->m_shipSpeed.tiles = static_cast<unsigned char>(s.GetArgVal());
 					return true;
 				}
 				else if (!strcmpi(pszKey, "PERIOD"))
 				{
-					pItemMulti->m_shipSpeed.tiles = static_cast<unsigned short>(s.GetArgVal());
+					pItemMulti->m_shipSpeed.tiles = static_cast<unsigned char>(s.GetArgVal());
 					return true;
 				}
 				INT64 piVal[2];
@@ -1887,10 +1887,10 @@ bool CItemBaseMulti::r_LoadVal( CScript &s )
 		if (iQty < 1)
 			return false;
 
-		m_shipSpeed.period = static_cast<unsigned short>(ppArgs[0]);
+		m_shipSpeed.period = static_cast<unsigned char>(ppArgs[0]);
 
 		if (iQty >= 2)
-			m_shipSpeed.tiles = static_cast<unsigned short>(ppArgs[1]);
+			m_shipSpeed.tiles = static_cast<unsigned char>(ppArgs[1]);
 	} break;
 	case MLC_TSPEECH:
 		return( m_Speech.r_LoadVal( s, RES_SPEECH ));

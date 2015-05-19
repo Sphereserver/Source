@@ -90,10 +90,10 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 		return( 1 );
 
 	int iBaseSpeed = 50;	//Wrestling speed
-	int iSwingSpeedIncrease = pChar->GetDefNum("INCREASESWINGSPEED", true);
+	int iSwingSpeedIncrease = static_cast<int>(pChar->GetDefNum("INCREASESWINGSPEED", true));
 	if ( pWeapon != NULL )
 	{
-		iBaseSpeed = pWeapon->GetDefNum("OVERRIDE.SPEED");
+		iBaseSpeed = static_cast<int>(pWeapon->GetDefNum("OVERRIDE.SPEED"));
 		if ( iBaseSpeed <= 0)
 		{
 			CItemBase * pItemDef = dynamic_cast<CItemBase *>(pWeapon->Base_GetDef());

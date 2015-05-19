@@ -2631,7 +2631,7 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 		// If caster have more than 100.0 in magery and poisoning and it's distance is lesser than 3 tiles, he has a 10% change to inflict lethal poison
 		if (pCharSrc->Skill_GetBase(SKILL_MAGERY) > 1000 && pCharSrc->Skill_GetBase(SKILL_POISONING) > 1000 && GetDist(pCharSrc) < 3 && Calc_GetRandVal(10) == 1)
 		{
-			pPoison->m_itSpell.m_pattern = IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(16, 33), 100);
+			pPoison->m_itSpell.m_pattern = static_cast<unsigned char>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(16, 33), 100));
 			pPoison->m_itSpell.m_spelllevel = 4;
 			pPoison->m_itSpell.m_spellcharges = 80;	//1 min / 20 sec
 		}
@@ -2642,19 +2642,19 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 		}
 		else if (iSkill < 851) // Normal
 		{
-			pPoison->m_itSpell.m_pattern = IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(5, 10), 100);
+			pPoison->m_itSpell.m_pattern = static_cast<unsigned char>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(5, 10), 100));
 			pPoison->m_itSpell.m_spelllevel = 1;
 			pPoison->m_itSpell.m_spellcharges = 30;
 		}
 		else if (iSkill < 1000) // Greater
 		{
-			pPoison->m_itSpell.m_pattern = IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(7, 15), 100);
+			pPoison->m_itSpell.m_pattern = static_cast<unsigned char>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(7, 15), 100));
 			pPoison->m_itSpell.m_spelllevel = 2;
 			pPoison->m_itSpell.m_spellcharges = 60;
 		}
 		else	// Deadly.
 		{
-			pPoison->m_itSpell.m_pattern = IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(15, 30), 100);
+			pPoison->m_itSpell.m_pattern = static_cast<unsigned char>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(15, 30), 100));
 			pPoison->m_itSpell.m_spelllevel = 3;
 			pPoison->m_itSpell.m_spellcharges = 60;
 		}

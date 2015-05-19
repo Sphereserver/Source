@@ -537,7 +537,6 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 	SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pSpell->m_itSpell.m_spell));
 	// m_itWeapon, m_itArmor, m_itSpell
 
-	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
 	short iStatEffect = static_cast<short>(pSpell->m_itSpell.m_spelllevel);
 
 	LAYER_TYPE layer = GetSpellLayer(spell);
@@ -2099,7 +2098,7 @@ bool CChar::Spell_CastDone()
 	ITEMID_TYPE iT1 = ITEMID_NOTHING;
 	ITEMID_TYPE iT2 = ITEMID_NOTHING;
 	CREID_TYPE iC1 = CREID_INVALID;
-	DWORD iColor = HUE_DEFAULT;
+	HUE_TYPE iColor = HUE_DEFAULT;
 
 	unsigned int fieldWidth = 0;
 	unsigned int fieldGauge = 0;
@@ -2186,7 +2185,7 @@ bool CChar::Spell_CastDone()
 	iC1 = static_cast<CREID_TYPE>(Args.m_VarsLocal.GetKeyNum("CreateObject1", true) & 0xFFFF);
 	areaRadius = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("areaRadius", true)));
 	unsigned int iDuration = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("duration", true)));
-	iColor = static_cast<DWORD>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor", true)));
+	iColor = static_cast<HUE_TYPE>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor", true)));
 
 	// Consume the reagents/mana/scroll/charge
 	if (!Spell_CanCast(spell, false, pObjSrc, true))
@@ -2723,11 +2722,11 @@ int CChar::Spell_CastStart()
 	m_atMagery.m_Spell = static_cast<SPELL_TYPE>(Args.m_iN1);
 	iDifficulty = static_cast<int>(Args.m_iN2);
 	iWaitTime = static_cast<int>(Args.m_iN3);
-	fWOP = Args.m_VarsLocal.GetKeyNum("WOP",true);
-	int WOPColor = Args.m_VarsLocal.GetKeyNum("WOPColor", true);
+	fWOP = Args.m_VarsLocal.GetKeyNum("WOP",true) > 0 ? true : false;
+	int WOPColor = static_cast<int>(Args.m_VarsLocal.GetKeyNum("WOPColor", true));
 	if (WOPColor < 0)
 		WOPColor = g_Cfg.m_iWordsOfPowerColor;
-	int WOPFont = Args.m_VarsLocal.GetKeyNum("WOPFont", true);
+	int WOPFont = static_cast<int>(Args.m_VarsLocal.GetKeyNum("WOPFont", true));
 	if (WOPFont < 0)
 		WOPFont = g_Cfg.m_iWordsOfPowerFont;
 
@@ -2845,7 +2844,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	}
 	HUE_TYPE iColor = static_cast<HUE_TYPE>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor", true)));
 	DWORD iRender = static_cast<DWORD>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectRender", true)));
-	fExplode = static_cast<BOOL>(Args.m_VarsLocal.GetKeyNum("EffectExplode", true));
+	fExplode = Args.m_VarsLocal.GetKeyNum("EffectExplode", true) > 0 ? true : false;
 	ITEMID_TYPE iT1 = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1", true)));
 
 	if (iT1 > ITEMID_QTY)

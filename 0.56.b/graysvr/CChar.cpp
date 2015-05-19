@@ -2714,19 +2714,19 @@ do_default:
 		case CHC_REGENHITS:
 		{
 			SetDefNum(s.GetKey(), s.GetArgVal(), false);
-			UpdateRegenTimers(STAT_STR, s.GetArgVal());
+			UpdateRegenTimers(STAT_STR, static_cast<short>(s.GetArgVal()));
 			UpdateStatsFlag();
 		}break;
 		case CHC_REGENSTAM:
 		{
 			SetDefNum(s.GetKey(), s.GetArgVal(), false);
-			UpdateRegenTimers(STAT_DEX, s.GetArgVal());
+			UpdateRegenTimers(STAT_DEX, static_cast<short>(s.GetArgVal()));
 			UpdateStatsFlag();
 		}break;
 		case CHC_REGENMANA:
 		{
 			SetDefNum(s.GetKey(), s.GetArgVal(), false);
-			UpdateRegenTimers(STAT_INT, s.GetArgVal());
+			UpdateRegenTimers(STAT_INT, static_cast<short>(s.GetArgVal()));
 			UpdateStatsFlag();
 		}break;
 		case CHC_INCREASEHITCHANCE:
@@ -3782,7 +3782,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			int iTicks = iSkill / 50; 
 			INT64		piCmd[2];
 			if (Str_ParseCmds(s.GetArgRaw(), piCmd, COUNTOF(piCmd)) > 1)
-				iTicks = piCmd[1];
+				iTicks = static_cast<int>(piCmd[1]);
 
 			SetPoison(iSkill, iTicks, pSrc->GetChar());
 		}

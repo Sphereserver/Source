@@ -2612,20 +2612,20 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 	int iDmgMin = 0;
 	int iDmgMax = 0;
 	STAT_TYPE iStatBonus;
-	long long iStatBonusPercent;
+	int iStatBonusPercent;
 	if ( pWeapon != NULL )
 	{
 		iDmgMin = pWeapon->Weapon_GetAttack(false);
 		iDmgMax = pWeapon->Weapon_GetAttack(true);
 		iStatBonus = static_cast<STAT_TYPE>(pWeapon->GetDefNum("COMBATBONUSSTAT"));
-		iStatBonusPercent = pWeapon->GetDefNum("COMBATBONUSPERCENT");
+		iStatBonusPercent = static_cast<int>(pWeapon->GetDefNum("COMBATBONUSPERCENT"));
 	}
 	else
 	{
 		iDmgMin = m_attackBase;
 		iDmgMax = m_attackBase + m_attackRange;
 		iStatBonus = static_cast<STAT_TYPE>(GetDefNum("COMBATBONUSSTAT"));
-		iStatBonusPercent = GetDefNum("COMBATBONUSPERCENT");
+		iStatBonusPercent = static_cast<int>(GetDefNum("COMBATBONUSPERCENT"));
 	}
 
 	if ( m_pPlayer )	// only players can have damage bonus
