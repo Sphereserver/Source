@@ -2890,7 +2890,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	if (skillActive == skillWeapon && m_Fight_Targ == pCharTarg->GetUID())
 		return true;
 
-	if ( IsSkillMagic(skillActive) )
+	if ( g_Cfg.IsSkillFlag(skillActive, SKF_MAGIC) )
 	{
 		if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 		{

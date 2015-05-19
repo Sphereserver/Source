@@ -708,43 +708,37 @@ LPCTSTR CChar::GetPossessPronoun() const
 	}
 }
 
-BYTE CChar::GetModeFlag( bool fTrueSight, const CClient* pViewer ) const
+BYTE CChar::GetModeFlag( const CClient *pViewer ) const
 {
 	ADDTOCALLSTACK("CChar::GetModeFlag");
+	CCharBase *pCharDef = Char_GetDef();
 	BYTE mode = 0;
 
-	if (pViewer != NULL && (pViewer->GetNetState()->isClientVersion(MINCLIVER_SA) || pViewer->GetNetState()->isClientSA()))
+	if ( IsStatFlag(STATF_Freeze|STATF_Stone) )
+		mode |= CHARMODE_FREEZE;
+	if ( pCharDef->IsFemale() )
+		mode |= CHARMODE_FEMALE;
+
+	if ( pViewer != NULL && (pViewer->GetNetState()->isClientVersion(MINCLIVER_SA) || pViewer->GetNetState()->isClientSA()) )
 	{
-		// only SA clients support these flags
 		if ( IsStatFlag( STATF_Hovering ) )
 			mode |= CHARMODE_FLYING;
 	}
 	else
 	{
-		// SA clients don't support these flags
 		if ( IsStatFlag( STATF_Poisoned ))
 			mode |= CHARMODE_POISON;
-		if ( IsStatFlag(STATF_Sleeping|STATF_Hallucinating) )
-			mode |= CHARMODE_YELLOW;
 	}
-	if ( IsStatFlag(STATF_Freeze|STATF_Stone) )		// Is this flag being used?
-		mode |= CHARMODE_FREEZE; 
 
-	CCharBase * pCharDef = Char_GetDef();
-	if ( pCharDef->IsFemale() )
-		mode |= CHARMODE_FEMALE;
-
+	if ( IsStatFlag( STATF_INVUL ))
+		mode |= CHARMODE_YELLOW;
+	if ( GetPrivLevel() > PLEVEL_Player )
+		mode |= CHARMODE_IGNOREMOBS;
 	if ( IsStatFlag( STATF_War ))
 		mode |= CHARMODE_WAR;
-	DWORD dwFlags = STATF_Sleeping;
-	if ( ! g_Cfg.m_iColorInvis )
-		dwFlags |= STATF_Insubstantial;
-	if ( ! g_Cfg.m_iColorHidden )
-		dwFlags |= STATF_Hidden;
-	if ( ! g_Cfg.m_iColorInvisSpell )
-		dwFlags |= STATF_Invisible;
-	if ( ! fTrueSight && IsStatFlag( dwFlags ))	// if not me, this will not show up !
+	if ( IsStatFlag( STATF_Invisible|STATF_Insubstantial|STATF_Hidden ))
 		mode |= CHARMODE_INVIS;
+
 	return( mode );
 }
 
@@ -843,7 +837,7 @@ CItem * CChar::GetSpellbookRandom(SPELL_TYPE iSpell) const	// Retrieves a spellb
 		const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(skill);
 		if (!pSkillDef)
 			continue;
-		if (IsSkillMagic(skill) && (Skill_GetBase(skill) > 1))	//only selecting skills with value > 0.1
+		if (g_Cfg.IsSkillFlag(skill, SKF_MAGIC) && (Skill_GetBase(skill) > 1))	//only selecting skills with value > 0.1
 		{
 			pBook = GetSpellbook(const_cast<CChar*>(this)->Spell_GetIndex(skill));
 			if (pBook)
@@ -1050,15 +1044,6 @@ bool CChar::CanDisturb( const CChar * pChar ) const
 	if ( GetPrivLevel() < pChar->GetPrivLevel())
 		return !pChar->IsStatFlag(STATF_Insubstantial);
 	return true;
-}
-
-bool CChar::CanSeeTrue( const CChar * pChar ) const
-{
-	ADDTOCALLSTACK("CChar::CanSeeTrue");
-	if ( pChar == NULL || pChar == this )
-		return( false );
-	// if ( pChar->IsStatFlag( STATF_Sleeping )) return( false );
-	return( pChar->GetPrivLevel() < GetPrivLevel() );
 }
 
 bool CChar::CanSeeAsDead( const CChar * pChar) const

@@ -436,12 +436,11 @@ SKILL_TYPE CChar::Skill_GetMagicRandom(unsigned short iVal)
 		const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(skill);
 		if (!pSkillDef)
 			continue;
-		if (IsSkillMagic(skill))
+		if (g_Cfg.IsSkillFlag(skill, SKF_MAGIC))
 		{
 			if (Skill_GetBase(skill) < iVal)
-			{
 				continue;
-			}
+
 			++count;
 			skills[static_cast<SKILL_TYPE>(count)] = skill;
 		}
@@ -466,7 +465,7 @@ SKILL_TYPE CChar::Skill_GetMagicBest()
 		if (!pSkillDef)
 			continue;
 
-		if (IsSkillMagic(skill))
+		if (g_Cfg.IsSkillFlag(skill, SKF_MAGIC))
 		{
 			int iVal = Skill_GetBase(test);
 			if (iVal > value)
@@ -1845,16 +1844,6 @@ int CChar::Skill_Tracking( SKTRIG_TYPE stage )
 	return( -SKTRIG_ABORT );
 }
 
-int CChar::Skill_Alchemy( SKTRIG_TYPE stage )
-{
-	ADDTOCALLSTACK("CChar::Skill_Alchemy");
-	// SKILL_ALCHEMY
-	// m_atCreate.m_ItemID = potion we are making.
-	// m_atCreate.m_Amount = amount of said item.
-
-	return( Skill_MakeItem( stage ));
-}
-
 int CChar::Skill_Mining( SKTRIG_TYPE stage )
 {
 	ADDTOCALLSTACK("CChar::Skill_Mining");
@@ -3137,9 +3126,7 @@ int CChar::Skill_Healing( SKTRIG_TYPE stage )
 	//  = -3 = failure.
 
 	if ( stage == SKTRIG_STROKE )
-	{
 		return 0;
-	}
 
 	CItem * pBandage = m_Act_TargPrv.ItemFind();
 	if ( pBandage == NULL )
@@ -3160,24 +3147,17 @@ int CChar::Skill_Healing( SKTRIG_TYPE stage )
 		return -SKTRIG_QTY;
 	}
 
-	CItemCorpse * pCorpse;	// resurrect by corpse.
-	CChar * pChar;
+	CItemCorpse * pCorpse = NULL;	// resurrect by corpse
+	CChar * pChar = m_Act_Targ.CharFind();
 	if ( pObj->IsItem())
 	{
-		// Corpse ?
 		pCorpse = dynamic_cast <CItemCorpse*>(pObj);
 		if ( pCorpse == NULL )
 		{
 			SysMessageDefault( DEFMSG_HEALING_NONCHAR );
 			return -SKTRIG_QTY;
 		}
-
 		pChar = pCorpse->m_uidLink.CharFind();
-	}
-	else
-	{
-		pCorpse = NULL;
-		pChar = m_Act_Targ.CharFind();
 	}
 
 	if ( pChar == NULL )
@@ -3206,9 +3186,7 @@ int CChar::Skill_Healing( SKTRIG_TYPE stage )
 		}
 		CRegionBase * pRegion = pCorpse->GetTopPoint().GetRegion(REGION_TYPE_AREA|REGION_TYPE_MULTI);
 		if ( pRegion == NULL )
-		{
 			return -SKTRIG_QTY;
-		}
 		if ( pRegion->IsFlag( REGION_ANTIMAGIC_ALL | REGION_ANTIMAGIC_RECALL_IN | REGION_ANTIMAGIC_TELEPORT ))
 		{
 			SysMessageDefault( DEFMSG_HEALING_AM );
@@ -3226,17 +3204,13 @@ int CChar::Skill_Healing( SKTRIG_TYPE stage )
 		return -SKTRIG_QTY;
 	}
 
-	if ( ! pChar->IsStatFlag( STATF_Poisoned|STATF_DEAD )
-		&& pChar->Stat_GetVal(STAT_STR) >= pChar->Stat_GetMax(STAT_STR) )
+	if ( !pChar->IsStatFlag( STATF_Poisoned|STATF_DEAD ) && pChar->Stat_GetVal(STAT_STR) >= pChar->Stat_GetMax(STAT_STR) )
 	{
 		if ( pChar == this )
-		{
 			SysMessageDefault( DEFMSG_HEALING_HEALTHY );
-		}
 		else
-		{
 			SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_HEALING_NONEED ), static_cast<LPCTSTR>(pChar->GetName()));
-		}
+
 		return -SKTRIG_QTY;
 	}
 
@@ -3267,21 +3241,15 @@ int CChar::Skill_Healing( SKTRIG_TYPE stage )
 		{
 			Emote( g_Cfg.GetDefaultMsg( DEFMSG_HEALING_SELF ) );
 		}
-		if ( pCorpse )
-		{
-			// resurrect.
+		if ( pCorpse )	// resurrect
 			return( 85 + Calc_GetRandVal(25));
-		}
-		if ( pChar->IsStatFlag( STATF_Poisoned ))
-		{
-			// level of the poison ?
+		if ( pChar->IsStatFlag( STATF_Poisoned ))	// poison level
 			return( 50 + Calc_GetRandVal(50));
-		}
+
 		return Calc_GetRandVal(80);
 	}
 
 	ASSERT( stage == SKTRIG_SUCCESS );
-
 	pBandage->ConsumeAmount();
 
 	CItem * pBloodyBandage = CItem::CreateScript(Calc_GetRandVal(2) ? ITEMID_BANDAGES_BLOODY1 : ITEMID_BANDAGES_BLOODY2, this );
@@ -3291,23 +3259,22 @@ int CChar::Skill_Healing( SKTRIG_TYPE stage )
 	if (pSkillDef == NULL)
 		return -SKTRIG_QTY;
 
-	int iSkillLevel = Skill_GetAdjusted( Skill_GetActive());
-
 	if ( pCorpse )
 	{
 		pChar->Spell_Resurrection(pCorpse);
 		return 0;
 	}
+
+	int iSkillLevel = Skill_GetAdjusted( Skill_GetActive());
 	if ( pChar->IsStatFlag( STATF_Poisoned ))
 	{
-		if ( ! SetPoisonCure( iSkillLevel, true ))
+		if ( !SetPoisonCure( iSkillLevel, true ))
 			return -SKTRIG_ABORT;
 
 		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_HEALING_CURE_1 ), (pChar == this) ? g_Cfg.GetDefaultMsg(DEFMSG_HEALING_YOURSELF) : ( pChar->GetName()));
 		if ( pChar != this )
-		{
 			pChar->SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_HEALING_CURE_2 ), static_cast<LPCTSTR>(GetName()));
-		}
+
 		return 0;
 	}
 
@@ -3323,9 +3290,8 @@ int CChar::Skill_RemoveTrap( SKTRIG_TYPE stage )
 	// Is it a trap ?
 
 	if ( stage == SKTRIG_STROKE )
-	{
 		return 0;
-	}
+
 	CItem * pTrap = m_Act_Targ.ItemFind();
 	if ( pTrap == NULL || ! pTrap->IsType(IT_TRAP))
 	{
@@ -3349,8 +3315,7 @@ int CChar::Skill_RemoveTrap( SKTRIG_TYPE stage )
 	}
 	if ( stage == SKTRIG_SUCCESS )
 	{
-		// disable it.
-		pTrap->SetTrapState( IT_TRAP_INACTIVE, ITEMID_NOTHING, 5*60 );
+		pTrap->SetTrapState( IT_TRAP_INACTIVE, ITEMID_NOTHING, 5*60 );	// disable it
 		return 0;
 	}
 	ASSERT(0);
@@ -3364,9 +3329,7 @@ int CChar::Skill_Begging( SKTRIG_TYPE stage )
 
 	CChar * pChar = m_Act_Targ.CharFind();
 	if ( pChar == NULL || pChar == this )
-	{
 		return( -SKTRIG_QTY );
-	}
 
 	if ( stage == SKTRIG_START )
 	{
@@ -3381,17 +3344,10 @@ int CChar::Skill_Begging( SKTRIG_TYPE stage )
 		return( 0 );
 	}
 	if ( stage == SKTRIG_FAIL )
-	{
-		// Might they do something bad ?
-		return( 0 );
-	}
-	if ( stage == SKTRIG_SUCCESS )
-	{
-		// Now what ? Not sure how to make begging successful.
-		// Give something from my inventory ?
+		return( 0 );	// Might they do something bad ?
 
-		return( 0 );
-	}
+	if ( stage == SKTRIG_SUCCESS )
+		return( 0 );	// Now what ? Not sure how to make begging successful. Give something from my inventory ?
 
 	ASSERT(0);
 	return( -SKTRIG_QTY );
@@ -3407,9 +3363,8 @@ int CChar::Skill_Magery( SKTRIG_TYPE stage )
 	//  m_atMagery.m_Spell = the spell.
 
 	if ( stage == SKTRIG_STROKE )
-	{
 		return( 0 );
-	}
+
 	if ( stage == SKTRIG_FAIL )
 	{
 		Spell_CastFail();
@@ -3417,32 +3372,24 @@ int CChar::Skill_Magery( SKTRIG_TYPE stage )
 	}
 	if ( stage == SKTRIG_SUCCESS )
 	{
-		const CSpellDef *		tSpell	= g_Cfg.GetSpellDef( m_atMagery.m_Spell );
+		const CSpellDef * tSpell = g_Cfg.GetSpellDef( m_atMagery.m_Spell );
 		if (tSpell == NULL)
 			return( 0 );
 
 		if ( IsClient() && IsSetMagicFlags( MAGICF_PRECAST ) && !tSpell->IsSpellType( SPELLFLAG_NOPRECAST ))
 		{
 			this->GetClient()->Cmd_Skill_Magery( this->m_atMagery.m_Spell, this->GetClient()->m_Targ_PrvUID.ObjFind() );
-
-			// Don't increase skill at this point. The client
-			// should select a target first.
-			return( -SKTRIG_QTY );
+			return( -SKTRIG_QTY );		// don't increase skill at this point. The client should select a target first.
 		}
 		else
 		{
-			if ( ! Spell_CastDone())
-			{
+			if ( !Spell_CastDone())
 				return( -SKTRIG_ABORT );
-			}
 			return( 0 );
 		}
 	}
 	if ( stage == SKTRIG_START )
-	{
-		// NOTE: this should call SetTimeout();
-		return Spell_CastStart();
-	}
+		return Spell_CastStart();	// NOTE: this should call SetTimeout();
 
 	ASSERT(0);
 	return( -SKTRIG_ABORT );
@@ -3451,17 +3398,19 @@ int CChar::Skill_Magery( SKTRIG_TYPE stage )
 int CChar::Skill_Fighting( SKTRIG_TYPE stage )
 {
 	ADDTOCALLSTACK("CChar::Skill_Fighting");
-	// SKILL_ARCHERY
-	// SKILL_THROWING
+	// SKILL_ARCHERY:
+	// SKILL_SWORDSMANSHIP:
+	// SKILL_MACEFIGHTING:
+	// SKILL_FENCING:
+	// SKILL_WRESTLING:
+	// SKILL_THROWING:
+	//
 	// m_Act_Targ = attack target.
 
 	if ( stage == SKTRIG_START )
 	{
-		// When do we get our next shot?
-
 		m_atFight.m_War_Swing_State = WAR_SWING_EQUIPPING;
-		m_atFight.m_fMoved	= 0;
-		int iDifficulty = g_Cfg.Calc_CombatChanceToHit( this, Skill_GetActive(), m_Act_Targ.CharFind(), m_uidWeapon.ItemFind());
+		m_atFight.m_fMoved = 0;
 
 		// Set the swing timer.
 		int iWaitTime = Fight_GetWeaponSwingTimer()/2;	// start the anim immediately.
@@ -3475,13 +3424,11 @@ int CChar::Skill_Fighting( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_STROKE )
 	{
 		// Hit or miss my current target.
-		if ( ! IsStatFlag( STATF_War ))
+		if ( !IsStatFlag( STATF_War ))
 			return -SKTRIG_ABORT;
 
 		if ( m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
-		{
 			m_atFight.m_War_Swing_State = WAR_SWING_READY;  // Waited my recoil time. So I'm ready.
-		}
 
 		Fight_HitTry();	// this cleans up itself.
 		return -SKTRIG_STROKE;	// Stay in the skill till we hit.
@@ -3507,9 +3454,8 @@ int CChar::Skill_MakeItem( SKTRIG_TYPE stage )
 	// m_atCreate.m_Amount = amount of said item.
 	
 	if ( stage == SKTRIG_START )
-	{
 		return m_Act_Difficulty;	// keep the already set difficulty
-	}
+
 	if ( stage == SKTRIG_SUCCESS )
 	{
 		if ( ! Skill_MakeItem( m_atCreate.m_ItemID, m_Act_Targ, SKTRIG_SUCCESS, false, (m_atCreate.m_Amount ? m_atCreate.m_Amount : 1) ))
@@ -3531,9 +3477,7 @@ int CChar::Skill_Tailoring( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_SUCCESS )
 	{
 		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-		{
 			Sound( SOUND_SNIP );	// snip noise
-		}
 	}
 
 	return( Skill_MakeItem( stage ));
@@ -3547,21 +3491,8 @@ int CChar::Skill_Inscription( SKTRIG_TYPE stage )
 		// Can we even attempt to make this scroll ?
 		// m_atCreate.m_ItemID = create this item
 		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-		{
 			Sound( 0x249 );
-		}
 	}
-
-	return( Skill_MakeItem( stage ));
-}
-
-int CChar::Skill_Bowcraft( SKTRIG_TYPE stage )
-{
-	ADDTOCALLSTACK("CChar::Skill_Bowcraft");
-	// SKILL_BOWCRAFT
-	// m_Act_Targ = the item we want to be part of this process.
-	// m_atCreate.m_ItemID = new item we are making
-	// m_atCreate.m_Amount = amount of said item.
 
 	return( Skill_MakeItem( stage ));
 }
@@ -3574,7 +3505,6 @@ int CChar::Skill_Blacksmith( SKTRIG_TYPE stage )
 	// m_Act_Targ = the hammer.
 
 	int iMaxDist = 2;
-
 	if ( stage == SKTRIG_START )
 	{
 		m_Act_p = g_World.FindItemTypeNearby( GetTopPoint(), IT_FORGE, iMaxDist, false );
@@ -3583,17 +3513,14 @@ int CChar::Skill_Blacksmith( SKTRIG_TYPE stage )
 			SysMessageDefault( DEFMSG_SMITHING_FORGE );
 			return( -SKTRIG_QTY );
 		}
-		UpdateDir( m_Act_p );	// toward the forge
-
-		m_atCreate.m_Stroke_Count = /*Calc_GetRandVal( 4 ) +*/ 2;
+		UpdateDir( m_Act_p );			// toward the forge
+		m_atCreate.m_Stroke_Count = 2;	// + Calc_GetRandVal( 4 )
 	}
 
 	if ( stage == SKTRIG_SUCCESS )
 	{
 		if ( GetTopPoint().GetDist( m_Act_p ) > iMaxDist )
-		{
 			return( -SKTRIG_FAIL );
-		}
 	}
 
 	return( Skill_MakeItem( stage ));
@@ -3607,15 +3534,10 @@ int CChar::Skill_Carpentry( SKTRIG_TYPE stage )
 	// m_atCreate.m_Amount = amount of said item.
 
 	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-	{
 		Sound( 0x23d );
-	}
 
 	if ( stage == SKTRIG_START )
-	{
-		// m_atCreate.m_ItemID = create this item
-		m_atCreate.m_Stroke_Count = /*Calc_GetRandVal( 3 ) +*/ 2;
-	}
+		m_atCreate.m_Stroke_Count = 2;	// + Calc_GetRandVal( 3 )
 
 	return( Skill_MakeItem( stage ));
 }
@@ -3623,22 +3545,8 @@ int CChar::Skill_Carpentry( SKTRIG_TYPE stage )
 int CChar::Skill_Scripted( SKTRIG_TYPE stage )
 {
 	ADDTOCALLSTACK("CChar::Skill_Scripted");
-	if ( stage == SKTRIG_FAIL )
-	{
+	if ( stage == SKTRIG_FAIL || stage == SKTRIG_START || stage == SKTRIG_STROKE || stage == SKTRIG_SUCCESS )
 		return 0;
-	}
-	if ( stage == SKTRIG_STROKE )
-	{
-		return 0;
-	}
-	if ( stage == SKTRIG_START )
-	{
-		return 0;
-	}
-	if ( stage == SKTRIG_SUCCESS )
-	{
-		return 0;
-	}
 
 	return( -SKTRIG_QTY );	// something odd
 }
@@ -3659,26 +3567,15 @@ int CChar::Skill_Information( SKTRIG_TYPE stage )
 	if ( ! IsClient())	// purely informational
 		return( -SKTRIG_QTY );
 
-	if ( stage == SKTRIG_FAIL )
-	{
+	if ( stage == SKTRIG_FAIL || stage == SKTRIG_STROKE )
 		return 0;
-	}
-	if ( stage == SKTRIG_STROKE )
-	{
-		return 0;
-	}
 
 	SKILL_TYPE skill = Skill_GetActive();
 	int iSkillLevel = Skill_GetAdjusted(skill);
-
 	if ( stage == SKTRIG_START )
-	{
 		return GetClient()->OnSkill_Info( skill, m_Act_Targ, iSkillLevel, true );
-	}
 	if ( stage == SKTRIG_SUCCESS )
-	{
 		return GetClient()->OnSkill_Info( skill, m_Act_Targ, iSkillLevel, false );
-	}
 
 	ASSERT(0);
 	return( -SKTRIG_QTY );
@@ -3693,7 +3590,6 @@ int CChar::Skill_Act_Napping( SKTRIG_TYPE stage )
 
 	if ( stage == SKTRIG_START )
 	{
-		// we are taking a small nap.
 		SetTimeout( 2*TICK_PER_SEC );
 		return( 0 );
 	}
@@ -3717,20 +3613,12 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 	// A Dragon I assume.
 	// m_Fight_Targ = my target.
 
-	if ( stage == SKTRIG_STROKE )
-	{
+	if ( stage == SKTRIG_STROKE || stage == SKTRIG_FAIL )
 		return 0;
-	}
-	if ( stage == SKTRIG_FAIL )
-	{
-		return 0;
-	}
 
 	CChar * pChar = m_Fight_Targ.CharFind();
 	if ( pChar == NULL )
-	{
 		return -SKTRIG_QTY;
-	}
 
 	m_Act_p = pChar->GetTopPoint();
 	if (!IsSetCombatFlags(COMBAT_NODIRCHANGE))
@@ -3740,9 +3628,8 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 	{
 		UpdateStatVal( STAT_DEX, -10 );
 		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
-		{
 			UpdateAnimate( ANIM_MON_Stomp );
-		}
+
 		SetTimeout( 3*TICK_PER_SEC );
 		return 0;
 	}
@@ -3751,28 +3638,33 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 
 	CPointMap pntMe = GetTopPoint();
 	if ( pntMe.GetDist( m_Act_p ) > UO_MAP_VIEW_SIGHT )
-	{
 		m_Act_p.StepLinePath( pntMe, UO_MAP_VIEW_SIGHT );
-	}
 
-	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+	//g_World.Explode( this, m_Act_p, 3, iDamage, DAMAGE_FIRE );
+
+	CChar *pTarget = m_Fight_Targ.CharFind();
+	if ( pTarget == NULL )
+		return 0;
+
+	int iDamage = static_cast<int>(GetDefNum("BREATH.DAM", true));
+	if ( !iDamage )
 	{
-		Sound( 0x227 );
+		iDamage = (Stat_GetVal(STAT_STR) * 16) / 100;
+		if ( iDamage < 1 )
+			iDamage = 1;
+		else if ( iDamage > 200 )
+			iDamage = 200;
 	}
 
-	// Set damage value
-	int iDamage = ( Stat_GetVal(STAT_STR) * 16 ) / 100;
-	if ( iDamage > 200 )
-		iDamage = 200;
+	HUE_TYPE hue = static_cast<HUE_TYPE>(GetDefNum("BREATH.HUE", true));
+	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(GetDefNum("BREATH.ANIM", true));
+	if ( !id )
+		id = ITEMID_FX_FIRE_BALL;
 
-	const CVarDefCont * pTagStorage = GetDefKey("BREATH.DAM", true);
-	if ( pTagStorage )
-	{
-		if ( pTagStorage->GetValNum() )
-			iDamage = static_cast<int>(pTagStorage->GetValNum());
-	}
-	g_World.Explode( this, m_Act_p, 3, iDamage, DAMAGE_FIRE | DAMAGE_GENERAL );
-	return( 0 );
+	Sound( 0x227 );
+	pTarget->Effect( EFFECT_BOLT, id, this, 5, 0, false, hue );
+	pTarget->OnTakeDamage( iDamage, this, DAMAGE_FIRE, 0, 100, 0, 0, 0 );
+	return 0;
 }
 
 int CChar::Skill_Act_Looting( SKTRIG_TYPE stage )
@@ -3782,9 +3674,8 @@ int CChar::Skill_Act_Looting( SKTRIG_TYPE stage )
 	// m_Act_Targ = the item i want.
 
 	if ( stage == SKTRIG_STROKE )
-	{
 		return 0;
-	}
+
 	if ( stage == SKTRIG_START )
 	{
 		if (( m_atLooting.m_iDistCurrent == 0 ) && ( IsTrigUsed(TRIGGER_NPCSEEWANTITEM) ))
@@ -3808,14 +3699,11 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 	// m_Fight_Targ = my target.
 
 	if ( stage == SKTRIG_STROKE )
-	{
 		return 0;
-	}
+
 	CChar * pChar = m_Fight_Targ.CharFind();
 	if ( pChar == NULL )
-	{
 		return( -SKTRIG_QTY );
-	}
 
 	m_Act_p = pChar->GetTopPoint();
 	if (!IsSetCombatFlags(COMBAT_NODIRCHANGE))
@@ -3825,22 +3713,18 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 	{
 		UpdateStatVal( STAT_DEX, -( 4 + Calc_GetRandVal(6)));
 		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
-		{
 			UpdateAnimate( ANIM_MON_Stomp );
-		}
+
 		return 0;
 	}
 
 	if ( stage != SKTRIG_SUCCESS )
-	{
 		return( -SKTRIG_QTY );
-	}
 
 	CPointMap pntMe = GetTopPoint();
 	if ( pntMe.GetDist( m_Act_p ) > UO_MAP_VIEW_SIGHT )
-	{
 		m_Act_p.StepLinePath( pntMe, UO_MAP_VIEW_SIGHT );
-	}
+
 	SoundChar( CRESND_GETHIT );
 
 	// a rock or a boulder ?
@@ -3897,11 +3781,8 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 			pRock->MoveToCheck(m_Act_p, this);
 			pRock->Effect(EFFECT_BOLT, id, this);
 		}
-		// did it hit ?
-		if ( ! Calc_GetRandVal( pChar->GetTopPoint().GetDist( m_Act_p )))
-		{
+		if ( ! Calc_GetRandVal( pChar->GetTopPoint().GetDist( m_Act_p )))	// did it hit?
 			pChar->OnTakeDamage( iDamage, this, DAMAGE_HIT_BLUNT );
-		}
 	}
 	
 	return 0;
@@ -3919,13 +3800,9 @@ int CChar::Skill_Act_Training( SKTRIG_TYPE stage )
 		return 0;
 	}
 	if ( stage == SKTRIG_STROKE )
-	{
 		return 0;
-	}
 	if ( stage != SKTRIG_SUCCESS )
-	{
 		return( -SKTRIG_QTY );
-	}
 
 	if ( m_Act_TargPrv == m_uidWeapon )
 	{
@@ -3994,6 +3871,7 @@ int CChar::Skill_GetSound( SKILL_TYPE skill )
 		case SKILL_TAILORING:
 			sound = 0x248;
 			break;
+		case SKILL_CARTOGRAPHY:
 		case SKILL_INSCRIPTION:
 			sound = 0x249;
 			break;
@@ -4005,9 +3883,6 @@ int CChar::Skill_GetSound( SKILL_TYPE skill )
 			break;
 		case SKILL_CARPENTRY:
 			sound = 0x23d;
-			break;
-		case SKILL_CARTOGRAPHY:
-			sound = 0x249;
 			break;
 		case SKILL_MINING:
 			sound = Calc_GetRandVal(2) ? 0x125 : 0x126;
@@ -4030,58 +3905,51 @@ int CChar::Skill_Stroke( bool fResource )
 	if ( m_atCreate.m_Stroke_Count > 1 )
 	{
 		if ( !g_Cfg.IsSkillFlag( skill, SKF_NOSFX ) )
-		{
 			sound = Skill_GetSound( skill );
-		}
 		if ( !g_Cfg.IsSkillFlag( skill, SKF_NOANIM ) )
-		{
 			anim = Skill_GetAnim( skill );
-		}
 	}
 	INT64 delay = Skill_GetTimeout();
 	if ( IsTrigUsed(TRIGGER_SKILLSTROKE) || (IsTrigUsed(TRIGGER_STROKE)) )
 	{
 		CScriptTriggerArgs args;
 		args.m_VarsLocal.SetNum("Skill", skill);
+		args.m_VarsLocal.SetNum("Sound", sound);
+		args.m_VarsLocal.SetNum("Delay", delay);
+		args.m_VarsLocal.SetNum("Anim", anim);
 		if ( fResource )
-			args.m_VarsLocal.SetNum("Strokes",m_atResource.m_Stroke_Count);
+			args.m_VarsLocal.SetNum("Strokes", m_atResource.m_Stroke_Count);
 		else
 			args.m_VarsLocal.SetNum("Strokes", m_atCreate.m_Stroke_Count);
-		args.m_VarsLocal.SetNum("Sound", sound);
-		args.m_VarsLocal.SetNum("Delay",delay);
-		args.m_VarsLocal.SetNum("Anim", static_cast<INT64>(anim));
 
 		if ( OnTrigger( CTRIG_SkillStroke, this, &args ) == TRIGRET_RET_TRUE ) 
 			return(-SKTRIG_ABORT);
 		if ( Skill_OnTrigger( skill, SKTRIG_STROKE, &args ) == TRIGRET_RET_TRUE )
 			return(-SKTRIG_ABORT);
 
-		sound = static_cast<int>(args.m_VarsLocal.GetKeyNum("Sound",false));
-		if ( fResource )
-			m_atResource.m_Stroke_Count = static_cast<WORD>(args.m_VarsLocal.GetKeyNum("Strokes",false));
-		else
-			m_atCreate.m_Stroke_Count = static_cast<WORD>(args.m_VarsLocal.GetKeyNum("Strokes",false));
-		delay = args.m_VarsLocal.GetKeyNum("Delay",true);
+		sound = static_cast<int>(args.m_VarsLocal.GetKeyNum("Sound", false));
+		delay = args.m_VarsLocal.GetKeyNum("Delay", true);
 		anim = static_cast<ANIM_TYPE>(args.m_VarsLocal.GetKeyNum("Anim", true));
+		if ( fResource )
+			m_atResource.m_Stroke_Count = static_cast<unsigned long>(args.m_VarsLocal.GetKeyNum("Strokes", false));
+		else
+			m_atCreate.m_Stroke_Count = static_cast<WORD>(args.m_VarsLocal.GetKeyNum("Strokes", false));
 	}
 
 	if ( sound )
 		Sound(sound);
-
-	// Keep trying and updating the animation
-	if ( anim )
-		UpdateAnimate( anim );
-
 	if ( delay < 10)
 		delay = 10;
+	if ( anim )
+		UpdateAnimate( anim );	// keep trying and updating the animation
 	if ( fResource )
 	{
 		if ( m_atResource.m_Stroke_Count )
 			m_atResource.m_Stroke_Count --;
 		if ( m_atResource.m_Stroke_Count < 1 )
 			return SKTRIG_SUCCESS;
-
-	}else
+	}
+	else
 	{
 		if ( m_atCreate.m_Stroke_Count )
 			m_atCreate.m_Stroke_Count --;
@@ -4115,26 +3983,29 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 	else switch ( Skill_GetActive() )
 	{
 		case SKILL_NONE:	// idling.
+		case SKILL_PARRYING:
+		case SKILL_CAMPING:
+		case SKILL_MAGICRESISTANCE:
+		case SKILL_TACTICS:
 			return 0;
 		case SKILL_ALCHEMY:
-			return Skill_Alchemy(stage);
+		case SKILL_BOWCRAFT:
+		case SKILL_TINKERING:
+			return Skill_MakeItem(stage);
 		case SKILL_ANATOMY:
 		case SKILL_ANIMALLORE:
 		case SKILL_ITEMID:
 		case SKILL_ARMSLORE:
+		case SKILL_EVALINT:
+		case SKILL_FORENSICS:
+		case SKILL_TASTEID:
 			return Skill_Information(stage);
-		case SKILL_PARRYING:
-			return 0;
 		case SKILL_BEGGING:
 			return Skill_Begging(stage);
 		case SKILL_BLACKSMITHING:
 			return Skill_Blacksmith(stage);
-		case SKILL_BOWCRAFT:
-			return Skill_Bowcraft(stage);
 		case SKILL_PEACEMAKING:
 			return Skill_Peacemaking(stage);
-		case SKILL_CAMPING:
-			return 0;
 		case SKILL_CARPENTRY:
 			return Skill_Carpentry(stage);
 		case SKILL_CARTOGRAPHY:
@@ -4145,17 +4016,15 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 			return Skill_DetectHidden(stage);
 		case SKILL_ENTICEMENT:
 			return Skill_Enticement(stage);
-		case SKILL_EVALINT:
-			return Skill_Information(stage);
 		case SKILL_HEALING:
+		case SKILL_VETERINARY:
 			return Skill_Healing(stage);
 		case SKILL_FISHING:
 			return Skill_Fishing(stage);
-		case SKILL_FORENSICS:
-			return Skill_Information(stage);
 		case SKILL_HERDING:
 			return Skill_Herding(stage);
 		case SKILL_HIDING:
+		case SKILL_STEALTH:
 			return Skill_Hiding(stage);
 		case SKILL_PROVOCATION:
 			return Skill_Provocation(stage);
@@ -4171,18 +4040,18 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 		case SKILL_SPELLWEAVING:
 		case SKILL_MYSTICISM:
 			return Skill_Magery(stage);
-		case SKILL_MAGICRESISTANCE:
-			return 0;
-		case SKILL_TACTICS:
-			return 0;
 		case SKILL_SNOOPING:
 			return Skill_Snooping(stage);
 		case SKILL_MUSICIANSHIP:
 			return Skill_Musicianship(stage);
-		case SKILL_POISONING:	// 30
+		case SKILL_POISONING:
 			return Skill_Poisoning(stage);
-		case SKILL_THROWING:
 		case SKILL_ARCHERY:
+		case SKILL_SWORDSMANSHIP:
+		case SKILL_MACEFIGHTING:
+		case SKILL_FENCING:
+		case SKILL_WRESTLING:
+		case SKILL_THROWING:
 			return Skill_Fighting(stage);
 		case SKILL_SPIRITSPEAK:
 			return Skill_SpiritSpeak(stage);
@@ -4192,27 +4061,14 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 			return Skill_Tailoring(stage);
 		case SKILL_TAMING:
 			return Skill_Taming(stage);
-		case SKILL_TASTEID:
-			return Skill_Information(stage);
-		case SKILL_TINKERING:
-			return Skill_MakeItem(stage);
 		case SKILL_TRACKING:
 			return Skill_Tracking(stage);
-		case SKILL_VETERINARY:
-			return Skill_Healing(stage);
-		case SKILL_SWORDSMANSHIP:
-		case SKILL_MACEFIGHTING:
-		case SKILL_FENCING:
-		case SKILL_WRESTLING:
-			return Skill_Fighting(stage);
 		case SKILL_LUMBERJACKING:
 			return Skill_Lumberjack(stage);
 		case SKILL_MINING:
 			return Skill_Mining(stage);
 		case SKILL_MEDITATION:
 			return Skill_Meditation(stage);
-		case SKILL_STEALTH:
-			return Skill_Hiding(stage);
 		case SKILL_REMOVETRAP:
 			return Skill_RemoveTrap(stage);
 		case NPCACT_BREATH:
@@ -4330,7 +4186,7 @@ TRIGRET_TYPE	CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScri
 		m_Act_SkillCurrent = skill;
 
 	pArgs->m_iN1 = skill;
-	if (IsSkillMagic(skill))
+	if (g_Cfg.IsSkillFlag(skill, SKF_MAGIC))
 		pArgs->m_VarsLocal.SetNum("spell",m_atMagery.m_Spell,true);
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
@@ -4356,7 +4212,7 @@ TRIGRET_TYPE	CChar::Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig, CSc
 		m_Act_SkillCurrent = skill;
 
 	pArgs->m_iN1 = skill;
-	if (IsSkillMagic(skill))
+	if (g_Cfg.IsSkillFlag(skill, SKF_MAGIC))
 		pArgs->m_VarsLocal.SetNum("spell",m_atMagery.m_Spell,true);
 
 	return OnTrigger( ctrig, this, pArgs );
@@ -4534,9 +4390,7 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 	}
 
 	if ( Skill_GetActive() != SKILL_NONE )
-	{
 		Skill_Fail( true );	// Fail previous skill unfinished. (with NO skill gain!)
-	}
 
 	if ( skill != SKILL_NONE )
 	{
@@ -4565,8 +4419,8 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 
 		// Execute the @START trigger and pass various craft parameters there
 		CScriptTriggerArgs pArgs;
-		bool bCraftSkill = IsSkillCraft(skill);
-		bool bGatherSkill = IsSkillGather(skill);
+		bool bCraftSkill = g_Cfg.IsSkillFlag(skill, SKF_CRAFT);
+		bool bGatherSkill = g_Cfg.IsSkillFlag(skill, SKF_GATHER);
 		RESOURCE_ID pResBase(RES_ITEMDEF, bCraftSkill? m_atCreate.m_ItemID : 0, 0);
 
 		if ( bCraftSkill == true )
@@ -4601,7 +4455,7 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 		if ( bCraftSkill == true )
 		{
 			// read crafting parameters
-			pResBase.SetPrivateUID(static_cast<int>(pArgs.m_VarsLocal.GetKeyNum("CraftItemdef",true)));
+			pResBase.SetPrivateUID(static_cast<unsigned long>(pArgs.m_VarsLocal.GetKeyNum("CraftItemdef",true)));
 			m_atCreate.m_ItemID = static_cast<ITEMID_TYPE>(pResBase.GetResIndex());
 			m_atCreate.m_Stroke_Count = static_cast<WORD>(pArgs.m_VarsLocal.GetKeyNum("CraftStrokeCnt",true));
 			if ( m_atCreate.m_Stroke_Count < 1)
@@ -4615,7 +4469,7 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 				UpdateAnimate( Skill_GetAnim( Skill_GetActive() ) );
 		}
 		if ( bGatherSkill == true )
-			m_atResource.m_Stroke_Count = static_cast<WORD>(pArgs.m_VarsLocal.GetKeyNum("GatherStrokeCnt",true));
+			m_atResource.m_Stroke_Count = static_cast<unsigned long>(pArgs.m_VarsLocal.GetKeyNum("GatherStrokeCnt",true));
 
 		if ( IsSkillBase(skill) )
 		{
@@ -4624,34 +4478,23 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 			{
 				int iWaitTime = pSkillDef->m_Delay.GetLinear( Skill_GetBase(skill) );
 				if ( iWaitTime != 0 )
-				{
-					// How long before complete skill.
-					SetTimeout( iWaitTime );
-				}
+					SetTimeout( iWaitTime );	// How long before complete skill.
 			}
 		}
 
 		if ( IsTimerExpired())
-		{
-			// the skill should have set it's own delay!?
-			SetTimeout( 1 );
-		}
+			SetTimeout( 1 );	// the skill should have set it's own delay!?
 
 		if ( m_Act_Difficulty > 0 )
 		{
-
 			if ( ! Skill_CheckSuccess( skill, m_Act_Difficulty ))
-			{
-					m_Act_Difficulty = - m_Act_Difficulty; // will result in Failure ?
-			}
+				m_Act_Difficulty = - m_Act_Difficulty;	// will result in Failure ?
 		}
 	}
 
 	// emote the action i am taking.
 	if (( g_Cfg.m_wDebugFlags & DEBUGF_NPC_EMOTE ) || IsStatFlag(STATF_EmoteAction))
-	{
 		Emote( Skill_GetName(true));
-	}
 
 	return( true );
 }

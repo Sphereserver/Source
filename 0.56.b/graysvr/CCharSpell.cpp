@@ -10,7 +10,7 @@ SPELL_TYPE CChar::Spell_GetIndex(SKILL_TYPE skill)	// Returns the first spell fo
 	if (skill == SKILL_NONE)	// providing no skill returns first monster's custom spell.
 		return SPELL_Summon_Undead;
 
-	if (!IsSkillMagic(skill))
+	if (!g_Cfg.IsSkillFlag(skill, SKF_MAGIC))
 		return SPELL_NONE;
 
 	switch (skill)
@@ -21,14 +21,14 @@ SPELL_TYPE CChar::Spell_GetIndex(SKILL_TYPE skill)	// Returns the first spell fo
 		return SPELL_Animate_Dead_AOS;
 	case SKILL_CHIVALRY:
 		return SPELL_Cleanse_by_Fire;
+	case SKILL_BUSHIDO:
+		return SPELL_Honorable_Execution;
+	case SKILL_NINJITSU:
+		return SPELL_Focus_Attack;
 	case SKILL_SPELLWEAVING:
 		return SPELL_Arcane_Circle;
 	case SKILL_MYSTICISM:
 		return SPELL_Nether_Bolt;
-	case SKILL_NINJITSU:
-		return SPELL_Focus_Attack;
-	case SKILL_BUSHIDO:
-		return SPELL_Honorable_Execution;
 	}
 	return SPELL_NONE;
 }
@@ -38,7 +38,7 @@ SPELL_TYPE CChar::Spell_GetMax(SKILL_TYPE skill)
 	if (skill == SKILL_NONE)	// providing no skill returns the last spell for monsters.
 		return SPELL_QTY;
 
-	if (!IsSkillMagic(skill))
+	if (!g_Cfg.IsSkillFlag(skill, SKF_MAGIC))
 		return SPELL_NONE;
 
 	switch (skill)
@@ -49,14 +49,14 @@ SPELL_TYPE CChar::Spell_GetMax(SKILL_TYPE skill)
 		return SPELL_NECROMANCY_QTY;
 	case SKILL_CHIVALRY:
 		return SPELL_CHIVALRY_QTY;
+	case SKILL_BUSHIDO:
+		return SPELL_BUSHIDO_QTY;
+	case SKILL_NINJITSU:
+		return SPELL_NINJITSU_QTY;
 	case SKILL_SPELLWEAVING:
 		return SPELL_SPELLWEAVING_QTY;
 	case SKILL_MYSTICISM:
 		return SPELL_MYSTICISM_QTY;
-	case SKILL_NINJITSU:
-		return SPELL_NINJITSU_QTY;
-	case SKILL_BUSHIDO:
-		return SPELL_BUSHIDO_QTY;
 	default:
 		break;
 	}
@@ -323,7 +323,7 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 		pChar->NPC_PetSetOwner( this );
 
 		int skill;
-		const CSpellDef *pSpellDef = g_Cfg.GetSpellDef( CChar::IsSkillMagic(m_Act_SkillCurrent)? m_atMagery.m_Spell : SPELL_Summon );
+		const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(	g_Cfg.IsSkillFlag(m_Act_SkillCurrent, SKF_MAGIC)? m_atMagery.m_Spell : SPELL_Summon );
 		if (!pSpellDef || !pSpellDef->GetPrimarySkill(&skill, NULL))
 		{
 			pChar->Delete();

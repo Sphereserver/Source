@@ -441,7 +441,7 @@ enum EXTAOS_TYPE
 	EXTAOS_QTY
 };
 
-#define MAX_TALK_BUFFER		1024	// how many chars can anyone speak all at once?
+#define MAX_TALK_BUFFER		256	// how many chars can anyone speak all at once? (client speech is limited to 128 chars and journal is limited to 256 chars)
 
 union CExtData
 {
@@ -2186,6 +2186,7 @@ struct CCommand	// command buffer from server to client.
 #define CHARMODE_POISON		0x04	// green status bar. (note: see XCMD_HealthBarColor for SA)
 #define CHARMODE_FLYING		0x04	// flying (gargoyles, SA)
 #define CHARMODE_YELLOW		0x08	// yellow status bar. (note: see XCMD_HealthBarColor for SA)
+#define CHARMODE_IGNOREMOBS	0x10
 #define CHARMODE_WAR		0x40
 #define CHARMODE_INVIS		0x80
 

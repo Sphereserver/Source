@@ -2428,7 +2428,7 @@ void CChar::NPC_Act_Fight()
 				if (iSkillforced)
 				{
 					SPELL_TYPE iSpellforced = static_cast<SPELL_TYPE>(Args.m_VarsLocal.GetKeyNum("spell", false));
-					if (IsSkillMagic(iSkillforced))
+					if (g_Cfg.IsSkillFlag(iSkillforced, SKF_MAGIC))
 						m_atMagery.m_Spell = iSpellforced;
 
 					Skill_Start(iSkillforced);

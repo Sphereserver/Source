@@ -1513,7 +1513,7 @@ bool CClient::OnTarg_Skill_Magery( CObjBase * pObj, const CPointMap & pt )
 
 	if ( IsSetMagicFlags( MAGICF_PRECAST ) && !pSpell->IsSpellType( SPELLFLAG_NOPRECAST ) && m_pChar->IsClient() )
 	{
-		if ( CChar::IsSkillMagic(m_pChar->m_Act_SkillCurrent) )
+		if ( g_Cfg.IsSkillFlag(m_pChar->m_Act_SkillCurrent, SKF_MAGIC) )
 		{
 			this->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_MAGERY_5 ) ); // You have not yet finished preparing the spell.
 			return false;

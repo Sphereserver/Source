@@ -3053,7 +3053,6 @@ public:
 	height_t GetHeightMount( bool fEyeSubstract = false ) const;
 	height_t GetHeight() const;
 
-	bool CanSeeTrue( const CChar * pChar = NULL ) const;
 	bool CanSeeAsDead( const CChar * pChar = NULL ) const;
 	bool CanSeeInContainer( const CItemContainer * pContItem ) const;
 	bool CanSee( const CObjBaseTemplate * pObj ) const;
@@ -3256,7 +3255,7 @@ public:
 public:
 	LPCTSTR GetPronoun() const;	// he
 	LPCTSTR GetPossessPronoun() const;	// his
-	BYTE GetModeFlag( bool fTrueSight = false, const CClient* pViewer = NULL ) const;
+	BYTE GetModeFlag( const CClient *pViewer = NULL ) const;
 	BYTE GetDirFlag(bool fSquelchForwardStep = false) const
 	{
 		// future: strongly typed enums will remove the need for this cast
@@ -3425,10 +3424,6 @@ public:
 	// skills and actions. -------------------------------------------
 	static bool IsSkillBase( SKILL_TYPE skill );
 	static bool IsSkillNPC( SKILL_TYPE skill );
-	static bool IsSkillMagic( SKILL_TYPE skill );
-	static bool IsSkillCraft(SKILL_TYPE skill);
-	static bool IsSkillGather(SKILL_TYPE skill);
-	static bool IsSkillFight(SKILL_TYPE skill);
 
 	SKILL_TYPE Skill_GetBest( unsigned int iRank = 0 ) const; // Which skill is the highest for character p
 	SKILL_TYPE Skill_GetActive() const
@@ -3500,7 +3495,6 @@ private:
 	int Skill_Information( SKTRIG_TYPE stage );
 	int Skill_Hiding( SKTRIG_TYPE stage );
 	int Skill_Enticement( SKTRIG_TYPE stage );
-	int Skill_Bowcraft( SKTRIG_TYPE stage );
 	int Skill_Snooping( SKTRIG_TYPE stage );
 	int Skill_Stealing( SKTRIG_TYPE stage );
 	int Skill_Mining( SKTRIG_TYPE stage );
@@ -3513,7 +3507,6 @@ private:
 	int Skill_Blacksmith(SKTRIG_TYPE stage);
 	int Skill_Lockpicking(SKTRIG_TYPE stage);
 	int Skill_Peacemaking(SKTRIG_TYPE stage);
-	int Skill_Alchemy(SKTRIG_TYPE stage);
 	int Skill_Carpentry(SKTRIG_TYPE stage);
 	int Skill_Provocation(SKTRIG_TYPE stage);
 	int Skill_Poisoning(SKTRIG_TYPE stage);
@@ -3890,87 +3883,6 @@ inline bool CChar::IsSkillBase( SKILL_TYPE skill ) // static
 {
 	// Is this in the base set of skills.
 	return( IS_SKILL_BASE(skill));
-}
-
-inline bool CChar::IsSkillCraft( SKILL_TYPE skill ) // static
-{
-	if (g_Cfg.IsSkillFlag(skill, SKF_SCRIPTED))
-		return false;
-	if (g_Cfg.IsSkillFlag(skill, SKF_CRAFT))
-		return true;
-	/*switch (skill)
-	{
-		case SKILL_ALCHEMY:
-		case SKILL_BLACKSMITHING:
-		case SKILL_BOWCRAFT:
-		case SKILL_CARPENTRY:
-		case SKILL_COOKING:
-		case SKILL_INSCRIPTION:
-		case SKILL_TAILORING:
-		case SKILL_TINKERING:
-			return true;
-		default:
-			return false;
-	}*/
-	return false;
-}
-
-inline bool CChar::IsSkillGather(SKILL_TYPE skill) // static
-{
-	if (g_Cfg.IsSkillFlag(skill, SKF_SCRIPTED))
-		return false;
-	if (g_Cfg.IsSkillFlag(skill, SKF_GATHER))
-		return true;
-	switch (skill)
-	{
-	case SKILL_MINING:
-	case SKILL_FISHING:
-	case SKILL_LUMBERJACKING:
-		return true;
-	default:
-		return false;
-	}
-}
-
-inline bool CChar::IsSkillFight(SKILL_TYPE skill) // static
-{
-	if (g_Cfg.IsSkillFlag(skill, SKF_SCRIPTED))
-		return false;
-	if (g_Cfg.IsSkillFlag(skill, SKF_FIGHT))
-		return true;
-	switch (skill)
-	{
-	case SKILL_SWORDSMANSHIP:
-	case SKILL_MACEFIGHTING:
-	case SKILL_FENCING:
-	case SKILL_WRESTLING:
-	case SKILL_ARCHERY:
-	case SKILL_THROWING:
-		return true;
-	default:
-		return false;
-	}
-}
-
-inline bool CChar::IsSkillMagic(SKILL_TYPE skill) // static
-{
-	if (g_Cfg.IsSkillFlag(skill, SKF_SCRIPTED))
-		return false;
-	if (g_Cfg.IsSkillFlag(skill, SKF_MAGIC))
-		return true;
-	switch (skill)
-	{
-	case SKILL_MAGERY:
-	case SKILL_NECROMANCY:
-	case SKILL_MYSTICISM:
-	case SKILL_SPELLWEAVING:
-	case SKILL_CHIVALRY:
-	//case SKILL_BUSHIDO:
-	//case SKILL_NINJITSU:
-		return true;
-	default:
-		return false;
-	}
 }
 
 inline bool CChar::IsSkillNPC( SKILL_TYPE skill )  // static

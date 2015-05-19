@@ -746,7 +746,7 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 		return TRIGRET_RET_FALSE;
 
 	// Movement whilst freeze-on-cast enabled is not allowed
-	if ( IsSetMagicFlags( MAGICF_FREEZEONCAST ) && CChar::IsSkillMagic(m_pChar->m_Act_SkillCurrent) )
+	if ( IsSetMagicFlags( MAGICF_FREEZEONCAST ) && g_Cfg.IsSkillFlag(m_pChar->m_Act_SkillCurrent, SKF_MAGIC) )
 	{
 		const CSpellDef* pSpellDef = g_Cfg.GetSpellDef(m_pChar->m_atMagery.m_Spell);
 		if (pSpellDef != NULL && !pSpellDef->IsSpellType(SPELLFLAG_NOFREEZEONCAST))
@@ -757,31 +757,25 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 	}
 
 	if ( m_pChar->OnFreezeCheck() )
-	{
 		return TRIGRET_RET_FALSE;
-	}
 
 	m_timeLastEventWalk = CServTime::GetCurrentTime();
 
 	bool fRun = ( rawdir & 0x80 ) == 0x80; // or flying ?
-
 	m_pChar->StatFlag_Mod( STATF_Fly, fRun );
 
 	DIR_TYPE dir = static_cast<DIR_TYPE>(rawdir & 0x0F);
 	if ( dir >= DIR_QTY )
-	{
 		return TRIGRET_RET_FALSE;
-	}
 
 	CPointMap pt = m_pChar->GetTopPoint();
 	CPointMap ptold = pt;
-	bool fMove = true;
 
 	if ( dir == m_pChar->m_dirFace )
 	{
-		LONGLONG	CurrTime	= GetTickCount();
-		m_iWalkStepCount++;
 		// Move in this dir.
+		LONGLONG CurrTime = GetTickCount();
+		m_iWalkStepCount++;
 		if ( ( m_iWalkStepCount % 7 ) == 0 )	// we have taken 8 steps ? direction changes don't count. (why we do this check also for gm?) <-- GM checks are on for the debug line only, maybe?
 		{
 			// Client only allows 4 steps of walk ahead.
@@ -794,59 +788,51 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 				{
 					// Speed Modes:
 					// 0 = Foot=Normal, Mount=Normal                         140 -  70
-					// 1 = Foot=Double Speed, Mount=Normal                    70 -  70    =70
-					// 2 = Foot=Always Walk, Mount=Always Walk (Half Speed)  280 - 140    =  x2
-					// 3 = Foot=Always Run, Mount=Always Walk                140 - 140    =70x2 (1|2)
-					// 4 = No Movement                                       N/A - N/A    =(handled by OnFreezeCheck)
+					// 1 = Foot=Double Speed, Mount=Normal                    70 -  70    = 70
+					// 2 = Foot=Always Walk, Mount=Always Walk (Half Speed)  280 - 140    = x2
+					// 3 = Foot=Always Run, Mount=Always Walk                140 - 140    = 70|x2 (1|2)
+					// 4 = No Movement                                       N/A - N/A    = (handled by OnFreezeCheck)
 
-					if (m_pChar->m_pPlayer->m_speedMode & 0x01) // = 70
+					if (m_pChar->m_pPlayer->m_speedMode & 0x01)
 						iTimeMin = 70;
-
-					if (m_pChar->m_pPlayer->m_speedMode & 0x02) // = x2
+					if (m_pChar->m_pPlayer->m_speedMode & 0x02)
 						iTimeMin *= 2;
 				}
 
 				if ( iTimeDiff > iTimeMin )
 				{
-					int	iRegen	= ((iTimeDiff - iTimeMin) * g_Cfg.m_iWalkRegen) / 150;
+					int	iRegen = ((iTimeDiff - iTimeMin) * g_Cfg.m_iWalkRegen) / 150;
 					if ( iRegen > g_Cfg.m_iWalkBuffer )
-						iRegen	= g_Cfg.m_iWalkBuffer;
+						iRegen = g_Cfg.m_iWalkBuffer;
 					else if ( iRegen < -((g_Cfg.m_iWalkBuffer * g_Cfg.m_iWalkRegen) / 100) )
-						iRegen	= -((g_Cfg.m_iWalkBuffer * g_Cfg.m_iWalkRegen) / 100);
-					iTimeDiff	= iTimeMin + iRegen;
+						iRegen = -((g_Cfg.m_iWalkBuffer * g_Cfg.m_iWalkRegen) / 100);
+					iTimeDiff = iTimeMin + iRegen;
 				}
 
-				m_iWalkTimeAvg		+= iTimeDiff;
-
-				int	oldAvg	= m_iWalkTimeAvg;
-				m_iWalkTimeAvg	-= iTimeMin;
+				m_iWalkTimeAvg += iTimeDiff;
+				int	oldAvg = m_iWalkTimeAvg;
+				m_iWalkTimeAvg -= iTimeMin;
 
 				if ( m_iWalkTimeAvg > g_Cfg.m_iWalkBuffer )
-					m_iWalkTimeAvg	= g_Cfg.m_iWalkBuffer;
+					m_iWalkTimeAvg = g_Cfg.m_iWalkBuffer;
 				else if ( m_iWalkTimeAvg < -g_Cfg.m_iWalkBuffer )
-					m_iWalkTimeAvg	= -g_Cfg.m_iWalkBuffer;
+					m_iWalkTimeAvg = -g_Cfg.m_iWalkBuffer;
 
 				if ( IsPriv( PRIV_DETAIL ) && IsPriv( PRIV_DEBUG ) )
-				{
 					SysMessagef( "Walkcheck trace: %i / %i (%i) :: %i", iTimeDiff, iTimeMin, oldAvg, m_iWalkTimeAvg );
-				}
 
-				if ( m_iWalkTimeAvg < 0 && iTimeDiff >= 0 && ! IsPriv(PRIV_GM) )	// TICK_PER_SEC
+				if ( m_iWalkTimeAvg < 0 && iTimeDiff >= 0 && !IsPriv(PRIV_GM) )	// TICK_PER_SEC
 				{
 					// walking too fast.
 					DEBUG_WARN(("%s (%lx): Fast Walk ?\n", GetName(), GetSocketID()));
 
 					TRIGRET_TYPE iAction = TRIGRET_RET_DEFAULT;
 					if ( IsTrigUsed(TRIGGER_USEREXWALKLIMIT) )
-					{
 						iAction = m_pChar->OnTrigger( CTRIG_UserExWalkLimit, m_pChar, NULL );
-					}
-					m_iWalkStepCount--; // eval again next time !
 
+					m_iWalkStepCount--; // eval again next time !
 					if ( iAction != TRIGRET_RET_TRUE )
-					{
 						return TRIGRET_RET_FALSE;
-					}
 				}
 			}
 			m_timeWalkStep = CurrTime;
@@ -876,35 +862,23 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 
 		// Now we've moved, are we now or no longer indoors and need to update weather?
 		if ( fRoof != m_pChar->IsStatFlag( STATF_InDoors ))
-		{
 			addWeather( WEATHER_DEFAULT );
-		}
 
-		// did i step on a telepad, trap, etc ?
+		// Did i step on a telepad, trap, etc ?
 		if ( m_pChar->CheckLocation())
-		{
-			// We stepped on teleporter
 			return TRIGRET_RET_DEFAULT;
-		}
-	}
 
-	if ( dir != m_pChar->m_dirFace )		// Just a change in dir.
-	{
-		m_pChar->m_dirFace = dir;
-		fMove = false;
-	}
-
-	// Ack the move. ( if this does not go back we get rubber banding )
-	new PacketMovementAck(this);
-
-	if ( !fMove )
-		m_pChar->UpdateMode(this);			// Show others I have turned !!
-	else
-	{
+		new PacketMovementAck(this);		// Ack the move. ( if this does not go back we get rubber banding )
 		m_pChar->UpdateMove( ptold, this );	// Who now sees me ?
 		addPlayerSee( ptold );				// What new stuff do I now see ?
 	}
-
+	else
+	{
+		// Just a change in dir.
+		m_pChar->m_dirFace = dir;
+		m_pChar->UpdateMode(this);			// Show others I have turned !!
+		new PacketMovementAck(this);		// Ack the move. ( if this does not go back we get rubber banding )
+	}
 	return TRIGRET_RET_TRUE;
 }
 
@@ -913,7 +887,7 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 void CClient::Event_CombatMode( bool fWar ) // Only for switching to combat mode
 {
 	ADDTOCALLSTACK("CClient::Event_CombatMode");
-	// If peacmaking then this doens't work ??
+	// If peacemaking then this doens't work ??
 	// Say "you are feeling too peacefull"
 	if ( m_pChar == NULL )
 		return;
@@ -942,19 +916,13 @@ void CClient::Event_CombatMode( bool fWar ) // Only for switching to combat mode
 	m_pChar->StatFlag_Mod( STATF_War, fWar );
 
 	if ( m_pChar->IsStatFlag( STATF_DEAD ))
-	{
-		// Manifest the ghost.
-		// War mode for ghosts.
-		m_pChar->StatFlag_Mod( STATF_Insubstantial, ! fWar );
-	}
+		m_pChar->StatFlag_Mod( STATF_Insubstantial, !fWar );	// manifest the ghost
 	
 	if ( fCleanSkill )
 	{
 		m_pChar->Skill_Fail( true );	
 		DEBUG_WARN(("UserWarMode - Cleaning Skill Action\n"));
 	}
-
-
 
 	addPlayerWarMode();
 	m_pChar->UpdateMode( this, m_pChar->IsStatFlag( STATF_DEAD ));
@@ -1191,14 +1159,14 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 				case IT_BEARD:
 					if (( m_pChar->GetDispID() != CREID_MAN ) && !m_pChar->IsPriv(PRIV_GM))
 					{
-						pVendor->Speak("Sorry, I cannot do anything for you.");
+						pVendor->Speak( g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTBUY) );
 						continue;
 					}
 				case IT_HAIR:
 					// Must be added directly. can't exist in pack!
 					if ( ! m_pChar->IsPlayableCharacter())
 					{
-						pVendor->Speak("Sorry, I cannot do anything for you.");
+						pVendor->Speak( g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTBUY) );
 						continue;
 					}
 					{

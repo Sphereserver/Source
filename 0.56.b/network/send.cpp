@@ -613,7 +613,7 @@ PacketPlayerPosition::PacketPlayerPosition(const CClient* target) : PacketSend(X
 	writeInt16(static_cast<WORD>(id));
 	writeByte(0);
 	writeInt16(hue);
-	writeByte(character->GetModeFlag(false, target));
+	writeByte(character->GetModeFlag(target));
 	writeInt16(pt.m_x);
 	writeInt16(pt.m_y);
 	writeInt16(0);
@@ -2198,7 +2198,7 @@ PacketCharacterMove::PacketCharacterMove(const CClient* target, const CChar* cha
 	writeByte(pos.m_z);
 	writeByte(direction);
 	writeInt16(hue);
-	writeByte(character->GetModeFlag(character->CanSeeTrue(target->GetChar()), target));
+	writeByte(character->GetModeFlag(target));
 	writeByte(static_cast<unsigned char>(character->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_NOTOINVUL), true)));
 
 	push(target);
@@ -2232,7 +2232,7 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 	writeByte(pos.m_z);
 	writeByte(character->GetDirFlag());
 	writeInt16(hue);
-	writeByte(character->GetModeFlag(character->CanSeeTrue(target->GetChar()), target));
+	writeByte(character->GetModeFlag(target));
 	writeByte(static_cast<unsigned char>(character->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_NOTOINVUL), true)));
 
 	bool isNewMobilePacket = target->GetNetState()->isClientVersion(MINCLIVER_NEWMOBINCOMING);

@@ -2180,3 +2180,9 @@ returns:
 	return 1: Blocks any action and stops everything, also deletes the memory (Blocking any changes, this will cause also the effect to do not have duration)
 	return 2: Let the memory exist but block default checks, perfect to override default effects and do some custom stuff.
 To simulate something like '@EffectEnd' just apply an event with @Timer to the memory since the 'default changes' are happening after @UnEquip and, at this point, the item must be removed in any case... so preventing this must be done before (@Timer fits perfectly).
+
+19-05-2015, Coruja
+Added: New animation on dragon breath attack.
+Changed: Reduced SAY/speech max text length (1024 -> 256 chars). Client is limited to 128 chars on default speech and 256 chars on journal, so this can avoid some exploits from 3rd party assists/tools without affect the gameplay.
+Changed: Major optimizations on walk, skills and general ticks code. It's working fine, but needs some heavy testing until we mark it as 100% stable.
+	-IMPORTANT: Be sure to update your sphere_skills.scp with proper FLAGS on all fight/ranged/magic/craft/gather skills, otherwise these skills will not work correctly.
