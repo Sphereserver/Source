@@ -4671,11 +4671,9 @@ bool CItem::SetMagicLock( CChar * pCharSrc, int iSkillLevel )
 bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, CItem * pSourceItem )
 {
 	ADDTOCALLSTACK("CItem::OnSpellEffect");
-	//
 	// A spell is cast on this item.
 	// ARGS:
 	//  iSkillLevel = 0-1000 = difficulty. may be slightly larger . how advanced is this spell (might be from a wand)
-	//
 
 	CScriptTriggerArgs Args( static_cast<int>(spell), iSkillLevel, pSourceItem );
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
@@ -4721,25 +4719,8 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				m_itWeapon.m_spellcharges = 0;
 			}
 
-			// Spells chance of blowing up the wand is based on total energy level.
-
-			int ispellbase = pSpellDef->m_wManaUse;
-			int iChanceToExplode = Calc_GetBellCurve( m_itWeapon.m_spellcharges+3+ispellbase/10, 2 ) / 2;
-			if ( ! Calc_GetRandVal(iChanceToExplode))
-			{
-				// Overcharge will explode !
-				Emote( "overcharged wand explodes" );
-				g_World.Explode( pCharSrc, GetTopLevelObj()->GetTopPoint(),
-					3, 2 + (ispellbase+iSkillLevel)/20,
-					DAMAGE_MAGIC | DAMAGE_GENERAL | DAMAGE_HIT_BLUNT );
-				Delete();
-				return false;
-			}
-			else
-			{
-				m_itWeapon.m_spellcharges++;
-				UpdatePropertyFlag(AUTOTOOLTIP_FLAG_WANDCHARGES);
-			}
+			m_itWeapon.m_spellcharges++;
+			UpdatePropertyFlag(AUTOTOOLTIP_FLAG_WANDCHARGES);
 		}
 	}
 
@@ -4752,121 +4733,105 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	WORD uDamage = 0;
 	switch ( spell )
 	{
-	case SPELL_Dispel_Field:
-	case SPELL_Dispel:
-	case SPELL_Mass_Dispel:
-		switch ( GetType())
-		{
-			case IT_SPELL: // ??? compare the strength of the spells ?
+		case SPELL_Dispel_Field:
+		case SPELL_Dispel:
+		case SPELL_Mass_Dispel:
+			if ( GetType() == IT_SPELL ) // ??? compare the strength of the spells ?
 			{
 				if ( IsTopLevel())
-				{
-					CItem * pItem = CItem::CreateScript( ITEMID_FX_TELE_VANISH, pCharSrc );
-					pItem->MoveToDecay( GetTopPoint(), 2*TICK_PER_SEC );
-				}
+					Effect( EFFECT_XYZ, ITEMID_FX_TELE_VANISH, pCharSrc, 8, 20 );
 				Delete();
-			} break;
-
-			default:
-				break;
-		}
-		break;
-
-	case SPELL_Curse:
-		return false;
-	case SPELL_Bless:
-		return false;
-	case SPELL_Incognito:
-		ClrAttr(ATTR_IDENTIFIED);
-		return true;
-	case SPELL_Lightning:
-		Effect( EFFECT_LIGHTNING, ITEMID_NOTHING, pCharSrc );
-		break;
-	case SPELL_Explosion:
-	case SPELL_Fireball:
-	case SPELL_Fire_Bolt:
-	case SPELL_Fire_Field:
-	case SPELL_Flame_Strike:
-	case SPELL_Meteor_Swarm:
-		uDamage = DAMAGE_FIRE;
-		break;
-
-	case SPELL_Magic_Lock:
-		if ( ! SetMagicLock( pCharSrc, iSkillLevel ))
-			return( false );
-		break;
-
-	case SPELL_Unlock:
-		{
-			int iDifficulty = Use_LockPick( pCharSrc, true, false );
-			if ( iDifficulty < 0 )
-				return( false );
-			bool fSuccess = pCharSrc->Skill_CheckSuccess( SKILL_MAGERY, iDifficulty );
-			Use_LockPick( pCharSrc, false, ! fSuccess );
-			return fSuccess;
-		}
-
-	case SPELL_Mark:
-		if ( pCharSrc == NULL )
+			}
+			break;
+		case SPELL_Bless:
+		case SPELL_Curse:
 			return false;
+		case SPELL_Incognito:
+			ClrAttr(ATTR_IDENTIFIED);
+			return true;
+		case SPELL_Lightning:
+			Effect( EFFECT_LIGHTNING, ITEMID_NOTHING, pCharSrc );
+			break;
+		case SPELL_Explosion:
+		case SPELL_Fireball:
+		case SPELL_Fire_Bolt:
+		case SPELL_Fire_Field:
+		case SPELL_Flame_Strike:
+		case SPELL_Meteor_Swarm:
+			uDamage = DAMAGE_FIRE;
+			break;
 
-		if ( ! pCharSrc->IsPriv(PRIV_GM))
-		{
-			if ( ! IsType(IT_RUNE) && ! IsType(IT_TELEPAD) )
-			{
-				pCharSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_SPELL_RECALL_NOTRUNE) );
-				return false;
-			}
-			if ( GetTopLevelObj() != pCharSrc )
-			{
-				// Prevent people from remarking GM teleport pads if they can't pick it up.
-				pCharSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_SPELL_MARK_CONT) );
-				return false;
-			}
-		}
+		case SPELL_Magic_Lock:
+			if ( ! SetMagicLock( pCharSrc, iSkillLevel ))
+				return( false );
+			break;
 
-		m_itRune.m_pntMark = pCharSrc->GetTopPoint();
-		if ( IsType(IT_RUNE) )
-		{
-			m_itRune.m_Strength = pSpellDef->m_Effect.GetLinear( iSkillLevel );
-			SetName( pCharSrc->m_pArea->GetName() );
-		}
-		break;
-
-	case SPELL_Resurrection:
-		// Should be a corpse .
-		if ( IsType( IT_CORPSE ))
-		{
-			CItemCorpse * pCorpse = dynamic_cast <CItemCorpse*>(this);
-			ASSERT(pCorpse);
-
-			// If the corpse is attached to a player or other disconnected person then yank them back.
-			CChar * pChar = pCorpse->m_uidLink.CharFind();
-			if ( pChar )
+		case SPELL_Unlock:
 			{
-				pChar->Spell_Resurrection(pCorpse);
-			}
-			else
-			{
-				// Just an NPC corpse I guess.
-				pChar = CChar::CreateBasic(m_itCorpse.m_BaseID);
-				if ( pChar == NULL )
+				int iDifficulty = Use_LockPick( pCharSrc, true, false );
+				if ( iDifficulty < 0 )
 					return( false );
-				pChar->NPC_LoadScript(false);
-				pChar->RaiseCorpse(pCorpse);
-				pChar->NPC_CreateTrigger(); //Removed from NPC_LoadScript() and triggered after char placement
+				bool fSuccess = pCharSrc->Skill_CheckSuccess( SKILL_MAGERY, iDifficulty );
+				Use_LockPick( pCharSrc, false, ! fSuccess );
+				return fSuccess;
 			}
-		}
-		break;
-	default:
-		break;
+
+		case SPELL_Mark:
+			if ( pCharSrc == NULL )
+				return false;
+
+			if ( ! pCharSrc->IsPriv(PRIV_GM))
+			{
+				if ( ! IsType(IT_RUNE) && ! IsType(IT_TELEPAD) )
+				{
+					pCharSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_SPELL_RECALL_NOTRUNE) );
+					return false;
+				}
+				if ( GetTopLevelObj() != pCharSrc )
+				{
+					// Prevent people from remarking GM teleport pads if they can't pick it up.
+					pCharSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_SPELL_MARK_CONT) );
+					return false;
+				}
+			}
+
+			m_itRune.m_pntMark = pCharSrc->GetTopPoint();
+			if ( IsType(IT_RUNE) )
+			{
+				m_itRune.m_Strength = pSpellDef->m_Effect.GetLinear( iSkillLevel );
+				SetName( pCharSrc->m_pArea->GetName() );
+			}
+			break;
+
+		case SPELL_Resurrection:
+			if ( IsType( IT_CORPSE ))
+			{
+				CItemCorpse * pCorpse = dynamic_cast <CItemCorpse*>(this);
+				ASSERT(pCorpse);
+
+				// If the corpse is attached to a player or other disconnected person then yank them back.
+				CChar * pChar = pCorpse->m_uidLink.CharFind();
+				if ( pChar )
+					pChar->Spell_Resurrection(pCorpse);
+				else
+				{
+					// Just an NPC corpse I guess.
+					pChar = CChar::CreateBasic(m_itCorpse.m_BaseID);
+					if ( pChar == NULL )
+						return false;
+					pChar->NPC_LoadScript(false);
+					pChar->RaiseCorpse(pCorpse);
+					pChar->NPC_CreateTrigger(); //Removed from NPC_LoadScript() and triggered after char placement
+				}
+			}
+			break;
+		default:
+			break;
 	}
 
 	// ??? Potions should explode when hit (etc..)
 	if ( pSpellDef->IsSpellType( SPELLFLAG_HARM ))
-	{
-		OnTakeDamage( 1, pCharSrc, DAMAGE_HIT_BLUNT | DAMAGE_MAGIC | uDamage );
-	}
+		OnTakeDamage( 1, pCharSrc, DAMAGE_MAGIC|uDamage );
 
 	return( true );
 }
@@ -4875,7 +4840,8 @@ int CItem::Armor_GetRepairPercent() const
 {
 	ADDTOCALLSTACK("CItem::Armor_GetRepairPercent");
 
-	if ( !m_itArmor.m_Hits_Max || ( m_itArmor.m_Hits_Max < m_itArmor.m_Hits_Cur )) return( 100 );
+	if ( !m_itArmor.m_Hits_Max || ( m_itArmor.m_Hits_Max < m_itArmor.m_Hits_Cur ))
+		return( 100 );
  	return( IMULDIV( m_itArmor.m_Hits_Cur, 100, m_itArmor.m_Hits_Max ));
 }
 
@@ -4883,29 +4849,17 @@ LPCTSTR CItem::Armor_GetRepairDesc() const
 {
 	ADDTOCALLSTACK("CItem::Armor_GetRepairDesc");
 	if ( m_itArmor.m_Hits_Cur > m_itArmor.m_Hits_Max )
-	{
 		return g_Cfg.GetDefaultMsg( DEFMSG_ITEMSTATUS_PERFECT );
-	}
 	else if ( m_itArmor.m_Hits_Cur == m_itArmor.m_Hits_Max )
-	{
 		return g_Cfg.GetDefaultMsg( DEFMSG_ITEMSTATUS_FULL );
-	}
 	else if ( m_itArmor.m_Hits_Cur > m_itArmor.m_Hits_Max / 2 )
-	{
 		return g_Cfg.GetDefaultMsg( DEFMSG_ITEMSTATUS_SCRATCHED );
-	}
 	else if ( m_itArmor.m_Hits_Cur > m_itArmor.m_Hits_Max / 3 )
-	{
 		return g_Cfg.GetDefaultMsg( DEFMSG_ITEMSTATUS_WELLWORN );
-	}
 	else if ( m_itArmor.m_Hits_Cur > 3 )
-	{
 		return g_Cfg.GetDefaultMsg( DEFMSG_ITEMSTATUS_BADLY );
-	}
 	else
-	{
 		return g_Cfg.GetDefaultMsg( DEFMSG_ITEMSTATUS_FALL_APART );
-	}
 }
 
 int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType, int iDmgPhysical, int iDmgFire, int iDmgCold, int iDmgPoison, int iDmgEnergy )

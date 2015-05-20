@@ -3634,7 +3634,6 @@ public:
 	bool Fight_Clear( const CChar * pCharTarg , bool bForced = false );
 	void Fight_ClearAll();
 	CChar * Fight_FindBestTarget();
-	bool Fight_AttackNext();
 	void Fight_HitTry();
 	WAR_SWING_TYPE Fight_Hit( CChar * pCharTarg );
 	int  Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom = false, bool bGetMax = true ) const;

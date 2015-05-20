@@ -20,37 +20,29 @@ void CChar::Action_StartSpecial( CREID_TYPE id )
 	// Water = put out fire !
 
 	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
-	{
 		UpdateAnimate( ANIM_CAST_AREA );
-	}
 
 	switch ( id )
 	{
 		case CREID_FIRE_ELEM:
-			// leave a fire patch.
 			{
+				// Leave a fire path
 				CItem * pItem = CItem::CreateScript( Calc_GetRandVal(2) ? ITEMID_FX_FIRE_F_EW : ITEMID_FX_FIRE_F_NS, this );
 				ASSERT(pItem);
-				pItem->SetType( IT_FIRE );
-				pItem->m_itSpell.m_spell = SPELL_Fire_Field;
+				pItem->SetType(IT_FIRE);
+				pItem->m_itSpell.m_spell = static_cast<WORD>(SPELL_Fire_Field);
 				pItem->m_itSpell.m_spelllevel = static_cast<WORD>(100 + Calc_GetRandVal(500));
 				pItem->m_itSpell.m_spellcharges = 1;
-				pItem->m_uidLink = GetUID();	// Link it back to you
-				pItem->MoveToDecay( GetTopPoint(), 30*TICK_PER_SEC + Calc_GetRandVal(60*TICK_PER_SEC));
+				pItem->m_uidLink = GetUID();	// link it back to you
+				pItem->MoveToDecay( GetTopPoint(), Calc_GetRandVal(60)*TICK_PER_SEC );
 			}
 			break;
 
 		case CREID_GIANT_SPIDER:
-			// Leave a web patch.
 			{
-				static const WORD sm_Webs[] =
-				{
-					ITEMID_WEB1_1,
-					ITEMID_WEB1_1 + 1,
-					ITEMID_WEB1_1 + 2,
-					ITEMID_WEB1_4
-				};
-				CItem * pItem = CItem::CreateScript( (ITEMID_TYPE) sm_Webs[ Calc_GetRandVal( COUNTOF(sm_Webs))], this );
+				// Leave a web path
+				CItem * pItem = CItem::CreateScript( static_cast<ITEMID_TYPE>(Calc_GetRandVal2(ITEMID_WEB1_1, ITEMID_WEB1_4)), this );
+				ASSERT(pItem);
 				pItem->SetType(IT_WEB);
 				pItem->MoveToCheck( GetTopPoint(), this );
 				pItem->SetDecayTime( 3*60*TICK_PER_SEC );
@@ -62,10 +54,8 @@ void CChar::Action_StartSpecial( CREID_TYPE id )
 			return;	// No special ability.
 	}
 
-	// loss of stamina for a bit.
-	UpdateStatVal( STAT_DEX, -( 5 + Calc_GetRandVal(5)));	// The cost in stam.
+	UpdateStatVal( STAT_DEX, -( 5 + Calc_GetRandVal(5)));	// the stamina cost
 }
-
 
 void CChar::Stat_AddMod( STAT_TYPE i, short iVal )
 {
@@ -74,7 +64,6 @@ void CChar::Stat_AddMod( STAT_TYPE i, short iVal )
 	m_Stat[i].m_mod	+= iVal;
 	UpdateStatsFlag();
 }
-
 
 void CChar::Stat_SetMod( STAT_TYPE i, short iVal )
 {
@@ -133,14 +122,8 @@ void CChar::Stat_SetMax( STAT_TYPE i, int iVal )
 	ADDTOCALLSTACK("CChar::Stat_SetMax");
 	ASSERT(i >= 0 && i < STAT_QTY); // allow for food
 
-	if ( g_Cfg.m_iStatFlag && (
-		( g_Cfg.m_iStatFlag&STAT_FLAG_DENYMAX ) ||
-		( m_pPlayer && g_Cfg.m_iStatFlag&STAT_FLAG_DENYMAXP ) ||
-		( m_pNPC && g_Cfg.m_iStatFlag&STAT_FLAG_DENYMAXN )
-	   ))
-	{
+	if ( g_Cfg.m_iStatFlag && ((g_Cfg.m_iStatFlag & STAT_FLAG_DENYMAX) || (m_pPlayer && g_Cfg.m_iStatFlag & STAT_FLAG_DENYMAXP) ||	(m_pNPC && g_Cfg.m_iStatFlag & STAT_FLAG_DENYMAXN)) )
 		m_Stat[i].m_max = 0;
-	}
 	else
 	{
 		int iStatVal = Stat_GetMax(static_cast<STAT_TYPE>(i));
@@ -160,20 +143,13 @@ void CChar::Stat_SetMax( STAT_TYPE i, int iVal )
 			}
 		}
 		m_Stat[i].m_max = iVal;
-		switch ( i )
-		{
-			case STAT_STR:
-				UpdateHitsFlag();
-				break;
-			case STAT_INT:
-				UpdateManaFlag();
-				break;
-			case STAT_DEX:
-				UpdateStamFlag();
-				break;
-			default:
-				break;
-		}
+
+		if ( i == STAT_STR )
+			UpdateHitsFlag();
+		else if ( i == STAT_INT )
+			UpdateManaFlag();
+		else if ( i == STAT_DEX )
+			UpdateStamFlag();
 	}
 }
 
@@ -184,11 +160,11 @@ int CChar::Stat_GetMax( STAT_TYPE i ) const
 	ASSERT(i >= 0 && i < STAT_QTY); // allow for food
 	if ( m_Stat[i].m_max < 1 )
 	{
-		if (i == STAT_FOOD)
+		if ( i == STAT_FOOD )
 		{
-			CCharBase* pCharDef = Char_GetDef();
+			CCharBase * pCharDef = Char_GetDef();
 			ASSERT(pCharDef);
-			val=pCharDef->m_MaxFood;
+			val = pCharDef->m_MaxFood;
 		}
 		else
 			val	= Stat_GetAdjusted(i);
@@ -200,24 +176,18 @@ int CChar::Stat_GetMax( STAT_TYPE i ) const
 		}
 		return (val < 0 ? (m_pPlayer ? 1 : 0) : val);
 	}
-	val	=  m_Stat[i].m_max;
+	val	= m_Stat[i].m_max;
 	if ( i >= STAT_BASE_QTY )
 		val += m_Stat[i].m_mod;
-
-	if ( val < 0 )
-		return ( m_pPlayer ? 1 : 0 );
-	return val;
+	return (val < 0 ? (m_pPlayer ? 1 : 0) : val);
 }
 
 int CChar::Stat_GetSum() const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetSum");
 	int iStatSum = 0;
-
 	for ( int i = 0; i < STAT_BASE_QTY; i++ )
-	{
 		iStatSum += Stat_GetBase(static_cast<STAT_TYPE>(i));
-	}
 
 	return( iStatSum );
 }
@@ -226,20 +196,11 @@ short CChar::Stat_GetAdjusted( STAT_TYPE i ) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetAdjusted");
 	short val = Stat_GetBase(i) + Stat_GetMod(i);
-	if ( i == STAT_FAME )
-	{
-		if ( val < 0 )
-			val = 0;
-		else if ( val > g_Cfg.m_iMaxFame )
-			val = static_cast<short>(g_Cfg.m_iMaxFame);
-	}
-	else if ( i == STAT_KARMA )
-	{
-		if ( val < g_Cfg.m_iMinKarma )
-			val = static_cast<short>(g_Cfg.m_iMinKarma);
-		else if ( val > g_Cfg.m_iMaxKarma )
-			val = static_cast<short>(g_Cfg.m_iMaxKarma);
-	}
+	if ( i == STAT_KARMA )
+		val = static_cast<short>(maximum(g_Cfg.m_iMinKarma, minimum(g_Cfg.m_iMaxKarma, val)));
+	else if ( i == STAT_FAME )
+		val = static_cast<short>(maximum(0, minimum(g_Cfg.m_iMaxFame, val)));
+
 	return val;
 }
 
@@ -252,7 +213,6 @@ short CChar::Stat_GetBase( STAT_TYPE i ) const
 		return 0;
 	return m_Stat[i].m_base;
 }
-
 
 void CChar::Stat_AddBase( STAT_TYPE i, short iVal )
 {
@@ -268,7 +228,7 @@ void CChar::Stat_SetBase( STAT_TYPE i, short iVal )
 	int iStatVal = Stat_GetBase(static_cast<STAT_TYPE>(i));
 	if (IsTrigUsed(TRIGGER_STATCHANGE) && !g_Serv.IsLoading() && !IsTriggerActive("CREATE"))
 	{
-		// Only Str, Dex, Int, Food fire @Statchange here
+		// Only Str, Dex, Int, Food fire @StatChange here
 		if (i >= STAT_STR && i <= STAT_FOOD)
 		{
 			CScriptTriggerArgs args;
@@ -297,34 +257,31 @@ void CChar::Stat_SetBase( STAT_TYPE i, short iVal )
 		case STAT_STR:
 			{
 				CCharBase * pCharDef = Char_GetDef();
-		
 				if ( pCharDef && !pCharDef->m_Str )
 					pCharDef->m_Str = iVal;
-			}
-			break;
-		case STAT_DEX:
-			{
-				CCharBase * pCharDef = Char_GetDef();
-		
-				if ( pCharDef && !pCharDef->m_Dex )
-					pCharDef->m_Dex = iVal;
 			}
 			break;
 		case STAT_INT:
 			{
 				CCharBase * pCharDef = Char_GetDef();
-		
 				if ( pCharDef && !pCharDef->m_Int )
 					pCharDef->m_Int = iVal;
 			}
 			break;
-		case STAT_KARMA:		// m_iMinKarma to m_iMaxKarma
+		case STAT_DEX:
+			{
+				CCharBase * pCharDef = Char_GetDef();
+				if ( pCharDef && !pCharDef->m_Dex )
+					pCharDef->m_Dex = iVal;
+			}
+			break;
+		case STAT_FOOD:
+			break;
+		case STAT_KARMA:
 			iVal = static_cast<short>(maximum(g_Cfg.m_iMinKarma, minimum(g_Cfg.m_iMaxKarma, iVal)));
 			break;
 		case STAT_FAME:
 			iVal = static_cast<short>(maximum(0, minimum(g_Cfg.m_iMaxFame, iVal)));
-			break;
-		case STAT_FOOD:
 			break;
 		default:
 			throw CGrayError(LOGL_CRIT, 0, "Stat_SetBase: index out of range");
@@ -344,14 +301,14 @@ short CChar::Stat_GetLimit( STAT_TYPE i ) const
 
 	if ( m_pPlayer )
 	{
-		const CSkillClassDef* pSkillClass = m_pPlayer->GetSkillClass();
+		const CSkillClassDef * pSkillClass = m_pPlayer->GetSkillClass();
 		ASSERT(pSkillClass);
 		if ( i == STAT_QTY )
 		{
 			pTagStorage = GetKey("OVERRIDE.STATSUM", true);
 			return pTagStorage ? (static_cast<short>(pTagStorage->GetValNum())) : pSkillClass->m_StatSumMax;
 		}
-		ASSERT( i>=0 && i<STAT_BASE_QTY );
+		ASSERT( i >= 0 && i < STAT_BASE_QTY );
 
 		sprintf(sStatName, "OVERRIDE.STATCAP_%d", static_cast<int>(i));
 		int iStatMax;
@@ -360,14 +317,13 @@ short CChar::Stat_GetLimit( STAT_TYPE i ) const
 		else
 			iStatMax = pSkillClass->m_StatMax[i];
 
-
 		if ( m_pPlayer->Stat_GetLock(i) >= SKILLLOCK_DOWN )
 		{
 			int iStatLevel = Stat_GetBase(i);
 			if ( iStatLevel < iStatMax )
 				iStatMax = iStatLevel;
 		}
-		return(static_cast<short>(iStatMax));
+		return( iStatMax );
 	}
 	else
 	{
@@ -382,14 +338,14 @@ short CChar::Stat_GetLimit( STAT_TYPE i ) const
 		if ( (pTagStorage = GetKey(sStatName, true)) != NULL )
 			iStatMax = static_cast<int>(pTagStorage->GetValNum());
 
-		return static_cast<short>(iStatMax);
+		return( iStatMax );
 	}
 }
 
 //----------------------------------------------------------------------
 // Skills
 
-SKILL_TYPE CChar::Skill_GetBest( unsigned int iRank ) const // Which skill is the highest for character p
+SKILL_TYPE CChar::Skill_GetBest( unsigned int iRank ) const
 {
 	ADDTOCALLSTACK("CChar::Skill_GetBest");
 	// Get the top n best skills.
@@ -429,28 +385,23 @@ SKILL_TYPE CChar::Skill_GetMagicRandom(unsigned short iVal)
 	// Retrieves a random magic skill, if iVal is set it will only select from the ones with value > iVal
 	ADDTOCALLSTACK("CChar::Skill_GetMagicRandom");
 	SKILL_TYPE skills[SKILL_QTY];
-	char count = 0;
-	for ( char i = 0; i < SKILL_QTY; i++)
+	int count = 0;
+	for ( char i = 0; i < SKILL_QTY; i++ )
 	{
 		SKILL_TYPE skill = static_cast<SKILL_TYPE>(i);
-		const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(skill);
-		if (!pSkillDef)
+		if (!g_Cfg.IsSkillFlag(skill, SKF_MAGIC))
 			continue;
-		if (g_Cfg.IsSkillFlag(skill, SKF_MAGIC))
-		{
-			if (Skill_GetBase(skill) < iVal)
-				continue;
 
-			++count;
-			skills[static_cast<SKILL_TYPE>(count)] = skill;
-		}
+		if (Skill_GetBase(skill) < iVal)
+			continue;
+
+		++count;
+		skills[static_cast<SKILL_TYPE>(count)] = skill;
 	}
-	if (count > 0)
-	{
-		char rand = Calc_GetRandVal2(1, count);
-		return skills[static_cast<SKILL_TYPE>(rand)];
-	}
-	return SKILL_NONE;
+	if ( count )
+		return skills[static_cast<SKILL_TYPE>(Calc_GetRandVal2(1, count))];
+	else
+		return SKILL_NONE;
 }
 
 SKILL_TYPE CChar::Skill_GetMagicBest()
@@ -458,21 +409,17 @@ SKILL_TYPE CChar::Skill_GetMagicBest()
 	ADDTOCALLSTACK("CChar::Skill_GetMagicBest");
 	SKILL_TYPE skill = SKILL_NONE;
 	int value = 0;
-	for (char i = 0; i < SKILL_QTY; i++)
+	for ( char i = 0; i < SKILL_QTY; i++ )
 	{
-		SKILL_TYPE test = static_cast<SKILL_TYPE>(i);
-		const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(skill);
-		if (!pSkillDef)
+		if (!g_Cfg.IsSkillFlag(skill, SKF_MAGIC))
 			continue;
 
-		if (g_Cfg.IsSkillFlag(skill, SKF_MAGIC))
+		SKILL_TYPE test = static_cast<SKILL_TYPE>(i);
+		int iVal = Skill_GetBase(test);
+		if (iVal > value)
 		{
-			int iVal = Skill_GetBase(test);
-			if (iVal > value)
-			{
-				skill = test;
-				value = iVal;
-			}
+			skill = test;
+			value = iVal;
 		}
 	}
 	return skill;
@@ -531,34 +478,28 @@ void CChar::Skill_SetBase( SKILL_TYPE skill, int iValue )
 {
 	ADDTOCALLSTACK("CChar::Skill_SetBase");
 	ASSERT( IsSkillBase(skill));
-	if ( iValue < 0 ) iValue = 0;
+	if ( iValue < 0 )
+		iValue = 0;
+
 	if ( IsTrigUsed(TRIGGER_SKILLCHANGE) )
 	{
 		CScriptTriggerArgs args;
-		args.m_iN1 = static_cast<INT64>(skill);
-		args.m_iN2 = iValue;
+		args.m_iN1 = static_cast<long long>(skill);
+		args.m_iN2 = static_cast<long long>(iValue);
 		if ( OnTrigger(CTRIG_SkillChange, this, &args) == TRIGRET_RET_TRUE )
 			return;
 
 		iValue = static_cast<int>(args.m_iN2);
 	}
 	m_Skill[skill] = iValue;
+
 	if ( IsClient())
-	{
-		// Update the skills list
-		m_pClient->addSkillWindow(skill);
-	}
+		m_pClient->addSkillWindow(skill);	// update the skills list
+
 	if (IsSetCombatFlags(COMBAT_OSIDAMAGEMOD))
 	{
-		switch (skill)
-		{
-			case SKILL_ANATOMY:
-			case SKILL_LUMBERJACKING:
-			case SKILL_TACTICS:
-				UpdateStatsFlag();
-			default:
-				break;
-		}
+		if ( skill == SKILL_ANATOMY || skill == SKILL_TACTICS || skill == SKILL_LUMBERJACKING )
+			UpdateStatsFlag();		// those skills are used to calculate the char damage bonus, so we must update the client status gump
 	}
 }
 
@@ -571,7 +512,7 @@ int CChar::Skill_GetMax( SKILL_TYPE skill, bool ignoreLock ) const
 	// What is my max potential in this skill ?
 	if ( m_pPlayer )
 	{
-		const CSkillClassDef* pSkillClass = m_pPlayer->GetSkillClass();
+		const CSkillClassDef * pSkillClass = m_pPlayer->GetSkillClass();
 		ASSERT(pSkillClass);
 
 		if ( skill == SKILL_MAX )
@@ -622,11 +563,8 @@ int CChar::Skill_GetSum() const
 {
 	ADDTOCALLSTACK("CChar::Skill_GetSum");
 	int iSkillSum = 0;
-
 	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
-	{
 		iSkillSum += Skill_GetBase(static_cast<SKILL_TYPE>(i));
-	}
 
 	return( iSkillSum );
 }
@@ -639,17 +577,17 @@ void CChar::Skill_Decay()
 	SKILL_TYPE skillDeduct = SKILL_NONE;
 	int iSkillLevel = 0;
 
-	// look for a skill to deduct from
+	// Look for a skill to deduct from
 	for (size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i)
 	{
 		if ( g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) == false )
 			continue;
 
-		// check that the skill is set to decrease and that it is not already at 0
+		// Check that the skill is set to decrease and that it is not already at 0
 		if ( Skill_GetLock(static_cast<SKILL_TYPE>(i)) != SKILLLOCK_DOWN || Skill_GetBase(static_cast<SKILL_TYPE>(i)) <= 0 )
 			continue;
 
-		// prefer to deduct from lesser skills
+		// Prefer to deduct from lesser skills
 		if ( skillDeduct != SKILL_NONE && iSkillLevel > Skill_GetBase(static_cast<SKILL_TYPE>(i)))
 			continue;
 
@@ -672,7 +610,6 @@ void CChar::Skill_Decay()
 	if ( skillDeduct != SKILL_NONE )
 	{
 		iSkillLevel--;
-
 		Skill_SetBase(skillDeduct, iSkillLevel);
 	}
 }
@@ -685,7 +622,6 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 	//
 	// ARGS:
 	//  difficulty = skill target from 0-100
-	//
 
 	if ( !IsSkillBase(skill) || !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) )
 		return;
@@ -697,8 +633,6 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 		return;
 
 	difficulty *= 10;
-	int iSkillLevel = Skill_GetBase( skill );
-
 	if ( difficulty < 1 )
 		difficulty = 1;
 	else if ( difficulty > 1000 )
@@ -707,39 +641,34 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 	if ( m_pPlayer )
 	{
 		int iSkillSum = 0;
-		int iSkillSumMax = Skill_GetMax(SKILL_MAX);
-
 		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
-		{
 			iSkillSum += Skill_GetBase(static_cast<SKILL_TYPE>(i));
-		}
 
-		if ( iSkillSum >= iSkillSumMax )
+		if ( iSkillSum >= Skill_GetMax(SKILL_MAX) )
 			difficulty = 0;
 	}
 
-	INT64 iSkillMax = Skill_GetMax(skill);	// max advance for this skill.
-
-	// ex. ADV_RATE=2000,500,25 for ANATOMY (easy)
-	// ex. ADV_RATE=8000,2000,100 for alchemy (hard)
-	// assume 100 = a 1 for 1 gain.
+	// ex. ADV_RATE=2000,500,25 -> easy
+	// ex. ADV_RATE=8000,2000,100 -> hard
+	// Assume 100 = a 1 for 1 gain
 	// ex: 8000 = we must use it 80 times to gain .1
 	// Higher the number = the less probable to advance.
 	// Extrapolate a place in the range.
 
 	// give a bonus or a penalty if the task was too hard or too easy.
-	int iSkillAdj = iSkillLevel + ( iSkillLevel - difficulty );
-
 	// no gain at all if it was WAY TOO easy
+	int iSkillLevel = Skill_GetBase( skill );
 	int iGainRadius = pSkillDef->m_GainRadius;
-
 	if ((iGainRadius > 0) && ((difficulty + iGainRadius) < iSkillLevel))
 	{
 		if ( GetKeyNum("NOSKILLMSG", true) )
 			SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_GAINRADIUS_NOT_MET) );
 		return;
 	}
+
+	int iSkillAdj = iSkillLevel + ( iSkillLevel - difficulty );
 	INT64 iChance = pSkillDef->m_AdvRate.GetChancePercent( iSkillAdj );
+	INT64 iSkillMax = Skill_GetMax(skill);	// max advance for this skill.
 
 	CScriptTriggerArgs pArgs( 0 , iChance, iSkillMax);
 	if ( IsTrigUsed(TRIGGER_SKILLGAIN) )
@@ -752,14 +681,13 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 		if ( Skill_OnTrigger( skill, SKTRIG_GAIN, &pArgs ) == TRIGRET_RET_TRUE )
 			return;
 	}
-	pArgs.getArgNs(0,&iChance,&iSkillMax);
+	pArgs.getArgNs( 0, &iChance, &iSkillMax );
 
 	if ( iChance <= 0 )
-		return; // less than no chance ?
+		return;
 
 	int iRoll = Calc_GetRandVal(1000);
-
-	if ( iSkillLevel < iSkillMax ) // Are we in position to gain skill ?
+	if ( iSkillLevel < iSkillMax )	// are we in position to gain skill ?
 	{
 		// slightly more chance of decay than gain
 		if ( (iRoll * 3) <= (iChance * 4) )
@@ -782,7 +710,6 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 			if ( iRoll <= iChance )
 			{
 				iSkillLevel++;
-
 				Skill_SetBase( skill, iSkillLevel );
 			}
 		}
@@ -795,47 +722,45 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 	int iStatCap = Stat_GetLimit(STAT_QTY);
 
 	// Stat effects are unrelated to advance in skill !
-	for ( int i=STAT_STR; i<STAT_BASE_QTY; i++ )
+	for ( int i = STAT_STR; i < STAT_BASE_QTY; i++ )
 	{
 		// Can't gain STR or DEX if morphed.
 		if ( IsStatFlag( STATF_Polymorph ) && i != STAT_INT )
 			continue;
 
-		if ( !Stat_GetLock((STAT_TYPE)i) == SKILLLOCK_UP)
+		if ( !Stat_GetLock(static_cast<STAT_TYPE>(i)) == SKILLLOCK_UP)
 			continue;
 
 		int iStatVal = Stat_GetBase(static_cast<STAT_TYPE>(i));
 		if ( iStatVal <= 0 )	// some odd condition
 			continue;
 
-		if (iStatSum >= iStatCap)	//We have already reached our stat cap
+		if (iStatSum >= iStatCap)	// stat cap already reached
 			break;
 
 		int iStatMax = Stat_GetLimit(static_cast<STAT_TYPE>(i));
 		if ( iStatVal >= iStatMax )
 			continue;	// nothing grows past this. (even for NPC's)
-		// You will tend toward these stat vals if you use this skill a lot.
+
+		// You will tend toward these stat vals if you use this skill a lot
 		int iStatTarg = pSkillDef->m_Stat[i];
 		if ( iStatVal >= iStatTarg )
-			continue;		// you've got higher stats than this skill is good for.
+			continue;		// you've got higher stats than this skill is good for
 
-		// ??? Building stats should consume food !!
-
+		// Adjust the chance by the percent of this that the skill uses
 		difficulty = IMULDIV( iStatVal, 1000, iStatTarg );
 		iChance = g_Cfg.m_StatAdv[i].GetChancePercent( difficulty );
-
-		// adjust the chance by the percent of this that the skill uses.
-		if (pSkillDef->m_StatPercent)
+		if ( pSkillDef->m_StatPercent )
 			iChance = ( iChance * pSkillDef->m_StatBonus[i] * pSkillDef->m_StatPercent ) / 10000;
 
-		if (iChance == 0)
+		if ( iChance == 0 )
 			continue;
-		iRoll = Calc_GetRandVal(1000);
 
-		bool decrease = Stat_Decrease((STAT_TYPE)i, skill);
+		bool decrease = Stat_Decrease(static_cast<STAT_TYPE>(i), skill);
 		if (decrease)
 			iStatSum = Stat_GetSum();
-		if ( iRoll <= iChance && decrease )
+
+		if ( iChance > Calc_GetRandVal(1000) && decrease )
 		{
 			Stat_SetBase(static_cast<STAT_TYPE>(i), static_cast<short>(iStatVal + 1));
 			break;
@@ -849,25 +774,24 @@ bool CChar::Stats_Regen(INT64 iTimeDiff)
 	// Food decay called here too.
 	// calling @RegenStat for each stat if proceed.
 	// iTimeDiff is the next tick the stats are going to regen.
+
 	for (STAT_TYPE i = STAT_STR; i <= STAT_FOOD; i = static_cast<STAT_TYPE>(i + 1))
 	{
 		int iRate = Stats_GetRegenVal(i, true);
-
-		m_Stat[i].m_regen += static_cast<unsigned short>(iTimeDiff);
-
-		// Regen OVERRIDE
-		int mod = Stats_GetRegenVal(i,false);
 		if (iRate < 0)
 			iRate = 0;
+
+		int mod = Stats_GetRegenVal(i,false);
 		if (i == STAT_STR && g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE && IsHuman())
 			mod += 2;		// Humans always have +2 hitpoint regeneration (racial traits)
 
+		m_Stat[i].m_regen += static_cast<unsigned short>(iTimeDiff);
 		if (m_Stat[i].m_regen < iRate)
 			continue;
 
 		int StatLimit = Stat_GetMax(i);
-
 		int HitsHungerLoss = g_Cfg.m_iHitsHungerLoss ? g_Cfg.m_iHitsHungerLoss : 0;
+
 		if (IsTrigUsed(TRIGGER_REGENSTAT))
 		{
 			CScriptTriggerArgs Args;
@@ -876,16 +800,18 @@ bool CChar::Stats_Regen(INT64 iTimeDiff)
 			Args.m_VarsLocal.SetNum("StatLimit", StatLimit, true);
 			if (i == STAT_FOOD)
 				Args.m_VarsLocal.SetNum("HitsHungerLoss", HitsHungerLoss);
+
 			if (OnTrigger(CTRIG_RegenStat, this, &Args) == TRIGRET_RET_TRUE)
 			{
 				m_Stat[i].m_regen = 0;
 				continue;
 			}
+
 			i = static_cast<STAT_TYPE>(Args.m_VarsLocal.GetKeyNum("StatID", true));
-			if (i > STAT_FOOD)
-				i = STAT_FOOD;
 			if (i < STAT_STR)
 				i = STAT_STR;
+			else if (i > STAT_FOOD)
+				i = STAT_FOOD;
 			mod = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Value", true));
 			StatLimit = static_cast<int>(Args.m_VarsLocal.GetKeyNum("StatLimit", true));
 			if (i == STAT_FOOD)
@@ -909,34 +835,37 @@ unsigned short CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool bGetTicks)
 	// Return regen rates and regen val for the given stat.
 	// bGetTicks = true returns the regen ticks
 	// bGetTicks = false returns the values of regeneration.
-	int iRate = g_Cfg.m_iRegenRate[iStat];		// in TICK_PER_SEC
+	
 	LPCTSTR stat;
 	switch (static_cast<STAT_TYPE>(iStat))
 	{
-	case STAT_STR:
-		stat = "HITS";
-		break;
-	case STAT_INT:
-		stat = "MANA";
-		break;
-	case STAT_DEX:
-		stat = "STAM";
-		break;
-	case STAT_FOOD:
-		stat = "FOOD";
-		break;
+		case STAT_STR:
+			stat = "HITS";
+			break;
+		case STAT_INT:
+			stat = "MANA";
+			break;
+		case STAT_DEX:
+			stat = "STAM";
+			break;
+		case STAT_FOOD:
+			stat = "FOOD";
+			break;
 	}
+
 	if (iStat <= STAT_FOOD)
 	{
 		char sRegen[21];
 		if (bGetTicks == true)
 		{
+			int iRate = g_Cfg.m_iRegenRate[iStat];	// in TICK_PER_SEC
 			sprintf(sRegen, "REGEN%s", stat);
 			if (GetDefNum(sRegen, false))
 				iRate -= static_cast<int>(GetDefNum(sRegen, false)) * TICK_PER_SEC;
 			return iRate;
 		}
-		else {
+		else
+		{
 			sprintf(sRegen, "REGENVAL%s", stat);
 			return static_cast<int>(maximum(1, GetDefNum(sRegen, true)));
 		}
@@ -948,61 +877,59 @@ bool CChar::Stat_Decrease(STAT_TYPE stat, SKILL_TYPE skill)
 {
 	// Stat to decrease
 	// Skill = is this being called from Skill_Gain? if so we check this skill's bonuses.
+	if ( !m_pPlayer )
+		return false;
 
 	// Check for stats degrade.
-	if (IsPriv(PRIV_GM))	// Faking the stat_gain, return true will allow stat to raise but the GM won't lose stat points
-		return true;
 	int iStatSumAvg = Stat_GetLimit(STAT_QTY);
 	int iStatSum = Stat_GetSum() + 1;	// +1 here assuming we are going to have +1 stat at some point thus we are calling this function
-	const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(skill);
-
-	if (iStatSum < iStatSumAvg)	//No need to lower any stat.
+	if (iStatSum < iStatSumAvg)		//No need to lower any stat.
 		return true;
+
 	int iminval;
-	if (skill)
+	if ( skill )
 		iminval = Stat_GetMax(stat);
 	else
 		iminval = Stat_GetAdjusted(stat);
 
-	if (m_pPlayer && iStatSum > iStatSumAvg)
+	// We are at a point where our skills can degrade a bit.
+	int iStatSumMax = iStatSumAvg + iStatSumAvg / 4;
+	int iChanceForLoss = Calc_GetSCurve(iStatSumMax - iStatSum, (iStatSumMax - iStatSumAvg) / 4);
+	if ( iChanceForLoss > Calc_GetRandVal(1000) )
 	{
-		// We are at a point where our skills can degrade a bit.
-		// In theory magical enhancements make us lazy !
-
-		int iStatSumMax = iStatSumAvg + iStatSumAvg / 4;
-		int iChanceForLoss = Calc_GetSCurve(iStatSumMax - iStatSum, (iStatSumMax - iStatSumAvg) / 4);
-		int iRoll = Calc_GetRandVal(1000);
-
-		if (iRoll < iChanceForLoss)
+		// Find the stat that was used least recently and degrade it.
+		int imin = -1;
+		int ival = 0;
+		for ( int i = STAT_STR; i<STAT_BASE_QTY; i++ )
 		{
-			// Find the stat that was used least recently and degrade it.
-			int imin = -1;
-			int ival = 0;
-			for (int i = STAT_STR; i<STAT_BASE_QTY; i++)
-			{
-				if ((STAT_TYPE)i == stat)
-					continue;
-				if (!Stat_GetLock((STAT_TYPE)i) == SKILLLOCK_DOWN)
-					continue;
-				if (skill)
-					ival = pSkillDef->m_StatBonus[i];
-				else
-					ival = Stat_GetBase((STAT_TYPE)i);
-				if ( iminval > ival )
-				{
-					imin = i;
-					iminval = ival;
-				}
-			}
+			if ( static_cast<STAT_TYPE>(i) == stat )
+				continue;
+			if ( !Stat_GetLock( static_cast<STAT_TYPE>(i) ) == SKILLLOCK_DOWN )
+				continue;
 
-			if (imin < 0)
-				return false;
-			int iStatVal = Stat_GetBase(static_cast<STAT_TYPE>(imin));
-			if (iStatVal > 10)
+			if ( skill )
 			{
-				Stat_SetBase(static_cast<STAT_TYPE>(imin), static_cast<short>(iStatVal - 1));
-				return true;
+				const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(skill);
+				ival = pSkillDef->m_StatBonus[i];
 			}
+			else
+				ival = Stat_GetBase( static_cast<STAT_TYPE>(i) );
+
+			if ( iminval > ival )
+			{
+				imin = i;
+				iminval = ival;
+			}
+		}
+
+		if ( imin < 0 )
+			return false;
+
+		int iStatVal = Stat_GetBase(static_cast<STAT_TYPE>(imin));
+		if ( iStatVal > 10 )
+		{
+			Stat_SetBase(static_cast<STAT_TYPE>(imin), static_cast<short>(iStatVal - 1));
+			return true;
 		}
 	}
 	return false;
@@ -1020,7 +947,7 @@ bool CChar::Skill_CheckSuccess( SKILL_TYPE skill, int difficulty, bool bUseBellC
 	// RETURN:
 	//	true = success in skill.
 
-	if  (IsPriv( PRIV_GM ))
+	if  ( IsPriv(PRIV_GM) && skill != SKILL_PARRYING )	// GM's can't always succeed Parrying or they won't receive any damage on combat even without STATF_Invul set
 		return( true );
 
 	if ( !IsSkillBase(skill) || difficulty < 0 )	// auto failure.
@@ -1051,7 +978,7 @@ bool CChar::Skill_UseQuick( SKILL_TYPE skill, INT64 difficulty, bool bAllowGain,
 	if ( IsTrigUsed(TRIGGER_SKILLUSEQUICK) )
 	{
 		ret = Skill_OnCharTrigger( skill, CTRIG_SkillUseQuick, &pArgs );
-		pArgs.getArgNs(0,&difficulty,&result);
+		pArgs.getArgNs( 0, &difficulty, &result);
 
 		if ( ret == TRIGRET_RET_TRUE )
 			return( true );
@@ -1061,7 +988,7 @@ bool CChar::Skill_UseQuick( SKILL_TYPE skill, INT64 difficulty, bool bAllowGain,
 	if ( IsTrigUsed(TRIGGER_USEQUICK) )
 	{
 		ret = Skill_OnTrigger( skill, SKTRIG_USEQUICK, &pArgs );
-		pArgs.getArgNs(0,&difficulty,&result);
+		pArgs.getArgNs( 0, &difficulty, &result );
 
 		if ( ret == TRIGRET_RET_TRUE )
 			return( true );
@@ -1069,28 +996,27 @@ bool CChar::Skill_UseQuick( SKILL_TYPE skill, INT64 difficulty, bool bAllowGain,
 			return( false );
 	}
 	
-	if ( ! result )
+	if ( result )	// success
+	{
+		if ( bAllowGain )
+			Skill_Experience( skill, static_cast<int>(difficulty) );
+		return( true );
+	}
+	else			// fail
 	{
 		if ( bAllowGain )
 			Skill_Experience( skill, static_cast<int>(-difficulty) );
-
 		return( false );
 	}
-	if ( bAllowGain )
-		Skill_Experience( skill, static_cast<int>(difficulty) );
-
-	return( true );
 }
 
 void CChar::Skill_Cleanup()
 {
 	ADDTOCALLSTACK("CChar::Skill_Cleanup");
-	// We are done with the skill.
-	// We may have succeeded, failed, or cancelled.
+	// We are done with the skill (succeeded / failed / aborted)
 	m_Act_Difficulty = 0;
 	m_Act_SkillCurrent = SKILL_NONE;
-
-	SetTimeout( m_pPlayer ? -1 : TICK_PER_SEC ); // we should get a brain tick next time.
+	SetTimeout( m_pPlayer ? -1 : TICK_PER_SEC );	// we should get a brain tick next time
 }
 
 LPCTSTR CChar::Skill_GetName( bool fUse ) const
@@ -1100,15 +1026,12 @@ LPCTSTR CChar::Skill_GetName( bool fUse ) const
 
 	SKILL_TYPE skill = Skill_GetActive();
 	if ( skill <= SKILL_NONE )
-	{
 		return( "Idling" );
-	}
+
 	if ( IsSkillBase(skill))
 	{
-		if ( ! fUse )
-		{
+		if ( !fUse )
 			return( g_Cfg.GetSkillKey(skill));
-		}
 
 		TCHAR * pszText = Str_GetTemp();
 		sprintf( pszText, "%s %s", g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_USING), g_Cfg.GetSkillKey(skill));
@@ -1117,24 +1040,24 @@ LPCTSTR CChar::Skill_GetName( bool fUse ) const
 
 	switch ( skill )
 	{
-		case NPCACT_FOLLOW_TARG: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_FOLLOWING) );
-		case NPCACT_STAY: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_STAYING) );
-		case NPCACT_GOTO: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GOINGTO) );
-		case NPCACT_WANDER: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_WANDERING) );
-		case NPCACT_FLEE: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_FLEEING) );
-		case NPCACT_TALK: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TALKING) );
-		case NPCACT_TALK_FOLLOW: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TALKFOLLOW) );
-		case NPCACT_GUARD_TARG: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GUARDING) );
-		case NPCACT_GO_HOME: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GOINGHOME) );
-		case NPCACT_BREATH: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_BREATHING) );
-		case NPCACT_LOOTING: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_LOOTING) );
-		case NPCACT_THROWING: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_THROWING) );
-		case NPCACT_LOOKING: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_LOOKING) );
-		case NPCACT_TRAINING: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TRAINING) );
-		case NPCACT_Napping: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_NAPPING) );
-		case NPCACT_FOOD: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_SEARCHINGFOOD) );
-		case NPCACT_RUNTO: return ( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_RUNNINGTO) );
-		default: return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_THINKING) );
+		case NPCACT_FOLLOW_TARG:	return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_FOLLOWING) );
+		case NPCACT_STAY:			return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_STAYING) );
+		case NPCACT_GOTO:			return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GOINGTO) );
+		case NPCACT_WANDER:			return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_WANDERING) );
+		case NPCACT_FLEE:			return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_FLEEING) );
+		case NPCACT_TALK:			return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TALKING) );
+		case NPCACT_TALK_FOLLOW:	return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TALKFOLLOW) );
+		case NPCACT_GUARD_TARG:		return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GUARDING) );
+		case NPCACT_GO_HOME:		return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GOINGHOME) );
+		case NPCACT_BREATH:			return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_BREATHING) );
+		case NPCACT_LOOTING:		return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_LOOTING) );
+		case NPCACT_THROWING:		return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_THROWING) );
+		case NPCACT_LOOKING:		return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_LOOKING) );
+		case NPCACT_TRAINING:		return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TRAINING) );
+		case NPCACT_Napping:		return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_NAPPING) );
+		case NPCACT_FOOD:			return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_SEARCHINGFOOD) );
+		case NPCACT_RUNTO:			return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_RUNNINGTO) );
+		default:					return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_THINKING) );
 	}
 }
 
@@ -1173,35 +1096,30 @@ INT64 CChar::Skill_GetTimeout()
 bool CChar::Skill_MakeItem_Success()
 {
 	ADDTOCALLSTACK("CChar::Skill_MakeItem_Success");
-	// deliver the goods.
-	int		quality	= 0;
+	// Deliver the goods
+
 	CItem * pItem = CItem::CreateTemplate( m_atCreate.m_ItemID, NULL, this );
 	if ( pItem == NULL )
 		return( false );
 
-	// Cast the item to CItemVendable for setting quality and exp later
-	CItemVendable * pItemVend = dynamic_cast<CItemVendable *> (pItem);
-
+	int quality = 0;
 	TCHAR *pszMsg = Str_GetTemp();
+	WORD iSkillLevel = Skill_GetBase( Skill_GetActive());				// primary skill value.
+	CItemVendable * pItemVend = dynamic_cast<CItemVendable *>(pItem);	// cast CItemVendable for setting quality and exp later
 
-	WORD iSkillLevel = Skill_GetBase( Skill_GetActive());	// primary skill value.
 	if ( m_atCreate.m_Amount != 1 )
 	{
 		if ( pItem->IsType( IT_SCROLL ))
 			pItem->m_itSpell.m_spelllevel = iSkillLevel;
 
-		// Some item what is stackable? Then it is easy
 		CItemBase * ptItemDef = CItemBase::FindItemBase( m_atCreate.m_ItemID );
 		if ( ptItemDef->Can( CAN_I_PILE ) )
-		{
-			pItem->SetAmount( m_atCreate.m_Amount ); // Set the quantity if we are making bolts, arrows or shafts
-		} 
+			pItem->SetAmount( m_atCreate.m_Amount );
 		else 
 		{
-			CItem * ptItem;
-			for (int n=1;n<m_atCreate.m_Amount;n++)
+			for ( int n = 1; n < m_atCreate.m_Amount; n++ )
 			{
-				ptItem = CItem::CreateTemplate( m_atCreate.m_ItemID, NULL, this );
+				CItem * ptItem = CItem::CreateTemplate( m_atCreate.m_ItemID, NULL, this );
 				ItemBounce( ptItem );
 			}
 		}
@@ -1218,46 +1136,34 @@ bool CChar::Skill_MakeItem_Success()
 	else
 	{
 		// Only set the quality on single items.
-		quality	= IMULDIV( iSkillLevel, 2, 10 );	// default value for quality.
 		// Quality depends on the skill of the craftsman, and a random chance.
 		// minimum quality is 1, maximum quality is 200.  100 is average.
-		// How much variance?  This is the difference in quality levels from
-		// what I can normally make.
-		int variance = 2 - static_cast<int>(log10(static_cast<double>(Calc_GetRandVal( 250 ) + 1))); // this should result in a value between 0 and 2.
+
+		// How much variance? This is the difference in quality levels from what I can normally make.
+		int variance = 2 - static_cast<int>(log10(static_cast<double>(Calc_GetRandVal( 250 ) + 1))); // this should result in a value between 0 and 2
+
 		// Determine if lower or higher quality
-		if ( Calc_GetRandVal( 2 ))
-		{
-			// Better than I can normally make
-		}
-		else
-		{
-			// Worse than I can normally make
-			variance = -(variance);
-		}
-		// The quality levels are as follows:
-		// 1 - 25 Shoddy
-		// 26 - 50 Poor
-		// 51 - 75 Below Average
-		// 76 - 125 Average
-		// 125 - 150 Above Average
-		// 151 - 175 Excellent
-		// 175 - 200 Superior
+		if ( !Calc_GetRandVal( 2 ))
+			variance = -(variance);		// worse than I can normally make
+
 		// Determine which range I'm in
+		quality	= IMULDIV( iSkillLevel, 2, 10 );	// default value for quality
 		int qualityBase;
-		if ( quality < 25 )
+		if ( quality < 25 )			// 1 - 25		Shoddy
 			qualityBase = 0;
-		else if ( quality < 50 )
+		else if ( quality < 50 )	// 26 - 50		Poor
 			qualityBase = 1;
-		else if ( quality < 75 )
+		else if ( quality < 75 )	// 51 - 75		Below Average
 			qualityBase = 2;
-		else if ( quality < 125 )
+		else if ( quality < 125 )	// 76 - 125		Average
 			qualityBase = 3;
-		else if ( quality < 150 )
+		else if ( quality < 150 )	// 125 - 150	Above Average
 			qualityBase = 4;
-		else if ( quality < 175 )
+		else if ( quality < 175 )	// 151 - 175	Excellent
 			qualityBase = 5;
-		else
+		else						// 175 - 200	Superior
 			qualityBase = 6;
+
 		qualityBase += variance;
 		if ( qualityBase < 0 )
 			qualityBase = 0;
@@ -1306,20 +1212,23 @@ bool CChar::Skill_MakeItem_Success()
 				break;
 		}
 
-		if (pItemVend != NULL) // Check that the item is vendable before setting quality
+		if (pItemVend != NULL)	// check that the item is vendable before setting quality
 			pItemVend->SetQuality(static_cast<WORD>(quality));
 
-		if (( iSkillLevel > 999 && ( quality > 175 )) && ( !IsSetOF(OF_NoItemNaming)))
+		if ( iSkillLevel > 999 && quality > 175 && !IsSetOF(OF_NoItemNaming))
 		{
 			// A GM made this, and it is of high quality
 			TCHAR * szNewName = Str_GetTemp();
 			sprintf(szNewName, g_Cfg.GetDefaultMsg(DEFMSG_GRANDMASTER_MARK), static_cast<LPCTSTR>(pItem->GetName()), static_cast<LPCTSTR>(GetName()));
 			pItem->SetName(szNewName);
+
+			// TO-DO: Find a way to clear CRAFTEDBY property on all items when chars got removed
+			//pItem->SetDefNum("CRAFTEDBY", GetUID());
 		}
 	}
 
-	// TODO: Can Decay block decay on ground of items
-	pItem->SetAttr(ATTR_MOVE_ALWAYS | ATTR_DECAY);	// Any made item is movable.
+	// TO-DO: Can Decay block decay on ground of items
+	pItem->SetAttr(ATTR_MOVE_ALWAYS|ATTR_DECAY);	// Any made item is movable.
 
 	// Item goes into ACT of player
 	CGrayUID uidOldAct = m_Act_Targ;
@@ -1341,37 +1250,25 @@ bool CChar::Skill_MakeItem_Success()
 	}
 	else if ( iRet == TRIGRET_RET_DEFAULT )
 	{
-		if ( pItem->IsType( IT_POTION ))
+		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
 		{
-			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-			{
-				Sound( 0x240 );	// pouring noise.
-			}
-		}
-		else if ( pItem->IsType( IT_MAP ))
-		{
-			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-			{
+			if ( pItem->IsType( IT_POTION ))
+				Sound( 0x240 );
+			else if ( pItem->IsType( IT_MAP ))
 				Sound( 0x255 );
-			}
 		}
-		else if ( *pszMsg )
-		{
+		if ( *pszMsg )
 			SysMessage(pszMsg);
-		}
 	}
 
-	//	experience gain on craftings
-	if ( g_Cfg.m_bExperienceSystem && ( g_Cfg.m_iExperienceMode&EXP_MODE_RAISE_CRAFT ))
+	// Experience gain on craftings
+	if ( g_Cfg.m_bExperienceSystem && ( g_Cfg.m_iExperienceMode & EXP_MODE_RAISE_CRAFT ))
 	{
-		int change = 0;
-		// Calculate cost for buying this item if it is vendable
+		int exp = 0;
 		if (pItemVend != NULL)
-			change = pItemVend->GetVendorPrice(0)/100;
-
-		//	item costing 1k will give 10 exp by default
-		if ( change )
-			ChangeExperience(change);
+			exp = pItemVend->GetVendorPrice(0) / 100;	// calculate cost for buying this item if it is vendable (gain = +1 exp each 100gp)
+		if ( exp )
+			ChangeExperience(exp);
 	}
 
 	ItemBounce( pItem );
@@ -1410,7 +1307,7 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 	//
 	// RETURN:
 	//   true = success.
-	//
+
 	if ( LayerFind( LAYER_DRAGGING ) )
 		ItemBounce(LayerFind( LAYER_DRAGGING));
 	if ( id <= 0 )
@@ -1423,12 +1320,8 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 	CItem * pItemTarg = uidTarg.ItemFind();
 	if ( pItemTarg && stage == SKTRIG_SELECT )
 	{
-		if ( pItemDef->m_SkillMake.ContainsResourceMatch( pItemTarg ) == false &&
-			pItemDef->m_BaseResources.ContainsResourceMatch( pItemTarg ) == false )
-		{
-			// Not intersect with the specified item
+		if ( pItemDef->m_SkillMake.ContainsResourceMatch( pItemTarg ) == false && pItemDef->m_BaseResources.ContainsResourceMatch( pItemTarg ) == false )
 			return( false );
-		}
 	}
 
 	if ( !SkillResourceTest( &(pItemDef->m_SkillMake) ) )
@@ -1437,10 +1330,10 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 		return( true );
 
 	iReplicationQty = ResourceConsume( &(pItemDef->m_BaseResources), iReplicationQty, stage != SKTRIG_SUCCESS, pItemDef->GetResourceID().GetResIndex() );
-	if ( ! iReplicationQty )
+	if ( !iReplicationQty )
 		return( false );
 
-	// test or consume the needed resources.
+	// Test or consume the needed resources.
 	if ( stage == SKTRIG_FAIL )
 	{
 		// If fail only consume part of them.
@@ -1450,9 +1343,7 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 		{
 			const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(static_cast<SKILL_TYPE>(pItemDef->m_SkillMake[i].GetResIndex()));
 			if ( pSkillDef != NULL && pSkillDef->m_Effect.m_aiValues.GetCount() > 0 )
-			{
 				iConsumePercent = pSkillDef->m_Effect.GetRandom();
-			}
 		}
 
 		if ( iConsumePercent < 0 )
@@ -1470,12 +1361,11 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 		if ( i == pItemDef->m_SkillMake.BadIndex() )
 			return( false );
 
-		CResourceQty RetMainSkill = pItemDef->m_SkillMake[i];
-
-		m_Act_Targ = uidTarg;	// targetted item to start the make process.
+		m_Act_Targ = uidTarg;	// targetted item to start the make process
 		m_atCreate.m_ItemID = id;
 		m_atCreate.m_Amount = static_cast<WORD>(iReplicationQty);
 
+		CResourceQty RetMainSkill = pItemDef->m_SkillMake[i];
 		return Skill_Start(static_cast<SKILL_TYPE>(RetMainSkill.GetResIndex()), static_cast<int>(RetMainSkill.GetResQty() / 10));
 	}
 
@@ -1496,11 +1386,9 @@ int CChar::Skill_NaturalResource_Setup( CItem * pResBit )
 	ASSERT(pResBit);
 
 	// Find the ore type located here based on color.
-	const CRegionResourceDef * pOreDef = dynamic_cast <const CRegionResourceDef *>( g_Cfg.ResourceGetDef( pResBit->m_itResource.m_rid_res ));
+	const CRegionResourceDef * pOreDef = dynamic_cast<const CRegionResourceDef *>( g_Cfg.ResourceGetDef( pResBit->m_itResource.m_rid_res ));
 	if ( pOreDef == NULL )
-	{
 		return( -1 );
-	}
 
 	return( pOreDef->m_Skill.GetRandom() / 10 );
 }
@@ -1519,27 +1407,22 @@ CItem * CChar::Skill_NaturalResource_Create( CItem * pResBit, SKILL_TYPE skill )
 	// Find the ore type located here based on color.
 	CRegionResourceDef * pOreDef = dynamic_cast <CRegionResourceDef *>( g_Cfg.ResourceGetDef( pResBit->m_itResource.m_rid_res ));
 	if ( pOreDef == NULL )
-	{
 		return( NULL );
-	}
 
 	// Skill effects how much of the ore i can get all at once.
 	if ( pOreDef->m_ReapItem == ITEMID_NOTHING )
-	{
-		// I intended for there to be nothing here.
-		return( NULL );
-	}
+		return( NULL );		// I intended for there to be nothing here
 
 	// Reap amount is semi-random
 	int iAmount = pOreDef->m_ReapAmount.GetRandomLinear( Skill_GetBase(skill) );
-	if ( ! iAmount)
+	if ( !iAmount )		// if REAPAMOUNT wasn't defined
 	{
-		int	maxAmount	= pResBit->GetAmount();
-		// if REAPAMOUNT wasn't defined
-		iAmount = pOreDef->m_Amount.GetRandomLinear( Skill_GetBase(skill) );
-		iAmount	/= 2;
-		if ( iAmount > maxAmount )	iAmount	= maxAmount;
-		if ( iAmount < 1 ) 		iAmount	= 1;
+		iAmount = pOreDef->m_Amount.GetRandomLinear( Skill_GetBase(skill) ) / 2;
+		int	maxAmount = pResBit->GetAmount();
+		if ( iAmount < 1 )
+			iAmount = 1;
+		if ( iAmount > maxAmount )
+			iAmount = maxAmount;
 	}
 
 	//(Region)ResourceGather behaviour
@@ -1552,17 +1435,15 @@ CItem * CChar::Skill_NaturalResource_Create( CItem * pResBit, SKILL_TYPE skill )
 	if ( IsTrigUsed(TRIGGER_RESOURCEGATHER) )
 		tRet = pOreDef->OnTrigger("@ResourceGather", this, &Args);
 	
-	if ( tRet == TRIGRET_RET_TRUE )		return( NULL );
+	if ( tRet == TRIGRET_RET_TRUE )
+		return( NULL );
 
-	iAmount = static_cast<int>(Args.m_iN1);
 	//Creating the 'id' variable with the local given through->by the trigger(s) instead on top of method
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(RES_GET_INDEX( Args.m_VarsLocal.GetKeyNum("ResourceID")));
 
-	iAmount = pResBit->ConsumeAmount( iAmount );	// amount i used up.
+	iAmount = pResBit->ConsumeAmount( static_cast<int>(Args.m_iN1) );	// amount i used up.
 	if ( iAmount <= 0 )
-	{
 		return( NULL );
-	}
 
 	CItem * pItem = CItem::CreateScript( id, this );
 	ASSERT(pItem);
@@ -1590,9 +1471,7 @@ bool CChar::Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg )
 		return( false );
 	}
 
-	if ( pItemOre->IsType( IT_ORE ) &&
-		pItemTarg != NULL &&
-		pItemTarg->IsType( IT_ORE ))
+	if ( pItemOre->IsType( IT_ORE ) && pItemTarg != NULL && pItemTarg->IsType( IT_ORE ))
 	{
 		// combine piles.
 		if ( pItemTarg == pItemOre )
@@ -1604,19 +1483,12 @@ bool CChar::Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg )
 		return( true );
 	}
 
-#define SKILL_SMELT_FORGE_DIST 3
-
-	if ( pItemTarg != NULL && pItemTarg->IsTopLevel() &&
-		pItemTarg->IsType( IT_FORGE ))
-	{
+	if ( pItemTarg != NULL && pItemTarg->IsTopLevel() && pItemTarg->IsType( IT_FORGE ))
 		m_Act_p = pItemTarg->GetTopPoint();
-	}
 	else
-	{
-		m_Act_p = g_World.FindItemTypeNearby( GetTopPoint(), IT_FORGE, SKILL_SMELT_FORGE_DIST, false );
-	}
+		m_Act_p = g_World.FindItemTypeNearby( GetTopPoint(), IT_FORGE, 3, false );
 
-	if ( ! m_Act_p.IsValidPoint() || ! CanTouch(m_Act_p))
+	if ( !m_Act_p.IsValidPoint() || !CanTouch(m_Act_p))
 	{
 		SysMessageDefault( DEFMSG_MINING_FORGE );
 		return( false );
@@ -1637,9 +1509,7 @@ bool CChar::Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg )
 	pItemEffect->SetAttr( ATTR_MOVE_NEVER );
 	pItemEffect->MoveToDecay( pt, TICK_PER_SEC );
 	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-	{
 		Sound( 0x2b );
-	}
 
 	UpdateDir( m_Act_p );
 	if ( pItemOre->IsAttr(ATTR_MAGIC|ATTR_BLESSED|ATTR_BLESSED2|ATTR_MOVE_ALWAYS))	// not magic items
@@ -1654,8 +1524,8 @@ bool CChar::Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg )
 
 	int iMiningSkill = Skill_GetAdjusted(SKILL_MINING);
 	int iOreQty = pItemOre->GetAmount();
-	const CItemBase * pIngotDef = NULL;
 	int iIngotQty = 0;
+	const CItemBase * pIngotDef = NULL;
 
 	if ( pOreDef->IsType( IT_ORE ))
 	{
@@ -1701,8 +1571,7 @@ bool CChar::Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg )
 		}
 	}
 
-	if ( pIngotDef == NULL ||
-		! pIngotDef->IsType(IT_INGOT))
+	if ( pIngotDef == NULL || !pIngotDef->IsType(IT_INGOT))
 	{
 		SysMessageDefault( DEFMSG_MINING_CONSUMED );
 		pItemOre->ConsumeAmount( iOreQty );
@@ -1710,20 +1579,15 @@ bool CChar::Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg )
 	}
 
 	iIngotQty *= iOreQty;	// max amount
-
 	int iSkillRange = pIngotDef->m_ttIngot.m_iSkillMax - pIngotDef->m_ttIngot.m_iSkillMin;
 	int iDifficulty = Calc_GetRandVal(iSkillRange);
-	//iIngotQty = IMULDIV( iIngotQty, iDifficulty, iSkillRange );
-	//if ( iIngotQty <= 0 )
-	//	iIngotQty = 1;
 
-	// try to make ingots.
+	// Try to make ingots
 	iDifficulty = ( pIngotDef->m_ttIngot.m_iSkillMin + iDifficulty ) / 10;
-	if ( ! iIngotQty || ! Skill_UseQuick( SKILL_MINING, iDifficulty ))
+	if ( !iIngotQty || !Skill_UseQuick( SKILL_MINING, iDifficulty ))
 	{
 		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MINING_NOTHING ), static_cast<LPCTSTR>(pItemOre->GetName()));
-		// Lose up to half the resources.
-		pItemOre->ConsumeAmount( Calc_GetRandVal( pItemOre->GetAmount() / 2 ) + 1 );
+		pItemOre->ConsumeAmount( Calc_GetRandVal( pItemOre->GetAmount() / 2 ) + 1 );	// lose up to half the resources.
 		return( false );
 	}
 
@@ -1732,12 +1596,10 @@ bool CChar::Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg )
 	CItem * pIngots = CItem::CreateScript( pIngotDef->GetID(), this );
 	if ( pIngots == NULL )
 	{
-		// Either this is really iron, or there isn't an ingot defined for this guy
 		SysMessageDefault( DEFMSG_MINING_NOTHING );
 		return( false );
 	}
 
-	// give some random loss factor.
 	pIngots->SetAmount( iIngotQty );
 	pItemOre->ConsumeAmount( pItemOre->GetAmount());
 	ItemBounce( pIngots );
@@ -1750,56 +1612,45 @@ bool CChar::Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax )
 	// SKILL_TRACKING
 	const CObjBase * pObj = uidTarg.ObjFind();
 	if ( pObj == NULL )
-	{
 		return false;
-	}
 
 	const CObjBaseTemplate * pObjTop = pObj->GetTopLevelObj();
 	if ( pObjTop == NULL )
-	{
 		return( false );
-	}
 
 	int dist = GetTopDist3D( pObjTop );	// disconnect = SHRT_MAX
 	if ( dist > iDistMax )
-	{
 		return false;
-	}
 
 	if ( pObjTop->IsChar() )
 	{
-		// prevent tracking of hidden staff
+		// Prevent tracking of hidden staff
 		const CChar *pChar = dynamic_cast<const CChar*>( pObjTop );
 		if ( pChar )
 		{
-			if ( GetPrivLevel() < pChar->GetPrivLevel() && pChar->IsStatFlag(STATF_Insubstantial) )
+			if ( pChar->GetPrivLevel() > GetPrivLevel() && pChar->IsStatFlag(STATF_Insubstantial) )
 				return false;
 		}
 	}
 
+	// Select tracking message based on distance
+	LPCTSTR pszDef;
+	if (dist <= 0)
+		pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_0 );
+	else if (dist < 16)
+		pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_1 );
+	else if (dist < 32)
+		pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_2 );
+	else if (dist < 100)
+		pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_3 );
+	else
+		pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_4 );
+
 	DIR_TYPE dir = GetDir( pObjTop );
-	if ( dirPrv != dir )
-	{
-		dirPrv = dir;
-
-		TCHAR *pszMsg = Str_GetTemp();
-		LPCTSTR pszDef;
-		// select tracking message based on distance
-		if (dist <= 0)
-			pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_0 );
-		else if (dist < 16)
-			pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_1 );
-		else if (dist < 32)
-			pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_2 );
-		else if (dist < 100)
-			pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_3 );
-		else
-			pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_4 );
-
-		ASSERT(dir >= 0 && static_cast<unsigned int>(dir) < COUNTOF(CPointBase::sm_szDirs));
-		sprintf(pszMsg, pszDef, pObj->GetName(), pObjTop->IsDisconnected()? g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT_DISC) : "", static_cast<LPCTSTR>(CPointBase::sm_szDirs[dir]));
-		ObjMessage(pszMsg, this);
-	}
+	ASSERT(dir >= 0 && static_cast<unsigned int>(dir) < COUNTOF(CPointBase::sm_szDirs));
+	TCHAR *pszMsg = Str_GetTemp();
+	sprintf(pszMsg, pszDef, pObj->GetName(), pObjTop->IsDisconnected()? g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT_DISC) : "", static_cast<LPCTSTR>(CPointBase::sm_szDirs[dir]));
+	ObjMessage(pszMsg, this);
 
 	return true;		// keep the skill active.
 }
@@ -1813,19 +1664,17 @@ int CChar::Skill_Tracking( SKTRIG_TYPE stage )
 	// SKILL_TRACKING
 	// m_Act_Targ = what am i tracking ?
 	// m_atTracking.m_PrvDir = the previous dir it was in.
-	//
 
 	if ( stage == SKTRIG_START )
-	{
-		// Already checked difficulty earlier.
-		return( 0 );
-	}
+		return( 0 );	// already checked difficulty earlier
+
 	if ( stage == SKTRIG_FAIL )
 	{
 		// This skill didn't fail, it just ended/went out of range, etc...
 		ObjMessage( g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_END ), this ); // say this instead of the failure message
 		return( -SKTRIG_ABORT );
 	}
+
 	if ( stage == SKTRIG_STROKE )
 	{
 		if ( Skill_Stroke( false ) == UINT_MAX)
@@ -1835,7 +1684,7 @@ int CChar::Skill_Tracking( SKTRIG_TYPE stage )
 		if ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE && IsHuman() )
 			iSkillLevel = maximum( iSkillLevel, 200 );			// humans always have a 20.0 minimum skill (racial traits)
 
-		if ( ! Skill_Tracking( m_Act_Targ, m_atTracking.m_PrvDir, iSkillLevel/10 + 10 ))
+		if ( !Skill_Tracking( m_Act_Targ, m_atTracking.m_PrvDir, iSkillLevel/10 + 10 ))
 			return( -SKTRIG_ABORT );
 		Skill_SetTimeout();			// next update.
 		return( -SKTRIG_STROKE );	// keep it active.
@@ -1859,19 +1708,25 @@ int CChar::Skill_Mining( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_FAIL )
 		return 0;
 
+	CItem * pShovel = m_Act_TargPrv.ItemFind();
+	if ( pShovel == NULL )
+	{
+		SysMessageDefault( DEFMSG_MINING_TOOL );
+		return( -SKTRIG_ABORT );
+	}
+
 	if ( m_Act_p.m_x == -1 )
 	{
 		SysMessageDefault( DEFMSG_MINING_4 );
 		return( -SKTRIG_QTY );
 	}
 
-	// Verify so we have a line of sight.
-	if ( ! CanSeeLOS( m_Act_p, NULL, 2 ))
+	// 3D distance check and LOS
+	if ( !CanSeeLOS( m_Act_p, NULL, 2 ))
 	{
-		int Range;
 		const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(SKILL_MINING);
-		Range = pSkillDef->m_Range;
-		if ( ! pSkillDef->m_Range )
+		int Range = pSkillDef->m_Range;
+		if ( !pSkillDef->m_Range )
 		{
 			g_Log.EventError("Mining skill doesn't have a value for RANGE, defaulting to 2\n");
 			Range = 2;
@@ -1883,17 +1738,8 @@ int CChar::Skill_Mining( SKTRIG_TYPE stage )
 		return( -SKTRIG_QTY );
 	}
 
-	CItem * pShovel = m_Act_TargPrv.ItemFind();
-	if ( pShovel == NULL )
-	{
-		SysMessageDefault( DEFMSG_MINING_TOOL );
-		return( -SKTRIG_ABORT );
-	}
-
-	// resource check
-	CItem * pResBit = g_World.CheckNaturalResource( m_Act_p,
-		(IT_TYPE) GETINTRESOURCE(m_atResource.m_ridType), stage == SKTRIG_START, this );
-
+	// Resource check
+	CItem * pResBit = g_World.CheckNaturalResource( m_Act_p, (IT_TYPE) GETINTRESOURCE(m_atResource.m_ridType), stage == SKTRIG_START, this );
 	if ( pResBit == NULL )
 	{
 		SysMessageDefault( DEFMSG_MINING_1 );
@@ -1951,13 +1797,10 @@ int CChar::Skill_Mining( SKTRIG_TYPE stage )
 	}
 
 	if (m_atUnk.m_Arg2)
-	{
 		ItemBounce( pItem );
-	}
 	else
-	{
 		pItem->MoveToCheck( GetTopPoint(), this );	// put at my feet.
-	}
+
 	return 0;
 }
 
@@ -1982,65 +1825,35 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 		return( -SKTRIG_QTY );
 	}
 
-	//Distance checks
-	CRegionBase * pRegion = GetTopPoint().GetRegion(REGION_TYPE_MULTI);
-	if (( pRegion ) && ( !pRegion->IsFlag(REGION_FLAG_SHIP) ))
+	CRegionBase * pRegion = GetTopPoint().GetRegion(REGION_TYPE_MULTI);		// are we in a house ?
+	if ( pRegion && ( !pRegion->IsFlag(REGION_FLAG_SHIP) ))
 	{
-		// Are we in a house ?
 		SysMessageDefault( DEFMSG_FISHING_3 );
 		return( -SKTRIG_QTY );
 	}
 
-	if (m_Act_p.GetRegion(REGION_TYPE_MULTI)) // Do not allow him to fish through ship floor
+	if (m_Act_p.GetRegion(REGION_TYPE_MULTI))	// do not allow him to fish through ship floor
 	{
 		SysMessageDefault( DEFMSG_FISHING_4 );
 		return( -SKTRIG_QTY );
 	}
 
-	int Range;
+	// 3D distance check and LOS
 	const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(SKILL_FISHING);
-	Range = pSkillDef->m_Range;
+	int Range = pSkillDef->m_Range;
 	if ( ! pSkillDef->m_Range )
 	{
 		g_Log.EventError("Fishing skill doesn't have a value for RANGE, defaulting to 4\n");
 		Range = 4;
 	}
+
 	if (( m_pPlayer && g_Cfg.m_iAdvancedLos & ADVANCEDLOS_PLAYER ) || ( m_pNPC && g_Cfg.m_iAdvancedLos & ADVANCEDLOS_NPC ))
 	{
-		if ( ! CanSeeLOS( m_Act_p, NULL, 18, LOS_FISHING ))
+		if ( !CanSeeLOS( m_Act_p, NULL, 18, LOS_FISHING ))
 		{
 			SysMessageDefault( DEFMSG_FISHING_LOS );
 			return( -SKTRIG_QTY );
 		}
-
-		if ( GetTopPoint().GetDist( m_Act_p ) > Range )	// Max distance for fishing.
-		{
-			SysMessageDefault( DEFMSG_FISHING_REACH );
-			return( -SKTRIG_QTY );
-		}
-	}
-	else
-	{
-		if ( GetTopPoint().GetDist( m_Act_p ) > Range ) // cast works for long distances.
-		{
-			SysMessageDefault( DEFMSG_FISHING_REACH );
-			return( -SKTRIG_QTY );
-		}
-	}
-
-	// resource check
-	CItem * pResBit = g_World.CheckNaturalResource( m_Act_p,
-			(IT_TYPE) GETINTRESOURCE(m_atResource.m_ridType), stage == SKTRIG_START, this );
-
-	if ( pResBit == NULL )
-	{
-		SysMessageDefault( DEFMSG_FISHING_1 );
-		return( -SKTRIG_QTY );
-	}
-	if ( pResBit->GetAmount() == 0 )
-	{
-		SysMessageDefault( DEFMSG_FISHING_2 );
-		return( -SKTRIG_QTY );
 	}
 
 	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOMINDIST ) )
@@ -2050,6 +1863,24 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 			SysMessageDefault( DEFMSG_FISHING_CLOSE );
 			return( -SKTRIG_QTY );
 		}
+	}
+	if ( GetTopPoint().GetDist( m_Act_p ) > Range )
+	{
+		SysMessageDefault( DEFMSG_FISHING_REACH );
+		return( -SKTRIG_QTY );
+	}
+
+	// Resource check
+	CItem * pResBit = g_World.CheckNaturalResource( m_Act_p, (IT_TYPE) GETINTRESOURCE(m_atResource.m_ridType), stage == SKTRIG_START, this );
+	if ( pResBit == NULL )
+	{
+		SysMessageDefault( DEFMSG_FISHING_1 );
+		return( -SKTRIG_QTY );
+	}
+	if ( pResBit->GetAmount() == 0 )
+	{
+		SysMessageDefault( DEFMSG_FISHING_2 );
+		return( -SKTRIG_QTY );
 	}
 
 	if ( stage == SKTRIG_START )
@@ -2071,7 +1902,7 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 				return stroke;
 		}
 
-		return 0 ;	// keep active.
+		return 0;	// keep active.
 	}
 
 	CItem * pFish = Skill_NaturalResource_Create( pResBit, SKILL_FISHING );
@@ -2083,14 +1914,9 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 	SysMessagef(g_Cfg.GetDefaultMsg( DEFMSG_FISHING_SUCCESS ), static_cast<LPCTSTR>(pFish->GetName()));
 
 	if (m_atUnk.m_Arg2)
-	{
 		ItemBounce( pFish );
-	}
 	else
-	{
 		pFish->MoveToCheck( GetTopPoint(), this );	// put at my feet.
-	}
-	m_Act_Targ = pFish->GetUID();
 
 	/*if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
 		Sound( 0x364 );	// 0x027 old sound.
@@ -2098,6 +1924,7 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 	pItemFX->SetType(IT_WATER_WASH);	// can't fish here.
 	pItemFX->MoveToDecay( m_Act_p, 1*TICK_PER_SEC );*/
 
+	m_Act_Targ = pFish->GetUID();
 	return 0;
 }
 
@@ -2115,11 +1942,8 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_FAIL )
 		return 0;
 
-	CItem * pResBit = g_World.CheckNaturalResource( m_Act_p,
-		(IT_TYPE) GETINTRESOURCE(m_atResource.m_ridType), stage == SKTRIG_START, this );
-
+	CItem * pResBit = g_World.CheckNaturalResource( m_Act_p, (IT_TYPE) GETINTRESOURCE(m_atResource.m_ridType), stage == SKTRIG_START, this );
 	CItem * pAxe = m_Act_TargPrv.ItemFind();
-
 	/*if ( stage == SKTRIG_FAIL )
 	{
 		if ( (pAxe->IsType(IT_WEAPON_FENCE)) && ( pResBit->GetAmount() != 0 ) )
@@ -2131,6 +1955,12 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 		return 0;
 	}*/
 
+	if ( pAxe == NULL )
+	{
+		SysMessageDefault( DEFMSG_LUMBERJACKING_TOOL );
+		return( -SKTRIG_ABORT );
+	}
+
 	if ( m_Act_p.m_x == -1 )
 	{
 		SysMessageDefault( DEFMSG_LUMBERJACKING_6 );
@@ -2138,11 +1968,9 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 	}
 
 	// 3D distance check and LOS
-	
-	int Range;
-	const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(SKILL_MINING);
-	Range = pSkillDef->m_Range;
-	if ( ! pSkillDef->m_Range )
+	const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(SKILL_LUMBERJACKING);
+	int Range = pSkillDef->m_Range;
+	if ( !pSkillDef->m_Range )
 	{
 		g_Log.EventError("Lumberjacking skill doesn't have a value for RANGE, defaulting to 2\n");
 		Range = 2;
@@ -2152,22 +1980,16 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 		SysMessageDefault( DEFMSG_LUMBERJACKING_REACH );
 		return( -SKTRIG_QTY );
 	}
-	if ( ! CanSeeLOS( m_Act_p, NULL, 2 ))
+	if ( !CanSeeLOS( m_Act_p, NULL, 2 ))
 	{
 		SysMessageDefault( DEFMSG_LUMBERJACKING_LOS );
 		return( -SKTRIG_QTY );
 	}
 
-	if ( pAxe == NULL )
-	{
-		SysMessageDefault( DEFMSG_LUMBERJACKING_TOOL );
-		return( -SKTRIG_ABORT );
-	}
-
-	// resource check
+	// Resource check
 	if ( pResBit == NULL )
 	{
-		if ( pAxe->IsType(IT_WEAPON_FENCE) ) //dagger
+		if ( pAxe->IsType(IT_WEAPON_FENCE) )	//dagger
 			SysMessageDefault( DEFMSG_LUMBERJACKING_3 );	// not a tree
 		else
 			SysMessageDefault( DEFMSG_LUMBERJACKING_1 );
@@ -2175,7 +1997,7 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 	}
 	if ( pResBit->GetAmount() == 0 )
 	{
-		if ( pAxe->IsType(IT_WEAPON_FENCE) ) //dagger
+		if ( pAxe->IsType(IT_WEAPON_FENCE) )	//dagger
 			SysMessageDefault( DEFMSG_LUMBERJACKING_4 );	// no wood to harvest
 		else
 			SysMessageDefault( DEFMSG_LUMBERJACKING_2 );
@@ -2200,7 +2022,6 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_STROKE )	// Useless now, strokes in SKF_GATHER are handled directly from Skill_Stage() and its code softcoded in their skill's triggers.
 	{
 		UpdateDir( m_Act_p );
-
 		if (IsSetEF(EF_DamageTools) )
 		{
 			if ( pAxe->m_itWeapon.m_Hits_Cur )
@@ -2225,6 +2046,7 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 		pResBit->ConsumeAmount(1);
 		return 0;
 	}
+
 	CItem * pItem = Skill_NaturalResource_Create( pResBit, SKILL_LUMBERJACKING );
 	if ( pItem == NULL )
 	{
@@ -2233,13 +2055,9 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 	}
 
 	if (m_atUnk.m_Arg2)
-	{
 		ItemBounce( pItem );
-	}
 	else
-	{
 		pItem->MoveToCheck( GetTopPoint(), this );	// put at my feet.
-	}
 	return 0;
 }
 
@@ -2252,18 +2070,11 @@ int CChar::Skill_DetectHidden( SKTRIG_TYPE stage )
 	// ??? Hidden objects ?
 
 	if ( stage == SKTRIG_START )
-	{
-		// Based on who is hiding ?
-		return( 10 );
-	}
-	if ( stage == SKTRIG_FAIL )
-	{
-		return 0;
-	}
-	if ( stage == SKTRIG_STROKE )
-	{
-		return 0;
-	}
+		return( 10 );	// based on who is hiding ?
+
+	if ( stage == SKTRIG_FAIL || stage == SKTRIG_STROKE )
+		return( 0 );
+
 	if ( stage != SKTRIG_SUCCESS )
 	{
 		ASSERT(0);
@@ -2280,7 +2091,7 @@ int CChar::Skill_DetectHidden( SKTRIG_TYPE stage )
 			break;
 		if ( pChar == this )
 			continue;
-		if ( ! pChar->IsStatFlag( STATF_Invisible | STATF_Hidden ))
+		if ( !pChar->IsStatFlag( STATF_Invisible|STATF_Hidden ))
 			continue;
 		// Try to detect them.
 		if ( pChar->IsStatFlag( STATF_Hidden ))
@@ -2292,10 +2103,8 @@ int CChar::Skill_DetectHidden( SKTRIG_TYPE stage )
 		fFound = true;
 	}
 
-	if ( ! fFound )
-	{
+	if ( !fFound )
 		return( -SKTRIG_FAIL );
-	}
 
 	return( 0 );
 }
@@ -2310,9 +2119,7 @@ int CChar::Skill_Cartography( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_START )
 	{
 		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-		{
 			Sound( 0x249 );
-		}
 	}
 
 	return( Skill_MakeItem( stage ));
@@ -2326,10 +2133,7 @@ int CChar::Skill_Musicianship( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_STROKE )
 		return 0;
 	if ( stage == SKTRIG_START )
-	{
-		// no instrument fail immediate
-		return Use_PlayMusic( m_Act_Targ.ItemFind(), Calc_GetRandVal(90));
-	}
+		return Use_PlayMusic( m_Act_Targ.ItemFind(), Calc_GetRandVal(90));	// no instrument fail immediate
 
 	return( 0 );
 }
@@ -2360,9 +2164,7 @@ int CChar::Skill_Peacemaking( SKTRIG_TYPE stage )
 			}
 
 		case SKTRIG_FAIL:
-			{
 				return 0;
-			}
 
 		case SKTRIG_SUCCESS:
 			{
@@ -2386,9 +2188,7 @@ int CChar::Skill_Peacemaking( SKTRIG_TYPE stage )
 							pChar->Fight_Attack(this);
 					}
 					else
-					{
 						pChar->Fight_ClearAll();
-					}
 
 					break;
 				}
@@ -2430,9 +2230,7 @@ int CChar::Skill_Enticement( SKTRIG_TYPE stage )
 			}
 
 		case SKTRIG_FAIL:
-			{
 				return 0;
-			}
 
 		case SKTRIG_SUCCESS:
 			{
@@ -2449,7 +2247,6 @@ int CChar::Skill_Enticement( SKTRIG_TYPE stage )
 
 				pChar->m_Act_p = GetTopPoint();
 				pChar->NPC_WalkToPoint( ( pChar->m_Act_p.GetDist(pChar->GetTopPoint()) > 3) );
-
 				return 0;
 			}
 			
@@ -2468,17 +2265,12 @@ int CChar::Skill_Provocation(SKTRIG_TYPE stage)
 	if ( stage == SKTRIG_STROKE )
 		return 0;
 
-	CChar	*pCharProv = m_Act_TargPrv.CharFind();
-	CChar	*pCharTarg = m_Act_Targ.CharFind();
+	CChar *pCharProv = m_Act_TargPrv.CharFind();
+	CChar *pCharTarg = m_Act_Targ.CharFind();
 
-	if (
-		!pCharProv || !pCharTarg ||
-		( pCharProv == this ) || ( pCharTarg == this ) || ( pCharProv == pCharTarg ) ||
+	if ( !pCharProv || !pCharTarg || ( pCharProv == this ) || ( pCharTarg == this ) || ( pCharProv == pCharTarg ) ||
 		pCharProv->IsStatFlag(STATF_Pet|STATF_Conjured|STATF_Stone|STATF_DEAD|STATF_INVUL) ||
-		pCharTarg->IsStatFlag(STATF_Pet|STATF_Conjured|STATF_Stone|STATF_DEAD|STATF_INVUL) ||
-		m_pArea->IsFlag(REGION_FLAG_SAFE|REGION_FLAG_GUARDED) ||
-		pCharProv->m_pArea->IsFlag(REGION_FLAG_SAFE|REGION_FLAG_GUARDED) ||
-		pCharTarg->m_pArea->IsFlag(REGION_FLAG_SAFE|REGION_FLAG_GUARDED) )
+		pCharTarg->IsStatFlag(STATF_Pet|STATF_Conjured|STATF_Stone|STATF_DEAD|STATF_INVUL) )
 	{
 		SysMessageDefault(DEFMSG_PROVOCATION_UPSET);
 		return -SKTRIG_QTY;
@@ -2491,9 +2283,7 @@ int CChar::Skill_Provocation(SKTRIG_TYPE stage)
 	}
 
 	if ( !CanSee(pCharProv) || !CanSee(pCharTarg) )
-	{
 		return -SKTRIG_ABORT;
-	}
 
 	switch ( stage )
 	{
@@ -2506,16 +2296,17 @@ int CChar::Skill_Provocation(SKTRIG_TYPE stage)
 			if ( !iDifficulty )
 				iDifficulty = pCharProv->Stat_GetAdjusted(STAT_INT);	// Depend on evil of the creature.
 
-			//	cannot provoke more experienced provoker
-			if ( pCharProv->Skill_GetAdjusted(SKILL_PROVOCATION) >= Skill_GetAdjusted(SKILL_PROVOCATION) )
+			if ( pCharProv->Skill_GetAdjusted(SKILL_PROVOCATION) >= Skill_GetAdjusted(SKILL_PROVOCATION) )	// cannot provoke more experienced provoker
 				iDifficulty = 0;
 
 			return iDifficulty;
 		}
 
 		case SKTRIG_FAIL:
+		{
 			pCharProv->Fight_Attack(this);
 			return 0;
+		}
 
 		case SKTRIG_SUCCESS:
 			// They are just too good for this.
@@ -2534,8 +2325,7 @@ int CChar::Skill_Provocation(SKTRIG_TYPE stage)
 			pCharProv->Memory_AddObjTypes(this, MEMORY_AGGREIVED|MEMORY_IRRITATEDBY);
 
 			// If out of range we might get attacked ourself.
-			if ( pCharProv->GetTopDist3D(pCharTarg) > UO_MAP_VIEW_SIGHT ||
-				pCharProv->GetTopDist3D(this) > UO_MAP_VIEW_SIGHT )
+			if ( pCharProv->GetTopDist3D(pCharTarg) > UO_MAP_VIEW_SIGHT || pCharProv->GetTopDist3D(this) > UO_MAP_VIEW_SIGHT )
 			{
 				// Check that only "evil" monsters attack provoker back
 				if ( pCharProv->Noto_IsEvil() )
@@ -2568,9 +2358,7 @@ int CChar::Skill_Provocation(SKTRIG_TYPE stage)
 			// If we provoke upon a good char we should go criminal for it
 			// but skill still succeed.
 			if ( pCharTarg->Noto_GetFlag(this) == NOTO_GOOD )
-			{
 				CheckCrimeSeen(SKILL_PROVOCATION, NULL, pCharTarg, "provoking");
-			}
 
 			pCharProv->Fight_Attack(pCharTarg); // Make the actual provoking.
 			return 0;
@@ -2588,37 +2376,24 @@ int CChar::Skill_Poisoning( SKTRIG_TYPE stage )
 	// Act_Targ = with this poison.
 
 	if ( stage == SKTRIG_STROKE )
-	{
 		return 0;
-	}
 
 	CItem * pPoison = m_Act_Targ.ItemFind();
-	if ( pPoison == NULL ||
-		! pPoison->IsType(IT_POTION))
-	{
+	if ( pPoison == NULL || !pPoison->IsType(IT_POTION))
 		return( -SKTRIG_ABORT );
-	}
 
 	if ( stage == SKTRIG_START )
-	{
 		return Calc_GetRandVal( 60 );
-	}
+
 	if ( stage == SKTRIG_FAIL )
-	{
-		// Lose the poison sometimes ?
-		return( 0 );
-	}
+		return( 0 );	// lose the poison sometimes ?
 
 	if ( RES_GET_INDEX(pPoison->m_itPotion.m_Type) != SPELL_Poison )
-	{
 		return( -SKTRIG_ABORT );
-	}
 
 	CItem * pItem = m_Act_TargPrv.ItemFind();
 	if ( pItem == NULL )
-	{
 		return( -SKTRIG_QTY );
-	}
 
 	if ( stage != SKTRIG_SUCCESS )
 	{
@@ -2627,9 +2402,7 @@ int CChar::Skill_Poisoning( SKTRIG_TYPE stage )
 	}
 
 	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-	{
 		Sound( 0x247 );	// powdering.
-	}
 
 	switch ( pItem->GetType() )
 	{
@@ -2686,9 +2459,7 @@ int CChar::Skill_Cooking( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_SUCCESS )
 	{
 		if ( GetTopPoint().GetDist( m_Act_p ) > iMaxDist )
-		{
 			return( -SKTRIG_FAIL );
-		}
 	}
 
 	return( Skill_MakeItem( stage ));
@@ -2703,9 +2474,8 @@ int CChar::Skill_Taming( SKTRIG_TYPE stage )
 
 	CChar * pChar = m_Act_Targ.CharFind();
 	if ( pChar == NULL )
-	{
 		return( -SKTRIG_QTY );
-	}
+
 	if ( pChar == this )
 	{
 		SysMessageDefault( DEFMSG_TAMING_YMASTER );
@@ -2721,7 +2491,7 @@ int CChar::Skill_Taming( SKTRIG_TYPE stage )
 		SysMessageDefault( DEFMSG_TAMING_REACH );
 		return -SKTRIG_QTY;
 	}
-	if ( ! CanSeeLOS( pChar ) )
+	if ( !CanSeeLOS( pChar ) )
 	{
 		SysMessageDefault( DEFMSG_TAMING_LOS );
 		return -SKTRIG_QTY;
@@ -2731,17 +2501,15 @@ int CChar::Skill_Taming( SKTRIG_TYPE stage )
 	ASSERT( pChar->m_pNPC );
 
 	int iTameBase = pChar->Skill_GetBase(SKILL_TAMING);
-	if ( ! IsPriv( PRIV_GM )) // if its a gm doing it, just check that its not
+	if ( !IsPriv( PRIV_GM )) // if its a gm doing it, just check that its not
 	{
-		// Is it tamable ?
-		if ( pChar->IsStatFlag( STATF_Pet ))
+		if ( pChar->IsStatFlag( STATF_Pet ))		// is it tamable ?
 		{
 			SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_TAMING_TAME ), static_cast<LPCTSTR>(pChar->GetName()));
 			return( -SKTRIG_QTY );
 		}
 
-		// Too smart or not an animal.
-		if ( ! iTameBase || pChar->Skill_GetBase(SKILL_ANIMALLORE))
+		if ( !iTameBase || pChar->Skill_GetBase(SKILL_ANIMALLORE))	// too smart or not an animal
 		{
 			SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_TAMING_TAMED ), static_cast<LPCTSTR>(pChar->GetName()));
 			return( -SKTRIG_QTY );
@@ -2751,22 +2519,15 @@ int CChar::Skill_Taming( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_START )
 	{
 		int iDifficulty = iTameBase/10;
-
-		if ( pChar->Memory_FindObjTypes( this, MEMORY_FIGHT|MEMORY_HARMEDBY|MEMORY_IRRITATEDBY|MEMORY_AGGREIVED ))
-		{
-			// I've attacked it b4 ?
+		if ( pChar->Memory_FindObjTypes( this, MEMORY_FIGHT|MEMORY_HARMEDBY|MEMORY_IRRITATEDBY|MEMORY_AGGREIVED ))	// I've attacked it before ?
 			iDifficulty += 50;
-		}
 
 		m_atTaming.m_Stroke_Count = static_cast<WORD>(Calc_GetRandVal(4) + 2);
 		return( iDifficulty );
 	}
 
 	if ( stage == SKTRIG_FAIL )
-	{
-		// chance of being attacked ?
 		return( 0 );
-	}
 
 	if ( stage == SKTRIG_STROKE )
 	{
@@ -2778,9 +2539,7 @@ int CChar::Skill_Taming( SKTRIG_TYPE stage )
 			g_Cfg.GetDefaultMsg( DEFMSG_TAMING_4 )
 		};
 
-		if ( IsPriv( PRIV_GM ))
-			return( 0 );
-		if ( m_atTaming.m_Stroke_Count <= 0 )
+		if ( m_atTaming.m_Stroke_Count <= 0 || IsPriv( PRIV_GM ))
 			return( 0 );
 
 		TCHAR * pszMsg = Str_GetTemp();
@@ -2795,11 +2554,10 @@ int CChar::Skill_Taming( SKTRIG_TYPE stage )
 
 	ASSERT( stage == SKTRIG_SUCCESS );
 
-	// Create the memory of being tamed to prevent lame macroers
+	// Check if I tamed it before
 	CItemMemory * pMemory = pChar->Memory_FindObjTypes( this, MEMORY_SPEAK );
 	if ( pMemory && pMemory->m_itEqMemory.m_Action == NPC_MEM_ACT_TAMED)
 	{
-		// See if I tamed it before
 		// I did, no skill to tame it again
 		TCHAR * pszMsg = Str_GetTemp();
 		sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_TAMING_REMEMBER ), static_cast<LPCTSTR>(pChar->GetName()));
@@ -2833,9 +2591,7 @@ int CChar::Skill_Lockpicking( SKTRIG_TYPE stage )
 	// m_Act_TargPrv = The pick.
 
 	if ( stage == SKTRIG_STROKE )
-	{
 		return 0;
-	}
 
 	CItem * pPick = m_Act_TargPrv.ItemFind();
 	if ( pPick == NULL || ! pPick->IsType( IT_LOCKPICK ))
@@ -2859,28 +2615,24 @@ int CChar::Skill_Lockpicking( SKTRIG_TYPE stage )
 
 	if ( stage == SKTRIG_FAIL )
 	{
-		// Damage my pick
-		pPick->OnTakeDamage( 1, this, DAMAGE_HIT_BLUNT );
+		pPick->OnTakeDamage( 1, this, DAMAGE_HIT_BLUNT );	// damage my pick
 		return( 0 );
 	}
 
-	if ( ! CanTouch( pLock ))	// we moved too far from the lock.
+	if ( !CanTouch( pLock ))	// we moved too far from the lock
 	{
 		SysMessageDefault( DEFMSG_LOCKPICKING_REACH );
 		return -SKTRIG_QTY;
 	}
 
 	if (  stage == SKTRIG_START )
-	{
 		return( pLock->Use_LockPick( this, true, false ));
-	}
 
 	ASSERT( stage == SKTRIG_SUCCESS );
 
 	if ( pLock->Use_LockPick( this, false, false ) < 0 )
-	{
 		return -SKTRIG_FAIL;
-	}
+
 	return 0;
 }
 
@@ -2892,8 +2644,9 @@ int CChar::Skill_Hiding( SKTRIG_TYPE stage )
 	// Skill required varies with terrain and situation ?
 	// if we are carrying a light source then this should not work.
 
-	// We shoud just stay in HIDING skill. ?
-	if ( stage == SKTRIG_STROKE ) return 0;
+	if ( stage == SKTRIG_STROKE )	// we shoud just stay in HIDING skill ?
+		return 0;
+
 	if ( stage == SKTRIG_FAIL )
 	{
 		Reveal( STATF_Hidden );
@@ -2904,8 +2657,7 @@ int CChar::Skill_Hiding( SKTRIG_TYPE stage )
 	{
 		if ( IsStatFlag( STATF_Hidden ))
 		{
-			// I was already hidden ? so un-hide.
-			Reveal( STATF_Hidden );
+			Reveal( STATF_Hidden );		// I was already hidden ? so un-hide.
 			return( -SKTRIG_ABORT );
 		}
 
@@ -2917,17 +2669,16 @@ int CChar::Skill_Hiding( SKTRIG_TYPE stage )
 		}
 		StatFlag_Set( STATF_Hidden );
 		UpdateModeFlag();
-		return( 0 );
+		return 0;
 	}
 
 	if ( stage == SKTRIG_START )
 	{
-		// Make sure i am not carrying a light ?
-
+		// Make sure I'm not carrying a light ?
 		CItem * pItem = GetContentHead();
 		for ( ; pItem; pItem = pItem->GetNext())
 		{
-			if ( ! CItemBase::IsVisibleLayer( pItem->GetEquipLayer()))
+			if ( !CItemBase::IsVisibleLayer( pItem->GetEquipLayer()))
 				continue;
 			if ( pItem->Item_GetDef()->Can( CAN_I_LIGHT ))
 			{
@@ -2970,17 +2721,14 @@ int CChar::Skill_Herding( SKTRIG_TYPE stage )
 		case SKTRIG_START:
 		{
 			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
-			{
 				UpdateAnimate(ANIM_ATTACK_WEAPON);
-			}
+
 			int iIntVal = pChar->Stat_GetAdjusted(STAT_INT) / 2;
 			return iIntVal + Calc_GetRandVal(iIntVal);
 		}
 
 		case SKTRIG_FAIL:
-		{
 			return 0;
-		}
 
 		case SKTRIG_SUCCESS:
 		{
@@ -3019,31 +2767,22 @@ int CChar::Skill_Herding( SKTRIG_TYPE stage )
 int CChar::Skill_SpiritSpeak( SKTRIG_TYPE stage )
 {
 	ADDTOCALLSTACK("CChar::Skill_SpiritSpeak");
-	if ( stage == SKTRIG_FAIL )
-	{
-		// bring ghosts ? hehe
+	if ( stage == SKTRIG_FAIL || stage == SKTRIG_STROKE )
 		return 0;
-	}
-	if ( stage == SKTRIG_STROKE )
-	{
-		return 0;
-	}
+
 	if ( stage == SKTRIG_START )
-	{
-		// difficulty based on spirits near ?
-		return( Calc_GetRandVal( 90 ));
-	}
+		return( Calc_GetRandVal( 90 ));		// difficulty based on spirits near ?
+
 	if ( stage == SKTRIG_SUCCESS )
 	{
 		if ( IsStatFlag( STATF_SpiritSpeak ))
 			return( -SKTRIG_ABORT );
-		SysMessageDefault( DEFMSG_SPIRITSPEAK_SUCCESS );
 		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-		{
 			Sound( 0x24a );
-		}
+
+		SysMessageDefault( DEFMSG_SPIRITSPEAK_SUCCESS );
 		Spell_Effect_Create( SPELL_NONE, LAYER_FLAG_SpiritSpeak, 1, 4*60*TICK_PER_SEC, this );
-		return( 0 );
+		return 0;
 	}
 
 	ASSERT(0);
@@ -3072,22 +2811,19 @@ int CChar::Skill_Meditation( SKTRIG_TYPE stage )
 		}
 
 		m_atTaming.m_Stroke_Count = 0;
-
 		SysMessageDefault( DEFMSG_MEDITATION_TRY );
-
 		return Calc_GetRandVal(100);	// how hard to get started ?
 	}
 	if ( stage == SKTRIG_STROKE )
-	{
 		return 0;
-	}
+
 	if ( stage == SKTRIG_SUCCESS )
 	{
 		if ( Stat_GetVal(STAT_INT) >= Stat_GetMax(STAT_INT))
 		{
 			GetClient()->removeBuff( BI_ACTIVEMEDITATION );
 			SysMessageDefault( DEFMSG_MEDITATION_PEACE_2 );
-			return( 0 );	// only give skill credit now.
+			return 0;	// only give skill credit now.
 		}
 
 		if ( m_atTaming.m_Stroke_Count == 0 )
@@ -3099,11 +2835,8 @@ int CChar::Skill_Meditation( SKTRIG_TYPE stage )
 			}
 		}
 		m_atTaming.m_Stroke_Count++;
-
 		UpdateStatVal( STAT_INT, 1 );
-
-		// next update. (depends on skill)
-		Skill_SetTimeout();
+		Skill_SetTimeout();		// next update (depends on skill)
 
 		// Set a new possibility for failure ?
 		// iDifficulty = Calc_GetRandVal(100);
@@ -3419,7 +3152,7 @@ int CChar::Skill_Fighting( SKTRIG_TYPE stage )
 			iWaitTime /= 2;
 		SetTimeout( iWaitTime );
 
-		return( iDifficulty );
+		return( g_Cfg.Calc_CombatChanceToHit( this, Skill_GetActive(), m_Act_Targ.CharFind(), m_uidWeapon.ItemFind()) );
 	}
 
 	if ( stage == SKTRIG_STROKE )

@@ -2186,3 +2186,10 @@ Added: New animation on dragon breath attack.
 Changed: Reduced SAY/speech max text length (1024 -> 256 chars). Client is limited to 128 chars on default speech and 256 chars on journal, so this can avoid some exploits from 3rd party assists/tools without affect the gameplay.
 Changed: Major optimizations on walk, skills and general ticks code. It's working fine, but needs some heavy testing until we mark it as 100% stable.
 	-IMPORTANT: Be sure to update your sphere_skills.scp with proper FLAGS on all fight/ranged/magic/craft/gather skills, otherwise these skills will not work correctly.
+
+20-05-2015, Coruja
+Fixed: Parrying skill check always returning 'true' (success) on chars with GM=1 set, making the char never receive any damage on combat even without invul flag set.
+Fixed: Mounts disappearing on worldsave on some specific situations.
+Changed: Improved Teleport/Dispel spell smoke animation.
+Changed: Another huge optimization on skills code.
+[Sphere.ini]: Updated TeleportEffectNPC / TeleportEffectPlayers settings with correct values.

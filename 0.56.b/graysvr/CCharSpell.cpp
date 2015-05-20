@@ -147,15 +147,13 @@ bool CChar::Spell_Teleport( CPointBase ptNew, bool fTakePets, bool fCheckAntiMag
 		fCheckAntiMagic = false;
 		if ( iEffect && ! IsStatFlag( STATF_Incognito ) && ! IsPriv( PRIV_PRIV_NOSHOW ))
 		{
-			iEffect = g_Cfg.m_iSpell_Teleport_Effect_Staff;	// drama
+			iEffect = g_Cfg.m_iSpell_Teleport_Effect_Staff;
 			iSound = g_Cfg.m_iSpell_Teleport_Sound_Staff;
 		}
 	}
 	else if ( fCheckAntiMagic )
 	{
-		CRegionBase * pArea = NULL;
-		pArea = CheckValidMove( ptNew, NULL, DIR_QTY, NULL );
-
+		CRegionBase * pArea = CheckValidMove( ptNew, NULL, DIR_QTY, NULL );
 		if ( pArea == NULL )
 		{
 			SysMessageDefault( DEFMSG_SPELL_TELE_CANT );
@@ -216,30 +214,26 @@ bool CChar::Spell_Teleport( CPointBase ptNew, bool fTakePets, bool fCheckAntiMag
 	}
 
 	CPointMap ptOld = GetTopPoint();
+	m_fClimbUpdated = false;			// update climb height here
+	MoveToChar( ptNew );				// move character
+	UpdateMove( ptOld, NULL, true );	// update other characters
 
-	m_fClimbUpdated = false; // update climb height here
-
-	// move character
-	MoveToChar( ptNew );
-
-	// departing effect
-	if ( ptOld.IsValidPoint() && iEffect != ITEMID_NOTHING )
-	{
-		CItem * pItem = CItem::CreateBase( iEffect );
-		ASSERT(pItem);
-		pItem->SetType( IT_NORMAL );
-		pItem->SetAttr( ATTR_MOVE_NEVER );
-		pItem->MoveToDecay( ptOld, 2 * TICK_PER_SEC );
-	}
-
-	// update other characters
-	UpdateMove( ptOld, NULL, true );
-
-	// entering effect
 	if ( iEffect != ITEMID_NOTHING )
 	{
-		Sound( iSound );	// 0x01fe
-		Effect( EFFECT_XYZ, iEffect, this, 10, 20 );
+		// Departing effect
+		if ( ptOld.IsValidPoint())
+		{
+			CItem * pItem = CItem::CreateBase( ITEMID_NODRAW );
+			ASSERT(pItem);
+			pItem->SetAttr( ATTR_MOVE_NEVER );
+			pItem->MoveTo( ptOld );
+			pItem->Effect( EFFECT_XYZ, iEffect, this, 10, 10 );
+			pItem->Delete();
+		}
+
+		// Entering effect
+		Effect( EFFECT_XYZ, iEffect, this, 10, 10 );
+		Sound( iSound );
 	}
 
 	return( true );
@@ -556,16 +550,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			// Delete the creature completely.
 			// ?? Drop anything it might have had ?
 			if (!g_Serv.IsLoading())
-			{
-				const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(SPELL_Teleport);
-				ASSERT(pSpellDef);
-
-				CItem * pEffect = CItem::CreateBase(ITEMID_FX_TELE_VANISH);
-				ASSERT(pEffect);
-				pEffect->SetAttr(ATTR_MAGIC | ATTR_MOVE_NEVER | ATTR_CAN_DECAY); // why is this movable ?
-				pEffect->MoveToDecay(GetTopPoint(), 2 * TICK_PER_SEC);
-				pEffect->Sound(pSpellDef->m_sound);
-			}
+				Effect( EFFECT_XYZ, ITEMID_FX_TELE_VANISH, this, 8, 20 );
 			if (m_pPlayer)	// summoned players ? thats odd.
 				return;
 			if (!IsStatFlag(STATF_DEAD)) // Fix for double @Destroy trigger

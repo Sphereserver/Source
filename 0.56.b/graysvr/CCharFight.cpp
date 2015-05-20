@@ -2921,12 +2921,6 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	return( true );
 }
 
-bool CChar::Fight_AttackNext()
-{
-	ADDTOCALLSTACK("CChar::Fight_AttackNext");
-	return Fight_Attack( Fight_FindBestTarget());
-}
-
 void CChar::Fight_HitTry()
 {
 	ADDTOCALLSTACK("CChar::Fight_HitTry");
@@ -2945,7 +2939,7 @@ void CChar::Fight_HitTry()
 	{
 		// Might be dead ? Clear this.
 		// move to my next target.
-		if (!Fight_AttackNext())
+		if (!Fight_Attack( Fight_FindBestTarget() ))
 		{
 			Skill_Start(SKILL_NONE);
 			StatFlag_Clear(STATF_War);
@@ -2958,7 +2952,7 @@ void CChar::Fight_HitTry()
 	{
 		// Might be dead ? Clear this.
 		// move to my next target.
-		if (!Fight_AttackNext())
+		if (!Fight_Attack( Fight_FindBestTarget() ))
 		{
 			Skill_Start(SKILL_NONE);
 			StatFlag_Clear(STATF_War);
@@ -2971,7 +2965,7 @@ void CChar::Fight_HitTry()
 	{
 		case WAR_SWING_INVALID:	// target is invalid.
 			Fight_Clear( pCharTarg );
-			Fight_AttackNext();
+			Fight_Attack( Fight_FindBestTarget() );
 			return;
 		case WAR_SWING_EQUIPPING:
 			// Assume I want to continue hitting
@@ -2985,7 +2979,7 @@ void CChar::Fight_HitTry()
 			return;
 		case WAR_SWING_READY:	// probably too far away. can't take my swing right now.
 			// Try for a diff target ?
-			Fight_AttackNext();
+			Fight_Attack( Fight_FindBestTarget() );
 			return;
 		case WAR_SWING_SWINGING:	// must come back here again to complete.
 			return;
@@ -3413,7 +3407,7 @@ bool CChar::Attacker_Delete( int index, bool bForced, ATTACKER_CLEAR_TYPE type )
 	if (m_Fight_Targ == pChar->GetUID())
 	{
 		m_Fight_Targ.InitUID();
-		Fight_AttackNext();
+		Fight_Attack( Fight_FindBestTarget() );
 	}
 	if ( ! m_lastAttackers.size() )
 		Attacker_Clear();
