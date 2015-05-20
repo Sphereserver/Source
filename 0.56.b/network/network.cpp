@@ -458,7 +458,7 @@ void HistoryIP::setBlocked(bool isBlocked, int timeout)
 	m_blocked = isBlocked;
 
 	if (isBlocked && timeout >= 0)
-		m_blockExpire = CServTime::GetCurrentTime() + timeout;
+		m_blockExpire = CServTime::GetCurrentTime() + (timeout * TICK_PER_SEC);
 	else
 		m_blockExpire.Init();
 }

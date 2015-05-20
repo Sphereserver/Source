@@ -983,6 +983,9 @@ bool CResource::r_LoadVal( CScript &s )
 		case RC_ACCTFILES:	// Put acct files here.
 			m_sAcctBaseDir = CGFile::GetMergedFileName( s.GetArgStr(), "" );
 			break;
+		case RC_ATTACKERTIMEOUT:
+			m_iAttackerTimeout = s.GetArgVal() * TICK_PER_SEC;
+			break;
 		case RC_BANKMAXWEIGHT:
 			m_iBankWMax = s.GetArgVal() * WEIGHT_UNITS;
 			break;
@@ -1049,6 +1052,12 @@ bool CResource::r_LoadVal( CScript &s )
 		case RC_DECAYTIMER:
 			m_iDecay_Item = s.GetArgVal() *60*TICK_PER_SEC;
 			break;
+		case RC_FREEZERESTARTTIME:
+			m_iFreezeRestartTime = s.GetArgVal() * TICK_PER_SEC;
+			break;
+		case RC_GAMEMINUTELENGTH:
+			m_iGameMinuteLength = s.GetArgVal() * TICK_PER_SEC;
+			break;
 		case RC_GUARDLINGER:
 			m_iGuardLingerTime = s.GetArgVal() * 60 * TICK_PER_SEC;
 			break;
@@ -1101,6 +1110,9 @@ bool CResource::r_LoadVal( CScript &s )
 			break;
 		case RC_MURDERDECAYTIME:
 			m_iMurderDecayTime = s.GetArgVal() * TICK_PER_SEC;
+			break;
+		case RC_NOTOTIMEOUT:
+			m_iNotoTimeout = s.GetArgVal() * TICK_PER_SEC;
 			break;
 		case RC_WOOLGROWTHTIME:
 			m_iWoolGrowthTime = s.GetArgVal() * 60 * TICK_PER_SEC;
@@ -1163,6 +1175,9 @@ bool CResource::r_LoadVal( CScript &s )
 		case RC_SAVEPERIOD:
 			m_iSavePeriod = s.GetArgVal()*60*TICK_PER_SEC;
 			break;
+		case RC_SPELLTIMEOUT:
+			m_iSpellTimeout = s.GetArgVal() * TICK_PER_SEC;
+			break;
 
 		case RC_SECTORSLEEP:
 			{
@@ -1192,6 +1207,9 @@ bool CResource::r_LoadVal( CScript &s )
 			g_Cfg.m_iOptionFlags = s.GetArgVal();
 			//PrintEFOFFlags(false, true);
 			break;
+		case RC_TIMERCALL:
+			m_iTimerCall = s.GetArgVal() * TICK_PER_SEC;
+			break;
 
 		case RC_TOOLTIPCACHE:
 			g_Cfg.m_iTooltipCache = s.GetArgVal() * TICK_PER_SEC;
@@ -1217,6 +1235,10 @@ bool CResource::r_LoadVal( CScript &s )
 			}
 			break;
 #endif
+		case RC_WALKBUFFER:
+			m_iWalkBuffer = s.GetArgVal() * TICK_PER_SEC;
+			break;
+
 
 		default:
 			return( sm_szLoadKeys[i].m_elem.SetValStr( this, s.GetArgRaw()));
@@ -1529,6 +1551,9 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 
 	switch (index)
 	{
+		case RC_ATTACKERTIMEOUT:
+			sVal.FormatVal(m_iAttackerTimeout / TICK_PER_SEC);
+			break;
 		case RC_BANKMAXWEIGHT:
 			sVal.FormatVal( m_iBankWMax / WEIGHT_UNITS );
 			break;
@@ -1566,6 +1591,12 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		case RC_DECAYTIMER:
 			sVal.FormatVal( m_iDecay_Item / (60*TICK_PER_SEC));
 			break;
+		case RC_FREEZERESTARTTIME:
+			sVal.FormatVal(m_iFreezeRestartTime / TICK_PER_SEC);
+			break;
+		case RC_GAMEMINUTELENGTH:
+			sVal.FormatVal(m_iGameMinuteLength / TICK_PER_SEC);
+			break;
 		case RC_GUARDLINGER:
 			sVal.FormatVal( m_iGuardLingerTime / (60*TICK_PER_SEC));
 			break;
@@ -1586,6 +1617,9 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			break;
 		case RC_MAPCACHETIME:
 			sVal.FormatVal( m_iMapCacheTime / TICK_PER_SEC );
+			break;
+		case RC_NOTOTIMEOUT:
+			sVal.FormatVal(m_iNotoTimeout / TICK_PER_SEC);
 			break;
 		case RC_MAXFAME:
 			sVal.FormatVal( m_iMaxFame );
@@ -1683,12 +1717,18 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		case RC_SAVEBACKGROUND:
 			sVal.FormatVal( m_iSaveBackgroundTime / (60 * TICK_PER_SEC));
 			break;
+		case RC_SPELLTIMEOUT:
+			sVal.FormatVal(m_iSpellTimeout / TICK_PER_SEC);
+			break;
 		case RC_GUILDS:
 			sVal.FormatVal( g_World.m_Stones.GetCount());
 			return( true );
 		case RC_TIMEUP:
 			sVal.FormatLLVal( ( - g_World.GetTimeDiff( g_World.m_timeStartup )) / TICK_PER_SEC );
 			return( true );
+		case RC_TIMERCALL:
+			sVal.FormatVal(m_iTimerCall / TICK_PER_SEC);
+			break;
 		case RC_VERSION:
 			sVal = g_szServerDescription;
 			break;
@@ -1722,6 +1762,9 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 
 		case RC_CONTEXTMENULIMIT:
 			sVal.FormatVal(g_Cfg.m_iContextMenuLimit);
+			break;
+		case RC_WALKBUFFER:
+			sVal.FormatVal(m_iWalkBuffer / TICK_PER_SEC);
 			break;
 		default:
 			return( sm_szLoadKeys[index].m_elem.GetValStr( this, sVal ));

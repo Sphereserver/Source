@@ -2530,7 +2530,7 @@ void CWorld::OnTick()
 	m_TimedFunctions.OnTick();
 	EXC_CATCHSUB("TimerFunction");
 
-	if ( (m_bSaveNotificationSent == false) && ((m_timeSave - 100) <= GetCurrentTime()) )
+	if ( (m_bSaveNotificationSent == false) && ((m_timeSave - (10 * TICK_PER_SEC)) <= GetCurrentTime()) )
 	{
 		Broadcast( g_Cfg.GetDefaultMsg( DEFMSG_SERVER_WORLDSAVENOTIFY ) );
 		m_bSaveNotificationSent = true;

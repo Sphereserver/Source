@@ -4366,67 +4366,73 @@ bool CChar::OnTick()
 
 	if (IsDisconnected())		// mounted horses can still get ticks
 		return true;
-	if (IsStatFlag(STATF_DEAD) && m_pNPC && m_pNPC->m_bonded == 1)	// bonded pets that are dead doesn't need more checks
-		return true;
 
-	if (IsClient())
+	bool isDeadAndBonded = (IsStatFlag(STATF_DEAD) && m_pNPC && m_pNPC->m_bonded == 1);
+	if (isDeadAndBonded == false)	// bonded pets that are dead doesnt need this checks. But still need to do movement checks.
 	{
-		// Players have a silly "always run" flag that gets stuck on.
-		if (-g_World.GetTimeDiff(GetClient()->m_timeLastEventWalk) > TICK_PER_SEC)
-			StatFlag_Clear(STATF_Fly);
 
-		// Check targeting timeout, if set
-		if (GetClient()->m_Targ_Timeout.IsTimeValid() && g_World.GetTimeDiff(GetClient()->m_Targ_Timeout) <= 0)
-			GetClient()->addTargetCancel();
-	}
-
-	if (Stat_GetVal(STAT_STR) <= 0)	// we can only die on our own tick
-	{
-		EXC_SET("death");
-		return Death();
-	}
-
-	if (IsTimerSet() && IsTimerExpired())
-	{
-		EXC_SET("timer expired");
-		// My turn to do some action.
-		switch ( Skill_Done())
+		if (IsClient())
 		{
+			// Players have a silly "always run" flag that gets stuck on.
+			if (-g_World.GetTimeDiff(GetClient()->m_timeLastEventWalk) > TICK_PER_SEC)
+				StatFlag_Clear(STATF_Fly);
+
+			// Check targeting timeout, if set
+			if (GetClient()->m_Targ_Timeout.IsTimeValid() && g_World.GetTimeDiff(GetClient()->m_Targ_Timeout) <= 0)
+				GetClient()->addTargetCancel();
+		}
+
+		if (Stat_GetVal(STAT_STR) <= 0)	// we can only die on our own tick
+		{
+			EXC_SET("death");
+			return Death();
+		}
+	}
+
+	if (iTimeDiff >= TICK_PER_SEC)	//This needs a check too, otherwise npcs will act extremely fast regardless of if they must or not
+	{
+		if (IsTimerSet() && IsTimerExpired())
+		{
+			EXC_SET("timer expired");
+			// My turn to do some action.
+			switch (Skill_Done())
+			{
 			case -SKTRIG_ABORT:	EXC_SET("skill abort"); Skill_Fail(true); break;	// fail with no message or credit.
 			case -SKTRIG_FAIL:	EXC_SET("skill fail"); Skill_Fail(false); break;
 			case -SKTRIG_QTY:	EXC_SET("skill cleanup"); Skill_Cleanup(); break;
-		}
+			}
 
-		if (m_pNPC)
-		{
-			ProfileTask aiTask(PROFILE_NPC_AI);
-			EXC_SET("NPC action");
-			// What to do next ?
-			NPC_OnTickAction();
-
-			// Some NPC AI actions
-			if ((g_Cfg.m_iNpcAi & NPC_AI_FOOD) && !(g_Cfg.m_iNpcAi & NPC_AI_INTFOOD))
-				NPC_Food();
-			if (g_Cfg.m_iNpcAi & NPC_AI_EXTRA)
-				NPC_AI();
-		}
-	}
-	else if (m_pNPC && IsStatFlag(STATF_War))
-	{
-		EXC_SET("combat hit try");
-		// Hit my current target (if i'm ready)
-		if (Fight_IsActive())
-		{
-			if (m_atFight.m_War_Swing_State == WAR_SWING_READY)
-				Fight_HitTry();
-		}
-		else if (Skill_GetActive() == SKILL_NONE)
-		{
-			if (!Fight_AttackNext())
+			if (m_pNPC)
 			{
-				Skill_Start(SKILL_NONE);
-				StatFlag_Clear(STATF_War);
-				m_Fight_Targ.InitUID();
+				ProfileTask aiTask(PROFILE_NPC_AI);
+				EXC_SET("NPC action");
+				// What to do next ?
+				NPC_OnTickAction();
+
+				// Some NPC AI actions
+				if ((g_Cfg.m_iNpcAi & NPC_AI_FOOD) && !(g_Cfg.m_iNpcAi & NPC_AI_INTFOOD))
+					NPC_Food();
+				if (g_Cfg.m_iNpcAi & NPC_AI_EXTRA)
+					NPC_AI();
+			}
+		}
+		else if (m_pNPC && IsStatFlag(STATF_War) && isDeadAndBonded == false)
+		{
+			EXC_SET("combat hit try");
+			// Hit my current target (if i'm ready)
+			if (Fight_IsActive())
+			{
+				if (m_atFight.m_War_Swing_State == WAR_SWING_READY)
+					Fight_HitTry();
+			}
+			else if (Skill_GetActive() == SKILL_NONE)
+			{
+				if (!Fight_AttackNext())
+				{
+					Skill_Start(SKILL_NONE);
+					StatFlag_Clear(STATF_War);
+					m_Fight_Targ.InitUID();
+				}
 			}
 		}
 	}

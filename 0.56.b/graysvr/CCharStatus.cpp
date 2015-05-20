@@ -736,7 +736,15 @@ BYTE CChar::GetModeFlag( const CClient *pViewer ) const
 		mode |= CHARMODE_IGNOREMOBS;
 	if ( IsStatFlag( STATF_War ))
 		mode |= CHARMODE_WAR;
-	if ( IsStatFlag( STATF_Invisible|STATF_Insubstantial|STATF_Hidden ))
+
+	DWORD dwFlags = STATF_Sleeping;
+	if (!g_Cfg.m_iColorInvis)	//This is needed for Serv.ColorInvis to work, proper flags must be set
+		dwFlags |= STATF_Insubstantial;
+	if (!g_Cfg.m_iColorHidden)	//serv.ColorHidden
+		dwFlags |= STATF_Hidden;
+	if (!g_Cfg.m_iColorInvisSpell)	//serv.ColorInvisSpell
+		dwFlags |= STATF_Invisible;
+	if (IsStatFlag(dwFlags))	// Checking if I have any of these settings enabled on the ini and I have any of them, if so ... CHARMODE_INVIS is set and color applied.
 		mode |= CHARMODE_INVIS;
 
 	return( mode );

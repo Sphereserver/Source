@@ -876,7 +876,8 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 	{
 		// Just a change in dir.
 		m_pChar->m_dirFace = dir;
-		m_pChar->UpdateMode(this);			// Show others I have turned !!
+		//m_pChar->UpdateMode(this);			// Show others I have turned !! This is sending stats update too, we only need to send the P change
+		m_pChar->UpdateMove(ptold, this,false,true);	// Who now sees me ?
 		new PacketMovementAck(this);		// Ack the move. ( if this does not go back we get rubber banding )
 	}
 	return TRIGRET_RET_TRUE;
