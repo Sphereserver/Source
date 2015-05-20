@@ -3144,7 +3144,6 @@ int CChar::Skill_Fighting( SKTRIG_TYPE stage )
 	{
 		m_atFight.m_War_Swing_State = WAR_SWING_EQUIPPING;
 		m_atFight.m_fMoved = 0;
-		int iDifficulty = g_Cfg.Calc_CombatChanceToHit(this, Skill_GetActive(), m_Act_Targ.CharFind(), m_uidWeapon.ItemFind());
 
 		// Set the swing timer.
 		int iWaitTime = Fight_GetWeaponSwingTimer()/2;	// start the anim immediately.
