@@ -944,19 +944,19 @@ public:
 	int		m_iDefaultCommandLevel;
 
 	//	color noto flag
-	int		m_iColorNotoGood;
-	int		m_iColorNotoGuildSame;
-	int		m_iColorNotoNeutral;
-	int		m_iColorNotoCriminal;
-	int		m_iColorNotoGuildWar;
-	int		m_iColorNotoEvil;
-	int		m_iColorNotoInvul;
-	int		m_iColorNotoInvulGameMaster;
-	int		m_iColorNotoDefault;
+	HUE_TYPE	m_iColorNotoGood;
+	HUE_TYPE	m_iColorNotoGuildSame;
+	HUE_TYPE	m_iColorNotoNeutral;
+	HUE_TYPE	m_iColorNotoCriminal;
+	HUE_TYPE	m_iColorNotoGuildWar;
+	HUE_TYPE	m_iColorNotoEvil;
+	HUE_TYPE	m_iColorNotoInvul;
+	HUE_TYPE	m_iColorNotoInvulGameMaster;
+	HUE_TYPE	m_iColorNotoDefault;
 	
-	int		m_iColorInvis;
-	int		m_iColorInvisSpell;
-	int		m_iColorHidden;
+	HUE_TYPE	m_iColorInvis;
+	HUE_TYPE	m_iColorInvisSpell;
+	HUE_TYPE	m_iColorHidden;
 
 	// notoriety inheritance
 	int     m_iPetsInheritNotoriety;

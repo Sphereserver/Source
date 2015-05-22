@@ -1373,6 +1373,8 @@ public:
 	CResourceDef * FixDef();
 	unsigned char GetFirstEmpty();
 	int GetName(TCHAR * pszOut) const;
+	CItemSpawn(ITEMID_TYPE id , CItemBase * pItemDef);
+	virtual ~CItemSpawn();
 };
 
 class CItemVendable : public CItem
@@ -1761,7 +1763,7 @@ private:
 	virtual bool r_Verb( CScript & s, CTextConsole * pSrc ); // Execute command from script
 
 	const CPointMap GetComponentPoint(Component * pComponent) const;
-	const CPointMap GetComponentPoint(int dx, int dy, int dz) const;
+	const CPointMap GetComponentPoint(int dx, int dy, signed char dz) const;
 	void CopyDesign(DesignDetails * designFrom, DesignDetails * designTo);
 
 private:
@@ -3412,7 +3414,7 @@ public:
 	int NotoSave_GetID( CChar * pChar );
 	int NotoSave_GetID( CGrayUID pChar );
 	CChar * NotoSave_GetUID( int index );
-	bool NotoSave_Delete( CChar * pChar, bool bForced );
+	bool NotoSave_Delete( CChar * pChar );
 	void NotoSave_CheckTimeout();
 
 	bool IsTakeCrime( const CItem * pItem, CChar ** ppCharMark = NULL ) const;
@@ -3456,7 +3458,7 @@ public:
 	void Skill_Fail( bool fCancel = false );
 	int Skill_Stroke( bool fResource);				// Strokes in crafting skills, calling for SkillStroke trig
 	ANIM_TYPE Skill_GetAnim( SKILL_TYPE skill);
-	int Skill_GetSound( SKILL_TYPE skill);
+	SOUND_TYPE Skill_GetSound( SKILL_TYPE skill);
 	int Skill_Stage( SKTRIG_TYPE stage );
 	TRIGRET_TYPE	Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage);
 	TRIGRET_TYPE	Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScriptTriggerArgs * pArgs); //pArgs.m_iN1 will be rewritten with skill

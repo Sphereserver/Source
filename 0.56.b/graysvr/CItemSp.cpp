@@ -114,6 +114,20 @@ int CItemSpawn::GetName(TCHAR * pszOut) const
 	return sprintf( pszOut, " (%s)", pszName );
 }
 
+CItemSpawn::CItemSpawn(ITEMID_TYPE id, CItemBase * pDef) : CItem(ITEMID_WorldGem, pDef)
+{
+	ADDTOCALLSTACK("CItemSpawn::CItemSpawn");
+	UNREFERENCED_PARAMETER(id);	//forced in CItem(ITEMID_WorldGem , )
+
+}
+
+
+CItemSpawn::~CItemSpawn()
+{
+	ADDTOCALLSTACK("CItemSpawn::~CItemSpawn");
+
+}
+
 
 
 void CItemSpawn::GenerateItem(CResourceDef * pDef)

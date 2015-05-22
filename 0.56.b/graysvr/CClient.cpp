@@ -998,17 +998,17 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 						ArgsCount++;
 				}
 
-				addBuff(iArgs[0], iArgs[1], iArgs[2], iArgs[3], Args, ArgsCount);
+				addBuff(static_cast<BUFF_ICONS>(iArgs[0]), iArgs[1], iArgs[2], static_cast<short>(iArgs[3]), Args, ArgsCount);
 			}
 			break;
 		case CV_REMOVEBUFF:
 			{
-				long IconId = s.GetArgVal();
+				BUFF_ICONS IconId = static_cast<BUFF_ICONS>(s.GetArgVal());
 				if (IconId < BI_START || IconId > BI_QTY/* || IconId == 0x3EB || IconId == 0x3EC*/) {
 					DEBUG_ERR(("Invalid RemoveBuff icon ID\n"));
 					break;
 				}
-				removeBuff(static_cast<WORD>(IconId));
+				removeBuff(IconId);
 			}
 			break;
 		case CV_ADDCLILOC:

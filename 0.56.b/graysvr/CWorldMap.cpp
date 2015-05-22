@@ -271,7 +271,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 				if ( !pMultiItem->m_visible )
 					continue;
 
-				ptTest = CPointMap( pMultiItem->m_dx + pt.m_x, pMultiItem->m_dy + pt.m_y, pMultiItem->m_dz + pt.m_z, pt.m_map );
+				ptTest = CPointMap( pMultiItem->m_dx + pt.m_x, pMultiItem->m_dy + pt.m_y, static_cast<signed char>( pMultiItem->m_dz + pt.m_z ), pt.m_map );
 
 				pItemDef = CItemBase::FindItemBase( pMultiItem->GetDispID() );
 				if ( pItemDef == NULL )
@@ -811,7 +811,7 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 						if ( pMultiItem->m_dx != x2 || pMultiItem->m_dy != y2 )
 							continue;
 
-						z = pItem->GetTopZ() + pMultiItem->m_dz;
+						z = static_cast<signed char>(pItem->GetTopZ() + pMultiItem->m_dz);
 
 						pItemDef = CItemBase::FindItemBase( pMultiItem->GetDispID() );
 						if ( pItemDef != NULL )
@@ -1109,7 +1109,7 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 							if ( pMultiItem->m_dx != x2 || pMultiItem->m_dy != y2 )
 								continue;
 
-							z = pItem->GetTopZ() + pMultiItem->m_dz;
+							z = static_cast<signed char>( pItem->GetTopZ() + pMultiItem->m_dz );
 							if ( ! block.IsUsableZ(z,block.m_zHeight))
 								continue;
 
@@ -1350,7 +1350,7 @@ void CWorld::GetHeightPoint2( const CPointMap & pt, CGrayMapBlockState & block, 
 							if ( pMultiItem->m_dx != x2 || pMultiItem->m_dy != y2 )
 								continue;
 
-							signed char zitem = pItem->GetTopZ() + pMultiItem->m_dz;
+							signed char zitem = static_cast<signed char>( pItem->GetTopZ() + pMultiItem->m_dz );
 							if ( ! block.IsUsableZ(zitem,PLAYER_HEIGHT))
 								continue;
 

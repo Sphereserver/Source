@@ -1985,8 +1985,6 @@ bool CChar::NPC_GetAllSpellbookSpells()	// Retrieves a spellbook from the magic 
 {
 	ADDTOCALLSTACK("CChar::GetSpellbook");
 	//	search for suitable book in hands first
-	int count = 0;
-	//	search for suitable book in hands first
 	CItem * pBook = GetContentHead();
 	for (; pBook != NULL; pBook = pBook->GetNext())
 	{
@@ -2082,11 +2080,11 @@ bool CChar::NPC_FightMagery(CChar * pChar)
 		}
 		return(false);
 	}
-	int i = 0;
+	unsigned char i = 0;
 	if (pWand)
-		i = Calc_GetRandVal2(0, count);	//chance between all spells + wand
+		i = static_cast<unsigned char>(Calc_GetRandVal2(0, count));	//chance between all spells + wand
 	else
-		i = Calc_GetRandVal2(0, count-1);
+		i = static_cast<unsigned char>(Calc_GetRandVal2(0, count-1));
 
 	//g_Log.EventDebug("Starting check cast at %d out of %d\n", i, count);
 	if (i > count)	// if i > count then we use wand to cast.
@@ -2315,7 +2313,7 @@ bool CChar::NPC_FightCast(CObjBase * &pTarg, CObjBase * pSrc, SPELL_TYPE &spell,
 			goto TestCast;	// if flag is present ... we leave the rest at the incoming code
 
 			//	spell is good, but does not harm. the target should obey me. hoping sphere can do this ;)
-			switch (spell)	// Maybe we should allow every summon by default excepting SPELLFLAG_PLAYER_ONLY ? in this case this point wouldn't be reached.
+			/*switch (spell)	// Maybe we should allow every summon by default excepting SPELLFLAG_PLAYER_ONLY ? in this case this point wouldn't be reached.
 			{
 			case SPELL_Air_Elem:
 			case SPELL_Daemon:
@@ -2331,7 +2329,7 @@ bool CChar::NPC_FightCast(CObjBase * &pTarg, CObjBase * pSrc, SPELL_TYPE &spell,
 				goto TestCast;
 			default:
 				return false;
-			}
+			}*/
 		}
 	}
 	else
@@ -3933,7 +3931,7 @@ void CChar::NPC_AI()
 		{
 			EXC_SET("dung pooping");
 
-			Sound(Calc_GetRandVal2(0x131,0x134));	//0x428 (lol)
+			Sound(static_cast<SOUND_TYPE>(Calc_GetRandVal2(0x131,0x134)));	//0x428 (lol)
 			Emote(g_Cfg.GetDefaultMsg(DEFMSG_NPC_ANIMAL_POOP));
 			CItem	*pDung = CItem::CreateBase( Calc_GetRandVal(2) ? ITEMID_Dung1 : ITEMID_Dung2 );
 			if ( pDung )

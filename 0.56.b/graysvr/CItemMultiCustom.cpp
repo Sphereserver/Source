@@ -229,7 +229,7 @@ void CItemMultiCustom::SwitchToLevel( CClient * pClientSrc, int iLevel )
 	if ( pChar != NULL )
 	{
 		CPointMap pt(GetTopPoint());
-		pt.m_z += static_cast<unsigned char>(GetPlaneZ(iLevel));
+		pt.m_z += GetPlaneZ( static_cast<signed char>( iLevel ));
 
 		CPointMap ptOld = pChar->GetTopPoint();
 		pChar->MoveToChar(pt);
@@ -299,9 +299,9 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 			continue;
 
 		CPointMap pt(GetTopPoint());
-		pt.m_x += (*i)->m_item.m_dx;
-		pt.m_y += (*i)->m_item.m_dy;
-		pt.m_z += (*i)->m_item.m_dz;
+		pt.m_x += static_cast<signed char>((*i)->m_item.m_dx);
+		pt.m_y += static_cast<signed char>((*i)->m_item.m_dy);
+		pt.m_z += static_cast<signed char>((*i)->m_item.m_dz);
 
 		pItem->m_uidLink = GetUID();
 		pItem->ClrAttr(ATTR_DECAY|ATTR_CAN_DECAY);
@@ -648,7 +648,7 @@ bool CItemMultiCustom::RemoveStairs(Component * pStairComponent)
 
 			int x=(*i)->m_item.m_dx;
 			int y=(*i)->m_item.m_dy;
-			int z=(*i)->m_item.m_dz;
+			signed char z=(*i)->m_item.m_dz;
 
 			i = m_designWorking.m_vectorComponents.erase(i);
 			m_designWorking.m_iRevision++;
@@ -991,7 +991,7 @@ const CPointMap CItemMultiCustom::GetComponentPoint(Component * pComp) const
 	return GetComponentPoint(pComp->m_item.m_dx, pComp->m_item.m_dy, pComp->m_item.m_dz);
 }
 
-const CPointMap CItemMultiCustom::GetComponentPoint(int dx, int dy, int dz) const
+const CPointMap CItemMultiCustom::GetComponentPoint(int dx, int dy, signed char dz) const
 {
 	ADDTOCALLSTACK("CItemMultiCustom::GetComponentPoint");
 	// return the real world location from the given offset
@@ -1237,7 +1237,7 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 					static_cast<ITEMID_TYPE>(Exp_GetVal(ppArgs[0])),
 					static_cast<short>(Exp_GetVal(ppArgs[1])),
 					static_cast<short>(Exp_GetVal(ppArgs[2])),
-					Exp_GetVal(ppArgs[3]));
+					static_cast<signed char>(Exp_GetVal(ppArgs[3])));
 		} break;
 
 		case IMCV_RESET:
@@ -1421,7 +1421,7 @@ bool CItemMultiCustom::r_LoadVal( CScript & s  )
 					static_cast<ITEMID_TYPE>(ATOI(ppArgs[0])),
 					static_cast<short>(ATOI(ppArgs[1])),
 					static_cast<short>(ATOI(ppArgs[2])),
-					ATOI(ppArgs[3]),
+					static_cast<signed char>(ATOI(ppArgs[3])),
 					ATOI(ppArgs[4]));
 			return true;
 		}

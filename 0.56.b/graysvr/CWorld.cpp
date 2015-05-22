@@ -2371,7 +2371,7 @@ void CWorld::Explode( CChar * pSrc, CPointMap pt, int iDist, int iDamage, WORD w
 	pItem->m_itExplode.m_iDamage = static_cast<WORD>(iDamage);
 	pItem->m_itExplode.m_wFlags = wFlags|DAMAGE_GENERAL|DAMAGE_HIT_BLUNT;
 	pItem->m_itExplode.m_iDist = static_cast<unsigned char>(iDist);
-	HUE_TYPE hue;
+	HUE_TYPE hue = HUE_DEFAULT;
 	const CVarDefCont * pHueStorage = pSrc->GetDefKey("BREATH.HUE", true);
 	if ( pHueStorage )
 	{

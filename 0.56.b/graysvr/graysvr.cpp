@@ -219,9 +219,11 @@ bool CMapList::DetectMapSize(int map)
 	int	index = m_mapnum[map];
 	if ( index < 0 )
 		return false;
+	g_Log.EventDebug("Loading map %d\n",map);
 
 	if (g_Install.m_Maps[index].IsFileOpen() == false)
 		return false;
+	g_Log.EventDebug("Loading 1\n");
 
 	//
 	//	#0 - map0.mul			(felucca, 6144x4096 or 7168x4096, 77070336 or 89915392 bytes)
@@ -267,7 +269,7 @@ bool CMapList::DetectMapSize(int map)
 		case 4: // map4.mul
 			if (m_sizex[map] <= 0)		m_sizex[map] = 1448;
 			if (m_sizey[map] <= 0)		m_sizey[map] = 1448;
-			if (m_sectorsize[map] <= 0)	m_sectorsize[map] = 8;
+			if (m_sectorsize[map] <= 0)	m_sectorsize[map] = 16;
 			break;
 
 		case 5: // map5.mul
@@ -401,19 +403,19 @@ CMapList	g_MapList;			// global maps information
 
 DIR_TYPE GetDirStr( LPCTSTR pszDir )
 {
-	char iDir2, iDir = toupper(pszDir[0]);
+	char iDir2, iDir = static_cast<char>(toupper(pszDir[0]));
 
 	switch ( iDir )
 	{
 		case 'E': return DIR_E;
 		case 'W': return DIR_W;
 		case 'N':
-			iDir2 = toupper(pszDir[1]);
+			iDir2 = static_cast<char>(toupper(pszDir[1]));
 			if ( iDir2 == 'E' ) return DIR_NE;
 			if ( iDir2 == 'W' ) return DIR_NW;
 			return DIR_N;
 		case 'S':
-			iDir2 = toupper(pszDir[1]);
+			iDir2 = static_cast<char>(toupper(pszDir[1]));
 			if ( iDir2 == 'E' ) return DIR_SE;
 			if ( iDir2 == 'W' ) return DIR_SW;
 			return DIR_S;

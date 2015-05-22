@@ -311,15 +311,15 @@ short CChar::Stat_GetLimit( STAT_TYPE i ) const
 		ASSERT( i >= 0 && i < STAT_BASE_QTY );
 
 		sprintf(sStatName, "OVERRIDE.STATCAP_%d", static_cast<int>(i));
-		int iStatMax;
+		short iStatMax;
 		if ( (pTagStorage = GetKey(sStatName, true)) != NULL )
-			iStatMax = static_cast<int>(pTagStorage->GetValNum());
+			iStatMax = static_cast<short>(pTagStorage->GetValNum());
 		else
 			iStatMax = pSkillClass->m_StatMax[i];
 
 		if ( m_pPlayer->Stat_GetLock(i) >= SKILLLOCK_DOWN )
 		{
-			int iStatLevel = Stat_GetBase(i);
+			short iStatLevel = Stat_GetBase(i);
 			if ( iStatLevel < iStatMax )
 				iStatMax = iStatLevel;
 		}
@@ -333,10 +333,10 @@ short CChar::Stat_GetLimit( STAT_TYPE i ) const
 			return pTagStorage ? static_cast<short>(pTagStorage->GetValNum()) : 300;
 		}
 
-		int iStatMax = 100;
+		short iStatMax = 100;
 		sprintf(sStatName, "OVERRIDE.STATCAP_%d", static_cast<int>(i));
 		if ( (pTagStorage = GetKey(sStatName, true)) != NULL )
-			iStatMax = static_cast<int>(pTagStorage->GetValNum());
+			iStatMax = static_cast<short>(pTagStorage->GetValNum());
 
 		return( iStatMax );
 	}
@@ -460,7 +460,7 @@ unsigned short CChar::Skill_GetAdjusted( SKILL_TYPE skill ) const
 
 	ASSERT( IsSkillBase( skill ));
 	const CSkillDef * pSkillDef = g_Cfg.GetSkillDef( skill );
-	int iAdjSkill = 0;
+	unsigned short iAdjSkill = 0;
 
 	if (pSkillDef != NULL)
 	{
@@ -468,7 +468,7 @@ unsigned short CChar::Skill_GetAdjusted( SKILL_TYPE skill ) const
 						 ( pSkillDef->m_StatBonus[STAT_INT] * maximum(0,Stat_GetAdjusted( STAT_INT )) ) +
 						 ( pSkillDef->m_StatBonus[STAT_DEX] * maximum(0,Stat_GetAdjusted( STAT_DEX )) );
 
-		iAdjSkill = IMULDIV( pSkillDef->m_StatPercent, iPureBonus, 10000 );
+		iAdjSkill = static_cast<unsigned short>(IMULDIV( pSkillDef->m_StatPercent, iPureBonus, 10000 ));
 	}
 
 	return( Skill_GetBase(static_cast<SKILL_TYPE>(skill)) + iAdjSkill );
@@ -491,7 +491,7 @@ void CChar::Skill_SetBase( SKILL_TYPE skill, int iValue )
 
 		iValue = static_cast<int>(args.m_iN2);
 	}
-	m_Skill[skill] = iValue;
+	m_Skill[skill] = static_cast<unsigned short>(iValue);
 
 	if ( IsClient())
 		m_pClient->addSkillWindow(skill);	// update the skills list
@@ -836,7 +836,7 @@ unsigned short CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool bGetTicks)
 	// bGetTicks = true returns the regen ticks
 	// bGetTicks = false returns the values of regeneration.
 	
-	LPCTSTR stat;
+	LPCTSTR stat = "";
 	switch (static_cast<STAT_TYPE>(iStat))
 	{
 		case STAT_STR:
@@ -858,19 +858,19 @@ unsigned short CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool bGetTicks)
 		char sRegen[21];
 		if (bGetTicks == true)
 		{
-			int iRate = g_Cfg.m_iRegenRate[iStat];	// in TICK_PER_SEC
+			unsigned short iRate = static_cast<unsigned short>(g_Cfg.m_iRegenRate[iStat]);	// in TICK_PER_SEC
 			sprintf(sRegen, "REGEN%s", stat);
 			if (GetDefNum(sRegen, false))
-				iRate -= static_cast<int>(GetDefNum(sRegen, false)) * TICK_PER_SEC;
+				iRate -= static_cast<unsigned short>(GetDefNum(sRegen, false)) * TICK_PER_SEC;
 			return iRate;
 		}
 		else
 		{
 			sprintf(sRegen, "REGENVAL%s", stat);
-			return static_cast<int>(maximum(1, GetDefNum(sRegen, true)));
+			return static_cast<unsigned short>(maximum(1, GetDefNum(sRegen, true)));
 		}
 	}
-	return -1;
+	return 0;
 }
 
 bool CChar::Stat_Decrease(STAT_TYPE stat, SKILL_TYPE skill)
@@ -1610,6 +1610,7 @@ bool CChar::Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax )
 {
 	ADDTOCALLSTACK("CChar::Skill_Tracking");
 	// SKILL_TRACKING
+	UNREFERENCED_PARAMETER(dirPrv);
 	const CObjBase * pObj = uidTarg.ObjFind();
 	if ( pObj == NULL )
 		return false;
@@ -3587,7 +3588,7 @@ ANIM_TYPE CChar::Skill_GetAnim( SKILL_TYPE skill )
 	return anim;
 }
 
-int CChar::Skill_GetSound( SKILL_TYPE skill )
+SOUND_TYPE CChar::Skill_GetSound( SKILL_TYPE skill )
 {
 	int sound = 0;
 	switch ( skill )
@@ -3626,7 +3627,7 @@ int CChar::Skill_GetSound( SKILL_TYPE skill )
 		default:
 			break;
 	}
-	return sound;
+	return static_cast<SOUND_TYPE>(sound);
 }
 
 int CChar::Skill_Stroke( bool fResource )
@@ -3670,7 +3671,7 @@ int CChar::Skill_Stroke( bool fResource )
 	}
 
 	if ( sound )
-		Sound(sound);
+		Sound(static_cast<SOUND_TYPE>(sound));
 	if ( delay < 10)
 		delay = 10;
 	if ( anim )

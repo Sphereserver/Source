@@ -651,7 +651,7 @@ static int GetHexDigit( TCHAR ch )
 	if ( IsDigit( ch ))
 		return( ch - '0' );
 
-	ch = toupper(ch);
+	ch = static_cast<TCHAR>(toupper(ch));
 	if ( ch > 'F' || ch <'A' )
 		return( -1 );
 
@@ -677,7 +677,7 @@ static int HtmlDeCode( TCHAR * pszDst, LPCTSTR pszSrc )
 				ch = *pszSrc++;
 				if ( ch )
 				{
-					ch = iVal*0x10 + GetHexDigit(ch);
+					ch = static_cast<TCHAR>(iVal*0x10 + GetHexDigit(ch));
 					if (static_cast<unsigned char>(ch) == 0xa0)
 						ch = '\0';
 				}

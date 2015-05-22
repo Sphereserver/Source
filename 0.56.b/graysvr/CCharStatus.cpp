@@ -847,7 +847,7 @@ CItem * CChar::GetSpellbookRandom(SPELL_TYPE iSpell) const	// Retrieves a spellb
 			continue;
 		if (g_Cfg.IsSkillFlag(skill, SKF_MAGIC) && (Skill_GetBase(skill) > 1))	//only selecting skills with value > 0.1
 		{
-			pBook = GetSpellbook(const_cast<CChar*>(this)->Spell_GetIndex(skill));
+			pBook = GetSpellbook(iSpell ? iSpell : const_cast<CChar*>(this)->Spell_GetIndex(skill));
 			if (pBook)
 				pBooks[++count] = pBook;
 		}
@@ -855,8 +855,8 @@ CItem * CChar::GetSpellbookRandom(SPELL_TYPE iSpell) const	// Retrieves a spellb
 	GetSpellbookExtra(pBooks,count); //Add extra spellbooks to the list. 
 	if (count > 0)
 	{
-		char rand = Calc_GetRandVal2(1, count);
-		return pBooks[static_cast<int>(rand)];
+		int rand = Calc_GetRandVal2(1, count);
+		return pBooks[rand];
 	}
 	return NULL;
 }
@@ -1314,7 +1314,7 @@ blocked:
 			{
 				wBlockFlags = CAN_C_SWIM | CAN_C_WALK | CAN_C_FLY;
 				signed char z = g_World.GetHeightPoint2(ptTest, wBlockFlags, true);
-				signed char zDiff = abs(z - ptTest.m_z);
+				signed char zDiff = static_cast<signed char>(abs(z - ptTest.m_z));
 				if (zDiff > PLAYER_HEIGHT) fBlocked = true;
 				else ptTest.m_z = z;
 
@@ -1328,7 +1328,7 @@ blocked:
 				{
 					wBlockFlags = CAN_C_SWIM | CAN_C_WALK | CAN_C_FLY;
 					signed char z = g_World.GetHeightPoint2(ptTest, wBlockFlags, true);
-					signed char zDiff = abs(z - ptTest.m_z);
+					signed char zDiff = static_cast<signed char>(abs(z - ptTest.m_z));
 					if (zDiff > PLAYER_HEIGHT) goto blocked;
 					else ptTest.m_z = z;
 
@@ -1346,7 +1346,7 @@ blocked:
 
 			wBlockFlags = CAN_C_SWIM | CAN_C_WALK | CAN_C_FLY;
 			signed char z = g_World.GetHeightPoint2( ptSrc, wBlockFlags, true );
-			signed char zDiff	= abs( z - ptSrc.m_z );
+			signed char zDiff	= static_cast<signed char>(abs( z - ptSrc.m_z ));
 			
 			if ( zDiff > PLAYER_HEIGHT ) goto blocked;
 			else ptSrc.m_z	= z;
@@ -1451,11 +1451,11 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 			{
 				CPointMap ptEnd = path.at(path.size() - 1);
 				if ( ptEnd.m_x != dx || ptEnd.m_y != dy || ptEnd.m_z != dz )
-					path.push_back(CPointMap(static_cast<WORD>(dx), static_cast<WORD>(dy), dz, ptSrc.m_map));
+					path.push_back(CPointMap(static_cast<WORD>(dx), static_cast<WORD>(dy), static_cast<signed char>(dz), ptSrc.m_map));
 			}
 			else
 			{
-				path.push_back(CPointMap(static_cast<WORD>(dx), static_cast<WORD>(dy), dz, ptSrc.m_map));
+				path.push_back(CPointMap(static_cast<WORD>(dx), static_cast<WORD>(dy), static_cast<signed char>(dz), ptSrc.m_map));
 			}
 			WARNLOS(("PATH X:%d Y:%d Z:%d\n",dx,dy,dz));
 
@@ -1871,7 +1871,7 @@ bool CChar::CanSeeLOS_New( const CPointMap & ptDst, CPointMap * pptBlock, int iM
 								if (( ( wTFlags & (UFLAG1_WALL|UFLAG1_BLOCK|UFLAG2_PLATFORM) ) || (pItemDef->m_Can & CAN_I_BLOCKLOS)  ) && !(( wTFlags & UFLAG2_WINDOW ) && ( flags & LOS_NB_WINDOWS )))
 								{
 									WARNLOS(("pMultiItem %0x %d,%d,%d - %d\n",pMultiItem->GetDispID(),pMultiItem->m_dx,pMultiItem->m_dy,pMultiItem->m_dz,Height));
-									min_z = pMultiItem->m_dz + pItem->GetTopPoint().m_z;
+									min_z = static_cast<signed char>(pMultiItem->m_dz) + pItem->GetTopPoint().m_z;
 									max_z = minimum(Height + min_z, UO_SIZE_Z);
 									WARNLOS(("wTFlags(0%lx)\n",wTFlags));
 

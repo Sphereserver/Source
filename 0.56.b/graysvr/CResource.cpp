@@ -638,15 +638,15 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "COLORHIDDEN",			{ ELEM_VOID,	OFFSETOF(CResource,m_iColorHidden),			0 }},
 	{ "COLORINVIS",				{ ELEM_VOID,	OFFSETOF(CResource,m_iColorInvis),			0 }},
 	{ "COLORINVISSPELL",		{ ELEM_VOID,	OFFSETOF(CResource,m_iColorInvisSpell),		0 }},
-	{ "COLORNOTOCRIMINAL",		{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoCriminal),	0 }},
-	{ "COLORNOTODEFAULT",		{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoDefault),	0 }},
-	{ "COLORNOTOEVIL",			{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoEvil),		0 }},
-	{ "COLORNOTOGOOD",			{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoGood),		0 }},
-	{ "COLORNOTOGUILDSAME",		{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoGuildSame),	0 }},
-	{ "COLORNOTOGUILDWAR",		{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoGuildWar),	0 }},
-	{ "COLORNOTOINVUL",			{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoInvul),		0 }},
-	{ "COLORNOTOINVULGAMEMASTER",{ ELEM_INT,	OFFSETOF(CResource,m_iColorNotoInvulGameMaster),	0 }},
-	{ "COLORNOTONEUTRAL",		{ ELEM_INT,		OFFSETOF(CResource,m_iColorNotoNeutral),	0 }},
+	{ "COLORNOTOCRIMINAL",		{ ELEM_WORD,	OFFSETOF(CResource, m_iColorNotoCriminal),	0 }},
+	{ "COLORNOTODEFAULT",		{ ELEM_WORD,	OFFSETOF(CResource, m_iColorNotoDefault),	0 }},
+	{ "COLORNOTOEVIL",			{ ELEM_WORD,	OFFSETOF(CResource, m_iColorNotoEvil),		0 }},
+	{ "COLORNOTOGOOD",			{ ELEM_WORD,	OFFSETOF(CResource,m_iColorNotoGood),		0 }},
+	{ "COLORNOTOGUILDSAME",		{ ELEM_WORD,	OFFSETOF(CResource,m_iColorNotoGuildSame),	0 }},
+	{ "COLORNOTOGUILDWAR",		{ ELEM_WORD,	OFFSETOF(CResource,m_iColorNotoGuildWar),	0 }},
+	{ "COLORNOTOINVUL",			{ ELEM_WORD,	OFFSETOF(CResource,m_iColorNotoInvul),		0 }},
+	{ "COLORNOTOINVULGAMEMASTER",{ ELEM_WORD,	OFFSETOF(CResource,m_iColorNotoInvulGameMaster),	0 }},
+	{ "COLORNOTONEUTRAL",		{ ELEM_WORD,	OFFSETOF(CResource,m_iColorNotoNeutral),	0 }},
 	{ "COMBATFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iCombatFlags),			0 }},
 	{ "COMMANDLOG",				{ ELEM_INT,		OFFSETOF(CResource,m_iCommandLog),			0 }},
 	{ "COMMANDPREFIX",			{ ELEM_BYTE,	OFFSETOF(CResource,m_cCommandPrefix),		0 }},
@@ -1001,13 +1001,13 @@ bool CResource::r_LoadVal( CScript &s )
 			}
 			break;
 		case RC_COLORHIDDEN:
-			m_iColorHidden = s.GetArgVal();
+			m_iColorHidden = static_cast<HUE_TYPE>(s.GetArgVal());
 			break;
 		case RC_COLORINVIS:
-			m_iColorInvis = s.GetArgVal();
+			m_iColorInvis = static_cast<HUE_TYPE>(s.GetArgVal());
 			break;
 		case RC_COLORINVISSPELL:
-			m_iColorInvisSpell = s.GetArgVal();
+			m_iColorInvisSpell = static_cast<HUE_TYPE>(s.GetArgVal());
 			break;
 		case RC_CORPSENPCDECAY:
 			m_iDecay_CorpseNPC = s.GetArgVal()*60*TICK_PER_SEC;
@@ -1329,7 +1329,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 					case 3:
 						if ( IsDigit(ppVal[2][0]) || (( iArgs == 4 ) && ( ppVal[2][0] == '-' )) )
 						{
-							pt.m_z = ( iArgs == 4 ) ? ATOI(ppVal[2]) : 0;
+							pt.m_z = static_cast<signed char>(( iArgs == 4 ) ? ATOI(ppVal[2]) : 0);
 							if ( iArgs == 3 )
 							{
 								pt.m_map = static_cast<unsigned char>(ATOI(ppVal[2]));
@@ -2021,7 +2021,7 @@ const CGrayMulti * CResource::GetMultiItemDefs( ITEMID_TYPE itemid )
 	if ( ! CItemBase::IsID_Multi(itemid))
 		return( NULL );
 
-	MULTI_TYPE id = itemid - ITEMID_MULTI;
+	MULTI_TYPE id = static_cast<MULTI_TYPE>(itemid - ITEMID_MULTI);
 	size_t index = m_MultiDefs.FindKey( id );
 	if ( index == m_MultiDefs.BadIndex() )
 	{
@@ -4198,7 +4198,7 @@ bool CResource::GenerateDefname(TCHAR *pObjectName, size_t iInputLength, LPCTSTR
 		else if ( _ISCSYMF(pObjectName[i]) )
 		{
 			if (pObjectName[i] != '_' || (iOut > 0 && pOutput[iOut - 1] != '_')) // avoid double '_'
-				pOutput[iOut++] = tolower(pObjectName[i]);
+				pOutput[iOut++] = static_cast<TCHAR>(tolower(pObjectName[i]));
 		}
 	}
 

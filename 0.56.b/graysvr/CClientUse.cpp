@@ -9,6 +9,7 @@
 inline bool CClient::Cmd_Use_Item_MustEquip( CItem * pItem, bool fFromDClick )
 {
 	ADDTOCALLSTACK("CClient::Cmd_Use_Item_MustEquip");
+	UNREFERENCED_PARAMETER(fFromDClick);
 	if ( ! m_pChar->CanMove( pItem ) )
 	{
 		return false;

@@ -48,7 +48,7 @@ CServerDef::CServerDef( LPCTSTR pszName, CSocketAddressIP dwIP ) :
 	m_timeCreate = CServTime::GetCurrentTime();
 
 	// Set default time zone from UTC
-	m_TimeZone = (int)_timezone / (60 * 60);	// Greenwich mean time.
+	m_TimeZone = static_cast<signed char>( _timezone / (60 * 60) );	// Greenwich mean time.
 	m_eAccApp = ACCAPP_Unspecified;
 }
 

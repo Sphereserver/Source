@@ -1033,7 +1033,7 @@ bool CChar::UpdateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward , BY
 	if (action < 0 || action >= ANIM_QTY)
 		return false;
 
-	ANIM_TYPE_NEW subaction;
+	ANIM_TYPE_NEW subaction = static_cast<ANIM_TYPE_NEW>(-1);
 	BYTE variation = 0;		//Seems to have some effect for humans/elfs vs gargoyles
 	if (fTranslate)
 		action = GenerateAnimate( action, true, fBackward);
@@ -1445,25 +1445,25 @@ void CChar::SoundChar( CRESND_TYPE type )
 
 		default:
 		{
-			id = pCharDef->m_soundbase + type;
+			id = static_cast<SOUND_TYPE>(pCharDef->m_soundbase + type);
 			switch ( pCharDef->m_soundbase )	// some creatures have no base sounds.
 			{
 				case 0:
-					id = 0;
+					id = SOUND_NONE;
 					break;
 				case 128: // old versions
 				case 181:
 				case 199:
 					if ( type <= CRESND_RAND2 )
-						id = 0;
+						id = SOUND_NONE;
 					break;
 				case 130: // ANIMALS_DEER3
 				case 183: // ANIMALS_LLAMA3
 				case 201: // ANIMALS_RABBIT3
 					if ( type <= CRESND_RAND2 )
-						id = 0;
+						id = SOUND_NONE;
 					else
-						id -= 2;
+						id = static_cast<SOUND_TYPE>(id-2);
 					break;
 				default:
 					break;
@@ -4038,7 +4038,7 @@ bool CChar::SetPrivLevel(CTextConsole * pSrc, LPCTSTR pszFlags)
 		{
 			pItem->SetAttr(ATTR_MOVE_NEVER|ATTR_NEWBIE|ATTR_MAGIC);
 			pItem->m_itArmor.m_spelllevel = 1000;
-			pItem->SetHue( ( PrivLevel >= PLEVEL_GM ) ? HUE_RED : HUE_BLUE_NAVY /*, false, pSrc */ ); //call @Dye on equiped gm robes after plevel change?
+			pItem->SetHue( static_cast<HUE_TYPE>(( PrivLevel >= PLEVEL_GM ) ? HUE_RED : HUE_BLUE_NAVY) /*, false, pSrc */ ); //call @Dye on equiped gm robes after plevel change?
 			ItemEquip(pItem);
 		}
 	}

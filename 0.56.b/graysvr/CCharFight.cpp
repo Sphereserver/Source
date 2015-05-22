@@ -347,7 +347,7 @@ HUE_TYPE CChar::Noto_GetHue( const CChar * pCharViewer, bool fIncog ) const
 		case NOTO_GUILD_WAR:	return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoGuildWar);	// Orange (enemy guild)
 		case NOTO_EVIL:			return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoEvil);		// Red
 		case NOTO_INVUL:		return IsPriv(PRIV_GM)? static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoInvulGameMaster) : static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoInvul);		// Purple / Yellow
-		default:				return color > NOTO_INVUL ? color : static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoDefault);	// Grey
+		default:				return static_cast<HUE_TYPE>(color > NOTO_INVUL ? color : g_Cfg.m_iColorNotoDefault);	// Grey
 	}
 }
 
@@ -885,7 +885,7 @@ void CChar::NotoSave_Resend( int id )
 	CChar * pChar = uid.CharFind();
 	if ( ! pChar )
 		return;
-	NotoSave_Delete( pChar, false );
+	NotoSave_Delete( pChar );
 	CObjBase *	pObj	= pChar->GetChar();
 	pObj	= dynamic_cast <CObjBase*>( pChar->GetTopLevelObj() );
 	if (  GetDist( pObj ) < UO_MAP_VIEW_SIGHT )
@@ -948,7 +948,7 @@ CChar * CChar::NotoSave_GetUID( int index )
 	return pChar;
 }
 
-bool CChar::NotoSave_Delete( CChar * pChar, bool bForced )
+bool CChar::NotoSave_Delete( CChar * pChar )
 {		
 	ADDTOCALLSTACK("CChar::NotoSave_Delete");
 	if ( ! pChar )
@@ -1202,7 +1202,7 @@ CItemMemory * CChar::Memory_AddObjTypes( CGrayUID uid, WORD MemTypes )
 		return Memory_CreateObj( uid, MemTypes );
 	}
 	Memory_AddTypes( pMemory, MemTypes );
-	NotoSave_Delete( uid.CharFind(), true );
+	NotoSave_Delete( uid.CharFind() );
 	return( pMemory );
 }
 
@@ -2220,7 +2220,7 @@ effect_bounce:
 		uType |= DAMAGE_FIXED;
 
 	// Apply armor calculation
-	if ( !(uType & DAMAGE_FIXED) )
+	if (!(uType & DAMAGE_FIXED | DAMAGE_GOD))
 	{
 		if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 		{
@@ -2915,7 +2915,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	CChar * pTarget = const_cast<CChar*>(pCharTarg);
 	if (!m_pPlayer && !btoldByMaster)	// We call for FindBestTarget when this CChar is not a player and was not commanded to attack, otherwise it attack directly.
 		pTarget = Fight_FindBestTarget();
-	m_Fight_Targ = pTarget ? pTarget->GetUID() : static_cast<CGrayUID>(-1);
+	m_Fight_Targ = pTarget ? pTarget->GetUID() : UID_UNUSED;
 	Skill_Start( skillWeapon );
 
 	return( true );

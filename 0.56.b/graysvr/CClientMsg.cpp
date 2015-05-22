@@ -139,7 +139,7 @@ void CClient::resendBuffs()
 		case SPELL_Protection:
 		case SPELL_Arch_Prot:
 		{
-			WORD BuffIcon = BI_PROTECTION;
+			BUFF_ICONS BuffIcon = BI_PROTECTION;
 			unsigned long BuffCliloc = 1075814;
 			if ( pSpell->m_itSpell.m_spell == SPELL_Arch_Prot )
 			{
@@ -197,7 +197,7 @@ void CClient::resendBuffs()
 	}
 
 }
-void CClient::addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD ClilocTwo, const short Time, LPCTSTR* pArgs, size_t iArgCount)
+void CClient::addBuff( const BUFF_ICONS IconId, const DWORD ClilocOne, const DWORD ClilocTwo, const short Time, LPCTSTR* pArgs, size_t iArgCount)
 {
 	ADDTOCALLSTACK("CClient::addBuff");
 	if ( !IsSetOF(OF_Buffs) )
@@ -208,7 +208,7 @@ void CClient::addBuff( const WORD IconId, const DWORD ClilocOne, const DWORD Cli
 	new PacketBuff(this, IconId, ClilocOne, ClilocTwo, Time, pArgs, iArgCount);
 }
 
-void CClient::removeBuff (const WORD IconId)
+void CClient::removeBuff(const BUFF_ICONS IconId)
 {
 	ADDTOCALLSTACK("CClient::removeBuff");
 	if ( !IsSetOF(OF_Buffs) )
@@ -726,7 +726,7 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 		}
 	}
 
-	WORD Args[] = { wHue, font, (bUnicode ? (WORD)1 : (WORD)0) };
+	WORD Args[] = { wHue, static_cast<WORD>(font), (bUnicode ? (WORD)1 : (WORD)0) };
 
 	if ( *pszText == '@' )
 	{
@@ -936,7 +936,7 @@ void CClient::GetAdjustedItemID( const CChar * pChar, const CItem * pItem, ITEMI
 	}
 
 	if ( m_pChar->IsStatFlag( STATF_Hallucinating ))
-		wHue = Calc_GetRandVal( HUE_DYE_HIGH );
+		wHue = static_cast<HUE_TYPE>(Calc_GetRandVal( HUE_DYE_HIGH ));
 	else if ( pChar->IsStatFlag(STATF_Stone))
 		wHue = HUE_STONE;
 	else if ( pChar->IsStatFlag(STATF_Insubstantial))
@@ -996,7 +996,7 @@ void CClient::GetAdjustedCharID( const CChar * pChar, CREID_TYPE & id, HUE_TYPE 
 			}
 		}
 
-		wHue = Calc_GetRandVal( HUE_DYE_HIGH );
+		wHue = static_cast<HUE_TYPE>(Calc_GetRandVal( HUE_DYE_HIGH ));
 	}
 	else
 	{

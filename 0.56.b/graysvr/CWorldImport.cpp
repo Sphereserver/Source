@@ -417,27 +417,27 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			if ( s.IsKey("X" ))
 			{
 				CPointMap pt = pItem->GetUnkPoint();
-				pt.m_x = static_cast<short>(ATOI(pArg));
+				pt.m_x = static_cast<short>( ATOI(pArg) );
 				pItem->SetUnkPoint(pt);
 				continue;
 			}
 			else if ( s.IsKey("Y" ))
 			{
 				CPointMap pt = pItem->GetUnkPoint();
-				pt.m_y = static_cast<short>(ATOI(pArg));
+				pt.m_y = static_cast<short>( ATOI(pArg) );
 				pItem->SetUnkPoint(pt);
 				continue;
 			}
 			else if ( s.IsKey("Z" ))
 			{
 				CPointMap pt = pItem->GetUnkPoint();
-				pt.m_z = ATOI(pArg);
+				pt.m_z = static_cast<signed char>( ATOI(pArg) );
 				pItem->SetUnkPoint(pt);
 				continue;
 			}
 			else if ( s.IsKey("COLOR" ))
 			{
-				pItem->SetHue( ATOI(pArg));
+				pItem->SetHue( static_cast<HUE_TYPE>( ATOI(pArg) ) );
 				continue;
 			}
 			else if ( s.IsKey("AMOUNT" ))
@@ -457,7 +457,7 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			}
 			else if ( s.IsKey("MOREZ" ))
 			{
-				pItem->m_itNormal.m_morep.m_z = ATOI(pArg);
+				pItem->m_itNormal.m_morep.m_z = static_cast<signed char>( ATOI(pArg) );
 				continue;
 			}
 			else if ( s.IsKey("MORE" ))
@@ -538,7 +538,7 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			}
 			else if ( s.IsKey("SKIN" ))
 			{
-				pChar->SetHue( ATOI(pArg));
+				pChar->SetHue( static_cast<HUE_TYPE>( ATOI(pArg) ));
 				continue;
 			}
 			else if ( s.IsKey("DIR" ))
@@ -555,7 +555,7 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			}
 			else if ( s.IsKey("XSKIN" ))
 			{
-				pChar->m_prev_Hue = ATOI(pArg);
+				pChar->m_prev_Hue = static_cast<HUE_TYPE>( ATOI(pArg) );
 				continue;
 			}
 			else if ( s.IsKey("FONT" ))

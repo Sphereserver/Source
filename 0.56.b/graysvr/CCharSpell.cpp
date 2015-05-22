@@ -396,7 +396,7 @@ bool CChar::Spell_Recall( CItem * pRune, bool fGate )
 		pGate->SetAttr(ATTR_MAGIC|ATTR_MOVE_NEVER|ATTR_CAN_DECAY);	// why is this movable ?
 		pGate->m_itTelepad.m_pntMark = pRune->m_itRune.m_pntMark;
 		// pGate->m_light_pattern = LIGHT_LARGE;
-		pGate->SetHue(pArea->IsGuarded() ? HUE_DEFAULT : HUE_RED );
+		pGate->SetHue(static_cast<HUE_TYPE>(pArea->IsGuarded() ? HUE_DEFAULT : HUE_RED ));
 		int iDuration = pSpellDef->m_Duration.GetLinear( 0 );
 		pGate->MoveToDecay( GetTopPoint(), iDuration );
 		pGate->m_uidLink = this->GetUID();
@@ -407,7 +407,7 @@ bool CChar::Spell_Recall( CItem * pRune, bool fGate )
 		pGate = CItem::CreateDupeItem( pGate );
 		ASSERT(pGate);
 		pGate->m_itTelepad.m_pntMark = GetTopPoint();
-		pGate->SetHue(( m_pArea && m_pArea->IsGuarded()) ? HUE_DEFAULT : HUE_RED );
+		pGate->SetHue(static_cast<HUE_TYPE>(( m_pArea && m_pArea->IsGuarded()) ? HUE_DEFAULT : HUE_RED ));
 		pGate->MoveToDecay( pRune->m_itRune.m_pntMark, iDuration );
 		pGate->m_uidLink = this->GetUID();
 		pGate->Sound( pSpellDef->m_sound );
@@ -956,7 +956,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				pSpell->SetName(GetName());	// Give it my name
 				SetName(pCharDef->GetTypeName());	// Give me general name for the type
 				if (!IsStatFlag(STATF_Polymorph) && IsPlayableCharacter())
-					SetHue((HUE_UNDERWEAR | HUE_SKIN_LOW) + Calc_GetRandVal(HUE_SKIN_HIGH - HUE_SKIN_LOW));
+					SetHue((HUE_UNDERWEAR | HUE_SKIN_LOW) + static_cast<HUE_TYPE>(Calc_GetRandVal(HUE_SKIN_HIGH - HUE_SKIN_LOW)));
 
 				if (IsSetOF(OF_Buffs) && IsClient())
 				{
@@ -1191,7 +1191,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					if ( iStatEffect < 0 )
 						iStatEffect = 0;
 					else if ( iStatEffect > Stat_GetVal(STAT_INT) )
-						iStatEffect = Stat_GetVal(STAT_INT);
+						iStatEffect = static_cast<short>(Stat_GetVal(STAT_INT));
 
 					pSpell->m_itSpell.m_spelllevel = iStatEffect;
 				}
@@ -1242,8 +1242,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					iMagicResist = minimum(Skill_GetBase(SKILL_MAGICRESISTANCE), 350 - (Skill_GetBase(SKILL_INSCRIPTION) / 20));
 
 					pSpell->m_itSpell.m_spelllevel = iStatEffect;
-					pSpell->m_itSpell.m_PolyStr = iPhysicalResist;
-					pSpell->m_itSpell.m_PolyDex = iMagicResist;
+					pSpell->m_itSpell.m_PolyStr = static_cast<short>(iPhysicalResist);
+					pSpell->m_itSpell.m_PolyDex = static_cast<short>(iMagicResist);
 
 					SetDefNum("RESPHYSICAL", static_cast<int>(GetDefNum("RESPHYSICAL", true) - iPhysicalResist));
 					SetDefNum("FASTERCASTING", static_cast<int>(GetDefNum("FASTERCASTING", true) - 2));
@@ -1255,7 +1255,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				}
 				if ( IsSetOF(OF_Buffs) && IsClient() )
 				{
-					WORD BuffIcon = BI_PROTECTION;
+					BUFF_ICONS BuffIcon = BI_PROTECTION;
 					unsigned long BuffCliloc = 1075814;
 					if ( spell == SPELL_Arch_Prot )
 					{
@@ -2153,8 +2153,8 @@ bool CChar::Spell_CastDone()
 
 	iSkillLevel = static_cast<int>(Args.m_iN2);
 
-	ITEMID_TYPE it1test;
-	ITEMID_TYPE it2test;
+	ITEMID_TYPE it1test = ITEMID_NOTHING;
+	ITEMID_TYPE it2test = ITEMID_NOTHING;
 
 	if (bIsSpellField)
 	{
@@ -2742,7 +2742,7 @@ int CChar::Spell_CastStart()
 			if ( i > 0 )
 			{
 				pszTemp[len] = 0;
-				Speak(pszTemp, WOPColor, TALKMODE_SAY, static_cast<FONT_TYPE>(WOPFont));
+				Speak(pszTemp, static_cast<HUE_TYPE>(WOPColor), TALKMODE_SAY, static_cast<FONT_TYPE>(WOPFont));
 			}
 		}
 	}

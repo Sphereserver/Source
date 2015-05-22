@@ -33,14 +33,14 @@ bool GetDeltaStr( CPointMap & pt, TCHAR * pszDir )
 	if (iQty <= 0)
 		return( false );
 
-	TCHAR chDir = toupper( ppCmd[0][0] );
+	TCHAR chDir = static_cast<TCHAR>(toupper(ppCmd[0][0]));
 	int iTmp = Exp_GetVal( ppCmd[1] );
 
 	if ( IsDigit( chDir ) || chDir == '-' )
 	{
 		pt.m_x += static_cast<short>(Exp_GetVal(ppCmd[0]));
 		pt.m_y += static_cast<short>(iTmp);
-		pt.m_z += Exp_GetVal( ppCmd[2] );
+		pt.m_z += static_cast<signed char>(Exp_GetVal(ppCmd[2]));
 	}
 	else	// a direction by name.
 	{
@@ -476,6 +476,7 @@ void CObjBase::SpeakUTF8Ex( const NWORD * pText, HUE_TYPE wHue, TALKMODE_TYPE mo
 bool CObjBase::MoveNear( CPointMap pt, int iSteps, DWORD dwCan )
 {
 	ADDTOCALLSTACK("CObjBase::MoveNear");
+	UNREFERENCED_PARAMETER(dwCan);
 	// Move to nearby this other object.
 	// Actually move it within +/- iSteps
 
@@ -2044,7 +2045,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			EXC_SET("NUDGEDOWN");
 			if ( IsTopLevel())
 			{
-				int zdiff = s.GetArgVal();
+				signed char zdiff = static_cast<signed char>(s.GetArgVal());
 				SetTopZ( GetTopZ() - ( zdiff ? zdiff : 1 ));
 				Update();
 			}
@@ -2053,7 +2054,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 			EXC_SET("NUDGEUP");
 			if ( IsTopLevel())
 			{
-				int zdiff = s.GetArgVal();
+				signed char zdiff = static_cast<signed char>(s.GetArgVal());
 				SetTopZ( GetTopZ() + ( zdiff ? zdiff : 1 ));
 				Update();
 			}
@@ -2204,7 +2205,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				bool		fCrim		= false;
 				bool		fFunction	= false;
 				bool		fMulti		= false;
-				TCHAR		low = tolower(*pszKey);
+				TCHAR		low = static_cast<TCHAR>(tolower(*pszKey));
 
 				while (( low >= 'a' ) && ( low <= 'z' ))
 				{
@@ -2217,7 +2218,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 					else if ( low == 'm' )
 						fMulti = true;
 
-					low = tolower(*(++pszKey));
+					low = static_cast<TCHAR>(tolower(*(++pszKey)));
 				}
 
 				pClientSrc->m_Targ_UID = GetUID();
@@ -2758,6 +2759,7 @@ void CObjBase::SetTriggerActive(LPCTSTR trig)
 void CObjBase::Delete(bool bforce)
 {
 	ADDTOCALLSTACK("CObjBase::Delete");
+	UNREFERENCED_PARAMETER(bforce);	// CObjBase doesnt use it, but CItem and CChar does use it, do not remove.
 
 	DeletePrepare();
 	g_World.m_TimedFunctions.Erase( GetUID() );
@@ -2785,6 +2787,8 @@ TRIGRET_TYPE CObjBase::Spell_OnTrigger( SPELL_TYPE spell, SPTRIG_TYPE stage, CCh
 
 inline bool CObjBase::CallPersonalTrigger(TCHAR * pArgs, CTextConsole * pSrc, TRIGRET_TYPE & trResult, bool bFull)
 {
+	ADDTOCALLSTACK("CObjBase::CallPersonalTrigger");
+	UNREFERENCED_PARAMETER(bFull);
 	TCHAR * ppCmdTrigger[3];
 	size_t iResultArgs = Str_ParseCmds(pArgs, ppCmdTrigger, COUNTOF(ppCmdTrigger), ",");
 	

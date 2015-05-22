@@ -480,7 +480,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 		return true;
 
 	// Convert first character to lowercase
-	TCHAR low = tolower(sText[0]);
+	TCHAR low = static_cast<TCHAR>(tolower(sText[0]));
 	bool fRet = true;
 
 	if ((( len > 2 ) || (( len == 2 ) && ( sText[1] != '#' ))) && ( sText[0] != 'd' ))

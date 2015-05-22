@@ -1591,7 +1591,7 @@ bool CItemBase::r_LoadVal( CScript &s )
 			break;
 
 		case IBC_LAYER:
-			m_layer = static_cast<LAYER_TYPE>(s.GetArgVal());
+			m_layer = static_cast<unsigned char>(s.GetArgVal());
 			break;
 		case IBC_PILE:
 			break;

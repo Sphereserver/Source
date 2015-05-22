@@ -2894,7 +2894,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 						case 3: // m_z
 							if ( IsDigit(ppVal[2][0]) || ppVal[2][0] == '-' )
 							{
-								pt.m_z = ATOI(ppVal[2]);
+								pt.m_z = static_cast<signed char>(ATOI(ppVal[2]));
 							}
 						case 2:
 							pt.m_y = static_cast<short>(ATOI(ppVal[1]));
@@ -3825,9 +3825,9 @@ bool CItem::Use_Portculis()
 
 	CPointMap pt = GetTopPoint();
 	if ( pt.m_z == m_itPortculis.m_z1 )
-		pt.m_z = m_itPortculis.m_z2;
+		pt.m_z = static_cast<signed char>(m_itPortculis.m_z2);
 	else
-		pt.m_z = m_itPortculis.m_z1;
+		pt.m_z = static_cast<signed char>(m_itPortculis.m_z1);
 
 	if ( pt.m_z == GetTopZ())
 		return false;
@@ -3857,7 +3857,7 @@ SOUND_TYPE CItem::Use_Music( bool fWell ) const
 {
 	ADDTOCALLSTACK("CItem::Use_Music");
 	const CItemBase * pItemDef = Item_GetDef();
-	return( fWell ? ( pItemDef->m_ttMusical.m_iSoundGood ) : ( pItemDef->m_ttMusical.m_iSoundBad ));
+	return( static_cast<SOUND_TYPE>(fWell ? ( pItemDef->m_ttMusical.m_iSoundGood ) : ( pItemDef->m_ttMusical.m_iSoundBad )));
 }
 
 bool CItem::IsDoorOpen() const
@@ -4865,6 +4865,11 @@ LPCTSTR CItem::Armor_GetRepairDesc() const
 int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType, int iDmgPhysical, int iDmgFire, int iDmgCold, int iDmgPoison, int iDmgEnergy )
 {
 	ADDTOCALLSTACK("CItem::OnTakeDamage");
+	UNREFERENCED_PARAMETER(iDmgPhysical);		// TO-DO ?
+	UNREFERENCED_PARAMETER(iDmgFire);
+	UNREFERENCED_PARAMETER(iDmgCold);
+	UNREFERENCED_PARAMETER(iDmgPoison);
+	UNREFERENCED_PARAMETER(iDmgEnergy);
 	// This will damage the item durability, break stuff, explode potions, etc.
 	// Any chance to do/avoid the damage must be checked before OnTakeDamage().
 	//
