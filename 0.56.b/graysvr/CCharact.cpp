@@ -2319,7 +2319,7 @@ bool CChar::Horse_Mount(CChar *pHorse) // Remove horse char and give player a ho
 		SysMessageDefault(DEFMSG_MOUNT_DONTOWN);
 		return false;
 	}
-	if (pHorse->m_pNPC->m_bonded == 1 && pHorse->IsStatFlag(STATF_DEAD))
+	if ( pHorse->m_pNPC->m_bonded && pHorse->IsStatFlag(STATF_DEAD) )
 	{
 		SysMessageDefault(DEFMSG_MOUNT_BONDED_DEAD_CANTMOUNT);
 		return false;
@@ -2750,9 +2750,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 		  GetDispID() != CREID_BLADES ) || (wFlags & DEATH_HASCORPSE)) )
 	{
 		if ( m_pPlayer )
-		{
 			Horse_UnMount(); // If i'm conjured then my horse goes with me.
-		}
 
 		CItem* pItemCorpse = CItem::CreateScript( ITEMID_CORPSE, this );
 		pCorpse = dynamic_cast <CItemCorpse *>(pItemCorpse);
@@ -2772,7 +2770,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 		pCorpse->m_itCorpse.m_facing_dir = static_cast<unsigned char>(m_dirFace);
 		pCorpse->SetAttr(ATTR_INVIS);	// Don't display til ready.
 
-		if (IsStatFlag(STATF_DEAD) || (m_pNPC && m_pNPC->m_bonded == 1))
+		if (IsStatFlag(STATF_DEAD) || (m_pNPC && m_pNPC->m_bonded))
 		{
 			pCorpse->SetTimeStamp(CServTime::GetCurrentTime().GetTimeRaw()); // death time.
 			if (Attacker_GetLast())
@@ -2788,7 +2786,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 			iDecayTime = -1;	// never
 		}
 
-		if (m_pPlayer || !IsStatFlag(STATF_DEAD) || (m_pNPC && m_pNPC->m_bonded == 1))	// not being deleted.
+		if (m_pPlayer || !IsStatFlag(STATF_DEAD) || (m_pNPC && m_pNPC->m_bonded))	// not being deleted.
 			pCorpse->m_uidLink = GetUID();
 	}
 	else
@@ -2885,23 +2883,16 @@ bool CChar::Death()
 			return true;
 	}
 
-	// I am dead and we need to give credit for the kill to my attacker(s).
-	TCHAR * pszKillStr = Str_GetTemp();
-	int iKillStrLen = sprintf(pszKillStr, g_Cfg.GetDefaultMsg(DEFMSG_KILLED_BY), (m_pPlayer)?'P':'N', GetNameWithoutIncognito() );
-	int iKillers = 0;
-
-	// Look through my memories of who i was fighting. (make sure they knew they where fighting me)
-	CChar	* pKiller = NULL;
-	CItem	* pItemNext;
-	CItem	* pItem;
-
+	// Look through memories of who I was fighting (make sure they knew they where fighting me)
+	CItem * pItemNext;
+	CItem * pItem;
 	for ( pItem = GetContentHead(); pItem; pItem = pItemNext)
 	{
 		pItemNext = pItem->GetNext();
 
 		if ( pItem->IsType(IT_EQ_TRADE_WINDOW) )
 		{
-			CItemContainer* pCont = dynamic_cast <CItemContainer*> (pItem);
+			CItemContainer * pCont = dynamic_cast<CItemContainer *>(pItem);
 			if ( pCont )
 			{
 				pCont->Trade_Delete();
@@ -2909,40 +2900,48 @@ bool CChar::Death()
 			}
 		}
 
+		if ( pItem->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_WAR_TARG) )
+			Memory_ClearTypes( static_cast<CItemMemory *>(pItem), 0xFFFF );
+
 		// Sets OBODY value to BODY if LAYER_Flag_Wool is found on an NPC
 		// Fixes issue with woolly sheep giving wool resource when corpse is carved after being shorn.
-		if ( (pItem->GetEquipLayer() == LAYER_FLAG_Wool) && (m_pNPC) )
-			this->m_prev_id = this->GetID();
-
-		bool bKillermem = pItem->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_WAR_TARG);
-
-		if (bKillermem)
-			Memory_ClearTypes(STATIC_CAST<CItemMemory *>(pItem), 0xFFFF);
+		if ( m_pNPC && (pItem->GetEquipLayer() == LAYER_FLAG_Wool) )
+			m_prev_id = GetID();
 	}
 
-	CScriptTriggerArgs args(this);
-
+	// Give credit for the kill to my attacker(s)
+	int iKillers = 0;
+	CChar * pKiller = NULL;
+	TCHAR * pszKillStr = Str_GetTemp();
+	int iKillStrLen = sprintf( pszKillStr, g_Cfg.GetDefaultMsg(DEFMSG_KILLED_BY), (m_pPlayer)? 'P':'N', GetNameWithoutIncognito() );
 	for ( unsigned int count = 0; count < m_lastAttackers.size(); count++ )
 	{
 		pKiller = CGrayUID(m_lastAttackers.at(count).charUID).CharFind();
-		args.m_iN1 = Attacker();
 		if ( pKiller )
 		{
 			if ( IsTrigUsed(TRIGGER_KILL) )
 			{
-				if (pKiller->OnTrigger(CTRIG_Kill, pKiller, &args) == TRIGRET_RET_TRUE )
+				CScriptTriggerArgs args(this);
+				args.m_iN1 = Attacker();
+				if ( pKiller->OnTrigger(CTRIG_Kill, pKiller, &args) == TRIGRET_RET_TRUE )
 					continue;
 			}
 
-			pKiller->Noto_Kill(this, IsStatFlag(STATF_Pet) , Attacker()-1);
-			iKillStrLen += sprintf( pszKillStr+iKillStrLen, "%s%c'%s'", iKillers ? ", " : "", 
-				(pKiller->m_pPlayer) ? 'P':'N', (pKiller->m_pPlayer) ? pKiller->GetNameWithoutIncognito() : pKiller->GetName() );
+			pKiller->Noto_Kill( this, IsStatFlag(STATF_Pet), Attacker()-1 );
+			iKillStrLen += sprintf( pszKillStr+iKillStrLen, "%s%c'%s'", iKillers ? ", " : "", (pKiller->m_pPlayer) ? 'P':'N', pKiller->GetNameWithoutIncognito() );
 			++iKillers;
-
 		}
 	}
 
-	//	No aggressor/killer detected. Try detect person last hit me  from the act target
+	// Record the kill event for posterity
+	if ( !iKillers )
+		iKillStrLen += sprintf( pszKillStr+iKillStrLen, "accident" );
+	if ( m_pPlayer )
+		g_Log.Event( LOGL_EVENT|LOGM_KILLS, "%s\n", pszKillStr );
+	if ( m_pParty )
+		m_pParty->SysMessageAll( pszKillStr );
+
+	// No aggressor/killer detected. Try detect person last hit me from the act target
 	if ( !pKiller )
 	{
 		CObjBase * ob = g_World.FindUID(m_Fight_Targ);
@@ -2952,54 +2951,42 @@ bool CChar::Death()
 			pKiller = this;	// Should NEVER reach this... but setting it incase of.
 	}
 
-	// record the kill event for posterity.
-	iKillStrLen += sprintf( pszKillStr+iKillStrLen, ( iKillers ) ? ".\n" : "accident.\n" );
-	if ( m_pPlayer )
-		g_Log.Event(LOGL_EVENT|LOGM_KILLS, "%s", pszKillStr);
-
-	if ( m_pParty )
-		m_pParty->SysMessageAll( pszKillStr );
-
 	Reveal();
 	SoundChar( CRESND_DIE );
-
-	// create the corpse item.
 	StatFlag_Set(STATF_DEAD);
 	StatFlag_Clear(STATF_Stone|STATF_Freeze|STATF_Hidden|STATF_Sleeping|STATF_Hovering);
-
-	bool isBonded = (m_pNPC && m_pNPC->m_bonded == 1);
-	if (m_pPlayer || !isBonded)
-	{
-		Stat_SetVal(STAT_STR, 0);
-		//return true;
-	}
-
-	Spell_Dispel(100);		// Get rid of all spell effects. (moved here to prevent double @Destroy trigger)
 	SetPoisonCure(0, true);
 	Skill_Cleanup();
+	Spell_Dispel(100);			// get rid of all spell effects (moved here to prevent double @Destroy trigger)
+	m_lastAttackers.clear();	// clear list of attackers
 
 	CChar * pRider = Horse_GetMountChar();
-	if (pRider)
-	{
+	if ( pRider )
 		pRider->Horse_UnMount();
-	}
 
-	if ( isBonded )
-		return true;
-
-	// Forgot who owns me. dismount my master if ridden.
-	NPC_PetClearOwners();
-
-	//	bugfix: no need to call @DeathCorpse since no corpse is created
+	// Create the corpse item
 	CItemCorpse * pCorpse = MakeCorpse(Calc_GetRandVal(2) != 0);
-	if (( pCorpse != NULL ) && ( IsTrigUsed(TRIGGER_DEATHCORPSE) ))
+	if ( pCorpse )
 	{
-   		CScriptTriggerArgs Args(pCorpse);
-   		OnTrigger(CTRIG_DeathCorpse, this, &Args);
+		if ( pCorpse->m_uidLink == GetUID() )	// doesn't make sense link the corpse to something invalid
+			pCorpse->m_uidLink.InitUID();
+
+		if ( IsTrigUsed(TRIGGER_DEATHCORPSE) )
+		{
+			CScriptTriggerArgs Args(pCorpse);
+			OnTrigger(CTRIG_DeathCorpse, this, &Args);
+		}
 	}
 
-	//	clear list of attackers
-	m_lastAttackers.clear();
+	if ( m_pNPC && m_pNPC->m_bonded )
+	{
+		// TO-DO: When die, the bonded pet is getting removed from client screen and then we need to call update to reveal it again.
+		// Maybe we can optimize this behavior making bonded pets don't disappear instead hide it and then reveal it again
+		Update();
+		return true;
+	}
+
+	NPC_PetClearOwners();
 
 	if ( m_pPlayer )
 	{
@@ -3010,19 +2997,13 @@ bool CChar::Death()
 			new PacketDeathMenu( GetClient(), PacketDeathMenu::Ghost );
 		}
 
-		m_pPlayer->m_wDeaths++;
 		if ( !(m_TagDefs.GetKeyNum("DEATHFLAGS", true) & DEATH_NOFAMECHANGE) )
 			Noto_Fame( -Stat_GetAdjusted(STAT_FAME)/10 );
 
-		// Experience could go down
-		//if (g_Cfg.m_bExperienceSystem && (g_Cfg.m_iExperienceMode&EXP_MODE_ALLOW_DOWN))	//Checks are already made in the ChangeExperience(), no reason to double check something.
-		ChangeExperience(-(static_cast<int>(m_exp)/10),pKiller);
-
-		SetHue( HUE_DEFAULT );	// Get all pale.
+		ChangeExperience( -(static_cast<int>(m_exp)/10), pKiller );
 
 		LPCTSTR pszGhostName = NULL;
-		CCharBase	*pCharDefPrev = CCharBase::FindCharBase( m_prev_id );
-
+		CCharBase *pCharDefPrev = CCharBase::FindCharBase( m_prev_id );
 		switch ( m_prev_id )
 		{
 			case CREID_GARGMAN:
@@ -3037,36 +3018,31 @@ bool CChar::Death()
 				pszGhostName = ( pCharDefPrev && pCharDefPrev->IsFemale() ? "c_ghost_woman" : "c_ghost_man" );
 				break;
 		}
-
 		ASSERT(pszGhostName != NULL);
 
-		SetID(static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType( RES_CHARDEF, pszGhostName )));
-		LayerAdd( CItem::CreateScript( ITEMID_DEATHSHROUD, this ));
-		Update();		// show everyone I am now a ghost.
-		
-		
-		//remove the characters which i cant see as dead from the screen
-		int iDeadCannotSee = g_Cfg.m_fDeadCannotSeeLiving;
-		if (iDeadCannotSee)
+		if ( !IsStatFlag(STATF_War) )
+			StatFlag_Set(STATF_Insubstantial);	// manifest war mode for ghosts
+
+		m_pPlayer->m_wDeaths++;
+		SetHue( HUE_DEFAULT );	// get all pale
+		SetID( static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType( RES_CHARDEF, pszGhostName )) );
+		LayerAdd( CItem::CreateScript( ITEMID_DEATHSHROUD, this ) );
+
+		// Remove the characters which I can't see as dead from the screen
+		if ( g_Cfg.m_fDeadCannotSeeLiving )
 		{
 			CWorldSearch AreaChars(GetTopPoint(), UO_MAP_VIEW_SIZE);
 			AreaChars.SetSearchSquare(true);
 			for (;;)
 			{
-				CChar	*pChar = AreaChars.GetChar();
+				CChar *pChar = AreaChars.GetChar();
 				if ( !pChar )
 					break;
-				if (!CanSeeAsDead(pChar))
+				if ( !CanSeeAsDead(pChar) )
 					GetClient()->addObjectRemove(pChar);						
 			}
 		}
-
-		// Manifest the ghost War mode for ghosts.
-		if ( ! IsStatFlag(STATF_War) )
-			StatFlag_Set(STATF_Insubstantial);
 	}
-
-	Skill_Cleanup();
 
 	if ( !IsClient() )
 	{
@@ -3075,10 +3051,6 @@ bool CChar::Death()
 			SetDisconnected();	// Respawn the NPC later
 			return true;
 		}
-		// Makes no sense to link the corpse to something that is not going to be valid.
-		if ( pCorpse && pCorpse->m_uidLink == GetUID())
-			pCorpse->m_uidLink.InitUID();
-
 		return false;	// delete this
 	}
 	return true;
@@ -4332,7 +4304,7 @@ bool CChar::OnTick()
 			GetClient()->addTargetCancel();
 	}
 
-	if ( Stat_GetVal(STAT_STR) <= 0 && !(m_pNPC && IsStatFlag(STATF_DEAD) && m_pNPC) )	// we can only die on our own tick ( Bonded pets that are death should pass this check or they won't move).
+	if ( !IsStatFlag(STATF_DEAD) && Stat_GetVal(STAT_STR) <= 0 )	// we can only die on our own tick
 	{
 		EXC_SET("death");
 		return Death();
@@ -4377,7 +4349,6 @@ bool CChar::OnTick()
 		OnTickStatusUpdate();
 	}
 
-
 	if ( IsTimerSet() && IsTimerExpired() )
 	{
 		EXC_SET("timer expired");
@@ -4403,7 +4374,7 @@ bool CChar::OnTick()
 			}
 		}
 	}
-	else if (m_pNPC && IsStatFlag(STATF_War) && !IsStatFlag(STATF_DEAD))
+	else if ( m_pNPC && IsStatFlag(STATF_War) && !IsStatFlag(STATF_DEAD) )
 	{
 		EXC_SET("combat hit try");
 		// Hit my current target (if i'm ready)

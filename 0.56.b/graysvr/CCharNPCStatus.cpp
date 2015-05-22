@@ -883,11 +883,11 @@ int CChar::NPC_GetAttackMotivation( CChar * pChar, int iMotivation ) const
 	if ( !m_pNPC || !pChar || !pChar->m_pArea )
 		return 0;
 	if ( Stat_GetVal(STAT_STR) <= 0 )
-		return( -1 );	// I'm dead.
+		return -1;		// I'm dead
 	// Is the target interesting ?
 	if ( pChar->m_pArea->IsFlag( REGION_FLAG_SAFE ))	// universal
-		return(0);
-	if (pChar->IsStatFlag(STATF_DEAD) && (pChar->m_pNPC && pChar->m_pNPC->m_bonded == 1))
+		return 0;
+	if ( pChar->IsStatFlag(STATF_DEAD) && pChar->m_pNPC && pChar->m_pNPC->m_bonded )
 		return 0;
 	// If the area is guarded then think better of this.
 	if ( pChar->m_pArea->IsGuarded() && m_pNPC->m_Brain != NPCBRAIN_GUARD )		// too smart for this.

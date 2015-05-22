@@ -2831,8 +2831,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	// RETURN:
 	//  true = new attack is accepted.
 
-	bool isBondedTarget = (pCharTarg && pCharTarg->IsStatFlag(STATF_DEAD) && (pCharTarg->m_pNPC && pCharTarg->m_pNPC->m_bonded == 1));
-	if ( pCharTarg == NULL || pCharTarg == this || ! CanSee(pCharTarg) || pCharTarg->IsStatFlag( STATF_DEAD ) || pCharTarg->IsDisconnected() || IsStatFlag( STATF_DEAD ) || isBondedTarget)
+	if ( pCharTarg == NULL || pCharTarg == this || pCharTarg->IsDisconnected() || !CanSee(pCharTarg) || pCharTarg->IsStatFlag( STATF_DEAD ) || IsStatFlag( STATF_DEAD ) || (pCharTarg->m_pNPC && pCharTarg->m_pNPC->m_bonded) )
 	{
 		// Not a valid target.
 		Fight_Clear( pCharTarg, true );
@@ -3081,7 +3080,7 @@ CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 
 		if ( pChar == NULL )
 			continue;
-		if (pChar && pChar->IsStatFlag(STATF_DEAD) && (pChar->m_pNPC && pChar->m_pNPC->m_bonded == 1))	//Is the target bonded and dead? not a fighting target then.
+		if ( pChar->IsStatFlag(STATF_DEAD) && pChar->m_pNPC && pChar->m_pNPC->m_bonded )	// is the target bonded and dead? not a fighting target then
 		{
 			pChar = NULL;
 			continue;

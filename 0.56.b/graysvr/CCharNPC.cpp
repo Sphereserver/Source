@@ -710,7 +710,6 @@ CCharNPC::CCharNPC( CChar * pChar, NPCBRAIN_TYPE NPCBrain )
 	m_Home_Dist_Wander = SHRT_MAX;	// as far as i want.
 	m_Act_Motivation = 0;
 	m_SpeechHue = HUE_TEXT_DEF;
-	m_bonded = 0;
 #ifndef _WIN32
 	for (int i_tmpN=0;i_tmpN < MAX_NPC_PATH_STORAGE_SIZE;i_tmpN++)
 	{
@@ -744,13 +743,11 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 		break;
 	//Set as numbers only
 	case CNC_BONDED:
-		{
-			m_bonded = static_cast<short>(s.GetArgVal());
-		}	break;
+		m_bonded = static_cast<bool>(s.GetArgVal());
+		break;
 	case CNC_FOLLOWERSLOTS:
 		pChar->SetDefNum(s.GetKey(), s.GetArgVal(), false );
 		break;
-
 	case CNC_ACTPRI:
 		m_Act_Motivation = static_cast<unsigned char>(s.GetArgVal());
 		break;
@@ -832,19 +829,15 @@ bool CCharNPC::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 	case CNC_THROWDAM:
 	case CNC_THROWOBJ:
 	case CNC_THROWRANGE:
-		{
-			sVal = pChar->GetDefStr(pszKey, false, true);
-		}
+		sVal = pChar->GetDefStr(pszKey, false, true);
 		break;
 	//return as decimal number or 0 if not set
 	//On these ones, check BaseDef if not found on dynamic
 	case CNC_BONDED:
-		sVal.FormatVal(m_bonded);
+		sVal.FormatVal( m_bonded );
 		break;
 	case CNC_FOLLOWERSLOTS:
-		{	
-			sVal.FormatLLVal(pChar->GetDefNum(pszKey, true, true));
-		}	
+		sVal.FormatLLVal(pChar->GetDefNum(pszKey, true, true));
 		break;
 	case CNC_ACTPRI:
 		sVal.FormatVal( m_Act_Motivation );
@@ -875,7 +868,6 @@ bool CCharNPC::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 	case CNC_SPEECHCOLOR:
 		sVal.FormatVal( m_SpeechHue );
 		break;
-
 	case CNC_VENDCAP:
 		{
 			CItemContainer * pBank = pChar->GetBank();

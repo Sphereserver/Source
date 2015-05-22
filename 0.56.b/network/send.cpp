@@ -2222,7 +2222,7 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 	CREID_TYPE id;
 	HUE_TYPE hue;
 	target->GetAdjustedCharID(character, id, hue);
-	const CPointMap& pos = character->GetTopPoint();
+	const CPointMap &pos = character->GetTopPoint();
 
 	initLength();
 	writeInt32(character->GetUID());
@@ -3988,19 +3988,19 @@ PacketEnableMapDiffs::PacketEnableMapDiffs(const CClient* target) : PacketExtend
 /***************************************************************************
 *
 *
-*	Packet 0xBF.0x19.0x00 : OldBondedStats				Set bonded status	(NORMAL)
+*	Packet 0xBF.0x19.0x00 : OldBondedStats		set bonded status (NORMAL)
 *
 *
 ***************************************************************************/
 
-PacketBondedStatus::PacketBondedStatus(const CChar * pChar) : PacketExtended(EXTDATA_Stats_Enable, 12, PRI_NORMAL)
+PacketBondedStatus::PacketBondedStatus(const CChar * pChar) : PacketExtended(EXTDATA_Stats_Enable, 11, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketBondedStatus::PacketBondedStatus");
 	if (!pChar->m_pNPC)
 		return;
 	writeByte(0x00);
 	writeInt32(pChar->GetUID());
-	writeByte(static_cast<BYTE>(pChar->m_pNPC->m_bonded));
+	writeByte(static_cast<unsigned char>(pChar->m_pNPC->m_bonded));
 }
 
 

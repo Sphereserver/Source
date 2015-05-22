@@ -2196,6 +2196,7 @@ Changed: Another huge optimization on skills code.
 
 22-05-2015, Coruja
 Fixed: NPCs not following his owner/target correctly.
+Changed: Some improvements on pet follower slots and pet bonding engine.
 [sphere_defs.scp]: Added missing 't_healing_stone' on [TYPEDEFS] section.
 
 22-05-2015, XuN

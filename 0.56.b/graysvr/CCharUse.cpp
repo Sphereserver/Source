@@ -61,125 +61,100 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 		pChar->OnTakeDamage( 1 + Calc_GetRandVal(10), this, DAMAGE_HIT_SLASH|DAMAGE_GENERAL );
 		return;
 	}
+	if ( pChar->m_pNPC && pChar->m_pNPC->m_bonded )		// corpses of bonded pets can't be carved
+	{
+		SysMessageDefault( DEFMSG_CARVE_CORPSE_2 );
+		return;
+	}
 
 	CPointMap pnt = pCorpse->GetTopLevelObj()->GetTopPoint();
 
 	bool fHumanCorpse = CCharBase::IsPlayableID( pCorpse->GetCorpseType());
 	if ( fHumanCorpse )
 	{
-		// If it's a player corpse, put the stuff in one of these and (mabey)
-		// flag them a criminal
-
+		// If it's a player corpse, put the stuff in one of these and (maybe) flag them a criminal
 		if ( pChar && pChar->m_pPlayer )
 		{
-			// Until the corse inherits NPC criminal status, only do
-			// other players
-			if ( CheckCorpseCrime( pCorpse, false, false ))
-			{
+			if ( CheckCorpseCrime( pCorpse, false, false ) )
 				SysMessageDefault( DEFMSG_CARVE_CORPSE_1 );
-			}
 		}
-
-		// Dump any stuff on corpse.
 		pCorpse->ContentsDump( pnt );
 	}
 
-	CREID_TYPE CorpseID = static_cast<CREID_TYPE>(pCorpse->m_itCorpse.m_BaseID);
+	CREID_TYPE CorpseID = pCorpse->m_itCorpse.m_BaseID;
 	const CCharBase * pCorpseDef = CCharBase::FindCharBase( CorpseID );
-	if ( pCorpseDef != NULL )
-	{
-		if ( pCorpseDef->m_wBloodHue != static_cast<HUE_TYPE>(-1) )
-		{
-			int iBloodLeft = static_cast<int>(pCorpse->m_TagDefs.GetKeyNum("BLOOD", true));
-			if ( iBloodLeft )
-			{
-				pCorpse->m_TagDefs.SetNum("BLOOD", iBloodLeft-1, true);
-				CItem * pBlood = CItem::CreateBase( (ITEMID_TYPE) sm_Item_Blood[ Calc_GetRandVal( COUNTOF( sm_Item_Blood )) ] );
-				ASSERT(pBlood);
-				pBlood->SetHue( pCorpseDef->m_wBloodHue );
-				pBlood->MoveToDecay(pCorpse->GetTopPoint(), 60*TICK_PER_SEC);
-			}
-		}
-	}
-
-	pCorpse->m_itCorpse.m_uidKiller = GetUID();	// by you.
-
-	// based on corpse type.
-	if ( pCorpseDef == NULL ||
-		! pCorpse->GetTimeStamp().IsTimeValid() )
+	if ( pCorpseDef == NULL || !pCorpse->GetTimeStamp().IsTimeValid() )
 	{
 		SysMessageDefault( DEFMSG_CARVE_CORPSE_2 );
 		pCorpse->SetTimeStamp(0);
 		return;
 	}
+	if ( pCorpseDef->m_wBloodHue != static_cast<HUE_TYPE>(-1) )
+	{
+		int iBloodLeft = static_cast<int>(pCorpse->m_TagDefs.GetKeyNum("BLOOD", true));
+		if ( iBloodLeft )
+		{
+			pCorpse->m_TagDefs.SetNum("BLOOD", iBloodLeft-1, true);
+			CItem * pBlood = CItem::CreateBase( (ITEMID_TYPE) sm_Item_Blood[ Calc_GetRandVal( COUNTOF( sm_Item_Blood )) ] );
+			ASSERT(pBlood);
+			pBlood->SetHue( pCorpseDef->m_wBloodHue );
+			pBlood->MoveToDecay(pCorpse->GetTopPoint(), 60*TICK_PER_SEC);
+		}
+	}
 
-	pCorpse->SetTimeStamp(0);	// been carved.
-
-	LPCTSTR pszMsg = NULL;
 	size_t iItems = 0;
 	for ( size_t i = 0; i < pCorpseDef->m_BaseResources.GetCount(); i++ )
 	{
-		int iQty = static_cast<int>(pCorpseDef->m_BaseResources[i].GetResQty());
+		unsigned int iQty = static_cast<unsigned int>(pCorpseDef->m_BaseResources[i].GetResQty());
 		RESOURCE_ID rid = pCorpseDef->m_BaseResources[i].GetResourceID();
 		if ( rid.GetResType() != RES_ITEMDEF )
-		{
 			continue;
-		}
 
 		ITEMID_TYPE id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 		if ( id == ITEMID_NOTHING )
 			break;
 
+		iItems++;
 		CItem * pPart = CItem::CreateTemplate( id, NULL, this );
 		ASSERT(pPart);
-
-		LPCTSTR pszMsgNew = NULL;
-		switch ( pPart->GetType())
+		switch ( pPart->GetType() )
 		{
 			case IT_FOOD:
-			case IT_FOOD_RAW:	// meat
+			case IT_FOOD_RAW:
 			case IT_MEAT_RAW:
-				pszMsgNew = g_Cfg.GetDefaultMsg( DEFMSG_CARVE_CORPSE_MEAT );
+				SysMessageDefault( DEFMSG_CARVE_CORPSE_MEAT );
 				pPart->m_itFood.m_MeatType = CorpseID;
 				break;
-			case IT_HIDE:	// hides
-			case IT_LEATHER:	// hides
-				pszMsgNew = g_Cfg.GetDefaultMsg( DEFMSG_CARVE_CORPSE_HIDES );
+			case IT_HIDE:
+			case IT_LEATHER:
+				SysMessageDefault( DEFMSG_CARVE_CORPSE_HIDES );
 				pPart->m_itSkin.m_creid = CorpseID;
 				break;
-			case IT_FEATHER:	// feathers.
-				pszMsgNew = g_Cfg.GetDefaultMsg( DEFMSG_CARVE_CORPSE_FEATHERS );
+			case IT_FEATHER:
+				SysMessageDefault( DEFMSG_CARVE_CORPSE_FEATHERS );
 				pPart->m_itSkin.m_creid = CorpseID;
 				break;
-			case IT_FUR:	// fur
-				pszMsgNew = g_Cfg.GetDefaultMsg( DEFMSG_CARVE_CORPSE_FUR );
+			case IT_FUR:
+				SysMessageDefault( DEFMSG_CARVE_CORPSE_FUR );
 				pPart->m_itSkin.m_creid = CorpseID;
 				break;
-			case IT_WOOL:	// wool
-				pszMsgNew = g_Cfg.GetDefaultMsg( DEFMSG_CARVE_CORPSE_WOOL );
+			case IT_WOOL:
+				SysMessageDefault( DEFMSG_CARVE_CORPSE_WOOL );
 				pPart->m_itSkin.m_creid = CorpseID;
 				break;
 			case IT_BLOOD:
 				if ( pCorpseDef->m_wBloodHue != static_cast<HUE_TYPE>(-1) )
-				{
 					pPart->SetHue( pCorpseDef->m_wBloodHue );
-				}
 				pPart->m_itSkin.m_creid = CorpseID;
 				break;
 			default:
 				break;
 		}
 
-		if ( pszMsg == NULL )
-			pszMsg = pszMsgNew;
 		if ( iQty > 1 )
 			pPart->SetAmount( iQty );
 
-		if ( !fHumanCorpse )
-		{
-			pCorpse->ContentAdd( pPart );
-		}
-		else
+		if ( fHumanCorpse )
 		{
 			if ( pChar )
 			{
@@ -190,18 +165,12 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 			}
 			pPart->MoveToDecay( pnt, pPart->GetDecayTime() );
 		}
-
-		iItems++;
+		else
+			pCorpse->ContentAdd( pPart );
 	}
 
 	if ( iItems <= 0 )
-	{
-		pszMsg = g_Cfg.GetDefaultMsg( DEFMSG_CARVE_CORPSE_2 );
-	}
-	if ( pszMsg != NULL )
-	{
-		SysMessage( pszMsg );
-	}
+		SysMessageDefault( DEFMSG_CARVE_CORPSE_2 );
 
 	if ( pCorpseDef->m_wBloodHue != static_cast<HUE_TYPE>(-1) )
 	{
@@ -209,7 +178,6 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 		if ( iBloodLeft )
 		{
 			pCorpse->m_TagDefs.SetNum("BLOOD", iBloodLeft-1, true);
-
 			CItem * pBlood = CItem::CreateBase( ITEMID_BLOOD1 );
 			ASSERT(pBlood);
 			pBlood->SetHue( pCorpseDef->m_wBloodHue );
@@ -217,10 +185,11 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 		}
 	}
 
+	pCorpse->m_itCorpse.m_uidKiller = GetUID();	// by you
+	pCorpse->SetTimeStamp(0);	// mark as been carved
+
 	if ( fHumanCorpse )
-	{
 		pCorpse->Delete();
-	}
 }
 
 void CChar::Use_MoonGate( CItem * pItem )

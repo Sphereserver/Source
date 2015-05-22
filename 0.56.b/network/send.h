@@ -1440,7 +1440,7 @@ public:
 /***************************************************************************
 *
 *
-*	Packet 0xBF.0x19.0x00 : OldBondedStatus				Set bonded status	(NORMAL)
+*	Packet 0xBF.0x19.0x00 : OldBondedStatus		set bonded status (NORMAL)
 *
 *
 ***************************************************************************/

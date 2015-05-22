@@ -2311,10 +2311,10 @@ public:
 	// Any NPC AI stuff will go here.
 	static LPCTSTR const sm_szVerbKeys[];
 
-	NPCBRAIN_TYPE m_Brain;	// For NPCs: Number of the assigned basic AI block
-	WORD	m_Home_Dist_Wander;	// Distance to allow to "wander".
-	BYTE    m_Act_Motivation;		// 0-100 (100=very greatly) how bad do i want to do the current action.
-	short m_bonded;		// Bonded Pet
+	NPCBRAIN_TYPE m_Brain;		// For NPCs: Number of the assigned basic AI block
+	WORD m_Home_Dist_Wander;	// Distance to allow to "wander".
+	BYTE m_Act_Motivation;		// 0-100 (100=very greatly) how bad do i want to do the current action.
+	bool m_bonded;				// Bonded pet
 
 	// We respond to what we here with this.
 	CResourceRefArray m_Speech;	// Speech fragment list (other stuff we know)

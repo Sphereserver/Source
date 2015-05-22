@@ -1049,13 +1049,16 @@ void CClient::addChar( const CChar * pChar )
 	ADDTOCALLSTACK("CClient::addChar");
 	// Full update about a char.
 	EXC_TRY("addChar");
-	new PacketCharacter(this, pChar);
+	new PacketCharacter( this, pChar );
 
 	EXC_SET("Wake sector");
 	pChar->GetTopPoint().GetSector()->SetSectorWakeStatus();	// if it can be seen then wake it.
 
-	EXC_SET("Health bar colour");
+	EXC_SET("Health bar color");
 	addHealthBarUpdate( pChar );
+
+	//EXC_SET("Bonded status");
+	//new PacketBondedStatus( pChar );
 
 	EXC_SET("AOSToolTip adding (end)");
 	addAOSTooltip( pChar );
@@ -1240,7 +1243,7 @@ void CClient::addCharName( const CChar * pChar ) // Singleclick text for a chara
 			if ( pChar->IsStatFlag( STATF_Conjured ))
 				strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SUMMONED) );
 			else if ( pChar->IsStatFlag( STATF_Pet ))
-				strcat( pszTemp, (pChar->m_pNPC->m_bonded == 1) ? g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_BONDED) : g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_TAME) );
+				strcat( pszTemp, (pChar->m_pNPC->m_bonded) ? g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_BONDED) : g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_TAME) );
 		}
 		if ( pChar->IsStatFlag( STATF_INVUL ) && ! pChar->IsStatFlag( STATF_Incognito ) && ! pChar->IsPriv( PRIV_PRIV_NOSHOW ))
 			strcat( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_INVUL) );

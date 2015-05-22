@@ -876,8 +876,7 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 	{
 		// Just a change in dir.
 		m_pChar->m_dirFace = dir;
-		//m_pChar->UpdateMode(this);			// Show others I have turned !! This is sending stats update too, we only need to send the P change
-		m_pChar->UpdateMove(ptold, this,false,true);	// Who now sees me ?
+		m_pChar->UpdateMove( ptold, this, false, true );	// Who now sees me ?
 		new PacketMovementAck(this);		// Ack the move. ( if this does not go back we get rubber banding )
 	}
 	return TRIGRET_RET_TRUE;
@@ -1056,9 +1055,6 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 
 	CItemVendable* pItem;
 	INT64 costtotal = 0;
-	short int iFollowerSlotsNeeded = 0;
-	short int iCurFollower = static_cast<short>(m_pChar->GetDefNum("CURFOLLOWER", true, true));
-	short int iMaxFollower = static_cast<short>(m_pChar->GetDefNum("MAXFOLLOWER", true, true));
 
 	//	Check if the vendor really has so much items
 	for (size_t i = 0; i < itemCount; ++i)
@@ -1090,17 +1086,18 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 			continue;
 		if ( IsSetOF(OF_PetSlots) && !IsPriv(PRIV_GM) )
 		{
-			CREID_TYPE id = pItem->m_itFigurine.m_ID;
-			CChar * pPet =  m_pChar->CreateNPC( id );
-			ASSERT(pPet);
-
-			iFollowerSlotsNeeded = static_cast<short>(maximum(pPet->GetDefNum("FOLLOWERSLOTS", true, true),1));
-			pPet->Delete();
-
-			if ((iCurFollower + iFollowerSlotsNeeded) > iMaxFollower)
+			CCharBase *pPetDef = CCharBase::FindCharBase( pItem->m_itFigurine.m_ID );
+			if ( pPetDef )
 			{
-				m_pChar->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_PETSLOTS_TRY_CONTROL) );
-				return;
+				short int iFollowerSlotsNeeded = static_cast<short>(maximum(pPetDef->GetDefNum("FOLLOWERSLOTS", true),1));
+				short int iCurFollower = static_cast<short>(m_pChar->GetDefNum("CURFOLLOWER", true, true));
+				short int iMaxFollower = static_cast<short>(m_pChar->GetDefNum("MAXFOLLOWER", true, true));
+
+				if ( iCurFollower + iFollowerSlotsNeeded > iMaxFollower )
+				{
+					m_pChar->SysMessageDefault( DEFMSG_PETSLOTS_TRY_CONTROL );
+					return;
+				}
 			}
 		}
 	}
