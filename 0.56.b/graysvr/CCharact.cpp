@@ -4318,111 +4318,106 @@ bool CChar::OnTick()
 	INT64 iTimeDiff = - g_World.GetTimeDiff(m_timeLastRegen);
 	if ( !iTimeDiff )
 		return true;
-
-	// We make items and notoriety / attackers to tick, but nothing more.
-	if (iTimeDiff >= TICK_PER_SEC)	// don't bother with < 1 sec times.
-	{
-		m_timeLastRegen = CServTime::GetCurrentTime();
-
-		// Decay equipped items (spells)
-		CItem *pItem = GetContentHead();
-		int iCount = 0;
-
-		for (; pItem != NULL; pItem = GetAt(++iCount))
-		{
-			EXC_TRYSUB("Ticking items");
-			if (pItem->IsType(IT_EQ_MEMORY_OBJ) && !pItem->m_uidLink.ObjFind())		// always check the validity of the memory objects
-			{
-				pItem->Delete();
-				continue;
-			}
-
-			pItem->OnTickStatusUpdate();
-			if (!pItem->IsTimerSet() || !pItem->IsTimerExpired())
-				continue;
-			else if (!OnTickEquip(pItem))
-				pItem->Delete();
-			EXC_CATCHSUB("Char");
-		}
-
-		EXC_SET("last attackers");
-		Attacker_CheckTimeout();
-
-		EXC_SET("NOTO timeout");
-		NotoSave_CheckTimeout();
-
-		EXC_SET("check location");
-		CheckLocation(true);	// check location periodically for standing in fire fields, traps, etc
-
-		if (IsStatFlag(STATF_DEAD))
-			return true;
-
-		EXC_SET("regen stats");
-		Stats_Regen(iTimeDiff);
-
-		EXC_SET("update stats");
-		OnTickStatusUpdate();
-	}
-
-	if (IsDisconnected())		// mounted horses can still get ticks
-		return true;
-	if (IsStatFlag(STATF_DEAD) && m_pNPC && m_pNPC->m_bonded == 1)	// bonded pets that are dead doesn't need more checks
+	if ( IsDisconnected() )		// mounted horses can still get ticks
 		return true;
 
-	if (IsClient())
+	if ( IsClient() )
 	{
 		// Players have a silly "always run" flag that gets stuck on.
-		if (-g_World.GetTimeDiff(GetClient()->m_timeLastEventWalk) > TICK_PER_SEC)
+		if ( -g_World.GetTimeDiff(GetClient()->m_timeLastEventWalk) > TICK_PER_SEC )
 			StatFlag_Clear(STATF_Fly);
 
 		// Check targeting timeout, if set
-		if (GetClient()->m_Targ_Timeout.IsTimeValid() && g_World.GetTimeDiff(GetClient()->m_Targ_Timeout) <= 0)
+		if ( GetClient()->m_Targ_Timeout.IsTimeValid() && g_World.GetTimeDiff(GetClient()->m_Targ_Timeout) <= 0 )
 			GetClient()->addTargetCancel();
 	}
 
-	if (Stat_GetVal(STAT_STR) <= 0)	// we can only die on our own tick
+	if ( Stat_GetVal(STAT_STR) <= 0 )	// we can only die on our own tick
 	{
 		EXC_SET("death");
 		return Death();
 	}
 
-	if (IsTimerSet() && IsTimerExpired())
+	if ( iTimeDiff < TICK_PER_SEC )		// don't bother with < 1 sec timers on the checks below
+		return true;
+
+	m_timeLastRegen = CServTime::GetCurrentTime();
+
+	// Decay equipped items (spells)
+	CItem *pItem = GetContentHead();
+	int iCount = 0;
+	for ( ; pItem != NULL; pItem = GetAt(++iCount) )
+	{
+		EXC_TRYSUB("Ticking items");
+		if ( pItem->IsType(IT_EQ_MEMORY_OBJ) && !pItem->m_uidLink.ObjFind() )		// always check the validity of the memory objects
+		{
+			pItem->Delete();
+			continue;
+		}
+		pItem->OnTickStatusUpdate();
+		if ( !pItem->IsTimerSet() || !pItem->IsTimerExpired() )
+			continue;
+		else if ( !OnTickEquip(pItem) )
+			pItem->Delete();
+		EXC_CATCHSUB("Char");
+	}
+
+	EXC_SET("last attackers");
+	Attacker_CheckTimeout();
+
+	EXC_SET("NOTO timeout");
+	NotoSave_CheckTimeout();
+
+	if ( !IsStatFlag(STATF_DEAD) )
+	{
+		// This location check is already called on walk events, so we doesn't need to check it again
+		//EXC_SET("check location");
+		//CheckLocation(true);	// check location periodically for standing in fire fields, traps, etc
+
+		EXC_SET("regen stats");
+		Stats_Regen(iTimeDiff);
+	}
+
+	EXC_SET("update stats");
+	OnTickStatusUpdate();
+
+	if ( IsTimerSet() && IsTimerExpired() )
 	{
 		EXC_SET("timer expired");
-		// My turn to do some action.
-		switch ( Skill_Done())
+		switch ( Skill_Done() )
 		{
-			case -SKTRIG_ABORT:	EXC_SET("skill abort"); Skill_Fail(true); break;	// fail with no message or credit.
-			case -SKTRIG_FAIL:	EXC_SET("skill fail"); Skill_Fail(false); break;
-			case -SKTRIG_QTY:	EXC_SET("skill cleanup"); Skill_Cleanup(); break;
+			case -SKTRIG_ABORT:	EXC_SET("skill abort");		Skill_Fail(true);	break;	// fail with no message or credit
+			case -SKTRIG_FAIL:	EXC_SET("skill fail");		Skill_Fail(false);	break;
+			case -SKTRIG_QTY:	EXC_SET("skill cleanup");	Skill_Cleanup();	break;
 		}
 
-		if (m_pNPC)
+		if ( m_pNPC )	// do some AI action
 		{
 			ProfileTask aiTask(PROFILE_NPC_AI);
 			EXC_SET("NPC action");
-			// What to do next ?
 			NPC_OnTickAction();
 
-			// Some NPC AI actions
-			if ((g_Cfg.m_iNpcAi & NPC_AI_FOOD) && !(g_Cfg.m_iNpcAi & NPC_AI_INTFOOD))
-				NPC_Food();
-			if (g_Cfg.m_iNpcAi & NPC_AI_EXTRA)
-				NPC_AI();
+			if ( !IsStatFlag(STATF_DEAD) )
+			{
+				if ( (g_Cfg.m_iNpcAi & NPC_AI_FOOD) && !(g_Cfg.m_iNpcAi & NPC_AI_INTFOOD) )
+					NPC_Food();
+				if ( g_Cfg.m_iNpcAi & NPC_AI_EXTRA )
+					NPC_AI();
+			}
 		}
 	}
-	else if (m_pNPC && IsStatFlag(STATF_War))
+	else if ( m_pNPC && IsStatFlag(STATF_War) )
 	{
 		EXC_SET("combat hit try");
 		// Hit my current target (if i'm ready)
-		if (Fight_IsActive())
+		if ( Fight_IsActive() )
 		{
-			if (m_atFight.m_War_Swing_State == WAR_SWING_READY)
+			if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )
 				Fight_HitTry();
 		}
-		else if (Skill_GetActive() == SKILL_NONE)
+		else if ( Skill_GetActive() == SKILL_NONE )
 		{
-			if (!Fight_Attack( Fight_FindBestTarget() ))
+			if ( !Fight_Attack(Fight_FindBestTarget()) )
 			{
 				Skill_Start(SKILL_NONE);
 				StatFlag_Clear(STATF_War);

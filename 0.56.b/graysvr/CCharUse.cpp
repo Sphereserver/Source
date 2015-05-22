@@ -1279,11 +1279,11 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 {
 	ADDTOCALLSTACK("CChar::Use_Figurine");
 	// NOTE: The figurine is NOT destroyed.
-	int iCreateNewNpc = 0;
+	bool bCreatedNewNpc = false;
 	if ( pItem == NULL )
 		return NULL;
 
-	if ( pItem->m_uidLink.IsValidUID() && pItem->m_uidLink.IsChar() && pItem->m_uidLink != GetUID() && ! IsPriv( PRIV_GM ))
+	if ( pItem->m_uidLink.IsValidUID() && pItem->m_uidLink.IsChar() && pItem->m_uidLink != GetUID() && !IsPriv( PRIV_GM ))
 	{
 		SysMessageDefault( DEFMSG_FIGURINE_NOTYOURS );
 		return( NULL );
@@ -1294,30 +1294,28 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 	if ( pPet == NULL )
 	{
 		CREID_TYPE id = pItem->m_itFigurine.m_ID;
-		if ( ! id )
+		if ( !id )
 		{
 			id = CItemBase::FindCharTrack( pItem->GetID());
-			if ( ! id )
+			if ( !id )
 			{
 				DEBUG_ERR(( "FIGURINE id 0%x, no creature\n", pItem->GetDispID()));
 				return NULL;
 			}
 		}
-		iCreateNewNpc = 1;
+		bCreatedNewNpc = true;
 		pPet = CreateNPC( id );
 		ASSERT(pPet);
-		pPet->SetName( pItem->GetName());
-		if ( pItem->GetHue())
+		pPet->SetName( pItem->GetName() );
+		if ( pItem->GetHue() )
 		{
 			pPet->m_prev_Hue = pItem->GetHue();
 			pPet->SetHue( pItem->GetHue());
 		}
 	}
 
-	if ( ! iPaces )
-	{
-		pPet->m_dirFace = m_dirFace;	// getting off ridden horse.
-	}
+	if ( !iPaces )
+		pPet->m_dirFace = m_dirFace;	// getting off ridden horse
 	else
 	{
 		if ( IsSetOF(OF_PetSlots) )
@@ -1327,10 +1325,10 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 			short int iMaxFollower = static_cast<short>(GetDefNum("MAXFOLLOWER", true, true));
 			short int iSetFollower = iCurFollower + iFollowerSlotsNeeded;
 
-			if ((iCurFollower + iFollowerSlotsNeeded) > iMaxFollower && !IsPriv(PRIV_GM) )
+			if ( iCurFollower + iFollowerSlotsNeeded > iMaxFollower && !IsPriv(PRIV_GM) )
 			{
-				SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_PETSLOTS_TRY_CONTROL) );
-				if ( iCreateNewNpc )
+				SysMessageDefault( DEFMSG_PETSLOTS_TRY_CONTROL );
+				if ( bCreatedNewNpc )
 					pPet->Delete();
 				return false;
 			}
@@ -1338,33 +1336,20 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 			// Send an update packet for the stats
 			SetDefNum("CURFOLLOWER", iSetFollower);
 			CClient * pClient = GetClient();
-			if (pClient)
+			if ( pClient )
 				pClient->addCharStatWindow( GetUID() );
 		}
 	}
 
 	if ( pPet->IsDisconnected())
-	{
-		// Pull the creature out of idle space.
-		pPet->StatFlag_Clear( STATF_Ridden );
-	}
+		pPet->StatFlag_Clear( STATF_Ridden );	// pull the creature out of IDLE space
 
 	pItem->m_itFigurine.m_UID.InitUID();
-	pPet->SetUnkPoint( pItem->GetTopLevelObj()->GetTopPoint() );
-	pPet->MoveToChar( pItem->GetTopLevelObj()->GetTopPoint() );
 	pPet->NPC_PetSetOwner( this );
+	pPet->MoveToChar( pItem->GetTopLevelObj()->GetTopPoint() );
 	pPet->Update();
 	pPet->Skill_Start( SKILL_NONE );	// was NPCACT_RIDDEN
-
-	if ( pItem->IsAttr( ATTR_MAGIC ))
-	{
-		pPet->UpdateAnimate( ANIM_CAST_DIR );
-		pPet->SoundChar( CRESND_GETHIT );
-	}
-	else
-	{
-		pPet->SoundChar( CRESND_RAND1 );	// Horse winny
-	}
+	pPet->SoundChar( CRESND_RAND1 );
 
 	return pPet;
 }

@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, May 8, 2015
+// FILE LAST UPDATED: Friday, May 22, 2015
 //
 VERSION=0.56c
 
@@ -1128,14 +1128,15 @@ t_spellbook_bard        193   // SA Bard spellbook (should have MOREZ=700 by def
 t_weapon_throwing       194   // Throwing Weapon
 t_cartography           195   // cartography tool
 t_cooking               196   // cooking tool
-t_pilot					197   // t_pilot (PacketWheelBoatMove)
-t_rope					198	  // almost the same as a ship plank, but not lockable by default.
+t_pilot                 197   // t_pilot (PacketWheelBoatMove)
+t_rope                  198   // almost the same as a ship plank, but not lockable by default.
+t_healing_stone         199
 
 //Add custom types after 500 to leave room for future hardcoded types
-t_forest		500   // Forest Tiles
-t_jungle		501   // Jungle Tiles
-t_furniture		502   // Furniture
-t_soul_forge	503   // Soul Forge
+t_forest                500   // Forest Tiles
+t_jungle                501   // Jungle Tiles
+t_furniture             502   // Furniture
+t_soul_forge            503   // Soul Forge
 
 [DEFNAME layers]
 layer_hand1       1

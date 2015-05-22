@@ -2193,3 +2193,7 @@ Fixed: Mounts disappearing on worldsave on some specific situations.
 Changed: Improved Teleport/Dispel spell smoke animation.
 Changed: Another huge optimization on skills code.
 [Sphere.ini]: Updated TeleportEffectNPC / TeleportEffectPlayers settings with correct values.
+
+22-05-2015, Coruja
+Fixed: NPCs not following his owner/target correctly.
+[sphere_defs.scp]: Added missing 't_healing_stone' on [TYPEDEFS] section.

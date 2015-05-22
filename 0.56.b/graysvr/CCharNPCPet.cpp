@@ -386,9 +386,9 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const
 					short int iCurFollower = static_cast<short>(pCharTarg->GetDefNum("CURFOLLOWER", true, true));
 					short int iMaxFollower = static_cast<short>(pCharTarg->GetDefNum("MAXFOLLOWER", true, true));
 
-					if ((iCurFollower + iFollowerSlotsNeeded) > iMaxFollower )
+					if ( iCurFollower + iFollowerSlotsNeeded > iMaxFollower )
 					{
-						pSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_PETSLOTS_TRY_TRANSFER) );
+						pSrc->SysMessageDefault( DEFMSG_PETSLOTS_TRY_TRANSFER );
 						break;
 					}
 				}
@@ -465,29 +465,29 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const
 void CChar::NPC_PetClearOwners()
 {
 	ADDTOCALLSTACK("CChar::NPC_PetClearOwners");
+	CChar * pOwner = NPC_PetGetOwner();
+	Memory_ClearTypes(MEMORY_IPET|MEMORY_FRIEND);
+
 	if ( NPC_IsVendor() )
 	{
 		StatFlag_Clear(STATF_INVUL);
-
-		// Drop all the stuff we are trying to sell !.
-		CChar * pBoss = NPC_PetGetOwner();
-		if ( pBoss )	// Give it all back.
+		if ( pOwner )	// give back to NPC owner all the stuff we are trying to sell
 		{
-			CItemContainer * pBankV = GetBank();
-			CItemContainer * pBankB = pBoss->GetBank();
-			pBoss->AddGoldToPack( pBankV->m_itEqBankBox.m_Check_Amount, pBankB );
-			pBankV->m_itEqBankBox.m_Check_Amount = 0;
+			CItemContainer * pBankVendor = GetBank();
+			CItemContainer * pBankOwner = pOwner->GetBank();
+			pOwner->AddGoldToPack( pBankVendor->m_itEqBankBox.m_Check_Amount, pBankOwner );
+			pBankVendor->m_itEqBankBox.m_Check_Amount = 0;
 
 			for ( size_t i = 0; i < COUNTOF(sm_VendorLayers); i++ )
 			{
 				CItemContainer * pCont = GetBank( sm_VendorLayers[i] );
 				if ( !pCont )
 					continue;
-				CItem	*pItemNext, *pItem = pCont->GetContentHead();
+				CItem *pItemNext, *pItem = pCont->GetContentHead();
 				for ( ; pItem != NULL; pItem = pItemNext )
 				{
 					pItemNext = pItem->GetNext();
-					pBankB->ContentAdd(pItem);
+					pBankOwner->ContentAdd(pItem);
 				}
 			}
 		}
@@ -495,33 +495,28 @@ void CChar::NPC_PetClearOwners()
 
 	if ( IsStatFlag(STATF_Ridden) )
 	{
-		CChar	*pCharRider = Horse_GetMountChar();
+		CChar *pCharRider = Horse_GetMountChar();
 		if ( pCharRider )
 			pCharRider->Horse_UnMount();
 	}
 
-	if (IsSetOF(OF_PetSlots))
+	if ( IsSetOF(OF_PetSlots) )
 	{
-		CItemMemory * pPetMemory = Memory_FindTypes( MEMORY_IPET );
-		if ( pPetMemory != NULL )
+		if ( pOwner )
 		{
-			CChar * pPetOwner = pPetMemory->m_uidLink.CharFind();
-
 			short int iFollowerSlotsNeeded = static_cast<short>(maximum(GetDefNum("FOLLOWERSLOTS", true, true),1));
-			short int iCurFollower = static_cast<short>(pPetOwner->GetDefNum("CURFOLLOWER", true, true));
+			short int iCurFollower = static_cast<short>(pOwner->GetDefNum("CURFOLLOWER", true, true));
 			short int iSetFollower = iCurFollower - iFollowerSlotsNeeded;
 			if ( iSetFollower < 0 )
 				iSetFollower = 0;
 
 			// Send an update packet for the stats
-			pPetOwner->SetDefNum("CURFOLLOWER", iSetFollower);
-			CClient * pClient = pPetOwner->GetClient();
-			if (pClient)
-				pClient->addCharStatWindow( pPetOwner->GetUID() );
+			pOwner->SetDefNum("CURFOLLOWER", iSetFollower);
+			CClient * pClient = pOwner->GetClient();
+			if ( pClient )
+				pClient->addCharStatWindow( pOwner->GetUID() );
 		}
 	}
-
-	Memory_ClearTypes(MEMORY_IPET|MEMORY_FRIEND);
 }
 
 bool CChar::NPC_PetSetOwner( CChar * pChar )
@@ -552,7 +547,7 @@ bool CChar::NPC_PetSetOwner( CChar * pChar )
 		StatFlag_Set( STATF_INVUL );
 	}
 
-	if (IsSetOF(OF_PetSlots))
+	if ( IsSetOF(OF_PetSlots) )
 	{
 		short int iFollowerSlotsNeeded = static_cast<short>(maximum(GetDefNum("FOLLOWERSLOTS", true, true),1));
 		short int iCurFollower = static_cast<short>(pChar->GetDefNum("CURFOLLOWER", true, true));
@@ -561,7 +556,7 @@ bool CChar::NPC_PetSetOwner( CChar * pChar )
 		// Send an update packet for the stats
 		pChar->SetDefNum("CURFOLLOWER", iSetFollower);
 		CClient * pClient = pChar->GetClient();
-		if (pClient)
+		if ( pClient )
 			pClient->addCharStatWindow( pChar->GetUID() );
 	}
 

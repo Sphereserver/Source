@@ -1749,21 +1749,19 @@ void CChar::NPC_Act_Guard()
 	if ( m_pNPC == NULL )
 		return;
 
-	CChar* pChar = m_Act_Targ.CharFind();
+	CChar * pChar = m_Act_Targ.CharFind();
 	if ( pChar != NULL && pChar != this && CanSeeLOS(pChar, LOS_NB_WINDOWS) )
 	{
-		// protect the target if they're in a fight
-		if ( pChar->Fight_IsActive())
+		if ( pChar->Fight_IsActive() )	// protect the target if they're in a fight
 		{
 			if ( Fight_Attack( pChar->m_Fight_Targ.CharFind() ))
 				return;
 		}
 	}
 
+	// Target is out of range or doesn't need protecting, so just follow for now
 	NPC_LookAtChar( pChar, 1 );
-
-	// target is out of range or doesn't need protecting, so just follow for now
-	NPC_Act_Follow(GetDist(pChar) > 3);
+	NPC_Act_Follow();
 }
 
 bool CChar::NPC_Act_Follow( bool fFlee, int maxDistance, bool forceDistance )
@@ -1807,34 +1805,29 @@ bool CChar::NPC_Act_Follow( bool fFlee, int maxDistance, bool forceDistance )
 	{
 		// Monster may get confused because he can't see you.
 		// There is a chance they could forget about you if hidden for a while.
-		if ( ! Calc_GetRandVal( 1 + (( 100 - Stat_GetAdjusted(STAT_INT)) / 20 )))
-			return( false );
-		if ( fFlee )
+		if ( fFlee || !Calc_GetRandVal( 1 + (( 100 - Stat_GetAdjusted(STAT_INT)) / 20 )))
 			return( false );
 	}
 
 	EXC_SET("Distance checks");
 	int dist = GetTopPoint().GetDist( m_Act_p );
-	if ( dist > UO_MAP_VIEW_RADAR*2 )			// too far away ?
+	if ( dist > UO_MAP_VIEW_RADAR )		// too far away ?
 		return( false );
 
 	if ( forceDistance )
 	{
 		if ( dist < maxDistance )
-		{
-			// start moving away
-			fFlee = true;
-		}
+			fFlee = true;	// start moving away
 	}
 	else
 	{
 		if ( fFlee )
 		{
 			if ( dist >= maxDistance )
-				return false;
+				return( false );
 		}
 		else if ( dist <= maxDistance )
-			return true;
+			return( true );
 	}
 
 	EXC_SET("Fleeing");
@@ -1843,7 +1836,7 @@ bool CChar::NPC_Act_Follow( bool fFlee, int maxDistance, bool forceDistance )
 		CPointMap ptOld = m_Act_p;
 		m_Act_p = GetTopPoint();
 		m_Act_p.Move( GetDirTurn( m_Act_p.GetDir( ptOld ), 4 + 1 - Calc_GetRandVal(3)));
-		NPC_WalkToPoint( dist > 3);
+		NPC_WalkToPoint( dist < 3 );
 		m_Act_p = ptOld;	// last known point of the enemy.
 		return( true );
 	}
@@ -1851,8 +1844,9 @@ bool CChar::NPC_Act_Follow( bool fFlee, int maxDistance, bool forceDistance )
 	EXC_SET("WalkToPoint 1");
 	NPC_WalkToPoint( IsStatFlag( STATF_War ) ? true : ( dist > 3 ));
 	return( true );
+
 	EXC_CATCH;
-	return false;
+	return( false );
 }
 
 bool CChar::NPC_FightArchery( CChar * pChar )
