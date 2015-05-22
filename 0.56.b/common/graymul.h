@@ -85,6 +85,8 @@ typedef WORD SOUND_TYPE;	// Sound ID
 
 enum SOUND_CODE
 {
+
+	SOUND_NONE			= 0,
 	SOUND_ANVIL			= 0x02a,
 
 	SOUND_TURN_PAGE		= 0x055,	// open spellbook
@@ -2588,7 +2590,7 @@ struct CUOMultiItemRec // (Multi.mul)
 	WORD  m_wTileID;	// ITEMID_TYPE = Index to tile CUOItemTypeRec/CUOItemTypeRec2
 	short m_dx;		// signed delta.
 	short m_dy;
-	short m_dz;
+	signed char m_dz;
 	DWORD m_visible;	// 0 or 1 (non-visible items are things like doors and signs)
 
 	ITEMID_TYPE GetDispID() const
@@ -2605,7 +2607,7 @@ struct CUOMultiItemRec2 // (Multi.mul, High Seas+)
 	WORD  m_wTileID;	// ITEMID_TYPE = Index to tile CUOItemTypeRec/CUOItemTypeRec2
 	short m_dx;			// signed delta.
 	short m_dy;
-	short m_dz;
+	signed char m_dz;
 	DWORD m_visible;	// 0 or 1 (non-visible items are things like doors and signs)
 	DWORD m_unknown;	// unknown data
 

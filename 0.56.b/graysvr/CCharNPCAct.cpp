@@ -1836,7 +1836,7 @@ bool CChar::NPC_Act_Follow( bool fFlee, int maxDistance, bool forceDistance )
 		CPointMap ptOld = m_Act_p;
 		m_Act_p = GetTopPoint();
 		m_Act_p.Move( GetDirTurn( m_Act_p.GetDir( ptOld ), 4 + 1 - Calc_GetRandVal(3)));
-		NPC_WalkToPoint( dist < 3 );
+		NPC_WalkToPoint( dist > 3 );
 		m_Act_p = ptOld;	// last known point of the enemy.
 		return( true );
 	}

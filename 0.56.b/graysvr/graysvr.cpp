@@ -219,11 +219,9 @@ bool CMapList::DetectMapSize(int map)
 	int	index = m_mapnum[map];
 	if ( index < 0 )
 		return false;
-	g_Log.EventDebug("Loading map %d\n",map);
 
 	if (g_Install.m_Maps[index].IsFileOpen() == false)
 		return false;
-	g_Log.EventDebug("Loading 1\n");
 
 	//
 	//	#0 - map0.mul			(felucca, 6144x4096 or 7168x4096, 77070336 or 89915392 bytes)

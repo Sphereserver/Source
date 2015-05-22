@@ -174,7 +174,7 @@ static int CvtUNICODEToSystem( TCHAR * pOut, int iSizeOutBytes, WCHAR wChar )
 	}
 
 	ASSERT( wChar < (1<<iStartBits));
-	pOut[0] = ( 0xfe << iStartBits ) | wChar;
+	pOut[0] = static_cast<TCHAR>( ( 0xfe << iStartBits ) | wChar );
 
 	return( iBytes );
 }

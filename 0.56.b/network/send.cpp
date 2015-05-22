@@ -4646,7 +4646,7 @@ bool PacketPropertyListVersion::onSend(const CClient* client)
  *
  *
  ***************************************************************************/
-PacketBuff::PacketBuff(const CClient* target, const WORD iconId, const DWORD clilocOne, const DWORD clilocTwo, const short time, LPCTSTR* args, size_t argCount) : PacketSend(XCMD_BuffPacket, 72, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketBuff::PacketBuff(const CClient* target, const BUFF_ICONS iconId, const DWORD clilocOne, const DWORD clilocTwo, const short time, LPCTSTR* args, size_t argCount) : PacketSend(XCMD_BuffPacket, 72, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketBuff::PacketBuff");
 	// At date of 04/2015 RUOSI seems to have a different structure than the one we have with one more argument and different order... however this one seems to keep working: http://ruosi.org/packetguide/index.xml#serverDF
@@ -4657,11 +4657,11 @@ PacketBuff::PacketBuff(const CClient* target, const WORD iconId, const DWORD cli
 	initLength();
 
 	writeInt32(character->GetUID());
-	writeInt16(iconId);
+	writeInt16(static_cast<WORD>(iconId));
 	writeInt16(0x1);	// show
 
 	writeInt32(0);
-	writeInt16(iconId);
+	writeInt16(static_cast<WORD>(iconId));
 	writeInt16(0x1);	// show
 
 	writeInt32(0);
@@ -4707,7 +4707,7 @@ PacketBuff::PacketBuff(const CClient* target, const WORD iconId, const DWORD cli
 	push(target);
 }
 
-PacketBuff::PacketBuff(const CClient* target, const WORD iconId) : PacketSend(XCMD_BuffPacket, 15, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketBuff::PacketBuff(const CClient* target, const BUFF_ICONS iconId) : PacketSend(XCMD_BuffPacket, 15, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketBuff::PacketBuff(2)");
 
@@ -4717,7 +4717,7 @@ PacketBuff::PacketBuff(const CClient* target, const WORD iconId) : PacketSend(XC
 	initLength();
 
 	writeInt32(character->GetUID());
-	writeInt16(iconId);
+	writeInt16(static_cast<WORD>(iconId));
 	writeInt16(0);		// hide icon
 
 	push(target);

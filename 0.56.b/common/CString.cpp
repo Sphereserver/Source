@@ -461,7 +461,7 @@ LPCTSTR Str_GetArticleAndSpace( LPCTSTR pszWord )
 	if ( pszWord )
 	{
 		static const TCHAR sm_Vowels[] = { 'A', 'E', 'I', 'O', 'U' };
-		TCHAR chName = toupper(pszWord[0]);
+		TCHAR chName = static_cast<TCHAR>( toupper(pszWord[0]) );
 		for ( size_t x = 0; x < COUNTOF(sm_Vowels); x++ )
 		{
 			if ( chName == sm_Vowels[x] )
@@ -595,8 +595,8 @@ static int Str_CmpHeadI( LPCTSTR pszFind, LPCTSTR pszTable )
 	{
 			//	we should always use same case as in other places. since strcmpi lowers,
 			//	we should lower here as well. fucking shit!
-		TCHAR ch1 = tolower(pszFind[i]);
-		TCHAR ch2 = tolower(pszTable[i]);
+		TCHAR ch1 = static_cast<TCHAR>( tolower(pszFind[i] ));
+		TCHAR ch2 = static_cast<TCHAR>( tolower(pszTable[i] ));
 		if ( ch2 == 0 )
 		{
 			if (( !isalnum(ch1))&&(ch1 != ch0))
@@ -869,7 +869,7 @@ static MATCH_TYPE Str_Match_After_Star( LPCTSTR pPattern, LPCTSTR pText )
 		return MATCH_VALID;
 
 	// get the next character to match which must be a literal or '['
-	TCHAR nextp = TOLOWER( *pPattern );
+	TCHAR nextp = static_cast<TCHAR>( TOLOWER(*pPattern ));
 	MATCH_TYPE match = MATCH_INVALID;
 
 	// Continue until we run out of text or definite result seen
@@ -949,9 +949,9 @@ MATCH_TYPE Str_Match( LPCTSTR pPattern, LPCTSTR pText )
 
 					// matching a '!', '^', '-', '\' or a ']'
 					if ( *pPattern == '\\' )
-						range_start = range_end = TOLOWER( *++pPattern );
+						range_start = range_end = static_cast<TCHAR>( TOLOWER(*++pPattern ));
 					else
-						range_start = range_end = TOLOWER( *pPattern );
+						range_start = range_end = static_cast<TCHAR>( TOLOWER(*pPattern ));
 
 					// if end of pattern then bad pattern (Missing ']')
 					if (!*pPattern)
@@ -961,14 +961,14 @@ MATCH_TYPE Str_Match( LPCTSTR pPattern, LPCTSTR pText )
 					if (*++pPattern == '-')
 					{
 						// get the range end
-						range_end = TOLOWER( *++pPattern );
+						range_end = static_cast<TCHAR>( TOLOWER(*++pPattern) );
 						// if end of pattern or construct then bad pattern
 						if ( range_end == '\0' || range_end == ']')
 							return MATCH_PATTERN;
 						// special character range end
 						if ( range_end == '\\')
 						{
-							range_end = TOLOWER( *++pPattern );
+							range_end = static_cast<TCHAR>( TOLOWER(*++pPattern) );
 							// if end of text then we have a bad pattern
 							if (!range_end)
 								return MATCH_PATTERN;
@@ -980,7 +980,7 @@ MATCH_TYPE Str_Match( LPCTSTR pPattern, LPCTSTR pText )
 					// if the text character is in range then match found.
 					// make sure the range letters have the proper
 					// relationship to one another before comparison
-					TCHAR chText = TOLOWER( *pText );
+					TCHAR chText = static_cast<TCHAR>( TOLOWER(*pText) );
 					if ( range_start < range_end  )
 					{
 						if ( chText >= range_start && chText <= range_end)

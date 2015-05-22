@@ -4332,7 +4332,7 @@ bool CChar::OnTick()
 			GetClient()->addTargetCancel();
 	}
 
-	if ( Stat_GetVal(STAT_STR) <= 0 )	// we can only die on our own tick
+	if ( Stat_GetVal(STAT_STR) <= 0 && !(m_pNPC && IsStatFlag(STATF_DEAD) && m_pNPC) )	// we can only die on our own tick ( Bonded pets that are death should pass this check or they won't move).
 	{
 		EXC_SET("death");
 		return Death();
@@ -4370,16 +4370,13 @@ bool CChar::OnTick()
 
 	if ( !IsStatFlag(STATF_DEAD) )
 	{
-		// This location check is already called on walk events, so we doesn't need to check it again
-		//EXC_SET("check location");
-		//CheckLocation(true);	// check location periodically for standing in fire fields, traps, etc
-
-		EXC_SET("regen stats");
+		EXC_SET("regen stats");	// Death characters doesnt regenerate anything
 		Stats_Regen(iTimeDiff);
+
+		EXC_SET("update stats"); // So either have to send updates on values.
+		OnTickStatusUpdate();
 	}
 
-	EXC_SET("update stats");
-	OnTickStatusUpdate();
 
 	if ( IsTimerSet() && IsTimerExpired() )
 	{
@@ -4406,7 +4403,7 @@ bool CChar::OnTick()
 			}
 		}
 	}
-	else if ( m_pNPC && IsStatFlag(STATF_War) )
+	else if (m_pNPC && IsStatFlag(STATF_War) && !IsStatFlag(STATF_DEAD))
 	{
 		EXC_SET("combat hit try");
 		// Hit my current target (if i'm ready)

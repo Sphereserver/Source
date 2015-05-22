@@ -1139,9 +1139,9 @@ bool CRegionWorld::r_LoadVal( CScript &s )
 			SetModified( REGMOD_EVENTS );
 			return( m_Events.r_LoadVal( s, RES_REGIONTYPE ));
 		default:
-			return( CRegionBase::r_LoadVal( s ));
+			break;
 	}
-	return true;
+	return(CRegionBase::r_LoadVal(s));
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
