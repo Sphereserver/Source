@@ -4311,43 +4311,44 @@ bool CChar::OnTick()
 		return Death();
 	}
 
-	if ( iTimeDiff < TICK_PER_SEC )		// don't bother with < 1 sec timers on the checks below
-		return true;
-
-	m_timeLastRegen = CServTime::GetCurrentTime();
-
-	// Decay equipped items (spells)
-	CItem *pItem = GetContentHead();
-	int iCount = 0;
-	for ( ; pItem != NULL; pItem = GetAt(++iCount) )
+	if (iTimeDiff >= TICK_PER_SEC)		// don't bother with < 1 sec timers on the checks below
 	{
-		EXC_TRYSUB("Ticking items");
-		if ( pItem->IsType(IT_EQ_MEMORY_OBJ) && !pItem->m_uidLink.ObjFind() )		// always check the validity of the memory objects
+
+		m_timeLastRegen = CServTime::GetCurrentTime();
+
+		// Decay equipped items (spells)
+		CItem *pItem = GetContentHead();
+		int iCount = 0;
+		for (; pItem != NULL; pItem = GetAt(++iCount))
 		{
-			pItem->Delete();
-			continue;
+			EXC_TRYSUB("Ticking items");
+			if (pItem->IsType(IT_EQ_MEMORY_OBJ) && !pItem->m_uidLink.ObjFind())		// always check the validity of the memory objects
+			{
+				pItem->Delete();
+				continue;
+			}
+			pItem->OnTickStatusUpdate();
+			if (!pItem->IsTimerSet() || !pItem->IsTimerExpired())
+				continue;
+			else if (!OnTickEquip(pItem))
+				pItem->Delete();
+			EXC_CATCHSUB("Char");
 		}
-		pItem->OnTickStatusUpdate();
-		if ( !pItem->IsTimerSet() || !pItem->IsTimerExpired() )
-			continue;
-		else if ( !OnTickEquip(pItem) )
-			pItem->Delete();
-		EXC_CATCHSUB("Char");
-	}
 
-	EXC_SET("last attackers");
-	Attacker_CheckTimeout();
+		EXC_SET("last attackers");
+		Attacker_CheckTimeout();
 
-	EXC_SET("NOTO timeout");
-	NotoSave_CheckTimeout();
+		EXC_SET("NOTO timeout");
+		NotoSave_CheckTimeout();
 
-	if ( !IsStatFlag(STATF_DEAD) )
-	{
-		EXC_SET("regen stats");	// Death characters doesnt regenerate anything
-		Stats_Regen(iTimeDiff);
+		if (!IsStatFlag(STATF_DEAD))
+		{
+			EXC_SET("regen stats");	// Death characters doesnt regenerate anything
+			Stats_Regen(iTimeDiff);
 
-		EXC_SET("update stats"); // So either have to send updates on values.
-		OnTickStatusUpdate();
+			EXC_SET("update stats"); // So either have to send updates on values.
+			OnTickStatusUpdate();
+		}
 	}
 
 	if ( IsTimerSet() && IsTimerExpired() )
