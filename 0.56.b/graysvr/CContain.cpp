@@ -43,8 +43,19 @@ void CContainer::ContentAddPrivate( CItem * pItem )
 	ASSERT( pItem->IsValidUID());	// it should be valid at this point.
 	if ( pItem->GetParent() == this )
 		return;
-
-	CGObList::InsertHead( pItem );
+	if (!CGObList::GetCount())
+		CGObList::InsertHead( pItem );
+	else
+	{
+		CItem* pTest = GetContentHead();
+		CItem *prevItem = pTest;
+		for (; pTest != NULL; pTest = pTest->GetNext())
+		{
+			if (pTest->GetUID() < prevItem->GetUID())
+				prevItem = pTest;
+		}
+		CGObList::InsertAfter(pItem,prevItem);
+	}
 	//CGObList::InsertTail( pItem );//Reversing the order in which things are added into a container
 	OnWeightChange( pItem->GetWeight());
 }

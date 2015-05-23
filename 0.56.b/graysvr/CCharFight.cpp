@@ -2914,7 +2914,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	CChar * pTarget = const_cast<CChar*>(pCharTarg);
 	if (!m_pPlayer && !btoldByMaster)	// We call for FindBestTarget when this CChar is not a player and was not commanded to attack, otherwise it attack directly.
 		pTarget = Fight_FindBestTarget();
-	m_Fight_Targ = pTarget ? pTarget->GetUID() : UID_UNUSED;
+	m_Fight_Targ = pTarget ? pTarget->GetUID() : static_cast<CGrayUID>(UID_UNUSED);
 	Skill_Start( skillWeapon );
 
 	return( true );
