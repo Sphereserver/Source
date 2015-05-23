@@ -1438,19 +1438,6 @@ public:
 };
 
 /***************************************************************************
-*
-*
-*	Packet 0xBF.0x19.0x00 : OldBondedStatus		set bonded status (NORMAL)
-*
-*
-***************************************************************************/
-class PacketBondedStatus : public PacketExtended
-{
-public:
-	PacketBondedStatus(const CChar * pChar);
-};
-
-/***************************************************************************
  *
  *
  *	Packet 0xBF.0x19.0x02 : PacketStatLocks		update lock status of stats (NORMAL)
@@ -1467,6 +1454,19 @@ public:
 	{
 		return state->isClientVersion(MINCLIVER_STATLOCKS);
 	}
+};
+
+/***************************************************************************
+*
+*
+*	Packet 0xBF.0x19.0x05.0xFF : BondedStatus		set bonded status (NORMAL)
+*
+*
+***************************************************************************/
+class PacketBondedStatus : public PacketExtended
+{
+public:
+	PacketBondedStatus(const CChar * pChar);
 };
 
 /***************************************************************************

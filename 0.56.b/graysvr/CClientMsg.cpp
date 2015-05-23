@@ -1057,8 +1057,8 @@ void CClient::addChar( const CChar * pChar )
 	EXC_SET("Health bar color");
 	addHealthBarUpdate( pChar );
 
-	//EXC_SET("Bonded status");
-	//new PacketBondedStatus( pChar );
+	EXC_SET("Bonded status");
+	new PacketBondedStatus( pChar );
 
 	EXC_SET("AOSToolTip adding (end)");
 	addAOSTooltip( pChar );

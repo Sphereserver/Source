@@ -506,7 +506,8 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 		}
 
 	}
-
+	if ( m_pNPC && m_pNPC->m_bonded )
+		m_Can &= ~CAN_C_GHOST;
 	Update();
 
 	CSpellDef *pSpellDef = g_Cfg.GetSpellDef( SPELL_Resurrection );

@@ -3988,25 +3988,6 @@ PacketEnableMapDiffs::PacketEnableMapDiffs(const CClient* target) : PacketExtend
 /***************************************************************************
 *
 *
-*	Packet 0xBF.0x19.0x00 : OldBondedStats		set bonded status (NORMAL)
-*
-*
-***************************************************************************/
-
-PacketBondedStatus::PacketBondedStatus(const CChar * pChar) : PacketExtended(EXTDATA_Stats_Enable, 11, PRI_NORMAL)
-{
-	ADDTOCALLSTACK("PacketBondedStatus::PacketBondedStatus");
-	if (!pChar->m_pNPC)
-		return;
-	writeByte(0x00);
-	writeInt32(pChar->GetUID());
-	writeByte(static_cast<unsigned char>(pChar->m_pNPC->m_bonded));
-}
-
-
-/***************************************************************************
-*
-*
 *	Packet 0xBF.0x19.0x02 : PacketStatLocks		update lock status of stats (NORMAL)
 *
 *
@@ -4029,6 +4010,35 @@ PacketStatLocks::PacketStatLocks(const CClient* target, const CChar* character) 
 	writeByte(status);
 
 	push(target);
+}
+
+
+/***************************************************************************
+*
+*
+*	Packet 0xBF.0x19.0x05.0xFF : BondedStatuss		set bonded status (NORMAL)
+*
+*
+***************************************************************************/
+
+PacketBondedStatus::PacketBondedStatus(const CChar * pChar) : PacketExtended(EXTDATA_Stats_Enable, 11, PRI_NORMAL)
+{
+	ADDTOCALLSTACK("PacketBondedStatus::PacketBondedStatus");
+	//ASSERT(pChar);
+	if (!pChar && !pChar->m_pNPC && !pChar->m_pNPC->m_bonded)	//Won't pass here if the NPC is not bonded, the packet seems to be sent to Bonded creatures with value 0/1 in * according to their bonding status.
+		return;
+	writeInt16(0x00);
+	writeByte(0x05);
+	writeInt32(pChar->GetUID());
+	writeByte(static_cast<unsigned char>(pChar->IsStatFlag(STATF_DEAD)));	// *
+	writeByte(0xFF);
+	writeByte(0x00);
+	writeInt16(0x00);	//***
+	writeInt16(0x00);	//**
+	writeInt16(0x00);	//**
+
+	// Somehow, sending 0 in * and some kind of information in ** and *** this packet is used also as 'Update Mobile Status Animation'. According to RUOSI: OSI uses this packet for updating character statues.
+	// *** Must be byte for that to happen.
 }
 
 

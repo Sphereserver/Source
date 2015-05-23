@@ -2982,6 +2982,7 @@ bool CChar::Death()
 	{
 		// TO-DO: When die, the bonded pet is getting removed from client screen and then we need to call update to reveal it again.
 		// Maybe we can optimize this behavior making bonded pets don't disappear instead hide it and then reveal it again
+		m_Can |= CAN_C_GHOST;
 		Update();
 		return true;
 	}
