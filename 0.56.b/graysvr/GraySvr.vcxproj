@@ -1,0 +1,698 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Local|Win32">
+      <Configuration>Local</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Nightly|Win32">
+      <Configuration>Nightly</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>GraySvr_trunk</ProjectName>
+    <ProjectGuid>{40CA07B5-BCC7-A9C8-A6E6-DEFC536EE8CB}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>SphereSvr</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Local|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>SphereSvr</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Nightly|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>SphereSvr</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>SphereSvr</TargetName>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>../common/mysql/include;../common/mysql/lib/debug;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_NEWGUILDSYSTEM;_MTNETWORK;_SUBVERSION;_DEBUG;_PACKETDUMP;_TESTEXCEPTION;DEBUG_CRYPT_MSGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BrowseInformation>true</BrowseInformation>
+      <CallingConvention>StdCall</CallingConvention>
+      <WarningLevel>Level2</WarningLevel>
+      <MinimalRebuild>true</MinimalRebuild>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>..\common\mysql\lib\debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>wsock32.lib;libmysql.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <Version>0.12</Version>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <PreBuildEvent>
+      <Command>SubWCRev.exe $(ProjectDir) $(ProjectDir)..\common\subversion\SvnRevision.tmpl $(ProjectDir)..\common\subversion\SvnRevision.h</Command>
+      <Message>Generate the svn_version.h file with the necessary repo identify info for versioning</Message>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Local|Win32'">
+    <ClCompile>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <WarningLevel>Level2</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_NEWGUILDSYSTEM;_MTNETWORK;_SUBVERSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CallingConvention>FastCall</CallingConvention>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <AdditionalIncludeDirectories>../common/mysql/include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>../common/mysql/lib/release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LargeAddressAware>true</LargeAddressAware>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+    </Link>
+    <PreBuildEvent>
+      <Command>SubWCRev.exe $(ProjectDir) $(ProjectDir)..\common\subversion\SvnRevision.tmpl $(ProjectDir)..\common\subversion\SvnRevision.h</Command>
+      <Message>Generate the svn_version.h file with the necessary repo identify info for versioning</Message>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Nightly|Win32'">
+    <ClCompile>
+      <StringPooling>true</StringPooling>
+      <WarningLevel>Level2</WarningLevel>
+      <AdditionalIncludeDirectories>../common/mysql/include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_NEWGUILDSYSTEM;_MTNETWORK;_SUBVERSION;_NIGHTLYBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CallingConvention>FastCall</CallingConvention>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>../common/mysql/lib/release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LargeAddressAware>true</LargeAddressAware>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+    </Link>
+    <PreBuildEvent>
+      <Command>SubWCRev.exe $(ProjectDir) $(ProjectDir)..\common\subversion\SvnRevision.tmpl $(ProjectDir)..\common\subversion\SvnRevision.h</Command>
+      <Message>Generate the svn_version.h file with the necessary repo identify info for versioning</Message>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <AdditionalIncludeDirectories>../common/mysql/include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_NEWGUILDSYSTEM;_MTNETWORK;_SUBVERSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <WarningLevel>Level2</WarningLevel>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <CallingConvention>FastCall</CallingConvention>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>../common/mysql/lib/release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LargeAddressAware>true</LargeAddressAware>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <PreBuildEvent>
+      <Command>SubWCRev.exe $(ProjectDir) $(ProjectDir)..\common\subversion\SvnRevision.tmpl $(ProjectDir)..\common\subversion\SvnRevision.h</Command>
+      <Message>Generate the svn_version.h file with the necessary repo identify info for versioning</Message>
+    </PreBuildEvent>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\common\CacheableScriptFile.cpp" />
+    <ClCompile Include="..\common\crashdump\crashdump.cpp" />
+    <ClCompile Include="..\common\CScriptCompiler.cpp" />
+    <ClCompile Include="..\common\CsvFile.cpp" />
+    <ClCompile Include="..\common\CVarFloat.cpp" />
+    <ClCompile Include="..\common\SQLite.cpp" />
+    <ClCompile Include="..\common\sqlite3.c" />
+    <ClCompile Include="..\network\network.cpp" />
+    <ClCompile Include="..\network\packet.cpp" />
+    <ClCompile Include="..\network\receive.cpp" />
+    <ClCompile Include="..\network\send.cpp" />
+    <ClCompile Include="..\sphere\asyncdb.cpp" />
+    <ClCompile Include="..\sphere\linuxev.cpp" />
+    <ClCompile Include="..\sphere\mutex.cpp" />
+    <ClCompile Include="..\sphere\ProfileData.cpp" />
+    <ClCompile Include="..\sphere\strings.cpp" />
+    <ClCompile Include="..\sphere\threads.cpp" />
+    <ClCompile Include="CAccount.cpp" />
+    <ClCompile Include="CBase.cpp" />
+    <ClCompile Include="CChar.cpp" />
+    <ClCompile Include="CCharact.cpp" />
+    <ClCompile Include="CCharBase.cpp" />
+    <ClCompile Include="CCharFight.cpp" />
+    <ClCompile Include="CCharNPC.cpp" />
+    <ClCompile Include="CCharNPCAct.cpp" />
+    <ClCompile Include="CCharNPCPet.cpp" />
+    <ClCompile Include="CCharNPCStatus.cpp" />
+    <ClCompile Include="CCharSkill.cpp" />
+    <ClCompile Include="CCharSpell.cpp" />
+    <ClCompile Include="CCharStatus.cpp" />
+    <ClCompile Include="CCharUse.cpp" />
+    <ClCompile Include="CChat.cpp" />
+    <ClCompile Include="CClient.cpp" />
+    <ClCompile Include="CClientDialog.cpp" />
+    <ClCompile Include="CClientEvent.cpp" />
+    <ClCompile Include="CClientGMPage.cpp" />
+    <ClCompile Include="CClientLog.cpp" />
+    <ClCompile Include="CClientMsg.cpp" />
+    <ClCompile Include="CClientTarg.cpp" />
+    <ClCompile Include="CClientUse.cpp" />
+    <ClCompile Include="CContain.cpp" />
+    <ClCompile Include="..\common\CEncrypt.cpp" />
+    <ClCompile Include="CGMPage.cpp" />
+    <ClCompile Include="CItem.cpp" />
+    <ClCompile Include="CItemBase.cpp" />
+    <ClCompile Include="CItemMulti.cpp" />
+    <ClCompile Include="CItemMultiCustom.cpp" />
+    <ClCompile Include="CItemShip.cpp" />
+    <ClCompile Include="CItemSp.cpp" />
+    <ClCompile Include="CItemStone.cpp" />
+    <ClCompile Include="CItemVend.cpp" />
+    <ClCompile Include="CLog.cpp" />
+    <ClCompile Include="CObjBase.cpp" />
+    <ClCompile Include="CPathFinder.cpp" />
+    <ClCompile Include="CQuest.cpp" />
+    <ClCompile Include="CResource.cpp" />
+    <ClCompile Include="CResourceCalc.cpp" />
+    <ClCompile Include="CResourceDef.cpp" />
+    <ClCompile Include="CSector.cpp" />
+    <ClCompile Include="CServer.cpp" />
+    <ClCompile Include="CServRef.cpp" />
+    <ClCompile Include="CWebPage.cpp" />
+    <ClCompile Include="CWorld.cpp" />
+    <ClCompile Include="CWorldImport.cpp" />
+    <ClCompile Include="CWorldMap.cpp" />
+    <ClCompile Include="graysvr.cpp" />
+    <ClCompile Include="ntservice.cpp" />
+    <ClCompile Include="ntwindow.cpp" />
+    <ClCompile Include="..\common\zlib\adler32.c" />
+    <ClCompile Include="..\common\zlib\compress.c" />
+    <ClCompile Include="..\common\zlib\crc32.c" />
+    <ClCompile Include="..\common\zlib\deflate.c" />
+    <ClCompile Include="..\common\zlib\infback.c" />
+    <ClCompile Include="..\common\zlib\inffast.c" />
+    <ClCompile Include="..\common\zlib\inflate.c" />
+    <ClCompile Include="..\common\zlib\inftrees.c" />
+    <ClCompile Include="..\common\zlib\trees.c" />
+    <ClCompile Include="..\common\zlib\uncompr.c" />
+    <ClCompile Include="..\common\zlib\zutil.c" />
+    <ClCompile Include="..\common\twofish\twofish2.cpp" />
+    <ClCompile Include="..\common\CArray.cpp" />
+    <ClCompile Include="..\common\CAssoc.cpp" />
+    <ClCompile Include="..\common\CAtom.cpp" />
+    <ClCompile Include="..\common\CDataBase.cpp" />
+    <ClCompile Include="..\common\CException.cpp" />
+    <ClCompile Include="..\common\CExpression.cpp" />
+    <ClCompile Include="..\common\CFile.cpp" />
+    <ClCompile Include="..\common\CFileList.cpp" />
+    <ClCompile Include="..\common\CGrayData.cpp" />
+    <ClCompile Include="..\common\CGrayInst.cpp" />
+    <ClCompile Include="..\common\CGrayMap.cpp" />
+    <ClCompile Include="..\common\CMapCache.cpp" />
+    <ClCompile Include="..\common\CMD5.cpp" />
+    <ClCompile Include="..\common\CQueue.cpp" />
+    <ClCompile Include="..\common\CRect.cpp" />
+    <ClCompile Include="..\common\CRegion.cpp" />
+    <ClCompile Include="..\common\CResourceBase.cpp" />
+    <ClCompile Include="..\common\CScript.cpp" />
+    <ClCompile Include="..\common\CScriptObj.cpp" />
+    <ClCompile Include="..\common\CSectorTemplate.cpp" />
+    <ClCompile Include="..\common\CSocket.cpp" />
+    <ClCompile Include="..\common\CString.cpp" />
+    <ClCompile Include="..\common\CTime.cpp" />
+    <ClCompile Include="..\common\CVarDefMap.cpp" />
+    <ClCompile Include="..\common\ListDefContMap.cpp" />
+    <ClCompile Include="..\common\CWindow.cpp" />
+    <ClCompile Include="..\common\graycom.cpp" />
+    <ClCompile Include="PingServer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\common\CacheableScriptFile.h" />
+    <ClInclude Include="..\common\crashdump\crashdump.h" />
+    <ClInclude Include="..\common\CScriptCompiler.h" />
+    <ClInclude Include="..\common\CsvFile.h" />
+    <ClInclude Include="..\common\CVarFloat.h" />
+    <ClInclude Include="..\network\network.h" />
+    <ClInclude Include="..\network\packet.h" />
+    <ClInclude Include="..\network\receive.h" />
+    <ClInclude Include="..\network\send.h" />
+    <ClInclude Include="..\sphere\asyncdb.h" />
+    <ClInclude Include="..\sphere\containers.h" />
+    <ClInclude Include="..\sphere\linuxev.h" />
+    <ClInclude Include="..\sphere\mutex.h" />
+    <ClInclude Include="..\sphere\ProfileData.h" />
+    <ClInclude Include="..\sphere\strings.h" />
+    <ClInclude Include="..\sphere\threads.h" />
+    <ClInclude Include="CAccount.h" />
+    <ClInclude Include="CBase.h" />
+    <ClInclude Include="CClient.h" />
+    <ClInclude Include="..\common\CEncrypt.h" />
+    <ClInclude Include="..\common\CMD5.h" />
+    <ClInclude Include="CObjBase.h" />
+    <ClInclude Include="CPathFinder.h" />
+    <ClInclude Include="CResource.h" />
+    <ClInclude Include="CServRef.h" />
+    <ClInclude Include="..\common\CWindow.h" />
+    <ClInclude Include="CWorld.h" />
+    <ClInclude Include="graysvr.h" />
+    <ClInclude Include="ntservice.h" />
+    <ClInclude Include="PingServer.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="..\common\zlib\crc32.h" />
+    <ClInclude Include="..\common\zlib\deflate.h" />
+    <ClInclude Include="..\common\zlib\inffast.h" />
+    <ClInclude Include="..\common\zlib\inffixed.h" />
+    <ClInclude Include="..\common\zlib\inflate.h" />
+    <ClInclude Include="..\common\zlib\inftrees.h" />
+    <ClInclude Include="..\common\zlib\trees.h" />
+    <ClInclude Include="..\common\zlib\zconf.h" />
+    <ClInclude Include="..\common\zlib\zlib.h" />
+    <ClInclude Include="..\common\zlib\zutil.h" />
+    <ClInclude Include="..\common\twofish\aes.h" />
+    <ClInclude Include="..\common\twofish\debug.h" />
+    <ClInclude Include="..\common\twofish\platform.h" />
+    <ClInclude Include="..\common\twofish\table.h" />
+    <ClInclude Include="..\common\regex\deelx.h" />
+    <ClInclude Include="..\common\carray.h" />
+    <ClInclude Include="..\common\cassoc.h" />
+    <ClInclude Include="..\common\CAtom.h" />
+    <ClInclude Include="..\common\CDataBase.h" />
+    <ClInclude Include="..\common\CException.h" />
+    <ClInclude Include="..\common\cexpression.h" />
+    <ClInclude Include="..\common\cfile.h" />
+    <ClInclude Include="..\common\cfilelist.h" />
+    <ClInclude Include="..\common\cgrayinst.h" />
+    <ClInclude Include="..\common\cGrayMap.h" />
+    <ClInclude Include="..\common\CMapCache.h" />
+    <ClInclude Include="..\common\cmemblock.h" />
+    <ClInclude Include="..\common\common.h" />
+    <ClInclude Include="..\common\CQueue.h" />
+    <ClInclude Include="..\common\crect.h" />
+    <ClInclude Include="..\common\cregion.h" />
+    <ClInclude Include="..\common\cresourcebase.h" />
+    <ClInclude Include="..\common\cscript.h" />
+    <ClInclude Include="..\common\cscriptobj.h" />
+    <ClInclude Include="..\common\cSectorTemplate.h" />
+    <ClInclude Include="..\common\csocket.h" />
+    <ClInclude Include="..\common\cstring.h" />
+    <ClInclude Include="..\common\ctime.h" />
+    <ClInclude Include="..\common\CVarDefMap.h" />
+    <ClInclude Include="..\common\ListDefContMap.h" />
+    <ClInclude Include="..\common\graycom.h" />
+    <ClInclude Include="..\common\graymul.h" />
+    <ClInclude Include="..\common\grayproto.h" />
+    <ClInclude Include="..\common\grayver.h" />
+    <ClInclude Include="..\common\os_unix.h" />
+    <ClInclude Include="..\common\os_windows.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GraySvr.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\tables\CBaseBaseDef_props.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CChar_functions.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CChar_props.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CCharBase_props.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CCharNpc_props.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CCharPlayer_props.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CClient_functions.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CClient_props.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CFile_functions.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CFile_props.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CFileObjContainer_functions.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CFileObjContainer_props.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\classnames.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CObjBase_functions.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CObjBase_props.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CQuest_functions.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CQuest_props.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CScriptCompiler.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CScriptObj_functions.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CSector_functions.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\defmessages.tbl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\Sphere.ini">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="spheresvr.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\docs\REVISIONS-51-54-SERIES.TXT" />
+    <None Include="..\..\docs\REVISIONS-55-SERIES.TXT" />
+    <None Include="..\..\docs\REVISIONS-56-Pre_release.TXT" />
+    <None Include="..\..\docs\REVISIONS-56-SERIES.TXT" />
+    <None Include="..\..\scripts\add-on\Champion_Spawn.zip" />
+    <None Include="..\..\scripts\add-on\Doom_Dungeon.zip" />
+    <None Include="..\..\scripts\add-on\House_Placement.zip" />
+    <None Include="..\..\scripts\add-on\readme.txt" />
+    <None Include="..\..\scripts\add-on\Slayer_Weapons.zip" />
+    <None Include="..\..\scripts\add-on\Sphere_Factions_56a.zip" />
+    <None Include="..\..\scripts\add-on\targetted_hits.scp" />
+    <None Include="..\..\scripts\add-on\worldfiles.zip" />
+    <None Include="..\..\scripts\items\sphere_item_animations.scp" />
+    <None Include="..\..\scripts\items\sphere_item_artifacts.scp" />
+    <None Include="..\..\scripts\items\sphere_item_artifacts_minor.scp" />
+    <None Include="..\..\scripts\items\sphere_item_artifacts_tokuno.scp" />
+    <None Include="..\..\scripts\items\sphere_item_boulders_rocks.scp" />
+    <None Include="..\..\scripts\items\sphere_item_buildings.scp" />
+    <None Include="..\..\scripts\items\sphere_item_building_doors.scp" />
+    <None Include="..\..\scripts\items\sphere_item_building_floors.scp" />
+    <None Include="..\..\scripts\items\sphere_item_building_other.scp" />
+    <None Include="..\..\scripts\items\sphere_item_building_roofs.scp" />
+    <None Include="..\..\scripts\items\sphere_item_building_stairs.scp" />
+    <None Include="..\..\scripts\items\sphere_item_building_walls.scp" />
+    <None Include="..\..\scripts\items\sphere_item_char_icons.scp" />
+    <None Include="..\..\scripts\items\sphere_item_christmas.scp" />
+    <None Include="..\..\scripts\items\sphere_item_deco_carpet_rugs.scp" />
+    <None Include="..\..\scripts\items\sphere_item_deco_carvings_statues.scp" />
+    <None Include="..\..\scripts\items\sphere_item_deco_dungeons_traps_dead.scp" />
+    <None Include="..\..\scripts\items\sphere_item_deco_fireplace_chimney_oven.scp" />
+    <None Include="..\..\scripts\items\sphere_item_deco_furniture.scp" />
+    <None Include="..\..\scripts\items\sphere_item_deco_lightsources.scp" />
+    <None Include="..\..\scripts\items\sphere_item_deco_miniatures.scp" />
+    <None Include="..\..\scripts\items\sphere_item_deco_signs.scp" />
+    <None Include="..\..\scripts\items\sphere_item_deco_virtues.scp" />
+    <None Include="..\..\scripts\items\sphere_item_deco_wall_hangings.scp" />
+    <None Include="..\..\scripts\items\sphere_item_ground_tiles.scp" />
+    <None Include="..\..\scripts\items\sphere_item_magic_armor.scp" />
+    <None Include="..\..\scripts\items\sphere_item_magic_chivalry.scp" />
+    <None Include="..\..\scripts\items\sphere_item_magic_jewelry.scp" />
+    <None Include="..\..\scripts\items\sphere_item_magic_leather.scp" />
+    <None Include="..\..\scripts\items\sphere_item_magic_magery.scp" />
+    <None Include="..\..\scripts\items\sphere_item_magic_mysticism.scp" />
+    <None Include="..\..\scripts\items\sphere_item_magic_necromancer_aos.scp" />
+    <None Include="..\..\scripts\items\sphere_item_magic_ninjitsu_bushido.scp" />
+    <None Include="..\..\scripts\items\sphere_item_magic_spellweaving.scp" />
+    <None Include="..\..\scripts\items\sphere_item_magic_wands.scp" />
+    <None Include="..\..\scripts\items\sphere_item_magic_weapon.scp" />
+    <None Include="..\..\scripts\items\sphere_item_memories.scp" />
+    <None Include="..\..\scripts\items\sphere_item_misc.scp" />
+    <None Include="..\..\scripts\items\sphere_item_multis_foundations.scp" />
+    <None Include="..\..\scripts\items\sphere_item_multis_houses_ships.scp" />
+    <None Include="..\..\scripts\items\sphere_item_multis_stairs.scp" />
+    <None Include="..\..\scripts\items\sphere_item_offset.scp" />
+    <None Include="..\..\scripts\items\sphere_item_profession.scp" />
+    <None Include="..\..\scripts\items\sphere_item_profession_alchemist.scp" />
+    <None Include="..\..\scripts\items\sphere_item_profession_barber.scp" />
+    <None Include="..\..\scripts\items\sphere_item_profession_cartographer.scp" />
+    <None Include="..\..\scripts\items\sphere_item_profession_cook_barkeep_baker.scp" />
+    <None Include="..\..\scripts\items\sphere_item_profession_tailor_tanner.scp" />
+    <None Include="..\..\scripts\items\sphere_item_provisions_armor.scp" />
+    <None Include="..\..\scripts\items\sphere_item_provisions_armor_color.scp" />
+    <None Include="..\..\scripts\items\sphere_item_provisions_clothing.scp" />
+    <None Include="..\..\scripts\items\sphere_item_provisions_deed.scp" />
+    <None Include="..\..\scripts\items\sphere_item_provisions_jewelry.scp" />
+    <None Include="..\..\scripts\items\sphere_item_provisions_misc.scp" />
+    <None Include="..\..\scripts\items\sphere_item_provisions_ore.scp" />
+    <None Include="..\..\scripts\items\sphere_item_provisions_potions.scp" />
+    <None Include="..\..\scripts\items\sphere_item_provisions_shields.scp" />
+    <None Include="..\..\scripts\items\sphere_item_provisions_weapons.scp" />
+    <None Include="..\..\scripts\items\sphere_item_resources.scp" />
+    <None Include="..\..\scripts\items\sphere_item_ship_parts.scp" />
+    <None Include="..\..\scripts\items\sphere_item_ship_parts_britannian.scp" />
+    <None Include="..\..\scripts\items\sphere_item_ship_parts_gargish.scp" />
+    <None Include="..\..\scripts\items\sphere_item_ship_parts_orcish.scp" />
+    <None Include="..\..\scripts\items\sphere_item_ship_parts_tokuno.scp" />
+    <None Include="..\..\scripts\items\sphere_item_siege.scp" />
+    <None Include="..\..\scripts\items\sphere_item_treasure_maps.scp" />
+    <None Include="..\..\scripts\items\sphere_item_typedefs.scp" />
+    <None Include="..\..\scripts\items\sphere_item_typedef_equipitem.scp" />
+    <None Include="..\..\scripts\items\sphere_item_unsorted.scp" />
+    <None Include="..\..\scripts\items\sphere_item_vegetation.scp" />
+    <None Include="..\..\scripts\maps\sphere_map0.scp" />
+    <None Include="..\..\scripts\maps\sphere_map0_ml.scp" />
+    <None Include="..\..\scripts\maps\sphere_map1.scp" />
+    <None Include="..\..\scripts\maps\sphere_map2.scp" />
+    <None Include="..\..\scripts\maps\sphere_map3.scp" />
+    <None Include="..\..\scripts\maps\sphere_map4.scp" />
+    <None Include="..\..\scripts\maps\sphere_map5.scp" />
+    <None Include="..\..\scripts\maps\sphere_map_points0.scp" />
+    <None Include="..\..\scripts\maps\sphere_map_points0_ml.scp" />
+    <None Include="..\..\scripts\maps\sphere_map_points1.scp" />
+    <None Include="..\..\scripts\maps\sphere_map_points2.scp" />
+    <None Include="..\..\scripts\maps\sphere_map_points3.scp" />
+    <None Include="..\..\scripts\maps\sphere_map_points4.scp" />
+    <None Include="..\..\scripts\maps\sphere_map_points5.scp" />
+    <None Include="..\..\scripts\npcs\spherechar_evil.scp" />
+    <None Include="..\..\scripts\npcs\spherechar_human.scp" />
+    <None Include="..\..\scripts\npcs\sphere_citizens.scp" />
+    <None Include="..\..\scripts\npcs\sphere_guildmasters.scp" />
+    <None Include="..\..\scripts\npcs\sphere_monsters.scp" />
+    <None Include="..\..\scripts\npcs\sphere_monsters_custom.scp" />
+    <None Include="..\..\scripts\npcs\sphere_vendors.scp" />
+    <None Include="..\..\scripts\speech\jobactor.scp" />
+    <None Include="..\..\scripts\speech\jobalchemist.scp" />
+    <None Include="..\..\scripts\speech\jobanimal.scp" />
+    <None Include="..\..\scripts\speech\jobarchitect.scp" />
+    <None Include="..\..\scripts\speech\jobarmourer.scp" />
+    <None Include="..\..\scripts\speech\jobartist.scp" />
+    <None Include="..\..\scripts\speech\jobbaker.scp" />
+    <None Include="..\..\scripts\speech\jobbanker.scp" />
+    <None Include="..\..\scripts\speech\jobbard.scp" />
+    <None Include="..\..\scripts\speech\jobbeekeeper.scp" />
+    <None Include="..\..\scripts\speech\jobbeggar.scp" />
+    <None Include="..\..\scripts\speech\jobblacksmith.scp" />
+    <None Include="..\..\scripts\speech\jobbowyer.scp" />
+    <None Include="..\..\scripts\speech\jobBrigand.scp" />
+    <None Include="..\..\scripts\speech\jobbutcher.scp" />
+    <None Include="..\..\scripts\speech\jobcarpenter.scp" />
+    <None Include="..\..\scripts\speech\jobcashual.scp" />
+    <None Include="..\..\scripts\speech\jobcobbler.scp" />
+    <None Include="..\..\scripts\speech\jobfarmer.scp" />
+    <None Include="..\..\scripts\speech\jobfurtrader.scp" />
+    <None Include="..\..\scripts\speech\jobgambler.scp" />
+    <None Include="..\..\scripts\speech\jobglassblower.scp" />
+    <None Include="..\..\scripts\speech\jobGuard.scp" />
+    <None Include="..\..\scripts\speech\jobhealer.scp" />
+    <None Include="..\..\scripts\speech\jobhealwand.scp" />
+    <None Include="..\..\scripts\speech\jobherbalist.scp" />
+    <None Include="..\..\scripts\speech\jobinnkeeper.scp" />
+    <None Include="..\..\scripts\speech\jobjailor.scp" />
+    <None Include="..\..\scripts\speech\jobjeweller.scp" />
+    <None Include="..\..\scripts\speech\jobjudge.scp" />
+    <None Include="..\..\scripts\speech\joblaborer.scp" />
+    <None Include="..\..\scripts\speech\jobMage.scp" />
+    <None Include="..\..\scripts\speech\jobMageEvil.scp" />
+    <None Include="..\..\scripts\speech\jobMageShop.scp" />
+    <None Include="..\..\scripts\speech\jobmapmaker.scp" />
+    <None Include="..\..\scripts\speech\jobmayor.scp" />
+    <None Include="..\..\scripts\speech\jobmiller.scp" />
+    <None Include="..\..\scripts\speech\jobminer.scp" />
+    <None Include="..\..\scripts\speech\jobminter.scp" />
+    <None Include="..\..\scripts\speech\jobmonk.scp" />
+    <None Include="..\..\scripts\speech\jobnoble.scp" />
+    <None Include="..\..\scripts\speech\joboverseer.scp" />
+    <None Include="..\..\scripts\speech\jobpaladin.scp" />
+    <None Include="..\..\scripts\speech\jobparliament.scp" />
+    <None Include="..\..\scripts\speech\jobpirate.scp" />
+    <None Include="..\..\scripts\speech\jobpriest.scp" />
+    <None Include="..\..\scripts\speech\jobprisoner.scp" />
+    <None Include="..\..\scripts\speech\jobprovisioner.scp" />
+    <None Include="..\..\scripts\speech\jobrancher.scp" />
+    <None Include="..\..\scripts\speech\jobranger.scp" />
+    <None Include="..\..\scripts\speech\jobrealtor.scp" />
+    <None Include="..\..\scripts\speech\jobrunner.scp" />
+    <None Include="..\..\scripts\speech\jobsailor.scp" />
+    <None Include="..\..\scripts\speech\jobscholar.scp" />
+    <None Include="..\..\scripts\speech\jobscribe.scp" />
+    <None Include="..\..\scripts\speech\jobsculptor.scp" />
+    <None Include="..\..\scripts\speech\jobservant.scp" />
+    <None Include="..\..\scripts\speech\jobshepherd.scp" />
+    <None Include="..\..\scripts\speech\jobshipwright.scp" />
+    <None Include="..\..\scripts\speech\jobtanner.scp" />
+    <None Include="..\..\scripts\speech\jobtavernkeeper.scp" />
+    <None Include="..\..\scripts\speech\jobthief.scp" />
+    <None Include="..\..\scripts\speech\jobtinker.scp" />
+    <None Include="..\..\scripts\speech\jobveggie.scp" />
+    <None Include="..\..\scripts\speech\jobvet.scp" />
+    <None Include="..\..\scripts\speech\jobwaiter.scp" />
+    <None Include="..\..\scripts\speech\jobweaponsmith.scp" />
+    <None Include="..\..\scripts\speech\jobweaponstrainer.scp" />
+    <None Include="..\..\scripts\speech\jobweaver.scp" />
+    <None Include="..\..\scripts\speech\speakhorse.scp" />
+    <None Include="..\..\scripts\speech\speakhuman.scp" />
+    <None Include="..\..\scripts\speech\speakmaster.scp" />
+    <None Include="..\..\scripts\speech\speakneeds.scp" />
+    <None Include="..\..\scripts\speech\speakorc.scp" />
+    <None Include="..\..\scripts\speech\speakrehello.scp" />
+    <None Include="..\..\scripts\speech\speakshopkeep.scp" />
+    <None Include="..\..\scripts\speech\spherespee.scp" />
+    <None Include="..\..\scripts\speech\townbritain.scp" />
+    <None Include="..\..\scripts\speech\townbucsden.scp" />
+    <None Include="..\..\scripts\speech\towncove.scp" />
+    <None Include="..\..\scripts\speech\townjhelom.scp" />
+    <None Include="..\..\scripts\speech\townmagincia.scp" />
+    <None Include="..\..\scripts\speech\townminoc.scp" />
+    <None Include="..\..\scripts\speech\townmoonglow.scp" />
+    <None Include="..\..\scripts\speech\townnujelm.scp" />
+    <None Include="..\..\scripts\speech\townserphold.scp" />
+    <None Include="..\..\scripts\speech\townskarabrae.scp" />
+    <None Include="..\..\scripts\speech\towntrinsic.scp" />
+    <None Include="..\..\scripts\speech\townvesper.scp" />
+    <None Include="..\..\scripts\speech\townwind.scp" />
+    <None Include="..\..\scripts\speech\townyew.scp" />
+    <None Include="..\..\scripts\spheretables.scp" />
+    <None Include="..\..\scripts\sphere_admin.scp" />
+    <None Include="..\..\scripts\sphere_backward_compatibility.scp" />
+    <None Include="..\..\scripts\sphere_book.scp" />
+    <None Include="..\..\scripts\sphere_defs.scp" />
+    <None Include="..\..\scripts\sphere_dialog.scp" />
+    <None Include="..\..\scripts\sphere_events_human.scp" />
+    <None Include="..\..\scripts\sphere_events_npcs.scp" />
+    <None Include="..\..\scripts\sphere_menu.scp" />
+    <None Include="..\..\scripts\sphere_msgs.scp" />
+    <None Include="..\..\scripts\sphere_name.scp" />
+    <None Include="..\..\scripts\sphere_newb.scp" />
+    <None Include="..\..\scripts\sphere_region.scp" />
+    <None Include="..\..\scripts\sphere_serv_triggers.scp" />
+    <None Include="..\..\scripts\sphere_skillmenu.scp" />
+    <None Include="..\..\scripts\sphere_skills.scp" />
+    <None Include="..\..\scripts\sphere_spawns.scp" />
+    <None Include="..\..\scripts\sphere_speech.scp" />
+    <None Include="..\..\scripts\sphere_spells.scp" />
+    <None Include="..\..\scripts\sphere_template.scp" />
+    <None Include="..\..\scripts\sphere_template_armor.scp" />
+    <None Include="..\..\scripts\sphere_template_loot.scp" />
+    <None Include="..\..\scripts\sphere_template_magic.scp" />
+    <None Include="..\..\scripts\sphere_template_misc.scp" />
+    <None Include="..\..\scripts\sphere_template_sets.scp" />
+    <None Include="..\..\scripts\sphere_template_vend.scp" />
+    <None Include="..\..\scripts\sphere_template_weapons.scp" />
+    <None Include="..\..\scripts\sphere_types.scp" />
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_config.scp" />
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_align.scp" />
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_charlist.scp" />
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_charter.scp" />
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_guildlist.scp" />
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_main.scp" />
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_master.scp" />
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_warfareadmin.scp" />
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_warfaredeclare.scp" />
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_warfarestatus.scp" />
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_events.scp" />
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_functions.scp" />
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_functions_player.scp" />
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_items.scp" />
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_promptconsole.scp" />
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_speech.scp" />
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_types.scp" />
+    <None Include="..\..\scripts\stones\README.TXT" />
+    <None Include="..\..\scripts\stones\sphere_genericstone_config.scp" />
+    <None Include="..\..\scripts\stones\sphere_genericstone_functions.scp" />
+    <None Include="..\..\scripts\stones\sphere_genericstone_items.scp" />
+    <None Include="..\..\scripts\stones\sphere_genericstone_types.scp" />
+    <None Include="..\..\scripts\stones\towns\sphere_town_config.scp" />
+    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_align.scp" />
+    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_charlist.scp" />
+    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_charter.scp" />
+    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_main.scp" />
+    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_master.scp" />
+    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_townlist.scp" />
+    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_warfareadmin.scp" />
+    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_warfaredeclare.scp" />
+    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_warfarestatus.scp" />
+    <None Include="..\..\scripts\stones\towns\sphere_town_events.scp" />
+    <None Include="..\..\scripts\stones\towns\sphere_town_functions.scp" />
+    <None Include="..\..\scripts\stones\towns\sphere_town_functions_player.scp" />
+    <None Include="..\..\scripts\stones\towns\sphere_town_items.scp" />
+    <None Include="..\..\scripts\stones\towns\sphere_town_promptconsole.scp" />
+    <None Include="..\..\scripts\stones\towns\sphere_town_speech.scp" />
+    <None Include="..\..\scripts\stones\towns\sphere_town_types.scp" />
+    <None Include="..\..\scripts\web\sphere.gif" />
+    <None Include="..\..\scripts\web\sphere404.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="..\..\scripts\web\spherestatusbase.html" />
+    <None Include="..\..\scripts\web\sphere_anim.gif" />
+    <None Include="..\sphereCrypt.ini" />
+    <None Include="..\tables\CCharPlayer_functions.tbl" />
+    <None Include="..\tables\CItemBase_props.tbl" />
+    <None Include="..\tables\CItemStone_functions.tbl" />
+    <None Include="..\tables\CItemStone_props.tbl" />
+    <None Include="..\tables\CItem_functions.tbl" />
+    <None Include="..\tables\CItem_props.tbl" />
+    <None Include="..\tables\CStoneMember_functions.tbl" />
+    <None Include="..\tables\CStoneMember_props.tbl" />
+    <None Include="..\tables\triggers.tbl" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>
