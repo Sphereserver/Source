@@ -2968,8 +2968,6 @@ bool CChar::Death()
 	CItemCorpse * pCorpse = MakeCorpse(Calc_GetRandVal(2) != 0);
 	if ( pCorpse )
 	{
-		if ( pCorpse->m_uidLink == GetUID() )	// doesn't make sense link the corpse to something invalid
-			pCorpse->m_uidLink.InitUID();
 
 		if ( IsTrigUsed(TRIGGER_DEATHCORPSE) )
 		{
