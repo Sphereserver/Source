@@ -35,15 +35,16 @@
 
 
 #ifdef USE_ASM
-extern	int useAsm;				/* ok to use ASM code? */
+extern	int	useAsm;				/* ok to use ASM code? */
 
-typedef	int cdecl CipherProc( cipherInstance* cipher, keyInstance* key, BYTE* input, int inputLen, BYTE* outBuffer );
-typedef int	cdecl KeySetupProc( keyInstance* key );
+typedef	int cdecl CipherProc
+   (cipherInstance *cipher, keyInstance *key,BYTE *input,int inputLen,BYTE *outBuffer);
+typedef int	cdecl KeySetupProc(keyInstance *key);
 
-extern CipherProc* blockEncrypt_86;	/* ptr to ASM functions */
-extern CipherProc* blockDecrypt_86;
-extern KeySetupProc* reKey_86;
-extern DWORD		cdecl TwofishAsmCodeSize();
+extern CipherProc	*blockEncrypt_86;	/* ptr to ASM functions */
+extern CipherProc	*blockDecrypt_86;
+extern KeySetupProc	*reKey_86;
+extern DWORD		cdecl TwofishAsmCodeSize(void);
 #endif
 
 /*
@@ -54,20 +55,17 @@ extern DWORD		cdecl TwofishAsmCodeSize();
 #define		CONST					/* help syntax from C++, NOP here */
 
 CONST		fullSbox MDStab;		/* not actually const.  Initialized ONE time */
-int needToBuildMDS = 1;		/* is MDStab initialized yet? */
+int			needToBuildMDS=1;		/* is MDStab initialized yet? */
 
 #define		BIG_TAB		0
 
 #if BIG_TAB
-BYTE bigTab[4][256][256];	/* pre-computed S-box */
+BYTE		bigTab[4][256][256];	/* pre-computed S-box */
 #endif
 
 /* number of rounds for various key sizes:  128, 192, 256 */
 /* (ignored for now in optimized code!) */
-CONST int numRounds[4] =
-{
-0, ROUNDS_128, ROUNDS_192, ROUNDS_256
-};
+CONST int	numRounds[4]= {0,ROUNDS_128,ROUNDS_192,ROUNDS_256};
 
 #if REENTRANT
 #define		_sBox_	 key->sBox8x32
@@ -135,14 +133,14 @@ static		fullSbox _sBox_;		/* permuted MDStab based on keys */
    in optimized assembly language.
 */
 #define	Fe32_(x,R) (_sBox_[0][2*_b(x,R  )] ^ _sBox_[0][2*_b(x,R+1)+1] ^	\
-					_sBox_[2][2*_b(x,R+2)] ^ _sBox_[2][2*_b(x,R+3)+1])
-/* set a single S-box value, given the input byte */
+				    _sBox_[2][2*_b(x,R+2)] ^ _sBox_[2][2*_b(x,R+3)+1])
+		/* set a single S-box value, given the input byte */
 #define sbSet(N,i,J,v) { _sBox_[N&2][2*i+(N&1)+2*J]=MDStab[N][v]; }
 #define	GetSboxKey	
 #endif
 
-const char* moduleDescription = "Optimized C ";
-const char* modeString = MOD_STRING;
+CONST		char *moduleDescription	="Optimized C ";
+CONST		char *modeString		=MOD_STRING;
 
 
 /* macro(s) for debugging help */
@@ -154,11 +152,8 @@ const char* modeString = MOD_STRING;
 /* end of debug macros */
 
 #ifdef GetCodeSize
-extern DWORD Here( DWORD x );			/* return caller's address! */
-DWORD TwofishCodeStart()
-{
-	return Here( 0 );
-}
+extern DWORD Here(DWORD x);			/* return caller's address! */
+DWORD TwofishCodeStart(void) { return Here(0); }
 #endif
 
 /*
@@ -178,26 +173,26 @@ DWORD TwofishCodeStart()
 *		 run for a fixed number of queries and then say we're done.
 *
 -****************************************************************************/
-int TableOp( int op )
-{
-	static int queryCnt = 0;
-
-	switch ( op )
+int TableOp(int op)
 	{
-	case TAB_DISABLE:
-		break;
-	case TAB_ENABLE:
-		break;
-	case TAB_RESET:
-		queryCnt = 0;
-		break;
-	case TAB_QUERY:
-		queryCnt++;
-		if ( queryCnt < TAB_MIN_QUERY )
-			return FALSE;
-	}
+	static int queryCnt=0;
+
+	switch (op)
+		{
+		case TAB_DISABLE:
+			break;
+		case TAB_ENABLE:
+			break;
+		case TAB_RESET:
+			queryCnt=0;
+			break;
+		case TAB_QUERY:
+			queryCnt++;
+			if (queryCnt < TAB_MIN_QUERY)
+				return FALSE;
+		}
 	return TRUE;
-}
+	}
 
 
 /*
@@ -222,51 +217,49 @@ int TableOp( int op )
 *	happens automatically below. 
 *
 -****************************************************************************/
-int ParseHexDword( int bits, CONST char* srcTxt, DWORD* d, char* dstTxt )
-{
+int ParseHexDword(int bits,CONST char *srcTxt,DWORD *d,char *dstTxt)
+	{
 	int i;
 	char c;
 	DWORD b;
 
 	union	/* make sure LittleEndian is defined correctly */
-	{
-		BYTE b[4];
+		{
+		BYTE  b[4];
 		DWORD d[1];
-	} v;
-	v.d[0] = 1;
-	if ( v.b[0 ^ ADDR_XOR] != 1 )
+		} v;
+	v.d[0]=1;
+	if (v.b[0 ^ ADDR_XOR] != 1)
 		return BAD_ENDIAN;		/* make sure compile-time switch is set ok */
 
 #if VALIDATE_PARMS
-#if ALIGN32
-	if ( ( ( int ) d ) & 3 )
+  #if ALIGN32
+	if (((int)d) & 3)
 		return BAD_ALIGN32;	
-#endif
+  #endif
 #endif
 
-	for ( i = 0; i*32 < bits; i++ )
-		d[i] = 0;					/* first, zero the field */
+	for (i=0;i*32<bits;i++)
+		d[i]=0;					/* first, zero the field */
 
-	for ( i = 0; i*4 < bits; i++ )		/* parse one nibble at a time */
-	{
-		/* case out the hexadecimal characters */
-		c = srcTxt[i];
-		if ( dstTxt )
-			dstTxt[i] = c;
-		if ( ( c >= '0' ) && ( c <= '9' ) )
-			b = c - '0';
-		else if ( ( c >= 'a' ) && ( c <= 'f' ) )
-			b = c - 'a' + 10;
-		else if ( ( c >= 'A' ) && ( c <= 'F' ) )
-			b = c - 'A' + 10;
+	for (i=0;i*4<bits;i++)		/* parse one nibble at a time */
+		{						/* case out the hexadecimal characters */
+		c=srcTxt[i];
+		if (dstTxt) dstTxt[i]=c;
+		if ((c >= '0') && (c <= '9'))
+			b=c-'0';
+		else if ((c >= 'a') && (c <= 'f'))
+			b=c-'a'+10;
+		else if ((c >= 'A') && (c <= 'F'))
+			b=c-'A'+10;
 		else
 			return BAD_KEY_MAT;	/* invalid hex character */
 		/* works for big and little endian! */
-		d[i / 8] |= b << ( 4 * ( ( i ^ 1 ) & 7 ) );
-	}
+		d[i/8] |= b << (4*((i^1)&7));		
+		}
 
 	return 0;					/* no error */
-}
+	}
 
 
 #if CHECK_TABLE
@@ -299,41 +292,41 @@ int ParseHexDword( int bits, CONST char* srcTxt, DWORD* d, char* dstTxt )
 *	macro Mij(x).
 *
 -****************************************************************************/
-DWORD f32( DWORD x, CONST DWORD* k32, int keyLen )
-{
-	BYTE b[4];
-
+DWORD f32(DWORD x,CONST DWORD *k32,int keyLen)
+	{
+	BYTE  b[4];
+	
 	/* Run each byte thru 8x8 S-boxes, xoring with key byte at each stage. */
 	/* Note that each byte goes through a different combination of S-boxes.*/
 
-	*( ( DWORD * ) b ) = Bswap( x );	/* make b[0] = LSB, b[3] = MSB */
-	switch ( ( ( keyLen + 63 ) / 64 ) & 3 )
-	{
-	case 0:
-		/* 256 bits of key */
-		b[0] = p8( 04 )[b[0]] ^ b0( k32[3] );
-		b[1] = p8( 14 )[b[1]] ^ b1( k32[3] );
-		b[2] = p8( 24 )[b[2]] ^ b2( k32[3] );
-		b[3] = p8( 34 )[b[3]] ^ b3( k32[3] );
-		/* fall thru, having pre-processed b[0]..b[3] with k32[3] */
-	case 3:
-		/* 192 bits of key */
-		b[0] = p8( 03 )[b[0]] ^ b0( k32[2] );
-		b[1] = p8( 13 )[b[1]] ^ b1( k32[2] );
-		b[2] = p8( 23 )[b[2]] ^ b2( k32[2] );
-		b[3] = p8( 33 )[b[3]] ^ b3( k32[2] );
-		/* fall thru, having pre-processed b[0]..b[3] with k32[2] */
-	case 2:
-		/* 128 bits of key */
-		b[0] = p8( 00 )[p8( 01 )[p8( 02 )[b[0]] ^ b0( k32[1] )] ^ b0( k32[0] )];
-		b[1] = p8( 10 )[p8( 11 )[p8( 12 )[b[1]] ^ b1( k32[1] )] ^ b1( k32[0] )];
-		b[2] = p8( 20 )[p8( 21 )[p8( 22 )[b[2]] ^ b2( k32[1] )] ^ b2( k32[0] )];
-		b[3] = p8( 30 )[p8( 31 )[p8( 32 )[b[3]] ^ b3( k32[1] )] ^ b3( k32[0] )];
-	}
+	*((DWORD *)b) = Bswap(x);	/* make b[0] = LSB, b[3] = MSB */
+	switch (((keyLen + 63)/64) & 3)
+		{
+		case 0:		/* 256 bits of key */
+			b[0] = p8(04)[b[0]] ^ b0(k32[3]);
+			b[1] = p8(14)[b[1]] ^ b1(k32[3]);
+			b[2] = p8(24)[b[2]] ^ b2(k32[3]);
+			b[3] = p8(34)[b[3]] ^ b3(k32[3]);
+			/* fall thru, having pre-processed b[0]..b[3] with k32[3] */
+		case 3:		/* 192 bits of key */
+			b[0] = p8(03)[b[0]] ^ b0(k32[2]);
+			b[1] = p8(13)[b[1]] ^ b1(k32[2]);
+			b[2] = p8(23)[b[2]] ^ b2(k32[2]);
+			b[3] = p8(33)[b[3]] ^ b3(k32[2]);
+			/* fall thru, having pre-processed b[0]..b[3] with k32[2] */
+		case 2:		/* 128 bits of key */
+			b[0] = p8(00)[p8(01)[p8(02)[b[0]] ^ b0(k32[1])] ^ b0(k32[0])];
+			b[1] = p8(10)[p8(11)[p8(12)[b[1]] ^ b1(k32[1])] ^ b1(k32[0])];
+			b[2] = p8(20)[p8(21)[p8(22)[b[2]] ^ b2(k32[1])] ^ b2(k32[0])];
+			b[3] = p8(30)[p8(31)[p8(32)[b[3]] ^ b3(k32[1])] ^ b3(k32[0])];
+		}
 
 	/* Now perform the MDS matrix multiply inline. */
-	return	( ( M00( b[0] ) ^ M01( b[1] ) ^ M02( b[2] ) ^ M03( b[3] ) ) ) ^ ( ( M10( b[0] ) ^ M11( b[1] ) ^ M12( b[2] ) ^ M13( b[3] ) ) << 8 ) ^ ( ( M20( b[0] ) ^ M21( b[1] ) ^ M22( b[2] ) ^ M23( b[3] ) ) << 16 ) ^ ( ( M30( b[0] ) ^ M31( b[1] ) ^ M32( b[2] ) ^ M33( b[3] ) ) << 24 ) ;
-}
+	return	((M00(b[0]) ^ M01(b[1]) ^ M02(b[2]) ^ M03(b[3]))	  ) ^
+			((M10(b[0]) ^ M11(b[1]) ^ M12(b[2]) ^ M13(b[3])) <<  8) ^
+			((M20(b[0]) ^ M21(b[1]) ^ M22(b[2]) ^ M23(b[3])) << 16) ^
+			((M30(b[0]) ^ M31(b[1]) ^ M32(b[2]) ^ M33(b[3])) << 24) ;
+	}
 #endif	/* CHECK_TABLE */
 
 
@@ -357,19 +350,19 @@ DWORD f32( DWORD x, CONST DWORD* k32, int keyLen )
 *	without lookup tables.
 *
 -****************************************************************************/
-DWORD RS_MDS_Encode( DWORD k0, DWORD k1 )
-{
-	int i, j;
+DWORD RS_MDS_Encode(DWORD k0,DWORD k1)
+	{
+	int i,j;
 	DWORD r;
 
-	for ( i = r = 0; i < 2; i++ )
-	{
-		r ^= ( i ) ? k0 : k1;			/* merge in 32 more key bits */
-		for ( j = 0; j < 4; j++ )			/* shift one byte at a time */
-			RS_rem( r );
-	}
+	for (i=r=0;i<2;i++)
+		{
+		r ^= (i) ? k0 : k1;			/* merge in 32 more key bits */
+		for (j=0;j<4;j++)			/* shift one byte at a time */
+			RS_rem(r);				
+		}
 	return r;
-}
+	}
 
 
 /*
@@ -388,21 +381,21 @@ DWORD RS_MDS_Encode( DWORD k0, DWORD k1 )
 *	one time at initialization, after which the table is "CONST".
 *
 -****************************************************************************/
-void BuildMDS()
-{
+void BuildMDS(void)
+	{
 	int i;
 	DWORD d;
-	BYTE m1[2], mX[2], mY[4];
+	BYTE m1[2],mX[2],mY[4];
 
-	for ( i = 0; i < 256; i++ )
-	{
-		m1[0] = P8x8[0][i];		/* compute all the matrix elements */
-		mX[0] = ( BYTE ) Mul_X( m1[0] );
-		mY[0] = ( BYTE ) Mul_Y( m1[0] );
+	for (i=0;i<256;i++)
+		{
+		m1[0]=P8x8[0][i];		/* compute all the matrix elements */
+		mX[0]=(BYTE) Mul_X(m1[0]);
+		mY[0]=(BYTE) Mul_Y(m1[0]);
 
-		m1[1] = P8x8[1][i];
-		mX[1] = ( BYTE ) Mul_X( m1[1] );
-		mY[1] = ( BYTE ) Mul_Y( m1[1] );
+		m1[1]=P8x8[1][i];
+		mX[1]=(BYTE) Mul_X(m1[1]);
+		mY[1]=(BYTE) Mul_Y(m1[1]);
 
 #undef	Mul_1					/* change what the pre-processor does with Mij */
 #undef	Mul_X
@@ -418,45 +411,41 @@ void BuildMDS()
 		b3(d) = M3##N[P_##N##0];	\
 		MDStab[N][i] = d;
 
-		SetMDS( 0 );				/* fill in the matrix with elements computed above */
-		SetMDS( 1 );
-		SetMDS( 2 );
-		SetMDS( 3 );
-	}
+		SetMDS(0);				/* fill in the matrix with elements computed above */
+		SetMDS(1);
+		SetMDS(2);
+		SetMDS(3);
+		}
 #undef	Mul_1
 #undef	Mul_X
 #undef	Mul_Y
 #define	Mul_1	Mx_1			/* re-enable true multiply */
 #define	Mul_X	Mx_X
 #define	Mul_Y	Mx_Y
-
+	
 #if BIG_TAB
 	{
-		int j, k;
-		BYTE* q0,* q1;
+	int j,k;
+	BYTE *q0,*q1;
 
-		for ( i = 0; i < 4; i++ )
+	for (i=0;i<4;i++)
 		{
-			switch ( i )
+		switch (i)
 			{
-			case 0:
-				q0 = p8( 01 ); q1 = p8( 02 );	break;
-			case 1:
-				q0 = p8( 11 ); q1 = p8( 12 );	break;
-			case 2:
-				q0 = p8( 21 ); q1 = p8( 22 );	break;
-			case 3:
-				q0 = p8( 31 ); q1 = p8( 32 );	break;
+			case 0:	q0=p8(01); q1=p8(02);	break;
+			case 1:	q0=p8(11); q1=p8(12);	break;
+			case 2:	q0=p8(21); q1=p8(22);	break;
+			case 3:	q0=p8(31); q1=p8(32);	break;
 			}
-			for ( j = 0; j < 256; j++ )
-				for ( k = 0; k < 256; k++ )
-					bigTab[i][j][k] = q0[q1[k] ^ j];
+		for (j=0;j<256;j++)
+			for (k=0;k<256;k++)
+				bigTab[i][j][k]=q0[q1[k]^j];
 		}
 	}
 #endif
 
-	needToBuildMDS = 0;			/* NEVER modify the table again! */
-}
+	needToBuildMDS=0;			/* NEVER modify the table again! */
+	}
 
 /*
 +*****************************************************************************
@@ -476,24 +465,24 @@ void BuildMDS()
 *	Note that key->numRounds must be even and >= 2 here.
 *
 -****************************************************************************/
-void ReverseRoundSubkeys( keyInstance* key, BYTE newDir )
-{
-	DWORD t0, t1;
-	register DWORD * r0 = key->subKeys + ROUND_SUBKEYS;
-	register DWORD * r1 = r0 + 2 * key->numRounds - 2;
-
-	for ( ; r0 < r1; r0 += 2,r1 -= 2 )
+void ReverseRoundSubkeys(keyInstance *key,BYTE newDir)
 	{
-		t0 = r0[0];			/* swap the order */
-		t1 = r0[1];
-		r0[0] = r1[0];		/* but keep relative order within pairs */
-		r0[1] = r1[1];
-		r1[0] = t0;
-		r1[1] = t1;
-	}
+	DWORD t0,t1;
+	register DWORD *r0=key->subKeys+ROUND_SUBKEYS;
+	register DWORD *r1=r0 + 2*key->numRounds - 2;
 
-	key->direction = newDir;
-}
+	for (;r0 < r1;r0+=2,r1-=2)
+		{
+		t0=r0[0];			/* swap the order */
+		t1=r0[1];
+		r0[0]=r1[0];		/* but keep relative order within pairs */
+		r0[1]=r1[1];
+		r1[0]=t0;
+		r1[1]=t1;
+		}
+
+	key->direction=newDir;
+	}
 
 /*
 +*****************************************************************************
@@ -525,18 +514,18 @@ void ReverseRoundSubkeys( keyInstance* key, BYTE newDir )
 		{ Xor32(dst,src,i  ); Xor32(dst,src,i+1); Xor32(dst,src,i+2); Xor32(dst,src,i+3); }	\
 	}
 #else						/* do it as a function call */
-void Xor256( void* dst, void* src, BYTE b )
-{
-	register DWORD	x = b * 0x01010101u;	/* replicate byte to all four bytes */
-	register DWORD * d = ( DWORD * ) dst;
-	register DWORD * s = ( DWORD * ) src;
+void Xor256(void *dst,void *src,BYTE b)
+	{
+	register DWORD	x=b*0x01010101u;	/* replicate byte to all four bytes */
+	register DWORD *d=(DWORD *)dst;
+	register DWORD *s=(DWORD *)src;
 #define X_8(N)	{ d[N]=s[N] ^ x; d[N+1]=s[N+1] ^ x; }
 #define X_32(N)	{ X_8(N); X_8(N+2); X_8(N+4); X_8(N+6); }
-	X_32( 0 ); X_32( 8 ); X_32( 16 ); X_32( 24 );	/* all inline */
-	d += 32;	/* keep offsets small! */
-	s += 32;
-	X_32( 0 ); X_32( 8 ); X_32( 16 ); X_32( 24 );	/* all inline */
-}
+	X_32(0 ); X_32( 8); X_32(16); X_32(24);	/* all inline */
+	d+=32;	/* keep offsets small! */
+	s+=32;
+	X_32(0 ); X_32( 8); X_32(16); X_32(24);	/* all inline */
+	}
 #endif
 
 /*
@@ -556,31 +545,31 @@ void Xor256( void* dst, void* src, BYTE b )
 *	be generated on-the-fly	using f32()
 *
 -****************************************************************************/
-int reKey( keyInstance* key )
-{
-	int i, j, k64Cnt, keyLen;
-	int subkeyCnt;
-	DWORD A = 0, B = 0, q;
-	DWORD sKey[MAX_KEY_BITS / 64], k32e[MAX_KEY_BITS / 64], k32o[MAX_KEY_BITS / 64];
-	BYTE L0[256], L1[256];	/* small local 8-bit permutations */
+int reKey(keyInstance *key)
+	{
+	int		i,j,k64Cnt,keyLen;
+	int		subkeyCnt;
+	DWORD	A=0,B=0,q;
+	DWORD	sKey[MAX_KEY_BITS/64],k32e[MAX_KEY_BITS/64],k32o[MAX_KEY_BITS/64];
+	BYTE	L0[256],L1[256];	/* small local 8-bit permutations */
 
 #if VALIDATE_PARMS
-#if ALIGN32
-	if ( ( ( int ) key ) & 3 )
+  #if ALIGN32
+	if (((int)key) & 3)
 		return BAD_ALIGN32;
-	if ( ( key->keyLen % 64 ) || ( key->keyLen < MIN_KEY_BITS ) )
+	if ((key->keyLen % 64) || (key->keyLen < MIN_KEY_BITS))
 		return BAD_KEY_INSTANCE;
-#endif
+  #endif
 #endif
 
-	if ( needToBuildMDS )			/* do this one time only */
+	if (needToBuildMDS)			/* do this one time only */
 		BuildMDS();
 
 #define	F32(res,x,k32)	\
 	{															\
 	DWORD t=x;													\
 	switch (k64Cnt & 3)											\
-		{														\
+	    {														\
 		case 0:  /* same as 4 */								\
 					b0(t)   = p8(04)[b0(t)] ^ b0(k32[3]);		\
 					b1(t)   = p8(14)[b1(t)] ^ b1(k32[3]);		\
@@ -603,107 +592,105 @@ int reKey( keyInstance* key )
 
 #if !CHECK_TABLE
 #if defined(USE_ASM)				/* only do this if not using assember */
-	if ( !( useAsm & 4 ) )
-		#endif
-		#endif
+if (!(useAsm & 4))
+#endif
+#endif
 	{
-		subkeyCnt = ROUND_SUBKEYS + 2 * key->numRounds;
-		keyLen = key->keyLen;
-		k64Cnt = ( keyLen + 63 ) / 64;			/* number of 64-bit key words */
-		for ( i = 0,j = k64Cnt - 1; i < k64Cnt; i++,j-- )
-		{
-			/* split into even/odd key dwords */
-			k32e[i] = key->key32[2 * i];
-			k32o[i] = key->key32[2 * i + 1];
-			/* compute S-box keys using (12,8) Reed-Solomon code over GF(256) */
-			sKey[j] = key->sboxKeys[j] = RS_MDS_Encode( k32e[i], k32o[i] );	/* reverse order */
+	subkeyCnt = ROUND_SUBKEYS + 2*key->numRounds;
+	keyLen=key->keyLen;
+	k64Cnt=(keyLen+63)/64;			/* number of 64-bit key words */
+	for (i=0,j=k64Cnt-1;i<k64Cnt;i++,j--)
+		{							/* split into even/odd key dwords */
+		k32e[i]=key->key32[2*i  ];
+		k32o[i]=key->key32[2*i+1];
+		/* compute S-box keys using (12,8) Reed-Solomon code over GF(256) */
+		sKey[j]=key->sboxKeys[j]=RS_MDS_Encode(k32e[i],k32o[i]);	/* reverse order */
 		}
 	}
 
 #ifdef USE_ASM
-	if ( useAsm & 4 )
+if (useAsm & 4)
 	{
-#if defined(COMPILE_KEY) && defined(USE_ASM)
-		key->keySig = VALID_SIG;			/* show that we are initialized */
-		key->codeSize = sizeof( key->compiledCode );	/* set size */
-#endif
-		reKey_86( key );
+	#if defined(COMPILE_KEY) && defined(USE_ASM)
+		key->keySig		= VALID_SIG;			/* show that we are initialized */
+		key->codeSize	= sizeof(key->compiledCode);	/* set size */
+	#endif
+	reKey_86(key);
 	}
-	else
-		#endif
+else
+#endif
 	{
-		for ( i = q = 0; i < subkeyCnt / 2; i++,q += SK_STEP )
-		{
-			/* compute round subkeys for PHT */
-			F32( A, q, k32e );		/* A uses even key dwords */
-			F32( B, q + SK_BUMP, k32o );		/* B uses odd  key dwords */
-			B = ROL( B, 8 );
-			key->subKeys[2 * i] = A + B;	/* combine with a PHT */
-			B = A + 2 * B;
-			key->subKeys[2 * i + 1] = ROL( B, SK_ROTL );
+	for (i=q=0;i<subkeyCnt/2;i++,q+=SK_STEP)	
+		{							/* compute round subkeys for PHT */
+		F32(A,q        ,k32e);		/* A uses even key dwords */
+		F32(B,q+SK_BUMP,k32o);		/* B uses odd  key dwords */
+		B = ROL(B,8);
+		key->subKeys[2*i  ] = A+B;	/* combine with a PHT */
+		B = A + 2*B;
+		key->subKeys[2*i+1] = ROL(B,SK_ROTL);
 		}
 #if !defined(ZERO_KEY)
-		switch ( keyLen )	/* case out key length for speed in generating S-boxes */
+	switch (keyLen)	/* case out key length for speed in generating S-boxes */
 		{
 		case 128:
-#if defined(FULL_KEY) || defined(PART_KEY)
+		#if defined(FULL_KEY) || defined(PART_KEY)
 #if BIG_TAB
-#define	one128(N,J)	sbSet(N,i,J,L0[i+J])
-#define	sb128(N) {						\
-			BYTE *qq=bigTab[N][b##N(sKey[1])];	\
-			Xor256(L0,qq,b##N(sKey[0]));		\
-			for (i=0;i<256;i+=2) { one128(N,0); one128(N,1); } }
+			#define	one128(N,J)	sbSet(N,i,J,L0[i+J])
+			#define	sb128(N) {						\
+				BYTE *qq=bigTab[N][b##N(sKey[1])];	\
+				Xor256(L0,qq,b##N(sKey[0]));		\
+				for (i=0;i<256;i+=2) { one128(N,0); one128(N,1); } }
 #else
-#define	one128(N,J)	sbSet(N,i,J,p8(N##1)[L0[i+J]]^k0)
-#define	sb128(N) {					\
-			Xor256(L0,p8(N##2),b##N(sKey[1]));	\
-			{ register DWORD k0=b##N(sKey[0]);	\
-			for (i=0;i<256;i+=2) { one128(N,0); one128(N,1); } } }
+			#define	one128(N,J)	sbSet(N,i,J,p8(N##1)[L0[i+J]]^k0)
+			#define	sb128(N) {					\
+				Xor256(L0,p8(N##2),b##N(sKey[1]));	\
+				{ register DWORD k0=b##N(sKey[0]);	\
+				for (i=0;i<256;i+=2) { one128(N,0); one128(N,1); } } }
 #endif
-#elif defined(MIN_KEY)
-#define	sb128(N) Xor256(_sBox8_(N),p8(N##2),b##N(sKey[1]))
-#endif
-			sb128( 0 ); sb128( 1 ); sb128( 2 ); sb128( 3 );
+		#elif defined(MIN_KEY)
+			#define	sb128(N) Xor256(_sBox8_(N),p8(N##2),b##N(sKey[1]))
+		#endif
+			sb128(0); sb128(1); sb128(2); sb128(3);
 			break;
 		case 192:
-#if defined(FULL_KEY) || defined(PART_KEY)
-#define one192(N,J) sbSet(N,i,J,p8(N##1)[p8(N##2)[L0[i+J]]^k1]^k0)
-#define	sb192(N) {						\
-			Xor256(L0,p8(N##3),b##N(sKey[2]));	\
-			{ register DWORD k0=b##N(sKey[0]);	\
-			  register DWORD k1=b##N(sKey[1]);	\
-			  for (i=0;i<256;i+=2) { one192(N,0); one192(N,1); } } }
-#elif defined(MIN_KEY)
-#define one192(N,J) sbSet(N,i,J,p8(N##2)[L0[i+J]]^k1)
-#define	sb192(N) {						\
-			Xor256(L0,p8(N##3),b##N(sKey[2]));	\
-			{ register DWORD k1=b##N(sKey[1]);	\
-			  for (i=0;i<256;i+=2) { one192(N,0); one192(N,1); } } }
-#endif
-			sb192( 0 ); sb192( 1 ); sb192( 2 ); sb192( 3 );
+		#if defined(FULL_KEY) || defined(PART_KEY)
+			#define one192(N,J) sbSet(N,i,J,p8(N##1)[p8(N##2)[L0[i+J]]^k1]^k0)
+			#define	sb192(N) {						\
+				Xor256(L0,p8(N##3),b##N(sKey[2]));	\
+				{ register DWORD k0=b##N(sKey[0]);	\
+				  register DWORD k1=b##N(sKey[1]);	\
+				  for (i=0;i<256;i+=2) { one192(N,0); one192(N,1); } } }
+		#elif defined(MIN_KEY)
+			#define one192(N,J) sbSet(N,i,J,p8(N##2)[L0[i+J]]^k1)
+			#define	sb192(N) {						\
+				Xor256(L0,p8(N##3),b##N(sKey[2]));	\
+				{ register DWORD k1=b##N(sKey[1]);	\
+				  for (i=0;i<256;i+=2) { one192(N,0); one192(N,1); } } }
+		#endif
+			sb192(0); sb192(1); sb192(2); sb192(3);
 			break;
 		case 256:
-#if defined(FULL_KEY) || defined(PART_KEY)
-#define one256(N,J) sbSet(N,i,J,p8(N##1)[p8(N##2)[L0[i+J]]^k1]^k0)
-#define	sb256(N) {										\
-			Xor256(L1,p8(N##4),b##N(sKey[3]));					\
-			for (i=0;i<256;i+=2) {L0[i  ]=p8(N##3)[L1[i]];		\
-								  L0[i+1]=p8(N##3)[L1[i+1]]; }	\
-			Xor256(L0,L0,b##N(sKey[2]));						\
-			{ register DWORD k0=b##N(sKey[0]);					\
-			  register DWORD k1=b##N(sKey[1]);					\
-			  for (i=0;i<256;i+=2) { one256(N,0); one256(N,1); } } }
-#elif defined(MIN_KEY)
-#define one256(N,J) sbSet(N,i,J,p8(N##2)[L0[i+J]]^k1)
-#define	sb256(N) {										\
-			Xor256(L1,p8(N##4),b##N(sKey[3]));					\
-			for (i=0;i<256;i+=2) {L0[i  ]=p8(N##3)[L1[i]];		\
-								  L0[i+1]=p8(N##3)[L1[i+1]]; }	\
-			Xor256(L0,L0,b##N(sKey[2]));						\
-			{ register DWORD k1=b##N(sKey[1]);					\
-			  for (i=0;i<256;i+=2) { one256(N,0); one256(N,1); } } }
-#endif
-			sb256( 0 ); sb256( 1 );	sb256( 2 ); sb256( 3 );
+		#if defined(FULL_KEY) || defined(PART_KEY)
+			#define one256(N,J) sbSet(N,i,J,p8(N##1)[p8(N##2)[L0[i+J]]^k1]^k0)
+			#define	sb256(N) {										\
+				Xor256(L1,p8(N##4),b##N(sKey[3]));					\
+				for (i=0;i<256;i+=2) {L0[i  ]=p8(N##3)[L1[i]];		\
+									  L0[i+1]=p8(N##3)[L1[i+1]]; }	\
+				Xor256(L0,L0,b##N(sKey[2]));						\
+				{ register DWORD k0=b##N(sKey[0]);					\
+				  register DWORD k1=b##N(sKey[1]);					\
+				  for (i=0;i<256;i+=2) { one256(N,0); one256(N,1); } } }
+		#elif defined(MIN_KEY)
+			#define one256(N,J) sbSet(N,i,J,p8(N##2)[L0[i+J]]^k1)
+			#define	sb256(N) {										\
+				Xor256(L1,p8(N##4),b##N(sKey[3]));					\
+				for (i=0;i<256;i+=2) {L0[i  ]=p8(N##3)[L1[i]];		\
+									  L0[i+1]=p8(N##3)[L1[i+1]]; }	\
+				Xor256(L0,L0,b##N(sKey[2]));						\
+				{ register DWORD k1=b##N(sKey[1]);					\
+				  for (i=0;i<256;i+=2) { one256(N,0); one256(N,1); } } }
+		#endif
+			sb256(0); sb256(1);	sb256(2); sb256(3);
 			break;
 		}
 #endif
@@ -711,29 +698,29 @@ int reKey( keyInstance* key )
 
 #if CHECK_TABLE						/* sanity check  vs. pedagogical code*/
 	{
-		GetSboxKey;
-		for ( i = 0; i < subkeyCnt / 2; i++ )
+	GetSboxKey;
+	for (i=0;i<subkeyCnt/2;i++)
 		{
-			A = f32( i * SK_STEP, k32e, keyLen );	/* A uses even key dwords */
-			B = f32( i * SK_STEP + SK_BUMP, k32o, keyLen );	/* B uses odd  key dwords */
-			B = ROL( B, 8 );
-			assert( key->subKeys[2 * i] == A + B );
-			assert( key->subKeys[2 * i + 1] == ROL( A + 2 * B, SK_ROTL ) );
+		A = f32(i*SK_STEP        ,k32e,keyLen);	/* A uses even key dwords */
+		B = f32(i*SK_STEP+SK_BUMP,k32o,keyLen);	/* B uses odd  key dwords */
+		B = ROL(B,8);
+		assert(key->subKeys[2*i  ] == A+  B);
+		assert(key->subKeys[2*i+1] == ROL(A+2*B,SK_ROTL));
 		}
-#if !defined(ZERO_KEY)			/* any S-boxes to check? */
-		for ( i = q = 0; i < 256; i++,q += 0x01010101 )
-			assert( f32( q, key->sboxKeys, keyLen ) == Fe32_( q, 0 ) );
-#endif
+  #if !defined(ZERO_KEY)			/* any S-boxes to check? */
+	for (i=q=0;i<256;i++,q+=0x01010101)
+		assert(f32(q,key->sboxKeys,keyLen) == Fe32_(q,0));
+  #endif
 	}
 #endif /* CHECK_TABLE */
 
-	DebugDumpKey( key );
+	DebugDumpKey(key);
 
-	if ( key->direction == DIR_ENCRYPT )
-		ReverseRoundSubkeys( key, DIR_ENCRYPT );	/* reverse the round subkey order */
+	if (key->direction == DIR_ENCRYPT)	
+		ReverseRoundSubkeys(key,DIR_ENCRYPT);	/* reverse the round subkey order */
 
 	return TRUE;
-}
+	}
 /*
 +*****************************************************************************
 *
@@ -752,36 +739,36 @@ int reKey( keyInstance* key )
 * Notes:	This parses the key bits from keyMaterial.  Zeroes out unused key bits
 *
 -****************************************************************************/
-int makeKey( keyInstance* key, BYTE direction, int keyLen, CONST char* keyMaterial )
-{
+int makeKey(keyInstance *key, BYTE direction, int keyLen,CONST char *keyMaterial)
+	{
 #if VALIDATE_PARMS				/* first, sanity check on parameters */
-	if ( key == NULL )
+	if (key == NULL)			
 		return BAD_KEY_INSTANCE;/* must have a keyInstance to initialize */
-	if ( ( direction != DIR_ENCRYPT ) && ( direction != DIR_DECRYPT ) )
+	if ((direction != DIR_ENCRYPT) && (direction != DIR_DECRYPT))
 		return BAD_KEY_DIR;		/* must have valid direction */
-	if ( ( keyLen > MAX_KEY_BITS ) || ( keyLen < 8 ) || ( keyLen & 0x3F ) )
+	if ((keyLen > MAX_KEY_BITS) || (keyLen < 8) || (keyLen & 0x3F))
 		return BAD_KEY_MAT;		/* length must be valid */
 	key->keySig = VALID_SIG;	/* show that we are initialized */
-#if ALIGN32
-	if ( ( ( ( int ) key ) & 3 ) || ( ( ( int ) key->key32 ) & 3 ) )
+  #if ALIGN32
+	if ((((int)key) & 3) || (((int)key->key32) & 3))
 		return BAD_ALIGN32;
-#endif
+  #endif
 #endif
 
-	key->direction = direction;/* set our cipher direction */
-	key->keyLen = ( keyLen + 63 ) & ~63;		/* round up to multiple of 64 */
-	key->numRounds = numRounds[( keyLen - 1 ) / 64];
-	memset( key->key32, 0, sizeof( key->key32 ) );	/* zero unused bits */
-	key->keyMaterial[MAX_KEY_SIZE] = 0;	/* terminate ASCII string */
+	key->direction	= direction;/* set our cipher direction */
+	key->keyLen		= (keyLen+63) & ~63;		/* round up to multiple of 64 */
+	key->numRounds	= numRounds[(keyLen-1)/64];
+	memset(key->key32,0,sizeof(key->key32));	/* zero unused bits */
+	key->keyMaterial[MAX_KEY_SIZE]=0;	/* terminate ASCII string */
 
-	if ( ( keyMaterial == NULL ) || ( keyMaterial[0] == 0 ) )
+	if ((keyMaterial == NULL) || (keyMaterial[0]==0))
 		return TRUE;			/* allow a "dummy" call */
-
-	if ( ParseHexDword( keyLen, keyMaterial, key->key32, key->keyMaterial ) )
+		
+	if (ParseHexDword(keyLen,keyMaterial,key->key32,key->keyMaterial))
 		return BAD_KEY_MAT;	
 
-	return reKey( key );			/* generate round subkeys */
-}
+	return reKey(key);			/* generate round subkeys */
+	}
 
 
 /*
@@ -799,33 +786,33 @@ int makeKey( keyInstance* key, BYTE direction, int keyLen, CONST char* keyMateri
 *					else error code (e.g., BAD_CIPHER_MODE)
 *
 -****************************************************************************/
-int cipherInit( cipherInstance* cipher, BYTE mode, CONST char* IV )
-{
+int cipherInit(cipherInstance *cipher, BYTE mode,CONST char *IV)
+	{
 	int i;
 #if VALIDATE_PARMS				/* first, sanity check on parameters */
-	if ( cipher == NULL )
+	if (cipher == NULL)			
 		return BAD_PARAMS;		/* must have a cipherInstance to initialize */
-	if ( ( mode != MODE_ECB ) && ( mode != MODE_CBC ) && ( mode != MODE_CFB1 ) )
+	if ((mode != MODE_ECB) && (mode != MODE_CBC) && (mode != MODE_CFB1))
 		return BAD_CIPHER_MODE;	/* must have valid cipher mode */
-	cipher->cipherSig = VALID_SIG;
-#if ALIGN32
-	if ( ( ( ( int ) cipher ) & 3 ) || ( ( ( int ) cipher->IV ) & 3 ) || ( ( ( int ) cipher->iv32 ) & 3 ) )
+	cipher->cipherSig	=	VALID_SIG;
+  #if ALIGN32
+	if ((((int)cipher) & 3) || (((int)cipher->IV) & 3) || (((int)cipher->iv32) & 3))
 		return BAD_ALIGN32;
-#endif
+  #endif
 #endif
 
-	if ( ( mode != MODE_ECB ) && ( IV ) )	/* parse the IV */
-	{
-		if ( ParseHexDword( BLOCK_SIZE, IV, cipher->iv32, NULL ) )
+	if ((mode != MODE_ECB) && (IV))	/* parse the IV */
+		{
+		if (ParseHexDword(BLOCK_SIZE,IV,cipher->iv32,NULL))
 			return BAD_IV_MAT;
-		for ( i = 0; i < BLOCK_SIZE / 32; i++ )	/* make byte-oriented copy for CFB1 */
-			( ( DWORD * ) cipher->IV )[i] = Bswap( cipher->iv32[i] );
-	}
+		for (i=0;i<BLOCK_SIZE/32;i++)	/* make byte-oriented copy for CFB1 */
+			((DWORD *)cipher->IV)[i] = Bswap(cipher->iv32[i]);
+		}
 
-	cipher->mode = mode;
+	cipher->mode		=	mode;
 
 	return TRUE;
-}
+	}
 
 /*
 +*****************************************************************************
@@ -849,88 +836,89 @@ int cipherInit( cipherInstance* cipher, BYTE mode, CONST char* IV )
 *		 sizes can be supported.
 *
 -****************************************************************************/
-int blockEncrypt( cipherInstance* cipher, keyInstance* key, CONST BYTE* input, int inputLen, BYTE* outBuffer )
-{
-	int i, n;						/* loop counters */
-	DWORD x[BLOCK_SIZE / 32];			/* block being encrypted */
-	DWORD t0, t1;					/* temp variables */
-	int rounds = key->numRounds;	/* number of rounds */
-	BYTE bit, bit0, ctBit, carry;		/* temps for CFB */
+int blockEncrypt(cipherInstance *cipher, keyInstance *key,CONST BYTE *input,
+				int inputLen, BYTE *outBuffer)
+	{
+	int   i,n;						/* loop counters */
+	DWORD x[BLOCK_SIZE/32];			/* block being encrypted */
+	DWORD t0,t1;					/* temp variables */
+	int	  rounds=key->numRounds;	/* number of rounds */
+	BYTE  bit,bit0,ctBit,carry;		/* temps for CFB */
 
 	/* make local copies of things for faster access */
-	int mode = cipher->mode;
+	int	  mode = cipher->mode;
 	DWORD sk[TOTAL_SUBKEYS];
-	DWORD IV[BLOCK_SIZE / 32];
+	DWORD IV[BLOCK_SIZE/32];
 
 	GetSboxKey;
 
 #if VALIDATE_PARMS
-	if ( ( cipher == NULL ) || ( cipher->cipherSig != VALID_SIG ) )
+	if ((cipher == NULL) || (cipher->cipherSig != VALID_SIG))
 		return BAD_CIPHER_STATE;
-	if ( ( key == NULL ) || ( key->keySig != VALID_SIG ) )
+	if ((key == NULL) || (key->keySig != VALID_SIG))
 		return BAD_KEY_INSTANCE;
-	if ( ( rounds < 2 ) || ( rounds > MAX_ROUNDS ) || ( rounds & 1 ) )
+	if ((rounds < 2) || (rounds > MAX_ROUNDS) || (rounds&1))
 		return BAD_KEY_INSTANCE;
-	if ( ( mode != MODE_CFB1 ) && ( inputLen % BLOCK_SIZE ) )
+	if ((mode != MODE_CFB1) && (inputLen % BLOCK_SIZE))
 		return BAD_INPUT_LEN;
-#if ALIGN32
-	if ( ( ( ( int ) cipher ) & 3 ) || ( ( ( int ) key ) & 3 ) || ( ( ( int ) input ) & 3 ) || ( ( ( int ) outBuffer ) & 3 ) )
+  #if ALIGN32
+	if ( (((int)cipher) & 3) || (((int)key      ) & 3) ||
+		 (((int)input ) & 3) || (((int)outBuffer) & 3))
 		return BAD_ALIGN32;
-#endif
+  #endif
 #endif
 
-	if ( mode == MODE_CFB1 )
-	{
-		/* use recursion here to handle CFB, one block at a time */
+	if (mode == MODE_CFB1)
+		{	/* use recursion here to handle CFB, one block at a time */
 		cipher->mode = MODE_ECB;	/* do encryption in ECB */
-		for ( n = 0; n < inputLen; n++ )
-		{
-			blockEncrypt( cipher, key, cipher->IV, BLOCK_SIZE, ( BYTE * ) x );
-			bit0 = 0x80 >> ( n & 7 );/* which bit position in byte */
-			ctBit = ( input[n / 8] & bit0 ) ^ ( ( ( ( BYTE * ) x )[0] & 0x80 ) >> ( n & 7 ) );
-			outBuffer[n / 8] = ( outBuffer[n / 8] & ~bit0 ) | ctBit;
-			carry = ctBit >> ( 7 - ( n & 7 ) );
-			for ( i = BLOCK_SIZE / 8 - 1; i >= 0; i-- )
+		for (n=0;n<inputLen;n++)
 			{
+			blockEncrypt(cipher,key,cipher->IV,BLOCK_SIZE,(BYTE *)x);
+			bit0  = 0x80 >> (n & 7);/* which bit position in byte */
+			ctBit = (input[n/8] & bit0) ^ ((((BYTE *) x)[0] & 0x80) >> (n&7));
+			outBuffer[n/8] = (outBuffer[n/8] & ~ bit0) | ctBit;
+			carry = ctBit >> (7 - (n&7));
+			for (i=BLOCK_SIZE/8-1;i>=0;i--)
+				{
 				bit = cipher->IV[i] >> 7;	/* save next "carry" from shift */
-				cipher->IV[i] = ( cipher->IV[i] << 1 ) ^ carry;
+				cipher->IV[i] = (cipher->IV[i] << 1) ^ carry;
 				carry = bit;
+				}
 			}
-		}
 		cipher->mode = MODE_CFB1;	/* restore mode for next time */
 		return inputLen;
-	}
+		}
 
 	/* here for ECB, CBC modes */
-	if ( key->direction != DIR_ENCRYPT )
-		ReverseRoundSubkeys( key, DIR_ENCRYPT );	/* reverse the round subkey order */
+	if (key->direction != DIR_ENCRYPT)
+		ReverseRoundSubkeys(key,DIR_ENCRYPT);	/* reverse the round subkey order */
 
 #ifdef USE_ASM
-	if ( ( useAsm & 1 ) && ( inputLen ) )
-		  #ifdef COMPILE_KEY
-		if ( key->keySig == VALID_SIG )
-			return ( ( CipherProc * ) ( key->encryptFuncPtr ) ) ( cipher, key, input, inputLen, outBuffer );
-#else	
-	return ( *blockEncrypt_86 ) ( cipher, key, input, inputLen, outBuffer );
-#endif
+	if ((useAsm & 1) && (inputLen))
+  #ifdef COMPILE_KEY
+		if (key->keySig == VALID_SIG)
+			return ((CipherProc *)(key->encryptFuncPtr))(cipher,key,input,inputLen,outBuffer);
+  #else	
+		return (*blockEncrypt_86)(cipher,key,input,inputLen,outBuffer);
+  #endif
 #endif
 	/* make local copy of subkeys for speed */
-	memcpy( sk, key->subKeys, sizeof( DWORD ) * ( ROUND_SUBKEYS + 2 * rounds ) );
-	if ( mode == MODE_CBC )
-		BlockCopy( IV, cipher->iv32 )
+	memcpy(sk,key->subKeys,sizeof(DWORD)*(ROUND_SUBKEYS+2*rounds));
+	if (mode == MODE_CBC)
+		BlockCopy(IV,cipher->iv32)
 	else
-		IV[0] = IV[1] = IV[2] = IV[3] = 0;
+		IV[0]=IV[1]=IV[2]=IV[3]=0;
 
-	for ( n = 0; n < inputLen; n += BLOCK_SIZE,input += BLOCK_SIZE / 8,outBuffer += BLOCK_SIZE / 8 )
-	{
+	for (n=0;n<inputLen;n+=BLOCK_SIZE,input+=BLOCK_SIZE/8,outBuffer+=BLOCK_SIZE/8)
+		{
 #ifdef DEBUG
-		DebugDump( input, "\n", -1, 0, 0, 0, 1 );
-		if ( cipher->mode == MODE_CBC )
-			DebugDump( cipher->iv32, "", IV_ROUND, 0, 0, 0, 0 );
+		DebugDump(input,"\n",-1,0,0,0,1);
+		if (cipher->mode == MODE_CBC)
+			DebugDump(cipher->iv32,"",IV_ROUND,0,0,0,0);
 #endif
 #define	LoadBlockE(N)  x[N]=Bswap(((DWORD *)input)[N]) ^ sk[INPUT_WHITEN+N] ^ IV[N]
-		LoadBlockE( 0 );	LoadBlockE( 1 );	LoadBlockE( 2 );	LoadBlockE( 3 );
-		DebugDump( x, "", 0, 0, 0, 0, 0 );
+		LoadBlockE(0);	LoadBlockE(1);	LoadBlockE(2);	LoadBlockE(3);
+		DebugDump(x,"",0,0,0,0,0);
 #define	EncryptRound(K,R,id)	\
 			t0	   = Fe32##id(x[K  ],0);					\
 			t1	   = Fe32##id(x[K^1],3);					\
@@ -942,30 +930,30 @@ int blockEncrypt( cipherInstance* cipher, keyInstance* key, CONST BYTE* input, i
 #define		Encrypt2(R,id)	{ EncryptRound(0,R+1,id); EncryptRound(2,R,id); }
 
 #if defined(ZERO_KEY)
-		switch ( key->keyLen )
-		{
-		case 128:
-			for ( i = rounds - 2; i >= 0; i -= 2 )
-				Encrypt2( i, _128 );
-			break;
-		case 192:
-			for ( i = rounds - 2; i >= 0; i -= 2 )
-				Encrypt2( i, _192 );
-			break;
-		case 256:
-			for ( i = rounds - 2; i >= 0; i -= 2 )
-				Encrypt2( i, _256 );
-			break;
-		}
+		switch (key->keyLen)
+			{
+			case 128:
+				for (i=rounds-2;i>=0;i-=2)
+					Encrypt2(i,_128);
+				break;
+			case 192:
+				for (i=rounds-2;i>=0;i-=2)
+					Encrypt2(i,_192);
+				break;
+			case 256:
+				for (i=rounds-2;i>=0;i-=2)
+					Encrypt2(i,_256);
+				break;
+			}
 #else
-		Encrypt2( 14, _ );
-		Encrypt2( 12, _ );
-		Encrypt2( 10, _ );
-		Encrypt2( 8, _ );
-		Encrypt2( 6, _ );
-		Encrypt2( 4, _ );
-		Encrypt2( 2, _ );
-		Encrypt2( 0, _ );
+		Encrypt2(14,_);
+		Encrypt2(12,_);
+		Encrypt2(10,_);
+		Encrypt2( 8,_);
+		Encrypt2( 6,_);
+		Encrypt2( 4,_);
+		Encrypt2( 2,_);
+		Encrypt2( 0,_);
 #endif
 
 		/* need to do (or undo, depending on your point of view) final swap */
@@ -974,26 +962,26 @@ int blockEncrypt( cipherInstance* cipher, keyInstance* key, CONST BYTE* input, i
 #else
 #define	StoreBlockE(N)	{ t0=x[N^2] ^ sk[OUTPUT_WHITEN+N]; ((DWORD *)outBuffer)[N]=Bswap(t0); }
 #endif
-		StoreBlockE( 0 );	StoreBlockE( 1 );	StoreBlockE( 2 );	StoreBlockE( 3 );
-		if ( mode == MODE_CBC )
-		{
-			IV[0] = Bswap( ( ( DWORD * ) outBuffer )[0] );
-			IV[1] = Bswap( ( ( DWORD * ) outBuffer )[1] );
-			IV[2] = Bswap( ( ( DWORD * ) outBuffer )[2] );
-			IV[3] = Bswap( ( ( DWORD * ) outBuffer )[3] );
-		}
+		StoreBlockE(0);	StoreBlockE(1);	StoreBlockE(2);	StoreBlockE(3);
+		if (mode == MODE_CBC)
+			{
+			IV[0]=Bswap(((DWORD *)outBuffer)[0]);
+			IV[1]=Bswap(((DWORD *)outBuffer)[1]);
+			IV[2]=Bswap(((DWORD *)outBuffer)[2]);
+			IV[3]=Bswap(((DWORD *)outBuffer)[3]);
+			}
 #ifdef DEBUG
-		DebugDump( outBuffer, "", rounds + 1, 0, 0, 0, 1 );
-		if ( cipher->mode == MODE_CBC )
-			DebugDump( cipher->iv32, "", IV_ROUND, 0, 0, 0, 0 );
+		DebugDump(outBuffer,"",rounds+1,0,0,0,1);
+		if (cipher->mode == MODE_CBC)
+			DebugDump(cipher->iv32,"",IV_ROUND,0,0,0,0);
 #endif
-	}
+		}
 
-	if ( mode == MODE_CBC )
-		BlockCopy( cipher->iv32, IV );
+	if (mode == MODE_CBC)
+		BlockCopy(cipher->iv32,IV);
 
 	return inputLen;
-}
+	}
 
 /*
 +*****************************************************************************
@@ -1017,82 +1005,84 @@ int blockEncrypt( cipherInstance* cipher, keyInstance* key, CONST BYTE* input, i
 *		 sizes can be supported.
 *
 -****************************************************************************/
-int blockDecrypt( cipherInstance* cipher, keyInstance* key, CONST BYTE* input, int inputLen, BYTE* outBuffer )
-{
-	int i, n;						/* loop counters */
-	DWORD x[BLOCK_SIZE / 32];			/* block being encrypted */
-	DWORD t0, t1;					/* temp variables */
-	int rounds = key->numRounds;	/* number of rounds */
-	BYTE bit, bit0, ctBit, carry;		/* temps for CFB */
+int blockDecrypt(cipherInstance *cipher, keyInstance *key,CONST BYTE *input,
+				int inputLen, BYTE *outBuffer)
+	{
+	int   i,n;						/* loop counters */
+	DWORD x[BLOCK_SIZE/32];			/* block being encrypted */
+	DWORD t0,t1;					/* temp variables */
+	int	  rounds=key->numRounds;	/* number of rounds */
+	BYTE  bit,bit0,ctBit,carry;		/* temps for CFB */
 
 	/* make local copies of things for faster access */
-	int mode = cipher->mode;
+	int	  mode = cipher->mode;
 	DWORD sk[TOTAL_SUBKEYS];
-	DWORD IV[BLOCK_SIZE / 32];
+	DWORD IV[BLOCK_SIZE/32];
 
 	GetSboxKey;
 
 #if VALIDATE_PARMS
-	if ( ( cipher == NULL ) || ( cipher->cipherSig != VALID_SIG ) )
+	if ((cipher == NULL) || (cipher->cipherSig != VALID_SIG))
 		return BAD_CIPHER_STATE;
-	if ( ( key == NULL ) || ( key->keySig != VALID_SIG ) )
+	if ((key == NULL) || (key->keySig != VALID_SIG))
 		return BAD_KEY_INSTANCE;
-	if ( ( rounds < 2 ) || ( rounds > MAX_ROUNDS ) || ( rounds & 1 ) )
+	if ((rounds < 2) || (rounds > MAX_ROUNDS) || (rounds&1))
 		return BAD_KEY_INSTANCE;
-	if ( ( cipher->mode != MODE_CFB1 ) && ( inputLen % BLOCK_SIZE ) )
+	if ((cipher->mode != MODE_CFB1) && (inputLen % BLOCK_SIZE))
 		return BAD_INPUT_LEN;
-#if ALIGN32
-	if ( ( ( ( int ) cipher ) & 3 ) || ( ( ( int ) key ) & 3 ) || ( ( ( int ) input ) & 3 ) || ( ( ( int ) outBuffer ) & 3 ) )
+  #if ALIGN32
+	if ( (((int)cipher) & 3) || (((int)key      ) & 3) ||
+		 (((int)input)  & 3) || (((int)outBuffer) & 3))
 		return BAD_ALIGN32;
-#endif
+  #endif
 #endif
 
-	if ( cipher->mode == MODE_CFB1 )
-	{
-		/* use blockEncrypt here to handle CFB, one block at a time */
+	if (cipher->mode == MODE_CFB1)
+		{	/* use blockEncrypt here to handle CFB, one block at a time */
 		cipher->mode = MODE_ECB;	/* do encryption in ECB */
-		for ( n = 0; n < inputLen; n++ )
-		{
-			blockEncrypt( cipher, key, cipher->IV, BLOCK_SIZE, ( BYTE * ) x );
-			bit0 = 0x80 >> ( n & 7 );
-			ctBit = input[n / 8] & bit0;
-			outBuffer[n / 8] = ( outBuffer[n / 8] & ~bit0 ) | ( ctBit ^ ( ( ( ( BYTE * ) x )[0] & 0x80 ) >> ( n & 7 ) ) );
-			carry = ctBit >> ( 7 - ( n & 7 ) );
-			for ( i = BLOCK_SIZE / 8 - 1; i >= 0; i-- )
+		for (n=0;n<inputLen;n++)
 			{
+			blockEncrypt(cipher,key,cipher->IV,BLOCK_SIZE,(BYTE *)x);
+			bit0  = 0x80 >> (n & 7);
+			ctBit = input[n/8] & bit0;
+			outBuffer[n/8] = (outBuffer[n/8] & ~ bit0) |
+							 (ctBit ^ ((((BYTE *) x)[0] & 0x80) >> (n&7)));
+			carry = ctBit >> (7 - (n&7));
+			for (i=BLOCK_SIZE/8-1;i>=0;i--)
+				{
 				bit = cipher->IV[i] >> 7;	/* save next "carry" from shift */
-				cipher->IV[i] = ( cipher->IV[i] << 1 ) ^ carry;
+				cipher->IV[i] = (cipher->IV[i] << 1) ^ carry;
 				carry = bit;
+				}
 			}
-		}
 		cipher->mode = MODE_CFB1;	/* restore mode for next time */
 		return inputLen;
-	}
+		}
 
 	/* here for ECB, CBC modes */
-	if ( key->direction != DIR_DECRYPT )
-		ReverseRoundSubkeys( key, DIR_DECRYPT );	/* reverse the round subkey order */
+	if (key->direction != DIR_DECRYPT)
+		ReverseRoundSubkeys(key,DIR_DECRYPT);	/* reverse the round subkey order */
 #ifdef USE_ASM
-	if ( ( useAsm & 2 ) && ( inputLen ) )
-		  #ifdef COMPILE_KEY
-		if ( key->keySig == VALID_SIG )
-			return ( ( CipherProc * ) ( key->decryptFuncPtr ) ) ( cipher, key, input, inputLen, outBuffer );
-#else	
-	return ( *blockDecrypt_86 ) ( cipher, key, input, inputLen, outBuffer );
-#endif
+	if ((useAsm & 2) && (inputLen))
+  #ifdef COMPILE_KEY
+		if (key->keySig == VALID_SIG)
+			return ((CipherProc *)(key->decryptFuncPtr))(cipher,key,input,inputLen,outBuffer);
+  #else	
+		return (*blockDecrypt_86)(cipher,key,input,inputLen,outBuffer);
+  #endif
 #endif
 	/* make local copy of subkeys for speed */
-	memcpy( sk, key->subKeys, sizeof( DWORD ) * ( ROUND_SUBKEYS + 2 * rounds ) );
-	if ( mode == MODE_CBC )
-		BlockCopy( IV, cipher->iv32 )
+	memcpy(sk,key->subKeys,sizeof(DWORD)*(ROUND_SUBKEYS+2*rounds));
+	if (mode == MODE_CBC)
+		BlockCopy(IV,cipher->iv32)
 	else
-		IV[0] = IV[1] = IV[2] = IV[3] = 0;
+		IV[0]=IV[1]=IV[2]=IV[3]=0;
 
-	for ( n = 0; n < inputLen; n += BLOCK_SIZE,input += BLOCK_SIZE / 8,outBuffer += BLOCK_SIZE / 8 )
-	{
-		DebugDump( input, "\n", rounds + 1, 0, 0, 0, 1 );
+	for (n=0;n<inputLen;n+=BLOCK_SIZE,input+=BLOCK_SIZE/8,outBuffer+=BLOCK_SIZE/8)
+		{
+		DebugDump(input,"\n",rounds+1,0,0,0,1);
 #define LoadBlockD(N) x[N^2]=Bswap(((DWORD *)input)[N]) ^ sk[OUTPUT_WHITEN+N]
-		LoadBlockD( 0 );	LoadBlockD( 1 );	LoadBlockD( 2 );	LoadBlockD( 3 );
+		LoadBlockD(0);	LoadBlockD(1);	LoadBlockD(2);	LoadBlockD(3);
 
 #define	DecryptRound(K,R,id)								\
 			t0	   = Fe32##id(x[K  ],0);					\
@@ -1106,71 +1096,70 @@ int blockDecrypt( cipherInstance* cipher, keyInstance* key, CONST BYTE* input, i
 #define		Decrypt2(R,id)	{ DecryptRound(2,R+1,id); DecryptRound(0,R,id); }
 
 #if defined(ZERO_KEY)
-		switch ( key->keyLen )
-		{
-		case 128:
-			for ( i = rounds - 2; i >= 0; i -= 2 )
-				Decrypt2( i, _128 );
-			break;
-		case 192:
-			for ( i = rounds - 2; i >= 0; i -= 2 )
-				Decrypt2( i, _192 );
-			break;
-		case 256:
-			for ( i = rounds - 2; i >= 0; i -= 2 )
-				Decrypt2( i, _256 );
-			break;
-		}
+		switch (key->keyLen)
+			{
+			case 128:
+				for (i=rounds-2;i>=0;i-=2)
+					Decrypt2(i,_128);
+				break;
+			case 192:
+				for (i=rounds-2;i>=0;i-=2)
+					Decrypt2(i,_192);
+				break;
+			case 256:
+				for (i=rounds-2;i>=0;i-=2)
+					Decrypt2(i,_256);
+				break;
+			}
 #else
 		{
-			Decrypt2( 14, _ );
-			Decrypt2( 12, _ );
-			Decrypt2( 10, _ );
-			Decrypt2( 8, _ );
-			Decrypt2( 6, _ );
-			Decrypt2( 4, _ );
-			Decrypt2( 2, _ );
-			Decrypt2( 0, _ );
+		Decrypt2(14,_);
+		Decrypt2(12,_);
+		Decrypt2(10,_);
+		Decrypt2( 8,_);
+		Decrypt2( 6,_);
+		Decrypt2( 4,_);
+		Decrypt2( 2,_);
+		Decrypt2( 0,_);
 		}
 #endif
-		DebugDump( x, "", 0, 0, 0, 0, 0 );
-		if ( cipher->mode == MODE_ECB )
-		{
+		DebugDump(x,"",0,0,0,0,0);
+		if (cipher->mode == MODE_ECB)
+			{
 #if LittleEndian
 #define	StoreBlockD(N)	((DWORD *)outBuffer)[N] = x[N] ^ sk[INPUT_WHITEN+N]
 #else
 #define	StoreBlockD(N)	{ t0=x[N]^sk[INPUT_WHITEN+N]; ((DWORD *)outBuffer)[N] = Bswap(t0); }
 #endif
-			StoreBlockD( 0 );	StoreBlockD( 1 );	StoreBlockD( 2 );	StoreBlockD( 3 );
+			StoreBlockD(0);	StoreBlockD(1);	StoreBlockD(2);	StoreBlockD(3);
 #undef  StoreBlockD
-			DebugDump( outBuffer, "", -1, 0, 0, 0, 1 );
+			DebugDump(outBuffer,"",-1,0,0,0,1);
 			continue;
-		}
+			}
 		else
-		{
+			{
 #define	StoreBlockD(N)	x[N]   ^= sk[INPUT_WHITEN+N] ^ IV[N];	\
 						IV[N]   = Bswap(((DWORD *)input)[N]);	\
 						((DWORD *)outBuffer)[N] = Bswap(x[N]);
-			StoreBlockD( 0 );	StoreBlockD( 1 );	StoreBlockD( 2 );	StoreBlockD( 3 );
+			StoreBlockD(0);	StoreBlockD(1);	StoreBlockD(2);	StoreBlockD(3);
 #undef  StoreBlockD
-			DebugDump( outBuffer, "", -1, 0, 0, 0, 1 );
+			DebugDump(outBuffer,"",-1,0,0,0,1);
+			}
 		}
-	}
-	if ( mode == MODE_CBC )	/* restore iv32 to cipher */
-		BlockCopy( cipher->iv32, IV )
+	if (mode == MODE_CBC)	/* restore iv32 to cipher */
+		BlockCopy(cipher->iv32,IV)
 
 	return inputLen;
-}
+	}
 
 #ifdef GetCodeSize
-DWORD TwofishCodeSize()
-{
-	DWORD x = Here( 0 );
+DWORD TwofishCodeSize(void)
+	{
+	DWORD x= Here(0);
 #ifdef USE_ASM
-	if ( useAsm & 3 )
+	if (useAsm & 3)
 		return TwofishAsmCodeSize();
 #endif
 	return x - TwofishCodeStart();
-};
+	};
 #endif
-
