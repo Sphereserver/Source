@@ -151,7 +151,7 @@ enum RESDISPLAY_VERSION
 #include "../common/CQueue.h"
 #include "../common/CSectorTemplate.h"
 #include "../common/CDataBase.h"
-#include "../common/SQLite.h" //New Database
+#include "../common/sqlite/SQLite.h" //New Database
 
 #include "CResource.h"
 #include "CServRef.h"

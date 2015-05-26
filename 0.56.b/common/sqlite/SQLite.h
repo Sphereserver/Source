@@ -1,8 +1,8 @@
 #pragma once
 
-#include "graycom.h"
+#include "../graycom.h"
 #include "sqlite3.h"
-#include "CScriptObj.h"
+#include "../CScriptObj.h"
 
 //////////////////////////////////////////////////////////////////////////
 // Typedefs

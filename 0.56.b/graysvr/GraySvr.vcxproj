@@ -159,8 +159,8 @@
     <ClCompile Include="..\common\CScriptCompiler.cpp" />
     <ClCompile Include="..\common\CsvFile.cpp" />
     <ClCompile Include="..\common\CVarFloat.cpp" />
-    <ClCompile Include="..\common\SQLite.cpp" />
-    <ClCompile Include="..\common\sqlite3.c" />
+    <ClCompile Include="..\common\sqlite\SQLite.cpp" />
+    <ClCompile Include="..\common\sqlite\sqlite3.c" />
     <ClCompile Include="..\network\network.cpp" />
     <ClCompile Include="..\network\packet.cpp" />
     <ClCompile Include="..\network\receive.cpp" />
