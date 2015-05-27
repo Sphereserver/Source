@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>GraySvr_trunk</ProjectName>
+    <ProjectName>0.56b</ProjectName>
     <ProjectGuid>{40CA07B5-BCC7-A9C8-A6E6-DEFC536EE8CB}</ProjectGuid>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -155,6 +155,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CacheableScriptFile.cpp" />
+    <ClCompile Include="..\common\CDatabaseLoader.cpp" />
+    <ClCompile Include="..\common\CEncrypt.cpp" />
     <ClCompile Include="..\common\crashdump\crashdump.cpp" />
     <ClCompile Include="..\common\CScriptCompiler.cpp" />
     <ClCompile Include="..\common\CsvFile.cpp" />
@@ -195,37 +197,20 @@
     <ClCompile Include="CClientTarg.cpp" />
     <ClCompile Include="CClientUse.cpp" />
     <ClCompile Include="CContain.cpp" />
-    <ClCompile Include="..\common\CEncrypt.cpp" />
     <ClCompile Include="CGMPage.cpp" />
     <ClCompile Include="CItem.cpp" />
     <ClCompile Include="CItemBase.cpp" />
     <ClCompile Include="CItemMulti.cpp" />
     <ClCompile Include="CItemMultiCustom.cpp" />
     <ClCompile Include="CItemShip.cpp" />
-    <ClCompile Include="CItemSp.cpp" />
-    <ClCompile Include="CItemStone.cpp" />
-    <ClCompile Include="CItemVend.cpp" />
-    <ClCompile Include="CLog.cpp" />
-    <ClCompile Include="CObjBase.cpp" />
-    <ClCompile Include="CPathFinder.cpp" />
-    <ClCompile Include="CQuest.cpp" />
-    <ClCompile Include="CResource.cpp" />
-    <ClCompile Include="CResourceCalc.cpp" />
-    <ClCompile Include="CResourceDef.cpp" />
-    <ClCompile Include="CSector.cpp" />
-    <ClCompile Include="CServer.cpp" />
-    <ClCompile Include="CServRef.cpp" />
-    <ClCompile Include="CWebPage.cpp" />
-    <ClCompile Include="CWorld.cpp" />
-    <ClCompile Include="CWorldImport.cpp" />
-    <ClCompile Include="CWorldMap.cpp" />
-    <ClCompile Include="graysvr.cpp" />
-    <ClCompile Include="ntservice.cpp" />
-    <ClCompile Include="ntwindow.cpp" />
     <ClCompile Include="..\common\zlib\adler32.c" />
     <ClCompile Include="..\common\zlib\compress.c" />
     <ClCompile Include="..\common\zlib\crc32.c" />
     <ClCompile Include="..\common\zlib\deflate.c" />
+    <ClCompile Include="..\common\zlib\gzclose.c" />
+    <ClCompile Include="..\common\zlib\gzlib.c" />
+    <ClCompile Include="..\common\zlib\gzread.c" />
+    <ClCompile Include="..\common\zlib\gzwrite.c" />
     <ClCompile Include="..\common\zlib\infback.c" />
     <ClCompile Include="..\common\zlib\inffast.c" />
     <ClCompile Include="..\common\zlib\inflate.c" />
@@ -261,14 +246,65 @@
     <ClCompile Include="..\common\ListDefContMap.cpp" />
     <ClCompile Include="..\common\CWindow.cpp" />
     <ClCompile Include="..\common\graycom.cpp" />
+    <ClCompile Include="CItemSp.cpp" />
+    <ClCompile Include="CItemStone.cpp" />
+    <ClCompile Include="CItemVend.cpp" />
+    <ClCompile Include="CLog.cpp" />
+    <ClCompile Include="CObjBase.cpp" />
+    <ClCompile Include="CPathFinder.cpp" />
+    <ClCompile Include="CQuest.cpp" />
+    <ClCompile Include="CResource.cpp" />
+    <ClCompile Include="CResourceCalc.cpp" />
+    <ClCompile Include="CResourceDef.cpp" />
+    <ClCompile Include="CSector.cpp" />
+    <ClCompile Include="CServer.cpp" />
+    <ClCompile Include="CServRef.cpp" />
+    <ClCompile Include="CWebPage.cpp" />
+    <ClCompile Include="CWorld.cpp" />
+    <ClCompile Include="CWorldImport.cpp" />
+    <ClCompile Include="CWorldMap.cpp" />
+    <ClCompile Include="graysvr.cpp" />
+    <ClCompile Include="ntservice.cpp" />
+    <ClCompile Include="ntwindow.cpp" />
     <ClCompile Include="PingServer.cpp" />
+    <ClCompile Include="UnixTerminal.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\CacheableScriptFile.h" />
+    <ClInclude Include="..\common\CDatabaseLoader.h" />
+    <ClInclude Include="..\common\CEncrypt.h" />
+    <ClInclude Include="..\common\CMD5.h" />
     <ClInclude Include="..\common\crashdump\crashdump.h" />
     <ClInclude Include="..\common\CScriptCompiler.h" />
     <ClInclude Include="..\common\CsvFile.h" />
     <ClInclude Include="..\common\CVarFloat.h" />
+    <ClInclude Include="..\common\CWindow.h" />
+    <ClInclude Include="..\common\mtrand\mtrand.h" />
+    <ClInclude Include="..\common\mysql\include\config-netware.h" />
+    <ClInclude Include="..\common\mysql\include\config-os2.h" />
+    <ClInclude Include="..\common\mysql\include\config-win.h" />
+    <ClInclude Include="..\common\mysql\include\errmsg.h" />
+    <ClInclude Include="..\common\mysql\include\mysql.h" />
+    <ClInclude Include="..\common\mysql\include\mysqld_error.h" />
+    <ClInclude Include="..\common\mysql\include\mysql_com.h" />
+    <ClInclude Include="..\common\mysql\include\mysql_embed.h" />
+    <ClInclude Include="..\common\mysql\include\mysql_time.h" />
+    <ClInclude Include="..\common\mysql\include\mysql_version.h" />
+    <ClInclude Include="..\common\mysql\include\my_alloc.h" />
+    <ClInclude Include="..\common\mysql\include\my_dbug.h" />
+    <ClInclude Include="..\common\mysql\include\my_getopt.h" />
+    <ClInclude Include="..\common\mysql\include\my_global.h" />
+    <ClInclude Include="..\common\mysql\include\my_list.h" />
+    <ClInclude Include="..\common\mysql\include\my_pthread.h" />
+    <ClInclude Include="..\common\mysql\include\my_sys.h" />
+    <ClInclude Include="..\common\mysql\include\m_ctype.h" />
+    <ClInclude Include="..\common\mysql\include\m_string.h" />
+    <ClInclude Include="..\common\mysql\include\raid.h" />
+    <ClInclude Include="..\common\mysql\include\typelib.h" />
+    <ClInclude Include="..\common\sqlite\SQLite.h" />
+    <ClInclude Include="..\common\sqlite\sqlite3.h" />
+    <ClInclude Include="..\common\subversion\SvnRevision.h" />
+    <ClInclude Include="..\common\zlib\gzguts.h" />
     <ClInclude Include="..\network\network.h" />
     <ClInclude Include="..\network\packet.h" />
     <ClInclude Include="..\network\receive.h" />
@@ -283,18 +319,14 @@
     <ClInclude Include="CAccount.h" />
     <ClInclude Include="CBase.h" />
     <ClInclude Include="CClient.h" />
-    <ClInclude Include="..\common\CEncrypt.h" />
-    <ClInclude Include="..\common\CMD5.h" />
     <ClInclude Include="CObjBase.h" />
     <ClInclude Include="CPathFinder.h" />
     <ClInclude Include="CResource.h" />
     <ClInclude Include="CServRef.h" />
-    <ClInclude Include="..\common\CWindow.h" />
     <ClInclude Include="CWorld.h" />
     <ClInclude Include="graysvr.h" />
     <ClInclude Include="ntservice.h" />
     <ClInclude Include="PingServer.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="..\common\zlib\crc32.h" />
     <ClInclude Include="..\common\zlib\deflate.h" />
     <ClInclude Include="..\common\zlib\inffast.h" />
@@ -341,9 +373,8 @@
     <ClInclude Include="..\common\grayver.h" />
     <ClInclude Include="..\common\os_unix.h" />
     <ClInclude Include="..\common\os_windows.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="GraySvr.rc" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="UnixTerminal.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\tables\CBaseBaseDef_props.tbl">
@@ -412,21 +443,30 @@
     <CustomBuild Include="..\Sphere.ini">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="spheresvr.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\docs\REVISIONS-51-54-SERIES.TXT" />
-    <None Include="..\..\docs\REVISIONS-55-SERIES.TXT" />
-    <None Include="..\..\docs\REVISIONS-56-Pre_release.TXT" />
     <None Include="..\..\docs\REVISIONS-56-SERIES.TXT" />
+    <None Include="..\..\scripts\add-on\Can_Use_Player_Event.rar" />
     <None Include="..\..\scripts\add-on\Champion_Spawn.zip" />
     <None Include="..\..\scripts\add-on\Doom_Dungeon.zip" />
+    <None Include="..\..\scripts\add-on\Expansion_Player_Event.rar" />
+    <None Include="..\..\scripts\add-on\HighSeas\Ships\HS_pilot.scp" />
     <None Include="..\..\scripts\add-on\House_Placement.zip" />
+    <None Include="..\..\scripts\add-on\mordaunts_housing_system.zip" />
     <None Include="..\..\scripts\add-on\readme.txt" />
     <None Include="..\..\scripts\add-on\Slayer_Weapons.zip" />
+    <None Include="..\..\scripts\add-on\Sphere Core File Creator - Installer.rar" />
+    <None Include="..\..\scripts\add-on\sphere_attr.rar" />
     <None Include="..\..\scripts\add-on\Sphere_Factions_56a.zip" />
     <None Include="..\..\scripts\add-on\targetted_hits.scp" />
     <None Include="..\..\scripts\add-on\worldfiles.zip" />
+    <None Include="..\..\scripts\items\multis\multis_foundations.scp" />
+    <None Include="..\..\scripts\items\multis\multis_houses.scp" />
+    <None Include="..\..\scripts\items\multis\multis_magincia_bazaar.scp" />
+    <None Include="..\..\scripts\items\multis\multis_misc.scp" />
+    <None Include="..\..\scripts\items\multis\multis_ships.scp" />
+    <None Include="..\..\scripts\items\multis\multis_stairs.scp" />
+    <None Include="..\..\scripts\items\multis\multis_wandering_camps.scp" />
     <None Include="..\..\scripts\items\sphere_item_animations.scp" />
     <None Include="..\..\scripts\items\sphere_item_artifacts.scp" />
     <None Include="..\..\scripts\items\sphere_item_artifacts_minor.scp" />
@@ -480,6 +520,7 @@
     <None Include="..\..\scripts\items\sphere_item_provisions_clothing.scp" />
     <None Include="..\..\scripts\items\sphere_item_provisions_deed.scp" />
     <None Include="..\..\scripts\items\sphere_item_provisions_jewelry.scp" />
+    <None Include="..\..\scripts\items\sphere_item_provisions_logs.scp" />
     <None Include="..\..\scripts\items\sphere_item_provisions_misc.scp" />
     <None Include="..\..\scripts\items\sphere_item_provisions_ore.scp" />
     <None Include="..\..\scripts\items\sphere_item_provisions_potions.scp" />
@@ -549,6 +590,7 @@
     <None Include="..\..\scripts\speech\jobjeweller.scp" />
     <None Include="..\..\scripts\speech\jobjudge.scp" />
     <None Include="..\..\scripts\speech\joblaborer.scp" />
+    <None Include="..\..\scripts\speech\joblumberjack.scp" />
     <None Include="..\..\scripts\speech\jobMage.scp" />
     <None Include="..\..\scripts\speech\jobMageEvil.scp" />
     <None Include="..\..\scripts\speech\jobMageShop.scp" />
@@ -595,6 +637,8 @@
     <None Include="..\..\scripts\speech\speakrehello.scp" />
     <None Include="..\..\scripts\speech\speakshopkeep.scp" />
     <None Include="..\..\scripts\speech\spherespee.scp" />
+    <None Include="..\..\scripts\speech\spk_house_cmds.scp" />
+    <None Include="..\..\scripts\speech\spk_ship_cmds.scp" />
     <None Include="..\..\scripts\speech\townbritain.scp" />
     <None Include="..\..\scripts\speech\townbucsden.scp" />
     <None Include="..\..\scripts\speech\towncove.scp" />
@@ -610,9 +654,11 @@
     <None Include="..\..\scripts\speech\townwind.scp" />
     <None Include="..\..\scripts\speech\townyew.scp" />
     <None Include="..\..\scripts\spheretables.scp" />
+    <None Include="..\..\scripts\sphere_add_sqlite.scp" />
     <None Include="..\..\scripts\sphere_admin.scp" />
     <None Include="..\..\scripts\sphere_backward_compatibility.scp" />
     <None Include="..\..\scripts\sphere_book.scp" />
+    <None Include="..\..\scripts\sphere_combat.scp" />
     <None Include="..\..\scripts\sphere_defs.scp" />
     <None Include="..\..\scripts\sphere_dialog.scp" />
     <None Include="..\..\scripts\sphere_events_human.scp" />
@@ -682,6 +728,15 @@
     </None>
     <None Include="..\..\scripts\web\spherestatusbase.html" />
     <None Include="..\..\scripts\web\sphere_anim.gif" />
+    <None Include="..\common\mysql\include\libmysql.def" />
+    <None Include="..\common\mysql\include\libmysqld.def" />
+    <None Include="..\common\mysql\lib\debug\libmysql.dll" />
+    <None Include="..\common\mysql\lib\release\libmysql.dll" />
+    <None Include="..\common\twofish\Makefile" />
+    <None Include="..\common\zlib\ChangeLog" />
+    <None Include="..\common\zlib\FAQ" />
+    <None Include="..\common\zlib\INDEX" />
+    <None Include="..\common\zlib\README" />
     <None Include="..\sphereCrypt.ini" />
     <None Include="..\tables\CCharPlayer_functions.tbl" />
     <None Include="..\tables\CItemBase_props.tbl" />
@@ -692,6 +747,39 @@
     <None Include="..\tables\CStoneMember_functions.tbl" />
     <None Include="..\tables\CStoneMember_props.tbl" />
     <None Include="..\tables\triggers.tbl" />
+    <None Include="makefile" />
+    <None Include="makefile.bsd" />
+    <None Include="makefile.lin-static" />
+    <None Include="makefile.nightly.debug" />
+    <None Include="makefile.nightly.release" />
+    <None Include="makefile.prerelease" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\docs\REVISIONS-51-54-SERIES.TXT" />
+    <Text Include="..\..\docs\REVISIONS-55-SERIES.TXT" />
+    <Text Include="..\..\docs\REVISIONS-56-Pre_release.TXT" />
+    <Text Include="..\common\mysql\version.txt" />
+    <Text Include="..\common\zlib\algorithm.txt" />
+    <Text Include="MANUAL.TXT" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\common\mysql\lib\debug\libmysql.lib" />
+    <Library Include="..\common\mysql\lib\debug\mysqlclient.lib" />
+    <Library Include="..\common\mysql\lib\debug\mysys.lib" />
+    <Library Include="..\common\mysql\lib\debug\regex.lib" />
+    <Library Include="..\common\mysql\lib\debug\strings.lib" />
+    <Library Include="..\common\mysql\lib\debug\zlib.lib" />
+    <Library Include="..\common\mysql\lib\release\libmysql.lib" />
+    <Library Include="..\common\mysql\lib\release\mysqlclient.lib" />
+    <Library Include="..\common\mysql\lib\release\mysys-max.lib" />
+    <Library Include="..\common\mysql\lib\release\mysys.lib" />
+    <Library Include="..\common\mysql\lib\release\mysys_tls.lib" />
+    <Library Include="..\common\mysql\lib\release\regex.lib" />
+    <Library Include="..\common\mysql\lib\release\strings.lib" />
+    <Library Include="..\common\mysql\lib\release\zlib.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GraySvr.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

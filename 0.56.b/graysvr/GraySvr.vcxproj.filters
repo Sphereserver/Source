@@ -1,0 +1,1801 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="common">
+      <UniqueIdentifier>{851a2cc0-ca88-4a95-bc64-98ad68514a3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\zlib">
+      <UniqueIdentifier>{5b6a8a1c-05f3-48a6-a896-082476a79f81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\twofish">
+      <UniqueIdentifier>{353e7db8-874b-4551-8e15-0fcc9875d06e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\mtrand">
+      <UniqueIdentifier>{3abdd197-d524-40eb-a5ae-59a6b045e73b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\regexp">
+      <UniqueIdentifier>{ab7d326a-8bb6-432c-997d-b35b39a8c9e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\crashdump">
+      <UniqueIdentifier>{bfcf28bb-2d0c-48a1-a304-037fb69f178b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\sqlite">
+      <UniqueIdentifier>{19b83913-ef63-4820-9ae0-158e0c75d5b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\mysql">
+      <UniqueIdentifier>{92ae6936-0d7b-4865-aee9-31f89657cdf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\mysql\include">
+      <UniqueIdentifier>{621a1f7a-a93c-425e-ac50-05b80ad313a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\mysql\lib">
+      <UniqueIdentifier>{9c9f59e8-0124-489c-910f-d2bea41dac9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\mysql\lib\debug">
+      <UniqueIdentifier>{de073d16-453f-4408-933a-f67069e83928}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\mysql\lib\release">
+      <UniqueIdentifier>{8bb2841a-952a-4e6b-80d0-654fbda96333}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graysvr">
+      <UniqueIdentifier>{15356495-5833-4141-9734-de04e7355bbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="network">
+      <UniqueIdentifier>{9aacf406-4351-4c7e-bcb9-8a21f30ac129}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scripts">
+      <UniqueIdentifier>{4ee42aa5-af07-40b1-9559-2c019370bbf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scripts\add-on">
+      <UniqueIdentifier>{826586c9-424c-4ce8-ba3e-154cf28af2e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scripts\add-on\HighSeas">
+      <UniqueIdentifier>{b61114f1-5026-4dc3-bcf9-7ea764c29ad6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scripts\add-on\HighSeas\Ships">
+      <UniqueIdentifier>{3d356ea3-189e-4101-9ec9-3fd005b9f867}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scripts\speech">
+      <UniqueIdentifier>{b8d7dfbd-6c6a-48a0-a122-28b996d1c5af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scripts\stones">
+      <UniqueIdentifier>{59577a10-df63-4dc0-b109-c80626ed6b30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scripts\stones\guilds">
+      <UniqueIdentifier>{71079d7e-27d3-4a47-be33-c5a1e85d39dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scripts\stones\towns">
+      <UniqueIdentifier>{8b19d0ca-58f5-41ab-a0da-00c80d382f75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scripts\maps">
+      <UniqueIdentifier>{690a6c2e-15e2-4113-a61e-678448e18f86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scripts\items">
+      <UniqueIdentifier>{0877bb0f-1870-49b7-89a2-f98135f9a304}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scripts\items\multis">
+      <UniqueIdentifier>{885e0541-091b-4bf7-8558-047a480f414b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scripts\npcs">
+      <UniqueIdentifier>{845fb31c-9d97-486f-bebb-60c676907ce7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scripts\web">
+      <UniqueIdentifier>{3584b99d-57b7-438e-9311-56c1211c4a7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sphere">
+      <UniqueIdentifier>{221c2cd5-32c0-4a7c-b5e0-f8aee82ca1d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tables">
+      <UniqueIdentifier>{b459b1a6-1618-4776-a2ef-a312167c3bbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\subversion">
+      <UniqueIdentifier>{1020eb71-d20f-4af6-b3ec-e4308f41415c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\common\zlib\adler32.c">
+      <Filter>common\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\zlib\compress.c">
+      <Filter>common\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\zlib\crc32.c">
+      <Filter>common\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\zlib\deflate.c">
+      <Filter>common\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\zlib\infback.c">
+      <Filter>common\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\zlib\inffast.c">
+      <Filter>common\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\zlib\inflate.c">
+      <Filter>common\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\zlib\inftrees.c">
+      <Filter>common\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\zlib\trees.c">
+      <Filter>common\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\zlib\uncompr.c">
+      <Filter>common\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\zlib\zutil.c">
+      <Filter>common\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\twofish\twofish2.cpp">
+      <Filter>common\twofish</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CArray.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CAssoc.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CAtom.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CDataBase.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CException.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CExpression.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CFileList.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CGrayData.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CGrayInst.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CGrayMap.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CMapCache.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CMD5.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CQueue.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CRect.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CRegion.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CResourceBase.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CScript.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CScriptObj.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CSectorTemplate.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CSocket.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CString.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CTime.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CVarDefMap.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\ListDefContMap.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CWindow.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\graycom.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sphere\asyncdb.cpp">
+      <Filter>sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sphere\linuxev.cpp">
+      <Filter>sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sphere\mutex.cpp">
+      <Filter>sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sphere\ProfileData.cpp">
+      <Filter>sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sphere\strings.cpp">
+      <Filter>sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sphere\threads.cpp">
+      <Filter>sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CacheableScriptFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="CItemMultiCustom.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CItemShip.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\crashdump\crashdump.cpp">
+      <Filter>common\crashdump</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CScriptCompiler.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CsvFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CVarFloat.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\network\network.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\network\packet.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\network\receive.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\network\send.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="PingServer.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\sqlite\SQLite.cpp">
+      <Filter>common\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\sqlite\sqlite3.c">
+      <Filter>common\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\zlib\gzclose.c">
+      <Filter>common\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\zlib\gzlib.c">
+      <Filter>common\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\zlib\gzread.c">
+      <Filter>common\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\zlib\gzwrite.c">
+      <Filter>common\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CDatabaseLoader.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="CAccount.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CBase.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CChar.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CCharact.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CCharBase.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CCharFight.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CCharNPC.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CCharNPCAct.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CCharNPCPet.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CCharNPCStatus.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CCharSkill.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CCharSpell.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CCharStatus.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CCharUse.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CChat.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CClient.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CClientDialog.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CClientEvent.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CClientGMPage.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CClientLog.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CClientMsg.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CClientTarg.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CClientUse.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CContain.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CGMPage.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CItem.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CItemBase.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CItemMulti.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CItemSp.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CItemStone.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CItemVend.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CLog.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CObjBase.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CPathFinder.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CQuest.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CResource.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CResourceCalc.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CResourceDef.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CSector.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CServer.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CServRef.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CWebPage.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CWorld.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CWorldImport.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="CWorldMap.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="graysvr.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="ntservice.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="ntwindow.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="UnixTerminal.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CEncrypt.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\common\zlib\crc32.h">
+      <Filter>common\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\zlib\deflate.h">
+      <Filter>common\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\zlib\inffast.h">
+      <Filter>common\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\zlib\inffixed.h">
+      <Filter>common\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\zlib\inflate.h">
+      <Filter>common\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\zlib\inftrees.h">
+      <Filter>common\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\zlib\trees.h">
+      <Filter>common\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\zlib\zconf.h">
+      <Filter>common\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\zlib\zlib.h">
+      <Filter>common\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\zlib\zutil.h">
+      <Filter>common\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\twofish\aes.h">
+      <Filter>common\twofish</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\twofish\debug.h">
+      <Filter>common\twofish</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\twofish\platform.h">
+      <Filter>common\twofish</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\twofish\table.h">
+      <Filter>common\twofish</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\regex\deelx.h">
+      <Filter>common\regexp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\carray.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cassoc.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CAtom.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CDataBase.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CException.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cexpression.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cfile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cfilelist.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cgrayinst.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cGrayMap.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CMapCache.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cmemblock.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\common.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CQueue.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\crect.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cregion.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cresourcebase.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cscript.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cscriptobj.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cSectorTemplate.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\csocket.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cstring.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\ctime.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CVarDefMap.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\ListDefContMap.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\graycom.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\graymul.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\grayproto.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\grayver.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\os_unix.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\os_windows.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sphere\asyncdb.h">
+      <Filter>sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sphere\containers.h">
+      <Filter>sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sphere\linuxev.h">
+      <Filter>sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sphere\mutex.h">
+      <Filter>sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sphere\ProfileData.h">
+      <Filter>sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sphere\strings.h">
+      <Filter>sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sphere\threads.h">
+      <Filter>sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CacheableScriptFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\crashdump\crashdump.h">
+      <Filter>common\crashdump</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CScriptCompiler.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CsvFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CVarFloat.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\network\network.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\network\packet.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\network\receive.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\network\send.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="PingServer.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mtrand\mtrand.h">
+      <Filter>common\mtrand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\sqlite\SQLite.h">
+      <Filter>common\sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\sqlite\sqlite3.h">
+      <Filter>common\sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\zlib\gzguts.h">
+      <Filter>common\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CDatabaseLoader.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\config-netware.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\config-os2.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\config-win.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\errmsg.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\m_ctype.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\m_string.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\my_alloc.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\my_dbug.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\my_getopt.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\my_global.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\my_list.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\my_pthread.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\my_sys.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\mysql.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\mysql_com.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\mysql_embed.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\mysql_time.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\mysql_version.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\mysqld_error.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\raid.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mysql\include\typelib.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="UnixTerminal.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CMD5.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="CAccount.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
+    <ClInclude Include="CBase.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
+    <ClInclude Include="CClient.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
+    <ClInclude Include="CObjBase.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
+    <ClInclude Include="CPathFinder.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
+    <ClInclude Include="CResource.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
+    <ClInclude Include="CServRef.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
+    <ClInclude Include="CWorld.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CWindow.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="graysvr.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CEncrypt.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="ntservice.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\subversion\SvnRevision.h">
+      <Filter>common\subversion</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\tables\CBaseBaseDef_props.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CChar_functions.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CChar_props.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CCharBase_props.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CCharNpc_props.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CCharPlayer_props.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CClient_functions.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CClient_props.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CFile_functions.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CFile_props.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CFileObjContainer_functions.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CFileObjContainer_props.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\classnames.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CObjBase_functions.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CObjBase_props.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CQuest_functions.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CQuest_props.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CScriptCompiler.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CScriptObj_functions.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\CSector_functions.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\tables\defmessages.tbl">
+      <Filter>tables</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Sphere.ini" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\sphereCrypt.ini" />
+    <None Include="..\tables\CCharPlayer_functions.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="..\tables\CItemBase_props.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="..\tables\CItem_functions.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="..\tables\CItem_props.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="..\tables\CItemStone_functions.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="..\tables\CItemStone_props.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="..\tables\CStoneMember_functions.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="..\tables\CStoneMember_props.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="..\..\scripts\add-on\Champion_Spawn.zip">
+      <Filter>scripts\add-on</Filter>
+    </None>
+    <None Include="..\..\scripts\add-on\Doom_Dungeon.zip">
+      <Filter>scripts\add-on</Filter>
+    </None>
+    <None Include="..\..\scripts\add-on\House_Placement.zip">
+      <Filter>scripts\add-on</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobactor.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobalchemist.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobanimal.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobarchitect.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobarmourer.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobartist.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobbaker.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobbanker.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobbard.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobbeekeeper.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobbeggar.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobblacksmith.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobbowyer.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobBrigand.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobbutcher.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobcarpenter.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobcashual.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobcobbler.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobfarmer.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobfurtrader.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobgambler.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobglassblower.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobGuard.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobhealer.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobhealwand.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobherbalist.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobinnkeeper.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobjailor.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobjeweller.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobjudge.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\joblaborer.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobMage.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobMageEvil.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobMageShop.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobmapmaker.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobmayor.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobmiller.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobminer.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobminter.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobmonk.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobnoble.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\joboverseer.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobpaladin.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobparliament.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobpirate.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobpriest.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobprisoner.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobprovisioner.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobrancher.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobranger.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobrealtor.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobrunner.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobsailor.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobscholar.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobscribe.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobsculptor.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobservant.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobshepherd.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobshipwright.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobtanner.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobtavernkeeper.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobthief.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobtinker.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobveggie.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobvet.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobwaiter.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobweaponsmith.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobweaponstrainer.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\jobweaver.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\speakshopkeep.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\speakhorse.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\speakhuman.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\speakmaster.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\speakneeds.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\speakorc.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\speakrehello.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\townbritain.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\townbucsden.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\towncove.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\townjhelom.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\townmagincia.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\townminoc.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\townmoonglow.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\townnujelm.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\townserphold.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\townskarabrae.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\towntrinsic.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\townvesper.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\townwind.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\townyew.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\add-on\Slayer_Weapons.zip">
+      <Filter>scripts\add-on</Filter>
+    </None>
+    <None Include="..\..\scripts\add-on\targetted_hits.scp">
+      <Filter>scripts\add-on</Filter>
+    </None>
+    <None Include="..\..\scripts\add-on\Sphere_Factions_56a.zip">
+      <Filter>scripts\add-on</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_admin.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_backward_compatibility.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_book.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_defs.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_dialog.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_events_human.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_events_npcs.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\sphere_genericstone_config.scp">
+      <Filter>scripts\stones</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\sphere_genericstone_functions.scp">
+      <Filter>scripts\stones</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\sphere_genericstone_items.scp">
+      <Filter>scripts\stones</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\sphere_genericstone_types.scp">
+      <Filter>scripts\stones</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\README.TXT">
+      <Filter>scripts\stones</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_config.scp">
+      <Filter>scripts\stones\guilds</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_types.scp">
+      <Filter>scripts\stones\guilds</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_speech.scp">
+      <Filter>scripts\stones\guilds</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_promptconsole.scp">
+      <Filter>scripts\stones\guilds</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_items.scp">
+      <Filter>scripts\stones\guilds</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_functions_player.scp">
+      <Filter>scripts\stones\guilds</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_functions.scp">
+      <Filter>scripts\stones\guilds</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_events.scp">
+      <Filter>scripts\stones\guilds</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_warfarestatus.scp">
+      <Filter>scripts\stones\guilds</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_warfaredeclare.scp">
+      <Filter>scripts\stones\guilds</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_warfareadmin.scp">
+      <Filter>scripts\stones\guilds</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_master.scp">
+      <Filter>scripts\stones\guilds</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_main.scp">
+      <Filter>scripts\stones\guilds</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_guildlist.scp">
+      <Filter>scripts\stones\guilds</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_charter.scp">
+      <Filter>scripts\stones\guilds</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_charlist.scp">
+      <Filter>scripts\stones\guilds</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_align.scp">
+      <Filter>scripts\stones\guilds</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\towns\sphere_town_config.scp">
+      <Filter>scripts\stones\towns</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\towns\sphere_town_types.scp">
+      <Filter>scripts\stones\towns</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\towns\sphere_town_speech.scp">
+      <Filter>scripts\stones\towns</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\towns\sphere_town_promptconsole.scp">
+      <Filter>scripts\stones\towns</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\towns\sphere_town_items.scp">
+      <Filter>scripts\stones\towns</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\towns\sphere_town_functions_player.scp">
+      <Filter>scripts\stones\towns</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\towns\sphere_town_functions.scp">
+      <Filter>scripts\stones\towns</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\towns\sphere_town_events.scp">
+      <Filter>scripts\stones\towns</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_warfarestatus.scp">
+      <Filter>scripts\stones\towns</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_warfaredeclare.scp">
+      <Filter>scripts\stones\towns</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_warfareadmin.scp">
+      <Filter>scripts\stones\towns</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_townlist.scp">
+      <Filter>scripts\stones\towns</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_master.scp">
+      <Filter>scripts\stones\towns</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_main.scp">
+      <Filter>scripts\stones\towns</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_charter.scp">
+      <Filter>scripts\stones\towns</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_charlist.scp">
+      <Filter>scripts\stones\towns</Filter>
+    </None>
+    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_align.scp">
+      <Filter>scripts\stones\towns</Filter>
+    </None>
+    <None Include="..\..\scripts\maps\sphere_map_points0.scp">
+      <Filter>scripts\maps</Filter>
+    </None>
+    <None Include="..\..\scripts\maps\sphere_map_points0_ml.scp">
+      <Filter>scripts\maps</Filter>
+    </None>
+    <None Include="..\..\scripts\maps\sphere_map_points1.scp">
+      <Filter>scripts\maps</Filter>
+    </None>
+    <None Include="..\..\scripts\maps\sphere_map_points2.scp">
+      <Filter>scripts\maps</Filter>
+    </None>
+    <None Include="..\..\scripts\maps\sphere_map_points3.scp">
+      <Filter>scripts\maps</Filter>
+    </None>
+    <None Include="..\..\scripts\maps\sphere_map_points4.scp">
+      <Filter>scripts\maps</Filter>
+    </None>
+    <None Include="..\..\scripts\maps\sphere_map_points5.scp">
+      <Filter>scripts\maps</Filter>
+    </None>
+    <None Include="..\..\scripts\maps\sphere_map0.scp">
+      <Filter>scripts\maps</Filter>
+    </None>
+    <None Include="..\..\scripts\maps\sphere_map0_ml.scp">
+      <Filter>scripts\maps</Filter>
+    </None>
+    <None Include="..\..\scripts\maps\sphere_map1.scp">
+      <Filter>scripts\maps</Filter>
+    </None>
+    <None Include="..\..\scripts\maps\sphere_map2.scp">
+      <Filter>scripts\maps</Filter>
+    </None>
+    <None Include="..\..\scripts\maps\sphere_map3.scp">
+      <Filter>scripts\maps</Filter>
+    </None>
+    <None Include="..\..\scripts\maps\sphere_map4.scp">
+      <Filter>scripts\maps</Filter>
+    </None>
+    <None Include="..\..\scripts\maps\sphere_map5.scp">
+      <Filter>scripts\maps</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_animations.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_artifacts.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_artifacts_minor.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_artifacts_tokuno.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_boulders_rocks.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_building_doors.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_building_floors.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_building_other.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_building_roofs.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_building_stairs.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_building_walls.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_buildings.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_char_icons.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_christmas.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_deco_carpet_rugs.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_deco_carvings_statues.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_deco_dungeons_traps_dead.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_deco_fireplace_chimney_oven.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_deco_furniture.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_deco_lightsources.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_deco_miniatures.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_deco_signs.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_deco_virtues.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_deco_wall_hangings.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_ground_tiles.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_magic_armor.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_magic_chivalry.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_magic_jewelry.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_magic_leather.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_magic_magery.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_magic_mysticism.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_magic_necromancer_aos.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_magic_ninjitsu_bushido.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_magic_spellweaving.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_magic_wands.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_magic_weapon.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_memories.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_misc.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_multis_foundations.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_multis_houses_ships.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_multis_stairs.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_offset.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_profession.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_profession_alchemist.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_profession_barber.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_profession_cartographer.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_profession_cook_barkeep_baker.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_profession_tailor_tanner.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_provisions_armor.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_provisions_armor_color.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_provisions_clothing.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_provisions_deed.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_provisions_jewelry.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_provisions_misc.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_provisions_ore.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_provisions_potions.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_provisions_shields.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_provisions_weapons.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_resources.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_ship_parts.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_ship_parts_britannian.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_ship_parts_gargish.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_ship_parts_orcish.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_ship_parts_tokuno.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_siege.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_treasure_maps.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_typedef_equipitem.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_typedefs.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_unsorted.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_vegetation.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_template.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_template_armor.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_template_loot.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_template_magic.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_template_misc.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_template_sets.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_template_vend.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_template_weapons.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_types.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\spheretables.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_spells.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_speech.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_spawns.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_skills.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_skillmenu.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_serv_triggers.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_region.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_newb.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_name.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_msgs.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\npcs\sphere_citizens.scp">
+      <Filter>scripts\npcs</Filter>
+    </None>
+    <None Include="..\..\scripts\npcs\sphere_guildmasters.scp">
+      <Filter>scripts\npcs</Filter>
+    </None>
+    <None Include="..\..\scripts\npcs\sphere_monsters.scp">
+      <Filter>scripts\npcs</Filter>
+    </None>
+    <None Include="..\..\scripts\npcs\sphere_monsters_custom.scp">
+      <Filter>scripts\npcs</Filter>
+    </None>
+    <None Include="..\..\scripts\npcs\sphere_vendors.scp">
+      <Filter>scripts\npcs</Filter>
+    </None>
+    <None Include="..\..\scripts\npcs\spherechar_evil.scp">
+      <Filter>scripts\npcs</Filter>
+    </None>
+    <None Include="..\..\scripts\npcs\spherechar_human.scp">
+      <Filter>scripts\npcs</Filter>
+    </None>
+    <None Include="..\..\scripts\add-on\readme.txt">
+      <Filter>scripts\add-on</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_menu.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\web\sphere.gif">
+      <Filter>scripts\web</Filter>
+    </None>
+    <None Include="..\..\scripts\web\sphere_anim.gif">
+      <Filter>scripts\web</Filter>
+    </None>
+    <None Include="..\..\scripts\web\sphere404.htm">
+      <Filter>scripts\web</Filter>
+    </None>
+    <None Include="..\..\scripts\web\spherestatusbase.html">
+      <Filter>scripts\web</Filter>
+    </None>
+    <None Include="..\tables\triggers.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\spherespee.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\add-on\worldfiles.zip">
+      <Filter>scripts\add-on</Filter>
+    </None>
+    <None Include="..\common\twofish\Makefile">
+      <Filter>common\twofish</Filter>
+    </None>
+    <None Include="..\common\zlib\ChangeLog">
+      <Filter>common\zlib</Filter>
+    </None>
+    <None Include="..\common\zlib\FAQ">
+      <Filter>common\zlib</Filter>
+    </None>
+    <None Include="..\common\zlib\INDEX">
+      <Filter>common\zlib</Filter>
+    </None>
+    <None Include="..\common\zlib\README">
+      <Filter>common\zlib</Filter>
+    </None>
+    <None Include="..\common\mysql\include\libmysql.def">
+      <Filter>common\mysql\include</Filter>
+    </None>
+    <None Include="..\common\mysql\include\libmysqld.def">
+      <Filter>common\mysql\include</Filter>
+    </None>
+    <None Include="..\common\mysql\lib\debug\libmysql.dll">
+      <Filter>common\mysql\lib\debug</Filter>
+    </None>
+    <None Include="..\common\mysql\lib\release\libmysql.dll">
+      <Filter>common\mysql\lib\release</Filter>
+    </None>
+    <None Include="..\..\docs\REVISIONS-56-SERIES.TXT" />
+    <None Include="makefile">
+      <Filter>graysvr</Filter>
+    </None>
+    <None Include="makefile.bsd">
+      <Filter>graysvr</Filter>
+    </None>
+    <None Include="makefile.lin-static">
+      <Filter>graysvr</Filter>
+    </None>
+    <None Include="makefile.nightly.debug">
+      <Filter>graysvr</Filter>
+    </None>
+    <None Include="makefile.nightly.release">
+      <Filter>graysvr</Filter>
+    </None>
+    <None Include="makefile.prerelease">
+      <Filter>graysvr</Filter>
+    </None>
+    <None Include="..\..\scripts\add-on\Can_Use_Player_Event.rar">
+      <Filter>scripts\add-on</Filter>
+    </None>
+    <None Include="..\..\scripts\add-on\Expansion_Player_Event.rar">
+      <Filter>scripts\add-on</Filter>
+    </None>
+    <None Include="..\..\scripts\add-on\mordaunts_housing_system.zip">
+      <Filter>scripts\add-on</Filter>
+    </None>
+    <None Include="..\..\scripts\add-on\Sphere Core File Creator - Installer.rar">
+      <Filter>scripts\add-on</Filter>
+    </None>
+    <None Include="..\..\scripts\add-on\sphere_attr.rar">
+      <Filter>scripts\add-on</Filter>
+    </None>
+    <None Include="..\..\scripts\add-on\HighSeas\Ships\HS_pilot.scp">
+      <Filter>scripts\add-on\HighSeas\Ships</Filter>
+    </None>
+    <None Include="..\..\scripts\items\sphere_item_provisions_logs.scp">
+      <Filter>scripts\items</Filter>
+    </None>
+    <None Include="..\..\scripts\items\multis\multis_foundations.scp">
+      <Filter>scripts\items\multis</Filter>
+    </None>
+    <None Include="..\..\scripts\items\multis\multis_houses.scp">
+      <Filter>scripts\items\multis</Filter>
+    </None>
+    <None Include="..\..\scripts\items\multis\multis_magincia_bazaar.scp">
+      <Filter>scripts\items\multis</Filter>
+    </None>
+    <None Include="..\..\scripts\items\multis\multis_misc.scp">
+      <Filter>scripts\items\multis</Filter>
+    </None>
+    <None Include="..\..\scripts\items\multis\multis_ships.scp">
+      <Filter>scripts\items\multis</Filter>
+    </None>
+    <None Include="..\..\scripts\items\multis\multis_stairs.scp">
+      <Filter>scripts\items\multis</Filter>
+    </None>
+    <None Include="..\..\scripts\items\multis\multis_wandering_camps.scp">
+      <Filter>scripts\items\multis</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\joblumberjack.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\spk_house_cmds.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\speech\spk_ship_cmds.scp">
+      <Filter>scripts\speech</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_add_sqlite.scp">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\sphere_combat.scp">
+      <Filter>scripts</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\common\zlib\algorithm.txt">
+      <Filter>common\zlib</Filter>
+    </Text>
+    <Text Include="..\common\mysql\version.txt">
+      <Filter>common\mysql</Filter>
+    </Text>
+    <Text Include="MANUAL.TXT">
+      <Filter>graysvr</Filter>
+    </Text>
+    <Text Include="..\..\docs\REVISIONS-51-54-SERIES.TXT" />
+    <Text Include="..\..\docs\REVISIONS-55-SERIES.TXT" />
+    <Text Include="..\..\docs\REVISIONS-56-Pre_release.TXT" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\common\mysql\lib\debug\libmysql.lib">
+      <Filter>common\mysql\lib\debug</Filter>
+    </Library>
+    <Library Include="..\common\mysql\lib\debug\mysqlclient.lib">
+      <Filter>common\mysql\lib\debug</Filter>
+    </Library>
+    <Library Include="..\common\mysql\lib\debug\mysys.lib">
+      <Filter>common\mysql\lib\debug</Filter>
+    </Library>
+    <Library Include="..\common\mysql\lib\debug\regex.lib">
+      <Filter>common\mysql\lib\debug</Filter>
+    </Library>
+    <Library Include="..\common\mysql\lib\debug\strings.lib">
+      <Filter>common\mysql\lib\debug</Filter>
+    </Library>
+    <Library Include="..\common\mysql\lib\debug\zlib.lib">
+      <Filter>common\mysql\lib\debug</Filter>
+    </Library>
+    <Library Include="..\common\mysql\lib\release\libmysql.lib">
+      <Filter>common\mysql\lib\release</Filter>
+    </Library>
+    <Library Include="..\common\mysql\lib\release\mysqlclient.lib">
+      <Filter>common\mysql\lib\release</Filter>
+    </Library>
+    <Library Include="..\common\mysql\lib\release\mysys.lib">
+      <Filter>common\mysql\lib\release</Filter>
+    </Library>
+    <Library Include="..\common\mysql\lib\release\mysys_tls.lib">
+      <Filter>common\mysql\lib\release</Filter>
+    </Library>
+    <Library Include="..\common\mysql\lib\release\mysys-max.lib">
+      <Filter>common\mysql\lib\release</Filter>
+    </Library>
+    <Library Include="..\common\mysql\lib\release\regex.lib">
+      <Filter>common\mysql\lib\release</Filter>
+    </Library>
+    <Library Include="..\common\mysql\lib\release\strings.lib">
+      <Filter>common\mysql\lib\release</Filter>
+    </Library>
+    <Library Include="..\common\mysql\lib\release\zlib.lib">
+      <Filter>common\mysql\lib\release</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GraySvr.rc">
+      <Filter>graysvr</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
