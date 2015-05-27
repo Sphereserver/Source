@@ -76,8 +76,10 @@ INCLUDE IMPLEMENTATION SPECIFIC INFORMATION.
 	parameters at the bottom of the structs as appropriate.
 */
 
+#ifndef BYTE //conflict with os_unix.h
 typedef unsigned char BYTE;
 typedef	unsigned long DWORD;		/* 32-bit unsigned quantity */
+#endif
 typedef DWORD fullSbox[4][256];
 
 /* The structure for key information */

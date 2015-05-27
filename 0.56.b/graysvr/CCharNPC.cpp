@@ -743,7 +743,7 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 		break;
 	//Set as numbers only
 	case CNC_BONDED:
-		m_bonded = static_cast<bool>(s.GetArgVal());
+		m_bonded = (s.GetArgVal() > 0);
 		break;
 	case CNC_FOLLOWERSLOTS:
 		pChar->SetDefNum(s.GetKey(), s.GetArgVal(), false );
@@ -790,17 +790,12 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 		break;
 	case CNC_SPELLADD:
 	{
-		unsigned char count = 0;
-		INT64 * ppCmd[255];
-		Str_ParseCmds(s.GetArgStr(), ppCmd[255], count, NULL);
-		if (count < 0)
+		INT64 ppCmd[255];
+		size_t count = Str_ParseCmds(s.GetArgStr(), ppCmd, COUNTOF(ppCmd));
+		if (count < 1)
 			return false;
-		for (unsigned char i = 0; i < count; i++)
-		{
-			if (!ppCmd[i])
-				break;
-			Spells_Add(static_cast<SPELL_TYPE>(*ppCmd[i]));
-		}
+		for (size_t i = 0; i < count; i++)
+			Spells_Add(static_cast<SPELL_TYPE>(ppCmd[i]));
 	}
 
 	default:
