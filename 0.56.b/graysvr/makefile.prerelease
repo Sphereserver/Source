@@ -164,7 +164,7 @@ C_FLAGS	= $(OPT) $(INCLUDE) $(DEFINES)
 all:	$(EXE)
 
 clean:	tidy
-	rm -f *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o ../network/*.o ../tests/*.o $(EXE) $(REXE)
+	rm -f *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../common/sqlite/*.of ../sphere/*.o ../network/*.o ../tests/*.o $(EXE) $(REXE)
 
 .depend:
 	@$(SCCO) -MM $(INCLUDE) $(SRC) $(COMMONSRC) > .depend
@@ -176,6 +176,7 @@ tidy:
 				 ../common/twofish/*~ ../common/twofish/*orig ../common/twofish/*bak \
 				 ../common/libev/*~ ../common/libev/*orig ../common/libev/*bak \
 				 ../common/zlib/*~ ../common/zlib/*orig ../common/zlib/*bak \
+				 ../common/sqlite/*~ ../common/sqlite/*orig ../common/sqlite/*bak \
 				 ../sphere/*~ ../sphere/*orig ../sphere/*bak \
 				 ../network/*~ ../network/*orig ../network/*bak \
 				 ../tests/*~ ../tests/*orig ../tests/*bak
@@ -197,7 +198,7 @@ flags:
 	@echo "Compiler Flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)"
 
 $(EXE): svn flags gray
-	@$(CC) $(O_FLAGS) $(C_FLAGS) -o $(EXE) *.o ../common/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o ../network/*.o $(LIBS)
+	@$(CC) $(O_FLAGS) $(C_FLAGS) -o $(EXE) *.o ../common/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../common/sqlite/*.o ../sphere/*.o ../network/*.o $(LIBS)
 
 version.h:	VERSION
 	echo "#define VERSION 'head -l VERSION'" > version.h
