@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, Apr 26, 2015
+// FILE LAST UPDATED: Thursday, May 28, 2015
 //
 VERSION=0.56c
 
@@ -645,7 +645,7 @@ CAST_TIME=1.5
 RESOURCES=i_reag_black_pearl,i_reag_garlic,i_reag_spider_silk,i_reag_sulfur_ash
 RUNE_ITEM=i_rune_dispel_field
 SCROLL_ITEM=i_scroll_dispel_field
-FLAGS=spellflag_dir_anim|spellflag_targ_obj|spellflag_playeronly
+FLAGS=spellflag_dir_anim|spellflag_targ_item|spellflag_playeronly
 EFFECT_ID=0
 EFFECT=0
 DURATION=0.0

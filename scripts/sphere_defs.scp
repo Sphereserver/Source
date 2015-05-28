@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, May 22, 2015
+// FILE LAST UPDATED: Thursday, May 28, 2015
 //
 VERSION=0.56c
 
@@ -1631,9 +1631,7 @@ bufficon_SpellFocusing			1070
 [DEFNAME buff_clilocs]
 buffcliloc_empty               1070722
 buffcliloc_curse_1             1075835
-buffcliloc_curse_2             1075840
-buffcliloc_masscurse_1         1075839
-buffcliloc_masscurse_2         1075840
+buffcliloc_curse_2             1075836
 buffcliloc_weaken_1            1075837
 buffcliloc_weaken_2            1075838
 buffcliloc_masscurse_1         1075839
@@ -1649,7 +1647,7 @@ buffcliloc_bless_2             1075848
 buffcliloc_reactivearmor_1     1075812
 buffcliloc_reactivearmor_2     1075813
 buffcliloc_protection_1        1075814
-buffcliloc_protection_2        1070722 //empty
+buffcliloc_protection_2        1075815
 buffcliloc_archprotection      1075816
 buffcliloc_archprotection      1070722 //empty
 buffcliloc_invisibility_1      1075825
@@ -1657,7 +1655,7 @@ buffcliloc_invisibility_2      1075826
 buffcliloc_paralyze_1          1075827
 buffcliloc_paralyze_2          1075828
 buffcliloc_magicreflection_1   1075817
-buffcliloc_magicreflection_1   1070722 //empty
+buffcliloc_magicreflection_1   1075818
 buffcliloc_clumsy_1            1075831
 buffcliloc_clumsy_2            1075832
 buffcliloc_feeblemind_1        1075833

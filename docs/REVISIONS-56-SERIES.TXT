@@ -2206,3 +2206,7 @@ NOTE: Disabling unused maps / using the less possible will increase the performa
 
 28-05-2015, Coruja
 Fixed: Spell buff/debuff icons showing wrong info on client login.
+[maps/sphere_map3.scp]: Added missing AREADEF a_isle_of_divide
+[maps/sphere_map4.scp]: Updated header comments
+[sphere_defs.scp]: Updated some cliloc values on 'buff_clilocs'
+[sphere_spells.scp]: Fixed Dispel Field spell flags [spellflag_targ_obj -> spellflag_targ_item]
