@@ -1937,7 +1937,7 @@ bool CItemBaseMulti::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole *
 			else if ( !strnicmp(pszKey, "DX", 2) )		sVal.FormatVal(item->m_dx);
 			else if ( !strnicmp(pszKey, "DY", 2) )		sVal.FormatVal(item->m_dy);
 			else if ( !strnicmp(pszKey, "DZ", 2) )		sVal.FormatVal(item->m_dz);
-			else if ( !strnicmp(pszKey, "D", 1) )		sVal.Format("%u,%i,%i", item->m_dx, item->m_dy, item->m_dz);
+			else if ( !strnicmp(pszKey, "D", 1) )		sVal.Format("%i,%i,%i", item->m_dx, item->m_dy, item->m_dz);
 			else if ( !strnicmp(pszKey, "VISIBLE", 7) )	sVal.FormatVal(item->m_visible);
 			else return false;
 		}
