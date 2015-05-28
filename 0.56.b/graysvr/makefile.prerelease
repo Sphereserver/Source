@@ -142,8 +142,8 @@ SRC	:= 	CAccount.cpp \
 		../common/CVarFloat.cpp \
 		../common/ListDefContMap.cpp \
 		../common/graycom.cpp \
-		../common/sqlite\SQLite.cpp \
-		../common/sqlite\sqlite3.c \
+		../common/sqlite/SQLite.cpp \
+		../common/sqlite/sqlite3.c \
 		../sphere/mutex.cpp \
 		../sphere/strings.cpp \
 		../sphere/threads.cpp \
