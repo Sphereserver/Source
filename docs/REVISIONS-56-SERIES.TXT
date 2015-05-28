@@ -2203,3 +2203,6 @@ Changed: Some improvements on pet follower slots and pet bonding engine.
 Major updates on code to fix compiler LVL4 warnings.
 Changed sector's size for map 4 from 8 to 16  (so we only have 5k sectors on this map instead of 31k), improving heavily performance when this map is enabled.
 NOTE: Disabling unused maps / using the less possible will increase the performance exponentially since each tick a loop for all maps and all it's sectors is fire, take this in count.
+
+28-05-2015, Coruja
+Fixed: Spell buff/debuff icons showing wrong info on client login.

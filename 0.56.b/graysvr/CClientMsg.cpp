@@ -34,31 +34,28 @@ void CClient::resendBuffs()
 		return;
 
 	// Skills
-	CChar* pChar = GetChar();
+	CChar *pChar = GetChar();
 	ASSERT(pChar);
 
 	if ( pChar->IsStatFlag( STATF_Hidden ) )
 		addBuff( BI_HIDDEN, 1075655, 1075656 );
 
 	// Spells
-	CContainer* Cont = dynamic_cast<CContainer*>(pChar);
+	CContainer *Cont = dynamic_cast<CContainer*>(pChar);
 	ASSERT(Cont);
 
-	TCHAR NumBuff[5][6];
-	LPCTSTR pNumBuff[5] = { NumBuff[0], NumBuff[1], NumBuff[2], NumBuff[3], NumBuff[4] };
-	int iBuffPercent = 0;
-	int iStatEffect = 0;
+	TCHAR NumBuff[7][8];
+	LPCTSTR pNumBuff[7] = { NumBuff[0], NumBuff[1], NumBuff[2], NumBuff[3], NumBuff[4], NumBuff[5], NumBuff[6] };
+	short iStatEffect = 0;
 	short iTimerEffect = 0;
 
 	for ( size_t i = 0; i < Cont->GetCount(); ++i )
 	{
-		CItem* pSpell = Cont->GetAt(i);
-		if ( !pSpell )
-			continue;
-		if ( !(pSpell->IsType(IT_SPELL)) )
+		CItem *pSpell = Cont->GetAt(i);
+		if ( !pSpell || !pSpell->IsType(IT_SPELL) )
 			continue;
 
-		iStatEffect = g_Cfg.GetSpellEffect(static_cast<SPELL_TYPE>(RES_GET_INDEX(pSpell->m_itSpell.m_spell)), pSpell->m_itSpell.m_spelllevel);
+		iStatEffect = static_cast<short>(pSpell->m_itSpell.m_spelllevel);
 		iTimerEffect = static_cast<short>(pSpell->GetTimerAdjusted());
 		
 		// TO-DO: Fix buff icons not showing correct timer value on client login
@@ -68,7 +65,7 @@ void CClient::resendBuffs()
 		switch( pSpell->m_itSpell.m_spell )
 		{
 		case SPELL_Night_Sight:
-			addBuff( BI_NIGHTSIGHT,1075643, 1075644, iTimerEffect );
+			addBuff( BI_NIGHTSIGHT, 1075643, 1075644, iTimerEffect );
 			break;
 		case SPELL_Clumsy:
 			ITOA(iStatEffect, NumBuff[0], 10);
@@ -86,17 +83,18 @@ void CClient::resendBuffs()
 		{
 			for ( int idx = STAT_STR; idx < STAT_BASE_QTY; ++idx )
 				ITOA(iStatEffect, NumBuff[idx], 10);
-			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
-			{
-				for ( int idx = 3; idx < 7; ++idx )
-					ITOA(10, NumBuff[idx], 10);
+			for ( int idx = 3; idx < 7; ++idx )
+				ITOA(10, NumBuff[idx], 10);
 
-				GetClient()->addBuff(BI_CURSE, 1075835, 1075836, iTimerEffect, pNumBuff, 7);
-			}
-			else
-			{
-				GetClient()->addBuff(BI_CURSE, 1075835, 1075840, iTimerEffect, pNumBuff, 3);
-			}
+			GetClient()->addBuff(BI_CURSE, 1075835, 1075836, iTimerEffect, pNumBuff, 7);
+			break;
+		}
+		case SPELL_Mass_Curse:
+		{
+			for ( int idx = STAT_STR; idx < STAT_BASE_QTY; ++idx )
+				ITOA(iStatEffect, NumBuff[idx], 10);
+
+			GetClient()->addBuff(BI_MASSCURSE, 1075839, 1075840, iTimerEffect, pNumBuff, 3);
 			break;
 		}
 		case SPELL_Strength:
@@ -113,7 +111,7 @@ void CClient::resendBuffs()
 			break;
 		case SPELL_Bless:
 		{
-			for ( int idx = STAT_STR; idx != STAT_BASE_QTY; ++idx)
+			for ( int idx = STAT_STR; idx < STAT_BASE_QTY; ++idx )
 				ITOA(iStatEffect, NumBuff[idx], 10);
 
 			addBuff( BI_BLESS, 1075847, 1075848, iTimerEffect, pNumBuff, STAT_BASE_QTY );
@@ -123,8 +121,7 @@ void CClient::resendBuffs()
 		{
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
-				iBuffPercent = pSpell->m_itSpell.m_spelllevel;
-				ITOA(iBuffPercent, NumBuff[0], 10);
+				ITOA(iStatEffect, NumBuff[0], 10);
 				for ( int idx = 1; idx < 5; ++idx )
 					ITOA(5, NumBuff[idx], 10);
 
@@ -140,7 +137,7 @@ void CClient::resendBuffs()
 		case SPELL_Arch_Prot:
 		{
 			BUFF_ICONS BuffIcon = BI_PROTECTION;
-			unsigned long BuffCliloc = 1075814;
+			DWORD BuffCliloc = 1075814;
 			if ( pSpell->m_itSpell.m_spell == SPELL_Arch_Prot )
 			{
 				BuffIcon = BI_ARCHPROTECTION;
@@ -172,8 +169,7 @@ void CClient::resendBuffs()
 		{
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
-				iBuffPercent = pSpell->m_itSpell.m_spelllevel;
-				ITOA(-iBuffPercent, NumBuff[0], 10);
+				ITOA(-iStatEffect, NumBuff[0], 10);
 				for ( int idx = 1; idx < 5; ++idx )
 					ITOA(10, NumBuff[idx], 10);
 
@@ -188,15 +184,13 @@ void CClient::resendBuffs()
 		case SPELL_Invis:
 			addBuff( BI_INVISIBILITY, 1075825, 1075826, iTimerEffect );
 			break;
-		//case SPELL_Mass_Curse:
-		//	break;
 		default:
 			break;
 		}
 
 	}
-
 }
+
 void CClient::addBuff( const BUFF_ICONS IconId, const DWORD ClilocOne, const DWORD ClilocTwo, const short Time, LPCTSTR* pArgs, size_t iArgCount)
 {
 	ADDTOCALLSTACK("CClient::addBuff");

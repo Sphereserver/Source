@@ -4734,9 +4734,16 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	switch ( spell )
 	{
 		case SPELL_Dispel_Field:
+			if ( GetType() == IT_SPELL )
+			{
+				if ( IsTopLevel())
+					Effect( EFFECT_XYZ, ITEMID_FX_HEAL_EFFECT, pCharSrc, 9, 20 );
+				Delete();
+			}
+			break;
 		case SPELL_Dispel:
 		case SPELL_Mass_Dispel:
-			if ( GetType() == IT_SPELL ) // ??? compare the strength of the spells ?
+			if ( GetType() == IT_SPELL )
 			{
 				if ( IsTopLevel())
 					Effect( EFFECT_XYZ, ITEMID_FX_TELE_VANISH, pCharSrc, 8, 20 );
@@ -4746,9 +4753,6 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		case SPELL_Bless:
 		case SPELL_Curse:
 			return false;
-		case SPELL_Incognito:
-			ClrAttr(ATTR_IDENTIFIED);
-			return true;
 		case SPELL_Lightning:
 			Effect( EFFECT_LIGHTNING, ITEMID_NOTHING, pCharSrc );
 			break;
@@ -4800,29 +4804,6 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			{
 				m_itRune.m_Strength = pSpellDef->m_Effect.GetLinear( iSkillLevel );
 				SetName( pCharSrc->m_pArea->GetName() );
-			}
-			break;
-
-		case SPELL_Resurrection:
-			if ( IsType( IT_CORPSE ))
-			{
-				CItemCorpse * pCorpse = dynamic_cast <CItemCorpse*>(this);
-				ASSERT(pCorpse);
-
-				// If the corpse is attached to a player or other disconnected person then yank them back.
-				CChar * pChar = pCorpse->m_uidLink.CharFind();
-				if ( pChar )
-					pChar->Spell_Resurrection(pCorpse);
-				else
-				{
-					// Just an NPC corpse I guess.
-					pChar = CChar::CreateBasic(m_itCorpse.m_BaseID);
-					if ( pChar == NULL )
-						return false;
-					pChar->NPC_LoadScript(false);
-					pChar->RaiseCorpse(pCorpse);
-					pChar->NPC_CreateTrigger(); //Removed from NPC_LoadScript() and triggered after char placement
-				}
 			}
 			break;
 		default:
