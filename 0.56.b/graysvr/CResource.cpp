@@ -1558,12 +1558,12 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			sVal.FormatVal( m_iBankWMax / WEIGHT_UNITS );
 			break;
 		case RC_BUILD:
-		   #ifdef __SVNREVISION__
-			sVal = __SVNREVISION__;
-		   #else
-			sVal = __DATE__;
-		   #endif
-		   break;
+			#ifdef __SVNREVISION__
+			 sVal.FormatVal( __SVNREVISION__ );
+			#else
+			 sVal = __DATE__;
+			#endif
+			break;
 		case RC_CLIENTLINGER:
 			sVal.FormatVal( m_iClientLingerTime / TICK_PER_SEC );
 			break;

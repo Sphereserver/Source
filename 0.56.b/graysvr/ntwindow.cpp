@@ -146,11 +146,14 @@ CNTApp theApp;
 bool CNTWindow::CAboutDlg::OnInitDialog()
 {
 	char *z = Str_GetTemp();
-	sprintf(z, "%s\n%s\nCompiled: %s",
-		g_Serv.GetName(),
-		GRAY_TITLE " Version " GRAY_VERSION,
-		__DATE__ " " __TIME__);
-	SetDlgItemText(IDC_ABOUT_VERSION,  z);
+	sprintf(z, "%s %s", GRAY_TITLE, GRAY_VERSION);
+	#ifdef __SVNREVISION__
+	 sprintf(z, "%s (build %d)", z, __SVNREVISION__);
+	#endif
+	SetDlgItemText(IDC_ABOUT_VERSION, z);
+
+	sprintf(z, "Compiled at %s (%s)", __DATE__, __TIME__);
+	SetDlgItemText(IDC_ABOUT_COMPILER, z);
 	return false;
 }
 

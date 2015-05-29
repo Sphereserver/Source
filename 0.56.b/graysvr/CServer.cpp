@@ -412,15 +412,14 @@ void CServer::ListClients( CTextConsole * pConsole ) const
 
 			TCHAR chRank = '=';
 			if ( pClient->IsPriv(PRIV_GM) || pClient->GetPrivLevel() >= PLEVEL_Counsel )
-				chRank = pChar->IsStatFlag(STATF_Insubstantial) ? '*' : '+';
+				chRank = '+';
 
-			sprintf(tmpMsg, "%lx:Acc%c'%s', (%s) Char='%s',(%s)\n",
+			sprintf(tmpMsg, "%lx:Acc%c'%s', Char='%s' (IP: %s)\n",
 				pClient->GetSocketID(),
 				chRank,
-				static_cast<LPCTSTR>(pClient->GetAccount()->GetName()),
-				pClient->GetPeerStr(),
-				static_cast<LPCTSTR>(pChar->GetName()),
-				static_cast<LPCTSTR>(pChar->GetTopPoint().WriteUsed()));
+				pClient->GetAccount()->GetName(),
+				pChar->GetName(),
+				pClient->GetPeerStr());
 		}
 		else
 		{
@@ -431,21 +430,21 @@ void CServer::ListClients( CTextConsole * pConsole ) const
 			switch ( pClient->GetConnectType() )
 			{
 				case CONNECT_TELNET:
-					pszState = "TelNet";
+					pszState = "TELNET";
 					break;
 				case CONNECT_HTTP:
-					pszState = "Web";
+					pszState = "WEB";
 					break;
 				default:
 					pszState = "NOT LOGGED IN";
 					break;
 			}
 
-			sprintf(tmpMsg, "%lx:Acc='%s', (%s) %s\n",
+			sprintf(tmpMsg, "%lx:Acc='%s' (IP: %s) %s\n",
 				pClient->GetSocketID(),
 				pClient->GetAccount() != NULL ? static_cast<LPCTSTR>(pClient->GetAccount()->GetName()) : "<NA>",
 				pClient->GetPeerStr(),
-				static_cast<LPCTSTR>(pszState));
+				pszState);
 		}
 
 		// If we have many clients, SCRIPT_MAX_LINE_LEN may be too short ;) (matex)
@@ -1960,9 +1959,9 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 	g_Log.WriteString("\n");
 
 #ifdef __SVNREVISION__
-	g_Log.Event(0, "%s, compiled at " __DATE__ " (" __TIME__ "), internal build #" __SVNREVISION__  "\n", g_szServerDescription);
+	g_Log.Event(LOGM_INIT, "%s, compiled at %s (%s) [build %d]\n", g_szServerDescription, __DATE__, __TIME__, __SVNREVISION__);
 #else
-	g_Log.Event(LOGM_INIT, "%s, compiled at " __DATE__ " (" __TIME__ ")\n", g_szServerDescription);
+	g_Log.Event(LOGM_INIT, "%s, compiled at %s (%s)\n", g_szServerDescription, __DATE__, __TIME__);
 #endif
 
 #ifdef _WIN32
@@ -1972,18 +1971,18 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 
 
 #ifdef _NIGHTLYBUILD
-	g_Log.EventWarn(" --- WARNING ---\r\n\r\n"
+	g_Log.EventWarn("\r\n"
 					"This is a nightly build of SphereServer. This build is to be used\r\n"
 					"for testing and/or bug reporting ONLY. DO NOT run this build on a\r\n"
 					"live shard unless you know what you are doing!\r\n"
 					"Nightly builds are automatically made every night from source and\r\n"
 					"might contain errors, might be unstable or even destroy your\r\n"
 					"shard as they are mostly untested!\r\n"
-					" ---------------------------------\r\n\r\n");
+					"-----------------------------------------------------------------\r\n\r\n");
 
 	if (!g_Cfg.m_bAgree)
 	{
-		g_Log.EventError("Please set AGREE=1 in the INI file to acknowledge that\nyou understand the terms for nightly builds\n");
+		g_Log.EventError("Please write AGREE=1 in Sphere.ini file to acknowledge that\nyou understand the terms of use for nightly builds.\n");
 		return false;
 	}
 #endif
