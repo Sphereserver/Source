@@ -1850,6 +1850,7 @@ enum LAYER_TYPE		// defined by UO. Only one item can be in a slot.
 	LAYER_AUCTION,				// Auction layer
 
 	//Necro
+	LAYER_SPELL_Blood_Oath,
 	LAYER_SPELL_Curse_Weapon,
 	LAYER_SPELL_Corpse_Skin,
 	LAYER_SPELL_Evil_Omen,

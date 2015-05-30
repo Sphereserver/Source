@@ -18386,6 +18386,12 @@ CATEGORY=Spells
 SUBSECTION=Necromancy
 DESCRIPTION=Horrific Beast (Moloch)
 
+ON=@SpellCast
+IF (<IsPlayer>)
+	//SysMessage=You canno't cast in your current state.
+	return 1
+endif
+
 [CHARDEF 02eb]
 DEFNAME=c_vampire_form
 NAME=vampire

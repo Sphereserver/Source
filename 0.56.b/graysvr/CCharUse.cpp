@@ -1191,6 +1191,12 @@ void CChar::Use_Drink( CItem * pItem )
 
 		// Convey the effect of the potion.
 		int iSkillQuality = pItem->m_itPotion.m_skillquality;
+		if (g_Cfg.m_iFeatureAOS&FEATURE_AOS_UPDATE_B)
+		{
+			int iEnhance = static_cast<int>(GetDefNum("EnhancePotions",false));
+			if (iEnhance)
+				iSkillQuality += IMULDIV(iSkillQuality,iEnhance,100);
+		}
 
 		OnSpellEffect(static_cast<SPELL_TYPE>(RES_GET_INDEX(pItem->m_itPotion.m_Type)), this, iSkillQuality, pItem );
 

@@ -3167,39 +3167,42 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 						case IT_CLOTHING:
 						case IT_SHIELD:
 							{
-								INT64 PhysicalResist = pItem->GetDefNum("RESPHYSICAL", true, true);
-								if ( PhysicalResist != 0 )
+								if (IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE))
 								{
-									this->m_TooltipData.Add( t = new CClientTooltip( 1060448 ) ); // physical resist ~1_val~%
-									t->FormatArgs( "%lld", PhysicalResist );
-								}
+									INT64 PhysicalResist = pItem->GetDefNum("RESPHYSICAL", true, true);
+									if (PhysicalResist != 0)
+									{
+										this->m_TooltipData.Add(t = new CClientTooltip(1060448)); // physical resist ~1_val~%
+										t->FormatArgs("%lld", PhysicalResist);
+									}
 
-								INT64 FireResist = pItem->GetDefNum("RESFIRE", true, true);
-								if ( FireResist != 0 )
-								{
-									this->m_TooltipData.Add( t = new CClientTooltip( 1060447 ) ); // fire resist ~1_val~%
-									t->FormatArgs( "%lld", FireResist );
-								}
+									INT64 FireResist = pItem->GetDefNum("RESFIRE", true, true);
+									if (FireResist != 0)
+									{
+										this->m_TooltipData.Add(t = new CClientTooltip(1060447)); // fire resist ~1_val~%
+										t->FormatArgs("%lld", FireResist);
+									}
 
-								INT64 ColdResist = pItem->GetDefNum("RESCOLD", true, true);
-								if ( ColdResist != 0 )
-								{
-									this->m_TooltipData.Add( t = new CClientTooltip( 1060445 ) ); // cold resist ~1_val~%
-									t->FormatArgs( "%lld", ColdResist );
-								}
+									INT64 ColdResist = pItem->GetDefNum("RESCOLD", true, true);
+									if (ColdResist != 0)
+									{
+										this->m_TooltipData.Add(t = new CClientTooltip(1060445)); // cold resist ~1_val~%
+										t->FormatArgs("%lld", ColdResist);
+									}
 
-								INT64 PoisonResist = pItem->GetDefNum("RESPOISON", true, true);
-								if ( PoisonResist != 0 )
-								{
-									this->m_TooltipData.Add( t = new CClientTooltip( 1060449 ) ); // poison resist ~1_val~%
-									t->FormatArgs( "%lld", PoisonResist );
-								}
+									INT64 PoisonResist = pItem->GetDefNum("RESPOISON", true, true);
+									if (PoisonResist != 0)
+									{
+										this->m_TooltipData.Add(t = new CClientTooltip(1060449)); // poison resist ~1_val~%
+										t->FormatArgs("%lld", PoisonResist);
+									}
 
-								INT64 EnergyResist = pItem->GetDefNum("RESENERGY", true, true);
-								if ( EnergyResist != 0 )
-								{
-									this->m_TooltipData.Add( t = new CClientTooltip( 1060446 ) ); // energy resist ~1_val~%
-									t->FormatArgs( "%lld", EnergyResist );
+									INT64 EnergyResist = pItem->GetDefNum("RESENERGY", true, true);
+									if (EnergyResist != 0)
+									{
+										this->m_TooltipData.Add(t = new CClientTooltip(1060446)); // energy resist ~1_val~%
+										t->FormatArgs("%lld", EnergyResist);
+									}
 								}
 
 								int ArmorRating = pItem->Armor_GetDefense();

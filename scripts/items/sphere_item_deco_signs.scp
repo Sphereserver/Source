@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2015
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,13 +7,14 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, September 20, 2013
+// FILE LAST UPDATED: Saturday, May 30, 2015
 //
 VERSION=0.56c
 
 
 [ITEMDEF 0b95]
 //library
+DEFNAME=i_sign_library
 RESOURCES=3 i_board,1 i_ingot_iron
 CATEGORY=Decoration - Signs
 SUBSECTION=Trade
@@ -22,10 +23,12 @@ DUPELIST=0b96
 
 [ITEMDEF 0b96]
 //library
+DEFNAME=i_sign_library_2
 DUPEITEM=0b95
 
 [ITEMDEF 0b97]
 //wooden signpost
+DEFNAME=i_signpost_wooden_dark
 RESOURCES=2 i_board,2 i_hinge
 FLIP=1
 CATEGORY=Decoration - Signs
@@ -35,10 +38,12 @@ DUPELIST=0b98
 
 [ITEMDEF 0b98]
 //wooden signpost
+DEFNAME=i_signpost_wooden_dark_2
 DUPEITEM=0b97
 
 [ITEMDEF 0b99]
 //wooden signpost
+DEFNAME=i_signpost_wooden_light
 RESOURCES=2 i_board,2 i_hinge
 FLIP=1
 CATEGORY=Decoration - Signs
@@ -48,10 +53,12 @@ DUPELIST=0b9a
 
 [ITEMDEF 0b9a]
 //wooden signpost
+DEFNAME=i_signpost_wooden_light_2
 DUPEITEM=0b99
 
 [ITEMDEF 0b9b]
 //metal signpost
+DEFNAME=i_signpost_metal_a
 RESOURCES=2 i_ingot_iron,2 i_hinge
 FLIP=1
 CATEGORY=Decoration - Signs
@@ -61,10 +68,12 @@ DUPELIST=0b9c
 
 [ITEMDEF 0b9c]
 //metal signpost
+DEFNAME=i_signpost_metal_a_2
 DUPEITEM=0b9b
 
 [ITEMDEF 0b9d]
 //metal signpost
+DEFNAME=i_signpost_metal_b
 RESOURCES=2 i_ingot_iron,2 i_hinge
 FLIP=1
 CATEGORY=Decoration - Signs
@@ -74,10 +83,12 @@ DUPELIST=0b9e
 
 [ITEMDEF 0b9e]
 //metal signpost
+DEFNAME=i_signpost_metal_b_2
 DUPEITEM=0b9d
 
 [ITEMDEF 0b9f]
 //metal signpost
+DEFNAME=i_signpost_metal_c
 RESOURCES=2 i_ingot_iron,2 i_hinge
 FLIP=1
 CATEGORY=Decoration - Signs
@@ -87,10 +98,12 @@ DUPELIST=0ba0
 
 [ITEMDEF 0ba0]
 //metal signpost
+DEFNAME=i_signpost_metal_c_2
 DUPEITEM=0b9f
 
 [ITEMDEF 0ba1]
 //metal signpost
+DEFNAME=i_signpost_metal_d
 RESOURCES=2 i_ingot_iron,2 i_hinge
 FLIP=1
 CATEGORY=Decoration - Signs
@@ -100,6 +113,7 @@ DUPELIST=0ba2
 
 [ITEMDEF 0ba2]
 //metal signpost
+DEFNAME=i_signpost_metal_d_2
 DUPEITEM=0ba1
 
 [ITEMDEF 0ba3]
@@ -115,6 +129,7 @@ DUPELIST=0ba4
 
 [ITEMDEF 0ba4]
 //Bakery
+DEFNAME=i_sign_bakery_2
 DUPEITEM=0ba3
 
 [ITEMDEF 0ba5]
@@ -130,6 +145,7 @@ DUPELIST=0ba6
 
 [ITEMDEF 0ba6]
 //Tailor
+DEFNAME=i_sign_tailor_2
 DUPEITEM=0ba5
 
 [ITEMDEF 0ba7]
@@ -145,10 +161,12 @@ DUPELIST=0ba8
 
 [ITEMDEF 0ba8]
 //Tinker
+DEFNAME=i_sign_tinker_2
 DUPEITEM=0ba7
 
 [ITEMDEF 0ba9]
 //Butcher
+DEFNAME=i_sign_butcher
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -159,10 +177,12 @@ DUPELIST=0baa
 
 [ITEMDEF 0baa]
 //Butcher
+DEFNAME=i_sign_butcher_2
 DUPEITEM=0ba9
 
 [ITEMDEF 0bab]
 //Healer
+DEFNAME=i_sign_healer
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -173,10 +193,12 @@ DUPELIST=0bac
 
 [ITEMDEF 0bac]
 //Healer
+DEFNAME=i_sign_healer_2
 DUPEITEM=0bab
 
 [ITEMDEF 0bad]
 //Mage
+DEFNAME=i_sign_mage
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -187,10 +209,12 @@ DUPELIST=0bae
 
 [ITEMDEF 0bae]
 //Mage
+DEFNAME=i_sign_mage_2
 DUPEITEM=0bad
 
 [ITEMDEF 0baf]
 //Woodworker
+DEFNAME=i_sign_woodworker
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -201,10 +225,12 @@ DUPELIST=0bb0
 
 [ITEMDEF 0bb0]
 //Woodworker
+DEFNAME=i_sign_woodworker_2
 DUPEITEM=0baf
 
 [ITEMDEF 0bb1]
 //Customs
+DEFNAME=i_sign_customs
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -215,10 +241,12 @@ DUPELIST=0bb2
 
 [ITEMDEF 0bb2]
 //Customs
+DEFNAME=i_sign_customs_2
 DUPEITEM=0bb1
 
 [ITEMDEF 0bb3]
 //Inn
+DEFNAME=i_sign_inn
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -229,10 +257,12 @@ DUPELIST=0bb4
 
 [ITEMDEF 0bb4]
 //Inn
+DEFNAME=i_sign_inn_2
 DUPEITEM=0bb3
 
 [ITEMDEF 0bb5]
 //Shipwright
+DEFNAME=i_sign_shipwright
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -243,10 +273,12 @@ DUPELIST=0bb6
 
 [ITEMDEF 0bb6]
 //Shipwright
+DEFNAME=i_sign_shipwright_2
 DUPEITEM=0bb5
 
 [ITEMDEF 0bb7]
 //Stables
+DEFNAME=i_sign_stables
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -257,10 +289,12 @@ DUPELIST=0bb8
 
 [ITEMDEF 0bb8]
 //Stables
+DEFNAME=i_sign_stables_2
 DUPEITEM=0bb7
 
 [ITEMDEF 0bb9]
 //Barber Shop
+DEFNAME=i_sign_barber_shop
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -271,10 +305,12 @@ DUPELIST=0bba
 
 [ITEMDEF 0bba]
 //Barber Shop
+DEFNAME=i_sign_barber_shop_2
 DUPEITEM=0bb9
 
 [ITEMDEF 0bbb]
 //Bard
+DEFNAME=i_sign_bard
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -285,10 +321,12 @@ DUPELIST=0bbc
 
 [ITEMDEF 0bbc]
 //Bard
+DEFNAME=i_sign_bard_2
 DUPEITEM=0bbb
 
 [ITEMDEF 0bbd]
 //Fletcher
+DEFNAME=i_sign_fletcher
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -299,10 +337,12 @@ DUPELIST=0bbe
 
 [ITEMDEF 0bbe]
 //Fletcher
+DEFNAME=i_sign_fletcher_2
 DUPEITEM=0bbd
 
 [ITEMDEF 0bbf]
 //Armourer
+DEFNAME=i_sign_armourer
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -313,10 +353,12 @@ DUPELIST=0bc0
 
 [ITEMDEF 0bc0]
 //Armourer
+DEFNAME=i_sign_armourer_2
 DUPEITEM=0bbf
 
 [ITEMDEF 0bc1]
 //Jeweler
+DEFNAME=i_sign_jeweler
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -327,10 +369,12 @@ DUPELIST=0bc2
 
 [ITEMDEF 0bc2]
 //Jeweler
+DEFNAME=i_sign_jeweler_2
 DUPEITEM=0bc1
 
 [ITEMDEF 0bc3]
 //Tavern
+DEFNAME=i_sign_tavern
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -341,10 +385,12 @@ DUPELIST=0bc4
 
 [ITEMDEF 0bc4]
 //Tavern
+DEFNAME=i_sign_tavern_2
 DUPEITEM=0bc3
 
 [ITEMDEF 0bc5]
 //Reagent Shop
+DEFNAME=i_sign_reagent_shop
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -355,10 +401,12 @@ DUPELIST=0bc6
 
 [ITEMDEF 0bc6]
 //Reagent Shop
+DEFNAME=i_sign_reagent_shop_2
 DUPEITEM=0bc5
 
 [ITEMDEF 0bc7]
 //Blacksmith
+DEFNAME=i_sign_blacksmith
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -369,10 +417,12 @@ DUPELIST=0bc8
 
 [ITEMDEF 0bc8]
 //Blacksmith
+DEFNAME=i_sign_blacksmith_2
 DUPEITEM=0bc7
 
 [ITEMDEF 0bc9]
 //Painter
+DEFNAME=i_sign_painter
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -383,10 +433,12 @@ DUPELIST=0bca
 
 [ITEMDEF 0bca]
 //Painter
+DEFNAME=i_sign_painter_2
 DUPEITEM=0bc9
 
 [ITEMDEF 0bcb]
 //Provisioner
+DEFNAME=i_sign_provisioner
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -397,10 +449,12 @@ DUPELIST=0bcc
 
 [ITEMDEF 0bcc]
 //Provisioner
+DEFNAME=i_sign_provisioner_2
 DUPEITEM=0bcb
 
 [ITEMDEF 0bcd]
 //Bowyer
+DEFNAME=i_sign_bowyer
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -411,10 +465,12 @@ DUPELIST=0bce
 
 [ITEMDEF 0bce]
 //Bowyer
+DEFNAME=i_sign_bowyer_2
 DUPEITEM=0bcd
 
 [ITEMDEF 0bcf]
 //wooden sign
+DEFNAME=i_sign_wooden
 TYPE=T_SIGN_GUMP
 FLIP=1
 TDATA2=067
@@ -426,6 +482,7 @@ DUPELIST=0bd0
 
 [ITEMDEF 0bd0]
 //wooden sign
+DEFNAME=i_sign_wooden_2
 DUPEITEM=0bcf
 
 [ITEMDEF 0bd1]
@@ -447,6 +504,7 @@ DUPEITEM=0bd1
 
 [ITEMDEF 0bd3]
 //Armaments Guild
+DEFNAME=i_sign_guild_armament
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -457,10 +515,12 @@ DUPELIST=0bd4
 
 [ITEMDEF 0bd4]
 //Armaments Guild
+DEFNAME=i_sign_guild_armament_2
 DUPEITEM=0bd3
 
 [ITEMDEF 0bd5]
 //Armourers Guild
+DEFNAME=i_sign_guild_armourer
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -471,10 +531,12 @@ DUPELIST=0bd6
 
 [ITEMDEF 0bd6]
 //Armourers Guild
+DEFNAME=i_sign_guild_armourer_2
 DUPEITEM=0bd5
 
 [ITEMDEF 0bd7]
 //Blacksmiths Guild
+DEFNAME=i_sign_guild_blacksmith
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -485,10 +547,12 @@ DUPELIST=0bd8
 
 [ITEMDEF 0bd8]
 //Blacksmiths Guild
+DEFNAME=i_sign_guild_blacksmith_2
 DUPEITEM=0bd7
 
 [ITEMDEF 0bd9]
 //Weapons Guild
+DEFNAME=i_sign_guild_weapon
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -499,10 +563,12 @@ DUPELIST=0bda
 
 [ITEMDEF 0bda]
 //Weapons Guild
+DEFNAME=i_sign_guild_weapon_2
 DUPEITEM=0bd9
 
 [ITEMDEF 0bdb]
 //Bardic Guild
+DEFNAME=i_sign_guild_bard
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -513,10 +579,12 @@ DUPELIST=0bdc
 
 [ITEMDEF 0bdc]
 //Bardic Guild
+DEFNAME=i_sign_guild_bard_2
 DUPEITEM=0bdb
 
 [ITEMDEF 0bdd]
 //Barters  Guild
+DEFNAME=i_sign_guild_barter
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -527,10 +595,12 @@ DUPELIST=0bde
 
 [ITEMDEF 0bde]
 //Barters  Guild
+DEFNAME=i_sign_guild_barter_2
 DUPEITEM=0bdd
 
 [ITEMDEF 0bdf]
 //Provisioner Guild
+DEFNAME=i_sign_guild_provisioner
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -540,11 +610,13 @@ DESCRIPTION=Provisioner Guild
 DUPELIST=0be0
 
 [ITEMDEF 0be0]
+DEFNAME=i_sign_guild_provisioner_2
 //Provisioner Guild
 DUPEITEM=0bdf
 
 [ITEMDEF 0be1]
 //Traders  Guild
+DEFNAME=i_sign_guild_trader
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -555,10 +627,12 @@ DUPELIST=0be2
 
 [ITEMDEF 0be2]
 //Traders  Guild
+DEFNAME=i_sign_guild_trader_2
 DUPEITEM=0be1
 
 [ITEMDEF 0be3]
 //Cooks  Guild
+DEFNAME=i_sign_guild_cook
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -569,10 +643,12 @@ DUPELIST=0be4
 
 [ITEMDEF 0be4]
 //Cooks  Guild
+DEFNAME=i_sign_guild_cook_2
 DUPEITEM=0be3
 
 [ITEMDEF 0be5]
 //Healers  Guild
+DEFNAME=i_sign_guild_healer
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -583,10 +659,12 @@ DUPELIST=0be6
 
 [ITEMDEF 0be6]
 //Healers  Guild
+DEFNAME=i_sign_guild_healer_2
 DUPEITEM=0be5
 
 [ITEMDEF 0be7]
 //Mages  Guild
+DEFNAME=i_sign_guild_mage
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -597,10 +675,12 @@ DUPELIST=0be8
 
 [ITEMDEF 0be8]
 //Mages  Guild
+DEFNAME=i_sign_guild_mage_2
 DUPEITEM=0be7
 
 [ITEMDEF 0be9]
 //Sorcerers  Guild
+DEFNAME=i_sign_guild_sorcerer
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -611,10 +691,12 @@ DUPELIST=0bea
 
 [ITEMDEF 0bea]
 //Sorcerers Guild
+DEFNAME=i_sign_guild_sorcerer_2
 DUPEITEM=0be9
 
 [ITEMDEF 0beb]
 //Illusionist Guild
+DEFNAME=i_sign_guild_illusionist
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -625,10 +707,12 @@ DUPELIST=0bec
 
 [ITEMDEF 0bec]
 //Illusionist Guild
+DEFNAME=i_sign_guild_illusionist_2
 DUPEITEM=0beb
 
 [ITEMDEF 0bed]
 //Miners Guild
+DEFNAME=i_sign_guild_miner
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -639,10 +723,12 @@ DUPELIST=0bee
 
 [ITEMDEF 0bee]
 //Miners Guild
+DEFNAME=i_sign_guild_miner_2
 DUPEITEM=0bed
 
 [ITEMDEF 0bef]
 //Archers Guild
+DEFNAME=i_sign_guild_archer
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -653,10 +739,12 @@ DUPELIST=0bf0
 
 [ITEMDEF 0bf0]
 //Archers Guild
+DEFNAME=i_sign_guild_archer_2
 DUPEITEM=0bef
 
 [ITEMDEF 0bf1]
 //Seamens Guild
+DEFNAME=i_sign_guild_seamen
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -667,10 +755,12 @@ DUPELIST=0bf2
 
 [ITEMDEF 0bf2]
 //Seamens Guild
+DEFNAME=i_sign_guild_seamen_2
 DUPEITEM=0bf1
 
 [ITEMDEF 0bf3]
 //Fishermens Guild
+DEFNAME=i_sign_guild_fisherman
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -681,10 +771,12 @@ DUPELIST=0bf4
 
 [ITEMDEF 0bf4]
 //Fishermens Guild
+DEFNAME=i_sign_guild_fisherman_2
 DUPEITEM=0bf3
 
 [ITEMDEF 0bf5]
 //Sailors Guild
+DEFNAME=i_sign_guild_sailor
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -695,10 +787,12 @@ DUPELIST=0bf6
 
 [ITEMDEF 0bf6]
 //Sailors Guild
+DEFNAME=i_sign_guild_sailor_2
 DUPEITEM=0bf5
 
 [ITEMDEF 0bf7]
 //Shipwrights Guild
+DEFNAME=i_sign_guild_shipwright
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -709,10 +803,12 @@ DUPELIST=0bf8
 
 [ITEMDEF 0bf8]
 //Shipwrights Guild
+DEFNAME=i_sign_guild_shipwright_2
 DUPEITEM=0bf7
 
 [ITEMDEF 0bf9]
 //Tailors Guild
+DEFNAME=i_sign_guild_tailor
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -723,10 +819,12 @@ DUPELIST=0bfa
 
 [ITEMDEF 0bfa]
 //Tailors Guild
+DEFNAME=i_sign_guild_tailor_2
 DUPEITEM=0bf9
 
 [ITEMDEF 0bfb]
 //Thieves Guild
+DEFNAME=i_sign_guild_thief
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -737,10 +835,12 @@ DUPELIST=0bfc
 
 [ITEMDEF 0bfc]
 //Thieves Guild
+DEFNAME=i_sign_guild_thief_2
 DUPEITEM=0bfb
 
 [ITEMDEF 0bfd]
 //Rogues Guild
+DEFNAME=i_sign_guild_rogue
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -751,10 +851,12 @@ DUPELIST=0bfe
 
 [ITEMDEF 0bfe]
 //Rogues Guild
+DEFNAME=i_sign_guild_rogue_2
 DUPEITEM=0bfd
 
 [ITEMDEF 0bff]
 //Assassins Guild
+DEFNAME=i_sign_guild_assassin
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -765,10 +867,12 @@ DUPELIST=0c00
 
 [ITEMDEF 0c00]
 //Assassins Guild
+DEFNAME=i_sign_guild_assassin_2
 DUPEITEM=0bff
 
 [ITEMDEF 0c01]
 //Tinkers Guild
+DEFNAME=i_sign_guild_tinker
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -779,10 +883,12 @@ DUPELIST=0c02
 
 [ITEMDEF 0c02]
 //Tinkers Guild
+DEFNAME=i_sign_guild_tinker_2
 DUPEITEM=0c01
 
 [ITEMDEF 0c03]
 //Warriors Guild
+DEFNAME=i_sign_guild_warrior
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -793,10 +899,12 @@ DUPELIST=0c04
 
 [ITEMDEF 0c04]
 //Warriors Guild
+DEFNAME=i_sign_guild_warrior_2
 DUPEITEM=0c03
 
 [ITEMDEF 0c05]
 //Cavalry Guild
+DEFNAME=i_sign_guild_cavalry
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -807,10 +915,12 @@ DUPELIST=0c06
 
 [ITEMDEF 0c06]
 //Cavalry Guild
+DEFNAME=i_sign_guild_cavalry_2
 DUPEITEM=0c05
 
 [ITEMDEF 0c07]
 //Fighters  Guild
+DEFNAME=i_sign_guild_fighter
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -821,10 +931,12 @@ DUPELIST=0c08
 
 [ITEMDEF 0c08]
 //Fighters Guild
+DEFNAME=i_sign_guild_fighter_2
 DUPEITEM=0c07
 
 [ITEMDEF 0c09]
 //Merchants Guild
+DEFNAME=i_sign_guild_merchant
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -835,10 +947,12 @@ DUPELIST=0c0a
 
 [ITEMDEF 0c0a]
 //Merchants Guild
+DEFNAME=i_sign_guild_merchant_2
 DUPEITEM=0c09
 
 [ITEMDEF 0c0b]
 //Bank
+DEFNAME=i_sign_bank
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -849,10 +963,12 @@ DUPELIST=0c0c
 
 [ITEMDEF 0c0c]
 //Bank
+DEFNAME=i_sign_bank_2
 DUPEITEM=0c0b
 
 [ITEMDEF 0c0d]
 //Theatre
+DEFNAME=i_sign_theatre
 TYPE=T_SIGN_GUMP
 FLIP=1
 RESOURCES=2 i_board,1 i_ingot_iron
@@ -863,6 +979,7 @@ DUPELIST=0c0e
 
 [ITEMDEF 0c0e]
 //Theatre
+DEFNAME=i_sign_theatre_2
 DUPEITEM=0c0d
 
 [ITEMDEF 0c43]
@@ -876,6 +993,7 @@ DUPELIST=0c44
 
 [ITEMDEF 0c44]
 //Beekeeper
+DEFNAME=i_sign_beekeeper_2
 DUPEITEM=0c43
 
 [ITEMDEF 01296]
@@ -976,9 +1094,11 @@ DESCRIPTION=@
 DUPELIST=0163e,0163f
 
 [ITEMDEF 0163e]
+DEFNAME=i_sign_ninos_2
 DUPEITEM=0163d
 
 [ITEMDEF 0163f]
+DEFNAME=i_sign_ninos_3
 DUPEITEM=0163d
 
 [ITEMDEF 01641]
@@ -994,10 +1114,12 @@ DUPELIST=01642,01643
 
 [ITEMDEF 01642]
 //NINOS sign
+DEFNAME=i_sign_os_2
 DUPEITEM=01641
 
 [ITEMDEF 01643]
 //NINOS sign
+DEFNAME=i_sign_os_3
 DUPEITEM=01641
 
 [ITEMDEF 01f28]
@@ -1014,6 +1136,7 @@ DUPELIST=01f29
 
 [ITEMDEF 01f29]
 //sign
+DEFNAME=i_sign_blank_2
 DUPEITEM=01f28
 
 

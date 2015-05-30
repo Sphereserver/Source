@@ -447,6 +447,8 @@ LAYER_TYPE CChar::CanEquipLayer( CItem * pItem, LAYER_TYPE layer, CChar * pCharM
 				pItemPrev->Delete();
 			}
 			break;
+		case LAYER_SPELL_Blood_Oath:
+			break;
 		default:
 			if ( layer >= LAYER_SPELL_STATS )
 			{

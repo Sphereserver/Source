@@ -37,6 +37,10 @@ int CResource::Calc_WalkThroughChar( CChar * pCharMove, CChar * pCharObstacle )
 	//  0 = no penalty , just walk through. ie. a human past a bird or really small.
 	if ( !pCharMove || !pCharObstacle )
 		return -1;
+
+	CItem * pPoly = pCharMove->LayerFind(LAYER_SPELL_Polymorph);
+	if (pPoly && pPoly->m_itSpell.m_spell == SPELL_Wraith_Form && pCharMove->GetTopMap() == 0)
+		return 0;	// Return no mana cost for morphed Wraiths, it still send the ' //msg_push "You shove %s out of the way." ' message, should it be disabled?
 	return ( pCharMove->Stat_GetAdjusted(STAT_DEX) / 5 );		// 20%
 }
 

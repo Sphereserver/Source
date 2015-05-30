@@ -3083,10 +3083,15 @@ public:
 	bool CanSeeItem( const CItem * pItem ) const
 	{
 		ASSERT(pItem);
-		if ( ! IsPriv( PRIV_GM ))
+		if (pItem->IsAttr(ATTR_INVIS))
 		{
-			if ( pItem->IsAttr( ATTR_INVIS ))
-				return( false );
+			if (IsPriv(PRIV_GM))
+				return true;
+			TCHAR *uidCheck = Str_GetTemp();
+			sprintf(uidCheck, "SeenBy_0%lx", static_cast<DWORD>(GetUID()));
+
+			if (!pItem->m_TagDefs.GetKeyNum(uidCheck, false))
+				return false;
 		}
 		return( true );
 	}
@@ -3479,6 +3484,7 @@ public:
 
 	void Spell_Effect_Remove(CItem * pSpell);
 	void Spell_Effect_Add( CItem * pSpell );
+	void Spell_Buff_Add(SPELL_TYPE spell, int iDuration, LPCTSTR* pArgs = 0, size_t iArgCount = 0);
 
 private:
 	int Skill_Done();	 // complete skill (async)

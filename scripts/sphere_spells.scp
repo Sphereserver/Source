@@ -1502,7 +1502,7 @@ SOUND=snd_spell_animate_dead
 RUNES=.Uus Corp
 CAST_TIME=4.0
 RESOURCES=i_reag_blood_vial,i_reag_grave_dust
-//RUNE_ITEM=
+RUNE_ITEM=i_rune_animate_dead
 SCROLL_ITEM=i_scroll_animate_dead
 FLAGS=spellflag_targ_item|spellflag_good|spellflag_summon|spellflag_fx_targ|spellflag_playeronly|spellflag_targ_no_player|spellflag_targ_no_npc
 EFFECT_ID=i_fx_sparkle
@@ -1521,7 +1521,7 @@ SOUND=snd_spell_curse
 RUNES=.In Jux Mani Xen
 CAST_TIME=1.5
 RESOURCES=i_reag_blood_vial
-//RUNE_ITEM=
+RUNE_ITEM=i_rune_blood_oath
 SCROLL_ITEM=i_scroll_blood_oath
 FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_nounparalyze
 EFFECT_ID=i_fx_curse
@@ -1539,7 +1539,7 @@ SOUND=snd_spell_curse
 RUNES=.In Aglo Corp Yelm
 CAST_TIME=2.0
 RESOURCES=i_reag_batwing,i_reag_grave_dust
-//RUNE_ITEM=
+RUNE_ITEM=i_rune_corpse_skin
 SCROLL_ITEM=i_scroll_corpse_skin
 FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_nounparalyze
 EFFECT_ID=i_fx_sparkle
@@ -1558,7 +1558,7 @@ SOUND=snd_spell_curse
 RUNES=.An Sanct Gra Char
 CAST_TIME=1.0
 RESOURCES=i_reag_pig_iron
-//RUNE_ITEM=
+RUNE_ITEM=i_rune_curse_weapon
 SCROLL_ITEM=i_scroll_curse_weapon
 FLAGS=spellflag_good
 EFFECT_ID=i_fx_sparkle
@@ -1576,7 +1576,7 @@ SOUND=snd_spell_curse
 RUNES=.Pas Tym An Sanct
 CAST_TIME=1.0
 RESOURCES=i_reag_batwing,i_reag_nox_crystal
-//RUNE_ITEM=
+RUNE_ITEM=i_rune_evil_omen
 SCROLL_ITEM=i_scroll_evil_omen
 FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_nounparalyze
 EFFECT_ID=i_fx_curse
@@ -1595,9 +1595,9 @@ SOUND=snd_spell_bless
 RUNES=.Rel Xen Vas Bal
 CAST_TIME=4.0
 RESOURCES=i_reag_batwing,i_reag_blood_vial
-//RUNE_ITEM=
+RUNE_ITEM=i_rune_horrific_beast
 SCROLL_ITEM=i_scroll_horrific_beast
-FLAGS=spellflag_good|spellflag_playeronly
+FLAGS=spellflag_good|spellflag_playeronly|spellflag_poly
 EFFECT_ID=i_fx_smoke
 EFFECT=5,15
 LAYER=layer_spell_polymorph
@@ -1606,6 +1606,17 @@ MANAUSE=11
 SKILLREQ=NECROMANCY 40.0
 INTERRUPT=100.0,40.0
 
+ON=@Select
+   IF (<FLAGS> & statf_polymorph)
+    IF (<MANA> < <SERV.SPELL.s_horrific_beast.MANAUSE>)
+     SYSMESSAGE <DEFMSG.spell_try_nomana>
+    ELSE
+     MANA -= <SERV.SPELL.s_horrific_beast.MANAUSE>
+     FINDID.<SERV.SPELL.s_horrific_beast.RUNE_ITEM>.REMOVE
+    ENDIF
+    return 1
+   ENDIF
+
 [SPELL 107]
 DEFNAME=s_lich_form
 NAME=Lich Form
@@ -1613,7 +1624,7 @@ SOUND=snd_spell_bless
 RUNES=.Rel Xen Corp Ort
 CAST_TIME=4.0
 RESOURCES=i_reag_nox_crystal,i_reag_blood_vial,i_reag_grave_dust
-//RUNE_ITEM=
+RUNE_ITEM=i_rune_lich_form
 SCROLL_ITEM=i_scroll_lich_form
 FLAGS=spellflag_good|spellflag_playeronly|spellflag_poly
 EFFECT_ID=i_fx_smoke
@@ -1624,6 +1635,17 @@ MANAUSE=23
 SKILLREQ=NECROMANCY 70.0
 INTERRUPT=100.0,70.0
 
+ON=@Select
+   IF (<FLAGS> & statf_polymorph)
+    IF (<MANA> < <SERV.SPELL.s_lich_form.MANAUSE>)
+     SYSMESSAGE <DEFMSG.spell_try_nomana>
+    ELSE
+     MANA -= <SERV.SPELL.s_lich_form.MANAUSE>
+     FINDID.<SERV.SPELL.s_lich_form.RUNE_ITEM>.REMOVE
+    ENDIF
+    return 1
+   ENDIF
+
 [SPELL 108]
 DEFNAME=s_mind_rot
 NAME=Mind Rot
@@ -1631,7 +1653,7 @@ SOUND=snd_spell_feeblemind
 RUNES=.Wis An Ben
 CAST_TIME=1.5
 RESOURCES=i_reag_batwing,i_reag_blood_vial,i_reag_pig_iron
-//RUNE_ITEM=
+RUNE_ITEM=i_rune_mind_rot
 SCROLL_ITEM=i_scroll_mind_rot
 FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_nounparalyze
 EFFECT_ID=i_fx_curse
@@ -1650,7 +1672,7 @@ SOUND=snd_spell_curse
 RUNES=.@0 In Sar
 CAST_TIME=2.0
 RESOURCES=i_reag_grave_dust,i_reag_pig_iron
-//RUNE_ITEM=
+RUNE_ITEM=i_rune_pain_spike
 SCROLL_ITEM=i_scroll_pain_spike
 FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ
 EFFECT_ID=i_fx_curse
@@ -1668,11 +1690,11 @@ SOUND=snd_spell_poison
 RUNES=.In Vas Nox
 CAST_TIME=2.0
 RESOURCES=i_reag_nox_crystal
-//RUNE_ITEM=i_rune_poison_strike
+RUNE_ITEM=i_rune_poison_strike
 SCROLL_ITEM=i_scroll_poison_strike
-FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_resist|spellflag_playeronly|spellflag_nounparalyze
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_resist|spellflag_nounparalyze|spellflag_area|spellflag_fx_targ
 EFFECT_ID=//FIXME
-EFFECT=0
+EFFECT=36,40
 //LAYER=layer_flag_poison	// TODO: Necromancers with > 60.0 skill have a 3-9% chance to poison the target, using .poison x,x would be enough, no need for layer flag?
 DURATION=0
 MANAUSE=17
@@ -1680,7 +1702,27 @@ SKILLREQ=NECROMANCY 50.0
 INTERRUPT=100.0,50.0
 PROMPT_MSG=Who will you poison strike?
 
+ON=@Success
+local.AreaRadius=2
 
+ON=@Effect
+if (<IsItem>)
+	return 1
+endif
+if (<src.act>==<uid>)
+	local.damage=<eval <r36,40> + ((300 + (<src.SpiritSpeak> * 9)) / 1000)>
+	damage=<dlocal.damage>,<src>,dam_magic,0,0,0,100,0	// Poison damage
+	if (<src.Poisoning> > 600)	// Necromancers having more than 60.0 skill points in Poisoning skill have a 3% to 9% chance (scales with poison skill) to poison their target.
+		local.chances = <eval 3 + <muldiv <src.poisoning>/10,3,60>>	// with 60 points you have a base of 3% to poison target, each 10 points until 120 represents another 1% chance
+		if (<local.chances> < <r100>)	// If caster got enough chances
+			Poison <src.Poisoning>	// poison me 
+		endif
+	endif
+else
+	local.distance = <src.act.distance>
+	local.dam=<eval <local.damage> / (<local.distance>+1)>
+	damage=<dlocal.dam>,<src>,dam_magic,0,0,0,100,0	// Poison damage
+endfor
 
 // s_Strangle
 // Chokes an enemy with poison, doing more damage as their Stamina drops.
@@ -1705,12 +1747,12 @@ SOUND=snd_spell_curse
 RUNES=.In Bal Nox
 CAST_TIME=2.5
 RESOURCES=i_reag_nox_crystal,i_reag_blood_vial
-//RUNE_ITEM=
+RUNE_ITEM=i_rune_strangle
 SCROLL_ITEM=i_scroll_strangle
 FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_harm|spellflag_fx_targ|spellflag_nounparalyze
 EFFECT_ID=i_fx_curse
 EFFECT=0
-LAYER=layer_flag_poison
+LAYER=layer_spell_strangle
 DURATION=0
 MANAUSE=29
 SKILLREQ=NECROMANCY 65.0
@@ -1723,7 +1765,7 @@ SOUND=snd_spell_summon_creature
 RUNES=.Kal Xen Bal
 CAST_TIME=4.0
 RESOURCES=i_reag_batwing,i_reag_grave_dust,i_reag_blood_vial
-//RUNE_ITEM=
+RUNE_ITEM=i_rune_summon_familiar
 SCROLL_ITEM=i_scroll_summon_familiar
 FLAGS=spellflag_dir_anim|spellflag_targ_xyz|spellflag_summon|spellflag_playeronly
 //EFFECT_ID=//FIXME
@@ -1741,9 +1783,9 @@ SOUND=snd_spell_bless
 RUNES=.Rel Xen An Sanct
 CAST_TIME=4.0
 RESOURCES=i_reag_batwing,i_reag_nox_crystal,i_reag_pig_iron
-//RUNE_ITEM=
+RUNE_ITEM=i_rune_vampiric_embrace
 SCROLL_ITEM=i_scroll_vampiric_embrace
-FLAGS=spellflag_good|spellflag_playeronly
+FLAGS=spellflag_good|spellflag_playeronly|spellflag_poly
 EFFECT_ID=i_fx_smoke
 EFFECT=5,15
 LAYER=layer_spell_polymorph
@@ -1752,6 +1794,17 @@ MANAUSE=23
 SKILLREQ=NECROMANCY 99.0
 INTERRUPT=100.0,100.0
 
+ON=@Select
+   IF (<FLAGS> & statf_polymorph)
+    IF (<MANA> < <SERV.SPELL.s_vampiric_embrace.MANAUSE>)
+     SYSMESSAGE <DEFMSG.spell_try_nomana>
+    ELSE
+     MANA -= <SERV.SPELL.s_vampiric_embrace.MANAUSE>
+     FINDID.<SERV.SPELL.s_vampiric_embrace.RUNE_ITEM>.REMOVE
+    ENDIF
+    return 1
+   ENDIF
+
 [SPELL 114]
 DEFNAME=s_vengeful_spirit
 NAME=Vengeful Spirit
@@ -1759,7 +1812,7 @@ SOUND=snd_monster_ghost1
 RUNES=.Kal Xen Bal Beh
 CAST_TIME=8.0
 RESOURCES=i_reag_batwing,i_reag_grave_dust,i_reag_pig_iron
-//RUNE_ITEM=
+RUNE_ITEM=i_rune_vengeful_spirit
 SCROLL_ITEM=i_scroll_vengeful_spirit
 FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_fx_targ
 EFFECT_ID=i_fx_smoke
@@ -1777,15 +1830,27 @@ SOUND=snd_wind2
 RUNES=.Kal Vas An Flam
 CAST_TIME=1.5
 RESOURCES=i_reag_nox_crystal,i_reag_grave_dust,i_reag_pig_iron
-//RUNE_ITEM=
+RUNE_ITEM=i_rune_wither
 SCROLL_ITEM=i_scroll_wither
-FLAGS=spellflag_dir_anim|spellflag_harm|spellflag_fx_targ
-EFFECT_ID=//FIXME
+FLAGS=spellflag_dir_anim|spellflag_harm|spellflag_area|spellflag_targ_char|spellflag_fx_targ
+EFFECT_ID=
+//FIXME
 //EFFECT=
 //DURATION=
 MANAUSE=23
 SKILLREQ=NECROMANCY 60.0
 INTERRUPT=100.0,60.0
+
+ON=@Success
+local.AreaRadius=4
+
+ON=@Effect	//It does more damage to good characters.
+if (!<IsChar>)
+	return 1
+endif
+if (<karma> > 1000)	// There's no much information on what is considered 'good', so we use Karma at base.
+	argn2 *=<argn2>/4	// There's no information about damage bonuses, so +25% damage for 'good' characters.
+endif
 
 [SPELL 116]
 DEFNAME=s_wraith_form
@@ -1794,16 +1859,27 @@ SOUND=snd_spell_bless
 RUNES=.Rel Xen Um
 CAST_TIME=4.0
 RESOURCES=i_reag_nox_crystal,i_reag_pig_iron
-//RUNE_ITEM=
+RUNE_ITEM=i_rune_wraith_form
 SCROLL_ITEM=i_scroll_wraith_form
 FLAGS=spellflag_good|spellflag_playeronly|spellflag_poly
 EFFECT_ID=i_fx_smoke
-EFFECT=5,15
+//EFFECT=-1
 LAYER=layer_spell_polymorph
 DURATION=0
 MANAUSE=17
 SKILLREQ=NECROMANCY 20.0
 INTERRUPT=100.0,20.0
+
+ON=@Select
+   IF (<FLAGS> & statf_polymorph)
+    IF (<MANA> < <SERV.SPELL.s_wraith_form.MANAUSE>)
+     SYSMESSAGE <DEFMSG.spell_try_nomana>
+    ELSE
+     MANA -= <SERV.SPELL.s_wraith_form.MANAUSE>
+     FINDID.<SERV.SPELL.s_wraith_form.RUNE_ITEM>.REMOVE
+    ENDIF
+    return 1
+   ENDIF
 
 [SPELL 117]
 DEFNAME=s_exorcism
@@ -1812,7 +1888,7 @@ SOUND=
 RUNES=.Ort Corp Grav
 CAST_TIME=2.0
 RESOURCES=i_reag_nox_crystal,i_reag_grave_dust
-RUNE_ITEM=
+RUNE_ITEM=i_rune_exorcism
 SCROLL_ITEM=i_scroll_exorcism
 FLAGS=
 EFFECT_ID=0
@@ -2488,9 +2564,9 @@ SOUND=0
 RUNES=//Tarisstree
 CAST_TIME=2.5
 RESOURCES=
-RUNE_ITEM=0
+RUNE_ITEM=i_scroll_reaper_form
 SCROLL_ITEM=i_scroll_reaper_form
-FLAGS=spellflag_disabled|spellflag_poly
+FLAGS=spellflag_good|spellflag_poly
 EFFECT_ID=0
 EFFECT=0
 LAYER=layer_spell_polymorph
@@ -2498,6 +2574,17 @@ DURATION=0.0
 MANAUSE=24
 SKILLREQ=SPELLWEAVING 34.1
 INTERRUPT=100.0,100.0
+
+ON=@Select
+   IF (<FLAGS> & statf_polymorph)
+    IF (<MANA> < <SERV.SPELL.s_reaper_form.MANAUSE>)
+     SYSMESSAGE <DEFMSG.spell_try_nomana>
+    ELSE
+     MANA -= <SERV.SPELL.s_reaper_form.MANAUSE>
+     FINDID.<SERV.SPELL.s_reaper_form.RUNE_ITEM>.REMOVE
+    ENDIF
+    return 1
+   ENDIF
 
 [SPELL 610]
 DEFNAME=s_wildfire
@@ -2759,8 +2846,8 @@ NAME=Stone Form
 CAST_TIME=1.0
 RUNES=IRY
 RESOURCES=i_reag_blood_moss, i_reag_fertile_dirt, i_reag_garlic
-FLAGS=spellflag_poly
-RUNE_ITEM=//i_rune_STONE_FORM
+FLAGS=spellflag_poly|spellflag_good
+RUNE_ITEM=i_scroll_STONE_FORM//i_rune_STONE_FORM
 SCROLL_ITEM=i_scroll_STONE_FORM
 EFFECT_ID=0
 EFFECT=5,30
@@ -2769,6 +2856,17 @@ DURATION=45.0,60.0
 MANAUSE=11
 SKILLREQ=MYSTICISM 33.0
 INTERRUPT=100.0,100.0
+
+ON=@Select
+   IF (<FLAGS> & statf_polymorph)
+    IF (<MANA> < <SERV.SPELL.s_Stone_Form.MANAUSE>)
+     SYSMESSAGE <DEFMSG.spell_try_nomana>
+    ELSE
+     MANA -= <SERV.SPELL.s_Stone_Form.MANAUSE>
+     FINDID.<SERV.SPELL.s_Stone_Form.RUNE_ITEM>.REMOVE
+    ENDIF
+    return 1
+   ENDIF
 
 [SPELL 686]
 // charges a spell stone with a selected spell, to be instantly cast when used

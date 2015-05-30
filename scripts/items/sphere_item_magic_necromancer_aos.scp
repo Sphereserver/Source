@@ -410,4 +410,123 @@ ON=@Create
    //MOREX=s_fixme
 
 
+
+[ITEMDEF i_rune_animate_dead]
+ID=i_scroll_animate_dead
+NAME=Animate Dead Rune
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Necromancy
+
+[ITEMDEF i_rune_blood_oath]
+ID=i_scroll_blood_oath
+NAME=Blood Oath Rune
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Necromancy
+
+[ITEMDEF i_rune_corpse_skin]
+ID=i_scroll_corpse_skin
+NAME=Corpse Skin Rune
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Necromancy
+
+[ITEMDEF i_rune_curse_weapon]
+ID=i_scroll_curse_weapon
+NAME=Curse Weapon Rune
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Necromancy
+
+[ITEMDEF i_rune_evil_omen]
+ID=i_scroll_evil_omen
+NAME=Evil Omen Rune
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Necromancy
+
+[ITEMDEF i_rune_horrific_beast]
+ID=i_scroll_horrific_beast
+NAME=Horrific Beast Rune
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Necromancy
+
+[ITEMDEF i_rune_lich_form]
+ID=i_scroll_lich_form
+NAME=Lich Form Rune
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Necromancy
+
+[ITEMDEF i_rune_mind_rot]
+ID=i_scroll_mind_rot
+NAME=Mind Rot Rune
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Necromancy
+
+[ITEMDEF i_rune_pain_spike]
+ID=i_scroll_pain_spike
+NAME=Pain Spike Rune
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Necromancy
+
+[ITEMDEF i_rune_poison_strike]
+ID=i_scroll_poison_strike
+NAME=Poison Strike Rune
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Necromancy
+
+[ITEMDEF i_rune_strangle]
+ID=i_scroll_strangle
+NAME=Strangulation Rune
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Necromancy
+
+[ITEMDEF i_rune_summon_familiar]
+ID=i_scroll_summon_familiar
+NAME=Summon Familiar Rune
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Necromancy
+
+[ITEMDEF i_rune_vampiric_embrace]
+ID=i_scroll_vampiric_embrace
+NAME=Vampiric Embrace Rune
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Necromancy
+
+[ITEMDEF i_rune_vengeful_spirit]
+ID=i_scroll_vengeful_spirit
+NAME=Vengeful Spirit Rune
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Necromancy
+
+[ITEMDEF i_rune_wither]
+ID=i_scroll_wither
+NAME=Wither Rune
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Necromancy
+
+[ITEMDEF i_rune_wraith_form]
+ID=i_scroll_wraith_form
+NAME=Wraith Form Rune
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Necromancy
+
+[ITEMDEF i_rune_exorcism]
+ID=i_scroll_exorcism
+NAME=Exorcism Rune
+TYPE=t_spellicon
+CATEGORY=Spell Icons
+SUBSECTION=Necromancy
 [EOF]

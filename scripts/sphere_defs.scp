@@ -1202,34 +1202,35 @@ layer_flag_bandage          53   // bandages go here for healing
 layer_auction               54   // layer for script purposes to equip container on character (like auction system)
 
 //Necromancy
-LAYER_SPELL_Curse_Weapon	55
-LAYER_SPELL_Corpse_Skin		56
-LAYER_SPELL_Evil_Omen		57
-LAYER_SPELL_Pain_Spike		58
-LAYER_SPELL_Mind_Rot		59
-LAYER_SPELL_Strangle		60
+LAYER_SPELL_Blood_Oath		55
+LAYER_SPELL_Curse_Weapon	56
+LAYER_SPELL_Corpse_Skin		57
+LAYER_SPELL_Evil_Omen		58
+LAYER_SPELL_Pain_Spike		59
+LAYER_SPELL_Mind_Rot		60
+LAYER_SPELL_Strangle		61
 
 //Chivalry
-LAYER_SPELL_Consecrate_Weapon	61
-LAYER_SPELL_Divine_Fury		62
-LAYER_SPELL_Enemy_Of_One	63
+LAYER_SPELL_Consecrate_Weapon	62
+LAYER_SPELL_Divine_Fury			63
+LAYER_SPELL_Enemy_Of_One		64
 
 //SpellWeaving
-LAYER_SPELL_Attunement		64
-LAYER_SPELL_Gift_Of_Renewal	65
-LAYER_SPELL_Immolating_Weapon 66
-LAYER_SPELL_Thunderstorm	67
-LAYER_SPELL_Arcane_Empowerment 68
-LAYER_SPELL_Ethereal_Voyage	69
-LAYER_SPELL_Gift_Of_Life	70
-LAYER_SPELL_Dryad_Allure	71
-LAYER_SPELL_Essence_Of_Wind	72
+LAYER_SPELL_Attunement			65
+LAYER_SPELL_Gift_Of_Renewal		66
+LAYER_SPELL_Immolating_Weapon	67
+LAYER_SPELL_Thunderstorm		68
+LAYER_SPELL_Arcane_Empowerment	69
+LAYER_SPELL_Ethereal_Voyage		70
+LAYER_SPELL_Gift_Of_Life		71
+LAYER_SPELL_Dryad_Allure		72
+LAYER_SPELL_Essence_Of_Wind		73
 
 //Mysticism
-LAYER_SPELL_Sleep			73
-LAYER_SPELL_Bombard			74
-LAYER_SPELL_Spell_Plague	75
-LAYER_SPELL_Nether_Cyclone	76
+LAYER_SPELL_Sleep				74
+LAYER_SPELL_Bombard				75
+LAYER_SPELL_Spell_Plague		76
+LAYER_SPELL_Nether_Cyclone		77
 
 [DEFNAME def_gumps]
 // name the gumps.

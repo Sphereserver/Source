@@ -2385,6 +2385,26 @@ effect_bounce:
 		}
 	}
 
+	if ( IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) )
+	{
+		// Blood Oath Effect
+		CItem * pMemory = LayerFind(LAYER_SPELL_Blood_Oath);
+		if (pMemory && pMemory->m_uidLink == pSrc->GetUID() && !(uType&DAMAGE_GOD))	// IF DAMAGE_GOD is set we are already receiving a reflected damage, so we must stop here to avoid an infinite loop.
+		{
+			int iReturn = IMULDIV(iDmg, pMemory->m_itSpell.m_spelllevel, 100);
+			pSrc->OnTakeDamage(iReturn, this, DAMAGE_GOD | DAMAGE_MAGIC);// I've casted Blood Oath to the target and he's damaging me ... Damage is increased but he also receives a portion of it.
+
+		}
+
+		// Evil Omen
+		CItem * pEvilOmen = LayerFind(LAYER_SPELL_Evil_Omen);
+		if (pEvilOmen && pEvilOmen->m_uidLink == pSrc->GetUID())
+		{
+			iDmg += IMULDIV(iDmg, 25, 100);	// Effect 1 = +25% increased damage on next source.
+			pEvilOmen->Delete(true);
+		}
+	}
+
 	// Apply damage
 	UpdateStatVal( STAT_STR, -iDmg );
 	if ( pSrc->IsClient() )
@@ -2611,21 +2631,26 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 
 	int iDmgMin = 0;
 	int iDmgMax = 0;
-	STAT_TYPE iStatBonus;
-	int iStatBonusPercent;
+	STAT_TYPE iStatBonus = static_cast<STAT_TYPE>(GetDefNum("COMBATBONUSSTAT"));
+	int iStatBonusPercent = static_cast<int>(GetDefNum("COMBATBONUSPERCENT"));
 	if ( pWeapon != NULL )
 	{
 		iDmgMin = pWeapon->Weapon_GetAttack(false);
 		iDmgMax = pWeapon->Weapon_GetAttack(true);
-		iStatBonus = static_cast<STAT_TYPE>(pWeapon->GetDefNum("COMBATBONUSSTAT"));
-		iStatBonusPercent = static_cast<int>(pWeapon->GetDefNum("COMBATBONUSPERCENT"));
 	}
 	else
 	{
 		iDmgMin = m_attackBase;
-		iDmgMax = m_attackBase + m_attackRange;
-		iStatBonus = static_cast<STAT_TYPE>(GetDefNum("COMBATBONUSSTAT"));
-		iStatBonusPercent = static_cast<int>(GetDefNum("COMBATBONUSPERCENT"));
+		iDmgMax = iDmgMin + m_attackRange;
+		if (IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
+		{
+			CItem * pPoly = LayerFind(LAYER_SPELL_Polymorph);
+			if (pPoly && pPoly->m_itSpell.m_spell == SPELL_Horrific_Beast)
+			{
+				iDmgMin += pPoly->m_itSpell.m_PolyStr;
+				iDmgMax += pPoly->m_itSpell.m_PolyDex;
+			}
+		}
 	}
 
 	if ( m_pPlayer )	// only players can have damage bonus
@@ -3997,6 +4022,12 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	//if ( iDmg ) // use OnTakeDamage below instead.
 	//	pCharTarg->OnHarmedBy( this, iDmg );
 
+	if (IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) && !g_Cfg.IsSkillRanged(skill))
+	{
+		CItem * pPoly = LayerFind(LAYER_SPELL_Polymorph);	// Horrific beast polymorph gives +25%(default) damage to melee attacks.
+		if (pPoly && pPoly->m_itSpell.m_spell == SPELL_Horrific_Beast)
+			iDmg += IMULDIV(iDmg, pPoly->m_itSpell.m_spelllevel, 100);
+	}
 	CScriptTriggerArgs	Args( iDmg, iTyp, pWeapon );
 	Args.m_VarsLocal.SetNum("ItemDamageChance", 40);
 	if ( pAmmo )
@@ -4077,18 +4108,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	}
 
 	// Took my swing. Do Damage !
-#ifdef _ALPHASPHERE
-	if (pWeapon != NULL )
-	{
-		CScriptTriggerArgs weaponArgs( iDmg, (int) iTyp );
-		if ( pWeapon->OnTrigger( ITRIG_DAMAGEGIVEN, this, &weaponArgs ) == TRIGRET_RET_TRUE )
-			iDmg = 0;
-		else {
-			iDmg = weaponArgs.m_iN1;
-			iTyp = weaponArgs.m_iN2;
-		}
-	}
-#endif
 	iDmg = pCharTarg->OnTakeDamage(
 			iDmg,
 			this,
@@ -4099,6 +4118,51 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			static_cast<int>(GetDefNum("DAMPOISON",true)),
 			static_cast<int>(GetDefNum("DAMENERGY",true))
 		   );
+
+
+	if (g_Cfg.m_iFeatureAOS &FEATURE_AOS_UPDATE_B)
+	{
+		// Hit Life Leech
+		if (iDmg > 0 && iDmg < INT_MAX && m_uidWeapon && pWeapon->GetDefNum("HitLeechLife", false)) // On every successful hit you will leech 0 to X percent health of (Damage done * 0.3) where X is the Hit Life Leech value on your weapon:
+		{
+			int iDmgFixed = IMULDIV(iDmg, 30, 100);	// Damage done * 0.4
+			Stat_SetVal(STAT_STR, Stat_GetVal(STAT_STR) + IMULDIV(iDmgFixed, Calc_GetRandVal2(0, static_cast<int>(pWeapon->GetDefNum("HitLeechLife"))), 100));
+			UpdateHitsFlag();
+		}
+
+		// Hit Mana Leech
+		if (iDmg > 0 && iDmg < INT_MAX && m_uidWeapon && pWeapon->GetDefNum("HitLeechMana", false)) // On every successful hit you will leech 0 to X percent mana of (Damage done * 0.4) where X is the Hit Mana Leech value on your weapon:
+		{
+			int iDmgFixed = IMULDIV(iDmg, 40, 100);	// Damage done * 0.4
+			Stat_SetVal(STAT_INT, Stat_GetVal(STAT_INT) + IMULDIV(iDmgFixed, Calc_GetRandVal2(0, static_cast<int>(pWeapon->GetDefNum("HitLeechMana"))), 100));
+			UpdateManaFlag();
+		}
+
+		// Hit Mana Drain
+		if (iDmg > 0 && iDmg < INT_MAX && m_uidWeapon && pWeapon->GetDefNum("HitManaDrain", false)) // A successful hit with such a weapon reduces a target's mana by 20% of the damage dealt by the wielder who triggered the effect
+		{
+			if (pWeapon->GetDefNum("HitManaDrain") < Calc_GetRandVal(100))	// Percentaje of drain, based on the prop.
+			{
+				pCharTarg->Stat_SetVal(STAT_INT, pCharTarg->Stat_GetVal(STAT_INT) - IMULDIV(iDmg, 20, 100));
+				UpdateManaFlag();
+			}
+		}
+
+		// SPELL_Wraith_Form
+		CItem * pPoly = LayerFind(LAYER_SPELL_Polymorph);
+		if ( pPoly && pPoly->m_itSpell.m_spell == SPELL_Wraith_Form )
+		{
+			int iMana = pCharTarg->Stat_GetVal(STAT_INT);
+			if (iMana > 0)
+			{
+				int iDrain = IMULDIV(iDmg,Skill_GetBase(SKILL_SPIRITSPEAK) / 50, 100 ); //8% of your damage is leeched as Mana at 0 Sprit Speak, 20 % at 100 Spirit Speak, 24 % at 120 Spirit Speak ... = /50
+				if (iMana < iDrain)	// Fix iDrain to never be higher than the target's mana.
+					iDrain = iMana;
+				pCharTarg->Stat_SetVal(STAT_INT, iMana - iDrain);
+				Stat_SetVal(STAT_INT, Stat_GetVal(STAT_INT) + iDrain);
+			}
+		}
+	}
 	if ( iDmg > 0 )
 	{
 		// Is we do no damage we get no experience!

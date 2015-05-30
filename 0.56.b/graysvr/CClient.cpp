@@ -379,8 +379,8 @@ void CClient::Announce( bool fArrive ) const
 			CChar * pChar = pClient->GetChar();
 			if ( !pChar || ( GetPrivLevel() > pClient->GetPrivLevel() ))
 				continue;
-			if ( !pClient->IsPriv(PRIV_DETAIL|PRIV_HEARALL) )
-				continue;
+			/*if ( !pClient->IsPriv(PRIV_DETAIL|PRIV_HEARALL) )
+				continue;*/
 
 			if ( !*pszMsg )
 			{

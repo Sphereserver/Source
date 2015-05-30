@@ -2213,3 +2213,50 @@ Fixed: Spell buff/debuff icons showing wrong info on client login.
 
 29-05-2015, Coruja
 Some minor design updates on SphereSvr.exe file/console.
+
+30-05-2015, XuN
+Added: TAG.SeenBy_uid for items with attr_invis allow these items to be seen by characters with the given uid, ie: tag.SeenBy_015af=1 will allow player with uid 015af to see this item, usefull for traps/quest items/etc.
+
+Changed return 2 from EffectAdd to return 0 to avoid some problems.
+Added only if FEATURE_AOS_B is enabled:
+	- Behaviour for HitLeechMana on weapons: Returned mana = 0 - X. Where X is the HitLeechMana% of (Damage dealt * 0.4). More info in: http://www.uoguide.com/Hit_Mana_Leech
+	- Behaviour for HitLeechLife on weapons: On every successful hit you will leech 0 to X percent health of (Damage done * 0.3) where X is the Hit Life Leech value on your weapon. (This means the same as HitLeechMana but using *0.3 instead of *0.4)
+	- Behaviour for HitManaDrain on weapons: %of draining a 20% of the damage dealt from the enemy's mana. so HitManaDrain = 50 means a 50% of draining mana to the target. Mana drained = 20% of the damage done.
+	- Behaviour for EnhancePotions on characters: Effect of the potion is increased by the % set on this property.
+Added default behaviours for the following necromancy spells (some of them was already working but not with their full effects):
+	s_curse_weapon = Adds +x HitLeechLife to any equipped weapon, while the spell is in effect unequiped weapons will get this bonus removed and equipped weapons will gain the bonus. X is stored at memory's morey (50 by default).
+	s_blood_oath = When a target of s_blood_oath damages the caster... the damage amount is increased, the target also receives the x% of damage than the caster. X by default should be 100, but its lowered to this formula: ((Resisting Spells Skill x 10) / 20) + 10. X is stored at memory's morey.
+	s_corpse_skin = Turns the victim's skin dry and corpse like. This temporarily decreases the target's fire and poison resists (Fire and Poison resist decreased by 15 (more1h) each), while increasing resistance to cold and physical damage (increasing both by 10 (more1L) each).
+	s_evil_omen = http://www.uoguide.com/Evil_Omen
+	s_pain_spike = http://www.uoguide.com/Pain_Spike
+	s_wraith_form = Gets + 15 Resphysical (more1h) and -5(more1l) ResEnergy/ResFire while the effect is active, it also grants the same effect (but not working with it's property) as HitLeechMana returning a % of the target's mana calculated from = Spirit Speak / 50 (24% at 120.0 Spirit Speak), also grants the ability to walk through creatures and players in Felucca
+	s_mind_rot = Decreases the LowerManaCost property on the character.
+	s_horrific_beast = Provides a bonus of unarmed damage (stored in more1l & more1h on the spell's memory, default = 5,9), Gains a +20 RegenHitsVal (more2) and +25 Melee damage increase (morey). It's also unable to cast other spells than polymorphing ones (@SpellCast in c_horrific_beast).
+	s_poison_strike	= scripted.
+	s_wither = scripted.
+	s_strangle = Info here: http://www.uoguide.com/Strangle
+	s_lich_form = +13 RegenValMana (more1l), -5 RegenValHits (more1h), -10 ResFire and +10 ResPoison/ResCold ( all three stored in more2).
+	s_vampiric_embrace = +20% HitLeechLife (more1l), +15 RegenStamVal (more1h), +3 RegenManaVal (more2), -25 ResFire (morey).
+
+NOTES:
+	- Almost all graphical effects for these spells are still not applied yet. Same for RUNE_ITEMs.
+	- Polymorphs from Necromancy have an increased damage received from Undead Slayer Weapons, since there's no hardcoded support for Slayer Weapons (yet?) I didn't add it. Feel free to script it.
+	- These Spells may not be working at 100% yet, just sent 'initial' code. sphere_spells.scp MUST be updated.
+	- Some behaviours related to spells and props are going to change in the following days.
+	
+[sphere_defs.scp]
+	- Added LAYER_Spell_BLood_Oath and modified the following values to match it's order.
+[sphere_spells.scp]
+	-Changed LAYER for s_strangle to LAYER_Spell_Strangle
+	-Behaviour for s_wither
+	-Behaviour for s_poison_strike
+	-Flags, RUNE_ITEM and more values for spells 100+.
+	-Added code under @Select for all spellflag_polymorph spells to unpolymorph who is already polymorphed (same as s_polymorph).
+[sphere_monsters.scp]
+	-Added: c_horrific_beast -> ON=@SpellCast trigger avoiding any casts for this creature if a player is morphed on it.
+[sphere_item_deco_signs.scp] (Darksun)
+	-Added missing definitions for all signs.
+[sphere_item_magic_necromancer_aos.scp]
+	-Added fake runes for all necromancy spells, they don't have real entries in tiledata but i'm using custom itemdefs with their scrolls as baseid.
+
+Taking in count lot of recent changes realized that some properties must properly shown or hidden according to some ini flags, so ResFire,ResPhysical, etc will only be shown on item's ToolTips if COMBAT_ELEMENTAL_ENGINE is enabled

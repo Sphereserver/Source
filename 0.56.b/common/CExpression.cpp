@@ -517,7 +517,7 @@ try_dec:
 	
 				TCHAR * ppCmd[5];
 				INT64 iResult;
-				size_t iCount;
+				size_t iCount = 0;
 	
 				switch ( iIntrinsic )
 				{
