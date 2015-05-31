@@ -3506,7 +3506,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	//  WAR_SWING_READY = can't take my swing right now. but i'm ready
 	//  WAR_SWING_SWINGING = taking my swing now.
 	
-	int iTyp = DAMAGE_HIT_BLUNT;
+	DAMAGE_TYPE iTyp = DAMAGE_HIT_BLUNT;
 
 	if ( IsTrigUsed( TRIGGER_HITCHECK ) )
 	{
@@ -3519,8 +3519,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			return (WAR_SWING_TYPE)pArgs.m_iN1;
 		else if ( tRet == -1 )
 			return WAR_SWING_INVALID;
-		m_atFight.m_War_Swing_State = (WAR_SWING_TYPE)pArgs.m_iN1;
-		iTyp = static_cast<int>(pArgs.m_iN2);
+		m_atFight.m_War_Swing_State = static_cast<WAR_SWING_TYPE>(pArgs.m_iN1);
+		iTyp = static_cast<DAMAGE_TYPE>(pArgs.m_iN2);
 
 		if (( m_atFight.m_War_Swing_State == WAR_SWING_SWINGING) && ( iTyp & DAMAGE_FIXED ) )
 		{
@@ -3554,7 +3554,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 					// look for override TAG on the specific weapon
 					CVarDefCont * pDamTypeOverride = pWeapon->GetKey("OVERRIDE.DAMAGETYPE",true);
 					if (pDamTypeOverride)
-						iTyp = static_cast<int>(pDamTypeOverride->GetValNum());
+						iTyp = static_cast<DAMAGE_TYPE>(pDamTypeOverride->GetValNum());
 				}
 			}
 			if ( iTyp & DAMAGE_FIXED )
@@ -3675,7 +3675,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		// look for override TAG on the specific weapon
 		CVarDefCont * pDamTypeOverride = pWeapon->GetKey("OVERRIDE.DAMAGETYPE",true);
 		if (pDamTypeOverride)
-			iTyp = static_cast<int>(pDamTypeOverride->GetValNum());
+			iTyp = static_cast<DAMAGE_TYPE>(pDamTypeOverride->GetValNum());
 	}
 
 
@@ -4060,7 +4060,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			pAmmo = NULL;
 
 		iDmg = static_cast<int>(Args.m_iN1);
-		iTyp = static_cast<int>(Args.m_iN2);
+		iTyp = static_cast<DAMAGE_TYPE>(Args.m_iN2);
 	}
 
 	// There's a chance that the arrow will stick in the target
@@ -4119,52 +4119,55 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			static_cast<int>(GetDefNum("DAMENERGY",true))
 		   );
 
-
-	if (g_Cfg.m_iFeatureAOS &FEATURE_AOS_UPDATE_B)
+	if (iDmg > 0)
 	{
-		// Hit Life Leech
-		if (iDmg > 0 && iDmg < INT_MAX && m_uidWeapon && pWeapon->GetDefNum("HitLeechLife", false)) // On every successful hit you will leech 0 to X percent health of (Damage done * 0.3) where X is the Hit Life Leech value on your weapon:
+		if (pWeapon != NULL)
 		{
-			int iDmgFixed = IMULDIV(iDmg, 30, 100);	// Damage done * 0.4
-			Stat_SetVal(STAT_STR, Stat_GetVal(STAT_STR) + IMULDIV(iDmgFixed, Calc_GetRandVal2(0, static_cast<int>(pWeapon->GetDefNum("HitLeechLife"))), 100));
-			UpdateHitsFlag();
-		}
+			bool bMakeLeechSound = false;
 
-		// Hit Mana Leech
-		if (iDmg > 0 && iDmg < INT_MAX && m_uidWeapon && pWeapon->GetDefNum("HitLeechMana", false)) // On every successful hit you will leech 0 to X percent mana of (Damage done * 0.4) where X is the Hit Mana Leech value on your weapon:
-		{
-			int iDmgFixed = IMULDIV(iDmg, 40, 100);	// Damage done * 0.4
-			Stat_SetVal(STAT_INT, Stat_GetVal(STAT_INT) + IMULDIV(iDmgFixed, Calc_GetRandVal2(0, static_cast<int>(pWeapon->GetDefNum("HitLeechMana"))), 100));
-			UpdateManaFlag();
-		}
-
-		// Hit Mana Drain
-		if (iDmg > 0 && iDmg < INT_MAX && m_uidWeapon && pWeapon->GetDefNum("HitManaDrain", false)) // A successful hit with such a weapon reduces a target's mana by 20% of the damage dealt by the wielder who triggered the effect
-		{
-			if (pWeapon->GetDefNum("HitManaDrain") < Calc_GetRandVal(100))	// Percentaje of drain, based on the prop.
+			int iHitLifeLeech = pWeapon->GetDefNum("HitLeechLife", true);
+			if (iHitLifeLeech)
 			{
-				pCharTarg->Stat_SetVal(STAT_INT, pCharTarg->Stat_GetVal(STAT_INT) - IMULDIV(iDmg, 20, 100));
-				UpdateManaFlag();
+				iHitLifeLeech = Calc_GetRandVal2(0, (iDmg * iHitLifeLeech * 30) / 10000);	// leech 0% ~ 30% of damage value
+				Stat_SetVal(STAT_STR, Stat_GetVal(STAT_STR) + iHitLifeLeech);
+				bMakeLeechSound = true;
 			}
+
+			int iHitManaLeech = pWeapon->GetDefNum("HitLeechMana", true);
+			if (iHitManaLeech)
+			{
+				iHitManaLeech = Calc_GetRandVal2(0, (iDmg * iHitManaLeech * 40) / 10000);	// leech 0% ~ 40% of damage value
+				Stat_SetVal(STAT_INT, Stat_GetVal(STAT_INT) + iHitManaLeech);
+				bMakeLeechSound = true;
+			}
+
+			if (pWeapon->GetDefNum("HitLeechStam", true) > Calc_GetRandVal(100))
+			{
+				Stat_SetVal(STAT_DEX, Stat_GetVal(STAT_DEX) + iDmg);	// leech 100% of damage value
+				bMakeLeechSound = true;
+			}
+
+			int iManaDrain = 0;
+			CItem * pPoly = LayerFind(LAYER_SPELL_Polymorph);
+			if (pPoly && pPoly->m_itSpell.m_spell == SPELL_Wraith_Form)
+				iManaDrain += IMULDIV(iDmg, Skill_GetBase(SKILL_SPIRITSPEAK) / 50, 100);	// leech 8% of damage value at 0 Spirit Speak, 20% at 100 Spirit Speak, 24% at 120 Spirit Speak
+			if (pWeapon->GetDefNum("HitManaDrain", true) > Calc_GetRandVal(100))
+				iManaDrain += IMULDIV(iDmg, 20, 100);	// leech 20% of damage value
+
+			int iTargMana = pCharTarg->Stat_GetVal(STAT_INT);
+			if (iManaDrain > iTargMana)
+				iManaDrain = iTargMana;
+			if (iManaDrain > 0)
+			{
+				pCharTarg->Stat_SetVal(STAT_INT, iTargMana - iManaDrain);
+				Stat_SetVal(STAT_INT, Stat_GetVal(STAT_INT) + iManaDrain);
+				bMakeLeechSound = true;
+			}
+
+			if (bMakeLeechSound)
+				Sound(0x44d);
 		}
 
-		// SPELL_Wraith_Form
-		CItem * pPoly = LayerFind(LAYER_SPELL_Polymorph);
-		if ( pPoly && pPoly->m_itSpell.m_spell == SPELL_Wraith_Form )
-		{
-			int iMana = pCharTarg->Stat_GetVal(STAT_INT);
-			if (iMana > 0)
-			{
-				int iDrain = IMULDIV(iDmg,Skill_GetBase(SKILL_SPIRITSPEAK) / 50, 100 ); //8% of your damage is leeched as Mana at 0 Sprit Speak, 20 % at 100 Spirit Speak, 24 % at 120 Spirit Speak ... = /50
-				if (iMana < iDrain)	// Fix iDrain to never be higher than the target's mana.
-					iDrain = iMana;
-				pCharTarg->Stat_SetVal(STAT_INT, iMana - iDrain);
-				Stat_SetVal(STAT_INT, Stat_GetVal(STAT_INT) + iDrain);
-			}
-		}
-	}
-	if ( iDmg > 0 )
-	{
 		// Is we do no damage we get no experience!
 		Skill_Experience( skill, m_Act_Difficulty );	// Get experience for it.
 	}

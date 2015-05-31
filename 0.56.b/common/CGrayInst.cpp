@@ -392,14 +392,11 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 	TCHAR * z1 = Str_GetTemp();
 	for ( unsigned char j = 0; j < 7; j++ )
 	{
-		bool bSup = false;
-
-		if ( j == 1 )
+		if ( j == 5 )	// ML just added some changes on maps 0/1 instead a new map
 			continue;
 
-		if ( j == 5 ) // ML
-			bSup = ( g_MapList.GetX(0) == 7168 );
-		else if ( j > 5 ) // SA+
+		bool bSup = false;
+		if ( j > 5 )	// SA+
 			bSup = ( g_MapList.m_maps[j - 1] );
 		else
 			bSup = ( g_MapList.m_maps[j] );
@@ -408,19 +405,21 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 		{
 			switch ( j )
 			{
-				case 0: strcpy(z1, "T2A"); break;
-				case 2: strcpy(z1, "LBR"); break;
-				case 3: strcpy(z1, "AOS"); break;
-				case 4: strcpy(z1, "SE"); break;
-				case 5: strcpy(z1, "ML"); break;
-				case 6: strcpy(z1, "SA"); break;
+				case 0: sprintf(z1, "Felucca (%d)", j);			break;
+				case 1: sprintf(z1, "Trammel (%d)", j);			break;
+				case 2: sprintf(z1, "Ilshenar (%d)", j);		break;
+				case 3: sprintf(z1, "Malas (%d)", j);			break;
+				case 4: sprintf(z1, "Tokuno Islands (%d)", j);	break;
+				case 6: sprintf(z1, "Ter Mur (%d)", j-1);		break;
 			}
 			if ( *z )
 				strcat(z, ", ");
 			strcat(z, z1);
 		}
 	}
-	g_Log.Event(LOGM_INIT, "Expansion maps supported: %s\n", z);
+
+	if ( *z )
+		g_Log.Event(LOGM_INIT, "Expansion maps supported: %s\n", z);
 
 	return static_cast<VERFILE_TYPE>(i);
 }

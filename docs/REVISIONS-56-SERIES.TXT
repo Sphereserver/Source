@@ -2260,3 +2260,8 @@ NOTES:
 	-Added fake runes for all necromancy spells, they don't have real entries in tiledata but i'm using custom itemdefs with their scrolls as baseid.
 
 Taking in count lot of recent changes realized that some properties must properly shown or hidden according to some ini flags, so ResFire,ResPhysical, etc will only be shown on item's ToolTips if COMBAT_ELEMENTAL_ENGINE is enabled
+
+31-05-2015, Coruja
+Changed: Some small code improvements on HITLEECH[LIFE/MANA/STAM] properties.
+Changed: Messsage 'Expansion maps supported' on server startup now will show the real map name (Felucca, Ilshenar, Malas, ...) instead UO expansion name (T2A, LBR, AOS, ...)
+[Sphere.ini]: Changed all MAPx settings to use -1 as sector size. This will make sphere use the default sector size value (64x64) instead .ini value (32x32).

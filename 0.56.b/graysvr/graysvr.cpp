@@ -229,7 +229,7 @@ bool CMapList::DetectMapSize(int map)
 	//	#2 - map2.mul			(ilshenar, 2304x1600, 11289600 bytes)
 	//	#3 - map3.mul			(malas, 2560x2048, 16056320 bytes)
 	//	#4 - map4.mul			(tokuno islands, 1448x1448, 6421156 bytes)
-	//	#6 - map5.mul			(tel mur, 1280x4096, 16056320 bytes)
+	//	#5 - map5.mul			(ter mur, 1280x4096, 16056320 bytes)
 	//
 
 	switch (index)
@@ -267,7 +267,7 @@ bool CMapList::DetectMapSize(int map)
 		case 4: // map4.mul
 			if (m_sizex[map] <= 0)		m_sizex[map] = 1448;
 			if (m_sizey[map] <= 0)		m_sizey[map] = 1448;
-			if (m_sectorsize[map] <= 0)	m_sectorsize[map] = 16;
+			if (m_sectorsize[map] <= 0)	m_sectorsize[map] = 64;
 			break;
 
 		case 5: // map5.mul
@@ -364,23 +364,9 @@ LPCTSTR const g_Stat_Name[STAT_QTY] =	// not sorted obviously.
 	"FAME",
 };
 
-LPCTSTR g_szServerDescription =
-	GRAY_TITLE " Version " GRAY_VERSION " "
-#ifdef _WIN32
-	"[WIN32]"
-#else
-#ifdef _BSD
-	"[FreeBSD]"
-#else
-	"[Linux]"
-#endif
-#endif
-#ifdef _DEBUG
-	"[DEBUG]"
-#endif
-	" by www.spherecommunity.net";
+LPCTSTR g_szServerDescription =	GRAY_TITLE " Version " GRAY_VERSION " " GRAY_VER_FILEOS_STR	" by www.spherecommunity.net";
 
-int g_szServerBuild = 155;
+int g_szServerBuild = 0;
 
 size_t CObjBase::sm_iCount = 0;	// UID table.
 LONGLONG llTimeProfileFrequency = 1000;	// time profiler

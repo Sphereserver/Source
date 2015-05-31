@@ -24,3 +24,14 @@
  #define GRAY_VERSION				GRAY_VER_STR "-Release"
  #define GRAY_VER_FILEFLAGS			0x0L
 #endif
+
+#if defined(_WIN32)
+ #define GRAY_VER_FILEOS			0x4L	//VOS__WINDOWS32
+ #define GRAY_VER_FILEOS_STR		"[WIN32]"
+#elif defined(_BSD)
+ #define GRAY_VER_FILEOS			0x0L	//VOS_UNKNOWN
+ #define GRAY_VER_FILEOS_STR		"[FreeBSD]"
+#else
+ #define GRAY_VER_FILEOS			0x0L	//VOS_UNKNOWN
+ #define GRAY_VER_FILEOS_STR		"[Linux]"
+#endif
