@@ -91,6 +91,8 @@ return 0
 // MaxMana
 //ENDIF
 
+//f_meditation_setup	// Uncomment this line to enable passive meditation (more info on sphere_skills.scp).
+
 
 [FUNCTION f_onchar_delete]
 // The f_onchar_delete function is called before a client delete his character from the Character Selection Menu.

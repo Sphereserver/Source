@@ -1114,10 +1114,38 @@ BONUS_STATS=20
 ADV_RATE=10.0,200.0,800.0
 
 ON=@Fail
+	//SRC.f_meditation_setup
 	SRC.SYSMESSAGE You lose your concentration.
 
 ON=@Abort
+	//SRC.f_meditation_setup
 	SRC.SYSMESSAGE You stop concentrating.
+
+ON=@Start
+	//SRC.f_meditation_setup
+
+ON=@Success
+	//SRC.f_meditation_setup
+
+
+[function f_meditation_setup]
+// This enables OSI meditation, providing a passive boost to RegenMana everytime and increasing it when the skill is active instead of the old regen-when-active.
+if (<tag0.MeditBonus>)
+	RegenMana -=<tag.MeditBonus>	// Removing old bonus before applying new one.
+endif
+tag.MeditBonus
+if (<tag0.MeditPenalty>)			// No Bonus when wearing plate armor
+	return 0
+endif
+local.baseBonus=<eval ((<Meditation>/10) * 3) + <int>>	// Bonus given by meditation and int
+if (<Meditation> >= 1000)	// GM medit gets a +10% bonus 
+	local.baseBonus += <muldiv <dlocal.baseBonus>,10,100>
+endif
+tag.MeditBonus=<eval 2 + <local.baseBonus> / 40>	// This is the value applied to RegenMana
+if (<action>==Meditation)	// If we are meditating the bonus gets doubled.
+	tag.MeditBonus *=2
+endif
+RegenMana += <tag.MeditBonus>
 
 [SKILL 47]
 DEFNAME=SKILL_STEALTH
@@ -1365,4 +1393,17 @@ Mysticism=100.0
 Imbuing=100.0
 Throwing=100.0
 
+
+ON=@ItemEquip
+if (<act.type>==t_armor && !<act.MageArmor>)
+	tag0.MeditPenalty ++
+	f_meditation_setup
+endif
+
+ON=@ItemUnEquip
+if (<act.type>==t_armor && !<act.MageArmor>)
+	tag0.MeditPenalty --
+	f_meditation_setup
+endif
+	
 [EOF]

@@ -499,6 +499,7 @@ void CChar::NPC_PetClearOwners()
 		if ( pCharRider )
 			pCharRider->Horse_UnMount();
 	}
+	m_pNPC->m_bonded = 0;	// Pets without owner cannot be bonded.
 
 	if ( IsSetOF(OF_PetSlots) )
 	{
