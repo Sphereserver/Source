@@ -3842,9 +3842,9 @@ PacketDisplayPopup::PacketDisplayPopup(const CClient* target, CGrayUID uid) : Pa
 	ADDTOCALLSTACK("PacketDisplayPopup::PacketDisplayPopup");
 
 	m_popupCount = 0;
-	m_isKr = target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA() || target->GetNetState()->isClientVersion(MINCLIVER_NEWCONTEXTMENU);
+	m_newPacketFormat = target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA() || target->GetNetState()->isClientVersion(MINCLIVER_NEWCONTEXTMENU);
 
-	if (m_isKr)
+	if (m_newPacketFormat)
 		writeInt16(2);
 	else
 		writeInt16(1);
@@ -3854,22 +3854,24 @@ PacketDisplayPopup::PacketDisplayPopup(const CClient* target, CGrayUID uid) : Pa
 	writeByte(0); // popup count
 }
 
-void PacketDisplayPopup::addOption(WORD entryTag, WORD textId, WORD flags, WORD color)
+void PacketDisplayPopup::addOption(WORD entryTag, DWORD textId, WORD flags, WORD color)
 {
 	ADDTOCALLSTACK("PacketDisplayPopup::addOption");
 
 	if (m_popupCount >= g_Cfg.m_iContextMenuLimit)
 	{
-		DEBUG_ERR(("Bad AddContextEntry usage: Too many entries, max = %d\n",static_cast<int>(MAX_POPUPS)));
+		DEBUG_ERR(("Bad AddContextEntry usage: Too many entries, max = %d\n", static_cast<int>(MAX_POPUPS)));
 		return;
 	}
 
-	if (m_isKr)
+	if (m_newPacketFormat)
 	{
+		if ( textId <= 32767 )
+			textId += 3000000;
 		if (flags & POPUPFLAG_COLOR)
 			flags &= ~POPUPFLAG_COLOR;
 
-		writeInt32(3000000 + textId);
+		writeInt32(textId);
 		writeInt16(entryTag);
 		writeInt16(flags);
 	}

@@ -799,6 +799,7 @@ try_dec:
 
 					case INTRINSIC_ABS:
 					{
+						iCount = 1;
 						iResult = llabs(GetVal(pszArgs));
 					} break;
 
@@ -812,7 +813,7 @@ try_dec:
 
 				if ( ! iCount )
 				{
-					DEBUG_ERR(( "Bad intrinsic function usage. missing )\n" ));
+					DEBUG_ERR(( "Bad intrinsic function usage: Missing arguments\n" ));
 					return 0;
 				}
 				else

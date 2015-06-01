@@ -1039,45 +1039,32 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 					DEBUG_ERR(("Bad AddContextEntry usage: Function takes maximum of 4 arguments!\n"));
 					return true;
 				}
-				if (( !IsStrNumeric(ppLocArgs[0]) ) || ( !IsStrNumeric(ppLocArgs[1]) ) )
+
+				if (m_pPopupPacket == NULL)
 				{
-					DEBUG_ERR(("Bad AddContextEntry usage: Check first 2 arguments!\n"));
+					DEBUG_ERR(("Bad AddContextEntry usage: Not used under a @ContextMenuRequest/@itemContextMenuRequest trigger!\n"));
 					return true;
 				}
-				if (( !IsStrNumeric(ppLocArgs[2]) ) && ( !IsStrEmpty(ppLocArgs[2]) ))
+
+				for ( int i = 0; i < 4; i++ )
 				{
-					DEBUG_ERR(("Bad AddContextEntry usage: 3rd parameter must be a number!\n"));
-					return true;
+					if ( i > 1 && IsStrEmpty(ppLocArgs[i]) )
+						continue;
+
+					if ( !IsStrNumeric(ppLocArgs[i]) )
+					{
+						DEBUG_ERR(("Bad AddContextEntry usage: Argument %d must be a number!\n", i+1));
+						return true;
+					}
 				}
-				if (( !IsStrNumeric(ppLocArgs[3]) ) && ( !IsStrEmpty(ppLocArgs[3]) ))
-				{
-					DEBUG_ERR(("Bad AddContextEntry usage: 4th parameter must be a number!\n"));
-					return true;
-				}
+
 				int entrytag = Exp_GetVal(ppLocArgs[0]);
 				if ( entrytag < 100 )
 				{
 					DEBUG_ERR(("Bad AddContextEntry usage: TextEntry < 100 is reserved for server usage!\n"));
 					return true;
 				}
-				DWORD textid = Exp_GetVal(ppLocArgs[1]);
-
-				if ( textid > 32767 )
-				{
-					if ( ( textid >= 3000000 ) && ( textid <= 3032767) )
-					{
-						textid -= 3000000;
-					} else
-					{
-						DEBUG_ERR(("Illegal CliLoc number. Only values between 3,000,000 and 3,032,767 (or 0 and 32,767) are permitted.\n"));
-						return true;
-					}
-				}
-
-				if (m_pPopupPacket != NULL)
-					m_pPopupPacket->addOption(static_cast<WORD>(entrytag), static_cast<WORD>(textid), static_cast<WORD>(Exp_GetVal(ppLocArgs[2])), static_cast<WORD>(Exp_GetVal(ppLocArgs[3])));
-				else
-					DEBUG_ERR(("Bad AddContextEntry usage: Not used under a @ContextMenuRequest/@itemContextMenuRequest trigger!\n"));
+				m_pPopupPacket->addOption(static_cast<WORD>(entrytag), static_cast<DWORD>(Exp_GetVal(ppLocArgs[1])), static_cast<WORD>(Exp_GetVal(ppLocArgs[2])), static_cast<WORD>(Exp_GetVal(ppLocArgs[3])));
 			}
 			break;
 		case CV_ARROWQUEST:

@@ -2265,3 +2265,7 @@ Taking in count lot of recent changes realized that some properties must properl
 Changed: Some small code improvements on HITLEECH[LIFE/MANA/STAM] properties.
 Changed: Messsage 'Expansion maps supported' on server startup now will show the real map name (Felucca, Ilshenar, Malas, ...) instead UO expansion name (T2A, LBR, AOS, ...)
 [Sphere.ini]: Changed all MAPx settings to use -1 as sector size. This will make sphere use the default sector size value (64x64) instead .ini value (32x32).
+
+01-05-2015, Coruja
+Fixed: ABS() intrinsic function not working correctly.
+Changed: Some small improvements on AddContextMenuEntry function.

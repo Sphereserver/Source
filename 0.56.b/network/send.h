@@ -1383,13 +1383,13 @@ public:
 class PacketDisplayPopup : public PacketExtended
 {
 private:
-	bool m_isKr;
+	bool m_newPacketFormat;
 	int m_popupCount;
 
 public:
 	PacketDisplayPopup(const CClient* target, CGrayUID uid);
 
-	void addOption(WORD entryTag, WORD textId, WORD flags, WORD color);
+	void addOption(WORD entryTag, DWORD textId, WORD flags, WORD color);
 	void finalise(void);
 
 	int getOptionCount(void) const
