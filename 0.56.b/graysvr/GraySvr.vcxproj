@@ -37,32 +37,28 @@
     <TargetName>SphereSvr</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <TargetName>SphereSvr</TargetName>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>SphereSvr</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>../common/mysql/include;../common/mysql/lib/debug;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_NEWGUILDSYSTEM;_MTNETWORK;_SUBVERSION;_DEBUG;_PACKETDUMP;_TESTEXCEPTION;DEBUG_CRYPT_MSGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <BrowseInformation>true</BrowseInformation>
+      <AdditionalIncludeDirectories>..\common\mysql\include;..\common\mysql\lib\debug;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CallingConvention>StdCall</CallingConvention>
-      <WarningLevel>Level2</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <MinimalRebuild>true</MinimalRebuild>
       <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_NEWGUILDSYSTEM;_MTNETWORK;_SUBVERSION;_DEBUG;_PACKETDUMP;_TESTEXCEPTION;DEBUG_CRYPT_MSGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level2</WarningLevel>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>..\common\mysql\lib\debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>wsock32.lib;libmysql.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <Version>0.12</Version>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <AdditionalDependencies>ws2_32.lib;wsock32.lib;libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <ProjectReference>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
@@ -74,25 +70,19 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Local|Win32'">
     <ClCompile>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <StringPooling>true</StringPooling>
-      <WarningLevel>Level2</WarningLevel>
-      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_NEWGUILDSYSTEM;_MTNETWORK;_SUBVERSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\common\mysql\include</AdditionalIncludeDirectories>
       <CallingConvention>FastCall</CallingConvention>
       <MinimalRebuild>true</MinimalRebuild>
-      <ExceptionHandling>Async</ExceptionHandling>
-      <AdditionalIncludeDirectories>../common/mysql/include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_NEWGUILDSYSTEM;_MTNETWORK;_SUBVERSION;_PRIVATEBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level2</WarningLevel>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>../common/mysql/lib/release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\common\mysql\lib\release</AdditionalLibraryDirectories>
       <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <LargeAddressAware>true</LargeAddressAware>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <PreBuildEvent>
       <Command>SubWCRev.exe $(ProjectDir) $(ProjectDir)..\common\subversion\SvnRevision.tmpl $(ProjectDir)..\common\subversion\SvnRevision.h</Command>
@@ -101,25 +91,19 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Nightly|Win32'">
     <ClCompile>
-      <StringPooling>true</StringPooling>
-      <WarningLevel>Level2</WarningLevel>
-      <AdditionalIncludeDirectories>../common/mysql/include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_NEWGUILDSYSTEM;_MTNETWORK;_SUBVERSION;_NIGHTLYBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\common\mysql\include</AdditionalIncludeDirectories>
       <CallingConvention>FastCall</CallingConvention>
       <MinimalRebuild>true</MinimalRebuild>
-      <ExceptionHandling>Async</ExceptionHandling>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_NEWGUILDSYSTEM;_MTNETWORK;_SUBVERSION;_NIGHTLYBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level2</WarningLevel>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>../common/mysql/lib/release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\common\mysql\lib\release</AdditionalLibraryDirectories>
       <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <LargeAddressAware>true</LargeAddressAware>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <PreBuildEvent>
       <Command>SubWCRev.exe $(ProjectDir) $(ProjectDir)..\common\subversion\SvnRevision.tmpl $(ProjectDir)..\common\subversion\SvnRevision.h</Command>
@@ -128,30 +112,24 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <StringPooling>true</StringPooling>
-      <AdditionalIncludeDirectories>../common/mysql/include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_NEWGUILDSYSTEM;_MTNETWORK;_SUBVERSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
-      <WarningLevel>Level2</WarningLevel>
-      <ExceptionHandling>Async</ExceptionHandling>
+      <AdditionalIncludeDirectories>..\common\mysql\include</AdditionalIncludeDirectories>
       <CallingConvention>FastCall</CallingConvention>
+      <MinimalRebuild>true</MinimalRebuild>
+      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_NEWGUILDSYSTEM;_MTNETWORK;_SUBVERSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level2</WarningLevel>
     </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
     <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../common/mysql/lib/release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\common\mysql\lib\release</AdditionalLibraryDirectories>
       <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <LargeAddressAware>true</LargeAddressAware>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PreBuildEvent>
       <Command>SubWCRev.exe $(ProjectDir) $(ProjectDir)..\common\subversion\SvnRevision.tmpl $(ProjectDir)..\common\subversion\SvnRevision.h</Command>
       <Message>Generate the svn_version.h file with the necessary repo identify info for versioning</Message>
     </PreBuildEvent>
-    <ResourceCompile>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CacheableScriptFile.cpp" />
