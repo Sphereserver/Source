@@ -3799,7 +3799,7 @@ void CItem::Flip()
 
 	if ( IsType( IT_CORPSE ))
 	{
-		m_itCorpse.m_facing_dir = static_cast<unsigned char>(GetDirTurn(static_cast<DIR_TYPE>(m_itCorpse.m_facing_dir), 1));
+		m_itCorpse.m_facing_dir = GetDirTurn(m_itCorpse.m_facing_dir, 1);
 		Update();
 		return;
 	}

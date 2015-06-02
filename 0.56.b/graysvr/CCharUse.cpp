@@ -61,11 +61,6 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 		pChar->OnTakeDamage( 1 + Calc_GetRandVal(10), this, DAMAGE_HIT_SLASH|DAMAGE_GENERAL );
 		return;
 	}
-	if ( pChar->m_pNPC && pChar->m_pNPC->m_bonded )		// corpses of bonded pets can't be carved
-	{
-		SysMessageDefault( DEFMSG_CARVE_CORPSE_2 );
-		return;
-	}
 
 	CPointMap pnt = pCorpse->GetTopLevelObj()->GetTopPoint();
 

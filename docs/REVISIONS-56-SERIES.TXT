@@ -2266,6 +2266,11 @@ Changed: Some small code improvements on HITLEECH[LIFE/MANA/STAM] properties.
 Changed: Messsage 'Expansion maps supported' on server startup now will show the real map name (Felucca, Ilshenar, Malas, ...) instead UO expansion name (T2A, LBR, AOS, ...)
 [Sphere.ini]: Changed all MAPx settings to use -1 as sector size. This will make sphere use the default sector size value (64x64) instead .ini value (32x32).
 
-01-05-2015, Coruja
+01-06-2015, Coruja
 Fixed: ABS() intrinsic function not working correctly.
 Changed: Some small improvements on AddContextMenuEntry function.
+
+02-06-2015, Coruja
+Fixed: Console error when players die.
+Fixed: PacketDeathAnimation .ini setting not working correctly.
+Changed: Some improvements on 'death' / 'make corpse' internal code. Now any NPC will have corpse when it die (unless it was an summoned NPC). So don't get confused if you see corpses of some NPCs which previously doesn't have corpse (elementals, etc), it's the default OSI behavior. Also TAG.DEATHFLAGS can be used to force removal/creation of the corpse on @Death

@@ -2725,133 +2725,84 @@ void CChar::Wake()
 void CChar::SleepStart( bool fFrontFall )
 {
 	ADDTOCALLSTACK("CChar::SleepStart");
-	if ( IsStatFlag( STATF_DEAD | STATF_Sleeping | STATF_Polymorph ))
+	if (IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Polymorph))
 		return;
 
-	StatFlag_Set( STATF_Sleeping );
-	if ( ! MakeCorpse( fFrontFall ))
+	CItemCorpse *pCorpse = MakeCorpse( fFrontFall );
+	if (pCorpse == NULL)
 	{
-		SysMessageDefault( DEFMSG_CANTSLEEP );
+		SysMessageDefault(DEFMSG_CANTSLEEP);
 		return;
 	}
 
-	SetID( m_prev_id );
-	StatFlag_Clear( STATF_Hidden );
+	// Play death animation (fall on ground)
+	UpdateCanSee(new PacketDeath(this, pCorpse), m_pClient);
 
+	SetID(m_prev_id);
+	StatFlag_Set(STATF_Sleeping);
+	StatFlag_Clear(STATF_Hidden);
 	Update();
-}
-
-bool CChar::MakeCorpse_Fail()
-{
-	ADDTOCALLSTACK("CChar::MakeCorpse_Fail");
-	// Some creatures can never sleep. (not corpse)
-	if ( ! IsStatFlag( STATF_DEAD ))
-		return( false );
-	if ( m_pPlayer )
-	{
-		StatFlag_Clear( STATF_Conjured );
-		Horse_UnMount();
-	}
-	if ( IsPlayableCharacter())
-		return( false );	// conjured humans just disapear.
-	if ( !(m_TagDefs.GetKeyNum("DEATHFLAGS", true) & DEATH_NOCONJUREDEFFECT) )
-	{
-		CItem * pItem = CItem::CreateScript(ITEMID_FX_SPELL_FAIL, this);
-		if ( pItem )
-			pItem->MoveToDecay(GetTopPoint(), 2*TICK_PER_SEC);
-	}
-	return true;
 }
 
 CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 {
 	ADDTOCALLSTACK("CChar::MakeCorpse");
-	// some creatures (Elems) have no corpses.
-	// IsStatFlag( STATF_DEAD ) might NOT be set. (sleeping)
+	// Create the char corpse when it die (STATF_DEAD) or fall asleep (STATF_Sleeping)
+	// Summoned (STATF_Conjured) and some others creatures have no corpse.
 
-	bool fLoot = ! IsStatFlag( STATF_Conjured );
 	WORD wFlags = static_cast<WORD>(m_TagDefs.GetKeyNum("DEATHFLAGS", true));
-
-	int iDecayTime = -1;	// never default.
-	CItemCorpse * pCorpse = NULL;
-
-	if ( !(wFlags & DEATH_NOCORPSE) && fLoot &&
-		(( GetDispID() != CREID_WATER_ELEM &&
-		  GetDispID() != CREID_AIR_ELEM &&
-		  GetDispID() != CREID_FIRE_ELEM &&
-		  GetDispID() != CREID_VORTEX &&
-		  GetDispID() != CREID_BLADES ) || (wFlags & DEATH_HASCORPSE)) )
+	if (wFlags & DEATH_NOCORPSE)
+		return( NULL );
+	if (IsStatFlag(STATF_Conjured) && !(wFlags & DEATH_NOCONJUREDEFFECT|DEATH_HASCORPSE))
 	{
-		if ( m_pPlayer )
-			Horse_UnMount(); // If i'm conjured then my horse goes with me.
-
-		CItem* pItemCorpse = CItem::CreateScript( ITEMID_CORPSE, this );
-		pCorpse = dynamic_cast <CItemCorpse *>(pItemCorpse);
-		if ( pCorpse == NULL )	// Weird internal error !
-		{
-			pItemCorpse->Delete();
-			if ( ! MakeCorpse_Fail() )
-				return( NULL );
-		}
-
-		TCHAR *pszMsg = Str_GetTemp();
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_CORPSE_OF ), static_cast<LPCTSTR>(GetName()));
-		pCorpse->SetName(pszMsg);
-		pCorpse->SetHue( GetHue());
-		pCorpse->SetCorpseType( GetDispID() );
-		pCorpse->m_itCorpse.m_BaseID = m_prev_id;	// id the corpse type here !
-		pCorpse->m_itCorpse.m_facing_dir = static_cast<unsigned char>(m_dirFace);
-		pCorpse->SetAttr(ATTR_INVIS);	// Don't display til ready.
-
-		if (IsStatFlag(STATF_DEAD) || (m_pNPC && m_pNPC->m_bonded))
-		{
-			pCorpse->SetTimeStamp(CServTime::GetCurrentTime().GetTimeRaw()); // death time.
-			if (Attacker_GetLast())
-				pCorpse->m_itCorpse.m_uidKiller = static_cast<CGrayUIDBase>(Attacker_GetLast()->GetUID());
-			else
-				pCorpse->m_itCorpse.m_uidKiller.InitUID();
-			iDecayTime = (m_pPlayer) ? g_Cfg.m_iDecay_CorpsePlayer : g_Cfg.m_iDecay_CorpseNPC;
-		}
-		else	// Sleeping
-		{
-			pCorpse->SetTimeStamp(0); // Not dead.
-			pCorpse->m_itCorpse.m_uidKiller = static_cast<CGrayUIDBase>(GetUID());
-			iDecayTime = -1;	// never
-		}
-
-		if (m_pPlayer || !IsStatFlag(STATF_DEAD) || (m_pNPC && m_pNPC->m_bonded))	// not being deleted.
-			pCorpse->m_uidLink = GetUID();
-	}
-	else
-	{
-		// Some creatures can never sleep. (not corpse)
-		if ( ! MakeCorpse_Fail() )
-			return( NULL );
+		Effect(EFFECT_XYZ, ITEMID_FX_SPELL_FAIL, this, 1, 30);
+		return( NULL );
 	}
 
-	// can fall forward.
-	DIR_TYPE dir = m_dirFace;
-	if ( fFrontFall )
+	CItemCorpse *pCorpse = dynamic_cast<CItemCorpse *>(CItem::CreateScript(ITEMID_CORPSE, this));
+	if (pCorpse == NULL)	// weird internal error
+		return( NULL );
+
+	if (m_pPlayer)		// if I'm NPC then my mount goes with me
+		Horse_UnMount();
+
+	TCHAR *pszMsg = Str_GetTemp();
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_CORPSE_OF), static_cast<LPCTSTR>(GetName()));
+	pCorpse->SetName(pszMsg);
+	pCorpse->SetHue(GetHue());
+	pCorpse->SetCorpseType(GetDispID());
+	pCorpse->m_itCorpse.m_BaseID = m_prev_id;	// id the corpse type here !
+	pCorpse->m_itCorpse.m_facing_dir = m_dirFace;		//TO-DO: Fix corpses always being created at same DIR even when the char is facing another DIR
+
+	if (fFrontFall)
+		pCorpse->m_itCorpse.m_facing_dir = static_cast<DIR_TYPE>(m_dirFace|0x80);
+
+	int iDecayTimer = -1;	// never decay
+	if (IsStatFlag(STATF_DEAD))
 	{
-		dir = static_cast<DIR_TYPE>( dir | 0x80 );
-		if ( pCorpse )
-			pCorpse->m_itCorpse.m_facing_dir = static_cast<unsigned char>(dir);
+		iDecayTimer = (m_pPlayer) ? g_Cfg.m_iDecay_CorpsePlayer : g_Cfg.m_iDecay_CorpseNPC;
+		pCorpse->SetTimeStamp(CServTime::GetCurrentTime().GetTimeRaw());	// death time
+		if (Attacker_GetLast())
+			pCorpse->m_itCorpse.m_uidKiller = Attacker_GetLast()->GetUID();
+		else
+			pCorpse->m_itCorpse.m_uidKiller.InitUID();
+	}
+	else	// sleeping (not dead)
+	{
+		pCorpse->SetTimeStamp(0);
+		pCorpse->m_itCorpse.m_uidKiller = GetUID();
 	}
 
-	// Death anim. default is to fall backwards. lie face up.
-	UpdateCanSee(new PacketDeath(this, pCorpse), m_pClient);
+	if (m_pPlayer || !IsStatFlag(STATF_DEAD))	// this char wont be deleted on death, so lets link the corpse to him
+		pCorpse->m_uidLink = GetUID();
 
-	// Move non-newbie contents of the pack to corpse. (before it is displayed)
-	if ( fLoot && !(wFlags & DEATH_NOLOOTDROP) && !(wFlags & DEATH_NOCORPSE) )
-	{
+	if (m_pNPC && (m_pNPC->m_bonded || IsStatFlag(STATF_Conjured)))
+		pCorpse->m_itCorpse.m_junk1 = 1;	// corpse of bonded and summoned creatures can't be carved
+
+	if ( !(wFlags & DEATH_NOLOOTDROP) )		// move non-newbie contents of the pack to corpse
 		DropAll( pCorpse );
-	}
-	if ( pCorpse )
-	{
-		pCorpse->ClrAttr(ATTR_INVIS);	// make visible.
-		pCorpse->MoveToDecay(GetTopPoint(), iDecayTime);
-	}
 
+	pCorpse->MoveToDecay(GetTopPoint(), iDecayTimer);
 	return( pCorpse );
 }
 
@@ -2974,18 +2925,16 @@ bool CChar::Death()
 	if ( m_pParty )
 		m_pParty->SysMessageAll( pszKillStr );
 
-	// No aggressor/killer detected. Try detect person last hit me from the act target
-	if ( !pKiller )
+	// Display death animation to client ("You are dead")
+	CClient * pClient = GetClient();
+	if ( pClient && g_Cfg.m_iPacketDeathAnimation )
 	{
-		CObjBase * ob = g_World.FindUID(m_Fight_Targ);
-		if (ob)
-			pKiller = static_cast<CChar *>(ob);
-		else
-			pKiller = this;	// Should NEVER reach this... but setting it incase of.
+		new PacketDeathMenu( pClient, PacketDeathMenu::ServerSent );
+		new PacketDeathMenu( pClient, PacketDeathMenu::Ghost );
 	}
 
 	Reveal();
-	SoundChar( CRESND_DIE );
+	SoundChar(CRESND_DIE);
 	StatFlag_Set(STATF_DEAD);
 	StatFlag_Clear(STATF_Stone|STATF_Freeze|STATF_Hidden|STATF_Sleeping|STATF_Hovering);
 	SetPoisonCure(0, true);
@@ -2993,15 +2942,10 @@ bool CChar::Death()
 	Spell_Dispel(100);			// get rid of all spell effects (moved here to prevent double @Destroy trigger)
 	m_lastAttackers.clear();	// clear list of attackers
 
-	CChar * pRider = Horse_GetMountChar();
-	if ( pRider )
-		pRider->Horse_UnMount();
-
 	// Create the corpse item
-	CItemCorpse * pCorpse = MakeCorpse(Calc_GetRandVal(2) != 0);
+	CItemCorpse * pCorpse = MakeCorpse(Calc_GetRandVal(2));
 	if ( pCorpse )
 	{
-
 		if ( IsTrigUsed(TRIGGER_DEATHCORPSE) )
 		{
 			CScriptTriggerArgs Args(pCorpse);
@@ -3009,26 +2953,24 @@ bool CChar::Death()
 		}
 	}
 
-	if ( m_pNPC && m_pNPC->m_bonded )
-	{
-		// TO-DO: When die, the bonded pet is getting removed from client screen and then we need to call update to reveal it again.
-		// Maybe we can optimize this behavior making bonded pets don't disappear instead hide it and then reveal it again
-		m_Can |= CAN_C_GHOST;
-		Update();
-		return true;
-	}
+	// Play death animation (fall on ground)
+	UpdateCanSee(new PacketDeath(this, pCorpse), m_pClient);
 
-	NPC_PetClearOwners();
+	if ( m_pNPC )
+	{
+		if ( m_pNPC->m_bonded )
+		{
+			// TO-DO: When die, the bonded pet is getting removed from client screen and then we need to call update to reveal it again.
+			// Maybe we can optimize this behavior making bonded pets don't disappear instead hide it and then reveal it again
+			m_Can |= CAN_C_GHOST;
+			Update();
+			return true;
+		}
+		NPC_PetClearOwners();
+	}
 
 	if ( m_pPlayer )
 	{
-		// Display death animation to client ("You are dead")
-		if ( g_Cfg.m_iPacketDeathAnimation )
-		{
-			new PacketDeathMenu( GetClient(), PacketDeathMenu::ServerSent );
-			new PacketDeathMenu( GetClient(), PacketDeathMenu::Ghost );
-		}
-
 		if ( !(m_TagDefs.GetKeyNum("DEATHFLAGS", true) & DEATH_NOFAMECHANGE) )
 			Noto_Fame( -Stat_GetAdjusted(STAT_FAME)/10 );
 
@@ -3071,12 +3013,12 @@ bool CChar::Death()
 				if ( !pChar )
 					break;
 				if ( !CanSeeAsDead(pChar) )
-					GetClient()->addObjectRemove(pChar);						
+					pClient->addObjectRemove(pChar);						
 			}
 		}
 	}
 
-	if ( !IsClient() )
+	if ( pClient == NULL )
 	{
 		if ( m_pPlayer )
 		{

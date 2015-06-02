@@ -660,10 +660,10 @@ public:
 		// IT_CORPSE
 		struct	// might just be a sleeping person as well
 		{
-			DWORD		m_junk1;		// more1=Death time of corpse object. 0=sleeping or carved (Now Placed inside TIMESTAMP for INT64 support)
-			CGrayUIDBase m_uidKiller;	// more2=Who killed this corpse, carved or looted it last. sleep=self.
-			CREID_TYPE	m_BaseID;		// morex,morey=The true type of the creature who's corpse this is.
-			BYTE		m_facing_dir;	// morez=corpse dir. 0x80 = on face. DIR_TYPE
+			DWORD		m_junk1;		// more1 = Corpse is already carved? (0=not carved, 1=carved)
+			CGrayUID	m_uidKiller;	// more2 = Who killed this corpse, carved or looted it last. sleep=self.
+			CREID_TYPE	m_BaseID;		// morex,morey = The true type of the creature who's corpse this is.
+			DIR_TYPE	m_facing_dir;	// morez = Corpse dir. 0x80 = on face.
 			// m_amount = the body type.
 			// m_uidLink = the creatures ghost.
 		} m_itCorpse;
@@ -3720,7 +3720,6 @@ public:
 	bool SetPoisonCure( int iLevel, bool fExtra );
 	bool CheckCorpseCrime( const CItemCorpse *pCorpse, bool fLooting, bool fTest );
 	CItemCorpse * FindMyCorpse( bool ignoreLOS = false, int iRadius = 2) const;
-	bool MakeCorpse_Fail();
 	CItemCorpse * MakeCorpse( bool fFrontFall );
 	bool RaiseCorpse( CItemCorpse * pCorpse );
 	bool Death();

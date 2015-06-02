@@ -357,11 +357,12 @@ PacketItemWorld::PacketItemWorld(const CClient* target, CItem *item) : PacketSen
 	long amount = ( item->GetAmount() > 1 ) ? item->GetAmount() : 0;
 	ITEMID_TYPE id = item->GetDispID();
 	CPointMap p = item->GetTopPoint();
-	BYTE dir = DIR_N;
+	DIR_TYPE dir = DIR_N;
 	HUE_TYPE hue = item->GetHue();
 	BYTE flags = 0;
+	BYTE light = 0;
 
-	adjustItemData(target, item, id, hue, amount, p, dir, flags, dir);
+	adjustItemData(target, item, id, hue, amount, p, dir, flags, light);
 
 	// this packet only supports item ids up to 0x3fff, and multis start from 0x4000 (ITEMID_MULTI_LEGACY)
 	// multis need to be adjusted to the lower range, and items between 03fff and 08000 need to be adjusted
@@ -403,7 +404,7 @@ PacketItemWorld::PacketItemWorld(const CClient* target, CItem *item) : PacketSen
 	push(target);
 }
 
-void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, long &amount, CPointMap &p, BYTE &dir, BYTE &flags, BYTE& light)
+void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, long &amount, CPointMap &p, DIR_TYPE &dir, BYTE &flags, BYTE& light)
 {
 	ADDTOCALLSTACK("PacketItemWorld::adjustItemData");
 
@@ -4825,7 +4826,7 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : Pac
 	long amount = item->GetAmount();
 	ITEMID_TYPE id = item->GetDispID();
 	CPointMap p = item->GetTopPoint();
-	BYTE dir = DIR_N;
+	DIR_TYPE dir = DIR_N;
 	HUE_TYPE hue = item->GetHue();
 	BYTE flags = 0;
 	BYTE light = 0;
@@ -4993,7 +4994,7 @@ PacketContainer::PacketContainer(const CClient* target, CObjBase** objects, size
 			long amount = item->GetAmount();
 			ITEMID_TYPE id = item->GetDispID();
 			CPointMap p = item->GetTopPoint();
-			BYTE dir = DIR_N;
+			DIR_TYPE dir = DIR_N;
 			HUE_TYPE hue = item->GetHue();
 			BYTE flags = 0;
 			BYTE light = 0;
