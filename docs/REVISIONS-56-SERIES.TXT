@@ -2273,4 +2273,7 @@ Changed: Some small improvements on AddContextMenuEntry function.
 02-06-2015, Coruja
 Fixed: Console error when players die.
 Fixed: PacketDeathAnimation .ini setting not working correctly.
-Changed: Some improvements on 'death' / 'make corpse' internal code. Now any NPC will have corpse when it die (unless it was an summoned NPC). So don't get confused if you see corpses of some NPCs which previously doesn't have corpse (elementals, etc), it's the default OSI behavior. Also TAG.DEATHFLAGS can be used to force removal/creation of the corpse on @Death
+Changed: Some improvements on 'death' / 'make corpse' internal code. Now any NPC will have corpse when it die (unless it was an summoned NPC). So don't get confused if you see corpses of some NPCs which previously doesn't have corpse (elementals, etc), it's the default OSI behavior. Also TAG.DEATHFLAGS can be used to force removal/creation of the corpse on @Death.
+
+03-06-2015, Coruja
+Changed: Paralyze spell formula (AOS -> pre-AOS) when MAGICF_OSIFORMULAS is enabled.

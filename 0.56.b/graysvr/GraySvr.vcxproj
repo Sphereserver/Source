@@ -51,6 +51,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <WarningLevel>Level2</WarningLevel>
+      <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -75,6 +76,7 @@
       <MinimalRebuild>true</MinimalRebuild>
       <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_NEWGUILDSYSTEM;_MTNETWORK;_SUBVERSION;_PRIVATEBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level2</WarningLevel>
+      <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -96,6 +98,7 @@
       <MinimalRebuild>true</MinimalRebuild>
       <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_NEWGUILDSYSTEM;_MTNETWORK;_SUBVERSION;_NIGHTLYBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level2</WarningLevel>
+      <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -117,6 +120,7 @@
       <MinimalRebuild>true</MinimalRebuild>
       <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_NEWGUILDSYSTEM;_MTNETWORK;_SUBVERSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level2</WarningLevel>
+      <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>

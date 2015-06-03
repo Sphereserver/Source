@@ -3627,14 +3627,15 @@ int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult,
 				break;
 
 			case SPELL_Paralyze:
-				{
-					iDuration = (pCharSrc->Skill_GetBase(SKILL_EVALINT) / 10) - (Skill_GetBase(SKILL_MAGICRESISTANCE) / 10);
-					if ( m_pNPC )
-						iDuration *= 3;
-					if ( iDuration < 1 )
-						iDuration = 1;
-				} 
+				iDuration = 7 + (pCharSrc->Skill_GetBase(SKILL_MAGERY) / 50);	// pre-AOS formula
 				break;
+
+				// AOS formula (it only works well on servers with skillcap)
+				/*iDuration = (pCharSrc->Skill_GetBase(SKILL_EVALINT) / 10) - (Skill_GetBase(SKILL_MAGICRESISTANCE) / 10);
+				if ( m_pNPC )
+					iDuration *= 3;
+				if ( iDuration < 0 )
+					iDuration = 0;*/
 
 			case SPELL_Poison_Field:
 				iDuration = 3 + (pCharSrc->Skill_GetBase(SKILL_MAGERY) / 25);
@@ -3664,20 +3665,25 @@ int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult,
 			case SPELL_Water_Elem:
 				iDuration = (2 * pCharSrc->Skill_GetBase(SKILL_MAGERY)) / 5;
 				break;
+
 			case SPELL_Corpse_Skin:
-				return (pCharSrc->Skill_GetBase(SKILL_SPIRITSPEAK) - Skill_GetBase(SKILL_MAGICRESISTANCE) / 25 + 40) * TICK_PER_SEC; // ((caster's Spirit Speak - target's Resisting Spells) / 2.5) + 40 seconds.
+				iDuration = 40 + ((pCharSrc->Skill_GetBase(SKILL_SPIRITSPEAK) - Skill_GetBase(SKILL_MAGICRESISTANCE)) / 25);
+				break;
 			case SPELL_Blood_Oath:
-				return (pCharSrc->Skill_GetBase(SKILL_SPIRITSPEAK) - Skill_GetBase(SKILL_MAGICRESISTANCE) / 80 + 8) * TICK_PER_SEC; // ((caster's Spirit Speak - target's Resisting Spells) / 80) + 8 seconds.
-			case SPELL_Evil_Omen:
-				return (-1);	// Remove on benefict
+				iDuration = 8 + ((pCharSrc->Skill_GetBase(SKILL_SPIRITSPEAK) - Skill_GetBase(SKILL_MAGICRESISTANCE)) / 80);
+				break;
 			case SPELL_Pain_Spike:
-				return ( TICK_PER_SEC );	// Timer is 1, but using 10 charges
+				iDuration = 1;		// timer is 1, but using 10 charges
+				break;
 			case SPELL_Mind_Rot:
-				return (pCharSrc->Skill_GetBase(SKILL_SPIRITSPEAK) - Skill_GetBase(SKILL_MAGICRESISTANCE) / 5 + 20) * TICK_PER_SEC;
+				iDuration = 20 + ((pCharSrc->Skill_GetBase(SKILL_SPIRITSPEAK) - Skill_GetBase(SKILL_MAGICRESISTANCE)) / 50);
+				break;
 			case SPELL_Strangle:
-				return (5 * TICK_PER_SEC);
+				iDuration = 5;
+				break;
 			case SPELL_Curse_Weapon:
-				return (pCharSrc->Skill_GetBase(SKILL_SPIRITSPEAK) / 34) + TICK_PER_SEC;	//Caster's Spirit Speak x 10 / 34 + 1 in seconds (1s at 0 SS, 30s at 100 SS, 36s at 120 SS)
+				iDuration = 1 + (pCharSrc->Skill_GetBase(SKILL_SPIRITSPEAK) / 34);
+				break;
 			default:
 				break;
 		}
