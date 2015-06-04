@@ -2277,3 +2277,4 @@ Changed: Some improvements on 'death' / 'make corpse' internal code. Now any NPC
 
 03-06-2015, Coruja
 Changed: Paralyze spell formula (AOS -> pre-AOS) when MAGICF_OSIFORMULAS is enabled.
+Added: Functionality for BONUS[STR/DEX/INT], BONUS[HITS/STAM/MANA] and LOWERMANACOST properties.

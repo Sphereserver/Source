@@ -2024,7 +2024,7 @@ bool CChar::Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool 
 	if ( pSpellDef->IsSpellType( SPELLFLAG_DISABLED ))
 		return( false );
 
-	int wManaUse = pSpellDef->m_wManaUse;
+	int wManaUse = pSpellDef->m_wManaUse * (100 - minimum(GetDefNum("LOWERMANACOST", true, true), 40)) / 100;
 
 	if (pSrc != this)
 	{

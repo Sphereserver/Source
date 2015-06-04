@@ -474,6 +474,30 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 				pItem->SetDefNum("HitLeechLife", pItem->GetDefNum("HitLeechLife", true) - pCursedMemory->m_itSpell.m_spelllevel, true);
 		}
 
+		INT64 iStrengthBonus = pItem->GetDefNum("BONUSSTR", true, true);
+		if (iStrengthBonus != 0)
+			Stat_SetMod(STAT_STR, Stat_GetMod(STAT_STR) - iStrengthBonus);
+
+		INT64 iDexterityBonus = pItem->GetDefNum("BONUSDEX", true, true);
+		if (iDexterityBonus != 0)
+			Stat_SetMod(STAT_DEX, Stat_GetMod(STAT_DEX) - iDexterityBonus);
+
+		INT64 iIntelligenceBonus = pItem->GetDefNum("BONUSINT", true, true);
+		if (iIntelligenceBonus != 0)
+			Stat_SetMod(STAT_INT, Stat_GetMod(STAT_INT) - iIntelligenceBonus);
+
+		INT64 iHitpointIncrease = pItem->GetDefNum("BONUSHITS", true, true);
+		if (iHitpointIncrease != 0)
+			Stat_SetMax(STAT_STR, Stat_GetMax(STAT_STR) - iHitpointIncrease);
+
+		INT64 iStaminaIncrease = pItem->GetDefNum("BONUSSTAM", true, true);
+		if (iStaminaIncrease != 0)
+			Stat_SetMax(STAT_DEX, Stat_GetMax(STAT_DEX) - iStaminaIncrease);
+
+		INT64 iManaIncrease = pItem->GetDefNum("BONUSMANA", true, true);
+		if (iManaIncrease != 0)
+			Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) - iManaIncrease);
+
 		INT64 iDamageIncrease = pItem->GetDefNum("INCREASEDAM", true, true);
 		if ( iDamageIncrease != 0 )
 			SetDefNum("INCREASEDAM", GetDefNum("INCREASEDAM", true) - iDamageIncrease);
@@ -501,6 +525,10 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 		INT64 iEnhancePotions = pItem->GetDefNum("ENHANCEPOTIONS", true, true);
 		if (iEnhancePotions != 0)
 			SetDefNum("ENHANCEPOTIONS", GetDefNum("ENHANCEPOTIONS", true) - iEnhancePotions);
+
+		INT64 iLowerManaCost = pItem->GetDefNum("LOWERMANACOST", true, true);
+		if (iLowerManaCost != 0)
+			SetDefNum("LOWERMANACOST", GetDefNum("LOWERMANACOST", true) - iLowerManaCost);
 
 		INT64 iLuck = pItem->GetDefNum("LUCK", true, true);
 		if ( iLuck != 0 )
@@ -2006,6 +2034,30 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 			pItem->SetDefNum("HitLeechLife", pItem->GetDefNum("HitLeechLife", true) + pCursedMemory->m_itSpell.m_spelllevel, true);
 	}
 
+	INT64 iStrengthBonus = pItem->GetDefNum("BONUSSTR", true, true);
+	if (iStrengthBonus != 0)
+		Stat_SetMod(STAT_STR, Stat_GetMod(STAT_STR) + iStrengthBonus);
+
+	INT64 iDexterityBonus = pItem->GetDefNum("BONUSDEX", true, true);
+	if (iDexterityBonus != 0)
+		Stat_SetMod(STAT_DEX, Stat_GetMod(STAT_DEX) + iDexterityBonus);
+
+	INT64 iIntelligenceBonus = pItem->GetDefNum("BONUSINT", true, true);
+	if (iIntelligenceBonus != 0)
+		Stat_SetMod(STAT_INT, Stat_GetMod(STAT_INT) + iIntelligenceBonus);
+
+	INT64 iHitpointIncrease = pItem->GetDefNum("BONUSHITS", true, true);
+	if (iHitpointIncrease != 0)
+		Stat_SetMax(STAT_STR, Stat_GetMax(STAT_STR) + iHitpointIncrease);
+
+	INT64 iStaminaIncrease = pItem->GetDefNum("BONUSSTAM", true, true);
+	if (iStaminaIncrease != 0)
+		Stat_SetMax(STAT_DEX, Stat_GetMax(STAT_DEX) + iStaminaIncrease);
+
+	INT64 iManaIncrease = pItem->GetDefNum("BONUSMANA", true, true);
+	if (iManaIncrease != 0)
+		Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) + iManaIncrease);
+
 	INT64 iDamageIncrease = pItem->GetDefNum("INCREASEDAM", true, true);
 	if (iDamageIncrease != 0)
 		SetDefNum("INCREASEDAM", GetDefNum("INCREASEDAM", true) + iDamageIncrease);
@@ -2033,6 +2085,10 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 	INT64 iEnhancePotions = pItem->GetDefNum("ENHANCEPOTIONS", true, true);
 	if (iEnhancePotions != 0)
 		SetDefNum("ENHANCEPOTIONS", GetDefNum("ENHANCEPOTIONS", true) + iEnhancePotions);
+
+	INT64 iLowerManaCost = pItem->GetDefNum("LOWERMANACOST", true, true);
+	if (iLowerManaCost != 0)
+		SetDefNum("LOWERMANACOST", GetDefNum("LOWERMANACOST", true) + iLowerManaCost);
 
 	INT64 iLuck = pItem->GetDefNum("LUCK", true, true);
 	if (iLuck != 0)
@@ -2707,19 +2763,19 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 void CChar::Wake()
 {
 	ADDTOCALLSTACK("CChar::Wake");
-	if ( ! IsStatFlag( STATF_Sleeping ))
+	if (!IsStatFlag(STATF_Sleeping))
 		return;
-	CItemCorpse * pCorpse = FindMyCorpse(true);
-	if ( pCorpse != NULL )
+
+	CItemCorpse *pCorpse = FindMyCorpse(true);
+	if (pCorpse == NULL)
 	{
-		RaiseCorpse(pCorpse);
-		StatFlag_Clear( STATF_Sleeping );
-		Update();	// update light levels etc.
+		Stat_SetVal(STAT_STR, 0);		// death
+		return;
 	}
-	else
-	{
-		Stat_SetVal( STAT_STR, 0 );		// Death
-	}
+
+	RaiseCorpse(pCorpse);
+	StatFlag_Clear(STATF_Sleeping);
+	Update();	// update light levels etc.
 }
 
 void CChar::SleepStart( bool fFrontFall )
