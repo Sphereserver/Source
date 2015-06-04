@@ -3148,7 +3148,7 @@ int CChar::Skill_Fighting( SKTRIG_TYPE stage )
 
 		// Set the swing timer.
 		int iWaitTime = Fight_GetWeaponSwingTimer()/2;	// start the anim immediately.
-		if ( g_Cfg.IsSkillRanged(Skill_GetActive()) )	// anim is funny for archery
+		if ( g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_RANGED) )	// anim is funny for archery
 			iWaitTime /= 2;
 		SetTimeout( iWaitTime );
 

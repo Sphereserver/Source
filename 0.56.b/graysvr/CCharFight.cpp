@@ -2203,6 +2203,9 @@ effect_bounce:
 		if ( Skill_UseQuick( SKILL_PARRYING, ParryChance, true, false ))
 		{
 			//Effect( EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 16 ); called in @UseQuick on parrying skill
+			//TO-DO: @UseQuick is always called before success/fail, so the glow effect above is always appearing even when the damage got parried or not.
+			//		 To make it work properly maybe we need some changes on @UseQuick (eg: replace @UseQuick with @Start and make it call @Success / @Fail, then we can use the glow effect on @Success)
+
 			if ( IsPriv(PRIV_DETAIL) )
 				pSrc->SysMessageDefault( DEFMSG_COMBAT_PARRY );
 			if ( pItemHit != NULL )
@@ -2215,12 +2218,30 @@ effect_bounce:
 	CCharBase * pCharDef = Char_GetDef();
 	ASSERT(pCharDef);
 
+	// Apply Necromancy cursed effects
+	if (IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
+	{
+		CItem * pEvilOmen = LayerFind(LAYER_SPELL_Evil_Omen);
+		if (pEvilOmen)
+		{
+			iDmg += iDmg / 4;
+			pEvilOmen->Delete();
+		}
+
+		CItem * pBloodOath = LayerFind(LAYER_SPELL_Blood_Oath);
+		if (pBloodOath && pBloodOath->m_uidLink == pSrc->GetUID() && !(uType & DAMAGE_FIXED))	// if DAMAGE_FIXED is set we are already receiving a reflected damage, so we must stop here to avoid an infinite loop.
+		{
+			iDmg += iDmg / 10;
+			pSrc->OnTakeDamage(iDmg * (100 - pBloodOath->m_itSpell.m_spelllevel) / 100, this, DAMAGE_MAGIC|DAMAGE_FIXED);
+		}
+	}
+
 	// MAGICF_IGNOREAR bypasses defense completely
 	if ( (uType & DAMAGE_MAGIC) && IsSetMagicFlags(MAGICF_IGNOREAR) )
 		uType |= DAMAGE_FIXED;
 
 	// Apply armor calculation
-	if (!((uType & DAMAGE_FIXED) || (uType & DAMAGE_GOD)))
+	if (!(uType & DAMAGE_GOD|DAMAGE_FIXED))
 	{
 		if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 		{
@@ -2309,9 +2330,13 @@ effect_bounce:
 	// Remove stuck/paralyze effect
 	if ( !(uType & DAMAGE_NOUNPARALYZE) )
 	{
-		StatFlag_Clear( STATF_Freeze );
-		if (LayerFind( LAYER_FLAG_Stuck ))
-			LayerFind( LAYER_FLAG_Stuck )->Delete();
+		CItem * pParalyze = LayerFind(LAYER_SPELL_Paralyze);
+		if (pParalyze)
+			pParalyze->Delete();
+
+		CItem * pStuck = LayerFind(LAYER_FLAG_Stuck);
+		if (pStuck)
+			pStuck->Delete();
 	}
 
 	if ( pSrc && pSrc != this )
@@ -2347,9 +2372,7 @@ effect_bounce:
 			// Check if Reactive Armor will reflect some damage back
 			if ( IsStatFlag(STATF_Reactive) && !(uType & DAMAGE_GOD) )
 			{
-				if ( pSrc->m_pNPC && ( pSrc->m_pNPC->m_Brain == NPCBRAIN_GUARD ))	// Reactive Armor doesn't make effect against guards
-					return( -1 );
-				else if ( GetTopDist3D(pSrc) < 2 )
+				if ( GetTopDist3D(pSrc) < 2 )
 				{
 					int iReactiveDamage = iDmg / 5;
 					if ( iReactiveDamage < 1 )
@@ -2385,27 +2408,8 @@ effect_bounce:
 		}
 	}
 
-	if ( IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) )
-	{
-		// Blood Oath Effect
-		CItem * pMemory = LayerFind(LAYER_SPELL_Blood_Oath);
-		if (pMemory && pMemory->m_uidLink == pSrc->GetUID() && !(uType&DAMAGE_GOD))	// IF DAMAGE_GOD is set we are already receiving a reflected damage, so we must stop here to avoid an infinite loop.
-		{
-			int iReturn = IMULDIV(iDmg, pMemory->m_itSpell.m_spelllevel, 100);
-			pSrc->OnTakeDamage(iReturn, this, DAMAGE_GOD | DAMAGE_MAGIC);// I've casted Blood Oath to the target and he's damaging me ... Damage is increased but he also receives a portion of it.
-
-		}
-
-		// Evil Omen
-		CItem * pEvilOmen = LayerFind(LAYER_SPELL_Evil_Omen);
-		if (pEvilOmen && pEvilOmen->m_uidLink == pSrc->GetUID())
-		{
-			iDmg += IMULDIV(iDmg, 25, 100);	// Effect 1 = +25% increased damage on next source.
-			pEvilOmen->Delete(true);
-		}
-	}
-
 	// Apply damage
+	SoundChar(CRESND_GETHIT);
 	UpdateStatVal( STAT_STR, -iDmg );
 	if ( pSrc->IsClient() )
 		pSrc->GetClient()->addHitsUpdate( GetUID() );	// always send updates to src
@@ -2413,38 +2417,29 @@ effect_bounce:
 	if ( IsAosFlagEnabled( FEATURE_AOS_DAMAGE ) )
 	{
 		if ( IsClient() )
-			m_pClient->addShowDamage( iDmg, (DWORD)GetUID() );
-		if ( pSrc->IsClient() && (GetUID() != pSrc->GetUID()) )
-			pSrc->m_pClient->addShowDamage( iDmg, (DWORD)GetUID() );
+			m_pClient->addShowDamage( iDmg, static_cast<DWORD>(GetUID()) );
+		if ( pSrc->IsClient() && (pSrc != this) )
+			pSrc->m_pClient->addShowDamage( iDmg, static_cast<DWORD>(GetUID()) );
 		else
 		{
 			CChar * pSrcOwner = pSrc->NPC_PetGetOwner();
 			if ( pSrcOwner != NULL )
 			{
 				if ( pSrcOwner->IsClient() )
-					pSrcOwner->m_pClient->addShowDamage( iDmg, (DWORD)GetUID() );
+					pSrcOwner->m_pClient->addShowDamage( iDmg, static_cast<DWORD>(GetUID()) );
 			}
 		}
 	}
 
 	if ( Stat_GetVal(STAT_STR) <= 0 )
 	{
-		// We will die from this...make sure the killer is set correctly...if we don't do this, the person we are currently
-		// attacking will get credit for killing us.
-		// Killed by a guard looks here !
+		// We will die from this. Make sure the killer is set correctly, otherwise the person we are currently attacking will get credit for killing us.
 		m_Fight_Targ = pSrc->GetUID();
-		if (IsStatFlag( STATF_Ridden )) // Dead Horse?
-		{
-			CChar *pCharRider = Horse_GetMountChar();
-			if ( pCharRider )
-				pCharRider->Horse_UnMount();
-		}
 		return( INT_MAX );
 	}
 
-	SoundChar( CRESND_GETHIT );
-	if ( m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )	// Not interrupt my swing.
-		UpdateAnimate( ANIM_GET_HIT );
+	if (m_atFight.m_War_Swing_State != WAR_SWING_SWINGING)	// don't interrupt my swing animation
+		UpdateAnimate(ANIM_GET_HIT);
 
 	return( iDmg );
 }
@@ -2802,7 +2797,7 @@ CChar * CChar::Fight_FindBestTarget()
 
 			int iDist = GetDist(pChar);
 
-			if ( g_Cfg.IsSkillRanged( skillWeapon ) )
+			if ( g_Cfg.IsSkillFlag(skillWeapon, SKF_RANGED) )
 			{
 				// archery dist is different.
 				if ( iDist < g_Cfg.m_iArcheryMinDist || iDist > g_Cfg.m_iArcheryMaxDist )
@@ -3133,7 +3128,7 @@ CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 		// Main priority is the Threat
 		// but we only add it if it meets some requirements: target must not be far than view size and must be in LOS.
 
-		if ( g_Cfg.IsSkillRanged( skillWeapon ) )
+		if ( g_Cfg.IsSkillFlag(skillWeapon, SKF_RANGED) )
 		{
 			// archery dist is different.
 			if ( iDist < g_Cfg.m_iArcheryMinDist || iDist > g_Cfg.m_iArcheryMaxDist )
@@ -3618,7 +3613,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	if ( CanSee(pCharTarg) )
 	{
-		if ( (pCharTarg->m_pNPC && pCharTarg->IsStatFlag(STATF_Ridden) ) || !CanSeeLOS(pCharTarg, (g_Cfg.IsSkillRanged(Skill_GetActive()) ? LOS_NB_WINDOWS : 0x0) ) ) //Allow archery through a window
+		if ( (pCharTarg->m_pNPC && pCharTarg->IsStatFlag(STATF_Ridden) ) || !CanSeeLOS(pCharTarg, (g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_RANGED) ? LOS_NB_WINDOWS : 0x0) ) ) //Allow archery through a window
 		{
 			if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
 				return( WAR_SWING_READY );
@@ -3680,7 +3675,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 
 	SKILL_TYPE skill = Skill_GetActive();
-	if ( g_Cfg.IsSkillRanged(skill) )
+	if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
 	{
 		if (IsSetCombatFlags(COMBAT_PREHIT) && (m_atFight.m_War_Swing_State == WAR_SWING_READY))
 		{
@@ -3943,7 +3938,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( m_Act_Difficulty < 0 )
 		{
 			CScriptTriggerArgs	Args ( 0, 0, pWeapon );
-			if (g_Cfg.IsSkillRanged(skill))
+			if (g_Cfg.IsSkillFlag(skill, SKF_RANGED))
 			{
 				// Get uid of the current arrow.
 				if (pAmmo)
@@ -3970,7 +3965,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	if ( m_Act_Difficulty < 0 )		// if not changed within trigger
 	{
 		// We missed. (miss noise)
-		if ( g_Cfg.IsSkillRanged(skill) )
+		if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
 		{
 			// 0x223 = bolt miss or dart ?
 			// do some thing with the arrow.
@@ -4022,7 +4017,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	//if ( iDmg ) // use OnTakeDamage below instead.
 	//	pCharTarg->OnHarmedBy( this, iDmg );
 
-	if (IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) && !g_Cfg.IsSkillRanged(skill))
+	if (IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) && !g_Cfg.IsSkillFlag(skill, SKF_RANGED))
 	{
 		CItem * pPoly = LayerFind(LAYER_SPELL_Polymorph);	// Horrific beast polymorph gives +25%(default) damage to melee attacks.
 		if (pPoly && pPoly->m_itSpell.m_spell == SPELL_Horrific_Beast)

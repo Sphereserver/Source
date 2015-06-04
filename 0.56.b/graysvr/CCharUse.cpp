@@ -333,7 +333,7 @@ bool CChar::Use_Train_Dummy( CItem * pItem, bool fSetup )
 
 	//SysMessagef("SKILLTAG=%s\n",skilltag);
 
-	if ( g_Cfg.IsSkillRanged(skill) ) // We do not allow archerytraining on dummys.
+	if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )	// We do not allow archerytraining on dummys.
 	{
 		SysMessageDefault( DEFMSG_ITEMUSE_TDUMMY_ARCH );
 		return( false );
@@ -503,7 +503,7 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 
 	// We have to be using a ranged skill (aka archery or throwing) on this
 	SKILL_TYPE skill = Fight_GetWeaponSkill();
-	if ( !g_Cfg.IsSkillRanged(skill) )
+	if ( !g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
 	{
 		SysMessageDefault( DEFMSG_ITEMUSE_ARCHB_WS );
 		return ( true );

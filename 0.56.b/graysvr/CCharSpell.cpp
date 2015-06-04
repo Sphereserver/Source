@@ -649,7 +649,6 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			break;
 
 		case LAYER_SPELL_Gift_Of_Life:
-
 			if (IsClient())
 				GetClient()->removeBuff(BI_GIFTOFLIFE);
 			break;
@@ -659,34 +658,34 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 				GetClient()->removeBuff(BI_ARCANEEMPOWERMENT);
 			break;
 
-			/*case LAYER_Mortal_Strike:
+		/*case LAYER_Mortal_Strike:
 			if (IsClient())
-			GetClient()->removeBuff(BI_MORTALSTRIKE);
+				GetClient()->removeBuff(BI_MORTALSTRIKE);
 			break;
 			}*/
-			break;
-			case LAYER_SPELL_Blood_Oath:
+
+		case LAYER_SPELL_Blood_Oath:
 			{
-				SetDefNum("ResFire", GetDefNum("ResFire") + 15, true);
-				SetDefNum("ResPoison", GetDefNum("ResPoison") + 15, true);
-				SetDefNum("ResCold", GetDefNum("ResCold") - 10, true);
-				SetDefNum("ResPhysical", GetDefNum("ResPhysical") - 10, true);
 				if (IsClient())
-					GetClient()->removeBuff(BI_BLOODOATHCASTER);
+					GetClient()->removeBuff(BI_BLOODOATHCURSE);
 				CChar * pSrc = pSpell->m_uidLink.CharFind();
 				if (pSrc->GetClient())
-					pSrc->GetClient()->removeBuff(BI_BLOODOATHCURSE);
+					pSrc->GetClient()->removeBuff(BI_BLOODOATHCASTER);
 			}break;
 		case LAYER_SPELL_Corpse_Skin:
+			SetDefNum("ResPhysical", GetDefNum("ResPhysical") - pSpell->m_itSpell.m_PolyStr, true);
+			SetDefNum("ResFire", GetDefNum("ResFire") + pSpell->m_itSpell.m_PolyDex, true);
+			SetDefNum("ResCold", GetDefNum("ResCold") - pSpell->m_itSpell.m_PolyStr, true);
+			SetDefNum("ResPoison", GetDefNum("ResPoison") + pSpell->m_itSpell.m_PolyDex, true);
 			if (IsClient())
 				GetClient()->removeBuff(BI_CORPSESKIN);
-			SetDefNum("ResFire", GetDefNum("ResFire") + pSpell->m_itSpell.m_PolyDex, true);
-			SetDefNum("ResPoison", GetDefNum("ResPoison") + pSpell->m_itSpell.m_PolyDex, true);
-			SetDefNum("ResCold", GetDefNum("ResCold") - pSpell->m_itSpell.m_PolyStr, true);
-			SetDefNum("ResPhysical", GetDefNum("ResPhysical") - pSpell->m_itSpell.m_PolyStr, true);
+			break;
+
 		case LAYER_SPELL_Pain_Spike:
 			if (IsClient())
 				GetClient()->removeBuff(BI_PAINSPIKE);
+			break;
+
 		default:
 			break;
 	}
@@ -1167,16 +1166,18 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			pSpell->m_itSpell.m_spelllevel = iStatEffect;
 			if ( IsSetOF(OF_Buffs) )
 			{
-				if (IsClient())
+				if ( IsClient() )
 				{
-					GetClient()->removeBuff(BI_BLOODOATHCASTER);
-					GetClient()->addBuff(BI_BLOODOATHCASTER, 1075805, 1075804, iTimerEffect, pNumBuff, 1);
+					strcpy(NumBuff[0], pCaster->GetName());
+					strcpy(NumBuff[1], pCaster->GetName());
+					GetClient()->removeBuff(BI_BLOODOATHCURSE);
+					GetClient()->addBuff(BI_BLOODOATHCURSE, 1075659, 1075660, iTimerEffect, pNumBuff, 2);
 				}
-				CChar * pSrc = pSpell->m_uidLink.CharFind();
-				if ( pSrc->GetClient() )
+				if ( pCaster->GetClient() )
 				{
-					pSrc->GetClient()->removeBuff(BI_BLOODOATHCURSE);
-					pSrc->GetClient()->addBuff(BI_BLOODOATHCURSE, 1075805, 1075804, iTimerEffect, pNumBuff, 1);
+					strcpy(NumBuff[0], GetName());
+					pCaster->GetClient()->removeBuff(BI_BLOODOATHCASTER);
+					pCaster->GetClient()->addBuff(BI_BLOODOATHCASTER, 1075661, 1075662, iTimerEffect, pNumBuff, 1);
 				}
 			}
 			break;
@@ -3143,11 +3144,11 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		int iResist = Skill_GetBase(SKILL_MAGICRESISTANCE);
 		if (IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
 		{
-			CItem * pMemory = LayerFind(LAYER_SPELL_Evil_Omen);
-			if (pMemory && pMemory->m_uidLink)
+			CItem * pEvilOmen = LayerFind(LAYER_SPELL_Evil_Omen);
+			if (pEvilOmen)
 			{
-				iResist /=2;	// Effect 3: Only 50% of magic resistance used in next resistable spell.
-				pMemory->Delete(true);
+				iResist /= 2;	// Effect 3: Only 50% of magic resistance used in next resistable spell.
+				pEvilOmen->Delete();
 			}
 		}
 		int iFirst = iResist / 50;
@@ -3489,12 +3490,12 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			Spell_Effect_Create(spell, LAYER_SPELL_Evil_Omen, iSkillLevel, GetSpellDuration(spell, iSkillLevel, iEffectMult, pCharSrc), pCharSrc);
 			break;
 
-		case SPELL_Pain_Spike:
-			Spell_Effect_Create(spell, LAYER_SPELL_Pain_Spike, iSkillLevel, GetSpellDuration(spell, iSkillLevel, iEffectMult, pCharSrc), pCharSrc);
-			break;
-
 		case SPELL_Mind_Rot:
 			Spell_Effect_Create(spell, LAYER_SPELL_Mind_Rot, iSkillLevel, GetSpellDuration(spell, iSkillLevel, iEffectMult, pCharSrc), pCharSrc);
+			break;
+
+		case SPELL_Pain_Spike:
+			Spell_Effect_Create(spell, LAYER_SPELL_Pain_Spike, iSkillLevel, GetSpellDuration(spell, iSkillLevel, iEffectMult, pCharSrc), pCharSrc);
 			break;
 
 		case SPELL_Strangle:
@@ -3577,7 +3578,7 @@ int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult,
 {
 	ADDTOCALLSTACK("CChar::GetSpellDuration");
 	int iDuration = -1;
-	if (IsSetMagicFlags(MAGICF_OSIFORMULAS) || spell >= SPELL_Animate_Dead_AOS && pCharSrc != NULL)
+	if (pCharSrc != NULL && (IsSetMagicFlags(MAGICF_OSIFORMULAS) || spell >= SPELL_Animate_Dead_AOS))
 	{
 		switch ( spell )
 		{
@@ -3666,23 +3667,23 @@ int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult,
 				iDuration = (2 * pCharSrc->Skill_GetBase(SKILL_MAGERY)) / 5;
 				break;
 
-			case SPELL_Corpse_Skin:
-				iDuration = 40 + ((pCharSrc->Skill_GetBase(SKILL_SPIRITSPEAK) - Skill_GetBase(SKILL_MAGICRESISTANCE)) / 25);
-				break;
 			case SPELL_Blood_Oath:
 				iDuration = 8 + ((pCharSrc->Skill_GetBase(SKILL_SPIRITSPEAK) - Skill_GetBase(SKILL_MAGICRESISTANCE)) / 80);
 				break;
-			case SPELL_Pain_Spike:
-				iDuration = 1;		// timer is 1, but using 10 charges
+			case SPELL_Corpse_Skin:
+				iDuration = 40 + ((pCharSrc->Skill_GetBase(SKILL_SPIRITSPEAK) - Skill_GetBase(SKILL_MAGICRESISTANCE)) / 25);
+				break;
+			case SPELL_Curse_Weapon:
+				iDuration = 1 + (pCharSrc->Skill_GetBase(SKILL_SPIRITSPEAK) / 34);
 				break;
 			case SPELL_Mind_Rot:
 				iDuration = 20 + ((pCharSrc->Skill_GetBase(SKILL_SPIRITSPEAK) - Skill_GetBase(SKILL_MAGICRESISTANCE)) / 50);
 				break;
+			case SPELL_Pain_Spike:
+				iDuration = 1;		// timer is 1, but using 10 charges
+				break;
 			case SPELL_Strangle:
 				iDuration = 5;
-				break;
-			case SPELL_Curse_Weapon:
-				iDuration = 1 + (pCharSrc->Skill_GetBase(SKILL_SPIRITSPEAK) / 34);
 				break;
 			default:
 				break;

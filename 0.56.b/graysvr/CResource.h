@@ -1136,11 +1136,6 @@ public:
 		return ( pSkillDef != NULL && (pSkillDef->m_dwFlags & skf) );
 	}
 
-	bool IsSkillRanged( SKILL_TYPE index ) const
-	{
-		return IsSkillFlag( index, SKF_RANGED );
-	}
-
 	const CSkillDef* GetSkillDef( SKILL_TYPE index ) const
 	{
 		if (m_SkillIndexDefs.IsValidIndex(static_cast<size_t>(index)) == false)

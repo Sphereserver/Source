@@ -2747,11 +2747,11 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 
 	if (IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
 	{
-		CItem * pMemory = LayerFind(LAYER_SPELL_Evil_Omen);
-		if (pMemory && pMemory->m_uidLink)
+		CItem * pEvilOmen = LayerFind(LAYER_SPELL_Evil_Omen);
+		if (pEvilOmen)
 		{
 			pPoison->m_itSpell.m_spelllevel++;	// Effect 2: next poison will have one additional level of poison.
-			pMemory->Delete(true);
+			pEvilOmen->Delete();
 		}
 	}
 
