@@ -660,10 +660,10 @@ public:
 		// IT_CORPSE
 		struct	// might just be a sleeping person as well
 		{
-			DWORD		m_junk1;		// more1 = Corpse is already carved? (0=not carved, 1=carved)
-			CGrayUID	m_uidKiller;	// more2 = Who killed this corpse, carved or looted it last. sleep=self.
-			CREID_TYPE	m_BaseID;		// morex,morey = The true type of the creature who's corpse this is.
-			DIR_TYPE	m_facing_dir;	// morez = Corpse dir. 0x80 = on face.
+			DWORD			m_junk1;		// more1 = Corpse is already carved? (0=not carved, 1=carved)
+			CGrayUIDBase	m_uidKiller;	// more2 = Who killed this corpse, carved or looted it last. sleep=self.
+			CREID_TYPE		m_BaseID;		// morex,morey = The true type of the creature who's corpse this is.
+			DIR_TYPE		m_facing_dir;	// morez = Corpse dir. 0x80 = on face.
 			// m_amount = the body type.
 			// m_uidLink = the creatures ghost.
 		} m_itCorpse;

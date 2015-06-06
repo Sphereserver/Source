@@ -394,7 +394,7 @@ PacketItemWorld::PacketItemWorld(const CClient* target, CItem *item) : PacketSen
 	writeInt16(p.m_x);
 	writeInt16(p.m_y);
 	if (dir > 0)
-		writeByte(dir);
+		writeByte(static_cast<BYTE>(dir));
 	writeByte(p.m_z);
 	if (hue > 0)
 		writeInt16(hue);
@@ -3872,14 +3872,14 @@ void PacketDisplayPopup::addOption(WORD entryTag, DWORD textId, WORD flags, WORD
 		if (flags & POPUPFLAG_COLOR)
 			flags &= ~POPUPFLAG_COLOR;
 
-		writeInt32(textId);
+		writeInt32(static_cast<WORD>(textId));
 		writeInt16(entryTag);
 		writeInt16(flags);
 	}
 	else
 	{
 		writeInt16(entryTag);
-		writeInt16(textId);
+		writeInt16(static_cast<WORD>(textId));
 		writeInt16(flags);
 
 		if (flags & POPUPFLAG_COLOR)
@@ -4849,7 +4849,7 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : Pac
 	writeByte(static_cast<unsigned char>(source));// 0=tiledata,1=character,2=multi
 	writeInt32(uid);
 	writeInt16(static_cast<WORD>(id));
-	writeByte(dir);
+	writeByte(static_cast<BYTE>(dir));
 	writeInt16(static_cast<WORD>(amount));
 	writeInt16(static_cast<WORD>(amount));
 	writeInt16(p.m_x);
@@ -5012,7 +5012,7 @@ PacketContainer::PacketContainer(const CClient* target, CObjBase** objects, size
 			writeByte(static_cast<unsigned char>(source));
 			writeInt32(uid);
 			writeInt16(static_cast<WORD>(id));
-			writeByte(dir);
+			writeByte(static_cast<BYTE>(dir));
 			writeInt16(static_cast<WORD>(amount));
 			writeInt16(static_cast<WORD>(amount));
 			writeInt16(p.m_x);

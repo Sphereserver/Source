@@ -4116,55 +4116,60 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	if (iDmg > 0)
 	{
-		if (pWeapon != NULL)
+		bool bMakeLeechSound = false;
+
+		CItem * pCurseWeapon = LayerFind(LAYER_SPELL_Curse_Weapon);
+		int iHitLifeLeech = static_cast<int>(GetDefNum("HitLeechLife", true));
+		if ( pWeapon && pCurseWeapon )
+			iHitLifeLeech += pCurseWeapon->m_itSpell.m_spelllevel;	// Applying Curse Weapon bonus.
+		if ( iHitLifeLeech )
 		{
-			bool bMakeLeechSound = false;
-
-			int iHitLifeLeech = pWeapon->GetDefNum("HitLeechLife", true);
-			if (iHitLifeLeech)
-			{
-				iHitLifeLeech = Calc_GetRandVal2(0, (iDmg * iHitLifeLeech * 30) / 10000);	// leech 0% ~ 30% of damage value
-				Stat_SetVal(STAT_STR, Stat_GetVal(STAT_STR) + iHitLifeLeech);
-				bMakeLeechSound = true;
-			}
-
-			int iHitManaLeech = pWeapon->GetDefNum("HitLeechMana", true);
-			if (iHitManaLeech)
-			{
-				iHitManaLeech = Calc_GetRandVal2(0, (iDmg * iHitManaLeech * 40) / 10000);	// leech 0% ~ 40% of damage value
-				Stat_SetVal(STAT_INT, Stat_GetVal(STAT_INT) + iHitManaLeech);
-				bMakeLeechSound = true;
-			}
-
-			if (pWeapon->GetDefNum("HitLeechStam", true) > Calc_GetRandVal(100))
-			{
-				Stat_SetVal(STAT_DEX, Stat_GetVal(STAT_DEX) + iDmg);	// leech 100% of damage value
-				bMakeLeechSound = true;
-			}
-
-			int iManaDrain = 0;
-			CItem * pPoly = LayerFind(LAYER_SPELL_Polymorph);
-			if (pPoly && pPoly->m_itSpell.m_spell == SPELL_Wraith_Form)
-				iManaDrain += IMULDIV(iDmg, Skill_GetBase(SKILL_SPIRITSPEAK) / 50, 100);	// leech 8% of damage value at 0 Spirit Speak, 20% at 100 Spirit Speak, 24% at 120 Spirit Speak
-			if (pWeapon->GetDefNum("HitManaDrain", true) > Calc_GetRandVal(100))
-				iManaDrain += IMULDIV(iDmg, 20, 100);	// leech 20% of damage value
-
-			int iTargMana = pCharTarg->Stat_GetVal(STAT_INT);
-			if (iManaDrain > iTargMana)
-				iManaDrain = iTargMana;
-			if (iManaDrain > 0)
-			{
-				pCharTarg->Stat_SetVal(STAT_INT, iTargMana - iManaDrain);
-				Stat_SetVal(STAT_INT, Stat_GetVal(STAT_INT) + iManaDrain);
-				bMakeLeechSound = true;
-			}
-
-			if (bMakeLeechSound)
-				Sound(0x44d);
+			iHitLifeLeech = Calc_GetRandVal2(0, (iDmg * iHitLifeLeech * 30) / 10000);	// leech 0% ~ 30% of damage value
+			Stat_SetVal(STAT_STR, Stat_GetVal(STAT_STR) + iHitLifeLeech);
+			UpdateHitsFlag();	// Status need to be updated after the changes.
+			bMakeLeechSound = true;
 		}
 
-		// Is we do no damage we get no experience!
-		Skill_Experience( skill, m_Act_Difficulty );	// Get experience for it.
+		int iHitManaLeech = static_cast<int>(GetDefNum("HitLeechMana", true));
+		if ( iHitManaLeech )
+		{
+			iHitManaLeech = Calc_GetRandVal2(0, (iDmg * iHitManaLeech * 40) / 10000);	// leech 0% ~ 40% of damage value
+			Stat_SetVal(STAT_INT, Stat_GetVal(STAT_INT) + iHitManaLeech);
+			UpdateManaFlag();
+			bMakeLeechSound = true;
+		}
+
+		if ( GetDefNum("HitLeechStam", true ) > Calc_GetRandLLVal(100) )
+		{
+			Stat_SetVal(STAT_DEX, Stat_GetVal(STAT_DEX) + iDmg);	// leech 100% of damage value
+			UpdateStamFlag();
+			bMakeLeechSound = true;
+		}
+
+		int iManaDrain = 0;
+		CItem * pPoly = LayerFind(LAYER_SPELL_Polymorph);
+		if ( pPoly && pPoly->m_itSpell.m_spell == SPELL_Wraith_Form )
+			iManaDrain += IMULDIV(iDmg, Skill_GetBase(SKILL_SPIRITSPEAK) / 50, 100);	// leech 8% of damage value at 0 Spirit Speak, 20% at 100 Spirit Speak, 24% at 120 Spirit Speak
+		if ( GetDefNum("HitManaDrain", true) > Calc_GetRandLLVal(100) )
+			iManaDrain += IMULDIV(iDmg, 20, 100);	// leech 20% of damage value
+
+		int iTargMana = pCharTarg->Stat_GetVal(STAT_INT);
+		if (iManaDrain > iTargMana)
+			iManaDrain = iTargMana;
+		if ( iManaDrain > 0 )
+		{
+			pCharTarg->Stat_SetVal(STAT_INT, iTargMana - iManaDrain);
+			pCharTarg->UpdateManaFlag();
+			Stat_SetVal(STAT_INT, Stat_GetVal(STAT_INT) + iManaDrain);
+			UpdateManaFlag();
+			bMakeLeechSound = true;
+		}
+
+		if ( bMakeLeechSound )
+			Sound(0x44d);
+
+		// If we do no damage, we get no experience!
+		Skill_Experience( skill, m_Act_Difficulty );
 	}
 
 	return( WAR_SWING_EQUIPPING );	// Made our full swing.

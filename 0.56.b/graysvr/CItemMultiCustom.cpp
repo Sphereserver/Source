@@ -506,7 +506,7 @@ void CItemMultiCustom::AddStairs(CClient * pClientSrc, ITEMID_TYPE id, short x, 
 		if ( !pMultiItem->m_visible )
 			continue;
 
-		AddItem(NULL, pMultiItem->GetDispID(), x + pMultiItem->m_dx, y + pMultiItem->m_dy, z + pMultiItem->m_dz, iStairID);
+		AddItem(NULL, pMultiItem->GetDispID(), x + pMultiItem->m_dx, y + pMultiItem->m_dy, z + static_cast<signed char>(pMultiItem->m_dz), iStairID);
 	}
 	SendStructureTo(pClientSrc);
 }
@@ -646,9 +646,9 @@ bool CItemMultiCustom::RemoveStairs(Component * pStairComponent)
 			if ( (*i)->m_isFloor && (GetPlane(*i) == 1) && (GetPlaneZ(GetPlane(*i)) == (*i)->m_item.m_dz) )
 				bReplaceDirt = true;
 
-			int x=(*i)->m_item.m_dx;
-			int y=(*i)->m_item.m_dy;
-			signed char z=(*i)->m_item.m_dz;
+			int x = (*i)->m_item.m_dx;
+			int y = (*i)->m_item.m_dy;
+			signed char z = static_cast<signed char>((*i)->m_item.m_dz);
 
 			i = m_designWorking.m_vectorComponents.erase(i);
 			m_designWorking.m_iRevision++;
@@ -988,7 +988,7 @@ size_t CItemMultiCustom::GetComponentsAt(short x, short y, signed char z, Compon
 const CPointMap CItemMultiCustom::GetComponentPoint(Component * pComp) const
 {
 	ADDTOCALLSTACK("CItemMultiCustom::GetComponentPoint");
-	return GetComponentPoint(pComp->m_item.m_dx, pComp->m_item.m_dy, pComp->m_item.m_dz);
+	return GetComponentPoint(pComp->m_item.m_dx, pComp->m_item.m_dy, static_cast<signed char>(pComp->m_item.m_dz));
 }
 
 const CPointMap CItemMultiCustom::GetComponentPoint(int dx, int dy, signed char dz) const

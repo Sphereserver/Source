@@ -474,27 +474,27 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 				pItem->SetDefNum("HitLeechLife", pItem->GetDefNum("HitLeechLife", true) - pCursedMemory->m_itSpell.m_spelllevel, true);
 		}
 
-		INT64 iStrengthBonus = pItem->GetDefNum("BONUSSTR", true, true);
+		short iStrengthBonus = static_cast<short>(pItem->GetDefNum("BONUSSTR", true, true));
 		if (iStrengthBonus != 0)
 			Stat_SetMod(STAT_STR, Stat_GetMod(STAT_STR) - iStrengthBonus);
 
-		INT64 iDexterityBonus = pItem->GetDefNum("BONUSDEX", true, true);
+		short iDexterityBonus = static_cast<short>(pItem->GetDefNum("BONUSDEX", true, true));
 		if (iDexterityBonus != 0)
 			Stat_SetMod(STAT_DEX, Stat_GetMod(STAT_DEX) - iDexterityBonus);
 
-		INT64 iIntelligenceBonus = pItem->GetDefNum("BONUSINT", true, true);
+		short iIntelligenceBonus = static_cast<short>(pItem->GetDefNum("BONUSINT", true, true));
 		if (iIntelligenceBonus != 0)
 			Stat_SetMod(STAT_INT, Stat_GetMod(STAT_INT) - iIntelligenceBonus);
 
-		INT64 iHitpointIncrease = pItem->GetDefNum("BONUSHITS", true, true);
+		short iHitpointIncrease = static_cast<short>(pItem->GetDefNum("BONUSHITS", true, true));
 		if (iHitpointIncrease != 0)
 			Stat_SetMax(STAT_STR, Stat_GetMax(STAT_STR) - iHitpointIncrease);
 
-		INT64 iStaminaIncrease = pItem->GetDefNum("BONUSSTAM", true, true);
+		int iStaminaIncrease = static_cast<int>(pItem->GetDefNum("BONUSSTAM", true, true));
 		if (iStaminaIncrease != 0)
 			Stat_SetMax(STAT_DEX, Stat_GetMax(STAT_DEX) - iStaminaIncrease);
 
-		INT64 iManaIncrease = pItem->GetDefNum("BONUSMANA", true, true);
+		int iManaIncrease = static_cast<int>(pItem->GetDefNum("BONUSMANA", true, true));
 		if (iManaIncrease != 0)
 			Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) - iManaIncrease);
 
@@ -2034,27 +2034,27 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 			pItem->SetDefNum("HitLeechLife", pItem->GetDefNum("HitLeechLife", true) + pCursedMemory->m_itSpell.m_spelllevel, true);
 	}
 
-	INT64 iStrengthBonus = pItem->GetDefNum("BONUSSTR", true, true);
+	short iStrengthBonus = static_cast<short>(pItem->GetDefNum("BONUSSTR", true, true));
 	if (iStrengthBonus != 0)
 		Stat_SetMod(STAT_STR, Stat_GetMod(STAT_STR) + iStrengthBonus);
 
-	INT64 iDexterityBonus = pItem->GetDefNum("BONUSDEX", true, true);
+	short iDexterityBonus = static_cast<short>(pItem->GetDefNum("BONUSDEX", true, true));
 	if (iDexterityBonus != 0)
 		Stat_SetMod(STAT_DEX, Stat_GetMod(STAT_DEX) + iDexterityBonus);
 
-	INT64 iIntelligenceBonus = pItem->GetDefNum("BONUSINT", true, true);
+	short iIntelligenceBonus = static_cast<short>(pItem->GetDefNum("BONUSINT", true, true));
 	if (iIntelligenceBonus != 0)
 		Stat_SetMod(STAT_INT, Stat_GetMod(STAT_INT) + iIntelligenceBonus);
 
-	INT64 iHitpointIncrease = pItem->GetDefNum("BONUSHITS", true, true);
+	int iHitpointIncrease = static_cast<int>(pItem->GetDefNum("BONUSHITS", true, true));
 	if (iHitpointIncrease != 0)
 		Stat_SetMax(STAT_STR, Stat_GetMax(STAT_STR) + iHitpointIncrease);
 
-	INT64 iStaminaIncrease = pItem->GetDefNum("BONUSSTAM", true, true);
+	int iStaminaIncrease = static_cast<int>(pItem->GetDefNum("BONUSSTAM", true, true));
 	if (iStaminaIncrease != 0)
 		Stat_SetMax(STAT_DEX, Stat_GetMax(STAT_DEX) + iStaminaIncrease);
 
-	INT64 iManaIncrease = pItem->GetDefNum("BONUSMANA", true, true);
+	int iManaIncrease = static_cast<int>(pItem->GetDefNum("BONUSMANA", true, true));
 	if (iManaIncrease != 0)
 		Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) + iManaIncrease);
 
@@ -2999,7 +2999,7 @@ bool CChar::Death()
 	m_lastAttackers.clear();	// clear list of attackers
 
 	// Create the corpse item
-	CItemCorpse * pCorpse = MakeCorpse(Calc_GetRandVal(2));
+	CItemCorpse * pCorpse = MakeCorpse(Calc_GetRandVal(2) > 1 ? true : false);
 	if ( pCorpse )
 	{
 		if ( IsTrigUsed(TRIGGER_DEATHCORPSE) )
@@ -3772,7 +3772,6 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 			{
 				bool redNew = ( pNewArea->m_TagDefs.GetKeyNum("RED", true) != 0 );
 				bool redOld = ( m_pArea->m_TagDefs.GetKeyNum("RED", true) != 0 );
-
 				if ( pNewArea->IsGuarded() != m_pArea->IsGuarded() )
 				{
 					if ( pNewArea->IsGuarded() )	// now under the protection
@@ -3789,21 +3788,15 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 					}
 				}
 				if ( redNew != redOld )
-				{
-					SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_REGION_REDDEF), (redNew ? DEFMSG_REGION_REDENTER : DEFMSG_REGION_REDLEFT));
-				}
+					SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_REGION_REDDEF), g_Cfg.GetDefaultMsg(redNew ? DEFMSG_REGION_REDENTER : DEFMSG_REGION_REDLEFT));
 				/*else if ( redNew && ( redNew == redOld ))
 				{
 					SysMessage("You are still in the red region.");
 				}*/
 				if ( pNewArea->IsFlag(REGION_FLAG_NO_PVP) != m_pArea->IsFlag(REGION_FLAG_NO_PVP))
-				{
 					SysMessageDefault(( pNewArea->IsFlag(REGION_FLAG_NO_PVP)) ? DEFMSG_REGION_PVPSAFE : DEFMSG_REGION_PVPNOT );
-				}
 				if ( pNewArea->IsFlag(REGION_FLAG_SAFE) != m_pArea->IsFlag(REGION_FLAG_SAFE) )
-				{
 					SysMessageDefault((pNewArea->IsFlag(REGION_FLAG_SAFE)) ? DEFMSG_REGION_SAFETYGET : DEFMSG_REGION_SAFETYLOSE);
-				}
 			}
 		}
 

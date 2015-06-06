@@ -1210,7 +1210,6 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				iStatEffect = 50;	// +50% HitLeechLife
 				pSpell->m_itSpell.m_spelllevel = iStatEffect;
 				pWeapon->SetDefNum("HitLeechLife", pWeapon->GetDefNum("HitLeechLife", true) + pSpell->m_itSpell.m_spelllevel, true);	// Adding 50% HitLeechLife to the weapon, since damaging with it should return 50% of the damage dealt.
-
 			}break;
 
 		default:
@@ -2025,7 +2024,7 @@ bool CChar::Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool 
 	if ( pSpellDef->IsSpellType( SPELLFLAG_DISABLED ))
 		return( false );
 
-	int wManaUse = pSpellDef->m_wManaUse * (100 - minimum(GetDefNum("LOWERMANACOST", true, true), 40)) / 100;
+	int wManaUse = pSpellDef->m_wManaUse * (100 - minimum(static_cast<int>(GetDefNum("LOWERMANACOST", true, true)), 40)) / 100;
 
 	if (pSrc != this)
 	{
@@ -3503,6 +3502,8 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			break;
 
 		case SPELL_Curse_Weapon:
+			Spell_Effect_Create(spell, LAYER_SPELL_Curse_Weapon, iSkillLevel, GetSpellDuration(spell, iSkillLevel, iEffectMult, pCharSrc), pCharSrc);
+			break;
 		case SPELL_Poison_Strike:
 		case SPELL_Summon_Familiar: 
 		case SPELL_Vengeful_Spirit:
