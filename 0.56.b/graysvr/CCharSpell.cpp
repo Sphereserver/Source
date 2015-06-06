@@ -1971,6 +1971,9 @@ void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, u
 				}
 			}
 
+			if (!fGoodLoc)
+				continue;
+
 			// Check for direct cast on an item.
 			CWorldSearch AreaItem( ptg );
 			for (;;)
@@ -1981,31 +1984,17 @@ void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, u
 				pItem->OnSpellEffect( m_atMagery.m_Spell, this, iSkillLevel, NULL );
 			}
 
-			//if ( fGoodLoc )
-			//{
-				CItem * pSpell = CItem::CreateBase( id );
-				ASSERT(pSpell);
-				pSpell->m_TagDefs.SetNum("BadLoc",!fGoodLoc,true);
-				pSpell->m_TagDefs.SetStr("Pos",false, ptg.WriteUsed(),false);
-				pSpell->SetType(IT_SPELL);
-				pSpell->SetAttr(ATTR_MAGIC);
-				pSpell->m_itSpell.m_spell = static_cast<WORD>(m_atMagery.m_Spell);
-				pSpell->m_itSpell.m_spelllevel = static_cast<WORD>(iSkillLevel);
-				pSpell->m_itSpell.m_spellcharges = 1;
-				pSpell->m_uidLink = GetUID();	// Link it back to you
-				pSpell->SetHue(iColor,false,this);
-				pSpell->GenerateScript(this);
-				if (!pSpell)
-					break;
-				if (pSpell->m_TagDefs.GetKeyNum("BadLoc", true))
-				{
-					pSpell->Delete(true);
-					break;
-				}
-
-				// Add some random element.
-				pSpell->MoveToDecay( ptg, iDuration, true);
-		//	}
+			CItem * pSpell = CItem::CreateBase( id );
+			ASSERT(pSpell);
+			pSpell->m_itSpell.m_spell = static_cast<WORD>(m_atMagery.m_Spell);
+			pSpell->m_itSpell.m_spelllevel = static_cast<WORD>(iSkillLevel);
+			pSpell->m_itSpell.m_spellcharges = 1;
+			pSpell->m_uidLink = GetUID();	// link it back to you
+			pSpell->SetType(IT_SPELL);
+			pSpell->SetAttr(ATTR_MAGIC);
+			pSpell->SetHue(iColor);
+			pSpell->GenerateScript(this);
+			pSpell->MoveToDecay( ptg, iDuration, true);
 		}
 	}
 }
@@ -3038,13 +3027,12 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	{
 		TRIGRET_TYPE iRet = OnTrigger( CTRIG_SpellEffect, pCharSrc ? pCharSrc : this, &Args );
 		spell = static_cast<SPELL_TYPE>(Args.m_iN1);
-		pSpellDef = g_Cfg.GetSpellDef(spell);
 		iD1 = static_cast<DAMAGE_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("DamageType", true)));
 
 		switch ( iRet )
 		{
 			case TRIGRET_RET_TRUE:	return(false);
-			case TRIGRET_RET_FALSE:	if ( pSpellDef && pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
+			case TRIGRET_RET_FALSE:	if ( pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
 			default:				break;
 		}
 	}
@@ -3055,13 +3043,12 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		spell = static_cast<SPELL_TYPE>(Args.m_iN1);
 		iSkillLevel = static_cast<int>(Args.m_iN2);
 		iEffectMult = static_cast<int>(Args.m_iN3);
-		pSpellDef = g_Cfg.GetSpellDef(spell);
 		iD1 = static_cast<DAMAGE_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("DamageType", true)));
 
 		switch ( iRet )
 		{
 			case TRIGRET_RET_TRUE:	return(false);
-			case TRIGRET_RET_FALSE:	if ( pSpellDef && pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
+			case TRIGRET_RET_FALSE:	if ( pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
 			default:				break;
 		}
 	}
@@ -3160,15 +3147,15 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		}
 	}
 
+	if (pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED))
+		return true;
+
 	if (pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) && iT1)
 		Effect(EFFECT_BOLT, iT1, pCharSrc, 5, 1, fExplode, iColor, iRender);
 	if ( pSpellDef->IsSpellType(SPELLFLAG_FX_TARG) && iT1 )
 		Effect(EFFECT_OBJ, iT1, this, 0, 15, fExplode, iColor, iRender); // 9, 14
 
 	iSkillLevel = iSkillLevel/2 + Calc_GetRandVal(iSkillLevel/2);	// randomize the effect.
-
-	if ( pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) )
-		return true;
 
 	if ( pSpellDef->IsSpellType(SPELLFLAG_DAMAGE) )
 	{
@@ -3281,7 +3268,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		case SPELL_Poison:
 		case SPELL_Poison_Field:
 			if ( !fPotion )
-				Effect(EFFECT_OBJ, iT1/*ITEMID_FX_CURSE_EFFECT*/, this, 0, 15, fExplode, iColor, iRender);
+				Effect(EFFECT_OBJ, iT1, this, 0, 15, fExplode, iColor, iRender);
 			SetPoison((pCharSrc->Skill_GetBase(SKILL_MAGERY) + pCharSrc->Skill_GetBase(SKILL_POISONING)) / 2, iSkillLevel / 50, pCharSrc);
 			break;
 
@@ -3313,7 +3300,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		case SPELL_Reveal:
 			if ( ! Reveal())
 				break;
-			Effect(EFFECT_OBJ, iT1/* ITEMID_FX_BLESS_EFFECT*/, this, 0, 15, fExplode, iColor, iRender);
+			Effect(EFFECT_OBJ, iT1, this, 0, 15, fExplode, iColor, iRender);
 			break;
 
 		case SPELL_Invis:
@@ -3326,10 +3313,10 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				GetSpellDuration( spell, iSkillLevel, iEffectMult, pCharSrc ), pCharSrc );
 			break;
 
-		case SPELL_Particle_Form:	// 112 // turns you into an immobile, but untargetable particle system for a while.
-		case SPELL_Stone:
-		case SPELL_Paralyze_Field:
 		case SPELL_Paralyze:
+		case SPELL_Paralyze_Field:
+		case SPELL_Stone:
+		case SPELL_Particle_Form:
 			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Paralyze, iSkillLevel,
 				GetSpellDuration( spell, iSkillLevel, iEffectMult, pCharSrc ), pCharSrc );
 			break;
@@ -3360,7 +3347,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			break;
 
 		case SPELL_Meteor_Swarm:
-			Effect(EFFECT_BOLT, iT1/*ITEMID_FX_FIRE_BALL*/, pCharSrc, 9, 6, fExplode, iColor, iRender);
+			Effect(EFFECT_BOLT, iT1, pCharSrc, 9, 6, fExplode, iColor, iRender);
 			break;
 	
 		case SPELL_Lightning:
@@ -3373,7 +3360,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			return Spell_Resurrection( NULL, pCharSrc );
 
 		case SPELL_Light:
-			Effect(EFFECT_OBJ, iT1/*ITEMID_FX_HEAL_EFFECT*/, this, 9, 6, fExplode, iColor, iRender);
+			Effect(EFFECT_OBJ, iT1, this, 9, 6, fExplode, iColor, iRender);
 			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_NEWLIGHT, iSkillLevel,
 				GetSpellDuration( spell, iSkillLevel, iEffectMult, pCharSrc ), pCharSrc );
 			break;
@@ -3440,7 +3427,6 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		case SPELL_Reaper_Form:
 		case SPELL_Polymorph:
 			{
-
 				Spell_Effect_Create(spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Polymorph, iSkillLevel,
 					GetSpellDuration(spell, iSkillLevel, iEffectMult, pCharSrc), pCharSrc);
 			}
@@ -3504,13 +3490,13 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		case SPELL_Curse_Weapon:
 			Spell_Effect_Create(spell, LAYER_SPELL_Curse_Weapon, iSkillLevel, GetSpellDuration(spell, iSkillLevel, iEffectMult, pCharSrc), pCharSrc);
 			break;
+
+		/*case SPELL_Animate_Dead_AOS:
 		case SPELL_Poison_Strike:
-		case SPELL_Summon_Familiar: 
+		case SPELL_Summon_Familiar:
 		case SPELL_Vengeful_Spirit:
 		case SPELL_Wither:
-		case SPELL_Exorcism:
-
-		case SPELL_Animate_Dead_AOS:
+		case SPELL_Exorcism:*/
 		default:
 			break;
 	}

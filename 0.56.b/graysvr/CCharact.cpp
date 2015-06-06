@@ -3423,105 +3423,62 @@ void CChar::CheckRevealOnMove()
 bool CChar::CheckLocation( bool fStanding )
 {
 	ADDTOCALLSTACK("CChar::CheckLocation");
-	// We are at this location
-	// what will happen ?
+	// We are at this location. What will happen?
+	// This function is called at every second on ALL chars
+	// (even walking or not), so avoid heavy codes here.
 	// RETURN: true = we teleported.
 
-	if ( IsClient() && GetClient()->m_pHouseDesign )
+	CClient *pClient = GetClient();
+	if ( pClient && pClient->m_pHouseDesign )
 	{
 		// stepping on items doesn't trigger anything whilst in design mode
-		if ( GetClient()->m_pHouseDesign->GetDesignArea().IsInside2d(GetTopPoint()) )
+		if ( pClient->m_pHouseDesign->GetDesignArea().IsInside2d(GetTopPoint()) )
 			return false;
 
-		GetClient()->m_pHouseDesign->EndCustomize(true);
+		pClient->m_pHouseDesign->EndCustomize(true);
 	}
 
-	if ( ! fStanding )
+	if ( !fStanding )
 	{
 		SKILL_TYPE iSkillActive	= Skill_GetActive();
-
-		if ( g_Cfg.IsSkillFlag( iSkillActive, SKF_IMMOBILE ) )
-		{
+		if ( g_Cfg.IsSkillFlag(iSkillActive, SKF_IMMOBILE) )
 			Skill_Fail(false);
-		}
-		else if ( g_Cfg.IsSkillFlag( iSkillActive, SKF_FIGHT ) )
+		else if ( g_Cfg.IsSkillFlag(iSkillActive, SKF_FIGHT) )
 		{
-			// Are we using a skill that is effected by motion ?
-			m_atFight.m_fMoved	= 1;
+			m_atFight.m_fMoved = 1;		// are we using a skill that is effected by motion?
 
-			if ( g_Cfg.IsSkillFlag( iSkillActive, SKF_RANGED ) && !IsSetCombatFlags(COMBAT_ARCHERYCANMOVE) && ! IsStatFlag( STATF_ArcherCanMove ) )
-			{
-				// If we moved and are wielding are in combat and are using a
-				// ranged weapon, then reset the weaponswingtimer.
+			if ( g_Cfg.IsSkillFlag(iSkillActive, SKF_RANGED) && !IsSetCombatFlags(COMBAT_ARCHERYCANMOVE) && !IsStatFlag(STATF_ArcherCanMove) )
 				Fight_ResetWeaponSwingTimer();
-			}
-		}
-		else switch ( iSkillActive )
-		{
-			case SKILL_MEDITATION:
-			case SKILL_MAGERY:
-			case SKILL_NECROMANCY:
-			case SKILL_CHIVALRY:
-			case SKILL_BUSHIDO:
-			case SKILL_NINJITSU:
-			case SKILL_SPELLWEAVING:
-			case SKILL_MYSTICISM:
-				// Skill is broken if we move ?
-				break;
-			case SKILL_HIDING:	// this should become stealth ?
-				break;
-			case SKILL_FENCING:
-			case SKILL_MACEFIGHTING:
-			case SKILL_SWORDSMANSHIP:
-			case SKILL_WRESTLING:
-				m_atFight.m_fMoved	= 1;
-				break;
-			case SKILL_THROWING:
-			case SKILL_ARCHERY:
-				m_atFight.m_fMoved	= 1;
-				if ( !IsSetCombatFlags(COMBAT_ARCHERYCANMOVE) && ! IsStatFlag( STATF_ArcherCanMove ) )
-				{
-					// If we moved and are wielding are in combat and are using a
-					// crossbow/bow kind of weapon, then reset the weaponswingtimer.
-					Fight_ResetWeaponSwingTimer();
-				}
-				break;
-			default:
-				break;
 		}
 
 		// This could get REALLY EXPENSIVE !
 		if ( IsTrigUsed(TRIGGER_STEP) )
 		{
 			if ( m_pArea->OnRegionTrigger( this, RTRIG_STEP ) == TRIGRET_RET_TRUE )
-				return( false );
+				return false;
 
-			CRegionBase * pRoom = GetTopPoint().GetRegion( REGION_TYPE_ROOM );
-			if ( pRoom )
-			{
-				if ( pRoom->OnRegionTrigger( this, RTRIG_STEP ) == TRIGRET_RET_TRUE )
-				return( false );
-			}
+			CRegionBase *pRoom = GetTopPoint().GetRegion(REGION_TYPE_ROOM);
+			if ( pRoom && pRoom->OnRegionTrigger( this, RTRIG_STEP ) == TRIGRET_RET_TRUE )
+				return false;
 		}
 	}
 
 	bool fStepCancel = false;
-	CWorldSearch AreaItems( GetTopPoint());
+	CWorldSearch AreaItems( GetTopPoint() );
 	for (;;)
 	{
-		CItem * pItem = AreaItems.GetItem();
+		CItem *pItem = AreaItems.GetItem();
 		if ( pItem == NULL )
 			break;
 
 		int zdiff = pItem->GetTopZ() - GetTopZ();
-
 		int	height = pItem->Item_GetDef()->GetHeight();
 		if ( height < 3 )
 			height = 3;
 
 		if ( zdiff > height || zdiff < -3 )
 			continue;
-		if (( IsTrigUsed(TRIGGER_STEP) ) || ( IsTrigUsed(TRIGGER_ITEMSTEP) ))
+		if ( IsTrigUsed(TRIGGER_STEP) || IsTrigUsed(TRIGGER_ITEMSTEP) )
 		{
 			CScriptTriggerArgs Args( fStanding? 1 : 0 );
 			if ( pItem->OnTrigger( ITRIG_STEP, this , &Args ) == TRIGRET_RET_TRUE )
@@ -3533,138 +3490,82 @@ bool CChar::CheckLocation( bool fStanding )
 
 		switch ( pItem->GetType() )
 		{
-			case IT_SHRINE:
-				// Resurrect the ghost
-				if ( fStanding )
-					continue;
-				OnSpellEffect( SPELL_Resurrection, this, 1000, pItem );
-				continue;
 			case IT_WEB:
 				if ( fStanding )
 					continue;
-				// Caught in a web.
-				if ( Use_Item_Web( pItem ))
-					return( true );
+				if ( Use_Item_Web(pItem) )	// we got stuck in a spider web
+					return false;
 				continue;
-			// case IT_CAMPFIRE:	// does nothing. standing on burning kindling shouldn't hurt us
 			case IT_FIRE:
-				// fire object hurts us ?
-				// pItem->m_itSpell.m_spelllevel = 0-1000 = heat level.
 				{
-					int iSkillLevel = pItem->m_itSpell.m_spelllevel/2;
-					iSkillLevel = iSkillLevel + Calc_GetRandVal(iSkillLevel);
-					if ( IsStatFlag( STATF_Fly ))	// run through fire.
-					{
+					int iSkillLevel = pItem->m_itSpell.m_spelllevel;	// heat level (0-1000)
+					iSkillLevel = Calc_GetRandVal2(iSkillLevel/2, iSkillLevel);
+					if ( IsStatFlag(STATF_Fly) )
 						iSkillLevel /= 2;
-					}
-					OnTakeDamage( g_Cfg.GetSpellEffect( SPELL_Fire_Field, iSkillLevel ), NULL, DAMAGE_FIRE|DAMAGE_GENERAL, 0, 100, 0, 0, 0 );
+
+					OnTakeDamage( g_Cfg.GetSpellEffect(SPELL_Fire_Field, iSkillLevel), NULL, DAMAGE_FIRE|DAMAGE_GENERAL, 0, 100, 0, 0, 0 );
+					Sound(0x15f);	// fire noise
 				}
-				Sound( 0x15f ); // Fire noise.
 				continue;
 			case IT_SPELL:
 				{
 					SPELL_TYPE Spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pItem->m_itSpell.m_spell));
 					OnSpellEffect( Spell, pItem->m_uidLink.CharFind(), pItem->m_itSpell.m_spelllevel, pItem );
-					const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(Spell);
+					const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(Spell);
 					if ( pSpellDef )
-					{
-						Sound( pSpellDef->m_sound);
-					}
+						Sound(pSpellDef->m_sound);
 				}
 				continue;
 			case IT_TRAP:
 			case IT_TRAP_ACTIVE:
-				OnTakeDamage( pItem->Use_Trap(), NULL, DAMAGE_HIT_BLUNT | DAMAGE_GENERAL );
+				OnTakeDamage( pItem->Use_Trap(), NULL, DAMAGE_HIT_BLUNT|DAMAGE_GENERAL );
 				continue;
 			case IT_SWITCH:
 				if ( pItem->m_itSwitch.m_fStep )
-				{
-					Use_Item( pItem );
-				}
+					Use_Item(pItem);
 				continue;
 			case IT_MOONGATE:
 			case IT_TELEPAD:
-				if ( fStanding && !IsStatFlag(STATF_Freeze|STATF_Stone))
+				if ( fStanding && !IsStatFlag(STATF_Freeze|STATF_Stone) )
 					continue;
-				Use_MoonGate( pItem );
-				return(true);
+				Use_MoonGate(pItem);
+				return true;
 			case IT_SHIP_PLANK:
-				// a plank is a teleporter off the ship.
-				if (!fStanding && !IsStatFlag(STATF_Hovering))
+			case IT_ROPE:
+				if ( !fStanding && !IsStatFlag(STATF_Hovering) )
 				{
-					// Find some place to go. (in direction of plank)
-					if (MoveToValidSpot(m_dirFace, g_Cfg.m_iMaxShipPlankTeleport, 1, true))
+					// Check if we can go out of the ship (in the same direction of plank)
+					if ( MoveToValidSpot(m_dirFace, g_Cfg.m_iMaxShipPlankTeleport, 1, true) )
 					{
-						pItem->SetTimeout(5 * TICK_PER_SEC);	// autoclose it behind us.
+						//pItem->SetTimeout(5 * TICK_PER_SEC);	// autoclose the plank behind us
 						return true;
 					}
 				}
 				continue;
-			case IT_ROPE:
-				// a plank is a teleporter off the ship.
-				if (!fStanding && !IsStatFlag(STATF_Hovering))
-				{
-					// Find some place to go. (in direction of plank)
-					if (MoveToValidSpot(m_dirFace, g_Cfg.m_iMaxShipPlankTeleport, 1, true))
-						return true;
-				}
-				continue;
-
 			case IT_CORPSE:
-				if ( m_pNPC && ( g_Cfg.m_iNpcAi&NPC_AI_LOOTING ) )
 				{
-					//	NPC are likely to loot corpses (but not if they are animals!)
-					if ( ( Calc_GetRandVal(150) < Stat_GetAdjusted(STAT_INT) ) || ( m_pNPC->m_Brain != NPCBRAIN_ANIMAL ) )
+					if ( !m_pNPC || !(g_Cfg.m_iNpcAi & NPC_AI_LOOTING) )
+						continue;
+					if ( !Can(CAN_C_USEHANDS) || IsStatFlag(STATF_Conjured|STATF_Pet) )
+						continue;
+					if ( m_pArea->IsFlag(REGION_FLAG_SAFE|REGION_FLAG_GUARDED) )
+						continue;
+
+					if ( Calc_GetRandVal(150) < Stat_GetAdjusted(STAT_INT) )
 					{
-						if ( m_pArea->IsFlag(REGION_FLAG_GUARDED|REGION_FLAG_SAFE) ) ;
-						else if ( IsStatFlag(STATF_Pet) && !IsStatFlag(STATF_Conjured) ) ;
-						else
+						CItemCorpse	*pCorpse = dynamic_cast<CItemCorpse*>(this);
+						if ( pCorpse != NULL && pCorpse->GetCount() > 0 )
 						{
-							CItemCorpse	*pCorpse = dynamic_cast <CItemCorpse*>(this);
+							CItem *pItem = pCorpse->GetAt(Calc_GetRandVal(pCorpse->GetCount()));
+							if (!pItem)
+								continue;
 
-							if ( pCorpse != NULL && pCorpse->GetCount() > 0 )
+							if ( CanCarry(pItem) && !pItem->IsAttr(ATTR_NEWBIE|ATTR_BLESSED|ATTR_INSURED|ATTR_NODROPTRADE) )
 							{
-								CItem *pItem = pCorpse->GetAt( Calc_GetRandVal(pCorpse->GetCount()) );
-								bool bLoot = false;
-
-								if ( !pItem ) ;
-								//	animals are looting food only
-								else if ( m_pNPC->m_Brain == NPCBRAIN_ANIMAL )
-								{
-									switch ( pItem->GetType() )
-									{
-										case IT_FOOD:
-										case IT_FOOD_RAW:
-										case IT_MEAT_RAW:
-										case IT_FRUIT:
-											bLoot = true;
-										default:
-											break;
-									}
-								}
-								else
-								{
-									if ( pItem->IsAttr(ATTR_NEWBIE|ATTR_BLESSED|ATTR_NODROPTRADE|ATTR_INSURED) ) ;
-									else if (( pItem->GetDispID() == ITEMID_BANDAGES_BLOODY1 ) || ( pItem->GetDispID() == ITEMID_BANDAGES_BLOODY2 )) ;
-									else if ( pItem->GetDispID() == ITEMID_EMPTY_BOTTLE ) ;
-									else if ( !CanCarry(pItem) ) ;
-									else if ( pItem->IsType(IT_CONTAINER) )
-									{
-										CItemContainer *pItemCont = dynamic_cast <CItemContainer*>(pItem);
-										if ( pItemCont->GetCount() > 0 )
-											bLoot = true;
-									}
-									else
-										bLoot = true;
-								}
-
-								if ( bLoot )
-								{
-									char *zMsg = Str_GetTemp();
-									sprintf(zMsg, g_Cfg.GetDefaultMsg( DEFMSG_LOOT_ITEM_FROM ), pItem->GetName(), pCorpse->GetName());
-									Emote(zMsg);
-									ItemBounce(pItem);
-								}
+								char *zMsg = Str_GetTemp();
+								sprintf(zMsg, g_Cfg.GetDefaultMsg(DEFMSG_LOOT_ITEM_FROM), pItem->GetName(), pCorpse->GetName());
+								Emote(zMsg);
+								ItemBounce(pItem);
 							}
 						}
 					}
@@ -3675,47 +3576,41 @@ bool CChar::CheckLocation( bool fStanding )
 		}
 	}
 
-	if ( fStepCancel )
+	if ( fStanding || fStepCancel )
 		return false;
 
-	if ( fStanding )
-		return false;
-
-	// Check the map teleporters in this CSector. (if any)
+	// Check the map teleporters in this CSector (if any)
 	const CPointMap & pt = GetTopPoint();
 	CSector *pSector = pt.GetSector();
 	if ( !pSector )
 		return false;
 
-	const CTeleport * pTel = pSector->GetTeleport(pt);
-	if ( pTel )
+	const CTeleport *pTeleport = pSector->GetTeleport(pt);
+	if ( !pTeleport )
+		return false;
+
+	if (m_pNPC)
 	{
-		if ( !IsClient() && m_pNPC )
+		if ( !pTeleport->bNpc )
+			return false;
+
+		if ( m_pNPC->m_Brain == NPCBRAIN_GUARD )
 		{
-			if ( !pTel->bNpc )
+			// Guards won't gate into unguarded areas.
+			const CRegionWorld *pArea = dynamic_cast<CRegionWorld*>(pTeleport->m_ptDst.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA));
+			if ( !pArea || !pArea->IsGuarded() )
 				return false;
-
-			// NPCs and gates.
-			if ( m_pNPC->m_Brain == NPCBRAIN_GUARD )
-			{
-				// Guards won't gate into unguarded areas.
-				const CRegionWorld * pArea = dynamic_cast <CRegionWorld *> ( pTel->m_ptDst.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA));
-				if ( !pArea || ! pArea->IsGuarded())
-					return false;
-			}
-			else if ( Noto_IsCriminal() )
-			{
-				// wont teleport to guarded areas.
-				const CRegionWorld *pArea = dynamic_cast <CRegionWorld *> ( pTel->m_ptDst.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA));
-				if ( !pArea || pArea->IsGuarded())
-					return false;
-			}
 		}
-
-		Spell_Teleport(pTel->m_ptDst, true, false, ITEMID_NOTHING);
-		return true;
+		if ( Noto_IsCriminal() )
+		{
+			// wont teleport to guarded areas.
+			const CRegionWorld *pArea = dynamic_cast<CRegionWorld*>(pTeleport->m_ptDst.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA));
+			if ( !pArea || pArea->IsGuarded() )
+				return false;
+		}
 	}
-	return false;
+	Spell_Teleport(pTeleport->m_ptDst, true, false, ITEMID_NOTHING);
+	return true;
 }
 
 bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
@@ -4335,7 +4230,6 @@ bool CChar::OnTick()
 
 	if (iTimeDiff >= TICK_PER_SEC)		// don't bother with < 1 sec timers on the checks below
 	{
-
 		m_timeLastRegen = CServTime::GetCurrentTime();
 
 		// Decay equipped items (spells)
@@ -4365,10 +4259,13 @@ bool CChar::OnTick()
 
 		if (!IsStatFlag(STATF_DEAD))
 		{
-			EXC_SET("regen stats");	// Death characters doesnt regenerate anything
+			EXC_SET("check location");
+			CheckLocation(true);	// check location periodically for standing in fire fields, traps, etc
+
+			EXC_SET("regen stats");
 			Stats_Regen(iTimeDiff);
 
-			EXC_SET("update stats"); // So either have to send updates on values.
+			EXC_SET("update stats");
 			OnTickStatusUpdate();
 		}
 	}

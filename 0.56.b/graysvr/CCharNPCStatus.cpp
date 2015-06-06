@@ -379,54 +379,27 @@ bool CChar::NPC_CheckWalkHere( const CPointBase & pt, const CRegionBase * pArea,
 	// Does the NPC want to walk here ? step on this item ?
 	if ( !m_pNPC )
 		return false;
-
-	if ( m_pArea != NULL ) // most decisions are based on area.
-	{
-		if ( m_pNPC->m_Brain == NPCBRAIN_GUARD && ! IsStatFlag( STATF_War ))
-		{
-			// Guards will want to stay in guard range.
-			if ( m_pArea->IsGuarded() && ! pArea->IsGuarded())
-			{
-				return( false );
-			}
-		}
-
-		if ( m_pNPC->m_Brain == NPCBRAIN_UNDEAD )
-		{
-			CSector	*ptSector = pt.GetSector();
-			CSector *ptopSector = GetTopSector();
-
-			if ( !ptSector || !ptopSector )
-				return false;
-
-			// always avoid the light.
-			bool fSafeThere = ( ptSector->IsDark() || ( wBlockFlags & CAN_I_ROOF ) || pArea->IsFlag(REGION_FLAG_UNDERGROUND));
-			if ( ! fSafeThere )
-			{
-				// But was it safe here ?
-				if ( ptopSector->IsDark() || IsStatFlag( STATF_InDoors ))
-					return( false );
-			}
-		}
-
-		if ( Noto_IsCriminal() && Stat_GetAdjusted(STAT_INT) > 20 )	// I'm evil
-		{
-			if ( ! m_pArea->IsGuarded() && pArea->IsGuarded())		// too smart for this.
-			{
-				return( false );
-			}
-		}
-	}
-
-	CCharBase * pCharDef = Char_GetDef();
 	if ( !pt.IsValidXY() )
 		return true;
 
-	bool fAvoid = false;
-	int iIntToAvoid = 10;	// how intelligent do i have to be to avoid this.
+	if ( m_pArea != NULL )
+	{
+		if ( m_pNPC->m_Brain == NPCBRAIN_GUARD && !IsStatFlag(STATF_War) )	// guards will want to stay in guard range
+		{
+			if ( m_pArea->IsGuarded() && !pArea->IsGuarded() )
+				return false;
+		}
+
+		if ( Noto_IsCriminal() )
+		{
+			if ( !m_pArea->IsGuarded() && pArea->IsGuarded() )
+				return false;
+		}
+	}
 
 	// Is there a nasty object here that will hurt us ?
-	CWorldSearch AreaItems( pt );
+	bool fAvoid = false;
+	CWorldSearch AreaItems(pt);
 	for (;;)
 	{
 		CItem * pItem = AreaItems.GetItem();
@@ -439,54 +412,26 @@ bool CChar::NPC_CheckWalkHere( const CPointBase & pt, const CRegionBase * pArea,
 
 		switch ( pItem->GetType() )
 		{
-			case IT_SHRINE:
-				// always avoid.
-				return( false );
-
 			case IT_WEB:
 				if ( GetDispID() == CREID_GIANT_SPIDER )
 					continue;
-				iIntToAvoid = 80;
-				fAvoid = true;
-				break;
-			case IT_FIRE: // fire object hurts us ?
-				if ( pCharDef->Can(CAN_C_FIRE_IMMUNE))	// i like fire.
+				return false;
+			case IT_FIRE:
+				if ( Can(CAN_C_FIRE_IMMUNE) )
 					continue;
-				iIntToAvoid = 20;	// most creatures recognize fire as bad.
-				fAvoid = true;
-				break;
-			case IT_SPELL:
-				switch ( pItem->m_itSpell.m_spell )
-				{
-					case SPELL_Fire_Field:		iIntToAvoid = 100;		break;
-					case SPELL_Poison_Field:	iIntToAvoid = 100;		break;
-					case SPELL_Paralyze_Field:	iIntToAvoid = 100;		break;
-					default:					iIntToAvoid = 150;		break;
-				}	
-				fAvoid = true;
-				break;
+				return false;
 			case IT_TRAP:
-				iIntToAvoid = 150;
-				fAvoid = true;
-				break;
 			case IT_TRAP_ACTIVE:
-				iIntToAvoid = 50;
-				fAvoid = true;
-				break;
+			case IT_SPELL:
 			case IT_MOONGATE:
 			case IT_TELEPAD:
-				fAvoid = true;
-				break;
+				return false;
 			default:
 				break;
 		}
 	}
-	if ( fAvoid )
-	{
-		if ( Calc_GetRandVal( Stat_GetAdjusted(STAT_INT)) > Calc_GetRandVal( iIntToAvoid ))
-			return( false );
-	}
-	return( true );
+
+	return true;
 }
 
 

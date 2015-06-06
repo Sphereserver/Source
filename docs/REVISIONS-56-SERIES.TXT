@@ -2288,3 +2288,6 @@ Changed: Some improvements on Blood Oath and Evil Omen spells (necromancy).
 Added some missing casts
 Fixed DEBUG errors when entering/leaving RED areas.
 Reverted back m_uidKiller in m_itCorpse to CGrayUIDBase to fix build not compiling.
+
+06-06-2015, Coruja
+Fixed: Field spells and triggers @Step (items) / @ItemStep (chars) not working correctly.
