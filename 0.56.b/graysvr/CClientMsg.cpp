@@ -1051,8 +1051,11 @@ void CClient::addChar( const CChar * pChar )
 	EXC_SET("Health bar color");
 	addHealthBarUpdate( pChar );
 
-	EXC_SET("Bonded status");
-	new PacketBondedStatus( pChar );
+	if ( pChar->m_pNPC && pChar->m_pNPC->m_bonded && pChar->IsStatFlag(STATF_DEAD) )
+	{
+		EXC_SET("Bonded status");
+		new PacketBondedStatus( pChar, true );
+	}
 
 	EXC_SET("AOSToolTip adding (end)");
 	addAOSTooltip( pChar );
@@ -1060,7 +1063,7 @@ void CClient::addChar( const CChar * pChar )
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("m_dirFace (0%x)\n",pChar->m_dirFace);
+	g_Log.EventDebug("m_dirFace (0%x)\n", pChar->m_dirFace);
 	EXC_DEBUG_END;
 }
 

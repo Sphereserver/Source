@@ -3020,6 +3020,7 @@ bool CChar::Death()
 			// Maybe we can optimize this behavior making bonded pets don't disappear instead hide it and then reveal it again
 			m_Can |= CAN_C_GHOST;
 			Update();
+			UpdateCanSee(new PacketBondedStatus(this, true));
 			return true;
 		}
 		NPC_PetClearOwners();

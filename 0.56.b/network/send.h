@@ -1459,14 +1459,14 @@ public:
 /***************************************************************************
 *
 *
-*	Packet 0xBF.0x19.0x05.0xFF : BondedStatus		set bonded status (NORMAL)
+*	Packet 0xBF.0x19 : BondedStatus			set bonded status (NORMAL)
 *
 *
 ***************************************************************************/
 class PacketBondedStatus : public PacketExtended
 {
 public:
-	PacketBondedStatus(const CChar * pChar);
+	PacketBondedStatus(const CChar * pChar, bool IsGhost);
 };
 
 /***************************************************************************
