@@ -335,92 +335,46 @@ void CClient::Announce( bool fArrive ) const
 
 	// We have logged in or disconnected.
 	// Annouce my arrival or departure.
-	if (( g_Cfg.m_iArriveDepartMsg == 2 ) && ( GetPrivLevel() > PLEVEL_Player ))		// notify of GMs
+	TCHAR *pszMsg = Str_GetTemp();
+	if ( (g_Cfg.m_iArriveDepartMsg == 2) && (GetPrivLevel() > PLEVEL_Player) )		// notify of GMs
 	{
-		char *zMsg = Str_GetTemp();
-		const char *zTitle;
-
-		switch ( GetPrivLevel() )
-		{
-			case PLEVEL_Owner:
-			case PLEVEL_Admin:
-				zTitle = "Admin";
-				break;
-			case PLEVEL_Seer:
-				zTitle = "Seer";
-				break;
-			case PLEVEL_Counsel:
-				zTitle = "Counselor";
-				break;
-			default:
-				zTitle = "GM";
-				break;
-		}
-
-		sprintf(zMsg, "@231 STAFF: %s %s logged %s.", zTitle, m_pChar->GetName(), ( fArrive ? "in" : "out" ));
-
-		ClientIterator it;
-		for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
-		{
-			if (( pClient == this ) || ( GetPrivLevel() > pClient->GetPrivLevel() ))
-				continue;
-			pClient->SysMessage(zMsg);
-		}
+		LPCTSTR zTitle = m_pChar->Noto_GetFameTitle();
+		sprintf(pszMsg, "@231 STAFF: %s%s logged %s.", zTitle, m_pChar->GetName(), (fArrive ? "in" : "out"));
 	}
 	else if ( g_Cfg.m_iArriveDepartMsg == 1 )		// notify of players
 	{
-		TCHAR *pszMsg = Str_GetTemp();
-		
+		const CRegionBase *pRegion = m_pChar->GetTopPoint().GetRegion(REGION_TYPE_AREA);
+		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ARRDEP_1),
+			m_pChar->GetName(),
+			fArrive ? g_Cfg.GetDefaultMsg(DEFMSG_ARRDEP_2) : g_Cfg.GetDefaultMsg(DEFMSG_ARRDEP_3),
+			pRegion != NULL ? pRegion->GetName() : g_Serv.GetName());
+	}
+	if ( pszMsg )
+	{
 		ClientIterator it;
-		for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
+		for (CClient *pClient = it.next(); pClient != NULL; pClient = it.next())
 		{
-			if ( pClient == this )
+			if ( (pClient == this) || (GetPrivLevel() > pClient->GetPrivLevel()) )
 				continue;
-			CChar * pChar = pClient->GetChar();
-			if ( !pChar || ( GetPrivLevel() > pClient->GetPrivLevel() ))
-				continue;
-			/*if ( !pClient->IsPriv(PRIV_DETAIL|PRIV_HEARALL) )
-				continue;*/
-
-			if ( !*pszMsg )
-			{
-				const CRegionBase * pRegion = m_pChar->GetTopPoint().GetRegion( REGION_TYPE_AREA );
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ARRDEP_1 ),
-					static_cast<LPCTSTR>(m_pChar->GetName()),
-					fArrive? g_Cfg.GetDefaultMsg( DEFMSG_ARRDEP_2 ) : g_Cfg.GetDefaultMsg( DEFMSG_ARRDEP_3 ),
-					pRegion != NULL? static_cast<LPCTSTR>(pRegion->GetName()) : static_cast<LPCTSTR>(g_Serv.GetName()));
-			}
 			pClient->SysMessage(pszMsg);
 		}
+
 	}
 
-	// re-Start murder decay if arriving
-
-	if ( m_pChar->m_pPlayer->m_wMurders )
+	// Check murder decay timer
+	CItem *pMurders = m_pChar->LayerFind(LAYER_FLAG_Murders);
+	if ( pMurders )
 	{
-		CItem * pMurders = m_pChar->LayerFind(LAYER_FLAG_Murders);
-		if ( pMurders )
+		if ( fArrive )	// on client login, set active timer on murder memory
+			pMurders->SetTimeout(pMurders->m_itEqMurderCount.m_Decay_Balance * TICK_PER_SEC);
+		else			// or make it inactive on logout
 		{
-			if ( fArrive )
-			{
-				// If the Memory exists, put it in the loop
-				pMurders->SetTimeout( pMurders->m_itEqMurderCount.m_Decay_Balance * TICK_PER_SEC );
-			}
-			else
-			{
-				// Or save decay point if departing and remove from the loop
-				pMurders->m_itEqMurderCount.m_Decay_Balance = static_cast<unsigned long>(pMurders->GetTimerAdjusted());
-				pMurders->SetTimeout(-1); // turn off the timer til we log in again.
-			}
-		}
-		else if ( fArrive )
-		{
-			// If not, see if we need one made
-			m_pChar->Noto_Murder();
+			pMurders->m_itEqMurderCount.m_Decay_Balance = static_cast<DWORD>(pMurders->GetTimerAdjusted());
+			pMurders->SetTimeout(-1);
 		}
 	}
-
-	m_pAccount->m_uidLastChar = m_pChar->GetUID();
+	else if ( fArrive )
+		m_pChar->Noto_Murder();		// if there's no murder memory found, check if we need a new memory
 }
 
 ////////////////////////////////////////////////////

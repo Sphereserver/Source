@@ -558,7 +558,7 @@ void CClient::addArrowQuest( int x, int y, int id )
 	new PacketArrowQuest(this, x, y, id);
 }
 
-void CClient::addMusic( WORD id )
+void CClient::addMusic( MIDI_TYPE id )
 {
 	ADDTOCALLSTACK("CClient::addMusic");
 	// Music is ussually appropriate for the region.
@@ -1305,27 +1305,24 @@ void CClient::addCharName( const CChar * pChar ) // Singleclick text for a chara
 void CClient::addPlayerStart( CChar * pChar )
 {
 	ADDTOCALLSTACK("CClient::addPlayerStart");
+	ASSERT(m_pChar->m_pPlayer);
+
 	if ( m_pChar != pChar )	// death option just usese this as a reload.
 	{
 		// This must be a CONTROL command ?
 		CharDisconnect();
 		if ( pChar->IsClient())	// not sure why this would happen but take care of it anyhow.
-		{
 			pChar->GetClient()->CharDisconnect();
-			ASSERT(!pChar->IsClient());
-		}
 		m_pChar = pChar;
 		m_pChar->ClientAttach( this );
 	}
 
-	ASSERT( m_pChar->IsClient());
-	ASSERT( m_pChar->m_pPlayer );
+	CPointMap pt = m_pChar->GetTopPoint();
+	CSector *pSector = pt.GetSector();
 
 	CItem * pItemChange = m_pChar->LayerFind(LAYER_FLAG_ClientLinger);
 	if ( pItemChange != NULL )
-	{
 		pItemChange->Delete();
-	}
 
 	m_Env.SetInvalid();
 /*
@@ -1334,44 +1331,24 @@ void CClient::addPlayerStart( CChar * pChar )
 	addExtData( EXTDATA_Party_Enable, &ExtData, sizeof(ExtData.Party_Enable));
 */
 
-	CPointMap pt = m_pChar->GetTopPoint();
-
 	new PacketPlayerStart(this);
-
-	ClearTargMode();	// clear death menu mode. etc. ready to walk about. cancel any previos modes
-
-	addMap( NULL, true );
-
-	addChangeServer();
-
+	ClearTargMode();	// clear death menu mode. etc. ready to walk about. cancel any previous modes
+	addMap(NULL, true);
 	addMapDiff();
-
-	addPlayerView( pt, true );
-
-	addRedrawAll();
-	addTime( true );
-
-	m_pChar->MoveToChar( pt );	// Make sure we are in active list.
+	//addChangeServer();		// we still need this?
+	m_pChar->MoveToChar(pt);	// make sure we are in active list
 	m_pChar->Update();
-
-	if ( pChar->m_pParty )
-	{
-		pChar->m_pParty->SendAddList(NULL);
-	}
-
-	// the client doesn't appear to load expansion maps when logging in during spring, so tell
-	// them it's summer to begin with
-	addSeason(SEASON_Summer);
-	addWeather(WEATHER_DEFAULT);
-	addLight();
-
-	// now send the correct season
-	CSector* pSector = pt.GetSector();
+	addPlayerView(pt, true);
+	addPlayerWarMode();
+	addRedrawAll();
+	addTime(true);
 	if (pSector != NULL)
 		addSeason(pSector->GetSeason());
+	if (pChar->m_pParty)
+		pChar->m_pParty->SendAddList(NULL);
 
-	addPlayerWarMode();
-	addKRToolbar( pChar->m_pPlayer->getKrToolbarStatus() );
+	addKRToolbar(pChar->m_pPlayer->getKrToolbarStatus());
+	resendBuffs();
 }
 
 void CClient::addPlayerWarMode()
@@ -3761,37 +3738,21 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	ADDTOCALLSTACK("CClient::Setup_Start");
 	// Play this char.
 	ASSERT( GetAccount() );
+	ASSERT( m_pChar );
 	ASSERT( pChar );
-	char	*z = Str_GetTemp();
 
 	CharDisconnect();	// I'm already logged in as someone else ?
+	m_pAccount->m_uidLastChar = pChar->GetUID();
 
-	g_Log.Event( LOGM_CLIENTS_LOG, "%lx:Setup_Start acct='%s', char='%s', IP='%s'\n", 
-		GetSocketID(), static_cast<LPCTSTR>(GetAccount()->GetName()), static_cast<LPCTSTR>(pChar->GetName()), GetPeerStr() );
+	g_Log.Event( LOGM_CLIENTS_LOG, "%lx:Setup_Start acct='%s', char='%s', IP='%s'\n", GetSocketID(), GetAccount()->GetName(), pChar->GetName(), GetPeerStr() );
 
-	bool fQuickLogIn = false;
-	bool fNoMessages = false;
-	if ( !pChar->IsDisconnected() )
-	{
-		// The players char is already in game ! Client linger time re-login.
-		fQuickLogIn = true;
-	}
-
-	//	gms should login with invul and without allshow flag set
-	if ( GetPrivLevel() >= PLEVEL_Counsel )
+	if ( GetPrivLevel() > PLEVEL_Player )		// GMs should login with invul and without allshow flag set
 	{
 		ClearPrivFlags(PRIV_ALLSHOW);
 		pChar->StatFlag_Set(STATF_INVUL);
 	}
 
 	addPlayerStart( pChar );
-	ASSERT(m_pChar);
-
-	// Gump memory cleanup, we don't want them from logged out players
-	m_mapOpenedGumps.clear();
-
-	// Resend buff icons
-	resendBuffs();
 
 	// Clear notoriety status from all nearby characters
 	CWorldSearch AreaChars(m_pChar->GetTopPoint(), UO_MAP_VIEW_SIZE);
@@ -3803,6 +3764,8 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 		pCharNear->NotoSave_Clear();
 	}
 
+	bool fNoMessages = false;
+	bool fQuickLogIn = !pChar->IsDisconnected();
 	if ( IsTrigUsed(TRIGGER_LOGIN) )
 	{
 		CScriptTriggerArgs Args( fNoMessages, fQuickLogIn, static_cast<INT64>(0) );
@@ -3816,9 +3779,7 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 		fQuickLogIn	= (Args.m_iN2 != 0);
 	}
 
-	if ( IsSetCombatFlags(COMBAT_PREHIT) )
-		pChar->SetKeyNum("LastHit", 0);
-
+	TCHAR *z = Str_GetTemp();
 	if ( !fQuickLogIn )
 	{
 		if ( !fNoMessages )
@@ -3836,16 +3797,11 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 		if ( m_pChar->m_pArea && m_pChar->m_pArea->IsGuarded() && !m_pChar->m_pArea->IsFlag(REGION_FLAG_ANNOUNCE) )
 		{
 			const CVarDefContStr * pVarStr = dynamic_cast <CVarDefContStr *>( m_pChar->m_pArea->m_TagDefs.GetKey("GUARDOWNER"));
-			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_REGION_GUARDSP),
-				( pVarStr ) ? static_cast<LPCTSTR>(pVarStr->GetValStr()) : g_Cfg.GetDefaultMsg(DEFMSG_REGION_GUARDSPT));
+			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_REGION_GUARDSP), ( pVarStr ) ? pVarStr->GetValStr() : g_Cfg.GetDefaultMsg(DEFMSG_REGION_GUARDSPT));
 			if ( m_pChar->m_pArea->m_TagDefs.GetKeyNum("RED", true) )
-			{
-				SysMessage("You are in the red region.");
-			}
+				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_REGION_REDDEF), g_Cfg.GetDefaultMsg(DEFMSG_REGION_REDENTER));
 		}
 	}
-
-	GetAccount()->m_TagDefs.DeleteKey("LastLogged");
 
 	if ( IsPriv(PRIV_GM_PAGE) && g_World.m_GMPages.GetCount() > 0 )
 	{
@@ -3853,47 +3809,33 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 		addSysMessage(z);
 	}
 	if ( IsPriv(PRIV_JAILED) )
-	{
 		m_pChar->Jail(&g_Serv, true, static_cast<int>(GetAccount()->m_TagDefs.GetKeyNum("JailCell", true)));
-	}
 	if ( g_Serv.m_timeShutdown.IsTimeValid() )
-	{
 		addBark( g_Cfg.GetDefaultMsg( DEFMSG_SERV_SHUTDOWN_SOON ), NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM, FONT_BOLD);
-	}
-	// Announce you to the world.
-	Announce(true);
+
+	GetAccount()->m_TagDefs.DeleteKey("LastLogged");
+	Announce(true);		// announce you to the world
 	m_pChar->Update(this);
 
-
-
-	// don't login on the water ! (unless i can swim)
-	if ( !m_pChar->Char_GetDef()->Can(CAN_C_SWIM) && !IsPriv(PRIV_GM) && m_pChar->IsSwimming() )
+	// Don't login on the water, bring us to nearest shore (unless I can swim)
+	if ( !IsPriv(PRIV_GM) && !m_pChar->Char_GetDef()->Can(CAN_C_SWIM) && m_pChar->IsSwimming() )
 	{
-		// bring to the nearest shore.
 		int iDist = 1;
 		int i;
-		for ( i=0; i<20; i++)
+		for ( i = 0; i < 20; i++ )
 		{
-			// try diagonal in all directions
 			int iDistNew = iDist + 20;
-			for ( int iDir = DIR_NE; iDir <= DIR_NW; iDir += 2 )
+			for ( int iDir = DIR_NE; iDir <= DIR_NW; iDir += 2 )	// try diagonal in all directions
 			{
 				if ( m_pChar->MoveToValidSpot(static_cast<DIR_TYPE>(iDir), iDistNew, iDist) )
 				{
-					i = 100;	// breakout
+					i = 100;
 					break;
 				}
 			}
 			iDist = iDistNew;
 		}
-		if ( i < 100 )
-		{
-			addSysMessage( g_Cfg.GetDefaultMsg( DEFMSG_REGION_WATER_1 ) );
-		}
-		else
-		{
-			addSysMessage( g_Cfg.GetDefaultMsg( DEFMSG_REGION_WATER_2 ) );
-		}
+		addSysMessage( g_Cfg.GetDefaultMsg( i < 100 ? DEFMSG_REGION_WATER_1 : DEFMSG_REGION_WATER_2) );
 	}
 
 	DEBUG_MSG(( "%lx:Setup_Start done\n", GetSocketID()));
