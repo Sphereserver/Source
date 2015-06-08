@@ -1888,7 +1888,7 @@ bool CChar::ItemDrop( CItem * pItem, const CPointMap & pt )
 
 	if ( IsSetEF( EF_ItemStacking ) )
 	{
-		//CGrayMapBlockState block( CAN_C_WALK, pt.m_z, pt.m_z, pt.m_z, maximum(pItem->GetHeight(), 1) );
+		CGrayMapBlockState block( CAN_C_WALK, pt.m_z, pt.m_z, pt.m_z, maximum(pItem->GetHeight(), 1) );
 		//g_World.GetHeightPoint( pt, block, true );
 		//DEBUG_ERR(("Drop: %d / Min: %d / Max: %d\n", pItem->GetFixZ(pt), block.m_Bottom.m_z, block.m_Top.m_z));
 
@@ -2818,6 +2818,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 	pCorpse->SetCorpseType(GetDispID());
 	pCorpse->m_itCorpse.m_BaseID = m_prev_id;	// id the corpse type here !
 	pCorpse->m_itCorpse.m_facing_dir = m_dirFace;		//TO-DO: Fix corpses always being created at same DIR even when the char is facing another DIR
+	pCorpse->m_uidLink = GetUID();
 
 	if (fFrontFall)
 		pCorpse->m_itCorpse.m_facing_dir = static_cast<DIR_TYPE>(m_dirFace|0x80);
@@ -2838,11 +2839,8 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 		pCorpse->m_itCorpse.m_uidKiller = GetUID();
 	}
 
-	if (m_pPlayer || !IsStatFlag(STATF_DEAD))	// this char wont be deleted on death, so lets link the corpse to him
-		pCorpse->m_uidLink = GetUID();
-
-	if (m_pNPC && (m_pNPC->m_bonded || IsStatFlag(STATF_Conjured)))
-		pCorpse->m_itCorpse.m_junk1 = 1;	// corpse of bonded and summoned creatures can't be carved
+	if ((m_pNPC && m_pNPC->m_bonded) || IsStatFlag(STATF_Conjured))
+		pCorpse->m_itCorpse.m_carved = 1;	// corpse of bonded and summoned creatures can't be carved
 
 	if ( !(wFlags & DEATH_NOLOOTDROP) )		// move non-newbie contents of the pack to corpse
 		DropAll( pCorpse );
@@ -3071,6 +3069,8 @@ bool CChar::Death()
 			SetDisconnected();	// Respawn the NPC later
 			return true;
 		}
+		if ( pCorpse )
+			pCorpse->m_uidLink.InitUID();
 		return false;	// delete this
 	}
 	return true;

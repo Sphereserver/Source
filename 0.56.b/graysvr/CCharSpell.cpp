@@ -475,7 +475,7 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 	if (m_pNPC && m_pNPC->m_bonded)
 	{
 		m_Can &= ~CAN_C_GHOST;
-		//UpdateCanSee(new PacketBondedStatus(this, false));
+		UpdateCanSee(new PacketBondedStatus(this, false));
 	}
 	Update();
 
