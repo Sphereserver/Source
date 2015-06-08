@@ -3872,7 +3872,7 @@ void PacketDisplayPopup::addOption(WORD entryTag, DWORD textId, WORD flags, WORD
 		if (flags & POPUPFLAG_COLOR)
 			flags &= ~POPUPFLAG_COLOR;
 
-		writeInt32(static_cast<WORD>(textId));
+		writeInt32(textId);
 		writeInt16(entryTag);
 		writeInt16(flags);
 	}

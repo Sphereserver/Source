@@ -2291,3 +2291,8 @@ Reverted back m_uidKiller in m_itCorpse to CGrayUIDBase to fix build not compili
 
 06-06-2015, Coruja
 Fixed: Field spells and triggers @Step (items) / @ItemStep (chars) not working correctly.
+
+08-06-2015, Coruja
+Fixed: Function AddContextEntry not working correctly on HS clients >= 7.0.0.0
+Fixed: Dead bonded pets not updating the ghost corpse correctly on resurrect.
+Fixed: Explosion potions causing damage to nearby items when it explodes.

@@ -415,14 +415,11 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 
 	if (!bNoFail)
 	{
-		if (pCharSrc && pCharSrc->IsPriv(PRIV_GM))
-			bNoFail = true;
-
-		if (IsPriv(PRIV_GM))
+		if (IsPriv(PRIV_GM) || (pCharSrc && pCharSrc->IsPriv(PRIV_GM)))
 			bNoFail = true;
 	}
 
-	if (!bNoFail && m_pArea &&	m_pArea->IsFlag(REGION_ANTIMAGIC_ALL | REGION_ANTIMAGIC_RECALL_IN | REGION_ANTIMAGIC_TELEPORT))
+	if (!bNoFail && m_pArea && m_pArea->IsFlag(REGION_ANTIMAGIC_ALL|REGION_ANTIMAGIC_RECALL_IN|REGION_ANTIMAGIC_TELEPORT))
 	{
 		// Could be a house break in.
 		// Check to see if it is.
@@ -434,19 +431,31 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 	}
 
 	int hits = IMULDIV(Stat_GetMax(STAT_STR), g_Cfg.m_iHitpointPercentOnRez, 100);
+	if (!pCorpse)
+		pCorpse = FindMyCorpse();
+
 	if (IsTrigUsed(TRIGGER_RESURRECT))
 	{
-		if (!pCorpse)
-			pCorpse = FindMyCorpse();
 		CScriptTriggerArgs Args(hits, 0, pCorpse);
 		if (OnTrigger(CTRIG_Resurrect, pCharSrc, &Args) == TRIGRET_RET_TRUE)
 			return false;
 		hits = static_cast<int>(Args.m_iN1);
 	}
+
 	SetID(m_prev_id);
 	SetHue(m_prev_Hue);
-	StatFlag_Clear(STATF_DEAD | STATF_Insubstantial);
+	StatFlag_Clear(STATF_DEAD|STATF_Insubstantial);
 	Stat_SetVal(STAT_STR, maximum(hits, 1));
+
+	bool bRaisedCorpse = false;
+	if (pCorpse != NULL)
+	{
+		if (RaiseCorpse(pCorpse))
+		{
+			SysMessageDefault(DEFMSG_SPELL_RES_REJOIN);
+			bRaisedCorpse = true;
+		}
+	}
 
 	if (m_pPlayer)
 	{
@@ -454,34 +463,26 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 		if (pDeathShroud != NULL)
 			pDeathShroud->Delete();
 
-		if (pCorpse == NULL)
-			pCorpse = FindMyCorpse();
-
-		if (pCorpse != NULL)
+		if (!bRaisedCorpse && !g_Cfg.m_fNoResRobe)
 		{
-			if (RaiseCorpse(pCorpse))
-				SysMessageDefault(DEFMSG_SPELL_RES_REJOIN);
-		}
-		else
-		{
-			if (!g_Cfg.m_fNoResRobe)
-			{
-				CItem *pRobe = CItem::CreateBase(ITEMID_ROBE);
-				ASSERT(pRobe);
-				pRobe->SetName(g_Cfg.GetDefaultMsg(DEFMSG_SPELL_RES_ROBENAME));
-				LayerAdd(pRobe, LAYER_ROBE);
-			}
+			CItem *pRobe = CItem::CreateBase(ITEMID_ROBE);
+			ASSERT(pRobe);
+			pRobe->SetName(g_Cfg.GetDefaultMsg(DEFMSG_SPELL_RES_ROBENAME));
+			LayerAdd(pRobe, LAYER_ROBE);
 		}
 
 	}
 	if (m_pNPC && m_pNPC->m_bonded)
+	{
 		m_Can &= ~CAN_C_GHOST;
+		//UpdateCanSee(new PacketBondedStatus(this, false));
+	}
 	Update();
 
 	CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Resurrection);
 	Effect(EFFECT_OBJ, pSpellDef->m_idEffect, this, 10, 16);
 	Sound(pSpellDef->m_sound);
-	return(true);
+	return true;
 }
 
 void CChar::Spell_Effect_Remove(CItem * pSpell)

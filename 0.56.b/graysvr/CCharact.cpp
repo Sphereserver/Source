@@ -1777,45 +1777,26 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 		}
 	}
 
-	//Do stack dropping if items are stacked
+	// Do stack dropping if items are stacked
 	if (( trigger == ITRIG_PICKUP_GROUND ) && IsSetEF( EF_ItemStackDrop ))
 	{
-		CPointMap ptNewPlace = pItem->GetTopPoint();
-		signed char	TopCheck = GetTopZ() + 17;
-		height_t Itemheight = (pItem->GetHeight() ? pItem->GetHeight() : 1);
+		signed char iItemHeight = maximum(pItem->GetHeight(), 1);
+		signed char	iStackMaxZ = GetTopZ() + 16;
 		CItem * pStack = NULL;
-		CWorldSearch CheckItems(ptNewPlace);
-		for (;;)
-		{
-			pStack = CheckItems.GetItem();
-			if ( pStack == NULL )
-				break;
-
-			if ( (pStack->GetTopZ() + pStack->GetHeight()) >= TopCheck )
-				continue;
-
-			if (pStack->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC|ATTR_LOCKEDDOWN))
-				TopCheck = pStack->GetTopZ() + pStack->GetHeight();
-
-			if (( pStack->GetTopZ() == pItem->GetTopZ()) && (pStack->IsType(IT_TABLE)) && (pStack != pItem))
-				TopCheck = pStack->GetTopZ() + pStack->GetHeight();
-		}
-
+		CPointMap ptNewPlace = pItem->GetTopPoint();
 		CWorldSearch AreaItems(ptNewPlace);
 		for (;;)
 		{
 			pStack = AreaItems.GetItem();
 			if ( pStack == NULL )
 				break;
-
-			if (( pStack->GetTopZ() <= pItem->GetTopZ()) || ( pStack->GetTopZ() >= TopCheck ))
+			if (( pStack->GetTopZ() <= pItem->GetTopZ()) || ( pStack->GetTopZ() > iStackMaxZ ))
 				continue;
-
-			if (pStack->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC|ATTR_LOCKEDDOWN))
+			if ( pStack->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC|ATTR_LOCKEDDOWN))
 				continue;
 
 			ptNewPlace = pStack->GetTopPoint();
-			ptNewPlace.m_z -= Itemheight;
+			ptNewPlace.m_z -= iItemHeight;
 			pStack->MoveToUpdate(ptNewPlace);
 		}
 	}
@@ -1905,34 +1886,42 @@ bool CChar::ItemDrop( CItem * pItem, const CPointMap & pt )
 	if ( pItem == NULL )
 		return( false );
 
-	CItemBase * pItemDef = pItem->Item_GetDef();
-	if (( g_Cfg.m_fFlipDroppedItems || pItemDef->Can(CAN_I_FLIP)) &&
-		pItem->IsMovableType() &&
-		! pItemDef->IsStackableType())
+	if ( IsSetEF( EF_ItemStacking ) )
 	{
-		// Does this item have a flipped version.
-		pItem->SetDispID( pItemDef->GetNextFlipID( pItem->GetDispID()));
+		//CGrayMapBlockState block( CAN_C_WALK, pt.m_z, pt.m_z, pt.m_z, maximum(pItem->GetHeight(), 1) );
+		//g_World.GetHeightPoint( pt, block, true );
+		//DEBUG_ERR(("Drop: %d / Min: %d / Max: %d\n", pItem->GetFixZ(pt), block.m_Bottom.m_z, block.m_Top.m_z));
+
+		CPointMap ptStack = pt;
+		signed char iStackMaxZ = block.m_Top.m_z;	//pt.m_z + 16;
+		CItem * pStack = NULL;
+		CWorldSearch AreaItems(ptStack);
+		for (;;)
+		{
+			pStack = AreaItems.GetItem();
+			if ( pStack == NULL )
+				break;
+			if ( pStack->GetTopZ() < pt.m_z || pStack->GetTopZ() > iStackMaxZ )
+				continue;
+
+			ptStack.m_z += maximum(pStack->GetHeight(), 1);
+			//DEBUG_ERR(("(%d > %d) || (%d > %d)\n", ptStack.m_z, iStackMaxZ, ptStack.m_z + maximum(pItem->GetHeight(), 1), iStackMaxZ + 3));
+			if ( (ptStack.m_z > iStackMaxZ) || (ptStack.m_z + maximum(pItem->GetHeight(), 1) > iStackMaxZ + 3) )
+			{
+				ItemBounce( pItem );		// put the item on backpack (or drop it on ground if it's too heavy)
+				return false;
+			}
+		}
+		return( pItem->MoveToCheck( ptStack, this ));	// don't flip the item if it got stacked
 	}
+
+	// Does this item have a flipped version?
+	CItemBase * pItemDef = pItem->Item_GetDef();
+	if (( g_Cfg.m_fFlipDroppedItems || pItemDef->Can(CAN_I_FLIP)) && pItem->IsMovableType() && !pItemDef->IsStackableType())
+		pItem->SetDispID( pItemDef->GetNextFlipID( pItem->GetDispID()));
 
 	return( pItem->MoveToCheck( pt, this ));
 }
-
-/*	bool bDroped = pItem->MoveToCheck( pt, this );
-
-	if ((bDroped) && (pItem->GetTopZ() == pt.m_z))
-	{
-		CItemBase * pItemDef = pItem->Item_GetDef();
-		if (( g_Cfg.m_fFlipDroppedItems || pItemDef->Can(CAN_I_FLIP)) &&
-			pItem->IsMovableType() &&
-			! pItemDef->IsStackableType())
-		{
-			// Does this item have a flipped version.
-			pItem->SetDispID( pItemDef->GetNextFlipID( pItem->GetDispID()));
-		}
-	}
-
-	return( bDroped );
-}*/
 
 bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 {

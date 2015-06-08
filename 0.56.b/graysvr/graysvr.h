@@ -1392,8 +1392,7 @@ public:
 	void addMapMode( CItemMap * pItem, MAPCMD_TYPE iType, bool fEdit = false );
 
 	void addGumpTextDisp( const CObjBase * pObj, GUMP_TYPE gump, LPCTSTR pszName, LPCTSTR pszText );
-	void addGumpInpVal( bool fcancel, INPVAL_STYLE style,
-		DWORD dwmask, LPCTSTR ptext1, LPCTSTR ptext2, CObjBase * pObj );
+	void addGumpInpVal( bool fcancel, INPVAL_STYLE style, DWORD dwmask, LPCTSTR ptext1, LPCTSTR ptext2, CObjBase * pObj );
 
 	void addItemMenu( CLIMODE_TYPE mode, const CMenuItem * item, size_t count, CObjBase * pObj = NULL );
 	void addGumpDialog( CLIMODE_TYPE mode, const CGString * sControls, size_t iControls, const CGString * psText, size_t iTexts, int x, int y, CObjBase * pObj = NULL, DWORD rid = 0 );
@@ -1709,8 +1708,6 @@ public:
 
 	bool SocketsInit(); // Initialize sockets
 	bool SocketsInit( CGSocket & socket );
-	void SocketsReceive();
-	CClient * SocketsReceive( CGSocket & socket );
 	void SocketsClose();
 
 	bool Load();

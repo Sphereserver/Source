@@ -1356,134 +1356,25 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	ADDTOCALLSTACK("CItem::MoveToCheck");
 	// Make noise and try to pile it and such.
 
-	CPointMap	ptNewPlace;
-	if ( !pt.IsValidPoint() )
-	{
-		if ( pCharMover )
-			ptNewPlace = pCharMover->GetTopPoint();
-		else
-			ptNewPlace.ValidatePoint();
-	}
-	else ptNewPlace  = pt;
+	CPointMap ptNewPlace;
+	if ( pt.IsValidPoint() )
+		ptNewPlace = pt;
+	else if ( pCharMover )
+		ptNewPlace = pCharMover->GetTopPoint();
+	else
+		ptNewPlace.ValidatePoint();
 
-	unsigned int iItemCount = 0;
-
-	// Look for pileable ? count how many items are here.
-	CItem * pItem = NULL;
-	CWorldSearch AreaItems(ptNewPlace);
-	short iMyZ = ptNewPlace.m_z;
-	bool iInvalidZ[20];
-	for (int i=0;i < 20;i++)
-		iInvalidZ[i] = false;
-
-	for (;;)
-	{
-		pItem = AreaItems.GetItem();
-		if ( pItem == NULL )
-			break;
-
-		iItemCount ++;
-
-		// can't stack from a distance
-		if ( ptNewPlace.GetDistZ(pItem->GetTopPoint()) <= 1 )
-		{
-			// ITRIG_STACKON
-			if ( Stack( pItem ))
-			{
-				iMyZ = pItem->GetTopZ();
-				break;
-			}
-		}
-
-		if (( IsSetEF( EF_ItemStacking ) && ( pCharMover )) && ( pCharMover->IsClient() && !pCharMover->GetClient()->m_pHouseDesign ))
-		{
-			if ( pItem->GetTopZ() < ptNewPlace.m_z)
-				break;
-
-			height_t tempheight = (pItem->GetHeight() ? pItem->GetHeight() : 1);
-			signed char itemTop = (pItem->GetTopZ() - ptNewPlace.m_z) + tempheight;
-			signed char itemBottom = pItem->GetTopZ() - ptNewPlace.m_z;
-
-			if (pItem->IsType(IT_TABLE) && itemTop < 20)
-				iInvalidZ[itemTop] = true;
-			else
-			{
-				for(int z = itemBottom; (z < itemTop) && (z < 20); z++)
-					iInvalidZ[z] = true;
-			}
-
-			if ( pItem->GetTopZ() >= iMyZ )
-				iMyZ = pItem->GetTopZ() + tempheight;
-		}
-	}
-
-
-	if (( IsSetEF( EF_ItemStacking ) && ( pCharMover )) && ( pCharMover->IsClient() && !pCharMover->GetClient()->m_pHouseDesign ))
-	{
-		//Can we find an empty space in the stack?
-		bool bValid = false;
-		for (int i=0;i < 16;i++)
-		{
-			if (!iInvalidZ[i])
-			{
-				bValid = true;
-
-				//Can the item fit here?
-				if (GetHeight() > 1)
-				{
-					for(int z = i+1; (z < i + GetHeight()) && (z < 20); z++)
-					{
-						if (iInvalidZ[z])
-							bValid = false;
-					}
-				}
-
-				if (bValid)
-				{
-					iMyZ = static_cast<short>(ptNewPlace.m_z + i);
-					break;
-				}
-			}
-		}
-
-		if ( (iMyZ - pCharMover->GetTopZ()) <= 16 )
-		{
-			ptNewPlace.m_z = static_cast<signed char>(iMyZ);
-		}
-		else
-		{
-			//Once we reach the stack max height, put the item on player feet
-			ptNewPlace.m_z = pCharMover->GetTopZ();
-		}
-	}
-
-	unsigned long wBlockFlags = CAN_C_WALK;
-	ptNewPlace.m_z = GetFixZ(ptNewPlace, wBlockFlags );
-
-	// Set the decay timer for this if not in a house or such.
-	INT64 iDecayTime = GetDecayTime();
+	// Set the decay timer
+	long long iDecayTime = GetDecayTime();
 	if ( iDecayTime > 0 )
 	{
-		// In a place where it will decay ?
 		const CRegionBase * pRegion = ptNewPlace.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA|REGION_TYPE_ROOM);
-		if ( pRegion != NULL && pRegion->IsFlag( REGION_FLAG_NODECAY ))	// No decay here in my house/boat
+		if ( pRegion != NULL && pRegion->IsFlag(REGION_FLAG_NODECAY) )
 			iDecayTime = -1;
 	}
 
-	if ( iItemCount > g_Cfg.m_iMaxItemComplexity )
-	{
-		Speak("Too many items here!");
-		if ( iItemCount > (g_Cfg.m_iMaxItemComplexity + (g_Cfg.m_iMaxItemComplexity / 2)) )
-		{
-			Speak("The ground collapses!");
-			Delete();
-		}
-	}
-
-	CObjBase * pOldCont = this->GetContainer();
-	TRIGRET_TYPE ttResult = TRIGRET_RET_DEFAULT;
-
-	if (( IsTrigUsed(TRIGGER_DROPON_GROUND) ) || ( IsTrigUsed(TRIGGER_ITEMDROPON_GROUND) ))
+	TRIGRET_TYPE ttResult;
+	if ( IsTrigUsed(TRIGGER_DROPON_GROUND) || IsTrigUsed(TRIGGER_ITEMDROPON_GROUND) )
 	{
 		CScriptTriggerArgs args;
 		args.m_s1 = ptNewPlace.WriteUsed();
@@ -1492,38 +1383,34 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 		ttResult = OnTrigger(ITRIG_DROPON_GROUND, pCharMover, &args);
 
 		iDecayTime = args.m_iN1;	// ARGN1 = Decay time for the dropped item (in ticks)
+		if ( IsDeleted() )
+			return false;
 	}
-
-	if (( IsDeleted() ) || ( pOldCont != this->GetContainer()))
-		return false;
 
 	if (ttResult != TRIGRET_RET_TRUE)
 	{
-		// when a player (not npcs or gms) drops an item on water it is deleted (not static/unmovable items)
-		if ( (IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC) == false) &&
-			((pCharMover != NULL) && (pCharMover->m_pPlayer != NULL && pCharMover->IsPriv(PRIV_GM) == false)) )
+		// Check if there's too many items on the same spot
+		unsigned int iItemCount = 0;
+		CItem * pItem = NULL;
+		CWorldSearch AreaItems(ptNewPlace);
+		for (;;)
 		{
-			const CUOMapMeter * pMeter = g_World.GetMapMeter(ptNewPlace);
-			if ( pMeter && (pMeter->m_z == ptNewPlace.m_z) )
+			pItem = AreaItems.GetItem();
+			if ( pItem == NULL )
+				break;
+
+			iItemCount ++;
+			if ( iItemCount > g_Cfg.m_iMaxItemComplexity )
 			{
-				if ( IT_WATER == g_World.GetTerrainItemType( pMeter->m_wTerrainIndex ) )
-				{
-					Speak("*Blub*");
-					Delete();
-					return( false );
-				}
-				else if ( pMeter->m_wTerrainIndex == 0x0244 )
-				{
-					Delete();
-					return( false );
-				}
+				Speak("Too many items here!");
+				iDecayTime = 60 * TICK_PER_SEC;		// force decay (even when REGION_FLAG_NODECAY is set)
+				break;
 			}
 		}
 	}
 
 	MoveToDecay(ptNewPlace, iDecayTime);
 	Sound(GetDropSound(NULL));
-
 	return true;
 }
 
@@ -5063,20 +4950,6 @@ bool CItem::OnExplosion()
 		pChar->OnTakeDamage( m_itExplode.m_iDamage, pSrc, m_itExplode.m_wFlags, iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy );
 	}
 
-	// Damage objects near by.
-	CWorldSearch AreaItems( GetTopPoint(), m_itExplode.m_iDist );
-	for (;;)
-	{
-		CItem * pItem = AreaItems.GetItem();
-		if ( pItem == NULL )
-			break;
-		if ( pItem == this )
-			continue;
-		if ( GetTopDist3D( pItem ) > m_itExplode.m_iDist )
-			continue;
-		pItem->OnTakeDamage( m_itExplode.m_iDamage, pSrc, m_itExplode.m_wFlags );
-	}
-
 	m_itExplode.m_wFlags = 0;
 	SetDecayTime( 3 * TICK_PER_SEC );
 	return( false );	// don't delete it yet.
@@ -5305,14 +5178,6 @@ bool CItem::OnTick()
 				Use_DoorNew( false );
 			}
 			return true;
-
-		case IT_WAND:
-			{
-				// Magic devices.
-				// Will regen over time ??
-				EXC_SET("default behaviour::IT_WAND");
-			}
-			break;
 
 		case IT_POTION:
 			{
