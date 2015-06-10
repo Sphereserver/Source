@@ -1167,63 +1167,47 @@ int CClient::OnSkill_Forensics( CGrayUID uid, int iSkillLevel, bool fTest )
 	// SKILL_FORENSICS
 	// ! weird client issue targetting corpses !
 
-	CItemCorpse * pCorpse = dynamic_cast <CItemCorpse *>( uid.ItemFind());
-	if ( pCorpse == NULL )
+	CItemCorpse * pCorpse = dynamic_cast<CItemCorpse *>(uid.ItemFind());
+	if ( !pCorpse )
 	{
 		SysMessageDefault( DEFMSG_FORENSICS_CORPSE );
-		return( -SKTRIG_QTY );
+		return -SKTRIG_QTY;
 	}
-
-	if ( ! m_pChar->CanTouch( pCorpse ))
+	if ( !m_pChar->CanTouch(pCorpse) )
 	{
 		SysMessageDefault( DEFMSG_FORENSICS_REACH );
-		return( -SKTRIG_QTY );
+		return -SKTRIG_QTY;
 	}
 
-	if ( fTest )
-	{
-		if ( pCorpse->m_uidLink == m_pChar->GetUID() )
-			return( 2 );
-		return Calc_GetRandVal(60);
-	}
+	if (fTest)
+		return (pCorpse->m_uidLink == m_pChar->GetUID()) ? 2 : Calc_GetRandVal(60);
 
-	CGrayUID uidKiller( pCorpse->m_itCorpse.m_uidKiller );
-	CChar * pCharKiller = uidKiller.CharFind();
-	LPCTSTR pName = ( pCharKiller != NULL ) ? pCharKiller->GetName() : NULL;
+	CChar * pCharKiller = pCorpse->m_itCorpse.m_uidKiller.CharFind();
+	LPCTSTR pName = pCharKiller ? pCharKiller->GetName() : NULL;
 
-	if ( pCorpse->IsCorpseSleeping())
+	if ( pCorpse->IsCorpseSleeping() )
 	{
-		// "They are not dead but mearly unconscious"
 		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_FORENSICS_ALIVE ), pName ? pName : "It" );
 		return 1;
 	}
 
-	TCHAR *pszTemp = Str_GetTemp();
-	if ( pCorpse->GetTimeStamp().IsTimeValid() )
+	TCHAR * pszTemp = Str_GetTemp();
+	if ( pCorpse->m_itCorpse.m_carved )
 	{
-		int len = sprintf( pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_FORENSICS_TIMER ),
-			pCorpse->GetName(), ( - g_World.GetTimeDiff( pCorpse->GetTimeStamp() )) / TICK_PER_SEC );
-		if ( pName == NULL )
-		{
-			strcpy( pszTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_FORENSICS_FAILNAME ) );
-		}
+		int len = sprintf( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_CARVE_1), pCorpse->GetName() );
+		if ( pName )
+			sprintf( pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_CARVE_2), pName );
 		else
-		{
-			sprintf( pszTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_FORENSICS_NAME ), pName );
-		}
+			strcpy( pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_FAILNAME) );
+
 	}
-	else
+	else if ( pCorpse->GetTimeStamp().IsTimeValid() )
 	{
-		int len = sprintf( pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_FORENSICS_CARVE_1 ),
-			pCorpse->GetName());
-		if ( pName == NULL )
-		{
-			strcpy( pszTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_FORENSICS_FAILNAME ) );
-		}
+		int len = sprintf( pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_TIMER), pCorpse->GetName(), -g_World.GetTimeDiff(pCorpse->GetTimeStamp()) / TICK_PER_SEC );
+		if ( pName )
+			sprintf( pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_NAME), pName );
 		else
-		{
-			sprintf( pszTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_FORENSICS_CARVE_2 ), pName );
-		}
+			strcpy( pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_FAILNAME) );
 	}
 	SysMessage( pszTemp );
 	return iSkillLevel;

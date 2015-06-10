@@ -2800,7 +2800,8 @@ int CChar::Skill_Meditation( SKTRIG_TYPE stage )
 
 	if ( stage == SKTRIG_FAIL || stage == SKTRIG_ABORT )
 	{
-		GetClient()->removeBuff(BI_ACTIVEMEDITATION);
+		if ( IsClient() )
+			GetClient()->removeBuff(BI_ACTIVEMEDITATION);
 		return 0;
 	}
 
@@ -2823,7 +2824,8 @@ int CChar::Skill_Meditation( SKTRIG_TYPE stage )
 	{
 		if ( Stat_GetVal(STAT_INT) >= Stat_GetMax(STAT_INT))
 		{
-			GetClient()->removeBuff( BI_ACTIVEMEDITATION );
+			if ( IsClient() )
+				GetClient()->removeBuff(BI_ACTIVEMEDITATION);
 			SysMessageDefault( DEFMSG_MEDITATION_PEACE_2 );
 			return 0;	// only give skill credit now.
 		}
@@ -2832,7 +2834,8 @@ int CChar::Skill_Meditation( SKTRIG_TYPE stage )
 		{
 			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
 			{
-				GetClient()->addBuff( BI_ACTIVEMEDITATION, 1075657, 1075658 );
+				if ( IsClient() )
+					GetClient()->addBuff(BI_ACTIVEMEDITATION, 1075657, 1075658);
 				Sound( 0x0f9 );
 			}
 		}

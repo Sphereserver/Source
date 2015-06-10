@@ -590,8 +590,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			if (IsClient())
 			{
 				m_pClient->addLight();
-				if (IsSetOF(OF_Buffs))
-					GetClient()->removeBuff(BI_NIGHTSIGHT);
+				GetClient()->removeBuff(BI_NIGHTSIGHT);
 			}
 			return;
 		}
@@ -639,6 +638,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			if (IsClient())
 				GetClient()->removeBuff(BI_THUNDERSTORM);
 			break;
+
 		case LAYER_SPELL_Essence_Of_Wind:
 			if (IsClient())
 				GetClient()->removeBuff(BI_ESSENCEOFWIND);
@@ -670,7 +670,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 				if (IsClient())
 					GetClient()->removeBuff(BI_BLOODOATHCURSE);
 				CChar * pSrc = pSpell->m_uidLink.CharFind();
-				if (pSrc->GetClient())
+				if (pSrc->IsClient())
 					pSrc->GetClient()->removeBuff(BI_BLOODOATHCASTER);
 			}break;
 		case LAYER_SPELL_Corpse_Skin:
@@ -995,10 +995,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			Update();		// show everyone I am now a new type
 
 			StatFlag_Set(STATF_Polymorph);
-			if (IsSetOF(OF_Buffs) && IsClient())
+			if (IsSetOF(OF_Buffs) && IsClient() && iBuffIcon)
 			{
-				if (!iBuffIcon)
-					return;
 				GetClient()->removeBuff(iBuffIcon);
 				GetClient()->addBuff(iBuffIcon, 1075824, 1070722, iTimerEffect);
 			}
@@ -1018,7 +1016,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			if (IsClient())
 			{
 				m_pClient->addLight();
-				if (IsSetOF(OF_Buffs))
+				if (IsSetOF(OF_Buffs) && IsClient())
 				{
 					GetClient()->removeBuff(BI_NIGHTSIGHT);
 					GetClient()->addBuff(BI_NIGHTSIGHT, 1075643, 1075644, iTimerEffect);
@@ -1174,7 +1172,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					GetClient()->removeBuff(BI_BLOODOATHCURSE);
 					GetClient()->addBuff(BI_BLOODOATHCURSE, 1075659, 1075660, iTimerEffect, pNumBuff, 2);
 				}
-				if ( pCaster->GetClient() )
+				if ( pCaster->IsClient() )
 				{
 					strcpy(NumBuff[0], GetName());
 					pCaster->GetClient()->removeBuff(BI_BLOODOATHCASTER);
@@ -1694,7 +1692,7 @@ bool CChar::Spell_Equip_OnTick( CItem * pItem )
 
 			// We will have this effect again.
 
-			if (IsClient() && IsSetOF(OF_Buffs))
+			if (IsSetOF(OF_Buffs) && IsClient())
 			{
 				GetClient()->removeBuff(BI_POISON);
 				GetClient()->addBuff(BI_POISON, 1017383, 1070722, static_cast<WORD>(pItem->GetTimerAdjusted()));
