@@ -2306,3 +2306,7 @@ Changed: Invulnerable chars (FLAGS=statf_invul) now are able to attack another c
 [sphere_msgs.scp]: Updated all 'carve_corpse_*' messages and removed 'msg_criminal', 'msg_magic_block'.
 [sphere_spells.scp]: Added missing 'spellflag_tard_dead' on s_resurrection spell.
 	-IMPORTANT: It's HIGHLY recommended update it, or Resurrection spell will stop working.
+
+10-06-2015, XuN
+Fixed: Res* not reducing damage anymore
+Fixed: Having RegenHits/Mana/Val greater than ini's setting stoping the regen process forever for this character.

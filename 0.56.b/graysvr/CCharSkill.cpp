@@ -858,11 +858,12 @@ unsigned short CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool bGetTicks)
 		char sRegen[21];
 		if (bGetTicks == true)
 		{
-			unsigned short iRate = static_cast<unsigned short>(g_Cfg.m_iRegenRate[iStat]);	// in TICK_PER_SEC
+			INT64 iRate = g_Cfg.m_iRegenRate[iStat];	// in TICK_PER_SEC
 			sprintf(sRegen, "REGEN%s", stat);
-			if (GetDefNum(sRegen, false))
-				iRate -= static_cast<unsigned short>(GetDefNum(sRegen, false)) * TICK_PER_SEC;
-			return iRate;
+			iRate -= GetDefNum(sRegen, true) * TICK_PER_SEC;
+			if (iRate < 0)
+				return 0;
+			return static_cast<unsigned short>(iRate);
 		}
 		else
 		{

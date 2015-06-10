@@ -2234,7 +2234,7 @@ effect_bounce:
 		uType |= DAMAGE_FIXED;
 
 	// Apply armor calculation
-	if (!(uType & DAMAGE_GOD|DAMAGE_FIXED))
+	if (!((uType & DAMAGE_FIXED) || (uType & DAMAGE_GOD)))
 	{
 		if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 		{
