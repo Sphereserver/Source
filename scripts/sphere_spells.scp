@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, May 28, 2015
+// FILE LAST UPDATED: Wednesday, Jun 10, 2015
 //
 VERSION=0.56c
 
@@ -1134,7 +1134,7 @@ CAST_TIME=2.3
 RESOURCES=i_reag_blood_moss,i_reag_garlic,i_reag_ginseng
 RUNE_ITEM=i_rune_resurrection
 SCROLL_ITEM=i_scroll_resurrection
-FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_fx_targ|spellflag_good|spellflag_playeronly
+FLAGS=spellflag_dir_anim|spellflag_targ_char|spellflag_fx_targ|spellflag_good|spellflag_targ_dead|spellflag_playeronly
 EFFECT_ID=i_fx_sparkle
 EFFECT=0
 DURATION=0.0

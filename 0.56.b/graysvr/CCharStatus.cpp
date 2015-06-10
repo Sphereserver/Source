@@ -2207,6 +2207,8 @@ bool CChar::CanMove( CItem * pItem, bool fMsg ) const
 
 	if ( IsPriv(PRIV_ALLMOVE|PRIV_DEBUG|PRIV_GM) )
 		return true;
+	if ( pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_LOCKEDDOWN) && !pItem->IsAttr(ATTR_MOVE_ALWAYS) )
+		return false;
 
 	if ( IsStatFlag(STATF_Stone|STATF_Freeze|STATF_Insubstantial|STATF_DEAD|STATF_Sleeping) )
 	{
@@ -2214,14 +2216,6 @@ bool CChar::CanMove( CItem * pItem, bool fMsg ) const
 			SysMessagef("%s", g_Cfg.GetDefaultMsg(DEFMSG_CANTMOVE_DEAD));
 		return false;
 	}
-	if ( !pItem )
-		return false;
-
-	if ( !pItem->IsAttr(ATTR_MOVE_ALWAYS) && pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_LOCKEDDOWN) )
-		return false;
-
-	if ( pItem->IsType(IT_CORPSE))
-		return false;
 
 	if ( pItem->IsTopLevel() )
 	{

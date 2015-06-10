@@ -2296,3 +2296,13 @@ Fixed: Field spells and triggers @Step (items) / @ItemStep (chars) not working c
 Fixed: Function AddContextEntry not working correctly on HS clients >= 7.0.0.0
 Fixed: Dead bonded pets not updating the ghost corpse correctly on resurrect.
 Fixed: Explosion potions causing damage to nearby items when it explodes.
+
+10-06-2015, Coruja
+Added: Player corpses now will turn into bones when it got carved or before it decay. Also improved the corpse carving behavior, and now when the corpse got carved it will place all items inside the bone container instead drop everything on the ground.
+Fixed: Wrong message appearing when the char get flagged criminal (changed 'msg_criminal' to 'msg_guards').
+Fixed: Poison/Paralyze Field spells continuously hitting the player at every second instead just hit when needed.
+Changed: Invulnerable chars (FLAGS=statf_invul) now are able to attack another char instead get the attack "magically blocked".
+[sphere_item_deco_dungeons_traps_dead.scp]: Removed TYPE=t_meat_raw, TDATA1 and VALUE from all 'i_flesh_*' items (they aren't foot and nor sellable items).
+[sphere_msgs.scp]: Updated all 'carve_corpse_*' messages and removed 'msg_criminal', 'msg_magic_block'.
+[sphere_spells.scp]: Added missing 'spellflag_tard_dead' on s_resurrection spell.
+	-IMPORTANT: It's HIGHLY recommended update it, or Resurrection spell will stop working.

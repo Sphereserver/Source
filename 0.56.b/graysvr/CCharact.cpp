@@ -2808,14 +2808,12 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 	if (pCorpse == NULL)	// weird internal error
 		return( NULL );
 
-	if (m_pPlayer)		// if I'm NPC then my mount goes with me
-		Horse_UnMount();
-
 	TCHAR *pszMsg = Str_GetTemp();
 	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_CORPSE_OF), static_cast<LPCTSTR>(GetName()));
 	pCorpse->SetName(pszMsg);
 	pCorpse->SetHue(GetHue());
 	pCorpse->SetCorpseType(GetDispID());
+	pCorpse->SetAttr(ATTR_MOVE_NEVER);
 	pCorpse->m_itCorpse.m_BaseID = m_prev_id;	// id the corpse type here !
 	pCorpse->m_itCorpse.m_facing_dir = m_dirFace;		//TO-DO: Fix corpses always being created at same DIR even when the char is facing another DIR
 	pCorpse->m_uidLink = GetUID();
@@ -2839,8 +2837,8 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 		pCorpse->m_itCorpse.m_uidKiller = GetUID();
 	}
 
-	if ((m_pNPC && m_pNPC->m_bonded) || IsStatFlag(STATF_Conjured))
-		pCorpse->m_itCorpse.m_carved = 1;	// corpse of bonded and summoned creatures can't be carved
+	if ((m_pNPC && m_pNPC->m_bonded) || IsStatFlag(STATF_Conjured|STATF_Sleeping))
+		pCorpse->m_itCorpse.m_carved = 1;	// corpse of bonded and summoned creatures (or sleeping players) can't be carved
 
 	if ( !(wFlags & DEATH_NOLOOTDROP) )		// move non-newbie contents of the pack to corpse
 		DropAll( pCorpse );
@@ -2984,6 +2982,9 @@ bool CChar::Death()
 	Skill_Cleanup();
 	Spell_Dispel(100);			// get rid of all spell effects (moved here to prevent double @Destroy trigger)
 	m_lastAttackers.clear();	// clear list of attackers
+
+	if ( m_pPlayer )		// if I'm NPC then my mount goes with me
+		Horse_UnMount();
 
 	// Create the corpse item
 	CItemCorpse * pCorpse = MakeCorpse(Calc_GetRandVal(2) > 1 ? true : false);
@@ -3498,13 +3499,7 @@ bool CChar::CheckLocation( bool fStanding )
 				}
 				continue;
 			case IT_SPELL:
-				{
-					SPELL_TYPE Spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pItem->m_itSpell.m_spell));
-					OnSpellEffect( Spell, pItem->m_uidLink.CharFind(), pItem->m_itSpell.m_spelllevel, pItem );
-					const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(Spell);
-					if ( pSpellDef )
-						Sound(pSpellDef->m_sound);
-				}
+				OnSpellEffect( static_cast<SPELL_TYPE>(RES_GET_INDEX(pItem->m_itSpell.m_spell)), pItem->m_uidLink.CharFind(), static_cast<int>(pItem->m_itSpell.m_spelllevel), pItem );
 				continue;
 			case IT_TRAP:
 			case IT_TRAP_ACTIVE:

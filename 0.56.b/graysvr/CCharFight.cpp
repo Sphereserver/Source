@@ -459,7 +459,7 @@ bool CChar::Noto_Criminal( CChar * pChar )
 		decay = static_cast<int>(Args.m_iN1);
 	}
 	if ( !IsStatFlag( STATF_Criminal) )
-		SysMessageDefault( DEFMSG_CRIMINAL );
+		SysMessageDefault( DEFMSG_GUARDS );
 
 	Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Criminal, 0, decay, NULL);
 	NotoSave_Update();
@@ -1909,13 +1909,6 @@ bool CChar::OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fCommandPet, bool
 
 	if (fShouldReveal)
 		pCharSrc->Reveal();	// fix invis exploit
-
-	if ( pCharSrc->IsStatFlag( STATF_INVUL ) && ! pCharSrc->IsPriv( PRIV_GM ))
-	{
-		// Can't do any damage either.
-		pCharSrc->SysMessageDefault( DEFMSG_MAGIC_BLOCK );
-		return( false );
-	}
 
 	// Am i already attacking the source anyhow
 	if (Fight_IsActive() && m_Fight_Targ == pCharSrc->GetUID())

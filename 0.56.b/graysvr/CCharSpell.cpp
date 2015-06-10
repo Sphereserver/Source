@@ -1825,9 +1825,9 @@ void CChar::Spell_Area( CPointMap pntTarg, int iDist, int iSkillLevel )
 		CChar * pChar = AreaChar.GetChar();
 		if ( pChar == NULL )
 			break;
-		if ( !IsSetMagicFlags( MAGICF_CANHARMSELF ) && pChar == this ) // not harm the caster.
+		if ( pChar == this )
 		{
-			if ( pSpellDef->IsSpellType( SPELLFLAG_HARM ))
+			if ( pSpellDef->IsSpellType(SPELLFLAG_HARM) && !IsSetMagicFlags(MAGICF_CANHARMSELF) )
 				continue;
 		}
 		pChar->OnSpellEffect( spelltype, this, iSkillLevel, NULL );
@@ -2991,32 +2991,23 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	// RETURN:
 	//  false = the spell did not work. (should we get credit ?)
 
-	int	iEffectMult	= 1000;
-	DAMAGE_TYPE iD1 = 0;
-
-	if ( this == NULL )
-		return(false);
-
-	ASSERT(!IsItem());
-	// Spell died or fizzled.
-	if ( iSkillLevel <= 0 )
-		return(false);
-
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
 	if ( pSpellDef == NULL )
-		return(false);
-
-	// Most spells don't work on ghosts.
-	if ( IsStatFlag(STATF_DEAD) )
-	{
-		if ((spell != SPELL_Resurrection) && (!pSpellDef->IsSpellType(SPELLFLAG_TARG_DEAD)))
-			return false;
-	}
+		return false;
+	if ( iSkillLevel <= 0 )		// spell died or fizzled
+		return false;
+	if ( IsStatFlag(STATF_DEAD) && !pSpellDef->IsSpellType(SPELLFLAG_TARG_DEAD) )
+		return false;
+	if ( spell == SPELL_Paralyze_Field && IsStatFlag(STATF_Freeze) )
+		return false;
+	if ( spell == SPELL_Poison_Field && IsStatFlag(STATF_Poisoned) )
+		return false;
 
 	bool fExplode = false;
-	if (pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) && !pSpellDef->IsSpellType(SPELLFLAG_GOOD))	// Bolt (chasing) spells have explode = 1 by default (if not good spell).
+	if (pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) && !pSpellDef->IsSpellType(SPELLFLAG_GOOD))	// bolt (chasing) spells have explode = 1 by default (if not good spell)
 		fExplode = true;
 
+	int iEffectMult = 1000;
 	CScriptTriggerArgs Args(static_cast<int>(spell), iSkillLevel, pSourceItem);
 	Args.m_VarsLocal.SetNum("DamageType", 0);
 	Args.m_VarsLocal.SetNum("CreateObject1", pSpellDef->m_idEffect);
@@ -3024,6 +3015,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	Args.m_iN3 = iEffectMult;
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
+	DAMAGE_TYPE iD1 = 0;
 	if ( IsTrigUsed(TRIGGER_SPELLEFFECT) )
 	{
 		TRIGRET_TYPE iRet = OnTrigger( CTRIG_SpellEffect, pCharSrc ? pCharSrc : this, &Args );
@@ -3032,7 +3024,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 		switch ( iRet )
 		{
-			case TRIGRET_RET_TRUE:	return(false);
+			case TRIGRET_RET_TRUE:	return false;
 			case TRIGRET_RET_FALSE:	if ( pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
 			default:				break;
 		}
@@ -3048,7 +3040,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 		switch ( iRet )
 		{
-			case TRIGRET_RET_TRUE:	return(false);
+			case TRIGRET_RET_TRUE:	return false;
 			case TRIGRET_RET_FALSE:	if ( pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
 			default:				break;
 		}
@@ -3063,7 +3055,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 	if ( pSpellDef->IsSpellType(SPELLFLAG_HARM) )
 	{
-		if ( !IsSetMagicFlags(MAGICF_CANHARMSELF) && pCharSrc == this )
+		if ( pCharSrc == this && !IsSetMagicFlags(MAGICF_CANHARMSELF) )
 			return false;
 
 		if ( IsStatFlag(STATF_INVUL) )
@@ -3108,24 +3100,6 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	bool fPotion = ( pSourceItem != NULL && pSourceItem->IsType(IT_POTION) );
 	bool fResistAttempt = true;
 	bool fResisted = false;
-	switch ( spell )
-	{
-		case SPELL_Poison:
-		case SPELL_Poison_Field:
-			if ( IsStatFlag(STATF_Poisoned) )
-				fResistAttempt = false;
-			break;
-
-		case SPELL_Paralyze:
-		case SPELL_Paralyze_Field:
-			if ( IsStatFlag(STATF_Freeze) )
-				return false;
-			break;
-
-		default:
-			break;
-	}
-
 	if ( pSpellDef->IsSpellType(SPELLFLAG_RESIST) && fResistAttempt && !fPotion && pCharSrc != NULL )
 	{
 		int iResist = Skill_GetBase(SKILL_MAGICRESISTANCE);
@@ -3155,6 +3129,8 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		Effect(EFFECT_BOLT, iT1, pCharSrc, 5, 1, fExplode, iColor, iRender);
 	if ( pSpellDef->IsSpellType(SPELLFLAG_FX_TARG) && iT1 )
 		Effect(EFFECT_OBJ, iT1, this, 0, 15, fExplode, iColor, iRender); // 9, 14
+	if (pSpellDef->m_sound)
+		Sound(pSpellDef->m_sound);
 
 	iSkillLevel = iSkillLevel/2 + Calc_GetRandVal(iSkillLevel/2);	// randomize the effect.
 

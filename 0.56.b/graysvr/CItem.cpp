@@ -5080,6 +5080,24 @@ bool CItem::OnTick()
 	EXC_SET("default behaviour");
 	switch ( type )
 	{
+		case IT_CORPSE:
+			{
+				EXC_SET("default behaviour::IT_CORPSE");
+				// turn player corpse into bones
+				CChar * pSrc = m_uidLink.CharFind();
+				if ( pSrc && pSrc->m_pPlayer )
+				{
+					SetID(static_cast<ITEMID_TYPE>(Calc_GetRandVal2(ITEMID_SKELETON_1, ITEMID_SKELETON_9)));
+					SetHue(static_cast<HUE_TYPE>(HUE_DEFAULT));
+					SetTimeout(static_cast<long long>(g_Cfg.m_iDecay_CorpsePlayer));
+					m_itCorpse.m_carved = 1;	// the corpse can't be carved anymore
+					m_uidLink.InitUID();		// and also it's not linked to the char anymore (others players can loot it without get flagged criminal)
+					RemoveFromView();
+					Update();
+					return true;
+				}
+			}
+			break;
 		case IT_LIGHT_LIT:
 			{
 				if ( m_itLight.m_charges == USHRT_MAX )//infinit charges
@@ -5140,7 +5158,7 @@ bool CItem::OnTick()
 				EXC_SET("default behaviour::IT_TRAP_ACTIVE");
 				SetTrapState( IT_TRAP_INACTIVE, m_itTrap.m_AnimID, m_itTrap.m_wAnimSec );
 			}
-			return( true );
+			return true;
 
 		case IT_TRAP_INACTIVE:
 			{

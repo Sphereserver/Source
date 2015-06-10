@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, May 8, 2015
+// FILE LAST UPDATED: Wednesday, Jun 10, 2015
 //
 VERSION=0.56c
 
@@ -125,13 +125,12 @@ EMOTE_DEF_UNICODE	0
 //bvbox_open_self				"You have %d stones in your %s"
 //cant_make						"You can't make that."
 //cant_make_res					"You can't make anything with what you have."
-//carve_corpse_1				"Guards can now be called on you."
-//carve_corpse_2				"You carve the corpse but find nothing usefull."
-//carve_corpse_feathers   		"You pluck the bird and get some feathers."
-//carve_corpse_fur				"You skin the corpse and get some fur."
-//carve_corpse_hides			"You skin the corpse and get the hides."
-//carve_corpse_meat				"You carve away some meat."
-//carve_corpse_wool				"You skin the corpse and get some unspun wool."
+//carve_corpse_feathers			"You pluck the bird. The feathers are now on the corpse."
+//carve_corpse_hides			"You skin it, and the hides are now in the corpse."
+//carve_corpse_meat				"You carve some meat, which remains on the corpse."
+//carve_corpse_nothing			"You see nothing useful to carve from the corpse."
+//carve_corpse_scales			"You cut away some scales, but they remain on the corpse."
+//carve_corpse_wool				"You shear it, and the wool is now on the corpse."
 //cmd_invalid					"Not a valid command or format"
 //cmd_remove_player				"Can't remove players this way, Try 'kill','kick' or 'remove 1'"
 //cmdafk_enter					"You go into AFK mode"
@@ -448,7 +447,6 @@ EMOTE_DEF_UNICODE	0
 //msg_corpse_of					"The remains of %s"
 //msg_coward_1					"You have retreated from the battle with %s"
 //msg_coward_2					"%s has retreated from the battle."
-//msg_criminal					"Criminal!"
 //msg_eatsome					"eat some %s"
 //msg_emote_1					"*You see %ss %s %s*"
 //msg_emote_2					"*Your %s %s*"
@@ -503,7 +501,7 @@ EMOTE_DEF_UNICODE	0
 //msg_gmpages					"There are %d GM pages pending. Use %cPAGE command."
 //msg_gmpages_none				"No GM pages queued. Use .page ?"
 //msg_gmpages_current			"Current GM .PAGE Account=%s (%s) Reason='%s' Time=%lld."
-//msg_guards					"Guards can now be called on you."
+//msg_guards					"Guards can now be called on you!"
 //msg_guest						"Your guest curse prevents you from taking this action"
 //msg_guildresign				"You cannot quit your %s while in a fight"
 //msg_heavy						"That is too heavy. You can't move that."		
@@ -539,7 +537,6 @@ EMOTE_DEF_UNICODE	0
 //msg_key_targ_sign				"What should the sign say?"
 //msg_key_wronglock				"The key does not fit into that lock."
 //msg_killed_by					"%c'%s' was killed by "
-//msg_magic_block				"The attack is magically blocked"
 //msg_mailbag_drop_1			"Drop mail on other players"
 //msg_mailbag_drop_2			"'%s' has dropped mail on you."
 //msg_maxchars					"You already have %d character(s)."
