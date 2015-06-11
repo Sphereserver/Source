@@ -2311,3 +2311,7 @@ Changed: Invulnerable chars (FLAGS=statf_invul) now are able to attack another c
 10-06-2015, XuN
 Fixed: Res* not reducing damage anymore
 Fixed: Having RegenHits/Mana/Val greater than ini's setting stoping the regen process forever for this character.
+
+11-06-2015, Coruja
+Changed: Some small improvements on explosion potion effect.
+Fixed: Console error "Hair/Beard not in a corpse" when corpse bones got saved on worldsave.

@@ -859,11 +859,10 @@ int CItem::FixWeirdness()
 		case IT_BEARD:	// 62 = just for grouping purposes.
 			// Hair should only be on person or equipped. (can get lost in pack)
 			// Hair should only be on person or on corpse.
-			if ( ! IsItemEquipped())
+			if ( !IsItemEquipped() )
 			{
-				CItemContainer * pCont = dynamic_cast <CItemContainer*> (GetParent());
-				if ( pCont == NULL ||
-					( pCont->GetID() != ITEMID_CORPSE && pCont->GetID() != ITEMID_VENDOR_BOX ))
+				CItemContainer * pCont = dynamic_cast<CItemContainer*>(GetParent());
+				if ( pCont == NULL || (pCont->GetType() != IT_CORPSE && pCont->GetType() != IT_EQ_VENDOR_BOX) )
 				{
 					iResultCode = 0x2227;
 					return( iResultCode );	// get rid of it.
@@ -4733,11 +4732,15 @@ LPCTSTR CItem::Armor_GetRepairDesc() const
 int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType, int iDmgPhysical, int iDmgFire, int iDmgCold, int iDmgPoison, int iDmgEnergy )
 {
 	ADDTOCALLSTACK("CItem::OnTakeDamage");
-	UNREFERENCED_PARAMETER(iDmgPhysical);		// TO-DO ?
+	// These iDmg* values are used only on class CChar and not on CItem. But they
+	// must be set here on CItem because this same OnTakeDamage() is used on both
+	// CChar and CItem.
+	UNREFERENCED_PARAMETER(iDmgPhysical);
 	UNREFERENCED_PARAMETER(iDmgFire);
 	UNREFERENCED_PARAMETER(iDmgCold);
 	UNREFERENCED_PARAMETER(iDmgPoison);
 	UNREFERENCED_PARAMETER(iDmgEnergy);
+
 	// This will damage the item durability, break stuff, explode potions, etc.
 	// Any chance to do/avoid the damage must be checked before OnTakeDamage().
 	//
