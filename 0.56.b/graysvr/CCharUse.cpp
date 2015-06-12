@@ -1245,8 +1245,7 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 			short int iCurFollower = static_cast<short>(GetDefNum("CURFOLLOWER", true, true));
 			short int iMaxFollower = static_cast<short>(GetDefNum("MAXFOLLOWER", true, true));
 			short int iSetFollower = iCurFollower + iFollowerSlotsNeeded;
-
-			if ( iCurFollower + iFollowerSlotsNeeded > iMaxFollower && !IsPriv(PRIV_GM) )
+			if ( (FollowersUpdate(pPet, false, &iFollowerSlotsNeeded) == false || iFollowerSlotsNeeded > iMaxFollower) && !IsPriv(PRIV_GM))
 			{
 				SysMessageDefault( DEFMSG_PETSLOTS_TRY_CONTROL );
 				if ( bCreatedNewNpc )
@@ -1273,6 +1272,31 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 	pPet->SoundChar( CRESND_RAND1 );
 
 	return pPet;
+}
+
+bool CChar::FollowersUpdate(CChar * pChar, bool bSustract, short* iFollowers)
+{
+	ADDTOCALLSTACK("CChar::FollowersUpdate");
+	// Attemp to update followers on this character based on pChar
+	// bSustract = true for pet's release, shrink, etc ...
+	// This is supossed to be called only when OF_PetSlots is enabled, so no need to check it here.
+
+	short iFollowerSlotsNeeded = *iFollowers;
+
+	if (IsTrigUsed(TRIGGER_FOLLOWERSUPDATE))
+	{
+		CScriptTriggerArgs Args;
+		Args.m_iN1 = bSustract;
+		Args.m_iN2 = iFollowerSlotsNeeded;
+		TRIGRET_TYPE iRet = OnTrigger(CTRIG_FollowersUpdate,pChar,&Args);
+		if ( iRet = TRIGRET_RET_TRUE )
+			return false;
+		bSustract = Args.m_iN1 > 0 ? 1 : 0;
+		iFollowerSlotsNeeded = static_cast<short>(Args.m_iN2);
+		iFollowers = &iFollowerSlotsNeeded;
+	}
+
+	return true;
 }
 
 bool CChar::Use_Key( CItem * pKey, CItem * pItemTarg )

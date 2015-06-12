@@ -46,6 +46,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 	"@ExpLevelChange",		// Experience LEVEL is going to change
 
 	"@FameChange",				// Fame changed
+	"@FollowersUpdate",
 
 	"@GetHit",				// I just got hit.
 	"@Hit",					// I just hit someone. (TARG)

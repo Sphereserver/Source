@@ -2462,7 +2462,9 @@ enum CTRIG_TYPE
 	CTRIG_ExpChange,		// EXP is going to change
 	CTRIG_ExpLevelChange,	// Experience LEVEL is going to change
 
-	CTRIG_FameChange,				// Fame chaged
+	CTRIG_FameChange,		// Fame chaged
+
+	CTRIG_FollowersUpdate,	// Adding or removing CurFollowers.
 
 	CTRIG_GetHit,			// I just got hit.
 	CTRIG_Hit,				// I just hit someone. (TARG)
@@ -3707,6 +3709,7 @@ public:
 	CChar * Use_Figurine( CItem * pItem, int iPaces = 0 );
 	CItem * Make_Figurine( CGrayUID uidOwner, ITEMID_TYPE id = ITEMID_NOTHING );
 	CItem * NPC_Shrink();
+	bool FollowersUpdate(CChar * pChar, bool bSustract = false, short * iFollowers = 0);
 
 	int  ItemPickup( CItem * pItem, int amount );
 	bool ItemEquip( CItem * pItem, CChar * pCharMsg = NULL, bool fFromDClick = false );

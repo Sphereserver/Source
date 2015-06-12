@@ -4028,24 +4028,9 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 				if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
 					goto stopandret;//return iRet;
 			}
-
-			// 4) EVENTSPET triggers
-			EXC_SET("NPC triggers - EVENTSPET"); // EVENTSPET (constant events of NPCs set from sphere.ini)
-			for ( size_t i = 0; i < g_Cfg.m_pEventsPetLink.GetCount(); ++i )
-			{
-				CResourceLink * pLink = g_Cfg.m_pEventsPetLink[i];
-				if ( !pLink || !pLink->HasTrigger(iAction) )
-					continue;
-				CResourceLock s;
-				if ( !pLink->ResourceLock(s) )
-					continue;
-				iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
-				if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
-					goto stopandret;//return iRet;
-			}
 		}
 
-		// 5) CHARDEF triggers
+		// 4) CHARDEF triggers
 		if ( m_pPlayer == NULL ) //	CHARDEF triggers (based on body type)
 		{
 			EXC_SET("chardef triggers");
@@ -4061,7 +4046,25 @@ TRIGRET_TYPE CChar::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 			}
 		}
 
-		// 6) EVENTSPLAYER triggers
+
+		// 5) EVENTSPET triggers for npcs
+		if (m_pNPC != NULL)
+		{
+			EXC_SET("NPC triggers - EVENTSPET"); // EVENTSPET (constant events of NPCs set from sphere.ini)
+			for (size_t i = 0; i < g_Cfg.m_pEventsPetLink.GetCount(); ++i)
+			{
+				CResourceLink * pLink = g_Cfg.m_pEventsPetLink[i];
+				if (!pLink || !pLink->HasTrigger(iAction))
+					continue;
+				CResourceLock s;
+				if (!pLink->ResourceLock(s))
+					continue;
+				iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
+				if (iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT)
+					goto stopandret;//return iRet;
+			}
+		}
+		// 5) EVENTSPLAYER triggers for players
 		if ( m_pPlayer != NULL )
 		{
 			//	EVENTSPLAYER triggers (constant events of players set from sphere.ini)

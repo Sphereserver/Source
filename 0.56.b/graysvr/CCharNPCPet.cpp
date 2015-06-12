@@ -386,7 +386,7 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const
 					short int iCurFollower = static_cast<short>(pCharTarg->GetDefNum("CURFOLLOWER", true, true));
 					short int iMaxFollower = static_cast<short>(pCharTarg->GetDefNum("MAXFOLLOWER", true, true));
 
-					if ( iCurFollower + iFollowerSlotsNeeded > iMaxFollower )
+					if ( pCharTarg->FollowersUpdate(this, false, &iFollowerSlotsNeeded) == false || (iCurFollower + iFollowerSlotsNeeded > iMaxFollower) )
 					{
 						pSrc->SysMessageDefault( DEFMSG_PETSLOTS_TRY_TRANSFER );
 						break;
@@ -512,7 +512,7 @@ void CChar::NPC_PetClearOwners()
 			short int iSetFollower = iCurFollower - iFollowerSlotsNeeded;
 			if ( iSetFollower < 0 )
 				iSetFollower = 0;
-
+			pOwner->FollowersUpdate(this, true, &iFollowerSlotsNeeded);
 			// Send an update packet for the stats
 			pOwner->SetDefNum("CURFOLLOWER", iSetFollower);
 			CClient * pClient = pOwner->GetClient();
@@ -556,6 +556,7 @@ bool CChar::NPC_PetSetOwner( CChar * pChar )
 		short int iCurFollower = static_cast<short>(pChar->GetDefNum("CURFOLLOWER", true, true));
 		short int iSetFollower = iCurFollower + iFollowerSlotsNeeded;
 
+		pChar->FollowersUpdate(this, false, &iFollowerSlotsNeeded);
 		// Send an update packet for the stats
 		pChar->SetDefNum("CURFOLLOWER", iSetFollower);
 		CClient * pClient = pChar->GetClient();

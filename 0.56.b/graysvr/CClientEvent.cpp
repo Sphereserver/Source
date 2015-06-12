@@ -1093,7 +1093,7 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 				short int iCurFollower = static_cast<short>(m_pChar->GetDefNum("CURFOLLOWER", true, true));
 				short int iMaxFollower = static_cast<short>(m_pChar->GetDefNum("MAXFOLLOWER", true, true));
 
-				if ( iCurFollower + iFollowerSlotsNeeded > iMaxFollower )
+				if ( m_pChar->FollowersUpdate(pVendor, false, &iFollowerSlotsNeeded) == false || ( iFollowerSlotsNeeded + iCurFollower > iMaxFollower ))
 				{
 					m_pChar->SysMessageDefault( DEFMSG_PETSLOTS_TRY_CONTROL );
 					return;

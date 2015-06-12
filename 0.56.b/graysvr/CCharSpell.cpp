@@ -251,6 +251,7 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 	}
 	else
 	{
+		pChar = CChar::CreateBasic(id);
 		if (!IsPriv(PRIV_GM))
 		{
 			CCharBase *pSummonDef = CCharBase::FindCharBase(id);
@@ -276,19 +277,19 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 
 			if (IsSetOF(OF_PetSlots))
 			{
-				short iFollowerSlotsNeeded = static_cast<short>(maximum(pSummonDef->GetDefNum("FOLLOWERSLOTS", true), 1));
+				short iFollowerSlotsNeeded = static_cast<int>(maximum(pSummonDef->GetDefNum("FOLLOWERSLOTS", true), 1));
 				short iCurFollower = static_cast<short>(GetDefNum("CURFOLLOWER", true, true));
 				short iMaxFollower = static_cast<short>(GetDefNum("MAXFOLLOWER", true, true));
 
-				if (iCurFollower + iFollowerSlotsNeeded > iMaxFollower)
+				if ( FollowersUpdate(pChar, false, &iFollowerSlotsNeeded) == false || iFollowerSlotsNeeded + iCurFollower > iMaxFollower )
 				{
 					SysMessageDefault(DEFMSG_PETSLOTS_TRY_SUMMON);
+					pChar->Delete();
 					return NULL;
 				}
 			}
 		}
 
-		pChar = CChar::CreateBasic(id);
 		if (pChar == NULL)
 			return(NULL);
 

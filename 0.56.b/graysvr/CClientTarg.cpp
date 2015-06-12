@@ -1612,7 +1612,7 @@ bool CClient::OnTarg_Pet_Stable( CChar * pCharPet )
 		short int iSetFollower = iCurFollower - iFollowerSlotsNeeded;
 		if ( iSetFollower < 0 )
 			iSetFollower = 0;
-
+		m_pChar->FollowersUpdate(pCharPet, true, &iFollowerSlotsNeeded);
 		// Send an update packet for the stats
 		m_pChar->SetDefNum("CURFOLLOWER", iSetFollower);
 		CClient * pClient = m_pChar->GetClient();
