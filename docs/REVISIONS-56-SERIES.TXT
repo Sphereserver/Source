@@ -2315,3 +2315,6 @@ Fixed: Having RegenHits/Mana/Val greater than ini's setting stoping the regen pr
 11-06-2015, Coruja
 Changed: Some small improvements on explosion potion effect.
 Fixed: Console error "Hair/Beard not in a corpse" when corpse bones got saved on worldsave.
+
+10-06-2015, XuN
+Changed all TAG.TamingSlots entries to FollowerSlots in: sphere_monsters.scp, sphere_monsters_custom.scp and spherechar_evil.scp.
