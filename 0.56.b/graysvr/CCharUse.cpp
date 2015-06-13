@@ -1089,7 +1089,6 @@ void CChar::Use_Drink( CItem * pItem )
 		return;
 	}
 
-	static const SOUND_TYPE sm_DrinkSounds[] = { 0x030, 0x031 };
 
 	const CItemBase * pItemDef = pItem->Item_GetDef();
 	ITEMID_TYPE idbottle = static_cast<ITEMID_TYPE>(RES_GET_INDEX(pItemDef->m_ttDrink.m_idEmpty));

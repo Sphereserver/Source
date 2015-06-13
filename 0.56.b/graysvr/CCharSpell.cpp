@@ -3002,6 +3002,11 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	if ( spell == SPELL_Poison_Field && IsStatFlag(STATF_Poisoned) )
 		return false;
 
+	static const SOUND_TYPE sm_DrinkSounds[] = { 0x030, 0x031 };
+	SOUND_TYPE iSound = pSpellDef->m_sound;
+	if (pSourceItem && pSourceItem->IsType(IT_POTION))
+		iSound = sm_DrinkSounds[Calc_GetRandVal(COUNTOF(sm_DrinkSounds))];
+
 	bool fExplode = false;
 	if (pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) && !pSpellDef->IsSpellType(SPELLFLAG_GOOD))	// bolt (chasing) spells have explode = 1 by default (if not good spell)
 		fExplode = true;
@@ -3011,6 +3016,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	Args.m_VarsLocal.SetNum("DamageType", 0);
 	Args.m_VarsLocal.SetNum("CreateObject1", pSpellDef->m_idEffect);
 	Args.m_VarsLocal.SetNum("Explode", fExplode);
+	Args.m_VarsLocal.SetNum("Sound", iSound);
 	Args.m_iN3 = iEffectMult;
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
@@ -3048,6 +3054,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	DWORD iRender = static_cast<DWORD>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectRender", true)));
 	fExplode = Args.m_VarsLocal.GetKeyNum("EffectExplode", true) > 0 ? true : false;
 	ITEMID_TYPE iT1 = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1", true)));
+	iSound = static_cast<SOUND_TYPE>(Args.m_VarsLocal.GetKeyNum("Sound", true));
 
 	if (iT1 > ITEMID_QTY)
 		iT1 = pSpellDef->m_idEffect;
@@ -3128,8 +3135,8 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		Effect(EFFECT_BOLT, iT1, pCharSrc, 5, 1, fExplode, iColor, iRender);
 	if ( pSpellDef->IsSpellType(SPELLFLAG_FX_TARG) && iT1 )
 		Effect(EFFECT_OBJ, iT1, this, 0, 15, fExplode, iColor, iRender); // 9, 14
-	if (pSpellDef->m_sound)
-		Sound(pSpellDef->m_sound);
+	if (iSound)
+		Sound(iSound);
 
 	iSkillLevel = iSkillLevel/2 + Calc_GetRandVal(iSkillLevel/2);	// randomize the effect.
 

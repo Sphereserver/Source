@@ -2323,3 +2323,5 @@ Added @FollowersUpdate trigger called in any update of followers related to OF_P
 	argn2 (R/W): FollowerSlots used.
 	SRC: Pet causing the trigger to run, when buying in vendors there's no PET yet, so SRC will point to the vendor.
 	Return 1 will not allow following actions to occur: Transfer, Summon, UnShrinks from t_figurine, Buy from vendors. Any other actions (like release, set owner...) will not take in count returns.
+
+Added local.sound to @Effect and @SpellEffect triggers, by default it uses spell->sound excepting effects from potions which will have a random value between 0x030 and 0x031 (old value), this is writable, 0 means no sound.
