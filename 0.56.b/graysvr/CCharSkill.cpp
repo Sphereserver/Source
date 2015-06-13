@@ -3396,11 +3396,13 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 
 	HUE_TYPE hue = static_cast<HUE_TYPE>(GetDefNum("BREATH.HUE", true));
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(GetDefNum("BREATH.ANIM", true));
+	EFFECT_TYPE effect = static_cast<EFFECT_TYPE>(GetDefNum("BREATH.TYPE",true));
 	if ( !id )
 		id = ITEMID_FX_FIRE_BALL;
-
+	if (! effect )
+		effect = EFFECT_BOLT;
 	Sound( 0x227 );
-	pTarget->Effect( EFFECT_BOLT, id, this, 5, 0, false, hue );
+	pTarget->Effect( effect, id, this, 20, 30, false, hue );
 	pTarget->OnTakeDamage( iDamage, this, DAMAGE_FIRE, 0, 100, 0, 0, 0 );
 	return 0;
 }

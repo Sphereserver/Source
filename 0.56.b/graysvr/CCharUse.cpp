@@ -1183,7 +1183,7 @@ void CChar::Use_Drink( CItem * pItem )
 		}
 	}
 
-	Sound( sm_DrinkSounds[ Calc_GetRandVal( COUNTOF(sm_DrinkSounds)) ] );
+	//Sound( sm_DrinkSounds[ Calc_GetRandVal( COUNTOF(sm_DrinkSounds)) ] );
 	UpdateAnimate( ANIM_EAT );
 
 	pItem->ConsumeAmount();
@@ -1288,7 +1288,7 @@ bool CChar::FollowersUpdate(CChar * pChar, bool bSustract, short* iFollowers)
 		Args.m_iN1 = bSustract;
 		Args.m_iN2 = iFollowerSlotsNeeded;
 		TRIGRET_TYPE iRet = OnTrigger(CTRIG_FollowersUpdate,pChar,&Args);
-		if ( iRet = TRIGRET_RET_TRUE )
+		if ( iRet == TRIGRET_RET_TRUE )
 			return false;
 		bSustract = Args.m_iN1 > 0 ? 1 : 0;
 		iFollowerSlotsNeeded = static_cast<short>(Args.m_iN2);

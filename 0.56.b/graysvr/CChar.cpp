@@ -1991,7 +1991,7 @@ do_default:
 					sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
 					return true;
 				}
-				else if(  !strnicmp(pszKey, "BREATH.HUE", 10) || !strnicmp(pszKey, "BREATH.ANIM", 11))
+				else if ( !strnicmp(pszKey, "BREATH.HUE", 10) || !strnicmp(pszKey, "BREATH.ANIM", 11) || !strnicmp(pszKey, "BREATH.TYPE", 11))
 				{
 					CVarDefCont * pVar = GetDefKey(pszKey, true);
 					sVal.FormatHex(pVar ? static_cast<DWORD>(pVar->GetValNum()) : 0);
@@ -2890,7 +2890,7 @@ do_default:
 			break;
 		case CHC_BREATH:
 			{				
-				if( !strnicmp(pszKey, "BREATH.DAM", 10) || !strnicmp(pszKey, "BREATH.HUE", 10) || !strnicmp(pszKey, "BREATH.ANIM", 11))
+				if ( !strnicmp(pszKey, "BREATH.DAM", 10) || !strnicmp(pszKey, "BREATH.HUE", 10) || !strnicmp(pszKey, "BREATH.ANIM", 11) || !strnicmp(pszKey, "BREATH.TYPE", 11) )
 				{
 					SetDefNum(s.GetKey(), s.GetArgLLVal());
 					return true;

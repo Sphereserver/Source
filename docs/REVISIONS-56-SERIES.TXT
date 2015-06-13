@@ -2316,7 +2316,7 @@ Fixed: Having RegenHits/Mana/Val greater than ini's setting stoping the regen pr
 Changed: Some small improvements on explosion potion effect.
 Fixed: Console error "Hair/Beard not in a corpse" when corpse bones got saved on worldsave.
 
-10-06-2015, XuN
+12-06-2015, XuN
 Changed all TAG.TamingSlots entries to FollowerSlots in: sphere_monsters.scp, sphere_monsters_custom.scp and spherechar_evil.scp.
 Added @FollowersUpdate trigger called in any update of followers related to OF_PetSlots:
 	argn1 (R/W): 0 = Adding followers (taming, unshrinking, summoning, buying ...), 1 = sustracting followers (release, transfer ...)
@@ -2324,4 +2324,7 @@ Added @FollowersUpdate trigger called in any update of followers related to OF_P
 	SRC: Pet causing the trigger to run, when buying in vendors there's no PET yet, so SRC will point to the vendor.
 	Return 1 will not allow following actions to occur: Transfer, Summon, UnShrinks from t_figurine, Buy from vendors. Any other actions (like release, set owner...) will not take in count returns.
 
-Added local.sound to @Effect and @SpellEffect triggers, by default it uses spell->sound excepting effects from potions which will have a random value between 0x030 and 0x031 (old value), this is writable, 0 means no sound.
+13-06-2015, XuN
+Fixed #2515: Added local.sound to @Effect and @SpellEffect triggers, by default it uses spell->sound excepting effects from potions which will have a random value between 0x030 and 0x031 (old value), this is writable, 0 means no sound.
+Fixed #2517: Added BREATH.TYPE to Breath's animation, this will tell Sphere what type of effect to use (same types as .effect).
+	- To help keeping old behaviour (explosion on target instead of following fireball) I added BREATH.ANIM and BREATH.TYPE to every brain_dragon in sphere_monsters.scp and sphere_monsters_custom.scp, just remove the // on these lines with a quick find&replace to enable old style breath.
