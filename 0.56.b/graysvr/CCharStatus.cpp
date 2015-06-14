@@ -2207,6 +2207,8 @@ bool CChar::CanMove( CItem * pItem, bool fMsg ) const
 
 	if ( IsPriv(PRIV_ALLMOVE|PRIV_DEBUG|PRIV_GM) )
 		return true;
+	if ( !pItem )
+		return false;
 	if ( pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_LOCKEDDOWN) && !pItem->IsAttr(ATTR_MOVE_ALWAYS) )
 		return false;
 

@@ -2764,7 +2764,7 @@ void CChar::Wake()
 
 	RaiseCorpse(pCorpse);
 	StatFlag_Clear(STATF_Sleeping);
-	Update();	// update light levels etc.
+	UpdateMode();
 }
 
 void CChar::SleepStart( bool fFrontFall )
@@ -2773,7 +2773,7 @@ void CChar::SleepStart( bool fFrontFall )
 	if (IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Polymorph))
 		return;
 
-	CItemCorpse *pCorpse = MakeCorpse( fFrontFall );
+	CItemCorpse *pCorpse = MakeCorpse(fFrontFall);
 	if (pCorpse == NULL)
 	{
 		SysMessageDefault(DEFMSG_CANTSLEEP);
@@ -2786,7 +2786,7 @@ void CChar::SleepStart( bool fFrontFall )
 	SetID(m_prev_id);
 	StatFlag_Set(STATF_Sleeping);
 	StatFlag_Clear(STATF_Hidden);
-	Update();
+	UpdateMode();
 }
 
 CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
@@ -2798,7 +2798,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 	WORD wFlags = static_cast<WORD>(m_TagDefs.GetKeyNum("DEATHFLAGS", true));
 	if (wFlags & DEATH_NOCORPSE)
 		return( NULL );
-	if (IsStatFlag(STATF_Conjured) && !(wFlags & DEATH_NOCONJUREDEFFECT|DEATH_HASCORPSE))
+	if (IsStatFlag(STATF_Conjured) && !(wFlags & (DEATH_NOCONJUREDEFFECT|DEATH_HASCORPSE)))
 	{
 		Effect(EFFECT_XYZ, ITEMID_FX_SPELL_FAIL, this, 1, 30);
 		return( NULL );
@@ -2809,14 +2809,18 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 		return( NULL );
 
 	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_CORPSE_OF), static_cast<LPCTSTR>(GetName()));
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_CORPSE_OF), GetName());
 	pCorpse->SetName(pszMsg);
 	pCorpse->SetHue(GetHue());
 	pCorpse->SetCorpseType(GetDispID());
 	pCorpse->SetAttr(ATTR_MOVE_NEVER);
 	pCorpse->m_itCorpse.m_BaseID = m_prev_id;	// id the corpse type here !
-	pCorpse->m_itCorpse.m_facing_dir = m_dirFace;		//TO-DO: Fix corpses always being created at same DIR even when the char is facing another DIR
+	pCorpse->m_itCorpse.m_facing_dir = m_dirFace;
 	pCorpse->m_uidLink = GetUID();
+
+	// TO-DO: Fix SRC (or 'this') always seeing the corpse to the same dir (it works fine
+	// for nearby clients but not for SRC). Probably it could be something related to the
+	// Update() function making the corpse always get back to same default dir.
 
 	if (fFrontFall)
 		pCorpse->m_itCorpse.m_facing_dir = static_cast<DIR_TYPE>(m_dirFace|0x80);
@@ -2843,6 +2847,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 	if ( !(wFlags & DEATH_NOLOOTDROP) )		// move non-newbie contents of the pack to corpse
 		DropAll( pCorpse );
 
+	pCorpse->SetKeyNum("OVERRIDE.MAXWEIGHT", g_Cfg.Calc_MaxCarryWeight(this) / 10);		// set corpse maxweight to prevent weird exploits like when someone place many items on an player corpse just to make this player get stuck on resurrect
 	pCorpse->MoveToDecay(GetTopPoint(), iDecayTimer);
 	return( pCorpse );
 }
@@ -2885,7 +2890,6 @@ bool CChar::RaiseCorpse( CItemCorpse * pCorpse )
 	}
 
 	// Corpse is now gone. 	// 0x80 = on face.
-	Update();
 	UpdateDir(static_cast<DIR_TYPE>(pCorpse->m_itCorpse.m_facing_dir &~0x80));
 	UpdateAnimate((pCorpse->m_itCorpse.m_facing_dir & 0x80) ? ANIM_DIE_FORWARD : ANIM_DIE_BACK, true, true);
 
@@ -2927,11 +2931,6 @@ bool CChar::Death()
 
 		if ( pItem->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_WAR_TARG) )
 			Memory_ClearTypes( static_cast<CItemMemory *>(pItem), 0xFFFF );
-
-		// Sets OBODY value to BODY if LAYER_Flag_Wool is found on an NPC
-		// Fixes issue with woolly sheep giving wool resource when corpse is carved after being shorn.
-		if ( m_pNPC && (pItem->GetEquipLayer() == LAYER_FLAG_Wool) )
-			m_prev_id = GetID();
 	}
 
 	// Give credit for the kill to my attacker(s)
@@ -4186,17 +4185,17 @@ bool CChar::CHAR_OnTickFood( int nFoodLevel , int HitsHungerLoss )
 bool CChar::OnTick()
 {
 	ADDTOCALLSTACK("CChar::OnTick");
-	TIME_PROFILE_INIT;
-	if ( IsSetSpecific )
-		TIME_PROFILE_START;
 	// Assume this is only called 1 time per sec.
 	// Get a timer tick when our timer expires.
 	// RETURN: false = delete this.
+
+	TIME_PROFILE_INIT;
+	if ( IsSetSpecific )
+		TIME_PROFILE_START;
+
 	EXC_TRY("Tick");
 	INT64 iTimeDiff = - g_World.GetTimeDiff(m_timeLastRegen);
 	if ( !iTimeDiff )
-		return true;
-	if ( IsDisconnected() )		// mounted horses can still get ticks
 		return true;
 
 	if ( IsClient() )
@@ -4210,34 +4209,34 @@ bool CChar::OnTick()
 			GetClient()->addTargetCancel();
 	}
 
-	if ( !IsStatFlag(STATF_DEAD) && Stat_GetVal(STAT_STR) <= 0 )	// we can only die on our own tick
+	if ( iTimeDiff >= TICK_PER_SEC )		// don't bother with < 1 sec timers on the checks below
 	{
-		EXC_SET("death");
-		return Death();
-	}
-
-	if (iTimeDiff >= TICK_PER_SEC)		// don't bother with < 1 sec timers on the checks below
-	{
-		m_timeLastRegen = CServTime::GetCurrentTime();
-
 		// Decay equipped items (spells)
 		CItem *pItem = GetContentHead();
-		int iCount = 0;
-		for (; pItem != NULL; pItem = GetAt(++iCount))
+		size_t iCount = 0;
+		for ( ; pItem != NULL; pItem = GetAt(++iCount) )
 		{
 			EXC_TRYSUB("Ticking items");
-			if (pItem->IsType(IT_EQ_MEMORY_OBJ) && !pItem->m_uidLink.ObjFind())		// always check the validity of the memory objects
+			/*if ( pItem->IsType(IT_EQ_MEMORY_OBJ) && !pItem->m_uidLink.ObjFind() )		// always check the validity of the memory objects
 			{
 				pItem->Delete();
 				continue;
 			}
-			pItem->OnTickStatusUpdate();
-			if (!pItem->IsTimerSet() || !pItem->IsTimerExpired())
+			pItem->OnTickStatusUpdate();*/
+			if ( !pItem->IsTimerSet() || !pItem->IsTimerExpired() )
 				continue;
-			else if (!OnTickEquip(pItem))
+			if ( !OnTickEquip(pItem) )
 				pItem->Delete();
 			EXC_CATCHSUB("Char");
 		}
+	}
+
+	if ( IsDisconnected() )
+		return true;
+
+	if ( iTimeDiff >= TICK_PER_SEC )		// don't bother with < 1 sec timers on the checks below
+	{
+		m_timeLastRegen = CServTime::GetCurrentTime();
 
 		EXC_SET("last attackers");
 		Attacker_CheckTimeout();
@@ -4245,7 +4244,7 @@ bool CChar::OnTick()
 		EXC_SET("NOTO timeout");
 		NotoSave_CheckTimeout();
 
-		if (!IsStatFlag(STATF_DEAD))
+		if ( !IsStatFlag(STATF_DEAD) )
 		{
 			EXC_SET("check location");
 			CheckLocation(true);	// check location periodically for standing in fire fields, traps, etc
@@ -4256,6 +4255,12 @@ bool CChar::OnTick()
 			EXC_SET("update stats");
 			OnTickStatusUpdate();
 		}
+	}
+
+	if ( !IsStatFlag(STATF_DEAD) && Stat_GetVal(STAT_STR) <= 0 )
+	{
+		EXC_SET("death");
+		return Death();
 	}
 
 	if ( IsTimerSet() && IsTimerExpired() )
@@ -4280,25 +4285,24 @@ bool CChar::OnTick()
 					NPC_Food();
 				if ( g_Cfg.m_iNpcAi & NPC_AI_EXTRA )
 					NPC_AI();
-			}
-		}
-	}
-	else if ( m_pNPC && IsStatFlag(STATF_War) && !IsStatFlag(STATF_DEAD) )
-	{
-		EXC_SET("combat hit try");
-		// Hit my current target (if i'm ready)
-		if ( Fight_IsActive() )
-		{
-			if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )
-				Fight_HitTry();
-		}
-		else if ( Skill_GetActive() == SKILL_NONE )
-		{
-			if ( !Fight_Attack(Fight_FindBestTarget()) )
-			{
-				Skill_Start(SKILL_NONE);
-				StatFlag_Clear(STATF_War);
-				m_Fight_Targ.InitUID();
+				if ( IsStatFlag(STATF_War) )
+				{
+					EXC_SET("NPC combat hit try");
+					if ( Fight_IsActive() )		// hit my current target (if I'm ready)
+					{
+						if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )
+							Fight_HitTry();
+					}
+					else if ( Skill_GetActive() == SKILL_NONE )		// exit warmode if there's no more targets to attack
+					{
+						if ( !Fight_Attack(Fight_FindBestTarget()) )
+						{
+							Skill_Start(SKILL_NONE);
+							StatFlag_Clear(STATF_War);
+							m_Fight_Targ.InitUID();
+						}
+					}
+				}
 			}
 		}
 	}
@@ -4306,14 +4310,13 @@ bool CChar::OnTick()
 	EXC_CATCH;
 #ifdef _DEBUG
 	EXC_DEBUG_START;
-	g_Log.EventDebug("'%s' npc '%d' player '%d' client '%d' [0%lx]\n",
-		GetName(), (int)(m_pNPC ? m_pNPC->m_Brain : 0), (int)(m_pPlayer != 0), (int)IsClient(), (DWORD)GetUID());
+	g_Log.EventDebug("'%s' npc '%d' player '%d' client '%d' [0%lx]\n", GetName(), (int)(m_pNPC ? m_pNPC->m_Brain : 0), (int)(m_pPlayer != 0), (int)IsClient(), (DWORD)GetUID());
 	EXC_DEBUG_END;
 #endif
 	if ( IsSetSpecific )
 	{
 		TIME_PROFILE_END;
-		DEBUG_ERR(("CChar::OnTick(%lx) took %lld.%lld to run\n", (DWORD)GetUID(), static_cast<INT64>(TIME_PROFILE_GET_HI), static_cast<INT64>(TIME_PROFILE_GET_LO)));
+		DEBUG_ERR(("CChar::OnTick(%lx) took %lld.%lld to run\n", (DWORD)GetUID(), (INT64)TIME_PROFILE_GET_HI, (INT64)TIME_PROFILE_GET_LO));
 	}
 	return true;
 }

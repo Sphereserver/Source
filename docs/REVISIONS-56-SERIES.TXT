@@ -2328,3 +2328,11 @@ Added @FollowersUpdate trigger called in any update of followers related to OF_P
 Fixed #2515: Added local.sound to @Effect and @SpellEffect triggers, by default it uses spell->sound excepting effects from potions which will have a random value between 0x030 and 0x031 (old value), this is writable, 0 means no sound.
 Fixed #2517: Added BREATH.TYPE to Breath's animation, this will tell Sphere what type of effect to use (same types as .effect).
 	- To help keeping old behaviour (explosion on target instead of following fireball) I added BREATH.ANIM and BREATH.TYPE to every brain_dragon in sphere_monsters.scp and sphere_monsters_custom.scp, just remove the // on these lines with a quick find&replace to enable old style breath.
+
+14-06-2015, Coruja
+Fixed: Summoned NPCs incorrectly creating corpses on death.
+Fixed: Summoned mounts not disappearing on summon timer expiration if it was mounted.
+Fixed: Region flags REGION_ANTIMAGIC_RECALL_IN and REGION_ANTIMAGIC_TELEPORT incorrectly blocking Resurrection spell effect.
+Fixed: Client screen not being updated correctly when ghosts got resurrected.
+Fixed: Possible console error when players/NPCs try pick/drop some specific items.
+Fixed: Combat not flagging the attacker criminal if the attack was parried by the target.

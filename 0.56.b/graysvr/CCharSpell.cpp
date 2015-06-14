@@ -246,16 +246,18 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 		// More specific npc type from script ?
 		pChar = CreateNPC( id );
 		if ( pChar == NULL )
-			return( NULL );
+			return NULL;
 		pChar->MoveToChar( pntTarg );
 	}
 	else
 	{
 		pChar = CChar::CreateBasic(id);
+		if (pChar == NULL)
+			return NULL;
+
 		if (!IsPriv(PRIV_GM))
 		{
 			CCharBase *pSummonDef = CCharBase::FindCharBase(id);
-
 			if (IsSetMagicFlags(MAGICF_SUMMONWALKCHECK))	// check if the target location is valid
 			{
 				WORD wCan = 0xFFFF;
@@ -290,9 +292,6 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 			}
 		}
 
-		if (pChar == NULL)
-			return(NULL);
-
 		if (g_Cfg.m_iMountHeight && !pChar->IsVerticalSpace(GetTopPoint(), false))
 		{
 			SysMessageDefault(DEFMSG_SUMMON_CEILING);
@@ -320,7 +319,7 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 	pChar->Update();
 	pChar->UpdateAnimate( ANIM_CAST_DIR );
 	pChar->SoundChar( CRESND_GETHIT );
-	return( pChar );
+	return pChar;
 }
 
 bool CChar::Spell_Recall(CItem * pRune, bool fGate)
@@ -414,24 +413,16 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 	if (!IsStatFlag(STATF_DEAD))
 		return false;
 
-	if (!bNoFail)
+	if (IsPriv(PRIV_GM) || (pCharSrc && pCharSrc->IsPriv(PRIV_GM)))
+		bNoFail = true;
+
+	if (!bNoFail && m_pArea && m_pArea->IsFlag(REGION_ANTIMAGIC_ALL))
 	{
-		if (IsPriv(PRIV_GM) || (pCharSrc && pCharSrc->IsPriv(PRIV_GM)))
-			bNoFail = true;
+		SysMessageDefault(DEFMSG_SPELL_RES_AM);
+		return false;
 	}
 
-	if (!bNoFail && m_pArea && m_pArea->IsFlag(REGION_ANTIMAGIC_ALL|REGION_ANTIMAGIC_RECALL_IN|REGION_ANTIMAGIC_TELEPORT))
-	{
-		// Could be a house break in.
-		// Check to see if it is.
-		if (m_pArea->GetResourceID().IsItem())
-		{
-			SysMessageDefault(DEFMSG_SPELL_RES_AM);
-			return false;
-		}
-	}
-
-	int hits = IMULDIV(Stat_GetMax(STAT_STR), g_Cfg.m_iHitpointPercentOnRez, 100);
+	long long hits = IMULDIV(Stat_GetMax(STAT_STR), g_Cfg.m_iHitpointPercentOnRez, 100);
 	if (!pCorpse)
 		pCorpse = FindMyCorpse();
 
@@ -440,7 +431,7 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 		CScriptTriggerArgs Args(hits, 0, pCorpse);
 		if (OnTrigger(CTRIG_Resurrect, pCharSrc, &Args) == TRIGRET_RET_TRUE)
 			return false;
-		hits = static_cast<int>(Args.m_iN1);
+		hits = Args.m_iN1;
 	}
 
 	SetID(m_prev_id);
@@ -478,7 +469,7 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 		m_Can &= ~CAN_C_GHOST;
 		UpdateCanSee(new PacketBondedStatus(this, false));
 	}
-	Update();
+	UpdateMode();
 
 	CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Resurrection);
 	Effect(EFFECT_OBJ, pSpellDef->m_idEffect, this, 10, 16);

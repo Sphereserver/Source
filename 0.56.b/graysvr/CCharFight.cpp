@@ -2168,6 +2168,11 @@ effect_bounce:
 		}
 	}
 
+	// Make some notoriety checks
+	// Don't reveal attacker if the damage has DAMAGE_NOREVEAL flag set (this is set by default for poison and spell damage)
+	if ( !OnAttackedBy(pSrc, iDmg, false, !(uType & DAMAGE_NOREVEAL)) )
+		return( 0 );
+
 	// Check parrying block chance
 	if ( !(uType & (DAMAGE_GOD|DAMAGE_MAGIC)) && (pSrc != this) )
 	{
@@ -2208,9 +2213,6 @@ effect_bounce:
 		}
 	}
 
-	CCharBase * pCharDef = Char_GetDef();
-	ASSERT(pCharDef);
-
 	// Apply Necromancy cursed effects
 	if (IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
 	{
@@ -2229,12 +2231,15 @@ effect_bounce:
 		}
 	}
 
+	CCharBase * pCharDef = Char_GetDef();
+	ASSERT(pCharDef);
+
 	// MAGICF_IGNOREAR bypasses defense completely
 	if ( (uType & DAMAGE_MAGIC) && IsSetMagicFlags(MAGICF_IGNOREAR) )
 		uType |= DAMAGE_FIXED;
 
 	// Apply armor calculation
-	if (!((uType & DAMAGE_FIXED) || (uType & DAMAGE_GOD)))
+	if ( !(uType & (DAMAGE_GOD|DAMAGE_FIXED)) )
 	{
 		if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 		{
@@ -2271,11 +2276,6 @@ effect_bounce:
 			iDmg -= iDef;
 		}
 	}
-
-	// Make some notoriety checks
-	// Don't reveal attacker if the damage has DAMAGE_NOREVEAL flag set (this is set by default for poison and spell damage)
-	if ( ! OnAttackedBy( pSrc, iDmg, false, !(uType & DAMAGE_NOREVEAL) ))
-		return( 0 );
 
 	CScriptTriggerArgs Args( iDmg, uType, static_cast<INT64>(0) );
 	Args.m_VarsLocal.SetNum("ItemDamageChance", 40);

@@ -446,6 +446,8 @@ void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_
 			hue &= HUE_MASK_LO | HUE_UNDERWEAR | HUE_TRANSLUCENT;
 		else
 			hue &= HUE_MASK_HI | HUE_UNDERWEAR | HUE_TRANSLUCENT;
+
+		dir = item->m_itCorpse.m_facing_dir;
 	}
 
 	if (character->IsStatFlag(STATF_Hallucinating))
@@ -472,10 +474,6 @@ void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_
 				light = item->m_itLight.m_pattern;
 			else
 				light = LIGHT_LARGE;
-		}
-		else if (id == ITEMID_CORPSE)
-		{
-			dir = item->m_itCorpse.m_facing_dir;
 		}
 	}
 }
@@ -1774,8 +1772,7 @@ PacketAction::PacketAction(const CChar* character, ANIM_TYPE action, WORD repeat
 
 	writeInt32(character->GetUID());
 	writeInt16(static_cast<WORD>(action));
-	writeByte(0);
-	writeByte(len);
+	writeInt16(len);
 	writeInt16(repeat);
 	writeBool(backward);
 	writeBool(repeat != 1);
