@@ -1058,7 +1058,7 @@ public:
 	}
 	void SetAmount( unsigned int amount );
 	WORD GetMaxAmount();
-	bool SetMaxAmount( unsigned short amount);
+	bool SetMaxAmount( WORD amount );
 	void SetAmountUpdate( unsigned int amount );
 	WORD GetAmount() const { return( m_amount ); }
 

@@ -1889,15 +1889,14 @@ void CItem::SetAmount( unsigned int amount )
 WORD CItem::GetMaxAmount()
 {
 	ADDTOCALLSTACK("CItem::GetMaxAmount");
-
 	if (!IsStackableType())
 		return 0;
 
 	CVarDefCont * pMax = GetDefKey("MaxAmount", false);
-	return static_cast<WORD>(pMax ? pMax->GetValNum() : INT_MAX);
+	return static_cast<WORD>(pMax ? pMax->GetValNum() : g_Cfg.m_iItemsMaxAmount);
 };
 
-bool CItem::SetMaxAmount(unsigned short amount)
+bool CItem::SetMaxAmount(WORD amount)
 {
 	ADDTOCALLSTACK("CItem::SetMaxAmount");
 	if (!IsStackableType())
@@ -1905,7 +1904,7 @@ bool CItem::SetMaxAmount(unsigned short amount)
 
 	if (amount > USHRT_MAX)
 		amount = USHRT_MAX;
-	SetDefNum("MaxAmount", amount, false);
+	SetDefNum("MaxAmount", amount);
 	return true;
 }
 

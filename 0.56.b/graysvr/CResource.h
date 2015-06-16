@@ -774,6 +774,7 @@ public:
 	bool m_fCharTags;			// Show [NPC] tags over chars.
 	bool m_fVendorTradeTitle;	// Show job title on vendor names.
 	bool m_fFlipDroppedItems;	// Flip dropped items.
+	int  m_iItemsMaxAmount;		// Max amount allowed for stackable items.
 	bool m_fCanUndressPets;		// Can players undress their pets?
 	bool m_fMonsterFight;		// Will creatures fight amoung themselves.
 	bool m_fMonsterFear;		// will they run away if hurt ?

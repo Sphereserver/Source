@@ -650,8 +650,8 @@ public:
 	static bool IsTypeSpellbook( IT_TYPE type );
 	static bool IsTypeMulti( IT_TYPE type );
 	static IT_TYPE GetTypeBase( ITEMID_TYPE id, const CUOItemTypeRec2 &tile );
-	unsigned short GetMaxAmount();
-	bool SetMaxAmount(unsigned short amount);
+	WORD GetMaxAmount();
+	bool SetMaxAmount(WORD amount);
 
 	static CItemBase * FindItemBase( ITEMID_TYPE id );
 	static bool IsValidDispID( ITEMID_TYPE id );

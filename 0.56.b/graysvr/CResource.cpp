@@ -102,6 +102,7 @@ CResource::CResource()
 	m_iGameMinuteLength	= 8 * TICK_PER_SEC;
 	m_fNoWeather		= false;
 	m_fFlipDroppedItems	= true;
+	m_iItemsMaxAmount	= 60000;
 	m_iMurderMinCount	= 5;
 	m_iMurderDecayTime	= 8*60*60* TICK_PER_SEC;
 	m_iMaxCharComplexity	= 16;
@@ -477,6 +478,7 @@ enum RC_TYPE
 	RC_HITSHUNGERLOSS,				// m_iHitsHungerLoss
 	RC_HITSUPDATERATE,
 	RC_INITHIDDENSKILLS,	// m_fInitHiddenSkills
+	RC_ITEMSMAXAMOUNT,		// m_iItemsMaxAmount
 	RC_LEVELMODE,			// m_iLevelMode
 	RC_LEVELNEXTAT,			// m_iLevelNextAt
 	RC_LEVELSYSTEM,			// m_bLevelSystem
@@ -712,6 +714,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "HITSHUNGERLOSS",			{ ELEM_INT,		OFFSETOF(CResource,m_iHitsHungerLoss),		0 }},
 	{ "HITSUPDATERATE",			{ ELEM_VOID,	0,											0 }},
 	{ "INITHIDDENSKILLS",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fInitHiddenSkills),	0 }},
+	{ "ITEMSMAXAMOUNT",			{ ELEM_INT,		OFFSETOF(CResource,m_iItemsMaxAmount),		0 }},
 	{ "LEVELMODE",				{ ELEM_INT,		OFFSETOF(CResource,m_iLevelMode),			0 }},
 	{ "LEVELNEXTAT",			{ ELEM_INT,		OFFSETOF(CResource,m_iLevelNextAt),			0 }},
 	{ "LEVELSYSTEM",			{ ELEM_BOOL,	OFFSETOF(CResource,m_bLevelSystem),			0 }},
@@ -1308,6 +1311,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			pszKey += 4;
 			TCHAR * pszArgsNext;
 			Str_Parse( const_cast<TCHAR*>(pszKey), &(pszArgsNext), ")" );
+			sVal.FormatVal(0);
 
 			CPointMap pt;
 			size_t iArgs = 0;
@@ -1345,13 +1349,6 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			}
 
 			pszKey = pszArgsNext;
-
-			if (( iArgs < 2 ) || !g_MapList.IsMapSupported(pt.m_map) || !pt.IsValidPoint() )
-			{
-				sVal.FormatVal(0);
-				return false;
-			}
-
 			SKIP_SEPARATORS(pszKey);
 			return pt.r_WriteVal(pszKey, sVal);
 		} 
