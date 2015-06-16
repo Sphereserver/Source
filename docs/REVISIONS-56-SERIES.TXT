@@ -2336,3 +2336,8 @@ Fixed: Region flags REGION_ANTIMAGIC_RECALL_IN and REGION_ANTIMAGIC_TELEPORT inc
 Fixed: Client screen not being updated correctly when ghosts got resurrected.
 Fixed: Possible console error when players/NPCs try pick/drop some specific items.
 Fixed: Combat not flagging the attacker criminal if the attack was parried by the target.
+
+16-06-2015, Coruja
+Changed: Some optimizations on internal walk code and spell add/remove behavior.
+Fixed: Paralyze effect not updating the client immediatelly when it goes off, making the client only able to walk after ~100ms on next tick update.
+[sphere_msgs.scp]: Removed 'msg_invisible' and 'msg_tingling' messages.

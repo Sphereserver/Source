@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Wednesday, Jun 10, 2015
+// FILE LAST UPDATED: Tuesday, Jun 16, 2015
 //
 VERSION=0.56c
 
@@ -508,7 +508,6 @@ EMOTE_DEF_UNICODE	0
 //msg_hunger					"You are %s"
 //msg_invis_off					"Invis OFF"
 //msg_invis_on					"Invis ON"
-//msg_invisible					"You push past something invisible"
 //msg_invul_off					"Invulnerability OFF"
 //msg_invul_on					"Invulnerability ON"
 //msg_it_is_dead				"It is dead."
@@ -620,7 +619,6 @@ EMOTE_DEF_UNICODE	0
 //msg_targ_dynamic				"Must select a dynamic object."
 //msg_targ_moved				"Targetted item moved?"
 //msg_targ_gone					"Targetted item is gone?"
-//msg_tingling					"You feel a tingling sensation."
 //msg_toofar_vendor				"Too far away from the Vendor"
 //msg_trade_cantmove			"You cannot move items that are in trade windows."
 //msg_trade_toofar				"You are too far away to trade items"

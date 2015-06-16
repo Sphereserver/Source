@@ -4729,18 +4729,9 @@ LPCTSTR CItem::Armor_GetRepairDesc() const
 		return g_Cfg.GetDefaultMsg( DEFMSG_ITEMSTATUS_FALL_APART );
 }
 
-int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType, int iDmgPhysical, int iDmgFire, int iDmgCold, int iDmgPoison, int iDmgEnergy )
+int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 {
 	ADDTOCALLSTACK("CItem::OnTakeDamage");
-	// These iDmg* values are used only on class CChar and not on CItem. But they
-	// must be set here on CItem because this same OnTakeDamage() is used on both
-	// CChar and CItem.
-	UNREFERENCED_PARAMETER(iDmgPhysical);
-	UNREFERENCED_PARAMETER(iDmgFire);
-	UNREFERENCED_PARAMETER(iDmgCold);
-	UNREFERENCED_PARAMETER(iDmgPoison);
-	UNREFERENCED_PARAMETER(iDmgEnergy);
-
 	// This will damage the item durability, break stuff, explode potions, etc.
 	// Any chance to do/avoid the damage must be checked before OnTakeDamage().
 	//
@@ -5210,7 +5201,7 @@ bool CItem::OnTick()
 					if ( m_itPotion.m_tick <= 1 )
 					{
 						// Set it off.
-						OnTakeDamage( 1, m_uidLink.CharFind(), DAMAGE_FIRE, 0, 100, 0, 0, 0 );
+						OnTakeDamage( 1, m_uidLink.CharFind(), DAMAGE_FIRE );
 					}
 					else
 					{

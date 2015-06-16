@@ -1912,7 +1912,7 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 		if ( pObjTarg != NULL )
 		{
 			// Check distance and LOS.
-			if ( pItemUse->GetDist( pObjTarg ) > UO_MAP_VIEW_SIZE )
+			if ( pItemUse->GetDist( pObjTarg ) > UO_MAP_VIEW_SIGHT )
 			{
 				SysMessageDefault( DEFMSG_ITEMUSE_TOOFAR );
 				return( true );
@@ -1921,7 +1921,13 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 			// Hit the Target !
 			pObjTarg->Sound( 0x207 );
 			pObjTarg->Effect( EFFECT_BOLT, ITEMID_Cannon_Ball, pItemUse, 8, 0, true );
-			pObjTarg->OnTakeDamage( 80 + Calc_GetRandVal( 150 ), m_pChar, DAMAGE_HIT_BLUNT | DAMAGE_FIRE );
+
+			CChar *pChar = dynamic_cast<CChar *>(this);
+			CItem *pItem = dynamic_cast<CItem *>(this);
+			if ( pChar )
+				pChar->OnTakeDamage( 80 + Calc_GetRandVal(150), m_pChar, DAMAGE_HIT_BLUNT|DAMAGE_FIRE );
+			else if ( pItem )
+				pItem->OnTakeDamage( 80 + Calc_GetRandVal(150), m_pChar, DAMAGE_HIT_BLUNT|DAMAGE_FIRE );
 		}
 		return( true );
 

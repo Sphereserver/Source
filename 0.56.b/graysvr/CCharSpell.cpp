@@ -490,21 +490,22 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 	if ( pSpell->IsType(IT_WAND))	// equipped wands do not confer effect.
 		return;
 
+	CClient *pClient = GetClient();
 	SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pSpell->m_itSpell.m_spell));
 	short iStatEffect = static_cast<short>(pSpell->m_itSpell.m_spelllevel);
-	switch (GetSpellLayer(spell))	// Spell effects that are common for the same layer fits here
-		{
+
+	switch (GetSpellLayer(spell))	// spell effects that are common for the same layer fits here
+	{
 		case LAYER_NONE:
 			break;
 		case LAYER_FLAG_Poison:
 			StatFlag_Clear(STATF_Poisoned);
 			UpdateModeFlag();
-			if (IsClient())
-				GetClient()->removeBuff(BI_POISON);
+			if (pClient)
+				pClient->removeBuff(BI_POISON);
 			break;
 		case LAYER_SPELL_Summon:
 		{
-			// Delete the creature completely.
 			if (m_pPlayer)	// summoned players ? thats odd.
 				return;
 			if (!g_Serv.IsLoading())
@@ -519,8 +520,8 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			switch (spell)
 			{
 				case SPELL_Polymorph:
-				case SPELL_BeastForm:		// 107 // polymorphs you into an animal for a while.
-				case SPELL_Monster_Form:	// 108 // polymorphs you into a monster for a while.
+				case SPELL_BeastForm:
+				case SPELL_Monster_Form:
 					iBuffIcon = BI_POLYMORPH;
 					break;
 				case SPELL_Horrific_Beast:
@@ -529,18 +530,18 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 					break;
 				case SPELL_Lich_Form:
 					iBuffIcon = BI_LICHFORM;
-					SetDefNum("RegenManaVal", GetDefNum("RegenManaVal", true) - pSpell->m_itSpell.m_PolyStr);	// RegenManaVal
-					SetDefNum("RegenHitsVal", GetDefNum("RegenHitsVal", true) + pSpell->m_itSpell.m_PolyDex);	// RegenHitsVal
-					SetDefNum("ResFire", GetDefNum("ResFire", true) + pSpell->m_itSpell.m_spellcharges);		// ResFire, ResPoison, ResCold
+					SetDefNum("RegenManaVal", GetDefNum("RegenManaVal", true) - pSpell->m_itSpell.m_PolyStr);
+					SetDefNum("RegenHitsVal", GetDefNum("RegenHitsVal", true) + pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("ResFire", GetDefNum("ResFire", true) + pSpell->m_itSpell.m_spellcharges);
 					SetDefNum("ResPoison", GetDefNum("ResPoison", true) - pSpell->m_itSpell.m_spellcharges);
 					SetDefNum("ResCold", GetDefNum("ResCold", true) - pSpell->m_itSpell.m_spellcharges);
 					break;
 				case SPELL_Vampiric_Embrace:
 					iBuffIcon = BI_VAMPIRICEMBRACE;
-					SetDefNum("HitLeechLife", GetDefNum("HitLeechLife", true) - pSpell->m_itSpell.m_PolyStr);		// +Hit Leech Life
-					SetDefNum("RegenStamVal", GetDefNum("RegenStamVal", true) - pSpell->m_itSpell.m_PolyDex);		// +RegenStamVal
-					SetDefNum("RegenManaVal", GetDefNum("RegenManaVal", true) - pSpell->m_itSpell.m_spellcharges);	// RegenManaVal
-					SetDefNum("ResFire", GetDefNum("ResFire", true) + pSpell->m_itSpell.m_spelllevel);				// ResFire
+					SetDefNum("HitLeechLife", GetDefNum("HitLeechLife", true) - pSpell->m_itSpell.m_PolyStr);
+					SetDefNum("RegenStamVal", GetDefNum("RegenStamVal", true) - pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("RegenManaVal", GetDefNum("RegenManaVal", true) - pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("ResFire", GetDefNum("ResFire", true) + pSpell->m_itSpell.m_spelllevel);
 					break;
 				case SPELL_Wraith_Form:
 					iBuffIcon = BI_WRAITHFORM;
@@ -558,10 +559,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 					break;
 			}
 
-			//  m_prev_id != GetID()
-			// poly back to orig form.
 			SetID(m_prev_id);
-			// set back to original stats as well.
 			if (IsSetMagicFlags(MAGICF_POLYMORPHSTATS))
 			{
 				Stat_AddMod(STAT_STR, -pSpell->m_itSpell.m_PolyStr);
@@ -569,20 +567,19 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 				Stat_SetVal(STAT_STR, minimum(Stat_GetVal(STAT_STR), Stat_GetMax(STAT_STR)));
 				Stat_SetVal(STAT_DEX, minimum(Stat_GetVal(STAT_DEX), Stat_GetMax(STAT_DEX)));
 			}
-			Update();
 			StatFlag_Clear(STATF_Polymorph);
-			if (IsClient())
-				GetClient()->removeBuff(iBuffIcon);
+			if (pClient)
+				pClient->removeBuff(iBuffIcon);
 			UpdateStatsFlag();
 			return;
 		}
 		case LAYER_SPELL_Night_Sight:
 		{
 			StatFlag_Clear(STATF_NightSight);
-			if (IsClient())
+			if (pClient)
 			{
-				m_pClient->addLight();
-				GetClient()->removeBuff(BI_NIGHTSIGHT);
+				pClient->addLight();
+				pClient->removeBuff(BI_NIGHTSIGHT);
 			}
 			return;
 		}
@@ -593,102 +590,104 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			pSpell->SetName("");	// clear the name from the item (might be a worn item)
 			if (!IsStatFlag(STATF_Polymorph))
 				SetHue(m_prev_Hue);
-			if (IsClient())
-				GetClient()->removeBuff(BI_INCOGNITO);
+			if (pClient)
+				pClient->removeBuff(BI_INCOGNITO);
 			NotoSave_Update();
 			break;
 
 		case LAYER_SPELL_Invis:
 			Reveal(STATF_Invisible);
-			if (IsClient())
-				GetClient()->removeBuff(BI_INVISIBILITY);
+			if (pClient)
+				pClient->removeBuff(BI_INVISIBILITY);
 			return;
 
 		case LAYER_SPELL_Paralyze:
 			StatFlag_Clear(STATF_Freeze);
-			if (IsClient())
-				GetClient()->removeBuff(BI_PARALYZE);
-			UpdateModeFlag();
+			if (pClient)
+			{
+				pClient->removeBuff(BI_PARALYZE);
+				pClient->addCharMove(this);		// immediately tell the client that now he's able to move (without this, it will be able to move only on next tick update)
+			}
 			break;
 
 		case LAYER_SPELL_Strangle:	// TO-DO: NumBuff[0] and NumBuff[1] to hold the damage range values.
-			if (IsClient())
-				GetClient()->removeBuff(BI_STRANGLE);
+			if (pClient)
+				pClient->removeBuff(BI_STRANGLE);
 			break;
 
 		case LAYER_SPELL_Gift_Of_Renewal:
-			if (IsClient())
-				GetClient()->removeBuff(BI_GIFTOFRENEWAL);
+			if (pClient)
+				pClient->removeBuff(BI_GIFTOFRENEWAL);
 			break;
 
 		case LAYER_SPELL_Attunement:
-			if (IsClient())
-				GetClient()->removeBuff(BI_ATTUNEWEAPON);
+			if (pClient)
+				pClient->removeBuff(BI_ATTUNEWEAPON);
 			break;
 
 		case LAYER_SPELL_Thunderstorm:
-			if (IsClient())
-				GetClient()->removeBuff(BI_THUNDERSTORM);
+			if (pClient)
+				pClient->removeBuff(BI_THUNDERSTORM);
 			break;
 
 		case LAYER_SPELL_Essence_Of_Wind:
-			if (IsClient())
-				GetClient()->removeBuff(BI_ESSENCEOFWIND);
+			if (pClient)
+				pClient->removeBuff(BI_ESSENCEOFWIND);
 			break;
 
 		case LAYER_SPELL_Ethereal_Voyage:
-			if (IsClient())
-				GetClient()->removeBuff(BI_ETHEREALVOYAGE);
+			if (pClient)
+				pClient->removeBuff(BI_ETHEREALVOYAGE);
 			break;
 
 		case LAYER_SPELL_Gift_Of_Life:
-			if (IsClient())
-				GetClient()->removeBuff(BI_GIFTOFLIFE);
+			if (pClient)
+				pClient->removeBuff(BI_GIFTOFLIFE);
 			break;
 
 		case LAYER_SPELL_Arcane_Empowerment:
-			if (IsClient())
-				GetClient()->removeBuff(BI_ARCANEEMPOWERMENT);
+			if (pClient)
+				pClient->removeBuff(BI_ARCANEEMPOWERMENT);
 			break;
 
 		/*case LAYER_Mortal_Strike:
-			if (IsClient())
-				GetClient()->removeBuff(BI_MORTALSTRIKE);
-			break;
-			}*/
+			if (pClient)
+				pClient->removeBuff(BI_MORTALSTRIKE);
+			break;*/
 
 		case LAYER_SPELL_Blood_Oath:
-			{
-				if (IsClient())
-					GetClient()->removeBuff(BI_BLOODOATHCURSE);
-				CChar * pSrc = pSpell->m_uidLink.CharFind();
-				if (pSrc->IsClient())
-					pSrc->GetClient()->removeBuff(BI_BLOODOATHCASTER);
-			}break;
+		{
+			if (pClient)
+				pClient->removeBuff(BI_BLOODOATHCURSE);
+			CChar * pSrc = pSpell->m_uidLink.CharFind();
+			if (pSrc && pSrc->IsClient())
+				pSrc->GetClient()->removeBuff(BI_BLOODOATHCASTER);
+			break;
+		}
 		case LAYER_SPELL_Corpse_Skin:
 			SetDefNum("ResPhysical", GetDefNum("ResPhysical") - pSpell->m_itSpell.m_PolyStr, true);
 			SetDefNum("ResFire", GetDefNum("ResFire") + pSpell->m_itSpell.m_PolyDex, true);
 			SetDefNum("ResCold", GetDefNum("ResCold") - pSpell->m_itSpell.m_PolyStr, true);
 			SetDefNum("ResPoison", GetDefNum("ResPoison") + pSpell->m_itSpell.m_PolyDex, true);
-			if (IsClient())
-				GetClient()->removeBuff(BI_CORPSESKIN);
+			if (pClient)
+				pClient->removeBuff(BI_CORPSESKIN);
 			break;
 
 		case LAYER_SPELL_Pain_Spike:
-			if (IsClient())
-				GetClient()->removeBuff(BI_PAINSPIKE);
+			if (pClient)
+				pClient->removeBuff(BI_PAINSPIKE);
 			break;
 
 		default:
 			break;
 	}
 
-	switch ( spell ) // The rest of the effects are handled directly by each spell.
+	switch (spell)	// the rest of the effects are handled directly by each spell
 	{
 		case SPELL_Clumsy:
 			Stat_AddMod(STAT_DEX, iStatEffect);
-			if (IsClient())
-				GetClient()->removeBuff(BI_CLUMSY);
+			if (pClient)
+				pClient->removeBuff(BI_CLUMSY);
 			return;
 		case SPELL_Particle_Form:	// 112 // turns you into an immobile, but untargetable particle system for a while.
 		case SPELL_Stone:
@@ -697,57 +696,57 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			break;
 		case SPELL_Hallucination:
 			StatFlag_Clear( STATF_Hallucinating );
-			if (IsClient())
-				m_pClient->addReSync();
+			if (pClient)
+				pClient->addReSync();
 			UpdateModeFlag();
 		case SPELL_Feeblemind:
 			Stat_AddMod( STAT_INT, iStatEffect );
-			if (IsClient())
-				GetClient()->removeBuff(BI_FEEBLEMIND);
+			if (pClient)
+				pClient->removeBuff(BI_FEEBLEMIND);
 			return;
 		case SPELL_Weaken:
 			Stat_AddMod( STAT_STR, iStatEffect );
-			if (IsClient())
-				GetClient()->removeBuff(BI_WEAKEN);
+			if (pClient)
+				pClient->removeBuff(BI_WEAKEN);
 			return;
 		case SPELL_Curse:
+		{
+			if ( m_pPlayer )
 			{
-				if ( m_pPlayer )
-				{
-					SetDefNum("RESFIREMAX", GetDefNum("RESFIREMAX", true, true) + 10);
-					SetDefNum("RESCOLDMAX", GetDefNum("RESCOLDMAX", true, true) + 10);
-					SetDefNum("RESPOISONMAX", GetDefNum("RESPOISONMAX", true, true) + 10);
-					SetDefNum("RESENERGYMAX", GetDefNum("RESENERGYMAX", true, true) + 10);
-				}
-				for (int i = STAT_STR; i < STAT_BASE_QTY; i++ )
-					Stat_AddMod(static_cast<STAT_TYPE>(i), iStatEffect);
-				if (IsClient())
-					GetClient()->removeBuff(BI_CURSE);
+				SetDefNum("RESFIREMAX", GetDefNum("RESFIREMAX", true, true) + 10);
+				SetDefNum("RESCOLDMAX", GetDefNum("RESCOLDMAX", true, true) + 10);
+				SetDefNum("RESPOISONMAX", GetDefNum("RESPOISONMAX", true, true) + 10);
+				SetDefNum("RESENERGYMAX", GetDefNum("RESENERGYMAX", true, true) + 10);
 			}
+			for (int i = STAT_STR; i < STAT_BASE_QTY; i++ )
+				Stat_AddMod(static_cast<STAT_TYPE>(i), iStatEffect);
+			if (pClient)
+				pClient->removeBuff(BI_CURSE);
 			return;
+		}
 		case SPELL_Agility:
 			Stat_AddMod( STAT_DEX, -iStatEffect );
-			if (IsClient())
-				GetClient()->removeBuff(BI_AGILITY);
+			if (pClient)
+				pClient->removeBuff(BI_AGILITY);
 			return;
 		case SPELL_Cunning:
 			Stat_AddMod( STAT_INT, -iStatEffect );
-			if (IsClient())
-				GetClient()->removeBuff(BI_CUNNING);
+			if (pClient)
+				pClient->removeBuff(BI_CUNNING);
 			return;
 		case SPELL_Strength:
 			Stat_AddMod( STAT_STR, -iStatEffect );
-			if (IsClient())
-				GetClient()->removeBuff(BI_STRENGTH);
+			if (pClient)
+				pClient->removeBuff(BI_STRENGTH);
 			return;
 		case SPELL_Bless:
-			{
-				for ( int i = STAT_STR; i < STAT_BASE_QTY; i++ )
-					Stat_AddMod(static_cast<STAT_TYPE>(i), -iStatEffect);
-				if (IsClient())
-					GetClient()->removeBuff(BI_BLESS);
-			}
+		{
+			for ( int i = STAT_STR; i < STAT_BASE_QTY; i++ )
+				Stat_AddMod(static_cast<STAT_TYPE>(i), -iStatEffect);
+			if (pClient)
+				pClient->removeBuff(BI_BLESS);
 			return;
+		}
 		case SPELL_Mana_Drain:
 			UpdateStatVal( STAT_INT, +iStatEffect );
 			Effect( EFFECT_OBJ, ITEMID_FX_SPARKLE_2, this, 10, 25 );
@@ -766,10 +765,9 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			{
 				StatFlag_Clear(STATF_Reactive);
 			}
-			if (IsClient())
-				GetClient()->removeBuff(BI_REACTIVEARMOR);
+			if (pClient)
+				pClient->removeBuff(BI_REACTIVEARMOR);
 			return;
-		case SPELL_Night_Sight:
 		case SPELL_Magic_Reflect:
 			StatFlag_Clear(STATF_Reflection);
 			if (IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE))
@@ -780,8 +778,8 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 				SetDefNum("RESPOISON", GetDefNum("RESPOISON", true) - 10);
 				SetDefNum("RESENERGY", GetDefNum("RESENERGY", true) - 10);
 			}
-			if (IsClient())
-				GetClient()->removeBuff(BI_MAGICREFLECTION);
+			if (pClient)
+				pClient->removeBuff(BI_MAGICREFLECTION);
 			return;
 		case SPELL_Steelskin:		// 114 // turns your skin into steel, giving a boost to your AR.
 		case SPELL_Stoneskin:		// 115 // turns your skin into stone, giving a boost to your AR.
@@ -799,25 +797,25 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			{
 				m_defense = static_cast<WORD>(CalcArmorDefense());
 			}
-			if (IsClient())
+			if (pClient)
 			{
 				if (spell == SPELL_Protection)
-					GetClient()->removeBuff(BI_PROTECTION);
+					pClient->removeBuff(BI_PROTECTION);
 				else if (spell == SPELL_Arch_Prot)
-					GetClient()->removeBuff(BI_ARCHPROTECTION);
+					pClient->removeBuff(BI_ARCHPROTECTION);
 			}
 			break;
-		case SPELL_Chameleon:		// 106 // makes your skin match the colors of whatever is behind you.
-			break;
+		/*case SPELL_Chameleon:		// 106 // makes your skin match the colors of whatever is behind you.
+			break;*/
 		case SPELL_Trance:			// 111 // temporarily increases your meditation skill.
 			Skill_SetBase(SKILL_MEDITATION, Skill_GetBase(SKILL_MEDITATION) - g_Cfg.GetSpellEffect(spell, iStatEffect));
 			break;
-		case SPELL_Shield:			// 113 // erects a temporary force field around you. Nobody approaching will be able to get within 1 tile of you, though you can move close to them if you wish.
-			break;
+		/*case SPELL_Shield:			// 113 // erects a temporary force field around you. Nobody approaching will be able to get within 1 tile of you, though you can move close to them if you wish.
+			break;*/
 		case SPELL_Mind_Rot:
 			SetDefNum("LowerManaCost", GetDefNum("LowerManaCost") + pSpell->m_itSpell.m_spelllevel, true);
-			if (IsClient())
-				GetClient()->removeBuff(BI_MINDROT);
+			if (pClient)
+				pClient->removeBuff(BI_MINDROT);
 			break;
 		case SPELL_Curse_Weapon:
 		{
@@ -844,7 +842,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 	if ( !pSpell || !pSpell->IsTypeSpellable() || pSpell->IsType(IT_WAND) )
 		return;
 
-	CChar *pCaster = static_cast<CChar*>(pSpell->m_uidLink.CharFind());
+	CClient *pClient = GetClient();
+	CChar *pCaster = pSpell->m_uidLink.CharFind();
 	SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pSpell->m_itSpell.m_spell));
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
 
@@ -873,8 +872,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 	LPCTSTR pNumBuff[7] = { NumBuff[0], NumBuff[1], NumBuff[2], NumBuff[3], NumBuff[4], NumBuff[5], NumBuff[6] };
 	//------------------------
 
-	LAYER_TYPE layer = GetSpellLayer(spell);
-	switch (layer)
+	switch (GetSpellLayer(spell))
 	{
 		case LAYER_NONE:
 			break;
@@ -987,31 +985,31 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			Update();		// show everyone I am now a new type
 
 			StatFlag_Set(STATF_Polymorph);
-			if (IsSetOF(OF_Buffs) && IsClient() && iBuffIcon)
+			if (pClient && IsSetOF(OF_Buffs) && iBuffIcon)
 			{
-				GetClient()->removeBuff(iBuffIcon);
-				GetClient()->addBuff(iBuffIcon, 1075824, 1070722, iTimerEffect);
+				pClient->removeBuff(iBuffIcon);
+				pClient->addBuff(iBuffIcon, 1075824, 1070722, iTimerEffect);
 			}
 			return;
 		}
 		case LAYER_FLAG_Poison:
 			StatFlag_Set(STATF_Poisoned);
 			UpdateModeFlag();
-			if (IsSetOF(OF_Buffs) && IsClient())
+			if (pClient && IsSetOF(OF_Buffs))
 			{
-				GetClient()->removeBuff(BI_POISON);
-				GetClient()->addBuff(BI_POISON, 1017383, 1070722, 2);
+				pClient->removeBuff(BI_POISON);
+				pClient->addBuff(BI_POISON, 1017383, 1070722, 2);
 			}
 			break;
 		case LAYER_SPELL_Night_Sight:
 			StatFlag_Set(STATF_NightSight);
-			if (IsClient())
+			if (pClient)
 			{
-				m_pClient->addLight();
-				if (IsSetOF(OF_Buffs) && IsClient())
+				pClient->addLight();
+				if (IsSetOF(OF_Buffs))
 				{
-					GetClient()->removeBuff(BI_NIGHTSIGHT);
-					GetClient()->addBuff(BI_NIGHTSIGHT, 1075643, 1075644, iTimerEffect);
+					pClient->removeBuff(BI_NIGHTSIGHT);
+					pClient->addBuff(BI_NIGHTSIGHT, 1075643, 1075644, iTimerEffect);
 				}
 			}
 			break;
@@ -1026,45 +1024,44 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				if (!IsStatFlag(STATF_Polymorph) && IsPlayableCharacter())
 					SetHue((HUE_UNDERWEAR | HUE_SKIN_LOW) + static_cast<HUE_TYPE>(Calc_GetRandVal(HUE_SKIN_HIGH - HUE_SKIN_LOW)));
 
-				if (IsSetOF(OF_Buffs) && IsClient())
+				if (pClient && IsSetOF(OF_Buffs))
 				{
-					GetClient()->removeBuff(BI_INCOGNITO);
-					GetClient()->addBuff(BI_INCOGNITO, 1075819, 1075820, iTimerEffect);
+					pClient->removeBuff(BI_INCOGNITO);
+					pClient->addBuff(BI_INCOGNITO, 1075819, 1075820, iTimerEffect);
 				}
 			}
 			break;
 		case LAYER_SPELL_Invis:
 			StatFlag_Set(STATF_Invisible);
-			if (IsClient())
-				new PacketCharacter(GetClient(), this); //updates paperdoll with less packets then GetClient()->addChar( this );
-			UpdateMove(GetTopPoint());	// Some will be seeing us for the first time !
-			if (IsSetOF(OF_Buffs) && IsClient())
+			if (pClient)
 			{
-				GetClient()->removeBuff(BI_INVISIBILITY);
-				GetClient()->addBuff(BI_INVISIBILITY, 1075825, 1075826, iTimerEffect);
+				new PacketCharacter(pClient, this);	//updates paperdoll with less packets then pClient->addChar(this)
+				if (IsSetOF(OF_Buffs))
+				{
+					pClient->removeBuff(BI_INVISIBILITY);
+					pClient->addBuff(BI_INVISIBILITY, 1075825, 1075826, iTimerEffect);
+				}
 			}
+			UpdateMove(GetTopPoint());	// some will be seeing us for the first time!
 			break;
 		case LAYER_SPELL_Paralyze:
 			StatFlag_Set(STATF_Freeze);
-			if (IsSetOF(OF_Buffs) && IsClient())
+			if (pClient && IsSetOF(OF_Buffs))
 			{
-				GetClient()->removeBuff(BI_PARALYZE);
-				GetClient()->addBuff(BI_PARALYZE, 1075827, 1075828, iTimerEffect);
+				pClient->removeBuff(BI_PARALYZE);
+				pClient->addBuff(BI_PARALYZE, 1075827, 1075828, iTimerEffect);
 			}
-			UpdateModeFlag();
+			//UpdateModeFlag();
 			break;
-
 		case LAYER_SPELL_Summon:
-			// LAYER_SPELL_Summon
 			StatFlag_Set(STATF_Conjured);
 			break;
-
 		case LAYER_SPELL_Strangle:	// TO-DO: NumBuff[0] and NumBuff[1] to hold the damage range values.
 			{
-				if (IsSetOF(OF_Buffs) && IsClient())
+				if (pClient && IsSetOF(OF_Buffs))
 				{
-					GetClient()->removeBuff(BI_STRANGLE);
-					GetClient()->addBuff(BI_STRANGLE, 1075794, 1075795, iTimerEffect);
+					pClient->removeBuff(BI_STRANGLE);
+					pClient->addBuff(BI_STRANGLE, 1075794, 1075795, iTimerEffect);
 				}
 				iStatEffect = (pCaster->Skill_GetBase(SKILL_SPIRITSPEAK) / 100);
 				if (iStatEffect < 4)
@@ -1073,67 +1070,67 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				pSpell->m_itSpell.m_spellcharges = iStatEffect;
 			}	break;
 		case LAYER_SPELL_Gift_Of_Renewal:
-			if (IsSetOF(OF_Buffs) && IsClient())
+			if (pClient && IsSetOF(OF_Buffs))
 			{
 				ITOA(pSpell->m_itSpell.m_spelllevel,NumBuff[0], 10);
-				GetClient()->removeBuff(BI_GIFTOFRENEWAL);
-				GetClient()->addBuff(BI_GIFTOFRENEWAL, 1075796, 1075797, iTimerEffect, pNumBuff, 1);
+				pClient->removeBuff(BI_GIFTOFRENEWAL);
+				pClient->addBuff(BI_GIFTOFRENEWAL, 1075796, 1075797, iTimerEffect, pNumBuff, 1);
 			}
 			break;
 		case LAYER_SPELL_Attunement:
-			if (IsSetOF(OF_Buffs) && IsClient())
+			if (pClient && IsSetOF(OF_Buffs))
 			{
 				ITOA(pSpell->m_itSpell.m_spelllevel, NumBuff[0], 10);
-				GetClient()->removeBuff(BI_ATTUNEWEAPON);
-				GetClient()->addBuff(BI_ATTUNEWEAPON, 1075798, 1075799, iTimerEffect, pNumBuff, 1);
+				pClient->removeBuff(BI_ATTUNEWEAPON);
+				pClient->addBuff(BI_ATTUNEWEAPON, 1075798, 1075799, iTimerEffect, pNumBuff, 1);
 			}
 			break;
 		case LAYER_SPELL_Thunderstorm:
-			if (IsSetOF(OF_Buffs) && IsClient())
+			if (pClient && IsSetOF(OF_Buffs))
 			{
 				ITOA(pSpell->m_itSpell.m_spelllevel, NumBuff[0], 10);
-				GetClient()->removeBuff(BI_THUNDERSTORM);
-				GetClient()->addBuff(BI_THUNDERSTORM, 1075800, 1075801, iTimerEffect, pNumBuff, 1);
+				pClient->removeBuff(BI_THUNDERSTORM);
+				pClient->addBuff(BI_THUNDERSTORM, 1075800, 1075801, iTimerEffect, pNumBuff, 1);
 			}
 			break;
 		case LAYER_SPELL_Essence_Of_Wind:
-			if (IsSetOF(OF_Buffs) && IsClient())
+			if (pClient && IsSetOF(OF_Buffs))
 			{
 				ITOA(pSpell->m_itSpell.m_spelllevel, NumBuff[0], 10);
-				GetClient()->removeBuff(BI_ESSENCEOFWIND);
-				GetClient()->addBuff(BI_ESSENCEOFWIND, 1075802, 1075803, iTimerEffect, pNumBuff, 1);
+				pClient->removeBuff(BI_ESSENCEOFWIND);
+				pClient->addBuff(BI_ESSENCEOFWIND, 1075802, 1075803, iTimerEffect, pNumBuff, 1);
 			}
 			break;
 		case LAYER_SPELL_Ethereal_Voyage:
-			if (IsSetOF(OF_Buffs) && IsClient())
+			if (pClient && IsSetOF(OF_Buffs))
 			{
-				GetClient()->removeBuff(BI_ETHEREALVOYAGE);
-				GetClient()->addBuff(BI_ETHEREALVOYAGE, 1075804, 1075805, iTimerEffect);
+				pClient->removeBuff(BI_ETHEREALVOYAGE);
+				pClient->addBuff(BI_ETHEREALVOYAGE, 1075804, 1075805, iTimerEffect);
 			}
 			break;
 		case LAYER_SPELL_Gift_Of_Life:
-			if (IsSetOF(OF_Buffs) && IsClient())
+			if (pClient && IsSetOF(OF_Buffs))
 			{
-				GetClient()->removeBuff(BI_GIFTOFLIFE);
-				GetClient()->addBuff(BI_GIFTOFLIFE, 1075806, 1075807, iTimerEffect);
+				pClient->removeBuff(BI_GIFTOFLIFE);
+				pClient->addBuff(BI_GIFTOFLIFE, 1075806, 1075807, iTimerEffect);
 			}
 			break;
 		case LAYER_SPELL_Arcane_Empowerment:
-			if (IsSetOF(OF_Buffs) && IsClient())
+			if (pClient && IsSetOF(OF_Buffs))
 			{
 				ITOA(pSpell->m_itSpell.m_spelllevel, NumBuff[0], 10);
 				ITOA(pSpell->m_itSpell.m_spellcharges,NumBuff[1], 10);
-				GetClient()->removeBuff(BI_ARCANEEMPOWERMENT);
-				GetClient()->addBuff(BI_ARCANEEMPOWERMENT, 1075805, 1075804, iTimerEffect, pNumBuff, 1);
+				pClient->removeBuff(BI_ARCANEEMPOWERMENT);
+				pClient->addBuff(BI_ARCANEEMPOWERMENT, 1075805, 1075804, iTimerEffect, pNumBuff, 1);
 			}
 			break;
 		/*case LAYER_Mortal_Strike:
-			if (IsSetOF(OF_Buffs) && IsClient())
+			if (pClient && IsSetOF(OF_Buffs))
 			{
-				GetClient()->removeBuff(BI_MORTALSTRIKE);
-				GetClient()->addBuff(BI_MORTALSTRIKE, 1075810, 1075811, iTimerEffect);
-			break;
-			}*/
+				pClient->removeBuff(BI_MORTALSTRIKE);
+				pClient->addBuff(BI_MORTALSTRIKE, 1075810, 1075811, iTimerEffect);
+			}
+			break;*/
 		case LAYER_SPELL_Pain_Spike:
 			{
 				CItem * pPrevious = LayerFind(LAYER_SPELL_Pain_Spike);
@@ -1141,7 +1138,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				{
 					CItem * pPrevious = LayerFind(LAYER_SPELL_Pain_Spike);
 					if (pPrevious)
-						pSpell->m_itSpell.m_spellcharges +=2 ;
+						pSpell->m_itSpell.m_spellcharges += 2;
 						//TO-DO If the spell targets someone already affected by the Pain Spike spell, only 3 to 7 points of DIRECT damage will be inflicted.
 				}
 				if (m_pNPC)
@@ -1155,28 +1152,29 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 		case LAYER_SPELL_Blood_Oath:
 			iStatEffect = ((Skill_GetBase(SKILL_MAGICRESISTANCE) * 10) / 20) + 10;	// bonus of reflection
 			pSpell->m_itSpell.m_spelllevel = iStatEffect;
-			if ( IsSetOF(OF_Buffs) )
+			if (IsSetOF(OF_Buffs))
 			{
-				if ( IsClient() )
+				if (pClient)
 				{
 					strcpy(NumBuff[0], pCaster->GetName());
 					strcpy(NumBuff[1], pCaster->GetName());
-					GetClient()->removeBuff(BI_BLOODOATHCURSE);
-					GetClient()->addBuff(BI_BLOODOATHCURSE, 1075659, 1075660, iTimerEffect, pNumBuff, 2);
+					pClient->removeBuff(BI_BLOODOATHCURSE);
+					pClient->addBuff(BI_BLOODOATHCURSE, 1075659, 1075660, iTimerEffect, pNumBuff, 2);
 				}
-				if ( pCaster->IsClient() )
+				CClient *pCasterClient = pCaster->GetClient();
+				if (pCasterClient)
 				{
 					strcpy(NumBuff[0], GetName());
-					pCaster->GetClient()->removeBuff(BI_BLOODOATHCASTER);
-					pCaster->GetClient()->addBuff(BI_BLOODOATHCASTER, 1075661, 1075662, iTimerEffect, pNumBuff, 1);
+					pCasterClient->removeBuff(BI_BLOODOATHCASTER);
+					pCasterClient->addBuff(BI_BLOODOATHCASTER, 1075661, 1075662, iTimerEffect, pNumBuff, 1);
 				}
 			}
 			break;
 		case LAYER_SPELL_Corpse_Skin:
-			if (IsSetOF(OF_Buffs) && IsClient())
+			if (pClient && IsSetOF(OF_Buffs))
 			{
-				GetClient()->removeBuff(BI_CORPSESKIN);
-				GetClient()->addBuff(BI_CORPSESKIN, 1075805, 1075804, iTimerEffect, pNumBuff, 1);
+				pClient->removeBuff(BI_CORPSESKIN);
+				pClient->addBuff(BI_CORPSESKIN, 1075805, 1075804, iTimerEffect, pNumBuff, 1);
 			}
 			pSpell->m_itSpell.m_PolyDex = 15;
 			pSpell->m_itSpell.m_PolyStr = 10;
@@ -1201,12 +1199,11 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				iStatEffect = 50;	// +50% HitLeechLife
 				pSpell->m_itSpell.m_spelllevel = iStatEffect;
 				pWeapon->SetDefNum("HitLeechLife", pWeapon->GetDefNum("HitLeechLife", true) + pSpell->m_itSpell.m_spelllevel, true);	// Adding 50% HitLeechLife to the weapon, since damaging with it should return 50% of the damage dealt.
-			}break;
-
+			}
+			break;
 		default:
 			break;
 	}
-	
 
 	switch ( spell )
 	{
@@ -1226,20 +1223,20 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			{
 				StatFlag_Set( STATF_Reactive );
 			}
-			if ( IsSetOF(OF_Buffs) && IsClient() )
+			if (pClient && IsSetOF(OF_Buffs))
 			{
-				GetClient()->removeBuff(BI_REACTIVEARMOR);
+				pClient->removeBuff(BI_REACTIVEARMOR);
 				if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 				{
 					ITOA(iStatEffect, NumBuff[0], 10);
 					for ( int idx = 1; idx < 5; ++idx )
 						ITOA(5, NumBuff[idx], 10);
 
-					GetClient()->addBuff(BI_REACTIVEARMOR, 1075812, 1075813, iTimerEffect, pNumBuff, 5);
+					pClient->addBuff(BI_REACTIVEARMOR, 1075812, 1075813, iTimerEffect, pNumBuff, 5);
 				}
 				else
 				{
-					GetClient()->addBuff(BI_REACTIVEARMOR, 1075812, 1070722, iTimerEffect);
+					pClient->addBuff(BI_REACTIVEARMOR, 1075812, 1070722, iTimerEffect);
 				}
 			}
 			break;
@@ -1251,13 +1248,14 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pSpell->m_itSpell.m_spelllevel = iStatEffect;
 				}
 				Stat_AddMod( STAT_DEX, -iStatEffect );
-				if ( IsSetOF(OF_Buffs) && IsClient() )
+				if (pClient && IsSetOF(OF_Buffs))
 				{
 					ITOA(iStatEffect, NumBuff[0], 10);
-					GetClient()->removeBuff(BI_CLUMSY);
-					GetClient()->addBuff(BI_CLUMSY, 1075831, 1075832, iTimerEffect, pNumBuff, 1);
+					pClient->removeBuff(BI_CLUMSY);
+					pClient->addBuff(BI_CLUMSY, 1075831, 1075832, iTimerEffect, pNumBuff, 1);
 				}
-			} break;
+			}
+			break;
 		case SPELL_Particle_Form:	// 112 // turns you into an immobile, but untargetable particle system for a while.
 		case SPELL_Stone:
 			StatFlag_Set( STATF_Stone );
@@ -1274,11 +1272,11 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pSpell->m_itSpell.m_spelllevel = iStatEffect;
 				}
 				Stat_AddMod( STAT_INT, -iStatEffect );
-				if ( IsSetOF(OF_Buffs) && IsClient() )
+				if (pClient && IsSetOF(OF_Buffs))
 				{
 					ITOA(iStatEffect, NumBuff[0], 10);
-					GetClient()->removeBuff(BI_FEEBLEMIND);
-					GetClient()->addBuff(BI_FEEBLEMIND, 1075833, 1075834, iTimerEffect, pNumBuff, 1);
+					pClient->removeBuff(BI_FEEBLEMIND);
+					pClient->addBuff(BI_FEEBLEMIND, 1075833, 1075834, iTimerEffect, pNumBuff, 1);
 				}
 			} break;
 		case SPELL_Weaken:
@@ -1289,11 +1287,11 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pSpell->m_itSpell.m_spelllevel = iStatEffect;
 				}
 				Stat_AddMod( STAT_STR, -iStatEffect );
-				if ( IsSetOF(OF_Buffs) && IsClient() )
+				if (pClient && IsSetOF(OF_Buffs))
 				{
 					ITOA(iStatEffect, NumBuff[0], 10);
-					GetClient()->removeBuff(BI_WEAKEN);
-					GetClient()->addBuff(BI_WEAKEN, 1075837, 1075838, iTimerEffect, pNumBuff, 1);
+					pClient->removeBuff(BI_WEAKEN);
+					pClient->addBuff(BI_WEAKEN, 1075837, 1075838, iTimerEffect, pNumBuff, 1);
 				}
 			} break;
 		case SPELL_Curse:
@@ -1313,9 +1311,9 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				for ( int i = STAT_STR; i < STAT_BASE_QTY; i++ )
 					Stat_AddMod(static_cast<STAT_TYPE>(i), -iStatEffect);
 
-				if ( IsSetOF(OF_Buffs) && IsClient() )
+				if (pClient && IsSetOF(OF_Buffs))
 				{
-					GetClient()->removeBuff(BI_CURSE);
+					pClient->removeBuff(BI_CURSE);
 					for ( int idx = STAT_STR; idx < STAT_BASE_QTY; ++idx )
 						ITOA(iStatEffect, NumBuff[idx], 10);
 					if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
@@ -1323,11 +1321,11 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 						for ( int idx = 3; idx < 7; ++idx )
 							ITOA(10, NumBuff[idx], 10);
 
-						GetClient()->addBuff(BI_CURSE, 1075835, 1075836, iTimerEffect, pNumBuff, 7);
+						pClient->addBuff(BI_CURSE, 1075835, 1075836, iTimerEffect, pNumBuff, 7);
 					}
 					else
 					{
-						GetClient()->addBuff(BI_CURSE, 1075835, 1075840, iTimerEffect, pNumBuff, 3);
+						pClient->addBuff(BI_CURSE, 1075835, 1075840, iTimerEffect, pNumBuff, 3);
 					}
 				}
 			} break;
@@ -1339,11 +1337,11 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pSpell->m_itSpell.m_spelllevel = iStatEffect;
 				}
 				Stat_AddMod( STAT_DEX, +iStatEffect );
-				if ( IsSetOF(OF_Buffs) && IsClient() )
+				if (pClient && IsSetOF(OF_Buffs))
 				{
 					ITOA(iStatEffect, NumBuff[0], 10);
-					GetClient()->removeBuff(BI_AGILITY);
-					GetClient()->addBuff(BI_AGILITY, 1075841, 1075842, iTimerEffect, pNumBuff, 1);
+					pClient->removeBuff(BI_AGILITY);
+					pClient->addBuff(BI_AGILITY, 1075841, 1075842, iTimerEffect, pNumBuff, 1);
 				}
 			} break;
 		case SPELL_Cunning:
@@ -1354,11 +1352,11 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pSpell->m_itSpell.m_spelllevel = iStatEffect;
 				}
 				Stat_AddMod( STAT_INT, +iStatEffect );
-				if ( IsSetOF(OF_Buffs) && IsClient() )
+				if (pClient && IsSetOF(OF_Buffs))
 				{
 					ITOA(iStatEffect, NumBuff[0], 10);
-					GetClient()->removeBuff(BI_CUNNING);
-					GetClient()->addBuff(BI_CUNNING, 1075843, 1075844, iTimerEffect, pNumBuff, 1);
+					pClient->removeBuff(BI_CUNNING);
+					pClient->addBuff(BI_CUNNING, 1075843, 1075844, iTimerEffect, pNumBuff, 1);
 				}
 			} break;
 		case SPELL_Strength:
@@ -1369,11 +1367,11 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pSpell->m_itSpell.m_spelllevel = iStatEffect;
 				}
 				Stat_AddMod( STAT_STR, +iStatEffect );
-				if ( IsSetOF(OF_Buffs) && IsClient() )
+				if (pClient && IsSetOF(OF_Buffs))
 				{
 					ITOA(iStatEffect, NumBuff[0], 10);
-					GetClient()->removeBuff(BI_STRENGTH);
-					GetClient()->addBuff(BI_STRENGTH, 1075845, 1075846, iTimerEffect, pNumBuff, 1);
+					pClient->removeBuff(BI_STRENGTH);
+					pClient->addBuff(BI_STRENGTH, 1075845, 1075846, iTimerEffect, pNumBuff, 1);
 				}
 			} break;
 		case SPELL_Bless:
@@ -1386,13 +1384,13 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				for ( int i = STAT_STR; i < STAT_BASE_QTY; i++ )
 					Stat_AddMod(static_cast<STAT_TYPE>(i), iStatEffect);
 
-				if ( IsSetOF(OF_Buffs) && IsClient() )
+				if (pClient && IsSetOF(OF_Buffs))
 				{
 					for ( int idx = STAT_STR; idx < STAT_BASE_QTY; ++idx)
 						ITOA(iStatEffect, NumBuff[idx], 10);
 
-					GetClient()->removeBuff(BI_BLESS);
-					GetClient()->addBuff(BI_BLESS, 1075847, 1075848, iTimerEffect, pNumBuff, STAT_BASE_QTY);
+					pClient->removeBuff(BI_BLESS);
+					pClient->addBuff(BI_BLESS, 1075847, 1075848, iTimerEffect, pNumBuff, STAT_BASE_QTY);
 				}
 			} break;
 		case SPELL_Mana_Drain:
@@ -1423,20 +1421,20 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				SetDefNum("RESPOISON", GetDefNum("RESPOISON", true) + 10);
 				SetDefNum("RESENERGY", GetDefNum("RESENERGY", true) + 10);
 			}
-			if ( IsSetOF(OF_Buffs) && IsClient() )
+			if (pClient && IsSetOF(OF_Buffs))
 			{
-				GetClient()->removeBuff(BI_MAGICREFLECTION);
+				pClient->removeBuff(BI_MAGICREFLECTION);
 				if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 				{
 					ITOA(-iStatEffect, NumBuff[0], 10);
 					for ( int idx = 1; idx < 5; ++idx )
 						ITOA(10, NumBuff[idx], 10);
 
-					GetClient()->addBuff(BI_MAGICREFLECTION, 1075817, 1075818, iTimerEffect, pNumBuff, 5);
+					pClient->addBuff(BI_MAGICREFLECTION, 1075817, 1075818, iTimerEffect, pNumBuff, 5);
 				}
 				else
 				{
-					GetClient()->addBuff(BI_MAGICREFLECTION, 1075817, 1070722, iTimerEffect);
+					pClient->addBuff(BI_MAGICREFLECTION, 1075817, 1070722, iTimerEffect);
 				}
 			}
 			break;
@@ -1465,7 +1463,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				{
 					m_defense = static_cast<WORD>(CalcArmorDefense());
 				}
-				if ( IsSetOF(OF_Buffs) && IsClient() )
+				if (pClient && IsSetOF(OF_Buffs))
 				{
 					BUFF_ICONS BuffIcon = BI_PROTECTION;
 					unsigned long BuffCliloc = 1075814;
@@ -1475,16 +1473,16 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 						BuffCliloc = 1075816;
 					}
 
-					GetClient()->removeBuff(BuffIcon);
+					pClient->removeBuff(BuffIcon);
 					if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 					{
 						ITOA(-iPhysicalResist, NumBuff[0], 10);
 						ITOA(-iMagicResist/10, NumBuff[1], 10);
-						GetClient()->addBuff(BuffIcon, BuffCliloc, 1075815, iTimerEffect, pNumBuff, 2);
+						pClient->addBuff(BuffIcon, BuffCliloc, 1075815, iTimerEffect, pNumBuff, 2);
 					}
 					else
 					{
-						GetClient()->addBuff(BuffIcon, BuffCliloc, 1070722, iTimerEffect);
+						pClient->addBuff(BuffIcon, BuffCliloc, 1070722, iTimerEffect);
 					}
 				}
 			}
@@ -2970,7 +2968,7 @@ int CChar::Spell_CastStart()
 }
 
 
-bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, CItem * pSourceItem )
+bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, CItem * pSourceItem )	// adicionar novo arg: bool bPlaySound
 {
 	ADDTOCALLSTACK("CChar::OnSpellEffect");
 	// Spell has a direct effect on this char.
@@ -2988,9 +2986,9 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		return false;
 	if ( IsStatFlag(STATF_DEAD) && !pSpellDef->IsSpellType(SPELLFLAG_TARG_DEAD) )
 		return false;
-	if ( spell == SPELL_Paralyze_Field && IsStatFlag(STATF_Freeze) )
+	if ( spell == SPELL_Paralyze_Field && LayerFind(LAYER_SPELL_Paralyze) )	//IsStatFlag(STATF_Freeze)
 		return false;
-	if ( spell == SPELL_Poison_Field && IsStatFlag(STATF_Poisoned) )
+	if ( spell == SPELL_Poison_Field && LayerFind(LAYER_FLAG_Poison) )	//IsStatFlag(STATF_Poisoned)
 		return false;
 
 	static const SOUND_TYPE sm_DrinkSounds[] = { 0x030, 0x031 };

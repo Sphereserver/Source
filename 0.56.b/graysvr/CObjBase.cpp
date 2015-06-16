@@ -1872,20 +1872,29 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 					return( false );
 				if ( iArgQty > 2 )	// Give it a new source char UID
 				{
-					CObjBaseTemplate * pObj = CGrayUID( static_cast<unsigned long>(piCmd[2]) ).ObjFind();
+					CObjBaseTemplate * pObj = CGrayUID( static_cast<DWORD>(piCmd[2]) ).ObjFind();
 					if ( pObj )
 						pObj = pObj->GetTopLevelObj();
-					pCharSrc = dynamic_cast <CChar*>(pObj);
+					pCharSrc = dynamic_cast<CChar*>(pObj);
 				}
-				OnTakeDamage( static_cast<int>(piCmd[0]),
-					pCharSrc,
-					(iArgQty >= 1)? static_cast<DAMAGE_TYPE>(piCmd[1]) : DAMAGE_HIT_BLUNT|DAMAGE_GENERAL,
-					(iArgQty >= 3)? static_cast<int>(piCmd[3]) : 0,		// physical damage %
-					(iArgQty >= 4)? static_cast<int>(piCmd[4]) : 0,		// fire damage %
-					(iArgQty >= 5)? static_cast<int>(piCmd[5]) : 0,		// cold damage %
-					(iArgQty >= 6)? static_cast<int>(piCmd[6]) : 0,		// poison damage %
-					(iArgQty >= 7)? static_cast<int>(piCmd[7]) : 0		// energy damage %
-				);
+
+				CChar *pChar = dynamic_cast<CChar *>(this);
+				CItem *pItem = dynamic_cast<CItem *>(this);
+				if ( pChar )
+					pChar->OnTakeDamage(static_cast<int>(piCmd[0]),
+						pCharSrc,
+						(iArgQty >= 1) ? static_cast<DAMAGE_TYPE>(piCmd[1]) : DAMAGE_HIT_BLUNT|DAMAGE_GENERAL,
+						(iArgQty >= 3) ? static_cast<int>(piCmd[3]) : 0,		// physical damage %
+						(iArgQty >= 4) ? static_cast<int>(piCmd[4]) : 0,		// fire damage %
+						(iArgQty >= 5) ? static_cast<int>(piCmd[5]) : 0,		// cold damage %
+						(iArgQty >= 6) ? static_cast<int>(piCmd[6]) : 0,		// poison damage %
+						(iArgQty >= 7) ? static_cast<int>(piCmd[7]) : 0			// energy damage %
+					);
+				else if ( pItem )
+					pItem->OnTakeDamage(static_cast<int>(piCmd[0]),
+						pCharSrc,
+						(iArgQty >= 1) ? static_cast<DAMAGE_TYPE>(piCmd[1]) : DAMAGE_HIT_BLUNT|DAMAGE_GENERAL
+					);
 			}
 			break;
 

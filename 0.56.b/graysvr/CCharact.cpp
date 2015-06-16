@@ -3080,63 +3080,28 @@ bool CChar::Death()
 bool CChar::OnFreezeCheck()
 {
 	ADDTOCALLSTACK("CChar::OnFreezeCheck");
-	// Check if and why are held in place.
-	// Can we break free ?
+	// Check if we are held in place.
 	// RETURN: true = held in place.
 
-	// speed mode '4' prevents movement
-	if ( m_pPlayer != NULL && (m_pPlayer->m_speedMode & 0x04) != 0 )
+	if ( IsStatFlag(STATF_Freeze|STATF_Stone) && !IsPriv(PRIV_GM) )
+		return true;
+	if ( GetKeyNum("NoMoveTill", true) > g_World.GetCurrentTime().GetTimeRaw() )
 		return true;
 
-	// Do not allow move if TAG.NoMoveTill > SERV.Time,
-	// needed for script purposes.
-	CVarDefCont* pKey = GetKey("NoMoveTill", false);
-	if ( pKey != NULL )
+	if ( m_pPlayer )
 	{
-		if ( pKey->GetValNum() > g_World.GetCurrentTime().GetTimeRaw() )
+		if ( m_pPlayer->m_speedMode & 0x04 )	// speed mode '4' prevents movement
 			return true;
 
-		DeleteKey("NoMoveTill");
-	}
-
-	if (!m_pPlayer && IsStatFlag( STATF_Sleeping ))
-		return true;
-
-	// finally, check for STATF_Freeze|STATF_Stone flags
-	if ( ! IsStatFlag( STATF_Freeze|STATF_Stone ) )
-		return false;
-
-	CItem * pFlag = LayerFind( LAYER_FLAG_Stuck );
-	if ( pFlag == NULL )	// stuck for some other reason i guess.
-	{
-		SysMessage(( IsStatFlag( STATF_Sleeping )) ?
-			g_Cfg.GetDefaultMsg( DEFMSG_UNCONSCIOUS ) :
-			g_Cfg.GetDefaultMsg( DEFMSG_FROZEN ) );
-	}
-	else if ( pFlag->IsDeleted() == true )
-	{
-		// not actually stuck!
-		return false;
-	}
-	else
-	{
-		// IT_EQ_STUCK
-		CItem * pWeb = pFlag->m_uidLink.ItemFind();
-		if ( pWeb == NULL ||
-			! pWeb->IsTopLevel() ||
-			pWeb->GetTopPoint() != GetTopPoint())
+		if ( IsSetMagicFlags(MAGICF_FREEZEONCAST) && g_Cfg.IsSkillFlag(m_Act_SkillCurrent, SKF_MAGIC) )		// casting magic spells
 		{
-			// Maybe we teleported away ?
-			pFlag->Delete();
-			return false;
+			CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
+			if ( pSpellDef && !pSpellDef->IsSpellType(SPELLFLAG_NOFREEZEONCAST) )
+				return true;
 		}
-
-		// Only allow me to try to damage it once per sec.
-		if ( ! pFlag->IsTimerSet())
-			return Use_Obj( pWeb, false );
 	}
 
-	return ! IsPriv( PRIV_GM );
+	return false;
 }
 
 void CChar::Flip()
@@ -3148,40 +3113,27 @@ void CChar::Flip()
 CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool fCheckOnly, DIR_TYPE dir, bool fPathFinding )
 {
 	ADDTOCALLSTACK("CChar::CanMoveWalkTo");
-
 	// For both players and NPC's
 	// Walk towards this point as best we can.
 	// Affect stamina as if we WILL move !
 	// RETURN:
 	//  ptDst.m_z = the new z
 	//  NULL = failed to walk here.
-	if ( IsSetMagicFlags( MAGICF_FREEZEONCAST ) && g_Cfg.IsSkillFlag(m_Act_SkillCurrent, SKF_MAGIC) )
-	{
-		const CSpellDef* pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
-		if (pSpellDef != NULL && !pSpellDef->IsSpellType(SPELLFLAG_NOFREEZEONCAST))
-		{
-			// Casting prevents movement with freeze-on-cast enabled.
-			return( NULL );
-		}
-	}
 
 	if ( OnFreezeCheck() )
-	{
-		// NPC's would call here.
-		return( NULL );	// can't move.
-	}
+		return NULL;
 
-	if ( !fCheckOnly && Stat_GetVal(STAT_DEX) <= 0 && ! IsStatFlag( STATF_DEAD ) )
+	if ( !fCheckOnly && Stat_GetVal(STAT_DEX) <= 0 && !IsStatFlag(STATF_DEAD) )
 	{
 		SysMessageDefault( DEFMSG_FATIGUE );
-		return( NULL );
+		return NULL;
 	}
 
-	int iWeightLoadPercent = GetWeightLoadPercent( GetTotalWeight());
+	int iWeightLoadPercent = GetWeightLoadPercent(GetTotalWeight());	// stamina already drop fast when char is overloaded, so this check is really needed? 
 	if ( !fCheckOnly && iWeightLoadPercent > 200 )
 	{
 		SysMessageDefault( DEFMSG_OVERLOAD );
-		return( NULL );
+		return NULL;
 	}
 
 	if ( IsClient() && GetClient()->m_pHouseDesign )
@@ -3191,7 +3143,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			if ( GetClient()->m_pHouseDesign->GetDesignArea().IsInside2d(ptDst) )
 			{
 				ptDst.m_z = GetTopZ();
-				return ptDst.GetRegion( REGION_TYPE_MULTI | REGION_TYPE_AREA );
+				return ptDst.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA);
 			}
 			return NULL;
 		}
@@ -3202,108 +3154,38 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 	// ok to go here ? physical blocking objects ?
 	WORD wBlockFlags = 0;
 	height_t ClimbHeight = 0;
-	CRegionBase * pArea = NULL;
+	CRegionBase *pArea = NULL;
 
 	EXC_TRY("CanMoveWalkTo");
 
 	EXC_SET("Check Valid Move");
-
 	pArea = CheckValidMove(ptDst, &wBlockFlags, dir, &ClimbHeight, fPathFinding);
-
 	if ( !pArea )
 	{
 		WARNWALK(("CheckValidMove failed\n"));
 		return NULL;
 	}
 
-	EXC_SET("Char-through walkability");
-	if ( fCheckOnly )
-	{
-		if (( g_Cfg.m_iNpcAi&NPC_AI_PATH ) && fCheckChars )	// fast lookup of being able to go through char there
-		{
-			if ( !IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Insubstantial) )
-			{
-				CWorldSearch AreaChars(ptDst);
-				AreaChars.SetAllShow(true);
-
-				for (;;)
-				{
-					CChar *pChar = AreaChars.GetChar();
-					if ( !pChar )
-						break;
-					if (( pChar == this ) || (pChar->GetTopZ() != ptDst.m_z) || !ptDst.IsSameMap(pChar->GetTopMap()) )
-						continue;
-
-					if ( m_pNPC && !pChar->m_pPlayer )
-						return NULL;	// not through non-players
-					if ( pChar->IsStatFlag(STATF_DEAD|STATF_Insubstantial) || pChar->IsDisconnected())
-						continue;
-					if ( m_pNPC && !pChar->IsStatFlag(STATF_Hidden))
-						return NULL;
-
-					//	How much stamina to push past ?
-					int iStamReq = g_Cfg.Calc_WalkThroughChar(this, pChar);
-					//	cannot push the char
-					if ( iStamReq < 0 || Stat_GetVal(STAT_DEX) <= iStamReq )
-						return NULL;
-				}
-			}
-		}
-		return pArea;
-	}
-
 	EXC_SET("NPC's will");
-	if ( ! m_pPlayer )
-	{
-		// Does the NPC want to walk here ?
-		if ( !NPC_CheckWalkHere( ptDst, pArea, wBlockFlags ) )
-			return( NULL );
-	}
+	if ( !fCheckOnly && m_pNPC && !NPC_CheckWalkHere(ptDst, pArea, wBlockFlags) )	// does the NPC want to walk here?
+		return NULL;
 
 	EXC_SET("Creature bumping");
-	// Bump into other creatures ?
-	if ( ! IsStatFlag( STATF_DEAD | STATF_Sleeping | STATF_Insubstantial ) && fCheckChars )
+	if ( fCheckChars && !IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Insubstantial) )
 	{
 		CWorldSearch AreaChars( ptDst );
-		AreaChars.SetAllShow( true );	// show logged out chars.
 		for (;;)
 		{
 			CChar * pChar = AreaChars.GetChar();
 			if ( pChar == NULL )
 				break;
-			if ( pChar == this )
+			if ( pChar == this || pChar->GetTopZ() != ptDst.m_z || !ptDst.IsSameMap(pChar->GetTopMap()) )
 				continue;
-			if ( pChar->GetTopZ() != ptDst.m_z )
-				continue;
-			if ( ! ptDst.IsSameMap( pChar->GetTopMap()))
-				continue;
+			if( m_pNPC && pChar->m_pNPC )	// NPCs can't walk over another NPC
+				return NULL;
 
-			// Everyone can walk over dead/insubstantial/disconnected characters
-			if ( pChar->IsStatFlag( STATF_DEAD | STATF_Insubstantial ) ||
-				pChar->IsDisconnected())
-			{
-				if ( CanDisturb(pChar) && IsStatFlag(STATF_SpiritSpeak))
-				{
-					SysMessageDefault( DEFMSG_TINGLING );
-				}
-				continue;
-			}
-
-			if( m_pNPC )
-			{
-				// NPCs can't bump through other characters, but can walk over someone hidden or NPCs
-				// in other cases people with 2uo can easily gain skill disallowing npc to move
-				if( pChar->IsStatFlag(STATF_Hidden) || !pChar->IsClient() ) ;
-				else
-				{
-					return NULL;
-				}
-			}
-
-			// How much stamina to push past ?
 			int iStamReq = g_Cfg.Calc_WalkThroughChar(this, pChar);
 			TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
-
 			if ( IsTrigUsed(TRIGGER_PERSONALSPACE) )
 			{
 				CScriptTriggerArgs Args(iStamReq);
@@ -3314,68 +3196,47 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 					return NULL;
 			}
 
+			if ( IsPriv(PRIV_GM) )		// GMs are allowed to walk over chars
+				return pArea;
+
 			TCHAR *pszMsg = Str_GetTemp();
-			if ( pChar->IsStatFlag(STATF_Invisible) )
+			if ( iStamReq < 0 || Stat_GetVal(STAT_DEX) <= iStamReq )	// check if we have enough stamina to push the char
 			{
-				strcpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_INVISIBLE));
-				continue;
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_CANTPUSH), pChar->GetName());
+				SysMessage(pszMsg);
+				return NULL;
 			}
 			else if ( pChar->IsStatFlag(STATF_Hidden) )
 			{
-				// reveal hidden people ?
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_HIDING_STUMBLE), pChar->GetName() );
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_HIDING_STUMBLE), pChar->GetName());
 				pChar->Reveal(STATF_Hidden);
 			}
 			else if ( pChar->IsStatFlag(STATF_Sleeping) )
-			{
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_STEPON_BODY), pChar->GetName() );
-			}
-			else if (( iStamReq < 0 ) || ( Stat_GetVal(STAT_DEX) <= iStamReq ))
-			{
-				if ( !IsPriv(PRIV_GM) )
-				{
-					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_CANTPUSH), pChar->GetName());
-					SysMessage(pszMsg);
-					return NULL;
-				}
-			}
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_STEPON_BODY), pChar->GetName());
 			else
-			{
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_PUSH), static_cast<LPCTSTR>(pChar->GetName()));
-			}
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_PUSH), pChar->GetName());
 
 			if ( iRet != TRIGRET_RET_FALSE )
+			{
 				SysMessage(pszMsg);
-
-			iStamReq = ( IsPriv(PRIV_GM) ? -10 : (( iStamReq < 0 ) ? 0 : iStamReq) );
-			UpdateStatVal(STAT_DEX, -iStamReq);
-			break;
+				break;
+			}
 		}
 	}
 
-	EXC_SET("Stamina penalty");
-	// decrease stamina if running or overloaded.
-	if ( !IsPriv(PRIV_GM) )
+	if ( !fCheckOnly )
 	{
-		// We are overloaded. reduce our stamina faster.
-		// Running acts like an increased load.
-		int iStamReq = g_Cfg.Calc_DropStamWhileMoving( this, iWeightLoadPercent );
+		EXC_SET("Stamina penalty");
+		int iStamReq = g_Cfg.Calc_DropStamWhileMoving(this, iWeightLoadPercent);	// decrease stamina if running or overloaded
 		if ( iStamReq )
-		{
-			// Lower avail stamina.
-			UpdateStatVal( STAT_DEX, -iStamReq );
-		}
+			UpdateStatVal(STAT_DEX, -iStamReq);
+
+		StatFlag_Mod(STATF_InDoors, (wBlockFlags & CAN_I_ROOF) || pArea->IsFlag(REGION_FLAG_UNDERGROUND));
+		m_zClimbHeight = (wBlockFlags & CAN_I_CLIMB) ? ClimbHeight : 0;
 	}
-
-	StatFlag_Mod( STATF_InDoors, ( wBlockFlags & CAN_I_ROOF ) || pArea->IsFlag(REGION_FLAG_UNDERGROUND) );
-
-	if ( wBlockFlags & CAN_I_CLIMB )
-		m_zClimbHeight = ClimbHeight;
-	else
-		m_zClimbHeight = 0;
 
 	EXC_CATCH;
-	return( pArea );
+	return pArea;
 }
 
 void CChar::CheckRevealOnMove()
@@ -4198,17 +4059,6 @@ bool CChar::OnTick()
 	if ( !iTimeDiff )
 		return true;
 
-	if ( IsClient() )
-	{
-		// Players have a silly "always run" flag that gets stuck on.
-		if ( -g_World.GetTimeDiff(GetClient()->m_timeLastEventWalk) > TICK_PER_SEC )
-			StatFlag_Clear(STATF_Fly);
-
-		// Check targeting timeout, if set
-		if ( GetClient()->m_Targ_Timeout.IsTimeValid() && g_World.GetTimeDiff(GetClient()->m_Targ_Timeout) <= 0 )
-			GetClient()->addTargetCancel();
-	}
-
 	if ( iTimeDiff >= TICK_PER_SEC )		// don't bother with < 1 sec timers on the checks below
 	{
 		// Decay equipped items (spells)
@@ -4233,6 +4083,17 @@ bool CChar::OnTick()
 
 	if ( IsDisconnected() )
 		return true;
+
+	if ( IsClient() )
+	{
+		// Players have a silly "always run" flag that gets stuck on.
+		if ( -g_World.GetTimeDiff(GetClient()->m_timeLastEventWalk) > TICK_PER_SEC )
+			StatFlag_Clear(STATF_Fly);
+
+		// Check targeting timeout, if set
+		if ( GetClient()->m_Targ_Timeout.IsTimeValid() && g_World.GetTimeDiff(GetClient()->m_Targ_Timeout) <= 0 )
+			GetClient()->addTargetCancel();
+	}
 
 	if ( iTimeDiff >= TICK_PER_SEC )		// don't bother with < 1 sec timers on the checks below
 	{
