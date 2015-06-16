@@ -2141,17 +2141,16 @@ CItemBaseDupe * CItemBaseDupe::GetDupeRef( ITEMID_TYPE id ) // static
 WORD CItemBase::GetMaxAmount()
 {
 	ADDTOCALLSTACK("CItemBase::GetMaxAmount");
-
 	if (!IsStackableType())
 		return 0;
 
-	return static_cast<WORD>(GetDefNum("MaxAmount", false) ? GetDefNum("MaxAmount", false) : INT_MAX);
+	WORD pMax = static_cast<WORD>(GetDefNum("MaxAmount", false));
+	return pMax ? pMax : static_cast<WORD>(g_Cfg.m_iItemsMaxAmount);
 };
 
-bool CItemBase::SetMaxAmount(unsigned short amount)
+bool CItemBase::SetMaxAmount(WORD amount)
 {
 	ADDTOCALLSTACK("CItemBase::SetMaxAmount");
-
 	if (!IsStackableType())
 		return false;
 
