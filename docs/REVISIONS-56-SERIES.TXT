@@ -2343,3 +2343,9 @@ Fixed: Paralyze effect not updating the client immediatelly when it goes off, ma
 Fixed: Function SERV.MAP(x,y,z,m) returning console error instead '0' when 'm' is a invalid/disabled map.
 [Sphere.ini]: Added new ItemsMaxAmount .ini setting. This will globally set max allowed amount for all stackable items (default is 60000).
 [sphere_msgs.scp]: Removed 'msg_invisible' and 'msg_tingling' messages.
+
+
+17-06-2015, Coruja
+Fixed: Stamina not decreasing correctly when walk over another char.
+Fixed: Packet to update char hitpoints being sent twice to nearby party members.
+Fixed: Properties like STR/ModSTR/MaxHits/etc making the char have current status value > max allowed value when the status got lowered.

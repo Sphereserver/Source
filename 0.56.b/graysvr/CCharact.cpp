@@ -3152,6 +3152,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 	}
 
 	// ok to go here ? physical blocking objects ?
+	int iStamReq = 0;
 	WORD wBlockFlags = 0;
 	height_t ClimbHeight = 0;
 	CRegionBase *pArea = NULL;
@@ -3184,7 +3185,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			if( m_pNPC && pChar->m_pNPC )	// NPCs can't walk over another NPC
 				return NULL;
 
-			int iStamReq = g_Cfg.Calc_WalkThroughChar(this, pChar);
+			iStamReq += g_Cfg.Calc_WalkThroughChar(this, pChar);
 			TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 			if ( IsTrigUsed(TRIGGER_PERSONALSPACE) )
 			{
@@ -3227,7 +3228,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 	if ( !fCheckOnly )
 	{
 		EXC_SET("Stamina penalty");
-		int iStamReq = g_Cfg.Calc_DropStamWhileMoving(this, iWeightLoadPercent);	// decrease stamina if running or overloaded
+		iStamReq += g_Cfg.Calc_DropStamWhileMoving(this, iWeightLoadPercent);	// decrease stamina if running or overloaded
 		if ( iStamReq )
 			UpdateStatVal(STAT_DEX, -iStamReq);
 

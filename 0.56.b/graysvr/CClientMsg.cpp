@@ -2238,11 +2238,6 @@ void CClient::addHitsUpdate( CGrayUID uid )
 
 	PacketHealthUpdate cmd(pChar, pChar == m_pChar);
 	cmd.send(this);
-
-	if (( pChar->m_pParty == NULL ) || ( m_pChar != pChar ))
-		return;
-
-	pChar->m_pParty->AddStatsUpdate( pChar, &cmd );
 }
 
 void CClient::addManaUpdate( CGrayUID uid )
@@ -2255,10 +2250,8 @@ void CClient::addManaUpdate( CGrayUID uid )
 	PacketManaUpdate cmd(pChar);
 	cmd.send(this);
 
-	if (( pChar->m_pParty == NULL ) || ( m_pChar != pChar ))
-		return;
-
-	pChar->m_pParty->AddStatsUpdate( pChar, &cmd );
+	if ( pChar->m_pParty )
+		pChar->m_pParty->AddStatsUpdate( pChar, &cmd );
 }
 
 void CClient::addStamUpdate( CGrayUID uid )
@@ -2271,10 +2264,8 @@ void CClient::addStamUpdate( CGrayUID uid )
 	PacketStaminaUpdate cmd(pChar);
 	cmd.send(this);
 
-	if (( pChar->m_pParty == NULL ) || ( m_pChar != pChar ))
-		return;
-
-	pChar->m_pParty->AddStatsUpdate( pChar, &cmd );
+	if ( pChar->m_pParty )
+		pChar->m_pParty->AddStatsUpdate( pChar, &cmd );
 }
 
 void CClient::addHealthBarUpdate( const CChar * pChar )

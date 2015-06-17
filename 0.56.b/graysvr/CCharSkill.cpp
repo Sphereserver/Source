@@ -33,8 +33,8 @@ void CChar::Action_StartSpecial( CREID_TYPE id )
 				pItem->m_itSpell.m_spell = static_cast<WORD>(SPELL_Fire_Field);
 				pItem->m_itSpell.m_spelllevel = static_cast<WORD>(100 + Calc_GetRandVal(500));
 				pItem->m_itSpell.m_spellcharges = 1;
-				pItem->m_uidLink = GetUID();	// link it back to you
-				pItem->MoveToDecay( GetTopPoint(), Calc_GetRandVal(60)*TICK_PER_SEC );
+				pItem->m_uidLink = GetUID();
+				pItem->MoveToDecay( GetTopPoint(), 10 + Calc_GetRandVal(50)*TICK_PER_SEC );
 			}
 			break;
 
@@ -44,17 +44,16 @@ void CChar::Action_StartSpecial( CREID_TYPE id )
 				CItem * pItem = CItem::CreateScript( static_cast<ITEMID_TYPE>(Calc_GetRandVal2(ITEMID_WEB1_1, ITEMID_WEB1_4)), this );
 				ASSERT(pItem);
 				pItem->SetType(IT_WEB);
-				pItem->MoveToCheck( GetTopPoint(), this );
-				pItem->SetDecayTime( 3*60*TICK_PER_SEC );
+				pItem->MoveToDecay( GetTopPoint(), 10 + Calc_GetRandVal(170)*TICK_PER_SEC );
 			}
 			break;
 
 		default:
 			SysMessage( "You have no special abilities" );
-			return;	// No special ability.
+			return;
 	}
 
-	UpdateStatVal( STAT_DEX, -( 5 + Calc_GetRandVal(5)));	// the stamina cost
+	UpdateStatVal( STAT_DEX, -(5 + Calc_GetRandVal(5)) );	// the stamina cost
 }
 
 void CChar::Stat_AddMod( STAT_TYPE i, short iVal )
@@ -70,21 +69,26 @@ void CChar::Stat_SetMod( STAT_TYPE i, short iVal )
 	ADDTOCALLSTACK("CChar::Stat_SetMod");
 	ASSERT(i >= 0 && i < STAT_QTY);
 	int iStatVal = Stat_GetMod(static_cast<STAT_TYPE>(i));
-	if ( IsTrigUsed(TRIGGER_STATCHANGE) && !IsTriggerActive("CREATE"))
+	if ( IsTrigUsed(TRIGGER_STATCHANGE) && !IsTriggerActive("CREATE") )
 	{
-		if (i >= STAT_STR && i <= STAT_DEX)
+		if ( i >= STAT_STR && i <= STAT_DEX )
 		{
 			CScriptTriggerArgs args;
-			args.m_iN1 = i+8;	// Shift by 8 to indicate modSTR, modINT, modDEX
+			args.m_iN1 = i+8;	// shift by 8 to indicate modSTR, modINT, modDEX
 			args.m_iN2 = iStatVal;
 			args.m_iN3 = iVal;
-			if (OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE)
+			if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
 				return;
 			// do not restore argn1 to i, bad things will happen! leave i untouched. (matex)
 			iVal = static_cast<short>(args.m_iN3);
 		}
 	}
 	m_Stat[i].m_mod = iVal;
+
+	int iMaxValue = Stat_GetMax(i);		// make sure the current value is not higher than new max value
+	if ( m_Stat[i].m_val > iMaxValue )
+		m_Stat[i].m_val = iMaxValue;
+
 	UpdateStatsFlag();
 }
 
@@ -122,27 +126,30 @@ void CChar::Stat_SetMax( STAT_TYPE i, int iVal )
 	ADDTOCALLSTACK("CChar::Stat_SetMax");
 	ASSERT(i >= 0 && i < STAT_QTY); // allow for food
 
-	if ( g_Cfg.m_iStatFlag && ((g_Cfg.m_iStatFlag & STAT_FLAG_DENYMAX) || (m_pPlayer && g_Cfg.m_iStatFlag & STAT_FLAG_DENYMAXP) ||	(m_pNPC && g_Cfg.m_iStatFlag & STAT_FLAG_DENYMAXN)) )
+	if ( g_Cfg.m_iStatFlag && ((g_Cfg.m_iStatFlag & STAT_FLAG_DENYMAX) || (m_pPlayer && g_Cfg.m_iStatFlag & STAT_FLAG_DENYMAXP) || (m_pNPC && g_Cfg.m_iStatFlag & STAT_FLAG_DENYMAXN)) )
 		m_Stat[i].m_max = 0;
 	else
 	{
 		int iStatVal = Stat_GetMax(static_cast<STAT_TYPE>(i));
-		if (IsTrigUsed(TRIGGER_STATCHANGE) && !IsTriggerActive("CREATE"))
+		if ( IsTrigUsed(TRIGGER_STATCHANGE) && !IsTriggerActive("CREATE") )
 		{
-			// Only STR, DEX, INT, FOOD fire MaxHits, MaxMana, MaxStam, MaxFood for @StatChange
-			if (i >= STAT_STR && i <= STAT_FOOD)
+			if ( i >= STAT_STR && i <= STAT_FOOD )		// only STR, DEX, INT, FOOD fire MaxHits, MaxMana, MaxStam, MaxFood for @StatChange
 			{
 				CScriptTriggerArgs args;
-				args.m_iN1 = i + 4; // Shift by 4 to indicate MaxHits, etc..
+				args.m_iN1 = i + 4;		// shift by 4 to indicate MaxHits, etc..
 				args.m_iN2 = iStatVal;
 				args.m_iN3 = iVal;
-				if (OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE)
+				if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
 					return;
-				// do not restore argn1 to i, bad things will happen! leave i untouched. (matex)
+				// do not restore argn1 to i, bad things will happen! leave it untouched. (matex)
 				iVal = static_cast<int>(args.m_iN3);
 			}
 		}
 		m_Stat[i].m_max = iVal;
+
+		int iMaxValue = Stat_GetMax(i);		// make sure the current value is not higher than new max value
+		if ( m_Stat[i].m_val > iMaxValue )
+			m_Stat[i].m_val = iMaxValue;
 
 		if ( i == STAT_STR )
 			UpdateHitsFlag();
@@ -288,6 +295,11 @@ void CChar::Stat_SetBase( STAT_TYPE i, short iVal )
 	}
 	
 	m_Stat[i].m_base = iVal;
+
+	int iMaxValue = Stat_GetMax(i);		// make sure the current value is not higher than new max value
+	if ( m_Stat[i].m_val > iMaxValue )
+		m_Stat[i].m_val = iMaxValue;
+
 	UpdateStatsFlag();
 	if ( !g_Serv.IsLoading() && i == STAT_KARMA )
 		NotoSave_Update();
