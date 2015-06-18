@@ -2344,8 +2344,14 @@ Fixed: Function SERV.MAP(x,y,z,m) returning console error instead '0' when 'm' i
 [Sphere.ini]: Added new ItemsMaxAmount .ini setting. This will globally set max allowed amount for all stackable items (default is 60000).
 [sphere_msgs.scp]: Removed 'msg_invisible' and 'msg_tingling' messages.
 
-
 17-06-2015, Coruja
 Fixed: Stamina not decreasing correctly when walk over another char.
 Fixed: Packet to update char hitpoints being sent twice to nearby party members.
 Fixed: Properties like STR/ModSTR/MaxHits/etc making the char have current status value > max allowed value when the status got lowered.
+
+18-06-2015, Coruja
+Changed: Combat now will make blood effects only for physical damage (wrestling / weapons).
+Changed: Field spells casted over the same field already created on ground now will make the previous field tile got replaced with the new one.
+Changed: Trigger @DropOn_Ground / @ItemDropOn_Ground now is fired when the item is already on the ground instead get fired before place it on ground. So there's no more ARGS showing the drop location P (use <ACT.P> instead) and also 'return 1' will disable drop sound and decay timer.
+Fixed: ATTR 'attr_magic' and 'attr_newbie' incorrectly affecting the item decay timer when it got dropped on ground.
+[Sphere.ini]: Updated ClientLinger setting with correct value.

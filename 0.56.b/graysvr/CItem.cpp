@@ -1180,32 +1180,23 @@ INT64 CItem::GetDecayTime() const
 	// Return time in seconds that it will take to decay this item.
 	// -1 = never decays.
 
-	switch ( GetType())
+	switch (GetType())
 	{
 		case IT_FOLIAGE:
-		case IT_CROPS: // Crops "decay" as they grow
-			return g_World.GetTimeDiff(g_World.GetNextNewMoon( ( GetTopPoint().m_map == 1 ) ? false : true ) +
-				Calc_GetRandLLVal(20) * g_Cfg.m_iGameMinuteLength);
+		case IT_CROPS:		// crops "decay" as they grow
+			return g_World.GetTimeDiff(g_World.GetNextNewMoon((GetTopPoint().m_map == 1) ? false : true) + Calc_GetRandLLVal(20) * g_Cfg.m_iGameMinuteLength);
 		case IT_MULTI:
 		case IT_SHIP:
 		case IT_MULTI_CUSTOM:
-			// very long decay updated as people use it.
-			return( 14*24*60*60*TICK_PER_SEC );	// days to rot a structure.
+			return( 14*24*60*60*TICK_PER_SEC );		// very long decay updated as people use it
 		case IT_TRASH_CAN:
-			// Empties every n seconds.
-			return( 15*TICK_PER_SEC );
-
+			return( 180*TICK_PER_SEC );		// empties in 3 minutes
 		default:
 			break;
 	}
 
-	if ( IsAttr(ATTR_CAN_DECAY|ATTR_STATIC|ATTR_MOVE_NEVER|ATTR_LOCKEDDOWN|ATTR_SECURE) || !IsMovableType() )
+	if (IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC|ATTR_LOCKEDDOWN|ATTR_SECURE) || !IsMovableType())
 		return -1;
-
-	if ( IsAttr(ATTR_MAGIC) )			//	magics destroyed later
-		return ( 4*g_Cfg.m_iDecay_Item );
-	if ( IsAttr(ATTR_NEWBIE) )			//	but newbie faster
-		return ( g_Cfg.m_iDecay_Item / 2 );
 
 	return g_Cfg.m_iDecay_Item;
 }
@@ -1363,7 +1354,8 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	else
 		ptNewPlace.ValidatePoint();
 
-	// Set the decay timer
+	MoveTo(ptNewPlace);
+
 	long long iDecayTime = GetDecayTime();
 	if ( iDecayTime > 0 )
 	{
@@ -1376,17 +1368,16 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	if ( IsTrigUsed(TRIGGER_DROPON_GROUND) || IsTrigUsed(TRIGGER_ITEMDROPON_GROUND) )
 	{
 		CScriptTriggerArgs args;
-		args.m_s1 = ptNewPlace.WriteUsed();
-		args.m_s1_raw = args.m_s1;
-		args.m_iN1 = iDecayTime;
+		args.m_iN1 = iDecayTime;		// ARGN1 = Decay time for the dropped item (in ticks)
 		ttResult = OnTrigger(ITRIG_DROPON_GROUND, pCharMover, &args);
 
-		iDecayTime = args.m_iN1;	// ARGN1 = Decay time for the dropped item (in ticks)
 		if ( IsDeleted() )
 			return false;
+
+		iDecayTime = args.m_iN1;
 	}
 
-	if (ttResult != TRIGRET_RET_TRUE)
+	if ( ttResult != TRIGRET_RET_TRUE )
 	{
 		// Check if there's too many items on the same spot
 		unsigned int iItemCount = 0;
@@ -1406,10 +1397,12 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 				break;
 			}
 		}
+
+		SetDecayTime(iDecayTime);
+		Sound(GetDropSound(NULL));
 	}
 
-	MoveToDecay(ptNewPlace, iDecayTime);
-	Sound(GetDropSound(NULL));
+	Update();
 	return true;
 }
 
@@ -4615,6 +4608,15 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		return false;
 	}
 
+	if ( IsType(IT_SPELL) && m_itSpell.m_spell == spell )
+	{
+		// On OSI the field item won't be placed if it overlap any other field spell already casted.
+		// But for backward compatibility, let's just override the old item with the new one, and only if it's the same field spell.
+		// This will prevent weird exploits, like cast many fire fields at same P to cause more damage.
+		Delete();
+		return true;
+	}
+
 	WORD uDamage = 0;
 	switch ( spell )
 	{
@@ -4699,7 +4701,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	if ( pSpellDef->IsSpellType( SPELLFLAG_HARM ))
 		OnTakeDamage( 1, pCharSrc, DAMAGE_MAGIC|uDamage );
 
-	return( true );
+	return true;
 }
 
 int CItem::Armor_GetRepairPercent() const

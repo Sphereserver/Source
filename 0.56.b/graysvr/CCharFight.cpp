@@ -2383,24 +2383,6 @@ effect_bounce:
 	if (iDmg <= 0)
 		return(0);
 
-	// Make blood effects
-	if ( m_wBloodHue != static_cast<HUE_TYPE>(-1) )
-	{
-		static const ITEMID_TYPE sm_Blood[] = { ITEMID_BLOOD1, ITEMID_BLOOD2, ITEMID_BLOOD3, ITEMID_BLOOD4, ITEMID_BLOOD5, ITEMID_BLOOD6, ITEMID_BLOOD_SPLAT };
-		int iBloodQty = g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE ? Calc_GetRandVal2(4,5) : Calc_GetRandVal2(1,2);
-
-		for ( int i = 0; i < iBloodQty; i++ )
-		{
-			ITEMID_TYPE iBloodID = sm_Blood[Calc_GetRandVal(COUNTOF(sm_Blood))];
-			CItem * pBlood = CItem::CreateBase( iBloodID );
-			ASSERT(pBlood);
-
-			pBlood->SetHue( m_wBloodHue );
-			pBlood->MoveNear( GetTopPoint(), 1 );
-			pBlood->SetDecayTime( 5*TICK_PER_SEC );
-		}
-	}
-
 	// Apply damage
 	SoundChar(CRESND_GETHIT);
 	UpdateStatVal( STAT_STR, -iDmg );
@@ -4160,6 +4142,23 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 		if ( bMakeLeechSound )
 			Sound(0x44d);
+
+		// Make blood effects
+		if ( m_wBloodHue != static_cast<HUE_TYPE>(-1) )
+		{
+			static const ITEMID_TYPE sm_Blood[] = { ITEMID_BLOOD1, ITEMID_BLOOD2, ITEMID_BLOOD3, ITEMID_BLOOD4, ITEMID_BLOOD5, ITEMID_BLOOD6, ITEMID_BLOOD_SPLAT };
+			int iBloodQty = g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE ? Calc_GetRandVal2(4, 5) : Calc_GetRandVal2(1, 2);
+
+			for ( int i = 0; i < iBloodQty; i++ )
+			{
+				ITEMID_TYPE iBloodID = sm_Blood[Calc_GetRandVal(COUNTOF(sm_Blood))];
+				CItem * pBlood = CItem::CreateBase(iBloodID);
+				ASSERT(pBlood);
+				pBlood->SetHue(m_wBloodHue);
+				pBlood->MoveNear(GetTopPoint(), 1);
+				pBlood->SetDecayTime(5 * TICK_PER_SEC);
+			}
+		}
 
 		// If we do no damage, we get no experience!
 		Skill_Experience( skill, m_Act_Difficulty );
