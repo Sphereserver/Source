@@ -1448,25 +1448,6 @@ bool CScriptObj::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 					return false;
 				}
 
-				// See if we are an Item or a Char so we can put the npc near us
-				const CObjBase *pIdentity = dynamic_cast<CObjBase *>(this);
-				// If we are non, try pSrc 
-				if(pIdentity == NULL)
-					pIdentity = pSrc->GetChar();
-
-				if (pIdentity)
-				{
-					// First try placing the char near us; if this fails place the char ON us
-					if (pIdentity->GetTopPoint().IsValidPoint() && (pChar->MoveNearObj(pIdentity, 1) || pChar->MoveTo(pIdentity->GetTopPoint())))
-						pChar->Update();
-					else
-					{
-						DEBUG_ERR(("NEWNPC failed on UID:0%lx, could not move to world\n", (DWORD)pIdentity->GetUID()));
-						pChar->Delete();
-						g_World.m_uidNew = (DWORD)0;
-						return false;
-					}
-				}
 				g_World.m_uidNew = pChar->GetUID();
 
 				if ( this != &g_Serv )

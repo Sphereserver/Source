@@ -1151,7 +1151,7 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 				case IT_FIGURINE:
 					{
 						for ( int f = 0; f < amount; f++ )
-							m_pChar->Use_Figurine(pItem, 2);
+							m_pChar->Use_Figurine(pItem);
 					}
 					goto do_consume;
 				case IT_BEARD:

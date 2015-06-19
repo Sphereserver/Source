@@ -60,7 +60,7 @@ CResource::CResource()
 
 	m_iGuestsMax = 0;
 	m_iArriveDepartMsg = 1;
-	m_iClientLingerTime = 60 * TICK_PER_SEC;
+	m_iClientLingerTime = 5*60*TICK_PER_SEC;
 	m_iDeadSocketTime = 5*60*TICK_PER_SEC;
 	m_iMinCharDeleteTime = 3*24*60*60*TICK_PER_SEC;
 	m_iMaxCharsPerAccount = 5;

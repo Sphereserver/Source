@@ -525,23 +525,24 @@ void CChar::NPC_PetClearOwners()
 bool CChar::NPC_PetSetOwner( CChar * pChar )
 {
 	ADDTOCALLSTACK("CChar::NPC_PetSetOwner");
-	// If previous owner was OWNER_SPAWN then remove it from spawn count
-	if ( IsStatFlag( STATF_Spawned ))
-		Memory_ClearTypes( MEMORY_ISPAWNED );
-
-	// Clear previous owner before set the new owner
-	NPC_PetClearOwners();
-
 	// m_pNPC may not be set yet if this is a conjured creature.
 	if ( m_pPlayer || pChar == this || pChar == NULL )
 		return false;
+
+	CChar * pOwner = NPC_PetGetOwner();
+	if ( pOwner == pChar )
+		return false;
+
+	// Clear previous owner before set the new owner
+	NPC_PetClearOwners();
 
 	// We get some of the noto of our owner.
 	// ??? If I am a pet. I have noto of my master.
 
 	m_ptHome.InitPoint();	// No longer homed.
+	Memory_ClearTypes( MEMORY_ISPAWNED );
 	Memory_AddObjTypes( pChar, MEMORY_IPET );
-	NPC_Act_Idle();
+	NPC_Act_Follow();
 	if ( NPC_IsVendor())
 	{
 		// Clear my cash total.
@@ -557,8 +558,9 @@ bool CChar::NPC_PetSetOwner( CChar * pChar )
 		short int iSetFollower = iCurFollower + iFollowerSlotsNeeded;
 
 		pChar->FollowersUpdate(this, false, &iFollowerSlotsNeeded);
-		// Send an update packet for the stats
 		pChar->SetDefNum("CURFOLLOWER", iSetFollower);
+
+		// Send an update packet for the stats
 		CClient * pClient = pChar->GetClient();
 		if ( pClient )
 			pClient->addCharStatWindow( pChar->GetUID() );

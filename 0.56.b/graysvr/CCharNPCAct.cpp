@@ -327,7 +327,7 @@ bool CChar::NPC_StablePetRetrieve( CChar * pCharPlayer )
 		CItem * pItemNext = pItem->GetNext();
 		if ( pItem->IsType( IT_FIGURINE ) && pItem->m_uidLink == pCharPlayer->GetUID())
 		{
-			if ( ! pCharPlayer->Use_Figurine( pItem, 2 ))
+			if ( !pCharPlayer->Use_Figurine(pItem) )
 			{
 				iCount = -1;
 				break;

@@ -1195,7 +1195,7 @@ void CChar::Use_Drink( CItem * pItem )
 	}
 }
 
-CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
+CChar * CChar::Use_Figurine( CItem * pItem, bool bCheckFollowerSlots )
 {
 	ADDTOCALLSTACK("CChar::Use_Figurine");
 	// NOTE: The figurine is NOT destroyed.
@@ -1234,36 +1234,32 @@ CChar * CChar::Use_Figurine( CItem * pItem, int iPaces )
 		}
 	}
 
-	if ( !iPaces )
-		pPet->m_dirFace = m_dirFace;	// getting off ridden horse
-	else
+	if ( bCheckFollowerSlots && IsSetOF(OF_PetSlots) )
 	{
-		if ( IsSetOF(OF_PetSlots) )
+		short int iFollowerSlotsNeeded = static_cast<short>(maximum(pPet->GetDefNum("FOLLOWERSLOTS", true, true),1));
+		short int iCurFollower = static_cast<short>(GetDefNum("CURFOLLOWER", true, true));
+		short int iMaxFollower = static_cast<short>(GetDefNum("MAXFOLLOWER", true, true));
+		short int iSetFollower = iCurFollower + iFollowerSlotsNeeded;
+		if ( (FollowersUpdate(pPet, false, &iFollowerSlotsNeeded) == false || iSetFollower > iMaxFollower) && !IsPriv(PRIV_GM))
 		{
-			short int iFollowerSlotsNeeded = static_cast<short>(maximum(pPet->GetDefNum("FOLLOWERSLOTS", true, true),1));
-			short int iCurFollower = static_cast<short>(GetDefNum("CURFOLLOWER", true, true));
-			short int iMaxFollower = static_cast<short>(GetDefNum("MAXFOLLOWER", true, true));
-			short int iSetFollower = iCurFollower + iFollowerSlotsNeeded;
-			if ( (FollowersUpdate(pPet, false, &iFollowerSlotsNeeded) == false || iFollowerSlotsNeeded > iMaxFollower) && !IsPriv(PRIV_GM))
-			{
-				SysMessageDefault( DEFMSG_PETSLOTS_TRY_CONTROL );
-				if ( bCreatedNewNpc )
-					pPet->Delete();
-				return false;
-			}
-
-			// Send an update packet for the stats
-			SetDefNum("CURFOLLOWER", iSetFollower);
-			CClient * pClient = GetClient();
-			if ( pClient )
-				pClient->addCharStatWindow( GetUID() );
+			SysMessageDefault( DEFMSG_PETSLOTS_TRY_CONTROL );
+			if ( bCreatedNewNpc )
+				pPet->Delete();
+			return NULL;
 		}
+
+		// Send an update packet for the stats
+		SetDefNum("CURFOLLOWER", iSetFollower);
+		CClient * pClient = GetClient();
+		if ( pClient )
+			pClient->addCharStatWindow( GetUID() );
 	}
 
 	if ( pPet->IsDisconnected())
 		pPet->StatFlag_Clear( STATF_Ridden );	// pull the creature out of IDLE space
 
 	pItem->m_itFigurine.m_UID.InitUID();
+	pPet->m_dirFace = m_dirFace;
 	pPet->NPC_PetSetOwner( this );
 	pPet->MoveToChar( pItem->GetTopLevelObj()->GetTopPoint() );
 	pPet->Update();
@@ -1747,11 +1743,9 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 
 	case IT_FIGURINE:
 		// Create the creature here.
-		fAction = ( Use_Figurine( pItem, 0 ) != NULL );
+		fAction = ( Use_Figurine(pItem) != NULL );
 		if ( fAction )
-		{
 			pItem->Delete();
-		}
 		break;
 
 	case IT_TRAP:

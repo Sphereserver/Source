@@ -2355,3 +2355,8 @@ Changed: Field spells casted over the same field already created on ground now w
 Changed: Trigger @DropOn_Ground / @ItemDropOn_Ground now is fired when the item is already on the ground instead get fired before place it on ground. So there's no more ARGS showing the drop location P (use <ACT.P> instead) and also 'return 1' will disable drop sound and decay timer.
 Fixed: ATTR 'attr_magic' and 'attr_newbie' incorrectly affecting the item decay timer when it got dropped on ground.
 [Sphere.ini]: Updated ClientLinger setting with correct value.
+
+19-06-2015, Coruja
+Changed: NEWNPC function won't automatically place the created NPC on source P anymore. Like NEWITEM, the NPC will be created virtually and must be placed on the world using P=x,y. This will prevent the server send unnecessary/duplicated 'update' packets to clients.
+Fixed #2514: Hiding / Stealth skills and Poison / Poison Field spells not updating the client screen correctly on action success.
+Fixed #2518: Mounts losing bonded status on dismount.

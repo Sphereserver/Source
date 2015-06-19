@@ -500,7 +500,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			break;
 		case LAYER_FLAG_Poison:
 			StatFlag_Clear(STATF_Poisoned);
-			UpdateModeFlag();
+			UpdateMode();
 			if (pClient)
 				pClient->removeBuff(BI_POISON);
 			break;
@@ -994,7 +994,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 		}
 		case LAYER_FLAG_Poison:
 			StatFlag_Set(STATF_Poisoned);
-			UpdateModeFlag();
+			UpdateMode();
 			if (pClient && IsSetOF(OF_Buffs))
 			{
 				pClient->removeBuff(BI_POISON);
@@ -1051,7 +1051,6 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				pClient->removeBuff(BI_PARALYZE);
 				pClient->addBuff(BI_PARALYZE, 1075827, 1075828, iTimerEffect);
 			}
-			//UpdateModeFlag();
 			break;
 		case LAYER_SPELL_Summon:
 			StatFlag_Set(STATF_Conjured);

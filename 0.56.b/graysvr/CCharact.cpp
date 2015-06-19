@@ -2451,17 +2451,8 @@ bool CChar::Horse_UnMount() // Get off a horse (Remove horse item and spawn new 
 	}
 
 	// What creature is the horse item ?
-	CChar * pHorse = Use_Figurine( pItem, 0 );
+	CChar * pHorse = Use_Figurine( pItem, false );
 	pItem->Delete();
-
-	if ( ( pHorse->Stat_GetVal( STAT_STR ) <= 0 ) || ( pHorse->IsStatFlag( STATF_DEAD ) ) )
-	{
-		// Horse is dead!
-		pHorse->StatFlag_Clear( STATF_DEAD );
-		pHorse->Stat_SetVal( STAT_STR, pHorse->Stat_GetAdjusted( STAT_STR ) );
-		pHorse->Death();
-		pHorse->Delete();
-	}
 
 	return( true );
 }

@@ -3704,7 +3704,7 @@ private:
 	CItem * Horse_GetMountItem() const;
 	CChar * Horse_GetMountChar() const;
 public:
-	CChar * Use_Figurine( CItem * pItem, int iPaces = 0 );
+	CChar * Use_Figurine( CItem * pItem, bool bCheckFollowerSlots = true );
 	CItem * Make_Figurine( CGrayUID uidOwner, ITEMID_TYPE id = ITEMID_NOTHING );
 	CItem * NPC_Shrink();
 	bool FollowersUpdate(CChar * pChar, bool bSustract = false, short * iFollowers = 0);
