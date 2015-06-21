@@ -1183,8 +1183,6 @@ public:
 	CRegionBase * GetRegion( LPCTSTR pKey ) const; // Find a region with the given name/defname
 
 	int Calc_MaxCarryWeight( const CChar * pChar ) const;
-	int Calc_DropStamWhileMoving( CChar * pChar, int iWeightLoadPercent );
-	int Calc_WalkThroughChar( CChar * pCharMove, CChar * pCharObstacle );
 	int Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon );
 	int Calc_CombatChanceToHit( CChar * pChar, SKILL_TYPE skill, CChar * pCharTarg, CItem * pWeapon );
 	int  Calc_StealingItem( CChar * pCharThief, CItem * pItem, CChar * pCharMark );

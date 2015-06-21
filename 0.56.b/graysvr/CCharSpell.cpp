@@ -279,7 +279,7 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 
 			if (IsSetOF(OF_PetSlots))
 			{
-				short iFollowerSlotsNeeded = static_cast<int>(maximum(pSummonDef->GetDefNum("FOLLOWERSLOTS", true), 1));
+				short iFollowerSlotsNeeded = static_cast<short>(maximum(pChar->GetDefNum("FOLLOWERSLOTS", true, true), 1));
 				short iCurFollower = static_cast<short>(GetDefNum("CURFOLLOWER", true, true));
 				short iMaxFollower = static_cast<short>(GetDefNum("MAXFOLLOWER", true, true));
 
@@ -2228,10 +2228,9 @@ bool CChar::Spell_TargCheck()
 	}
 
 	// Need a target.
-	if (	pSpellDef->IsSpellType( SPELLFLAG_TARG_OBJ )
-		&& !( !pObj && pSpellDef->IsSpellType( SPELLFLAG_TARG_XYZ ) ) )
+	if ( pSpellDef->IsSpellType( SPELLFLAG_TARG_OBJ ) && !( !pObj && pSpellDef->IsSpellType( SPELLFLAG_TARG_XYZ ) ) )
 	{
-		if ( pObj == NULL )
+		if ( pObj == NULL || pObjTop == NULL )
 		{
 			SysMessageDefault( DEFMSG_SPELL_TARG_OBJ );
 			return( false );
@@ -2241,7 +2240,7 @@ bool CChar::Spell_TargCheck()
 			SysMessageDefault(DEFMSG_SPELL_TARG_LOS);
 			return false;
 		}
-		if ( ! IsPriv( PRIV_GM ) && pObjTop != pObj && pObjTop->IsChar() && pObjTop != this )
+		if ( !IsPriv(PRIV_GM) && pObjTop != this && pObjTop != pObj && pObjTop->IsChar() )
 		{
 			SysMessageDefault( DEFMSG_SPELL_TARG_CONT );
 			return( false );

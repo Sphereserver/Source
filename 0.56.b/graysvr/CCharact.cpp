@@ -84,14 +84,13 @@ bool CChar::TeleportToObj( int iType, TCHAR * pszArgs )
 		}
 
 		CObjBaseTemplate * pObjTop = pObj->GetTopLevelObj();
-		if ( pObjTop->IsChar())
+		if ( pObjTop == NULL || pObjTop == this )
+			continue;
+		if ( pObjTop->IsChar() )
 		{
 			if ( ! CanDisturb( dynamic_cast<CChar*>(pObjTop)))
 				continue;
 		}
-
-		if ( pObjTop == this )
-			continue;
 
 		m_Act_Targ = pObj->GetUID();
 		Spell_Teleport( pObjTop->GetTopPoint(), true, false );
@@ -733,15 +732,6 @@ void CChar::UpdateRegenTimers(STAT_TYPE iStat, short iVal)
 	m_Stat[iStat].m_regen = iDiff;
 }
 
-void CChar::UpdateHitsForOthers() const
-{
-	ADDTOCALLSTACK("CChar::UpdateHitsForOthers");
-
-	PacketHealthUpdate* cmd = new PacketHealthUpdate(this, false);
-
-	UpdateCanSee(cmd, m_pClient);
-}
-
 void CChar::UpdateStatVal( STAT_TYPE type, int iChange, int iLimit )
 {
 	ADDTOCALLSTACK("CChar::UpdateStatVal");
@@ -1375,7 +1365,7 @@ void CChar::UpdateDir( const CObjBaseTemplate * pObj )
 		return;
 
 	pObj = pObj->GetTopLevelObj();
-	if ( pObj == this )		// In our own pack.
+	if ( pObj == NULL || pObj == this )		// In our own pack.
 		return;
 	UpdateDir( pObj->GetTopPoint());
 }
@@ -3120,26 +3110,23 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 		return NULL;
 	}
 
-	int iWeightLoadPercent = GetWeightLoadPercent(GetTotalWeight());	// stamina already drop fast when char is overloaded, so this check is really needed? 
+	int iWeightLoadPercent = GetWeightLoadPercent(GetTotalWeight());
 	if ( !fCheckOnly && iWeightLoadPercent > 200 )
 	{
 		SysMessageDefault( DEFMSG_OVERLOAD );
 		return NULL;
 	}
 
-	if ( IsClient() && GetClient()->m_pHouseDesign )
+	CClient *pClient = GetClient();
+	if ( pClient && pClient->m_pHouseDesign )
 	{
-		if ( GetClient()->m_pHouseDesign->GetDesignArea().IsInside2d(GetTopPoint()) )
+		if ( pClient->m_pHouseDesign->GetDesignArea().IsInside2d(ptDst) )
 		{
-			if ( GetClient()->m_pHouseDesign->GetDesignArea().IsInside2d(ptDst) )
-			{
-				ptDst.m_z = GetTopZ();
-				return ptDst.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA);
-			}
-			return NULL;
+			ptDst.m_z = GetTopZ();
+			return ptDst.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA);
 		}
-
-		GetClient()->m_pHouseDesign->EndCustomize(true);
+		pClient->m_pHouseDesign->EndCustomize(true);
+		return NULL;
 	}
 
 	// ok to go here ? physical blocking objects ?
@@ -3165,6 +3152,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 	EXC_SET("Creature bumping");
 	if ( fCheckChars && !IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Insubstantial) )
 	{
+		CItem * pPoly = LayerFind(LAYER_SPELL_Polymorph);
 		CWorldSearch AreaChars( ptDst );
 		for (;;)
 		{
@@ -3176,7 +3164,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			if( m_pNPC && pChar->m_pNPC )	// NPCs can't walk over another NPC
 				return NULL;
 
-			iStamReq += g_Cfg.Calc_WalkThroughChar(this, pChar);
+			iStamReq = 10;
 			TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 			if ( IsTrigUsed(TRIGGER_PERSONALSPACE) )
 			{
@@ -3188,11 +3176,15 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 					return NULL;
 			}
 
-			if ( IsPriv(PRIV_GM) )		// GMs are allowed to walk over chars
+			if ( IsPriv(PRIV_GM) )		// GMs are always allowed to walk over chars
 				return pArea;
+			if ( pPoly && pPoly->m_itSpell.m_spell == SPELL_Wraith_Form && GetTopMap() == 0 )		// chars under Wraith Form effect can always walk through chars in Felucca
+				return pArea;
+			if ( Stat_GetVal(STAT_DEX) < Stat_GetMax(STAT_DEX) )
+				return NULL;
 
 			TCHAR *pszMsg = Str_GetTemp();
-			if ( iStamReq < 0 || Stat_GetVal(STAT_DEX) <= iStamReq )	// check if we have enough stamina to push the char
+			if ( Stat_GetVal(STAT_DEX) < iStamReq )		// check if we have enough stamina to push the char
 			{
 				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_CANTPUSH), pChar->GetName());
 				SysMessage(pszMsg);
@@ -3209,17 +3201,25 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_PUSH), pChar->GetName());
 
 			if ( iRet != TRIGRET_RET_FALSE )
-			{
 				SysMessage(pszMsg);
-				break;
-			}
+
+			break;
 		}
 	}
 
 	if ( !fCheckOnly )
 	{
 		EXC_SET("Stamina penalty");
-		iStamReq += g_Cfg.Calc_DropStamWhileMoving(this, iWeightLoadPercent);	// decrease stamina if running or overloaded
+		// Chance to drop more stamina if running or overloaded
+		CVarDefCont * pVal = GetKey("OVERRIDE.RUNNINGPENALTY", true);
+		if ( IsStatFlag(STATF_Fly|STATF_Hovering) )
+			iWeightLoadPercent += pVal ? static_cast<int>(pVal->GetValNum()) : g_Cfg.m_iStamRunningPenalty;
+
+		pVal = GetKey("OVERRIDE.STAMINALOSSATWEIGHT", true);
+		int iChanceForStamLoss = Calc_GetSCurve(iWeightLoadPercent - (pVal ? static_cast<int>(pVal->GetValNum()) : g_Cfg.m_iStaminaLossAtWeight), 10);
+		if ( iChanceForStamLoss > Calc_GetRandVal(1000) )
+			iStamReq += 1;
+
 		if ( iStamReq )
 			UpdateStatVal(STAT_DEX, -iStamReq);
 
@@ -3957,11 +3957,12 @@ void CChar::OnTickStatusUpdate()
 
 	// process m_fStatusUpdate flags
 	INT64 iTimeDiff = - g_World.GetTimeDiff( m_timeLastHitsUpdate );
-	if ( g_Cfg.m_iHitsUpdateRate && ( iTimeDiff >= g_Cfg.m_iHitsUpdateRate ) ) // update hits for all
+	if ( g_Cfg.m_iHitsUpdateRate && ( iTimeDiff >= g_Cfg.m_iHitsUpdateRate ) )
 	{
 		if ( m_fStatusUpdate & SU_UPDATE_HITS )
 		{
-			UpdateHitsForOthers();
+			PacketHealthUpdate *cmd = new PacketHealthUpdate(this, false);
+			UpdateCanSee(cmd, m_pClient);		// send hits update to all nearby clients
 			m_fStatusUpdate &= ~SU_UPDATE_HITS;
 		}
 		m_timeLastHitsUpdate = CServTime::GetCurrentTime();

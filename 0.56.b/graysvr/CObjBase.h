@@ -3245,7 +3245,6 @@ public:
 	void UpdateManaFlag() const;
 	void UpdateStamFlag() const;
 	void UpdateRegenTimers( STAT_TYPE iStat, short iVal);
-	void UpdateHitsForOthers() const;
 	ANIM_TYPE GenerateAnimate(ANIM_TYPE action, bool fTranslate = true, bool fBackward = false, BYTE iFrameDelay = 0, BYTE iAnimLen = 7);
 	bool UpdateAnimate(ANIM_TYPE action, bool fTranslate = true, bool fBackward = false, BYTE iFrameDelay = 0, BYTE iAnimLen = 7);
 

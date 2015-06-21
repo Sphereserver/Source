@@ -27,56 +27,6 @@ int CResource::Calc_MaxCarryWeight( const CChar * pChar ) const
 	return( iQty * WEIGHT_UNITS );
 }
 
-int CResource::Calc_WalkThroughChar( CChar * pCharMove, CChar * pCharObstacle )
-{
-	ADDTOCALLSTACK("CResource::Calc_WalkThroughChar");
-	// Can't i push past this char ?
-	// RETURN: 
-	//  Stamina penalty
-	//  -1 = i can't push through.
-	//  0 = no penalty , just walk through. ie. a human past a bird or really small.
-	if ( !pCharMove || !pCharObstacle )
-		return -1;
-
-	CItem * pPoly = pCharMove->LayerFind(LAYER_SPELL_Polymorph);
-	if (pPoly && pPoly->m_itSpell.m_spell == SPELL_Wraith_Form && pCharMove->GetTopMap() == 0)
-		return 0;	// Return no mana cost for morphed Wraiths, it still send the ' //msg_push "You shove %s out of the way." ' message, should it be disabled?
-	return ( pCharMove->Stat_GetAdjusted(STAT_DEX) / 5 );		// 20%
-}
-
-int CResource::Calc_DropStamWhileMoving( CChar * pChar, int iWeightLoadPercent )
-{
-	ADDTOCALLSTACK("CResource::Calc_DropStamWhileMoving");
-	// I am now running/walking.
-	// Should my stam drop ?
-	// ARGS:
-	//  iWeightLoadPercent = 0-100 percent of the weight i can carry.
-	// RETURN:
-	//  Stamina penalty
-	//  -1 = can't move
-	//  
-
-	ASSERT(pChar);
-
-	if ( pChar->IsStatFlag( STATF_DEAD ) )
-		return 0;
-
-	CVarDefCont * pVal = pChar->GetKey("OVERRIDE.RUNNINGPENALTY",true);
-
-	if ( pChar->IsStatFlag( STATF_Fly|STATF_Hovering ))	// i'm running ?
-		iWeightLoadPercent += pVal ? static_cast<int>(pVal->GetValNum()) : m_iStamRunningPenalty;
-
-	// Chance to drop in Stam given a weight
-	pVal = pChar->GetKey("OVERRIDE.STAMINALOSSATWEIGHT",true);
-
-	int iChanceForStamLoss = pVal ? Calc_GetSCurve( iWeightLoadPercent - static_cast<int>(pVal->GetValNum()), 10 ) : Calc_GetSCurve( iWeightLoadPercent - m_iStaminaLossAtWeight, 10 );
-	int iRoll = Calc_GetRandVal(1000);
-	if ( iRoll <= iChanceForStamLoss )
-		return 1;
-
-	return( 0 );
-}
-
 //********************************
 // Combat
 

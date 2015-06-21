@@ -2360,3 +2360,7 @@ Fixed: ATTR 'attr_magic' and 'attr_newbie' incorrectly affecting the item decay 
 Changed: NEWNPC function won't automatically place the created NPC on source P anymore. Like NEWITEM, the NPC will be created virtually and must be placed on the world using P=x,y. This will prevent the server send unnecessary/duplicated 'update' packets to clients.
 Fixed #2514: Hiding / Stealth skills and Poison / Poison Field spells not updating the client screen correctly on action success.
 Fixed #2518: Mounts losing bonded status on dismount.
+
+21-06-2015, Coruja
+Changed: Improved stamina checks when walking.
+Fixed: Possible console error on specific char actions like walk, teleport and cast spells.
