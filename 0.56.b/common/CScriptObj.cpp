@@ -1170,6 +1170,8 @@ badcmd:
 					g_Log.EventError("SYSSPAWN failed with error %d (\"%s\") when executing %s.\n", errno, strerror(errno), pszKey);
 					raise(SIGKILL);
 					g_Log.EventError("Failed errorhandling in SYSSPAWN. Server is UNSTABLE.\n");
+					while(true) {} // do NOT leave here until the process receives SIGKILL otherwise it will free up resources
+								   // it inherited from the main process, which pretty will fuck everything up. Normally this point should never be reached.
 				}
 				else if(bWait) // parent process here (do we have to wait?)
 				{

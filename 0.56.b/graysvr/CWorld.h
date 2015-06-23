@@ -27,6 +27,10 @@ private:
 	BYTE m_ColdChance;		// Will be snow if rain chance success.
 	BYTE m_ListenItems;		// Items on the ground that listen ?
 
+	#ifdef _SECTOR_INTTICK
+		int m_activitysectorscount;
+		const CSector *m_activitysectors[9];
+	#endif
 private:
 	WEATHER_TYPE GetWeatherCalc() const;
 	BYTE GetLightCalc( bool fQuickSet ) const;
@@ -51,6 +55,10 @@ public:
 	// Time
 	int GetLocalTime() const;
 	LPCTSTR GetLocalGameTime() const;
+
+	#ifdef _SECTOR_INTTICK
+		void InitTick();
+	#endif
 
 	SEASON_TYPE GetSeason() const
 	{

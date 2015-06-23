@@ -98,14 +98,15 @@
 #else	// _DEBUG
 
 	#ifndef ASSERT
-		#ifndef _WIN32
+		/*#ifndef _WIN32
 			// In linux, if we get an access violation, an exception isn't thrown.  Instead, we get
 			// a SIG_SEGV, and the process cores. The following code takes care of this for us.
 			extern void Assert_CheckFail( const char * pExp, const char *pFile, long lLine );
+			//matex3: is this still necessary? We have a SIG_SEGV handler nowaways.
 			#define ASSERT(exp)			(void)( (exp) || (Assert_CheckFail(#exp, __FILE__, __LINE__), 0) )
-		#else
+		#else*/
 			#define ASSERT(exp)
-		#endif
+		/*#endif*/
 	#endif	// ASSERT
 
 	#ifndef STATIC_CAST
