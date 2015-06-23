@@ -278,30 +278,30 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 			return true;
 
 		case IT_POTION:
-			if ( ! m_pChar->CanMove( pItem ))	// locked down decoration.
+			if ( !m_pChar->CanMove(pItem) )
 			{
 				SysMessageDefault( DEFMSG_ITEMUSE_POTION_FAIL );
 				return false;
 			}
 			if ( RES_GET_INDEX(pItem->m_itPotion.m_Type) == SPELL_Poison )
 			{
-				// ask them what they want to use the poison on ?
-				// Poisoning or poison self ?
-				addTarget( CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg( DEFMSG_TARGET_PROMT ), false, true );
+				// If we click directly on poison potion, we will drink poison and get ill.
+				// To use it on Poisoning skill, the skill will request to target the potion.
+				m_pChar->OnSpellEffect(SPELL_Poison, m_pChar, pItem->m_itSpell.m_spelllevel, NULL);
 				return true;
 			}
 			else if ( RES_GET_INDEX(pItem->m_itPotion.m_Type) == SPELL_Explosion )
 			{
 				// Throw explode potion.
-				if ( ! m_pChar->ItemPickup( pItem, 1 ))
-					return true;
-				m_tmUseItem.m_pParent = pItem->GetParent();	// Cheat Verify FIX.
+				if ( !m_pChar->ItemPickup(pItem, 1) )
+					return false;
 
-				addTarget( CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg( DEFMSG_SELECT_POTION_TARGET ), true, true );
-				// Put the potion in our hand as well. (and set it's timer)
-				pItem->m_itPotion.m_tick = 4;	// countdown to explode purple.
-				pItem->m_itPotion.m_ignited = 1; // ignite it
-				pItem->SetTimeout( TICK_PER_SEC );
+				m_tmUseItem.m_pParent = pItem->GetParent();		// put the potion in our hand
+				addTarget(CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg(DEFMSG_SELECT_POTION_TARGET), true, true, 5*TICK_PER_SEC);
+
+				pItem->m_itPotion.m_tick = 4;		// countdown to explode
+				pItem->m_itPotion.m_ignited = 1;	// ignite it
+				pItem->SetTimeout(TICK_PER_SEC);
 				pItem->m_uidLink = m_pChar->GetUID();
 				return true;
 			}

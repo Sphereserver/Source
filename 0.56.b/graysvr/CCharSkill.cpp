@@ -3390,8 +3390,6 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 	if ( pntMe.GetDist( m_Act_p ) > UO_MAP_VIEW_SIGHT )
 		m_Act_p.StepLinePath( pntMe, UO_MAP_VIEW_SIGHT );
 
-	//g_World.Explode( this, m_Act_p, 3, iDamage, DAMAGE_FIRE );
-
 	CChar *pTarget = m_Fight_Targ.CharFind();
 	if ( pTarget == NULL )
 		return 0;

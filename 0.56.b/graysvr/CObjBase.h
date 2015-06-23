@@ -1308,7 +1308,7 @@ public:
 		return( m_itBook.m_ResID.GetResType() == RES_BOOK );
 	}
 
-	bool OnExplosion();
+	void OnExplosion();
 	bool OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, CItem * pSourceItem );
 	int OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType = DAMAGE_HIT_BLUNT );
 
@@ -3126,8 +3126,6 @@ public:
 	int		Stat_GetSum() const;
 
 	short	Stat_GetLimit( STAT_TYPE i ) const;
-
-	void Stat_Experience(STAT_TYPE stat, int difficulty);
 
 	bool Stat_Decrease( STAT_TYPE stat, SKILL_TYPE skill = (SKILL_TYPE)NULL);
 	bool Stats_Regen(INT64 iTimeDiff);

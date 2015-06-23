@@ -485,7 +485,6 @@ public:
 
 	void Broadcast( LPCTSTR pMsg );
 	void __cdecl Broadcastf( LPCTSTR pMsg, ...) __printfargs(2,3);
-	void Explode( CChar * pSrc, CPointMap pt, BYTE iDist, WORD iDamage, WORD wFlags = DAMAGE_GENERAL | DAMAGE_HIT_BLUNT );
 
 	bool Export( LPCTSTR pszFilename, const CChar* pSrc, WORD iModeFlags = IMPFLAGS_ITEMS, int iDist = SHRT_MAX, int dx = 0, int dy = 0 );
 	bool Import( LPCTSTR pszFilename, const CChar* pSrc, WORD iModeFlags = IMPFLAGS_ITEMS, int iDist = SHRT_MAX, TCHAR *pszAgs1 = NULL, TCHAR *pszAgs2 = NULL );

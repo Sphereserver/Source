@@ -2351,33 +2351,6 @@ void __cdecl CWorld::Broadcastf(LPCTSTR pMsg, ...) // System broadcast in bold t
 	Broadcast(sTemp);
 }
 
-void CWorld::Explode( CChar * pSrc, CPointMap pt, BYTE iDist, WORD iDamage, WORD wFlags )
-{
-	ADDTOCALLSTACK("CWorld::Explode");
-	// Purple potions (explosion)
-	
-	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(pSrc->GetDefNum("BREATH.ANIM", true));
-	if ( !id )
-		id = ITEMID_FX_EXPLODE_3;
-
-	CItem *pItem = CItem::CreateBase(id);
-	if ( !pItem )
-		return;
-
-	HUE_TYPE hue = static_cast<HUE_TYPE>(pSrc->GetDefNum("BREATH.HUE", true));
-	if ( hue )
-		pItem->SetHue(hue, true);
-
-	pItem->m_uidLink = pSrc ? pSrc->GetUID() : static_cast<CGrayUID>(UID_CLEAR);
-	pItem->m_itExplode.m_iDamage = iDamage;
-	pItem->m_itExplode.m_wFlags = wFlags;
-	pItem->m_itExplode.m_iDist = iDist;
-	pItem->SetType(IT_EXPLOSION);
-	pItem->SetAttr(ATTR_MOVE_NEVER|ATTR_CAN_DECAY);
-	pItem->MoveToDecay(pt, 1);	// almost immediate decay
-	pItem->Sound(0x207);		// sound is attached to the object so put the sound before the explosion
-}
-
 //////////////////////////////////////////////////////////////////
 // Game time.
 

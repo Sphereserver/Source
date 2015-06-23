@@ -1865,23 +1865,19 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 
 	case IT_POTION:
 		// Use a potion on something else.
-		if ( RES_GET_INDEX(pItemUse->m_itPotion.m_Type) == SPELL_Poison )
+		if ( RES_GET_INDEX(pItemUse->m_itPotion.m_Type) == SPELL_Explosion )
 		{
-			// ??? If the item is a poison ask them what they want to use the poison on ?
-			// Poisoning or poison self ?
-		}
-		else if ( RES_GET_INDEX(pItemUse->m_itPotion.m_Type) == SPELL_Explosion )
-		{
-			// Throw explode potion.
-			if ( ! pItemUse->IsItemEquipped() || pItemUse->GetEquipLayer() != LAYER_DRAGGING )
+			// Throw explosion potion
+			if ( !pItemUse->IsItemEquipped() || pItemUse->GetEquipLayer() != LAYER_DRAGGING )
 				return( false );
 
-			// Put at destination location.
-			CPointMap ptBlock;
-			if ( m_pChar->CanSeeLOS( pt, &ptBlock, UO_MAP_VIEW_SIZE, LOS_NB_WINDOWS ))	// Get the block point; flag means that we can throw an explosion potion outta a window
-				ptBlock = pt;
-			pItemUse->MoveToUpdate( ptBlock );	// leave the decay as it is.
-			pItemUse->Effect( EFFECT_BOLT, pItemUse->GetDispID(), m_pChar, 7, 0, false );
+			// Check if we have clear LOS to target location and also if it's not over a wall (to prevent hit chars on the other side of the wall)
+			if ( m_pChar->CanSeeLOS(pt, NULL, UO_MAP_VIEW_SIGHT, LOS_NB_WINDOWS) && !g_World.IsItemTypeNear(pt, IT_WALL, 0, true) )
+			{
+				pItemUse->SetAttr(ATTR_MOVE_NEVER);
+				pItemUse->MoveToUpdate(pt);
+				pItemUse->Effect(EFFECT_BOLT, pItemUse->GetDispID(), m_pChar, 7, 0, false, maximum(0, pItemUse->GetHue()-1));
+			}
 		}
 		return( true );
 

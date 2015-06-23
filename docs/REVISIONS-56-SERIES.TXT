@@ -2364,3 +2364,8 @@ Fixed #2518: Mounts losing bonded status on dismount.
 21-06-2015, Coruja
 Changed: Improved stamina checks when walking.
 Fixed: Possible console error on specific char actions like walk, teleport and cast spells.
+
+23-06-2015, Coruja
+Changed: Some internal improvements on explosion potions code.
+Fixed: Items being able to be dropped on ground inside walls tiles.
+Fixed: Possible console error when casting field spells.

@@ -1347,7 +1347,7 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	// Make noise and try to pile it and such.
 
 	CPointMap ptNewPlace;
-	if ( pt.IsValidPoint() )
+	if ( pt.IsValidPoint() && !g_World.IsItemTypeNear(pt, IT_WALL, 0, true) )
 		ptNewPlace = pt;
 	else if ( pCharMover )
 		ptNewPlace = pCharMover->GetTopPoint();
@@ -4553,7 +4553,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	// ARGS:
 	//  iSkillLevel = 0-1000 = difficulty. may be slightly larger . how advanced is this spell (might be from a wand)
 
-	CScriptTriggerArgs Args( static_cast<int>(spell), iSkillLevel, pSourceItem );
+	CScriptTriggerArgs Args( spell, iSkillLevel, pSourceItem );
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
 	if (( IsTrigUsed(TRIGGER_SPELLEFFECT) ) || ( IsTrigUsed(TRIGGER_ITEMSPELL) ))
@@ -4608,7 +4608,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		return false;
 	}
 
-	if ( IsType(IT_SPELL) && m_itSpell.m_spell == spell )
+	if ( IsType(IT_SPELL) && RES_GET_INDEX(m_itSpell.m_spell) == spell )
 	{
 		// On OSI the field item won't be placed if it overlap any other field spell already casted.
 		// But for backward compatibility, let's just override the old item with the new one, and only if it's the same field spell.
@@ -4791,17 +4791,25 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		return INT_MAX;
 
 	case IT_POTION:
-		if ( uType & ( DAMAGE_HIT_BLUNT|DAMAGE_HIT_PIERCE|DAMAGE_HIT_SLASH|DAMAGE_GOD|DAMAGE_MAGIC|DAMAGE_FIRE ))
+		if ( RES_GET_INDEX(m_itPotion.m_Type) == SPELL_Explosion )
 		{
-			if ( RES_GET_INDEX(m_itPotion.m_Type) == SPELL_Explosion )
-			{
-				CSpellDef * pSpell = g_Cfg.GetSpellDef(SPELL_Explosion);
-				g_World.Explode( pSrc, GetTopLevelObj()->GetTopPoint(), 3,
-								 g_Cfg.GetSpellEffect( SPELL_Explosion, m_itPotion.m_skillquality ),
-								 pSpell->IsSpellType(SPELLFLAG_NOUNPARALYZE) ? DAMAGE_GENERAL|DAMAGE_HIT_BLUNT|DAMAGE_FIRE|DAMAGE_NOUNPARALYZE : DAMAGE_GENERAL|DAMAGE_HIT_BLUNT|DAMAGE_FIRE  );
-				Delete();
-				return( INT_MAX );
-			}
+			CSpellDef *pSpell = g_Cfg.GetSpellDef(SPELL_Explosion);
+			CChar *pSrc = m_uidLink.CharFind();
+
+			CItem *pItem = CItem::CreateBase(ITEMID_FX_EXPLODE_3);
+			if ( !pItem )
+				return( 0 );
+
+			pItem->m_uidLink = pSrc ? pSrc->GetUID() : static_cast<CGrayUID>(UID_CLEAR);
+			pItem->m_itExplode.m_iDamage = g_Cfg.GetSpellEffect(SPELL_Explosion, m_itPotion.m_skillquality);
+			pItem->m_itExplode.m_wFlags = pSpell->IsSpellType(SPELLFLAG_NOUNPARALYZE) ? DAMAGE_FIRE|DAMAGE_NOUNPARALYZE : DAMAGE_FIRE;
+			pItem->m_itExplode.m_iDist = 2;
+			pItem->SetType(IT_EXPLOSION);
+			pItem->SetAttr(ATTR_MOVE_NEVER|ATTR_DECAY);
+			pItem->MoveToDecay(GetTopLevelObj()->GetTopPoint(), 1);		// almost immediate decay
+
+			ConsumeAmount();
+			return( INT_MAX );
 		}
 		return( 1 );
 
@@ -4901,7 +4909,7 @@ forcedamage:
 	return( 0 );
 }
 
-bool CItem::OnExplosion()
+void CItem::OnExplosion()
 {
 	ADDTOCALLSTACK("CItem::OnExplosion");
 	// IT_EXPLOSION
@@ -4910,9 +4918,6 @@ bool CItem::OnExplosion()
 
 	ASSERT( IsTopLevel());
 	ASSERT( m_type == IT_EXPLOSION );
-
-	if ( ! m_itExplode.m_wFlags )
-		return( true );
 
 	// AOS damage types (used by COMBAT_ELEMENTAL_ENGINE)
 	int iDmgPhysical = 0;
@@ -4932,22 +4937,17 @@ bool CItem::OnExplosion()
 		iDmgPhysical = 100;
 
 	CChar * pSrc = m_uidLink.CharFind();
-
 	CWorldSearch AreaChars( GetTopPoint(), m_itExplode.m_iDist );
 	for (;;)
 	{
 		CChar * pChar = AreaChars.GetChar();
 		if ( pChar == NULL )
 			break;
-		if ( GetTopDist3D( pChar ) > m_itExplode.m_iDist )
-			continue;
-		pChar->Effect( EFFECT_OBJ, ITEMID_FX_EXPLODE_1, pSrc, 9, 6 );
 		pChar->OnTakeDamage( m_itExplode.m_iDamage, pSrc, m_itExplode.m_wFlags, iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy );
 	}
 
-	m_itExplode.m_wFlags = 0;
-	SetDecayTime( 3 * TICK_PER_SEC );
-	return( false );	// don't delete it yet.
+	Effect(EFFECT_XYZ, ITEMID_FX_EXPLODE_3, this, 9, 10);
+	Sound(0x307);
 }
 
 bool CItem::IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg )
@@ -5093,6 +5093,7 @@ bool CItem::OnTick()
 				}
 			}
 			break;
+
 		case IT_LIGHT_LIT:
 			{
 				if ( m_itLight.m_charges == USHRT_MAX )//infinit charges
@@ -5143,10 +5144,9 @@ bool CItem::OnTick()
 		case IT_EXPLOSION:
 			{
 				EXC_SET("default behaviour::IT_EXPLOSION");
-				if ( OnExplosion())
-					break;
+				OnExplosion();
 			}
-			return true;
+			break;
 
 		case IT_TRAP_ACTIVE:
 			{
@@ -5195,22 +5195,20 @@ bool CItem::OnTick()
 		case IT_POTION:
 			{
 				EXC_SET("default behaviour::IT_POTION");
-				// This is a explode potion ?
-				if (( RES_GET_INDEX(m_itPotion.m_Type) == SPELL_Explosion ) && m_itPotion.m_ignited )
+				// This is a explosion potion?
+				if ( (RES_GET_INDEX(m_itPotion.m_Type) == SPELL_Explosion) && m_itPotion.m_ignited )
 				{
-					// count down the timer. ??
 					if ( m_itPotion.m_tick <= 1 )
 					{
-						// Set it off.
 						OnTakeDamage( 1, m_uidLink.CharFind(), DAMAGE_FIRE );
 					}
 					else
 					{
 						m_itPotion.m_tick --;
 						TCHAR *pszMsg = Str_GetTemp();
-						CObjBase* pObj = STATIC_CAST <CObjBase*>(GetTopLevelObj());
+						CObjBase* pObj = static_cast<CObjBase*>(GetTopLevelObj());
 						ASSERT(pObj);
-						pObj->Speak(ITOA(m_itPotion.m_tick, pszMsg, 10));
+						pObj->Speak(ITOA(m_itPotion.m_tick, pszMsg, 10), HUE_RED);
 						SetTimeout( TICK_PER_SEC );
 					}
 					return true;
