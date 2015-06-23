@@ -2372,3 +2372,11 @@ Fixed: Items being able to be dropped on ground inside walls tiles.
 Fixed: Possible console error when casting field spells.
 Fixed: CUSTOMIZE function on customizable multis not hiding correctly all house dynamic items on ground when client enter on customization mode.
 Fixed: House customization menu making the char get moved to multi center when it switch to another floor level.
+
+23-06-2015, matex
+Changed: Disabled assertions in non-debug Linux builds. This should not be necessary anymore because there is a SIGSEGV handler in linux builds.
+Added: Experimental feature for Sectorsleeping which can be enabled during compilation by using _SECTOR_INTTICK. 
+It basically checks in a 3x3 matrix around each sector if there are any players around to determine if the sector is sleeping. 
+This leads to a more intelligent distribution of available compute power on small maps (because then the Sectorsleepmask can be 
+increased without any immediately 'noticeable' effects). It is not yet available in nightly builds because I consider it too performance 
+critical to make it available via a Sphere.ini setting (this would induce an additional comparison in each tick.)
