@@ -2367,5 +2367,8 @@ Fixed: Possible console error on specific char actions like walk, teleport and c
 
 23-06-2015, Coruja
 Changed: Some internal improvements on explosion potions code.
+Changed: Items dropped on invalid location on ground now will get bounced to char backpack instead get moved to char P.
 Fixed: Items being able to be dropped on ground inside walls tiles.
 Fixed: Possible console error when casting field spells.
+Fixed: CUSTOMIZE function on customizable multis not hiding correctly all house dynamic items on ground when client enter on customization mode.
+Fixed: House customization menu making the char get moved to multi center when it switch to another floor level.

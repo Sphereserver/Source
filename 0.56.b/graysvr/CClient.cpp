@@ -384,15 +384,9 @@ bool CClient::CanSee( const CObjBaseTemplate * pObj ) const
 	ADDTOCALLSTACK("CClient::CanSee");
 	// Can player see item b
 	if ( m_pChar == NULL || pObj == NULL )
-		return( false );
+		return false;
 
-	if ( m_pHouseDesign && pObj->IsItem() )
-	{
-		const CItem * pItem = STATIC_CAST<const CItem *>( pObj );
-		if (pItem != NULL && ((DWORD)pItem->GetKeyNum("FIXTURE") == (DWORD)m_pHouseDesign->GetUID()))
-			return( false );
-	}
-	else if (!IsPriv(PRIV_ALLSHOW) && pObj->IsChar())
+	if (!IsPriv(PRIV_ALLSHOW) && pObj->IsChar())
 	{
 		const CChar *pChar = static_cast<const CChar*>(pObj);
 		if (pChar->IsDisconnected())

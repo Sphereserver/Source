@@ -3125,7 +3125,6 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			ptDst.m_z = GetTopZ();
 			return ptDst.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA);
 		}
-		pClient->m_pHouseDesign->EndCustomize(true);
 		return NULL;
 	}
 

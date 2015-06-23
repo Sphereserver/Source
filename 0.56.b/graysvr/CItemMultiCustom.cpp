@@ -130,29 +130,29 @@ void CItemMultiCustom::BeginCustomize(CClient * pClientSrc)
 	// send the latest building design
 	SendStructureTo(pClientSrc);
 
-	// hide dynamic items
-	CWorldSearch Area(GetTopPoint(), GetDesignArea().GetWidth());
+	// move client to building and hide it
+	CChar * pChar = pClientSrc->GetChar();
+	pChar->StatFlag_Set(STATF_Hidden);
+
+	CPointMap ptOld = pChar->GetTopPoint();
+	CPointMap ptNew(GetTopPoint());
+	ptNew.m_z += 7;
+
+	pChar->MoveToChar(ptNew);
+	pChar->UpdateMove(ptOld, NULL, true);
+
+	// hide all dynamic items inside the house
+	CGRect rectDesign = GetDesignArea();
+	CWorldSearch Area(GetTopPoint(), GetDesignArea().GetWidth()/2);
 	Area.SetSearchSquare(true);
 	for (;;)
 	{
 		CItem * pItem = Area.GetItem();
 		if ( pItem == NULL )
 			break;
-
-		if ( pItem->GetUID() != GetUID() )
+		if ( pItem != this )
 			pClientSrc->addObjectRemove(pItem);
 	}
-
-	// move client to building and hide it
-	CChar * pChar = pClientSrc->GetChar();
-	pChar->StatFlag_Set( STATF_Hidden );
-
-	CPointMap pt(GetTopPoint());
-	pt.m_z += 7;
-
-	CPointMap ptOld = pChar->GetTopPoint();
-	pChar->MoveToChar(pt);
-	pChar->UpdateMove(ptOld, NULL, true);
 }
 
 void CItemMultiCustom::EndCustomize(bool bForced)
@@ -229,11 +229,10 @@ void CItemMultiCustom::SwitchToLevel( CClient * pClientSrc, int iLevel )
 	if ( pChar != NULL )
 	{
 		CPointMap pt(GetTopPoint());
-		pt.m_z += GetPlaneZ( static_cast<signed char>( iLevel ));
+		pt.m_z += GetPlaneZ(static_cast<unsigned char>(iLevel));
 
-		CPointMap ptOld = pChar->GetTopPoint();
-		pChar->MoveToChar(pt);
-		pChar->UpdateMove(ptOld, NULL, true);
+		pChar->SetTopZ(pt.m_z);
+		pChar->UpdateMove(GetTopPoint(), NULL, true);
 	}
 
 	pClientSrc->addItem(this);
@@ -1462,26 +1461,7 @@ unsigned char CItemMultiCustom::GetPlane( Component * pComponent )
 
 signed char CItemMultiCustom::GetPlaneZ( unsigned char plane )
 {
-	switch ( plane )
-	{
-		case 7:
-			return 127;
-		case 6:
-			return 107;
-		case 5:
-			return 87;
-		case 4:
-			return 67;
-		case 3:
-			return 47;
-		case 2:
-			return 27;
-		case 1:
-			return 7;
-		case 0:
-		default:
-			return 0;
-	}
+	return 7 + ((plane - 1) * 20);
 }
 
 bool CItemMultiCustom::IsValidItem( ITEMID_TYPE id, CClient * pClientSrc, bool bMulti )

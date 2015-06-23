@@ -1350,7 +1350,10 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	if ( pt.IsValidPoint() && !g_World.IsItemTypeNear(pt, IT_WALL, 0, true) )
 		ptNewPlace = pt;
 	else if ( pCharMover )
-		ptNewPlace = pCharMover->GetTopPoint();
+	{
+		pCharMover->ItemBounce(this);
+		return false;
+	}
 	else
 		ptNewPlace.ValidatePoint();
 
