@@ -446,6 +446,7 @@ public:
 	ITEMID_TYPE m_idScroll;		// The scroll graphic item for this.
 	ITEMID_TYPE m_idEffect;		// Animation effect ID
 	WORD m_wManaUse;			// How much mana does it need.
+	WORD m_wTithingUse;			// Tithing points required for this spell.
 	LAYER_TYPE m_idLayer;		// Where the layer buff/debuff/data is stored.
 
 	CValueCurveDef	m_CastTime;		// In TICK_PER_SEC.

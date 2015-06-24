@@ -4671,8 +4671,8 @@ resources=8 i_hides_cut
 skillmake=tailoring 53.9
 dupelist=04047
 
-category=Equipment
-subsection=Armor - Gargish Leather
+category=Provisions - Armor
+subsection=Gargish Leather Armor
 description=Gargish Leather Arms (Female)
 
 on=@Create
@@ -4704,8 +4704,8 @@ resources=8 i_hides_cut
 skillmake=tailoring 53.9
 dupelist=04048
 
-category=Equipment
-subsection=Armor - Gargish Leather
+category=Provisions - Armor
+subsection=Gargish Leather Armor
 description=Gargish Leather Arms
 
 on=@Create
@@ -4737,8 +4737,8 @@ resources=8 i_hides_cut
 skillmake=tailoring 70.5
 dupelist=04049
 
-category=Equipment
-subsection=Armor - Gargish Leather
+category=Provisions - Armor
+subsection=Gargish Leather Armor
 description=Gargish Leather Chest (Female)
 
 on=@Create
@@ -4770,8 +4770,8 @@ resources=8 i_hides_cut
 skillmake=tailoring 70.5
 dupelist=0404a
 
-category=Equipment
-subsection=Armor - Gargish Leather
+category=Provisions - Armor
+subsection=Gargish Leather Armor
 description=Gargish Leather Chest
 
 on=@Create
@@ -4803,8 +4803,8 @@ resources=10 i_hides_cut
 skillmake=tailoring 66.3
 dupelist=0404d
 
-category=Equipment
-subsection=Armor - Gargish Leather
+category=Provisions - Armor
+subsection=Gargish Leather Armor
 description=Gargish Leather Leggings (Female)
 
 on=@Create
@@ -4836,8 +4836,8 @@ resources=10 i_hides_cut
 skillmake=tailoring 66.3
 dupelist=0404e
 
-category=Equipment
-subsection=Armor - Gargish Leather
+category=Provisions - Armor
+subsection=Gargish Leather Armor
 description=Gargish Leather Leggings
 
 on=@Create
@@ -4874,8 +4874,8 @@ resources=6 i_hides_cut
 skillmake=tailoring 58.0
 dupelist=0404b
 
-category=Equipment
-subsection=Armor - Gargish Leather
+category=Provisions - Armor
+subsection=Gargish Leather Armor
 description=Gargish Leather Kilt (Female)
 
 on=@Create
@@ -4907,8 +4907,8 @@ resources=6 i_hides_cut
 skillmake=tailoring 58.0
 dupelist=0404c
 
-category=Equipment
-subsection=Armor - Gargish Leather
+category=Provisions - Armor
+subsection=Gargish Leather Armor
 description=Gargish Leather Kilt
 
 on=@Create
@@ -4940,8 +4940,8 @@ resources=6 i_hides_cut
 skillmake=tailoring 40.4
 dupelist=041d9
 
-category=Equipment
-subsection=Armor - Gargish Leather
+category=Provisions - Armor
+subsection=Gargish Leather Armor
 description=Gargish Leather Talons
 
 on=@Create
@@ -4967,8 +4967,8 @@ resources=12 i_hides_cut
 skillmake=tailoring 65.0
 dupelist=0457f
 
-category=Equipment
-subsection=Armor - Gargish Leather
+category=Provisions - Armor
+subsection=Gargish Leather Armor
 description=Gargish Leather Wing Armor
 
 on=@Create
@@ -5000,8 +5000,8 @@ resources=
 skillmake=
 dupelist=0450e
 
-category=Equipment
-subsection=Armor - Gargish Leather
+category=Provisions - Armor
+subsection=Gargish Leather Armor
 description=Gargish Belt
 
 on=@Create

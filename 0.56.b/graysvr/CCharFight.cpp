@@ -3544,6 +3544,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			return( WAR_SWING_EQUIPPING );	// Made our full swing.
 		}
 	}
+
+	INT64 iTime = Fight_GetWeaponSwingTimer();;
 	if ( !pCharTarg || ( pCharTarg == this ) )
 		return WAR_SWING_INVALID;
 
@@ -3690,7 +3692,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		{
 			// ??? the bow is acting like a (poor) blunt weapon at this range?
 			SysMessageDefault( DEFMSG_COMBAT_ARCH_TOOCLOSE );
-			int iTime = Fight_GetWeaponSwingTimer();
 			UpdateAnimate(GenerateAnimate(ANIM_ATTACK_1H_SLASH, false, false), false, false, static_cast<unsigned char>(iTime / TICK_PER_SEC));
 			return( WAR_SWING_EQUIPPING );
 		}
@@ -3762,7 +3763,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				UpdateDir(pCharTarg);
 
 			// just start the bow animation.
-			INT64 iTime = Fight_GetWeaponSwingTimer();
 			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
 			unsigned char animDelay = static_cast<unsigned char>(iTime) / TICK_PER_SEC;
 			if ( IsTrigUsed(TRIGGER_HITTRY) )
@@ -3851,7 +3851,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				UpdateDir(pCharTarg);
 
 			// We are swinging.
-			INT64 iTime = Fight_GetWeaponSwingTimer();
 			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
 			unsigned char animDelay = static_cast<unsigned char>(iTime) / TICK_PER_SEC;
 			if (IsTrigUsed(TRIGGER_HITTRY))
@@ -3894,7 +3893,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	// We made our swing. so we must recoil.
 	m_atFight.m_War_Swing_State = WAR_SWING_EQUIPPING;
 	m_atFight.m_fMoved	= 0;
-	INT64 iTime = static_cast<INT64>(Fight_GetWeaponSwingTimer());
 	SetTimeout(iTime/2);	// try again sooner.
 
 	// Stamina for fighting. More stamina loss for more heavy weapons

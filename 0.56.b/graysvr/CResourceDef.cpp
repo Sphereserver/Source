@@ -571,6 +571,7 @@ enum SPC_TYPE
 	SPC_SCROLL_ITEM,
 	SPC_SKILLREQ,
 	SPC_SOUND,
+	SPC_TITHINGUSE,
 	SPC_QTY
 };
 
@@ -594,6 +595,7 @@ LPCTSTR const CSpellDef::sm_szLoadKeys[SPC_QTY+1] =
 	"SCROLL_ITEM",
 	"SKILLREQ",
 	"SOUND",
+	"TITHINGUSE",
 	NULL
 };
 
@@ -719,6 +721,9 @@ bool CSpellDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		case SPC_SOUND:
 			sVal.FormatVal(m_sound);
 			break;
+		case SPC_TITHINGUSE:
+			sVal.FormatVal(m_wTithingUse);
+			break;
 		default:
 			return( CResourceDef::r_WriteVal( pszKey, sVal, pSrc ));
 	}
@@ -793,6 +798,9 @@ bool CSpellDef::r_LoadVal( CScript &s )
 			break;
 		case SPC_SOUND:
 			m_sound = static_cast<SOUND_TYPE>(s.GetArgVal());
+			break;
+		case SPC_TITHINGUSE:
+			m_wTithingUse = static_cast<WORD>(s.GetArgVal());
 			break;
 		default:
 			return( CResourceDef::r_LoadVal( s ) );

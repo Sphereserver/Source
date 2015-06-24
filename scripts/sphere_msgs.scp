@@ -903,6 +903,7 @@ EMOTE_DEF_UNICODE	0
 //spell_try_frozenhands			"You cannot cast spells while your hands are frozen."
 //spell_try_nobook				"You don't have a spellbook handy."
 //spell_try_nomana				"You lack sufficient mana for this spell"
+//spell_try_notithing			"You must have at least %s Tithing Points to use this ability"	//1060173
 //spell_try_noregs				"You lack %s for this spell"
 //spell_try_notyourbook			"The spell is not in your spellbook."
 //spell_try_thereg				"reagents"

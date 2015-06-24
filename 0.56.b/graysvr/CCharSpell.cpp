@@ -2002,6 +2002,7 @@ bool CChar::Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool 
 		return( false );
 
 	int wManaUse = pSpellDef->m_wManaUse * (100 - minimum(static_cast<int>(GetDefNum("LOWERMANACOST", true, true)), 40)) / 100;
+	int wTithingUse = pSpellDef->m_wTithingUse * (100 - minimum(static_cast<int>(GetDefNum("LOWERREAGENTCOST", true, true)), 40)) / 100;;
 
 	if (pSrc != this)
 	{
@@ -2009,9 +2010,15 @@ bool CChar::Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool 
 		if (pItem)
 		{
 			if (pItem->GetType() == IT_WAND)
+			{
 				wManaUse = 0;
-			else if(pItem->GetType() == IT_SCROLL)
+				wTithingUse = 0;
+			}
+			else if (pItem->GetType() == IT_SCROLL)
+			{
 				wManaUse /= 2;
+				wTithingUse /= 2;
+			}
 		}
 	}
 
@@ -2021,6 +2028,7 @@ bool CChar::Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool 
 		Args.m_iN3 |= 0x0001;
 	if ( fFailMsg )
 		Args.m_iN3 |= 0x0002;
+	Args.m_VarsLocal.SetNum("TithingUse",wTithingUse);
 
 	if ( IsTrigUsed(TRIGGER_SELECT) )
 	{
@@ -2053,6 +2061,7 @@ bool CChar::Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool 
 		spell = static_cast<SPELL_TYPE>(Args.m_iN1);
 	}
 	wManaUse = static_cast<int>(Args.m_iN2);
+	wTithingUse = static_cast<int>(Args.m_VarsLocal.GetKeyNum("TithingUse",true));
 
 	if ( pSrc != this )
 	{
@@ -2162,20 +2171,38 @@ bool CChar::Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool 
 	}
 
 	// Check for mana
-	if ( Stat_GetVal(STAT_INT) < wManaUse )
+	if (Stat_GetVal(STAT_INT) < wManaUse)
 	{
-		if ( fFailMsg )
-			SysMessageDefault( DEFMSG_SPELL_TRY_NOMANA );
-		return( false );
+		if (fFailMsg)
+			SysMessageDefault(DEFMSG_SPELL_TRY_NOMANA);
+		return(false);
 	}
-	if ( ! fTest && wManaUse )
+	if (!fTest && wManaUse)
 	{
 		// Consume mana.
-		if ( m_Act_Difficulty < 0 )	// use diff amount of mana if we fail.
+		if (m_Act_Difficulty < 0)	// use diff amount of mana if we fail.
 		{
-			wManaUse = wManaUse/2 + Calc_GetRandVal( wManaUse/2 + wManaUse/4 );
+			wManaUse = wManaUse / 2 + Calc_GetRandVal(wManaUse / 2 + wManaUse / 4);
 		}
-		UpdateStatVal( STAT_INT, -wManaUse );
+		UpdateStatVal(STAT_INT, -wManaUse);
+	}
+
+	// Check for Tithing
+	int wTithing = GetDefNum("Tithing");
+	if ( wTithing < wTithingUse)
+	{
+		if (fFailMsg)
+			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TRY_NOTITHING),wTithingUse);
+		return(false);
+	}
+	if (!fTest && wTithingUse)
+	{
+		// Consume points
+		if (m_Act_Difficulty < 0)	// use diff amount of points if we fail.
+		{
+			wTithingUse = wTithingUse / 2 + Calc_GetRandVal(wTithingUse / 2 + wTithingUse / 4);
+		}
+		SetDefNum("Tithing", wTithing - wTithingUse);
 	}
 
 	return( true );

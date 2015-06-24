@@ -2380,3 +2380,12 @@ It basically checks in a 3x3 matrix around each sector if there are any players 
 This leads to a more intelligent distribution of available compute power on small maps (because then the Sectorsleepmask can be 
 increased without any immediately 'noticeable' effects). It is not yet available in nightly builds because I consider it too performance 
 critical to make it available via a Sphere.ini setting (this would induce an additional comparison in each tick.)
+
+24-06-2015, XuN
+Added TithingUse variable for [SPELL ] working like ManaUse but for Tithing Points.
+Fixed #2521: delay reseting after the the trigger, so it was impossible to change it.
+Added support for Tithing in spells, note that LowerManaCost doesn't affect Tithing points but LowerReagentsCost does it unlike for mana.
+Fixed a typo causing humans to create 10% of t_hide when carving corpses instead of applying a bonus of 10%
+sphere_msgs.scp: Added //spell_try_notithing			"You must have at least %s Tithing Points to use this ability"	//1060173
+sphere_item_provisions_armor.scp: Updated Description and Subsection for gargoyle leather armor.
+sphere_spells.scp: Added TithingUse to chivalry spells.

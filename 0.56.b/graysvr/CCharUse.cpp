@@ -94,7 +94,7 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 				SysMessageDefault( DEFMSG_CARVE_CORPSE_HIDES );
 				//pPart->m_itSkin.m_creid = CorpseID;
 				if ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE && IsHuman() )	// humans always find 10% bonus when gathering hides, ores and logs (racial traits)
-					iQty = iQty * 10 / 100;
+					iQty = iQty * 110 / 100;
 				break;
 			case IT_FEATHER:
 				SysMessageDefault( DEFMSG_CARVE_CORPSE_FEATHERS );
