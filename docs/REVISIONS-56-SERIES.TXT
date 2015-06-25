@@ -2189,7 +2189,6 @@ Changed: Major optimizations on walk, skills and general ticks code. It's workin
 
 20-05-2015, Coruja
 Fixed: Parrying skill check always returning 'true' (success) on chars with GM=1 set, making the char never receive any damage on combat even without invul flag set.
-Fixed: Mounts disappearing on worldsave on some specific situations.
 Changed: Improved Teleport/Dispel spell smoke animation.
 Changed: Another huge optimization on skills code.
 [Sphere.ini]: Updated TeleportEffectNPC / TeleportEffectPlayers settings with correct values.
@@ -2389,3 +2388,10 @@ Fixed a typo causing humans to create 10% of t_hide when carving corpses instead
 sphere_msgs.scp: Added //spell_try_notithing			"You must have at least %s Tithing Points to use this ability"	//1060173
 sphere_item_provisions_armor.scp: Updated Description and Subsection for gargoyle leather armor.
 sphere_spells.scp: Added TithingUse to chivalry spells.
+
+25-06-2015, Coruja
+Fixed: Walking over ghosts requiring stamina to pass.
+Fixed: Mounts disappearing on worldsave on some specific situations.
+Added: New REFUSETRADES (bool 0/1) char property. If set to true (1), it will prevent others clients to open secure trades with this char.
+Added: New 'Allow Trades' / 'Refuse Trades' context menu buttons to toggle REFUSETRADES property. Unfortunately only clients >= 7.0.30 can see these buttons because OSI added these cliloc texts only on this client version.
+[sphere_msgs.scp]: Added new message 'msg_trade_refuse'.

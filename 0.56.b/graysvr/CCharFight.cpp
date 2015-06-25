@@ -619,19 +619,17 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iOtherKillers)
 	{
 		ASSERT( m_pNPC );
 
-		// I am a guard ?
-		if ( ! pKill->m_pPlayer &&
-			m_pNPC->m_Brain == NPCBRAIN_GUARD )
+		// Don't create a corpse or loot if got NPC killed by a guard
+		if ( !pKill->m_pPlayer && m_pNPC->m_Brain == NPCBRAIN_GUARD )
 		{
-			// Don't create a corpse or loot if NPC killed by a guard.
-			// No corpse and no loot !
 			pKill->StatFlag_Set( STATF_Conjured );
 			return;
 		}
 
 		// Check to see if anything is on the corpse I just killed
-		//Skill_Start( NPCACT_LOOKING );	// look around for loot.
-		Skill_Start(NPCACT_LOOTING);	// once the npc starts looking it gets trapped in a loop - This appears to work and the npc no longer stays frozen
+		if ( !IsStatFlag(STATF_Ridden) )
+			Skill_Start(NPCACT_LOOTING);
+
 		// If an NPC kills an NPC then it doesn't count.
 		if ( pKill->m_pNPC )
 			return;

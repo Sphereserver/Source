@@ -916,11 +916,8 @@ int CWorldThread::FixObj( CObjBase * pObj, DWORD dwUID )
 		if ( iResultCode == 0x1203 || iResultCode == 0x1103 )
 		{
 			CChar * pChar = dynamic_cast <CChar*>(pObj);
-			if (pChar)
-			{
-				DEBUG_ERR(( "Ridden NPC must have action=111 (NPCACT_RIDDEN) but it have action=%d\n", pChar->m_Act_SkillCurrent ));
+			if ( pChar )
 				pChar->Skill_Start( NPCACT_RIDDEN );
-			}
 		}
 		else
 			pObj->Delete();
