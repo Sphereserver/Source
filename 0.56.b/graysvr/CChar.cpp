@@ -580,41 +580,31 @@ int CChar::FixWeirdness()
 	{
 		CItem * pShield = LayerFind( LAYER_HAND2 );
 		if ( pShield == NULL )
-		{
 			StatFlag_Clear( STATF_HasShield );
-		}
 	}
 	if ( IsStatFlag( STATF_OnHorse ))
 	{
 		CItem * pHorse = LayerFind( LAYER_HORSE );
 		if ( pHorse == NULL )
-		{
 			StatFlag_Clear( STATF_OnHorse );
-		}
 	}
 	if ( IsStatFlag( STATF_Spawned ))
 	{
 		CItemMemory * pMemory = Memory_FindTypes( MEMORY_ISPAWNED );
 		if ( pMemory == NULL )
-		{
 			StatFlag_Clear( STATF_Spawned );
-		}
 	}
 	if ( IsStatFlag( STATF_Pet ))
 	{
 		CItemMemory * pMemory = Memory_FindTypes( MEMORY_IPET );
 		if ( pMemory == NULL )
-		{
 			StatFlag_Clear( STATF_Pet );
-		}
 	}
 	if ( IsStatFlag( STATF_Ridden ))
 	{
 		// Move the ridden creature to the same location as it's rider.
 		if ( m_pPlayer || ! IsDisconnected())
-		{
 			StatFlag_Clear( STATF_Ridden );
-		}
 		else
 		{
 			if ( Skill_GetActive() != NPCACT_RIDDEN )
@@ -636,15 +626,15 @@ int CChar::FixWeirdness()
 			}
 		}
 	}
-	if ( IsStatFlag( STATF_Criminal ))
+	/*if ( IsStatFlag( STATF_Criminal ))
 	{
-		// make sure we have a criminal flag timer ?
-	}
+		CItem * pMemory = LayerFind( LAYER_FLAG_Criminal );
+		if ( pMemory == NULL )
+			StatFlag_Clear( STATF_Criminal );
+	}*/
 
 	if ( ! IsIndividualName() && pCharDef->GetTypeName()[0] == '#' )
-	{
 		SetName( pCharDef->GetTypeName());
-	}
 
 	if ( m_pPlayer )	// Player char.
 	{
@@ -678,9 +668,7 @@ int CChar::FixWeirdness()
 				{
 					int iStatMax = Stat_GetLimit(static_cast<STAT_TYPE>(j));
 					if ( Stat_GetAdjusted(static_cast<STAT_TYPE>(j)) > iStatMax*g_Cfg.m_iOverSkillMultiply )
-					{
 						Stat_SetBase(static_cast<STAT_TYPE>(j), static_cast<short>(iStatMax));
-					}
 				}
 			}
 		}
@@ -702,10 +690,7 @@ int CChar::FixWeirdness()
 	}
 
 	if ( GetTimerAdjusted() > 60*60 )
-	{
-		// unreasonably long for a char?
-		SetTimeout(1);
-	}
+		SetTimeout(1);	// unreasonably long for a char?
 
 	return IsWeird();
 }
@@ -2606,6 +2591,12 @@ do_default:
 			break;
 		case CHC_P:
 			goto do_default;
+		case CHC_REFUSETRADES:
+			{
+				CVarDefCont * pVar = GetDefKey(pszKey, true);
+				sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
+			}
+			break;
 		case CHC_STONE:
 			sVal.FormatVal( IsStatFlag( STATF_Stone ));
 			break;
@@ -3082,6 +3073,9 @@ do_default:
 				m_fClimbUpdated = false; // update climb height
 				MoveToChar(pt);
 			}
+			break;
+		case CHC_REFUSETRADES:
+			SetDefNum(s.GetKey(), static_cast<bool>(s.GetArgVal()), false);
 			break;
 		case CHC_STONE:
 			{

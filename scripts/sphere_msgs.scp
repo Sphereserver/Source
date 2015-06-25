@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Tuesday, Jun 16, 2015
+// FILE LAST UPDATED: Thursday, Jun 25, 2015
 //
 VERSION=0.56c
 
@@ -621,6 +621,7 @@ EMOTE_DEF_UNICODE	0
 //msg_targ_gone					"Targetted item is gone?"
 //msg_toofar_vendor				"Too far away from the Vendor"
 //msg_trade_cantmove			"You cannot move items that are in trade windows."
+//msg_trade_refuse				"%s is refusing all trades."
 //msg_trade_toofar				"You are too far away to trade items"
 //msg_trade_wait				"You should wait %i seconds more before accepting."
 //msg_unconscious				"You are unconscious and can't move."

@@ -1381,6 +1381,12 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 	// Begin secure trading with a char. (Make the initial offer)
 	ASSERT(m_pChar);
 
+	if ( pChar->GetDefNum("REFUSETRADES", true) )
+	{
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_TRADE_REFUSE), pChar->GetName());
+		return( false );
+	}
+
 	if (( pChar ) && (( IsTrigUsed(TRIGGER_DROPON_CHAR) ) || ( IsTrigUsed(TRIGGER_ITEMDROPON_CHAR) )))
 	{
 		CScriptTriggerArgs Args( pChar );

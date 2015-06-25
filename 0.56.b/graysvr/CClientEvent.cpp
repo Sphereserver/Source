@@ -2443,7 +2443,16 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 			}
 		}
 		else if ( pChar == m_pChar )
+		{
 			m_pPopupPacket->addOption(POPUP_BACKPACK, 6145, POPUPFLAG_COLOR, 0xFFFF);
+			if ( GetNetState()->isClientVersion(MINCLIVER_STATUS_V6) )
+			{
+				if ( pChar->GetDefNum("REFUSETRADES", true) )
+					m_pPopupPacket->addOption(POPUP_TRADE_ALLOW, 1154112, POPUPFLAG_COLOR, 0xFFFF);
+				else
+					m_pPopupPacket->addOption(POPUP_TRADE_REFUSE, 1154113, POPUPFLAG_COLOR, 0xFFFF);
+			}
+		}
 		else
 		{
 			if ( m_pChar->m_pParty == NULL && pChar->m_pParty == NULL )
@@ -2577,6 +2586,14 @@ void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do somethin
 		case POPUP_PARTY_REMOVE:
 			if ( m_pChar->m_pParty != NULL )
 				m_pChar->m_pParty->RemoveMember( pChar->GetUID(), m_pChar->GetUID() );
+			break;
+
+		case POPUP_TRADE_ALLOW:
+			m_pChar->SetDefNum("REFUSETRADES", 0);
+			break;
+
+		case POPUP_TRADE_REFUSE:
+			m_pChar->SetDefNum("REFUSETRADES", 1);
 			break;
 
 		case POPUP_BANKBOX:

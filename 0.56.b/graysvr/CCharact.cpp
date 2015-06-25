@@ -3158,12 +3158,17 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			CChar * pChar = AreaChars.GetChar();
 			if ( pChar == NULL )
 				break;
-			if ( pChar == this || pChar->GetTopZ() != ptDst.m_z || !ptDst.IsSameMap(pChar->GetTopMap()) )
+			if ( pChar == this || pChar->GetTopZ() != ptDst.m_z )
 				continue;
 			if( m_pNPC && pChar->m_pNPC )	// NPCs can't walk over another NPC
 				return NULL;
 
 			iStamReq = 10;
+			if ( IsPriv(PRIV_GM) || pChar->IsStatFlag(STATF_DEAD) )
+				iStamReq = 0;
+			else if ( pPoly && pPoly->m_itSpell.m_spell == SPELL_Wraith_Form && GetTopMap() == 0 )		// chars under Wraith Form effect can always walk through chars in Felucca
+				iStamReq = 0;
+
 			TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 			if ( IsTrigUsed(TRIGGER_PERSONALSPACE) )
 			{
@@ -3175,9 +3180,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 					return NULL;
 			}
 
-			if ( IsPriv(PRIV_GM) )		// GMs are always allowed to walk over chars
-				return pArea;
-			if ( pPoly && pPoly->m_itSpell.m_spell == SPELL_Wraith_Form && GetTopMap() == 0 )		// chars under Wraith Form effect can always walk through chars in Felucca
+			if ( iStamReq <= 0 )
 				return pArea;
 			if ( Stat_GetVal(STAT_DEX) < Stat_GetMax(STAT_DEX) )
 				return NULL;
