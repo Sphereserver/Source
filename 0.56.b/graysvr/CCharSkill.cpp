@@ -3168,13 +3168,13 @@ int CChar::Skill_Fighting( SKTRIG_TYPE stage )
 			iWaitTime /= 2;
 		SetTimeout( iWaitTime );
 
-		return( g_Cfg.Calc_CombatChanceToHit( this, Skill_GetActive(), m_Act_Targ.CharFind(), m_uidWeapon.ItemFind()) );
+		return( g_Cfg.Calc_CombatChanceToHit(this, m_Act_Targ.CharFind(), Skill_GetActive()) );
 	}
 
 	if ( stage == SKTRIG_STROKE )
 	{
 		// Hit or miss my current target.
-		if ( !IsStatFlag( STATF_War ))
+		if ( !IsStatFlag(STATF_War) )
 			return -SKTRIG_ABORT;
 
 		if ( m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )

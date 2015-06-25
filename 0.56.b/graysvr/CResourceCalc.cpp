@@ -83,92 +83,30 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 	return iSwingSpeed;*/
 }
 
-int CResource::Calc_CombatChanceToHit( CChar * pChar, SKILL_TYPE skill, CChar * pCharTarg, CItem * pWeapon )
+int CResource::Calc_CombatChanceToHit( CChar * pChar, CChar * pCharTarg, SKILL_TYPE skill )
 {
 	ADDTOCALLSTACK("CResource::Calc_CombatChanceToHit");
-	UNREFERENCED_PARAMETER(pWeapon);
-	// AGRS:
-	//  pChar = the attacker.
-	//  pWeapon = NULL = wrestling.
+	// Combat: Compare attacker skill vs target skill
+	// to calculate the hit chance on combat.
 	//
 	// RETURN:
-	//  0-100 percent chance to hit on a d100 roll.
-	// ??? OR ???
-	//  0-100 percent difficulty against my SKILL_* combat skill 
-	//
-	// NOTE: 
-	// There should be size panlties of large creatures vs. small creatures in melee combat.
-
-	// Chance to hit a target: (bow or melee)
-	// Target speed (DEX) subtract out STAM lost?
-	// Target Surprised ? (war mode) 
-	// vs. 
-	// Attackers Weapon skill
-	// Attackers TACTICS
-	// Attackers STAM/DEX
-	// Size diff.
-	//
-	// NOTE: 
-	//  How does this translate to experiencce in my combat skills ?
-
-	// What is our chance of hitting our target?
-	// This will be compared to our current weapon skill level.
-	// There should always be a bit of a chance. (even if we suck)
-	// Adjust the value for our experience curve level.
-	// RETURN:
-	//  0-100 difficulty.
+	//  0-100 percent chance to hit.
 
 	if ( pCharTarg == NULL )
-	{
-		return( Calc_GetRandVal(31) ); // must be a training dummy
-	}
+		return( 50 );	// must be a training dummy
+	if ( pChar->m_pNPC && pChar->m_pNPC->m_Brain == NPCBRAIN_GUARD && m_fGuardsInstantKill )
+		return( 100 );
 
-	if ( pChar->m_pNPC &&
-		pChar->m_pNPC->m_Brain == NPCBRAIN_GUARD &&
-		m_fGuardsInstantKill )
-	{
-		return( 0 );
-	}
+	int iAttackerSkill = ((pChar->Skill_GetBase(skill) / 10) + 20) * (100 + minimum(pChar->GetDefNum("INCREASEHITCHANCE", true), 45));
+	int iTargetSkill = ((pCharTarg->Skill_GetBase(skill) / 10) + 20) * (100 + minimum(pCharTarg->GetDefNum("INCREASEHITCHANCE", true), 45));
 
-	// Frozen targets should be easy.
-	if ( pCharTarg->IsStatFlag( STATF_Sleeping | STATF_Freeze | STATF_Stone ))
-	{
-		return( Calc_GetRandVal(10) );
-	}
+	int iChance = iAttackerSkill * 100 / (iTargetSkill * 2);
+	if ( iChance < 2 )
+		iChance = 2;	// minimum hit chance is 2%
+	else if ( iChance > 100 )
+		iChance = 100;
 
-	int iSkillVal = pChar->Skill_GetAdjusted( skill );
-
-	// Offensive value mostly based on your skill and TACTICS.
-	// 0 - 1000
-	int iSkillAttack = ( iSkillVal + pChar->Skill_GetAdjusted( SKILL_TACTICS )) / 2;
-	// int iSkillAttack = ( iSkillVal * 3 + pChar->Skill_GetAdjusted( SKILL_TACTICS )) / 4;
-
-	// Defensive value mostly based on your tactics value and random DEX,
-	// 0 - 1000
-	int iSkillDefend = pCharTarg->Skill_GetAdjusted( SKILL_TACTICS );
-
-	// Make it easier to hit people havin a bow or crossbow due to the fact that its
-	// not a very "mobile" weapon, nor is it fast to change position while in
-	// a fight etc. Just use 90% of the statvalue when defending so its easier
-	// to hit than defend == more fun in combat.
-	int iStam = pCharTarg->Stat_GetVal(STAT_DEX);
-	if ( g_Cfg.IsSkillFlag(pCharTarg->Skill_GetActive(), SKF_RANGED) && !g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
-		// The defender uses ranged weapon and the attacker is not.
-		// Make just a bit easier to hit.
-		iSkillDefend = ( iSkillDefend + iStam*9 ) / 2;
-	else
-		// The defender is using a nonranged, or they both use bows.
-		iSkillDefend = ( iSkillDefend + iStam*10 ) / 2;
-
-	int iDiff = ( iSkillAttack - iSkillDefend ) / 5;
-
-	iDiff = ( iSkillVal - iDiff ) / 10;
-	if ( iDiff < 0 )
-		iDiff = 0;	// just means it's very easy.
-	else if ( iDiff > 100 )
-		iDiff = 100;	// just means it's very hard.
-
-	return( Calc_GetRandVal(iDiff) );	// always need to have some chance. );
+	return( iChance );
 }
 
 int CResource::Calc_FameKill( CChar * pKill )

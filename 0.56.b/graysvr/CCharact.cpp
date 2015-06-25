@@ -4107,11 +4107,11 @@ bool CChar::OnTick()
 
 			EXC_SET("regen stats");
 			Stats_Regen(iTimeDiff);
-
-			EXC_SET("update stats");
-			OnTickStatusUpdate();
 		}
 	}
+
+	EXC_SET("update stats");
+	OnTickStatusUpdate();
 
 	if ( !IsStatFlag(STATF_DEAD) && Stat_GetVal(STAT_STR) <= 0 )
 	{
@@ -4141,24 +4141,24 @@ bool CChar::OnTick()
 					NPC_Food();
 				if ( g_Cfg.m_iNpcAi & NPC_AI_EXTRA )
 					NPC_AI();
-				if ( IsStatFlag(STATF_War) )
-				{
-					EXC_SET("NPC combat hit try");
-					if ( Fight_IsActive() )		// hit my current target (if I'm ready)
-					{
-						if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )
-							Fight_HitTry();
-					}
-					else if ( Skill_GetActive() == SKILL_NONE )		// exit warmode if there's no more targets to attack
-					{
-						if ( !Fight_Attack(Fight_FindBestTarget()) )
-						{
-							Skill_Start(SKILL_NONE);
-							StatFlag_Clear(STATF_War);
-							m_Fight_Targ.InitUID();
-						}
-					}
-				}
+			}
+		}
+	}
+	else if ( IsStatFlag(STATF_War) )
+	{
+		EXC_SET("combat hit try");
+		if ( Fight_IsActive() )		// hit my current target (if I'm ready)
+		{
+			if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )
+				Fight_HitTry();
+		}
+		else if ( Skill_GetActive() == SKILL_NONE )		// exit warmode if there's no more targets to attack
+		{
+			if ( !Fight_Attack(Fight_FindBestTarget()) )
+			{
+				Skill_Start(SKILL_NONE);
+				StatFlag_Clear(STATF_War);
+				m_Fight_Targ.InitUID();
 			}
 		}
 	}
