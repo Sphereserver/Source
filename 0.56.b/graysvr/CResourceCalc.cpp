@@ -100,20 +100,17 @@ int CResource::Calc_CombatChanceToHit( CChar * pChar, CChar * pCharTarg, SKILL_T
 	int iAttackerSkill = pChar->Skill_GetBase(skill);
 	if ( iAttackerSkill < 200 && pChar->IsGargoyle() && (g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS) )
 		iAttackerSkill = 200;	// Racial traits: Deadly Aim. Gargoyles always have a minimum of 20.0 of throwing for checks (not shown in skill's gump).
-	iAttackerSkill = (( iAttackerSkill / 10) + 20) * (100 + minimum(static_cast<int>(pChar->GetDefNum("INCREASEHITCHANCE", true)), 45));
+	int iHitChance = static_cast<int>(pChar->GetDefNum("INCREASEHITCHANCE", true));
+	if (g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS && pChar->IsGargoyle())
+		iHitChance += 5;	// Racial traits: Deadly Aim. Gargoyles always have a +5% hit chance, stacking with any other bonuses.
+	iAttackerSkill = (( iAttackerSkill / 10) + 20) * (100 + minimum( iHitChance, 45));
 	int iTargetSkill = ((pCharTarg->Skill_GetBase(skill) / 10) + 20) * (100 + minimum(static_cast<int>(pCharTarg->GetDefNum("HitLowerAtk", true)), 45));
 
 	int iChance = iAttackerSkill * 100 / (iTargetSkill * 2);
-	if ( g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS && pChar->IsGargoyle() )
-		iChance += 5;	// Racial traits: Deadly Aim. Gargoyles always have a +5% hit chance, stacking with any other bonuses.
 	if ( iChance < 2 )
 		iChance = 2;	// minimum hit chance is 2%
 	else if ( iChance > 100 )
 		iChance = 100;
-	/*g_Log.EventDebug("ChanceToHit for %s against %s is:\n", pChar->GetName(), pCharTarg->GetName());
-	g_Log.EventDebug("Attacker = %d\n", iAttackerSkill);
-	g_Log.EventDebug("Target = %d\n", iTargetSkill);
-	g_Log.EventDebug("iChance = %d\n", iChance);*/
 
 	return( iChance );
 }
