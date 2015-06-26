@@ -22,8 +22,8 @@ int CResource::Calc_MaxCarryWeight( const CChar * pChar ) const
 	signed int iQty = 40 + ( pChar->Stat_GetAdjusted(STAT_STR) * 35 / 10 ) + pChar->m_ModMaxWeight;
 	if ( iQty < 0 )
 		iQty = 0;
-	if ( m_iFeatureML & FEATURE_ML_UPDATE && pChar->IsHuman())
-		iQty += 60;		//Humans can always carry +60 stones (racial traits)
+	if ( m_iFeatureML & FEATURE_ML_RACIAL_BONUS && pChar->IsHuman())
+		iQty += 60;		//Humans can always carry +60 stones (Strong Back racial trait)
 	return( iQty * WEIGHT_UNITS );
 }
 
@@ -97,14 +97,23 @@ int CResource::Calc_CombatChanceToHit( CChar * pChar, CChar * pCharTarg, SKILL_T
 	if ( pChar->m_pNPC && pChar->m_pNPC->m_Brain == NPCBRAIN_GUARD && m_fGuardsInstantKill )
 		return( 100 );
 
-	int iAttackerSkill = ((pChar->Skill_GetBase(skill) / 10) + 20) * (100 + minimum(pChar->GetDefNum("INCREASEHITCHANCE", true), 45));
-	int iTargetSkill = ((pCharTarg->Skill_GetBase(skill) / 10) + 20) * (100 + minimum(pCharTarg->GetDefNum("INCREASEHITCHANCE", true), 45));
+	int iAttackerSkill = pChar->Skill_GetBase(skill);
+	if ( iAttackerSkill < 200 && pChar->IsGargoyle() && (g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS) )
+		iAttackerSkill = 200;	// Racial traits: Deadly Aim. Gargoyles always have a minimum of 20.0 of throwing for checks (not shown in skill's gump).
+	iAttackerSkill = (( iAttackerSkill / 10) + 20) * (100 + minimum(static_cast<int>(pChar->GetDefNum("INCREASEHITCHANCE", true)), 45));
+	int iTargetSkill = ((pCharTarg->Skill_GetBase(skill) / 10) + 20) * (100 + minimum(static_cast<int>(pCharTarg->GetDefNum("HitLowerAtk", true)), 45));
 
 	int iChance = iAttackerSkill * 100 / (iTargetSkill * 2);
+	if ( g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS && pChar->IsGargoyle() )
+		iChance += 5;	// Racial traits: Deadly Aim. Gargoyles always have a +5% hit chance, stacking with any other bonuses.
 	if ( iChance < 2 )
 		iChance = 2;	// minimum hit chance is 2%
 	else if ( iChance > 100 )
 		iChance = 100;
+	/*g_Log.EventDebug("ChanceToHit for %s against %s is:\n", pChar->GetName(), pCharTarg->GetName());
+	g_Log.EventDebug("Attacker = %d\n", iAttackerSkill);
+	g_Log.EventDebug("Target = %d\n", iTargetSkill);
+	g_Log.EventDebug("iChance = %d\n", iChance);*/
 
 	return( iChance );
 }

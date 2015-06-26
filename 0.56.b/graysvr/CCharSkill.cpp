@@ -178,8 +178,8 @@ int CChar::Stat_GetMax( STAT_TYPE i ) const
 
 		if ( i == STAT_INT )
 		{
-			if ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE && IsElf() )
-				val += 20;		// elves always have +20 max mana (racial traits)
+			if ( g_Cfg.m_iFeatureML & FEATURE_ML_RACIAL_BONUS && IsElf() )
+				val += 20;		// elves always have +20 max mana (Wisdom racial trait)
 		}
 		return (val < 0 ? (m_pPlayer ? 1 : 0) : val);
 	}
@@ -794,8 +794,8 @@ bool CChar::Stats_Regen(INT64 iTimeDiff)
 			iRate = 0;
 
 		int mod = Stats_GetRegenVal(i,false);
-		if (i == STAT_STR && g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE && IsHuman())
-			mod += 2;		// Humans always have +2 hitpoint regeneration (racial traits)
+		if (i == STAT_STR && g_Cfg.m_iFeatureML & FEATURE_ML_RACIAL_BONUS && IsHuman())
+			mod += 2;		// Humans always have +2 hitpoint regeneration (Tough racial trait)
 
 		m_Stat[i].m_regen += static_cast<unsigned short>(iTimeDiff);
 		if (m_Stat[i].m_regen < iRate)
@@ -1695,7 +1695,7 @@ int CChar::Skill_Tracking( SKTRIG_TYPE stage )
 			return( -SKTRIG_ABORT );
 
 		int iSkillLevel = Skill_GetAdjusted(SKILL_TRACKING);
-		if ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE && IsHuman() )
+		if ( g_Cfg.m_iFeatureML & FEATURE_ML_RACIAL_BONUS && IsHuman() )
 			iSkillLevel = maximum( iSkillLevel, 200 );			// humans always have a 20.0 minimum skill (racial traits)
 
 		if ( !Skill_Tracking( m_Act_Targ, m_atTracking.m_PrvDir, iSkillLevel/10 + 10 ))
@@ -3168,7 +3168,7 @@ int CChar::Skill_Fighting( SKTRIG_TYPE stage )
 			iWaitTime /= 2;
 		SetTimeout( iWaitTime );
 
-		return( g_Cfg.Calc_CombatChanceToHit(this, m_Act_Targ.CharFind(), Skill_GetActive()) );
+		return( g_Cfg.Calc_CombatChanceToHit(this, m_Fight_Targ.CharFind(), Skill_GetActive()) );
 	}
 
 	if ( stage == SKTRIG_STROKE )

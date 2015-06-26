@@ -2908,7 +2908,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	if (!m_pPlayer && !btoldByMaster)	// We call for FindBestTarget when this CChar is not a player and was not commanded to attack, otherwise it attack directly.
 		pTarget = Fight_FindBestTarget();
 	m_Fight_Targ = pTarget ? pTarget->GetUID() : static_cast<CGrayUID>(UID_UNUSED);
-	Skill_Start( skillWeapon );
+	Skill_Start( skillWeapon, g_Cfg.Calc_CombatChanceToHit(this,pTarget,skillActive) );
 
 	return( true );
 }
@@ -3988,11 +3988,18 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	//if ( iDmg ) // use OnTakeDamage below instead.
 	//	pCharTarg->OnHarmedBy( this, iDmg );
 
-	if (IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) && !g_Cfg.IsSkillFlag(skill, SKF_RANGED))
+	if ( IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) && !g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
 	{
 		CItem * pPoly = LayerFind(LAYER_SPELL_Polymorph);	// Horrific beast polymorph gives +25%(default) damage to melee attacks.
 		if (pPoly && pPoly->m_itSpell.m_spell == SPELL_Horrific_Beast)
 			iDmg += IMULDIV(iDmg, pPoly->m_itSpell.m_spelllevel, 100);
+	}
+
+	if ( (g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS) && IsGargoyle() )
+	{
+		int iCurrentHPPercent = (Stat_GetVal(STAT_STR) * 100) / Stat_GetMax(STAT_STR);	// Calculating current percentage of HP.
+		int iFinalBonus = iCurrentHPPercent / 20;		// Setting the number of bonuses to apply: each 15% is 1 bonus
+		iDmg += IMULDIV( iDmg, iFinalBonus * 15, 100 );	//Racial Bonus (Berserk), Gargoyles gains +15% damage per each 20% HP lost.
 	}
 	CScriptTriggerArgs	Args( iDmg, iTyp, pWeapon );
 	Args.m_VarsLocal.SetNum("ItemDamageChance", 40);

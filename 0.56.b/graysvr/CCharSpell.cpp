@@ -422,7 +422,7 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 		return false;
 	}
 
-	long long hits = IMULDIV(Stat_GetMax(STAT_STR), g_Cfg.m_iHitpointPercentOnRez, 100);
+	int hits = IMULDIV(Stat_GetMax(STAT_STR), g_Cfg.m_iHitpointPercentOnRez, 100);
 	if (!pCorpse)
 		pCorpse = FindMyCorpse();
 
@@ -431,7 +431,7 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 		CScriptTriggerArgs Args(hits, 0, pCorpse);
 		if (OnTrigger(CTRIG_Resurrect, pCharSrc, &Args) == TRIGRET_RET_TRUE)
 			return false;
-		hits = Args.m_iN1;
+		hits = static_cast<int>(Args.m_iN1);
 	}
 
 	SetID(m_prev_id);
@@ -2188,7 +2188,7 @@ bool CChar::Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool 
 	}
 
 	// Check for Tithing
-	int wTithing = GetDefNum("Tithing");
+	int wTithing = static_cast<int>(GetDefNum("Tithing"));
 	if ( wTithing < wTithingUse)
 	{
 		if (fFailMsg)
@@ -2381,6 +2381,9 @@ bool CChar::Spell_CastDone()
 	{
 		iSkillLevel = Skill_GetAdjusted(static_cast<SKILL_TYPE>(iSkill));
 	}
+
+	if ( iSkill == SKILL_MYSTICISM  && iSkillLevel < 300 && IsGargoyle() && (g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS) )
+		iSkillLevel = 300;	// Racial trait (Mystic Insight). Gargoyles always have a minimum of 30.0 Mysticism.
 
 	CScriptTriggerArgs	Args(spell, iSkillLevel, pObjSrc);
 	Args.m_VarsLocal.SetNum("fieldWidth", 0);
@@ -3170,6 +3173,14 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				int DamageBonus = static_cast<int>(pCharSrc->GetDefNum("INCREASESPELLDAM",true));
 				if ( m_pPlayer && pCharSrc->m_pPlayer && DamageBonus > 15 )		// Spell Damage Increase is capped at 15% on PvP
 					DamageBonus = 15;
+
+
+				if ((g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS) && IsGargoyle())
+				{
+					int iCurrentHPPercent = (Stat_GetVal(STAT_STR) * 100) / Stat_GetMax(STAT_STR);	// Calculating current percentage of HP.
+					int iFinalBonus = iCurrentHPPercent / 20;		// Setting the number of bonuses to apply: each 15% is 1 bonus
+					iDmg += IMULDIV(iDmg, iFinalBonus * 3, 100);	//Racial Bonus (Berserk), Gargoyles gains +3% SpellDamageIncrease per each 20% HP lost.
+				}
 
 				// INT bonus
 				DamageBonus += pCharSrc->Stat_GetAdjusted(STAT_INT) / 10;

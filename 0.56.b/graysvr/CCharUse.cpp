@@ -93,7 +93,7 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 			case IT_HIDE:
 				SysMessageDefault( DEFMSG_CARVE_CORPSE_HIDES );
 				//pPart->m_itSkin.m_creid = CorpseID;
-				if ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE && IsHuman() )	// humans always find 10% bonus when gathering hides, ores and logs (racial traits)
+				if ( g_Cfg.m_iFeatureML & FEATURE_ML_RACIAL_BONUS && IsHuman() )	// humans always find 10% bonus when gathering hides, ores and logs (Workhorse racial trait)
 					iQty = iQty * 110 / 100;
 				break;
 			case IT_FEATHER:

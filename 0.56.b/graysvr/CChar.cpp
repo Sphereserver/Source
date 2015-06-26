@@ -3073,7 +3073,7 @@ do_default:
 			}
 			break;
 		case CHC_REFUSETRADES:
-			SetDefNum(s.GetKey(), static_cast<bool>(s.GetArgVal()), false);
+			SetDefNum(s.GetKey(), s.GetArgVal() > 0 ? 1 : 0, false);
 			break;
 		case CHC_STONE:
 			{

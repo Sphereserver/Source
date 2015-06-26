@@ -2400,3 +2400,10 @@ Added: New Hit Chance combat formula (more info: http://uo.stratics.com/content/
 26-06-2015, Coruja
 Fixed: Sphere crash when drop an item on a invalid ground location.
 Fixed: Function GOLD creating gold piles with max amount 65000 instead use ItemsMaxAmount value.
+
+26-06-2015, XuN
+Added left Racial bonuses for Elfs, Added all for Gargoyles excepting Master Artisan.
+Added a missing call to Calc_CombatChanceToHit() from Fight_Attack(), making it to no check the chances to hit.
+For more info about Racial bonuses, read here: http://www.uoguide.com/Racial_Abilities .
+[sphere.ini]
+	-Added FEATURE_ML_RACIAL_BONUS and FEATURE_SA_RACIAL_BONUS to FeatureML and FeatureSA respectively, each one activating the bonuses for human/elfs or gargoyles.

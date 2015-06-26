@@ -2430,7 +2430,7 @@ bool CChar::Horse_UnMount() // Get off a horse (Remove horse item and spawn new 
 	}
 
 	// What creature is the horse item ?
-	CChar * pHorse = Use_Figurine( pItem, false );
+	Use_Figurine( pItem, false );
 	pItem->Delete();
 
 	return( true );

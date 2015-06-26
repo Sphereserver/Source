@@ -1367,7 +1367,7 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 			iDecayTime = -1;
 	}
 
-	TRIGRET_TYPE ttResult;
+	TRIGRET_TYPE ttResult = TRIGRET_RET_DEFAULT;
 	if ( IsTrigUsed(TRIGGER_DROPON_GROUND) || IsTrigUsed(TRIGGER_ITEMDROPON_GROUND) )
 	{
 		CScriptTriggerArgs args;
@@ -4804,7 +4804,7 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 				return( 0 );
 
 			pItem->m_uidLink = pSrc ? pSrc->GetUID() : static_cast<CGrayUID>(UID_CLEAR);
-			pItem->m_itExplode.m_iDamage = g_Cfg.GetSpellEffect(SPELL_Explosion, m_itPotion.m_skillquality);
+			pItem->m_itExplode.m_iDamage = static_cast<WORD>(g_Cfg.GetSpellEffect(SPELL_Explosion, m_itPotion.m_skillquality));
 			pItem->m_itExplode.m_wFlags = pSpell->IsSpellType(SPELLFLAG_NOUNPARALYZE) ? DAMAGE_FIRE|DAMAGE_NOUNPARALYZE : DAMAGE_FIRE;
 			pItem->m_itExplode.m_iDist = 2;
 			pItem->SetType(IT_EXPLOSION);

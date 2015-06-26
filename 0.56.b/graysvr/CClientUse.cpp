@@ -1247,8 +1247,8 @@ bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )
 				// Check action difficulty when trying to track players
 				int tracking = m_pChar->Skill_GetBase( SKILL_TRACKING );
 				int detectHidden = m_pChar->Skill_GetBase( SKILL_DETECTINGHIDDEN );
-				if ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE && pChar->IsElf() )
-					tracking /= 2;			// elves are more difficult to track (racial traits)
+				if ( g_Cfg.m_iFeatureML & FEATURE_ML_RACIAL_BONUS && pChar->IsElf() )
+					tracking /= 2;			// elves are more difficult to track (Difficult to Track racial trait)
 
 				int hiding = pChar->Skill_GetBase( SKILL_HIDING );
 				int stealth = pChar->Skill_GetBase( SKILL_STEALTH );

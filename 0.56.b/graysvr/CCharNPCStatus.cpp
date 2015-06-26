@@ -376,6 +376,7 @@ int CChar::NPC_GetTrainMax( const CChar * pStudent, SKILL_TYPE Skill ) const
 bool CChar::NPC_CheckWalkHere( const CPointBase & pt, const CRegionBase * pArea, WORD wBlockFlags ) const
 {
 	ADDTOCALLSTACK("CChar::NPC_CheckWalkHere");
+	UNREFERENCED_PARAMETER(wBlockFlags);
 	// Does the NPC want to walk here ? step on this item ?
 	if ( !m_pNPC )
 		return false;
@@ -398,7 +399,6 @@ bool CChar::NPC_CheckWalkHere( const CPointBase & pt, const CRegionBase * pArea,
 	}
 
 	// Is there a nasty object here that will hurt us ?
-	bool fAvoid = false;
 	CWorldSearch AreaItems(pt);
 	for (;;)
 	{
