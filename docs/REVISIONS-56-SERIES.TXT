@@ -2396,3 +2396,7 @@ Added: New REFUSETRADES (bool 0/1) char property. If set to true (1), it will pr
 Added: New 'Allow Trades' / 'Refuse Trades' context menu buttons to toggle REFUSETRADES property. Unfortunately only clients >= 7.0.30 can see these buttons because OSI added these cliloc texts only on this client version.
 Added: New Hit Chance combat formula (more info: http://uo.stratics.com/content/arms-armor/combat.php#hitchance)
 [sphere_msgs.scp]: Added new message 'msg_trade_refuse'.
+
+26-06-2015, Coruja
+Fixed: Sphere crash when drop an item on a invalid ground location.
+Fixed: Function GOLD creating gold piles with max amount 65000 instead use ItemsMaxAmount value.

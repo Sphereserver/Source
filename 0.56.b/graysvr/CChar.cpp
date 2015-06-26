@@ -2946,16 +2946,14 @@ do_default:
 						DWORD amount = ((DWORD)newGold) - currentGold;
 						while ( amount > 0 )
 						{
-							CItem *gold = CItem::CreateBase(ITEMID_GOLD_C1);
-							gold->SetAmount( amount > 65000 ? 65000 : amount);
-							amount -= gold->GetAmount();
-							/*GetPackSafe()*/GetBank()->ContentAdd(gold);
+							CItem *pItem = CItem::CreateBase(ITEMID_GOLD_C1);
+							pItem->SetAmount(minimum(amount, pItem->GetMaxAmount()));
+							amount -= pItem->GetAmount();
+							GetBank()->ContentAdd(pItem);
 						}
 					}
+					UpdateStatsFlag();
 				}
-				CClient * pClient = this->GetClient();
-				if (pClient)
-					pClient->addCharStatWindow( this->GetUID() );
 			} break;
 
 		case CHC_HITPOINTS:

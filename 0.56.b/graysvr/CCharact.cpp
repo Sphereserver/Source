@@ -1821,52 +1821,41 @@ bool CChar::ItemBounce( CItem * pItem )
 	// We can't put this where we want to
 	// So put in my pack if i can. else drop.
 	// don't check where this came from !
-
-
 	if ( pItem == NULL )
 		return false;
 
 	CItemContainer * pPack = GetPackSafe();
 	if ( pItem->GetParent() == pPack )
-		return( true );
+		return true;
 
 	LPCTSTR pszWhere = NULL;
-	if ( CanCarry( pItem ) && ( pPack ))// this can happen at load time.
+	if ( pPack && CanCarry(pItem) )		// this can happen at load time
 	{
-		// if we can carry it
 		pszWhere = g_Cfg.GetDefaultMsg( DEFMSG_BOUNCE_PACK );
-
-		pPack->ContentAdd( pItem ); // Add it to pack
-		Sound( pItem->GetDropSound( pPack ));
 		pItem->RemoveFromView();
-		pItem->Update();
+		pPack->ContentAdd(pItem);		// add it to pack
+		Sound(pItem->GetDropSound(pPack));
 	}
 	else
 	{
-		if ( ! GetTopPoint().IsValidPoint())
+		if ( !GetTopPoint().IsValidPoint() )
 		{
 			// NPC is being created and has no valid point yet.
-			if (pszWhere)
-			{
-				DEBUG_ERR(( "No pack to place loot item '%s' for NPC '%s'\n", pItem->GetResourceName(), GetResourceName()));
-			}
+			if ( pszWhere )
+				DEBUG_ERR(("No pack to place loot item '%s' for NPC '%s'\n", pItem->GetResourceName(), GetResourceName()));
 			else
-			{
-				DEBUG_ERR(( "Loot item %s too heavy for NPC %s\n", pItem->GetResourceName(), GetResourceName()));
-			}
+				DEBUG_ERR(("Loot item %s too heavy for NPC %s\n", pItem->GetResourceName(), GetResourceName()));
+
 			pItem->Delete();
 			return false;
 		}
 		pszWhere = g_Cfg.GetDefaultMsg( DEFMSG_FEET );
-		ItemDrop( pItem, GetTopPoint());
-
-		// Maybe this update should be at CItem:MoveToCheck() ?
 		pItem->RemoveFromView();
-		pItem->Update();
+		pItem->MoveToUpdate(GetTopPoint());	// drop it on ground
 	}
 
 	SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_ITEMPLACE ), pItem->GetName(), pszWhere );
-	return( true );
+	return true;
 }
 
 bool CChar::ItemDrop( CItem * pItem, const CPointMap & pt )
