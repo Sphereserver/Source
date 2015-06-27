@@ -560,7 +560,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			}
 
 			SetID(m_prev_id);
-			if (IsSetMagicFlags(MAGICF_POLYMORPHSTATS))
+			if ( IsSetMagicFlags(MAGICF_POLYMORPHSTATS) && spell == SPELL_Polymorph )
 			{
 				Stat_AddMod(STAT_STR, -pSpell->m_itSpell.m_PolyStr);
 				Stat_AddMod(STAT_DEX, -pSpell->m_itSpell.m_PolyDex);
@@ -956,31 +956,31 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				if (pCharDef->m_Str)
 				{
 					int iChange = pCharDef->m_Str - Stat_GetBase(STAT_STR);
-					if (iChange > SPELL_MAX_POLY_STAT)
+					if (iChange > SPELL_MAX_POLY_STAT)			// Can't pass from SPELL_MAX_POLY_STAT defined in .ini (MaxPolyStats)
 						iChange = SPELL_MAX_POLY_STAT;
+					else if ( iChange < 0 && iChange * -1 > SPELL_MAX_POLY_STAT )	// Limit it to negative values too
+						iChange = -SPELL_MAX_POLY_STAT;
 					if (iChange + Stat_GetBase(STAT_STR) < 0)
 						iChange = -Stat_GetBase(STAT_STR);
 					Stat_AddMod(STAT_STR, static_cast<short>(iChange));
 					pSpell->m_itSpell.m_PolyStr = static_cast<short>(iChange);
 				}
 				else
-				{
 					pSpell->m_itSpell.m_PolyStr = 0;
-				}
 				if (pCharDef->m_Dex)
 				{
 					int iChange = pCharDef->m_Dex - Stat_GetBase(STAT_DEX);
 					if (iChange > SPELL_MAX_POLY_STAT)
 						iChange = SPELL_MAX_POLY_STAT;
+					else if (iChange < 0 && iChange * -1 > SPELL_MAX_POLY_STAT)	// Limit it to negative values too
+						iChange = -SPELL_MAX_POLY_STAT;
 					if (iChange + Stat_GetBase(STAT_DEX) < 0)
 						iChange = -Stat_GetBase(STAT_DEX);
 					Stat_AddMod(STAT_DEX, static_cast<short>(iChange));
 					pSpell->m_itSpell.m_PolyDex = static_cast<short>(iChange);
 				}
 				else
-				{
 					pSpell->m_itSpell.m_PolyDex = 0;
-				}
 			}
 			Update();		// show everyone I am now a new type
 
