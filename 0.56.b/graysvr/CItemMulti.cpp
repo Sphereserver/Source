@@ -260,7 +260,7 @@ void CItemMulti::Multi_Create( CChar * pChar, DWORD dwKeyCode )
 			// Put dupe key in the bank.
 			pKey = CreateDupeItem( pKey );
 			pChar->GetBank()->ContentAdd( pKey );
-			pChar->SysMessageDefault(DEFMSG_KEY_DUPEBANK);
+			pChar->SysMessageDefault(DEFMSG_MSG_KEY_DUPEBANK);
 		}
 	}
 }

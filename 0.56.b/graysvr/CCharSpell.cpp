@@ -99,7 +99,7 @@ bool CChar::Spell_Teleport( CPointBase ptNew, bool fTakePets, bool fCheckAntiMag
 	{
 		if ( ! IsVerticalSpace( ptNew, false ) )
 		{
-			SysMessageDefault( DEFMSG_MOUNT_CEILING );
+			SysMessageDefault( DEFMSG_MSG_MOUNT_CEILING );
 			return false;
 		}
 	}
@@ -271,7 +271,7 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 
 					if (wBlockFlags &~wCan)
 					{
-						SysMessageDefault(DEFMSG_SUMMON_INVALIDTARG);
+						SysMessageDefault(DEFMSG_MSG_SUMMON_INVALIDTARG);
 						return NULL;
 					}
 				}
@@ -294,7 +294,7 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 
 		if (g_Cfg.m_iMountHeight && !pChar->IsVerticalSpace(GetTopPoint(), false))
 		{
-			SysMessageDefault(DEFMSG_SUMMON_CEILING);
+			SysMessageDefault(DEFMSG_MSG_SUMMON_CEILING);
 			pChar->Delete();
 			return NULL;
 		}
@@ -3088,7 +3088,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		}
 		else if ( GetPrivLevel() == PLEVEL_Guest )
 		{
-			pCharSrc->SysMessageDefault( DEFMSG_ACC_GUESTHIT );
+			pCharSrc->SysMessageDefault( DEFMSG_MSG_ACC_GUESTHIT );
 			Effect(EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 16);
 			return false;
 		}

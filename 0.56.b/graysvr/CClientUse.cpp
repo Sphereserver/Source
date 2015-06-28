@@ -16,7 +16,7 @@ inline bool CClient::Cmd_Use_Item_MustEquip( CItem * pItem, bool fFromDClick )
 	}
 	else if ( ! m_pChar->CanCarry( pItem ) )
 	{
-		SysMessageDefault(DEFMSG_HEAVY);
+		SysMessageDefault(DEFMSG_MSG_HEAVY);
 		return false;
 	}
 	
@@ -1394,7 +1394,7 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 
 	if ( pChar->GetDefNum("REFUSETRADES", true) )
 	{
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_TRADE_REFUSE), pChar->GetName());
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_REFUSE), pChar->GetName());
 		return false;
 	}
 

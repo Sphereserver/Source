@@ -1205,7 +1205,7 @@ CChar * CChar::Use_Figurine( CItem * pItem, bool bCheckFollowerSlots )
 
 	if ( pItem->m_uidLink.IsValidUID() && pItem->m_uidLink.IsChar() && pItem->m_uidLink != GetUID() && !IsPriv( PRIV_GM ))
 	{
-		SysMessageDefault( DEFMSG_FIGURINE_NOTYOURS );
+		SysMessageDefault( DEFMSG_MSG_FIGURINE_NOTYOURS );
 		return( NULL );
 	}
 
@@ -1301,7 +1301,7 @@ bool CChar::Use_Key( CItem * pKey, CItem * pItemTarg )
 	ASSERT(pKey->IsType(IT_KEY));
 	if ( pItemTarg == NULL )
 	{
-		SysMessageDefault( DEFMSG_KEY_TARG );
+		SysMessageDefault( DEFMSG_MSG_KEY_TARG );
 		return false;
 	}
 
@@ -1310,18 +1310,18 @@ bool CChar::Use_Key( CItem * pKey, CItem * pItemTarg )
 		// We are trying to copy a key ?
 		if ( ! CanUse( pItemTarg, true ))
 		{
-			SysMessageDefault( DEFMSG_KEY_TARG_REACH );
+			SysMessageDefault( DEFMSG_MSG_KEY_TARG_REACH );
 			return false;
 		}
 
 		if ( ! pKey->m_itKey.m_lockUID && ! pItemTarg->m_itKey.m_lockUID )
 		{
-			SysMessageDefault( DEFMSG_KEY_BLANKS );
+			SysMessageDefault( DEFMSG_MSG_KEY_BLANKS );
 			return false;
 		}
 		if ( pItemTarg->m_itKey.m_lockUID && pKey->m_itKey.m_lockUID )
 		{
-			SysMessageDefault( DEFMSG_KEY_NOTBLANKS );
+			SysMessageDefault( DEFMSG_MSG_KEY_NOTBLANKS );
 			return false;
 		}
 
@@ -1329,7 +1329,7 @@ bool CChar::Use_Key( CItem * pKey, CItem * pItemTarg )
 
 		if ( ! Skill_UseQuick( SKILL_TINKERING, 30+Calc_GetRandLLVal(40)))
 		{
-			SysMessageDefault( DEFMSG_KEY_FAILC );
+			SysMessageDefault( DEFMSG_MSG_KEY_FAILC );
 			return( false );
 		}
 		if ( pItemTarg->m_itKey.m_lockUID )
@@ -1345,7 +1345,7 @@ bool CChar::Use_Key( CItem * pKey, CItem * pItemTarg )
 
 	if ( ! pKey->m_itKey.m_lockUID )
 	{
-		SysMessageDefault( DEFMSG_KEY_ISBLANK );
+		SysMessageDefault( DEFMSG_MSG_KEY_ISBLANK );
 		return false;
 	}
 	if ( pKey == pItemTarg )	// Rename the key.
@@ -1353,14 +1353,14 @@ bool CChar::Use_Key( CItem * pKey, CItem * pItemTarg )
 		// We may rename the key.
 		if ( IsClient())
 		{
-			GetClient()->addPromptConsole( CLIMODE_PROMPT_NAME_KEY, g_Cfg.GetDefaultMsg( DEFMSG_KEY_SETNAME ), pKey->GetUID() );
+			GetClient()->addPromptConsole( CLIMODE_PROMPT_NAME_KEY, g_Cfg.GetDefaultMsg( DEFMSG_MSG_KEY_SETNAME ), pKey->GetUID() );
 		}
 		return false;
 	}
 
 	if ( ! CanUse( pItemTarg, false ))
 	{
-		SysMessageDefault( DEFMSG_KEY_CANTREACH );
+		SysMessageDefault( DEFMSG_MSG_KEY_CANTREACH );
 		return false;
 	}
 
@@ -1374,12 +1374,12 @@ bool CChar::Use_Key( CItem * pKey, CItem * pItemTarg )
 
 	if ( ! pItemTarg->m_itContainer.m_lockUID )	// or m_itContainer.m_lockUID
 	{
-		SysMessageDefault( DEFMSG_KEY_NOLOCK );
+		SysMessageDefault( DEFMSG_MSG_KEY_NOLOCK );
 		return false;
 	}
 	if ( ! pKey->IsKeyLockFit( pItemTarg->m_itContainer.m_lockUID )) // or m_itKey
 	{
-		SysMessageDefault( DEFMSG_KEY_WRONGLOCK );
+		SysMessageDefault( DEFMSG_MSG_KEY_WRONGLOCK );
 		return false;
 	}
 
@@ -1396,38 +1396,38 @@ bool CChar::Use_KeyChange( CItem * pItemTarg )
 		// We may rename the sign.
 		if ( IsClient())
 		{
-			GetClient()->addPromptConsole( CLIMODE_PROMPT_NAME_SIGN, g_Cfg.GetDefaultMsg( DEFMSG_KEY_TARG_SIGN ), pItemTarg->GetUID() );
+			GetClient()->addPromptConsole( CLIMODE_PROMPT_NAME_SIGN, g_Cfg.GetDefaultMsg( DEFMSG_MSG_KEY_TARG_SIGN ), pItemTarg->GetUID() );
 		}
 		return true;
 	case IT_CONTAINER:
 		pItemTarg->SetType(IT_CONTAINER_LOCKED);
-		SysMessageDefault( DEFMSG_KEY_TARG_CONT_LOCK );
+		SysMessageDefault( DEFMSG_MSG_KEY_TARG_CONT_LOCK );
 		break;
 	case IT_CONTAINER_LOCKED:
 		pItemTarg->SetType(IT_CONTAINER);
-		SysMessageDefault( DEFMSG_KEY_TARG_CONT_ULOCK );
+		SysMessageDefault( DEFMSG_MSG_KEY_TARG_CONT_ULOCK );
 		break;
 	case IT_SHIP_HOLD:
 		pItemTarg->SetType(IT_SHIP_HOLD_LOCK);
-		SysMessageDefault( DEFMSG_KEY_TARG_HOLD_LOCK );
+		SysMessageDefault( DEFMSG_MSG_KEY_TARG_HOLD_LOCK );
 		break;
 	case IT_SHIP_HOLD_LOCK:
 		pItemTarg->SetType(IT_SHIP_HOLD);
-		SysMessageDefault( DEFMSG_KEY_TARG_HOLD_ULOCK );
+		SysMessageDefault( DEFMSG_MSG_KEY_TARG_HOLD_ULOCK );
 		break;
 	case IT_DOOR_OPEN:
 	case IT_DOOR:
 		pItemTarg->SetType(IT_DOOR_LOCKED);
-		SysMessageDefault( DEFMSG_KEY_TARG_DOOR_LOCK );
+		SysMessageDefault( DEFMSG_MSG_KEY_TARG_DOOR_LOCK );
 		break;
 	case IT_DOOR_LOCKED:
 		pItemTarg->SetType(IT_DOOR);
-		SysMessageDefault( DEFMSG_KEY_TARG_DOOR_ULOCK );
+		SysMessageDefault( DEFMSG_MSG_KEY_TARG_DOOR_ULOCK );
 		break;
 	case IT_SHIP_TILLER:
 		if ( IsClient())
 		{
-			GetClient()->addPromptConsole( CLIMODE_PROMPT_NAME_SHIP, g_Cfg.GetDefaultMsg( DEFMSG_SHIPNAME_PROMT ), pItemTarg->GetUID() );
+			GetClient()->addPromptConsole( CLIMODE_PROMPT_NAME_SHIP, g_Cfg.GetDefaultMsg( DEFMSG_MSG_SHIPNAME_PROMT ), pItemTarg->GetUID() );
 		}
 		return true;
 	case IT_SHIP_PLANK:
@@ -1435,20 +1435,20 @@ bool CChar::Use_KeyChange( CItem * pItemTarg )
 		if ( pItemTarg->GetType() == IT_SHIP_SIDE_LOCKED )
 		{
 			pItemTarg->SetType(IT_SHIP_SIDE);
-			SysMessageDefault( DEFMSG_KEY_TARG_SHIP_ULOCK );
+			SysMessageDefault( DEFMSG_MSG_KEY_TARG_SHIP_ULOCK );
 			break;
 		}
 		// Then fall thru and lock it.
 	case IT_SHIP_SIDE:
 		pItemTarg->SetType(IT_SHIP_SIDE_LOCKED);
-		SysMessageDefault( DEFMSG_KEY_TARG_SHIP_LOCK );
+		SysMessageDefault( DEFMSG_MSG_KEY_TARG_SHIP_LOCK );
 		break;
 	case IT_SHIP_SIDE_LOCKED:
 		pItemTarg->SetType(IT_SHIP_SIDE);
-		SysMessageDefault( DEFMSG_KEY_TARG_SHIP_ULOCK );
+		SysMessageDefault( DEFMSG_MSG_KEY_TARG_SHIP_ULOCK );
 		break;
 	default:
-		SysMessageDefault( DEFMSG_KEY_TARG_NOLOCK );
+		SysMessageDefault( DEFMSG_MSG_KEY_TARG_NOLOCK );
 		return false;
 	}
 
@@ -1479,14 +1479,14 @@ bool CChar::Use_Seed( CItem * pSeed, CPointMap * pPoint )
 
 	if ( ! CanTouch(pt))
 	{
-		SysMessageDefault( DEFMSG_SEED_REACH );
+		SysMessageDefault( DEFMSG_MSG_SEED_REACH );
 		return( false );
 	}
 
 	// is there soil here ? IT_DIRT
 	if ( ! IsPriv(PRIV_GM) && ! g_World.IsItemTypeNear( pt, IT_DIRT, 0, false ))
 	{
-		SysMessageDefault( DEFMSG_SEED_TARGSOIL );
+		SysMessageDefault( DEFMSG_MSG_SEED_TARGSOIL );
 		return( false );
 	}
 
@@ -1494,7 +1494,7 @@ bool CChar::Use_Seed( CItem * pSeed, CPointMap * pPoint )
 	ITEMID_TYPE idReset = static_cast<ITEMID_TYPE>(RES_GET_INDEX(pItemDef->m_ttFruit.m_idReset));
 	if ( idReset == 0 )
 	{
-		SysMessageDefault( DEFMSG_SEED_NOGOOD );
+		SysMessageDefault( DEFMSG_MSG_SEED_NOGOOD );
 		return( false );
 	}
 
@@ -1509,7 +1509,7 @@ bool CChar::Use_Seed( CItem * pSeed, CPointMap * pPoint )
 			pItem->IsType(IT_FOLIAGE))
 		{
 			// already a tree here .
-			SysMessageDefault( DEFMSG_SEED_ATREE );
+			SysMessageDefault( DEFMSG_MSG_SEED_ATREE );
 			return( false );
 		}
 		if ( pItem->IsType(IT_CROPS))
@@ -1608,14 +1608,14 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 		if ( pItem->m_itItemStone.m_wAmount == USHRT_MAX )
 		{
 			// used to be sysmessagef
-			SysMessageDefault( DEFMSG_IT_IS_DEAD );
+			SysMessageDefault( DEFMSG_MSG_IT_IS_DEAD );
 			return true;
 		}
 		if ( pItem->m_itItemStone.m_wRegenTime )
 		{
 			if ( pItem->IsTimerSet())
 			{
-				SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_STONEREG_TIME ), pItem->GetTimerDiff() / TICK_PER_SEC );
+				SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_STONEREG_TIME ), pItem->GetTimerDiff() / TICK_PER_SEC );
 				return true;
 			}
 			pItem->SetTimeout( pItem->m_itItemStone.m_wRegenTime * TICK_PER_SEC );
@@ -1782,7 +1782,7 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 	case IT_DOOR_LOCKED:
 		if ( ! ContentFindKeyFor( pItem ))
 		{
-			SysMessageDefault( DEFMSG_KEY_DOORLOCKED );
+			SysMessageDefault( DEFMSG_MSG_KEY_DOORLOCKED );
 			if ( ! pItem->IsTopLevel())
 				return( false );
 			if ( pItem->IsAttr(ATTR_MAGIC))

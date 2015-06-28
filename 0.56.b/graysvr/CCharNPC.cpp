@@ -673,7 +673,7 @@ bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command 
 			{
 				if ( pSrc->GetPrivLevel() <= GetPrivLevel() || pSrc->GetPrivLevel() < PLEVEL_Admin )
 				{
-					pSrc->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_ACC_PRIV));
+					pSrc->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_PRIV));
 					return false;
 				}
 			}
@@ -684,20 +684,20 @@ bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command 
 			if ( !s.HasArgs() )
 			{
 				pAccount->ClearPassword();
-				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_ACC_PASSCLEAR));
-				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_ACC_PASSCLEAR_RELOG));
+				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_PASSCLEAR));
+				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_PASSCLEAR_RELOG));
 				g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "Account '%s', password cleared", pAccount->GetName());
 			}
 			else
 			{
 				if ( pAccount->SetPassword(s.GetArgStr()) )
 				{
-					SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_ACC_ACCEPTPASS));
+					SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_ACCEPTPASS));
 					g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "Account '%s', password set to '%s'\n", pAccount->GetName(), s.GetArgStr());
 					return true;
 				}
 
-				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_ACC_INVALIDPASS));
+				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_INVALIDPASS));
 			}
 			break;
 		}

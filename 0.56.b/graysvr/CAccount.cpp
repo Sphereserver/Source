@@ -765,20 +765,20 @@ bool CAccount::Kick( CTextConsole * pSrc, bool fBlock )
 	ADDTOCALLSTACK("CAccount::Kick");
 	if (( GetPrivLevel() >= pSrc->GetPrivLevel()) &&  ( pSrc->GetChar() ) )
 	{
-		pSrc->SysMessageDefault(DEFMSG_ACC_PRIV);
+		pSrc->SysMessageDefault(DEFMSG_MSG_ACC_PRIV);
 		return( false );
 	}
 
 	if ( fBlock )
 	{
 		SetPrivFlags( PRIV_BLOCKED );
-		pSrc->SysMessagef( g_Cfg.GetDefaultMsg(DEFMSG_ACC_BLOCK), static_cast<LPCTSTR>(GetName()) );
+		pSrc->SysMessagef( g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BLOCK), static_cast<LPCTSTR>(GetName()) );
 	}
 
 	LPCTSTR pszAction = fBlock ? "KICK" : "DISCONNECT";
 
 	TCHAR * z = Str_GetTemp();
-	sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_ACC_KICK), GetName(), pszAction, pSrc->GetName());
+	sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_KICK), GetName(), pszAction, pSrc->GetName());
 	g_Log.Event(LOGL_EVENT|LOGM_GM_CMDS, "%s\n", z);
 	
 	return true;

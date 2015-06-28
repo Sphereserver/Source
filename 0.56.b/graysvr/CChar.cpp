@@ -3609,9 +3609,9 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			{
 				char *z = Str_GetTemp();
 				if ( pCharSrc == this )
-					sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_SELF), Food_GetLevelMessage( false, false ));
+					sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_SELF), Food_GetLevelMessage( false, false ));
 				else
-					sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_OTHER), static_cast<LPCTSTR>(GetName()), Food_GetLevelMessage( false, false ));
+					sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_OTHER), static_cast<LPCTSTR>(GetName()), Food_GetLevelMessage( false, false ));
 				pCharSrc->ObjMessage(z, this);
 			}
 			break;
@@ -3620,7 +3620,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			{
 				m_StatFlag = s.GetArgFlag( m_StatFlag, STATF_Insubstantial );
 				if ( IsSetOF( OF_Command_Sysmsgs ) )
-					pSrc->SysMessage( IsStatFlag( STATF_Insubstantial )? g_Cfg.GetDefaultMsg(DEFMSG_INVIS_ON) : g_Cfg.GetDefaultMsg(DEFMSG_INVIS_OFF) );
+					pSrc->SysMessage( IsStatFlag( STATF_Insubstantial )? g_Cfg.GetDefaultMsg(DEFMSG_MSG_INVIS_ON) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_INVIS_OFF) );
 
 				//UpdateMode( NULL, true );	// invis used by GM bug requires this
 				Update();
@@ -3636,7 +3636,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				m_StatFlag = s.GetArgFlag( m_StatFlag, STATF_INVUL );
 				NotoSave_Update();
 				if ( IsSetOF( OF_Command_Sysmsgs ) )
-					pSrc->SysMessage( IsStatFlag( STATF_INVUL )? g_Cfg.GetDefaultMsg(DEFMSG_INVUL_ON) : g_Cfg.GetDefaultMsg(DEFMSG_INVUL_OFF) );
+					pSrc->SysMessage( IsStatFlag( STATF_INVUL )? g_Cfg.GetDefaultMsg(DEFMSG_MSG_INVUL_ON) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_INVUL_OFF) );
 			}
 			break;
 		case CHV_JAIL:	// i am being jailed
@@ -3942,22 +3942,22 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				{
 					if ( m_pArea->GetResourceID().IsItem())
 					{
-						sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_CMD_WHERE_AREA), m_pArea->GetName(), GetTopPoint().WriteUsed());
+						sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_WHERE_AREA), m_pArea->GetName(), GetTopPoint().WriteUsed());
 					}
 					else
 					{
 						const CRegionBase * pRoom = GetTopPoint().GetRegion( REGION_TYPE_ROOM );
 						if ( ! pRoom )
 						{
-							sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_CMD_WHERE_AREA), m_pArea->GetName(), GetTopPoint().WriteUsed());
+							sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_WHERE_AREA), m_pArea->GetName(), GetTopPoint().WriteUsed());
 						} else
 						{
-							sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_CMD_WHERE_ROOM), m_pArea->GetName(), pRoom->GetName(), GetTopPoint().WriteUsed());
+							sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_WHERE_ROOM), m_pArea->GetName(), pRoom->GetName(), GetTopPoint().WriteUsed());
 						}
 					}
 				}
 				else
-					sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_CMD_WHERE), GetTopPoint().WriteUsed());
+					sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_WHERE), GetTopPoint().WriteUsed());
 				pCharSrc->ObjMessage(z, this);
 			}
 			break;
@@ -4112,14 +4112,14 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 
 	static UINT const keyWords[] =
 	{
-		DEFMSG_EXP_CHANGE_1,		// 0
-		DEFMSG_EXP_CHANGE_2,
-		DEFMSG_EXP_CHANGE_3,
-		DEFMSG_EXP_CHANGE_4,
-		DEFMSG_EXP_CHANGE_5,
-		DEFMSG_EXP_CHANGE_6,		// 5
-		DEFMSG_EXP_CHANGE_7,
-		DEFMSG_EXP_CHANGE_8
+		DEFMSG_MSG_EXP_CHANGE_1,		// 0
+		DEFMSG_MSG_EXP_CHANGE_2,
+		DEFMSG_MSG_EXP_CHANGE_3,
+		DEFMSG_MSG_EXP_CHANGE_4,
+		DEFMSG_MSG_EXP_CHANGE_5,
+		DEFMSG_MSG_EXP_CHANGE_6,		// 5
+		DEFMSG_MSG_EXP_CHANGE_7,
+		DEFMSG_MSG_EXP_CHANGE_8
 	};
 
 	if (delta != 0 || pCharDead)//	zero call will sync the exp level
@@ -4180,8 +4180,8 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 			else if (absval >= maxval / 14)		//   7%
 				iWord = 1;
 
-			m_pClient->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_EXP_CHANGE_0),
-				(delta > 0) ? g_Cfg.GetDefaultMsg(DEFMSG_EXP_CHANGE_GAIN) : g_Cfg.GetDefaultMsg(DEFMSG_EXP_CHANGE_LOST),
+			m_pClient->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_0),
+				(delta > 0) ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_GAIN) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_LOST),
 				g_Cfg.GetDefaultMsg(keyWords[iWord]));
 		}
 	}
@@ -4218,8 +4218,8 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 
 			if (m_pClient && bShowMsg)
 			{
-				m_pClient->SysMessagef((abs(delta) == 1) ? g_Cfg.GetDefaultMsg(DEFMSG_EXP_LVLCHANGE_0) : g_Cfg.GetDefaultMsg(DEFMSG_EXP_LVLCHANGE_1),
-					(delta > 0) ? g_Cfg.GetDefaultMsg(DEFMSG_EXP_LVLCHANGE_GAIN) : g_Cfg.GetDefaultMsg(DEFMSG_EXP_LVLCHANGE_LOST));
+				m_pClient->SysMessagef((abs(delta) == 1) ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_LVLCHANGE_0) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_LVLCHANGE_1),
+					(delta > 0) ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_LVLCHANGE_GAIN) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_LVLCHANGE_LOST));
 			}
 		}
 	}

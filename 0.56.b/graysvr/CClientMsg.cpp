@@ -3788,21 +3788,21 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 		if ( m_pChar->m_pArea && m_pChar->m_pArea->IsGuarded() && !m_pChar->m_pArea->IsFlag(REGION_FLAG_ANNOUNCE) )
 		{
 			const CVarDefContStr * pVarStr = dynamic_cast <CVarDefContStr *>( m_pChar->m_pArea->m_TagDefs.GetKey("GUARDOWNER"));
-			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_REGION_GUARDSP), ( pVarStr ) ? pVarStr->GetValStr() : g_Cfg.GetDefaultMsg(DEFMSG_REGION_GUARDSPT));
+			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDSP), ( pVarStr ) ? pVarStr->GetValStr() : g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDSPT));
 			if ( m_pChar->m_pArea->m_TagDefs.GetKeyNum("RED", true) )
-				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_REGION_REDDEF), g_Cfg.GetDefaultMsg(DEFMSG_REGION_REDENTER));
+				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDDEF), g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDENTER));
 		}
 	}
 
 	if ( IsPriv(PRIV_GM_PAGE) && g_World.m_GMPages.GetCount() > 0 )
 	{
-		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_GMPAGES), static_cast<int>(g_World.m_GMPages.GetCount()), g_Cfg.m_cCommandPrefix);
+		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_GMPAGES), static_cast<int>(g_World.m_GMPages.GetCount()), g_Cfg.m_cCommandPrefix);
 		addSysMessage(z);
 	}
 	if ( IsPriv(PRIV_JAILED) )
 		m_pChar->Jail(&g_Serv, true, static_cast<int>(GetAccount()->m_TagDefs.GetKeyNum("JailCell", true)));
 	if ( g_Serv.m_timeShutdown.IsTimeValid() )
-		addBark( g_Cfg.GetDefaultMsg( DEFMSG_SERV_SHUTDOWN_SOON ), NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM, FONT_BOLD);
+		addBark( g_Cfg.GetDefaultMsg( DEFMSG_MSG_SERV_SHUTDOWN_SOON ), NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM, FONT_BOLD);
 
 	GetAccount()->m_TagDefs.DeleteKey("LastLogged");
 	Announce(true);		// announce you to the world
@@ -3826,7 +3826,7 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 			}
 			iDist = iDistNew;
 		}
-		addSysMessage( g_Cfg.GetDefaultMsg( i < 100 ? DEFMSG_REGION_WATER_1 : DEFMSG_REGION_WATER_2) );
+		addSysMessage( g_Cfg.GetDefaultMsg( i < 100 ? DEFMSG_MSG_REGION_WATER_1 : DEFMSG_MSG_REGION_WATER_2) );
 	}
 
 	DEBUG_MSG(( "%lx:Setup_Start done\n", GetSocketID()));
@@ -3979,7 +3979,7 @@ BYTE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 	if ( pAccount->IsPriv( PRIV_BLOCKED ))
 	{
 		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s' is blocked.\n", GetSocketID(), static_cast<LPCTSTR>(pAccount->GetName()));
-		sMsg.Format( g_Cfg.GetDefaultMsg( DEFMSG_ACC_BLOCKED ), static_cast<LPCTSTR>(g_Serv.m_sEMail));
+		sMsg.Format( g_Cfg.GetDefaultMsg( DEFMSG_MSG_ACC_BLOCKED ), static_cast<LPCTSTR>(g_Serv.m_sEMail));
 		return( PacketLoginError::Blocked );
 	}
 
@@ -4030,7 +4030,7 @@ BYTE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 		if ( ! GetPeer().IsLocalAddr() && SockName.GetAddrIP() != GetPeer().GetAddrIP() )
 		{
 			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s', maximum clients reached (only local connections allowed).\n", GetSocketID(), static_cast<LPCTSTR>(pAccount->GetName()));
-			sMsg = g_Cfg.GetDefaultMsg( DEFMSG_SERV_LD );
+			sMsg = g_Cfg.GetDefaultMsg( DEFMSG_MSG_SERV_LD );
 			return( PacketLoginError::MaxClients );
 		}
 	}
@@ -4040,7 +4040,7 @@ BYTE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 		if ( pAccount->GetPrivLevel() < PLEVEL_Admin )
 		{
 			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s', maximum clients reached (only administrators allowed).\n", GetSocketID(), static_cast<LPCTSTR>(pAccount->GetName()));
-			sMsg = g_Cfg.GetDefaultMsg( DEFMSG_SERV_AO );
+			sMsg = g_Cfg.GetDefaultMsg( DEFMSG_MSG_SERV_AO );
 			return( PacketLoginError::MaxClients );
 		}
 	}
@@ -4049,7 +4049,7 @@ BYTE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 	{
 		// Give them a polite goodbye.
 		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s', maximum clients reached.\n", GetSocketID(), static_cast<LPCTSTR>(pAccount->GetName()));
-		sMsg = g_Cfg.GetDefaultMsg( DEFMSG_SERV_FULL );
+		sMsg = g_Cfg.GetDefaultMsg( DEFMSG_MSG_SERV_FULL );
 		return( PacketLoginError::MaxClients );
 	}
 	//	Do the scripts allow to login this account?
@@ -4062,7 +4062,7 @@ BYTE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 	g_Serv.r_Call("f_onaccount_login", &g_Serv, &Args, NULL, &tr);
 	if ( tr == TRIGRET_RET_TRUE )
 	{
-		sMsg = g_Cfg.GetDefaultMsg( DEFMSG_ACC_DENIED );
+		sMsg = g_Cfg.GetDefaultMsg( DEFMSG_MSG_ACC_DENIED );
 		return (PacketLoginError::Blocked);
 	}
 
@@ -4089,7 +4089,7 @@ BYTE CClient::LogIn( LPCTSTR pszAccName, LPCTSTR pszPassword, CGString & sMsg )
 	if ( iLen1 == 0 || iLen1 != iLen3 || iLen1 > MAX_NAME_SIZE )	// a corrupt message.
 	{
 		TCHAR szVersion[ 256 ];
-		sMsg.Format( g_Cfg.GetDefaultMsg( DEFMSG_ACC_WCLI ), static_cast<LPCTSTR>(m_Crypt.WriteClientVer( szVersion )));
+		sMsg.Format( g_Cfg.GetDefaultMsg( DEFMSG_MSG_ACC_WCLI ), static_cast<LPCTSTR>(m_Crypt.WriteClientVer( szVersion )));
 		return( PacketLoginError::BadAccount );
 	}
 
@@ -4097,7 +4097,7 @@ BYTE CClient::LogIn( LPCTSTR pszAccName, LPCTSTR pszPassword, CGString & sMsg )
 	if ( iLen2 != iLen3 )	// a corrupt message.
 	{
 		TCHAR szVersion[ 256 ];
-		sMsg.Format( g_Cfg.GetDefaultMsg( DEFMSG_ACC_WCLI ), static_cast<LPCTSTR>(m_Crypt.WriteClientVer( szVersion )));
+		sMsg.Format( g_Cfg.GetDefaultMsg( DEFMSG_MSG_ACC_WCLI ), static_cast<LPCTSTR>(m_Crypt.WriteClientVer( szVersion )));
 		return( PacketLoginError::BadPassword );
 	}
 
@@ -4118,7 +4118,7 @@ BYTE CClient::LogIn( LPCTSTR pszAccName, LPCTSTR pszPassword, CGString & sMsg )
 		{
 			if ( i>=g_Cfg.m_iGuestsMax )
 			{
-				sMsg = g_Cfg.GetDefaultMsg( DEFMSG_ACC_GUSED );
+				sMsg = g_Cfg.GetDefaultMsg( DEFMSG_MSG_ACC_GUSED );
 				return( PacketLoginError::MaxGuests );
 			}
 
@@ -4137,7 +4137,7 @@ BYTE CClient::LogIn( LPCTSTR pszAccName, LPCTSTR pszPassword, CGString & sMsg )
 	{
 		if ( pszPassword[0] == '\0' )
 		{
-			sMsg = g_Cfg.GetDefaultMsg( DEFMSG_ACC_NEEDPASS );
+			sMsg = g_Cfg.GetDefaultMsg( DEFMSG_MSG_ACC_NEEDPASS );
 			return( PacketLoginError::BadPassword );
 		}
 	}
@@ -4147,14 +4147,14 @@ BYTE CClient::LogIn( LPCTSTR pszAccName, LPCTSTR pszPassword, CGString & sMsg )
 	if ( ! pAccount )
 	{
 		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s' does not exist\n", GetSocketID(), pszAccName);
-		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_ACC_UNK), pszAccName);
+		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_UNK), pszAccName);
 		return PacketLoginError::Invalid;
 	}
 
 	if ( g_Cfg.m_iMaxAccountLoginTries && !pAccount->CheckPasswordTries(GetPeer()))
 	{
 		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: '%s' exceeded password tries in time lapse\n", GetSocketID(), static_cast<LPCTSTR>(pAccount->GetName()));
-		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_ACC_BADPASS);
+		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
 		return PacketLoginError::MaxPassTries;
 	}
 
@@ -4163,7 +4163,7 @@ BYTE CClient::LogIn( LPCTSTR pszAccName, LPCTSTR pszPassword, CGString & sMsg )
 		if ( ! pAccount->CheckPassword(pszPassword))
 		{
 			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: '%s' bad password\n", GetSocketID(), static_cast<LPCTSTR>(pAccount->GetName()));
-			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_ACC_BADPASS);
+			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
 			return PacketLoginError::BadPass;
 		}
 	}

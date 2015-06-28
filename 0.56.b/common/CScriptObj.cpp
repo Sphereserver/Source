@@ -1617,18 +1617,10 @@ size_t CScriptObj::ParseText( TCHAR * pszResponse, CTextConsole * pSrc, int iFla
 			int len = sVal.GetLength();
 
 			EXC_SET("mem shifting");
-#if defined(_DEBUG) || !defined(_WIN32)
-			size_t estimatedLength = (strlen(pszResponse + i + 1) + iBegin + len);
-			ASSERT(estimatedLength < SCRIPT_MAX_LINE_LEN);
-#endif
 
 			memmove( pszResponse + iBegin + len, pszResponse + i + 1, strlen( pszResponse + i + 1 ) + 1 );
 			memcpy( pszResponse + iBegin, static_cast<LPCTSTR>(sVal), len );
 			i = iBegin + len - 1;
-			
-#if defined(_DEBUG) || !defined(_WIN32)
-			ASSERT(strlen(pszResponse) == estimatedLength);
-#endif
 
 			if ((iFlags & 2) != 0) // just do this one then bail out.
 				return i;

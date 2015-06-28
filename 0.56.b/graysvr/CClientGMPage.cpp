@@ -17,14 +17,14 @@ void CClient::Cmd_GM_Page( LPCTSTR pszReason ) // Help button (Calls GM Call Men
 
 	if ( pszReason[0] == '\0' )
 	{
-		SysMessageDefault( DEFMSG_GMPAGE_CANCELED );
+		SysMessageDefault( DEFMSG_MSG_GMPAGE_CANCELED );
 		return;
 	}
 
 	const CPointMap & ptPlayerLocation = m_pChar->GetTopPoint();
 
 	TCHAR * pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_GMPAGE_REC ),
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MSG_GMPAGE_REC ),
 		    m_pChar->GetName(), (DWORD) m_pChar->GetUID(),
 		    ptPlayerLocation.m_x, ptPlayerLocation.m_y, ptPlayerLocation.m_z, ptPlayerLocation.m_map,
 			pszReason);
@@ -44,11 +44,11 @@ void CClient::Cmd_GM_Page( LPCTSTR pszReason ) // Help button (Calls GM Call Men
 	}
 
 	if (fFound == false)
-		SysMessageDefault( DEFMSG_GMPAGE_QUED );
+		SysMessageDefault( DEFMSG_MSG_GMPAGE_QUED );
 	else
-		SysMessageDefault( DEFMSG_GMPAGE_NOTIFIED );
+		SysMessageDefault( DEFMSG_MSG_GMPAGE_NOTIFIED );
 
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_GMPAGE_QNUM ), static_cast<int>(g_World.m_GMPages.GetCount()));
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MSG_GMPAGE_QNUM ), static_cast<int>(g_World.m_GMPages.GetCount()));
 	SysMessage(pszMsg);
 
 	// Already have a message in the queue ?
@@ -62,7 +62,7 @@ void CClient::Cmd_GM_Page( LPCTSTR pszReason ) // Help button (Calls GM Call Men
 
 	if ( pPage != NULL )
 	{
-		SysMessageDefault( DEFMSG_GMPAGE_UPDATE );
+		SysMessageDefault( DEFMSG_MSG_GMPAGE_UPDATE );
 		pPage->SetReason( pszReason );
 		pPage->m_timePage = CServTime::GetCurrentTime();
 	}
@@ -137,7 +137,7 @@ void CClient::Cmd_GM_PageMenu( unsigned int iEntryStart )
 
 	if ( count <= 0 )
 	{
-		SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_GMPAGES_NONE) );
+		SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_MSG_GMPAGES_NONE) );
 		return;
 	}
 
@@ -153,7 +153,7 @@ void CClient::Cmd_GM_PageInfo()
 	ASSERT( m_pGMPage );
 
 	SysMessagef(
-		g_Cfg.GetDefaultMsg(DEFMSG_GMPAGES_CURRENT),
+		g_Cfg.GetDefaultMsg(DEFMSG_MSG_GMPAGES_CURRENT),
 		static_cast<LPCTSTR>(m_pGMPage->GetName()),
 		static_cast<LPCTSTR>(m_pGMPage->GetAccountStatus()),
 		static_cast<LPCTSTR>(m_pGMPage->GetReason()),

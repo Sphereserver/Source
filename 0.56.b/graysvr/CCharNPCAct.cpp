@@ -260,7 +260,7 @@ bool CChar::NPC_StablePetSelect( CChar * pCharPlayer )
 	CItemContainer * pBank = GetBank();
 	if ( pBank->GetCount() >= MAX_ITEMS_CONT )
 	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_FULL ) );
+		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_FULL ) );
 		return( false );
 	}
 
@@ -300,12 +300,12 @@ bool CChar::NPC_StablePetSelect( CChar * pCharPlayer )
 	}
 	if ( iCount >= iPetMax )
 	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_TOOMANY ) );
+		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_TOOMANY ) );
 		return( false );
 	}
 
 	pCharPlayer->m_pClient->m_Targ_PrvUID = GetUID();
-	pCharPlayer->m_pClient->addTarget( CLIMODE_TARG_PET_STABLE, g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_TARG ) );
+	pCharPlayer->m_pClient->addTarget( CLIMODE_TARG_PET_STABLE, g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_TARG ) );
 	return( true );
 }
 
@@ -342,16 +342,16 @@ bool CChar::NPC_StablePetRetrieve( CChar * pCharPlayer )
 	if ( iCount == -1 )
 	{
 		TCHAR *pszTemp = Str_GetTemp();
-		sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_CLAIM_FOLLOWER ), pItem->GetName());
+		sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_CLAIM_FOLLOWER ), pItem->GetName());
 		Speak( pszTemp );
 	}
 	else if ( iCount == 0 )
 	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_CLAIM_NOPETS ) );
+		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_CLAIM_NOPETS ) );
 	}
 	else
 	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_CLAIM ) );
+		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_CLAIM ) );
 	}
 
 	return( true );
@@ -3412,7 +3412,7 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 					{
 						if ( NPC_CanSpeak() )
 						{
-							Speak(g_Cfg.GetDefaultMsg(DEFMSG_MURDERER));
+							Speak(g_Cfg.GetDefaultMsg(DEFMSG_MSG_MURDERER));
 						}
 						// PC attacks NPC
 						return false;

@@ -382,25 +382,25 @@ void CObjBase::Emote(LPCTSTR pText, CClient * pClientExclude, bool fForcePossess
 
 		if (pObjTop != this)
 		{
-			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_EMOTE_1), static_cast<LPCTSTR>(pObjTop->GetName()), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
-			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_EMOTE_2), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
+			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_1), static_cast<LPCTSTR>(pObjTop->GetName()), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
+			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_2), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
 		}
 		else if (fForcePossessive)
 		{
 			// ex. "You see joes poor shot ruin an arrow"
-			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_EMOTE_3), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
-			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_EMOTE_4), pText);
+			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_3), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
+			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_4), pText);
 		}
 		else
 		{
-			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_EMOTE_5), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
-			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_EMOTE_6), pText);
+			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_5), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
+			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_6), pText);
 		}
 	}
 	else
 	{
 		// Top level is an item. Article ?
-		sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_EMOTE_7), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
+		sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_7), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
 		strcpy(pszYou, pszThem);
 	}
 
@@ -427,25 +427,25 @@ void CObjBase::Emote2(LPCTSTR pText, LPCTSTR pText1, CClient * pClientExclude, b
 
 		if (pObjTop != this)
 		{
-			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_EMOTE_1), static_cast<LPCTSTR>(pObjTop->GetName()), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText1));
-			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_EMOTE_2), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
+			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_1), static_cast<LPCTSTR>(pObjTop->GetName()), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText1));
+			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_2), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
 		}
 		else if (fForcePossessive)
 		{
 			// ex. "You see joes poor shot ruin an arrow"
-			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_EMOTE_3), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText1));
-			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_EMOTE_4), pText);
+			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_3), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText1));
+			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_4), pText);
 		}
 		else
 		{
-			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_EMOTE_5), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText1));
-			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_EMOTE_6), pText);
+			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_5), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText1));
+			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_6), pText);
 		}
 	}
 	else
 	{
 		// Top level is an item. Article ?
-		sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_EMOTE_7), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText1));
+		sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_7), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText1));
 		strcpy(pszYou, pszThem);
 	}
 

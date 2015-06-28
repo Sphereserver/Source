@@ -1250,7 +1250,7 @@ bool CItemContainer::CanContainerHold( const CItem * pItem, const CChar * pCharM
 		case IT_GAME_BOARD:
 			if ( ! pItem->IsType(IT_GAME_PIECE))
 			{
-				pCharMsg->SysMessageDefault( DEFMSG_ERR_NOTGAMEPIECE );
+				pCharMsg->SysMessageDefault( DEFMSG_MSG_ERR_NOTGAMEPIECE );
 				return( false );
 			}
 			break;
@@ -1263,12 +1263,12 @@ bool CItemContainer::CanContainerHold( const CItem * pItem, const CChar * pCharM
 		case IT_KEYRING: // empty key ring.
 			if ( ! pItem->IsType(IT_KEY) )
 			{
-				pCharMsg->SysMessageDefault( DEFMSG_ERR_NOTKEY );
+				pCharMsg->SysMessageDefault( DEFMSG_MSG_ERR_NOTKEY );
 				return( false );
 			}
 			if ( ! pItem->m_itKey.m_lockUID )
 			{
-				pCharMsg->SysMessageDefault( DEFMSG_ERR_NOBLANKRING );
+				pCharMsg->SysMessageDefault( DEFMSG_MSG_ERR_NOBLANKRING );
 				return( false );
 			}
 			break;
@@ -1276,14 +1276,14 @@ bool CItemContainer::CanContainerHold( const CItem * pItem, const CChar * pCharM
 		case IT_EQ_VENDOR_BOX:
 			if ( pItem->IsTimerSet() && ! pItem->IsAttr(ATTR_DECAY))
 			{
-				pCharMsg->SysMessageDefault( DEFMSG_ERR_NOT4SALE );
+				pCharMsg->SysMessageDefault( DEFMSG_MSG_ERR_NOT4SALE );
 				return( false );
 			}
 
 			// Fix players losing their items when attempting to sell them with no VALUE property scripted
 			if ( !pItem->Item_GetDef()->GetMakeValue(0) )
 			{
-				pCharMsg->SysMessageDefault( DEFMSG_ERR_NOT4SALE );
+				pCharMsg->SysMessageDefault( DEFMSG_MSG_ERR_NOT4SALE );
 				return ( false );
 			}
 

@@ -8,7 +8,7 @@ COPTDEFAULT = -fno-omit-frame-pointer -ffast-math $(MARCH)
 OPT 	= -O0 -fno-expensive-optimizations $(OPTDEFAULT)
 COPT	= -O0 -fno-expensive-optimizations $(COPTDEFAULT)
 WARN	= -Wall -Wno-unknown-pragmas -Wno-invalid-offsetof -Wno-unused-but-set-variable -Wno-switch
-CWARN	= -Wall -Wno-unknown-pragmas -Wno-unused-but-set-variable -Wno-switch
+CWARN	= -Wall -Wno-unknown-pragmas -Wno-unused-but-set-variable -Wno-switch -Wno-implicit-function-declaration
 
 ifdef DBG
 DEBUG	= -s -ggdb3

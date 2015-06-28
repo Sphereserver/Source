@@ -2511,7 +2511,7 @@ void CWorld::OnTick()
 
 	if ( (m_bSaveNotificationSent == false) && ((m_timeSave - (10 * TICK_PER_SEC)) <= GetCurrentTime()) )
 	{
-		Broadcast( g_Cfg.GetDefaultMsg( DEFMSG_SERVER_WORLDSAVENOTIFY ) );
+		Broadcast( g_Cfg.GetDefaultMsg( DEFMSG_SERVER_WORLDSAVE_NOTIFY ) );
 		m_bSaveNotificationSent = true;
 	}
 

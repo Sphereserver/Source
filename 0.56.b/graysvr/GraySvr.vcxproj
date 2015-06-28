@@ -730,6 +730,7 @@
     <None Include="..\tables\CStoneMember_props.tbl" />
     <None Include="..\tables\triggers.tbl" />
     <None Include="makefile" />
+    <None Include="makefile.alt" />
     <None Include="makefile.bsd" />
     <None Include="makefile.lin-static" />
     <None Include="makefile.nightly.debug" />

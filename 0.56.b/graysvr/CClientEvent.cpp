@@ -422,7 +422,7 @@ void CClient::Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, u
 			// non-vendable items should never be dropped inside IT_EQ_VENDOR_BOX
 			if ( pContItem->IsType( IT_EQ_VENDOR_BOX ) &&  !pItem->Item_GetDef()->GetMakeValue(0) )
 			{
-				SysMessageDefault( DEFMSG_ERR_NOT4SALE );
+				SysMessageDefault( DEFMSG_MSG_ERR_NOT4SALE );
 				Event_Item_Drop_Fail( pItem );
 				return;
 			}
@@ -751,7 +751,7 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 		const CSpellDef* pSpellDef = g_Cfg.GetSpellDef(m_pChar->m_atMagery.m_Spell);
 		if (pSpellDef != NULL && !pSpellDef->IsSpellType(SPELLFLAG_NOFREEZEONCAST))
 		{
-			SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_FROZEN ) );
+			SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_MSG_FROZEN ) );
 			return TRIGRET_RET_FALSE;
 		}
 	}
@@ -978,7 +978,7 @@ bool CClient::Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode)
 	}
 
 	if ( !m_bAllowCommand && !m_bAllowSay )
-		SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_ACC_PRIV));
+		SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_PRIV));
 
 	if ( m_bAllowCommand )
 	{
@@ -1449,7 +1449,7 @@ void CClient::Event_MailMsg( CGrayUID uid1, CGrayUID uid2 )
 	CChar * pChar = uid1.CharFind();
 	if ( pChar == NULL )
 	{
-		SysMessageDefault( DEFMSG_MAILBAG_DROP_1 );
+		SysMessageDefault( DEFMSG_MSG_MAILBAG_DROP_1 );
 		return;
 	}
 
@@ -1465,7 +1465,7 @@ void CClient::Event_MailMsg( CGrayUID uid1, CGrayUID uid2 )
 	}
 	// Might be an NPC ?
 	TCHAR * pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MAILBAG_DROP_2 ), static_cast<LPCTSTR>(m_pChar->GetName()));
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MSG_MAILBAG_DROP_2 ), static_cast<LPCTSTR>(m_pChar->GetName()));
 	pChar->SysMessage(pszMsg);
 }
 
@@ -1606,7 +1606,7 @@ void CClient::Event_PromptResp( LPCTSTR pszText, size_t len, DWORD context1, DWO
 
 		default:
 			// DEBUG_ERR(( "%x:Unrequested Prompt mode %d\n", m_Socket.GetSocket(), PrvTargMode ));
-			SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_PROMPT_UNEXPECTED) );
+			SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_MSG_PROMPT_UNEXPECTED) );
 			return;
 	}
 
@@ -1617,13 +1617,13 @@ void CClient::Event_PromptResp( LPCTSTR pszText, size_t len, DWORD context1, DWO
 	CItem * pItem = m_Prompt_Uid.ItemFind();
 	if ( pItem == NULL || type == 0 || szText[0] == '\0' )
 	{
-		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_RENAME_CANCEL ), pszReName );
+		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_RENAME_CANCEL ), pszReName );
 		return;
 	}
 
 	if ( g_Cfg.IsObscene( szText ))
 	{
-		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_RENAME_WNAME ), pszReName, szText );
+		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_RENAME_WNAME ), pszReName, szText );
 		return;
 	}
 
@@ -1646,7 +1646,7 @@ void CClient::Event_PromptResp( LPCTSTR pszText, size_t len, DWORD context1, DWO
 	}
 #else
 	pItem->SetName(sMsg);
-	sMsg.Format(g_Cfg.GetDefaultMsg( DEFMSG_RENAME_SUCCESS ), pszReName, static_cast<LPCTSTR>(pItem->GetName()));
+	sMsg.Format(g_Cfg.GetDefaultMsg( DEFMSG_MSG_RENAME_SUCCESS ), pszReName, static_cast<LPCTSTR>(pItem->GetName()));
 #endif
 
 	SysMessage(sMsg);
@@ -2243,7 +2243,7 @@ void CClient::Event_Target(DWORD context, CGrayUID uid, CPointMap pt, BYTE flags
 	{
 		// unexpected context
 		if (context != 0 && (pt.m_x != -1 || uid.GetPrivateUID() != 0))
-			SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_TARG_UNEXPECTED) );
+			SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_MSG_TARG_UNEXPECTED) );
 
 		return;
 	}
@@ -2717,7 +2717,7 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName )
 				CItem * pBook = m_pChar->GetSpellbook();
 				if ( pBook == NULL )
 				{
-					SysMessageDefault( DEFMSG_NOSPELLBOOK );
+					SysMessageDefault( DEFMSG_MSG_NOSPELLBOOK );
 					break;
 				}
 				// Must send proper context info or it will crash tha client.

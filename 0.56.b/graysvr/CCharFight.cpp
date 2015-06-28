@@ -67,7 +67,7 @@ void CChar::Guild_Resign( MEMORY_TYPE MemType )
 		{
 			CItemStone * pMyStone = pMember->GetParentStone();
 			ASSERT(pMyStone);
-			SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_GUILDRESIGN ), static_cast<LPCTSTR>(pMyStone->GetTypeName()) );
+			SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_GUILDRESIGN ), static_cast<LPCTSTR>(pMyStone->GetTypeName()) );
 		}
 	}
 
@@ -435,7 +435,7 @@ void CChar::Noto_Murder()
 	ADDTOCALLSTACK("CChar::Noto_Murder");
 	// I am a murderer (it seems) (update my murder decay item)
 	if ( Noto_IsMurderer() )
-		SysMessageDefault(DEFMSG_MURDERER);
+		SysMessageDefault(DEFMSG_MSG_MURDERER);
 
 	if ( m_pPlayer && m_pPlayer->m_wMurders )
 		Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Murders, 0, g_Cfg.m_iMurderDecayTime, NULL);
@@ -459,7 +459,7 @@ bool CChar::Noto_Criminal( CChar * pChar )
 		decay = static_cast<int>(Args.m_iN1);
 	}
 	if ( !IsStatFlag( STATF_Criminal) )
-		SysMessageDefault( DEFMSG_GUARDS );
+		SysMessageDefault( DEFMSG_MSG_GUARDS );
 
 	Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Criminal, 0, decay, NULL);
 	NotoSave_Update();
@@ -477,21 +477,21 @@ void CChar::Noto_ChangeDeltaMsg( int iDelta, LPCTSTR pszType )
 
 	static UINT const sm_DegreeTable[8] =
 	{
-		DEFMSG_NOTO_CHANGE_1,
-		DEFMSG_NOTO_CHANGE_2,
-		DEFMSG_NOTO_CHANGE_3,
-		DEFMSG_NOTO_CHANGE_4,
-		DEFMSG_NOTO_CHANGE_5,
-		DEFMSG_NOTO_CHANGE_6,
-		DEFMSG_NOTO_CHANGE_7,
-		DEFMSG_NOTO_CHANGE_8		// 300 = huge
+		DEFMSG_MSG_NOTO_CHANGE_1,
+		DEFMSG_MSG_NOTO_CHANGE_2,
+		DEFMSG_MSG_NOTO_CHANGE_3,
+		DEFMSG_MSG_NOTO_CHANGE_4,
+		DEFMSG_MSG_NOTO_CHANGE_5,
+		DEFMSG_MSG_NOTO_CHANGE_6,
+		DEFMSG_MSG_NOTO_CHANGE_7,
+		DEFMSG_MSG_NOTO_CHANGE_8		// 300 = huge
 	};
 
 	int iDegree = minimum(abs(iDelta) / NOTO_FACTOR, 7);
 
 	TCHAR *pszMsg = Str_GetTemp();
-	sprintf( pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_NOTO_CHANGE_0 ), 
-		( iDelta < 0 ) ? g_Cfg.GetDefaultMsg( DEFMSG_NOTO_CHANGE_LOST ) : g_Cfg.GetDefaultMsg( DEFMSG_NOTO_CHANGE_GAIN ),
+	sprintf( pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MSG_NOTO_CHANGE_0 ), 
+		( iDelta < 0 ) ? g_Cfg.GetDefaultMsg( DEFMSG_MSG_NOTO_CHANGE_LOST ) : g_Cfg.GetDefaultMsg( DEFMSG_MSG_NOTO_CHANGE_GAIN ),
 		 g_Cfg.GetDefaultMsg(sm_DegreeTable[iDegree]), pszType );
 	
 	SysMessage( pszMsg );
@@ -503,7 +503,7 @@ void CChar::Noto_ChangeNewMsg( int iPrvLevel )
 	if ( iPrvLevel != Noto_GetLevel())
 	{
 		// reached a new title level ?
-		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_NOTO_GETTITLE ), static_cast<LPCTSTR>(Noto_GetTitle()));
+		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_NOTO_GETTITLE ), static_cast<LPCTSTR>(Noto_GetTitle()));
 	}
 }
 
@@ -1343,13 +1343,13 @@ bool CChar::CheckCrimeSeen( SKILL_TYPE SkillToSee, CChar * pCharMark, const CObj
 		{
 			if ( pCharMark == NULL )
 			{
-				sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_YOUNOTICE_1), GetName(), pAction, pItem->GetName());
+				sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_YOUNOTICE_1), GetName(), pAction, pItem->GetName());
 			}
 			else
 			{
-				sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_YOUNOTICE_2),
-					static_cast<LPCTSTR>(GetName()), pAction, fYour ? g_Cfg.GetDefaultMsg( DEFMSG_YOUNOTICE_YOUR ) : static_cast<LPCTSTR>(pCharMark->GetName()),
-					fYour ? "" : g_Cfg.GetDefaultMsg( DEFMSG_YOUNOTICE_S ),
+				sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_YOUNOTICE_2),
+					static_cast<LPCTSTR>(GetName()), pAction, fYour ? g_Cfg.GetDefaultMsg( DEFMSG_MSG_YOUNOTICE_YOUR ) : static_cast<LPCTSTR>(pCharMark->GetName()),
+					fYour ? "" : g_Cfg.GetDefaultMsg( DEFMSG_MSG_YOUNOTICE_S ),
 					static_cast<LPCTSTR>(pItem->GetName()));
 			}
 			pChar->ObjMessage(z, this);
@@ -2441,8 +2441,8 @@ void CChar::Memory_Fight_Retreat( CChar * pTarg, CItemMemory * pFight )
 	}
 
 	SysMessagef( fCowardice ?
-		g_Cfg.GetDefaultMsg( DEFMSG_COWARD_1 ) :
-		g_Cfg.GetDefaultMsg( DEFMSG_COWARD_2 ), static_cast<LPCTSTR>(pTarg->GetName()));
+		g_Cfg.GetDefaultMsg( DEFMSG_MSG_COWARD_1 ) :
+		g_Cfg.GetDefaultMsg( DEFMSG_MSG_COWARD_2 ), static_cast<LPCTSTR>(pTarg->GetName()));
 
 	// Lose some fame.
 	if ( fCowardice )
@@ -2863,7 +2863,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 
 	if ( GetPrivLevel() <= PLEVEL_Guest && pCharTarg->m_pPlayer && pCharTarg->GetPrivLevel() > PLEVEL_Guest )
 	{
-		SysMessageDefault( DEFMSG_GUEST );
+		SysMessageDefault( DEFMSG_MSG_GUEST );
 		Fight_Clear( pCharTarg );
 		return( false );
 	}

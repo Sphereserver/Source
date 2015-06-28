@@ -21,7 +21,7 @@ bool CClient::OnTarg_Obj_Set( CObjBase * pObj )
 
 	if ( pObj == NULL )
 	{
-		SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_TARG_UNEXPECTED) );
+		SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_MSG_TARG_UNEXPECTED) );
 		return( false );
 	}
 
@@ -42,7 +42,7 @@ bool CClient::OnTarg_Obj_Set( CObjBase * pObj )
 	// Check priv level for the new verb.
 	if ( ! g_Cfg.CanUsePrivVerb( pObj, m_Targ_Text, this ))
 	{
-		SysMessageDefault( DEFMSG_CMD_LACKPRIV );
+		SysMessageDefault( DEFMSG_MSG_CMD_LACKPRIV );
 		g_Log.Event( LOGM_GM_CMDS, "%s=0\n", pszLogMsg);
 		return( false );
 	}
@@ -62,7 +62,7 @@ bool CClient::OnTarg_Obj_Set( CObjBase * pObj )
 	bool fRet = pObj->r_Verb( sCmd, this );
 	if ( ! fRet )
 	{
-		SysMessageDefault( DEFMSG_ERR_INVSET );
+		SysMessageDefault( DEFMSG_MSG_ERR_INVSET );
 	}
 
 	if ( GetPrivLevel() >= g_Cfg.m_iCommandLog )
@@ -359,7 +359,7 @@ bool CClient::OnTarg_Item_Link( CObjBase * pObj2 )
 
 	if ( pObj2 == NULL )
 	{
-		SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_TARG_DYNAMIC) );
+		SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_MSG_TARG_DYNAMIC) );
 		return( false );
 	}
 
@@ -370,19 +370,19 @@ bool CClient::OnTarg_Item_Link( CObjBase * pObj2 )
 		if ( pItem2 == NULL )
 		{
 			m_Targ_UID.InitUID();
-			addTarget( CLIMODE_TARG_LINK, g_Cfg.GetDefaultMsg( DEFMSG_TARG_LINK ) );
+			addTarget( CLIMODE_TARG_LINK, g_Cfg.GetDefaultMsg( DEFMSG_MSG_TARG_LINK ) );
 		}
 		else
 		{
 			m_Targ_UID = pObj2->GetUID();
-			addTarget( CLIMODE_TARG_LINK, g_Cfg.GetDefaultMsg( DEFMSG_TARG_LINK2 ) );
+			addTarget( CLIMODE_TARG_LINK, g_Cfg.GetDefaultMsg( DEFMSG_MSG_TARG_LINK2 ) );
 		}
 		return true;
 	}
 
 	if ( pItem2 == pItem1 )
 	{
-		SysMessageDefault( DEFMSG_TARG_LINK_SAME );
+		SysMessageDefault( DEFMSG_MSG_TARG_LINK_SAME );
 		// Break any existing links.
 		return false;
 	}
@@ -419,7 +419,7 @@ bool CClient::OnTarg_Item_Link( CObjBase * pObj2 )
 		}
 	}
 
-	SysMessageDefault( DEFMSG_TARG_LINKS );
+	SysMessageDefault( DEFMSG_MSG_TARG_LINKS );
 	return true;
 }
 
@@ -524,14 +524,14 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 	if ( !m_tmTile.m_ptFirst.IsValidPoint())
 	{
 		m_tmTile.m_ptFirst = pt;
-		addTarget( CLIMODE_TARG_TILE, g_Cfg.GetDefaultMsg( DEFMSG_TARG_PC ), true );
+		addTarget( CLIMODE_TARG_TILE, g_Cfg.GetDefaultMsg( DEFMSG_MSG_TARG_PC ), true );
 		return true;
 	}
 
 	if ( pt == m_tmTile.m_ptFirst && m_tmTile.m_Code != CV_EXTRACT ) // Extract can work with one square
 	{
 		SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_TILE_SAME_POINT ) );
-		addTarget( CLIMODE_TARG_TILE, g_Cfg.GetDefaultMsg( DEFMSG_TARG_PC ), true );
+		addTarget( CLIMODE_TARG_TILE, g_Cfg.GetDefaultMsg( DEFMSG_MSG_TARG_PC ), true );
 		return true;
 	}
 
@@ -1565,25 +1565,25 @@ bool CClient::OnTarg_Pet_Stable( CChar * pCharPet )
 
 	if ( pCharPet == NULL || pCharPet->m_pPlayer || pCharMaster == pCharPet )
 	{
-		pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_TARG_FAIL ) );
+		pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_TARG_FAIL ) );
 		return( false );
 	}
 
 	if ( ! pCharMaster->CanSeeLOS( pCharPet ))
 	{
-		pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_TARG_LOS ) );
+		pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_TARG_LOS ) );
 		return( false );
 	}
 
 	if ( ! pCharPet->NPC_IsOwnedBy( m_pChar ))
 	{
-		pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_TARG_OWNER ) );
+		pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_TARG_OWNER ) );
 		return( false );
 	}
 
 	if ( pCharPet->IsStatFlag(STATF_Conjured))
 	{
-		pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_TARG_SUMMON ) );
+		pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_TARG_SUMMON ) );
 		return( false );
 	}
 
@@ -1592,7 +1592,7 @@ bool CClient::OnTarg_Pet_Stable( CChar * pCharPet )
 	{
 		if ( ! pPack->IsEmpty() )
 		{
-			pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_TARG_UNLOAD ) );
+			pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_TARG_UNLOAD ) );
 			return( false );
 		}
 	}
@@ -1601,7 +1601,7 @@ bool CClient::OnTarg_Pet_Stable( CChar * pCharPet )
 	CItem * pPetItem = pCharPet->Make_Figurine( m_pChar->GetUID());
 	if ( pPetItem == NULL )
 	{
-		pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_TARG_FAIL ) );
+		pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_TARG_FAIL ) );
 		return( false );
 	}
 
@@ -1621,7 +1621,7 @@ bool CClient::OnTarg_Pet_Stable( CChar * pCharPet )
 	}
 
 	pCharMaster->GetBank()->ContentAdd( pPetItem );
-	pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_STABLEMASTER_CLAIM ) );
+	pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_CLAIM ) );
 	return true;
 }
 
@@ -1797,14 +1797,14 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 	CItem * pItemUse = m_Targ_UID.ItemFind();
 	if ( pItemUse == NULL )
 	{
-		SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_TARG_GONE) );
+		SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_MSG_TARG_GONE) );
 		return false;
 	}
 	if ( pItemUse->GetParent() != m_tmUseItem.m_pParent )
 	{
 		// Watch out for cheating.
 		// Is the source item still in the same place as it was.
-		SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_TARG_MOVED));
+		SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TARG_MOVED));
 		return false;
 	}
 
@@ -2526,7 +2526,7 @@ bool CClient::OnTarg_Party_Add( CChar * pChar )
 
 	if ( pChar == m_pChar )
 	{
-		SysMessageDefault( DEFMSG_PARTY_NOSELFADD );
+		SysMessageDefault( DEFMSG_PARTY_NO_SELF_ADD );
 		return( false );
 	}
 
@@ -2540,7 +2540,7 @@ bool CClient::OnTarg_Party_Add( CChar * pChar )
 	{
 		if ( !(m_pChar->m_pParty->IsPartyMaster(m_pChar)) )
 		{
-			SysMessageDefault( DEFMSG_PARTY_ADD_NOTLEADER );
+			SysMessageDefault( DEFMSG_PARTY_NOTLEADER );
 			return( false );
 		}
 

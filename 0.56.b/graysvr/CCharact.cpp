@@ -164,7 +164,7 @@ void CChar::Jail( CTextConsole * pSrc, bool fSet, int iCell )
 			strcpy( szJailName, "jail" );
 		}
 		Spell_Teleport( g_Cfg.GetRegionPoint( szJailName ), true, false );
-		SysMessageDefault( DEFMSG_JAILED );
+		SysMessageDefault( DEFMSG_MSG_JAILED );
 	}
 	else	// forgive.
 	{
@@ -189,7 +189,7 @@ void CChar::Jail( CTextConsole * pSrc, bool fSet, int iCell )
 			if ( pAccount->m_TagDefs.GetKey("JailCell") != NULL )
 				pAccount->m_TagDefs.DeleteKey("JailCell");
 		}
-		SysMessageDefault( DEFMSG_FORGIVEN );
+		SysMessageDefault( DEFMSG_MSG_FORGIVEN );
 	}
 }
 
@@ -1659,7 +1659,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 		pItem->m_uidLink != GetUID() &&
 		!IsPriv(PRIV_ALLMOVE|PRIV_GM))
 	{
-		SysMessageDefault(DEFMSG_STEAL);
+		SysMessageDefault(DEFMSG_MSG_STEAL);
 		return -1;
 	}
 
@@ -1668,7 +1668,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 	{
 		// Taking stuff off someones corpse can be a crime !
 		if ( CheckCorpseCrime(pCorpseItem, true, false) )
-			SysMessageDefault(DEFMSG_GUARDS);
+			SysMessageDefault(DEFMSG_MSG_GUARDS);
 	}
 
 	int iAmountMax = pItem->GetAmount();
@@ -1687,7 +1687,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 	bool fDrop = false;
 	if ( GetWeightLoadPercent(GetTotalWeight() + iItemWeight) > 300 )
 	{
-		SysMessageDefault(DEFMSG_HEAVY);
+		SysMessageDefault(DEFMSG_MSG_HEAVY);
 		if (( pChar == this ) && ( pItem->GetParent() == GetPack() ))
 		{
 			fDrop = true;	// we can always drop it out of own pack !
@@ -1708,7 +1708,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 
 		if (bCanTake == false)
 		{
-			SysMessageDefault(DEFMSG_STEAL);
+			SysMessageDefault(DEFMSG_MSG_STEAL);
 			return -1;
 		}
 		trigger = pItem->IsItemEquipped() ? ITRIG_UNEQUIP : ITRIG_PICKUP_PACK;
@@ -1831,7 +1831,7 @@ bool CChar::ItemBounce( CItem * pItem )
 	LPCTSTR pszWhere = NULL;
 	if ( pPack && CanCarry(pItem) )		// this can happen at load time
 	{
-		pszWhere = g_Cfg.GetDefaultMsg( DEFMSG_BOUNCE_PACK );
+		pszWhere = g_Cfg.GetDefaultMsg( DEFMSG_MSG_BOUNCE_PACK );
 		pItem->RemoveFromView();
 		pPack->ContentAdd(pItem);		// add it to pack
 		Sound(pItem->GetDropSound(pPack));
@@ -1849,12 +1849,12 @@ bool CChar::ItemBounce( CItem * pItem )
 			pItem->Delete();
 			return false;
 		}
-		pszWhere = g_Cfg.GetDefaultMsg( DEFMSG_FEET );
+		pszWhere = g_Cfg.GetDefaultMsg( DEFMSG_MSG_FEET );
 		pItem->RemoveFromView();
 		pItem->MoveToUpdate(GetTopPoint());	// drop it on ground
 	}
 
-	SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_ITEMPLACE ), pItem->GetName(), pszWhere );
+	SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_ITEMPLACE ), pItem->GetName(), pszWhere );
 	return true;
 }
 
@@ -2082,7 +2082,7 @@ void CChar::EatAnim( LPCTSTR pszName, int iQty )
 		UpdateAnimate( ANIM_EAT );
 
 	TCHAR * pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_EATSOME), static_cast<LPCTSTR>(pszName));
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EATSOME), static_cast<LPCTSTR>(pszName));
 	Emote(pszMsg);
 
 	int iHits = 0;
@@ -2345,7 +2345,7 @@ bool CChar::Horse_Mount(CChar *pHorse) // Remove horse char and give player a ho
 
 	if ( !CanTouch(pHorse) )
 	{
-		SysMessageDefault(DEFMSG_MOUNT_DIST);
+		SysMessageDefault(DEFMSG_MSG_MOUNT_DIST);
 		return false;
 	}
 
@@ -2358,17 +2358,17 @@ bool CChar::Horse_Mount(CChar *pHorse) // Remove horse char and give player a ho
 
 	if ( !IsMountCapable() )
 	{
-		SysMessageDefault(DEFMSG_MOUNT_UNABLE);
+		SysMessageDefault(DEFMSG_MSG_MOUNT_UNABLE);
 		return false;
 	}
 	if ( pHorse->m_pPlayer || !pHorse->NPC_IsOwnedBy(this) )
 	{
-		SysMessageDefault(DEFMSG_MOUNT_DONTOWN);
+		SysMessageDefault(DEFMSG_MSG_MOUNT_DONTOWN);
 		return false;
 	}
 	if ( pHorse->m_pNPC->m_bonded && pHorse->IsStatFlag(STATF_DEAD) )
 	{
-		SysMessageDefault(DEFMSG_MOUNT_BONDED_DEAD_CANTMOUNT);
+		SysMessageDefault(DEFMSG_MSG_BONDED_DEAD_CANTMOUNT);
 		return false;
 	}
 
@@ -2377,7 +2377,7 @@ bool CChar::Horse_Mount(CChar *pHorse) // Remove horse char and give player a ho
 		//is there space for me+mounted horse?
 		if (! IsVerticalSpace( GetTopPoint(), true ) )
 		{
-			SysMessageDefault( DEFMSG_MOUNT_CEILING );
+			SysMessageDefault( DEFMSG_MSG_MOUNT_CEILING );
 			return false;
 		}
 	}
@@ -2746,7 +2746,7 @@ void CChar::SleepStart( bool fFrontFall )
 	CItemCorpse *pCorpse = MakeCorpse(fFrontFall);
 	if (pCorpse == NULL)
 	{
-		SysMessageDefault(DEFMSG_CANTSLEEP);
+		SysMessageDefault(DEFMSG_MSG_CANTSLEEP);
 		return;
 	}
 
@@ -2779,7 +2779,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 		return( NULL );
 
 	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_CORPSE_OF), GetName());
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_CORPSE_OF), GetName());
 	pCorpse->SetName(pszMsg);
 	pCorpse->SetHue(GetHue());
 	pCorpse->SetCorpseType(GetDispID());
@@ -2907,7 +2907,7 @@ bool CChar::Death()
 	int iKillers = 0;
 	CChar * pKiller = NULL;
 	TCHAR * pszKillStr = Str_GetTemp();
-	int iKillStrLen = sprintf( pszKillStr, g_Cfg.GetDefaultMsg(DEFMSG_KILLED_BY), (m_pPlayer)? 'P':'N', GetNameWithoutIncognito() );
+	int iKillStrLen = sprintf( pszKillStr, g_Cfg.GetDefaultMsg(DEFMSG_MSG_KILLED_BY), (m_pPlayer)? 'P':'N', GetNameWithoutIncognito() );
 	for ( unsigned int count = 0; count < m_lastAttackers.size(); count++ )
 	{
 		pKiller = CGrayUID(m_lastAttackers.at(count).charUID).CharFind();
@@ -3095,14 +3095,14 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 
 	if ( !fCheckOnly && Stat_GetVal(STAT_DEX) <= 0 && !IsStatFlag(STATF_DEAD) )
 	{
-		SysMessageDefault( DEFMSG_FATIGUE );
+		SysMessageDefault( DEFMSG_MSG_FATIGUE );
 		return NULL;
 	}
 
 	int iWeightLoadPercent = GetWeightLoadPercent(GetTotalWeight());
 	if ( !fCheckOnly && iWeightLoadPercent > 200 )
 	{
-		SysMessageDefault( DEFMSG_OVERLOAD );
+		SysMessageDefault( DEFMSG_MSG_OVERLOAD );
 		return NULL;
 	}
 
@@ -3177,7 +3177,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			TCHAR *pszMsg = Str_GetTemp();
 			if ( Stat_GetVal(STAT_DEX) < iStamReq )		// check if we have enough stamina to push the char
 			{
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_CANTPUSH), pChar->GetName());
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_CANTPUSH), pChar->GetName());
 				SysMessage(pszMsg);
 				return NULL;
 			}
@@ -3187,9 +3187,9 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 				pChar->Reveal(STATF_Hidden);
 			}
 			else if ( pChar->IsStatFlag(STATF_Sleeping) )
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_STEPON_BODY), pChar->GetName());
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_STEPON_BODY), pChar->GetName());
 			else
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_PUSH), pChar->GetName());
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_PUSH), pChar->GetName());
 
 			if ( iRet != TRIGRET_RET_FALSE )
 				SysMessage(pszMsg);
@@ -3486,7 +3486,7 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 			if ( pNewArea->IsFlag(REGION_FLAG_ANNOUNCE) && !pNewArea->IsInside2d( GetTopPoint()) )	// new area.
 			{
 				CVarDefContStr * pVarStr = dynamic_cast <CVarDefContStr *>( pNewArea->m_TagDefs.GetKey("ANNOUNCEMENT"));
-				SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_REGION_ENTER ),
+				SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_REGION_ENTER ),
 					( pVarStr != NULL ) ? static_cast<LPCTSTR>(pVarStr->GetValStr()) : static_cast<LPCTSTR>(pNewArea->GetName()));
 			}
 
@@ -3500,26 +3500,26 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 					if ( pNewArea->IsGuarded() )	// now under the protection
 					{
 						CVarDefContStr	*pVarStr = dynamic_cast <CVarDefContStr *>( pNewArea->m_TagDefs.GetKey("GUARDOWNER"));
-						SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_REGION_GUARDS_1 ),
-							( pVarStr != NULL ) ? static_cast<LPCTSTR>(pVarStr->GetValStr()) : g_Cfg.GetDefaultMsg( DEFMSG_REGION_GUARD_ART ) );
+						SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_REGION_GUARDS_1 ),
+							( pVarStr != NULL ) ? static_cast<LPCTSTR>(pVarStr->GetValStr()) : g_Cfg.GetDefaultMsg( DEFMSG_MSG_REGION_GUARD_ART ) );
 					}
 					else							// have left the protection
 					{
 						CVarDefContStr	*pVarStr = dynamic_cast <CVarDefContStr *>( m_pArea->m_TagDefs.GetKey("GUARDOWNER"));
-						SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_REGION_GUARDS_2 ),
-							( pVarStr != NULL ) ? static_cast<LPCTSTR>(pVarStr->GetValStr()) : g_Cfg.GetDefaultMsg( DEFMSG_REGION_GUARD_ART ) );
+						SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_REGION_GUARDS_2 ),
+							( pVarStr != NULL ) ? static_cast<LPCTSTR>(pVarStr->GetValStr()) : g_Cfg.GetDefaultMsg( DEFMSG_MSG_REGION_GUARD_ART ) );
 					}
 				}
 				if ( redNew != redOld )
-					SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_REGION_REDDEF), g_Cfg.GetDefaultMsg(redNew ? DEFMSG_REGION_REDENTER : DEFMSG_REGION_REDLEFT));
+					SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDDEF), g_Cfg.GetDefaultMsg(redNew ? DEFMSG_MSG_REGION_REDENTER : DEFMSG_MSG_REGION_REDLEFT));
 				/*else if ( redNew && ( redNew == redOld ))
 				{
 					SysMessage("You are still in the red region.");
 				}*/
 				if ( pNewArea->IsFlag(REGION_FLAG_NO_PVP) != m_pArea->IsFlag(REGION_FLAG_NO_PVP))
-					SysMessageDefault(( pNewArea->IsFlag(REGION_FLAG_NO_PVP)) ? DEFMSG_REGION_PVPSAFE : DEFMSG_REGION_PVPNOT );
+					SysMessageDefault(( pNewArea->IsFlag(REGION_FLAG_NO_PVP)) ? DEFMSG_MSG_REGION_PVPSAFE : DEFMSG_MSG_REGION_PVPNOT );
 				if ( pNewArea->IsFlag(REGION_FLAG_SAFE) != m_pArea->IsFlag(REGION_FLAG_SAFE) )
-					SysMessageDefault((pNewArea->IsFlag(REGION_FLAG_SAFE)) ? DEFMSG_REGION_SAFETYGET : DEFMSG_REGION_SAFETYLOSE);
+					SysMessageDefault((pNewArea->IsFlag(REGION_FLAG_SAFE)) ? DEFMSG_MSG_REGION_SAFETYGET : DEFMSG_MSG_REGION_SAFETYLOSE);
 			}
 		}
 
@@ -3987,7 +3987,7 @@ void CChar::OnTickFood(int iVal, int HitsHungerLoss)
 	if ( nFoodLevel < 40) 	// start looking for food at 40%
  	{
 		// Tell everyone we look hungry.
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_HUNGER), Food_GetLevelMessage(false, false));
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_HUNGER), Food_GetLevelMessage(false, false));
 		CHAR_OnTickFood( nFoodLevel , HitsHungerLoss );
 	}
 }
@@ -4008,7 +4008,7 @@ bool CChar::CHAR_OnTickFood( int nFoodLevel , int HitsHungerLoss )
 
 	bool bPet = IsStatFlag(STATF_Pet);
 	char *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_LOOKS), Food_GetLevelMessage(bPet, false));
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_LOOKS), Food_GetLevelMessage(bPet, false));
 	CItem *pMountItem = Horse_GetMountItem();
 	if ( pMountItem )
 		pMountItem->Emote(pszMsg);

@@ -246,7 +246,7 @@ void CServer::Shutdown( INT64 iMinutes ) // If shutdown is initialized
 		if ( ! m_timeShutdown.IsTimeValid() )
 			return;
 		m_timeShutdown.Init();
-		g_World.Broadcast( g_Cfg.GetDefaultMsg( DEFMSG_SERV_SHUTDOWN_CANCEL ) );
+		g_World.Broadcast( g_Cfg.GetDefaultMsg( DEFMSG_MSG_SERV_SHUTDOWN_CANCEL ) );
 		return;
 	}
 
@@ -259,7 +259,7 @@ void CServer::Shutdown( INT64 iMinutes ) // If shutdown is initialized
 		m_timeShutdown = CServTime::GetCurrentTime() + ( iMinutes * 60 * TICK_PER_SEC );
 	}
 
-	g_World.Broadcastf(g_Cfg.GetDefaultMsg( DEFMSG_SERV_SHUTDOWN ), iMinutes);
+	g_World.Broadcastf(g_Cfg.GetDefaultMsg( DEFMSG_MSG_SERV_SHUTDOWN ), iMinutes);
 }
 
 void CServer::SysMessage( LPCTSTR pszMsg ) const

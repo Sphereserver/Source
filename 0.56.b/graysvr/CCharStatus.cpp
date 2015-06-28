@@ -886,25 +886,25 @@ LPCTSTR CChar::Food_GetLevelMessage( bool fPet, bool fHappy ) const
 	{
 		static LPCTSTR const sm_szPetHunger[] =
 		{
-			g_Cfg.GetDefaultMsg(DEFMSG_PET_HAPPY_1),
-			g_Cfg.GetDefaultMsg(DEFMSG_PET_HAPPY_2),
-			g_Cfg.GetDefaultMsg(DEFMSG_PET_HAPPY_3),
-			g_Cfg.GetDefaultMsg(DEFMSG_PET_HAPPY_4),
-			g_Cfg.GetDefaultMsg(DEFMSG_PET_HAPPY_5),
-			g_Cfg.GetDefaultMsg(DEFMSG_PET_HAPPY_6),
-			g_Cfg.GetDefaultMsg(DEFMSG_PET_HAPPY_7),
-			g_Cfg.GetDefaultMsg(DEFMSG_PET_HAPPY_8)
+			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_HAPPY_1),
+			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_HAPPY_2),
+			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_HAPPY_3),
+			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_HAPPY_4),
+			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_HAPPY_5),
+			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_HAPPY_6),
+			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_HAPPY_7),
+			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_HAPPY_8)
 		};
 		static LPCTSTR const sm_szPetHappy[] =
 		{
-			g_Cfg.GetDefaultMsg(DEFMSG_PET_FOOD_1),
-			g_Cfg.GetDefaultMsg(DEFMSG_PET_FOOD_2),
-			g_Cfg.GetDefaultMsg(DEFMSG_PET_FOOD_3),
-			g_Cfg.GetDefaultMsg(DEFMSG_PET_FOOD_4),
-			g_Cfg.GetDefaultMsg(DEFMSG_PET_FOOD_5),
-			g_Cfg.GetDefaultMsg(DEFMSG_PET_FOOD_6),
-			g_Cfg.GetDefaultMsg(DEFMSG_PET_FOOD_7),
-			g_Cfg.GetDefaultMsg(DEFMSG_PET_FOOD_8)
+			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_FOOD_1),
+			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_FOOD_2),
+			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_FOOD_3),
+			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_FOOD_4),
+			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_FOOD_5),
+			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_FOOD_6),
+			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_FOOD_7),
+			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_FOOD_8)
 		};
 
 		if ( index >= (COUNTOF(sm_szPetHunger) - 1) )
@@ -915,14 +915,14 @@ LPCTSTR CChar::Food_GetLevelMessage( bool fPet, bool fHappy ) const
 
 	static LPCTSTR const sm_szFoodLevel[] =
 	{
-		g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_1),
-		g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_2),
-		g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_3),
-		g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_4),
-		g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_5),
-		g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_6),
-		g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_7),
-		g_Cfg.GetDefaultMsg(DEFMSG_FOOD_LVL_8)
+		g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_1),
+		g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_2),
+		g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_3),
+		g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_4),
+		g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_5),
+		g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_6),
+		g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_7),
+		g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_8)
 	};
 
 	if ( index >= (COUNTOF(sm_szFoodLevel) - 1) )
@@ -2237,7 +2237,7 @@ bool CChar::CanMove( CItem * pItem, bool fMsg ) const
 			CItemContainer * pItemCont = dynamic_cast <CItemContainer *> (pItem->GetContainer());
 			if ( pItemCont && pItemCont->IsItemInTrade() )
 			{
-				SysMessage(g_Cfg.GetDefaultMsg( DEFMSG_TRADE_CANTMOVE ));
+				SysMessage(g_Cfg.GetDefaultMsg( DEFMSG_MSG_TRADE_CANTMOVE ));
 				return false;
 			}
 		}
@@ -2571,7 +2571,7 @@ CRegionBase * CChar::CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, D
 	WARNWALK(("GetHeightMount( false ) %d  block.m_Top.m_z  %d ptDest.m_z  %d\n",GetHeightMount( false ),block.m_Top.m_z,ptDest.m_z));
 	if (( GetHeightMount( false ) + ptDest.m_z >= block.m_Top.m_z ) && ( g_Cfg.m_iMountHeight ) && ( !IsPriv( PRIV_GM ) ) && ( !IsPriv( PRIV_ALLMOVE ) ))
 	{
-		SysMessageDefault( DEFMSG_MOUNT_CEILING );
+		SysMessageDefault( DEFMSG_MSG_MOUNT_CEILING );
 		return NULL;
 	}
 

@@ -1734,6 +1734,9 @@
     <None Include="..\..\scripts\sphere_combat.scp">
       <Filter>scripts</Filter>
     </None>
+    <None Include="makefile.alt">
+      <Filter>graysvr</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\common\zlib\algorithm.txt">

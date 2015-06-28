@@ -147,7 +147,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 	if (client->GetChar() != NULL)
 	{
 		// logging in as a new player whilst already online !
-		client->addSysMessage(g_Cfg.GetDefaultMsg(DEFMSG_ALREADYONLINE));
+		client->addSysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ALREADYONLINE));
 		DEBUG_ERR(("%lx:Setup_CreateDialog acct='%s' already online!\n", net->id(), account->GetName()));
 		return false;
 	}
@@ -166,7 +166,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 	size_t iQtyChars = account->m_Chars.GetCharCount();
 	if (iQtyChars >= iMaxChars)
 	{
-		client->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MAXCHARS), static_cast<int>(iQtyChars));
+		client->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_MAXCHARS), static_cast<int>(iQtyChars));
 		if (client->GetPrivLevel() < PLEVEL_Seer)
 		{
 			client->addLoginErr(PacketLoginError::TooManyChars);
@@ -1147,7 +1147,7 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 			if (character->GetDist(container) > UO_MAP_VIEW_SIZE)
 			{
 				// to far away
-				client->SysMessageDefault(DEFMSG_TRADE_TOOFAR);
+				client->SysMessageDefault(DEFMSG_MSG_TRADE_TOOFAR);
 				return true;
 			}
 
@@ -1163,7 +1163,7 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 				{
 					TCHAR* msg = Str_GetTemp();
 					long seconds = static_cast<long>(need2wait-timerow) / TICK_PER_SEC;
-					sprintf(msg, g_Cfg.GetDefaultMsg(DEFMSG_TRADE_WAIT), seconds);
+					sprintf(msg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_WAIT), seconds);
 					client->SysMessage(msg);
 					return true;
 				}
@@ -2701,7 +2701,7 @@ bool PacketArrowClick::onReceive(NetState* net)
 
 	bool rightClick = readBool();
 
-	client->SysMessageDefault(DEFMSG_FOLLOW_ARROW);
+	client->SysMessageDefault(DEFMSG_MSG_FOLLOW_ARROW);
 
 	if ( IsTrigUsed(TRIGGER_USERQUESTARROWCLICK) )
 	{
@@ -2732,7 +2732,7 @@ bool PacketWrestleDisarm::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketWrestleDisarm::onReceive");
 
-	net->getClient()->SysMessageDefault(DEFMSG_WRESTLING_NOGO);
+	net->getClient()->SysMessageDefault(DEFMSG_MSG_WRESTLING_NOGO);
 	return true;
 }
 
@@ -2752,7 +2752,7 @@ bool PacketWrestleStun::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketWrestleStun::onReceive");
 
-	net->getClient()->SysMessageDefault(DEFMSG_WRESTLING_NOGO);
+	net->getClient()->SysMessageDefault(DEFMSG_MSG_WRESTLING_NOGO);
 	return true;
 }
 

@@ -8,16 +8,14 @@
 
 TCHAR CExpression::sm_szMessages[DEFMSG_QTY][128] =
 {
-	#define MSG(a,b,c) c,
+	#define MSG(a,b) b,
 	#include "../tables/defmessages.tbl"
-	#undef MSG
 };
 
 LPCTSTR const CExpression::sm_szMsgNames[DEFMSG_QTY] =
 {
-	#define MSG(a,b,c) b,
+	#define MSG(a,b) #a,
 	#include "../tables/defmessages.tbl"
-	#undef MSG
 };
 
 DWORD ahextoi( LPCTSTR pszStr ) // Convert hex string to integer
