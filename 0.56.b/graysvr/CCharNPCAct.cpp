@@ -3891,275 +3891,63 @@ void CChar::NPC_Food()
 	EXC_DEBUG_END;
 }
 
-#define NPCAI_MAX_ITERATIONS	5
-#define NPCAI_INT_TOACTMORE		150
-
-void CChar::NPC_AI()
+void CChar::NPC_ExtraAI()
 {
-	ADDTOCALLSTACK("CChar::NPC_AI");
+	ADDTOCALLSTACK("CChar::NPC_ExtraAI");
 	EXC_TRY("ExtraAI");
 
 	if ( !m_pNPC )
 		return;
-
-	EXC_SET("init");
-	CPointMap	pt		= GetTopPoint();
-	CSector		*pSector = pt.GetSector();
-	int			iInt	= Stat_GetAdjusted(STAT_INT);
-	int			iDex	= Stat_GetAdjusted(STAT_DEX);
-	bool		bActed;
-	int			iter	= 1;
-	CREID_TYPE	npcType = NPC_GetAllyGroupType(GetDispID());
-
-	if ( !pSector )
+	if ( GetNPCBrain() != NPCBRAIN_HUMAN )
 		return;
 
+	EXC_SET("init");
 	if ( IsTrigUsed(TRIGGER_NPCACTION) )
 	{
 		if ( OnTrigger( CTRIG_NPCAction, this ) == TRIGRET_RET_TRUE )
 			return;
 	}
 
-	//	some very very basic actions which does not need any INT/DEX for self
-    CItemMemory * pMemory = Memory_FindTypes( MEMORY_FIGHT );
-
-	//	domestic animals pooping the ground
-    if (( m_pNPC->m_Brain == NPCBRAIN_ANIMAL ) && !IsStatFlag (STATF_Freeze | STATF_Stone | STATF_Insubstantial | STATF_Conjured) && !pMemory)
+	// Equip weapons if possible
+	EXC_SET("weapon/shield");
+	if ( IsStatFlag(STATF_War) )
 	{
-		if ( Calc_GetRandVal(130) );
-		else if (( npcType == CREID_HORSE1 ) || ( npcType == CREID_Bull_Brown ) || ( npcType == CREID_Pig ) || ( npcType == CREID_Llama ))
-		{
-			EXC_SET("dung pooping");
+		CItem *pWeapon = LayerFind(LAYER_HAND1);
+		if ( !pWeapon || !pWeapon->IsTypeWeapon() )
+			ItemEquipWeapon(false);
 
-			Sound(static_cast<SOUND_TYPE>(Calc_GetRandVal2(0x131,0x134)));	//0x428 (lol)
-			Emote(g_Cfg.GetDefaultMsg(DEFMSG_NPC_ANIMAL_POOP));
-			CItem	*pDung = CItem::CreateBase( Calc_GetRandVal(2) ? ITEMID_Dung1 : ITEMID_Dung2 );
-			if ( pDung )
-			{
-				TCHAR * pszMsg = Str_GetTemp();
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ANIMAL_DUNG ), GetName());
-				pDung->SetName(pszMsg);
-				pDung->SetAttr(ATTR_MOVE_NEVER);
-				pDung->MoveToDecay(pt, Calc_GetRandVal2(10,30)*TICK_PER_SEC);
-			}
-			return;
+		CItem *pShield = LayerFind(LAYER_HAND2);
+		if ( !pShield || !pShield->IsTypeArmor() )
+		{
+			pShield = GetPack()->ContentFind(RESOURCE_ID(RES_TYPEDEF, IT_SHIELD));
+			if ( pShield )
+				ItemEquip(pShield);
 		}
+		return;
 	}
 
-	//	are we active enough to do some actions?
-	if ( iDex < Calc_GetRandVal(NPCAI_INT_TOACTMORE) )
-		return;
-
-	while ( iter < NPCAI_MAX_ITERATIONS )
+	// Equip lightsource at night time
+	EXC_SET("light source");
+	CPointMap pt = GetTopPoint();
+	CSector *pSector = pt.GetSector();
+	if ( pSector && pSector->IsDark() )
 	{
-		bActed = false;
-		iter++;
-
-		switch ( m_pNPC->m_Brain )
+		CItem *pLightSourceCheck = LayerFind(LAYER_HAND2);
+		if ( !(pLightSourceCheck && (pLightSourceCheck->IsType(IT_LIGHT_OUT) || pLightSourceCheck->IsType(IT_LIGHT_LIT))) )
 		{
-			case NPCBRAIN_VENDOR:
+			CItem *pLightSource = ContentFind(RESOURCE_ID(RES_TYPEDEF, IT_LIGHT_OUT));
+			if ( pLightSource )
 			{
-				EXC_SET("vendor");
-
-				//	shops are closing at night
-				if ( pSector->IsNight() && g_Cfg.m_iNpcAi&NPC_AI_VEND_TIME )
-				{
-					bool canGoOffDuty = true;
-					CWorldSearch Area(GetTopPoint(), GetVisualRange());
-					while ( CChar *pChar = Area.GetChar() )
-					{
-						if ( !pChar->IsClient() )
-							continue;
-
-						if ( !CanSee( pChar ) )
-							continue;
-
-						canGoOffDuty = false;
-						break;
-					}
-					if ( canGoOffDuty )
-					{
-						m_pNPC->m_Brain = NPCBRAIN_VENDOR_OFFDUTY;
-						bActed = true;
-					}
-				}
-				break;
-			} // vendor
-			case NPCBRAIN_VENDOR_OFFDUTY:
-			{
-				EXC_SET("vendor off-duty");
-
-				//	shops are re-opened in daylight
-				if ( !pSector->IsNight() )
-				{
-					//	TODO: when it will be possible to record a number of commands, vendor should
-					//	go unlock the door if nearby
-					m_pNPC->m_Brain = NPCBRAIN_VENDOR;
-					bActed = true;
-				}
-				break;
-			} // vendor off duty
-
-			case NPCBRAIN_THIEF:
-			{
-				EXC_SET("thief");
-				//	thief searches a target to steal something in the packs and ground around
-				//	if it is dark, steal and run to home position
-				//	TODO:
-				break;
-			} // thief
-
-			case NPCBRAIN_STABLE:				//	Stable Man
-			{
-				EXC_SET("stable man");
-
-				CWorldSearch Area(GetTopPoint(), GetVisualRange());
-
-				while (bActed == false)
-				{
-					CChar* pChar = Area.GetChar();
-					if ( pChar == NULL )
-						break;
-
-					if ( pChar == this )
-						continue;
-
-					if ( !CanSee( pChar ) )
-						continue;
-
-					int iDist = GetDist(pChar);
-
-					if (( !pChar->m_pNPC ) ||
-						( pChar->m_pNPC->m_Brain != NPCBRAIN_ANIMAL ) ||
-						( pChar->IsStatFlag(STATF_Stone|STATF_Hidden|STATF_Conjured|STATF_Ridden) ))
-						continue;
-
-					//	feeds animals nearby
-					int iMaxFood = pChar->Stat_GetMax(STAT_FOOD);
-					int iFood = pChar->Stat_GetVal(STAT_FOOD);
-					if ( iMaxFood && ( iFood < iMaxFood/4 ) )
-					{
-						if ( iDist > 1 )
-						{
-							UpdateDir(pChar);
-							UpdateAnimate(ANIM_FIDGET_YAWN);
-							pChar->UpdateAnimate(ANIM_ANI_EAT);
-							pChar->Stat_SetVal(STAT_FOOD, iFood + Calc_GetRandVal2(1, iMaxFood - iFood));
-							char *z = Str_GetTemp();
-							sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_STABLEMASTER_FEED), pChar->GetName());
-							Emote(z);
-						}
-						else
-						{
-							CPointMap	pt = pChar->GetTopPoint();
-							if ( CanMoveWalkTo(pt) )
-							{
-								m_Act_p = pt;
-								Skill_Start(NPCACT_GOTO);
-								NPC_WalkToPoint(iDist > 3);
-							}
-						}
-						bActed = true;
-					}
-				}
-				break;
-			} // stabler
-
-			case NPCBRAIN_BEGGAR:
-			{
-				EXC_SET("beggar");
-				if ( pSector->IsDark() )
-				{
-					//	TODO: should go sleeping if darktime
-					bActed = true;
-				}
-				break;
-			} // beggar
-
-			case NPCBRAIN_HEALER:
-			{
-				EXC_SET("healer");
-				//	healers searches for chars nearby to heal them. if can heal and have
-				//	bandages, go to him and apply bandages on him. these are converted to
-				//	bloody bandages
-				//	TODO:
-				//	healers searches for items nearby to gather bandages/bloody bandages,
-				//	water to clean the bandages
-				//	TODO:
-				bActed = true;
-				break;
-			} // healer
-
-			case NPCBRAIN_UNDEAD:
-			{
-				EXC_SET("undead");
-				break;
-			} // undead
-
-			default:
-				break;
-		} // switch brain
-
-		if ( bActed ) ;
-		else if ( GetNPCBrain() == NPCBRAIN_HUMAN )
-		{
-			//	equip/unequip lightsource if not equipped
-			EXC_SET("light source");
-			if ( bActed ) ;
-			else if ( IsStatFlag(STATF_War) ) ;
-			else if ( pSector->IsDark() && !IsStatFlag(STATF_NightSight) )
-			{
-
-				CItem *pLightSourceCheck = LayerFind(LAYER_HAND2);
-				if ( !( pLightSourceCheck && ( pLightSourceCheck->IsType(IT_LIGHT_OUT) || pLightSourceCheck->IsType(IT_LIGHT_LIT) )))
-				{
-					CItem *pLightSource = ContentFind(RESOURCE_ID(RES_TYPEDEF,IT_LIGHT_OUT));
-					if ( pLightSource )
-					{
-						if ( ItemEquip(pLightSource) && Use_Obj(pLightSource, false, true) )
-							bActed = true;
-					}
-				}
+				ItemEquip(pLightSource);
+				Use_Obj(pLightSource, false);
 			}
-			else
-			{
-				CItem *pLightSource = LayerFind(LAYER_HAND2);
-				if ( pLightSource && ( pLightSource->IsType(IT_LIGHT_OUT) || pLightSource->IsType(IT_LIGHT_LIT) ))
-				{
-					if ( ItemBounce(pLightSource) )
-						bActed = true;
-				}
-			}
-
-			//	equip weapons if possible
-			EXC_SET("weapon/shield");
-			if ( bActed ) ;
-			else if ( IsStatFlag(STATF_War) )
-			{
-				CItem *pWeapon = LayerFind(LAYER_HAND1);
-				if ( !pWeapon || !pWeapon->IsTypeWeapon() )
-				{
-					pWeapon = LayerFind(LAYER_HAND2);
-					if ( !pWeapon || !pWeapon->IsTypeWeapon() )
-					{
-						CItem *pItem = GetPackSafe()->ContentFind(RESOURCE_ID(RES_TYPEDEF, IT_SHIELD));
-						if ( pItem )
-							ItemEquip(pItem);
-						ItemEquipWeapon(false);
-					}
-				}
-			}
-
-			//	all humans having little of food level should take some time to visit a
-			//	dinning place, returning back after some time. the dinning place detection
-			//	should take place in mapcache routines somehow, here to act only.
-			EXC_SET("human generic");
-			//	TODO:
 		}
-
-		//	clever creatures are able to make several actions during one tick
-		if (( iInt < NPCAI_INT_TOACTMORE ) || ( Calc_GetRandVal(iInt) < NPCAI_INT_TOACTMORE ))
-			break;
+	}
+	else
+	{
+		CItem *pLightSource = LayerFind(LAYER_HAND2);
+		if ( pLightSource && (pLightSource->IsType(IT_LIGHT_OUT) || pLightSource->IsType(IT_LIGHT_LIT)) )
+			ItemBounce(pLightSource);
 	}
 
 	EXC_CATCH;

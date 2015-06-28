@@ -4129,7 +4129,7 @@ bool CChar::OnTick()
 				if ( (g_Cfg.m_iNpcAi & NPC_AI_FOOD) && !(g_Cfg.m_iNpcAi & NPC_AI_INTFOOD) )
 					NPC_Food();
 				if ( g_Cfg.m_iNpcAi & NPC_AI_EXTRA )
-					NPC_AI();
+					NPC_ExtraAI();
 			}
 		}
 	}

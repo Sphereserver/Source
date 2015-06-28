@@ -366,6 +366,12 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 				sVal = szLine;
 			}
 			return( true );
+		case CPC_REFUSETRADES:
+			{
+				CVarDefCont * pVar = pChar->GetDefKey(pszKey, true);
+				sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
+			}
+			return( true );
 		case CPC_SKILLCLASS:
 			sVal = GetSkillClass()->GetResourceName();
 			return( true );
@@ -499,6 +505,9 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 			} return( true );
 		case CPC_PROFILE:
 			m_sProfile = Str_MakeFiltered( s.GetArgStr());
+			return( true );
+		case CPC_REFUSETRADES:
+			pChar->SetDefNum(s.GetKey(), s.GetArgVal() > 0 ? 1 : 0, false);
 			return( true );
 		case CPC_SKILLCLASS:
 			return SetSkillClass( pChar, g_Cfg.ResourceGetIDType( RES_SKILLCLASS, s.GetArgStr()));

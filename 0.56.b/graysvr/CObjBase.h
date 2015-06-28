@@ -3838,7 +3838,7 @@ private:
 public:
 	void NPC_Pathfinding();		//	NPC thread AI - pathfinding
 	void NPC_Food();			//	NPC thread AI - search for food
-	void NPC_AI();				//	NPC thread AI - some general operations
+	void NPC_ExtraAI();			//	NPC thread AI - some general extra operations
 	bool NPC_AddSpellsFromBook(CItem * pBook);
 
 	void NPC_PetDesert();	

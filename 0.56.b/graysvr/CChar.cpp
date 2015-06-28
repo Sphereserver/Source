@@ -2591,12 +2591,6 @@ do_default:
 			break;
 		case CHC_P:
 			goto do_default;
-		case CHC_REFUSETRADES:
-			{
-				CVarDefCont * pVar = GetDefKey(pszKey, true);
-				sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
-			}
-			break;
 		case CHC_STONE:
 			sVal.FormatVal( IsStatFlag( STATF_Stone ));
 			break;
@@ -3071,9 +3065,6 @@ do_default:
 				m_fClimbUpdated = false; // update climb height
 				MoveToChar(pt);
 			}
-			break;
-		case CHC_REFUSETRADES:
-			SetDefNum(s.GetKey(), s.GetArgVal() > 0 ? 1 : 0, false);
 			break;
 		case CHC_STONE:
 			{

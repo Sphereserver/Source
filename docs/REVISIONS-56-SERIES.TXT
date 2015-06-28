@@ -2407,3 +2407,12 @@ Added a missing call to Calc_CombatChanceToHit() from Fight_Attack(), making it 
 For more info about Racial bonuses, read here: http://www.uoguide.com/Racial_Abilities .
 [sphere.ini]
 	-Added FEATURE_ML_RACIAL_BONUS and FEATURE_SA_RACIAL_BONUS to FeatureML and FeatureSA respectively, each one activating the bonuses for human/elfs or gargoyles.
+
+28-06-2015, Coruja
+Changed: REFUSETRADES property now can be only used on players. NPCs won't use it anymore, since NPCs can't open trade windows.
+Changed: Huge optimization on NPC_AI_EXTRA code. This is a heavy code called thousands of times per second, so unfortunately some features got removed to improve Sphere performance overall:
+	-Animals (brain_animal) wont poop on ground anymore.
+	-Animal Trainers (brain_animal_trainer) won't give food to nearby pets anymore.
+	-Vendors won't go off-duty (brain_vendor_offduty) at night time anymore.
+	PS: If someone still need these features, it can be done by scripts using @NPCAction trigger or at BUY/SELL functions on file /speech/speakshopkeep.scp
+[sphere_msgs.scp]: Removed messages 'animal_dung' and 'npc_animal_poop'.

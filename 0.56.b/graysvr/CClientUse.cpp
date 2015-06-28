@@ -1381,84 +1381,90 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 	// Begin secure trading with a char. (Make the initial offer)
 	ASSERT(m_pChar);
 
+	if ( pChar && (IsTrigUsed(TRIGGER_DROPON_CHAR) || IsTrigUsed(TRIGGER_ITEMDROPON_CHAR)) )
+	{
+		CScriptTriggerArgs Args(pChar);
+		if ( pItem->OnTrigger( ITRIG_DROPON_CHAR, m_pChar, &Args ) == TRIGRET_RET_TRUE )
+			return false;
+	}
+
+	// NPC's can't use trade windows
+	if ( pChar->m_pNPC )
+		return pChar->NPC_OnItemGive(m_pChar, pItem);
+
 	if ( pChar->GetDefNum("REFUSETRADES", true) )
 	{
 		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_TRADE_REFUSE), pChar->GetName());
-		return( false );
+		return false;
 	}
 
-	if (( pChar ) && (( IsTrigUsed(TRIGGER_DROPON_CHAR) ) || ( IsTrigUsed(TRIGGER_ITEMDROPON_CHAR) )))
-	{
-		CScriptTriggerArgs Args( pChar );
-		if ( pItem->OnTrigger( ITRIG_DROPON_CHAR, m_pChar, &Args ) == TRIGRET_RET_TRUE )
-				return ( false );
-	}
-
-	// Trade window only if another PC.
-	if ( ! pChar->IsClient())
-	{
-		return( pChar->NPC_OnItemGive( m_pChar, pItem ));
-	}
-
-	// Is there already a trade window open for this client ?
+	// Check if the trade window is already open
 	CItem * pItemCont = m_pChar->GetContentHead();
-	for ( ; pItemCont != NULL; pItemCont = pItemCont->GetNext())
+	for ( ; pItemCont != NULL; pItemCont = pItemCont->GetNext() )
 	{
-		if ( ! pItemCont->IsType(IT_EQ_TRADE_WINDOW))
-			continue; // found it
-		CItem * pItemPartner = pItemCont->m_uidLink.ItemFind(); // counterpart trade window.
+		if ( !pItemCont->IsType(IT_EQ_TRADE_WINDOW) )
+			continue;
+
+		CItem * pItemPartner = pItemCont->m_uidLink.ItemFind();
 		if ( pItemPartner == NULL )
 			continue;
-		CChar * pCharPartner = dynamic_cast <CChar*>( pItemPartner->GetParent());
+
+		CChar * pCharPartner = dynamic_cast<CChar*>(pItemPartner->GetParent());
 		if ( pCharPartner != pChar )
 			continue;
-		CItemContainer * pCont = dynamic_cast <CItemContainer *>( pItemCont );
-		ASSERT(pCont);
-		if (IsTrigUsed(TRIGGER_DROPON_TRADE))
-		{
-			CScriptTriggerArgs Args1( pChar );
-			if ( pItem->OnTrigger( ITRIG_DROPON_TRADE, this , &Args1 ) == TRIGRET_RET_TRUE ) //m_pChar, &Args1
-				return( false );
-		}
-		pCont->ContentAdd( pItem );
-		return( true );
-	}
-	if (IsTrigUsed(TRIGGER_TRADECREATE))
-	{
-		CScriptTriggerArgs Args( pItem );
-		if ( (m_pChar->OnTrigger(CTRIG_TradeCreate, pChar, &Args) == TRIGRET_RET_TRUE ) || (pChar->OnTrigger(CTRIG_TradeCreate, m_pChar, &Args) == TRIGRET_RET_TRUE ) )
-		{
-			return ( false );
-		}
-	}
-	// Open a new one.
-	CItem* pItem1 = CItem::CreateBase( ITEMID_Bulletin1 );
-	if ( !pItem1 )
-		return( false );
 
-	CItemContainer* pCont1 = dynamic_cast <CItemContainer*> ( pItem1 );
+		if ( IsTrigUsed(TRIGGER_DROPON_TRADE) )
+		{
+			CScriptTriggerArgs Args1(pChar);
+			if ( pItem->OnTrigger( ITRIG_DROPON_TRADE, this , &Args1 ) == TRIGRET_RET_TRUE )
+				return false;
+		}
+
+		CItemContainer * pCont = dynamic_cast<CItemContainer*>(pItemCont);
+		ASSERT(pCont);
+		pCont->ContentAdd(pItem);
+		return true;
+	}
+
+	// Open new trade window
+	if ( IsTrigUsed(TRIGGER_TRADECREATE) )
+	{
+		CScriptTriggerArgs Args(pItem);
+		if ( (m_pChar->OnTrigger(CTRIG_TradeCreate, pChar, &Args) == TRIGRET_RET_TRUE) || (pChar->OnTrigger(CTRIG_TradeCreate, m_pChar, &Args) == TRIGRET_RET_TRUE) )
+			return false;
+	}
+
+	if ( IsTrigUsed(TRIGGER_DROPON_TRADE) )
+	{
+		CScriptTriggerArgs Args1(pChar);
+		if ( pItem->OnTrigger(ITRIG_DROPON_TRADE, this, &Args1) == TRIGRET_RET_TRUE )
+			return false;
+	}
+
+	CItem * pItem1 = CItem::CreateBase(ITEMID_Bulletin1);
+	if ( !pItem1 )
+		return false;
+
+	CItemContainer * pCont1 = dynamic_cast<CItemContainer*>(pItem1);
 	if ( !pCont1 )
 	{
 		DEBUG_ERR(("Item 0%x must be a container type to enable player trading.\n", ITEMID_Bulletin1));
 		pItem1->Delete();
-		return( false ); 
+		return false; 
 	}
 
-	pCont1->SetType( IT_EQ_TRADE_WINDOW );
-
-	// no need to perform the same tests on the second, since it is identical to the first
-	CItemContainer* pCont2 = dynamic_cast <CItemContainer*> (CItem::CreateBase( ITEMID_Bulletin1 ));
+	CItemContainer * pCont2 = dynamic_cast<CItemContainer*>(CItem::CreateBase(ITEMID_Bulletin1));
 	ASSERT(pCont2);
-	pCont2->SetType( IT_EQ_TRADE_WINDOW );
 
+	pCont1->SetType(IT_EQ_TRADE_WINDOW);
 	pCont1->m_itEqTradeWindow.m_fCheck = 0;
 	pCont1->m_uidLink = pCont2->GetUID();
+	m_pChar->LayerAdd(pCont1, LAYER_SPECIAL);
 
+	pCont2->SetType(IT_EQ_TRADE_WINDOW);
 	pCont2->m_itEqTradeWindow.m_fCheck = 0;
 	pCont2->m_uidLink = pCont1->GetUID();
-
-	m_pChar->LayerAdd( pCont1, LAYER_SPECIAL );
-	pChar->LayerAdd( pCont2, LAYER_SPECIAL );
+	pChar->LayerAdd(pCont2, LAYER_SPECIAL);
 
 	PacketTradeAction cmd(SECURE_TRADE_OPEN);
 	cmd.prepareContainerOpen(pChar, pCont1, pCont2);
@@ -1469,18 +1475,17 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 	LogOpenedContainer(pCont2);
 	pChar->GetClient()->LogOpenedContainer(pCont1);
 
-	CPointMap pt( 30, 30, 9 );
-	if (IsTrigUsed(TRIGGER_DROPON_TRADE))
+	if ( IsTrigUsed(TRIGGER_DROPON_TRADE) )
 	{
-		CScriptTriggerArgs Args1( pChar );
-		if ( pItem->OnTrigger( ITRIG_DROPON_TRADE, this , &Args1 ) == TRIGRET_RET_TRUE ) //m_pChar, &Args1
+		CScriptTriggerArgs Args1(pChar);
+		if ( pItem->OnTrigger( ITRIG_DROPON_TRADE, this , &Args1 ) == TRIGRET_RET_TRUE )
 		{
 			pCont1->Delete();
 			pCont2->Delete();
-			return( false );
+			return false;
 		}
 	}
-	pCont1->ContentAdd( pItem, pt );
-	return( true );
+	CPointMap pt(30, 30, 9);
+	pCont1->ContentAdd(pItem, pt);
+	return true;
 }
-
