@@ -603,6 +603,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 
 		case LAYER_SPELL_Paralyze:
 			StatFlag_Clear(STATF_Freeze);
+			UpdateMode();
 			if (pClient)
 			{
 				pClient->removeBuff(BI_PARALYZE);
@@ -1046,6 +1047,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			break;
 		case LAYER_SPELL_Paralyze:
 			StatFlag_Set(STATF_Freeze);
+			UpdateMode();
 			if (pClient && IsSetOF(OF_Buffs))
 			{
 				pClient->removeBuff(BI_PARALYZE);
@@ -3174,20 +3176,16 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				if ( m_pPlayer && pCharSrc->m_pPlayer && DamageBonus > 15 )		// Spell Damage Increase is capped at 15% on PvP
 					DamageBonus = 15;
 
-
-				if ((g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS) && IsGargoyle())
-				{
-					int iCurrentHPPercent = (Stat_GetVal(STAT_STR) * 100) / Stat_GetMax(STAT_STR);	// Calculating current percentage of HP.
-					int iFinalBonus = iCurrentHPPercent / 20;		// Setting the number of bonuses to apply: each 15% is 1 bonus
-					iDmg += IMULDIV(iDmg, iFinalBonus * 3, 100);	//Racial Bonus (Berserk), Gargoyles gains +3% SpellDamageIncrease per each 20% HP lost.
-				}
-
 				// INT bonus
 				DamageBonus += pCharSrc->Stat_GetAdjusted(STAT_INT) / 10;
 
 				// Inscription bonus
 				if ( pCharSrc->Skill_GetBase(SKILL_INSCRIPTION) >= 1000 )
 					DamageBonus += 10;
+
+				// Racial Bonus (Berserk), gargoyles gains +3% Spell Damage Increase per each 20 HP lost
+				if ( (g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS) && IsGargoyle() )
+					DamageBonus += minimum(3 * ((Stat_GetMax(STAT_STR) - Stat_GetVal(STAT_STR)) / 20), 12);		// value is capped at 12%
 
 				iDmg += iDmg * DamageBonus / 100;
 			}

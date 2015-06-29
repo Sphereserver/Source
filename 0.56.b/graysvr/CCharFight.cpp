@@ -2321,13 +2321,19 @@ effect_bounce:
 	// Remove stuck/paralyze effect
 	if ( !(uType & DAMAGE_NOUNPARALYZE) )
 	{
+		// Workaround: we must remove the flag immediately, but the memory only on next tick.
+		// If we remove the memory immediately, the char will be paralyzed again immediately
+		// after receive the damage, with no chance to get unfrozen and run away
+		StatFlag_Clear(STATF_Freeze);
+		UpdateMode();
+
 		CItem * pParalyze = LayerFind(LAYER_SPELL_Paralyze);
 		if (pParalyze)
-			pParalyze->Delete();
+			pParalyze->SetTimeout(1);
 
 		CItem * pStuck = LayerFind(LAYER_FLAG_Stuck);
 		if (pStuck)
-			pStuck->Delete();
+			pStuck->SetTimeout(1);
 	}
 
 	if ( pSrc && pSrc != this )
@@ -2624,6 +2630,10 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 	if ( m_pPlayer )	// only players can have damage bonus
 	{
 		int iDmgBonus = minimum(static_cast<int>(GetDefNum("INCREASEDAM", true, true)), 100);		// Damage Increase is capped at 100%
+		// Racial Bonus (Berserk), gargoyles gains +15% Damage Increase per each 20 HP lost
+		if ((g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS) && IsGargoyle())
+			iDmgBonus += minimum(15 * ((Stat_GetMax(STAT_STR) - Stat_GetVal(STAT_STR)) / 20), 60);		// value is capped at 60%
+
 		if (IsSetCombatFlags(COMBAT_OSIDAMAGEMOD))
 		{
 			// AOS damage bonus
@@ -3995,12 +4005,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			iDmg += IMULDIV(iDmg, pPoly->m_itSpell.m_spelllevel, 100);
 	}
 
-	if ( (g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS) && IsGargoyle() )
-	{
-		int iCurrentHPPercent = (Stat_GetVal(STAT_STR) * 100) / Stat_GetMax(STAT_STR);	// Calculating current percentage of HP.
-		int iFinalBonus = iCurrentHPPercent / 20;		// Setting the number of bonuses to apply: each 15% is 1 bonus
-		iDmg += IMULDIV( iDmg, iFinalBonus * 15, 100 );	//Racial Bonus (Berserk), Gargoyles gains +15% damage per each 20% HP lost.
-	}
 	CScriptTriggerArgs	Args( iDmg, iTyp, pWeapon );
 	Args.m_VarsLocal.SetNum("ItemDamageChance", 40);
 	if ( pAmmo )

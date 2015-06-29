@@ -2409,6 +2409,9 @@ For more info about Racial bonuses, read here: http://www.uoguide.com/Racial_Abi
 	-Added FEATURE_ML_RACIAL_BONUS and FEATURE_SA_RACIAL_BONUS to FeatureML and FeatureSA respectively, each one activating the bonuses for human/elfs or gargoyles.
 
 28-06-2015, Coruja
+Fixed: Damages not breaking Paralyze Field spell effect.
+Fixed: Explosion potions not checking LOS when it explodes.
+Changed: Updated Berserk gargoyle racial trait formula added by XuN.
 Changed: REFUSETRADES property now can be only used on players. NPCs won't use it anymore, since NPCs can't open trade windows.
 Changed: Huge optimization on NPC_AI_EXTRA code. This is a heavy code called thousands of times per second, so unfortunately some features got removed to improve Sphere performance overall:
 	-Animals (brain_animal) wont poop on ground anymore.

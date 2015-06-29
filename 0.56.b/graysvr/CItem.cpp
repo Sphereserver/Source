@@ -4946,7 +4946,8 @@ void CItem::OnExplosion()
 		CChar * pChar = AreaChars.GetChar();
 		if ( pChar == NULL )
 			break;
-		pChar->OnTakeDamage( m_itExplode.m_iDamage, pSrc, m_itExplode.m_wFlags, iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy );
+		if ( pChar->CanSeeLOS(this) )
+			pChar->OnTakeDamage( m_itExplode.m_iDamage, pSrc, m_itExplode.m_wFlags, iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy );
 	}
 
 	Effect(EFFECT_XYZ, ITEMID_FX_EXPLODE_3, this, 9, 10);
