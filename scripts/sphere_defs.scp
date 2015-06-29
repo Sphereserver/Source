@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, May 28, 2015
+// FILE LAST UPDATED: Monday, Jun 29, 2015
 //
 VERSION=0.56c
 
@@ -147,14 +147,10 @@ brain_healer           3
 brain_guard            4
 brain_banker           5
 brain_vendor           6
-brain_beggar           7
-brain_animal_trainer   8
-brain_thief            9
-brain_monster          10
-brain_berserk          11
-brain_undead           12
-brain_dragon           13
-brain_vendor_offduty   14
+brain_animal_trainer   7
+brain_monster          8
+brain_berserk          9
+brain_dragon           10
 
 [DEFNAME sounds]
 snd_wind1                 21

@@ -143,13 +143,13 @@ bool CChar::Noto_IsEvil() const
 		return true;
 	switch ( GetNPCBrain() )
 	{
-		case NPCBRAIN_UNDEAD:
 		case NPCBRAIN_MONSTER:
-			return ( iKarma< 0 );
+		case NPCBRAIN_DRAGON:
+			return ( iKarma < 0 );
 		case NPCBRAIN_BERSERK:
 			return true;
 		case NPCBRAIN_ANIMAL:
-			return ( iKarma<= -800 );
+			return ( iKarma <= -800 );
 		default:
 			break;
 	}
@@ -1278,9 +1278,6 @@ void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 
 	if ( this != pCharMark )	// it's not me.
 	{
-		// Thieves and beggars don't care.
-		if ( m_pNPC->m_Brain == NPCBRAIN_THIEF || m_pNPC->m_Brain == NPCBRAIN_BEGGAR )
-			return;
 		if ( fMyMaster )	// I won't rat you out.
 			return;
 	}

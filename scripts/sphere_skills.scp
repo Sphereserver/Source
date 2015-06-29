@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Saturday, Mar 14, 2015
+// FILE LAST UPDATED: Monday, Jun 29, 2015
 //
 VERSION=0.56c
 
@@ -906,6 +906,11 @@ BONUS_DEX=50
 BONUS_INT=50
 BONUS_STATS=25
 ADV_RATE=2.5,50.0,200.0
+
+ON=@Select
+	IF !(<SRC.ISPLAYER>)
+	 return 1
+	ENDIF
 
 ON=@Stroke
 	LOCAL.ModZ=<eval <ACT.P.Z>/-10>

@@ -1030,15 +1030,12 @@ void CClient::Event_VendorBuy_Cheater( int iCode )
 	{
 		"Other",
 		"Bad vendor UID",
-		"Vendor is off-duty",
 		"Bad item UID",
 		"Requested items out of stock",
 		"Total cost is too great"
 	};
 
-	g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%lx:Cheater '%s' is submitting illegal buy packet (%s)\n", GetSocketID(),
-		GetAccount()->GetName(),
-		sm_BuyPacketCheats[iCode]);
+	g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%lx:Cheater '%s' is submitting illegal buy packet (%s)\n", GetSocketID(), GetAccount()->GetName(), sm_BuyPacketCheats[iCode]);
 	SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTBUY));
 }
 
@@ -1069,7 +1066,7 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 		if ((items[i].m_amount <= 0) || (items[i].m_amount > pItem->GetAmount()))
 		{
 			pVendor->Speak("Your order cannot be fulfilled, please try again.");
-			Event_VendorBuy_Cheater( 0x4 );
+			Event_VendorBuy_Cheater( 0x3 );
 			return;
 		}
 
@@ -1077,7 +1074,7 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 		if ( costtotal > MAX_COST )
 		{
 			pVendor->Speak("Your order cannot be fulfilled, please try again.");
-			Event_VendorBuy_Cheater( 0x5 );
+			Event_VendorBuy_Cheater( 0x4 );
 			return;
 		}
 

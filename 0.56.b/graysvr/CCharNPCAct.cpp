@@ -69,12 +69,6 @@ bool CChar::NPC_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command fro
 		if ( pCharSrc == NULL || !pCharSrc->IsClient())
 			return false;
 
-		if ( m_pNPC->m_Brain == NPCBRAIN_VENDOR_OFFDUTY )
-		{
-			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_OFFDUTY));
-			return true;
-		}
-
 		CClient * pClientSrc = pCharSrc->GetClient();
 		ASSERT(pClientSrc != NULL);
 		if ( !pClientSrc->addShopMenuBuy(this) )
@@ -124,12 +118,6 @@ bool CChar::NPC_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command fro
 		if ( pCharSrc == NULL || !pCharSrc->IsClient() )
 			return false;
 
-		if ( m_pNPC->m_Brain == NPCBRAIN_VENDOR_OFFDUTY )
-		{
-			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_OFFDUTY));
-			return true;
-		}
-		
 		CClient * pClientSrc = pCharSrc->GetClient();
 		ASSERT(pClientSrc != NULL);
 		if ( ! pClientSrc->addShopMenuSell( this ))
@@ -681,7 +669,7 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 		return( false );
 
 	// Check the NPC is capable of teaching
-	if ( (m_pNPC->m_Brain < NPCBRAIN_HUMAN) || (m_pNPC->m_Brain > NPCBRAIN_THIEF) || (m_pNPC->m_Brain == NPCBRAIN_GUARD) )
+	if ( (m_pNPC->m_Brain < NPCBRAIN_HUMAN) || (m_pNPC->m_Brain > NPCBRAIN_STABLE) || (m_pNPC->m_Brain == NPCBRAIN_GUARD) )
 		return( false );
 
 	// Check the NPC isn't busy fighting
@@ -768,70 +756,6 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 	strcat( pszMsg, "." );
 	Speak( pszMsg );
 	return( true );
-}
-
-bool CChar::NPC_Act_Begging( CChar * pChar )
-{
-	ADDTOCALLSTACK("CChar::NPC_Act_Begging");
-	// SKILL_BEGGING
-	bool fSpeak;
-
-	if ( pChar )
-	{
-		// Is this a proper target for begging ?
-		if ( pChar == this ||
-			pChar->m_pNPC ||	// Don't beg from NPC's or the PC you just begged from
-			pChar->GetUID() == m_Act_TargPrv )	// Already targetting this person.
-			return( false );
-
-		if ( pChar->GetUID() == m_Act_Targ && Skill_GetActive() == SKILL_BEGGING )
-			return( true );
-
-		Skill_Start( SKILL_BEGGING );
-		m_Act_Targ = pChar->GetUID();
-		fSpeak = true;
-	}
-	else
-	{
-		// We are already begging.
-		pChar = m_Act_Targ.CharFind();
-		if (( pChar == NULL ) ||
-		    ((! CanSee( pChar )) && ( Calc_GetRandVal(75) > Stat_GetAdjusted(STAT_INT))))  // Dumb beggars think I'm gone
-		{
-			m_Act_Targ.InitUID();
-			Skill_Start( SKILL_NONE );
-			return( false );
-		}
-
-		// Time to beg ?
-		fSpeak = ! Calc_GetRandVal(6);
-	}
-
-	SetTimeout( 2*TICK_PER_SEC );
-
-	static UINT const sm_szSpeakBeggar[] =
-	{
-		DEFMSG_NPC_BEGGAR_BEG_1,
-		DEFMSG_NPC_BEGGAR_BEG_2,
-		DEFMSG_NPC_BEGGAR_BEG_3,
-		DEFMSG_NPC_BEGGAR_BEG_4,
-		DEFMSG_NPC_BEGGAR_BEG_5,
-		DEFMSG_NPC_BEGGAR_BEG_6
-	};
-
-	UpdateDir( pChar );	// face PC
-	if ( fSpeak )
-	{
-		Speak( g_Cfg.GetDefaultMsg(sm_szSpeakBeggar[ Calc_GetRandVal( COUNTOF( sm_szSpeakBeggar )) ]) );
-	}
-
-	if ( ! Calc_GetRandVal( ( IMULDIV(g_Cfg.m_iMaxFame, 101, 100) - pChar->Stat_GetAdjusted(STAT_FAME)) / 50 ))
-	{
-		UpdateAnimate( ANIM_BOW );
-		return( true );
-	}
-
-	return( NPC_Act_Follow( false, 2 ));
 }
 
 void CChar::NPC_OnNoticeSnoop( CChar * pCharThief, CChar * pCharMark )
@@ -1538,15 +1462,7 @@ bool CChar::NPC_LookAtChar( CChar * pChar, int iDist )
 				return true;
 			break;
 
-		case NPCBRAIN_BEGGAR:
-			if ( NPC_Act_Begging( pChar ))
-				return true;
-			if ( NPC_LookAtCharHuman( pChar ))
-				return( true );
-			break;
-
 		case NPCBRAIN_MONSTER:
-		case NPCBRAIN_UNDEAD:
 		case NPCBRAIN_DRAGON:
 			if ( NPC_LookAtCharMonster( pChar ))
 				return( true );
@@ -1584,7 +1500,6 @@ bool CChar::NPC_LookAtChar( CChar * pChar, int iDist )
 		case NPCBRAIN_STABLE:
 		case NPCBRAIN_ANIMAL:
 		case NPCBRAIN_HUMAN:
-		case NPCBRAIN_THIEF:
 			if ( NPC_LookAtCharHuman(pChar) )
 				return true;
 			break;
@@ -3424,36 +3339,6 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 			}
 			break;
 
-		case NPCBRAIN_BEGGAR:
-		case NPCBRAIN_THIEF:
-			if ( Food_CanEat(pItem) &&
-				Use_Eat( pItem ))
-			{
-				Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_BEGGAR_FOOD_TY ) );
-				return( true );
-			}
-			if ( ! CanCarry( pItem ))
-			{
-				Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_WEAK ) );
-				return( false );
-			}
-			if ( pItem->IsType(IT_GOLD) || Food_CanEat(pItem))
-				Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_BEGGAR_FOOD_TAL ) );
-			else
-				Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_BEGGAR_SELL ) );
-
-			ItemEquip( pItem );
-			pItem->Update();
-
-			if (m_Act_Targ == pCharSrc->GetUID())
-			{
-				Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_BEGGAR_IFONLY ) );
-				m_Act_TargPrv = m_Act_Targ;
-				m_Act_Targ.InitUID();
-				Skill_Start( SKILL_NONE );
-			}
-			return( true );
-
 		default:
 			break;
 	}
@@ -3508,11 +3393,6 @@ void CChar::NPC_OnTickAction()
 				// We should try to do something new.
 				EXC_SET("idle: Skill_None");
 				NPC_Act_Idle();
-				break;
-
-			case SKILL_BEGGING:
-				EXC_SET("begging");
-				NPC_Act_Begging(NULL);
 				break;
 
 			case SKILL_STEALTH:

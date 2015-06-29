@@ -2285,14 +2285,10 @@ enum NPCBRAIN_TYPE	// General AI type.
 	NPCBRAIN_GUARD,		// 4 = inside cities
 	NPCBRAIN_BANKER,	// 5 = can open your bank box for you
 	NPCBRAIN_VENDOR,	// 6 = will sell from vendor boxes.
-	NPCBRAIN_BEGGAR,	// 7 = begs.
-	NPCBRAIN_STABLE,	// 8 = will store your animals for you.
-	NPCBRAIN_THIEF,		// 9 = should try to steal ?
-	NPCBRAIN_MONSTER,	// 10 = not tamable. normally evil.
-	NPCBRAIN_BERSERK,	// 11 = attack closest (blades, vortex)
-	NPCBRAIN_UNDEAD,	// 12 = disapears in the light.
-	NPCBRAIN_DRAGON,	// 13 = we can breath fire. may be tamable ? hirable ?
-	NPCBRAIN_VENDOR_OFFDUTY,	// 14 = "Sorry i'm not working right now. come back when my shop is open.
+	NPCBRAIN_STABLE,	// 7 = will store your animals for you.
+	NPCBRAIN_MONSTER,	// 8 = not tamable. normally evil.
+	NPCBRAIN_BERSERK,	// 9 = attack closest (blades, vortex)
+	NPCBRAIN_DRAGON,	// 10 = we can breath fire. may be tamable ? hirable ?
 	NPCBRAIN_QTY
 };
 
@@ -3820,7 +3816,6 @@ private:
 	void NPC_Act_GoHome();
 	bool NPC_Act_Talk();
 	void NPC_Act_Wander();
-	bool NPC_Act_Begging( CChar * pChar );
 	void NPC_Act_Fight();
 	void NPC_Act_Idle();
 	inline void NPC_Act_Looting_CantGetItem( CItem * pItem );

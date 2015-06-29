@@ -1,5 +1,5 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2015
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, October 18, 2013
+// FILE LAST UPDATED: Monday, Jun 29, 2015
 //
 VERSION=0.56c
 
@@ -372,17 +372,17 @@ MENU MENU_ADDITEM
 [MENU M_ADDI_GM]
 GameMaster Items
 ON=0 GM Robe (undyed)
-ADDITEM i_robe_gm
+ADD i_robe_gm
 ON=0 Magic Key
-ADDITEM i_key_magic
+ADD i_key_magic
 ON=0 Teleport Rune
-ADDITEM i_RUNE_GLOWING_1
+ADD i_RUNE_GLOWING_1
 ON=0 Lord British Armor
-ADDITEM i_PERSON_LORD_BRITISH
+ADD i_PERSON_LORD_BRITISH
 ON=0 Blackthorne Robe
-ADDITEM i_PERSON_BLACK_THORNE
+ADD i_PERSON_BLACK_THORNE
 ON=0 Death Shroud
-ADDITEM i_deathshroud
+ADD i_deathshroud
 ON=0 PREVIOUS MENU
 MENU M_GMFEATURES
 
@@ -667,15 +667,15 @@ MENU M_TRAV_T2A
 [MENU M_ADDI_VAL]
 Valuables
 ON=i_gold <NAME>
-ADDITEM i_gold
+ADD i_gold
 ON=i_ingot_gold <NAME>
-ADDITEM i_ingot_gold
+ADD i_ingot_gold
 ON=i_ingot_silver <NAME>
-ADDITEM i_ingot_silver
+ADD i_ingot_silver
 ON=i_ingot_copper Copper Ingots
-ADDITEM i_ingot_copper
+ADD i_ingot_copper
 ON=i_ingot_iron Iron Ingots
-ADDITEM i_ingot_iron
+ADD i_ingot_iron
 ON=i_virtstone_8 Gems
 MENU M_ADDI_GEMS
 ON=i_necklace_gold Jewelry
@@ -684,51 +684,51 @@ MENU M_ADDI_JEWELRY
 [MENU M_ADDI_GEMS]
 Gems
 ON=i_gem_amethyst Amethyst
-ADDITEM i_gem_amethyst
+ADD i_gem_amethyst
 ON=i_gem_citrine Citrine
-ADDITEM i_gem_citrine
+ADD i_gem_citrine
 ON=i_gem_diamond Diamond
-ADDITEM i_gem_diamond
+ADD i_gem_diamond
 ON=i_gem_emerald Emerald
-ADDITEM i_gem_emerald
+ADD i_gem_emerald
 ON=i_gem_amber Piece of Amber
-ADDITEM i_gem_amber
+ADD i_gem_amber
 ON=i_gem_ruby Ruby
-ADDITEM i_gem_ruby
+ADD i_gem_ruby
 ON=i_gem_sapphire Saphire
-ADDITEM i_gem_sapphire
+ADD i_gem_sapphire
 ON=i_gem_star_sapphire Star Saphire
-ADDITEM i_gem_star_sapphire
+ADD i_gem_star_sapphire
 ON=i_gem_tourmaline Tourmaline
-ADDITEM i_gem_tourmaline
+ADD i_gem_tourmaline
 
 [MENU M_ADDN_NEW]
 New Creatures
 ON=0 Skeleton Archer
-ADDNPC c_SKELETONARCHER
+ADD c_SKELETONARCHER
 ON=0 PREVIOUS MENU
 MENU M_ADDN
 
 [MENU M_ADDN_OPHID]
 T2A Creatures (Ophidian & Terathan)
 ON=0 Ophidian Arch Mage
-ADDNPC c_OPHIDIAN_ARCHMAGE
+ADD c_OPHIDIAN_ARCHMAGE
 ON=0 Ophidian Mage
-ADDNPC c_OPHIDIAN_MAGE
+ADD c_OPHIDIAN_MAGE
 ON=0 Ophidian Knight
-ADDNPC c_OPHIDIAN_KNIGHT
+ADD c_OPHIDIAN_KNIGHT
 ON=0 Ophidian Matriarch
-ADDNPC c_OPHIDIAN_QUEEN
+ADD c_OPHIDIAN_QUEEN
 ON=0 Ophidian Warrior
-ADDNPC c_OPHIDIAN_WARRIOR
+ADD c_OPHIDIAN_WARRIOR
 ON=0 Terathan Avenger
-ADDNPC c_TERATHAN_AVENGER
+ADD c_TERATHAN_AVENGER
 ON=0 Terathan Drone
-ADDNPC c_TERATHAN_DRONE
+ADD c_TERATHAN_DRONE
 ON=0 Terathan Matriarch
-ADDNPC c_TERATHAN_MATRIARCH
+ADD c_TERATHAN_MATRIARCH
 ON=0 Terathan Warrior
-ADDNPC c_TERATHAN_WARRIOR
+ADD c_TERATHAN_WARRIOR
 ON=0 PREVIOUS MENU
 MENU M_ADDN_T2A
 
@@ -803,163 +803,163 @@ MENU M_ADDN
 [MENU M_ADDN_DOM]
 Domestic Animals
 ON=0 Horse (brown)
-ADDNPC c_horse_brown_dk
+ADD c_horse_brown_dk
 ON=0 Horse (pale)
-ADDNPC c_horse_brown_lt
+ADD c_horse_brown_lt
 ON=0 Horse (white)
-ADDNPC c_horse_gray
+ADD c_horse_gray
 ON=0 Horse (tan)
-ADDNPC c_horse_tan
+ADD c_horse_tan
 ON=0 Pack Horse
-ADDNPC c_HORSE_PACK
+ADD c_HORSE_PACK
 ON=0 Llama
-ADDNPC c_llama
+ADD c_llama
 ON=0 Pack Llama
-ADDNPC c_LLAMA_PACK
+ADD c_LLAMA_PACK
 ON=0 Cow (light brown)
-ADDNPC c_cow_brown
+ADD c_cow_brown
 ON=0 Cow (black & white)
-ADDNPC c_cow_bw
+ADD c_cow_bw
 ON=0 Bull (light brown)
-ADDNPC c_bull_brown_lt
+ADD c_bull_brown_lt
 ON=0 Bull (dark brown, spotted)
-ADDNPC c_bull_brown_dk
+ADD c_bull_brown_dk
 ON=0 Pig
-ADDNPC c_PIG
+ADD c_PIG
 ON=0 Sheep (wooly)
-ADDNPC c_SHEEP_WOOLLY
+ADD c_SHEEP_WOOLLY
 ON=0 Goat
-ADDNPC c_GOAT
+ADD c_GOAT
 ON=0 Cat
-ADDNPC c_cat
+ADD c_cat
 ON=0 Dog
-ADDNPC c_dog
+ADD c_dog
 ON=0 PREVIOUS MENU
 MENU M_ADDN
 
 [MENU M_ADDN_LIV]
 Living Creatures
 ON=0 Corpser
-ADDNPC c_corpser
+ADD c_corpser
 ON=0 Harpy
-ADDNPC c_harpy
+ADD c_harpy
 ON=0 Mongbat (subterranean)
-ADDNPC c_mongbat
+ADD c_mongbat
 ON=0 Mongbat (arboreal)
-ADDNPC c_MONGBAT_ARBOREAL
+ADD c_MONGBAT_ARBOREAL
 ON=0 Ogre
-ADDNPC c_OGRE
+ADD c_OGRE
 ON=0 Ogre Lord
-ADDNPC c_ogre_lord
+ADD c_ogre_lord
 ON=0 Ettin, Lizmen, Orc, Ratmen, Troll
 MENU M_ADDN_ETTIN
 ON=0 Reaper
-ADDNPC c_reaper
+ADD c_reaper
 ON=0 Slime
-ADDNPC c_slime
+ADD c_slime
 ON=0 Giant Scorpion
-ADDNPC c_scorpion_giant
+ADD c_scorpion_giant
 ON=0 Giant Spider
-ADDNPC c_spider_giant
+ADD c_spider_giant
 ON=0 Giant Serpent
-ADDNPC c_snake_giant
+ADD c_snake_giant
 ON=0 Giant Rat
-ADDNPC c_rat_giant
+ADD c_rat_giant
 ON=0 PREVIOUS MENU
 MENU M_ADDN
 
 [MENU M_ADDN_UND]
 Undead Creatures
 ON=0 Spectre
-ADDNPC c_SPECTRE
+ADD c_SPECTRE
 ON=0 Headless
-ADDNPC c_Headless
+ADD c_Headless
 ON=0 Lich
-ADDNPC c_lich
+ADD c_lich
 ON=0 Lich Lord
-ADDNPC c_lich_lord
+ADD c_lich_lord
 ON=0 Skeleton
-ADDNPC c_skeleton
+ADD c_skeleton
 ON=0 Skeleton (with axe)
-ADDNPC c_skeleton_w_axe
+ADD c_skeleton_w_axe
 ON=0 Skeleton (with sword)
-ADDNPC c_skeleton_w_sword
+ADD c_skeleton_w_sword
 ON=0 Skeletal Knight
-ADDNPC c_skeleton_knight
+ADD c_skeleton_knight
 ON=0 Skeletal Mage
-ADDNPC c_skeleton_mage
+ADD c_skeleton_mage
 ON=0 Zombie
-ADDNPC c_ZOMBIE
+ADD c_ZOMBIE
 ON=0 PREVIOUS MENU
 MENU M_ADDN
 
 [MENU M_ADDN_MYTH]
 Mythical Creatures
 ON=0 Air Elemental
-ADDNPC c_elem_AIR
+ADD c_elem_AIR
 ON=0 Earth Elemental
-ADDNPC c_elem_earth
+ADD c_elem_earth
 ON=0 Fire Elemental
-ADDNPC c_elem_fire
+ADD c_elem_fire
 ON=0 Water Elemental
-ADDNPC c_elem_water
+ADD c_elem_water
 ON=0 Wisp
-ADDNPC c_WISP
+ADD c_WISP
 ON=0 Dragon (red)
-ADDNPC c_DRAGON_RED
+ADD c_DRAGON_RED
 ON=0 Dragon (green)
-ADDNPC c_DRAGON_GREEN
+ADD c_DRAGON_GREEN
 ON=0 Drake (red)
-ADDNPC c_DRAGON_SMALL_RED
+ADD c_DRAGON_SMALL_RED
 ON=0 Drake (Black)
-ADDNPC c_DRAGON_SMALL_BLACK
+ADD c_DRAGON_SMALL_BLACK
 ON=0 Daemon
-ADDNPC c_DAEMON
+ADD c_DAEMON
 ON=0 Balron (Elder Daemon)
-ADDNPC c_balron
+ADD c_balron
 ON=0 Daemon (with sword)
-ADDNPC c_DAEMON_W_SWORD
+ADD c_DAEMON_W_SWORD
 ON=0 Gargoyle
-ADDNPC c_GARGOYLE
+ADD c_GARGOYLE
 ON=0 Gazer
-ADDNPC c_gazer
+ADD c_gazer
 ON=0 Elder Gazer
-ADDNPC c_gazer_elder
+ADD c_gazer_elder
 ON=0 Sea Serpent
-ADDNPC c_SEA_SERPENT
+ADD c_SEA_SERPENT
 ON=0 PREVIOUS MENU
 MENU M_ADDN
 
 [MENU M_ADDN_T2A]
 T2A Creatures
 ON=0 Bullfrog
-ADDNPC c_bullfrog
+ADD c_bullfrog
 ON=0 Cyclops
-ADDNPC c_CYCLOPS
+ADD c_CYCLOPS
 ON=0 Frost Troll
-ADDNPC c_frost_troll
+ADD c_frost_troll
 ON=0 Giant Ice Serpent
-ADDNPC c_ICE_SERPENT
+ADD c_ICE_SERPENT
 ON=0 Imp
-ADDNPC c_imp
+ADD c_imp
 ON=0 Kraken
-ADDNPC c_KRAKEN
+ADD c_KRAKEN
 ON=0 Lava Lizard
-ADDNPC c_lava_lizard
+ADD c_lava_lizard
 ON=0 Mummy
-ADDNPC c_MUMMY
+ADD c_MUMMY
 ON=0 Nightmare
-ADDNPC c_NIGHTMARE
+ADD c_NIGHTMARE
 ON=0 Phoenix
-ADDNPC c_PHOENIX
+ADD c_PHOENIX
 ON=0 Stone Gargoyle
-ADDNPC c_gargoyle_stone
+ADD c_gargoyle_stone
 ON=0 Stone Harpy
-ADDNPC c_stoneharpy
+ADD c_stoneharpy
 ON=0 Giant Toad
-ADDNPC c_TOAD_GIANT
+ADD c_TOAD_GIANT
 ON=0 Titan
-ADDNPC c_TITAN
+ADD c_TITAN
 ON=0 Wyrm & Wyvern
 MENU M_ADDN_WYRM
 ON=0 Ophidian's & Terathan's
@@ -972,37 +972,37 @@ MENU M_ADDN
 [MENU M_ADDN_ETTIN]
 Ettin, Lizmen, Orc, Ratmen, Troll
 ON=0 Ettin
-ADDNPC c_ettin
+ADD c_ettin
 ON=0 Ettin (with axe)
-ADDNPC c_ETTIN_W_AXE
+ADD c_ETTIN_W_AXE
 ON=0 Lizardman
-ADDNPC c_lizardman
+ADD c_lizardman
 ON=0 Lizardman (with spear)
-ADDNPC c_lizardman_spear
+ADD c_lizardman_spear
 ON=0 Lizzardman (with mace)
-ADDNPC c_lizardman_mace
+ADD c_lizardman_mace
 ON=0 Orc
-ADDNPC c_ORC
+ADD c_ORC
 ON=0 Orc (with club)
-ADDNPC c_orc_w_club
+ADD c_orc_w_club
 ON=0 Orcish Mage
-ADDNPC c_orc_mage
+ADD c_orc_mage
 ON=0 Orc Captian
-ADDNPC c_orc_captain
+ADD c_orc_captain
 ON=0 Orc Lord
-ADDNPC c_orc_lord
+ADD c_orc_lord
 ON=0 Ratman
-ADDNPC c_ratman
+ADD c_ratman
 ON=0 Ratman (with warfork)
-ADDNPC c_ratman_w_mace
+ADD c_ratman_w_mace
 ON=0 Ratman (with sword)
-ADDNPC c_ratman_w_sword
+ADD c_ratman_w_sword
 ON=0 Troll
-ADDNPC c_troll
+ADD c_troll
 ON=0 Troll (with mace)
-ADDNPC c_troll_w_mace
+ADD c_troll_w_mace
 ON=0 Troll (with axe)
-ADDNPC c_troll_w_axe
+ADD c_troll_w_axe
 ON=0 PREVIOUS MENU
 MENU M_ADDN_LIV
 
@@ -1026,170 +1026,170 @@ MENU M_ADDN_MAL
 [MENU M_ADDN_MSHOPFOO]
 Male Shopkeepers (food)
 ON=0 Butcher
-ADDNPC C_H_BUTCHER
+ADD C_H_BUTCHER
 ON=0 Baker
-ADDNPC C_H_BAKER
+ADD C_H_BAKER
 ON=0 Farmer
-ADDNPC C_H_FARMER
+ADD C_H_FARMER
 ON=0 Innkeeper
-ADDNPC C_H_INNKEEPER
+ADD C_H_INNKEEPER
 ON=0 Cook
-ADDNPC C_H_COOK
+ADD C_H_COOK
 ON=0 Waiter
-ADDNPC C_H_WAITER
+ADD C_H_WAITER
 ON=0 Miller
-ADDNPC C_H_MILLER
+ADD C_H_MILLER
 ON=0 Beekeeper
-ADDNPC C_H_BEEKEEPER
+ADD C_H_BEEKEEPER
 ON=0 Tavernkeeper
-ADDNPC C_H_TAVERNKEEPER
+ADD C_H_TAVERNKEEPER
 
 [MENU M_ADDN_MSHOPCLO]
 Male Shopkeepers (cloths)
 ON=0 Cobbler
-ADDNPC C_H_COBBLER
+ADD C_H_COBBLER
 ON=0 Tailor
-ADDNPC C_H_TAILOR
+ADD C_H_TAILOR
 ON=0 Tanner
-ADDNPC C_H_TANNER
+ADD C_H_TANNER
 ON=0 Weaver
-ADDNPC C_H_WEAVER
+ADD C_H_WEAVER
 ON=0 Fur Trader
-ADDNPC C_H_FURTRADER
+ADD C_H_FURTRADER
 
 [MENU M_ADDN_MSHOPCOM]
 Male Shopkeepers (Combat)
 ON=0 Blacksmith
-ADDNPC C_H_BLACKSMITH
+ADD C_H_BLACKSMITH
 ON=0 Weaponsmith (bladed)
-ADDNPC C_H_WEAPONSMITH_BLADE
+ADD C_H_WEAPONSMITH_BLADE
 ON=0 Weaponsmith (blunt)
-ADDNPC C_H_WEAPONSMITH_BLUNT
+ADD C_H_WEAPONSMITH_BLUNT
 ON=0 Armourer
-ADDNPC C_H_ARMORER
+ADD C_H_ARMORER
 ON=0 Bowyer
-ADDNPC C_H_BOWYER
+ADD C_H_BOWYER
 
 [MENU M_ADDN_MSHOPMAG]
 Male Shopkeepers (Magery)
 ON=0 Mage
-ADDNPC C_H_MAGESHOP
+ADD C_H_MAGESHOP
 ON=0 Alchemist
-ADDNPC C_H_ALCHEMIST
+ADD C_H_ALCHEMIST
 ON=0 Herbalist
-ADDNPC C_H_HERBALIST
+ADD C_H_HERBALIST
 ON=0 Scribe
-ADDNPC C_H_SCRIBE
+ADD C_H_SCRIBE
 
 [MENU M_ADDN_MSHOPEQ]
 Male Shopkeepers (Equip)
 ON=0 Provisioner
-ADDNPC C_H_PROVIS
+ADD C_H_PROVIS
 ON=0 Tinker
-ADDNPC C_H_TINKER
+ADD C_H_TINKER
 ON=0 Carpenter
-ADDNPC C_H_CARPENTER
+ADD C_H_CARPENTER
 ON=0 Architect
-ADDNPC C_H_ARCHITECT
+ADD C_H_ARCHITECT
 
 [MENU M_ADDN_MSHOPO]
 Male Shopkeepers (Other)
 ON=0 Healer
-ADDNPC C_H_HEALER
+ADD C_H_HEALER
 ON=0 Jeweler
-ADDNPC C_H_JEWELER
+ADD C_H_JEWELER
 ON=0 MapMaker
-ADDNPC C_H_MAPMAKER
+ADD C_H_MAPMAKER
 ON=0 Animal Trainer
-ADDNPC C_H_ANIMALTRAINER
+ADD C_H_ANIMALTRAINER
 
 [MENU M_ADDN_MTOWN]
 Male Town Based
 ON=0 Banker
-ADDNPC C_H_BANKER
+ADD C_H_BANKER
 ON=0 Minter
-ADDNPC C_H_MINTER
+ADD C_H_MINTER
 ON=0 Town Crier
-ADDNPC C_H_TOWNCRIER
+ADD C_H_TOWNCRIER
 ON=0 Prisoner
-ADDNPC C_H_PRISONER
+ADD C_H_PRISONER
 ON=0 Thief
-ADDNPC C_H_THIEF
+ADD C_H_THIEF
 ON=0 Beggar
-ADDNPC C_H_BEGGER
+ADD C_H_BEGGER
 ON=0 Noble
-ADDNPC C_H_NOBLE
+ADD C_H_NOBLE
 ON=0 Mayor
-ADDNPC C_H_MAYOR
+ADD C_H_MAYOR
 ON=0 Gambler
-ADDNPC C_H_GAMBLER
+ADD C_H_GAMBLER
 ON=0 Judge
-ADDNPC C_H_JUDGE
+ADD C_H_JUDGE
 ON=0 Artist
-ADDNPC C_H_ARTIST
+ADD C_H_ARTIST
 ON=0 Sculptor
-ADDNPC C_H_SCULPTOR
+ADD C_H_SCULPTOR
 ON=0 Shipwright
-ADDNPC C_H_SHIPWRIGHT
+ADD C_H_SHIPWRIGHT
 ON=0 Veterinarian
-ADDNPC C_H_VET
+ADD C_H_VET
 ON=0 Glassblower
-ADDNPC C_H_GLASSBLOWER
+ADD C_H_GLASSBLOWER
 
 [MENU M_ADDN_MWILD]
 Male Wilderness & Town
 ON=0 Peasant
-ADDNPC C_H_PEASANT
+ADD C_H_PEASANT
 ON=0 Wandering Healer
-ADDNPC C_H_HEALER
+ADD C_H_HEALER
 ON=0 Sailor
-ADDNPC C_H_SAILOR
+ADD C_H_SAILOR
 ON=0 Fisherman
-ADDNPC C_H_FISHER
+ADD C_H_FISHER
 ON=0 Shepherd
-ADDNPC C_H_SHEPHERD
+ADD C_H_SHEPHERD
 ON=0 Bard
-ADDNPC C_H_BARD
+ADD C_H_BARD
 ON=0 Gypsy
-ADDNPC C_H_GYPSY
+ADD C_H_GYPSY
 ON=0 Actor
-ADDNPC C_H_ACTOR
+ADD C_H_ACTOR
 ON=0 Monk
-ADDNPC C_H_MONK
+ADD C_H_MONK
 ON=0 Rancher
-ADDNPC C_H_RANCHER
+ADD C_H_RANCHER
 ON=0 Miner
-ADDNPC C_H_MINER
+ADD C_H_MINER
 
 [MENU M_ADDN_MFIGHT]
 Male Fighters & Guards
 ON=0 Guard
-ADDNPC C_H_GUARD
+ADD C_H_GUARD
 ON=0 Jailor
-ADDNPC C_H_JAILOR
+ADD C_H_JAILOR
 ON=0 Mercenary
-ADDNPC C_H_MERCENARY
+ADD C_H_MERCENARY
 ON=0 Paladin
-ADDNPC C_H_PALADIN
+ADD C_H_PALADIN
 ON=0 Warrior
-ADDNPC C_H_WARRIOR
+ADD C_H_WARRIOR
 ON=0 Ranger
-ADDNPC C_H_RANGER
+ADD C_H_RANGER
 ON=0 Fighter
-ADDNPC C_H_FIGHTER
+ADD C_H_FIGHTER
 ON=0 Weapons Trainer
-ADDNPC C_H_WEAPONSTRAINER
+ADD C_H_WEAPONSTRAINER
 ON=0 Mage
-ADDNPC C_H_MAGE
+ADD C_H_MAGE
 
 [MENU M_ADDN_MEVIL]
 Male Evil (Player Killers)
 ON=0 Brigand
-ADDNPC C_H_BRIGAND
+ADD C_H_BRIGAND
 ON=0 Evil Mage
-ADDNPC C_H_EVILMAGE
+ADD C_H_EVILMAGE
 ON=0 Pirate
-ADDNPC C_H_PIRATE
+ADD C_H_PIRATE
 
 [MENU M_ADDN_FSHOP]
 Female Shopkeepers
@@ -1211,299 +1211,299 @@ MENU M_ADDN_FEM
 [MENU M_ADDN_FSHOPFOOD]
 Female Shopkeepers (food)
 ON=0 Butcher
-ADDNPC C_H_BUTCHER_F
+ADD C_H_BUTCHER_F
 ON=0 Baker
-ADDNPC C_H_BAKER_F
+ADD C_H_BAKER_F
 ON=0 Farmer
-ADDNPC C_H_FARMER_F
+ADD C_H_FARMER_F
 ON=0 Innkeeper
-ADDNPC C_H_INNKEEPER_F
+ADD C_H_INNKEEPER_F
 ON=0 Cook
-ADDNPC C_H_COOK_F
+ADD C_H_COOK_F
 ON=0 Waitress
-ADDNPC C_H_WAITRESS
+ADD C_H_WAITRESS
 ON=0 Miller
-ADDNPC C_H_MILLER_F
+ADD C_H_MILLER_F
 ON=0 Beekeeper
-ADDNPC C_H_BEEKEEPER_F
+ADD C_H_BEEKEEPER_F
 ON=0 Tavernkeeper
-ADDNPC C_H_TAVERNKEEPER_F
+ADD C_H_TAVERNKEEPER_F
 ON=0 PREVIOUS MENU
 MENU M_ADDN_FSHOP
 
 [MENU M_ADDN_FSHOPCLOTH]
 Female Shopkeepers (cloths)
 ON=0 Cobbler
-ADDNPC C_H_COBBLER_F
+ADD C_H_COBBLER_F
 ON=0 Tailor
-ADDNPC C_H_TAILOR_F
+ADD C_H_TAILOR_F
 ON=0 Tanner
-ADDNPC C_H_TANNER_F
+ADD C_H_TANNER_F
 ON=0 Weaver
-ADDNPC C_H_WEAVER_F
+ADD C_H_WEAVER_F
 ON=0 Fur Trader
-ADDNPC C_H_FURTRADER_F
+ADD C_H_FURTRADER_F
 ON=0 PREVIOUS MENU
 MENU M_ADDN_FSHOP
 
 [MENU M_ADDN_FSHOPCOMB]
 Female Shopkeepers (Combat)
 ON=0 Blacksmith
-ADDNPC C_H_BLACKSMITH_F
+ADD C_H_BLACKSMITH_F
 ON=0 Weaponsmith (bladed)
-ADDNPC C_H_WEAPONSMITH_BLADE_F
+ADD C_H_WEAPONSMITH_BLADE_F
 ON=0 Weaponsmith (blunt)
-ADDNPC C_H_WEAPONSMITH_BLUNT_F
+ADD C_H_WEAPONSMITH_BLUNT_F
 ON=0 Armorer
-ADDNPC C_H_ARMORER_F
+ADD C_H_ARMORER_F
 ON=0 Bowyer
-ADDNPC C_H_BOWYER_F
+ADD C_H_BOWYER_F
 ON=0 PREVIOUS MENU
 MENU M_ADDN_FSHOP
 
 [MENU M_ADDN_FSHOPMAG]
 Female Shopkeepers (Magery)
 ON=0 Mage
-ADDNPC C_H_MAGESHOP_F
+ADD C_H_MAGESHOP_F
 ON=0 Alchemist
-ADDNPC C_H_ALCHEMIST_F
+ADD C_H_ALCHEMIST_F
 ON=0 Herbalist
-ADDNPC C_H_HERBALIST_F
+ADD C_H_HERBALIST_F
 ON=0 Scribe
-ADDNPC C_H_SCRIBE_F
+ADD C_H_SCRIBE_F
 ON=0 PREVIOUS MENU
 MENU M_ADDN_FSHOP
 
 [MENU M_ADDN_FSHOPEQ]
 Female Shopkeepers (Equip)
 ON=0 Provisioner
-ADDNPC C_H_PROVIS_F
+ADD C_H_PROVIS_F
 ON=0 Tinker
-ADDNPC C_H_TINKER_F
+ADD C_H_TINKER_F
 ON=0 Carpenter
-ADDNPC C_H_CARPENTER_F
+ADD C_H_CARPENTER_F
 ON=0 Architect
-ADDNPC C_H_ARCHITECT_F
+ADD C_H_ARCHITECT_F
 ON=0 PREVIOUS MENU
 MENU M_ADDN_FSHOP
 
 [MENU M_ADDN_FSHOPO]
 Female Shopkeepers (Other)
 ON=0 Healer
-ADDNPC C_H_HEALER_F
+ADD C_H_HEALER_F
 ON=0 Jeweler
-ADDNPC C_H_JEWELER_F
+ADD C_H_JEWELER_F
 ON=0 MapMaker
-ADDNPC C_H_MAPMAKER_F
+ADD C_H_MAPMAKER_F
 ON=0 Animal Trainer
-ADDNPC C_H_ANIMALTRAINER_F
+ADD C_H_ANIMALTRAINER_F
 ON=0 PREVIOUS MENU
 MENU M_ADDN_FSHOP
 
 [MENU M_ADDN_FTOWN]
 Female Town Based
 ON=0 Banker
-ADDNPC C_H_BANKER_F
+ADD C_H_BANKER_F
 ON=0 Minter
-ADDNPC C_H_MINTER_F
+ADD C_H_MINTER_F
 ON=0 Town Crier
-ADDNPC C_H_TOWNCRIER_F
+ADD C_H_TOWNCRIER_F
 ON=0 Prisoner
-ADDNPC C_H_PRISONER_F
+ADD C_H_PRISONER_F
 ON=0 Thief
-ADDNPC C_H_THIEF_F
+ADD C_H_THIEF_F
 ON=0 Beggar
-ADDNPC C_H_BEGGER_F
+ADD C_H_BEGGER_F
 ON=0 Noble
-ADDNPC C_H_NOBLE_F
+ADD C_H_NOBLE_F
 ON=0 Mayor
-ADDNPC C_H_MAYOR_F
+ADD C_H_MAYOR_F
 ON=0 Gambler
-ADDNPC C_H_GAMBLER_F
+ADD C_H_GAMBLER_F
 ON=0 Judge
-ADDNPC C_H_JUDGE_F
+ADD C_H_JUDGE_F
 ON=0 Artist
-ADDNPC C_H_ARTIST_F
+ADD C_H_ARTIST_F
 ON=0 Sculptor
-ADDNPC C_H_SCULPTOR_F
+ADD C_H_SCULPTOR_F
 ON=0 Shipwright
-ADDNPC C_H_SHIPWRIGHT_F
+ADD C_H_SHIPWRIGHT_F
 ON=0 Veterinarian
-ADDNPC C_H_VET_F
+ADD C_H_VET_F
 ON=0 Glassblower
-ADDNPC C_H_GLASSBLOWER_F
+ADD C_H_GLASSBLOWER_F
 ON=0 PREVIOUS MENU
 MENU M_ADDN_FSHOP
 
 [MENU M_ADDN_FWILD]
 Female Wilderness & Town
 ON=0 Peasant
-ADDNPC C_H_PEASANT_F
+ADD C_H_PEASANT_F
 ON=0 Wandering Healer
-ADDNPC C_H_HEAL_WANDER_F
+ADD C_H_HEAL_WANDER_F
 ON=0 Sailor
-ADDNPC C_H_SAILOR_F
+ADD C_H_SAILOR_F
 ON=0 Fisherwoman
-ADDNPC C_H_FISHER_F
+ADD C_H_FISHER_F
 ON=0 Shepherd
-ADDNPC C_H_SHEPHERD_F
+ADD C_H_SHEPHERD_F
 ON=0 Bard
-ADDNPC C_H_BARD_F
+ADD C_H_BARD_F
 ON=0 Gypsy
-ADDNPC C_H_GYPSY_F
+ADD C_H_GYPSY_F
 ON=0 Actress
-ADDNPC C_H_ACTOR_F
+ADD C_H_ACTOR_F
 ON=0 Monk
-ADDNPC C_H_MONK_F
+ADD C_H_MONK_F
 ON=0 Rancher
-ADDNPC C_H_RANCHER_F
+ADD C_H_RANCHER_F
 ON=0 Miner
-ADDNPC C_H_MINER_F
+ADD C_H_MINER_F
 ON=0 PREVIOUS MENU
 MENU M_ADDN_FSHOP
 
 [MENU M_ADDN_FFIGHT]
 Female Fighters & Guards
 ON=0 Guard
-ADDNPC C_H_GUARD
+ADD C_H_GUARD
 ON=0 Jailor
-ADDNPC C_H_JAILOR
+ADD C_H_JAILOR
 ON=0 Mercenary
-ADDNPC C_H_MERCENARY
+ADD C_H_MERCENARY
 ON=0 Paladin
-ADDNPC C_H_PALADIN
+ADD C_H_PALADIN
 ON=0 Warrior
-ADDNPC C_H_WARRIOR
+ADD C_H_WARRIOR
 ON=0 Ranger
-ADDNPC C_H_RANGER
+ADD C_H_RANGER
 ON=0 Fighter
-ADDNPC C_H_FIGHTER
+ADD C_H_FIGHTER
 ON=0 Weapons Trainer
-ADDNPC C_H_WEAPONSTRAINER
+ADD C_H_WEAPONSTRAINER
 ON=0 Mage
-ADDNPC C_H_MAGE
+ADD C_H_MAGE
 ON=0 PREVIOUS MENU
 MENU M_ADDN_FSHOP
 
 [MENU M_ADDN_FEVIL]
 Female Evil (Player Killers)
 ON=0 Brigand
-ADDNPC C_H_BRIGAND_F
+ADD C_H_BRIGAND_F
 ON=0 Evil Mage
-ADDNPC C_H_EVILMAGE_F
+ADD C_H_EVILMAGE_F
 ON=0 Pirate
-ADDNPC C_H_PIRATE_F
+ADD C_H_PIRATE_F
 ON=0 PREVIOUS MENU
 MENU M_ADDN_FSHOP
 
 [MENU M_ADDN_WILD_FOR]
 Wild Animals (Forest & Jungle)
 ON=0 Brown Bear
-ADDNPC c_bear_brown
+ADD c_bear_brown
 ON=0 Black Bear
-ADDNPC c_a_black_bear
+ADD c_a_black_bear
 ON=0 Grizzly Bear
-ADDNPC c_Bear_Grizzly
+ADD c_Bear_Grizzly
 ON=0 Cougar
-ADDNPC c_a_cougar
+ADD c_a_cougar
 ON=0 Panther
-ADDNPC c_panther
+ADD c_panther
 ON=0 Deer (Hind)
-ADDNPC c_DOE
+ADD c_DOE
 ON=0 Deer (Hart)
-ADDNPC c_stag
+ADD c_stag
 ON=0 Mountain Goat
-ADDNPC c_a_mountain_goat
+ADD c_a_mountain_goat
 ON=0 Boar
-ADDNPC c_pig_big
+ADD c_pig_big
 ON=0 Rabbit
-ADDNPC c_rabbit
+ADD c_rabbit
 ON=0 Jackrabbit
-ADDNPC c_a_jackrabbit
+ADD c_a_jackrabbit
 ON=0 Rat
-ADDNPC c_rat
+ADD c_rat
 ON=0 Sewer Rat
-ADDNPC c_a_rat_sewer
+ADD c_a_rat_sewer
 ON=0 Grey Wolf
-ADDNPC c_a_wolf_gray
+ADD c_a_wolf_gray
 ON=0 Timber Wolf
-ADDNPC c_wolf
+ADD c_wolf
 ON=0 Gorilla
-ADDNPC c_GORILLA
+ADD c_GORILLA
 ON=0 PREVIOUS MENU
 MENU M_ADDN_WILD
 
 [MENU M_ADDN_WILD_SWAMP]
 Wild Animals (Swamp)
 ON=0 Alligator
-ADDNPC c_ALLIGATOR
+ADD c_ALLIGATOR
 ON=0 Snake
-ADDNPC c_SNAKE
+ADD c_SNAKE
 ON=0 PREVIOUS MENU
 MENU M_ADDN_WILD
 
 [MENU M_ADDN_WILD_NOR]
 Wild Animals (Northern)
 ON=0 Polar Bear
-ADDNPC c_BEAR_POLAR
+ADD c_BEAR_POLAR
 ON=0 Snow Leopard
-ADDNPC C_A_SNOW_LEOPARD
+ADD C_A_SNOW_LEOPARD
 ON=0 White Wolf
-ADDNPC C_A_WOLF_WHITE
+ADD C_A_WOLF_WHITE
 ON=0 PREVIOUS MENU
 MENU M_ADDN_WILD
 
 [MENU M_ADDN_WILD_SEA]
 Wild Animals (Sea)
 ON=i_pet_dolphin Dolphin
-ADDNPC c_DOLPHIN
+ADD c_DOLPHIN
 ON=i_pet_walrus Walrus
-ADDNPC c_WALRUS
+ADD c_WALRUS
 ON=i_hand_7 PREVIOUS MENU
 MENU M_ADDN_WILD
 
 [MENU M_ADDN_WILD_FLY]
 Wild Animals (Flying)
 ON=0 Bird
-ADDNPC c_BIRD
+ADD c_BIRD
 ON=0 Tropical Bird
-ADDNPC C_BIRD_TROPICAL
+ADD C_BIRD_TROPICAL
 ON=0 Crow
-ADDNPC C_BIRD_CROW
+ADD C_BIRD_CROW
 ON=0 Raven
-ADDNPC C_BIRD_RAVEN
+ADD C_BIRD_RAVEN
 ON=0 Magpie
-ADDNPC C_BIRD_MAGPIE
+ADD C_BIRD_MAGPIE
 ON=0 Eagle
-ADDNPC c_EAGLE
+ADD c_EAGLE
 ON=0 Chicken
-ADDNPC c_CHICKEN
+ADD c_CHICKEN
 
 [MENU M_ADDN_T2A_ICE]
 T2A Ice Creatures & Ostards
 ON=0 Ice Elemental
-ADDNPC c_elem_ice
+ADD c_elem_ice
 ON=0 Snow Elemental
-ADDNPC c_elem_ice
+ADD c_elem_ice
 ON=0 Ice Fiend
-ADDNPC c_ICEFIEND
+ADD c_ICEFIEND
 ON=0 Ice Snake
-ADDNPC c_ice_snake
+ADD c_ice_snake
 ON=0 Oclock (Desert Ostard)
-ADDNPC c_OSTARD_DESERT
+ADD c_OSTARD_DESERT
 ON=0 Zostrich (Frenzied Ostard)
-ADDNPC c_OSTARD_ZOSTRICH
+ADD c_OSTARD_ZOSTRICH
 ON=0 Orn (Forest Ostard)
-ADDNPC c_OSTARD_Forest
+ADD c_OSTARD_Forest
 ON=0 PREVIOUS MENU
 MENU M_ADDN_T2A
 
 [MENU M_ADDN_WYRM]
 T2A Creatures (Wyrm & Wyvern)
 ON=0 White Wyrm
-ADDNPC c_dragon_ice
+ADD c_dragon_ice
 ON=0 Wyvern
-ADDNPC c_wyvern
+ADD c_wyvern
 ON=0 PREVIOUS MENU
 MENU M_ADDN_T2A
 

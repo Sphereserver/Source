@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Thursday, Jun 25, 2015
+// FILE LAST UPDATED: Monday, Jun 29, 2015
 //
 VERSION=0.56c
 
@@ -640,16 +640,6 @@ EMOTE_DEF_UNICODE	0
 //npc_vendor_sell_ty			"Here you are, %d gold coin%s. I thank thee for thy business."
 //non_alive						"That does not appear to be a living being."
 //npc_banker_deposit			"I shall deposit %d gold in your account"
-//npc_beggar_beg_1				"Could thou spare a few coins?"
-//npc_beggar_beg_2				"I have a family to feed, think of the children."
-//npc_beggar_beg_3				"Can you spare any gold?"
-//npc_beggar_beg_4				"I have children to feed."
-//npc_beggar_beg_5				"I haven't eaten in days."
-//npc_beggar_beg_6				"Please? Just a few coins."
-//npc_beggar_food_tal			"Thank thee! Now I can feed my children!"
-//npc_beggar_food_ty			"Mmm thank you. I was very hungry."
-//npc_beggar_ifonly				"If only others were as kind as you."
-//npc_beggar_sell				"I'll sell this for gold! Thank thee!"
 //npc_generic_crim				"Help! Guards a Criminal!"
 //npc_generic_dontwant			"They don't appear to want the item"
 //npc_generic_gone_1			"Well it was nice speaking to you %s but I must go about my business"
@@ -767,7 +757,6 @@ EMOTE_DEF_UNICODE	0
 //npc_vendor_nomoney1			"Begging thy pardon, but thou canst not afford that."
 //npc_vendor_nothing_buy   		"You have nothing I'm interested in"
 //npc_vendor_nothing_sell 		"Sorry I have nothing of interest to you."
-//npc_vendor_offduty			"Sorry, I'm currently off-duty. Come back when my shop is open."
 //npc_vendor_cantreach			"You can't reach the Vendor"
 //npc_vendor_s1					"That is %lld gold coin%s worth of goods."
 //npc_vendor_setprice_1			"Setting price of %s to %d"

@@ -2419,3 +2419,11 @@ Changed: Huge optimization on NPC_AI_EXTRA code. This is a heavy code called tho
 	-Vendors won't go off-duty (brain_vendor_offduty) at night time anymore.
 	PS: If someone still need these features, it can be done by scripts using @NPCAction trigger or at BUY/SELL functions on file /speech/speakshopkeep.scp
 [sphere_msgs.scp]: Removed messages 'animal_dung' and 'npc_animal_poop'.
+
+29-06-2015, Coruja
+[sphere_defs.scp]: Removed 'brain_beggar', 'brain_thief', 'brain_undead' and 'brain_vendor_offduty'. Unfortunately these NPC brains never had worked correctly so it won't make much difference if they got removed to clean some obsolete internal codes.
+[sphere_msgs.scp]: Removed messages 'npc_beggar_*' and 'npc_vendor_offduty'.
+[speakhuman.scp]: Changed a single 'brain_thief' line to 'brain_animal_trainer' brain check on train command to match these brain changes [brain_thief -> brain_animal_trainer]
+[sphere_backward_compatibility.scp]: Added backward compatibility to these 4 removed NPC brains.
+[sphere_skills.scp]: Added (<ISPLAYER>) check on Tracking skill to prevent console error when an NPC try to use this skill.
+[sphere_menu.scp]: Updated all obsolete ADDITEM and ADDNPC lines to ADD.

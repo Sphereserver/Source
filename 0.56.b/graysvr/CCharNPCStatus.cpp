@@ -525,8 +525,7 @@ int CChar::NPC_WantThisItem( CItem * pItem ) const
 			return( pItemSell->GetVendorPrice(0) );
 	}
 
-	bool bWantGold = ((( m_pNPC->m_Brain >= NPCBRAIN_HUMAN ) && ( m_pNPC->m_Brain <= NPCBRAIN_THIEF )) ||
-						( m_pNPC->m_Brain == NPCBRAIN_VENDOR_OFFDUTY ));
+	bool bWantGold = (( m_pNPC->m_Brain >= NPCBRAIN_HUMAN ) && ( m_pNPC->m_Brain <= NPCBRAIN_STABLE ));
 
 	//	I need for gold
 	if ( bWantGold )
@@ -771,12 +770,10 @@ int CChar::NPC_GetAttackContinueMotivation( CChar * pChar, int iMotivation ) con
 
 	if ( pChar->IsStatFlag( STATF_DEAD | STATF_INVUL | STATF_Stone ))
 		return( -100 );
-
+	if ( m_pNPC->m_Brain == NPCBRAIN_GUARD )
+		return( 100 );
 	if ( m_pNPC->m_Brain == NPCBRAIN_BERSERK )
-	{
-		// Less interested the further away they are.
-		return( iMotivation + 80 - GetDist( pChar ));
-	}
+		return( iMotivation + 80 - GetDist( pChar ));	// less interested the further away they are
 
 	// Try to stay on one target.
 	if ( Fight_IsActive() && m_Act_Targ == pChar->GetUID())
@@ -785,17 +782,8 @@ int CChar::NPC_GetAttackContinueMotivation( CChar * pChar, int iMotivation ) con
 	// Less interested the further away they are.
 	iMotivation -= GetDist( pChar );
 
-	// Undead are fearless.
-	if ( m_pNPC->m_Brain == NPCBRAIN_UNDEAD	|| m_pNPC->m_Brain == NPCBRAIN_GUARD )
-	{
-		iMotivation += 90;
+	if ( !g_Cfg.m_fMonsterFear )
 		return( iMotivation );
-	}
-
-	if ( ! g_Cfg.m_fMonsterFear )
-	{
-		return( iMotivation );
-	}
 
 	// I'm just plain stronger.
 	iMotivation += ( Stat_GetAdjusted(STAT_STR) - pChar->Stat_GetAdjusted(STAT_STR));

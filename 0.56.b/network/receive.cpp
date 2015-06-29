@@ -745,7 +745,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 		return true;
 
 	CChar* vendor = vendorSerial.CharFind();
-	if (vendor == NULL || vendor->m_pNPC == NULL || (!vendor->NPC_IsVendor() && vendor->m_pNPC->m_Brain != NPCBRAIN_VENDOR_OFFDUTY))
+	if (vendor == NULL || vendor->m_pNPC == NULL || !vendor->NPC_IsVendor())
 	{
 		client->Event_VendorBuy_Cheater(0x1);
 		return true;
@@ -754,13 +754,6 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 	if (buyer->CanTouch(vendor) == false)
 	{
 		client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTREACH));
-		return true;
-	}
-
-	if (vendor->m_pNPC->m_Brain == NPCBRAIN_VENDOR_OFFDUTY) // cheaters
-	{
-		vendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_OFFDUTY));
-		client->Event_VendorBuy_Cheater(0x2);
 		return true;
 	}
 
@@ -794,7 +787,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 		item = dynamic_cast<CItemVendable*>(serial.ItemFind());
 		if (item == NULL || item->IsValidSaleItem(true) == false)
 		{
-			client->Event_VendorBuy_Cheater(0x3);
+			client->Event_VendorBuy_Cheater(0x2);
 			return true;
 		}
 
@@ -816,7 +809,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 		if (items[index].m_price <= 0)
 		{
 			vendor->Speak("Alas, I don't have these goods currently stocked. Let me know if there is something else thou wouldst buy.");
-			client->Event_VendorBuy_Cheater(0x4);
+			client->Event_VendorBuy_Cheater(0x3);
 			return true;
 		}
 	}
@@ -1878,7 +1871,7 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 	size_t itemCount = readInt16();
 
 	CChar* vendor = vendorSerial.CharFind();
-	if (vendor == NULL || vendor->m_pNPC == NULL || (!vendor->NPC_IsVendor() && vendor->m_pNPC->m_Brain != NPCBRAIN_VENDOR_OFFDUTY))
+	if (vendor == NULL || vendor->m_pNPC == NULL || !vendor->NPC_IsVendor())
 	{
 		client->Event_VendorBuy_Cheater(0x1);
 		return true;
@@ -1887,13 +1880,6 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 	if (seller->CanTouch(vendor) == false)
 	{
 		client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTREACH));
-		return true;
-	}
-
-	if (vendor->m_pNPC->m_Brain == NPCBRAIN_VENDOR_OFFDUTY) // cheaters
-	{
-		vendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_OFFDUTY));
-		client->Event_VendorBuy_Cheater(0x2);
 		return true;
 	}
 

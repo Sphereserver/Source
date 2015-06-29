@@ -606,8 +606,7 @@ NPCBRAIN_TYPE CChar::GetNPCBrain( bool fDefault ) const
 
 	if ( m_pNPC && fDefault )
 	{
-		if ((( m_pNPC->m_Brain >= NPCBRAIN_HUMAN ) && ( m_pNPC->m_Brain <= NPCBRAIN_THIEF )) ||
-			( m_pNPC->m_Brain == NPCBRAIN_VENDOR_OFFDUTY ))
+		if (( m_pNPC->m_Brain >= NPCBRAIN_HUMAN ) && ( m_pNPC->m_Brain <= NPCBRAIN_STABLE ))
 			return NPCBRAIN_HUMAN;
 
 		return m_pNPC->m_Brain;
@@ -632,10 +631,6 @@ NPCBRAIN_TYPE CChar::GetNPCBrain( bool fDefault ) const
 				case CREID_SWAMP_DRAGON1:
 				case CREID_SWAMP_DRAGON2:
 					return NPCBRAIN_DRAGON;
-
-				case CREID_SHADE:
-				case CREID_MUMMY:
-					return NPCBRAIN_UNDEAD;
 
 				default:
 					return NPCBRAIN_MONSTER;
