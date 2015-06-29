@@ -408,11 +408,11 @@ bool CResourceDef::SetResourceName( LPCTSTR pszName )
 
 		if ( RES_GET_INDEX(pVarKey->GetValNum()) == GetResourceID().GetResIndex())
 		{
-			DEBUG_WARN(( "The DEFNAME=%s has a strange type mismatch? 0%x!=0%lx\n", pszName, pVarKey->GetValNum(), GetResourceID().GetPrivateUID() ));
+			DEBUG_WARN(( "The DEFNAME=%s has a strange type mismatch? 0%llx!=0%lx\n", pszName, pVarKey->GetValNum(), GetResourceID().GetPrivateUID() ));
 		}
 		else
 		{
-			DEBUG_WARN(( "The DEFNAME=%s already exists! 0%x!=0%lx\n", pszName, RES_GET_INDEX(pVarKey->GetValNum()), GetResourceID().GetResIndex() ));
+			DEBUG_WARN(( "The DEFNAME=%s already exists! 0%llx!=0%x\n", pszName, RES_GET_INDEX(pVarKey->GetValNum()), GetResourceID().GetResIndex() ));
 		}
 
 		iVarNum = g_Exp.m_VarDefs.SetNum( pszName, GetResourceID().GetPrivateUID() );

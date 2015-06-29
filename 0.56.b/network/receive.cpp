@@ -3337,7 +3337,7 @@ bool PacketWheelBoatMove::onReceive(NetState* net)
 		else
 		{
 #ifdef _DEBUG
-			g_Log.EventDebug("Boat move request failed. Boat not found on character ('%s' %lx) position",
+			g_Log.EventDebug("Boat move request failed. Boat not found on character ('%s' %x) position",
 				static_cast<LPCTSTR>(character->GetName()), character->GetUID());
 #endif
 			return false;
@@ -3345,7 +3345,7 @@ bool PacketWheelBoatMove::onReceive(NetState* net)
 	}
 
 #ifdef _DEBUG
-	g_Log.EventDebug("Character ('%s' %lx) moving boat (%lx)\n",
+	g_Log.EventDebug("Character ('%s' %x) moving boat (%x)\n",
 		static_cast<LPCTSTR>(character->GetName()), character->GetUID(), pShipItem->GetUID());
 #endif
 

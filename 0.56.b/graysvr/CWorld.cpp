@@ -1546,7 +1546,7 @@ bool CWorld::Save( bool fForceImmediate ) // Save world state
 #endif
 
 #ifdef _DEBUG 
-			g_Log.EventDebug("Flushing %d client(s) output data...\n", g_Serv.StatGet(SERV_STAT_CLIENTS));
+			g_Log.EventDebug("Flushing %lu client(s) output data...\n", g_Serv.StatGet(SERV_STAT_CLIENTS));
 #endif
 
 #ifndef _MTNETWORK

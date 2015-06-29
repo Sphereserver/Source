@@ -177,9 +177,8 @@ class CDataBase;
 //	Triggers list
 enum E_TRIGGERS
 {
-	#define ADD(a,b) TRIGGER_##a,
+	#define ADD(a) TRIGGER_##a,
 	#include "../tables/triggers.tbl"
-	#undef ADD
 	TRIGGER_QTY,
 };
 
