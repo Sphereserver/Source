@@ -3550,7 +3550,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		}
 	}
 
-	INT64 iTime = Fight_GetWeaponSwingTimer();;
+	INT64 iTime = Fight_GetWeaponSwingTimer();
 	if ( !pCharTarg || ( pCharTarg == this ) )
 		return WAR_SWING_INVALID;
 

@@ -610,6 +610,7 @@ CSpellDef::CSpellDef( SPELL_TYPE id ) :
 	m_idEffect = ITEMID_NOTHING;
 	m_idLayer = LAYER_NONE;
 	m_wManaUse = 0;
+	m_wTithingUse = 0;
 	m_CastTime.Init();
 	m_Interrupt.Init();
 	m_Interrupt.m_aiValues.SetCount( 1 );

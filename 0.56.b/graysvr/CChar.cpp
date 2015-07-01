@@ -3277,7 +3277,7 @@ bool CChar::r_Load( CScript & s ) // Load a character from script
 
 	// Make sure everything is ok.
 	if (( m_pPlayer && ! IsClient()) ||
-		( m_pNPC && IsStatFlag( STATF_DEAD | STATF_Ridden )))	// dead npc
+		( m_pNPC && IsStatFlag( STATF_Ridden )))	// ridden npc
 	{
 		SetDisconnected();
 	}
