@@ -1552,17 +1552,6 @@ void CClient::Event_PromptResp( LPCTSTR pszText, size_t len, DWORD context1, DWO
 			pszPrefix = g_Cfg.GetDefaultMsg(DEFMSG_STONE_FOR);
 			break;
 
-		case CLIMODE_PROMPT_STONE_SET_ABBREV:
-			pszReName = "Abbreviation";
-			pszPrefix = "";
-			break;
-
-		case CLIMODE_PROMPT_STONE_GRANT_TITLE:
-		case CLIMODE_PROMPT_STONE_SET_TITLE:
-			pszReName = "Title";
-			pszPrefix = "";
-			break;
-
 		case CLIMODE_PROMPT_TARG_VERB:
 			// Send a msg to the pre-tergetted player. "ETARGVERB"
 			// m_Prompt_Uid = the target.

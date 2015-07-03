@@ -682,83 +682,73 @@ public:
 
 enum CLIMODE_TYPE	// What mode is the client to server connection in ? (waiting for input ?)
 {
-	// setup events ------------------------------------------------
-
+	// Setup events ------------------------------------------------------------------
 	CLIMODE_SETUP_CONNECTING,
-	CLIMODE_SETUP_SERVERS,		// client has received the servers list.
-	CLIMODE_SETUP_RELAY,		// client has been relayed to the game server. wait for new login.
-	CLIMODE_SETUP_CHARLIST,	// client has the char list and may (play a char, delete a char, create a new char)
+	CLIMODE_SETUP_SERVERS,			// client has received the servers list
+	CLIMODE_SETUP_RELAY,			// client has been relayed to the game server. wait for new login
+	CLIMODE_SETUP_CHARLIST,			// client has the char list and may (select char, delete char, create new char)
 
-	// Capture the user input for this mode. ------------------------------------------
-	CLIMODE_NORMAL,		// No targetting going on. we are just walking around etc.
+	// Capture the user input for this mode  -----------------------------------------
+	CLIMODE_NORMAL,					// No targeting going on, we are just walking around, etc
 
-	// asyc events enum here. --------------------------------------------------------
-	CLIMODE_DRAG,			// I'm dragging something. (not quite a targeting but similar)
-	CLIMODE_DEATH,			// The death menu is up.
-	CLIMODE_DYE,			// The dye dialog is up.
-	CLIMODE_INPVAL,		// special text input dialog (for setting item attrib)
+	// Asyc events enum here  --------------------------------------------------------
+	CLIMODE_DRAG,					// I'm dragging something (not quite a targeting but similar)
+	CLIMODE_DYE,					// the dye dialog is up and I'm targeting something to dye
+	CLIMODE_INPVAL,					// special text input dialog (for setting item attrib)
 
 	// Some sort of general gump dialog ----------------------------------------------
-	CLIMODE_DIALOG,		// from RES_DIALOG
+	CLIMODE_DIALOG,					// from RES_DIALOG
 
-	// Hard-coded (internal) gumps.
-	CLIMODE_DIALOG_ADMIN,
-	CLIMODE_DIALOG_GUILD,	// reserved.
-	CLIMODE_DIALOG_HAIR_DYE, // Using hair dye // Not used anymore
-	CLIMODE_DIALOG_TOME,
+	// Hard-coded (internal) dialogs
 	CLIMODE_DIALOG_VIRTUE = 0x1CD,
 
-	// Making a selection from a menu. ----------------------------------------------
-	CLIMODE_MENU,		// RES_MENU
+	// Making a selection from a menu  -----------------------------------------------
+	CLIMODE_MENU,					// from RES_MENU
 
-	// Hard-coded (internal) menus.
-	CLIMODE_MENU_SKILL,		// result of some skill. tracking, tinkering, blacksmith, etc.
+	// Hard-coded (internal) menus
+	CLIMODE_MENU_SKILL,				// result of some skill (tracking, tinkering, blacksmith, etc)
 	CLIMODE_MENU_SKILL_TRACK_SETUP,
 	CLIMODE_MENU_SKILL_TRACK,
-	CLIMODE_MENU_GM_PAGES,		// show me the gm pages .
-	CLIMODE_MENU_EDIT,		// edit the contents of a container.
+	CLIMODE_MENU_GM_PAGES,			// open gm pages list
+	CLIMODE_MENU_EDIT,				// edit the contents of a container
 
-	// promting for text input.------------------------------------------------------
-	//CLIMODE_PROMPT,					// Some sort of text prompt input.
+	// Prompting for text input ------------------------------------------------------
 	CLIMODE_PROMPT_NAME_RUNE,
-	CLIMODE_PROMPT_NAME_KEY,		// naming a key.
-	CLIMODE_PROMPT_NAME_SIGN,		// name a house sign
+	CLIMODE_PROMPT_NAME_KEY,		// naming a key
+	CLIMODE_PROMPT_NAME_SIGN,		// naming a house sign
 	CLIMODE_PROMPT_NAME_SHIP,
-	CLIMODE_PROMPT_GM_PAGE_TEXT,	// allowed to enter text for page.
-	CLIMODE_PROMPT_VENDOR_PRICE,	// What would you like the price to be ?
-	CLIMODE_PROMPT_TARG_VERB,		// Send a msg to another player.
-	CLIMODE_PROMPT_SCRIPT_VERB,		// Script verb
-	CLIMODE_PROMPT_STONE_NAME,		// prompt for text.
-	CLIMODE_PROMPT_STONE_SET_ABBREV,
-	CLIMODE_PROMPT_STONE_SET_TITLE,
-	CLIMODE_PROMPT_STONE_GRANT_TITLE,
+	CLIMODE_PROMPT_GM_PAGE_TEXT,	// allowed to enter text for GM page
+	CLIMODE_PROMPT_VENDOR_PRICE,	// what would you like the price to be?
+	CLIMODE_PROMPT_TARG_VERB,		// send message to another player
+	CLIMODE_PROMPT_SCRIPT_VERB,		// script verb
+	CLIMODE_PROMPT_STONE_NAME,		// prompt for text
 
-	// Targetting mouse cursor. -------------------------------------------------------------
-	CLIMODE_MOUSE_TYPE,	// Greater than this = mouse type targetting.
+	// Targeting mouse cursor  -------------------------------------------------------
+	CLIMODE_MOUSE_TYPE,				// greater than this = mouse type targeting
 
-	// GM targetting command stuff.
-	CLIMODE_TARG_OBJ_SET,		// Set some attribute of the item i will show.
-	CLIMODE_TARG_OBJ_INFO,		// what item do i want props for ?
+	// GM targeting command stuff
+	CLIMODE_TARG_OBJ_SET,			// set some attribute of the item I will show
+	CLIMODE_TARG_OBJ_INFO,			// what item do I want props for?
 	CLIMODE_TARG_OBJ_FUNC,
 
-	CLIMODE_TARG_UNEXTRACT,		// Break out Multi items
-	CLIMODE_TARG_ADDITEM,		// "ADDITEM" command.
-	CLIMODE_TARG_LINK,			// "LINK" command
-	CLIMODE_TARG_TILE,			// "TILE" command.
+	CLIMODE_TARG_UNEXTRACT,			// break out multi items
+	CLIMODE_TARG_ADDITEM,			// "ADDITEM" command
+	CLIMODE_TARG_LINK,				// "LINK" command
+	CLIMODE_TARG_TILE,				// "TILE" command
 
-	// Normal user stuff. (mouse targetting)
-	CLIMODE_TARG_SKILL,				// targeting a skill or spell.
+	// Normal user stuff  (mouse targeting)
+	CLIMODE_TARG_SKILL,				// targeting a skill or spell
 	CLIMODE_TARG_SKILL_MAGERY,
 	CLIMODE_TARG_SKILL_HERD_DEST,
 	CLIMODE_TARG_SKILL_POISON,
 	CLIMODE_TARG_SKILL_PROVOKE,
 
 	CLIMODE_TARG_USE_ITEM,			// target for using the selected item
-	CLIMODE_TARG_PET_CMD,			// targetted pet command
-	CLIMODE_TARG_PET_STABLE,		// Pick a creature to stable.
-	CLIMODE_TARG_REPAIR,		// attempt to repair an item.
-	CLIMODE_TARG_STONE_RECRUIT,		// Recruit members for a stone	(mouse select)
-	CLIMODE_TARG_STONE_RECRUITFULL,	// Recruit/make a member and set abbrev show
+	CLIMODE_TARG_PET_CMD,			// targeted pet command
+	CLIMODE_TARG_PET_STABLE,		// pick a creature to stable
+	CLIMODE_TARG_REPAIR,			// attempt to repair an item
+	CLIMODE_TARG_STONE_RECRUIT,		// recruit members for a stone (mouse select)
+	CLIMODE_TARG_STONE_RECRUITFULL,	// recruit/make a member and set abbrev show
 	CLIMODE_TARG_PARTY_ADD,
 
 	CLIMODE_TARG_QTY
