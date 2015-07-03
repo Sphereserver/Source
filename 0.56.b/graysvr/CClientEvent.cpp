@@ -745,20 +745,6 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 	if ( m_pChar == NULL )
 		return TRIGRET_RET_FALSE;
 
-	// Movement whilst freeze-on-cast enabled is not allowed
-	if ( IsSetMagicFlags( MAGICF_FREEZEONCAST ) && g_Cfg.IsSkillFlag(m_pChar->m_Act_SkillCurrent, SKF_MAGIC) )
-	{
-		const CSpellDef* pSpellDef = g_Cfg.GetSpellDef(m_pChar->m_atMagery.m_Spell);
-		if (pSpellDef != NULL && !pSpellDef->IsSpellType(SPELLFLAG_NOFREEZEONCAST))
-		{
-			SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_MSG_FROZEN ) );
-			return TRIGRET_RET_FALSE;
-		}
-	}
-
-	if ( m_pChar->OnFreezeCheck() )
-		return TRIGRET_RET_FALSE;
-
 	m_timeLastEventWalk = CServTime::GetCurrentTime();
 
 	bool fRun = ( rawdir & 0x80 ) == 0x80; // or flying ?

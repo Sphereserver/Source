@@ -3808,7 +3808,6 @@ private:
 	bool NPC_FightCast(CObjBase * &pChar ,CObjBase * pSrc, SPELL_TYPE &spell, SKILL_TYPE skill = SKILL_NONE);
 	bool NPC_FightArchery( CChar * pChar );
 	bool NPC_FightMayCast(bool fCheckSkill = true) const;
-	bool NPC_FightFindSpells(SPELL_TYPE &spells);
 	bool NPC_GetAllSpellbookSpells();
 
 	bool NPC_Act_Follow( bool fFlee = false, int maxDistance = 1, bool forceDistance = false );

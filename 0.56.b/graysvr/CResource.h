@@ -913,12 +913,11 @@ public:
 #define	NPC_AI_EXTRA			0x00004		//	NPC magics, combat, etc
 #define NPC_AI_ALWAYSINT		0x00008		//	NPC pathfinding does not check int, always smart
 #define NPC_AI_INTFOOD			0x00010		//  NPC food search (more intelligent and trusworthy)
-#define NPC_AI_MAGICS			0x00020
 #define NPC_AI_COMBAT			0x00040
 #define NPC_AI_VEND_TIME		0x00080
 #define NPC_AI_LOOTING			0x00100
 #define	NPC_AI_MOVEOBSTACLES	0x00200
-#define NPC_AI_PERSISTENTPATH	0x00400		// 
+#define NPC_AI_PERSISTENTPATH	0x00400
 #define NPC_AI_THREAT			0x00800
 	int		m_iNpcAi;
 
@@ -1076,7 +1075,6 @@ public:
 	bool r_LoadVal( CScript &s );
 	bool r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc );
 	bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
-	void r_Write( CScript &s );
 
 	bool LoadIni( bool fTest );
 	bool LoadCryptIni( void );

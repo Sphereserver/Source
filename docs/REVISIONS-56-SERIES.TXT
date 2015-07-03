@@ -2429,6 +2429,7 @@ Changed: Huge optimization on NPC_AI_EXTRA code. This is a heavy code called tho
 [sphere_menu.scp]: Updated all obsolete ADDITEM and ADDNPC lines to ADD.
 
 03-07-2015, Coruja
+Fixed: Wrong console error text when trying to set NPC brains on players.
 Fixed: Dead bonded NPCs losing gray color on corpse when client redraw the NPC on screen.
 Fixed: @PersonalSpace trigger not being called when walking over chars on stairs.
 Changed: Improved frozen check on walk routines and ISSTUCK function.

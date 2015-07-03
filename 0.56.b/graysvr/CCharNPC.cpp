@@ -109,33 +109,23 @@ bool CChar::SetNPCBrain( NPCBRAIN_TYPE NPCBrain )
 {
 	ADDTOCALLSTACK("CChar::SetNPCBrain");
 	// Set up the char as an NPC
-	if ( NPCBrain == NPCBRAIN_NONE || IsClient())
-	{
-		DEBUG_ERR(( "SetNPCBrain NULL\n" ));
+	if ( NPCBrain == NPCBRAIN_NONE )
 		return false;
-	}
+
 	if ( m_pPlayer != NULL )
 	{
 		if ( m_pPlayer->GetAccount() != NULL )
-		{
 			DEBUG_ERR(( "SetNPCBrain to Player Account '%s'\n", m_pPlayer->GetAccount()->GetName() ));
-		}
 		else
-		{
 			DEBUG_ERR(( "SetNPCBrain to Player Name '%s'\n", GetName()));
-		}
 		return false;
 	}
+
 	if ( m_pNPC == NULL )
-	{
 		m_pNPC = new CCharNPC( this, NPCBrain );
-	}
 	else
-	{
-		// just replace existing brain.
-		m_pNPC->m_Brain = NPCBrain;
-	}
-	return( true );
+		m_pNPC->m_Brain = NPCBrain;		// just replace existing brain
+	return true;
 }
 
 //////////////////////////
