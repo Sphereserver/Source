@@ -2134,20 +2134,6 @@ private:
 	void SetCharter( unsigned int iLine, LPCTSTR pCharter );
 	LPCTSTR GetWebPageURL() const;
 	void SetWebPage( LPCTSTR pWebPage );
-
-#ifndef _NEWGUILDSYSTEM
-	bool IsInMenu( STONEDISP_TYPE iStoneMenu, const CItemStone * pOtherStone ) const;
-	bool IsInMenu( STONEDISP_TYPE iStoneMenu, const CStoneMember * pMember ) const;
-
-	// Client interaction.
-	size_t  addStoneListSetup( STONEDISP_TYPE iStoneMenu, CGString * psText, size_t iTexts );
-	void addStoneList( CClient * pClient, STONEDISP_TYPE iStoneMenu );
-	void addStoneSetViewCharter( CClient * pClient, STONEDISP_TYPE iStoneMenu );
-	void addStoneDialog( CClient * pClient, STONEDISP_TYPE menuid );
-	
-	void SetupMenu( CClient * pClient, bool fMasterFunc = false );
-#endif
-
 	void ElectMaster();
 public:
 	static const char *m_sClassName;
@@ -2195,12 +2181,6 @@ public:
 	LPCTSTR GetAlignName() const;
 	LPCTSTR GetAbbrev() const;
 	void SetAbbrev( LPCTSTR pAbbrev );
-	
-#ifndef _NEWGUILDSYSTEM
-	bool OnPromptResp( CClient * pClient, CLIMODE_TYPE TargMode, LPCTSTR pszText, CGString & sMsg, CGrayUID context );
-	bool OnDialogButton( CClient * pClient, STONEDISP_TYPE type, CDialogResponseArgs & resp );
-	void Use_Item( CClient * pClient );
-#endif
 };
 
 enum CIC_TYPE

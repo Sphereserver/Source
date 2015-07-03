@@ -47,7 +47,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <MinimalRebuild>true</MinimalRebuild>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_NEWGUILDSYSTEM;_MTNETWORK;_SUBVERSION;_DEBUG;_PACKETDUMP;_TESTEXCEPTION;DEBUG_CRYPT_MSGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_MTNETWORK;_SUBVERSION;_DEBUG;_PACKETDUMP;_TESTEXCEPTION;DEBUG_CRYPT_MSGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <WarningLevel>Level2</WarningLevel>
@@ -74,7 +74,7 @@
       <AdditionalIncludeDirectories>..\common\mysql\include</AdditionalIncludeDirectories>
       <CallingConvention>FastCall</CallingConvention>
       <MinimalRebuild>true</MinimalRebuild>
-      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_NEWGUILDSYSTEM;_MTNETWORK;_SUBVERSION;_PRIVATEBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_MTNETWORK;_SUBVERSION;_PRIVATEBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level2</WarningLevel>
       <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
@@ -96,7 +96,7 @@
       <AdditionalIncludeDirectories>..\common\mysql\include</AdditionalIncludeDirectories>
       <CallingConvention>FastCall</CallingConvention>
       <MinimalRebuild>true</MinimalRebuild>
-      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_NEWGUILDSYSTEM;_MTNETWORK;_SUBVERSION;_NIGHTLYBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_MTNETWORK;_SUBVERSION;_NIGHTLYBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level2</WarningLevel>
       <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
@@ -118,7 +118,7 @@
       <AdditionalIncludeDirectories>..\common\mysql\include</AdditionalIncludeDirectories>
       <CallingConvention>FastCall</CallingConvention>
       <MinimalRebuild>true</MinimalRebuild>
-      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_NEWGUILDSYSTEM;_MTNETWORK;_SUBVERSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_MTNETWORK;_SUBVERSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level2</WarningLevel>
       <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>

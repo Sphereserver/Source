@@ -2248,21 +2248,6 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 		resp.AddText(id, text);
 	}
 
-#ifndef _NEWGUILDSYSTEM
-	switch ( context ) // This is the page number
-	{
-		case CLIMODE_DIALOG_GUILD: // Guild/Leige/Townstones stuff comes here
-		{
-			CItemStone* stone = dynamic_cast<CItemStone*>( client->m_Targ_UID.ItemFind() );
-			if (stone == NULL || stone->OnDialogButton(client, (STONEDISP_TYPE)button, resp))
-				return true;
-		} break;
-
-		default:
-			break;
-	}
-#endif
-
 	if (net->isClientKR())
 		context = g_Cfg.GetKRDialogMap(context);
 

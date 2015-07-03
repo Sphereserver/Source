@@ -510,21 +510,7 @@ void CItemStone::SetAbbrev( LPCTSTR pAbbrev )
 LPCTSTR CItemStone::GetTypeName() const
 {
 	ADDTOCALLSTACK("CItemStone::GetTypeName");
-
-#ifndef _NEWGUILDSYSTEM
-	switch ( GetType() )
-	{
-		case IT_STONE_GUILD:
-			return "Guild";
-		case IT_STONE_TOWN:
-			return "Town";
-		default:
-			return "Unk";
-	}
-
-#else
 	CVarDefCont * pResult = NULL;
-	
 	switch ( GetType() )
 	{
 		case IT_STONE_GUILD:
@@ -541,7 +527,6 @@ LPCTSTR CItemStone::GetTypeName() const
 		pResult = g_Exp.m_VarDefs.GetKey("STONECONFIG_TYPENAME_UNK");
 
 	return ( pResult == NULL ) ? "" : pResult->GetValStr();
-#endif
 }
 
 void CItemStone::r_Write( CScript & s )
@@ -592,37 +577,18 @@ void CItemStone::r_Write( CScript & s )
 LPCTSTR CItemStone::GetAlignName() const
 {
 	ADDTOCALLSTACK("CItemStone::GetAlignName");
-#ifndef _NEWGUILDSYSTEM
-	static LPCTSTR const sm_AlignName[] = // STONEALIGN_TYPE
-	{
-		"standard",	// STONEALIGN_STANDARD
-		"Order",	// STONEALIGN_ORDER
-		"Chaos"		// STONEALIGN_CHAOS
-	};
-	int iAlign = GetAlignType();
-	if ( iAlign >= COUNTOF( sm_AlignName ))
-		iAlign = 0;
-	return( sm_AlignName[ iAlign ] );
-#else
 	int iAlign = GetAlignType();
 
 	TemporaryString sDefname;
 	if ( GetType() == IT_STONE_GUILD )
-	{
 		sprintf(sDefname, "GUILDCONFIG_ALIGN_%d", iAlign);
-	}
 	else if ( GetType() == IT_STONE_TOWN )
-	{
 		sprintf(sDefname, "TOWNSCONFIG_ALIGN_%d", iAlign);
-	}
 	else
-	{
 		return "";
-	}
 
 	LPCTSTR sRes = g_Exp.m_VarDefs.GetKeyStr(sDefname);
 	return ( sRes == NULL ) ? "" : sRes;
-#endif
 }
 
 enum STC_TYPE

@@ -1611,26 +1611,8 @@ void CClient::Event_PromptResp( LPCTSTR pszText, size_t len, DWORD context1, DWO
 	}
 
 	sMsg.Format("%s%s", pszPrefix, szText);
-#ifndef _NEWGUILDSYSTEM
-	switch (pItem->GetType())
-	{
-		case IT_STONE_GUILD:
-		case IT_STONE_TOWN:
-			{
-				CItemStone * pStone = dynamic_cast <CItemStone*> ( pItem );
-				if ( !pStone || !pStone->OnPromptResp(this, promptMode, szText, sMsg, CGrayUID(context2)) )
-					return;
-			}
-			break;
-		default:
-			pItem->SetName(sMsg);
-			sMsg.Format(g_Cfg.GetDefaultMsg( DEFMSG_RENAME_SUCCESS ), pszReName, static_cast<LPCTSTR>(pItem->GetName()));
-			break;
-	}
-#else
 	pItem->SetName(sMsg);
 	sMsg.Format(g_Cfg.GetDefaultMsg( DEFMSG_MSG_RENAME_SUCCESS ), pszReName, static_cast<LPCTSTR>(pItem->GetName()));
-#endif
 
 	SysMessage(sMsg);
 }

@@ -267,14 +267,6 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_STONE_GUILD:
 		case IT_STONE_TOWN:
 			// Guild and town stones.
-#ifndef _NEWGUILDSYSTEM
-			{
-				CItemStone * pStone = dynamic_cast<CItemStone*>(pItem);
-				if ( pStone == NULL )
-					break;
-				pStone->Use_Item( this );
-			}
-#endif
 			return true;
 
 		case IT_POTION:
