@@ -1381,7 +1381,8 @@ public:
 	void addHitsUpdate( CGrayUID uid );
 	void addManaUpdate( CGrayUID uid );
 	void addStamUpdate( CGrayUID uid );
-	void addHealthBarUpdate( const CChar* pChar );
+	void addHealthBarUpdate( const CChar * pChar );
+	void addBondedStatus( const CChar * pChar );
 	void addSkillWindow(SKILL_TYPE skill, bool bFromInfo = false); // Opens the skills list
 	void addBulletinBoard( const CItemContainer * pBoard );
 	bool addBBoardMessage( const CItemContainer * pBoard, BBOARDF_TYPE flag, CGrayUID uidMsg );

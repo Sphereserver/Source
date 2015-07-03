@@ -1466,7 +1466,7 @@ public:
 class PacketBondedStatus : public PacketExtended
 {
 public:
-	PacketBondedStatus(const CChar * pChar, bool IsGhost);
+	PacketBondedStatus(const CClient * target, const CChar * pChar, bool IsGhost);
 };
 
 /***************************************************************************

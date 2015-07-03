@@ -199,7 +199,7 @@ bool CChar::Spell_Teleport( CPointBase ptNew, bool fTakePets, bool fCheckAntiMag
 				if (pChar->Skill_GetActive() == NPCACT_FOLLOW_TARG && pChar->m_Act_Targ == GetUID())
 				{
 					CPointMap masterp = GetTopPoint();	// it will modify the val.
-					if (!pChar->CanMoveWalkTo(masterp, false))
+					if (!pChar->CanMoveWalkTo(masterp, false, true))
 						continue;
 					pChar->Spell_Teleport(ptNew, fTakePets, fCheckAntiMagic, iEffect, iSound);
 				}
@@ -464,12 +464,14 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 		}
 
 	}
+
+	bool bFullUpdate = false;
 	if (m_pNPC && m_pNPC->m_bonded)
 	{
 		m_Can &= ~CAN_C_GHOST;
-		UpdateCanSee(new PacketBondedStatus(this, false));
+		bFullUpdate = true;
 	}
-	UpdateMode();
+	UpdateMode(NULL, bFullUpdate);
 
 	CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Resurrection);
 	Effect(EFFECT_OBJ, pSpellDef->m_idEffect, this, 10, 16);

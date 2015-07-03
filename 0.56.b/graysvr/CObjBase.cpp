@@ -504,7 +504,7 @@ bool CObjBase::MoveNear( CPointMap pt, int iSteps, DWORD dwCan )
 		ASSERT(pCharThis != NULL);
 
 		pCharThis->m_zClimbHeight = 0;
-		if ( pCharThis->CanMoveWalkTo(pt, false, true, dir) == NULL )
+		if ( pCharThis->CanMoveWalkTo(pt, false, false, dir) == NULL )
 			return( false );
 	}
 

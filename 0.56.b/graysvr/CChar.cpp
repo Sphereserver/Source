@@ -2349,7 +2349,7 @@ do_default:
 			{
 				CPointBase	pt = GetTopPoint();
 
-				if ( LayerFind(LAYER_FLAG_Stuck) && IsStatFlag( STATF_Freeze ) )	// it is stuck if is in web/etc
+				if ( OnFreezeCheck() )
 					sVal.FormatVal(1);
 				else if ( CanMoveWalkTo(pt, true, true, DIR_N) || CanMoveWalkTo(pt, true, true, DIR_E) || CanMoveWalkTo(pt, true, true, DIR_S) || CanMoveWalkTo(pt, true, true, DIR_W) )
 					sVal.FormatVal(0);

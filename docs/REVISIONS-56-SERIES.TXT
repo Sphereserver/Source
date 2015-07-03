@@ -2427,3 +2427,9 @@ Changed: Huge optimization on NPC_AI_EXTRA code. This is a heavy code called tho
 [sphere_backward_compatibility.scp]: Added backward compatibility to these 4 removed NPC brains.
 [sphere_skills.scp]: Added (<ISPLAYER>) check on Tracking skill to prevent console error when an NPC try to use this skill.
 [sphere_menu.scp]: Updated all obsolete ADDITEM and ADDNPC lines to ADD.
+
+03-07-2015, Coruja
+Fixed: Dead bonded NPCs losing gray color on corpse when client redraw the NPC on screen.
+Fixed: @PersonalSpace trigger not being called when walking over chars on stairs.
+Changed: Improved frozen check on walk routines and ISSTUCK function.
+[sphere_monsters.scp / sphere_monsters_custom.scp]: Updated obsolete NPCs brain 'brain_undead' to 'brain_monster'.

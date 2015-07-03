@@ -4021,13 +4021,15 @@ PacketStatLocks::PacketStatLocks(const CClient* target, const CChar* character) 
 *
 ***************************************************************************/
 
-PacketBondedStatus::PacketBondedStatus(const CChar * pChar, bool IsGhost) : PacketExtended(EXTDATA_Stats_Enable, 11, PRI_NORMAL)
+PacketBondedStatus::PacketBondedStatus(const CClient * target, const CChar * pChar, bool IsGhost) : PacketExtended(EXTDATA_Stats_Enable, 11, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketBondedStatus::PacketBondedStatus");
 
 	writeByte(0x0);
 	writeInt32(pChar->GetUID());
 	writeByte(IsGhost);
+
+	push(target);
 }
 
 

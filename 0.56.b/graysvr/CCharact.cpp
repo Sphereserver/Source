@@ -2973,11 +2973,8 @@ bool CChar::Death()
 	{
 		if ( m_pNPC->m_bonded )
 		{
-			// TO-DO: When die, the bonded pet is getting removed from client screen and then we need to call update to reveal it again.
-			// Maybe we can optimize this behavior making bonded pets don't disappear instead hide it and then reveal it again
 			m_Can |= CAN_C_GHOST;
-			Update();
-			UpdateCanSee(new PacketBondedStatus(this, true));
+			UpdateMode(NULL, true);
 			return true;
 		}
 		NPC_PetClearOwners();
@@ -3090,20 +3087,26 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 	//  ptDst.m_z = the new z
 	//  NULL = failed to walk here.
 
-	if ( OnFreezeCheck() )
-		return NULL;
-
-	if ( !fCheckOnly && Stat_GetVal(STAT_DEX) <= 0 && !IsStatFlag(STATF_DEAD) )
-	{
-		SysMessageDefault( DEFMSG_MSG_FATIGUE );
-		return NULL;
-	}
-
 	int iWeightLoadPercent = GetWeightLoadPercent(GetTotalWeight());
-	if ( !fCheckOnly && iWeightLoadPercent > 200 )
+	if ( !fCheckOnly )
 	{
-		SysMessageDefault( DEFMSG_MSG_OVERLOAD );
-		return NULL;
+		if ( OnFreezeCheck() )
+		{
+			SysMessageDefault(DEFMSG_MSG_FROZEN);
+			return NULL;
+		}
+
+		if ( Stat_GetVal(STAT_DEX) <= 0 && !IsStatFlag(STATF_DEAD) )
+		{
+			SysMessageDefault(DEFMSG_MSG_FATIGUE);
+			return NULL;
+		}
+
+		if ( iWeightLoadPercent > 200 )
+		{
+			SysMessageDefault(DEFMSG_MSG_OVERLOAD);
+			return NULL;
+		}
 	}
 
 	CClient *pClient = GetClient();
@@ -3147,9 +3150,9 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			CChar * pChar = AreaChars.GetChar();
 			if ( pChar == NULL )
 				break;
-			if ( pChar == this || pChar->GetTopZ() != ptDst.m_z )
+			if ( pChar == this || abs(pChar->GetTopZ() - ptDst.m_z) > 5 || pChar->IsStatFlag(STATF_Insubstantial) )
 				continue;
-			if( m_pNPC && pChar->m_pNPC )	// NPCs can't walk over another NPC
+			if ( m_pNPC && pChar->m_pNPC )	// NPCs can't walk over another NPC
 				return NULL;
 
 			iStamReq = 10;
@@ -3170,7 +3173,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			}
 
 			if ( iStamReq <= 0 )
-				return pArea;
+				continue;
 			if ( Stat_GetVal(STAT_DEX) < Stat_GetMax(STAT_DEX) )
 				return NULL;
 
