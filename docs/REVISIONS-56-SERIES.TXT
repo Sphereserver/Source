@@ -2434,3 +2434,8 @@ Fixed: Dead bonded NPCs losing gray color on corpse when client redraw the NPC o
 Fixed: @PersonalSpace trigger not being called when walking over chars on stairs.
 Changed: Improved frozen check on walk routines and ISSTUCK function.
 [sphere_monsters.scp / sphere_monsters_custom.scp]: Updated obsolete NPCs brain 'brain_undead' to 'brain_monster'.
+
+04-07-2015, Coruja
+Fixed: Combat creating blood on the attacker instead target.
+Fixed: Dragons (brain_dragon) always hitting breath attack even when the target get out of LOS.
+Changed: Decreased dragon breath damage. The previous formula was causing too high damages when the dragon has high hitpoints.

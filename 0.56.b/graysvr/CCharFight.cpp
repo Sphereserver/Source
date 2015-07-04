@@ -4159,7 +4159,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				CItem * pBlood = CItem::CreateBase(iBloodID);
 				ASSERT(pBlood);
 				pBlood->SetHue(m_wBloodHue);
-				pBlood->MoveNear(GetTopPoint(), 1);
+				pBlood->MoveNear(pCharTarg->GetTopPoint(), 1);
 				pBlood->SetDecayTime(5 * TICK_PER_SEC);
 			}
 		}

@@ -3386,18 +3386,17 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 
 	ASSERT( stage == SKTRIG_SUCCESS );
 
+	if ( !CanSeeLOS(pChar) )
+		return -SKTRIG_QTY;
+
 	CPointMap pntMe = GetTopPoint();
 	if ( pntMe.GetDist( m_Act_p ) > UO_MAP_VIEW_SIGHT )
 		m_Act_p.StepLinePath( pntMe, UO_MAP_VIEW_SIGHT );
 
-	CChar *pTarget = m_Fight_Targ.CharFind();
-	if ( pTarget == NULL )
-		return 0;
-
 	int iDamage = static_cast<int>(GetDefNum("BREATH.DAM", true));
 	if ( !iDamage )
 	{
-		iDamage = (Stat_GetVal(STAT_STR) * 16) / 100;
+		iDamage = (Stat_GetVal(STAT_STR) * 5) / 100;
 		if ( iDamage < 1 )
 			iDamage = 1;
 		else if ( iDamage > 200 )
@@ -3412,8 +3411,8 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 	if (! effect )
 		effect = EFFECT_BOLT;
 	Sound( 0x227 );
-	pTarget->Effect( effect, id, this, 20, 30, false, hue );
-	pTarget->OnTakeDamage( iDamage, this, DAMAGE_FIRE, 0, 100, 0, 0, 0 );
+	pChar->Effect( effect, id, this, 20, 30, false, hue );
+	pChar->OnTakeDamage( iDamage, this, DAMAGE_FIRE, 0, 100, 0, 0, 0 );
 	return 0;
 }
 

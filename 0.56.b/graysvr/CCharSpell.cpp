@@ -1623,8 +1623,6 @@ bool CChar::Spell_Equip_OnTick( CItem * pItem )
 					case 4:	//Lethal
 						pItem->SetTimeout(50);
 						break;
-						pItem->SetTimeout(20);
-						break;
 				}
 
 				static LPCTSTR const sm_Poison_Message[] =
