@@ -465,11 +465,11 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 
 	}
 
-	bool bFullUpdate = false;
+	bool bFullUpdate = true;
 	if (m_pNPC && m_pNPC->m_bonded)
 	{
 		m_Can &= ~CAN_C_GHOST;
-		bFullUpdate = true;
+		//bFullUpdate = true;
 	}
 	UpdateMode(NULL, bFullUpdate);
 
