@@ -415,6 +415,7 @@ enum RC_TYPE
 	RC_COLORNOTOINVULGAMEMASTER,	// m_iColorNotoInvulGameMaster
 	RC_COLORNOTONEUTRAL,	// m_iColorNotoNeutral
 	RC_COMBATFLAGS,			// m_iCombatFlags
+	RC_COMBATSPEEDERA,		// m_iCombatSpeedEra
 	RC_COMMANDLOG,
 	RC_COMMANDPREFIX,
 	RC_COMMANDTRIGGER,		// m_sCommandTrigger
