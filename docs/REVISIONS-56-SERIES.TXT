@@ -2439,3 +2439,19 @@ Changed: Improved frozen check on walk routines and ISSTUCK function.
 Fixed: Combat creating blood on the attacker instead target.
 Fixed: Dragons (brain_dragon) always hitting breath attack even when the target get out of LOS.
 Changed: Decreased dragon breath damage. The previous formula was causing too high damages when the dragon has high hitpoints.
+
+08-07-2015, XuN
+[sphere.ini]:
+-Added CombatSpeedEra to switch between speed formulas that has been changed over the years, also updated the source to reflect this addition and added fully back the formula for Legacy, it was a little tweaked.
+// CombatSpeedEra
+// 0 = Legacy, T2A, 55x versions..., Recommended SpeedScaleFactor = 15000, Use DEX by default to calc speed, all others use stam
+// 1 = AOS,							 Recommended SpeedScaleFactor = 40000
+// 2 = SE, 							 doesn't use m_iSpeedScaleFactor and it's only compatible with ML speed format eg. 0.25 ~ 5.00 seconds instead 0 ~ 50
+// 3 = ML, 							 Recommended SpeedScaleFactor = 80000
+CombatSpeedEra= 3	// Default is ML (3)
+
+Note that SpeedScaleFactor must be changed along with this setting.
+Tweaked CombatFormulas, they were using iDelay/2 when Fighting Skill started and generating another iDelay/2 after that period of time making it impossible to fully rewrite the value under argn1 in @HitTry.
+
+[sphere_backwards_compatibility]:
+Added some more items.

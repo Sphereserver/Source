@@ -806,6 +806,7 @@ public:
 	int  m_iArcheryMinDist;
 	int  m_iHitsUpdateRate;		// how often send my hits updates to visible clients
 	int  m_iSpeedScaleFactor;	// fight skill delay = m_iSpeedScaleFactor / ( (dex + 100) * Weapon Speed )
+	int  m_iCombatSpeedEra;		// defines which speed calculations to use
 	int  m_iSkillPracticeMax;	// max skill level a player can practice on dummies/targets upto
 	bool m_iPacketDeathAnimation;	// packet 02c
 

@@ -3166,7 +3166,7 @@ int CChar::Skill_Fighting( SKTRIG_TYPE stage )
 		int iWaitTime = Fight_GetWeaponSwingTimer()/2;	// start the anim immediately.
 		if ( g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_RANGED) )	// anim is funny for archery
 			iWaitTime /= 2;
-		SetTimeout( iWaitTime );
+		SetTimeout( 0 );
 
 		return( g_Cfg.Calc_CombatChanceToHit(this, m_Fight_Targ.CharFind(), Skill_GetActive()) );
 	}

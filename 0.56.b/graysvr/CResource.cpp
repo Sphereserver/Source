@@ -132,6 +132,7 @@ CResource::CResource()
 	m_iHitsUpdateRate	= TICK_PER_SEC;
 	m_iSpeedScaleFactor 	= 15000;
 	m_iCombatFlags		= 0;
+	m_iCombatSpeedEra	= 4;	// default = 4 = SE
 	m_iMagicFlags		= 0;
 	m_iMaxPolyStats		= 150;
 
@@ -650,6 +651,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "COLORNOTOINVULGAMEMASTER",{ ELEM_WORD,	OFFSETOF(CResource,m_iColorNotoInvulGameMaster),	0 }},
 	{ "COLORNOTONEUTRAL",		{ ELEM_WORD,	OFFSETOF(CResource,m_iColorNotoNeutral),	0 }},
 	{ "COMBATFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iCombatFlags),			0 }},
+	{ "COMBATSPEEDERA",			{ ELEM_BYTE,	OFFSETOF(CResource, m_iCombatSpeedEra),		0 }},
 	{ "COMMANDLOG",				{ ELEM_INT,		OFFSETOF(CResource,m_iCommandLog),			0 }},
 	{ "COMMANDPREFIX",			{ ELEM_BYTE,	OFFSETOF(CResource,m_cCommandPrefix),		0 }},
 	{ "COMMANDTRIGGER",			{ ELEM_CSTRING,	OFFSETOF(CResource,m_sCommandTrigger),		0 }},

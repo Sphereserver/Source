@@ -25,7 +25,7 @@ SUBSECTION=Books
 DESCRIPTION=Chivalry Spellbook
 ON=@Create
    ATTR=attr_magic|attr_newbie
-   MOREZ=0200
+   MOREZ=200
    MORE1=03ff
 
 
