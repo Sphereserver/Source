@@ -439,6 +439,25 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 	StatFlag_Clear(STATF_DEAD|STATF_Insubstantial);
 	Stat_SetVal(STAT_STR, maximum(hits, 1));
 
+	if (m_pNPC && m_pNPC->m_bonded)
+		m_Can &= ~CAN_C_GHOST;
+
+	ClientIterator it;
+	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
+	{
+		if (!pClient->CanSee(this))
+			continue;
+
+		if ( pClient == m_pClient )
+			pClient->addPlayerView(NULL, static_cast<bool>(!g_Cfg.m_fDeadCannotSeeLiving));
+		else
+		{
+			pClient->addChar(this);
+			if ( m_pNPC )
+				pClient->addBondedStatus(this, false);
+		}
+	}
+
 	bool bRaisedCorpse = false;
 	if (pCorpse != NULL)
 	{
@@ -464,14 +483,6 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 		}
 
 	}
-
-	bool bFullUpdate = true;
-	if (m_pNPC && m_pNPC->m_bonded)
-	{
-		m_Can &= ~CAN_C_GHOST;
-		//bFullUpdate = true;
-	}
-	UpdateMode(NULL, bFullUpdate);
 
 	CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Resurrection);
 	Effect(EFFECT_OBJ, pSpellDef->m_idEffect, this, 10, 16);
@@ -599,8 +610,6 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 
 		case LAYER_SPELL_Invis:
 			Reveal(STATF_Invisible);
-			if (pClient)
-				pClient->removeBuff(BI_INVISIBILITY);
 			return;
 
 		case LAYER_SPELL_Paralyze:
@@ -1045,7 +1054,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pClient->addBuff(BI_INVISIBILITY, 1075825, 1075826, iTimerEffect);
 				}
 			}
-			UpdateMove(GetTopPoint());	// some will be seeing us for the first time!
+			UpdateMode();
 			break;
 		case LAYER_SPELL_Paralyze:
 			StatFlag_Set(STATF_Freeze);
@@ -2506,17 +2515,17 @@ bool CChar::Spell_CastDone()
 		{
 			switch (spell)
 			{
-			case SPELL_Arch_Cure:		areaRadius = 2;							break;
-			case SPELL_Arch_Prot:		areaRadius = 3;							break;
-			case SPELL_Mass_Curse:		areaRadius = 2;							break;
-			case SPELL_Reveal:			areaRadius = 1 + (iSkillLevel / 200);	break;
-			case SPELL_Chain_Lightning: areaRadius = 2;							break;
-			case SPELL_Mass_Dispel:		areaRadius = 8;							break;
-			case SPELL_Meteor_Swarm:	areaRadius = 2;							break;
-			case SPELL_Earthquake:		areaRadius = 1 + (iSkillLevel / 150);	break;
-			case SPELL_Poison_Strike:	areaRadius = 2;							break;
-			case SPELL_Wither:			areaRadius = 4;							break;
-			default: areaRadius = 4;											break;
+				case SPELL_Arch_Cure:		areaRadius = 2;							break;
+				case SPELL_Arch_Prot:		areaRadius = 3;							break;
+				case SPELL_Mass_Curse:		areaRadius = 2;							break;
+				case SPELL_Reveal:			areaRadius = 1 + (iSkillLevel / 200);	break;
+				case SPELL_Chain_Lightning: areaRadius = 2;							break;
+				case SPELL_Mass_Dispel:		areaRadius = 8;							break;
+				case SPELL_Meteor_Swarm:	areaRadius = 2;							break;
+				case SPELL_Earthquake:		areaRadius = 1 + (iSkillLevel / 150);	break;
+				case SPELL_Poison_Strike:	areaRadius = 2;							break;
+				case SPELL_Wither:			areaRadius = 4;							break;
+				default:					areaRadius = 4;							break;
 			}
 		}
 
@@ -2998,7 +3007,7 @@ int CChar::Spell_CastStart()
 }
 
 
-bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, CItem * pSourceItem )	// adicionar novo arg: bool bPlaySound
+bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, CItem * pSourceItem )
 {
 	ADDTOCALLSTACK("CChar::OnSpellEffect");
 	// Spell has a direct effect on this char.
@@ -3122,7 +3131,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	}
 
 	// Check if the spell can be resisted
-	bool fPotion = ( pSourceItem != NULL && pSourceItem->IsType(IT_POTION) );
+	bool fPotion = (pSourceItem && pSourceItem->IsType(IT_POTION));
 	bool fResistAttempt = true;
 	bool fResisted = false;
 	if ( pSpellDef->IsSpellType(SPELLFLAG_RESIST) && fResistAttempt && !fPotion && pCharSrc != NULL )
@@ -3180,8 +3189,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				DamageBonus += pCharSrc->Stat_GetAdjusted(STAT_INT) / 10;
 
 				// Inscription bonus
-				if ( pCharSrc->Skill_GetBase(SKILL_INSCRIPTION) >= 1000 )
-					DamageBonus += 10;
+				DamageBonus += pCharSrc->Skill_GetBase(SKILL_INSCRIPTION) / 100;
 
 				// Racial Bonus (Berserk), gargoyles gains +3% Spell Damage Increase per each 20 HP lost
 				if ( (g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS) && IsGargoyle() )
@@ -3196,31 +3204,37 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 		if ( !iD1 )
 		{
-			switch ( spell )
+			switch (spell)
 			{
-				case SPELL_Magic_Arrow:		iD1 = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_NOREVEAL;		break;
-				case SPELL_Fireball:		iD1 = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_NOREVEAL;		break;
-				case SPELL_Fire_Field:		iD1 = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_NOREVEAL;		break;
-				case SPELL_Explosion:		iD1 = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_NOREVEAL;		break;
-				case SPELL_Flame_Strike:	iD1 = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_NOREVEAL;		break;
-				case SPELL_Meteor_Swarm:	iD1 = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_NOREVEAL;		break;
-				case SPELL_Fire_Bolt:		iD1 = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_NOREVEAL;		break;
-				case SPELL_Harm:			iD1 = DAMAGE_MAGIC | DAMAGE_COLD | DAMAGE_NOREVEAL;		break;
-				case SPELL_Mind_Blast:		iD1 = DAMAGE_MAGIC | DAMAGE_COLD | DAMAGE_NOREVEAL;		break;
-				case SPELL_Lightning:		iD1 = DAMAGE_MAGIC | DAMAGE_ENERGY | DAMAGE_NOREVEAL;	break;
-				case SPELL_Energy_Bolt:		iD1 = DAMAGE_MAGIC | DAMAGE_ENERGY | DAMAGE_NOREVEAL;	break;
-				case SPELL_Chain_Lightning:	iD1 = DAMAGE_MAGIC | DAMAGE_ENERGY | DAMAGE_NOREVEAL;	break;
-				case SPELL_Earthquake:		iD1 = DAMAGE_MAGIC | DAMAGE_GENERAL | DAMAGE_NOREVEAL;	break;
-				default:					iD1 = DAMAGE_MAGIC | DAMAGE_GENERAL | DAMAGE_NOREVEAL;	break;
+				case SPELL_Magic_Arrow:
+				case SPELL_Fireball:
+				case SPELL_Fire_Field:
+				case SPELL_Explosion:
+				case SPELL_Flame_Strike:
+				case SPELL_Meteor_Swarm:
+				case SPELL_Fire_Bolt:
+					iD1 = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_NOREVEAL;
+					break;
+
+				case SPELL_Harm:
+				case SPELL_Mind_Blast:
+					iD1 = DAMAGE_MAGIC | DAMAGE_COLD | DAMAGE_NOREVEAL;
+					break;
+
+				case SPELL_Lightning:
+				case SPELL_Energy_Bolt:
+				case SPELL_Chain_Lightning:
+					iD1 = DAMAGE_MAGIC | DAMAGE_ENERGY | DAMAGE_NOREVEAL;
+					break;
+
+				default:
+					iD1 = DAMAGE_MAGIC | DAMAGE_GENERAL | DAMAGE_NOREVEAL;
+					break;
 			}
 		}
 
 		// AOS damage types (used by COMBAT_ELEMENTAL_ENGINE)
-		int iDmgPhysical = 0;
-		int iDmgFire = 0;
-		int iDmgCold = 0;
-		int iDmgPoison = 0;
-		int iDmgEnergy = 0;
+		int iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy = 0;
 		if ( iD1 & DAMAGE_FIRE )
 			iDmgFire = 100;
 		else if ( iD1 & DAMAGE_COLD )
@@ -3363,7 +3377,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			break;
 
 		case SPELL_Resurrection:
-			return Spell_Resurrection( NULL, pCharSrc );
+			return Spell_Resurrection(NULL, pCharSrc, (pSourceItem && pSourceItem->IsType(IT_SHRINE)));
 
 		case SPELL_Light:
 			Effect(EFFECT_OBJ, iT1, this, 9, 6, fExplode, iColor, iRender);
@@ -3382,7 +3396,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			{
 				if ( m_pPlayer )
 					break;
-				if ( fPotion && pSourceItem )
+				if ( fPotion )
 					pSourceItem->Delete();
 
 				CItem * pItem = NPC_Shrink(); // this delete's the char !!!

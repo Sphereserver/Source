@@ -4923,11 +4923,7 @@ void CItem::OnExplosion()
 	ASSERT( m_type == IT_EXPLOSION );
 
 	// AOS damage types (used by COMBAT_ELEMENTAL_ENGINE)
-	int iDmgPhysical = 0;
-	int iDmgFire = 0;
-	int iDmgCold = 0;
-	int iDmgPoison = 0;
-	int iDmgEnergy = 0;
+	int iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy = 0;
 	if ( m_itExplode.m_wFlags & DAMAGE_FIRE )
 		iDmgFire = 100;
 	else if ( m_itExplode.m_wFlags & DAMAGE_COLD )

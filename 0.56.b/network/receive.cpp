@@ -225,14 +225,14 @@ bool PacketMovementReq::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketMovementReq::onReceive");
 
 	BYTE direction = readByte();
-	short sequence = readByte();
+	BYTE sequence = readByte();
 	DWORD crypt = readInt32(); // fast walk key
 
 	doMovement(net, direction, sequence, crypt);
 	return true;
 }
 
-void PacketMovementReq::doMovement(NetState* net, BYTE direction, short sequence, DWORD crypt, INT64 iTime1, INT64 iTime2)
+void PacketMovementReq::doMovement(NetState* net, BYTE direction, BYTE sequence, DWORD crypt, INT64 iTime1, INT64 iTime2)
 {
 	ADDTOCALLSTACK("PacketMovementReq::doMovement");
 
@@ -254,11 +254,11 @@ void PacketMovementReq::doMovement(NetState* net, BYTE direction, short sequence
 		INT64 iTiming = iTime2 - iTime1;
 		if ( (fRun && (iTiming > 200)) || (!fRun && (iTiming > 300)) )
 			canMoveThere = TRIGRET_RET_FALSE;
-	}*/
+	}
 
-	// check sequence
+	// check sequence	// Not working properly!
 	if (canMoveThere == TRIGRET_RET_TRUE && sequence != net->m_sequence)
-		canMoveThere = net->m_sequence == 0? TRIGRET_RET_DEFAULT : TRIGRET_RET_FALSE;
+		canMoveThere = net->m_sequence == 0? TRIGRET_RET_DEFAULT : TRIGRET_RET_FALSE;*/
 
 	// perform movement
 	if (canMoveThere == TRIGRET_RET_TRUE)
@@ -266,7 +266,7 @@ void PacketMovementReq::doMovement(NetState* net, BYTE direction, short sequence
 
 	if (canMoveThere == TRIGRET_RET_FALSE)
 	{
-		new PacketMovementRej(client, static_cast<BYTE>(sequence));
+		new PacketMovementRej(client, sequence);
 		net->m_sequence = 0;
 	}
 	else if (canMoveThere == TRIGRET_RET_TRUE)
@@ -4295,14 +4295,21 @@ PacketMovementReqNew::PacketMovementReqNew() : PacketMovementReq(0)
 bool PacketMovementReqNew::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketMovementReqNew::onReceive");
+	// This new walk packet is only used on SA enhanced clients.
+	// On classic clients this packet is used as 'Krrios special client' (?) which
+	// does some useless weird stuff. Also classic clients using Injection 2014 will
+	// strangely send this packet to server when the player press the 'Chat' button,
+	// so it's better leave this packet disabled to prevent some exploits.
+	if (!net->isClientSA())
+		return false;
 
 	skip(2);
-	short steps = readByte();
+	BYTE steps = readByte();
 	INT64 iTime1 = readInt64();
 	INT64 iTime2 = readInt64(); //these should be used for speed control somehow... (in micro-seconds)
-	while(steps)
+	while (steps)
 	{
-		short sequence = readByte();
+		BYTE sequence = readByte();
 		BYTE direction = readByte();
 		DWORD mode = readInt32();
 		if (mode == 2)

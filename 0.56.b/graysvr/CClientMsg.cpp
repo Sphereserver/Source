@@ -1054,7 +1054,7 @@ void CClient::addChar( const CChar * pChar )
 	if ( pChar->m_pNPC && pChar->m_pNPC->m_bonded && pChar->IsStatFlag(STATF_DEAD) )
 	{
 		EXC_SET("Bonded status");
-		addBondedStatus(pChar);
+		addBondedStatus(pChar, true);
 	}
 
 	EXC_SET("AOSToolTip adding (end)");
@@ -2278,13 +2278,13 @@ void CClient::addHealthBarUpdate( const CChar * pChar )
 		new PacketHealthBarUpdate(this, pChar);
 }
 
-void CClient::addBondedStatus( const CChar * pChar )
+void CClient::addBondedStatus( const CChar * pChar, bool bIsDead )
 {
 	ADDTOCALLSTACK("CClient::addBondedStatus");
 	if ( pChar == NULL )
 		return;
 
-	new PacketBondedStatus(this, pChar, pChar->IsStatFlag(STATF_DEAD));
+	new PacketBondedStatus(this, pChar, bIsDead);
 }
 
 void CClient::addSpellbookOpen( CItem * pBook, WORD offset )

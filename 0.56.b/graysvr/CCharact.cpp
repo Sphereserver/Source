@@ -1223,26 +1223,21 @@ void CChar::UpdateMode( CClient * pExcludeClient, bool fFull )
 			continue;
 		if ( pClient->GetChar() == NULL )
 			continue;
-
-		if ( ! pClient->CanSee( this ))
+		if ( GetTopPoint().GetDistSight(pClient->GetChar()->GetTopPoint()) > UO_MAP_VIEW_SIZE )
+			continue;
+		if ( !pClient->CanSee(this) )
 		{
 			// In the case of "INVIS" used by GM's we must use this.
-			if ( GetTopPoint().GetDistSight( pClient->GetChar()->GetTopPoint()) <= UO_MAP_VIEW_SIZE )
-			{
-				pClient->addObjectRemove( this );
-			}
+			pClient->addObjectRemove( this );
 			continue;
 		}
-// VisRangeCheck
-		if ( pClient->GetChar()->GetSight() >= GetTopPoint().GetDistSight( pClient->GetChar()->GetTopPoint()) )
+
+		if ( fFull )
+			pClient->addChar(this);
+		else
 		{
-			if ( fFull )
-				pClient->addChar(this);
-			else
-			{
-				pClient->addCharMove(this);
-				pClient->addHealthBarUpdate(this);
-			}
+			pClient->addCharMove(this);
+			pClient->addHealthBarUpdate(this);
 		}
 	}
 }
@@ -1385,26 +1380,21 @@ void CChar::Update(const CClient * pClientExclude ) // If character status has b
 	{
 		if ( pClient == pClientExclude )
 			continue;
-		if (pClient->GetChar() == NULL)
+		if ( pClient->GetChar() == NULL )
 			continue;
-
-		if (!pClient->CanSee(this))
+		if ( GetTopPoint().GetDistSight(pClient->GetChar()->GetTopPoint()) > UO_MAP_VIEW_SIZE )
+			continue;
+		if ( !pClient->CanSee(this) )
 		{
 			// In the case of "INVIS" used by GM's we must use this.
-			if (GetTopPoint().GetDistSight(pClient->GetChar()->GetTopPoint()) <= UO_MAP_VIEW_SIZE)
-			{
-				pClient->addObjectRemove(this);
-			}
+			pClient->addObjectRemove(this);
 			continue;
 		}
+
 		if ( pClient == m_pClient ) 
-		{
 			pClient->addReSync();
-		}	
-		else if ( pClient->CanSee( this ) )
-		{
+		else
 			pClient->addChar( this );
-		}
 	}
 }
 
@@ -2165,14 +2155,19 @@ bool CChar::Reveal( DWORD dwFlags )
 	}
 
 	StatFlag_Clear(dwFlags);
-	if ( IsStatFlag(STATF_Invisible|STATF_Hidden|STATF_Insubstantial|STATF_Sleeping))
+	CClient *pClient = GetClient();
+	if ( pClient )
+	{
+		if ( !IsStatFlag(STATF_Hidden) )
+			pClient->removeBuff(BI_HIDDEN);
+		if ( !IsStatFlag(STATF_Invisible) )
+			pClient->removeBuff(BI_INVISIBILITY);
+	}
+
+	if ( IsStatFlag(STATF_Invisible|STATF_Hidden|STATF_Insubstantial|STATF_Sleeping) )
 		return false;
 
-	//UpdateMode(NULL, true);
-	Update();
-
-	if ( IsClient() )
-		GetClient()->removeBuff( BI_HIDDEN );
+	UpdateMode(NULL, true);
 	SysMessageDefault(DEFMSG_HIDING_REVEALED);
 	return true;
 }
@@ -2908,7 +2903,7 @@ bool CChar::Death()
 	CChar * pKiller = NULL;
 	TCHAR * pszKillStr = Str_GetTemp();
 	int iKillStrLen = sprintf( pszKillStr, g_Cfg.GetDefaultMsg(DEFMSG_MSG_KILLED_BY), (m_pPlayer)? 'P':'N', GetNameWithoutIncognito() );
-	for ( unsigned int count = 0; count < m_lastAttackers.size(); count++ )
+	for ( size_t count = 0; count < m_lastAttackers.size(); count++ )
 	{
 		pKiller = CGrayUID(m_lastAttackers.at(count).charUID).CharFind();
 		if ( pKiller )
@@ -2934,14 +2929,6 @@ bool CChar::Death()
 		g_Log.Event( LOGL_EVENT|LOGM_KILLS, "%s\n", pszKillStr );
 	if ( m_pParty )
 		m_pParty->SysMessageAll( pszKillStr );
-
-	// Display death animation to client ("You are dead")
-	CClient * pClient = GetClient();
-	if ( pClient && g_Cfg.m_iPacketDeathAnimation )
-	{
-		new PacketDeathMenu( pClient, PacketDeathMenu::ServerSent );
-		new PacketDeathMenu( pClient, PacketDeathMenu::Ghost );
-	}
 
 	Reveal();
 	SoundChar(CRESND_DIE);
@@ -2977,15 +2964,19 @@ bool CChar::Death()
 			UpdateMode(NULL, true);
 			return true;
 		}
+
+		if ( pCorpse )
+			pCorpse->m_uidLink.InitUID();
+
 		NPC_PetClearOwners();
+		return false;	// delete the NPC
 	}
 
 	if ( m_pPlayer )
 	{
+		ChangeExperience(-(static_cast<int>(m_exp) / 10), pKiller);
 		if ( !(m_TagDefs.GetKeyNum("DEATHFLAGS", true) & DEATH_NOFAMECHANGE) )
 			Noto_Fame( -Stat_GetAdjusted(STAT_FAME)/10 );
-
-		ChangeExperience( -(static_cast<int>(m_exp)/10), pKiller );
 
 		LPCTSTR pszGhostName = NULL;
 		CCharBase *pCharDefPrev = CCharBase::FindCharBase( m_prev_id );
@@ -3013,6 +3004,21 @@ bool CChar::Death()
 		SetID( static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType( RES_CHARDEF, pszGhostName )) );
 		LayerAdd( CItem::CreateScript( ITEMID_DEATHSHROUD, this ) );
 
+		CClient * pClient = GetClient();
+		if ( pClient )
+		{
+			// OSI uses PacketDeathMenu to update client screen on death.
+			// If the user disable this packet, it must be updated using PacketPlayerPosition
+			if ( g_Cfg.m_iPacketDeathAnimation )
+			{
+				// Display death animation to client ("You are dead")
+				new PacketDeathMenu(pClient, PacketDeathMenu::ServerSent);
+				new PacketDeathMenu(pClient, PacketDeathMenu::Ghost);
+			}
+			else
+				new PacketPlayerPosition(pClient);
+		}
+
 		// Remove the characters which I can't see as dead from the screen
 		if ( g_Cfg.m_fDeadCannotSeeLiving )
 		{
@@ -3027,18 +3033,6 @@ bool CChar::Death()
 					pClient->addObjectRemove(pChar);						
 			}
 		}
-	}
-
-	if ( pClient == NULL )
-	{
-		if ( m_pPlayer )
-		{
-			SetDisconnected();	// Respawn the NPC later
-			return true;
-		}
-		if ( pCorpse )
-			pCorpse->m_uidLink.InitUID();
-		return false;	// delete this
 	}
 	return true;
 }

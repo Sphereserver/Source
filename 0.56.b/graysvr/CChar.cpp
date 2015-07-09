@@ -1218,7 +1218,7 @@ void CChar::SetID( CREID_TYPE id )
 		if (pHand != NULL)
 			GetPackSafe()->ContentAdd(pHand);
 	}
-	Update();
+	UpdateMode();
 }
 
 void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc  )
@@ -3622,12 +3622,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				if ( IsSetOF( OF_Command_Sysmsgs ) )
 					pSrc->SysMessage( IsStatFlag( STATF_Insubstantial )? g_Cfg.GetDefaultMsg(DEFMSG_MSG_INVIS_ON) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_INVIS_OFF) );
 
-				//UpdateMode( NULL, true );	// invis used by GM bug requires this
-				Update();
-
-				// Update own character (turns grey)
-				if ( IsClient() )
-					GetClient()->addChar( this );
+				UpdateMode(NULL, true);
 			}
 			break;
 		case CHV_INVUL:
