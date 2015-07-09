@@ -50,7 +50,7 @@ public:
 	virtual bool onReceive(NetState* net);
 
 protected:
-	void doMovement(NetState* net, BYTE direction, short sequence, DWORD crypt, INT64 iTime1 = 0, INT64 iTime2 = 0);
+	void doMovement(NetState* net, BYTE direction, BYTE sequence, DWORD crypt, INT64 iTime1 = 0, INT64 iTime2 = 0);
 };
 
 /***************************************************************************

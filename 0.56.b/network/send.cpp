@@ -658,8 +658,8 @@ PacketMovementAck::PacketMovementAck(const CClient* target) : PacketSend(XCMD_Wa
 {
 	ADDTOCALLSTACK("PacketMovementAck::PacketMovementAck");
 
-	writeByte(static_cast<const unsigned char>(target->GetNetState()->m_sequence));
-	writeByte(static_cast<unsigned char>(target->GetChar()->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_NOTOINVUL), true)));
+	writeByte(static_cast<BYTE>(target->GetNetState()->m_sequence));
+	writeByte(static_cast<BYTE>(target->GetChar()->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_NOTOINVUL), true)));
 	push(target);
 }
 

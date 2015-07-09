@@ -2455,3 +2455,11 @@ Tweaked CombatFormulas, they were using iDelay/2 when Fighting Skill started and
 
 [sphere_backwards_compatibility]:
 Added some more items.
+
+09-07-2015, Coruja
+Changed: Improved some internal actions to update the client screen using less packets instead always do a full resend.
+Fixed: Client screen not being updated correctly on death/resurrect when PacketDeathAnimation .ini setting is disabled.
+Fixed: MAGICF_OSIFORMULAS .ini setting not calculating Inscription bonus correctly.
+Fixed: REVEAL function not removing 'Invisibility' buff icon correctly.
+Fixed: Major walk exploit when Injection clients press 'Chat' button.
+Fixed: Anti-magic regions blocking resurrect on ankh's (t_shrine).

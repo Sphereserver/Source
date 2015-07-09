@@ -119,7 +119,7 @@ public:
 	GAMECLIENT_TYPE m_clientType; // type of client
 	DWORD m_clientVersion; // client version (encryption)
 	DWORD m_reportedVersion; // client version (reported)
-	short m_sequence; // movement sequence
+	BYTE m_sequence; // movement sequence
 
 public:
 	explicit NetState(long id);
