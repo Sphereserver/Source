@@ -2467,4 +2467,6 @@ Fixed: Anti-magic regions blocking resurrect on ankh's (t_shrine).
 10-07-2015, Coruja
 Fixed: Status (hits/mana/stam) of all chars going down to ~15 at server startup.
 Changed: Small improvement on EF_Item_Strict_Comparison .ini experimental feature.
-[Sphere.ini]: Added missing description on some Experimental and OptionFlags features
+[Sphere.ini]:
+	-Removed obsolete EF_Size_Optimise and EF_Intrinsic_Locals experimental flags.
+	-Added missing descriptions on Experimental and OptionFlags features.

@@ -3139,10 +3139,10 @@ void CChar::r_Write( CScript & s )
 	ADDTOCALLSTACK_INTENSIVE("CChar::r_Write");
 	EXC_TRY("r_Write");
 
-	s.WriteSection((IsSetEF(EF_Size_Optimise) ? "WC %s" : "WORLDCHAR %s"), GetResourceName());
+	s.WriteSection("WORLDCHAR %s", GetResourceName());
 	s.WriteKeyVal("CREATE", -(g_World.GetTimeDiff(m_timeCreate) / TICK_PER_SEC));
 
-	CObjBase::r_Write( s );
+	CObjBase::r_Write(s);
 	if ( m_pPlayer )
 		m_pPlayer->r_WriteChar(this, s);
 	if ( m_pNPC )
@@ -3190,7 +3190,7 @@ void CChar::r_Write( CScript & s )
 
 	TCHAR szTmp[100];
 	size_t j = 0;
-	for ( j = 0; j <STAT_QTY; j++ )
+	for ( j = 0; j < STAT_QTY; j++ )
 	{
 		// this is VERY important, saving the MOD first
 		if ( Stat_GetMod(static_cast<STAT_TYPE>(j)) )

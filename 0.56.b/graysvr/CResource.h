@@ -50,28 +50,18 @@ enum OF_TYPE
 enum EF_TYPE
 {
 	EF_NoDiagonalCheckLOS			= 0x0000001,
-	EF_Unused02						= 0x0000002,
 	EF_ItemStacking					= 0x0000004,
 	EF_ItemStackDrop				= 0x0000008,
-	EF_Unused010					= 0x0000010,
-	EF_Intrinsic_Locals				= 0x0000020,
 	EF_Item_Strict_Comparison		= 0x0000040,
-	EF_Unused080					= 0x0000080,
-	EF_Unused0100					= 0x0000100,
 	EF_AllowTelnetPacketFilter		= 0x0000200,
 	EF_Script_Profiler				= 0x0000400,
-	EF_Size_Optimise				= 0x0000800,
-	EF_Unused01000					= 0x0001000,
 	EF_DamageTools					= 0x0002000,
 	EF_UsePingServer				= 0x0008000,
-	EF_Unused0100000				= 0x0010000,
 	EF_FixCanSeeInClosedConts		= 0x0020000,
-	EF_Unused0400000				= 0x0400000,
 #ifndef _MTNETWORK
 	EF_NetworkOutThread				= 0x0800000,
 #endif
     EF_Specific						= 0x1000000,	// Specific behaviour, not completly tested
-	EF_UltimaLive					= 0x2000000		//very Experimental!!!
 };
 
 enum MAGICFLAGS_TYPE

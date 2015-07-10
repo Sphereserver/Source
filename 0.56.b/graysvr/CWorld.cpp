@@ -1297,10 +1297,7 @@ bool CWorld::SaveStage() // Save world state in stages.
 			if ( !pRegion || !pRegion->HasResourceName() || !pRegion->m_iModified )
 				continue;
 
-			if ( IsSetEF(EF_Size_Optimise) )
-				m_FileData.WriteSection("WS %s", pRegion->GetResourceName());
-			else
-				m_FileData.WriteSection("WORLDSCRIPT %s", pRegion->GetResourceName());
+			m_FileData.WriteSection("WORLDSCRIPT %s", pRegion->GetResourceName());
 			pRegion->r_WriteModified(m_FileData);
 		}
 
@@ -2314,7 +2311,7 @@ void CWorld::SpeakUNICODE( const CObjBaseTemplate * pSrc, const NCHAR * pwText, 
 					}
 					else
 					{
-						for ( size_t i = 0; pwText[i] != 0 && iLen < MAX_TALK_BUFFER; i++, iLen++ )
+						for ( size_t i = 0; pwText[i] != 0 && iLen < MAX_TALK_BUFFER - 1; i++, iLen++ )
 						{
 							wTextName[iLen] = pwText[i];
 						}
@@ -2332,7 +2329,7 @@ void CWorld::SpeakUNICODE( const CObjBaseTemplate * pSrc, const NCHAR * pwText, 
 				TCHAR * pszMsg = Str_GetTemp();
 				sprintf(pszMsg, "<%s [%lx]>", static_cast<LPCTSTR>(pSrc->GetName()), static_cast<DWORD>(pSrc->GetUID()));
 				int iLen = CvtSystemToNUNICODE( wTextUID, COUNTOF(wTextUID), pszMsg, -1 );
-				for ( size_t i = 0; pwText[i] && iLen < MAX_TALK_BUFFER; i++, iLen++ )
+				for ( size_t i = 0; pwText[i] && iLen < MAX_TALK_BUFFER - 1; i++, iLen++ )
 				{
 					wTextUID[iLen] = pwText[i];
 				}

@@ -2031,21 +2031,21 @@ void CItem::r_WriteMore2( CGString & sVal )
 void CItem::r_Write( CScript & s )
 {
 	ADDTOCALLSTACK_INTENSIVE("CItem::r_Write");
-	CItemBase	*pItemDef = Item_GetDef();
+	CItemBase *pItemDef = Item_GetDef();
 	if ( !pItemDef )
 		return;
 
-	s.WriteSection((IsSetEF(EF_Size_Optimise) ? "WI %s" : "WORLDITEM %s"), GetResourceName());
+	s.WriteSection("WORLDITEM %s", GetResourceName());
 
 	CObjBase::r_Write(s);
 
-	if ( GetDispID() != GetID())	// the item is flipped.
+	if ( GetDispID() != GetID() )	// the item is flipped.
 		s.WriteKey("DISPID", g_Cfg.ResourceGetName(RESOURCE_ID(RES_ITEMDEF, GetDispID())));
 	if ( GetAmount() != 1 )
 		s.WriteKeyVal("AMOUNT", GetAmount());
-	if ( ! pItemDef->IsType(m_type))
+	if ( !pItemDef->IsType(m_type) )
 		s.WriteKey("TYPE", g_Cfg.ResourceGetName(RESOURCE_ID(RES_TYPEDEF, m_type)));
-	if ( m_uidLink.IsValidUID())
+	if ( m_uidLink.IsValidUID() )
 		s.WriteKeyHex("LINK", m_uidLink);
 	if ( m_Attr )
 		s.WriteKeyHex("ATTR", m_Attr);
@@ -2054,18 +2054,18 @@ void CItem::r_Write( CScript & s )
 	{
 		CGString sVal;
 		r_WriteMore1(sVal);
-		s.WriteKey( "MORE1", sVal );
+		s.WriteKey("MORE1", sVal);
 	}
 	if ( m_itNormal.m_more2 )
 	{
 		CGString sVal;
 		r_WriteMore2(sVal);
-		s.WriteKey( "MORE2", sVal );
+		s.WriteKey("MORE2", sVal);
 	}
 	if ( m_itNormal.m_morep.m_x || m_itNormal.m_morep.m_y || m_itNormal.m_morep.m_z || m_itNormal.m_morep.m_map )
-		s.WriteKey( "MOREP", m_itNormal.m_morep.WriteUsed());
+		s.WriteKey("MOREP", m_itNormal.m_morep.WriteUsed());
 
-	CObjBase * pCont = GetContainer();
+	CObjBase *pCont = GetContainer();
 	if ( pCont )
 	{
 		if ( pCont->IsChar() )
