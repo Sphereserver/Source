@@ -2661,7 +2661,7 @@ do_default:
 			i = g_Cfg.FindStatKey( pszKey );
 			if ( i >= 0 )
 			{
-				int iVal = s.GetArgVal() - Stat_GetMod(static_cast<STAT_TYPE>(i));
+				int iVal = s.GetArgVal();
 				if (iVal > SHRT_MAX)
 					iVal = SHRT_MAX;
 				else if (iVal < SHRT_MIN)
@@ -3139,9 +3139,8 @@ void CChar::r_Write( CScript & s )
 	ADDTOCALLSTACK_INTENSIVE("CChar::r_Write");
 	EXC_TRY("r_Write");
 
-	if ( IsSetEF(EF_Size_Optimise) ) s.WriteSection("WC %s", GetResourceName());
-	else s.WriteSection("WORLDCHAR %s", GetResourceName());
-	s.WriteKeyVal( "CREATE", -( g_World.GetTimeDiff( m_timeCreate ) / TICK_PER_SEC ) );
+	s.WriteSection((IsSetEF(EF_Size_Optimise) ? "WC %s" : "WORLDCHAR %s"), GetResourceName());
+	s.WriteKeyVal("CREATE", -(g_World.GetTimeDiff(m_timeCreate) / TICK_PER_SEC));
 
 	CObjBase::r_Write( s );
 	if ( m_pPlayer )
@@ -3150,9 +3149,9 @@ void CChar::r_Write( CScript & s )
 		m_pNPC->r_WriteChar(this, s);
 
 	if ( GetTopPoint().IsValidPoint() )
-		s.WriteKey( "P", GetTopPoint().WriteUsed());
+		s.WriteKey("P", GetTopPoint().WriteUsed());
 	if ( !m_sTitle.IsEmpty() )
-		s.WriteKey( "TITLE", m_sTitle );
+		s.WriteKey("TITLE", m_sTitle);
 	if ( m_fonttype != FONT_NORMAL )
 		s.WriteKeyVal("FONT", m_fonttype);
 	if ( m_dirFace != DIR_SE )
@@ -3168,7 +3167,7 @@ void CChar::r_Write( CScript & s )
 
 	if ( Skill_GetActive() != SKILL_NONE )
 	{
-		s.WriteKey("ACTION", g_Cfg.ResourceGetName( RESOURCE_ID( RES_SKILL, Skill_GetActive())));
+		s.WriteKey("ACTION", g_Cfg.ResourceGetName(RESOURCE_ID(RES_SKILL, Skill_GetActive())));
 		if ( m_atUnk.m_Arg1 )
 			s.WriteKeyHex("ACTARG1", m_atUnk.m_Arg1);
 		if ( m_atUnk.m_Arg2 )
@@ -3177,65 +3176,52 @@ void CChar::r_Write( CScript & s )
 			s.WriteKeyHex("ACTARG3", m_atUnk.m_Arg3);
 	}
 
-	if ( m_ModMaxWeight )
-		s.WriteKeyVal( "MODMAXWEIGHT", m_ModMaxWeight );
-
 	if ( m_exp )
 		s.WriteKeyVal("EXP", m_exp);
 	if ( m_level )
 		s.WriteKeyVal("LEVEL", m_level);
 
+	if ( m_ModMaxWeight )
+		s.WriteKeyVal("MODMAXWEIGHT", m_ModMaxWeight);
 	if ( m_height )
-		s.WriteKeyVal( "HEIGHT", m_height );
-
-/*	if ( m_ResFire )
-		s.WriteKeyVal( "RESFIRE", m_ResFire);
-	if ( m_ResCold )
-		s.WriteKeyVal( "RESCOLD", m_ResCold);
-	if ( m_ResPoison )
-		s.WriteKeyVal( "RESPOISON", m_ResPoison);
-	if ( m_ResEnergy )
-		s.WriteKeyVal( "RESENERGY", m_ResEnergy);*/
-
-	s.WriteKeyVal( "HITS", Stat_GetVal(STAT_STR) );
-	s.WriteKeyVal( "STAM", Stat_GetVal(STAT_DEX) );
-	s.WriteKeyVal( "MANA", Stat_GetVal(STAT_INT) );
-	s.WriteKeyVal( "FOOD", Stat_GetVal(STAT_FOOD) );
-
-	if ( Stat_GetAdjusted(STAT_STR) != Stat_GetMax(STAT_STR) )
-		s.WriteKeyVal( "MAXHITS", Stat_GetMax(STAT_STR) );
-	if ( Stat_GetAdjusted(STAT_DEX) != Stat_GetMax(STAT_DEX) )
-		s.WriteKeyVal( "MAXSTAM", Stat_GetMax(STAT_DEX) );
-	if ( Stat_GetAdjusted(STAT_INT) != Stat_GetMax(STAT_INT) )
-		s.WriteKeyVal( "MAXMANA", Stat_GetMax(STAT_INT) );
-
-	if ( m_ptHome.IsValidPoint())
-	{
-		s.WriteKey( "HOME", m_ptHome.WriteUsed());
-	}
+		s.WriteKeyVal("HEIGHT", m_height);
+	if ( m_ptHome.IsValidPoint() )
+		s.WriteKey("HOME", m_ptHome.WriteUsed());
 
 	TCHAR szTmp[100];
 	size_t j = 0;
-	for ( j = 0; j <STAT_QTY; j++)
+	for ( j = 0; j <STAT_QTY; j++ )
 	{
 		// this is VERY important, saving the MOD first
 		if ( Stat_GetMod(static_cast<STAT_TYPE>(j)) )
 		{
-			sprintf( szTmp, "MOD%s",  g_Stat_Name[j] );
-			s.WriteKeyVal( szTmp, Stat_GetMod(static_cast<STAT_TYPE>(j)) );
+			sprintf(szTmp, "MOD%s", g_Stat_Name[j]);
+			s.WriteKeyVal(szTmp, Stat_GetMod(static_cast<STAT_TYPE>(j)));
 		}
 		if ( Stat_GetBase(static_cast<STAT_TYPE>(j)) )
 		{
-			sprintf( szTmp, "O%s",  g_Stat_Name[j] );
-			s.WriteKeyVal( szTmp, Stat_GetBase(static_cast<STAT_TYPE>(j)) );
+			sprintf(szTmp, "O%s", g_Stat_Name[j]);
+			s.WriteKeyVal(szTmp, Stat_GetBase(static_cast<STAT_TYPE>(j)));
 		}
 	}
 
-	for ( j = 0; j < g_Cfg.m_iMaxSkill; j++)
+	if ( Stat_GetAdjusted(STAT_STR) != Stat_GetMax(STAT_STR) )
+		s.WriteKeyVal("MAXHITS", Stat_GetMax(STAT_STR));
+	if ( Stat_GetAdjusted(STAT_DEX) != Stat_GetMax(STAT_DEX) )
+		s.WriteKeyVal("MAXSTAM", Stat_GetMax(STAT_DEX));
+	if ( Stat_GetAdjusted(STAT_INT) != Stat_GetMax(STAT_INT) )
+		s.WriteKeyVal("MAXMANA", Stat_GetMax(STAT_INT));
+
+	s.WriteKeyVal("HITS", Stat_GetVal(STAT_STR));
+	s.WriteKeyVal("STAM", Stat_GetVal(STAT_DEX));
+	s.WriteKeyVal("MANA", Stat_GetVal(STAT_INT));
+	s.WriteKeyVal("FOOD", Stat_GetVal(STAT_FOOD));
+
+	for ( j = 0; j < g_Cfg.m_iMaxSkill; j++ )
 	{
 		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(j)) || Skill_GetBase(static_cast<SKILL_TYPE>(j)) == 0 )
 			continue;
-		s.WriteKeyVal( g_Cfg.GetSkillDef(static_cast<SKILL_TYPE>(j))->GetKey(), Skill_GetBase(static_cast<SKILL_TYPE>(j)));
+		s.WriteKeyVal(g_Cfg.GetSkillDef(static_cast<SKILL_TYPE>(j))->GetKey(), Skill_GetBase(static_cast<SKILL_TYPE>(j)));
 	}
 
 	r_WriteContent(s);

@@ -3234,7 +3234,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		}
 
 		// AOS damage types (used by COMBAT_ELEMENTAL_ENGINE)
-		int iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy = 0;
+		int iDmgPhysical = 0, iDmgFire = 0, iDmgCold = 0, iDmgPoison = 0, iDmgEnergy = 0;
 		if ( iD1 & DAMAGE_FIRE )
 			iDmgFire = 100;
 		else if ( iD1 & DAMAGE_COLD )

@@ -2463,3 +2463,8 @@ Fixed: MAGICF_OSIFORMULAS .ini setting not calculating Inscription bonus correct
 Fixed: REVEAL function not removing 'Invisibility' buff icon correctly.
 Fixed: Major walk exploit when Injection clients press 'Chat' button.
 Fixed: Anti-magic regions blocking resurrect on ankh's (t_shrine).
+
+10-07-2015, Coruja
+Fixed: Status (hits/mana/stam) of all chars going down to ~15 at server startup.
+Changed: Small improvement on EF_Item_Strict_Comparison .ini experimental feature.
+[Sphere.ini]: Added missing description on some Experimental and OptionFlags features

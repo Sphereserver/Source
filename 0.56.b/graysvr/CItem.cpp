@@ -4923,7 +4923,7 @@ void CItem::OnExplosion()
 	ASSERT( m_type == IT_EXPLOSION );
 
 	// AOS damage types (used by COMBAT_ELEMENTAL_ENGINE)
-	int iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy = 0;
+	int iDmgPhysical = 0, iDmgFire = 0, iDmgCold = 0, iDmgPoison = 0, iDmgEnergy = 0;
 	if ( m_itExplode.m_wFlags & DAMAGE_FIRE )
 		iDmgFire = 100;
 	else if ( m_itExplode.m_wFlags & DAMAGE_COLD )
@@ -4956,98 +4956,62 @@ bool CItem::IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg )
 	// Check for all the matching special cases.
 	// ARGS:
 	//  dwArg = specific key or map (for typedefs)
-	//          exclude item id (for itemdefs and typedefs)
-
-	if ( GetAmount() == 0 )
-		return( false );	// does not count for any matches.
 
 	CItemBase * pItemDef = Item_GetDef();
 	ASSERT(pItemDef);
 
-	if ( rid == pItemDef->GetResourceID())
-		return( true );
+	if ( rid == pItemDef->GetResourceID() )
+		return true;
 
 	RES_TYPE restype = rid.GetResType();
-	int index = rid.GetResIndex();
 
-	switch ( restype )
+	if ( restype == RES_ITEMDEF )
 	{
-		case RES_TYPEDEF:
-			if ( ! IsType(static_cast<IT_TYPE>(index)))
-				return( false );
+		if ( IsSetEF(EF_Item_Strict_Comparison) )
+			return false;
 
-			if ( dwArg )
+		ITEMID_TYPE index = static_cast<ITEMID_TYPE>(rid.GetResIndex());
+		switch ( index )
+		{
+			case ITEMID_LOG_1:		// logs and boards are the same resource type
 			{
-				switch ( index )
-				{
-					case IT_MAP:
-						// matching maps.
-						if ( LOWORD(dwArg) != m_itMap.m_top ||
-							HIWORD(dwArg) != m_itMap.m_left )
-						{
-							return( false );
-						}
-						break;
-
-					case IT_KEY:
-						if ( ! IsKeyLockFit( dwArg ))
-							return( false );
-						break;
-				}
-
-				if ( static_cast<ITEMID_TYPE>(dwArg) == GetID())
-					return( false );
+				if ( IsType(IT_BOARD) )
+					return true;
 			}
-			return( true );
-
-		case RES_ITEMDEF:
-			if ( static_cast<ITEMID_TYPE>(dwArg) == GetID())
-				return( false );
-
-			if ( GetID() == index )
-				return true;
-
-			if ( IsSetEF( EF_Item_Strict_Comparison ) )
-				return false;
-
-			switch ( index )
+			case ITEMID_LEATHER_1:	// leather and hides are the same resource type
 			{
-				case ITEMID_LEATHER_1:
-				case ITEMID_HIDES:
-					if ( IsType( IT_HIDE ) || IsType( IT_LEATHER ))
-					{
-						// We should be able to use leather in place of hides.
-						return( true );
-					}
-					break;
-				case ITEMID_LOG_1:
-				case ITEMID_BOARD1:
-					if ( IsType(IT_LOG) || IsType(IT_BOARD))
-					{
-						// We should be able to use boards in place of logs.
-						return( true );
-					}
-					break;
-				case ITEMID_Arrow:
-					if ( IsType(IT_WEAPON_ARROW))
-					{
-						return( true );
-					}
-					break;
-				case ITEMID_XBolt:
-					if ( IsType(IT_WEAPON_BOLT))
-					{
-						return( true );
-					}
-					break;
+				if ( IsType(IT_HIDE) )
+					return true;
 			}
-			break;
-
-		default:
-			return( false );
+		}
+		return false;
 	}
 
-	return( false );
+	if ( restype == RES_TYPEDEF )
+	{
+		IT_TYPE index = static_cast<IT_TYPE>(rid.GetResIndex());
+		if ( !IsType(index) )
+			return false;
+
+		switch ( index )
+		{
+			case IT_MAP:		// different map types are not the same resource
+			{
+				if ( LOWORD(dwArg) != m_itMap.m_top || HIWORD(dwArg) != m_itMap.m_left )
+					return false;
+				break;
+			}
+			case IT_KEY:		// keys with different links are not the same resource
+			{
+				if ( m_itKey.m_lockUID != dwArg )
+					return false;
+				break;
+			}
+		}
+		return true;
+	}
+
+	return false;
 }
 
 bool CItem::OnTick()
