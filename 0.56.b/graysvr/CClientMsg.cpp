@@ -1305,7 +1305,6 @@ void CClient::addCharName( const CChar * pChar ) // Singleclick text for a chara
 void CClient::addPlayerStart( CChar * pChar )
 {
 	ADDTOCALLSTACK("CClient::addPlayerStart");
-	ASSERT(m_pChar->m_pPlayer);
 
 	if ( m_pChar != pChar )	// death option just usese this as a reload.
 	{
@@ -1316,6 +1315,7 @@ void CClient::addPlayerStart( CChar * pChar )
 		m_pChar = pChar;
 		m_pChar->ClientAttach( this );
 	}
+	ASSERT(m_pChar->m_pPlayer);
 
 	CPointMap pt = m_pChar->GetTopPoint();
 	CSector *pSector = pt.GetSector();
@@ -3738,7 +3738,6 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	ADDTOCALLSTACK("CClient::Setup_Start");
 	// Play this char.
 	ASSERT( GetAccount() );
-	ASSERT( m_pChar );
 	ASSERT( pChar );
 
 	CharDisconnect();	// I'm already logged in as someone else ?
@@ -3753,7 +3752,7 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	}
 
 	addPlayerStart( pChar );
-
+	ASSERT(m_pChar);
 	// Clear notoriety status from all nearby characters
 	CWorldSearch AreaChars(m_pChar->GetTopPoint(), UO_MAP_VIEW_SIZE);
 	for (;;)
