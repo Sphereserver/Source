@@ -47,14 +47,14 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <MinimalRebuild>true</MinimalRebuild>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_MTNETWORK;_SUBVERSION;_DEBUG;_PACKETDUMP;_TESTEXCEPTION;DEBUG_CRYPT_MSGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_SUBVERSION;_PACKETDUMP;_TESTEXCEPTION;DEBUG_CRYPT_MSGS;_MTNETWORK;WIN32;_WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <WarningLevel>Level2</WarningLevel>
       <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_SUBVERSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
       <AdditionalLibraryDirectories>..\common\mysql\lib\debug</AdditionalLibraryDirectories>
@@ -74,12 +74,12 @@
       <AdditionalIncludeDirectories>..\common\mysql\include</AdditionalIncludeDirectories>
       <CallingConvention>FastCall</CallingConvention>
       <MinimalRebuild>true</MinimalRebuild>
-      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_MTNETWORK;_SUBVERSION;_PRIVATEBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_PRIVATEBUILD;_SUBVERSION;_MTNETWORK;WIN32;_WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level2</WarningLevel>
       <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_PRIVATEBUILD;_SUBVERSION;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
       <AdditionalLibraryDirectories>..\common\mysql\lib\release</AdditionalLibraryDirectories>
@@ -96,12 +96,12 @@
       <AdditionalIncludeDirectories>..\common\mysql\include</AdditionalIncludeDirectories>
       <CallingConvention>FastCall</CallingConvention>
       <MinimalRebuild>true</MinimalRebuild>
-      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_MTNETWORK;_SUBVERSION;_NIGHTLYBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_NIGHTLYBUILD;_SUBVERSION;_MTNETWORK;WIN32;_WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level2</WarningLevel>
       <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_NIGHTLYBUILD;_SUBVERSION;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
       <AdditionalLibraryDirectories>..\common\mysql\lib\release</AdditionalLibraryDirectories>
@@ -118,12 +118,12 @@
       <AdditionalIncludeDirectories>..\common\mysql\include</AdditionalIncludeDirectories>
       <CallingConvention>FastCall</CallingConvention>
       <MinimalRebuild>true</MinimalRebuild>
-      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_MTNETWORK;_SUBVERSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SUBVERSION;_MTNETWORK;WIN32;_WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level2</WarningLevel>
       <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SUBVERSION;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
       <AdditionalLibraryDirectories>..\common\mysql\lib\release</AdditionalLibraryDirectories>

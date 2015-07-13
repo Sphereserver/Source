@@ -676,7 +676,7 @@ bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command 
 				pAccount->ClearPassword();
 				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_PASSCLEAR));
 				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_PASSCLEAR_RELOG));
-				g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "Account '%s', password cleared", pAccount->GetName());
+				g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "Account '%s', password cleared\n", pAccount->GetName());
 			}
 			else
 			{
