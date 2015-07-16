@@ -147,13 +147,16 @@ int CResource::Calc_CombatChanceToHit( CChar * pChar, CChar * pCharTarg, SKILL_T
 		return( 100 );
 
 	int iAttackerSkill = pChar->Skill_GetBase(skill);
-	if ( iAttackerSkill < 200 && pChar->IsGargoyle() && (g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS) )
-		iAttackerSkill = 200;	// Racial traits: Deadly Aim. Gargoyles always have a minimum of 20.0 of throwing for checks (not shown in skill's gump).
-	int iHitChance = static_cast<int>(pChar->GetDefNum("INCREASEHITCHANCE", true));
-	if (g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS && pChar->IsGargoyle())
-		iHitChance += 5;	// Racial traits: Deadly Aim. Gargoyles always have a +5% hit chance, stacking with any other bonuses.
-	iAttackerSkill = (( iAttackerSkill / 10) + 20) * (100 + minimum( iHitChance, 45));
-	int iTargetSkill = ((pCharTarg->Skill_GetBase(skill) / 10) + 20) * (100 + minimum(static_cast<int>(pCharTarg->GetDefNum("HitLowerAtk", true)), 45));
+	int iAttackerHitChance = static_cast<int>(pChar->GetDefNum("INCREASEHITCHANCE", true));
+	if ( g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS && pChar->IsGargoyle() )
+	{
+		// Racial traits: Deadly Aim. Gargoyles always have +5 Hit Chance Increase and a minimum of 20.0 Throwing skill (not shown in skills gump)
+		if ( iAttackerSkill < 200 )
+			iAttackerSkill = 200;
+		iAttackerHitChance += 5;
+	}
+	iAttackerSkill = ((iAttackerSkill / 10) + 20) * (100 + minimum(iAttackerHitChance, 45));
+	int iTargetSkill = ((pCharTarg->Skill_GetBase(skill) / 10) + 20) * (100 + minimum(static_cast<int>(pCharTarg->GetDefNum("INCREASEDEFCHANCE", true)), 45));
 
 	int iChance = iAttackerSkill * 100 / (iTargetSkill * 2);
 	if ( iChance < 2 )

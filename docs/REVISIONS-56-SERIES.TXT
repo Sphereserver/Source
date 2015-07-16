@@ -2474,3 +2474,4 @@ Changed: Small improvement on EF_Item_Strict_Comparison .ini experimental featur
 16-07-2015, Coruja
 Fixed #2538: BOUNCE function not activating item decay if it got dropped on ground by overweight.
 Fixed: NPCs Healer (brain_healer) resurrecting dead bonded pets (only the pet owner can resurrect it).
+Fixed: Combat hit chance formula being called twice, resulting a double chance to miss the attack.

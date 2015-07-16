@@ -2783,56 +2783,47 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	// RETURN:
 	//  true = new attack is accepted.
 
-	if ( pCharTarg == NULL || pCharTarg == this || pCharTarg->IsDisconnected() || !CanSee(pCharTarg) || pCharTarg->IsStatFlag( STATF_DEAD ) || IsStatFlag( STATF_DEAD ) || (pCharTarg->m_pNPC && pCharTarg->m_pNPC->m_bonded) )
+	if ( pCharTarg == NULL || pCharTarg == this || pCharTarg->IsDisconnected() || !CanSee(pCharTarg) || pCharTarg->IsStatFlag(STATF_DEAD) || IsStatFlag(STATF_DEAD) )
 	{
 		// Not a valid target.
-		Fight_Clear( pCharTarg, true );
-		return( false );
+		Fight_Clear(pCharTarg, true);
+		return false;
+	}
+	else if ( GetPrivLevel() <= PLEVEL_Guest && pCharTarg->m_pPlayer && pCharTarg->GetPrivLevel() > PLEVEL_Guest )
+	{
+		SysMessageDefault(DEFMSG_MSG_GUEST);
+		Fight_Clear(pCharTarg);
+		return false;
 	}
 
-	if ( g_Cfg.m_fAttackingIsACrime == TRUE)
+	CChar * pTarget = const_cast<CChar*>(pCharTarg);
+
+	if ( g_Cfg.m_fAttackingIsACrime == TRUE )
 	{
-		CChar * pTarg = const_cast<CChar*>(pCharTarg);
-		if ( pTarg->Noto_GetFlag( this ) == NOTO_GOOD )
-		{
-			/*if ( IsClient())
-			{
-				// I decide if this is a crime.
-				pTarg->OnNoticeCrime( this, pTarg );
-			}
-			else
-			{*/
-				// If it is a pet then this a crime others can report.
-				CheckCrimeSeen( SKILL_NONE, pTarg, NULL, NULL );
-			//}
-		}
+		if ( pCharTarg->Noto_GetFlag(this) == NOTO_GOOD )
+			CheckCrimeSeen(SKILL_NONE, pTarget, NULL, NULL);
 	}
+
 	INT64 threat = 0;
 	if ( btoldByMaster )
 		threat = 1000 + Attacker_GetHighestThreat();
 
-	if ((m_Fight_Targ != pCharTarg->GetUID()) && ((IsTrigUsed(TRIGGER_ATTACK)) || (IsTrigUsed(TRIGGER_CHARATTACK))))
+	if ( (m_Fight_Targ != pCharTarg->GetUID()) && ((IsTrigUsed(TRIGGER_ATTACK)) || (IsTrigUsed(TRIGGER_CHARATTACK))) )
 	{
 		CScriptTriggerArgs Args;
 		Args.m_iN1 = threat;
-		if (OnTrigger(CTRIG_Attack, const_cast<CChar *>(pCharTarg), &Args) == TRIGRET_RET_TRUE)
+		if ( OnTrigger(CTRIG_Attack, pTarget, &Args) == TRIGRET_RET_TRUE )
 			return false;
 		threat = Args.m_iN1;
 	}
 
-	if ( GetPrivLevel() <= PLEVEL_Guest && pCharTarg->m_pPlayer && pCharTarg->GetPrivLevel() > PLEVEL_Guest )
-	{
-		SysMessageDefault( DEFMSG_MSG_GUEST );
-		Fight_Clear( pCharTarg );
-		return( false );
-	}
-	if ( Attacker_Add( const_cast<CChar*>( pCharTarg ), threat ) == false )
-		return( false );
-
-	if (Attacker_GetIgnore(const_cast<CChar*>(pCharTarg)))
+	if ( Attacker_Add(pTarget, threat) == false )
 		return false;
-	// I am attacking. (or defending)
-	StatFlag_Set( STATF_War );
+	if ( Attacker_GetIgnore(pTarget) )
+		return false;
+
+	// I'm attacking (or defending)
+	StatFlag_Set(STATF_War);
 
 	// Skill interruption ?
 	SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
@@ -2858,18 +2849,19 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 		const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
 		if ( pSpellDef != NULL && pSpellDef->GetPrimarySkill(&skill, NULL) )
 		{
-			int iInterrupt = pSpellDef->m_Interrupt.GetLinear( Skill_GetBase(static_cast<SKILL_TYPE>(skill)) );
-			if ( Calc_GetRandVal( 1000 ) >= iInterrupt )
+			int iInterrupt = pSpellDef->m_Interrupt.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(skill)));
+			if ( Calc_GetRandVal(1000) >= iInterrupt )
 				return true;
 		}
 	}
-	CChar * pTarget = const_cast<CChar*>(pCharTarg);
-	if (!m_pPlayer && !btoldByMaster)	// We call for FindBestTarget when this CChar is not a player and was not commanded to attack, otherwise it attack directly.
-		pTarget = Fight_FindBestTarget();
-	m_Fight_Targ = pTarget ? pTarget->GetUID() : static_cast<CGrayUID>(UID_UNUSED);
-	Skill_Start( skillWeapon, g_Cfg.Calc_CombatChanceToHit(this,pTarget,skillActive) );
 
-	return( true );
+	if ( !m_pPlayer && !btoldByMaster )	// We call for FindBestTarget when this CChar is not a player and was not commanded to attack, otherwise it attack directly.
+		pTarget = Fight_FindBestTarget();
+
+	m_Fight_Targ = pTarget ? pTarget->GetUID() : static_cast<CGrayUID>(UID_UNUSED);
+	Skill_Start(skillWeapon);
+
+	return true;
 }
 
 void CChar::Fight_HitTry()
