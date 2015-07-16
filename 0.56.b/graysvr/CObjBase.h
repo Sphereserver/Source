@@ -1369,7 +1369,6 @@ public:
 	inline CCharBase * TryChar( CREID_TYPE &id );
 	inline CItemBase * TryItem( ITEMID_TYPE &id );
 	CResourceDef * FixDef();
-	unsigned char GetFirstEmpty();
 	int GetName(TCHAR * pszOut) const;
 	CItemSpawn(ITEMID_TYPE id , CItemBase * pItemDef);
 	virtual ~CItemSpawn();
@@ -3376,13 +3375,12 @@ public:
 	LPCTSTR Noto_GetFameTitle() const;
 	LPCTSTR Noto_GetTitle() const;
 
-	void Noto_Kill(CChar * pKill, bool fPetKill = false, int iOtherKillers = 0);
+	void Noto_Kill(CChar * pKill, bool fPetKill = false, int iTotalKillers = 0);
 	bool Noto_Criminal( CChar * pChar = NULL);
 	void Noto_Murder();
 	int NotoSave() { return static_cast<int>(m_notoSaves.size()); }
 	void NotoSave_Add( CChar * pChar, NOTO_TYPE value, NOTO_TYPE color = NOTO_INVALID );
 	NOTO_TYPE NotoSave_GetValue( int id, bool bGetColor = false );
-	NOTO_TYPE NotoSave_GetValue( CChar * pChar );
 	INT64 NotoSave_GetTime( int id );
 	void NotoSave_SetValue( CChar * pChar, NOTO_TYPE value );
 	void NotoSave_SetValue( int pChar, NOTO_TYPE value);
@@ -3447,7 +3445,6 @@ public:
 	bool Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg );
 	bool Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax = SHRT_MAX );
 	bool Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly = false, int iReplicationQty = 1 );
-	bool Skill_MakeItem( ITEMID_TYPE id, ITEMID_TYPE material, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly = false, int iReplicationQty = 1 );
 	bool Skill_MakeItem_Success();
 	bool Skill_Snoop_Check( const CItemContainer * pItem );
 	void Skill_Cleanup();	 // may have just cancelled targetting.
@@ -3457,7 +3454,6 @@ public:
 
 	void Spell_Effect_Remove(CItem * pSpell);
 	void Spell_Effect_Add( CItem * pSpell );
-	void Spell_Buff_Add(SPELL_TYPE spell, int iDuration, LPCTSTR* pArgs = 0, size_t iArgCount = 0);
 
 private:
 	int Skill_Done();	 // complete skill (async)
@@ -3575,7 +3571,6 @@ public:
 			return( NULL );
 		return( pMemory );
 	}
-	CItemMemory * Memory_FindGump( DWORD gump, DWORD uid = 0, bool bSdialog = false ) const;
 	// -------- Public alias for MemoryCreateObj ------------------
 	CItemMemory * Memory_AddObj( CGrayUID uid, WORD MemTypes )
 	{
@@ -3656,7 +3651,6 @@ public:
 	void Attacker_SetIgnore(CChar * pChar, bool fIgnore);
 	INT64 Attacker_GetHighestThreat();
 	int  Attacker_GetID( CChar * pChar );
-	int  Attacker_GetID( LPCTSTR pChar );
 	int  Attacker_GetID( CGrayUID pChar );
 	int  IsAttackedBy( CChar * pChar ) { return Attacker_GetID( pChar); } 
 	CChar * Attacker_FindBestTarget( bool bUseThreat = false );
@@ -3774,7 +3768,6 @@ private:
 	bool NPC_CheckWalkHere( const CPointBase & pt, const CRegionBase * pArea, WORD wBlockFlags ) const;
 	void NPC_OnNoticeSnoop( CChar * pCharThief, CChar * pCharMark );
 
-	bool NPC_LootContainer( CItemContainer * pItem );
 	void NPC_LootMemory( CItem * pItem );
 	bool NPC_LookAtCharGuard( CChar * pChar, bool bFromTrigger = false );
 	bool NPC_LookAtCharHealer( CChar * pChar );
@@ -3797,7 +3790,6 @@ private:
 	void NPC_Act_Wander();
 	void NPC_Act_Fight();
 	void NPC_Act_Idle();
-	inline void NPC_Act_Looting_CantGetItem( CItem * pItem );
 	void NPC_Act_Looting();
 	void NPC_Act_Flee();
 	void NPC_Act_Goto(int iDist = 30);

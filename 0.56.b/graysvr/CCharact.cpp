@@ -1841,7 +1841,7 @@ bool CChar::ItemBounce( CItem * pItem )
 		}
 		pszWhere = g_Cfg.GetDefaultMsg( DEFMSG_MSG_FEET );
 		pItem->RemoveFromView();
-		pItem->MoveToUpdate(GetTopPoint());	// drop it on ground
+		pItem->MoveToDecay(GetTopPoint(), pItem->GetDecayTime());	// drop it on ground
 	}
 
 	SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_ITEMPLACE ), pItem->GetName(), pszWhere );
@@ -2916,7 +2916,7 @@ bool CChar::Death()
 					continue;
 			}
 
-			pKiller->Noto_Kill( this, IsStatFlag(STATF_Pet), Attacker()-1 );
+			pKiller->Noto_Kill( this, IsStatFlag(STATF_Pet), Attacker() );
 			iKillStrLen += sprintf( pszKillStr+iKillStrLen, "%s%c'%s'", iKillers ? ", " : "", (pKiller->m_pPlayer) ? 'P':'N', pKiller->GetNameWithoutIncognito() );
 			++iKillers;
 		}

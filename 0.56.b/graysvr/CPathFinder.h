@@ -31,7 +31,6 @@ public:
 public:
 	CPathFinderPoint();
 	explicit CPathFinderPoint(const CPointMap& pt);
-	CPathFinderPoint(const CPointMap& pt, CPointMap& parent);
 
 private:
 	CPathFinderPoint(const CPathFinderPoint& copy);
@@ -39,7 +38,6 @@ private:
 
 public:
 	const CPathFinderPoint* GetParent() const;
-	CPathFinderPoint* GetPoint();
 	void SetParent(CPathFinderPointRef& pt);
 
 	bool operator < (const CPathFinderPoint& pt) const;

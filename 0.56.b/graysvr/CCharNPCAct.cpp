@@ -1189,6 +1189,9 @@ bool CChar::NPC_LookAtCharHuman( CChar * pChar )
 bool CChar::NPC_LookAtCharHealer( CChar * pChar )
 {
 	ADDTOCALLSTACK("CChar::NPC_LookAtCharHealer");
+	if ( !pChar->IsStatFlag(STATF_DEAD) || (pChar->m_pNPC && pChar->m_pNPC->m_bonded) )
+		return false;
+
 	static LPCTSTR const sm_szHealerRefuseEvils[] =
 	{
 		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_EVIL_1 ),
@@ -1215,9 +1218,6 @@ bool CChar::NPC_LookAtCharHealer( CChar * pChar )
 		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_RES_4 ),
 		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_RES_5 )
 	};
-
-	if ( ! pChar->IsStatFlag( STATF_DEAD ))
-		return false;
 
 	UpdateDir( pChar );
 

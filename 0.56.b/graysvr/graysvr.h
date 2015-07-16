@@ -1107,7 +1107,6 @@ private:
 	bool OnRxConsoleLoginComplete();
 	bool OnRxConsole( const BYTE * pData, size_t len );
 	bool OnRxPing( const BYTE * pData, size_t len );
-	bool OnRxWebPageRequest( CWebPageDef * pPage, LPCTSTR pszMatch );
 	bool OnRxWebPageRequest( BYTE * pRequest, size_t len );
 
 	BYTE LogIn( CAccountRef pAccount, CGString & sMsg );
@@ -1703,8 +1702,6 @@ public:
 	void SocketsClose();
 
 	bool Load();
-
-	void RegisterServerUpdate();
 
 	void SysMessage( LPCTSTR pMsg ) const;
 	void PrintTelnet( LPCTSTR pszMsg ) const;

@@ -637,7 +637,6 @@ public:
 
 private:
 	static CItemBase * MakeDupeReplacement( CItemBase * pBase, ITEMID_TYPE iddupe );
-	bool Load();
 	int CalculateMakeValue( int iSkillLevel ) const;
 protected:
 	static void ReplaceItemBase( CItemBase * pOld, CResourceDef * pNew );

@@ -595,7 +595,7 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom, bool bMessage )
 
 extern unsigned int Calc_ExpGet_Exp(unsigned int);
 
-void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iOtherKillers)
+void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iTotalKillers)
 {
 	ADDTOCALLSTACK("CChar::Noto_Kill");
 	// I participated in killing pKill CChar. (called from Death())
@@ -609,36 +609,28 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iOtherKillers)
 
 	// Fight is over now that i have won. (if i was fighting at all )
 	// ie. Magery cast might not be a "fight"
-	Fight_Clear( pKill );
+	Fight_Clear(pKill);
 	if ( pKill == this )
-	{
 		return;
-	}
 
-	if ( !m_pPlayer )
+	if ( m_pNPC )
 	{
-		ASSERT( m_pNPC );
-
-		// Don't create a corpse or loot if got NPC killed by a guard
-		if ( !pKill->m_pPlayer && m_pNPC->m_Brain == NPCBRAIN_GUARD )
+		if ( pKill->m_pNPC )
 		{
-			pKill->StatFlag_Set( STATF_Conjured );
+			if ( m_pNPC->m_Brain == NPCBRAIN_GUARD )	// don't create corpse if NPC got killed by a guard
+				pKill->StatFlag_Set(STATF_Conjured);
 			return;
 		}
 
 		// Check to see if anything is on the corpse I just killed
-		if ( !IsStatFlag(STATF_Ridden) )
+		if ( !IsStatFlag(STATF_Ridden) )	// ridden NPCs can't do any action different than NPCACT_RIDDEN
 			Skill_Start(NPCACT_LOOTING);
-
-		// If an NPC kills an NPC then it doesn't count.
-		if ( pKill->m_pNPC )
-			return;
 	}
 	else if ( NotoThem < NOTO_GUILD_SAME )
 	{
-		ASSERT( m_pPlayer );
+		ASSERT(m_pPlayer);
 		// I'm a murderer !
-		if ( ! IsPriv(PRIV_GM))
+		if ( !IsPriv(PRIV_GM) )
 		{
 			CScriptTriggerArgs args;
 			args.m_iN1 = m_pPlayer->m_wMurders+1;
@@ -653,93 +645,53 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iOtherKillers)
 
 			m_pPlayer->m_wMurders = static_cast<WORD>(args.m_iN1);
 			NotoSave_Update();
-			if ( args.m_iN2 ) 
+			if ( args.m_iN2 )
 				Noto_Criminal();
 
 			Noto_Murder();
 		}
 	}
 
-	if ( NotoThem != NOTO_GUILD_SAME )			// no fame/karma gain for killing guildmates
+	// No fame/karma/exp gain on these conditions
+	if ( fPetKill || NotoThem == NOTO_GUILD_SAME || pKill->IsStatFlag(STATF_Conjured) || (pKill->m_pNPC && pKill->m_pNPC->m_bonded) )
+		return;
+
+	int iPrvLevel = Noto_GetLevel();	// store title before fame/karma changes to check if it got changed
+	Noto_Fame(g_Cfg.Calc_FameKill(pKill) / iTotalKillers);
+	Noto_Karma(g_Cfg.Calc_KarmaKill(pKill, NotoThem) / iTotalKillers);
+
+	if ( g_Cfg.m_bExperienceSystem && (g_Cfg.m_iExperienceMode & EXP_MODE_RAISE_COMBAT) )
 	{
-		// Store current notolevel before changes, used to check if notlvl is changed.
-		int iPrvLevel = Noto_GetLevel();
-		int iFameChange = g_Cfg.Calc_FameKill(pKill) / (iOtherKillers + 1);
-		int iKarmaChange = g_Cfg.Calc_KarmaKill(pKill, NotoThem) / (iOtherKillers + 1);
-
-		// no real fame/karma/exp for letting your pets do the work! and killing summoned pets as well
-		if ( !fPetKill && pKill->IsStatFlag(STATF_Conjured) )
-			fPetKill = true;
-	
-		if ( !fPetKill )							
+		int change = (pKill->m_exp / 10) / iTotalKillers;
+		if ( change )
 		{
-			Noto_Fame(iFameChange);
-			Noto_Karma(iKarmaChange);
-
-			//	count change of experience
-			if ( g_Cfg.m_bExperienceSystem && ( g_Cfg.m_iExperienceMode & EXP_MODE_RAISE_COMBAT ))
-			{
-				// default delta = exp/10 (same as death loss), divided for each killer proportionaly
-				int change = pKill->m_exp;
-
-				if ( g_Cfg.m_bLevelSystem &&
-					( (g_Cfg.m_iExperienceMode & (EXP_MODE_ALLOW_DOWN|EXP_MODE_DOWN_NOLEVEL)) == (EXP_MODE_ALLOW_DOWN|EXP_MODE_DOWN_NOLEVEL) ) &&
-					pKill->m_pPlayer )
-				{
-					//	to disallow players to get some level and then allow kill self without
-					//	any bad affect on self - share only exp till the current level
-					change -= Calc_ExpGet_Exp(pKill->m_level);
-					if ( change < 0 )
-						change = 0;
-				}
-
-				change = (change/10)/(iOtherKillers + 1);
-
-				if ( change )							// PvP / PvM ?
-				{
-					// NPC is considering self as a player if being a killer.
-					if ( pKill->m_pPlayer )
-						change = ( change * g_Cfg.m_iExperienceKoefPVP )/100;
-					else
-						change = ( change * g_Cfg.m_iExperienceKoefPVM )/100;
-				}
-
-				if ( change )
-				{
-					//	bonuses of different experiences
-					if ( (m_exp * 4) < pKill->m_exp )		// 200%		[exp = 1/4 of killed]
-						change *= 2;
-					else if ( (m_exp * 2) < pKill->m_exp )	// 150%		[exp = 1/2 of killed]
-						change = (change * 3) / 2;
-					else if ( m_exp <= pKill->m_exp )		// 100%		[exp <= killed]
-						;
-					else if ( m_exp < (pKill->m_exp * 2) )	//  50%		[exp < 2 * killed]
-						change /= 2;
-					else if ( m_exp < (pKill->m_exp * 3) )	//  25%		[exp < 3 * killed]
-						change /= 4;
-					else									//  10%		[exp >= 3 * killed]
-						change /= 10;
-				}
-
-				//	bonuses of different experience levels
-				if ( change && g_Cfg.m_bLevelSystem && pKill->m_pPlayer )
-				{
-					int dlevel = m_level - pKill->m_level;
-
-					if ( dlevel < 0 )				//	+10% per each lower level
-						change = (change * (100 + 10 * (minimum(abs(dlevel),10))))/100;
-					else if ( !dlevel )
-						;
-					else							//	-10% per each upper level
-						change = (change * (100 - 10 * (minimum(dlevel,10))))/100;
-				}
-
-				ChangeExperience(change, pKill);
-			}
+			if ( m_pPlayer && pKill->m_pPlayer )
+				change = (change * g_Cfg.m_iExperienceKoefPVP) / 100;
+			else
+				change = (change * g_Cfg.m_iExperienceKoefPVM) / 100;
 		}
 
-		Noto_ChangeNewMsg( iPrvLevel ); // Inform on any notlvl changes.
+		if ( change )
+		{
+			//	bonuses of different experiences
+			if ( (m_exp * 4) < pKill->m_exp )		// 200%		[exp < 1/4 of killed]
+				change *= 2;
+			else if ( (m_exp * 2) < pKill->m_exp )	// 150%		[exp < 1/2 of killed]
+				change = (change * 3) / 2;
+			else if ( m_exp <= pKill->m_exp )		// 100%		[exp <= killed]
+				;
+			else if ( m_exp < (pKill->m_exp * 2) )	//  50%		[exp < 2 * killed]
+				change /= 2;
+			else if ( m_exp < (pKill->m_exp * 3) )	//  25%		[exp < 3 * killed]
+				change /= 4;
+			else									//  10%		[exp >= 3 * killed]
+				change /= 10;
+		}
+
+		ChangeExperience(change, pKill);
 	}
+
+	Noto_ChangeNewMsg(iPrvLevel);	// inform any title changes
 }
 
 void CChar::NotoSave_Add( CChar * pChar, NOTO_TYPE value, NOTO_TYPE color  )
@@ -2926,19 +2878,14 @@ void CChar::Fight_HitTry()
 	// A timer has expired so try to take a hit.
 	// I am ready to swing or already swinging.
 	// but i might not be close enough.
-	// RETURN:
-	//  false = no swing taken
-	//  true = continue fighting
 
-	ASSERT( Fight_IsActive());
-	ASSERT( m_atFight.m_War_Swing_State == WAR_SWING_READY || m_atFight.m_War_Swing_State == WAR_SWING_SWINGING );
+	ASSERT( Fight_IsActive() );
+	ASSERT( m_atFight.m_War_Swing_State == WAR_SWING_READY|WAR_SWING_SWINGING );
 
 	CChar * pCharTarg = m_Fight_Targ.CharFind();
-	if (pCharTarg == NULL)
+	if ( pCharTarg == NULL || pCharTarg->IsStatFlag(STATF_DEAD) )	// dead players and dead bonded pets can't be attacked
 	{
-		// Might be dead ? Clear this.
-		// move to my next target.
-		if (!Fight_Attack( Fight_FindBestTarget() ))
+		if ( !Fight_Attack(Fight_FindBestTarget()) )
 		{
 			Skill_Start(SKILL_NONE);
 			StatFlag_Clear(STATF_War);
@@ -2946,41 +2893,25 @@ void CChar::Fight_HitTry()
 		}
 		return;
 	}
-	bool isBondedTarget = pCharTarg->IsStatFlag(STATF_DEAD);	// Bonded targets are the unique npcs able to be attacked, it they were not bonded the would be dead and not exist anymore... no need of more checks. Dead players are in the same group, must be skipped.
-	if (isBondedTarget)
+
+	switch ( Fight_Hit(pCharTarg) )
 	{
-		// Might be dead ? Clear this.
-		// move to my next target.
-		if (!Fight_Attack( Fight_FindBestTarget() ))
+		case WAR_SWING_INVALID:		// target is invalid
 		{
-			Skill_Start(SKILL_NONE);
-			StatFlag_Clear(STATF_War);
-			m_Fight_Targ.InitUID();
+			Fight_Clear(pCharTarg);
+			Fight_Attack(Fight_FindBestTarget());
+			return;
 		}
-		return;
-	}
-	// Try to hit my target. I'm ready.
-	switch ( Fight_Hit( pCharTarg ))
-	{
-		case WAR_SWING_INVALID:	// target is invalid.
-			Fight_Clear( pCharTarg );
-			Fight_Attack( Fight_FindBestTarget() );
+		case WAR_SWING_EQUIPPING:	// keep hitting the same target
+		{
+			Skill_Cleanup();	// smooth transition = not a cancel of skill
+			Skill_Start(Skill_GetActive());
 			return;
-		case WAR_SWING_EQUIPPING:
-			// Assume I want to continue hitting
-			// Swing again. (start swing delay)
-			// same target.
-			{
-				SKILL_TYPE skill = Skill_GetActive();
-				Skill_Cleanup();	// Smooth transition = not a cancel of skill.
-				Skill_Start(skill);
-			}
+		}
+		case WAR_SWING_READY:		// probably too far away, can't take my swing right now
+			Fight_Attack(Fight_FindBestTarget());
 			return;
-		case WAR_SWING_READY:	// probably too far away. can't take my swing right now.
-			// Try for a diff target ?
-			Fight_Attack( Fight_FindBestTarget() );
-			return;
-		case WAR_SWING_SWINGING:	// must come back here again to complete.
+		case WAR_SWING_SWINGING:	// must come back here again to complete
 			return;
 		default:
 			break;
@@ -2992,31 +2923,29 @@ bool CChar::Attacker_Add( CChar * pChar, INT64 threat )
 {
 	ADDTOCALLSTACK("CChar::Attacker_Add");
 	CGrayUID uid = static_cast<CGrayUID>(pChar->GetUID());
-	if  ( m_lastAttackers.size() )	// Must only check for existing attackers if there are any attacker already.
+	if ( m_lastAttackers.size() )	// Must only check for existing attackers if there are any attacker already.
 	{
-		for (std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it)
+		for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it )
 		{
 			LastAttackers & refAttacker = *it;
 			if ( refAttacker.charUID == uid )
-			{
-				//Found one, no actions needed so we skip
-				return true;
-			}
+				return true;	// found one, no actions needed so we skip
 		}
 	}
 	else if ( IsTrigUsed(TRIGGER_COMBATSTART) )
 	{
-		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatStart,pChar,0);
+		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatStart, pChar, 0);
 		if ( tRet == TRIGRET_RET_TRUE )
 			return false;
 	}
+
 	CScriptTriggerArgs Args;
 	bool fIgnore = false;
 	Args.m_iN1 = threat;
 	Args.m_iN2 = fIgnore;
 	if ( IsTrigUsed(TRIGGER_COMBATADD) )
 	{
-		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatAdd,pChar,&Args);
+		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatAdd, pChar, &Args);
 		if ( tRet == TRIGRET_RET_TRUE )
 			return false;
 		threat = Args.m_iN1;
@@ -3027,30 +2956,23 @@ bool CChar::Attacker_Add( CChar * pChar, INT64 threat )
 	attacker.amountDone = 0;
 	attacker.charUID = uid;
 	attacker.elapsed = 0;
-	if ( m_pPlayer )
-		attacker.threat = 0;
-	else
-		attacker.threat = threat;
+	attacker.threat = (m_pPlayer) ? 0 : threat;
 	attacker.ignore = fIgnore;
 	m_lastAttackers.push_back(attacker);
 
-
 	// Record the start of the fight.
 	Memory_Fight_Start(pChar);
-	char *z = NULL;
-
-	if (!attacker.ignore)
+	char *z = Str_GetTemp();
+	if ( !attacker.ignore )
 	{
-		if (GetTopSector()->GetCharComplexity() < 7)
-		{
-			z = Str_GetTemp();
+		//if ( GetTopSector()->GetCharComplexity() < 7 )
+		//{
 			sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKO), GetName(), pChar->GetName());
 			UpdateObjMessage(z, NULL, pChar->GetClient(), HUE_TEXT_DEF, TALKMODE_EMOTE);
-		}
+		//}
 
-		if (pChar->IsClient() && pChar->CanSee(this))
+		if ( pChar->IsClient() && pChar->CanSee(this) )
 		{
-			if (!z) z = Str_GetTemp();
 			sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKS), GetName());
 			pChar->GetClient()->addBarkParse(z, this, HUE_TEXT_DEF, TALKMODE_EMOTE);
 		}
@@ -3061,26 +2983,22 @@ bool CChar::Attacker_Add( CChar * pChar, INT64 threat )
 CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 {
 	ADDTOCALLSTACK("CChar::Attacker_FindBestTarget");
-	if ( !Attacker() )
+	if ( !m_lastAttackers.size() )
 		return NULL;
-	SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
-	int iClosest = INT_MAX;	// closest
-
-	CChar * pChar = NULL;
-	CChar * pClosest = NULL;
-	if ( ! m_lastAttackers.size() )
-		return pChar;
 
 	INT64 threat = 0;
+	int iClosest = INT_MAX;
+	CChar * pChar = NULL;
+	CChar * pClosest = NULL;
+	SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
 
-	for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); it++)
+	for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); it++ )
 	{
 		LastAttackers & refAttacker = *it;
-		CChar * pChar = static_cast<CChar*>( static_cast<CGrayUID>( refAttacker.charUID ).CharFind() );
-
+		pChar = static_cast<CChar*>(static_cast<CGrayUID>(refAttacker.charUID).CharFind());
 		if ( pChar == NULL )
 			continue;
-		if ( pChar->IsStatFlag(STATF_DEAD) && pChar->m_pNPC && pChar->m_pNPC->m_bonded )	// is the target bonded and dead? not a fighting target then
+		if ( pChar->IsStatFlag(STATF_DEAD) )	// dead chars can't be selected as target
 		{
 			pChar = NULL;
 			continue;
@@ -3088,14 +3006,14 @@ CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 		if ( refAttacker.ignore )
 		{
 			bool bIgnore = true;
-			if ( IsTrigUsed( TRIGGER_HITIGNORE ) )
+			if ( IsTrigUsed(TRIGGER_HITIGNORE) )
 			{
 				CScriptTriggerArgs Args;
 				Args.m_iN1 = bIgnore;
 				OnTrigger(CTRIG_HitIgnore, pChar, &Args);
 				bIgnore = Args.m_iN1 ? true : false;
 			}
-			if (bIgnore)
+			if ( bIgnore )
 			{
 				pChar = NULL;
 				continue;
@@ -3103,26 +3021,23 @@ CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 		}
 		if ( pClosest == NULL )
 			pClosest = pChar;
-		int iDist = GetDist(pChar);
-		
+
 		// Main priority is the Threat
 		// but we only add it if it meets some requirements: target must not be far than view size and must be in LOS.
-
+		int iDist = GetDist(pChar);
 		if ( g_Cfg.IsSkillFlag(skillWeapon, SKF_RANGED) )
 		{
-			// archery dist is different.
-			if ( iDist < g_Cfg.m_iArcheryMinDist || iDist > g_Cfg.m_iArcheryMaxDist )
+			if ( iDist < g_Cfg.m_iArcheryMinDist || iDist > g_Cfg.m_iArcheryMaxDist )	// archery dist is different.
 				continue;
-			if (m_Fight_Targ == pChar->GetUID())	// alternate.
+			if ( m_Fight_Targ == pChar->GetUID() )	// alternate.
 				continue;
-		} 
+		}
 		if ( iDist > UO_MAP_VIEW_SIGHT )
 			continue;
-
-		if ( ! CanSeeLOS( pChar ) )
+		if ( !CanSeeLOS(pChar) )
 			continue;
 
-		if ( bUseThreat && threat < refAttacker.threat)
+		if ( bUseThreat && threat < refAttacker.threat )
 		{
 			// So if we reached here ... this target has more threat than the others and meets the reqs.
 			pClosest = pChar;
@@ -3130,14 +3045,14 @@ CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
 			threat = refAttacker.threat;
 
 		}
-		else if (iDist < iClosest)
+		else if ( iDist < iClosest )
 		{
 			// ??? in the npc case. can i actually reach this target ?
 			pClosest = pChar;
 			iClosest = iDist;
 		}
 	}
-	return ( pClosest ) ? pClosest : pChar;
+	return (pClosest) ? pClosest : pChar;
 }
 
 INT64 CChar::Attacker_GetDam( int id)

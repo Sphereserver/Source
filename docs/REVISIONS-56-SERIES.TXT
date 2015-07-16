@@ -2470,3 +2470,7 @@ Changed: Small improvement on EF_Item_Strict_Comparison .ini experimental featur
 [Sphere.ini]:
 	-Removed obsolete EF_Size_Optimise and EF_Intrinsic_Locals experimental flags.
 	-Added missing descriptions on Experimental and OptionFlags features.
+
+16-07-2015, Coruja
+Fixed #2538: BOUNCE function not activating item decay if it got dropped on ground by overweight.
+Fixed: NPCs Healer (brain_healer) resurrecting dead bonded pets (only the pet owner can resurrect it).
