@@ -3367,35 +3367,6 @@ bool CChar::CheckLocation( bool fStanding )
 					}
 				}
 				continue;
-			case IT_CORPSE:
-				{
-					if ( !m_pNPC || !(g_Cfg.m_iNpcAi & NPC_AI_LOOTING) )
-						continue;
-					if ( !Can(CAN_C_USEHANDS) || IsStatFlag(STATF_Conjured|STATF_Pet) )
-						continue;
-					if ( m_pArea->IsFlag(REGION_FLAG_SAFE|REGION_FLAG_GUARDED) )
-						continue;
-
-					if ( Calc_GetRandVal(150) < Stat_GetAdjusted(STAT_INT) )
-					{
-						CItemCorpse	*pCorpse = dynamic_cast<CItemCorpse*>(this);
-						if ( pCorpse != NULL && pCorpse->GetCount() > 0 )
-						{
-							CItem *pItem = pCorpse->GetAt(Calc_GetRandVal(pCorpse->GetCount()));
-							if (!pItem)
-								continue;
-
-							if ( CanCarry(pItem) && !pItem->IsAttr(ATTR_NEWBIE|ATTR_BLESSED|ATTR_INSURED|ATTR_NODROPTRADE) )
-							{
-								char *zMsg = Str_GetTemp();
-								sprintf(zMsg, g_Cfg.GetDefaultMsg(DEFMSG_LOOT_ITEM_FROM), pItem->GetName(), pCorpse->GetName());
-								Emote(zMsg);
-								ItemBounce(pItem);
-							}
-						}
-					}
-				}
-				continue;
 			default:
 				continue;
 		}

@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, Jun 29, 2015
+// FILE LAST UPDATED: Friday, Jul 17, 2015
 //
 VERSION=0.56c
 
@@ -1077,8 +1077,8 @@ EMOTE_DEF_UNICODE	0
 //select_magic_target			"Select target..."
 //cant_add_spellbook			"Can't add this to the spellbook"
 //just_been_poisoned			"You have been poisoned!"
-//loot_item_from				"looting %s from %s"
 //loot_criminal_act				"Looting this corpse will be a criminal act!"
+//loot_rummage					"*rummages through a corpse and takes an item*"
 //select_potion_target			"Where do you want to throw the potion?"
 //item_in_use					"The item is in use"
 //itemtitle_unholy				"Unholy "

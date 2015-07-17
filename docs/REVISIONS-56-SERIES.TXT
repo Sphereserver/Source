@@ -2475,3 +2475,7 @@ Changed: Small improvement on EF_Item_Strict_Comparison .ini experimental featur
 Fixed #2538: BOUNCE function not activating item decay if it got dropped on ground by overweight.
 Fixed: NPCs Healer (brain_healer) resurrecting dead bonded pets (only the pet owner can resurrect it).
 Fixed: Combat hit chance formula being called twice, resulting a double chance to miss the attack.
+
+17-07-2015, Coruja
+Added: New improved NPC looting AI (NPC_AI_LOOTING). It's working, but still need some testing to check if everything is fine.
+[sphere_msgs.scp]: Removed 'loot_item_from' and added 'loot_rummage' messages.

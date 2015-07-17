@@ -1195,7 +1195,6 @@ enum SV_TYPE
 	SV_IMPORT,
 	SV_INFORMATION,
 	SV_ITEMS, //read only
-	SV_LISTUPDATE,
 	SV_LOAD,
 	SV_LOG,
 	SV_PRINTLISTS,
@@ -1234,7 +1233,6 @@ LPCTSTR const CServer::sm_szVerbKeys[SV_QTY+1] =
 	"IMPORT",
 	"INFORMATION",
 	"ITEMS", // read only
-	"LISTUPDATE",
 	"LOAD",
 	"LOG",
 	"PRINTLISTS",
@@ -1448,9 +1446,6 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 			{
 				pSrc->SysMessage( "IMPORT name [flags] [area distance]" );
 			}
-			break;
-		case SV_LISTUPDATE:
-			//RegisterServerUpdate();
 			break;
 		case SV_LOAD:
 			// Load a resource file.

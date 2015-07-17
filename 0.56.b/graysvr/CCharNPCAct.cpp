@@ -1292,18 +1292,17 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 	ADDTOCALLSTACK("CChar::NPC_LookAtItem");
 
 	// I might want to go pickup this item ?
-	if ( ! CanSee( pItem ))
-		return( false );
+	if ( !CanSee(pItem) )
+		return false;
 
 	int iWantThisItem = NPC_WantThisItem(pItem);
-
 	if ( IsTrigUsed(TRIGGER_NPCLOOKATITEM) )
 	{
-		if (( !pItem->IsAttr( ATTR_MOVE_NEVER|ATTR_LOCKEDDOWN|ATTR_SECURE ) ) && ( IsTrigUsed(TRIGGER_NPCLOOKATITEM) ))
+		if ( IsTrigUsed(TRIGGER_NPCLOOKATITEM) && !pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_LOCKEDDOWN|ATTR_SECURE) )
 		{
 
-			CScriptTriggerArgs	Args( iDist, iWantThisItem, pItem );
-			switch( OnTrigger( CTRIG_NPCLookAtItem, this, &Args ) )
+			CScriptTriggerArgs	Args(iDist, iWantThisItem, pItem);
+			switch ( OnTrigger(CTRIG_NPCLookAtItem, this, &Args) )
 			{
 				case  TRIGRET_RET_TRUE:		return true;
 				case  TRIGRET_RET_FALSE:	return false;
@@ -1329,9 +1328,16 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 		}
 	}
 
-	CCharBase * pCharDef = Char_GetDef();
+	// Loot nearby corpses
+	if ( pItem->IsType(IT_CORPSE) && (g_Cfg.m_iNpcAi & NPC_AI_LOOTING) && (Memory_FindObj(pItem) == NULL) )
+	{
+		m_Act_p = pItem->GetTopPoint();
+		m_Act_Targ = pItem->GetUID();
+		NPC_Act_Looting();
+		return true;
+	}
 
-	// check for crops we can rip.
+	// Check for crops we can rip
 	if (  pItem->IsType( IT_CROPS ) ||  pItem->IsType( IT_FOLIAGE ) )
 	{
 		CItemBase * checkItemBase = pItem->Item_GetDef();
@@ -1367,6 +1373,7 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 
 
 	// check for doors we can open.
+	CCharBase * pCharDef = Char_GetDef();
 	if ( Stat_GetAdjusted(STAT_INT) > 20 &&
 		pCharDef->Can(CAN_C_USEHANDS) &&
 		pItem->IsType( IT_DOOR ) &&	// not locked.
@@ -2588,167 +2595,72 @@ void CChar::NPC_LootMemory( CItem * pItem )
 	}
 }
 
-bool CChar::NPC_LootContainer( CItemContainer * pContainer )
-{
-	ADDTOCALLSTACK("CChar::NPC_LootContainer");
-	// Go through the pack and see if there is anything I want there...
-	CItem * pNext;
-	CItem * pLoot = pContainer->GetContentHead();
-	for ( ; pLoot != NULL; pLoot = pNext )
-	{
-		pNext = pLoot->GetNext();
-		// Have I checked this one already?
-		if ( Memory_FindObj( pLoot ))
-			continue;
-
-		if ( pLoot->IsContainer())
-		{
-			// Loot it as well
-			if ( ! NPC_LootContainer( dynamic_cast <CItemContainer *> (pLoot)))
-			{
-				// Not finished with it
-				return false;
-			}
-		}
-
-		if ( ! NPC_WantThisItem( pLoot ))
-			continue;
-
-		// How much can I carry
-		if ( CanCarry( pLoot ))
-		{
-			UpdateAnimate( ANIM_BOW );
-			ItemEquip( pLoot );
-		}
-		else
-		{
-			// Can't carry the whole stack...how much can I carry?
-			NPC_LootMemory( pLoot );
-		}
-
-		// I can only pick up one thing at a time, so come back here on my next tick
-		SetTimeout( 1 );	// Don't go through things so fast.
-		return false;
-	}
-
-	// I've gone through everything here...remember that we've looted this container
-	NPC_LootMemory( pContainer );
-	return true;
-}
-
-inline void CChar::NPC_Act_Looting_CantGetItem( CItem * pItem )
-{
-	ADDTOCALLSTACK("CChar::NPC_Act_Looting_CantGetItem");
-	NPC_LootMemory( pItem );
-	Skill_Start( SKILL_NONE );
-}
-
 void CChar::NPC_Act_Looting()
 {
 	ADDTOCALLSTACK("CChar::NPC_Act_Looting");
 	// NPCACT_LOOTING
-	// We have seen something good that we want. checking it out now.
-	// We just killed something, so we should see if it has anything interesting on it.
-	// Find the corpse first
+	// We killed something, let's take a look on the corpse.
+	// Or we find something interesting on ground
+	//
+	// m_Act_Targ = item UID that we trying to look
+	// m_Act_p = last known position of the corpse
 
-	if ( !m_pNPC )
+	//Skill_Start(SKILL_NONE);
+	if ( !m_pNPC || !(g_Cfg.m_iNpcAi & NPC_AI_LOOTING) )
+		return;
+	if ( !Can(CAN_C_USEHANDS) || IsStatFlag(STATF_Conjured|STATF_Pet) )
+		return;
+	if ( m_pArea->IsFlag(REGION_FLAG_SAFE|REGION_FLAG_GUARDED) )
 		return;
 
 	CItem * pItem = m_Act_Targ.ItemFind();
 	if ( pItem == NULL )
-	{
-		Skill_Start( SKILL_NONE );
 		return;
-	}
 
 	CObjBaseTemplate * pObjTop = pItem->GetTopLevelObj();
-	if ( m_Act_TargPrv != pObjTop->GetUID() ||
-		m_Act_p != pObjTop->GetTopPoint())
+	if ( m_Act_TargPrv != pObjTop->GetUID() || m_Act_p != pObjTop->GetTopPoint() )	// give up if object got moved
 	{
-		// It moved ?
-		// give up on this.
-		NPC_Act_Looting_CantGetItem( pItem );
+		NPC_LootMemory(pItem);
 		return;
 	}
 
-	if ( GetDist( pItem ) > 1 )	// move toward it.
+	if ( GetDist(pItem) > 2 )	// move toward it
 	{
 		if ( ++(m_atLooting.m_iDistCurrent) > m_atLooting.m_iDistEstimate )
 		{
-			NPC_Act_Looting_CantGetItem( pItem );
+			NPC_LootMemory(pItem);
 			return;
 		}
 		NPC_WalkToPoint();
 		return;
 	}
 
-	if ( pItem->IsTypeLocked())
+	if ( !CanTouch(pItem) )
 	{
-		NPC_Act_Looting_CantGetItem( pItem );
+		NPC_LootMemory(pItem);
 		return;
 	}
 
-	if ( pItem->IsType(IT_CORPSE))
-	{
-		// Did I kill this one?
-		if ( pItem->m_itCorpse.m_uidKiller != GetUID())
-		{
-			// Wasn't me...less chance of actually looting it.
-			if ( Calc_GetRandVal( 4 ))
-			{
-				NPC_Act_Looting_CantGetItem( pItem );
-				return;
-			}
-		}
-	}
-
-	// Can i reach the object that i want ?
-	if ( ! CanTouch( pItem ))
-	{
-		NPC_Act_Looting_CantGetItem( pItem );
-		return;
-	}
-
-	// I can reach it
-	CItemCorpse * pCorpse = dynamic_cast <CItemCorpse *> ( pItem );
+	CItemCorpse * pCorpse = dynamic_cast<CItemCorpse *>(pItem);
 	if ( pCorpse )
 	{
-		if ( ! NPC_LootContainer( pCorpse ))
-			return;
-
-		// Eat raw meat ? or just evil ?
-		if ( m_pNPC->m_Brain == NPCBRAIN_MONSTER ||
-			m_pNPC->m_Brain == NPCBRAIN_ANIMAL ||
-			m_pNPC->m_Brain == NPCBRAIN_DRAGON )
+		if ( pCorpse && pCorpse->GetCount() > 0 )
 		{
-			// Only do this if it has a resource type we want...
-			if ( pCorpse->GetTimeStamp().IsTimeValid() )
+			pItem = pCorpse->GetAt(Calc_GetRandVal(pCorpse->GetCount()));
+			if ( pItem && CanMove(pItem) && CanCarry(pItem) )
 			{
-				Use_CarveCorpse( pCorpse );
-				Skill_Start( NPCACT_LOOKING );
-				return;
+				Speak(g_Cfg.GetDefaultMsg(DEFMSG_LOOT_RUMMAGE));
+				ItemBounce(pItem);
 			}
 		}
 	}
 	else
 	{
-		if ( ! CanCarry( pItem ))
-		{
-			NPC_Act_Looting_CantGetItem( pItem );
-			return;
-		}
-
-		// can i eat it on the ground ?
-
-		UpdateAnimate( ANIM_BOW );
-		ItemBounce( pItem );
+		if ( CanMove(pItem) && CanCarry(pItem) )
+			ItemBounce(pItem);
 	}
 
-	// Done looting
-	// We might be looting this becuase we are hungry...
-	// What was I doing before this?
-
-	Skill_Start( SKILL_NONE );
+	SetTimeout(10 * TICK_PER_SEC);	// wait some time to loot more items
 }
 
 void CChar::NPC_Act_Flee()
