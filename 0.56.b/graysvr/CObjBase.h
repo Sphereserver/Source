@@ -2840,16 +2840,6 @@ public:
 			int	 m_iStepsCurrent;	// how long has it taken ?
 		} m_atFlee;
 
-		// NPCACT_LOOTING
-		// m_Act_Targ = what am i looting ? (Corpse)
-		// m_Act_TargPrv = targets parent
-		// m_Act_p = location of the target.
-		struct
-		{
-			int	 m_iDistEstimate;	// how long should it take to get there.
-			int	 m_iDistCurrent;	// how long has it taken ?
-		} m_atLooting;
-
 		// NPCACT_TRAINING
 		// m_Act_Targ = what am i training on
 		// m_Act_TargPrv = weapon
@@ -3503,7 +3493,6 @@ private:
 	int Skill_Act_Throwing(SKTRIG_TYPE stage);
 	int Skill_Act_Breath(SKTRIG_TYPE stage);
 	int Skill_Act_Training( SKTRIG_TYPE stage );
-	int Skill_Act_Looting( SKTRIG_TYPE stage );
 
 	void Spell_Dispel( int iskilllevel );
 	CChar * Spell_Summon( CREID_TYPE id, CPointMap pt, bool fPet );

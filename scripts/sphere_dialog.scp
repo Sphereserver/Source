@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, Mar 23, 2015
+// FILE LAST UPDATED: Saturday, Jul 18, 2015
 //
 VERSION=0.56c
 
@@ -221,8 +221,8 @@ ON=17
 ON=18
    IF (<ACTION>==-1)
       SRC.MESSAGE @50 Doing nothing.
-   ELIF ((<ACTION> >= SKILL_ANATOMY) && (<ACTION> <= SKILL_SPELLWEAVING)) //1~54
-      SRC.MESSAGE @50 Using the skill <SERV.SKILL(<EVAL (<ACTION>&0000000ff)>).KEY>.
+   ELIF ((<ACTION> >= SKILL_ANATOMY) && (<ACTION> <= SKILL_THROWING)) //1~57
+      SRC.MESSAGE @50 Using skill <SERV.SKILL(<EVAL (<ACTION>&0000000ff)>).KEY>.
    ELIF (<ACTION>==064) //100
       SRC.MESSAGE @50 Npc following someone.
    ELIF (<ACTION>==065) //101
@@ -248,14 +248,12 @@ ON=18
    ELIF (<ACTION>==06f) //111
       SRC.MESSAGE @50 Npc being ridden or shrunk as figurine.
    ELIF (<ACTION>==070) //112
-      SRC.MESSAGE @50 Npc looting a target corpse.
-   ELIF (<ACTION>==071) //113
       SRC.MESSAGE @50 Npc throwing a stone at target.
-   ELIF (<ACTION>==072) //114
+   ELIF (<ACTION>==071) //113
       SRC.MESSAGE @50 Npc using as a training dummy, or teaching sth. etc.
-   ELIF (<ACTION>==073) //115
+   ELIF (<ACTION>==072) //114
       SRC.MESSAGE @50 Npc snoozing a little bit, but not sleeping.
-   ELIF (<ACTION>==074) //116
+   ELIF (<ACTION>==073) //115
       SRC.MESSAGE @50 Npc searching for food.
    ELSE
       SRC.MESSAGE @50 Action not in this menu.

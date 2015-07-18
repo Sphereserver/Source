@@ -905,43 +905,15 @@ int CChar::NPC_WalkToPoint( bool fRun )
 						CItem	*pItem = AreaItems.GetItem();
 						if ( !pItem ) break;
 						else if ( abs(pItem->GetTopZ() - pMe.m_z) > 3 ) continue;		// item is too high
-						else if ( pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_OWNED|ATTR_INVIS|ATTR_STATIC|ATTR_MAGIC|ATTR_LOCKEDDOWN) ) bClearedWay = false;
 						else if ( !pItem->Item_GetDef()->Can(CAN_I_BLOCK) ) continue;	// this item not blocking me
-						else if ( !CanCarry(pItem) ) bClearedWay = false;
+						else if ( !CanMove(pItem) || !CanCarry(pItem) ) bClearedWay = false;
 						else
 						{
-							//	If the item is a valuable one, investigate the way to loot it
-							//	or not. Do it only with first direction we try to move items and
-							//	if we are not too busy with something else
-							SKILL_TYPE	st = Skill_GetActive();
-							if ( !Calc_GetRandVal(4) )	// 25% chance for item review
-							{
-								if (( st == NPCACT_WANDER ) || ( st == NPCACT_LOOKING ) || ( st == NPCACT_GO_HOME ))
-								{
-									CItemVendable *pVend = dynamic_cast <CItemVendable*>(pItem);
-									if ( pVend )	// the item is valuable
-									{
-										LONG price = pVend->GetBasePrice();
-													//	the more intelligent i am, the more valuable
-													//	staff I will look to
-										if ( Calc_GetRandVal(price) < iInt )
-										{
-											m_Act_Targ = pItem->GetUID();
-											NPC_Act_Looting();
-											bClearedWay = false;
-											break;
-										}
-									}
-								}
-							}
-							bClearedWay = true;
-
 							//	move this item to the position I am currently in
-							pItem->SetTopPoint(GetTopPoint());
-							pItem->Update();
+							pItem->MoveToUpdate(GetTopPoint());
+							bClearedWay = true;
+							break;
 						}
-
-						if ( !bClearedWay ) break;
 					}
 
 					if ( bClearedWay ) break;
@@ -1290,9 +1262,10 @@ bool CChar::NPC_LookAtCharHealer( CChar * pChar )
 bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 {
 	ADDTOCALLSTACK("CChar::NPC_LookAtItem");
-
 	// I might want to go pickup this item ?
-	if ( !CanSee(pItem) )
+
+	CCharBase * pCharDef = Char_GetDef();
+	if ( !pCharDef->Can(CAN_C_USEHANDS) || !CanSee(pItem) )
 		return false;
 
 	int iWantThisItem = NPC_WantThisItem(pItem);
@@ -1312,88 +1285,36 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 		}
 	}
 
-	//	loot the item if wish to loot it, and not already looted
-	if ( iWantThisItem && ( Memory_FindObj( pItem ) == NULL ))
+	// Loot nearby items on ground
+	if ( iWantThisItem > Calc_GetRandVal(100) )
 	{
-		if ( Calc_GetRandVal(100) < iWantThisItem )
-		{
-			m_Act_Targ = pItem->GetUID();
-			CObjBaseTemplate * pObjTop = pItem->GetTopLevelObj();
-			m_Act_TargPrv = pObjTop->GetUID();
-			m_Act_p = pObjTop->GetTopPoint();
-			m_atLooting.m_iDistEstimate = GetTopDist(pObjTop) * 2;
-			m_atLooting.m_iDistCurrent = 0;
-			Skill_Start(NPCACT_LOOTING);
-			return true;
-		}
-	}
-
-	// Loot nearby corpses
-	if ( pItem->IsType(IT_CORPSE) && (g_Cfg.m_iNpcAi & NPC_AI_LOOTING) && (Memory_FindObj(pItem) == NULL) )
-	{
-		m_Act_p = pItem->GetTopPoint();
 		m_Act_Targ = pItem->GetUID();
 		NPC_Act_Looting();
 		return true;
 	}
 
-	// Check for crops we can rip
-	if (  pItem->IsType( IT_CROPS ) ||  pItem->IsType( IT_FOLIAGE ) )
+	// Loot nearby corpses
+	if ( pItem->IsType(IT_CORPSE) && (g_Cfg.m_iNpcAi & NPC_AI_LOOTING) && (Memory_FindObj(pItem) == NULL) )
 	{
-		CItemBase * checkItemBase = pItem->Item_GetDef();
-		if ( checkItemBase->m_ttNormal.m_tData3 )
-		{
-			if (Food_GetLevelPercent() < 100)
-			{
- 				if (GetDist( pItem ) <= 2) 
-				{
-					if (CanTouch( pItem ) )
-					{
-						if (!Calc_GetRandVal(2))
-						{
-							Use_Item( pItem );
-							return true;
-						}
-					}
-				}
-				else
-				{
-					// Walk towards it
-					CPointMap pt = pItem->GetTopPoint();
-					if ( CanMoveWalkTo( pt ))
-					{
-						m_Act_p = pt;
-						NPC_WalkToPoint();
-						return true;
-					}
-				}
-			}
-		}
+		m_Act_Targ = pItem->GetUID();
+		NPC_Act_Looting();
+		return true;
 	}
 
-
-	// check for doors we can open.
-	CCharBase * pCharDef = Char_GetDef();
-	if ( Stat_GetAdjusted(STAT_INT) > 20 &&
-		pCharDef->Can(CAN_C_USEHANDS) &&
-		pItem->IsType( IT_DOOR ) &&	// not locked.
-		GetDist( pItem ) <= 1 &&
-		CanTouch( pItem ) &&
-		!Calc_GetRandVal(2))
+	// Check for doors we can open
+	if ( pItem->IsType(IT_DOOR) && GetDist(pItem) <= 1 && CanTouch(pItem) && !Calc_GetRandVal(2) )
 	{
-		// Is it opened or closed?
-		if ( pItem->IsDoorOpen())
-			return( false );
+		if ( pItem->IsDoorOpen() )	// door is already open
+			return false;
 
-		// The door is closed.
-		UpdateDir( pItem );
-		if ( ! Use_Item( pItem ))	// try to open it.
-			return( false );
+		UpdateDir(pItem);
+		if ( !Use_Item(pItem) )	// try to open it
+			return false;
 
 		// Walk through it
 		CPointMap pt = GetTopPoint();
-		pt.MoveN( GetDir( pItem ), 2 );
-		if ( CanMoveWalkTo( pt ))
+		pt.MoveN(GetDir(pItem), 2);
+		if ( CanMoveWalkTo(pt) )
 		{
 			m_Act_p = pt;
 			NPC_WalkToPoint();
@@ -1401,7 +1322,7 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 		}
 	}
 
-	return( false );
+	return false;
 }
 
 
@@ -2589,26 +2510,21 @@ void CChar::NPC_LootMemory( CItem * pItem )
 	pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_IGNORE;
 
 	// If the item is set to decay.
-	if ( pItem->IsTimerSet() && ! pItem->IsTimerExpired())
-	{
-		pMemory->SetTimeout( pItem->GetTimerDiff());	// We'll forget about this once the item is gone
-	}
+	if ( pItem->IsTimerSet() && pItem->GetTimerDiff() > 0 )
+		pMemory->SetTimeout(pItem->GetTimerDiff());		// forget about this once the item is gone
 }
 
 void CChar::NPC_Act_Looting()
 {
 	ADDTOCALLSTACK("CChar::NPC_Act_Looting");
-	// NPCACT_LOOTING
 	// We killed something, let's take a look on the corpse.
 	// Or we find something interesting on ground
 	//
-	// m_Act_Targ = item UID that we trying to look
-	// m_Act_p = last known position of the corpse
+	// m_Act_Targ = UID of the item/corpse that we trying to loot
 
-	//Skill_Start(SKILL_NONE);
-	if ( !m_pNPC || !(g_Cfg.m_iNpcAi & NPC_AI_LOOTING) )
+	if ( !(g_Cfg.m_iNpcAi & NPC_AI_LOOTING) )
 		return;
-	if ( !Can(CAN_C_USEHANDS) || IsStatFlag(STATF_Conjured|STATF_Pet) )
+	if ( !m_pNPC || m_pNPC->m_Brain != NPCBRAIN_MONSTER || !Can(CAN_C_USEHANDS) || IsStatFlag(STATF_Conjured|STATF_Pet) || (m_TagDefs.GetKeyNum("DEATHFLAGS", true) & DEATH_NOCORPSE) )
 		return;
 	if ( m_pArea->IsFlag(REGION_FLAG_SAFE|REGION_FLAG_GUARDED) )
 		return;
@@ -2617,50 +2533,33 @@ void CChar::NPC_Act_Looting()
 	if ( pItem == NULL )
 		return;
 
-	CObjBaseTemplate * pObjTop = pItem->GetTopLevelObj();
-	if ( m_Act_TargPrv != pObjTop->GetUID() || m_Act_p != pObjTop->GetTopPoint() )	// give up if object got moved
-	{
-		NPC_LootMemory(pItem);
-		return;
-	}
-
 	if ( GetDist(pItem) > 2 )	// move toward it
 	{
-		if ( ++(m_atLooting.m_iDistCurrent) > m_atLooting.m_iDistEstimate )
-		{
-			NPC_LootMemory(pItem);
-			return;
-		}
 		NPC_WalkToPoint();
 		return;
 	}
 
-	if ( !CanTouch(pItem) )
+	CItemCorpse * pCorpse = dynamic_cast<CItemCorpse *>(pItem);
+	if ( pCorpse && pCorpse->GetCount() > 0 )
+		pItem = pCorpse->GetAt(Calc_GetRandVal(pCorpse->GetCount()));
+
+	if ( !CanTouch(pItem) || !CanMove(pItem) || !CanCarry(pItem) )
 	{
 		NPC_LootMemory(pItem);
 		return;
 	}
 
-	CItemCorpse * pCorpse = dynamic_cast<CItemCorpse *>(pItem);
-	if ( pCorpse )
+	if ( IsTrigUsed(TRIGGER_NPCSEEWANTITEM) )
 	{
-		if ( pCorpse && pCorpse->GetCount() > 0 )
-		{
-			pItem = pCorpse->GetAt(Calc_GetRandVal(pCorpse->GetCount()));
-			if ( pItem && CanMove(pItem) && CanCarry(pItem) )
-			{
-				Speak(g_Cfg.GetDefaultMsg(DEFMSG_LOOT_RUMMAGE));
-				ItemBounce(pItem);
-			}
-		}
-	}
-	else
-	{
-		if ( CanMove(pItem) && CanCarry(pItem) )
-			ItemBounce(pItem);
+		CScriptTriggerArgs Args(pItem);
+		if ( OnTrigger(CTRIG_NPCSeeWantItem, this, &Args) == TRIGRET_RET_TRUE )
+			return;
 	}
 
-	SetTimeout(10 * TICK_PER_SEC);	// wait some time to loot more items
+	if ( pCorpse )
+		Speak(g_Cfg.GetDefaultMsg(DEFMSG_LOOT_RUMMAGE), HUE_TEXT_DEF, TALKMODE_EMOTE);
+
+	ItemBounce(pItem);
 }
 
 void CChar::NPC_Act_Flee()
@@ -3372,10 +3271,6 @@ void CChar::NPC_OnTickAction()
 			case NPCACT_GO_HOME:
 				EXC_SET("go home");
 				NPC_Act_GoHome();
-				break;
-			case NPCACT_LOOTING:
-				EXC_SET("looting");
-				NPC_Act_Looting();
 				break;
 			case NPCACT_LOOKING:
 				EXC_SET("looking");

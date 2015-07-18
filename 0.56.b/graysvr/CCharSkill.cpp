@@ -1063,7 +1063,6 @@ LPCTSTR CChar::Skill_GetName( bool fUse ) const
 		case NPCACT_GUARD_TARG:		return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GUARDING) );
 		case NPCACT_GO_HOME:		return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GOINGHOME) );
 		case NPCACT_BREATH:			return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_BREATHING) );
-		case NPCACT_LOOTING:		return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_LOOTING) );
 		case NPCACT_THROWING:		return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_THROWING) );
 		case NPCACT_LOOKING:		return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_LOOKING) );
 		case NPCACT_TRAINING:		return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TRAINING) );
@@ -3416,31 +3415,6 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 	return 0;
 }
 
-int CChar::Skill_Act_Looting( SKTRIG_TYPE stage )
-{
-	ADDTOCALLSTACK("CChar::Skill_Act_Looting");
-	// NPCACT_LOOTING
-	// m_Act_Targ = the item i want.
-
-	if ( stage == SKTRIG_STROKE )
-		return 0;
-
-	if ( stage == SKTRIG_START )
-	{
-		if (( m_atLooting.m_iDistCurrent == 0 ) && ( IsTrigUsed(TRIGGER_NPCSEEWANTITEM) ))
-		{
-			CScriptTriggerArgs Args( m_Act_Targ.ItemFind());
-			if ( OnTrigger( CTRIG_NPCSeeWantItem, this, &Args ) == TRIGRET_RET_TRUE )
-				return( -SKTRIG_QTY );
-		}
-
-		SetTimeout( 1 * TICK_PER_SEC );
-		return 0;
-	}
-
-	return( -SKTRIG_QTY );
-}
-
 int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 {
 	ADDTOCALLSTACK("CChar::Skill_Act_Throwing");
@@ -3822,8 +3796,6 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 			return Skill_RemoveTrap(stage);
 		case NPCACT_BREATH:
 			return Skill_Act_Breath(stage);
-		case NPCACT_LOOTING:
-			return Skill_Act_Looting(stage);
 		case NPCACT_THROWING:
 			return Skill_Act_Throwing(stage);
 		case NPCACT_TRAINING:

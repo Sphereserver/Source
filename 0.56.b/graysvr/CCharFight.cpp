@@ -621,10 +621,6 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iTotalKillers)
 				pKill->StatFlag_Set(STATF_Conjured);
 			return;
 		}
-
-		// Check to see if anything is on the corpse I just killed
-		if ( !IsStatFlag(STATF_Ridden) )	// ridden NPCs can't do any action different than NPCACT_RIDDEN
-			Skill_Start(NPCACT_LOOTING);
 	}
 	else if ( NotoThem < NOTO_GUILD_SAME )
 	{

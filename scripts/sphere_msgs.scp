@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Friday, Jul 17, 2015
+// FILE LAST UPDATED: Saturday, Jul 18, 2015
 //
 VERSION=0.56c
 
@@ -1172,7 +1172,6 @@ EMOTE_DEF_UNICODE	0
 //skillact_guarding				"Guarding"
 //skillact_goinghome			"Going Home"
 //skillact_breathing			"Breathing"
-//skillact_looting				"Looting"
 //skillact_throwing				"Throwing"
 //skillact_looking				"Looking"
 //skillact_training				"Training"

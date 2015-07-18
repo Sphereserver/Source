@@ -440,32 +440,21 @@ CItemVendable * CChar::NPC_FindVendableItem( CItemVendable * pVendItem, CItemCon
 {
 	ADDTOCALLSTACK("CChar::NPC_FindVendableItem");
 	UNREFERENCED_PARAMETER(pContStock);
-	// Does the NPC want to buy this item
+	// Does the NPC want to buy this item?
 	if ( !pVendItem || !pContBuy || !pVendItem->IsValidSaleItem(false) )
 		return NULL;
 
-	CItem * pItemTest = pContBuy->ContentFind( RESOURCE_ID(RES_ITEMDEF, pVendItem->GetID()));
+	CItem * pItemTest = pContBuy->ContentFind(RESOURCE_ID(RES_ITEMDEF, pVendItem->GetID()));
 	if ( pItemTest == NULL )
-	{
-		/*if ( pContStock )
-		{
-			pItemTest = pContStock->ContentFind( RESOURCE_ID(RES_ITEMDEF, pVendItem->GetID()));
-		}
-		if ( pItemTest == NULL )*/
-			return NULL;
-	}
+		return NULL;
 
-	CItemVendable * pItemSell = dynamic_cast <CItemVendable *> (pItemTest);
-	if ( pItemSell == NULL )
-	{
-		// This is odd. The vendor should not have had this Item !
-		return( NULL );
-	}
+	CItemVendable * pItemSell = dynamic_cast<CItemVendable *>(pItemTest);
+	if ( pItemSell == NULL )	// the item is not vendable
+		return NULL;
+	if ( pVendItem->GetType() != pItemSell->GetType())	// sanity check
+		return NULL;
 
-	if ( pVendItem->GetType() != pItemSell->GetType())	// sanity check.
-		return( NULL );
-
-	return( pItemSell );
+	return pItemSell;
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -482,60 +471,35 @@ int CChar::NPC_WantThisItem( CItem * pItem ) const
 	//  Don't check if i can see this or i can reach it.
 	//  Don't check if i can carry this ?
 	//
-	//  Also take into consideration that some items such as:
-	// ex. i want to eat fruit off a fruit tree.
-	// ex. i want raw food that may be cooked etc.
-	// ex. I want a corpse that i can cut up and eat the parts.
-	// ex. I want a chest to loot.
-	//
 	// RETURN:
 	//  0-100 percent = how bad do we want it ?
 
-	// a container i would loot.
-
-	if ( ! CanMove( pItem, false ))
-	{
-		// Some items like fruit trees, chests and corpses might still be useful.
-		return( 0 );
-	}
+	if ( !CanMove(pItem, false) )
+		return 0;
 
 	CCharBase * pCharDef = Char_GetDef();
 	ASSERT(pCharDef != NULL);
 	size_t iRet = pCharDef->m_Desires.FindResourceMatch(pItem);
 	if ( iRet != pCharDef->m_Desires.BadIndex() )
-	{
-		return( static_cast<int>(pCharDef->m_Desires[iRet].GetResQty()) );
-	}
+		return static_cast<int>(pCharDef->m_Desires[iRet].GetResQty());
 
-	// i'm hungry and this is food ?
+	// I'm hungry and this is food ?
 	int iFoodLevel = Food_GetLevelPercent();
-	if ( Food_CanEat( pItem ) && iFoodLevel < 100 )
-	{
-		return( 100 - iFoodLevel );
-	}
+	if ( Food_CanEat(pItem) && iFoodLevel < 100 )
+		return 100 - iFoodLevel;
 
-	// If i'm a vendor. is it something i would buy ?
-	if ( NPC_IsVendor())
+	if ( NPC_IsVendor() )
 	{
-		CItemVendable * pItemSell = NPC_FindVendableItem(
-			dynamic_cast <CItemVendable *> (pItem),
-			const_cast <CChar*>(this)->GetBank( LAYER_VENDOR_BUYS ),
-			const_cast <CChar*>(this)->GetBank( LAYER_VENDOR_STOCK ));
+		// Vendors always want money
+		if ( pItem->IsType(IT_GOLD) )
+			return 100;
+
+		// Is it something I would buy?
+		CItemVendable * pItemSell = NPC_FindVendableItem(dynamic_cast<CItemVendable *>(pItem), const_cast<CChar *>(this)->GetBank(LAYER_VENDOR_BUYS), const_cast<CChar *>(this)->GetBank(LAYER_VENDOR_STOCK));
 		if ( pItemSell )
-			return( pItemSell->GetVendorPrice(0) );
+			return pItemSell->GetVendorPrice(0);
 	}
 
-	bool bWantGold = (( m_pNPC->m_Brain >= NPCBRAIN_HUMAN ) && ( m_pNPC->m_Brain <= NPCBRAIN_STABLE ));
-
-	//	I need for gold
-	if ( bWantGold )
-	{
-		//	wish for gold and valuables too (that can be sold)
-		if ( pItem->IsType(IT_COIN) || pItem->IsType(IT_GOLD) ) return 100;
-		else if (( Stat_GetAdjusted(STAT_INT) > 50 ) && dynamic_cast <CItemVendable*>(pItem)) return (Calc_GetRandVal(50)+50);
-	}
-
-	// I guess I don't want it
 	return 0;
 }
 
