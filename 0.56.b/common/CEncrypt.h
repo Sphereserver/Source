@@ -29,6 +29,7 @@ enum CONNECT_TYPE	// What type of client connection is this ?
 	CONNECT_HTTP,		// We are serving web pages to this.
 	CONNECT_TELNET,		// we are in telnet console mode.
 	CONNECT_UOG,		// UOG needs special connection
+	CONNECT_AXIS,		// Axis connection mode.
 	CONNECT_QTY
 };
 

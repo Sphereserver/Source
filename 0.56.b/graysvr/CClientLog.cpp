@@ -33,6 +33,7 @@ bool CClient::IsConnecting() const
 	switch ( GetConnectType() )
 	{
 		case CONNECT_TELNET:
+		case CONNECT_AXIS:
 		case CONNECT_HTTP:
 		case CONNECT_GAME:
 			return false;
@@ -368,7 +369,7 @@ bool CClient::OnRxConsole( const BYTE * pData, size_t iLen )
 					CAccountRef pAccount = g_Accounts.Account_Find(m_zLogin);
 					if (( pAccount == NULL ) || ( pAccount->GetPrivLevel() < PLEVEL_Admin ))
 					{
-						SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_NOT_PRIV));
+						SysMessagef("%s\n", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_NOT_PRIV));
 						m_Targ_Text.Empty();
 						return false;
 					}
@@ -392,6 +393,70 @@ bool CClient::OnRxConsole( const BYTE * pData, size_t iLen )
 
 				if (g_Cfg.m_fTelnetLog && GetPrivLevel() >= g_Cfg.m_iCommandLog)
 					g_Log.Event(LOGM_GM_CMDS, "%lx:'%s' commands '%s'=%d\n", GetSocketID(), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(m_Targ_Text), iRet);
+			}
+		}
+	}
+	return true;
+}
+
+bool CClient::OnRxAxis( const BYTE * pData, size_t iLen )
+{
+	ADDTOCALLSTACK("CClient::OnRxAxis");
+	if ( !iLen || ( GetConnectType() != CONNECT_AXIS ))
+		return false;
+
+	while ( iLen -- )
+	{
+		int iRet = OnConsoleKey( m_Targ_Text, *pData++, GetAccount() != NULL );
+		if ( ! iRet )
+			return( false );
+		if ( iRet == 2 )
+		{
+			if ( GetAccount() == NULL )
+			{
+				if ( !m_zLogin[0] )
+				{
+					if ( static_cast<unsigned int>(m_Targ_Text.GetLength()) <= (COUNTOF(m_zLogin) - 1) )
+						strcpy(m_zLogin, m_Targ_Text);
+					m_Targ_Text.Empty();
+				}
+				else
+				{
+					CGString sMsg;
+
+					CAccountRef pAccount = g_Accounts.Account_Find(m_zLogin);
+					if (( pAccount == NULL ) || ( pAccount->GetPrivLevel() < PLEVEL_Counsel ))
+					{
+						SysMessagef("%s\n", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_NOT_PRIV));
+						m_Targ_Text.Empty();
+						return false;
+					}
+					if ( LogIn(m_zLogin, m_Targ_Text, sMsg ) == PacketLoginError::Success )
+					{
+						m_Targ_Text.Empty();
+						if ( GetPrivLevel() < PLEVEL_Counsel )	// this really should not happen.
+						{
+							SysMessagef("%s\n", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_NOT_PRIV));
+						}
+						if (GetPeer().IsValidAddr())
+						{
+							GetPeer().GetAddrStr();
+							CScriptTriggerArgs Args;
+							Args.m_VarsLocal.SetStrNew("Account",GetName());
+							Args.m_VarsLocal.SetStrNew("IP",GetPeer().GetAddrStr());
+							r_Call("f_axis_load", this, &Args);
+							return true;
+						}
+						return false;
+					}
+					else if ( ! sMsg.IsEmpty())
+					{
+						SysMessage( sMsg );
+						return false;
+					}
+					m_Targ_Text.Empty();
+				}
+				return true;
 			}
 		}
 	}
@@ -452,6 +517,22 @@ bool CClient::OnRxPing( const BYTE * pData, size_t iLen )
 			}
 
 			SysMessage("Login?:\n");
+			return true;
+		}
+
+		//Axis Connection
+		case '@':
+		{
+			if ( (iLen > 1) &&
+				 (iLen != 2 || pData[1] != '\n') &&
+				 (iLen != 3 || pData[1] != '\r' || pData[2] != '\n') &&
+				 (iLen != 3 || pData[1] != '\n' || pData[2] != '\0') )
+				break;
+
+			// enter into Axis mode. (look for password).
+			SetConnectType( CONNECT_AXIS );
+			m_zLogin[0] = 0;
+			SysMessage("@\n");
 			return true;
 		}
 

@@ -1233,6 +1233,14 @@ void NetworkIn::tick(void)
 						continue;
 					}
 					break;
+				case CONNECT_AXIS:
+					EXC_SET("Axis message");
+					if ( !client->m_client->OnRxAxis(evt.m_Raw, received) )
+					{
+						client->markReadClosed();
+						continue;
+					}
+					break;
 					
 				default:
 					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Junk messages with no crypt\n", client->m_id);
@@ -3416,6 +3424,11 @@ bool NetworkInput::processOtherClientData(NetState* state, Packet* buffer)
 		case CONNECT_TELNET:
 			EXC_SET("telnet message");
 			if (client->OnRxConsole(buffer->getRemainingData(), buffer->getRemainingLength()) == false)
+				return false;
+			break;
+		case CONNECT_AXIS:
+			EXC_SET("Axis message");
+			if (client->OnRxAxis(buffer->getRemainingData(), buffer->getRemainingLength()) == false)
 				return false;
 			break;
 

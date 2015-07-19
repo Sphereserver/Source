@@ -299,6 +299,7 @@ void CClient::SysMessage( LPCTSTR pszMsg ) const // System message (In lower lef
 	switch ( GetConnectType() )
 	{
 		case CONNECT_TELNET:
+		case CONNECT_AXIS:
 			{
 				if ( ISINTRESOURCE(pszMsg) || *pszMsg == '\0' ) return;
 
@@ -402,7 +403,7 @@ bool CClient::CanHear( const CObjBaseTemplate * pSrc, TALKMODE_TYPE mode ) const
 
 	if ( ! IsConnectTypePacket())
 	{
-		if ( GetConnectType() != CONNECT_TELNET )
+		if (( GetConnectType() != CONNECT_TELNET ) && ( GetConnectType() != CONNECT_AXIS ))
 			return( false );
 		if ( mode == TALKMODE_BROADCAST ) // && GetAccount()
 			return( true );

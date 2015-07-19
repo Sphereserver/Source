@@ -1106,6 +1106,7 @@ private:
 
 	bool OnRxConsoleLoginComplete();
 	bool OnRxConsole( const BYTE * pData, size_t len );
+	bool OnRxAxis( const BYTE * pData, size_t len );
 	bool OnRxPing( const BYTE * pData, size_t len );
 	bool OnRxWebPageRequest( BYTE * pRequest, size_t len );
 
