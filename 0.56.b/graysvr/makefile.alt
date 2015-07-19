@@ -1,6 +1,3 @@
-VER	= 0.56c
-PLAT	= Linux
-
 # Generic makefile
 MARCH = -march=i686
 OPTDEFAULT = -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
@@ -36,7 +33,7 @@ DEBUGDEFS = -D_DEBUG -DTHREAD_TRACK_CALLSTACK
 endif
 
 SVNDEFS = -D_SUBVERSION
-DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFNIX) $(NIGHTLYDEFS) $(EXTRADEFS) $(DEBUGDEFS) $(SVNDEFS) $(DBDEFS)
+DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFNIX) $(NIGHTLYDEFS) $(EXTRADEFS) $(DEBUGDEFS) $(SVNDEFS)
 
 EXE	= graysvr
 REXE	= spheresvr
@@ -207,10 +204,6 @@ flags:
 $(EXE): svn flags gray
 	@$(CC) $(O_FLAGS) $(C_FLAGS) -o $(EXE) *.o ../common/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../common/sqlite/*.o ../sphere/*.o ../network/*.o $(LIBS)
 
-version.h:	VERSION
-	echo "#define VERSION 'head -l VERSION'" > version.h
-	echo "#define COMPILED_BY \"$(COMPILED_BY)\"" >> version.h
-
 %.o:	%.cpp
 	@echo " Compiling $<"
 	@$(CC) -c $(O_FLAGS) $(C_FLAGS) $< -o $@
@@ -222,10 +215,10 @@ version.h:	VERSION
 dist:	
 	@cp $(EXE) $(REXE)
 ifdef DBG
-	@rm -f ./Build/SphereSvr[Linux].tgz
-	@tar cvzf ./Build/SphereSvr[Linux].tgz $(REXE)
-else
 	@rm -f ./Build/SphereSvr[Linux][DEBUG].tgz
 	@tar cvzf ./Build/SphereSvr[Linux][DEBUG].tgz $(REXE)
+else
+	@rm -f ./Build/SphereSvr[Linux].tgz
+	@tar cvzf ./Build/SphereSvr[Linux].tgz $(REXE)
 endif
 	@rm -f $(REXE)
