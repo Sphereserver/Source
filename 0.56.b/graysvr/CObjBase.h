@@ -3663,7 +3663,7 @@ public:
 	CChar * Use_Figurine( CItem * pItem, bool bCheckFollowerSlots = true );
 	CItem * Make_Figurine( CGrayUID uidOwner, ITEMID_TYPE id = ITEMID_NOTHING );
 	CItem * NPC_Shrink();
-	bool FollowersUpdate(CChar * pChar, bool bSustract = false, short * iFollowers = 0);
+	bool FollowersUpdate( CChar * pChar, short iFollowerSlots = 0, bool bCheckOnly = false );
 
 	int  ItemPickup( CItem * pItem, int amount );
 	bool ItemEquip( CItem * pItem, CChar * pCharMsg = NULL, bool fFromDClick = false );

@@ -61,6 +61,11 @@ void CChar::Stat_AddMod( STAT_TYPE i, short iVal )
 	ADDTOCALLSTACK("CChar::Stat_AddMod");
 	ASSERT(i >= 0 && i < STAT_QTY);
 	m_Stat[i].m_mod	+= iVal;
+
+	int iMaxValue = Stat_GetMax(i);		// make sure the current value is not higher than new max value
+	if ( m_Stat[i].m_val > iMaxValue )
+		m_Stat[i].m_val = iMaxValue;
+
 	UpdateStatsFlag();
 }
 

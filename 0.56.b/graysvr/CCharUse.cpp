@@ -1203,10 +1203,10 @@ CChar * CChar::Use_Figurine( CItem * pItem, bool bCheckFollowerSlots )
 	if ( pItem == NULL )
 		return NULL;
 
-	if ( pItem->m_uidLink.IsValidUID() && pItem->m_uidLink.IsChar() && pItem->m_uidLink != GetUID() && !IsPriv( PRIV_GM ))
+	if ( pItem->m_uidLink.IsValidUID() && pItem->m_uidLink.IsChar() && pItem->m_uidLink != GetUID() && !IsPriv(PRIV_GM) )
 	{
-		SysMessageDefault( DEFMSG_MSG_FIGURINE_NOTYOURS );
-		return( NULL );
+		SysMessageDefault(DEFMSG_MSG_FIGURINE_NOTYOURS);
+		return NULL;
 	}
 
 	// Create a new NPC if there's no one linked to this figurine 
@@ -1216,43 +1216,33 @@ CChar * CChar::Use_Figurine( CItem * pItem, bool bCheckFollowerSlots )
 		CREID_TYPE id = pItem->m_itFigurine.m_ID;
 		if ( !id )
 		{
-			id = CItemBase::FindCharTrack( pItem->GetID());
+			id = CItemBase::FindCharTrack(pItem->GetID());
 			if ( !id )
 			{
-				DEBUG_ERR(( "FIGURINE id 0%x, no creature\n", pItem->GetDispID()));
+				DEBUG_ERR(("FIGURINE id 0%x, no creature\n", pItem->GetDispID()));
 				return NULL;
 			}
 		}
 		bCreatedNewNpc = true;
-		pPet = CreateNPC( id );
+		pPet = CreateNPC(id);
 		ASSERT(pPet);
-		pPet->SetName( pItem->GetName() );
+		pPet->SetName(pItem->GetName());
 		if ( pItem->GetHue() )
 		{
 			pPet->m_prev_Hue = pItem->GetHue();
-			pPet->SetHue( pItem->GetHue());
+			pPet->SetHue(pItem->GetHue());
 		}
 	}
 
 	if ( bCheckFollowerSlots && IsSetOF(OF_PetSlots) )
 	{
-		short int iFollowerSlotsNeeded = static_cast<short>(maximum(pPet->GetDefNum("FOLLOWERSLOTS", true, true),1));
-		short int iCurFollower = static_cast<short>(GetDefNum("CURFOLLOWER", true, true));
-		short int iMaxFollower = static_cast<short>(GetDefNum("MAXFOLLOWER", true, true));
-		short int iSetFollower = iCurFollower + iFollowerSlotsNeeded;
-		if ( (FollowersUpdate(pPet, false, &iFollowerSlotsNeeded) == false || iSetFollower > iMaxFollower) && !IsPriv(PRIV_GM))
+		if ( !FollowersUpdate(pPet, static_cast<short>(maximum(1, pPet->GetDefNum("FOLLOWERSLOTS", true, true))), true) )
 		{
-			SysMessageDefault( DEFMSG_PETSLOTS_TRY_CONTROL );
+			SysMessageDefault(DEFMSG_PETSLOTS_TRY_CONTROL);
 			if ( bCreatedNewNpc )
 				pPet->Delete();
 			return NULL;
 		}
-
-		// Send an update packet for the stats
-		SetDefNum("CURFOLLOWER", iSetFollower);
-		CClient * pClient = GetClient();
-		if ( pClient )
-			pClient->addCharStatWindow( GetUID() );
 	}
 
 	if ( pPet->IsDisconnected())
@@ -1260,37 +1250,45 @@ CChar * CChar::Use_Figurine( CItem * pItem, bool bCheckFollowerSlots )
 
 	pItem->m_itFigurine.m_UID.InitUID();
 	pPet->m_dirFace = m_dirFace;
-	pPet->NPC_PetSetOwner( this );
-	pPet->MoveToChar( pItem->GetTopLevelObj()->GetTopPoint() );
+	pPet->NPC_PetSetOwner(this);
+	pPet->MoveToChar(pItem->GetTopLevelObj()->GetTopPoint());
 	pPet->Update();
-	pPet->Skill_Start( SKILL_NONE );	// was NPCACT_RIDDEN
-	pPet->SoundChar( CRESND_RAND1 );
+	pPet->Skill_Start(SKILL_NONE);	// was NPCACT_RIDDEN
+	pPet->SoundChar(CRESND_RAND1);
 
 	return pPet;
 }
 
-bool CChar::FollowersUpdate(CChar * pChar, bool bSustract, short* iFollowers)
+bool CChar::FollowersUpdate( CChar * pChar, short iFollowerSlots, bool bCheckOnly )
 {
 	ADDTOCALLSTACK("CChar::FollowersUpdate");
 	// Attemp to update followers on this character based on pChar
 	// bSustract = true for pet's release, shrink, etc ...
 	// This is supossed to be called only when OF_PetSlots is enabled, so no need to check it here.
 
-	short iFollowerSlotsNeeded = *iFollowers;
-
-	if (IsTrigUsed(TRIGGER_FOLLOWERSUPDATE))
+	if ( !bCheckOnly && IsTrigUsed(TRIGGER_FOLLOWERSUPDATE) )
 	{
 		CScriptTriggerArgs Args;
-		Args.m_iN1 = bSustract;
-		Args.m_iN2 = iFollowerSlotsNeeded;
-		TRIGRET_TYPE iRet = OnTrigger(CTRIG_FollowersUpdate,pChar,&Args);
-		if ( iRet == TRIGRET_RET_TRUE )
+		Args.m_iN1 = (iFollowerSlots > 0) ? 0 : 1;
+		Args.m_iN2 = abs(iFollowerSlots);
+		if ( OnTrigger(CTRIG_FollowersUpdate, pChar, &Args) == TRIGRET_RET_TRUE )
 			return false;
-		bSustract = Args.m_iN1 > 0 ? 1 : 0;
-		iFollowerSlotsNeeded = static_cast<short>(Args.m_iN2);
-		iFollowers = &iFollowerSlotsNeeded;
+
+		iFollowerSlots = static_cast<short>(Args.m_iN2);
 	}
 
+	short iCurFollower = static_cast<short>(GetDefNum("CURFOLLOWER", true, true));
+	short iMaxFollower = static_cast<short>(GetDefNum("MAXFOLLOWER", true, true));
+	short iSetFollower = iCurFollower + iFollowerSlots;
+
+	if ( (iSetFollower > iMaxFollower) && !IsPriv(PRIV_GM) )
+		return false;
+
+	if ( !bCheckOnly )
+	{
+		SetDefNum("CURFOLLOWER", maximum(iSetFollower, 0));
+		UpdateStatsFlag();
+	}
 	return true;
 }
 
@@ -1746,7 +1744,7 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 		fAction = ( Use_Figurine(pItem) != NULL );
 		if ( fAction )
 			pItem->Delete();
-		break;
+		return true;
 
 	case IT_TRAP:
 	case IT_TRAP_ACTIVE:

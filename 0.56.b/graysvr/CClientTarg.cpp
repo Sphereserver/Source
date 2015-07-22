@@ -1606,19 +1606,7 @@ bool CClient::OnTarg_Pet_Stable( CChar * pCharPet )
 	}
 
 	if ( IsSetOF(OF_PetSlots) )
-	{
-		short int iFollowerSlotsNeeded = static_cast<short>(maximum(pCharPet->GetDefNum("FOLLOWERSLOTS", true, true),1));
-		short int iCurFollower = static_cast<short>(m_pChar->GetDefNum("CURFOLLOWER", true, true));
-		short int iSetFollower = iCurFollower - iFollowerSlotsNeeded;
-		if ( iSetFollower < 0 )
-			iSetFollower = 0;
-		m_pChar->FollowersUpdate(pCharPet, true, &iFollowerSlotsNeeded);
-		// Send an update packet for the stats
-		m_pChar->SetDefNum("CURFOLLOWER", iSetFollower);
-		CClient * pClient = m_pChar->GetClient();
-		if ( pClient )
-			pClient->addCharStatWindow( m_pChar->GetUID() );
-	}
+		m_pChar->FollowersUpdate(pCharPet, static_cast<short>(-maximum(1, pCharPet->GetDefNum("FOLLOWERSLOTS", true, true))));
 
 	pCharMaster->GetBank()->ContentAdd( pPetItem );
 	pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_CLAIM ) );

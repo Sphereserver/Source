@@ -380,13 +380,9 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const
 				break;
 			if ( pCharTarg->IsClient() )
 			{
-				if ( IsSetOF(OF_PetSlots) && !pSrc->IsPriv(PRIV_GM) )
+				if ( IsSetOF(OF_PetSlots) )
 				{
-					short int iFollowerSlotsNeeded = static_cast<short>(maximum(GetDefNum("FOLLOWERSLOTS", true, true),1));
-					short int iCurFollower = static_cast<short>(pCharTarg->GetDefNum("CURFOLLOWER", true, true));
-					short int iMaxFollower = static_cast<short>(pCharTarg->GetDefNum("MAXFOLLOWER", true, true));
-
-					if ( pCharTarg->FollowersUpdate(this, false, &iFollowerSlotsNeeded) == false || (iCurFollower + iFollowerSlotsNeeded > iMaxFollower) )
+					if ( !pCharTarg->FollowersUpdate(this, static_cast<short>(maximum(1, GetDefNum("FOLLOWERSLOTS", true, true))), true) )
 					{
 						pSrc->SysMessageDefault( DEFMSG_PETSLOTS_TRY_TRANSFER );
 						break;
@@ -503,23 +499,8 @@ void CChar::NPC_PetClearOwners()
 			pCharRider->Horse_UnMount();
 	}
 
-	if ( IsSetOF(OF_PetSlots) )
-	{
-		if ( pOwner )
-		{
-			short int iFollowerSlotsNeeded = static_cast<short>(maximum(GetDefNum("FOLLOWERSLOTS", true, true),1));
-			short int iCurFollower = static_cast<short>(pOwner->GetDefNum("CURFOLLOWER", true, true));
-			short int iSetFollower = iCurFollower - iFollowerSlotsNeeded;
-			if ( iSetFollower < 0 )
-				iSetFollower = 0;
-			pOwner->FollowersUpdate(this, true, &iFollowerSlotsNeeded);
-			// Send an update packet for the stats
-			pOwner->SetDefNum("CURFOLLOWER", iSetFollower);
-			CClient * pClient = pOwner->GetClient();
-			if ( pClient )
-				pClient->addCharStatWindow( pOwner->GetUID() );
-		}
-	}
+	if ( pOwner && IsSetOF(OF_PetSlots) )
+		pOwner->FollowersUpdate(this, static_cast<short>(-maximum(1, GetDefNum("FOLLOWERSLOTS", true, true))));
 }
 
 bool CChar::NPC_PetSetOwner( CChar * pChar )
@@ -533,40 +514,23 @@ bool CChar::NPC_PetSetOwner( CChar * pChar )
 	if ( pOwner == pChar )
 		return false;
 
-	// Clear previous owner before set the new owner
-	NPC_PetClearOwners();
-
-	// We get some of the noto of our owner.
-	// ??? If I am a pet. I have noto of my master.
-
-	m_ptHome.InitPoint();	// No longer homed.
-	Memory_ClearTypes( MEMORY_ISPAWNED );
-	Memory_AddObjTypes( pChar, MEMORY_IPET );
+	NPC_PetClearOwners();	// clear previous owner before set the new owner
+	m_ptHome.InitPoint();	// no longer homed
+	Memory_ClearTypes(MEMORY_ISPAWNED);
+	Memory_AddObjTypes(pChar, MEMORY_IPET);
 	NPC_Act_Follow();
-	if ( NPC_IsVendor())
+	if ( NPC_IsVendor() )
 	{
 		// Clear my cash total.
 		CItemContainer * pBank = GetBank();
 		pBank->m_itEqBankBox.m_Check_Amount = 0;
-		StatFlag_Set( STATF_INVUL );
+		StatFlag_Set(STATF_INVUL);
 	}
 
 	if ( IsSetOF(OF_PetSlots) )
-	{
-		short int iFollowerSlotsNeeded = static_cast<short>(maximum(GetDefNum("FOLLOWERSLOTS", true, true),1));
-		short int iCurFollower = static_cast<short>(pChar->GetDefNum("CURFOLLOWER", true, true));
-		short int iSetFollower = iCurFollower + iFollowerSlotsNeeded;
+		pChar->FollowersUpdate(this, static_cast<short>(maximum(1, GetDefNum("FOLLOWERSLOTS", true, true))));
 
-		pChar->FollowersUpdate(this, false, &iFollowerSlotsNeeded);
-		pChar->SetDefNum("CURFOLLOWER", iSetFollower);
-
-		// Send an update packet for the stats
-		CClient * pClient = pChar->GetClient();
-		if ( pClient )
-			pClient->addCharStatWindow( pChar->GetUID() );
-	}
-
-	return( true );
+	return true;
 }
 
 // Hirelings...

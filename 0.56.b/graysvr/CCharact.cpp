@@ -2335,12 +2335,15 @@ bool CChar::Horse_Mount(CChar *pHorse) // Remove horse char and give player a ho
 {
 	ADDTOCALLSTACK("CChar::Horse_Mount");
 	// RETURN:
-	//  true = done mounting so take no more action.
-	//  false = we can't mount this so do something else.
+	//  true = done mounting
+	//  false = we can't mount this
 
 	if ( !CanTouch(pHorse) )
 	{
-		SysMessageDefault(DEFMSG_MSG_MOUNT_DIST);
+		if ( pHorse->m_pNPC->m_bonded && pHorse->IsStatFlag(STATF_DEAD) )
+			SysMessageDefault(DEFMSG_MSG_BONDED_DEAD_CANTMOUNT);
+		else
+			SysMessageDefault(DEFMSG_MSG_MOUNT_DIST);
 		return false;
 	}
 
@@ -2356,28 +2359,21 @@ bool CChar::Horse_Mount(CChar *pHorse) // Remove horse char and give player a ho
 		SysMessageDefault(DEFMSG_MSG_MOUNT_UNABLE);
 		return false;
 	}
-	if ( pHorse->m_pPlayer || !pHorse->NPC_IsOwnedBy(this) )
+
+	if ( !pHorse->NPC_IsOwnedBy(this) )
 	{
 		SysMessageDefault(DEFMSG_MSG_MOUNT_DONTOWN);
-		return false;
-	}
-	if ( pHorse->m_pNPC->m_bonded && pHorse->IsStatFlag(STATF_DEAD) )
-	{
-		SysMessageDefault(DEFMSG_MSG_BONDED_DEAD_CANTMOUNT);
 		return false;
 	}
 
 	if ( g_Cfg.m_iMountHeight )
 	{
-		//is there space for me+mounted horse?
-		if (! IsVerticalSpace( GetTopPoint(), true ) )
+		if ( !IsVerticalSpace(GetTopPoint(), true) )	// is there space for the char + mount?
 		{
-			SysMessageDefault( DEFMSG_MSG_MOUNT_CEILING );
+			SysMessageDefault(DEFMSG_MSG_MOUNT_CEILING);
 			return false;
 		}
 	}
-
-	Horse_UnMount();	// unmount if already on a horse.
 
 	if ( IsTrigUsed(TRIGGER_MOUNT) )
 	{
@@ -2386,49 +2382,45 @@ bool CChar::Horse_Mount(CChar *pHorse) // Remove horse char and give player a ho
 			return false;
 	}
 
-	// set a new owner if it is not us (check first to prevent friends taking ownership)
-	if (pHorse->NPC_IsOwnedBy(this, false) == false)
-		pHorse->NPC_PetSetOwner( this );
-
 	CItem * pItem = pHorse->Make_Figurine(GetUID(), id);
 	if ( !pItem )
 		return false;
 
+	// Set a new owner if it is not us (check first to prevent friends taking ownership)
+	if ( !pHorse->NPC_IsOwnedBy(this, false) )
+		pHorse->NPC_PetSetOwner(this);
+
+	Horse_UnMount();					// unmount if already mounted
 	pItem->SetType(IT_EQ_HORSE);
-	pItem->SetTimeout(TICK_PER_SEC);// The first time we give it immediately a tick, then give the horse a tick everyone once in a while.
-	LayerAdd(pItem, LAYER_HORSE);	// equip the horse item
-
-	Update();
-
+	pItem->SetTimeout(TICK_PER_SEC);	// the first time we give it immediately a tick, then give the horse a tick everyone once in a while.
+	LayerAdd(pItem, LAYER_HORSE);		// equip the horse item
 	return true;
 }
 
 bool CChar::Horse_UnMount() // Get off a horse (Remove horse item and spawn new horse)
 {
 	ADDTOCALLSTACK("CChar::Horse_UnMount");
-	if ( ! IsStatFlag( STATF_OnHorse ) || (IsStatFlag( STATF_Stone) && (!IsPriv(PRIV_GM))))
-		return( false );
+	if ( !IsStatFlag(STATF_OnHorse) || (IsStatFlag(STATF_Stone) && !IsPriv(PRIV_GM)) )
+		return false;
 
-	CItem * pItem = LayerFind( LAYER_HORSE );
+	CItem * pItem = LayerFind(LAYER_HORSE);
 	if ( pItem == NULL || pItem->IsDeleted() )
 	{
-		StatFlag_Clear( STATF_OnHorse );	// flag got out of sync !
-		return( false );
+		StatFlag_Clear(STATF_OnHorse);	// flag got out of sync !
+		return false;
 	}
 
 	CChar * pPet = pItem->m_itFigurine.m_UID.CharFind();
-	if ((pPet != NULL && pPet->IsDisconnected() && !pPet->IsDeleted()) && ( IsTrigUsed(TRIGGER_DISMOUNT) )) // valid horse for trigger
+	if ( IsTrigUsed(TRIGGER_DISMOUNT) && pPet != NULL && pPet->IsDisconnected() && !pPet->IsDeleted() ) // valid horse for trigger
 	{
 		CScriptTriggerArgs Args(pPet);
-   		if ( OnTrigger(CTRIG_Dismount, this, &Args) == TRIGRET_RET_TRUE )
-			return ( false );
+		if ( OnTrigger(CTRIG_Dismount, this, &Args) == TRIGRET_RET_TRUE )
+			return false;
 	}
 
-	// What creature is the horse item ?
-	Use_Figurine( pItem, false );
+	Use_Figurine(pItem, false);
 	pItem->Delete();
-
-	return( true );
+	return true;
 }
 
 bool CChar::OnTickEquip( CItem * pItem )

@@ -237,62 +237,63 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 {
 	ADDTOCALLSTACK("CChar::Spell_Summon");
 	if ( id == CREID_INVALID )
-		return( NULL );
+		return NULL;
 
 	CChar * pChar;
 	if ( !fSpellSummon )
 	{
 		// GM creates a char this way. "ADDNPC"
 		// More specific npc type from script ?
-		pChar = CreateNPC( id );
+		pChar = CreateNPC(id);
 		if ( pChar == NULL )
 			return NULL;
 		pChar->MoveToChar( pntTarg );
 	}
 	else
 	{
-		pChar = CChar::CreateBasic(id);
-		if (pChar == NULL)
+		int skill;
+		CSpellDef *pSpellDef = g_Cfg.GetSpellDef(g_Cfg.IsSkillFlag(m_Act_SkillCurrent, SKF_MAGIC) ? m_atMagery.m_Spell : SPELL_Summon);
+		if ( !pSpellDef || !pSpellDef->GetPrimarySkill(&skill, NULL) )
 			return NULL;
 
-		if (!IsPriv(PRIV_GM))
+		if ( !IsPriv(PRIV_GM) )
 		{
 			CCharBase *pSummonDef = CCharBase::FindCharBase(id);
-			if (IsSetMagicFlags(MAGICF_SUMMONWALKCHECK))	// check if the target location is valid
+			if ( IsSetMagicFlags(MAGICF_SUMMONWALKCHECK) )	// check if the target location is valid
 			{
 				WORD wCan = 0xFFFF;
-				if (pSummonDef != NULL)
+				if ( pSummonDef != NULL )
 					wCan = pSummonDef->m_Can & CAN_C_MOVEMASK;
 
-				if (wCan != 0xFFFF)
+				if ( wCan != 0xFFFF )
 				{
 					DWORD wBlockFlags = 0;
 					g_World.GetHeightPoint2(pntTarg, wBlockFlags, true);
 
-					if (wBlockFlags &~wCan)
+					if ( wBlockFlags & ~wCan )
 					{
 						SysMessageDefault(DEFMSG_MSG_SUMMON_INVALIDTARG);
 						return NULL;
 					}
 				}
 			}
+		}
 
-			if (IsSetOF(OF_PetSlots))
+		pChar = CChar::CreateBasic(id);
+		if ( pChar == NULL )
+			return NULL;
+
+		if ( IsSetOF(OF_PetSlots) )
+		{
+			if ( !FollowersUpdate(pChar, static_cast<short>(maximum(1, pChar->GetDefNum("FOLLOWERSLOTS", true, true))), true) )
 			{
-				short iFollowerSlotsNeeded = static_cast<short>(maximum(pChar->GetDefNum("FOLLOWERSLOTS", true, true), 1));
-				short iCurFollower = static_cast<short>(GetDefNum("CURFOLLOWER", true, true));
-				short iMaxFollower = static_cast<short>(GetDefNum("MAXFOLLOWER", true, true));
-
-				if ( FollowersUpdate(pChar, false, &iFollowerSlotsNeeded) == false || iFollowerSlotsNeeded + iCurFollower > iMaxFollower )
-				{
-					SysMessageDefault(DEFMSG_PETSLOTS_TRY_SUMMON);
-					pChar->Delete();
-					return NULL;
-				}
+				SysMessageDefault(DEFMSG_PETSLOTS_TRY_SUMMON);
+				pChar->Delete();
+				return NULL;
 			}
 		}
 
-		if (g_Cfg.m_iMountHeight && !pChar->IsVerticalSpace(GetTopPoint(), false))
+		if ( g_Cfg.m_iMountHeight && !pChar->IsVerticalSpace(GetTopPoint(), false) )
 		{
 			SysMessageDefault(DEFMSG_MSG_SUMMON_CEILING);
 			pChar->Delete();
@@ -304,21 +305,13 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 		pChar->MoveToChar(pntTarg);
 		pChar->NPC_CreateTrigger();		// removed from NPC_LoadScript() and triggered after char placement
 		pChar->NPC_PetSetOwner(this);
-
-		int skill;
-		const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(g_Cfg.IsSkillFlag(m_Act_SkillCurrent, SKF_MAGIC) ? m_atMagery.m_Spell : SPELL_Summon);
-		if (!pSpellDef || !pSpellDef->GetPrimarySkill(&skill, NULL))
-		{
-			pChar->Delete();
-			return NULL;
-		}
 		pChar->OnSpellEffect(SPELL_Summon, this, Skill_GetAdjusted(static_cast<SKILL_TYPE>(skill)), NULL);
 	}
 
-	m_Act_Targ = pChar->GetUID();	// for last target stuff.
+	m_Act_Targ = pChar->GetUID();	// for last target stuff
 	pChar->Update();
-	pChar->UpdateAnimate( ANIM_CAST_DIR );
-	pChar->SoundChar( CRESND_GETHIT );
+	pChar->UpdateAnimate(ANIM_CAST_DIR);
+	pChar->SoundChar(CRESND_GETHIT);
 	return pChar;
 }
 
@@ -3108,14 +3101,14 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			return false;
 
 		// Check if the spell can be reflected
-		if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_CHAR) && pCharSrc != NULL && pCharSrc != this )		//only spells with direct target can be reflected
+		if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_CHAR) && pCharSrc != NULL && pCharSrc != this )		// only spells with direct target can be reflected
 		{
 			if ( IsStatFlag(STATF_Reflection) )
 			{
 				CItem *pMagicReflect = LayerFind(LAYER_SPELL_Magic_Reflect);
 				pMagicReflect->Delete();
 				Effect(EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 5);
-				if ( pCharSrc->IsStatFlag(STATF_Reflection) )		//caster is under reflection effect too, so the spell will reflect back to default target
+				if ( pCharSrc->IsStatFlag(STATF_Reflection) )		// caster is under reflection effect too, so the spell will reflect back to default target
 				{
 					CItem *pMagicReflect = pCharSrc->LayerFind(LAYER_SPELL_Magic_Reflect);
 					pMagicReflect->Delete();
@@ -3123,7 +3116,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				}
 				else
 				{
-					pCharSrc->OnSpellEffect( spell, pCharSrc, iSkillLevel, pSourceItem );
+					pCharSrc->OnSpellEffect( spell, NULL, iSkillLevel, pSourceItem );	// source can't be pCharSrc because it won't make effect if MAGICF_CANHARMSELF is disabled
 					return false;
 				}
 			}

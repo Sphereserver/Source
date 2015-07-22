@@ -2480,3 +2480,9 @@ Fixed: Combat hit chance formula being called twice, resulting a double chance t
 Added: New improved NPC looting AI (NPC_AI_LOOTING).
 [sphere_msgs.scp]: Added 'loot_rummage' and removed 'loot_item_from', 'skillact_looting' messages.
 [sphere_dialog]: Updated dialog d_charprop1 button 18.
+
+22-07-2015, Coruja
+Changed: Some improvements on OF_PetSlots engine.
+Fixed: Removed unnecessary full update on client when the player try to use any mount.
+Fixed: Function MOD[STR/DEX/INT] not fixing hits/stam/mana max value after decreased.
+Fixed: Magic Reflection spell not reflecting spells with SPELLFLAG_DAMAGE set.

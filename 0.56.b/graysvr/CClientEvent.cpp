@@ -1067,16 +1067,12 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 		// If it's a pet, check if we have follower slots to control it
 		if ( pItem->GetType() != IT_FIGURINE )
 			continue;
-		if ( IsSetOF(OF_PetSlots) && !IsPriv(PRIV_GM) )
+		if ( IsSetOF(OF_PetSlots) )
 		{
 			CCharBase *pPetDef = CCharBase::FindCharBase( pItem->m_itFigurine.m_ID );
 			if ( pPetDef )
 			{
-				short int iFollowerSlotsNeeded = static_cast<short>(maximum(pPetDef->GetDefNum("FOLLOWERSLOTS", true),1));
-				short int iCurFollower = static_cast<short>(m_pChar->GetDefNum("CURFOLLOWER", true, true));
-				short int iMaxFollower = static_cast<short>(m_pChar->GetDefNum("MAXFOLLOWER", true, true));
-
-				if ( m_pChar->FollowersUpdate(pVendor, false, &iFollowerSlotsNeeded) == false || ( iFollowerSlotsNeeded + iCurFollower > iMaxFollower ))
+				if ( !m_pChar->FollowersUpdate(pVendor, static_cast<short>(maximum(1, pPetDef->GetDefNum("FOLLOWERSLOTS", true)))) )
 				{
 					m_pChar->SysMessageDefault( DEFMSG_PETSLOTS_TRY_CONTROL );
 					return;
