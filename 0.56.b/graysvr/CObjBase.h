@@ -3680,7 +3680,7 @@ public:
 	CItemCorpse * MakeCorpse( bool fFrontFall );
 	bool RaiseCorpse( CItemCorpse * pCorpse );
 	bool Death();
-	bool Reveal( DWORD dwFlags = ( STATF_Invisible | STATF_Hidden | STATF_Sleeping ));
+	bool Reveal( DWORD dwFlags = 0 );
 	void Jail( CTextConsole * pSrc, bool fSet, int iCell );
 	void EatAnim( LPCTSTR pszName, int iQty );
 	void CallGuards( CChar * pCriminal );
@@ -3823,7 +3823,7 @@ public:
 
 	// Outside events that occur to us.
 	int  OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType, int iDmgPhysical = 0, int iDmgFire = 0, int iDmgCold = 0, int iDmgPoison = 0, int iDmgEnergy = 0 );
-	void OnHarmedBy( CChar * pCharSrc, int iHarmQty );
+	void OnHarmedBy( CChar * pCharSrc );
 	bool OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fPetsCommand = false, bool fShouldReveal = true );
 
 	bool OnTickEquip( CItem * pItem );

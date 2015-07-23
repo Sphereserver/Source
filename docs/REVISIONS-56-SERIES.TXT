@@ -2486,3 +2486,9 @@ Changed: Some improvements on OF_PetSlots engine.
 Fixed: Removed unnecessary full update on client when the player try to use any mount.
 Fixed: Function MOD[STR/DEX/INT] not fixing hits/stam/mana max value after decreased.
 Fixed: Magic Reflection spell not reflecting spells with SPELLFLAG_DAMAGE set.
+
+23-07-2015, Coruja
+Fixed: Function REVEAL not working correctly when used with empty args.
+Fixed: Invisible chars not getting revealed when looting items from corpses.
+Fixed: Clients not entering on warmode correctly after get hit by someone.
+Fixed: Damages not breaking Paralyze Field spell effect correctly.

@@ -1233,7 +1233,7 @@ void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 	{
 		// I being the victim can retaliate.
 		Memory_AddObjTypes( pCriminal, MEMORY_SAWCRIME );
-		OnHarmedBy( pCriminal, 1 );
+		OnHarmedBy( pCriminal );
 	}
 
 	if ( ! NPC_CanSpeak())
@@ -1792,10 +1792,9 @@ void CChar::CallGuards( CChar * pCriminal )
 
 
 
-void CChar::OnHarmedBy( CChar * pCharSrc, int iHarmQty )
+void CChar::OnHarmedBy( CChar * pCharSrc )
 {
 	ADDTOCALLSTACK("CChar::OnHarmedBy");
-	UNREFERENCED_PARAMETER(iHarmQty);
 	// i notice a Crime or attack against me ..
 	// Actual harm has taken place.
 	// Attack back.
@@ -1816,17 +1815,8 @@ void CChar::OnHarmedBy( CChar * pCharSrc, int iHarmQty )
 	if ( NPC_IsOwnedBy(pCharSrc, false) )
 		NPC_PetDesert();
 
-	// TORFO patch: war mode to other
-	if ( IsClient() )
-	{
-		StatFlag_Set(STATF_War);
-		GetClient()->addPlayerWarMode();
-	}
-
 	// I will Auto-Defend myself.
 	Fight_Attack(pCharSrc);
-	if ( !fFightActive )	// auto defend puts us in war mode.
-		UpdateModeFlag();
 }
 
 bool CChar::OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fCommandPet, bool fShouldReveal)
@@ -1879,7 +1869,7 @@ bool CChar::OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fCommandPet, bool
 	if ( ! fCommandPet )
 	{
 		// possibly retaliate. (auto defend)
-		OnHarmedBy( pCharSrc, iHarmQty );
+		OnHarmedBy( pCharSrc );
 	}
 
 	return( true );
@@ -2071,7 +2061,7 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType, int iDmgPhys
 {
 	ADDTOCALLSTACK("CChar::OnTakeDamage");
 	// Someone hit us.
-	// iDmg already defined by Fight_CalcDamage(), here we just apply armor related calculations
+	// iDmg already defined, here we just apply armor related calculations
 	//
 	// uType: damage flags
 	//  DAMAGE_GOD
@@ -2090,11 +2080,11 @@ int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType, int iDmgPhys
 	if ( pSrc == NULL )
 		pSrc = this;
 
-	if ( IsStatFlag(STATF_DEAD))	// already dead
+	if ( IsStatFlag(STATF_DEAD) )	// already dead
 		return( -1 );
-	if ( !(uType & DAMAGE_GOD))
+	if ( !(uType & DAMAGE_GOD) )
 	{
-		if ( IsStatFlag(STATF_INVUL|STATF_Stone))
+		if ( IsStatFlag(STATF_INVUL|STATF_Stone) )
 		{
 effect_bounce:
 			Effect( EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 16 );
@@ -2104,9 +2094,9 @@ effect_bounce:
 			goto effect_bounce;
 		if ( m_pArea )
 		{
-			if ( m_pArea->IsFlag(REGION_FLAG_SAFE))
+			if ( m_pArea->IsFlag(REGION_FLAG_SAFE) )
 				goto effect_bounce;
-			if ( m_pArea->IsFlag(REGION_FLAG_NO_PVP) && pSrc && (( IsStatFlag(STATF_Pet) &&  NPC_PetGetOwner() == pSrc) || (m_pPlayer && ( pSrc->m_pPlayer || pSrc->IsStatFlag(STATF_Pet)) ) ))
+			if ( m_pArea->IsFlag(REGION_FLAG_NO_PVP) && pSrc && ((IsStatFlag(STATF_Pet) && NPC_PetGetOwner() == pSrc) || (m_pPlayer && (pSrc->m_pPlayer || pSrc->IsStatFlag(STATF_Pet)))) )
 				goto effect_bounce;
 		}
 	}
@@ -2116,58 +2106,18 @@ effect_bounce:
 	if ( !OnAttackedBy(pSrc, iDmg, false, !(uType & DAMAGE_NOREVEAL)) )
 		return( 0 );
 
-	// Check parrying block chance
-	if ( !(uType & (DAMAGE_GOD|DAMAGE_MAGIC)) && (pSrc != this) )
-	{
-		// Legacy pre-SE formula
-		CItem * pItemHit = NULL;
-		int ParryChance = 0;
-		if ( IsStatFlag(STATF_HasShield) )	// parry using shield
-		{
-			pItemHit = LayerFind(LAYER_HAND2);
-			ParryChance = Skill_GetBase(SKILL_PARRYING) / 40;
-		}
-		else if ( LayerFind(LAYER_HAND1) )	// parry using weapon
-		{
-			pItemHit = LayerFind(LAYER_HAND1);
-			ParryChance = Skill_GetBase(SKILL_PARRYING) / 80;
-		}
-
-		if ( Skill_GetBase(SKILL_PARRYING) >= 1000 )
-			ParryChance += 5;
-
-		int DexMod = 100;
-		if ( Stat_GetVal(STAT_DEX) < 80 )
-			DexMod -= (80 - Stat_GetVal(STAT_DEX));
-
-		ParryChance *= DexMod / 100;
-		if ( Skill_UseQuick( SKILL_PARRYING, ParryChance, true, false ))
-		{
-			//Effect( EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 16 ); called in @UseQuick on parrying skill
-			//TO-DO: @UseQuick is always called before success/fail, so the glow effect above is always appearing even when the damage got parried or not.
-			//		 To make it work properly maybe we need some changes on @UseQuick (eg: replace @UseQuick with @Start and make it call @Success / @Fail, then we can use the glow effect on @Success)
-
-			if ( IsPriv(PRIV_DETAIL) )
-				pSrc->SysMessageDefault( DEFMSG_COMBAT_PARRY );
-			if ( pItemHit != NULL )
-				pItemHit->OnTakeDamage( iDmg, pSrc, uType );
-
-			return( 0 );
-		}
-	}
-
 	// Apply Necromancy cursed effects
-	if (IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
+	if ( IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) )
 	{
 		CItem * pEvilOmen = LayerFind(LAYER_SPELL_Evil_Omen);
-		if (pEvilOmen)
+		if ( pEvilOmen )
 		{
 			iDmg += iDmg / 4;
 			pEvilOmen->Delete();
 		}
 
 		CItem * pBloodOath = LayerFind(LAYER_SPELL_Blood_Oath);
-		if (pBloodOath && pBloodOath->m_uidLink == pSrc->GetUID() && !(uType & DAMAGE_FIXED))	// if DAMAGE_FIXED is set we are already receiving a reflected damage, so we must stop here to avoid an infinite loop.
+		if ( pBloodOath && pBloodOath->m_uidLink == pSrc->GetUID() && !(uType & DAMAGE_FIXED) )	// if DAMAGE_FIXED is set we are already receiving a reflected damage, so we must stop here to avoid an infinite loop.
 		{
 			iDmg += iDmg / 10;
 			pSrc->OnTakeDamage(iDmg * (100 - pBloodOath->m_itSpell.m_spelllevel) / 100, this, DAMAGE_MAGIC|DAMAGE_FIXED);
@@ -2266,19 +2216,19 @@ effect_bounce:
 	// Remove stuck/paralyze effect
 	if ( !(uType & DAMAGE_NOUNPARALYZE) )
 	{
-		// Workaround: we must remove the flag immediately, but the memory only on next tick.
-		// If we remove the memory immediately, the char will be paralyzed again immediately
-		// after receive the damage, with no chance to get unfrozen and run away
-		StatFlag_Clear(STATF_Freeze);
-		UpdateMode();
-
 		CItem * pParalyze = LayerFind(LAYER_SPELL_Paralyze);
-		if (pParalyze)
-			pParalyze->SetTimeout(1);
+		if ( pParalyze )
+			pParalyze->Delete();
 
 		CItem * pStuck = LayerFind(LAYER_FLAG_Stuck);
-		if (pStuck)
-			pStuck->SetTimeout(1);
+		if ( pStuck )
+			pStuck->Delete();
+
+		if ( IsStatFlag(STATF_Freeze) )
+		{
+			StatFlag_Clear(STATF_Freeze);
+			UpdateMode();
+		}
 	}
 
 	if ( pSrc && pSrc != this )
@@ -2820,6 +2770,9 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 
 	// I'm attacking (or defending)
 	StatFlag_Set(STATF_War);
+	UpdateModeFlag();
+	if ( IsClient() )
+		GetClient()->addPlayerWarMode();
 
 	// Skill interruption ?
 	SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
@@ -3892,11 +3845,51 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	}
 
 	// We hit...
+	// Check if target will block the hit
+	if ( !(iTyp & DAMAGE_GOD) )
+	{
+		// Legacy pre-SE formula
+		CItem * pItemHit = NULL;
+		int ParryChance = 0;
+		if ( pCharTarg->IsStatFlag(STATF_HasShield) )	// parry using shield
+		{
+			pItemHit = pCharTarg->LayerFind(LAYER_HAND2);
+			ParryChance = pCharTarg->Skill_GetBase(SKILL_PARRYING) / 40;
+		}
+		else if ( pCharTarg->LayerFind(LAYER_HAND1) )	// parry using weapon
+		{
+			pItemHit = pCharTarg->LayerFind(LAYER_HAND1);
+			ParryChance = pCharTarg->Skill_GetBase(SKILL_PARRYING) / 80;
+		}
+
+		if ( pCharTarg->Skill_GetBase(SKILL_PARRYING) >= 1000 )
+			ParryChance += 5;
+
+		int DexMod = 100;
+		if ( pCharTarg->Stat_GetVal(STAT_DEX) < 80 )
+			DexMod -= (80 - pCharTarg->Stat_GetVal(STAT_DEX));
+
+		ParryChance *= DexMod / 100;
+		if ( pCharTarg->Skill_UseQuick(SKILL_PARRYING, ParryChance, true, false) )
+		{
+			//Effect( EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 16 ); called in @UseQuick on parrying skill
+			//TO-DO: @UseQuick is always called before success/fail, so the glow effect above is always appearing even when the damage got parried or not.
+			//		 To make it work properly maybe we need some changes on @UseQuick (eg: replace @UseQuick with @Start and make it call @Success / @Fail, then we can use the glow effect on @Success)
+
+			if ( IsPriv(PRIV_DETAIL) )
+				SysMessageDefault(DEFMSG_COMBAT_PARRY);
+			if ( pItemHit != NULL )
+				pItemHit->OnTakeDamage(1, this, iTyp);
+
+			return(WAR_SWING_EQUIPPING);	// we missed
+		}
+	}
+
 	// Calculate base damage.
 	int	iDmg = Fight_CalcDamage( pWeapon );
 
 	//if ( iDmg ) // use OnTakeDamage below instead.
-	//	pCharTarg->OnHarmedBy( this, iDmg );
+	//	pCharTarg->OnHarmedBy( this );
 
 	if ( IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) && !g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
 	{

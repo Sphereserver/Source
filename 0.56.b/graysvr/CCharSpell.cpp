@@ -3018,9 +3018,9 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		return false;
 	if ( IsStatFlag(STATF_DEAD) && !pSpellDef->IsSpellType(SPELLFLAG_TARG_DEAD) )
 		return false;
-	if ( spell == SPELL_Paralyze_Field && LayerFind(LAYER_SPELL_Paralyze) )	//IsStatFlag(STATF_Freeze)
+	if ( spell == SPELL_Paralyze_Field && IsStatFlag(STATF_Freeze) )
 		return false;
-	if ( spell == SPELL_Poison_Field && LayerFind(LAYER_FLAG_Poison) )	//IsStatFlag(STATF_Poisoned)
+	if ( spell == SPELL_Poison_Field && IsStatFlag(STATF_Poisoned) )
 		return false;
 
 	static const SOUND_TYPE sm_DrinkSounds[] = { 0x030, 0x031 };

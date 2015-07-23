@@ -1654,11 +1654,11 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 	}
 
 	const CItemCorpse * pCorpseItem = dynamic_cast <const CItemCorpse *>(pObjTop);
-	if ( pCorpseItem )
+	if ( pCorpseItem && pCorpseItem->m_uidLink != GetUID() )
 	{
-		// Taking stuff off someones corpse can be a crime !
-		if ( CheckCorpseCrime(pCorpseItem, true, false) )
+		if ( CheckCorpseCrime(pCorpseItem, true, false) )	// taking stuff off someones corpse can be a crime!
 			SysMessageDefault(DEFMSG_MSG_GUARDS);
+		Reveal();
 	}
 
 	int iAmountMax = pItem->GetAmount();
@@ -2120,36 +2120,35 @@ bool CChar::Reveal( DWORD dwFlags )
 	ADDTOCALLSTACK("CChar::Reveal");
 	// Some outside influence may be revealing us.
 
+	if ( !dwFlags )
+		dwFlags = STATF_Invisible|STATF_Hidden|STATF_Sleeping;
 	if ( !IsStatFlag(dwFlags) )
 		return false;
 
 	if ( IsClient() && GetClient()->m_pHouseDesign )
 	{
-		// no reveal whilst in house design (unless they somehow got out)
+		// No reveal whilst in house design (unless they somehow got out)
 		if ( GetClient()->m_pHouseDesign->GetDesignArea().IsInside2d(GetTopPoint()) )
 			return false;
 
 		GetClient()->m_pHouseDesign->EndCustomize(true);
 	}
 
-	if (( dwFlags & STATF_Sleeping ) && IsStatFlag( STATF_Sleeping ))
-	{
-		// Try to wake me up.
+	if ( (dwFlags & STATF_Sleeping) && IsStatFlag(STATF_Sleeping) )
 		Wake();
-	}
 	
-	if ( ( dwFlags & STATF_Invisible ) && IsStatFlag( STATF_Invisible ))
+	if ( (dwFlags & STATF_Invisible) && IsStatFlag(STATF_Invisible) )
 	{
 		CItem * pSpell = LayerFind(LAYER_SPELL_Invis);
-		if ( pSpell && pSpell->IsType(IT_SPELL) && (pSpell->m_itSpell.m_spell == SPELL_Invis))
+		if ( pSpell && pSpell->IsType(IT_SPELL) && (pSpell->m_itSpell.m_spell == SPELL_Invis) )
 		{
-			pSpell->SetType( IT_NORMAL );	// Setting it to IT_NORMAL avoid a second call to this function
+			pSpell->SetType(IT_NORMAL);		// setting it to IT_NORMAL avoid a second call to this function
 			pSpell->Delete();
 		}
 		pSpell = LayerFind(LAYER_FLAG_Potion);
-		if ( pSpell && pSpell->IsType(IT_SPELL) && (pSpell->m_itSpell.m_spell == SPELL_Invis))
+		if ( pSpell && pSpell->IsType(IT_SPELL) && (pSpell->m_itSpell.m_spell == SPELL_Invis) )
 		{
-			pSpell->SetType( IT_NORMAL );	// Setting it to IT_NORMAL avoid a second call to this function
+			pSpell->SetType(IT_NORMAL);		// setting it to IT_NORMAL avoid a second call to this function
 			pSpell->Delete();
 		}
 	}

@@ -3827,9 +3827,8 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 					return Spell_Resurrection( NULL, pCharSrc, true );
 			}
 		case CHV_REVEAL:
-			{
-				Reveal(static_cast<unsigned long>(s.GetArgVal()));
-			}break;
+			Reveal(static_cast<DWORD>(s.GetArgVal()));
+			break;
 		case CHV_SALUTE:	//	salute to player
 			{
 				CObjBase	*pTarget = pCharSrc;
