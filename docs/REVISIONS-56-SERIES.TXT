@@ -2490,5 +2490,6 @@ Fixed: Magic Reflection spell not reflecting spells with SPELLFLAG_DAMAGE set.
 23-07-2015, Coruja
 Fixed: Function REVEAL not working correctly when used with empty args.
 Fixed: Invisible chars not getting revealed when looting items from corpses.
+Fixed: Telekinesis spell not flagging criminal when used to loot items from corpses.
+Fixed: Paralyze spell effect not getting removed correctly.
 Fixed: Clients not entering on warmode correctly after get hit by someone.
-Fixed: Damages not breaking Paralyze Field spell effect correctly.

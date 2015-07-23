@@ -1653,11 +1653,10 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 		return -1;
 	}
 
-	const CItemCorpse * pCorpseItem = dynamic_cast <const CItemCorpse *>(pObjTop);
-	if ( pCorpseItem && pCorpseItem->m_uidLink != GetUID() )
+	const CItemCorpse * pCorpse = dynamic_cast<const CItemCorpse *>(pObjTop);
+	if ( pCorpse && pCorpse->m_uidLink != GetUID() )
 	{
-		if ( CheckCorpseCrime(pCorpseItem, true, false) )	// taking stuff off someones corpse can be a crime!
-			SysMessageDefault(DEFMSG_MSG_GUARDS);
+		CheckCorpseCrime(pCorpse, true, false);
 		Reveal();
 	}
 

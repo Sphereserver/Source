@@ -2604,8 +2604,17 @@ bool CChar::Spell_CastDone()
 				break;
 
 			case SPELL_Telekin:	// Act as DClick on the object.
+			{
+				CItemCorpse * pCorpse = dynamic_cast<CItemCorpse *>(pObj->GetTopLevelObj());
+				if ( pCorpse && pCorpse->m_uidLink != GetUID() )
+				{
+					CheckCorpseCrime(pCorpse, true, false);
+					Reveal();
+				}
+
 				Use_Obj(pObj, false);
 				break;
+			}
 
 			case SPELL_Teleport:
 				Spell_Teleport(m_Act_p);
