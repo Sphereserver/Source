@@ -463,6 +463,7 @@ private:
 	WORD	m_weight;
 
 public:
+	BYTE	m_speed;
 	// Attribute flags.
 #define ATTR_IDENTIFIED		0x0001		// This is the identified name. ???
 #define ATTR_DECAY			0x0002		// Timer currently set to decay.
@@ -992,7 +993,7 @@ public:
 
 	int IsWeird() const;
 	signed char GetFixZ(CPointMap pt, unsigned long wBlockFlags = 0 );
-	
+	BYTE GetSpeed() const;
 	void SetAttr( DWORD dwAttr )
 	{
 		m_Attr |= dwAttr;

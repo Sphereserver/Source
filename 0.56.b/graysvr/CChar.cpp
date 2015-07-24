@@ -1021,7 +1021,7 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 		}
 		else
 		{
-			TRIGRET_TYPE tRet = OnTriggerRunVal( s, TRIGRUN_SINGLE_EXEC, &g_Serv, NULL );
+			TRIGRET_TYPE tRet = OnTriggerRun( s, TRIGRUN_SINGLE_EXEC, &g_Serv, NULL, NULL );
 			if ( (tRet == TRIGRET_RET_FALSE) && fFullInterp )
 				;
 			else if ( tRet != TRIGRET_RET_DEFAULT )
@@ -2821,13 +2821,23 @@ do_default:
 								Attacker_Delete(pChar, false, ATTACKER_CLEAR_SCRIPT);
 							}
 							return true;
-						}
-						if ( !strnicmp(pszKey, "ADD", 3 ) )
+						}else if ( !strnicmp(pszKey, "ADD", 3 ) )
 						{
 							CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
 							if (! pChar )
 								return false;
 							Fight_Attack(pChar);
+							return true;
+						}
+						else if (!strnicmp(pszKey, "TARGET", 6))
+						{
+							CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
+							if (!pChar || pChar == this)	// We canno't set ourselves as target.
+							{
+								m_Fight_Targ.InitUID();
+								return false;
+							}
+							m_Fight_Targ = pChar->GetUID();
 							return true;
 						}
 						else

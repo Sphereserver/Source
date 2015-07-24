@@ -576,6 +576,17 @@ bool CItem::IsMovable() const
 	return( IsMovableType());
 }
 
+// Retrieve tag.override.speed for this CItem
+// If no tag, then retrieve CItemBase::GetSpeed()
+// Doing this way lets speed be changed for all created weapons from the script itself instead of rewriting one by one.
+BYTE CItem::GetSpeed() const
+{
+	if (m_TagDefs.GetKey("OVERRIDE.SPEED"))
+		return static_cast<BYTE>(m_TagDefs.GetKeyNum("OVERRIDE.SPEED"));
+	CItemBase * pItemDef = dynamic_cast<CItemBase *>(Base_GetDef());
+	return pItemDef->GetSpeed();
+}
+
 int CItem::IsWeird() const
 {
 	ADDTOCALLSTACK_INTENSIVE("CItem::IsWeird");
@@ -4884,26 +4895,32 @@ forcedamage:
 		TCHAR *pszMsg = Str_GetTemp();
 		if ( pSrc != NULL )
 		{
-			// Tell hitter they scored !
-			if ( pChar && pChar != pSrc )
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEM_DMG_DAMAGE1 ), static_cast<LPCTSTR>(pChar->GetName()), static_cast<LPCTSTR>(GetName()));
-			else
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEM_DMG_DAMAGE2 ), static_cast<LPCTSTR>(GetName()));
-			pSrc->SysMessage(pszMsg);
+			if (pSrc->IsPriv(PRIV_DETAIL))
+			{
+				// Tell hitter they scored !
+				if (pChar && pChar != pSrc)
+					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE1), static_cast<LPCTSTR>(pChar->GetName()), static_cast<LPCTSTR>(GetName()));
+				else
+					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE2), static_cast<LPCTSTR>(GetName()));
+				pSrc->SysMessage(pszMsg);
+			}
 		}
 		if ( pChar && pChar != pSrc )
 		{
-			// Tell target they got damaged.
-			*pszMsg = 0;
-			if ( m_itArmor.m_Hits_Cur < m_itArmor.m_Hits_Max / 2 )
+			if (pChar->IsPriv(PRIV_DETAIL))
 			{
-				int iPercent = Armor_GetRepairPercent();
-				if ( pChar->Skill_GetAdjusted( SKILL_ARMSLORE ) / 10 > iPercent )
-					sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEM_DMG_DAMAGE3 ), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(Armor_GetRepairDesc()));
+				// Tell target they got damaged.
+				*pszMsg = 0;
+				if (m_itArmor.m_Hits_Cur < m_itArmor.m_Hits_Max / 2)
+				{
+					int iPercent = Armor_GetRepairPercent();
+					if (pChar->Skill_GetAdjusted(SKILL_ARMSLORE) / 10 > iPercent)
+						sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE3), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(Armor_GetRepairDesc()));
+				}
+				if (!*pszMsg)
+					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE4), static_cast<LPCTSTR>(GetName()));
+				pChar->SysMessage(pszMsg);
 			}
-			if ( !*pszMsg )
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEM_DMG_DAMAGE4 ), static_cast<LPCTSTR>(GetName()));
-			pChar->SysMessage(pszMsg);
 		}
 		return( 2 );
 	}

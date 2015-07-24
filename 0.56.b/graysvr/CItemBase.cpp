@@ -942,6 +942,13 @@ int CItemBase::CalculateMakeValue( int iQualityLevel ) const
 	return( lValue );
 }
 
+BYTE CItemBase::GetSpeed() const
+{
+	if (m_TagDefs.GetKey("OVERRIDE.SPEED"))
+		return static_cast<BYTE>(m_TagDefs.GetKeyNum("OVERRIDE.SPEED"));
+	return m_speed;
+}
+
 int CItemBase::GetMakeValue( int iQualityLevel )
 {
 	ADDTOCALLSTACK("CItemBase::GetMakeValue");

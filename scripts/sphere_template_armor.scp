@@ -64,13 +64,13 @@ ITEM={ i_gargish_leather_arms_f 1 i_gargish_leather_arms 1 i_gargish_leather_che
 CATEGORY=Item Templates
 SUBSECTION=Armor Templates
 DESCRIPTION=Random Gargish Leather (male)
-ITEM={ i_gargish_leather_arms 1 i_gargish_leather_chest 1 i_gargish_leather_leggings 1 i_gargish_leather_kilt 1 i_gargish_leather_talons 1 i_gargish_leather_belt 1 i_gargish_leather_wings 1 } 
+ITEM={ i_gargish_leather_arms 1 i_gargish_leather_chest 1 i_gargish_leather_leggings 1 i_gargish_leather_kilt 1 i_gargish_leather_talons 1 i_gargish_leather_belt 1 i_gargish_leather_wing_armor 1 } 
 
 [TEMPLATE random_armor_gargish_leather_female]
 CATEGORY=Item Templates
 SUBSECTION=Armor Templates
 DESCRIPTION=Random Gargish Leather (female)
-ITEM={ i_gargish_leather_arms_female 1 i_gargish_leather_chest_female 1 i_gargish_leather_leggings_female 1 i_gargish_leather_kilt_female 1 i_gargish_leather_talons 1 i_gargish_leather_belt 1 i_gargish_leather_wings 1 } 
+ITEM={ i_gargish_leather_arms_f 1 i_gargish_leather_chest_f 1 i_gargish_leather_leggings_f 1 i_gargish_leather_kilt_f 1 i_gargish_leather_talons 1 i_gargish_leather_belt 1 i_gargish_leather_wing_armor 1 } 
 
 
 [TEMPLATE random_armor_gargish_plate]
@@ -170,7 +170,7 @@ ITEM={ i_gargish_cloth_kilt_female 1 i_gargish_leather_kilt_female 1 i_gargish_p
 CATEGORY=Item Templates
 SUBSECTION=Armor Templates
 DESCRIPTION=Random Gargish Wings
-ITEM={ i_gargish_cloth_wings 1 i_gargish_leather_wings 1 }
+ITEM={ i_gargish_cloth_wings 1 i_gargish_leather_wing_armor 1 }
 
 [TEMPLATE random_armor_gargish_talons]
 CATEGORY=Item Templates

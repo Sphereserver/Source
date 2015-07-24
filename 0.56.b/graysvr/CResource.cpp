@@ -3835,6 +3835,7 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		if ( IsSetEF(EF_NoDiagonalCheckLOS) ) catresname(zExperimentalFlags, "NoDiagonalCheckLOS");
 		if ( IsSetEF(EF_ItemStacking) ) catresname(zExperimentalFlags, "ItemStacking");
 		if ( IsSetEF(EF_ItemStackDrop) ) catresname(zExperimentalFlags, "ItemStackDrop");
+		if ( IsSetEF(EF_Intrinsic_Locals) ) catresname(zExperimentalFlags, "IntrinsicLocals");
 		if ( IsSetEF(EF_Item_Strict_Comparison) ) catresname(zExperimentalFlags, "ItemStrictComparison");
 		if ( IsSetEF(EF_AllowTelnetPacketFilter) ) catresname(zExperimentalFlags, "TelnetPacketFilter");
 		if ( IsSetEF(EF_Script_Profiler) ) catresname(zExperimentalFlags, "ScriptProfiler");

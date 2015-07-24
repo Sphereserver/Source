@@ -794,6 +794,8 @@ bool CChar::Stats_Regen(INT64 iTimeDiff)
 
 	for (STAT_TYPE i = STAT_STR; i <= STAT_FOOD; i = static_cast<STAT_TYPE>(i + 1))
 	{
+		if (g_Cfg.m_iRegenRate[i] < 0)
+			continue;
 		int iRate = Stats_GetRegenVal(i, true);
 		if (iRate < 0)
 			iRate = 0;
@@ -3167,10 +3169,10 @@ int CChar::Skill_Fighting( SKTRIG_TYPE stage )
 		m_atFight.m_fMoved = 0;
 
 		// Set the swing timer.
-		int iWaitTime = Fight_GetWeaponSwingTimer()/2;	// start the anim immediately.
+		/*int iWaitTime = Fight_GetWeaponSwingTimer()/2;	// start the anim immediately.
 		if ( g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_RANGED) )	// anim is funny for archery
-			iWaitTime /= 2;
-		SetTimeout( 0 );
+			iWaitTime /= 2;*/
+		SetTimeout( 0 );	// Timeout(0) here means instantly call @HitTry, so the whole delay can be overrided in argn1
 
 		return( g_Cfg.Calc_CombatChanceToHit(this, m_Fight_Targ.CharFind(), Skill_GetActive()) );
 	}

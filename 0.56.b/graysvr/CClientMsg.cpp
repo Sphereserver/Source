@@ -3381,9 +3381,8 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 								this->m_TooltipData.Add( t = new CClientTooltip( 1061168 ) ); // weapon damage ~1_val~ - ~2_val~
 								t->FormatArgs( "%d\t%d", pItem->m_attackBase + pItem->m_ModAr, ( pItem->Weapon_GetAttack(true) ) );
 
-								CItemBase * pItemDef = dynamic_cast<CItemBase *>(pItem->Base_GetDef());
 								this->m_TooltipData.Add( t = new CClientTooltip( 1061167 ) ); // weapon speed ~1_val~
-								t->FormatArgs( "%d", pItemDef->GetSpeed() );
+								t->FormatArgs( "%d", pItem->GetSpeed() );
 
 								int Range = pItem->RangeL();
 								if ( Range > 1 )

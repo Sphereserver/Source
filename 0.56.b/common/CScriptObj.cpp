@@ -268,7 +268,18 @@ bool CScriptTriggerArgs::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsol
 {
 	ADDTOCALLSTACK("CScriptTriggerArgs::r_WriteVal");
 	EXC_TRY("WriteVal");
-	if ( !strnicmp("LOCAL.", pszKey, 6) )
+	if ( IsSetEF( EF_Intrinsic_Locals ) )
+	{
+		EXC_SET("intrinsic");
+		CVarDefCont *	pVar	= m_VarsLocal.GetKey( pszKey );
+		
+		if ( pVar )
+		{
+			sVal	= pVar->GetValStr();
+			return true;
+		}
+	}
+	else if ( !strnicmp("LOCAL.", pszKey, 6) )
 	{
 		EXC_SET("local");
 		pszKey	+= 6;

@@ -463,13 +463,13 @@ class CItemBase : public CBaseBaseDef
 	// Describe basic stuff about all items.
 	// Partly based on CUOItemTypeRec/CUOItemTypeRec2
 private:
-	WORD	m_weight;
+	WORD	m_weight;		// weight in WEIGHT_UNITS (USHRT_MAX=not movable) defaults from the .MUL file.
 	CGTypedArray<ITEMID_TYPE,ITEMID_TYPE> m_flip_id;	//  can be flipped to make these display ids.
 	IT_TYPE	m_type;			// default double click action type. (if any)
 	CValueRangeDef m_values;		// range of values given a quality skill
 	BYTE    m_layer;		// Is this item equippable on paperdoll? LAYER=LAYER_TYPE defaults from the .MUL file.
 	DWORD   m_dwFlags;		//  UFLAG4_DOOR from CUOItemTypeRec/CUOItemTypeRec2
-	BYTE	m_speed;		// weight in WEIGHT_UNITS (USHRT_MAX=not movable) defaults from the .MUL file.
+	BYTE	m_speed;
 public:
 	static const char *m_sClassName;
 	SKILL_TYPE m_iSkill;
@@ -725,10 +725,7 @@ public:
 			return( WEIGHT_UNITS );	// If we can pick them up then we should be able to move them
 		return( m_weight );
 	}
-	BYTE GetSpeed() const
-	{
-		return m_speed;
-	}
+	BYTE GetSpeed() const;
 	WORD GetVolume() const
 	{
 		return( m_weight / WEIGHT_UNITS );

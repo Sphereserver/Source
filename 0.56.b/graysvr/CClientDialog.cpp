@@ -518,7 +518,7 @@ bool CDialogDef::GumpSetup( int iPage, CClient * pClient, CObjBase * pObjSrc, LP
 	m_pObj			= pObjSrc;
 	m_iOriginX		= 0;
 	m_iOriginY		= 0;
-	m_iPage = static_cast<WORD>(iPage);
+	m_iPage			= static_cast<WORD>(iPage);
 	m_bNoDispose	= false;
 
 	CScriptTriggerArgs	Args(iPage, 0, pObjSrc);

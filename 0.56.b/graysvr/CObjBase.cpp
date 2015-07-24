@@ -1384,7 +1384,14 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 					return( false );
 
 				sVal = g_Cfg.Calc_MaptoSextant(pt);
-			} break;
+		} break;
+		case OC_SPEED:
+		{
+			if ( !this->IsItem() )
+				return false;
+			CItem * pItem = static_cast<CItem*>(this);
+			sVal.FormatVal(pItem->GetSpeed());
+		}	break;
 		case OC_TIMESTAMP:
 			sVal.FormatLLVal(GetTimeStamp().GetTimeRaw());
 			break;
@@ -1764,7 +1771,16 @@ bool CObjBase::r_LoadVal( CScript & s )
 			SetName( s.GetArgStr());
 			break;
 		case OC_P:	// Must set the point via the CItem or CChar methods.
-			return( false );
+			return(false);
+		case OC_SPEED:
+		{
+			if (!this->IsItem())
+				return false;
+			CItem * pItem = static_cast<CItem*>(this);
+			pItem->m_speed = static_cast<BYTE>(s.GetArgVal());
+			pItem->ResendTooltip();
+			return true;
+		}
 		case OC_TIMER:
 			SetTimeout( s.GetArgLLVal() * TICK_PER_SEC );
 			break;

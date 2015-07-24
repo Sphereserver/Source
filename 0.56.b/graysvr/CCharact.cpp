@@ -2480,7 +2480,9 @@ bool CChar::OnTickEquip( CItem * pItem )
 				CChar * pHorse = pItem->m_itFigurine.m_UID.CharFind();
 				if (pHorse == NULL)
 					return(false);
-				return pHorse->OnTick();
+				if (pHorse != this)				//Some scripts can force mounts to have as 'mount' the rider itself (like old ethereal scripts)
+					return pHorse->OnTick();	// if we call OnTick again on them we'll have an infinite loop.
+				return true;
 				// NPCs with just an item equipped is fine
 				// but still give ticks just in case
 				/*if ( m_pNPC )

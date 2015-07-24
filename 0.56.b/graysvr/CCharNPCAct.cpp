@@ -1929,7 +1929,6 @@ bool CChar::NPC_FightMagery(CChar * pChar)
 	else
 		i = static_cast<unsigned char>(Calc_GetRandVal2(0, count-1));
 
-	//g_Log.EventDebug("Starting check cast at %d out of %d\n", i, count);
 	if (i > count)	// if i > count then we use wand to cast.
 	{
 		SPELL_TYPE spell = static_cast<SPELL_TYPE>(pWand->m_itWeapon.m_spell);
@@ -1944,7 +1943,6 @@ bool CChar::NPC_FightMagery(CChar * pChar)
 	for (; i < count; i++)
 	{
 		SPELL_TYPE spell = m_pNPC->Spells_GetAt(i);
-		//g_Log.EventDebug("Checks for spell %d on loop %d\n",spell,count);
 		const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
 		if (!pSpellDef)	//If it reached here it should exist, checking anyway.
 			continue;
@@ -3606,9 +3604,13 @@ void CChar::NPC_ExtraAI()
 		CItem *pShield = LayerFind(LAYER_HAND2);
 		if ( !pShield || !pShield->IsTypeArmor() )
 		{
-			pShield = GetPack()->ContentFind(RESOURCE_ID(RES_TYPEDEF, IT_SHIELD));
-			if ( pShield )
-				ItemEquip(pShield);
+			CItemContainer * pPack = GetPack();
+			if (pPack)
+			{
+				pShield = pPack->ContentFind(RESOURCE_ID(RES_TYPEDEF, IT_SHIELD));
+				if (pShield)
+					ItemEquip(pShield);
+			}
 		}
 		return;
 	}

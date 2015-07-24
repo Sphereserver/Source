@@ -554,6 +554,11 @@ i_cot_sw						i_cot
 
 // Definitions
 brain_beserk					brain_berserk
+brain_towncrier					brain_human
+brain_beggar					brain_human
+brain_thief						brain_human
+brain_vendor_offduty			brain_vendor
+brain_undead					brain_monster
 loot_orge_lord					loot_ogre_lord
 snd_rune_beetle					snd_monster_rune_beetle
 snd_yomotsu					snd_monster_yomotsu

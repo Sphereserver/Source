@@ -52,6 +52,7 @@ enum EF_TYPE
 	EF_NoDiagonalCheckLOS			= 0x0000001,
 	EF_ItemStacking					= 0x0000004,
 	EF_ItemStackDrop				= 0x0000008,
+	EF_Intrinsic_Locals				= 0x0000020,
 	EF_Item_Strict_Comparison		= 0x0000040,
 	EF_AllowTelnetPacketFilter		= 0x0000200,
 	EF_Script_Profiler				= 0x0000400,

@@ -2493,3 +2493,13 @@ Fixed: Invisible chars not getting revealed when looting items from corpses.
 Fixed: Telekinesis spell not flagging criminal when used to loot items from corpses.
 Fixed: Paralyze spell effect not getting removed correctly.
 Fixed: Clients not entering on warmode correctly after get hit by someone.
+
+24-07-2015, XuN
+Added TAG.OVERRIDE.SPEED for ITEMDEFS and Items overriding the current speed for weapons.
+Fixed #2535: NPCRestock is now accepting code like any other triggers.
+Added: Setting RegenX=-1 in the ini will disable regens for that stat, also the @RegenStat trigger and every related code.
+[Items/Sphere_item_provisions_weapons.scp]:
+	-Added TAG.OVERRIDE.SPEED for all weapons to match new speeds on OSI, uncomment these lines to enable them (These speeds are meant to be used with CombatSpeedEra=3).
+Re-added detail check for parrying messages, they were being sent always regardless of the detail flag on the character.
+Re-Adeed EF_Intrinsic_Locals with a warning comment in the ini.
+Fixed a check in CChar::NPC_ExtraAI() giving errors when trying to find items inside a container when there was no container to search on.

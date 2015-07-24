@@ -365,6 +365,7 @@ bool AbstractThread::checkStuck()
 				static_cast<AbstractSphereThread*>(this)->printStackTrace();
 			#endif
 			terminate(false);
+			run();
 			start();
 			return true;
 		}

@@ -3407,6 +3407,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	}
 
 	INT64 iTime = Fight_GetWeaponSwingTimer();
+	iTime -= TICK_PER_SEC;	// We lost one tick while waiting in SetTimeout() from SkillStart
 	if ( !pCharTarg || ( pCharTarg == this ) )
 		return WAR_SWING_INVALID;
 
@@ -3634,6 +3635,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				if ( OnTrigger( CTRIG_HitTry, pCharTarg, &Args ) == TRIGRET_RET_TRUE )
 					return( WAR_SWING_READY );
 				iTime = Args.m_iN1;
+				if ( iTime < 1 )	// Softcoded time can be lesser than default '12' but never negative, also setting it to 1 tick min.
+					iTime = 1;
 				anim = (ANIM_TYPE)Args.m_VarsLocal.GetKeyNum("Anim",false);
 				animDelay = (unsigned char)Args.m_VarsLocal.GetKeyNum("AnimDelay", true);
 				if (animDelay < 0)
