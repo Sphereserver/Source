@@ -568,13 +568,14 @@ bool PacketResynchronize::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketResynchronize::onReceive");
 
-	CClient* client = net->getClient();
+	CClient * client = net->getClient();
 	ASSERT(client);
-	if (client->GetChar() == NULL)
+
+	CChar * pChar = client->GetChar();
+	if ( !pChar )
 		return false;
 
-	net->m_sequence = 0;
-	client->addReSync();
+	client->addPlayerView(pChar->GetTopPoint(), false);
 	return true;
 }
 

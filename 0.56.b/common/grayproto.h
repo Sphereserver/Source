@@ -178,7 +178,7 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	//	0x50
 	XCMD_IdleWarning	= 0x53,
 	XCMD_Sound			= 0x54,
-	XCMD_ReDrawAll		= 0x55,
+	XCMD_LoginComplete	= 0x55,
 	XCMD_MapEdit		= 0x56,
 	XCMD_Time			= 0x5b,
 	XCMD_CharPlay		= 0x5d,

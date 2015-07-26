@@ -653,23 +653,23 @@ void CChar::UnEquipAllItems( CItemContainer * pDest, bool bLeaveHands )
 	}
 }
 
-void CChar::UpdateDrag( CItem * pItem, CObjBase * pCont, CPointMap * ppt )
+void CChar::UpdateDrag( CItem * pItem, CObjBase * pCont, CPointMap * pt )
 {
 	ADDTOCALLSTACK("CChar::UpdateDrag");
 	// Show the world that I am picking up or putting down this object.
 	// NOTE: This makes people disapear.
 
-	if (pCont != NULL && pCont->GetTopLevelObj() == this)
-		return; // moving to my own backpack
-	else if (pCont == NULL && ppt == NULL && pItem->GetTopLevelObj() == this)
-		return; // doesn't work for ground objects
+	if ( pCont && pCont->GetTopLevelObj() == this )		// moving to my own backpack
+		return;
+	if ( !pCont && !pt && pItem->GetTopLevelObj() == this )		// doesn't work for ground objects
+		return;
 
-	PacketDragAnimation* cmd = new PacketDragAnimation(this, pItem, pCont, ppt);
+	PacketDragAnimation* cmd = new PacketDragAnimation(this, pItem, pCont, pt);
 	UpdateCanSee(cmd, m_pClient);
 }
 
 
-void	CChar::UpdateStatsFlag() const
+void CChar::UpdateStatsFlag() const
 {
 	ADDTOCALLSTACK("CChar::UpdateStatsFlag");
 	// Push status change to all who can see us.
@@ -1217,7 +1217,7 @@ void CChar::UpdateMode( CClient * pExcludeClient, bool fFull )
 		m_fStatusUpdate &= ~SU_UPDATE_MODE;
 
 	ClientIterator it;
-	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
+	for ( CClient* pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
 		if ( pExcludeClient == pClient )
 			continue;
@@ -1228,7 +1228,7 @@ void CChar::UpdateMode( CClient * pExcludeClient, bool fFull )
 		if ( !pClient->CanSee(this) )
 		{
 			// In the case of "INVIS" used by GM's we must use this.
-			pClient->addObjectRemove( this );
+			pClient->addObjectRemove(this);
 			continue;
 		}
 
@@ -1245,10 +1245,7 @@ void CChar::UpdateMode( CClient * pExcludeClient, bool fFull )
 void CChar::UpdateSpeedMode()
 {
 	ADDTOCALLSTACK("CChar::UpdateSpeedMode");
-	if ( g_Serv.IsLoading() )
-		return;
-
-	if ( !m_pPlayer )
+	if ( g_Serv.IsLoading() || !m_pPlayer )
 		return;
 
 	if ( IsClient() )
@@ -1258,10 +1255,7 @@ void CChar::UpdateSpeedMode()
 void CChar::UpdateVisualRange()
 {
 	ADDTOCALLSTACK("CChar::UpdateVisualRange");
-	if ( g_Serv.IsLoading() )
-		return;
-
-	if ( !m_pPlayer )
+	if ( g_Serv.IsLoading() || !m_pPlayer )
 		return;
 
 	DEBUG_WARN(("CChar::UpdateVisualRange called, m_iVisualRange is %d\n", m_iVisualRange));
@@ -1270,7 +1264,7 @@ void CChar::UpdateVisualRange()
 		GetClient()->addVisualRange( m_iVisualRange );
 }
 
-void CChar::UpdateMove( const CPointMap & pold, CClient * pExcludeClient, bool fFull, bool fOnlyDir )
+void CChar::UpdateMove( const CPointMap & ptOld, CClient * pExcludeClient, bool fFull )
 {
 	ADDTOCALLSTACK("CChar::UpdateMove");
 	// Who now sees this char ?
@@ -1283,52 +1277,39 @@ void CChar::UpdateMove( const CPointMap & pold, CClient * pExcludeClient, bool f
 	EXC_TRY("UpdateMove");
 	EXC_SET("FOR LOOP");
 	ClientIterator it;
-	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
+	for ( CClient* pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
 		if ( pClient == pExcludeClient )
-			continue;	// no need to see self move.
-		EXC_SET("IF m_pClient");
+			continue;	// no need to see self move
+
 		if ( pClient == m_pClient )
 		{
 			if ( fFull )
 			{
-				EXC_SET("ADD map");
-				// What do i now see ?
-				pClient->addMap( pold.IsValidPoint() ? &pold : NULL );
-				EXC_SET("AddPlayerView");
-				pClient->addPlayerView( pold );
-				continue;
-			} else if ( fOnlyDir )
-			{
-				EXC_SET("AddPlayerView");
-				pClient->addPlayerView( pold, fOnlyDir );
-				continue;
+				EXC_SET("AddMap");
+				pClient->addMap(ptOld.IsValidPoint() ? &ptOld : NULL);
 			}
+			EXC_SET("AddPlayerView");
+			pClient->addPlayerView(ptOld, false);
+			continue;
 		}
-		EXC_SET("Char Getting");
+
+		EXC_SET("GetChar");
 		CChar * pChar = pClient->GetChar();
 		if ( pChar == NULL )
 			continue;
 
-		bool fCouldSee = ( pold.GetDistSight( pChar->GetTopPoint()) <= pChar->GetSight() );
-		EXC_SET("if cansee");
-		if ( ! pClient->CanSee( this ))
-		{	// can't see me now.
-			if ( fCouldSee )
-			{
-				EXC_SET("AddObjRem");
-				pClient->addObjectRemove( this );
-			}
-		}
-		else if ( fCouldSee )
-		{	// They see me move because they can see me now and could see me already
-			EXC_SET("AddcharMove");
-			pClient->addCharMove( this );
+		if ( ptOld.GetDistSight(pChar->GetTopPoint()) <= pChar->GetSight() )
+		{
+			EXC_SET("AddCharMove");
+			pClient->addCharMove(this);		// this client already saw me, just send the movement packet
+			continue;
 		}
 		else
-		{	// first time this client has seen me.
+		{
 			EXC_SET("AddChar");
-			pClient->addChar( this );
+			pClient->addChar(this);		// first time this client has seen me, send complete packet
+			continue;
 		}
 	}
 	EXC_CATCH;
@@ -1341,7 +1322,7 @@ void CChar::UpdateDir( DIR_TYPE dir )
 	if ( dir != m_dirFace && dir > DIR_INVALID && dir < DIR_QTY )
 	{
 		m_dirFace = dir;	// face victim.
-		UpdateMove( GetTopPoint(), NULL, false, true );
+		UpdateMove(GetTopPoint());
 	}
 }
 
@@ -1350,7 +1331,7 @@ void CChar::UpdateDir( const CPointMap & pt )
 	ADDTOCALLSTACK("CChar::UpdateDir");
 
 	// Change in direction.
-	UpdateDir( GetTopPoint().GetDir( pt ));
+	UpdateDir(GetTopPoint().GetDir(pt));
 }
 
 void CChar::UpdateDir( const CObjBaseTemplate * pObj )
@@ -1360,9 +1341,9 @@ void CChar::UpdateDir( const CObjBaseTemplate * pObj )
 		return;
 
 	pObj = pObj->GetTopLevelObj();
-	if ( pObj == NULL || pObj == this )		// In our own pack.
+	if ( pObj == NULL || pObj == this )		// in our own pack
 		return;
-	UpdateDir( pObj->GetTopPoint());
+	UpdateDir(pObj->GetTopPoint());
 }
 
 void CChar::Update(const CClient * pClientExclude ) // If character status has been changed (Polymorph), resend him
@@ -1376,7 +1357,7 @@ void CChar::Update(const CClient * pClientExclude ) // If character status has b
 		m_fStatusUpdate &= ~SU_UPDATE_MODE;
 
 	ClientIterator it;
-	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
+	for ( CClient* pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
 		if ( pClient == pClientExclude )
 			continue;
@@ -1391,10 +1372,10 @@ void CChar::Update(const CClient * pClientExclude ) // If character status has b
 			continue;
 		}
 
-		if ( pClient == m_pClient ) 
+		if ( pClient == m_pClient )
 			pClient->addReSync();
 		else
-			pClient->addChar( this );
+			pClient->addChar(this);
 	}
 }
 

@@ -480,14 +480,14 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0x55 : PacketRedrawAll			redraw all (NORMAL)
+ *	Packet 0x55 : PacketLoginComplete		redraw all (NORMAL)
  *
  *
  ***************************************************************************/
-class PacketRedrawAll : public PacketSend
+class PacketLoginComplete : public PacketSend
 {
 public:
-	PacketRedrawAll(const CClient* target);
+	PacketLoginComplete(const CClient* target);
 };
 
 /***************************************************************************

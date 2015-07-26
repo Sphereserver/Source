@@ -3212,14 +3212,14 @@ public:
 	ANIM_TYPE GenerateAnimate(ANIM_TYPE action, bool fTranslate = true, bool fBackward = false, BYTE iFrameDelay = 0, BYTE iAnimLen = 7);
 	bool UpdateAnimate(ANIM_TYPE action, bool fTranslate = true, bool fBackward = false, BYTE iFrameDelay = 0, BYTE iAnimLen = 7);
 
-	void UpdateMode(  CClient * pExcludeClient = NULL, bool fFull= false );
+	void UpdateMode( CClient * pExcludeClient = NULL, bool fFull= false );
 	void UpdateSpeedMode();
 	void UpdateVisualRange();
-	void UpdateMove( const CPointMap & pold, CClient * pClientExclude = NULL, bool fFull = false, bool fOnlydir = false );
+	void UpdateMove( const CPointMap & ptOld, CClient * pClientExclude = NULL, bool fFull = false );
 	void UpdateDir( DIR_TYPE dir );
 	void UpdateDir( const CPointMap & pt );
 	void UpdateDir( const CObjBaseTemplate * pObj );
-	void UpdateDrag( CItem * pItem, CObjBase * pCont = NULL, CPointMap * pp = NULL );
+	void UpdateDrag( CItem * pItem, CObjBase * pCont = NULL, CPointMap * pt = NULL );
 	void Update(const CClient * pClientExclude = NULL);
 
 public:

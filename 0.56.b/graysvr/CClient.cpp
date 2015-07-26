@@ -763,21 +763,21 @@ bool CClient::r_LoadVal( CScript & s )
 			GetAccount()->TogPrivFlags( PRIV_ALLMOVE, s.GetArgStr() );
 			if ( IsSetOF( OF_Command_Sysmsgs ) )
 				m_pChar->SysMessage( IsPriv(PRIV_ALLMOVE)? "Allmove ON" : "Allmove OFF" );
-			addReSync();
+			addPlayerView(NULL);
 			break;
 		case CC_ALLSHOW:
-			addRemoveAll( true, true );
+			addRemoveAll(true, true);
 			GetAccount()->TogPrivFlags( PRIV_ALLSHOW, s.GetArgStr() );
 			if ( IsSetOF( OF_Command_Sysmsgs ) )
 				m_pChar->SysMessage( IsPriv(PRIV_ALLSHOW)? "Allshow ON" : "Allshow OFF" );
-			addReSync();
+			addPlayerView(NULL);
 			break;
 		case CC_DEBUG:
+			addRemoveAll(true, false);
 			GetAccount()->TogPrivFlags( PRIV_DEBUG, s.GetArgStr() );
 			if ( IsSetOF( OF_Command_Sysmsgs ) )
 					m_pChar->SysMessage( IsPriv(PRIV_DEBUG)? "Debug ON" : "Debug OFF" );
-			addRemoveAll( true, false );
-			addReSync();
+			addPlayerView(NULL);
 			break;
 		case CC_DETAIL:
 			GetAccount()->TogPrivFlags( PRIV_DETAIL, s.GetArgStr() );

@@ -46,6 +46,7 @@ void CClient::resendBuffs()
 
 	TCHAR NumBuff[7][8];
 	LPCTSTR pNumBuff[7] = { NumBuff[0], NumBuff[1], NumBuff[2], NumBuff[3], NumBuff[4], NumBuff[5], NumBuff[6] };
+
 	short iStatEffect = 0;
 	short iTimerEffect = 0;
 
@@ -77,7 +78,7 @@ void CClient::resendBuffs()
 			break;
 		case SPELL_Feeblemind:
 			ITOA(iStatEffect, NumBuff[0], 10);
-			addBuff( BI_FEEBLEMIND, 1075833, 1075834, iTimerEffect, pNumBuff, 1  );
+			addBuff( BI_FEEBLEMIND, 1075833, 1075834, iTimerEffect, pNumBuff, 1 );
 			break;
 		case SPELL_Curse:
 		{
@@ -86,7 +87,7 @@ void CClient::resendBuffs()
 			for ( int idx = 3; idx < 7; ++idx )
 				ITOA(10, NumBuff[idx], 10);
 
-			GetClient()->addBuff(BI_CURSE, 1075835, 1075836, iTimerEffect, pNumBuff, 7);
+			addBuff(BI_CURSE, 1075835, 1075836, iTimerEffect, pNumBuff, 7);
 			break;
 		}
 		case SPELL_Mass_Curse:
@@ -94,7 +95,7 @@ void CClient::resendBuffs()
 			for ( int idx = STAT_STR; idx < STAT_BASE_QTY; ++idx )
 				ITOA(iStatEffect, NumBuff[idx], 10);
 
-			GetClient()->addBuff(BI_MASSCURSE, 1075839, 1075840, iTimerEffect, pNumBuff, 3);
+			addBuff(BI_MASSCURSE, 1075839, 1075840, iTimerEffect, pNumBuff, 3);
 			break;
 		}
 		case SPELL_Strength:
@@ -286,29 +287,30 @@ void CClient::addRemoveAll( bool fItems, bool fChars )
 	if ( fItems )
 	{
 		// Remove any multi objects first ! or client will hang
-		CWorldSearch AreaItems( GetChar()->GetTopPoint(), UO_MAP_VIEW_RADAR );
-		AreaItems.SetAllShow( IsPriv( PRIV_ALLSHOW ));	// show logged out chars?
+		CWorldSearch AreaItems(GetChar()->GetTopPoint(), UO_MAP_VIEW_RADAR);
 		AreaItems.SetSearchSquare(true);
 		for (;;)
 		{
 			CItem * pItem = AreaItems.GetItem();
 			if ( pItem == NULL )
 				break;
-			addObjectRemove( pItem );
+			addObjectRemove(pItem);
 		}
 	}
 	if ( fChars )
 	{
-		// Remove any multi objects first ! or client will hang
-		CWorldSearch AreaChars( GetChar()->GetTopPoint(), UO_MAP_VIEW_SIZE );
-		AreaChars.SetAllShow( IsPriv( PRIV_ALLSHOW ));	// show logged out chars?
+		CChar * pCharSrc = GetChar();
+		CWorldSearch AreaChars(GetChar()->GetTopPoint(), UO_MAP_VIEW_SIZE);
+		AreaChars.SetAllShow(IsPriv(PRIV_ALLSHOW));
 		AreaChars.SetSearchSquare(true);
 		for (;;)
 		{
 			CChar * pChar = AreaChars.GetChar();
 			if ( pChar == NULL )
 				break;
-			addObjectRemove( pChar );
+			if ( pChar == pCharSrc )
+				continue;
+			addObjectRemove(pChar);
 		}
 	}
 }
@@ -1319,6 +1321,7 @@ void CClient::addPlayerStart( CChar * pChar )
 	if ( pItemChange != NULL )
 		pItemChange->Delete();
 
+	ClearTargMode();	// clear death menu mode. etc. ready to walk about. cancel any previous modes
 	m_Env.SetInvalid();
 /*
 	CExtData ExtData;
@@ -1327,17 +1330,14 @@ void CClient::addPlayerStart( CChar * pChar )
 */
 
 	new PacketPlayerStart(this);
-	ClearTargMode();	// clear death menu mode. etc. ready to walk about. cancel any previous modes
-	addMap(NULL);
 	addMapDiff();
 	//addChangeServer();		// we still need this?
 	m_pChar->MoveToChar(pt);	// make sure we are in active list
 	m_pChar->Update();
-	addPlayerView(pt, true);
 	addPlayerWarMode();
-	addRedrawAll();
+	addLoginComplete();
 	addTime(true);
-	if (pSector != NULL)
+	if ( pSector != NULL )
 		addSeason(pSector->GetSeason());
 	if (pChar->m_pParty)
 		pChar->m_pParty->SendAddList(NULL);
@@ -2082,7 +2082,7 @@ void CClient::addPlayerSeeShip( const CPointMap & ptold )
 	}
 }
 
-void CClient::addPlayerView( const CPointMap & ptold, bool playerStart )
+void CClient::addPlayerView( const CPointMap & pt, bool bFull )
 {
 	ADDTOCALLSTACK("CClient::addPlayerView");
 	// I moved = Change my point of view. Teleport etc..
@@ -2093,13 +2093,13 @@ void CClient::addPlayerView( const CPointMap & ptold, bool playerStart )
 	// resync this stuff.
 	m_net->m_sequence = 0;
 
-	if ( ptold == m_pChar->GetTopPoint() )
-		return;	// not a real move i guess. might just have been a change in face dir.
+	if ( pt == m_pChar->GetTopPoint() )
+		return;		// not a real move i guess. might just have been a change in face dir.
 
 	m_Env.SetInvalid();	// Must resend environ stuff.
 
-	if ( !playerStart )
-		addPlayerSee( ptold );
+	if ( bFull )
+		addPlayerSee(pt);
 }
 
 void CClient::addReSync()
@@ -2606,10 +2606,10 @@ bool CClient::addBBoardMessage( const CItemContainer * pBoard, BBOARDF_TYPE flag
 	return( true );
 }
 
-void CClient::addRedrawAll()
+void CClient::addLoginComplete()
 {
-	ADDTOCALLSTACK("CClient::addRedrawAll");
-	new PacketRedrawAll(this);
+	ADDTOCALLSTACK("CClient::addLoginComplete");
+	new PacketLoginComplete(this);
 }
 
 void CClient::addChatSystemMessage( CHATMSG_TYPE iType, LPCTSTR pszName1, LPCTSTR pszName2, CLanguageID lang )

@@ -1311,7 +1311,7 @@ public:
 	void addAOSPlayerSeeNoCrypt(); //sends tooltips for items in LOS
 	void addPlayerSee( const CPointMap & pt ); // Send objects the player can now see
 	void addPlayerSeeShip( const CPointMap & pt ); // Send objects the player can now see from a ship
-	void addPlayerView( const CPointMap & pt, bool playerStart = false);
+	void addPlayerView( const CPointMap & pt, bool bFull = true );
 	void addPlayerWarMode();
 
 	void addCharMove( const CChar * pChar );
@@ -1389,7 +1389,7 @@ public:
 
 	bool addGumpDialogProps( CGrayUID uid );
 
-	void addRedrawAll();
+	void addLoginComplete();
 	void addChatSystemMessage(CHATMSG_TYPE iType, LPCTSTR pszName1 = NULL, LPCTSTR pszName2 = NULL, CLanguageID lang = 0 );
 
 	bool addWalkCode( EXTDATA_TYPE iType, size_t iQty );

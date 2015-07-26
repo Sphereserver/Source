@@ -856,16 +856,16 @@ TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 		if ( m_pChar->CheckLocation())
 			return TRIGRET_RET_DEFAULT;
 
-		new PacketMovementAck(this);		// Ack the move. ( if this does not go back we get rubber banding )
+		new PacketMovementAck( this );		// Ack the move. ( if this does not go back we get rubber banding )
 		m_pChar->UpdateMove( ptold, this );	// Who now sees me ?
 		addPlayerSee( ptold );				// What new stuff do I now see ?
 	}
 	else
 	{
 		// Just a change in dir.
+		new PacketMovementAck( this );		// Ack the move. ( if this does not go back we get rubber banding )
 		m_pChar->m_dirFace = dir;
-		m_pChar->UpdateMove( ptold, this, false, true );	// Who now sees me ?
-		new PacketMovementAck(this);		// Ack the move. ( if this does not go back we get rubber banding )
+		m_pChar->UpdateMove( ptold, this );	// Who now sees me ?
 	}
 	return TRIGRET_RET_TRUE;
 }

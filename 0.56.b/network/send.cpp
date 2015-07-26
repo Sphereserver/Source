@@ -1464,13 +1464,13 @@ PacketPlaySound::PacketPlaySound(const CClient* target, SOUND_TYPE sound, int fl
 /***************************************************************************
  *
  *
- *	Packet 0x55 : PacketRedrawAll			redraw all (NORMAL)
+ *	Packet 0x55 : PacketLoginComplete		redraw all (NORMAL)
  *
  *
  ***************************************************************************/
-PacketRedrawAll::PacketRedrawAll(const CClient* target) : PacketSend(XCMD_ReDrawAll, 1, PRI_NORMAL)
+PacketLoginComplete::PacketLoginComplete(const CClient* target) : PacketSend(XCMD_LoginComplete, 1, PRI_NORMAL)
 {
-	ADDTOCALLSTACK("PacketRedrawAll::PacketRedrawAll");
+	ADDTOCALLSTACK("PacketLoginComplete::PacketLoginComplete");
 
 	push(target);
 }
