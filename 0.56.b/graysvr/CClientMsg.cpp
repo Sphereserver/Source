@@ -952,7 +952,7 @@ void CClient::GetAdjustedItemID( const CChar * pChar, const CItem * pItem, ITEMI
 		id = static_cast<ITEMID_TYPE>(pItemDef->GetResDispDnId());
 }
 
-void CClient::GetAdjustedCharID( const CChar * pChar, CREID_TYPE & id, HUE_TYPE & wHue ) const
+void CClient::GetAdjustedCharID( const CChar * pChar, CREID_TYPE &id, HUE_TYPE &wHue ) const
 {
 	ADDTOCALLSTACK("CClient::GetAdjustedCharID");
 	// Some clients can't see all creature artwork and colors.
@@ -961,7 +961,7 @@ void CClient::GetAdjustedCharID( const CChar * pChar, CREID_TYPE & id, HUE_TYPE 
 	ASSERT( GetAccount() );
 	ASSERT( pChar );
 
-	if ( IsPriv(PRIV_DEBUG))
+	if ( IsPriv(PRIV_DEBUG) )
 	{
 		id = CREID_MAN;
 		wHue = 0;
@@ -971,54 +971,49 @@ void CClient::GetAdjustedCharID( const CChar * pChar, CREID_TYPE & id, HUE_TYPE 
 	id = pChar->GetDispID();
 	CCharBase * pCharDef = pChar->Char_GetDef();
 
-	if ( m_pChar->IsStatFlag( STATF_Hallucinating )) // viewer is Hallucinating.
+	if ( m_pChar->IsStatFlag(STATF_Hallucinating) )
 	{
 		if ( pChar != m_pChar )
 		{
 			// Get a random creature from the artwork.
-			id = static_cast<CREID_TYPE>(Calc_GetRandVal(CREID_EQUIP_GM_ROBE));
-			pCharDef = CCharBase::FindCharBase( id );
-
-			for ( int iTries = 0; iTries < CREID_EQUIP_GM_ROBE; iTries ++ )
+			pCharDef = NULL;
+			while ( pCharDef == NULL )
 			{
-				if ( pCharDef && ( id != CREID_SEA_Creature ) )
-					break;
-				id = static_cast<CREID_TYPE>(id + 1);
-				if ( id >= CREID_EQUIP_GM_ROBE )
-					id = CREID_OGRE;
-				pCharDef = CCharBase::FindCharBase( id );
+				id = static_cast<CREID_TYPE>(Calc_GetRandVal(CREID_EQUIP_GM_ROBE));
+				if ( id != CREID_SEA_Creature )		// skip this chardef, it can crash many clients
+					pCharDef = CCharBase::FindCharBase(id);
 			}
 		}
 
-		wHue = static_cast<HUE_TYPE>(Calc_GetRandVal( HUE_DYE_HIGH ));
+		wHue = static_cast<HUE_TYPE>(Calc_GetRandVal(HUE_DYE_HIGH));
 	}
 	else
 	{
-		if ( pChar->IsStatFlag(STATF_Stone))	// turned to stone.
+		if ( pChar->IsStatFlag(STATF_Stone) )	// turned to stone.
 			wHue = HUE_STONE;
-		else if ( pChar->IsStatFlag(STATF_Insubstantial))	// turned to stone.
+		else if ( pChar->IsStatFlag(STATF_Insubstantial) )	// turned to stone.
 			wHue = g_Cfg.m_iColorInvis;
-		else if ( pChar->IsStatFlag(STATF_Hidden))	// turned to stone.
+		else if ( pChar->IsStatFlag(STATF_Hidden) )	// turned to stone.
 			wHue = g_Cfg.m_iColorHidden;
-		else if ( pChar->IsStatFlag(STATF_Invisible))	// turned to stone.
+		else if ( pChar->IsStatFlag(STATF_Invisible) )	// turned to stone.
 			wHue = g_Cfg.m_iColorInvisSpell;
 		else
 		{
 			wHue = pChar->GetHue();
-			if ( pCharDef && ( GetResDisp() < pCharDef->GetResLevel() ) )
-				if ( pCharDef->GetResDispDnHue() != HUE_DEFAULT )
-					wHue = pCharDef->GetResDispDnHue();
-
-			// allow transparency and underwear colors
-			if (( wHue & HUE_MASK_HI ) > HUE_QTY )
+			// Allow transparency and underwear colors
+			if ( (wHue & HUE_MASK_HI) > HUE_QTY )
 				wHue &= HUE_MASK_LO | HUE_UNDERWEAR | HUE_TRANSLUCENT;
 			else
 				wHue &= HUE_MASK_HI | HUE_UNDERWEAR | HUE_TRANSLUCENT;
 		}
 	}
 
-	if ( pCharDef && ( GetResDisp() < pCharDef->GetResLevel() ) )
+	if ( pCharDef && (GetResDisp() < pCharDef->GetResLevel()) )
+	{
 		id = static_cast<CREID_TYPE>(pCharDef->GetResDispDnId());
+		if ( pCharDef->GetResDispDnHue() != HUE_DEFAULT )
+			wHue = pCharDef->GetResDispDnHue();
+	}
 }
 
 void CClient::addCharMove( const CChar * pChar )
@@ -1333,7 +1328,7 @@ void CClient::addPlayerStart( CChar * pChar )
 
 	new PacketPlayerStart(this);
 	ClearTargMode();	// clear death menu mode. etc. ready to walk about. cancel any previous modes
-	addMap(NULL, true);
+	addMap(NULL);
 	addMapDiff();
 	//addChangeServer();		// we still need this?
 	m_pChar->MoveToChar(pt);	// make sure we are in active list
@@ -2107,42 +2102,30 @@ void CClient::addPlayerView( const CPointMap & ptold, bool playerStart )
 		addPlayerSee( ptold );
 }
 
-void CClient::addReSync(bool bForceMap)
+void CClient::addReSync()
 {
 	ADDTOCALLSTACK("CClient::addReSync");
 	if ( m_pChar == NULL )
 		return;
 	// Reloads the client with all it needs.
-	CPointMap ptold;	// invalid value.
-	addMap(NULL, !bForceMap);
-	addChar( m_pChar );
-	addPlayerView(ptold);
+	addMap(NULL);
+	addChar(m_pChar);
+	addPlayerView(NULL);
 	addLight();		// Current light level where I am.
 	addWeather();	// if any ...
-	addSpeedMode( m_pChar->m_pPlayer->m_speedMode );
-	addCharStatWindow( m_pChar->GetUID() );
+	addSpeedMode(m_pChar->m_pPlayer->m_speedMode);
+	addCharStatWindow(m_pChar->GetUID());
 }
 
-void CClient::addMap( const CPointMap * pOldP, bool playerStart)
+void CClient::addMap( const CPointMap * ptOld )
 {
 	ADDTOCALLSTACK("CClient::addMap");
 	if ( m_pChar == NULL )
 		return;
 
 	CPointMap pt = m_pChar->GetTopPoint();
-
-	if ( !playerStart && pOldP && pOldP->m_map == pt.m_map )
-		return;
-
-	new PacketMapChange(this, g_MapList.m_mapid[pt.m_map]);
-
-	if ( !playerStart )
-	{
-		CPointMap	ptold;
-		addPlayerView(ptold);
-		addChar(m_pChar);
-		addLight();		// Current light level where I am.
-	}
+	if ( ptOld && ptOld->m_map != pt.m_map )
+		new PacketMapChange(this, g_MapList.m_mapid[pt.m_map]);
 }
 
 void CClient::addMapDiff()
@@ -2530,9 +2513,9 @@ void CClient::addBankOpen( CChar * pChar, LAYER_TYPE layer )
 	addContainerSetup( pBankBox );
 }
 
-void CClient::addMap( CItemMap * pMap )
+void CClient::addDrawMap( CItemMap * pMap )
 {
-	ADDTOCALLSTACK("CClient::addMap");
+	ADDTOCALLSTACK("CClient::addDrawMap");
 	// Make player drawn maps possible. (m_map_type=0) ???
 
 	if ( pMap == NULL )

@@ -506,10 +506,10 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			break;
 		case LAYER_FLAG_Poison:
 			StatFlag_Clear(STATF_Poisoned);
-			UpdateMode();
+			UpdateModeFlag();
 			if (pClient)
 				pClient->removeBuff(BI_POISON);
-			break;
+			return;
 		case LAYER_SPELL_Summon:
 		{
 			if (m_pPlayer)	// summoned players ? thats odd.
@@ -599,7 +599,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			if (pClient)
 				pClient->removeBuff(BI_INCOGNITO);
 			NotoSave_Update();
-			break;
+			return;
 
 		case LAYER_SPELL_Invis:
 			Reveal(STATF_Invisible);
@@ -607,58 +607,58 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 
 		case LAYER_SPELL_Paralyze:
 			StatFlag_Clear(STATF_Freeze);
-			UpdateMode();
+			UpdateModeFlag();
 			if (pClient)
 			{
 				pClient->removeBuff(BI_PARALYZE);
 				pClient->addCharMove(this);		// immediately tell the client that now he's able to move (without this, it will be able to move only on next tick update)
 			}
-			break;
+			return;
 
 		case LAYER_SPELL_Strangle:	// TO-DO: NumBuff[0] and NumBuff[1] to hold the damage range values.
 			if (pClient)
 				pClient->removeBuff(BI_STRANGLE);
-			break;
+			return;
 
 		case LAYER_SPELL_Gift_Of_Renewal:
 			if (pClient)
 				pClient->removeBuff(BI_GIFTOFRENEWAL);
-			break;
+			return;
 
 		case LAYER_SPELL_Attunement:
 			if (pClient)
 				pClient->removeBuff(BI_ATTUNEWEAPON);
-			break;
+			return;
 
 		case LAYER_SPELL_Thunderstorm:
 			if (pClient)
 				pClient->removeBuff(BI_THUNDERSTORM);
-			break;
+			return;
 
 		case LAYER_SPELL_Essence_Of_Wind:
 			if (pClient)
 				pClient->removeBuff(BI_ESSENCEOFWIND);
-			break;
+			return;
 
 		case LAYER_SPELL_Ethereal_Voyage:
 			if (pClient)
 				pClient->removeBuff(BI_ETHEREALVOYAGE);
-			break;
+			return;
 
 		case LAYER_SPELL_Gift_Of_Life:
 			if (pClient)
 				pClient->removeBuff(BI_GIFTOFLIFE);
-			break;
+			return;
 
 		case LAYER_SPELL_Arcane_Empowerment:
 			if (pClient)
 				pClient->removeBuff(BI_ARCANEEMPOWERMENT);
-			break;
+			return;
 
 		/*case LAYER_Mortal_Strike:
 			if (pClient)
 				pClient->removeBuff(BI_MORTALSTRIKE);
-			break;*/
+			return;*/
 
 		case LAYER_SPELL_Blood_Oath:
 		{
@@ -667,7 +667,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			CChar * pSrc = pSpell->m_uidLink.CharFind();
 			if (pSrc && pSrc->IsClient())
 				pSrc->GetClient()->removeBuff(BI_BLOODOATHCASTER);
-			break;
+			return;
 		}
 		case LAYER_SPELL_Corpse_Skin:
 			SetDefNum("ResPhysical", GetDefNum("ResPhysical") - pSpell->m_itSpell.m_PolyStr, true);
@@ -676,15 +676,12 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			SetDefNum("ResPoison", GetDefNum("ResPoison") + pSpell->m_itSpell.m_PolyDex, true);
 			if (pClient)
 				pClient->removeBuff(BI_CORPSESKIN);
-			break;
+			return;
 
 		case LAYER_SPELL_Pain_Spike:
 			if (pClient)
 				pClient->removeBuff(BI_PAINSPIKE);
-			break;
-
-		default:
-			break;
+			return;
 	}
 
 	switch (spell)	// the rest of the effects are handled directly by each spell
@@ -698,12 +695,16 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 		case SPELL_Stone:
 			StatFlag_Clear( STATF_Stone );
 			UpdateModeFlag();
-			break;
+			return;
 		case SPELL_Hallucination:
 			StatFlag_Clear( STATF_Hallucinating );
+			UpdateStatsFlag();
 			if (pClient)
-				pClient->addReSync();
-			UpdateModeFlag();
+			{
+				pClient->addChar(this);
+				pClient->addPlayerView(NULL);
+			}
+			return;
 		case SPELL_Feeblemind:
 			Stat_AddMod( STAT_INT, iStatEffect );
 			if (pClient)
@@ -809,30 +810,27 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 				else if (spell == SPELL_Arch_Prot)
 					pClient->removeBuff(BI_ARCHPROTECTION);
 			}
-			break;
+			return;
 		/*case SPELL_Chameleon:		// 106 // makes your skin match the colors of whatever is behind you.
-			break;*/
+			return;*/
 		case SPELL_Trance:			// 111 // temporarily increases your meditation skill.
 			Skill_SetBase(SKILL_MEDITATION, Skill_GetBase(SKILL_MEDITATION) - g_Cfg.GetSpellEffect(spell, iStatEffect));
-			break;
+			return;
 		/*case SPELL_Shield:			// 113 // erects a temporary force field around you. Nobody approaching will be able to get within 1 tile of you, though you can move close to them if you wish.
-			break;*/
+			return;*/
 		case SPELL_Mind_Rot:
 			SetDefNum("LowerManaCost", GetDefNum("LowerManaCost") + pSpell->m_itSpell.m_spelllevel, true);
 			if (pClient)
 				pClient->removeBuff(BI_MINDROT);
-			break;
+			return;
 		case SPELL_Curse_Weapon:
-		{
-			CItem * pWeapon = m_uidWeapon.ItemFind();
-			if (!pWeapon)
-				break;
-			pWeapon->SetDefNum("HitLeechLife", pWeapon->GetDefNum("HitLeechLife", true) - pSpell->m_itSpell.m_spelllevel, true);	// Adding 50% HitLeechLife to the weapon, since damaging with it should return 50% of the damage dealt.
-		}break;
-		default:
+			{
+				CItem * pWeapon = m_uidWeapon.ItemFind();
+				if (pWeapon)
+					pWeapon->SetDefNum("HitLeechLife", pWeapon->GetDefNum("HitLeechLife", true) - pSpell->m_itSpell.m_spelllevel, true);	// Adding 50% HitLeechLife to the weapon, since damaging with it should return 50% of the damage dealt.
+			}
 			return;
 	}
-	UpdateStatsFlag();
 }
 
 
@@ -999,13 +997,13 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 		}
 		case LAYER_FLAG_Poison:
 			StatFlag_Set(STATF_Poisoned);
-			UpdateMode();
+			UpdateModeFlag();
 			if (pClient && IsSetOF(OF_Buffs))
 			{
 				pClient->removeBuff(BI_POISON);
 				pClient->addBuff(BI_POISON, 1017383, 1070722, 2);
 			}
-			break;
+			return;
 		case LAYER_SPELL_Night_Sight:
 			StatFlag_Set(STATF_NightSight);
 			if (pClient)
@@ -1017,7 +1015,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pClient->addBuff(BI_NIGHTSIGHT, 1075643, 1075644, iTimerEffect);
 				}
 			}
-			break;
+			return;
 		case LAYER_SPELL_Incognito:
 			if (!IsStatFlag(STATF_Incognito))
 			{
@@ -1035,7 +1033,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pClient->addBuff(BI_INCOGNITO, 1075819, 1075820, iTimerEffect);
 				}
 			}
-			break;
+			return;
 		case LAYER_SPELL_Invis:
 			StatFlag_Set(STATF_Invisible);
 			if (pClient)
@@ -1047,20 +1045,20 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pClient->addBuff(BI_INVISIBILITY, 1075825, 1075826, iTimerEffect);
 				}
 			}
-			UpdateMode();
-			break;
+			UpdateModeFlag();
+			return;
 		case LAYER_SPELL_Paralyze:
 			StatFlag_Set(STATF_Freeze);
-			UpdateMode();
+			UpdateModeFlag();
 			if (pClient && IsSetOF(OF_Buffs))
 			{
 				pClient->removeBuff(BI_PARALYZE);
 				pClient->addBuff(BI_PARALYZE, 1075827, 1075828, iTimerEffect);
 			}
-			break;
+			return;
 		case LAYER_SPELL_Summon:
 			StatFlag_Set(STATF_Conjured);
-			break;
+			return;
 		case LAYER_SPELL_Strangle:	// TO-DO: NumBuff[0] and NumBuff[1] to hold the damage range values.
 			{
 				if (pClient && IsSetOF(OF_Buffs))
@@ -1073,7 +1071,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					iStatEffect = 4;
 				pSpell->m_itSpell.m_spelllevel = iStatEffect;
 				pSpell->m_itSpell.m_spellcharges = iStatEffect;
-			}	break;
+			}
+			return;
 		case LAYER_SPELL_Gift_Of_Renewal:
 			if (pClient && IsSetOF(OF_Buffs))
 			{
@@ -1081,7 +1080,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				pClient->removeBuff(BI_GIFTOFRENEWAL);
 				pClient->addBuff(BI_GIFTOFRENEWAL, 1075796, 1075797, iTimerEffect, pNumBuff, 1);
 			}
-			break;
+			return;
 		case LAYER_SPELL_Attunement:
 			if (pClient && IsSetOF(OF_Buffs))
 			{
@@ -1089,7 +1088,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				pClient->removeBuff(BI_ATTUNEWEAPON);
 				pClient->addBuff(BI_ATTUNEWEAPON, 1075798, 1075799, iTimerEffect, pNumBuff, 1);
 			}
-			break;
+			return;
 		case LAYER_SPELL_Thunderstorm:
 			if (pClient && IsSetOF(OF_Buffs))
 			{
@@ -1097,7 +1096,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				pClient->removeBuff(BI_THUNDERSTORM);
 				pClient->addBuff(BI_THUNDERSTORM, 1075800, 1075801, iTimerEffect, pNumBuff, 1);
 			}
-			break;
+			return;
 		case LAYER_SPELL_Essence_Of_Wind:
 			if (pClient && IsSetOF(OF_Buffs))
 			{
@@ -1105,21 +1104,21 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				pClient->removeBuff(BI_ESSENCEOFWIND);
 				pClient->addBuff(BI_ESSENCEOFWIND, 1075802, 1075803, iTimerEffect, pNumBuff, 1);
 			}
-			break;
+			return;
 		case LAYER_SPELL_Ethereal_Voyage:
 			if (pClient && IsSetOF(OF_Buffs))
 			{
 				pClient->removeBuff(BI_ETHEREALVOYAGE);
 				pClient->addBuff(BI_ETHEREALVOYAGE, 1075804, 1075805, iTimerEffect);
 			}
-			break;
+			return;
 		case LAYER_SPELL_Gift_Of_Life:
 			if (pClient && IsSetOF(OF_Buffs))
 			{
 				pClient->removeBuff(BI_GIFTOFLIFE);
 				pClient->addBuff(BI_GIFTOFLIFE, 1075806, 1075807, iTimerEffect);
 			}
-			break;
+			return;
 		case LAYER_SPELL_Arcane_Empowerment:
 			if (pClient && IsSetOF(OF_Buffs))
 			{
@@ -1128,14 +1127,14 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				pClient->removeBuff(BI_ARCANEEMPOWERMENT);
 				pClient->addBuff(BI_ARCANEEMPOWERMENT, 1075805, 1075804, iTimerEffect, pNumBuff, 1);
 			}
-			break;
+			return;
 		/*case LAYER_Mortal_Strike:
 			if (pClient && IsSetOF(OF_Buffs))
 			{
 				pClient->removeBuff(BI_MORTALSTRIKE);
 				pClient->addBuff(BI_MORTALSTRIKE, 1075810, 1075811, iTimerEffect);
 			}
-			break;*/
+			return;*/
 		case LAYER_SPELL_Pain_Spike:
 			{
 				CItem * pPrevious = LayerFind(LAYER_SPELL_Pain_Spike);
@@ -1153,7 +1152,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				pSpell->m_itSpell.m_spellcharges = 10;
 				pSpell->m_itSpell.m_spelllevel = iStatEffect;
 			}
-			break;
+			return;
 		case LAYER_SPELL_Blood_Oath:
 			iStatEffect = ((Skill_GetBase(SKILL_MAGICRESISTANCE) * 10) / 20) + 10;	// bonus of reflection
 			pSpell->m_itSpell.m_spelllevel = iStatEffect;
@@ -1174,7 +1173,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pCasterClient->addBuff(BI_BLOODOATHCASTER, 1075661, 1075662, iTimerEffect, pNumBuff, 1);
 				}
 			}
-			break;
+			return;
 		case LAYER_SPELL_Corpse_Skin:
 			if (pClient && IsSetOF(OF_Buffs))
 			{
@@ -1187,12 +1186,12 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			SetDefNum("ResPoison", GetDefNum("ResPoison") - pSpell->m_itSpell.m_PolyDex, true);
 			SetDefNum("ResCold", GetDefNum("ResCold") + pSpell->m_itSpell.m_PolyStr, true);
 			SetDefNum("ResPhysical", GetDefNum("ResPhysical") + pSpell->m_itSpell.m_PolyStr, true);
-			break;
+			return;
 		case LAYER_SPELL_Mind_Rot:
 			iStatEffect = 10;	// -10% LOWERMANACOST
 			pSpell->m_itSpell.m_spelllevel = iStatEffect;
 			SetDefNum("LowerManaCost", GetDefNum("LowerManaCost")-iStatEffect , true);
-			break;
+			return;
 		case LAYER_SPELL_Curse_Weapon:
 			{
 				CItem * pWeapon = m_uidWeapon.ItemFind();
@@ -1205,9 +1204,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				pSpell->m_itSpell.m_spelllevel = iStatEffect;
 				pWeapon->SetDefNum("HitLeechLife", pWeapon->GetDefNum("HitLeechLife", true) + pSpell->m_itSpell.m_spelllevel, true);	// Adding 50% HitLeechLife to the weapon, since damaging with it should return 50% of the damage dealt.
 			}
-			break;
-		default:
-			break;
+			return;
 	}
 
 	switch ( spell )
@@ -1244,7 +1241,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pClient->addBuff(BI_REACTIVEARMOR, 1075812, 1070722, iTimerEffect);
 				}
 			}
-			break;
+			return;
 		case SPELL_Clumsy:
 			{
 				if ( pCaster != NULL && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
@@ -1260,15 +1257,21 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pClient->addBuff(BI_CLUMSY, 1075831, 1075832, iTimerEffect, pNumBuff, 1);
 				}
 			}
-			break;
+			return;
 		case SPELL_Particle_Form:	// 112 // turns you into an immobile, but untargetable particle system for a while.
 		case SPELL_Stone:
 			StatFlag_Set( STATF_Stone );
 			UpdateModeFlag();
-			break;
+			return;
 		case SPELL_Hallucination:
 			StatFlag_Set( STATF_Hallucinating );
-			UpdateModeFlag();
+			UpdateStatsFlag();
+			if (pClient)
+			{
+				pClient->addChar(this);
+				pClient->addPlayerView(NULL);
+			}
+			return;
 		case SPELL_Feeblemind:
 			{
 				if ( pCaster != NULL && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
@@ -1283,7 +1286,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pClient->removeBuff(BI_FEEBLEMIND);
 					pClient->addBuff(BI_FEEBLEMIND, 1075833, 1075834, iTimerEffect, pNumBuff, 1);
 				}
-			} break;
+			}
+			return;
 		case SPELL_Weaken:
 			{
 				if ( pCaster != NULL && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
@@ -1298,7 +1302,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pClient->removeBuff(BI_WEAKEN);
 					pClient->addBuff(BI_WEAKEN, 1075837, 1075838, iTimerEffect, pNumBuff, 1);
 				}
-			} break;
+			}
+			return;
 		case SPELL_Curse:
 			{
 				if ( pCaster != NULL && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
@@ -1333,7 +1338,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 						pClient->addBuff(BI_CURSE, 1075835, 1075840, iTimerEffect, pNumBuff, 3);
 					}
 				}
-			} break;
+			}
+			return;
 		case SPELL_Agility:
 			{
 				if ( pCaster != NULL && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
@@ -1348,7 +1354,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pClient->removeBuff(BI_AGILITY);
 					pClient->addBuff(BI_AGILITY, 1075841, 1075842, iTimerEffect, pNumBuff, 1);
 				}
-			} break;
+			}
+			return;
 		case SPELL_Cunning:
 			{
 				if ( pCaster != NULL && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
@@ -1363,7 +1370,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pClient->removeBuff(BI_CUNNING);
 					pClient->addBuff(BI_CUNNING, 1075843, 1075844, iTimerEffect, pNumBuff, 1);
 				}
-			} break;
+			}
+			return;
 		case SPELL_Strength:
 			{
 				if ( pCaster != NULL && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
@@ -1378,7 +1386,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pClient->removeBuff(BI_STRENGTH);
 					pClient->addBuff(BI_STRENGTH, 1075845, 1075846, iTimerEffect, pNumBuff, 1);
 				}
-			} break;
+			}
+			return;
 		case SPELL_Bless:
 			{
 				if ( pCaster != NULL && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
@@ -1397,7 +1406,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pClient->removeBuff(BI_BLESS);
 					pClient->addBuff(BI_BLESS, 1075847, 1075848, iTimerEffect, pNumBuff, STAT_BASE_QTY);
 				}
-			} break;
+			}
+			return;
 		case SPELL_Mana_Drain:
 			{
 				if ( pCaster != NULL )
@@ -1411,8 +1421,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pSpell->m_itSpell.m_spelllevel = iStatEffect;
 				}
 				UpdateStatVal( STAT_INT, -iStatEffect );
-			} break;
-		
+			}
+			return;
 		case SPELL_Magic_Reflect:
 			StatFlag_Set( STATF_Reflection );
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
@@ -1442,7 +1452,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pClient->addBuff(BI_MAGICREFLECTION, 1075817, 1070722, iTimerEffect);
 				}
 			}
-			break;
+			return;
 		case SPELL_Steelskin:		// 114 // turns your skin into steel, giving a boost to your AR.
 		case SPELL_Stoneskin:		// 115 // turns your skin into stone, giving a boost to your AR.
 		case SPELL_Protection:
@@ -1491,26 +1501,19 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					}
 				}
 			}
-			break; 
+			return; 
 		
-
-		case SPELL_Chameleon:		// 106 // makes your skin match the colors of whatever is behind you.
-		case SPELL_BeastForm:		// 107 // polymorphs you into an animal for a while.
-		case SPELL_Monster_Form:	// 108 // polymorphs you into a monster for a while.
-			break;
 
 		case SPELL_Trance:			// 111 // temporarily increases your meditation skill.
 			Skill_SetBase( SKILL_MEDITATION, Skill_GetBase( SKILL_MEDITATION ) + iStatEffect );
-			break;
-
-		case SPELL_Shield:			// 113 // erects a temporary force field around you. Nobody approaching will be able to get within 1 tile of you, though you can move close to them if you wish.
-			break;
-
-		default:
 			return;
-	}
 
-	UpdateStatsFlag();
+		/*case SPELL_Chameleon:		// 106 // makes your skin match the colors of whatever is behind you.
+		case SPELL_BeastForm:		// 107 // polymorphs you into an animal for a while.
+		case SPELL_Monster_Form:	// 108 // polymorphs you into a monster for a while.
+		case SPELL_Shield:			// 113 // erects a temporary force field around you. Nobody approaching will be able to get within 1 tile of you, though you can move close to them if you wish.
+			return;*/
+	}
 }
 
 bool CChar::Spell_Equip_OnTick( CItem * pItem )
@@ -1583,7 +1586,8 @@ bool CChar::Spell_Equip_OnTick( CItem * pItem )
 			{
 				static const SOUND_TYPE sm_sounds[] = { 0x243, 0x244, 0x245 };
 				m_pClient->addSound(sm_sounds[Calc_GetRandVal(COUNTOF(sm_sounds))]);
-				m_pClient->addReSync();
+				m_pClient->addChar(this);
+				m_pClient->addPlayerView(NULL);
 			}
 			// save the effect.
 			pItem->SetTimeout((15 + Calc_GetRandLLVal(15))*TICK_PER_SEC);
@@ -2628,7 +2632,7 @@ bool CChar::Spell_CastDone()
 			case SPELL_Dispel_Field:
 			{
 				CItem * pItem = dynamic_cast <CItem*> (pObj);
-				if (pItem == NULL || pItem->IsAttr(ATTR_MOVE_NEVER) || (!pItem->IsType(IT_CAMPFIRE) && !pItem->IsType(IT_SPELL) && !pItem->IsType(IT_FIRE)))
+				if ( pItem == NULL || pItem->IsAttr(ATTR_MOVE_NEVER) || !pItem->IsType(IT_SPELL) )
 				{
 					SysMessageDefault(DEFMSG_SPELL_DISPELLF_WT);
 					return(false);

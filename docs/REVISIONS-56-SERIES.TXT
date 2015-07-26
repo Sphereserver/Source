@@ -2503,3 +2503,6 @@ Added: Setting RegenX=-1 in the ini will disable regens for that stat, also the 
 Re-added detail check for parrying messages, they were being sent always regardless of the detail flag on the character.
 Re-Adeed EF_Intrinsic_Locals with a warning comment in the ini.
 Fixed a check in CChar::NPC_ExtraAI() giving errors when trying to find items inside a container when there was no container to search on.
+
+25-07-2015, Coruja
+Changed: Optimized many spells and some others functions to avoid send unnecessary 'update' packets to client when it's not needed (or send it using less packets when needed).

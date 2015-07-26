@@ -450,7 +450,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 			SysMessageDefault( DEFMSG_ITEMUSE_TELESCOPE );
 			return true;
 		case IT_MAP:
-			addMap( dynamic_cast <CItemMap*>( pItem ));
+			addDrawMap(dynamic_cast<CItemMap*>(pItem));
 			return true;
 
 		case IT_CANNON_BALL:

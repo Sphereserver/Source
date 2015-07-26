@@ -2067,34 +2067,31 @@ bool CClient::Event_DoubleClick( CGrayUID uid, bool fMacro, bool fTestTouch, boo
 		return false;
 
 	CObjBase * pObj = uid.ObjFind();
-	if (!pObj || ((fTestTouch && !m_pChar->CanSee(pObj)) && !(pObj->m_Can & CAN_I_FORCEDC)))
+	if ( !pObj || (fTestTouch && !m_pChar->CanSee(pObj) && !(pObj->m_Can & CAN_I_FORCEDC)) )
 	{
-		addObjectRemoveCantSee( uid, "the target" );
+		addObjectRemoveCantSee(uid, "the target");
 		return false;
 	}
 
-	// Face the object we are using/activating.
-	if ( !IsSetOF(OF_DClickNoTurn) )
+	// Face the object
+	if ( !IsSetOF(OF_DClickNoTurn) && (pObj->GetTopLevelObj() != m_pChar) )
 	{
 		SetTargMode();
 		m_Targ_UID = uid;
-		m_pChar->UpdateDir( pObj );
+		m_pChar->UpdateDir(pObj);
 	}
 
-	if ( pObj->IsItem())
-	{
-		return Cmd_Use_Item( dynamic_cast <CItem *>(pObj), fTestTouch, fScript );
-	}
+	if ( pObj->IsItem() )
+		return Cmd_Use_Item(dynamic_cast<CItem *>(pObj), fTestTouch, fScript);
 
-	CChar * pChar = dynamic_cast <CChar*>(pObj);
-
-	if (( IsTrigUsed(TRIGGER_DCLICK) ) || ( IsTrigUsed(TRIGGER_CHARDCLICK) ))
+	CChar * pChar = dynamic_cast<CChar *>(pObj);
+	if ( IsTrigUsed(TRIGGER_DCLICK) || IsTrigUsed(TRIGGER_CHARDCLICK) )
 	{
-		if ( pChar->OnTrigger( CTRIG_DClick, m_pChar ) == TRIGRET_RET_TRUE )
+		if ( pChar->OnTrigger(CTRIG_DClick, m_pChar) == TRIGRET_RET_TRUE )
 			return true;
 	}
 
-	if ( ! fMacro )
+	if ( !fMacro )
 	{
 		if ( pChar == m_pChar )
 		{
@@ -2102,7 +2099,7 @@ bool CClient::Event_DoubleClick( CGrayUID uid, bool fMacro, bool fTestTouch, boo
 			{
 				// in war mode not to drop from horse accidentally we need this check
 				// Should also check for STATF_War in case someone starts fight and runs away.
-				if ( pChar->IsStatFlag(STATF_War) && pChar->Memory_FindTypes(MEMORY_FIGHT) && !IsSetCombatFlags(COMBAT_DCLICKSELF_UNMOUNTS))
+				if ( !IsSetCombatFlags(COMBAT_DCLICKSELF_UNMOUNTS) && pChar->IsStatFlag(STATF_War) && pChar->Memory_FindTypes(MEMORY_FIGHT) )
 				{
 					addCharPaperdoll(pChar);
 					return true;
@@ -2112,71 +2109,70 @@ bool CClient::Event_DoubleClick( CGrayUID uid, bool fMacro, bool fTestTouch, boo
 			}
 		}
 
-		if ( pChar->m_pNPC && ( pChar->GetNPCBrain() != NPCBRAIN_HUMAN ))
+		if ( pChar->m_pNPC && (pChar->GetNPCBrain() != NPCBRAIN_HUMAN) )
 		{
-			if ( m_pChar->Horse_Mount( pChar ))
+			if ( m_pChar->Horse_Mount(pChar) )
 				return true;
-			switch ( pChar->GetID())
+
+			switch ( pChar->GetID() )
 			{
 				case CREID_HORSE_PACK:
 				case CREID_LLAMA_PACK:
-					// pack animals open container.
-					return Cmd_Use_Item( pChar->GetPackSafe(), fTestTouch );
+					return Cmd_Use_Item(pChar->GetPackSafe(), fTestTouch);	// pack animals open container
 				default:
-					if ( IsPriv(PRIV_GM))
-					{
-						// snoop the creature.
-						return Cmd_Use_Item( pChar->GetPackSafe(), false );
-					}
+					if ( IsPriv(PRIV_GM) )
+						return Cmd_Use_Item(pChar->GetPackSafe(), false);	// snoop the creature
 					return false;
 			}
 		}
 	}
 
-	// open paper doll.
 	addCharPaperdoll(pChar);
-
-	return( true );
+	return true;
 }
 
 void CClient::Event_SingleClick( CGrayUID uid )
 {
 	ADDTOCALLSTACK("CClient::Event_SingleClick");
-	// the ALLNAMES macro comes through here.
+	// The client is doing a single click on obj.
+	// Also called to show incoming char names
+	// on screen (including ALLNAMES macro).
+	//
+	// PS: Clients using tooltips don't send single click
+	//	   requests when clicking on obj.
+
 	if ( m_pChar == NULL )
 		return;
 
 	CObjBase * pObj = uid.ObjFind();
 	if ( !m_pChar->CanSee(pObj) )
 	{
-		// ALLNAMES makes this happen as we are running thru an area.
-		// So display no msg. Do not use (addObjectRemoveCantSee)
-		addObjectRemove( uid );
+		// ALLNAMES makes this happen as we are running thru an area,
+		// so display no msg. Do not use addObjectRemoveCantSee()
+		addObjectRemove(uid);
 		return;
 	}
 
-	if (( IsTrigUsed(TRIGGER_CLICK) ) || (( IsTrigUsed(TRIGGER_ITEMCLICK) ) && ( pObj->IsItem())) || (( IsTrigUsed(TRIGGER_CHARCLICK) ) && ( pObj->IsChar())))
+	if ( IsTrigUsed(TRIGGER_CLICK) || (IsTrigUsed(TRIGGER_ITEMCLICK) && pObj->IsItem()) || (IsTrigUsed(TRIGGER_CHARCLICK) && pObj->IsChar()) )
 	{
-		CScriptTriggerArgs Args( this );
-		if ( pObj->OnTrigger( "@Click", m_pChar, &Args ) == TRIGRET_RET_TRUE )	// CTRIG_Click, ITRIG_Click
+		CScriptTriggerArgs Args(this);
+		if ( pObj->OnTrigger("@Click", m_pChar, &Args) == TRIGRET_RET_TRUE )	// CTRIG_Click, ITRIG_Click
 			return;
 	}
 
-	if ( pObj->IsItem())
+	if ( pObj->IsItem() )
 	{
-		addItemName( dynamic_cast <CItem *>(pObj));
+		addItemName(dynamic_cast<CItem *>(pObj));
 		return;
 	}
 
-	// TODO: if tooltip are enabled this is not used.
-	// and move char name creation to tooltip for .debug
-	if ( pObj->IsChar())
+	if ( pObj->IsChar() )
 	{
-		addCharName( dynamic_cast <CChar*>(pObj) );
+		addCharName(dynamic_cast<CChar *>(pObj));
 		return;
 	}
 
-	SysMessagef( "Bogus item uid=0%lx?", (DWORD) uid );
+	SysMessagef("Bogus item uid=0%lx?", (DWORD)uid);
 }
 
 void CClient::Event_Target(DWORD context, CGrayUID uid, CPointMap pt, BYTE flags, ITEMID_TYPE id)

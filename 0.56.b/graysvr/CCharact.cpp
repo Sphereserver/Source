@@ -1294,7 +1294,7 @@ void CChar::UpdateMove( const CPointMap & pold, CClient * pExcludeClient, bool f
 			{
 				EXC_SET("ADD map");
 				// What do i now see ?
-				pClient->addMap( (pold.IsValidPoint() ? &pold : NULL), true );
+				pClient->addMap( pold.IsValidPoint() ? &pold : NULL );
 				EXC_SET("AddPlayerView");
 				pClient->addPlayerView( pold );
 				continue;
@@ -3623,7 +3623,7 @@ bool CChar::MoveToChar(CPointMap pt, bool bForceFix)
 	if ( fSectorChange && ! g_Serv.IsLoading() )	// there was a change in environment.
 	{
 		if ( fMapChange )
-			GetClient()->addReSync(true);			// a must-have for map change
+			GetClient()->addReSync();		// a must-have for map change
 
 		if ( IsTrigUsed(TRIGGER_ENVIRONCHANGE) )
 		{

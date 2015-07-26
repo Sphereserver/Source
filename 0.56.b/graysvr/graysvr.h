@@ -1327,8 +1327,8 @@ public:
 	void addArrowQuest( int x, int y, int id );
 	void addEffect( EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate * pDst, const CObjBaseTemplate * pSrc, BYTE speed = 5, BYTE loop = 1, bool explode = false, DWORD color = 0, DWORD render = 0, WORD effectid = 0, DWORD explodeid = 0, WORD explodesound = 0, DWORD effectuid = 0, BYTE type = 0 );
 	void addSound( SOUND_TYPE id, const CObjBaseTemplate * pBase = NULL, int iRepeat = 1 );
-	void addReSync(bool bForceMap = false);
-	void addMap( const CPointMap * pOldP, bool playerStart = false );
+	void addReSync();
+	void addMap( const CPointMap * ptOld );
 	void addMapDiff();
 	void addChangeServer();
 
@@ -1378,7 +1378,7 @@ public:
 	bool addBBoardMessage( const CItemContainer * pBoard, BBOARDF_TYPE flag, CGrayUID uidMsg );
 
 	void addToolTip( const CObjBase * pObj, LPCTSTR psztext );
-	void addMap( CItemMap * pItem );
+	void addDrawMap( CItemMap * pItem );
 	void addMapMode( CItemMap * pItem, MAPCMD_TYPE iType, bool fEdit = false );
 
 	void addGumpTextDisp( const CObjBase * pObj, GUMP_TYPE gump, LPCTSTR pszName, LPCTSTR pszText );

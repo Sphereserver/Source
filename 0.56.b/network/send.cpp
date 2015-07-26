@@ -450,9 +450,6 @@ void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_
 		dir = item->m_itCorpse.m_facing_dir;
 	}
 
-	if (character->IsStatFlag(STATF_Hallucinating))
-		hue = static_cast<HUE_TYPE>(Calc_GetRandVal(HUE_DYE_HIGH)); // restrict colours
-
 	if (character->CanMove(item, false))
 		flags |= ITEMF_MOVABLE;
 
@@ -798,9 +795,6 @@ PacketItemContainer::PacketItemContainer(const CClient* target, const CItem* ite
 			hue = itemDefinition->GetResDispDnHue() & HUE_MASK_HI;
 	}
 
-	if (target->GetChar()->IsStatFlag(STATF_Hallucinating))
-		hue = static_cast<HUE_TYPE>(Calc_GetRandVal(HUE_DYE_HIGH)); // restrict colours
-
 	if (hue > HUE_QTY)
 		hue &= HUE_MASK_LO;
 
@@ -1129,27 +1123,19 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 				if (vendorItem == NULL || vendorItem->GetAmount() == 0 || vendorItem->IsType(IT_GOLD))
 					continue;
 
+				hue = item->GetHue() & HUE_MASK_HI;
 				amount = minimum(g_Cfg.m_iVendorMaxSell, amount);
 				pos.m_x = static_cast<signed short>(m_count + 1);
 				pos.m_y = 1;
 
-				if (viewer->IsStatFlag(STATF_Hallucinating))
+				if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
 				{
-					hue = static_cast<HUE_TYPE>(Calc_GetRandVal(HUE_DYE_HIGH));
+					if (itemDefinition->GetResDispDnHue() != HUE_DEFAULT)
+						hue = itemDefinition->GetResDispDnHue() & HUE_MASK_HI;
 				}
-				else
-				{
-					hue = item->GetHue() & HUE_MASK_HI;
 
-					if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
-					{
-						if (itemDefinition->GetResDispDnHue() != HUE_DEFAULT)
-							hue = itemDefinition->GetResDispDnHue() & HUE_MASK_HI;
-					}
-
-					if (hue > HUE_QTY)
-						hue &= HUE_MASK_LO; // restrict colors
-				}
+				if (hue > HUE_QTY)
+					hue &= HUE_MASK_LO; // restrict colors
 
 				// write item data
 				writeInt32(item->GetUID());
@@ -1198,30 +1184,21 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 
 				itemDefinition = item->Item_GetDef();
 				id = item->GetDispID();
+				pos = item->GetContainedPoint();
+				hue = item->GetHue() & HUE_MASK_HI;
 				amount = item->GetAmount();
 
 				if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
 					id = static_cast<ITEMID_TYPE>(itemDefinition->GetResDispDnId());
 
-				pos = item->GetContainedPoint();
-
-				if (viewer->IsStatFlag(STATF_Hallucinating))
+				if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
 				{
-					hue = static_cast<HUE_TYPE>(Calc_GetRandVal(HUE_DYE_HIGH));
+					if (itemDefinition->GetResDispDnHue() != HUE_DEFAULT)
+						hue = itemDefinition->GetResDispDnHue() & HUE_MASK_HI;
 				}
-				else
-				{
-					hue = item->GetHue() & HUE_MASK_HI;
 
-					if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
-					{
-						if (itemDefinition->GetResDispDnHue() != HUE_DEFAULT)
-							hue = itemDefinition->GetResDispDnHue() & HUE_MASK_HI;
-					}
-
-					if (hue > HUE_QTY)
-						hue &= HUE_MASK_LO; // restrict colors
-				}
+				if (hue > HUE_QTY)
+					hue &= HUE_MASK_LO; // restrict colors
 
 				// write item data
 				writeInt32(item->GetUID());
