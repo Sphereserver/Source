@@ -2506,3 +2506,6 @@ Fixed a check in CChar::NPC_ExtraAI() giving errors when trying to find items in
 
 25-07-2015, Coruja
 Changed: Optimized many spells and some others functions to avoid send unnecessary 'update' packets to client when it's not needed (or send it using less packets when needed).
+
+26-07-2015, XuN
+Enabled again movement packet for newer clients since blocking it was causing newer clients to do not move at all and getting 'freezed' after some steps. Added a few lines of code to UserChatButton to make this packet restrict movement when this button is being pressed, hence avoiding these injection problems.

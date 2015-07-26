@@ -43,6 +43,7 @@ void CClient::Event_ChatButton(const NCHAR * pszName) // Client's chat button wa
 		if (m_pChar->OnTrigger(CTRIG_UserChatButton, m_pChar) == TRIGRET_RET_TRUE)
 			return;
 	}
+	this->GetChar()->SetTriggerActive("UserChatButton");	// dirty fix for SA Classic clients with injection moving a lot when using chat button, we set 'active trigger' to this, so we check it back on the packet to limit the amount of steps to do.
 
 	ASSERT(GetAccount());
 
@@ -89,6 +90,7 @@ void CClient::Event_ChatButton(const NCHAR * pszName) // Client's chat button wa
 	// Ok, below here we have a chat system nickname
 	// Tell the chat system it has a new client using it
 	SetChatActive();
+	this->GetChar()->SetTriggerActive("");
 }
 
 void CClient::Event_ChatText( const NCHAR * pszText, int len, CLanguageID lang ) // Text from a client

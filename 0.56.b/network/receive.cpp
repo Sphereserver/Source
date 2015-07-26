@@ -4300,11 +4300,18 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 	// does some useless weird stuff. Also classic clients using Injection 2014 will
 	// strangely send this packet to server when the player press the 'Chat' button,
 	// so it's better leave this packet disabled to prevent some exploits.
-	if (!net->isClientSA())
-		return false;
+	
+	/*if (!net->isClientSA())		// Disabling this means disabling walking in newer classic clients, DO NOT DISABLE the packet
+		return false;*/
 
 	skip(2);
 	BYTE steps = readByte();
+	bool bUsingChat = false;
+	if (net->getClient()->GetChar()->IsTriggerActive("UserChatButton"))	// so a check is added here to avoid injection forcing movement packets when user chat button
+	{
+		bUsingChat = true;
+		steps = 1;
+	}
 	INT64 iTime1 = readInt64();
 	INT64 iTime2 = readInt64(); //these should be used for speed control somehow... (in micro-seconds)
 	while (steps)
@@ -4318,6 +4325,8 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 		doMovement(net, direction, sequence, 0, iTime1, iTime2);
 		steps--;
 	}
+	if (bUsingChat)
+		net->getClient()->GetChar()->SetTriggerActive("");
 	return true;
 }
 
