@@ -18,9 +18,12 @@ This file contains functions that are triggered by server actions.
 
 
 [PLEVEL 7]
+f_axis_preload
+f_onaccount_connect
 f_onaccount_create
 f_onaccount_login
 f_onaccount_delete
+f_onaccount_pwchange
 f_onchar_create
 f_onchar_delete
 f_onserver_start
@@ -30,6 +33,14 @@ f_onserver_save_fail
 f_onserver_save_finished
 f_onserver_exit
 f_onserver_blockip
+
+[FUNCTION f_axis_preload]
+// This is called every time someone connects from Axis to retrieve information
+// local.account --> Account name of connecting client
+// local.IP --> IP address of connecting client
+// RETURN
+//	  0 --> normal action (allow information to be sent)
+//	  1 --> Deny access (close connection with no info sent)
 
 [FUNCTION f_onaccount_connect]	//Read carefully
 // The f_onaccount_login function is called before the sent password is checked.

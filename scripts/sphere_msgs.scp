@@ -117,6 +117,10 @@ EMOTE_DEF_UNICODE	0
 //armslore_rep					"This item is %s."
 //armslore_rep_0				" It looks quite fragile."
 //armslore_unable				"That does not appear to be a weapon or armor."
+//axis_denied					"Access to Axis' database has been denied!")
+//axis_file_error				"ERROR: Unable to open Axis' database file"
+//axis_info_error				"ERROR: Unable to retrieve Axis' database info"
+//axis_not_priv					"This account does not exist or is not privileged to access Axis' database."
 //begging_start					"You grovel at %s's feet"
 //bvbox_full_items				"Your bankbox can't hold more items."
 //bvbox_full_weight				"Your bankbox can't hold more weight."
