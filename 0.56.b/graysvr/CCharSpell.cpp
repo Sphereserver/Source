@@ -576,7 +576,6 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			StatFlag_Clear(STATF_Polymorph);
 			if (pClient)
 				pClient->removeBuff(iBuffIcon);
-			UpdateStatsFlag();
 			return;
 		}
 		case LAYER_SPELL_Night_Sight:
@@ -607,7 +606,6 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 
 		case LAYER_SPELL_Paralyze:
 			StatFlag_Clear(STATF_Freeze);
-			UpdateModeFlag();
 			if (pClient)
 			{
 				pClient->removeBuff(BI_PARALYZE);
@@ -698,7 +696,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			return;
 		case SPELL_Hallucination:
 			StatFlag_Clear( STATF_Hallucinating );
-			UpdateStatsFlag();
+			UpdateModeFlag();
 			if (pClient)
 			{
 				pClient->addChar(this);
@@ -985,7 +983,6 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				else
 					pSpell->m_itSpell.m_PolyDex = 0;
 			}
-			Update();		// show everyone I am now a new type
 
 			StatFlag_Set(STATF_Polymorph);
 			if (pClient && IsSetOF(OF_Buffs) && iBuffIcon)
@@ -1036,16 +1033,12 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			return;
 		case LAYER_SPELL_Invis:
 			StatFlag_Set(STATF_Invisible);
-			if (pClient)
-			{
-				new PacketCharacter(pClient, this);	//updates paperdoll with less packets then pClient->addChar(this)
-				if (IsSetOF(OF_Buffs))
-				{
-					pClient->removeBuff(BI_INVISIBILITY);
-					pClient->addBuff(BI_INVISIBILITY, 1075825, 1075826, iTimerEffect);
-				}
-			}
 			UpdateModeFlag();
+			if (pClient && IsSetOF(OF_Buffs))
+			{
+				pClient->removeBuff(BI_INVISIBILITY);
+				pClient->addBuff(BI_INVISIBILITY, 1075825, 1075826, iTimerEffect);
+			}
 			return;
 		case LAYER_SPELL_Paralyze:
 			StatFlag_Set(STATF_Freeze);
@@ -1265,7 +1258,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			return;
 		case SPELL_Hallucination:
 			StatFlag_Set( STATF_Hallucinating );
-			UpdateStatsFlag();
+			UpdateModeFlag();
 			if (pClient)
 			{
 				pClient->addChar(this);
@@ -3441,7 +3434,6 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				else if ( IsGargoyle() )
 					SetID( pCharDef->IsFemale() ? CREID_GARGMAN : CREID_GARGWOMAN );
 				m_prev_id = GetID();
-				Update();
 			}
 			break;
 

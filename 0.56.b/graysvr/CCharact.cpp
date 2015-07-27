@@ -1287,10 +1287,13 @@ void CChar::UpdateMove( const CPointMap & ptOld, CClient * pExcludeClient, bool 
 			if ( fFull )
 			{
 				EXC_SET("AddMap");
-				pClient->addMap(ptOld.IsValidPoint() ? &ptOld : NULL);
+				pClient->addMap(&ptOld);
+
+				EXC_SET("AddChar");
+				pClient->addChar(this);
 			}
 			EXC_SET("AddPlayerView");
-			pClient->addPlayerView(ptOld, false);
+			pClient->addPlayerView(ptOld, fFull);
 			continue;
 		}
 

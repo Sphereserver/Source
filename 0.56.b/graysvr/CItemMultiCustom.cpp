@@ -139,7 +139,7 @@ void CItemMultiCustom::BeginCustomize(CClient * pClientSrc)
 	ptNew.m_z += 7;
 
 	pChar->MoveToChar(ptNew);
-	pChar->UpdateMove(ptOld, NULL, true);
+	pChar->UpdateMove(ptOld);
 
 	// hide all dynamic items inside the house
 	CGRect rectDesign = GetDesignArea();
@@ -205,11 +205,10 @@ void CItemMultiCustom::EndCustomize(bool bForced)
 			ptDest.m_z = g_World.GetHeightPoint2(ptDest, wBlockFlags, true);
 
 			pChar->MoveToChar(ptDest);
-			pChar->UpdateMove(ptOld, NULL, true);
+			pChar->UpdateMove(ptOld);
 		}
 
 		SendStructureTo(pClient);
-		pClient->addReSync();
 	}
 }
 
@@ -232,7 +231,7 @@ void CItemMultiCustom::SwitchToLevel( CClient * pClientSrc, int iLevel )
 		pt.m_z += GetPlaneZ(static_cast<unsigned char>(iLevel));
 
 		pChar->SetTopZ(pt.m_z);
-		pChar->UpdateMove(GetTopPoint(), NULL, true);
+		pChar->UpdateMove(GetTopPoint());
 	}
 
 	pClientSrc->addItem(this);
