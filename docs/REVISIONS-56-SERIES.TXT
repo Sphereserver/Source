@@ -2509,3 +2509,8 @@ Changed: Optimized many spells and some others functions to avoid send unnecessa
 
 26-07-2015, XuN
 Enabled again movement packet for newer clients since blocking it was causing newer clients to do not move at all and getting 'freezed' after some steps. Added a few lines of code to UserChatButton to make this packet restrict movement when this button is being pressed, hence avoiding these injection problems.
+
+26-07-2015,Ben
+Added support for future Axis connection... (details will be available when the time comes)
+Added internal support for Category,Subsection.Description and ID in SPAWN and TEMPLATE sections. they can now be accessed with (eg: serv.spawn.defname_here.category)
+Also added access to ID in CHARDEF to return the real anim id of the chardef in hex. (serv.chardef.c_man.id should return 0190)

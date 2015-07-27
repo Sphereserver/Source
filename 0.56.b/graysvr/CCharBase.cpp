@@ -187,6 +187,9 @@ bool CCharBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		case CBC_DISPID:
 			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_CHARDEF, GetDispID()));
 			break;
+		case CBC_ID:
+			sVal.FormatHex( GetDispID() );
+			break;
 		case CBC_FOODTYPE:
 			{
 				TCHAR *pszTmp = Str_GetTemp();

@@ -1003,7 +1003,7 @@ void NetworkIn::tick(void)
 		EXC_SET("messages - check frozen");
 		if (!FD_ISSET(client->m_socket.GetSocket(), &readfds))
 		{
-			if (client->m_client->GetConnectType() != CONNECT_TELNET)
+			if ((client->m_client->GetConnectType() != CONNECT_TELNET) && (client->m_client->GetConnectType() != CONNECT_AXIS))
 			{
 				// check for timeout
 				int iLastEventDiff = -g_World.GetTimeDiff( client->m_client->m_timeLastEvent );
@@ -3105,7 +3105,7 @@ void NetworkInput::processData()
 		EXC_SET("check message");
 		if (state->m_incoming.rawPackets.empty())
 		{
-			if (client->GetConnectType() != CONNECT_TELNET)
+			if ((client->GetConnectType() != CONNECT_TELNET) && (client->GetConnectType() != CONNECT_AXIS))
 			{
 				// check for timeout
 				EXC_SET("check frozen");

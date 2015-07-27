@@ -8,6 +8,7 @@
 #include "graysvr.h"	// predef header.
 #include "../network/network.h"
 #include "../network/send.h"
+#include "../common/CFileList.h"
 #pragma warning(disable:4096)
 #include "../common/zlib/zlib.h"
 #pragma warning(default:4096)
@@ -427,24 +428,59 @@ bool CClient::OnRxAxis( const BYTE * pData, size_t iLen )
 					CAccountRef pAccount = g_Accounts.Account_Find(m_zLogin);
 					if (( pAccount == NULL ) || ( pAccount->GetPrivLevel() < PLEVEL_Counsel ))
 					{
-						SysMessagef("%s\n", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_NOT_PRIV));
+						SysMessagef("*%s", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_NOT_PRIV));
 						m_Targ_Text.Empty();
 						return false;
 					}
 					if ( LogIn(m_zLogin, m_Targ_Text, sMsg ) == PacketLoginError::Success )
 					{
 						m_Targ_Text.Empty();
-						if ( GetPrivLevel() < PLEVEL_Counsel )	// this really should not happen.
+						if ( GetPrivLevel() < PLEVEL_Counsel )
 						{
-							SysMessagef("%s\n", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_NOT_PRIV));
+							SysMessagef("*%s", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_NOT_PRIV));
+							return false;
 						}
 						if (GetPeer().IsValidAddr())
 						{
-							GetPeer().GetAddrStr();
 							CScriptTriggerArgs Args;
 							Args.m_VarsLocal.SetStrNew("Account",GetName());
 							Args.m_VarsLocal.SetStrNew("IP",GetPeer().GetAddrStr());
-							r_Call("f_axis_load", this, &Args);
+							TRIGRET_TYPE tRet = TRIGRET_RET_FALSE;
+							r_Call("f_axis_preload", this, &Args, NULL, &tRet);
+							if ( tRet == TRIGRET_RET_TRUE )
+							{
+								SysMessagef("*%s", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_DENIED));
+								return false;
+							}
+
+							time_t dateChange;
+							DWORD dwSize;
+							if ( ! CFileList::ReadFileInfo( "Axis.db", dateChange, dwSize ))
+							{
+								SysMessagef("*%s", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_INFO_ERROR));
+								return false;
+							}
+
+							CGFile FileRead;
+							if ( ! FileRead.Open( "Axis.db", OF_READ|OF_BINARY ))
+							{
+								SysMessagef("*%s", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_FILE_ERROR));
+								return false;
+							}
+
+							TCHAR szTmp[8*1024];
+							PacketWeb packet;
+							for (;;)
+							{
+								size_t iLength = FileRead.Read( szTmp, sizeof( szTmp ) );
+								if ( iLength <= 0 )
+									break;
+								packet.setData((BYTE*)szTmp, iLength);
+								packet.send(this);
+								dwSize -= iLength;
+								if ( dwSize <= 0 )
+									break;
+							}
 							return true;
 						}
 						return false;
@@ -532,7 +568,16 @@ bool CClient::OnRxPing( const BYTE * pData, size_t iLen )
 			// enter into Axis mode. (look for password).
 			SetConnectType( CONNECT_AXIS );
 			m_zLogin[0] = 0;
-			SysMessage("@\n");
+
+			time_t dateChange;
+			DWORD dwSize;
+			if ( ! CFileList::ReadFileInfo( "Axis", dateChange, dwSize ))
+			{
+				g_Log.Event( LOGM_CLIENTS_LOG|LOGL_EVENT, "Axis database not accessible.\n");
+				return false;
+			}
+
+			SysMessagef("%d",dwSize);
 			return true;
 		}
 

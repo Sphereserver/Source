@@ -837,9 +837,13 @@ bool CSpellDef::GetPrimarySkill( int * piSkill, int * piQty ) const
 enum RGC_TYPE
 {
 	RGC_CALCMEMBERINDEX,
+	RGC_CATEGORY,
+	RGC_CONTAINER,
 	RGC_DEFNAME,
+	RGC_DESCRIPTION,
 	RGC_ID,
 	RGC_RESOURCES,
+	RGC_SUBSECTION,
 	RGC_WEIGHT,
 	RGC_QTY
 };
@@ -847,9 +851,13 @@ enum RGC_TYPE
 LPCTSTR const CRandGroupDef::sm_szLoadKeys[RGC_QTY+1] =
 {
 	"CALCMEMBERINDEX",
+	"CATEGORY",
+	"CONTAINER",
 	"DEFNAME",
+	"DESCRIPTION",
 	"ID",
 	"RESOURCES",
+	"SUBSECTION",
 	"WEIGHT",
 	NULL
 };
@@ -873,9 +881,23 @@ bool CRandGroupDef::r_LoadVal( CScript &s )
 	// RES_SPAWN or RES_REGIONTYPE
 	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
+		case RGC_CATEGORY:
+			m_sCategory = s.GetArgStr();
+			break;
+		case RGC_SUBSECTION:
+			m_sSubsection = s.GetArgStr();
+			break;
+		case RGC_DESCRIPTION:
+			{
+				m_sDescription = s.GetArgStr();
+				if ( !strcmpi(m_sDescription, "@") )
+					m_sDescription = m_sSubsection;
+			}
+			break;
 		case RGC_DEFNAME: // "DEFNAME"
 			return SetResourceName( s.GetArgStr());
 		case RGC_ID:	// "ID"
+		case RGC_CONTAINER:
 			{
 				TCHAR	*ppCmd[2];
 				size_t iArgs = Str_ParseCmds(s.GetArgStr(), ppCmd, COUNTOF(ppCmd));
@@ -903,8 +925,9 @@ bool CRandGroupDef::r_LoadVal( CScript &s )
 			}
 			break;
 
-		default:
-			return( CResourceDef::r_LoadVal( s ));
+		//default:
+			//Ignore the rest
+			//return( CResourceDef::r_LoadVal( s ));
 	}
 	return true;
 	EXC_CATCH;
@@ -922,6 +945,23 @@ bool CRandGroupDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * p
 
 	switch ( FindTableHeadSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
+		case RGC_CATEGORY:
+			sVal = m_sCategory;
+			break;
+		case RGC_SUBSECTION:
+			sVal = m_sSubsection;
+			break;
+		case RGC_DESCRIPTION:
+			sVal = m_sDescription;
+			break;
+		case RGC_ID:
+		case RGC_CONTAINER:
+		{
+			size_t i = GetRandMemberIndex();
+			if ( i != BadMemberIndex() )
+				sVal.FormatHex(GetMemberID(i) & 0xFFFFFF);
+			break;
+		}
 		case RGC_CALCMEMBERINDEX:
 		{
 			pszKey += 15;

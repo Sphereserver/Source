@@ -489,6 +489,10 @@ public:
 	{
 	}
 
+	CGString	m_sCategory;
+	CGString	m_sSubsection;
+	CGString	m_sDescription;
+
 private:
 	CRandGroupDef(const CRandGroupDef& copy);
 	CRandGroupDef& operator=(const CRandGroupDef& other);

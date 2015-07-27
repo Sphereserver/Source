@@ -2823,7 +2823,6 @@ bool CResource::LoadResourceSection( CScript * pScript )
 	case RES_TIP:
 	case RES_SPEECH:
 	case RES_SCROLL:
-	case RES_TEMPLATE:
 	case RES_SKILLMENU:
 		// Just index this for access later.
 		pPrvDef = ResourceGetDef( rid );
@@ -2938,6 +2937,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		break;
 	case RES_REGIONTYPE:
 	case RES_SPAWN:
+	case RES_TEMPLATE:
 		pPrvDef = ResourceGetDef( rid );
 		if ( pPrvDef )
 		{
