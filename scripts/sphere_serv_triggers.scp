@@ -40,7 +40,8 @@ f_onserver_blockip
 // local.IP --> IP address of connecting client
 // RETURN
 //	  0 --> normal action (allow information to be sent)
-//	  1 --> Deny access (close connection with no info sent)
+//	  1 --> Deny access (close connection with no info sent) (send deny message)
+//    2 --> Deny access (close connection with no info sent) (no message sent)
 
 [FUNCTION f_onaccount_connect]	//Read carefully
 // The f_onaccount_login function is called before the sent password is checked.

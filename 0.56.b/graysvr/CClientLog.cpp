@@ -428,7 +428,7 @@ bool CClient::OnRxAxis( const BYTE * pData, size_t iLen )
 					CAccountRef pAccount = g_Accounts.Account_Find(m_zLogin);
 					if (( pAccount == NULL ) || ( pAccount->GetPrivLevel() < PLEVEL_Counsel ))
 					{
-						SysMessagef("*%s", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_NOT_PRIV));
+						SysMessagef("\"%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_NOT_PRIV));
 						m_Targ_Text.Empty();
 						return false;
 					}
@@ -437,7 +437,7 @@ bool CClient::OnRxAxis( const BYTE * pData, size_t iLen )
 						m_Targ_Text.Empty();
 						if ( GetPrivLevel() < PLEVEL_Counsel )
 						{
-							SysMessagef("*%s", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_NOT_PRIV));
+							SysMessagef("\"%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_NOT_PRIV));
 							return false;
 						}
 						if (GetPeer().IsValidAddr())
@@ -447,9 +447,11 @@ bool CClient::OnRxAxis( const BYTE * pData, size_t iLen )
 							Args.m_VarsLocal.SetStrNew("IP",GetPeer().GetAddrStr());
 							TRIGRET_TYPE tRet = TRIGRET_RET_FALSE;
 							r_Call("f_axis_preload", this, &Args, NULL, &tRet);
+							if ( tRet == TRIGRET_RET_DEFAULT )
+								return false;
 							if ( tRet == TRIGRET_RET_TRUE )
 							{
-								SysMessagef("*%s", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_DENIED));
+								SysMessagef("\"%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_DENIED));
 								return false;
 							}
 
@@ -457,14 +459,14 @@ bool CClient::OnRxAxis( const BYTE * pData, size_t iLen )
 							DWORD dwSize;
 							if ( ! CFileList::ReadFileInfo( "Axis.db", dateChange, dwSize ))
 							{
-								SysMessagef("*%s", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_INFO_ERROR));
+								SysMessagef("\"%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_INFO_ERROR));
 								return false;
 							}
 
 							CGFile FileRead;
 							if ( ! FileRead.Open( "Axis.db", OF_READ|OF_BINARY ))
 							{
-								SysMessagef("*%s", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_FILE_ERROR));
+								SysMessagef("\"%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_FILE_ERROR));
 								return false;
 							}
 
@@ -487,7 +489,7 @@ bool CClient::OnRxAxis( const BYTE * pData, size_t iLen )
 					}
 					else if ( ! sMsg.IsEmpty())
 					{
-						SysMessage( sMsg );
+						SysMessagef("\"%s\"", sMsg);
 						return false;
 					}
 					m_Targ_Text.Empty();
@@ -570,14 +572,9 @@ bool CClient::OnRxPing( const BYTE * pData, size_t iLen )
 			m_zLogin[0] = 0;
 
 			time_t dateChange;
-			DWORD dwSize;
-			if ( ! CFileList::ReadFileInfo( "Axis", dateChange, dwSize ))
-			{
-				g_Log.Event( LOGM_CLIENTS_LOG|LOGL_EVENT, "Axis database not accessible.\n");
-				return false;
-			}
-
-			SysMessagef("%d",dwSize);
+			DWORD dwSize = 0;
+			CFileList::ReadFileInfo( "Axis.db", dateChange, dwSize );
+			SysMessagef("%lu",dwSize);
 			return true;
 		}
 
