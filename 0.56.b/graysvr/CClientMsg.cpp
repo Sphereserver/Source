@@ -2124,8 +2124,10 @@ void CClient::addMap( const CPointMap * ptOld )
 		return;
 
 	CPointMap pt = m_pChar->GetTopPoint();
-	if ( ptOld && ptOld->m_map != pt.m_map )
-		new PacketMapChange(this, g_MapList.m_mapid[pt.m_map]);
+	if ( ptOld && ptOld->m_map == pt.m_map )	// we still on the same map, no update needed
+		return;
+
+	new PacketMapChange(this, g_MapList.m_mapid[pt.m_map]);
 }
 
 void CClient::addMapDiff()
@@ -3735,15 +3737,6 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 
 	addPlayerStart( pChar );
 	ASSERT(m_pChar);
-	// Clear notoriety status from all nearby characters
-	CWorldSearch AreaChars(m_pChar->GetTopPoint(), UO_MAP_VIEW_SIZE);
-	for (;;)
-	{
-		CChar * pCharNear = AreaChars.GetChar();
-		if ( pCharNear == NULL )
-			break;
-		pCharNear->NotoSave_Clear();
-	}
 
 	bool fNoMessages = false;
 	bool fQuickLogIn = !pChar->IsDisconnected();
@@ -3796,7 +3789,6 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 
 	GetAccount()->m_TagDefs.DeleteKey("LastLogged");
 	Announce(true);		// announce you to the world
-	m_pChar->Update(this);
 
 	// Don't login on the water, bring us to nearest shore (unless I can swim)
 	if ( !IsPriv(PRIV_GM) && !m_pChar->Char_GetDef()->Can(CAN_C_SWIM) && m_pChar->IsSwimming() )

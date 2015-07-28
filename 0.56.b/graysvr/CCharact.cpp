@@ -735,35 +735,20 @@ void CChar::UpdateRegenTimers(STAT_TYPE iStat, short iVal)
 void CChar::UpdateStatVal( STAT_TYPE type, int iChange, int iLimit )
 {
 	ADDTOCALLSTACK("CChar::UpdateStatVal");
-	int iVal = Stat_GetVal( type );
+	int iValPrev = Stat_GetVal(type);
+	int iVal = iValPrev + iChange;
+	if ( !iLimit )
+		iLimit = Stat_GetMax( type );
 
-	if ( iChange )
-	{
-		if ( ! iLimit )
-		{
-			iLimit = Stat_GetMax( type );
-		}
-		if ( iChange < 0 )
-		{
-			iVal += iChange;
-		}
-		else if ( iVal > iLimit )
-		{
-			iVal -= iChange;
-			if ( iVal < iLimit ) iVal = iLimit;
-		}
-		else
-		{
-			iVal += iChange;
-			if ( iVal > iLimit ) iVal = iLimit;
-		}
-		if ( iVal < 0 ) iVal = 0;
-		Stat_SetVal( type, iVal );
-	}
+	if ( iVal < 0 )
+		iVal = 0;
+	else if ( iVal > iLimit )
+		iVal = iLimit;
 
-	iLimit = Stat_GetMax(type);
-	if ( iLimit < 0 )
-		iLimit = 0;
+	if ( iVal == iValPrev )
+		return;
+
+	Stat_SetVal(type, iVal);
 
 	switch ( type )
 	{
@@ -775,7 +760,6 @@ void CChar::UpdateStatVal( STAT_TYPE type, int iChange, int iLimit )
 			break;
 		case STAT_DEX:
 			UpdateStamFlag();
-		default:
 			break;
 	}
 }
@@ -1264,7 +1248,7 @@ void CChar::UpdateVisualRange()
 		GetClient()->addVisualRange( m_iVisualRange );
 }
 
-void CChar::UpdateMove( const CPointMap & ptOld, CClient * pExcludeClient, bool fFull )
+void CChar::UpdateMove( const CPointMap & ptOld, CClient * pExcludeClient, bool bFull )
 {
 	ADDTOCALLSTACK("CChar::UpdateMove");
 	// Who now sees this char ?
@@ -1284,16 +1268,8 @@ void CChar::UpdateMove( const CPointMap & ptOld, CClient * pExcludeClient, bool 
 
 		if ( pClient == m_pClient )
 		{
-			if ( fFull )
-			{
-				EXC_SET("AddMap");
-				pClient->addMap(&ptOld);
-
-				EXC_SET("AddChar");
-				pClient->addChar(this);
-			}
 			EXC_SET("AddPlayerView");
-			pClient->addPlayerView(ptOld, fFull);
+			pClient->addPlayerView(ptOld, bFull);
 			continue;
 		}
 

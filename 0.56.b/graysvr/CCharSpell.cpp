@@ -82,7 +82,7 @@ void CChar::Spell_Dispel(int iLevel)
 	}
 }
 
-bool CChar::Spell_Teleport( CPointBase ptNew, bool fTakePets, bool fCheckAntiMagic,	ITEMID_TYPE iEffect, SOUND_TYPE iSound )
+bool CChar::Spell_Teleport( CPointMap ptNew, bool fTakePets, bool fCheckAntiMagic, ITEMID_TYPE iEffect, SOUND_TYPE iSound )
 {
 	ADDTOCALLSTACK("CChar::Spell_Teleport");
 	// Teleport you to this place.
@@ -90,34 +90,32 @@ bool CChar::Spell_Teleport( CPointBase ptNew, bool fTakePets, bool fCheckAntiMag
 	// ex. ships plank.
 	// RETURN: true = it worked.
 
-	if ( ! ptNew.IsCharValid())
+	if ( !ptNew.IsCharValid() )
 		return false;
 
 	ptNew.m_z = GetFixZ(ptNew);
 
 	if ( g_Cfg.m_iMountHeight )
 	{
-		if ( ! IsVerticalSpace( ptNew, false ) )
+		if ( !IsVerticalSpace(ptNew, false) )
 		{
-			SysMessageDefault( DEFMSG_MSG_MOUNT_CEILING );
+			SysMessageDefault(DEFMSG_MSG_MOUNT_CEILING);
 			return false;
 		}
 	}
 
-	Reveal();
-
-	if ( IsPriv(PRIV_JAILED))
+	if ( IsPriv(PRIV_JAILED) )
 	{
-		CRegionBase *pJail = g_Cfg.GetRegion( "jail" );
-		if (pJail == NULL || pJail->IsInside2d(ptNew) == false)
+		CRegionBase *pJail = g_Cfg.GetRegion("jail");
+		if ( !pJail || !pJail->IsInside2d(ptNew) )
 		{
 			// Must be /PARDONed to leave jail area
 			static LPCTSTR const sm_szPunishMsg[] =
 			{
-				g_Cfg.GetDefaultMsg( DEFMSG_SPELL_TELE_JAILED_1 ),
-				g_Cfg.GetDefaultMsg( DEFMSG_SPELL_TELE_JAILED_2 )
+				g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TELE_JAILED_1),
+				g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TELE_JAILED_2)
 			};
-			SysMessage( sm_szPunishMsg[ Calc_GetRandVal( COUNTOF( sm_szPunishMsg )) ]);
+			SysMessage(sm_szPunishMsg[Calc_GetRandVal(COUNTOF(sm_szPunishMsg))]);
 
 			int iCell = 0;
 			if ( m_pPlayer && m_pPlayer->GetAccount() )
@@ -125,12 +123,12 @@ bool CChar::Spell_Teleport( CPointBase ptNew, bool fTakePets, bool fCheckAntiMag
 
 			if ( iCell )
 			{
-				TCHAR szJailName[ 128 ];
-				sprintf( szJailName, "jail%d", iCell );
-				pJail = g_Cfg.GetRegion( szJailName );
+				TCHAR szJailName[128];
+				sprintf(szJailName, "jail%d", iCell);
+				pJail = g_Cfg.GetRegion(szJailName);
 			}
 
-			if ( pJail != NULL )
+			if ( pJail )
 				ptNew = pJail->m_pt;
 			else
 				ptNew.InitPoint();
@@ -138,99 +136,94 @@ bool CChar::Spell_Teleport( CPointBase ptNew, bool fTakePets, bool fCheckAntiMag
 	}
 
 	// Is it a valid teleport location that allows this ?
-
-	if ( IsPriv( PRIV_GM ))
+	if ( fCheckAntiMagic && !IsPriv(PRIV_GM) )
 	{
-		fCheckAntiMagic = false;
-		if ( iEffect && ! IsStatFlag( STATF_Incognito ) && ! IsPriv( PRIV_PRIV_NOSHOW ))
+		CRegionBase * pArea = CheckValidMove(ptNew, NULL, DIR_QTY, NULL);
+		if ( !pArea )
 		{
-			iEffect = g_Cfg.m_iSpell_Teleport_Effect_Staff;
-			iSound = g_Cfg.m_iSpell_Teleport_Sound_Staff;
-		}
-	}
-	else if ( fCheckAntiMagic )
-	{
-		CRegionBase * pArea = CheckValidMove( ptNew, NULL, DIR_QTY, NULL );
-		if ( pArea == NULL )
-		{
-			SysMessageDefault( DEFMSG_SPELL_TELE_CANT );
+			SysMessageDefault(DEFMSG_SPELL_TELE_CANT);
 			return false;
 		}
-		if ( pArea->IsFlag( REGION_ANTIMAGIC_RECALL_IN | REGION_ANTIMAGIC_TELEPORT ))
+		if ( pArea->IsFlag(REGION_ANTIMAGIC_RECALL_IN|REGION_ANTIMAGIC_TELEPORT) )
 		{
-			SysMessageDefault( DEFMSG_SPELL_TELE_AM );
+			SysMessageDefault(DEFMSG_SPELL_TELE_AM);
 			return false;
 		}
 	}
 
-	if ( IsClient() )
+	if ( !IsStatFlag(STATF_Insubstantial) )
 	{
-		if ( IsStatFlag( STATF_Insubstantial ))
-			iEffect = ITEMID_NOTHING;
-	}
-
-	if ( iEffect == ITEMID_TEMPLATE )
-	{
-		if ( IsClient() )
+		if ( m_pPlayer )
 		{
-			iEffect = g_Cfg.m_iSpell_Teleport_Effect_Players;
-			iSound = g_Cfg.m_iSpell_Teleport_Sound_Players;
-		} else {
+			if ( IsPriv(PRIV_GM) && !IsStatFlag(STATF_Incognito) && !IsPriv(PRIV_PRIV_NOSHOW) )
+			{
+				iEffect = g_Cfg.m_iSpell_Teleport_Effect_Staff;
+				iSound = g_Cfg.m_iSpell_Teleport_Sound_Staff;
+			}
+			else
+			{
+				iEffect = g_Cfg.m_iSpell_Teleport_Effect_Players;
+				iSound = g_Cfg.m_iSpell_Teleport_Sound_Players;
+			}
+		}
+		else
+		{
 			iEffect = g_Cfg.m_iSpell_Teleport_Effect_NPC;
 			iSound = g_Cfg.m_iSpell_Teleport_Sound_NPC;
 		}
 	}
-	
-	if (GetTopPoint().IsValidPoint())	// Guards might have just been created
+
+	CPointMap ptOld = GetTopPoint();
+	if ( ptOld.IsValidPoint() )		// guards might have just been created
 	{
-		if (fTakePets)
+		if ( fTakePets )	// look for any creatures that might be following me near by
 		{
-			// Look for any creatures that might be following me near by.
-			CWorldSearch Area(GetTopPoint(), UO_MAP_VIEW_SIGHT);
+			CWorldSearch Area(ptOld, UO_MAP_VIEW_SIGHT);
 			for (;;)
 			{
 				CChar * pChar = Area.GetChar();
-				if (pChar == NULL)
+				if ( pChar == NULL )
 					break;
-				if (pChar == this)
+				if ( pChar == this )
 					continue;
 
-				// My pets ?
-				if (pChar->Skill_GetActive() == NPCACT_FOLLOW_TARG && pChar->m_Act_Targ == GetUID())
+				if ( pChar->Skill_GetActive() == NPCACT_FOLLOW_TARG && pChar->m_Act_Targ == GetUID() )	// my pet?
 				{
-					CPointMap masterp = GetTopPoint();	// it will modify the val.
-					if (!pChar->CanMoveWalkTo(masterp, false, true))
-						continue;
-					pChar->Spell_Teleport(ptNew, fTakePets, fCheckAntiMagic, iEffect, iSound);
+					if ( pChar->CanMoveWalkTo(ptOld, false, true) )
+						pChar->Spell_Teleport(ptNew, fTakePets, fCheckAntiMagic, iEffect, iSound);
 				}
 			}
 		}
 	}
 
-	CPointMap ptOld = GetTopPoint();
-	m_fClimbUpdated = false;			// update climb height here
-	MoveToChar( ptNew );				// move character
-	UpdateMove( ptOld, NULL, true );	// update other characters
+	m_fClimbUpdated = false;		// update climb height here
+	MoveToChar(ptNew);				// move character
+	UpdateMove(ptOld, NULL, true);	// update other characters
+	Reveal();
+
+	CClient *pClient = GetClient();
+	if ( pClient && (ptNew.m_map != ptOld.m_map) )
+		pClient->addMap(&ptNew);
 
 	if ( iEffect != ITEMID_NOTHING )
 	{
 		// Departing effect
-		if ( ptOld.IsValidPoint())
+		if ( ptOld.IsValidPoint() )
 		{
-			CItem * pItem = CItem::CreateBase( ITEMID_NODRAW );
+			CItem * pItem = CItem::CreateBase(ITEMID_NODRAW);
 			ASSERT(pItem);
-			pItem->SetAttr( ATTR_MOVE_NEVER );
-			pItem->MoveTo( ptOld );
-			pItem->Effect( EFFECT_XYZ, iEffect, this, 10, 10 );
+			pItem->SetAttr(ATTR_MOVE_NEVER);
+			pItem->MoveTo(ptOld);
+			pItem->Effect(EFFECT_XYZ, iEffect, this, 10, 10);
 			pItem->Delete();
 		}
 
 		// Entering effect
-		Effect( EFFECT_XYZ, iEffect, this, 10, 10 );
-		Sound( iSound );
+		Effect(EFFECT_XYZ, iEffect, this, 10, 10);
+		Sound(iSound);
 	}
 
-	return( true );
+	return true;
 }
 
 CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon )

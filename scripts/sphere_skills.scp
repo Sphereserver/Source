@@ -7,7 +7,7 @@
 // Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Monday, Jun 29, 2015
+// FILE LAST UPDATED: Tuesday, Jul 28, 2015
 //
 VERSION=0.56c
 
@@ -134,7 +134,7 @@ ON=@Abort
 [SKILL 4]
 DEFNAME=SKILL_ARMSLORE
 KEY=ArmsLore
-TITLE=Weapons Master
+TITLE=Weapon Master
 PROMPT_MSG=What would you like to evaluate?
 DELAY=1.0
 STAT_STR=10
@@ -192,7 +192,7 @@ ON=@Abort
 [SKILL 7]
 DEFNAME=SKILL_Blacksmith
 KEY=Blacksmithing
-TITLE=Smith
+TITLE=Blacksmith
 FLAGS=SKF_CRAFT
 PROMPT_MSG=
 DELAY=1.2		//Old value=1.7
@@ -657,7 +657,7 @@ ON=@Abort
 [SKILL 26]
 DEFNAME=Skill_MagicResist
 KEY=MagicResistance
-TITLE=Mage
+TITLE=Warder
 PROMPT_MSG=
 EFFECT=0.0,90.0
 STAT_STR=40

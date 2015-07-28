@@ -217,6 +217,10 @@ void CItemMultiCustom::SwitchToLevel( CClient * pClientSrc, int iLevel )
 	ADDTOCALLSTACK("CItemMultiCustom::SwitchToLevel");
 	// switch the client to the given level of the building
 
+	CChar * pChar = pClientSrc->GetChar();
+	if ( pChar == NULL )
+		return;
+
 	if ( iLevel < 0 )
 		iLevel = 0;
 
@@ -224,17 +228,11 @@ void CItemMultiCustom::SwitchToLevel( CClient * pClientSrc, int iLevel )
 	if ( iLevel > iMaxLevel )
 		iLevel = iMaxLevel;
 
-	CChar * pChar = pClientSrc->GetChar();
-	if ( pChar != NULL )
-	{
-		CPointMap pt(GetTopPoint());
-		pt.m_z += GetPlaneZ(static_cast<unsigned char>(iLevel));
+	CPointMap pt(GetTopPoint());
+	pt.m_z += GetPlaneZ(static_cast<unsigned char>(iLevel));
 
-		pChar->SetTopZ(pt.m_z);
-		pChar->UpdateMove(GetTopPoint());
-	}
-
-	pClientSrc->addItem(this);
+	pChar->SetTopZ(pt.m_z);
+	pChar->UpdateMove(GetTopPoint());
 }
 
 void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
