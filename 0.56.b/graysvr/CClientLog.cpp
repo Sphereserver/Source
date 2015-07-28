@@ -428,7 +428,7 @@ bool CClient::OnRxAxis( const BYTE * pData, size_t iLen )
 					CAccountRef pAccount = g_Accounts.Account_Find(m_zLogin);
 					if (( pAccount == NULL ) || ( pAccount->GetPrivLevel() < PLEVEL_Counsel ))
 					{
-						SysMessagef("\"%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_NOT_PRIV));
+						SysMessagef("\"MSG:%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_NOT_PRIV));
 						m_Targ_Text.Empty();
 						return false;
 					}
@@ -437,7 +437,7 @@ bool CClient::OnRxAxis( const BYTE * pData, size_t iLen )
 						m_Targ_Text.Empty();
 						if ( GetPrivLevel() < PLEVEL_Counsel )
 						{
-							SysMessagef("\"%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_NOT_PRIV));
+							SysMessagef("\"MSG:%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_NOT_PRIV));
 							return false;
 						}
 						if (GetPeer().IsValidAddr())
@@ -445,13 +445,13 @@ bool CClient::OnRxAxis( const BYTE * pData, size_t iLen )
 							CScriptTriggerArgs Args;
 							Args.m_VarsLocal.SetStrNew("Account",GetName());
 							Args.m_VarsLocal.SetStrNew("IP",GetPeer().GetAddrStr());
-							TRIGRET_TYPE tRet = TRIGRET_RET_FALSE;
+							TRIGRET_TYPE tRet = TRIGRET_RET_DEFAULT;
 							r_Call("f_axis_preload", this, &Args, NULL, &tRet);
-							if ( tRet == TRIGRET_RET_DEFAULT )
+							if ( tRet == TRIGRET_RET_FALSE )
 								return false;
 							if ( tRet == TRIGRET_RET_TRUE )
 							{
-								SysMessagef("\"%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_DENIED));
+								SysMessagef("\"MSG:%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_DENIED));
 								return false;
 							}
 
@@ -459,14 +459,14 @@ bool CClient::OnRxAxis( const BYTE * pData, size_t iLen )
 							DWORD dwSize;
 							if ( ! CFileList::ReadFileInfo( "Axis.db", dateChange, dwSize ))
 							{
-								SysMessagef("\"%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_INFO_ERROR));
+								SysMessagef("\"MSG:%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_INFO_ERROR));
 								return false;
 							}
 
 							CGFile FileRead;
 							if ( ! FileRead.Open( "Axis.db", OF_READ|OF_BINARY ))
 							{
-								SysMessagef("\"%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_FILE_ERROR));
+								SysMessagef("\"MSG:%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_FILE_ERROR));
 								return false;
 							}
 
@@ -489,7 +489,7 @@ bool CClient::OnRxAxis( const BYTE * pData, size_t iLen )
 					}
 					else if ( ! sMsg.IsEmpty())
 					{
-						SysMessagef("\"%s\"", sMsg);
+						SysMessagef("\"MSG:%s\"", sMsg);
 						return false;
 					}
 					m_Targ_Text.Empty();
