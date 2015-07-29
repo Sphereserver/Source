@@ -895,11 +895,9 @@ bool CSector::MoveCharToSector( CChar * pChar )
 {
 	ADDTOCALLSTACK("CSector::MoveCharToSector");
 	// Move a CChar into this CSector.
-	// NOTE:
-	//   m_pt is still the old location. Not moved yet!
 	// ASSUME: called from CChar.MoveToChar() assume ACtive char.
 
-	if ( IsCharActiveIn( pChar ))
+	if ( IsCharActiveIn(pChar) )
 		return false;	// already here
 
 	// Check my save parity vs. this sector's
@@ -923,23 +921,8 @@ bool CSector::MoveCharToSector( CChar * pChar )
 		}
 	}
 
-	if ( pChar->IsClient())
-	{
-		// Send new weather and light for this sector
-		// Only send if different than last ???
-
-		CClient * pClient = pChar->GetClient();
-		if ( ! pChar->IsStatFlag( STATF_DEAD | STATF_NightSight | STATF_Sleeping ))
-		{
-			pClient->addLight(GetLight());
-		}
-		// Provide the weather as an arg as we are not in the new location yet.
-		pClient->addWeather(GetWeather());
-		pClient->addSeason(GetSeason());
-	}
-
-	m_Chars_Active.AddCharToSector( pChar );	// remove from previous spot.
-	return( true );
+	m_Chars_Active.AddCharToSector(pChar);	// remove from previous spot.
+	return true;
 }
 
 inline bool CSector::IsSectorSleeping() const

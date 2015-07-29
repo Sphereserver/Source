@@ -1415,11 +1415,11 @@ PacketQueryClient::PacketQueryClient(CClient* target, BYTE bCmd) : PacketSend(XC
  *
  *
  ***************************************************************************/
-PacketGlobalLight::PacketGlobalLight(const CClient* target, int light) : PacketSend(XCMD_Light, 2, PRI_NORMAL)
+PacketGlobalLight::PacketGlobalLight(const CClient* target, BYTE light) : PacketSend(XCMD_Light, 2, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketGlobalLight::PacketGlobalLight");
 
-	writeByte(static_cast<unsigned char>(light));
+	writeByte(light);
 	push(target);
 }
 
@@ -1544,30 +1544,9 @@ PacketWeather::PacketWeather(const CClient* target, WEATHER_TYPE weather, int se
 {
 	ADDTOCALLSTACK("PacketWeather::PacketWeather");
 
-	switch (weather)
-	{
-		case WEATHER_RAIN:
-		case WEATHER_STORM:
-		case WEATHER_SNOW:
-			// fix weird client transition problem.
-			// May only transition from Dry.
-			writeByte(WEATHER_DRY);
-			writeByte(0x00);
-			writeByte(0x10);
-			send(target);
-
-			seek(1);
-			writeByte(static_cast<unsigned char>(weather));
-			writeByte(static_cast<unsigned char>(severity));
-			break;
-
-		default:
-			writeByte(WEATHER_DRY);
-			writeByte(0x00);
-			break;
-	}
-	
-	writeByte(static_cast<unsigned char>(temperature));
+	writeByte(static_cast<BYTE>(weather));
+	writeByte(static_cast<BYTE>(severity));
+	writeByte(static_cast<BYTE>(temperature));
 	push(target);
 }
 

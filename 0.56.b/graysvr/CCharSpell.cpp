@@ -196,14 +196,18 @@ bool CChar::Spell_Teleport( CPointMap ptNew, bool fTakePets, bool fCheckAntiMagi
 		}
 	}
 
-	m_fClimbUpdated = false;		// update climb height here
-	MoveToChar(ptNew);				// move character
-	UpdateMove(ptOld, NULL, true);	// update other characters
-	Reveal();
+	MoveTo(ptNew);		// move character
 
 	CClient *pClient = GetClient();
+	CClient *pClientIgnore = NULL;
 	if ( pClient && (ptNew.m_map != ptOld.m_map) )
-		pClient->addMap(&ptNew);
+	{
+		pClient->addReSync();
+		pClientIgnore = pClient;	// we don't need update this client again
+	}
+
+	UpdateMove(ptOld, pClientIgnore, true);
+	Reveal();
 
 	if ( iEffect != ITEMID_NOTHING )
 	{

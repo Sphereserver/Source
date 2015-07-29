@@ -525,31 +525,30 @@ void CClient::addWeather( WEATHER_TYPE weather ) // Send new weather to player
 	new PacketWeather(this, weather, 0x40, 0x10);
 }
 
-void CClient::addLight( int iLight )
+void CClient::addLight()
 {
 	ADDTOCALLSTACK("CClient::addLight");
 	// NOTE: This could just be a flash of light.
 	// Global light level.
 	ASSERT(m_pChar);
+	BYTE iLight = UCHAR_MAX;
 
-	if (m_pChar->m_LocalLight)
+	if ( m_pChar->m_LocalLight )
 		iLight = m_pChar->m_LocalLight;
 
-	if ( iLight < LIGHT_BRIGHT )
-	{
+	if ( iLight == UCHAR_MAX )
 		iLight = m_pChar->GetLightLevel();
-	}
-
+		
 	// Scale light level for non-t2a.
 	if ( iLight < LIGHT_BRIGHT )
 		iLight = LIGHT_BRIGHT;
-	if ( iLight > LIGHT_DARK )
+	else if ( iLight > LIGHT_DARK )
 		iLight = LIGHT_DARK;
 
 	if ( iLight == m_Env.m_Light )
 		return;
-	m_Env.m_Light = static_cast<unsigned char>(iLight);
 
+	m_Env.m_Light = iLight;
 	new PacketGlobalLight(this, iLight);
 }
 
@@ -2108,7 +2107,7 @@ void CClient::addReSync()
 	if ( m_pChar == NULL )
 		return;
 	// Reloads the client with all it needs.
-	addMap(NULL);
+	addMap();
 	addChar(m_pChar);
 	addPlayerView(NULL);
 	addLight();		// Current light level where I am.
@@ -2117,16 +2116,13 @@ void CClient::addReSync()
 	addCharStatWindow(m_pChar->GetUID());
 }
 
-void CClient::addMap( const CPointMap * ptOld )
+void CClient::addMap()
 {
 	ADDTOCALLSTACK("CClient::addMap");
 	if ( m_pChar == NULL )
 		return;
 
 	CPointMap pt = m_pChar->GetTopPoint();
-	if ( ptOld && ptOld->m_map == pt.m_map )	// we still on the same map, no update needed
-		return;
-
 	new PacketMapChange(this, g_MapList.m_mapid[pt.m_map]);
 }
 

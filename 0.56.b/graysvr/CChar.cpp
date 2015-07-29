@@ -1169,56 +1169,44 @@ void CChar::SetID( CREID_TYPE id )
 	// Just set the base id and not the actual display id.
 	// NOTE: Never return NULL
 
-	CCharBase * pCharDef = CCharBase::FindCharBase( id );
+	CCharBase * pCharDef = CCharBase::FindCharBase(id);
 	if ( pCharDef == NULL )
 	{
 		if ( id != -1 && id != CREID_INVALID )
-		{
-			DEBUG_ERR(( "Create Invalid Char 0%x\n", id ));
-		}
-		pCharDef = Char_GetDef();
-		if ( pCharDef != NULL )
-			return;
-		id = static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType( RES_CHARDEF, "DEFAULTCHAR"));
+			DEBUG_ERR(("Create Invalid Char 0%x\n", id));
+
+		id = static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, "DEFAULTCHAR"));
 		if ( id < 0 )
-		{
 			id = CREID_OGRE;
-		}
+
 		pCharDef = CCharBase::FindCharBase(id);
 	}
 
-	if ( pCharDef == Char_GetDef())
+	if ( pCharDef == Char_GetDef() )
 		return;
 
-	m_BaseRef.SetRef( pCharDef );
-
+	m_BaseRef.SetRef(pCharDef);
 	if ( m_prev_id == CREID_INVALID )
-	{
 		m_prev_id = GetID();
-	}
 
-	// our new body may not be capable of riding a horse
-	if (IsMountCapable() == false)
+	if ( !IsMountCapable() )	// new body may not be capable of riding mounts
 		Horse_UnMount();
 
-	// our new body may not be capable of equipping items
-	if (pCharDef->Can(CAN_C_EQUIP) == false)
+	if ( !pCharDef->Can(CAN_C_EQUIP) )	// new body may not be capable of equipping items (except maybe on hands)
 	{
-		// we can't equip anything, except maybe in our hands
 		UnEquipAllItems(NULL, pCharDef->Can(CAN_C_USEHANDS));
 	}
-	else if (pCharDef->Can(CAN_C_USEHANDS) == false)
+	else if ( !pCharDef->Can(CAN_C_USEHANDS) )
 	{
-		// we can't use our hands, so just unequip those
-		CItem * pHand = LayerFind(LAYER_HAND1);
-		if (pHand != NULL)
+		CItem *pHand = LayerFind(LAYER_HAND1);
+		if ( pHand )
 			GetPackSafe()->ContentAdd(pHand);
 
 		pHand = LayerFind(LAYER_HAND2);
-		if (pHand != NULL)
+		if ( pHand )
 			GetPackSafe()->ContentAdd(pHand);
 	}
-	UpdateMode();
+	UpdateMode(NULL, true);
 }
 
 void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc  )
@@ -1349,7 +1337,6 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 			Skill_SetBase(skSkill4, iSkillVal4 * 10);
 	}
 
-	SetDefNum("MAXFOLLOWER", 5);	// Set max pet followers slots
 	m_fonttype = FONT_NORMAL;		// Set speech font type
 	m_sTitle.Empty();				// Set title
 
@@ -3072,8 +3059,7 @@ do_default:
 			{
 				CPointMap pt;
 				pt.Read(s.GetArgStr());
-				m_fClimbUpdated = false; // update climb height
-				MoveToChar(pt);
+				MoveTo(pt);
 			}
 			break;
 		case CHC_STONE:

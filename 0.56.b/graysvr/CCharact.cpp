@@ -2802,8 +2802,7 @@ bool CChar::RaiseCorpse( CItemCorpse * pCorpse )
 	if ( pCorpse->IsTopLevel() || pCorpse->IsItemInContainer())
 	{
 		// I should move to where my corpse is just in case.
-		m_fClimbUpdated = false; // update climb height
-		MoveToChar( pCorpse->GetTopLevelObj()->GetTopPoint());
+		MoveTo(pCorpse->GetTopLevelObj()->GetTopPoint());
 	}
 
 	// Corpse is now gone. 	// 0x80 = on face.
@@ -3544,12 +3543,12 @@ bool CChar::MoveToChar(CPointMap pt, bool bForceFix)
 	// This could be us just taking a step or being teleported.
 	// Low level: DOES NOT UPDATE DISPLAYS or container flags. (may be offline)
 	// This does not check for gravity.
-	//
 
-	if ( ! pt.IsValidPoint() )
+	if ( !pt.IsValidPoint() )
 		return false;
 
-	if ( m_pPlayer && ! IsClient())	// moving a logged out client !
+	CClient *pClient = GetClient();
+	if ( m_pPlayer && !pClient )	// moving a logged out client !
 	{
 		CSector *pSector = pt.GetSector();
 		if ( !pSector )
@@ -3558,43 +3557,35 @@ bool CChar::MoveToChar(CPointMap pt, bool bForceFix)
 		// We cannot put this char in non-disconnect state.
 		SetDisconnected();
 		pSector->m_Chars_Disconnect.InsertHead(this);
-		SetUnkPoint( pt );
+		SetUnkPoint(pt);
 		return true;
 	}
 
 	// Did we step into a new region ?
-	CRegionWorld * pAreaNew = dynamic_cast <CRegionWorld *>( pt.GetRegion( REGION_TYPE_MULTI|REGION_TYPE_AREA ));
-	if ( ! MoveToRegion( pAreaNew, true))
+	CRegionWorld * pAreaNew = dynamic_cast<CRegionWorld *>(pt.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA));
+	if ( !MoveToRegion(pAreaNew, true) )
 		return false;
 
-	CRegionBase * pRoomNew = pt.GetRegion( REGION_TYPE_ROOM);
-	if ( ! MoveToRoom( pRoomNew, true))
+	CRegionBase * pRoomNew = pt.GetRegion(REGION_TYPE_ROOM);
+	if ( !MoveToRoom(pRoomNew, true) )
 		return false;
 
-	bool fSectorChange	= pt.GetSector()->MoveCharToSector(this);
-	bool fMapChange = false;
-	CPointMap	prevPt	= GetUnkPoint();
-
-	// Move this item to it's point in the world. (ground or top level)
+	CPointMap ptOld = GetUnkPoint();
+	bool fSectorChange = pt.GetSector()->MoveCharToSector(this);
 	SetTopPoint(pt);
-	if ( IsClient() && ( prevPt.m_map != pt.m_map ))
-		fSectorChange = fMapChange = true;
 
-	if ( fSectorChange && ! g_Serv.IsLoading() )	// there was a change in environment.
+	if ( !m_fClimbUpdated || bForceFix )
+		FixClimbHeight();
+
+	if ( fSectorChange && !g_Serv.IsLoading() )
 	{
-		if ( fMapChange )
-			GetClient()->addReSync();		// a must-have for map change
-
 		if ( IsTrigUsed(TRIGGER_ENVIRONCHANGE) )
 		{
-			CScriptTriggerArgs	Args( prevPt.m_x, prevPt.m_y, prevPt.m_z << 16 | prevPt.m_map );
+			CScriptTriggerArgs	Args(ptOld.m_x, ptOld.m_y, ptOld.m_z << 16 | ptOld.m_map);
 			OnTrigger(CTRIG_EnvironChange, this, &Args);
 		}
 	}
 
-	if (!m_fClimbUpdated || bForceFix)
-		FixClimbHeight();
-		
 	return true;
 }
 

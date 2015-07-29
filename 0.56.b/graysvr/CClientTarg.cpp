@@ -613,8 +613,7 @@ bool CClient::OnTarg_Tile( CObjBase * pObj, const CPointMap & pt )
 					continue;
 				CPointMap ptMove = pChar->GetTopPoint();
 				ptMove += ptNudge;
-				pChar->m_fClimbUpdated = false; // update climb height
-				pChar->MoveToChar( ptMove );
+				pChar->MoveTo(ptMove);
 				iCount++;
 			}
 

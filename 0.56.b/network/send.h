@@ -433,7 +433,7 @@ public:
 class PacketGlobalLight : public PacketSend
 {
 public:
-	PacketGlobalLight(const CClient* target, int light);
+	PacketGlobalLight(const CClient* target, BYTE light);
 };
 
 /***************************************************************************
