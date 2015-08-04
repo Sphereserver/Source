@@ -1,19 +1,17 @@
 //****************************************************************************
-// SPHERE by : Menasoft ©1997-2007
+// SPHERE by : Menasoft ©1997-2015
 // www.sphereserver.net
 // All SPHERE script files and formats are copyright Menasoft & Partners.
 // This file may be freely edited for personal use, but may not be distributed
 // in whole or in part, in any format without express written permission from
-// Menasoft & Partners.  All donations and contributions 
+// Menasoft & Partners.  All donations and contributions
 // become the property of Menasoft & Partners.
 //****************************************************************************
-// FILE LAST UPDATED: Sunday, October 6, 2013
+// FILE LAST UPDATED: Tuesday, Jul 28, 2015
 //
 VERSION=0.56c
 
-
 [COMMENT spheretables]
-
 NOTE: This file is loaded 2nd after SPHERE.INI and the order is very important,
 so be aware that the resources section is processed top down... if a file near
 the top is dependant on a file near the bottom, you may try to slide the dependent
@@ -21,7 +19,6 @@ file up the list... but sometimes unreconcilable dependencies can happen, in whi
 case the problematic file may need to be split.
 
 As a general rule:
-
 - DEFNAMEs come first
 - TYPEDEF and EVENTS second
 - ITEMDEF and CHARDEF
@@ -32,22 +29,35 @@ As a general rule:
 [RESOURCES]
 // sphere.ini and spheretable.scp are automatic.
 // All the other scripts we want to load.
-scripts/sphere_defs.scp
-scripts/sphere_types.scp
-scripts/sphere_book.scp
+scripts/sphere_admin.scp
 scripts/sphere_backward_compatibility.scp
+scripts/sphere_book.scp
+scripts/sphere_defs.scp
+scripts/sphere_dialog.scp
 scripts/sphere_events_human.scp
 scripts/sphere_events_npcs.scp
-scripts/npcs/
-scripts/sphere_admin.scp
-scripts/sphere_dialog.scp
-scripts/items/sphere_item_resources.scp
+scripts/sphere_menu.scp
+scripts/sphere_name.scp
+scripts/sphere_serv_triggers.scp
+scripts/sphere_skills.scp
+scripts/sphere_skillmenu.scp
+scripts/sphere_newb.scp
+scripts/sphere_speech.scp
+scripts/sphere_types.scp
 scripts/items/
 scripts/items/multis/
+scripts/stones/
+scripts/stones/guilds/
+scripts/stones/towns/
+scripts/npcs/
+scripts/speech/
+scripts/sphere_spawns.scp
+scripts/sphere_spells.scp
+
+// Insert custom files here //
+
+// Maps //
 scripts/sphere_region.scp
-// -----------------------------------
-//          	Maps
-// -----------------------------------
 scripts/maps/sphere_map0.scp
 scripts/maps/sphere_map0_ml.scp
 scripts/maps/sphere_map1.scp
@@ -62,28 +72,11 @@ scripts/maps/sphere_map_points2.scp
 scripts/maps/sphere_map_points3.scp
 scripts/maps/sphere_map_points4.scp
 scripts/maps/sphere_map_points5.scp
-// -----------------------------------
-scripts/sphere_menu.scp
-scripts/sphere_name.scp
-scripts/sphere_skillmenu.scp
-scripts/sphere_spawns.scp
-scripts/sphere_speech.scp
-scripts/sphere_skills.scp
-scripts/sphere_spells.scp
-scripts/sphere_newb.scp
+
+// Templates //
 scripts/sphere_template.scp
 scripts/sphere_template_loot.scp
 scripts/sphere_template_vend.scp
-scripts/sphere_serv_triggers.scp
-scripts/speech/
-// -----------------------------------
-//          Stone system
-// -----------------------------------
-scripts/stones/
-scripts/stones/guilds/
-scripts/stones/towns/
-// -----------------------------------
-// scripts/custom/
 
 [OBSCENE]
 
@@ -145,7 +138,7 @@ Renowned
 Rude
 Disreputable
 Notorious
-Imfamous
+Infamous
 Dishonored
 
 Unsavory
@@ -273,4 +266,3 @@ PLEVEL
 SERV.MYSQLPASSWORD
 
 [EOF]
-

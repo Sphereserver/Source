@@ -2520,3 +2520,6 @@ Also added access to ID in CHARDEF to return the real anim id of the chardef in 
 [spheretables.scp]:
 	-Updated RESOURCES using an better file order to prevent some 'undefined keyword' errors on sphere startup.
 	-Fixed a small notoriety typo [Imfamous -> Infamous]
+
+04-08-2015, Coruja
+Changed: If there's multiple field spells on the same tile, now only the first field will make effect. This will prevent some weird exploits like cast multiple Fire Field spells on the same tile to take more damage, etc.

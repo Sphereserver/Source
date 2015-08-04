@@ -3270,6 +3270,7 @@ bool CChar::CheckLocation( bool fStanding )
 			}
 		}
 
+		bool bSpellHit = false;
 		switch ( pItem->GetType() )
 		{
 			case IT_WEB:
@@ -3290,7 +3291,18 @@ bool CChar::CheckLocation( bool fStanding )
 				}
 				continue;
 			case IT_SPELL:
-				OnSpellEffect( static_cast<SPELL_TYPE>(RES_GET_INDEX(pItem->m_itSpell.m_spell)), pItem->m_uidLink.CharFind(), static_cast<int>(pItem->m_itSpell.m_spelllevel), pItem );
+				// Workaround: only hit 1 spell on each loop. If we hit all spells (eg: multiple field spells)
+				// it will allow weird exploits like cast many Fire Fields on the same spot to take more damage,
+				// or Paralyze Field + Fire Field to make the target get stuck forever being damaged with no way
+				// to get out of the field, since the damage won't allow cast any spell and the Paralyze Field
+				// will immediately paralyze again with 0ms delay at each damage tick.
+				// On OSI if the player cast multiple fields on the same tile, it will remove the previous field
+				// tile that got overlapped. But Sphere doesn't use this method, so this workaround is needed.
+				if ( !bSpellHit )
+				{
+					OnSpellEffect(static_cast<SPELL_TYPE>(RES_GET_INDEX(pItem->m_itSpell.m_spell)), pItem->m_uidLink.CharFind(), static_cast<int>(pItem->m_itSpell.m_spelllevel), pItem);
+					bSpellHit = true;
+				}
 				continue;
 			case IT_TRAP:
 			case IT_TRAP_ACTIVE:
