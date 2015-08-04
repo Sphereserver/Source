@@ -2522,4 +2522,5 @@ Also added access to ID in CHARDEF to return the real anim id of the chardef in 
 	-Fixed a small notoriety typo [Imfamous -> Infamous]
 
 04-08-2015, Coruja
-Changed: If there's multiple field spells on the same tile, now only the first field will make effect. This will prevent some weird exploits like cast multiple Fire Field spells on the same tile to take more damage, etc.
+[Sphere.ini]: Added new magic flag MAGICF_OVERRIDEFIELDS to prevent cast multiple field spells on the same tile, making the new field tile remove the previous field.
+Changed: If there's multiple field spells on the same tile and MAGICF_OVERRIDEFIELDS is disabled, now only the first field will make effect (this will prevent some weird exploits like cast multiple Fire Field spells on the same tile to take more damage, etc).

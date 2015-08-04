@@ -77,8 +77,9 @@ enum MAGICFLAGS_TYPE
 	MAGICF_NOFIELDSOVERWALLS	= 0x0000080,	// prevent fields from being formed over blocking objects.
 	MAGICF_NOANIM				= 0x0000100,	// auto spellflag_no_anim on all spells
 	MAGICF_OSIFORMULAS			= 0x0000200,	// calculated damage and duration based on OSI formulas
-	MAGICF_NOCASTFROZENHANDS	= 0x0000400,		// can't cast spells if got paralyzed holding something on hands
-	MAGICF_POLYMORPHSTATS		= 0x0000800		// Polymorph spells give out stats based on base chars (old behaviour backwards).
+	MAGICF_NOCASTFROZENHANDS	= 0x0000400,	// can't cast spells if got paralyzed holding something on hands
+	MAGICF_POLYMORPHSTATS		= 0x0000800,	// Polymorph spells give out stats based on base chars (old behaviour backwards).
+	MAGICF_OVERRIDEFIELDS		= 0x0001000		// Prevent cast multiple field spells on the same tile, making the new field tile remove the previous field
 };
 
 enum COMBATFLAGS_TYPE
@@ -92,7 +93,7 @@ enum COMBATFLAGS_TYPE
 	COMBAT_OSIDAMAGEMOD			= 0x0000080,	// modify weapon damage OSI-style (taking anatomy, tactics, lumberjacking into account)
 	COMBAT_ARCHERYCANMOVE		= 0x0000100,	// allow firing bow while moving
 	COMBAT_STAYINRANGE			= 0x0000200,	// must be in range at the end of the swing or the hit will miss
-	COMBAT_STACKARMOR			= 0x0001000,		// if a region is covered by more than one armor part, all AR will count
+	COMBAT_STACKARMOR			= 0x0001000,	// if a region is covered by more than one armor part, all AR will count
 	COMBAT_NOPOISONHIT			= 0x0002000		// Uses old (55i like) poisoning style: Poisoning > 30.0 && (RAND(100.0)> Poisoning) for monsters OR weapon.morez && (RAND(100) < weapon.morez ) for poisoned weapons.
 };
 

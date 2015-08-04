@@ -1943,11 +1943,15 @@ void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, u
 				if (( pSpellDef->IsSpellType(SPELLFLAG_HARM) ) && ( !pChar->OnAttackedBy( this, 1, false ) ))	// they should know they where attacked.
 					continue;
 
-				if ( !pSpellDef->IsSpellType( SPELLFLAG_NOUNPARALYZE ) )
+				if ( !pSpellDef->IsSpellType(SPELLFLAG_NOUNPARALYZE) )
 				{
-					if (pChar->LayerFind( LAYER_FLAG_Stuck ))
-						pChar->LayerFind( LAYER_FLAG_Stuck )->Delete();
-					pChar->StatFlag_Clear( STATF_Freeze );
+					CItem * pParalyze = pChar->LayerFind(LAYER_SPELL_Paralyze);
+					if ( pParalyze )
+						pParalyze->Delete();
+
+					CItem * pStuck = pChar->LayerFind(LAYER_FLAG_Stuck);
+					if ( pStuck )
+						pStuck->Delete();
 				}
 
 				if (( idEW == ITEMID_STONE_WALL ) || ( idEW == ITEMID_FX_ENERGY_F_EW ) || ( idEW == ITEMID_FX_ENERGY_F_NS ))	// don't place stone wall over characters
@@ -1967,6 +1971,11 @@ void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, u
 				CItem * pItem = AreaItem.GetItem();
 				if ( pItem == NULL )
 					break;
+				if ( pItem->IsType(IT_SPELL) && IsSetMagicFlags(MAGICF_OVERRIDEFIELDS) )
+				{
+					pItem->Delete();
+					continue;
+				}
 				pItem->OnSpellEffect( m_atMagery.m_Spell, this, iSkillLevel, NULL );
 			}
 
