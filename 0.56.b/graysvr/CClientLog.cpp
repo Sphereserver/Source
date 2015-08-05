@@ -489,7 +489,7 @@ bool CClient::OnRxAxis( const BYTE * pData, size_t iLen )
 					}
 					else if ( ! sMsg.IsEmpty())
 					{
-						SysMessagef("\"MSG:%s\"", sMsg);
+						SysMessagef("\"MSG:%s\"", (LPCTSTR)sMsg);
 						return false;
 					}
 					m_Targ_Text.Empty();
