@@ -439,13 +439,15 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 			continue;
 
 		if ( pClient == m_pClient )
-			pClient->addPlayerView(NULL, static_cast<bool>(g_Cfg.m_fDeadCannotSeeLiving));
-		else
 		{
-			pClient->addChar(this);
-			if ( m_pNPC )
-				pClient->addBondedStatus(this, false);
+			pClient->addPlayerView(NULL, static_cast<bool>(g_Cfg.m_fDeadCannotSeeLiving));
+			pClient->addLight();
+			pClient->addWeather();
 		}
+
+		pClient->addChar(this);
+		if ( m_pNPC )
+			pClient->addBondedStatus(this, false);
 	}
 
 	bool bRaisedCorpse = false;
@@ -3663,6 +3665,14 @@ int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult,
 
 			case SPELL_Energy_Field:
 				iDuration = (15 + (pCharSrc->Skill_GetBase(SKILL_MAGERY) / 5)) / 7;
+				break;
+
+			case SPELL_Polymorph:
+				{
+					iDuration = pCharSrc->Skill_GetBase(SKILL_MAGERY) / 10;
+					if ( iDuration > 120 )
+						iDuration = 120;
+				}
 				break;
 
 			case SPELL_Vortex:

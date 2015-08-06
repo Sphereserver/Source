@@ -2782,36 +2782,25 @@ bool CChar::RaiseCorpse( CItemCorpse * pCorpse )
 	{
 		CItemContainer * pPack = GetPackSafe();
 
-		CItem* pItemNext;
+		CItem * pItemNext;
 		for ( CItem * pItem = pCorpse->GetContentHead(); pItem != NULL; pItem = pItemNext )
 		{
 			pItemNext = pItem->GetNext();
-			if ( pItem->IsType( IT_HAIR ) || pItem->IsType( IT_BEARD ) )
-				continue;	// Hair on corpse was copied!
-			// Redress if equipped.
-			if ( pItem->GetContainedLayer())
-				ItemEquip( pItem );	// Equip the item.
+			if ( pItem->IsType(IT_HAIR) || pItem->IsType(IT_BEARD) )	// hair on corpse was copied!
+				continue;
+
+			if ( pItem->GetContainedLayer() )
+				ItemEquip(pItem);
 			else
-				pPack->ContentAdd( pItem );	// Toss into pack.
+				pPack->ContentAdd(pItem);
 		}
 
-		// Any items left just dump on the ground.
-		pCorpse->ContentsDump( GetTopPoint());
+		pCorpse->ContentsDump( GetTopPoint());		// drop left items on ground
 	}
 
-	if ( pCorpse->IsTopLevel() || pCorpse->IsItemInContainer())
-	{
-		// I should move to where my corpse is just in case.
-		MoveTo(pCorpse->GetTopLevelObj()->GetTopPoint());
-	}
-
-	// Corpse is now gone. 	// 0x80 = on face.
-	UpdateDir(static_cast<DIR_TYPE>(pCorpse->m_itCorpse.m_facing_dir &~0x80));
 	UpdateAnimate((pCorpse->m_itCorpse.m_facing_dir & 0x80) ? ANIM_DIE_FORWARD : ANIM_DIE_BACK, true, true);
-
 	pCorpse->Delete();
-
-	return( true );
+	return true;
 }
 
 bool CChar::Death()
@@ -3962,13 +3951,13 @@ bool CChar::OnTick()
 		TIME_PROFILE_START;
 
 	EXC_TRY("Tick");
-	INT64 iTimeDiff = - g_World.GetTimeDiff(m_timeLastRegen);
+	INT64 iTimeDiff = -g_World.GetTimeDiff(m_timeLastRegen);
 	if ( !iTimeDiff )
 		return true;
 
 	if ( iTimeDiff >= TICK_PER_SEC )		// don't bother with < 1 sec timers on the checks below
 	{
-		// Decay equipped items (spells)
+		// Decay equipped items (memories/spells)
 		CItem *pItem = GetContentHead();
 		size_t iCount = 0;
 		for ( ; pItem != NULL; pItem = GetAt(++iCount) )
@@ -3991,15 +3980,16 @@ bool CChar::OnTick()
 	if ( IsDisconnected() )
 		return true;
 
-	if ( IsClient() )
+	CClient *pClient = GetClient();
+	if ( pClient )
 	{
 		// Players have a silly "always run" flag that gets stuck on.
-		if ( -g_World.GetTimeDiff(GetClient()->m_timeLastEventWalk) > TICK_PER_SEC )
+		if ( -g_World.GetTimeDiff(pClient->m_timeLastEventWalk) > TICK_PER_SEC )
 			StatFlag_Clear(STATF_Fly);
 
 		// Check targeting timeout, if set
-		if ( GetClient()->m_Targ_Timeout.IsTimeValid() && g_World.GetTimeDiff(GetClient()->m_Targ_Timeout) <= 0 )
-			GetClient()->addTargetCancel();
+		if ( pClient->m_Targ_Timeout.IsTimeValid() && g_World.GetTimeDiff(pClient->m_Targ_Timeout) <= 0 )
+			pClient->addTargetCancel();
 	}
 
 	if ( iTimeDiff >= TICK_PER_SEC )		// don't bother with < 1 sec timers on the checks below
@@ -4049,6 +4039,26 @@ bool CChar::OnTick()
 
 			if ( !IsStatFlag(STATF_DEAD) )
 			{
+				if ( IsStatFlag(STATF_War) )
+				{
+					if ( Fight_IsActive() )		// hit my current target (if I'm ready)
+					{
+						EXC_SET("combat hit try");
+						if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )
+							Fight_HitTry();
+					}
+					else if ( Skill_GetActive() == SKILL_NONE )		// exit warmode if there's no more targets to attack
+					{
+						EXC_SET("combat target");
+						if ( !Fight_Attack(Fight_FindBestTarget()) )
+						{
+							Skill_Start(SKILL_NONE);
+							StatFlag_Clear(STATF_War);
+							m_Fight_Targ.InitUID();
+						}
+					}
+				}
+
 				if ( (g_Cfg.m_iNpcAi & NPC_AI_FOOD) && !(g_Cfg.m_iNpcAi & NPC_AI_INTFOOD) )
 					NPC_Food();
 				if ( g_Cfg.m_iNpcAi & NPC_AI_EXTRA )
@@ -4056,31 +4066,8 @@ bool CChar::OnTick()
 			}
 		}
 	}
-	else if ( IsStatFlag(STATF_War) )
-	{
-		EXC_SET("combat hit try");
-		if ( Fight_IsActive() )		// hit my current target (if I'm ready)
-		{
-			if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )
-				Fight_HitTry();
-		}
-		else if ( Skill_GetActive() == SKILL_NONE )		// exit warmode if there's no more targets to attack
-		{
-			if ( !Fight_Attack(Fight_FindBestTarget()) )
-			{
-				Skill_Start(SKILL_NONE);
-				StatFlag_Clear(STATF_War);
-				m_Fight_Targ.InitUID();
-			}
-		}
-	}
 
 	EXC_CATCH;
-#ifdef _DEBUG
-	EXC_DEBUG_START;
-	g_Log.EventDebug("'%s' npc '%d' player '%d' client '%d' [0%lx]\n", GetName(), (int)(m_pNPC ? m_pNPC->m_Brain : 0), (int)(m_pPlayer != 0), (int)IsClient(), (DWORD)GetUID());
-	EXC_DEBUG_END;
-#endif
 	if ( IsSetSpecific )
 	{
 		TIME_PROFILE_END;

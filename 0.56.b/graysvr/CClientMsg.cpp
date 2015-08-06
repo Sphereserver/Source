@@ -2089,9 +2089,6 @@ void CClient::addPlayerView( const CPointMap & pt, bool bFull )
 
 	new PacketPlayerPosition(this);
 
-	// resync this stuff.
-	m_net->m_sequence = 0;
-
 	if ( pt == m_pChar->GetTopPoint() )
 		return;		// not a real move i guess. might just have been a change in face dir.
 
@@ -2187,8 +2184,8 @@ void CClient::addCharStatWindow( CGrayUID uid, bool fRequested ) // Opens the st
 	if ( IsTrigUsed(TRIGGER_USERSTATS) )
 	{
 		CScriptTriggerArgs	Args(0, 0, uid.ObjFind());
-		Args.m_iN3	= fRequested;
-		if ( m_pChar->OnTrigger( CTRIG_UserStats, pChar, &Args ) == TRIGRET_RET_TRUE )
+		Args.m_iN3 = fRequested;
+		if ( m_pChar->OnTrigger(CTRIG_UserStats, pChar, &Args) == TRIGRET_RET_TRUE )
 			return;
 	}
 
@@ -2196,18 +2193,8 @@ void CClient::addCharStatWindow( CGrayUID uid, bool fRequested ) // Opens the st
 	if ( pChar == m_pChar )
 		m_fUpdateStats = 0;
 
-	if ( ( pChar != m_pChar ) && ( pChar->m_pParty != NULL ) && ( pChar->m_pParty->IsInParty( m_pChar ) ) )
-	{
-		// Send mana and stamina info to party members
-		addManaUpdate( pChar->GetUID() );
-		addStamUpdate( pChar->GetUID() );
-	}
-
 	if ( (pChar == m_pChar) && (pChar->m_pPlayer != NULL) && (PacketStatLocks::CanSendTo(GetNetState())) )
-	{
 		new PacketStatLocks(this, pChar);
-	}
-
 }
 
 void CClient::addHitsUpdate( CGrayUID uid )
