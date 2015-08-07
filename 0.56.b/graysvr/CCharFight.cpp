@@ -2511,7 +2511,9 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 	{
 		iDmgMin = m_attackBase;
 		iDmgMax = iDmgMin + m_attackRange;
-		if (IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
+
+		// Horrific Beast (necro spell) changes char base damage to 5-15
+		if (g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B)
 		{
 			CItem * pPoly = LayerFind(LAYER_SPELL_Polymorph);
 			if (pPoly && pPoly->m_itSpell.m_spell == SPELL_Horrific_Beast)
@@ -2525,9 +2527,18 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 	if ( m_pPlayer )	// only players can have damage bonus
 	{
 		int iDmgBonus = minimum(static_cast<int>(GetDefNum("INCREASEDAM", true, true)), 100);		// Damage Increase is capped at 100%
+
 		// Racial Bonus (Berserk), gargoyles gains +15% Damage Increase per each 20 HP lost
 		if ((g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS) && IsGargoyle())
 			iDmgBonus += minimum(15 * ((Stat_GetMax(STAT_STR) - Stat_GetVal(STAT_STR)) / 20), 60);		// value is capped at 60%
+
+		// Horrific Beast (necro spell) add +25% Damage Increase
+		if (g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B)
+		{
+			CItem * pPoly = LayerFind(LAYER_SPELL_Polymorph);
+			if (pPoly && pPoly->m_itSpell.m_spell == SPELL_Horrific_Beast)
+				iDmgBonus += 25;
+		}
 
 		if (IsSetCombatFlags(COMBAT_OSIDAMAGEMOD))
 		{
@@ -2845,8 +2856,8 @@ void CChar::Fight_HitTry()
 		}
 		case WAR_SWING_EQUIPPING:	// keep hitting the same target
 		{
-			Skill_Cleanup();	// smooth transition = not a cancel of skill
 			Skill_Start(Skill_GetActive());
+			SetTimeout(TICK_PER_SEC);		// delay to start next swing
 			return;
 		}
 		case WAR_SWING_READY:		// probably too far away, can't take my swing right now
@@ -3406,8 +3417,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		}
 	}
 
-	INT64 iTime = Fight_GetWeaponSwingTimer();
-	iTime -= TICK_PER_SEC;	// We lost one tick while waiting in SetTimeout() from SkillStart
 	if ( !pCharTarg || ( pCharTarg == this ) )
 		return WAR_SWING_INVALID;
 
@@ -3512,6 +3521,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			iTyp = static_cast<DAMAGE_TYPE>(pDamTypeOverride->GetValNum());
 	}
 
+	INT64 iTime = Fight_GetWeaponSwingTimer();
+	iTime -= TICK_PER_SEC;	// We lost one tick while waiting in SetTimeout() from SkillStart
 
 	SKILL_TYPE skill = Skill_GetActive();
 	if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
@@ -3554,7 +3565,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		{
 			// ??? the bow is acting like a (poor) blunt weapon at this range?
 			SysMessageDefault( DEFMSG_COMBAT_ARCH_TOOCLOSE );
-			UpdateAnimate(GenerateAnimate(ANIM_ATTACK_1H_SLASH, false, false), false, false, static_cast<unsigned char>(iTime / TICK_PER_SEC));
+			UpdateAnimate(GenerateAnimate(ANIM_ATTACK_1H_SLASH, false, false), false, false, static_cast<BYTE>(iTime / TICK_PER_SEC));
 			return( WAR_SWING_EQUIPPING );
 		}
 
@@ -3626,7 +3637,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 			// just start the bow animation.
 			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
-			unsigned char animDelay = static_cast<unsigned char>(iTime) / TICK_PER_SEC;
+			BYTE animDelay = iTime / TICK_PER_SEC;
 			if ( IsTrigUsed(TRIGGER_HITTRY) )
 			{
 				CScriptTriggerArgs	Args( iTime, 0, pWeapon );
@@ -3634,18 +3645,18 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				Args.m_VarsLocal.SetNum("AnimDelay", animDelay);
 				if ( OnTrigger( CTRIG_HitTry, pCharTarg, &Args ) == TRIGRET_RET_TRUE )
 					return( WAR_SWING_READY );
-				iTime = Args.m_iN1;
+				iTime = (INT64)Args.m_iN1;
 				if ( iTime < 1 )	// Softcoded time can be lesser than default '12' but never negative, also setting it to 1 tick min.
 					iTime = 1;
 				anim = (ANIM_TYPE)Args.m_VarsLocal.GetKeyNum("Anim",false);
-				animDelay = (unsigned char)Args.m_VarsLocal.GetKeyNum("AnimDelay", true);
+				animDelay = (BYTE)Args.m_VarsLocal.GetKeyNum("AnimDelay", true);
 				if (animDelay < 0)
 					animDelay = 0;
 			}
 
 			m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
 			m_atFight.m_fMoved	= 0;
-			SetTimeout( iTime * 3 / 4 );	// try again sooner.
+			SetTimeout( iTime );		// try again sooner
 			if ( anim >= 0)
 				UpdateAnimate( anim,false, false, animDelay);
 			return( WAR_SWING_SWINGING );
@@ -3716,7 +3727,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 			// We are swinging.
 			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
-			unsigned char animDelay = static_cast<unsigned char>(iTime) / TICK_PER_SEC;
+			BYTE animDelay = iTime / TICK_PER_SEC;
 			if (IsTrigUsed(TRIGGER_HITTRY))
 			{
 				CScriptTriggerArgs	Args(iTime, 0, pWeapon);
@@ -3724,9 +3735,11 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				Args.m_VarsLocal.SetNum("AnimDelay", animDelay);
 				if (OnTrigger(CTRIG_HitTry, pCharTarg, &Args) == TRIGRET_RET_TRUE)
 					return(WAR_SWING_READY);
-				iTime = Args.m_iN1;
+				iTime = (INT64)Args.m_iN1;
+				if ( iTime < 1 )	// Softcoded time can be lesser than default '12' but never negative, also setting it to 1 tick min.
+					iTime = 1;
 				anim = (ANIM_TYPE)Args.m_VarsLocal.GetKeyNum("Anim", false);
-				animDelay = (unsigned char)Args.m_VarsLocal.GetKeyNum("AnimDelay", true);
+				animDelay = (BYTE)Args.m_VarsLocal.GetKeyNum("AnimDelay", true);
 				if (animDelay < 0)
 					animDelay = 0;
 			}
@@ -3742,7 +3755,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			}
 			else
 			{
-				SetTimeout( iTime/2 );	// try again sooner.
+				SetTimeout( iTime );	// try again sooner
 				if ( anim >= 0)
 					UpdateAnimate( anim, false, false, animDelay );
 			}
@@ -3890,17 +3903,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	// Calculate base damage.
 	int	iDmg = Fight_CalcDamage( pWeapon );
-
-	//if ( iDmg ) // use OnTakeDamage below instead.
-	//	pCharTarg->OnHarmedBy( this );
-
-	if ( IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) && !g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
-	{
-		CItem * pPoly = LayerFind(LAYER_SPELL_Polymorph);	// Horrific beast polymorph gives +25%(default) damage to melee attacks.
-		if (pPoly && pPoly->m_itSpell.m_spell == SPELL_Horrific_Beast)
-			iDmg += IMULDIV(iDmg, pPoly->m_itSpell.m_spelllevel, 100);
-	}
-
+	
 	CScriptTriggerArgs	Args( iDmg, iTyp, pWeapon );
 	Args.m_VarsLocal.SetNum("ItemDamageChance", 40);
 	if ( pAmmo )
@@ -4057,7 +4060,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				ITEMID_TYPE iBloodID = sm_Blood[Calc_GetRandVal(COUNTOF(sm_Blood))];
 				CItem * pBlood = CItem::CreateBase(iBloodID);
 				ASSERT(pBlood);
-				pBlood->SetHue(m_wBloodHue);
+				pBlood->SetHue(pCharTarg->m_wBloodHue);
 				pBlood->MoveNear(pCharTarg->GetTopPoint(), 1);
 				pBlood->SetDecayTime(5 * TICK_PER_SEC);
 			}

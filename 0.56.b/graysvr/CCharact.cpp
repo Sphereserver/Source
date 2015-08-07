@@ -4031,6 +4031,13 @@ bool CChar::OnTick()
 			case -SKTRIG_QTY:	EXC_SET("skill cleanup");	Skill_Cleanup();	break;
 		}
 
+		if ( IsStatFlag(STATF_War) )
+		{
+			EXC_SET("combat hit try");
+			if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )	// hit my current target (if I'm ready)
+				Fight_HitTry();
+		}
+
 		if ( m_pNPC )	// do some AI action
 		{
 			ProfileTask aiTask(PROFILE_NPC_AI);
@@ -4039,26 +4046,6 @@ bool CChar::OnTick()
 
 			if ( !IsStatFlag(STATF_DEAD) )
 			{
-				if ( IsStatFlag(STATF_War) )
-				{
-					if ( Fight_IsActive() )		// hit my current target (if I'm ready)
-					{
-						EXC_SET("combat hit try");
-						if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )
-							Fight_HitTry();
-					}
-					else if ( Skill_GetActive() == SKILL_NONE )		// exit warmode if there's no more targets to attack
-					{
-						EXC_SET("combat target");
-						if ( !Fight_Attack(Fight_FindBestTarget()) )
-						{
-							Skill_Start(SKILL_NONE);
-							StatFlag_Clear(STATF_War);
-							m_Fight_Targ.InitUID();
-						}
-					}
-				}
-
 				if ( (g_Cfg.m_iNpcAi & NPC_AI_FOOD) && !(g_Cfg.m_iNpcAi & NPC_AI_INTFOOD) )
 					NPC_Food();
 				if ( g_Cfg.m_iNpcAi & NPC_AI_EXTRA )

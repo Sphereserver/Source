@@ -439,11 +439,7 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 			continue;
 
 		if ( pClient == m_pClient )
-		{
 			pClient->addPlayerView(NULL, static_cast<bool>(g_Cfg.m_fDeadCannotSeeLiving));
-			pClient->addLight();
-			pClient->addWeather();
-		}
 
 		pClient->addChar(this);
 		if ( m_pNPC )

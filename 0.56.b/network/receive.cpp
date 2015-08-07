@@ -575,7 +575,9 @@ bool PacketResynchronize::onReceive(NetState* net)
 	if ( !pChar )
 		return false;
 
-	client->addPlayerView(pChar->GetTopPoint(), false);
+	new PacketCharacter(client, pChar);
+	client->addPlayerView(NULL);
+	net->m_sequence = 0;
 	return true;
 }
 
