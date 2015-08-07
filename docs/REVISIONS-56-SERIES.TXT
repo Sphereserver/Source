@@ -2530,3 +2530,9 @@ Fixed #2541: Client screen not being updated correctly on resurrect.
 Fixed: Players randomly switching to previous targets on combat.
 Fixed: Client sending unnecessary mana/stam update to party members when opening the status menu.
 Added: Missing Polymorph spell duration formula when MAGICF_OSIFORMULAS feature is enabled.
+
+07-08-2015, Coruja
+Fixed: Random 'walk resync' problems.
+Fixed: Incorrect full update packet sent to clients when it' ID (body) got changed.
+Fixed: Combat swings between attacks not working correctly.
+Fixed #2539: Combat damages always creating blood using default color (red) instead follow BLOODCOLOR property.
