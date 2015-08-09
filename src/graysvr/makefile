@@ -1,8 +1,9 @@
 VER	= 0.56b
 PLAT	= Linux
+SHELL   = /bin/bash
 
 # Generic makefile
-MARCH = -march=i686
+MARCH = -march=i686 -m32
 OPTDEFAULT = -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
 OPT 	= -O0 -fno-expensive-optimizations $(OPTDEFAULT)
 #OPT	= -O2 $(OPTDEFAULT)
@@ -42,8 +43,7 @@ SPECIAL = $(EX) $(STRICT) $(DEBUG)
 PROF	= -pg
 PIPE	= -pipe
 
-SVNREV     = ../common/subversion/svnwcrev
-SVNREVARG  = ../ ../common/subversion/SvnRevision.tmpl ../common/subversion/SvnRevision.h
+GITREVISIONCMD = "$(shell git log -1 HEAD --format=%H\ \(%aD\))"
 
 SRC	:= 	CAccount.cpp \
 		CBase.cpp \
@@ -142,6 +142,8 @@ SRC	:= 	CAccount.cpp \
 		../common/CVarFloat.cpp \
 		../common/ListDefContMap.cpp \
 		../common/graycom.cpp \
+                ../common/sqlite/SQLite.cpp \
+                ../common/sqlite/sqlite3.c \
 		../sphere/mutex.cpp \
 		../sphere/strings.cpp \
 		../sphere/threads.cpp \
@@ -183,8 +185,8 @@ tags:	$(SRC)
 
 #cmn:	$(COMMONSRC:.cpp=.o)
 
-svn:
-	@$(SVNREV) $(SVNREVARG)
+git:
+	@echo '#define __GITREVISION__ ${GITREVISIONCMD}' > ../common/version/GitRevision.h
 
 gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
 
@@ -194,8 +196,8 @@ gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
 flags:  
 	@echo "Compiler Flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)"
 
-$(EXE): svn flags gray
-	@$(CC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o ../network/*.o
+$(EXE): git flags gray
+	@$(CC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o  ../common/sqlite/*.o ../sphere/*.o ../network/*.o $(LIBS)
 
 version.h:	VERSION
 	echo "#define VERSION 'head -l VERSION'" > version.h

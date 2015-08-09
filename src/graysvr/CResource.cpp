@@ -8,9 +8,6 @@
 #include "../common/grayver.h"
 #include "../common/CFileList.h"
 #include "../network/network.h"
-#ifdef _SUBVERSION
-	#include "../common/subversion/SvnRevision.h"
-#endif
 
 CResource::CResource()
 {

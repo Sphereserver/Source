@@ -9,9 +9,6 @@
 #include "../common/CAssoc.h"
 #include "../common/CFileList.h"
 #include "../network/network.h"
-#ifdef _SUBVERSION
-	#include "../common/subversion/SvnRevision.h"
-#endif
 
 #ifdef _WIN32
 	#include "ntservice.h"	// g_Service

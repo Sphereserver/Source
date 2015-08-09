@@ -1,8 +1,8 @@
 #ifdef _SUBVERSION
- #include "./subversion/SvnRevision.h"
+ #include "./version/GitRevision.h"
 #endif
-#ifdef __SVNREVISION__
- #define GRAY_VER_BUILD			__SVNREVISION__
+#ifdef __GITREVISION__
+ #define GRAY_VER_BUILD			__GITREVISION__
 #else
  #define GRAY_VER_BUILD			0
 #endif
