@@ -6,10 +6,8 @@ SHELL   = /bin/bash
 MARCH = -march=i686 -m32
 OPTDEFAULT = -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
 OPT 	= -O0 -fno-expensive-optimizations $(OPTDEFAULT)
-#OPT	= -O2 $(OPTDEFAULT)
-#WARN	= -Wall -Wextra -Wno-unknown-pragmas -Wno-invalid-offsetof
-WARN	= -w
-#DEBUG	= -ggdb2
+WARN	= -Wall -Wextra -Wno-unknown-pragmas -Wno-invalid-offsetof
+#WARN	= -w
 DEBUG	= -s
 
 # DB includes + libs
@@ -22,7 +20,7 @@ INCLUDE	= -I../common $(DBINCL)
 LIBS	= -dynamic -L/usr/lib -lpthread $(DBLIBS) -lrt -ldl
 DEFNIX  = -D_LINUX
 
-#NIGHTLYDEFS = -D_NIGHTLYBUILD -DTHREAD_TRACK_CALLSTACK
+NIGHTLYDEFS = -D_NIGHTLYBUILD -DTHREAD_TRACK_CALLSTACK
 EXTRADEFS = -D_MTNETWORK
 #DEBUGDEFS = -D_DEBUG -D_PACKETDUMP -D_TESTEXCEPTION -DDEBUG_CRYPT_MSGS
 SVNDEFS = -D_SUBVERSION
@@ -35,7 +33,6 @@ CC	= g++
 CCO	= gcc
 
 NO	= -fno-rtti -fno-exceptions
-#EX	= -fexceptions -fasynchronous-exceptions -fsjlj-exceptions
 EX	= -fexceptions -fnon-call-exceptions
 STRICT  = # -mstrict-align
 SPECIAL = $(EX) $(STRICT) $(DEBUG)
@@ -166,10 +163,6 @@ all:	$(EXE)
 clean:	tidy
 	rm -f *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o ../network/*.o ../tests/*.o $(EXE) $(REXE)
 
-.depend:
-	@$(SCCO) -MM $(INCLUDE) $(SRC) $(COMMONSRC) > .depend
-	perl -pi -e 's/([^.]+)\.o/o\/\1.o/g' .depend
-
 tidy:
 	rm -f *~ *orig *bak *rej ../common/*~ ../common/*orig ../common*bak \
 				 ../common/mtrand/*~ ../common/mtrand/*orig ../common/mtrand/*bak \
@@ -183,25 +176,16 @@ tidy:
 tags:	$(SRC)
 	ctags $(SRC)
 
-#cmn:	$(COMMONSRC:.cpp=.o)
-
 git:
 	@echo '#define __GITREVISION__ ${GITREVISIONCMD}' > ../common/version/GitRevision.h
 
 gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
-
-#commonlib:	$(COMMONSRC:.cpp=.o)
-#	ar r $@ $?
 
 flags:  
 	@echo "Compiler Flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)"
 
 $(EXE): git flags gray
 	@$(CC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o  ../common/sqlite/*.o ../sphere/*.o ../network/*.o $(LIBS)
-
-version.h:	VERSION
-	echo "#define VERSION 'head -l VERSION'" > version.h
-	echo "#define COMPILED_BY \"$(COMPILED_BY)\"" >> version.h
 
 %.o:	%.cpp
 	@echo " Compiling $<"
@@ -210,18 +194,3 @@ version.h:	VERSION
 %.co:	%.c
 	@echo " Compiling $<"
 	@$(CCO) -c $(O_FLAGS) $(C_FLAGS) $< -o $(@:.co=.o)
-
-dist:
-	@cp $(EXE) $(REXE)
-	@cp ../../docs/REVISIONS-56-SERIES.TXT Revisions$(VER).txt
-	@cp MANUAL.TXT Manual$(VER).txt
-	@cp ../../scripts/sphere_msgs.scp sphere_msgs.scp
-	@cp ../../scripts/sphere_types.scp sphere_types.scp
-	@cp ../../scripts/sphere_serv_triggers.scp sphere_serv_triggers.scp
-	@tar cvfz SphereServer$(VER)-$(PLAT).tgz $(REXE) Revisions$(VER).txt  Manual$(VER).txt  ../Sphere.ini ../sphere.dic ../sphereCrypt.ini sphere_msgs.scp sphere_types.scp sphere_serv_triggers.scp
-	@echo DONE -------
-	@ls -la SphereServer$(VER)-$(PLAT).tgz
-	@tar tvfz SphereServer$(VER)-$(PLAT).tgz
-	@echo -----------
-#	@scp SphereServer$(VER)-$(PLAT).tgz REVISIONS.TXT MANUAL.TXT uo@www.dagonar.com:~/public_html/sphere/files/
-	@rm Revisions$(VER).txt Manual$(VER).txt $(REXE) sphere_msgs.scp sphere_types.scp sphere_serv_triggers.scp
