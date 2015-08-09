@@ -1,5 +1,3 @@
-VER	= 0.56b
-PLAT	= Linux
 SHELL   = /bin/bash
 
 # Generic makefile
@@ -20,14 +18,15 @@ INCLUDE	= -I../common $(DBINCL)
 LIBS	= -dynamic -L/usr/lib -lpthread $(DBLIBS) -lrt -ldl
 DEFNIX  = -D_LINUX
 
+# Nightly and Debug flags are activated by dedicated rules later on
 NIGHTLYDEFS = -D_NIGHTLYBUILD -DTHREAD_TRACK_CALLSTACK
-EXTRADEFS = -D_MTNETWORK
-#DEBUGDEFS = -D_DEBUG -D_PACKETDUMP -D_TESTEXCEPTION -DDEBUG_CRYPT_MSGS
-SVNDEFS = -D_SUBVERSION
-DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFNIX) $(NIGHTLYDEFS) $(EXTRADEFS) $(DEBUGDEFS) $(SVNDEFS) $(DBDEFS)
+DEBUGDEFS = -D_DEBUG -D_PACKETDUMP -D_TESTEXCEPTION -DDEBUG_CRYPT_MSGS
 
-EXE	= graysvr
-REXE	= spheresvr
+EXTRADEFS = -D_MTNETWORK
+SVNDEFS = -D_SUBVERSION
+DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFNIX) $(EXTRADEFS) $(SVNDEFS) $(DBDEFS)
+
+EXE	= spheresvr
 
 CC	= g++
 CCO	= gcc
@@ -156,12 +155,12 @@ O_FLAGS	= $(WARN) $(PIPE) $(SPECIAL)
 C_FLAGS	= $(OPT) $(INCLUDE) $(DEFINES)
 
 
-.PHONY:	all clean tidy
+.PHONY:	all clean tidy debug-nightly
 
 all:	$(EXE)
 
 clean:	tidy
-	rm -f *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o ../network/*.o ../tests/*.o $(EXE) $(REXE)
+	rm -f *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o ../network/*.o ../tests/*.o $(EXE)
 
 tidy:
 	rm -f *~ *orig *bak *rej ../common/*~ ../common/*orig ../common*bak \
@@ -183,6 +182,10 @@ gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
 
 flags:  
 	@echo "Compiler Flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)"
+
+debug: ; $(eval DEFINES := $(DEFINES) $(DEBUGDEFS) $(NIGHTLYDEFS))
+
+nightly: debug $(EXE)	
 
 $(EXE): git flags gray
 	@$(CC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o  ../common/sqlite/*.o ../sphere/*.o ../network/*.o $(LIBS)
