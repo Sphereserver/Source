@@ -1,9 +1,0 @@
-//
-//	Class:	CFile
-//	Set:	functions
-//	Prefix:	FOV_
-//
-
-ADD(CLOSE,		"CLOSE")
-ADD(DELETEFILE,	"DELETEFILE")
-ADD(FLUSH,		"FLUSH")
