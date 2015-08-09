@@ -1662,21 +1662,6 @@
     <None Include="makefile">
       <Filter>graysvr</Filter>
     </None>
-    <None Include="makefile.bsd">
-      <Filter>graysvr</Filter>
-    </None>
-    <None Include="makefile.lin-static">
-      <Filter>graysvr</Filter>
-    </None>
-    <None Include="makefile.nightly.debug">
-      <Filter>graysvr</Filter>
-    </None>
-    <None Include="makefile.nightly.release">
-      <Filter>graysvr</Filter>
-    </None>
-    <None Include="makefile.prerelease">
-      <Filter>graysvr</Filter>
-    </None>
     <None Include="..\..\scripts\add-on\Can_Use_Player_Event.rar">
       <Filter>scripts\add-on</Filter>
     </None>

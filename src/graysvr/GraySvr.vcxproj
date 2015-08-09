@@ -65,8 +65,11 @@
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
     </ProjectReference>
     <PreBuildEvent>
-      <Command>SubWCRev.exe $(ProjectDir) $(ProjectDir)..\common\subversion\SvnRevision.tmpl $(ProjectDir)..\common\subversion\SvnRevision.h</Command>
-      <Message>Generate the svn_version.h file with the necessary repo identify info for versioning</Message>
+      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%H\"" &gt; ../common/version/GitRevision.h
+for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
+set /a gitver = %gitver%+410
+echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</Command>
+      <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Local|Win32'">
@@ -87,8 +90,11 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <PreBuildEvent>
-      <Command>SubWCRev.exe $(ProjectDir) $(ProjectDir)..\common\subversion\SvnRevision.tmpl $(ProjectDir)..\common\subversion\SvnRevision.h</Command>
-      <Message>Generate the svn_version.h file with the necessary repo identify info for versioning</Message>
+      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%H\"" &gt; ../common/version/GitRevision.h
+for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
+set /a gitver = %gitver%+410
+echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</Command>
+      <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Nightly|Win32'">
@@ -109,8 +115,11 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <PreBuildEvent>
-      <Command>SubWCRev.exe $(ProjectDir) $(ProjectDir)..\common\subversion\SvnRevision.tmpl $(ProjectDir)..\common\subversion\SvnRevision.h</Command>
-      <Message>Generate the svn_version.h file with the necessary repo identify info for versioning</Message>
+      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%H\"" &gt; ../common/version/GitRevision.h
+for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
+set /a gitver = %gitver%+410
+echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</Command>
+      <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -131,8 +140,11 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <PreBuildEvent>
-      <Command>SubWCRev.exe $(ProjectDir) $(ProjectDir)..\common\subversion\SvnRevision.tmpl $(ProjectDir)..\common\subversion\SvnRevision.h</Command>
-      <Message>Generate the svn_version.h file with the necessary repo identify info for versioning</Message>
+      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%H\"" &gt; ../common/version/GitRevision.h
+for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
+set /a gitver = %gitver%+410
+echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</Command>
+      <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -731,11 +743,6 @@
     <None Include="..\tables\triggers.tbl" />
     <None Include="makefile" />
     <None Include="makefile.alt" />
-    <None Include="makefile.bsd" />
-    <None Include="makefile.lin-static" />
-    <None Include="makefile.nightly.debug" />
-    <None Include="makefile.nightly.release" />
-    <None Include="makefile.prerelease" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\docs\REVISIONS-51-54-SERIES.TXT" />

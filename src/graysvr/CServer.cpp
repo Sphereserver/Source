@@ -9,6 +9,9 @@
 #include "../common/CAssoc.h"
 #include "../common/CFileList.h"
 #include "../network/network.h"
+#ifdef _SUBVERSION
+ #include "../common/version/GitRevision.h"
+#endif
 
 #ifdef _WIN32
 	#include "ntservice.h"	// g_Service
@@ -1950,8 +1953,8 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 	EXC_SET("log write");
 	g_Log.WriteString("\n");
 
-#ifdef __SVNREVISION__
-	g_Log.Event(LOGM_INIT, "%s, compiled at %s (%s) [build %d]\n", g_szServerDescription, __DATE__, __TIME__, __SVNREVISION__);
+#ifdef __GITREVISION__
+	g_Log.Event(LOGM_INIT, "%s, compiled at %s (%s) [build %d] - %s\n", g_szServerDescription, __DATE__, __TIME__, __GITREVISION__,__GITHASH__);
 #else
 	g_Log.Event(LOGM_INIT, "%s, compiled at %s (%s)\n", g_szServerDescription, __DATE__, __TIME__);
 #endif
