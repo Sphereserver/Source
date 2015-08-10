@@ -2793,15 +2793,18 @@ public:
 			WORD m_Stroke_Count;		// all requiring multi strokes.
 		} m_atTaming;
 
+		// SKILL_ARCHERY
 		// SKILL_SWORDSMANSHIP
-		// SKILL_MACEFIGHTING,
-		// SKILL_FENCING,
+		// SKILL_MACEFIGHTING
+		// SKILL_FENCING
 		// SKILL_WRESTLING
+		// SKILL_THROWING
 		struct
 		{
 			WAR_SWING_TYPE	m_War_Swing_State;	// We are in the war mode swing.
-			//CGrayUID		m_Act_Targ;			// = who are we currently attacking?
+			//CGrayUID		m_Act_Targ;			// Who are we currently attacking?
 			WORD			m_fMoved;
+			int				m_NextSwingDelay;	// Waiting time between swings
 		} m_atFight;
 
 		// SKILL_TRACKING

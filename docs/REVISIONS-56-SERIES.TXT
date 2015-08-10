@@ -2536,3 +2536,9 @@ Fixed: Random 'walk resync' problems.
 Fixed: Incorrect full update packet sent to clients when it' ID (body) got changed.
 Fixed: Combat swings between attacks not working correctly.
 Fixed #2539: Combat damages always creating blood using default color (red) instead follow BLOODCOLOR property.
+
+09-08-2015, Coruja
+Changed: Major improvements and optimizations on internal Hit / HitTry combat calls.
+Changed: Combat swing behavior got slightly changed to be more accurate.
+	-Now instead the animation speed match the swing delay duration and only do the damage at the end, the animation/damage will always occour on first 7ms and then it will keep waiting the remaining time until next swing.
+	-This makes all anims/sounds perfectly match the damage timer no matter the weapon type or swing delay timer.
