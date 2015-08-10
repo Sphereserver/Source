@@ -1559,7 +1559,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			break;
 		case RC_BUILD:
 			#ifdef __GITREVISION__
-			 sVal.Format( "%d - %s",__GITREVISION__,__GITHASH__ );
+			 sVal.FormatVal(__GITREVISION__);
 			#else
 			 sVal = __DATE__;
 			#endif
