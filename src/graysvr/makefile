@@ -39,7 +39,8 @@ SPECIAL = $(EX) $(STRICT) $(DEBUG)
 PROF	= -pg
 PIPE	= -pipe
 
-GITREVISIONCMD = "$(shell git log -1 HEAD --format=%H\ \(%aD\))"
+GITHASHCMD = "$(shell git log -1 HEAD --format=%H)"
+GITREVISIONCMD = $(shell echo $(shell git rev-list --count HEAD) + 410 | bc)
 
 SRC	:= 	CAccount.cpp \
 		CBase.cpp \
@@ -138,8 +139,8 @@ SRC	:= 	CAccount.cpp \
 		../common/CVarFloat.cpp \
 		../common/ListDefContMap.cpp \
 		../common/graycom.cpp \
-                ../common/sqlite/SQLite.cpp \
-                ../common/sqlite/sqlite3.c \
+        ../common/sqlite/SQLite.cpp \
+        ../common/sqlite/sqlite3.c \
 		../sphere/mutex.cpp \
 		../sphere/strings.cpp \
 		../sphere/threads.cpp \
@@ -176,7 +177,8 @@ tags:	$(SRC)
 	ctags $(SRC)
 
 git:
-	@echo '#define __GITREVISION__ ${GITREVISIONCMD}' > ../common/version/GitRevision.h
+	@echo '#define __GITHASH__ ${GITHASHCMD}' > ../common/version/GitRevision.h
+	@echo '#define __GITREVISION__ ${GITREVISIONCMD}' >> ../common/version/GitRevision.h
 
 gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
 

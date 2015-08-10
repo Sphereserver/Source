@@ -1,5 +1,7 @@
+SHELL   = /bin/bash
+
 # Generic makefile
-MARCH = -march=i686
+MARCH = -march=i686 -m32
 OPTDEFAULT = -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
 COPTDEFAULT = -fno-omit-frame-pointer -ffast-math $(MARCH)
 OPT 	= -O0 -fno-expensive-optimizations $(OPTDEFAULT)
@@ -24,19 +26,19 @@ DEFNIX  = -D_LINUX
 
 ifdef NIGHTLY
 NIGHTLYDEFS = -D_NIGHTLYBUILD
+# NIGHTLYDEFS = -D_NIGHTLYBUILD -DTHREAD_TRACK_CALLSTACK
 endif
-
-EXTRADEFS = -D_MTNETWORK
 
 ifdef DBG
 DEBUGDEFS = -D_DEBUG -DTHREAD_TRACK_CALLSTACK
+# DEBUGDEFS = -D_DEBUG -D_PACKETDUMP -D_TESTEXCEPTION -DDEBUG_CRYPT_MSGS
 endif
 
+EXTRADEFS = -D_MTNETWORK
 SVNDEFS = -D_SUBVERSION
 DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFNIX) $(NIGHTLYDEFS) $(EXTRADEFS) $(DEBUGDEFS) $(SVNDEFS)
 
-EXE	= graysvr
-REXE	= spheresvr
+EXE	= spheresvr
 
 CC	= g++
 CCO	= gcc
@@ -45,11 +47,11 @@ NO	= -fno-rtti -fno-exceptions
 EX	= -fexceptions -fnon-call-exceptions
 SPECIAL = $(EX) $(DEBUG)
 
+GITHASHCMD = "$(shell git log -1 HEAD --format=%H)"
+GITREVISIONCMD = $(shell echo $(shell git rev-list --count HEAD) + 410 | bc)
+
 PROF	= -pg
 PIPE	= -pipe
-
-SVNREV     = ../common/subversion/svnwcrev
-SVNREVARG  = ../../ ../common/subversion/SvnRevision.tmpl ../common/subversion/SvnRevision.h
 
 SRC	:= 	CAccount.cpp \
 		CBase.cpp \
@@ -172,11 +174,7 @@ CC_FLAGS	= $(COPT) $(INCLUDE) $(DEFINES)
 all:	$(EXE)
 
 clean:	tidy
-	rm -f *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../common/sqlite/*.o ../sphere/*.o ../network/*.o ../tests/*.o $(EXE) $(REXE)
-
-.depend:
-	@$(SCCO) -MM $(INCLUDE) $(SRC) $(COMMONSRC) > .depend
-	perl -pi -e 's/([^.]+)\.o/o\/\1.o/g' .depend
+	rm -f *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../common/sqlite/*.o ../sphere/*.o ../network/*.o ../tests/*.o $(EXE)
 
 tidy:
 	rm -f *~ *orig *bak *rej ../common/*~ ../common/*orig ../common*bak \
@@ -192,8 +190,9 @@ tidy:
 tags:	$(SRC)
 	ctags $(SRC)
 
-svn:
-	@$(SVNREV) $(SVNREVARG)
+git:
+	@echo '#define __GITHASH__ ${GITHASHCMD}' > ../common/version/GitRevision.h
+	@echo '#define __GITREVISION__ ${GITREVISIONCMD}' >> ../common/version/GitRevision.h
 
 gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
 
@@ -201,7 +200,7 @@ gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
 flags:  
 	@echo "Compiler Flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)"
 
-$(EXE): svn flags gray
+$(EXE): git flags gray
 	@$(CC) $(O_FLAGS) $(C_FLAGS) -o $(EXE) *.o ../common/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../common/sqlite/*.o ../sphere/*.o ../network/*.o $(LIBS)
 
 %.o:	%.cpp
@@ -212,13 +211,11 @@ $(EXE): svn flags gray
 	@echo " Compiling $<"
 	@$(CCO) -c $(CO_FLAGS) $(CC_FLAGS) $< -o $(@:.co=.o)
 
-dist:	
-	@cp $(EXE) $(REXE)
-ifdef DBG
+distDBG:	
 	@rm -f ./Build/SphereSvr[Linux][DEBUG].tgz
-	@tar cvzf ./Build/SphereSvr[Linux][DEBUG].tgz $(REXE)
-else
+	@tar cvzf ./Build/SphereSvr[Linux][DEBUG].tgz $(EXE)
+
+dist:
 	@rm -f ./Build/SphereSvr[Linux].tgz
-	@tar cvzf ./Build/SphereSvr[Linux].tgz $(REXE)
-endif
-	@rm -f $(REXE)
+	@tar cvzf ./Build/SphereSvr[Linux].tgz $(EXE)
+
