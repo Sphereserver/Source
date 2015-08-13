@@ -2324,6 +2324,7 @@ public:
 		return( m_Brain == NPCBRAIN_HEALER || m_Brain == NPCBRAIN_STABLE || m_Brain == NPCBRAIN_VENDOR );
 	}
 
+	int GetNpcAiFlags( const CChar *pChar ) const;
 public:
 	CCharNPC( CChar * pChar, NPCBRAIN_TYPE NPCBrain );
 	~CCharNPC();
@@ -3812,6 +3813,12 @@ public:
 	bool NPC_IsVendor() const
 	{
 		return (m_pNPC && m_pNPC->IsVendor());
+	}
+	int NPC_GetAiFlags()
+	{
+		if(m_pNPC == NULL)
+			return 0;
+		return (m_pNPC->GetNpcAiFlags(this));
 	}
 	bool NPC_Vendor_Restock(bool bForce = false, bool bFillStock = false);
 	int NPC_GetVendorMarkup( const CChar * pChar ) const;

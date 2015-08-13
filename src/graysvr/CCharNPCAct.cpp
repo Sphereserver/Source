@@ -812,7 +812,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 
 	EXC_SET("NPC_AI_PATH");
 	//	Use pathfinding
-	if ( g_Cfg.m_iNpcAi & NPC_AI_PATH )
+	if ( NPC_GetAiFlags() & NPC_AI_PATH )
 	{
 		NPC_Pathfinding();
 
@@ -889,7 +889,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 			bool	bClearedWay = false;
 			// Some object in my way that i could move ? Try to move it.
 			if ( !pCharDef->Can(CAN_C_USEHANDS) || IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Freeze|STATF_Stone) ) ;		// i cannot use hands or i am frozen, so cannot move objects
-			else if (( g_Cfg.m_iNpcAi&NPC_AI_MOVEOBSTACLES ) && ( iInt > iRand ))
+			else if (( NPC_GetAiFlags()&NPC_AI_MOVEOBSTACLES ) && ( iInt > iRand ))
 			{
 				int			i;
 				CPointMap	point;
@@ -1294,7 +1294,7 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 	}
 
 	// Loot nearby corpses
-	if ( pItem->IsType(IT_CORPSE) && (g_Cfg.m_iNpcAi & NPC_AI_LOOTING) && (Memory_FindObj(pItem) == NULL) )
+	if ( pItem->IsType(IT_CORPSE) && (NPC_GetAiFlags() & NPC_AI_LOOTING) && (Memory_FindObj(pItem) == NULL) )
 	{
 		m_Act_Targ = pItem->GetUID();
 		NPC_Act_Looting();
@@ -1447,7 +1447,7 @@ bool CChar::NPC_LookAround( bool fForceCheckItems )
 	// RETURN:
 	//   true = found something better to do.
 
-	if ( g_Cfg.m_iNpcAi&NPC_AI_INTFOOD )
+	if ( NPC_GetAiFlags()&NPC_AI_INTFOOD )
 	{
 		bool fFood = NPC_Act_Food();
 		//DEBUG_ERR(("2 fFood %d\n",fFood));
@@ -2027,7 +2027,7 @@ bool CChar::NPC_FightCast(CObjBase * &pTarg, CObjBase * pSrc, SPELL_TYPE &spell,
 				pFriend[1] = pFriend[2] = pFriend[3] = NULL;
 				iFriendIndex = 1;
 
-				if (g_Cfg.m_iNpcAi&NPC_AI_COMBAT )
+				if (NPC_GetAiFlags()&NPC_AI_COMBAT )
 				{
 					//	search for the neariest friend in combat
 					CWorldSearch AreaChars(GetTopPoint(), UO_MAP_VIEW_SIGHT);
@@ -2175,7 +2175,7 @@ bool CChar::NPC_FightCast(CObjBase * &pTarg, CObjBase * pSrc, SPELL_TYPE &spell,
 	}
 	else
 	{
-		/*if (g_Cfg.m_iNpcAi&NPC_AI_STRICTCAST)
+		/*if (NPC_GetAiFlags()&NPC_AI_STRICTCAST)
 			return false;*/
 		//if ( /*!pVar &&*/ !pSpellDef->IsSpellType(SPELLFLAG_HARM))
 		//	return false;
@@ -2520,7 +2520,7 @@ void CChar::NPC_Act_Looting()
 	//
 	// m_Act_Targ = UID of the item/corpse that we trying to loot
 
-	if ( !(g_Cfg.m_iNpcAi & NPC_AI_LOOTING) )
+	if ( !(NPC_GetAiFlags() & NPC_AI_LOOTING) )
 		return;
 	if ( !m_pNPC || m_pNPC->m_Brain != NPCBRAIN_MONSTER || !Can(CAN_C_USEHANDS) || IsStatFlag(STATF_Conjured|STATF_Pet) || (m_TagDefs.GetKeyNum("DEATHFLAGS", true) & DEATH_NOCORPSE) )
 		return;
@@ -2596,7 +2596,7 @@ void CChar::NPC_Act_Runto(int iDist)
 		case 2:
 			// Give it up...
 			// Go directly there...
-			if ( g_Cfg.m_iNpcAi&NPC_AI_PERSISTENTPATH )
+			if ( NPC_GetAiFlags()&NPC_AI_PERSISTENTPATH )
 			{
 				if (!GetTopPoint().IsValidPoint())
 					iDist --;
@@ -2639,7 +2639,7 @@ void CChar::NPC_Act_Goto(int iDist)
 		case 2:
 			// Give it up...
 			// Go directly there...
-			if ( g_Cfg.m_iNpcAi&NPC_AI_PERSISTENTPATH )
+			if ( NPC_GetAiFlags()&NPC_AI_PERSISTENTPATH )
 			{
 				if (!GetTopPoint().IsValidPoint())
 					iDist --;
@@ -2870,7 +2870,7 @@ void CChar::NPC_Act_Idle()
 	// Idle NPC's should try to take some action.
 	m_pNPC->m_Act_Motivation = 0;	// we have no motivation to do anything.
 
-	if ( g_Cfg.m_iNpcAi&NPC_AI_INTFOOD )
+	if ( NPC_GetAiFlags()&NPC_AI_INTFOOD )
 	{
 		bool fFood = NPC_Act_Food();
 		//DEBUG_ERR(("fFood %d\n",fFood));
@@ -3279,7 +3279,7 @@ void CChar::NPC_OnTickAction()
 				break;
 			case NPCACT_FOOD:
 				EXC_SET("Food Skill");
-				if ( g_Cfg.m_iNpcAi&NPC_AI_INTFOOD )
+				if ( NPC_GetAiFlags() & NPC_AI_INTFOOD )
 				{
 					if ( ! NPC_Act_Food() )
 						Skill_Start(SKILL_NONE);
@@ -3331,7 +3331,7 @@ void CChar::NPC_Pathfinding()
 		return;
 
 	// If NPC_AI_ALWAYSINT is set, just make it as smart as possible.
-	int			iInt = ( g_Cfg.m_iNpcAi & NPC_AI_ALWAYSINT ) ? 300 : Stat_GetAdjusted(STAT_INT);
+	int			iInt = ( NPC_GetAiFlags() & NPC_AI_ALWAYSINT ) ? 300 : Stat_GetAdjusted(STAT_INT);
 	CPointMap	pTarg = m_Act_p;
 	int			dist = local.GetDist(pTarg);
 

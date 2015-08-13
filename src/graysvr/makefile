@@ -4,7 +4,7 @@ SHELL   = /bin/bash
 MARCH = -march=i686 -m32
 OPTDEFAULT = -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
 OPT 	= -O0 -fno-expensive-optimizations $(OPTDEFAULT)
-WARN	= -Wall -Wextra -Wno-unknown-pragmas -Wno-invalid-offsetof
+WARN	= -Wall -Wextra -Wno-unknown-pragmas -Wno-invalid-offsetof -Wno-switch
 #WARN	= -w
 DEBUG	= -s
 
@@ -40,7 +40,7 @@ PROF	= -pg
 PIPE	= -pipe
 
 GITHASHCMD = "$(shell git log -1 HEAD --format=%H)"
-GITREVISIONCMD = $(shell echo $(shell git rev-list --count HEAD) + 410 | bc)
+GITREVISIONCMD = $(shell expr $(shell git rev-list --count HEAD) + 410)
 
 SRC	:= 	CAccount.cpp \
 		CBase.cpp \
@@ -179,6 +179,7 @@ tags:	$(SRC)
 git:
 	@echo '#define __GITHASH__ ${GITHASHCMD}' > ../common/version/GitRevision.h
 	@echo '#define __GITREVISION__ ${GITREVISIONCMD}' >> ../common/version/GitRevision.h
+	@echo 'Git Hash is ${GITHASHCMD}. Revision No. is ${GITREVISIONCMD}'
 
 gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
 

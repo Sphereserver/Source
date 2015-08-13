@@ -4046,9 +4046,10 @@ bool CChar::OnTick()
 
 			if ( !IsStatFlag(STATF_DEAD) )
 			{
-				if ( (g_Cfg.m_iNpcAi & NPC_AI_FOOD) && !(g_Cfg.m_iNpcAi & NPC_AI_INTFOOD) )
+				int iAiFlags = NPC_GetAiFlags();
+				if ( (iAiFlags & NPC_AI_FOOD) && !(iAiFlags & NPC_AI_INTFOOD) )
 					NPC_Food();
-				if ( g_Cfg.m_iNpcAi & NPC_AI_EXTRA )
+				if ( iAiFlags & NPC_AI_EXTRA )
 					NPC_ExtraAI();
 			}
 		}

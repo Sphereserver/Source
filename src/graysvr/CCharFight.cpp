@@ -2664,7 +2664,7 @@ CChar * CChar::Fight_FindBestTarget()
 	// RETURN:
 	//  number of targets.
 	if ( Attacker() )
-		return Attacker_FindBestTarget((g_Cfg.m_iNpcAi&NPC_AI_THREAT && !m_pPlayer));
+		return Attacker_FindBestTarget((NPC_GetAiFlags()&NPC_AI_THREAT && !m_pPlayer));
 	/*else
 	{
 		SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();

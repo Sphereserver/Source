@@ -2542,3 +2542,7 @@ Changed: Major improvements and optimizations on internal Hit / HitTry combat ca
 Changed: Combat swing behavior got slightly changed to be more accurate.
 	-Now instead the animation speed match the swing delay duration and only do the damage at the end, the animation/damage will always occour on first 7ms and then it will keep waiting the remaining time until next swing.
 	-This makes all anims/sounds perfectly match the damage timer no matter the weapon type or swing delay timer.
+
+13-08-2015, matex
+Added: OVERRIDE.NPCAI to control AI-flags on a per character basis if necessary. Otherwise NPCAI flag from sphere.ini is used.
+

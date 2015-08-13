@@ -927,3 +927,11 @@ void CCharNPC::r_WriteChar( CChar * pChar, CScript & s )
 		s.WriteKey( "NEED", pszTmp );
 	}
 }
+
+int CCharNPC::GetNpcAiFlags( const CChar *pChar ) const 
+{
+	CVarDefCont *pVar = pChar->GetKey( "OVERRIDE.NPCAI", true );
+	if (pVar != NULL)
+        	return static_cast<int>(pVar->GetValNum());
+	return g_Cfg.m_iNpcAi;
+}
