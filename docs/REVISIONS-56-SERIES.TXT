@@ -2546,3 +2546,10 @@ Changed: Combat swing behavior got slightly changed to be more accurate.
 13-08-2015, matex
 Added: OVERRIDE.NPCAI to control AI-flags on a per character basis if necessary. Otherwise NPCAI flag from sphere.ini is used.
 
+15-08-2015, matex
+Added: EF_DynamicBackgroundsave. This will enable, if necessary, if a backgroundsave tick is triggered to save more than only one Sector. 
+This especially makes sense if the map has a lot of sectors. E.g. if the sectorsize deviates from 64x64 as completion of a single backgroundsave
+takes circa 40 minutes with a sectorsize of 32x32 and BACKGROUNDSAVE set to 1. Using dynamic backgroundsaving this can be sped up at the cost of
+some performance. You can approximately limit the amount of items/characters that will be saved as the Operation will just stop if it estimated that
+saving another sector would exceed SaveStepMaxComplexity. You can further limit how many sectors will be saved at maximum per backgroundsave-tick using SaveSectorsPerTick. This is a maximum value. If the maximum complexity is exceeded it may not reach that maximum value.
+Added: SECTOR.INACTIVECOUNT. Will report the number of logged-out chararacters inside that sector.

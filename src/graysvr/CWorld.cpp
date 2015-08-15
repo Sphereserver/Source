@@ -1277,8 +1277,47 @@ bool CWorld::SaveStage() // Save world state in stages.
 	{
 		// NPC Chars in the world secors and the stuff they are carrying.
 		// Sector lighting info.
-		if ( m_Sectors[m_iSaveStage] )
-			m_Sectors[m_iSaveStage]->r_Write();
+                if(IsSetEF(EF_Dynamic_Backsave))
+                {
+                        unsigned int szComplexity = 0;
+                        unsigned int szSectorCnt = 1;
+
+                        CSector *s = m_Sectors[m_iSaveStage];
+                        if( s )
+                        {
+                                s->r_Write();
+                                szComplexity += ( s->GetCharComplexity() + s->GetInactiveChars())*100 + s->GetItemComplexity();
+                        }
+                        unsigned int dynStage = m_iSaveStage+1;
+                        if( szComplexity <= g_Cfg.m_iSaveStepMaxComplexity )
+                        {
+                                while(dynStage < m_SectorsQty && szSectorCnt <= g_Cfg.m_iSaveSectorsPerTick)
+                                {
+                                        s = m_Sectors[dynStage];
+                                        if ( s )
+                                        {
+                                                szComplexity += ( s->GetCharComplexity() + s->GetInactiveChars())*100 + s->GetItemComplexity();
+
+                                                if(szComplexity <= g_Cfg.m_iSaveStepMaxComplexity)
+                                                {
+                                                        s->r_Write();
+                                                        m_iSaveStage = dynStage;
+                                                        szSectorCnt++;
+                                                }
+                                                else
+                                                {
+                                                        break;
+                                                }
+                                        }
+                                        dynStage++;
+                                }
+                        }
+                }
+                else
+                {
+                        if ( m_Sectors[m_iSaveStage] )
+                                m_Sectors[m_iSaveStage]->r_Write();
+                }
 	}
 	else if ( m_iSaveStage == m_SectorsQty )
 	{

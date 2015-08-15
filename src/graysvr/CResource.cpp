@@ -560,6 +560,8 @@ enum RC_TYPE
 	RC_RUNNINGPENALTY,			// m_iStamRunningPenalty
 	RC_SAVEBACKGROUND,			// m_iSaveBackgroundTime
 	RC_SAVEPERIOD,
+	RC_SAVESECTORSPERTICK,                  // m_iSaveSectorsPerTick
+        RC_SAVESTEPMAXCOMPLEXITY,               // m_iSaveStepMaxComplexity
 	RC_SCPFILES,
 	RC_SECTORSLEEP,				// m_iSectorSleepMask
 	RC_SECURE,
@@ -797,6 +799,8 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "RUNNINGPENALTY",			{ ELEM_INT,		OFFSETOF(CResource,m_iStamRunningPenalty),	0 }},
 	{ "SAVEBACKGROUND",			{ ELEM_INT,		OFFSETOF(CResource,m_iSaveBackgroundTime),	0 }},
 	{ "SAVEPERIOD",				{ ELEM_INT,		OFFSETOF(CResource,m_iSavePeriod),			0 }},
+	{ "SAVESECTORSPERTICK",                     { ELEM_INT,             OFFSETOF(CResource,m_iSaveSectorsPerTick),      0 }},
+        { "SAVESTEPMAXCOMPLEXITY",                     { ELEM_INT,             OFFSETOF(CResource,m_iSaveStepMaxComplexity),      0 }},
 	{ "SCPFILES",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sSCPBaseDir),			0 }},
 	{ "SECTORSLEEP",			{ ELEM_INT,		OFFSETOF(CResource,m_iSectorSleepMask),		0 }},
 	{ "SECURE",					{ ELEM_BOOL,	OFFSETOF(CResource,m_fSecure),				0 }},
@@ -1195,6 +1199,16 @@ bool CResource::r_LoadVal( CScript &s )
 		case RC_SAVEBACKGROUND:
 			m_iSaveBackgroundTime = s.GetArgVal() * 60 * TICK_PER_SEC;
 			break;
+
+                case RC_SAVESECTORSPERTICK:
+                        m_iSaveSectorsPerTick = s.GetArgVal();
+                        if( m_iSaveSectorsPerTick <= 0 )
+                                m_iSaveSectorsPerTick = 1;
+                        break;
+                case RC_SAVESTEPMAXCOMPLEXITY:
+                        m_iSaveStepMaxComplexity = s.GetArgVal();
+                        break;
+
 
 		case RC_WORLDSAVE: // Put save files here.
 			m_sWorldBaseDir = CGFile::GetMergedFileName( s.GetArgStr(), "" );
@@ -1717,6 +1731,12 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		case RC_SAVEBACKGROUND:
 			sVal.FormatVal( m_iSaveBackgroundTime / (60 * TICK_PER_SEC));
 			break;
+                case RC_SAVESECTORSPERTICK:
+                        sVal.FormatVal( m_iSaveSectorsPerTick );
+                        break;
+                case RC_SAVESTEPMAXCOMPLEXITY:
+                        sVal.FormatVal( m_iSaveStepMaxComplexity );
+                        break;
 		case RC_SPELLTIMEOUT:
 			sVal.FormatVal(m_iSpellTimeout / TICK_PER_SEC);
 			break;

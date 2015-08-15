@@ -231,19 +231,18 @@ void CClient::addTime( bool bCurrent )
 {
 	ADDTOCALLSTACK("CClient::addTime");
 	// Send time. (real or game time ??? why ?)
-	PacketGameTime* cmd(NULL);
 
 	if ( bCurrent )
 	{
 		long long lCurrentTime = (CServTime::GetCurrentTime()).GetTimeRaw();
-		cmd = new PacketGameTime(this, 
+		new PacketGameTime(this, 
 								( lCurrentTime / ( 60*60*TICK_PER_SEC )) % 24,
 								( lCurrentTime / ( 60*TICK_PER_SEC )) % 60,
 								( lCurrentTime / ( TICK_PER_SEC )) % 60);
 	}
 	else
 	{
-		cmd = new PacketGameTime(this);
+		new PacketGameTime(this);
 	}
 }
 

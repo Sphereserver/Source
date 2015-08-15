@@ -159,6 +159,10 @@ public:
 	{
 		return( m_Chars_Active.GetCount());
 	}
+	size_t GetInactiveChars() const
+        {
+                return( m_Chars_Disconnect.GetCount());
+        }
 	size_t HasClients() const
 	{
 		return( m_Chars_Active.HasClients());

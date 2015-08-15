@@ -4130,11 +4130,13 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 			delta = static_cast<int>(args.m_iN1);
 			bShowMsg = (args.m_iN2 != 0);
 		}
-		m_exp += delta;
-		
-		if (m_exp < 0)
-			m_exp = 0;
 
+		// Do not allow an underflow due to negative Exp Change.
+		if( delta < 0 && m_exp < abs(delta) )
+			m_exp = 0;
+		else
+			m_exp += delta;
+		
 		if (m_pClient && bShowMsg && delta)
 		{
 			int iWord = 0;
@@ -4182,15 +4184,15 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 			}
 
 			level = m_level + delta;
+			// Prevent integer underflow due to negative level change
+			if( delta < 0 && abs(delta) > m_level )
+				level = 0;
 			if (g_Cfg.m_wDebugFlags&DEBUGF_LEVEL)
 			{
 				DEBUG_ERR(("%s %s level change (was %u, delta %d, now %u)\n",
 					(m_pNPC ? "NPC" : "Player"), GetName(), m_level, delta, level));
 			}
 			m_level = level;
-
-			if (m_level < 0)
-				m_level = 0;
 
 			if (m_pClient && bShowMsg)
 			{
