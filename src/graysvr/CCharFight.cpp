@@ -3309,15 +3309,16 @@ void CChar::Attacker_RemoveChar()
 void CChar::Attacker_CheckTimeout()
 {
 	ADDTOCALLSTACK("CChar::Attacker_CheckTimeout");
-	if ( m_lastAttackers.size() )
+	if (m_lastAttackers.size())
 	{
-		for ( int count = 0 ; count < static_cast<int>(m_lastAttackers.size()); count++)
+		for (int count = 0; count < static_cast<int>(m_lastAttackers.size()); count++)
 		{
 			LastAttackers & refAttacker = m_lastAttackers.at(count);
-			if ( ( ++(refAttacker.elapsed) > g_Cfg.m_iAttackerTimeout ) && ( g_Cfg.m_iAttackerTimeout > 0  ) )
+			if ((++(refAttacker.elapsed) > g_Cfg.m_iAttackerTimeout) && (g_Cfg.m_iAttackerTimeout > 0))
 			{
-				Attacker_Delete(count, true, ATTACKER_CLEAR_ELAPSED);
-				break;
+				CChar *pEnemy = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
+				if (pEnemy && (pEnemy->Attacker_GetElapsed(pEnemy->Attacker_GetID(this))> g_Cfg.m_iAttackerTimeout) && (g_Cfg.m_iAttackerTimeout > 0))	//Do not remove if I kept attacking him.
+					Attacker_Delete(count, true, ATTACKER_CLEAR_ELAPSED);
 			}
 		}
 	}
