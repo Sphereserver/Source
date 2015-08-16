@@ -2553,3 +2553,6 @@ takes circa 40 minutes with a sectorsize of 32x32 and BACKGROUNDSAVE set to 1. U
 some performance. You can approximately limit the amount of items/characters that will be saved as the Operation will just stop if it estimated that
 saving another sector would exceed SaveStepMaxComplexity. You can further limit how many sectors will be saved at maximum per backgroundsave-tick using SaveSectorsPerTick. This is a maximum value. If the maximum complexity is exceeded it may not reach that maximum value.
 Added: SECTOR.INACTIVECOUNT. Will report the number of logged-out chararacters inside that sector.
+
+16-08-2015, Coruja
+Fixed: Walk packet events causing excessive CPU/bandwidth usage.

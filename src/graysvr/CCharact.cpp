@@ -1278,17 +1278,25 @@ void CChar::UpdateMove( const CPointMap & ptOld, CClient * pExcludeClient, bool 
 		if ( pChar == NULL )
 			continue;
 
-		if ( ptOld.GetDistSight(pChar->GetTopPoint()) <= pChar->GetSight() )
+		bool fCouldSee = (ptOld.GetDistSight(pChar->GetTopPoint()) <= pChar->GetSight());
+		EXC_SET("CanSee");
+		if ( !pClient->CanSee(this) )
 		{
-			EXC_SET("AddCharMove");
+			if ( fCouldSee )
+			{
+				EXC_SET("AddObjRem");
+				pClient->addObjectRemove(this);		// this client can't see me anymore
+			}
+		}
+		else if ( fCouldSee )
+		{
+			EXC_SET("AddcharMove");
 			pClient->addCharMove(this);		// this client already saw me, just send the movement packet
-			continue;
 		}
 		else
 		{
 			EXC_SET("AddChar");
-			pClient->addChar(this);		// first time this client has seen me, send complete packet
-			continue;
+			pClient->addChar(this);			// first time this client has seen me, send complete packet
 		}
 	}
 	EXC_CATCH;
