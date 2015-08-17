@@ -1954,7 +1954,7 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 	g_Log.WriteString("\n");
 
 #ifdef __GITREVISION__
-	g_Log.Event(LOGM_INIT, "%s, compiled at %s (%s) [build %d] - %s\n", g_szServerDescription, __DATE__, __TIME__, __GITREVISION__,__GITHASH__);
+	g_Log.Event(LOGM_INIT, "%s, compiled at %s (%s) [build %d / GIT hash %s]\n", g_szServerDescription, __DATE__, __TIME__, __GITREVISION__, __GITHASH__);
 #else
 	g_Log.Event(LOGM_INIT, "%s, compiled at %s (%s)\n", g_szServerDescription, __DATE__, __TIME__);
 #endif

@@ -47,7 +47,7 @@ NO	= -fno-rtti -fno-exceptions
 EX	= -fexceptions -fnon-call-exceptions
 SPECIAL = $(EX) $(DEBUG)
 
-GITHASHCMD = "$(shell git log -1 HEAD --format=%H)"
+GITHASHCMD = "$(shell git log -1 HEAD --format=%h)"
 GITREVISIONCMD = $(shell echo $(shell git rev-list --count HEAD) + 410 | bc)
 
 PROF	= -pg

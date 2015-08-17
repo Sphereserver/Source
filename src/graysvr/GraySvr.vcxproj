@@ -65,7 +65,7 @@
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
     </ProjectReference>
     <PreBuildEvent>
-      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%H\"" &gt; ../common/version/GitRevision.h
+      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; ../common/version/GitRevision.h
 for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
 set /a gitver = %gitver%+410
 echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</Command>
@@ -90,7 +90,7 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</
       <SubSystem>Windows</SubSystem>
     </Link>
     <PreBuildEvent>
-      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%H\"" &gt; ../common/version/GitRevision.h
+      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; ../common/version/GitRevision.h
 for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
 set /a gitver = %gitver%+410
 echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</Command>
@@ -115,7 +115,7 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</
       <SubSystem>Windows</SubSystem>
     </Link>
     <PreBuildEvent>
-      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%H\"" &gt; ../common/version/GitRevision.h
+      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; ../common/version/GitRevision.h
 for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
 set /a gitver = %gitver%+410
 echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</Command>
@@ -140,7 +140,7 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</
       <SubSystem>Windows</SubSystem>
     </Link>
     <PreBuildEvent>
-      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%H\"" &gt; ../common/version/GitRevision.h
+      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; ../common/version/GitRevision.h
 for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
 set /a gitver = %gitver%+410
 echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</Command>

@@ -39,7 +39,7 @@ SPECIAL = $(EX) $(STRICT) $(DEBUG)
 PROF	= -pg
 PIPE	= -pipe
 
-GITHASHCMD = "$(shell git log -1 HEAD --format=%H)"
+GITHASHCMD = "$(shell git log -1 HEAD --format=%h)"
 GITREVISIONCMD = $(shell expr $(shell git rev-list --count HEAD) + 410)
 
 SRC	:= 	CAccount.cpp \
