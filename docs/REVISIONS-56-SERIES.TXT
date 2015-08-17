@@ -2556,3 +2556,6 @@ Added: SECTOR.INACTIVECOUNT. Will report the number of logged-out chararacters i
 
 16-08-2015, Coruja
 Fixed: Walk packet events causing excessive CPU/bandwidth usage.
+
+17-08-2015, Coruja
+Fixed: Char property Regen[Hits/Mana/Stam] not working correctly.

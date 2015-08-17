@@ -2685,23 +2685,23 @@ do_default:
 	{
 		//Status Update Variables
 		case CHC_REGENHITS:
-		{
-			SetDefNum(s.GetKey(), s.GetArgVal(), false);
-			UpdateRegenTimers(STAT_STR, static_cast<short>(s.GetArgVal()));
-			UpdateStatsFlag();
-		}break;
+			{
+				SetDefNum(s.GetKey(), s.GetArgVal(), false);
+				UpdateRegenTimers(STAT_STR, static_cast<short>(s.GetArgVal()));
+			}
+			break;
 		case CHC_REGENSTAM:
-		{
-			SetDefNum(s.GetKey(), s.GetArgVal(), false);
-			UpdateRegenTimers(STAT_DEX, static_cast<short>(s.GetArgVal()));
-			UpdateStatsFlag();
-		}break;
+			{
+				SetDefNum(s.GetKey(), s.GetArgVal(), false);
+				UpdateRegenTimers(STAT_DEX, static_cast<short>(s.GetArgVal()));
+			}
+			break;
 		case CHC_REGENMANA:
-		{
-			SetDefNum(s.GetKey(), s.GetArgVal(), false);
-			UpdateRegenTimers(STAT_INT, static_cast<short>(s.GetArgVal()));
-			UpdateStatsFlag();
-		}break;
+			{
+				SetDefNum(s.GetKey(), s.GetArgVal(), false);
+				UpdateRegenTimers(STAT_INT, static_cast<short>(s.GetArgVal()));
+			}
+			break;
 		case CHC_INCREASEHITCHANCE:
 		case CHC_INCREASESWINGSPEED:
 		case CHC_INCREASEDAM:
