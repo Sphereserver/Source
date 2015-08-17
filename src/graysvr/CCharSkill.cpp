@@ -856,7 +856,7 @@ unsigned short CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool bGetTicks)
 	// bGetTicks = false returns the values of regeneration.
 	
 	LPCTSTR stat = "";
-	switch (static_cast<STAT_TYPE>(iStat))
+	switch ( iStat )
 	{
 		case STAT_STR:
 			stat = "HITS";
@@ -872,17 +872,17 @@ unsigned short CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool bGetTicks)
 			break;
 	}
 
-	if (iStat <= STAT_FOOD)
+	if ( iStat <= STAT_FOOD )
 	{
 		char sRegen[21];
-		if (bGetTicks == true)
+		if ( bGetTicks )
 		{
-			INT64 iRate = g_Cfg.m_iRegenRate[iStat];	// in TICK_PER_SEC
 			sprintf(sRegen, "REGEN%s", stat);
-			iRate -= GetDefNum(sRegen, true) * TICK_PER_SEC;
-			if (iRate < 0)
-				return 0;
-			return static_cast<unsigned short>(iRate);
+			unsigned short iRate = GetDefNum(sRegen, true) * TICK_PER_SEC;
+			if ( iRate )
+				return maximum(0, iRate);
+
+			return static_cast<unsigned short>(maximum(0, g_Cfg.m_iRegenRate[iStat]));
 		}
 		else
 		{
