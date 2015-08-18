@@ -42,7 +42,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\common\mysql\include;..\common\mysql\lib\debug;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\common\mysql\include;..\common\mysql\lib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CallingConvention>StdCall</CallingConvention>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <MinimalRebuild>true</MinimalRebuild>
@@ -57,7 +57,7 @@
       <PreprocessorDefinitions>_DEBUG;_SUBVERSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\common\mysql\lib\debug</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\common\mysql\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>ws2_32.lib;wsock32.lib;libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
@@ -85,7 +85,7 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</
       <PreprocessorDefinitions>_PRIVATEBUILD;_SUBVERSION;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\common\mysql\lib\release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\common\mysql\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
@@ -110,7 +110,7 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</
       <PreprocessorDefinitions>_NIGHTLYBUILD;_SUBVERSION;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\common\mysql\lib\release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\common\mysql\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
@@ -135,7 +135,7 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</
       <PreprocessorDefinitions>_SUBVERSION;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\common\mysql\lib\release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\common\mysql\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
@@ -274,27 +274,6 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</
     <ClInclude Include="..\common\CVarFloat.h" />
     <ClInclude Include="..\common\CWindow.h" />
     <ClInclude Include="..\common\mtrand\mtrand.h" />
-    <ClInclude Include="..\common\mysql\include\config-netware.h" />
-    <ClInclude Include="..\common\mysql\include\config-os2.h" />
-    <ClInclude Include="..\common\mysql\include\config-win.h" />
-    <ClInclude Include="..\common\mysql\include\errmsg.h" />
-    <ClInclude Include="..\common\mysql\include\mysql.h" />
-    <ClInclude Include="..\common\mysql\include\mysqld_error.h" />
-    <ClInclude Include="..\common\mysql\include\mysql_com.h" />
-    <ClInclude Include="..\common\mysql\include\mysql_embed.h" />
-    <ClInclude Include="..\common\mysql\include\mysql_time.h" />
-    <ClInclude Include="..\common\mysql\include\mysql_version.h" />
-    <ClInclude Include="..\common\mysql\include\my_alloc.h" />
-    <ClInclude Include="..\common\mysql\include\my_dbug.h" />
-    <ClInclude Include="..\common\mysql\include\my_getopt.h" />
-    <ClInclude Include="..\common\mysql\include\my_global.h" />
-    <ClInclude Include="..\common\mysql\include\my_list.h" />
-    <ClInclude Include="..\common\mysql\include\my_pthread.h" />
-    <ClInclude Include="..\common\mysql\include\my_sys.h" />
-    <ClInclude Include="..\common\mysql\include\m_ctype.h" />
-    <ClInclude Include="..\common\mysql\include\m_string.h" />
-    <ClInclude Include="..\common\mysql\include\raid.h" />
-    <ClInclude Include="..\common\mysql\include\typelib.h" />
     <ClInclude Include="..\common\sqlite\SQLite.h" />
     <ClInclude Include="..\common\sqlite\sqlite3.h" />
     <ClInclude Include="..\common\subversion\SvnRevision.h" />
@@ -439,293 +418,6 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\docs\REVISIONS-56-SERIES.TXT" />
-    <None Include="..\..\scripts\add-on\Can_Use_Player_Event.rar" />
-    <None Include="..\..\scripts\add-on\Champion_Spawn.zip" />
-    <None Include="..\..\scripts\add-on\Doom_Dungeon.zip" />
-    <None Include="..\..\scripts\add-on\Expansion_Player_Event.rar" />
-    <None Include="..\..\scripts\add-on\HighSeas\Ships\HS_pilot.scp" />
-    <None Include="..\..\scripts\add-on\House_Placement.zip" />
-    <None Include="..\..\scripts\add-on\mordaunts_housing_system.zip" />
-    <None Include="..\..\scripts\add-on\readme.txt" />
-    <None Include="..\..\scripts\add-on\Slayer_Weapons.zip" />
-    <None Include="..\..\scripts\add-on\Sphere Core File Creator - Installer.rar" />
-    <None Include="..\..\scripts\add-on\sphere_attr.rar" />
-    <None Include="..\..\scripts\add-on\Sphere_Factions_56a.zip" />
-    <None Include="..\..\scripts\add-on\targetted_hits.scp" />
-    <None Include="..\..\scripts\add-on\worldfiles.zip" />
-    <None Include="..\..\scripts\items\multis\multis_foundations.scp" />
-    <None Include="..\..\scripts\items\multis\multis_houses.scp" />
-    <None Include="..\..\scripts\items\multis\multis_magincia_bazaar.scp" />
-    <None Include="..\..\scripts\items\multis\multis_misc.scp" />
-    <None Include="..\..\scripts\items\multis\multis_ships.scp" />
-    <None Include="..\..\scripts\items\multis\multis_stairs.scp" />
-    <None Include="..\..\scripts\items\multis\multis_wandering_camps.scp" />
-    <None Include="..\..\scripts\items\sphere_item_animations.scp" />
-    <None Include="..\..\scripts\items\sphere_item_artifacts.scp" />
-    <None Include="..\..\scripts\items\sphere_item_artifacts_minor.scp" />
-    <None Include="..\..\scripts\items\sphere_item_artifacts_tokuno.scp" />
-    <None Include="..\..\scripts\items\sphere_item_boulders_rocks.scp" />
-    <None Include="..\..\scripts\items\sphere_item_buildings.scp" />
-    <None Include="..\..\scripts\items\sphere_item_building_doors.scp" />
-    <None Include="..\..\scripts\items\sphere_item_building_floors.scp" />
-    <None Include="..\..\scripts\items\sphere_item_building_other.scp" />
-    <None Include="..\..\scripts\items\sphere_item_building_roofs.scp" />
-    <None Include="..\..\scripts\items\sphere_item_building_stairs.scp" />
-    <None Include="..\..\scripts\items\sphere_item_building_walls.scp" />
-    <None Include="..\..\scripts\items\sphere_item_char_icons.scp" />
-    <None Include="..\..\scripts\items\sphere_item_christmas.scp" />
-    <None Include="..\..\scripts\items\sphere_item_deco_carpet_rugs.scp" />
-    <None Include="..\..\scripts\items\sphere_item_deco_carvings_statues.scp" />
-    <None Include="..\..\scripts\items\sphere_item_deco_dungeons_traps_dead.scp" />
-    <None Include="..\..\scripts\items\sphere_item_deco_fireplace_chimney_oven.scp" />
-    <None Include="..\..\scripts\items\sphere_item_deco_furniture.scp" />
-    <None Include="..\..\scripts\items\sphere_item_deco_lightsources.scp" />
-    <None Include="..\..\scripts\items\sphere_item_deco_miniatures.scp" />
-    <None Include="..\..\scripts\items\sphere_item_deco_signs.scp" />
-    <None Include="..\..\scripts\items\sphere_item_deco_virtues.scp" />
-    <None Include="..\..\scripts\items\sphere_item_deco_wall_hangings.scp" />
-    <None Include="..\..\scripts\items\sphere_item_ground_tiles.scp" />
-    <None Include="..\..\scripts\items\sphere_item_magic_armor.scp" />
-    <None Include="..\..\scripts\items\sphere_item_magic_chivalry.scp" />
-    <None Include="..\..\scripts\items\sphere_item_magic_jewelry.scp" />
-    <None Include="..\..\scripts\items\sphere_item_magic_leather.scp" />
-    <None Include="..\..\scripts\items\sphere_item_magic_magery.scp" />
-    <None Include="..\..\scripts\items\sphere_item_magic_mysticism.scp" />
-    <None Include="..\..\scripts\items\sphere_item_magic_necromancer_aos.scp" />
-    <None Include="..\..\scripts\items\sphere_item_magic_ninjitsu_bushido.scp" />
-    <None Include="..\..\scripts\items\sphere_item_magic_spellweaving.scp" />
-    <None Include="..\..\scripts\items\sphere_item_magic_wands.scp" />
-    <None Include="..\..\scripts\items\sphere_item_magic_weapon.scp" />
-    <None Include="..\..\scripts\items\sphere_item_memories.scp" />
-    <None Include="..\..\scripts\items\sphere_item_misc.scp" />
-    <None Include="..\..\scripts\items\sphere_item_multis_foundations.scp" />
-    <None Include="..\..\scripts\items\sphere_item_multis_houses_ships.scp" />
-    <None Include="..\..\scripts\items\sphere_item_multis_stairs.scp" />
-    <None Include="..\..\scripts\items\sphere_item_offset.scp" />
-    <None Include="..\..\scripts\items\sphere_item_profession.scp" />
-    <None Include="..\..\scripts\items\sphere_item_profession_alchemist.scp" />
-    <None Include="..\..\scripts\items\sphere_item_profession_barber.scp" />
-    <None Include="..\..\scripts\items\sphere_item_profession_cartographer.scp" />
-    <None Include="..\..\scripts\items\sphere_item_profession_cook_barkeep_baker.scp" />
-    <None Include="..\..\scripts\items\sphere_item_profession_tailor_tanner.scp" />
-    <None Include="..\..\scripts\items\sphere_item_provisions_armor.scp" />
-    <None Include="..\..\scripts\items\sphere_item_provisions_armor_color.scp" />
-    <None Include="..\..\scripts\items\sphere_item_provisions_clothing.scp" />
-    <None Include="..\..\scripts\items\sphere_item_provisions_deed.scp" />
-    <None Include="..\..\scripts\items\sphere_item_provisions_jewelry.scp" />
-    <None Include="..\..\scripts\items\sphere_item_provisions_logs.scp" />
-    <None Include="..\..\scripts\items\sphere_item_provisions_misc.scp" />
-    <None Include="..\..\scripts\items\sphere_item_provisions_ore.scp" />
-    <None Include="..\..\scripts\items\sphere_item_provisions_potions.scp" />
-    <None Include="..\..\scripts\items\sphere_item_provisions_shields.scp" />
-    <None Include="..\..\scripts\items\sphere_item_provisions_weapons.scp" />
-    <None Include="..\..\scripts\items\sphere_item_resources.scp" />
-    <None Include="..\..\scripts\items\sphere_item_ship_parts.scp" />
-    <None Include="..\..\scripts\items\sphere_item_ship_parts_britannian.scp" />
-    <None Include="..\..\scripts\items\sphere_item_ship_parts_gargish.scp" />
-    <None Include="..\..\scripts\items\sphere_item_ship_parts_orcish.scp" />
-    <None Include="..\..\scripts\items\sphere_item_ship_parts_tokuno.scp" />
-    <None Include="..\..\scripts\items\sphere_item_siege.scp" />
-    <None Include="..\..\scripts\items\sphere_item_treasure_maps.scp" />
-    <None Include="..\..\scripts\items\sphere_item_typedefs.scp" />
-    <None Include="..\..\scripts\items\sphere_item_typedef_equipitem.scp" />
-    <None Include="..\..\scripts\items\sphere_item_unsorted.scp" />
-    <None Include="..\..\scripts\items\sphere_item_vegetation.scp" />
-    <None Include="..\..\scripts\maps\sphere_map0.scp" />
-    <None Include="..\..\scripts\maps\sphere_map0_ml.scp" />
-    <None Include="..\..\scripts\maps\sphere_map1.scp" />
-    <None Include="..\..\scripts\maps\sphere_map2.scp" />
-    <None Include="..\..\scripts\maps\sphere_map3.scp" />
-    <None Include="..\..\scripts\maps\sphere_map4.scp" />
-    <None Include="..\..\scripts\maps\sphere_map5.scp" />
-    <None Include="..\..\scripts\maps\sphere_map_points0.scp" />
-    <None Include="..\..\scripts\maps\sphere_map_points0_ml.scp" />
-    <None Include="..\..\scripts\maps\sphere_map_points1.scp" />
-    <None Include="..\..\scripts\maps\sphere_map_points2.scp" />
-    <None Include="..\..\scripts\maps\sphere_map_points3.scp" />
-    <None Include="..\..\scripts\maps\sphere_map_points4.scp" />
-    <None Include="..\..\scripts\maps\sphere_map_points5.scp" />
-    <None Include="..\..\scripts\npcs\spherechar_evil.scp" />
-    <None Include="..\..\scripts\npcs\spherechar_human.scp" />
-    <None Include="..\..\scripts\npcs\sphere_citizens.scp" />
-    <None Include="..\..\scripts\npcs\sphere_guildmasters.scp" />
-    <None Include="..\..\scripts\npcs\sphere_monsters.scp" />
-    <None Include="..\..\scripts\npcs\sphere_monsters_custom.scp" />
-    <None Include="..\..\scripts\npcs\sphere_vendors.scp" />
-    <None Include="..\..\scripts\speech\jobactor.scp" />
-    <None Include="..\..\scripts\speech\jobalchemist.scp" />
-    <None Include="..\..\scripts\speech\jobanimal.scp" />
-    <None Include="..\..\scripts\speech\jobarchitect.scp" />
-    <None Include="..\..\scripts\speech\jobarmourer.scp" />
-    <None Include="..\..\scripts\speech\jobartist.scp" />
-    <None Include="..\..\scripts\speech\jobbaker.scp" />
-    <None Include="..\..\scripts\speech\jobbanker.scp" />
-    <None Include="..\..\scripts\speech\jobbard.scp" />
-    <None Include="..\..\scripts\speech\jobbeekeeper.scp" />
-    <None Include="..\..\scripts\speech\jobbeggar.scp" />
-    <None Include="..\..\scripts\speech\jobblacksmith.scp" />
-    <None Include="..\..\scripts\speech\jobbowyer.scp" />
-    <None Include="..\..\scripts\speech\jobBrigand.scp" />
-    <None Include="..\..\scripts\speech\jobbutcher.scp" />
-    <None Include="..\..\scripts\speech\jobcarpenter.scp" />
-    <None Include="..\..\scripts\speech\jobcashual.scp" />
-    <None Include="..\..\scripts\speech\jobcobbler.scp" />
-    <None Include="..\..\scripts\speech\jobfarmer.scp" />
-    <None Include="..\..\scripts\speech\jobfurtrader.scp" />
-    <None Include="..\..\scripts\speech\jobgambler.scp" />
-    <None Include="..\..\scripts\speech\jobglassblower.scp" />
-    <None Include="..\..\scripts\speech\jobGuard.scp" />
-    <None Include="..\..\scripts\speech\jobhealer.scp" />
-    <None Include="..\..\scripts\speech\jobhealwand.scp" />
-    <None Include="..\..\scripts\speech\jobherbalist.scp" />
-    <None Include="..\..\scripts\speech\jobinnkeeper.scp" />
-    <None Include="..\..\scripts\speech\jobjailor.scp" />
-    <None Include="..\..\scripts\speech\jobjeweller.scp" />
-    <None Include="..\..\scripts\speech\jobjudge.scp" />
-    <None Include="..\..\scripts\speech\joblaborer.scp" />
-    <None Include="..\..\scripts\speech\joblumberjack.scp" />
-    <None Include="..\..\scripts\speech\jobMage.scp" />
-    <None Include="..\..\scripts\speech\jobMageEvil.scp" />
-    <None Include="..\..\scripts\speech\jobMageShop.scp" />
-    <None Include="..\..\scripts\speech\jobmapmaker.scp" />
-    <None Include="..\..\scripts\speech\jobmayor.scp" />
-    <None Include="..\..\scripts\speech\jobmiller.scp" />
-    <None Include="..\..\scripts\speech\jobminer.scp" />
-    <None Include="..\..\scripts\speech\jobminter.scp" />
-    <None Include="..\..\scripts\speech\jobmonk.scp" />
-    <None Include="..\..\scripts\speech\jobnoble.scp" />
-    <None Include="..\..\scripts\speech\joboverseer.scp" />
-    <None Include="..\..\scripts\speech\jobpaladin.scp" />
-    <None Include="..\..\scripts\speech\jobparliament.scp" />
-    <None Include="..\..\scripts\speech\jobpirate.scp" />
-    <None Include="..\..\scripts\speech\jobpriest.scp" />
-    <None Include="..\..\scripts\speech\jobprisoner.scp" />
-    <None Include="..\..\scripts\speech\jobprovisioner.scp" />
-    <None Include="..\..\scripts\speech\jobrancher.scp" />
-    <None Include="..\..\scripts\speech\jobranger.scp" />
-    <None Include="..\..\scripts\speech\jobrealtor.scp" />
-    <None Include="..\..\scripts\speech\jobrunner.scp" />
-    <None Include="..\..\scripts\speech\jobsailor.scp" />
-    <None Include="..\..\scripts\speech\jobscholar.scp" />
-    <None Include="..\..\scripts\speech\jobscribe.scp" />
-    <None Include="..\..\scripts\speech\jobsculptor.scp" />
-    <None Include="..\..\scripts\speech\jobservant.scp" />
-    <None Include="..\..\scripts\speech\jobshepherd.scp" />
-    <None Include="..\..\scripts\speech\jobshipwright.scp" />
-    <None Include="..\..\scripts\speech\jobtanner.scp" />
-    <None Include="..\..\scripts\speech\jobtavernkeeper.scp" />
-    <None Include="..\..\scripts\speech\jobthief.scp" />
-    <None Include="..\..\scripts\speech\jobtinker.scp" />
-    <None Include="..\..\scripts\speech\jobveggie.scp" />
-    <None Include="..\..\scripts\speech\jobvet.scp" />
-    <None Include="..\..\scripts\speech\jobwaiter.scp" />
-    <None Include="..\..\scripts\speech\jobweaponsmith.scp" />
-    <None Include="..\..\scripts\speech\jobweaponstrainer.scp" />
-    <None Include="..\..\scripts\speech\jobweaver.scp" />
-    <None Include="..\..\scripts\speech\speakhorse.scp" />
-    <None Include="..\..\scripts\speech\speakhuman.scp" />
-    <None Include="..\..\scripts\speech\speakmaster.scp" />
-    <None Include="..\..\scripts\speech\speakneeds.scp" />
-    <None Include="..\..\scripts\speech\speakorc.scp" />
-    <None Include="..\..\scripts\speech\speakrehello.scp" />
-    <None Include="..\..\scripts\speech\speakshopkeep.scp" />
-    <None Include="..\..\scripts\speech\spherespee.scp" />
-    <None Include="..\..\scripts\speech\spk_house_cmds.scp" />
-    <None Include="..\..\scripts\speech\spk_ship_cmds.scp" />
-    <None Include="..\..\scripts\speech\townbritain.scp" />
-    <None Include="..\..\scripts\speech\townbucsden.scp" />
-    <None Include="..\..\scripts\speech\towncove.scp" />
-    <None Include="..\..\scripts\speech\townjhelom.scp" />
-    <None Include="..\..\scripts\speech\townmagincia.scp" />
-    <None Include="..\..\scripts\speech\townminoc.scp" />
-    <None Include="..\..\scripts\speech\townmoonglow.scp" />
-    <None Include="..\..\scripts\speech\townnujelm.scp" />
-    <None Include="..\..\scripts\speech\townserphold.scp" />
-    <None Include="..\..\scripts\speech\townskarabrae.scp" />
-    <None Include="..\..\scripts\speech\towntrinsic.scp" />
-    <None Include="..\..\scripts\speech\townvesper.scp" />
-    <None Include="..\..\scripts\speech\townwind.scp" />
-    <None Include="..\..\scripts\speech\townyew.scp" />
-    <None Include="..\..\scripts\spheretables.scp" />
-    <None Include="..\..\scripts\sphere_add_sqlite.scp" />
-    <None Include="..\..\scripts\sphere_admin.scp" />
-    <None Include="..\..\scripts\sphere_backward_compatibility.scp" />
-    <None Include="..\..\scripts\sphere_book.scp" />
-    <None Include="..\..\scripts\sphere_combat.scp" />
-    <None Include="..\..\scripts\sphere_defs.scp" />
-    <None Include="..\..\scripts\sphere_dialog.scp" />
-    <None Include="..\..\scripts\sphere_events_human.scp" />
-    <None Include="..\..\scripts\sphere_events_npcs.scp" />
-    <None Include="..\..\scripts\sphere_menu.scp" />
-    <None Include="..\..\scripts\sphere_msgs.scp" />
-    <None Include="..\..\scripts\sphere_name.scp" />
-    <None Include="..\..\scripts\sphere_newb.scp" />
-    <None Include="..\..\scripts\sphere_region.scp" />
-    <None Include="..\..\scripts\sphere_serv_triggers.scp" />
-    <None Include="..\..\scripts\sphere_skillmenu.scp" />
-    <None Include="..\..\scripts\sphere_skills.scp" />
-    <None Include="..\..\scripts\sphere_spawns.scp" />
-    <None Include="..\..\scripts\sphere_speech.scp" />
-    <None Include="..\..\scripts\sphere_spells.scp" />
-    <None Include="..\..\scripts\sphere_template.scp" />
-    <None Include="..\..\scripts\sphere_template_armor.scp" />
-    <None Include="..\..\scripts\sphere_template_loot.scp" />
-    <None Include="..\..\scripts\sphere_template_magic.scp" />
-    <None Include="..\..\scripts\sphere_template_misc.scp" />
-    <None Include="..\..\scripts\sphere_template_sets.scp" />
-    <None Include="..\..\scripts\sphere_template_vend.scp" />
-    <None Include="..\..\scripts\sphere_template_weapons.scp" />
-    <None Include="..\..\scripts\sphere_types.scp" />
-    <None Include="..\..\scripts\stones\guilds\sphere_guild_config.scp" />
-    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_align.scp" />
-    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_charlist.scp" />
-    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_charter.scp" />
-    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_guildlist.scp" />
-    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_main.scp" />
-    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_master.scp" />
-    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_warfareadmin.scp" />
-    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_warfaredeclare.scp" />
-    <None Include="..\..\scripts\stones\guilds\sphere_guild_dlg_warfarestatus.scp" />
-    <None Include="..\..\scripts\stones\guilds\sphere_guild_events.scp" />
-    <None Include="..\..\scripts\stones\guilds\sphere_guild_functions.scp" />
-    <None Include="..\..\scripts\stones\guilds\sphere_guild_functions_player.scp" />
-    <None Include="..\..\scripts\stones\guilds\sphere_guild_items.scp" />
-    <None Include="..\..\scripts\stones\guilds\sphere_guild_promptconsole.scp" />
-    <None Include="..\..\scripts\stones\guilds\sphere_guild_speech.scp" />
-    <None Include="..\..\scripts\stones\guilds\sphere_guild_types.scp" />
-    <None Include="..\..\scripts\stones\README.TXT" />
-    <None Include="..\..\scripts\stones\sphere_genericstone_config.scp" />
-    <None Include="..\..\scripts\stones\sphere_genericstone_functions.scp" />
-    <None Include="..\..\scripts\stones\sphere_genericstone_items.scp" />
-    <None Include="..\..\scripts\stones\sphere_genericstone_types.scp" />
-    <None Include="..\..\scripts\stones\towns\sphere_town_config.scp" />
-    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_align.scp" />
-    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_charlist.scp" />
-    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_charter.scp" />
-    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_main.scp" />
-    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_master.scp" />
-    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_townlist.scp" />
-    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_warfareadmin.scp" />
-    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_warfaredeclare.scp" />
-    <None Include="..\..\scripts\stones\towns\sphere_town_dlg_warfarestatus.scp" />
-    <None Include="..\..\scripts\stones\towns\sphere_town_events.scp" />
-    <None Include="..\..\scripts\stones\towns\sphere_town_functions.scp" />
-    <None Include="..\..\scripts\stones\towns\sphere_town_functions_player.scp" />
-    <None Include="..\..\scripts\stones\towns\sphere_town_items.scp" />
-    <None Include="..\..\scripts\stones\towns\sphere_town_promptconsole.scp" />
-    <None Include="..\..\scripts\stones\towns\sphere_town_speech.scp" />
-    <None Include="..\..\scripts\stones\towns\sphere_town_types.scp" />
-    <None Include="..\..\scripts\web\sphere.gif" />
-    <None Include="..\..\scripts\web\sphere404.htm">
-      <DeploymentContent>true</DeploymentContent>
-    </None>
-    <None Include="..\..\scripts\web\spherestatusbase.html" />
-    <None Include="..\..\scripts\web\sphere_anim.gif" />
-    <None Include="..\common\mysql\include\libmysql.def" />
-    <None Include="..\common\mysql\include\libmysqld.def" />
-    <None Include="..\common\mysql\lib\debug\libmysql.dll" />
-    <None Include="..\common\mysql\lib\release\libmysql.dll" />
     <None Include="..\common\twofish\Makefile" />
     <None Include="..\common\zlib\ChangeLog" />
     <None Include="..\common\zlib\FAQ" />
@@ -748,25 +440,8 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</
     <Text Include="..\..\docs\REVISIONS-51-54-SERIES.TXT" />
     <Text Include="..\..\docs\REVISIONS-55-SERIES.TXT" />
     <Text Include="..\..\docs\REVISIONS-56-Pre_release.TXT" />
-    <Text Include="..\common\mysql\version.txt" />
-    <Text Include="..\common\zlib\algorithm.txt" />
+    <Text Include="..\..\docs\REVISIONS-56-SERIES.TXT" />
     <Text Include="MANUAL.TXT" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\common\mysql\lib\debug\libmysql.lib" />
-    <Library Include="..\common\mysql\lib\debug\mysqlclient.lib" />
-    <Library Include="..\common\mysql\lib\debug\mysys.lib" />
-    <Library Include="..\common\mysql\lib\debug\regex.lib" />
-    <Library Include="..\common\mysql\lib\debug\strings.lib" />
-    <Library Include="..\common\mysql\lib\debug\zlib.lib" />
-    <Library Include="..\common\mysql\lib\release\libmysql.lib" />
-    <Library Include="..\common\mysql\lib\release\mysqlclient.lib" />
-    <Library Include="..\common\mysql\lib\release\mysys-max.lib" />
-    <Library Include="..\common\mysql\lib\release\mysys.lib" />
-    <Library Include="..\common\mysql\lib\release\mysys_tls.lib" />
-    <Library Include="..\common\mysql\lib\release\regex.lib" />
-    <Library Include="..\common\mysql\lib\release\strings.lib" />
-    <Library Include="..\common\mysql\lib\release\zlib.lib" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GraySvr.rc" />

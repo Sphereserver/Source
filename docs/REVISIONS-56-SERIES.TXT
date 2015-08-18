@@ -2559,3 +2559,4 @@ Fixed: Walk packet events causing excessive CPU/bandwidth usage.
 
 17-08-2015, Coruja
 Fixed: Char property Regen[Hits/Mana/Stam] not working correctly.
+Changed: Updated internal MySQL libs version 4.1.18 to 6.1.6. 
