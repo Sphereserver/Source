@@ -1636,43 +1636,44 @@ bool CChar::Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax )
 
 	const CObjBaseTemplate * pObjTop = pObj->GetTopLevelObj();
 	if ( pObjTop == NULL )
-		return( false );
+		return false;
 
-	int dist = GetTopDist3D( pObjTop );	// disconnect = SHRT_MAX
+	int dist = GetTopDist3D(pObjTop);	// disconnect = SHRT_MAX
 	if ( dist > iDistMax )
 		return false;
 
 	if ( pObjTop->IsChar() )
 	{
 		// Prevent tracking of hidden staff
-		const CChar *pChar = dynamic_cast<const CChar*>( pObjTop );
-		if ( pChar )
-		{
-			if ( pChar->GetPrivLevel() > GetPrivLevel() && pChar->IsStatFlag(STATF_Insubstantial) )
-				return false;
-		}
+		const CChar * pChar = dynamic_cast<const CChar*>(pObjTop);
+		if ( pChar && pChar->GetPrivLevel() > GetPrivLevel() && pChar->IsStatFlag(STATF_Insubstantial) )
+			return false;
 	}
+
+	DIR_TYPE dir = GetDir(pObjTop);
+	ASSERT(dir >= 0 && static_cast<unsigned int>(dir) < COUNTOF(CPointBase::sm_szDirs));
 
 	// Select tracking message based on distance
 	LPCTSTR pszDef;
-	if (dist <= 0)
-		pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_0 );
-	else if (dist < 16)
-		pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_1 );
-	else if (dist < 32)
-		pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_2 );
-	else if (dist < 100)
-		pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_3 );
+	if ( dist <= 0 )
+		pszDef = g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT_0);
+	else if ( dist < 16 )
+		pszDef = g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT_1);
+	else if ( dist < 32 )
+		pszDef = g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT_2);
+	else if ( dist < 100 )
+		pszDef = g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT_3);
 	else
-		pszDef = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_RESULT_4 );
+		pszDef = g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT_4);
 
-	DIR_TYPE dir = GetDir( pObjTop );
-	ASSERT(dir >= 0 && static_cast<unsigned int>(dir) < COUNTOF(CPointBase::sm_szDirs));
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, pszDef, pObj->GetName(), pObjTop->IsDisconnected()? g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT_DISC) : "", static_cast<LPCTSTR>(CPointBase::sm_szDirs[dir]));
-	ObjMessage(pszMsg, this);
+	if ( pszDef[0] )
+	{
+		TCHAR *pszMsg = Str_GetTemp();
+		sprintf(pszMsg, pszDef, pObj->GetName(), pObjTop->IsDisconnected() ? g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT_DISC) : "", CPointBase::sm_szDirs[dir]);
+		ObjMessage(pszMsg, this);
+	}
 
-	return true;		// keep the skill active.
+	return true;		// keep the skill active
 }
 
 //************************************

@@ -2559,4 +2559,9 @@ Fixed: Walk packet events causing excessive CPU/bandwidth usage.
 
 17-08-2015, Coruja
 Fixed: Char property Regen[Hits/Mana/Stam] not working correctly.
-Changed: Updated internal MySQL libs version 4.1.18 to 6.1.6. 
+Changed: Updated internal MySQL libs version 4.1.18 to 6.1.6.
+
+18-08-2015, Coruja
+Fixed: Combat randomly not starting the first swing.
+Fixed: World teleports incorrectly showing teleport spell animation.
+Fixed: Tracking skill showing empty messages instead not show any message at all when the tracking messages are blank on sphere_msgs.scp.

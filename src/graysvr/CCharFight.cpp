@@ -2832,7 +2832,7 @@ void CChar::Fight_HitTry()
 	// but i might not be close enough.
 
 	ASSERT( Fight_IsActive() );
-	ASSERT( m_atFight.m_War_Swing_State == WAR_SWING_READY|WAR_SWING_SWINGING );
+	ASSERT( m_atFight.m_War_Swing_State == (WAR_SWING_READY|WAR_SWING_SWINGING) );
 
 	CChar * pCharTarg = m_Fight_Targ.CharFind();
 	if ( pCharTarg == NULL || pCharTarg->IsStatFlag(STATF_DEAD) )	// dead players and dead bonded pets can't be attacked
@@ -3433,6 +3433,9 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		return WAR_SWING_EQUIPPING;
 	}
 
+	if ( !CanSeeLOS(pCharTarg) )
+		return WAR_SWING_EQUIPPING;
+
 	// I am on ship. Should be able to combat only inside the ship to avoid free sea and ground characters hunting
 	if ( (m_pArea != pCharTarg->m_pArea) && !IsSetCombatFlags(COMBAT_ALLOWHITFROMSHIP) )
 	{
@@ -3502,9 +3505,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			}
 		}
 	}
-
-	if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) )
-		UpdateDir(pCharTarg);
 
 	SKILL_TYPE skill = Skill_GetActive();
 	if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
@@ -3605,6 +3605,10 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			m_atFight.m_NextSwingDelay = iSwingDelay - 7;
 			m_atFight.m_fMoved = 0;
 			SetTimeout(7);		// attack speed is always 7ms and then the char keep waiting the remaining time
+
+			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) )
+				UpdateDir(pCharTarg);
+
 			Reveal();
 			UpdateAnimate(anim, false, false, animDelay);
 			return WAR_SWING_SWINGING;
@@ -3673,6 +3677,9 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			}
 			else
 				SetTimeout(7);		// attack speed is always 7ms and then the char keep waiting the remaining time
+
+			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) )
+				UpdateDir(pCharTarg);
 
 			Reveal();
 			UpdateAnimate(anim, false, false, animDelay);

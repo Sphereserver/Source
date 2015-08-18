@@ -151,11 +151,11 @@ bool CChar::Spell_Teleport( CPointMap ptNew, bool fTakePets, bool fCheckAntiMagi
 		}
 	}
 
-	if ( !IsStatFlag(STATF_Insubstantial) )
+	if ( iEffect != ITEMID_NOTHING && !IsStatFlag(STATF_Insubstantial) )
 	{
 		if ( m_pPlayer )
 		{
-			if ( IsPriv(PRIV_GM) && !IsStatFlag(STATF_Incognito) && !IsPriv(PRIV_PRIV_NOSHOW) )
+			if ( IsPriv(PRIV_GM) && !IsPriv(PRIV_PRIV_NOSHOW) && !IsStatFlag(STATF_Incognito) )
 			{
 				iEffect = g_Cfg.m_iSpell_Teleport_Effect_Staff;
 				iSound = g_Cfg.m_iSpell_Teleport_Sound_Staff;
