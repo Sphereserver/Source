@@ -3433,9 +3433,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		return WAR_SWING_EQUIPPING;
 	}
 
-	if ( !CanSeeLOS(pCharTarg) )
-		return WAR_SWING_EQUIPPING;
-
 	// I am on ship. Should be able to combat only inside the ship to avoid free sea and ground characters hunting
 	if ( (m_pArea != pCharTarg->m_pArea) && !IsSetCombatFlags(COMBAT_ALLOWHITFROMSHIP) )
 	{
@@ -3564,7 +3561,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				}
 
 				pAmmo = (pNewCont)? pNewCont->ContentFind(rid) : ContentFind(rid);
-
 			}
 			else
 				pAmmo = ContentFind(rid);
@@ -3580,6 +3576,9 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		// Start the swing
 		if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )
 		{
+			if ( !CanSeeLOS(pCharTarg) )
+				return WAR_SWING_EQUIPPING;
+
 			int iSwingDelay = Fight_GetWeaponSwingTimer();
 			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
 			BYTE animDelay = 0;
@@ -3603,14 +3602,14 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 			m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
 			m_atFight.m_NextSwingDelay = iSwingDelay - 7;
-			m_atFight.m_fMoved = 0;
 			SetTimeout(7);		// attack speed is always 7ms and then the char keep waiting the remaining time
 
-			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) )
-				UpdateDir(pCharTarg);
-
 			Reveal();
-			UpdateAnimate(anim, false, false, animDelay);
+			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) && !IsStatFlag(STATF_Fly) )
+			{
+				UpdateDir(pCharTarg);
+				UpdateAnimate(anim, false, false, animDelay);
+			}
 			return WAR_SWING_SWINGING;
 		}
 
@@ -3645,6 +3644,9 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		// Start the swing
 		if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )
 		{
+			if ( !CanSeeLOS(pCharTarg) )
+				return WAR_SWING_EQUIPPING;
+
 			int iSwingDelay = Fight_GetWeaponSwingTimer();
 			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
 			BYTE animDelay = 0;
@@ -3668,30 +3670,22 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 			m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
 			m_atFight.m_NextSwingDelay = iSwingDelay - 7;
-			m_atFight.m_fMoved = 0;
-
-			if ( IsSetCombatFlags(COMBAT_PREHIT) )
-			{
-				SetKeyNum("LastHit", iSwingDelay + g_World.GetCurrentTime().GetTimeRaw());
-				SetTimeout(1);
-			}
-			else
-				SetTimeout(7);		// attack speed is always 7ms and then the char keep waiting the remaining time
-
-			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) )
-				UpdateDir(pCharTarg);
+			SetTimeout(7);		// attack speed is always 7ms and then the char keep waiting the remaining time
 
 			Reveal();
-			UpdateAnimate(anim, false, false, animDelay);
+			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) && !IsStatFlag(STATF_Fly) )
+			{
+				UpdateDir(pCharTarg);
+				UpdateAnimate(anim, false, false, animDelay);
+			}
 			return WAR_SWING_SWINGING;
 		}
 	}
 
 	// We made our swing. so we must recoil.
 	m_atFight.m_War_Swing_State = WAR_SWING_EQUIPPING;
-	m_atFight.m_fMoved	= 0;
 
-	CVarDefCont * pTagStorage = NULL; 
+	CVarDefCont * pTagStorage = NULL;
 	SOUND_TYPE iSnd = 0;
 
 	// Check if we hit something;

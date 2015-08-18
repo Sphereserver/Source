@@ -3221,12 +3221,11 @@ bool CChar::CheckLocation( bool fStanding )
 		SKILL_TYPE iSkillActive	= Skill_GetActive();
 		if ( g_Cfg.IsSkillFlag(iSkillActive, SKF_IMMOBILE) )
 			Skill_Fail(false);
-		else if ( g_Cfg.IsSkillFlag(iSkillActive, SKF_FIGHT) )
+		else if ( g_Cfg.IsSkillFlag(iSkillActive, SKF_FIGHT) && g_Cfg.IsSkillFlag(iSkillActive, SKF_RANGED) && !IsSetCombatFlags(COMBAT_ARCHERYCANMOVE) && !IsStatFlag(STATF_ArcherCanMove) )
 		{
-			m_atFight.m_fMoved = 1;		// are we using a skill that is effected by motion?
-
-			if ( g_Cfg.IsSkillFlag(iSkillActive, SKF_RANGED) && !IsSetCombatFlags(COMBAT_ARCHERYCANMOVE) && !IsStatFlag(STATF_ArcherCanMove) )
-				Fight_ResetWeaponSwingTimer();
+			// Keep timer active holding the swing action until the char stops moving
+			m_atFight.m_War_Swing_State = WAR_SWING_EQUIPPING;
+			SetTimeout(TICK_PER_SEC);
 		}
 
 		// This could get REALLY EXPENSIVE !

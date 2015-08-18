@@ -3167,15 +3167,9 @@ int CChar::Skill_Fighting( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_START )
 	{
 		m_atFight.m_War_Swing_State = WAR_SWING_EQUIPPING;
-		m_atFight.m_fMoved = 0;
+		SetTimeout(0);		// instantly call @HitTry, so the whole delay can be overrided in ARGN1
 
-		// Set the swing timer.
-		/*int iWaitTime = Fight_GetWeaponSwingTimer()/2;	// start the anim immediately.
-		if ( g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_RANGED) )	// anim is funny for archery
-			iWaitTime /= 2;*/
-		SetTimeout( 0 );	// Timeout(0) here means instantly call @HitTry, so the whole delay can be overrided in argn1
-
-		return( g_Cfg.Calc_CombatChanceToHit(this, m_Fight_Targ.CharFind(), Skill_GetActive()) );
+		return g_Cfg.Calc_CombatChanceToHit(this, m_Fight_Targ.CharFind(), Skill_GetActive());
 	}
 
 	if ( stage == SKTRIG_STROKE )

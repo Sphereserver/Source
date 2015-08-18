@@ -2803,8 +2803,6 @@ public:
 		struct
 		{
 			WAR_SWING_TYPE	m_War_Swing_State;	// We are in the war mode swing.
-			//CGrayUID		m_Act_Targ;			// Who are we currently attacking?
-			WORD			m_fMoved;
 			int				m_NextSwingDelay;	// Waiting time between swings
 		} m_atFight;
 
