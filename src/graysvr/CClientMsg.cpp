@@ -2371,8 +2371,8 @@ int CClient::addShopItems(CChar * pVendor, LAYER_TYPE layer, bool bReal)
 	int count = 0;
 	if ( bReal )
 	{
-		addContents(pContainer, false, false, true);
-		for (const CItem* item = pContainer->GetContentTail(); item != NULL && count < MAX_ITEMS_CONT; item = item->GetPrev())
+		addContents(pContainer, false, false, true, false);
+		for (const CItem* item = pContainer->GetContentHead(); item != NULL && count < MAX_ITEMS_CONT; item = item->GetNext())
 		{
 			addAOSTooltip(item, false, true);
 			count++;
@@ -2381,7 +2381,7 @@ int CClient::addShopItems(CChar * pVendor, LAYER_TYPE layer, bool bReal)
 		{
 			addContents(pContainer, false, false, false, true);
 			PacketVendorBuyList* cmd = new PacketVendorBuyList();
-			cmd->fillContainer(pContainer, 0, 0);
+			count = cmd->fillContainer(pContainer, pVendor->NPC_GetVendorMarkup(m_pChar), count);
 			cmd->push(this);
 		}
 	}

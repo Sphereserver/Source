@@ -1071,8 +1071,8 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 	const CItemBase* itemDefinition;
 	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA());
 
-	if (!bExtra)
-	{
+	/*if (!bExtra)
+	{*/
 		initLength();
 		skip(2);
 
@@ -1088,7 +1088,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 
 		if (isShop)
 		{
-			for (const CItem* item = container->GetContentTail(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetPrev())
+			for (const CItem* item = container->GetContentHead(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetNext())
 			{
 				if (filterLayers == true)
 				{
@@ -1222,12 +1222,12 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 	seek(3);
 	writeInt16(static_cast<WORD>(m_count));
 	seek(l);
-	}
+	/*}
 	else
 	{
 		writeInt16(5);
 		writeInt16(0);
-	}
+	}*/
 
 	push(target);
 }
