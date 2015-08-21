@@ -406,31 +406,22 @@ bool CChar::NPC_CheckWalkHere( const CPointBase & pt, const CRegionBase * pArea,
 		if ( pItem == NULL )
 			break;
 
-		int zdiff = pItem->GetTopZ() - pt.m_z;
-		if ( abs(zdiff) > 3 )
+		if ( abs(pItem->GetTopZ() - pt.m_z) > 5 )
 			continue;
 
 		switch ( pItem->GetType() )
 		{
 			case IT_WEB:
-				if ( GetDispID() == CREID_GIANT_SPIDER )
-					continue;
-				return false;
+				return (GetDispID() == CREID_GIANT_SPIDER) ? true : false;
 			case IT_FIRE:
-				if ( Can(CAN_C_FIRE_IMMUNE) )
-					continue;
-				return false;
+				return Can(CAN_C_FIRE_IMMUNE);
 			case IT_TRAP:
 			case IT_TRAP_ACTIVE:
-			case IT_SPELL:
 			case IT_MOONGATE:
 			case IT_TELEPAD:
 				return false;
-			default:
-				break;
 		}
 	}
-
 	return true;
 }
 

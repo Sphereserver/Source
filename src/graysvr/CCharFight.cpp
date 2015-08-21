@@ -3357,7 +3357,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		tRet = OnTrigger(CTRIG_HitCheck, pCharTarg, &pArgs);
 		if ( tRet == TRIGRET_RET_TRUE )
 			return (WAR_SWING_TYPE)pArgs.m_iN1;
-		else if ( tRet == -1 )
+		if ( tRet == -1 )
 			return WAR_SWING_INVALID;
 
 		m_atFight.m_War_Swing_State = static_cast<WAR_SWING_TYPE>(pArgs.m_iN1);
@@ -3368,7 +3368,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			if ( tRet == TRIGRET_RET_DEFAULT )
 				return WAR_SWING_EQUIPPING;
 
-			if ( iTyp == DAMAGE_HIT_BLUNT )	// If type did not change in the trigger, default iTyp is set.
+			if ( iTyp == DAMAGE_HIT_BLUNT )		// if type did not change in the trigger, default iTyp is set
 			{
 				CItem *pWeapon = m_uidWeapon.ItemFind();
 				CItemBase *pWeaponDef = NULL;
@@ -3417,20 +3417,19 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	if ( !pCharTarg || pCharTarg == this )
 		return WAR_SWING_INVALID;
 
-	//	Very basic check on possibility to hit
+	// Very basic check on possibility to hit
 	if ( IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Freeze|STATF_Stone) || pCharTarg->IsStatFlag(STATF_DEAD|STATF_INVUL|STATF_Stone|STATF_Ridden) )
 		return WAR_SWING_INVALID;
-
 	if ( pCharTarg->m_pArea && pCharTarg->m_pArea->IsFlag(REGION_FLAG_SAFE) )
 		return WAR_SWING_INVALID;
 
 	int dist = GetTopDist3D(pCharTarg);
 	if ( dist > UO_MAP_VIEW_RADAR )
 	{
-		if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
-			return WAR_SWING_INVALID;
+		if ( IsSetCombatFlags(COMBAT_STAYINRANGE) )
+			return WAR_SWING_EQUIPPING;
 
-		return WAR_SWING_EQUIPPING;
+		return WAR_SWING_INVALID;
 	}
 
 	// I am on ship. Should be able to combat only inside the ship to avoid free sea and ground characters hunting
@@ -3439,41 +3438,28 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( m_pArea && m_pArea->IsFlag(REGION_FLAG_SHIP) )
 		{
 			SysMessageDefault(DEFMSG_COMBAT_OUTSIDESHIP);
-			Skill_Start(SKILL_NONE);
 			return WAR_SWING_INVALID;
 		}
 		if ( pCharTarg->m_pArea && pCharTarg->m_pArea->IsFlag(REGION_FLAG_SHIP) )
 		{
 			SysMessageDefault(DEFMSG_COMBAT_INSIDESHIP);
-			Skill_Start(SKILL_NONE);
 			return WAR_SWING_INVALID;
 		}
 	}
 
-	//	conjured npc removed on guard hit
+	// Guards should remove conjured NPCs
 	if ( m_pNPC && m_pNPC->m_Brain == NPCBRAIN_GUARD && pCharTarg->m_pNPC && pCharTarg->IsStatFlag(STATF_Conjured) )
 	{
 		pCharTarg->Delete();
 		return WAR_SWING_EQUIPPING;
 	}
 
-	//	fix of the bounce back effect with dir update for clients to be able to run in combat easily
+	// Fix of the bounce back effect with dir update for clients to be able to run in combat easily
 	if ( IsClient() && (g_Cfg.m_iCombatFlags & COMBAT_FACECOMBAT) )
 	{
 		DIR_TYPE dirOpponent = GetDir(pCharTarg, m_dirFace);
 		if ( (dirOpponent != m_dirFace) && (dirOpponent != GetDirTurn(m_dirFace, -1)) && (dirOpponent != GetDirTurn(m_dirFace, 1)) )
 			return WAR_SWING_READY;
-	}
-
-	if ( IsSetCombatFlags(COMBAT_PREHIT) && (m_atFight.m_War_Swing_State == WAR_SWING_READY) )
-	{
-		INT64 diff = GetKeyNum("LastHit", true) - g_World.GetCurrentTime().GetTimeRaw();
-		if ( diff > 0 )
-		{
-			diff = (diff > 50) ? 50 : diff;
-			SetTimeout(diff);
-			return WAR_SWING_READY;
-		}
 	}
 
 	CItem *pWeapon = m_uidWeapon.ItemFind();
@@ -3509,7 +3495,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( IsStatFlag(STATF_HasShield) )		// this should never happen
 		{
 			SysMessageDefault(DEFMSG_ITEMUSE_BOW_SHIELD);
-			Skill_Start(SKILL_NONE);
 			return WAR_SWING_INVALID;
 		}
 
@@ -3568,7 +3553,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			if ( !pAmmo && m_pPlayer )
 			{
 				SysMessageDefault(DEFMSG_COMBAT_ARCH_NOAMMO);
-				Skill_Start(SKILL_NONE);
 				return WAR_SWING_INVALID;
 			}
 		}
@@ -3852,10 +3836,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			pAmmo->Delete();
 	}
 
-	// Raise skill
-	if ( m_pPlayer && !pCharTarg->m_pArea->IsFlag(REGION_FLAG_NO_PVP) )
-		Skill_UseQuick(SKILL_TACTICS, pCharTarg->Skill_GetBase(SKILL_TACTICS) / 10);
-
 	// Hit noise (based on weapon type)
 	SoundChar(CRESND_HIT);
 
@@ -3882,7 +3862,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( !IsSetCombatFlags(COMBAT_NOPOISONHIT) && 50 >= Calc_GetRandVal(100) )
 		{
 			int iPoisoningSkill = Skill_GetBase(SKILL_POISONING);
-			pCharTarg->SetPoison(Calc_GetRandVal(iPoisoningSkill), Calc_GetRandVal(iPoisoningSkill / 50), this);
+			if ( iPoisoningSkill )
+				pCharTarg->SetPoison(Calc_GetRandVal(iPoisoningSkill), Calc_GetRandVal(iPoisoningSkill / 50), this);
 		}
 	}
 
@@ -3973,8 +3954,12 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			}
 		}
 
-		// If we do no damage, we get no experience!
-		Skill_Experience(skill, m_Act_Difficulty);
+		// Check for passive skill gain
+		if ( m_pPlayer && !pCharTarg->m_pArea->IsFlag(REGION_FLAG_NO_PVP) )
+		{
+			Skill_Experience(skill, m_Act_Difficulty);
+			Skill_Experience(SKILL_TACTICS, m_Act_Difficulty);
+		}
 	}
 
 	return WAR_SWING_EQUIPPING;

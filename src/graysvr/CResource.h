@@ -87,7 +87,6 @@ enum COMBATFLAGS_TYPE
 {
 	COMBAT_NODIRCHANGE			= 0x0000001,	// not rotate player when fighting
 	COMBAT_FACECOMBAT			= 0x0000002,	// allow faced combat only
-	COMBAT_PREHIT				= 0x0000004,	// allow prehit for close combat. first hit is instant (delay 0.1sec)
 	COMBAT_ELEMENTAL_ENGINE		= 0x0000008,	// use DAM*/RES* to split damage/resist into Physical/Fire/Cold/Poison/Energy (AOS) instead use old AR (pre-AOS)
 	COMBAT_DCLICKSELF_UNMOUNTS	= 0x0000020,	// unmount horse when dclicking self while in warmode
 	COMBAT_ALLOWHITFROMSHIP		= 0x0000040,	// allow attacking opponents from ships

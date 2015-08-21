@@ -4808,13 +4808,12 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		if ( RES_GET_INDEX(m_itPotion.m_Type) == SPELL_Explosion )
 		{
 			CSpellDef *pSpell = g_Cfg.GetSpellDef(SPELL_Explosion);
-			CChar *pSrc = m_uidLink.CharFind();
-
 			CItem *pItem = CItem::CreateBase(ITEMID_FX_EXPLODE_3);
 			if ( !pItem )
 				return( 0 );
 
-			pItem->m_uidLink = pSrc ? pSrc->GetUID() : static_cast<CGrayUID>(UID_CLEAR);
+			if ( pSrc )
+				pItem->m_uidLink = pSrc->GetUID();
 			pItem->m_itExplode.m_iDamage = static_cast<WORD>(g_Cfg.GetSpellEffect(SPELL_Explosion, m_itPotion.m_skillquality));
 			pItem->m_itExplode.m_wFlags = pSpell->IsSpellType(SPELLFLAG_NOUNPARALYZE) ? DAMAGE_FIRE|DAMAGE_NOUNPARALYZE : DAMAGE_FIRE;
 			pItem->m_itExplode.m_iDist = 2;
@@ -4987,17 +4986,19 @@ bool CItem::IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg )
 		if ( IsSetEF(EF_Item_Strict_Comparison) )
 			return false;
 
+		ITEMID_TYPE itemid = pItemDef->GetID();
 		ITEMID_TYPE index = static_cast<ITEMID_TYPE>(rid.GetResIndex());
+
 		switch ( index )
 		{
-			case ITEMID_LOG_1:		// logs and boards are the same resource type
+			case ITEMID_LOG_1:		// boards can be used as logs (but logs can't be used as boards)
 			{
-				if ( IsType(IT_BOARD) )
+				if ( itemid == ITEMID_BOARD1 )
 					return true;
 			}
-			case ITEMID_LEATHER_1:	// leather and hides are the same resource type
+			case ITEMID_HIDES:		// leather can be used as hide (but hide can't be used as leather)
 			{
-				if ( IsType(IT_HIDE) )
+				if ( itemid == ITEMID_LEATHER_1 )
 					return true;
 			}
 		}

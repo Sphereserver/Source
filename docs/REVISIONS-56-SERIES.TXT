@@ -2566,3 +2566,10 @@ Fixed: Combat randomly not starting the first swing.
 Fixed: Rubberband when using combat skills while running.
 Fixed: World teleports incorrectly showing teleport spell animation.
 Fixed: Tracking skill showing empty messages instead not show any message at all when the tracking messages are blank on sphere_msgs.scp.
+
+21-08-2015, Coruja
+Fixed: NPCs (brain_monster) always trying to apply poison on hit, even if the NPC doesn't have poisoning skill or poisoned weapons.
+Fixed: NPCs not moving when step on Fire Field spell.
+Fixed: Tactics skill too difficult to gain on combat.
+Fixed: Explosion potion not flagging criminal when hit someone.
+[Sphere.ini] Removed COMBAT_PREHIT combat flag, it can be replaced by AttackingIsaCrime which does the same thing.
