@@ -2231,6 +2231,32 @@ effect_bounce:
 		}
 	}
 
+	// Disturb magic spells (only players can be disturbed)
+	if ( m_pPlayer && !(uType & DAMAGE_NODISTURB) && g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_MAGIC) )
+	{
+		// Check if my spell can be interrupted
+		int iDisturbChance = 0;
+		int iSpellSkill;
+		const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
+		if ( pSpellDef && pSpellDef->GetPrimarySkill(&iSpellSkill) )
+			iDisturbChance = pSpellDef->m_Interrupt.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(iSpellSkill)));
+
+		if ( iDisturbChance && IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+		{
+			// Protection spell can cancel the disturb
+			CItem *pProtectionSpell = LayerFind(LAYER_SPELL_Protection);
+			if ( pProtectionSpell )
+			{
+				int iChance = pProtectionSpell->m_itSpell.m_spelllevel;
+				if ( iChance > Calc_GetRandVal(1000) )
+					iDisturbChance = 0;
+			}
+		}
+
+		if ( iDisturbChance > Calc_GetRandVal(1000) )
+			Skill_Fail();
+	}
+
 	if ( pSrc && pSrc != this )
 	{
 		// Update attacker list
@@ -2785,37 +2811,13 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	if ( IsClient() )
 		GetClient()->addPlayerWarMode();
 
-	// Skill interruption ?
 	SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
 	SKILL_TYPE skillActive = Skill_GetActive();
 
-	if (skillActive == skillWeapon && m_Fight_Targ == pCharTarg->GetUID())
+	if (skillActive == skillWeapon && m_Fight_Targ == pCharTarg->GetUID())		// already attacking this same target using the same skill
 		return true;
 
-	if ( g_Cfg.IsSkillFlag(skillActive, SKF_MAGIC) )
-	{
-		if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
-		{
-			CItem *pProtectionSpell = LayerFind(LAYER_SPELL_Protection);
-			if ( pProtectionSpell != NULL )
-			{
-				int iChance = pProtectionSpell->m_itSpell.m_spelllevel;
-				if ( iChance > Calc_GetRandVal(100) )
-					return true;
-			}
-		}
-
-		int skill;
-		const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
-		if ( pSpellDef != NULL && pSpellDef->GetPrimarySkill(&skill, NULL) )
-		{
-			int iInterrupt = pSpellDef->m_Interrupt.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(skill)));
-			if ( Calc_GetRandVal(1000) >= iInterrupt )
-				return true;
-		}
-	}
-
-	if ( !m_pPlayer && !btoldByMaster )	// We call for FindBestTarget when this CChar is not a player and was not commanded to attack, otherwise it attack directly.
+	if ( m_pNPC && !btoldByMaster )		// call FindBestTarget when this CChar is a NPC and was not commanded to attack, otherwise it attack directly
 		pTarget = Fight_FindBestTarget();
 
 	m_Fight_Targ = pTarget ? pTarget->GetUID() : static_cast<CGrayUID>(UID_UNUSED);

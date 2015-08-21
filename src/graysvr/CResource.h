@@ -142,6 +142,7 @@ enum BODYPART_TYPE
 #define DAMAGE_COLD			0x0200	// cold or water based damage
 #define DAMAGE_HIT_SLASH	0x0400	// sword
 #define DAMAGE_HIT_PIERCE	0x0800	// spear.
+#define DAMAGE_NODISTURB	0x2000	// victim won't be disturbed
 #define DAMAGE_NOREVEAL		0x4000	// Attacker is not revealed for this
 #define DAMAGE_NOUNPARALYZE	0x8000  // victim won't be unparalyzed
 #define DAMAGE_FIXED		0x10000	// already fixed damage, don't do calcs ... only create blood, anim, sounds... and update memories and attacker

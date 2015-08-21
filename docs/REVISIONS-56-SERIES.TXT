@@ -2572,4 +2572,7 @@ Fixed: NPCs (brain_monster) always trying to apply poison on hit, even if the NP
 Fixed: NPCs not moving when step on Fire Field spell.
 Fixed: Tactics skill too difficult to gain on combat.
 Fixed: Explosion potion not flagging criminal when hit someone.
+Fixed: Spells disturb not working correctly in some specific cases.
+Fixed: Missing paperdoll update when char ID (body) get changed.
 [Sphere.ini] Removed COMBAT_PREHIT combat flag, it can be replaced by AttackingIsaCrime which does the same thing.
+[sphere_defs.scp]: Added new 'dam_nodisturb' damage flag.
