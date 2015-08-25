@@ -151,7 +151,7 @@ bool CChar::Spell_Teleport( CPointMap ptNew, bool fTakePets, bool fCheckAntiMagi
 		}
 	}
 
-	if ( iEffect != ITEMID_NOTHING && !IsStatFlag(STATF_Insubstantial) )
+	if ( !IsStatFlag(STATF_Insubstantial) )
 	{
 		if ( m_pPlayer )
 		{

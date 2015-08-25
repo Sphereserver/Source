@@ -1434,37 +1434,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			}
 			break;
 		case CV_TELE:
-			{
-				CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Teleport);
-				if (pSpellDef == NULL)
-					return true;
-
-				CObjBase * pObjSrc = dynamic_cast<CObjBase *>(pSrc);
-
-				if ( IsSetMagicFlags( MAGICF_PRECAST ) && !pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ) )
-				{
-					int skill;
-					if (!pSpellDef->GetPrimarySkill(&skill, NULL))
-						return true;
-
-					m_tmSkillMagery.m_Spell = SPELL_Teleport;
-					m_pChar->m_atMagery.m_Spell = SPELL_Teleport;
-					if (pObjSrc != NULL)
-					{
-						m_Targ_UID = pObjSrc->GetUID();	// default target.
-						m_Targ_PrvUID = pObjSrc->GetUID();
-					}
-					else
-					{
-						m_Targ_UID.ClearUID();
-						m_Targ_PrvUID.ClearUID();
-					}
-					m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
-					break;
-				}
-				else
-					Cmd_Skill_Magery( SPELL_Teleport, pObjSrc);
-			}
+			Cmd_Skill_Magery(SPELL_Teleport, dynamic_cast<CObjBase *>(pSrc));
 			break;
 		case CV_TILE:
 			if ( ! s.HasArgs())

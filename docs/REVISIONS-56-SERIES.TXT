@@ -2576,3 +2576,8 @@ Fixed: Spells disturb not working correctly in some specific cases.
 Fixed: Missing paperdoll update when char ID (body) get changed.
 [Sphere.ini] Removed COMBAT_PREHIT combat flag, it can be replaced by AttackingIsaCrime which does the same thing.
 [sphere_defs.scp]: Added new 'dam_nodisturb' damage flag.
+
+25-08-2015, Coruja
+Fixed: Food items not restoring char FOOD correctly.
+Fixed: HitLeech[Life/Mana/Stam] and HitManaDrain properties making hits/mana/stam rise over the max char limit.
+[sphere_spells.scp]: Removed SOUND / EFFECT_ID from Teleport spell. These values are already handled by Sphere.ini settings, and sphere_spells.scp values was making it play twice.

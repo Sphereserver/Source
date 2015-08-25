@@ -3892,8 +3892,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( iHitLifeLeech )
 		{
 			iHitLifeLeech = Calc_GetRandVal2(0, (iDmg * iHitLifeLeech * 30) / 10000);	// leech 0% ~ 30% of damage value
-			Stat_SetVal(STAT_STR, Stat_GetVal(STAT_STR) + iHitLifeLeech);
-			UpdateHitsFlag();
+			UpdateStatVal(STAT_STR, Stat_GetVal(STAT_STR) + iHitLifeLeech);
 			bMakeLeechSound = true;
 		}
 
@@ -3901,15 +3900,13 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( iHitManaLeech )
 		{
 			iHitManaLeech = Calc_GetRandVal2(0, (iDmg * iHitManaLeech * 40) / 10000);	// leech 0% ~ 40% of damage value
-			Stat_SetVal(STAT_INT, Stat_GetVal(STAT_INT) + iHitManaLeech);
-			UpdateManaFlag();
+			UpdateStatVal(STAT_INT, Stat_GetVal(STAT_INT) + iHitManaLeech);
 			bMakeLeechSound = true;
 		}
 
 		if ( GetDefNum("HitLeechStam", true) > Calc_GetRandLLVal(100) )
 		{
-			Stat_SetVal(STAT_DEX, Stat_GetVal(STAT_DEX) + iDmg);	// leech 100% of damage value
-			UpdateStamFlag();
+			UpdateStatVal(STAT_DEX, Stat_GetVal(STAT_DEX) + iDmg);	// leech 100% of damage value
 			bMakeLeechSound = true;
 		}
 
@@ -3929,10 +3926,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 		if ( iManaDrain > 0 )
 		{
-			pCharTarg->Stat_SetVal(STAT_INT, iTargMana - iManaDrain);
-			pCharTarg->UpdateManaFlag();
-			Stat_SetVal(STAT_INT, Stat_GetVal(STAT_INT) + iManaDrain);
-			UpdateManaFlag();
+			pCharTarg->UpdateStatVal(STAT_INT, iTargMana - iManaDrain);
+			UpdateStatVal(STAT_INT, Stat_GetVal(STAT_INT) + iManaDrain);
 			bMakeLeechSound = true;
 		}
 
