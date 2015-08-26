@@ -495,6 +495,7 @@ public:
 	DWORD	m_Attr;
 	// NOTE: If this link is set but not valid -> then delete the whole object !
 	CGrayUID m_uidLink;		// Linked to this other object in the world. (owned, key, etc)
+	CGrayUID m_uidSpawnItem;		// SpawnItem for this item
 
 	bool IsTriggerActive(LPCTSTR trig) { return static_cast<CObjBase*>(const_cast<CItem*>(this))->IsTriggerActive(trig); }
 	void SetTriggerActive(LPCTSTR trig = NULL) { static_cast<CObjBase*>(const_cast<CItem*>(this))->SetTriggerActive(trig); }
@@ -1361,11 +1362,15 @@ private:
 	CGrayUID m_obj[UCHAR_MAX];
 
 public:
+	static const char *m_sClassName;
 	void OnTick( bool fExec );
 	void KillChildren();
 	CCharBase * SetTrackID();
-	void GenerateItem( CResourceDef * pDef );
+	void GenerateItem( CResourceDef * pDef );	//Creating the resource
 	void GenerateChar( CResourceDef * pDef );
+
+	void DelObj( CGrayUID uid );	//Removing one object from this spawn's list
+	void AddObj( CGrayUID uid );
 
 	inline CCharBase * TryChar( CREID_TYPE &id );
 	inline CItemBase * TryItem( ITEMID_TYPE &id );
@@ -1373,6 +1378,9 @@ public:
 	int GetName(TCHAR * pszOut) const;
 	CItemSpawn(ITEMID_TYPE id , CItemBase * pItemDef);
 	virtual ~CItemSpawn();
+	virtual bool r_WriteVal(LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc);
+	virtual bool  r_LoadVal(CScript & s);
+	virtual void  r_Write(CScript & s);
 };
 
 class CItemVendable : public CItem
@@ -2687,6 +2695,7 @@ public:
 	bool m_fClimbUpdated;	// FixClimbHeight() called?
 	bool m_fIgnoreNextPetCmd;	// return 1 in speech block for this pet will make it ignore target petcmds while allowing the rest to perform them
 	height_t m_zClimbHeight;	// The height at the end of the climbable.
+	CGrayUID m_uidSpawnItem;	// SpawnItem for this char.
 
 	// Saved stuff.
 	DIR_TYPE m_dirFace;	// facing this dir.

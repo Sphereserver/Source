@@ -1692,8 +1692,9 @@ bool CChar::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 				return( true );
 			case CHR_SPAWNITEM:
 				{
-					CItemMemory * pMemory = Memory_FindTypes(MEMORY_ISPAWNED);
-					pRef = pMemory ? pMemory->m_uidLink.ItemFind() : NULL;
+					/*CItemMemory * pMemory = Memory_FindTypes(MEMORY_ISPAWNED);
+					pRef = pMemory ? pMemory->m_uidLink.ItemFind() : NULL;*/
+					pRef = m_uidSpawnItem.IsValidUID() ? m_uidSpawnItem.ItemFind() : NULL;
 					return true;
 				}
 			case CHR_WEAPON:

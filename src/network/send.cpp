@@ -1088,7 +1088,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 
 		if (isShop)
 		{
-			for (const CItem* item = container->GetContentHead(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetNext())
+			for (const CItem* item = container->GetContentTail(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetPrev())
 			{
 				if (filterLayers == true)
 				{
@@ -1155,7 +1155,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 		}
 		else
 		{
-			for (const CItem* item = container->GetContentHead(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetNext())
+			for (const CItem* item = container->GetContentTail(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetPrev())
 			{
 				if (item->IsAttr(ATTR_INVIS) && viewer->CanSee(item) == false)
 					continue;

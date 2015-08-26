@@ -107,6 +107,7 @@ CItem::~CItem()
 	switch ( m_type )
 	{
 		case IT_SPAWN_CHAR:
+		//case IT_SPAWN_ITEM:	//Should items be removed too?
 			{
 				CItemSpawn *pSpawn = static_cast<CItemSpawn*>(this);
 				pSpawn->KillChildren();
@@ -201,9 +202,10 @@ CItem * CItem::CreateBase( ITEMID_TYPE id )	// static
 		case IT_SCRIPT:
 			pItem = new CItemScript( id, pItemDef );
 			break;
-		/*case IT_SPAWN_CHAR:
+		case IT_SPAWN_CHAR:
 		case IT_SPAWN_ITEM:
-			pItem = new CItemSpawn(id ,pItemDef);*/
+			pItem = new CItemSpawn(id ,pItemDef);
+			break;
 		default:
 			if ( pItemDef->GetMakeValue(0))
 				pItem = new CItemVendable( id, pItemDef );
@@ -2475,12 +2477,7 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_TYPEDEF, m_type ));
 			break;
 		default:
-			{
-				/*CItemSpawn * pSpawn = static_cast<CItemSpawn*>(this);
-				if (pSpawn && (GetType() == IT_SPAWN_CHAR || GetType() == IT_SPAWN_ITEM))
-					return pSpawn->r_WriteVal(pszKey, sVal, pSrc);*/
-				fDoDefault = true;
-			}
+			fDoDefault = true;
 	}
 	if ( fDoDefault )
 		return( CObjBase::r_WriteVal( pszKey, sVal, pSrc ));

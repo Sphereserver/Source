@@ -51,6 +51,7 @@ ADD(CItemMap,				"CItemMap");
 ADD(CItemMessage,			"CItemMessage");
 ADD(CItemVendable,			"CItemVendable");
 ADD(CItemShip,				"CItemShip");
+ADD(CItemSpawn,				"CItemSpawn");
 ADD(CItemStone,				"CItemStone");
 ADD(CDataBase,				"CDataBase");
 ADD(CItemBaseMulti,			"CItemBaseMulti");

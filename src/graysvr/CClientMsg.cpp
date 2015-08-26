@@ -2372,7 +2372,7 @@ int CClient::addShopItems(CChar * pVendor, LAYER_TYPE layer, bool bReal)
 	if ( bReal )
 	{
 		addContents(pContainer, false, false, true, false);
-		for (const CItem* item = pContainer->GetContentHead(); item != NULL && count < MAX_ITEMS_CONT; item = item->GetNext())
+		for (const CItem* item = pContainer->GetContentTail(); item != NULL && count < MAX_ITEMS_CONT; item = item->GetPrev())
 		{
 			addAOSTooltip(item, false, true);
 			count++;

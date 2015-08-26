@@ -1924,6 +1924,7 @@ void CWorld::r_Write( CScript & s )
 	// Write out the safe header.
 	s.WriteKey("TITLE", GRAY_TITLE " World Script");
 	s.WriteKey("VERSION", GRAY_VERSION);
+	s.WriteKeyVal("PREVBUILD", __GITREVISION__);
 	s.WriteKeyVal( "TIME", GetCurrentTime().GetTimeRaw() );
 	s.WriteKeyVal( "SAVECOUNT", m_iSaveCountID );
 	s.Flush();	// Force this out to the file now.
@@ -1954,6 +1955,7 @@ bool CWorld::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 
 enum WC_TYPE
 {
+	WC_PREVBUILD,
 	WC_SAVECOUNT,
 	WC_TIME,
 	WC_TITLE,
@@ -1963,6 +1965,7 @@ enum WC_TYPE
 
 LPCTSTR const CWorld::sm_szLoadKeys[WC_QTY+1] =	// static
 {
+	"PREVBUILD",
 	"SAVECOUNT",
 	"TIME",
 	"TITLE",
@@ -2017,6 +2020,9 @@ bool CWorld::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 
 	switch ( FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1 ))
 	{
+		case WC_PREVBUILD:
+			sVal.FormatVal(m_iPrevBuild);
+			break;
 		case WC_SAVECOUNT: // "SAVECOUNT"
 			sVal.FormatVal( m_iSaveCountID );
 			break;
@@ -2049,6 +2055,9 @@ bool CWorld::r_LoadVal( CScript &s )
 	LPCTSTR	pszKey = s.GetKey();
 	switch ( FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1 ))
 	{
+		case WC_PREVBUILD:
+			m_iPrevBuild = s.GetArgVal();
+			break;
 		case WC_SAVECOUNT: // "SAVECOUNT"
 			m_iSaveCountID = s.GetArgVal();
 			break;

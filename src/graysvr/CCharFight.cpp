@@ -946,7 +946,7 @@ bool CChar::Memory_UpdateFlags( CItemMemory * pMemory )
 
 	if ( wMemTypes & MEMORY_FIGHT )	// update more often to check for retreat.
 		iCheckTime = 30*TICK_PER_SEC;
-	else if ( wMemTypes & ( MEMORY_IPET | MEMORY_GUARD | MEMORY_ISPAWNED | MEMORY_GUILD | MEMORY_TOWN ))
+	else if ( wMemTypes & ( MEMORY_IPET | MEMORY_GUARD /*| MEMORY_ISPAWNED*/ | MEMORY_GUILD | MEMORY_TOWN ))
 		iCheckTime = -1;	// never go away.
 	else if ( m_pNPC )	// MEMORY_SPEAK
 		iCheckTime = 5*60*TICK_PER_SEC;
@@ -974,13 +974,20 @@ bool CChar::Memory_UpdateClearTypes( CItemMemory * pMemory, WORD MemTypes )
 	{
 		StatFlag_Clear( STATF_Spawned );
 		// I am a memory link to another object.
-		CItem * pSpawn = pMemory->m_uidLink.ItemFind();
+		if ( m_uidSpawnItem.ItemFind() )
+		{
+			CItemSpawn * pSpawn = static_cast<CItemSpawn*>(m_uidSpawnItem.ItemFind());
+			if ( pSpawn )
+				pSpawn->DelObj( GetUID() );
+			m_uidSpawnItem.InitUID();
+		}
+		/*CItem * pSpawn = pMemory->m_uidLink.ItemFind();
 		if ( pSpawn != NULL &&
 			pSpawn->IsType(IT_SPAWN_CHAR) &&
 			pSpawn->m_itSpawnChar.m_current )
 		{
 			pSpawn->m_itSpawnChar.m_current --;
-		}
+		}*/
 	}
 	if ( MemTypes & MEMORY_IPET )
 	{
@@ -999,6 +1006,12 @@ void CChar::Memory_AddTypes( CItemMemory * pMemory, WORD MemTypes )
 	ADDTOCALLSTACK("CChar::Memory_AddTypes");
 	if ( pMemory )
 	{
+		if ((MemTypes & MEMORY_ISPAWNED))	// BackWards compatibility when updating from builds lower than CItemSpawn change (2427) so their npcs get linked again to the spawn
+		{
+			CItemSpawn * pSpawn = static_cast<CItemSpawn*>(pMemory->m_uidLink.ItemFind());
+			pSpawn->AddObj(GetUID());
+			return;
+		}
 		pMemory->SetMemoryTypes( pMemory->GetMemoryTypes() | MemTypes );
 		pMemory->m_itEqMemory.m_pt = GetTopPoint();	// Where did the fight start ?
 		pMemory->SetTimeStamp(CServTime::GetCurrentTime().GetTimeRaw());
@@ -1030,6 +1043,13 @@ CItemMemory * CChar::Memory_CreateObj( CGrayUID uid, WORD MemTypes )
 	{
 		MemTypes = MEMORY_ISPAWNED;
 	}
+
+	/*if ((MemTypes & MEMORY_ISPAWNED))	// BackWards compatibility when updating from builds lower than CItemSpawn change (2427) so their npcs get linked again to the spawn
+	{
+		CItemSpawn * pSpawn = static_cast<CItemSpawn*>(uid.ItemFind());
+		pSpawn->AddObj(GetUID());
+		return NULL;
+	}*/
 
 	CItemMemory * pMemory = dynamic_cast <CItemMemory *>(CItem::CreateBase( ITEMID_MEMORY ));
 	if ( pMemory == NULL )
@@ -1169,7 +1189,15 @@ bool CChar::Memory_OnTick( CItemMemory * pMemory )
 		return Memory_Fight_OnTick( pMemory );
 	}
 
-	if ( pMemory->IsMemoryTypes( MEMORY_IPET | MEMORY_GUARD | MEMORY_ISPAWNED | MEMORY_GUILD | MEMORY_TOWN ))
+	/*if (pMemory->IsMemoryTypes(MEMORY_ISPAWNED))	// BackWards compatibility when updating from builds lower than CItemSpawn change (2427) so their npcs get linked again to the spawn
+	{
+		CItemSpawn * pSpawn = static_cast<CItemSpawn*>(pMemory->m_uidLink.ItemFind());
+		if (pSpawn)
+			pSpawn->AddObj(GetUID());
+		return false;
+	}*/
+
+	if ( pMemory->IsMemoryTypes( MEMORY_IPET | MEMORY_GUARD /*| MEMORY_ISPAWNED*/ | MEMORY_GUILD | MEMORY_TOWN ))
 		return( true );	// never go away.
 
 	return( false );	// kill it?.

@@ -125,16 +125,16 @@ CItemSpawn::CItemSpawn(ITEMID_TYPE id, CItemBase * pDef) : CItem(ITEMID_WorldGem
 CItemSpawn::~CItemSpawn()
 {
 	ADDTOCALLSTACK("CItemSpawn::~CItemSpawn");
-
+	//KillChildren();
 }
 
 
 
+// Count how many items are here already.
+// This could be in a container.
 void CItemSpawn::GenerateItem(CResourceDef * pDef)
 {
 	ADDTOCALLSTACK("CitemSpawn:GenerateItem");
-	// Count how many items are here already.
-	// This could be in a container.
 
 	RESOURCE_ID_BASE rid = pDef->GetResourceID();
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
@@ -191,6 +191,8 @@ void CItemSpawn::GenerateItem(CResourceDef * pDef)
 	pItem->SetKeyNum("SpawnItem", static_cast<DWORD>(GetUID()));	// This might be dangerous ?
 	pItem->SetDecayTime( g_Cfg.m_iDecay_Item );	// It will decay eventually to be replaced later.
 	pItem->MoveNearObj( this, iDistMax );
+	pItem->m_uidSpawnItem = GetUID();
+	AddObj( pItem->GetUID() );
 }
 
 
@@ -226,8 +228,8 @@ void CItemSpawn::GenerateChar(CResourceDef * pDef)
 		return;
 	}
 
-	m_itSpawnChar.m_current ++;
-	pChar->Memory_AddObjTypes(this, MEMORY_ISPAWNED);
+	//m_itSpawnChar.m_current ++;
+	//pChar->Memory_AddObjTypes(this, MEMORY_ISPAWNED);
 
 	pChar->NPC_LoadScript(true);
 	pChar->MoveTo(GetTopPoint());
@@ -247,7 +249,7 @@ void CItemSpawn::GenerateChar(CResourceDef * pDef)
 	if( isBadPlaceToSpawn )
 	{
 		pChar->Delete();
-		m_itSpawnChar.m_current--;
+		//m_itSpawnChar.m_current--;
 		return;
 	}
 
@@ -259,11 +261,56 @@ void CItemSpawn::GenerateChar(CResourceDef * pDef)
 	}
 	pChar->Update();
 
-	//AddObj(pChar->GetUID());
+	pChar->m_uidSpawnItem = GetUID();		// SpawnItem for this char
+	AddObj( pChar->GetUID() );
 }
 
+// Deleting one object from Spawn's memory, reallocating memory automatically.
+void CItemSpawn::DelObj( CGrayUID uid )
+{
+	ADDTOCALLSTACK("CitemSpawn:DelObj");
+	if ( !uid.IsValidUID() )
+		return;
+	if ( uid.ItemFind() )
+		uid.ItemFind()->m_uidSpawnItem.InitUID();
+	else if ( uid.CharFind() )
+		uid.CharFind()->m_uidSpawnItem.InitUID();
+	for (UCHAR i = 0; i < m_itSpawnChar.m_current; i++)
+	{
+		if ( m_obj[i].IsValidUID() && m_obj[i] == uid )// found this uid, proceeding to clear it
+		{
+			while ( m_obj[i + 1])			// searching for any entry higher than this one...
+			{
+				m_obj[i] = m_obj[i + 1];	// and moving it 1 position to keep values 'together'.
+				i++;
+			}
+			m_obj[i].InitUID();				// Finished moving higher entries (if any) so we free the last entry.
+			break;
+		}
+	}
+	m_itSpawnChar.m_current--;
+}
 
+// Storing one UID in Spawn's m_obj[]
+void CItemSpawn::AddObj( CGrayUID uid )
+{
+	ADDTOCALLSTACK("CitemSpawn:AddObj");
+	UCHAR iCount = GetAmount() > 0 ? GetAmount() : 1;
+	for ( UCHAR i = 0; i < iCount; i++ )
+	{
+		if ( !m_obj[i].ObjFind() )
+		{
+			m_obj[i] = uid;
+			m_itSpawnChar.m_current++;
+			break;
+		}
+	}
+}
 
+// Setting time again
+// stoping if more2 >= amount
+// more1 Resource Check
+// resource (item/char) generation
 void CItemSpawn::OnTick(bool fExec)
 {
 	ADDTOCALLSTACK("CitemSpawn:OnTick");
@@ -280,7 +327,7 @@ void CItemSpawn::OnTick(bool fExec)
 	if ( !fExec || IsTimerExpired() )
 		SetTimeout( iMinutes * 60 * TICK_PER_SEC );	// set time to check again.
 
-	if ( ! fExec )
+	if ( ! fExec || m_itSpawnChar.m_current >= GetAmount() )
 		return;
 
 	CResourceDef * pDef = FixDef();
@@ -297,13 +344,12 @@ void CItemSpawn::OnTick(bool fExec)
 		GenerateChar(pDef);
 }
 
+// kill everything spawned from this spawn !
 void CItemSpawn::KillChildren()
 {
 	ADDTOCALLSTACK("CitemSpawn:KillChildren");
-	// kill all creatures spawned from this !
-	int iCurrent = m_itSpawnChar.m_current;
 
-	for ( int j = 0; j < 256; j++ )	// loop through all maps
+	/*for ( int j = 0; j < 256; j++ )	// loop through all maps
 	{
 		if ( !g_MapList.m_maps[j] ) continue;		// skip unsupported maps
 
@@ -320,15 +366,32 @@ void CItemSpawn::KillChildren()
 					pChar->Memory_FindObjTypes(this, MEMORY_ISPAWNED) )
 				{
 					pChar->Delete();
-					iCurrent--;
 				}
 			}
 		}
+	}*/
+	WORD iTotal = GetType() == IT_SPAWN_CHAR ? static_cast<WORD>(m_itSpawnChar.m_current) : GetAmount(); //m_itSpawnItem doesn't have m_current, it uses more2 to set the amount of items spawned in each tick, so i'm using its amount to perform the loop
+	if ( iTotal <= 0 )
+		return;
+	for ( WORD i = 0; i < iTotal; i++ )
+	{
+		if ( !m_obj[i].IsValidUID() )
+			continue;
+		CChar * pObj = m_obj[i].CharFind();
+		if ( pObj )
+		{
+			//DelObj( pObj->GetUID() );
+			pObj->Delete();
+			m_obj[i].InitUID();
+		}
+
 	}
-	m_itSpawnChar.m_current = 0;	// Should not be necessary
+	m_itSpawnChar.m_current = 0;
 	OnTick(false);
 }
 
+// Setting display ID based on Character's Figurine (only for chars)
+// TODO: Enable this for items too.
 CCharBase * CItemSpawn::SetTrackID()
 {
 	ADDTOCALLSTACK("CitemSpawn:SetTrackID");
@@ -353,7 +416,106 @@ CCharBase * CItemSpawn::SetTrackID()
 	return( pCharDef );
 }
 
+enum ISPW_TYPE
+{
+	ISPW_ADDOBJ,
+	ISPW_AT,
+	ISPW_DELOBJ,
+	ISPW_RESET,
+	ISPW_START,
+	ISPW_STOP,
+	ISPW_QTY
+};
 
+
+LPCTSTR const CItemSpawn::sm_szLoadKeys[ISPW_QTY + 1] =
+{
+	"ADDOBJ",
+	"AT",
+	"DELOBJ",
+	"RESET",
+	"START",
+	"STOP",
+	NULL
+};
+
+bool CItemSpawn::r_WriteVal(LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc)
+{
+	ADDTOCALLSTACK("CitemSpawn:r_WriteVal");
+	EXC_TRY("WriteVal");
+	if ( !strnicmp(pszKey,"at.",3) )
+	{
+		pszKey += 3;
+		int objIndex = Exp_GetVal(pszKey);
+		if ( m_obj[objIndex].ItemFind() )
+			return m_obj[objIndex].ItemFind()->r_WriteVal(pszKey, sVal, pSrc);
+		else if ( m_obj[objIndex].CharFind() )
+			return m_obj[objIndex].CharFind()->r_WriteVal(pszKey, sVal, pSrc);
+		return false;
+	}
+	EXC_CATCH;
+	return CItem::r_WriteVal(pszKey, sVal, pSrc);
+}
+
+bool CItemSpawn::r_LoadVal(CScript & s)
+{
+	ADDTOCALLSTACK("CitemSpawn:r_LoadVal");
+	EXC_TRY("LoadVal");
+
+	if (g_Serv.IsLoading())
+		if (!strnicmp(s.GetKey(), "more2", 5))	//More2 shouldn't be loaded as it's being setted with ADDOBJ
+			return true;
+
+	LPCTSTR	pszKey = s.GetKey();
+	int iCmd = FindTableSorted(s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
+	if (iCmd < 0)
+		return CItem::r_LoadVal(s);
+
+	switch (iCmd)
+	{
+		case ISPW_ADDOBJ:
+			AddObj(s.GetArgVal());
+			return true;
+		case ISPW_AT:
+		{
+			pszKey += 3;
+			s.InitKey();
+			s.WriteString(pszKey);
+			int objIndex = Exp_GetVal(pszKey);
+			if (m_obj[objIndex].ItemFind())
+				return m_obj[objIndex].ItemFind()->r_LoadVal(s);
+			else if (m_obj[objIndex].CharFind())
+				return m_obj[objIndex].CharFind()->r_LoadVal(s);
+			return false;
+		}
+		default:
+			break;
+	}
+	return false;	
+	EXC_CATCH;
+}
+
+// Writing 'ADDOBJ=uid' in the save file
+void  CItemSpawn::r_Write(CScript & s)
+{
+	ADDTOCALLSTACK("CitemSpawn:r_Write");
+	EXC_TRY("Write");
+	CItem::r_Write(s);
+	WORD iTotal = GetType() == IT_SPAWN_CHAR ? static_cast<WORD>(m_itSpawnChar.m_current) : GetAmount(); //m_itSpawnItem doesn't have m_current, it uses more2 to set the amount of items spawned in each tick, so i'm using its amount to perform the loop
+	if (iTotal <= 0)
+		return;
+	for (WORD i = 0; i < iTotal; i++)
+	{
+		if (!m_obj[i].IsValidUID())
+			continue;
+		CChar * pObj = m_obj[i].CharFind();
+		if (pObj)
+			s.WriteKeyHex("ADDOBJ",pObj->GetUID());
+	}
+
+	EXC_CATCH;
+
+}
 /////////////////////////////////////////////////////////////////////////////
 
 void CItem::Plant_SetTimer()

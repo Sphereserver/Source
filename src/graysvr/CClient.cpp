@@ -1061,7 +1061,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 								CResourceDef	*pDef = pSpawn->FixDef();
 								if ( !pDef )
 								{
-									RESOURCE_ID_BASE	rid = ( pSpawn->IsType(IT_SPAWN_ITEM) ? pSpawn->m_itSpawnItem.m_ItemID : pSpawn->m_itSpawnChar.m_CharID);
+									RESOURCE_ID_BASE	rid = ( pItem->IsType(IT_SPAWN_ITEM) ? pItem->m_itSpawnItem.m_ItemID : pItem->m_itSpawnChar.m_CharID);
 
 									CPointMap	pt = pItem->GetTopPoint();
 									m_pChar->Spell_Teleport(pt, true, false);
