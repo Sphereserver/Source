@@ -2812,8 +2812,6 @@ public:
 		struct
 		{
 			WAR_SWING_TYPE	m_War_Swing_State;	// We are in the war mode swing.
-			//CGrayUID		m_Act_Targ;			// Who are we currently attacking?
-			WORD			m_fMoved;
 			int				m_NextSwingDelay;	// Waiting time between swings
 		} m_atFight;
 
@@ -3530,7 +3528,7 @@ public:
 	bool Spell_CastDone();
 	bool OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, CItem * pSourceItem );
 	bool Spell_Resurrection(CItemCorpse * pCorpse = NULL, CChar * pCharSrc = NULL, bool bNoFail = false);
-	bool Spell_Teleport( CPointMap pt, bool fTakePets = false, bool fCheckAntiMagic = true, ITEMID_TYPE iEffect = ITEMID_TEMPLATE, SOUND_TYPE iSound = 0x01fe );
+	bool Spell_Teleport( CPointMap pt, bool fTakePets = false, bool fCheckAntiMagic = true, ITEMID_TYPE iEffect = ITEMID_NOTHING, SOUND_TYPE iSound = SOUND_NONE );
 	bool Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool fFailMsg, bool fCheckAntiMagic = true );
 	int	GetSpellEffect( SPELL_TYPE spell, int iSkillLevel, int iEffectMult );
 	int	GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult, CChar * pCharSrc = NULL );

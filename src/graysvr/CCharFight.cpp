@@ -2259,6 +2259,32 @@ effect_bounce:
 		}
 	}
 
+	// Disturb magic spells (only players can be disturbed)
+	if ( m_pPlayer && !(uType & DAMAGE_NODISTURB) && g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_MAGIC) )
+	{
+		// Check if my spell can be interrupted
+		int iDisturbChance = 0;
+		int iSpellSkill;
+		const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
+		if ( pSpellDef && pSpellDef->GetPrimarySkill(&iSpellSkill) )
+			iDisturbChance = pSpellDef->m_Interrupt.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(iSpellSkill)));
+
+		if ( iDisturbChance && IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+		{
+			// Protection spell can cancel the disturb
+			CItem *pProtectionSpell = LayerFind(LAYER_SPELL_Protection);
+			if ( pProtectionSpell )
+			{
+				int iChance = pProtectionSpell->m_itSpell.m_spelllevel;
+				if ( iChance > Calc_GetRandVal(1000) )
+					iDisturbChance = 0;
+			}
+		}
+
+		if ( iDisturbChance > Calc_GetRandVal(1000) )
+			Skill_Fail();
+	}
+
 	if ( pSrc && pSrc != this )
 	{
 		// Update attacker list
@@ -2813,37 +2839,13 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	if ( IsClient() )
 		GetClient()->addPlayerWarMode();
 
-	// Skill interruption ?
 	SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
 	SKILL_TYPE skillActive = Skill_GetActive();
 
-	if (skillActive == skillWeapon && m_Fight_Targ == pCharTarg->GetUID())
+	if (skillActive == skillWeapon && m_Fight_Targ == pCharTarg->GetUID())		// already attacking this same target using the same skill
 		return true;
 
-	if ( g_Cfg.IsSkillFlag(skillActive, SKF_MAGIC) )
-	{
-		if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
-		{
-			CItem *pProtectionSpell = LayerFind(LAYER_SPELL_Protection);
-			if ( pProtectionSpell != NULL )
-			{
-				int iChance = pProtectionSpell->m_itSpell.m_spelllevel;
-				if ( iChance > Calc_GetRandVal(100) )
-					return true;
-			}
-		}
-
-		int skill;
-		const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
-		if ( pSpellDef != NULL && pSpellDef->GetPrimarySkill(&skill, NULL) )
-		{
-			int iInterrupt = pSpellDef->m_Interrupt.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(skill)));
-			if ( Calc_GetRandVal(1000) >= iInterrupt )
-				return true;
-		}
-	}
-
-	if ( !m_pPlayer && !btoldByMaster )	// We call for FindBestTarget when this CChar is not a player and was not commanded to attack, otherwise it attack directly.
+	if ( m_pNPC && !btoldByMaster )		// call FindBestTarget when this CChar is a NPC and was not commanded to attack, otherwise it attack directly
 		pTarget = Fight_FindBestTarget();
 
 	m_Fight_Targ = pTarget ? pTarget->GetUID() : static_cast<CGrayUID>(UID_UNUSED);
@@ -2860,7 +2862,7 @@ void CChar::Fight_HitTry()
 	// but i might not be close enough.
 
 	ASSERT( Fight_IsActive() );
-	ASSERT( m_atFight.m_War_Swing_State == WAR_SWING_READY|WAR_SWING_SWINGING );
+	ASSERT( m_atFight.m_War_Swing_State == (WAR_SWING_READY|WAR_SWING_SWINGING) );
 
 	CChar * pCharTarg = m_Fight_Targ.CharFind();
 	if ( pCharTarg == NULL || pCharTarg->IsStatFlag(STATF_DEAD) )	// dead players and dead bonded pets can't be attacked
@@ -3385,7 +3387,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		tRet = OnTrigger(CTRIG_HitCheck, pCharTarg, &pArgs);
 		if ( tRet == TRIGRET_RET_TRUE )
 			return (WAR_SWING_TYPE)pArgs.m_iN1;
-		else if ( tRet == -1 )
+		if ( tRet == -1 )
 			return WAR_SWING_INVALID;
 
 		m_atFight.m_War_Swing_State = static_cast<WAR_SWING_TYPE>(pArgs.m_iN1);
@@ -3396,7 +3398,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			if ( tRet == TRIGRET_RET_DEFAULT )
 				return WAR_SWING_EQUIPPING;
 
-			if ( iTyp == DAMAGE_HIT_BLUNT )	// If type did not change in the trigger, default iTyp is set.
+			if ( iTyp == DAMAGE_HIT_BLUNT )		// if type did not change in the trigger, default iTyp is set
 			{
 				CItem *pWeapon = m_uidWeapon.ItemFind();
 				CItemBase *pWeaponDef = NULL;
@@ -3445,20 +3447,19 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	if ( !pCharTarg || pCharTarg == this )
 		return WAR_SWING_INVALID;
 
-	//	Very basic check on possibility to hit
+	// Very basic check on possibility to hit
 	if ( IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Freeze|STATF_Stone) || pCharTarg->IsStatFlag(STATF_DEAD|STATF_INVUL|STATF_Stone|STATF_Ridden) )
 		return WAR_SWING_INVALID;
-
 	if ( pCharTarg->m_pArea && pCharTarg->m_pArea->IsFlag(REGION_FLAG_SAFE) )
 		return WAR_SWING_INVALID;
 
 	int dist = GetTopDist3D(pCharTarg);
 	if ( dist > UO_MAP_VIEW_RADAR )
 	{
-		if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
-			return WAR_SWING_INVALID;
+		if ( IsSetCombatFlags(COMBAT_STAYINRANGE) )
+			return WAR_SWING_EQUIPPING;
 
-		return WAR_SWING_EQUIPPING;
+		return WAR_SWING_INVALID;
 	}
 
 	// I am on ship. Should be able to combat only inside the ship to avoid free sea and ground characters hunting
@@ -3467,41 +3468,28 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( m_pArea && m_pArea->IsFlag(REGION_FLAG_SHIP) )
 		{
 			SysMessageDefault(DEFMSG_COMBAT_OUTSIDESHIP);
-			Skill_Start(SKILL_NONE);
 			return WAR_SWING_INVALID;
 		}
 		if ( pCharTarg->m_pArea && pCharTarg->m_pArea->IsFlag(REGION_FLAG_SHIP) )
 		{
 			SysMessageDefault(DEFMSG_COMBAT_INSIDESHIP);
-			Skill_Start(SKILL_NONE);
 			return WAR_SWING_INVALID;
 		}
 	}
 
-	//	conjured npc removed on guard hit
+	// Guards should remove conjured NPCs
 	if ( m_pNPC && m_pNPC->m_Brain == NPCBRAIN_GUARD && pCharTarg->m_pNPC && pCharTarg->IsStatFlag(STATF_Conjured) )
 	{
 		pCharTarg->Delete();
 		return WAR_SWING_EQUIPPING;
 	}
 
-	//	fix of the bounce back effect with dir update for clients to be able to run in combat easily
+	// Fix of the bounce back effect with dir update for clients to be able to run in combat easily
 	if ( IsClient() && (g_Cfg.m_iCombatFlags & COMBAT_FACECOMBAT) )
 	{
 		DIR_TYPE dirOpponent = GetDir(pCharTarg, m_dirFace);
 		if ( (dirOpponent != m_dirFace) && (dirOpponent != GetDirTurn(m_dirFace, -1)) && (dirOpponent != GetDirTurn(m_dirFace, 1)) )
 			return WAR_SWING_READY;
-	}
-
-	if ( IsSetCombatFlags(COMBAT_PREHIT) && (m_atFight.m_War_Swing_State == WAR_SWING_READY) )
-	{
-		INT64 diff = GetKeyNum("LastHit", true) - g_World.GetCurrentTime().GetTimeRaw();
-		if ( diff > 0 )
-		{
-			diff = (diff > 50) ? 50 : diff;
-			SetTimeout(diff);
-			return WAR_SWING_READY;
-		}
 	}
 
 	CItem *pWeapon = m_uidWeapon.ItemFind();
@@ -3531,16 +3519,12 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		}
 	}
 
-	if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) )
-		UpdateDir(pCharTarg);
-
 	SKILL_TYPE skill = Skill_GetActive();
 	if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
 	{
 		if ( IsStatFlag(STATF_HasShield) )		// this should never happen
 		{
 			SysMessageDefault(DEFMSG_ITEMUSE_BOW_SHIELD);
-			Skill_Start(SKILL_NONE);
 			return WAR_SWING_INVALID;
 		}
 
@@ -3592,7 +3576,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				}
 
 				pAmmo = (pNewCont)? pNewCont->ContentFind(rid) : ContentFind(rid);
-
 			}
 			else
 				pAmmo = ContentFind(rid);
@@ -3600,7 +3583,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			if ( !pAmmo && m_pPlayer )
 			{
 				SysMessageDefault(DEFMSG_COMBAT_ARCH_NOAMMO);
-				Skill_Start(SKILL_NONE);
 				return WAR_SWING_INVALID;
 			}
 		}
@@ -3608,6 +3590,9 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		// Start the swing
 		if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )
 		{
+			if ( !CanSeeLOS(pCharTarg) )
+				return WAR_SWING_EQUIPPING;
+
 			int iSwingDelay = Fight_GetWeaponSwingTimer();
 			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
 			BYTE animDelay = 0;
@@ -3631,10 +3616,14 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 			m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
 			m_atFight.m_NextSwingDelay = iSwingDelay - 7;
-			m_atFight.m_fMoved = 0;
 			SetTimeout(7);		// attack speed is always 7ms and then the char keep waiting the remaining time
+
 			Reveal();
-			UpdateAnimate(anim, false, false, animDelay);
+			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) && !IsStatFlag(STATF_Fly) )
+			{
+				UpdateDir(pCharTarg);
+				UpdateAnimate(anim, false, false, animDelay);
+			}
 			return WAR_SWING_SWINGING;
 		}
 
@@ -3669,6 +3658,9 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		// Start the swing
 		if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )
 		{
+			if ( !CanSeeLOS(pCharTarg) )
+				return WAR_SWING_EQUIPPING;
+
 			int iSwingDelay = Fight_GetWeaponSwingTimer();
 			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
 			BYTE animDelay = 0;
@@ -3692,27 +3684,22 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 			m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
 			m_atFight.m_NextSwingDelay = iSwingDelay - 7;
-			m_atFight.m_fMoved = 0;
-
-			if ( IsSetCombatFlags(COMBAT_PREHIT) )
-			{
-				SetKeyNum("LastHit", iSwingDelay + g_World.GetCurrentTime().GetTimeRaw());
-				SetTimeout(1);
-			}
-			else
-				SetTimeout(7);		// attack speed is always 7ms and then the char keep waiting the remaining time
+			SetTimeout(7);		// attack speed is always 7ms and then the char keep waiting the remaining time
 
 			Reveal();
-			UpdateAnimate(anim, false, false, animDelay);
+			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) && !IsStatFlag(STATF_Fly) )
+			{
+				UpdateDir(pCharTarg);
+				UpdateAnimate(anim, false, false, animDelay);
+			}
 			return WAR_SWING_SWINGING;
 		}
 	}
 
 	// We made our swing. so we must recoil.
 	m_atFight.m_War_Swing_State = WAR_SWING_EQUIPPING;
-	m_atFight.m_fMoved	= 0;
 
-	CVarDefCont * pTagStorage = NULL; 
+	CVarDefCont * pTagStorage = NULL;
 	SOUND_TYPE iSnd = 0;
 
 	// Check if we hit something;
@@ -3879,10 +3866,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			pAmmo->Delete();
 	}
 
-	// Raise skill
-	if ( m_pPlayer && !pCharTarg->m_pArea->IsFlag(REGION_FLAG_NO_PVP) )
-		Skill_UseQuick(SKILL_TACTICS, pCharTarg->Skill_GetBase(SKILL_TACTICS) / 10);
-
 	// Hit noise (based on weapon type)
 	SoundChar(CRESND_HIT);
 
@@ -3909,7 +3892,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( !IsSetCombatFlags(COMBAT_NOPOISONHIT) && 50 >= Calc_GetRandVal(100) )
 		{
 			int iPoisoningSkill = Skill_GetBase(SKILL_POISONING);
-			pCharTarg->SetPoison(Calc_GetRandVal(iPoisoningSkill), Calc_GetRandVal(iPoisoningSkill / 50), this);
+			if ( iPoisoningSkill )
+				pCharTarg->SetPoison(Calc_GetRandVal(iPoisoningSkill), Calc_GetRandVal(iPoisoningSkill / 50), this);
 		}
 	}
 
@@ -3936,8 +3920,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( iHitLifeLeech )
 		{
 			iHitLifeLeech = Calc_GetRandVal2(0, (iDmg * iHitLifeLeech * 30) / 10000);	// leech 0% ~ 30% of damage value
-			Stat_SetVal(STAT_STR, Stat_GetVal(STAT_STR) + iHitLifeLeech);
-			UpdateHitsFlag();
+			UpdateStatVal(STAT_STR, Stat_GetVal(STAT_STR) + iHitLifeLeech);
 			bMakeLeechSound = true;
 		}
 
@@ -3945,15 +3928,13 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( iHitManaLeech )
 		{
 			iHitManaLeech = Calc_GetRandVal2(0, (iDmg * iHitManaLeech * 40) / 10000);	// leech 0% ~ 40% of damage value
-			Stat_SetVal(STAT_INT, Stat_GetVal(STAT_INT) + iHitManaLeech);
-			UpdateManaFlag();
+			UpdateStatVal(STAT_INT, Stat_GetVal(STAT_INT) + iHitManaLeech);
 			bMakeLeechSound = true;
 		}
 
 		if ( GetDefNum("HitLeechStam", true) > Calc_GetRandLLVal(100) )
 		{
-			Stat_SetVal(STAT_DEX, Stat_GetVal(STAT_DEX) + iDmg);	// leech 100% of damage value
-			UpdateStamFlag();
+			UpdateStatVal(STAT_DEX, Stat_GetVal(STAT_DEX) + iDmg);	// leech 100% of damage value
 			bMakeLeechSound = true;
 		}
 
@@ -3973,10 +3954,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 		if ( iManaDrain > 0 )
 		{
-			pCharTarg->Stat_SetVal(STAT_INT, iTargMana - iManaDrain);
-			pCharTarg->UpdateManaFlag();
-			Stat_SetVal(STAT_INT, Stat_GetVal(STAT_INT) + iManaDrain);
-			UpdateManaFlag();
+			pCharTarg->UpdateStatVal(STAT_INT, iTargMana - iManaDrain);
+			UpdateStatVal(STAT_INT, Stat_GetVal(STAT_INT) + iManaDrain);
 			bMakeLeechSound = true;
 		}
 
@@ -4000,8 +3979,12 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			}
 		}
 
-		// If we do no damage, we get no experience!
-		Skill_Experience(skill, m_Act_Difficulty);
+		// Check for passive skill gain
+		if ( m_pPlayer && !pCharTarg->m_pArea->IsFlag(REGION_FLAG_NO_PVP) )
+		{
+			Skill_Experience(skill, m_Act_Difficulty);
+			Skill_Experience(SKILL_TACTICS, m_Act_Difficulty);
+		}
 	}
 
 	return WAR_SWING_EQUIPPING;

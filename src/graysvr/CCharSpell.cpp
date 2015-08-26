@@ -155,7 +155,7 @@ bool CChar::Spell_Teleport( CPointMap ptNew, bool fTakePets, bool fCheckAntiMagi
 	{
 		if ( m_pPlayer )
 		{
-			if ( IsPriv(PRIV_GM) && !IsStatFlag(STATF_Incognito) && !IsPriv(PRIV_PRIV_NOSHOW) )
+			if ( IsPriv(PRIV_GM) && !IsPriv(PRIV_PRIV_NOSHOW) && !IsStatFlag(STATF_Incognito) )
 			{
 				iEffect = g_Cfg.m_iSpell_Teleport_Effect_Staff;
 				iSound = g_Cfg.m_iSpell_Teleport_Sound_Staff;
@@ -1671,7 +1671,7 @@ bool CChar::Spell_Equip_OnTick( CItem * pItem )
 				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_SPELL_YOUFEEL), static_cast<LPCTSTR>(sm_Poison_Message[iLevel]));
 			}
 
-			OnTakeDamage(maximum(sm_iPoisonMax[iLevel], iDmg), pItem->m_uidLink.CharFind(), DAMAGE_MAGIC | DAMAGE_POISON | DAMAGE_NOREVEAL, 0, 0, 0, 100, 0);
+			OnTakeDamage(maximum(sm_iPoisonMax[iLevel], iDmg), pItem->m_uidLink.CharFind(), DAMAGE_MAGIC|DAMAGE_POISON|DAMAGE_NODISTURB|DAMAGE_NOREVEAL, 0, 0, 0, 100, 0);
 
 			// g_Cfg.GetSpellEffect( SPELL_Poison,
 

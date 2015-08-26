@@ -2032,10 +2032,10 @@ void CChar::EatAnim( LPCTSTR pszName, int iQty )
 {
 	ADDTOCALLSTACK("CChar::EatAnim");
 	static const SOUND_TYPE sm_EatSounds[] = { 0x03a, 0x03b, 0x03c };
-	Sound( sm_EatSounds[ Calc_GetRandVal( COUNTOF(sm_EatSounds)) ] );
+	Sound(sm_EatSounds[Calc_GetRandVal(COUNTOF(sm_EatSounds))]);
 
-	if ( !IsStatFlag(STATF_OnHorse))
-		UpdateAnimate( ANIM_EAT );
+	if ( !IsStatFlag(STATF_OnHorse) )
+		UpdateAnimate(ANIM_EAT);
 
 	TCHAR * pszMsg = Str_GetTemp();
 	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EATSOME), static_cast<LPCTSTR>(pszName));
@@ -2043,43 +2043,36 @@ void CChar::EatAnim( LPCTSTR pszName, int iQty )
 
 	int iHits = 0;
 	int iMana = 0;
+	int iStam = Calc_GetRandVal2(3, 6) + (iQty / 5);
 	int iFood = iQty;
-	int iStam = Calc_GetRandVal2(3, 6) + iQty / 5;
-	bool bIgnoreMax = false;
-	if (IsTrigUsed(TRIGGER_EAT))
+	int iStatsLimit = 0;
+	if ( IsTrigUsed(TRIGGER_EAT) )
 	{
 		CScriptTriggerArgs Args;
-		Args.m_iN1 = bIgnoreMax;
 		Args.m_VarsLocal.SetNumNew("Hits", iHits);
 		Args.m_VarsLocal.SetNumNew("Mana", iMana);
-		Args.m_VarsLocal.SetNumNew("Food", iFood);
 		Args.m_VarsLocal.SetNumNew("Stam", iStam);
-		if (OnTrigger(CTRIG_Eat, this, &Args) == TRIGRET_RET_TRUE)
+		Args.m_VarsLocal.SetNumNew("Food", iFood);
+		Args.m_iN1 = iStatsLimit;
+		if ( OnTrigger(CTRIG_Eat, this, &Args) == TRIGRET_RET_TRUE )
 			return;
-		bIgnoreMax = Args.m_iN1 ? true : false;
+
 		iHits = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Hits", true)) + Stat_GetVal(STAT_STR);
 		iMana = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Mana", true)) + Stat_GetVal(STAT_INT);
 		iStam = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Stam", true)) + Stat_GetVal(STAT_DEX);
 		iFood = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Food", true)) + Stat_GetVal(STAT_FOOD);
+		iStatsLimit = static_cast<int>(Args.m_iN1);
+	}
 
-	}
-	if (!bIgnoreMax)
-	{
-			iHits = minimum(iHits, Stat_GetMax(STAT_STR));
-			iStam = minimum(iStam, Stat_GetMax(STAT_DEX));
-			iMana = minimum(iMana, Stat_GetMax(STAT_INT));
-			iFood = minimum(iFood, Stat_GetMax(STAT_FOOD));
-	}
-	if (iHits)
-		Stat_SetVal(STAT_STR, iHits);
-	if (iStam)
-		Stat_SetVal(STAT_DEX, iStam);
-	if (iMana)
-		Stat_SetVal(STAT_INT, iMana);
-	if (iFood)
-		Stat_SetVal(STAT_FOOD, iFood);
+	if ( iHits )
+		UpdateStatVal(STAT_STR, iHits, iStatsLimit);
+	if ( iMana )
+		UpdateStatVal(STAT_INT, iMana, iStatsLimit);
+	if ( iStam )
+		UpdateStatVal(STAT_DEX, iStam, iStatsLimit);
+	if ( iFood )
+		UpdateStatVal(STAT_FOOD, iFood, iStatsLimit);
 }
-	
 
 bool CChar::Reveal( DWORD dwFlags )
 {
@@ -3221,12 +3214,11 @@ bool CChar::CheckLocation( bool fStanding )
 		SKILL_TYPE iSkillActive	= Skill_GetActive();
 		if ( g_Cfg.IsSkillFlag(iSkillActive, SKF_IMMOBILE) )
 			Skill_Fail(false);
-		else if ( g_Cfg.IsSkillFlag(iSkillActive, SKF_FIGHT) )
+		else if ( g_Cfg.IsSkillFlag(iSkillActive, SKF_FIGHT) && g_Cfg.IsSkillFlag(iSkillActive, SKF_RANGED) && !IsSetCombatFlags(COMBAT_ARCHERYCANMOVE) && !IsStatFlag(STATF_ArcherCanMove) )
 		{
-			m_atFight.m_fMoved = 1;		// are we using a skill that is effected by motion?
-
-			if ( g_Cfg.IsSkillFlag(iSkillActive, SKF_RANGED) && !IsSetCombatFlags(COMBAT_ARCHERYCANMOVE) && !IsStatFlag(STATF_ArcherCanMove) )
-				Fight_ResetWeaponSwingTimer();
+			// Keep timer active holding the swing action until the char stops moving
+			m_atFight.m_War_Swing_State = WAR_SWING_EQUIPPING;
+			SetTimeout(TICK_PER_SEC);
 		}
 
 		// This could get REALLY EXPENSIVE !
