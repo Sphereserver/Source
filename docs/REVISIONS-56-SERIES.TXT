@@ -2581,3 +2581,10 @@ Fixed: Missing paperdoll update when char ID (body) get changed.
 Fixed: Food items not restoring char FOOD correctly.
 Fixed: HitLeech[Life/Mana/Stam] and HitManaDrain properties making hits/mana/stam rise over the max char limit.
 [sphere_spells.scp]: Removed SOUND / EFFECT_ID from Teleport spell. These values are already handled by Sphere.ini settings, and sphere_spells.scp values was making it play twice.
+
+27-08-2015, Coruja
+Added: New STEPSTEALTH char property to set how many steps the char can walk invisible while using Stealth skill. This property is set when using Stealth skill, will decrease -1 on each walk step (or -2 if running) and will reveal when reach 0.
+Changed: Trigger @StepStealth no longer use ARGN1 to force reveal, the ARGN1=1 can be replaced by STEPSTEALTH=0.
+Fixed: Missing buff icon when using INVIS (GM command).
+[sphere_skills.scp]: New Stealth softcoded skill.
+	-IMPORTANT: It's HIGHLY recommended update it, or this skill will stop working.

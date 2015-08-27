@@ -240,15 +240,15 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 	m_dirFace = DIR_SE;
 	m_fonttype = FONT_NORMAL;
 
-	m_defense = 0;
-
 	m_height = 0;
-
 	m_ModMaxWeight = 0;
+
+	m_StepStealth = 0;
 	m_iVisualRange = UO_MAP_VIEW_SIZE;
 
 	m_exp = 0;
 	m_level = 0;
+	m_defense = 0;
 	m_atUnk.m_Arg1 = 0;
 	m_atUnk.m_Arg2 = 0;
 	m_atUnk.m_Arg3 = 0;
@@ -756,15 +756,15 @@ bool CChar::DupeFrom( CChar * pChar, bool fNewbieItems )
 	m_dirFace = pChar->m_dirFace;
 	m_fonttype = pChar->m_fonttype;
 
-	m_defense = pChar->m_defense;
-
 	m_height = pChar->m_height;
-
 	m_ModMaxWeight = pChar->m_ModMaxWeight;
+	
+	m_StepStealth = pChar->m_StepStealth;
 	m_iVisualRange = pChar->m_iVisualRange;
 
 	m_exp = pChar->m_exp;
 	m_level = pChar->m_level;
+	m_defense = pChar->m_defense;
 	m_atUnk.m_Arg1 = pChar->m_atUnk.m_Arg1;
 	m_atUnk.m_Arg2 = pChar->m_atUnk.m_Arg2;
 	m_atUnk.m_Arg3 = pChar->m_atUnk.m_Arg3;
@@ -2513,6 +2513,9 @@ do_default:
 		case CHC_STAMINA:
 			sVal.FormatVal( Stat_GetVal(STAT_DEX) );
 			break;
+		case CHC_STEPSTEALTH:
+			sVal.FormatVal( m_StepStealth );
+			break;
 		case CHC_MANA:
 			sVal.FormatVal( Stat_GetVal(STAT_INT) );
 			break;
@@ -2965,6 +2968,9 @@ do_default:
 			Stat_SetVal(STAT_DEX,  s.GetArgVal() );
 			UpdateStamFlag();
 			break;
+		case CHC_STEPSTEALTH:
+			m_StepStealth = s.GetArgVal();
+			break;
 		case CHC_HEIGHT:
 			m_height = static_cast<height_t>(s.GetArgVal());
 			break;
@@ -3183,6 +3189,8 @@ void CChar::r_Write( CScript & s )
 		s.WriteKeyVal("HEIGHT", m_height);
 	if ( m_ptHome.IsValidPoint() )
 		s.WriteKey("HOME", m_ptHome.WriteUsed());
+	if ( m_StepStealth )
+		s.WriteKeyVal("STEPSTEALTH", m_StepStealth);
 
 	TCHAR szTmp[100];
 	size_t j = 0;
@@ -3601,10 +3609,20 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			if ( pSrc )
 			{
 				m_StatFlag = s.GetArgFlag( m_StatFlag, STATF_Insubstantial );
-				if ( IsSetOF( OF_Command_Sysmsgs ) )
-					pSrc->SysMessage( IsStatFlag( STATF_Insubstantial )? g_Cfg.GetDefaultMsg(DEFMSG_MSG_INVIS_ON) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_INVIS_OFF) );
-
 				UpdateMode(NULL, true);
+				if ( IsStatFlag(STATF_Insubstantial) )
+				{
+					GetClient()->addBuff(BI_HIDDEN, 1075655, 1075656);
+					if ( IsSetOF(OF_Command_Sysmsgs) )
+						pSrc->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_INVIS_ON));
+				}
+				else
+				{
+					if ( !IsStatFlag(STATF_Hidden) )
+						GetClient()->removeBuff(BI_HIDDEN);
+					if ( IsSetOF(OF_Command_Sysmsgs) )
+						pSrc->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_INVIS_OFF));
+				}
 			}
 			break;
 		case CHV_INVUL:

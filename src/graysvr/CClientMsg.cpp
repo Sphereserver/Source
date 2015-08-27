@@ -37,7 +37,7 @@ void CClient::resendBuffs()
 	CChar *pChar = GetChar();
 	ASSERT(pChar);
 
-	if ( pChar->IsStatFlag( STATF_Hidden ) )
+	if ( pChar->IsStatFlag(STATF_Hidden|STATF_Insubstantial) )
 		addBuff( BI_HIDDEN, 1075655, 1075656 );
 
 	// Spells
