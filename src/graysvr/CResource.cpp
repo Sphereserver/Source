@@ -872,9 +872,9 @@ bool CResource::r_LoadVal( CScript &s )
 		{
 			bool ok = true;
 			std::string str = s.GetKey()+3;
-			for ( size_t i = 0; i < str.size(); ++i )
+			for ( size_t j = 0; j < str.size(); ++j )
 			{
-				if ( IsDigit(str[i]) )
+				if ( IsDigit(str[j]) )
 					continue;
 
 				ok = false;
@@ -1131,9 +1131,9 @@ bool CResource::r_LoadVal( CScript &s )
 			{
 				int seconds = s.GetArgVal();
 				size_t threadCount = ThreadHolder::getActiveThreads();
-				for (size_t i = 0; i < threadCount; i++)
+				for (size_t j = 0; j < threadCount; j++)
 				{
-					AbstractSphereThread* thread = STATIC_CAST<AbstractSphereThread*>(ThreadHolder::getThreadAt(i));
+					AbstractSphereThread* thread = STATIC_CAST<AbstractSphereThread*>(ThreadHolder::getThreadAt(j));
 					if (thread != NULL)
 						thread->m_profile.SetActive(seconds);
 				}
@@ -1302,7 +1302,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 	{
 		if ( !strnicmp( pszKey, "REGEN", 5 ))
 		{
-			int index = ATOI(pszKey+5);
+			index = ATOI(pszKey+5);
 			if (( index < 0 ) || ( index >= STAT_QTY ))
 				return false;
 			sVal.FormatVal(g_Cfg.m_iRegenRate[index] / TICK_PER_SEC);
@@ -1430,8 +1430,6 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 						g_Log.EventError("Invalid Sector #%d for Map %d\n", iSecNumber, iMapNumber);
 						return false;
 					}
-					g_Log.EventError("Unsupported command %d\n", iMapNumber);
-					return false;
 				}
 			}
 			g_Log.EventError("Unsupported Map %d\n", iMapNumber);
@@ -2479,7 +2477,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 	{
 		LPCTSTR	pszDef = pScript->GetArgStr();
 		CVarDefCont * pVarBase = g_Exp.m_VarDefs.GetKey( pszDef );
-		CVarDefCont * pVarNum = NULL;
+		pVarNum = NULL;
 		if ( pVarBase )
 			pVarNum = dynamic_cast <CVarDefContNum*>( pVarBase );
 		if ( !pVarNum )
@@ -4096,7 +4094,7 @@ bool CResource::Load( bool fResync )
 	// Make region DEFNAMEs
 	{
 		size_t iMax = g_Cfg.m_RegionDefs.GetCount();
-		for ( size_t i = 0; i < iMax; i++ )
+		for ( size_t k = 0; k < iMax; k++ )
 		{
 			CRegionBase * pRegion = dynamic_cast <CRegionBase*> (g_Cfg.m_RegionDefs.GetAt(i));
 			if ( !pRegion )

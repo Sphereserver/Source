@@ -71,6 +71,7 @@ public:
 
 	WORD	m_defenseBase;	// Armor for IsArmor items
 	WORD	m_defenseRange;	// variable range of defense.
+	CGrayUID m_uidSpawnItem;		// SpawnItem for this item
 
 	CResourceRefArray m_OEvents;
 	static size_t sm_iCount;	// how many total objects in the world ?
@@ -495,7 +496,6 @@ public:
 	DWORD	m_Attr;
 	// NOTE: If this link is set but not valid -> then delete the whole object !
 	CGrayUID m_uidLink;		// Linked to this other object in the world. (owned, key, etc)
-	CGrayUID m_uidSpawnItem;		// SpawnItem for this item
 
 	bool IsTriggerActive(LPCTSTR trig) { return static_cast<CObjBase*>(const_cast<CItem*>(this))->IsTriggerActive(trig); }
 	void SetTriggerActive(LPCTSTR trig = NULL) { static_cast<CObjBase*>(const_cast<CItem*>(this))->SetTriggerActive(trig); }
@@ -1368,6 +1368,7 @@ public:
 	CCharBase * SetTrackID();
 	void GenerateItem( CResourceDef * pDef );	//Creating the resource
 	void GenerateChar( CResourceDef * pDef );
+	unsigned char GetCount();
 
 	void DelObj( CGrayUID uid );	//Removing one object from this spawn's list
 	void AddObj( CGrayUID uid );
@@ -2695,7 +2696,6 @@ public:
 	bool m_fClimbUpdated;	// FixClimbHeight() called?
 	bool m_fIgnoreNextPetCmd;	// return 1 in speech block for this pet will make it ignore target petcmds while allowing the rest to perform them
 	height_t m_zClimbHeight;	// The height at the end of the climbable.
-	CGrayUID m_uidSpawnItem;	// SpawnItem for this char.
 
 	// Saved stuff.
 	DIR_TYPE m_dirFace;	// facing this dir.

@@ -590,13 +590,23 @@ int CChar::FixWeirdness()
 	}
 	if ( IsStatFlag( STATF_Spawned ))
 	{
-		CItemMemory * pMemory = Memory_FindTypes( MEMORY_ISPAWNED );
-		if ( pMemory == NULL )
+		if ( !m_uidSpawnItem.ItemFind() )
 			StatFlag_Clear( STATF_Spawned );
+	}
+	CItemMemory * pMemory = Memory_FindTypes(MEMORY_ISPAWNED);	//Clean MEMORY_ISPAWNED and force char to use SpawnItem
+	if (pMemory)
+	{
+		CItemSpawn * pSpawn = static_cast<CItemSpawn*>(pMemory->m_uidLink.ItemFind());
+		if (pSpawn)
+		{
+			pSpawn->AddObj( GetUID() );
+			m_uidSpawnItem = pSpawn->GetUID();
+		}
+		pMemory->Delete();
 	}
 	if ( IsStatFlag( STATF_Pet ))
 	{
-		CItemMemory * pMemory = Memory_FindTypes( MEMORY_IPET );
+		pMemory = Memory_FindTypes( MEMORY_IPET );
 		if ( pMemory == NULL )
 			StatFlag_Clear( STATF_Pet );
 	}
@@ -786,8 +796,7 @@ bool CChar::DupeFrom( CChar * pChar, bool fNewbieItems )
 
 	g_World.m_uidLastNewChar = GetUID();	// for script access.
 
-	size_t i = 0;
-	for ( ; i < STAT_QTY; i++ )
+	for ( size_t i = 0; i < STAT_QTY; i++ )
 	{
 		Stat_SetBase(static_cast<STAT_TYPE>(i), pChar->Stat_GetBase(static_cast<STAT_TYPE>(i)));
 		Stat_SetMod(static_cast<STAT_TYPE>(i), pChar->Stat_GetMod(static_cast<STAT_TYPE>(i)));
@@ -796,7 +805,7 @@ bool CChar::DupeFrom( CChar * pChar, bool fNewbieItems )
 		m_Stat[i].m_regen = 0;
 	}
 
-	for ( i = 0; i < g_Cfg.m_iMaxSkill; i++ )
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
 		m_Skill[i] = pChar->m_Skill[i];
 	}
@@ -1636,7 +1645,6 @@ enum CHR_TYPE
 	CHR_MEMORYFINDTYPE,
 	CHR_OWNER,
 	CHR_REGION,
-	CHR_SPAWNITEM,
 	CHR_WEAPON,
 	CHR_QTY
 };
@@ -1650,7 +1658,6 @@ LPCTSTR const CChar::sm_szRefKeys[CHR_QTY+1] =
 	"MEMORYFINDTYPE",
 	"OWNER",
 	"REGION",
-	"SPAWNITEM",
 	"WEAPON",
 	NULL
 };
@@ -1690,13 +1697,6 @@ bool CChar::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 			case CHR_OWNER:
 				pRef	= NPC_PetGetOwner();
 				return( true );
-			case CHR_SPAWNITEM:
-				{
-					/*CItemMemory * pMemory = Memory_FindTypes(MEMORY_ISPAWNED);
-					pRef = pMemory ? pMemory->m_uidLink.ItemFind() : NULL;*/
-					pRef = m_uidSpawnItem.IsValidUID() ? m_uidSpawnItem.ItemFind() : NULL;
-					return true;
-				}
 			case CHR_WEAPON:
 				{
 					pRef	= m_uidWeapon.ObjFind();
@@ -3362,15 +3362,14 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			break;
 		case CHV_ATTACK:
 			{
-				CChar *		pSrc	= pCharSrc;
 				INT64 piCmd[1];
 				if ( Str_ParseCmds( s.GetArgRaw(), piCmd, COUNTOF(piCmd)) > 0 )
 				{
 					CGrayUID uid = static_cast<unsigned long>(piCmd[0]);
-					pSrc = uid.CharFind();
+					pCharSrc = uid.CharFind();
 				}
-				if ( pSrc )
-					Fight_Attack( pSrc );
+				if ( pCharSrc )
+					Fight_Attack( pCharSrc );
 			}
 			break;
 		case CHV_BANK:
@@ -3665,10 +3664,10 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 
 		case CHV_NEWBIESKILL:
 			{
-				CResourceLock s;
-				if ( !g_Cfg.ResourceLock( s, RES_NEWBIE, s.GetArgStr()) )
+				CResourceLock t;
+				if ( !g_Cfg.ResourceLock( t, RES_NEWBIE, s.GetArgStr()) )
 					return false;
-				ReadScript(s);
+				ReadScript(t);
 			}
 			break;
 
@@ -4133,7 +4132,7 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 		}
 
 		// Do not allow an underflow due to negative Exp Change.
-		if( delta < 0 && m_exp < abs(delta) )
+		if( delta < 0 && static_cast<int>(m_exp) < abs(delta) )
 			m_exp = 0;
 		else
 			m_exp += delta;
@@ -4186,7 +4185,7 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 
 			level = m_level + delta;
 			// Prevent integer underflow due to negative level change
-			if( delta < 0 && abs(delta) > m_level )
+			if( delta < 0 && abs(delta) > static_cast<int>(m_level) )
 				level = 0;
 			if (g_Cfg.m_wDebugFlags&DEBUGF_LEVEL)
 			{

@@ -1131,6 +1131,7 @@ CWorld::CWorld()
 {
 	m_iSaveCountID = 0;
 	m_iSaveStage = 0;
+	m_iPrevBuild = 0;
 	m_bSaveNotificationSent = false;
 	m_timeSector.Init();
 	m_timeRespawn.Init();
@@ -1813,7 +1814,7 @@ bool CWorld::LoadWorld() // Load world from script
 
 		if ( m_Sectors )
 		{
-			for ( int s = 0; s < m_SectorsQty; s++ )
+			for ( unsigned int s = 0; s < m_SectorsQty; s++ )
 			{
 				// Remove everything from the sectors
 				m_Sectors[s]->Close();
@@ -1884,7 +1885,7 @@ bool CWorld::LoadAll() // Load world from script
 	// Set all the sector light levels now that we know the time.
 	// This should not look like part of the load. (CTRIG_EnvironChange triggers should run)
 	size_t iCount;
-	for ( int s = 0; s < m_SectorsQty; s++ )
+	for ( unsigned int s = 0; s < m_SectorsQty; s++ )
 	{
 		EXC_TRYSUB("Load");
 		CSector *pSector = m_Sectors[s];
@@ -2153,14 +2154,14 @@ void CWorld::Close()
 	if ( m_Sectors != NULL )
 	{
 		//	free memory allocated by sectors
-		for ( int s = 0; s < m_SectorsQty; s++ )
+		for ( unsigned int s = 0; s < m_SectorsQty; s++ )
 		{
 			// delete everything in sector
 			m_Sectors[s]->Close();
 		}
 		// do this in two loops because destructors of items 
 		// may access server sectors
-		for (int s = 0; s < m_SectorsQty; s++)
+		for ( unsigned int s = 0; s < m_SectorsQty; s++ )
 		{
 			// delete the sectors
 			delete m_Sectors[s];

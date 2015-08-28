@@ -1036,7 +1036,7 @@ TRIGRET_TYPE CRegionBase::OnRegionTrigger( CTextConsole * pSrc, RTRIG_TYPE iActi
 		CResourceLock s;
 		if ( !pLink->ResourceLock(s) )
 			continue;
-		TRIGRET_TYPE iRet = CScriptObj::OnTriggerScript(s, sm_szTrigName[iAction], pSrc);
+		iRet = CScriptObj::OnTriggerScript(s, sm_szTrigName[iAction], pSrc);
 		if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
 			return iRet;
 	}

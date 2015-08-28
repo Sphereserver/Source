@@ -127,6 +127,9 @@ CItem::~CItem()
 		default:
 			break;
 	}
+	CItemSpawn * pSpawn = static_cast<CItemSpawn*>(m_uidSpawnItem.ItemFind());
+	if (pSpawn)// Removing from spawn
+		pSpawn->DelObj(GetUID());
 	g_Serv.StatDec(SERV_STAT_ITEMS);
 }
 
@@ -748,7 +751,7 @@ int CItem::FixWeirdness()
 		case ITEMID_DEATHSHROUD:	// be on a dead person only.
 		case ITEMID_GM_ROBE:
 			{
-				CChar * pChar = dynamic_cast<CChar*>( GetTopLevelObj());
+				pChar = dynamic_cast<CChar*>( GetTopLevelObj());
 				if ( pChar == NULL )
 				{
 					iResultCode = 0x2206;
@@ -3197,12 +3200,12 @@ TRIGRET_TYPE CItem::OnTriggerCreate( CTextConsole * pSrc, CScriptTriggerArgs * p
 
 	// 1) Look up the trigger in the RES_ITEMDEF. (default)
 	EXC_SET("itemdef");
-	CBaseBaseDef * pResourceLink = Base_GetDef();
-	ASSERT(pResourceLink);
-	if ( pResourceLink->HasTrigger( iAction ))
+	CBaseBaseDef * pResourceBase = Base_GetDef();
+	ASSERT(pResourceBase);
+	if ( pResourceBase->HasTrigger( iAction ))
 	{
 		CResourceLock s;
-		if ( pResourceLink->ResourceLock(s))
+		if ( pResourceBase->ResourceLock(s))
 		{
 			iRet = CScriptObj::OnTriggerScript( s, pszTrigName, pSrc, pArgs );
 		}

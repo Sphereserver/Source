@@ -729,8 +729,8 @@ public:
 	int  m_iSavePeriod;			// Minutes between saves.
 	int  m_iSaveBackupLevels;	// How many backup levels.
 	int  m_iSaveBackgroundTime;	// Speed of the background save in minutes.
-	int  m_iSaveSectorsPerTick;     // max number of sectors per dynamic background save step
-        int  m_iSaveStepMaxComplexity;  // maximum "number of items+characters" saved at once during dynamic background save
+	unsigned int  m_iSaveSectorsPerTick;     // max number of sectors per dynamic background save step
+	unsigned int  m_iSaveStepMaxComplexity;  // maximum "number of items+characters" saved at once during dynamic background save
 	bool m_fSaveGarbageCollect;	// Always force a full garbage collection.
 
 	// Account

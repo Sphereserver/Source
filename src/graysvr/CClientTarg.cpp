@@ -184,7 +184,6 @@ bool CClient::Cmd_Control( CChar * pChar2 )
 	if ( pPack1 != NULL )
 	{
 		CItemContainer * pPack2 = pChar2->GetPackSafe();
-		CItem* pItemNext;
 		for ( CItem* pItem=pPack1->GetContentHead(); pItem!=NULL; pItem=pItemNext )
 		{
 			pItemNext = pItem->GetNext();

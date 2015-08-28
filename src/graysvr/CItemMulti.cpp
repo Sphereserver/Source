@@ -426,8 +426,8 @@ bool CItemMulti::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 		case SHV_MULTICREATE:
 		{
 			CGrayUID	uid( s.GetArgVal() );
-			CChar *	pSrc	= uid.CharFind();
-			Multi_Create( pSrc, 0 );
+			CChar *	pCharSrc = uid.CharFind();
+			Multi_Create( pCharSrc, 0 );
 			return true;
 		}
 

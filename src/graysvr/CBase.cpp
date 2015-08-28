@@ -245,7 +245,7 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 					{
 						bool fQtyOnly = false;
 						bool fKeyOnly = false;
-						int index = Exp_GetVal( pszKey );
+						index = Exp_GetVal( pszKey );
 						SKIP_SEPARATORS( pszKey );
 
 						if ( !strnicmp( pszKey, "KEY", 3 ))

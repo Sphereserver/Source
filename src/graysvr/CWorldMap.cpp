@@ -1388,7 +1388,7 @@ void CWorld::GetHeightPoint2( const CPointMap & pt, CGrayMapBlockState & block, 
 		ASSERT(pItemDef);
 
 		// Get Attributes from ItemDef. If they are not set, get them from the static object (DISPID)
-		DWORD wBlockThis = pItemDef->m_Can & (CAN_I_DOOR | CAN_I_WATER | CAN_I_CLIMB | CAN_I_BLOCK | CAN_I_PLATFORM);
+		wBlockThis = pItemDef->m_Can & (CAN_I_DOOR | CAN_I_WATER | CAN_I_CLIMB | CAN_I_BLOCK | CAN_I_PLATFORM);
 		height_t zHeight = pItemDef->GetHeight();
 
 		DWORD wStaticBlockThis = 0;

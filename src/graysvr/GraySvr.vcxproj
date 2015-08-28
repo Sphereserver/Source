@@ -130,10 +130,11 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</
     <ClCompile>
       <AdditionalIncludeDirectories>..\common\mysql\include</AdditionalIncludeDirectories>
       <CallingConvention>FastCall</CallingConvention>
-      <MinimalRebuild>true</MinimalRebuild>
-      <PreprocessorDefinitions>_SUBVERSION;_MTNETWORK;WIN32;_WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <WarningLevel>Level2</WarningLevel>
+      <PreprocessorDefinitions>_SUBVERSION;_MTNETWORK;WIN32;_WIN32;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <WarningLevel>Level4</WarningLevel>
       <ExceptionHandling>Async</ExceptionHandling>
+      <SDLCheck>false</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_SUBVERSION;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>

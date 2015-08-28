@@ -363,24 +363,24 @@ private:
 	CServTime	m_timeSector;		// next time to do sector stuff.
 	CServTime	m_timeSave;		// when to auto save ?
 	CServTime	m_timeSync;		// next time to send client sync request.
-	bool m_bSaveNotificationSent;	// has notification been sent?
+	bool		m_bSaveNotificationSent;	// has notification been sent?
 	CServTime	m_timeRespawn;	// when to res dead NPC's ?
 	CServTime	m_timeCallUserFunc;	// when to call next user func
-	int		m_Sector_Pulse;		// Slow some stuff down that doesn't need constant processing.
+	unsigned int m_Sector_Pulse;		// Slow some stuff down that doesn't need constant processing.
 
-	int		m_iSaveStage;	// Current stage of the background save.
-	LONGLONG m_savetimer; // Time it takes to save
+	unsigned int m_iSaveStage;	// Current stage of the background save.
+	LONGLONG	m_savetimer; // Time it takes to save
 
 public:
 	static const char *m_sClassName;
 	// World data.
-	CSector	**m_Sectors;
-	int		m_SectorsQty;
+	CSector **m_Sectors;
+	unsigned int m_SectorsQty;
 
 public:
-	int		m_iSaveCountID;	// Current archival backup id. Whole World must have this same stage id
-	int		m_iLoadVersion;		// Previous load version. (only used during load of course)
-	int		m_iPrevBuild;		// Previous __GITREVISION__
+	unsigned int	m_iSaveCountID;	// Current archival backup id. Whole World must have this same stage id
+	unsigned int	m_iLoadVersion;		// Previous load version. (only used during load of course)
+	unsigned int	m_iPrevBuild;		// Previous __GITREVISION__
 	CServTime m_timeStartup;		// When did the system restore load/save ?
 
 	CGrayUID m_uidLastNewItem;	// for script access.

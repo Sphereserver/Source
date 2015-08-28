@@ -878,7 +878,7 @@ unsigned short CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool bGetTicks)
 		if ( bGetTicks )
 		{
 			sprintf(sRegen, "REGEN%s", stat);
-			unsigned short iRate = GetDefNum(sRegen, true) * TICK_PER_SEC;
+			unsigned short iRate = static_cast<unsigned short>( GetDefNum(sRegen, true) ) * TICK_PER_SEC;
 			if ( iRate )
 				return maximum(0, iRate);
 
@@ -3499,12 +3499,12 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 
 	if ( id != ITEMID_NOTHING )
 	{
-		CItem *pRock = CItem::CreateScript(id, this);
-		if ( pRock )
+		CItem *pItemRock = CItem::CreateScript(id, this);
+		if ( pItemRock )
 		{
-			pRock->SetAttr(ATTR_DECAY);
-			pRock->MoveToCheck(m_Act_p, this);
-			pRock->Effect(EFFECT_BOLT, id, this);
+			pItemRock->SetAttr(ATTR_DECAY);
+			pItemRock->MoveToCheck(m_Act_p, this);
+			pItemRock->Effect(EFFECT_BOLT, id, this);
 		}
 		if ( ! Calc_GetRandVal( pChar->GetTopPoint().GetDist( m_Act_p )))	// did it hit?
 			pChar->OnTakeDamage( iDamage, this, DAMAGE_HIT_BLUNT );

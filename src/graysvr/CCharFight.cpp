@@ -256,8 +256,8 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 					//		NOTO_GUILD_WAR	= 0x10
 					//		NOTO_EVIL		= 0x20
 					//		NOTO_INVUL		= 0x40
-					int iNotoFlag = 1 << (notoMaster - 1);
-					if ( (g_Cfg.m_iPetsInheritNotoriety & iNotoFlag) == iNotoFlag )
+					int iNotoFlags = 1 << (notoMaster - 1);
+					if ( (g_Cfg.m_iPetsInheritNotoriety & iNotoFlags) == iNotoFlags )
 						return notoMaster;
 				}
 				else
@@ -935,25 +935,18 @@ bool CChar::Memory_UpdateFlags( CItemMemory * pMemory )
 	}
 
 	INT64 iCheckTime;
-	if ( wMemTypes & MEMORY_ISPAWNED )
-	{
-		StatFlag_Set( STATF_Spawned );
-	}
-	else if ( wMemTypes & MEMORY_IPET )
+	if ( wMemTypes & MEMORY_IPET )
 	{
 		StatFlag_Set( STATF_Pet );
 	}
-
 	if ( wMemTypes & MEMORY_FIGHT )	// update more often to check for retreat.
 		iCheckTime = 30*TICK_PER_SEC;
-	else if ( wMemTypes & ( MEMORY_IPET | MEMORY_GUARD /*| MEMORY_ISPAWNED*/ | MEMORY_GUILD | MEMORY_TOWN ))
+	else if ( wMemTypes & ( MEMORY_IPET | MEMORY_GUARD | MEMORY_GUILD | MEMORY_TOWN ))
 		iCheckTime = -1;	// never go away.
 	else if ( m_pNPC )	// MEMORY_SPEAK
 		iCheckTime = 5*60*TICK_PER_SEC;
 	else
-	{
 		iCheckTime = 20*60*TICK_PER_SEC;
-	}
 	pMemory->SetTimeout( iCheckTime );	// update it's decay time.
 	return( true );
 }
@@ -970,25 +963,6 @@ bool CChar::Memory_UpdateClearTypes( CItemMemory * pMemory, WORD MemTypes )
 
 	MemTypes &= wPrvMemTypes;	// Which actually got turned off ?
 
-	if ( MemTypes & MEMORY_ISPAWNED )
-	{
-		StatFlag_Clear( STATF_Spawned );
-		// I am a memory link to another object.
-		if ( m_uidSpawnItem.ItemFind() )
-		{
-			CItemSpawn * pSpawn = static_cast<CItemSpawn*>(m_uidSpawnItem.ItemFind());
-			if ( pSpawn )
-				pSpawn->DelObj( GetUID() );
-			m_uidSpawnItem.InitUID();
-		}
-		/*CItem * pSpawn = pMemory->m_uidLink.ItemFind();
-		if ( pSpawn != NULL &&
-			pSpawn->IsType(IT_SPAWN_CHAR) &&
-			pSpawn->m_itSpawnChar.m_current )
-		{
-			pSpawn->m_itSpawnChar.m_current --;
-		}*/
-	}
 	if ( MemTypes & MEMORY_IPET )
 	{
 		// Am i still a pet of some sort ?
@@ -1006,12 +980,6 @@ void CChar::Memory_AddTypes( CItemMemory * pMemory, WORD MemTypes )
 	ADDTOCALLSTACK("CChar::Memory_AddTypes");
 	if ( pMemory )
 	{
-		if ((MemTypes & MEMORY_ISPAWNED))	// BackWards compatibility when updating from builds lower than CItemSpawn change (2427) so their npcs get linked again to the spawn
-		{
-			CItemSpawn * pSpawn = static_cast<CItemSpawn*>(pMemory->m_uidLink.ItemFind());
-			pSpawn->AddObj(GetUID());
-			return;
-		}
 		pMemory->SetMemoryTypes( pMemory->GetMemoryTypes() | MemTypes );
 		pMemory->m_itEqMemory.m_pt = GetTopPoint();	// Where did the fight start ?
 		pMemory->SetTimeStamp(CServTime::GetCurrentTime().GetTimeRaw());
@@ -1043,13 +1011,6 @@ CItemMemory * CChar::Memory_CreateObj( CGrayUID uid, WORD MemTypes )
 	{
 		MemTypes = MEMORY_ISPAWNED;
 	}
-
-	/*if ((MemTypes & MEMORY_ISPAWNED))	// BackWards compatibility when updating from builds lower than CItemSpawn change (2427) so their npcs get linked again to the spawn
-	{
-		CItemSpawn * pSpawn = static_cast<CItemSpawn*>(uid.ItemFind());
-		pSpawn->AddObj(GetUID());
-		return NULL;
-	}*/
 
 	CItemMemory * pMemory = dynamic_cast <CItemMemory *>(CItem::CreateBase( ITEMID_MEMORY ));
 	if ( pMemory == NULL )
@@ -1188,14 +1149,6 @@ bool CChar::Memory_OnTick( CItemMemory * pMemory )
 		// Is the fight still valid ?
 		return Memory_Fight_OnTick( pMemory );
 	}
-
-	/*if (pMemory->IsMemoryTypes(MEMORY_ISPAWNED))	// BackWards compatibility when updating from builds lower than CItemSpawn change (2427) so their npcs get linked again to the spawn
-	{
-		CItemSpawn * pSpawn = static_cast<CItemSpawn*>(pMemory->m_uidLink.ItemFind());
-		if (pSpawn)
-			pSpawn->AddObj(GetUID());
-		return false;
-	}*/
 
 	if ( pMemory->IsMemoryTypes( MEMORY_IPET | MEMORY_GUARD /*| MEMORY_ISPAWNED*/ | MEMORY_GUILD | MEMORY_TOWN ))
 		return( true );	// never go away.
@@ -1860,6 +1813,7 @@ bool CChar::OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fCommandPet, bool
 	//
 	// RETURN: true = ok.
 	//  false = we are immune to this char ! (or they to us)
+	UNREFERENCED_PARAMETER(iHarmQty);
 
 	if ( pCharSrc == NULL )
 		return true;	// field spell ?
@@ -2649,7 +2603,7 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 				iStatBonus = static_cast<STAT_TYPE>(STAT_STR);
 			if (!iStatBonusPercent)
 				iStatBonusPercent = 10;
-			int iDmgBonus = Stat_GetAdjusted(iStatBonus) * iStatBonusPercent / 100;
+			iDmgBonus = Stat_GetAdjusted(iStatBonus) * iStatBonusPercent / 100;
 
 			iDmgMin += iDmgBonus;
 			iDmgMax += iDmgBonus;
@@ -3564,7 +3518,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		{
 			if ( pCont )
 			{
-				CGrayUID uidCont = static_cast<CGrayUID>(pCont->GetValNum());
+				CGrayUID uidCont = static_cast<CGrayUID>(static_cast<DWORD>(pCont->GetValNum()));
 				CItemContainer *pNewCont = dynamic_cast<CItemContainer*>(uidCont.ItemFind());
 				if ( !pNewCont )	//if no UID, check for ITEMID_TYPE
 				{
@@ -3605,7 +3559,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				if ( OnTrigger(CTRIG_HitTry, pCharTarg, &Args) == TRIGRET_RET_TRUE )
 					return WAR_SWING_READY;
 
-				iSwingDelay = Args.m_iN1;
+				iSwingDelay = static_cast<int>(Args.m_iN1);
 				if ( iSwingDelay < 7 )		// swing delay lower than 7ms will break the timer
 					iSwingDelay = 7;
 				anim = (ANIM_TYPE)Args.m_VarsLocal.GetKeyNum("Anim", false);
@@ -3673,7 +3627,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				if ( OnTrigger(CTRIG_HitTry, pCharTarg, &Args) == TRIGRET_RET_TRUE )
 					return WAR_SWING_READY;
 
-				iSwingDelay = Args.m_iN1;
+				iSwingDelay = static_cast<int>(Args.m_iN1);
 				if ( iSwingDelay < 7 )		// swing delay lower than 7ms will break the timer
 					iSwingDelay = 7;
 				anim = (ANIM_TYPE)Args.m_VarsLocal.GetKeyNum("Anim", false);

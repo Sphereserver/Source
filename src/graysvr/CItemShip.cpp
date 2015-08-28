@@ -249,7 +249,7 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 						//Client is on Ship
 						if (tMe->GetRegion()->GetResourceID().GetObjUID() == GetUID())
 						{
-							CPointMap pt = tMe->GetTopPoint();
+							pt = tMe->GetTopPoint();
 							pt -= pdelta;
 							pClient->addPlayerSeeShip( pt );
 							if (pClient->GetNetState()->isClientSA())

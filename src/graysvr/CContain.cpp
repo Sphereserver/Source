@@ -205,7 +205,7 @@ TRIGRET_TYPE CContainer::OnGenericContTriggerForLoop( CScript &s, CTextConsole *
 			if ( pCont->IsSearchable())
 			{
 				CContainer * pContBase = dynamic_cast <CContainer *> (pCont);
-				TRIGRET_TYPE iRet = pContBase->OnGenericContTriggerForLoop( s, pSrc, pArgs, pResult, StartContext, EndContext, iDecendLevels-1 );
+				iRet = pContBase->OnGenericContTriggerForLoop( s, pSrc, pArgs, pResult, StartContext, EndContext, iDecendLevels-1 );
 				if ( iRet != TRIGRET_ENDIF )
 				{
 					return( iRet );

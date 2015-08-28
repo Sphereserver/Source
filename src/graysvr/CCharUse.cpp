@@ -1599,6 +1599,11 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 
 	bool fAction = true;
 
+
+	CItemSpawn * pSpawn = static_cast<CItemSpawn*>(pItem->m_uidSpawnItem.ItemFind());
+	if ( pSpawn )
+		pSpawn->DelObj(pItem->GetUID());	// Removing this item from it's spawn when non-player DClicks it (forced DClick from script).
+
 	switch ( pItem->GetType() )
 	{
 	case IT_ITEM_STONE:
@@ -1949,7 +1954,7 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 	if ( pLinkItem != NULL && pLinkItem != pItem )
 	{
 		static CItem * sm_pItemFirst = NULL;	// watch out for loops.
-		static int sm_iCount = 0;
+		sm_iCount = 0;
 		if ( ! fLink )
 		{
 			sm_pItemFirst = pItem;
@@ -1976,13 +1981,9 @@ bool CChar::Use_Obj( CObjBase * pObj, bool fTestTouch, bool fScript  )
 	if ( pObj == NULL )
 		return( false );
 	if ( IsClient())
-	{
 		return GetClient()->Event_DoubleClick( pObj->GetUID(), false, fTestTouch, fScript );
-	}
 	else
-	{
 		return Use_Item( dynamic_cast <CItem*>(pObj), fTestTouch );
-	}
 }
 
 bool CChar::ItemEquipArmor( bool fForce )

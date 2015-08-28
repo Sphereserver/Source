@@ -290,7 +290,7 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 			continue;
 
 		// replace the doors and teleporters with real items
-		CItem * pItem = CItem::CreateScript((*i)->m_item.GetDispID());
+		pItem = CItem::CreateScript((*i)->m_item.GetDispID());
 		if ( pItem == NULL )
 			continue;
 

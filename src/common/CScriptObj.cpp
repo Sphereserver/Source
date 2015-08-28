@@ -884,7 +884,7 @@ badcmd:
 			}
 			if ( !*pszKey )
 			{
-				CObjBase * pObj = dynamic_cast <CObjBase*> (pRef);	// if it can be converted .
+				pObj = dynamic_cast <CObjBase*> (pRef);	// if it can be converted .
 				sVal.FormatHex( pObj ? (DWORD) pObj->GetUID() : 0 );
 				return true;
 			}

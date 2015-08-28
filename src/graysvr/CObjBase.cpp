@@ -72,6 +72,7 @@ CObjBase::CObjBase( bool fItem )
 	m_PropertyList = NULL;
 	m_PropertyHash = 0;
 	m_PropertyRevision = 0;
+	m_uidSpawnItem = UID_UNUSED;
 
 	if ( g_Serv.IsLoading())
 	{
@@ -594,6 +595,7 @@ enum OBR_TYPE
 {
 	OBR_ROOM,
 	OBR_SECTOR,
+	OBR_SPAWNITEM,
 	OBR_TOPOBJ,
 	OBR_TYPEDEF,
 	OBR_QTY
@@ -603,6 +605,7 @@ LPCTSTR const CObjBase::sm_szRefKeys[OBR_QTY+1] =
 {
 	"ROOM",
 	"SECTOR",
+	"SPAWNITEM",
 	"TOPOBJ",
 	"TYPEDEF",
 	NULL
@@ -624,6 +627,9 @@ bool CObjBase::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 			case OBR_SECTOR:
 				pRef = GetTopLevelObj()->GetTopSector();
 				return( true );
+			case OBR_SPAWNITEM:
+				pRef = m_uidSpawnItem != static_cast<CGrayUID>(UID_UNUSED) ? m_uidSpawnItem.ItemFind() : NULL;
+				return true;
 			case OBR_TOPOBJ:
 				if ( pszKey[-1] != '.' )	// only used as a ref !
 					break;
@@ -952,8 +958,8 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			{
 				TCHAR * key = const_cast<TCHAR*>(pszKey);
 				key += 5;
-				TCHAR * pszArgs[4];
-				size_t iArgQty = Str_ParseCmds(key , pszArgs, COUNTOF(pszArgs));
+				TCHAR * pszArg[4];
+				size_t iArgQty = Str_ParseCmds(key , pszArg, COUNTOF(pszArg));
 				if (iArgQty < 2)
 				{
 					g_Log.EventError("SysMessagef with less than 1 args for the given text\n");
@@ -965,10 +971,10 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 					return false;
 				}
 				//strip quotes if any
-				if (*pszArgs[0] == '"')
-					pszArgs[0]++;
+				if (*pszArg[0] == '"')
+					pszArg[0]++;
 				BYTE count = 0;
-				for (TCHAR * pEnd = pszArgs[0] + strlen(pszArgs[0]) - 1; pEnd >= pszArgs[0]; pEnd--)
+				for (TCHAR * pEnd = pszArg[0] + strlen(pszArg[0]) - 1; pEnd >= pszArg[0]; pEnd--)
 				{
 					if (*pEnd == '"')
 					{
@@ -977,7 +983,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 					}
 					count++;
 				}
-				sVal.Format(pszArgs[0], pszArgs[1], pszArgs[2] ? pszArgs[2] : 0, pszArgs[3] ? pszArgs[3] : 0);
+				sVal.Format(pszArg[0], pszArg[1], pszArg[2] ? pszArg[2] : 0, pszArg[3] ? pszArg[3] : 0);
 				return true;
 			}break;
 		case OC_DIALOGLIST:
@@ -1240,14 +1246,14 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			CItem * pItem = NULL;
 			if ( *pszKey )
 			{
-				TCHAR * pszArgs = Str_GetTemp();
-				strcpylen( pszArgs, pszKey, strlen( pszKey ) + 1 );
+				TCHAR * pszArg = Str_GetTemp();
+				strcpylen( pszArg, pszKey, strlen( pszKey ) + 1 );
 
 				CGrayUID uid = Exp_GetVal( pszKey );
 				pItem = dynamic_cast<CItem*> (uid.ObjFind());
 				if (pItem == NULL)
 				{
-					ITEMID_TYPE id = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetID(RES_ITEMDEF, const_cast<LPCTSTR &>(reinterpret_cast<LPTSTR &>(pszArgs))).GetResIndex());
+					ITEMID_TYPE id = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetID(RES_ITEMDEF, const_cast<LPCTSTR &>(reinterpret_cast<LPTSTR &>(pszArg))).GetResIndex());
 					const CItemBase * pItemDef = CItemBase::FindItemBase( id );
 					if ( pItemDef != NULL )
 					{
@@ -1280,14 +1286,14 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			CItem * pItem = NULL;
 			if ( *pszKey )
 			{
-				TCHAR * pszArgs = Str_GetTemp();
-				strcpylen( pszArgs, pszKey, strlen( pszKey ) + 1 );
+				TCHAR * pszArg = Str_GetTemp();
+				strcpylen( pszArg, pszKey, strlen( pszKey ) + 1 );
 
 				CGrayUID uid = Exp_GetVal( pszKey );
 				pItem = dynamic_cast<CItem*> (uid.ObjFind());
 				if ( pItem == NULL )
 				{
-					ITEMID_TYPE id = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetID(RES_ITEMDEF, const_cast<LPCTSTR &>(reinterpret_cast<LPTSTR &>(pszArgs))).GetResIndex());
+					ITEMID_TYPE id = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetID(RES_ITEMDEF, const_cast<LPCTSTR &>(reinterpret_cast<LPTSTR &>(pszArg))).GetResIndex());
 					const CItemBase * pItemDef = CItemBase::FindItemBase( id );
 					if (pItemDef != NULL)
 					{

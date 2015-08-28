@@ -136,6 +136,10 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		}
 	}
 
+	CItemSpawn * pSpawn = static_cast<CItemSpawn*>(pItem->m_uidSpawnItem.ItemFind()); //Removing this item from it's spawn when players DClick it from ground, no other way to take it out.
+	if ( pSpawn )
+		pSpawn->DelObj(pItem->GetUID());
+
 	SetTargMode();
 	m_Targ_UID = pItem->GetUID(); // probably already set anyhow.
 	m_tmUseItem.m_pParent = pItem->GetParent(); // Cheat Verify.
@@ -972,9 +976,7 @@ size_t CClient::Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuIt
 				{
 					// Test if there is anything in this skillmenu we can do.
 					++sm_iReentrant;
-
-					CMenuItem item;
-					if ( ! Cmd_Skill_Menu_Build( g_Cfg.ResourceGetIDType( RES_SKILLMENU, s.GetArgStr()), -2, &item, iMaxSize, fShowMenu, fLimitReached ))
+					if ( ! Cmd_Skill_Menu_Build( g_Cfg.ResourceGetIDType( RES_SKILLMENU, s.GetArgStr()), -2, *&item, iMaxSize, fShowMenu, fLimitReached ))
 					{
 						iShowCount--;
 						fSkip = true;

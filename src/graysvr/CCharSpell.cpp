@@ -439,7 +439,7 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 			continue;
 
 		if ( pClient == m_pClient )
-			pClient->addPlayerView(NULL, static_cast<bool>(g_Cfg.m_fDeadCannotSeeLiving));
+			pClient->addPlayerView(NULL, g_Cfg.m_fDeadCannotSeeLiving ? true : false);
 
 		pClient->addChar(this);
 		if ( m_pNPC )
@@ -1128,7 +1128,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				CItem * pPrevious = LayerFind(LAYER_SPELL_Pain_Spike);
 				if (pPrevious)
 				{
-					CItem * pPrevious = LayerFind(LAYER_SPELL_Pain_Spike);
+					pPrevious = LayerFind(LAYER_SPELL_Pain_Spike);
 					if (pPrevious)
 						pSpell->m_itSpell.m_spellcharges += 2;
 						//TO-DO If the spell targets someone already affected by the Pain Spike spell, only 3 to 7 points of DIRECT damage will be inflicted.
@@ -3054,7 +3054,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	DAMAGE_TYPE iD1 = 0;
 	if ( IsTrigUsed(TRIGGER_SPELLEFFECT) )
 	{
-		TRIGRET_TYPE iRet = OnTrigger( CTRIG_SpellEffect, pCharSrc ? pCharSrc : this, &Args );
+		iRet = OnTrigger( CTRIG_SpellEffect, pCharSrc ? pCharSrc : this, &Args );
 		spell = static_cast<SPELL_TYPE>(Args.m_iN1);
 		iD1 = static_cast<DAMAGE_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("DamageType", true)));
 
@@ -3120,7 +3120,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				Effect(EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 5);
 				if ( pCharSrc->IsStatFlag(STATF_Reflection) )		// caster is under reflection effect too, so the spell will reflect back to default target
 				{
-					CItem *pMagicReflect = pCharSrc->LayerFind(LAYER_SPELL_Magic_Reflect);
+					pMagicReflect = pCharSrc->LayerFind(LAYER_SPELL_Magic_Reflect);
 					pMagicReflect->Delete();
 					pCharSrc->Effect(EFFECT_OBJ, ITEMID_FX_GLOW, pCharSrc, 10, 5);
 				}

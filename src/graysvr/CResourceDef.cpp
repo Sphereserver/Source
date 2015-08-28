@@ -678,7 +678,7 @@ bool CSpellDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 					SKIP_SEPARATORS( pszKey );
 					// Determine the index of the resource
 					// we wish to find
-					int	index = Exp_GetVal( pszKey );
+					index = Exp_GetVal( pszKey );
 					SKIP_SEPARATORS( pszKey );
 
 					// Check for "RESOURCES.x.KEY"

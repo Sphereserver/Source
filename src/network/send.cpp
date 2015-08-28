@@ -1066,7 +1066,7 @@ PacketCloseVendor::PacketCloseVendor(const CClient* target, const CChar* vendor)
 PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* container, bool isShop, bool filterLayers, bool bExtra) : PacketSend(XCMD_Content, 5, PRI_NORMAL), m_container(container->GetUID())
 {
 	ADDTOCALLSTACK("PacketItemContents::PacketItemContents");
-
+	UNREFERENCED_PARAMETER(bExtra);	//Disabled temporary, it seems to prevent buy list from being sent to some old Enhanced Clients
 	const CChar* viewer = target->GetChar();
 	const CItemBase* itemDefinition;
 	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA());

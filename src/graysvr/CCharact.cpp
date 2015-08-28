@@ -888,55 +888,55 @@ ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackw
 				// All animals have all these anims thankfully
 				switch (action)
 				{
-				case ANIM_WALK_UNARM:
-				case ANIM_WALK_ARM:
-				case ANIM_WALK_WAR:
-					return ANIM_ANI_WALK;
-				case ANIM_RUN_UNARM:
-				case ANIM_RUN_ARMED:
-					return ANIM_ANI_RUN;
-				case ANIM_STAND:
-				case ANIM_STAND_WAR_1H:
-				case ANIM_STAND_WAR_2H:
-				default:
-					return ANIM_ANI_STAND;
+					case ANIM_WALK_UNARM:
+					case ANIM_WALK_ARM:
+					case ANIM_WALK_WAR:
+						return ANIM_ANI_WALK;
+					case ANIM_RUN_UNARM:
+					case ANIM_RUN_ARMED:
+						return ANIM_ANI_RUN;
+					case ANIM_STAND:
+					case ANIM_STAND_WAR_1H:
+					case ANIM_STAND_WAR_2H:
 
-				case ANIM_FIDGET1:
-					return ANIM_ANI_FIDGET1;
-				case ANIM_FIDGET_YAWN:
-					return ANIM_ANI_FIDGET2;
-				case ANIM_CAST_DIR:
-					return ANIM_ANI_ATTACK1;
-				case ANIM_CAST_AREA:
-					return ANIM_ANI_EAT;
-				case ANIM_GET_HIT:
-					return ANIM_ANI_GETHIT;
+					case ANIM_FIDGET1:
+						return ANIM_ANI_FIDGET1;
+					case ANIM_FIDGET_YAWN:
+						return ANIM_ANI_FIDGET2;
+					case ANIM_CAST_DIR:
+						return ANIM_ANI_ATTACK1;
+					case ANIM_CAST_AREA:
+						return ANIM_ANI_EAT;
+					case ANIM_GET_HIT:
+						return ANIM_ANI_GETHIT;
 
-				case ANIM_ATTACK_1H_SLASH:
-				case ANIM_ATTACK_1H_PIERCE:
-				case ANIM_ATTACK_1H_BASH:
-				case ANIM_ATTACK_2H_BASH:
-				case ANIM_ATTACK_2H_SLASH:
-				case ANIM_ATTACK_2H_PIERCE:
-				case ANIM_ATTACK_BOW:
-				case ANIM_ATTACK_XBOW:
-				case ANIM_ATTACK_WRESTLE:
-					switch (Calc_GetRandVal(2))
-					{
-					case 0: return ANIM_ANI_ATTACK1; break;
-					case 1: return ANIM_ANI_ATTACK2; break;
-					}
+					case ANIM_ATTACK_1H_SLASH:
+					case ANIM_ATTACK_1H_PIERCE:
+					case ANIM_ATTACK_1H_BASH:
+					case ANIM_ATTACK_2H_BASH:
+					case ANIM_ATTACK_2H_SLASH:
+					case ANIM_ATTACK_2H_PIERCE:
+					case ANIM_ATTACK_BOW:
+					case ANIM_ATTACK_XBOW:
+					case ANIM_ATTACK_WRESTLE:
+						switch (Calc_GetRandVal(2))
+						{
+						case 0: return ANIM_ANI_ATTACK1; break;
+						case 1: return ANIM_ANI_ATTACK2; break;
+						}
 
-				case ANIM_DIE_BACK:
-					return ANIM_ANI_DIE1;
-				case ANIM_DIE_FORWARD:
-					return ANIM_ANI_DIE2;
-				case ANIM_BLOCK:
-				case ANIM_BOW:
-				case ANIM_SALUTE:
-					return ANIM_ANI_SLEEP;
-				case ANIM_EAT:
-					return ANIM_ANI_EAT;
+					case ANIM_DIE_BACK:
+						return ANIM_ANI_DIE1;
+					case ANIM_DIE_FORWARD:
+						return ANIM_ANI_DIE2;
+					case ANIM_BLOCK:
+					case ANIM_BOW:
+					case ANIM_SALUTE:
+						return ANIM_ANI_SLEEP;
+					case ANIM_EAT:
+						return ANIM_ANI_EAT;
+					default:
+						break;
 				}
 
 				while (action != ANIM_WALK_UNARM && !(pCharDef->m_Anims & (1 << action)))
@@ -944,10 +944,10 @@ ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackw
 					// This anim is not supported. Try to use one that is.
 					switch (action)
 					{
-					case ANIM_ANI_SLEEP:	// All have this.
-						return ANIM_ANI_EAT;
-					default:
-						return ANIM_WALK_UNARM;
+						case ANIM_ANI_SLEEP:	// All have this.
+							return ANIM_ANI_EAT;
+						default:
+							return ANIM_WALK_UNARM;
 					}
 				}
 			}
@@ -957,39 +957,39 @@ ANIM_TYPE CChar::GenerateAnimate( ANIM_TYPE action, bool fTranslate, bool fBackw
 
 				switch (action)
 				{
-				case ANIM_CAST_DIR:
-					return ANIM_MON_Stomp;
-				case ANIM_CAST_AREA:
-					return ANIM_MON_PILLAGE;
-				case ANIM_DIE_BACK:
-					return ANIM_MON_DIE1;
-				case ANIM_DIE_FORWARD:
-					return ANIM_MON_DIE2;
-				case ANIM_GET_HIT:
-					switch (Calc_GetRandVal(3))
-					{
-					case 0: return ANIM_MON_GETHIT; break;
-					case 1: return ANIM_MON_BlockRight; break;
-					case 2: return ANIM_MON_BlockLeft; break;
-					}
-					break;
-				case ANIM_ATTACK_1H_SLASH:
-				case ANIM_ATTACK_1H_PIERCE:
-				case ANIM_ATTACK_1H_BASH:
-				case ANIM_ATTACK_2H_BASH:
-				case ANIM_ATTACK_2H_PIERCE:
-				case ANIM_ATTACK_2H_SLASH:
-				case ANIM_ATTACK_BOW:
-				case ANIM_ATTACK_XBOW:
-				case ANIM_ATTACK_WRESTLE:
-					switch (Calc_GetRandVal(3))
-					{
-					case 0: return ANIM_MON_ATTACK1; break;
-					case 1: return ANIM_MON_ATTACK2; break;
-					case 2: return ANIM_MON_ATTACK3; break;
-					}
-				default:
-					return ANIM_WALK_UNARM;
+					case ANIM_CAST_DIR:
+						return ANIM_MON_Stomp;
+					case ANIM_CAST_AREA:
+						return ANIM_MON_PILLAGE;
+					case ANIM_DIE_BACK:
+						return ANIM_MON_DIE1;
+					case ANIM_DIE_FORWARD:
+						return ANIM_MON_DIE2;
+					case ANIM_GET_HIT:
+						switch (Calc_GetRandVal(3))
+						{
+						case 0: return ANIM_MON_GETHIT; break;
+						case 1: return ANIM_MON_BlockRight; break;
+						case 2: return ANIM_MON_BlockLeft; break;
+						}
+						break;
+					case ANIM_ATTACK_1H_SLASH:
+					case ANIM_ATTACK_1H_PIERCE:
+					case ANIM_ATTACK_1H_BASH:
+					case ANIM_ATTACK_2H_BASH:
+					case ANIM_ATTACK_2H_PIERCE:
+					case ANIM_ATTACK_2H_SLASH:
+					case ANIM_ATTACK_BOW:
+					case ANIM_ATTACK_XBOW:
+					case ANIM_ATTACK_WRESTLE:
+						switch (Calc_GetRandVal(3))
+						{
+						case 0: return ANIM_MON_ATTACK1; break;
+						case 1: return ANIM_MON_ATTACK2; break;
+						case 2: return ANIM_MON_ATTACK3; break;
+						}
+					default:
+						return ANIM_WALK_UNARM;
 				}
 				// NOTE: Available actions depend HEAVILY on creature type !
 				// ??? Monsters don't have all anims in common !
@@ -1760,12 +1760,13 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 	// being taken from the ground by a hidden character to
 	// prevent lingering item.
 	if ( ( trigger == ITRIG_PICKUP_GROUND ) && (IsStatFlag( STATF_Insubstantial | STATF_Invisible | STATF_Hidden )) )
-	{
         pItem->RemoveFromView( m_pClient );
-	}
 
 	// Pick it up.
 	pItem->SetDecayTime(-1);	// Kill any decay timer.
+	CItemSpawn * pSpawn = static_cast<CItemSpawn*>(pItem->m_uidSpawnItem.ItemFind());
+	if (pSpawn)
+		pSpawn->DelObj(pItem->GetUID());
 	LayerAdd( pItem, LAYER_DRAGGING );
 
 	return amount;

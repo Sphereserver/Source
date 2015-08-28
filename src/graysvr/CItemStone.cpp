@@ -1157,7 +1157,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 					{
 						if ( pszArgs[0] != '\0' )
 						{
-							CStoneMember * pMember = STATIC_CAST <CStoneMember *>(GetHead());
+							pMember = STATIC_CAST <CStoneMember *>(GetHead());
 							CScript scriptVerb( pszArgs );
 
 							for (; pMember != NULL; pMember = pMember->GetNext())
@@ -1209,7 +1209,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 					{
 						if ( pszArgs[0] != '\0' )
 						{
-							CStoneMember * pMember = STATIC_CAST <CStoneMember *>(GetHead());
+							pMember = STATIC_CAST <CStoneMember *>(GetHead());
 							CScript scriptVerb( pszArgs );
 
 							for (; pMember != NULL; pMember = pMember->GetNext())
