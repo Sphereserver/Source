@@ -2560,3 +2560,55 @@ Fixed: Walk packet events causing excessive CPU/bandwidth usage.
 17-08-2015, Coruja
 Fixed: Char property Regen[Hits/Mana/Stam] not working correctly.
 Changed: Updated internal MySQL libs version 4.1.18 to 6.1.6. 
+
+19-08-2015, Coruja
+Fixed: Combat randomly not starting the first swing.
+Fixed: Rubberband when using combat skills while running.
+Fixed: World teleports incorrectly showing teleport spell animation.
+Fixed: Tracking skill showing empty messages instead not show any message at all when the tracking messages are blank on sphere_msgs.scp.
+
+21-08-2015, Coruja
+Fixed: NPCs (brain_monster) always trying to apply poison on hit, even if the NPC doesn't have poisoning skill or poisoned weapons.
+Fixed: NPCs not moving when step on Fire Field spell.
+Fixed: Tactics skill too difficult to gain on combat.
+Fixed: Explosion potion not flagging criminal when hit someone.
+Fixed: Spells disturb not working correctly in some specific cases.
+Fixed: Missing paperdoll update when char ID (body) get changed.
+[Sphere.ini] Removed COMBAT_PREHIT combat flag, it can be replaced by AttackingIsaCrime which does the same thing.
+[sphere_defs.scp]: Added new 'dam_nodisturb' damage flag.
+
+25-08-2015, Coruja
+Fixed: Food items not restoring char FOOD correctly.
+Fixed: HitLeech[Life/Mana/Stam] and HitManaDrain properties making hits/mana/stam rise over the max char limit.
+[sphere_spells.scp]: Removed SOUND / EFFECT_ID from Teleport spell. These values are already handled by Sphere.ini settings, and sphere_spells.scp values was making it play twice.
+
+27-08-2015, Coruja
+Added: New STEPSTEALTH char property to set how many steps the char can walk invisible while using Stealth skill. This property is set when using Stealth skill, will decrease -1 on each walk step (or -2 if running) and will reveal when reach 0.
+Changed: Trigger @StepStealth no longer use ARGN1 to force reveal, the ARGN1=1 can be replaced by STEPSTEALTH=0.
+Fixed: Missing buff icon when using INVIS (GM command).
+[sphere_skills.scp]: New Stealth softcoded skill.
+	-IMPORTANT: It's HIGHLY recommended update it, or this skill will stop working.
+
+28-08-2015, XuN
+Changed the way SPAWNS works, improved them and added more access functions:
+	- Removed MEMORY_ISPAWNED from source (still present as a def in sphere_defs.scp for backwards-compat)
+	- Updated SpawnItem to point directly to the spawn instead of redirecting to memory's link.
+	- Moved SpawnItem (R) to COjbBase to affect both chars and items.
+	- Spawned OBJs are now stored in the spawn, so SpawnItem only gives quick access to the spawn.
+	- Functions added to spawns:
+		- AT.n.KEY (R): Retrieves the 'KEY' val for the 'n' spawned item/char, examples: <at.0.name>, <at.0.str>...
+		- COUNT (R): Returns the total count of spawned items or chars.
+		- RESET (W): Removes every spawned Item/Char.
+		- STOP (W): Removes every spawned Item/Char and stops the Spawn.
+		- START (W): Same as DClicking the Spawn, but from function, without LOS/Distance/etc limitations (It just makes it start, doesn't reset it, so won't work if it's already working).
+		- ADDOBJ uid (W): Adds the given UID(the Item/Char must exist obviously, so it must be created before) to the Spawned list, it doesn't check for MORE2 < AMOUNT or anything, it's a forced add. Example:
+				ON=@GetHit
+					REF1=<SpawnItem>
+					SERV.NEWNPC=<baseid>
+					NEW.P=<P>
+					NEW.FLAGS |= STATF_CONJURED
+					REF1.ADDOBJ=<NEW>
+		- DELOBJ uid (W): The opossite of ADDOBJ, removes one OBJ from this list (just remove from the list, it's not removing the OBJ itself).
+NOTE: While updating for this build, when server is loading for first time and converting MEMORY_ISPAWNED to SpawnItem and removing these memories, Sphere will throw a memory_leak exception after loading the world because of the difference between items before loading (chars with memory_ispawned) and items after loading (memory_ispawned removed).
+
+Added PREVBUILD storing in the worldsaves the current BUILD (__GITREVISION__), usefull to apply changes when updating the bin. Usage: <SERV.PrevBuild>
