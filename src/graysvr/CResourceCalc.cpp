@@ -78,44 +78,48 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 		}
 		return iWaitTime;
 	}
-
-	int iBaseSpeed = 50;	//Wrestling speed
-	int iSwingSpeedIncrease = static_cast<int>(pChar->GetDefNum("INCREASESWINGSPEED", true));
-	if (pWeapon != NULL)
+	else
 	{
-		iBaseSpeed = pWeapon->GetSpeed();
+
+		int iBaseSpeed = 50;	//Wrestling speed
+		int iSwingSpeedIncrease = static_cast<int>(pChar->GetDefNum("INCREASESWINGSPEED", true));
+		if (pWeapon != NULL)
+		{
+			iBaseSpeed = pWeapon->GetSpeed();
+		}
+
+		// AOS formula		(default m_iSpeedScaleFactor = 40000)
+		if (g_Cfg.m_iCombatSpeedEra == 1)
+		{
+			int iSwingSpeed = (pChar->Stat_GetVal(STAT_DEX) + 100) * iBaseSpeed;
+			iSwingSpeed = maximum(1, iSwingSpeed * (100 + iSwingSpeedIncrease) / 100);
+			iSwingSpeed = ((g_Cfg.m_iSpeedScaleFactor * TICK_PER_SEC) / iSwingSpeed) / 2;
+			if (iSwingSpeed < 12)		//1.25
+				iSwingSpeed = 12;
+			return iSwingSpeed;
+		}
+
+		// ML formula		(doesn't use m_iSpeedScaleFactor and it's only compatible with ML speed format eg. 0.25 ~ 5.00 instead 0 ~ 50)
+		else if (g_Cfg.m_iCombatSpeedEra == 3)
+		{
+			int iSwingSpeed = ((iBaseSpeed * 4) - (pChar->Stat_GetVal(STAT_DEX) / 30)) * (100 / (100 + iSwingSpeedIncrease));
+			if (iSwingSpeed < 5)
+				iSwingSpeed = 5;
+			return iSwingSpeed;
+		}
+
+
+		// SE formula		(default m_iSpeedScaleFactor = 80000)
+		//if (g_Cfg.m_iCombatSpeedEra == 2)	// 2 or any other value = default
+		else
+		{
+			int iSwingSpeed = maximum(1, iBaseSpeed * (100 + iSwingSpeedIncrease) / 100);
+			iSwingSpeed = (g_Cfg.m_iSpeedScaleFactor / ((pChar->Stat_GetVal(STAT_DEX) + 100) * iSwingSpeed)) - 2;
+			if (iSwingSpeed < 7)
+				iSwingSpeed = 7;
+			return iSwingSpeed;
+		}
 	}
-
-	// AOS formula		(default m_iSpeedScaleFactor = 40000)
-	if (g_Cfg.m_iCombatSpeedEra == 1)
-	{
-		int iSwingSpeed = (pChar->Stat_GetVal(STAT_DEX) + 100) * iBaseSpeed;
-		iSwingSpeed = maximum(1, iSwingSpeed * (100 + iSwingSpeedIncrease) / 100);
-		iSwingSpeed = ((g_Cfg.m_iSpeedScaleFactor * TICK_PER_SEC) / iSwingSpeed) / 2;
-		if (iSwingSpeed < 12)		//1.25
-			iSwingSpeed = 12;
-		return iSwingSpeed;
-	}
-
-	// ML formula		(doesn't use m_iSpeedScaleFactor and it's only compatible with ML speed format eg. 0.25 ~ 5.00 instead 0 ~ 50)
-	if (g_Cfg.m_iCombatSpeedEra == 3)
-	{
-		int iSwingSpeed = ((iBaseSpeed * 4) - (pChar->Stat_GetVal(STAT_DEX) / 30)) * (100 / (100 + iSwingSpeedIncrease));
-		if ( iSwingSpeed < 5 )
-		iSwingSpeed = 5;
-		return iSwingSpeed;
-	}
-
-
-	// SE formula		(default m_iSpeedScaleFactor = 80000)
-	//if (g_Cfg.m_iCombatSpeedEra == 2)	// 2 or any other value = default
-	//{
-		int iSwingSpeed = maximum(1, iBaseSpeed * (100 + iSwingSpeedIncrease) / 100);
-		iSwingSpeed = (g_Cfg.m_iSpeedScaleFactor / ((pChar->Stat_GetVal(STAT_DEX) + 100) * iSwingSpeed)) - 2;
-		if (iSwingSpeed < 5)
-			iSwingSpeed = 5;
-		return iSwingSpeed;
-	//}
 }
 
 int CResource::Calc_CombatChanceToHit( CChar * pChar, CChar * pCharTarg, SKILL_TYPE skill )

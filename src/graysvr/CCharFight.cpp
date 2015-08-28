@@ -2611,6 +2611,7 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 		iDmgMin += iDmgMin * iDmgBonus / 100;
 		iDmgMax += iDmgMax * iDmgBonus / 100;
 	}
+	g_Log.EventDebug("Dam for %s = %d-%d\n", GetName(), iDmgMin,iDmgMax);
 
 	if ( bNoRandom )
 		return( bGetMax ? iDmgMax : iDmgMin );
@@ -3473,6 +3474,9 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		}
 	}
 
+	int iSwingDelay = Fight_GetWeaponSwingTimer();
+	ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
+	BYTE animDelay = iSwingDelay - 7;// attack speed is always 7ms and then the char keep waiting the remaining time;
 	SKILL_TYPE skill = Skill_GetActive();
 	if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
 	{
@@ -3547,10 +3551,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			if ( !CanSeeLOS(pCharTarg) )
 				return WAR_SWING_EQUIPPING;
 
-			int iSwingDelay = Fight_GetWeaponSwingTimer();
-			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
-			BYTE animDelay = 0;
-
 			if ( IsTrigUsed(TRIGGER_HITTRY) )
 			{
 				CScriptTriggerArgs Args(iSwingDelay, 0, pWeapon);
@@ -3560,8 +3560,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 					return WAR_SWING_READY;
 
 				iSwingDelay = static_cast<int>(Args.m_iN1);
-				if ( iSwingDelay < 7 )		// swing delay lower than 7ms will break the timer
-					iSwingDelay = 7;
 				anim = (ANIM_TYPE)Args.m_VarsLocal.GetKeyNum("Anim", false);
 				animDelay = (BYTE)Args.m_VarsLocal.GetKeyNum("AnimDelay", true);
 				if ( animDelay < 0 )
@@ -3569,15 +3567,13 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			}
 
 			m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
-			m_atFight.m_NextSwingDelay = iSwingDelay - 7;
-			SetTimeout(7);		// attack speed is always 7ms and then the char keep waiting the remaining time
+			m_atFight.m_NextSwingDelay = iSwingDelay;
+			SetTimeout(iSwingDelay);
 
 			Reveal();
 			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) && !IsStatFlag(STATF_Fly) )
-			{
 				UpdateDir(pCharTarg);
-				UpdateAnimate(anim, false, false, animDelay);
-			}
+			UpdateAnimate(anim, false, false, animDelay);
 			return WAR_SWING_SWINGING;
 		}
 
@@ -3615,10 +3611,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			if ( !CanSeeLOS(pCharTarg) )
 				return WAR_SWING_EQUIPPING;
 
-			int iSwingDelay = Fight_GetWeaponSwingTimer();
-			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
-			BYTE animDelay = 0;
-
 			if ( IsTrigUsed(TRIGGER_HITTRY) )
 			{
 				CScriptTriggerArgs Args(iSwingDelay, 0, pWeapon);
@@ -3628,8 +3620,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 					return WAR_SWING_READY;
 
 				iSwingDelay = static_cast<int>(Args.m_iN1);
-				if ( iSwingDelay < 7 )		// swing delay lower than 7ms will break the timer
-					iSwingDelay = 7;
 				anim = (ANIM_TYPE)Args.m_VarsLocal.GetKeyNum("Anim", false);
 				animDelay = (BYTE)Args.m_VarsLocal.GetKeyNum("AnimDelay", true);
 				if ( animDelay < 0 )
@@ -3637,15 +3627,13 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			}
 
 			m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
-			m_atFight.m_NextSwingDelay = iSwingDelay - 7;
-			SetTimeout(7);		// attack speed is always 7ms and then the char keep waiting the remaining time
+			m_atFight.m_NextSwingDelay = iSwingDelay;
+			SetTimeout(iSwingDelay);
 
 			Reveal();
 			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) && !IsStatFlag(STATF_Fly) )
-			{
 				UpdateDir(pCharTarg);
-				UpdateAnimate(anim, false, false, animDelay);
-			}
+			UpdateAnimate(anim, false, false, animDelay);
 			return WAR_SWING_SWINGING;
 		}
 	}

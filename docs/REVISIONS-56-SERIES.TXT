@@ -2612,3 +2612,9 @@ Changed the way SPAWNS works, improved them and added more access functions:
 NOTE: While updating for this build, when server is loading for first time and converting MEMORY_ISPAWNED to SpawnItem and removing these memories, Sphere will throw a memory_leak exception after loading the world because of the difference between items before loading (chars with memory_ispawned) and items after loading (memory_ispawned removed).
 
 Added PREVBUILD storing in the worldsaves the current BUILD (__GITREVISION__), usefull to apply changes when updating the bin. Usage: <SERV.PrevBuild>
+
+
+Fixed #2537:Changed iSwingDelay from CChar::Fight_Hit to CResource::Calc_CombatAttackSpeed to prevent double checks for speeds 'lower than' and to avoid guard's speed to be overriden if GuardsInstantKill=1
+Also changed AnimDelay from @HitTry to initially have a duration of argn1 -=7, so this can be softcoded to match 'old style' by just adding a simple +=7
+Fixed #2554: SkillUseQuick not checking for SKF_SCRIPTED
+Fixed #2553: Animations not being displayed when fighting with COMBATF_NODIRCHANGE
