@@ -992,8 +992,6 @@ bool CChar::Skill_UseQuick( SKILL_TYPE skill, INT64 difficulty, bool bAllowGain,
 	// Use a skill instantly. No wait at all.
 	// No interference with other skills.
 
-	if (g_Cfg.IsSkillFlag( skill, SKF_SCRIPTED ))
-		return false;
 	INT64 result = Skill_CheckSuccess( skill, static_cast<int>(difficulty), bUseBellCurve );
 	CScriptTriggerArgs pArgs( 0 , difficulty, result);
 	TRIGRET_TYPE ret = TRIGRET_RET_DEFAULT;
@@ -1672,7 +1670,7 @@ bool CChar::Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax )
 	if ( pszDef[0] )
 	{
 		TCHAR *pszMsg = Str_GetTemp();
-		sprintf(pszMsg, pszDef, pObj->GetName(), pObjTop->IsDisconnected() ? g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT_DISC) : "", CPointBase::sm_szDirs[dir]);
+		sprintf(pszMsg, pszDef, pObj->GetName(), pObjTop->IsDisconnected() ? g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT_DISC) : CPointBase::sm_szDirs[dir]);
 		ObjMessage(pszMsg, this);
 	}
 
@@ -3158,7 +3156,7 @@ int CChar::Skill_Fighting( SKTRIG_TYPE stage )
 	// SKILL_WRESTLING:
 	// SKILL_THROWING:
 	//
-	// m_Act_Targ = attack target.
+	// m_Fight_Targ = attack target.
 
 	if ( stage == SKTRIG_START )
 	{

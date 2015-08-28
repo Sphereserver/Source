@@ -1229,6 +1229,8 @@ bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )
 
 			CCharBase * pCharDef = pChar->Char_GetDef();
 			NPCBRAIN_TYPE basic_type = pChar->GetNPCBrain();
+			if ( basic_type == NPCBRAIN_DRAGON )
+				basic_type = NPCBRAIN_MONSTER;
 			if ( track_type != basic_type && track_type != NPCBRAIN_QTY )
 			{
 				if ( track_type != NPCBRAIN_NONE )		// no match.

@@ -2611,7 +2611,6 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 		iDmgMin += iDmgMin * iDmgBonus / 100;
 		iDmgMax += iDmgMax * iDmgBonus / 100;
 	}
-	g_Log.EventDebug("Dam for %s = %d-%d\n", GetName(), iDmgMin,iDmgMax);
 
 	if ( bNoRandom )
 		return( bGetMax ? iDmgMax : iDmgMin );
@@ -3474,9 +3473,11 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		}
 	}
 
-	int iSwingDelay = Fight_GetWeaponSwingTimer();
+	int iSwingDelay = Fight_GetWeaponSwingTimer() - 1;	// Swings are being started in the next tick after they start, so to compensate that it's being substracted here.
 	ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
-	BYTE animDelay = iSwingDelay - 7;// attack speed is always 7ms and then the char keep waiting the remaining time;
+	short animDelay = ( iSwingDelay / 10 ) - 7;// attack speed is always 7ms and then the char keep waiting the remaining time, its also in seconds, hence the /10
+	if ( animDelay < 1 ) // less than this will not display animation
+		animDelay = 1;
 	SKILL_TYPE skill = Skill_GetActive();
 	if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
 	{
@@ -3573,7 +3574,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			Reveal();
 			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) && !IsStatFlag(STATF_Fly) )
 				UpdateDir(pCharTarg);
-			UpdateAnimate(anim, false, false, animDelay);
+			UpdateAnimate(anim, false, false, static_cast<BYTE>(animDelay));
 			return WAR_SWING_SWINGING;
 		}
 
@@ -3633,7 +3634,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			Reveal();
 			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) && !IsStatFlag(STATF_Fly) )
 				UpdateDir(pCharTarg);
-			UpdateAnimate(anim, false, false, animDelay);
+			UpdateAnimate(anim, false, false, static_cast<BYTE>(animDelay));
 			return WAR_SWING_SWINGING;
 		}
 	}

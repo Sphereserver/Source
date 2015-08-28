@@ -2614,7 +2614,9 @@ NOTE: While updating for this build, when server is loading for first time and c
 Added PREVBUILD storing in the worldsaves the current BUILD (__GITREVISION__), usefull to apply changes when updating the bin. Usage: <SERV.PrevBuild>
 
 
-Fixed #2537:Changed iSwingDelay from CChar::Fight_Hit to CResource::Calc_CombatAttackSpeed to prevent double checks for speeds 'lower than' and to avoid guard's speed to be overriden if GuardsInstantKill=1
+Changed iSwingDelay from CChar::Fight_Hit to CResource::Calc_CombatAttackSpeed to prevent double checks for speeds 'lower than' and to avoid guard's speed to be overriden if GuardsInstantKill=1
 Also changed AnimDelay from @HitTry to initially have a duration of argn1 -=7, so this can be softcoded to match 'old style' by just adding a simple +=7
 Fixed #2554: SkillUseQuick not checking for SKF_SCRIPTED
 Fixed #2553: Animations not being displayed when fighting with COMBATF_NODIRCHANGE
+Fixed #2547: Dragons will be tracked as Monsters
+Fixed Tracking not displaying the direction of the target in the given message.
