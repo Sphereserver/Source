@@ -2560,26 +2560,3 @@ Fixed: Walk packet events causing excessive CPU/bandwidth usage.
 17-08-2015, Coruja
 Fixed: Char property Regen[Hits/Mana/Stam] not working correctly.
 Changed: Updated internal MySQL libs version 4.1.18 to 6.1.6. 
-
-Changed the way SPAWNS works, improved them and added more access functions:
-	- Removed MEMORY_ISPAWNED from source (still present as a def in sphere_defs.scp for backwards-compat)
-	- Updated SpawnItem to point directly to the spawn instead of redirecting to memory's link.
-	- Moved SpawnItem (R) to COjbBase to affect both chars and items.
-	- Spawned OBJs are now stored in the spawn, so SpawnItem only gives quick access to the spawn.
-	- Functions added to spawns:
-		- AT.n.KEY (R): Retrieves the 'KEY' val for the 'n' spawned item/char, examples: <at.0.name>, <at.0.str>...
-		- COUNT (R): Returns the total count of spawned items or chars.
-		- RESET (W): Removes every spawned Item/Char.
-		- STOP (W): Removes every spawned Item/Char and stops the Spawn.
-		- START (W): Same as DClicking the Spawn, but from function, without LOS/Distance/etc limitations (It just makes it start, doesn't reset it, so won't work if it's already working).
-		- ADDOBJ uid (W): Adds the given UID(the Item/Char must exist obviously, so it must be created before) to the Spawned list, it doesn't check for MORE2 < AMOUNT or anything, it's a forced add. Example:
-				ON=@GetHit
-					REF1=<SpawnItem>
-					SERV.NEWNPC=<baseid>
-					NEW.P=<P>
-					NEW.FLAGS |= STATF_CONJURED
-					REF1.ADDOBJ=<NEW>
-		- DELOBJ uid (W): The opossite of ADDOBJ, removes one OBJ from this list (just remove from the list, it's not removing the OBJ itself).
-NOTE: While updating for this build, when server is loading for first time and converting MEMORY_ISPAWNED to SpawnItem and removing these memories, Sphere will throw a memory_leak exception after loading the world because of the difference between items before loading (chars with memory_ispawned) and items after loading (memory_ispawned removed).
-
-Added PREVBUILD storing in the worldsaves the current BUILD (__GITREVISION__), usefull to apply changes when updating the bin. Usage: <SERV.PrevBuild>

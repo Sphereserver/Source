@@ -2668,8 +2668,8 @@ public:
 	CCharPlayer * m_pPlayer;	// May even be an off-line player !
 	CCharNPC * m_pNPC;			// we can be both a player and an NPC if "controlled" ?
 	CPartyDef * m_pParty;		// What party am i in ?
-	CRegionWorld * m_pArea; // What region are we in now. (for guarded message)
-	CRegionBase * m_pRoom; // What room we are in now.
+	CRegionWorld * m_pArea;		// What region are we in now. (for guarded message)
+	CRegionBase * m_pRoom;		// What room we are in now.
 
 	static LPCTSTR const sm_szRefKeys[];
 	static LPCTSTR const sm_szLoadKeys[];
@@ -2679,34 +2679,29 @@ public:
 
 	// Combat stuff. cached data. (not saved)
 	CGrayUID m_uidWeapon;		// current Wielded weapon.	(could just get rid of this ?)
-	WORD m_defense;			// calculated armor worn (NOT intrinsic armor)
+	WORD m_defense;				// calculated armor worn (NOT intrinsic armor)
 
-	height_t m_height;		//Height set in-game or under some trigger (height=) - for both items and chars
+	height_t m_height;			// Height set in-game or under some trigger (height=) - for both items and chars
 
-	signed int m_ModMaxWeight;
-	unsigned int m_exp;			//	character experience
-	unsigned int m_level;		//	character experience level
-	BYTE m_iVisualRange;		//  Visual Range
-//	short int m_ResPhysical;
-//	short int m_ResFire;
-//	short int m_ResCold;
-//	short int m_ResPoison;
-//	short int m_ResEnergy;
-	//DIR_TYPE m_dirClimb;	// we are standing on a CAN_I_CLIMB or UFLAG2_CLIMBABLE, DIR_QTY = not on climbable
-	bool m_fClimbUpdated;	// FixClimbHeight() called?
+	int m_ModMaxWeight;
+	unsigned int m_exp;			// character experience
+	unsigned int m_level;		// character experience level
+	BYTE m_iVisualRange;		// Visual Range
+	//DIR_TYPE m_dirClimb;		// we are standing on a CAN_I_CLIMB or UFLAG2_CLIMBABLE, DIR_QTY = not on climbable
+	bool m_fClimbUpdated;		// FixClimbHeight() called?
 	bool m_fIgnoreNextPetCmd;	// return 1 in speech block for this pet will make it ignore target petcmds while allowing the rest to perform them
 	height_t m_zClimbHeight;	// The height at the end of the climbable.
 
 	// Saved stuff.
-	DIR_TYPE m_dirFace;	// facing this dir.
-	CGString m_sTitle;		// Special title such as "the guard" (replaces the normal skill title).
+	DIR_TYPE m_dirFace;			// facing this dir.
+	CGString m_sTitle;			// Special title such as "the guard" (replaces the normal skill title).
 	CPointMap m_ptHome;			// What is our "home" region. (towns and bounding of NPC's)
-	FONT_TYPE m_fonttype;	// Speech font to use // can client set this ?
+	FONT_TYPE m_fonttype;		// Speech font to use // can client set this ?
 
 	// In order to revert to original Hue and body.
 	CREID_TYPE m_prev_id;		// Backup of body type for ghosts and poly
-	HUE_TYPE m_prev_Hue;	// Backup of skin color. in case of polymorph etc.
-	HUE_TYPE m_wBloodHue;	// Replicating CharDef's BloodColor on the char, or overriding it.
+	HUE_TYPE m_prev_Hue;		// Backup of skin color. in case of polymorph etc.
+	HUE_TYPE m_wBloodHue;		// Replicating CharDef's BloodColor on the char, or overriding it.
 	bool IsTriggerActive(LPCTSTR trig) { return static_cast<CObjBase*>(const_cast<CChar*>(this))->IsTriggerActive(trig); }
 	void SetTriggerActive(LPCTSTR trig = NULL) { static_cast<CObjBase*>(const_cast<CChar*>(this))->SetTriggerActive(trig); }
 
@@ -2733,10 +2728,11 @@ public:
 	// Some character action in progress.
 	SKILL_TYPE	m_Act_SkillCurrent;	// Currently using a skill. Could be combat skill.
 	CGrayUID	m_Act_Targ;			// Current caction target
-	CGrayUID	m_Fight_Targ;			// Current combat target
+	CGrayUID	m_Fight_Targ;		// Current combat target
 	CGrayUID	m_Act_TargPrv;		// Previous target.
 	int			m_Act_Difficulty;	// -1 = fail skill. (0-100) for skill advance calc.
 	CPointBase  m_Act_p;			// Moving to this location. or location of forge we are working on.
+	int			m_StepStealth;		// Max steps allowed to walk invisible while using Stealth skill
 
 	union	// arg specific to the action type.(m_Act_SkillCurrent)
 	{

@@ -2660,7 +2660,6 @@ int CChar::Skill_Lockpicking( SKTRIG_TYPE stage )
 int CChar::Skill_Hiding( SKTRIG_TYPE stage )
 {
 	ADDTOCALLSTACK("CChar::Skill_Hiding");
-	// SKILL_Stealth = move while already hidden !
 	// SKILL_Hiding
 	// Skill required varies with terrain and situation ?
 	// if we are carrying a light source then this should not work.
@@ -2670,18 +2669,12 @@ int CChar::Skill_Hiding( SKTRIG_TYPE stage )
 
 	if ( stage == SKTRIG_FAIL )
 	{
-		Reveal( STATF_Hidden );
+		Reveal();
 		return 0;
 	}
 
 	if ( stage == SKTRIG_SUCCESS )
 	{
-		if ( IsStatFlag( STATF_Hidden ))
-		{
-			Reveal( STATF_Hidden );		// I was already hidden ? so un-hide.
-			return( -SKTRIG_ABORT );
-		}
-
 		ObjMessage( g_Cfg.GetDefaultMsg( DEFMSG_HIDING_SUCCESS ), this );
 		if ( IsClient() )
 		{
@@ -3689,12 +3682,16 @@ int CChar::Skill_Stroke( bool fResource )
 int CChar::Skill_Stage( SKTRIG_TYPE stage )
 {
 	ADDTOCALLSTACK("CChar::Skill_Stage");
-	if ( stage == SKTRIG_STROKE && g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_CRAFT ))
-		return(Skill_Stroke( false ));
-	else if ( stage == SKTRIG_STROKE && g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_GATHER ))
+	if ( stage == SKTRIG_STROKE )
 	{
-		UpdateDir( m_Act_p );
-		return(Skill_Stroke( true ));
+		if ( g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_CRAFT) )
+			return Skill_Stroke(false);
+		
+		if ( g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_GATHER) )
+		{
+			UpdateDir(m_Act_p);
+			return Skill_Stroke(true);
+		}
 	}
 
 	if ( g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_SCRIPTED ) )
@@ -3712,6 +3709,7 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 		case SKILL_CAMPING:
 		case SKILL_MAGICRESISTANCE:
 		case SKILL_TACTICS:
+		case SKILL_STEALTH:
 			return 0;
 		case SKILL_ALCHEMY:
 		case SKILL_BOWCRAFT:
@@ -3749,7 +3747,6 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 		case SKILL_HERDING:
 			return Skill_Herding(stage);
 		case SKILL_HIDING:
-		case SKILL_STEALTH:
 			return Skill_Hiding(stage);
 		case SKILL_PROVOCATION:
 			return Skill_Provocation(stage);
@@ -4063,7 +4060,8 @@ bool CChar::Skill_Wait( SKILL_TYPE skilltry )
 	SKILL_TYPE skill = Skill_GetActive();
 	if ( skill == SKILL_NONE )	// not currently doing anything.
 	{
-		Reveal();
+		if ( skilltry != SKILL_STEALTH )
+			Reveal();
 		return( false );
 	}
 

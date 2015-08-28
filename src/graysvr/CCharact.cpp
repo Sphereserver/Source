@@ -2113,11 +2113,12 @@ bool CChar::Reveal( DWORD dwFlags )
 		}
 	}
 
+	m_StepStealth = 0;
 	StatFlag_Clear(dwFlags);
 	CClient *pClient = GetClient();
 	if ( pClient )
 	{
-		if ( !IsStatFlag(STATF_Hidden) )
+		if ( !IsStatFlag(STATF_Hidden|STATF_Insubstantial) )
 			pClient->removeBuff(BI_HIDDEN);
 		if ( !IsStatFlag(STATF_Invisible) )
 			pClient->removeBuff(BI_INVISIBILITY);
@@ -2136,51 +2137,48 @@ void CChar::SpeakUTF8( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_
 	ADDTOCALLSTACK("CChar::SpeakUTF8");
 	// Ignore the font argument here !
 
-	if ( IsStatFlag(STATF_Stone))
+	if ( IsStatFlag(STATF_Stone) )
 		return;
-	Reveal( STATF_Hidden|STATF_Sleeping );
-	if ( mode == TALKMODE_YELL && GetPrivLevel() >= PLEVEL_Counsel && g_Cfg.m_iDistanceYell > 0 )
-	{	// Broadcast yell.
-		mode = TALKMODE_BROADCAST;	// GM Broadcast (Done if a GM yells something)
-	}
-	CObjBase::SpeakUTF8( pszText, wHue, mode, font, lang );
+	if ( mode == TALKMODE_YELL && GetPrivLevel() >= PLEVEL_Counsel )
+		mode = TALKMODE_BROADCAST;		// GM Broadcast (done if a GM yells something)
+	if ( m_pNPC )
+		wHue = m_pNPC->m_SpeechHue;
+
+	Reveal();
+	CObjBase::SpeakUTF8(pszText, wHue, mode, font, lang);
 }
+
 void CChar::SpeakUTF8Ex( const NWORD * pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang )
 {
 	ADDTOCALLSTACK("CChar::SpeakUTF8Ex");
 	// Ignore the font argument here !
 
-	if ( IsStatFlag(STATF_Stone))
+	if ( IsStatFlag(STATF_Stone) )
 		return;
-	Reveal( STATF_Hidden|STATF_Sleeping );
-	if ( mode == TALKMODE_YELL && GetPrivLevel() >= PLEVEL_Counsel && g_Cfg.m_iDistanceYell > 0 )
-	{	// Broadcast yell.
-		mode = TALKMODE_BROADCAST;	// GM Broadcast (Done if a GM yells something)
-	}
+	if ( mode == TALKMODE_YELL && GetPrivLevel() >= PLEVEL_Counsel )
+		mode = TALKMODE_BROADCAST;		// GM Broadcast (done if a GM yells something)
 	if ( m_pNPC )
-	{
 		wHue = m_pNPC->m_SpeechHue;
-	}
-	CObjBase::SpeakUTF8Ex( pszText, wHue, mode, font, lang );
+
+	Reveal();
+	CObjBase::SpeakUTF8Ex(pszText, wHue, mode, font, lang);
 }
+
 void CChar::Speak( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font )
 {
 	ADDTOCALLSTACK("CChar::Speak");
 	// Speak to all clients in the area.
 	// Ignore the font argument here !
 
-	if ( IsStatFlag(STATF_Stone))
+	if ( IsStatFlag(STATF_Stone) )
 		return;
-	Reveal( STATF_Hidden|STATF_Sleeping );
-	if ( mode == TALKMODE_YELL && GetPrivLevel() >= PLEVEL_Counsel && g_Cfg.m_iDistanceYell > 0 )
-	{	// Broadcast yell.
-		mode = TALKMODE_BROADCAST;	// GM Broadcast (Done if a GM yells something)
-	}
+	if ( mode == TALKMODE_YELL && GetPrivLevel() >= PLEVEL_Counsel )
+		mode = TALKMODE_BROADCAST;		// GM Broadcast (done if a GM yells something)
 	if ( m_pNPC )
-	{
 		wHue = m_pNPC->m_SpeechHue;
-	}
-	CObjBase::Speak( pszText, wHue, mode, font );
+
+	Reveal();
+	CObjBase::Speak(pszText, wHue, mode, font);
 }
 
 CItem * CChar::Make_Figurine( CGrayUID uidOwner, ITEMID_TYPE id )
@@ -3164,32 +3162,16 @@ void CChar::CheckRevealOnMove()
 {
 	ADDTOCALLSTACK("CChar::CheckRevealOnMove");
 	// Are we going to reveal ourselves by moving ?
-	if ( IsClient() && GetClient()->m_pHouseDesign )
-	{
-		if ( GetClient()->m_pHouseDesign->GetDesignArea().IsInside2d(GetTopPoint()) )
-			return;
 
-		GetClient()->m_pHouseDesign->EndCustomize(true);
-	}
+	if ( !IsStatFlag(STATF_Invisible|STATF_Hidden|STATF_Sleeping) )
+		return;
 
-	if ( IsStatFlag(STATF_Invisible|STATF_Hidden|STATF_Sleeping) )
-	{
-		// Wake up if sleeping and this is possible.
-		bool bReveal = false;
+	if ( IsTrigUsed(TRIGGER_STEPSTEALTH) )
+		OnTrigger(CTRIG_StepStealth, this);
 
-		if ( IsStatFlag(STATF_Fly|STATF_Sleeping|STATF_Hovering) || !IsStatFlag(STATF_Hidden) ||
-			!Skill_UseQuick(SKILL_STEALTH, Calc_GetRandLLVal(105)) )
-			bReveal = true;
-		if ( IsTrigUsed(TRIGGER_STEPSTEALTH) )
-		{
-			CScriptTriggerArgs Args((int)bReveal);	// ARGN1 - reveal?
-			OnTrigger(CTRIG_StepStealth, this, &Args);
-			bReveal = ( Args.m_iN1 != 0);
-		}
-
-		if ( bReveal )
-			Reveal();
-	}
+	m_StepStealth -= IsStatFlag(STATF_Fly|STATF_Hovering) ? 2 : 1;
+	if ( m_StepStealth <= 0 )
+		Reveal();
 }
 
 bool CChar::CheckLocation( bool fStanding )
