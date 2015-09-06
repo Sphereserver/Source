@@ -1007,11 +1007,6 @@ CItemMemory * CChar::Memory_CreateObj( CGrayUID uid, WORD MemTypes )
 	// NOTE: Does not check if object already has a memory.!!!
 	//  Assume it does not !
 
-	if (( MemTypes & MEMORY_IPET ) && uid.IsItem())
-	{
-		MemTypes = MEMORY_ISPAWNED;
-	}
-
 	CItemMemory * pMemory = dynamic_cast <CItemMemory *>(CItem::CreateBase( ITEMID_MEMORY ));
 	if ( pMemory == NULL )
 		return( NULL );
@@ -1150,7 +1145,7 @@ bool CChar::Memory_OnTick( CItemMemory * pMemory )
 		return Memory_Fight_OnTick( pMemory );
 	}
 
-	if ( pMemory->IsMemoryTypes( MEMORY_IPET | MEMORY_GUARD /*| MEMORY_ISPAWNED*/ | MEMORY_GUILD | MEMORY_TOWN ))
+	if ( pMemory->IsMemoryTypes( MEMORY_IPET | MEMORY_GUARD | MEMORY_GUILD | MEMORY_TOWN ))
 		return( true );	// never go away.
 
 	return( false );	// kill it?.
@@ -1608,7 +1603,7 @@ void CChar::CallGuards( CChar * pCriminal )
 	CChar		*pChar;
 	bool		bCriminal = false;
 
-	if ( pCriminal && pCriminal->IsPriv(PRIV_GM) )
+	if ( IsStatFlag(STATF_DEAD) || pCriminal && (pCriminal->IsStatFlag(STATF_DEAD) || pCriminal->IsPriv(PRIV_GM)) )
 		return;
 
 	// I'm a guard, why summon someone else to do my work? :)
@@ -3475,7 +3470,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	int iSwingDelay = Fight_GetWeaponSwingTimer() - 1;	// Swings are being started in the next tick after they start, so to compensate that it's being substracted here.
 	ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
-	short animDelay = ( iSwingDelay / 10 ) - 7;// attack speed is always 7ms and then the char keep waiting the remaining time, its also in seconds, hence the /10
+	short animDelay = ( iSwingDelay - 7  ) / 10;// attack speed is always 7ms and then the char keep waiting the remaining time, its also in seconds, hence the /10
 	if ( animDelay < 1 ) // less than this will not display animation
 		animDelay = 1;
 	SKILL_TYPE skill = Skill_GetActive();

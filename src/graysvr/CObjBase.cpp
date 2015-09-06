@@ -2776,6 +2776,11 @@ bool CObjBase::IsTriggerActive(LPCTSTR trig)
 	return m_RunningTrigger == trig ? true : false;
 }
 
+LPCTSTR CObjBase::GetTriggerActive()
+{
+	return m_RunningTrigger ? m_RunningTrigger : "none";
+}
+
 void CObjBase::SetTriggerActive(LPCTSTR trig)
 {
 	if (trig)

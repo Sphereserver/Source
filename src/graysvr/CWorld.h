@@ -368,7 +368,7 @@ private:
 	CServTime	m_timeCallUserFunc;	// when to call next user func
 	unsigned int m_Sector_Pulse;		// Slow some stuff down that doesn't need constant processing.
 
-	unsigned int m_iSaveStage;	// Current stage of the background save.
+	int m_iSaveStage;	// Current stage of the background save.
 	LONGLONG	m_savetimer; // Time it takes to save
 
 public:

@@ -1764,6 +1764,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 
 	// Pick it up.
 	pItem->SetDecayTime(-1);	// Kill any decay timer.
+	g_Log.EventDebug("ItemPickUp\n");
 	CItemSpawn * pSpawn = static_cast<CItemSpawn*>(pItem->m_uidSpawnItem.ItemFind());
 	if (pSpawn)
 		pSpawn->DelObj(pItem->GetUID());
@@ -2436,76 +2437,12 @@ bool CChar::OnTickEquip( CItem * pItem )
 			// Give my horse a tick. (It is still in the game !)
 			// NOTE: What if my horse dies (poisoned?)
 			{
-				CChar * pHorse = pItem->m_itFigurine.m_UID.CharFind();
+				CChar * pHorse = Horse_GetMountChar();
 				if (pHorse == NULL)
 					return(false);
 				if (pHorse != this)				//Some scripts can force mounts to have as 'mount' the rider itself (like old ethereal scripts)
 					return pHorse->OnTick();	// if we call OnTick again on them we'll have an infinite loop.
 				return true;
-				// NPCs with just an item equipped is fine
-				// but still give ticks just in case
-				/*if ( m_pNPC )
-				{
-					pItem->SetTimeout( 10 * TICK_PER_SEC );
-					return( true );
-				}
-
-				CChar * pHorse = pItem->m_itFigurine.m_UID.CharFind();
-				if ( pHorse == NULL )
-					return( false );
-
-				if ( ( pHorse->Stat_GetVal(STAT_STR) <= 0 ) || ( pHorse->IsStatFlag( STATF_DEAD ) ) )
-				{
-					DEBUG_ERR(( "Character %s (0%lx) riding dead horse (0%lx) - forcing death on horse\n", GetName(), (DWORD)GetUID(), (DWORD)pHorse->GetUID() ));
-					Horse_UnMount();
-					return( false );
-				}
-
-				INT64 iTicks = 10 * TICK_PER_SEC;
-				for ( STAT_TYPE i = STAT_STR; i <= STAT_FOOD; i = static_cast<STAT_TYPE>(i + 1) )
-				{
-					LPCTSTR stat;
-					switch (i)
-					{
-						case STAT_STR:
-							stat = "HITS";
-							break;
-						case STAT_INT:
-							stat = "MANA";
-							break;
-						case STAT_DEX:
-							stat = "STAM";
-							break;
-						case STAT_FOOD:
-							stat = "FOOD";
-							break;
-						default:
-							continue;
-					}
-					INT64 iRegen = g_Cfg.m_iRegenRate[i];
-					if ( i <= STAT_FOOD )
-					{
-						char sRegen[21];
-						sprintf(sRegen, "REGEN%s", stat);
-						if ( GetDefNum(sRegen, false))
-							iRegen = GetDefNum(sRegen, false) * TICK_PER_SEC;
-					}
-					iTicks = minimum(iTicks,iRegen);
-				}
-
-				pItem->SetTimeout( iTicks );
-
-				if ( pHorse->Fight_IsActive() )
-					pHorse->Fight_ClearAll();
-
-				if ( pHorse->Skill_GetActive() != NPCACT_RIDDEN )
-					pHorse->Skill_Start( NPCACT_RIDDEN );
-
-				bool bHorseTick = pHorse->OnTick();
-				if ( !bHorseTick )
-					pHorse->Delete();
-
-				return( bHorseTick );*/
 			}
 
 		case LAYER_FLAG_Criminal:
@@ -3892,6 +3829,7 @@ bool CChar::CHAR_OnTickFood( int nFoodLevel , int HitsHungerLoss )
 	// Check Food usage.
 	// Are we hungry enough to take some new action ?
 	// RETURN: true = we have taken an action.
+	g_Log.EventDebug("OnTickFood\n");
 
 	if ( HitsHungerLoss <= 0 )
 		return false;

@@ -110,7 +110,8 @@ CItem::~CItem()
 		//case IT_SPAWN_ITEM:	//Should items be removed too?
 			{
 				CItemSpawn *pSpawn = static_cast<CItemSpawn*>(this);
-				pSpawn->KillChildren();
+				if ( pSpawn )
+					pSpawn->KillChildren();
 			}
 			break;
 		case IT_FIGURINE:
@@ -917,8 +918,11 @@ int CItem::FixWeirdness()
 		case IT_SPAWN_ITEM:
 			{
 				CItemSpawn *pSpawn = static_cast<CItemSpawn*>(this);
-				pSpawn->FixDef();
-				pSpawn->SetTrackID();
+				if (pSpawn)
+				{
+					pSpawn->FixDef();
+					pSpawn->SetTrackID();
+				}
 			}
 			break;
 	
@@ -2739,10 +2743,13 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				&& ( IsType( IT_SPAWN_CHAR ) || IsType( IT_SPAWN_ITEM ) ) )
 			{
 				CItemSpawn *pSpawn = static_cast<CItemSpawn*>(this);
-				pSpawn->FixDef();
-				pSpawn->SetTrackID();
-				RemoveFromView();
-				Update();
+				if (pSpawn)
+				{
+					pSpawn->FixDef();
+					pSpawn->SetTrackID();
+					RemoveFromView();
+					Update();
+				}
 			}
 			return true;
 		case IC_MORE1h:
@@ -3008,6 +3015,8 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	{
 		iAction = (ITRIG_TYPE) FindTableSorted( pszTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
 	}
+	if (pszTrigName == "@Destroy" || pszTrigName == "@UNEQUIP")
+		static_cast<AbstractSphereThread*>(ThreadHolder::current())->printStackTrace();
 	SetTriggerActive(pszTrigName);
 
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
@@ -5202,7 +5211,9 @@ bool CItem::OnTick()
 		case IT_SPAWN_ITEM:	// Spawn an item.
 			{
 				EXC_SET("default behaviour::IT_SPAWN");
-				static_cast<CItemSpawn*>(this)->OnTick(true);
+				CItemSpawn * pSpawn = static_cast<CItemSpawn*>(this);
+				if ( pSpawn )
+					pSpawn->OnTick(true);
 			}
 			return true;
 

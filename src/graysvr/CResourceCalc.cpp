@@ -102,7 +102,7 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 		// ML formula		(doesn't use m_iSpeedScaleFactor and it's only compatible with ML speed format eg. 0.25 ~ 5.00 instead 0 ~ 50)
 		else if (g_Cfg.m_iCombatSpeedEra == 3)
 		{
-			int iSwingSpeed = ((iBaseSpeed * 4) - (pChar->Stat_GetVal(STAT_DEX) / 30)) * (100 / (100 + iSwingSpeedIncrease));
+			int iSwingSpeed = floor(iBaseSpeed - floor( (pChar->Stat_GetVal(STAT_DEX) / 30) * 2.5) * (100.0 / (100 + iSwingSpeedIncrease))) ;
 			if (iSwingSpeed < 5)
 				iSwingSpeed = 5;
 			return iSwingSpeed;

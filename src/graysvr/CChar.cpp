@@ -328,6 +328,9 @@ CChar::~CChar() // Delete character
 	DeleteAll();			// Remove me early so virtuals will work
 	ClearNPC();
 	ClearPlayer();
+	CItemSpawn * pSpawn = static_cast<CItemSpawn*>(m_uidSpawnItem.ItemFind());
+	if (pSpawn)// Removing from spawn
+		pSpawn->DelObj(GetUID());
 	g_Serv.StatDec( SERV_STAT_CHARS );
 }
 
@@ -592,21 +595,24 @@ int CChar::FixWeirdness()
 	{
 		if ( !m_uidSpawnItem.ItemFind() )
 			StatFlag_Clear( STATF_Spawned );
-	}
-	CItemMemory * pMemory = Memory_FindTypes(MEMORY_ISPAWNED);	//Clean MEMORY_ISPAWNED and force char to use SpawnItem
-	if (pMemory)
-	{
-		CItemSpawn * pSpawn = static_cast<CItemSpawn*>(pMemory->m_uidLink.ItemFind());
-		if (pSpawn)
+
+		CItemMemory * pMemory = Memory_FindTypes(MEMORY_ISPAWNED);	//Clean MEMORY_ISPAWNED and force char to use SpawnItem
+		if (pMemory)
 		{
-			pSpawn->AddObj( GetUID() );
-			m_uidSpawnItem = pSpawn->GetUID();
+			g_Log.EventDebug("MEMORY_Spawned check\n");
+			CItemSpawn * pSpawn = static_cast<CItemSpawn*>(pMemory->m_uidLink.ItemFind());
+			if (pSpawn)
+			{
+				pSpawn->AddObj(GetUID());
+				m_uidSpawnItem = pSpawn->GetUID();
+			}
+			return -1;
+			//Memory_ClearTypes( pMemory, MEMORY_ISPAWNED ); 
 		}
-		pMemory->Delete();
 	}
 	if ( IsStatFlag( STATF_Pet ))
 	{
-		pMemory = Memory_FindTypes( MEMORY_IPET );
+		CItemMemory *pMemory = Memory_FindTypes( MEMORY_IPET );
 		if ( pMemory == NULL )
 			StatFlag_Clear( STATF_Pet );
 	}
@@ -636,19 +642,19 @@ int CChar::FixWeirdness()
 			}
 		}
 	}
-	/*if ( IsStatFlag( STATF_Criminal ))
+	if ( IsStatFlag( STATF_Criminal ))
 	{
 		CItem * pMemory = LayerFind( LAYER_FLAG_Criminal );
 		if ( pMemory == NULL )
 			StatFlag_Clear( STATF_Criminal );
-	}*/
+	}
 
 	if ( ! IsIndividualName() && pCharDef->GetTypeName()[0] == '#' )
 		SetName( pCharDef->GetTypeName());
 
 	if ( m_pPlayer )	// Player char.
 	{
-		Memory_ClearTypes(MEMORY_ISPAWNED|MEMORY_IPET);
+		Memory_ClearTypes( MEMORY_ISPAWNED|MEMORY_IPET );
 		StatFlag_Clear( STATF_Ridden );
 
 		if ( m_pPlayer->GetSkillClass() == NULL )	// this should never happen.

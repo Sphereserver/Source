@@ -1274,7 +1274,7 @@ bool CWorld::SaveStage() // Save world state in stages.
 			GarbageCollection_New();
 		}
 	}
-	else if ( m_iSaveStage < m_SectorsQty )
+	else if ( m_iSaveStage < static_cast<int>(m_SectorsQty) )
 	{
 		// NPC Chars in the world secors and the stuff they are carrying.
 		// Sector lighting info.
@@ -1320,7 +1320,7 @@ bool CWorld::SaveStage() // Save world state in stages.
                                 m_Sectors[m_iSaveStage]->r_Write();
                 }
 	}
-	else if ( m_iSaveStage == m_SectorsQty )
+	else if ( m_iSaveStage == static_cast<int>(m_SectorsQty) )
 	{
 		m_FileData.WriteSection( "TIMERF" );
 		g_World.m_TimedFunctions.r_Write(m_FileData);
@@ -1348,16 +1348,16 @@ bool CWorld::SaveStage() // Save world state in stages.
 			pPage->r_Write(m_FileData);
 		}
 	}
-	else if ( m_iSaveStage == m_SectorsQty+1 )
+	else if ( m_iSaveStage == static_cast<int>(m_SectorsQty)+1 )
 	{
 		//	Empty save stage
 	}
-	else if ( m_iSaveStage == m_SectorsQty+2 )
+	else if ( m_iSaveStage == static_cast<int>(m_SectorsQty)+2 )
 	{
 		// Now make a backup of the account file.
 		bRc = g_Accounts.Account_SaveAll();
 	}
-	else if ( m_iSaveStage == m_SectorsQty+3 )
+	else if ( m_iSaveStage == static_cast<int>(m_SectorsQty)+3 )
 	{
 		// EOF marker to show we reached the end.
 		m_FileData.WriteSection("EOF");
@@ -1443,13 +1443,13 @@ bool CWorld::SaveForce() // Save world state
 	{
 		try
 		{
-			if (( m_iSaveStage >= 0 ) && ( m_iSaveStage < m_SectorsQty ))
+			if (( m_iSaveStage >= 0 ) && ( m_iSaveStage < static_cast<int>(m_SectorsQty) ))
 				pCurBlock = msgs[1];
-			else if ( m_iSaveStage == m_SectorsQty )
+			else if ( m_iSaveStage == static_cast<int>(m_SectorsQty) )
 				pCurBlock = msgs[2];
-			else if ( m_iSaveStage == m_SectorsQty+1 )
+			else if ( m_iSaveStage == static_cast<int>(m_SectorsQty)+1 )
 				pCurBlock = msgs[3];
-			else if ( m_iSaveStage == m_SectorsQty+2 )
+			else if ( m_iSaveStage == static_cast<int>(m_SectorsQty)+2 )
 				pCurBlock = msgs[4];
 			else
 				pCurBlock = msgs[5];
@@ -1791,7 +1791,7 @@ bool CWorld::LoadWorld() // Load world from script
 	CGString sDataName;
 	sDataName.Format("%s" GRAY_FILE "data",	static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));
 
-	int iPrevSaveCount = m_iSaveCountID;
+	unsigned int iPrevSaveCount = m_iSaveCountID;
 	for (;;)
 	{
 		LoadFile(sDataName, false);

@@ -81,6 +81,7 @@ public:
 	}
 	virtual void DeletePrepare();
 	bool IsTriggerActive(LPCTSTR trig) ;
+	LPCTSTR GetTriggerActive();
 	void SetTriggerActive(LPCTSTR trig = NULL); 
 
 public:

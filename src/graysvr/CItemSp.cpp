@@ -299,7 +299,7 @@ void CItemSpawn::DelObj( CGrayUID uid )
 void CItemSpawn::AddObj( CGrayUID uid )
 {
 	ADDTOCALLSTACK("CitemSpawn:AddObj");
-	UCHAR iMax = GetAmount() > 0 ? GetAmount() : 1;
+	UCHAR iMax = GetAmount() > (UCHAR)0 ? GetAmount() : (UCHAR)1;
 	iMax += 1;	// We must give a +1 to create a 'free slot'
 	bool bIsSpawnChar = GetType() == IT_SPAWN_CHAR;
 	if  (bIsSpawnChar )
@@ -317,7 +317,10 @@ void CItemSpawn::AddObj( CGrayUID uid )
 		{
 			m_obj[i] = uid;
 			if (bIsSpawnChar)
+			{
 				m_itSpawnChar.m_current++;
+				uid.CharFind()->StatFlag_Set(STATF_Spawned);
+			}
 			uid.ObjFind()->m_uidSpawnItem = GetUID();
 			break;
 		}
@@ -438,6 +441,7 @@ LPCTSTR const CItemSpawn::sm_szLoadKeys[ISPW_QTY + 1] =
 bool CItemSpawn::r_WriteVal(LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc)
 {
 	ADDTOCALLSTACK("CitemSpawn:r_WriteVal");
+	//g_Log.EventDebug("CItemSpawnDebug::WriteVal (%s)\n",pszKey);
 	EXC_TRY("WriteVal");
 	if (!strnicmp(pszKey, "at.", 3))
 	{

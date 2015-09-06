@@ -516,7 +516,6 @@ bool CChar::NPC_PetSetOwner( CChar * pChar )
 
 	NPC_PetClearOwners();	// clear previous owner before set the new owner
 	m_ptHome.InitPoint();	// no longer homed
-	//Memory_ClearTypes(MEMORY_ISPAWNED);
 	CItemSpawn * pSpawn = static_cast<CItemSpawn*>( m_uidSpawnItem.ItemFind() );
 	if ( pSpawn )
 		pSpawn->DelObj( GetUID() );
