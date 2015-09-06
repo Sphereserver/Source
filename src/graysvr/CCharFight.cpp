@@ -929,7 +929,7 @@ bool CChar::Memory_UpdateFlags( CItemMemory * pMemory )
 
 	WORD wMemTypes = pMemory->GetMemoryTypes();
 
-	if ( ! wMemTypes )	// No memories here anymore so kill it.
+	if ( ! wMemTypes || (wMemTypes & MEMORY_ISPAWNED))	// No memories here anymore so kill it.
 	{
 		return false;
 	}
@@ -1603,7 +1603,7 @@ void CChar::CallGuards( CChar * pCriminal )
 	CChar		*pChar;
 	bool		bCriminal = false;
 
-	if ( IsStatFlag(STATF_DEAD) || pCriminal && (pCriminal->IsStatFlag(STATF_DEAD) || pCriminal->IsPriv(PRIV_GM)) )
+	if ( IsStatFlag(STATF_DEAD) || ( pCriminal && (pCriminal->IsStatFlag(STATF_DEAD) ) || pCriminal->IsPriv(PRIV_GM)) )
 		return;
 
 	// I'm a guard, why summon someone else to do my work? :)

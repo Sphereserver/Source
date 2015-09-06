@@ -3015,8 +3015,6 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	{
 		iAction = (ITRIG_TYPE) FindTableSorted( pszTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
 	}
-	if (pszTrigName == "@Destroy" || pszTrigName == "@UNEQUIP")
-		static_cast<AbstractSphereThread*>(ThreadHolder::current())->printStackTrace();
 	SetTriggerActive(pszTrigName);
 
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
