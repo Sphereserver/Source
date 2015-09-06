@@ -137,7 +137,7 @@ unsigned char CItemSpawn::GetCount()
 	else if ( GetType() == IT_SPAWN_ITEM )
 	{
 		unsigned char iCount = 0;
-		UCHAR i = 0;
+		unsigned char i = 0;
 		while ( m_obj[i].ItemFind() )
 		{
 			CGrayUID spawn = m_obj[i].ItemFind()->m_uidSpawnItem;
@@ -271,7 +271,7 @@ void CItemSpawn::DelObj( CGrayUID uid )
 	ADDTOCALLSTACK("CitemSpawn:DelObj");
 	if ( !uid.IsValidUID() )
 		return;
-	for ( UCHAR i = 0; i < GetCount(); i++ )
+	for ( unsigned char i = 0; i < GetCount(); i++ )
 	{
 		if ( m_obj[i].IsValidUID() && m_obj[i] == uid )	// found this uid, proceeding to clear it
 		{
@@ -299,7 +299,7 @@ void CItemSpawn::DelObj( CGrayUID uid )
 void CItemSpawn::AddObj( CGrayUID uid )
 {
 	ADDTOCALLSTACK("CitemSpawn:AddObj");
-	UCHAR iMax = GetAmount() > (UCHAR)0 ? GetAmount() : (UCHAR)1;
+	unsigned char iMax = GetAmount() > (unsigned char)0 ? GetAmount() : (unsigned char)1;
 	iMax += 1;	// We must give a +1 to create a 'free slot'
 	bool bIsSpawnChar = GetType() == IT_SPAWN_CHAR;
 	if  (bIsSpawnChar )
@@ -309,7 +309,7 @@ void CItemSpawn::AddObj( CGrayUID uid )
 	}
 	if ( uid.ObjFind()->m_uidSpawnItem = !static_cast<CGrayUID>(UID_UNUSED) )	//... which doesn't have a SpawnItem already
 		return;
-	for ( UCHAR i = 0; i < iMax; i++ )
+	for ( unsigned char i = 0; i < iMax; i++ )
 	{
 		if ( m_obj[i] == uid )	// Not adding me again
 			return;
