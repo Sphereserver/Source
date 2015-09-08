@@ -307,7 +307,7 @@ void CItemSpawn::AddObj( CGrayUID uid )
 		if (!uid || !uid.CharFind()->m_pNPC)	// Only adding NPCs...
 			return;
 	}
-	if ( uid.ObjFind()->m_uidSpawnItem = !static_cast<CGrayUID>(UID_UNUSED) )	//... which doesn't have a SpawnItem already
+	if ( uid.ObjFind()->m_uidSpawnItem != static_cast<CGrayUID>(UID_UNUSED) )	//... which doesn't have a SpawnItem already
 		return;
 	for ( unsigned char i = 0; i < iMax; i++ )
 	{
