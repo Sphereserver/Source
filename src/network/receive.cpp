@@ -3312,7 +3312,7 @@ bool PacketWheelBoatMove::onReceive(NetState* net)
 		{
 #ifdef _DEBUG
 			g_Log.EventDebug("Boat move request failed. Boat not found on character ('%s' 0%lx) position",
-				static_cast<LPCTSTR>(character->GetName()), character->GetUID());
+				static_cast<LPCTSTR>(character->GetName()), static_cast<DWORD>(character->GetUID()));
 #endif
 			return false;
 		}
@@ -3320,7 +3320,7 @@ bool PacketWheelBoatMove::onReceive(NetState* net)
 
 #ifdef _DEBUG
 	g_Log.EventDebug("Character ('%s' 0%lx) moving boat (0%lx)\n",
-		static_cast<LPCTSTR>(character->GetName()), character->GetUID(), pShipItem->GetUID());
+		static_cast<LPCTSTR>(character->GetName()), static_cast<DWORD>(character->GetUID()), static_cast<DWORD>(pShipItem->GetUID()));
 #endif
 
 	return true;
