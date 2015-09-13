@@ -213,10 +213,10 @@ $(EXE): git flags gray
 	@$(CCO) -c $(CO_FLAGS) $(CC_FLAGS) $< -o $(@:.co=.o)
 
 distDBG:	
-	@rm -f ./Build/SphereSvr[Linux][DEBUG].tgz
-	@tar cvzf ./Build/SphereSvr[Linux][DEBUG].tgz $(EXE)
+	@rm -f ./Build/SphereSvr[Linux][DEBUG].tar.gz
+	@tar cvzf ./Build/SphereSvr[Linux][DEBUG].tar.gz $(EXE)
 
 dist:
-	@rm -f ./Build/SphereSvr[Linux].tgz
-	@tar cvzf ./Build/SphereSvr[Linux].tgz $(EXE)
+	@rm -f ./Build/SphereSvr[Linux].tar.gz
+	@tar cvzf ./Build/SphereSvr[Linux].tar.gz $(EXE)
 
