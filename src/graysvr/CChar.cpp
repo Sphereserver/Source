@@ -328,9 +328,6 @@ CChar::~CChar() // Delete character
 	DeleteAll();			// Remove me early so virtuals will work
 	ClearNPC();
 	ClearPlayer();
-	CItemSpawn * pSpawn = static_cast<CItemSpawn*>(m_uidSpawnItem.ItemFind());
-	if (pSpawn)// Removing from spawn
-		pSpawn->DelObj(GetUID());
 	g_Serv.StatDec( SERV_STAT_CHARS );
 }
 
@@ -599,15 +596,13 @@ int CChar::FixWeirdness()
 		CItemMemory * pMemory = Memory_FindTypes(MEMORY_ISPAWNED);	//Clean MEMORY_ISPAWNED and force char to use SpawnItem
 		if (pMemory)
 		{
-			g_Log.EventDebug("MEMORY_Spawned check\n");
 			CItemSpawn * pSpawn = static_cast<CItemSpawn*>(pMemory->m_uidLink.ItemFind());
 			if (pSpawn)
 			{
 				pSpawn->AddObj(GetUID());
 				m_uidSpawnItem = pSpawn->GetUID();
 			}
-			return -1;
-			//Memory_ClearTypes( pMemory, MEMORY_ISPAWNED ); 
+
 		}
 	}
 	if ( IsStatFlag( STATF_Pet ))
@@ -654,7 +649,7 @@ int CChar::FixWeirdness()
 
 	if ( m_pPlayer )	// Player char.
 	{
-		Memory_ClearTypes( MEMORY_ISPAWNED|MEMORY_IPET );
+		Memory_ClearTypes( MEMORY_IPET );
 		StatFlag_Clear( STATF_Ridden );
 
 		if ( m_pPlayer->GetSkillClass() == NULL )	// this should never happen.
@@ -1853,10 +1848,7 @@ do_default:
 		case CHC_REGENVALMANA:
 		case CHC_SPELLTIMEOUT:
 		case CHC_TITHING:
-			{
-				CVarDefCont * pVar = GetDefKey(pszKey, true);
-				sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
-			}	
+			sVal.FormatLLVal(GetDefNum(pszKey, true));
 			break;
 		case CHC_ATTACKER:
 			{

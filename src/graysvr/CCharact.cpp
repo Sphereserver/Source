@@ -1764,7 +1764,6 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 
 	// Pick it up.
 	pItem->SetDecayTime(-1);	// Kill any decay timer.
-	g_Log.EventDebug("ItemPickUp\n");
 	CItemSpawn * pSpawn = static_cast<CItemSpawn*>(pItem->m_uidSpawnItem.ItemFind());
 	if (pSpawn)
 		pSpawn->DelObj(pItem->GetUID());
@@ -2390,7 +2389,6 @@ bool CChar::OnTickEquip( CItem * pItem )
 	//  false = delete it.
 	if ( ! pItem )
 		return false;
-
 	switch ( pItem->GetEquipLayer())
 	{
 		case LAYER_FLAG_Wool:
@@ -2437,11 +2435,12 @@ bool CChar::OnTickEquip( CItem * pItem )
 			// Give my horse a tick. (It is still in the game !)
 			// NOTE: What if my horse dies (poisoned?)
 			{
-				CChar * pHorse = Horse_GetMountChar();
-				if (pHorse == NULL)
+				CChar * pHorse = pItem->m_itFigurine.m_UID.CharFind();
+				if ( pHorse == NULL )
 					return(false);
-				if (pHorse != this)				//Some scripts can force mounts to have as 'mount' the rider itself (like old ethereal scripts)
+				if ( pHorse != this )				//Some scripts can force mounts to have as 'mount' the rider itself (like old ethereal scripts)
 					return pHorse->OnTick();	// if we call OnTick again on them we'll have an infinite loop.
+				pItem->SetTimeout( TICK_PER_SEC );
 				return true;
 			}
 
@@ -3829,7 +3828,6 @@ bool CChar::CHAR_OnTickFood( int nFoodLevel , int HitsHungerLoss )
 	// Check Food usage.
 	// Are we hungry enough to take some new action ?
 	// RETURN: true = we have taken an action.
-	g_Log.EventDebug("OnTickFood\n");
 
 	if ( HitsHungerLoss <= 0 )
 		return false;

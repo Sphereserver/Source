@@ -275,6 +275,8 @@ void CItemSpawn::DelObj( CGrayUID uid )
 	{
 		if ( m_obj[i].IsValidUID() && m_obj[i] == uid )	// found this uid, proceeding to clear it
 		{
+			if (GetType() == IT_SPAWN_CHAR)	// IT_SPAWN_ITEM uses 'more2' to store how much items to spawn at once, so we must not touch it.
+				m_itSpawnChar.m_current--;	// found this UID in the spawn's list, decreasing CChar's count only in this case
 			while ( m_obj[i + 1].IsValidUID() )			// searching for any entry higher than this one...
 			{
 				m_obj[i] = m_obj[i + 1];	// and moving it 1 position to keep values 'together'.
@@ -291,8 +293,6 @@ void CItemSpawn::DelObj( CGrayUID uid )
 		uid.CharFind()->m_uidSpawnItem.InitUID();
 		uid.CharFind()->StatFlag_Clear(STATF_Spawned);
 	}
-	if ( GetType() == IT_SPAWN_CHAR )	// IT_SPAWN_ITEM uses 'more2' to store how much items to spawn at once, so we must not touch it.
-		m_itSpawnChar.m_current--;
 }
 
 // Storing one UID in Spawn's m_obj[]
@@ -304,10 +304,10 @@ void CItemSpawn::AddObj( CGrayUID uid )
 	bool bIsSpawnChar = GetType() == IT_SPAWN_CHAR;
 	if  (bIsSpawnChar )
 	{
-		if (!uid || !uid.CharFind()->m_pNPC)	// Only adding NPCs...
+		if (!uid || !uid.CharFind()->m_pNPC)	// Only adding UIDs...
 			return;
 	}
-	if ( uid.ObjFind()->m_uidSpawnItem != static_cast<CGrayUID>(UID_UNUSED) )	//... which doesn't have a SpawnItem already
+	if ( uid.ObjFind()->m_uidSpawnItem.ItemFind() )	//... which doesn't have a SpawnItem already
 		return;
 	for ( unsigned char i = 0; i < iMax; i++ )
 	{
@@ -375,7 +375,7 @@ void CItemSpawn::KillChildren()
 	{
 		if ( !m_obj[i].IsValidUID() )
 			continue;
-		CChar * pObj = m_obj[i].CharFind();
+		CObjBase * pObj = m_obj[i].ObjFind();
 		if ( pObj )
 		{
 			pObj->Delete();
@@ -383,7 +383,7 @@ void CItemSpawn::KillChildren()
 		}
 
 	}
-	m_itSpawnChar.m_current = 0;
+	//m_itSpawnChar.m_current = 0;
 	OnTick(false);
 }
 

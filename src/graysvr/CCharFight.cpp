@@ -1603,7 +1603,7 @@ void CChar::CallGuards( CChar * pCriminal )
 	CChar		*pChar;
 	bool		bCriminal = false;
 
-	if ( IsStatFlag(STATF_DEAD) || ( pCriminal && ( pCriminal->IsStatFlag(STATF_DEAD) || pCriminal->IsPriv(PRIV_GM) ) ) )
+	if ( IsStatFlag(STATF_DEAD) || ( pCriminal && ( pCriminal->IsStatFlag(STATF_DEAD) ) ) || pCriminal->IsPriv(PRIV_GM) )
 		return;
 
 	// I'm a guard, why summon someone else to do my work? :)
@@ -3470,7 +3470,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	int iSwingDelay = Fight_GetWeaponSwingTimer() - 1;	// Swings are being started in the next tick after they start, so to compensate that it's being substracted here.
 	ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
-	short animDelay = ( iSwingDelay - 7  ) / 10;// attack speed is always 7ms and then the char keep waiting the remaining time, its also in seconds, hence the /10
+	short animDelay = ( (short)iSwingDelay - 7  ) / 10;// attack speed is always 7ms and then the char keep waiting the remaining time, its also in seconds, hence the /10
 	if ( animDelay < 1 ) // less than this will not display animation
 		animDelay = 1;
 	SKILL_TYPE skill = Skill_GetActive();

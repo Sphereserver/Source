@@ -2613,7 +2613,7 @@ NOTE: While updating for this build, when server is loading for first time and c
 
 Added PREVBUILD storing in the worldsaves the current BUILD (__GITREVISION__), usefull to apply changes when updating the bin. Usage: <SERV.PrevBuild>
 
-
+07-09-2015, XuN
 Changed iSwingDelay from CChar::Fight_Hit to CResource::Calc_CombatAttackSpeed to prevent double checks for speeds 'lower than' and to avoid guard's speed to be overriden if GuardsInstantKill=1
 Also changed AnimDelay from @HitTry to initially have a duration of argn1 -=7, so this can be softcoded to match 'old style' by just adding a simple +=7
 Updated fighting delays to match again the 'real' delay removing a tick from the delay (as the fighting proccess is starting in the next tick).
@@ -2622,3 +2622,7 @@ Fixed #2553: Animations not being displayed when fighting with COMBATF_NODIRCHAN
 Fixed #2547: Dragons will be tracked as Monsters
 Fixed Tracking not displaying the direction of the target in the given message.
 Fixed ML SpeedEra's formula not giving correct delays.
+
+15-09-2015, XuN
+Fixed #2542: NPCs ridden by GMs deleted on WorldSave.
+Fixed #2554: UseQuick not returning false for Skills with SKF_SCRIPTED.

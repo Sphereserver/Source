@@ -992,6 +992,9 @@ bool CChar::Skill_UseQuick( SKILL_TYPE skill, INT64 difficulty, bool bAllowGain,
 	// Use a skill instantly. No wait at all.
 	// No interference with other skills.
 
+	if (g_Cfg.IsSkillFlag(skill, SKF_SCRIPTED))
+		return false;
+
 	INT64 result = Skill_CheckSuccess( skill, static_cast<int>(difficulty), bUseBellCurve );
 	CScriptTriggerArgs pArgs( 0 , difficulty, result);
 	TRIGRET_TYPE ret = TRIGRET_RET_DEFAULT;

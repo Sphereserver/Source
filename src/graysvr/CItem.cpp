@@ -128,9 +128,6 @@ CItem::~CItem()
 		default:
 			break;
 	}
-	CItemSpawn * pSpawn = static_cast<CItemSpawn*>(m_uidSpawnItem.ItemFind());
-	if (pSpawn)// Removing from spawn
-		pSpawn->DelObj(GetUID());
 	g_Serv.StatDec(SERV_STAT_ITEMS);
 }
 
