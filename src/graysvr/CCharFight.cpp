@@ -3480,11 +3480,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		}
 	}
 
-	int iSwingDelay = Fight_GetWeaponSwingTimer() - 1;	// Swings are being started in the next tick after they start, so to compensate that it's being substracted here.
-	ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
-	short animDelay = ( (short)iSwingDelay - 7  ) / 10;// attack speed is always 7ms and then the char keep waiting the remaining time, its also in seconds, hence the /10
-	if ( animDelay < 1 ) // less than this will not display animation
-		animDelay = 1;
 	SKILL_TYPE skill = Skill_GetActive();
 	if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
 	{
@@ -3559,6 +3554,10 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			if ( !CanSeeLOS(pCharTarg) )
 				return WAR_SWING_EQUIPPING;
 
+			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
+			long long animDelay = 7 / TICK_PER_SEC;					// attack speed is always 7ms and then the char keep waiting the remaining time
+			int iSwingDelay = Fight_GetWeaponSwingTimer() - 1;		// swings are started only on the next tick, so substract -1 to compensate that
+
 			if ( IsTrigUsed(TRIGGER_HITTRY) )
 			{
 				CScriptTriggerArgs Args(iSwingDelay, 0, pWeapon);
@@ -3569,14 +3568,14 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 				iSwingDelay = static_cast<int>(Args.m_iN1);
 				anim = (ANIM_TYPE)Args.m_VarsLocal.GetKeyNum("Anim", false);
-				animDelay = (BYTE)Args.m_VarsLocal.GetKeyNum("AnimDelay", true);
+				animDelay = Args.m_VarsLocal.GetKeyNum("AnimDelay", true);
 				if ( animDelay < 0 )
 					animDelay = 0;
 			}
 
 			m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
 			m_atFight.m_NextSwingDelay = iSwingDelay;
-			SetTimeout(iSwingDelay);
+			SetTimeout(animDelay);
 
 			Reveal();
 			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) && !IsStatFlag(STATF_Fly) )
@@ -3619,6 +3618,10 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			if ( !CanSeeLOS(pCharTarg) )
 				return WAR_SWING_EQUIPPING;
 
+			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
+			long long animDelay = 7 / TICK_PER_SEC;					// attack speed is always 7ms and then the char keep waiting the remaining time
+			int iSwingDelay = Fight_GetWeaponSwingTimer() - 1;		// swings are started only on the next tick, so substract -1 to compensate that
+
 			if ( IsTrigUsed(TRIGGER_HITTRY) )
 			{
 				CScriptTriggerArgs Args(iSwingDelay, 0, pWeapon);
@@ -3629,14 +3632,14 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 				iSwingDelay = static_cast<int>(Args.m_iN1);
 				anim = (ANIM_TYPE)Args.m_VarsLocal.GetKeyNum("Anim", false);
-				animDelay = (BYTE)Args.m_VarsLocal.GetKeyNum("AnimDelay", true);
+				animDelay = Args.m_VarsLocal.GetKeyNum("AnimDelay", true);
 				if ( animDelay < 0 )
 					animDelay = 0;
 			}
 
 			m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
 			m_atFight.m_NextSwingDelay = iSwingDelay;
-			SetTimeout(iSwingDelay);
+			SetTimeout(animDelay);
 
 			Reveal();
 			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) && !IsStatFlag(STATF_Fly) )
@@ -3649,83 +3652,57 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	// We made our swing. so we must recoil.
 	m_atFight.m_War_Swing_State = WAR_SWING_EQUIPPING;
 
-	CVarDefCont * pTagStorage = NULL;
-	SOUND_TYPE iSnd = 0;
-
-	// Check if we hit something;
-	if ( IsTrigUsed(TRIGGER_HITMISS) )
+	// We missed
+	if ( m_Act_Difficulty < 0 )
 	{
-		if ( m_Act_Difficulty < 0 )
+		if ( IsTrigUsed(TRIGGER_HITMISS) )
 		{
 			CScriptTriggerArgs Args(0, 0, pWeapon);
-			if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
-			{
-				// Get uid of the current arrow.
-				if ( pAmmo )
-					Args.m_VarsLocal.SetNum("Arrow", pAmmo->GetUID());
-			}
+			if ( pAmmo )
+				Args.m_VarsLocal.SetNum("Arrow", pAmmo->GetUID());
 			if ( OnTrigger(CTRIG_HitMiss, pCharTarg, &Args) == TRIGRET_RET_TRUE )
 				return WAR_SWING_EQUIPPING;
 
-			// If arrow is handled by script, do nothing with it further!
-			if ( Args.m_VarsLocal.GetKeyNum("ArrowHandled") != 0 )
+			if ( Args.m_VarsLocal.GetKeyNum("ArrowHandled") != 0 )		// if arrow is handled by script, do nothing with it further!
 				pAmmo = NULL;
 		}
+
+		if ( pAmmo && m_pPlayer && (40 >= Calc_GetRandVal(100)) )
+		{
+			pAmmo->UnStackSplit(1);
+			pAmmo->MoveToDecay(pCharTarg->GetTopPoint(), g_Cfg.m_iDecay_Item);
+		}
+
+		SOUND_TYPE iSound = 0;
 		if ( pWeapon )
-			pTagStorage = pWeapon->GetKey("OVERRIDE.SOUND_MISS", true);
-
-		if ( pTagStorage )
+			iSound = static_cast<SOUND_TYPE>(pWeapon->GetKeyNum("OVERRIDE.SOUND_MISS", true));
+		if ( !iSound )
 		{
-			if ( pTagStorage->GetValNum() )
-				iSnd = static_cast<SOUND_TYPE>(pTagStorage->GetValNum());
-		}
-	}
-
-	if ( m_Act_Difficulty < 0 )		// if not changed within trigger
-	{
-		// We missed. (miss noise)
-		if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
-		{
-			// 0x223 = bolt miss or dart ?
-			// do some thing with the arrow.
-			if ( pTagStorage != NULL )
-				Sound(iSnd);
-			else
-				Sound(Calc_GetRandVal(2) ? 0x233 : 0x238);
-
-			if ( pAmmo && m_pPlayer && (40 >= Calc_GetRandVal(100)) )
+			if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
 			{
-				pAmmo->UnStackSplit(1);
-				pAmmo->SetDecayTime(g_Cfg.m_iDecay_Item);
-				pAmmo->MoveNear(pCharTarg->GetTopPoint(), Calc_GetRandVal(1));
+				static const SOUND_TYPE sm_Snd_Miss[] = { 0x233, 0x238 };
+				iSound = sm_Snd_Miss[Calc_GetRandVal(COUNTOF(sm_Snd_Miss))];
 			}
-
-			return WAR_SWING_EQUIPPING;
+			else
+			{
+				static const SOUND_TYPE sm_Snd_Miss[] = { 0x238, 0x239, 0x23a };
+				iSound = sm_Snd_Miss[Calc_GetRandVal(COUNTOF(sm_Snd_Miss))];
+			}
 		}
-
-		static const SOUND_TYPE sm_Snd_Miss[] =
-		{
-			0x238,	// = swish01
-			0x239,	// = swish02
-			0x23a	// = swish03
-		};
-		if ( pTagStorage != NULL )
-			Sound(iSnd);
-		else
-			Sound(sm_Snd_Miss[Calc_GetRandVal(COUNTOF(sm_Snd_Miss))]);
 
 		if ( IsPriv(PRIV_DETAIL) )
 			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_MISSS), pCharTarg->GetName());
 		if ( pCharTarg->IsPriv(PRIV_DETAIL) )
 			pCharTarg->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_MISSO), GetName());
 
+		Sound(iSound);
 		return WAR_SWING_EQUIPPING;
 	}
 
-	// We hit...
-	// Check if target will block the hit
+	// We hit
 	if ( !(iTyp & DAMAGE_GOD) )
 	{
+		// Check if target will block the hit
 		// Legacy pre-SE formula
 		CItem * pItemHit = NULL;
 		int ParryChance = 0;
@@ -3750,16 +3727,13 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		ParryChance *= DexMod / 100;
 		if ( pCharTarg->Skill_UseQuick(SKILL_PARRYING, ParryChance, true, false) )
 		{
-			//Effect( EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 16 ); called in @UseQuick on parrying skill
-			//TO-DO: @UseQuick is always called before success/fail, so the glow effect above is always appearing even when the damage got parried or not.
-			//		 To make it work properly maybe we need some changes on @UseQuick (eg: replace @UseQuick with @Start and make it call @Success / @Fail, then we can use the glow effect on @Success)
-
 			if ( IsPriv(PRIV_DETAIL) )
 				SysMessageDefault(DEFMSG_COMBAT_PARRY);
 			if ( pItemHit )
 				pItemHit->OnTakeDamage(1, this, iTyp);
 
-			return WAR_SWING_EQUIPPING;		// we missed
+			//Effect(EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 16);		// moved to scripts (@UseQuick on Parrying skill)
+			return WAR_SWING_EQUIPPING;
 		}
 	}
 

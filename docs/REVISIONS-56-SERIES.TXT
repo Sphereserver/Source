@@ -2626,3 +2626,7 @@ Fixed ML SpeedEra's formula not giving correct delays.
 15-09-2015, XuN
 Fixed #2542: NPCs ridden by GMs deleted on WorldSave.
 Fixed #2554: UseQuick not returning false for Skills with SKF_SCRIPTED.
+
+17-09-2015, Coruja
+Fixed: Combat swing behavior not working correctly.
+[sphere_skills.scp]: Updated Parrying skill to fix glow effect appearing even on failure.
