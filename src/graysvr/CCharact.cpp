@@ -3877,7 +3877,7 @@ bool CChar::OnTick()
 	{
 		// Decay equipped items (memories/spells)
 		CItem *pItem = GetContentHead();
-		for ( ; pItem != NULL; pItem = pItem->GetNext() )
+		for ( size_t iCount = 0; pItem != NULL; pItem = GetAt(++iCount) )
 		{
 			EXC_TRYSUB("Ticking items");
 			/*if ( pItem->IsType(IT_EQ_MEMORY_OBJ) && !pItem->m_uidLink.ObjFind() )		// always check the validity of the memory objects
