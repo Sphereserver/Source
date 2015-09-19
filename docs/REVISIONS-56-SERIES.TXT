@@ -2630,3 +2630,10 @@ Fixed #2554: UseQuick not returning false for Skills with SKF_SCRIPTED.
 17-09-2015, Coruja
 Fixed: Combat swing behavior not working correctly.
 [sphere_skills.scp]: Updated Parrying skill to fix glow effect appearing even on failure.
+
+18-09-2015, Coruja
+[sphere_monsters.scp]: Added new dinosaurs CHARDEFs from UO Time of Legends (still incomplete yet).
+[sphere_item_char_icons.scp]: Added ITEMDEF i_pet_tiger.
+
+19-09-2015, Coruja
+Fixed: LOCAL.AnimDelay on @HitTry trigger not working correctly.

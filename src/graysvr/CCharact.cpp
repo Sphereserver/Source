@@ -281,7 +281,8 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 			if ( pItem->IsTypeWeapon())
 			{
 				m_uidWeapon = pItem->GetUID();
-				Fight_ResetWeaponSwingTimer();
+				if ( Fight_IsActive() )
+					Skill_Start(Fight_GetWeaponSkill());	// reset weapon swing timer
 			}
 			else if ( pItem->IsTypeArmor())
 			{
@@ -380,8 +381,8 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 			if ( pItem->IsTypeWeapon())
 			{
 				m_uidWeapon.InitUID();
-				Fight_ResetWeaponSwingTimer();
-
+				if ( Fight_IsActive() )
+					Skill_Start(Fight_GetWeaponSkill());	// reset weapon swing timer
 			}
 			else if ( pItem->IsTypeArmor())
 			{

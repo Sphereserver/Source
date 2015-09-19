@@ -2625,47 +2625,24 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 		return( Calc_GetRandVal2(iDmgMin, iDmgMax) );
 }
 
-void CChar::Fight_ResetWeaponSwingTimer()
-{
-	ADDTOCALLSTACK("CChar::Fight_ResetWeaponSwingTimer");
-	// The target or the weapon might have changed.
-	// So restart the skill
-	if ( Fight_IsActive())
-		Skill_Start( Fight_GetWeaponSkill());
-}
-
-int CChar::Fight_GetWeaponSwingTimer()
-{
-	ADDTOCALLSTACK("CChar::Fight_GetWeaponSwingTimer");
-	// We have just equipped the weapon or gone into War mode.
-	// Set the swing timer for the weapon or on us for .
-	//   m_atFight.m_War_Swing_State = WAR_SWING_EQUIPPING or WAR_SWING_SWINGING;
-	// RETURN:
-	//  tenths of a sec. TICK_PER_SEC
-
-	return( g_Cfg.Calc_CombatAttackSpeed( this, m_uidWeapon.ItemFind()));
-}
-
 void CChar::Fight_ClearAll()
 {
 	ADDTOCALLSTACK("CChar::Fight_ClearAll");
-	// clear all my active targets. Toggle out of war mode.
+	// Clear all my active targets. Toggle out of war mode.
 	// Should I add @CombatEnd trigger here too?
-	CItem * pItem = GetContentHead();
-	for ( ; pItem != NULL; pItem = pItem->GetNext())
+	for ( CItem * pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		if ( ! pItem->IsMemoryTypes(MEMORY_WAR_TARG))
+		if ( !pItem->IsMemoryTypes(MEMORY_WAR_TARG) )
 			continue;
-		Memory_ClearTypes( STATIC_CAST <CItemMemory *>(pItem), MEMORY_WAR_TARG );
+		Memory_ClearTypes(static_cast<CItemMemory *>(pItem), MEMORY_WAR_TARG);
 	}
-	Attacker_Clear();
 
-	// Our target is gone.
-	StatFlag_Clear( STATF_War );
+	Attacker_Clear();
+	StatFlag_Clear(STATF_War);
 
 	if ( Fight_IsActive() )
 	{
-		Skill_Start( SKILL_NONE );
+		Skill_Start(SKILL_NONE);
 		m_Fight_Targ.InitUID();
 	}
 
@@ -2675,51 +2652,77 @@ void CChar::Fight_ClearAll()
 CChar * CChar::Fight_FindBestTarget()
 {
 	ADDTOCALLSTACK("CChar::Fight_FindBestTarget");
-	// If i am an NPC with no more targets then drop out of war mode.
-	// RETURN:
-	//  number of targets.
+	// Find the best target to attack.
+	// Switch to this new target even if I'm already attacking someone.
 	if ( Attacker() )
-		return Attacker_FindBestTarget((NPC_GetAiFlags()&NPC_AI_THREAT && !m_pPlayer));
-	/*else
 	{
+		if ( !m_lastAttackers.size() )
+			return NULL;
+
+		INT64 threat = 0;
+		int iClosest = INT_MAX;
+		CChar * pChar = NULL;
+		CChar * pClosest = NULL;
 		SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
-		int iClosest = INT_MAX;	// closest
 
-		const CItem * pItem = GetContentHead();
-		for ( ; pItem != NULL; pItem = pItem->GetNext())
+		for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); it++ )
 		{
-			if ( ! pItem->IsMemoryTypes(MEMORY_WAR_TARG))
+			LastAttackers & refAttacker = *it;
+			pChar = static_cast<CChar*>(static_cast<CGrayUID>(refAttacker.charUID).CharFind());
+			if ( !pChar )
 				continue;
-			// check that the item is actually a memory item
-			const CItemMemory * pMemory = dynamic_cast <const CItemMemory *>(pItem);
-			if ( pMemory == NULL )
+			if ( pChar->IsStatFlag(STATF_DEAD) )	// dead chars can't be selected as target
+			{
+				pChar = NULL;
 				continue;
-
-			pChar = pItem->m_uidLink.CharFind();
-			if ( pChar == NULL)
-				continue;
+			}
+			if ( refAttacker.ignore )
+			{
+				bool bIgnore = true;
+				if ( IsTrigUsed(TRIGGER_HITIGNORE) )
+				{
+					CScriptTriggerArgs Args;
+					Args.m_iN1 = bIgnore;
+					OnTrigger(CTRIG_HitIgnore, pChar, &Args);
+					bIgnore = Args.m_iN1 ? true : false;
+				}
+				if ( bIgnore )
+				{
+					pChar = NULL;
+					continue;
+				}
+			}
+			if ( !pClosest )
+				pClosest = pChar;
 
 			int iDist = GetDist(pChar);
+			if ( iDist > UO_MAP_VIEW_SIGHT )
+				continue;
+			if ( g_Cfg.IsSkillFlag(skillWeapon, SKF_RANGED) && (iDist < g_Cfg.m_iArcheryMinDist || iDist > g_Cfg.m_iArcheryMaxDist) )
+				continue;
+			if ( !CanSeeLOS(pChar) )
+				continue;
 
-			if ( g_Cfg.IsSkillFlag(skillWeapon, SKF_RANGED) )
+			if ( m_pNPC && (NPC_GetAiFlags() & NPC_AI_THREAT) && (threat < refAttacker.threat) )	// this char has more threat than others, let's switch to this target
 			{
-				// archery dist is different.
-				if ( iDist < g_Cfg.m_iArcheryMinDist || iDist > g_Cfg.m_iArcheryMaxDist )
-					continue;
-				if ( m_Act_Targ == pChar->GetUID())	// alternate.
-					continue;
-				return( pChar );
+				pClosest = pChar;
+				iClosest = iDist;
+				threat = refAttacker.threat;
 			}
-			else if ( iDist < iClosest )
+			else if ( iDist < iClosest )	// this char is more closer to me than my current target, let's switch to this target
 			{
-				// ??? in the npc case. can i actually reach this target ?
 				pClosest = pChar;
 				iClosest = iDist;
 			}
 		}
-	}*/
-	else if (m_Fight_Targ.CharFind() != NULL)
-		return m_Fight_Targ.CharFind();
+		return pClosest ? pClosest : pChar;
+	}
+
+	// New target not found, check if I can keep attacking my current target
+	CChar *pTarget = m_Fight_Targ.CharFind();
+	if ( pTarget )
+		return pTarget;
+
 	return NULL;
 }
 
@@ -2921,81 +2924,6 @@ bool CChar::Attacker_Add( CChar * pChar, INT64 threat )
 		}
 	}
 	return true;
-}
-
-CChar * CChar::Attacker_FindBestTarget( bool bUseThreat )
-{
-	ADDTOCALLSTACK("CChar::Attacker_FindBestTarget");
-	if ( !m_lastAttackers.size() )
-		return NULL;
-
-	INT64 threat = 0;
-	int iClosest = INT_MAX;
-	CChar * pChar = NULL;
-	CChar * pClosest = NULL;
-	SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
-
-	for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); it++ )
-	{
-		LastAttackers & refAttacker = *it;
-		pChar = static_cast<CChar*>(static_cast<CGrayUID>(refAttacker.charUID).CharFind());
-		if ( pChar == NULL )
-			continue;
-		if ( pChar->IsStatFlag(STATF_DEAD) )	// dead chars can't be selected as target
-		{
-			pChar = NULL;
-			continue;
-		}
-		if ( refAttacker.ignore )
-		{
-			bool bIgnore = true;
-			if ( IsTrigUsed(TRIGGER_HITIGNORE) )
-			{
-				CScriptTriggerArgs Args;
-				Args.m_iN1 = bIgnore;
-				OnTrigger(CTRIG_HitIgnore, pChar, &Args);
-				bIgnore = Args.m_iN1 ? true : false;
-			}
-			if ( bIgnore )
-			{
-				pChar = NULL;
-				continue;
-			}
-		}
-		if ( pClosest == NULL )
-			pClosest = pChar;
-
-		// Main priority is the Threat
-		// but we only add it if it meets some requirements: target must not be far than view size and must be in LOS.
-		int iDist = GetDist(pChar);
-		if ( g_Cfg.IsSkillFlag(skillWeapon, SKF_RANGED) )
-		{
-			if ( iDist < g_Cfg.m_iArcheryMinDist || iDist > g_Cfg.m_iArcheryMaxDist )	// archery dist is different.
-				continue;
-			if ( m_Fight_Targ == pChar->GetUID() )	// alternate.
-				continue;
-		}
-		if ( iDist > UO_MAP_VIEW_SIGHT )
-			continue;
-		if ( !CanSeeLOS(pChar) )
-			continue;
-
-		if ( bUseThreat && threat < refAttacker.threat )
-		{
-			// So if we reached here ... this target has more threat than the others and meets the reqs.
-			pClosest = pChar;
-			iClosest = iDist;
-			threat = refAttacker.threat;
-
-		}
-		else if ( iDist < iClosest )
-		{
-			// ??? in the npc case. can i actually reach this target ?
-			pClosest = pChar;
-			iClosest = iDist;
-		}
-	}
-	return (pClosest) ? pClosest : pChar;
 }
 
 INT64 CChar::Attacker_GetDam( int id)
@@ -3555,8 +3483,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				return WAR_SWING_EQUIPPING;
 
 			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
-			long long animDelay = 7 / TICK_PER_SEC;					// attack speed is always 7ms and then the char keep waiting the remaining time
-			int iSwingDelay = Fight_GetWeaponSwingTimer() - 1;		// swings are started only on the next tick, so substract -1 to compensate that
+			long long animDelay = 7;		// attack speed is always 7ms and then the char keep waiting the remaining time
+			int iSwingDelay = g_Cfg.Calc_CombatAttackSpeed(this, pWeapon) - 1;	// swings are started only on the next tick, so substract -1 to compensate that
 
 			if ( IsTrigUsed(TRIGGER_HITTRY) )
 			{
@@ -3574,13 +3502,13 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			}
 
 			m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
-			m_atFight.m_NextSwingDelay = iSwingDelay;
+			m_atFight.m_NextSwingDelay = iSwingDelay - animDelay;
 			SetTimeout(animDelay);
 
 			Reveal();
 			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) && !IsStatFlag(STATF_Fly) )
 				UpdateDir(pCharTarg);
-			UpdateAnimate(anim, false, false, static_cast<BYTE>(animDelay));
+			UpdateAnimate(anim, false, false, static_cast<BYTE>(animDelay / TICK_PER_SEC));
 			return WAR_SWING_SWINGING;
 		}
 
@@ -3619,8 +3547,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				return WAR_SWING_EQUIPPING;
 
 			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
-			long long animDelay = 7 / TICK_PER_SEC;					// attack speed is always 7ms and then the char keep waiting the remaining time
-			int iSwingDelay = Fight_GetWeaponSwingTimer() - 1;		// swings are started only on the next tick, so substract -1 to compensate that
+			long long animDelay = 7;		// attack speed is always 7ms and then the char keep waiting the remaining time
+			int iSwingDelay = g_Cfg.Calc_CombatAttackSpeed(this, pWeapon) - 1;	// swings are started only on the next tick, so substract -1 to compensate that
 
 			if ( IsTrigUsed(TRIGGER_HITTRY) )
 			{
@@ -3638,13 +3566,13 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			}
 
 			m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
-			m_atFight.m_NextSwingDelay = iSwingDelay;
+			m_atFight.m_NextSwingDelay = iSwingDelay - animDelay;
 			SetTimeout(animDelay);
 
 			Reveal();
 			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) && !IsStatFlag(STATF_Fly) )
 				UpdateDir(pCharTarg);
-			UpdateAnimate(anim, false, false, static_cast<BYTE>(animDelay));
+			UpdateAnimate(anim, false, false, static_cast<BYTE>(animDelay / TICK_PER_SEC));
 			return WAR_SWING_SWINGING;
 		}
 	}

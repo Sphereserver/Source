@@ -3594,8 +3594,6 @@ private:
 	int	CalcFightRange( CItem * pWeapon = NULL );
 
 	SKILL_TYPE Fight_GetWeaponSkill() const;
-	void Fight_ResetWeaponSwingTimer();
-	int Fight_GetWeaponSwingTimer();
 	bool Fight_IsActive() const;
 public:
 	int CalcArmorDefense() const;
@@ -3625,7 +3623,6 @@ public:
 	};
 
 	int	 Attacker() { return static_cast<int>(m_lastAttackers.size()); }
-	//bool Attacker_Add( CChar * pChar);
 	bool Attacker_Add(CChar * pChar, INT64 threat = 0);
 	CChar * Attacker_GetLast();
 	bool Attacker_Delete(CChar * pChar, bool bForced = false, ATTACKER_CLEAR_TYPE type = ATTACKER_CLEAR_FORCED);
@@ -3650,10 +3647,8 @@ public:
 	INT64 Attacker_GetHighestThreat();
 	int  Attacker_GetID( CChar * pChar );
 	int  Attacker_GetID( CGrayUID pChar );
-	int  IsAttackedBy( CChar * pChar ) { return Attacker_GetID( pChar); } 
-	CChar * Attacker_FindBestTarget( bool bUseThreat = false );
-	//
 
+	//
 	bool Player_OnVerb( CScript &s, CTextConsole * pSrc );
 	void InitPlayer( CClient * pClient, const char * pszCharname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE iProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc  );
 	bool ReadScriptTrig(CCharBase * pCharDef, CTRIG_TYPE trig, bool bVendor = false);
