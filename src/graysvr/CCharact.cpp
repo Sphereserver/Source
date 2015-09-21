@@ -3256,7 +3256,7 @@ bool CChar::CheckLocation( bool fStanding )
 	if ( !pTeleport )
 		return false;
 
-	if (m_pNPC)
+	if ( m_pNPC )
 	{
 		if ( !pTeleport->bNpc )
 			return false;
@@ -3276,7 +3276,7 @@ bool CChar::CheckLocation( bool fStanding )
 				return false;
 		}
 	}
-	Spell_Teleport(pTeleport->m_ptDst, true, false, ITEMID_NOTHING);
+	Spell_Teleport(pTeleport->m_ptDst, true, false, false);
 	return true;
 }
 
@@ -3549,7 +3549,7 @@ bool CChar::MoveToValidSpot(DIR_TYPE dir, int iDist, int iDistStart, bool bFromS
 			if ( ! ( wBlockFlags &~ wCan ))
 			{
 				// we can go here. (maybe)
-				if ( Spell_Teleport( pt, true, !bFromShip, ITEMID_NOTHING) )
+				if ( Spell_Teleport(pt, true, !bFromShip, false) )
 					return true;
 			}
 		}

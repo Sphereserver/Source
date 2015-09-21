@@ -270,9 +270,8 @@ CRegionBase * CSectorBase::GetRegion( const CPointBase & pt, DWORD dwType ) cons
 				continue;
 		}
 
-		if ( ! pRegion->m_pt.IsSameMap(pt.m_map))
+		if ( pRegion->m_pt.m_map != pt.m_map )
 			continue;
-
 		if ( ! pRegion->IsInside2d( pt ))
 			continue;
 		return( pRegion );
@@ -313,7 +312,7 @@ size_t CSectorBase::GetRegions( const CPointBase & pt, DWORD dwType, CRegionLink
 				continue;
 		}
 
-		if ( ! pRegion->m_pt.IsSameMap(pt.m_map))
+		if ( pRegion->m_pt.m_map != pt.m_map )
 			continue;
 		if ( ! pRegion->IsInside2d( pt ))
 			continue;
@@ -378,35 +377,22 @@ bool CSectorBase::LinkRegion( CRegionBase * pRegionNew )
 	return( true );
 }
 
-CTeleport * CSectorBase::GetTeleport2d( const CPointMap & pt ) const
-{
-	ADDTOCALLSTACK("CSectorBase::GetTeleport2d");
-	// Any teleports here at this point ?
-
-	size_t i = m_Teleports.FindKey( pt.GetPointSortIndex());
-	if ( i == m_Teleports.BadIndex() )
-		return( NULL );
-	return STATIC_CAST <CTeleport *>( m_Teleports[i]);
-}
-
 CTeleport * CSectorBase::GetTeleport( const CPointMap & pt ) const
 {
 	ADDTOCALLSTACK("CSectorBase::GetTeleport");
 	// Any teleports here at this point ?
 
-	CTeleport * pTeleport = GetTeleport2d( pt );
-	if ( pTeleport == NULL )
-		return( NULL );
+	size_t i = m_Teleports.FindKey(pt.GetPointSortIndex());
+	if ( i == m_Teleports.BadIndex() )
+		return NULL;
 
-	int zdiff = pt.m_z - pTeleport->m_z;	
-	if ( abs(zdiff) > 5 )
-		return( NULL );
+	CTeleport *pTeleport = static_cast<CTeleport *>(m_Teleports[i]);
+	if ( pTeleport->m_map != pt.m_map )
+		return NULL;
+	if ( abs(pTeleport->m_z - pt.m_z) > 5 )
+		return NULL;
 
-	// Check m_map ?
-	if ( ! pTeleport->IsSameMap( pt.m_map ))
-		return( NULL );
-
-	return( pTeleport );
+	return pTeleport;
 }
 
 bool CSectorBase::AddTeleport( CTeleport * pTeleport )

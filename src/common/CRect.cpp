@@ -111,30 +111,30 @@ int CPointBase::GetDist( const CPointBase & pt ) const // Distance between point
 {
 	ADDTOCALLSTACK("CPointBase::GetDist");
 	// Get the basic 2d distance.
-	if ( !pt.IsValidPoint())
-		return( SHRT_MAX );
-	if ( ! IsSameMap( pt.m_map ))
-		return( SHRT_MAX );
+	if ( !pt.IsValidPoint() )
+		return SHRT_MAX;
+	if ( pt.m_map != m_map )
+		return SHRT_MAX;
 
-	return( GetDistBase( pt ));
+	return GetDistBase(pt);
 }
 
 int CPointBase::GetDistSightBase( const CPointBase & pt ) const // Distance between points based on UO sight
 {
-	int dx = abs(m_x-pt.m_x);
-	int dy = abs(m_y-pt.m_y);
-	return( maximum( dx, dy ));
+	int dx = abs(m_x - pt.m_x);
+	int dy = abs(m_y - pt.m_y);
+	return maximum(dx, dy);
 }
 
 int CPointBase::GetDistSight( const CPointBase & pt ) const // Distance between points based on UO sight
 {
 	ADDTOCALLSTACK("CPointBase::GetDistSight");
-	if ( !pt.IsValidPoint())
-		return( SHRT_MAX );
-	if ( ! IsSameMap( pt.m_map ))
-		return( SHRT_MAX );
+	if ( !pt.IsValidPoint() )
+		return SHRT_MAX;
+	if ( pt.m_map != m_map )
+		return SHRT_MAX;
 
-	return( GetDistSightBase( pt ));
+	return GetDistSightBase(pt);
 }
 
 int CPointBase::GetDist3D( const CPointBase & pt ) const // Distance between points
@@ -190,11 +190,6 @@ void CPointBase::ValidatePoint()
 	if (m_x >= static_cast<signed short>(g_MapList.GetX(m_map))) m_x = static_cast<signed short>(g_MapList.GetX(m_map) - 1);
 	if ( m_y < 0 ) m_y = 0;
 	if (m_y >= static_cast<signed short>(g_MapList.GetY(m_map))) m_y = static_cast<signed short>(g_MapList.GetY(m_map) - 1);
-}
-
-bool CPointBase::IsSameMap( BYTE map ) const
-{
-	return( map == m_map );
 }
 
 bool CPointBase::IsSame2D( const CPointBase & pt ) const

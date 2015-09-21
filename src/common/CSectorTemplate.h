@@ -136,7 +136,6 @@ public:
 
 	// CTeleport(s) in the region.
 	CTeleport * GetTeleport( const CPointMap & pt ) const;
-	CTeleport * GetTeleport2d( const CPointMap & pt ) const;
 	bool AddTeleport( CTeleport * pTeleport );
 
 	bool IsFlagSet( DWORD dwFlag ) const

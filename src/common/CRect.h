@@ -69,8 +69,6 @@ public:
 
 	void ValidatePoint();
 
-	bool IsSameMap( BYTE map ) const;
-
 	bool IsSame2D( const CPointBase & pt ) const;
 
 	void Set( const CPointBase & pt );

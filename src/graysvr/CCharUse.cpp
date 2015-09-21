@@ -198,9 +198,7 @@ void CChar::Use_MoonGate( CItem * pItem )
 	}
 
 	// Teleport me. and take a step.
-	Spell_Teleport( ptTeleport, true,
-		(pItem->IsAttr(ATTR_DECAY))?true:false,
-		(fQuiet) ? ITEMID_NOTHING : ITEMID_FX_TELE_VANISH );
+	Spell_Teleport(ptTeleport, true, pItem->IsAttr(ATTR_DECAY) ? true : false, !fQuiet);
 }
 
 bool CChar::Use_Kindling( CItem * pKindling )
@@ -1588,423 +1586,417 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 	// RETURN:
 	//   true = it activated.
 
-	if ( pItem == NULL )
-		return( false );
+	if ( !pItem )
+		return false;
 
-	if ((( m_pNPC != NULL ) && ( m_pPlayer == NULL )) && (( IsTrigUsed(TRIGGER_DCLICK) ) || ( IsTrigUsed(TRIGGER_ITEMDCLICK) ))) //for players, dclick was called before this function
-	{		
-		if ( pItem->OnTrigger( ITRIG_DCLICK, this ) == TRIGRET_RET_TRUE )
+	if ( m_pNPC && (IsTrigUsed(TRIGGER_DCLICK) || IsTrigUsed(TRIGGER_ITEMDCLICK)) )		// for players, DClick was called before this function
+	{
+		if ( pItem->OnTrigger(ITRIG_DCLICK, this) == TRIGRET_RET_TRUE )
 			return false;
 	}
 
-	bool fAction = true;
-
-
-	CItemSpawn * pSpawn = static_cast<CItemSpawn*>(pItem->m_uidSpawnItem.ItemFind());
+	CItemSpawn *pSpawn = static_cast<CItemSpawn*>(pItem->m_uidSpawnItem.ItemFind());
 	if ( pSpawn )
-		pSpawn->DelObj(pItem->GetUID());	// Removing this item from it's spawn when non-player DClicks it (forced DClick from script).
+		pSpawn->DelObj(pItem->GetUID());	// remove this item from it's spawn when DClicks it
 
+	bool fAction = true;
 	switch ( pItem->GetType() )
 	{
-	case IT_ITEM_STONE:
-		// Give them this item
-		if ( pItem->m_itItemStone.m_wAmount == USHRT_MAX )
+		case IT_ITEM_STONE:
 		{
-			// used to be sysmessagef
-			SysMessageDefault( DEFMSG_MSG_IT_IS_DEAD );
-			return true;
-		}
-		if ( pItem->m_itItemStone.m_wRegenTime )
-		{
-			if ( pItem->IsTimerSet())
+			// Give them this item
+			if ( pItem->m_itItemStone.m_wAmount == USHRT_MAX )
 			{
-				SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_STONEREG_TIME ), pItem->GetTimerDiff() / TICK_PER_SEC );
+				SysMessageDefault(DEFMSG_MSG_IT_IS_DEAD);
 				return true;
 			}
-			pItem->SetTimeout( pItem->m_itItemStone.m_wRegenTime * TICK_PER_SEC );
-		}
-		ItemBounce( CItem::CreateTemplate( pItem->m_itItemStone.m_ItemID, GetPackSafe(), this ));
-		if ( pItem->m_itItemStone.m_wAmount != 0 )
-		{
-			pItem->m_itItemStone.m_wAmount--;
-			if ( pItem->m_itItemStone.m_wAmount == 0 )
+			if ( pItem->m_itItemStone.m_wRegenTime )
 			{
-				pItem->m_itItemStone.m_wAmount = USHRT_MAX;
+				if ( pItem->IsTimerSet() )
+				{
+					SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_STONEREG_TIME), pItem->GetTimerDiff() / TICK_PER_SEC);
+					return true;
+				}
+				pItem->SetTimeout(pItem->m_itItemStone.m_wRegenTime * TICK_PER_SEC);
 			}
+			ItemBounce(CItem::CreateTemplate(pItem->m_itItemStone.m_ItemID, GetPackSafe(), this));
+			if ( pItem->m_itItemStone.m_wAmount != 0 )
+			{
+				pItem->m_itItemStone.m_wAmount--;
+				if ( pItem->m_itItemStone.m_wAmount == 0 )
+					pItem->m_itItemStone.m_wAmount = USHRT_MAX;
+			}
+			return true;
 		}
-		return true;
 
-	case IT_SEED:
-		return Use_Seed( pItem, NULL );
+		case IT_SEED:
+			return Use_Seed(pItem, NULL);
 
-	case IT_BEDROLL:
-		return Use_BedRoll(pItem);
+		case IT_BEDROLL:
+			return Use_BedRoll(pItem);
 
-	case IT_BELLOWS:
-		// This is supposed to make the nearby fire pit hotter.
-		pItem->Sound( 0x02b );
-		pItem->SetAnim(static_cast<ITEMID_TYPE>(pItem->GetID() + 1), 2 * TICK_PER_SEC);
-		return true;
+		case IT_KINDLING:
+			return Use_Kindling(pItem);
 
-	case IT_KINDLING:
-		return Use_Kindling( pItem );
-
-	case IT_SPINWHEEL:
-		// Just make them spin.
-		if ( !fLink )
+		case IT_SPINWHEEL:
 		{
+			if ( fLink )
+				return false;
+
+			// Just make them spin
 			pItem->SetAnim(static_cast<ITEMID_TYPE>(pItem->GetID() + 1), 2 * TICK_PER_SEC);
-			SysMessageDefault( DEFMSG_ITEMUSE_SPINWHEEL );
+			SysMessageDefault(DEFMSG_ITEMUSE_SPINWHEEL);
 			return true;
 		}
-		else
-			return false;
 
-	case IT_TRAIN_DUMMY:	// Train dummy.
-		if ( !fLink )
+		case IT_TRAIN_DUMMY:
 		{
-			Use_Train_Dummy(pItem, true );
+			if ( fLink )
+				return false;
+
+			Use_Train_Dummy(pItem, true);
 			return true;
 		}
-		else
-			return false;
-	case IT_TRAIN_PICKPOCKET:
-		if ( !fLink )
+
+		case IT_TRAIN_PICKPOCKET:
 		{
+			if ( fLink )
+				return false;
+
 			Use_Train_PickPocketDip(pItem, true);
 			return true;
 		}
-		else
-			return false;
-	case IT_ARCHERY_BUTTE:	// Archery Butte
-		if ( !fLink )
+
+		case IT_ARCHERY_BUTTE:
 		{
+			if ( fLink )
+				return false;
+
 			Use_Train_ArcheryButte(pItem, true);
 			return true;
 		}
-		else
-			return false;
 
-	case IT_LOOM:
-		//pItem->SetAnim(static_cast<ITEMID_TYPE>(pItem->GetID() + 1), 2 * TICK_PER_SEC);
-		if ( !fLink )
+		case IT_LOOM:
 		{
-			SysMessageDefault( DEFMSG_ITEMUSE_LOOM );
+			if ( fLink )
+				return false;
+
+			SysMessageDefault(DEFMSG_ITEMUSE_LOOM);
 			return true;
 		}
-		else
-			return false;
 
-	case IT_BEE_HIVE:
-		// Get honey from it.
-		if ( !fLink )
+		case IT_BEE_HIVE:
 		{
+			if ( fLink )
+				return false;
+
+			// Get honey from it
 			ITEMID_TYPE id = ITEMID_NOTHING;
-			if ( ! pItem->m_itBeeHive.m_honeycount )
+			if ( !pItem->m_itBeeHive.m_honeycount )
+				SysMessageDefault(DEFMSG_ITEMUSE_BEEHIVE);
+			else
 			{
-				SysMessageDefault( DEFMSG_ITEMUSE_BEEHIVE );
-			}
-			else switch ( Calc_GetRandVal(3))
-			{
-			case 1:
-				id = ITEMID_JAR_HONEY;
-				break;
-			case 2:
-				id = ITEMID_BEE_WAX;
-				break;
+				switch ( Calc_GetRandVal(3) )
+				{
+					case 1:
+						id = ITEMID_JAR_HONEY;
+						break;
+					case 2:
+						id = ITEMID_BEE_WAX;
+						break;
+				}
 			}
 			if ( id )
 			{
-				ItemBounce( CItem::CreateScript( id, this ));
-				pItem->m_itBeeHive.m_honeycount --;
+				ItemBounce(CItem::CreateScript(id, this));
+				pItem->m_itBeeHive.m_honeycount--;
 			}
 			else
 			{
-				// ouch got stung. Poison bee sting ?
-				SysMessageDefault( DEFMSG_ITEMUSE_BEEHIVE_STING );
-				OnTakeDamage( Calc_GetRandVal(5), this, DAMAGE_POISON|DAMAGE_GENERAL );
+				SysMessageDefault(DEFMSG_ITEMUSE_BEEHIVE_STING);
+				OnTakeDamage(Calc_GetRandVal(5), this, DAMAGE_POISON|DAMAGE_GENERAL);
 			}
-			pItem->SetTimeout( 15*60*TICK_PER_SEC );
-			return true;
-		}
-		else
-			return false;
-
-	case IT_MUSICAL:
-		if ( ! Skill_Wait(SKILL_MUSICIANSHIP))
-		{
-			m_Act_Targ = pItem->GetUID();
-			Skill_Start( SKILL_MUSICIANSHIP );
-		}
-		break;
-
-	case IT_CROPS:
-	case IT_FOLIAGE:
-		// Pick cotton/hay/etc...
-		fAction = pItem->Plant_Use(this);
-		break;
-
-	case IT_FIGURINE:
-		// Create the creature here.
-		fAction = ( Use_Figurine(pItem) != NULL );
-		if ( fAction )
-			pItem->Delete();
-		return true;
-
-	case IT_TRAP:
-	case IT_TRAP_ACTIVE:
-		// Explode or active the trap. (plus any linked traps.)
-		if ( CanTouch( pItem->GetTopLevelObj()->GetTopPoint()))
-		{
-			OnTakeDamage( pItem->Use_Trap(), NULL, DAMAGE_HIT_BLUNT | DAMAGE_GENERAL );
-		}
-		else
-		{
-			pItem->Use_Trap();
-		}
-		break;
-
-	case IT_SWITCH:
-		// Switches can be linked to gates and doors and such.
-		// Flip the switch graphic.
-		pItem->SetSwitchState();
-		break;
-
-	case IT_PORT_LOCKED:	// Can only be trigered.
-		if ( ! fLink && ! IsPriv(PRIV_GM))
-		{
-			SysMessageDefault( DEFMSG_ITEMUSE_PORT_LOCKED );
-			return( true );
-		}
-
-	case IT_PORTCULIS:
-		// Open a metal gate via a trigger of some sort.
-		pItem->Use_Portculis();
-		break;
-
-	case IT_DOOR_LOCKED:
-		if ( ! ContentFindKeyFor( pItem ))
-		{
-			SysMessageDefault( DEFMSG_MSG_KEY_DOORLOCKED );
-			if ( ! pItem->IsTopLevel())
-				return( false );
-			if ( pItem->IsAttr(ATTR_MAGIC))
-			{
-				// Show it's magic face.
-				ITEMID_TYPE id = ( GetDispID() & DOOR_NORTHSOUTH ) ? ITEMID_DOOR_MAGIC_SI_NS : ITEMID_DOOR_MAGIC_SI_EW;
-				CItem * pFace = CItem::CreateBase( id );
-				ASSERT(pFace);
-				pFace->MoveToDecay( pItem->GetTopPoint(), 4*TICK_PER_SEC );
-			}
-			if ( ! IsPriv( PRIV_GM ))
-				return true;
-		}
-
-	case IT_DOOR_OPEN:
-	case IT_DOOR:
-		{
-			//bool fOpen = pItem->Use_Door( fLink );
-			bool fOpen = pItem->Use_DoorNew( fLink );
-			if ( fLink || !fOpen ) // Don't link if we are just closing the door.
-				return true;
-		}
-		break;
-
-	case IT_SHIP_PLANK:
-		// If on the ship close it. if not teleport to it.
-		if ( m_pArea->IsFlag( REGION_FLAG_SHIP ) &&
-			m_pArea->GetResourceID() == pItem->m_uidLink )
-		{
-			// Close it. Check for a key if the plank used to be a locked ship side
-			if ( pItem->m_itShipPlank.m_itSideType == IT_SHIP_SIDE_LOCKED && !ContentFindKeyFor( pItem ) )
-			{
-				SysMessageDefault( DEFMSG_ITEMUSE_SHIPSIDE );
-				return true;
-			}
-			return( pItem->Ship_Plank( false ));
-		}
-		else if ( pItem->IsTopLevel())
-		{
-			// Move to it.
-			CPointMap pntTarg = pItem->GetTopPoint();
-			pntTarg.m_z ++;
-			Spell_Teleport( pntTarg, true, false, ITEMID_NOTHING );
-		}
-		return true;
-
-	case IT_SHIP_SIDE_LOCKED:
-		if ( ! ContentFindKeyFor( pItem ))
-		{
-			SysMessageDefault( DEFMSG_ITEMUSE_SHIPSIDE );
+			pItem->SetTimeout(15 * 60 * TICK_PER_SEC);
 			return true;
 		}
 
-	case IT_SHIP_SIDE:
-		// Open it if we have the key or are already on the ship
-		pItem->Ship_Plank( true );
-		break;
+		case IT_MUSICAL:
+		{
+			if ( !Skill_Wait(SKILL_MUSICIANSHIP) )
+			{
+				m_Act_Targ = pItem->GetUID();
+				Skill_Start(SKILL_MUSICIANSHIP);
+			}
+			break;
+		}
 
-	case IT_GRAIN:
-	case IT_GRASS:
-	case IT_GARBAGE:
-	case IT_FRUIT:
-	case IT_FOOD:
-	case IT_FOOD_RAW:
-	case IT_MEAT_RAW:
-		if ( !fLink )
+		case IT_CROPS:
+		case IT_FOLIAGE:
+		{
+			// Pick cotton/hay/etc
+			fAction = pItem->Plant_Use(this);
+			break;
+		}
+
+		case IT_FIGURINE:
+		{
+			// Create the creature here
+			fAction = (Use_Figurine(pItem) != NULL);
+			if ( fAction )
+				pItem->Delete();
+			return true;
+		}
+
+		case IT_TRAP:
+		case IT_TRAP_ACTIVE:
+		{
+			// Activate the trap (plus any linked traps)
+			int iDmg = pItem->Use_Trap();
+			if ( CanTouch(pItem->GetTopLevelObj()->GetTopPoint()) )
+				OnTakeDamage(iDmg, NULL, DAMAGE_HIT_BLUNT|DAMAGE_GENERAL);
+			break;
+		}
+
+		case IT_SWITCH:
+		{
+			// Switches can be linked to gates and doors and such.
+			// Flip the switch graphic.
+			pItem->SetSwitchState();
+			break;
+		}
+
+		case IT_PORT_LOCKED:
+			if ( !fLink && !IsPriv(PRIV_GM) )
+			{
+				SysMessageDefault(DEFMSG_ITEMUSE_PORT_LOCKED);
+				return true;
+			}
+		case IT_PORTCULIS:
+			// Open a metal gate vertically
+			pItem->Use_Portculis();
+			break;
+
+		case IT_DOOR_LOCKED:
+			if ( !ContentFindKeyFor(pItem) )
+			{
+				SysMessageDefault(DEFMSG_MSG_KEY_DOORLOCKED);
+				if ( !pItem->IsTopLevel() )
+					return false;
+				if ( pItem->IsAttr(ATTR_MAGIC) )	// show it's magic face
+				{
+					ITEMID_TYPE id = (GetDispID() & DOOR_NORTHSOUTH) ? ITEMID_DOOR_MAGIC_SI_NS : ITEMID_DOOR_MAGIC_SI_EW;
+					CItem *pFace = CItem::CreateBase(id);
+					ASSERT(pFace);
+					pFace->MoveToDecay(pItem->GetTopPoint(), 4 * TICK_PER_SEC);
+				}
+				if ( !IsPriv(PRIV_GM) )
+					return true;
+			}
+		case IT_DOOR_OPEN:
+		case IT_DOOR:
+			{
+				bool fOpen = pItem->Use_DoorNew(fLink);
+				if ( fLink || !fOpen )	// don't link if we are just closing the door
+					return true;
+			}
+			break;
+
+		case IT_SHIP_PLANK:
+		{
+			// Close the plank if I'm inside the ship
+			if ( m_pArea->IsFlag(REGION_FLAG_SHIP) && m_pArea->GetResourceID() == pItem->m_uidLink )
+			{
+				if ( pItem->m_itShipPlank.m_itSideType == IT_SHIP_SIDE_LOCKED && !ContentFindKeyFor(pItem) )
+				{
+					SysMessageDefault(DEFMSG_ITEMUSE_SHIPSIDE);
+					return true;
+				}
+				return pItem->Ship_Plank(false);
+			}
+			else if ( pItem->IsTopLevel() )
+			{
+				// Teleport to plank if I'm outside the ship
+				CPointMap pntTarg = pItem->GetTopPoint();
+				pntTarg.m_z++;
+				Spell_Teleport(pntTarg, true, false, false);
+			}
+			return true;
+		}
+
+		case IT_SHIP_SIDE_LOCKED:
+			if ( !ContentFindKeyFor(pItem) )
+			{
+				SysMessageDefault(DEFMSG_ITEMUSE_SHIPSIDE);
+				return true;
+			}
+		case IT_SHIP_SIDE:
+			// Open the plank
+			pItem->Ship_Plank(true);
+			return true;
+
+		case IT_GRAIN:
+		case IT_GRASS:
+		case IT_GARBAGE:
+		case IT_FRUIT:
+		case IT_FOOD:
+		case IT_FOOD_RAW:
+		case IT_MEAT_RAW:
+		{
+			if ( fLink )
+				return false;
+
 			Use_Eat(pItem);
-		else
-			return false;
-		return true;
-
-	case IT_POTION:
-	case IT_DRINK:
-	case IT_PITCHER:
-	case IT_WATER_WASH:
-	case IT_BOOZE:
-		if ( !fLink )
-			Use_Drink(pItem);
-		else
-			return false;
-		return true;
-
-	case IT_LIGHT_OUT: // Can the light be lit ?
-	case IT_LIGHT_LIT: // Can the light be doused ?
-		fAction = pItem->Use_Light();
-		break;
-
-	case IT_CLOTHING:
-	case IT_ARMOR:
-	case IT_ARMOR_LEATHER:
-	case IT_SHIELD:
-	case IT_WEAPON_MACE_CROOK:
-	case IT_WEAPON_MACE_PICK:
-	case IT_WEAPON_MACE_SMITH:
-	case IT_WEAPON_MACE_SHARP:
-	case IT_WEAPON_SWORD:
-	case IT_WEAPON_FENCE:
-	case IT_WEAPON_BOW:
-	case IT_WEAPON_AXE:
-	case IT_WEAPON_XBOW:
-	case IT_WEAPON_MACE_STAFF:
-	case IT_JEWELRY:
-	case IT_WEAPON_THROWING:
-		if ( !fLink )
-			return ItemEquip( pItem );
-		else
-			return false;
-
-	case IT_WEB:
-		// try to get out of web.
-		if ( !fLink )
-		{
-			Use_Item_Web( pItem );
 			return true;
 		}
-		else
-			return false;
 
-	case IT_SPY_GLASS:
-		if ( !fLink )
+		case IT_POTION:
+		case IT_DRINK:
+		case IT_PITCHER:
+		case IT_WATER_WASH:
+		case IT_BOOZE:
 		{
-			// Spyglass will now tell you the moon phases...
+			if ( fLink )
+				return false;
+
+			Use_Drink(pItem);
+			return true;
+		}
+
+		case IT_LIGHT_OUT:		// can the light be lit?
+		case IT_LIGHT_LIT:		// can the light be doused?
+			fAction = pItem->Use_Light();
+			break;
+
+		case IT_CLOTHING:
+		case IT_ARMOR:
+		case IT_ARMOR_LEATHER:
+		case IT_SHIELD:
+		case IT_WEAPON_MACE_CROOK:
+		case IT_WEAPON_MACE_PICK:
+		case IT_WEAPON_MACE_SMITH:
+		case IT_WEAPON_MACE_SHARP:
+		case IT_WEAPON_SWORD:
+		case IT_WEAPON_FENCE:
+		case IT_WEAPON_BOW:
+		case IT_WEAPON_AXE:
+		case IT_WEAPON_XBOW:
+		case IT_WEAPON_MACE_STAFF:
+		case IT_JEWELRY:
+		case IT_WEAPON_THROWING:
+		{
+			if ( fLink )
+				return false;
+
+			return ItemEquip(pItem);
+		}
+
+		case IT_WEB:
+		{
+			if ( fLink )
+				return false;
+
+			Use_Item_Web(pItem);
+			return true;
+		}
+
+		case IT_SPY_GLASS:
+		{
+			if ( fLink )
+				return false;
+
+			// Spyglass will tell you the moon phases
 			static LPCTSTR const sm_sPhases[8] =
 			{
-				g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_SPYGLASS_M1 ),
-				g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_SPYGLASS_M2 ),
-				g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_SPYGLASS_M3 ),
-				g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_SPYGLASS_M4 ),
-				g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_SPYGLASS_M5 ),
-				g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_SPYGLASS_M6 ),
-				g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_SPYGLASS_M7 ),
-				g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_SPYGLASS_M8 )
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M1),
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M2),
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M3),
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M4),
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M5),
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M6),
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M7),
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M8)
 			};
-			SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_SPYGLASS_TR ), sm_sPhases[ g_World.GetMoonPhase(false) ]);
-			SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_SPYGLASS_FE ), sm_sPhases[ g_World.GetMoonPhase(true) ]);
+			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_TR), sm_sPhases[g_World.GetMoonPhase(false)]);
+			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_FE), sm_sPhases[g_World.GetMoonPhase(true)]);
 
-			if ( m_pArea && m_pArea->IsFlag( REGION_FLAG_SHIP ))
-			{
-				ObjMessage( pItem->Use_SpyGlass(this), this );
-			}
+			if ( m_pArea && m_pArea->IsFlag(REGION_FLAG_SHIP) )
+				ObjMessage(pItem->Use_SpyGlass(this), this);
 			return true;
 		}
-		return false;
-	case IT_SEXTANT:
-		if ( !fLink )
+
+		case IT_SEXTANT:
 		{
-			if (( GetTopPoint().m_map <= 1 ) && ( GetTopPoint().m_x > UO_SIZE_X_REAL ))	// in dungeons and t2a lands
-			{
-				ObjMessage( g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_SEXTANT_T2A ), this );
-			}
+			if ( fLink )
+				return false;
+
+			if ( (GetTopPoint().m_map <= 1) && (GetTopPoint().m_x > UO_SIZE_X_REAL) )	// dungeons and T2A lands
+				ObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SEXTANT_T2A), this);
 			else
 			{
-				TCHAR * pszMsg = Str_GetTemp();
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_SEXTANT ), static_cast<LPCTSTR>(m_pArea->GetName()), static_cast<LPCTSTR>(pItem->Use_Sextant(GetTopPoint())));
+				TCHAR *pszMsg = Str_GetTemp();
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SEXTANT), m_pArea->GetName(), pItem->Use_Sextant(GetTopPoint()));
 				ObjMessage(pszMsg, this);
 			}
 			return true;
 		}
-		else return false;
-	default:
-		fAction = false;
+
+		default:
+			fAction = false;
 	}
 
-	// Try to follow the link as well. (if it has one)
-	CItem * pLinkItem = pItem->m_uidLink.ItemFind();
-	if ( pLinkItem != NULL && pLinkItem != pItem )
+	// Try to follow the link as well (if it has one)
+	CItem *pLinkItem = pItem->m_uidLink.ItemFind();
+	if ( pLinkItem && (pLinkItem != pItem) )
 	{
-		static CItem * sm_pItemFirst = NULL;	// watch out for loops.
+		static CItem *sm_pItemFirst = NULL;		// watch out for loops
 		sm_iCount = 0;
-		if ( ! fLink )
+		if ( fLink )
+		{
+			if ( sm_pItemFirst == pItem )
+				return true;	// kill the loop
+			if ( ++sm_iCount > 64 )
+				return true;
+		}
+		else
 		{
 			sm_pItemFirst = pItem;
 			sm_iCount = 0;
 		}
-		else
-		{
-			if ( sm_pItemFirst == pItem )
-				return true;	// kill the loop.
-			if ( ++sm_iCount > 64 )
-			{
-				return( true );
-			}
-		}
-		fAction |= Use_Item( pLinkItem, true );
+		fAction |= Use_Item(pLinkItem, true);
 	}
 
-	return( fAction );
+	return fAction;
 }
 
 bool CChar::Use_Obj( CObjBase * pObj, bool fTestTouch, bool fScript  )
 {
 	ADDTOCALLSTACK("CChar::Use_Obj");
-	if ( pObj == NULL )
-		return( false );
-	if ( IsClient())
-		return GetClient()->Event_DoubleClick( pObj->GetUID(), false, fTestTouch, fScript );
+	if ( !pObj )
+		return false;
+	if ( IsClient() )
+		return GetClient()->Event_DoubleClick(pObj->GetUID(), false, fTestTouch, fScript);
 	else
-		return Use_Item( dynamic_cast <CItem*>(pObj), fTestTouch );
+		return Use_Item(dynamic_cast<CItem*>(pObj), fTestTouch);
 }
 
 bool CChar::ItemEquipArmor( bool fForce )
 {
 	ADDTOCALLSTACK("CChar::ItemEquipArmor");
-	// equip ourselves as best as possible.
+	// Equip ourselves as best as possible.
 
-	CCharBase		*pCharDef = Char_GetDef();
-	CItemContainer	*pPack = GetPack();
-
-	if ( !pCharDef || !pPack || !pCharDef->Can(CAN_C_EQUIP) )
+	CCharBase *pCharDef = Char_GetDef();
+	CItemContainer *pPack = GetPack();
+	if ( !pPack || !pCharDef || !pCharDef->Can(CAN_C_EQUIP) )
 		return false;
 
 	int iBestScore[LAYER_HORSE];
 	memset(iBestScore, 0, sizeof(iBestScore));
-	CItem	*pBestArmor[LAYER_HORSE];
+	CItem *pBestArmor[LAYER_HORSE];
 	memset(pBestArmor, 0, sizeof(pBestArmor));
 
 	if ( !fForce )
 	{
-		// Block those layers that are already used.
+		// Block those layers that are already used
 		for ( size_t i = 0; i < COUNTOF(iBestScore); i++ )
 		{
 			pBestArmor[i] = LayerFind(static_cast<LAYER_TYPE>(i));
@@ -2013,14 +2005,13 @@ bool CChar::ItemEquipArmor( bool fForce )
 		}
 	}
 
-	CItem	*pItem = pPack->GetContentHead();
-	for ( ; pItem != NULL; pItem = pItem->GetNext() )
+	for ( CItem *pItem = pPack->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
 		int iScore = pItem->Armor_GetDefense();
-		if ( !iScore )	// might not be armor.
+		if ( !iScore )	// might not be armor
 			continue;
 
-		// Can i even equip this ?
+		// Can I even equip this?
 		LAYER_TYPE layer = CanEquipLayer(pItem, LAYER_QTY, NULL, true);
 		if ( layer == LAYER_NONE )
 			continue;
@@ -2032,12 +2023,11 @@ bool CChar::ItemEquipArmor( bool fForce )
 		}
 	}
 
-	// now equip all the stuff we found.
-	for ( size_t i = 0; i <COUNTOF(iBestScore); i++ )
+	// Equip all the stuff we found
+	for ( size_t i = 0; i < COUNTOF(iBestScore); i++ )
 	{
-		if ( pBestArmor[i] == NULL )
-			continue;
-		ItemEquip(pBestArmor[i], this);
+		if ( pBestArmor[i] )
+			ItemEquip(pBestArmor[i], this);
 	}
 
 	return true;
@@ -2046,25 +2036,24 @@ bool CChar::ItemEquipArmor( bool fForce )
 bool CChar::ItemEquipWeapon( bool fForce )
 {
 	ADDTOCALLSTACK("CChar::ItemEquipWeapon");
-	// find my best weapon and equip it.
-	if ( ! fForce && m_uidWeapon.IsValidUID())	// we are ok.
-		return( true );
+	// Find my best weapon and equip it
+	if ( !fForce && m_uidWeapon.IsValidUID() )	// we already have a weapon equipped
+		return true;
 
-	CCharBase		*pCharDef = Char_GetDef();
-	CItemContainer	*pPack = GetPack();
+	CCharBase *pCharDef = Char_GetDef();
+	CItemContainer *pPack = GetPack();
 
-	if ( !pCharDef || !pPack || !pCharDef->Can(CAN_C_USEHANDS) )
-		return( false );
+	if ( !pPack || !pCharDef || !pCharDef->Can(CAN_C_USEHANDS) )
+		return false;
 
-	// Go through all my weapons and come up with a score for it's usefulness.
+	// Loop through all my weapons and come up with a score for it's usefulness
 
-	CItem * pBestWeapon = NULL;
-	int iWeaponScoreMax = NPC_GetWeaponUseScore( NULL );	// just wrestling.
+	CItem *pBestWeapon = NULL;
+	int iWeaponScoreMax = NPC_GetWeaponUseScore(NULL);	// wrestling
 
-	CItem* pItem = pPack->GetContentHead();
-	for ( ; pItem!=NULL; pItem = pItem->GetNext())
+	for ( CItem *pItem = pPack->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		int iWeaponScore = NPC_GetWeaponUseScore( pItem );
+		int iWeaponScore = NPC_GetWeaponUseScore(pItem);
 		if ( iWeaponScore > iWeaponScoreMax )
 		{
 			iWeaponScoreMax = iWeaponScore;
@@ -2073,10 +2062,7 @@ bool CChar::ItemEquipWeapon( bool fForce )
 	}
 
 	if ( pBestWeapon )
-	{
 		return ItemEquip(pBestWeapon);
-	}
 
-	return( true );
+	return true;
 }
-

@@ -1717,7 +1717,7 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap &
 			if ( pChar->GetPrivLevel() >= PLEVEL_Counsel && !CanSee( pChar ) )
 			{
 				// Don't reveal the presence of hidden staff
-				pChar->Spell_Teleport(m_pChar->GetTopPoint(), false, false);
+				pChar->Spell_Teleport(m_pChar->GetTopPoint(), false, false, false);
 				continue;
 			}
 

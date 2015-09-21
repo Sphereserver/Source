@@ -82,7 +82,7 @@ void CChar::Spell_Dispel(int iLevel)
 	}
 }
 
-bool CChar::Spell_Teleport( CPointMap ptNew, bool fTakePets, bool fCheckAntiMagic, ITEMID_TYPE iEffect, SOUND_TYPE iSound )
+bool CChar::Spell_Teleport( CPointMap ptNew, bool bTakePets, bool bCheckAntiMagic, bool bDisplayEffect, ITEMID_TYPE iEffect, SOUND_TYPE iSound )
 {
 	ADDTOCALLSTACK("CChar::Spell_Teleport");
 	// Teleport you to this place.
@@ -136,7 +136,7 @@ bool CChar::Spell_Teleport( CPointMap ptNew, bool fTakePets, bool fCheckAntiMagi
 	}
 
 	// Is it a valid teleport location that allows this ?
-	if ( fCheckAntiMagic && !IsPriv(PRIV_GM) )
+	if ( bCheckAntiMagic && !IsPriv(PRIV_GM) )
 	{
 		CRegionBase * pArea = CheckValidMove(ptNew, NULL, DIR_QTY, NULL);
 		if ( !pArea )
@@ -176,7 +176,7 @@ bool CChar::Spell_Teleport( CPointMap ptNew, bool fTakePets, bool fCheckAntiMagi
 	CPointMap ptOld = GetTopPoint();
 	if ( ptOld.IsValidPoint() )		// guards might have just been created
 	{
-		if ( fTakePets )	// look for any creatures that might be following me near by
+		if ( bTakePets )	// look for any creatures that might be following me near by
 		{
 			CWorldSearch Area(ptOld, UO_MAP_VIEW_SIGHT);
 			for (;;)
@@ -190,7 +190,7 @@ bool CChar::Spell_Teleport( CPointMap ptNew, bool fTakePets, bool fCheckAntiMagi
 				if ( pChar->Skill_GetActive() == NPCACT_FOLLOW_TARG && pChar->m_Act_Targ == GetUID() )	// my pet?
 				{
 					if ( pChar->CanMoveWalkTo(ptOld, false, true) )
-						pChar->Spell_Teleport(ptNew, fTakePets, fCheckAntiMagic, iEffect, iSound);
+						pChar->Spell_Teleport(ptNew, bTakePets, bCheckAntiMagic, bDisplayEffect, iEffect, iSound);
 				}
 			}
 		}
@@ -209,22 +209,26 @@ bool CChar::Spell_Teleport( CPointMap ptNew, bool fTakePets, bool fCheckAntiMagi
 	UpdateMove(ptOld, pClientIgnore, true);
 	Reveal();
 
-	if ( iEffect != ITEMID_NOTHING )
+	if ( bDisplayEffect )
 	{
-		// Departing effect
-		if ( ptOld.IsValidPoint() )
+		if ( iEffect != ITEMID_NOTHING )
 		{
-			CItem * pItem = CItem::CreateBase(ITEMID_NODRAW);
-			ASSERT(pItem);
-			pItem->SetAttr(ATTR_MOVE_NEVER);
-			pItem->MoveTo(ptOld);
-			pItem->Effect(EFFECT_XYZ, iEffect, this, 10, 10);
-			pItem->Delete();
-		}
+			// Departing effect
+			if ( ptOld.IsValidPoint() )
+			{
+				CItem *pItem = CItem::CreateBase(ITEMID_NODRAW);
+				ASSERT(pItem);
+				pItem->SetAttr(ATTR_MOVE_NEVER);
+				pItem->MoveTo(ptOld);
+				pItem->Effect(EFFECT_XYZ, iEffect, this, 10, 10);
+				pItem->Delete();
+			}
 
-		// Entering effect
-		Effect(EFFECT_XYZ, iEffect, this, 10, 10);
-		Sound(iSound);
+			// Entering effect
+			Effect(EFFECT_XYZ, iEffect, this, 10, 10);
+		}
+		if ( iSound != SOUND_NONE )
+			Sound(iSound);
 	}
 
 	return true;
@@ -380,7 +384,7 @@ bool CChar::Spell_Recall(CItem * pRune, bool fGate)
 	}
 	else
 	{
-		if (!Spell_Teleport(pRune->m_itRune.m_pntMark, true, true, ITEMID_NOTHING))
+		if (!Spell_Teleport(pRune->m_itRune.m_pntMark, true, true))
 			return(false);
 	}
 
