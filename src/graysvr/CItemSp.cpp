@@ -383,7 +383,7 @@ void CItemSpawn::KillChildren()
 		}
 
 	}
-	//m_itSpawnChar.m_current = 0;
+	m_itSpawnChar.m_current = 0;
 	OnTick(false);
 }
 

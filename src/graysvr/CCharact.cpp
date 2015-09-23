@@ -2352,6 +2352,8 @@ bool CChar::Horse_Mount(CChar *pHorse) // Remove horse char and give player a ho
 	pItem->SetType(IT_EQ_HORSE);
 	pItem->SetTimeout(TICK_PER_SEC);	// the first time we give it immediately a tick, then give the horse a tick everyone once in a while.
 	LayerAdd(pItem, LAYER_HORSE);		// equip the horse item
+	pHorse->StatFlag_Set(STATF_Ridden);
+	pHorse->Skill_Start(NPCACT_RIDDEN);
 	return true;
 }
 

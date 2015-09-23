@@ -3547,20 +3547,20 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				return WAR_SWING_EQUIPPING;
 
 			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
-			long long animDelay = 7;		// attack speed is always 7ms and then the char keep waiting the remaining time
+			int animDelay = 7;		// attack speed is always 7ms and then the char keep waiting the remaining time
 			int iSwingDelay = g_Cfg.Calc_CombatAttackSpeed(this, pWeapon) - 1;	// swings are started only on the next tick, so substract -1 to compensate that
 
 			if ( IsTrigUsed(TRIGGER_HITTRY) )
 			{
 				CScriptTriggerArgs Args(iSwingDelay, 0, pWeapon);
-				Args.m_VarsLocal.SetNum("Anim", (int)anim);
+				Args.m_VarsLocal.SetNum("Anim", static_cast<int>(anim));
 				Args.m_VarsLocal.SetNum("AnimDelay", animDelay);
 				if ( OnTrigger(CTRIG_HitTry, pCharTarg, &Args) == TRIGRET_RET_TRUE )
 					return WAR_SWING_READY;
 
 				iSwingDelay = static_cast<int>(Args.m_iN1);
-				anim = (ANIM_TYPE)Args.m_VarsLocal.GetKeyNum("Anim", false);
-				animDelay = Args.m_VarsLocal.GetKeyNum("AnimDelay", true);
+				anim = static_cast<ANIM_TYPE>(Args.m_VarsLocal.GetKeyNum("Anim", false));
+				animDelay = static_cast<int>(Args.m_VarsLocal.GetKeyNum("AnimDelay", true));
 				if ( animDelay < 0 )
 					animDelay = 0;
 			}

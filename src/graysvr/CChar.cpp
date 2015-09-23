@@ -886,7 +886,7 @@ bool CChar::DupeFrom( CChar * pChar, bool fNewbieItems )
 				pItem->m_itNormal.m_more2 = this->GetUID();
 			else if ( pTest2->NPC_IsOwnedBy(pChar, true) )	// Mount's fix
 			{
-				if (fNewbieItems )	// Removing any mount references for the memory, so when character dies or dismounts ... no mount will appear.
+				if ( fNewbieItems )	// Removing any mount references for the memory, so when character dies or dismounts ... no mount will appear.
 					pItem->m_itNormal.m_more2 = 0;
 				else	// otherwise we create a full new character.
 				{
