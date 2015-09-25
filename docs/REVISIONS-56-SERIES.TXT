@@ -2637,3 +2637,9 @@ Fixed: Combat swing behavior not working correctly.
 
 19-09-2015, Coruja
 Fixed: LOCAL.AnimDelay on @HitTry trigger not working correctly.
+
+25-09-2015, XuN
+Fixed #2558: errors thrown when CombatSpeedEra=0 and Weapons had no SPEED defined.
+Fixed #2556: Added GetDefKeyNum/Str as shortcut to get directly the values, used in CChar::Fight_Hit to send correct values to CChar::OnTakeDamage
+Fixed HitLeechLife/Stam/Mana not giving the corrent amount of hits/stam/mana
+CHANGED tag.override.sound_hit to AMMOSOUNDHIT and tag.override.sound_miss to AMMOSOUNDMISS to match other AMMO* properties.
