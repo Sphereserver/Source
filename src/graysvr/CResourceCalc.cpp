@@ -43,8 +43,6 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 
 	int iSwingSpeedIncrease = static_cast<int>(pChar->GetDefNum("INCREASESWINGSPEED", true));
 	int iBaseSpeed = 50;	//Wrestling speed
-	if ( pWeapon )			//Weapon speed
-		iBaseSpeed = pWeapon->GetSpeed();
 
 	switch ( g_Cfg.m_iCombatSpeedEra )
 	{
@@ -69,6 +67,8 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 		case 1:
 		{
 			// AOS formula		(default m_iSpeedScaleFactor = 40000)
+			if (pWeapon)			//Weapon speed
+				iBaseSpeed = pWeapon->GetSpeed();
 			int iSwingSpeed = (pChar->Stat_GetVal(STAT_DEX) + 100) * iBaseSpeed;
 			iSwingSpeed = maximum(1, iSwingSpeed * (100 + iSwingSpeedIncrease) / 100);
 			iSwingSpeed = ((g_Cfg.m_iSpeedScaleFactor * TICK_PER_SEC) / iSwingSpeed) / 2;
@@ -81,6 +81,8 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 		case 2:
 		{
 			// SE formula		(default m_iSpeedScaleFactor = 80000)
+			if (pWeapon)			//Weapon speed
+				iBaseSpeed = pWeapon->GetSpeed();
 			int iSwingSpeed = maximum(1, iBaseSpeed * (100 + iSwingSpeedIncrease) / 100);
 			iSwingSpeed = (g_Cfg.m_iSpeedScaleFactor / ((pChar->Stat_GetVal(STAT_DEX) + 100) * iSwingSpeed)) - 2;	// get speed in ticks of 0.25s each
 			if ( iSwingSpeed < 5 )
@@ -92,6 +94,8 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 		case 3:
 		{
 			// ML formula		(doesn't use m_iSpeedScaleFactor and it's only compatible with ML speed format eg. 0.25 ~ 5.00 instead 0 ~ 50)
+			if (pWeapon)			//Weapon speed
+				iBaseSpeed = pWeapon->GetSpeed();
 			int iSwingSpeed = ((iBaseSpeed * 4) - (pChar->Stat_GetVal(STAT_DEX) / 30)) * (100 / (100 + iSwingSpeedIncrease));	// get speed in ticks of 0.25s each
 			if ( iSwingSpeed < 5 )
 				iSwingSpeed = 5;

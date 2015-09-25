@@ -331,7 +331,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_SPAWN_ITEM:
 			{
 				SysMessageDefault(DEFMSG_ITEMUSE_SPAWNITEM_TRIG);
-				CItemSpawn *pSpawn = static_cast<CItemSpawn*>(pItem);
+				//CItemSpawn *pSpawn = static_cast<CItemSpawn*>(pItem);
 				pSpawn->OnTick(true);
 			}
 			return true;

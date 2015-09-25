@@ -155,6 +155,20 @@ public:
 		}
 	}
 
+	//Shortcut for GetDefKey + result->GetValStr
+	LPCTSTR GetDefKeyStr( LPCTSTR pszKey, bool fDef ) const
+	{
+		CVarDefCont * pVar = GetDefKey(pszKey, fDef);
+		return pVar ? pVar->GetValStr():"";
+	}
+
+	//Shortcut for GetDefKey + result->GetValNum
+	INT64 GetDefKeyNum( LPCTSTR pszKey, bool fDef ) const
+	{
+		CVarDefCont * pVar = GetDefKey(pszKey, fDef);
+		return pVar ? pVar->GetValNum():0;
+	}
+
 
 	LPCTSTR GetKeyStr( LPCTSTR pszKey, bool fZero = false, bool fDef = false ) const
 	{

@@ -1464,12 +1464,11 @@ void CChar::SoundChar( CRESND_TYPE type )
 		CItem * pWeapon = m_uidWeapon.ItemFind();
 		if ( pWeapon != NULL )
 		{
-			CVarDefCont * pTagStorage = NULL; 
-			pTagStorage = pWeapon->GetKey("OVERRIDE.SOUND_HIT", true);
-			if ( pTagStorage )
+			CVarDefCont * pVar = GetDefKey("AMMOSOUNDHIT", true);
+			if ( pVar )
 			{
-				if ( pTagStorage->GetValNum() )
-					id = static_cast<SOUND_TYPE>(pTagStorage->GetValNum());
+				if ( pVar->GetValNum() )
+					id = static_cast<SOUND_TYPE>(pVar->GetValNum());
 			}
 			else
 			{

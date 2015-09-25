@@ -4309,7 +4309,6 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 
 	skip(2);
 	BYTE steps = readByte();
-	bool bUsingChat = false;
 	INT64 iTime1 = readInt64();
 	INT64 iTime2 = readInt64(); //these should be used for speed control somehow... (in micro-seconds)
 	while (steps)

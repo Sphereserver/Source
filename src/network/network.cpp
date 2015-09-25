@@ -311,13 +311,13 @@ void NetState::markFlush(bool needsFlush) volatile
 void NetState::detectAsyncMode(void)
 {
 	ADDTOCALLSTACK("NetState::detectAsyncMode");
-	bool wasAsync = isAsyncMode();
+	//bool wasAsync = isAsyncMode();
 
 	// Disabled because of unstability.
 	setAsyncMode(false);
 	return;
 	// is async mode enabled?
-	if ( !g_Cfg.m_fUseAsyncNetwork || !isInUse() )
+/*	if ( !g_Cfg.m_fUseAsyncNetwork || !isInUse() )
 		setAsyncMode(false);
 
 	// if the version mod flag is not set, always use async mode
@@ -339,7 +339,7 @@ void NetState::detectAsyncMode(void)
 		setAsyncMode(false);
 
 	if (wasAsync != isAsyncMode())
-		DEBUGNETWORK(("%lx:Switching async mode from %s to %s.\n", id(), wasAsync? "1":"0", isAsyncMode()? "1":"0"));
+		DEBUGNETWORK(("%lx:Switching async mode from %s to %s.\n", id(), wasAsync? "1":"0", isAsyncMode()? "1":"0"));*/
 }
 
 bool NetState::hasPendingData(void) const

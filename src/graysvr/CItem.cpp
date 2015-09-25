@@ -2248,6 +2248,8 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_AMMOANIMRENDER:
 		case IC_AMMOCONT:
 		case IC_AMMOTYPE:
+		case IC_AMMOSOUNDHIT:
+		case IC_AMMOSOUNDMISS:
 		case IC_BONUSSKILL1:
 		case IC_BONUSSKILL2:
 		case IC_BONUSSKILL3:
@@ -2507,6 +2509,8 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_AMMOANIMRENDER:
 		case IC_AMMOCONT:
 		case IC_AMMOTYPE:
+		case IC_AMMOSOUNDHIT:
+		case IC_AMMOSOUNDMISS:
 		case IC_BONUSSKILL1:
 		case IC_BONUSSKILL2:
 		case IC_BONUSSKILL3:

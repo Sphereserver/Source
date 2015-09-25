@@ -2324,7 +2324,7 @@ effect_bounce:
 	{
 		// We will die from this. Make sure the killer is set correctly, otherwise the person we are currently attacking will get credit for killing us.
 		m_Fight_Targ = pSrc->GetUID();
-		return( INT_MAX );
+		return( iDmg );
 	}
 
 	if (m_atFight.m_War_Swing_State != WAR_SWING_SWINGING)	// don't interrupt my swing animation
@@ -3483,7 +3483,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				return WAR_SWING_EQUIPPING;
 
 			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
-			long long animDelay = 7;		// attack speed is always 7ms and then the char keep waiting the remaining time
+			int animDelay = 7;		// attack speed is always 7ms and then the char keep waiting the remaining time
 			int iSwingDelay = g_Cfg.Calc_CombatAttackSpeed(this, pWeapon) - 1;	// swings are started only on the next tick, so substract -1 to compensate that
 
 			if ( IsTrigUsed(TRIGGER_HITTRY) )
@@ -3495,8 +3495,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 					return WAR_SWING_READY;
 
 				iSwingDelay = static_cast<int>(Args.m_iN1);
-				anim = (ANIM_TYPE)Args.m_VarsLocal.GetKeyNum("Anim", false);
-				animDelay = Args.m_VarsLocal.GetKeyNum("AnimDelay", true);
+				anim = static_cast<ANIM_TYPE>(Args.m_VarsLocal.GetKeyNum("Anim", false));
+				animDelay = static_cast<int>(Args.m_VarsLocal.GetKeyNum("AnimDelay", true));
 				if ( animDelay < 0 )
 					animDelay = 0;
 			}
@@ -3603,7 +3603,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 		SOUND_TYPE iSound = 0;
 		if ( pWeapon )
-			iSound = static_cast<SOUND_TYPE>(pWeapon->GetKeyNum("OVERRIDE.SOUND_MISS", true));
+			iSound = static_cast<SOUND_TYPE>(pWeapon->GetDefNum("AMMOSOUNDMISS", true));
 		if ( !iSound )
 		{
 			if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
@@ -3754,11 +3754,11 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			iDmg,
 			this,
 			iTyp,
-			static_cast<int>(GetDefNum("DAMPHYSICAL",true)),
-			static_cast<int>(GetDefNum("DAMFIRE",true)),
-			static_cast<int>(GetDefNum("DAMCOLD",true)),
-			static_cast<int>(GetDefNum("DAMPOISON",true)),
-			static_cast<int>(GetDefNum("DAMENERGY",true))
+			static_cast<int>(GetDefKeyNum("DAMPHYSICAL",true)),
+			static_cast<int>(GetDefKeyNum("DAMFIRE",true)),
+			static_cast<int>(GetDefKeyNum("DAMCOLD",true)),
+			static_cast<int>(GetDefKeyNum("DAMPOISON",true)),
+			static_cast<int>(GetDefKeyNum("DAMENERGY",true))
 		   );
 
 	if ( iDmg > 0 )
@@ -3772,7 +3772,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( iHitLifeLeech )
 		{
 			iHitLifeLeech = Calc_GetRandVal2(0, (iDmg * iHitLifeLeech * 30) / 10000);	// leech 0% ~ 30% of damage value
-			UpdateStatVal(STAT_STR, Stat_GetVal(STAT_STR) + iHitLifeLeech);
+			UpdateStatVal(STAT_STR, iHitLifeLeech, Stat_GetMax(STAT_STR));
 			bMakeLeechSound = true;
 		}
 
@@ -3780,13 +3780,13 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( iHitManaLeech )
 		{
 			iHitManaLeech = Calc_GetRandVal2(0, (iDmg * iHitManaLeech * 40) / 10000);	// leech 0% ~ 40% of damage value
-			UpdateStatVal(STAT_INT, Stat_GetVal(STAT_INT) + iHitManaLeech);
+			UpdateStatVal(STAT_INT, iHitManaLeech, Stat_GetMax(STAT_INT));
 			bMakeLeechSound = true;
 		}
 
 		if ( GetDefNum("HitLeechStam", true) > Calc_GetRandLLVal(100) )
 		{
-			UpdateStatVal(STAT_DEX, Stat_GetVal(STAT_DEX) + iDmg);	// leech 100% of damage value
+			UpdateStatVal(STAT_DEX, iDmg, Stat_GetMax(STAT_DEX));	// leech 100% of damage value
 			bMakeLeechSound = true;
 		}
 
@@ -3807,7 +3807,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( iManaDrain > 0 )
 		{
 			pCharTarg->UpdateStatVal(STAT_INT, iTargMana - iManaDrain);
-			UpdateStatVal(STAT_INT, Stat_GetVal(STAT_INT) + iManaDrain);
+			UpdateStatVal(STAT_INT, iManaDrain, Stat_GetMax(STAT_INT));
 			bMakeLeechSound = true;
 		}
 
