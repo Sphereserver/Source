@@ -2643,3 +2643,7 @@ Fixed #2558: errors thrown when CombatSpeedEra=0 and Weapons had no SPEED define
 Fixed #2556: Added GetDefKeyNum/Str as shortcut to get directly the values, used in CChar::Fight_Hit to send correct values to CChar::OnTakeDamage
 Fixed HitLeechLife/Stam/Mana not giving the corrent amount of hits/stam/mana
 CHANGED tag.override.sound_hit to AMMOSOUNDHIT and tag.override.sound_miss to AMMOSOUNDMISS to match other AMMO* properties.
+
+25-09-2015, Coruja
+Fixed: Console error when players call "Guards".
+Added: Better user-friendly description to server exit codes. Now the console will show "Server terminated: [reason][code]" instead "Server terminated by error [code]".

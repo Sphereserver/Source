@@ -1607,178 +1607,126 @@ void CChar::CallGuards( CChar * pCriminal )
 {
 	ADDTOCALLSTACK("CChar::CallGuards");
 	// I just yelled for guards.
-	if ( !m_pArea || ( this == pCriminal ))
+	if ( !m_pArea || (pCriminal == this) )
+		return;
+	if ( IsStatFlag(STATF_DEAD) || (pCriminal && (pCriminal->IsStatFlag(STATF_DEAD) || pCriminal->IsPriv(PRIV_GM))) )
 		return;
 
-	bool		bSearchedGuard = false;
-	CChar		*pGuard = NULL;
-	CChar		*pChar;
-	bool		bCriminal = false;
-
-	if ( IsStatFlag(STATF_DEAD) || ( pCriminal && ( pCriminal->IsStatFlag(STATF_DEAD) ) ) || pCriminal->IsPriv(PRIV_GM) )
-		return;
-
-	// I'm a guard, why summon someone else to do my work? :)
-	if ( !m_pPlayer && m_pNPC->m_Brain == NPCBRAIN_GUARD )
+	CChar *pGuard = NULL;
+	if ( m_pNPC && m_pNPC->m_Brain == NPCBRAIN_GUARD )
 	{
-		bSearchedGuard = true;
+		// I'm a guard, why summon someone else to do my work? :)
 		pGuard = this;
-	}
-
-	if ( !bSearchedGuard )
-	{
-		// Is there a free guard near by ?
-		CWorldSearch AreaGuard(GetTopPoint(), UO_MAP_VIEW_RADAR);
-		while ( (pGuard = AreaGuard.GetChar()) != NULL )
-		{
-			if (( pGuard->m_pPlayer ) || ( pGuard->m_pNPC->m_Brain != NPCBRAIN_GUARD ) || pGuard->IsStatFlag(STATF_War) )
-				continue;
-			break;
-		}
-	}
-
-	// Guards can't respond if criminal is outside of the guard zone.
-	
-	CWorldSearch AreaCrime(GetTopPoint(), UO_MAP_VIEW_SIZE);
-	// Is there anything for guards to see ?
-	if ( !pCriminal )
-	{
-		bSearchedGuard = true;
-		while ( (pChar = AreaCrime.GetChar()) != NULL )
-		{
-			bCriminal = false;	// Asume everyone is inocent.
-			if ( pChar == this )
-				continue;
-
-			//	scan for guards also ;) it will speed up the execution a bit
-			if ( !pGuard && !pChar->m_pPlayer )
-			{	
-				if ( pChar->GetNPCBrain() == NPCBRAIN_GUARD)
-				{
-					pGuard = pChar;
-					continue;
-				}
-			}
-
-			// don't allow guards to be called on someone we cant disturb
-			if (CanDisturb(pChar) == false)
-				continue;
-
-			// mark person a criminal if seen him criming
-			// Only players call guards this way. NPC's flag criminal instantly.
-			if ( m_pPlayer && Memory_FindObjTypes(pChar, MEMORY_SAWCRIME) )
-				pChar->Noto_Criminal();
-			
-			if ( ( pChar->IsStatFlag( STATF_Criminal ) || ( pChar->Noto_IsEvil() &&  g_Cfg.m_fGuardsOnMurderers) ) && pChar->m_pArea->IsGuarded()  )
-				bCriminal = true;
-
-			CVarDefCont * pVarDef = pChar->m_pArea->m_TagDefs.GetKey("OVERRIDE.GUARDS");
-			RESOURCE_ID rid = g_Cfg.ResourceGetIDType( RES_CHARDEF, (pVarDef? pVarDef->GetValStr():"GUARDS") );
-			if ( IsTrigUsed(TRIGGER_CALLGUARDS) )
-			{
-				CScriptTriggerArgs args( pGuard );
-				args.m_iN1 = rid.GetResIndex();
-				args.m_iN2 = 0;
-				args.m_iN3 = bCriminal;
-				args.m_VarObjs.Insert( 1, pChar, true );
-
-				if ( OnTrigger(CTRIG_CallGuards, pChar, &args) == TRIGRET_RET_TRUE )
-					return;
-
-				if ( static_cast<int>(args.m_iN1) != rid.GetResIndex() )
-				{
-					rid = RESOURCE_ID( RES_CHARDEF, static_cast<int>(args.m_iN1) );
-				}
-				if ( args.m_iN2 > 0 )
-					pGuard = NULL;
-					
-				if ( args.m_iN3 == 0 )
-					bCriminal = false;
-				else
-					bCriminal = true;
-			}
-			if ( bCriminal == true )
-			{
-				if ( !pGuard )			//	spawn a new guard
-				{
-					if ( !rid.IsValidUID() )
-						return;
-
-					pGuard = CChar::CreateNPC(static_cast<CREID_TYPE>(rid.GetResIndex()));
-					if ( !pGuard )
-						return;
-
-					if ( pGuard->GetNPCBrain() != NPCBRAIN_GUARD)
-						pGuard->SetNPCBrain(NPCBRAIN_GUARD);
-
-					//	normal guards, just with patched color hue also acting in red areas
-					if ( pChar->m_pArea->m_TagDefs.GetKeyNum("RED", true) )
-						pGuard->m_TagDefs.SetNum("NAME.HUE", g_Cfg.m_iColorNotoEvil, true);
-
-					pGuard->Spell_Effect_Create(SPELL_Summon, LAYER_SPELL_Summon, 1000, g_Cfg.m_iGuardLingerTime);
-					pGuard->Spell_Teleport(pChar->GetTopPoint(), false, false);
-				}
-				pGuard->NPC_LookAtCharGuard(pChar, true);
-			}
-		}
 	}
 	else
 	{
-		if ( !pCriminal->m_pArea->IsGuarded() )
-			return;
-		if ( !bSearchedGuard )
+		// Search for a free guards nearby
+		CWorldSearch AreaGuard(GetTopPoint(), UO_MAP_VIEW_SIGHT);
+		CChar *pGuardFound = NULL;
+		while ( (pGuardFound = AreaGuard.GetChar()) != NULL )
 		{
-			// Is there a free guard near by ?
-			CWorldSearch AreaGuard(GetTopPoint(), UO_MAP_VIEW_RADAR);
-			while ( (pGuard = AreaGuard.GetChar()) != NULL )
+			if ( pGuardFound->m_pNPC && (pGuardFound->m_pNPC->m_Brain == NPCBRAIN_GUARD) && !pGuardFound->IsStatFlag(STATF_War) )
 			{
-				if (( pGuard->m_pPlayer ) || ( pGuard->m_pNPC->m_Brain != NPCBRAIN_GUARD ) || pGuard->IsStatFlag(STATF_War) )
-					continue;
+				pGuard = pGuardFound;
 				break;
 			}
 		}
+	}
+	
+	if ( pCriminal )
+	{
+		if ( !pCriminal->m_pArea->IsGuarded() )
+			return;
 
-		CVarDefCont * pVarDef = pCriminal->m_pArea->m_TagDefs.GetKey("OVERRIDE.GUARDS");
-		RESOURCE_ID rid = g_Cfg.ResourceGetIDType( RES_CHARDEF, (pVarDef? pVarDef->GetValStr():"GUARDS") );
+		CVarDefCont *pVarDef = pCriminal->m_pArea->m_TagDefs.GetKey("OVERRIDE.GUARDS");
+		RESOURCE_ID rid = g_Cfg.ResourceGetIDType(RES_CHARDEF, (pVarDef ? pVarDef->GetValStr() : "GUARDS"));
 		if ( IsTrigUsed(TRIGGER_CALLGUARDS) )
 		{
-			CScriptTriggerArgs args( pGuard );
-			args.m_iN1 = rid.GetResIndex();
-			args.m_iN2 = 0;
-			args.m_VarObjs.Insert( 1, pCriminal, true );
+			CScriptTriggerArgs Args(pGuard);
+			Args.m_iN1 = rid.GetResIndex();
+			Args.m_iN2 = 0;
+			Args.m_VarObjs.Insert(1, pCriminal, true);
 
-			if ( OnTrigger(CTRIG_CallGuards, pCriminal, &args) == TRIGRET_RET_TRUE )
+			if ( OnTrigger(CTRIG_CallGuards, pCriminal, &Args) == TRIGRET_RET_TRUE )
 				return;
 
-			if ( args.m_iN1 != rid.GetResIndex() )
-				rid = RESOURCE_ID( RES_CHARDEF, static_cast<int>(args.m_iN1) );
-			if ( args.m_iN2 )
+			if ( static_cast<int>(Args.m_iN1) != rid.GetResIndex() )
+				rid = RESOURCE_ID(RES_CHARDEF, static_cast<int>(Args.m_iN1));
+			if ( Args.m_iN2 > 0 )
 				pGuard = NULL;
 		}
-		if ( !pGuard )			//	spawn a new guard
+		if ( !pGuard )		//	spawn a new guard
 		{
 			if ( !rid.IsValidUID() )
 				return;
-
 			pGuard = CChar::CreateNPC(static_cast<CREID_TYPE>(rid.GetResIndex()));
 			if ( !pGuard )
 				return;
-			
-			if ( pGuard->GetNPCBrain() != NPCBRAIN_GUARD)
-				pGuard->SetNPCBrain(NPCBRAIN_GUARD);
 
-			//	normal guards, just with patched color hue also acting in red areas
 			if ( pCriminal->m_pArea->m_TagDefs.GetKeyNum("RED", true) )
 				pGuard->m_TagDefs.SetNum("NAME.HUE", g_Cfg.m_iColorNotoEvil, true);
-
 			pGuard->Spell_Effect_Create(SPELL_Summon, LAYER_SPELL_Summon, 1000, g_Cfg.m_iGuardLingerTime);
 			pGuard->Spell_Teleport(pCriminal->GetTopPoint(), false, false);
 		}
 		pGuard->NPC_LookAtCharGuard(pCriminal, true);
 	}
+	else
+	{
+		// We don't have any target yet, let's check everyone nearby
+		CWorldSearch AreaCrime(GetTopPoint(), UO_MAP_VIEW_SIZE);
+		while ( (pCriminal = AreaCrime.GetChar()) != NULL )
+		{
+			if ( pCriminal == this )
+				continue;
+			if ( !pCriminal->m_pArea->IsGuarded() )
+				continue;
+			if ( !CanDisturb(pCriminal) )	// don't allow guards to be called on someone we can't disturb
+				continue;
+
+			// Mark person as criminal if I saw him criming
+			// Only players call guards this way. NPC's flag criminal instantly
+			if ( m_pPlayer && Memory_FindObjTypes(pCriminal, MEMORY_SAWCRIME) )
+				pCriminal->Noto_Criminal();
+
+			bool bCriminal = (pCriminal->IsStatFlag(STATF_Criminal) || (pCriminal->Noto_IsEvil() && g_Cfg.m_fGuardsOnMurderers));
+			if ( !bCriminal )
+				continue;
+
+			CVarDefCont *pVarDef = pCriminal->m_pArea->m_TagDefs.GetKey("OVERRIDE.GUARDS");
+			RESOURCE_ID rid = g_Cfg.ResourceGetIDType(RES_CHARDEF, (pVarDef ? pVarDef->GetValStr() : "GUARDS"));
+			if ( IsTrigUsed(TRIGGER_CALLGUARDS) )
+			{
+				CScriptTriggerArgs Args(pGuard);
+				Args.m_iN1 = rid.GetResIndex();
+				Args.m_iN2 = 0;
+				Args.m_VarObjs.Insert(1, pCriminal, true);
+
+				if ( OnTrigger(CTRIG_CallGuards, pCriminal, &Args) == TRIGRET_RET_TRUE )
+					return;
+
+				if ( static_cast<int>(Args.m_iN1) != rid.GetResIndex() )
+					rid = RESOURCE_ID(RES_CHARDEF, static_cast<int>(Args.m_iN1));
+				if ( Args.m_iN2 > 0 )
+					pGuard = NULL;
+			}
+			if ( !pGuard )		//	spawn a new guard
+			{
+				if ( !rid.IsValidUID() )
+					return;
+				pGuard = CChar::CreateNPC(static_cast<CREID_TYPE>(rid.GetResIndex()));
+				if ( !pGuard )
+					return;
+
+				if ( pCriminal->m_pArea->m_TagDefs.GetKeyNum("RED", true) )
+					pGuard->m_TagDefs.SetNum("NAME.HUE", g_Cfg.m_iColorNotoEvil, true);
+				pGuard->Spell_Effect_Create(SPELL_Summon, LAYER_SPELL_Summon, 1000, g_Cfg.m_iGuardLingerTime);
+				pGuard->Spell_Teleport(pCriminal->GetTopPoint(), false, false);
+			}
+			pGuard->NPC_LookAtCharGuard(pCriminal, true);
+			pGuard = NULL;	// we can't still using the same guard when calling guards on many targets at once
+		}
+	}
 }
-
-
 
 void CChar::OnHarmedBy( CChar * pCharSrc )
 {

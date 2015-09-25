@@ -709,9 +709,27 @@ void Sphere_ExitServer()
 	g_Serv.SocketsClose();
 	g_World.Close();
 
-	g_Log.Event(LOGM_INIT|LOGL_FATAL, g_Serv.m_iExitFlag ?
-		"Server terminated by error %d!\n" : "Server shutdown (code %d) complete!\n",
-		g_Serv.m_iExitFlag);
+	LPCTSTR Reason;
+	switch ( g_Serv.m_iExitFlag )
+	{
+		case -10:	Reason = "Unexpected error occurred";			break;
+		case -9:	Reason = "Failed to bind server IP/port";		break;
+		case -8:	Reason = "Failed to load worldsave files";		break;
+		case -3:	Reason = "Failed to load server settings";		break;
+		case -1:	Reason = "Shutdown via commandline";			break;
+#ifdef _WIN32
+		case 1:		Reason = "X command on console";				break;
+#else
+		case 1:		Reason = "Terminal closed by SIGHUP signal";	break;
+#endif
+		case 2:		Reason = "SHUTDOWN command executed";			break;
+		case 4:		Reason = "Service shutdown";					break;
+		case 5:		Reason = "Console window closed";				break;
+		case 6:		Reason = "Proccess aborted by SIGABRT signal";	break;
+		default:	Reason = "Server shutdown complete";			break;
+	}
+
+	g_Log.Event(LOGM_INIT|LOGL_FATAL, "Server terminated: %s (code %d)\n", Reason, g_Serv.m_iExitFlag);
 	g_Log.Close();
 }
 
