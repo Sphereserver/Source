@@ -3442,7 +3442,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			SetTimeout(animDelay);
 
 			Reveal();
-			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) && !IsStatFlag(STATF_Fly) )
+			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) )
 				UpdateDir(pCharTarg);
 			UpdateAnimate(anim, false, false, static_cast<BYTE>(animDelay / TICK_PER_SEC));
 			return WAR_SWING_SWINGING;
@@ -3506,7 +3506,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			SetTimeout(animDelay);
 
 			Reveal();
-			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) && !IsStatFlag(STATF_Fly) )
+			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) )
 				UpdateDir(pCharTarg);
 			UpdateAnimate(anim, false, false, static_cast<BYTE>(animDelay / TICK_PER_SEC));
 			return WAR_SWING_SWINGING;

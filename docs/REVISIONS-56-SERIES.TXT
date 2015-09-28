@@ -2647,3 +2647,7 @@ CHANGED tag.override.sound_hit to AMMOSOUNDHIT and tag.override.sound_miss to AM
 25-09-2015, Coruja
 Fixed: Console error when players call "Guards".
 Added: Better user-friendly description to server exit codes. Now the console will show "Server terminated: [reason][code]" instead "Server terminated by error [code]".
+
+28-09-2015, Coruja
+Fixed: NPCs not facing target when starting combat swings.
+Added: New 'DYE <uid>' function to open dye gump on selected UID.

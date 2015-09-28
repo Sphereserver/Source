@@ -1145,6 +1145,55 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				}
 			} break;
 
+		case CV_CLOSEPAPERDOLL:
+			{
+				CChar *pChar = m_pChar;
+				if ( s.HasArgs() )
+				{
+					CGrayUID uid = s.GetArgVal();
+					pChar = uid.CharFind();
+				}
+				if ( pChar )
+					closeUIWindow(pChar, 0x01);
+			}
+			break;
+
+		case CV_CLOSEPROFILE:
+			{
+				CChar *pChar = m_pChar;
+				if ( s.HasArgs() )
+				{
+					CGrayUID uid = s.GetArgVal();
+					pChar = uid.CharFind();
+				}
+				if ( pChar )
+					closeUIWindow(pChar, 0x08);
+			}
+			break;
+
+		case CV_CLOSESTATUS:
+			{
+				CChar *pChar = m_pChar;
+				if ( s.HasArgs() )
+				{
+					CGrayUID uid = s.GetArgVal();
+					pChar = uid.CharFind();
+				}
+				if ( pChar )
+					closeUIWindow(pChar, 0x02);
+			}
+			break;
+
+		case CV_DYE:
+			if ( s.HasArgs() )
+			{
+				CGrayUID uid(s.GetArgVal());
+				CObjBase *pObj = uid.ObjFind();
+				if ( pObj )
+					addDyeOption(pObj);
+			}
+			break;
+
 		case CV_EVERBTARG:
 			m_Prompt_Text = s.GetArgStr();
 			addPromptConsole( CLIMODE_PROMPT_TARG_VERB, m_Targ_Text.IsEmpty() ? "Enter the verb" : "Enter the text",  m_Targ_UID );
@@ -1283,6 +1332,20 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			m_tmTile.m_Code = CV_NUKECHAR;	// set nuke code.
 			addTarget( CLIMODE_TARG_TILE, g_Cfg.GetDefaultMsg( DEFMSG_SELECT_NUKE_CHAR_AREA ), true );
 			break;
+
+		case CV_OPENPAPERDOLL:
+		{
+			CChar *pChar = m_pChar;
+			if ( s.HasArgs() )
+			{
+				CGrayUID uid = s.GetArgVal();
+				pChar = uid.CharFind();
+			}
+			if ( pChar )
+				addCharPaperdoll(pChar);
+		}
+		break;
+
 		case CV_PAGE:
 			Cmd_GM_PageCmd( s.GetArgStr());
 			break;
