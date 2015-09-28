@@ -929,7 +929,7 @@ bool CChar::Memory_UpdateFlags( CItemMemory * pMemory )
 
 	WORD wMemTypes = pMemory->GetMemoryTypes();
 
-	if ( ! wMemTypes || (wMemTypes & MEMORY_ISPAWNED))	// No memories here anymore so kill it.
+	if ( !wMemTypes )	// No memories here anymore so kill it.
 	{
 		return false;
 	}
@@ -963,18 +963,6 @@ bool CChar::Memory_UpdateClearTypes( CItemMemory * pMemory, WORD MemTypes )
 
 	MemTypes &= wPrvMemTypes;	// Which actually got turned off ?
 
-	if ( MemTypes & MEMORY_ISPAWNED )
-	{
-		StatFlag_Clear( STATF_Spawned );
-		// I am a memory link to another object.
-		CItem * pSpawn = pMemory->m_uidLink.ItemFind();
-		if ( pSpawn != NULL &&
-			pSpawn->IsType(IT_SPAWN_CHAR) &&
-			pSpawn->m_itSpawnChar.m_current )
-		{
-			pSpawn->m_itSpawnChar.m_current --;
-		}
-	}
 	if ( MemTypes & MEMORY_IPET )
 	{
 		// Am i still a pet of some sort ?

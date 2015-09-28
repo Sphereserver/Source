@@ -592,18 +592,6 @@ int CChar::FixWeirdness()
 	{
 		if ( !m_uidSpawnItem.ItemFind() )
 			StatFlag_Clear( STATF_Spawned );
-
-		CItemMemory * pMemory = Memory_FindTypes(MEMORY_ISPAWNED);	//Clean MEMORY_ISPAWNED and force char to use SpawnItem
-		if (pMemory)
-		{
-			CItemSpawn * pSpawn = static_cast<CItemSpawn*>(pMemory->m_uidLink.ItemFind());
-			if (pSpawn)
-			{
-				pSpawn->AddObj(GetUID());
-				m_uidSpawnItem = pSpawn->GetUID();
-			}
-
-		}
 	}
 	if ( IsStatFlag( STATF_Pet ))
 	{
@@ -646,6 +634,19 @@ int CChar::FixWeirdness()
 
 	if ( ! IsIndividualName() && pCharDef->GetTypeName()[0] == '#' )
 		SetName( pCharDef->GetTypeName());
+
+	// Automatic transition from old to new spawn engine
+	CItemMemory *pMemory = Memory_FindTypes(MEMORY_ISPAWNED);
+	if ( pMemory )
+	{
+		CItemSpawn *pSpawn = static_cast<CItemSpawn*>(pMemory->m_uidLink.ItemFind());
+		pMemory->Delete();
+		if ( pSpawn )
+		{
+			pSpawn->AddObj(GetUID());
+			m_uidSpawnItem = pSpawn->GetUID();
+		}
+	}
 
 	if ( m_pPlayer )	// Player char.
 	{

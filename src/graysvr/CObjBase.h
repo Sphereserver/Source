@@ -20,7 +20,7 @@ enum MEMORY_TYPE
 	MEMORY_SPEAK		= 0x0040,	// We spoke about something at some point. (or was tamed) (NPC_MEM_ACT_TYPE)
 	MEMORY_AGGREIVED	= 0x0080,	// I was attacked and was the inocent party here !
 	MEMORY_GUARD		= 0x0100,	// Guard this item (never time out)
-	MEMORY_ISPAWNED		= 0x0200,	// I am spawned from this item. (never time out)
+	MEMORY_ISPAWNED		= 0x0200,	// UNUSED!!!! I am spawned from this item. (never time out)
 	MEMORY_GUILD		= 0x0400,	// This is my guild stone. (never time out) only have 1
 	MEMORY_TOWN			= 0x0800,	// This is my town stone. (never time out) only have 1
 	MEMORY_UNUSED		= 0x1000,	// UNUSED!!!! I am following this Object (never time out)
