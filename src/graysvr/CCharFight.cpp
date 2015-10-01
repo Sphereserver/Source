@@ -3317,6 +3317,17 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			return WAR_SWING_READY;
 	}
 
+	if ( IsSetCombatFlags(COMBAT_PREHIT) && (m_atFight.m_War_Swing_State == WAR_SWING_READY) )
+	{
+		INT64 diff = GetKeyNum("LastHit", true) - g_World.GetCurrentTime().GetTimeRaw();
+		if ( diff > 0 )
+		{
+			diff = (diff > 50) ? 50 : diff;
+			SetTimeout(diff);
+			return WAR_SWING_READY;
+		}
+	}
+
 	CItem *pWeapon = m_uidWeapon.ItemFind();
 	CItem *pAmmo = NULL;
 	CItemBase *pWeaponDef = NULL;

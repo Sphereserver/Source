@@ -2651,3 +2651,7 @@ Added: Better user-friendly description to server exit codes. Now the console wi
 28-09-2015, Coruja
 Fixed: NPCs not facing target when starting combat swings.
 Added: New 'DYE <uid>' function to open dye gump on selected UID.
+
+01-10-2015, XuN
+Fixed combat swings being aborted when range was not in the required limits regardless of COMBATF_STAYINRANGE enabled or disabled.
+ReAdded COMBATF_PREHIT since AttackingIsaCrime is the setting used now to handle notoriety checks, and prehit is used to create a different combat style on some servers dealing damage first and recoaling after.
