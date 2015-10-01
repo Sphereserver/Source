@@ -118,6 +118,7 @@ CResource::CResource()
 	m_iHitpointPercentOnRez	= 10;
 	m_iHitsHungerLoss	= 0;
 	m_fLootingIsACrime	= true;
+	m_bLootingReveal = true;
 	m_fHelpingCriminalsIsACrime = true;
 	m_fGenericSounds	= true;
 	m_fAutoNewbieKeys 	= true;
@@ -490,6 +491,7 @@ enum RC_TYPE
 	RC_LOG,
 	RC_LOGMASK,				// GetLogMask
 	RC_LOOTINGISACRIME,		// m_fLootingIsACrime
+	RC_LOOTINGREVEAL,		// m_bLootingReveal
 	RC_LOSTNPCTELEPORT,		// m_fLostNPCTeleport
 	RC_MAGICFLAGS,
 	RC_MAGICUNLOCKDOOR,		// m_iMagicUnlockDoor
@@ -729,6 +731,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "LOG",					{ ELEM_VOID,	0,											0 }},
 	{ "LOGMASK",				{ ELEM_VOID,	0,											0 }}, // GetLogMask
 	{ "LOOTINGISACRIME",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fLootingIsACrime),		0 }},
+	{ "LOOTINGREVEAL",			{ ELEM_BOOL,	OFFSETOF(CResource,m_bLootingReveal),		0 }},
 	{ "LOSTNPCTELEPORT",		{ ELEM_INT,		OFFSETOF(CResource,m_iLostNPCTeleport),		0 }},
 	{ "MAGICFLAGS",				{ ELEM_INT,		OFFSETOF(CResource,m_iMagicFlags),			0 }},
 	{ "MAGICUNLOCKDOOR",		{ ELEM_INT,		OFFSETOF(CResource,m_iMagicUnlockDoor),		0 }},

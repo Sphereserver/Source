@@ -2655,3 +2655,6 @@ Added: New 'DYE <uid>' function to open dye gump on selected UID.
 01-10-2015, XuN
 Fixed combat swings being aborted when range was not in the required limits regardless of COMBATF_STAYINRANGE enabled or disabled.
 ReAdded COMBATF_PREHIT since AttackingIsaCrime is the setting used now to handle notoriety checks, and prehit is used to create a different combat style on some servers dealing damage first and recoaling after.
+Added #2560: @TARGON_CANCEL will fire on chars now when closing a target created by TARGETF*, ARGS = function.
+[sphere.ini]
+	-Added: LootingReveal, setting this to 1 will force your character to be revealed when looting corpses that don't belong to you.

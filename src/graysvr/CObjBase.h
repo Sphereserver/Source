@@ -155,21 +155,6 @@ public:
 		}
 	}
 
-	//Shortcut for GetDefKey + result->GetValStr
-	LPCTSTR GetDefKeyStr( LPCTSTR pszKey, bool fDef ) const
-	{
-		CVarDefCont * pVar = GetDefKey(pszKey, fDef);
-		return pVar ? pVar->GetValStr():"";
-	}
-
-	//Shortcut for GetDefKey + result->GetValNum
-	INT64 GetDefKeyNum( LPCTSTR pszKey, bool fDef ) const
-	{
-		CVarDefCont * pVar = GetDefKey(pszKey, fDef);
-		return pVar ? pVar->GetValNum():0;
-	}
-
-
 	LPCTSTR GetKeyStr( LPCTSTR pszKey, bool fZero = false, bool fDef = false ) const
 	{
 		CVarDefCont	* pVar = GetKey( pszKey, fDef );
@@ -2586,6 +2571,7 @@ enum CTRIG_TYPE
 	CTRIG_SpellTargetCancel,	//  cancelled spell target
 	CTRIG_StatChange,
 	CTRIG_StepStealth,		//+Made a step while being in stealth 
+	CTRIG_Targon_Cancel,		// Cancel target from TARGETF
 	CTRIG_ToggleFlying,
 	CTRIG_ToolTip,			// someone did tool tips on me.
 	CTRIG_TradeAccepted,	// Everything went well, and we are about to exchange trade items

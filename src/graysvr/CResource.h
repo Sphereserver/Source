@@ -825,6 +825,7 @@ public:
 	int	 m_iMurderDecayTime;	// (minutes) Roll murder counts off this often.
 	bool m_fHelpingCriminalsIsACrime;// If I help (rez, heal, etc) a criminal, do I become one too?
 	bool m_fLootingIsACrime;	// Looting a blue corpse is bad.
+	bool m_bLootingReveal;		// Reveal when looting other's corpses or not.
 	int  m_iCriminalTimer;		// How many minutes are criminals flagged for?
 	int	 m_iPlayerKarmaNeutral;	// How much bad karma makes a player neutral?
 	int	 m_iPlayerKarmaEvil;	// How much bad karma makes a player evil?

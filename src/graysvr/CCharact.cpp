@@ -1624,7 +1624,8 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 	if ( pCorpse && pCorpse->m_uidLink != GetUID() )
 	{
 		CheckCorpseCrime(pCorpse, true, false);
-		Reveal();
+		if ( g_Cfg.m_bLootingReveal == true )
+			Reveal();
 	}
 
 	int iAmountMax = pItem->GetAmount();

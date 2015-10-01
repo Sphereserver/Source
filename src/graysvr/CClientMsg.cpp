@@ -1479,6 +1479,16 @@ void CClient::SetTargMode( CLIMODE_TYPE targmode, LPCTSTR pPrompt, int iTimeout 
 
 	switch ( GetTargMode() )
 	{
+		case CLIMODE_TARG_OBJ_FUNC:
+		{
+			if ( IsTrigUsed(TRIGGER_TARGON_CANCEL) )
+			{
+				CScriptTriggerArgs Args;
+				Args.m_s1 =  m_Targ_Text;
+				if ( GetChar()->OnTrigger( CTRIG_Targon_Cancel, m_pChar, &Args ) == TRIGRET_RET_TRUE )
+					bSuppressCancelMessage = true;
+			}
+		} break;
 		case CLIMODE_TARG_USE_ITEM:
 		{
 			CItem * pItemUse = m_Targ_UID.ItemFind();

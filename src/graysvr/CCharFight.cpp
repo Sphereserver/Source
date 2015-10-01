@@ -3310,7 +3310,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	}
 
 	// Fix of the bounce back effect with dir update for clients to be able to run in combat easily
-	if ( IsClient() && (g_Cfg.m_iCombatFlags & COMBAT_FACECOMBAT) )
+	if ( IsClient() && IsSetCombatFlags(COMBAT_FACECOMBAT) )
 	{
 		DIR_TYPE dirOpponent = GetDir(pCharTarg, m_dirFace);
 		if ( (dirOpponent != m_dirFace) && (dirOpponent != GetDirTurn(m_dirFace, -1)) && (dirOpponent != GetDirTurn(m_dirFace, 1)) )
@@ -3331,8 +3331,18 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	CItem *pWeapon = m_uidWeapon.ItemFind();
 	CItem *pAmmo = NULL;
 	CItemBase *pWeaponDef = NULL;
+	CVarDefCont * pType= NULL;
+	CVarDefCont * pCont= NULL;
+	CVarDefCont * pAnim= NULL;
+	CVarDefCont * pColor= NULL;
+	CVarDefCont * pRender= NULL;
 	if ( pWeapon )
 	{
+		pType = pWeapon->GetDefKey("AMMOTYPE", true);
+		pCont = pWeapon->GetDefKey("AMMOCONT", true);
+		pAnim = pWeapon->GetDefKey("AMMOANIM", true);
+		pColor = pWeapon->GetDefKey("AMMOANIMHUE", true);
+		pRender = pWeapon->GetDefKey("AMMOANIMRENDER", true);
 		CVarDefCont * pDamTypeOverride = pWeapon->GetKey("OVERRIDE.DAMAGETYPE", true);
 		if ( pDamTypeOverride )
 			iTyp = static_cast<DAMAGE_TYPE>(pDamTypeOverride->GetValNum());
@@ -3356,11 +3366,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	}
 
 	SKILL_TYPE skill = Skill_GetActive();
-	CVarDefCont * pType = pWeapon->GetDefKey("AMMOTYPE", true);
-	CVarDefCont * pCont = pWeapon->GetDefKey("AMMOCONT", true);
-	CVarDefCont * pAnim = pWeapon->GetDefKey("AMMOANIM", true);
-	CVarDefCont * pColor = pWeapon->GetDefKey("AMMOANIMHUE", true);
-	CVarDefCont * pRender = pWeapon->GetDefKey("AMMOANIMRENDER", true);
 	RESOURCE_ID_BASE rid;
 	LPCTSTR t_Str;
 
@@ -3467,7 +3472,14 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 		m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
 		m_atFight.m_NextSwingDelay = iSwingDelay - animDelay;
-		SetTimeout(animDelay);
+
+		if ( IsSetCombatFlags(COMBAT_PREHIT) )
+		{
+			SetKeyNum("LastHit", iSwingDelay + g_World.GetCurrentTime().GetTimeRaw());
+			SetTimeout(0);
+		}
+		else
+			SetTimeout(animDelay);
 
 		Reveal();
 		if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) )
@@ -3677,11 +3689,11 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			iDmg,
 			this,
 			iTyp,
-			static_cast<int>(GetDefKeyNum("DAMPHYSICAL",true)),
-			static_cast<int>(GetDefKeyNum("DAMFIRE",true)),
-			static_cast<int>(GetDefKeyNum("DAMCOLD",true)),
-			static_cast<int>(GetDefKeyNum("DAMPOISON",true)),
-			static_cast<int>(GetDefKeyNum("DAMENERGY",true))
+			static_cast<int>(GetDefNum("DAMPHYSICAL",true,true)),	//fDef = true because DAM* was added in CHARDEF instead of under @Create
+			static_cast<int>(GetDefNum("DAMFIRE",true,true)),
+			static_cast<int>(GetDefNum("DAMCOLD",true,true)),
+			static_cast<int>(GetDefNum("DAMPOISON",true,true)),
+			static_cast<int>(GetDefNum("DAMENERGY",true,true))
 		   );
 
 	if ( iDmg > 0 )
