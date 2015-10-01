@@ -3345,9 +3345,17 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	}
 
 	SKILL_TYPE skill = Skill_GetActive();
-	if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
+	CVarDefCont * pType = pWeapon->GetDefKey("AMMOTYPE", true);
+	CVarDefCont * pCont = pWeapon->GetDefKey("AMMOCONT", true);
+	CVarDefCont * pAnim = pWeapon->GetDefKey("AMMOANIM", true);
+	CVarDefCont * pColor = pWeapon->GetDefKey("AMMOANIMHUE", true);
+	CVarDefCont * pRender = pWeapon->GetDefKey("AMMOANIMRENDER", true);
+	RESOURCE_ID_BASE rid;
+	LPCTSTR t_Str;
+
+	if (g_Cfg.IsSkillFlag(skill, SKF_RANGED))
 	{
-		if ( IsStatFlag(STATF_HasShield) )		// this should never happen
+		if (IsStatFlag(STATF_HasShield))		// this should never happen
 		{
 			SysMessageDefault(DEFMSG_ITEMUSE_BOW_SHIELD);
 			return WAR_SWING_INVALID;
@@ -3355,28 +3363,25 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 		int	iMinDist = pWeapon ? pWeapon->RangeH() : g_Cfg.m_iArcheryMinDist;
 		int	iMaxDist = pWeapon ? pWeapon->RangeL() : g_Cfg.m_iArcheryMaxDist;
-		if ( !iMaxDist || (iMinDist == 0 && iMaxDist == 1) )
+		if (!iMaxDist || (iMinDist == 0 && iMaxDist == 1))
 			iMaxDist = g_Cfg.m_iArcheryMaxDist;
-		if ( !iMinDist )
+		if (!iMinDist)
 			iMinDist = g_Cfg.m_iArcheryMinDist;
 
-		if ( dist < iMinDist )
+		if (dist < iMinDist)
 		{
 			SysMessageDefault(DEFMSG_COMBAT_ARCH_TOOCLOSE);
+			if (!IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING)
+				return(WAR_SWING_READY);
 			return WAR_SWING_EQUIPPING;
 		}
-		else if ( dist > iMaxDist )
+		else if (dist > iMaxDist)
+		{
+			if (!IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING)
+				return(WAR_SWING_READY);
 			return WAR_SWING_EQUIPPING;
-
-		CVarDefCont * pType = pWeapon->GetDefKey("AMMOTYPE", true);
-		CVarDefCont * pCont = pWeapon->GetDefKey("AMMOCONT", true);
-		CVarDefCont * pAnim  = pWeapon->GetDefKey("AMMOANIM", true);
-		CVarDefCont * pColor = pWeapon->GetDefKey("AMMOANIMHUE", true);
-		CVarDefCont * pRender = pWeapon->GetDefKey("AMMOANIMRENDER", true);
-
-		RESOURCE_ID_BASE rid;
-		LPCTSTR t_Str;
-		if ( pType )
+		}
+		if (pType)
 		{
 			t_Str = pType->GetValStr();
 			rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, t_Str));
@@ -3385,69 +3390,83 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			rid = pWeaponDef->m_ttWeaponBow.m_idAmmo;
 
 		ITEMID_TYPE AmmoID = static_cast<ITEMID_TYPE>(rid.GetResIndex());
-		if ( AmmoID )
+		if (AmmoID)
 		{
-			if ( pCont )
+			if (pCont)
 			{
 				CGrayUID uidCont = static_cast<CGrayUID>(static_cast<DWORD>(pCont->GetValNum()));
 				CItemContainer *pNewCont = dynamic_cast<CItemContainer*>(uidCont.ItemFind());
-				if ( !pNewCont )	//if no UID, check for ITEMID_TYPE
+				if (!pNewCont)	//if no UID, check for ITEMID_TYPE
 				{
 					t_Str = pCont->GetValStr();
 					RESOURCE_ID_BASE rContid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, t_Str));
 					ITEMID_TYPE ContID = static_cast<ITEMID_TYPE>(rContid.GetResIndex());
-					if ( ContID )
+					if (ContID)
 						pNewCont = dynamic_cast<CItemContainer*>(ContentFind(rContid));
 				}
 
-				pAmmo = (pNewCont)? pNewCont->ContentFind(rid) : ContentFind(rid);
+				pAmmo = (pNewCont) ? pNewCont->ContentFind(rid) : ContentFind(rid);
 			}
 			else
 				pAmmo = ContentFind(rid);
 
-			if ( !pAmmo && m_pPlayer )
+			if (!pAmmo && m_pPlayer)
 			{
 				SysMessageDefault(DEFMSG_COMBAT_ARCH_NOAMMO);
 				return WAR_SWING_INVALID;
 			}
 		}
-
-		// Start the swing
-		if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )
+	}
+	else
+	{
+		int	iMinDist = pWeapon ? pWeapon->RangeH() : 0;
+		int	iMaxDist = CalcFightRange(pWeapon);
+		if ( dist < iMinDist || dist > iMaxDist )
 		{
-			if ( !CanSeeLOS(pCharTarg) )
-				return WAR_SWING_EQUIPPING;
+			if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
+				return(WAR_SWING_READY);
+			return WAR_SWING_EQUIPPING;
+		}
+	}
 
-			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
-			int animDelay = 7;		// attack speed is always 7ms and then the char keep waiting the remaining time
-			int iSwingDelay = g_Cfg.Calc_CombatAttackSpeed(this, pWeapon) - 1;	// swings are started only on the next tick, so substract -1 to compensate that
+	// Start the swing
+	if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )
+	{
+		if ( !CanSeeLOS(pCharTarg) )
+			return WAR_SWING_EQUIPPING;
 
-			if ( IsTrigUsed(TRIGGER_HITTRY) )
-			{
-				CScriptTriggerArgs Args(iSwingDelay, 0, pWeapon);
-				Args.m_VarsLocal.SetNum("Anim", (int)anim);
-				Args.m_VarsLocal.SetNum("AnimDelay", animDelay);
-				if ( OnTrigger(CTRIG_HitTry, pCharTarg, &Args) == TRIGRET_RET_TRUE )
-					return WAR_SWING_READY;
+		ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
+		int animDelay = 7;		// attack speed is always 7ms and then the char keep waiting the remaining time
+		int iSwingDelay = g_Cfg.Calc_CombatAttackSpeed(this, pWeapon) - 1;	// swings are started only on the next tick, so substract -1 to compensate that
 
-				iSwingDelay = static_cast<int>(Args.m_iN1);
-				anim = static_cast<ANIM_TYPE>(Args.m_VarsLocal.GetKeyNum("Anim", false));
-				animDelay = static_cast<int>(Args.m_VarsLocal.GetKeyNum("AnimDelay", true));
-				if ( animDelay < 0 )
-					animDelay = 0;
-			}
+		if ( IsTrigUsed(TRIGGER_HITTRY) )
+		{
+			CScriptTriggerArgs Args(iSwingDelay, 0, pWeapon);
+			Args.m_VarsLocal.SetNum("Anim", (int)anim);
+			Args.m_VarsLocal.SetNum("AnimDelay", animDelay);
+			if ( OnTrigger(CTRIG_HitTry, pCharTarg, &Args) == TRIGRET_RET_TRUE )
+				return WAR_SWING_READY;
 
-			m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
-			m_atFight.m_NextSwingDelay = iSwingDelay - animDelay;
-			SetTimeout(animDelay);
-
-			Reveal();
-			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) )
-				UpdateDir(pCharTarg);
-			UpdateAnimate(anim, false, false, static_cast<BYTE>(animDelay / TICK_PER_SEC));
-			return WAR_SWING_SWINGING;
+			iSwingDelay = static_cast<int>(Args.m_iN1);
+			anim = static_cast<ANIM_TYPE>(Args.m_VarsLocal.GetKeyNum("Anim", false));
+			animDelay = static_cast<int>(Args.m_VarsLocal.GetKeyNum("AnimDelay", true));
+			if ( animDelay < 0 )
+				animDelay = 0;
 		}
 
+		m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
+		m_atFight.m_NextSwingDelay = iSwingDelay - animDelay;
+		SetTimeout(animDelay);
+
+		Reveal();
+		if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) )
+			UpdateDir(pCharTarg);
+		UpdateAnimate(anim, false, false, static_cast<BYTE>(animDelay / TICK_PER_SEC));
+		return WAR_SWING_SWINGING;
+	}
+
+	if (g_Cfg.IsSkillFlag(skill, SKF_RANGED))
+	{
 		// Post-swing behavior
 		ITEMID_TYPE AmmoAnim;
 		if ( pAnim )
@@ -3468,49 +3487,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			AmmoRender = static_cast<DWORD>(pRender->GetValNum());
 
 		pCharTarg->Effect(EFFECT_BOLT, AmmoAnim, this, 18, 1, false, AmmoHue, AmmoRender);
-	}
-	else
-	{
-		int	iMinDist = pWeapon ? pWeapon->RangeH() : 0;
-		int	iMaxDist = CalcFightRange(pWeapon);
-		if ( dist < iMinDist || dist > iMaxDist )
-			return WAR_SWING_EQUIPPING;
-
-		// Start the swing
-		if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )
-		{
-			if ( !CanSeeLOS(pCharTarg) )
-				return WAR_SWING_EQUIPPING;
-
-			ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
-			int animDelay = 7;		// attack speed is always 7ms and then the char keep waiting the remaining time
-			int iSwingDelay = g_Cfg.Calc_CombatAttackSpeed(this, pWeapon) - 1;	// swings are started only on the next tick, so substract -1 to compensate that
-
-			if ( IsTrigUsed(TRIGGER_HITTRY) )
-			{
-				CScriptTriggerArgs Args(iSwingDelay, 0, pWeapon);
-				Args.m_VarsLocal.SetNum("Anim", static_cast<int>(anim));
-				Args.m_VarsLocal.SetNum("AnimDelay", animDelay);
-				if ( OnTrigger(CTRIG_HitTry, pCharTarg, &Args) == TRIGRET_RET_TRUE )
-					return WAR_SWING_READY;
-
-				iSwingDelay = static_cast<int>(Args.m_iN1);
-				anim = static_cast<ANIM_TYPE>(Args.m_VarsLocal.GetKeyNum("Anim", false));
-				animDelay = static_cast<int>(Args.m_VarsLocal.GetKeyNum("AnimDelay", true));
-				if ( animDelay < 0 )
-					animDelay = 0;
-			}
-
-			m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
-			m_atFight.m_NextSwingDelay = iSwingDelay - animDelay;
-			SetTimeout(animDelay);
-
-			Reveal();
-			if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) )
-				UpdateDir(pCharTarg);
-			UpdateAnimate(anim, false, false, static_cast<BYTE>(animDelay / TICK_PER_SEC));
-			return WAR_SWING_SWINGING;
-		}
 	}
 
 	// We made our swing. so we must recoil.
