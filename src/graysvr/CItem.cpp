@@ -1346,9 +1346,7 @@ bool CItem::MoveTo(CPointMap pt, bool bForceFix) // Put item on the ground here.
 	{
 		size_t iCount = pSector->GetItemComplexity();
 		if ( iCount > g_Cfg.m_iMaxSectorComplexity )
-		{
-			DEBUG_ERR(( "Warning: %" FMTSIZE_T " items at %s,too complex!\n", iCount, pt.WriteUsed()));
-		}
+			g_Log.Event(LOGL_WARN, "%d items at %s. Sector too complex!\n", iCount, pt.WriteUsed());
 	}
 
 	SetTopPoint( pt );
@@ -3816,7 +3814,7 @@ bool CItem::Use_DoorNew( bool bJustOpen )
 
 	MoveToUpdate(pt);
 	Sound( bClosing ? iCloseSnd : iOpenSnd );
-	SetTimeout( bClosing ? -1 : 60*TICK_PER_SEC );
+	SetTimeout( bClosing ? -1 : 20*TICK_PER_SEC );
 	bClosing ? ClrAttr(ATTR_OPENED) : SetAttr(ATTR_OPENED);
 	return( ! bClosing );
 }

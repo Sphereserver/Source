@@ -279,22 +279,22 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 
 		case PC_STOCK:
 			// Magic restocking container.
-			if ( ! NPC_IsVendor())
-				return( false );
+			if ( !NPC_IsVendor() || !pSrc->IsClient() )
+				return false;
 			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_ITEMS_SELL ) );
 			pSrc->GetClient()->addBankOpen( this, LAYER_VENDOR_STOCK );
 			break;
 
 		case PC_BOUGHT:
-			if ( ! NPC_IsVendor())
-				return( false );
+			if ( !NPC_IsVendor() || !pSrc->IsClient() )
+				return false;
 			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_ITEMS_BUY ) );
 			pSrc->GetClient()->addBankOpen( this, LAYER_VENDOR_EXTRA );
 			break;
 
 		case PC_SAMPLES:
-			if ( ! NPC_IsVendor())
-				return( false );
+			if ( !NPC_IsVendor() || !pSrc->IsClient() )
+				return false;
 			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_ITEMS_SAMPLE ) );
 			pSrc->GetClient()->addBankOpen( this, LAYER_VENDOR_BUYS );
 			break;

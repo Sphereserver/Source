@@ -3531,13 +3531,14 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				UpdateMode(NULL, true);
 				if ( IsStatFlag(STATF_Insubstantial) )
 				{
-					GetClient()->addBuff(BI_HIDDEN, 1075655, 1075656);
+					if ( IsClient() )
+						GetClient()->addBuff(BI_HIDDEN, 1075655, 1075656);
 					if ( IsSetOF(OF_Command_Sysmsgs) )
 						pSrc->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_INVIS_ON));
 				}
 				else
 				{
-					if ( !IsStatFlag(STATF_Hidden) )
+					if ( IsClient() && !IsStatFlag(STATF_Hidden) )
 						GetClient()->removeBuff(BI_HIDDEN);
 					if ( IsSetOF(OF_Command_Sysmsgs) )
 						pSrc->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_INVIS_OFF));
@@ -3810,7 +3811,8 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			// just eat this if it's not a client.
 			break;
 		case CHV_TARGETCLOSE:
-			GetClient()->addTargetCancel();
+			if ( IsClient() )
+				GetClient()->addTargetCancel();
 			break;
 		case CHV_UNDERWEAR:
 			if ( ! IsPlayableCharacter())

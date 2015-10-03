@@ -1821,7 +1821,7 @@ bool CServer::SocketsInit() // Initialize sockets
 			strcpy(szName, pHost->h_name);
 	}
 
-	g_Log.Event( LOGM_INIT, "Server started on '%s' port %d.\n", szName, m_ip.GetPort());
+	g_Log.Event( LOGM_INIT, "Server started on hostname '%s'\n", szName);
 	if ( !iRet && pHost && pHost->h_addr )
 	{
 		for ( size_t i = 0; pHost->h_addr_list[i] != NULL; i++ )
@@ -1830,7 +1830,7 @@ bool CServer::SocketsInit() // Initialize sockets
 			ip.SetAddrIP(*((DWORD*)(pHost->h_addr_list[i]))); // 0.1.2.3
 			if ( !m_ip.IsLocalAddr() && !m_ip.IsSameIP(ip) )
 				continue;
-			g_Log.Event(LOGM_INIT, "Monitoring IP '%s'.\n", static_cast<LPCTSTR>(ip.GetAddrStr()));
+			g_Log.Event(LOGM_INIT, "Monitoring IP %s:%d\n", ip.GetAddrStr(), m_ip.GetPort());
 		}
 	}
 	return true;

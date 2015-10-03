@@ -483,7 +483,7 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 			return true;
 		case CPC_KRTOOLBARSTATUS:
 			m_bKrToolbarEnabled = ( s.GetArgVal() != 0 );
-			if ( pChar->GetClient() != NULL )
+			if ( pChar->IsClient() )
 				pChar->GetClient()->addKRToolbar( m_bKrToolbarEnabled );
 			return true;
 		case CPC_LASTUSED:

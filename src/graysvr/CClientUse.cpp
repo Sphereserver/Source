@@ -1384,9 +1384,10 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 			return false;
 	}
 
-	// NPC's can't use trade windows
-	if ( pChar->m_pNPC )
+	if ( pChar->m_pNPC )	// NPC's can't use trade windows
 		return pChar->NPC_OnItemGive(m_pChar, pItem);
+	else if ( !pChar->IsClient() )	// and also offline players
+		return false;
 
 	if ( pChar->GetDefNum("REFUSETRADES", true) )
 	{

@@ -2658,3 +2658,9 @@ ReAdded COMBATF_PREHIT since AttackingIsaCrime is the setting used now to handle
 Added #2560: @TARGON_CANCEL will fire on chars now when closing a target created by TARGETF*, ARGS = function.
 [sphere.ini]
 	-Added: LootingReveal, setting this to 1 will force your character to be revealed when looting corpses that don't belong to you.
+
+03-10-2015, Coruja
+Fixed: Console error when using some specific functions on NPCs or offline players.
+Changed: Default timer to close doors after open it changed from 60sec to 20sec.
+[items/sphere_item_magic_ninjitsu_bushido.scp]: Fixed wrong MOREZ on i_spellbook_bushido, i_spellbook_ninjitsu.
+[maps/sphere_map5.scp]: Added new regions from UO Time of Legends expansion.
