@@ -4144,6 +4144,7 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 
 		// Execute the @START trigger and pass various craft parameters there
 		CScriptTriggerArgs pArgs;
+		bool bFightSkill = g_Cfg.IsSkillFlag(skill, SKF_FIGHT);
 		bool bCraftSkill = g_Cfg.IsSkillFlag(skill, SKF_CRAFT);
 		bool bGatherSkill = g_Cfg.IsSkillFlag(skill, SKF_GATHER);
 		RESOURCE_ID pResBase(RES_ITEMDEF, bCraftSkill? m_atCreate.m_ItemID : 0, 0);
@@ -4212,8 +4213,8 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 
 		if ( m_Act_Difficulty > 0 )
 		{
-			if ( ! Skill_CheckSuccess( skill, m_Act_Difficulty ))
-				m_Act_Difficulty = - m_Act_Difficulty;	// will result in Failure ?
+			if ( !Skill_CheckSuccess(skill, m_Act_Difficulty, !bFightSkill) )
+				m_Act_Difficulty = -m_Act_Difficulty;	// will result in failure
 		}
 	}
 

@@ -2666,5 +2666,6 @@ Changed: Default timer to close doors after open it changed from 60sec to 20sec.
 [maps/sphere_map5.scp]: Added new regions from UO Time of Legends expansion.
 
 04-10-2015, Coruja
+Fixed: Hit Chance combat formula not working correctly.
 Fixed: sphereworld.scp file saving many [SECTOR] templates for the same sector separately instead save everything related to this same sector on the same template.
 [sphere.ini]: Removed EF_Specific / OF_Specific settings, which was incomplete since 7 years ago and was never released to public.
