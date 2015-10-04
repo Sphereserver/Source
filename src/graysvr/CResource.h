@@ -43,14 +43,13 @@ enum OF_TYPE
 	OF_NoPrefix					= 0x0004000,
 	OF_DyeType					= 0x0008000,
 	OF_DrinkIsFood				= 0x0010000,
-	OF_DClickNoTurn				= 0x0020000,
-	OF_Specific					= 0x1000000
+	OF_DClickNoTurn				= 0x0020000
 };
 
 enum EF_TYPE
 {
 	EF_NoDiagonalCheckLOS			= 0x0000001,
-	EF_Dynamic_Backsave                     = 0x0000002,
+	EF_Dynamic_Backsave				= 0x0000002,
 	EF_ItemStacking					= 0x0000004,
 	EF_ItemStackDrop				= 0x0000008,
 	EF_Intrinsic_Locals				= 0x0000020,
@@ -63,7 +62,6 @@ enum EF_TYPE
 #ifndef _MTNETWORK
 	EF_NetworkOutThread				= 0x0800000,
 #endif
-    EF_Specific						= 0x1000000,	// Specific behaviour, not completly tested
 };
 
 enum MAGICFLAGS_TYPE
@@ -1269,7 +1267,6 @@ public:
 
 #define IsSetEF(ef)				((g_Cfg.m_iExperimental & ef) != 0)
 #define IsSetOF(of)				((g_Cfg.m_iOptionFlags & of) != 0)
-#define IsSetSpecific			((g_Cfg.m_iExperimental & EF_Specific) != 0 && (g_Cfg.m_iOptionFlags & OF_Specific) != 0)
 #define IsSetCombatFlags(of)	((g_Cfg.m_iCombatFlags & of) != 0)
 #define IsSetMagicFlags(of)		((g_Cfg.m_iMagicFlags & of) != 0)
 

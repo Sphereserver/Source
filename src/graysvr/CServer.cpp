@@ -1852,10 +1852,7 @@ void CServer::OnTick()
 {
 	ADDTOCALLSTACK("CServer::OnTick");
 	EXC_TRY("Tick");
-
 	TIME_PROFILE_INIT;
-	if ( IsSetSpecific )
-		TIME_PROFILE_START;
 
 #ifndef _WIN32
 	if (g_UnixTerminal.isReady())
@@ -1903,16 +1900,6 @@ void CServer::OnTick()
 	EXC_SET("generic");
 	g_Cfg.OnTick(false);
 	m_hdb.OnTick();
-	if ( IsSetSpecific )
-	{
-		EXC_SET("time profile");
-		TIME_PROFILE_END;
-		LONGLONG	hi = TIME_PROFILE_GET_HI;
-		if ( hi > 5L )
-		{
-			DEBUG_ERR(("CServer::OnTick() [socket operations] took %lld.%lld to run\n", static_cast<INT64>(hi), static_cast<INT64>(TIME_PROFILE_GET_LO)));
-		}
-	}
 	EXC_CATCH;
 
 	EXC_DEBUG_START;

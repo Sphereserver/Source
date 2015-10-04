@@ -3866,10 +3866,7 @@ bool CChar::OnTick()
 	// Assume this is only called 1 time per sec.
 	// Get a timer tick when our timer expires.
 	// RETURN: false = delete this.
-
 	TIME_PROFILE_INIT;
-	if ( IsSetSpecific )
-		TIME_PROFILE_START;
 
 	EXC_TRY("Tick");
 	INT64 iTimeDiff = -g_World.GetTimeDiff(m_timeLastRegen);
@@ -3976,10 +3973,5 @@ bool CChar::OnTick()
 	}
 
 	EXC_CATCH;
-	if ( IsSetSpecific )
-	{
-		TIME_PROFILE_END;
-		DEBUG_ERR(("CChar::OnTick(%lx) took %lld.%lld to run\n", (DWORD)GetUID(), (INT64)TIME_PROFILE_GET_HI, (INT64)TIME_PROFILE_GET_LO));
-	}
 	return true;
 }

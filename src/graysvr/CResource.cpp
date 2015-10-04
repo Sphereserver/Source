@@ -3840,7 +3840,6 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 		if ( IsSetOF(OF_DyeType) ) catresname(zOptionFlags, "DyeType");
 		if ( IsSetOF(OF_DrinkIsFood) ) catresname(zOptionFlags, "DrinkIsFood");
 		if ( IsSetOF(OF_DClickNoTurn) ) catresname(zOptionFlags, "DClickNoTurn");
-		if ( IsSetOF(OF_Specific) ) catresname(zOptionFlags, "Specific");
 
 		if ( zOptionFlags[0] != '\0' )
 		{
@@ -3866,7 +3865,6 @@ void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
 #ifndef _MTNETWORK
 		if ( IsSetEF(EF_NetworkOutThread) ) catresname(zExperimentalFlags, "NetworkOutThread");
 #endif
-		if ( IsSetEF(EF_Specific) ) catresname(zExperimentalFlags, "Specific");
 
 		if ( zExperimentalFlags[0] != '\0' )
 		{

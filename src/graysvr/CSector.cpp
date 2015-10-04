@@ -309,7 +309,10 @@ void CSector::r_Write()
 	if (g_Cfg.m_bAllowLightOverride && IsLightOverriden())
 	{
 		if ( bHeaderCreated == false )
-			g_World.m_FileWorld.WriteSection("SECTOR %d,%d,0,%d", pt.m_x, pt.m_y, pt.m_map );
+		{
+			g_World.m_FileWorld.WriteSection("SECTOR %d,%d,0,%d", pt.m_x, pt.m_y, pt.m_map);
+			bHeaderCreated = true;
+		}
 
 		g_World.m_FileWorld.WriteKeyVal("LIGHT", GetLight());
 	}
@@ -317,7 +320,10 @@ void CSector::r_Write()
 	if (!g_Cfg.m_fNoWeather && (IsRainOverriden() || IsColdOverriden()))
 	{
 		if ( bHeaderCreated == false )
-			g_World.m_FileWorld.WriteSection("SECTOR %d,%d,0,%d", pt.m_x, pt.m_y, pt.m_map );
+		{
+			g_World.m_FileWorld.WriteSection("SECTOR %d,%d,0,%d", pt.m_x, pt.m_y, pt.m_map);
+			bHeaderCreated = true;
+		}
 
 		if ( IsRainOverriden() )
 			g_World.m_FileWorld.WriteKeyVal("RAINCHANCE", GetRainChance());
@@ -329,77 +335,46 @@ void CSector::r_Write()
 	if (GetSeason() != SEASON_Summer)
 	{
 		if ( bHeaderCreated == false )
-			g_World.m_FileWorld.WriteSection("SECTOR %d,%d,0,%d", pt.m_x, pt.m_y, pt.m_map );
+		{
+			g_World.m_FileWorld.WriteSection("SECTOR %d,%d,0,%d", pt.m_x, pt.m_y, pt.m_map);
+			bHeaderCreated = true;
+		}
 
 		g_World.m_FileWorld.WriteKeyVal("SEASON", GetSeason());
 	}
 
-	//g_Log.EventDebug("SECTOR %d,%d,0,%d\n", pt.m_x, pt.m_y, pt.m_map);
-	//g_Log.EventDebug("IsLightOverriden() %s\n",IsLightOverriden()?"true":"false");
-	//g_Log.EventDebug("IsRainOverriden() %s\n",IsRainOverriden()?"true":"false");
-	//g_Log.EventDebug("IsColdOverriden() %s\n",IsColdOverriden()?"true":"false");
-	//g_Log.EventDebug("SEASON %d\n",GetSeason());
-	//g_Log.EventDebug("LIGHT %d\n",GetLight());
-	//g_Log.EventDebug("RAINCHANCE %d\n",GetRainChance());
-	//g_Log.EventDebug("COLDCHANCE %d\n",GetColdChance());
-
 	// Chars in the sector.
-	CChar * pCharNext;
-	CChar * pChar = STATIC_CAST <CChar*>( m_Chars_Active.GetHead());
-	for ( ; pChar != NULL; pChar = pCharNext )
+	CChar *pCharNext = NULL;
+	for ( CChar *pChar = static_cast<CChar*>(m_Chars_Active.GetHead()); pChar != NULL; pChar = pCharNext )
 	{
 		pCharNext = pChar->GetNext();
-		if ( pChar->m_pPlayer )
-		{
-			pChar->r_WriteParity( g_World.m_FilePlayers );
-		}
-		else
-		{
-			pChar->r_WriteParity( g_World.m_FileWorld );
-		}
+		pChar->r_WriteParity(pChar->m_pPlayer ? g_World.m_FilePlayers : g_World.m_FileWorld);
 	}
-	// Inactive Client Chars, ridden horses and dead npcs
-	// NOTE: ??? Push inactive player chars out to the account files here ?
-	pChar = STATIC_CAST <CChar*> (m_Chars_Disconnect.GetHead());
-	for ( ; pChar != NULL; pChar = pCharNext )
+
+	// Inactive Client Chars, ridden horses and dead NPCs (NOTE: Push inactive player chars out to the account files here?)
+	for ( CChar *pChar = static_cast<CChar*>(m_Chars_Disconnect.GetHead()); pChar != NULL; pChar = pCharNext )
 	{
 		pCharNext = pChar->GetNext();
-		if ( pChar->m_pPlayer )
-		{
-			pChar->r_WriteParity( g_World.m_FilePlayers );
-		}
-		else
-		{
-			pChar->r_WriteParity( g_World.m_FileWorld );
-		}
+		pChar->r_WriteParity(pChar->m_pPlayer ? g_World.m_FilePlayers : g_World.m_FileWorld);
 	}
 
 	// Items on the ground.
-	CItem * pItemNext;
-	CItem * pItem = STATIC_CAST <CItem*> (m_Items_Inert.GetHead());
-	for ( ; pItem != NULL; pItem = pItemNext )
+	CItem *pItemNext = NULL;
+	for ( CItem *pItem = static_cast<CItem*>(m_Items_Inert.GetHead()); pItem != NULL; pItem = pItemNext )
 	{
 		pItemNext = pItem->GetNext();
 		if ( pItem->IsType(IT_MULTI_CUSTOM) )
 			pItem->r_WriteSafe(g_World.m_FileMultis);
-#ifdef _ALPHASPHERE
-		else if ( !pItem->IsAttr(ATTR_STATIC) || IsSetEF(EF_Specific) )
-#else
 		else if ( !pItem->IsAttr(ATTR_STATIC) )
-#endif
 			pItem->r_WriteSafe(g_World.m_FileWorld);
 	}
-	pItem = STATIC_CAST <CItem*> (m_Items_Timer.GetHead());
-	for ( ; pItem != NULL; pItem = pItemNext )
+
+	for ( CItem *pItem = static_cast<CItem*>(m_Items_Timer.GetHead()); pItem != NULL; pItem = pItemNext )
 	{
 		pItemNext = pItem->GetNext();
 		if ( pItem->IsType(IT_MULTI_CUSTOM) )
 			pItem->r_WriteSafe(g_World.m_FileMultis);
-#ifdef _ALPHASPHERE
-		else if ( !pItem->IsAttr(ATTR_STATIC) || IsSetEF(EF_Specific) )
-#else
 		else if ( !pItem->IsAttr(ATTR_STATIC) )
-#endif
 			pItem->r_WriteSafe(g_World.m_FileWorld);
 	}
 }
@@ -1047,8 +1022,6 @@ void CSector::OnTick(int iPulseCount)
 	ADDTOCALLSTACK_INTENSIVE("CSector::OnTick");
 	// CWorld gives OnTick() to all CSectors.
 	TIME_PROFILE_INIT;
-	if ( IsSetSpecific )
-		TIME_PROFILE_START;
 
 	EXC_TRY("Tick");
 	EXC_SET("light change");
@@ -1289,15 +1262,5 @@ void CSector::OnTick(int iPulseCount)
 	CPointMap pt = GetBasePoint();
 	g_Log.EventError("sector #%d [%d,%d,%d,%d]\n", GetIndex(),  pt.m_x, pt.m_y, pt.m_z, pt.m_map);
 	EXC_DEBUG_END;
-
-	if ( IsSetSpecific )
-	{
-		TIME_PROFILE_END;
-		LONGLONG hi = TIME_PROFILE_GET_HI;
-		if ( hi > 1L )
-		{
-			DEBUG_ERR(("CSector::OnTick(%d) [ticking sector] took %lld.%lld to run\n", GetIndex(), static_cast<INT64>(hi), static_cast<INT64>(TIME_PROFILE_GET_LO)));
-		}
-	}
 }
 

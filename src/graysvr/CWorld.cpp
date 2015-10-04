@@ -1629,13 +1629,6 @@ bool CWorld::Save( bool fForceImmediate ) // Save world state
 void CWorld::SaveStatics()
 {
 	ADDTOCALLSTACK("CWorld::SaveStatics");
-#ifdef _ALPHASPHERE
-	if ( IsSetEF(EF_Specific) )
-	{
-		g_Log.Event(LOGM_SAVE, "Statics data NOT saved due to EF_Specific flag.\n");
-		return;
-	}
-#endif
 	try
 	{
 		if ( !g_Cfg.m_fSaveGarbageCollect )
@@ -2480,8 +2473,6 @@ void CWorld::OnTick()
 		return;
 
 	TIME_PROFILE_INIT;
-	if ( IsSetSpecific )
-		TIME_PROFILE_START;
 
 	if ( g_Cfg.m_iFeatureSA & FEATURE_SA_MOVEMENT )
 	{
@@ -2581,15 +2572,6 @@ void CWorld::OnTick()
 			m_timeCallUserFunc = GetCurrentTime() + g_Cfg.m_iTimerCall*60*TICK_PER_SEC;
 			CScriptTriggerArgs args(g_Cfg.m_iTimerCall);
 			g_Serv.r_Call("f_onserver_timer", &g_Serv, &args);
-		}
-	}
-	if ( IsSetSpecific )
-	{
-		TIME_PROFILE_END;
-		LONGLONG hi = TIME_PROFILE_GET_HI;
-		if ( hi > 50L )
-		{
-			DEBUG_ERR(("CWorld::OnTick() [ticking sectors] took %lld.%lld to run\n", static_cast<INT64>(hi), static_cast<INT64>(TIME_PROFILE_GET_LO)));
 		}
 	}
 }
