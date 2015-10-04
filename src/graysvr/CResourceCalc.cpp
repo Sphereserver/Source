@@ -42,33 +42,49 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 		return 1;
 
 	int iSwingSpeedIncrease = static_cast<int>(pChar->GetDefNum("INCREASESWINGSPEED", true));
-	int iBaseSpeed = 50;	//Wrestling speed
+	int iBaseSpeed = 50;	// Base speed = Wrestling speed.
+	if ( pWeapon )			// If we have a weapon, base speed should match weapon's value.
+		iBaseSpeed = pWeapon->GetSpeed();
 
 	switch ( g_Cfg.m_iCombatSpeedEra )
 	{
-		case 0:
+		case 0:	// OLD (55r and lower) formula using DEX and: a)Speed if set on weapon or b)calculating delay from weapon's weight if speed not set (taking in count if weapon is 2h)
 		{
-			// Sphere custom formula
-			int iSwingSpeed = 0;
 			if ( pWeapon )
-				iSwingSpeed = (g_Cfg.m_iSpeedScaleFactor * TICK_PER_SEC) / ((pChar->Stat_GetAdjusted(STAT_DEX) + 100) * iBaseSpeed);
-			else
-				iSwingSpeed = 5 + IMULDIV(100 - pChar->Stat_GetAdjusted(STAT_DEX), 40, 100);	// wrestling just use DEX range (0 ~ 40)
-			if ( iSwingSpeed < 5 )
-				iSwingSpeed = 5;
-			return iSwingSpeed;
+			{
+				if (iBaseSpeed)
+				{
+					int iWaitTime = (TICK_PER_SEC * g_Cfg.m_iSpeedScaleFactor) / ((pChar->Stat_GetAdjusted(STAT_DEX) + 100) * iBaseSpeed);
+					return ( iWaitTime < 5 ? 5 : iWaitTime ); // Never less than 5 tenths, even removing the '5' limit it should never be less than 0 or CChar will get SetTimeout(-1) and stop attack.
+				}
+			}
 
-			// Legacy pre-AOS formula	(default m_iSpeedScaleFactor = 15000)
-			/*int iSwingSpeed = maximum(1, (pChar->Stat_GetVal(STAT_DEX) + 100) * iBaseSpeed);
-			iSwingSpeed = (g_Cfg.m_iSpeedScaleFactor * TICK_PER_SEC) / iSwingSpeed;
-			return iSwingSpeed;*/
+			// Base speed is just your DEX range=40 to 0
+			int iWaitTime = IMULDIV(100 - pChar->Stat_GetAdjusted(STAT_DEX), 40, 100);
+			if (iWaitTime < 5)	// no-one needs to be this fast.
+				iWaitTime = 5;
+			else
+				iWaitTime += 5;
+
+			// Speed of the weapon as well effected by strength (minor).
+
+			if ( pWeapon )
+			{
+				int iWeaponWait = (pWeapon->GetWeight() * 10) / (4 * WEIGHT_UNITS);	// tenths of a stone.
+				if (pWeapon->GetEquipLayer() == LAYER_HAND2)	// 2 handed is slower
+				{
+					iWeaponWait += iWaitTime / 2;
+				}
+				iWaitTime += iWeaponWait;
+			}
+			else
+				iWaitTime += 2;
+			return iWaitTime;
 		}
 
 		case 1:
 		{
 			// AOS formula		(default m_iSpeedScaleFactor = 40000)
-			if (pWeapon)			//Weapon speed
-				iBaseSpeed = pWeapon->GetSpeed();
 			int iSwingSpeed = (pChar->Stat_GetVal(STAT_DEX) + 100) * iBaseSpeed;
 			iSwingSpeed = maximum(1, iSwingSpeed * (100 + iSwingSpeedIncrease) / 100);
 			iSwingSpeed = ((g_Cfg.m_iSpeedScaleFactor * TICK_PER_SEC) / iSwingSpeed) / 2;
@@ -81,8 +97,6 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 		case 2:
 		{
 			// SE formula		(default m_iSpeedScaleFactor = 80000)
-			if (pWeapon)			//Weapon speed
-				iBaseSpeed = pWeapon->GetSpeed();
 			int iSwingSpeed = maximum(1, iBaseSpeed * (100 + iSwingSpeedIncrease) / 100);
 			iSwingSpeed = (g_Cfg.m_iSpeedScaleFactor / ((pChar->Stat_GetVal(STAT_DEX) + 100) * iSwingSpeed)) - 2;	// get speed in ticks of 0.25s each
 			if ( iSwingSpeed < 5 )
@@ -94,8 +108,6 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 		case 3:
 		{
 			// ML formula		(doesn't use m_iSpeedScaleFactor and it's only compatible with ML speed format eg. 0.25 ~ 5.00 instead 0 ~ 50)
-			if (pWeapon)			//Weapon speed
-				iBaseSpeed = pWeapon->GetSpeed();
 			int iSwingSpeed = ((iBaseSpeed * 4) - (pChar->Stat_GetVal(STAT_DEX) / 30)) * (100 / (100 + iSwingSpeedIncrease));	// get speed in ticks of 0.25s each
 			if ( iSwingSpeed < 5 )
 				iSwingSpeed = 5;

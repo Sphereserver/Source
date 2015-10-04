@@ -3200,7 +3200,10 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	//  WAR_SWING_EQUIPPING	= recoiling weapon / swing made
 	//  WAR_SWING_READY		= can't take my swing right now. but I'm ready to hit
 	//  WAR_SWING_SWINGING	= taking my swing now
-	
+
+	if ( !pCharTarg || pCharTarg == this )
+		return WAR_SWING_INVALID;
+
 	DAMAGE_TYPE iTyp = DAMAGE_HIT_BLUNT;
 
 	if ( IsTrigUsed(TRIGGER_HITCHECK) )
@@ -3268,9 +3271,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			return WAR_SWING_EQUIPPING;
 		}
 	}
-
-	if ( !pCharTarg || pCharTarg == this )
-		return WAR_SWING_INVALID;
 
 	// Very basic check on possibility to hit
 	if ( IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Freeze|STATF_Stone) || pCharTarg->IsStatFlag(STATF_DEAD|STATF_INVUL|STATF_Stone|STATF_Ridden) )
@@ -3466,12 +3466,16 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			iSwingDelay = static_cast<int>(Args.m_iN1);
 			anim = static_cast<ANIM_TYPE>(Args.m_VarsLocal.GetKeyNum("Anim", false));
 			animDelay = static_cast<int>(Args.m_VarsLocal.GetKeyNum("AnimDelay", true));
+			if ( iSwingDelay < 0 )
+				iSwingDelay = 0;
 			if ( animDelay < 0 )
 				animDelay = 0;
 		}
 
 		m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
 		m_atFight.m_NextSwingDelay = iSwingDelay - animDelay;
+		if ( m_atFight.m_NextSwingDelay < 1 )
+			m_atFight.m_NextSwingDelay = 1;
 
 		if ( IsSetCombatFlags(COMBAT_PREHIT) )
 		{
