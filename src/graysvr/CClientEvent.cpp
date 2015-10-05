@@ -2403,6 +2403,9 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 		}
 		else
 		{
+			if ( GetNetState()->isClientVersion(MINCLIVER_TOL) && m_pChar->GetDist(pChar) <= 2 )
+				m_pPopupPacket->addOption(POPUP_TRADE_OPEN, 1077728, POPUPFLAG_COLOR, 0xFFFF);
+
 			if ( m_pChar->m_pParty == NULL && pChar->m_pParty == NULL )
 				m_pPopupPacket->addOption(POPUP_PARTY_ADD, 197, POPUPFLAG_COLOR, 0xFFFF);
 			else if ( m_pChar->m_pParty != NULL && m_pChar->m_pParty->IsPartyMaster(m_pChar) )
@@ -2542,6 +2545,10 @@ void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do somethin
 
 		case POPUP_TRADE_REFUSE:
 			m_pChar->SetDefNum("REFUSETRADES", 1);
+			break;
+
+		case POPUP_TRADE_OPEN:
+			Cmd_SecureTrade(pChar, NULL);
 			break;
 
 		case POPUP_BANKBOX:

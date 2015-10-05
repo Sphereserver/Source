@@ -1377,7 +1377,7 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 	// Begin secure trading with a char. (Make the initial offer)
 	ASSERT(m_pChar);
 
-	if ( pChar && (IsTrigUsed(TRIGGER_DROPON_CHAR) || IsTrigUsed(TRIGGER_ITEMDROPON_CHAR)) )
+	if ( pChar && pItem && (IsTrigUsed(TRIGGER_DROPON_CHAR) || IsTrigUsed(TRIGGER_ITEMDROPON_CHAR)) )
 	{
 		CScriptTriggerArgs Args(pChar);
 		if ( pItem->OnTrigger( ITRIG_DROPON_CHAR, m_pChar, &Args ) == TRIGRET_RET_TRUE )
@@ -1385,7 +1385,7 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 	}
 
 	if ( pChar->m_pNPC )	// NPC's can't use trade windows
-		return pChar->NPC_OnItemGive(m_pChar, pItem);
+		return pItem ? pChar->NPC_OnItemGive(m_pChar, pItem) : false;
 	else if ( !pChar->IsClient() )	// and also offline players
 		return false;
 
@@ -1396,30 +1396,31 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 	}
 
 	// Check if the trade window is already open
-	CItem * pItemCont = m_pChar->GetContentHead();
-	for ( ; pItemCont != NULL; pItemCont = pItemCont->GetNext() )
+	for ( CItem *pItemCont = m_pChar->GetContentHead(); pItemCont != NULL; pItemCont = pItemCont->GetNext() )
 	{
 		if ( !pItemCont->IsType(IT_EQ_TRADE_WINDOW) )
 			continue;
 
-		CItem * pItemPartner = pItemCont->m_uidLink.ItemFind();
+		CItem *pItemPartner = pItemCont->m_uidLink.ItemFind();
 		if ( pItemPartner == NULL )
 			continue;
 
-		CChar * pCharPartner = dynamic_cast<CChar*>(pItemPartner->GetParent());
+		CChar *pCharPartner = dynamic_cast<CChar*>(pItemPartner->GetParent());
 		if ( pCharPartner != pChar )
 			continue;
 
-		if ( IsTrigUsed(TRIGGER_DROPON_TRADE) )
+		if ( pItem )
 		{
-			CScriptTriggerArgs Args1(pChar);
-			if ( pItem->OnTrigger( ITRIG_DROPON_TRADE, this , &Args1 ) == TRIGRET_RET_TRUE )
-				return false;
+			if ( IsTrigUsed(TRIGGER_DROPON_TRADE) )
+			{
+				CScriptTriggerArgs Args1(pChar);
+				if ( pItem->OnTrigger(ITRIG_DROPON_TRADE, this, &Args1) == TRIGRET_RET_TRUE )
+					return false;
+			}
+			CItemContainer *pCont = dynamic_cast<CItemContainer*>(pItemCont);
+			if ( pCont )
+				pCont->ContentAdd(pItem);
 		}
-
-		CItemContainer * pCont = dynamic_cast<CItemContainer*>(pItemCont);
-		ASSERT(pCont);
-		pCont->ContentAdd(pItem);
 		return true;
 	}
 
@@ -1431,18 +1432,18 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 			return false;
 	}
 
-	if ( IsTrigUsed(TRIGGER_DROPON_TRADE) )
+	if ( IsTrigUsed(TRIGGER_DROPON_TRADE) && pItem )
 	{
 		CScriptTriggerArgs Args1(pChar);
 		if ( pItem->OnTrigger(ITRIG_DROPON_TRADE, this, &Args1) == TRIGRET_RET_TRUE )
 			return false;
 	}
 
-	CItem * pItem1 = CItem::CreateBase(ITEMID_Bulletin1);
+	CItem *pItem1 = CItem::CreateBase(ITEMID_Bulletin1);
 	if ( !pItem1 )
 		return false;
 
-	CItemContainer * pCont1 = dynamic_cast<CItemContainer*>(pItem1);
+	CItemContainer *pCont1 = dynamic_cast<CItemContainer*>(pItem1);
 	if ( !pCont1 )
 	{
 		DEBUG_ERR(("Item 0%x must be a container type to enable player trading.\n", ITEMID_Bulletin1));
@@ -1450,7 +1451,7 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 		return false; 
 	}
 
-	CItemContainer * pCont2 = dynamic_cast<CItemContainer*>(CItem::CreateBase(ITEMID_Bulletin1));
+	CItemContainer *pCont2 = dynamic_cast<CItemContainer*>(CItem::CreateBase(ITEMID_Bulletin1));
 	ASSERT(pCont2);
 
 	pCont1->SetName("Trade Window");
@@ -1486,17 +1487,20 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 	LogOpenedContainer(pCont2);
 	pChar->GetClient()->LogOpenedContainer(pCont1);
 
-	if ( IsTrigUsed(TRIGGER_DROPON_TRADE) )
+	if ( pItem )
 	{
-		CScriptTriggerArgs Args1(pChar);
-		if ( pItem->OnTrigger( ITRIG_DROPON_TRADE, this , &Args1 ) == TRIGRET_RET_TRUE )
+		if ( IsTrigUsed(TRIGGER_DROPON_TRADE) )
 		{
-			pCont1->Delete();
-			pCont2->Delete();
-			return false;
+			CScriptTriggerArgs Args1(pChar);
+			if ( pItem->OnTrigger(ITRIG_DROPON_TRADE, this, &Args1) == TRIGRET_RET_TRUE )
+			{
+				pCont1->Delete();
+				pCont2->Delete();
+				return false;
+			}
 		}
+		CPointMap pt(30, 30, 9);
+		pCont1->ContentAdd(pItem, pt);
 	}
-	CPointMap pt(30, 30, 9);
-	pCont1->ContentAdd(pItem, pt);
 	return true;
 }

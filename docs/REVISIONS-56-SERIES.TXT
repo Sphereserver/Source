@@ -2675,4 +2675,5 @@ Added: Basic support for UO Time of Legends (TOL)
 	-Added RESDISP 9 (TOL) support.
 	-Added VIRTUALGOLD / VIRTUALPLATINUM functions to store virtual gold/platinum of chars. Although these values can be set, there's nothing using it yet.
 	-Added support for the new trade window changes (still incomplete / not working).
+	-Added new 'Trade' popup button to open a trade window when click on another player (enabled only on TOL clients 7.0.46.0+)
 	[sphere_admin.scp]: Added 'admin_resdisp_9' def.
