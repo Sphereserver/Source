@@ -1453,11 +1453,13 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 	CItemContainer * pCont2 = dynamic_cast<CItemContainer*>(CItem::CreateBase(ITEMID_Bulletin1));
 	ASSERT(pCont2);
 
+	pCont1->SetName("Trade Window");
 	pCont1->SetType(IT_EQ_TRADE_WINDOW);
 	pCont1->m_itEqTradeWindow.m_fCheck = 0;
 	pCont1->m_uidLink = pCont2->GetUID();
 	m_pChar->LayerAdd(pCont1, LAYER_SPECIAL);
 
+	pCont2->SetName("Trade Window");
 	pCont2->SetType(IT_EQ_TRADE_WINDOW);
 	pCont2->m_itEqTradeWindow.m_fCheck = 0;
 	pCont2->m_uidLink = pCont1->GetUID();
@@ -1468,6 +1470,18 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 	cmd.send(this);
 	cmd.prepareContainerOpen(m_pChar, pCont2, pCont1);
 	cmd.send(pChar->GetClient());
+
+	PacketTradeAction cmd2(SECURE_TRADE_UPDATELEDGER);
+	if ( GetNetState()->isClientVersion(MINCLIVER_NEWSECURETRADE) )
+	{
+		cmd2.prepareUpdateLedger(pCont1, static_cast<DWORD>(m_pChar->m_virtualGold), static_cast<DWORD>(m_pChar->m_virtualPlatinum));
+		cmd2.send(this);
+	}
+	if ( pChar->GetClient()->GetNetState()->isClientVersion(MINCLIVER_NEWSECURETRADE) )
+	{
+		cmd2.prepareUpdateLedger(pCont2, static_cast<DWORD>(pChar->m_virtualGold), static_cast<DWORD>(pChar->m_virtualPlatinum));
+		cmd2.send(pChar->GetClient());
+	}
 
 	LogOpenedContainer(pCont2);
 	pChar->GetClient()->LogOpenedContainer(pCont1);

@@ -1123,7 +1123,6 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 	skip(2); // length
 	SECURE_TRADE_TYPE action = static_cast<SECURE_TRADE_TYPE>(readByte());
 	CGrayUID containerSerial(readInt32());
-	DWORD arg = readInt32();
 
 	CItemContainer* container = dynamic_cast<CItemContainer*>( containerSerial.ItemFind() );
 	if (container == NULL)
@@ -1165,8 +1164,18 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 				}
 			}
 
+			DWORD arg = readInt32();
 			container->Trade_Status(arg != 0);
 			return true;
+		}
+
+		case SECURE_TRADE_UPDATEGOLD:	// update trade window virtual gold
+		{
+			DWORD gold = readInt32();
+			DWORD platinum = readInt32();
+			// TO-DO: function still incomplete. Honestly I don't know how this data works.
+			// Probably these gold/platinum values must be stored directly on trade window
+			// container (m_itEqTradeWindow) to transfer it on trade accept
 		}
 
 		default:

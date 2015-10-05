@@ -812,7 +812,9 @@ enum SECURE_TRADE_TYPE
 	// SecureTrade Action types.
 	SECURE_TRADE_OPEN = 0,
 	SECURE_TRADE_CLOSE = 1,
-	SECURE_TRADE_CHANGE = 2
+	SECURE_TRADE_CHANGE = 2,
+	SECURE_TRADE_UPDATEGOLD = 3,
+	SECURE_TRADE_UPDATELEDGER = 4
 };
 
 enum SEASON_TYPE
@@ -973,6 +975,7 @@ enum NOTO_TYPE
 #define MINCLIVER_ML				0x500000	// minimum client to activate ML packets (5.0.0a)
 #define MINCLIVER_SA				0x700000	// minimum client to activate SA packets (7.0.0.0)
 #define MINCLIVER_HS				0x700090	// minimum client to activate HS packets (7.0.9.0)
+#define MINCLIVER_TOL				0x700460	// minimum client to activate TOL packets (7.0.46.0)
 
 // client versions (extended status gump info)
 #define MINCLIVER_STATUS_V2			0x300084	// minimum client to receive v2 of 0x11 packet (3.0.8d)
@@ -990,6 +993,7 @@ enum NOTO_TYPE
 #define MINCLIVER_CLOSEDIALOG		0x400040	// minimum client where close dialog does not trigger a client response
 #define MINCLIVER_COMPRESSDIALOG	0x500000	// minimum client to receive zlib compressed dialogs (5.0.0a)
 #define MINCLIVER_ITEMGRID			0x600017	// minimum client to use grid index (6.0.1.7)
+#define MINCLIVER_NEWSECURETRADE	0x700460	// minimum client to use virtual gold/platinum on trade window (7.0.46.0)
 
 // client versions (packets)
 #define MAXCLIVER_REVERSEIP			0x400000	// maximum client to reverse ip in 0xA8 packet
