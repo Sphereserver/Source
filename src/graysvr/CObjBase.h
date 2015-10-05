@@ -2692,6 +2692,8 @@ public:
 	CGString m_sTitle;			// Special title such as "the guard" (replaces the normal skill title).
 	CPointMap m_ptHome;			// What is our "home" region. (towns and bounding of NPC's)
 	FONT_TYPE m_fonttype;		// Speech font to use // can client set this ?
+	int m_virtualGold;			// Virtual gold used by TOL clients
+	int m_virtualPlatinum;		// Virtual platinum used by TOL clients (1 platinum = 1.000.000.000 gold)
 
 	// In order to revert to original Hue and body.
 	CREID_TYPE m_prev_id;		// Backup of body type for ghosts and poly

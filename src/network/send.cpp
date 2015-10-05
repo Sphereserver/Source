@@ -1757,10 +1757,10 @@ PacketTradeAction::PacketTradeAction(SECURE_TRADE_TYPE action) : PacketSend(XCMD
 	ADDTOCALLSTACK("PacketTradeAction::PacketTradeAction");
 
 	initLength();
-	writeByte(static_cast<unsigned char>(action));
+	writeByte(static_cast<BYTE>(action));
 }
 
-void PacketTradeAction::prepareContainerOpen(const CChar* character, const CItem* container1, const CItem* container2)
+void PacketTradeAction::prepareContainerOpen(const CChar *character, const CItem *container1, const CItem *container2)
 {
 	ADDTOCALLSTACK("PacketTradeAction::prepareContainerOpen");
 
@@ -1772,7 +1772,7 @@ void PacketTradeAction::prepareContainerOpen(const CChar* character, const CItem
 	writeStringFixedASCII(character->GetName(), 30);
 }
 	
-void PacketTradeAction::prepareReadyChange(const CItemContainer* container1, const CItemContainer* container2)
+void PacketTradeAction::prepareReadyChange(const CItemContainer *container1, const CItemContainer *container2)
 {
 	ADDTOCALLSTACK("PacketTradeAction::prepareReadyChange");
 
@@ -1783,8 +1783,7 @@ void PacketTradeAction::prepareReadyChange(const CItemContainer* container1, con
 	writeBool(false);
 }
 
-
-void PacketTradeAction::prepareClose(const CItemContainer* container)
+void PacketTradeAction::prepareClose(const CItemContainer *container)
 {
 	ADDTOCALLSTACK("PacketTradeAction::prepareClose");
 
@@ -1792,6 +1791,28 @@ void PacketTradeAction::prepareClose(const CItemContainer* container)
 	writeInt32(container->GetUID());
 	writeInt32(0);
 	writeInt32(0);
+	writeBool(false);
+}
+
+void PacketTradeAction::prepareUpdateGold(const CItemContainer *container, DWORD gold, DWORD platinum)
+{
+	ADDTOCALLSTACK("PacketTradeAction::prepareUpdateGold");
+
+	seek(4);
+	writeInt32(container->GetUID());
+	writeInt32(gold);
+	writeInt32(platinum);
+	writeBool(false);
+}
+
+void PacketTradeAction::prepareUpdateLedger(const CItemContainer *container, DWORD gold, DWORD platinum)
+{
+	ADDTOCALLSTACK("PacketTradeAction::prepareUpdateLedger");
+
+	seek(4);
+	writeInt32(container->GetUID());
+	writeInt32(gold);
+	writeInt32(platinum);
 	writeBool(false);
 }
 
