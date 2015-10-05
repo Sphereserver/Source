@@ -9,12 +9,12 @@
 #include "CClient.h"
 #include "../network/send.h"
 
+// Get my guild stone for my guild. even if i'm just a STONEPRIV_CANDIDATE ?
+// ARGS:
+//  MemType == MEMORY_GUILD or MEMORY_TOWN
 CItemStone * CChar::Guild_Find( MEMORY_TYPE MemType ) const
 {
 	ADDTOCALLSTACK("CChar::Guild_Find");
-	// Get my guild stone for my guild. even if i'm just a STONEPRIV_CANDIDATE ?
-	// ARGS:
-	//  MemType == MEMORY_GUILD or MEMORY_TOWN
 	if ( ! m_pPlayer )
 		return( NULL );
 	CItemMemory * pMyGMem = Memory_FindTypes(static_cast<WORD>(MemType));
@@ -30,10 +30,10 @@ CItemStone * CChar::Guild_Find( MEMORY_TYPE MemType ) const
 	return( pMyStone );
 }
 
+// Get my member record for my guild.
 CStoneMember * CChar::Guild_FindMember( MEMORY_TYPE MemType ) const
 {
 	ADDTOCALLSTACK("CChar::Guild_FindMember");
-	// Get my member record for my guild.
 	CItemStone * pMyStone = Guild_Find(MemType);
 	if ( pMyStone == NULL )
 		return( NULL );
@@ -47,11 +47,11 @@ CStoneMember * CChar::Guild_FindMember( MEMORY_TYPE MemType ) const
 	return( pMember );
 }
 
+// response to "I resign from my guild" or "town"
+// Are we in an active battle ?
 void CChar::Guild_Resign( MEMORY_TYPE MemType )
 {
 	ADDTOCALLSTACK("CChar::Guild_Resign");
-	// response to "I resign from my guild" or "town"
-	// Are we in an active battle ?
 
 	if ( IsStatFlag( STATF_DEAD ))
 		return;
@@ -74,10 +74,10 @@ void CChar::Guild_Resign( MEMORY_TYPE MemType )
 	delete pMember;
 }
 
+// Get my guild abbrev if i have chosen to turn it on.
 LPCTSTR CChar::Guild_Abbrev( MEMORY_TYPE MemType ) const
 {
 	ADDTOCALLSTACK("CChar::Guild_Abbrev");
-	// Get my guild abbrev if i have chosen to turn it on.
 	CStoneMember * pMember = Guild_FindMember(MemType);
 	if ( pMember == NULL )
 		return( NULL );
@@ -90,10 +90,10 @@ LPCTSTR CChar::Guild_Abbrev( MEMORY_TYPE MemType ) const
 	return( pMyStone->GetAbbrev());
 }
 
+// Get my [guild abbrev] if i have chosen to turn it on.
 LPCTSTR CChar::Guild_AbbrevBracket( MEMORY_TYPE MemType ) const
 {
 	ADDTOCALLSTACK("CChar::Guild_AbbrevBracket");
-	// Get my [guild abbrev] if i have chosen to turn it on.
 	LPCTSTR pszAbbrev = Guild_Abbrev(MemType);
 	if ( pszAbbrev == NULL )
 		return( NULL );
@@ -104,12 +104,14 @@ LPCTSTR CChar::Guild_AbbrevBracket( MEMORY_TYPE MemType ) const
 
 //*****************************************************************
 
+// I'm a murderer?
 bool CChar::Noto_IsMurderer() const
 {
 	ADDTOCALLSTACK("CChar::Noto_IsMurderer");
 	return( m_pPlayer && m_pPlayer->m_wMurders > g_Cfg.m_iMurderMinCount );
 }
 
+// I'm evil?
 bool CChar::Noto_IsEvil() const
 {
 	ADDTOCALLSTACK("CChar::Noto_IsEvil");
@@ -160,6 +162,7 @@ bool CChar::Noto_IsEvil() const
 	return ( iKarma <= -3000 );
 }
 
+// I'm Neutral?
 bool CChar::Noto_IsNeutral() const
 {
 	ADDTOCALLSTACK("CChar::Noto_IsNeutral");
@@ -182,12 +185,13 @@ bool CChar::Noto_IsNeutral() const
 	return( iKarma<0 );
 }
 
+// What is this char to the viewer ?
+// This allows the noto attack check in the client.
+// Notoriety handler, it's saved and readed here but calculated on Noto_CalcFlag()
+// NOTO_GOOD = it is criminal to attack me.
 NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool fAllowInvul, bool bOnlyColor ) const
 {
 	ADDTOCALLSTACK("CChar::Noto_GetFlag");
-	// What is this char to the viewer ?
-	// This allows the noto attack check in the client.
-	// NOTO_GOOD = it is criminal to attack me.
 	CChar * pThis = const_cast<CChar*>(this);
 	CChar * pTarget = const_cast<CChar*>(pCharViewer);
 	NOTO_TYPE Noto;
@@ -224,6 +228,7 @@ NotoReturn:
 		return Noto;
 }
 
+// Calculate notoriety, just retrieving it ... not storing.
 NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, bool fAllowInvul ) const
 {
 	ADDTOCALLSTACK("CChar::Noto_CalcFlag");
@@ -328,11 +333,11 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 	return( NOTO_GOOD );
 }
 
+// What is this char to the viewer ?
+// Represent as a text Hue.
 HUE_TYPE CChar::Noto_GetHue( const CChar * pCharViewer, bool fIncog ) const
 {
 	ADDTOCALLSTACK("CChar::Noto_GetHue");
-	// What is this char to the viewer ?
-	// Represent as a text Hue.
 	CVarDefCont * sVal = GetKey( "NAME.HUE", true );
 	if ( sVal )
 		return  static_cast<HUE_TYPE>(sVal->GetValNum());
@@ -351,6 +356,7 @@ HUE_TYPE CChar::Noto_GetHue( const CChar * pCharViewer, bool fIncog ) const
 	}
 }
 
+// Lord, StatfLevel ...
 LPCTSTR CChar::Noto_GetFameTitle() const
 {
 	ADDTOCALLSTACK("CChar::Noto_GetFameTitle");
@@ -389,11 +395,11 @@ LPCTSTR CChar::Noto_GetFameTitle() const
 	return "";
 }
 
+// Paperdoll title for character
+// This is so we can inform user of change in title !
 int CChar::Noto_GetLevel() const
 {
 	ADDTOCALLSTACK("CChar::Noto_GetLevel");
-	// Paperdoll title for character
-	// This is so we can inform user of change in title !
 
 	size_t i = 0;
 	int iKarma = Stat_GetAdjusted(STAT_KARMA);
@@ -408,10 +414,10 @@ int CChar::Noto_GetLevel() const
 	return( ( i * (g_Cfg.m_NotoFameLevels.GetCount() + 1) ) + j );
 }
 
+// Paperdoll title for character
 LPCTSTR CChar::Noto_GetTitle() const
 {
 	ADDTOCALLSTACK("CChar::Noto_GetTitle");
-	// Paperdoll title for character
 
 	LPCTSTR pTitle = Noto_IsMurderer() ? g_Cfg.GetDefaultMsg( DEFMSG_TITLE_MURDERER ) : ( IsStatFlag(STATF_Criminal) ? g_Cfg.GetDefaultMsg( DEFMSG_TITLE_CRIMINAL ) :  g_Cfg.GetNotoTitle(Noto_GetLevel(), Char_GetDef()->IsFemale()) );
 	LPCTSTR pFameTitle = GetKeyStr("NAME.PREFIX");
@@ -430,10 +436,10 @@ LPCTSTR CChar::Noto_GetTitle() const
 	return pTemp;
 }
 
+// I am a murderer (it seems) (update my murder decay item)
 void CChar::Noto_Murder()
 {
 	ADDTOCALLSTACK("CChar::Noto_Murder");
-	// I am a murderer (it seems) (update my murder decay item)
 	if ( Noto_IsMurderer() )
 		SysMessageDefault(DEFMSG_MSG_MURDERER);
 
@@ -441,10 +447,10 @@ void CChar::Noto_Murder()
 		Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Murders, 0, g_Cfg.m_iMurderDecayTime, NULL);
 }
 
+// I am a criminal and the guards will be on my ass.
 bool CChar::Noto_Criminal( CChar * pChar )
 {
 	ADDTOCALLSTACK("CChar::Noto_Criminal");
-	// I am a criminal and the guards will be on my ass.
 	if ( IsPriv(PRIV_GM) || m_pNPC )
 		return false;
 	int decay = g_Cfg.m_iCriminalTimer;
@@ -466,6 +472,7 @@ bool CChar::Noto_Criminal( CChar * pChar )
 	return true;
 }
 
+// I've become murderer or criminal, let's see a message for it
 void CChar::Noto_ChangeDeltaMsg( int iDelta, LPCTSTR pszType )
 {
 	ADDTOCALLSTACK("CChar::Noto_ChangeDeltaMsg");
@@ -497,6 +504,7 @@ void CChar::Noto_ChangeDeltaMsg( int iDelta, LPCTSTR pszType )
 	SysMessage( pszMsg );
 }
 
+// I have a new notoriety Level? check it and show a message if so
 void CChar::Noto_ChangeNewMsg( int iPrvLevel )
 {
 	ADDTOCALLSTACK("CChar::Noto_ChangeNewMsg");
@@ -507,10 +515,11 @@ void CChar::Noto_ChangeNewMsg( int iPrvLevel )
 	}
 }
 
+// My fame changed, fire @FameChange and set new value
+// Fame should only go down on death, time or cowardice ?
 void CChar::Noto_Fame( int iFameChange )
 {
 	ADDTOCALLSTACK("CChar::Noto_Fame");
-	// Fame should only go down on death, time or cowardice ?
 
 	if ( ! iFameChange )
 		return;
@@ -545,13 +554,13 @@ void CChar::Noto_Fame( int iFameChange )
 	Stat_SetBase(STAT_FAME, static_cast<short>(iFame));
 }
 
+// iBottom is a variable where you control at what point
+// the loss for this action stop (as in stealing shouldnt
+// take you to dread ). iBottom def. to g_Cfg.m_iMinKarma if you leave
+// it out.
 void CChar::Noto_Karma( int iKarmaChange, int iBottom, bool bMessage )
 {
 	ADDTOCALLSTACK("CChar::Noto_Karma");
-	// iBottom is a variable where you control at what point
-	// the loss for this action stop (as in stealing shouldnt
-	// take you to dread ). iBottom def. to g_Cfg.m_iMinKarma if you leave
-	// it out.
 
 	int	iKarma = Stat_GetAdjusted(STAT_KARMA);
 	iKarmaChange = g_Cfg.Calc_KarmaScale( iKarma, iKarmaChange );
@@ -595,11 +604,11 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom, bool bMessage )
 
 extern unsigned int Calc_ExpGet_Exp(unsigned int);
 
+// I participated in killing pKill CChar. (called from Death())
+// I Get some fame/karma. (maybe)
 void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iTotalKillers)
 {
 	ADDTOCALLSTACK("CChar::Noto_Kill");
-	// I participated in killing pKill CChar. (called from Death())
-	// I Get some fame/karma. (maybe)
 
 	if ( !pKill )
 		return;
@@ -690,11 +699,11 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iTotalKillers)
 	Noto_ChangeNewMsg(iPrvLevel);	// inform any title changes
 }
 
+// pChar is retrieving my notoriety, I'm going to store what I have to send him on my list.
+// value is the notoriety value I have for him
+// color (if specified) is the color override sent in packets.
 void CChar::NotoSave_Add( CChar * pChar, NOTO_TYPE value, NOTO_TYPE color  )
 {
-	// pChar is retrieving my notoriety, I'm going to store what I have to send him on my list.
-	// value is the notoriety value I have for him
-	// color (if specified) is the color override sent in packets.
 	ADDTOCALLSTACK("CChar::NotoSave_Add");
 	if ( !pChar )
 		return;
@@ -722,11 +731,11 @@ void CChar::NotoSave_Add( CChar * pChar, NOTO_TYPE value, NOTO_TYPE color  )
 	refNoto.color = color;
 	m_notoSaves.push_back(refNoto);
 }
-	
+
+// Retrieves the stored notoriety this character has for selected ID player
+// bGetcolor retrieves only color value (for movement packets updating it)
 NOTO_TYPE CChar::NotoSave_GetValue( int id, bool bGetColor )
 {
-	// Retrieves the stored notoriety this character has for selected ID player
-	// bGetcolor retrieves only color value (for movement packets updating it)
 	ADDTOCALLSTACK("CChar::NotoSave_GetValue");
 	if ( !m_notoSaves.size() )
 		return NOTO_INVALID;
@@ -741,6 +750,7 @@ NOTO_TYPE CChar::NotoSave_GetValue( int id, bool bGetColor )
 		return refNotoSave.value;
 }
 
+// Retrieves how much time the value nID for this char has
 INT64 CChar::NotoSave_GetTime( int id )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_GetTime");
@@ -754,6 +764,7 @@ INT64 CChar::NotoSave_GetTime( int id )
 	return refNotoSave.time;
 }
 
+// A notoriety value for pChar was calculated, storing it.
 void CChar::NotoSave_SetValue( CChar * pChar, NOTO_TYPE value )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_SetValue(CChar)");
@@ -768,6 +779,7 @@ void CChar::NotoSave_SetValue( CChar * pChar, NOTO_TYPE value )
 	refNotoSave.value = value;
 }
 
+// A notoriety value for nID char was calculated, storing it.
 void CChar::NotoSave_SetValue( int pChar, NOTO_TYPE value)
 {
 	ADDTOCALLSTACK("CChar::NotoSave_SetValue(int)");
@@ -781,6 +793,7 @@ void CChar::NotoSave_SetValue( int pChar, NOTO_TYPE value)
 	refNotoSave.value = value;
 }
 
+// Clearing all notoriety data
 void CChar::NotoSave_Clear()
 {
 	ADDTOCALLSTACK("CChar::NotoSave_Clear");
@@ -788,6 +801,7 @@ void CChar::NotoSave_Clear()
 		m_notoSaves.clear();
 }
 
+// Clearing notoriety and update myself so everyone checks my noto again.
 void CChar::NotoSave_Update()
 {
 	ADDTOCALLSTACK("CChar::NotoSave_Update");
@@ -796,9 +810,9 @@ void CChar::NotoSave_Update()
 	ResendTooltip();
 }
 
+// called from CChar::OnTick() to update the timers and refresh the list when expired.
 void CChar::NotoSave_CheckTimeout()
 {
-	// called from CChar::OnTick() to update the timers and refresh the list when expired.
 	ADDTOCALLSTACK("CChar::NotoSave_CheckTimeout");
 	if (g_Cfg.m_iNotoTimeout <= 0)	// No value = no expiration.
 		return;
@@ -819,6 +833,7 @@ void CChar::NotoSave_CheckTimeout()
 	}
 }
 
+// Deleting myself and sending data again for given char
 void CChar::NotoSave_Resend( int id )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_Resend()");
@@ -838,6 +853,7 @@ void CChar::NotoSave_Resend( int id )
 		Noto_GetFlag( pChar, true , true );
 }
 
+// Retrieving the nID on the list for the given CChar
 int CChar::NotoSave_GetID( CChar * pChar )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_GetID(CChar)");
@@ -860,6 +876,7 @@ int CChar::NotoSave_GetID( CChar * pChar )
 	return -1;
 }
 
+// Retrieving the nID on the list for the given uid. Mostly a direct call from <attacker.getid <uid>> (script access).
 int CChar::NotoSave_GetID( CGrayUID pChar )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_GetID(CGrayUID)");
@@ -882,6 +899,7 @@ int CChar::NotoSave_GetID( CGrayUID pChar )
 	return -1;
 }
 
+// Get uid from 'index'
 CChar * CChar::NotoSave_GetUID( int index )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_GetUID");
@@ -894,6 +912,7 @@ CChar * CChar::NotoSave_GetUID( int index )
 	return pChar;
 }
 
+//Remove data from pChar
 bool CChar::NotoSave_Delete( CChar * pChar )
 {		
 	ADDTOCALLSTACK("CChar::NotoSave_Delete");
@@ -919,10 +938,10 @@ bool CChar::NotoSave_Delete( CChar * pChar )
 //***************************************************************
 // Memory this char has about something in the world.
 
+// Reset the check timer based on the type of memory.
 bool CChar::Memory_UpdateFlags( CItemMemory * pMemory )
 {
 	ADDTOCALLSTACK("CChar::Memory_UpdateFlags");
-	// Reset the check timer based on the type of memory.
 
 	ASSERT(pMemory);
 	ASSERT(pMemory->IsType(IT_EQ_MEMORY_OBJ));
@@ -951,11 +970,11 @@ bool CChar::Memory_UpdateFlags( CItemMemory * pMemory )
 	return( true );
 }
 
+// Just clear these flags but do not delete the memory.
+// RETURN: true = still useful memory.
 bool CChar::Memory_UpdateClearTypes( CItemMemory * pMemory, WORD MemTypes )
 {
 	ADDTOCALLSTACK("CChar::Memory_UpdateClearTypes");
-	// Just clear these flags but do not delete the memory.
-	// RETURN: true = still useful memory.
 	ASSERT(pMemory);
 
 	WORD wPrvMemTypes = pMemory->GetMemoryTypes();
@@ -975,6 +994,7 @@ bool CChar::Memory_UpdateClearTypes( CItemMemory * pMemory, WORD MemTypes )
 	return fMore && Memory_UpdateFlags( pMemory );
 }
 
+// Adding a new flag to the given pMemory
 void CChar::Memory_AddTypes( CItemMemory * pMemory, WORD MemTypes )
 {
 	ADDTOCALLSTACK("CChar::Memory_AddTypes");
@@ -987,10 +1007,10 @@ void CChar::Memory_AddTypes( CItemMemory * pMemory, WORD MemTypes )
 	}
 }
 
+// Clear the memory object of this type.
 bool CChar::Memory_ClearTypes( CItemMemory * pMemory, WORD MemTypes )
 {
 	ADDTOCALLSTACK("CChar::Memory_ClearTypes");
-	// Clear this memory object of this type.
 	if ( pMemory )
 	{
 		if ( Memory_UpdateClearTypes( pMemory, MemTypes ))
@@ -1000,12 +1020,12 @@ bool CChar::Memory_ClearTypes( CItemMemory * pMemory, WORD MemTypes )
 	return false;
 }
 
+// Create a memory about this object.
+// NOTE: Does not check if object already has a memory.!!!
+//  Assume it does not !
 CItemMemory * CChar::Memory_CreateObj( CGrayUID uid, WORD MemTypes )
 {
 	ADDTOCALLSTACK("CChar::Memory_CreateObj");
-	// Create a memory about this object.
-	// NOTE: Does not check if object already has a memory.!!!
-	//  Assume it does not !
 
 	CItemMemory * pMemory = dynamic_cast <CItemMemory *>(CItem::CreateBase( ITEMID_MEMORY ));
 	if ( pMemory == NULL )
@@ -1020,10 +1040,10 @@ CItemMemory * CChar::Memory_CreateObj( CGrayUID uid, WORD MemTypes )
 	return( pMemory );
 }
 
+// Remove all the memories of this type.
 void CChar::Memory_ClearTypes( WORD MemTypes )
 {
 	ADDTOCALLSTACK("CChar::Memory_ClearTypes");
-	// Remove all the memories of this type.
 	CItem* pItemNext;
 	CItem* pItem=GetContentHead();
 	for ( ; pItem!=NULL; pItem=pItemNext)
@@ -1038,10 +1058,10 @@ void CChar::Memory_ClearTypes( WORD MemTypes )
 	}
 }
 
+// Do I have a memory / link for this object ?
 CItemMemory * CChar::Memory_FindObj( CGrayUID uid ) const
 {
 	ADDTOCALLSTACK("CChar::Memory_FindObj");
-	// Do I have a memory / link for this object ?
 	CItem* pItem=GetContentHead();
 	for ( ; pItem!=NULL; pItem=pItem->GetNext())
 	{
@@ -1054,11 +1074,11 @@ CItemMemory * CChar::Memory_FindObj( CGrayUID uid ) const
 	return( NULL );
 }
 
+// Do we have a certain type of memory.
+// Just find the first one.
 CItemMemory * CChar::Memory_FindTypes( WORD MemTypes ) const
 {
 	ADDTOCALLSTACK("CChar::Memory_FindTypes");
-	// Do we have a certain type of memory.
-	// Just find the first one.
 	if ( ! MemTypes )
 		return( NULL );
 	CItem* pItem=GetContentHead();
@@ -1071,6 +1091,7 @@ CItemMemory * CChar::Memory_FindTypes( WORD MemTypes ) const
 	return( NULL );
 }
 
+// Looping through all memories ( ForCharMemoryType ).
 TRIGRET_TYPE CChar::OnCharTrigForMemTypeLoop( CScript &s, CTextConsole * pSrc, CScriptTriggerArgs * pArgs, CGString * pResult, WORD wMemType )
 {
 	ADDTOCALLSTACK("CChar::OnCharTrigForMemTypeLoop");
@@ -1115,6 +1136,7 @@ TRIGRET_TYPE CChar::OnCharTrigForMemTypeLoop( CScript &s, CTextConsole * pSrc, C
 	return( TRIGRET_ENDIF );
 }
 
+// Adding a new value for this memory, updating notoriety
 CItemMemory * CChar::Memory_AddObjTypes( CGrayUID uid, WORD MemTypes )
 {
 	ADDTOCALLSTACK("CChar::Memory_AddObjTypes");
@@ -1128,11 +1150,11 @@ CItemMemory * CChar::Memory_AddObjTypes( CGrayUID uid, WORD MemTypes )
 	return( pMemory );
 }
 
+// NOTE: Do not return true unless u update the timer !
+// RETURN: false = done with this memory.
 bool CChar::Memory_OnTick( CItemMemory * pMemory )
 {
 	ADDTOCALLSTACK("CChar::Memory_OnTick");
-	// NOTE: Do not return true unless u update the timer !
-	// RETURN: false = done with this memory.
 	ASSERT(pMemory);
 
 	CObjBase * pObj = pMemory->m_uidLink.ObjFind();
@@ -1153,10 +1175,10 @@ bool CChar::Memory_OnTick( CItemMemory * pMemory )
 
 //////////////////////////////////////////////////////////////////////////////
 
+// I noticed a crime.
 void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 {
 	ADDTOCALLSTACK("CChar::OnNoticeCrime");
-	// I noticed a crime.
 	ASSERT(pCriminal);
 	if (pCriminal == this)
 		return;
@@ -1229,14 +1251,14 @@ void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 	CallGuards( pCriminal );
 }
 
+// I am commiting a crime.
+// Did others see me commit or try to commit the crime.
+//  SkillToSee = NONE = everyone can notice this.
+// RETURN:
+//  true = somebody saw me.
 bool CChar::CheckCrimeSeen( SKILL_TYPE SkillToSee, CChar * pCharMark, const CObjBase * pItem, LPCTSTR pAction )
 {
 	ADDTOCALLSTACK("CChar::CheckCrimeSeen");
-	// I am commiting a crime.
-	// Did others see me commit or try to commit the crime.
-	//  SkillToSee = NONE = everyone can notice this.
-	// RETURN:
-	//  true = somebody saw me.
 
 	bool fSeen = false;
 
@@ -1316,12 +1338,12 @@ bool CChar::CheckCrimeSeen( SKILL_TYPE SkillToSee, CChar * pCharMark, const CObj
 	return( fSeen );
 }
 
+// Assume the container is not locked.
+// return: true = snoop or can't open at all.
+//  false = instant open.
 bool CChar::Skill_Snoop_Check( const CItemContainer * pItem )
 {
 	ADDTOCALLSTACK("CChar::Skill_Snoop_Check");
-	// Assume the container is not locked.
-	// return: true = snoop or can't open at all.
-	//  false = instant open.
 
 	if ( pItem == NULL )
 		return( true );
@@ -1366,15 +1388,15 @@ bool CChar::Skill_Snoop_Check( const CItemContainer * pItem )
 	return( true );
 }
 
+// SKILL_SNOOPING
+// m_Act_Targ = object to snoop into.
+// RETURN:
+// -SKTRIG_QTY = no chance. and not a crime
+// -SKTRIG_FAIL = no chance and caught.
+// 0-100 = difficulty = percent chance of failure.
 int CChar::Skill_Snooping( SKTRIG_TYPE stage )
 {
 	ADDTOCALLSTACK("CChar::Skill_Snooping");
-	// SKILL_SNOOPING
-	// m_Act_Targ = object to snoop into.
-	// RETURN:
-	// -SKTRIG_QTY = no chance. and not a crime
-	// -SKTRIG_FAIL = no chance and caught.
-	// 0-100 = difficulty = percent chance of failure.
 
 	if ( stage == SKTRIG_STROKE )
 		return( 0 );
@@ -1432,16 +1454,14 @@ int CChar::Skill_Snooping( SKTRIG_TYPE stage )
 	return( 0 );
 }
 
+// m_Act_Targ = object to steal.
+// RETURN:
+// -SKTRIG_QTY = no chance. and not a crime
+// -SKTRIG_FAIL = no chance and caught.
+// 0-100 = difficulty = percent chance of failure.
 int CChar::Skill_Stealing( SKTRIG_TYPE stage )
 {
 	ADDTOCALLSTACK("CChar::Skill_Stealing");
-	// m_Act_Targ = object to steal.
-	// RETURN:
-	// -SKTRIG_QTY = no chance. and not a crime
-	// -SKTRIG_FAIL = no chance and caught.
-	// 0-100 = difficulty = percent chance of failure.
-	//
-
 	if ( stage == SKTRIG_STROKE )
 		return( 0 );
 
@@ -1591,10 +1611,10 @@ cantsteal:
 	return( 0 );
 }
 
+// I just yelled for guards.
 void CChar::CallGuards( CChar * pCriminal )
 {
 	ADDTOCALLSTACK("CChar::CallGuards");
-	// I just yelled for guards.
 	if ( !m_pArea || (pCriminal == this) )
 		return;
 	if ( IsStatFlag(STATF_DEAD) || (pCriminal && (pCriminal->IsStatFlag(STATF_DEAD) || pCriminal->IsPriv(PRIV_GM))) )
@@ -1716,12 +1736,12 @@ void CChar::CallGuards( CChar * pCriminal )
 	}
 }
 
+// i notice a Crime or attack against me ..
+// Actual harm has taken place.
+// Attack back.
 void CChar::OnHarmedBy( CChar * pCharSrc )
 {
 	ADDTOCALLSTACK("CChar::OnHarmedBy");
-	// i notice a Crime or attack against me ..
-	// Actual harm has taken place.
-	// Attack back.
 
 	bool fFightActive = Fight_IsActive();
 	Memory_AddObjTypes(pCharSrc, MEMORY_HARMEDBY);
@@ -1743,19 +1763,19 @@ void CChar::OnHarmedBy( CChar * pCharSrc )
 	Fight_Attack(pCharSrc);
 }
 
+// We have been attacked in some way by this CChar.
+// Might not actually be doing any real damage. (yet)
+//
+// They may have just commanded their pet to attack me.
+// Cast a bad spell at me.
+// Fired projectile at me.
+// Attempted to provoke me ?
+//
+// RETURN: true = ok.
+//  false = we are immune to this char ! (or they to us)
 bool CChar::OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fCommandPet, bool fShouldReveal)
 {
 	ADDTOCALLSTACK("CChar::OnAttackedBy");
-	// We have been attacked in some way by this CChar.
-	// Might not actually be doing any real damage. (yet)
-	//
-	// They may have just commanded their pet to attack me.
-	// Cast a bad spell at me.
-	// Fired projectile at me.
-	// Attempted to provoke me ?
-	//
-	// RETURN: true = ok.
-	//  false = we are immune to this char ! (or they to us)
 	UNREFERENCED_PARAMETER(iHarmQty);
 
 	if ( pCharSrc == NULL )
@@ -1815,11 +1835,11 @@ struct CArmorLayerType
 	const LAYER_TYPE * m_pLayers;
 };
 
+// OSI doesn't damage ARMOR_BACK and ARMOR_FEET at all.
+// But for backward compatibility, I decreased ARMOR_CHEST (-10%) and increased
+// ARMOR_BACK (+5%) and ARMOR_FEET (+5%) just to keep them getting some damage
 static const CArmorLayerType sm_ArmorLayers[ARMOR_QTY] =	// layers covering the armor zone.
 {
-	// OSI doesn't damage ARMOR_BACK and ARMOR_FEET at all.
-	// But for backward compatibility, I decreased ARMOR_CHEST (-10%) and increased
-	// ARMOR_BACK (+5%) and ARMOR_FEET (+5%) just to keep them getting some damage
 	{ 15,	sm_ArmorLayerHead },	// ARMOR_HEAD
 	{ 7,	sm_ArmorLayerNeck },	// ARMOR_NECK
 	{ 5,	sm_ArmorLayerBack },	// ARMOR_BACK
@@ -1830,12 +1850,12 @@ static const CArmorLayerType sm_ArmorLayers[ARMOR_QTY] =	// layers covering the 
 	{ 5,	sm_ArmorLayerFeet }		// ARMOR_FEET
 };
 
+// When armor is added or subtracted check this.
+// This is the general AC number printed.
+// Tho not really used to compute damage.
 int CChar::CalcArmorDefense() const
 {
 	ADDTOCALLSTACK("CChar::CalcArmorDefense");
-	// When armor is added or subtracted check this.
-	// This is the general AC number printed.
-	// Tho not really used to compute damage.
 
 	int iDefenseTotal = 0;
 	int iArmorCount = 0;
@@ -1982,25 +2002,25 @@ int CChar::CalcArmorDefense() const
 	return maximum(( iDefenseTotal / 100 ) + m_ModAr, 0);
 }
 
+// Someone hit us.
+// iDmg already defined, here we just apply armor related calculations
+//
+// uType: damage flags
+//  DAMAGE_GOD
+//  DAMAGE_HIT_BLUNT
+//  DAMAGE_MAGIC
+//  ...
+//
+// iDmg[Physical/Fire/Cold/Poison/Energy]: % of each type to split the damage into
+//  Eg: iDmgPhysical=70 + iDmgCold=30 will split iDmg value into 70% physical + 30% cold
+//
+// RETURN: damage done
+//  -1		= already dead / invalid target.
+//  0		= no damage.
+//  INT_MAX	= killed.
 int CChar::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType, int iDmgPhysical, int iDmgFire, int iDmgCold, int iDmgPoison, int iDmgEnergy )
 {
 	ADDTOCALLSTACK("CChar::OnTakeDamage");
-	// Someone hit us.
-	// iDmg already defined, here we just apply armor related calculations
-	//
-	// uType: damage flags
-	//  DAMAGE_GOD
-	//  DAMAGE_HIT_BLUNT
-	//  DAMAGE_MAGIC
-	//  ...
-	//
-	// iDmg[Physical/Fire/Cold/Poison/Energy]: % of each type to split the damage into
-	//  Eg: iDmgPhysical=70 + iDmgCold=30 will split iDmg value into 70% physical + 30% cold
-	//
-	// RETURN: damage done
-	//  -1		= already dead / invalid target.
-	//  0		= no damage.
-	//  INT_MAX	= killed.
 
 	if ( pSrc == NULL )
 		pSrc = this;
@@ -2272,10 +2292,10 @@ effect_bounce:
 //*******************************************************************************
 // Fight specific memories.
 
+// The fight is over because somebody ran away.
 void CChar::Memory_Fight_Retreat( CChar * pTarg, CItemMemory * pFight )
 {
 	ADDTOCALLSTACK("CChar::Memory_Fight_Retreat");
-	// The fight is over because somebody ran away.
 	if ( pTarg == NULL || pTarg->IsStatFlag( STATF_DEAD ))
 		return;
 
@@ -2301,12 +2321,12 @@ void CChar::Memory_Fight_Retreat( CChar * pTarg, CItemMemory * pFight )
 		Noto_Fame( -1 );
 }
 
+// Check on the status of the fight.
+// return: false = delete the memory completely.
+//  true = skip it.
 bool CChar::Memory_Fight_OnTick( CItemMemory * pMemory )
 {
 	ADDTOCALLSTACK("CChar::Memory_Fight_OnTick");
-	// Check on the status of the fight.
-	// return: false = delete the memory completely.
-	//  true = skip it.
 
 	ASSERT(pMemory);
 	CChar * pTarg = pMemory->m_uidLink.CharFind();
@@ -2404,20 +2424,20 @@ void CChar::Memory_Fight_Start( const CChar * pTarg )
 
 //********************************************************
 
+// What sort of weapon am i using?
 SKILL_TYPE CChar::Fight_GetWeaponSkill() const
 {
 	ADDTOCALLSTACK("CChar::Fight_GetWeaponSkill");
-	// What sort of weapon am i using?
 	CItem * pWeapon = m_uidWeapon.ItemFind();
 	if ( pWeapon == NULL )
 		return( SKILL_WRESTLING );
 	return( pWeapon->Weapon_GetSkill());
 }
 
+// Am i in an active fight mode ?
 bool CChar::Fight_IsActive() const
 {
 	ADDTOCALLSTACK("CChar::Fight_IsActive");
-	// Am i in an active fight mode ?
 	if ( ! IsStatFlag(STATF_War))
 		return( false );
 
@@ -2442,6 +2462,7 @@ bool CChar::Fight_IsActive() const
 	return g_Cfg.IsSkillFlag( iSkillActive, SKF_FIGHT );
 }
 
+// Calculating base DMG (also used for STATUS value)
 int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax ) const
 {
 	ADDTOCALLSTACK("CChar::Fight_CalcDamage");
@@ -2561,11 +2582,11 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 		return( Calc_GetRandVal2(iDmgMin, iDmgMax) );
 }
 
+// Clear all my active targets. Toggle out of war mode.
+// Should I add @CombatEnd trigger here too?
 void CChar::Fight_ClearAll()
 {
 	ADDTOCALLSTACK("CChar::Fight_ClearAll");
-	// Clear all my active targets. Toggle out of war mode.
-	// Should I add @CombatEnd trigger here too?
 	for ( CItem * pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
 		if ( !pItem->IsMemoryTypes(MEMORY_WAR_TARG) )
@@ -2585,11 +2606,11 @@ void CChar::Fight_ClearAll()
 	UpdateModeFlag();
 }
 
+// Find the best target to attack.
+// Switch to this new target even if I'm already attacking someone.
 CChar * CChar::Fight_FindBestTarget()
 {
 	ADDTOCALLSTACK("CChar::Fight_FindBestTarget");
-	// Find the best target to attack.
-	// Switch to this new target even if I'm already attacking someone.
 	if ( Attacker() )
 	{
 		if ( !m_lastAttackers.size() )
@@ -2662,10 +2683,10 @@ CChar * CChar::Fight_FindBestTarget()
 	return NULL;
 }
 
+// I no longer want to attack this char.
 bool CChar::Fight_Clear(const CChar *pChar, bool bForced)
 {
 	ADDTOCALLSTACK("CChar::Fight_Clear");
-	// I no longer want to attack this char.
 	if ( ! pChar )
 		return false;
 
@@ -2685,14 +2706,14 @@ bool CChar::Fight_Clear(const CChar *pChar, bool bForced)
 	return (pChar != NULL);	// I did not know about this ?
 }
 
+// We want to attack some one.
+// But they won't notice til we actually hit them.
+// This is just my intent.
+// RETURN:
+//  true = new attack is accepted.
 bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 {
 	ADDTOCALLSTACK("CChar::Fight_Attack");
-	// We want to attack some one.
-	// But they won't notice til we actually hit them.
-	// This is just my intent.
-	// RETURN:
-	//  true = new attack is accepted.
 
 	if ( pCharTarg == NULL || pCharTarg == this || pCharTarg->IsDisconnected() || !CanSee(pCharTarg) || pCharTarg->IsStatFlag(STATF_DEAD) || IsStatFlag(STATF_DEAD) )
 	{
@@ -2754,12 +2775,12 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	return true;
 }
 
+// A timer has expired so try to take a hit.
+// I am ready to swing or already swinging.
+// but i might not be close enough.
 void CChar::Fight_HitTry()
 {
 	ADDTOCALLSTACK("CChar::Fight_HitTry");
-	// A timer has expired so try to take a hit.
-	// I am ready to swing or already swinging.
-	// but i might not be close enough.
 
 	ASSERT( Fight_IsActive() );
 	ASSERT( m_atFight.m_War_Swing_State == (WAR_SWING_READY|WAR_SWING_SWINGING) );
@@ -2801,6 +2822,7 @@ void CChar::Fight_HitTry()
 
 	ASSERT(0);
 }
+// Add some enemy to my Attacker list
 bool CChar::Attacker_Add( CChar * pChar, INT64 threat )
 {
 	ADDTOCALLSTACK("CChar::Attacker_Add");
@@ -2862,6 +2884,7 @@ bool CChar::Attacker_Add( CChar * pChar, INT64 threat )
 	return true;
 }
 
+// Retrieves damage done to nID enemy
 INT64 CChar::Attacker_GetDam( int id)
 {
 	ADDTOCALLSTACK("CChar::Attacker_GetDam");
@@ -2873,6 +2896,7 @@ INT64 CChar::Attacker_GetDam( int id)
 	return refAttacker.amountDone;
 }
 
+// Retrieves the amount of time elapsed since the last hit to nID enemy
 INT64 CChar::Attacker_GetElapsed( int id)
 {
 	ADDTOCALLSTACK("CChar::Attacker_GetElapsed");
@@ -2886,6 +2910,7 @@ INT64 CChar::Attacker_GetElapsed( int id)
 	return refAttacker.elapsed;
 }
 
+// Retrieves Threat value that nID enemy represents against me
 INT64 CChar::Attacker_GetThreat( int id)
 {
 	ADDTOCALLSTACK("CChar::Attacker_GetThreat");
@@ -2897,6 +2922,7 @@ INT64 CChar::Attacker_GetThreat( int id)
 	return refAttacker.threat ? refAttacker.threat : 0;
 }
 
+// Retrieves the character with most Threat
 INT64 CChar::Attacker_GetHighestThreat()
 {
 	if ( !m_lastAttackers.size() )
@@ -2911,6 +2937,7 @@ INT64 CChar::Attacker_GetHighestThreat()
 	return highThreat;
 }
 
+// Retrieves the last character that I hit
 CChar * CChar::Attacker_GetLast()
 {
 	INT64 dwLastTime = INT_MAX, dwCurTime = 0;
@@ -2929,6 +2956,7 @@ CChar * CChar::Attacker_GetLast()
 	return retChar;
 }
 
+// Set elapsed time (refreshing it?)
 void CChar::Attacker_SetElapsed( CChar * pChar, INT64 value)
 {
 	ADDTOCALLSTACK("CChar::Attacker_SetElapsed(CChar)");
@@ -2937,6 +2965,7 @@ void CChar::Attacker_SetElapsed( CChar * pChar, INT64 value)
 }
 
 
+// Set elapsed time (refreshing it?)
 void CChar::Attacker_SetElapsed( int pChar, INT64 value)
 {
 	ADDTOCALLSTACK("CChar::Attacker_SetElapsed(int)");
@@ -2950,6 +2979,7 @@ void CChar::Attacker_SetElapsed( int pChar, INT64 value)
 	refAttacker.elapsed = value;
 }
 
+// Damaged pChar
 void CChar::Attacker_SetDam( CChar * pChar, INT64 value)
 {
 	ADDTOCALLSTACK("CChar::Attacker_SetDam(CChar)");
@@ -2958,6 +2988,7 @@ void CChar::Attacker_SetDam( CChar * pChar, INT64 value)
 }
 
 
+// Damaged pChar
 void CChar::Attacker_SetDam( int pChar, INT64 value)
 {
 	ADDTOCALLSTACK("CChar::Attacker_SetDam(int)");
@@ -2971,6 +3002,7 @@ void CChar::Attacker_SetDam( int pChar, INT64 value)
 	refAttacker.amountDone = value;
 }
 
+// New Treat level
 void CChar::Attacker_SetThreat(CChar * pChar, INT64 value)
 {
 	ADDTOCALLSTACK("CChar::Attacker_SetThreat(CChar)");
@@ -2978,7 +3010,7 @@ void CChar::Attacker_SetThreat(CChar * pChar, INT64 value)
 	return Attacker_SetThreat(Attacker_GetID(pChar), value);
 }
 
-
+// New Treat level
 void CChar::Attacker_SetThreat(int pChar, INT64 value)
 {
 	ADDTOCALLSTACK("CChar::Attacker_SetThreat(int)");
@@ -2994,6 +3026,7 @@ void CChar::Attacker_SetThreat(int pChar, INT64 value)
 	refAttacker.threat = value;
 }
 
+// Ignoring this pChar on Hit checks
 void CChar::Attacker_SetIgnore(CChar * pChar, bool fIgnore)
 {
 	ADDTOCALLSTACK("CChar::Attacker_SetIgnore(CChar)");
@@ -3001,7 +3034,7 @@ void CChar::Attacker_SetIgnore(CChar * pChar, bool fIgnore)
 	return Attacker_SetIgnore(Attacker_GetID(pChar), fIgnore);
 }
 
-
+// Ignoring this pChar on Hit checks
 void CChar::Attacker_SetIgnore(int pChar, bool fIgnore)
 {
 	ADDTOCALLSTACK("CChar::Attacker_SetIgnore(int)");
@@ -3015,12 +3048,14 @@ void CChar::Attacker_SetIgnore(int pChar, bool fIgnore)
 	refAttacker.ignore = fIgnore;
 }
 
+// I'm ignoring pChar?
 bool CChar::Attacker_GetIgnore(CChar * pChar)
 {
 	ADDTOCALLSTACK("CChar::Attacker_GetIgnore(CChar)");
 	return Attacker_GetIgnore(Attacker_GetID(pChar));
 }
 
+// I'm ignoring pChar?
 bool CChar::Attacker_GetIgnore(int id)
 {
 	ADDTOCALLSTACK("CChar::Attacker_GetIgnore(int)");
@@ -3034,6 +3069,7 @@ bool CChar::Attacker_GetIgnore(int id)
 	return (refAttacker.ignore != 0);
 }
 
+// Clear the whole attacker's list, combat ended.
 void CChar::Attacker_Clear()
 {
 	ADDTOCALLSTACK("CChar::Attacker_Clear");
@@ -3052,6 +3088,7 @@ void CChar::Attacker_Clear()
 	UpdateModeFlag();
 }
 
+// Get nID value of attacker list from the given pChar
 int CChar::Attacker_GetID( CChar * pChar )
 {
 	ADDTOCALLSTACK("CChar::Attacker_GetID(CChar)");
@@ -3077,12 +3114,14 @@ int CChar::Attacker_GetID( CChar * pChar )
 	return -1;
 }
 
+// Get nID value of attacker list from the given pChar
 int CChar::Attacker_GetID( CGrayUID pChar )
 {
 	ADDTOCALLSTACK("CChar::Attacker_GetID(CGrayUID)");
 	return Attacker_GetID( pChar.CharFind()->GetChar() );
 }
 
+// Get UID value of attacker list from the given pChar
 CChar * CChar::Attacker_GetUID( int index )
 {
 	ADDTOCALLSTACK("CChar::Attacker_GetUID");
@@ -3094,6 +3133,8 @@ CChar * CChar::Attacker_GetUID( int index )
 	CChar * pChar = static_cast<CChar*>( static_cast<CGrayUID>( refAttacker.charUID ).CharFind() );
 	return pChar;
 }
+
+// Removing nID from list
 bool CChar::Attacker_Delete( int index, bool bForced, ATTACKER_CLEAR_TYPE type )
 {
 	ADDTOCALLSTACK("CChar::Attacker_Delete(int)");
@@ -3135,6 +3176,7 @@ bool CChar::Attacker_Delete( int index, bool bForced, ATTACKER_CLEAR_TYPE type )
 	return true;
 }
 
+// Removing pChar from list
 bool CChar::Attacker_Delete(CChar * pChar, bool bForced, ATTACKER_CLEAR_TYPE type)
 {		
 	ADDTOCALLSTACK("CChar::Attacker_Delete(CChar)");
@@ -3145,6 +3187,7 @@ bool CChar::Attacker_Delete(CChar * pChar, bool bForced, ATTACKER_CLEAR_TYPE typ
 	return Attacker_Delete( Attacker_GetID( pChar), bForced, type );
 }
 
+// Removing everyone
 void CChar::Attacker_RemoveChar()
 {
 	ADDTOCALLSTACK("CChar::Attacker_RemoveChar");
@@ -3161,6 +3204,7 @@ void CChar::Attacker_RemoveChar()
 	}
 }
 
+// Checking if Elapsed > serv.AttackerTimeout
 void CChar::Attacker_CheckTimeout()
 {
 	ADDTOCALLSTACK("CChar::Attacker_CheckTimeout");
@@ -3179,6 +3223,7 @@ void CChar::Attacker_CheckTimeout()
 	}
 }
 
+// Distance from which I can hit
 int CChar::CalcFightRange( CItem * pWeapon )
 {
 	ADDTOCALLSTACK("CChar::CalcFightRange");
@@ -3190,16 +3235,18 @@ int CChar::CalcFightRange( CItem * pWeapon )
 }
 
 
+// Attempt to hit our target.
+// Calculating damage
+// Damaging target ( OnTakeDamage() / @GetHit )
+// pCharTarg = the target.
+// RETURN:
+//  WAR_SWING_INVALID	= target is invalid
+//  WAR_SWING_EQUIPPING	= recoiling weapon / swing made
+//  WAR_SWING_READY		= can't take my swing right now. but I'm ready to hit
+//  WAR_SWING_SWINGING	= taking my swing now
 WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 {
 	ADDTOCALLSTACK("CChar::Fight_Hit");
-	// Attempt to hit our target.
-	// pCharTarg = the target.
-	// RETURN:
-	//  WAR_SWING_INVALID	= target is invalid
-	//  WAR_SWING_EQUIPPING	= recoiling weapon / swing made
-	//  WAR_SWING_READY		= can't take my swing right now. but I'm ready to hit
-	//  WAR_SWING_SWINGING	= taking my swing now
 
 	if ( !pCharTarg || pCharTarg == this )
 		return WAR_SWING_INVALID;

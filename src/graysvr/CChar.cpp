@@ -196,19 +196,19 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY+1] =	// static
 /////////////////////////////////////////////////////////////////
 // -CChar
 
+// Create the "basic" NPC. Not NPC or player yet.
+// NOTE: NEVER return NULL
 CChar * CChar::CreateBasic(CREID_TYPE baseID) // static
 {
 	ADDTOCALLSTACK("CChar::CreateBasic");
-	// Create the "basic" NPC. Not NPC or player yet.
-	// NOTE: NEVER return NULL
 	return new CChar(baseID);
 }
 
+// Create an NPC
+// NOTE: NEVER return NULL
 CChar * CChar::CreateNPC( CREID_TYPE baseID )	// static
 {
 	ADDTOCALLSTACK("CChar::CreateNPC");
-	// Create an NPC
-	// NOTE: NEVER return NULL
 	CChar * pChar = CreateBasic(baseID);
 	ASSERT(pChar);
 	pChar->NPC_LoadScript(true);
@@ -294,7 +294,8 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 	ASSERT(IsDisconnected());
 }
 
-CChar::~CChar() // Delete character
+// Delete character
+CChar::~CChar() 
 {
 	DeletePrepare();	// remove me early so virtuals will work.
 	if ( IsStatFlag( STATF_Ridden ))
@@ -329,10 +330,10 @@ CChar::~CChar() // Delete character
 	g_Serv.StatDec( SERV_STAT_CHARS );
 }
 
+// Client is detaching from this CChar.
 void CChar::ClientDetach()
 {
 	ADDTOCALLSTACK("CChar::ClientDetach");
-	// Client is detaching from this CChar.
 	
 	// remove all trade windows.
 	for ( CItem *pItem = GetContentHead(); pItem ; )
@@ -367,10 +368,10 @@ void CChar::ClientDetach()
 	m_pClient = NULL;
 }
 
+// Client is Attaching to this CChar.
 void CChar::ClientAttach( CClient * pClient )
 {
 	ADDTOCALLSTACK("CChar::ClientAttach");
-	// Client is Attaching to this CChar.
 	if ( GetClient() == pClient )
 		return;
 	if ( ! SetPlayerAccount( pClient->GetAccount()))	// i now own this char.
@@ -384,10 +385,10 @@ void CChar::ClientAttach( CClient * pClient )
 	FixClimbHeight();
 }
 
+// Client logged out or NPC is dead.
 void CChar::SetDisconnected()
 {
 	ADDTOCALLSTACK("CChar::SetDisconnected");
-	// Client logged out or NPC is dead.
 	if ( IsClient())
 	{
 		GetClient()->GetNetState()->markReadClosed();
@@ -405,6 +406,8 @@ void CChar::SetDisconnected()
 	GetTopSector()->m_Chars_Disconnect.InsertHead( this );
 }
 
+// Called before Delete()
+// @Destroy can prevent the deletion
 bool CChar::NotifyDelete()
 {
 	if ( IsTrigUsed(TRIGGER_DESTROY) )
@@ -439,10 +442,11 @@ void CChar::Delete(bool bforce)
 	CObjBase::Delete();
 }
 
+// Is there something wrong with this char?
+// RETURN: invalid code.
 int CChar::IsWeird() const
 {
 	ADDTOCALLSTACK_INTENSIVE("CChar::IsWeird");
-	// RETURN: invalid code.
 	int iResultCode = CObjBase::IsWeird();
 	if ( iResultCode )
 		return iResultCode;
@@ -502,6 +506,8 @@ int CChar::IsWeird() const
 
 	return( 0 );
 }
+
+// Get the Z we should be at
 signed char CChar::GetFixZ( CPointMap pt, unsigned long wBlockFlags)
 {
 	if (! wBlockFlags )
@@ -553,15 +559,15 @@ signed char CChar::GetFixZ( CPointMap pt, unsigned long wBlockFlags)
 	return(block.m_Bottom.m_z);
 }
 
+// Clean up weird flags.
+// fix Weirdness.
+// NOTE:
+//  Deleting a player char is VERY BAD ! Be careful !
+//
+// RETURN: false = i can't fix this.
 int CChar::FixWeirdness()
 {
 	ADDTOCALLSTACK("CChar::FixWeirdness");
-	// Clean up weird flags.
-	// fix Weirdness.
-	// NOTE:
-	//  Deleting a player char is VERY BAD ! Be careful !
-	//
-	// RETURN: false = i can't fix this.
 
 	int iResultCode = CObjBase::IsWeird();
 	if ( iResultCode )
@@ -705,10 +711,10 @@ int CChar::FixWeirdness()
 	return IsWeird();
 }
 
+// Creating a new char. (Not loading from save file) Make sure things are set to reasonable values.
 void CChar::CreateNewCharCheck()
 {
 	ADDTOCALLSTACK("CChar::CreateNewCharCheck");
-	// Creating a new char. (Not loading from save file) MAke sure things are set to reasonable values.
 	m_prev_id = GetID();
 	m_prev_Hue = GetHue();
 
@@ -753,6 +759,8 @@ void CChar::CreateNewCharCheck()
 		SetTimeout(1);
 	}
 }
+
+
 bool CChar::DupeFrom( CChar * pChar, bool fNewbieItems )
 {
 	// CChar part
@@ -911,6 +919,7 @@ bool CChar::DupeFrom( CChar * pChar, bool fNewbieItems )
 	return true;
 }
 
+// Reading triggers from CHARDEF
 bool CChar::ReadScriptTrig(CCharBase * pCharDef, CTRIG_TYPE trig, bool bVendor)
 {
 	ADDTOCALLSTACK("CChar::ReadScriptTrig");
@@ -922,12 +931,12 @@ bool CChar::ReadScriptTrig(CCharBase * pCharDef, CTRIG_TYPE trig, bool bVendor)
 	return ReadScript(s, bVendor);
 }
 
+// If this is a regen they will have a pack already.
+// RETURN:
+//  true = default return. (mostly ignored).
 bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 {
 	ADDTOCALLSTACK("CChar::ReadScript");
-	// If this is a regen they will have a pack already.
-	// RETURN:
-	//  true = default return. (mostly ignored).
 	bool fFullInterp		= false;
 
 	CItem * pItem = NULL;
@@ -1043,10 +1052,10 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 	return( true );
 }
 
+// Create an NPC from script.
 void CChar::NPC_LoadScript( bool fRestock )
 {
 	ADDTOCALLSTACK("CChar::NPC_LoadScript");
-	// Create an NPC from script.
 	if ( m_pNPC == NULL )
 		// Set a default brian type til we get the real one from scripts.
 		SetNPCBrain(GetNPCBrain(false));	// should have a default brain. watch out for override vendor.
@@ -1072,6 +1081,7 @@ void CChar::NPC_LoadScript( bool fRestock )
 	CreateNewCharCheck();	//This one is giving stats, etc to the char, so we can read/set them in the next triggers.
 }
 
+// @Create trigger, NPC version
 void CChar::NPC_CreateTrigger()
 {
 	ADDTOCALLSTACK("CChar::NPC_CreateTrigger");
@@ -1135,14 +1145,12 @@ height_t CChar::GetHeightMount( bool fEyeSubstract ) const
 		height += 4;
 	if ( fEyeSubstract )
 		--height;
-	//DEBUG_ERR(("Height %d\n",Height));
 	return ( height ); //if mounted +4, if not -1 (let's say it's eyes' height)
 }
 
 height_t CChar::GetHeight() const
 {
 	ADDTOCALLSTACK("CChar::GetHeight");
-	//DEBUG_ERR(("m_height %d\n",m_height));
 	if ( m_height ) //set by a dynamic variable (On=@Create  Height=10)
 		return m_height;
 
@@ -1150,7 +1158,6 @@ height_t CChar::GetHeight() const
 
 	CCharBase * pCharDef = Char_GetDef();
 	tmpHeight = pCharDef->GetHeight();
-	//DEBUG_ERR(("1 tmpHeight %d\n",tmpHeight));
 	if ( tmpHeight ) //set by a chardef variable ([CHARDEF 10]  Height=10)
 		return tmpHeight;
 
@@ -1158,25 +1165,22 @@ height_t CChar::GetHeight() const
 
 	sprintf(heightDef, "height_0%x", static_cast<unsigned int>(pCharDef->GetDispID()));
 	tmpHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(heightDef));
-	//DEBUG_ERR(("2 tmpHeight %d\n",tmpHeight));
 	if ( tmpHeight ) //set by a defname ([DEFNAME charheight]  height_0a)
 		return tmpHeight;
 
 	sprintf(heightDef, "height_%u", static_cast<unsigned int>(pCharDef->GetDispID()));
 	tmpHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(heightDef));
-	//DEBUG_ERR(("3 tmpHeight %d\n",tmpHeight));
 	if ( tmpHeight ) //set by a defname ([DEFNAME charheight]  height_10)
 		return tmpHeight;
 
-	//DEBUG_ERR(("PLAYER_HEIGHT %d\n",PLAYER_HEIGHT));
 	return PLAYER_HEIGHT; //if everything fails
 }
 
+// Just set the base id and not the actual display id.
+// NOTE: Never return NULL
 void CChar::SetID( CREID_TYPE id )
 {
 	ADDTOCALLSTACK("CChar::SetID");
-	// Just set the base id and not the actual display id.
-	// NOTE: Never return NULL
 
 	CCharBase * pCharDef = CCharBase::FindCharBase(id);
 	if ( pCharDef == NULL )
@@ -1218,10 +1222,10 @@ void CChar::SetID( CREID_TYPE id )
 	UpdateMode(NULL, true);
 }
 
+// Create a brand new Player char. Called directly from the packet.
 void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc  )
 {
 	ADDTOCALLSTACK("CChar::InitPlayer");
-	// Create a brand new Player char.
 	ASSERT(pClient);
 	UNREFERENCED_PARAMETER(prProf);
 
@@ -3941,6 +3945,7 @@ lbl_cchar_ontriggerspeech:
 	return false;
 }
 
+// Gaining exp
 unsigned int Calc_ExpGet_Exp(unsigned int level)
 {
 	unsigned int exp = 0;
@@ -3960,6 +3965,7 @@ unsigned int Calc_ExpGet_Exp(unsigned int level)
 	return exp;
 }
 
+// Increasing level
 unsigned int Calc_ExpGet_Level(unsigned int exp)
 {
 	unsigned int level = 0; // current level
@@ -3989,6 +3995,7 @@ unsigned int Calc_ExpGet_Level(unsigned int exp)
 	return level;
 }
 
+// We killed a character, starting exp calcs
 void CChar::ChangeExperience(int delta, CChar *pCharDead)
 {
 	ADDTOCALLSTACK("CChar::ChangeExperience");
@@ -4113,6 +4120,7 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 	}
 }
 
+// returns <SkillTotal>
 int CChar::GetSkillTotal(int what, bool how)
 {
 	ADDTOCALLSTACK("CChar::GetSkillTotal");

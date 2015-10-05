@@ -39,11 +39,11 @@ CCharBase::CCharBase( CREID_TYPE id ) :
 	SetResDispDnId(CREID_MAN);
 }
 
+// From "Bill the carpenter" or "#HUMANMALE the Carpenter",
+// Get "Carpenter"
 LPCTSTR CCharBase::GetTradeName() const
 {
 	ADDTOCALLSTACK("CCharBase::GetTradeName");
-	// From "Bill the carpenter" or "#HUMANMALE the Carpenter",
-	// Get "Carpenter"
 	LPCTSTR pName = CBaseBaseDef::GetTypeName();
 	if ( pName[0] != '#' )
 		return( pName );
@@ -77,10 +77,10 @@ void CCharBase::CopyBasic( const CCharBase * pCharDef )
 	CBaseBaseDef::CopyBasic( pCharDef );	// This will overwrite the CResourceLink!!
 }
 
+// Setting the visual "ID" for this.
 bool CCharBase::SetDispID( CREID_TYPE id )
 {
 	ADDTOCALLSTACK("CCharBase::SetDispID");
-	// Setting the "ID" for this.
 	if ( id == GetID())
 		return true;
 	if ( id == GetDispID())
@@ -103,6 +103,7 @@ bool CCharBase::SetDispID( CREID_TYPE id )
 	return( true );
 }
 
+// Setting what do I eat
 void CCharBase::SetFoodType( LPCTSTR pszFood )
 {
 	ADDTOCALLSTACK("CCharBase::SetFoodType");
@@ -367,10 +368,10 @@ bool CCharBase::r_Load( CScript & s )
 
 ////////////////////////////////////////////
 
+// find it (or near it) if already loaded.
 CCharBase * CCharBase::FindCharBase( CREID_TYPE baseID ) // static
 {
 	ADDTOCALLSTACK("CCharBase::FindCharBase");
-	// find it (or near it) if already loaded.
 	RESOURCE_ID rid = RESOURCE_ID( RES_CHARDEF, baseID );
 	size_t index = g_Cfg.m_ResHash.FindKey(rid);
 	if ( index == g_Cfg.m_ResHash.BadIndex() )

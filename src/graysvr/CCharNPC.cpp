@@ -61,10 +61,10 @@ void CChar::ClearPlayer()
 	m_pPlayer = NULL;
 }
 
+// Set up the char as a Player.
 bool CChar::SetPlayerAccount(CAccount *pAccount)
 {
 	ADDTOCALLSTACK("CChar::SetPlayerAccount");
-	// Set up the char as a Player.
 	if ( !pAccount )
 		return false;
 
@@ -103,12 +103,10 @@ bool CChar::SetPlayerAccount( LPCTSTR pszAccName )
 	return( SetPlayerAccount( pAccount ));
 }
 
-
-
+// Set up the char as an NPC
 bool CChar::SetNPCBrain( NPCBRAIN_TYPE NPCBrain )
 {
 	ADDTOCALLSTACK("CChar::SetNPCBrain");
-	// Set up the char as an NPC
 	if ( NPCBrain == NPCBRAIN_NONE )
 		return false;
 
@@ -201,10 +199,10 @@ bool CCharPlayer::SetSkillClass( CChar * pChar, RESOURCE_ID rid )
 	return true;
 }
 
+// This should always return NON-NULL.
 CSkillClassDef * CCharPlayer::GetSkillClass() const
 {
 	ADDTOCALLSTACK("CCharPlayer::GetSkillClass");
-	// This should always return NON-NULL.
 
 	CResourceLink * pLink = m_SkillClass.GetRef();
 	if ( pLink == NULL )
@@ -212,10 +210,10 @@ CSkillClassDef * CCharPlayer::GetSkillClass() const
 	return( STATIC_CAST <CSkillClassDef *>(pLink));	
 }
 
+// only players can have skill locks.
 SKILL_TYPE CCharPlayer::Skill_GetLockType( LPCTSTR pszKey ) const
 {
 	ADDTOCALLSTACK("CCharPlayer::Skill_GetLockType");
-	// only players can have skill locks.
 
 	TCHAR szTmpKey[128];
 	strcpylen( szTmpKey, pszKey, COUNTOF(szTmpKey) );
@@ -250,10 +248,10 @@ void CCharPlayer::Skill_SetLock( SKILL_TYPE skill, SKILLLOCK_TYPE state )
 	m_SkillLock[skill] = static_cast<unsigned char>(state);
 }
 
+// only players can have stat locks.
 STAT_TYPE CCharPlayer::Stat_GetLockType( LPCTSTR pszKey ) const
 {
 	ADDTOCALLSTACK("CCharPlayer::Stat_GetLockType");
-	// only players can have skill locks.
 
 	TCHAR szTmpKey[128];
 	strcpylen( szTmpKey, pszKey, COUNTOF(szTmpKey) );
@@ -622,7 +620,8 @@ LPCTSTR const CCharPlayer::sm_szVerbKeys[CPV_QTY+1] =
 	NULL
 };
 
-bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command from script
+// Execute command from script
+bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc ) 
 {
 	ADDTOCALLSTACK("CChar::Player_OnVerb");
 	if ( !m_pPlayer )

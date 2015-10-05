@@ -7,6 +7,7 @@
 
 /////////////////////////////////////////////////////////////////////////////
 
+// Test if the character from more1 exists.
 inline CCharBase * CItemSpawn::TryChar( CREID_TYPE &id )
 {
 	ADDTOCALLSTACK("CitemSpawn:TryChar");
@@ -19,6 +20,7 @@ inline CCharBase * CItemSpawn::TryChar( CREID_TYPE &id )
 		return NULL;
 }
 
+// Test if the item from more1 exists.
 inline CItemBase * CItemSpawn::TryItem(ITEMID_TYPE &id)
 {
 	ADDTOCALLSTACK("CitemSpawn:TryItem");
@@ -30,12 +32,12 @@ inline CItemBase * CItemSpawn::TryItem(ITEMID_TYPE &id)
 		}
 		return NULL;
 }
-
+;
+// Get a proper RESOURCE_ID from the id provided.
+// RETURN: true = ok.
 CResourceDef * CItemSpawn::FixDef()
 {
-	ADDTOCALLSTACK("CitemSpawn:FixDef");
-	// Get a proper RESOURCE_ID from the id provided.
-	// RETURN: true = ok.
+	ADDTOCALLSTACK("CitemSpawn:FixDef")
 
 	RESOURCE_ID_BASE rid = ( IsType(IT_SPAWN_ITEM) ? m_itSpawnItem.m_ItemID : m_itSpawnChar.m_CharID );
 
@@ -87,6 +89,7 @@ CResourceDef * CItemSpawn::FixDef()
 	}
 }
 
+// Gets the name of the resource created (item or char).
 int CItemSpawn::GetName(TCHAR * pszOut) const
 {
 	ADDTOCALLSTACK("CitemSpawn:GetName");
@@ -128,7 +131,7 @@ CItemSpawn::~CItemSpawn()
 	//KillChildren();
 }
 
-
+// Returns created objs (items/chars).
 unsigned char CItemSpawn::GetCount()
 {
 	ADDTOCALLSTACK("CitemSpawn:GetCount");
@@ -198,7 +201,8 @@ void CItemSpawn::GenerateItem(CResourceDef * pDef)
 }
 
 
-
+// Check if the spawn can create another char
+// and create it if so
 void CItemSpawn::GenerateChar(CResourceDef * pDef)
 {
 	ADDTOCALLSTACK("CitemSpawn:GenerateChar");
@@ -441,7 +445,6 @@ LPCTSTR const CItemSpawn::sm_szLoadKeys[ISPW_QTY + 1] =
 bool CItemSpawn::r_WriteVal(LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc)
 {
 	ADDTOCALLSTACK("CitemSpawn:r_WriteVal");
-	//g_Log.EventDebug("CItemSpawnDebug::WriteVal (%s)\n",pszKey);
 	EXC_TRY("WriteVal");
 	if (!strnicmp(pszKey, "at.", 3))
 	{
@@ -538,14 +541,14 @@ void CItem::Plant_SetTimer()
 	SetTimeout( GetDecayTime() );
 }
 
+// Pick cotton/hay/etc...
+// use the
+//  IT_CROPS = transforms into a "ripe" variety then is used up on reaping.
+//  IT_FOLIAGE = is not consumed on reap (unless eaten then will regrow invis)
+//
 bool CItem::Plant_Use( CChar * pChar )
 {
 	ADDTOCALLSTACK("CItem::Plant_Use");
-	// Pick cotton/hay/etc...
-	// use the
-	//  IT_CROPS = transforms into a "ripe" variety then is used up on reaping.
-	//  IT_FOLIAGE = is not consumed on reap (unless eaten then will regrow invis)
-	//
 
 	if ( !pChar )
 		return false;
@@ -585,6 +588,7 @@ bool CItem::Plant_Use( CChar * pChar )
 	return true;
 }
 
+// timer expired, should I grow?
 bool CItem::Plant_OnTick()
 {
 	ADDTOCALLSTACK("CItem::Plant_OnTick");
@@ -657,10 +661,10 @@ bool CItem::Plant_OnTick()
 	return true;
 }
 
+// Animals will eat crops before they are ripe, so we need a way to reset them prematurely
 void CItem::Plant_CropReset()
 {
 	ADDTOCALLSTACK("CItem::Plant_CropReset");
-	// Animals will eat crops before they are ripe, so we need a way to reset them prematurely
 
 	if ( ! IsType(IT_CROPS) && ! IsType(IT_FOLIAGE))
 	{
@@ -1062,10 +1066,10 @@ void CItemCommCrystal::OnMoveFrom()
 		pSector->RemoveListenItem();
 }
 
-bool CItemCommCrystal::MoveTo(CPointMap pt, bool bForceFix ) // Put item on the ground here.
+// Move this item to it's point in the world. (ground/top level)
+bool CItemCommCrystal::MoveTo(CPointMap pt, bool bForceFix )
 {
 	ADDTOCALLSTACK("CItemCommCrystal::MoveTo");
-	// Move this item to it's point in the world. (ground/top level)
 	CSector * pSector = pt.GetSector();
 	ASSERT(pSector);
 	pSector->AddListenItem();

@@ -532,11 +532,11 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 	EXC_DEBUG_END;
 	return false;
 }
-
+;
+// do not copy CResourceLink
 void CBaseBaseDef::CopyBasic( const CBaseBaseDef * pBase )
 {
-	ADDTOCALLSTACK("CBaseBaseDef::CopyBasic");
-	// do not copy CResourceLink
+	ADDTOCALLSTACK("CBaseBaseDef::CopyBasic")
 
 	if ( m_sName.IsEmpty())	// Base type name. should set this itself most times. (don't overwrite it!)
 		m_sName = pBase->m_sName;
