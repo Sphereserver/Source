@@ -2797,6 +2797,9 @@ void CObjBase::Delete(bool bforce)
 	ADDTOCALLSTACK("CObjBase::Delete");
 	UNREFERENCED_PARAMETER(bforce);	// CObjBase doesnt use it, but CItem and CChar does use it, do not remove.
 
+	if ( m_uidSpawnItem.ItemFind() )
+		static_cast<CItemSpawn*>( m_uidSpawnItem.ItemFind() )->DelObj( GetUID() );
+
 	DeletePrepare();
 	g_World.m_TimedFunctions.Erase( GetUID() );
 	g_World.m_ObjDelete.InsertHead(this);
