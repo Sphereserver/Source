@@ -1,6 +1,0 @@
-_NAZTEST_WARTARG activates automated setting/checking of MEMORY_WAR_TARG
-
-_NAZTEST_THROW activates
-	TAG.OVERRIDE.ROCK		(item a monster throws; 0 disables throwing)
-
-
