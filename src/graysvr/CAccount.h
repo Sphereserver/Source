@@ -95,6 +95,7 @@ public:
 
 public:
 	CAccount( LPCTSTR pszName, bool fGuest = false );
+	// TODO: Why virtual? Need fix.
 	virtual ~CAccount();
 private:
 	CAccount(const CAccount& copy);

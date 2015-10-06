@@ -16,8 +16,14 @@ extern "C"
 //**********************************************************************
 // -CAccounts
 
-// ARGS:
-//   fChanges = false = trap duplicates
+/**
+* Load a single account. 
+* @see Account_LoadAll()
+* @param pszNameRaw header of ACCOUNT section.
+* @param s Arguments for account.
+* @param fChanges false = trap duplicates.
+* @return true if account is successfully loaded, false otherwise.
+*/
 bool CAccounts::Account_Load( LPCTSTR pszNameRaw, CScript & s, bool fChanges )
 {
 	ADDTOCALLSTACK("CAccounts::Account_Load");
@@ -61,7 +67,13 @@ bool CAccounts::Account_Load( LPCTSTR pszNameRaw, CScript & s, bool fChanges )
 	return true;
 }
 
-// Load the accounts file. (at start up)
+/**
+* Load account file.
+* If fChanges is true, will read accu file.
+* @param fChanges true if is an update.
+* @param fClearChanges true to clear the accu file.
+* @return true if succesfully load new accounts, false otherwise.
+*/
 bool CAccounts::Account_LoadAll( bool fChanges, bool fClearChanges )
 {
 	ADDTOCALLSTACK("CAccounts::Account_LoadAll");
@@ -116,7 +128,10 @@ bool CAccounts::Account_LoadAll( bool fChanges, bool fClearChanges )
 	return true;
 }
 
-// Save the accounts file
+/**
+* Save the accounts file.
+* @return true if successfully saved, false otherwise.
+*/
 bool CAccounts::Account_SaveAll()
 {
 	ADDTOCALLSTACK("CAccounts::Account_SaveAll");
@@ -154,7 +169,11 @@ bool CAccounts::Account_SaveAll()
 	return false;
 }
 
-// IS this new chat name already used ?
+/**
+* Check if a chat name is already used.
+* @param pszChatName string containing the name.
+* @return CAccountRef if the name is already used, NULL otherwise.
+*/
 CAccountRef CAccounts::Account_FindChat( LPCTSTR pszChatName )
 {
 	ADDTOCALLSTACK("CAccounts::Account_FindChat");
@@ -496,6 +515,13 @@ bool CAccounts::Account_OnCmd( TCHAR * pszArgs, CTextConsole * pSrc )
 // -CAccount
 
 // allow just basic chars. No spaces, only numbers, letters and underbar. -+. and single quotes ?
+/**
+* Check and sanitizes name.
+* Basically only accepts [a-zA-Z0-9_]+ string. Also check if name is obscene.
+* @param pszNameOut output string.
+* @param pszNameInp input string.
+* @return 
+*/
 bool CAccount::NameStrip( TCHAR * pszNameOut, LPCTSTR pszNameInp )
 {
 	ADDTOCALLSTACK("CAccount::NameStrip");
@@ -504,10 +530,12 @@ bool CAccount::NameStrip( TCHAR * pszNameOut, LPCTSTR pszNameInp )
 
 	if ( iLen <= 0 )
 		return false;
+	// Check for newline characters.
 	if ( strchr(pszNameOut, 0x0A) || strchr(pszNameOut, 0x0C) || strchr(pszNameOut, 0x0D) )
 		return false;
 	if ( !strcmpi(pszNameOut, "EOF") || !strcmpi(pszNameOut, "ACCOUNT") )
 		return false;
+	// Check for name already used.
 	if ( FindTableSorted(pszNameOut, CAccounts::sm_szVerbKeys, COUNTOF(CAccounts::sm_szVerbKeys)-1) >= 0 )
 		return false;
 	if ( g_Cfg.IsObscene(pszNameOut) )
