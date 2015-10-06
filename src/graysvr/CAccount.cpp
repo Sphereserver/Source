@@ -69,9 +69,9 @@ bool CAccounts::Account_Load( LPCTSTR pszNameRaw, CScript & s, bool fChanges )
 
 /**
 * Load account file.
-* If fChanges is true, will read accu file.
+* If fChanges is true, will read acct file.
 * @param fChanges true if is an update.
-* @param fClearChanges true to clear the accu file.
+* @param fClearChanges true to clear the acct file.
 * @return true if succesfully load new accounts, false otherwise.
 */
 bool CAccounts::Account_LoadAll( bool fChanges, bool fClearChanges )
@@ -186,7 +186,12 @@ CAccountRef CAccounts::Account_FindChat( LPCTSTR pszChatName )
 	return NULL;
 }
 
-// Find %s account
+/**
+* Get a CAccountRef from a valid name.
+* If the name is not valid NULL is returned.
+* @param pszName the name of the CAccount we are looking for.
+* @return CAccountRef if pszName si a valid account name and exists an CAccount with that name, Null otherwise.
+*/
 CAccountRef CAccounts::Account_Find( LPCTSTR pszName )
 {
 	ADDTOCALLSTACK("CAccounts::Account_Find");
@@ -202,8 +207,15 @@ CAccountRef CAccounts::Account_Find( LPCTSTR pszName )
 	return NULL;
 }
 
-// Find an account by this name.
-// Create one in some circumstances.
+/**
+* Get or create an Account in some circumstances.
+* If there is an Account with the provided name, the account is returned.
+* If there is not an Account with the providded name, AutoAccount is enabled in sphere.ini and the name is a valid account name, the account is created and returned.
+* Otherwise, NULL is returned.
+* @param pszName name of the account.
+* @param fAutoCreate try to create the account if not exists.
+* @return CAccountRef if account exists or created, NULL otherwise.
+*/
 CAccountRef CAccounts::Account_FindCreate( LPCTSTR pszName, bool fAutoCreate )
 {
 	ADDTOCALLSTACK("CAccounts::Account_FindCreate");
@@ -227,6 +239,12 @@ CAccountRef CAccounts::Account_FindCreate( LPCTSTR pszName, bool fAutoCreate )
 	return NULL;
 }
 
+/**
+* Remove an CAccount.
+* First try to call the f_onaccount_delete server trigger. If trigger returns true, do not remove the account and return false. If trigger returns false, remove the account and return true.
+* @param pAccount CAccount to remove.
+* @return 
+*/
 bool CAccounts::Account_Delete( CAccount * pAccount )
 {
 	ADDTOCALLSTACK("CAccounts::Account_Delete");
