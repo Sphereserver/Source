@@ -15,9 +15,9 @@ class CAccount : public CScriptObj
 	static LPCTSTR const sm_szLoadKeys[];
 private:
 	PLEVEL_TYPE m_PrivLevel;
-	CGString m_sName;			// Name = no spaces. case independant.
-	CGString m_sCurPassword;	// Accounts auto-generated but never used should not last long !
-	CGString m_sNewPassword;	// The new password will be transfered when they use it.
+	CGString m_sName;			///< Name = no spaces. case independant.
+	CGString m_sCurPassword;	///< Accounts auto-generated but never used should not last long !
+	CGString m_sNewPassword;	///< The new password will be transfered when they use it.
 
 #define PRIV_UNUSED0		0x0001
 #define PRIV_GM				0x0002	// Acts as a GM (dif from having GM level)
@@ -37,7 +37,7 @@ private:
 #define PRIV_UNUSED4		0x8000
 
 #define PRIV_UNUSED (PRIV_UNUSED0|PRIV_UNUSED1|PRIV_UNUSED2|PRIV_UNUSED3|PRIV_UNUSED4)
-	WORD m_PrivFlags;			// optional privileges for char (bit-mapped)
+	WORD m_PrivFlags;			///< optional privileges for char (bit-mapped)
 
 	BYTE m_ResDisp;
 	BYTE m_MaxChars;

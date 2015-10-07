@@ -208,9 +208,9 @@ CAccountRef CAccounts::Account_Find( LPCTSTR pszName )
 }
 
 /**
-* Get or create an Account in some circumstances.
-* If there is an Account with the provided name, the account is returned.
-* If there is not an Account with the providded name, AutoAccount is enabled in sphere.ini and the name is a valid account name, the account is created and returned.
+* Get or create an CAccount in some circumstances.
+* If there is an CAccount with the provided name, a CAccountRef of the account is returned.
+* If there is not an CAccount with the providded name, AutoAccount is enabled in sphere.ini and the name is a valid account name, a CAcount is created and a CAccountRef of the returned.
 * Otherwise, NULL is returned.
 * @param pszName name of the account.
 * @param fAutoCreate try to create the account if not exists.
@@ -263,6 +263,11 @@ bool CAccounts::Account_Delete( CAccount * pAccount )
 	return true;
 }
 
+/**
+* Add a new CAccount.
+* First call f_onaccount_create trigger. If trigger returns true, cancel creation. If triggers return false, create the CAccount.
+* @param pAccount Account to create.
+*/
 void CAccounts::Account_Add( CAccount * pAccount )
 {
 	ADDTOCALLSTACK("CAccounts::Account_Add");
@@ -284,6 +289,11 @@ void CAccounts::Account_Add( CAccount * pAccount )
 	m_Accounts.AddSortKey(pAccount,pAccount->GetName());
 }
 
+/**
+* Get a CAccountRef of an CAccount by his index.
+* @param index array index of the CAccount.
+* @return CAccountRef of the CAccount if index is valid, NULL otherwise.
+*/
 CAccountRef CAccounts::Account_Get( size_t index )
 {
 	ADDTOCALLSTACK("CAccounts::Account_Get");
@@ -292,6 +302,15 @@ CAccountRef CAccounts::Account_Get( size_t index )
 	return( CAccountRef( STATIC_CAST <CAccount *>( m_Accounts[index])));
 }
 
+/**
+* Add a new CAccount, command interface.
+* Check if extist a CAccount with the same name, and validate the name. If not exists and name is valid, create the CAccount.
+* @param pSrc command shell interface.
+* @param pszName new CAccount name.
+* @param pszArg new CAccount password.
+* @param md5 true if we need md5 to store the password.
+* @return true if CAccount creation is success, false otherwise.
+*/
 bool CAccounts::Cmd_AddNew( CTextConsole * pSrc, LPCTSTR pszName, LPCTSTR pszArg, bool md5 )
 {
 	ADDTOCALLSTACK("CAccounts::Cmd_AddNew");
@@ -324,16 +343,20 @@ bool CAccounts::Cmd_AddNew( CTextConsole * pSrc, LPCTSTR pszName, LPCTSTR pszArg
 	return true;
 }
 
+/**
+* CAccount actions.
+* This enum describes the CACcount acctions performed by command shell.
+*/
 enum VACS_TYPE
 {
-	VACS_ADD,
-	VACS_ADDMD5,
-	VACS_BLOCKED,
-	VACS_HELP,
-	VACS_JAILED,
-	VACS_UNUSED,
-	VACS_UPDATE,
-	VACS_QTY
+	VACS_ADD, ///< Add a new CAccount.
+	VACS_ADDMD5, ///< Add a new CAccount, storing the password with md5.
+	VACS_BLOCKED, ///< Bloc a CAccount.
+	VACS_HELP, ///< Show CAccount commands.
+	VACS_JAILED, ///< "Jail" the CAccount.
+	VACS_UNUSED, ///< Use a command on unused CAccount.
+	VACS_UPDATE, ///< Process the acct file to add accounts.
+	VACS_QTY ///< TODOC.
 };
 
 LPCTSTR const CAccounts::sm_szVerbKeys[] =	// CAccounts:: // account group verbs.
@@ -348,7 +371,17 @@ LPCTSTR const CAccounts::sm_szVerbKeys[] =	// CAccounts:: // account group verbs
 	NULL,
 };
 
-// do something to all the unused accounts.
+/**
+* Do something to all the unused accounts.
+* First check for accounts with an inactivity of greater or equal to pszDays. Then perform the action to that accounts.
+* If action is DELETE, the accounts with privileges will not be removed.
+* @param pSrc command shell interface.
+* @param pszDays number of days of inactivity to consider a CAccount unused.
+* @param pszVerb action to perform.
+* @param pszArgs TODOC.
+* @param dwMask discard any CAccount with this mask.
+* @return Always true.
+*/
 bool CAccounts::Cmd_ListUnused(CTextConsole * pSrc, LPCTSTR pszDays, LPCTSTR pszVerb, LPCTSTR pszArgs, DWORD dwMask)
 {
 	ADDTOCALLSTACK("CAccounts::Cmd_ListUnused");
@@ -423,7 +456,12 @@ bool CAccounts::Cmd_ListUnused(CTextConsole * pSrc, LPCTSTR pszDays, LPCTSTR psz
 	return true;
 }
 
-// Modify the accounts on line. "ACCOUNT"
+/**
+* Perform actions to accounts via command shell interface (Command ACCOUNT).
+* @param pszArgs TODOC.
+* @param pSrc command shell interface.
+* @return TODOC.
+*/
 bool CAccounts::Account_OnCmd( TCHAR * pszArgs, CTextConsole * pSrc )
 {
 	ADDTOCALLSTACK("CAccounts::Account_OnCmd");
