@@ -16,14 +16,7 @@ extern "C"
 //**********************************************************************
 // -CAccounts
 
-/**
-* Load a single account. 
-* @see Account_LoadAll()
-* @param pszNameRaw header of ACCOUNT section.
-* @param s Arguments for account.
-* @param fChanges false = trap duplicates.
-* @return true if account is successfully loaded, false otherwise.
-*/
+
 bool CAccounts::Account_Load( LPCTSTR pszNameRaw, CScript & s, bool fChanges )
 {
 	ADDTOCALLSTACK("CAccounts::Account_Load");
@@ -67,13 +60,6 @@ bool CAccounts::Account_Load( LPCTSTR pszNameRaw, CScript & s, bool fChanges )
 	return true;
 }
 
-/**
-* Load account file.
-* If fChanges is true, will read acct file.
-* @param fChanges true if is an update.
-* @param fClearChanges true to clear the acct file.
-* @return true if succesfully load new accounts, false otherwise.
-*/
 bool CAccounts::Account_LoadAll( bool fChanges, bool fClearChanges )
 {
 	ADDTOCALLSTACK("CAccounts::Account_LoadAll");
@@ -128,10 +114,7 @@ bool CAccounts::Account_LoadAll( bool fChanges, bool fClearChanges )
 	return true;
 }
 
-/**
-* Save the accounts file.
-* @return true if successfully saved, false otherwise.
-*/
+
 bool CAccounts::Account_SaveAll()
 {
 	ADDTOCALLSTACK("CAccounts::Account_SaveAll");
@@ -169,11 +152,6 @@ bool CAccounts::Account_SaveAll()
 	return false;
 }
 
-/**
-* Check if a chat name is already used.
-* @param pszChatName string containing the name.
-* @return CAccountRef if the name is already used, NULL otherwise.
-*/
 CAccountRef CAccounts::Account_FindChat( LPCTSTR pszChatName )
 {
 	ADDTOCALLSTACK("CAccounts::Account_FindChat");
@@ -186,12 +164,6 @@ CAccountRef CAccounts::Account_FindChat( LPCTSTR pszChatName )
 	return NULL;
 }
 
-/**
-* Get a CAccountRef from a valid name.
-* If the name is not valid NULL is returned.
-* @param pszName the name of the CAccount we are looking for.
-* @return CAccountRef if pszName si a valid account name and exists an CAccount with that name, Null otherwise.
-*/
 CAccountRef CAccounts::Account_Find( LPCTSTR pszName )
 {
 	ADDTOCALLSTACK("CAccounts::Account_Find");
@@ -207,15 +179,6 @@ CAccountRef CAccounts::Account_Find( LPCTSTR pszName )
 	return NULL;
 }
 
-/**
-* Get or create an CAccount in some circumstances.
-* If there is an CAccount with the provided name, a CAccountRef of the account is returned.
-* If there is not an CAccount with the providded name, AutoAccount is enabled in sphere.ini and the name is a valid account name, a CAcount is created and a CAccountRef of the returned.
-* Otherwise, NULL is returned.
-* @param pszName name of the account.
-* @param fAutoCreate try to create the account if not exists.
-* @return CAccountRef if account exists or created, NULL otherwise.
-*/
 CAccountRef CAccounts::Account_FindCreate( LPCTSTR pszName, bool fAutoCreate )
 {
 	ADDTOCALLSTACK("CAccounts::Account_FindCreate");
@@ -239,12 +202,6 @@ CAccountRef CAccounts::Account_FindCreate( LPCTSTR pszName, bool fAutoCreate )
 	return NULL;
 }
 
-/**
-* Remove an CAccount.
-* First try to call the f_onaccount_delete server trigger. If trigger returns true, do not remove the account and return false. If trigger returns false, remove the account and return true.
-* @param pAccount CAccount to remove.
-* @return 
-*/
 bool CAccounts::Account_Delete( CAccount * pAccount )
 {
 	ADDTOCALLSTACK("CAccounts::Account_Delete");
@@ -263,11 +220,6 @@ bool CAccounts::Account_Delete( CAccount * pAccount )
 	return true;
 }
 
-/**
-* Add a new CAccount.
-* First call f_onaccount_create trigger. If trigger returns true, cancel creation. If triggers return false, create the CAccount.
-* @param pAccount Account to create.
-*/
 void CAccounts::Account_Add( CAccount * pAccount )
 {
 	ADDTOCALLSTACK("CAccounts::Account_Add");
@@ -289,11 +241,6 @@ void CAccounts::Account_Add( CAccount * pAccount )
 	m_Accounts.AddSortKey(pAccount,pAccount->GetName());
 }
 
-/**
-* Get a CAccountRef of an CAccount by his index.
-* @param index array index of the CAccount.
-* @return CAccountRef of the CAccount if index is valid, NULL otherwise.
-*/
 CAccountRef CAccounts::Account_Get( size_t index )
 {
 	ADDTOCALLSTACK("CAccounts::Account_Get");
@@ -302,15 +249,6 @@ CAccountRef CAccounts::Account_Get( size_t index )
 	return( CAccountRef( STATIC_CAST <CAccount *>( m_Accounts[index])));
 }
 
-/**
-* Add a new CAccount, command interface.
-* Check if extist a CAccount with the same name, and validate the name. If not exists and name is valid, create the CAccount.
-* @param pSrc command shell interface.
-* @param pszName new CAccount name.
-* @param pszArg new CAccount password.
-* @param md5 true if we need md5 to store the password.
-* @return true if CAccount creation is success, false otherwise.
-*/
 bool CAccounts::Cmd_AddNew( CTextConsole * pSrc, LPCTSTR pszName, LPCTSTR pszArg, bool md5 )
 {
 	ADDTOCALLSTACK("CAccounts::Cmd_AddNew");
@@ -371,17 +309,6 @@ LPCTSTR const CAccounts::sm_szVerbKeys[] =	// CAccounts:: // account group verbs
 	NULL,
 };
 
-/**
-* Do something to all the unused accounts.
-* First check for accounts with an inactivity of greater or equal to pszDays. Then perform the action to that accounts.
-* If action is DELETE, the accounts with privileges will not be removed.
-* @param pSrc command shell interface.
-* @param pszDays number of days of inactivity to consider a CAccount unused.
-* @param pszVerb action to perform.
-* @param pszArgs TODOC.
-* @param dwMask discard any CAccount with this mask.
-* @return Always true.
-*/
 bool CAccounts::Cmd_ListUnused(CTextConsole * pSrc, LPCTSTR pszDays, LPCTSTR pszVerb, LPCTSTR pszArgs, DWORD dwMask)
 {
 	ADDTOCALLSTACK("CAccounts::Cmd_ListUnused");
@@ -456,12 +383,6 @@ bool CAccounts::Cmd_ListUnused(CTextConsole * pSrc, LPCTSTR pszDays, LPCTSTR psz
 	return true;
 }
 
-/**
-* Perform actions to accounts via command shell interface (Command ACCOUNT).
-* @param pszArgs TODOC.
-* @param pSrc command shell interface.
-* @return TODOC.
-*/
 bool CAccounts::Account_OnCmd( TCHAR * pszArgs, CTextConsole * pSrc )
 {
 	ADDTOCALLSTACK("CAccounts::Account_OnCmd");
@@ -570,14 +491,7 @@ bool CAccounts::Account_OnCmd( TCHAR * pszArgs, CTextConsole * pSrc )
 //**********************************************************************
 // -CAccount
 
-// allow just basic chars. No spaces, only numbers, letters and underbar. -+. and single quotes ?
-/**
-* Check and sanitizes name.
-* Basically only accepts [a-zA-Z0-9_]+ string. Also check if name is obscene.
-* @param pszNameOut output string.
-* @param pszNameInp input string.
-* @return 
-*/
+
 bool CAccount::NameStrip( TCHAR * pszNameOut, LPCTSTR pszNameInp )
 {
 	ADDTOCALLSTACK("CAccount::NameStrip");
@@ -629,8 +543,6 @@ PLEVEL_TYPE CAccount::GetPrivLevelText( LPCTSTR pszFlags ) // static
 	return static_cast<PLEVEL_TYPE>(level);
 }
 
-// Make sure the name is in valid format.
-// Assume the pszName has been stripped of all just !
 CAccount::CAccount( LPCTSTR pszName, bool fGuest )
 {
 	g_Serv.StatInc( SERV_STAT_ACCOUNTS );
@@ -657,7 +569,6 @@ CAccount::CAccount( LPCTSTR pszName, bool fGuest )
 	g_Accounts.Account_Add( this );
 }
 
-// Removing all chars from this acc
 void CAccount::DeleteChars()
 {
 	ADDTOCALLSTACK("CAccount::DeleteChars");
@@ -686,7 +597,6 @@ void CAccount::DeleteChars()
 }
 
 
-// We should go track down and delete all the chars and clients that use this account !
 CAccount::~CAccount()
 {
 	g_Serv.StatDec( SERV_STAT_ACCOUNTS );
@@ -695,14 +605,12 @@ CAccount::~CAccount()
 	ClearPasswordTries(true);
 }
 
-
 void CAccount::SetPrivLevel( PLEVEL_TYPE plevel )
 {
 	ADDTOCALLSTACK("CAccount::SetPrivLevel");
 	m_PrivLevel = plevel;	// PLEVEL_Counsel
 }
 
-// Is the account logged in.
 CClient * CAccount::FindClient( const CClient * pExclude ) const
 {
 	ADDTOCALLSTACK("CAccount::FindClient");
@@ -721,7 +629,6 @@ CClient * CAccount::FindClient( const CClient * pExclude ) const
 	return( pClient );
 }
 
-// this char is mine ?
 bool CAccount::IsMyAccountChar( const CChar * pChar ) const
 {
 	ADDTOCALLSTACK("CAccount::IsMyAccountChar");
@@ -732,7 +639,6 @@ bool CAccount::IsMyAccountChar( const CChar * pChar ) const
 	return(	pChar->m_pPlayer->GetAccount() == this );
 }
 
-// unlink the CChar from this CAccount.
 size_t CAccount::DetachChar( CChar * pChar )
 {
 	ADDTOCALLSTACK("CAccount::DetachChar");
@@ -747,7 +653,6 @@ size_t CAccount::DetachChar( CChar * pChar )
 	return( m_Chars.DetachChar( pChar ));
 }
 
-// link the char to this account.
 size_t CAccount::AttachChar( CChar * pChar )
 {
 	ADDTOCALLSTACK("CAccount::AttachChar");
@@ -768,10 +673,6 @@ size_t CAccount::AttachChar( CChar * pChar )
 	return( i );
 }
 
-// s.GetArgFlag
-// No args = toggle the flag.
-// 1 = set the flag.
-// 0 = clear the flag.
 void CAccount::TogPrivFlags( WORD wPrivFlags, LPCTSTR pszArgs )
 {
 	ADDTOCALLSTACK("CAccount::TogPrivFlags");
@@ -790,7 +691,6 @@ void CAccount::TogPrivFlags( WORD wPrivFlags, LPCTSTR pszArgs )
 	}
 }
 
-// The account just logged in.
 void CAccount::OnLogin( CClient * pClient )
 {
 	ADDTOCALLSTACK("CAccount::OnLogin");
@@ -824,7 +724,6 @@ void CAccount::OnLogin( CClient * pClient )
 	g_Log.Event( LOGM_CLIENTS_LOG, "%lx:Login '%s'\n", pClient->GetSocketID(), static_cast<LPCTSTR>(GetName()));
 }
 
-// CClient is disconnecting from this CAccount.
 void CAccount::OnLogout(CClient *pClient, bool bWasChar)
 {
 	ADDTOCALLSTACK("CAccount::OnLogout");
@@ -833,9 +732,9 @@ void CAccount::OnLogout(CClient *pClient, bool bWasChar)
 	if ( pClient->GetConnectType() == CONNECT_TELNET )// unlink the admin client.
 		g_Serv.m_iAdminClients --;
 
-													// calculate total game time. skip this calculation in
-													// case if it was login type packet. it has the same type,
-													// so we should check whatever player is attached to a char
+	// calculate total game time. skip this calculation in
+	// case if it was login type packet. it has the same type,
+	// so we should check whatever player is attached to a char
 	if ( pClient->IsConnectTypePacket() && bWasChar )
 	{
 		m_Last_Connect_Time = ( -g_World.GetTimeDiff(pClient->m_timeLogin) ) / ( TICK_PER_SEC * 60 );
