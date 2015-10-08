@@ -34,10 +34,10 @@ class CClient;
 class CAccount : public CScriptObj
 {
 	// RES_ACCOUNT
-	static LPCTSTR const sm_szVerbKeys[];
-	static LPCTSTR const sm_szLoadKeys[];
+	static LPCTSTR const sm_szVerbKeys[]; ///< Action list.
+	static LPCTSTR const sm_szLoadKeys[]; ///< Script fields.
 private:
-	PLEVEL_TYPE m_PrivLevel;
+	PLEVEL_TYPE m_PrivLevel; ///< Privileges level of the CAccount.
 	CGString m_sName; ///< Name = no spaces. case independant.
 	CGString m_sCurPassword; ///< Accounts auto-generated but never used should not last long !
 	CGString m_sNewPassword; ///< The new password will be transfered when they use it.
@@ -51,7 +51,7 @@ private:
 	typedef struct { long long m_First; long long m_Last; long long m_Delay; } TimeTriesStruct_t;
 	typedef std::pair<TimeTriesStruct_t, int> BlockLocalTimePair_t;
 	typedef std::map<DWORD,BlockLocalTimePair_t> BlockLocalTime_t;
-	BlockLocalTime_t m_BlockIP;
+	BlockLocalTime_t m_BlockIP; ///< Password tries.
 
 public:
 	static const char *m_sClassName;
@@ -74,42 +74,52 @@ public:
 	CVarDefMap m_BaseDefs;		///< New Variable storage system.
 
 public:
-	LPCTSTR GetDefStr( LPCTSTR pszKey, bool fZero = false ) const { return m_BaseDefs.GetKeyStr( pszKey, fZero ); }
-	INT64 GetDefNum( LPCTSTR pszKey, bool fZero = false ) const	{ return m_BaseDefs.GetKeyNum( pszKey, fZero );	}
-
-	void SetDefNum(LPCTSTR pszKey, INT64 iVal, bool fZero = true) 
-	{ 
-		m_BaseDefs.SetNum(pszKey, iVal, fZero);
-	}
-
-	void SetDefStr(LPCTSTR pszKey, LPCTSTR pszVal, bool fQuoted = false, bool fZero = true)
-	{
-		m_BaseDefs.SetStr(pszKey, fQuoted, pszVal, fZero);
-	}
-
-	void DeleteDef(LPCTSTR pszKey)
-	{
-		m_BaseDefs.DeleteKey(pszKey);
-	}
-
 	/**
 	* @brief Creates a new CAccount.
 	* Also sanitizes name and register de CAccount.
 	* @param pszName CAccount name.
 	* @param fGuest flag for guest accounts.
 	*/
-	CAccount( LPCTSTR pszName, bool fGuest = false );
-	
+	CAccount(LPCTSTR pszName, bool fGuest = false);
+
 private:
 	CAccount(const CAccount& copy);
 	CAccount& operator=(const CAccount& other);
 public:
+
+	LPCTSTR GetDefStr( LPCTSTR pszKey, bool fZero = false ) const { return m_BaseDefs.GetKeyStr( pszKey, fZero ); }
+	INT64 GetDefNum( LPCTSTR pszKey, bool fZero = false ) const	{ return m_BaseDefs.GetKeyNum( pszKey, fZero );	}
+	void SetDefNum(LPCTSTR pszKey, INT64 iVal, bool fZero = true) 
+	{ 
+		m_BaseDefs.SetNum(pszKey, iVal, fZero);
+	}
+	void SetDefStr(LPCTSTR pszKey, LPCTSTR pszVal, bool fQuoted = false, bool fZero = true)
+	{
+		m_BaseDefs.SetStr(pszKey, fQuoted, pszVal, fZero);
+	}
+	void DeleteDef(LPCTSTR pszKey) { m_BaseDefs.DeleteKey(pszKey); }
+
+	
 	/**
 	* @brief Remove a CAccount.
 	* We should go track down and delete all the chars and clients that use this account !
 	* TODO: Why virtual? Need fix?
 	*/
 	virtual ~CAccount();
+
+	/************************************************************************
+	* SCP related section.
+	************************************************************************/
+
+	virtual bool r_LoadVal( CScript & s );
+	virtual bool r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc );
+	virtual bool r_Verb( CScript &s, CTextConsole * pSrc );
+	virtual bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
+	void r_Write(CScript & s);
+
+	/************************************************************************
+	* Name and password related section.
+	************************************************************************/
 
 	/**
 	* @brief Check and sanitizes name.
@@ -118,35 +128,58 @@ public:
 	* @param pszNameInp input string.
 	* @return true if name is a valid account name and not repeated, false otherwise.
 	*/
-	static bool NameStrip( TCHAR * pszNameOut, LPCTSTR pszNameInp );
-
-	virtual bool r_LoadVal( CScript & s );
-	virtual bool r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc );
-	virtual bool r_Verb( CScript &s, CTextConsole * pSrc );
-	virtual bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
-	void r_Write(CScript & s);
-	bool Kick( CTextConsole * pSrc, bool fBlock );
-
-	/************************************************************************
-	* Name and password related section.
-	************************************************************************/
-
+	static bool NameStrip(TCHAR * pszNameOut, LPCTSTR pszNameInp);
+	/**
+	* @brief Get the CAccount name.
+	* @return the CAccount name.
+	*/
 	LPCTSTR GetName() const { return( m_sName ); }
+	/**
+	* @brief Get the CAccount password.
+	* @return the CAccount password.
+	*/
 	LPCTSTR GetPassword() const { return( m_sCurPassword ); }
+	/**
+	* @brief Set a new password.
+	* fires the server trigger f_onserver_pwchange. If true, return false.
+	* If password is valid, set it and return true.
+	* @return true if the password is set, false otherwise.
+	*/
 	bool SetPassword( LPCTSTR pszPassword, bool isMD5Hash = false );
-	void ClearPassword()
-	{
-		m_sCurPassword.Empty();	// can be set on next login.
-	}
+	/**
+	* @brief Removes the current password.
+	* The password can be set on next login.
+	*/
+	void ClearPassword() { m_sCurPassword.Empty(); }
+	/**
+	* @brief Check password agains CAccount password.
+	* If CAccount has no password and password length is 0, check fails.
+	* If CAccount has no password and password lenght is greater than 0, try to set password check success.
+	* Then server f_onaccount_connect trigger is fired. If it returns true, check fails.
+	* Last the password is checked.
+	* @param pszPassword pass to check.
+	* @return true if password is ok and f_onaccount_connect not returns true. False otherwise.
+	*/
 	bool CheckPassword( LPCTSTR pszPassword );
-
-	LPCTSTR GetNewPassword() const
-	{
-		return( m_sNewPassword );
-	}
+	/**
+	* @brief Get new password.
+	* @return new password.
+	*/
+	LPCTSTR GetNewPassword() const { return( m_sNewPassword ); }
 	void SetNewPassword( LPCTSTR pszPassword );
-
+	/**
+	* @brief Wrong pw given, check the failed tries to take actions again'st this ip.
+	* If the peer is localhost or 127.0.0.1, the password try do not count.
+	* Register the password try and, if there is too many password tries (>100) clear the last tries.
+	* @param csaPeerName Client net information.
+	* @return TODOC.
+	*/
 	bool CheckPasswordTries(CSocketAddress csaPeerName);
+	/**
+	* @brief Removes saved data related to passwordtries for this CAccount.
+	* We can remove the last 3 minutes or all the data.
+	* @param bAll true if we want to remove all passwordtries data.
+	*/
 	void ClearPasswordTries(bool bAll = false);
 
 	/************************************************************************
@@ -252,6 +285,13 @@ public:
 	* @param bWasChar true if is logged with a CChar.
 	*/
 	void OnLogout(CClient *pClient, bool bWasChar = false);
+	/**
+	* @brief Kick / Ban a player.
+	* Only if plevel of CAccount is higher than SRC plevel, do not kick or ban.
+	* @param pSrc SRC of the action.
+	* @param fBlock if true, kick and ban.
+	*/
+	bool Kick(CTextConsole * pSrc, bool fBlock);
 
 	/************************************************************************
 	* CChars related section.

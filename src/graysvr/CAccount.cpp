@@ -745,7 +745,6 @@ void CAccount::OnLogout(CClient *pClient, bool bWasChar)
 	}
 }
 
-// Kick account
 bool CAccount::Kick( CTextConsole * pSrc, bool fBlock )
 {
 	ADDTOCALLSTACK("CAccount::Kick");
@@ -770,7 +769,7 @@ bool CAccount::Kick( CTextConsole * pSrc, bool fBlock )
 	return true;
 }
 
-// Wrong pw given, check the failed tries to take actions again'st this ip.
+
 bool CAccount::CheckPasswordTries(CSocketAddress csaPeerName)
 {
 	if ( csaPeerName.IsLocalAddr() || (csaPeerName.GetAddrIP() == 0x7F000001) )
@@ -840,8 +839,7 @@ bool CAccount::CheckPasswordTries(CSocketAddress csaPeerName)
 	return bReturn;
 }
 
-// We reached max storing data?
-// Removing all saved data related to passwordtries
+
 void CAccount::ClearPasswordTries(bool bAll)
 {
 	if ( bAll )
@@ -868,8 +866,6 @@ void CAccount::ClearPasswordTries(bool bAll)
 	}
 }
 
-// RETURN:
-//  false = failure.
 bool CAccount::CheckPassword( LPCTSTR pszPassword )
 {
 	ADDTOCALLSTACK("CAccount::CheckPassword");
@@ -924,7 +920,6 @@ bool CAccount::CheckPassword( LPCTSTR pszPassword )
 	return( false );	// failure.
 }
 
-// setting new pw
 bool CAccount::SetPassword( LPCTSTR pszPassword, bool isMD5Hash )
 {
 	ADDTOCALLSTACK("CAccount::SetPassword");
