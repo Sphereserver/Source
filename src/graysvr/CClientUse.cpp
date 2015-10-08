@@ -1475,12 +1475,12 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 	PacketTradeAction cmd2(SECURE_TRADE_UPDATELEDGER);
 	if ( GetNetState()->isClientVersion(MINCLIVER_NEWSECURETRADE) )
 	{
-		cmd2.prepareUpdateLedger(pCont1, static_cast<DWORD>(m_pChar->m_virtualGold), static_cast<DWORD>(m_pChar->m_virtualPlatinum));
+		cmd2.prepareUpdateLedger(pCont1, static_cast<DWORD>(m_pChar->m_virtualGold));
 		cmd2.send(this);
 	}
 	if ( pChar->GetClient()->GetNetState()->isClientVersion(MINCLIVER_NEWSECURETRADE) )
 	{
-		cmd2.prepareUpdateLedger(pCont2, static_cast<DWORD>(pChar->m_virtualGold), static_cast<DWORD>(pChar->m_virtualPlatinum));
+		cmd2.prepareUpdateLedger(pCont2, static_cast<DWORD>(pChar->m_virtualGold));
 		cmd2.send(pChar->GetClient());
 	}
 

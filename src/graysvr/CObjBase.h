@@ -2693,7 +2693,6 @@ public:
 	CPointMap m_ptHome;			// What is our "home" region. (towns and bounding of NPC's)
 	FONT_TYPE m_fonttype;		// Speech font to use // can client set this ?
 	INT64 m_virtualGold;		// Virtual gold used by TOL clients
-	INT64 m_virtualPlatinum;	// Virtual platinum
 
 	// In order to revert to original Hue and body.
 	CREID_TYPE m_prev_id;		// Backup of body type for ghosts and poly

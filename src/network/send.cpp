@@ -1794,25 +1794,23 @@ void PacketTradeAction::prepareClose(const CItemContainer *container)
 	writeBool(false);
 }
 
-void PacketTradeAction::prepareUpdateGold(const CItemContainer *container, DWORD gold, DWORD platinum)
+void PacketTradeAction::prepareUpdateGold(const CItemContainer *container, DWORD gold)
 {
 	ADDTOCALLSTACK("PacketTradeAction::prepareUpdateGold");
 
 	seek(4);
 	writeInt32(container->GetUID());
 	writeInt32(gold);
-	writeInt32(platinum);
 	writeBool(false);
 }
 
-void PacketTradeAction::prepareUpdateLedger(const CItemContainer *container, DWORD gold, DWORD platinum)
+void PacketTradeAction::prepareUpdateLedger(const CItemContainer *container, DWORD gold)
 {
 	ADDTOCALLSTACK("PacketTradeAction::prepareUpdateLedger");
 
 	seek(4);
 	writeInt32(container->GetUID());
 	writeInt32(gold);
-	writeInt32(platinum);
 	writeBool(false);
 }
 
