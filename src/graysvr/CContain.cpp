@@ -632,46 +632,42 @@ bool CItemContainer::IsItemInTrade()
 	return pObj2->IsItemInTrade();
 }
 
-void CItemContainer::Trade_Status( bool fCheck )
+void CItemContainer::Trade_Status( bool bCheck )
 {
 	ADDTOCALLSTACK("CItemContainer::Trade_Status");
 	// Update trade status check boxes to both sides.
-	CItemContainer * pPartner = dynamic_cast <CItemContainer *> ( m_uidLink.ItemFind());
-	if ( pPartner == NULL )
+	CItemContainer *pPartner = dynamic_cast<CItemContainer*>(m_uidLink.ItemFind());
+	if ( !pPartner )
 		return;
 
-	CChar * pChar1 = dynamic_cast <CChar*> (GetParent());
-	if ( pChar1 == NULL )
+	CChar *pChar1 = dynamic_cast<CChar*>(GetParent());
+	if ( !pChar1 )
 		return;
-	CChar * pChar2 = dynamic_cast <CChar*> (pPartner->GetParent());
-	if ( pChar2 == NULL )
+	CChar *pChar2 = dynamic_cast<CChar*>(pPartner->GetParent());
+	if ( !pChar2 )
 		return;
 
-	m_itEqTradeWindow.m_fCheck = fCheck? 1 : 0;
-	if ( ! fCheck )
-	{
-		pPartner->m_itEqTradeWindow.m_fCheck = 0;
-	}
+	m_itEqTradeWindow.m_bCheck = bCheck ? 1 : 0;
+	if ( !bCheck )
+		pPartner->m_itEqTradeWindow.m_bCheck = 0;
 
 	PacketTradeAction cmd(SECURE_TRADE_CHANGE);
-
-	if ( pChar1->IsClient())
+	if ( pChar1->IsClient() )
 	{
 		cmd.prepareReadyChange(this, pPartner);
 		cmd.send(pChar1->GetClient());
 	}
-	if ( pChar2->IsClient())
+	if ( pChar2->IsClient() )
 	{
 		cmd.prepareReadyChange(pPartner, this);
 		cmd.send(pChar2->GetClient());
 	}
 
-	// if both checked then done.
-	if ( pPartner->m_itEqTradeWindow.m_fCheck == 0 || m_itEqTradeWindow.m_fCheck == 0 )
+	// Check if both clients had pressed the 'accept' buttom
+	if ( pPartner->m_itEqTradeWindow.m_bCheck == 0 || m_itEqTradeWindow.m_bCheck == 0 )
 		return;
 
-	CItem * pItem;
-	CItem * pItemNext;
+	CItem *pItem, *pItemNext;
 	int iCont1, iCont2;
 	unsigned short i;
 
@@ -680,49 +676,103 @@ void CItemContainer::Trade_Status( bool fCheck )
 	for ( i = 1; pItem != NULL; pItem = pItemNext, ++i )
 	{
 		pItemNext = pItem->GetNext();
-		Args1.m_VarObjs.Insert( i, pItem, true );
+		Args1.m_VarObjs.Insert(i, pItem, true);
 	}
 
 	Args1.m_iN1 = iCont1 = --i;
 	pItemNext = NULL;
-	//DEBUG_ERR(("Args1.m_iN1(%d) = iCont1(%d) = i(%d)\n",Args1.m_iN1, iCont1, i));
 
 	CScriptTriggerArgs Args2(pChar2);
 	pItem = GetContentHead();
 	for ( i = 1; pItem != NULL; pItem = pItemNext, ++i )
 	{
 		pItemNext = pItem->GetNext();
-		Args2.m_VarObjs.Insert( i, pItem, true );
+		Args2.m_VarObjs.Insert(i, pItem, true);
 	}
 
 	Args2.m_iN1 = iCont2 = --i;
 	pItemNext = NULL;
 
-	if (( IsTrigUsed(TRIGGER_TRADEACCEPTED) ) || ( IsTrigUsed(TRIGGER_CHARTRADEACCEPTED) ))
+	if ( (IsTrigUsed(TRIGGER_TRADEACCEPTED)) || (IsTrigUsed(TRIGGER_CHARTRADEACCEPTED)) )
 	{
 		Args1.m_iN2 = iCont2;
 		Args2.m_iN2 = iCont1;
-		if (( pChar1->OnTrigger(CTRIG_TradeAccepted, pChar2, &Args1) == TRIGRET_RET_TRUE ) || ( pChar2->OnTrigger(CTRIG_TradeAccepted, pChar1, &Args2) == TRIGRET_RET_TRUE ))
-			Delete(); //Return 1 in one of the triggers
+		if ( (pChar1->OnTrigger(CTRIG_TradeAccepted, pChar2, &Args1) == TRIGRET_RET_TRUE) || (pChar2->OnTrigger(CTRIG_TradeAccepted, pChar1, &Args2) == TRIGRET_RET_TRUE) )
+			Delete();
 	}
 
+	// Transfer items
 	pItem = GetContentHead();
-	for ( ; pItem != NULL; pItem = pItemNext)
+	for ( ; pItem != NULL; pItem = pItemNext )
 	{
 		pItemNext = pItem->GetNext();
-		pChar2->ItemBounce( pItem );
+		pChar2->ItemBounce(pItem);
 	}
 
 	pItemNext = NULL;
 	pItem = pPartner->GetContentHead();	
-	for ( ; pItem != NULL; pItem = pItemNext)
+	for ( ; pItem != NULL; pItem = pItemNext )
 	{
 		pItemNext = pItem->GetNext();
-		pChar1->ItemBounce( pItem );
+		pChar1->ItemBounce(pItem);
+	}
+
+	// Transfer gold/platinum
+	if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD )
+	{
+		INT64 iGold1 = m_itEqTradeWindow.m_iGold + (m_itEqTradeWindow.m_iPlatinum * 1000000000);
+		INT64 iGold2 = pPartner->m_itEqTradeWindow.m_iGold + (pPartner->m_itEqTradeWindow.m_iPlatinum * 1000000000);
+		pChar1->m_virtualGold += iGold2 - iGold1;
+		pChar2->m_virtualGold += iGold1 - iGold2;
+		pChar1->UpdateStatsFlag();
+		pChar2->UpdateStatsFlag();
 	}
 
 	// done with trade.
 	Delete();
+}
+
+void CItemContainer::Trade_UpdateGold( DWORD platinum, DWORD gold )
+{
+	ADDTOCALLSTACK("CItemContainer::Trade_UpdateGold");
+	// Update trade gold/platinum values.
+	CItemContainer *pPartner = dynamic_cast<CItemContainer*>(m_uidLink.ItemFind());
+	if ( !pPartner )
+		return;
+
+	CChar *pChar1 = dynamic_cast<CChar*>(GetParent());
+	if ( !pChar1 || !pChar1->IsClient() )
+		return;
+	CChar *pChar2 = dynamic_cast<CChar*>(pPartner->GetParent());
+	if ( !pChar2 || !pChar2->IsClient() )
+		return;
+
+	// Fix for a client bug when total value is > 1.000.000.000 (1 platinum) it
+	// allow the user insert a gold value higher than it have. So these values
+	// must be checked again on server-side to prevent cheating.
+	bool bResend = false;
+	DWORD iMaxGold = static_cast<DWORD>(pChar1->m_virtualGold % 1000000000);
+	if ( gold > iMaxGold )
+	{
+		gold = iMaxGold;
+		bResend = true;
+	}
+	DWORD iMaxPlatinum = static_cast<DWORD>(pChar1->m_virtualGold % 1000000000);
+	if ( platinum > iMaxPlatinum )
+	{
+		platinum = iMaxPlatinum;
+		bResend = true;
+	}
+
+	m_itEqTradeWindow.m_iGold = gold;
+	m_itEqTradeWindow.m_iPlatinum = platinum;
+
+	PacketTradeAction cmd(SECURE_TRADE_UPDATEGOLD);
+	cmd.prepareUpdateGold(this, platinum, gold);
+	if ( bResend )
+		cmd.send(pChar1->GetClient());
+	if ( pChar2->GetClient()->GetNetState()->isClientVersion(MINCLIVER_NEWSECURETRADE) )
+		cmd.send(pChar2->GetClient());
 }
 
 void CItemContainer::Trade_Delete()
@@ -1078,7 +1128,7 @@ void CItemContainer::OnRemoveOb( CGObListRec* pObRec )	// Override this = called
 	{
 		// Remove from a trade window.
 		Trade_Status( false );
-		m_TagDefs.SetNum("wait1sec", g_World.GetCurrentTime().GetTimeRaw() + 60*TICK_PER_SEC, false);
+		m_itEqTradeWindow.m_iWaitTime = g_World.GetCurrentTime().GetTimeRaw() + (10 * TICK_PER_SEC);
 	}
 	if ( IsType(IT_EQ_VENDOR_BOX) && IsItemEquipped())	// vendor boxes should ALWAYS be equipped !
 	{

@@ -681,10 +681,10 @@ public:
 		// IT_EQ_TRADE_WINDOW
 		struct
 		{
-			DWORD	m_junk1;
-			DWORD	m_junk2;
-			DWORD	m_junk3;
-			BYTE	m_fCheck;	// morez=Check box for trade window.
+			DWORD	m_iGold;
+			DWORD	m_iPlatinum;
+			INT64	m_iWaitTime;
+			BYTE	m_bCheck;		// morez=Check box for trade window.
 		} m_itEqTradeWindow;
 
 		// IT_SPAWN_ITEM
@@ -1565,7 +1565,8 @@ protected:
 	void OnRemoveOb( CGObListRec* pObRec );	// Override this = called when removed from list.
 public:
 	bool IsItemInTrade();
-	void Trade_Status( bool fCheck );
+	void Trade_Status( bool bCheck );
+	void Trade_UpdateGold( DWORD platinum, DWORD gold );
 	void Trade_Delete();
 
 	void MakeKey();
