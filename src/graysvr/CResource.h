@@ -899,6 +899,7 @@ public:
 	int		m_iFeatureML;
 	int		m_iFeatureKR;
 	int		m_iFeatureSA;
+	int		m_iFeatureTOL;
 	int		m_iFeatureExtra;
 	
 	int		m_iMaxLoopTimes;

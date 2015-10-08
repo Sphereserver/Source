@@ -131,32 +131,37 @@
 #define IsAosFlagEnabled( value )	( g_Cfg.m_iFeatureAOS & (value) )
 #define IsResClient( value )		( GetAccount()->GetResDisp() >= (value) )
 
-#define FEATURE_T2A_UPDATE 		0x01
-#define FEATURE_T2A_CHAT 		0x02
-#define FEATURE_LBR_UPDATE		0x01
-#define FEATURE_LBR_SOUND		0x02
+#define FEATURE_T2A_UPDATE 			0x01
+#define FEATURE_T2A_CHAT 			0x02
+#define FEATURE_LBR_UPDATE			0x01
+#define FEATURE_LBR_SOUND			0x02
 
-#define FEATURE_AOS_UPDATE_A	0x01	// AOS Monsters, Map, Skills
-#define FEATURE_AOS_UPDATE_B	0x02	// Tooltip, Fightbook, Necro/paladin on creation, Single/Six char selection screen
-#define FEATURE_AOS_POPUP		0x04	// PopUp Menus
-#define FEATURE_AOS_DAMAGE		0x08
+#define FEATURE_AOS_UPDATE_A		0x01	// AOS Monsters, Map, Skills
+#define FEATURE_AOS_UPDATE_B		0x02	// Tooltip, Fightbook, Necro/paladin on creation, Single/Six char selection screen
+#define FEATURE_AOS_POPUP			0x04	// PopUp Menus
+#define FEATURE_AOS_DAMAGE			0x08
 
-#define FEATURE_SE_UPDATE		0x01	// 0x00008 in 0xA9
-#define FEATURE_SE_NINJASAM		0x02	// 0x00040 in feature
+#define FEATURE_SE_UPDATE			0x01	// 0x00008 in 0xA9
+#define FEATURE_SE_NINJASAM			0x02	// 0x00040 in feature
 
-#define FEATURE_ML_UPDATE		0x01 	// 0x00100 on charlist and 0x0080 for feature to activate
-#define FEATURE_ML_NINTHAGE		0x02	// 0x00200 feature (unlock house designer items)
-#define FEATURE_ML_RACIAL_BONUS 0x04	// Not related to Login flags, just to keep these bonuses separated from other things.
+#define FEATURE_ML_UPDATE			0x01 	// 0x00100 on charlist and 0x0080 for feature to activate
+#define FEATURE_ML_RACIAL_BONUS		0x02	// Not related to login flags. Enable racial bonuses for elves
 
-#define FEATURE_KR_UPDATE		0x01	// 0x00200 in 0xA9 (KR crapness)
-#define FEATURE_KR_CLIENTTYPE	0x02	// 0x00400 in 0xA9 (enables 0xE1 packet)
+#define FEATURE_KR_UPDATE			0x01	// 0x00200 in 0xA9 (KR crapness)
+#define FEATURE_KR_CLIENTTYPE		0x02	// 0x00400 in 0xA9 (enables 0xE1 packet)
 
-#define FEATURE_SA_UPDATE		0x01	// 0x10000 feature (unlock gargoyle character, housing items)
-#define FEATURE_SA_MOVEMENT		0x02	// 0x04000 on charlist (new movement packets)
-#define FEATURE_SA_RACIAL_BONUS 0x04	// same as FEATURE_ML_RACIAL_BONUS
+#define FEATURE_SA_UPDATE			0x01	// 0x10000 feature (unlock gargoyle character, housing items)
+#define FEATURE_SA_MOVEMENT			0x02	// 0x04000 on charlist (new movement packets)
+#define FEATURE_SA_RACIAL_BONUS		0x04	// Not related to login flags. Enable racial bonuses for gargoyles
 
-#define FEATURE_EXTRA_GOTHIC	0x01	// 0x40000 feature (unlock gothic house designer items)
-#define FEATURE_EXTRA_RUSTIC	0x02	// 0x80000 feature (unlock rustic house designer items)
+#define FEATURE_TOL_UPDATE			0x01	// 0x400000 feature
+#define FEATURE_TOL_VIRTUALGOLD		0x02	// Not related to login flags
+
+#define FEATURE_EXTRA_CRYSTAL		0x01	// 0x200 feature (unlock ML crystal items on house design)
+#define FEATURE_EXTRA_GOTHIC		0x02	// 0x40000 feature (unlock SA gothic items on house design)
+#define FEATURE_EXTRA_RUSTIC		0x04	// 0x80000 feature (unlock SA rustic items on house design)
+#define FEATURE_EXTRA_JUNGLE		0x08	// 0x100000 feature (unlock TOL jungle items on house design)
+#define FEATURE_EXTRA_SHADOWGUARD	0x10	// 0x200000 feature (unlock TOL shadowguard items on house design)
 
 #include "common.h"
 #include "CException.h"
