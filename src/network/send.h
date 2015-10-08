@@ -625,8 +625,8 @@ public:
 	void prepareContainerOpen(const CChar *character, const CItem *container1, const CItem *container2);
 	void prepareReadyChange(const CItemContainer *container1, const CItemContainer *container2);
 	void prepareClose(const CItemContainer *container);
-	void prepareUpdateGold(const CItemContainer *container, DWORD gold, DWORD platinum);
-	void prepareUpdateLedger(const CItemContainer *container, DWORD gold, DWORD platinum);
+	void prepareUpdateGold(const CItemContainer *container, DWORD gold);
+	void prepareUpdateLedger(const CItemContainer *container, DWORD gold);
 };
 
 /***************************************************************************
