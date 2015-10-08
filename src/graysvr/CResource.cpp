@@ -173,6 +173,7 @@ CResource::CResource()
 	m_iFeatureML		= 0;
 	m_iFeatureKR		= 0;
 	m_iFeatureSA		= 0;
+	m_iFeatureTOL		= 0;
 	m_iFeatureExtra		= 0;
 
 	m_iStatFlag = 0;
@@ -465,6 +466,7 @@ enum RC_TYPE
 	RC_FEATURESSA,
 	RC_FEATURESSE,
 	RC_FEATUREST2A,
+	RC_FEATURESTOL,
 	RC_FLIPDROPPEDITEMS,	// m_fFlipDroppedItems
 	RC_FORCEGARBAGECOLLECT,	// m_fSaveGarbageCollect
 	RC_FREEZERESTARTTIME,	// m_iFreezeRestartTime
@@ -705,6 +707,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "FEATURESA",				{ ELEM_INT,		OFFSETOF(CResource,m_iFeatureSA),			0 }},
 	{ "FEATURESE",				{ ELEM_INT,		OFFSETOF(CResource,m_iFeatureSE),			0 }},
 	{ "FEATURET2A",				{ ELEM_INT,		OFFSETOF(CResource,m_iFeatureT2A),			0 }},
+	{ "FEATURETOL",				{ ELEM_INT,		OFFSETOF(CResource,m_iFeatureTOL),			0 }},
 	{ "FLIPDROPPEDITEMS",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fFlipDroppedItems),	0 }},
 	{ "FORCEGARBAGECOLLECT",	{ ELEM_BOOL,	OFFSETOF(CResource,m_fSaveGarbageCollect),	0 }},
 	{ "FREEZERESTARTTIME",		{ ELEM_INT,		OFFSETOF(CResource,m_iFreezeRestartTime),	0 }},
@@ -2291,8 +2294,8 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 		bResOk = ( res >= RDS_AOS );
 		if ( bResOk )
 		{
-			retValue |= ( (m_iFeatureAOS & FEATURE_AOS_UPDATE_A) && (this->m_iFeatureAOS & FEATURE_AOS_UPDATE_B) ) ? 0x020 : 0x00;
 			retValue |= ( m_iFeatureAOS & FEATURE_AOS_POPUP ) ? 0x008 : 0x00;
+			retValue |= ( m_iFeatureAOS & FEATURE_AOS_UPDATE_B ) ? 0x020 : 0x00;
 		}
 
 		bResOk = ( res >= RDS_SE );
@@ -2323,10 +2326,6 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 		retValue |= ( chars == 1 ) ? 0x0014 : 0x00;
 		retValue |= ( chars >= 6 ) ? 0x0040 : 0x00;
 		retValue |= ( chars >= 7 ) ? 0x1000 : 0x00;
-
-#ifdef _DEBUG
-		retValue |= g_Exp.m_VarGlobals.GetKeyNum("FEATUREA");
-#endif
 	}
 	else
 	{
@@ -2347,10 +2346,10 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 		//		0x00800
 		//		0x01000	Seventh Character Slot
 		//		0x02000
-		//		0x04000
+		//		0x04000 New movement engine
 		//		0x08000	Since client 4.0 this bit has to be set, otherwise bits 3..14 are ignored.
 		//		0x10000	Gargoyles, SA housing
-		//		0x20000	
+		//		0x20000 High Seas
 		//		0x40000	Gothic pack (house designer items)
 		//		0x80000	Rustic pack (house designer items)
 		//	Thus	0		neither T2A NOR LBR, equal to not sending it at all,
@@ -2393,7 +2392,6 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 		if ( bResOk )
 		{
 			retValue |= ( m_iFeatureML & FEATURE_ML_UPDATE ) ? 0x080 : 0x00;
-			retValue |= ( m_iFeatureML & FEATURE_ML_NINTHAGE ) ? 0x0200 : 0x00;
 		}
 
 		bResOk = ( res >= RDS_SA );
@@ -2402,15 +2400,20 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 			retValue |= ( m_iFeatureSA & FEATURE_SA_UPDATE ) ? 0x10000 : 0x00;
 		}
 
+		bResOk = ( res >= RDS_TOL );
+		if ( bResOk )
+		{
+			retValue |= ( m_iFeatureTOL & FEATURE_TOL_UPDATE ) ? 0x400000 : 0x00;
+		}
+
+		retValue |= ( m_iFeatureExtra & FEATURE_EXTRA_CRYSTAL ) ? 0x0200 : 0x00;
 		retValue |= ( m_iFeatureExtra & FEATURE_EXTRA_GOTHIC ) ? 0x40000 : 0x00;
 		retValue |= ( m_iFeatureExtra & FEATURE_EXTRA_RUSTIC ) ? 0x80000 : 0x00;
+		retValue |= ( m_iFeatureExtra & FEATURE_EXTRA_JUNGLE ) ? 0x100000 : 0x00;
+		retValue |= ( m_iFeatureExtra & FEATURE_EXTRA_SHADOWGUARD ) ? 0x200000 : 0x00;
 		
 		retValue |= ( chars >= 6 ) ? 0x0020 : 0x00;
 		retValue |= ( chars >= 7 ) ? 0x1000 : 0x00;
-
-#ifdef _DEBUG
-		retValue |= g_Exp.m_VarGlobals.GetKeyNum("FEATUREB");
-#endif
 	}
 
 	return( retValue );

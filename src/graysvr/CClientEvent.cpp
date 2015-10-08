@@ -1083,24 +1083,38 @@ void CClient::Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t it
 		}
 	}
 
-	//	Check for gold being enough to buy this
-	bool fBoss = pVendor->NPC_IsOwnedBy(m_pChar);
-	if ( !fBoss )
-	{
-		int iGold = m_pChar->GetPackSafe()->ContentConsume(RESOURCE_ID(RES_TYPEDEF,IT_GOLD), static_cast<int>(costtotal), true);
-		if ( !g_Cfg.m_fPayFromPackOnly && iGold)
-			iGold = m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF,IT_GOLD), static_cast<int>(costtotal), true);
-		if (iGold)
-		{
-			pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_NOMONEY1));
-			return;
-		}
-	}
-
 	if ( costtotal <= 0 )
 	{
 		pVendor->Speak("Thou hast bought nothing!");
 		return;
+	}
+
+	//	Check for gold being enough to buy this
+	bool fBoss = pVendor->NPC_IsOwnedBy(m_pChar);
+	if ( !fBoss )
+	{
+		if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD )
+		{
+			if ( m_pChar->m_virtualGold < costtotal )
+			{
+				pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_NOMONEY1));
+				return;
+			}
+			m_pChar->m_virtualGold -= costtotal;
+			m_pChar->UpdateStatsFlag();
+		}
+		else
+		{
+			int iGold = m_pChar->GetPackSafe()->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), static_cast<int>(costtotal), true);
+			if ( !g_Cfg.m_fPayFromPackOnly && iGold )
+				iGold = m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), static_cast<int>(costtotal), true);
+
+			if ( iGold )
+			{
+				pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_NOMONEY1));
+				return;
+			}
+		}
 	}
 
 	//	Move the items bought into your pack.
@@ -1368,7 +1382,14 @@ void CClient::Event_VendorSell(CChar* pVendor, const VendorItem* items, size_t i
 		if ( fShortfall )
 			pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_NOMONEY));
 
-		m_pChar->AddGoldToPack(iGold);
+		if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD )
+		{
+			m_pChar->m_virtualGold += iGold;
+			m_pChar->UpdateStatsFlag();
+		}
+		else
+			m_pChar->AddGoldToPack(iGold);
+
 		addVendorClose(pVendor);
 	}
 	else

@@ -243,9 +243,7 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 
 	m_StepStealth = 0;
 	m_iVisualRange = UO_MAP_VIEW_SIZE;
-
 	m_virtualGold = 0;
-	m_virtualPlatinum = 0;
 
 	m_exp = 0;
 	m_level = 0;
@@ -782,9 +780,7 @@ bool CChar::DupeFrom( CChar * pChar, bool fNewbieItems )
 	
 	m_StepStealth = pChar->m_StepStealth;
 	m_iVisualRange = pChar->m_iVisualRange;
-
 	m_virtualGold = pChar->m_virtualGold;
-	m_virtualPlatinum = pChar->m_virtualPlatinum;
 
 	m_exp = pChar->m_exp;
 	m_level = pChar->m_level;
@@ -2611,10 +2607,7 @@ do_default:
 			sVal.FormatVal(m_level);
 			break;
 		case CHC_VIRTUALGOLD:
-			sVal.FormatVal(m_virtualGold);
-			break;
-		case CHC_VIRTUALPLATINUM:
-			sVal.FormatVal(m_virtualPlatinum);
+			sVal.FormatLLVal(m_virtualGold);
 			break;
 		case CHC_VISUALRANGE:
 			sVal.FormatVal(GetSight());
@@ -3126,10 +3119,8 @@ do_default:
 			ChangeExperience();
 			break;
 		case CHC_VIRTUALGOLD:
-			m_virtualGold = s.GetArgVal();
-			break;
-		case CHC_VIRTUALPLATINUM:
-			m_virtualPlatinum = s.GetArgVal();
+			m_virtualGold = s.GetArgLLVal();
+			UpdateStatsFlag();
 			break;
 		case CHC_VISUALRANGE:
 			{
@@ -3200,8 +3191,6 @@ void CChar::r_Write( CScript & s )
 
 	if ( m_virtualGold )
 		s.WriteKeyVal("VIRTUALGOLD", m_virtualGold);
-	if ( m_virtualPlatinum )
-		s.WriteKeyVal("VIRTUALPLATINUM", m_virtualPlatinum);
 
 	if ( m_exp )
 		s.WriteKeyVal("EXP", m_exp);
