@@ -16,8 +16,7 @@ extern "C"
 //**********************************************************************
 // -CAccounts
 
-// ARGS:
-//   fChanges = false = trap duplicates
+
 bool CAccounts::Account_Load( LPCTSTR pszNameRaw, CScript & s, bool fChanges )
 {
 	ADDTOCALLSTACK("CAccounts::Account_Load");
@@ -61,7 +60,6 @@ bool CAccounts::Account_Load( LPCTSTR pszNameRaw, CScript & s, bool fChanges )
 	return true;
 }
 
-// Load the accounts file. (at start up)
 bool CAccounts::Account_LoadAll( bool fChanges, bool fClearChanges )
 {
 	ADDTOCALLSTACK("CAccounts::Account_LoadAll");
@@ -116,7 +114,7 @@ bool CAccounts::Account_LoadAll( bool fChanges, bool fClearChanges )
 	return true;
 }
 
-// Save the accounts file
+
 bool CAccounts::Account_SaveAll()
 {
 	ADDTOCALLSTACK("CAccounts::Account_SaveAll");
@@ -154,7 +152,6 @@ bool CAccounts::Account_SaveAll()
 	return false;
 }
 
-// IS this new chat name already used ?
 CAccountRef CAccounts::Account_FindChat( LPCTSTR pszChatName )
 {
 	ADDTOCALLSTACK("CAccounts::Account_FindChat");
@@ -167,7 +164,6 @@ CAccountRef CAccounts::Account_FindChat( LPCTSTR pszChatName )
 	return NULL;
 }
 
-// Find %s account
 CAccountRef CAccounts::Account_Find( LPCTSTR pszName )
 {
 	ADDTOCALLSTACK("CAccounts::Account_Find");
@@ -183,8 +179,6 @@ CAccountRef CAccounts::Account_Find( LPCTSTR pszName )
 	return NULL;
 }
 
-// Find an account by this name.
-// Create one in some circumstances.
 CAccountRef CAccounts::Account_FindCreate( LPCTSTR pszName, bool fAutoCreate )
 {
 	ADDTOCALLSTACK("CAccounts::Account_FindCreate");
@@ -287,16 +281,20 @@ bool CAccounts::Cmd_AddNew( CTextConsole * pSrc, LPCTSTR pszName, LPCTSTR pszArg
 	return true;
 }
 
+/**
+* CAccount actions.
+* This enum describes the CACcount acctions performed by command shell.
+*/
 enum VACS_TYPE
 {
-	VACS_ADD,
-	VACS_ADDMD5,
-	VACS_BLOCKED,
-	VACS_HELP,
-	VACS_JAILED,
-	VACS_UNUSED,
-	VACS_UPDATE,
-	VACS_QTY
+	VACS_ADD, ///< Add a new CAccount.
+	VACS_ADDMD5, ///< Add a new CAccount, storing the password with md5.
+	VACS_BLOCKED, ///< Bloc a CAccount.
+	VACS_HELP, ///< Show CAccount commands.
+	VACS_JAILED, ///< "Jail" the CAccount.
+	VACS_UNUSED, ///< Use a command on unused CAccount.
+	VACS_UPDATE, ///< Process the acct file to add accounts.
+	VACS_QTY ///< TODOC.
 };
 
 LPCTSTR const CAccounts::sm_szVerbKeys[] =	// CAccounts:: // account group verbs.
@@ -311,7 +309,6 @@ LPCTSTR const CAccounts::sm_szVerbKeys[] =	// CAccounts:: // account group verbs
 	NULL,
 };
 
-// do something to all the unused accounts.
 bool CAccounts::Cmd_ListUnused(CTextConsole * pSrc, LPCTSTR pszDays, LPCTSTR pszVerb, LPCTSTR pszArgs, DWORD dwMask)
 {
 	ADDTOCALLSTACK("CAccounts::Cmd_ListUnused");
@@ -386,7 +383,6 @@ bool CAccounts::Cmd_ListUnused(CTextConsole * pSrc, LPCTSTR pszDays, LPCTSTR psz
 	return true;
 }
 
-// Modify the accounts on line. "ACCOUNT"
 bool CAccounts::Account_OnCmd( TCHAR * pszArgs, CTextConsole * pSrc )
 {
 	ADDTOCALLSTACK("CAccounts::Account_OnCmd");
@@ -495,7 +491,7 @@ bool CAccounts::Account_OnCmd( TCHAR * pszArgs, CTextConsole * pSrc )
 //**********************************************************************
 // -CAccount
 
-// allow just basic chars. No spaces, only numbers, letters and underbar. -+. and single quotes ?
+
 bool CAccount::NameStrip( TCHAR * pszNameOut, LPCTSTR pszNameInp )
 {
 	ADDTOCALLSTACK("CAccount::NameStrip");
@@ -504,10 +500,12 @@ bool CAccount::NameStrip( TCHAR * pszNameOut, LPCTSTR pszNameInp )
 
 	if ( iLen <= 0 )
 		return false;
+	// Check for newline characters.
 	if ( strchr(pszNameOut, 0x0A) || strchr(pszNameOut, 0x0C) || strchr(pszNameOut, 0x0D) )
 		return false;
 	if ( !strcmpi(pszNameOut, "EOF") || !strcmpi(pszNameOut, "ACCOUNT") )
 		return false;
+	// Check for name already used.
 	if ( FindTableSorted(pszNameOut, CAccounts::sm_szVerbKeys, COUNTOF(CAccounts::sm_szVerbKeys)-1) >= 0 )
 		return false;
 	if ( g_Cfg.IsObscene(pszNameOut) )
@@ -545,8 +543,6 @@ PLEVEL_TYPE CAccount::GetPrivLevelText( LPCTSTR pszFlags ) // static
 	return static_cast<PLEVEL_TYPE>(level);
 }
 
-// Make sure the name is in valid format.
-// Assume the pszName has been stripped of all just !
 CAccount::CAccount( LPCTSTR pszName, bool fGuest )
 {
 	g_Serv.StatInc( SERV_STAT_ACCOUNTS );
@@ -573,7 +569,6 @@ CAccount::CAccount( LPCTSTR pszName, bool fGuest )
 	g_Accounts.Account_Add( this );
 }
 
-// Removing all chars from this acc
 void CAccount::DeleteChars()
 {
 	ADDTOCALLSTACK("CAccount::DeleteChars");
@@ -602,7 +597,6 @@ void CAccount::DeleteChars()
 }
 
 
-// We should go track down and delete all the chars and clients that use this account !
 CAccount::~CAccount()
 {
 	g_Serv.StatDec( SERV_STAT_ACCOUNTS );
@@ -611,14 +605,12 @@ CAccount::~CAccount()
 	ClearPasswordTries(true);
 }
 
-
 void CAccount::SetPrivLevel( PLEVEL_TYPE plevel )
 {
 	ADDTOCALLSTACK("CAccount::SetPrivLevel");
 	m_PrivLevel = plevel;	// PLEVEL_Counsel
 }
 
-// Is the account logged in.
 CClient * CAccount::FindClient( const CClient * pExclude ) const
 {
 	ADDTOCALLSTACK("CAccount::FindClient");
@@ -637,7 +629,6 @@ CClient * CAccount::FindClient( const CClient * pExclude ) const
 	return( pClient );
 }
 
-// this char is mine ?
 bool CAccount::IsMyAccountChar( const CChar * pChar ) const
 {
 	ADDTOCALLSTACK("CAccount::IsMyAccountChar");
@@ -648,7 +639,6 @@ bool CAccount::IsMyAccountChar( const CChar * pChar ) const
 	return(	pChar->m_pPlayer->GetAccount() == this );
 }
 
-// unlink the CChar from this CAccount.
 size_t CAccount::DetachChar( CChar * pChar )
 {
 	ADDTOCALLSTACK("CAccount::DetachChar");
@@ -663,7 +653,6 @@ size_t CAccount::DetachChar( CChar * pChar )
 	return( m_Chars.DetachChar( pChar ));
 }
 
-// link the char to this account.
 size_t CAccount::AttachChar( CChar * pChar )
 {
 	ADDTOCALLSTACK("CAccount::AttachChar");
@@ -684,10 +673,6 @@ size_t CAccount::AttachChar( CChar * pChar )
 	return( i );
 }
 
-// s.GetArgFlag
-// No args = toggle the flag.
-// 1 = set the flag.
-// 0 = clear the flag.
 void CAccount::TogPrivFlags( WORD wPrivFlags, LPCTSTR pszArgs )
 {
 	ADDTOCALLSTACK("CAccount::TogPrivFlags");
@@ -706,7 +691,6 @@ void CAccount::TogPrivFlags( WORD wPrivFlags, LPCTSTR pszArgs )
 	}
 }
 
-// The account just logged in.
 void CAccount::OnLogin( CClient * pClient )
 {
 	ADDTOCALLSTACK("CAccount::OnLogin");
@@ -740,7 +724,6 @@ void CAccount::OnLogin( CClient * pClient )
 	g_Log.Event( LOGM_CLIENTS_LOG, "%lx:Login '%s'\n", pClient->GetSocketID(), static_cast<LPCTSTR>(GetName()));
 }
 
-// CClient is disconnecting from this CAccount.
 void CAccount::OnLogout(CClient *pClient, bool bWasChar)
 {
 	ADDTOCALLSTACK("CAccount::OnLogout");
@@ -749,9 +732,9 @@ void CAccount::OnLogout(CClient *pClient, bool bWasChar)
 	if ( pClient->GetConnectType() == CONNECT_TELNET )// unlink the admin client.
 		g_Serv.m_iAdminClients --;
 
-													// calculate total game time. skip this calculation in
-													// case if it was login type packet. it has the same type,
-													// so we should check whatever player is attached to a char
+	// calculate total game time. skip this calculation in
+	// case if it was login type packet. it has the same type,
+	// so we should check whatever player is attached to a char
 	if ( pClient->IsConnectTypePacket() && bWasChar )
 	{
 		m_Last_Connect_Time = ( -g_World.GetTimeDiff(pClient->m_timeLogin) ) / ( TICK_PER_SEC * 60 );
@@ -762,7 +745,6 @@ void CAccount::OnLogout(CClient *pClient, bool bWasChar)
 	}
 }
 
-// Kick account
 bool CAccount::Kick( CTextConsole * pSrc, bool fBlock )
 {
 	ADDTOCALLSTACK("CAccount::Kick");
@@ -787,7 +769,7 @@ bool CAccount::Kick( CTextConsole * pSrc, bool fBlock )
 	return true;
 }
 
-// Wrong pw given, check the failed tries to take actions again'st this ip.
+
 bool CAccount::CheckPasswordTries(CSocketAddress csaPeerName)
 {
 	if ( csaPeerName.IsLocalAddr() || (csaPeerName.GetAddrIP() == 0x7F000001) )
@@ -857,8 +839,7 @@ bool CAccount::CheckPasswordTries(CSocketAddress csaPeerName)
 	return bReturn;
 }
 
-// We reached max storing data?
-// Removing all saved data related to passwordtries
+
 void CAccount::ClearPasswordTries(bool bAll)
 {
 	if ( bAll )
@@ -885,8 +866,6 @@ void CAccount::ClearPasswordTries(bool bAll)
 	}
 }
 
-// RETURN:
-//  false = failure.
 bool CAccount::CheckPassword( LPCTSTR pszPassword )
 {
 	ADDTOCALLSTACK("CAccount::CheckPassword");
@@ -941,7 +920,6 @@ bool CAccount::CheckPassword( LPCTSTR pszPassword )
 	return( false );	// failure.
 }
 
-// setting new pw
 bool CAccount::SetPassword( LPCTSTR pszPassword, bool isMD5Hash )
 {
 	ADDTOCALLSTACK("CAccount::SetPassword");
