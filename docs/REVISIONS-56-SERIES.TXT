@@ -2674,7 +2674,7 @@ Fixed: sphereworld.scp file saving many [SECTOR] templates for the same sector s
 Added: Basic support for UO Time of Legends (TOL)
 	-Added RESDISP 9 (TOL) support.
 	-Added VIRTUALGOLD function to store virtual gold of chars.
-	-Added support for the new trade window changes (still incomplete / not working).
+	-Added support for the new trade window changes.
 	-Added new 'Trade' popup button to open a trade window when click on another player (enabled only on TOL clients 7.0.46.0+)
 	[sphere_admin.scp]: Added 'admin_resdisp_9' def.
 
@@ -2682,3 +2682,9 @@ Added: Basic support for UO Time of Legends (TOL)
 [Sphere.ini]:
 	-Added new FeatureTOL and FeatureExtra settings (some flags still incomplete)
 	-Moved FEATURE_ML_NINTHAGE (FeatureML) to FEATURE_EXTRA_CRYSTAL (FeatureExtra)
+
+09-10-2015, Coruja
+Added: Small improvements on TOL trade window.
+Added: 'physical' gold piles now will be converted to 'virtual' gold when dropped on bankbox (if FEATURE_TOL_VIRTUALGOLD is enabled).
+[sphere_msgs.scp]: Added new messages 'bvbox_deposited', 'msg_trade_sent_*', 'msg_trade_received_*'.
+[sphere_map_points5.scp]: Updated [MoonGates] values.

@@ -1130,56 +1130,36 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 	else if (character != container->GetParent())
 		return true;
 
-	// perform the trade
-	switch (action)
+	switch ( action )
 	{
-		case SECURE_TRADE_CLOSE: // cancel trade. send each person cancel messages, move items
+		case SECURE_TRADE_CLOSE:		// cancel trade. send each person cancel messages, move items
 			container->Delete();
 			return true;
 
-		case SECURE_TRADE_CHANGE: // change check marks. possible conclude trade
+		case SECURE_TRADE_CHANGE:		// change check marks. possible conclude trade
 		{
-			if (character->GetDist(container) > UO_MAP_VIEW_SIZE)
+			if ( character->GetDist(container) > UO_MAP_VIEW_SIZE )
 			{
-				// to far away
 				client->SysMessageDefault(DEFMSG_MSG_TRADE_TOOFAR);
 				return true;
 			}
 
-			long need2wait(0);
-			CVarDefCont* vardef = container->GetTagDefs()->GetKey("wait1sec");
-			if (vardef != NULL)
-				need2wait = static_cast<long>(vardef->GetValNum());
-
-			if (need2wait > 0)
+			INT64 iWaitTime = container->m_itEqTradeWindow.m_iWaitTime;
+			INT64 iTimestamp = g_World.GetCurrentTime().GetTimeRaw();
+			if ( iWaitTime > iTimestamp )
 			{
-				long long timerow = g_World.GetCurrentTime().GetTimeRaw();
-				if (need2wait > timerow)
-				{
-					TCHAR* msg = Str_GetTemp();
-					long seconds = static_cast<long>(need2wait-timerow) / TICK_PER_SEC;
-					sprintf(msg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_WAIT), seconds);
-					client->SysMessage(msg);
-					return true;
-				}
+				INT64 iSeconds = (iWaitTime - iTimestamp) / TICK_PER_SEC;
+				client->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_WAIT), iSeconds);
+				return true;
 			}
 
-			DWORD arg = readInt32();
-			container->Trade_Status(arg != 0);
+			container->Trade_Status(readInt32() != 0);
 			return true;
 		}
 
 		case SECURE_TRADE_UPDATEGOLD:	// update trade window virtual gold
-		{
-			DWORD gold = readInt32();
-			DWORD platinum = readInt32();
-			// TO-DO: function still incomplete. Honestly I don't know how this data works.
-			// Probably these gold/platinum values must be stored directly on trade window
-			// container (m_itEqTradeWindow) to transfer it on trade accept
-		}
-
-		default:
-			break;
+			container->Trade_UpdateGold(readInt32(), readInt32());
+			return true;
 	}
 
 	return true;

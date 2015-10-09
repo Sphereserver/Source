@@ -1778,8 +1778,8 @@ void PacketTradeAction::prepareReadyChange(const CItemContainer *container1, con
 
 	seek(4);
 	writeInt32(container1->GetUID());
-	writeInt32(container1->m_itEqTradeWindow.m_fCheck);
-	writeInt32(container2->m_itEqTradeWindow.m_fCheck);
+	writeInt32(container1->m_itEqTradeWindow.m_bCheck);
+	writeInt32(container2->m_itEqTradeWindow.m_bCheck);
 	writeBool(false);
 }
 
