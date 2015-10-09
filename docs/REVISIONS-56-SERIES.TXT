@@ -2682,3 +2682,9 @@ Added: Basic support for UO Time of Legends (TOL)
 [Sphere.ini]:
 	-Added new FeatureTOL and FeatureExtra settings (some flags still incomplete)
 	-Moved FEATURE_ML_NINTHAGE (FeatureML) to FEATURE_EXTRA_CRYSTAL (FeatureExtra)
+
+09-10-2015, Coruja
+Added: Small improvements on TOL trade window.
+Added: 'physical' gold piles now will be converted to 'virtual' gold when dropped on bankbox (if FEATURE_TOL_VIRTUALGOLD is enabled).
+[sphere_msgs.scp]: Added new messages 'bvbox_deposited', 'msg_trade_sent_*', 'msg_trade_received_*'.
+[sphere_map_points5.scp]: Updated [MoonGates] values.

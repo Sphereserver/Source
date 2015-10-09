@@ -336,6 +336,16 @@ void CClient::Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, u
 			}
 			if ( pChar->GetBank()->IsItemInside( pContItem ))
 			{
+				// Convert physical gold into virtual gold when drop it on bankbox
+				if ( pItem->IsType(IT_GOLD) && (g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD) )
+				{
+					pChar->m_virtualGold += pItem->GetAmount();
+					SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_BVBOX_DEPOSITED), pItem->GetAmount());
+					addSound(pItem->GetDropSound(pObjOn));
+					pItem->Delete();
+					return;
+				}
+
 				// Diff Weight restrict for bank box and items in the bank box.
 				if ( ! pChar->GetBank()->CanContainerHold( pItem, m_pChar ))
 				{
@@ -2424,9 +2434,6 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 		}
 		else
 		{
-			if ( GetNetState()->isClientVersion(MINCLIVER_TOL) && m_pChar->GetDist(pChar) <= 2 )
-				m_pPopupPacket->addOption(POPUP_TRADE_OPEN, 1077728, POPUPFLAG_COLOR, 0xFFFF);
-
 			if ( m_pChar->m_pParty == NULL && pChar->m_pParty == NULL )
 				m_pPopupPacket->addOption(POPUP_PARTY_ADD, 197, POPUPFLAG_COLOR, 0xFFFF);
 			else if ( m_pChar->m_pParty != NULL && m_pChar->m_pParty->IsPartyMaster(m_pChar) )
@@ -2436,6 +2443,9 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 				else if ( pChar->m_pParty == m_pChar->m_pParty )
 					m_pPopupPacket->addOption(POPUP_PARTY_REMOVE, 198, POPUPFLAG_COLOR, 0xFFFF);
 			}
+
+			if ( GetNetState()->isClientVersion(MINCLIVER_TOL) && m_pChar->GetDist(pChar) <= 2 )
+				m_pPopupPacket->addOption(POPUP_TRADE_OPEN, 1077728, POPUPFLAG_COLOR, 0xFFFF);
 		}
 		
 		if (( Args.m_iN1 != 1 ) && ( IsTrigUsed(TRIGGER_CONTEXTMENUREQUEST) ))

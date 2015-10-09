@@ -1474,16 +1474,19 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 	cmd.prepareContainerOpen(m_pChar, pCont2, pCont1);
 	cmd.send(pChar->GetClient());
 
-	PacketTradeAction cmd2(SECURE_TRADE_UPDATELEDGER);
-	if ( GetNetState()->isClientVersion(MINCLIVER_NEWSECURETRADE) )
+	if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD )
 	{
-		cmd2.prepareUpdateLedger(pCont1, static_cast<DWORD>(m_pChar->m_virtualGold % 1000000000), static_cast<DWORD>(m_pChar->m_virtualGold / 1000000000));
-		cmd2.send(this);
-	}
-	if ( pChar->GetClient()->GetNetState()->isClientVersion(MINCLIVER_NEWSECURETRADE) )
-	{
-		cmd2.prepareUpdateLedger(pCont2, static_cast<DWORD>(pChar->m_virtualGold % 1000000000), static_cast<DWORD>(pChar->m_virtualGold / 1000000000));
-		cmd2.send(pChar->GetClient());
+		PacketTradeAction cmd2(SECURE_TRADE_UPDATELEDGER);
+		if ( GetNetState()->isClientVersion(MINCLIVER_NEWSECURETRADE) )
+		{
+			cmd2.prepareUpdateLedger(pCont1, static_cast<DWORD>(m_pChar->m_virtualGold % 1000000000), static_cast<DWORD>(m_pChar->m_virtualGold / 1000000000));
+			cmd2.send(this);
+		}
+		if ( pChar->GetClient()->GetNetState()->isClientVersion(MINCLIVER_NEWSECURETRADE) )
+		{
+			cmd2.prepareUpdateLedger(pCont2, static_cast<DWORD>(pChar->m_virtualGold % 1000000000), static_cast<DWORD>(pChar->m_virtualGold / 1000000000));
+			cmd2.send(pChar->GetClient());
+		}
 	}
 
 	LogOpenedContainer(pCont2);

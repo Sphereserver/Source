@@ -1800,8 +1800,8 @@ void PacketTradeAction::prepareUpdateGold(const CItemContainer *container, DWORD
 
 	seek(4);
 	writeInt32(container->GetUID());
-	writeInt32(platinum);
 	writeInt32(gold);
+	writeInt32(platinum);
 	writeBool(false);
 }
 

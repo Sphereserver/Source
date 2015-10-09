@@ -720,6 +720,38 @@ void CItemContainer::Trade_Status( bool bCheck )
 	// Transfer gold/platinum
 	if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD )
 	{
+		if ( m_itEqTradeWindow.m_iPlatinum && m_itEqTradeWindow.m_iGold )
+		{
+			pChar1->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_SENT_PLAT_GOLD), m_itEqTradeWindow.m_iPlatinum, m_itEqTradeWindow.m_iGold, pChar2->GetName());
+			pChar2->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_RECEIVED_PLAT_GOLD), m_itEqTradeWindow.m_iPlatinum, m_itEqTradeWindow.m_iGold, pChar1->GetName());
+		}
+		else if ( m_itEqTradeWindow.m_iPlatinum )
+		{
+			pChar1->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_SENT_PLAT), m_itEqTradeWindow.m_iPlatinum, pChar2->GetName());
+			pChar2->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_RECEIVED_PLAT), m_itEqTradeWindow.m_iPlatinum, pChar1->GetName());
+		}
+		else if ( m_itEqTradeWindow.m_iGold )
+		{
+			pChar1->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_SENT_GOLD), m_itEqTradeWindow.m_iGold, pChar2->GetName());
+			pChar2->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_RECEIVED_GOLD), m_itEqTradeWindow.m_iGold, pChar1->GetName());
+		}
+
+		if ( pPartner->m_itEqTradeWindow.m_iPlatinum && pPartner->m_itEqTradeWindow.m_iGold )
+		{
+			pChar2->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_SENT_PLAT_GOLD), pPartner->m_itEqTradeWindow.m_iPlatinum, pPartner->m_itEqTradeWindow.m_iGold, pChar1->GetName());
+			pChar1->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_RECEIVED_PLAT_GOLD), pPartner->m_itEqTradeWindow.m_iPlatinum, pPartner->m_itEqTradeWindow.m_iGold, pChar2->GetName());
+		}
+		else if ( pPartner->m_itEqTradeWindow.m_iPlatinum )
+		{
+			pChar2->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_SENT_PLAT), pPartner->m_itEqTradeWindow.m_iPlatinum, pChar1->GetName());
+			pChar1->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_RECEIVED_PLAT), pPartner->m_itEqTradeWindow.m_iPlatinum, pChar2->GetName());
+		}
+		else if ( pPartner->m_itEqTradeWindow.m_iGold )
+		{
+			pChar2->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_SENT_GOLD), pPartner->m_itEqTradeWindow.m_iGold, pChar1->GetName());
+			pChar1->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_RECEIVED_GOLD), pPartner->m_itEqTradeWindow.m_iGold, pChar2->GetName());
+		}
+
 		INT64 iGold1 = m_itEqTradeWindow.m_iGold + (m_itEqTradeWindow.m_iPlatinum * 1000000000);
 		INT64 iGold2 = pPartner->m_itEqTradeWindow.m_iGold + (pPartner->m_itEqTradeWindow.m_iPlatinum * 1000000000);
 		pChar1->m_virtualGold += iGold2 - iGold1;
@@ -735,11 +767,10 @@ void CItemContainer::Trade_Status( bool bCheck )
 void CItemContainer::Trade_UpdateGold( DWORD platinum, DWORD gold )
 {
 	ADDTOCALLSTACK("CItemContainer::Trade_UpdateGold");
-	// Update trade gold/platinum values.
+	// Update trade gold/platinum values on TOL clients
 	CItemContainer *pPartner = dynamic_cast<CItemContainer*>(m_uidLink.ItemFind());
 	if ( !pPartner )
 		return;
-
 	CChar *pChar1 = dynamic_cast<CChar*>(GetParent());
 	if ( !pChar1 || !pChar1->IsClient() )
 		return;
@@ -747,31 +778,33 @@ void CItemContainer::Trade_UpdateGold( DWORD platinum, DWORD gold )
 	if ( !pChar2 || !pChar2->IsClient() )
 		return;
 
+	bool bUpdateChar1 = false;
+	bool bUpdateChar2 = pChar2->GetClient()->GetNetState()->isClientVersion(MINCLIVER_NEWSECURETRADE);
+
 	// Fix for a client bug when total value is > 1.000.000.000 (1 platinum) it
 	// allow the user insert a gold value higher than it have. So these values
 	// must be checked again on server-side to prevent cheating.
-	bool bResend = false;
 	DWORD iMaxGold = static_cast<DWORD>(pChar1->m_virtualGold % 1000000000);
 	if ( gold > iMaxGold )
 	{
 		gold = iMaxGold;
-		bResend = true;
+		bUpdateChar1 = true;
 	}
 	DWORD iMaxPlatinum = static_cast<DWORD>(pChar1->m_virtualGold % 1000000000);
 	if ( platinum > iMaxPlatinum )
 	{
 		platinum = iMaxPlatinum;
-		bResend = true;
+		bUpdateChar1 = true;
 	}
 
 	m_itEqTradeWindow.m_iGold = gold;
 	m_itEqTradeWindow.m_iPlatinum = platinum;
 
 	PacketTradeAction cmd(SECURE_TRADE_UPDATEGOLD);
-	cmd.prepareUpdateGold(this, platinum, gold);
-	if ( bResend )
+	cmd.prepareUpdateGold(this, gold, platinum);
+	if ( bUpdateChar1 )
 		cmd.send(pChar1->GetClient());
-	if ( pChar2->GetClient()->GetNetState()->isClientVersion(MINCLIVER_NEWSECURETRADE) )
+	if ( bUpdateChar2 )
 		cmd.send(pChar2->GetClient());
 }
 
