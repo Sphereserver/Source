@@ -13,6 +13,11 @@ Install mysql library
 * sudo apt-get install libmysql++ libmysql++-dev
 * sudo apt-get install libmysqlclient-dev:i386
 
+### Windows
+
+Create a .sln file
+* Open src\graysvr\GraySvr.vcxproj with Visual Studio, press crtl + s to save the solution and choose a name for the .sln file, use this file from now.
+
 ## Coding Notes (add as you wish to standardize the coding for new contributors)
 
 * Make sure you can compile and run the program before pushing a commit.
