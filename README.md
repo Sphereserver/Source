@@ -1,5 +1,8 @@
 # Sphereserver
 
+## Join gitter chat
+[![Join the chat at https://gitter.im/Sphereserver/Source](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Sphereserver/Source)
+
 ## Project details
 
 [Automatic builds](http://nightly.prerelease.sphere.torfo.org/)
