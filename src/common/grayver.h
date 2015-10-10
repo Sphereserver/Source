@@ -7,9 +7,9 @@
  #define GRAY_VER_BUILD			0
 #endif
 
-#define GRAY_VER_FILEVERSION		0,56,3,GRAY_VER_BUILD		// version to be set on generated .exe file
-#define	GRAY_VER_NUM				0x00005603L					// version for some internal usage, like compiled scripts
-#define GRAY_VER_STR				"0.56c"						// share version with all files
+#define GRAY_VER_FILEVERSION		0,56,4,GRAY_VER_BUILD		// version to be set on generated .exe file
+#define	GRAY_VER_NUM				0x00005604L					// version for some internal usage, like compiled scripts
+#define GRAY_VER_STR				"0.56d"						// share version with all files
 
 #if defined(_DEBUG)
  #define GRAY_VERSION				GRAY_VER_STR "-Debug"
