@@ -34,716 +34,713 @@
     <Filter Include="tables">
       <UniqueIdentifier>{b459b1a6-1618-4776-a2ef-a312167c3bbb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="common\subversion">
-      <UniqueIdentifier>{1020eb71-d20f-4af6-b3ec-e4308f41415c}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\common\zlib\adler32.c">
+    <ClCompile Include="src\common\zlib\adler32.c">
       <Filter>common\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\zlib\compress.c">
+    <ClCompile Include="src\common\zlib\compress.c">
       <Filter>common\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\zlib\crc32.c">
+    <ClCompile Include="src\common\zlib\crc32.c">
       <Filter>common\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\zlib\deflate.c">
+    <ClCompile Include="src\common\zlib\deflate.c">
       <Filter>common\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\zlib\infback.c">
+    <ClCompile Include="src\common\zlib\infback.c">
       <Filter>common\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\zlib\inffast.c">
+    <ClCompile Include="src\common\zlib\inffast.c">
       <Filter>common\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\zlib\inflate.c">
+    <ClCompile Include="src\common\zlib\inflate.c">
       <Filter>common\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\zlib\inftrees.c">
+    <ClCompile Include="src\common\zlib\inftrees.c">
       <Filter>common\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\zlib\trees.c">
+    <ClCompile Include="src\common\zlib\trees.c">
       <Filter>common\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\zlib\uncompr.c">
+    <ClCompile Include="src\common\zlib\uncompr.c">
       <Filter>common\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\zlib\zutil.c">
+    <ClCompile Include="src\common\zlib\zutil.c">
       <Filter>common\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\twofish\twofish2.cpp">
+    <ClCompile Include="src\common\twofish\twofish2.cpp">
       <Filter>common\twofish</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CArray.cpp">
+    <ClCompile Include="src\common\CArray.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CAssoc.cpp">
+    <ClCompile Include="src\common\CAssoc.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CAtom.cpp">
+    <ClCompile Include="src\common\CAtom.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CDataBase.cpp">
+    <ClCompile Include="src\common\CDataBase.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CException.cpp">
+    <ClCompile Include="src\common\CException.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CExpression.cpp">
+    <ClCompile Include="src\common\CExpression.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CFile.cpp">
+    <ClCompile Include="src\common\CFile.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CFileList.cpp">
+    <ClCompile Include="src\common\CFileList.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CGrayData.cpp">
+    <ClCompile Include="src\common\CGrayData.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CGrayInst.cpp">
+    <ClCompile Include="src\common\CGrayInst.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CGrayMap.cpp">
+    <ClCompile Include="src\common\CGrayMap.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CMapCache.cpp">
+    <ClCompile Include="src\common\CMapCache.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CMD5.cpp">
+    <ClCompile Include="src\common\CMD5.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CQueue.cpp">
+    <ClCompile Include="src\common\CQueue.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CRect.cpp">
+    <ClCompile Include="src\common\CRect.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CRegion.cpp">
+    <ClCompile Include="src\common\CRegion.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CResourceBase.cpp">
+    <ClCompile Include="src\common\CResourceBase.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CScript.cpp">
+    <ClCompile Include="src\common\CScript.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CScriptObj.cpp">
+    <ClCompile Include="src\common\CScriptObj.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CSectorTemplate.cpp">
+    <ClCompile Include="src\common\CSectorTemplate.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CSocket.cpp">
+    <ClCompile Include="src\common\CSocket.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CString.cpp">
+    <ClCompile Include="src\common\CString.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CTime.cpp">
+    <ClCompile Include="src\common\CTime.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CVarDefMap.cpp">
+    <ClCompile Include="src\common\CVarDefMap.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\ListDefContMap.cpp">
+    <ClCompile Include="src\common\ListDefContMap.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CWindow.cpp">
+    <ClCompile Include="src\common\CWindow.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\graycom.cpp">
+    <ClCompile Include="src\common\graycom.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\sphere\asyncdb.cpp">
+    <ClCompile Include="src\sphere\asyncdb.cpp">
       <Filter>sphere</Filter>
     </ClCompile>
-    <ClCompile Include="..\sphere\linuxev.cpp">
+    <ClCompile Include="src\sphere\linuxev.cpp">
       <Filter>sphere</Filter>
     </ClCompile>
-    <ClCompile Include="..\sphere\mutex.cpp">
+    <ClCompile Include="src\sphere\mutex.cpp">
       <Filter>sphere</Filter>
     </ClCompile>
-    <ClCompile Include="..\sphere\ProfileData.cpp">
+    <ClCompile Include="src\sphere\ProfileData.cpp">
       <Filter>sphere</Filter>
     </ClCompile>
-    <ClCompile Include="..\sphere\strings.cpp">
+    <ClCompile Include="src\sphere\strings.cpp">
       <Filter>sphere</Filter>
     </ClCompile>
-    <ClCompile Include="..\sphere\threads.cpp">
+    <ClCompile Include="src\sphere\threads.cpp">
       <Filter>sphere</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CacheableScriptFile.cpp">
+    <ClCompile Include="src\common\CacheableScriptFile.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="CItemMultiCustom.cpp">
+    <ClCompile Include="src\graysvr\CItemMultiCustom.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CItemShip.cpp">
+    <ClCompile Include="src\graysvr\CItemShip.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\crashdump\crashdump.cpp">
+    <ClCompile Include="src\common\crashdump\crashdump.cpp">
       <Filter>common\crashdump</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CScriptCompiler.cpp">
+    <ClCompile Include="src\common\CScriptCompiler.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CsvFile.cpp">
+    <ClCompile Include="src\common\CsvFile.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CVarFloat.cpp">
+    <ClCompile Include="src\common\CVarFloat.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\network\network.cpp">
+    <ClCompile Include="src\network\network.cpp">
       <Filter>network</Filter>
     </ClCompile>
-    <ClCompile Include="..\network\packet.cpp">
+    <ClCompile Include="src\network\packet.cpp">
       <Filter>network</Filter>
     </ClCompile>
-    <ClCompile Include="..\network\receive.cpp">
+    <ClCompile Include="src\network\receive.cpp">
       <Filter>network</Filter>
     </ClCompile>
-    <ClCompile Include="..\network\send.cpp">
+    <ClCompile Include="src\network\send.cpp">
       <Filter>network</Filter>
     </ClCompile>
-    <ClCompile Include="PingServer.cpp">
+    <ClCompile Include="src\graysvr\PingServer.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\sqlite\SQLite.cpp">
+    <ClCompile Include="src\common\sqlite\SQLite.cpp">
       <Filter>common\sqlite</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\sqlite\sqlite3.c">
+    <ClCompile Include="src\common\sqlite\sqlite3.c">
       <Filter>common\sqlite</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\zlib\gzclose.c">
+    <ClCompile Include="src\common\zlib\gzclose.c">
       <Filter>common\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\zlib\gzlib.c">
+    <ClCompile Include="src\common\zlib\gzlib.c">
       <Filter>common\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\zlib\gzread.c">
+    <ClCompile Include="src\common\zlib\gzread.c">
       <Filter>common\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\zlib\gzwrite.c">
+    <ClCompile Include="src\common\zlib\gzwrite.c">
       <Filter>common\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CDatabaseLoader.cpp">
+    <ClCompile Include="src\common\CDatabaseLoader.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="CAccount.cpp">
+    <ClCompile Include="src\graysvr\CAccount.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CBase.cpp">
+    <ClCompile Include="src\graysvr\CBase.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CChar.cpp">
+    <ClCompile Include="src\graysvr\CChar.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CCharact.cpp">
+    <ClCompile Include="src\graysvr\CCharact.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CCharBase.cpp">
+    <ClCompile Include="src\graysvr\CCharBase.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CCharFight.cpp">
+    <ClCompile Include="src\graysvr\CCharFight.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CCharNPC.cpp">
+    <ClCompile Include="src\graysvr\CCharNPC.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CCharNPCAct.cpp">
+    <ClCompile Include="src\graysvr\CCharNPCAct.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CCharNPCPet.cpp">
+    <ClCompile Include="src\graysvr\CCharNPCPet.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CCharNPCStatus.cpp">
+    <ClCompile Include="src\graysvr\CCharNPCStatus.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CCharSkill.cpp">
+    <ClCompile Include="src\graysvr\CCharSkill.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CCharSpell.cpp">
+    <ClCompile Include="src\graysvr\CCharSpell.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CCharStatus.cpp">
+    <ClCompile Include="src\graysvr\CCharStatus.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CCharUse.cpp">
+    <ClCompile Include="src\graysvr\CCharUse.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CChat.cpp">
+    <ClCompile Include="src\graysvr\CChat.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CClient.cpp">
+    <ClCompile Include="src\graysvr\CClient.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CClientDialog.cpp">
+    <ClCompile Include="src\graysvr\CClientDialog.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CClientEvent.cpp">
+    <ClCompile Include="src\graysvr\CClientEvent.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CClientGMPage.cpp">
+    <ClCompile Include="src\graysvr\CClientGMPage.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CClientLog.cpp">
+    <ClCompile Include="src\graysvr\CClientLog.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CClientMsg.cpp">
+    <ClCompile Include="src\graysvr\CClientMsg.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CClientTarg.cpp">
+    <ClCompile Include="src\graysvr\CClientTarg.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CClientUse.cpp">
+    <ClCompile Include="src\graysvr\CClientUse.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CContain.cpp">
+    <ClCompile Include="src\graysvr\CContain.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CGMPage.cpp">
+    <ClCompile Include="src\graysvr\CGMPage.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CItem.cpp">
+    <ClCompile Include="src\graysvr\CItem.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CItemBase.cpp">
+    <ClCompile Include="src\graysvr\CItemBase.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CItemMulti.cpp">
+    <ClCompile Include="src\graysvr\CItemMulti.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CItemSp.cpp">
+    <ClCompile Include="src\graysvr\CItemSp.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CItemStone.cpp">
+    <ClCompile Include="src\graysvr\CItemStone.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CItemVend.cpp">
+    <ClCompile Include="src\graysvr\CItemVend.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CLog.cpp">
+    <ClCompile Include="src\graysvr\CLog.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CObjBase.cpp">
+    <ClCompile Include="src\graysvr\CObjBase.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CPathFinder.cpp">
+    <ClCompile Include="src\graysvr\CPathFinder.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CQuest.cpp">
+    <ClCompile Include="src\graysvr\CQuest.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CResource.cpp">
+    <ClCompile Include="src\graysvr\CResource.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CResourceCalc.cpp">
+    <ClCompile Include="src\graysvr\CResourceCalc.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CResourceDef.cpp">
+    <ClCompile Include="src\graysvr\CResourceDef.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CSector.cpp">
+    <ClCompile Include="src\graysvr\CSector.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CServer.cpp">
+    <ClCompile Include="src\graysvr\CServer.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CServRef.cpp">
+    <ClCompile Include="src\graysvr\CServRef.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CWebPage.cpp">
+    <ClCompile Include="src\graysvr\CWebPage.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CWorld.cpp">
+    <ClCompile Include="src\graysvr\CWorld.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CWorldImport.cpp">
+    <ClCompile Include="src\graysvr\CWorldImport.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="CWorldMap.cpp">
+    <ClCompile Include="src\graysvr\CWorldMap.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="graysvr.cpp">
+    <ClCompile Include="src\graysvr\graysvr.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="ntservice.cpp">
+    <ClCompile Include="src\graysvr\ntservice.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="ntwindow.cpp">
+    <ClCompile Include="src\graysvr\ntwindow.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="UnixTerminal.cpp">
+    <ClCompile Include="src\graysvr\UnixTerminal.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\CEncrypt.cpp">
+    <ClCompile Include="src\common\CEncrypt.cpp">
       <Filter>common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\common\zlib\crc32.h">
+    <ClInclude Include="src\common\zlib\crc32.h">
       <Filter>common\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\zlib\deflate.h">
+    <ClInclude Include="src\common\zlib\deflate.h">
       <Filter>common\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\zlib\inffast.h">
+    <ClInclude Include="src\common\zlib\inffast.h">
       <Filter>common\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\zlib\inffixed.h">
+    <ClInclude Include="src\common\zlib\inffixed.h">
       <Filter>common\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\zlib\inflate.h">
+    <ClInclude Include="src\common\zlib\inflate.h">
       <Filter>common\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\zlib\inftrees.h">
+    <ClInclude Include="src\common\zlib\inftrees.h">
       <Filter>common\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\zlib\trees.h">
+    <ClInclude Include="src\common\zlib\trees.h">
       <Filter>common\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\zlib\zconf.h">
+    <ClInclude Include="src\common\zlib\zconf.h">
       <Filter>common\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\zlib\zlib.h">
+    <ClInclude Include="src\common\zlib\zlib.h">
       <Filter>common\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\zlib\zutil.h">
+    <ClInclude Include="src\common\zlib\zutil.h">
       <Filter>common\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\twofish\aes.h">
+    <ClInclude Include="src\common\twofish\aes.h">
       <Filter>common\twofish</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\twofish\debug.h">
+    <ClInclude Include="src\common\twofish\debug.h">
       <Filter>common\twofish</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\twofish\platform.h">
+    <ClInclude Include="src\common\twofish\platform.h">
       <Filter>common\twofish</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\twofish\table.h">
+    <ClInclude Include="src\common\twofish\table.h">
       <Filter>common\twofish</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\regex\deelx.h">
+    <ClInclude Include="src\common\regex\deelx.h">
       <Filter>common\regexp</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\carray.h">
+    <ClInclude Include="src\common\carray.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\cassoc.h">
+    <ClInclude Include="src\common\cassoc.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\CAtom.h">
+    <ClInclude Include="src\common\CAtom.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\CDataBase.h">
+    <ClInclude Include="src\common\CDataBase.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\CException.h">
+    <ClInclude Include="src\common\CException.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\cexpression.h">
+    <ClInclude Include="src\common\cexpression.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\cfile.h">
+    <ClInclude Include="src\common\cfile.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\cfilelist.h">
+    <ClInclude Include="src\common\cfilelist.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\cgrayinst.h">
+    <ClInclude Include="src\common\cgrayinst.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\cGrayMap.h">
+    <ClInclude Include="src\common\cGrayMap.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\CMapCache.h">
+    <ClInclude Include="src\common\CMapCache.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\cmemblock.h">
+    <ClInclude Include="src\common\cmemblock.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\common.h">
+    <ClInclude Include="src\common\common.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\CQueue.h">
+    <ClInclude Include="src\common\CQueue.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\crect.h">
+    <ClInclude Include="src\common\crect.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\cregion.h">
+    <ClInclude Include="src\common\cregion.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\cresourcebase.h">
+    <ClInclude Include="src\common\cresourcebase.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\cscript.h">
+    <ClInclude Include="src\common\cscript.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\cscriptobj.h">
+    <ClInclude Include="src\common\cscriptobj.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\cSectorTemplate.h">
+    <ClInclude Include="src\common\cSectorTemplate.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\csocket.h">
+    <ClInclude Include="src\common\csocket.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\cstring.h">
+    <ClInclude Include="src\common\cstring.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\ctime.h">
+    <ClInclude Include="src\common\ctime.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\CVarDefMap.h">
+    <ClInclude Include="src\common\CVarDefMap.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\ListDefContMap.h">
+    <ClInclude Include="src\common\ListDefContMap.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\graycom.h">
+    <ClInclude Include="src\common\graycom.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\graymul.h">
+    <ClInclude Include="src\common\graymul.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\grayproto.h">
+    <ClInclude Include="src\common\grayproto.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\grayver.h">
+    <ClInclude Include="src\common\grayver.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\os_unix.h">
+    <ClInclude Include="src\common\os_unix.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\os_windows.h">
+    <ClInclude Include="src\common\os_windows.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\sphere\asyncdb.h">
+    <ClInclude Include="src\sphere\asyncdb.h">
       <Filter>sphere</Filter>
     </ClInclude>
-    <ClInclude Include="..\sphere\containers.h">
+    <ClInclude Include="src\sphere\containers.h">
       <Filter>sphere</Filter>
     </ClInclude>
-    <ClInclude Include="..\sphere\linuxev.h">
+    <ClInclude Include="src\sphere\linuxev.h">
       <Filter>sphere</Filter>
     </ClInclude>
-    <ClInclude Include="..\sphere\mutex.h">
+    <ClInclude Include="src\sphere\mutex.h">
       <Filter>sphere</Filter>
     </ClInclude>
-    <ClInclude Include="..\sphere\ProfileData.h">
+    <ClInclude Include="src\sphere\ProfileData.h">
       <Filter>sphere</Filter>
     </ClInclude>
-    <ClInclude Include="..\sphere\strings.h">
+    <ClInclude Include="src\sphere\strings.h">
       <Filter>sphere</Filter>
     </ClInclude>
-    <ClInclude Include="..\sphere\threads.h">
+    <ClInclude Include="src\sphere\threads.h">
       <Filter>sphere</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\CacheableScriptFile.h">
+    <ClInclude Include="src\common\CacheableScriptFile.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\crashdump\crashdump.h">
+    <ClInclude Include="src\common\crashdump\crashdump.h">
       <Filter>common\crashdump</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\CScriptCompiler.h">
+    <ClInclude Include="src\common\CScriptCompiler.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\CsvFile.h">
+    <ClInclude Include="src\common\CsvFile.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\CVarFloat.h">
+    <ClInclude Include="src\common\CVarFloat.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\network\network.h">
+    <ClInclude Include="src\network\network.h">
       <Filter>network</Filter>
     </ClInclude>
-    <ClInclude Include="..\network\packet.h">
+    <ClInclude Include="src\network\packet.h">
       <Filter>network</Filter>
     </ClInclude>
-    <ClInclude Include="..\network\receive.h">
+    <ClInclude Include="src\network\receive.h">
       <Filter>network</Filter>
     </ClInclude>
-    <ClInclude Include="..\network\send.h">
+    <ClInclude Include="src\network\send.h">
       <Filter>network</Filter>
     </ClInclude>
-    <ClInclude Include="PingServer.h">
+    <ClInclude Include="src\graysvr\PingServer.h">
       <Filter>graysvr</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\mtrand\mtrand.h">
+    <ClInclude Include="src\common\mtrand\mtrand.h">
       <Filter>common\mtrand</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\sqlite\SQLite.h">
+    <ClInclude Include="src\common\sqlite\SQLite.h">
       <Filter>common\sqlite</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\sqlite\sqlite3.h">
+    <ClInclude Include="src\common\sqlite\sqlite3.h">
       <Filter>common\sqlite</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\zlib\gzguts.h">
+    <ClInclude Include="src\common\zlib\gzguts.h">
       <Filter>common\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\CDatabaseLoader.h">
+    <ClInclude Include="src\common\CDatabaseLoader.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="UnixTerminal.h">
+    <ClInclude Include="src\graysvr\UnixTerminal.h">
       <Filter>graysvr</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\CMD5.h">
+    <ClInclude Include="src\common\CMD5.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="CAccount.h">
+    <ClInclude Include="src\graysvr\CAccount.h">
       <Filter>graysvr</Filter>
     </ClInclude>
-    <ClInclude Include="CBase.h">
+    <ClInclude Include="src\graysvr\CBase.h">
       <Filter>graysvr</Filter>
     </ClInclude>
-    <ClInclude Include="CClient.h">
+    <ClInclude Include="src\graysvr\CClient.h">
       <Filter>graysvr</Filter>
     </ClInclude>
-    <ClInclude Include="CObjBase.h">
+    <ClInclude Include="src\graysvr\CObjBase.h">
       <Filter>graysvr</Filter>
     </ClInclude>
-    <ClInclude Include="CPathFinder.h">
+    <ClInclude Include="src\graysvr\CPathFinder.h">
       <Filter>graysvr</Filter>
     </ClInclude>
-    <ClInclude Include="CResource.h">
+    <ClInclude Include="src\graysvr\CResource.h">
       <Filter>graysvr</Filter>
     </ClInclude>
-    <ClInclude Include="CServRef.h">
+    <ClInclude Include="src\graysvr\CServRef.h">
       <Filter>graysvr</Filter>
     </ClInclude>
-    <ClInclude Include="CWorld.h">
+    <ClInclude Include="src\graysvr\CWorld.h">
       <Filter>graysvr</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\CWindow.h">
+    <ClInclude Include="src\common\CWindow.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="graysvr.h">
+    <ClInclude Include="src\graysvr\graysvr.h">
       <Filter>graysvr</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
+    <ClInclude Include="src\graysvr\resource.h">
       <Filter>graysvr</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\CEncrypt.h">
+    <ClInclude Include="src\common\CEncrypt.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="ntservice.h">
+    <ClInclude Include="src\graysvr\ntservice.h">
       <Filter>graysvr</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\subversion\SvnRevision.h">
+    <ClInclude Include="src\common\subversion\SvnRevision.h">
       <Filter>common\subversion</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="..\tables\CBaseBaseDef_props.tbl">
+    <CustomBuild Include="src\tables\CBaseBaseDef_props.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CChar_functions.tbl">
+    <CustomBuild Include="src\tables\CChar_functions.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CChar_props.tbl">
+    <CustomBuild Include="src\tables\CChar_props.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CCharBase_props.tbl">
+    <CustomBuild Include="src\tables\CCharBase_props.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CCharNpc_props.tbl">
+    <CustomBuild Include="src\tables\CCharNpc_props.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CCharPlayer_props.tbl">
+    <CustomBuild Include="src\tables\CCharPlayer_props.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CClient_functions.tbl">
+    <CustomBuild Include="src\tables\CClient_functions.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CClient_props.tbl">
+    <CustomBuild Include="src\tables\CClient_props.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CFile_functions.tbl">
+    <CustomBuild Include="src\tables\CFile_functions.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CFile_props.tbl">
+    <CustomBuild Include="src\tables\CFile_props.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CFileObjContainer_functions.tbl">
+    <CustomBuild Include="src\tables\CFileObjContainer_functions.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CFileObjContainer_props.tbl">
+    <CustomBuild Include="src\tables\CFileObjContainer_props.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\tables\classnames.tbl">
+    <CustomBuild Include="src\tables\classnames.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CObjBase_functions.tbl">
+    <CustomBuild Include="src\tables\CObjBase_functions.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CObjBase_props.tbl">
+    <CustomBuild Include="src\tables\CObjBase_props.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CQuest_functions.tbl">
+    <CustomBuild Include="src\tables\CQuest_functions.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CQuest_props.tbl">
+    <CustomBuild Include="src\tables\CQuest_props.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CScriptCompiler.tbl">
+    <CustomBuild Include="src\tables\CScriptCompiler.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CScriptObj_functions.tbl">
+    <CustomBuild Include="src\tables\CScriptObj_functions.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CSector_functions.tbl">
+    <CustomBuild Include="src\tables\CSector_functions.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\tables\defmessages.tbl">
+    <CustomBuild Include="src\tables\defmessages.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\Sphere.ini" />
+    <CustomBuild Include="src\Sphere.ini" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\sphereCrypt.ini" />
-    <None Include="..\tables\CCharPlayer_functions.tbl">
+    <None Include="src\sphereCrypt.ini" />
+    <None Include="src\tables\CCharPlayer_functions.tbl">
       <Filter>tables</Filter>
     </None>
-    <None Include="..\tables\CItemBase_props.tbl">
+    <None Include="src\tables\CItemBase_props.tbl">
       <Filter>tables</Filter>
     </None>
-    <None Include="..\tables\CItem_functions.tbl">
+    <None Include="src\tables\CItem_functions.tbl">
       <Filter>tables</Filter>
     </None>
-    <None Include="..\tables\CItem_props.tbl">
+    <None Include="src\tables\CItem_props.tbl">
       <Filter>tables</Filter>
     </None>
-    <None Include="..\tables\CItemStone_functions.tbl">
+    <None Include="src\tables\CItemStone_functions.tbl">
       <Filter>tables</Filter>
     </None>
-    <None Include="..\tables\CItemStone_props.tbl">
+    <None Include="src\tables\CItemStone_props.tbl">
       <Filter>tables</Filter>
     </None>
-    <None Include="..\tables\CStoneMember_functions.tbl">
+    <None Include="src\tables\CStoneMember_functions.tbl">
       <Filter>tables</Filter>
     </None>
-    <None Include="..\tables\CStoneMember_props.tbl">
+    <None Include="src\tables\CStoneMember_props.tbl">
       <Filter>tables</Filter>
     </None>
-    <None Include="..\tables\triggers.tbl">
+    <None Include="src\tables\triggers.tbl">
       <Filter>tables</Filter>
     </None>
-    <None Include="..\common\twofish\Makefile">
+    <None Include="src\common\twofish\Makefile">
       <Filter>common\twofish</Filter>
     </None>
-    <None Include="..\common\zlib\ChangeLog">
+    <None Include="src\common\zlib\ChangeLog">
       <Filter>common\zlib</Filter>
     </None>
-    <None Include="..\common\zlib\FAQ">
+    <None Include="src\common\zlib\FAQ">
       <Filter>common\zlib</Filter>
     </None>
-    <None Include="..\common\zlib\INDEX">
+    <None Include="src\common\zlib\INDEX">
       <Filter>common\zlib</Filter>
     </None>
-    <None Include="..\common\zlib\README">
+    <None Include="src\common\zlib\README">
       <Filter>common\zlib</Filter>
     </None>
     <None Include="makefile">
@@ -754,16 +751,16 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="MANUAL.TXT">
+    <Text Include="src\graysvr\MANUAL.TXT">
       <Filter>graysvr</Filter>
     </Text>
-    <Text Include="..\..\docs\REVISIONS-51-54-SERIES.TXT" />
-    <Text Include="..\..\docs\REVISIONS-55-SERIES.TXT" />
-    <Text Include="..\..\docs\REVISIONS-56-Pre_release.TXT" />
-    <Text Include="..\..\docs\REVISIONS-56-SERIES.TXT" />
+    <Text Include="docs\REVISIONS-51-54-SERIES.TXT" />
+    <Text Include="docs\REVISIONS-55-SERIES.TXT" />
+    <Text Include="docs\REVISIONS-56-Pre_release.TXT" />
+    <Text Include="docs\REVISIONS-56-SERIES.TXT" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="GraySvr.rc">
+    <ResourceCompile Include="src\graysvr\GraySvr.rc">
       <Filter>graysvr</Filter>
     </ResourceCompile>
   </ItemGroup>

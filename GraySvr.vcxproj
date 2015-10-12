@@ -24,9 +24,6 @@
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <PlatformToolset>v140_xp</PlatformToolset>
-  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -46,7 +43,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\common\mysql\include;..\common\mysql\lib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\common\mysql\include;src\common\mysql\lib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CallingConvention>StdCall</CallingConvention>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <MinimalRebuild>true</MinimalRebuild>
@@ -61,7 +58,7 @@
       <PreprocessorDefinitions>_DEBUG;_SUBVERSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\common\mysql\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>src\common\mysql\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>ws2_32.lib;wsock32.lib;libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
@@ -69,16 +66,16 @@
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
     </ProjectReference>
     <PreBuildEvent>
-      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; ../common/version/GitRevision.h
+      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; src/common/version/GitRevision.h
 for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
 set /a gitver = %gitver%+410
-echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</Command>
+echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Local|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\common\mysql\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\common\mysql\include</AdditionalIncludeDirectories>
       <CallingConvention>FastCall</CallingConvention>
       <MinimalRebuild>true</MinimalRebuild>
       <PreprocessorDefinitions>_PRIVATEBUILD;_SUBVERSION;_MTNETWORK;WIN32;_WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -89,21 +86,21 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</
       <PreprocessorDefinitions>_PRIVATEBUILD;_SUBVERSION;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\common\mysql\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>src\common\mysql\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PreBuildEvent>
-      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; ../common/version/GitRevision.h
+      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; src/common/version/GitRevision.h
 for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
 set /a gitver = %gitver%+410
-echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</Command>
+echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Nightly|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\common\mysql\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\common\mysql\include</AdditionalIncludeDirectories>
       <CallingConvention>FastCall</CallingConvention>
       <MinimalRebuild>true</MinimalRebuild>
       <PreprocessorDefinitions>_NIGHTLYBUILD;_SUBVERSION;_MTNETWORK;WIN32;_WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -114,21 +111,21 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</
       <PreprocessorDefinitions>_NIGHTLYBUILD;_SUBVERSION;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\common\mysql\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>src\common\mysql\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PreBuildEvent>
-      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; ../common/version/GitRevision.h
+      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; src/common/version/GitRevision.h
 for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
 set /a gitver = %gitver%+410
-echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</Command>
+echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\common\mysql\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\common\mysql\include</AdditionalIncludeDirectories>
       <CallingConvention>FastCall</CallingConvention>
       <PreprocessorDefinitions>_SUBVERSION;_MTNETWORK;WIN32;_WIN32;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
@@ -140,316 +137,305 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</
       <PreprocessorDefinitions>_SUBVERSION;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\common\mysql\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>src\common\mysql\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PreBuildEvent>
-      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; ../common/version/GitRevision.h
+      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; src/common/version/GitRevision.h
 for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
 set /a gitver = %gitver%+410
-echo #define __GITREVISION__ %gitver% &gt;&gt; ../common/version/GitRevision.h</Command>
+echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\common\CacheableScriptFile.cpp" />
-    <ClCompile Include="..\common\CDatabaseLoader.cpp" />
-    <ClCompile Include="..\common\CEncrypt.cpp" />
-    <ClCompile Include="..\common\crashdump\crashdump.cpp" />
-    <ClCompile Include="..\common\CScriptCompiler.cpp" />
-    <ClCompile Include="..\common\CsvFile.cpp" />
-    <ClCompile Include="..\common\CVarFloat.cpp" />
-    <ClCompile Include="..\common\sqlite\SQLite.cpp" />
-    <ClCompile Include="..\common\sqlite\sqlite3.c" />
-    <ClCompile Include="..\network\network.cpp" />
-    <ClCompile Include="..\network\packet.cpp" />
-    <ClCompile Include="..\network\receive.cpp" />
-    <ClCompile Include="..\network\send.cpp" />
-    <ClCompile Include="..\sphere\asyncdb.cpp" />
-    <ClCompile Include="..\sphere\linuxev.cpp" />
-    <ClCompile Include="..\sphere\mutex.cpp" />
-    <ClCompile Include="..\sphere\ProfileData.cpp" />
-    <ClCompile Include="..\sphere\strings.cpp" />
-    <ClCompile Include="..\sphere\threads.cpp" />
-    <ClCompile Include="CAccount.cpp" />
-    <ClCompile Include="CBase.cpp" />
-    <ClCompile Include="CChar.cpp" />
-    <ClCompile Include="CCharact.cpp" />
-    <ClCompile Include="CCharBase.cpp" />
-    <ClCompile Include="CCharFight.cpp" />
-    <ClCompile Include="CCharNPC.cpp" />
-    <ClCompile Include="CCharNPCAct.cpp" />
-    <ClCompile Include="CCharNPCPet.cpp" />
-    <ClCompile Include="CCharNPCStatus.cpp" />
-    <ClCompile Include="CCharSkill.cpp" />
-    <ClCompile Include="CCharSpell.cpp" />
-    <ClCompile Include="CCharStatus.cpp" />
-    <ClCompile Include="CCharUse.cpp" />
-    <ClCompile Include="CChat.cpp" />
-    <ClCompile Include="CClient.cpp" />
-    <ClCompile Include="CClientDialog.cpp" />
-    <ClCompile Include="CClientEvent.cpp" />
-    <ClCompile Include="CClientGMPage.cpp" />
-    <ClCompile Include="CClientLog.cpp" />
-    <ClCompile Include="CClientMsg.cpp" />
-    <ClCompile Include="CClientTarg.cpp" />
-    <ClCompile Include="CClientUse.cpp" />
-    <ClCompile Include="CContain.cpp" />
-    <ClCompile Include="CGMPage.cpp" />
-    <ClCompile Include="CItem.cpp" />
-    <ClCompile Include="CItemBase.cpp" />
-    <ClCompile Include="CItemMulti.cpp" />
-    <ClCompile Include="CItemMultiCustom.cpp" />
-    <ClCompile Include="CItemShip.cpp" />
-    <ClCompile Include="..\common\zlib\adler32.c" />
-    <ClCompile Include="..\common\zlib\compress.c" />
-    <ClCompile Include="..\common\zlib\crc32.c" />
-    <ClCompile Include="..\common\zlib\deflate.c" />
-    <ClCompile Include="..\common\zlib\gzclose.c" />
-    <ClCompile Include="..\common\zlib\gzlib.c" />
-    <ClCompile Include="..\common\zlib\gzread.c" />
-    <ClCompile Include="..\common\zlib\gzwrite.c" />
-    <ClCompile Include="..\common\zlib\infback.c" />
-    <ClCompile Include="..\common\zlib\inffast.c" />
-    <ClCompile Include="..\common\zlib\inflate.c" />
-    <ClCompile Include="..\common\zlib\inftrees.c" />
-    <ClCompile Include="..\common\zlib\trees.c" />
-    <ClCompile Include="..\common\zlib\uncompr.c" />
-    <ClCompile Include="..\common\zlib\zutil.c" />
-    <ClCompile Include="..\common\twofish\twofish2.cpp" />
-    <ClCompile Include="..\common\CArray.cpp" />
-    <ClCompile Include="..\common\CAssoc.cpp" />
-    <ClCompile Include="..\common\CAtom.cpp" />
-    <ClCompile Include="..\common\CDataBase.cpp" />
-    <ClCompile Include="..\common\CException.cpp" />
-    <ClCompile Include="..\common\CExpression.cpp" />
-    <ClCompile Include="..\common\CFile.cpp" />
-    <ClCompile Include="..\common\CFileList.cpp" />
-    <ClCompile Include="..\common\CGrayData.cpp" />
-    <ClCompile Include="..\common\CGrayInst.cpp" />
-    <ClCompile Include="..\common\CGrayMap.cpp" />
-    <ClCompile Include="..\common\CMapCache.cpp" />
-    <ClCompile Include="..\common\CMD5.cpp" />
-    <ClCompile Include="..\common\CQueue.cpp" />
-    <ClCompile Include="..\common\CRect.cpp" />
-    <ClCompile Include="..\common\CRegion.cpp" />
-    <ClCompile Include="..\common\CResourceBase.cpp" />
-    <ClCompile Include="..\common\CScript.cpp" />
-    <ClCompile Include="..\common\CScriptObj.cpp" />
-    <ClCompile Include="..\common\CSectorTemplate.cpp" />
-    <ClCompile Include="..\common\CSocket.cpp" />
-    <ClCompile Include="..\common\CString.cpp" />
-    <ClCompile Include="..\common\CTime.cpp" />
-    <ClCompile Include="..\common\CVarDefMap.cpp" />
-    <ClCompile Include="..\common\ListDefContMap.cpp" />
-    <ClCompile Include="..\common\CWindow.cpp" />
-    <ClCompile Include="..\common\graycom.cpp" />
-    <ClCompile Include="CItemSp.cpp" />
-    <ClCompile Include="CItemStone.cpp" />
-    <ClCompile Include="CItemVend.cpp" />
-    <ClCompile Include="CLog.cpp" />
-    <ClCompile Include="CObjBase.cpp" />
-    <ClCompile Include="CPathFinder.cpp" />
-    <ClCompile Include="CQuest.cpp" />
-    <ClCompile Include="CResource.cpp" />
-    <ClCompile Include="CResourceCalc.cpp" />
-    <ClCompile Include="CResourceDef.cpp" />
-    <ClCompile Include="CSector.cpp" />
-    <ClCompile Include="CServer.cpp" />
-    <ClCompile Include="CServRef.cpp" />
-    <ClCompile Include="CWebPage.cpp" />
-    <ClCompile Include="CWorld.cpp" />
-    <ClCompile Include="CWorldImport.cpp" />
-    <ClCompile Include="CWorldMap.cpp" />
-    <ClCompile Include="graysvr.cpp" />
-    <ClCompile Include="ntservice.cpp" />
-    <ClCompile Include="ntwindow.cpp" />
-    <ClCompile Include="PingServer.cpp" />
-    <ClCompile Include="UnixTerminal.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\common\CacheableScriptFile.h" />
-    <ClInclude Include="..\common\CDatabaseLoader.h" />
-    <ClInclude Include="..\common\CEncrypt.h" />
-    <ClInclude Include="..\common\CMD5.h" />
-    <ClInclude Include="..\common\crashdump\crashdump.h" />
-    <ClInclude Include="..\common\CScriptCompiler.h" />
-    <ClInclude Include="..\common\CsvFile.h" />
-    <ClInclude Include="..\common\CVarFloat.h" />
-    <ClInclude Include="..\common\CWindow.h" />
-    <ClInclude Include="..\common\mtrand\mtrand.h" />
-    <ClInclude Include="..\common\sqlite\SQLite.h" />
-    <ClInclude Include="..\common\sqlite\sqlite3.h" />
-    <ClInclude Include="..\common\subversion\SvnRevision.h" />
-    <ClInclude Include="..\common\zlib\gzguts.h" />
-    <ClInclude Include="..\network\network.h" />
-    <ClInclude Include="..\network\packet.h" />
-    <ClInclude Include="..\network\receive.h" />
-    <ClInclude Include="..\network\send.h" />
-    <ClInclude Include="..\sphere\asyncdb.h" />
-    <ClInclude Include="..\sphere\containers.h" />
-    <ClInclude Include="..\sphere\linuxev.h" />
-    <ClInclude Include="..\sphere\mutex.h" />
-    <ClInclude Include="..\sphere\ProfileData.h" />
-    <ClInclude Include="..\sphere\strings.h" />
-    <ClInclude Include="..\sphere\threads.h" />
-    <ClInclude Include="CAccount.h" />
-    <ClInclude Include="CBase.h" />
-    <ClInclude Include="CClient.h" />
-    <ClInclude Include="CObjBase.h" />
-    <ClInclude Include="CPathFinder.h" />
-    <ClInclude Include="CResource.h" />
-    <ClInclude Include="CServRef.h" />
-    <ClInclude Include="CWorld.h" />
-    <ClInclude Include="graysvr.h" />
-    <ClInclude Include="ntservice.h" />
-    <ClInclude Include="PingServer.h" />
-    <ClInclude Include="..\common\zlib\crc32.h" />
-    <ClInclude Include="..\common\zlib\deflate.h" />
-    <ClInclude Include="..\common\zlib\inffast.h" />
-    <ClInclude Include="..\common\zlib\inffixed.h" />
-    <ClInclude Include="..\common\zlib\inflate.h" />
-    <ClInclude Include="..\common\zlib\inftrees.h" />
-    <ClInclude Include="..\common\zlib\trees.h" />
-    <ClInclude Include="..\common\zlib\zconf.h" />
-    <ClInclude Include="..\common\zlib\zlib.h" />
-    <ClInclude Include="..\common\zlib\zutil.h" />
-    <ClInclude Include="..\common\twofish\aes.h" />
-    <ClInclude Include="..\common\twofish\debug.h" />
-    <ClInclude Include="..\common\twofish\platform.h" />
-    <ClInclude Include="..\common\twofish\table.h" />
-    <ClInclude Include="..\common\regex\deelx.h" />
-    <ClInclude Include="..\common\carray.h" />
-    <ClInclude Include="..\common\cassoc.h" />
-    <ClInclude Include="..\common\CAtom.h" />
-    <ClInclude Include="..\common\CDataBase.h" />
-    <ClInclude Include="..\common\CException.h" />
-    <ClInclude Include="..\common\cexpression.h" />
-    <ClInclude Include="..\common\cfile.h" />
-    <ClInclude Include="..\common\cfilelist.h" />
-    <ClInclude Include="..\common\cgrayinst.h" />
-    <ClInclude Include="..\common\cGrayMap.h" />
-    <ClInclude Include="..\common\CMapCache.h" />
-    <ClInclude Include="..\common\cmemblock.h" />
-    <ClInclude Include="..\common\common.h" />
-    <ClInclude Include="..\common\CQueue.h" />
-    <ClInclude Include="..\common\crect.h" />
-    <ClInclude Include="..\common\cregion.h" />
-    <ClInclude Include="..\common\cresourcebase.h" />
-    <ClInclude Include="..\common\cscript.h" />
-    <ClInclude Include="..\common\cscriptobj.h" />
-    <ClInclude Include="..\common\cSectorTemplate.h" />
-    <ClInclude Include="..\common\csocket.h" />
-    <ClInclude Include="..\common\cstring.h" />
-    <ClInclude Include="..\common\ctime.h" />
-    <ClInclude Include="..\common\CVarDefMap.h" />
-    <ClInclude Include="..\common\ListDefContMap.h" />
-    <ClInclude Include="..\common\graycom.h" />
-    <ClInclude Include="..\common\graymul.h" />
-    <ClInclude Include="..\common\grayproto.h" />
-    <ClInclude Include="..\common\grayver.h" />
-    <ClInclude Include="..\common\os_unix.h" />
-    <ClInclude Include="..\common\os_windows.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="UnixTerminal.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="..\tables\CBaseBaseDef_props.tbl">
+    <ClCompile Include="src\common\CacheableScriptFile.cpp" />
+    <ClCompile Include="src\common\CDatabaseLoader.cpp" />
+    <ClCompile Include="src\common\CEncrypt.cpp" />
+    <ClCompile Include="src\common\crashdump\crashdump.cpp" />
+    <ClCompile Include="src\common\CScriptCompiler.cpp" />
+    <ClCompile Include="src\common\CsvFile.cpp" />
+    <ClCompile Include="src\common\CVarFloat.cpp" />
+    <ClCompile Include="src\common\sqlite\SQLite.cpp" />
+    <ClCompile Include="src\common\sqlite\sqlite3.c" />
+    <ClCompile Include="src\network\network.cpp" />
+    <ClCompile Include="src\network\packet.cpp" />
+    <ClCompile Include="src\network\receive.cpp" />
+    <ClCompile Include="src\network\send.cpp" />
+    <ClCompile Include="src\sphere\asyncdb.cpp" />
+    <ClCompile Include="src\sphere\linuxev.cpp" />
+    <ClCompile Include="src\sphere\mutex.cpp" />
+    <ClCompile Include="src\sphere\ProfileData.cpp" />
+    <ClCompile Include="src\sphere\strings.cpp" />
+    <ClCompile Include="src\sphere\threads.cpp" />
+    <ClCompile Include="src\graysvr\CAccount.cpp" />
+    <ClCompile Include="src\graysvr\CBase.cpp" />
+    <ClCompile Include="src\graysvr\CChar.cpp" />
+    <ClCompile Include="src\graysvr\CCharact.cpp" />
+    <ClCompile Include="src\graysvr\CCharBase.cpp" />
+    <ClCompile Include="src\graysvr\CCharFight.cpp" />
+    <ClCompile Include="src\graysvr\CCharNPC.cpp" />
+    <ClCompile Include="src\graysvr\CCharNPCAct.cpp" />
+    <ClCompile Include="src\graysvr\CCharNPCPet.cpp" />
+    <ClCompile Include="src\graysvr\CCharNPCStatus.cpp" />
+    <ClCompile Include="src\graysvr\CCharSkill.cpp" />
+    <ClCompile Include="src\graysvr\CCharSpell.cpp" />
+    <ClCompile Include="src\graysvr\CCharStatus.cpp" />
+    <ClCompile Include="src\graysvr\CCharUse.cpp" />
+    <ClCompile Include="src\graysvr\CChat.cpp" />
+    <ClCompile Include="src\graysvr\CClient.cpp" />
+    <ClCompile Include="src\graysvr\CClientDialog.cpp" />
+    <ClCompile Include="src\graysvr\CClientEvent.cpp" />
+    <ClCompile Include="src\graysvr\CClientGMPage.cpp" />
+    <ClCompile Include="src\graysvr\CClientLog.cpp" />
+    <ClCompile Include="src\graysvr\CClientMsg.cpp" />
+    <ClCompile Include="src\graysvr\CClientTarg.cpp" />
+    <ClCompile Include="src\graysvr\CClientUse.cpp" />
+    <ClCompile Include="src\graysvr\CContain.cpp" />
+    <ClCompile Include="src\graysvr\CGMPage.cpp" />
+    <ClCompile Include="src\graysvr\CItem.cpp" />
+    <ClCompile Include="src\graysvr\CItemBase.cpp" />
+    <ClCompile Include="src\graysvr\CItemMulti.cpp" />
+    <ClCompile Include="src\graysvr\CItemMultiCustom.cpp" />
+    <ClCompile Include="src\graysvr\CItemShip.cpp" />
+    <ClCompile Include="src\common\zlib\adler32.c" />
+    <ClCompile Include="src\common\zlib\compress.c" />
+    <ClCompile Include="src\common\zlib\crc32.c" />
+    <ClCompile Include="src\common\zlib\deflate.c" />
+    <ClCompile Include="src\common\zlib\gzclose.c" />
+    <ClCompile Include="src\common\zlib\gzlib.c" />
+    <ClCompile Include="src\common\zlib\gzread.c" />
+    <ClCompile Include="src\common\zlib\gzwrite.c" />
+    <ClCompile Include="src\common\zlib\infback.c" />
+    <ClCompile Include="src\common\zlib\inffast.c" />
+    <ClCompile Include="src\common\zlib\inflate.c" />
+    <ClCompile Include="src\common\zlib\inftrees.c" />
+    <ClCompile Include="src\common\zlib\trees.c" />
+    <ClCompile Include="src\common\zlib\uncompr.c" />
+    <ClCompile Include="src\common\zlib\zutil.c" />
+    <ClCompile Include="src\common\twofish\twofish2.cpp" />
+    <ClCompile Include="src\common\CArray.cpp" />
+    <ClCompile Include="src\common\CAssoc.cpp" />
+    <ClCompile Include="src\common\CAtom.cpp" />
+    <ClCompile Include="src\common\CDataBase.cpp" />
+    <ClCompile Include="src\common\CException.cpp" />
+    <ClCompile Include="src\common\CExpression.cpp" />
+    <ClCompile Include="src\common\CFile.cpp" />
+    <ClCompile Include="src\common\CFileList.cpp" />
+    <ClCompile Include="src\common\CGrayData.cpp" />
+    <ClCompile Include="src\common\CGrayInst.cpp" />
+    <ClCompile Include="src\common\CGrayMap.cpp" />
+    <ClCompile Include="src\common\CMapCache.cpp" />
+    <ClCompile Include="src\common\CMD5.cpp" />
+    <ClCompile Include="src\common\CQueue.cpp" />
+    <ClCompile Include="src\common\CRect.cpp" />
+    <ClCompile Include="src\common\CRegion.cpp" />
+    <ClCompile Include="src\common\CResourceBase.cpp" />
+    <ClCompile Include="src\common\CScript.cpp" />
+    <ClCompile Include="src\common\CScriptObj.cpp" />
+    <ClCompile Include="src\common\CSectorTemplate.cpp" />
+    <ClCompile Include="src\common\CSocket.cpp" />
+    <ClCompile Include="src\common\CString.cpp" />
+    <ClCompile Include="src\common\CTime.cpp" />
+    <ClCompile Include="src\common\CVarDefMap.cpp" />
+    <ClCompile Include="src\common\ListDefContMap.cpp" />
+    <ClCompile Include="src\common\CWindow.cpp" />
+    <ClCompile Include="src\common\graycom.cpp" />
+    <ClCompile Include="src\graysvr\CItemSp.cpp" />
+    <ClCompile Include="src\graysvr\CItemStone.cpp" />
+    <ClCompile Include="src\graysvr\CItemVend.cpp" />
+    <ClCompile Include="src\graysvr\CLog.cpp" />
+    <ClCompile Include="src\graysvr\CObjBase.cpp" />
+    <ClCompile Include="src\graysvr\CPathFinder.cpp" />
+    <ClCompile Include="src\graysvr\CQuest.cpp" />
+    <ClCompile Include="src\graysvr\CResource.cpp" />
+    <ClCompile Include="src\graysvr\CResourceCalc.cpp" />
+    <ClCompile Include="src\graysvr\CResourceDef.cpp" />
+    <ClCompile Include="src\graysvr\CSector.cpp" />
+    <ClCompile Include="src\graysvr\CServer.cpp" />
+    <ClCompile Include="src\graysvr\CServRef.cpp" />
+    <ClCompile Include="src\graysvr\CWebPage.cpp" />
+    <ClCompile Include="src\graysvr\CWorld.cpp" />
+    <ClCompile Include="src\graysvr\CWorldImport.cpp" />
+    <ClCompile Include="src\graysvr\CWorldMap.cpp" />
+    <ClCompile Include="src\graysvr\graysvr.cpp" />
+    <ClCompile Include="src\graysvr\ntservice.cpp" />
+    <ClCompile Include="src\graysvr\ntwindow.cpp" />
+    <ClCompile Include="src\graysvr\PingServer.cpp" />
+    <ClCompile Include="src\graysvr\UnixTerminal.cpp" />
+    <ClInclude Include="src\common\CacheableScriptFile.h" />
+    <ClInclude Include="src\common\CDatabaseLoader.h" />
+    <ClInclude Include="src\common\CEncrypt.h" />
+    <ClInclude Include="src\common\CMD5.h" />
+    <ClInclude Include="src\common\crashdump\crashdump.h" />
+    <ClInclude Include="src\common\CScriptCompiler.h" />
+    <ClInclude Include="src\common\CsvFile.h" />
+    <ClInclude Include="src\common\CVarFloat.h" />
+    <ClInclude Include="src\common\CWindow.h" />
+    <ClInclude Include="src\common\mtrand\mtrand.h" />
+    <ClInclude Include="src\common\sqlite\SQLite.h" />
+    <ClInclude Include="src\common\sqlite\sqlite3.h" />
+    <ClInclude Include="src\common\zlib\gzguts.h" />
+    <ClInclude Include="src\network\network.h" />
+    <ClInclude Include="src\network\packet.h" />
+    <ClInclude Include="src\network\receive.h" />
+    <ClInclude Include="src\network\send.h" />
+    <ClInclude Include="src\sphere\asyncdb.h" />
+    <ClInclude Include="src\sphere\containers.h" />
+    <ClInclude Include="src\sphere\linuxev.h" />
+    <ClInclude Include="src\sphere\mutex.h" />
+    <ClInclude Include="src\sphere\ProfileData.h" />
+    <ClInclude Include="src\sphere\strings.h" />
+    <ClInclude Include="src\sphere\threads.h" />
+    <ClInclude Include="src\graysvr\CAccount.h" />
+    <ClInclude Include="src\graysvr\CBase.h" />
+    <ClInclude Include="src\graysvr\CClient.h" />
+    <ClInclude Include="src\graysvr\CObjBase.h" />
+    <ClInclude Include="src\graysvr\CPathFinder.h" />
+    <ClInclude Include="src\graysvr\CResource.h" />
+    <ClInclude Include="src\graysvr\CServRef.h" />
+    <ClInclude Include="src\graysvr\CWorld.h" />
+    <ClInclude Include="src\graysvr\graysvr.h" />
+    <ClInclude Include="src\graysvr\ntservice.h" />
+    <ClInclude Include="src\graysvr\PingServer.h" />
+    <ClInclude Include="src\common\zlib\crc32.h" />
+    <ClInclude Include="src\common\zlib\deflate.h" />
+    <ClInclude Include="src\common\zlib\inffast.h" />
+    <ClInclude Include="src\common\zlib\inffixed.h" />
+    <ClInclude Include="src\common\zlib\inflate.h" />
+    <ClInclude Include="src\common\zlib\inftrees.h" />
+    <ClInclude Include="src\common\zlib\trees.h" />
+    <ClInclude Include="src\common\zlib\zconf.h" />
+    <ClInclude Include="src\common\zlib\zlib.h" />
+    <ClInclude Include="src\common\zlib\zutil.h" />
+    <ClInclude Include="src\common\twofish\aes.h" />
+    <ClInclude Include="src\common\twofish\debug.h" />
+    <ClInclude Include="src\common\twofish\platform.h" />
+    <ClInclude Include="src\common\twofish\table.h" />
+    <ClInclude Include="src\common\regex\deelx.h" />
+    <ClInclude Include="src\common\carray.h" />
+    <ClInclude Include="src\common\cassoc.h" />
+    <ClInclude Include="src\common\CAtom.h" />
+    <ClInclude Include="src\common\CDataBase.h" />
+    <ClInclude Include="src\common\CException.h" />
+    <ClInclude Include="src\common\cexpression.h" />
+    <ClInclude Include="src\common\cfile.h" />
+    <ClInclude Include="src\common\cfilelist.h" />
+    <ClInclude Include="src\common\cgrayinst.h" />
+    <ClInclude Include="src\common\cGrayMap.h" />
+    <ClInclude Include="src\common\CMapCache.h" />
+    <ClInclude Include="src\common\cmemblock.h" />
+    <ClInclude Include="src\common\common.h" />
+    <ClInclude Include="src\common\CQueue.h" />
+    <ClInclude Include="src\common\crect.h" />
+    <ClInclude Include="src\common\cregion.h" />
+    <ClInclude Include="src\common\cresourcebase.h" />
+    <ClInclude Include="src\common\cscript.h" />
+    <ClInclude Include="src\common\cscriptobj.h" />
+    <ClInclude Include="src\common\cSectorTemplate.h" />
+    <ClInclude Include="src\common\csocket.h" />
+    <ClInclude Include="src\common\cstring.h" />
+    <ClInclude Include="src\common\ctime.h" />
+    <ClInclude Include="src\common\CVarDefMap.h" />
+    <ClInclude Include="src\common\ListDefContMap.h" />
+    <ClInclude Include="src\common\graycom.h" />
+    <ClInclude Include="src\common\graymul.h" />
+    <ClInclude Include="src\common\grayproto.h" />
+    <ClInclude Include="src\common\grayver.h" />
+    <ClInclude Include="src\common\os_unix.h" />
+    <ClInclude Include="src\common\os_windows.h" />
+    <ClInclude Include="src\graysvr\resource.h" />
+    <ClInclude Include="src\graysvr\UnixTerminal.h" />
+    <CustomBuild Include="src\tables\CBaseBaseDef_props.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CChar_functions.tbl">
+    <CustomBuild Include="src\tables\CChar_functions.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CChar_props.tbl">
+    <CustomBuild Include="src\tables\CChar_props.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CCharBase_props.tbl">
+    <CustomBuild Include="src\tables\CCharBase_props.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CCharNpc_props.tbl">
+    <CustomBuild Include="src\tables\CCharNpc_props.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CCharPlayer_props.tbl">
+    <CustomBuild Include="src\tables\CCharPlayer_props.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CClient_functions.tbl">
+    <CustomBuild Include="src\tables\CClient_functions.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CClient_props.tbl">
+    <CustomBuild Include="src\tables\CClient_props.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CFile_functions.tbl">
+    <CustomBuild Include="src\tables\CFile_functions.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CFile_props.tbl">
+    <CustomBuild Include="src\tables\CFile_props.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CFileObjContainer_functions.tbl">
+    <CustomBuild Include="src\tables\CFileObjContainer_functions.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CFileObjContainer_props.tbl">
+    <CustomBuild Include="src\tables\CFileObjContainer_props.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\tables\classnames.tbl">
+    <CustomBuild Include="src\tables\classnames.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CObjBase_functions.tbl">
+    <CustomBuild Include="src\tables\CObjBase_functions.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CObjBase_props.tbl">
+    <CustomBuild Include="src\tables\CObjBase_props.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CQuest_functions.tbl">
+    <CustomBuild Include="src\tables\CQuest_functions.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CQuest_props.tbl">
+    <CustomBuild Include="src\tables\CQuest_props.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CScriptCompiler.tbl">
+    <CustomBuild Include="src\tables\CScriptCompiler.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CScriptObj_functions.tbl">
+    <CustomBuild Include="src\tables\CScriptObj_functions.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\tables\CSector_functions.tbl">
+    <CustomBuild Include="src\tables\CSector_functions.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\tables\defmessages.tbl">
+    <CustomBuild Include="src\tables\defmessages.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="..\Sphere.ini">
+    <CustomBuild Include="src\Sphere.ini">
       <FileType>Document</FileType>
     </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\common\twofish\Makefile" />
-    <None Include="..\common\zlib\ChangeLog" />
-    <None Include="..\common\zlib\FAQ" />
-    <None Include="..\common\zlib\INDEX" />
-    <None Include="..\common\zlib\README" />
-    <None Include="..\sphereCrypt.ini" />
-    <None Include="..\tables\CCharPlayer_functions.tbl" />
-    <None Include="..\tables\CItemBase_props.tbl" />
-    <None Include="..\tables\CItemStone_functions.tbl" />
-    <None Include="..\tables\CItemStone_props.tbl" />
-    <None Include="..\tables\CItem_functions.tbl" />
-    <None Include="..\tables\CItem_props.tbl" />
-    <None Include="..\tables\CStoneMember_functions.tbl" />
-    <None Include="..\tables\CStoneMember_props.tbl" />
-    <None Include="..\tables\triggers.tbl" />
+    <None Include="src\common\twofish\Makefile" />
+    <None Include="src\common\zlib\ChangeLog" />
+    <None Include="src\common\zlib\FAQ" />
+    <None Include="src\common\zlib\INDEX" />
+    <None Include="src\common\zlib\README" />
+    <None Include="src\sphereCrypt.ini" />
+    <None Include="src\tables\CCharPlayer_functions.tbl" />
+    <None Include="src\tables\CItemBase_props.tbl" />
+    <None Include="src\tables\CItemStone_functions.tbl" />
+    <None Include="src\tables\CItemStone_props.tbl" />
+    <None Include="src\tables\CItem_functions.tbl" />
+    <None Include="src\tables\CItem_props.tbl" />
+    <None Include="src\tables\CStoneMember_functions.tbl" />
+    <None Include="src\tables\CStoneMember_props.tbl" />
+    <None Include="src\tables\triggers.tbl" />
     <None Include="makefile" />
     <None Include="makefile.alt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="..\..\docs\REVISIONS-51-54-SERIES.TXT" />
-    <Text Include="..\..\docs\REVISIONS-55-SERIES.TXT" />
-    <Text Include="..\..\docs\REVISIONS-56-Pre_release.TXT" />
-    <Text Include="..\..\docs\REVISIONS-56-SERIES.TXT" />
+    <Text Include="docs\REVISIONS-51-54-SERIES.TXT" />
+    <Text Include="docs\REVISIONS-55-SERIES.TXT" />
+    <Text Include="docs\REVISIONS-56-Pre_release.TXT" />
+    <Text Include="docs\REVISIONS-56-SERIES.TXT" />
     <Text Include="MANUAL.TXT" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="GraySvr.rc" />
+    <ResourceCompile Include="src\graysvr\GraySvr.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

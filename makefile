@@ -14,7 +14,7 @@ DBLIBS	= -lmysqlclient
 #DBDEFS	= -D_DBPLUGIN
 
 # Linux
-INCLUDE	= -I../common $(DBINCL)
+INCLUDE	= -I/src/common $(DBINCL)
 LIBS	= -dynamic -L/usr/lib -lpthread $(DBLIBS) -lrt -ldl
 DEFNIX  = -D_LINUX
 
@@ -42,115 +42,115 @@ PIPE	= -pipe
 GITHASHCMD = "$(shell git log -1 HEAD --format=%h)"
 GITREVISIONCMD = $(shell expr $(shell git rev-list --count HEAD) + 410)
 
-SRC	:= 	CAccount.cpp \
-		CBase.cpp \
-		CChar.cpp \
-		CCharact.cpp \
-		CCharBase.cpp \
-		CCharFight.cpp \
-		CCharNPC.cpp \
-		CCharNPCAct.cpp \
-		CCharNPCPet.cpp \
-		CCharNPCStatus.cpp \
-		CCharSkill.cpp \
-		CCharSpell.cpp \
-		CCharStatus.cpp \
-		CCharUse.cpp \
-		CChat.cpp \
-		CClient.cpp \
-		CClientDialog.cpp \
-		CClientEvent.cpp \
-		CClientGMPage.cpp \
-		CClientLog.cpp \
-		CClientMsg.cpp \
-		CClientTarg.cpp \
-		CClientUse.cpp \
-		CContain.cpp \
-		CGMPage.cpp \
-		CItem.cpp \
-		CItemBase.cpp \
-		CItemMulti.cpp \
-		CItemMultiCustom.cpp \
-		CItemShip.cpp \
-		CItemSp.cpp \
-		CItemStone.cpp \
-		CItemVend.cpp \
-		CLog.cpp \
-		CObjBase.cpp \
-		CPathFinder.cpp \
-		CResource.cpp \
-		CResourceCalc.cpp \
-		CResourceDef.cpp \
-		CSector.cpp \
-		CServer.cpp \
-		CServRef.cpp \
-		CQuest.cpp \
-		CWebPage.cpp \
-		CWorld.cpp \
-		CWorldImport.cpp \
-		CWorldMap.cpp \
-		graysvr.cpp \
-		PingServer.cpp \
-		UnixTerminal.cpp \
-		../common/twofish/twofish2.cpp \
-		../common/libev/wrapper_ev.c \
-		../common/zlib/adler32.c \
-		../common/zlib/compress.c \
-		../common/zlib/crc32.c \
-		../common/zlib/deflate.c \
-		../common/zlib/gzclose.c \
-		../common/zlib/gzlib.c \
-		../common/zlib/gzread.c \
-		../common/zlib/gzwrite.c \
-		../common/zlib/infback.c \
-		../common/zlib/inffast.c \
-		../common/zlib/inflate.c \
-		../common/zlib/inftrees.c \
-		../common/zlib/trees.c \
-		../common/zlib/uncompr.c \
-		../common/zlib/zutil.c \
-		../common/CArray.cpp \
-		../common/CAtom.cpp \
-		../common/CAssoc.cpp \
-		../common/CDataBase.cpp \
-		../common/CDatabaseLoader.cpp \
-		../common/CEncrypt.cpp \
-		../common/CExpression.cpp \
-		../common/CException.cpp \
-		../common/CacheableScriptFile.cpp \
-		../common/CFile.cpp \
-		../common/CFileList.cpp \
-		../common/CGrayData.cpp \
-		../common/CGrayInst.cpp \
-		../common/CGrayMap.cpp \
-		../common/CMD5.cpp \
-		../common/CQueue.cpp \
-		../common/CRect.cpp \
-		../common/CRegion.cpp \
-		../common/CResourceBase.cpp \
-		../common/CScript.cpp \
-		../common/CScriptObj.cpp \
-		../common/CSectorTemplate.cpp \
-		../common/CSocket.cpp \
-		../common/CsvFile.cpp \
-		../common/CTime.cpp \
-		../common/CString.cpp \
-		../common/CVarDefMap.cpp \
-		../common/CVarFloat.cpp \
-		../common/ListDefContMap.cpp \
-		../common/graycom.cpp \
-        ../common/sqlite/SQLite.cpp \
-        ../common/sqlite/sqlite3.c \
-		../sphere/mutex.cpp \
-		../sphere/strings.cpp \
-		../sphere/threads.cpp \
-		../sphere/linuxev.cpp \
-		../sphere/asyncdb.cpp \
-		../sphere/ProfileData.cpp \
-		../network/network.cpp \
-		../network/packet.cpp \
-		../network/send.cpp \
-		../network/receive.cpp
+SRC	:= 	src/graysvr/CAccount.cpp \
+		src/graysvr/CBase.cpp \
+		src/graysvr/CChar.cpp \
+		src/graysvr/CCharact.cpp \
+		src/graysvr/CCharBase.cpp \
+		src/graysvr/CCharFight.cpp \
+		src/graysvr/CCharNPC.cpp \
+		src/graysvr/CCharNPCAct.cpp \
+		src/graysvr/CCharNPCPet.cpp \
+		src/graysvr/CCharNPCStatus.cpp \
+		src/graysvr/CCharSkill.cpp \
+		src/graysvr/CCharSpell.cpp \
+		src/graysvr/CCharStatus.cpp \
+		src/graysvr/CCharUse.cpp \
+		src/graysvr/CChat.cpp \
+		src/graysvr/CClient.cpp \
+		src/graysvr/CClientDialog.cpp \
+		src/graysvr/CClientEvent.cpp \
+		src/graysvr/CClientGMPage.cpp \
+		src/graysvr/CClientLog.cpp \
+		src/graysvr/CClientMsg.cpp \
+		src/graysvr/CClientTarg.cpp \
+		src/graysvr/CClientUse.cpp \
+		src/graysvr/CContain.cpp \
+		src/graysvr/CGMPage.cpp \
+		src/graysvr/CItem.cpp \
+		src/graysvr/CItemBase.cpp \
+		src/graysvr/CItemMulti.cpp \
+		src/graysvr/CItemMultiCustom.cpp \
+		src/graysvr/CItemShip.cpp \
+		src/graysvr/CItemSp.cpp \
+		src/graysvr/CItemStone.cpp \
+		src/graysvr/CItemVend.cpp \
+		src/graysvr/CLog.cpp \
+		src/graysvr/CObjBase.cpp \
+		src/graysvr/CPathFinder.cpp \
+		src/graysvr/CResource.cpp \
+		src/graysvr/CResourceCalc.cpp \
+		src/graysvr/CResourceDef.cpp \
+		src/graysvr/CSector.cpp \
+		src/graysvr/CServer.cpp \
+		src/graysvr/CServRef.cpp \
+		src/graysvr/CQuest.cpp \
+		src/graysvr/CWebPage.cpp \
+		src/graysvr/CWorld.cpp \
+		src/graysvr/CWorldImport.cpp \
+		src/graysvr/CWorldMap.cpp \
+		src/graysvr/graysvr.cpp \
+		src/graysvr/PingServer.cpp \
+		src/graysvr/UnixTerminal.cpp \
+		src/common/twofish/twofish2.cpp \
+		src/common/libev/wrapper_ev.c \
+		src/common/zlib/adler32.c \
+		src/common/zlib/compress.c \
+		src/common/zlib/crc32.c \
+		src/common/zlib/deflate.c \
+		src/common/zlib/gzclose.c \
+		src/common/zlib/gzlib.c \
+		src/common/zlib/gzread.c \
+		src/common/zlib/gzwrite.c \
+		src/common/zlib/infback.c \
+		src/common/zlib/inffast.c \
+		src/common/zlib/inflate.c \
+		src/common/zlib/inftrees.c \
+		src/common/zlib/trees.c \
+		src/common/zlib/uncompr.c \
+		src/common/zlib/zutil.c \
+		src/common/CArray.cpp \
+		src/common/CAtom.cpp \
+		src/common/CAssoc.cpp \
+		src/common/CDataBase.cpp \
+		src/common/CDatabaseLoader.cpp \
+		src/common/CEncrypt.cpp \
+		src/common/CExpression.cpp \
+		src/common/CException.cpp \
+		src/common/CacheableScriptFile.cpp \
+		src/common/CFile.cpp \
+		src/common/CFileList.cpp \
+		src/common/CGrayData.cpp \
+		src/common/CGrayInst.cpp \
+		src/common/CGrayMap.cpp \
+		src/common/CMD5.cpp \
+		src/common/CQueue.cpp \
+		src/common/CRect.cpp \
+		src/common/CRegion.cpp \
+		src/common/CResourceBase.cpp \
+		src/common/CScript.cpp \
+		src/common/CScriptObj.cpp \
+		src/common/CSectorTemplate.cpp \
+		src/common/CSocket.cpp \
+		src/common/CsvFile.cpp \
+		src/common/CTime.cpp \
+		src/common/CString.cpp \
+		src/common/CVarDefMap.cpp \
+		src/common/CVarFloat.cpp \
+		src/common/ListDefContMap.cpp \
+		src/common/graycom.cpp \
+		src/common/sqlite/SQLite.cpp \
+		src/common/sqlite/sqlite3.c \
+		src/sphere/mutex.cpp \
+		src/sphere/strings.cpp \
+		src/sphere/threads.cpp \
+		src/sphere/linuxev.cpp \
+		src/sphere/asyncdb.cpp \
+		src/sphere/ProfileData.cpp \
+		src/network/network.cpp \
+		src/network/packet.cpp \
+		src/network/send.cpp \
+		src/network/receive.cpp
 
 O_FLAGS	= $(WARN) $(PIPE) $(SPECIAL)
 C_FLAGS	= $(OPT) $(INCLUDE) $(DEFINES)
@@ -161,24 +161,24 @@ C_FLAGS	= $(OPT) $(INCLUDE) $(DEFINES)
 all:	$(EXE)
 
 clean:	tidy
-	rm -f *.o ../common/*.o ../common/mtrand/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o ../sphere/*.o ../network/*.o ../tests/*.o $(EXE)
+	rm -f *.o src/common/*.o src/common/mtrand/*.o src/common/twofish/*.o src/common/libev/*.o src/common/zlib/*.o src/sphere/*.o src/network/*.o src/tests/*.o $(EXE)
 
 tidy:
-	rm -f *~ *orig *bak *rej ../common/*~ ../common/*orig ../common*bak \
-				 ../common/mtrand/*~ ../common/mtrand/*orig ../common/mtrand/*bak \
-				 ../common/twofish/*~ ../common/twofish/*orig ../common/twofish/*bak \
-				 ../common/libev/*~ ../common/libev/*orig ../common/libev/*bak \
-				 ../common/zlib/*~ ../common/zlib/*orig ../common/zlib/*bak \
-				 ../sphere/*~ ../sphere/*orig ../sphere/*bak \
-				 ../network/*~ ../network/*orig ../network/*bak \
-				 ../tests/*~ ../tests/*orig ../tests/*bak
+	rm -f *~ *orig *bak *rej src/common/*~ src/common/*orig src/common*bak \
+				 src/common/mtrand/*~ src/common/mtrand/*orig src/common/mtrand/*bak \
+				 src/common/twofish/*~ src/common/twofish/*orig src/common/twofish/*bak \
+				 src/common/libev/*~ src/common/libev/*orig src/common/libev/*bak \
+				 src/common/zlib/*~ src/common/zlib/*orig src/common/zlib/*bak \
+				 src/sphere/*~ src/sphere/*orig src/sphere/*bak \
+				 src/network/*~ src/network/*orig src/network/*bak \
+				 src/tests/*~ src/tests/*orig src/tests/*bak
 
 tags:	$(SRC)
 	ctags $(SRC)
 
 git:
-	@echo '#define __GITHASH__ ${GITHASHCMD}' > ../common/version/GitRevision.h
-	@echo '#define __GITREVISION__ ${GITREVISIONCMD}' >> ../common/version/GitRevision.h
+	@echo '#define __GITHASH__ ${GITHASHCMD}' > src/common/version/GitRevision.h
+	@echo '#define __GITREVISION__ ${GITREVISIONCMD}' >> src/common/version/GitRevision.h
 	@echo 'Git Hash is ${GITHASHCMD}. Revision No. is ${GITREVISIONCMD}'
 
 gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
@@ -191,7 +191,7 @@ debug: ; $(eval DEFINES := $(DEFINES) $(DEBUGDEFS) $(NIGHTLYDEFS))
 nightly: debug $(EXE)	
 
 $(EXE): git flags gray
-	@$(CC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o ../common/*.o ../common/twofish/*.o ../common/libev/*.o ../common/zlib/*.o  ../common/sqlite/*.o ../sphere/*.o ../network/*.o $(LIBS)
+	@$(CC) $(O_FLAGS) $(C_FLAGS) $(LIBS) -o $(EXE) *.o src/common/*.o src/common/twofish/*.o src/common/libev/*.o src/common/zlib/*.o  src/common/sqlite/*.o src/sphere/*.o src/network/*.o $(LIBS)
 
 %.o:	%.cpp
 	@echo " Compiling $<"
