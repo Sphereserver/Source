@@ -13,7 +13,7 @@
     <Filter Include="common\mtrand">
       <UniqueIdentifier>{3abdd197-d524-40eb-a5ae-59a6b045e73b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="common\regexp">
+    <Filter Include="common\regex">
       <UniqueIdentifier>{ab7d326a-8bb6-432c-997d-b35b39a8c9e7}</UniqueIdentifier>
     </Filter>
     <Filter Include="common\crashdump">
@@ -423,7 +423,7 @@
       <Filter>common\twofish</Filter>
     </ClInclude>
     <ClInclude Include="src\common\regex\deelx.h">
-      <Filter>common\regexp</Filter>
+      <Filter>common\regex</Filter>
     </ClInclude>
     <ClInclude Include="src\common\carray.h">
       <Filter>common</Filter>
@@ -629,9 +629,6 @@
     <ClInclude Include="src\graysvr\ntservice.h">
       <Filter>graysvr</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\subversion\SvnRevision.h">
-      <Filter>common\subversion</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="src\tables\CBaseBaseDef_props.tbl">
@@ -743,17 +740,8 @@
     <None Include="src\common\zlib\README">
       <Filter>common\zlib</Filter>
     </None>
-    <None Include="makefile">
-      <Filter>graysvr</Filter>
-    </None>
-    <None Include="makefile.alt">
-      <Filter>graysvr</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="src\graysvr\MANUAL.TXT">
-      <Filter>graysvr</Filter>
-    </Text>
     <Text Include="docs\REVISIONS-51-54-SERIES.TXT" />
     <Text Include="docs\REVISIONS-55-SERIES.TXT" />
     <Text Include="docs\REVISIONS-56-Pre_release.TXT" />

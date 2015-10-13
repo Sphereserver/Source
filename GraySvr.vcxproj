@@ -428,13 +428,10 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
     <None Include="src\tables\CStoneMember_functions.tbl" />
     <None Include="src\tables\CStoneMember_props.tbl" />
     <None Include="src\tables\triggers.tbl" />
-    <None Include="makefile" />
-    <None Include="makefile.alt" />
     <Text Include="docs\REVISIONS-51-54-SERIES.TXT" />
     <Text Include="docs\REVISIONS-55-SERIES.TXT" />
     <Text Include="docs\REVISIONS-56-Pre_release.TXT" />
     <Text Include="docs\REVISIONS-56-SERIES.TXT" />
-    <Text Include="MANUAL.TXT" />
     <ResourceCompile Include="src\graysvr\GraySvr.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
