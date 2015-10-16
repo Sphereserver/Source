@@ -1016,7 +1016,6 @@ void CSector::OnTick(int iPulseCount)
 {
 	ADDTOCALLSTACK_INTENSIVE("CSector::OnTick");
 	// CWorld gives OnTick() to all CSectors.
-	TIME_PROFILE_INIT;
 
 	EXC_TRY("Tick");
 	EXC_SET("light change");

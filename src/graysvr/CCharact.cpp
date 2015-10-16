@@ -3901,7 +3901,6 @@ bool CChar::CHAR_OnTickFood( int nFoodLevel , int HitsHungerLoss )
 bool CChar::OnTick()
 {
 	ADDTOCALLSTACK("CChar::OnTick");
-	TIME_PROFILE_INIT;
 
 	EXC_TRY("Tick");
 	INT64 iTimeDiff = -g_World.GetTimeDiff(m_timeLastRegen);

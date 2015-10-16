@@ -1847,7 +1847,6 @@ void CServer::OnTick()
 {
 	ADDTOCALLSTACK("CServer::OnTick");
 	EXC_TRY("Tick");
-	TIME_PROFILE_INIT;
 
 #ifndef _WIN32
 	if (g_UnixTerminal.isReady())

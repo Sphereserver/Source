@@ -2467,8 +2467,6 @@ void CWorld::OnTick()
 	if ( g_Serv.IsLoading() || !m_Clock.Advance() )
 		return;
 
-	TIME_PROFILE_INIT;
-
 	if ( g_Cfg.m_iFeatureSA & FEATURE_SA_MOVEMENT )
 	{
 		if ( m_timeSync <= GetCurrentTime())
