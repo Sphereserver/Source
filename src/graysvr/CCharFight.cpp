@@ -1,10 +1,4 @@
-//
-// CCharFight.cpp
-// Copyright Menace Software (www.menasoft.com).
-//
 // Fight/Criminal actions/Noto.
-//
-
 #include "graysvr.h"	// predef header.
 #include "CClient.h"
 #include "../network/send.h"

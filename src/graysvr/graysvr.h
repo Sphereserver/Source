@@ -1,9 +1,3 @@
-//
-// GraySvr.H
-// Copyright Menace Software (www.menasoft.com).
-// Precompiled header
-//
-
 #ifndef _INC_GRAYSVR_H_
 #define _INC_GRAYSVR_H_
 #pragma once

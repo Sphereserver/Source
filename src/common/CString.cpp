@@ -1,8 +1,3 @@
-//
-// CGString.CPP
-// Copyright Menace Software (www.menasoft.com).
-//
-
 #include "regex/deelx.h"
 #include "graycom.h"
 

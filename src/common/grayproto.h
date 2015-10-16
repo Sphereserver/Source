@@ -1,7 +1,3 @@
-//
-// GrayProto.h
-// Copyright Menace Software (www.menasoft.com).
-//
 // Protocol formats.
 // Define all the data passed from Client to Server.
 
@@ -1863,7 +1859,7 @@ struct CEvent	// event buffer from client to server..
 			BYTE m_Cmd;				// 0 = 0xEB
 			NWORD m_One;			// 1 - 2 = 0x01
 			NWORD m_Six;			// 3 - 4 = 0x06
-			BYTE m_Type;			// 5 = 0x1 – spell, 0x2 – weapon ability, 0x3 – skill, 0x4 – item, 0x5 – scroll
+			BYTE m_Type;			// 5 = 0x1 ï¿½ spell, 0x2 ï¿½ weapon ability, 0x3 ï¿½ skill, 0x4 ï¿½ item, 0x5 ï¿½ scroll
 			BYTE m_Zero;			// 6 = 0x00
 			NDWORD m_ObjectUID;		// 7 - 11 = serial uid
 		} UseHotbar;
@@ -3289,7 +3285,7 @@ struct CCommand	// command buffer from server to client.
 			BYTE m_Cmd;				// 0 = 0xE9
 			NDWORD m_Uid;			// 1 - 4 = serial uid
 			NWORD m_IdUi;			// 5 - 6 = id ui
-			char m_Desc[64];		// 7 - 71 = dexcription: ”ToggleInventory”, ”TogglePaperdoll”, ”ToggleMap”, ””
+			char m_Desc[64];		// 7 - 71 = dexcription: ï¿½ToggleInventoryï¿½, ï¿½TogglePaperdollï¿½, ï¿½ToggleMapï¿½, ï¿½ï¿½
 			NDWORD m_commandId;		// 72 - 76 = command Id
 		} HighlightUIToggle;
 

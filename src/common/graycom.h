@@ -1,9 +1,3 @@
-//
-// graycom.h
-// Copyright Menace Software (www.menasoft.com).
-// common header file.
-//
-
 #ifndef _INC_GRAYCOM_H
 #define _INC_GRAYCOM_H
 #pragma once

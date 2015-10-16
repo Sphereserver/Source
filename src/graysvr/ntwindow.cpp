@@ -1,10 +1,4 @@
-//
-// NTWindow.CPP
-// Copyright Menace Software (www.menasoft.com).
-//
 // Put up a window for data (other than the console)
-//
-
 #ifdef _WIN32
 
 #include "graysvr.h"	// predef header.

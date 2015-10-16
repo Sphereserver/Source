@@ -1,8 +1,3 @@
-//
-// CFileList.h
-// Copyright Menace Software (www.menasoft.com).
-//
-
 #ifndef _INC_CFILELIST_H
 #define _INC_CFILELIST_H
 #pragma once

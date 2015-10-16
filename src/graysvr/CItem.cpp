@@ -1,8 +1,3 @@
-//
-// CItem.cpp
-// Copyright Menace Software (www.menasoft.com).
-//
-
 #include "graysvr.h"	// predef header.
 #include "../network/network.h"
 #include "../network/send.h"
@@ -903,7 +898,7 @@ int CItem::FixWeirdness()
 			// blank unlinked keys.
 			if ( m_itKey.m_lockUID && ! IsValidUID())
 			{
-				DEBUG_ERR(( "Key '%s' has bad link to 0%lx, ´blanked out\n", static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(m_itKey.m_lockUID)));
+				DEBUG_ERR(( "Key '%s' has bad link to 0%lx, ï¿½blanked out\n", static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(m_itKey.m_lockUID)));
 				m_itKey.m_lockUID.ClearUID();
 			}
 			break;

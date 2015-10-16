@@ -1,10 +1,4 @@
-//
-// CClientMsg.cpp
-// Copyright Menace Software (www.menasoft.com).
-//
 // Game server messages. (No login stuff)
-//
-
 #include "graysvr.h"	// predef header.
 #include "CClient.h"
 #include "../network/network.h"

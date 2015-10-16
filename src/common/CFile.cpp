@@ -1,8 +1,3 @@
-//
-// CFile.cpp
-// Copyright Menace Software (www.menasoft.com).
-//
-
 #include "graycom.h"
 
 #ifndef _WIN32

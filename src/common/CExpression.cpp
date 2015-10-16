@@ -1,8 +1,3 @@
-//
-// Cexpression.cpp
-// Copyright Menace Software (www.menasoft.com).
-//
-
 #include <cmath>
 #include "../graysvr/graysvr.h"
 

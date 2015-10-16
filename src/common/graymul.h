@@ -1,10 +1,4 @@
-//
-// GrayMUL.H
-// Copyright Menace Software (www.menasoft.com).
-//
 // Define resources in the MUL files.
-//
-
 #ifndef _INC_GRAYMUL_H
 #define _INC_GRAYMUL_H
 #pragma once

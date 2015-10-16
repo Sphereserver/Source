@@ -1,11 +1,3 @@
-// cvendoritem.cpp
-// Copyright Menace Software (www.menasoft.com).
-//
-// Implementation file for the CItemVendable class
-//
-// Initial version by Catharsis.  11/20/1999
-//
-
 #include "graysvr.h"
 
 CItemVendable::CItemVendable( ITEMID_TYPE id, CItemBase * pDef ) : CItem( id, pDef )

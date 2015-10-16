@@ -1,10 +1,5 @@
-//
-// CScript.cpp
-// Copyright Menace Software (www.menasoft.com).
-//
 // NOTE: all scripts should be encoded in UTF-8.
 // So they may have full unicode chars inside.
-
 #include "../graysvr/graysvr.h"
 
 ///////////////////////////////////////////////////////////////

@@ -1,8 +1,3 @@
-//
-// CResourceDef.h
-// Copyright Menace Software (www.menasoft.com).
-//
-
 #include "../graysvr/graysvr.h"
 #include "CFileList.h"
 #include "CResourceBase.h"

@@ -1,9 +1,4 @@
-//
-// Cregion.cpp
-// Copyright Menace Software (www.menasoft.com).
 // Common for client and server.
-//
-
 #include "../graysvr/graysvr.h"
 #include "../network/network.h"
 

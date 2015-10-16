@@ -1,9 +1,4 @@
-//
-// CCharSkill.cpp
-// Copyright Menace Software (www.menasoft.com).
 //  CChar is either an NPC or a Player.
-//
-
 #include <cmath>
 #include "graysvr.h"	// predef header.
 

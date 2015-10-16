@@ -1,8 +1,4 @@
-//
-// CItemBase.CPP
-// Copyright Menace Software (www.menasoft.com).
 // define the base types of an item (rather than the instance)
-//
 #include "graysvr.h"	// predef header.
 
 /////////////////////////////////////////////////////////////////

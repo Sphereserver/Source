@@ -1,14 +1,9 @@
-//
-// common.h
-// Copyright Menace Software (www.menasoft.com).
 // always for __cplusplus
 // I try to compile in several different environments.
 // 1. DOS command line or windows (_WINDOWS	by compiler or _INC_WINDOWS in windows.h)
 // 2. MFC or not MFC  (__AFX_H__ in afx.h or _MFC_VER by compiler)
 // 3. 16 bit or 32 bit (_WIN32 defined by compiler)
 // 4. LINUX 32 bit
-//
-
 #ifndef _INC_COMMON_H
 #define _INC_COMMON_H
 #pragma once

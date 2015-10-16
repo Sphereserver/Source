@@ -1,8 +1,3 @@
-//
-// Cgrayinst.h
-// Copyright Menace Software (www.menasoft.com).
-//
-
 #ifndef _INC_CGRAYINST_H
 #define _INC_CGRAYINST_H
 #pragma once

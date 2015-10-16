@@ -1,8 +1,3 @@
-//
-// CRegion.H
-// Copyright Menace Software (www.menasoft.com).
-//
-
 #ifndef _INC_CREGION_H
 #define _INC_CREGION_H
 #pragma once

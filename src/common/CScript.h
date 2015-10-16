@@ -1,8 +1,3 @@
-//
-// CScript.h
-// Copyright Menace Software (www.menasoft.com).
-//
-
 #ifndef _INC_CSCRIPT_H
 #define _INC_CSCRIPT_H
 #pragma once

@@ -1,8 +1,4 @@
-//
-// CResourceDef.cpp
-// Copyright Menace Software (www.menasoft.com).
 // A variety of resource blocks.
-//
 #include "graysvr.h"	// predef header.
 #include "../common/CAssoc.h"
 

@@ -1,8 +1,3 @@
-//
-// CWebPage.cpp
-// Copyright Menace Software (www.menasoft.com).
-//
-
 #include "graysvr.h"	// predef header.
 #include "../common/grayver.h"	// sphere version
 #include "../common/CFileList.h"

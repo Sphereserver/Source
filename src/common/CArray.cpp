@@ -1,8 +1,3 @@
-//
-// CArray.cpp
-// Copyright Menace Software (www.menasoft.com).
-//
-
 #include "graycom.h"
 #include "CArray.h"
 

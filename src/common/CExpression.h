@@ -1,8 +1,3 @@
-//
-// CExpression.h
-// Copyright Menace Software (www.menasoft.com).
-//
-
 #ifndef _INC_CEXPRSSION_H
 #define _INC_CEXPRSSION_H
 #pragma once

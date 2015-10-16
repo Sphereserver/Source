@@ -1,10 +1,4 @@
-//
-// CCharNPCPet.CPP
-// Copyright Menace Software (www.menasoft.com).
-//
 // Actions specific to an NPC.
-//
-
 #include "graysvr.h"	// predef header.
 
 void CChar::NPC_OnPetCommand( bool fSuccess, CChar * pMaster )

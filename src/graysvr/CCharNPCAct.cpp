@@ -1,10 +1,4 @@
-//
-// CCharNPCAct.CPP
-// Copyright Menace Software (www.menasoft.com).
-//
 // Actions specific to an NPC.
-//
-
 #include "graysvr.h"	// predef header.
 #include "../graysvr/CPathFinder.h"
 #include "../network/receive.h"

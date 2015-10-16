@@ -1,9 +1,4 @@
-//
-// CClientTarg.cpp
-// Copyright Menace Software (www.menasoft.com).
-//
 // An item is targetted.
-
 #include "graysvr.h"	// predef header.
 #include "CClient.h"
 #include "../network/send.h"

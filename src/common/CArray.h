@@ -1,9 +1,4 @@
-//
-// CArray.h
-// Copyright Menace Software (www.menasoft.com).
-//
 // c++ Collections.
-
 #ifndef _INC_CARRAY_H
 #define _INC_CARRAY_H
 

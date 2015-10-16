@@ -1,10 +1,4 @@
-//
-// CChat.CPP
-// Copyright Menace Software (www.menasoft.com).
-//
 // Chat system
-//
-
 #include "graysvr.h"	// predef header.
 #include "../network/network.h"
 

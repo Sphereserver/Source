@@ -1,6 +1,3 @@
-// ntservice.cpp
-// Copyright Menace Software (www.menasoft.com).
-//
 // Stuff for making this application run as an NT service
 
 #ifdef _WIN32

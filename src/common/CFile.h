@@ -1,7 +1,3 @@
-//
-// CGFile.h
-// Copyright Menace Software (www.menasoft.com).
-
 #ifndef _INC_CFILE_H
 #define _INC_CFILE_H
 #pragma once

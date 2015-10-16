@@ -1,10 +1,4 @@
-//
-// CCharNPC.CPP
-// Copyright Menace Software (www.menasoft.com).
-//
 // Actions specific to an NPC.
-//
-
 #include "graysvr.h"	// predef header.
 #include "CClient.h"
 

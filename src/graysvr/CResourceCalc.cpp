@@ -1,9 +1,4 @@
-//
-// CResourceCalc.cpp
-// Copyright Menace Software (www.menasoft.com).
 // The physics calculations of the world.
-//
-
 #include "graysvr.h"	// predef header.
 
 //********************************

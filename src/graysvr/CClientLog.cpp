@@ -1,10 +1,4 @@
-//
-// CClientLog.cpp
-// Copyright Menace Software (www.menasoft.com).
-//
 // Login and low level stuff for the client.
-//
-
 #include "graysvr.h"	// predef header.
 #include "../network/network.h"
 #include "../network/send.h"

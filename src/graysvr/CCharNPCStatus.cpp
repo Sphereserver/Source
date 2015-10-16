@@ -1,11 +1,5 @@
-//
-// CCharNPCStatus.cpp
-// Copyright Menace Software (www.menasoft.com).
-//
 // Test things to judge what an NPC might be thinking. (want to do)
 // But take no actions here.
-//
-
 #include "graysvr.h"	// predef header.
 
 CREID_TYPE CChar::NPC_GetAllyGroupType(CREID_TYPE idTest)	// static

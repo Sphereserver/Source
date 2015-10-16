@@ -1,8 +1,3 @@
-//
-// GRAYINST.CPP
-// Copyright Menace Software (www.menasoft.com).
-//
-
 #include "graycom.h"
 #include "CGrayInst.h"
 #include "../graysvr/graysvr.h"

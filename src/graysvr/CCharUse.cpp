@@ -1,9 +1,4 @@
-//
-// CCharUse.cpp
-// Copyright Menace Software (www.menasoft.com).
 //  CChar is either an NPC or a Player.
-//
-
 #include "graysvr.h"	// predef header.
 
 bool CChar::Use_MultiLockDown( CItem * pItemTarg )

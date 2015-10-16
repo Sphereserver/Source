@@ -1,8 +1,3 @@
-//
-// CMemBlock.h
-// Copyright Menace Software (www.menasoft.com).
-//
-
 #ifndef _INC_CMEMBLOCK_H
 #define _INC_CMEMBLOCK_H
 #pragma once

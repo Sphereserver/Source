@@ -1,8 +1,3 @@
-//
-// CObjBase.cpp
-// Copyright Menace Software (www.menasoft.com).
-// base classes.
-//
 #include "graysvr.h"	// predef header.
 #include "../common/grayver.h"
 #include "../network/network.h"

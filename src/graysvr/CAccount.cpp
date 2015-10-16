@@ -1,8 +1,3 @@
-//
-// CAccount.cpp
-// Copyright Menace Software (www.menasoft.com).
-//
-
 #include "graysvr.h"	// predef header.
 #include "../common/CMD5.h"
 #include "../network/network.h"

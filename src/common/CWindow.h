@@ -1,8 +1,4 @@
-//
 // CWindow = a base window class for controls.
-// Copyright Menace Software (www.menasoft.com).
-//
-
 #ifndef _INC_CWINDOW_H
 #define _INC_CWINDOW_H
 #pragma once

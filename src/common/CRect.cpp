@@ -1,10 +1,3 @@
-//
-// Crect.cpp
-// Copyright Menace Software (www.menasoft.com).
-// Common for client and server.
-//
-
-#include <cmath>
 #include "../graysvr/graysvr.h"
 
 //*************************************************************************
