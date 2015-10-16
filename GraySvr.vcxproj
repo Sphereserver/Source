@@ -154,7 +154,6 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
     <ClCompile Include="src\common\CDatabaseLoader.cpp" />
     <ClCompile Include="src\common\CEncrypt.cpp" />
     <ClCompile Include="src\common\crashdump\crashdump.cpp" />
-    <ClCompile Include="src\common\CScriptCompiler.cpp" />
     <ClCompile Include="src\common\CsvFile.cpp" />
     <ClCompile Include="src\common\CVarFloat.cpp" />
     <ClCompile Include="src\common\sqlite\SQLite.cpp" />
@@ -226,7 +225,6 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
     <ClCompile Include="src\common\CGrayData.cpp" />
     <ClCompile Include="src\common\CGrayInst.cpp" />
     <ClCompile Include="src\common\CGrayMap.cpp" />
-    <ClCompile Include="src\common\CMapCache.cpp" />
     <ClCompile Include="src\common\CMD5.cpp" />
     <ClCompile Include="src\common\CQueue.cpp" />
     <ClCompile Include="src\common\CRect.cpp" />
@@ -269,7 +267,6 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
     <ClInclude Include="src\common\CEncrypt.h" />
     <ClInclude Include="src\common\CMD5.h" />
     <ClInclude Include="src\common\crashdump\crashdump.h" />
-    <ClInclude Include="src\common\CScriptCompiler.h" />
     <ClInclude Include="src\common\CsvFile.h" />
     <ClInclude Include="src\common\CVarFloat.h" />
     <ClInclude Include="src\common\CWindow.h" />
@@ -324,7 +321,6 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
     <ClInclude Include="src\common\cfilelist.h" />
     <ClInclude Include="src\common\cgrayinst.h" />
     <ClInclude Include="src\common\cGrayMap.h" />
-    <ClInclude Include="src\common\CMapCache.h" />
     <ClInclude Include="src\common\cmemblock.h" />
     <ClInclude Include="src\common\common.h" />
     <ClInclude Include="src\common\CQueue.h" />
@@ -396,9 +392,6 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
       <FileType>Document</FileType>
     </CustomBuild>
     <CustomBuild Include="src\tables\CQuest_props.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CScriptCompiler.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
     <CustomBuild Include="src\tables\CScriptObj_functions.tbl">

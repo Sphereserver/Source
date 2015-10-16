@@ -105,9 +105,6 @@
     <ClCompile Include="src\common\CGrayMap.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\CMapCache.cpp">
-      <Filter>common</Filter>
-    </ClCompile>
     <ClCompile Include="src\common\CMD5.cpp">
       <Filter>common</Filter>
     </ClCompile>
@@ -182,9 +179,6 @@
     </ClCompile>
     <ClCompile Include="src\common\crashdump\crashdump.cpp">
       <Filter>common\crashdump</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\CScriptCompiler.cpp">
-      <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="src\common\CsvFile.cpp">
       <Filter>common</Filter>
@@ -455,9 +449,6 @@
     <ClInclude Include="src\common\cGrayMap.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\CMapCache.h">
-      <Filter>common</Filter>
-    </ClInclude>
     <ClInclude Include="src\common\cmemblock.h">
       <Filter>common</Filter>
     </ClInclude>
@@ -544,9 +535,6 @@
     </ClInclude>
     <ClInclude Include="src\common\crashdump\crashdump.h">
       <Filter>common\crashdump</Filter>
-    </ClInclude>
-    <ClInclude Include="src\common\CScriptCompiler.h">
-      <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\CsvFile.h">
       <Filter>common</Filter>
@@ -680,9 +668,6 @@
       <Filter>tables</Filter>
     </CustomBuild>
     <CustomBuild Include="src\tables\CQuest_props.tbl">
-      <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CScriptCompiler.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
     <CustomBuild Include="src\tables\CScriptObj_functions.tbl">
