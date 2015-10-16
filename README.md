@@ -1,4 +1,5 @@
 # Sphereserver
+Game server for UO
 
 ## Join gitter chat
 [![Join the chat at https://gitter.im/Sphereserver/Source](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Sphereserver/Source)
@@ -27,3 +28,8 @@ Create a .sln file
 * Rebasing instead of pulling the project is a better practice to avoid unnecessary "merge branch master" commits.
 
 ## Licensing
+Copyright 2015 Sphereserver development team
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
