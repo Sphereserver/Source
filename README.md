@@ -25,3 +25,5 @@ Create a .sln file
 
 * Make sure you can compile and run the program before pushing a commit.
 * Rebasing instead of pulling the project is a better practice to avoid unnecessary "merge branch master" commits.
+
+## Licensing
