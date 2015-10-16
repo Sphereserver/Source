@@ -288,11 +288,11 @@ CONFIGURE_FILE (
 # Set cxx and c compiler flags.
 SET (CXX_WARNING_FLAGS "-Wall -Wextra -Wno-unknown-pragmas -Wno-invalid-offsetof -Wno-switch")
 SET (CXX_ARCH_OPTS "-march=i686 -m32")
-SET (CXX_OPTS "-fno-omit-frame-pointer -ffast-math -fpermissive -O0 -fno-expensive-optimizations")
+SET (CXX_OPTS "-s -fno-omit-frame-pointer -ffast-math -fpermissive -O0 -fno-expensive-optimizations")
 SET (CXX_SPECIAL "-fexceptions -fnon-call-exceptions")
 SET (C_WARNING_FLAGS "-Wall -Wextra -Wno-unknown-pragmas -Wno-switch")
 SET (C_ARCH_OPTS "-march=i686 -m32")
-SET (C_OPTS "-fno-omit-frame-pointer -ffast-math -O0 -fno-expensive-optimizations")
+SET (C_OPTS "-s -fno-omit-frame-pointer -ffast-math -O0 -fno-expensive-optimizations")
 SET (C_SPECIAL "-fexceptions -fnon-call-exceptions")
 SET (CMAKE_CXX_FLAGS "${CXX_WARNING_FLAGS} ${CXX_ARCH_OPTS} ${CXX_OPTS} ${CXX_SPECIAL}")
 SET (CMAKE_C_FLAGS "${C_WARNING_FLAGS} ${C_ARCH_OPTS} ${C_OPTS} ${C_SPECIAL}")
