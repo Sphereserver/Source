@@ -301,6 +301,18 @@ private:
 	CLog(const CLog& copy);
 	CLog& operator=(const CLog& other);
 
+	enum Color
+	{
+		DEFAULT,
+		YELLOW,
+		RED,
+		CYAN
+	};
+
+	/**
+	 * Changes current console color to the specified one. Note, that the color should be reset after being set
+	 */
+	void SetColor(Color color);
 } g_Log;		// Log file
 
 //////////////////

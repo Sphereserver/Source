@@ -48,6 +48,39 @@ bool CLog::OpenLog( LPCTSTR pszBaseDirName )	// name set previously.
 	return false;
 }
 
+void CLog::SetColor(Color color)
+{
+#ifndef NO_COLOR_OUTPUT
+	switch (color) {
+#ifdef _WIN32
+        case YELLOW:
+            NTWindow_PostMsgColor(RGB(127,127,0));
+            break;
+        case RED:
+            NTWindow_PostMsgColor(RGB(255,0,0));
+            break;
+        case CYAN:
+            NTWindow_PostMsgColor(RGB(0,127,255));
+            break;
+        default:
+            NTWindow_PostMsgColor(0);
+#else
+		case YELLOW:
+			g_UnixTerminal.setColor(UnixTerminal::COL_YELLOW);
+			break;
+		case RED:
+			g_UnixTerminal.setColor(UnixTerminal::COL_RED);
+			break;
+		case CYAN:
+			g_UnixTerminal.setColor(UnixTerminal::COL_CYAN);
+			break;
+		default:
+			g_UnixTerminal.setColor(UnixTerminal::COL_DEFAULT);
+#endif
+	}
+#endif
+}
+
 int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 {
 	// NOTE: This could be called in odd interrupt context so don't use dynamic stuff
@@ -121,60 +154,28 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 		// Print to screen.
 		if ( ! ( wMask & LOGM_INIT ) && ! g_Serv.IsLoading())
 		{
-#ifdef _WIN32
-			NTWindow_PostMsgColor( RGB( 127,127,0 ));
-#else
-			g_UnixTerminal.setColor(UnixTerminal::COL_YELLOW);
-#endif
-
+			SetColor(YELLOW);
 			g_Serv.PrintStr( szTime );
-
-#ifdef _WIN32
-			NTWindow_PostMsgColor(0);
-#else
-			g_UnixTerminal.setColor(UnixTerminal::COL_DEFAULT);
-#endif
+			SetColor(DEFAULT);
 		}
 
 		if ( pszLabel )	// some sort of error
 		{
-#ifdef _WIN32
-			NTWindow_PostMsgColor( RGB( 255,0,0 ));
-#else
-			g_UnixTerminal.setColor(UnixTerminal::COL_RED);
-#endif
-
+			SetColor(RED);
 			g_Serv.PrintStr( pszLabel );
-
-#ifdef _WIN32
-			NTWindow_PostMsgColor( RGB( 255,255,255 ));
-#else
-			g_UnixTerminal.setColor(UnixTerminal::COL_DEFAULT);
-#endif
+			SetColor(DEFAULT);
 		}
 
 		if ( szScriptContext[0] )
 		{
-#ifdef _WIN32
-			NTWindow_PostMsgColor( RGB( 0,127,255 ));
-#else
-			g_UnixTerminal.setColor(UnixTerminal::COL_CYAN);
-#endif
-
+			SetColor(CYAN);
 			g_Serv.PrintStr( szScriptContext );
-
-#ifdef _WIN32
-			NTWindow_PostMsgColor(0);
-#else
-			g_UnixTerminal.setColor(UnixTerminal::COL_DEFAULT);
-#endif
+			SetColor(DEFAULT);
 		}
 		g_Serv.PrintStr( pszMsg );
 
 		// Back to normal color.
-#ifdef _WIN32
-		NTWindow_PostMsgColor(0);
-#endif
+		SetColor(DEFAULT);
 
 		// Print to log file.
 		WriteString( szTime );
