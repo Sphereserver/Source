@@ -103,8 +103,6 @@ common/CGrayInst.cpp
 common/CGrayInst.h
 common/CGrayMap.cpp
 common/CGrayMap.h
-#common/CMapCache.cpp
-#common/CMapCache.h
 common/CMD5.cpp
 common/CMD5.h
 common/CMemBlock.h
@@ -117,8 +115,6 @@ common/CRegion.cpp
 common/CRegion.h
 common/CResourceBase.cpp
 common/CResourceBase.h
-#common/CScriptCompiler.cpp
-#common/CScriptCompiler.h
 common/CScript.cpp
 common/CScript.h
 common/CScriptObj.cpp
