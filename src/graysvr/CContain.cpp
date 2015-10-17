@@ -781,19 +781,12 @@ void CItemContainer::Trade_UpdateGold( DWORD platinum, DWORD gold )
 	bool bUpdateChar1 = false;
 	bool bUpdateChar2 = pChar2->GetClient()->GetNetState()->isClientVersion(MINCLIVER_NEWSECURETRADE);
 
-	// Fix for a client bug when total value is > 1.000.000.000 (1 platinum) it
-	// allow the user insert a gold value higher than it have. So these values
-	// must be checked again on server-side to prevent cheating.
-	DWORD iMaxGold = static_cast<DWORD>(pChar1->m_virtualGold % 1000000000);
-	if ( gold > iMaxGold )
+	// To prevent cheating, check if the char really have these gold/platinum values
+	INT64 iMaxValue = pChar1->m_virtualGold;
+	if ( gold + (platinum * 1000000000) > iMaxValue )
 	{
-		gold = iMaxGold;
-		bUpdateChar1 = true;
-	}
-	DWORD iMaxPlatinum = static_cast<DWORD>(pChar1->m_virtualGold % 1000000000);
-	if ( platinum > iMaxPlatinum )
-	{
-		platinum = iMaxPlatinum;
+		gold = iMaxValue % 1000000000;
+		platinum = iMaxValue / 1000000000;
 		bUpdateChar1 = true;
 	}
 

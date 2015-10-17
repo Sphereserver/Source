@@ -2688,3 +2688,6 @@ Added: Small improvements on TOL trade window.
 Added: 'physical' gold piles now will be converted to 'virtual' gold when dropped on bankbox (if FEATURE_TOL_VIRTUALGOLD is enabled).
 [sphere_msgs.scp]: Added new messages 'bvbox_deposited', 'msg_trade_sent_*', 'msg_trade_received_*'.
 [sphere_map_points5.scp]: Updated [MoonGates] values.
+
+16-10-2015, Coruja
+Fixed: TOL trade window not allowing trade gold when the char have 1 or more platinum.
