@@ -232,7 +232,6 @@ bool CContainer::ContentFindKeyFor( CItem * pLocked ) const
 {
 	ADDTOCALLSTACK("CContainer::ContentFindKeyFor");
 	// Look for the key that fits this in my possesion.
-	// TODO: Double check for pLocked->m_itContainer.m_lockUID working
 	return( pLocked->m_itContainer.m_lockUID && (ContentFind( RESOURCE_ID( RES_TYPEDEF, IT_KEY ), pLocked->m_itContainer.m_lockUID ) != NULL) );
 }
 

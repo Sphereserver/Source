@@ -1093,7 +1093,6 @@ bool CChar::CanSeeLOS( const CPointMap &ptDst, CPointMap *pptBlock, int iMaxDist
 	// Max distance of iMaxDist
 	// Line of sight check
 	// NOTE: if not blocked. pptBlock is undefined.
-	// ToDo: move repeated blocks to a separate functions?
 	// 3D LOS later - real LOS, i.e. we can't shoot through the floor, but can shoot through the hole in it
 
 	if ( IsPriv(PRIV_GM) )
@@ -1579,7 +1578,6 @@ bool CChar::CanSeeLOS_New( const CPointMap &ptDst, CPointMap *pptBlock, int iMax
 		
 		// ----------- Multis ---------------
 		
-		// TODO: I think that this part should be optimized
 		if ( !(flags & LOS_NB_MULTI) )
 		{
 			if ( !((flags & LOS_NB_LOCAL_MULTI) && (pSrcRegion == pNowRegion)) )

@@ -968,36 +968,6 @@ int CClient::OnSkill_ArmsLore( CGrayUID uid, int iSkillLevel, bool fTest )
 		return( -SKTRIG_QTY );
 	}
 
-	/* todo: why aren't these being used? remove?
-	static LPCTSTR const sm_szAttackMessages[] =
-	{
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DAM_1 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DAM_2 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DAM_3 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DAM_4 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DAM_5 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DAM_6 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DAM_7 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DAM_8 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DAM_9 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DAM_10 )
-	};
-	
-	static LPCTSTR const sm_szDefenseMessages[] =
-	{
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DEF_1 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DEF_2 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DEF_3 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DEF_4 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DEF_5 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DEF_6 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DEF_7 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DEF_8 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DEF_9 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_ARMSLORE_DEF_10 )
-	};
-	*/
-
 	if ( fTest )
 	{
 		return Calc_GetRandVal(60);

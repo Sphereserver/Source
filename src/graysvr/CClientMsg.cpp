@@ -2456,7 +2456,6 @@ bool CClient::addShopMenuSell( CChar * pVendor )
 
 	int iConvertFactor		= - pVendor->NPC_GetVendorMarkup( m_pChar );
 
-	// TODO: Here we should add the container empty, not required to send items.
 	CItemContainer * pContainer1 = pVendor->GetBank( LAYER_VENDOR_BUYS );
 	addItem( pContainer1 );
 	CItemContainer * pContainer2 = pVendor->GetBank( LAYER_VENDOR_STOCK );

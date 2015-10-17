@@ -103,8 +103,8 @@ public:
 	/**
 	* @brief Remove a CAccount.
 	* We should go track down and delete all the chars and clients that use this account !
-	* TODO: Why virtual? Need fix?
 	*/
+	// virtual not required at the moment but might be if subclassed
 	virtual ~CAccount();
 
 	/************************************************************************
