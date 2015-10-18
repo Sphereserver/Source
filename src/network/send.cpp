@@ -128,7 +128,7 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 		writeInt16(static_cast<WORD>(other->Stat_GetMax(STAT_STR)));
 		writeBool(canRename);
 
-		unsigned char version(0);
+		BYTE version(0);
 		if (state->isClientVersion(MINCLIVER_STATUS_V6))
 			version = 6;
 		else if (state->isClientVersion(MINCLIVER_STATUS_V5))
@@ -216,8 +216,8 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 		{
 			if (other->m_pPlayer != NULL)
 			{
-				writeByte(static_cast<unsigned char>(other->GetDefNum("CURFOLLOWER", true, true)));
-				writeByte(static_cast<unsigned char>(other->GetDefNum("MAXFOLLOWER", true, true)));
+				writeByte(static_cast<BYTE>(other->GetDefNum("CURFOLLOWER", true, true)));
+				writeByte(static_cast<BYTE>(other->GetDefNum("MAXFOLLOWER", true, true)));
 			}
 			else
 			{
@@ -238,7 +238,7 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 			writeInt16(static_cast<WORD>(other->Fight_CalcDamage(weapon, true, false)));
 			writeInt16(static_cast<WORD>(other->Fight_CalcDamage(weapon, true, true)));
 
-			writeInt32(static_cast<unsigned long>(other->GetDefNum("TITHING", true, true)));
+			writeInt32(static_cast<DWORD>(other->GetDefNum("TITHING", true, true)));
 		}
 
 		if (version >= 6)	// SA attributes
@@ -552,7 +552,7 @@ PacketMessageASCII::PacketMessageASCII(const CClient* target, LPCTSTR pszText, c
 		writeInt16(static_cast<WORD>(sourceCharacter->GetDispID()));
 	}
 	
-	writeByte(static_cast<unsigned char>(mode));
+	writeByte(static_cast<BYTE>(mode));
 	writeInt16(static_cast<WORD>(hue));
 	writeInt16(static_cast<WORD>(font));
 
@@ -595,6 +595,7 @@ PacketRemoveObject::PacketRemoveObject(const CClient* target, CGrayUID uid) : Pa
 PacketPlayerPosition::PacketPlayerPosition(const CClient* target) : PacketSend(XCMD_View, 19, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketPlayerPosition::PacketPlayerPosition");
+	//PS: This packet remove weather effects on client screen
 
 	const CChar* character = target->GetChar();
 	ASSERT(character);
@@ -893,7 +894,7 @@ PacketDragCancel::PacketDragCancel(const CClient* target, Reason code) : PacketS
 {
 	ADDTOCALLSTACK("PacketDragCancel::PacketDragCancel");
 
-	writeByte(static_cast<unsigned char>(code));
+	writeByte(static_cast<BYTE>(code));
 	push(target);
 }
 
@@ -924,7 +925,7 @@ PacketDeathMenu::PacketDeathMenu(const CClient* target, Reason reason) : PacketS
 {
 	ADDTOCALLSTACK("PacketDeathMenu::PacketDeathMenu");
 
-	writeByte(static_cast<unsigned char>(reason));
+	writeByte(static_cast<BYTE>(reason));
 	push(target);
 }
 
@@ -951,7 +952,7 @@ PacketItemEquipped::PacketItemEquipped(const CClient* target, const CItem* item)
 	writeInt32(item->GetUID());
 	writeInt16(static_cast<WORD>(layer == LAYER_BANKBOX ? ITEMID_CHEST_SILVER : id));
 	writeByte(0);
-	writeByte(static_cast<unsigned char>(layer));
+	writeByte(static_cast<BYTE>(layer));
 	writeInt32(parent->GetUID());
 	writeInt16(hue);
 
@@ -1010,7 +1011,7 @@ PacketSkills::PacketSkills(const CClient* target, const CChar* character, SKILL_
 			writeInt16(static_cast<WORD>(i + 1));
 			writeInt16(character->Skill_GetAdjusted(static_cast<SKILL_TYPE>(i)));
 			writeInt16(character->Skill_GetBase(static_cast<SKILL_TYPE>(i)));
-			writeByte(static_cast<unsigned char>(character->Skill_GetLock(static_cast<SKILL_TYPE>(i))));
+			writeByte(static_cast<BYTE>(character->Skill_GetLock(static_cast<SKILL_TYPE>(i))));
 			if (includeCaps)
 				writeInt16(static_cast<WORD>(character->Skill_GetMax(static_cast<SKILL_TYPE>(i))));
 		}
@@ -1028,7 +1029,7 @@ PacketSkills::PacketSkills(const CClient* target, const CChar* character, SKILL_
 		writeInt16(static_cast<WORD>(skill));
 		writeInt16(character->Skill_GetAdjusted(skill));
 		writeInt16(character->Skill_GetBase(skill));
-		writeByte(static_cast<unsigned char>(character->Skill_GetLock(skill)));
+		writeByte(static_cast<BYTE>(character->Skill_GetLock(skill)));
 		if (includeCaps)
 			writeInt16(static_cast<WORD>(character->Skill_GetMax(skill)));
 	}
@@ -1253,7 +1254,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItem* spell
 		writeInt16(static_cast<WORD>(i));
 		writeInt16(0);
 		writeInt16(0);
-		if (includeGrid)	writeByte(static_cast<unsigned char>(m_count));
+		if (includeGrid)	writeByte(static_cast<BYTE>(m_count));
 		writeInt32(spellbook->GetUID());
 		writeInt16(HUE_DEFAULT);
 
@@ -1295,7 +1296,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItemContain
 		writeInt16(item->m_itSpell.m_spell);
 		writeInt16(0);
 		writeInt16(0);
-		if (includeGrid)	writeByte(static_cast<unsigned char>(m_count));
+		if (includeGrid)	writeByte(static_cast<BYTE>(m_count));
 		writeInt32(spellbook->GetUID());
 		writeInt16(static_cast<WORD>(HUE_DEFAULT));
 
@@ -1360,7 +1361,7 @@ PacketQueryClient::PacketQueryClient(CClient* target, BYTE bCmd) : PacketSend(XC
 
 			for (int i = 0; i < 2; i++)
 			{
-				writeByte(static_cast<unsigned char>(i));
+				writeByte(static_cast<BYTE>(i));
 				writeInt16(static_cast<WORD>(g_MapList.GetX(i)));
 				writeInt16(static_cast<WORD>(g_MapList.GetY(i)));
 				writeInt16(static_cast<WORD>(g_MapList.GetX(i)));
@@ -1435,7 +1436,7 @@ PacketWarningMessage::PacketWarningMessage(const CClient* target, PacketWarningM
 {
 	ADDTOCALLSTACK("PacketWarningMessage::PacketWarningMessage");
 
-	writeByte(static_cast<unsigned char>(code));
+	writeByte(static_cast<BYTE>(code));
 	push(target);
 }
 
@@ -1451,7 +1452,7 @@ PacketPlaySound::PacketPlaySound(const CClient* target, SOUND_TYPE sound, int fl
 {
 	ADDTOCALLSTACK("PacketPlaySound::PacketPlaySound");
 
-	writeByte(static_cast<unsigned char>(flags));
+	writeByte(static_cast<BYTE>(flags));
 	writeInt16(static_cast<WORD>(sound));
 	writeInt16(static_cast<WORD>(volume));
 	writeInt16(pos.m_x);
@@ -1488,7 +1489,7 @@ PacketMapPlot::PacketMapPlot(const CClient* target, const CItem* map, MAPCMD_TYP
 	ADDTOCALLSTACK("PacketMapPlot::PacketMapPlot");
 
 	writeInt32(map->GetUID());
-	writeByte(static_cast<unsigned char>(mode));
+	writeByte(static_cast<BYTE>(mode));
 	writeBool(edit);
 	writeInt16(0);
 	writeInt16(0);
@@ -1501,7 +1502,7 @@ PacketMapPlot::PacketMapPlot(const CItem* map, MAPCMD_TYPE mode, bool edit) : Pa
 	ADDTOCALLSTACK("PacketMapPlot::PacketMapPlot");
 
 	writeInt32(map->GetUID());
-	writeByte(static_cast<unsigned char>(mode));
+	writeByte(static_cast<BYTE>(mode));
 	writeBool(edit);
 }
 
@@ -1526,9 +1527,9 @@ PacketGameTime::PacketGameTime(const CClient* target, int hours, int minutes, in
 {
 	ADDTOCALLSTACK("PacketGameTime::PacketGameTime");
 
-	writeByte(static_cast<unsigned char>(hours));
-	writeByte(static_cast<unsigned char>(minutes));
-	writeByte(static_cast<unsigned char>(seconds));
+	writeByte(static_cast<BYTE>(hours));
+	writeByte(static_cast<BYTE>(minutes));
+	writeByte(static_cast<BYTE>(seconds));
 	push(target);
 }
 
@@ -1654,9 +1655,9 @@ PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetT
 {
 	ADDTOCALLSTACK("PacketAddTarget::PacketAddTarget");
 
-	writeByte(static_cast<unsigned char>(type));
+	writeByte(static_cast<BYTE>(type));
 	writeInt32(context);
-	writeByte(static_cast<unsigned char>(flags));
+	writeByte(static_cast<BYTE>(flags));
 
 	// unused data
 	writeInt32(0);
@@ -1673,9 +1674,9 @@ PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetT
 {
 	ADDTOCALLSTACK("PacketAddTarget::PacketAddTarget(2)");
 
-	writeByte(static_cast<unsigned char>(type));
+	writeByte(static_cast<BYTE>(type));
 	writeInt32(context);
-	writeByte(static_cast<unsigned char>(flags));
+	writeByte(static_cast<BYTE>(flags));
 	
 	writeInt32(0);
 	writeInt32(0);
@@ -1878,7 +1879,7 @@ void PacketEffect::writeBasicEffect(EFFECT_TYPE motion, ITEMID_TYPE id, const CO
 		srcpos = dstpos;
 
 
-	writeByte(static_cast<unsigned char>(motion));
+	writeByte(static_cast<BYTE>(motion));
 
 	switch (motion)
 	{
@@ -1954,7 +1955,7 @@ PacketBulletinBoard::PacketBulletinBoard(const CClient* target, BBOARDF_TYPE act
 	ADDTOCALLSTACK("PacketBulletinBoard::PacketBulletinBoard(2)");
 
 	initLength();
-	writeByte(static_cast<unsigned char>(action == BBOARDF_REQ_FULL ? BBOARDF_MSG_BODY : BBOARDF_MSG_HEAD));
+	writeByte(static_cast<BYTE>(action == BBOARDF_REQ_FULL ? BBOARDF_MSG_BODY : BBOARDF_MSG_HEAD));
 	writeInt32(board->GetUID());
 
 	writeInt32(message->GetUID());
@@ -1977,7 +1978,7 @@ PacketBulletinBoard::PacketBulletinBoard(const CClient* target, BBOARDF_TYPE act
 		lenstr = strlen(author) + 1;
 		if (lenstr > 255) lenstr = 255;
 
-		writeByte(static_cast<unsigned char>(lenstr));
+		writeByte(static_cast<BYTE>(lenstr));
 		writeStringFixedASCII(author, lenstr);
 	}
 
@@ -1985,14 +1986,14 @@ PacketBulletinBoard::PacketBulletinBoard(const CClient* target, BBOARDF_TYPE act
 	lenstr = strlen(message->GetName()) + 1;
 	if (lenstr > 255) lenstr = 255;
 
-	writeByte(static_cast<unsigned char>(lenstr));
+	writeByte(static_cast<BYTE>(lenstr));
 	writeStringFixedASCII(message->GetName(), lenstr);
 
 	// message time
 	sprintf(tempstr, "Day %lu", (g_World.GetGameWorldTime(message->GetTimeStamp()) / (24 * 60)) % 365);
 	lenstr = strlen(tempstr) + 1;
 
-	writeByte(static_cast<unsigned char>(lenstr));
+	writeByte(static_cast<BYTE>(lenstr));
 	writeStringFixedASCII(tempstr, lenstr);
 
 	if (action == BBOARDF_REQ_FULL)
@@ -2012,7 +2013,7 @@ PacketBulletinBoard::PacketBulletinBoard(const CClient* target, BBOARDF_TYPE act
 			lenstr = strlen(text) + 2;
 			if (lenstr > 255) lenstr = 255;
 
-			writeByte(static_cast<unsigned char>(lenstr));
+			writeByte(static_cast<BYTE>(lenstr));
 			writeStringFixedASCII(text, lenstr);
 		}
 	}
@@ -2110,7 +2111,7 @@ int PacketVendorBuyList::fillContainer(const CItemContainer* container, int conv
 		if (len > 255)
 			len = 255;
 
-		writeByte(static_cast<unsigned char>(len));
+		writeByte(static_cast<BYTE>(len));
 		writeStringFixedASCII(name, len);
 
 		count++;
@@ -2119,7 +2120,7 @@ int PacketVendorBuyList::fillContainer(const CItemContainer* container, int conv
 	// seek back to write count
 	size_t endpos = getPosition();
 	seek(countpos);
-	writeByte(static_cast<unsigned char>(count));
+	writeByte(static_cast<BYTE>(count));
 	seek(endpos);
 
 	return count;
@@ -2174,7 +2175,7 @@ PacketCharacterMove::PacketCharacterMove(const CClient* target, const CChar* cha
 	writeByte(direction);
 	writeInt16(hue);
 	writeByte(character->GetModeFlag(target));
-	writeByte(static_cast<unsigned char>(character->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_NOTOINVUL), true)));
+	writeByte(static_cast<BYTE>(character->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_NOTOINVUL), true)));
 
 	push(target);
 }
@@ -2208,7 +2209,7 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 	writeByte(character->GetDirFlag());
 	writeInt16(hue);
 	writeByte(character->GetModeFlag(target));
-	writeByte(static_cast<unsigned char>(character->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_NOTOINVUL), true)));
+	writeByte(static_cast<BYTE>(character->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_NOTOINVUL), true)));
 
 	bool isNewMobilePacket = target->GetNetState()->isClientVersion(MINCLIVER_NEWMOBINCOMING);
 
@@ -2242,19 +2243,19 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 			if (isNewMobilePacket)
 			{
 				writeInt16(static_cast<WORD>(itemid));
-				writeByte(static_cast<unsigned char>(layer));
+				writeByte(static_cast<BYTE>(layer));
 				writeInt16(static_cast<WORD>(hue));
 			}
 			else if (hue != 0)
 			{
 				writeInt16(static_cast<WORD>(itemid | 0x8000));
-				writeByte(static_cast<unsigned char>(layer));
+				writeByte(static_cast<BYTE>(layer));
 				writeInt16(static_cast<WORD>(hue));
 			}
 			else
 			{
 				writeInt16(static_cast<WORD>(itemid));
-				writeByte(static_cast<unsigned char>(layer));
+				writeByte(static_cast<BYTE>(layer));
 			}
 		}
 	}
@@ -2295,10 +2296,10 @@ PacketDisplayMenu::PacketDisplayMenu(const CClient* target, CLIMODE_TYPE mode, c
 
 	int len = items[0].m_sText.GetLength();
 	if (len > 255) len = 255;
-	writeByte(static_cast<unsigned char>(len));
+	writeByte(static_cast<BYTE>(len));
 	writeStringFixedASCII(static_cast<LPCTSTR>(items[0].m_sText), len);
 
-	writeByte(static_cast<unsigned char>(count));
+	writeByte(static_cast<BYTE>(count));
 	for (size_t i = 1; i <= count; i++)
 	{
 		writeInt16(items[i].m_id);
@@ -2306,7 +2307,7 @@ PacketDisplayMenu::PacketDisplayMenu(const CClient* target, CLIMODE_TYPE mode, c
 
 		len = items[i].m_sText.GetLength();
 		if (len > 255) len = 255;
-		writeByte(static_cast<unsigned char>(len));
+		writeByte(static_cast<BYTE>(len));
 		writeStringFixedASCII(static_cast<LPCTSTR>(items[i].m_sText), len);
 	}
 
@@ -2334,7 +2335,7 @@ PacketChangeCharacter::PacketChangeCharacter(CClient* target) : PacketSend(XCMD_
 	size_t count = target->Setup_FillCharList(this, target->GetChar());
 
 	seek(countPos);
-	writeByte(static_cast<unsigned char>(count));
+	writeByte(static_cast<BYTE>(count));
 	skip((count * 60) + 1);
 
 	push(target);
@@ -2352,7 +2353,7 @@ PacketLoginError::PacketLoginError(const CClient* target, PacketLoginError::Reas
 {
 	ADDTOCALLSTACK("PacketLoginError::PacketLoginError");
 
-	writeByte(static_cast<unsigned char>(reason));
+	writeByte(static_cast<BYTE>(reason));
 	push(target);
 }
 
@@ -2368,7 +2369,7 @@ PacketDeleteError::PacketDeleteError(const CClient* target, PacketDeleteError::R
 {
 	ADDTOCALLSTACK("PacketDeleteError::PacketDeleteError");
 
-	writeByte(static_cast<unsigned char>(reason));
+	writeByte(static_cast<BYTE>(reason));
 	push(target);
 }
 
@@ -2392,7 +2393,7 @@ PacketCharacterListUpdate::PacketCharacterListUpdate(CClient* target, const CCha
 	size_t count = target->Setup_FillCharList(this, lastCharacter);
 
 	seek(countPos);
-	writeByte(static_cast<unsigned char>(count));
+	writeByte(static_cast<BYTE>(count));
 	skip(count * 60);
 
 	push(target);
@@ -2450,7 +2451,7 @@ PacketPaperdoll::PacketPaperdoll(const CClient* target, const CChar* character) 
 		writeStringFixedASCII(text, 60);
 	}
 
-	writeByte(static_cast<unsigned char>(mode));
+	writeByte(static_cast<BYTE>(mode));
 	push(target);
 }
 
@@ -2502,7 +2503,7 @@ PacketCorpseEquipment::PacketCorpseEquipment(CClient* target, const CItemContain
 		}
 
 
-		writeByte(static_cast<unsigned char>(layer));
+		writeByte(static_cast<BYTE>(layer));
 		writeInt32(item->GetUID());
 		m_count++;
 
@@ -2764,7 +2765,7 @@ PacketAllNamesResponse::PacketAllNamesResponse(const CClient* target, const CObj
  *
  *
  ***************************************************************************/
-PacketAddPrompt::PacketAddPrompt(const CClient* target, CGrayUID context1, CGrayUID context2, bool useUnicode) : PacketSend(static_cast<unsigned char>(useUnicode ? XCMD_PromptUNICODE : XCMD_Prompt), 16, g_Cfg.m_fUsePacketPriorities ? PRI_LOW : PRI_NORMAL)
+PacketAddPrompt::PacketAddPrompt(const CClient* target, CGrayUID context1, CGrayUID context2, bool useUnicode) : PacketSend(static_cast<BYTE>(useUnicode ? XCMD_PromptUNICODE : XCMD_Prompt), 16, g_Cfg.m_fUsePacketPriorities ? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketAddPrompt::PacketAddPrompt");
 
@@ -2978,7 +2979,7 @@ PacketOpenScroll::PacketOpenScroll(const CClient* target, CResourceLock &s, SCRO
 
 	initLength();
 
-	writeByte(static_cast<unsigned char>(type));
+	writeByte(static_cast<BYTE>(type));
 	writeInt32(context);
 
 	size_t lengthPosition(getPosition());
@@ -3068,7 +3069,7 @@ void PacketServerList::writeServerEntry(const CServerRef& server, int index, boo
 
 	writeInt16(static_cast<WORD>(index));
 	writeStringFixedASCII(server->GetName(), 32);
-	writeByte(static_cast<unsigned char>(percentFull));
+	writeByte(static_cast<BYTE>(percentFull));
 	writeByte(server->m_TimeZone);
 
 	if (reverseIp)
@@ -3103,8 +3104,8 @@ PacketCharacterList::PacketCharacterList(CClient* target, const CChar* lastChara
 
 	const CAccountRef account = target->GetAccount();
 	ASSERT(account != NULL);
-	DWORD tmVer = static_cast<unsigned long>(account->m_TagDefs.GetKeyNum("clientversion"));
-	DWORD tmVerReported = static_cast<unsigned long>(account->m_TagDefs.GetKeyNum("reportedcliver"));
+	DWORD tmVer = static_cast<DWORD>(account->m_TagDefs.GetKeyNum("clientversion"));
+	DWORD tmVerReported = static_cast<DWORD>(account->m_TagDefs.GetKeyNum("reportedcliver"));
 
 	initLength();
 
@@ -3114,12 +3115,12 @@ PacketCharacterList::PacketCharacterList(CClient* target, const CChar* lastChara
 	size_t count = target->Setup_FillCharList(this, lastCharacter);
 
 	seek(countPos);
-	writeByte(static_cast<unsigned char>(count));
+	writeByte(static_cast<BYTE>(count));
 	skip(count * 60);
 
 	
 	int startCount = g_Cfg.m_StartDefs.GetCount();
-	writeByte(static_cast<unsigned char>(startCount));
+	writeByte(static_cast<BYTE>(startCount));
 	
 	// since 7.0.13.0, start locations have extra information
 	bool includeExtraStartInfo = (tmVer >= MINCLIVER_EXTRASTARTINFO || tmVerReported >= MINCLIVER_EXTRASTARTINFO);
@@ -3131,7 +3132,7 @@ PacketCharacterList::PacketCharacterList(CClient* target, const CChar* lastChara
 		{
 			const CStartLoc* start = g_Cfg.m_StartDefs[i];
 
-			writeByte(static_cast<unsigned char>(i + 1));
+			writeByte(static_cast<BYTE>(i + 1));
 			writeStringFixedASCII(static_cast<LPCTSTR>(start->m_sArea), MAX_NAME_SIZE + 2);
 			writeStringFixedASCII(static_cast<LPCTSTR>(start->m_sName), MAX_NAME_SIZE + 2);
 			writeInt32(start->m_pt.m_x);
@@ -3147,12 +3148,12 @@ PacketCharacterList::PacketCharacterList(CClient* target, const CChar* lastChara
 	{
 		for (int i = 0; i < startCount; i++)
 		{
-			writeByte(static_cast<unsigned char>(i + 1));
+			writeByte(static_cast<BYTE>(i + 1));
 			writeStringFixedASCII(static_cast<LPCTSTR>(g_Cfg.m_StartDefs[i]->m_sArea), MAX_NAME_SIZE + 1);
 			writeStringFixedASCII(static_cast<LPCTSTR>(g_Cfg.m_StartDefs[i]->m_sName), MAX_NAME_SIZE + 1);
 		}
 	}
-	int flags = g_Cfg.GetPacketFlag(true, static_cast<RESDISPLAY_VERSION>(account->GetResDisp()), maximum(account->GetMaxChars(), static_cast<unsigned char>(account->m_Chars.GetCharCount())));
+	int flags = g_Cfg.GetPacketFlag(true, static_cast<RESDISPLAY_VERSION>(account->GetResDisp()), maximum(account->GetMaxChars(), static_cast<BYTE>(account->m_Chars.GetCharCount())));
 	if (!target->GetNetState()->getClientType())
 		flags |= 0x400;
 	writeInt32(flags);
@@ -3203,7 +3204,7 @@ PacketGumpValueInput::PacketGumpValueInput(const CClient* target, bool cancel, I
 	writeStringFixedASCII(text, len);
 
 	writeBool(cancel);
-	writeByte(static_cast<unsigned char>(style));
+	writeByte(static_cast<BYTE>(style));
 	writeInt32(maxLength);
 
 	TCHAR* z(NULL);
@@ -3262,7 +3263,7 @@ PacketMessageUNICODE::PacketMessageUNICODE(const CClient* target, const NWORD* p
 		writeInt16(static_cast<WORD>(sourceCharacter->GetDispID()));
 	}
 	
-	writeByte(static_cast<unsigned char>(mode));
+	writeByte(static_cast<BYTE>(mode));
 	writeInt16(static_cast<WORD>(hue));
 	writeInt16(static_cast<WORD>(font));
 	writeStringFixedASCII(language.GetStr(), 4);
@@ -3272,7 +3273,7 @@ PacketMessageUNICODE::PacketMessageUNICODE(const CClient* target, const NWORD* p
 	else
 		writeStringFixedASCII(source->GetName(), 30);
 
-	writeStringUNICODE(reinterpret_cast<const WCHAR *>(pszText));
+	writeStringUNICODE(reinterpret_cast<const WCHAR*>(pszText));
 
 	push(target);
 }
@@ -3547,8 +3548,8 @@ PacketEnableFeatures::PacketEnableFeatures(const CClient* target, DWORD flags) :
 
 	const CAccountRef account = target->GetAccount();
 	ASSERT(account != NULL);
-	DWORD tmVer = static_cast<unsigned long>(account->m_TagDefs.GetKeyNum("clientversion"));
-	DWORD tmVerReported = static_cast<unsigned long>(account->m_TagDefs.GetKeyNum("reportedcliver"));
+	DWORD tmVer = static_cast<DWORD>(account->m_TagDefs.GetKeyNum("clientversion"));
+	DWORD tmVerReported = static_cast<DWORD>(account->m_TagDefs.GetKeyNum("reportedcliver"));
 	
 	// since 6.0.14.2, feature flags are 4 bytes instead of 2.
 	if (tmVer >= MINCLIVER_EXTRAFEATURES || tmVerReported >= MINCLIVER_EXTRAFEATURES)
@@ -3595,7 +3596,7 @@ PacketSeason::PacketSeason(const CClient* target, SEASON_TYPE season, bool playM
 {
 	ADDTOCALLSTACK("PacketSeason::PacketSeason");
 
-	writeByte(static_cast<unsigned char>(season));
+	writeByte(static_cast<BYTE>(season));
 	writeBool(playMusic);
 
 	push(target);
@@ -3666,7 +3667,7 @@ PacketParty::PacketParty(PARTYMSG_TYPE type, size_t len, Priority priority) : Pa
 {
 	ADDTOCALLSTACK("PacketParty::PacketParty");
 
-	writeByte(static_cast<unsigned char>(type));
+	writeByte(static_cast<BYTE>(type));
 }
 
 
@@ -3683,7 +3684,7 @@ PacketPartyList::PacketPartyList(const CCharRefArray* members) : PacketParty(PAR
 
 	size_t iQty = members->GetCharCount();
 
-	writeByte(static_cast<unsigned char>(iQty));
+	writeByte(static_cast<BYTE>(iQty));
 
 	for (size_t i = 0; i < iQty; i++)
 		writeInt32(members->GetChar(i));
@@ -3705,7 +3706,7 @@ PacketPartyRemoveMember::PacketPartyRemoveMember(const CChar* member, const CCha
 
 	size_t iQty = members == NULL? 0 : members->GetCharCount();
 
-	writeByte(static_cast<unsigned char>(iQty));
+	writeByte(static_cast<BYTE>(iQty));
 	writeInt32(member->GetUID());
 
 	for (size_t i = 0; i < iQty; i++)
@@ -3757,7 +3758,7 @@ PacketMapChange::PacketMapChange(const CClient* target, int map) : PacketExtende
 {
 	ADDTOCALLSTACK("PacketMapChange::PacketMapChange");
 
-	writeByte(static_cast<unsigned char>(map));
+	writeByte(static_cast<BYTE>(map));
 
 	push(target);
 }
@@ -3870,7 +3871,7 @@ void PacketDisplayPopup::finalise(void)
 	size_t endPosition(getPosition());
 
 	seek(11);
-	writeByte(static_cast<unsigned char>(m_popupCount));
+	writeByte(static_cast<BYTE>(m_popupCount));
 
 	seek(endPosition);
 }
@@ -4158,7 +4159,7 @@ PacketMessageLocalised::PacketMessageLocalised(const CClient* target, int cliloc
 		writeInt16(static_cast<WORD>(sourceCharacter->GetDispID()));
 	}
 
-	writeByte(static_cast<unsigned char>(mode));
+	writeByte(static_cast<BYTE>(mode));
 	writeInt16(static_cast<WORD>(hue));
 	writeInt16(static_cast<WORD>(font));
 	writeInt32(cliloc);
@@ -4219,11 +4220,11 @@ PacketMessageLocalisedEx::PacketMessageLocalisedEx(const CClient* target, int cl
 		writeInt16(static_cast<WORD>(sourceCharacter->GetDispID()));
 	}
 
-	writeByte(static_cast<unsigned char>(mode));
+	writeByte(static_cast<BYTE>(mode));
 	writeInt16(hue);
 	writeInt16(static_cast<WORD>(font));
 	writeInt32(cliloc);
-	writeByte(static_cast<unsigned char>(affixType));
+	writeByte(static_cast<BYTE>(affixType));
 
 	if (source == NULL)
 		writeStringFixedASCII("System", 30);
@@ -4484,8 +4485,8 @@ bool PacketHouseDesign::writePlaneData(int plane, int itemCount, BYTE* data, int
 		return false;
 	}
 
-	writeByte(static_cast<unsigned char>(plane | 0x20));
-	writeByte(static_cast<unsigned char>(dataSize));
+	writeByte(static_cast<BYTE>(plane | 0x20));
+	writeByte(static_cast<BYTE>(dataSize));
 	writeByte((BYTE)compressLength);
 	writeByte(((dataSize >> 4) & 0xF0) | ((compressLength >> 8) & 0x0F));
 	writeData(compressBuffer, compressLength);
@@ -4502,9 +4503,9 @@ bool PacketHouseDesign::writeStairData(ITEMID_TYPE id, int x, int y, int z)
 	ADDTOCALLSTACK("PacketHouseDesign::writeStairData");
 
 	m_stairBuffer[m_stairCount].m_id = static_cast<WORD>(id);
-	m_stairBuffer[m_stairCount].m_x = static_cast<unsigned char>(x);
-	m_stairBuffer[m_stairCount].m_y = static_cast<unsigned char>(y);
-	m_stairBuffer[m_stairCount].m_z = static_cast<unsigned char>(z);
+	m_stairBuffer[m_stairCount].m_x = static_cast<BYTE>(x);
+	m_stairBuffer[m_stairCount].m_y = static_cast<BYTE>(y);
+	m_stairBuffer[m_stairCount].m_z = static_cast<BYTE>(z);
 	m_stairCount++;
 
 	if (m_stairCount >= STAIRSPERBLOCK)
@@ -4545,8 +4546,8 @@ void PacketHouseDesign::flushStairData(void)
 		return;
 	}
 
-	writeByte(static_cast<unsigned char>(9 + m_stairPlaneCount));
-	writeByte(static_cast<unsigned char>(stairSize));
+	writeByte(static_cast<BYTE>(9 + m_stairPlaneCount));
+	writeByte(static_cast<BYTE>(stairSize));
 	writeByte((BYTE)compressLength);
 	writeByte(((stairSize >> 4) & 0xF0) | ((compressLength >> 8) & 0x0F));
 	writeData(compressBuffer, compressLength);
@@ -4569,7 +4570,7 @@ void PacketHouseDesign::finalise(void)
 	seek(13);
 	writeInt16(static_cast<WORD>(m_itemCount));
 	writeInt16(static_cast<WORD>(m_dataSize));
-	writeByte(static_cast<unsigned char>(m_planeCount + m_stairPlaneCount));
+	writeByte(static_cast<BYTE>(m_planeCount + m_stairPlaneCount));
 
 	seek(endPosition);
 }
@@ -4811,7 +4812,7 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : Pac
 	}
 
 	writeInt16(1);
-	writeByte(static_cast<unsigned char>(source));// 0=tiledata,1=character,2=multi
+	writeByte(static_cast<BYTE>(source));// 0=tiledata,1=character,2=multi
 	writeInt32(uid);
 	writeInt16(static_cast<WORD>(id));
 	writeByte(static_cast<BYTE>(dir));
@@ -4838,11 +4839,11 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CChar* mobile) : P
 	DWORD uid = mobile->GetUID();
 	CREID_TYPE id = mobile->GetDispID();
 	CPointMap p = mobile->GetTopPoint();
-	BYTE dir = static_cast<unsigned char>(mobile->m_dirFace);
+	BYTE dir = static_cast<BYTE>(mobile->m_dirFace);
 	HUE_TYPE hue = mobile->GetHue();
 
 	writeInt16(1);
-	writeByte(static_cast<unsigned char>(source));
+	writeByte(static_cast<BYTE>(source));
 	writeInt32(uid);
 	writeInt16(static_cast<WORD>(id));
 	writeByte(dir);
@@ -4974,7 +4975,7 @@ PacketContainer::PacketContainer(const CClient* target, CObjBase** objects, size
 
 			writeByte(0xF3);
 			writeInt16(1);
-			writeByte(static_cast<unsigned char>(source));
+			writeByte(static_cast<BYTE>(source));
 			writeInt32(uid);
 			writeInt16(static_cast<WORD>(id));
 			writeByte(static_cast<BYTE>(dir));
@@ -4995,12 +4996,12 @@ PacketContainer::PacketContainer(const CClient* target, CObjBase** objects, size
 			DWORD uid = mobile->GetUID();
 			CREID_TYPE id = mobile->GetDispID();
 			CPointMap p = mobile->GetTopPoint();
-			BYTE dir = static_cast<unsigned char>(mobile->m_dirFace);
+			BYTE dir = static_cast<BYTE>(mobile->m_dirFace);
 			HUE_TYPE hue = mobile->GetHue();
 
 			writeByte(0xF3);
 			writeInt16(1);
-			writeByte(static_cast<unsigned char>(source));
+			writeByte(static_cast<BYTE>(source));
 			writeInt32(uid);
 			writeInt16(static_cast<WORD>(id));
 			writeByte(dir);
