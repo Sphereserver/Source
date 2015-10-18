@@ -245,8 +245,8 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
     <ClCompile Include="src\graysvr\CItemVend.cpp" />
     <ClCompile Include="src\graysvr\CLog.cpp" />
     <ClCompile Include="src\graysvr\CObjBase.cpp" />
+    <ClCompile Include="src\graysvr\CParty.cpp" />
     <ClCompile Include="src\graysvr\CPathFinder.cpp" />
-    <ClCompile Include="src\graysvr\CQuest.cpp" />
     <ClCompile Include="src\graysvr\CResource.cpp" />
     <ClCompile Include="src\graysvr\CResourceCalc.cpp" />
     <ClCompile Include="src\graysvr\CResourceDef.cpp" />
@@ -388,10 +388,10 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
     <CustomBuild Include="src\tables\CObjBase_props.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="src\tables\CQuest_functions.tbl">
+    <CustomBuild Include="src\tables\CParty_functions.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="src\tables\CQuest_props.tbl">
+    <CustomBuild Include="src\tables\CParty_props.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
     <CustomBuild Include="src\tables\CScriptObj_functions.tbl">

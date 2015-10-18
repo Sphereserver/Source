@@ -321,10 +321,10 @@
     <ClCompile Include="src\graysvr\CObjBase.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="src\graysvr\CPathFinder.cpp">
+    <ClCompile Include="src\graysvr\CParty.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="src\graysvr\CQuest.cpp">
+    <ClCompile Include="src\graysvr\CPathFinder.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
     <ClCompile Include="src\graysvr\CResource.cpp">
@@ -664,10 +664,10 @@
     <CustomBuild Include="src\tables\CObjBase_props.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="src\tables\CQuest_functions.tbl">
+    <CustomBuild Include="src\tables\CParty_functions.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="src\tables\CQuest_props.tbl">
+    <CustomBuild Include="src\tables\CParty_props.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
     <CustomBuild Include="src\tables\CScriptObj_functions.tbl">

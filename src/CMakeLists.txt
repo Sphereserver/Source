@@ -45,9 +45,9 @@ graysvr/CItemVend.cpp
 graysvr/CLog.cpp
 graysvr/CObjBase.cpp
 graysvr/CObjBase.h
+graysvr/CParty.cpp
 graysvr/CPathFinder.cpp
 graysvr/CPathFinder.h
-graysvr/CQuest.cpp
 graysvr/CResourceCalc.cpp
 graysvr/CResource.cpp
 graysvr/CResourceDef.cpp

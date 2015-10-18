@@ -89,6 +89,7 @@ SRC	:= 	./src/graysvr/CAccount.cpp \
 		./src/graysvr/CItemVend.cpp \
 		./src/graysvr/CLog.cpp \
 		./src/graysvr/CObjBase.cpp \
+		./src/graysvr/CParty.cpp \
 		./src/graysvr/CPathFinder.cpp \
 		./src/graysvr/CResource.cpp \
 		./src/graysvr/CResourceCalc.cpp \
@@ -96,7 +97,6 @@ SRC	:= 	./src/graysvr/CAccount.cpp \
 		./src/graysvr/CSector.cpp \
 		./src/graysvr/CServer.cpp \
 		./src/graysvr/CServRef.cpp \
-		./src/graysvr/CQuest.cpp \
 		./src/graysvr/CWebPage.cpp \
 		./src/graysvr/CWorld.cpp \
 		./src/graysvr/CWorldImport.cpp \
