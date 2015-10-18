@@ -197,7 +197,7 @@ void CPartyDef::AddStatsUpdate( CChar * pChar, PacketSend * pPacket )
 		CChar * pCharNow = m_Chars.GetChar(i).CharFind();
 		if ( pCharNow && pCharNow != pChar )
 		{
-			if ( pCharNow->CanSee( pChar ) && pCharNow->IsClient() )
+			if ( pCharNow->IsClient() && pCharNow->CanSee(pChar) )
 				pPacket->send(pCharNow->GetClient());
 		}
 	}
@@ -583,7 +583,7 @@ bool CPartyDef::AcceptEvent( CChar * pCharAccept, CGrayUID uidInviter, bool bFor
 enum PDV_TYPE
 {
 	#define ADD(a,b) PDV_##a,
-	#include "../tables/CQuest_functions.tbl"
+	#include "../tables/CParty_functions.tbl"
 	#undef ADD
 	PDV_QTY
 };
@@ -591,7 +591,7 @@ enum PDV_TYPE
 LPCTSTR const CPartyDef::sm_szVerbKeys[PDV_QTY+1] =
 {
 	#define ADD(a,b) b,
-	#include "../tables/CQuest_functions.tbl"
+	#include "../tables/CParty_functions.tbl"
 	#undef ADD
 	NULL
 };
@@ -599,7 +599,7 @@ LPCTSTR const CPartyDef::sm_szVerbKeys[PDV_QTY+1] =
 enum PDC_TYPE
 {
 	#define ADD(a,b) PDC_##a,
-	#include "../tables/CQuest_props.tbl"
+	#include "../tables/CParty_props.tbl"
 	#undef ADD
 	PDC_QTY
 };
@@ -607,7 +607,7 @@ enum PDC_TYPE
 LPCTSTR const CPartyDef::sm_szLoadKeys[PDC_QTY+1] =
 {
 	#define ADD(a,b) b,
-	#include "../tables/CQuest_props.tbl"
+	#include "../tables/CParty_props.tbl"
 	#undef ADD
 	NULL
 };
