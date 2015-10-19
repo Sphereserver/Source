@@ -5,13 +5,13 @@
 //*****************************************************************
 // -CCharRefArray
 
-size_t CCharRefArray::FindChar( const CChar * pChar ) const
+size_t CCharRefArray::FindChar( const CChar *pChar ) const
 {
 	ADDTOCALLSTACK("CCharRefArray::FindChar");
-	if ( pChar == NULL )
+	if ( !pChar )
 		return m_uidCharArray.BadIndex();
 
-	CGrayUID uid( pChar->GetUID());
+	CGrayUID uid(pChar->GetUID());
 	size_t iQty = m_uidCharArray.GetCount();
 	for ( size_t i = 0; i < iQty; i++ )
 	{
@@ -21,34 +21,29 @@ size_t CCharRefArray::FindChar( const CChar * pChar ) const
 	return m_uidCharArray.BadIndex();
 }
 
-size_t CCharRefArray::AttachChar( const CChar * pChar )
+size_t CCharRefArray::AttachChar( const CChar *pChar )
 {
 	ADDTOCALLSTACK("CCharRefArray::AttachChar");
-	size_t i = FindChar( pChar );
+	size_t i = FindChar(pChar);
 	if ( i != m_uidCharArray.BadIndex() )
-		return( i );
-	return m_uidCharArray.Add( pChar->GetUID() );
+		return i;
+	return m_uidCharArray.Add(pChar->GetUID());
 }
 
-size_t CCharRefArray::InsertChar( const CChar * pChar, size_t i )
+size_t CCharRefArray::InsertChar( const CChar *pChar, size_t i )
 {
 	ADDTOCALLSTACK("CCharRefArray::InsertChar");
-	size_t currentIndex = FindChar( pChar );
+	size_t currentIndex = FindChar(pChar);
 	if ( currentIndex != m_uidCharArray.BadIndex() )
 	{
-		// already there
-		if ( currentIndex == i )
+		if ( currentIndex == i )	// already there
 			return i;
-
-		// remove from list
-		DetachChar(currentIndex);
+		DetachChar(currentIndex);	// remove from list
 	}
 
-	// prevent from being inserted too high
-	if ( IsValidIndex(i) == false )
+	if ( !IsValidIndex(i) )		// prevent from being inserted too high
 		i = GetCharCount();
 
-	// insert
 	m_uidCharArray.InsertAt(i, pChar->GetUID() );
 	return i;
 }
@@ -59,41 +54,41 @@ void CCharRefArray::DetachChar( size_t i )
 	m_uidCharArray.RemoveAt(i);
 }
 
-size_t CCharRefArray::DetachChar( const CChar * pChar )
+size_t CCharRefArray::DetachChar( const CChar *pChar )
 {
 	ADDTOCALLSTACK("CCharRefArray::DetachChar");
-	size_t i = FindChar( pChar );
+	size_t i = FindChar(pChar);
 	if ( i != m_uidCharArray.BadIndex() )
-		DetachChar( i );
-	return( i );
+		DetachChar(i);
+	return i;
 }
 
 void CCharRefArray::DeleteChars()
 {
 	ADDTOCALLSTACK("CCharRefArray::DeleteChars");
 	size_t iQty = m_uidCharArray.GetCount();
-	while (iQty > 0)
+	while ( iQty > 0 )
 	{
-		CChar * pChar = m_uidCharArray[--iQty].CharFind();
-		if ( pChar != NULL )
+		CChar *pChar = m_uidCharArray[--iQty].CharFind();
+		if ( pChar )
 			pChar->Delete();
 	}
 	m_uidCharArray.RemoveAll();
 }
 
 
-void CCharRefArray::WritePartyChars( CScript & s )
+void CCharRefArray::WritePartyChars( CScript &s )
 {
 	ADDTOCALLSTACK("CCharRefArray::WritePartyChars");
 	size_t iQty = m_uidCharArray.GetCount();
-	for ( size_t j = 0; j < iQty; j++ ) // write out links to all my chars
-		s.WriteKeyHex( "CHARUID", m_uidCharArray[j] );
+	for ( size_t j = 0; j < iQty; j++ )		// write out links to all my chars
+		s.WriteKeyHex("CHARUID", m_uidCharArray[j]);
 }
 
 //*****************************************************************
 // -CPartyDef
 
-CPartyDef::CPartyDef( CChar * pChar1, CChar *pChar2 )
+CPartyDef::CPartyDef( CChar *pChar1, CChar *pChar2 )
 {
 	// pChar1 = the master.
 	ASSERT(pChar1);
@@ -102,27 +97,27 @@ CPartyDef::CPartyDef( CChar * pChar1, CChar *pChar2 )
 	pChar2->m_pParty = this;
 	AttachChar(pChar1);
 	AttachChar(pChar2);
-	SendAddList( NULL );	// send full list to all.
+	SendAddList(NULL);		// send full list to all
 	m_sName.Format("Party_0%lx", (DWORD)pChar1->GetUID());
 }
 
 // ---------------------------------------------------------
-size_t CPartyDef::AttachChar( CChar * pChar )
+size_t CPartyDef::AttachChar( CChar *pChar )
 {
 	ADDTOCALLSTACK("CPartyDef::AttachChar");
 	// RETURN:
 	//  index of the char in the group. BadIndex = not in group.
-	size_t i = m_Chars.AttachChar( pChar );
+	size_t i = m_Chars.AttachChar(pChar);
 	pChar->NotoSave_Update();
 	return i;
 }
 
-size_t CPartyDef::DetachChar( CChar * pChar )
+size_t CPartyDef::DetachChar( CChar *pChar )
 {
 	ADDTOCALLSTACK("CPartyDef::DetachChar");
 	// RETURN:
 	//  index of the char in the group. BadIndex = not in group.
-	size_t i = m_Chars.DetachChar( pChar );
+	size_t i = m_Chars.DetachChar(pChar);
 	if ( i != m_Chars.BadIndex() )
 	{
 		pChar->m_pParty = NULL;
@@ -133,59 +128,57 @@ size_t CPartyDef::DetachChar( CChar * pChar )
 	return i;
 }
 
-bool CPartyDef::SetMaster( CChar * pNewMaster )
+bool CPartyDef::SetMaster( CChar *pNewMaster )
 {
-	if ( pNewMaster == NULL )
-		return( false );
-	else if ( ! IsInParty( pNewMaster ) || IsPartyMaster( pNewMaster ) )
-		return( false );
+	if ( !pNewMaster )
+		return false;
+	else if ( !IsInParty(pNewMaster) || IsPartyMaster(pNewMaster) )
+		return false;
 
-	size_t i = m_Chars.InsertChar( pNewMaster, 0 );
+	size_t i = m_Chars.InsertChar(pNewMaster, 0);
 	SendAddList(NULL);
-
-	return( i == 0 );
+	return (i == 0);
 }
 
-void CPartyDef::SetLootFlag( CChar * pChar, bool fSet )
+void CPartyDef::SetLootFlag( CChar *pChar, bool fSet )
 {
 	ADDTOCALLSTACK("CPartyDef::SetLootFlag");
-	ASSERT( pChar );
+	ASSERT(pChar);
 	if ( IsInParty(pChar) )
 	{
 		pChar->SetKeyNum("PARTY_CANLOOTME", fSet);
-		pChar->SysMessageDefault( fSet ? DEFMSG_PARTY_LOOT_ALLOW : DEFMSG_PARTY_LOOT_BLOCK );
+		pChar->SysMessageDefault(fSet ? DEFMSG_PARTY_LOOT_ALLOW : DEFMSG_PARTY_LOOT_BLOCK);
 	}
 }
 
-bool CPartyDef::GetLootFlag( const CChar * pChar )
+bool CPartyDef::GetLootFlag( const CChar *pChar )
 {
 	ADDTOCALLSTACK("CPartyDef::GetLootFlag");
-	ASSERT( pChar );
+	ASSERT(pChar);
 	if ( IsInParty(pChar) )
-		return ( pChar->GetKeyNum("PARTY_CANLOOTME", true) != 0 );
+		return (pChar->GetKeyNum("PARTY_CANLOOTME", true) != 0);
 
-	return( false );
+	return false;
 }
 
-bool CPartyDef::FixWeirdness( CChar * pChar )
+bool CPartyDef::FixWeirdness( CChar *pChar )
 {
 	ADDTOCALLSTACK("CPartyDef::FixWeirdness");
 	if ( !pChar )
-		return( false );
-
+		return false;
 	if ( pChar->m_pParty != this )
-		return( DetachChar( pChar ) != m_Chars.BadIndex() ); // this is bad!
-	else if ( ! m_Chars.IsCharIn( pChar ))
+		return (DetachChar(pChar) != m_Chars.BadIndex());	// this is bad!
+	if ( !m_Chars.IsCharIn(pChar) )
 	{
 		pChar->m_pParty = NULL;
-		return( true );
+		return true;
 	}
 
-	return( false );
+	return false;
 }
 
 // ---------------------------------------------------------
-void CPartyDef::AddStatsUpdate( CChar * pChar, PacketSend * pPacket )
+void CPartyDef::AddStatsUpdate( CChar *pChar, PacketSend *pPacket )
 {
 	ADDTOCALLSTACK("CPartyDef::AddStatsUpdate");
 	size_t iQty = m_Chars.GetCharCount();
@@ -194,7 +187,7 @@ void CPartyDef::AddStatsUpdate( CChar * pChar, PacketSend * pPacket )
 
 	for ( size_t i = 0; i < iQty; i++ )
 	{
-		CChar * pCharNow = m_Chars.GetChar(i).CharFind();
+		CChar *pCharNow = m_Chars.GetChar(i).CharFind();
 		if ( pCharNow && pCharNow != pChar )
 		{
 			if ( pCharNow->IsClient() && pCharNow->CanSee(pChar) )
@@ -211,58 +204,56 @@ void CPartyDef::SysMessageAll( LPCTSTR pText )
 	size_t iQty = m_Chars.GetCharCount();
 	for ( size_t i = 0; i < iQty; i++ )
 	{
-		CChar * pChar = m_Chars.GetChar(i).CharFind();
-		pChar->SysMessage( pText );
+		CChar *pChar = m_Chars.GetChar(i).CharFind();
+		pChar->SysMessage(pText);
 	}
 }
 
 // ---------------------------------------------------------
-bool CPartyDef::SendMemberMsg( CChar * pCharDest, PacketSend * pPacket )
+bool CPartyDef::SendMemberMsg( CChar *pCharDest, PacketSend *pPacket )
 {
 	ADDTOCALLSTACK("CPartyDef::SendMemberMsg");
-	if ( pCharDest == NULL )
+	if ( !pCharDest )
 	{
-		SendAll( pPacket );
-		return( true );
+		SendAll(pPacket);
+		return true;
 	}
 
 	// Weirdness check.
 	if ( pCharDest->m_pParty != this )
 	{
-		if ( DetachChar( pCharDest ) != m_Chars.BadIndex() ) // this is bad!
-			return( false );
-		return( true );
+		if ( DetachChar(pCharDest) != m_Chars.BadIndex() )	// this is bad!
+			return false;
+		return true;
 	}
-	else if ( ! m_Chars.IsCharIn( pCharDest ))
+	if ( !m_Chars.IsCharIn(pCharDest) )
 	{
 		pCharDest->m_pParty = NULL;
-		return( true );
+		return true;
 	}
 
-	if ( pCharDest->IsClient())
+	if ( pCharDest->IsClient() )
 	{
-		CClient * pClient = pCharDest->GetClient();
+		CClient *pClient = pCharDest->GetClient();
 		ASSERT(pClient);
-
 		pPacket->send(pClient);
-
-		if (*pPacket->getData() == PARTYMSG_Remove )
+		if ( *pPacket->getData() == PARTYMSG_Remove )
 			pClient->addReSync();
 	}
 
-	return( true );
+	return true;
 }
 
-void CPartyDef::SendAll( PacketSend * pPacket )
+void CPartyDef::SendAll( PacketSend *pPacket )
 {
 	ADDTOCALLSTACK("CPartyDef::SendAll");
 	// Send this to all members of the party.
 	size_t iQty = m_Chars.GetCharCount();
 	for ( size_t i = 0; i < iQty; i++ )
 	{
-		CChar * pChar = m_Chars.GetChar(i).CharFind();
+		CChar *pChar = m_Chars.GetChar(i).CharFind();
 		ASSERT(pChar);
-		if ( ! SendMemberMsg( pChar, pPacket ))
+		if ( !SendMemberMsg(pChar, pPacket) )
 		{
 			iQty--;
 			i--;
@@ -271,15 +262,14 @@ void CPartyDef::SendAll( PacketSend * pPacket )
 }
 
 // ---------------------------------------------------------
-bool CPartyDef::SendAddList( CChar * pCharDest )
+bool CPartyDef::SendAddList( CChar *pCharDest )
 {
 	ADDTOCALLSTACK("CPartyDef::SendAddList");
 
-	if (m_Chars.GetCharCount() <= 0)
+	if ( m_Chars.GetCharCount() <= 0 )
 		return false;
 
 	PacketPartyList cmd(&m_Chars);
-
 	if (pCharDest)
 		SendMemberMsg(pCharDest, &cmd);
 	else
@@ -288,7 +278,7 @@ bool CPartyDef::SendAddList( CChar * pCharDest )
 	return true;
 }
 
-bool CPartyDef::SendRemoveList( CChar * pCharRemove, bool bFor )
+bool CPartyDef::SendRemoveList( CChar *pCharRemove, bool bFor )
 {
 	ADDTOCALLSTACK("CPartyDef::SendRemoveList");
 
@@ -299,36 +289,35 @@ bool CPartyDef::SendRemoveList( CChar * pCharRemove, bool bFor )
 	}
 	else
 	{
-		if (m_Chars.GetCharCount() <= 0)
+		if ( m_Chars.GetCharCount() <= 0 )
 			return false;
 
 		PacketPartyRemoveMember cmd(pCharRemove, &m_Chars);
 		SendAll(&cmd);
 	}
 
-	return( true );
+	return true;
 }
 
 // ---------------------------------------------------------
-bool CPartyDef::MessageEvent( CGrayUID uidDst, CGrayUID uidSrc, const NCHAR * pText, int ilenmsg )
+bool CPartyDef::MessageEvent( CGrayUID uidDst, CGrayUID uidSrc, const NCHAR *pText, int ilenmsg )
 {
 	ADDTOCALLSTACK("CPartyDef::MessageEvent");
 	UNREFERENCED_PARAMETER(ilenmsg);
 	if ( pText == NULL )
-		return( false );
+		return false;
+	if ( uidDst && !IsInParty(uidDst.CharFind()) )
+		return false;
 
-	if ( uidDst && !IsInParty( uidDst.CharFind() ) )
-		return( false );
-
-	CChar * pFrom = uidSrc.CharFind();
-	CChar * pTo = NULL;
-	if ( uidDst != (DWORD) 0 )
+	CChar *pFrom = uidSrc.CharFind();
+	CChar *pTo = NULL;
+	if ( uidDst != (DWORD)0 )
 		pTo = uidDst.CharFind();
 
-	TCHAR * szText = Str_GetTemp();
-	CvtNUNICODEToSystem( szText, MAX_TALK_BUFFER, pText, MAX_TALK_BUFFER );
+	TCHAR *szText = Str_GetTemp();
+	CvtNUNICODEToSystem(szText, MAX_TALK_BUFFER, pText, MAX_TALK_BUFFER);
 
-	if ( ! m_pSpeechFunction.IsEmpty() )
+	if ( !m_pSpeechFunction.IsEmpty() )
 	{
 		TRIGRET_TYPE tr = TRIGRET_RET_FALSE;
 		CScriptTriggerArgs Args;
@@ -340,27 +329,27 @@ bool CPartyDef::MessageEvent( CGrayUID uidDst, CGrayUID uidSrc, const NCHAR * pT
 		if ( r_Call(m_pSpeechFunction, &g_Serv, &Args, NULL, &tr) )
 		{
 			if ( tr == TRIGRET_RET_TRUE )
-				return( false );
+				return false;
 		}
 	}
 
-	if ( g_Log.IsLoggedMask( LOGM_PLAYER_SPEAK ))
-		g_Log.Event( LOGM_PLAYER_SPEAK, "%lx:'%s' Says '%s' in party to '%s'\n", pFrom->GetClient()->GetSocketID(), pFrom->GetName(), szText, pTo ? pTo->GetName() : "all" );
+	if ( g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) )
+		g_Log.Event(LOGM_PLAYER_SPEAK, "%lx:'%s' Says '%s' in party to '%s'\n", pFrom->GetClient()->GetSocketID(), pFrom->GetName(), szText, pTo ? pTo->GetName() : "all");
 
-	sprintf(szText, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_MSG ), pText);
+	sprintf(szText, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_MSG), pText);
 	PacketPartyChat cmd(pFrom, pText);
 
-	if ( pTo != NULL )
+	if ( pTo )
 		SendMemberMsg(pTo, &cmd);
 	else
 		SendAll(&cmd);
 
-	return( true );
+	return true;
 }
 
 // ---------------------------------------------------------
 
-void CPartyDef::AcceptMember( CChar * pChar )
+void CPartyDef::AcceptMember( CChar *pChar )
 {
 	ADDTOCALLSTACK("CPartyDef::AcceptMember");
 	// This person has accepted to be part of the party.
@@ -368,7 +357,7 @@ void CPartyDef::AcceptMember( CChar * pChar )
 
 	pChar->m_pParty = this;
 	AttachChar(pChar);
-	SendAddList( NULL );
+	SendAddList(NULL);
 }
 
 bool CPartyDef::RemoveMember( CGrayUID uidRemove, CGrayUID uidCommand )
@@ -381,25 +370,25 @@ bool CPartyDef::RemoveMember( CGrayUID uidRemove, CGrayUID uidCommand )
 	// NOTE: remove of the master will cause the party to disband.
 
 	if ( m_Chars.GetCharCount() <= 0 )
-		return( false );
+		return false;
 
 	CGrayUID uidMaster = GetMaster();
-	if ( uidRemove != uidCommand && uidCommand != uidMaster )
-		return( false );
+	if ( (uidRemove != uidCommand) && (uidCommand != uidMaster) )
+		return false;
 
-	CChar * pCharRemove = uidRemove.CharFind();
-	if ( pCharRemove == NULL )
-		return( false );
+	CChar *pCharRemove = uidRemove.CharFind();
+	if ( !pCharRemove )
+		return false;
 	if ( !IsInParty(pCharRemove) )
-		return( false );
+		return false;
 	if ( uidRemove == uidMaster )
-		return( Disband( uidMaster ));
+		return Disband(uidMaster);
 
-	CChar * pSrc = uidCommand.CharFind();
-	if (( pSrc != NULL ) && ( IsTrigUsed(TRIGGER_PARTYREMOVE) ))
+	CChar *pSrc = uidCommand.CharFind();
+	if ( pSrc && IsTrigUsed(TRIGGER_PARTYREMOVE) )
 	{
 		CScriptTriggerArgs args;
-		if ( pCharRemove->OnTrigger(CTRIG_PartyRemove, pSrc, &args)== TRIGRET_RET_TRUE )
+		if ( pCharRemove->OnTrigger(CTRIG_PartyRemove, pSrc, &args) == TRIGRET_RET_TRUE )
 			return false;
 	}
 	if ( IsTrigUsed(TRIGGER_PARTYLEAVE) )
@@ -409,22 +398,22 @@ bool CPartyDef::RemoveMember( CGrayUID uidRemove, CGrayUID uidCommand )
 	}
 
 	// Remove it from the party
-	SendRemoveList( pCharRemove, true );
-	DetachChar( pCharRemove );
-	pCharRemove->SysMessageDefault( DEFMSG_PARTY_LEAVE_2 );
+	SendRemoveList(pCharRemove, true);
+	DetachChar(pCharRemove);
+	pCharRemove->SysMessageDefault(DEFMSG_PARTY_LEAVE_2);
 
-	TCHAR * pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_LEAVE_1 ), pCharRemove->GetName());
-	SysMessageAll( pszMsg );
+	TCHAR *pszMsg = Str_GetTemp();
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_LEAVE_1), pCharRemove->GetName());
+	SysMessageAll(pszMsg);
 
 	if ( m_Chars.GetCharCount() <= 1 )
 	{
 		// Disband the party
-		SysMessageAll( g_Cfg.GetDefaultMsg(DEFMSG_PARTY_LEAVE_LAST_PERSON) );
-		return( Disband( uidMaster ) );
+		SysMessageAll(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_LEAVE_LAST_PERSON));
+		return Disband(uidMaster);
 	}
 
-	return( true );
+	return true;
 }
 
 bool CPartyDef::Disband( CGrayUID uidMaster )
@@ -432,27 +421,27 @@ bool CPartyDef::Disband( CGrayUID uidMaster )
 	ADDTOCALLSTACK("CPartyDef::Disband");
 	// Make sure i am the master.
 	if ( m_Chars.GetCharCount() <= 0 )
-		return( false );
+		return false;
 	if ( GetMaster() != uidMaster )
-		return( false );
+		return false;
 
-	CChar * pMaster = GetMaster().CharFind();
-	if (( pMaster != NULL ) && ( IsTrigUsed(TRIGGER_PARTYDISBAND) ))
+	CChar *pMaster = GetMaster().CharFind();
+	if ( pMaster && IsTrigUsed(TRIGGER_PARTYDISBAND) )
 	{
 		CScriptTriggerArgs args;
 		if ( pMaster->OnTrigger(CTRIG_PartyDisband, pMaster, &args) == TRIGRET_RET_TRUE )
 			return false;
 	}
 
-	SysMessageAll(g_Cfg.GetDefaultMsg( DEFMSG_PARTY_DISBANDED ));
+	SysMessageAll(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DISBANDED));
 
-	CChar * pSrc = uidMaster.CharFind();
+	CChar *pSrc = uidMaster.CharFind();
 	size_t iQty = m_Chars.GetCharCount();
 	ASSERT(iQty > 0);
 	for ( size_t i = 0; i < iQty; i++ )
 	{
-		CChar * pChar = m_Chars.GetChar(i).CharFind();
-		if ( pChar == NULL )
+		CChar *pChar = m_Chars.GetChar(i).CharFind();
+		if ( !pChar )
 			continue;
 
 		if ( IsTrigUsed(TRIGGER_PARTYREMOVE) )
@@ -462,120 +451,101 @@ bool CPartyDef::Disband( CGrayUID uidMaster )
 			pChar->OnTrigger(CTRIG_PartyRemove, pSrc, &args);
 		}
 
-		SendRemoveList( pChar, true );
-		DetachChar( pChar );
+		SendRemoveList(pChar, true);
+		DetachChar(pChar);
 	}
 
 	delete this;	// should remove itself from the world list.
-	return( true );
+	return true;
 }
 
 // ---------------------------------------------------------
-bool CPartyDef::DeclineEvent( CChar * pCharDecline, CGrayUID uidInviter )	// static
+bool CPartyDef::DeclineEvent( CChar *pCharDecline, CGrayUID uidInviter )	// static
 {
 	ADDTOCALLSTACK("CPartyDef::DeclineEvent");
 	// This should happen after a timeout as well.
-	// " You notify %s that you do not wish to join the party"
+	// "You notify %s that you do not wish to join the party"
 
-	CChar * pCharInviter = uidInviter.CharFind();
-	if ( !pCharInviter || !pCharDecline )
-		return( false );
-	if ( uidInviter == pCharDecline->GetUID() )
-		return( false );
+	CChar *pCharInviter = uidInviter.CharFind();
+	if ( !pCharInviter || !pCharDecline || uidInviter == pCharDecline->GetUID() )
+		return false;
 
-	CVarDefCont * sTempVal = pCharInviter->GetTagDefs()->GetKey("PARTY_LASTINVITE");
-	if ( !sTempVal )
-		return( false );
-	if ((DWORD)sTempVal->GetValNum() != (DWORD)pCharDecline->GetUID())
-		return( false );
+	CVarDefCont *sTempVal = pCharInviter->GetTagDefs()->GetKey("PARTY_LASTINVITE");
+	if ( !sTempVal || (DWORD)sTempVal->GetValNum() != (DWORD)pCharDecline->GetUID() )
+		return false;
 
-	// Remove the key
 	pCharInviter->DeleteKey("PARTY_LASTINVITE");
 
-	TCHAR * sTemp = Str_GetTemp();
-	sprintf(sTemp, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE_2), static_cast<LPCTSTR>(pCharInviter->GetName()));
-	pCharDecline->SysMessage( sTemp );
+	TCHAR *sTemp = Str_GetTemp();
+	sprintf(sTemp, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE_2), pCharInviter->GetName());
+	pCharDecline->SysMessage(sTemp);
 	sTemp = Str_GetTemp();
-	sprintf(sTemp, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE_1), static_cast<LPCTSTR>(pCharDecline->GetName()));
-	pCharInviter->SysMessage( sTemp );
-
-	return( true );
+	sprintf(sTemp, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE_1), pCharDecline->GetName());
+	pCharInviter->SysMessage(sTemp);
+	return true;
 }
 
-bool CPartyDef::AcceptEvent( CChar * pCharAccept, CGrayUID uidInviter, bool bForced )	// static
+bool CPartyDef::AcceptEvent( CChar *pCharAccept, CGrayUID uidInviter, bool bForced )	// static
 {
 	ADDTOCALLSTACK("CPartyDef::AcceptEvent");
 	// We are accepting the invite to join a party
 	// No security checks if bForced -> true !!!
-
 	// Party master is only one that can add ! GetChar(0)
-	ASSERT( pCharAccept );
 
-	CChar * pCharInviter = uidInviter.CharFind();
-	if ( pCharInviter == NULL )
-		return( false );
-	if ( pCharInviter == pCharAccept )
-		return( false );
-	if ( !pCharInviter->IsClient() || !pCharAccept->IsClient() )
-		return( false );
+	CChar *pCharInviter = uidInviter.CharFind();
+	if ( !pCharInviter || !pCharInviter->IsClient() || !pCharAccept || !pCharAccept->IsClient() || pCharInviter == pCharAccept )
+		return false;
 
-	CPartyDef * pParty = pCharInviter->m_pParty;
+	CPartyDef *pParty = pCharInviter->m_pParty;
 	if ( !bForced )
 	{
-		CVarDefCont * sTempVal = pCharInviter->GetTagDefs()->GetKey("PARTY_LASTINVITE");
-		if ( !sTempVal )
-			return( false );
+		CVarDefCont *sTempVal = pCharInviter->GetTagDefs()->GetKey("PARTY_LASTINVITE");
+		if ( !sTempVal || (DWORD)sTempVal->GetValNum() != (DWORD)pCharAccept->GetUID() )
+			return false;
 
-		if ((DWORD)sTempVal->GetValNum() != (DWORD)pCharAccept->GetUID())
-			return( false );
-
-		// Remove the key
 		pCharInviter->DeleteKey("PARTY_LASTINVITE");
 
-		if ( !pCharInviter->CanSee( pCharAccept ) )
-			return( false );
+		if ( !pCharInviter->CanSee(pCharAccept) )
+			return false;
 	}
 
-	if ( pCharAccept->m_pParty != NULL )	// Aready in a party !
+	if ( pCharAccept->m_pParty )	// already in a party
 	{
 		if ( pParty == pCharAccept->m_pParty )	// already in this party
 			return true;
 
 		if ( bForced )
 		{
-			pCharAccept->m_pParty->RemoveMember( pCharAccept->GetUID(), pCharAccept->GetUID() );
+			pCharAccept->m_pParty->RemoveMember(pCharAccept->GetUID(), pCharAccept->GetUID());
 			pCharAccept->m_pParty = NULL;
 		}
 		else
 			return false;
 	}
 
-	TCHAR * pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_JOINED ), static_cast<LPCTSTR>(pCharAccept->GetName()));
+	TCHAR *pszMsg = Str_GetTemp();
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_JOINED), pCharAccept->GetName());
 
-	if ( pParty == NULL )
+	if ( !pParty )
 	{
 		// Create the party now.
-		pParty = new CPartyDef( pCharInviter, pCharAccept );
+		pParty = new CPartyDef(pCharInviter, pCharAccept);
 		ASSERT(pParty);
-		g_World.m_Parties.InsertHead( pParty );
-		pCharInviter->SysMessage( pszMsg );
+		g_World.m_Parties.InsertHead(pParty);
+		pCharInviter->SysMessage(pszMsg);
 	}
 	else
 	{
-		if ( pParty->IsPartyFull() )
-			return( false );
-		if ( !bForced && !pParty->IsPartyMaster(pCharInviter) )
-			return( false );
+		// Add to existing party
+		if ( pParty->IsPartyFull() || (!bForced && !pParty->IsPartyMaster(pCharInviter)) )
+			return false;
 
-
-		// Just add to existing party.
-		pParty->SysMessageAll( pszMsg );	// tell everyone already in the party about this.
-		pParty->AcceptMember( pCharAccept );
+		pParty->SysMessageAll(pszMsg);	// tell everyone already in the party about this
+		pParty->AcceptMember(pCharAccept);
 	}
 
-	pCharAccept->SysMessageDefault( DEFMSG_PARTY_ADDED );
-	return( true );
+	pCharAccept->SysMessageDefault(DEFMSG_PARTY_ADDED);
+	return true;
 }
 
 // ---------------------------------------------------------
@@ -612,48 +582,44 @@ LPCTSTR const CPartyDef::sm_szLoadKeys[PDC_QTY+1] =
 	NULL
 };
 
-bool CPartyDef::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef ) 
+bool CPartyDef::r_GetRef( LPCTSTR &pszKey, CScriptObj *&pRef )
 {
 	ADDTOCALLSTACK("CPartyDef::r_GetRef");
-	if ( !strnicmp("MASTER.",pszKey,7) )
-	{
-		pszKey += 7; 
-
-		CChar * pMaster = GetMaster().CharFind();
-		if ( pMaster != NULL ) 
-		{ 
-			pRef = pMaster; 
-			return( true ); 
-		}
-	}
-	else if ( !strnicmp("MEMBER.",pszKey,7) )
+	if ( !strnicmp("MASTER.", pszKey, 7) )
 	{
 		pszKey += 7;
-
-		size_t nNumber = Exp_GetVal(pszKey);
-		SKIP_SEPARATORS(pszKey);
-		if (m_Chars.IsValidIndex(nNumber) == false)
-			return( false );
-
-		CChar * pMember = m_Chars.GetChar(nNumber).CharFind();
-		if ( pMember != NULL ) 
-		{ 
-			pRef = pMember; 
-			return( true ); 
+		CChar *pMaster = GetMaster().CharFind();
+		if ( pMaster )
+		{
+			pRef = pMaster;
+			return true;
 		}
 	}
+	else if ( !strnicmp("MEMBER.", pszKey, 7) )
+	{
+		pszKey += 7;
+		size_t nNumber = Exp_GetVal(pszKey);
+		SKIP_SEPARATORS(pszKey);
+		if ( !m_Chars.IsValidIndex(nNumber) )
+			return false;
 
-	return( false );
+		CChar *pMember = m_Chars.GetChar(nNumber).CharFind();
+		if ( pMember )
+		{
+			pRef = pMember;
+			return true;
+		}
+	}
+	return false;
 }
 
-bool CPartyDef::r_LoadVal( CScript & s )
+bool CPartyDef::r_LoadVal( CScript &s )
 { 
 	ADDTOCALLSTACK("CPartyDef::r_LoadVal");
 	EXC_TRY("LoadVal");
 	LPCTSTR pszKey = s.GetKey();
 
-	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1);
-	
+	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
 	switch ( index )
 	{
 		case PDC_SPEECHFILTER:
@@ -663,14 +629,14 @@ bool CPartyDef::r_LoadVal( CScript & s )
 			else
 			{
 				LPCTSTR pszArg = s.GetArgStr();
-				CResourceLink * m_pTestEvent = dynamic_cast<CResourceLink *>( g_Cfg.ResourceGetDefByName( RES_FUNCTION, pszArg ) );
+				CResourceLink *m_pTestEvent = dynamic_cast<CResourceLink *>(g_Cfg.ResourceGetDefByName(RES_FUNCTION, pszArg));
 
-				if ( m_pTestEvent == NULL )
-					return( false );
-		
+				if ( !m_pTestEvent )
+					return false;
+
 				this->m_pSpeechFunction.Format("%s", pszArg);
 			}
-		
+
 		} break;
 
 		case PDC_TAG0:
@@ -678,7 +644,7 @@ bool CPartyDef::r_LoadVal( CScript & s )
 		{
 			bool fQuoted = false;
 			pszKey = pszKey + ((index == PDC_TAG0) ? 5 : 4);
-			m_TagDefs.SetStr( pszKey, fQuoted, s.GetArgStr( &fQuoted ), (index == PDC_TAG0) );
+			m_TagDefs.SetStr(pszKey, fQuoted, s.GetArgStr(&fQuoted), (index == PDC_TAG0));
 		} break;
 		
 		default:
@@ -693,49 +659,47 @@ bool CPartyDef::r_LoadVal( CScript & s )
 	return false;
 }
 
-bool CPartyDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
+bool CPartyDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc )
 {
 	ADDTOCALLSTACK("CPartyDef::r_WriteVal");
 	EXC_TRY("WriteVal");
 
-	CScriptObj * pRef;
-	if ( r_GetRef( pszKey, pRef ))
+	CScriptObj *pRef;
+	if ( r_GetRef(pszKey, pRef) )
 	{
-		if ( pRef == NULL )	// good command but bad link.
+		if ( pRef == NULL )		// good command but bad link.
 		{
 			sVal = "0";
 			return true;
 		}
 		if ( pszKey[0] == '\0' )	// we where just testing the ref.
 		{
-			CObjBase * pObj = dynamic_cast<CObjBase *>(pRef);
+			CObjBase *pObj = dynamic_cast<CObjBase*>(pRef);
 			if ( pObj )
-				sVal.FormatHex( (DWORD) pObj->GetUID() );
+				sVal.FormatHex((DWORD)pObj->GetUID());
 			else
-				sVal.FormatVal( 1 );
-			return( true );
+				sVal.FormatVal(1);
+			return true;
 		}
-		return pRef->r_WriteVal( pszKey, sVal, pSrc );
+		return pRef->r_WriteVal(pszKey, sVal, pSrc);
 	}
 
 	bool fZero = false;
-	switch ( FindTableHeadSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
+	switch ( FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
 		case PDC_ISSAMEPARTYOF:
 		{
 			pszKey += 13;
 			GETNONWHITESPACE(pszKey);
-
 			if ( pszKey[0] != '\0' )
 			{
 				CGrayUID charToCheck(static_cast<DWORD>(Exp_GetVal(pszKey)));
-				CChar * pCharToCheck = charToCheck.CharFind();
+				CChar *pCharToCheck = charToCheck.CharFind();
 
-				sVal.FormatVal( pCharToCheck != NULL && pCharToCheck->m_pParty == this );
+				sVal.FormatVal(pCharToCheck && pCharToCheck->m_pParty == this);
 			}
 			else
-				return( false );
-
+				return false;
 		} break;
 
 		case PDC_MEMBERS:
@@ -752,54 +716,54 @@ bool CPartyDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		case PDC_TAG:
 		{
 			if ( pszKey[3] != '.' )
-				return( false );
+				return false;
 			pszKey += 4;
-			sVal = m_TagDefs.GetKeyStr( pszKey, fZero );
+			sVal = m_TagDefs.GetKeyStr(pszKey, fZero);
 		} break;
 
 		case PDC_TAGAT:
 		{
- 			pszKey += 5; // eat the 'TAGAT'
- 			if ( *pszKey == '.' ) // do we have an argument?
- 			{
- 				SKIP_SEPARATORS( pszKey );
- 				size_t iQty = static_cast<size_t>( Exp_GetVal( pszKey ) );
+			pszKey += 5;	// eat the 'TAGAT'
+			if ( *pszKey == '.' )	// do we have an argument?
+			{
+				SKIP_SEPARATORS(pszKey);
+				size_t iQty = static_cast<size_t>(Exp_GetVal(pszKey));
 				if ( iQty >= m_TagDefs.GetCount() )
- 					return( false ); // trying to get non-existant tag
+					return false;	// trying to get non-existant tag
 
-				CVarDefCont * pTagAt = m_TagDefs.GetAt( iQty );
- 				if ( !pTagAt )
- 					return( false ); // trying to get non-existant tag
+				CVarDefCont *pTagAt = m_TagDefs.GetAt(iQty);
+				if ( !pTagAt )
+					return false;	// trying to get non-existant tag
 
- 				SKIP_SEPARATORS( pszKey );
- 				if ( ! *pszKey )
- 				{
- 					sVal.Format("%s=%s", static_cast<LPCTSTR>(pTagAt->GetKey()), static_cast<LPCTSTR>(pTagAt->GetValStr()));
- 					return( true );
- 				}
- 				else if ( !strnicmp( pszKey, "KEY", 3 ))
- 				{
- 					sVal = static_cast<LPCTSTR>(pTagAt->GetKey());
- 					return( true );
- 				}
- 				else if ( !strnicmp( pszKey, "VAL", 3 ))
- 				{
- 					sVal = pTagAt->GetValStr();
- 					return( true );
- 				}
- 			}
-			return( false );
+				SKIP_SEPARATORS(pszKey);
+				if ( !*pszKey )
+				{
+					sVal.Format("%s=%s", pTagAt->GetKey(), pTagAt->GetValStr());
+					return true;
+				}
+				else if ( !strnicmp(pszKey, "KEY", 3) )
+				{
+					sVal = pTagAt->GetKey();
+					return true;
+				}
+				else if ( !strnicmp(pszKey, "VAL", 3) )
+				{
+					sVal = pTagAt->GetValStr();
+					return true;
+				}
+			}
+			return false;
 		}
 
 		case PDC_TAGCOUNT:
-			sVal.FormatVal( m_TagDefs.GetCount() );
+			sVal.FormatVal(m_TagDefs.GetCount());
 			break;
 
 		default:
 			return false;
 	}
 
-	return( true );
+	return true;
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
@@ -808,43 +772,42 @@ bool CPartyDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 	return false;
 }
 
-bool CPartyDef::r_Verb( CScript & s, CTextConsole * pSrc )
+bool CPartyDef::r_Verb( CScript &s, CTextConsole *pSrc )
 {
 	ADDTOCALLSTACK("CPartyDef::r_Verb");
 	EXC_TRY("Verb");
 	ASSERT(pSrc);
 
 	LPCTSTR pszKey = s.GetKey();
-	CScriptObj * pRef;
-	if ( r_GetRef( pszKey, pRef ))
+	CScriptObj *pRef;
+	if ( r_GetRef(pszKey, pRef) )
 	{
 		if ( pszKey[0] )
 		{
 			if ( !pRef )
 				return true;
-			CScript script( pszKey, s.GetArgStr());
-			return pRef->r_Verb( script, pSrc );
+			CScript script(pszKey, s.GetArgStr());
+			return pRef->r_Verb(script, pSrc);
 		}
 	}
 
-	int iIndex = FindTableSorted( pszKey, sm_szVerbKeys, COUNTOF(sm_szVerbKeys)-1 );
-
+	int iIndex = FindTableSorted(pszKey, sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
 	switch ( iIndex )
 	{
 		case PDV_ADDMEMBER:
 		case PDV_ADDMEMBERFORCED:
 		{
-			bool bForced = ( iIndex == PDV_ADDMEMBERFORCED );
-			CGrayUID toAdd = (DWORD) s.GetArgVal();
-			CChar * pCharAdd = toAdd.CharFind();
+			bool bForced = (iIndex == PDV_ADDMEMBERFORCED);
+			CGrayUID toAdd = (DWORD)s.GetArgVal();
+			CChar *pCharAdd = toAdd.CharFind();
+			CChar *pCharMaster = GetMaster().CharFind();
+			if ( !pCharAdd || IsInParty(pCharAdd) )
+				return false;
 
-			if ( !pCharAdd || IsInParty( pCharAdd ) )
-				return( false );
-
-			if ( !bForced )
-				(GetMaster().CharFind())->SetKeyNum("PARTY_LASTINVITE", (DWORD) toAdd);
+			if ( pCharMaster && !bForced )
+				pCharMaster->SetKeyNum("PARTY_LASTINVITE", (long long)toAdd);
 			
-			return( CPartyDef::AcceptEvent( pCharAdd, GetMaster(), bForced ) );
+			return CPartyDef::AcceptEvent(pCharAdd, GetMaster(), bForced);
 		} break;
 
 		case PDV_CLEARTAGS:
@@ -858,7 +821,7 @@ bool CPartyDef::r_Verb( CScript & s, CTextConsole * pSrc )
 			return true;
 
 		case PDV_DISBAND:
-			return( Disband( GetMaster() ) );
+			return Disband(GetMaster());
 
 		case PDV_MESSAGE:
 			break;
@@ -871,20 +834,18 @@ bool CPartyDef::r_Verb( CScript & s, CTextConsole * pSrc )
 			{
 				pszArg++;
 				size_t nMember = Exp_GetVal(pszArg);
-				if ( m_Chars.IsValidIndex(nMember) == false )
-					return( false );
+				if ( !m_Chars.IsValidIndex(nMember) )
+					return false;
 
 				toRemove = m_Chars.GetChar(nMember);
 			}
 			else
-			{
-				toRemove = (DWORD) s.GetArgVal();
-			}
+				toRemove = (DWORD)s.GetArgVal();
 
-			if ( toRemove != (DWORD) 0 )
-				return( RemoveMember( toRemove, GetMaster() ) );
+			if ( toRemove != (DWORD)0 )
+				return RemoveMember(toRemove, GetMaster());
 
-			return( false );
+			return false;
 		} break;
 
 		case PDV_SETMASTER:
@@ -895,20 +856,18 @@ bool CPartyDef::r_Verb( CScript & s, CTextConsole * pSrc )
 			{
 				pszArg++;
 				size_t nMember = Exp_GetVal(pszArg);
-				if ( nMember == 0 || m_Chars.IsValidIndex(nMember) == false )
-					return( false );
+				if ( nMember == 0 || !m_Chars.IsValidIndex(nMember) )
+					return false;
 
 				newMaster = m_Chars.GetChar(nMember);
 			}
 			else
-			{
-				newMaster = (DWORD) s.GetArgVal();
-			}
+				newMaster = (DWORD)s.GetArgVal();
 
-			if ( newMaster != (DWORD) 0 )
-				return( SetMaster( newMaster.CharFind() ) );
+			if ( newMaster != (DWORD)0 )
+				return SetMaster(newMaster.CharFind());
 
-			return( false );
+			return false;
 		} break;
 
 		case PDV_SYSMESSAGE:
@@ -924,12 +883,16 @@ bool CPartyDef::r_Verb( CScript & s, CTextConsole * pSrc )
 				if ( *pszArg != '@' )
 				{
 					LPCTSTR __pszArg = pszArg;
-					while ( *pszArg != ' ' ) { pszArg++; x++; }
+					while ( *pszArg != ' ' )
+					{
+						pszArg++;
+						x++;
+					}
 					strcpylen(pUid, __pszArg, ++x);
 
 					size_t nMember = Exp_GetVal(pUid);
-					if ( m_Chars.IsValidIndex(nMember) == false )
-						return( false );
+					if ( !m_Chars.IsValidIndex(nMember) )
+						return false;
 
 					toSysmessage = m_Chars.GetChar(nMember);
 				}
@@ -937,33 +900,35 @@ bool CPartyDef::r_Verb( CScript & s, CTextConsole * pSrc )
 			else
 			{
 				LPCTSTR __pszArg = pszArg;
-				while ( *pszArg != ' ' ) { pszArg++; x++; }
+				while ( *pszArg != ' ' )
+				{
+					pszArg++;
+					x++;
+				}
 				strcpylen(pUid, __pszArg, ++x);
 
 				toSysmessage = static_cast<DWORD>(Exp_GetVal(pUid));
 			}
 
-			SKIP_SEPARATORS( pszArg );
+			SKIP_SEPARATORS(pszArg);
 
-			if ( toSysmessage != (DWORD) 0 )
+			if ( toSysmessage != (DWORD)0 )
 			{
-				CChar * pSend = toSysmessage.CharFind();
-				pSend->SysMessage( pszArg );
+				CChar *pSend = toSysmessage.CharFind();
+				pSend->SysMessage(pszArg);
 			}
 			else
-			{
-				SysMessageAll( pszArg );
-			}
+				SysMessageAll(pszArg);
 		} break;
 
 		case PDV_TAGLIST:
-			m_TagDefs.DumpKeys( pSrc, "TAG." );
+			m_TagDefs.DumpKeys(pSrc, "TAG.");
 			break;
 
 		default:
 			return false;
 	}
-	return( true );
+	return true;
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
@@ -972,9 +937,9 @@ bool CPartyDef::r_Verb( CScript & s, CTextConsole * pSrc )
 	return false;
 }
 
-bool CPartyDef::r_Load( CScript & s )
+bool CPartyDef::r_Load( CScript &s )
 { 
 	ADDTOCALLSTACK("CPartyDef::r_Load");
 	UNREFERENCED_PARAMETER(s);
-	return( false ); 
+	return false; 
 }
