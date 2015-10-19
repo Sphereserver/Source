@@ -240,7 +240,7 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
     <ClCompile Include="src\common\ListDefContMap.cpp" />
     <ClCompile Include="src\common\CWindow.cpp" />
     <ClCompile Include="src\common\graycom.cpp" />
-    <ClCompile Include="src\graysvr\CItemSp.cpp" />
+    <ClCompile Include="src\graysvr\CItemSpawn.cpp" />
     <ClCompile Include="src\graysvr\CItemStone.cpp" />
     <ClCompile Include="src\graysvr\CItemVend.cpp" />
     <ClCompile Include="src\graysvr\CLog.cpp" />

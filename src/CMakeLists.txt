@@ -39,7 +39,7 @@ graysvr/CItem.cpp
 graysvr/CItemMulti.cpp
 graysvr/CItemMultiCustom.cpp
 graysvr/CItemShip.cpp
-graysvr/CItemSp.cpp
+graysvr/CItemSpawn.cpp
 graysvr/CItemStone.cpp
 graysvr/CItemVend.cpp
 graysvr/CLog.cpp

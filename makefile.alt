@@ -84,7 +84,7 @@ SRC	:= 	./src/graysvr/CAccount.cpp \
 		./src/graysvr/CItemMulti.cpp \
 		./src/graysvr/CItemMultiCustom.cpp \
 		./src/graysvr/CItemShip.cpp \
-		./src/graysvr/CItemSp.cpp \
+		./src/graysvr/CItemSpawn.cpp \
 		./src/graysvr/CItemStone.cpp \
 		./src/graysvr/CItemVend.cpp \
 		./src/graysvr/CLog.cpp \

@@ -306,7 +306,7 @@
     <ClCompile Include="src\graysvr\CItemMulti.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="src\graysvr\CItemSp.cpp">
+    <ClCompile Include="src\graysvr\CItemSpawn.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
     <ClCompile Include="src\graysvr\CItemStone.cpp">
