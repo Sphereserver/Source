@@ -19,27 +19,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
+    <TargetName>SphereSvr</TargetName>
     <ProjectName>0.56c</ProjectName>
     <ProjectGuid>{40CA07B5-BCC7-A9C8-A6E6-DEFC536EE8CB}</ProjectGuid>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <TargetName>SphereSvr</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Local|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>SphereSvr</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Nightly|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>SphereSvr</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>SphereSvr</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -130,7 +126,6 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
       <PreprocessorDefinitions>_SUBVERSION;_MTNETWORK;WIN32;_WIN32;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <ExceptionHandling>Async</ExceptionHandling>
-      <SDLCheck>false</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
