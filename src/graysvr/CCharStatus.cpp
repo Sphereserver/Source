@@ -1133,8 +1133,8 @@ blocked:
 				ptTest.Move(dirTest2);
 				{
 					wBlockFlags = CAN_C_SWIM|CAN_C_WALK|CAN_C_FLY;
-					signed char z = g_World.GetHeightPoint2(ptTest, wBlockFlags, true);
-					signed char zDiff = static_cast<signed char>(abs(z - ptTest.m_z));
+					z = g_World.GetHeightPoint2(ptTest, wBlockFlags, true);
+					zDiff = static_cast<signed char>(abs(z - ptTest.m_z));
 					if ( zDiff > PLAYER_HEIGHT )
 						goto blocked;
 

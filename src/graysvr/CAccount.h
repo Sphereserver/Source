@@ -247,7 +247,7 @@ public:
 	* @param wPrivFlags Privilege flags to test.
 	* @return true if all the flags are set, false otherwise. 
 	*/
-	bool IsPriv( WORD wPrivFlags ) const { return(m_PrivFlags & wPrivFlags); }
+	bool IsPriv( WORD wPrivFlags ) const { return (m_PrivFlags & wPrivFlags) != 0; }
 	/**
 	* @brief Set the privileges flags specified.
 	* @param wPrivFlags flags to set.

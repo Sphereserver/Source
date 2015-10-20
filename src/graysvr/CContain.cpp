@@ -784,8 +784,8 @@ void CItemContainer::Trade_UpdateGold( DWORD platinum, DWORD gold )
 	INT64 iMaxValue = pChar1->m_virtualGold;
 	if ( gold + (platinum * 1000000000) > iMaxValue )
 	{
-		gold = iMaxValue % 1000000000;
-		platinum = iMaxValue / 1000000000;
+		gold = static_cast<DWORD>(iMaxValue % 1000000000);
+		platinum = static_cast<DWORD>(iMaxValue / 1000000000);
 		bUpdateChar1 = true;
 	}
 

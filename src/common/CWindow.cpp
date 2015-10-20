@@ -50,7 +50,7 @@ LRESULT WINAPI CWindowBase::WndProc( HWND hWnd, UINT message, WPARAM wParam, LPA
 	{
 		LPCREATESTRUCT lpCreateStruct = (LPCREATESTRUCT)lParam;
 		ASSERT(lpCreateStruct);
-		CWindowBase *pWnd = (CWindowBase *)(lpCreateStruct->lpCreateParams);
+		pWnd = (CWindowBase *)(lpCreateStruct->lpCreateParams);
 		ASSERT( pWnd );
 		pWnd->m_hWnd = hWnd;	// OnCreate()
 		pWnd->SetWindowLongPtr(GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWnd));
