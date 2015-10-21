@@ -3291,6 +3291,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 							case IT_WEAPON_XBOW:
 								iTyp |= DAMAGE_HIT_PIERCE;
 								break;
+							default:
+								break;
 						}
 					}
 				}
@@ -3401,6 +3403,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				case IT_WEAPON_BOW:
 				case IT_WEAPON_XBOW:
 					iTyp |= DAMAGE_HIT_PIERCE;
+					break;
+				default:
 					break;
 			}
 		}

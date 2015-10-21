@@ -1067,111 +1067,113 @@ bool CChar::UpdateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward , BY
 			action1 = NANIM_ATTACK; //Should be NANIM_ATTACK;
 			switch (pWeapon->GetType())
 			{
-			case IT_WEAPON_MACE_CROOK:
-			case IT_WEAPON_MACE_PICK:
-			case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
-			case IT_WEAPON_MACE_STAFF:
-			case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
-				subaction = (layer == LAYER_HAND2) ? NANIM_ATTACK_2H_BASH : NANIM_ATTACK_1H_BASH;
-				break;
-			case IT_WEAPON_SWORD:
-			case IT_WEAPON_AXE:
-				subaction = (layer == LAYER_HAND2) ? NANIM_ATTACK_2H_PIERCE : NANIM_ATTACK_1H_PIERCE;
-				break;
-			case IT_WEAPON_FENCE:
-				subaction = (layer == LAYER_HAND2) ? NANIM_ATTACK_2H_SLASH : NANIM_ATTACK_1H_SLASH;
-				break;
-			case IT_WEAPON_THROWING:
-				subaction = NANIM_ATTACK_THROWING;
-				break;
-			case IT_WEAPON_BOW:
-				subaction = NANIM_ATTACK_BOW;
-				break;
-			case IT_WEAPON_XBOW:
-				subaction = NANIM_ATTACK_CROSSBOW;
-				break;
-			default:
-				break;
+				case IT_WEAPON_MACE_CROOK:
+				case IT_WEAPON_MACE_PICK:
+				case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
+				case IT_WEAPON_MACE_STAFF:
+				case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
+					subaction = (layer == LAYER_HAND2) ? NANIM_ATTACK_2H_BASH : NANIM_ATTACK_1H_BASH;
+					break;
+				case IT_WEAPON_SWORD:
+				case IT_WEAPON_AXE:
+					subaction = (layer == LAYER_HAND2) ? NANIM_ATTACK_2H_PIERCE : NANIM_ATTACK_1H_PIERCE;
+					break;
+				case IT_WEAPON_FENCE:
+					subaction = (layer == LAYER_HAND2) ? NANIM_ATTACK_2H_SLASH : NANIM_ATTACK_1H_SLASH;
+					break;
+				case IT_WEAPON_THROWING:
+					subaction = NANIM_ATTACK_THROWING;
+					break;
+				case IT_WEAPON_BOW:
+					subaction = NANIM_ATTACK_BOW;
+					break;
+				case IT_WEAPON_XBOW:
+					subaction = NANIM_ATTACK_CROSSBOW;
+					break;
+				default:
+					break;
 			}
 		}
 		else {
 			switch (action)
 			{
-			case ANIM_ATTACK_1H_SLASH:
-				action1 = NANIM_ATTACK;
-				subaction = NANIM_ATTACK_2H_BASH;
-				break;
-			case ANIM_ATTACK_1H_PIERCE:
-				action1 = NANIM_ATTACK;
-				subaction = NANIM_ATTACK_1H_SLASH;
-				break;
-			case ANIM_ATTACK_1H_BASH:
-				action1 = NANIM_ATTACK;
-				subaction = NANIM_ATTACK_1H_PIERCE;
-				break;
-			case ANIM_ATTACK_2H_PIERCE:
-				action1 = NANIM_ATTACK;
-				subaction = NANIM_ATTACK_2H_SLASH;
-				break;
-			case ANIM_ATTACK_2H_SLASH:
-				action1 = NANIM_ATTACK;
-				subaction = NANIM_ATTACK_2H_BASH;
-				break;
-			case ANIM_ATTACK_2H_BASH:
-				action1 = NANIM_ATTACK;
-				subaction = NANIM_ATTACK_2H_SLASH;
-				break;
-			case ANIM_CAST_DIR:
-				action1 = NANIM_SPELL;
-				subaction = NANIM_SPELL_NORMAL;
-				break;
-			case ANIM_CAST_AREA:
-				action1 = NANIM_SPELL;
-				subaction = NANIM_SPELL_SUMMON;
-				break;
-			case ANIM_ATTACK_BOW:
-				subaction = NANIM_ATTACK_BOW;
-				break;
-			case ANIM_ATTACK_XBOW:
-				subaction = NANIM_ATTACK_CROSSBOW;
-				break;
-			case ANIM_GET_HIT:
-				action1 = NANIM_GETHIT;
-				break;
-			case ANIM_BLOCK:
-				action1 = NANIM_BLOCK;
-				variation = 1;
-				break;
-			case ANIM_ATTACK_WRESTLE:
-				action1 = NANIM_ATTACK;
-				subaction = NANIM_ATTACK_WRESTLING;
-				break;
-				/*case ANIM_BOW:		//I'm commenting these 2 because they are not showing properly when Hovering/Mounted, so we skip them.
-				action1 = NANIM_EMOTE;
-				subaction = NANIM_EMOTE_BOW;
-				break;
-				case ANIM_SALUTE:
-				action1 = NANIM_EMOTE;
-				subaction = NANIM_EMOTE_SALUTE;
-				break;*/
-			case ANIM_EAT:
-				action1 = NANIM_EAT;
-				break;
-				break;
-			default:
-				break;
+				case ANIM_ATTACK_1H_SLASH:
+					action1 = NANIM_ATTACK;
+					subaction = NANIM_ATTACK_2H_BASH;
+					break;
+				case ANIM_ATTACK_1H_PIERCE:
+					action1 = NANIM_ATTACK;
+					subaction = NANIM_ATTACK_1H_SLASH;
+					break;
+				case ANIM_ATTACK_1H_BASH:
+					action1 = NANIM_ATTACK;
+					subaction = NANIM_ATTACK_1H_PIERCE;
+					break;
+				case ANIM_ATTACK_2H_PIERCE:
+					action1 = NANIM_ATTACK;
+					subaction = NANIM_ATTACK_2H_SLASH;
+					break;
+				case ANIM_ATTACK_2H_SLASH:
+					action1 = NANIM_ATTACK;
+					subaction = NANIM_ATTACK_2H_BASH;
+					break;
+				case ANIM_ATTACK_2H_BASH:
+					action1 = NANIM_ATTACK;
+					subaction = NANIM_ATTACK_2H_SLASH;
+					break;
+				case ANIM_CAST_DIR:
+					action1 = NANIM_SPELL;
+					subaction = NANIM_SPELL_NORMAL;
+					break;
+				case ANIM_CAST_AREA:
+					action1 = NANIM_SPELL;
+					subaction = NANIM_SPELL_SUMMON;
+					break;
+				case ANIM_ATTACK_BOW:
+					subaction = NANIM_ATTACK_BOW;
+					break;
+				case ANIM_ATTACK_XBOW:
+					subaction = NANIM_ATTACK_CROSSBOW;
+					break;
+				case ANIM_GET_HIT:
+					action1 = NANIM_GETHIT;
+					break;
+				case ANIM_BLOCK:
+					action1 = NANIM_BLOCK;
+					variation = 1;
+					break;
+				case ANIM_ATTACK_WRESTLE:
+					action1 = NANIM_ATTACK;
+					subaction = NANIM_ATTACK_WRESTLING;
+					break;
+					/*case ANIM_BOW:		//I'm commenting these 2 because they are not showing properly when Hovering/Mounted, so we skip them.
+					action1 = NANIM_EMOTE;
+					subaction = NANIM_EMOTE_BOW;
+					break;
+					case ANIM_SALUTE:
+					action1 = NANIM_EMOTE;
+					subaction = NANIM_EMOTE_SALUTE;
+					break;*/
+				case ANIM_EAT:
+					action1 = NANIM_EAT;
+					break;
+					break;
+				default:
+					break;
 			}
 		}
 	}//Other new animations than work on humans, elfs and gargoyles
 	switch (action)
 	{
-	case ANIM_DIE_BACK:
-		variation = 1;		//Variation makes characters die back
-		action1 = NANIM_DEATH;
-		break;
-	case ANIM_DIE_FORWARD:
-		action1 = NANIM_DEATH;
-		break;
+		case ANIM_DIE_BACK:
+			variation = 1;		//Variation makes characters die back
+			action1 = NANIM_DEATH;
+			break;
+		case ANIM_DIE_FORWARD:
+			action1 = NANIM_DEATH;
+			break;
+		default:
+			break;
 	}
 	PacketActionBasic* cmdnew = new PacketActionBasic(this, action1, subaction, variation);
 	PacketAction* cmd = new PacketAction(this, action, 1, fBackward, iFrameDelay, iAnimLen);

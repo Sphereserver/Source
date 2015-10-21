@@ -3935,6 +3935,8 @@ bool CItem::Use_Door( bool fJustOpen )
 			iCloseSnd = 0x00f3;
 			iOpenSnd = 0x00eb;
 			break;
+		default:
+			break;
 	}
 
 	//override sounds
@@ -4999,8 +5001,9 @@ bool CItem::IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg )
 				if ( itemid == ITEMID_LEATHER_1 )
 					return true;
 			}
+			default:
+				return false;
 		}
-		return false;
 	}
 
 	if ( restype == RES_TYPEDEF )
@@ -5023,8 +5026,9 @@ bool CItem::IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg )
 					return false;
 				break;
 			}
+			default:
+				return true;
 		}
-		return true;
 	}
 
 	return false;

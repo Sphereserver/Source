@@ -865,6 +865,8 @@ unsigned short CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool bGetTicks)
 		case STAT_FOOD:
 			stat = "FOOD";
 			break;
+		default:
+			break;
 	}
 
 	if ( iStat <= STAT_FOOD )

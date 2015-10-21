@@ -271,7 +271,7 @@ void PacketMovementReq::doMovement(NetState* net, BYTE direction, BYTE sequence,
 	}
 	else if (canMoveThere == TRIGRET_RET_TRUE)
 	{
-		if (++sequence == 256)
+		if (++sequence == UCHAR_MAX)
 			sequence = 1;
 
 		net->m_sequence = sequence;
@@ -1159,6 +1159,8 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 
 		case SECURE_TRADE_UPDATEGOLD:	// update trade window virtual gold
 			container->Trade_UpdateGold(readInt32(), readInt32());
+			return true;
+		default:
 			return true;
 	}
 

@@ -867,6 +867,8 @@ void CChar::Use_EatQty( CItem * pFood, int iQty )
 		case IT_MEAT_RAW:
 			if ( pFood->m_itFood.m_poison_skill )	// was the food poisoned?
 				SetPoison(pFood->m_itFood.m_poison_skill * 10, 1 + (pFood->m_itFood.m_poison_skill / 50), this);
+		default:
+			break;
 	}
 
 	UpdateDir(pFood);

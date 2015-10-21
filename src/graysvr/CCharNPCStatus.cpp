@@ -414,6 +414,8 @@ bool CChar::NPC_CheckWalkHere( const CPointBase & pt, const CRegionBase * pArea,
 			case IT_MOONGATE:
 			case IT_TELEPAD:
 				return false;
+			default:
+				break;
 		}
 	}
 	return true;

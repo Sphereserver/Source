@@ -32,7 +32,7 @@ inline CItemBase * CItemSpawn::TryItem(ITEMID_TYPE &id)
 // RETURN: true = ok.
 CResourceDef * CItemSpawn::FixDef()
 {
-	ADDTOCALLSTACK("CitemSpawn:FixDef")
+	ADDTOCALLSTACK("CitemSpawn:FixDef");
 
 	RESOURCE_ID_BASE rid = ( IsType(IT_SPAWN_ITEM) ? m_itSpawnItem.m_ItemID : m_itSpawnChar.m_CharID );
 

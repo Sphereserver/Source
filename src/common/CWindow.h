@@ -1,10 +1,11 @@
 // CWindow = a base window class for controls.
+#ifdef _WIN32
 #ifndef _INC_CWINDOW_H
 #define _INC_CWINDOW_H
 #pragma once
 
 #include "../common/graycom.h"
-#include "cstring.h"
+#include "CString.h"
 #include <RICHEDIT.H>	// CRichEditCtrl
 
 class CWindow    // similar to Std MFC class CWnd
@@ -434,3 +435,4 @@ public:
 };
 
 #endif	// _INC_CWINDOW_H
+#endif	// _WIN32

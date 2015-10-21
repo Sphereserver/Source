@@ -2106,9 +2106,11 @@ bool CChar::NPC_FightCast(CObjBase * &pTarg, CObjBase * pSrc, SPELL_TYPE &spell,
 				//	spell is good, but must be targeted at an item
 				switch (spell)
 				{
-				case SPELL_Immolating_Weapon:
-					pTarg = m_uidWeapon.ObjFind();
-					if (pTarg)
+					case SPELL_Immolating_Weapon:
+						pTarg = m_uidWeapon.ObjFind();
+						if (pTarg)
+							break;
+					default:
 						break;
 				}
 			}
@@ -2118,20 +2120,20 @@ bool CChar::NPC_FightCast(CObjBase * &pTarg, CObjBase * pSrc, SPELL_TYPE &spell,
 				switch (spell)
 				{
 					//No spells added ATM until they are created, good example spell to here = SPELL_Healing_Stone
-				case SPELL_Healing_Stone:
-				{
-					CItem * pStone = GetBackpackItem(ITEMID_HEALING_STONE);
-					if (!pStone)
-						break;
-					if ((pStone->m_itNormal.m_morep.m_z == 0) && (Stat_GetVal(STAT_STR) < static_cast<int>(pStone->m_itNormal.m_more2)) && (pStone->m_itNormal.m_more1 >= pStone->m_itNormal.m_more2))
+					case SPELL_Healing_Stone:
 					{
-						Use_Obj(pStone, false);
-						return true; // we are not casting any spell but suceeded at using the stone created by this one, we are done now.
+						CItem * pStone = GetBackpackItem(ITEMID_HEALING_STONE);
+						if (!pStone)
+							break;
+						if ((pStone->m_itNormal.m_morep.m_z == 0) && (Stat_GetVal(STAT_STR) < static_cast<int>(pStone->m_itNormal.m_more2)) && (pStone->m_itNormal.m_more1 >= pStone->m_itNormal.m_more2))
+						{
+							Use_Obj(pStone, false);
+							return true; // we are not casting any spell but suceeded at using the stone created by this one, we are done now.
+						}
+						return false;	// Already have a stone, no need of more
 					}
-					return false;	// Already have a stone, no need of more
-				}
-				default:
-					break;
+					default:
+						break;
 				}
 
 				if (!bSpellSuits) return false;

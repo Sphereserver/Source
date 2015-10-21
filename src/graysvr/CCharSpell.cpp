@@ -15,22 +15,23 @@ SPELL_TYPE CChar::Spell_GetIndex(SKILL_TYPE skill)	// Returns the first spell fo
 
 	switch (skill)
 	{
-	case SKILL_MAGERY:
-		return SPELL_Clumsy;
-	case SKILL_NECROMANCY:
-		return SPELL_Animate_Dead_AOS;
-	case SKILL_CHIVALRY:
-		return SPELL_Cleanse_by_Fire;
-	case SKILL_BUSHIDO:
-		return SPELL_Honorable_Execution;
-	case SKILL_NINJITSU:
-		return SPELL_Focus_Attack;
-	case SKILL_SPELLWEAVING:
-		return SPELL_Arcane_Circle;
-	case SKILL_MYSTICISM:
-		return SPELL_Nether_Bolt;
+		case SKILL_MAGERY:
+			return SPELL_Clumsy;
+		case SKILL_NECROMANCY:
+			return SPELL_Animate_Dead_AOS;
+		case SKILL_CHIVALRY:
+			return SPELL_Cleanse_by_Fire;
+		case SKILL_BUSHIDO:
+			return SPELL_Honorable_Execution;
+		case SKILL_NINJITSU:
+			return SPELL_Focus_Attack;
+		case SKILL_SPELLWEAVING:
+			return SPELL_Arcane_Circle;
+		case SKILL_MYSTICISM:
+			return SPELL_Nether_Bolt;
+		default:
+			return SPELL_NONE;
 	}
-	return SPELL_NONE;
 }
 
 SPELL_TYPE CChar::Spell_GetMax(SKILL_TYPE skill)
@@ -43,24 +44,23 @@ SPELL_TYPE CChar::Spell_GetMax(SKILL_TYPE skill)
 
 	switch (skill)
 	{
-	case SKILL_MAGERY:
-		return SPELL_BOOK_QTY;
-	case SKILL_NECROMANCY:
-		return SPELL_NECROMANCY_QTY;
-	case SKILL_CHIVALRY:
-		return SPELL_CHIVALRY_QTY;
-	case SKILL_BUSHIDO:
-		return SPELL_BUSHIDO_QTY;
-	case SKILL_NINJITSU:
-		return SPELL_NINJITSU_QTY;
-	case SKILL_SPELLWEAVING:
-		return SPELL_SPELLWEAVING_QTY;
-	case SKILL_MYSTICISM:
-		return SPELL_MYSTICISM_QTY;
-	default:
-		break;
+		case SKILL_MAGERY:
+			return SPELL_BOOK_QTY;
+		case SKILL_NECROMANCY:
+			return SPELL_NECROMANCY_QTY;
+		case SKILL_CHIVALRY:
+			return SPELL_CHIVALRY_QTY;
+		case SKILL_BUSHIDO:
+			return SPELL_BUSHIDO_QTY;
+		case SKILL_NINJITSU:
+			return SPELL_NINJITSU_QTY;
+		case SKILL_SPELLWEAVING:
+			return SPELL_SPELLWEAVING_QTY;
+		case SKILL_MYSTICISM:
+			return SPELL_MYSTICISM_QTY;
+		default:
+			return SPELL_NONE;
 	}
-	return SPELL_NONE;
 }
 
 void CChar::Spell_Dispel(int iLevel)
@@ -679,6 +679,8 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			if (pClient)
 				pClient->removeBuff(BI_PAINSPIKE);
 			return;
+		default:
+			break;
 	}
 
 	switch (spell)	// the rest of the effects are handled directly by each spell
@@ -826,6 +828,8 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 				if (pWeapon)
 					pWeapon->SetDefNum("HitLeechLife", pWeapon->GetDefNum("HitLeechLife", true) - pSpell->m_itSpell.m_spelllevel, true);	// Adding 50% HitLeechLife to the weapon, since damaging with it should return 50% of the damage dealt.
 			}
+			return;
+		default:
 			return;
 	}
 }
@@ -1197,6 +1201,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				pWeapon->SetDefNum("HitLeechLife", pWeapon->GetDefNum("HitLeechLife", true) + pSpell->m_itSpell.m_spelllevel, true);	// Adding 50% HitLeechLife to the weapon, since damaging with it should return 50% of the damage dealt.
 			}
 			return;
+		default:
+			break;
 	}
 
 	switch ( spell )

@@ -712,6 +712,8 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 			defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_UNICODE",true) != 0);
 			break;
 		}
+		default:
+			break;
 	}
 
 	WORD Args[] = { wHue, static_cast<WORD>(font), (bUnicode ? (WORD)1 : (WORD)0) };

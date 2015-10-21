@@ -64,8 +64,9 @@ bool CChar::IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwAmount, DWORD dwArgRe
 			if ( !ContentConsume(rid, dwAmount, true) )
 				return true;
 			return false;
+		default:
+			return false;
 	}
-	return false;
 }
 
 CItemContainer *CChar::GetBank( LAYER_TYPE layer )
@@ -498,6 +499,8 @@ NPCBRAIN_TYPE CChar::GetNPCBrain(bool fDefault) const
 			case CREID_SWAMP_DRAGON1:
 			case CREID_SWAMP_DRAGON2:
 				return NPCBRAIN_DRAGON;
+			default:
+				break;
 		}
 		return NPCBRAIN_MONSTER;
 	}
@@ -520,8 +523,9 @@ NPCBRAIN_TYPE CChar::GetNPCBrain(bool fDefault) const
 		case CREID_Bull_Frog:
 		case CREID_Dolphin:
 			return NPCBRAIN_ANIMAL;
+		default:
+			return NPCBRAIN_MONSTER;
 	}
-	return NPCBRAIN_MONSTER;
 }
 
 LPCTSTR CChar::GetPronoun() const
@@ -1774,6 +1778,8 @@ bool CChar::CanTouch( const CObjBase *pObj ) const
 				if ( IsStatFlag(STATF_Sleeping|STATF_Freeze|STATF_Stone) )
 					break;
 				return GetTopDist3D(pItem->GetTopLevelObj()) <= UO_MAP_VIEW_SIZE;
+			default:
+				break;
 		}
 	}
 

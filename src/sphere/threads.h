@@ -361,7 +361,7 @@ public:
 	}
 };
 
-#define ADDTOCALLSTACK(_function_)	StackDebugInformation debugStack(_function_);
+#define ADDTOCALLSTACK(_function_)	StackDebugInformation debugStack(_function_)
 #define PAUSECALLSTACK STATIC_CAST<AbstractSphereThread *>(ThreadHolder::current())->freezeCallStack(true)
 #define UNPAUSECALLSTACK STATIC_CAST<AbstractSphereThread *>(ThreadHolder::current())->freezeCallStack(false)
 #ifdef _WIN32
