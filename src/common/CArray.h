@@ -1,4 +1,8 @@
-// c++ Collections.
+/**
+* @file CArray.h
+* @brief C++ collections custom implementation.
+*/
+
 #ifndef _INC_CARRAY_H
 #define _INC_CARRAY_H
 
@@ -9,178 +13,506 @@
 	#pragma warning(disable:4505)
 #endif
 
-///////////////////////////////////////////////////////////
-// CGObList
-
 class CGObList;
 
-class CGObListRec	// generic list record. 
+/**
+* @brief Generic list record.
+*
+* Each CGObListRec belongs to just one CGObList.
+*/
+class CGObListRec
 {
-	// This item belongs to JUST ONE LIST
 	friend class CGObList;
 
 	private:
-		CGObList  * 	m_pParent;		// link me back to my parent object.
-		CGObListRec * 	m_pNext;
-		CGObListRec * 	m_pPrev;
+		CGObList  * 	m_pParent; ///< Parent list.
+		CGObListRec * 	m_pNext; ///< Next record.
+		CGObListRec * 	m_pPrev; ///< Prev record.
 	public:
 		static const char *m_sClassName;
+		/**
+		* @brief get the CGObList propietary of this record.
+		* @return CGObList propietary of this record.
+		*/
 		CGObList  * 	GetParent() const { return m_pParent; }
+		/**
+		* @brief get the next record of the parent list.
+		* @return the next record of the parent list.
+		*/
 		CGObListRec * 	GetNext() const { return m_pNext; }
+		/**
+		* @brief get the previous record of the parent list.
+		* @return the previous record of the parent list.
+		*/
 		CGObListRec * 	GetPrev() const { return m_pPrev; }
 	public:
+		/**
+		* @brief set references for parent, next and previous to NULL.
+		*/
 		CGObListRec();
 		virtual ~CGObListRec();
 	private:
+		/**
+		* @brief No copies allowed.
+		*/
 		CGObListRec(const CGObListRec& copy);
+		/**
+		* @brief No copies allowed.
+		*/
 		CGObListRec& operator=(const CGObListRec& other);
 	public:
+		/**
+		* @brief Removes from the parent CGObList.
+		*/
 		inline void RemoveSelf();
 };
 
-class CGObList	// generic list of objects based on CGObListRec.
+/**
+* @brief Generic list of objects.
+*/
+class CGObList
 {
 	friend class CGObListRec;
 
 	private:
-		CGObListRec * m_pHead;
-		CGObListRec * m_pTail;	// Do we really care about tail ? (as it applies to lists anyhow)
-		size_t m_iCount;
+		CGObListRec * m_pHead;	///< Head of the list.
+		CGObListRec * m_pTail;	///< Tail of the list. Do we really care about tail ? (as it applies to lists anyhow)
+		size_t m_iCount;	///< Count of elements of the CGObList.
 	private:
+		/**
+		* @brief Call the trigger OnRemoveOb.
+		*
+		* Only called by CGObListRec::RemoveSelf()
+		* @see OnRemoveOb()
+		* @param pObRec record to remove.
+		*/
 		void RemoveAtSpecial( CGObListRec * pObRec );
 	protected:
-		// Override this to get called when an item is removed from this list.
-		// Never called directly. call pObRec->RemoveSelf()
-		virtual void OnRemoveOb( CGObListRec* pObRec );	// Override this = called when removed from list.
+		/**
+		* @brief Trigger that fires when a record if removed.
+		*
+		* Override this to get called when an item is removed from this list.
+		* Never called directly. Called CGObListRec::RemoveSelf()
+		* @see CGObListRec::RemoveSelf()
+		* @param pObRec removed record.
+		*/
+		virtual void OnRemoveOb( CGObListRec* pObRec );
 	public:
 		static const char *m_sClassName;
+		/**
+		* @brief Sets head, tail and count.
+		*/
 		CGObList();
 		virtual ~CGObList();
 	private:
+		/**
+		* @brief No copies allowed.
+		*/
 		CGObList(const CGObList& copy);
+		/**
+		* @brief No copies allowed.
+		*/
 		CGObList& operator=(const CGObList& other);
 	public:
+		/**
+		* @brief Get the nth element of the list.
+		* @param index of the element to get.
+		* @return nth element if lenght is greater or equal to index, NULL otherwise.
+		*/
 		CGObListRec * GetAt( size_t index ) const;
-		// pPrev = NULL = first
+		/**
+		* @brief Insert a record after the referenced record.
+		*
+		* If the position referenced is NULL, the record is inserted at head.
+		* @param pNewRec record to insert.
+		* @param pPrev position to insert after.
+		*/
 		virtual void InsertAfter( CGObListRec * pNewRec, CGObListRec * pPrev = NULL );
+		/**
+		* @brief Insert a record at head.
+		* @param pNewRec record to insert.
+		*/
 		void InsertHead( CGObListRec * pNewRec );
+		/**
+		* @brief Insert a record at tail.
+		* @param pNewRec record to insert.
+		*/
 		void InsertTail( CGObListRec * pNewRec );
+		/**
+		* @brief Remove all records of the CGObList.
+		*/
 		void DeleteAll();
+		/**
+		* @brief Remove all records of the CGObList.
+		*
+		* TODO: Really needed?
+		* @see DeleteAll()		
+		*/
 		void Empty();
+		/**
+		* @brief Get the first record of the CGObList.
+		* @return The first record of the CGObList if list is not empty, NULL otherwise.
+		*/
 		CGObListRec * GetHead() const;
+		/**
+		* @brief Get the last record of the CGObList.
+		* @return The last record of the CGObList if list is not empty, NULL otherwise.
+		*/
 		CGObListRec * GetTail() const;
+		/**
+		* @brief Get the record count of the list.
+		* @return The record count of the list.
+		*/
 		size_t GetCount() const;
+		/**
+		* @brief Check if CGObList if empty.
+		* @return true if CGObList is empty, false otherwise.
+		*/
 		bool IsEmpty() const;
 };
 
 ///////////////////////////////////////////////////////////
 // CGTypedArray<class TYPE, class ARG_TYPE>
 
+/**
+* @brief Typed Array.
+*
+* NOTE: This will not call true constructors or destructors !
+* TODO: Really needed two types in template?
+*/
 template<class TYPE, class ARG_TYPE>
 class CGTypedArray
 {
-	// NOTE: This will not call true constructors or destructors !
 	private:
-		TYPE* m_pData;			// the actual array of data
-		size_t m_nCount;			// # of elements currently in the list
-		size_t m_nRealCount;		//	real number of allocated elements
+		TYPE* m_pData;	///< Pointer to allocated mem.
+		size_t m_nCount;	///< count of elements stored.
+		size_t m_nRealCount;	///< Size of allocated mem.
 
 	public:
 		static const char *m_sClassName;
+		/**
+		* @brief Initializes array.
+		*
+		* Sets m_pData to NULL and counters to zero.
+		*/
 		CGTypedArray();
 		virtual ~CGTypedArray();
 		const CGTypedArray<TYPE, ARG_TYPE> & operator=( const CGTypedArray<TYPE, ARG_TYPE> & array );
 	private:
+		/**
+		* @brief No copy on construction allowed.
+		*/
 		CGTypedArray<TYPE, ARG_TYPE>(const CGTypedArray<TYPE, ARG_TYPE> & copy);
 	public:
-		TYPE * GetBasePtr() const;	// This is dangerous to use of course.
+		/**
+		* @brief Get the internal data pointer.
+		*
+		* This is dangerous to use of course.
+		* @return the internal data pointer.
+		*/
+		TYPE * GetBasePtr() const;
+		/**
+		* @brief Get the element count in array.
+		* @return get the element count in array.
+		*/
 		size_t GetCount() const;
+		/**
+		* @brief Get the total element that fits in allocated mem.
+		* @return get the total element that fits in allocated mem.
+		*/
 		size_t GetRealCount() const;
+		/**
+		* @brief Check if index is valid for this array.
+		* @param i index to check.
+		* @return true if index is valid, false otherwise.
+		*/
 		bool IsValidIndex( size_t i ) const;
+		/**
+		* @brief Realloc the internal data into a new size.
+		* @param nNewCount new size of the mem.
+		*/
 		void SetCount( size_t nNewCount );
+		/**
+		* @brief Remove all elements from the array and free mem.
+		*/
 		void RemoveAll();
+		/**
+		* @brief Remove all elements from the array and free mem.
+		*
+		* TODO: Really needed?
+		* @see RemoveAll()
+		*/
 		void Empty();
+		/**
+		* @brief Update element nth to a new value.
+		* @param nIndex index of element to update.
+		* @param newElement new value.
+		*/
 		void SetAt( size_t nIndex, ARG_TYPE newElement );
+		/**
+		* @brief Update element nth to a new value.
+		*
+		* If size of array is lesser to nIndex, increment array size.
+		* @param nIndex index of element to update.
+		* @param newElement new value.
+		*/
 		void SetAtGrow( size_t nIndex, ARG_TYPE newElement);
+		/**
+		* @brief Insert a element in nth position.
+		* @param nIndex position to insert the element.
+		* @param newElement element to insert.
+		*/
 		void InsertAt( size_t nIndex, ARG_TYPE newElement );
+		/**
+		* @brief Insert a new element to the end of the array.
+		* @param newElement element to insert.
+		* @return the element count of the array.
+		*/
 		size_t Add( ARG_TYPE newElement );
+		/**
+		* @brief Removes the nth element and move the next elements one position left.
+		* @param nIndex position of the element to remove.
+		*/
 		void RemoveAt( size_t nIndex );
+		/**
+		* @brief get the nth element.
+		*
+		* Also checks if index is valid.
+		* @param nIndex position of the element.
+		* @return Element in nIndex position.
+		*/
 		TYPE GetAt( size_t nIndex) const;
+		/**
+		* @brief get the nth element.
+		*
+		* Also checks if index is valid.
+		* @see GetAt()
+		* @param nIndex position of the element.
+		* @return Element in nIndex position.
+		*/
 		TYPE operator[](size_t nIndex) const;
+		/**
+		* @brief get a reference to the nth element.
+		*
+		* Also checks if index is valid.
+		* @param nIndex position of the element.
+		* @return Element in nIndex position.
+		*/
 		TYPE& ElementAt( size_t nIndex );
+		/**
+		* @brief get a reference to the nth element.
+		*
+		* Also checks if index is valid.
+		* @see ElementAt()
+		* @param nIndex position of the element.
+		* @return Element in nIndex position.
+		*/
 		TYPE& operator[](size_t nIndex);
+		/**
+		* @brief get a reference to the nth element.
+		*
+		* Also checks if index is valid.
+		* @param nIndex position of the element.
+		* @return Element in nIndex position.
+		*/
 		const TYPE& ElementAt( size_t nIndex ) const;
+		/**
+		* @brief TODOC
+		* @param pElements TODOC
+		* @param nCount TODOC
+		*/
 		virtual void ConstructElements(TYPE* pElements, size_t nCount );
+		/**
+		* @brief TODOC
+		* @param pElements TODOC
+		* @param nCount TODOC
+		*/
 		virtual void DestructElements(TYPE* pElements, size_t nCount );
+		/**
+		* @brief Copy an CGTypedArray into this.
+		* @param pArray array to copy.
+		*/
 		void Copy( const CGTypedArray<TYPE, ARG_TYPE> * pArray );
 	public:
 		inline size_t BadIndex() const { return (std::numeric_limits<size_t>::max)(); }
 };
 
-/////////////////////////////////////////////////////////////////////////////
-// CGPtrTypeArray
-
+/**
+* @brief An Array of pointers.
+*/
 template<class TYPE>
-class CGPtrTypeArray : public CGTypedArray<TYPE, TYPE>	// void*
+class CGPtrTypeArray : public CGTypedArray<TYPE, TYPE>
 {
 	protected:
+		/**
+		* @brief TODOC
+		* @param pElements TODOC
+		* @param nCount TODOC
+		*/
 		virtual void DestructElements( TYPE* pElements, size_t nCount );
 	public:
 		static const char *m_sClassName;
+		/**
+		* @brief get the position of a data in the array.
+		* @param pData data to look for.
+		* @return position of the data if data is in the array, BadIndex otherwise.
+		*/
 		size_t FindPtr( TYPE pData ) const;
+		/**
+		* @brief check if data is in this array.
+		* @param pData data to find in the array.
+		* @return true if pData is in the array, BadIndex() otherwise.
+		*/
 		bool ContainsPtr( TYPE pData ) const;
+		/**
+		* @brief if data is in array, rmove it.
+		* @param pData data to remove from the array.
+		*/
 		bool RemovePtr( TYPE pData );
+		/**
+		* @brief Check if an index is between 0 and element count.
+		* @param i index to check.
+		* @return true if index is valid, false otherwise.
+		*/
 		bool IsValidIndex( size_t i ) const;
 	public:
 		CGPtrTypeArray() { };
 		virtual ~CGPtrTypeArray() { };
 	private:
+		/**
+		* @brief No copy on construction allowed.
+		*/
 		CGPtrTypeArray<TYPE>(const CGPtrTypeArray<TYPE> & copy);
+		/**
+		* @brief No copy allowed.
+		*/
 		CGPtrTypeArray<TYPE>& operator=(const CGPtrTypeArray<TYPE> & other);
 };
 
-/////////////////////////////////////////////////////////////////////////////
-// CGObArray
-
+/**
+* @brief Array of objects.
+*
+* The point of this type is that the array now OWNS the element.
+* It will get deleted when the array is deleted.
+*/
 template<class TYPE>
 class CGObArray : public CGPtrTypeArray<TYPE>
 {
-	// The point of this type is that the array now OWNS the element.
-	// It will get deleted when the array is deleted.
 	protected:
+		/**
+		* @brief Destroy elements.
+		* @param pElements pointer to data to destroy.
+		* @param nCount Number of elements to destroy.
+		*/
 		virtual void DestructElements( TYPE* pElements, size_t nCount );
 	public:
 		static const char *m_sClassName;
+		/**
+		* @brief remove all elements.
+		* @param bElements if true, destroy elements too.
+		*/
 		void Clean(bool bElements = false);
+		/**
+		* @brief Remove an element if exists in the array.
+		* @param pData data to remove.
+		* @return true if data is removed, false otherwise.
+		*/
 		bool DeleteOb( TYPE pData );
+		/**
+		* @brief Remove the nth element.
+		* @param nIndex position of the element to remove.
+		* @return true if index is valid and object is removed, false otherwise.
+		*/
 		void DeleteAt( size_t nIndex );
 	public:
 		CGObArray() { };
 		virtual ~CGObArray();
 	private:
+		/**
+		* @brief No copy on construction allowed.
+		*/
 		CGObArray<TYPE>(const CGObArray<TYPE> & copy);
+		/**
+		* @brief No copy allowed.
+		*/
 		CGObArray<TYPE> & operator=(const CGObArray<TYPE> & other);
 };
 
-////////////////////////////////////////////////////////////
-// CGObSortArray = A sorted array of objects.
-
+/**
+* @brief Array of objects (sorted).
+*
+* The point of this type is that the array now OWNS the element.
+* It will get deleted when the array is deleted.
+*/
 template<class TYPE,class KEY_TYPE>
 struct CGObSortArray : public CGObArray<TYPE>
 {
 	public:
+		/**
+		* @brief Finds the position of the key closest to a provided key.
+		*
+		* Also sets iCompareRes to a value: 0 if key match with index, -1 if 
+		* key should be less than index and +1 if key should be greater than
+		* index.
+		* @param key key to find.
+		* @param iCompareRes comparison result.
+		* @param fNoSpaces TODOC
+		* @return index closest to key.
+		*/
 		size_t FindKeyNear( KEY_TYPE key, int & iCompareRes, bool fNoSpaces = false ) const;
+		/**
+		* @brief Find a key in the array.
+		* @param key key we are looking for.
+		* @return a valid index if the key is in the array, BadIndex otherwise.
+		*/
 		size_t FindKey( KEY_TYPE key ) const;
+		/**
+		* @brief Check if a key is in the index.
+		* @param key key we are looking for.
+		* @return true if key is in the array, false otherwise.
+		*/
 		bool ContainsKey( KEY_TYPE key ) const;
+		/**
+		* @brief Adds a value into a position.
+		* @see FindKeyNear()
+		* @param index position to insert the value.
+		* @param iCompareRes modifier to index. See FindKeyNear().
+		* @param pNew value to insert.
+		* @return position where the value is inserted.
+		*/
 		size_t AddPresorted( size_t index, int iCompareRes, TYPE pNew );
+		/**
+		* @brief Add a pair key-value and mantain the array sorted.
+		*
+		* If key exists in the array, will destroy current value and sets the 
+		* new.
+		* @param pNew value to insert.
+		* @param key key of the value to insert.
+		* @return position where the value is inserted.
+		*/
 		size_t AddSortKey( TYPE pNew, KEY_TYPE key );
+		/**
+		* @brief TODOC.
+		* @param fNoSpaces TODOC.
+		* @return TODOC.
+		*/
 		virtual int CompareKey( KEY_TYPE, TYPE, bool fNoSpaces ) const = 0;
+		/**
+		* @brief Removes the pair key - value from the array.
+		* @param key to remove.
+		*/
 		void DeleteKey( KEY_TYPE key );
 	public:
 		CGObSortArray() { };
 		virtual ~CGObSortArray() { };
 	private:
+		/**
+		* @brief No copy on construction allowed.
+		*/
 		CGObSortArray<TYPE, KEY_TYPE>(const CGObSortArray<TYPE, KEY_TYPE> & copy);
+		/**
+		* @brief No copy allowed.
+		*/
 		CGObSortArray<TYPE, KEY_TYPE> & operator=(const CGObSortArray<TYPE, KEY_TYPE> & other);
 };
 
@@ -578,7 +910,7 @@ size_t CGObSortArray<TYPE, KEY_TYPE>::FindKeyNear( KEY_TYPE key, int & iCompareR
 
 	while ( iLow <= iHigh )
 	{
-		i = (iHigh + iLow) / 2;
+		i = (iHigh + iLow) >> 1;
 		iCompareRes = CompareKey( key, STANDARD_CPLUSPLUS_THIS(GetAt(i)), fNoSpaces );
 		if ( iCompareRes == 0 )
 			break;
