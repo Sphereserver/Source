@@ -384,11 +384,10 @@ void CVarDefMap::Empty()
 void CVarDefMap::Copy( const CVarDefMap * pArray )
 {
 	ADDTOCALLSTACK("CVarDefMap::Copy");
-	if ( this == pArray )
+	if ( !pArray || pArray == this )
 		return;
 
 	Empty();
-
 	if ( pArray->GetCount() <= 0 )
 		return;
 
@@ -401,9 +400,10 @@ void CVarDefMap::Copy( const CVarDefMap * pArray )
 bool CVarDefMap::Compare( const CVarDefMap * pArray )
 {
 	ADDTOCALLSTACK("CVarDefMap::Compare");
-	if ( this == pArray )
+	if ( !pArray )
+		return false;
+	if ( pArray == this )
 		return true;
-
 	if ( pArray->GetCount() != GetCount() )
 		return false;
 
@@ -426,7 +426,9 @@ bool CVarDefMap::Compare( const CVarDefMap * pArray )
 bool CVarDefMap::CompareAll( const CVarDefMap * pArray )
 {
 	ADDTOCALLSTACK("CVarDefMap::Compare");
-	if ( this == pArray )
+	if ( !pArray )
+		return false;
+	if ( pArray == this )
 		return true;
 
 	if (pArray->GetCount())

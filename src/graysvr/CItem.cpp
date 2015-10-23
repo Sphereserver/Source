@@ -1144,26 +1144,30 @@ bool CItem::Stack( CItem * pItem )
 	//  true = the item got stacked. (it is gone)
 	//  false = the item will not stack. (do somethjing else with it)
 	// pItem is the item stacking on.
-	//
 
+	if ( !pItem )
+		return false;
 	if ( pItem == this )
-		return( true );
+		return true;
 	if ( !IsStackable(pItem) )
 		return false;
-
-	if (!m_TagDefs.Compare( &( pItem->m_TagDefs ) ))
-		return false ;
-
-	if (!m_BaseDefs.CompareAll(&(pItem->m_BaseDefs)))
+	if ( !m_TagDefs.Compare(&pItem->m_TagDefs) )
+		return false;
+	if ( !m_BaseDefs.CompareAll(&pItem->m_BaseDefs) )
 		return false;
 
 	// Lost newbie status.
-	if ( IsAttr( ATTR_NEWBIE ) != pItem->IsAttr( ATTR_NEWBIE )) return false;
-	else if ( IsAttr( ATTR_MOVE_NEVER ) != pItem->IsAttr( ATTR_MOVE_NEVER )) return false;
-	else if ( IsAttr( ATTR_STATIC ) != pItem->IsAttr( ATTR_STATIC )) return false;
-	else if ( IsAttr( ATTR_LOCKEDDOWN ) != pItem->IsAttr( ATTR_LOCKEDDOWN )) return false;
-	unsigned int amount = pItem->GetAmount() + GetAmount();
-	if (amount > pItem->GetMaxAmount())
+	if ( IsAttr(ATTR_NEWBIE) != pItem->IsAttr(ATTR_NEWBIE) )
+		return false;
+	if ( IsAttr(ATTR_MOVE_NEVER) != pItem->IsAttr(ATTR_MOVE_NEVER) )
+		return false;
+	if ( IsAttr(ATTR_STATIC) != pItem->IsAttr(ATTR_STATIC) )
+		return false;
+	if ( IsAttr(ATTR_LOCKEDDOWN) != pItem->IsAttr(ATTR_LOCKEDDOWN) )
+		return false;
+
+	WORD amount = pItem->GetAmount() + GetAmount();
+	if ( amount > pItem->GetMaxAmount() )
 	{
 		amount = pItem->GetMaxAmount() - pItem->GetAmount();
 		pItem->SetAmount(pItem->GetAmount() + amount);
@@ -1180,7 +1184,7 @@ bool CItem::Stack( CItem * pItem )
 		ResendTooltip();
 		pItem->Delete();
 	}
-	return( true );
+	return true;
 }
 
 INT64 CItem::GetDecayTime() const
@@ -4673,6 +4677,9 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 		case SPELL_Unlock:
 			{
+				if ( !pCharSrc )
+					return false;
+
 				int iDifficulty = Use_LockPick( pCharSrc, true, false );
 				if ( iDifficulty < 0 )
 					return( false );
@@ -4682,7 +4689,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			}
 
 		case SPELL_Mark:
-			if ( pCharSrc == NULL )
+			if ( !pCharSrc )
 				return false;
 
 			if ( ! pCharSrc->IsPriv(PRIV_GM))

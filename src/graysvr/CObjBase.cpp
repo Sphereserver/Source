@@ -366,37 +366,38 @@ void CObjBase::Emote(LPCTSTR pText, CClient * pClientExclude, bool fForcePossess
 	// "*You see NAME blah*" or "*You blah*"
 	// fPosessive = "*You see NAME's blah*" or "*Your blah*"
 
-	CObjBase * pObjTop = STATIC_CAST <CObjBase*>(GetTopLevelObj());
-	ASSERT(pObjTop);
+	CObjBase *pObjTop = static_cast<CObjBase*>(GetTopLevelObj());
+	if ( !pObjTop )
+		return;
 
 	TCHAR *pszThem = Str_GetTemp();
 	TCHAR *pszYou = Str_GetTemp();
 
-	if (pObjTop->IsChar())
+	if ( pObjTop->IsChar() )
 	{
 		// Someone has this equipped.
 
-		if (pObjTop != this)
+		if ( pObjTop != this )
 		{
-			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_1), static_cast<LPCTSTR>(pObjTop->GetName()), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
-			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_2), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
+			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_1), pObjTop->GetName(), GetName(), pText);
+			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_2), GetName(), pText);
 		}
-		else if (fForcePossessive)
+		else if ( fForcePossessive )
 		{
 			// ex. "You see joes poor shot ruin an arrow"
-			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_3), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
+			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_3), GetName(), pText);
 			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_4), pText);
 		}
 		else
 		{
-			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_5), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
+			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_5), GetName(), pText);
 			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_6), pText);
 		}
 	}
 	else
 	{
 		// Top level is an item. Article ?
-		sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_7), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
+		sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_7), GetName(), pText);
 		strcpy(pszYou, pszThem);
 	}
 
@@ -411,37 +412,37 @@ void CObjBase::Emote2(LPCTSTR pText, LPCTSTR pText1, CClient * pClientExclude, b
 	// "*You see NAME blah*" or "*You blah*"
 	// fPosessive = "*You see NAME's blah*" or "*Your blah*"
 
-	CObjBase * pObjTop = STATIC_CAST <CObjBase*>(GetTopLevelObj());
-	ASSERT(pObjTop);
+	CObjBase *pObjTop = static_cast<CObjBase*>(GetTopLevelObj());
+	if ( !pObjTop )
+		return;
 
 	TCHAR *pszThem = Str_GetTemp();
 	TCHAR *pszYou = Str_GetTemp();
 
-	if (pObjTop->IsChar())
+	if ( pObjTop->IsChar() )
 	{
 		// Someone has this equipped.
-
-		if (pObjTop != this)
+		if ( pObjTop != this )
 		{
-			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_1), static_cast<LPCTSTR>(pObjTop->GetName()), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText1));
-			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_2), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText));
+			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_1), pObjTop->GetName(), GetName(), pText1);
+			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_2), GetName(), pText);
 		}
-		else if (fForcePossessive)
+		else if ( fForcePossessive )
 		{
 			// ex. "You see joes poor shot ruin an arrow"
-			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_3), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText1));
+			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_3), GetName(), pText1);
 			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_4), pText);
 		}
 		else
 		{
-			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_5), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText1));
+			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_5), GetName(), pText1);
 			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_6), pText);
 		}
 	}
 	else
 	{
 		// Top level is an item. Article ?
-		sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_7), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pText1));
+		sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_7), GetName(), pText1);
 		strcpy(pszYou, pszThem);
 	}
 

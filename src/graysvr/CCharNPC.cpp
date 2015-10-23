@@ -618,7 +618,7 @@ LPCTSTR const CCharPlayer::sm_szVerbKeys[CPV_QTY+1] =
 bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc ) 
 {
 	ADDTOCALLSTACK("CChar::Player_OnVerb");
-	if ( !m_pPlayer )
+	if ( !m_pPlayer || !pSrc )
 		return false;
 
 	LPCTSTR pszKey = s.GetKey();

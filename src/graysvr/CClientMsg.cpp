@@ -311,7 +311,8 @@ void CClient::addRemoveAll( bool fItems, bool fChars )
 void CClient::addItem_OnGround( CItem * pItem ) // Send items (on ground)
 {
 	ADDTOCALLSTACK("CClient::addItem_OnGround");
-	ASSERT(pItem);
+	if ( !pItem )
+		return;
 	
 	if ( PacketItemWorldNew::CanSendTo(GetNetState()) )
 		new PacketItemWorldNew(this, pItem);
@@ -1062,7 +1063,8 @@ void CClient::addItemName( const CItem * pItem )
 {
 	ADDTOCALLSTACK("CClient::addItemName");
 	// NOTE: CanSee() has already been called.
-	ASSERT(pItem);
+	if ( !pItem )
+		return;
 
 	bool fIdentified = ( IsPriv(PRIV_GM) || pItem->IsAttr( ATTR_IDENTIFIED ));
 	LPCTSTR pszNameFull = pItem->GetNameFull( fIdentified );
@@ -1127,7 +1129,8 @@ void CClient::addItemName( const CItem * pItem )
 			case IT_SPAWN_ITEM:
 				{
 					CItemSpawn *pSpawn = static_cast<CItemSpawn*>(const_cast<CItem*>(pItem));
-					len += pSpawn->GetName( szName + len );
+					if ( pSpawn )
+						len += pSpawn->GetName(szName + len);
 				}
 				break;
 
@@ -1136,11 +1139,9 @@ void CClient::addItemName( const CItem * pItem )
 			case IT_ROCK:
 			case IT_WATER:
 				{
-				const CResourceDef * pResDef = g_Cfg.ResourceGetDef( pItem->m_itResource.m_rid_res );
-				if ( pResDef)
-				{
-					len += sprintf( szName+len, " (%s)", pResDef->GetName());
-				}
+					CResourceDef *pResDef = g_Cfg.ResourceGetDef(pItem->m_itResource.m_rid_res);
+					if ( pResDef )
+						len += sprintf(szName + len, " (%s)", pResDef->GetName());
 				}
 				break;
 
@@ -3772,7 +3773,7 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	if ( IsPriv(PRIV_JAILED) )
 		m_pChar->Jail(&g_Serv, true, static_cast<int>(GetAccount()->m_TagDefs.GetKeyNum("JailCell", true)));
 	if ( g_Serv.m_timeShutdown.IsTimeValid() )
-		addBark( g_Cfg.GetDefaultMsg( DEFMSG_MSG_SERV_SHUTDOWN_SOON ), NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM, FONT_BOLD);
+		addBarkParse(g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_SHUTDOWN_SOON), NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM, FONT_BOLD);
 
 	GetAccount()->m_TagDefs.DeleteKey("LastLogged");
 	Announce(true);		// announce you to the world

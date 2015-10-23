@@ -484,8 +484,6 @@ do_not_nt_service:
 			return -2;
 
 		ExtractPath(szPath);
-		_chdir(szPath);
-
 		g_Cfg.LoadIni(false);
 	}
 

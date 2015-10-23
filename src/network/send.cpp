@@ -2646,6 +2646,9 @@ PacketDisplayBook::PacketDisplayBook(const CClient* target, CItem* book) : Packe
 {
 	ADDTOCALLSTACK("PacketDisplayBook::PacketDisplayBook");
 
+	if ( !book )
+		return;
+
 	bool isWritable = false;
 	int pages = 0;
 	CGString title;
@@ -4264,6 +4267,9 @@ PacketLogoutAck::PacketLogoutAck(const CClient* target) : PacketSend(XCMD_Logout
 PacketDisplayBookNew::PacketDisplayBookNew(const CClient* target, CItem* book) : PacketSend(XCMD_AOSBookPage, 17, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketDisplayBookNew::PacketDisplayBookNew");
+
+	if ( !book )
+		return;
 
 	bool isWritable = false;
 	int pages = 0;

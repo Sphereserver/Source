@@ -1711,7 +1711,7 @@ bool CChar::CanSeeLOS_New( const CPointMap &ptDst, CPointMap *pptBlock, int iMax
 bool CChar::CanSeeLOS( const CObjBaseTemplate *pObj, WORD wFlags ) const
 {
 	ADDTOCALLSTACK("CChar::CanSeeLOS");
-	if ( !CanSee(pObj) )
+	if ( !pObj || !CanSee(pObj) )
 		return false;
 	pObj = pObj->GetTopLevelObj();
 	if ( (m_pPlayer && (g_Cfg.m_iAdvancedLos & ADVANCEDLOS_PLAYER)) || (m_pNPC && (g_Cfg.m_iAdvancedLos & ADVANCEDLOS_NPC)) )

@@ -760,6 +760,9 @@ void CChar::CreateNewCharCheck()
 bool CChar::DupeFrom( CChar * pChar, bool fNewbieItems )
 {
 	// CChar part
+	if ( !pChar )
+		return false;
+
 	m_pArea = pChar->m_pArea;
 	m_pRoom = pChar->m_pRoom;
 	m_StatFlag = pChar->m_StatFlag;

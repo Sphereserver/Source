@@ -266,10 +266,11 @@ bool CItemMulti::Multi_IsPartOf( const CItem * pItem ) const
 	// Assume it is in my area test already.
 	// IT_MULTI
 	// IT_SHIP
-	ASSERT( pItem );
+	if ( !pItem )
+		return false;
 	if ( pItem == this )
-		return( true );
-	return ( pItem->m_uidLink == GetUID());
+		return true;
+	return (pItem->m_uidLink == GetUID());
 }
 
 CItem * CItemMulti::Multi_FindItemComponent( int iComp ) const

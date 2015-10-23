@@ -905,25 +905,25 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 					z += ((wBlockThis & CAN_I_CLIMB) ? pDupeDef->GetHeight()/2 : pDupeDef->GetHeight());
 				}
 			}
+
+			if ( block.m_Bottom.m_z < z )
+			{
+				if ( (z < pt.m_z + PLAYER_HEIGHT) && (wBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER)) )
+				{
+					block.m_Bottom.m_dwBlockFlags = wBlockThis;
+					block.m_Bottom.m_dwTile = pItemDef->GetDispID() + TERRAIN_QTY;
+					block.m_Bottom.m_z = z;
+				}
+				else if ( block.m_Top.m_z > z )
+				{
+					block.m_Top.m_dwBlockFlags = wBlockThis;
+					block.m_Top.m_dwTile = pItemDef->GetDispID() + TERRAIN_QTY;
+					block.m_Top.m_z = z;
+				}
+			}
 		}
 		else if (pItem->GetDispID())
 			CItemBase::GetItemTiledataFlags(wBlockThis,pItem->GetDispID());
-
-		if (block.m_Bottom.m_z < z)
-		{
-			if ((z < pt.m_z+PLAYER_HEIGHT) && (wBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER)))
-			{
-				block.m_Bottom.m_dwBlockFlags = wBlockThis;
-				block.m_Bottom.m_dwTile = pItemDef->GetDispID() + TERRAIN_QTY;
-				block.m_Bottom.m_z = z;
-			}
-			else if (block.m_Top.m_z > z)
-			{
-				block.m_Top.m_dwBlockFlags = wBlockThis;
-				block.m_Top.m_dwTile = pItemDef->GetDispID() + TERRAIN_QTY;
-				block.m_Top.m_z = z;
-			}
-		}
 	}
 
 	wBlockThis = 0;

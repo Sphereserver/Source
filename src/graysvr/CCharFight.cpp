@@ -1173,20 +1173,9 @@ bool CChar::Memory_OnTick( CItemMemory * pMemory )
 void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 {
 	ADDTOCALLSTACK("CChar::OnNoticeCrime");
-	ASSERT(pCriminal);
-	if (pCriminal == this)
+	if ( !pCriminal || pCriminal == this || pCriminal == pCharMark || pCriminal->IsPriv(PRIV_GM) || pCriminal->GetNPCBrain() == NPCBRAIN_GUARD )
 		return;
-
-	if (pCriminal == pCharMark)
-		return;
-	
-	if ( pCriminal->GetNPCBrain() == NPCBRAIN_GUARD )
-		return;
-
-	if ( pCriminal->IsPriv(PRIV_GM) )
-		return;
-
-	if ( pCriminal->Noto_Criminal( this ) == true )
+	if ( pCriminal->Noto_Criminal(this) )
 		return;
 
 	// Make my owner criminal too (if I have one)
@@ -1276,19 +1265,12 @@ bool CChar::CheckCrimeSeen( SKILL_TYPE SkillToSee, CChar * pCharMark, const CObj
 
 
 		char *z = Str_GetTemp();
-		if ( pAction != NULL )
+		if ( pItem && pAction )
 		{
-			if ( pCharMark == NULL )
-			{
+			if ( !pCharMark )
 				sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_YOUNOTICE_1), GetName(), pAction, pItem->GetName());
-			}
 			else
-			{
-				sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_YOUNOTICE_2),
-					static_cast<LPCTSTR>(GetName()), pAction, fYour ? g_Cfg.GetDefaultMsg( DEFMSG_MSG_YOUNOTICE_YOUR ) : static_cast<LPCTSTR>(pCharMark->GetName()),
-					fYour ? "" : g_Cfg.GetDefaultMsg( DEFMSG_MSG_YOUNOTICE_S ),
-					static_cast<LPCTSTR>(pItem->GetName()));
-			}
+				sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_YOUNOTICE_2), GetName(), pAction, fYour ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_YOUNOTICE_YOUR) : pCharMark->GetName(), fYour ? "" : g_Cfg.GetDefaultMsg(DEFMSG_MSG_YOUNOTICE_S), pItem->GetName());
 			pChar->ObjMessage(z, this);
 		}
 

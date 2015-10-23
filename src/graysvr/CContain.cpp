@@ -1231,7 +1231,7 @@ void CItemContainer::SetKeyRing()
 bool CItemContainer::CanContainerHold( const CItem * pItem, const CChar * pCharMsg )
 {
 	ADDTOCALLSTACK("CItemContainer::CanContainerHold");
-	if ( pCharMsg == NULL )
+	if ( !pCharMsg || !pItem )
 		return( false );
 	if ( pCharMsg->IsPriv(PRIV_GM))	// a gm can doing anything.
 		return( true );
@@ -1450,7 +1450,8 @@ void CItemContainer::OnOpenEvent( CChar * pCharOpener, const CObjBaseTemplate * 
 	ADDTOCALLSTACK("CItemContainer::OnOpenEvent");
 	// The container is being opened. Explode ? etc ?
 
-	ASSERT(pCharOpener);
+	if ( !pCharOpener )
+		return;
 
 	if ( IsType(IT_EQ_BANK_BOX) ||
 		IsType(IT_EQ_VENDOR_BOX))

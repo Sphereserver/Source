@@ -769,7 +769,7 @@ void CListDefMap::Copy( const CListDefMap * pArray )
 {
 	ADDTOCALLSTACK("CListDefMap::Copy");
 
-	if ( this == pArray )
+	if ( !pArray || pArray == this )
 		return;
 
 	Empty();

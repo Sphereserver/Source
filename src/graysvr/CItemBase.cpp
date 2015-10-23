@@ -1747,7 +1747,8 @@ CItemBase * CItemBaseMulti::MakeMultiRegion( CItemBase * pBase, CScript & s ) //
 	// "MULTIREGION"
 	// We must transform this object into a CItemBaseMulti
 
-	ASSERT( pBase );
+	if ( !pBase )
+		return NULL;
 
 	if ( ! pBase->IsTypeMulti(pBase->GetType()) )
 	{

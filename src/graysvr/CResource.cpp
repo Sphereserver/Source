@@ -2025,33 +2025,31 @@ DWORD CResource::GetKRDialog(DWORD rid)
 const CGrayMulti * CResource::GetMultiItemDefs( CItem * pItem )
 {
 	ADDTOCALLSTACK("CResource::GetMultiItemDefs(CItem*)");
-	ASSERT(pItem != NULL);
-	CItemMultiCustom * pItemMulti = dynamic_cast<CItemMultiCustom*>( pItem );
-	if ( pItemMulti == NULL )	// multi.mul multi
-		return GetMultiItemDefs( pItem->GetDispID() );
-	else						// customised multi
-		return pItemMulti->GetMultiItemDefs();
+	if ( !pItem )
+		return NULL;
+
+	CItemMultiCustom *pItemMultiCustom = dynamic_cast<CItemMultiCustom*>(pItem);
+	if ( pItemMultiCustom )
+		return pItemMultiCustom->GetMultiItemDefs();	// customized multi
+
+	return GetMultiItemDefs(pItem->GetDispID());		// multi.mul multi
 }
 
 const CGrayMulti * CResource::GetMultiItemDefs( ITEMID_TYPE itemid )
 {
 	ADDTOCALLSTACK("CResource::GetMultiItemDefs(ITEMID_TYPE)");
-	if ( ! CItemBase::IsID_Multi(itemid))
-		return( NULL );
+	if ( !CItemBase::IsID_Multi(itemid) )
+		return NULL;
 
 	MULTI_TYPE id = static_cast<MULTI_TYPE>(itemid - ITEMID_MULTI);
-	size_t index = m_MultiDefs.FindKey( id );
+	size_t index = m_MultiDefs.FindKey(id);
 	if ( index == m_MultiDefs.BadIndex() )
-	{
-		index = m_MultiDefs.AddSortKey( new CGrayMulti( id ), id );
-	}
+		index = m_MultiDefs.AddSortKey(new CGrayMulti(id), id);
 	else
-	{
 		m_MultiDefs[index]->HitCacheTime();
-	}
-	const CGrayMulti * pMulti = m_MultiDefs[index];
-	ASSERT(pMulti);
-	return( pMulti );
+
+	const CGrayMulti *pMulti = m_MultiDefs[index];
+	return pMulti;
 }
 
 PLEVEL_TYPE CResource::GetPrivCommandLevel( LPCTSTR pszCmd ) const

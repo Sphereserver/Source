@@ -2309,8 +2309,7 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 	ADDTOCALLSTACK("CClient::Event_AOSPopupMenuRequest");
 	CGrayUID uObj = uid;
 	CChar *pChar = uObj.CharFind();
-
-	if ( !CanSee(uObj.ObjFind()) || m_pChar->IsStatFlag(STATF_DEAD))
+	if ( !pChar || m_pChar->IsStatFlag(STATF_DEAD) || !CanSee(uObj.ObjFind()) )
 		return;
 
 	if (!IsSetOF(OF_NoContextMenuLOS))
@@ -2504,6 +2503,8 @@ void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do somethin
 		return;
 
 	CChar *pChar = uObj.CharFind();
+	if ( !pChar )
+		return;
 
 	if ( pChar->m_pNPC )
 	{
