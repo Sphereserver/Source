@@ -3347,18 +3347,110 @@ public:
 
 private:
 	// Noto/Karma stuff. --------------------------------
+
+	/**
+	* @brief Update Karma with the given values.
+	*
+	* Used to increase/decrease Karma values, checks if you can have the resultant values,
+	* fire @KarmaChange trigger and show a message as result of the change (if procceed).
+	* Can't never be greater than g_Cfg.m_iMaxKarma or lower than g_Cfg.m_iMinKarma or iBottom.
+	* @param iKarma Amount of karma to change, can be possitive and negative.
+	* @param iBottom is the lower value you can have for this execution.
+	* @param bMessage show message to the char or not.
+	*/
 	void Noto_Karma( int iKarma, int iBottom=INT_MIN, bool bMessage = false );
+
+	/**
+	* @brief Update Fame with the given value.
+	*
+	* Used to increase/decrease Fame, it fires @FameChange trigger.
+	* Can't never exceed g_Cfg.m_iMaxFame and can't never be lower than 0.
+	* @param iFameChange is the amount of fame to change over the current one.
+	*/
 	void Noto_Fame( int iFameChange );
+
+	/**
+	* @brief I have a new notoriety Level? check it and show a message if so.
+	*
+	* @param iPriv The 'new' notoriety level, it will be checked against the current level to see if it changed.
+	*/
 	void Noto_ChangeNewMsg( int iPrv );
+
+	/**
+	* @brief I've become murderer or criminal, let's see a message for it.
+	*
+	* MSG_NOTO_CHANGE_0-8 contains the strings 'you have gained a bit/a lot/etc of', so the given iDelta is used to check wether of these MSG should be used.
+	* @param iDelta Amount of Karma/Fame changed.
+	* @param pszType String containing 'Karma' or 'Fame' to pass as argument to the given text.
+	*/
 	void Noto_ChangeDeltaMsg( int iDelta, LPCTSTR pszType );
 
 public:
+	// Notoriety code
+
+	/**
+	* @brief Returns what is this char to the viewer.
+	*
+	* This allows the noto attack check in the client.
+	* Notoriety handler using std::vector, it's saved and readed here but calcs are being made in Noto_CalcFlag().
+	* Actually 2 values are stored in this vectored list: Notoriety (the notoriety level) and Color (the color we are showing in the HP bar and in our character for the viewer).
+	* Calls @NotoSend trigger with src = pChar, argn1 = notoriety level, argn2 = color to send.
+	* @param pChar is the CChar that needs to know what I am (good, evil, criminal, neutral...) to him.
+	* @param fIncog if set to true (usually because of Incognito spell), this character will be gray for the viever (pChar).
+	* @param fInvul if set to true invulnerable characters will return NOTO_INVUL (yellow bar, etc).
+	* @param bGetColor if set to true only the color will be returned and not the notoriety (note that they can differ if set to so in the @NotoSend trigger).
+	* @return NOTO_TYPE notoriety level.
+	*/
 	NOTO_TYPE Noto_GetFlag( const CChar * pChar, bool fIncog = false, bool fInvul = false, bool bGetColor = false ) const;
+
+	/**
+	* @brief Notoriety calculations
+	*
+	* TAG.OVERRIDE.NOTO will override everything and use the value in the tag for everyone, regardless of what I really are for them.
+	* If this char is a pet, check if notoriety must be inherited from it's master or do regular checks for it.
+	* @param pChar is the CChar that needs to know what I am (good, evil, criminal, neutral...) to him.
+	* @param fIncog if set to true (usually because of Incognito spell), this character will be gray for the viever (pChar).
+	* @param fInvul if set to true invulnerable characters will return NOTO_INVUL (yellow bar, etc).
+	* @return NOTO_TYPE notoriety level.
+	*/
 	NOTO_TYPE Noto_CalcFlag( const CChar * pChar, bool fIncog = false, bool fInvul = false ) const;
+
+	/**
+	* @brief What color should the viewer see from me?
+	*
+	* Used to retrieve color for character and corpse's names.
+	* @param pChar is the CChar that needs to know what I am (good, evil, criminal, neutral...) to him.
+	* @param fIncog if set to true (usually because of Incognito spell), this character will be gray for the viever (pChar).
+	* @return HUE_TYPE my color.
+	*/
 	HUE_TYPE Noto_GetHue( const CChar * pChar, bool fIncog = false ) const;
+
+	/**
+	* @brief I'm neutral?
+	*
+	* @return true if I am.
+	*/
+
 	bool Noto_IsNeutral() const;
+	/**
+	* @brief I'm murderer?
+	*
+	* @return true if I am.
+	*/
 	bool Noto_IsMurderer() const;
+
+	/**
+	* @brief I'm evil?
+	*
+	* @return true if I am.
+	*/
+
 	bool Noto_IsEvil() const;
+	/**
+	* @brief I'm a criminal?
+	*
+	* @return true if I am.
+	*/
 	bool Noto_IsCriminal() const
 	{
 		// do the guards hate me ?
@@ -3366,34 +3458,147 @@ public:
 			return( true );
 		return Noto_IsEvil();
 	}
+
+	/**
+	* @brief Notoriety level for this character.
+	*
+	* checks my position on g_Cfg.m_NotoFameLevels or g_Cfg.m_NotoKarmaLevels.
+	* @return notoriety level.
+	*/
 	int Noto_GetLevel() const;
+
+	/**
+	* @brief // Lord, StatfLevel ... used for Noto_GetTitle.
+	*
+	* @return string with the title.
+	*/
 	LPCTSTR Noto_GetFameTitle() const;
+
+	/**
+	* @brief Paperdoll title for character.
+	*
+	* This checks for <tag.name.prefix> <nototitle> <name> <tag.name.suffix> and the sex to send the correct text to the paperdoll.
+	* @return string with the title.
+	*/
 	LPCTSTR Noto_GetTitle() const;
 
-	void Noto_Kill(CChar * pKill, bool fPetKill = false, int iTotalKillers = 0);
+	/**
+	* @brief I killed someone, should I have credits? and penalties?
+	*
+	* Here fires the @MurderMark trigger, also gives exp if level system is enabled to give exp on killing.
+	* @param pKill, the chara I killed (or participated to kill).
+	* @param bPetKill when true the code will stop before giving fame and karma.
+	* @param iTotalKillers how many characters participated in this kill.
+	*/
+	void Noto_Kill(CChar * pKill, bool bPetKill = false, int iTotalKillers = 0);
+
+	/**
+	* @brief I'm becoming criminal.
+	*
+	* The @Criminal trigger is fired here.
+	* @param pChar: on who I performed criminal actions or saw me commiting a crime and flagged me as criminal.
+	* @return true if I really became a criminal.
+	*/
 	bool Noto_Criminal( CChar * pChar = NULL);
+
+	/**
+	* @brief I am a murderer (it seems) (update my murder decay item).
+	*
+	*/
 	void Noto_Murder();
-	int NotoSave() { return static_cast<int>(m_notoSaves.size()); }
+
+	/**
+	* @brief How much notoriety values do I have stored?
+	*
+	* @return amount of characters stored.
+	*/
+	int NotoSave();
+
+	/**
+	* @brief Adding someone to my notoriety list.
+	*
+	* @param pChar is retrieving my notoriety, I'm going to store what I have to send him on my list.
+	* @param value is the notoriety value I have for him
+	* @param color (if specified) is the color override sent in packets.
+	*/
 	void NotoSave_Add( CChar * pChar, NOTO_TYPE value, NOTO_TYPE color = NOTO_INVALID );
+
+	/**
+	* @brief Retrieving the stored notoriety for this list's entry.
+	*
+	* @param id is the entry we want to recover.
+	* @param bGetColor if true will retrieve the Color and not the Noto value.
+	* @return Value of Notoriety (or color)
+	*/
 	NOTO_TYPE NotoSave_GetValue( int id, bool bGetColor = false );
+
+	/**
+	* @brief Gets how much time this notoriety was stored.
+	*
+	* @param id the entry on the list.
+	* @return time in seconds.
+	*/
 	INT64 NotoSave_GetTime( int id );
-	void NotoSave_SetValue( CChar * pChar, NOTO_TYPE value );
-	void NotoSave_SetValue( int pChar, NOTO_TYPE value);
+
+	/**
+	* @brief Clearing all notoriety data
+	*/
 	void NotoSave_Clear();
+
+	/**
+	* @brief Clearing notoriety and update myself so everyone checks my noto again.
+	*/
 	void NotoSave_Update();
+
+	/**
+	* @brief Deleting myself and sending data again for given char.
+	*
+	* @param id, entry of the viewer.
+	*/
 	void NotoSave_Resend( int id );
+
+	/**
+	* @brief Gets the entry list of the given CChar.
+	*
+	* @param pChar, CChar to retrieve the entry number for.
+	* @return the entry number.
+	*/
 	int NotoSave_GetID( CChar * pChar );
-	int NotoSave_GetID( CGrayUID pChar );
-	CChar * NotoSave_GetUID( int index );
+
+	/**
+	* @brief Removing stored data for pChar.
+	*
+	* @param pChar, the CChar I want to remove from my list.
+	* @return true if successfully removed it.
+	*/
 	bool NotoSave_Delete( CChar * pChar );
+
+	/**
+	* @brief Removing expired notorieties.
+	*/
 	void NotoSave_CheckTimeout();
 
+	/**
+	* @brief We are snooping or stealing, is taking this item a crime ?
+	*
+	* @param pItem the item we are acting to.
+	* @param ppCharMark = The character we are offending.
+	* @return false = no crime.
+	*/
 	bool IsTakeCrime( const CItem * pItem, CChar ** ppCharMark = NULL ) const;
 
+	
+	/**
+	* @brief We killed a character, starting exp calcs
+	*
+	* Main function for default Level system.
+	* Triggers @ExpChange and @LevelChange if needed
+	* @param delta, amount of exp gaining (or losing?)
+	* @param ppCharDead from who we gained the experience.
+	*/
 	void ChangeExperience(int delta = 0, CChar *pCharDead = NULL);
 	int GetSkillTotal(int what = 0, bool how = true);
 
-public:
 	// skills and actions. -------------------------------------------
 	static bool IsSkillBase( SKILL_TYPE skill );
 	static bool IsSkillNPC( SKILL_TYPE skill );

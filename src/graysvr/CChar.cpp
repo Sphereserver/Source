@@ -4005,7 +4005,6 @@ unsigned int Calc_ExpGet_Level(unsigned int exp)
 	return level;
 }
 
-// We killed a character, starting exp calcs
 void CChar::ChangeExperience(int delta, CChar *pCharDead)
 {
 	ADDTOCALLSTACK("CChar::ChangeExperience");

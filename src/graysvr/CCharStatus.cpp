@@ -2082,11 +2082,6 @@ bool CChar::CanMove( CItem *pItem, bool fMsg ) const
 bool CChar::IsTakeCrime( const CItem *pItem, CChar ** ppCharMark ) const
 {
 	ADDTOCALLSTACK("CChar::IsTakeCrime");
-	// We are snooping or stealing.
-	// Is taking this item a crime ?
-	// RETURN:
-	//  ppCharMark = The character we are offending.
-	//  false = no crime.
 
 	if ( IsPriv(PRIV_GM | PRIV_ALLMOVE) )
 		return false;

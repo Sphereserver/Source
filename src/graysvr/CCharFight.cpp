@@ -156,7 +156,6 @@ bool CChar::Noto_IsEvil() const
 	return ( iKarma <= -3000 );
 }
 
-// I'm Neutral?
 bool CChar::Noto_IsNeutral() const
 {
 	ADDTOCALLSTACK("CChar::Noto_IsNeutral");
@@ -179,10 +178,6 @@ bool CChar::Noto_IsNeutral() const
 	return( iKarma<0 );
 }
 
-// What is this char to the viewer ?
-// This allows the noto attack check in the client.
-// Notoriety handler, it's saved and readed here but calculated on Noto_CalcFlag()
-// NOTO_GOOD = it is criminal to attack me.
 NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool fAllowInvul, bool bOnlyColor ) const
 {
 	ADDTOCALLSTACK("CChar::Noto_GetFlag");
@@ -222,7 +217,6 @@ NotoReturn:
 		return Noto;
 }
 
-// Calculate notoriety, just retrieving it ... not storing.
 NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, bool fAllowInvul ) const
 {
 	ADDTOCALLSTACK("CChar::Noto_CalcFlag");
@@ -327,8 +321,6 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 	return( NOTO_GOOD );
 }
 
-// What is this char to the viewer ?
-// Represent as a text Hue.
 HUE_TYPE CChar::Noto_GetHue( const CChar * pCharViewer, bool fIncog ) const
 {
 	ADDTOCALLSTACK("CChar::Noto_GetHue");
@@ -350,7 +342,7 @@ HUE_TYPE CChar::Noto_GetHue( const CChar * pCharViewer, bool fIncog ) const
 	}
 }
 
-// Lord, StatfLevel ...
+
 LPCTSTR CChar::Noto_GetFameTitle() const
 {
 	ADDTOCALLSTACK("CChar::Noto_GetFameTitle");
@@ -389,8 +381,6 @@ LPCTSTR CChar::Noto_GetFameTitle() const
 	return "";
 }
 
-// Paperdoll title for character
-// This is so we can inform user of change in title !
 int CChar::Noto_GetLevel() const
 {
 	ADDTOCALLSTACK("CChar::Noto_GetLevel");
@@ -408,7 +398,6 @@ int CChar::Noto_GetLevel() const
 	return( ( i * (g_Cfg.m_NotoFameLevels.GetCount() + 1) ) + j );
 }
 
-// Paperdoll title for character
 LPCTSTR CChar::Noto_GetTitle() const
 {
 	ADDTOCALLSTACK("CChar::Noto_GetTitle");
@@ -430,7 +419,6 @@ LPCTSTR CChar::Noto_GetTitle() const
 	return pTemp;
 }
 
-// I am a murderer (it seems) (update my murder decay item)
 void CChar::Noto_Murder()
 {
 	ADDTOCALLSTACK("CChar::Noto_Murder");
@@ -441,7 +429,6 @@ void CChar::Noto_Murder()
 		Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Murders, 0, g_Cfg.m_iMurderDecayTime, NULL);
 }
 
-// I am a criminal and the guards will be on my ass.
 bool CChar::Noto_Criminal( CChar * pChar )
 {
 	ADDTOCALLSTACK("CChar::Noto_Criminal");
@@ -466,7 +453,6 @@ bool CChar::Noto_Criminal( CChar * pChar )
 	return true;
 }
 
-// I've become murderer or criminal, let's see a message for it
 void CChar::Noto_ChangeDeltaMsg( int iDelta, LPCTSTR pszType )
 {
 	ADDTOCALLSTACK("CChar::Noto_ChangeDeltaMsg");
@@ -498,7 +484,6 @@ void CChar::Noto_ChangeDeltaMsg( int iDelta, LPCTSTR pszType )
 	SysMessage( pszMsg );
 }
 
-// I have a new notoriety Level? check it and show a message if so
 void CChar::Noto_ChangeNewMsg( int iPrvLevel )
 {
 	ADDTOCALLSTACK("CChar::Noto_ChangeNewMsg");
@@ -509,8 +494,6 @@ void CChar::Noto_ChangeNewMsg( int iPrvLevel )
 	}
 }
 
-// My fame changed, fire @FameChange and set new value
-// Fame should only go down on death, time or cowardice ?
 void CChar::Noto_Fame( int iFameChange )
 {
 	ADDTOCALLSTACK("CChar::Noto_Fame");
@@ -548,10 +531,6 @@ void CChar::Noto_Fame( int iFameChange )
 	Stat_SetBase(STAT_FAME, static_cast<short>(iFame));
 }
 
-// iBottom is a variable where you control at what point
-// the loss for this action stop (as in stealing shouldnt
-// take you to dread ). iBottom def. to g_Cfg.m_iMinKarma if you leave
-// it out.
 void CChar::Noto_Karma( int iKarmaChange, int iBottom, bool bMessage )
 {
 	ADDTOCALLSTACK("CChar::Noto_Karma");
@@ -598,8 +577,6 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom, bool bMessage )
 
 extern unsigned int Calc_ExpGet_Exp(unsigned int);
 
-// I participated in killing pKill CChar. (called from Death())
-// I Get some fame/karma. (maybe)
 void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iTotalKillers)
 {
 	ADDTOCALLSTACK("CChar::Noto_Kill");
@@ -693,9 +670,11 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iTotalKillers)
 	Noto_ChangeNewMsg(iPrvLevel);	// inform any title changes
 }
 
-// pChar is retrieving my notoriety, I'm going to store what I have to send him on my list.
-// value is the notoriety value I have for him
-// color (if specified) is the color override sent in packets.
+int CChar::NotoSave() 
+{ 
+	ADDTOCALLSTACK("CChar::NotoSave");
+	return static_cast<int>(m_notoSaves.size());
+}
 void CChar::NotoSave_Add( CChar * pChar, NOTO_TYPE value, NOTO_TYPE color  )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_Add");
@@ -726,8 +705,6 @@ void CChar::NotoSave_Add( CChar * pChar, NOTO_TYPE value, NOTO_TYPE color  )
 	m_notoSaves.push_back(refNoto);
 }
 
-// Retrieves the stored notoriety this character has for selected ID player
-// bGetcolor retrieves only color value (for movement packets updating it)
 NOTO_TYPE CChar::NotoSave_GetValue( int id, bool bGetColor )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_GetValue");
@@ -744,7 +721,6 @@ NOTO_TYPE CChar::NotoSave_GetValue( int id, bool bGetColor )
 		return refNotoSave.value;
 }
 
-// Retrieves how much time the value nID for this char has
 INT64 CChar::NotoSave_GetTime( int id )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_GetTime");
@@ -758,36 +734,6 @@ INT64 CChar::NotoSave_GetTime( int id )
 	return refNotoSave.time;
 }
 
-// A notoriety value for pChar was calculated, storing it.
-void CChar::NotoSave_SetValue( CChar * pChar, NOTO_TYPE value )
-{
-	ADDTOCALLSTACK("CChar::NotoSave_SetValue(CChar)");
-	if ( !m_notoSaves.size() )
-		return;
-	if ( ! pChar )
-		return;
-	int id = NotoSave_GetID(pChar);
-	if ( id < 0 )
-		return;
-	NotoSaves & refNotoSave = m_notoSaves.at( id );
-	refNotoSave.value = value;
-}
-
-// A notoriety value for nID char was calculated, storing it.
-void CChar::NotoSave_SetValue( int pChar, NOTO_TYPE value)
-{
-	ADDTOCALLSTACK("CChar::NotoSave_SetValue(int)");
-	if ( !m_notoSaves.size() )
-		return;
-	if ( !pChar )
-		return;
-	if ( static_cast<int>(m_notoSaves.size()) <= pChar )
-		return;
-	NotoSaves & refNotoSave = m_notoSaves.at( pChar );
-	refNotoSave.value = value;
-}
-
-// Clearing all notoriety data
 void CChar::NotoSave_Clear()
 {
 	ADDTOCALLSTACK("CChar::NotoSave_Clear");
@@ -795,7 +741,6 @@ void CChar::NotoSave_Clear()
 		m_notoSaves.clear();
 }
 
-// Clearing notoriety and update myself so everyone checks my noto again.
 void CChar::NotoSave_Update()
 {
 	ADDTOCALLSTACK("CChar::NotoSave_Update");
@@ -804,7 +749,6 @@ void CChar::NotoSave_Update()
 	ResendTooltip();
 }
 
-// called from CChar::OnTick() to update the timers and refresh the list when expired.
 void CChar::NotoSave_CheckTimeout()
 {
 	ADDTOCALLSTACK("CChar::NotoSave_CheckTimeout");
@@ -827,7 +771,6 @@ void CChar::NotoSave_CheckTimeout()
 	}
 }
 
-// Deleting myself and sending data again for given char
 void CChar::NotoSave_Resend( int id )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_Resend()");
@@ -847,7 +790,6 @@ void CChar::NotoSave_Resend( int id )
 		Noto_GetFlag( pChar, true , true );
 }
 
-// Retrieving the nID on the list for the given CChar
 int CChar::NotoSave_GetID( CChar * pChar )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_GetID(CChar)");
@@ -870,43 +812,6 @@ int CChar::NotoSave_GetID( CChar * pChar )
 	return -1;
 }
 
-// Retrieving the nID on the list for the given uid. Mostly a direct call from <attacker.getid <uid>> (script access).
-int CChar::NotoSave_GetID( CGrayUID pChar )
-{
-	ADDTOCALLSTACK("CChar::NotoSave_GetID(CGrayUID)");
-	if ( !m_notoSaves.size() )
-		return -1;
-	int count = 0;
-	if ( NotoSave() )
-	{
-		for ( std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); it++)
-		{
-			NotoSaves & refNotoSave = m_notoSaves.at(count);
-			CGrayUID uid = refNotoSave.charUID;
-			if ( uid.CharFind() && uid == pChar )
-			{
-				return count;
-			}
-			count++;
-		}
-	}
-	return -1;
-}
-
-// Get uid from 'index'
-CChar * CChar::NotoSave_GetUID( int index )
-{
-	ADDTOCALLSTACK("CChar::NotoSave_GetUID");
-	if ( !m_notoSaves.size() )
-		return NULL;
-	if ( static_cast<int>(m_notoSaves.size()) <= index )
-		return NULL;
-	NotoSaves & refNotoSave = m_notoSaves.at(index);
-	CChar * pChar = static_cast<CChar*>( static_cast<CGrayUID>( refNotoSave.charUID ).CharFind() );
-	return pChar;
-}
-
-//Remove data from pChar
 bool CChar::NotoSave_Delete( CChar * pChar )
 {		
 	ADDTOCALLSTACK("CChar::NotoSave_Delete");
@@ -929,6 +834,7 @@ bool CChar::NotoSave_Delete( CChar * pChar )
 	}
 	return false;
 }
+
 //***************************************************************
 // Memory this char has about something in the world.
 
