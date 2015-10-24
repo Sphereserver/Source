@@ -13,6 +13,7 @@ CItemBase::CItemBase( ITEMID_TYPE id ) :
 	SetDefNum("RANGE",1); //m_range = 1;
 	m_type = IT_NORMAL;
 	m_layer = LAYER_NONE;
+	m_CanUse = 0;
 
 	// Just applies to equippable weapons/armor.
 	m_ttNormal.m_tData1 = 0;

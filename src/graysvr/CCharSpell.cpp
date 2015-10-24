@@ -2944,7 +2944,7 @@ int CChar::Spell_CastStart()
 	CScriptTriggerArgs Args(static_cast<int>(m_atMagery.m_Spell), iDifficulty, pItem);
 	Args.m_iN3 = iWaitTime;
 	Args.m_VarsLocal.SetNum("WOP",fWOP);
-	Args.m_VarsLocal.SetNum("WOPColor", g_Cfg.m_iWordsOfPowerColor, true);
+	Args.m_VarsLocal.SetNum("WOPColor", m_pNPC ? m_pNPC->m_SpeechHue : g_Cfg.m_iWordsOfPowerColor, true);
 	Args.m_VarsLocal.SetNum("WOPFont", g_Cfg.m_iWordsOfPowerFont, true);
 
 	if ( IsTrigUsed(TRIGGER_SPELLCAST) )
@@ -2991,7 +2991,7 @@ int CChar::Spell_CastStart()
 
 		if ( pSpellDef->m_sRunes[0] == '.' )
 		{
-			Speak((pSpellDef->m_sRunes.GetPtr()) + 1);
+			Speak((pSpellDef->m_sRunes.GetPtr()) + 1, static_cast<HUE_TYPE>(WOPColor), TALKMODE_SPELL, static_cast<FONT_TYPE>(WOPFont));
 		}
 		else
 		{
@@ -3010,7 +3010,7 @@ int CChar::Spell_CastStart()
 			if ( i > 0 )
 			{
 				pszTemp[len] = 0;
-				Speak(pszTemp, static_cast<HUE_TYPE>(WOPColor), TALKMODE_SAY, static_cast<FONT_TYPE>(WOPFont));
+				Speak(pszTemp, static_cast<HUE_TYPE>(WOPColor), TALKMODE_SPELL, static_cast<FONT_TYPE>(WOPFont));
 			}
 		}
 	}
