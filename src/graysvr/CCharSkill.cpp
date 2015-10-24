@@ -1328,58 +1328,60 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 	// RETURN:
 	//   true = success.
 
-	if ( LayerFind( LAYER_DRAGGING ) )
-		ItemBounce(LayerFind( LAYER_DRAGGING));
 	if ( id <= 0 )
-		return( true );
+		return true;
 
-	CItemBase * pItemDef = CItemBase::FindItemBase( id );
-	if ( pItemDef == NULL )
-		return( false );
+	CItem *pItemDragging = LayerFind(LAYER_DRAGGING);
+	if ( pItemDragging )
+		ItemBounce(pItemDragging);
 
-	CItem * pItemTarg = uidTarg.ItemFind();
+	CItemBase *pItemDef = CItemBase::FindItemBase(id);
+	if ( !pItemDef )
+		return false;
+
+	CItem *pItemTarg = uidTarg.ItemFind();
 	if ( pItemTarg && stage == SKTRIG_SELECT )
 	{
-		if ( pItemDef->m_SkillMake.ContainsResourceMatch( pItemTarg ) == false && pItemDef->m_BaseResources.ContainsResourceMatch( pItemTarg ) == false )
-			return( false );
+		if ( !pItemDef->m_SkillMake.ContainsResourceMatch(pItemTarg) && !pItemDef->m_BaseResources.ContainsResourceMatch(pItemTarg) )
+			return false;
 	}
 
-	if ( !SkillResourceTest( &(pItemDef->m_SkillMake) ) )
-		return( false );
+	if ( !SkillResourceTest(&(pItemDef->m_SkillMake)) )
+		return false;
 	if ( fSkillOnly )
-		return( true );
+		return true;
 
-	iReplicationQty = ResourceConsume( &(pItemDef->m_BaseResources), iReplicationQty, stage != SKTRIG_SUCCESS, pItemDef->GetResourceID().GetResIndex() );
+	iReplicationQty = ResourceConsume(&(pItemDef->m_BaseResources), iReplicationQty, stage != SKTRIG_SUCCESS, pItemDef->GetResourceID().GetResIndex());
 	if ( !iReplicationQty )
-		return( false );
+		return false;
 
 	// Test or consume the needed resources.
 	if ( stage == SKTRIG_FAIL )
 	{
 		// If fail only consume part of them.
 		int iConsumePercent = -1;
-		size_t i = pItemDef->m_SkillMake.FindResourceType( RES_SKILL );
+		size_t i = pItemDef->m_SkillMake.FindResourceType(RES_SKILL);
 		if ( i != pItemDef->m_SkillMake.BadIndex() )
 		{
-			const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(static_cast<SKILL_TYPE>(pItemDef->m_SkillMake[i].GetResIndex()));
-			if ( pSkillDef != NULL && pSkillDef->m_Effect.m_aiValues.GetCount() > 0 )
+			const CSkillDef *pSkillDef = g_Cfg.GetSkillDef(static_cast<SKILL_TYPE>(pItemDef->m_SkillMake[i].GetResIndex()));
+			if ( pSkillDef && pSkillDef->m_Effect.m_aiValues.GetCount() > 0 )
 				iConsumePercent = pSkillDef->m_Effect.GetRandom();
 		}
 
 		if ( iConsumePercent < 0 )
-			iConsumePercent = Calc_GetRandVal( 50 );
+			iConsumePercent = Calc_GetRandVal(50);
 
-		ResourceConsumePart( &(pItemDef->m_BaseResources), iReplicationQty, iConsumePercent, false, pItemDef->GetResourceID().GetResIndex() );
-		return( false );
+		ResourceConsumePart(&(pItemDef->m_BaseResources), iReplicationQty, iConsumePercent, false, pItemDef->GetResourceID().GetResIndex());
+		return false;
 	}
 
 	if ( stage == SKTRIG_START )
 	{
 		// Start the skill.
 		// Find the primary skill required.
-		size_t i = pItemDef->m_SkillMake.FindResourceType( RES_SKILL );
+		size_t i = pItemDef->m_SkillMake.FindResourceType(RES_SKILL);
 		if ( i == pItemDef->m_SkillMake.BadIndex() )
-			return( false );
+			return false;
 
 		m_Act_Targ = uidTarg;	// targetted item to start the make process
 		m_atCreate.m_ItemID = id;
@@ -1392,10 +1394,10 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 	if ( stage == SKTRIG_SUCCESS )
 	{
 		m_atCreate.m_Amount = static_cast<WORD>(iReplicationQty); // how much resources we really consumed
-		return( Skill_MakeItem_Success() );
+		return Skill_MakeItem_Success();
 	}
 
-	return( true );
+	return true;
 }
 
 int CChar::Skill_NaturalResource_Setup( CItem * pResBit )
@@ -1699,11 +1701,11 @@ int CChar::Skill_Tracking( SKTRIG_TYPE stage )
 
 	if ( stage == SKTRIG_STROKE )
 	{
-		if ( Skill_Stroke( false ) == UINT_MAX)
+		if ( Skill_Stroke(false) == -SKTRIG_ABORT )
 			return( -SKTRIG_ABORT );
 
 		int iSkillLevel = Skill_GetAdjusted(SKILL_TRACKING);
-		if ( g_Cfg.m_iFeatureML & FEATURE_ML_RACIAL_BONUS && IsHuman() )
+		if ( (g_Cfg.m_iFeatureML & FEATURE_ML_RACIAL_BONUS) && IsHuman() )
 			iSkillLevel = maximum( iSkillLevel, 200 );			// humans always have a 20.0 minimum skill (racial traits)
 
 		if ( !Skill_Tracking( m_Act_Targ, m_atTracking.m_PrvDir, iSkillLevel/10 + 10 ))

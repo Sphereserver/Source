@@ -1023,11 +1023,12 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 	else
 		pSpellDef = g_Cfg.GetSpellDef(iSpell);
 
+	if ( !pSpellDef )
+		return false;
+
 	// Do we have the regs? Etc.
 	if ( !m_pChar->Spell_CanCast(iSpell, true, pSrc, true) )
 		return false;
-
-	ASSERT(pSpellDef);
 
 	SetTargMode();
 	m_tmSkillMagery.m_Spell		= iSpell;				// m_atMagery.m_Spell
@@ -1371,9 +1372,10 @@ bool CClient::Cmd_SecureTrade( CChar * pChar, CItem * pItem )
 {
 	ADDTOCALLSTACK("CClient::Cmd_SecureTrade");
 	// Begin secure trading with a char. (Make the initial offer)
-	ASSERT(m_pChar);
+	if ( !pChar )
+		return false;
 
-	if ( pChar && pItem && (IsTrigUsed(TRIGGER_DROPON_CHAR) || IsTrigUsed(TRIGGER_ITEMDROPON_CHAR)) )
+	if ( pItem && (IsTrigUsed(TRIGGER_DROPON_CHAR) || IsTrigUsed(TRIGGER_ITEMDROPON_CHAR)) )
 	{
 		CScriptTriggerArgs Args(pChar);
 		if ( pItem->OnTrigger( ITRIG_DROPON_CHAR, m_pChar, &Args ) == TRIGRET_RET_TRUE )
