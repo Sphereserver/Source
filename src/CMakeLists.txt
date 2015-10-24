@@ -61,9 +61,6 @@ graysvr/CWorldImport.cpp
 graysvr/CWorldMap.cpp
 graysvr/graysvr.cpp
 graysvr/graysvr.h
-graysvr/GraySvr.rc
-graysvr/PingServer.cpp
-graysvr/PingServer.h
 graysvr/resource.h
 )
 source_group(Game FILES ${game_SRCS})
@@ -154,6 +151,8 @@ network/receive.cpp
 network/receive.h
 network/send.cpp
 network/send.h
+graysvr/PingServer.cpp
+graysvr/PingServer.h
 )
 source_group(Network FILES ${network_SRCS})
 
@@ -177,6 +176,7 @@ graysvr/ntservice.h
 graysvr/ntwindow.cpp
 graysvr/UnixTerminal.cpp
 graysvr/UnixTerminal.h
+graysvr/GraySvr.rc
 )
 source_group(Sphere FILES ${sphere_SRCS})
  
@@ -408,10 +408,21 @@ IF(WIN32)
 			# -O3 only works on gcc, using -Ox for 'full optimization' instead.
 			COMPILE_FLAGS -Ox	
 	)
+	set_target_properties(spheresvrNightly 
+		PROPERTIES 
+			# Setting the exe to be a windows application and not a console one.
+			LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS"
+			# -O3 only works on gcc, using -Ox for 'full optimization' instead.
+			COMPILE_FLAGS -Ox	
+	)
 	
 	# Windows libs.
-	TARGET_LINK_LIBRARIES (
-		spheresvr
+	TARGET_LINK_LIBRARIES ( spheresvr
+		libmysql
+		ws2_32
+		wsock32
+	)
+	TARGET_LINK_LIBRARIES ( spheresvrNightly
 		libmysql
 		ws2_32
 		wsock32

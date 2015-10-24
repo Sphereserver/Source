@@ -2189,8 +2189,6 @@ void CChar::Speak( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE
 		return;
 	if ( mode == TALKMODE_YELL && GetPrivLevel() >= PLEVEL_Counsel )
 		mode = TALKMODE_BROADCAST;		// GM Broadcast (done if a GM yells something)
-	if ( m_pNPC )
-		wHue = m_pNPC->m_SpeechHue;
 
 	Reveal();
 	CObjBase::Speak(pszText, wHue, mode, font);
