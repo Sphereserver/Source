@@ -4,6 +4,7 @@
 #include <errno.h>	// errno
 #endif
 
+#include "CString.h"
 
 bool CFile::SetFilePath( LPCTSTR pszName )
 {
@@ -145,7 +146,7 @@ bool CFile::Write( const void * pData, DWORD dwLength ) const
 }
 
 #ifdef _WIN32
-void CFile::NotifyIOError( LPCTSTR szMessage )
+void CFile::NotifyIOError( LPCTSTR szMessage ) const
 {
 	LPVOID lpMsgBuf;
 	FormatMessage( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, GetLastError(), 0, reinterpret_cast<LPTSTR>(&lpMsgBuf), 0, NULL );
