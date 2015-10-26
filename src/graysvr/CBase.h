@@ -411,7 +411,7 @@ enum IT_TYPE		// double click type action.
 	IT_TRAIN_DUMMY,		// 156
 	IT_TRAIN_PICKPOCKET,// 157
 	IT_BEDROLL,			// 158
-	IT_BELLOWS,			// 159
+	IT_UNUSED_159,		// 159
 	IT_HIDE,			// 160 = hides are cured to make leather.
 	IT_CLOTH_BOLT,		// 161 = must be cut up to make cloth squares.
 	IT_BOARD,			// 162 = logs are plained into decent lumber
