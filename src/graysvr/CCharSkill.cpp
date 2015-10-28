@@ -1118,38 +1118,38 @@ bool CChar::Skill_MakeItem_Success()
 	ADDTOCALLSTACK("CChar::Skill_MakeItem_Success");
 	// Deliver the goods
 
-	CItem * pItem = CItem::CreateTemplate( m_atCreate.m_ItemID, NULL, this );
-	if ( pItem == NULL )
-		return( false );
+	CItem *pItem = CItem::CreateTemplate(m_atCreate.m_ItemID, NULL, this);
+	if ( !pItem )
+		return false;
 
 	int quality = 0;
 	TCHAR *pszMsg = Str_GetTemp();
-	WORD iSkillLevel = Skill_GetBase( Skill_GetActive());				// primary skill value.
-	CItemVendable * pItemVend = dynamic_cast<CItemVendable *>(pItem);	// cast CItemVendable for setting quality and exp later
+	WORD iSkillLevel = Skill_GetBase(Skill_GetActive());				// primary skill value.
+	CItemVendable *pItemVend = dynamic_cast<CItemVendable*>(pItem);		// cast CItemVendable for setting quality and exp later
 
 	if ( m_atCreate.m_Amount != 1 )
 	{
-		if ( pItem->IsType( IT_SCROLL ))
+		if ( pItem->IsType(IT_SCROLL) )
 			pItem->m_itSpell.m_spelllevel = iSkillLevel;
 
-		CItemBase * ptItemDef = CItemBase::FindItemBase( m_atCreate.m_ItemID );
-		if ( ptItemDef->Can( CAN_I_PILE ) )
-			pItem->SetAmount( m_atCreate.m_Amount );
-		else 
+		CItemBase *ptItemDef = CItemBase::FindItemBase(m_atCreate.m_ItemID);
+		if ( ptItemDef->Can(CAN_I_PILE) )
+			pItem->SetAmount(m_atCreate.m_Amount);
+		else
 		{
 			for ( int n = 1; n < m_atCreate.m_Amount; n++ )
 			{
-				CItem * ptItem = CItem::CreateTemplate( m_atCreate.m_ItemID, NULL, this );
-				ItemBounce( ptItem );
+				CItem *ptItem = CItem::CreateTemplate(m_atCreate.m_ItemID, NULL, this);
+				ItemBounce(ptItem);
 			}
 		}
 	}
-	else if ( pItem->IsType( IT_SCROLL ))
+	else if ( pItem->IsType(IT_SCROLL) )
 	{
 		// scrolls have the skill level of the inscriber ?
 		pItem->m_itSpell.m_spelllevel = iSkillLevel;
 	}
-	else if ( pItem->IsType( IT_POTION ))
+	else if ( pItem->IsType(IT_POTION) )
 	{
 		// Create the potion, set various properties,
 	}
@@ -1160,14 +1160,14 @@ bool CChar::Skill_MakeItem_Success()
 		// minimum quality is 1, maximum quality is 200.  100 is average.
 
 		// How much variance? This is the difference in quality levels from what I can normally make.
-		int variance = 2 - static_cast<int>(log10(static_cast<double>(Calc_GetRandVal( 250 ) + 1))); // this should result in a value between 0 and 2
+		int variance = 2 - static_cast<int>(log10(static_cast<double>(Calc_GetRandVal(250) + 1)));	// this should result in a value between 0 and 2
 
 		// Determine if lower or higher quality
-		if ( !Calc_GetRandVal( 2 ))
-			variance = -(variance);		// worse than I can normally make
+		if ( !Calc_GetRandVal(2) )
+			variance = -variance;		// worse than I can normally make
 
 		// Determine which range I'm in
-		quality	= IMULDIV( iSkillLevel, 2, 10 );	// default value for quality
+		quality = IMULDIV(iSkillLevel, 2, 10);	// default value for quality
 		int qualityBase;
 		if ( quality < 25 )			// 1 - 25		Shoddy
 			qualityBase = 0;
@@ -1194,37 +1194,37 @@ bool CChar::Skill_MakeItem_Success()
 		{
 			case 0:
 				// Shoddy quality
-				strcpy(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MAKESUCCESS_1 ));
-				quality = Calc_GetRandVal( 25 ) + 1;
+				strcpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_1));
+				quality = Calc_GetRandVal(25) + 1;
 				break;
 			case 1:
 				// Poor quality
-				strcpy(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MAKESUCCESS_2 ));
-				quality = Calc_GetRandVal( 25 ) + 26;
+				strcpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_2));
+				quality = Calc_GetRandVal(25) + 26;
 				break;
 			case 2:
 				// Below average quality
-				strcpy(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MAKESUCCESS_3 ));
-				quality = Calc_GetRandVal( 25 ) + 51;
+				strcpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_3));
+				quality = Calc_GetRandVal(25) + 51;
 				break;
 			case 3:
 				// Average quality
-				quality = Calc_GetRandVal( 50 ) + 76;
+				quality = Calc_GetRandVal(50) + 76;
 				break;
 			case 4:
 				// Above average quality
-				strcpy(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MAKESUCCESS_4 ));
-				quality = Calc_GetRandVal( 25 ) + 126;
+				strcpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_4));
+				quality = Calc_GetRandVal(25) + 126;
 				break;
 			case 5:
 				// Excellent quality
-				strcpy(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MAKESUCCESS_5 ));
-				quality = Calc_GetRandVal( 25 ) + 151;
+				strcpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_5));
+				quality = Calc_GetRandVal(25) + 151;
 				break;
 			case 6:
 				// Superior quality
-				strcpy(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MAKESUCCESS_6 ));
-				quality = Calc_GetRandVal( 25 ) + 176;
+				strcpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_6));
+				quality = Calc_GetRandVal(25) + 176;
 				break;
 			default:
 				// How'd we get here?
@@ -1232,23 +1232,20 @@ bool CChar::Skill_MakeItem_Success()
 				break;
 		}
 
-		if (pItemVend != NULL)	// check that the item is vendable before setting quality
+		if ( pItemVend )	// check that the item is vendable before setting quality
 			pItemVend->SetQuality(static_cast<WORD>(quality));
 
-		if ( iSkillLevel > 999 && quality > 175 && !IsSetOF(OF_NoItemNaming))
+		if ( iSkillLevel > 999 && quality > 175 && !IsSetOF(OF_NoItemNaming) )
 		{
 			// A GM made this, and it is of high quality
-			TCHAR * szNewName = Str_GetTemp();
-			sprintf(szNewName, g_Cfg.GetDefaultMsg(DEFMSG_GRANDMASTER_MARK), static_cast<LPCTSTR>(pItem->GetName()), static_cast<LPCTSTR>(GetName()));
+			TCHAR *szNewName = Str_GetTemp();
+			sprintf(szNewName, g_Cfg.GetDefaultMsg(DEFMSG_GRANDMASTER_MARK), pItem->GetName(), GetName());
 			pItem->SetName(szNewName);
 
-			// TO-DO: Find a way to clear CRAFTEDBY property on all items when chars got removed
+			// TO-DO: before enable CRAFTEDBY we must find away to properly clear CRAFTEDBY value on all items when chars got deleted
 			//pItem->SetDefNum("CRAFTEDBY", GetUID());
 		}
 	}
-
-	// TO-DO: Can Decay block decay on ground of items
-	pItem->SetAttr(ATTR_MOVE_ALWAYS|ATTR_DECAY);	// Any made item is movable.
 
 	// Item goes into ACT of player
 	CGrayUID uidOldAct = m_Act_Targ;
@@ -1256,12 +1253,12 @@ bool CChar::Skill_MakeItem_Success()
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 	if ( IsTrigUsed(TRIGGER_SKILLMAKEITEM) )
 	{
-		CScriptTriggerArgs Args( iSkillLevel, quality, uidOldAct.ObjFind() );
-		iRet = OnTrigger( CTRIG_SkillMakeItem, this, &Args );
+		CScriptTriggerArgs Args(iSkillLevel, quality, uidOldAct.ObjFind());
+		iRet = OnTrigger(CTRIG_SkillMakeItem, this, &Args);
 	}
 	m_Act_Targ = uidOldAct;		// restore
 
-	CObjBase * pItemCont = pItem->GetContainer();
+	CObjBase *pItemCont = pItem->GetContainer();
 	if ( iRet == TRIGRET_RET_TRUE )
 	{
 		if ( pItem->GetContainer() == pItemCont )
@@ -1270,28 +1267,28 @@ bool CChar::Skill_MakeItem_Success()
 	}
 	else if ( iRet == TRIGRET_RET_DEFAULT )
 	{
-		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
+		if ( !g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_NOSFX) )
 		{
-			if ( pItem->IsType( IT_POTION ))
-				Sound( 0x240 );
-			else if ( pItem->IsType( IT_MAP ))
-				Sound( 0x255 );
+			if ( pItem->IsType(IT_POTION) )
+				Sound(0x240);
+			else if ( pItem->IsType(IT_MAP) )
+				Sound(0x255);
 		}
 		if ( *pszMsg )
 			SysMessage(pszMsg);
 	}
 
 	// Experience gain on craftings
-	if ( g_Cfg.m_bExperienceSystem && ( g_Cfg.m_iExperienceMode & EXP_MODE_RAISE_CRAFT ))
+	if ( g_Cfg.m_bExperienceSystem && (g_Cfg.m_iExperienceMode & EXP_MODE_RAISE_CRAFT) )
 	{
 		int exp = 0;
-		if (pItemVend != NULL)
+		if ( pItemVend )
 			exp = pItemVend->GetVendorPrice(0) / 100;	// calculate cost for buying this item if it is vendable (gain = +1 exp each 100gp)
 		if ( exp )
 			ChangeExperience(exp);
 	}
 
-	ItemBounce( pItem );
+	ItemBounce(pItem);
 	return true;
 }
 
@@ -1299,7 +1296,7 @@ bool CChar::Skill_MakeItem_Success()
 int CChar::SkillResourceTest( const CResourceQtyArray * pResources )
 {
 	ADDTOCALLSTACK("CChar::SkillResourceTest");
-	return pResources->IsResourceMatchAll( this );
+	return pResources->IsResourceMatchAll(this);
 }
 
 
@@ -1328,13 +1325,6 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 	// RETURN:
 	//   true = success.
 
-	if ( id <= 0 )
-		return true;
-
-	CItem *pItemDragging = LayerFind(LAYER_DRAGGING);
-	if ( pItemDragging )
-		ItemBounce(pItemDragging);
-
 	CItemBase *pItemDef = CItemBase::FindItemBase(id);
 	if ( !pItemDef )
 		return false;
@@ -1351,6 +1341,10 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 	if ( fSkillOnly )
 		return true;
 
+	CItem *pItemDragging = LayerFind(LAYER_DRAGGING);
+	if ( pItemDragging )
+		ItemBounce(pItemDragging);
+
 	iReplicationQty = ResourceConsume(&(pItemDef->m_BaseResources), iReplicationQty, stage != SKTRIG_SUCCESS, pItemDef->GetResourceID().GetResIndex());
 	if ( !iReplicationQty )
 		return false;
@@ -1363,7 +1357,7 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 		size_t i = pItemDef->m_SkillMake.FindResourceType(RES_SKILL);
 		if ( i != pItemDef->m_SkillMake.BadIndex() )
 		{
-			const CSkillDef *pSkillDef = g_Cfg.GetSkillDef(static_cast<SKILL_TYPE>(pItemDef->m_SkillMake[i].GetResIndex()));
+			CSkillDef *pSkillDef = g_Cfg.GetSkillDef(static_cast<SKILL_TYPE>(pItemDef->m_SkillMake[i].GetResIndex()));
 			if ( pSkillDef && pSkillDef->m_Effect.m_aiValues.GetCount() > 0 )
 				iConsumePercent = pSkillDef->m_Effect.GetRandom();
 		}

@@ -2691,3 +2691,6 @@ Added: 'physical' gold piles now will be converted to 'virtual' gold when droppe
 
 16-10-2015, Coruja
 Fixed: TOL trade window not allowing trade gold when the char have 1 or more platinum.
+
+27-10-2015, Coruja
+Fixed: Possible Sphere crash when DClick on items with long LINK sequence.

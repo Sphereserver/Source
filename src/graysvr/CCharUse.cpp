@@ -1769,7 +1769,7 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 	CItem *pLinkItem = pItem->m_uidLink.ItemFind();
 	if ( pLinkItem && (pLinkItem != pItem) )
 	{
-		CItem *pItemFirst = NULL;		// watch out for loops
+		static CItem *pItemFirst = NULL;		// watch out for loops
 		size_t iCount = 0;
 		if ( fLink )
 		{
@@ -1779,10 +1779,8 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 				return true;
 		}
 		else
-		{
 			pItemFirst = pItem;
-			iCount = 0;
-		}
+
 		fAction |= Use_Item(pLinkItem, true);
 	}
 
