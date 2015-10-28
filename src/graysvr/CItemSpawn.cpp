@@ -2,34 +2,31 @@
 
 /////////////////////////////////////////////////////////////////////////////
 
-// Test if the character from more1 exists.
+
 inline CCharBase * CItemSpawn::TryChar( CREID_TYPE &id )
 {
 	ADDTOCALLSTACK("CitemSpawn:TryChar");
-		CCharBase * pCharDef = CCharBase::FindCharBase( id );
-		if ( pCharDef )
-		{
-			m_itSpawnChar.m_CharID = RESOURCE_ID( RES_CHARDEF, id );
-			return( pCharDef );
-		}
-		return NULL;
+	CCharBase * pCharDef = CCharBase::FindCharBase( id );
+	if ( pCharDef )
+	{
+		m_itSpawnChar.m_CharID = RESOURCE_ID( RES_CHARDEF, id );
+		return( pCharDef );
+	}
+	return NULL;
 }
 
-// Test if the item from more1 exists.
 inline CItemBase * CItemSpawn::TryItem(ITEMID_TYPE &id)
 {
 	ADDTOCALLSTACK("CitemSpawn:TryItem");
-		CItemBase * pItemDef = CItemBase::FindItemBase( id );
-		if ( pItemDef )
-		{
-			m_itSpawnItem.m_ItemID = RESOURCE_ID( RES_ITEMDEF, id );
-			return( pItemDef );
-		}
-		return NULL;
+	CItemBase * pItemDef = CItemBase::FindItemBase( id );
+	if ( pItemDef )
+	{
+		m_itSpawnItem.m_ItemID = RESOURCE_ID( RES_ITEMDEF, id );
+		return( pItemDef );
+	}
+	return NULL;
 }
-;
-// Get a proper RESOURCE_ID from the id provided.
-// RETURN: true = ok.
+
 CResourceDef * CItemSpawn::FixDef()
 {
 	ADDTOCALLSTACK("CitemSpawn:FixDef");
@@ -84,7 +81,6 @@ CResourceDef * CItemSpawn::FixDef()
 	}
 }
 
-// Gets the name of the resource created (item or char).
 int CItemSpawn::GetName(TCHAR * pszOut) const
 {
 	ADDTOCALLSTACK("CitemSpawn:GetName");
@@ -116,17 +112,14 @@ CItemSpawn::CItemSpawn(ITEMID_TYPE id, CItemBase * pDef) : CItem(ITEMID_WorldGem
 {
 	ADDTOCALLSTACK("CItemSpawn::CItemSpawn");
 	UNREFERENCED_PARAMETER(id);	//forced in CItem(ITEMID_WorldGem , )
-
 }
 
 
 CItemSpawn::~CItemSpawn()
 {
 	ADDTOCALLSTACK("CItemSpawn::~CItemSpawn");
-	//KillChildren();
 }
 
-// Returns created objs (items/chars).
 unsigned char CItemSpawn::GetCount()
 {
 	ADDTOCALLSTACK("CitemSpawn:GetCount");
@@ -148,9 +141,6 @@ unsigned char CItemSpawn::GetCount()
 	return 0;
 }
 
-
-// Count how many items are here already.
-// This could be in a container.
 void CItemSpawn::GenerateItem(CResourceDef * pDef)
 {
 	ADDTOCALLSTACK("CitemSpawn:GenerateItem");
@@ -195,9 +185,6 @@ void CItemSpawn::GenerateItem(CResourceDef * pDef)
 	pItem->m_uidSpawnItem = GetUID();
 }
 
-
-// Check if the spawn can create another char
-// and create it if so
 void CItemSpawn::GenerateChar(CResourceDef * pDef)
 {
 	ADDTOCALLSTACK("CitemSpawn:GenerateChar");
@@ -264,7 +251,6 @@ void CItemSpawn::GenerateChar(CResourceDef * pDef)
 
 }
 
-// Deleting one object from Spawn's memory, reallocating memory automatically.
 void CItemSpawn::DelObj( CGrayUID uid )
 {
 	ADDTOCALLSTACK("CitemSpawn:DelObj");
@@ -294,20 +280,24 @@ void CItemSpawn::DelObj( CGrayUID uid )
 	}
 }
 
-// Storing one UID in Spawn's m_obj[]
 void CItemSpawn::AddObj( CGrayUID uid )
 {
 	ADDTOCALLSTACK("CitemSpawn:AddObj");
 	unsigned char iMax = GetAmount() > 0 ? static_cast<unsigned char>(GetAmount()) : 1;
 	iMax += 1;	// We must give a +1 to create a 'free slot'
 	bool bIsSpawnChar = GetType() == IT_SPAWN_CHAR;
-	if  (bIsSpawnChar )
-	{
-		if (!uid || !uid.CharFind()->m_pNPC)	// Only adding UIDs...
-			return;
-	}
-	if ( uid.ObjFind()->m_uidSpawnItem.ItemFind() )	//... which doesn't have a SpawnItem already
+	if (!uid)
 		return;
+
+	if ( bIsSpawnChar )
+	{
+		if ( !uid.CharFind()->m_pNPC)	// Only adding NPCs to IT_SPAWN_CHAR..
+			return;
+		if ( uid.CharFind()->m_uidSpawnItem.ItemFind() )	//... if they doesn't have a SpawnItem already.
+			return;
+	} else if( !uid.ItemFind() )		// Only adding Items to IT_SPAWN_ITEM
+		return;
+
 	for ( unsigned char i = 0; i < iMax; i++ )
 	{
 		if ( m_obj[i] == uid )	// Not adding me again
@@ -326,10 +316,6 @@ void CItemSpawn::AddObj( CGrayUID uid )
 	}
 }
 
-// Setting time again
-// stoping if more2 >= amount
-// more1 Resource Check
-// resource (item/char) generation
 void CItemSpawn::OnTick(bool fExec)
 {
 	ADDTOCALLSTACK("CitemSpawn:OnTick");
@@ -363,7 +349,6 @@ void CItemSpawn::OnTick(bool fExec)
 		GenerateChar(pDef);
 }
 
-// kill everything spawned from this spawn !
 void CItemSpawn::KillChildren()
 {
 	ADDTOCALLSTACK("CitemSpawn:KillChildren");
@@ -372,22 +357,18 @@ void CItemSpawn::KillChildren()
 		return;
 	for ( WORD i = 0; i < iTotal; i++ )
 	{
-		if ( !m_obj[i].IsValidUID() )
-			continue;
 		CObjBase * pObj = m_obj[i].ObjFind();
-		if ( pObj )
-		{
-			pObj->Delete();
-			m_obj[i].InitUID();
-		}
+		if ( !pObj )
+			continue;
+		pObj->m_uidSpawnItem.InitUID();
+		pObj->Delete();
+		m_obj[i].InitUID();
 
 	}
 	m_itSpawnChar.m_current = 0;
 	OnTick(false);
 }
 
-// Setting display ID based on Character's Figurine (only for chars)
-// TODO: Enable this for items too.
 CCharBase * CItemSpawn::SetTrackID()
 {
 	ADDTOCALLSTACK("CitemSpawn:SetTrackID");
@@ -507,7 +488,6 @@ bool CItemSpawn::r_LoadVal(CScript & s)
 	return false;
 }
 
-// Writing 'ADDOBJ=uid' in the save file
 void  CItemSpawn::r_Write(CScript & s)
 {
 	ADDTOCALLSTACK("CitemSpawn:r_Write");

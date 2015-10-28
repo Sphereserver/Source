@@ -2156,8 +2156,6 @@ void CChar::SpeakUTF8( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_
 		return;
 	if ( mode == TALKMODE_YELL && GetPrivLevel() >= PLEVEL_Counsel )
 		mode = TALKMODE_BROADCAST;		// GM Broadcast (done if a GM yells something)
-	if ( m_pNPC )
-		wHue = m_pNPC->m_SpeechHue;
 
 	Reveal();
 	CObjBase::SpeakUTF8(pszText, wHue, mode, font, lang);
@@ -2172,8 +2170,6 @@ void CChar::SpeakUTF8Ex( const NWORD * pszText, HUE_TYPE wHue, TALKMODE_TYPE mod
 		return;
 	if ( mode == TALKMODE_YELL && GetPrivLevel() >= PLEVEL_Counsel )
 		mode = TALKMODE_BROADCAST;		// GM Broadcast (done if a GM yells something)
-	if ( m_pNPC )
-		wHue = m_pNPC->m_SpeechHue;
 
 	Reveal();
 	CObjBase::SpeakUTF8Ex(pszText, wHue, mode, font, lang);

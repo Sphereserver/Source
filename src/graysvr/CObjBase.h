@@ -1356,24 +1356,94 @@ class CItemSpawn : public CItem
 private:
 	static LPCTSTR const sm_szLoadKeys[];
 	static LPCTSTR const sm_szVerbKeys[];
-	CGrayUID m_obj[UCHAR_MAX];
+	CGrayUID m_obj[UCHAR_MAX];	///< Storing UIDs of the created items/chars.
 
 public:
 	static const char *m_sClassName;
+
+	/**
+	* @brief Overrides onTick for this class.
+	*
+	* Setting time again
+	* stoping if more2 >= amount
+	* more1 Resource Check
+	* resource (item/char) generation
+	*/
 	void OnTick( bool fExec );
+
+	/**
+	* @brief Removes everything created by this spawn, if still belongs to the spawn.
+	*/
 	void KillChildren();
+
+	/**
+	* @brief Setting display ID based on Character's Figurine (only for chars).
+	*/
 	CCharBase * SetTrackID();
-	void GenerateItem( CResourceDef * pDef );	//Creating the resource
+
+	/**
+	* @brief Setting display ID based on Character's Figurine (only for chars).
+	*
+	* @param pDef resource to create
+	*/
+	void GenerateItem( CResourceDef * pDef );
+
+	/**
+	* @brief Setting display ID based on Character's Figurine (only for chars).
+	*
+	* @param pDef resource to create
+	*/
 	void GenerateChar( CResourceDef * pDef );
+
+	/**
+	* @brief Gets the total count of items or chars created which are still considered as 'spawned' by this spawn.
+	*
+	* @return the count of items/chars.
+	*/
 	unsigned char GetCount();
 
-	void DelObj( CGrayUID uid );	//Removing one object from this spawn's list
+	/**
+	* @brief Removing one UID in Spawn's m_obj[].
+	*
+	* @param UID of the obj to remove.
+	*/
+	void DelObj( CGrayUID uid );
+
+	/**
+	* @brief Storing one UID in Spawn's m_obj[].
+	*
+	* @param UID of the obj to add.
+	*/
 	void AddObj( CGrayUID uid );
 
+	/**
+	* @brief Test if the character from more1 exists.
+	*
+	* @param ID of the char to check.
+	*/
 	inline CCharBase * TryChar( CREID_TYPE &id );
+
+	/**
+	* @brief Test if the item from more1 exists.
+	*
+	* @param ID of the item to check.
+	*/
 	inline CItemBase * TryItem( ITEMID_TYPE &id );
+
+	/**
+	* @brief Get a proper RESOURCE_ID from the id provided.
+	*
+	* @return a valid RESOURCE_ID.
+	*/
 	CResourceDef * FixDef();
+
+	/**
+	* @brief Gets the name of the resource created (item or char).
+	*
+	* @return the name of the resource.
+	*/
 	int GetName(TCHAR * pszOut) const;
+
 	CItemSpawn(ITEMID_TYPE id , CItemBase * pItemDef);
 	virtual ~CItemSpawn();
 	virtual bool r_WriteVal(LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc);
