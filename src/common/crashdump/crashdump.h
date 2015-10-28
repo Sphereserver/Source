@@ -2,7 +2,9 @@
 #define _CRASHDUMP_H
 
 #include <windows.h>
+#pragma warning(disable:4091)
 #include <Dbghelp.h>
+#pragma warning(default:4091)
 #include <stdio.h>
 
 typedef BOOL (WINAPI *MINIDUMPWRITEDUMP)(HANDLE hProcess,
