@@ -497,9 +497,10 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 
 	CClient *pClient = GetClient();
 	SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pSpell->m_itSpell.m_spell));
+	CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
 	short iStatEffect = static_cast<short>(pSpell->m_itSpell.m_spelllevel);
 
-	switch (GetSpellLayer(spell))	// spell effects that are common for the same layer fits here
+	switch (pSpellDef->m_idLayer)	// spell effects that are common for the same layer fits here
 	{
 		case LAYER_NONE:
 			break;
@@ -876,7 +877,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 	LPCTSTR pNumBuff[7] = { NumBuff[0], NumBuff[1], NumBuff[2], NumBuff[3], NumBuff[4], NumBuff[5], NumBuff[6] };
 	//------------------------
 
-	switch (GetSpellLayer(spell))
+	switch (pSpellDef->m_idLayer)
 	{
 		case LAYER_NONE:
 			break;
@@ -1760,9 +1761,26 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 	// NOTE:
 	//   ATTR_MAGIC without ATTR_MOVE_NEVER is dispellable !
 
-	CItem * pSpell;
-	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
-	pSpell = CItem::CreateBase( pSpellDef ? ( pSpellDef->m_idSpell ) : ITEMID_RHAND_POINT_NW );
+	// Check if there's any previous effect to clear before apply the new effect
+	for ( CItem *pSpellPrev = GetContentHead(); pSpellPrev != NULL; pSpellPrev = pSpellPrev->GetNext() )
+	{
+		if ( pSpellPrev->GetEquipLayer() != layer )
+			continue;
+		if ( pSpellPrev->m_itSpell.m_spell != spell )
+			continue;
+		if ( pSpellPrev->GetTimerAdjusted() == -1 )
+		{
+			// Some spells create memories using TIMER=-1 intentionally to make the effect last forever
+			// or until death/logout. So casting this spell again will just remove the current effect.
+			pSpellPrev->Delete();
+			return NULL;
+		}
+		pSpellPrev->Delete();
+		break;
+	}
+
+	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
+	CItem *pSpell = CItem::CreateBase(pSpellDef ? pSpellDef->m_idSpell : ITEMID_RHAND_POINT_NW);
 	ASSERT(pSpell);
 
 	switch ( layer )
@@ -1776,27 +1794,20 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 		default:						break;
 	}
 
-//	if (( IsSetMagicFlags( MAGICF_STACKSTATS ) && (layer == LAYER_SPELL_STATS) ) || (layer == LAYER_NONE))
-//		layer = pSpell->Item_GetDef()->GetEquipLayer();
-
-	pSpell->SetAttr(ATTR_NEWBIE);
-	if ( pSpellDef )
-		pSpell->SetAttr(ATTR_MAGIC);
-
+	g_World.m_uidNew = pSpell->GetUID();
+	pSpell->SetAttr(pSpellDef ? ATTR_NEWBIE|ATTR_MAGIC : ATTR_NEWBIE);
 	pSpell->SetType(IT_SPELL);
 	pSpell->SetDecayTime(iDuration);
 	pSpell->m_itSpell.m_spell = static_cast<WORD>(spell);
 	pSpell->m_itSpell.m_spelllevel = static_cast<WORD>(g_Cfg.GetSpellEffect(spell, iSkillLevel));
 	pSpell->m_itSpell.m_spellcharges = 1;
-
 	if ( pSrc )
 		pSpell->m_uidLink = pSrc->GetUID();
 
-	g_World.m_uidNew = pSpell->GetUID();
 	Spell_Effect_Add(pSpell);
-	if (bEquip)
-		LayerAdd( pSpell, layer );	// Remove any competing effect first.
-	return( pSpell );
+	if ( bEquip )
+		LayerAdd(pSpell, layer);
+	return pSpell;
 }
 
 void CChar::Spell_Area( CPointMap pntTarg, int iDist, int iSkillLevel )
@@ -3043,9 +3054,10 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	if ( spell == SPELL_Poison_Field && IsStatFlag(STATF_Poisoned) )
 		return false;
 
+	bool fPotion = (pSourceItem && pSourceItem->IsType(IT_POTION));
 	static const SOUND_TYPE sm_DrinkSounds[] = { 0x030, 0x031 };
 	SOUND_TYPE iSound = pSpellDef->m_sound;
-	if (pSourceItem && pSourceItem->IsType(IT_POTION))
+	if ( fPotion )
 		iSound = sm_DrinkSounds[Calc_GetRandVal(COUNTOF(sm_DrinkSounds))];
 
 	bool fExplode = false;
@@ -3144,7 +3156,6 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	}
 
 	// Check if the spell can be resisted
-	bool fPotion = (pSourceItem && pSourceItem->IsType(IT_POTION));
 	bool fResistAttempt = true;
 	bool fResisted = false;
 	if ( pSpellDef->IsSpellType(SPELLFLAG_RESIST) && fResistAttempt && !fPotion && pCharSrc != NULL )
@@ -3542,55 +3553,6 @@ int CChar::GetSpellEffect( SPELL_TYPE spell, int iSkillLevel, int iEffectMult )
 	ADDTOCALLSTACK("CChar::GetSpellEffect");
 	int	iEffect = g_Cfg.GetSpellEffect( spell, iSkillLevel );
 	return (iEffect * iEffectMult ) / 1000;
-}
-
-// Quick retrieve of the LAYER_TYPE for the given spell
-LAYER_TYPE CChar::GetSpellLayer(SPELL_TYPE spell)
-{
-	ADDTOCALLSTACK("CChar::GetSpellEffect");
-	CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
-	ASSERT(pSpellDef);
-	if (pSpellDef->IsSpellType(SPELLFLAG_POLY))
-		return LAYER_SPELL_Polymorph;
-	if (pSpellDef->IsSpellType(SPELLFLAG_SUMMON))
-		return LAYER_SPELL_Summon;
-	switch (spell)
-	{
-		case SPELL_Cunning:
-		case SPELL_Strength:
-		case SPELL_Agility:
-		case SPELL_Bless:
-		case SPELL_Weaken:
-		case SPELL_Clumsy:
-		case SPELL_Feeblemind:
-			return LAYER_SPELL_STATS;			// 32 = Stats effecting spell. These cancel each other out.
-		case SPELL_Reactive_Armor:
-			return LAYER_SPELL_Reactive;
-		case SPELL_Night_Sight:
-		case SPELL_Light:
-			return LAYER_SPELL_Night_Sight;
-		case SPELL_Protection:
-		case SPELL_Arch_Prot:
-			return LAYER_SPELL_Protection;
-		case SPELL_Incognito:
-			return LAYER_SPELL_Incognito;
-		case SPELL_Magic_Reflect:
-			return LAYER_SPELL_Magic_Reflect;
-		case SPELL_Paralyze:
-		case SPELL_Paralyze_Field:
-			return LAYER_SPELL_Paralyze;		// or turned to stone.
-		case SPELL_Invis:
-		case SPELL_Ethereal_Voyage:
-			return LAYER_SPELL_Invis;
-		case SPELL_Poison:
-		case SPELL_Poison_Field:
-			return LAYER_FLAG_Poison;
-		default:
-			break;
-	}
-	if (pSpellDef->m_idLayer)
-		return pSpellDef->m_idLayer;
-	return LAYER_NONE;
 }
 
 int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult, CChar * pCharSrc )

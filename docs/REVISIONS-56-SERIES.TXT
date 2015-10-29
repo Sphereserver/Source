@@ -2694,3 +2694,9 @@ Fixed: TOL trade window not allowing trade gold when the char have 1 or more pla
 
 27-10-2015, Coruja
 Fixed: Possible Sphere crash when DClick on items with long LINK sequence.
+
+29-10-2015, Coruja
+Fixed: Spells memories incorrectly being dropped to backpack instead get removed when the char is already under a spell effect and cast it again.
+Fixed: Spells memories intentionally created with TIMER=-1 not being removed when the char cast the spell again to cancel the current effect.
+Changed: Buff/debuff spells now will get the memory effect layer from scripts instead use hardcoded values.
+	-IMPORTANT: It's HIGHLY recommended check if your sphere_spells.scp is updated and have LAYER value properly set on buff/debuff spells, or these spells will stop working.

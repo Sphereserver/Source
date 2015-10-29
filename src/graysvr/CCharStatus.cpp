@@ -365,19 +365,13 @@ LAYER_TYPE CChar::CanEquipLayer( CItem *pItem, LAYER_TYPE layer, CChar *pCharMsg
 				if ( !fTest )
 					pItemPrev->Delete();
 				break;
+			case LAYER_SPELL_STATS:			// already handled by CChar::Spell_Effect_Create()
 			case LAYER_SPELL_Blood_Oath:
 				break;
 			default:
 			{
-				if ( layer == LAYER_SPELL_STATS )
-				{
-					if ( IsSetMagicFlags(MAGICF_STACKSTATS) || (pItemPrev->m_itSpell.m_spell != pItem->m_itSpell.m_spell) )
-						break;
-				}
-
 				if ( !CanMove(pItemPrev) )
 					return LAYER_NONE;
-
 				if ( !fTest )
 					ItemBounce(pItemPrev);
 				break;

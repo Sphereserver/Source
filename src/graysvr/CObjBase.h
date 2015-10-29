@@ -3800,7 +3800,6 @@ public:
 	bool Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool fFailMsg, bool fCheckAntiMagic = true );
 	int	GetSpellEffect( SPELL_TYPE spell, int iSkillLevel, int iEffectMult );
 	int	GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult, CChar * pCharSrc = NULL );
-	LAYER_TYPE GetSpellLayer(SPELL_TYPE spell);	// Layer for buffs/debuffs
 	// Memories about objects in the world. -------------------
 private:
 	bool Memory_OnTick( CItemMemory * pMemory );

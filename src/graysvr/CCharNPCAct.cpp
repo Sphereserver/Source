@@ -956,7 +956,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 	EXC_SET("Old Top Point");
 	CPointMap pold = GetTopPoint();
 
-	EXC_SET("Revel");
+	EXC_SET("Reveal");
 	CheckRevealOnMove();
 
 	EXC_SET("MoveToChar");
@@ -2082,8 +2082,8 @@ bool CChar::NPC_FightCast(CObjBase * &pTarg, CObjBase * pSrc, SPELL_TYPE &spell,
 					}
 					if (bSpellSuits) break;
 
-					LAYER_TYPE layer = GetSpellLayer(spell);
-					if (!layer == LAYER_NONE)
+					LAYER_TYPE layer = pSpellDef->m_idLayer;
+					if (layer != LAYER_NONE)
 					{
 						if (pTarget->LayerFind(layer))
 						{
