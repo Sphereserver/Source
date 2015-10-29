@@ -1900,9 +1900,9 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 		if ( pItem->IsDeleted() )
 			return false;
 
-		if ( iRet == TRIGRET_RET_TRUE )
+		if (iRet == TRIGRET_RET_TRUE)
 		{
-			if ( pItem->GetEquipLayer() == LAYER_DRAGGING ) // dragging? else just do nothing
+			if (pItem->GetEquipLayer() == LAYER_DRAGGING || !pItem->GetContainer())  // dragging or no cont? else just do nothing
 			{
 				pItem->RemoveSelf();
 				ItemBounce(pItem);
