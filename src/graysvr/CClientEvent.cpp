@@ -2308,36 +2308,33 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 {
 	ADDTOCALLSTACK("CClient::Event_AOSPopupMenuRequest");
 	CGrayUID uObj = uid;
-	CChar *pChar = uObj.CharFind();
-	if ( !pChar || m_pChar->IsStatFlag(STATF_DEAD) || !CanSee(uObj.ObjFind()) )
+	CObjBaseTemplate *pObj = uObj.ObjFind();
+	if ( !m_pChar || m_pChar->IsStatFlag(STATF_DEAD) || !CanSee(pObj) )
+		return;
+	if ( !IsSetOF(OF_NoContextMenuLOS) && !m_pChar->CanSeeLOS(pObj) )
 		return;
 
-	if (!IsSetOF(OF_NoContextMenuLOS))
-	{
-		if (m_pChar && !(m_pChar->CanSeeLOS(uObj.ObjFind(), 0x0)))
-			return;
-	}
-
-	if (m_pPopupPacket != NULL)
+	if ( m_pPopupPacket != NULL )
 	{
 		DEBUG_ERR(("New popup packet being formed before previous one has been released.\n"));
 
 		delete m_pPopupPacket;
 		m_pPopupPacket = NULL;
 	}
-
 	m_pPopupPacket = new PacketDisplayPopup(this, uid);
 
 	CScriptTriggerArgs Args;
 	bool fPreparePacket = false;
+	CItem *pItem = uObj.ItemFind();
+	CChar *pChar = uObj.CharFind();
 
-	if ( uObj.IsItem() )
+	if ( pItem )
 	{
-		if (( IsTrigUsed(TRIGGER_CONTEXTMENUREQUEST) ) || ( IsTrigUsed(TRIGGER_ITEMCONTEXTMENUREQUEST) ))
+		if ( IsTrigUsed(TRIGGER_CONTEXTMENUREQUEST) || IsTrigUsed(TRIGGER_ITEMCONTEXTMENUREQUEST) )
 		{
 			Args.m_iN1 = 1;
-			uObj.ItemFind()->OnTrigger(ITRIG_ContextMenuRequest, this->GetChar(), &Args);
-			fPreparePacket = true; // There is no hardcoded stuff for items
+			pItem->OnTrigger(ITRIG_ContextMenuRequest, GetChar(), &Args);
+			fPreparePacket = true;		// there's no hardcoded stuff for items
 		}
 		else
 		{
@@ -2346,13 +2343,13 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 			return;
 		}
 	}
-	else if ( uObj.IsChar() )
+	else if ( pChar )
 	{
 		if ( IsTrigUsed(TRIGGER_CONTEXTMENUREQUEST) )
 		{
 			Args.m_iN1 = 1;
-			int iRet = pChar->OnTrigger(CTRIG_ContextMenuRequest, this->GetChar(), &Args);
-			if ( iRet  == TRIGRET_RET_TRUE )
+			TRIGRET_TYPE iRet = pChar->OnTrigger(CTRIG_ContextMenuRequest, GetChar(), &Args);
+			if ( iRet == TRIGRET_RET_TRUE )
 				fPreparePacket = true;
 		}
 	}
@@ -2363,7 +2360,7 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 		return;
 	}
 
-	if ( ! fPreparePacket )
+	if ( pChar && !fPreparePacket )
 	{
 
 		if ( pChar->IsPlayableCharacter() )
@@ -2393,13 +2390,13 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 					break;
 			}
 
-			if ( pChar->NPC_IsOwnedBy( m_pChar, false ) )
+			if ( pChar->NPC_IsOwnedBy(m_pChar, false) )
 			{
 				bool bDead = pChar->IsStatFlag(STATF_DEAD);	// Checking once if character is dead, only happening for bonded pets.
 				if ( !bDead )
 					m_pPopupPacket->addOption(POPUP_PETGUARD, 6107, POPUPFLAG_COLOR, 0xFFFF);
 				m_pPopupPacket->addOption(POPUP_PETFOLLOW, 6108, POPUPFLAG_COLOR, 0xFFFF);
-				if ( pChar->GetPack())
+				if ( pChar->GetPack() )
 					m_pPopupPacket->addOption(POPUP_PETDROP, 6109, POPUPFLAG_COLOR, 0xFFFF);
 				if ( !bDead )
 					m_pPopupPacket->addOption(POPUP_PETKILL, 6111, POPUPFLAG_COLOR, 0xFFFF);
@@ -2409,7 +2406,7 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 				m_pPopupPacket->addOption(POPUP_PETTRANSFER, 6113, POPUPFLAG_COLOR, 0xFFFF);
 				m_pPopupPacket->addOption(POPUP_PETRELEASE, 6118, POPUPFLAG_COLOR, 0xFFFF);
 			}
-			else if ( pChar->Memory_FindObjTypes( m_pChar, MEMORY_FRIEND ) != NULL )
+			else if ( pChar->Memory_FindObjTypes(m_pChar, MEMORY_FRIEND) )
 			{
 				m_pPopupPacket->addOption(POPUP_PETFOLLOW, 6108, POPUPFLAG_COLOR, 0xFFFF);
 				m_pPopupPacket->addOption(POPUP_PETSTOP, 6112, POPUPFLAG_COLOR, 0xFFFF);
@@ -2442,15 +2439,15 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 			if ( GetNetState()->isClientVersion(MINCLIVER_TOL) && m_pChar->GetDist(pChar) <= 2 )
 				m_pPopupPacket->addOption(POPUP_TRADE_OPEN, 1077728, POPUPFLAG_COLOR, 0xFFFF);
 		}
-		
-		if (( Args.m_iN1 != 1 ) && ( IsTrigUsed(TRIGGER_CONTEXTMENUREQUEST) ))
+
+		if ( (Args.m_iN1 != 1) && (IsTrigUsed(TRIGGER_CONTEXTMENUREQUEST)) )
 		{
 			Args.m_iN1 = 2;
-			pChar->OnTrigger(CTRIG_ContextMenuRequest, this->GetChar(), &Args);
+			pChar->OnTrigger(CTRIG_ContextMenuRequest, GetChar(), &Args);
 		}
 	}
 	
-	if (m_pPopupPacket->getOptionCount() <= 0)
+	if ( m_pPopupPacket->getOptionCount() <= 0 )
 	{
 		delete m_pPopupPacket;
 		m_pPopupPacket = NULL;

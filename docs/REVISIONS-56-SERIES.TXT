@@ -2696,6 +2696,7 @@ Fixed: TOL trade window not allowing trade gold when the char have 1 or more pla
 Fixed: Possible Sphere crash when DClick on items with long LINK sequence.
 
 29-10-2015, Coruja
+Fixed: Context menu not working on items.
 Fixed: Spells memories incorrectly being dropped to backpack instead get removed when the char is already under a spell effect and cast it again.
 Fixed: Spells memories intentionally created with TIMER=-1 not being removed when the char cast the spell again to cancel the current effect.
 Changed: Buff/debuff spells now will get the memory effect layer from scripts instead use hardcoded values.
