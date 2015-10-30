@@ -2938,18 +2938,18 @@ do_default:
 
 		case CHC_GOLD:
 			{
-				DWORD currentGold = ContentCount(RESOURCE_ID(RES_TYPEDEF, IT_GOLD));
-				long newGold = s.GetArgVal();
+				int currentGold = ContentCount(RESOURCE_ID(RES_TYPEDEF, IT_GOLD));
+				int newGold = static_cast<int>(s.GetArgVal());
 
 				if ( newGold >= 0 )
 				{
-					if( ((DWORD)newGold) < currentGold )
+					if( newGold < currentGold )
 					{
 						ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), currentGold - newGold);
 					}
-					else if( ((DWORD)newGold) > currentGold )
+					else if( newGold > currentGold )
 					{
-						DWORD amount = ((DWORD)newGold) - currentGold;
+						int amount = newGold - currentGold;
 						while ( amount > 0 )
 						{
 							CItem *pItem = CItem::CreateBase(ITEMID_GOLD_C1);

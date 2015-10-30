@@ -645,8 +645,8 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 		return;
 
 	difficulty *= 10;
-	if ( difficulty < 1 )
-		difficulty = 1;
+	if ( difficulty < 50 ) // SKills with values lower than 4.2 won't increase, setting them with a minimum of 5.0 for the gain checks.
+		difficulty = 50;
 	else if ( difficulty > 1000 )
 		difficulty = 1000;
 
@@ -670,15 +670,16 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 	// give a bonus or a penalty if the task was too hard or too easy.
 	// no gain at all if it was WAY TOO easy
 	int iSkillLevel = Skill_GetBase( skill );
+	int iSkillLevelFixed = iSkillLevel < 50 ? 50 : iSkillLevel;
 	int iGainRadius = pSkillDef->m_GainRadius;
-	if ((iGainRadius > 0) && ((difficulty + iGainRadius) < iSkillLevel))
+	if ((iGainRadius > 0) && ((difficulty + iGainRadius) < iSkillLevelFixed))
 	{
 		if ( GetKeyNum("NOSKILLMSG", true) )
 			SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_GAINRADIUS_NOT_MET) );
 		return;
 	}
 
-	int iSkillAdj = iSkillLevel + ( iSkillLevel - difficulty );
+	int iSkillAdj = iSkillLevelFixed + ( iSkillLevelFixed - difficulty );
 	INT64 iChance = pSkillDef->m_AdvRate.GetChancePercent( iSkillAdj );
 	INT64 iSkillMax = Skill_GetMax(skill);	// max advance for this skill.
 
@@ -699,7 +700,7 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 		return;
 
 	int iRoll = Calc_GetRandVal(1000);
-	if ( iSkillLevel < iSkillMax )	// are we in position to gain skill ?
+	if ( iSkillLevelFixed < iSkillMax )	// are we in position to gain skill ?
 	{
 		// slightly more chance of decay than gain
 		if ( (iRoll * 3) <= (iChance * 4) )

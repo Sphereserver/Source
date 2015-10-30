@@ -1166,7 +1166,7 @@ bool CItem::Stack( CItem * pItem )
 	if ( IsAttr(ATTR_LOCKEDDOWN) != pItem->IsAttr(ATTR_LOCKEDDOWN) )
 		return false;
 
-	WORD amount = pItem->GetAmount() + GetAmount();
+	int amount = pItem->GetAmount() + GetAmount();
 	if ( amount > pItem->GetMaxAmount() )
 	{
 		amount = pItem->GetMaxAmount() - pItem->GetAmount();

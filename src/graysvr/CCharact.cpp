@@ -3985,7 +3985,7 @@ bool CChar::OnTick()
 				Fight_HitTry();
 		}
 
-		if ( m_pNPC )	// do some AI action
+		else if ( m_pNPC )	// do some AI action
 		{
 			ProfileTask aiTask(PROFILE_NPC_AI);
 			EXC_SET("NPC action");
