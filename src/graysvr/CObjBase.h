@@ -2750,6 +2750,7 @@ public:
 	height_t m_height;			// Height set in-game or under some trigger (height=) - for both items and chars
 
 	int m_ModMaxWeight;
+	CGrayUID m_UIDLastNewItem;	///< Last item created, used to store on this CChar the UID of the last created item via ITEM or ITEMNEWBIe in @Create and @Restock to prevent COLOR, etc properties to be called with no reference when the item was not really created, ie: ITEM=i_dagger,R5
 	unsigned int m_exp;			// character experience
 	unsigned int m_level;		// character experience level
 	BYTE m_iVisualRange;		// Visual Range

@@ -229,7 +229,7 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 	{
 		StatFlag_Set(STATF_SaveParity);	// It will get saved next time.
 	}
-
+	m_UIDLastNewItem.InitUID();
 	m_dirFace = DIR_SE;
 	m_fonttype = FONT_NORMAL;
 
@@ -1009,7 +1009,10 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 
 						pItem = CItem::CreateHeader( s.GetArgRaw(), this, iCmd == ITC_ITEMNEWBIE );
 						if ( pItem == NULL )
+						{
+							m_UIDLastNewItem = GetUID();	// Setting m_UIDLastNewItem to CChar's UID to prevent calling any following functions meant to be called on that item
 							continue;
+						}
 
 						if ( iCmd == ITC_ITEMNEWBIE )
 						{
@@ -1030,6 +1033,8 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 
 		}
 
+		if ( m_UIDLastNewItem == GetUID() )
+			continue;
 		if ( pItem != NULL )
 		{
 			if ( fFullInterp )	// Modify the item.
@@ -1044,9 +1049,11 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 				;
 			else if ( tRet != TRIGRET_RET_DEFAULT )
 			{
+				m_UIDLastNewItem.InitUID();
 				return (tRet == TRIGRET_RET_FALSE);
 			}
 		}
+		m_UIDLastNewItem.InitUID();	//Clearing the attr for the next cycle
 	}
 
 	return( true );
