@@ -1009,6 +1009,8 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 		case IBC_AMMOTYPE:
 		case IBC_AMMOSOUNDHIT:
 		case IBC_AMMOSOUNDMISS:
+		case IBC_DROPSOUND:
+		case IBC_EQUIPSOUND:
 		case IBC_BONUSSKILL1:
 		case IBC_BONUSSKILL2:
 		case IBC_BONUSSKILL3:
@@ -1336,6 +1338,8 @@ bool CItemBase::r_LoadVal( CScript &s )
 		case IBC_AMMOTYPE:
 		case IBC_AMMOSOUNDHIT:
 		case IBC_AMMOSOUNDMISS:
+		case IBC_DROPSOUND:
+		case IBC_EQUIPSOUND:
 		case IBC_BONUSSKILL1:
 		case IBC_BONUSSKILL2:
 		case IBC_BONUSSKILL3:

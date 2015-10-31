@@ -3430,7 +3430,6 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			if ( s.HasArgs() && ! s.GetArgVal())
 			{
 				StatFlag_Clear( STATF_Criminal );
-				NotoSave_Update();
 			}
 			else
 			{

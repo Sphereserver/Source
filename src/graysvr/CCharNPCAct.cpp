@@ -3296,7 +3296,7 @@ void CChar::NPC_OnTickAction()
 	}
 
 	EXC_SET("timer expired");
-	if ( IsTimerExpired() )	// Was not reset ?
+	if ( IsTimerExpired() && !(IsSetCombatFlags(COMBAT_PREHIT) && m_atFight.m_War_Swing_State == WAR_SWING_SWINGING))	// Was not reset? PREHIT forces timer to be 0, so it get's defaulted here breaking NPC's speed when PREHIT is enabled. Must not check in this case.
 	{
 		INT64 timeout	= maximum((150-Stat_GetAdjusted(STAT_DEX))/2, 0);
 		timeout = Calc_GetRandLLVal2(timeout/2, timeout);

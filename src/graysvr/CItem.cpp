@@ -1307,13 +1307,12 @@ SOUND_TYPE CItem::GetDropSound( const CObjBase * pObjOn ) const
 			break;
 	}
 
-	CVarDefCont * pTagStorage = NULL; 
-	pTagStorage = GetKey("OVERRIDE.DROPSOUND", true);
-	if ( pTagStorage )
+	CVarDefCont * pVar = GetDefKey("DROPSOUND", true);
+	if ( pVar )
 	{
-		if ( pTagStorage->GetValNum() )
+		if ( pVar->GetValNum() )
 		{
-			iSnd = static_cast<SOUND_TYPE>(pTagStorage->GetValNum());
+			iSnd = static_cast<SOUND_TYPE>(pVar->GetValNum());
 		}
 	}
 
@@ -2244,6 +2243,8 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_AMMOTYPE:
 		case IC_AMMOSOUNDHIT:
 		case IC_AMMOSOUNDMISS:
+		case IC_DROPSOUND:
+		case IC_EQUIPSOUND:
 		case IC_BONUSSKILL1:
 		case IC_BONUSSKILL2:
 		case IC_BONUSSKILL3:
@@ -2505,6 +2506,8 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_AMMOTYPE:
 		case IC_AMMOSOUNDHIT:
 		case IC_AMMOSOUNDMISS:
+		case IC_DROPSOUND:
+		case IC_EQUIPSOUND:
 		case IC_BONUSSKILL1:
 		case IC_BONUSSKILL2:
 		case IC_BONUSSKILL3:

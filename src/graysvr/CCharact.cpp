@@ -316,6 +316,7 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 
 		case LAYER_FLAG_Criminal:
 			StatFlag_Set( STATF_Criminal );
+			NotoSave_Update();
 			return;
 		case LAYER_FLAG_SpiritSpeak:
 			StatFlag_Set( STATF_SpiritSpeak );
@@ -417,6 +418,7 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 
 		case LAYER_FLAG_Criminal:
 			StatFlag_Clear( STATF_Criminal );
+			NotoSave_Update();
 			break;
 		case LAYER_FLAG_SpiritSpeak:
 			StatFlag_Clear( STATF_SpiritSpeak );
@@ -1942,8 +1944,17 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 
 	Spell_Effect_Add(pItem);	// if it has a magic effect.
 
+	SOUND_TYPE iSound = 0x57;
+	CVarDefCont * pVar = GetDefKey("EQUIPSOUND", true);
+	if ( pVar )
+	{
+		if ( pVar->GetValNum() )
+		{
+			iSound = static_cast<SOUND_TYPE>(pVar->GetValNum());
+		}
+	}
 	if ( CItemBase::IsVisibleLayer(layer) )	// visible layer ?
-		Sound(0x057);
+		Sound(iSound);
 
 	if ( fFromDClick )
 		pItem->ResendOnEquip();
@@ -3985,7 +3996,7 @@ bool CChar::OnTick()
 				Fight_HitTry();
 		}
 
-		else if ( m_pNPC )	// do some AI action
+		if ( m_pNPC )	// do some AI action
 		{
 			ProfileTask aiTask(PROFILE_NPC_AI);
 			EXC_SET("NPC action");

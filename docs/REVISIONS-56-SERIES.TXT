@@ -2701,3 +2701,7 @@ Fixed: Spells memories incorrectly being dropped to backpack instead get removed
 Fixed: Spells memories intentionally created with TIMER=-1 not being removed when the char cast the spell again to cancel the current effect.
 Changed: Buff/debuff spells now will get the memory effect layer from scripts instead use hardcoded values.
 	-IMPORTANT: It's HIGHLY recommended check if your sphere_spells.scp is updated and have LAYER value properly set on buff/debuff spells, or these spells will stop working.
+
+30-10-2015, XuN
+Added EquipSound to override sounds for items when equipping them.
+Changed tag.override.dropsound to DropSound.
