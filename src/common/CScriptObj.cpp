@@ -973,11 +973,11 @@ badcmd:
 				INT64 bit = Exp_GetLLVal(pszKey);
 
 				if ( index == SSC_ISBIT )
-					sVal.FormatLLVal(val & ( INT64(1) << bit ));
+					sVal.FormatLLVal(val & ( (INT64)(1) << bit ));
 				else if ( index == SSC_SETBIT )
-					sVal.FormatLLVal(val | ( INT64(1) << bit ));
+					sVal.FormatLLVal(val | ( (INT64)(1) << bit ));
 				else
-					sVal.FormatLLVal(val & (~ ( INT64(1) << bit )));
+					sVal.FormatLLVal(val & (~ ( (INT64)(1) << bit )));
 				break;
 			}
 		case SSC_ISEMPTY:

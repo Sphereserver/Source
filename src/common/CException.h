@@ -94,6 +94,7 @@ public:
 		LPCTSTR inLocalArgs = a; \
 		unsigned int inLocalBlockCnt(0); \
 		bool bCATCHExcept = false; \
+		UNREFERENCED_PARAMETER(bCATCHExcept); \
 		try \
 		{
 
@@ -133,6 +134,7 @@ public:
 		LPCTSTR inLocalSubArgs = a; \
 		unsigned int inLocalSubBlockCnt(0); \
 		bool bCATCHExceptSub = false; \
+		UNREFERENCED_PARAMETER(bCATCHExceptSub); \
 		try \
 		{
 

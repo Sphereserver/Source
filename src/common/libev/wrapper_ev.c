@@ -12,4 +12,13 @@
 #pragma GCC diagnostic ignored "-Wunused-value"
 #pragma GCC diagnostic ignored "-Wunused-variable"
 
+
+#ifdef __MINGW32__
+#include <time.h>
+struct timespec
+{
+    time_t tv_sec;
+    long int tv_nsec;
+};
+#endif  // __MINGW32__
 #include "ev.c"

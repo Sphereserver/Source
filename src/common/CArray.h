@@ -6,12 +6,17 @@
 #ifndef _INC_CARRAY_H
 #define _INC_CARRAY_H
 
-#ifndef _WIN32
-	#define STANDARD_CPLUSPLUS_THIS(_x_) this->_x_
-#else
+
+#if _MSC_VER
 	#define STANDARD_CPLUSPLUS_THIS(_x_) _x_
 	#pragma warning(disable:4505)
-#endif
+#endif // _MSC_VER
+#ifdef __MINGW32__
+#define STANDARD_CPLUSPLUS_THIS(_x_) this->_x_
+#endif  // __MINGW32__
+#ifdef LINUX
+#define STANDARD_CPLUSPLUS_THIS(_x_) this->_x_
+#endif  // LINUX
 
 class CGObList;
 

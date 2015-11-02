@@ -6,7 +6,11 @@
 #ifndef _INC_NTSERVICE_H
 #define _INC_NTSERVICE_H
 
+#ifdef __MINGW32__
+#include <excpt.h>
+#else //__MINGW32__
 #include <eh.h> //	exception handling info.
+#endif //__MINGW32__
 
 extern class CNTService
 {

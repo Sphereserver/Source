@@ -48,4 +48,22 @@ extern void NTWindow_SetWindowTitle( LPCTSTR pText = NULL );
 // printf format identifiers
 #define FMTSIZE_T "Iu" // windows uses %Iu to format size_t
 
+
+#ifdef __MINGW32__
+	/*
+	There is a problem with the UNREFERENCED_PARAMETER macro from mingw and sphereserver.
+	operator= is on many clases private and the UNREFERENCED_PARAMETER macro from mingw is (P)=(P),
+	so we have a compilation error here.
+	*/
+	#ifdef UNREFERENCED_PARAMETER
+		#undef UNREFERENCED_PARAMETER
+	#endif  // UNREFERENCED_PARAMETER
+	#define UNREFERENCED_PARAMETER(P)	(void)(P)
+	// Not defined for mingw.
+	#define LSTATUS int
+	typedef void (__cdecl *_invalid_parameter_handler)(const wchar_t *,const wchar_t *,const wchar_t *,unsigned int,uintptr_t);
+	// Stuctured exception handling windows api not implemented on mingw.
+	#define __except(P)		catch(int)
+	#endif  // __MINGW32__
+
 #endif

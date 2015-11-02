@@ -2,9 +2,13 @@
 #define _CRASHDUMP_H
 
 #include <windows.h>
+#ifdef __MINGW32__
+#include "mingwdbghelp.h"
+#else  // __MINGW32__
 #pragma warning(disable:4091)
 #include <Dbghelp.h>
 #pragma warning(default:4091)
+#endif  // __MINGW32__
 #include <stdio.h>
 
 typedef BOOL (WINAPI *MINIDUMPWRITEDUMP)(HANDLE hProcess,

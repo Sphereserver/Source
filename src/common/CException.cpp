@@ -194,7 +194,7 @@ void Assert_CheckFail( LPCTSTR pExp, LPCTSTR pFile, long lLine )
 
 void SetExceptionTranslator()
 {
-#if defined(_WIN32) && !defined(_DEBUG)
+#if defined(_WIN32) && !defined(__MINGW32__) && !defined(_DEBUG)
 	_set_se_translator( Sphere_Exception_Win32 );
 #endif
 }
