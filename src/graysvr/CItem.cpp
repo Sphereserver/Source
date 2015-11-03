@@ -4983,7 +4983,7 @@ bool CItem::IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg )
 	// ARGS:
 	//  dwArg = specific key or map (for typedefs)
 
-	CItemBase * pItemDef = Item_GetDef();
+	CItemBase *pItemDef = Item_GetDef();
 	ASSERT(pItemDef);
 
 	if ( rid == pItemDef->GetResourceID() )
@@ -5005,40 +5005,46 @@ bool CItem::IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg )
 			{
 				if ( itemid == ITEMID_BOARD1 )
 					return true;
+				break;
 			}
 			case ITEMID_HIDES:		// leather can be used as hide (but hide can't be used as leather)
 			{
 				if ( itemid == ITEMID_LEATHER_1 )
 					return true;
+				break;
 			}
 			default:
-				return false;
+				break;
 		}
+		return false;
 	}
-
-	if ( restype == RES_TYPEDEF )
+	else if ( restype == RES_TYPEDEF )
 	{
 		IT_TYPE index = static_cast<IT_TYPE>(rid.GetResIndex());
 		if ( !IsType(index) )
 			return false;
 
-		switch ( index )
+		if ( dwArg )
 		{
-			case IT_MAP:		// different map types are not the same resource
+			switch ( index )
 			{
-				if ( LOWORD(dwArg) != m_itMap.m_top || HIWORD(dwArg) != m_itMap.m_left )
-					return false;
-				break;
+				case IT_MAP:		// different map types are not the same resource
+				{
+					if ( LOWORD(dwArg) != m_itMap.m_top || HIWORD(dwArg) != m_itMap.m_left )
+						return false;
+					break;
+				}
+				case IT_KEY:		// keys with different links are not the same resource
+				{
+					if ( m_itKey.m_lockUID != dwArg )
+						return false;
+					break;
+				}
+				default:
+					break;
 			}
-			case IT_KEY:		// keys with different links are not the same resource
-			{
-				if ( m_itKey.m_lockUID != dwArg )
-					return false;
-				break;
-			}
-			default:
-				return true;
 		}
+		return true;
 	}
 
 	return false;

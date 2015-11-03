@@ -1770,7 +1770,7 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 	if ( pLinkItem && (pLinkItem != pItem) )
 	{
 		static CItem *pItemFirst = NULL;		// watch out for loops
-		size_t iCount = 0;
+		static size_t iCount = 0;
 		if ( fLink )
 		{
 			if ( pItemFirst == pItem )
@@ -1778,7 +1778,7 @@ bool CChar::Use_Item( CItem * pItem, bool fLink )
 			if ( ++iCount > 64 )
 				return true;
 		}
-		else
+		else if ( !pItemFirst )
 			pItemFirst = pItem;
 
 		fAction |= Use_Item(pLinkItem, true);

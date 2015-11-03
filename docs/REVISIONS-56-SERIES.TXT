@@ -2692,9 +2692,6 @@ Added: 'physical' gold piles now will be converted to 'virtual' gold when droppe
 16-10-2015, Coruja
 Fixed: TOL trade window not allowing trade gold when the char have 1 or more platinum.
 
-27-10-2015, Coruja
-Fixed: Possible Sphere crash when DClick on items with long LINK sequence.
-
 29-10-2015, Coruja
 Fixed: Context menu not working on items.
 Fixed: Spells memories incorrectly being dropped to backpack instead get removed when the char is already under a spell effect and cast it again.
@@ -2705,3 +2702,7 @@ Changed: Buff/debuff spells now will get the memory effect layer from scripts in
 30-10-2015, XuN
 Added EquipSound to override sounds for items when equipping them.
 Changed tag.override.dropsound to DropSound.
+
+03-11-2015, Coruja
+Fixed: Possible Sphere crash when DClick on items with long LINK sequence (thx roberpot).
+Fixed: Key items linked to houses/boats not being recognized correctly on backpack when using locked items.
