@@ -69,8 +69,6 @@ common/CArray.cpp
 common/CArray.h
 common/CAssoc.cpp
 common/CAssoc.h
-common/CAtom.cpp
-common/CAtom.h
 common/CDataBase.cpp
 common/CDataBase.h
 common/CDatabaseLoader.cpp

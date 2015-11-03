@@ -211,7 +211,6 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
     <ClCompile Include="src\common\twofish\twofish2.cpp" />
     <ClCompile Include="src\common\CArray.cpp" />
     <ClCompile Include="src\common\CAssoc.cpp" />
-    <ClCompile Include="src\common\CAtom.cpp" />
     <ClCompile Include="src\common\CDataBase.cpp" />
     <ClCompile Include="src\common\CException.cpp" />
     <ClCompile Include="src\common\CExpression.cpp" />
@@ -308,7 +307,6 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
     <ClInclude Include="src\common\regex\deelx.h" />
     <ClInclude Include="src\common\carray.h" />
     <ClInclude Include="src\common\cassoc.h" />
-    <ClInclude Include="src\common\CAtom.h" />
     <ClInclude Include="src\common\CDataBase.h" />
     <ClInclude Include="src\common\CException.h" />
     <ClInclude Include="src\common\cexpression.h" />

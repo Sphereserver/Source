@@ -14,7 +14,7 @@
 #ifdef __MINGW32__
 #define STANDARD_CPLUSPLUS_THIS(_x_) this->_x_
 #endif  // __MINGW32__
-#ifdef LINUX
+#ifdef __linux
 #define STANDARD_CPLUSPLUS_THIS(_x_) this->_x_
 #endif  // LINUX
 

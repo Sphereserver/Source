@@ -110,7 +110,6 @@ SRC	:= 	./src/graysvr/CAccount.cpp \
 		./src/common/zlib/uncompr.c \
 		./src/common/zlib/zutil.c \
 		./src/common/CArray.cpp \
-		./src/common/CAtom.cpp \
 		./src/common/CAssoc.cpp \
 		./src/common/CDataBase.cpp \
 		./src/common/CDatabaseLoader.cpp \

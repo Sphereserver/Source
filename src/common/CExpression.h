@@ -2,8 +2,6 @@
 #define _INC_CEXPRSSION_H
 #pragma once
 
-#include "CAtom.h"
-
 #define _ISCSYMF(ch) ( IsAlpha(ch) || (ch)=='_')	// __iscsym or __iscsymf
 #define _ISCSYM(ch) ( isalnum(ch) || (ch)=='_')	// __iscsym or __iscsymf
 
