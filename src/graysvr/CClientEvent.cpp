@@ -2366,44 +2366,36 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 		if ( pChar->IsPlayableCharacter() )
 			m_pPopupPacket->addOption(POPUP_PAPERDOLL, 6123, POPUPFLAG_COLOR, 0xFFFF);
 
-		if ( pChar->m_pNPC )
+		if ( pChar->m_pNPC && !pChar->IsStatFlag(STATF_DEAD) )
 		{
-			switch ( pChar->m_pNPC->m_Brain )
+			if ( pChar->m_pNPC->m_Brain == NPCBRAIN_BANKER )
+				m_pPopupPacket->addOption(POPUP_BANKBOX, 6105, POPUPFLAG_COLOR, 0xFFFF);
+			else if ( pChar->m_pNPC->m_Brain == NPCBRAIN_STABLE )
 			{
-				case NPCBRAIN_BANKER:
-					m_pPopupPacket->addOption(POPUP_BANKBOX, 6105, POPUPFLAG_COLOR, 0xFFFF);
-					m_pPopupPacket->addOption(POPUP_BANKBALANCE, 6124, POPUPFLAG_COLOR, 0xFFFF);
-					break;
+				m_pPopupPacket->addOption(POPUP_STABLESTABLE, 6126, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_STABLERETRIEVE, 6127, POPUPFLAG_COLOR, 0xFFFF);
+			}
 
-				case NPCBRAIN_STABLE:
-					m_pPopupPacket->addOption(POPUP_STABLESTABLE, 6126, POPUPFLAG_COLOR, 0xFFFF);
-					m_pPopupPacket->addOption(POPUP_STABLERETRIEVE, 6127, POPUPFLAG_COLOR, 0xFFFF);
-					break;
-
-				case NPCBRAIN_VENDOR:
-				case NPCBRAIN_HEALER:
-					m_pPopupPacket->addOption(POPUP_VENDORBUY, 6103, POPUPFLAG_COLOR, 0xFFFF);
-					m_pPopupPacket->addOption(POPUP_VENDORSELL, 6104, POPUPFLAG_COLOR, 0xFFFF);
-					break;
-
-				default:
-					break;
+			if ( pChar->NPC_IsVendor() )
+			{
+				m_pPopupPacket->addOption(POPUP_VENDORBUY, 6103, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_VENDORSELL, 6104, POPUPFLAG_COLOR, 0xFFFF);
 			}
 
 			if ( pChar->NPC_IsOwnedBy(m_pChar, false) )
 			{
-				bool bDead = pChar->IsStatFlag(STATF_DEAD);	// Checking once if character is dead, only happening for bonded pets.
-				if ( !bDead )
-					m_pPopupPacket->addOption(POPUP_PETGUARD, 6107, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETGUARD, 6107, POPUPFLAG_COLOR, 0xFFFF);
 				m_pPopupPacket->addOption(POPUP_PETFOLLOW, 6108, POPUPFLAG_COLOR, 0xFFFF);
 				if ( pChar->GetPack() )
 					m_pPopupPacket->addOption(POPUP_PETDROP, 6109, POPUPFLAG_COLOR, 0xFFFF);
-				if ( !bDead )
-					m_pPopupPacket->addOption(POPUP_PETKILL, 6111, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETKILL, 6111, POPUPFLAG_COLOR, 0xFFFF);
 				m_pPopupPacket->addOption(POPUP_PETSTOP, 6112, POPUPFLAG_COLOR, 0xFFFF);
 				m_pPopupPacket->addOption(POPUP_PETSTAY, 6114, POPUPFLAG_COLOR, 0xFFFF);
-				m_pPopupPacket->addOption(POPUP_PETFRIEND, 6110, POPUPFLAG_COLOR, 0xFFFF);
-				m_pPopupPacket->addOption(POPUP_PETTRANSFER, 6113, POPUPFLAG_COLOR, 0xFFFF);
+				if ( !pChar->IsStatFlag(STATF_Conjured) )
+				{
+					m_pPopupPacket->addOption(POPUP_PETFRIEND, 6110, POPUPFLAG_COLOR, 0xFFFF);
+					m_pPopupPacket->addOption(POPUP_PETTRANSFER, 6113, POPUPFLAG_COLOR, 0xFFFF);
+				}
 				m_pPopupPacket->addOption(POPUP_PETRELEASE, 6118, POPUPFLAG_COLOR, 0xFFFF);
 			}
 			else if ( pChar->Memory_FindObjTypes(m_pChar, MEMORY_FRIEND) )
@@ -2579,11 +2571,6 @@ void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do somethin
 		case POPUP_BANKBOX:
 			if ( pChar->m_pNPC->m_Brain == NPCBRAIN_BANKER )
 				pChar->NPC_OnHear("bank", m_pChar);
-			break;
-
-		case POPUP_BANKBALANCE:
-			if ( pChar->m_pNPC->m_Brain == NPCBRAIN_BANKER )
-				pChar->NPC_OnHear("balance", m_pChar);
 			break;
 
 		case POPUP_VENDORBUY:

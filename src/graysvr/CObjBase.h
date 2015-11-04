@@ -2398,7 +2398,7 @@ public:
 
 	bool IsVendor() const
 	{
-		return( m_Brain == NPCBRAIN_HEALER || m_Brain == NPCBRAIN_STABLE || m_Brain == NPCBRAIN_VENDOR );
+		return( m_Brain == NPCBRAIN_HEALER || m_Brain == NPCBRAIN_BANKER || m_Brain == NPCBRAIN_VENDOR || m_Brain == NPCBRAIN_STABLE );
 	}
 
 	int GetNpcAiFlags( const CChar *pChar ) const;

@@ -2706,3 +2706,6 @@ Changed tag.override.dropsound to DropSound.
 03-11-2015, Coruja
 Fixed: Possible Sphere crash when DClick on items with long LINK sequence (thx roberpot).
 Fixed: Key items linked to houses/boats not being recognized correctly on backpack when using locked items.
+
+04-11-2015, Coruja
+Changed: NPC Banker (brain_banker) is now considered an NPC vendor and can use BUY/SELL commands.
