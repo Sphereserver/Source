@@ -4000,8 +4000,16 @@ public:
 	bool Use_Train_PickPocketDip( CItem * pItem, bool fSetup );
 	bool Use_Train_Dummy( CItem * pItem, bool fSetup );
 	bool Use_Train_ArcheryButte( CItem * pButte, bool fSetup );
-	bool Use_Item( CItem * pItem, bool fLink = false );
+	/**
+	 * Uses an item (triggers item doubleclick)
+	 * @param pItem item being processed
+	 * @param fLink true if the method is following a linked item (not targeted directly)
+	 * return true if the action succeeded
+	 */
+	bool Use_Item(CItem *pItem, bool fLink = false);
 	bool Use_Obj( CObjBase * pObj, bool fTestTouch, bool fScript = false );
+private:
+	int Do_Use_Item(CItem * pItem, bool fLink = false);
 
 	// NPC AI -----------------------------------------
 private:
