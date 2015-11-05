@@ -2712,3 +2712,8 @@ Changed: NPC Banker (brain_banker) is now considered an NPC vendor and can use B
 [Sphere.ini]:
 	-Added new NPCTrainCost setting to tweak the cost of skills trained on NPCs vendors (credits to Nazghul, he did this setting 7 years ago but never enabled it, I just made some improvements and enabled it).
 	-Updated NPCTrainMax value.
+
+05-11-2015, XuN
+Fixed NPCs not reacting instantly when they see a new target, they stand in the place for some random time without moving against their target.
+Fixed Spawns having no NPC limit.
+Added MAGIFC_NOREVEALINVISIBLE		02000	// (Old style backwards) Casts won't reveal you on SpellCast if you are under Invisible spelleffect.

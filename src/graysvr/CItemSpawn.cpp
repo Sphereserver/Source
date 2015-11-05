@@ -284,7 +284,6 @@ void CItemSpawn::AddObj( CGrayUID uid )
 {
 	ADDTOCALLSTACK("CitemSpawn:AddObj");
 	unsigned char iMax = GetAmount() > 0 ? static_cast<unsigned char>(GetAmount()) : 1;
-	iMax += 1;	// We must give a +1 to create a 'free slot'
 	bool bIsSpawnChar = GetType() == IT_SPAWN_CHAR;
 	if (!uid)
 		return;

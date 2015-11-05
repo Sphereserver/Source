@@ -207,7 +207,10 @@ bool CChar::Spell_Teleport( CPointMap ptNew, bool bTakePets, bool bCheckAntiMagi
 	}
 
 	UpdateMove(ptOld, pClientIgnore, true);
-	Reveal();
+	if ( IsSetMagicFlags(MAGIFC_NOREVEALINVISIBLE))
+		Reveal(STATF_Hidden);
+	else
+		Reveal(STATF_Hidden|STATF_Invisible);
 
 	if ( bDisplayEffect )
 	{

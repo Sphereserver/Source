@@ -78,7 +78,8 @@ enum MAGICFLAGS_TYPE
 	MAGICF_OSIFORMULAS			= 0x0000200,	// calculated damage and duration based on OSI formulas
 	MAGICF_NOCASTFROZENHANDS	= 0x0000400,	// can't cast spells if got paralyzed holding something on hands
 	MAGICF_POLYMORPHSTATS		= 0x0000800,	// Polymorph spells give out stats based on base chars (old behaviour backwards).
-	MAGICF_OVERRIDEFIELDS		= 0x0001000		// Prevent cast multiple field spells on the same tile, making the new field tile remove the previous field
+	MAGICF_OVERRIDEFIELDS		= 0x0001000,	// Prevent cast multiple field spells on the same tile, making the new field tile remove the previous field
+	MAGIFC_NOREVEALINVISIBLE	= 0x0002000		// (Old style backwards) Casts won't reveal you on SpellCast if you are under Invisible spelleffect.
 };
 
 enum COMBATFLAGS_TYPE
