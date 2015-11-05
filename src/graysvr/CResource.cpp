@@ -81,13 +81,11 @@ CResource::CResource()
 	m_fGuardsOnMurderers	= true;
 	m_iSnoopCriminal	= 1000;
 	m_iTradeWindowSnooping = true;
-	m_iTrainSkillPercent	= 50;
-	m_iTrainSkillMax	= 500;
+	m_iTrainSkillCost = 1;
+	m_iTrainSkillMax = 420;
+	m_iTrainSkillPercent = 30;
 	m_fDeadCannotSeeLiving = 0;
 	m_iMediumCanHearGhosts	= 1000;
-#ifdef _ALPHASPHERE
-	m_iTrainSkillCost	= 1;
-#endif
 	m_iSkillPracticeMax	= 300;
 	m_iPacketDeathAnimation = true;
 	m_fCharTags			= true;
@@ -537,11 +535,9 @@ enum RC_TYPE
 	RC_NPCAI,					// m_iNpcAi
 	RC_NPCNOFAMETITLE,			// m_NPCNoFameTitle
 	RC_NPCSKILLSAVE,			// m_iSaveNPCSkills
+	RC_NPCTRAINCOST,			// m_iTrainSkillCost
 	RC_NPCTRAINMAX,				// m_iTrainSkillMax
 	RC_NPCTRAINPERCENT,			// m_iTrainSkillPercent
-#ifdef _ALPHASPHERE
-	RC_NPCTRAINSKILLCOST,		// m_iTrainSkillCost
-#endif
 	RC_NTSERVICE,				// m_fUseNTService
 	RC_OPTIONFLAGS,				// m_iOptionFlags
 	RC_OVERSKILLMULTIPLY,		// m_iOverSkillMultiply
@@ -778,11 +774,9 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "NPCAI",					{ ELEM_INT,		OFFSETOF(CResource,m_iNpcAi),				0 }},
 	{ "NPCNOFAMETITLE",			{ ELEM_BOOL,	OFFSETOF(CResource,m_NPCNoFameTitle),		0 }},
 	{ "NPCSKILLSAVE",			{ ELEM_INT,		OFFSETOF(CResource,m_iSaveNPCSkills),	0 }},
+	{ "NPCTRAINCOST",			{ ELEM_INT,		OFFSETOF(CResource,m_iTrainSkillCost),		0 }},
 	{ "NPCTRAINMAX",			{ ELEM_INT,		OFFSETOF(CResource,m_iTrainSkillMax),		0 }},
 	{ "NPCTRAINPERCENT",		{ ELEM_INT,		OFFSETOF(CResource,m_iTrainSkillPercent),	0 }},
-#ifdef _ALPHASPHERE
-	{ "NPCTRAINSKILLCOST",		{ ELEM_INT,		OFFSETOF(CResource,m_iTrainSkillCost),		0 }},
-#endif
 	{ "NTSERVICE",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUseNTService),			0 }},
 	{ "OPTIONFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iOptionFlags),				0 }},
 	{ "OVERSKILLMULTIPLY",		{ ELEM_INT,		OFFSETOF(CResource,m_iOverSkillMultiply),		0 }},

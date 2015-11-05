@@ -2709,3 +2709,6 @@ Fixed: Key items linked to houses/boats not being recognized correctly on backpa
 
 04-11-2015, Coruja
 Changed: NPC Banker (brain_banker) is now considered an NPC vendor and can use BUY/SELL commands.
+[Sphere.ini]:
+	-Added new NPCTrainCost setting to tweak the cost of skills trained on NPCs vendors (credits to Nazghul, he did this setting 7 years ago but never enabled it, I just made some improvements and enabled it).
+	-Updated NPCTrainMax value.

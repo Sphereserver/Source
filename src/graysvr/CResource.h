@@ -791,13 +791,11 @@ public:
 	int  m_iHitsHungerLoss;		// How many % of HP will loose char on starving
 	int  m_iMaxBaseSkill;		// Maximum value for base skills at char creation
 	bool m_fInitHiddenSkills;	// Hidden skills will be initialised at char creation
-	int  m_iTrainSkillPercent;	// How much can NPC's train up to ?
+	int	 m_iTrainSkillCost;
 	int	 m_iTrainSkillMax;
+	int  m_iTrainSkillPercent;	// How much can NPC's train up to ?
 	int  m_fDeadCannotSeeLiving;
 	int  m_iMediumCanHearGhosts;	// At this Spirit Speak skill level players can understand ghosts speech instead hear 'oOOoO ooO'
-#ifdef _ALPHASPHERE
-	int m_iTrainSkillCost;
-#endif
 	int	 m_iMountHeight;		// The height at which a mounted person clears ceilings.
 	int	 m_iMoveRate;			// The percent rate of NPC movement
 	int  m_iArcheryMaxDist;

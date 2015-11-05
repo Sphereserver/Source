@@ -497,11 +497,11 @@ int CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 
 	int iSkillSrcVal = pCharSrc->Skill_GetBase(Skill);
 	int iSkillVal = Skill_GetBase(Skill);
-	int iTrainCost = NPC_GetTrainMax( pCharSrc, Skill ) - iSkillSrcVal;
+	int iTrainVal = NPC_GetTrainMax(pCharSrc, Skill) - iSkillSrcVal;
 
 	// Train npc skill cap
 	int iMaxDecrease = 0;
-	if ((pCharSrc->GetSkillTotal() + iTrainCost) > pCharSrc->Skill_GetMax(SKILL_MAX))
+	if ((pCharSrc->GetSkillTotal() + iTrainVal) > pCharSrc->Skill_GetMax(SKILL_MAX))
 	{	
 		for (size_t i = SKILL_NONE + 1; i < g_Cfg.m_iMaxSkill; i++ )
 		{
@@ -511,11 +511,11 @@ int CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 			if ( pCharSrc->Skill_GetLock(static_cast<SKILL_TYPE>(i)) == SKILLLOCK_DOWN )
 				iMaxDecrease += pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i));
 		}
-		iMaxDecrease = minimum( iTrainCost, iMaxDecrease);
+		iMaxDecrease = minimum(iTrainVal, iMaxDecrease);
 	}
 	else
 	{
-		iMaxDecrease = iTrainCost;
+		iMaxDecrease = iTrainVal;
 	}
 
 	LPCTSTR pszMsg;
@@ -552,42 +552,13 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem * pGold)
 		return false;
 	}
 
-	int iTrainCost = NPC_OnTrainCheck(pCharSrc, skill);
+	int iTrainCost = NPC_OnTrainCheck(pCharSrc, skill) * g_Cfg.m_iTrainSkillCost;
 	if (( iTrainCost <= 0 ) || !pGold )
 		return false;
 
 	Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_SUCCESS ) );
 
 	// Consume as much money as we can train for.
-#ifdef _ALPHASPHERE
-	int iTrainPricePerPercent=1;
-
-	CVarDefCont * pValue = GetKey("OVERRIDE.TRAINSKILLCOST",true);
-	if ( pValue ) 
-	{
-		iTrainPricePerPercent = pValue->GetValNum();
-	} else {
-		iTrainPricePerPercent = g_Cfg.m_iTrainSkillCost;
-	}
-
-	if ( pGold->GetAmount() < (iTrainCost * iTrainPricePerPercent) )
-	{
-		iTrainCost = (pGold->GetAmount() / iTrainPricePerPercent);
-	}
-	else if ( pGold->GetAmount() == (iTrainCost * iTrainPricePerPercent) )
-	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_THATSALL_1 ) );
-		pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_NONE;
-	}
-	else
-	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_THATSALL_2 ) );
-		pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_NONE;
-
-		// Give change back.
-		pGold->UnStackSplit( (iTrainCost * iTrainPricePerPercent), pCharSrc );
-	}
-#else
 	if ( pGold->GetAmount() < iTrainCost )
 	{
 		iTrainCost = pGold->GetAmount();
@@ -605,7 +576,6 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem * pGold)
 		// Give change back.
 		pGold->UnStackSplit( iTrainCost, pCharSrc );
 	}
-#endif
 	GetPackSafe()->ContentAdd( pGold );	// take my cash.
 
 	// Give credit for training.
@@ -687,7 +657,7 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 			continue;
 
 		// Can we train in this ?
-		int iTrainCost = NPC_OnTrainCheck( pCharSrc, static_cast<SKILL_TYPE>(i));
+		int iTrainCost = NPC_OnTrainCheck(pCharSrc, static_cast<SKILL_TYPE>(i)) * g_Cfg.m_iTrainSkillCost;
 		if ( iTrainCost <= 0 )
 			return true;
 
