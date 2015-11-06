@@ -283,7 +283,6 @@
 			static LPCTSTR const sm_szVerbKeys[];
 
 		private:
-			CFileObj * GetObjectAt( size_t iWhere );
 			void ResizeContainer( size_t iNewRange );
 
 		public:

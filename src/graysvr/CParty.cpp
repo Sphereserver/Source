@@ -161,22 +161,6 @@ bool CPartyDef::GetLootFlag( const CChar *pChar )
 	return false;
 }
 
-bool CPartyDef::FixWeirdness( CChar *pChar )
-{
-	ADDTOCALLSTACK("CPartyDef::FixWeirdness");
-	if ( !pChar )
-		return false;
-	if ( pChar->m_pParty != this )
-		return (DetachChar(pChar) != m_Chars.BadIndex());	// this is bad!
-	if ( !m_Chars.IsCharIn(pChar) )
-	{
-		pChar->m_pParty = NULL;
-		return true;
-	}
-
-	return false;
-}
-
 // ---------------------------------------------------------
 void CPartyDef::AddStatsUpdate( CChar *pChar, PacketSend *pPacket )
 {

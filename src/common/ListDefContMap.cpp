@@ -855,7 +855,6 @@ void CListDefMap::ClearKeys(LPCTSTR mask)
 
 		while ( i != m_Container.end() )
 		{
-			pListBase = NULL;
 			pListBase = (*i);
 
 			if ( pListBase && ( strstr(pListBase->GetKey(), sMask.GetPtr()) ) )

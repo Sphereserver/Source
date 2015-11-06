@@ -89,18 +89,6 @@ BOOL CNTService::SetServiceStatus( DWORD dwCurrentState, DWORD dwWin32ExitCode, 
 	return fResult;
 }
 
-//	PURPOSE:  Handles console control events.  This application only handles Ctrl-C and Ctrl-Break events.
-BOOL WINAPI CNTService::ControlHandler(DWORD dwCtrlType)	// static
-{
-	if (( dwCtrlType == CTRL_BREAK_EVENT ) || ( dwCtrlType == CTRL_C_EVENT ))
-	{
-		g_Service.ServiceStop();
-		return TRUE;
-	}
-	g_Service.SetServiceStatus(g_Service.m_sStatus.dwCurrentState, NO_ERROR, 3000);
-	return FALSE;
-}
-
 //	PURPOSE:  This function is called by the SCM whenever ControlService() is called on this service.  The
 //		SCM does not start the service through this function.
 void WINAPI CNTService::service_ctrl(DWORD dwCtrlCode) // static
@@ -229,7 +217,7 @@ bailout3:
 		else
 		{
 			char szMessage[80];
-			sprintf(szMessage, "%ld.", rc);
+			sprintf(szMessage, "%d.", rc);
 			ReportEvent(EVENTLOG_ERROR_TYPE, 0, "service stopped abnormally", szMessage);
 		}
 	}

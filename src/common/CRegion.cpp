@@ -48,13 +48,6 @@ CGRegion::CGRegion()
 	m_rectUnion.SetRectEmpty();
 }
 
-bool CGRegion::RealizeRegion()
-{
-	ADDTOCALLSTACK("CGRegion::RealizeRegion");
-	if ( IsRegionEmpty()) return( false );
-	return( true );
-}
-
 size_t CGRegion::GetRegionRectCount() const
 {
 	ADDTOCALLSTACK("CGRegion::GetRegionRectCount");

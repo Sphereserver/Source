@@ -1908,7 +1908,6 @@ private:
 	bool Ship_CanMoveTo( const CPointMap & pt ) const;
 	bool Ship_MoveDelta( CPointBase pdelta );
 	bool Ship_OnMoveTick();
-	unsigned char Ship_GetMovePeriod();
 
 	virtual bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
 	virtual void r_Write( CScript & s );

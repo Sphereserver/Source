@@ -458,8 +458,6 @@ public:
 class CGRegion
 {
 	// A bunch of rectangles forming an area.
-private:
-	virtual bool RealizeRegion();
 public:
 	static const char *m_sClassName;
 	CGRect m_rectUnion;	// The union rectangle.

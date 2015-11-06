@@ -71,7 +71,6 @@ private:
 	// List manipulation
 	size_t AttachChar( CChar * pChar );
 	size_t DetachChar( CChar * pChar );
-	bool FixWeirdness( CChar * pChar ); // true = weirdness found
 
 public:
 	CPartyDef( CChar * pCharInvite, CChar * pCharAccept );

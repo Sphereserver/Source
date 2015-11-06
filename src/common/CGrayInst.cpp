@@ -498,7 +498,7 @@ unsigned long long HashFileName(CGString csFile)
 {
 	UINT eax, ecx, edx, ebx, esi, edi;
 
-	eax = ecx = edx = ebx = esi = edi = 0;
+	eax = ecx = edx = 0;
 	ebx = edi = esi = (INT32) csFile.GetLength() + 0xDEADBEEF;
 
 	int i = 0;

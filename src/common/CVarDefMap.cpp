@@ -703,7 +703,6 @@ void CVarDefMap::ClearKeys(LPCTSTR mask)
 
 		while ( i != m_Container.end() )
 		{
-			pVarBase = NULL;
 			pVarBase = (*i);
 
 			if ( pVarBase && ( strstr(pVarBase->GetKey(), sMask.GetPtr()) ) )

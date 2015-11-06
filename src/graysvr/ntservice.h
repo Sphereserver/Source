@@ -27,7 +27,6 @@ private:
 	void ServiceStartMain(DWORD dwArgc, LPTSTR *lpszArgv);
 
 	// Our exported API.
-	static BOOL WINAPI ControlHandler(DWORD dwCtrlType);
 	static void WINAPI service_ctrl(DWORD dwCtrlCode);
 	static void WINAPI service_main(DWORD dwArgc, LPTSTR *lpszArgv);
 
