@@ -1,9 +1,8 @@
-//
-// CQueue.cpp
-//
+/**
+* @file CQueue.cpp
+*/
 
 #include "../graysvr/graysvr.h"
-#include "CQueue.h"
 
 CQueueBytes::CQueueBytes()
 {
