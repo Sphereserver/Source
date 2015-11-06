@@ -1013,6 +1013,7 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 							m_UIDLastNewItem = GetUID();	// Setting m_UIDLastNewItem to CChar's UID to prevent calling any following functions meant to be called on that item
 							continue;
 						}
+						m_UIDLastNewItem.InitUID();	//Clearing the attr for the next cycle
 
 						if ( iCmd == ITC_ITEMNEWBIE )
 						{
@@ -1053,7 +1054,6 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 				return (tRet == TRIGRET_RET_FALSE);
 			}
 		}
-		m_UIDLastNewItem.InitUID();	//Clearing the attr for the next cycle
 	}
 
 	return( true );

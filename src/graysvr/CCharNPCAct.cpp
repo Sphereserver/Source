@@ -1477,7 +1477,7 @@ bool CChar::NPC_LookAround( bool fForceCheckItems )
 			if ( Calc_GetRandVal(iDist) )
 				continue;	// can't see them.
 		}
-		if ( !NPC_LookAtChar(pChar, iDist) )
+		if ( NPC_LookAtChar(pChar, iDist) )
 			return true;
 	}
 
