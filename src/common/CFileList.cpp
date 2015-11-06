@@ -1,6 +1,6 @@
-//
-// CFileList
-//
+/**
+* @file CFileList.cpp
+*/
 
 #include "graycom.h"
 #include "CFileList.h"
@@ -8,10 +8,7 @@
 #if defined(_WIN32)
 #include <io.h> 		// findfirst
 #else	// LINUX
-#include <unistd.h>
 #include <dirent.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #endif
 
 // Similar to the MFC CFileFind
