@@ -9,11 +9,11 @@ bool CGrayInstall::FindInstall()
 
 	static LPCTSTR m_szKeys[] =
 	{
-		"Software\\Menasoft\\" GRAY_FILE,
-		"Software\\Origin Worlds Online\\Ultima Online\\1.0", 
-		"Software\\Origin Worlds Online\\Ultima Online\\KR Legacy Beta", 
-		"Software\\Origin Worlds Online\\Ultima Online Third Dawn\\1.0", 
-		"Electronic Arts\\EA Games\\Ultima Online Stygian Abyss Classic"
+		"Software\\Origin Worlds Online\\Ultima Online\\1.0",
+		"Software\\Origin Worlds Online\\Ultima Online Third Dawn\\1.0",
+		"Software\\Origin Worlds Online\\Ultima Online\\KR Legacy Beta",
+		"Software\\Electronic Arts\\EA Games\\Ultima Online Stygian Abyss Classic",
+		"Software\\Electronic Arts\\EA Games\\Ultima Online Classic"
 	};
 	
 	HKEY hKey = NULL;
