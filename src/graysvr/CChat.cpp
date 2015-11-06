@@ -597,20 +597,19 @@ void CChat::GenerateChatName(CGString &sName, const CClient * pClient) // static
 	sName.Copy(sTempName.GetPtr());
 }
 
-void CChat::Broadcast(CChatChanMember * pFrom, LPCTSTR pszText, CLanguageID lang, bool fOverride)
+void CChat::Broadcast(CChatChanMember *pFrom, LPCTSTR pszText, CLanguageID lang, bool fOverride)
 {
 	ADDTOCALLSTACK("CChat::Broadcast");
-
 	ClientIterator it;
-	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
+	for (CClient *pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
-		if ( ! pClient->IsChatActive())
+		if (!pClient->IsChatActive())
 			continue;
-		if ( fOverride || ( ! fOverride && pClient->IsReceivingAllowed()))
+		if (fOverride || pClient->IsReceivingAllowed())
 		{
 			CGString sName;
 			DecorateName(sName, pFrom, fOverride);
-			pClient->SendChatMsg(CHATMSG_PlayerTalk, sName, pszText, lang );
+			pClient->SendChatMsg(CHATMSG_PlayerTalk, sName, pszText, lang);
 		}
 	}
 }

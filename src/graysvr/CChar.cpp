@@ -1092,42 +1092,40 @@ void CChar::NPC_LoadScript( bool fRestock )
 void CChar::NPC_CreateTrigger()
 {
 	ADDTOCALLSTACK("CChar::NPC_CreateTrigger");
+	if (!m_pNPC)
+		return;
 
-	CCharBase * pCharDef = Char_GetDef();
-
+	CCharBase *pCharDef = Char_GetDef();
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 	LPCTSTR pszTrigName = "@Create";
-	CTRIG_TYPE iAction = (CTRIG_TYPE) FindTableSorted( pszTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
+	CTRIG_TYPE iAction = (CTRIG_TYPE)FindTableSorted(pszTrigName, sm_szTrigName, COUNTOF(sm_szTrigName) - 1);
 
-	if ( m_pNPC != NULL )
+	// 2) TEVENTS
+	for (size_t i = 0; i < pCharDef->m_TEvents.GetCount(); ++i)
 	{
-		// 2) TEVENTS
-		for ( size_t i = 0; i < pCharDef->m_TEvents.GetCount(); ++i )
-		{
-			CResourceLink * pLink = pCharDef->m_TEvents[i];
-			if ( !pLink || !pLink->HasTrigger(iAction) )
-				continue;
-			CResourceLock s;
-			if ( !pLink->ResourceLock(s) )
-				continue;
-			iRet = CScriptObj::OnTriggerScript(s, pszTrigName, this, 0);
-			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
-				return;
-		}
+		CResourceLink * pLink = pCharDef->m_TEvents[i];
+		if (!pLink || !pLink->HasTrigger(iAction))
+			continue;
+		CResourceLock s;
+		if (!pLink->ResourceLock(s))
+			continue;
+		iRet = CScriptObj::OnTriggerScript(s, pszTrigName, this, 0);
+		if (iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT)
+			return;
+	}
 
-		// 4) EVENTSPET triggers
-		for ( size_t i = 0; i < g_Cfg.m_pEventsPetLink.GetCount(); ++i )
-		{
-			CResourceLink * pLink = g_Cfg.m_pEventsPetLink[i];
-			if ( !pLink || !pLink->HasTrigger(iAction) )
-				continue;
-			CResourceLock s;
-			if ( !pLink->ResourceLock(s) )
-				continue;
-			iRet = CScriptObj::OnTriggerScript(s, pszTrigName, this, 0);
-			if ( iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT )
-				return;
-		}
+	// 4) EVENTSPET triggers
+	for (size_t i = 0; i < g_Cfg.m_pEventsPetLink.GetCount(); ++i)
+	{
+		CResourceLink * pLink = g_Cfg.m_pEventsPetLink[i];
+		if (!pLink || !pLink->HasTrigger(iAction))
+			continue;
+		CResourceLock s;
+		if (!pLink->ResourceLock(s))
+			continue;
+		iRet = CScriptObj::OnTriggerScript(s, pszTrigName, this, 0);
+		if (iRet != TRIGRET_RET_FALSE && iRet != TRIGRET_RET_DEFAULT)
+			return;
 	}
 }
 
@@ -2006,10 +2004,7 @@ do_default:
 					}
 					if ( m_notoSaves.size() )
 					{
-						size_t notoIndex = m_notoSaves.size();
-
-						notoIndex = Exp_GetVal(pszKey);
-
+						size_t notoIndex = Exp_GetVal(pszKey);
 						SKIP_SEPARATORS(pszKey);
 						if ( notoIndex < m_notoSaves.size() )
 						{

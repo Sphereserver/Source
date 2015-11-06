@@ -277,17 +277,17 @@ class CScrollBar : public CWindow
 // Constructors
 public:
 	static const char *m_sClassName;
-	CScrollBar::CScrollBar() 
+	CScrollBar() 
 	{
 	}
 
 // Attributes
-	void CScrollBar::GetScrollRange(LPINT lpMinPos, LPINT lpMaxPos) const
+	void GetScrollRange(LPINT lpMinPos, LPINT lpMaxPos) const
 	{
 		ASSERT(IsWindow());
 		::GetScrollRange(m_hWnd, SB_CTL, lpMinPos, lpMaxPos);
 	}
-	BOOL CScrollBar::GetScrollInfo(LPSCROLLINFO lpScrollInfo, UINT nMask)
+	BOOL GetScrollInfo(LPSCROLLINFO lpScrollInfo, UINT nMask)
 	{
 		lpScrollInfo->cbSize = sizeof(*lpScrollInfo);
 		lpScrollInfo->fMask = nMask;

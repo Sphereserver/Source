@@ -784,8 +784,7 @@ void CChar::NotoSave_Resend( int id )
 	if ( ! pChar )
 		return;
 	NotoSave_Delete( pChar );
-	CObjBase *	pObj	= pChar->GetChar();
-	pObj	= dynamic_cast <CObjBase*>( pChar->GetTopLevelObj() );
+	CObjBaseTemplate *pObj = pChar->GetTopLevelObj();
 	if (  GetDist( pObj ) < UO_MAP_VIEW_SIGHT )
 		Noto_GetFlag( pChar, true , true );
 }
@@ -793,13 +792,11 @@ void CChar::NotoSave_Resend( int id )
 int CChar::NotoSave_GetID( CChar * pChar )
 {
 	ADDTOCALLSTACK("CChar::NotoSave_GetID(CChar)");
-	if ( !pChar )
+	if ( !pChar || !m_notoSaves.size() )
 		return -1;
-	if ( !m_notoSaves.size() )
-		return -1;
-	int count = 0;
 	if ( NotoSave() )
 	{
+		int count = 0;
 		for ( std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); it++)
 		{
 			NotoSaves & refNotoSave = m_notoSaves.at(count);
@@ -1194,9 +1191,7 @@ bool CChar::CheckCrimeSeen( SKILL_TYPE SkillToSee, CChar * pCharMark, const CObj
 				Args.m_iN1 = SkillToSee ? SkillToSee : pCharMark->Skill_GetActive();;
 				Args.m_iN2 = pItem ? (DWORD)pItem->GetUID() : 0;
 				Args.m_pO1 = pCharMark;
-				int iRet = TRIGRET_RET_DEFAULT;
-
-				iRet = pChar->OnTrigger(CTRIG_SeeSnoop, this, &Args);
+				TRIGRET_TYPE iRet = pChar->OnTrigger(CTRIG_SeeSnoop, this, &Args);
 
 				if (iRet == TRIGRET_RET_TRUE)
 					continue;
@@ -3158,7 +3153,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			if ( iTyp == DAMAGE_HIT_BLUNT )		// if type did not change in the trigger, default iTyp is set
 			{
 				CItem *pWeapon = m_uidWeapon.ItemFind();
-				CItemBase *pWeaponDef = NULL;
 				if ( pWeapon )
 				{
 					CVarDefCont * pDamTypeOverride = pWeapon->GetKey("OVERRIDE.DAMAGETYPE", true);
@@ -3166,7 +3160,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 						iTyp = static_cast<DAMAGE_TYPE>(pDamTypeOverride->GetValNum());
 					else
 					{
-						pWeaponDef = pWeapon->Item_GetDef();
+						CItemBase *pWeaponDef = pWeapon->Item_GetDef();
 						switch ( pWeaponDef->GetType() )
 						{
 							case IT_WEAPON_SWORD:
@@ -3690,7 +3684,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( m_wBloodHue != static_cast<HUE_TYPE>(-1) )
 		{
 			static const ITEMID_TYPE sm_Blood[] = { ITEMID_BLOOD1, ITEMID_BLOOD2, ITEMID_BLOOD3, ITEMID_BLOOD4, ITEMID_BLOOD5, ITEMID_BLOOD6, ITEMID_BLOOD_SPLAT };
-			int iBloodQty = g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE ? Calc_GetRandVal2(4, 5) : Calc_GetRandVal2(1, 2);
+			int iBloodQty = (g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE) ? Calc_GetRandVal2(4, 5) : Calc_GetRandVal2(1, 2);
 
 			for ( int i = 0; i < iBloodQty; i++ )
 			{

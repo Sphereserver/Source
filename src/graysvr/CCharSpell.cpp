@@ -1601,7 +1601,7 @@ bool CChar::Spell_Equip_OnTick( CItem * pItem )
 			// Both potions and poison spells use this.
 			// m_itSpell.m_spelllevel = strength of the poison ! 0-1000
 
-			static const int sm_iPoisonMax[] = { 2, 4, 6, 8 };
+			static const int sm_iPoisonMax[] = { 2, 4, 6, 8, 10 };
 
 			if (iCharges <= 0)
 				return(false);
@@ -2950,7 +2950,7 @@ int CChar::Spell_CastStart()
 		}
 	}
 
-	INT64 iWaitTime = IsPriv(PRIV_GM) ? 1 : pSpellDef->m_CastTime.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(iSkill)));
+	int iWaitTime = IsPriv(PRIV_GM) ? 1 : pSpellDef->m_CastTime.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(iSkill)));
 	iWaitTime -= GetDefNum("FASTERCASTING", true, true) * 2;	//correct value is 0.25, but sphere can handle only 0.2
 	if ( iWaitTime < 1 )
 		iWaitTime = 1;

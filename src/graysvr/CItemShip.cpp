@@ -615,29 +615,6 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 	return true;
 }
 
-unsigned char CItemShip::Ship_GetMovePeriod()
-{
-	ADDTOCALLSTACK("CItemShip::Ship_GetMovePeriod");			
-	/*Intervals:
-		*drift forward
-		* fast | 0.25 | 0.25
-		* slow | 0.50 | 0.50
-		*
-	*/
-	CItemMulti * pItemMulti = dynamic_cast<CItemMulti*>(this);
-	switch (pItemMulti->m_shipSpeed.period)
-	{
-		case 0:
-		case 1:
-			return 8;
-		case 2:
-			return 4;
-		default:
-			break;
-	}
-	return pItemMulti->m_shipSpeed.period;
-}
-
 bool CItemShip::Ship_OnMoveTick()
 {
 	ADDTOCALLSTACK("CItemShip::Ship_OnMoveTick");

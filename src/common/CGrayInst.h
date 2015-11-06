@@ -94,6 +94,7 @@ public:
 	{
 		memset(m_FileFormat, 0, sizeof(m_FileFormat));
 		memset(m_IsMapUopFormat, 0, sizeof(m_IsMapUopFormat));
+		memset(m_UopMapAddress, 0, sizeof(m_UopMapAddress));
 	};
 
 private:

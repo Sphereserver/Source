@@ -103,9 +103,7 @@ void CClient::Event_Item_Dye( CGrayUID uid, HUE_TYPE wHue ) // Rehue an item
 	if (m_pChar == NULL)
 		return;
 
-	CObjBase	*pObj = uid.ObjFind();
-	CItem	*pItem;
-
+	CObjBase *pObj = uid.ObjFind();
 	if ( !m_pChar->CanTouch(pObj) )
 	{
 		SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_DYE_REACH));
@@ -120,7 +118,7 @@ void CClient::Event_Item_Dye( CGrayUID uid, HUE_TYPE wHue ) // Rehue an item
 	{
 		if ( !pObj->IsChar() )
 		{
-			pItem = dynamic_cast<CItem *>(pObj);
+			CItem *pItem = dynamic_cast<CItem *>(pObj);
 			if (pItem == NULL || (( pObj->GetBaseID() != 0xFAB ) && (!pItem->IsType(IT_DYE_VAT) || !IsSetOF(OF_DyeType))))
 				return;
 

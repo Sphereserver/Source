@@ -1148,17 +1148,16 @@ bool CChar::UpdateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward , BY
 					action1 = NANIM_ATTACK;
 					subaction = NANIM_ATTACK_WRESTLING;
 					break;
-					/*case ANIM_BOW:		//I'm commenting these 2 because they are not showing properly when Hovering/Mounted, so we skip them.
+				/*case ANIM_BOW:		//I'm commenting these 2 because they are not showing properly when Hovering/Mounted, so we skip them.
 					action1 = NANIM_EMOTE;
 					subaction = NANIM_EMOTE_BOW;
 					break;
-					case ANIM_SALUTE:
+				case ANIM_SALUTE:
 					action1 = NANIM_EMOTE;
 					subaction = NANIM_EMOTE_SALUTE;
 					break;*/
 				case ANIM_EAT:
 					action1 = NANIM_EAT;
-					break;
 					break;
 				default:
 					break;
@@ -3025,7 +3024,6 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 	}
 
 	// ok to go here ? physical blocking objects ?
-	int iStamReq = 0;
 	WORD wBlockFlags = 0;
 	height_t ClimbHeight = 0;
 	CRegionBase *pArea = NULL;
@@ -3045,6 +3043,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 		return NULL;
 
 	EXC_SET("Creature bumping");
+	int iStamReq = 0;
 	if ( fCheckChars && !IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Insubstantial) )
 	{
 		CItem * pPoly = LayerFind(LAYER_SPELL_Polymorph);
