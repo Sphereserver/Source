@@ -654,51 +654,6 @@ int CChar::NPC_GetHostilityLevelToward( const CChar * pCharTarg ) const
 	{
 		iHostility += 50;
 	}
-
-#ifdef _ALPHASPHERE
-	/* 
-		foes or allies? 
-		Defined by tag.ff_group, tag.ff_foe and/or tag.ff_ally
-	*/
-	CVarDefCont	*pVar, *pVarTarg;
-	int iffCounter=0, iffGroup=0;
-
-	pVarTarg = pCharTarg->m_TagDefs.GetKey("FF_GROUP");
-	if ( pVarTarg )
-	{
-		iffGroup = pVarTarg->GetValNum();
-		pVar = m_TagDefs.GetKey("FF_FOE");
-		if ( pVar )
-		{
-			iffCounter = pVar->GetValNum();
-			if ( iffCounter & iffGroup )
-			{
-				// is an enemy
-				iHostility += 70;
-			}
-		} else {
-			pVar = m_TagDefs.GetKey("FF_ALLY");
-			if ( pVar )
-			{
-				iffCounter = pVar->GetValNum();
-				if ( iffCounter & iffGroup )
-				{
-					// is an ally
-					iHostility -= 70;
-				}
-			}
-		}
-
-		if ( iHostility > 100 )
-			iHostility = 100;
-		else if ( iHostility < -100 )
-			iHostility = -100;
-		TCHAR *pszTmp = Str_GetTemp();
-		sprintf(pszTmp,"char = %s, target = %s, iHostility = %d, iffGroup = %d, iffCounter = %d\n",GetName(),pCharTarg->GetName(),iHostility,iffGroup,iffCounter);
-		DEBUG_WARN((pszTmp));
-	}
-#endif
-
 	return( iHostility );
 }
 

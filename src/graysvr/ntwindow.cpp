@@ -1129,10 +1129,9 @@ bool NTWindow_OnTick( int iWaitmSec )
 				}
 				else if ( msg.wParam == VK_TAB )	// TAB (auto-complete)
 				{
-					TCHAR * pszTemp = Str_GetTemp();
 					size_t selStart, selEnd;
-					TCHAR * p = NULL;
-					CEdit * inp = &theApp.m_wndMain.m_wndInput;
+					TCHAR *pszTemp = Str_GetTemp();
+					CEdit *inp = &theApp.m_wndMain.m_wndInput;
 
 					//	get current selection (to be replaced), suppose it being our "completed" word
 					inp->GetSel(selStart, selEnd);
@@ -1157,7 +1156,7 @@ bool NTWindow_OnTick( int iWaitmSec )
 						}
 
 						// detect part of the text we are entered so far
-						p = &pszTemp[strlen(pszTemp) - 1];
+						TCHAR *p = &pszTemp[strlen(pszTemp) - 1];
 						while (( p >= pszTemp ) && ( *p != '.' ) && ( *p != ' ' ) && ( *p != '/' ) && ( *p != '=' ))
 						{
 							p--;

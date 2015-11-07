@@ -1063,7 +1063,7 @@ void NetworkIn::tick(void)
 					{
 						DEBUGNETWORK(("%lx:Receiving new client login handshake.\n", client->id()));
 
-						CEvent* pEvent = (CEvent*)buffer;
+						CEvent *pEvent = static_cast<CEvent*>(buffer);
 
 						if (client->m_newseed)
 						{
@@ -1160,7 +1160,7 @@ void NetworkIn::tick(void)
 			// log in the client
 			EXC_SET("messages - setup");
 			client->m_client->SetConnectType(CONNECT_CRYPT);
-			client->m_client->xProcessClientSetup((CEvent*)buffer, received);
+			client->m_client->xProcessClientSetup(static_cast<CEvent*>(buffer), received);
 			continue;
 		}
 
@@ -1192,7 +1192,7 @@ void NetworkIn::tick(void)
 								continue;
 
 							received -= iEncKrLen;
-							client->m_client->xProcessClientSetup( (CEvent*)(evt.m_Raw + iEncKrLen), received);
+							client->m_client->xProcessClientSetup(static_cast<CEvent*>(evt.m_Raw + iEncKrLen), received);
 							break;
 						}
 						else

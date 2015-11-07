@@ -242,14 +242,14 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	}
 
 	// Parts of multis ?
-	const CGrayMulti * pMulti 			= NULL;		// Multi Def (multi check)
-	const CUOMultiItemRec2 * pMultiItem = NULL;		// Multi item iterator
-	CRegionBase * pRegion				= NULL;
 	CRegionLinks rlinks;
-	size_t iRegionQty = pt.GetRegions( REGION_TYPE_MULTI, rlinks );
+	size_t iRegionQty = pt.GetRegions(REGION_TYPE_MULTI, rlinks);
 	if ( iRegionQty > 0 )
 	{
-		for ( size_t iRegion = 0; iRegion < iRegionQty; pMulti = NULL, ++iRegion)
+		CRegionBase *pRegion = NULL;
+		const CGrayMulti *pMulti = NULL;			// Multi Def (multi check)
+		const CUOMultiItemRec2 *pMultiItem = NULL;	// Multi item iterator
+		for ( size_t iRegion = 0; iRegion < iRegionQty; pMulti = NULL, ++iRegion )
 		{
 			pRegion = rlinks.GetAt(iRegion);
 			pItem = pRegion->GetResourceID().ItemFind();

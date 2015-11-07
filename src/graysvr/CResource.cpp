@@ -1325,13 +1325,11 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			sVal.FormatVal(0);
 
 			CPointMap pt;
-			size_t iArgs = 0;
-
 			if ( IsDigit( pszKey[0] ) || pszKey[0] == '-' )
 			{
 				pt.m_map = 0; pt.m_z = 0;
 				TCHAR * ppVal[4];
-				iArgs = Str_ParseCmds( const_cast<TCHAR*>(pszKey), ppVal, COUNTOF( ppVal ), "," );
+				size_t iArgs = Str_ParseCmds( const_cast<TCHAR*>(pszKey), ppVal, COUNTOF( ppVal ), "," );
 
 				switch ( iArgs )
 				{

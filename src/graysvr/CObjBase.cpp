@@ -661,14 +661,13 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 {
 	ADDTOCALLSTACK("CObjBase::r_WriteVal");
 	EXC_TRY("WriteVal");
-	LPCTSTR pszArgs	= NULL;
 
 	int index = FindTableHeadSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 );
 	if ( index < 0 )
 	{
 		// RES_FUNCTION call
 		// Is it a function returning a value ? Parse args ?
-		pszArgs = strchr( pszKey, ' ' );
+		LPCTSTR pszArgs = strchr(pszKey, ' ');
 		if ( pszArgs != NULL )
 		{
 			pszArgs++;

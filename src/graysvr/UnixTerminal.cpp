@@ -191,21 +191,21 @@ void UnixTerminal::prepareColor()
 #else
 
 	// enable colour based on known terminal types
-	static const char * sz_Supported_Terminals[] =
-	{
-		"aixterm", "ansi", "color_xterm",
-		"con132x25", "con132x30", "con132x43", "con132x60",
-		"con80x25", "con80x28", "con80x30", "con80x43", "con80x50", "con80x60",
-		"cons25", "console", "gnome", "hft", "kon", "konsole", "kterm",
-		"linux", "rxvt", "screen", "screen.linux", "vt100-color",
-		"xterm", "xterm-color"
-	};
-
 	m_isColorEnabled = false;
 
 	const char * termtype = getenv("TERM");
 	if (termtype != NULL)
 	{
+		static const char *sz_Supported_Terminals[] =
+		{
+			"aixterm", "ansi", "color_xterm",
+			"con132x25", "con132x30", "con132x43", "con132x60",
+			"con80x25", "con80x28", "con80x30", "con80x43", "con80x50", "con80x60",
+			"cons25", "console", "gnome", "hft", "kon", "konsole", "kterm",
+			"linux", "rxvt", "screen", "screen.linux", "vt100-color",
+			"xterm", "xterm-color"
+		};
+
 		for (size_t i = 0; i < COUNTOF(sz_Supported_Terminals); ++i)
 		{
 			if (strcmp(termtype, sz_Supported_Terminals[i]) == 0)

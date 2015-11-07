@@ -797,7 +797,7 @@ int CChar::NotoSave_GetID( CChar * pChar )
 	if ( NotoSave() )
 	{
 		int count = 0;
-		for ( std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); it++)
+		for ( std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); ++it )
 		{
 			NotoSaves & refNotoSave = m_notoSaves.at(count);
 			CGrayUID uid = refNotoSave.charUID;
@@ -817,7 +817,7 @@ bool CChar::NotoSave_Delete( CChar * pChar )
 	if ( NotoSave() )
 	{
 		int count = 0;
-		for ( std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); it++)
+		for ( std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); ++it )
 		{
 			NotoSaves & refNotoSave = m_notoSaves.at(count);
 			CGrayUID uid = refNotoSave.charUID;
@@ -2499,7 +2499,7 @@ CChar * CChar::Fight_FindBestTarget()
 		CChar * pClosest = NULL;
 		SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
 
-		for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); it++ )
+		for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it )
 		{
 			LastAttackers & refAttacker = *it;
 			pChar = static_cast<CChar*>(static_cast<CGrayUID>(refAttacker.charUID).CharFind());
@@ -2974,7 +2974,7 @@ int CChar::Attacker_GetID( CChar * pChar )
 	if ( ! m_lastAttackers.size() )
 		return -1;
 	int count = 0;
-	for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); it++)
+	for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it )
 	{
 		LastAttackers & refAttacker = m_lastAttackers.at(count);
 		CGrayUID uid = refAttacker.charUID;
