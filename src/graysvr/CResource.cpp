@@ -251,7 +251,8 @@ CResource::CResource()
 						   AUTOTOOLTIP_FLAG_SPELLBOOK;
 	m_iContextMenuLimit = 15;
 
-	m_iMaxAccountLoginTries = 0;		// maximum bad password tries before a temp ip ban
+	m_iClientLoginMaxTries = 0;		// maximum bad password tries before a temp ip ban
+	m_iClientLoginTempBan = 3*60*TICK_PER_SEC;
 	m_iMaxShipPlankTeleport = UO_MAP_VIEW_SIZE;
 
 	m_NPCNoFameTitle = 0;
@@ -393,6 +394,8 @@ enum RC_TYPE
 	RC_CANUNDRESSPETS,		// m_fCanUndressPets
 	RC_CHARTAGS,			// m_fCharTags
 	RC_CLIENTLINGER,
+	RC_CLIENTLOGINMAXTRIES,	// m_iClientLoginMaxTries
+	RC_CLIENTLOGINTEMPBAN,	// m_iClientLoginTempBan
 	RC_CLIENTMAX,			// m_iClientsMax
 	RC_CLIENTMAXIP,			// m_iClientsMaxIP
 	RC_CLIENTS,
@@ -490,7 +493,6 @@ enum RC_TYPE
 	RC_MAGICFLAGS,
 	RC_MAGICUNLOCKDOOR,		// m_iMagicUnlockDoor
 	RC_MAPCACHETIME,
-	RC_MAXACCOUNTLOGINTRIES,	// m_iMaxAccountLoginTries
 	RC_MAXBASESKILL,			// m_iMaxBaseSkill
 	RC_MAXCHARSPERACCOUNT,		// m_iMaxCharsPerAccount
 	RC_MAXCOMPLEXITY,			// m_iMaxCharComplexity
@@ -632,6 +634,8 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "CANUNDRESSPETS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fCanUndressPets),		0 }},
 	{ "CHARTAGS",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fCharTags),			0 }},
 	{ "CLIENTLINGER",			{ ELEM_INT,		OFFSETOF(CResource,m_iClientLingerTime),	0 }},
+	{ "CLIENTLOGINMAXTRIES",	{ ELEM_INT,		OFFSETOF(CResource,m_iClientLoginMaxTries),	0 }},
+	{ "CLIENTLOGINTEMPBAN",		{ ELEM_INT,		OFFSETOF(CResource,m_iClientLoginTempBan),	0 }},
 	{ "CLIENTMAX",				{ ELEM_INT,		OFFSETOF(CResource,m_iClientsMax),			0 }},
 	{ "CLIENTMAXIP",			{ ELEM_INT,		OFFSETOF(CResource,m_iClientsMaxIP),		0 }},
 	{ "CLIENTS",				{ ELEM_VOID,	0,											0 }},	// duplicate
@@ -729,7 +733,6 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "MAGICFLAGS",				{ ELEM_INT,		OFFSETOF(CResource,m_iMagicFlags),			0 }},
 	{ "MAGICUNLOCKDOOR",		{ ELEM_INT,		OFFSETOF(CResource,m_iMagicUnlockDoor),		0 }},
 	{ "MAPCACHETIME",			{ ELEM_INT,		OFFSETOF(CResource,m_iMapCacheTime),		0 }},
-	{ "MAXACCOUNTLOGINTRIES",	{ ELEM_INT,		OFFSETOF(CResource,m_iMaxAccountLoginTries),0 }},
 	{ "MAXBASESKILL",			{ ELEM_INT,		OFFSETOF(CResource,m_iMaxBaseSkill),		0 }},
 	{ "MAXCHARSPERACCOUNT",		{ ELEM_BYTE,	OFFSETOF(CResource,m_iMaxCharsPerAccount),	0 }},
 	{ "MAXCOMPLEXITY",			{ ELEM_INT,		OFFSETOF(CResource,m_iMaxCharComplexity),	0 }},
@@ -996,6 +999,15 @@ bool CResource::r_LoadVal( CScript &s )
 		case RC_CLIENTLINGER:
 			m_iClientLingerTime = s.GetArgVal() * TICK_PER_SEC;
 			break;
+		case RC_CLIENTLOGINMAXTRIES:
+			{
+				m_iClientLoginMaxTries = s.GetArgVal();
+				if ( m_iClientLoginMaxTries < 0 )
+					m_iClientLoginMaxTries = 0;
+			} break;
+		case RC_CLIENTLOGINTEMPBAN:
+			m_iClientLoginTempBan = s.GetArgVal() * 60 * TICK_PER_SEC;
+			break;
 		case RC_CLIENTMAX:
 		case RC_CLIENTS:
 			m_iClientsMax = s.GetArgVal();
@@ -1083,12 +1095,6 @@ bool CResource::r_LoadVal( CScript &s )
 		case RC_MAPCACHETIME:
 			m_iMapCacheTime = s.GetArgVal() * TICK_PER_SEC;
 			break;
-		case RC_MAXACCOUNTLOGINTRIES:
-			{
-				m_iMaxAccountLoginTries = s.GetArgVal();
-				if ( m_iMaxAccountLoginTries < 0 )
-					m_iMaxAccountLoginTries = 0;
-			} break;
 		case RC_MAXCHARSPERACCOUNT:
 			m_iMaxCharsPerAccount = static_cast<unsigned char>(s.GetArgVal());
 			if ( m_iMaxCharsPerAccount > MAX_CHARS_PER_ACCT )

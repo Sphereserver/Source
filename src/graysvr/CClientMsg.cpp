@@ -4121,7 +4121,7 @@ BYTE CClient::LogIn( LPCTSTR pszAccName, LPCTSTR pszPassword, CGString & sMsg )
 		return PacketLoginError::Invalid;
 	}
 
-	if ( g_Cfg.m_iMaxAccountLoginTries && !pAccount->CheckPasswordTries(GetPeer()))
+	if ( g_Cfg.m_iClientLoginMaxTries && !pAccount->CheckPasswordTries(GetPeer()) )
 	{
 		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: '%s' exceeded password tries in time lapse\n", GetSocketID(), static_cast<LPCTSTR>(pAccount->GetName()));
 		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);

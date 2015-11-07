@@ -772,7 +772,7 @@ bool CAccount::CheckPasswordTries(CSocketAddress csaPeerName)
 		return true;
 	}
 
-	int iAccountMaxTries = g_Cfg.m_iMaxAccountLoginTries;
+	int iAccountMaxTries = g_Cfg.m_iClientLoginMaxTries;
 	bool bReturn = true;
 	DWORD dwCurrentIP = csaPeerName.GetAddrIP();
 	CServTime timeCurrent = CServTime::GetCurrentTime();
@@ -808,7 +808,7 @@ bool CAccount::CheckPasswordTries(CSocketAddress csaPeerName)
 				}
 				else if ( itResult.second == iAccountMaxTries )
 				{
-					ttsData.m_Delay = ttsData.m_Last + (2*60*TICK_PER_SEC);
+					ttsData.m_Delay = ttsData.m_Last + static_cast<long long>(g_Cfg.m_iClientLoginTempBan);
 					bReturn = false;
 				}
 			}
@@ -848,9 +848,10 @@ void CAccount::ClearPasswordTries(bool bAll)
 		for ( BlockLocalTime_t::iterator itData = m_BlockIP.begin(); itData != m_BlockIP.end(); ++itData )
 		{
 			BlockLocalTimePair_t itResult = (*itData).second;
-			if (( timeCurrent - itResult.first.m_Last ) > 3*60*TICK_PER_SEC )
+			if ( (timeCurrent - itResult.first.m_Last) > g_Cfg.m_iClientLoginTempBan )
 			{
 				m_BlockIP.erase(itData);
+				continue;
 			}
 
 			if ( itData != m_BlockIP.begin() )

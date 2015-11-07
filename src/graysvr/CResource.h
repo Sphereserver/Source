@@ -962,7 +962,8 @@ public:
 	// notoriety inheritance
 	int     m_iPetsInheritNotoriety;
 
-	int		m_iMaxAccountLoginTries;
+	int		m_iClientLoginMaxTries;
+	int		m_iClientLoginTempBan;
 	int		m_iMaxShipPlankTeleport;
 
 #ifndef _DBPLUGIN
