@@ -579,17 +579,12 @@ int CWebPageDef::ServPageRequest( CClient * pClient, LPCTSTR pszURLArgs, CGTime 
 
 	const char *sDate = datetime.FormatGmt(NULL);	// current date.
 
-	if ( ! fGenerate &&
-		! pdateIfModifiedSince &&
-		pdateIfModifiedSince->IsTimeValid() &&
-		dateChange <= pdateIfModifiedSince->GetTime() )
+	if ( !fGenerate || !pdateIfModifiedSince || (pdateIfModifiedSince->IsTimeValid() && pdateIfModifiedSince->GetTime() > dateChange) )
 	{
 		TCHAR *pszTemp = Str_GetTemp();
-		sprintf(pszTemp, 
-			"HTTP/1.1 304 Not Modified\r\nDate: %s\r\nServer: " GRAY_TITLE " V " GRAY_VERSION "\r\nContent-Length: 0\r\n\r\n", sDate);
-
+		sprintf(pszTemp, "HTTP/1.1 304 Not Modified\r\nDate: %s\r\nServer: " GRAY_TITLE " V " GRAY_VERSION "\r\nContent-Length: 0\r\n\r\n", sDate);
 		new PacketWeb(pClient, (BYTE*)pszTemp, strlen(pszTemp));
-		return(0);
+		return 0;
 	}
 
 	// Now serve up the page.

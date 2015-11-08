@@ -251,7 +251,7 @@ public:
 			pszTmp[0] = '\0';
 		lstrcat( szFileName, ".INI" );
 
-		OFSTRUCT ofs;
+		OFSTRUCT ofs = { };
 		if ( OpenFile( szFileName, &ofs, OF_EXIST ) != HFILE_ERROR)
 		{
 			m_pszProfileName = ofs.szPathName;

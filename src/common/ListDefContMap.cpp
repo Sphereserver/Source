@@ -563,7 +563,7 @@ void CListDefCont::PrintElements(CGString& strElements) const
 			strElements += pListElemStr->GetValStr();
 			strElements += "\"";
 		}
-		else
+		else if ( pListElem )
 			strElements += pListElem->GetValStr();
 
 		strElements += ",";
@@ -608,7 +608,7 @@ void CListDefCont::r_WriteSave( CScript& s )
 			strElement.Format("\"%s\"", pListElemStr->GetValStr());
 			s.WriteKey("ELEM", strElement.GetPtr());
 		}
-		else
+		else if ( pListElem )
 			s.WriteKey("ELEM", pListElem->GetValStr());
 	}
 }

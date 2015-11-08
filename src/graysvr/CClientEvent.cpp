@@ -2449,88 +2449,105 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 	m_pPopupPacket = NULL;
 }
 
-void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do something after a player selected something from a pop-up menu
+void CClient::Event_AOSPopupMenuSelect(DWORD uid, WORD EntryTag)	//do something after a player selected something from a pop-up menu
 {
 	ADDTOCALLSTACK("CClient::Event_AOSPopupMenuSelect");
-	if ( !EntryTag || m_pChar == NULL )
+	if ( !m_pChar || !EntryTag )
 		return;
 
 	CGrayUID uObj = uid;
+	CObjBase *pObj = uObj.ObjFind();
+	if ( !CanSee(pObj) )
+		return;
+	if ( !IsSetOF(OF_NoContextMenuLOS) && !m_pChar->CanSeeLOS(pObj) )
+		return;
+
 	CScriptTriggerArgs Args;
-
-	if ( !CanSee( uObj.ObjFind() ) )
-		return;
-
-	if (!IsSetOF(OF_NoContextMenuLOS))
+	CItem *pItem = uObj.ItemFind();
+	if ( pItem )
 	{
-		if (m_pChar->CanSeeLOS(uObj.ObjFind(), 0x0) == false)
-			return;
-	}
-
-	if ( uObj.IsItem() )
-	{
-		if (( IsTrigUsed(TRIGGER_CONTEXTMENUSELECT) ) || ( IsTrigUsed(TRIGGER_ITEMCONTEXTMENUSELECT) ))
+		if ( IsTrigUsed(TRIGGER_CONTEXTMENUSELECT) || IsTrigUsed(TRIGGER_ITEMCONTEXTMENUSELECT) )
 		{
 			Args.m_iN1 = EntryTag;
-			uObj.ItemFind()->OnTrigger(ITRIG_ContextMenuSelect, this->GetChar(), &Args);
+			pItem->OnTrigger(ITRIG_ContextMenuSelect, GetChar(), &Args);
 		}
-		return; //There is no hardcoded stuff for items
+		return;		// there's no hardcoded stuff for items
 	}
-	else if ( uObj.IsChar() )
-	{
-		if ( IsTrigUsed(TRIGGER_CONTEXTMENUSELECT) )
-		{
-			Args.m_iN1 = EntryTag;
-			int iRet = uObj.CharFind()->OnTrigger(CTRIG_ContextMenuSelect, this->GetChar(), &Args);
-			if ( iRet == TRIGRET_RET_TRUE )
-				return;
-		}
-	}
-	else
-		return;
 
 	CChar *pChar = uObj.CharFind();
 	if ( !pChar )
 		return;
 
+	if ( IsTrigUsed(TRIGGER_CONTEXTMENUSELECT) )
+	{
+		Args.m_iN1 = EntryTag;
+		if ( pChar->OnTrigger(CTRIG_ContextMenuSelect, GetChar(), &Args) == TRIGRET_RET_TRUE )
+			return;
+	}
+
 	if ( pChar->m_pNPC )
 	{
 		switch ( EntryTag )
 		{
+			case POPUP_BANKBOX:
+				if ( pChar->m_pNPC->m_Brain == NPCBRAIN_BANKER )
+					pChar->NPC_OnHear("bank", m_pChar);
+				break;
+
+			case POPUP_VENDORBUY:
+				if ( pChar->NPC_IsVendor() )
+					pChar->NPC_OnHear("buy", m_pChar);
+				break;
+
+			case POPUP_VENDORSELL:
+				if ( pChar->NPC_IsVendor() )
+					pChar->NPC_OnHear("sell", m_pChar);
+				break;
+
 			case POPUP_PETGUARD:
-				pChar->NPC_OnHearPetCmd( "guard", m_pChar, false );
+				pChar->NPC_OnHearPetCmd("guard", m_pChar);
 				break;
 
 			case POPUP_PETFOLLOW:
-				pChar->NPC_OnHearPetCmd( "follow", m_pChar, false );
+				pChar->NPC_OnHearPetCmd("follow", m_pChar);
 				break;
 
 			case POPUP_PETDROP:
-				pChar->NPC_OnHearPetCmd( "drop", m_pChar, false );
+				pChar->NPC_OnHearPetCmd("drop", m_pChar);
 				break;
 
 			case POPUP_PETKILL:
-				pChar->NPC_OnHearPetCmd( "kill", m_pChar, false );
+				pChar->NPC_OnHearPetCmd("kill", m_pChar);
 				break;
 
 			case POPUP_PETSTOP:
-				pChar->NPC_OnHearPetCmd( "stop", m_pChar, false );
+				pChar->NPC_OnHearPetCmd("stop", m_pChar);
 				break;
 
 			case POPUP_PETSTAY:
-				pChar->NPC_OnHearPetCmd( "stay", m_pChar, false );
+				pChar->NPC_OnHearPetCmd("stay", m_pChar);
 				break;
 
 			case POPUP_PETFRIEND:
-				pChar->NPC_OnHearPetCmd( "friend", m_pChar, false );
+				pChar->NPC_OnHearPetCmd("friend", m_pChar);
 				break;
 
 			case POPUP_PETTRANSFER:
-				pChar->NPC_OnHearPetCmd( "transfer", m_pChar, false );
+				pChar->NPC_OnHearPetCmd("transfer", m_pChar);
 				break;
 
 			case POPUP_PETRELEASE:
-				pChar->NPC_OnHearPetCmd( "release", m_pChar, false );
+				pChar->NPC_OnHearPetCmd("release", m_pChar);
+				break;
+
+			case POPUP_STABLESTABLE:
+				if ( pChar->m_pNPC->m_Brain == NPCBRAIN_STABLE )
+					pChar->NPC_OnHear("stable", m_pChar);
+				break;
+
+			case POPUP_STABLERETRIEVE:
+				if ( pChar->m_pNPC->m_Brain == NPCBRAIN_STABLE )
+					pChar->NPC_OnHear("retrieve", m_pChar);
 				break;
 		}
 	}
@@ -2538,20 +2555,20 @@ void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do somethin
 	switch ( EntryTag )
 	{
 		case POPUP_PAPERDOLL:
-			m_pChar->GetClient()->addCharPaperdoll( pChar );
+			m_pChar->GetClient()->addCharPaperdoll(pChar);
 			break;
 
 		case POPUP_BACKPACK:
-			m_pChar->Use_Obj(m_pChar->LayerFind( LAYER_PACK ), false, false );
+			m_pChar->Use_Obj(m_pChar->LayerFind(LAYER_PACK), false, false);
 			break;
 
 		case POPUP_PARTY_ADD:
-			m_pChar->GetClient()->OnTarg_Party_Add( pChar );
+			m_pChar->GetClient()->OnTarg_Party_Add(pChar);
 			break;
 
 		case POPUP_PARTY_REMOVE:
-			if ( m_pChar->m_pParty != NULL )
-				m_pChar->m_pParty->RemoveMember( pChar->GetUID(), m_pChar->GetUID() );
+			if ( m_pChar->m_pParty )
+				m_pChar->m_pParty->RemoveMember(pChar->GetUID(), m_pChar->GetUID());
 			break;
 
 		case POPUP_TRADE_ALLOW:
@@ -2564,31 +2581,6 @@ void CClient::Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag ) //do somethin
 
 		case POPUP_TRADE_OPEN:
 			Cmd_SecureTrade(pChar, NULL);
-			break;
-
-		case POPUP_BANKBOX:
-			if ( pChar->m_pNPC->m_Brain == NPCBRAIN_BANKER )
-				pChar->NPC_OnHear("bank", m_pChar);
-			break;
-
-		case POPUP_VENDORBUY:
-			if ( pChar->NPC_IsVendor() )
-				pChar->NPC_OnHear("buy", m_pChar);
-			break;
-
-		case POPUP_VENDORSELL:
-			if ( pChar->NPC_IsVendor() )
-				pChar->NPC_OnHear("sell", m_pChar);
-			break;
-
-		case POPUP_STABLESTABLE:
-			if ( pChar->m_pNPC->m_Brain == NPCBRAIN_STABLE )
-				pChar->NPC_OnHear("stable", m_pChar);
-			break;
-
-		case POPUP_STABLERETRIEVE:
-			if ( pChar->m_pNPC->m_Brain == NPCBRAIN_STABLE )
-				pChar->NPC_OnHear("retrieve", m_pChar);
 			break;
 	}
 }

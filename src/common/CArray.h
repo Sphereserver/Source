@@ -668,7 +668,7 @@ void CGTypedArray<TYPE,ARG_TYPE>::DestructElements(TYPE* pElements, size_t nCoun
 template<class TYPE, class ARG_TYPE>
 void CGTypedArray<TYPE,ARG_TYPE>::Copy(const CGTypedArray<TYPE, ARG_TYPE> * pArray)
 {
-	if ( this == pArray ) // it was !=
+	if ( !pArray || pArray == this )	// it was !=
 		return;
 
 	Empty();

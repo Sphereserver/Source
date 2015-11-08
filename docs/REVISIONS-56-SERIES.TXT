@@ -2717,3 +2717,8 @@ Changed: NPC Banker (brain_banker) is now considered an NPC vendor and can use B
 Fixed NPCs not reacting instantly when they see a new target, they stand in the place for some random time without moving against their target.
 Fixed Spawns having no NPC limit.
 Added MAGIFC_NOREVEALINVISIBLE		02000	// (Old style backwards) Casts won't reveal you on SpellCast if you are under Invisible spelleffect.
+
+07-11-2015, Coruja
+[Sphere.ini]
+	-Added new ClientLoginTempBan setting to tweak the temporary ban duration of client IP when it reach max wrong password tries
+	-Renamed MaxAccountLoginTries setting to ClientLoginMaxTries
