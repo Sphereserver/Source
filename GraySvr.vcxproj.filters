@@ -419,7 +419,7 @@
     <ClInclude Include="src\common\carray.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\cassoc.h">
+    <ClInclude Include="src\common\CAssoc.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\CDataBase.h">
@@ -428,22 +428,22 @@
     <ClInclude Include="src\common\CException.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\cexpression.h">
+    <ClInclude Include="src\common\CExpression.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\cfile.h">
+    <ClInclude Include="src\common\CFile.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\cfilelist.h">
+    <ClInclude Include="src\common\CFileList.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\cgrayinst.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\cGrayMap.h">
+    <ClInclude Include="src\common\CGrayMap.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\cmemblock.h">
+    <ClInclude Include="src\common\CMemBlock.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\common.h">
@@ -458,25 +458,25 @@
     <ClInclude Include="src\common\cregion.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\cresourcebase.h">
+    <ClInclude Include="src\common\CResourceBase.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\cscript.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\cscriptobj.h">
+    <ClInclude Include="src\common\CScriptObj.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\cSectorTemplate.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\csocket.h">
+    <ClInclude Include="src\common\CSocket.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\cstring.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\ctime.h">
+    <ClInclude Include="src\common\CTime.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\CVarDefMap.h">
