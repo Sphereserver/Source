@@ -853,12 +853,11 @@ int CItem::FixWeirdness()
 	
 		case IT_EQ_HORSE:
 			// These should only exist eqipped.
-			if ( ! IsItemEquipped() || GetEquipLayer() != LAYER_HORSE )
+			if ( !IsItemEquipped() || GetEquipLayer() != LAYER_HORSE )
 			{
 				iResultCode = 0x2226;
 				return( iResultCode );	// get rid of it.
 			}
-			SetTimeout( 10*TICK_PER_SEC );
 			break;
 	
 		case IT_HAIR:

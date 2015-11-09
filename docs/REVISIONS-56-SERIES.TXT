@@ -2722,3 +2722,6 @@ Added MAGIFC_NOREVEALINVISIBLE		02000	// (Old style backwards) Casts won't revea
 [Sphere.ini]
 	-Added new ClientLoginTempBan setting to tweak the temporary ban duration of client IP when it reach max wrong password tries
 	-Renamed MaxAccountLoginTries setting to ClientLoginMaxTries
+
+09-11-2015, Coruja
+Fixed: Mounts disappearing on world save when ridden by NPCs.
