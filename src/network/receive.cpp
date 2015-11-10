@@ -3260,8 +3260,6 @@ bool PacketWheelBoatMove::onReceive(NetState* net)
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	CRegionWorld* area = character->m_pArea;
-
 	if (character == NULL)
 		return false;
 
@@ -3274,6 +3272,7 @@ bool PacketWheelBoatMove::onReceive(NetState* net)
 	//skip(1);
 	BYTE speed = readByte(); //(0 = Stop Movement, 1 = One Tile Movement, 2 = Normal Movement) ***These speeds are NOT the same as 0xF6 packet
 
+	CRegionWorld *area = character->m_pArea;
 	if (area && area->IsFlag(REGION_FLAG_SHIP))
 	{
 		CItemShip *pShipItem = dynamic_cast<CItemShip *>(area->GetResourceID().ItemFind());

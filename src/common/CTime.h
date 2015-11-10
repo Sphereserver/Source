@@ -35,13 +35,13 @@ public:
 	CGTime( struct tm time );
 	CGTime(int nYear, int nMonth, int nDay, int nHour, int nMin, int nSec, int nDST = -1);
 
-	const CGTime& operator=(const CGTime& timeSrc)
+	const CGTime &CGTime::operator=(const CGTime &timeSrc)
 	{
 		m_time = timeSrc.m_time;
 		return *this;
 	}
 
-	const CGTime& operator=(time_t t)
+	const CGTime &CGTime::operator=(time_t t)
 	{
 		m_time = t;
 		return *this;

@@ -3135,8 +3135,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		CScriptTriggerArgs pArgs;
 		pArgs.m_iN1 = m_atFight.m_War_Swing_State;
 		pArgs.m_iN2 = iTyp;
-		TRIGRET_TYPE tRet;
-		tRet = OnTrigger(CTRIG_HitCheck, pCharTarg, &pArgs);
+		TRIGRET_TYPE tRet = OnTrigger(CTRIG_HitCheck, pCharTarg, &pArgs);
 		if ( tRet == TRIGRET_RET_TRUE )
 			return (WAR_SWING_TYPE)pArgs.m_iN1;
 		if ( tRet == -1 )

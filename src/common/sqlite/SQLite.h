@@ -173,11 +173,11 @@ public:
 	// If you have a previous table connected to this class,
 	//   you do not have to worry, 
 	//   it will commit suicide before eating the new table.
-	void operator =( const TablePtr& cTablePtr );
+	void TablePtr::operator=( const TablePtr &cTablePtr );
 
 	// Functor operator, will de-reference the m_pTable member.
 	// WARNING: Use with care! Check for non-null m_pTable first!
-	Table& operator()(){ return *m_pTable; };
+	Table &TablePtr::operator()(){ return *m_pTable; };
 
 	// bool operator, to check if m_pTable is valid.
 	operator bool(){ return m_pTable!=0; };
@@ -204,11 +204,11 @@ class UTF8MBSTR
 public:
 	UTF8MBSTR(void);
 	UTF8MBSTR( LPCTSTR lpStr );
-	UTF8MBSTR( UTF8MBSTR& lpStr );
+	UTF8MBSTR( UTF8MBSTR &lpStr );
 	virtual ~UTF8MBSTR();
 
-	void operator =( LPCTSTR lpStr );
-	void operator =( UTF8MBSTR& lpStr );
+	void UTF8MBSTR::operator=( LPCTSTR lpStr );
+	void UTF8MBSTR::operator=( UTF8MBSTR &lpStr );
 	operator char* ();
 	operator stdstring ();
 

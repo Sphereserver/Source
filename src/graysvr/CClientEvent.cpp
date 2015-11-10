@@ -1876,9 +1876,10 @@ void CClient::Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bo
 					capitals++;
 
 			if (( chars > 5 ) && ((( capitals * 100 )/chars) > 75 ))
-			{							// 80% of chars are in capital letters. lowercase it
+			{							// 75% of chars are in capital letters. lowercase it
 				for ( i = 1; i < chars; i++ )				// instead of the 1st char
-					if (( z[i] >= 'A' ) && ( z[i] <= 'Z' )) z[i] += 0x20;
+					if (( z[i] >= 'A' ) && ( z[i] <= 'Z' ))
+						z[i] += 0x20;
 			}
 		}
 
@@ -1955,12 +1956,12 @@ void CClient::Event_TalkUNICODE( NWORD* wszText, int iTextLen, HUE_TYPE wHue, TA
 					capitals++;
 
 			if (( chars > 5 ) && ((( capitals * 100 )/chars) > 75 ))
-			{							// 80% of chars are in capital letters. lowercase it
+			{							// 75% of chars are in capital letters. lowercase it
 				for ( i = 1; i < chars; i++ )				// instead of the 1st char
 					if (( szText[i] >= 'A' ) && ( szText[i] <= 'Z' ))
 						szText[i] += 0x20;
 
-				iTextLen = CvtSystemToNUNICODE(wszText, iTextLen, szText, chars);
+				iLen = CvtSystemToNUNICODE(wszText, iTextLen, szText, chars);
 			}
 		}
 

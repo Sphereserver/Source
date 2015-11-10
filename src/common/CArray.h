@@ -202,7 +202,7 @@ class CGTypedArray
 		*/
 		CGTypedArray();
 		virtual ~CGTypedArray();
-		const CGTypedArray<TYPE, ARG_TYPE> & operator=( const CGTypedArray<TYPE, ARG_TYPE> & array );
+		const CGTypedArray<TYPE, ARG_TYPE> &CGTypedArray<TYPE, ARG_TYPE>::operator=( const CGTypedArray<TYPE, ARG_TYPE> &array );
 	private:
 		/**
 		* @brief No copy on construction allowed.

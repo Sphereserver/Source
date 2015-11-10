@@ -652,7 +652,7 @@ void CCrypt::LoginCryptStart( DWORD dwIP, BYTE * pEvent, size_t iLen )
 		{
 			// Unknown client !!! Set as unencrypted and let Sphere do the rest.
 #ifdef DEBUG_CRYPT_MSGS
-			DEBUG_ERR(("Unknown client,i = %lu\n", i ));
+			DEBUG_ERR(("Unknown client, i = %u\n", i));
 #endif
 			SetClientVerIndex(0);
 			SetCryptMask(m_tmp_CryptMaskHi, m_tmp_CryptMaskLo); // Hi - Lo
@@ -668,9 +668,9 @@ void CCrypt::LoginCryptStart( DWORD dwIP, BYTE * pEvent, size_t iLen )
 
 #ifdef DEBUG_CRYPT_MSGS
 #ifndef _WIN32
-		fprintf(stderr, "LoginCrypt %lu (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]);
+		fprintf(stderr, "LoginCrypt %u (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]);
 #else
-		DEBUG_ERR(("LoginCrypt %lu (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]));
+		DEBUG_ERR(("LoginCrypt %u (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]));
 #endif
 #endif
 		bool isValid = ( m_Raw[0] == 0x80 && m_Raw[30] == 0x00 && m_Raw[60] == 0x00 );
@@ -739,7 +739,7 @@ void CCrypt::GameCryptStart( DWORD dwIP, BYTE * pEvent, size_t iLen )
 
 	bool bOut = false;
 
-	for ( unsigned long i = ENC_NONE; i < ENC_QTY; i++ )
+	for ( size_t i = ENC_NONE; i < ENC_QTY; i++ )
 	{
 		SetEncryptionType(static_cast<ENCRYPTION_TYPE>(i));
 
@@ -753,9 +753,9 @@ void CCrypt::GameCryptStart( DWORD dwIP, BYTE * pEvent, size_t iLen )
 		
 #ifdef DEBUG_CRYPT_MSGS
 #ifndef _WIN32
-		fprintf(stderr, "GameCrypt %lu (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]);
+		fprintf(stderr, "GameCrypt %u (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]);
 #else
-		DEBUG_ERR(("GameCrypt %lu (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]));
+		DEBUG_ERR(("GameCrypt %u (%x) type %x-%x\n", i, GetClientVer(), m_Raw[0], pEvent[0]));
 #endif
 #endif
 		
