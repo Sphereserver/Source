@@ -278,7 +278,7 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 	if ( this != pCharViewer ) // Am I checking myself?
 	{
 		// If they saw me commit a crime or I am their aggressor then criminal to just them.
-		CItemMemory * pMemory = pCharViewer->Memory_FindObjTypes(this, MEMORY_SAWCRIME | MEMORY_AGGREIVED | MEMORY_HARMEDBY);
+		CItemMemory * pMemory = pCharViewer->Memory_FindObjTypes(this, MEMORY_SAWCRIME|MEMORY_AGGREIVED|MEMORY_HARMEDBY);
 		if ( pMemory != NULL )
 			return( NOTO_CRIMINAL );
 
@@ -3155,7 +3155,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				CItem *pWeapon = m_uidWeapon.ItemFind();
 				if ( pWeapon )
 				{
-					CVarDefCont * pDamTypeOverride = pWeapon->GetKey("OVERRIDE.DAMAGETYPE", true);
+					CVarDefCont *pDamTypeOverride = pWeapon->GetKey("OVERRIDE.DAMAGETYPE", true);
 					if ( pDamTypeOverride )
 						iTyp = static_cast<DAMAGE_TYPE>(pDamTypeOverride->GetValNum());
 					else
@@ -3256,11 +3256,11 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	CItem *pWeapon = m_uidWeapon.ItemFind();
 	CItem *pAmmo = NULL;
 	CItemBase *pWeaponDef = NULL;
-	CVarDefCont * pType= NULL;
-	CVarDefCont * pCont= NULL;
-	CVarDefCont * pAnim= NULL;
-	CVarDefCont * pColor= NULL;
-	CVarDefCont * pRender= NULL;
+	CVarDefCont *pType = NULL;
+	CVarDefCont *pCont = NULL;
+	CVarDefCont *pAnim = NULL;
+	CVarDefCont *pColor = NULL;
+	CVarDefCont *pRender = NULL;
 	if ( pWeapon )
 	{
 		pType = pWeapon->GetDefKey("AMMOTYPE", true);
@@ -3268,7 +3268,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		pAnim = pWeapon->GetDefKey("AMMOANIM", true);
 		pColor = pWeapon->GetDefKey("AMMOANIMHUE", true);
 		pRender = pWeapon->GetDefKey("AMMOANIMRENDER", true);
-		CVarDefCont * pDamTypeOverride = pWeapon->GetKey("OVERRIDE.DAMAGETYPE", true);
+		CVarDefCont *pDamTypeOverride = pWeapon->GetKey("OVERRIDE.DAMAGETYPE", true);
 		if ( pDamTypeOverride )
 			iTyp = static_cast<DAMAGE_TYPE>(pDamTypeOverride->GetValNum());
 		else
@@ -3296,9 +3296,9 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	RESOURCE_ID_BASE rid;
 	LPCTSTR t_Str;
 
-	if (g_Cfg.IsSkillFlag(skill, SKF_RANGED))
+	if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
 	{
-		if (IsStatFlag(STATF_HasShield))		// this should never happen
+		if ( IsStatFlag(STATF_HasShield) )		// this should never happen
 		{
 			SysMessageDefault(DEFMSG_ITEMUSE_BOW_SHIELD);
 			return WAR_SWING_INVALID;
@@ -3306,25 +3306,25 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 		int	iMinDist = pWeapon ? pWeapon->RangeH() : g_Cfg.m_iArcheryMinDist;
 		int	iMaxDist = pWeapon ? pWeapon->RangeL() : g_Cfg.m_iArcheryMaxDist;
-		if (!iMaxDist || (iMinDist == 0 && iMaxDist == 1))
+		if ( !iMaxDist || (iMinDist == 0 && iMaxDist == 1) )
 			iMaxDist = g_Cfg.m_iArcheryMaxDist;
-		if (!iMinDist)
+		if ( !iMinDist )
 			iMinDist = g_Cfg.m_iArcheryMinDist;
 
-		if (dist < iMinDist)
+		if ( dist < iMinDist )
 		{
 			SysMessageDefault(DEFMSG_COMBAT_ARCH_TOOCLOSE);
-			if (!IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING)
+			if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
 				return(WAR_SWING_READY);
 			return WAR_SWING_EQUIPPING;
 		}
-		else if (dist > iMaxDist)
+		else if ( dist > iMaxDist )
 		{
-			if (!IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING)
+			if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
 				return(WAR_SWING_READY);
 			return WAR_SWING_EQUIPPING;
 		}
-		if (pType)
+		if ( pType )
 		{
 			t_Str = pType->GetValStr();
 			rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, t_Str));
@@ -3333,18 +3333,18 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			rid = pWeaponDef->m_ttWeaponBow.m_idAmmo;
 
 		ITEMID_TYPE AmmoID = static_cast<ITEMID_TYPE>(rid.GetResIndex());
-		if (AmmoID)
+		if ( AmmoID )
 		{
-			if (pCont)
+			if ( pCont )
 			{
 				CGrayUID uidCont = static_cast<CGrayUID>(static_cast<DWORD>(pCont->GetValNum()));
 				CItemContainer *pNewCont = dynamic_cast<CItemContainer*>(uidCont.ItemFind());
-				if (!pNewCont)	//if no UID, check for ITEMID_TYPE
+				if ( !pNewCont )	//if no UID, check for ITEMID_TYPE
 				{
 					t_Str = pCont->GetValStr();
 					RESOURCE_ID_BASE rContid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, t_Str));
 					ITEMID_TYPE ContID = static_cast<ITEMID_TYPE>(rContid.GetResIndex());
-					if (ContID)
+					if ( ContID )
 						pNewCont = dynamic_cast<CItemContainer*>(ContentFind(rContid));
 				}
 
@@ -3353,7 +3353,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			else
 				pAmmo = ContentFind(rid);
 
-			if (!pAmmo && m_pPlayer)
+			if ( !pAmmo && m_pPlayer )
 			{
 				SysMessageDefault(DEFMSG_COMBAT_ARCH_NOAMMO);
 				return WAR_SWING_INVALID;
@@ -3419,7 +3419,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		return WAR_SWING_SWINGING;
 	}
 
-	if (g_Cfg.IsSkillFlag(skill, SKF_RANGED))
+	if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
 	{
 		// Post-swing behavior
 		ITEMID_TYPE AmmoAnim;
@@ -3498,7 +3498,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	{
 		// Check if target will block the hit
 		// Legacy pre-SE formula
-		CItem * pItemHit = NULL;
+		CItem *pItemHit = NULL;
 		int ParryChance = 0;
 		if ( pCharTarg->IsStatFlag(STATF_HasShield) )	// parry using shield
 		{
@@ -3532,7 +3532,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	}
 
 	// Calculate base damage
-	int	iDmg = Fight_CalcDamage( pWeapon );
+	int	iDmg = Fight_CalcDamage(pWeapon);
 	
 	CScriptTriggerArgs Args(iDmg, iTyp, pWeapon);
 	Args.m_VarsLocal.SetNum("ItemDamageChance", 40);
@@ -3600,7 +3600,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		}
 
 		// Check if the weapon will be damaged
-		int iDamageChance = static_cast<int>(Args.m_VarsLocal.GetKeyNum("ItemDamageChance",true));
+		int iDamageChance = static_cast<int>(Args.m_VarsLocal.GetKeyNum("ItemDamageChance", true));
 		if ( iDamageChance > Calc_GetRandVal(100) )
 			pWeapon->OnTakeDamage(iDmg, pCharTarg);
 	}
@@ -3617,19 +3617,19 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	// Took my swing. Do Damage !
 	iDmg = pCharTarg->OnTakeDamage(
-			iDmg,
-			this,
-			iTyp,
-			static_cast<int>(GetDefNum("DAMPHYSICAL",true,true)),	//fDef = true because DAM* was added in CHARDEF instead of under @Create
-			static_cast<int>(GetDefNum("DAMFIRE",true,true)),
-			static_cast<int>(GetDefNum("DAMCOLD",true,true)),
-			static_cast<int>(GetDefNum("DAMPOISON",true,true)),
-			static_cast<int>(GetDefNum("DAMENERGY",true,true))
-		   );
+		iDmg,
+		this,
+		iTyp,
+		static_cast<int>(GetDefNum("DAMPHYSICAL", true, true)),
+		static_cast<int>(GetDefNum("DAMFIRE", true, true)),
+		static_cast<int>(GetDefNum("DAMCOLD", true, true)),
+		static_cast<int>(GetDefNum("DAMPOISON", true, true)),
+		static_cast<int>(GetDefNum("DAMENERGY", true, true))
+		);
 
 	if ( iDmg > 0 )
 	{
-		CItem * pCurseWeapon = LayerFind(LAYER_SPELL_Curse_Weapon);
+		CItem *pCurseWeapon = LayerFind(LAYER_SPELL_Curse_Weapon);
 		int iHitLifeLeech = static_cast<int>(GetDefNum("HitLeechLife", true));
 		if ( pWeapon && pCurseWeapon )
 			iHitLifeLeech += pCurseWeapon->m_itSpell.m_spelllevel;
@@ -3659,7 +3659,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		int iManaDrain = 0;
 		if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B )
 		{
-			CItem * pPoly = LayerFind(LAYER_SPELL_Polymorph);
+			CItem *pPoly = LayerFind(LAYER_SPELL_Polymorph);
 			if ( pPoly && pPoly->m_itSpell.m_spell == SPELL_Wraith_Form )
 				iManaDrain += 5 + (15 * Skill_GetBase(SKILL_SPIRITSPEAK) / 1000);
 		}
@@ -3689,7 +3689,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			for ( int i = 0; i < iBloodQty; i++ )
 			{
 				ITEMID_TYPE iBloodID = sm_Blood[Calc_GetRandVal(COUNTOF(sm_Blood))];
-				CItem * pBlood = CItem::CreateBase(iBloodID);
+				CItem *pBlood = CItem::CreateBase(iBloodID);
 				ASSERT(pBlood);
 				pBlood->SetHue(pCharTarg->m_wBloodHue);
 				pBlood->MoveNear(pCharTarg->GetTopPoint(), 1);

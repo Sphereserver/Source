@@ -330,10 +330,7 @@ void CSector::r_Write()
 	if (GetSeason() != SEASON_Summer)
 	{
 		if ( bHeaderCreated == false )
-		{
 			g_World.m_FileWorld.WriteSection("SECTOR %d,%d,0,%d", pt.m_x, pt.m_y, pt.m_map);
-			bHeaderCreated = true;
-		}
 
 		g_World.m_FileWorld.WriteKeyVal("SEASON", GetSeason());
 	}

@@ -39,7 +39,7 @@ bool IsTrigUsed(const char *name)
 	if ( g_Serv.IsLoading() == true)
 		return false;
 	std::vector<T_TRIGGERS>::iterator it;
-	for ( it = g_triggers.begin(); it != g_triggers.end(); it++ )
+	for ( it = g_triggers.begin(); it != g_triggers.end(); ++it )
 	{
 		if ( !strcmpi(it->m_name, name) )
 			return (it->m_used != 0); // Returns true or false for known triggers
@@ -60,7 +60,7 @@ void TriglistInit()
 void TriglistClear()
 {
 	std::vector<T_TRIGGERS>::iterator it;
-	for ( it = g_triggers.begin(); it != g_triggers.end(); it++ )
+	for ( it = g_triggers.begin(); it != g_triggers.end(); ++it )
 	{
 		(*it).m_used = 0;
 	}
@@ -75,7 +75,7 @@ void TriglistAdd(E_TRIGGERS id)
 void TriglistAdd(const char *name)
 {
 	std::vector<T_TRIGGERS>::iterator it;
-	for ( it = g_triggers.begin(); it != g_triggers.end(); it++ )
+	for ( it = g_triggers.begin(); it != g_triggers.end(); ++it )
 	{
 		if ( !strcmpi(it->m_name, name) )
 		{
@@ -89,7 +89,7 @@ void Triglist(long &total, long &used)
 {
 	total = used = 0;
 	std::vector<T_TRIGGERS>::iterator it;
-	for ( it = g_triggers.begin(); it != g_triggers.end(); it++ )
+	for ( it = g_triggers.begin(); it != g_triggers.end(); ++it )
 	{
 		total++;
 		if ( it->m_used )
@@ -100,7 +100,7 @@ void Triglist(long &total, long &used)
 void TriglistPrint()
 {
 	std::vector<T_TRIGGERS>::iterator it;
-	for ( it = g_triggers.begin(); it != g_triggers.end(); it++ )
+	for ( it = g_triggers.begin(); it != g_triggers.end(); ++it )
 	{
 		if ( it->m_used )
 		{

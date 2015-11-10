@@ -840,25 +840,18 @@ void CAccount::ClearPasswordTries(bool bAll)
 	if ( bAll )
 	{
 		m_BlockIP.clear();
+		return;
 	}
-	else
+
+	long long timeCurrent = CServTime::GetCurrentTime().GetTimeRaw();
+	for ( BlockLocalTime_t::iterator itData = m_BlockIP.begin(); itData != m_BlockIP.end(); ++itData )
 	{
-		long long timeCurrent = CServTime::GetCurrentTime().GetTimeRaw();
+		BlockLocalTimePair_t itResult = (*itData).second;
+		if ( (timeCurrent - itResult.first.m_Last) > g_Cfg.m_iClientLoginTempBan )
+			m_BlockIP.erase(itData);
 
-		for ( BlockLocalTime_t::iterator itData = m_BlockIP.begin(); itData != m_BlockIP.end(); ++itData )
-		{
-			BlockLocalTimePair_t itResult = (*itData).second;
-			if ( (timeCurrent - itResult.first.m_Last) > g_Cfg.m_iClientLoginTempBan )
-			{
-				m_BlockIP.erase(itData);
-				continue;
-			}
-
-			if ( itData != m_BlockIP.begin() )
-			{
-				--itData;
-			}
-		}
+		if ( itData != m_BlockIP.begin() )
+			--itData;
 	}
 }
 

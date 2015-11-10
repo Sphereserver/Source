@@ -14,14 +14,14 @@ INT_PTR CALLBACK CDialogBase::DialogProc( HWND hWnd, UINT message, WPARAM wParam
 	CDialogBase * pDlg;
 	if ( message == WM_INITDIALOG )
 	{
-		pDlg = (CDialogBase *)( lParam );
+		pDlg = reinterpret_cast<CDialogBase *>(lParam);
 		ASSERT( pDlg );
 		pDlg->m_hWnd = hWnd;	// OnCreate()
 		pDlg->SetWindowLongPtr( GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pDlg) );
 	}
 	else
 	{
-		pDlg = (CDialogBase *)(LPVOID)::GetWindowLongPtr( hWnd, GWLP_USERDATA );
+		pDlg = static_cast<CDialogBase *>((LPVOID)::GetWindowLongPtr(hWnd, GWLP_USERDATA));
 	}
 	if ( pDlg )
 	{
@@ -50,12 +50,12 @@ LRESULT WINAPI CWindowBase::WndProc( HWND hWnd, UINT message, WPARAM wParam, LPA
 	{
 		LPCREATESTRUCT lpCreateStruct = (LPCREATESTRUCT)lParam;
 		ASSERT(lpCreateStruct);
-		pWnd = (CWindowBase *)(lpCreateStruct->lpCreateParams);
+		pWnd = static_cast<CWindowBase *>(lpCreateStruct->lpCreateParams);
 		ASSERT( pWnd );
 		pWnd->m_hWnd = hWnd;	// OnCreate()
 		pWnd->SetWindowLongPtr(GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWnd));
 	}
-	pWnd = (CWindowBase *)(LPVOID)::GetWindowLongPtr( hWnd, GWLP_USERDATA );
+	pWnd = static_cast<CWindowBase *>((LPVOID)::GetWindowLongPtr(hWnd, GWLP_USERDATA));
 	return ( pWnd ? pWnd->DefWindowProc(message, wParam, lParam) : ::DefWindowProc(hWnd, message, wParam, lParam) );
 }
 

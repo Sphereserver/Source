@@ -258,7 +258,7 @@ public:
 
 	// UID Managenent
 	DWORD GetUIDCount() const;
-#define UID_PLACE_HOLDER ((CObjBase*)0xFFFFFFFF)
+#define UID_PLACE_HOLDER (reinterpret_cast<CObjBase*>(0xFFFFFFFF))
 	CObjBase * FindUID(DWORD dwIndex) const;
 	void FreeUID(DWORD dwIndex);
 	DWORD AllocUID( DWORD dwIndex, CObjBase * pObj );

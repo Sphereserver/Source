@@ -244,7 +244,6 @@ void _cdecl CLog::CatchEvent( const CGrayError * pErr, LPCTSTR pszCatchContext, 
 	catch(...)
 	{
 		// Not much we can do about this.
-		pErr = NULL;
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 	sm_prevCatchTick = timeCurrent;

@@ -1124,17 +1124,22 @@ bool CWorldClock::Advance()
 
 CWorld::CWorld()
 {
+	m_savetimer = 0;
 	m_iSaveCountID = 0;
 	m_iSaveStage = 0;
 	m_iPrevBuild = 0;
+	m_iLoadVersion = 0;
 	m_bSaveNotificationSent = false;
 	m_timeSector.Init();
+	m_timeSave.Init();
+	m_timeSync.Init();
 	m_timeRespawn.Init();
 	m_timeStartup.Init();
 	m_timeCallUserFunc.Init();
 
 	m_Sectors = NULL;
 	m_SectorsQty = 0;
+	m_Sector_Pulse = 0;
 }
 
 void CWorld::Init()
@@ -2318,7 +2323,7 @@ void CWorld::SpeakUNICODE( const CObjBaseTemplate * pSrc, const NCHAR * pwText, 
 				if ( wTextGhost[0] == '\0' )	// Garble ghost.
 				{
 					size_t i;
-					for ( i = 0; pwText[i] && i < MAX_TALK_BUFFER; ++i )
+					for ( i = 0; i < MAX_TALK_BUFFER - 1 && pwText[i]; ++i )
 					{
 						if ( pwText[i] != ' ' && pwText[i] != '\t' )
 							wTextGhost[i] = Calc_GetRandVal(2) ? 'O' : 'o';

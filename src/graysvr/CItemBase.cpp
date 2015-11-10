@@ -1122,7 +1122,7 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 					if ( i > 0 )
 						iLen += strcpylen( pszTemp+iLen, "," );
 
-					iLen += sprintf( pszTemp+iLen, "0%x", m_flip_id[i] );
+					iLen += sprintf(pszTemp + iLen, "0%x", static_cast<unsigned int>(m_flip_id[i]));
 					ASSERT(iLen < SCRIPT_MAX_LINE_LEN);
 				}
 				sVal = pszTemp;

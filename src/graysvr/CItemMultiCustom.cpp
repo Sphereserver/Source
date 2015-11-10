@@ -142,7 +142,6 @@ void CItemMultiCustom::BeginCustomize(CClient * pClientSrc)
 	pChar->UpdateMove(ptOld);
 
 	// hide all dynamic items inside the house
-	CGRect rectDesign = GetDesignArea();
 	CWorldSearch Area(GetTopPoint(), GetDesignArea().GetWidth()/2);
 	Area.SetSearchSquare(true);
 	for (;;)

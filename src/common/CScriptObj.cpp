@@ -1824,7 +1824,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 			if ( iType & 2 )		// FORCHAR, FOROBJ
 			{
 				CWorldSearch AreaChars( pt, iDist );
-				AreaChars.SetAllShow( iType & 0x20 ? true : false );
+				AreaChars.SetAllShow((iType & 0x20) ? true : false);
 				for (;;)
 				{
 					++LoopsMade;
@@ -2281,15 +2281,13 @@ jump_in:
 					if ( s.HasArgs() )
 					{
 						TCHAR * ppArgs[2];
-						TCHAR * tempPoint;
-						TemporaryString porigValue;
-						
 						size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(s.GetArgRaw()), ppArgs, COUNTOF(ppArgs), " \t,");
 						
 						if ( iArgQty >= 1 )
 						{
+							TemporaryString porigValue;
 							strcpy(porigValue, ppArgs[0]);
-							tempPoint = porigValue;
+							TCHAR *tempPoint = porigValue;
 							ParseText( tempPoint, pSrc, 0, pArgs );
 							
 							CGrayUID pCurUid = static_cast<DWORD>(Exp_GetVal(tempPoint));

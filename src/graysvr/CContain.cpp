@@ -1632,7 +1632,7 @@ void CItemContainer::Game_Create()
 			// In checkers the pieces are placed on the black squares
 			if ( (i&3) == 0 )
 			{
-				pt.m_x = (i / 4)&1? 67:42;
+				pt.m_x = ((i / 4) & 1) ? 67 : 42;
 				pt.m_y = sm_CheckerRow[ i/4 ];
 			}
 			else

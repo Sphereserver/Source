@@ -626,7 +626,7 @@ int CWebPageDef::ServPageRequest( CClient * pClient, LPCTSTR pszURLArgs, CGTime 
 			break;
 		packet.setData((BYTE*)szTmp, iLen);
 		packet.send(pClient);
-		dwSize -= iLen;
+		//dwSize -= iLen;
 		if ( iLen < sizeof( szTmp ) )
 		{
 			// memset( szTmp+iLen, 0, sizeof(szTmp)-iLen );

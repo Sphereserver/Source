@@ -86,6 +86,7 @@ CSectorBase::CSectorBase()
 {
 	m_map = 0;
 	m_index = 0;
+	m_dwFlags = 0;
 }
 
 CSectorBase::~CSectorBase()

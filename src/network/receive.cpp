@@ -2452,9 +2452,9 @@ bool PacketClientVersion::onReceive(NetState* net)
 		net->m_reportedVersion = version;
 		net->detectAsyncMode();
 
-		DEBUG_MSG(("Getting cliver 0x%lx/0x%lx\n", version, (version&0xFFFFF0)));
+		DEBUG_MSG(("Getting cliver 0x%lx/0x%lx\n", version, (version & 0xFFFFF0)));
 		
-		if (g_Serv.m_ClientVersion.GetClientVer() != 0 && ((version&0xFFFFF0) != (unsigned long)g_Serv.m_ClientVersion.GetClientVer()))
+		if (g_Serv.m_ClientVersion.GetClientVer() != 0 && ((version & 0xFFFFF0) != (DWORD)g_Serv.m_ClientVersion.GetClientVer()))
 		{
 			client->addLoginErr(PacketLoginError::BadVersion);
 		}
@@ -3260,17 +3260,10 @@ bool PacketWheelBoatMove::onReceive(NetState* net)
 	CClient* client = net->getClient();
 	ASSERT(client);
 	CChar* character = client->GetChar();
-
-	CItemShip* pShipItem;
 	CRegionWorld* area = character->m_pArea;
 
 	if (character == NULL)
-	{
-#ifdef _DEBUG
-		g_Log.EventDebug("Boat move request failed. Invalid character");
-#endif
 		return false;
-	}
 
 	skip(4);
 	//DWORD serial = readInt32(); //player serial
@@ -3283,7 +3276,7 @@ bool PacketWheelBoatMove::onReceive(NetState* net)
 
 	if (area && area->IsFlag(REGION_FLAG_SHIP))
 	{
-		pShipItem = dynamic_cast <CItemShip *>(area->GetResourceID().ItemFind());
+		CItemShip *pShipItem = dynamic_cast<CItemShip *>(area->GetResourceID().ItemFind());
 		if (pShipItem && pShipItem->m_itShip.m_Pilot == character->GetUID())
 		{
 			//direction of movement = moving - ship_face
@@ -3300,19 +3293,8 @@ bool PacketWheelBoatMove::onReceive(NetState* net)
 				pShipItem->Ship_Move(moving, speed);
 		}
 		else
-		{
-#ifdef _DEBUG
-			g_Log.EventDebug("Boat move request failed. Boat not found on character ('%s' 0%lx) position",
-				static_cast<LPCTSTR>(character->GetName()), static_cast<DWORD>(character->GetUID()));
-#endif
 			return false;
-		}
 	}
-
-#ifdef _DEBUG
-	g_Log.EventDebug("Character ('%s' 0%lx) moving boat (0%lx)\n",
-		static_cast<LPCTSTR>(character->GetName()), static_cast<DWORD>(character->GetUID()), static_cast<DWORD>(pShipItem->GetUID()));
-#endif
 
 	return true;
 }

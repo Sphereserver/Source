@@ -739,7 +739,7 @@ void CCrypt::GameCryptStart( DWORD dwIP, BYTE * pEvent, size_t iLen )
 
 	bool bOut = false;
 
-	for ( int i = ENC_NONE; i < ENC_QTY; i++ )
+	for ( unsigned long i = ENC_NONE; i < ENC_QTY; i++ )
 	{
 		SetEncryptionType(static_cast<ENCRYPTION_TYPE>(i));
 

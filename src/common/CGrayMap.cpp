@@ -191,7 +191,7 @@ bool CGrayMapBlockState::CheckTile_Item( DWORD wItemBlockFlags, signed char zBot
 		}
 	}
 
-	if ( zBottom <= ( m_zClimb + ( wItemBlockFlags & ( CAN_I_CLIMB ) ? zHeight / 2 : 0 ) ) )
+	if ( zBottom <= (m_zClimb + ((wItemBlockFlags & CAN_I_CLIMB) ? zHeight / 2 : 0)) )
 	{
 		if ( zTop >= m_Bottom.m_z )
 		{

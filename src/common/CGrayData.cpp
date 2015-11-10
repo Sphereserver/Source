@@ -101,7 +101,6 @@ void CVerDataMul::Load( CGFile & file )
 		{
 			DEBUG_ERR(( "VerData Array is NOT sorted !\n" ));
 			throw CGrayError( LOGL_CRIT, -1, "VerData: NOT Sorted!");
-			break;
 		}
 	}
 #endif

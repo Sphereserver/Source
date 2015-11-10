@@ -518,8 +518,7 @@ void Table::JoinTable(Table & tblJoin)
 	{
 		m_iRows+=tblJoin.m_iRows;
 
-		for (std::vector<row>::iterator it=tblJoin.m_lstRows.begin();
-			it!=tblJoin.m_lstRows.end(); it++)
+		for (std::vector<row>::iterator it = tblJoin.m_lstRows.begin(); it != tblJoin.m_lstRows.end(); ++it)
 		{
 			m_lstRows.push_back(*it);
 		}

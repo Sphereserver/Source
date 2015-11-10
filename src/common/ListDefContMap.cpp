@@ -350,21 +350,16 @@ inline void CListDefCont::DeleteAtIterator(DefList::iterator it)
 	if ( it != m_listElements.end() )
 	{
 		CListDefContElem *pListBase = (*it);
-		CListDefContNum * pListNum = NULL;
-		CListDefContStr * pListStr = NULL;
-
 		m_listElements.erase(it);
 
 		if ( pListBase )
 		{
-			pListNum = dynamic_cast<CListDefContNum *>(pListBase);
-
+			CListDefContNum *pListNum = dynamic_cast<CListDefContNum *>(pListBase);
 			if ( pListNum )
 				delete pListNum;
 			else
 			{
-				pListStr = dynamic_cast<CListDefContStr *>(pListBase);
-
+				CListDefContStr *pListStr = dynamic_cast<CListDefContStr *>(pListBase);
 				if ( pListStr )
 					delete pListStr;
 			}
@@ -412,7 +407,6 @@ void CListDefCont::RemoveAll()
 
 bool compare_insensitive (CListDefContElem * firstelem, CListDefContElem * secondelem)
 {
-	unsigned int i=0;
 	LPCTSTR first = firstelem->GetValStr();
 	LPCTSTR second = secondelem->GetValStr();
 
@@ -424,6 +418,7 @@ bool compare_insensitive (CListDefContElem * firstelem, CListDefContElem * secon
 	}
 	else
 	{
+		unsigned int i = 0;
 		while ( (i < strlen(first)) && (i < strlen(second)))
 		{
 			if (tolower(first[i]) < tolower(second[i])) return true;
@@ -436,7 +431,6 @@ bool compare_insensitive (CListDefContElem * firstelem, CListDefContElem * secon
 
 bool compare_sensitive (CListDefContElem * firstelem, CListDefContElem * secondelem)
 {
-	unsigned int i=0;
 	LPCTSTR first = firstelem->GetValStr();
 	LPCTSTR second = secondelem->GetValStr();
 
@@ -448,6 +442,7 @@ bool compare_sensitive (CListDefContElem * firstelem, CListDefContElem * seconde
 	}
 	else
 	{
+		unsigned int i = 0;
 		while ( (i < strlen(first)) && (i < strlen(second)))
 		{
 			if (first[i] < second[i]) return true;
@@ -1080,18 +1075,13 @@ bool CListDefMap::r_Write( CTextConsole *pSrc, LPCTSTR pszString, CGString& strV
 
 	if ( IsSimpleNumberString(ppCmds[1]) )
 	{
-		CListDefContElem* pListElem = NULL;
-		CListDefContStr* pListElemStr = NULL;
-
 		nStartIndex = Exp_GetVal(ppCmds[1]);
-		pListElem = pListBase->GetAt(nStartIndex);
-
+		CListDefContElem *pListElem = pListBase->GetAt(nStartIndex);
 		if ( pListElem )
 		{
 			if ( !(*(ppCmds[2])) )
 			{
-				pListElemStr = dynamic_cast<CListDefContStr*>(pListElem);
-
+				CListDefContStr *pListElemStr = dynamic_cast<CListDefContStr*>(pListElem);
 				if ( pListElemStr )
 					strVal.Format("\"%s\"", pListElemStr->GetValStr());
 				else

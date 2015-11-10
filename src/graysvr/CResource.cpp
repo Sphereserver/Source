@@ -65,7 +65,9 @@ CResource::CResource()
 	m_iSaveBackupLevels = 3;
 	m_iSaveBackgroundTime = 5*60*TICK_PER_SEC;	// Use the new background save.
 	m_fSaveGarbageCollect = false;	// Always force a full garbage collection.
-	m_iSavePeriod = 15*60*TICK_PER_SEC;
+	m_iSavePeriod = 20*60*TICK_PER_SEC;
+	m_iSaveSectorsPerTick = 1;
+	m_iSaveStepMaxComplexity = 500;
 
 	// In game effects.
 	m_fCanUndressPets   = false;

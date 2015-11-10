@@ -1063,7 +1063,7 @@ int Str_RegExMatch(LPCTSTR pPattern, LPCTSTR pText, TCHAR * lastError)
 
 		return 0;
 	}
-	catch (std::bad_alloc e)
+	catch (const std::bad_alloc e)
 	{
 		strcpylen(lastError, e.what(), SCRIPT_MAX_LINE_LEN);
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);

@@ -8,6 +8,7 @@
 CMD5::CMD5()
 {
 	reset();
+	m_input;
 }
 
 CMD5::~CMD5()
@@ -32,10 +33,9 @@ void CMD5::reset()
 
 inline void byteReverse( unsigned char *buffer, unsigned int longs )
 {
-    unsigned int temp;
     do
 	{
-		temp = static_cast<unsigned int>( static_cast<unsigned int>(buffer[3]) << 8 | buffer[2] ) << 16 | ( static_cast<unsigned int>(buffer[1]) << 8 | buffer[0] );
+		unsigned int temp = static_cast<unsigned int>( static_cast<unsigned int>(buffer[3]) << 8 | buffer[2] ) << 16 | ( static_cast<unsigned int>(buffer[1]) << 8 | buffer[0] );
 		reinterpret_cast<unsigned int *>(buffer)[0] = temp;
 		buffer += 4;
     }

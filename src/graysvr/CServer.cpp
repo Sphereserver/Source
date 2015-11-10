@@ -975,9 +975,7 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 			LONGLONG average = g_profiler.total / g_profiler.called;
 			TScriptProfiler::TScriptProfilerFunction * pFun;
 			TScriptProfiler::TScriptProfilerTrigger * pTrig;
-			LONGLONG divby(1);
-
-			divby = llTimeProfileFrequency / 1000;
+			LONGLONG divby = llTimeProfileFrequency / 1000;
 
 			pSrc->SysMessagef( "Scripts: called %lu times and took %i.%04i msec (%i.%04i msec average). Reporting with highest average.\n",
 					g_profiler.called,
@@ -1520,7 +1518,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 #ifdef _WIN32
 				if ( GRAY_GetOSInfo()->dwPlatformId != 2 )
 				{
-					g_Log.EventError( "Command not aviable on Windows 95/98/ME.\n" );
+					g_Log.EventError( "Command not avaible on Windows 95/98/ME.\n" );
 					return( false );
 				}
 
@@ -1532,7 +1530,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 
 				pSrc->SysMessage( "Memory shrinked succesfully.\n" );
 #else
-				g_Log.EventError( "Command not aviable on *NIX os.\n" );
+				g_Log.EventError( "Command not avaible on *NIX os.\n" );
 				return false;
 #endif
 			} break;

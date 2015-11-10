@@ -317,21 +317,19 @@ void CVarDefMap::DeleteAtIterator( DefSet::iterator it )
 	ADDTOCALLSTACK("CVarDefMap::DeleteAtIterator");
 	if ( it != m_Container.end() )
 	{
-		CVarDefCont * pVarBase = (*it);
-		CVarDefContNum * pVarNum = NULL;
-		CVarDefContStr * pVarStr = NULL;
+		CVarDefCont *pVarBase = (*it);
 		m_Container.erase(it);
 
 		if ( pVarBase )
 		{
-			pVarNum = dynamic_cast<CVarDefContNum *>(pVarBase);
-			if (pVarNum)
+			CVarDefContNum *pVarNum = dynamic_cast<CVarDefContNum *>(pVarBase);
+			if ( pVarNum )
 			{
 				delete pVarNum;
 			}
 			else
 			{
-				pVarStr = dynamic_cast<CVarDefContStr *>(pVarBase);
+				CVarDefContStr *pVarStr = dynamic_cast<CVarDefContStr *>(pVarBase);
 				if ( pVarStr )
 					delete pVarStr;
 			}

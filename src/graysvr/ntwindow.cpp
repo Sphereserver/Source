@@ -318,6 +318,7 @@ CNTWindow::CNTWindow()
 	m_dwColorPrv		= RGB( 0xaf,0xaf,0xaf );
 	m_iHeightInput		= 0;
    	m_hLogFont			= NULL;
+	m_wndLog.SetSel(0, 0);
 	memset(m_zCommands, 0, sizeof(m_zCommands));
 }
 
@@ -874,7 +875,7 @@ LRESULT WINAPI CNTWindow::WindowProc( HWND hWnd, UINT message, WPARAM wParam, LP
 			theApp.m_wndMain.OnNotify( (int) wParam, (NMHDR *) lParam );
 			return 0;
 		case WM_USER_POST_MSG:
-			theApp.m_wndMain.OnUserPostMessage( (COLORREF) wParam, (CGString*) lParam );
+			theApp.m_wndMain.OnUserPostMessage( (COLORREF) wParam, reinterpret_cast<CGString*>(lParam) );
 			return 1;
 		case WM_USER_TRAY_NOTIFY:
 			return theApp.m_wndMain.OnUserTrayNotify( wParam, lParam );
