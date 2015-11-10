@@ -305,7 +305,7 @@ public:
 	* @param psz string to concatenate with.
 	* @return The result of concatenate the CGString with psz.
 	*/
-	const CGString &CGString::operator+=(LPCTSTR psz)	// like strcat
+	const CGString& operator+=(LPCTSTR psz)	// like strcat
 	{
 		Add(psz);
 		return(*this);
@@ -315,7 +315,7 @@ public:
 	* @param ch character to concatenate with.
 	* @return The result of concatenate the CGString with ch.
 	*/
-	const CGString &CGString::operator+=(TCHAR ch)
+	const CGString& operator+=(TCHAR ch)
 	{
 		Add(ch);
 		return(*this);
@@ -325,20 +325,20 @@ public:
 	* @param pStr string to copy.
 	* @return the CGString.
 	*/
-	const CGString &CGString::operator=(LPCTSTR pStr)
+	const CGString& operator=(LPCTSTR pStr)
 	{
 		Copy(pStr);
-		return *this;
+		return(*this);
 	}
 	/**
 	* @brief Copy supplied CGString into the CGString.
 	* @param s CGString to copy.
 	* @return the CGString.
 	*/
-	const CGString &CGString::operator=(const CGString &s)
+	const CGString& operator=(const CGString &s)
 	{
 		Copy(s.GetPtr());
-		return *this;
+		return(*this);
 	}
 };
 
