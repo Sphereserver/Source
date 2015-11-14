@@ -124,7 +124,6 @@ SRC	:= 	./src/graysvr/CAccount.cpp \
 		./src/common/CArray.cpp \
 		./src/common/CAssoc.cpp \
 		./src/common/CDataBase.cpp \
-		./src/common/CDatabaseLoader.cpp \
 		./src/common/CEncrypt.cpp \
 		./src/common/CExpression.cpp \
 		./src/common/CException.cpp \

@@ -216,9 +216,6 @@
     <ClCompile Include="src\common\zlib\gzwrite.c">
       <Filter>common\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\CDatabaseLoader.cpp">
-      <Filter>common</Filter>
-    </ClCompile>
     <ClCompile Include="src\graysvr\CAccount.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
@@ -562,9 +559,6 @@
     </ClInclude>
     <ClInclude Include="src\common\zlib\gzguts.h">
       <Filter>common\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="src\common\CDatabaseLoader.h">
-      <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\graysvr\UnixTerminal.h">
       <Filter>graysvr</Filter>

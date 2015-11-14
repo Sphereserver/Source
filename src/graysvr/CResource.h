@@ -966,21 +966,12 @@ public:
 	int		m_iClientLoginTempBan;
 	int		m_iMaxShipPlankTeleport;
 
-#ifndef _DBPLUGIN
-	//	mySQL features
+	//	MySQL features
 	bool		m_bMySql;
 	CGString	m_sMySqlHost;
 	CGString	m_sMySqlUser;
 	CGString	m_sMySqlPass;
 	CGString	m_sMySqlDB;
-#else
-	CGString	m_sDbDll;
-	CGString	m_sDbHost;
-	CGString	m_sDbUser;
-	CGString	m_sDbPass;
-	CGString	m_sDbDatabase;
-	int			m_iDbQueryBuffer;
-#endif
 
 	// network settings
 #ifdef _MTNETWORK

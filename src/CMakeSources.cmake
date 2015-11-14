@@ -71,8 +71,6 @@ common/CAssoc.cpp
 common/CAssoc.h
 common/CDataBase.cpp
 common/CDataBase.h
-common/CDatabaseLoader.cpp
-common/CDatabaseLoader.h
 common/CEncrypt.cpp
 common/CEncrypt.h
 common/CException.cpp

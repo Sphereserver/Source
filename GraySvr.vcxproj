@@ -146,7 +146,6 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\common\CacheableScriptFile.cpp" />
-    <ClCompile Include="src\common\CDatabaseLoader.cpp" />
     <ClCompile Include="src\common\CEncrypt.cpp" />
     <ClCompile Include="src\common\crashdump\crashdump.cpp" />
     <ClCompile Include="src\common\CsvFile.cpp" />
@@ -257,7 +256,6 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
     <ClCompile Include="src\graysvr\PingServer.cpp" />
     <ClCompile Include="src\graysvr\UnixTerminal.cpp" />
     <ClInclude Include="src\common\CacheableScriptFile.h" />
-    <ClInclude Include="src\common\CDatabaseLoader.h" />
     <ClInclude Include="src\common\CEncrypt.h" />
     <ClInclude Include="src\common\CMD5.h" />
     <ClInclude Include="src\common\crashdump\crashdump.h" />
