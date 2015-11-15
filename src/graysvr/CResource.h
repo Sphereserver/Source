@@ -888,7 +888,6 @@ public:
 #define	ADVANCEDLOS_PLAYER			0x01
 #define	ADVANCEDLOS_NPC				0x02
 	int		m_iAdvancedLos;		// AdvancedLOS
-	int		m_iWrapX;
 
 	// New ones
 	int		m_iFeatureT2A;
@@ -966,21 +965,12 @@ public:
 	int		m_iClientLoginTempBan;
 	int		m_iMaxShipPlankTeleport;
 
-#ifndef _DBPLUGIN
-	//	mySQL features
+	//	MySQL features
 	bool		m_bMySql;
 	CGString	m_sMySqlHost;
 	CGString	m_sMySqlUser;
 	CGString	m_sMySqlPass;
 	CGString	m_sMySqlDB;
-#else
-	CGString	m_sDbDll;
-	CGString	m_sDbHost;
-	CGString	m_sDbUser;
-	CGString	m_sDbPass;
-	CGString	m_sDbDatabase;
-	int			m_iDbQueryBuffer;
-#endif
 
 	// network settings
 #ifdef _MTNETWORK

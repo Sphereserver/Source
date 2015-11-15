@@ -157,8 +157,6 @@ CResource::CResource()
 
 	m_iAdvancedLos		= 0;
 
-	m_iWrapX		= 0x1400;
-
 	// New ones
 	m_iFeatureT2A		= (FEATURE_T2A_UPDATE|FEATURE_T2A_CHAT);
 	m_iFeatureLBR		= 0;
@@ -191,12 +189,8 @@ CResource::CResource()
 	m_iLevelMode = LEVEL_MODE_DOUBLE;
 	m_iLevelNextAt = 0;
 
-#ifndef _DBPLUGIN
-	//	mySQL support
+	//	MySQL support
 	m_bMySql = false;
-#else
-	m_iDbQueryBuffer = DEFAULT_RESULT_SIZE;
-#endif
 
 	m_cCommandPrefix = '.';
 
@@ -374,70 +368,62 @@ bool CResource::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 
 enum RC_TYPE
 {
-	RC_ACCTFILES,			// m_sAcctBaseDir
-	RC_ADVANCEDLOS,			// m_iAdvancedLos
+	RC_ACCTFILES,				// m_sAcctBaseDir
+	RC_ADVANCEDLOS,				// m_iAdvancedLos
 	RC_AGREE,
-	RC_ALLOWBUYSELLAGENT,	// m_bAllowBuySellAgent
-	RC_ALLOWLIGHTOVERRIDE,	// m_bAllowLightOverride
-	RC_ALLOWNEWBTRANSFER,	// m_bAllowNewbTransfer
-	RC_ARCHERYMAXDIST,		// m_iArcheryMaxDist
-	RC_ARCHERYMINDIST,		// m_iArcheryMinDist
+	RC_ALLOWBUYSELLAGENT,		// m_bAllowBuySellAgent
+	RC_ALLOWLIGHTOVERRIDE,		// m_bAllowLightOverride
+	RC_ALLOWNEWBTRANSFER,		// m_bAllowNewbTransfer
+	RC_ARCHERYMAXDIST,			// m_iArcheryMaxDist
+	RC_ARCHERYMINDIST,			// m_iArcheryMinDist
 	RC_ARRIVEDEPARTMSG,
-	RC_ATTACKERTIMEOUT,		// m_iAttackerTimeout
-	RC_ATTACKINGISACRIME,	// m_fAttackingIsACrime
-	RC_AUTONEWBIEKEYS,		// m_fAutoNewbieKeys
-	RC_AUTOPRIVFLAGS,		// m_iAutoPrivFlags
-	RC_AUTORESDISP,			// m_iAutoResDisp
-	RC_AUTOTOOLTIPRESEND,	// m_iAutoTooltipResend
-	RC_BACKUPLEVELS,		// m_iSaveBackupLevels
+	RC_ATTACKERTIMEOUT,			// m_iAttackerTimeout
+	RC_ATTACKINGISACRIME,		// m_fAttackingIsACrime
+	RC_AUTONEWBIEKEYS,			// m_fAutoNewbieKeys
+	RC_AUTOPRIVFLAGS,			// m_iAutoPrivFlags
+	RC_AUTORESDISP,				// m_iAutoResDisp
+	RC_AUTOTOOLTIPRESEND,		// m_iAutoTooltipResend
+	RC_BACKUPLEVELS,			// m_iSaveBackupLevels
 	RC_BANKMAXITEMS,
 	RC_BANKMAXWEIGHT,
 	RC_BUILD,
-	RC_CANUNDRESSPETS,		// m_fCanUndressPets
-	RC_CHARTAGS,			// m_fCharTags
+	RC_CANUNDRESSPETS,			// m_fCanUndressPets
+	RC_CHARTAGS,				// m_fCharTags
 	RC_CLIENTLINGER,
-	RC_CLIENTLOGINMAXTRIES,	// m_iClientLoginMaxTries
-	RC_CLIENTLOGINTEMPBAN,	// m_iClientLoginTempBan
-	RC_CLIENTMAX,			// m_iClientsMax
-	RC_CLIENTMAXIP,			// m_iClientsMaxIP
+	RC_CLIENTLOGINMAXTRIES,		// m_iClientLoginMaxTries
+	RC_CLIENTLOGINTEMPBAN,		// m_iClientLoginTempBan
+	RC_CLIENTMAX,				// m_iClientsMax
+	RC_CLIENTMAXIP,				// m_iClientsMaxIP
 	RC_CLIENTS,
 	RC_COLORHIDDEN,
 	RC_COLORINVIS,
 	RC_COLORINVISSPELL,
-	RC_COLORNOTOCRIMINAL,	// m_iColorNotoCriminal
-	RC_COLORNOTODEFAULT,	// m_iColorNotoDefault
-	RC_COLORNOTOEVIL,		// m_iColorNotoEvil
-	RC_COLORNOTOGOOD,		// m_iColorNotoGood
-	RC_COLORNOTOGUILDSAME,	// m_iColorNotoGuildSame
-	RC_COLORNOTOGUILDWAR,	// m_iColorNotoGuildWar
-	RC_COLORNOTOINVUL,		// m_iColorNotoInvul
-	RC_COLORNOTOINVULGAMEMASTER,	// m_iColorNotoInvulGameMaster
-	RC_COLORNOTONEUTRAL,	// m_iColorNotoNeutral
-	RC_COMBATFLAGS,			// m_iCombatFlags
-	RC_COMBATSPEEDERA,		// m_iCombatSpeedEra
+	RC_COLORNOTOCRIMINAL,		// m_iColorNotoCriminal
+	RC_COLORNOTODEFAULT,		// m_iColorNotoDefault
+	RC_COLORNOTOEVIL,			// m_iColorNotoEvil
+	RC_COLORNOTOGOOD,			// m_iColorNotoGood
+	RC_COLORNOTOGUILDSAME,		// m_iColorNotoGuildSame
+	RC_COLORNOTOGUILDWAR,		// m_iColorNotoGuildWar
+	RC_COLORNOTOINVUL,			// m_iColorNotoInvul
+	RC_COLORNOTOINVULGAMEMASTER,// m_iColorNotoInvulGameMaster
+	RC_COLORNOTONEUTRAL,		// m_iColorNotoNeutral
+	RC_COMBATFLAGS,				// m_iCombatFlags
+	RC_COMBATSPEEDERA,			// m_iCombatSpeedEra
 	RC_COMMANDLOG,
 	RC_COMMANDPREFIX,
-	RC_COMMANDTRIGGER,		// m_sCommandTrigger
-	RC_CONNECTINGMAX,		// m_iConnectingMax
-	RC_CONNECTINGMAXIP,		// m_iConnectingMaxIP
-	RC_CONTEXTMENULIMIT,	// m_iContextMenuLimit
+	RC_COMMANDTRIGGER,			// m_sCommandTrigger
+	RC_CONNECTINGMAX,			// m_iConnectingMax
+	RC_CONNECTINGMAXIP,			// m_iConnectingMaxIP
+	RC_CONTEXTMENULIMIT,		// m_iContextMenuLimit
 	RC_CORPSENPCDECAY,
 	RC_CORPSEPLAYERDECAY,
-	RC_CRIMINALTIMER,		// m_iCriminalTimer
-	RC_CUOSTATUS,			// m_fCUOStatus
-#ifdef _DBPLUGIN
-	RC_DBDATABASE,			//	m_sDbDatabase
-	RC_DBDLL,				//	m_sDbDll
-	RC_DBHOST,				//	m_sDbHost
-	RC_DBPASSWORD,			//	m_sDbPass
-	RC_DBQUERYBUFFER,		//	m_iDbQueryBuffer
-	RC_DBUSER,				//	m_sDbUser
-#endif
+	RC_CRIMINALTIMER,			// m_iCriminalTimer
+	RC_CUOSTATUS,				// m_fCUOStatus
 	RC_DEADCANNOTSEELIVING,
 	RC_DEADSOCKETTIME,
 	RC_DEBUGFLAGS,
 	RC_DECAYTIMER,
-	RC_DEFAULTCOMMANDLEVEL,	//m_iDefaultCommandLevel
+	RC_DEFAULTCOMMANDLEVEL,		//m_iDefaultCommandLevel
 	RC_DISTANCETALK,
 	RC_DISTANCEWHISPER,
 	RC_DISTANCEYELL,
@@ -445,16 +431,16 @@ enum RC_TYPE
 	RC_DUMPPACKETSFORACC,
 #endif
 	RC_DUNGEONLIGHT,
-	RC_EQUIPPEDCAST,		// m_fEquippedCast
-	RC_EVENTSITEM,			// m_sEventsItem
-	RC_EVENTSPET,			// m_sEventsPet
-	RC_EVENTSPLAYER,		// m_sEventsPlayer
-	RC_EVENTSREGION,		// m_sEventsRegion
-	RC_EXPERIENCEKOEFPVM,	// m_iExperienceKoefPVM
-	RC_EXPERIENCEKOEFPVP,	// m_iExperienceKoefPVP
-	RC_EXPERIENCEMODE,		// m_iExperienceMode
-	RC_EXPERIENCESYSTEM,	// m_bExperienceSystem
-	RC_EXPERIMENTAL,		// m_iExperimental
+	RC_EQUIPPEDCAST,			// m_fEquippedCast
+	RC_EVENTSITEM,				// m_sEventsItem
+	RC_EVENTSPET,				// m_sEventsPet
+	RC_EVENTSPLAYER,			// m_sEventsPlayer
+	RC_EVENTSREGION,			// m_sEventsRegion
+	RC_EXPERIENCEKOEFPVM,		// m_iExperienceKoefPVM
+	RC_EXPERIENCEKOEFPVP,		// m_iExperienceKoefPVP
+	RC_EXPERIENCEMODE,			// m_iExperienceMode
+	RC_EXPERIENCESYSTEM,		// m_bExperienceSystem
+	RC_EXPERIMENTAL,			// m_iExperimental
 	RC_FEATURESAOS,
 	RC_FEATURESEXTRA,
 	RC_FEATURESKR,
@@ -464,36 +450,36 @@ enum RC_TYPE
 	RC_FEATURESSE,
 	RC_FEATUREST2A,
 	RC_FEATURESTOL,
-	RC_FLIPDROPPEDITEMS,	// m_fFlipDroppedItems
-	RC_FORCEGARBAGECOLLECT,	// m_fSaveGarbageCollect
-	RC_FREEZERESTARTTIME,	// m_iFreezeRestartTime
-	RC_GAMEMINUTELENGTH,	// m_iGameMinuteLength
-	RC_GENERICSOUNDS,		// m_fGenericSounds
-	RC_GUARDLINGER,			// m_iGuardLingerTime
+	RC_FLIPDROPPEDITEMS,		// m_fFlipDroppedItems
+	RC_FORCEGARBAGECOLLECT,		// m_fSaveGarbageCollect
+	RC_FREEZERESTARTTIME,		// m_iFreezeRestartTime
+	RC_GAMEMINUTELENGTH,		// m_iGameMinuteLength
+	RC_GENERICSOUNDS,			// m_fGenericSounds
+	RC_GUARDLINGER,				// m_iGuardLingerTime
 	RC_GUARDSINSTANTKILL,
 	RC_GUARDSONMURDERERS,
 	RC_GUESTSMAX,
 	RC_GUILDS,
 	RC_HEARALL,
-	RC_HELPINGCRIMINALSISACRIME,	// m_fHelpingCriminalsIsACrime
-	RC_HITPOINTPERCENTONREZ,		// m_iHitpointPercentOnRez
-	RC_HITSHUNGERLOSS,				// m_iHitsHungerLoss
+	RC_HELPINGCRIMINALSISACRIME,// m_fHelpingCriminalsIsACrime
+	RC_HITPOINTPERCENTONREZ,	// m_iHitpointPercentOnRez
+	RC_HITSHUNGERLOSS,			// m_iHitsHungerLoss
 	RC_HITSUPDATERATE,
-	RC_INITHIDDENSKILLS,	// m_fInitHiddenSkills
-	RC_ITEMSMAXAMOUNT,		// m_iItemsMaxAmount
-	RC_LEVELMODE,			// m_iLevelMode
-	RC_LEVELNEXTAT,			// m_iLevelNextAt
-	RC_LEVELSYSTEM,			// m_bLevelSystem
-	RC_LIGHTDAY,			// m_iLightDay
-	RC_LIGHTNIGHT,			// m_iLightNight
-	RC_LOCALIPADMIN,		// m_fLocalIPAdmin
+	RC_INITHIDDENSKILLS,		// m_fInitHiddenSkills
+	RC_ITEMSMAXAMOUNT,			// m_iItemsMaxAmount
+	RC_LEVELMODE,				// m_iLevelMode
+	RC_LEVELNEXTAT,				// m_iLevelNextAt
+	RC_LEVELSYSTEM,				// m_bLevelSystem
+	RC_LIGHTDAY,				// m_iLightDay
+	RC_LIGHTNIGHT,				// m_iLightNight
+	RC_LOCALIPADMIN,			// m_fLocalIPAdmin
 	RC_LOG,
-	RC_LOGMASK,				// GetLogMask
-	RC_LOOTINGISACRIME,		// m_fLootingIsACrime
-	RC_LOOTINGREVEAL,		// m_bLootingReveal
-	RC_LOSTNPCTELEPORT,		// m_fLostNPCTeleport
+	RC_LOGMASK,					// GetLogMask
+	RC_LOOTINGISACRIME,			// m_fLootingIsACrime
+	RC_LOOTINGREVEAL,			// m_bLootingReveal
+	RC_LOSTNPCTELEPORT,			// m_fLostNPCTeleport
 	RC_MAGICFLAGS,
-	RC_MAGICUNLOCKDOOR,		// m_iMagicUnlockDoor
+	RC_MAGICUNLOCKDOOR,			// m_iMagicUnlockDoor
 	RC_MAPCACHETIME,
 	RC_MAXBASESKILL,			// m_iMaxBaseSkill
 	RC_MAXCHARSPERACCOUNT,		// m_iMaxCharsPerAccount
@@ -517,17 +503,15 @@ enum RC_TYPE
 	RC_MONSTERFEAR,				// m_fMonsterFear
 	RC_MONSTERFIGHT,
 	RC_MOUNTHEIGHT,				// m_iMountHeight
-	RC_MOVERATE,				//	m_iMoveRate
+	RC_MOVERATE,				// m_iMoveRate
 	RC_MULFILES,
 	RC_MURDERDECAYTIME,			// m_iMurderDecayTime;
-	RC_MURDERMINCOUNT,			//	m_iMurderMinCount
-#ifndef _DBPLUGIN
-	RC_MYSQL,					//	m_bMySql
-	RC_MYSQLDB,					//	m_sMySqlDatabase
-	RC_MYSQLHOST,				//	m_sMySqlHost
-	RC_MYSQLPASS,				//	m_sMySqlPassword
-	RC_MYSQLUSER,				//	m_sMySqlUser
-#endif
+	RC_MURDERMINCOUNT,			// m_iMurderMinCount
+	RC_MYSQL,					// m_bMySql
+	RC_MYSQLDB,					// m_sMySqlDatabase
+	RC_MYSQLHOST,				// m_sMySqlHost
+	RC_MYSQLPASS,				// m_sMySqlPassword
+	RC_MYSQLUSER,				// m_sMySqlUser
 	RC_NETTTL,					// m_iNetHistoryTTL
 #ifdef _MTNETWORK
 	RC_NETWORKTHREADPRIORITY,	// m_iNetworkThreadPriority
@@ -558,8 +542,8 @@ enum RC_TYPE
 	RC_RUNNINGPENALTY,			// m_iStamRunningPenalty
 	RC_SAVEBACKGROUND,			// m_iSaveBackgroundTime
 	RC_SAVEPERIOD,
-	RC_SAVESECTORSPERTICK,                  // m_iSaveSectorsPerTick
-        RC_SAVESTEPMAXCOMPLEXITY,               // m_iSaveStepMaxComplexity
+	RC_SAVESECTORSPERTICK,		// m_iSaveSectorsPerTick
+    RC_SAVESTEPMAXCOMPLEXITY,	// m_iSaveStepMaxComplexity
 	RC_SCPFILES,
 	RC_SECTORSLEEP,				// m_iSectorSleepMask
 	RC_SECURE,
@@ -571,17 +555,17 @@ enum RC_TYPE
 	RC_SPEEDSCALEFACTOR,
 	RC_SPELLTIMEOUT,
 	RC_STAMINALOSSATWEIGHT,		// m_iStaminaLossAtWeight
-	RC_STATSFLAGS,				//	m_iStatFlag
+	RC_STATSFLAGS,				// m_iStatFlag
 	RC_STRIPPATH,				// for TNG
 	RC_SUPPRESSCAPITALS,
-	RC_TELEPORTEFFECTNPC,		//	m_iSpell_Teleport_Effect_NPC
-	RC_TELEPORTEFFECTPLAYERS,	//	m_iSpell_Teleport_Effect_Players
-	RC_TELEPORTEFFECTSTAFF,		//	m_iSpell_Teleport_Effect_Staff
-	RC_TELEPORTSOUNDNPC,		//	m_iSpell_Teleport_Sound_NPC
-	RC_TELEPORTSOUNDPLAYERS,	//	m_iSpell_Teleport_Sound_Players
-	RC_TELEPORTSOUNDSTAFF,		//	m_iSpell_Teleport_Sound_Staff
-	RC_TELNETLOG,				//  m_fTelnetLog
-	RC_TIMERCALL,				//	m_iTimerCall
+	RC_TELEPORTEFFECTNPC,		// m_iSpell_Teleport_Effect_NPC
+	RC_TELEPORTEFFECTPLAYERS,	// m_iSpell_Teleport_Effect_Players
+	RC_TELEPORTEFFECTSTAFF,		// m_iSpell_Teleport_Effect_Staff
+	RC_TELEPORTSOUNDNPC,		// m_iSpell_Teleport_Sound_NPC
+	RC_TELEPORTSOUNDPLAYERS,	// m_iSpell_Teleport_Sound_Players
+	RC_TELEPORTSOUNDSTAFF,		// m_iSpell_Teleport_Sound_Staff
+	RC_TELNETLOG,				// m_fTelnetLog
+	RC_TIMERCALL,				// m_iTimerCall
 	RC_TIMEUP,
 	RC_TOOLTIPCACHE,			// m_iTooltipCache
 	RC_TOOLTIPMODE,				// m_iTooltipMode
@@ -606,7 +590,6 @@ enum RC_TYPE
 	RC_WOPPLAYER,
 	RC_WOPSTAFF,
 	RC_WORLDSAVE,
-	RC_WRAPX,
 	RC_ZEROPOINT,				// m_sZeroPoint
 	RC_QTY
 }; 
@@ -644,9 +627,9 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "COLORHIDDEN",			{ ELEM_VOID,	OFFSETOF(CResource,m_iColorHidden),			0 }},
 	{ "COLORINVIS",				{ ELEM_VOID,	OFFSETOF(CResource,m_iColorInvis),			0 }},
 	{ "COLORINVISSPELL",		{ ELEM_VOID,	OFFSETOF(CResource,m_iColorInvisSpell),		0 }},
-	{ "COLORNOTOCRIMINAL",		{ ELEM_WORD,	OFFSETOF(CResource, m_iColorNotoCriminal),	0 }},
-	{ "COLORNOTODEFAULT",		{ ELEM_WORD,	OFFSETOF(CResource, m_iColorNotoDefault),	0 }},
-	{ "COLORNOTOEVIL",			{ ELEM_WORD,	OFFSETOF(CResource, m_iColorNotoEvil),		0 }},
+	{ "COLORNOTOCRIMINAL",		{ ELEM_WORD,	OFFSETOF(CResource,m_iColorNotoCriminal),	0 }},
+	{ "COLORNOTODEFAULT",		{ ELEM_WORD,	OFFSETOF(CResource,m_iColorNotoDefault),	0 }},
+	{ "COLORNOTOEVIL",			{ ELEM_WORD,	OFFSETOF(CResource,m_iColorNotoEvil),		0 }},
 	{ "COLORNOTOGOOD",			{ ELEM_WORD,	OFFSETOF(CResource,m_iColorNotoGood),		0 }},
 	{ "COLORNOTOGUILDSAME",		{ ELEM_WORD,	OFFSETOF(CResource,m_iColorNotoGuildSame),	0 }},
 	{ "COLORNOTOGUILDWAR",		{ ELEM_WORD,	OFFSETOF(CResource,m_iColorNotoGuildWar),	0 }},
@@ -654,7 +637,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "COLORNOTOINVULGAMEMASTER",{ ELEM_WORD,	OFFSETOF(CResource,m_iColorNotoInvulGameMaster),	0 }},
 	{ "COLORNOTONEUTRAL",		{ ELEM_WORD,	OFFSETOF(CResource,m_iColorNotoNeutral),	0 }},
 	{ "COMBATFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iCombatFlags),			0 }},
-	{ "COMBATSPEEDERA",			{ ELEM_BYTE,	OFFSETOF(CResource, m_iCombatSpeedEra),		0 }},
+	{ "COMBATSPEEDERA",			{ ELEM_BYTE,	OFFSETOF(CResource,m_iCombatSpeedEra),		0 }},
 	{ "COMMANDLOG",				{ ELEM_INT,		OFFSETOF(CResource,m_iCommandLog),			0 }},
 	{ "COMMANDPREFIX",			{ ELEM_BYTE,	OFFSETOF(CResource,m_cCommandPrefix),		0 }},
 	{ "COMMANDTRIGGER",			{ ELEM_CSTRING,	OFFSETOF(CResource,m_sCommandTrigger),		0 }},
@@ -665,15 +648,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "CORPSEPLAYERDECAY",		{ ELEM_INT,		OFFSETOF(CResource,m_iDecay_CorpsePlayer),	0 }},
 	{ "CRIMINALTIMER",			{ ELEM_INT,		OFFSETOF(CResource,m_iCriminalTimer),		0 }},
 	{ "CUOSTATUS",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fCUOStatus),			0 }},
-#ifdef _DBPLUGIN
-	{ "DBDATABASE",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sDbDatabase),			0 }},
-	{ "DBDLL",					{ ELEM_CSTRING,	OFFSETOF(CResource,m_sDbDll),				0 }},
-	{ "DBHOST",					{ ELEM_CSTRING, OFFSETOF(CResource,m_sDbHost),				0 }},
-	{ "DBPASSWORD",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sDbPass),				0 }},
-	{ "DBQUERYBUFFER",			{ ELEM_INT,		OFFSETOF(CResource,m_iDbQueryBuffer),		0 }},
-	{ "DBUSER",					{ ELEM_CSTRING,	OFFSETOF(CResource,m_sDbUser),				0 }},
-#endif
-	{ "DEADCANNOTSEELIVING",    { ELEM_INT,    OFFSETOF(CResource,m_fDeadCannotSeeLiving), 0 }},
+	{ "DEADCANNOTSEELIVING",	{ ELEM_INT,		OFFSETOF(CResource,m_fDeadCannotSeeLiving),	0 }},
 	{ "DEADSOCKETTIME",			{ ELEM_INT,		OFFSETOF(CResource,m_iDeadSocketTime),		0 }},
 	{ "DEBUGFLAGS",				{ ELEM_WORD,	OFFSETOF(CResource,m_wDebugFlags),			0 }},
 	{ "DECAYTIMER",				{ ELEM_INT,		OFFSETOF(CResource,m_iDecay_Item),			0 }},
@@ -761,16 +736,14 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "MULFILES",				{ ELEM_VOID,	0,											0 }},
 	{ "MURDERDECAYTIME",		{ ELEM_INT,		OFFSETOF(CResource,m_iMurderDecayTime),		0 }},
 	{ "MURDERMINCOUNT",			{ ELEM_INT,		OFFSETOF(CResource,m_iMurderMinCount),		0 }}, // amount of murders before we get title.
-#ifndef _DBPLUGIN
 	{ "MYSQL",					{ ELEM_BOOL,	OFFSETOF(CResource,m_bMySql),				0 }},
 	{ "MYSQLDATABASE",			{ ELEM_CSTRING,	OFFSETOF(CResource,m_sMySqlDB),				0 }},
 	{ "MYSQLHOST",				{ ELEM_CSTRING, OFFSETOF(CResource,m_sMySqlHost),			0 }},
 	{ "MYSQLPASSWORD",			{ ELEM_CSTRING,	OFFSETOF(CResource,m_sMySqlPass),			0 }},
 	{ "MYSQLUSER",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sMySqlUser),			0 }},
-#endif
 	{ "NETTTL",					{ ELEM_INT,		OFFSETOF(CResource,m_iNetHistoryTTL),		0 }},
 #ifdef _MTNETWORK
-	{ "NETWORKTHREADPRIORITY",	{ ELEM_INT,		OFFSETOF(CResource,m_iNetworkThreadPriority), 0 }},
+	{ "NETWORKTHREADPRIORITY",	{ ELEM_INT,		OFFSETOF(CResource,m_iNetworkThreadPriority),	0 }},
 	{ "NETWORKTHREADS",			{ ELEM_INT,		OFFSETOF(CResource,m_iNetworkThreads),		0 }},
 #endif
 	{ "NORESROBE",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fNoResRobe),			0 }},
@@ -778,18 +751,18 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "NOWEATHER",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fNoWeather),			0 }},
 	{ "NPCAI",					{ ELEM_INT,		OFFSETOF(CResource,m_iNpcAi),				0 }},
 	{ "NPCNOFAMETITLE",			{ ELEM_BOOL,	OFFSETOF(CResource,m_NPCNoFameTitle),		0 }},
-	{ "NPCSKILLSAVE",			{ ELEM_INT,		OFFSETOF(CResource,m_iSaveNPCSkills),	0 }},
+	{ "NPCSKILLSAVE",			{ ELEM_INT,		OFFSETOF(CResource,m_iSaveNPCSkills),		0 }},
 	{ "NPCTRAINCOST",			{ ELEM_INT,		OFFSETOF(CResource,m_iTrainSkillCost),		0 }},
 	{ "NPCTRAINMAX",			{ ELEM_INT,		OFFSETOF(CResource,m_iTrainSkillMax),		0 }},
 	{ "NPCTRAINPERCENT",		{ ELEM_INT,		OFFSETOF(CResource,m_iTrainSkillPercent),	0 }},
-	{ "NTSERVICE",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUseNTService),			0 }},
-	{ "OPTIONFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iOptionFlags),				0 }},
-	{ "OVERSKILLMULTIPLY",		{ ELEM_INT,		OFFSETOF(CResource,m_iOverSkillMultiply),		0 }},
-	{ "PACKETDEATHANIMATION",	{ ELEM_BOOL,	OFFSETOF(CResource, m_iPacketDeathAnimation),	0 }},
-	{ "PAYFROMPACKONLY",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fPayFromPackOnly),			0 }},
-	{ "PETSINHERITNOTORIETY",	{ ELEM_INT,		OFFSETOF(CResource,m_iPetsInheritNotoriety),	0 }},
-	{ "PLAYEREVIL",				{ ELEM_INT,		OFFSETOF(CResource,m_iPlayerKarmaEvil),			0 }},
-	{ "PLAYERNEUTRAL",			{ ELEM_INT,		OFFSETOF(CResource,m_iPlayerKarmaNeutral),		0 }},
+	{ "NTSERVICE",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUseNTService),		0 }},
+	{ "OPTIONFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iOptionFlags),			0 }},
+	{ "OVERSKILLMULTIPLY",		{ ELEM_INT,		OFFSETOF(CResource,m_iOverSkillMultiply),	0 }},
+	{ "PACKETDEATHANIMATION",	{ ELEM_BOOL,	OFFSETOF(CResource,m_iPacketDeathAnimation),0 }},
+	{ "PAYFROMPACKONLY",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fPayFromPackOnly),		0 }},
+	{ "PETSINHERITNOTORIETY",	{ ELEM_INT,		OFFSETOF(CResource,m_iPetsInheritNotoriety),0 }},
+	{ "PLAYEREVIL",				{ ELEM_INT,		OFFSETOF(CResource,m_iPlayerKarmaEvil),		0 }},
+	{ "PLAYERNEUTRAL",			{ ELEM_INT,		OFFSETOF(CResource,m_iPlayerKarmaNeutral),	0 }},
 	{ "PROFILE",				{ ELEM_VOID,	0,											0 }},
 	{ "REAGENTLOSSFAIL",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fReagentLossFail),		0 }},
 	{ "REAGENTSREQUIRED",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fReagentsRequired),	0 }},
@@ -798,8 +771,8 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "RUNNINGPENALTY",			{ ELEM_INT,		OFFSETOF(CResource,m_iStamRunningPenalty),	0 }},
 	{ "SAVEBACKGROUND",			{ ELEM_INT,		OFFSETOF(CResource,m_iSaveBackgroundTime),	0 }},
 	{ "SAVEPERIOD",				{ ELEM_INT,		OFFSETOF(CResource,m_iSavePeriod),			0 }},
-	{ "SAVESECTORSPERTICK",                     { ELEM_INT,             OFFSETOF(CResource,m_iSaveSectorsPerTick),      0 }},
-        { "SAVESTEPMAXCOMPLEXITY",                     { ELEM_INT,             OFFSETOF(CResource,m_iSaveStepMaxComplexity),      0 }},
+	{ "SAVESECTORSPERTICK",		{ ELEM_INT,		OFFSETOF(CResource,m_iSaveSectorsPerTick),	0 }},
+	{ "SAVESTEPMAXCOMPLEXITY",	{ ELEM_INT,		OFFSETOF(CResource,m_iSaveStepMaxComplexity),	0 }},
 	{ "SCPFILES",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sSCPBaseDir),			0 }},
 	{ "SECTORSLEEP",			{ ELEM_INT,		OFFSETOF(CResource,m_iSectorSleepMask),		0 }},
 	{ "SECURE",					{ ELEM_BOOL,	OFFSETOF(CResource,m_fSecure),				0 }},
@@ -846,7 +819,6 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "WOPPLAYER",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fWordsOfPowerPlayer),	0 }},
 	{ "WOPSTAFF",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fWordsOfPowerStaff),	0 }},
 	{ "WORLDSAVE",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sWorldBaseDir),		0 }},
-	{ "WRAPX",					{ ELEM_INT,		OFFSETOF(CResource,m_iWrapX),				0 }},
 	{ "ZEROPOINT",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sZeroPoint),			0 }},
 	{ NULL,						{ ELEM_VOID,	0,											0 }}
 };
@@ -1039,31 +1011,6 @@ bool CResource::r_LoadVal( CScript &s )
 		case RC_STRIPPATH:	// Put TNG stripped files here.
 			m_sStripPath = CGFile::GetMergedFileName( s.GetArgStr(), "" );
 			break;
-#ifdef _DBPLUGIN
-		case RC_DBDLL:
-			{
-				m_sDbDll.Empty();
-				if ( s.HasArgs() )
-				{
-					TCHAR * pTmpName = Str_TrimWhitespace( s.GetArgStr() );
-					if ( pTmpName && *pTmpName )
-					{
-						m_sDbDll = pTmpName;
-					}
-
-					cDatabaseLoader::ForceInstanceReload();
-				}
-			} break;
-
-		case RC_DBQUERYBUFFER:
-			{
-				if ( s.HasArgs() )
-				{
-					int iTempValue = s.GetArgVal();
-					m_iDbQueryBuffer = ( iTempValue >= 1 ) ? iTempValue : DEFAULT_RESULT_SIZE;
-				}
-			} break;
-#endif
 		case RC_DEADSOCKETTIME:
 			m_iDeadSocketTime = s.GetArgVal()*60*TICK_PER_SEC;
 			break;
