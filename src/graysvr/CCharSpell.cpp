@@ -2950,9 +2950,9 @@ int CChar::Spell_CastStart()
 		}
 	}
 
-	int iWaitTime = IsPriv(PRIV_GM) ? 1 : pSpellDef->m_CastTime.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(iSkill)));
+	int iWaitTime = pSpellDef->m_CastTime.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(iSkill)));
 	iWaitTime -= GetDefNum("FASTERCASTING", true, true) * 2;	//correct value is 0.25, but sphere can handle only 0.2
-	if ( iWaitTime < 1 )
+	if ( iWaitTime < 1 || IsPriv(PRIV_GM) )
 		iWaitTime = 1;
 
 	CScriptTriggerArgs Args(static_cast<int>(m_atMagery.m_Spell), iDifficulty, pItem);
