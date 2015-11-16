@@ -46,8 +46,8 @@ bool CLog::OpenLog( LPCTSTR pszBaseDirName )	// name set previously.
 
 void CLog::SetColor(Color color)
 {
-#ifndef NO_COLOR_OUTPUT
-	switch (color) {
+	switch (color)
+	{
 #ifdef _WIN32
         case YELLOW:
             NTWindow_PostMsgColor(RGB(127,127,0));
@@ -74,7 +74,6 @@ void CLog::SetColor(Color color)
 			g_UnixTerminal.setColor(UnixTerminal::COL_DEFAULT);
 #endif
 	}
-#endif
 }
 
 int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )

@@ -1676,9 +1676,6 @@ public:
 	char	m_OutPacketFilter[255][32];	// list of outgoing packet filtering functions
 
 	CFileObj	fhFile;			//	file script object
-#ifdef _NEW_FILE_COLLECTION
-	CFileObjContainer fcFileContainer;
-#endif
 	CDataBase	m_hdb;			//	SQL data base
 	CSQLite		m_hldb;			//	Local database
 

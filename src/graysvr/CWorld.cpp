@@ -1166,10 +1166,6 @@ void CWorld::Init()
 	TemporaryString z;
 	TemporaryString z1;
 
-	#ifdef _SECTOR_INTTICK
-		unsigned int base = 0;
-	#endif
-
 	for ( m = 0; m < 256; m++ )
 	{
 		if ( !g_MapList.m_maps[m] ) continue;
@@ -1183,16 +1179,6 @@ void CWorld::Init()
 			pSector->Init(s, m);
 			m_Sectors[m_SectorsQty++] = pSector;
 		}
-		#ifdef _SECTOR_INTTICK
-		// This will initialize a 3x3 Matrix around each sector
-		// which is used to check for 'activity', to determine
-		// which sectors are sleepy and which are not.
-		for (int s = 0; s < g_MapList.GetSectorQty(m); s++)
-		{
-			m_Sectors[base + s]->InitTick();
-		}
-		base += g_MapList.GetSectorQty(m);
-		#endif
 	}
 	ASSERT(m_SectorsQty);
 
