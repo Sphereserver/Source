@@ -1626,7 +1626,6 @@ bool CServer::CommandLine( int argc, TCHAR * argv[] )
 					"-P# Set the port number.\n"
 					"-Ofilename Output console to this file name\n"
 					"-Q Quit when finished.\n"
-					"-T Run tests and exit (avilable only in test builds).\n"
 					);
 				return( false );
 #ifdef _WIN32
@@ -1684,14 +1683,6 @@ bool CServer::CommandLine( int argc, TCHAR * argv[] )
 				continue;
 			case 'Q':
 				return false;
-
-			case 'T':
-				{
-#ifdef VJAKA_REDO
-					testThreads();
-#endif
-				} return false;
-
 			default:
 				g_Log.Event(LOGM_INIT|LOGL_CRIT, "Don't recognize command line data '%s'\n", static_cast<LPCTSTR>(argv[argn]));
 				break;

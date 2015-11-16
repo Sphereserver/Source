@@ -1170,11 +1170,7 @@ blocked:
 #define BETWEENPOINT(coord, coordt, coords) ( (coord > ((double)minimum(coordt, coords) - 0.5)) && (coord < ((double)maximum(coordt, coords) + 0.5)) )
 #define APPROX(num) ((double)((num - floor(num)) > 0.5)? ceil(num) : floor(num))
 //#define CALCITEMHEIGHT(num) num + ((pItemDef->GetTFlags() & 0x400)? pItemDef->GetHeight() / 2 : pItemDef->GetHeight())
-#ifdef DEBUGCANSEELOS
-	#define WARNLOS(_x_)		g_pLog->EventWarn _x_;
-#else
-	#define WARNLOS(_x_)		if ( g_Cfg.m_wDebugFlags & DEBUGF_LOS ) { g_pLog->EventWarn _x_; }
-#endif
+#define WARNLOS(_x_)		if ( g_Cfg.m_wDebugFlags & DEBUGF_LOS ) { g_pLog->EventWarn _x_; }
 
 bool inline CChar::CanSeeLOS_New_Failed( CPointMap *pptBlock, CPointMap &ptNow ) const
 {
@@ -1694,9 +1690,6 @@ bool CChar::CanSeeLOS_New( const CPointMap &ptDst, CPointMap *pptBlock, int iMax
 	return true;
 }
 
-#ifdef DEBUGCANSEELOS
-	#undef DEBUGCANSEELOS
-#endif
 #undef WARNLOS
 #undef APPROX
 #undef BETWEENPOINT

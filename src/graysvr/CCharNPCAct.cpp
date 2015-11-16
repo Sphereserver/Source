@@ -2692,13 +2692,8 @@ bool CChar::NPC_Act_Food()
 			}
 		}
 
-		if ( ( pItem->GetTopPoint().m_z > (iMyZ + 10) ) || ( pItem->GetTopPoint().m_z < (iMyZ - 1) ) )
-		{
-#ifdef _NAZDEBUG
-			g_Log.EventError("CChar::NPC_Act_Food: '%s' found %s but its Z (%d) is too different from his (%d)\n", GetName(), pItem->GetName(), pItem->GetTopPoint().m_z, iMyZ );
-#endif
+		if ( pItem->GetTopPoint().m_z > (iMyZ + 10) || pItem->GetTopPoint().m_z < (iMyZ - 1) )
 			continue;
-		}
 		if ( pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC|ATTR_LOCKEDDOWN|ATTR_SECURE) )
 			continue;
 
@@ -2774,15 +2769,9 @@ bool CChar::NPC_Act_Food()
 		// found any crops or foliage at least (nearby, of course)?
 		if ( pCropItem )
 		{
-#ifdef _NAZDEBUG
-			g_Log.EventError("CChar::NPC_Act_Food: '%s' found %s\n", GetName(), pCropItem->GetName() );
-#endif
-			if (GetDist( pCropItem) < 5)
+			if ( GetDist(pCropItem) < 5 )
 			{
-#ifdef _NAZDEBUG
-				g_Log.EventError("CChar::NPC_LookAtItem: '%s' is near %s\n", GetName(), pCropItem->GetName() );
-#endif
-				Use_Item( pCropItem );
+				Use_Item(pCropItem);
 				bSearchGrass = false;	// no need to eat grass if at next tick we can eat better stuff
 			}
 		}

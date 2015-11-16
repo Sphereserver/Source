@@ -14,57 +14,8 @@ CSector::CSector()
 	SetDefaultWeatherChance();
 
 	m_dwFlags = 0;
-
 	m_fSaveParity = false;
-	#ifdef _SECTOR_INTTICK
-		m_activitysectorscount = 0;
-		memset(m_activitysectors, 0, 9 * sizeof(CSector*));
-	#endif
 }
-
-#ifdef _SECTOR_INTTICK
-void CSector::InitTick()
-{
-	if (m_activitysectors[0] != NULL)
-		return;
-	int xoffs = GetIndex() % g_MapList.GetSectorCols(m_map);
-	int yoffs = GetIndex() / g_MapList.GetSectorCols(m_map);
-	m_activitysectors[m_activitysectorscount++] = this;
-
-	// Plan: we assemble a 3x3 matrix in the normal case (except for sectors which are on the map boundaries)
-	// this 3x3 matrix is actually a vector which contains the current sector and the 8 sectors around it.
-	// We put sectors into this vector as follows: first the 3 sectors left of the current sector,
-	// then the 'current' row with the current sector inside, then the 3 sectors right of the current sector.
-
-	// Carefully check leftmost
-	if (xoffs != 0)
-	{
-		m_activitysectors[m_activitysectorscount++] = g_World.GetSector(m_map, GetIndex() - 1);
-		// Carefully check bottommost sectors
-		if (yoffs != g_MapList.GetSectorRows(m_map) - 1)
-			m_activitysectors[m_activitysectorscount++] = g_World.GetSector(m_map, GetIndex() + g_MapList.GetSectorCols(m_map) - 1);
-		// Carefully check topmost sectors
-		if (yoffs != 0)
-			m_activitysectors[m_activitysectorscount++] = g_World.GetSector(m_map, GetIndex() - g_MapList.GetSectorCols(m_map) - 1);
-	}
-	// Carefully check rightmost sectors
-	if (xoffs != g_MapList.GetSectorCols(m_map) - 1)
-	{
-		m_activitysectors[m_activitysectorscount++] = g_World.GetSector(m_map, GetIndex() + 1);
-		// Carefully check bottommost sectors
-		if (yoffs != g_MapList.GetSectorRows(m_map) - 1)
-			m_activitysectors[m_activitysectorscount++] = g_World.GetSector(m_map, GetIndex() + g_MapList.GetSectorCols(m_map) + 1);
-		// Carefully check topmost sectors
-		if (yoffs != 0)
-			m_activitysectors[m_activitysectorscount++] = g_World.GetSector(m_map, GetIndex() - g_MapList.GetSectorCols(m_map) + 1);
-	}
-	// Carefully check topmost sectors
-	if (yoffs != 0)
-		m_activitysectors[m_activitysectorscount++] = g_World.GetSector(m_map, GetIndex() - g_MapList.GetSectorCols(m_map));
-	if (yoffs != g_MapList.GetSectorRows(m_map) - 1)
-		m_activitysectors[m_activitysectorscount++] = g_World.GetSector(m_map, GetIndex() + g_MapList.GetSectorCols(m_map));
-}
-#endif
 
 enum SC_TYPE
 {
@@ -895,40 +846,19 @@ bool CSector::MoveCharToSector( CChar * pChar )
 inline bool CSector::IsSectorSleeping() const
 {
 	ADDTOCALLSTACK_INTENSIVE("CSector::IsSectorSleeping");
-	if (IsFlagSet(SECF_NoSleep)) 
+	if ( IsFlagSet(SECF_NoSleep) )
+		return false;	// never sleep
+
+	if ( IsFlagSet(SECF_InstaSleep) )
 	{
-		return false; //never sleep
-	}
-	else if (IsFlagSet(SECF_InstaSleep))
-	{
-		size_t clients = m_Chars_Active.HasClients();
-		if (clients > 0)
-			return false; //has at least one client, no sleep
+		if ( m_Chars_Active.HasClients() > 0 )
+			return false;	// has at least one client, no sleep
 		else
-			return true; //no active client inside, instant sleep
+			return true;	// no active client inside, instant sleep
 	}
-	else //default behaviour
-	{
-		long long iAge = - g_World.GetTimeDiff( GetLastClientTime());
-	#ifdef _SECTOR_INTTICK
-		// If someone was here in the last 2 minutes.. keep us awake
-		if (iAge <= 2 * 60 * TICK_PER_SEC)
-			return false;
-		// Use 9.-stencil
-		// if we find a sector with clients inside this
-		// 3x3 matrix with our sector in the middle, the
-		// sector should not be sleeping
-		for (int i = 0; i < m_activitysectorscount; i++)
-		{
-			if (m_activitysectors[i]->HasClients())
-				return false;
-		}
-		//g_Log.EventDebug("Ticking Sector %i\n", GetIndex());
-		return true;
-	#else
-		return(iAge > 10 * 60 * TICK_PER_SEC);
-	#endif
-	}
+
+	//default behaviour
+	return (-g_World.GetTimeDiff(GetLastClientTime()) > 10 * 60 * TICK_PER_SEC);
 }
 
 void CSector::SetSectorWakeStatus()

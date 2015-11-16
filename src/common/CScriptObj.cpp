@@ -457,14 +457,6 @@ bool CScriptObj::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 		pRef = &(g_Serv.fhFile);
 		return true;
 	}
-#ifdef _NEW_FILE_COLLECTION
-	else if ( !strnicmp(pszKey, "FILES.", 6) )
-	{
-		pszKey += 6;
-		pRef = &(g_Serv.fcFileContainer);
-		return true;
-	}
-#endif
 	else if ( !strnicmp(pszKey, "DB.", 3) )
 	{
 		pszKey += 3;
@@ -707,10 +699,6 @@ bool CScriptObj::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 			sVal.FormatHex( 0x01 );
 		else if ( pTmpRef == &(g_Serv.fhFile) )
 			sVal.FormatHex( 0x02 );
-#ifdef _NEW_FILE_COLLECTION
-		else if ( pTmpRef == &(g_Serv.fcFileContainer) )
-			sVal.FormatHex( 0x04 );
-#endif
 		else if (( pTmpRef == &(g_Serv.m_hdb) ) || dynamic_cast<CDataBase*>(pTmpRef) )
 			sVal.FormatHex( 0x00008 );
 		else if ( dynamic_cast<CResourceDef*>(pTmpRef) )
