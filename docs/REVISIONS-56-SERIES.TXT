@@ -2725,3 +2725,13 @@ Added MAGIFC_NOREVEALINVISIBLE		02000	// (Old style backwards) Casts won't revea
 
 09-11-2015, Coruja
 Fixed: Mounts disappearing on world save when ridden by NPCs.
+
+13-11-2015, Coruja
+[sphere_skills.scp]: Fixed console error when an NPC try to use Tracking skill.
+[items/sphere_item_char_icons.scp]: Added TOL NPCs icons.
+[npcs/sphere_monsters.scp]:
+	-Updated NPCs Wild Tiger and TOL dinosaurs.
+	-Added new TOL NPCs Silverback Gorilla, Infernus, Greater Phoenix, Myrmidex Drone.
+
+16-11-2015, Coruja
+Fixed #2563: FasterCasting char property incorrectly affecting spell cast delay on chars with GM=1 set.
