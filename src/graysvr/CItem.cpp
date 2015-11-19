@@ -819,9 +819,7 @@ int CItem::FixWeirdness()
 	{
 		case IT_EQ_TRADE_WINDOW:
 			// Should not exist except equipped.
-			if ( ! IsItemEquipped() ||
-				GetEquipLayer() != LAYER_NONE ||
-				pChar->m_pPlayer == NULL )
+			if ( !IsItemEquipped() || GetEquipLayer() != LAYER_NONE || !pChar || !pChar->m_pPlayer || !pChar->IsClient() )
 			{
 				iResultCode = 0x2220;
 				return( iResultCode );	// get rid of it.
@@ -830,9 +828,7 @@ int CItem::FixWeirdness()
 	
 		case IT_EQ_CLIENT_LINGER:
 			// Should not exist except equipped.
-			if ( ! IsItemEquipped() ||
-				GetEquipLayer() != LAYER_FLAG_ClientLinger ||
-				pChar->m_pPlayer == NULL )
+			if ( !IsItemEquipped() || GetEquipLayer() != LAYER_FLAG_ClientLinger || !pChar || !pChar->m_pPlayer )
 			{
 				iResultCode = 0x2221;
 				return( iResultCode );	// get rid of it.
