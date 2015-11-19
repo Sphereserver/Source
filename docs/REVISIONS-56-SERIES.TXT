@@ -2738,3 +2738,5 @@ Fixed #2563: FasterCasting char property incorrectly affecting spell cast delay 
 
 19-11-2015, Coruja
 Fixed: Items inside Trade Window container becoming unreachable after server worldsave + shutdown while the trade window is open.
+Fixed: Tracking skill not aborting the action when the client logout.
+[sphere_skills.scp]: Fixed console error on Tracking skill.
