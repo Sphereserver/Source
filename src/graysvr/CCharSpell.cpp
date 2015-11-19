@@ -37,7 +37,7 @@ SPELL_TYPE CChar::Spell_GetIndex(SKILL_TYPE skill)	// Returns the first spell fo
 SPELL_TYPE CChar::Spell_GetMax(SKILL_TYPE skill)
 {
 	if (skill == SKILL_NONE)	// providing no skill returns the last spell for monsters.
-		return SPELL_QTY;
+		return SPELL_CUSTOM_QTY;
 
 	if (!g_Cfg.IsSkillFlag(skill, SKF_MAGIC))
 		return SPELL_NONE;
@@ -45,7 +45,7 @@ SPELL_TYPE CChar::Spell_GetMax(SKILL_TYPE skill)
 	switch (skill)
 	{
 		case SKILL_MAGERY:
-			return SPELL_BOOK_QTY;
+			return SPELL_MAGERY_QTY;
 		case SKILL_NECROMANCY:
 			return SPELL_NECROMANCY_QTY;
 		case SKILL_CHIVALRY:

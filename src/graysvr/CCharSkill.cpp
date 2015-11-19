@@ -1628,6 +1628,10 @@ bool CChar::Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax )
 	ADDTOCALLSTACK("CChar::Skill_Tracking");
 	// SKILL_TRACKING
 	UNREFERENCED_PARAMETER(dirPrv);
+
+	if ( !IsClient() )		// abort action if the client get disconnected
+		return false;
+
 	const CObjBase * pObj = uidTarg.ObjFind();
 	if ( pObj == NULL )
 		return false;
@@ -1644,7 +1648,7 @@ bool CChar::Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax )
 	{
 		// Prevent tracking of hidden staff
 		const CChar * pChar = dynamic_cast<const CChar*>(pObjTop);
-		if ( pChar && pChar->GetPrivLevel() > GetPrivLevel() && pChar->IsStatFlag(STATF_Insubstantial) )
+		if ( pChar && pChar->IsStatFlag(STATF_Insubstantial) && pChar->GetPrivLevel() > GetPrivLevel() )
 			return false;
 	}
 

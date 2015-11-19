@@ -819,9 +819,7 @@ int CItem::FixWeirdness()
 	{
 		case IT_EQ_TRADE_WINDOW:
 			// Should not exist except equipped.
-			if ( ! IsItemEquipped() ||
-				GetEquipLayer() != LAYER_NONE ||
-				pChar->m_pPlayer == NULL )
+			if ( !IsItemEquipped() || GetEquipLayer() != LAYER_NONE || !pChar || !pChar->m_pPlayer || !pChar->IsClient() )
 			{
 				iResultCode = 0x2220;
 				return( iResultCode );	// get rid of it.
@@ -830,9 +828,7 @@ int CItem::FixWeirdness()
 	
 		case IT_EQ_CLIENT_LINGER:
 			// Should not exist except equipped.
-			if ( ! IsItemEquipped() ||
-				GetEquipLayer() != LAYER_FLAG_ClientLinger ||
-				pChar->m_pPlayer == NULL )
+			if ( !IsItemEquipped() || GetEquipLayer() != LAYER_FLAG_ClientLinger || !pChar || !pChar->m_pPlayer )
 			{
 				iResultCode = 0x2221;
 				return( iResultCode );	// get rid of it.
@@ -3552,15 +3548,13 @@ int CItem::GetSpellcountInBook() const
 		return -1;
 
 	int count = 0;
-	for ( int i = SPELL_Clumsy; i <= SPELL_BOOK_QTY; i++ )
+	for ( int i = SPELL_Clumsy; i <= SPELL_MAGERY_QTY; i++ )
 	{
-		if ( IsSpellInBook(static_cast<SPELL_TYPE>(i)))
-		{
+		if ( IsSpellInBook(static_cast<SPELL_TYPE>(i)) )
 			count++;
-		}
 	}
 
-	return( count );
+	return count;
 }
 
 SKILL_TYPE CItem::GetSpellBookSkill()
@@ -3589,8 +3583,8 @@ SKILL_TYPE CItem::GetSpellBookSkill()
 			break;
 	}
 	return SKILL_NONE;// SKILL_NONE returns 1000+ index in CChar::Spell_GetIndex()
-
 }
+
 int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
 {
 	ADDTOCALLSTACK("CItem::AddSpellbookSpell");

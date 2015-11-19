@@ -3940,8 +3940,8 @@ bool CChar::OnTick()
 	CClient *pClient = GetClient();
 	if ( pClient )
 	{
-		// Players have a silly "always run" flag that gets stuck on.
-		if ( -g_World.GetTimeDiff(pClient->m_timeLastEventWalk) > TICK_PER_SEC )
+		// Clear 'running' flag when the client stop running
+		if ( -g_World.GetTimeDiff(pClient->m_timeLastEventWalk) > 2 )
 			StatFlag_Clear(STATF_Fly);
 
 		// Check targeting timeout, if set
@@ -3988,12 +3988,12 @@ bool CChar::OnTick()
 			case -SKTRIG_QTY:	EXC_SET("skill cleanup");	Skill_Cleanup();	break;
 		}
 
-		if ( IsStatFlag(STATF_War) )
+		/*if ( IsStatFlag(STATF_War) )
 		{
 			EXC_SET("combat hit try");
 			if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )	// hit my current target (if I'm ready)
 				Fight_HitTry();
-		}
+		}*/
 
 		if ( m_pNPC )	// do some AI action
 		{

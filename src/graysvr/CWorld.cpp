@@ -98,7 +98,7 @@ LPCTSTR GetReasonForGarbageCode(int iCode = -1)
 			break;
 	
 		case 0x2220:
-			pStr = "Trade window memory not equipped in the correct layer";
+			pStr = "Trade window memory not equipped in the correct layer or equipped on disconnected char";
 			break;
 
 		case 0x2221:
