@@ -1243,7 +1243,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItem* spell
 	skip(2);
 
 	m_count = 0;
-	for (int i = SPELL_Clumsy; i <= SPELL_BOOK_QTY; i++)
+	for (int i = SPELL_Clumsy; i <= SPELL_MAGERY_QTY; i++)
 	{
 		if (spellbook->IsSpellInBook(static_cast<SPELL_TYPE>(i)) == false)
 			continue;
