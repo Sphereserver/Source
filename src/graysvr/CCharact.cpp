@@ -3940,8 +3940,8 @@ bool CChar::OnTick()
 	CClient *pClient = GetClient();
 	if ( pClient )
 	{
-		// Players have a silly "always run" flag that gets stuck on.
-		if ( -g_World.GetTimeDiff(pClient->m_timeLastEventWalk) > TICK_PER_SEC )
+		// Clear 'running' flag when the client stop running
+		if ( -g_World.GetTimeDiff(pClient->m_timeLastEventWalk) > 2 )
 			StatFlag_Clear(STATF_Fly);
 
 		// Check targeting timeout, if set
