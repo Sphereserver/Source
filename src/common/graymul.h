@@ -1883,57 +1883,48 @@ enum SPELL_TYPE	// List of spell numbers in spell book.
 {
 	SPELL_NONE = 0,
 
-	SPELL_Clumsy = 1,		// just reduces the Dex.
+	// Magery
+	SPELL_Clumsy = 1,		// 1st circle
 	SPELL_Create_Food,
 	SPELL_Feeblemind,
 	SPELL_Heal,
 	SPELL_Magic_Arrow,
-	SPELL_Night_Sight,	// 6
+	SPELL_Night_Sight,
 	SPELL_Reactive_Armor,
 	SPELL_Weaken,
-
-	// 2nd
-	SPELL_Agility,	// 9
+	SPELL_Agility,			// 2nd circle
 	SPELL_Cunning,
 	SPELL_Cure,
 	SPELL_Harm,
 	SPELL_Magic_Trap,
 	SPELL_Magic_Untrap,
 	SPELL_Protection,
-	SPELL_Strength,	// 16
-
-	// 3rd
-	SPELL_Bless,		// 17
+	SPELL_Strength,
+	SPELL_Bless,			// 3rd circle
 	SPELL_Fireball,
 	SPELL_Magic_Lock,
 	SPELL_Poison,
 	SPELL_Telekin,
 	SPELL_Teleport,
 	SPELL_Unlock,
-	SPELL_Wall_of_Stone,	// 24
-
-	// 4th
-	SPELL_Arch_Cure,	// 25
+	SPELL_Wall_of_Stone,
+	SPELL_Arch_Cure,		// 4th circle
 	SPELL_Arch_Prot,
 	SPELL_Curse,
 	SPELL_Fire_Field,
 	SPELL_Great_Heal,
-	SPELL_Lightning,	// 30
+	SPELL_Lightning,
 	SPELL_Mana_Drain,
 	SPELL_Recall,
-
-		// 5th
-	SPELL_Blade_Spirit,
+	SPELL_Blade_Spirit,		// 5th circle
 	SPELL_Dispel_Field,
-	SPELL_Incognito,		// 35
+	SPELL_Incognito,
 	SPELL_Magic_Reflect,
 	SPELL_Mind_Blast,
 	SPELL_Paralyze,
 	SPELL_Poison_Field,
-	SPELL_Summon,			// 40
-
-		// 6th
-	SPELL_Dispel,
+	SPELL_Summon,
+	SPELL_Dispel,			// 6th circle
 	SPELL_Energy_Bolt,
 	SPELL_Explosion,
 	SPELL_Invis,
@@ -1941,30 +1932,25 @@ enum SPELL_TYPE	// List of spell numbers in spell book.
 	SPELL_Mass_Curse,
 	SPELL_Paralyze_Field,
 	SPELL_Reveal,
-
-		// 7th
-	SPELL_Chain_Lightning,
+	SPELL_Chain_Lightning,	// 7th circle
 	SPELL_Energy_Field,
 	SPELL_Flame_Strike,
 	SPELL_Gate_Travel,
-	SPELL_Mana_Vamp,		// 53
+	SPELL_Mana_Vamp,
 	SPELL_Mass_Dispel,
-	SPELL_Meteor_Swarm,	// 55
+	SPELL_Meteor_Swarm,
 	SPELL_Polymorph,
-
-		// 8th
-	SPELL_Earthquake,
+	SPELL_Earthquake,		// 8th circle
 	SPELL_Vortex,
-	SPELL_Resurrection,	// 59
+	SPELL_Resurrection,
 	SPELL_Air_Elem,
 	SPELL_Daemon,
 	SPELL_Earth_Elem,
 	SPELL_Fire_Elem,
-	SPELL_Water_Elem,	// 64
-	SPELL_BOOK_QTY = SPELL_Water_Elem,		// Thats all that is in the standard spell book.
+	SPELL_Water_Elem,
+	SPELL_MAGERY_QTY = SPELL_Water_Elem,
 
-	// AOS Stuff
-	//Necromancy
+	// Necromancy (AOS)
 	SPELL_Animate_Dead_AOS = 101,
 	SPELL_Blood_Oath,
 	SPELL_Corpse_Skin,
@@ -1981,10 +1967,10 @@ enum SPELL_TYPE	// List of spell numbers in spell book.
 	SPELL_Vengeful_Spirit,
 	SPELL_Wither,
 	SPELL_Wraith_Form,
-	SPELL_Exorcism ,
-	SPELL_NECROMANCY_QTY = 117,
+	SPELL_Exorcism,
+	SPELL_NECROMANCY_QTY = SPELL_Exorcism,
 
-	// Chivalry
+	// Chivalry (AOS)
 	SPELL_Cleanse_by_Fire = 201,
 	SPELL_Close_Wounds,
 	SPELL_Consecrate_Weapon,
@@ -1995,18 +1981,18 @@ enum SPELL_TYPE	// List of spell numbers in spell book.
 	SPELL_Noble_Sacrifice,
 	SPELL_Remove_Curse,
 	SPELL_Sacred_Journey,
-	SPELL_CHIVALRY_QTY = 210,
+	SPELL_CHIVALRY_QTY = SPELL_Sacred_Journey,
 
-	//Bushido
+	// Bushido (SE)
 	SPELL_Honorable_Execution = 401,
 	SPELL_Confidence,
 	SPELL_Evasion,
 	SPELL_Counter_Attack,
 	SPELL_Lightning_Strike,
 	SPELL_Momentum_Strike,
-	SPELL_BUSHIDO_QTY = 406,
+	SPELL_BUSHIDO_QTY = SPELL_Momentum_Strike,
 
-	//Ninjitsu
+	// Ninjitsu (SE)
 	SPELL_Focus_Attack = 501,
 	SPELL_Death_Strike,
 	SPELL_Animal_Form,
@@ -2015,10 +2001,9 @@ enum SPELL_TYPE	// List of spell numbers in spell book.
 	SPELL_Backstab,
 	SPELL_Shadowjump,
 	SPELL_Mirror_Image,
-	SPELL_NINJITSU_QTY = 508,
+	SPELL_NINJITSU_QTY = SPELL_Mirror_Image,
 
-	//ML Stuff
-	//Spellweaving
+	// Spellweaving (ML)
 	SPELL_Arcane_Circle = 601,
 	SPELL_Gift_of_Renewal,
 	SPELL_Immolating_Weapon,
@@ -2035,10 +2020,9 @@ enum SPELL_TYPE	// List of spell numbers in spell book.
 	SPELL_Word_of_Death,
 	SPELL_Gift_of_Life,
 	SPELL_Arcane_Empowerment,
-	SPELL_SPELLWEAVING_QTY = 616,
+	SPELL_SPELLWEAVING_QTY = SPELL_Arcane_Empowerment,
 
-	//SA Stuff
-	//Mysticism
+	// Mysticism (SA)
 	SPELL_Nether_Bolt = 678,
 	SPELL_Healing_Stone,
 	SPELL_Enchant_Weapon,
@@ -2054,85 +2038,49 @@ enum SPELL_TYPE	// List of spell numbers in spell book.
 	SPELL_Hail_Storm,
 	SPELL_Nether_Cyclone,
 	SPELL_Rising_Collossus,
-	SPELL_MYSTICISM_QTY = 693,
-	//Bard
+	SPELL_MYSTICISM_QTY = SPELL_Rising_Collossus,
+
+	// Bard (SA)
 	SPELL_Inspire = 701,
 	SPELL_Invigorate,
 	SPELL_Resilience,
 	SPELL_Perseverance,
 	SPELL_Tribulation,
 	SPELL_Despair,
-	SPELL_QTY_BARD = 706,
+	SPELL_BARD_QTY = SPELL_Despair,
 
-	//End of base spells
-	SPELL_QTY_BASE = 706,
-
-	//Start of custom spells.
-	// -------------------------------
-	// spells and effects not in the client spellbook.
-
-	// Necro
-	SPELL_Extra = 1000,
+	// Custom Sphere spells (used by some monsters)
 	SPELL_Summon_Undead = 1000,
 	SPELL_Animate_Dead,
 	SPELL_Bone_Armor,
 	SPELL_Light,
-	SPELL_Fire_Bolt,		// 69
-	SPELL_Hallucination,	// 70
-	SPELL_BASE_QTY,		// monsters can use these.
+	SPELL_Fire_Bolt,
+	SPELL_Hallucination,
+	SPELL_CUSTOM_QTY = SPELL_Hallucination,
 
-	// Extra special spells. (can be used as potion effects as well). Commented value = old index.
-	SPELL_Stone		= 1006,	// 71 // Turn to stone. (permanent)	.
-	SPELL_Shrink,			// 72 // turn pet into icon.
-	SPELL_Refresh,			// 73 // stamina
-	SPELL_Restore,			// 74 // This potion increases both your hit points and your stamina.
-	SPELL_Mana,				// 75 // restone mana
-	SPELL_Sustenance,		// 76 // serves to fill you up. (Remember, healing rate depends on how well fed you are!)
-	SPELL_Chameleon,		// 77 // makes your skin match the colors of whatever is behind you.
-	SPELL_BeastForm,		// 78 // polymorphs you into an animal for a while.
-	SPELL_Monster_Form,		// 79 // polymorphs you into a monster for a while.
-	SPELL_Gender_Swap,		// 81 // permanently changes your gender.
-	SPELL_Trance,			// 82 // temporarily increases your meditation skill.
-	SPELL_Particle_Form,	// 83 // turns you into an immobile, but untargetable particle system for a while.
-	SPELL_Shield,			// 84 // erects a temporary force field around you. Nobody approaching will be able to get within 1 tile of you, though you can move close to them if you wish.
-	SPELL_Steelskin,		// 85 // turns your skin into steel, giving a boost to your AR.
-	SPELL_Stoneskin,		// 86 // turns your skin into stone, giving a boost to your AR.
-	SPELL_Regenerate,		// 87 // regen hitpoints at a fast rate.
-	SPELL_Enchant,			// 88 // Enchant an item (weapon or armor)
-	SPELL_Forget,			// 1023, only existed in sphere_spells.scp before
-	SPELL_Water,			// 89 // all liquids can act as spells/potions.
+	// Custom extra special spells (can be used as potion effects as well). Commented value = old index.
+	SPELL_Stone,			// 71 = Turn to stone (permanent).
+	SPELL_Shrink,			// 72 = turn pet into icon.
+	SPELL_Refresh,			// 73 = stamina
+	SPELL_Restore,			// 74 = This potion increases both your hit points and your stamina.
+	SPELL_Mana,				// 75 = restone mana
+	SPELL_Sustenance,		// 76 = serves to fill you up. (Remember, healing rate depends on how well fed you are!)
+	SPELL_Chameleon,		// 77 = makes your skin match the colors of whatever is behind you.
+	SPELL_BeastForm,		// 78 = polymorphs you into an animal for a while.
+	SPELL_Monster_Form,		// 79 = polymorphs you into a monster for a while.
+	SPELL_Gender_Swap,		// 81 = permanently changes your gender.
+	SPELL_Trance,			// 82 = temporarily increases your meditation skill.
+	SPELL_Particle_Form,	// 83 = turns you into an immobile, but untargetable particle system for a while.
+	SPELL_Shield,			// 84 = erects a temporary force field around you. Nobody approaching will be able to get within 1 tile of you, though you can move close to them if you wish.
+	SPELL_Steelskin,		// 85 = turns your skin into steel, giving a boost to your AR.
+	SPELL_Stoneskin,		// 86 = turns your skin into stone, giving a boost to your AR.
+	SPELL_Regenerate,		// 87 = regen hitpoints at a fast rate.
+	SPELL_Enchant,			// 88 = Enchant an item (weapon or armor)
+	SPELL_Forget,			// 89 = only existed in sphere_spells.scp before
 	SPELL_Ale,				// 90 = drunkeness ?
 	SPELL_Wine,				// 91 = mild drunkeness ?
 	SPELL_Liquor,			// 92 = extreme drunkeness ?
-	SPELL_Blood,
-	SPELL_Milk,
-	SPELL_Oil,
-	SPELL_Criminal,			// Makes one a criminal.
-	SPELL_Targetted,		// Makes one a universal target.
-	SPELL_Peaceful,			// Makes you very peaceful.
-	SPELL_Scare,			// Make you fearful.
-	SPELL_SpiritSpeak,
-	SPELL_Confused,			// May hit others ?
-	SPELL_Beserk,			// May hit all around you.
-	SPELL_Custom1,
-	SPELL_Custom2,
-	SPELL_Custom3,
-	SPELL_Custom4,
-	SPELL_Custom5,
-	SPELL_Custom6,
-	SPELL_Custom7,
-	SPELL_Custom8,
-	SPELL_Custom9,
-	SPELL_Custom10,
-	SPELL_Custom11,
-	SPELL_Custom12,
-	SPELL_Custom13,
-	SPELL_Custom14,
-	SPELL_Custom15,
-	SPELL_Custom16,
-	SPELL_Custom17,
-	SPELL_Custom18,
-	SPELL_QTY = SPELL_Custom18
+	SPELL_QTY = SPELL_Liquor
 };
 
 enum LIGHT_PATTERN	// What pattern (m_light_pattern) does the light source (CAN_LIGHT) take.

@@ -3548,15 +3548,13 @@ int CItem::GetSpellcountInBook() const
 		return -1;
 
 	int count = 0;
-	for ( int i = SPELL_Clumsy; i <= SPELL_BOOK_QTY; i++ )
+	for ( int i = SPELL_Clumsy; i <= SPELL_MAGERY_QTY; i++ )
 	{
-		if ( IsSpellInBook(static_cast<SPELL_TYPE>(i)))
-		{
+		if ( IsSpellInBook(static_cast<SPELL_TYPE>(i)) )
 			count++;
-		}
 	}
 
-	return( count );
+	return count;
 }
 
 SKILL_TYPE CItem::GetSpellBookSkill()
@@ -3585,8 +3583,8 @@ SKILL_TYPE CItem::GetSpellBookSkill()
 			break;
 	}
 	return SKILL_NONE;// SKILL_NONE returns 1000+ index in CChar::Spell_GetIndex()
-
 }
+
 int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
 {
 	ADDTOCALLSTACK("CItem::AddSpellbookSpell");
