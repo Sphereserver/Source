@@ -3162,7 +3162,7 @@ int CChar::Skill_Fighting( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_START )
 	{
 		m_atFight.m_War_Swing_State = WAR_SWING_EQUIPPING;
-		SetTimeout(0);		// instantly call @HitTry, so the whole delay can be overrided in ARGN1
+		SetTimeout(maximum(0, g_World.GetTimeDiff(m_atFight.m_timeNextCombatSwing)));
 
 		return g_Cfg.Calc_CombatChanceToHit(this, m_Fight_Targ.CharFind(), Skill_GetActive());
 	}

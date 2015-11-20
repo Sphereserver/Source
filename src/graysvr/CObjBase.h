@@ -2874,8 +2874,8 @@ public:
 		// SKILL_THROWING
 		struct
 		{
-			WAR_SWING_TYPE	m_War_Swing_State;	// We are in the war mode swing.
-			int				m_NextSwingDelay;	// Waiting time between swings
+			WAR_SWING_TYPE	m_War_Swing_State;		// We are in the war mode swing.
+			CServTime		m_timeNextCombatSwing;	// Time to wait before start another combat swing.
 		} m_atFight;
 
 		// SKILL_TRACKING

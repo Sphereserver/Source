@@ -2685,12 +2685,13 @@ void CChar::Fight_HitTry()
 		case WAR_SWING_EQUIPPING:	// keep hitting the same target
 		{
 			Skill_Start(Skill_GetActive());
-			SetTimeout(m_atFight.m_NextSwingDelay);
 			return;
 		}
 		case WAR_SWING_READY:		// probably too far away, can't take my swing right now
+		{
 			Fight_Attack(Fight_FindBestTarget());
 			return;
+		}
 		case WAR_SWING_SWINGING:	// must come back here again to complete
 			return;
 		default:
@@ -3399,13 +3400,11 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		}
 
 		m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
-		m_atFight.m_NextSwingDelay = iSwingDelay - animDelay;
-		if ( m_atFight.m_NextSwingDelay < 1 )
-			m_atFight.m_NextSwingDelay = 1;
+		m_atFight.m_timeNextCombatSwing = CServTime::GetCurrentTime() + iSwingDelay;
 
 		if ( IsSetCombatFlags(COMBAT_PREHIT) )
 		{
-			SetKeyNum("LastHit", iSwingDelay + g_World.GetCurrentTime().GetTimeRaw());
+			SetKeyNum("LastHit", g_World.GetCurrentTime().GetTimeRaw() + iSwingDelay);
 			SetTimeout(0);
 		}
 		else

@@ -2740,3 +2740,6 @@ Fixed #2563: FasterCasting char property incorrectly affecting spell cast delay 
 Fixed: Items inside Trade Window container becoming unreachable after server worldsave + shutdown while the trade window is open.
 Fixed: Tracking skill not aborting the action when the client logout.
 [sphere_skills.scp]: Fixed console error on Tracking skill.
+
+20-11-2015, Coruja
+Fixed: Combat exploit to force start next swing immediately instead wait proper delay between swings.
