@@ -2743,3 +2743,4 @@ Fixed: Tracking skill not aborting the action when the client logout.
 
 20-11-2015, Coruja
 Fixed: Combat exploit to force start next swing immediately instead wait proper delay between swings.
+Changed: Now instead char spawns (t_spawn_char) block the char creation when it reach sector max char complexity, it will spawn the char but throwing an 'Sector too complex' console warning.
