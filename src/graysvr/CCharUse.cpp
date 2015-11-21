@@ -1739,7 +1739,7 @@ bool CChar::Use_Item(CItem *pItem, bool fLink) {
 			result |= Do_Use_Item(pLinkItem, true);
 		}
 	}
-	return (bool) (result & ~MASK_RETURN_FOLLOW_LINKS);
+	return (result & ~MASK_RETURN_FOLLOW_LINKS) ? true : false;
 }
 
 bool CChar::Use_Obj( CObjBase * pObj, bool fTestTouch, bool fScript  )

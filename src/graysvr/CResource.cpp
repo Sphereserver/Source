@@ -112,7 +112,6 @@ CResource::CResource()
 	m_iHitpointPercentOnRez	= 10;
 	m_iHitsHungerLoss	= 0;
 	m_fLootingIsACrime	= true;
-	m_bLootingReveal = true;
 	m_fHelpingCriminalsIsACrime = true;
 	m_fGenericSounds	= true;
 	m_fAutoNewbieKeys 	= true;
@@ -130,6 +129,7 @@ CResource::CResource()
 	m_iCombatSpeedEra	= 2;	// default = 4 = SE
 	m_iMagicFlags		= 0;
 	m_iMaxPolyStats		= 150;
+	m_iRevealFlags		= 0;
 
 	m_fNoResRobe		= 0;
 	m_iLostNPCTeleport	= 0;
@@ -476,7 +476,6 @@ enum RC_TYPE
 	RC_LOG,
 	RC_LOGMASK,					// GetLogMask
 	RC_LOOTINGISACRIME,			// m_fLootingIsACrime
-	RC_LOOTINGREVEAL,			// m_bLootingReveal
 	RC_LOSTNPCTELEPORT,			// m_fLostNPCTeleport
 	RC_MAGICFLAGS,
 	RC_MAGICUNLOCKDOOR,			// m_iMagicUnlockDoor
@@ -537,6 +536,7 @@ enum RC_TYPE
 	RC_PROFILE,
 	RC_REAGENTLOSSFAIL,			// m_fReagentLossFail
 	RC_REAGENTSREQUIRED,
+	RC_REVEALFLAGS,				// m_iRevealFlags
 	RC_RTICKS,
 	RC_RTIME,
 	RC_RUNNINGPENALTY,			// m_iStamRunningPenalty
@@ -705,7 +705,6 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "LOG",					{ ELEM_VOID,	0,											0 }},
 	{ "LOGMASK",				{ ELEM_VOID,	0,											0 }}, // GetLogMask
 	{ "LOOTINGISACRIME",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fLootingIsACrime),		0 }},
-	{ "LOOTINGREVEAL",			{ ELEM_BOOL,	OFFSETOF(CResource,m_bLootingReveal),		0 }},
 	{ "LOSTNPCTELEPORT",		{ ELEM_INT,		OFFSETOF(CResource,m_iLostNPCTeleport),		0 }},
 	{ "MAGICFLAGS",				{ ELEM_INT,		OFFSETOF(CResource,m_iMagicFlags),			0 }},
 	{ "MAGICUNLOCKDOOR",		{ ELEM_INT,		OFFSETOF(CResource,m_iMagicUnlockDoor),		0 }},
@@ -766,6 +765,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "PROFILE",				{ ELEM_VOID,	0,											0 }},
 	{ "REAGENTLOSSFAIL",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fReagentLossFail),		0 }},
 	{ "REAGENTSREQUIRED",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fReagentsRequired),	0 }},
+	{ "REVEALFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iRevealFlags),			0 }},
 	{ "RTICKS",					{ ELEM_VOID,	0,											0 }},
 	{ "RTIME",					{ ELEM_VOID,	0,											0 }},
 	{ "RUNNINGPENALTY",			{ ELEM_INT,		OFFSETOF(CResource,m_iStamRunningPenalty),	0 }},

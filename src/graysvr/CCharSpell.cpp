@@ -207,10 +207,7 @@ bool CChar::Spell_Teleport( CPointMap ptNew, bool bTakePets, bool bCheckAntiMagi
 	}
 
 	UpdateMove(ptOld, pClientIgnore, true);
-	if ( IsSetMagicFlags(MAGIFC_NOREVEALINVISIBLE))
-		Reveal(STATF_Hidden);
-	else
-		Reveal(STATF_Hidden|STATF_Invisible);
+	Reveal();
 
 	if ( bDisplayEffect )
 	{
@@ -2950,8 +2947,8 @@ int CChar::Spell_CastStart()
 		}
 	}
 
-	int iWaitTime = pSpellDef->m_CastTime.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(iSkill)));
-	iWaitTime -= GetDefNum("FASTERCASTING", true, true) * 2;	//correct value is 0.25, but sphere can handle only 0.2
+	INT64 iWaitTime = pSpellDef->m_CastTime.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(iSkill)));
+	iWaitTime -= GetDefNum("FASTERCASTING", true, true) * 2;	//correct value is 0.25, but sphere can handle only 0.2.
 	if ( iWaitTime < 1 || IsPriv(PRIV_GM) )
 		iWaitTime = 1;
 
@@ -3028,6 +3025,10 @@ int CChar::Spell_CastStart()
 			}
 		}
 	}
+	if ( g_Cfg.m_iRevealFlags & REVEALF_SPELLCAST )
+		Reveal(STATF_Hidden|STATF_Invisible);
+	else
+		Reveal(STATF_Hidden);
 
 	SetTimeout(iWaitTime);
 	return iDifficulty;

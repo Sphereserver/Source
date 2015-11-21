@@ -79,7 +79,15 @@ enum MAGICFLAGS_TYPE
 	MAGICF_NOCASTFROZENHANDS	= 0x0000400,	// can't cast spells if got paralyzed holding something on hands
 	MAGICF_POLYMORPHSTATS		= 0x0000800,	// Polymorph spells give out stats based on base chars (old behaviour backwards).
 	MAGICF_OVERRIDEFIELDS		= 0x0001000,	// Prevent cast multiple field spells on the same tile, making the new field tile remove the previous field
-	MAGIFC_NOREVEALINVISIBLE	= 0x0002000		// (Old style backwards) Casts won't reveal you on SpellCast if you are under Invisible spelleffect.
+};
+
+enum REVEALFLAGS_TYPE
+{
+	REVEALF_DETECTINGHIDDEN		= 0x001,		///* Reveal Spell with Detecting Hidden Skill.
+	REVEALF_LOOTINGSELF			= 0x002,		///* Reveal when looting self bodies.
+	REVEALF_LOOTINGOTHERS		= 0x004,		///* Reveal when looting bodies of other Players or NPCs.
+	REVEALF_SPEAK				= 0x008,		///* Reveal when speaking.
+	REVEALF_SPELLCAST			= 0x010			///* Reveal when starting to cast a Spell.
 };
 
 enum COMBATFLAGS_TYPE
@@ -810,6 +818,7 @@ public:
 	// Flags for controlling pvp/pvm behaviour of players
 	int  m_iCombatFlags;		// combat flags
 	int  m_iMagicFlags;			// magic flags
+	int  m_iRevealFlags;		///* reveal flags used for SPELL_REVEAL (mostly for backwards).
 
 	// Criminal/Karma
 	bool m_fAttackingIsACrime;		// Is attacking (even before hitting) a crime?
@@ -822,7 +831,6 @@ public:
 	int	 m_iMurderDecayTime;	// (minutes) Roll murder counts off this often.
 	bool m_fHelpingCriminalsIsACrime;// If I help (rez, heal, etc) a criminal, do I become one too?
 	bool m_fLootingIsACrime;	// Looting a blue corpse is bad.
-	bool m_bLootingReveal;		// Reveal when looting other's corpses or not.
 	int  m_iCriminalTimer;		// How many minutes are criminals flagged for?
 	int	 m_iPlayerKarmaNeutral;	// How much bad karma makes a player neutral?
 	int	 m_iPlayerKarmaEvil;	// How much bad karma makes a player evil?

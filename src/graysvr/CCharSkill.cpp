@@ -2114,7 +2114,7 @@ int CChar::Skill_DetectHidden( SKTRIG_TYPE stage )
 			break;
 		if ( pChar == this )
 			continue;
-		if ( !pChar->IsStatFlag( STATF_Invisible|STATF_Hidden ))
+		if ( !pChar->IsStatFlag( STATF_Hidden ) || ( pChar->IsStatFlag( STATF_Invisible ) && !(g_Cfg.m_iRevealFlags & REVEALF_DETECTINGHIDDEN) ))
 			continue;
 		// Try to detect them.
 		if ( pChar->IsStatFlag( STATF_Hidden ))

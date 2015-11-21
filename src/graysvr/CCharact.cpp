@@ -1631,10 +1631,15 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 	}
 
 	const CItemCorpse * pCorpse = dynamic_cast<const CItemCorpse *>(pObjTop);
-	if ( pCorpse && pCorpse->m_uidLink != GetUID() )
+	if ( pCorpse && pCorpse->m_uidLink == GetUID() )
+	{
+		if ( g_Cfg.m_iRevealFlags && REVEALF_LOOTINGSELF )
+			Reveal();
+	}
+	else 
 	{
 		CheckCorpseCrime(pCorpse, true, false);
-		if ( g_Cfg.m_bLootingReveal == true )
+		if ( g_Cfg.m_iRevealFlags && REVEALF_LOOTINGOTHERS )
 			Reveal();
 	}
 
@@ -2167,7 +2172,11 @@ void CChar::SpeakUTF8( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_
 	if ( mode == TALKMODE_YELL && GetPrivLevel() >= PLEVEL_Counsel )
 		mode = TALKMODE_BROADCAST;		// GM Broadcast (done if a GM yells something)
 
-	Reveal();
+	if ( mode != TALKMODE_SPELL )		// spell's reveal is handled in Spell_CastStart
+	{
+		if ( g_Cfg.m_iRevealFlags & REVEALF_SPEAK )
+			Reveal();
+	}
 	CObjBase::SpeakUTF8(pszText, wHue, mode, font, lang);
 }
 
@@ -2181,7 +2190,11 @@ void CChar::SpeakUTF8Ex( const NWORD * pszText, HUE_TYPE wHue, TALKMODE_TYPE mod
 	if ( mode == TALKMODE_YELL && GetPrivLevel() >= PLEVEL_Counsel )
 		mode = TALKMODE_BROADCAST;		// GM Broadcast (done if a GM yells something)
 
-	Reveal();
+	if ( mode != TALKMODE_SPELL )		// spell's reveal is handled in Spell_CastStart
+	{
+		if ( g_Cfg.m_iRevealFlags & REVEALF_SPEAK )
+			Reveal();
+	}
 	CObjBase::SpeakUTF8Ex(pszText, wHue, mode, font, lang);
 }
 
@@ -2196,7 +2209,11 @@ void CChar::Speak( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE
 	if ( mode == TALKMODE_YELL && GetPrivLevel() >= PLEVEL_Counsel )
 		mode = TALKMODE_BROADCAST;		// GM Broadcast (done if a GM yells something)
 
-	Reveal();
+	if ( mode != TALKMODE_SPELL )		// spell's reveal is handled in Spell_CastStart
+	{
+		if ( g_Cfg.m_iRevealFlags & REVEALF_SPEAK )
+			Reveal();
+	}
 	CObjBase::Speak(pszText, wHue, mode, font);
 }
 
