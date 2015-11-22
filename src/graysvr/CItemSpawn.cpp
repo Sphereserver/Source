@@ -112,7 +112,7 @@ unsigned char CItemSpawn::GetCount()
 		while ( m_obj[i].ItemFind() )
 		{
 			CGrayUID spawn = m_obj[i].ItemFind()->m_uidSpawnItem;
-			if ( spawn.IsValidUID() && spawn == GetUID() )
+			if ( spawn.IsValidUID() && (spawn == GetUID()) )
 				iCount++;
 			i++;
 		}
@@ -176,36 +176,28 @@ void CItemSpawn::GenerateChar(CResourceDef *pDef)
 		return;
 
 	CChar *pChar = CChar::CreateBasic(static_cast<CREID_TYPE>(rid.GetResIndex()));
-	if ( pChar == NULL )
+	if ( !pChar )
 		return;
 
 	pChar->NPC_LoadScript(true);
 	pChar->StatFlag_Set(STATF_Spawned);
 	pChar->MoveTo(GetTopPoint());
 	pChar->NPC_CreateTrigger();		// removed from NPC_LoadScript() and triggered after char placement
-	AddObj(pChar->GetUID());
 
-	// Deny definitely known a bad place to spawn (like red NPCs in guarded areas)
-	// Usually caused by wide range near the edge of the towns
-	if ( (pChar->GetRegion() == NULL) || (pChar->GetRegion()->IsGuarded() && pChar->Noto_IsEvil()) )
+	// Check if the NPC can spawn in this region
+	CRegionBase *pRegion = GetTopPoint().GetRegion(REGION_TYPE_AREA);
+	if ( !pRegion || (pRegion->IsGuarded() && pChar->Noto_IsEvil()) )
 	{
-		//m_itSpawnChar.m_current--;
 		pChar->Delete();
 		return;
 	}
 
+	AddObj(pChar->GetUID());
+	pChar->Update();
+
 	size_t iCount = GetTopSector()->GetCharComplexity();
 	if ( iCount > g_Cfg.m_iMaxCharComplexity )
 		g_Log.Event(LOGL_WARN, "%d chars at %s. Sector too complex!\n", iCount, GetTopSector()->GetBasePoint().WriteUsed());
-
-	ASSERT(pChar->m_pNPC);
-	BYTE iDistMax = m_itSpawnChar.m_DistMax;
-	if ( iDistMax )
-	{
-		pChar->m_ptHome = GetTopPoint();
-		pChar->m_pNPC->m_Home_Dist_Wander = static_cast<WORD>(iDistMax);
-	}
-	pChar->Update();
 }
 
 void CItemSpawn::DelObj(CGrayUID uid)
@@ -214,69 +206,82 @@ void CItemSpawn::DelObj(CGrayUID uid)
 	if ( !uid.IsValidUID() )
 		return;
 
-	for ( unsigned char i = 0; i < GetCount(); i++ )
+	unsigned char iMax = GetCount();
+	for ( unsigned char i = 0; i < iMax; i++ )
 	{
-		if ( m_obj[i].IsValidUID() && m_obj[i] == uid )		// found this uid, proceeding to clear it
+		if ( m_obj[i] != uid )
+			continue;
+
+		CObjBase *pObj = uid.ObjFind();
+		pObj->m_uidSpawnItem.InitUID();
+
+		if ( GetType() == IT_SPAWN_CHAR )				// IT_SPAWN_ITEM uses MORE2 to store how much items to spawn at once, so we must not touch it.
 		{
-			if ( GetType() == IT_SPAWN_CHAR )				// IT_SPAWN_ITEM uses MORE2 to store how much items to spawn at once, so we must not touch it.
-				m_itSpawnChar.m_current--;					// found this UID in the spawn's list, decreasing CChar's count only in this case
-
-			while ( m_obj[i + 1].IsValidUID() )				// searching for any entry higher than this one...
-			{
-				m_obj[i] = m_obj[i + 1];					// and moving it 1 position to keep values 'together'.
-				i++;
-			}
-			m_obj[i].InitUID();								// Finished moving higher entries (if any) so we free the last entry.
-			break;
+			uid.CharFind()->StatFlag_Clear(STATF_Spawned);
+			m_itSpawnChar.m_current--;
 		}
-	}
 
-	if ( uid.ItemFind() )
-		uid.ItemFind()->m_uidSpawnItem.InitUID();
-	else if ( uid.CharFind() )
-	{
-		uid.CharFind()->m_uidSpawnItem.InitUID();
-		uid.CharFind()->StatFlag_Clear(STATF_Spawned);
+		while ( m_obj[i + 1].IsValidUID() )				// searching for any entry higher than this one...
+		{
+			m_obj[i] = m_obj[i + 1];					// and moving it 1 position to keep values 'together'.
+			i++;
+		}
+		m_obj[i].InitUID();								// Finished moving higher entries (if any) so we free the last entry.
+		break;
 	}
 }
 
 void CItemSpawn::AddObj(CGrayUID uid)
 {
 	ADDTOCALLSTACK("CitemSpawn:AddObj");
-	if ( !uid )
-		return;
-
-	// If this obj is already linked to a spawn, remove the link before procceed
-	CItem *pPrevSpawn = uid.ObjFind()->m_uidSpawnItem.ItemFind();
-	if ( pPrevSpawn )
-	{
-		CItemSpawn *pPrevSpawnItem = static_cast<CItemSpawn*>(pPrevSpawn);
-		pPrevSpawnItem->DelObj(uid);
-	}
+	// NOTE: This function is also called when loading spawn items
+	// on server startup. In this case, some objs UID still invalid
+	// (not loaded yet) so just proceed without any checks.
 
 	bool bIsSpawnChar = (GetType() == IT_SPAWN_CHAR);
-	if ( bIsSpawnChar )		// IT_SPAWN_CHAR can only spawn chars
+	if ( !g_Serv.IsLoading() )
 	{
-		if ( !uid.CharFind()->m_pNPC )
+		if ( !uid.IsValidUID() )
 			return;
+
+		if ( bIsSpawnChar )				// IT_SPAWN_CHAR can only spawn NPCs
+		{
+			CChar *pChar = uid.CharFind();
+			if ( !pChar || !pChar->m_pNPC )
+				return;
+		}
+		else if ( !uid.ItemFind() )		// IT_SPAWN_ITEM can only spawn items
+			return;
+
+		CItem *pPrevSpawn = uid.ObjFind()->m_uidSpawnItem.ItemFind();
+		if ( pPrevSpawn )
+		{
+			if ( pPrevSpawn == this )		// obj already linked to this spawn
+				return;
+			CItemSpawn *pPrevSpawnItem = static_cast<CItemSpawn*>(pPrevSpawn);
+			pPrevSpawnItem->DelObj(uid);	// obj linked to other spawn, remove the link before proceed
+		}
 	}
-	else if ( !uid.ItemFind() )		// IT_SPAWN_ITEM can only spawn items
-		return;
 
 	unsigned char iMax = (GetAmount() > 0) ? static_cast<unsigned char>(GetAmount()) : 1;
-	for ( unsigned char i = 0; i < iMax; i++ )
+	for ( unsigned char i = 0; i <= iMax; i++ )
 	{
-		if ( m_obj[i] == uid )		// Not adding me again
-			return;
 		if ( !m_obj[i].ObjFind() )
 		{
 			m_obj[i] = uid;
-			if ( bIsSpawnChar )
+			if ( !g_Serv.IsLoading() )
 			{
-				m_itSpawnChar.m_current++;
-				uid.CharFind()->StatFlag_Set(STATF_Spawned);
+				uid.ObjFind()->m_uidSpawnItem = GetUID();
+				if ( bIsSpawnChar )
+				{
+					m_itSpawnChar.m_current++;
+					CChar *pChar = uid.CharFind();
+					ASSERT(pChar->m_pNPC);
+					pChar->StatFlag_Set(STATF_Spawned);
+					pChar->m_ptHome = GetTopPoint();
+					pChar->m_pNPC->m_Home_Dist_Wander = static_cast<WORD>(m_itSpawnChar.m_DistMax);
+				}
 			}
-			uid.ObjFind()->m_uidSpawnItem = GetUID();
 			break;
 		}
 	}
@@ -413,11 +418,6 @@ bool CItemSpawn::r_LoadVal(CScript & s)
 	ADDTOCALLSTACK("CitemSpawn:r_LoadVal");
 	EXC_TRY("LoadVal");
 
-	if ( g_Serv.IsLoading() )
-	{
-		if ( !strnicmp(s.GetKey(), "more2", 5) )	//MORE2 shouldn't be loaded as it's being set with ADDOBJ
-			return true;
-	}
 	int iCmd = FindTableSorted(s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
 	if ( iCmd < 0 )
 		return CItem::r_LoadVal(s);
@@ -426,16 +426,12 @@ bool CItemSpawn::r_LoadVal(CScript & s)
 	{
 		case ISPW_ADDOBJ:
 		{
-			CGrayUID uid = static_cast<CGrayUID>(s.GetArgVal());
-			if ( uid.ObjFind() )
-				AddObj(uid);
+			AddObj(static_cast<CGrayUID>(s.GetArgVal()));
 			return true;
 		}
 		case ISPW_DELOBJ:
 		{
-			CGrayUID uid = static_cast<CGrayUID>(s.GetArgVal());
-			if ( uid.ObjFind() )
-				DelObj(uid);
+			DelObj(static_cast<CGrayUID>(s.GetArgVal()));
 			return true;
 		}
 		case ISPW_RESET:

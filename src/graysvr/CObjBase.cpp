@@ -624,7 +624,7 @@ bool CObjBase::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 				pRef = GetTopLevelObj()->GetTopSector();
 				return( true );
 			case OBR_SPAWNITEM:
-				pRef = m_uidSpawnItem != static_cast<CGrayUID>(UID_UNUSED) ? m_uidSpawnItem.ItemFind() : NULL;
+				pRef = (m_uidSpawnItem != static_cast<CGrayUID>(UID_UNUSED)) ? m_uidSpawnItem.ItemFind() : NULL;
 				return true;
 			case OBR_TOPOBJ:
 				if ( pszKey[-1] != '.' )	// only used as a ref !
@@ -1370,6 +1370,9 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_SERIAL:
 			sVal.FormatHex( GetUID());
 			break;
+		case OC_SPAWNITEM:
+			sVal.FormatHex(m_uidSpawnItem);
+			break;
 		case OC_SEXTANTP:
 			{
 				pszKey += 8;
@@ -1790,6 +1793,12 @@ bool CObjBase::r_LoadVal( CScript & s )
 			break;
 		case OC_TIMESTAMP:
 			SetTimeStamp( s.GetArgLLVal());
+			break;
+		case OC_SPAWNITEM:
+			if ( !g_Serv.IsLoading() )	// SPAWNITEM is read-only
+				return false;
+			m_uidSpawnItem = static_cast<CGrayUID>(s.GetArgVal());
+			break;
 		case OC_UID:
 		case OC_SERIAL:
 			// Don't set container flags through this.
@@ -1820,6 +1829,8 @@ void CObjBase::r_Write( CScript & s )
 		s.WriteKeyVal( "TIMER", GetTimerAdjusted());
 	if ( m_timestamp.IsTimeValid() )
 		s.WriteKeyVal( "TIMESTAMP", GetTimeStamp().GetTimeRaw());
+	if ( m_uidSpawnItem.IsValidUID() )
+		s.WriteKeyHex("SPAWNITEM", m_uidSpawnItem);
 	if ( m_ModAr )
 		s.WriteKeyVal("MODAR", m_ModAr);
 
