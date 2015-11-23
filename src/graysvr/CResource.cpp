@@ -12,76 +12,76 @@ CResource::CResource()
 
 	m_fUseNTService = false;
 	m_fUseHTTP		= 2;
-	m_fUseAuthID	= false;
-	m_iMapCacheTime = 2 * 60 * TICK_PER_SEC;
+	m_fUseAuthID	= true;
+	m_iMapCacheTime = 2*60*TICK_PER_SEC;
 	m_iSectorSleepMask = (1<<10)-1;
 	m_fUseMapDiffs = false;
 
 	m_wDebugFlags = 0; //DEBUGF_NPC_EMOTE
 	m_fSecure = true;
-	m_iFreezeRestartTime = 10;
+	m_iFreezeRestartTime = 60;
 	m_bAgree = false;
 	m_fMd5Passwords = false;
 
 	//Magic
-	m_fReagentsRequired = true;
-	m_fReagentLossFail = true;
+	m_fReagentsRequired = false;
+	m_fReagentLossFail = false;
 	m_iWordsOfPowerColor = HUE_TEXT_DEF;
 	m_iWordsOfPowerFont = FONT_NORMAL;
 	m_fWordsOfPowerPlayer = true;
 	m_fWordsOfPowerStaff = false;
 	m_fEquippedCast = true;
-	m_iMagicUnlockDoor = 1000;
+	m_iMagicUnlockDoor = 900;
 	m_iSpellTimeout = 0;
 
 	m_iSpell_Teleport_Effect_Staff = ITEMID_FX_FLAMESTRIKE;	// drama
 	m_iSpell_Teleport_Sound_Staff = 0x1f3;
 	m_iSpell_Teleport_Effect_Players = ITEMID_FX_TELE_VANISH;
 	m_iSpell_Teleport_Sound_Players = 0x01fe;
-	m_iSpell_Teleport_Effect_NPC = ITEMID_FX_TELE_VANISH;
+	m_iSpell_Teleport_Effect_NPC = ITEMID_FX_HEAL_EFFECT;
 	m_iSpell_Teleport_Sound_NPC = 0x01fe;
 
 	// Decay
 	m_iDecay_Item = 30*60*TICK_PER_SEC;
-	m_iDecay_CorpsePlayer = 45*60*TICK_PER_SEC;
-	m_iDecay_CorpseNPC = 15*60*TICK_PER_SEC;
+	m_iDecay_CorpsePlayer = 7*60*TICK_PER_SEC;
+	m_iDecay_CorpseNPC = 7*60*TICK_PER_SEC;
 
 	// Accounts
 	m_iClientsMax		= FD_SETSIZE-1;
-	m_iConnectingMax	= 24;
+	m_iClientsMaxIP		= 16;
+	m_iConnectingMax	= 32;
 	m_iConnectingMaxIP	= 8;
-	m_iClientsMaxIP		= 0;
 
 	m_iGuestsMax = 0;
 	m_iArriveDepartMsg = 1;
-	m_iClientLingerTime = 5*60*TICK_PER_SEC;
+	m_iClientLingerTime = 10*60*TICK_PER_SEC;
 	m_iDeadSocketTime = 5*60*TICK_PER_SEC;
-	m_iMinCharDeleteTime = 3*24*60*60*TICK_PER_SEC;
+	m_iMinCharDeleteTime = 7*24*60*60*TICK_PER_SEC;
 	m_iMaxCharsPerAccount = 5;
 	m_fLocalIPAdmin = true;
 
 	// Save
 	m_iSaveNPCSkills = 10;
-	m_iSaveBackupLevels = 3;
-	m_iSaveBackgroundTime = 5*60*TICK_PER_SEC;	// Use the new background save.
-	m_fSaveGarbageCollect = false;	// Always force a full garbage collection.
+	m_iSaveBackupLevels = 10;
+	m_iSaveBackgroundTime = 0;		// Use the new background save.
+	m_fSaveGarbageCollect = true;	// Always force a full garbage collection.
 	m_iSavePeriod = 20*60*TICK_PER_SEC;
 	m_iSaveSectorsPerTick = 1;
 	m_iSaveStepMaxComplexity = 500;
 
 	// In game effects.
-	m_fCanUndressPets   = false;
-	m_fMonsterFight		= true;
-	m_fMonsterFear		= true;
-	m_iLightDungeon		= 17;
-	m_iLightNight		= 17;	// dark before t2a.
+	m_fCanUndressPets   = true;
+	m_fMonsterFight		= false;
+	m_fMonsterFear		= false;
+	m_iLightDungeon		= 27;
+	m_iLightNight		= 25;	// dark before t2a.
 	m_iLightDay		= LIGHT_BRIGHT;
 	m_iBankIMax		= 1000;
-	m_iBankWMax		= 400 * WEIGHT_UNITS;
-	m_fAttackingIsACrime =	true;
+	m_iBankWMax		= 1000 * WEIGHT_UNITS;
+	m_fAttackingIsACrime	= true;
 	m_fGuardsInstantKill	= true;
 	m_fGuardsOnMurderers	= true;
-	m_iSnoopCriminal	= 1000;
+	m_iSnoopCriminal	= 100;
 	m_iTradeWindowSnooping = true;
 	m_iTrainSkillCost = 1;
 	m_iTrainSkillMax = 420;
@@ -90,16 +90,16 @@ CResource::CResource()
 	m_iMediumCanHearGhosts	= 1000;
 	m_iSkillPracticeMax	= 300;
 	m_iPacketDeathAnimation = true;
-	m_fCharTags			= true;
+	m_fCharTags			= false;
 	m_fVendorTradeTitle	= true;
-	m_iVendorMaxSell	= 30;
-	m_iGameMinuteLength	= 8 * TICK_PER_SEC;
-	m_fNoWeather		= false;
+	m_iVendorMaxSell	= 255;
+	m_iGameMinuteLength	= 20*TICK_PER_SEC;
+	m_fNoWeather		= true;
 	m_fFlipDroppedItems	= true;
 	m_iItemsMaxAmount	= 60000;
 	m_iMurderMinCount	= 5;
-	m_iMurderDecayTime	= 8*60*60* TICK_PER_SEC;
-	m_iMaxCharComplexity	= 16;
+	m_iMurderDecayTime	= 8*60*60*TICK_PER_SEC;
+	m_iMaxCharComplexity	= 32;
 	m_iMaxItemComplexity	= 25;
 	m_iMaxSectorComplexity	= 1024;
 	m_iPlayerKarmaNeutral	= -2000; // How much bad karma makes a player neutral?
@@ -107,7 +107,7 @@ CResource::CResource()
 	m_iMinKarma = -10000;
 	m_iMaxKarma = 10000;
 	m_iMaxFame = 10000;
-	m_iGuardLingerTime	= 1*60*TICK_PER_SEC; // "GUARDLINGER",
+	m_iGuardLingerTime	= 3*60*TICK_PER_SEC;
 	m_iCriminalTimer	= 3*60*TICK_PER_SEC;
 	m_iHitpointPercentOnRez	= 10;
 	m_iHitsHungerLoss	= 0;
@@ -115,44 +115,44 @@ CResource::CResource()
 	m_fHelpingCriminalsIsACrime = true;
 	m_fGenericSounds	= true;
 	m_fAutoNewbieKeys 	= true;
-	m_iMaxBaseSkill		= 250;
+	m_iMaxBaseSkill		= 200;
 	m_fInitHiddenSkills		= false;
 	m_iStamRunningPenalty 	= 50;
-	m_iStaminaLossAtWeight 	= 100;
-	m_iMountHeight		= PLAYER_HEIGHT + 5;
+	m_iStaminaLossAtWeight 	= 150;
+	m_iMountHeight		= false;
 	m_iMoveRate			= 100;
 	m_iArcheryMinDist	= 2;
-	m_iArcheryMaxDist	= 12;
+	m_iArcheryMaxDist	= 15;
 	m_iHitsUpdateRate	= TICK_PER_SEC;
-	m_iSpeedScaleFactor 	= 15000;
+	m_iSpeedScaleFactor	= 80000;
 	m_iCombatFlags		= 0;
 	m_iCombatSpeedEra	= 2;	// default = 4 = SE
 	m_iMagicFlags		= 0;
 	m_iMaxPolyStats		= 150;
-	m_iRevealFlags		= 0;
+	m_iRevealFlags		= (REVEALF_DETECTINGHIDDEN|REVEALF_LOOTINGSELF|REVEALF_LOOTINGOTHERS|REVEALF_SPEAK|REVEALF_SPELLCAST);
 
 	m_fNoResRobe		= 0;
-	m_iLostNPCTeleport	= 0;
-	m_iExperimental		= 0x181;
+	m_iLostNPCTeleport	= 50;
+	m_iExperimental		= 0;
 	m_iDistanceYell		= UO_MAP_VIEW_RADAR;
 	m_iDistanceWhisper	= 3;
 	m_iDistanceTalk		= UO_MAP_VIEW_SIZE;
-	m_iOptionFlags		= 0;
+	m_iOptionFlags		= (OF_Command_Sysmsgs|OF_NoHouseMuteSpeech);
 
 	m_iMaxSkill			= SKILL_SCRIPTED;
-	m_iWalkBuffer		= 50;
+	m_iWalkBuffer		= 75;
 	m_iWalkRegen		= 25;
 	m_iWoolGrowthTime	= 30*60*TICK_PER_SEC;
 	m_iAttackerTimeout	= 300;
 
 	m_iCommandLog		= 0;
-	m_fTelnetLog		= false;
+	m_fTelnetLog		= true;
 
 	m_fUsecrypt 		= true; // Server want crypt client ?
 	m_fUsenocrypt		= false; // Server want un-crypt client ? (version guessed by cliver)
-	m_fPayFromPackOnly	= 0; // pay vendors from packs only
+	m_fPayFromPackOnly	= false; // pay vendors from packs only
 
-	m_iOverSkillMultiply 	= 0;
+	m_iOverSkillMultiply = 2;
 	m_fSuppressCapitals = false;
 
 	m_iAdvancedLos		= 0;
@@ -171,9 +171,9 @@ CResource::CResource()
 	m_iStatFlag = 0;
 
 	m_iNpcAi = 0;
-	m_iMaxLoopTimes = 10000;
+	m_iMaxLoopTimes = 100000;
 
-	m_iAutoResDisp = RDS_T2A;
+	m_iAutoResDisp = RDS_TOL;
 	m_iAutoPrivFlags = PRIV_DETAIL;
 
 	// Third Party Tools
@@ -196,12 +196,10 @@ CResource::CResource()
 
 	m_iDefaultCommandLevel = 7;	//PLevel 7 default for command levels.
 
-	m_iRegenRate[STAT_STR] = 6*TICK_PER_SEC;		// Seconds to heal ONE hp (before stam/food adjust)
-	m_iRegenRate[STAT_INT] = 5*TICK_PER_SEC;		// Seconds to heal ONE mn
-	m_iRegenRate[STAT_DEX] = 3*TICK_PER_SEC;		// Seconds to heal ONE stm
-	m_iRegenRate[STAT_FOOD] = 30*60*TICK_PER_SEC;	// Food usage (1 time per 30 minutes)
-	m_iRegenRate[STAT_KARMA] = 0;					// Karma doesn't drop
-	m_iRegenRate[STAT_FAME] = 12*60*60*TICK_PER_SEC;// Fame drop (1 time per x minutes)
+	m_iRegenRate[STAT_STR] = 40*TICK_PER_SEC;		// Seconds to heal ONE hp (before stam/food adjust)
+	m_iRegenRate[STAT_INT] = 20*TICK_PER_SEC;		// Seconds to heal ONE mn
+	m_iRegenRate[STAT_DEX] = 10*TICK_PER_SEC;		// Seconds to heal ONE stm
+	m_iRegenRate[STAT_FOOD] = 60*60*TICK_PER_SEC;	// Food usage (1 time per 60 minutes)
 
 	m_iTimerCall = 0;
 	m_bAllowLightOverride = true;
@@ -228,30 +226,28 @@ CResource::CResource()
 	m_iPetsInheritNotoriety = 0;
 
 #ifdef _MTNETWORK
-	m_iNetworkThreads = 1;
+	m_iNetworkThreads = 0;
 	m_iNetworkThreadPriority = IThread::Disabled;
 #endif
-	m_fUseAsyncNetwork = 1;
+	m_fUseAsyncNetwork = 0;
 	m_iNetMaxPings = 15;
 	m_iNetHistoryTTL = 300;
-	m_iNetMaxPacketsPerTick = 25;
-	m_iNetMaxLengthPerTick = 12000;
-	m_iNetMaxQueueSize = 50;
-	m_fUsePacketPriorities = true;
+	m_iNetMaxPacketsPerTick = 50;
+	m_iNetMaxLengthPerTick = 18000;
+	m_iNetMaxQueueSize = 75;
+	m_fUsePacketPriorities = false;
 	m_fUseExtraBuffer = true;
 
-	m_iTooltipCache = 60 * TICK_PER_SEC;
+	m_iTooltipCache = 30*TICK_PER_SEC;
 	m_iTooltipMode = TOOLTIPMODE_SENDVERSION;
-	m_iAutoTooltipResend = AUTOTOOLTIP_FLAG_NAME|AUTOTOOLTIP_FLAG_AMOUNT|AUTOTOOLTIP_FLAG_WEIGHT|
-						   AUTOTOOLTIP_FLAG_DURABILITY|AUTOTOOLTIP_FLAG_POISON|AUTOTOOLTIP_FLAG_WANDCHARGES|
-						   AUTOTOOLTIP_FLAG_SPELLBOOK;
+	m_iAutoTooltipResend = (AUTOTOOLTIP_FLAG_NAME|AUTOTOOLTIP_FLAG_AMOUNT|AUTOTOOLTIP_FLAG_WEIGHT|AUTOTOOLTIP_FLAG_DURABILITY|AUTOTOOLTIP_FLAG_POISON|AUTOTOOLTIP_FLAG_WANDCHARGES|AUTOTOOLTIP_FLAG_SPELLBOOK);
 	m_iContextMenuLimit = 15;
 
 	m_iClientLoginMaxTries = 0;		// maximum bad password tries before a temp ip ban
 	m_iClientLoginTempBan = 3*60*TICK_PER_SEC;
 	m_iMaxShipPlankTeleport = UO_MAP_VIEW_SIZE;
 
-	m_NPCNoFameTitle = 0;
+	m_NPCNoFameTitle = false;
 }
 
 CResource::~CResource()
@@ -730,7 +726,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "MINKARMA",				{ ELEM_INT,		OFFSETOF(CResource,m_iMinKarma),			0 }},
 	{ "MONSTERFEAR",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fMonsterFear),			0 }},
 	{ "MONSTERFIGHT",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fMonsterFight),		0 }},
-	{ "MOUNTHEIGHT",			{ ELEM_INT,		OFFSETOF(CResource,m_iMountHeight),			0 }},
+	{ "MOUNTHEIGHT",			{ ELEM_BOOL,	OFFSETOF(CResource,m_iMountHeight),			0 }},
 	{ "MOVERATE",				{ ELEM_INT,		OFFSETOF(CResource,m_iMoveRate),			0 }},
 	{ "MULFILES",				{ ELEM_VOID,	0,											0 }},
 	{ "MURDERDECAYTIME",		{ ELEM_INT,		OFFSETOF(CResource,m_iMurderDecayTime),		0 }},

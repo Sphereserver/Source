@@ -805,7 +805,7 @@ public:
 	int  m_iTrainSkillPercent;	// How much can NPC's train up to ?
 	int  m_fDeadCannotSeeLiving;
 	int  m_iMediumCanHearGhosts;	// At this Spirit Speak skill level players can understand ghosts speech instead hear 'oOOoO ooO'
-	int	 m_iMountHeight;		// The height at which a mounted person clears ceilings.
+	bool m_iMountHeight;		// Do not allow entering under roof being on horse?
 	int	 m_iMoveRate;			// The percent rate of NPC movement
 	int  m_iArcheryMaxDist;
 	int  m_iArcheryMinDist;
