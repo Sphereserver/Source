@@ -1633,13 +1633,13 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 	const CItemCorpse * pCorpse = dynamic_cast<const CItemCorpse *>(pObjTop);
 	if ( pCorpse && pCorpse->m_uidLink == GetUID() )
 	{
-		if ( g_Cfg.m_iRevealFlags && REVEALF_LOOTINGSELF )
+		if ( g_Cfg.m_iRevealFlags & REVEALF_LOOTINGSELF )
 			Reveal();
 	}
 	else 
 	{
 		CheckCorpseCrime(pCorpse, true, false);
-		if ( g_Cfg.m_iRevealFlags && REVEALF_LOOTINGOTHERS )
+		if ( g_Cfg.m_iRevealFlags & REVEALF_LOOTINGOTHERS )
 			Reveal();
 	}
 

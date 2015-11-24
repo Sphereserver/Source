@@ -1698,9 +1698,14 @@ bool CChar::CanSeeLOS_New( const CPointMap &ptDst, CPointMap *pptBlock, int iMax
 bool CChar::CanSeeLOS( const CObjBaseTemplate *pObj, WORD wFlags ) const
 {
 	ADDTOCALLSTACK("CChar::CanSeeLOS");
-	if ( !pObj || !CanSee(pObj) )
+
+	if ( !CanSee(pObj) )
 		return false;
+
 	pObj = pObj->GetTopLevelObj();
+	if ( !pObj  )
+		return false;
+
 	if ( (m_pPlayer && (g_Cfg.m_iAdvancedLos & ADVANCEDLOS_PLAYER)) || (m_pNPC && (g_Cfg.m_iAdvancedLos & ADVANCEDLOS_NPC)) )
 	{
 		CPointMap pt = pObj->GetTopPoint();
@@ -1777,7 +1782,7 @@ bool CChar::CanTouch( const CObjBase *pObj ) const
 	}
 
 	//	search up to top level object
-	if ( pObjTop != this )
+	if ( pObjTop && (pObjTop != this) )
 	{
 		if ( pObjTop->IsChar() )
 		{

@@ -307,18 +307,17 @@ bool CClient::OnRxConsoleLoginComplete()
 	ADDTOCALLSTACK("CClient::OnRxConsoleLoginComplete");
 	if ( GetConnectType() != CONNECT_TELNET )
 		return false;
+	if ( !GetPeer().IsValidAddr() )
+		return false;
 
- 	if ( GetPrivLevel() < PLEVEL_Admin )	// this really should not happen.
+	if ( GetPrivLevel() < PLEVEL_Admin )	// this really should not happen.
 	{
 		SysMessagef("%s\n", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_NO_ADMIN));
 		return false;
 	}
 
-	if ( ! GetPeer().IsValidAddr())
-		return( false );
-
-	SysMessagef( "%s '%s','%s'\n", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_WELCOME_2), GetName(), GetPeerStr());
-	return( true );
+	SysMessagef("%s '%s' ('%s')\n", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_WELCOME_2), GetName(), GetPeerStr());
+	return true;
 }
 
 bool CClient::OnRxConsole( const BYTE * pData, size_t iLen )
@@ -348,12 +347,12 @@ bool CClient::OnRxConsole( const BYTE * pData, size_t iLen )
 				{
 					if ( static_cast<unsigned int>(m_Targ_Text.GetLength()) > (COUNTOF(m_zLogin) - 1) )
 					{
-						SysMessage("Login?:\n");
+						SysMessage("Login:\n");
 					}
 					else
 					{
 						strcpy(m_zLogin, m_Targ_Text);
-						SysMessage("Password?:\n");
+						SysMessage("Password:\n");
 					}
 					m_Targ_Text.Empty();
 				}
