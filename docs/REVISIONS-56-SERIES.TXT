@@ -2747,3 +2747,4 @@ Changed: Now instead char spawns (t_spawn_char) block the char creation when it 
 
 24-11-2015, Coruja
 Fixed: Buffs not reloading correct remaining timer on client login.
+Fixed: Spiderweb (t_web) making chars stay stuck even after the spiderweb get removed.

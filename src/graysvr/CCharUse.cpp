@@ -653,8 +653,10 @@ bool CChar::Use_Item_Web( CItem * pItemWeb )
 		// First time message.
 		pFlag = CItem::CreateBase(ITEMID_WEB1_1);
 		ASSERT(pFlag);
+		pFlag->SetAttr(ATTR_DECAY);
 		pFlag->SetType(IT_EQ_STUCK);
 		pFlag->m_uidLink = pItemWeb->GetUID();
+		pFlag->SetTimeout(pItemWeb->GetTimerDAdjusted());
 		LayerAdd(pFlag, LAYER_FLAG_Stuck);
 	}
 	else
@@ -667,7 +669,6 @@ bool CChar::Use_Item_Web( CItem * pItemWeb )
 		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SWEB_STUCK), pItemWeb->GetName());
 	}
 
-	pFlag->SetTimeout(TICK_PER_SEC);	// don't check it too often
 	return true;
 }
 

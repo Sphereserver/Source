@@ -323,6 +323,8 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 			return;
 		case LAYER_FLAG_Stuck:
 			StatFlag_Set( STATF_Freeze );
+			if ( IsClient() )
+				GetClient()->addBuff(BI_PARALYZE, 1075827, 1075828, static_cast<WORD>(pItem->GetTimerAdjusted()));
 			break;
 		default:
 			break;
@@ -425,6 +427,11 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 			break;
 		case LAYER_FLAG_Stuck:
 			StatFlag_Clear( STATF_Freeze );
+			if ( IsClient() )
+			{
+				GetClient()->removeBuff(BI_PARALYZE);
+				GetClient()->addCharMove(this);		// immediately tell the client that now he's able to move (without this, it will be able to move only on next tick update)
+			}
 			break;
 		default:
 			break;
@@ -2465,13 +2472,6 @@ bool CChar::OnTickEquip( CItem * pItem )
 					break;
 			}
 			break;
-
-		case LAYER_FLAG_Stuck:
-			// Only allow me to try to damage the web so often
-			// Non-magical. held by something.
-			// IT_EQ_STUCK
-			pItem->SetTimeout( -1 );
-			return( true );
 
 		case LAYER_HORSE:
 			// Give my horse a tick. (It is still in the game !)

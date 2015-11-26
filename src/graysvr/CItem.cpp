@@ -4837,19 +4837,12 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 			return( 0 );
 		}
 
-		iDmg = Calc_GetRandVal( iDmg ) + 1;
-		if ( static_cast<unsigned int>(iDmg) > m_itWeb.m_Hits_Cur || ( uType & DAMAGE_FIRE ))
+		if ( static_cast<DWORD>(iDmg) > m_itWeb.m_Hits_Cur || ( uType & DAMAGE_FIRE ))
 		{
 			if ( pSrc )
 				pSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_WEB_DESTROY ) );
-			if ( Calc_GetRandVal( 2 ) || ( uType & DAMAGE_FIRE ))
-			{
-				Delete();
-				return( INT_MAX );
-			}
-			SetID( ITEMID_REAG_SS );
-			Update();
-			return( 2 );
+			Delete();
+			return( INT_MAX );
 		}
 
 		if ( pSrc )
