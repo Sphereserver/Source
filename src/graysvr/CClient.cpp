@@ -273,6 +273,7 @@ void CClient::CharDisconnect()
 		// become an NPC for a little while
 		CItem * pItemChange = CItem::CreateBase( ITEMID_RHAND_POINT_W );
 		ASSERT(pItemChange);
+		pItemChange->SetName("Client Linger");
 		pItemChange->SetType(IT_EQ_CLIENT_LINGER);
 		pItemChange->SetTimeout(iLingerTime);
 		m_pChar->LayerAdd(pItemChange, LAYER_FLAG_ClientLinger);
@@ -943,7 +944,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 						ArgsCount++;
 				}
 
-				addBuff(static_cast<BUFF_ICONS>(iArgs[0]), iArgs[1], iArgs[2], static_cast<short>(iArgs[3]), Args, ArgsCount);
+				addBuff(static_cast<BUFF_ICONS>(iArgs[0]), iArgs[1], iArgs[2], static_cast<WORD>(iArgs[3]), Args, ArgsCount);
 			}
 			break;
 		case CV_REMOVEBUFF:

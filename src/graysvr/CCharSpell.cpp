@@ -855,8 +855,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 	if ( !pSpellDef || !spell )
 		return;
 
-	short iStatEffect = static_cast<short>(pSpell->m_itSpell.m_spelllevel);
-	short iTimerEffect = static_cast<short>(pSpell->GetTimerAdjusted());
+	WORD iStatEffect = static_cast<WORD>(pSpell->m_itSpell.m_spelllevel);
+	WORD iTimerEffect = static_cast<WORD>(pSpell->GetTimerAdjusted());
 
 	if (IsTrigUsed(TRIGGER_EFFECTADD))
 	{
@@ -1788,7 +1788,6 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 		case LAYER_FLAG_Criminal:		pSpell->SetName("Criminal Timer");			break;
 		case LAYER_FLAG_Potion:			pSpell->SetName("Potion Cooldown");			break;
 		case LAYER_FLAG_Drunk:			pSpell->SetName("Drunk Effect");			break;
-		case LAYER_FLAG_ClientLinger:	pSpell->SetName("Client Linger");			break;
 		case LAYER_FLAG_Hallucination:	pSpell->SetName("Hallucination Effect");	break;
 		case LAYER_FLAG_Murders:		pSpell->SetName("Murder Decay");			break;
 		default:						break;

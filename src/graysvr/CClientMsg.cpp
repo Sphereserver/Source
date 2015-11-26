@@ -27,166 +27,185 @@ void CClient::resendBuffs()
 	if ( PacketBuff::CanSendTo(GetNetState()) == false )
 		return;
 
-	// Skills
 	CChar *pChar = GetChar();
 	ASSERT(pChar);
 
-	if ( pChar->IsStatFlag(STATF_Hidden|STATF_Insubstantial) )
-		addBuff( BI_HIDDEN, 1075655, 1075656 );
+	// NOTE: If the player logout and login again without close the client, buffs with remaining
+	// time will stay cached on client, making it not display the remaining time if the server
+	// send this same buff again. To avoid this, we must remove the buff before send it.
+
+	if ( pChar->IsStatFlag(STATF_Hidden | STATF_Insubstantial) )
+		addBuff(BI_HIDDEN, 1075655, 1075656);
+
+	CItem *pStuck = pChar->LayerFind(LAYER_FLAG_Stuck);
+	if ( pStuck )
+	{
+		removeBuff(BI_PARALYZE);
+		addBuff(BI_PARALYZE, 1075827, 1075828, static_cast<WORD>(pStuck->GetTimerAdjusted()));
+	}
 
 	// Spells
-	CContainer *Cont = dynamic_cast<CContainer*>(pChar);
-	ASSERT(Cont);
-
 	TCHAR NumBuff[7][8];
 	LPCTSTR pNumBuff[7] = { NumBuff[0], NumBuff[1], NumBuff[2], NumBuff[3], NumBuff[4], NumBuff[5], NumBuff[6] };
 
-	short iStatEffect = 0;
-	short iTimerEffect = 0;
+	WORD iStatEffect = 0;
+	WORD iTimerEffect = 0;
 
-	for ( size_t i = 0; i < Cont->GetCount(); ++i )
+	for ( CItem *pItem = pChar->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		CItem *pSpell = Cont->GetAt(i);
-		if ( !pSpell || !pSpell->IsType(IT_SPELL) )
+		if ( !pItem->IsType(IT_SPELL) )
 			continue;
 
-		iStatEffect = static_cast<short>(pSpell->m_itSpell.m_spelllevel);
-		iTimerEffect = static_cast<short>(pSpell->GetTimerAdjusted());
-		
-		// TO-DO: Fix buff icons not showing correct timer value on client login
-		// Strangely the buff works fine when added (cast spell), but on resend (client login)
-		// it always use timer=0 even if the timer value is correct and added properly
+		iStatEffect = static_cast<short>(pItem->m_itSpell.m_spelllevel);
+		iTimerEffect = static_cast<short>(pItem->GetTimerAdjusted());
 
-		switch( pSpell->m_itSpell.m_spell )
+		switch ( pItem->m_itSpell.m_spell )
 		{
-		case SPELL_Night_Sight:
-			addBuff( BI_NIGHTSIGHT, 1075643, 1075644, iTimerEffect );
-			break;
-		case SPELL_Clumsy:
-			ITOA(iStatEffect, NumBuff[0], 10);
-			addBuff( BI_CLUMSY, 1075831, 1075832, iTimerEffect, pNumBuff, 1 );
-			break;
-		case SPELL_Weaken:
-			ITOA(iStatEffect, NumBuff[0], 10);
-			addBuff( BI_WEAKEN, 1075837, 1075838, iTimerEffect, pNumBuff, 1 );
-			break;
-		case SPELL_Feeblemind:
-			ITOA(iStatEffect, NumBuff[0], 10);
-			addBuff( BI_FEEBLEMIND, 1075833, 1075834, iTimerEffect, pNumBuff, 1 );
-			break;
-		case SPELL_Curse:
-		{
-			for ( int idx = STAT_STR; idx < STAT_BASE_QTY; ++idx )
-				ITOA(iStatEffect, NumBuff[idx], 10);
-			for ( int idx = 3; idx < 7; ++idx )
-				ITOA(10, NumBuff[idx], 10);
-
-			addBuff(BI_CURSE, 1075835, 1075836, iTimerEffect, pNumBuff, 7);
-			break;
-		}
-		case SPELL_Mass_Curse:
-		{
-			for ( int idx = STAT_STR; idx < STAT_BASE_QTY; ++idx )
-				ITOA(iStatEffect, NumBuff[idx], 10);
-
-			addBuff(BI_MASSCURSE, 1075839, 1075840, iTimerEffect, pNumBuff, 3);
-			break;
-		}
-		case SPELL_Strength:
-			ITOA(iStatEffect, NumBuff[0], 10);
-			addBuff( BI_STRENGTH, 0x106A85, 0x106A86, iTimerEffect, pNumBuff, 1 );
-			break;
-		case SPELL_Agility:
-			ITOA(iStatEffect, NumBuff[0], 10);
-			addBuff( BI_AGILITY, 0x106A85, 0x106A86, iTimerEffect, pNumBuff, 1 );
-			break;
-		case SPELL_Cunning:
-			ITOA(iStatEffect, NumBuff[0], 10);
-			addBuff( BI_CUNNING, 0x106A85, 0x106A86, iTimerEffect, pNumBuff, 1 );
-			break;
-		case SPELL_Bless:
-		{
-			for ( int idx = STAT_STR; idx < STAT_BASE_QTY; ++idx )
-				ITOA(iStatEffect, NumBuff[idx], 10);
-
-			addBuff( BI_BLESS, 1075847, 1075848, iTimerEffect, pNumBuff, STAT_BASE_QTY );
-			break;
-		}
-		case SPELL_Reactive_Armor:
-		{
-			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
-			{
+			case SPELL_Night_Sight:
+				removeBuff(BI_NIGHTSIGHT);
+				addBuff(BI_NIGHTSIGHT, 1075643, 1075644, iTimerEffect);
+				break;
+			case SPELL_Clumsy:
 				ITOA(iStatEffect, NumBuff[0], 10);
-				for ( int idx = 1; idx < 5; ++idx )
-					ITOA(5, NumBuff[idx], 10);
-
-				addBuff( BI_REACTIVEARMOR, 1075812, 1075813, iTimerEffect, pNumBuff, 5 );
-			}
-			else
+				removeBuff(BI_CLUMSY);
+				addBuff(BI_CLUMSY, 1075831, 1075832, iTimerEffect, pNumBuff, 1);
+				break;
+			case SPELL_Weaken:
+				ITOA(iStatEffect, NumBuff[0], 10);
+				removeBuff(BI_WEAKEN);
+				addBuff(BI_WEAKEN, 1075837, 1075838, iTimerEffect, pNumBuff, 1);
+				break;
+			case SPELL_Feeblemind:
+				ITOA(iStatEffect, NumBuff[0], 10);
+				removeBuff(BI_FEEBLEMIND);
+				addBuff(BI_FEEBLEMIND, 1075833, 1075834, iTimerEffect, pNumBuff, 1);
+				break;
+			case SPELL_Curse:
 			{
-				addBuff( BI_REACTIVEARMOR, 1075812, 1070722, iTimerEffect );
-			}
-			break;
-		}
-		case SPELL_Protection:
-		case SPELL_Arch_Prot:
-		{
-			BUFF_ICONS BuffIcon = BI_PROTECTION;
-			DWORD BuffCliloc = 1075814;
-			if ( pSpell->m_itSpell.m_spell == SPELL_Arch_Prot )
-			{
-				BuffIcon = BI_ARCHPROTECTION;
-				BuffCliloc = 1075816;
-			}
-
-			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
-			{
-				ITOA(static_cast<int>(-pSpell->m_itSpell.m_PolyStr), NumBuff[0], 10);
-				ITOA(static_cast<int>(-pSpell->m_itSpell.m_PolyDex/10), NumBuff[1], 10);
-				addBuff(BuffIcon, BuffCliloc, 1075815, iTimerEffect, pNumBuff, 2);
-			}
-			else
-			{
-				addBuff( BuffIcon, BuffCliloc, 1070722, iTimerEffect );
-			}
-			break;
-		}
-		case SPELL_Poison:
-			addBuff( BI_POISON, 1017383, 1070722, iTimerEffect );
-			break;
-		case SPELL_Incognito:
-			addBuff( BI_INCOGNITO, 1075819, 1075820, iTimerEffect );
-			break;
-		case SPELL_Paralyze:
-			addBuff( BI_PARALYZE, 1075827, 1075828, iTimerEffect );
-			break;
-		case SPELL_Magic_Reflect:
-		{
-			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
-			{
-				ITOA(-iStatEffect, NumBuff[0], 10);
-				for ( int idx = 1; idx < 5; ++idx )
+				for ( int idx = STAT_STR; idx < STAT_BASE_QTY; ++idx )
+					ITOA(iStatEffect, NumBuff[idx], 10);
+				for ( int idx = 3; idx < 7; ++idx )
 					ITOA(10, NumBuff[idx], 10);
 
-				addBuff( BI_MAGICREFLECTION, 1075817, 1075818, iTimerEffect, pNumBuff, 5 );
+				removeBuff(BI_CURSE);
+				addBuff(BI_CURSE, 1075835, 1075836, iTimerEffect, pNumBuff, 7);
+				break;
 			}
-			else
+			case SPELL_Mass_Curse:
 			{
-				addBuff( BI_MAGICREFLECTION, 1075817, 1070722, iTimerEffect );
+				for ( int idx = STAT_STR; idx < STAT_BASE_QTY; ++idx )
+					ITOA(iStatEffect, NumBuff[idx], 10);
+
+				removeBuff(BI_MASSCURSE);
+				addBuff(BI_MASSCURSE, 1075839, 1075840, iTimerEffect, pNumBuff, 3);
+				break;
 			}
-			break;
-		}
-		case SPELL_Invis:
-			addBuff( BI_INVISIBILITY, 1075825, 1075826, iTimerEffect );
-			break;
-		default:
-			break;
+			case SPELL_Strength:
+				ITOA(iStatEffect, NumBuff[0], 10);
+				removeBuff(BI_STRENGTH);
+				addBuff(BI_STRENGTH, 1075845, 1075846, iTimerEffect, pNumBuff, 1);
+				break;
+			case SPELL_Agility:
+				ITOA(iStatEffect, NumBuff[0], 10);
+				removeBuff(BI_AGILITY);
+				addBuff(BI_AGILITY, 1075841, 1075842, iTimerEffect, pNumBuff, 1);
+				break;
+			case SPELL_Cunning:
+				ITOA(iStatEffect, NumBuff[0], 10);
+				removeBuff(BI_CUNNING);
+				addBuff(BI_CUNNING, 1075843, 1075844, iTimerEffect, pNumBuff, 1);
+				break;
+			case SPELL_Bless:
+			{
+				for ( int idx = STAT_STR; idx < STAT_BASE_QTY; ++idx )
+					ITOA(iStatEffect, NumBuff[idx], 10);
+
+				removeBuff(BI_BLESS);
+				addBuff(BI_BLESS, 1075847, 1075848, iTimerEffect, pNumBuff, STAT_BASE_QTY);
+				break;
+			}
+			case SPELL_Reactive_Armor:
+			{
+				removeBuff(BI_REACTIVEARMOR);
+				if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+				{
+					ITOA(iStatEffect, NumBuff[0], 10);
+					for ( int idx = 1; idx < 5; ++idx )
+						ITOA(5, NumBuff[idx], 10);
+
+					addBuff(BI_REACTIVEARMOR, 1075812, 1075813, iTimerEffect, pNumBuff, 5);
+				}
+				else
+				{
+					addBuff(BI_REACTIVEARMOR, 1075812, 1070722, iTimerEffect);
+				}
+				break;
+			}
+			case SPELL_Protection:
+			case SPELL_Arch_Prot:
+			{
+				BUFF_ICONS BuffIcon = BI_PROTECTION;
+				DWORD BuffCliloc = 1075814;
+				if ( pItem->m_itSpell.m_spell == SPELL_Arch_Prot )
+				{
+					BuffIcon = BI_ARCHPROTECTION;
+					BuffCliloc = 1075816;
+				}
+
+				removeBuff(BuffIcon);
+				if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+				{
+					ITOA(static_cast<int>(-pItem->m_itSpell.m_PolyStr), NumBuff[0], 10);
+					ITOA(static_cast<int>(-pItem->m_itSpell.m_PolyDex / 10), NumBuff[1], 10);
+					addBuff(BuffIcon, BuffCliloc, 1075815, iTimerEffect, pNumBuff, 2);
+				}
+				else
+				{
+					addBuff(BuffIcon, BuffCliloc, 1070722, iTimerEffect);
+				}
+				break;
+			}
+			case SPELL_Poison:
+				removeBuff(BI_POISON);
+				addBuff(BI_POISON, 1017383, 1070722, iTimerEffect);
+				break;
+			case SPELL_Incognito:
+				removeBuff(BI_INCOGNITO);
+				addBuff(BI_INCOGNITO, 1075819, 1075820, iTimerEffect);
+				break;
+			case SPELL_Paralyze:
+				removeBuff(BI_PARALYZE);
+				addBuff(BI_PARALYZE, 1075827, 1075828, iTimerEffect);
+				break;
+			case SPELL_Magic_Reflect:
+			{
+				removeBuff(BI_MAGICREFLECTION);
+				if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+				{
+					ITOA(-iStatEffect, NumBuff[0], 10);
+					for ( int idx = 1; idx < 5; ++idx )
+						ITOA(10, NumBuff[idx], 10);
+
+					addBuff(BI_MAGICREFLECTION, 1075817, 1075818, iTimerEffect, pNumBuff, 5);
+				}
+				else
+				{
+					addBuff(BI_MAGICREFLECTION, 1075817, 1070722, iTimerEffect);
+				}
+				break;
+			}
+			case SPELL_Invis:
+				removeBuff(BI_INVISIBILITY);
+				addBuff(BI_INVISIBILITY, 1075825, 1075826, iTimerEffect);
+				break;
+			default:
+				break;
 		}
 
 	}
 }
 
-void CClient::addBuff( const BUFF_ICONS IconId, const DWORD ClilocOne, const DWORD ClilocTwo, const short Time, LPCTSTR* pArgs, size_t iArgCount)
+void CClient::addBuff( const BUFF_ICONS IconId, const DWORD ClilocOne, const DWORD ClilocTwo, const WORD Time, LPCTSTR* pArgs, size_t iArgCount)
 {
 	ADDTOCALLSTACK("CClient::addBuff");
 	if ( !IsSetOF(OF_Buffs) )
