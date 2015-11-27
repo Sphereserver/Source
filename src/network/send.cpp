@@ -86,15 +86,15 @@ void PacketWeb::setData(const BYTE * data, size_t length)
  *
  *
  ***************************************************************************/
-PacketCombatDamage::PacketCombatDamage(const CClient* target, DWORD damage, CGrayUID defender) : PacketSend(XCMD_DamagePacket, 7, PRI_NORMAL)
+PacketCombatDamage::PacketCombatDamage(const CClient* target, WORD damage, CGrayUID defender) : PacketSend(XCMD_DamagePacket, 7, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketCombatDamage::PacketCombatDamage");
 
-	if ( damage >= 0x10000 )
-		damage = 0xffff;
+	if ( damage >= USHRT_MAX )
+		damage = USHRT_MAX;
 
 	writeInt32(defender);
-	writeInt16(static_cast<WORD>(damage));
+	writeInt16(damage);
 	push(target);
 }
 
@@ -4104,13 +4104,16 @@ PacketHouseEndCustomise::PacketHouseEndCustomise(const CClient* target, const CI
  *
  *
  ***************************************************************************/
-PacketCombatDamageOld::PacketCombatDamageOld(const CClient* target, DWORD damage, CGrayUID defender) : PacketExtended(EXTDATA_DamagePacketOld, 11, PRI_NORMAL)
+PacketCombatDamageOld::PacketCombatDamageOld(const CClient* target, BYTE damage, CGrayUID defender) : PacketExtended(EXTDATA_DamagePacketOld, 11, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketCombatDamageOld::PacketCombatDamageOld");
 
+	if ( damage >= UCHAR_MAX )
+		damage = UCHAR_MAX;
+
 	writeByte(0x01);
 	writeInt32(defender);
-	writeByte((BYTE)(minimum(damage, 255)));
+	writeByte(damage);
 
 	push(target);
 }

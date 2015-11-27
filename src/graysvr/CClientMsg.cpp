@@ -228,16 +228,16 @@ void CClient::removeBuff(const BUFF_ICONS IconId)
 }
 
 
-bool CClient::addDeleteErr(BYTE code, unsigned int iSlot)
+bool CClient::addDeleteErr(BYTE code, DWORD iSlot)
 {
 	ADDTOCALLSTACK("CClient::addDeleteErr");
 	// code
-	if (code == PacketDeleteError::Success)
+	if ( code == PacketDeleteError::Success )
 		return true;
-	CChar * pChar = m_tmSetupCharList[iSlot].CharFind();
-	g_Log.EventWarn("%lx:Bad Char Delete Attempted %d (acct='%s', char='%s', ip='%s')\n", GetSocketID(), code, GetAccount()->GetName(), ((pChar != NULL) ? pChar->GetName() : ""), GetPeerStr());
+	CChar *pChar = m_tmSetupCharList[iSlot].CharFind();
+	g_Log.EventWarn("%lx:Bad Char Delete Attempted %d (acct='%s', char='%s', IP='%s')\n", GetSocketID(), code, GetAccount()->GetName(), (pChar ? pChar->GetName() : ""), GetPeerStr());
 	new PacketDeleteError(this, static_cast<PacketDeleteError::Reason>(code));
-	return( false );
+	return false;
 }
 
 void CClient::addTime( bool bCurrent )
@@ -3636,9 +3636,9 @@ void CClient::addShowDamage( int damage, DWORD uid_damage )
 		damage = 0;
 
 	if ( PacketCombatDamage::CanSendTo(GetNetState()) )
-		new PacketCombatDamage(this, damage, CGrayUID(uid_damage));
+		new PacketCombatDamage(this, static_cast<WORD>(damage), CGrayUID(uid_damage));
 	else if ( PacketCombatDamageOld::CanSendTo(GetNetState()) )
-		new PacketCombatDamageOld(this, damage, CGrayUID(uid_damage));
+		new PacketCombatDamageOld(this, static_cast<BYTE>(damage), CGrayUID(uid_damage));
 }
 
 void CClient::addSpeedMode( int speedMode )
@@ -3854,11 +3854,11 @@ BYTE CClient::Setup_Play( unsigned int iSlot ) // After hitting "Play Character"
 	return Setup_Start( pChar );
 }
 
-BYTE CClient::Setup_Delete( unsigned int iSlot ) // Deletion of character
+BYTE CClient::Setup_Delete( DWORD iSlot ) // Deletion of character
 {
 	ADDTOCALLSTACK("CClient::Setup_Delete");
 	ASSERT( GetAccount() );
-	DEBUG_MSG(( "%lx:Setup_Delete slot=%u\n", GetSocketID(), iSlot ));
+	DEBUG_MSG(( "%lx:Setup_Delete slot=%lu\n", GetSocketID(), iSlot ));
 	if ( iSlot >= COUNTOF(m_tmSetupCharList))
 		return PacketDeleteError::NotExist;
 
@@ -3891,6 +3891,7 @@ BYTE CClient::Setup_Delete( unsigned int iSlot ) // Deletion of character
 		return PacketDeleteError::InvalidRequest;
 	}
 
+	g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "%lx:Account '%s' deleted char '%s' [0%lx] on client login screen.\n", GetSocketID(), GetAccount()->GetName(), pChar->GetName(), static_cast<DWORD>(pChar->GetUID()));
 	pChar->Delete();
 
 	// refill the list.

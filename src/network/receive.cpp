@@ -1491,7 +1491,7 @@ bool PacketCharDelete::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketCharDelete::onReceive");
 
 	skip(MAX_NAME_SIZE); // charpass
-	unsigned int slot = readInt32();
+	DWORD slot = readInt32();
 	skip(4); // client ip
 
 	CClient* client = net->getClient();
