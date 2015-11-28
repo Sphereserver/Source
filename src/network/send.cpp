@@ -628,7 +628,7 @@ PacketPlayerPosition::PacketPlayerPosition(const CClient* target) : PacketSend(X
  *
  *
  ***************************************************************************/
-PacketMovementRej::PacketMovementRej(const CClient* target, BYTE sequence) : PacketSend(XCMD_WalkCancel, 8, g_Cfg.m_fUsePacketPriorities? PRI_HIGHEST : PRI_NORMAL)
+PacketMovementRej::PacketMovementRej(const CClient* target, BYTE sequence) : PacketSend(XCMD_WalkReject, 8, g_Cfg.m_fUsePacketPriorities? PRI_HIGHEST : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMovementRej::PacketMovementRej");
 

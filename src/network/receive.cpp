@@ -242,7 +242,7 @@ void PacketMovementReq::doMovement(NetState* net, BYTE direction, BYTE sequence,
 	TRIGRET_TYPE canMoveThere(TRIGRET_RET_TRUE);
 
 	// check crypt key
-	if (net->isClientVersion(MINCLIVER_CHECKWALKCODE) && (crypt != 0))
+	if ((g_Cfg.m_wDebugFlags & DEBUGF_WALKCODES) && net->isClientVersion(MINCLIVER_CHECKWALKCODE) && (crypt != 0))
 		canMoveThere = client->Event_WalkingCheck(crypt)? TRIGRET_RET_TRUE : TRIGRET_RET_FALSE;
 
 	//Check Timing
@@ -568,6 +568,9 @@ bool PacketResynchronize::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketResynchronize::onReceive");
 
+	//BYTE sequence = readByte();
+	//NOTO_TYPE noto = static_cast<NOTO_TYPE>(readByte());
+
 	CClient * client = net->getClient();
 	ASSERT(client);
 
@@ -575,6 +578,7 @@ bool PacketResynchronize::onReceive(NetState* net)
 	if ( !pChar )
 		return false;
 
+	new PacketPlayerPosition(client);
 	new PacketCharacter(client, pChar);
 	client->addPlayerView(NULL);
 	net->m_sequence = 0;

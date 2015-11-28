@@ -595,7 +595,7 @@ void PacketManager::registerStandardPackets(void)
 
 	// standard packets
 	registerPacket(XCMD_Create, new PacketCreate());							// create character
-	registerPacket(XCMD_Walk, new PacketMovementReq());							// movement request
+	registerPacket(XCMD_WalkRequest, new PacketMovementReq());					// movement request
 	registerPacket(XCMD_Talk, new PacketSpeakReq());							// speak
 	registerPacket(XCMD_Attack, new PacketAttackReq());							// begin attack
 	registerPacket(XCMD_DClick, new PacketDoubleClick());						// double click object
@@ -613,7 +613,7 @@ void PacketManager::registerStandardPackets(void)
 	registerPacket(XCMD_MapEdit, new PacketMapEdit());							// edit map pins
 	registerPacket(XCMD_CharPlay, new PacketCharPlay());						// select character
 	registerPacket(XCMD_BookPage, new PacketBookPageEdit());					// edit book content
-	registerPacket(XCMD_Options, new PacketUnknown());						// unused options packet
+	registerPacket(XCMD_Options, new PacketUnknown());							// unused options packet
 	registerPacket(XCMD_Target, new PacketTarget());							// target an object
 	registerPacket(XCMD_SecureTrade, new PacketSecureTradeReq());				// secure trade action
 	registerPacket(XCMD_BBoard, new PacketBulletinBoardReq());					// bulletin board action
@@ -660,7 +660,7 @@ void PacketManager::registerStandardPackets(void)
 	registerPacket(XCMD_MacroEquipItem, new PacketEquipItemMacro());			//
 	registerPacket(XCMD_MacroUnEquipItem, new PacketUnEquipItemMacro());		//
 	registerPacket(XCMD_WalkNew, new PacketMovementReqNew());					// movement request (SA)
-	registerPacket(XCMD_TSyncReply, new PacketTimeSyncReply());						//
+	registerPacket(XCMD_TSyncReply, new PacketTimeSyncReply());					//
 	registerPacket(XCMD_CrashReport, new PacketCrashReport());					//
 	registerPacket(XCMD_CreateHS, new PacketCreateHS());						// create character (HS)
 

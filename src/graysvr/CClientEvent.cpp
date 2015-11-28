@@ -682,14 +682,9 @@ bool CClient::Event_WalkingCheck(DWORD dwEcho)
 	//  true = ok to walk.
 	//  false = the client is cheating. I did not send that code.
 
-	if ( ! ( g_Cfg.m_wDebugFlags & DEBUGF_WALKCODES ))
-		return( true );
-
 	// If the LIFO stack has not been sent, send them out now
 	if ( m_Walk_CodeQty == UINT_MAX )
-	{
 		addWalkCode(EXTDATA_WalkCode_Prime, COUNTOF(m_Walk_LIFO));
-	}
 
 	// Keep track of echo'd 0's and invalid non 0's
 	// (you can get 1 to 4 of these legitimately when you first start walking)
@@ -737,7 +732,7 @@ bool CClient::Event_WalkingCheck(DWORD dwEcho)
 TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
 {
 	ADDTOCALLSTACK("CClient::Event_Walking");
-	// XCMD_Walk
+	// XCMD_WalkRequest
 	// Return:
 	//  TRIGRET_RET_TRUE    = The walking was allowed
 	//  TRIGRET_RET_FALSE   = The walking was rejected

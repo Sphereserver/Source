@@ -131,7 +131,7 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 {
 	//	0x00
 	XCMD_Create			= 0x00,
-	XCMD_Walk			= 0x02,
+	XCMD_WalkRequest	= 0x02,
 	XCMD_Talk			= 0x03,
 	XCMD_Attack			= 0x05,
 	XCMD_DClick			= 0x06,
@@ -150,7 +150,7 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_Remove			= 0x1d,
 	//	0x20
 	XCMD_View			= 0x20,
-	XCMD_WalkCancel		= 0x21,
+	XCMD_WalkReject		= 0x21,
 	XCMD_WalkAck		= 0x22,
 	XCMD_DragAnim		= 0x23,
 	XCMD_ContOpen		= 0x24,
