@@ -801,7 +801,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			}
 			else
 			{
-				m_defense = static_cast<WORD>(CalcArmorDefense());
+				m_defense -= iStatEffect;
 			}
 			if (pClient)
 			{
@@ -1475,7 +1475,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				}
 				else
 				{
-					m_defense = static_cast<WORD>(CalcArmorDefense());
+					m_defense += iStatEffect;
 				}
 				if (pClient && IsSetOF(OF_Buffs))
 				{

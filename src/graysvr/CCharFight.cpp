@@ -1749,27 +1749,6 @@ int CChar::CalcArmorDefense() const
 	{
 		WORD iDefense = static_cast<WORD>(pItem->Armor_GetDefense());
 
-		// IsTypeSpellable() ? ! IT_WAND
-		if (( pItem->IsType(IT_SPELL) || pItem->IsTypeArmor()) && pItem->m_itSpell.m_spell )
-		{
-			SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pItem->m_itSpell.m_spell));
-			switch (spell)
-			{
-				case SPELL_Steelskin:		// turns your skin into steel, giving a boost to your AR.
-				case SPELL_Stoneskin:		// turns your skin into stone, giving a boost to your AR.
-				case SPELL_Protection:
-				case SPELL_Arch_Prot:
-					// Effect of protection spells.
-					iDefenseTotal += g_Cfg.GetSpellEffect(spell, pItem->m_itSpell.m_spelllevel ) * 100;
-					break;
-
-				default:
-					break;
-			}
-		}
-		if ( iDefense <= 0 )
-			continue;
-
 		// reverse of sm_ArmorLayers
 		switch ( pItem->GetEquipLayer())
 		{
