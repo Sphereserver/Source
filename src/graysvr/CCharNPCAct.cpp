@@ -2165,6 +2165,86 @@ bool CChar::NPC_FightCast(CObjBase * &pTarg, CObjBase * pSrc, SPELL_TYPE &spell,
 	return true;
 }
 
+CChar * CChar::NPC_FightFindBestTarget()
+{
+	ADDTOCALLSTACK("CChar::NPC_FightFindBestTarget");
+	// Find the best target to attack, and switch to this
+	// new target even if I'm already attacking someone.
+	if ( !m_pNPC )
+		return NULL;
+
+	if ( Attacker() )
+	{
+		if ( !m_lastAttackers.size() )
+			return NULL;
+
+		INT64 threat = 0;
+		int iClosest = INT_MAX;
+		CChar *pChar = NULL;
+		CChar *pClosest = NULL;
+		SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
+
+		for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it )
+		{
+			LastAttackers &refAttacker = *it;
+			pChar = static_cast<CChar*>(static_cast<CGrayUID>(refAttacker.charUID).CharFind());
+			if ( !pChar )
+				continue;
+			if ( pChar->IsStatFlag(STATF_DEAD) )	// dead chars can't be selected as target
+			{
+				pChar = NULL;
+				continue;
+			}
+			if ( refAttacker.ignore )
+			{
+				bool bIgnore = true;
+				if ( IsTrigUsed(TRIGGER_HITIGNORE) )
+				{
+					CScriptTriggerArgs Args;
+					Args.m_iN1 = bIgnore;
+					OnTrigger(CTRIG_HitIgnore, pChar, &Args);
+					bIgnore = Args.m_iN1 ? true : false;
+				}
+				if ( bIgnore )
+				{
+					pChar = NULL;
+					continue;
+				}
+			}
+			if ( !pClosest )
+				pClosest = pChar;
+
+			int iDist = GetDist(pChar);
+			if ( iDist > UO_MAP_VIEW_SIGHT )
+				continue;
+			if ( g_Cfg.IsSkillFlag(skillWeapon, SKF_RANGED) && (iDist < g_Cfg.m_iArcheryMinDist || iDist > g_Cfg.m_iArcheryMaxDist) )
+				continue;
+			if ( !CanSeeLOS(pChar) )
+				continue;
+
+			if ( (NPC_GetAiFlags() & NPC_AI_THREAT) && (threat < refAttacker.threat) )	// this char has more threat than others, let's switch to this target
+			{
+				pClosest = pChar;
+				iClosest = iDist;
+				threat = refAttacker.threat;
+			}
+			else if ( iDist < iClosest )	// this char is more closer to me than my current target, let's switch to this target
+			{
+				pClosest = pChar;
+				iClosest = iDist;
+			}
+		}
+		return pClosest ? pClosest : pChar;
+	}
+
+	// New target not found, check if I can keep attacking my current target
+	CChar *pTarget = m_Fight_Targ.CharFind();
+	if ( pTarget )
+		return pTarget;
+
+	return NULL;
+}
+
 void CChar::NPC_Act_Fight()
 {
 	ADDTOCALLSTACK("CChar::NPC_Act_Fight");
@@ -2190,7 +2270,7 @@ void CChar::NPC_Act_Fight()
 
 	if (Attacker_GetIgnore(pChar))
 	{
-		if (!Fight_FindBestTarget())
+		if (!NPC_FightFindBestTarget())
 		{
 			Skill_Start(SKILL_NONE);
 			StatFlag_Clear(STATF_War);

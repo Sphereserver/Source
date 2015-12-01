@@ -2443,16 +2443,13 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 void CChar::Fight_ClearAll()
 {
 	ADDTOCALLSTACK("CChar::Fight_ClearAll");
-	for ( CItem * pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		if ( !pItem->IsMemoryTypes(MEMORY_WAR_TARG) )
-			continue;
-		Memory_ClearTypes(static_cast<CItemMemory *>(pItem), MEMORY_WAR_TARG);
+		if ( pItem->IsMemoryTypes(MEMORY_WAR_TARG) )
+			Memory_ClearTypes(static_cast<CItemMemory *>(pItem), MEMORY_WAR_TARG);
 	}
 
 	Attacker_Clear();
-	StatFlag_Clear(STATF_War);
-
 	if ( Fight_IsActive() )
 	{
 		Skill_Start(SKILL_NONE);
@@ -2462,102 +2459,25 @@ void CChar::Fight_ClearAll()
 	UpdateModeFlag();
 }
 
-// Find the best target to attack.
-// Switch to this new target even if I'm already attacking someone.
-CChar * CChar::Fight_FindBestTarget()
-{
-	ADDTOCALLSTACK("CChar::Fight_FindBestTarget");
-	if ( Attacker() )
-	{
-		if ( !m_lastAttackers.size() )
-			return NULL;
-
-		INT64 threat = 0;
-		int iClosest = INT_MAX;
-		CChar * pChar = NULL;
-		CChar * pClosest = NULL;
-		SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
-
-		for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it )
-		{
-			LastAttackers & refAttacker = *it;
-			pChar = static_cast<CChar*>(static_cast<CGrayUID>(refAttacker.charUID).CharFind());
-			if ( !pChar )
-				continue;
-			if ( pChar->IsStatFlag(STATF_DEAD) )	// dead chars can't be selected as target
-			{
-				pChar = NULL;
-				continue;
-			}
-			if ( refAttacker.ignore )
-			{
-				bool bIgnore = true;
-				if ( IsTrigUsed(TRIGGER_HITIGNORE) )
-				{
-					CScriptTriggerArgs Args;
-					Args.m_iN1 = bIgnore;
-					OnTrigger(CTRIG_HitIgnore, pChar, &Args);
-					bIgnore = Args.m_iN1 ? true : false;
-				}
-				if ( bIgnore )
-				{
-					pChar = NULL;
-					continue;
-				}
-			}
-			if ( !pClosest )
-				pClosest = pChar;
-
-			int iDist = GetDist(pChar);
-			if ( iDist > UO_MAP_VIEW_SIGHT )
-				continue;
-			if ( g_Cfg.IsSkillFlag(skillWeapon, SKF_RANGED) && (iDist < g_Cfg.m_iArcheryMinDist || iDist > g_Cfg.m_iArcheryMaxDist) )
-				continue;
-			if ( !CanSeeLOS(pChar) )
-				continue;
-
-			if ( m_pNPC && (NPC_GetAiFlags() & NPC_AI_THREAT) && (threat < refAttacker.threat) )	// this char has more threat than others, let's switch to this target
-			{
-				pClosest = pChar;
-				iClosest = iDist;
-				threat = refAttacker.threat;
-			}
-			else if ( iDist < iClosest )	// this char is more closer to me than my current target, let's switch to this target
-			{
-				pClosest = pChar;
-				iClosest = iDist;
-			}
-		}
-		return pClosest ? pClosest : pChar;
-	}
-
-	// New target not found, check if I can keep attacking my current target
-	CChar *pTarget = m_Fight_Targ.CharFind();
-	if ( pTarget )
-		return pTarget;
-
-	return NULL;
-}
-
 // I no longer want to attack this char.
 bool CChar::Fight_Clear(const CChar *pChar, bool bForced)
 {
 	ADDTOCALLSTACK("CChar::Fight_Clear");
-	if ( ! pChar )
-		return false;
-
-	if (Attacker_Delete(const_cast<CChar*>(pChar), bForced, ATTACKER_CLEAR_FORCED) == false)
+	if ( !pChar || !Attacker_Delete(const_cast<CChar*>(pChar), bForced, ATTACKER_CLEAR_FORCED) )
 		return false;
 
 	// Go to my next target.
 	if (m_Fight_Targ == pChar->GetUID())
 		m_Fight_Targ.InitUID();
 
-	pChar = Fight_FindBestTarget();
-	if ( pChar )
-		Fight_Attack(pChar);
-	else if ( !m_pPlayer )
-		Fight_ClearAll();
+	if ( m_pNPC )
+	{
+		pChar = NPC_FightFindBestTarget();
+		if ( pChar )
+			Fight_Attack(pChar);
+		else
+			Fight_ClearAll();
+	}
 
 	return (pChar != NULL);	// I did not know about this ?
 }
@@ -2623,7 +2543,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 		return true;
 
 	if ( m_pNPC && !btoldByMaster )		// call FindBestTarget when this CChar is a NPC and was not commanded to attack, otherwise it attack directly
-		pTarget = Fight_FindBestTarget();
+		pTarget = NPC_FightFindBestTarget();
 
 	m_Fight_Targ = pTarget ? pTarget->GetUID() : static_cast<CGrayUID>(UID_UNUSED);
 	Skill_Start(skillWeapon);
@@ -2641,14 +2561,15 @@ void CChar::Fight_HitTry()
 	ASSERT( Fight_IsActive() );
 	ASSERT( m_atFight.m_War_Swing_State == (WAR_SWING_READY|WAR_SWING_SWINGING) );
 
-	CChar * pCharTarg = m_Fight_Targ.CharFind();
-	if ( pCharTarg == NULL || pCharTarg->IsStatFlag(STATF_DEAD) )	// dead players and dead bonded pets can't be attacked
+	CChar *pCharTarg = m_Fight_Targ.CharFind();
+	if ( !pCharTarg || pCharTarg->IsStatFlag(STATF_DEAD) )	// dead players and dead bonded pets can't be attacked
 	{
-		if ( !Fight_Attack(Fight_FindBestTarget()) )
+		if ( !Fight_Attack(NPC_FightFindBestTarget()) )
 		{
 			Skill_Start(SKILL_NONE);
-			StatFlag_Clear(STATF_War);
 			m_Fight_Targ.InitUID();
+			if ( m_pNPC )
+				StatFlag_Clear(STATF_War);
 		}
 		return;
 	}
@@ -2658,7 +2579,8 @@ void CChar::Fight_HitTry()
 		case WAR_SWING_INVALID:		// target is invalid
 		{
 			Fight_Clear(pCharTarg);
-			Fight_Attack(Fight_FindBestTarget());
+			if ( m_pNPC )
+				Fight_Attack(NPC_FightFindBestTarget());
 			return;
 		}
 		case WAR_SWING_EQUIPPING:	// keep hitting the same target
@@ -2668,7 +2590,8 @@ void CChar::Fight_HitTry()
 		}
 		case WAR_SWING_READY:		// probably too far away, can't take my swing right now
 		{
-			Fight_Attack(Fight_FindBestTarget());
+			if ( m_pNPC )
+				Fight_Attack(NPC_FightFindBestTarget());
 			return;
 		}
 		case WAR_SWING_SWINGING:	// must come back here again to complete
@@ -2931,15 +2854,15 @@ void CChar::Attacker_Clear()
 {
 	ADDTOCALLSTACK("CChar::Attacker_Clear");
 	if ( IsTrigUsed(TRIGGER_COMBATEND) )
-		OnTrigger(CTRIG_CombatEnd,this,0);
-	m_lastAttackers.clear();
-		// Our target is gone.
-	StatFlag_Clear( STATF_War );
+		OnTrigger(CTRIG_CombatEnd, this, 0);
 
+	m_lastAttackers.clear();
 	if ( Fight_IsActive() )
 	{
-		Skill_Start( SKILL_NONE );
+		Skill_Start(SKILL_NONE);
 		m_Fight_Targ.InitUID();
+		if ( m_pNPC )
+			StatFlag_Clear(STATF_War);
 	}
 
 	UpdateModeFlag();
@@ -2995,40 +2918,37 @@ CChar * CChar::Attacker_GetUID( int index )
 bool CChar::Attacker_Delete( int index, bool bForced, ATTACKER_CLEAR_TYPE type )
 {
 	ADDTOCALLSTACK("CChar::Attacker_Delete(int)");
-	if ( ! m_lastAttackers.size() )
+	if ( !m_lastAttackers.size() || index < 0 || static_cast<int>(m_lastAttackers.size()) <= index )
 		return false;
-	if ( index < 0 )
-		return false;
-	if ( static_cast<int>(m_lastAttackers.size()) <= index )
-		return false;
-	LastAttackers & refAttacker = m_lastAttackers.at(index);
-	CChar * pChar = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
-	if ( ! pChar )
+
+	LastAttackers &refAttacker = m_lastAttackers.at(index);
+	CChar *pChar = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
+	if ( !pChar )
 		return false;
 	
 	if ( IsTrigUsed(TRIGGER_COMBATDELETE) )
 	{
 		CScriptTriggerArgs Args;
 		Args.m_iN1 = 0;
-		Args.m_iN2 = (int)type;
+		Args.m_iN2 = static_cast<int>(type);
 		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatDelete,pChar,&Args);
-		if ( tRet == TRIGRET_RET_TRUE  ||  Args.m_iN1 == 1 )
+		if ( tRet == TRIGRET_RET_TRUE || Args.m_iN1 == 1 )
 			return false;
 		bForced = Args.m_iN1 ? true : false;
 	}
 	std::vector<LastAttackers>::iterator it = m_lastAttackers.begin() + index;
 	CItemMemory *pFight = Memory_FindObj(pChar->GetUID());	// My memory of the fight.
-	if ( pFight && bForced == true )
-	{
+	if ( pFight && bForced )
 		Memory_ClearTypes(pFight, MEMORY_WAR_TARG);
-	}
+
 	m_lastAttackers.erase(it);
-	if (m_Fight_Targ == pChar->GetUID())
+	if ( m_Fight_Targ == pChar->GetUID() )
 	{
 		m_Fight_Targ.InitUID();
-		Fight_Attack( Fight_FindBestTarget() );
+		if ( m_pNPC )
+			Fight_Attack(NPC_FightFindBestTarget());
 	}
-	if ( ! m_lastAttackers.size() )
+	if ( !m_lastAttackers.size() )
 		Attacker_Clear();
 	return true;
 }

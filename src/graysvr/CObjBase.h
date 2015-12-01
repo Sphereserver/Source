@@ -3875,7 +3875,6 @@ public:
 	bool Fight_Attack( const CChar * pCharTarg, bool toldByMaster = false );
 	bool Fight_Clear( const CChar * pCharTarg , bool bForced = false );
 	void Fight_ClearAll();
-	CChar * Fight_FindBestTarget();
 	void Fight_HitTry();
 	WAR_SWING_TYPE Fight_Hit( CChar * pCharTarg );
 	int  Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom = false, bool bGetMax = true ) const;
@@ -4048,6 +4047,7 @@ private:
 	bool NPC_LookAtItem( CItem * pItem, int iDist );
 	bool NPC_LookAround( bool fForceCheckItems = false );
 	int  NPC_WalkToPoint(bool fRun = false);
+	CChar * CChar::NPC_FightFindBestTarget();
 	bool NPC_FightMagery(CChar * pChar);
 	bool NPC_FightCast(CObjBase * &pChar ,CObjBase * pSrc, SPELL_TYPE &spell, SKILL_TYPE skill = SKILL_NONE);
 	bool NPC_FightArchery( CChar * pChar );

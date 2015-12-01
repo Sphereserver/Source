@@ -2751,3 +2751,6 @@ Fixed: Spiderweb (t_web) making chars stay stuck even after the spiderweb get re
 
 28-11-2015
 Fixed: Protection spell not working when COMBAT_ELEMENTAL_ENGINE .ini setting is disabled.
+
+01-12-2015
+Fixed: Players randomly switching to another target on combat.
