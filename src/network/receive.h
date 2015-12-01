@@ -437,7 +437,7 @@ public:
 class PacketCreateKR : public PacketCreate
 {
 public:
-	PacketCreateKR(void);
+	PacketCreateKR();
 	virtual bool onReceive(NetState* net);
 };
 
@@ -1461,6 +1461,6 @@ public:
 class PacketCreateHS : public PacketCreate
 {
 public:
-	PacketCreateHS(void);
+	PacketCreateHS();
 	virtual bool onReceive(NetState* net);
 };

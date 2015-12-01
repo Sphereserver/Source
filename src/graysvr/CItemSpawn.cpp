@@ -253,13 +253,12 @@ void CItemSpawn::AddObj(CGrayUID uid)
 		else if ( !uid.ItemFind() )		// IT_SPAWN_ITEM can only spawn items
 			return;
 
-		CItem *pPrevSpawn = uid.ObjFind()->m_uidSpawnItem.ItemFind();
+		CItemSpawn *pPrevSpawn = static_cast<CItemSpawn*>(uid.ObjFind()->m_uidSpawnItem.ItemFind());
 		if ( pPrevSpawn )
 		{
 			if ( pPrevSpawn == this )		// obj already linked to this spawn
 				return;
-			CItemSpawn *pPrevSpawnItem = static_cast<CItemSpawn*>(pPrevSpawn);
-			pPrevSpawnItem->DelObj(uid);	// obj linked to other spawn, remove the link before proceed
+			pPrevSpawn->DelObj(uid);		// obj linked to other spawn, remove the link before proceed
 		}
 	}
 

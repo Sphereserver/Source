@@ -1514,7 +1514,7 @@ bool PacketCharDelete::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketCreateKR::PacketCreateKR(void) : PacketCreate(0)
+PacketCreateKR::PacketCreateKR() : PacketCreate(0)
 {
 }
 

@@ -4047,7 +4047,7 @@ private:
 	bool NPC_LookAtItem( CItem * pItem, int iDist );
 	bool NPC_LookAround( bool fForceCheckItems = false );
 	int  NPC_WalkToPoint(bool fRun = false);
-	CChar * CChar::NPC_FightFindBestTarget();
+	CChar * NPC_FightFindBestTarget();
 	bool NPC_FightMagery(CChar * pChar);
 	bool NPC_FightCast(CObjBase * &pChar ,CObjBase * pSrc, SPELL_TYPE &spell, SKILL_TYPE skill = SKILL_NONE);
 	bool NPC_FightArchery( CChar * pChar );

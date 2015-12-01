@@ -547,7 +547,7 @@ bool CClient::OnRxPing( const BYTE * pData, size_t iLen )
 				}
 			}
 
-			SysMessage("Login?:\n");
+			SysMessage("Login:\n");
 			return true;
 		}
 
