@@ -476,12 +476,8 @@ void CChar::NPC_PetClearOwners()
 				CItemContainer * pCont = GetBank( sm_VendorLayers[i] );
 				if ( !pCont )
 					continue;
-				CItem *pItemNext, *pItem = pCont->GetContentHead();
-				for ( ; pItem != NULL; pItem = pItemNext )
-				{
-					pItemNext = pItem->GetNext();
+				for ( CItem *pItem = pCont->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 					pBankOwner->ContentAdd(pItem);
-				}
 			}
 		}
 	}

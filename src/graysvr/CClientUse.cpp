@@ -663,11 +663,9 @@ void CClient::Cmd_EditItem( CObjBase * pObj, int iSelect )
 	item[0].m_sText.Format( "Contents of %s", static_cast<LPCTSTR>(pObj->GetName()));
 
 	size_t count = 0;
-	CItem * pItemNext;
-	for ( CItem * pItem = pContainer->GetContentHead(); pItem != NULL; pItem = pItemNext )
+	for ( CItem *pItem = pContainer->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
 		count++;
-		pItemNext = pItem->GetNext();
 		m_tmMenu.m_Item[count] = pItem->GetUID();
 		item[count].m_sText = pItem->GetName();
 		ITEMID_TYPE idi = pItem->GetDispID();

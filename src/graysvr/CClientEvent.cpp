@@ -1702,14 +1702,10 @@ void CClient::Event_Talk_Common(TCHAR * szText) // PC speech
 		if ( pChar == NULL )
 			break;
 
-		if ( pChar->IsStatFlag(STATF_COMM_CRYSTAL))
+		if ( pChar->IsStatFlag(STATF_COMM_CRYSTAL) )
 		{
-			CItem	*pItemNext, *pItem = pChar->GetContentHead();
-			for ( ; pItem != NULL; pItem = pItemNext )
-			{
-				pItemNext = pItem->GetNext();
+			for ( CItem *pItem = pChar->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 				pItem->OnHear(szText, m_pChar);
-			}
 		}
 
 		if ( pChar == m_pChar )

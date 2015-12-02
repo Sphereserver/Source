@@ -2691,8 +2691,7 @@ int CChar::Skill_Hiding( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_START )
 	{
 		// Make sure I'm not carrying a light ?
-		CItem * pItem = GetContentHead();
-		for ( ; pItem; pItem = pItem->GetNext())
+		for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 		{
 			if ( !CItemBase::IsVisibleLayer( pItem->GetEquipLayer()))
 				continue;

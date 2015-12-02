@@ -592,13 +592,10 @@ void CChar::UnEquipAllItems( CItemContainer * pDest, bool bLeaveHands )
 
 	if ( GetCount() <= 0 )
 		return;
-	CItemContainer * pPack = NULL;
+	CItemContainer *pPack = GetPackSafe();
 
-	CItem* pItemNext;
-	CItem* pItem = GetContentHead();
-	for ( ; pItem != NULL; pItem = pItemNext )
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		pItemNext = pItem->GetNext();
 		LAYER_TYPE layer = pItem->GetEquipLayer();
 
 		switch ( layer )
@@ -613,23 +610,21 @@ void CChar::UnEquipAllItems( CItemContainer * pDest, bool bLeaveHands )
 			case LAYER_FLAG_Drunk:
 			case LAYER_FLAG_Stuck:
 			case LAYER_FLAG_PotionUsed:
-				if ( IsStatFlag( STATF_DEAD ))
+				if ( IsStatFlag(STATF_DEAD) )
 					pItem->Delete();
 				continue;
 			case LAYER_PACK:
 			case LAYER_HORSE:
 				continue;
-			case LAYER_HAIR:	// leave this.
+			case LAYER_HAIR:
 			case LAYER_BEARD:
 				// Copy hair and beard to corpse.
-				if ( pDest == NULL )
-					continue;
-				if ( pDest->IsType(IT_CORPSE))
+				if ( pDest && pDest->IsType(IT_CORPSE) )
 				{
-					CItem * pDupe = CItem::CreateDupeItem( pItem );
-					pDest->ContentAdd( pDupe );	// add content
+					CItem *pDupe = CItem::CreateDupeItem(pItem);
+					pDest->ContentAdd(pDupe);
 					// Equip layer only matters on a corpse.
-					pDupe->SetContainedLayer(static_cast<unsigned char>(layer));
+					pDupe->SetContainedLayer(static_cast<BYTE>(layer));
 				}
 				continue;
 			case LAYER_DRAGGING:
@@ -637,30 +632,29 @@ void CChar::UnEquipAllItems( CItemContainer * pDest, bool bLeaveHands )
 				break;
 			case LAYER_HAND1:
 			case LAYER_HAND2:
-				if (bLeaveHands)
+				if ( bLeaveHands )
 					continue;
 				break;
 			default:
 				// can't transfer this to corpse.
-				if ( ! CItemBase::IsVisibleLayer( layer ))
+				if ( !CItemBase::IsVisibleLayer(layer) )
 					continue;
 				break;
 		}
-		if ( pDest != NULL &&
-			! pItem->IsAttr( ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_BLESSED|ATTR_INSURED|ATTR_NODROPTRADE ))
-		{	// Move item to dest. (corpse ussually)
-			pDest->ContentAdd( pItem );
-			if ( pDest->IsType(IT_CORPSE))
+		if ( pDest && !pItem->IsAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_BLESSED|ATTR_INSURED|ATTR_NODROPTRADE) )
+		{
+			// Move item to dest (corpse usually)
+			pDest->ContentAdd(pItem);
+			if ( pDest->IsType(IT_CORPSE) )
 			{
 				// Equip layer only matters on a corpse.
-				pItem->SetContainedLayer(static_cast<unsigned char>(layer));
+				pItem->SetContainedLayer(static_cast<BYTE>(layer));
 			}
 		}
-		else
-		{	// Move item to chars' pack.
-			if ( pPack == NULL )
-				pPack = GetPackSafe();
-			pPack->ContentAdd( pItem );
+		else if ( pPack )
+		{
+			// Move item to char pack.
+			pPack->ContentAdd(pItem);
 		}
 	}
 }
@@ -2759,18 +2753,15 @@ bool CChar::RaiseCorpse( CItemCorpse * pCorpse )
 
 	if ( pCorpse->GetCount() > 0 )
 	{
-		CItemContainer * pPack = GetPackSafe();
-
-		CItem * pItemNext;
-		for ( CItem * pItem = pCorpse->GetContentHead(); pItem != NULL; pItem = pItemNext )
+		CItemContainer *pPack = GetPackSafe();
+		for ( CItem *pItem = pCorpse->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 		{
-			pItemNext = pItem->GetNext();
 			if ( pItem->IsType(IT_HAIR) || pItem->IsType(IT_BEARD) )	// hair on corpse was copied!
 				continue;
 
 			if ( pItem->GetContainedLayer() )
 				ItemEquip(pItem);
-			else
+			else if ( pPack )
 				pPack->ContentAdd(pItem);
 		}
 
@@ -2804,12 +2795,8 @@ bool CChar::Death()
 	}
 
 	// Look through memories of who I was fighting (make sure they knew they where fighting me)
-	CItem * pItemNext;
-	CItem * pItem;
-	for ( pItem = GetContentHead(); pItem; pItem = pItemNext)
+	for ( CItem *pItem = GetContentHead(); pItem; pItem = pItem->GetNext() )
 	{
-		pItemNext = pItem->GetNext();
-
 		if ( pItem->IsType(IT_EQ_TRADE_WINDOW) )
 		{
 			CItemContainer * pCont = dynamic_cast<CItemContainer *>(pItem);
@@ -3933,8 +3920,7 @@ bool CChar::OnTick()
 	if ( iTimeDiff >= TICK_PER_SEC )		// don't bother with < 1 sec timers on the checks below
 	{
 		// Decay equipped items (memories/spells)
-		CItem *pItem = GetContentHead();
-		for ( size_t iCount = 0; pItem != NULL; pItem = GetAt(++iCount) )
+		for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 		{
 			EXC_TRYSUB("Ticking items");
 			/*if ( pItem->IsType(IT_EQ_MEMORY_OBJ) && !pItem->m_uidLink.ObjFind() )		// always check the validity of the memory objects

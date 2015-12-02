@@ -20,19 +20,18 @@ int CContainer::FixWeight()
 	// If there is some sort of ASSERT during item add then this is used to fix it.
 	m_totalweight = 0;
 
-	CItem* pItem=GetContentHead();
-	for ( ; pItem!=NULL; pItem=pItem->GetNext())
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
 		CItemContainer * pCont = dynamic_cast <CItemContainer *> (pItem);
 		if ( pCont )
 		{
 			pCont->FixWeight();
-			if ( ! pCont->IsWeighed())
-				continue;	// Bank box doesn't count for wieght.
+			if ( !pCont->IsWeighed() )	// bank box doesn't count for weight.
+				continue;
 		}
 		m_totalweight += pItem->GetWeight();
 	}
-	return( m_totalweight );
+	return m_totalweight;
 }
 
 void CContainer::ContentAddPrivate( CItem * pItem )
@@ -79,11 +78,9 @@ void CContainer::r_WriteContent( CScript & s ) const
 	ASSERT(dynamic_cast<const CGObList *>(this) != NULL);
 
 	// Write out all the items in me.
-	CItem* pItemNext;
-	for ( CItem* pItem = GetContentHead(); pItem != NULL; pItem = pItemNext)
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		pItemNext = pItem->GetNext();
-		ASSERT( pItem->GetParent() == this );
+		ASSERT(pItem->GetParent() == this);
 		pItem->r_WriteSafe(s);
 	}
 }
@@ -121,12 +118,8 @@ TRIGRET_TYPE CContainer::OnContTriggerForLoop( CScript &s, CTextConsole * pSrc, 
 	ADDTOCALLSTACK("CContainer::OnContTriggerForLoop");
 	if ( rid.GetResIndex() != 0 )
 	{
-		CItem* pItem = GetContentHead();
-		CItem * pItemNext;
-		for ( ; pItem!=NULL; pItem=pItemNext)
+		for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 		{
-			pItemNext = pItem->GetNext();
-			
 			if ( pItem->IsResourceMatch( rid, dwArg ))
 			{
 				s.SeekContext( StartContext );
@@ -178,12 +171,8 @@ TRIGRET_TYPE CContainer::OnContTriggerForLoop( CScript &s, CTextConsole * pSrc, 
 TRIGRET_TYPE CContainer::OnGenericContTriggerForLoop( CScript &s, CTextConsole * pSrc, CScriptTriggerArgs * pArgs, CGString * pResult, CScriptLineContext & StartContext, CScriptLineContext & EndContext, int iDecendLevels )
 {
 	ADDTOCALLSTACK("CContainer::OnGenericContTriggerForLoop");
-	CItem* pItem = GetContentHead();
-	CItem * pItemNext;
-	for ( ; pItem!=NULL; pItem=pItemNext)
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		pItemNext = pItem->GetNext();
-		
 		s.SeekContext( StartContext );
 		TRIGRET_TYPE iRet = pItem->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
 		if ( iRet == TRIGRET_BREAK )
@@ -254,11 +243,8 @@ int CContainer::ContentConsume( RESOURCE_ID_BASE rid, int amount, bool fTest, DW
 	if ( rid.GetResIndex() == 0 )
 		return( amount );	// from skills menus.
 
-	CItem * pItemNext;
-	for ( CItem* pItem=GetContentHead(); pItem!=NULL; pItem=pItemNext)
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		pItemNext = pItem->GetNext();
-
 		if ( pItem->IsResourceMatch( rid, dwArg ))
 		{
 			amount -= pItem->ConsumeAmount( amount, fTest );
@@ -323,17 +309,14 @@ void CContainer::ContentNotifyDelete()
 		return;
 
 	// trigger @Destroy on contained items
-	CItem *pItemNext = NULL;
-	for (CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext)
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		pItemNext = pItem->GetNext();
-
-		if ( pItem->NotifyDelete() == false )
+		if ( !pItem->NotifyDelete() )
 		{
 			// item shouldn't be destroyed and so cannot remain in this container,
 			// drop it to the ground if it hasn't been moved already
-			if (pItem->GetParent() == this)
-				pItem->MoveToCheck( pItem->GetTopLevelObj()->GetTopPoint() );
+			if ( pItem->GetParent() == this )
+				pItem->MoveToCheck(pItem->GetTopLevelObj()->GetTopPoint());
 		}
 	}
 }
@@ -343,14 +326,12 @@ void CContainer::ContentsDump( const CPointMap & pt, DWORD dwAttrLeave )
 	ADDTOCALLSTACK("CContainer::ContentsDump");
 	// Just dump the contents onto the ground.
 	dwAttrLeave |= ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_CURSED2|ATTR_BLESSED2;
-	CItem * pItemNext;
-	for ( CItem* pItem=GetContentHead(); pItem!=NULL; pItem=pItemNext)
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		pItemNext = pItem->GetNext();
-		if ( pItem->IsAttr(dwAttrLeave))
-			continue;	// hair and newbie stuff.
+		if ( pItem->IsAttr(dwAttrLeave) )	// hair and newbie stuff.
+			continue;
 		// ??? scatter a little ?
-		pItem->MoveToCheck( pt );
+		pItem->MoveToCheck(pt);
 	}
 }
 
@@ -361,13 +342,11 @@ void CContainer::ContentsTransfer( CItemContainer * pCont, bool fNoNewbie )
 	if ( pCont == NULL )
 		return;
 
-	CItem* pItemNext;
-	for ( CItem* pItem=GetContentHead(); pItem!=NULL; pItem=pItemNext)
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		pItemNext = pItem->GetNext();
-		if ( fNoNewbie && pItem->IsAttr( ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_CURSED2|ATTR_BLESSED2 ))	// keep newbie stuff.
+		if ( fNoNewbie && pItem->IsAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_CURSED2|ATTR_BLESSED2) )	// keep newbie stuff.
 			continue;
-		pCont->ContentAdd( pItem );	// add content
+		pCont->ContentAdd(pItem);	// add content
 	}
 }
 
@@ -666,55 +645,36 @@ void CItemContainer::Trade_Status( bool bCheck )
 	if ( pPartner->m_itEqTradeWindow.m_bCheck == 0 || m_itEqTradeWindow.m_bCheck == 0 )
 		return;
 
-	CItem *pItem, *pItemNext;
-	int iCont1, iCont2;
-	unsigned short i;
-
 	CScriptTriggerArgs Args1(pChar1);
-	pItem = pPartner->GetContentHead();
-	for ( i = 1; pItem != NULL; pItem = pItemNext, ++i )
+	unsigned short i = 1;
+	for ( CItem *pItem = pPartner->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		pItemNext = pItem->GetNext();
 		Args1.m_VarObjs.Insert(i, pItem, true);
+		i++;
 	}
-
-	Args1.m_iN1 = iCont1 = --i;
-	pItemNext = NULL;
+	Args1.m_iN1 = --i;
 
 	CScriptTriggerArgs Args2(pChar2);
-	pItem = GetContentHead();
-	for ( i = 1; pItem != NULL; pItem = pItemNext, ++i )
+	i = 1;
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		pItemNext = pItem->GetNext();
 		Args2.m_VarObjs.Insert(i, pItem, true);
+		i++;
 	}
+	Args2.m_iN1 = --i;
 
-	Args2.m_iN1 = iCont2 = --i;
-	pItemNext = NULL;
-
-	if ( (IsTrigUsed(TRIGGER_TRADEACCEPTED)) || (IsTrigUsed(TRIGGER_CHARTRADEACCEPTED)) )
+	if ( IsTrigUsed(TRIGGER_TRADEACCEPTED) || IsTrigUsed(TRIGGER_CHARTRADEACCEPTED) )
 	{
-		Args1.m_iN2 = iCont2;
-		Args2.m_iN2 = iCont1;
 		if ( (pChar1->OnTrigger(CTRIG_TradeAccepted, pChar2, &Args1) == TRIGRET_RET_TRUE) || (pChar2->OnTrigger(CTRIG_TradeAccepted, pChar1, &Args2) == TRIGRET_RET_TRUE) )
 			Delete();
 	}
 
 	// Transfer items
-	pItem = GetContentHead();
-	for ( ; pItem != NULL; pItem = pItemNext )
-	{
-		pItemNext = pItem->GetNext();
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 		pChar2->ItemBounce(pItem);
-	}
 
-	pItemNext = NULL;
-	pItem = pPartner->GetContentHead();	
-	for ( ; pItem != NULL; pItem = pItemNext )
-	{
-		pItemNext = pItem->GetNext();
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 		pChar1->ItemBounce(pItem);
-	}
 
 	// Transfer gold/platinum
 	if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD )
@@ -821,13 +781,9 @@ void CItemContainer::Trade_Delete()
 	}
 	
 	// Drop items back in my pack.
-	CItem * pItemNext;
-	for ( CItem* pItem = GetContentHead(); pItem!=NULL; pItem=pItemNext)
-	{
-		pItemNext = pItem->GetNext();
-		pChar->ItemBounce( pItem );
-	}
-	
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+		pChar->ItemBounce(pItem);
+
 	// Kill my trading partner.
 	CItemContainer * pPartner = dynamic_cast <CItemContainer *> ( m_uidLink.ItemFind());
 	if ( pPartner == NULL )
@@ -998,10 +954,8 @@ void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt, unsigned char grid
 		// Try to stack it.
 		if ( ! g_Serv.IsLoading() && pItem->Item_GetDef()->IsStackableType())
 		{
-			CItem * pItemNext;
-			for ( CItem* pTry=GetContentHead(); pTry!=NULL; pTry=pItemNext)
+			for ( CItem *pTry = GetContentHead(); pTry != NULL; pTry = pTry->GetNext() )
 			{
-				pItemNext = pTry->GetNext();
 				pt = pTry->GetContainedPoint();
 				if ( pItem->Stack( pTry ))
 				{
@@ -1014,18 +968,14 @@ void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt, unsigned char grid
 			pt = GetRandContainerLoc();
 	}
 
+	// check that the grid index isn't already in use
 	bool bValidGrid = true;
-	{	
-		// check that the grid index isn't already in use
-		CItem * pItemNext;
-		for ( CItem * pTry = GetContentHead(); pTry != NULL; pTry = pItemNext )
+	for ( CItem *pTry = GetContentHead(); pTry != NULL; pTry = pTry->GetNext() )
+	{
+		if ( pTry->GetContainedGridIndex() == gridIndex )
 		{
-			pItemNext = pTry->GetNext();
-			if ( pTry->GetContainedGridIndex() == gridIndex )
-			{
-				bValidGrid = false;
-				break;
-			}
+			bValidGrid = false;
+			break;
 		}
 	}
 
@@ -1036,11 +986,8 @@ void CItemContainer::ContentAdd( CItem * pItem, CPointMap pt, unsigned char grid
 		for ( gridIndex = 0; (gridIndex < 255 && !bValidGrid); gridIndex++ )
 		{
 			bValidGrid = true;
-
-			CItem * pItemNext;
-			for ( CItem * pTry = GetContentHead(); pTry != NULL; pTry = pItemNext )
+			for ( CItem *pTry = GetContentHead(); pTry != NULL; pTry = pTry->GetNext() )
 			{
-				pItemNext = pTry->GetNext();
 				if ( pTry->GetContainedGridIndex() == gridIndex )
 				{
 					bValidGrid = false;
@@ -1399,14 +1346,11 @@ void CItemContainer::Restock()
 			case LAYER_VENDOR_STOCK:
 				// Magic restock the vendors container.
 				{
-					CItem* pItemNext;
-					CItem* pItem = GetContentHead();
-					for ( ; pItem!=NULL; pItem=pItemNext)
+					for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 					{
-						pItemNext = pItem->GetNext();
-						CItemVendable * pVendItem = dynamic_cast <CItemVendable *> (pItem);
-						if ( pVendItem != NULL )
-							pVendItem->Restock( true );
+						CItemVendable *pVendItem = dynamic_cast<CItemVendable *>(pItem);
+						if ( pVendItem )
+							pVendItem->Restock(true);
 					}
 				}
 				break;
@@ -1420,12 +1364,11 @@ void CItemContainer::Restock()
 			case LAYER_VENDOR_BUYS:
 				{
 					// Reset what we will buy from players.
-					CItem* pItem= GetContentHead();
-					for ( ; pItem!=NULL; pItem = pItem->GetNext())
+					for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 					{
-						CItemVendable * pVendItem = dynamic_cast <CItemVendable *> (pItem);
-						if ( pVendItem != NULL )
-							pVendItem->Restock( false );
+						CItemVendable *pVendItem = dynamic_cast<CItemVendable *>(pItem);
+						if ( pVendItem )
+							pVendItem->Restock(false);
 					}
 				}
 				break;

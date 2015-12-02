@@ -274,10 +274,9 @@ bool CChar::NPC_StablePetSelect( CChar * pCharPlayer )
 	if ( m_TagDefs.GetKey("MAXPLAYERPETS") )
 		iPetMax = static_cast<int>(m_TagDefs.GetKeyNum("MAXPLAYERPETS"));
 
-	CItem* pItem = pBank->GetContentHead();
-	for ( ; pItem != NULL ; pItem = pItem->GetNext())
+	for ( CItem *pItem = pBank->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		if ( pItem->IsType( IT_FIGURINE ) && pItem->m_uidLink == pCharPlayer->GetUID())
+		if ( pItem->IsType(IT_FIGURINE) && pItem->m_uidLink == pCharPlayer->GetUID() )
 			iCount++;
 	}
 	if ( iCount >= iPetMax )
@@ -297,46 +296,29 @@ bool CChar::NPC_StablePetRetrieve( CChar * pCharPlayer )
 	// Get pets for this person from my inventory.
 	// May want to put up a menu ???
 
-	if ( m_pNPC == NULL )
-		return( false );
-	if ( m_pNPC->m_Brain != NPCBRAIN_STABLE )
-		return( false );
+	if ( !m_pNPC || m_pNPC->m_Brain != NPCBRAIN_STABLE )
+		return false;
 
 	int iCount = 0;
-	CItem* pItem = GetBank()->GetContentHead();
-	while ( pItem != NULL )
+	for ( CItem *pItem = GetBank()->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		CItem * pItemNext = pItem->GetNext();
-		if ( pItem->IsType( IT_FIGURINE ) && pItem->m_uidLink == pCharPlayer->GetUID())
+		if ( pItem->IsType(IT_FIGURINE) && pItem->m_uidLink == pCharPlayer->GetUID() )
 		{
 			if ( !pCharPlayer->Use_Figurine(pItem) )
 			{
-				iCount = -1;
-				break;
+				TCHAR *pszTemp = Str_GetTemp();
+				sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_NPC_STABLEMASTER_CLAIM_FOLLOWER), pItem->GetName());
+				Speak(pszTemp);
+				return true;
 			}
 
 			pItem->Delete();
 			iCount++;
 		}
-		pItem = pItemNext;
 	}
 
-	if ( iCount == -1 )
-	{
-		TCHAR *pszTemp = Str_GetTemp();
-		sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_CLAIM_FOLLOWER ), pItem->GetName());
-		Speak( pszTemp );
-	}
-	else if ( iCount == 0 )
-	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_CLAIM_NOPETS ) );
-	}
-	else
-	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_CLAIM ) );
-	}
-
-	return( true );
+	Speak(g_Cfg.GetDefaultMsg((iCount > 0) ? DEFMSG_NPC_STABLEMASTER_CLAIM : DEFMSG_NPC_STABLEMASTER_CLAIM_NOPETS));
+	return true;
 }
 
 void CChar::NPC_ActStart_SpeakTo( CChar * pSrc )
@@ -1793,8 +1775,7 @@ bool CChar::NPC_GetAllSpellbookSpells()	// Retrieves a spellbook from the magic 
 {
 	ADDTOCALLSTACK("CChar::GetSpellbook");
 	//	search for suitable book in hands first
-	CItem * pBook = GetContentHead();
-	for (; pBook != NULL; pBook = pBook->GetNext())
+	for ( CItem *pBook = GetContentHead(); pBook != NULL; pBook = pBook->GetNext() )
 	{
 		if (pBook->IsTypeSpellbook())
 		{
@@ -1807,8 +1788,7 @@ bool CChar::NPC_GetAllSpellbookSpells()	// Retrieves a spellbook from the magic 
 	CItemContainer *pPack = GetPack();
 	if (pPack)
 	{
-		pBook = pPack->GetContentHead();
-		for (; pBook != NULL; pBook = pBook->GetNext())
+		for ( CItem *pBook = pPack->GetContentHead(); pBook != NULL; pBook = pBook->GetNext() )
 		{
 			if (pBook->IsTypeSpellbook())
 			{

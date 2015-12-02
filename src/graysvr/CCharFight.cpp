@@ -941,12 +941,9 @@ CItemMemory * CChar::Memory_CreateObj( CGrayUID uid, WORD MemTypes )
 void CChar::Memory_ClearTypes( WORD MemTypes )
 {
 	ADDTOCALLSTACK("CChar::Memory_ClearTypes");
-	CItem* pItemNext;
-	CItem* pItem=GetContentHead();
-	for ( ; pItem!=NULL; pItem=pItemNext)
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		pItemNext = pItem->GetNext();
-		if ( ! pItem->IsMemoryTypes(MemTypes))
+		if ( !pItem->IsMemoryTypes(MemTypes) )
 			continue;
 		CItemMemory * pMemory = dynamic_cast <CItemMemory *>(pItem);
 		if ( pMemory == NULL )
@@ -959,8 +956,7 @@ void CChar::Memory_ClearTypes( WORD MemTypes )
 CItemMemory * CChar::Memory_FindObj( CGrayUID uid ) const
 {
 	ADDTOCALLSTACK("CChar::Memory_FindObj");
-	CItem* pItem=GetContentHead();
-	for ( ; pItem!=NULL; pItem=pItem->GetNext())
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
 		if ( ! pItem->IsType(IT_EQ_MEMORY_OBJ))
 			continue;
@@ -976,10 +972,9 @@ CItemMemory * CChar::Memory_FindObj( CGrayUID uid ) const
 CItemMemory * CChar::Memory_FindTypes( WORD MemTypes ) const
 {
 	ADDTOCALLSTACK("CChar::Memory_FindTypes");
-	if ( ! MemTypes )
-		return( NULL );
-	CItem* pItem=GetContentHead();
-	for ( ; pItem!=NULL; pItem=pItem->GetNext())
+	if ( !MemTypes )
+		return NULL;
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
 		if ( ! pItem->IsMemoryTypes(MemTypes))
 			continue;
@@ -997,14 +992,9 @@ TRIGRET_TYPE CChar::OnCharTrigForMemTypeLoop( CScript &s, CTextConsole * pSrc, C
 
 	if ( wMemType )
 	{
-		CItem * pItem = GetContentHead();
-		CItem * pItemNext;
-
-		for ( ; pItem!=NULL; pItem=pItemNext)
+		for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 		{
-			pItemNext = pItem->GetNext();
-
-			if ( ! pItem->IsMemoryTypes(wMemType))
+			if ( !pItem->IsMemoryTypes(wMemType) )
 				continue;
 			TRIGRET_TYPE iRet = pItem->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
 			if ( iRet == TRIGRET_BREAK )

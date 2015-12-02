@@ -193,8 +193,7 @@ void CImportFile::ImportFix()
 		}
 
 		// Is it a dupe in the container or equipped ?
-		CItem * pItem = dynamic_cast <CContainer*>(pObjCont)->GetContentHead();
-		for ( ; pItem != NULL; pItem = pItem->GetNext())
+		for ( CItem *pItem = dynamic_cast<CContainer*>(pObjCont)->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 		{
 			if ( pItemTest == pItem )
 				continue;

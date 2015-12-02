@@ -332,12 +332,10 @@ void CChar::ClientDetach()
 	ADDTOCALLSTACK("CChar::ClientDetach");
 	
 	// remove all trade windows.
-	for ( CItem *pItem = GetContentHead(); pItem ; )
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		CItem	*pItemNext = pItem->GetNext();
 		if ( pItem->IsType(IT_EQ_TRADE_WINDOW) )
 			pItem->Delete();
-		pItem = pItemNext;
 	}
 	if ( !IsClient() )
 		return;
@@ -862,23 +860,21 @@ bool CChar::DupeFrom( CChar * pChar, bool fNewbieItems )
 			pItem->SetAttr(ATTR_NEWBIE);
 			if (pItem->IsType(IT_CONTAINER) )
 			{
-				CItem* pItemNext;
-				for ( CItem* cItem = static_cast<CItemContainer*>(pItem)->GetContentHead() ; cItem != NULL; cItem = pItemNext )
+				for ( CItem *pItemCont = static_cast<CItemContainer*>(pItem)->GetContentHead(); pItemCont != NULL; pItemCont = pItemCont->GetNext() )
 				{
-					pItemNext = cItem->GetNext();
-					cItem->SetAttr(ATTR_NEWBIE);
+					pItemCont->SetAttr(ATTR_NEWBIE);
 
-					CChar * pTest = static_cast<CChar*>(static_cast<CGrayUID>(cItem->m_itNormal.m_more1).CharFind());
-					if ( pTest && pTest == pChar)
-						cItem->m_itNormal.m_more1 = this->GetUID();
+					CChar *pTest = static_cast<CChar*>(static_cast<CGrayUID>(pItemCont->m_itNormal.m_more1).CharFind());
+					if ( pTest && pTest == pChar )
+						pItemCont->m_itNormal.m_more1 = this->GetUID();
 
-					CChar * pTest2 = static_cast<CChar*>(static_cast<CGrayUID>(cItem->m_itNormal.m_more2).CharFind());
-					if ( pTest2 && pTest2 == pChar)
-						cItem->m_itNormal.m_more2 = this->GetUID();
+					CChar *pTest2 = static_cast<CChar*>(static_cast<CGrayUID>(pItemCont->m_itNormal.m_more2).CharFind());
+					if ( pTest2 && pTest2 == pChar )
+						pItemCont->m_itNormal.m_more2 = this->GetUID();
 
-					CChar * pTest3 = static_cast<CChar*>(static_cast<CGrayUID>(cItem->m_uidLink).CharFind());
-					if ( pTest3 && pTest3 == pChar)
-						cItem->m_uidLink = this->GetUID();
+					CChar *pTest3 = static_cast<CChar*>(static_cast<CGrayUID>(pItemCont->m_uidLink).CharFind());
+					if ( pTest3 && pTest3 == pChar )
+						pItemCont->m_uidLink = this->GetUID();
 				}
 			}
 		}

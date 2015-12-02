@@ -2334,12 +2334,11 @@ void CClient::addCustomSpellbookOpen( CItem * pBook, DWORD gumpID )
 {
 	ADDTOCALLSTACK("CClient::addCustomSpellbookOpen");
 	const CItemContainer * pContainer = dynamic_cast <CItemContainer *> (pBook);
-	CItem	* pItem;
 	if ( !pContainer )
 		return;
 
 	int count=0;
-	for ( pItem=pContainer->GetContentHead(); pItem!=NULL; pItem=pItem->GetNext() )
+	for ( CItem *pItem = pContainer->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
 		if ( !pItem->IsType( IT_SCROLL ) )
 			continue;

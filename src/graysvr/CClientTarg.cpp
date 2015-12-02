@@ -153,15 +153,13 @@ bool CClient::Cmd_Control( CChar * pChar2 )
 	CChar * pChar1 = m_pChar;
 
 	// Put my newbie equipped items on it.
-	CItem* pItemNext;
-	for ( CItem* pItem=pChar1->GetContentHead(); pItem!=NULL; pItem=pItemNext )
+	for ( CItem *pItem = pChar1->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		pItemNext = pItem->GetNext();
-		if ( ! pItem->IsAttr(ATTR_MOVE_NEVER))
+		if ( !pItem->IsAttr(ATTR_MOVE_NEVER) )
 			continue; // keep GM stuff.
-		if ( ! CItemBase::IsVisibleLayer( pItem->GetEquipLayer()))
+		if ( !CItemBase::IsVisibleLayer(pItem->GetEquipLayer()) )
 			continue;
-		switch ( pItem->GetEquipLayer())
+		switch ( pItem->GetEquipLayer() )
 		{
 			case LAYER_BEARD:
 			case LAYER_HAIR:
@@ -171,20 +169,19 @@ bool CClient::Cmd_Control( CChar * pChar2 )
 			default:
 				break;
 		}
-		pChar2->LayerAdd( pItem );	// add content
+		pChar2->LayerAdd(pItem);	// add content
 	}
 
 	// Put my GM pack stuff in it's inventory.
-	CItemContainer * pPack1 = pChar1->GetPack();
-	if ( pPack1 != NULL )
+	CItemContainer *pPack1 = pChar1->GetPack();
+	CItemContainer *pPack2 = pChar2->GetPackSafe();
+	if ( pPack1 && pPack2 )
 	{
-		CItemContainer * pPack2 = pChar2->GetPackSafe();
-		for ( CItem* pItem=pPack1->GetContentHead(); pItem!=NULL; pItem=pItemNext )
+		for ( CItem *pItem = pPack1->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 		{
-			pItemNext = pItem->GetNext();
-			if ( ! pItem->IsAttr(ATTR_MOVE_NEVER))
-				continue; // keep newbie stuff.
-			pPack2->ContentAdd( pItem );	// add content
+			if ( !pItem->IsAttr(ATTR_MOVE_NEVER) )	// keep newbie stuff.
+				continue;
+			pPack2->ContentAdd(pItem);	// add content
 		}
 	}
 
