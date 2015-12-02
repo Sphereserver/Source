@@ -663,9 +663,11 @@ void CClient::Cmd_EditItem( CObjBase * pObj, int iSelect )
 	item[0].m_sText.Format( "Contents of %s", static_cast<LPCTSTR>(pObj->GetName()));
 
 	size_t count = 0;
-	for ( CItem *pItem = pContainer->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	CItem * pItemNext;
+	for ( CItem * pItem = pContainer->GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
 		count++;
+		pItemNext = pItem->GetNext();
 		m_tmMenu.m_Item[count] = pItem->GetUID();
 		item[count].m_sText = pItem->GetName();
 		ITEMID_TYPE idi = pItem->GetDispID();
@@ -1147,6 +1149,7 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase * pSrc )
 	return( true );
 }
 
+
 bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )
 {
 	ADDTOCALLSTACK("CClient::Cmd_Skill_Tracking");
@@ -1173,9 +1176,12 @@ bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )
 		item[4].m_id = ITEMID_TRACK_WOMAN;
 		item[4].m_color = 0;
 		item[4].m_sText = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_SKILLMENU_PLAYERS );
+		item[5].m_id = ITEMID_TRACK_WISP;
+		item[5].m_color = 0;
+		item[5].m_sText = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_SKILLMENU_ALL );
 
 		m_tmMenu.m_Item[0] = 0;
-		addItemMenu( CLIMODE_MENU_SKILL_TRACK_SETUP, item, 4 );
+		addItemMenu( CLIMODE_MENU_SKILL_TRACK_SETUP, item, 5 );
 		return( true );
 	}
 
@@ -1191,13 +1197,16 @@ bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )
 			return true;
 		}
 
+		bool fGM = IsPriv(PRIV_GM);
+
 		static const NPCBRAIN_TYPE sm_Track_Brain[] =
 		{
 			NPCBRAIN_QTY,	// not used here.
 			NPCBRAIN_ANIMAL,
 			NPCBRAIN_MONSTER,
 			NPCBRAIN_HUMAN,
-			NPCBRAIN_NONE	// players
+			NPCBRAIN_NONE,	// players
+			NPCBRAIN_QTY,	// anything.
 		};
 
 		if ( track_sel >= COUNTOF(sm_Track_Brain))
@@ -1210,7 +1219,7 @@ bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )
 		item[0].m_sText = g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_SKILLMENU_TITLE );
 		m_tmMenu.m_Item[0] = track_sel;
 
-		CWorldSearch AreaChars( m_pChar->GetTopPoint(), m_pChar->Skill_GetBase(SKILL_TRACKING)/10 + 10 );
+		CWorldSearch AreaChars( m_pChar->GetTopPoint(), m_pChar->Skill_GetBase(SKILL_TRACKING)/20 + 10 );
 		for (;;)
 		{
 			CChar * pChar = AreaChars.GetChar();
@@ -1224,39 +1233,25 @@ bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )
 
 			CCharBase * pCharDef = pChar->Char_GetDef();
 			NPCBRAIN_TYPE basic_type = pChar->GetNPCBrain();
-			if ( basic_type == NPCBRAIN_DRAGON )
-				basic_type = NPCBRAIN_MONSTER;
 			if ( track_type != basic_type && track_type != NPCBRAIN_QTY )
 			{
 				if ( track_type != NPCBRAIN_NONE )		// no match.
+				{
 					continue;
-				if ( pChar->IsStatFlag( STATF_DEAD ))	// can't track ghosts
-					continue;
+				}
+
+				// players
 				if ( ! pChar->m_pPlayer )
 					continue;
-
-				// Check action difficulty when trying to track players
-				int tracking = m_pChar->Skill_GetBase( SKILL_TRACKING );
-				int detectHidden = m_pChar->Skill_GetBase( SKILL_DETECTINGHIDDEN );
-				if ( g_Cfg.m_iFeatureML & FEATURE_ML_RACIAL_BONUS && pChar->IsElf() )
-					tracking /= 2;			// elves are more difficult to track (Difficult to Track racial trait)
-
-				int hiding = pChar->Skill_GetBase( SKILL_HIDING );
-				int stealth = pChar->Skill_GetBase( SKILL_STEALTH );
-				int divisor = maximum(hiding + stealth, 1);
-
-				int chance;
-				if ( g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE )
-					chance = 50 * (tracking * 2 + detectHidden) / divisor;
-				else
-					chance = 50 * (tracking + detectHidden + 10 * Calc_GetRandVal(20) ) / divisor;
-
-				if ( Calc_GetRandVal(100) > chance )
+				if ( ! fGM && basic_type != NPCBRAIN_HUMAN )	// can't track polymorphed person.
 					continue;
 			}
 
+			if ( ! fGM && ! pCharDef->Can( CAN_C_WALK ))	// never moves or just swims.
+				continue;
+
 			count ++;
-			item[count].m_id = static_cast<WORD>(pCharDef->m_trackID);
+			item[count].m_id = pCharDef->m_trackID;
 			item[count].m_color = 0;
 			item[count].m_sText = pChar->GetName();
 			m_tmMenu.m_Item[count] = pChar->GetUID();
@@ -1264,10 +1259,10 @@ bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )
 				break;
 		}
 
-		// Some credit for trying.
 		if ( count > 0 )
 		{
-			m_pChar->Skill_UseQuick( SKILL_TRACKING, 20 + Calc_GetRandLLVal( 30 ));
+			// Some credit for trying.
+			m_pChar->Skill_UseQuick( SKILL_TRACKING, 20 + Calc_GetRandVal( 30 ));
 
 			ASSERT(count < COUNTOF(item));
 			addItemMenu( CLIMODE_MENU_SKILL_TRACK, item, count );
@@ -1275,18 +1270,21 @@ bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )
 		}
 		else
 		{
-			m_pChar->Skill_UseQuick( SKILL_TRACKING, 10 + Calc_GetRandLLVal( 30 ));
+			// Some credit for trying.
+			m_pChar->Skill_UseQuick( SKILL_TRACKING, 10 + Calc_GetRandVal( 30 ));
 		}
 	}
 
-	// Tracking failed or was cancelled.
+	// Tracking failed or was cancelled .
+
 	static LPCTSTR const sm_Track_FailMsg[] =
 	{
 		g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_CANCEL ),
 		g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_FAIL_ANIMAL ),
 		g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_FAIL_MONSTER ),
 		g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_FAIL_HUMAN ),
-		g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_FAIL_HUMAN )
+		g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_FAIL_HUMAN ),
+		g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_FAIL )
 	};
 
 	if (track_sel >= COUNTOF(sm_Track_FailMsg))
