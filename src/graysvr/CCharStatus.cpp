@@ -619,7 +619,7 @@ BYTE CChar::GetLightLevel() const
 
 	if ( IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_NightSight) || IsPriv(PRIV_DEBUG) )
 		return LIGHT_BRIGHT;
-	if ( g_Cfg.m_iFeatureML & FEATURE_ML_RACIAL_BONUS && IsElf() )		// elves always have nightsight enabled (Night Sight racial trait)
+	if ( (g_Cfg.m_iFeatureML & FEATURE_ML_RACIAL_BONUS) && IsElf() )		// elves always have nightsight enabled (Night Sight racial trait)
 		return LIGHT_BRIGHT;
 	return GetTopSector()->GetLight();
 }

@@ -17,7 +17,7 @@ int CResource::Calc_MaxCarryWeight( const CChar * pChar ) const
 	signed int iQty = 40 + ( pChar->Stat_GetAdjusted(STAT_STR) * 35 / 10 ) + pChar->m_ModMaxWeight;
 	if ( iQty < 0 )
 		iQty = 0;
-	if ( m_iFeatureML & FEATURE_ML_RACIAL_BONUS && pChar->IsHuman())
+	if ( (m_iFeatureML & FEATURE_ML_RACIAL_BONUS) && pChar->IsHuman())
 		iQty += 60;		//Humans can always carry +60 stones (Strong Back racial trait)
 	return( iQty * WEIGHT_UNITS );
 }
