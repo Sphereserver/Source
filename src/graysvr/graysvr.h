@@ -1527,7 +1527,6 @@ public:
 	void SysMessage( LPCTSTR pMsg ) const; // System message (In lower left corner)
 	bool CanSee( const CObjBaseTemplate * pObj ) const;
 	bool CanHear( const CObjBaseTemplate * pSrc, TALKMODE_TYPE mode ) const;
-	bool IsSkillVisible( SKILL_TYPE skill );
 
 	bool Dialog_Setup( CLIMODE_TYPE mode, RESOURCE_ID_BASE rid, int iPage, CObjBase * pObj, LPCTSTR Arguments = "" );
 	bool Dialog_Close( CObjBase * pObj, DWORD rid, int buttonID );

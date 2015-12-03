@@ -2749,8 +2749,11 @@ Changed: Now instead char spawns (t_spawn_char) block the char creation when it 
 Fixed: Buffs not reloading correct remaining timer on client login.
 Fixed: Spiderweb (t_web) making chars stay stuck even after the spiderweb get removed.
 
-28-11-2015
+28-11-2015, Coruja
 Fixed: Protection spell not working when COMBAT_ELEMENTAL_ENGINE .ini setting is disabled.
 
-01-12-2015
+01-12-2015, Coruja
 Fixed: Players randomly switching to another target on combat.
+
+03-12-2015, Coruja
+[Sphere.ini]: Removed InitHiddenSkills setting. Now player characters are created with base values set on all skills set instead set only on skills that the player client version can see.

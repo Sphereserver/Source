@@ -1301,13 +1301,8 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 	// randomize the skills first.
 	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
-		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
-			continue;
-
-		if (( !g_Cfg.m_fInitHiddenSkills ) && !pClient->IsSkillVisible(static_cast<SKILL_TYPE>(i)))
-			continue;
-
-		Skill_SetBase(static_cast<SKILL_TYPE>(i), Calc_GetRandVal( g_Cfg.m_iMaxBaseSkill));
+		if ( g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
+			Skill_SetBase(static_cast<SKILL_TYPE>(i), Calc_GetRandVal(g_Cfg.m_iMaxBaseSkill));
 	}
 
 	if ( wStr > 60 )		wStr = 60;

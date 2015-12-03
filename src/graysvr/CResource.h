@@ -799,7 +799,6 @@ public:
 	int  m_iHitpointPercentOnRez;	// How many hitpoints do they get when they are rez'd?
 	int  m_iHitsHungerLoss;		// How many % of HP will loose char on starving
 	int  m_iMaxBaseSkill;		// Maximum value for base skills at char creation
-	bool m_fInitHiddenSkills;	// Hidden skills will be initialised at char creation
 	int	 m_iTrainSkillCost;
 	int	 m_iTrainSkillMax;
 	int  m_iTrainSkillPercent;	// How much can NPC's train up to ?
