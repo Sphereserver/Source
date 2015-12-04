@@ -17,7 +17,7 @@ int CResource::Calc_MaxCarryWeight( const CChar * pChar ) const
 	signed int iQty = 40 + ( pChar->Stat_GetAdjusted(STAT_STR) * 35 / 10 ) + pChar->m_ModMaxWeight;
 	if ( iQty < 0 )
 		iQty = 0;
-	if ( (m_iFeatureML & FEATURE_ML_RACIAL_BONUS) && pChar->IsHuman())
+	if ( (m_iRacialFlags & RACIALF_HUMAN_STRONGBACK) && pChar->IsHuman())
 		iQty += 60;		//Humans can always carry +60 stones (Strong Back racial trait)
 	return( iQty * WEIGHT_UNITS );
 }
@@ -128,7 +128,7 @@ int CResource::Calc_CombatChanceToHit( CChar * pChar, CChar * pCharTarg, SKILL_T
 
 	int iAttackerSkill = pChar->Skill_GetBase(skill);
 	int iAttackerHitChance = static_cast<int>(pChar->GetDefNum("INCREASEHITCHANCE", true));
-	if ( (g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS) && pChar->IsGargoyle() )
+	if ( (g_Cfg.m_iRacialFlags & RACIALF_GARG_DEADLYAIM) && pChar->IsGargoyle() )
 	{
 		// Racial traits: Deadly Aim. Gargoyles always have +5 Hit Chance Increase and a minimum of 20.0 Throwing skill (not shown in skills gump)
 		if ( skill == SKILL_THROWING && iAttackerSkill < 200 )

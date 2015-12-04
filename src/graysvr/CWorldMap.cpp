@@ -117,10 +117,13 @@ CItem * CWorld::CheckNaturalResource( const CPointMap & pt, IT_TYPE Type, bool f
 
 	// Total amount of ore here.
 	int amount = pOreDef->m_Amount.GetRandom();
-	if ( (Type == IT_ROCK) && (g_Cfg.m_iFeatureML & FEATURE_ML_RACIAL_BONUS) && pCharSrc->IsHuman() && pCharSrc->GetTopMap() == 0 )
-		amount += 1;	// Workhorse racial bonus, giving +1 ore to humans in Felucca.
-	if ( (Type == IT_TREE) && (g_Cfg.m_iFeatureML & FEATURE_ML_RACIAL_BONUS) && pCharSrc->IsHuman() && pCharSrc->GetTopMap() == 1 )
-		amount += 2;	// Workhorse racial bonus, giving +2 logs to humans in Trammel.
+	if ( (g_Cfg.m_iRacialFlags & RACIALF_HUMAN_WORKHORSE) && pCharSrc->IsHuman() )
+	{
+		if ( (Type == IT_ROCK) && (pCharSrc->GetTopMap() == 0) )
+			amount += 1;	// Workhorse racial bonus, giving +1 ore to humans in Felucca.
+		else if ( (Type == IT_TREE) && (pCharSrc->GetTopMap() == 1) )
+			amount += 2;	// Workhorse racial bonus, giving +2 logs to humans in Trammel.
+	}
 	pResBit->SetAmount( amount );
 	pResBit->MoveToDecay(pt, pOreDef->m_iRegenerateTime.GetRandom() * TICK_PER_SEC);	// Delete myself in this amount of time.
 

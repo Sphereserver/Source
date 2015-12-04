@@ -90,6 +90,21 @@ enum REVEALFLAGS_TYPE
 	REVEALF_SPELLCAST			= 0x010			///* Reveal when starting to cast a Spell.
 };
 
+enum RACIALFLAGS_TYPE
+{
+	RACIALF_HUMAN_STRONGBACK	= 0x0001,		// Increase carrying capacity (+60 stones of weight)
+	RACIALF_HUMAN_TOUGH			= 0x0002,		// Regenerate hitpoints faster (+2 Hit Point Regeneration)
+	RACIALF_HUMAN_WORKHORSE		= 0x0004,		// Find more resources while gathering hides, ore and lumber
+	RACIALF_HUMAN_JACKOFTRADES	= 0x0008,		// Skill calculations always consider 20.0 minimum ability on untrained skills
+	RACIALF_ELF_NIGHTSIGHT		= 0x0010,		// Permanent night sight effect
+	RACIALF_ELF_DIFFTRACK		= 0x0020,		// Increase difficulty to be tracked while hidden/invisible
+	RACIALF_ELF_WISDOM			= 0x0040,		// Permanent max mana bonus (+20 Mana Increase)
+	RACIALF_GARG_FLY			= 0x0080,		// Enable gargoyle fly ability (FEATURE_AOS_UPDATE_B is required to enable gargoyle ability book)
+	RACIALF_GARG_BERSERK		= 0x0100,		// Increase ferocity in situations of danger (15% Damage Increase + 3% Spell Damage Increase for each 20hp lost)
+	RACIALF_GARG_DEADLYAIM		= 0x0200,		// Throwing calculations always consider 20.0 minimum ability when untrained
+	RACIALF_GARG_MYSTICINSIGHT	= 0x0400		// Mysticism calculations always consider 30.0 minimum ability when untrained
+};
+
 enum COMBATFLAGS_TYPE
 {
 	COMBAT_NODIRCHANGE			= 0x0000001,	// not rotate player when fighting
@@ -817,6 +832,7 @@ public:
 	// Flags for controlling pvp/pvm behaviour of players
 	int  m_iCombatFlags;		// combat flags
 	int  m_iMagicFlags;			// magic flags
+	int  m_iRacialFlags;		// racial traits flags
 	int  m_iRevealFlags;		///* reveal flags used for SPELL_REVEAL (mostly for backwards).
 
 	// Criminal/Karma

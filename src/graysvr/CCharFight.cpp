@@ -2347,7 +2347,7 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 		int iDmgBonus = minimum(static_cast<int>(GetDefNum("INCREASEDAM", true, true)), 100);		// Damage Increase is capped at 100%
 
 		// Racial Bonus (Berserk), gargoyles gains +15% Damage Increase per each 20 HP lost
-		if ((g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS) && IsGargoyle())
+		if ((g_Cfg.m_iRacialFlags & RACIALF_GARG_BERSERK) && IsGargoyle())
 			iDmgBonus += minimum(15 * ((Stat_GetMax(STAT_STR) - Stat_GetVal(STAT_STR)) / 20), 60);		// value is capped at 60%
 
 		// Horrific Beast (necro spell) add +25% Damage Increase

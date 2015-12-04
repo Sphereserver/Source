@@ -2757,3 +2757,8 @@ Fixed: Players randomly switching to another target on combat.
 
 03-12-2015, Coruja
 [Sphere.ini]: Removed InitHiddenSkills setting. Now player characters are created with base values set on all skills set instead set only on skills that the player client version can see.
+
+04-12-2015, Coruja
+[Sphere.ini]:
+	-Added new RacialFlags setting to tweak human/elf/gargoyle racial traits individually.
+	-Removed FEATURE_ML_RACIAL_BONUS and FEATURE_SA_RACIAL_BONUS settings (they got moved to RacialFlags).

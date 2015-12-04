@@ -178,7 +178,7 @@ int CChar::Stat_GetMax( STAT_TYPE i ) const
 
 		if ( i == STAT_INT )
 		{
-			if ( (g_Cfg.m_iFeatureML & FEATURE_ML_RACIAL_BONUS) && IsElf() )
+			if ( (g_Cfg.m_iRacialFlags & RACIALF_ELF_WISDOM) && IsElf() )
 				val += 20;		// elves always have +20 max mana (Wisdom racial trait)
 		}
 		return (val < 0 ? (m_pPlayer ? 1 : 0) : val);
@@ -797,7 +797,7 @@ bool CChar::Stats_Regen(INT64 iTimeDiff)
 			iRate = 0;
 
 		int mod = Stats_GetRegenVal(i,false);
-		if ((i == STAT_STR) && (g_Cfg.m_iFeatureML & FEATURE_ML_RACIAL_BONUS) && IsHuman())
+		if ((i == STAT_STR) && (g_Cfg.m_iRacialFlags & RACIALF_HUMAN_TOUGH) && IsHuman())
 			mod += 2;		// Humans always have +2 hitpoint regeneration (Tough racial trait)
 
 		m_Stat[i].m_regen += static_cast<unsigned short>(iTimeDiff);
@@ -1704,7 +1704,7 @@ int CChar::Skill_Tracking( SKTRIG_TYPE stage )
 			return( -SKTRIG_ABORT );
 
 		int iSkillLevel = Skill_GetAdjusted(SKILL_TRACKING);
-		if ( (g_Cfg.m_iFeatureML & FEATURE_ML_RACIAL_BONUS) && IsHuman() )
+		if ( (g_Cfg.m_iRacialFlags & RACIALF_HUMAN_JACKOFTRADES) && IsHuman() )
 			iSkillLevel = maximum( iSkillLevel, 200 );			// humans always have a 20.0 minimum skill (racial traits)
 
 		if ( !Skill_Tracking( m_Act_Targ, m_atTracking.m_PrvDir, iSkillLevel/10 + 10 ))

@@ -128,6 +128,7 @@ CResource::CResource()
 	m_iCombatSpeedEra	= 2;	// default = 4 = SE
 	m_iMagicFlags		= 0;
 	m_iMaxPolyStats		= 150;
+	m_iRacialFlags		= 0;
 	m_iRevealFlags		= (REVEALF_DETECTINGHIDDEN|REVEALF_LOOTINGSELF|REVEALF_LOOTINGOTHERS|REVEALF_SPEAK|REVEALF_SPELLCAST);
 
 	m_fNoResRobe		= 0;
@@ -528,6 +529,7 @@ enum RC_TYPE
 	RC_PLAYEREVIL,				// m_iPlayerKarmaEvil
 	RC_PLAYERNEUTRAL,			// m_iPlayerKarmaNeutral
 	RC_PROFILE,
+	RC_RACIALFLAGS,				// m_iRacialFlags
 	RC_REAGENTLOSSFAIL,			// m_fReagentLossFail
 	RC_REAGENTSREQUIRED,
 	RC_REVEALFLAGS,				// m_iRevealFlags
@@ -756,6 +758,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "PLAYEREVIL",				{ ELEM_INT,		OFFSETOF(CResource,m_iPlayerKarmaEvil),		0 }},
 	{ "PLAYERNEUTRAL",			{ ELEM_INT,		OFFSETOF(CResource,m_iPlayerKarmaNeutral),	0 }},
 	{ "PROFILE",				{ ELEM_VOID,	0,											0 }},
+	{ "RACIALFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iRacialFlags),			0 }},
 	{ "REAGENTLOSSFAIL",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fReagentLossFail),		0 }},
 	{ "REAGENTSREQUIRED",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fReagentsRequired),	0 }},
 	{ "REVEALFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iRevealFlags),			0 }},

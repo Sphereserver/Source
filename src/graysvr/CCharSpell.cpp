@@ -2404,7 +2404,7 @@ bool CChar::Spell_CastDone()
 		iSkillLevel = Skill_GetAdjusted(static_cast<SKILL_TYPE>(iSkill));
 	}
 
-	if ( iSkill == SKILL_MYSTICISM  && iSkillLevel < 300 && IsGargoyle() && (g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS) )
+	if ( (iSkill == SKILL_MYSTICISM) && (g_Cfg.m_iRacialFlags & RACIALF_GARG_MYSTICINSIGHT) && (iSkillLevel < 300) && IsGargoyle() )
 		iSkillLevel = 300;	// Racial trait (Mystic Insight). Gargoyles always have a minimum of 30.0 Mysticism.
 
 	CScriptTriggerArgs	Args(spell, iSkillLevel, pObjSrc);
@@ -3216,7 +3216,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				DamageBonus += pCharSrc->Skill_GetBase(SKILL_INSCRIPTION) / 100;
 
 				// Racial Bonus (Berserk), gargoyles gains +3% Spell Damage Increase per each 20 HP lost
-				if ( (g_Cfg.m_iFeatureSA & FEATURE_SA_RACIAL_BONUS) && IsGargoyle() )
+				if ( (g_Cfg.m_iRacialFlags & RACIALF_GARG_BERSERK) && IsGargoyle() )
 					DamageBonus += minimum(3 * ((Stat_GetMax(STAT_STR) - Stat_GetVal(STAT_STR)) / 20), 12);		// value is capped at 12%
 
 				iDmg += iDmg * DamageBonus / 100;
