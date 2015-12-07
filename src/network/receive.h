@@ -48,9 +48,6 @@ class PacketMovementReq : public Packet
 public:
 	PacketMovementReq(size_t size = 7);
 	virtual bool onReceive(NetState* net);
-
-protected:
-	void doMovement(NetState* net, BYTE direction, BYTE sequence, DWORD crypt, INT64 iTime1 = 0, INT64 iTime2 = 0);
 };
 
 /***************************************************************************
@@ -1414,7 +1411,7 @@ public:
  *
  *
  ***************************************************************************/
-class PacketMovementReqNew : public PacketMovementReq
+class PacketMovementReqNew : public Packet
 {
 public:
 	PacketMovementReqNew();

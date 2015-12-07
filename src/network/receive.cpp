@@ -224,58 +224,40 @@ bool PacketMovementReq::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketMovementReq::onReceive");
 
-	BYTE direction = readByte();
-	BYTE sequence = readByte();
-	DWORD crypt = readInt32(); // fast walk key
-
-	doMovement(net, direction, sequence, crypt);
-	return true;
-}
-
-void PacketMovementReq::doMovement(NetState* net, BYTE direction, BYTE sequence, DWORD crypt, INT64 iTime1, INT64 iTime2)
-{
-	ADDTOCALLSTACK("PacketMovementReq::doMovement");
-
-	CClient* client = net->getClient();
+	CClient *client = net->getClient();
 	ASSERT(client);
 
-	TRIGRET_TYPE canMoveThere(TRIGRET_RET_TRUE);
+	BYTE direction = readByte();
+	BYTE sequence = readByte();
 
-	// check crypt key
-	if ((g_Cfg.m_wDebugFlags & DEBUGF_WALKCODES) && net->isClientVersion(MINCLIVER_CHECKWALKCODE) && (crypt != 0))
-		canMoveThere = client->Event_WalkingCheck(crypt)? TRIGRET_RET_TRUE : TRIGRET_RET_FALSE;
+	bool bCanMove = true;
+	if ( net->m_sequence == 0 && sequence != 0 )
+		bCanMove = false;
 
-	//Check Timing
-	UNREFERENCED_PARAMETER(iTime1);	//Remove these unreferenced parameters when enabling again the following iTiming code
-	UNREFERENCED_PARAMETER(iTime2);
-	/*if (iTime1 && iTime2) // Not working properly!
+	if ( bCanMove && IsSetEF(EF_FastWalkPrevention) && net->isClientVersion(MINCLIVER_CHECKWALKCODE) )
 	{
-		bool fRun = ( direction & 0x80 ) == 0x80;
-		INT64 iTiming = iTime2 - iTime1;
-		if ( (fRun && (iTiming > 200)) || (!fRun && (iTiming > 300)) )
-			canMoveThere = TRIGRET_RET_FALSE;
+		DWORD crypt = readInt32();
+		if ( !client->Event_CheckFastwalkKey(crypt) )
+			bCanMove = false;
 	}
 
-	// check sequence	// Not working properly!
-	if (canMoveThere == TRIGRET_RET_TRUE && sequence != net->m_sequence)
-		canMoveThere = net->m_sequence == 0? TRIGRET_RET_DEFAULT : TRIGRET_RET_FALSE;*/
+	if ( bCanMove )
+		bCanMove = client->Event_CheckWalk(direction, sequence);
 
-	// perform movement
-	if (canMoveThere == TRIGRET_RET_TRUE)
-		canMoveThere = client->Event_Walking(direction);
+	if ( bCanMove )
+	{
+		if ( ++sequence == UCHAR_MAX )
+			sequence = 1;
 
-	if (canMoveThere == TRIGRET_RET_FALSE)
+		new PacketMovementAck(client);
+		net->m_sequence = sequence;
+	}
+	else
 	{
 		new PacketMovementRej(client, sequence);
 		net->m_sequence = 0;
 	}
-	else if (canMoveThere == TRIGRET_RET_TRUE)
-	{
-		if (++sequence == UCHAR_MAX)
-			sequence = 1;
-
-		net->m_sequence = sequence;
-	}
+	return true;
 }
 
 
@@ -4267,7 +4249,7 @@ bool PacketUnEquipItemMacro::onReceive(NetState* net)
  *
  *
  ***************************************************************************/
-PacketMovementReqNew::PacketMovementReqNew() : PacketMovementReq(0)
+PacketMovementReqNew::PacketMovementReqNew() : Packet(0)
 {
 }
 
@@ -4279,29 +4261,49 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 	// does some useless weird stuff. Also classic clients using Injection 2014 will
 	// strangely send this packet to server when the player press the 'Chat' button,
 	// so it's better leave this packet disabled to prevent some exploits.
-	
-	/*if (!net->isClientSA())		// Disabling this means disabling walking in newer classic clients, DO NOT DISABLE the packet
-		return false;*/
+
+	CClient *client = net->getClient();
+	ASSERT(client);
 
 	skip(2);
+	bool bCanMove = true;
 	BYTE steps = readByte();
-	bool bUsingChat = false;
-	if (net->getClient()->GetChar()->IsTriggerActive("UserChatButton"))	// so a check is added here to avoid injection forcing movement packets when user chat button
-	{
-		bUsingChat = true;
-		steps = 0;
-	}
-	INT64 iTime1 = readInt64();
-	INT64 iTime2 = readInt64(); //these should be used for speed control somehow... (in micro-seconds)
 	while (steps)
 	{
+		INT64 iTime1 = readInt64();
+		INT64 iTime2 = readInt64();
 		BYTE sequence = readByte();
 		BYTE direction = readByte();
-		DWORD mode = readInt32();
+		DWORD mode = readInt32();	// 1 = walk, 2 = run
 		if (mode == 2)
 			direction |= 0x80;
 
-		doMovement(net, direction, sequence, 0, iTime1, iTime2);
+		if ( IsSetEF(EF_FastWalkPrevention) )
+		{
+			bool fRun = (mode == 2);
+			INT64 iTimeDiff = iTime2 - iTime1;
+			if ( (fRun && (iTimeDiff > 200)) || (!fRun && (iTimeDiff > 300)) )
+				bCanMove = false;
+		}
+
+		// The client send these values, but they're not really needed
+		//DWORD x = readInt32();
+		//DWORD y = readInt32();
+		//DWORD z = readInt32();
+
+		if ( bCanMove )
+			bCanMove = client->Event_CheckWalk(direction);
+
+		if ( bCanMove )
+		{
+			new PacketMovementAck(client);
+		}
+		else
+		{
+			new PacketMovementRej(client, sequence);
+			return false;
+		}
+
 		steps--;
 	}
 	return true;

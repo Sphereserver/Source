@@ -906,7 +906,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 	StatFlag_Mod(STATF_Fly, fRun);
 
 	EXC_SET("Old Top Point");
-	CPointMap pold = GetTopPoint();
+	CPointMap ptOld = GetTopPoint();
 
 	EXC_SET("Reveal");
 	CheckRevealOnMove();
@@ -914,11 +914,15 @@ int CChar::NPC_WalkToPoint( bool fRun )
 	EXC_SET("MoveToChar");
 	MoveToChar(pMe);
 
-	EXC_SET("Move Update");
-	UpdateMove(pold);
-
 	EXC_SET("Check Location");
-	CheckLocation(false);	// Look for teleports etc.
+	if ( !CheckLocation(false) )	// Look for teleports etc.
+	{
+		SetTopPoint(ptOld);		// we already moved, so move back to previous location
+		return 2;
+	}
+
+	EXC_SET("Move Update");
+	UpdateMove(ptOld);
 
 	EXC_SET("Speed counting");
 	// How fast can they move.

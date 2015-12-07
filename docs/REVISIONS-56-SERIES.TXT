@@ -2762,3 +2762,7 @@ Fixed: Players randomly switching to another target on combat.
 [Sphere.ini]:
 	-Added new RacialFlags setting to tweak human/elf/gargoyle racial traits individually.
 	-Removed FEATURE_ML_RACIAL_BONUS and FEATURE_SA_RACIAL_BONUS settings (they got moved to RacialFlags).
+
+06-12-2015, Coruja
+Changed: Improved walk packets on classic/enhanced clients.
+[Sphere.ini]: Moved DEBUGF_WALKCODES to new EF_FastWalkPrevention experimental setting (also improved, but still incomplete yet).

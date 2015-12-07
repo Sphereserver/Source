@@ -3151,7 +3151,7 @@ void CChar::CheckRevealOnMove()
 // We are at this location. What will happen?
 // This function is called at every second on ALL chars
 // (even walking or not), so avoid heavy codes here.
-// RETURN: true = we teleported.
+// RETURN: false = we can't move there.
 bool CChar::CheckLocation( bool fStanding )
 {
 	ADDTOCALLSTACK("CChar::CheckLocation");
@@ -3291,7 +3291,7 @@ bool CChar::CheckLocation( bool fStanding )
 
 	const CTeleport *pTeleport = pSector->GetTeleport(pt);
 	if ( !pTeleport )
-		return false;
+		return true;
 
 	if ( m_pNPC )
 	{

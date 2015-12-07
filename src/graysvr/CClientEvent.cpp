@@ -670,9 +670,79 @@ void CClient::Event_Skill_Use( SKILL_TYPE skill ) // Skill is clicked on the ski
 
 
 
-bool CClient::Event_WalkingCheck(DWORD dwEcho)
+bool CClient::Event_CheckWalkBuffer()
 {
-	ADDTOCALLSTACK("CClient::Event_WalkingCheck");
+	ADDTOCALLSTACK("CClient::Event_CheckWalkBuffer");
+	// Check if the client is trying to walk too fast.
+	// Direction changes don't count.
+
+	if ( !g_Cfg.m_iWalkBuffer )
+		return true;
+	if ( (m_iWalkStepCount % 7) != 0 )	// only check when we have taken 8 steps
+		return true;
+
+	// Client only allows 4 steps of walk ahead.
+	LONGLONG CurrTime = static_cast<LONGLONG>(GetTickCount());
+	int iTimeDiff = static_cast<int>((CurrTime - m_timeWalkStep) / 10);
+	int iTimeMin = m_pChar->IsStatFlag(STATF_OnHorse|STATF_Hovering) ? 70 : 140; // minimum time to move 8 steps
+
+	if ( m_pChar->m_pPlayer && m_pChar->m_pPlayer->m_speedMode != 0 )
+	{
+		// Speed Modes:
+		// 0 = Foot=Normal, Mount=Normal                         140 -  70
+		// 1 = Foot=Double Speed, Mount=Normal                    70 -  70    = 70
+		// 2 = Foot=Always Walk, Mount=Always Walk (Half Speed)  280 - 140    = x2
+		// 3 = Foot=Always Run, Mount=Always Walk                140 - 140    = 70|x2 (1|2)
+		// 4 = No Movement                                       N/A - N/A    = (handled by OnFreezeCheck)
+
+		if ( m_pChar->m_pPlayer->m_speedMode & 0x01 )
+			iTimeMin = 70;
+		if ( m_pChar->m_pPlayer->m_speedMode & 0x02 )
+			iTimeMin *= 2;
+	}
+
+	if ( iTimeDiff > iTimeMin )
+	{
+		int	iRegen = ((iTimeDiff - iTimeMin) * g_Cfg.m_iWalkRegen) / 150;
+		if ( iRegen > g_Cfg.m_iWalkBuffer )
+			iRegen = g_Cfg.m_iWalkBuffer;
+		else if ( iRegen < -((g_Cfg.m_iWalkBuffer * g_Cfg.m_iWalkRegen) / 100) )
+			iRegen = -((g_Cfg.m_iWalkBuffer * g_Cfg.m_iWalkRegen) / 100);
+		iTimeDiff = iTimeMin + iRegen;
+	}
+
+	m_iWalkTimeAvg += iTimeDiff;
+	int	oldAvg = m_iWalkTimeAvg;
+	m_iWalkTimeAvg -= iTimeMin;
+
+	if ( m_iWalkTimeAvg > g_Cfg.m_iWalkBuffer )
+		m_iWalkTimeAvg = g_Cfg.m_iWalkBuffer;
+	else if ( m_iWalkTimeAvg < -g_Cfg.m_iWalkBuffer )
+		m_iWalkTimeAvg = -g_Cfg.m_iWalkBuffer;
+
+	if ( IsPriv(PRIV_DETAIL) && IsPriv(PRIV_DEBUG) )
+		SysMessagef("Walkcheck trace: %i / %i (%i) :: %i", iTimeDiff, iTimeMin, oldAvg, m_iWalkTimeAvg);
+
+	if ( m_iWalkTimeAvg < 0 && iTimeDiff >= 0 )	// TICK_PER_SEC
+	{
+		// Walking too fast.
+		DEBUG_WARN(("%s (%lx): Fast Walk ?\n", GetName(), GetSocketID()));
+		if ( IsTrigUsed(TRIGGER_USEREXWALKLIMIT) )
+		{
+			if ( m_pChar->OnTrigger(CTRIG_UserExWalkLimit, m_pChar) != TRIGRET_RET_TRUE )
+				return false;
+		}
+	}
+
+	m_timeWalkStep = CurrTime;
+	return true;
+}
+
+
+
+bool CClient::Event_CheckFastwalkKey( DWORD dwEcho )
+{
+	ADDTOCALLSTACK("CClient::Event_CheckFastwalkKey");
 	// look for the walk code, and remove it
 	// Client will send 0's if we have not given it any EXTDATA_WalkCode_Prime message.
 	// The client will use codes in order.
@@ -684,11 +754,11 @@ bool CClient::Event_WalkingCheck(DWORD dwEcho)
 
 	// If the LIFO stack has not been sent, send them out now
 	if ( m_Walk_CodeQty == UINT_MAX )
-		addWalkCode(EXTDATA_WalkCode_Prime, COUNTOF(m_Walk_LIFO));
+		addFastwalkKey(EXTDATA_WalkCode_Prime, COUNTOF(m_Walk_LIFO));
 
 	// Keep track of echo'd 0's and invalid non 0's
 	// (you can get 1 to 4 of these legitimately when you first start walking)
-	ASSERT( m_Walk_CodeQty != UINT_MAX );
+	ASSERT(m_Walk_CodeQty != UINT_MAX);
 
 	for ( unsigned int i = 0; i < m_Walk_CodeQty; i++ )
 	{
@@ -696,11 +766,11 @@ bool CClient::Event_WalkingCheck(DWORD dwEcho)
 		{
 			// Move next to the head.
 			i++;
-			memmove( m_Walk_LIFO, m_Walk_LIFO + i, (m_Walk_CodeQty-i)*sizeof(DWORD));
+			memmove(m_Walk_LIFO, m_Walk_LIFO + i, (m_Walk_CodeQty - i) * sizeof(DWORD));
 			m_Walk_CodeQty -= i;
-			// Set this to uint_max so we know later if we've gotten at least 1 valid echo
-			m_Walk_InvalidEchos = UINT_MAX;
-			return( true );
+			m_Walk_InvalidEchos = UINT_MAX;		// set this to UINT_MAX so we know later if we've gotten at least 1 valid echo
+			addFastwalkKey(EXTDATA_WalkCode_Add, 1);
+			return true;
 		}
 	}
 
@@ -708,18 +778,18 @@ bool CClient::Event_WalkingCheck(DWORD dwEcho)
 	{
 		// If we're here, we got at least one valid echo....therefore
 		// we should never get another one
-		DEBUG_ERR(( "%lx: Invalid walk echo (0%lx). Invalid after valid.\n", GetSocketID(), dwEcho ));
+		DEBUG_ERR(("%lx: Invalid walk echo (0%lx). Invalid after valid.\n", GetSocketID(), dwEcho));
 		return false;
 	}
 
 	// Increment # of invalids received. This is allowed at startup.
 	// These "should" always be 0's
-	if ( ++ m_Walk_InvalidEchos >= COUNTOF(m_Walk_LIFO))
+	if ( ++m_Walk_InvalidEchos >= COUNTOF(m_Walk_LIFO) )
 	{
 		// The most I ever got was 2 of these, but I've seen 4
 		// a couple of times on a real server...we might have to
 		// increase this # if it becomes a problem (but I doubt that)
-		DEBUG_ERR(( "%lx: Invalid walk echo. Too many initial invalid.\n", GetSocketID()));
+		DEBUG_ERR(("%lx: Invalid walk echo. Too many initial invalid.\n", GetSocketID()));
 		return false;
 	}
 
@@ -729,144 +799,75 @@ bool CClient::Event_WalkingCheck(DWORD dwEcho)
 
 
 
-TRIGRET_TYPE CClient::Event_Walking( BYTE rawdir ) // Player moves
+bool CClient::Event_CheckWalk( BYTE rawdir, BYTE sequence ) // Player moves
 {
-	ADDTOCALLSTACK("CClient::Event_Walking");
+	ADDTOCALLSTACK("CClient::Event_CheckWalk");
 	// XCMD_WalkRequest
 	// Return:
-	//  TRIGRET_RET_TRUE    = The walking was allowed
-	//  TRIGRET_RET_FALSE   = The walking was rejected
-	//  TRIGRET_RET_DEFAULT = A teleporter was used (walking is accepted without ack)
+	//  true    = walking was allowed
+	//  false   = walking was rejected
 
 	// The theory....
 	// The client sometimes echos 1 or 2 zeros or invalid echos when you first start
 	//	walking (the invalid non zeros happen when you log off and don't exit the
 	//	client.exe all the way and then log back in, XXX doesn't clear the stack)
 
-	if ( m_pChar == NULL )
-		return TRIGRET_RET_FALSE;
+	if ( !m_pChar )
+		return false;
 
 	m_timeLastEventWalk = CServTime::GetCurrentTime();
 
-	bool fRun = ( rawdir & 0x80 ) == 0x80; // or flying ?
-	m_pChar->StatFlag_Mod( STATF_Fly, fRun );
-
 	DIR_TYPE dir = static_cast<DIR_TYPE>(rawdir & 0x0F);
 	if ( dir >= DIR_QTY )
-		return TRIGRET_RET_FALSE;
+		return false;
+
+	bool fRun = (rawdir & 0x80);	// or flying
+	m_pChar->StatFlag_Mod(STATF_Fly, fRun);
 
 	CPointMap pt = m_pChar->GetTopPoint();
-	CPointMap ptold = pt;
+	CPointMap ptOld = pt;
+	pt.Move(dir);
 
 	if ( dir == m_pChar->m_dirFace )
 	{
 		// Move in this dir.
-		LONGLONG CurrTime = GetTickCount();
-		m_iWalkStepCount++;
-		if ( ( m_iWalkStepCount % 7 ) == 0 )	// we have taken 8 steps ? direction changes don't count. (why we do this check also for gm?) <-- GM checks are on for the debug line only, maybe?
-		{
-			// Client only allows 4 steps of walk ahead.
-			if ( g_Cfg.m_iWalkBuffer > 0 )
-			{
-				int iTimeDiff = static_cast<int>((CurrTime - m_timeWalkStep)/10);
-				int iTimeMin = m_pChar->IsStatFlag( STATF_OnHorse|STATF_Hovering )? 70 : 140; // minimum time to move 8 steps
-
-				if (m_pChar->m_pPlayer != NULL && m_pChar->m_pPlayer->m_speedMode != 0)
-				{
-					// Speed Modes:
-					// 0 = Foot=Normal, Mount=Normal                         140 -  70
-					// 1 = Foot=Double Speed, Mount=Normal                    70 -  70    = 70
-					// 2 = Foot=Always Walk, Mount=Always Walk (Half Speed)  280 - 140    = x2
-					// 3 = Foot=Always Run, Mount=Always Walk                140 - 140    = 70|x2 (1|2)
-					// 4 = No Movement                                       N/A - N/A    = (handled by OnFreezeCheck)
-
-					if (m_pChar->m_pPlayer->m_speedMode & 0x01)
-						iTimeMin = 70;
-					if (m_pChar->m_pPlayer->m_speedMode & 0x02)
-						iTimeMin *= 2;
-				}
-
-				if ( iTimeDiff > iTimeMin )
-				{
-					int	iRegen = ((iTimeDiff - iTimeMin) * g_Cfg.m_iWalkRegen) / 150;
-					if ( iRegen > g_Cfg.m_iWalkBuffer )
-						iRegen = g_Cfg.m_iWalkBuffer;
-					else if ( iRegen < -((g_Cfg.m_iWalkBuffer * g_Cfg.m_iWalkRegen) / 100) )
-						iRegen = -((g_Cfg.m_iWalkBuffer * g_Cfg.m_iWalkRegen) / 100);
-					iTimeDiff = iTimeMin + iRegen;
-				}
-
-				m_iWalkTimeAvg += iTimeDiff;
-				int	oldAvg = m_iWalkTimeAvg;
-				m_iWalkTimeAvg -= iTimeMin;
-
-				if ( m_iWalkTimeAvg > g_Cfg.m_iWalkBuffer )
-					m_iWalkTimeAvg = g_Cfg.m_iWalkBuffer;
-				else if ( m_iWalkTimeAvg < -g_Cfg.m_iWalkBuffer )
-					m_iWalkTimeAvg = -g_Cfg.m_iWalkBuffer;
-
-				if ( IsPriv( PRIV_DETAIL ) && IsPriv( PRIV_DEBUG ) )
-					SysMessagef( "Walkcheck trace: %i / %i (%i) :: %i", iTimeDiff, iTimeMin, oldAvg, m_iWalkTimeAvg );
-
-				if ( m_iWalkTimeAvg < 0 && iTimeDiff >= 0 && !IsPriv(PRIV_GM) )	// TICK_PER_SEC
-				{
-					// walking too fast.
-					DEBUG_WARN(("%s (%lx): Fast Walk ?\n", GetName(), GetSocketID()));
-
-					TRIGRET_TYPE iAction = TRIGRET_RET_DEFAULT;
-					if ( IsTrigUsed(TRIGGER_USEREXWALKLIMIT) )
-						iAction = m_pChar->OnTrigger( CTRIG_UserExWalkLimit, m_pChar, NULL );
-
-					m_iWalkStepCount--; // eval again next time !
-					if ( iAction != TRIGRET_RET_TRUE )
-						return TRIGRET_RET_FALSE;
-				}
-			}
-			m_timeWalkStep = CurrTime;
-		}	// nth step
-
-		pt.Move(dir);
-
-		// Before moving, check if we were indoors
-		bool fRoof = m_pChar->IsStatFlag( STATF_InDoors );
+		if ( !Event_CheckWalkBuffer() )
+			return false;
 
 		// Check the z height here.
 		// The client already knows this but doesn't tell us.
 		if ( !m_pChar->CanMoveWalkTo(pt, true, false, dir) )
+			return false;
+
+		bool fRoof = m_pChar->IsStatFlag(STATF_InDoors);
+		if ( !m_pChar->MoveToChar(pt) )
+			return false;
+
+		// Did i step on a telepad, trap, etc ?
+		if ( !m_pChar->CheckLocation(false) )
 		{
-			m_iWalkStepCount--;
-			return TRIGRET_RET_FALSE;
+			m_pChar->SetTopPoint(ptOld);	// we already moved, so move back to previous location
+			return false;
 		}
 
 		// Are we invis ?
 		m_pChar->CheckRevealOnMove();
 
-		if (!m_pChar->MoveToChar( pt ))
-		{
-			m_iWalkStepCount--;
-			return TRIGRET_RET_FALSE;
-		}
+		// Update weather if we are no longer indoors
+		if ( fRoof && !m_pChar->IsStatFlag(STATF_InDoors) )
+			addWeather(WEATHER_DEFAULT);
 
-		// Now we've moved, are we now or no longer indoors and need to update weather?
-		if ( fRoof != m_pChar->IsStatFlag( STATF_InDoors ))
-			addWeather( WEATHER_DEFAULT );
-
-		// Did i step on a telepad, trap, etc ?
-		if ( m_pChar->CheckLocation())
-			return TRIGRET_RET_DEFAULT;
-
-		new PacketMovementAck( this );		// Ack the move. ( if this does not go back we get rubber banding )
-		m_pChar->UpdateMove( ptold, this );	// Who now sees me ?
-		addPlayerSee( ptold );				// What new stuff do I now see ?
+		m_pChar->UpdateMove(ptOld, this);	// Who now sees me ?
+		addPlayerSee(ptOld);				// What new stuff do I now see ?
+		m_iWalkStepCount++;					// Increase step count to use on walk buffer checks
 	}
 	else
 	{
 		// Just a change in dir.
-		new PacketMovementAck( this );		// Ack the move. ( if this does not go back we get rubber banding )
 		m_pChar->m_dirFace = dir;
-		m_pChar->UpdateMove( ptold, this );	// Who now sees me ?
+		m_pChar->UpdateMove(ptOld, this);	// Who now sees me ?
 	}
-	return TRIGRET_RET_TRUE;
+	return true;
 }
 
 

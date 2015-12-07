@@ -52,6 +52,7 @@ enum EF_TYPE
 	EF_Dynamic_Backsave				= 0x0000002,
 	EF_ItemStacking					= 0x0000004,
 	EF_ItemStackDrop				= 0x0000008,
+	EF_FastWalkPrevention			= 0x0000010,
 	EF_Intrinsic_Locals				= 0x0000020,
 	EF_Item_Strict_Comparison		= 0x0000040,
 	EF_AllowTelnetPacketFilter		= 0x0000200,
@@ -732,7 +733,6 @@ public:
 	int  m_iFreezeRestartTime;	// # seconds before restarting.
 #define DEBUGF_NPC_EMOTE		0x0001
 #define DEBUGF_ADVANCE_STATS	0x0002
-#define DEBUGF_WALKCODES		0x0080	// try the new walk code checking stuff.
 #define DEBUGF_EXP				0x0200	// experience gain/loss
 #define DEBUGF_LEVEL			0x0400	// experience level changes
 #define	DEBUGF_SCRIPTS			0x0800	// debug flags for scripts

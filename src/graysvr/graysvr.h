@@ -1195,8 +1195,9 @@ public:
 	void Event_VendorBuy_Cheater( int iCode = 0 );
 	void Event_VendorSell(CChar* pVendor, const VendorItem* items, size_t itemCount);
 	void Event_VendorSell_Cheater( int iCode = 0 );
-	TRIGRET_TYPE Event_Walking( BYTE rawdir ); // Player moves
-	bool Event_WalkingCheck(DWORD dwEcho);
+	bool Event_CheckWalk( BYTE rawdir, BYTE sequence = 0 ); // Player moves
+	bool Event_CheckWalkBuffer();
+	bool Event_CheckFastwalkKey( DWORD dwEcho );
 	
 	TRIGRET_TYPE Menu_OnSelect( RESOURCE_ID_BASE rid, int iSelect, CObjBase * pObj );
 	TRIGRET_TYPE Dialog_OnButton( RESOURCE_ID_BASE rid, DWORD dwButtonID, CObjBase * pObj, CDialogResponseArgs * pArgs );
@@ -1399,7 +1400,7 @@ public:
 	void addLoginComplete();
 	void addChatSystemMessage(CHATMSG_TYPE iType, LPCTSTR pszName1 = NULL, LPCTSTR pszName2 = NULL, CLanguageID lang = 0 );
 
-	bool addWalkCode( EXTDATA_TYPE iType, size_t iQty );
+	bool addFastwalkKey( EXTDATA_TYPE iType, size_t iQty );
 
 	void addCharPaperdoll( CChar * pChar );
 
