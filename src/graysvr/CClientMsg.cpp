@@ -521,21 +521,14 @@ void CClient::addWeather( WEATHER_TYPE weather ) // Send new weather to player
 	if ( g_Cfg.m_fNoWeather )
 		return;
 
-	if ( m_pChar->IsStatFlag( STATF_InDoors ))
-	{
-		// If there is a roof over our head at the moment then stop rain.
-		weather = WEATHER_DRY;
-	}
-	else if ( weather == WEATHER_DEFAULT )
-	{
+	if ( weather == WEATHER_DEFAULT )
 		weather = m_pChar->GetTopSector()->GetWeather();
-	}
 
 	if ( weather == m_Env.m_Weather )
 		return;
 
 	m_Env.m_Weather = weather;
-	new PacketWeather(this, weather, 0x40, 0x10);
+	new PacketWeather(this, weather, Calc_GetRandVal2(10, 70), 0x10);
 }
 
 void CClient::addLight()

@@ -799,10 +799,11 @@ bool CClient::Event_CheckFastwalkKey( DWORD dwEcho )
 
 
 
-bool CClient::Event_CheckWalk( BYTE rawdir, BYTE sequence ) // Player moves
+bool CClient::Event_Walk( BYTE rawdir, BYTE sequence ) // Player moves
 {
-	ADDTOCALLSTACK("CClient::Event_CheckWalk");
-	// XCMD_WalkRequest
+	ADDTOCALLSTACK("CClient::Event_Walk");
+	// The client is sending a walk request to server, so the server must check
+	// if the movement is possible and reply with another allow/reject packet
 	// Return:
 	//  true    = walking was allowed
 	//  false   = walking was rejected
@@ -832,31 +833,40 @@ bool CClient::Event_CheckWalk( BYTE rawdir, BYTE sequence ) // Player moves
 	{
 		// Move in this dir.
 		if ( !Event_CheckWalkBuffer() )
+		{
+			new PacketMovementRej(this, sequence);
 			return false;
+		}
 
 		// Check the z height here.
 		// The client already knows this but doesn't tell us.
 		if ( !m_pChar->CanMoveWalkTo(pt, true, false, dir) )
+		{
+			new PacketMovementRej(this, sequence);
 			return false;
+		}
 
-		bool fRoof = m_pChar->IsStatFlag(STATF_InDoors);
 		if ( !m_pChar->MoveToChar(pt) )
+		{
+			new PacketMovementRej(this, sequence);
 			return false;
+		}
 
 		// Did i step on a telepad, trap, etc ?
 		if ( !m_pChar->CheckLocation(false) )
 		{
 			m_pChar->SetTopPoint(ptOld);	// we already moved, so move back to previous location
+			new PacketMovementRej(this, sequence);
 			return false;
 		}
 
 		// Are we invis ?
 		m_pChar->CheckRevealOnMove();
 
-		// Update weather if we are no longer indoors
-		if ( fRoof && !m_pChar->IsStatFlag(STATF_InDoors) )
-			addWeather(WEATHER_DEFAULT);
+		// Update weather if needed
+		addWeather();
 
+		new PacketMovementAck(this);
 		m_pChar->UpdateMove(ptOld, this);	// Who now sees me ?
 		addPlayerSee(ptOld);				// What new stuff do I now see ?
 		m_iWalkStepCount++;					// Increase step count to use on walk buffer checks
@@ -864,6 +874,7 @@ bool CClient::Event_CheckWalk( BYTE rawdir, BYTE sequence ) // Player moves
 	else
 	{
 		// Just a change in dir.
+		new PacketMovementAck(this);
 		m_pChar->m_dirFace = dir;
 		m_pChar->UpdateMove(ptOld, this);	// Who now sees me ?
 	}

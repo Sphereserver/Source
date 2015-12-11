@@ -242,19 +242,16 @@ bool PacketMovementReq::onReceive(NetState* net)
 	}
 
 	if ( bCanMove )
-		bCanMove = client->Event_CheckWalk(direction, sequence);
+		bCanMove = client->Event_Walk(direction, sequence);
 
 	if ( bCanMove )
 	{
 		if ( ++sequence == UCHAR_MAX )
 			sequence = 1;
-
-		new PacketMovementAck(client);
 		net->m_sequence = sequence;
 	}
 	else
 	{
-		new PacketMovementRej(client, sequence);
 		net->m_sequence = 0;
 	}
 	return true;
@@ -4292,17 +4289,10 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 		//DWORD z = readInt32();
 
 		if ( bCanMove )
-			bCanMove = client->Event_CheckWalk(direction);
+			bCanMove = client->Event_Walk(direction);
 
-		if ( bCanMove )
-		{
-			new PacketMovementAck(client);
-		}
-		else
-		{
-			new PacketMovementRej(client, sequence);
+		if ( !bCanMove )
 			return false;
-		}
 
 		steps--;
 	}
