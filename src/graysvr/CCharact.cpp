@@ -2795,7 +2795,7 @@ bool CChar::Death()
 	}
 
 	// Look through memories of who I was fighting (make sure they knew they where fighting me)
-	for ( CItem *pItem = GetContentHead(); pItem; pItem = pItem->GetNext() )
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
 		if ( pItem->IsType(IT_EQ_TRADE_WINDOW) )
 		{
@@ -3920,15 +3920,10 @@ bool CChar::OnTick()
 	if ( iTimeDiff >= TICK_PER_SEC )		// don't bother with < 1 sec timers on the checks below
 	{
 		// Decay equipped items (memories/spells)
-		for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+		CItem *pItem = GetContentHead();
+		for ( size_t iCount = 0; pItem != NULL; pItem = GetAt(++iCount) )
 		{
 			EXC_TRYSUB("Ticking items");
-			/*if ( pItem->IsType(IT_EQ_MEMORY_OBJ) && !pItem->m_uidLink.ObjFind() )		// always check the validity of the memory objects
-			{
-				pItem->Delete();
-				continue;
-			}
-			pItem->OnTickStatusUpdate();*/
 			if ( !pItem->IsTimerSet() || !pItem->IsTimerExpired() )
 				continue;
 			if ( !OnTickEquip(pItem) )
@@ -3990,13 +3985,6 @@ bool CChar::OnTick()
 			case -SKTRIG_FAIL:	EXC_SET("skill fail");		Skill_Fail(false);	break;
 			case -SKTRIG_QTY:	EXC_SET("skill cleanup");	Skill_Cleanup();	break;
 		}
-
-		/*if ( IsStatFlag(STATF_War) )
-		{
-			EXC_SET("combat hit try");
-			if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )	// hit my current target (if I'm ready)
-				Fight_HitTry();
-		}*/
 
 		if ( m_pNPC )	// do some AI action
 		{
