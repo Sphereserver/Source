@@ -594,8 +594,10 @@ void CChar::UnEquipAllItems( CItemContainer * pDest, bool bLeaveHands )
 		return;
 	CItemContainer *pPack = GetPackSafe();
 
-	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	CItem *pItemNext;
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
+		pItemNext = pItem->GetNext();
 		LAYER_TYPE layer = pItem->GetEquipLayer();
 
 		switch ( layer )
@@ -604,7 +606,6 @@ void CChar::UnEquipAllItems( CItemContainer * pDest, bool bLeaveHands )
 				pItem->Delete();	// Get rid of any trades.
 				continue;
 			case LAYER_FLAG_Poison:
-			case LAYER_FLAG_Criminal:
 			case LAYER_FLAG_Hallucination:
 			case LAYER_FLAG_Potion:
 			case LAYER_FLAG_Drunk:
@@ -3602,44 +3603,39 @@ bool CChar::SetPrivLevel(CTextConsole * pSrc, LPCTSTR pszFlags)
 {
 	ADDTOCALLSTACK("CChar::SetPrivLevel");
 
-	if (( pSrc->GetPrivLevel() < PLEVEL_Admin ) ||
-		( pSrc->GetPrivLevel() < GetPrivLevel() ) ||
-		!pszFlags[0] || !m_pPlayer )
+	if ( !m_pPlayer || !pszFlags[0] || (pSrc->GetPrivLevel() < PLEVEL_Admin) || (pSrc->GetPrivLevel() < GetPrivLevel()) )
 		return false;
 
-	CAccount * pAccount = m_pPlayer->GetAccount();
+	CAccount *pAccount = m_pPlayer->GetAccount();
 	PLEVEL_TYPE PrivLevel = CAccount::GetPrivLevelText(pszFlags);
 
 	// Remove Previous GM Robe
-	ContentConsume(RESOURCE_ID(RES_ITEMDEF,ITEMID_GM_ROBE), INT_MAX);
+	ContentConsume(RESOURCE_ID(RES_ITEMDEF, ITEMID_GM_ROBE), INT_MAX);
 
 	if ( PrivLevel >= PLEVEL_Counsel )
 	{
-		pAccount->SetPrivFlags(PRIV_GM_PAGE|( PrivLevel >= PLEVEL_GM ? PRIV_GM : 0));
+		pAccount->SetPrivFlags(PRIV_GM_PAGE|(PrivLevel >= PLEVEL_GM ? PRIV_GM : 0));
+		StatFlag_Set(STATF_INVUL);
 
 		UnEquipAllItems();
 
-		CItem * pItem = CItem::CreateScript( ITEMID_GM_ROBE, this );
+		CItem *pItem = CItem::CreateScript(ITEMID_GM_ROBE, this);
 		if ( pItem )
 		{
 			pItem->SetAttr(ATTR_MOVE_NEVER|ATTR_NEWBIE|ATTR_MAGIC);
-			pItem->m_itArmor.m_spelllevel = 1000;
-			pItem->SetHue( static_cast<HUE_TYPE>(( PrivLevel >= PLEVEL_GM ) ? HUE_RED : HUE_BLUE_NAVY) /*, false, pSrc */ ); //call @Dye on equiped gm robes after plevel change?
+			pItem->SetHue(static_cast<HUE_TYPE>((PrivLevel >= PLEVEL_GM) ? HUE_RED : HUE_BLUE_NAVY));	// since sept/2014 OSI changed 'Counselor' plevel to 'Advisor', using GM Robe color 05f
 			ItemEquip(pItem);
 		}
 	}
 	else
 	{
 		// Revoke GM status.
-		pAccount->ClearPrivFlags( PRIV_GM_PAGE|PRIV_GM );
+		pAccount->ClearPrivFlags(PRIV_GM_PAGE|PRIV_GM);
+		StatFlag_Clear(STATF_INVUL);
 	}
 
-	if ( pAccount->GetPrivLevel() < PLEVEL_Admin && PrivLevel < PLEVEL_Admin )	// can't demote admin this way.
-	{
-		pAccount->SetPrivLevel( PrivLevel );
-	}
-
-	Update();
+	pAccount->SetPrivLevel(PrivLevel);
+	NotoSave_Update();
 	return true;
 }
 

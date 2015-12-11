@@ -1936,7 +1936,6 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 						ASSERT(pWool);
 						pWool->SetTimeout( g_Cfg.m_iWoolGrowthTime );
 						pCharTarg->LayerAdd( pWool, LAYER_FLAG_Wool );
-						pCharTarg->Update();
 					}
 					return true;
 				case CREID_Sheep_Sheered:

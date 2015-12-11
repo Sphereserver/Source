@@ -3083,8 +3083,9 @@ do_default:
 				StatFlag_Mod(STATF_Stone,fSet);
 				if ( fChange )
 				{
-					RemoveFromView();
-					Update();
+					UpdateMode(NULL, true);
+					if ( IsClient() )
+						m_pClient->addCharMove(this);
 				}
 			}
 			break;
@@ -3821,8 +3822,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			if ( ! IsPlayableCharacter())
 				return( false );
 			SetHue( GetHue() ^ HUE_UNDERWEAR /*, false, pSrc*/ ); //call @Dye on underwear?
-			RemoveFromView();
-			Update();
+			UpdateMode();
 			break;
 		case CHV_UNEQUIP:	// uid
 			return ItemBounce( CGrayUID( s.GetArgVal()).ItemFind());

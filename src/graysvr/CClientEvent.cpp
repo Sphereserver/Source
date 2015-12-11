@@ -855,16 +855,13 @@ bool CClient::Event_Walk( BYTE rawdir, BYTE sequence ) // Player moves
 		// Did i step on a telepad, trap, etc ?
 		if ( !m_pChar->CheckLocation(false) )
 		{
-			m_pChar->SetTopPoint(ptOld);	// we already moved, so move back to previous location
+			m_pChar->SetUnkPoint(ptOld);	// we already moved, so move back to previous location
 			new PacketMovementRej(this, sequence);
 			return false;
 		}
 
 		// Are we invis ?
 		m_pChar->CheckRevealOnMove();
-
-		// Update weather if needed
-		addWeather();
 
 		new PacketMovementAck(this);
 		m_pChar->UpdateMove(ptOld, this);	// Who now sees me ?
