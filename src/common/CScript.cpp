@@ -379,9 +379,6 @@ foundit:
 	Str_Parse( m_pszKey, &m_pszArg );
 	return true;
 	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	EXC_DEBUG_END;
 	return false;
 }
 
@@ -497,9 +494,6 @@ bool CScript::ReadKeyParse() // Read line from script
 
 	return true;
 	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	EXC_DEBUG_END;
 	return false;
 }
 

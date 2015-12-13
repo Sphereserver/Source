@@ -3219,8 +3219,6 @@ bool NetworkInput::checkForData(fd_set& fds)
 	return select(count + 1, &fds, NULL, NULL, &timeout) > 0;
 
 	EXC_CATCH;
-	EXC_DEBUG_START;
-	EXC_DEBUG_END;
 	return false;
 }
 

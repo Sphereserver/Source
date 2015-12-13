@@ -771,9 +771,6 @@ int Sphere_OnTick()
 #endif
 
 	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	EXC_DEBUG_END;
 	return g_Serv.m_iExitFlag;
 }
 void CServer::ShipTimers_Tick()
@@ -871,9 +868,6 @@ static void Sphere_MainMonitorLoop()
 			g_Log.Event(LOGL_CRIT, "'%s' thread hang, restarting...\n", g_Main.getName());
 #endif
 		EXC_CATCH;
-
-		EXC_DEBUG_START;
-		EXC_DEBUG_END;
 	}
 
 }

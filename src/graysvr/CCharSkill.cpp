@@ -3164,7 +3164,7 @@ int CChar::Skill_Fighting( SKTRIG_TYPE stage )
 		INT64 iRemainingDelay = g_World.GetTimeDiff(m_atFight.m_timeNextCombatSwing);
 		if ( iRemainingDelay < 0 || iRemainingDelay > 255 )
 			iRemainingDelay = 0;
-
+		g_Log.EventDebug("[%d (0x%lu)] SetTimeout = %lld (%lld)\n",GetName(),GetUID(),iRemainingDelay, m_atFight.m_timeNextCombatSwing.GetTimeRaw());
 		SetTimeout(iRemainingDelay);
 		return g_Cfg.Calc_CombatChanceToHit(this, m_Fight_Targ.CharFind(), Skill_GetActive());
 	}

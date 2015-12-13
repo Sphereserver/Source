@@ -244,9 +244,6 @@ void CPathFinder::FillMap()
 	}
 
 	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	EXC_DEBUG_END;
 }
 
 CPointMap CPathFinder::ReadStep(size_t Step)

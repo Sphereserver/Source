@@ -1,8 +1,6 @@
 #include "send.h"
 #include "network.h"
-#pragma warning(disable:4096)
 #include "../common/zlib/zlib.h"
-#pragma warning(default:4096)
 
 #ifndef _WIN32
 #include <sys/time.h>

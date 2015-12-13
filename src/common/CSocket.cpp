@@ -6,6 +6,10 @@
 //
 //		***		***			***
 
+#ifdef _WIN32
+	#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#endif
+
 CSocketAddressIP::CSocketAddressIP()
 {
 	s_addr = INADDR_BROADCAST;

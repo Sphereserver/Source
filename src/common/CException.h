@@ -191,9 +191,10 @@ public:
 	#define EXC_CATCH }
 	#define EXC_TRYSUB(a) {
 	#define EXC_CATCHSUB(a) }
-	#define EXC_DEBUG_START if ( 0 ) {
+	
+	#define EXC_DEBUG_START {
 	#define EXC_DEBUG_END }
-	#define EXC_DEBUGSUB_START	if ( 0 ) {
+	#define EXC_DEBUGSUB_START	{
 	#define EXC_DEBUGSUB_END }
 	#define EXC_ADD_SCRIPT
 	#define EXC_ADD_SCRIPTSRC

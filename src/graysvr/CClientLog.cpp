@@ -3,9 +3,7 @@
 #include "../network/network.h"
 #include "../network/send.h"
 #include "../common/CFileList.h"
-#pragma warning(disable:4096)
 #include "../common/zlib/zlib.h"
-#pragma warning(default:4096)
 
 CHuffman CClient::m_Comp;
 #if !defined(_WIN32) || defined(_LIBEV)

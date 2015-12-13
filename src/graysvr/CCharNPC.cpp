@@ -593,9 +593,6 @@ void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s )
 		s.WriteKeyVal( szTemp, m_SkillLock[j] );
 	}
 	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	EXC_DEBUG_END;
 }
 
 enum CPV_TYPE	// Player char.

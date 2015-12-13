@@ -3236,9 +3236,6 @@ void CChar::r_Write( CScript & s )
 
 	r_WriteContent(s);
 	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	EXC_DEBUG_END;
 }
 
 void CChar::r_WriteParity( CScript & s )

@@ -1239,9 +1239,6 @@ bool NTWindow_OnTick( int iWaitmSec )
 		DispatchMessage(&msg);
 
 		EXC_CATCH;
-
-		EXC_DEBUG_START;
-		EXC_DEBUG_END;
 	}
 }
 

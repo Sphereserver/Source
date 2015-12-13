@@ -1884,9 +1884,6 @@ void CServer::OnTick()
 	g_Cfg.OnTick(false);
 	m_hdb.OnTick();
 	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	EXC_DEBUG_END;
 }
 
 bool CServer::Load()
@@ -1981,8 +1978,5 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 
 	return true;
 	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	EXC_DEBUG_END;
 	return false;
 }

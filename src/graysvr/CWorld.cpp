@@ -966,9 +966,6 @@ void CWorldThread::GarbageCollection_New()
 		pPage = pPageNext;
 	}
 	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	EXC_DEBUG_END;
 }
 
 void CWorldThread::GarbageCollection_UIDs()
@@ -1184,9 +1181,6 @@ void CWorld::Init()
 
 	g_Log.Event(LOGM_INIT, "Allocating map sectors:%s\n", static_cast<LPCTSTR>(z));
 	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	EXC_DEBUG_END;
 }
 
 CWorld::~CWorld()
@@ -1837,9 +1831,6 @@ bool CWorld::LoadWorld() // Load world from script
 
 	g_Log.Event(LOGL_FATAL|LOGM_INIT, "No previous backup available ?\n");
 	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	EXC_DEBUG_END;
 	return false;
 }
 

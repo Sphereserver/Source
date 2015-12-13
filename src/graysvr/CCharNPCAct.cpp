@@ -3591,9 +3591,6 @@ void CChar::NPC_Food()
 		}
 	}
 	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	EXC_DEBUG_END;
 }
 
 void CChar::NPC_ExtraAI()
@@ -3660,7 +3657,4 @@ void CChar::NPC_ExtraAI()
 	}
 
 	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	EXC_DEBUG_END;
 }

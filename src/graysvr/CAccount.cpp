@@ -141,9 +141,6 @@ bool CAccounts::Account_SaveAll()
 	Account_LoadAll(true, true);	// clear the change file now.
 	return true;
 	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	EXC_DEBUG_END;
 	return false;
 }
 
