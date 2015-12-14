@@ -594,7 +594,7 @@ void CChar::UnEquipAllItems( CItemContainer * pDest, bool bLeaveHands )
 		return;
 	CItemContainer *pPack = GetPackSafe();
 
-	CItem *pItemNext;
+	CItem *pItemNext = NULL;
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
 		pItemNext = pItem->GetNext();

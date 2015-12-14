@@ -300,8 +300,10 @@ bool CChar::NPC_StablePetRetrieve( CChar * pCharPlayer )
 		return false;
 
 	int iCount = 0;
-	for ( CItem *pItem = GetBank()->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	CItem *pItemNext = NULL;
+	for ( CItem *pItem = GetBank()->GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
+		pItemNext = pItem->GetNext();
 		if ( pItem->IsType(IT_FIGURINE) && pItem->m_uidLink == pCharPlayer->GetUID() )
 		{
 			if ( !pCharPlayer->Use_Figurine(pItem) )

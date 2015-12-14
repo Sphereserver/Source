@@ -332,8 +332,10 @@ void CChar::ClientDetach()
 	ADDTOCALLSTACK("CChar::ClientDetach");
 	
 	// remove all trade windows.
-	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	CItem *pItemNext = NULL;
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
+		pItemNext = pItem->GetNext();
 		if ( pItem->IsType(IT_EQ_TRADE_WINDOW) )
 			pItem->Delete();
 	}

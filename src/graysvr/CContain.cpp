@@ -619,10 +619,10 @@ void CItemContainer::Trade_Status( bool bCheck )
 		return;
 
 	CChar *pChar1 = dynamic_cast<CChar*>(GetParent());
-	if ( !pChar1 )
+	if ( !pChar1 || !pChar1->IsClient() )
 		return;
 	CChar *pChar2 = dynamic_cast<CChar*>(pPartner->GetParent());
-	if ( !pChar2 )
+	if ( !pChar2 || !pChar2->IsClient() )
 		return;
 
 	m_itEqTradeWindow.m_bCheck = bCheck ? 1 : 0;
@@ -630,51 +630,40 @@ void CItemContainer::Trade_Status( bool bCheck )
 		pPartner->m_itEqTradeWindow.m_bCheck = 0;
 
 	PacketTradeAction cmd(SECURE_TRADE_CHANGE);
-	if ( pChar1->IsClient() )
-	{
-		cmd.prepareReadyChange(this, pPartner);
-		cmd.send(pChar1->GetClient());
-	}
-	if ( pChar2->IsClient() )
-	{
-		cmd.prepareReadyChange(pPartner, this);
-		cmd.send(pChar2->GetClient());
-	}
+	cmd.prepareReadyChange(this, pPartner);
+	cmd.send(pChar1->GetClient());
+
+	cmd.prepareReadyChange(pPartner, this);
+	cmd.send(pChar2->GetClient());
 
 	// Check if both clients had pressed the 'accept' buttom
 	if ( pPartner->m_itEqTradeWindow.m_bCheck == 0 || m_itEqTradeWindow.m_bCheck == 0 )
 		return;
 
-	CScriptTriggerArgs Args1(pChar1);
-	unsigned short i = 1;
-	for ( CItem *pItem = pPartner->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
-	{
-		Args1.m_VarObjs.Insert(i, pItem, true);
-		i++;
-	}
-	Args1.m_iN1 = --i;
-
-	CScriptTriggerArgs Args2(pChar2);
-	i = 1;
-	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
-	{
-		Args2.m_VarObjs.Insert(i, pItem, true);
-		i++;
-	}
-	Args2.m_iN1 = --i;
-
 	if ( IsTrigUsed(TRIGGER_TRADEACCEPTED) || IsTrigUsed(TRIGGER_CHARTRADEACCEPTED) )
 	{
+		CScriptTriggerArgs Args1(pChar1);
+		unsigned short i = 1;
+		for ( CItem *pItem = pPartner->GetContentHead(); pItem != NULL; pItem = pItem->GetNext(), i++ )
+			Args1.m_VarObjs.Insert(i, pItem, true);
+		Args1.m_iN1 = --i;
+
+		CScriptTriggerArgs Args2(pChar2);
+		i = 1;
+		for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext(), i++ )
+			Args2.m_VarObjs.Insert(i, pItem, true);
+		Args2.m_iN2 = --i;
+
 		if ( (pChar1->OnTrigger(CTRIG_TradeAccepted, pChar2, &Args1) == TRIGRET_RET_TRUE) || (pChar2->OnTrigger(CTRIG_TradeAccepted, pChar1, &Args2) == TRIGRET_RET_TRUE) )
-			Delete();
+			return;
 	}
 
 	// Transfer items
-	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
-		pChar2->ItemBounce(pItem);
+	for ( CItem *pItem = pPartner->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+		pChar1->ItemBounce(pItem);
 
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
-		pChar1->ItemBounce(pItem);
+		pChar2->ItemBounce(pItem);
 
 	// Transfer gold/platinum
 	if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD )
