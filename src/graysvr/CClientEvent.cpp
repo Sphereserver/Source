@@ -740,65 +740,6 @@ bool CClient::Event_CheckWalkBuffer()
 
 
 
-bool CClient::Event_CheckFastwalkKey( DWORD dwEcho )
-{
-	ADDTOCALLSTACK("CClient::Event_CheckFastwalkKey");
-	// look for the walk code, and remove it
-	// Client will send 0's if we have not given it any EXTDATA_WalkCode_Prime message.
-	// The client will use codes in order.
-	// But it will skip codes sometimes. so delete codes that get skipped.
-
-	// RETURN:
-	//  true = ok to walk.
-	//  false = the client is cheating. I did not send that code.
-
-	// If the LIFO stack has not been sent, send them out now
-	if ( m_Walk_CodeQty == UINT_MAX )
-		addFastwalkKey(EXTDATA_WalkCode_Prime, COUNTOF(m_Walk_LIFO));
-
-	// Keep track of echo'd 0's and invalid non 0's
-	// (you can get 1 to 4 of these legitimately when you first start walking)
-	ASSERT(m_Walk_CodeQty != UINT_MAX);
-
-	for ( unsigned int i = 0; i < m_Walk_CodeQty; i++ )
-	{
-		if ( m_Walk_LIFO[i] == dwEcho )	// found a good code.
-		{
-			// Move next to the head.
-			i++;
-			memmove(m_Walk_LIFO, m_Walk_LIFO + i, (m_Walk_CodeQty - i) * sizeof(DWORD));
-			m_Walk_CodeQty -= i;
-			m_Walk_InvalidEchos = UINT_MAX;		// set this to UINT_MAX so we know later if we've gotten at least 1 valid echo
-			addFastwalkKey(EXTDATA_WalkCode_Add, 1);
-			return true;
-		}
-	}
-
-	if ( m_Walk_InvalidEchos == UINT_MAX )
-	{
-		// If we're here, we got at least one valid echo....therefore
-		// we should never get another one
-		DEBUG_ERR(("%lx: Invalid walk echo (0%lx). Invalid after valid.\n", GetSocketID(), dwEcho));
-		return false;
-	}
-
-	// Increment # of invalids received. This is allowed at startup.
-	// These "should" always be 0's
-	if ( ++m_Walk_InvalidEchos >= COUNTOF(m_Walk_LIFO) )
-	{
-		// The most I ever got was 2 of these, but I've seen 4
-		// a couple of times on a real server...we might have to
-		// increase this # if it becomes a problem (but I doubt that)
-		DEBUG_ERR(("%lx: Invalid walk echo. Too many initial invalid.\n", GetSocketID()));
-		return false;
-	}
-
-	// Allow them to walk a bit till we catch up.
-	return true;
-}
-
-
-
 bool CClient::Event_Walk( BYTE rawdir, BYTE sequence ) // Player moves
 {
 	ADDTOCALLSTACK("CClient::Event_Walk");
@@ -816,14 +757,12 @@ bool CClient::Event_Walk( BYTE rawdir, BYTE sequence ) // Player moves
 	if ( !m_pChar )
 		return false;
 
-	m_timeLastEventWalk = CServTime::GetCurrentTime();
-
 	DIR_TYPE dir = static_cast<DIR_TYPE>(rawdir & 0x0F);
 	if ( dir >= DIR_QTY )
+	{
+		new PacketMovementRej(this, sequence);
 		return false;
-
-	bool fRun = (rawdir & 0x80);	// or flying
-	m_pChar->StatFlag_Mod(STATF_Fly, fRun);
+	}
 
 	CPointMap pt = m_pChar->GetTopPoint();
 	CPointMap ptOld = pt;
@@ -862,6 +801,10 @@ bool CClient::Event_Walk( BYTE rawdir, BYTE sequence ) // Player moves
 
 		// Are we invis ?
 		m_pChar->CheckRevealOnMove();
+
+		// Set running flag if I'm running
+		m_pChar->StatFlag_Mod(STATF_Fly, (rawdir & 0x80));
+		m_timeLastEventWalk = CServTime::GetCurrentTime();
 
 		new PacketMovementAck(this);
 		m_pChar->UpdateMove(ptOld, this);	// Who now sees me ?

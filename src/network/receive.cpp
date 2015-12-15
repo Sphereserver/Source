@@ -229,26 +229,26 @@ bool PacketMovementReq::onReceive(NetState* net)
 
 	BYTE direction = readByte();
 	BYTE sequence = readByte();
+	//DWORD crypt = readInt32();	// client fastwalk crypt (not used anymore)
 
-	bool bCanMove = true;
 	if ( net->m_sequence == 0 && sequence != 0 )
-		bCanMove = false;
-
-	if ( bCanMove && IsSetEF(EF_FastWalkPrevention) && net->isClientVersion(MINCLIVER_CHECKWALKCODE) )
 	{
-		DWORD crypt = readInt32();
-		if ( !client->Event_CheckFastwalkKey(crypt) )
-			bCanMove = false;
+		direction = DIR_QTY;	// setting invalid direction to intentionally reject the walk request
+	}
+	else if ( IsSetEF(EF_FastWalkPrevention) )
+	{
+		// TO-DO: Poorly working. To make this thing work correctly
+		// we must compare timers using numbers with more precision
+		INT64 iDiff = (direction & 0x80) ? 1 : 3;
+		if ( -g_World.GetTimeDiff(client->m_timeLastEventWalk) < iDiff )
+			direction = DIR_QTY;	// setting invalid direction to intentionally reject the walk request
 	}
 
-	if ( bCanMove )
-		bCanMove = client->Event_Walk(direction, sequence);
-
-	if ( bCanMove )
+	if ( client->Event_Walk(direction, sequence) )
 	{
-		if ( ++sequence == UCHAR_MAX )
-			sequence = 1;
-		net->m_sequence = sequence;
+		if ( sequence == UCHAR_MAX )
+			sequence = 0;
+		net->m_sequence = ++sequence;
 	}
 	else
 	{
@@ -4248,16 +4248,15 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 	ASSERT(client);
 
 	skip(2);
-	bool bCanMove = true;
 	BYTE steps = readByte();
-	while (steps)
+	while ( steps )
 	{
 		INT64 iTime1 = readInt64();
 		INT64 iTime2 = readInt64();
 		BYTE sequence = readByte();
 		BYTE direction = readByte();
 		DWORD mode = readInt32();	// 1 = walk, 2 = run
-		if (mode == 2)
+		if ( mode == 2 )
 			direction |= 0x80;
 
 		if ( IsSetEF(EF_FastWalkPrevention) )
@@ -4265,7 +4264,7 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 			bool fRun = (mode == 2);
 			INT64 iTimeDiff = iTime2 - iTime1;
 			if ( (fRun && (iTimeDiff > 200)) || (!fRun && (iTimeDiff > 300)) )
-				bCanMove = false;
+				direction = DIR_QTY;	// setting invalid direction to intentionally reject the walk request
 		}
 
 		// The client send these values, but they're not really needed
@@ -4273,11 +4272,8 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 		//DWORD y = readInt32();
 		//DWORD z = readInt32();
 
-		if ( bCanMove )
-			bCanMove = client->Event_Walk(direction, sequence);
-
-		if ( !bCanMove )
-			return false;
+		if ( !client->Event_Walk(direction, sequence) )
+			return true;
 
 		steps--;
 	}

@@ -2647,44 +2647,6 @@ void CClient::addItemMenu( CLIMODE_TYPE mode, const CMenuItem * item, size_t cou
 	SetTargMode( mode );
 }
 
-
-bool CClient::addFastwalkKey( EXTDATA_TYPE iType, size_t iCodes )
-{
-	ADDTOCALLSTACK("CClient::addFastwalkKey");
-	// Fill up the walk code buffer.
-	// RETURN: true = new codes where sent.
-
-	if ( !m_Crypt.IsInit() )	// this is not even a game client ! IsConnectTypePacket()
-		return false;
-	if ( GetNetState()->isClientLessVersion(MINCLIVER_CHECKWALKCODE) )
-		return false;
-
-	if ( iType == EXTDATA_WalkCode_Add )
-	{
-		if ( m_Walk_InvalidEchos != UINT_MAX )	// they are stuck til they give a valid echo!
-			return false;
-		// On a timer tick call this.
-		if ( m_Walk_CodeQty >= COUNTOF(m_Walk_LIFO) )	// they are appearently not moving fast
-			return false;
-	}
-	else
-	{
-		// Fill the buffer at start.
-		ASSERT(m_Walk_CodeQty == UINT_MAX);
-		m_Walk_CodeQty = 0;
-	}
-
-	ASSERT(iCodes <= COUNTOF(m_Walk_LIFO));
-
-	// Make a new key and send it
-	size_t i = 0;
-	for ( ; i < iCodes && m_Walk_CodeQty < COUNTOF(m_Walk_LIFO); m_Walk_CodeQty++, i++ )
-		m_Walk_LIFO[m_Walk_CodeQty] = Calc_GetRandVal(ULONG_MAX);
-
-	new PacketFastWalk(this, m_Walk_LIFO, m_Walk_CodeQty, i);
-	return true;
-}
-
 void CClient::addCharPaperdoll( CChar * pChar )
 {
 	ADDTOCALLSTACK("CClient::addCharPaperdoll");

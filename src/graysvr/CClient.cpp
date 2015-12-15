@@ -48,10 +48,6 @@ CClient::CClient(NetState* state)
 	m_tmSetup.m_iConnect = 0;
 	m_tmSetup.m_bNewSeed = false;
 
-	memset( m_Walk_LIFO, 0, sizeof( m_Walk_LIFO ));	// Initialize the fast walk killer stuff
-	m_Walk_InvalidEchos = 0;
-	m_Walk_CodeQty = UINT_MAX;	// how many valid codes in here ?
-
 	m_Env.SetInvalid();
 
 	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Client connected [Total:%lu] ('%s' %ld/%ld)\n",

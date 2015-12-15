@@ -969,11 +969,6 @@ private:
 	int m_iWalkStepCount;		// Count the actual steps . Turning does not count.
 	LONGLONG m_timeWalkStep;	// the last %8 walk step time.
 
-	// Stupid Walk limiting code. (Not working really)
-	DWORD m_Walk_LIFO[16];	// Client > 1.26 must match these .
-	unsigned int m_Walk_InvalidEchos;
-	unsigned int m_Walk_CodeQty;
-
 	// Screensize
 	struct __screensize
 	{
@@ -1197,7 +1192,6 @@ public:
 	void Event_VendorSell_Cheater( int iCode = 0 );
 	bool Event_Walk( BYTE rawdir, BYTE sequence = 0 ); // Player moves
 	bool Event_CheckWalkBuffer();
-	bool Event_CheckFastwalkKey( DWORD dwEcho );
 	
 	TRIGRET_TYPE Menu_OnSelect( RESOURCE_ID_BASE rid, int iSelect, CObjBase * pObj );
 	TRIGRET_TYPE Dialog_OnButton( RESOURCE_ID_BASE rid, DWORD dwButtonID, CObjBase * pObj, CDialogResponseArgs * pArgs );
@@ -1399,8 +1393,6 @@ public:
 
 	void addLoginComplete();
 	void addChatSystemMessage(CHATMSG_TYPE iType, LPCTSTR pszName1 = NULL, LPCTSTR pszName2 = NULL, CLanguageID lang = 0 );
-
-	bool addFastwalkKey( EXTDATA_TYPE iType, size_t iQty );
 
 	void addCharPaperdoll( CChar * pChar );
 

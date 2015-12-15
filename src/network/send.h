@@ -1251,19 +1251,6 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0xBF.0x01 : PacketFastWalk		send fask walk keys (NORMAL)
- *
- *
- ***************************************************************************/
-class PacketFastWalk : public PacketExtended
-{
-public:
-	PacketFastWalk(const CClient* target, DWORD* codes, size_t count, size_t sendCount);
-};
-
-/***************************************************************************
- *
- *
  *	Packet 0xBF.0x04 : PacketGumpChange		change gump (LOW)
  *
  *

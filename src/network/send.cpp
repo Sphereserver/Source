@@ -3626,24 +3626,6 @@ PacketExtended::PacketExtended(EXTDATA_TYPE type, size_t len, Priority priority)
 /***************************************************************************
  *
  *
- *	Packet 0xBF.0x01 : PacketFastWalk		send fask walk keys (NORMAL)
- *
- *
- ***************************************************************************/
-PacketFastWalk::PacketFastWalk(const CClient* target, DWORD* codes, size_t count, size_t sendCount) : PacketExtended(EXTDATA_WalkCode_Prime, 29, PRI_NORMAL)
-{
-	ADDTOCALLSTACK("PacketFastWalk::PacketFastWalk");
-
-	for (size_t i = count - sendCount; i < count; i++)
-		writeInt32(codes[i]);
-
-	push(target);
-}
-
-
-/***************************************************************************
- *
- *
  *	Packet 0xBF.0x04 : PacketGumpChange		change gump (LOW)
  *
  *

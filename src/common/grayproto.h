@@ -326,8 +326,8 @@ enum PARTYMSG_TYPE
 
 enum EXTDATA_TYPE
 {
-	EXTDATA_WalkCode_Prime	= 0x01,	// send to client
-	EXTDATA_WalkCode_Add	= 0x02,	// send to client
+	EXTDATA_Fastwalk_Init	= 0x01,	// send to client
+	EXTDATA_Fastwalk_Add	= 0x02,	// send to client
 	EXTDATA_Unk3,
 	EXTDATA_GumpChange		= 0x04,	// len=8 "00 00 00 67 00 00 00 00"
 	EXTDATA_ScreenSize		= 0x05,	// len=8 "00 00 02 80 00 00 00 0a"
