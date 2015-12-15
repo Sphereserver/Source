@@ -3196,6 +3196,7 @@ bool CChar::CheckLocation( bool fStanding )
 	}
 
 	bool fStepCancel = false;
+	bool bSpellHit = false;
 	CWorldSearch AreaItems( GetTopPoint() );
 	for (;;)
 	{
@@ -3212,15 +3213,17 @@ bool CChar::CheckLocation( bool fStanding )
 			continue;
 		if ( IsTrigUsed(TRIGGER_STEP) || IsTrigUsed(TRIGGER_ITEMSTEP) )
 		{
-			CScriptTriggerArgs Args( fStanding? 1 : 0 );
-			if ( pItem->OnTrigger( ITRIG_STEP, this , &Args ) == TRIGRET_RET_TRUE )
+			CScriptTriggerArgs Args(fStanding ? 1 : 0);
+			TRIGRET_TYPE iRet = pItem->OnTrigger(ITRIG_STEP, this, &Args);
+			if ( iRet == TRIGRET_RET_TRUE )		// block walk
 			{
-				fStepCancel	= true;
+				fStepCancel = true;
 				continue;
 			}
+			if ( iRet == TRIGRET_RET_HALFBAKED )	// allow walk, skipping hardcoded checks below
+				continue;
 		}
 
-		bool bSpellHit = false;
 		switch ( pItem->GetType() )
 		{
 			case IT_WEB:
@@ -3264,7 +3267,7 @@ bool CChar::CheckLocation( bool fStanding )
 				continue;
 			case IT_MOONGATE:
 			case IT_TELEPAD:
-				if ( fStanding && !IsStatFlag(STATF_Freeze|STATF_Stone) )
+				if ( fStanding )
 					continue;
 				Use_MoonGate(pItem);
 				return true;
