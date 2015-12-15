@@ -243,8 +243,10 @@ int CContainer::ContentConsume( RESOURCE_ID_BASE rid, int amount, bool fTest, DW
 	if ( rid.GetResIndex() == 0 )
 		return( amount );	// from skills menus.
 
-	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	CItem *pItemNext = NULL;
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
+		pItemNext = pItem->GetNext();
 		if ( pItem->IsResourceMatch( rid, dwArg ))
 		{
 			amount -= pItem->ConsumeAmount( amount, fTest );
@@ -309,8 +311,10 @@ void CContainer::ContentNotifyDelete()
 		return;
 
 	// trigger @Destroy on contained items
-	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	CItem *pItemNext = NULL;
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
+		pItemNext = pItem->GetNext();
 		if ( !pItem->NotifyDelete() )
 		{
 			// item shouldn't be destroyed and so cannot remain in this container,
@@ -326,8 +330,10 @@ void CContainer::ContentsDump( const CPointMap & pt, DWORD dwAttrLeave )
 	ADDTOCALLSTACK("CContainer::ContentsDump");
 	// Just dump the contents onto the ground.
 	dwAttrLeave |= ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_CURSED2|ATTR_BLESSED2;
-	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	CItem *pItemNext = NULL;
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
+		pItemNext = pItem->GetNext();
 		if ( pItem->IsAttr(dwAttrLeave) )	// hair and newbie stuff.
 			continue;
 		// ??? scatter a little ?
@@ -342,8 +348,10 @@ void CContainer::ContentsTransfer( CItemContainer * pCont, bool fNoNewbie )
 	if ( pCont == NULL )
 		return;
 
-	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	CItem *pItemNext = NULL;
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
+		pItemNext = pItem->GetNext();
 		if ( fNoNewbie && pItem->IsAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_CURSED2|ATTR_BLESSED2) )	// keep newbie stuff.
 			continue;
 		pCont->ContentAdd(pItem);	// add content
@@ -654,16 +662,25 @@ void CItemContainer::Trade_Status( bool bCheck )
 			Args2.m_VarObjs.Insert(i, pItem, true);
 		Args2.m_iN2 = --i;
 
+		Args1.m_iN2 = Args2.m_iN2;
+		Args2.m_iN1 = Args1.m_iN1;
 		if ( (pChar1->OnTrigger(CTRIG_TradeAccepted, pChar2, &Args1) == TRIGRET_RET_TRUE) || (pChar2->OnTrigger(CTRIG_TradeAccepted, pChar1, &Args2) == TRIGRET_RET_TRUE) )
 			return;
 	}
 
 	// Transfer items
-	for ( CItem *pItem = pPartner->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	CItem *pItemNext = NULL;
+	for ( CItem *pItem = pPartner->GetContentHead(); pItem != NULL; pItem = pItemNext )
+	{
+		pItemNext = pItem->GetNext();
 		pChar1->ItemBounce(pItem);
+	}
 
-	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
+	{
+		pItemNext = pItem->GetNext();
 		pChar2->ItemBounce(pItem);
+	}
 
 	// Transfer gold/platinum
 	if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD )
@@ -770,8 +787,12 @@ void CItemContainer::Trade_Delete()
 	}
 	
 	// Drop items back in my pack.
-	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	CItem *pItemNext = NULL;
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
+	{
+		pItemNext = pItem->GetNext();
 		pChar->ItemBounce(pItem);
+	}
 
 	// Kill my trading partner.
 	CItemContainer * pPartner = dynamic_cast <CItemContainer *> ( m_uidLink.ItemFind());

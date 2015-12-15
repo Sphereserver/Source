@@ -153,8 +153,10 @@ bool CClient::Cmd_Control( CChar * pChar2 )
 	CChar * pChar1 = m_pChar;
 
 	// Put my newbie equipped items on it.
-	for ( CItem *pItem = pChar1->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	CItem *pItemNext = NULL;
+	for ( CItem *pItem = pChar1->GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
+		pItemNext = pItem->GetNext();
 		if ( !pItem->IsAttr(ATTR_MOVE_NEVER) )
 			continue; // keep GM stuff.
 		if ( !CItemBase::IsVisibleLayer(pItem->GetEquipLayer()) )
@@ -177,8 +179,9 @@ bool CClient::Cmd_Control( CChar * pChar2 )
 	CItemContainer *pPack2 = pChar2->GetPackSafe();
 	if ( pPack1 && pPack2 )
 	{
-		for ( CItem *pItem = pPack1->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+		for ( CItem *pItem = pPack1->GetContentHead(); pItem != NULL; pItem = pItemNext )
 		{
+			pItemNext = pItem->GetNext();
 			if ( !pItem->IsAttr(ATTR_MOVE_NEVER) )	// keep newbie stuff.
 				continue;
 			pPack2->ContentAdd(pItem);	// add content

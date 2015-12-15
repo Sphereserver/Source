@@ -2755,8 +2755,10 @@ bool CChar::RaiseCorpse( CItemCorpse * pCorpse )
 	if ( pCorpse->GetCount() > 0 )
 	{
 		CItemContainer *pPack = GetPackSafe();
-		for ( CItem *pItem = pCorpse->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+		CItem *pItemNext = NULL;
+		for ( CItem *pItem = pCorpse->GetContentHead(); pItem != NULL; pItem = pItemNext )
 		{
+			pItemNext = pItem->GetNext();
 			if ( pItem->IsType(IT_HAIR) || pItem->IsType(IT_BEARD) )	// hair on corpse was copied!
 				continue;
 
@@ -2796,11 +2798,13 @@ bool CChar::Death()
 	}
 
 	// Look through memories of who I was fighting (make sure they knew they where fighting me)
-	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	CItem *pItemNext = NULL;
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
+		pItemNext = pItem->GetNext();
 		if ( pItem->IsType(IT_EQ_TRADE_WINDOW) )
 		{
-			CItemContainer * pCont = dynamic_cast<CItemContainer *>(pItem);
+			CItemContainer *pCont = dynamic_cast<CItemContainer *>(pItem);
 			if ( pCont )
 			{
 				pCont->Trade_Delete();

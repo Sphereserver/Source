@@ -941,14 +941,16 @@ CItemMemory * CChar::Memory_CreateObj( CGrayUID uid, WORD MemTypes )
 void CChar::Memory_ClearTypes( WORD MemTypes )
 {
 	ADDTOCALLSTACK("CChar::Memory_ClearTypes");
-	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	CItem *pItemNext = NULL;
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
+		pItemNext = pItem->GetNext();
 		if ( !pItem->IsMemoryTypes(MemTypes) )
 			continue;
 		CItemMemory * pMemory = dynamic_cast <CItemMemory *>(pItem);
-		if ( pMemory == NULL )
+		if ( !pMemory )
 			continue;
-		Memory_ClearTypes( pMemory, MemTypes );
+		Memory_ClearTypes(pMemory, MemTypes);
 	}
 }
 
@@ -958,13 +960,13 @@ CItemMemory * CChar::Memory_FindObj( CGrayUID uid ) const
 	ADDTOCALLSTACK("CChar::Memory_FindObj");
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		if ( ! pItem->IsType(IT_EQ_MEMORY_OBJ))
+		if ( !pItem->IsType(IT_EQ_MEMORY_OBJ) )
 			continue;
 		if ( pItem->m_uidLink != uid )
 			continue;
-		return( dynamic_cast <CItemMemory *>( pItem ));
+		return dynamic_cast<CItemMemory *>(pItem);
 	}
-	return( NULL );
+	return NULL;
 }
 
 // Do we have a certain type of memory.
@@ -974,13 +976,14 @@ CItemMemory * CChar::Memory_FindTypes( WORD MemTypes ) const
 	ADDTOCALLSTACK("CChar::Memory_FindTypes");
 	if ( !MemTypes )
 		return NULL;
+
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		if ( ! pItem->IsMemoryTypes(MemTypes))
+		if ( !pItem->IsMemoryTypes(MemTypes) )
 			continue;
-		return( dynamic_cast <CItemMemory *>( pItem ));
+		return dynamic_cast<CItemMemory *>(pItem);
 	}
-	return( NULL );
+	return NULL;
 }
 
 // Looping through all memories ( ForCharMemoryType ).
@@ -2433,8 +2436,10 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 void CChar::Fight_ClearAll()
 {
 	ADDTOCALLSTACK("CChar::Fight_ClearAll");
-	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	CItem *pItemNext = NULL;
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
+		pItemNext = pItem->GetNext();
 		if ( pItem->IsMemoryTypes(MEMORY_WAR_TARG) )
 			Memory_ClearTypes(static_cast<CItemMemory *>(pItem), MEMORY_WAR_TARG);
 	}
