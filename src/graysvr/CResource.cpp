@@ -125,7 +125,7 @@ CResource::CResource()
 	m_iHitsUpdateRate	= TICK_PER_SEC;
 	m_iSpeedScaleFactor	= 80000;
 	m_iCombatFlags		= 0;
-	m_iCombatSpeedEra	= 2;	// default = 4 = SE
+	m_iCombatSpeedEra	= 3;
 	m_iMagicFlags		= 0;
 	m_iMaxPolyStats		= 150;
 	m_iRacialFlags		= 0;

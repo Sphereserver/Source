@@ -2770,3 +2770,5 @@ Changed: Improved walk packets on classic/enhanced clients.
 17-12-2015, Coruja
 Fixed: House customization not allowing clients to walk.
 Fixed: Backpack not updating on death.
+[Sphere.ini]: Added new pre-AOS option on CombatSpeedEra setting.
+	-IMPORTANT: Option values got changed, check if the selected option is correct after update the script.
