@@ -2934,7 +2934,10 @@ bool CChar::Death()
 				new PacketDeathMenu(pClient, PacketDeathMenu::Ghost);
 			}
 			else
+			{
 				new PacketPlayerPosition(pClient);
+				pClient->addContainerSetup(GetPack());	// update backpack contents
+			}
 		}
 
 		// Remove the characters which I can't see as dead from the screen
@@ -3164,9 +3167,9 @@ bool CChar::CheckLocation( bool fStanding )
 	CClient *pClient = GetClient();
 	if ( pClient && pClient->m_pHouseDesign )
 	{
-		// stepping on items doesn't trigger anything whilst in design mode
+		// Stepping on items doesn't trigger anything whilst in design mode
 		if ( pClient->m_pHouseDesign->GetDesignArea().IsInside2d(GetTopPoint()) )
-			return false;
+			return true;
 
 		pClient->m_pHouseDesign->EndCustomize(true);
 	}

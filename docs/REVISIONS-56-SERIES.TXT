@@ -2766,3 +2766,7 @@ Fixed: Players randomly switching to another target on combat.
 06-12-2015, Coruja
 Changed: Improved walk packets on classic/enhanced clients.
 [Sphere.ini]: Moved DEBUGF_WALKCODES to new EF_FastWalkPrevention experimental setting (also improved, but still incomplete yet).
+
+17-12-2015, Coruja
+Fixed: House customization not allowing clients to walk.
+Fixed: Backpack not updating on death.
