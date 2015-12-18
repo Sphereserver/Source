@@ -239,7 +239,7 @@ bool PacketMovementReq::onReceive(NetState* net)
 	{
 		// TO-DO: Poorly working. To make this thing work correctly
 		// we must compare timers using numbers with more precision
-		INT64 iDiff = (direction & 0x80) ? 1 : 3;
+		INT64 iDiff = (direction & 0x80) ? 1 : 2;
 		if ( -g_World.GetTimeDiff(client->m_timeLastEventWalk) < iDiff )
 			direction = DIR_QTY;	// setting invalid direction to intentionally reject the walk request
 	}
@@ -507,9 +507,7 @@ bool PacketItemEquipReq::onReceive(NetState* net)
 		return false;
 
 	CItem* item = source->LayerFind(LAYER_DRAGGING);
-	if (item == NULL ||
-		client->GetTargMode() != CLIMODE_DRAG ||
-		item->GetUID() != itemSerial)
+	if ( item == NULL || client->GetTargMode() != CLIMODE_DRAG || item->GetUID() != itemSerial )
 	{
 		// I have no idea why i got here.
 		new PacketDragCancel(client, PacketDragCancel::Other);
@@ -519,13 +517,12 @@ bool PacketItemEquipReq::onReceive(NetState* net)
 	client->ClearTargMode(); // done dragging.
 
 	CChar* target = targetSerial.CharFind();
-	if ( target == NULL ||
-		 itemLayer >= LAYER_HORSE ||
-		!target->NPC_IsOwnedBy(source) || 
-		!target->CanCarry(item) ||
-		!target->ItemEquip(item, source) )
+	bool bCanCarry = target->CanCarry(item);
+	if ( target == NULL || (itemLayer >= LAYER_HORSE) || !target->NPC_IsOwnedBy(source) || !bCanCarry || !target->ItemEquip(item, source) )
 	{
-		source->ItemBounce(item); //cannot equip
+		client->Event_Item_Drop_Fail(item);		//cannot equip
+		if ( !bCanCarry )
+			client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_HEAVY));
 	}
 
 	return true;

@@ -1156,7 +1156,6 @@ private:
 
 	// Commands from client
 	void Event_Skill_Use( SKILL_TYPE x ); // Skill is clicked on the skill list
-	inline void Event_Item_Drop_Fail( CItem * pItem );
 	void Event_Talk_Common(TCHAR * szText ); // PC speech
 	bool Event_Command( LPCTSTR pszCommand, TALKMODE_TYPE mode = TALKMODE_SYSTEM ); // Client entered a '/' command like /ADD
 
@@ -1173,6 +1172,7 @@ public:
 	bool Event_DoubleClick( CGrayUID uid, bool fMacro, bool fTestTouch, bool fScript = false );
 	void Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName );
 	void Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, unsigned char gridIndex = 0 ); // Item is dropped on ground
+	inline void Event_Item_Drop_Fail( CItem * pItem );
 	void Event_Item_Dye( CGrayUID uid, HUE_TYPE wHue );	// Rehue an item
 	void Event_Item_Pickup( CGrayUID uid, int amount ); // Client grabs an item
 	void Event_MailMsg( CGrayUID uid1, CGrayUID uid2 );

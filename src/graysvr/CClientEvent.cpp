@@ -240,23 +240,27 @@ void inline CClient::Event_Item_Drop_Fail( CItem * pItem )
 	ADDTOCALLSTACK("CClient::Event_Item_Drop_Fail");
 	// The item was in the LAYER_DRAGGING.
 	// Try to bounce it back to where it came from.
-	if ( pItem == NULL )
+	if ( !pItem )
 		return;
 
-	// Game pieces should be returned to their game boards.
-	if ( pItem->IsType(IT_GAME_PIECE) )
+	CItemContainer *pPrevCont = static_cast<CItemContainer *>(m_Targ_PrvUID.ItemFind());
+	if ( pPrevCont )
 	{
-		CItemContainer *pGame = dynamic_cast<CItemContainer *>( m_Targ_PrvUID.ItemFind() );
-		if ( pGame != NULL )
-			pGame->ContentAdd( pItem, m_Targ_p );
-		else
-			pItem->Delete();
-
+		pPrevCont->ContentAdd(pItem, m_Targ_p);
 		return;
 	}
 
-	if ( pItem == m_pChar->LayerFind( LAYER_DRAGGING ) )	// if still being dragged
-		m_pChar->ItemBounce( pItem );
+	CChar *pPrevChar = m_Targ_PrvUID.CharFind();
+	if ( pPrevChar )
+	{
+		pPrevChar->ItemEquip(pItem);
+		return;
+	}
+
+	if ( m_Targ_PrvUID )	// if there's a previous cont UID set but it's not a valid container/char, probably this container/char got removed. So drop the item at player foot
+		m_Targ_p = m_pChar->GetTopPoint();
+
+	pItem->MoveToCheck(m_Targ_p);
 }
 
 void CClient::Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, unsigned char gridIndex )
@@ -349,7 +353,7 @@ void CClient::Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, u
 			}
 			else if ( ! pChar->CanCarry( pItem ))
 			{
-				// SysMessage( "That is too heavy" );
+				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_HEAVY));
 				Event_Item_Drop_Fail( pItem );
 				return;
 			}

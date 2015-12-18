@@ -2772,3 +2772,6 @@ Fixed: House customization not allowing clients to walk.
 Fixed: Backpack not updating on death.
 [Sphere.ini]: Added new pre-AOS option on CombatSpeedEra setting.
 	-IMPORTANT: Option values got changed, check if the selected option is correct after update the script.
+
+18-12-2015, Coruja
+Changed: Improved the event handler when an item equip/drop request was denied. Now the item is dropped on its last location instead always drop it on player backpack.
