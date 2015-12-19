@@ -235,7 +235,7 @@ void CClient::Event_Item_Pickup(CGrayUID uid, int amount) // Client grabs an ite
 	EXC_CATCH;
 }
 
-void inline CClient::Event_Item_Drop_Fail( CItem * pItem )
+void CClient::Event_Item_Drop_Fail( CItem *pItem )
 {
 	ADDTOCALLSTACK("CClient::Event_Item_Drop_Fail");
 	// The item was in the LAYER_DRAGGING.

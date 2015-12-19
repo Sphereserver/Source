@@ -1172,7 +1172,7 @@ public:
 	bool Event_DoubleClick( CGrayUID uid, bool fMacro, bool fTestTouch, bool fScript = false );
 	void Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName );
 	void Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, unsigned char gridIndex = 0 ); // Item is dropped on ground
-	inline void Event_Item_Drop_Fail( CItem * pItem );
+	void Event_Item_Drop_Fail( CItem *pItem );
 	void Event_Item_Dye( CGrayUID uid, HUE_TYPE wHue );	// Rehue an item
 	void Event_Item_Pickup( CGrayUID uid, int amount ); // Client grabs an item
 	void Event_MailMsg( CGrayUID uid1, CGrayUID uid2 );
