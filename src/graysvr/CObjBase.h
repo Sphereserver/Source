@@ -308,8 +308,8 @@ public:
 	// Location
 	virtual bool MoveTo(CPointMap pt, bool bForceFix = false) = 0;	// Move to a location at top level.
 
-	virtual bool MoveNear( CPointMap pt, int iSteps = 0, DWORD dwCan = CAN_C_WALK );
-	virtual bool MoveNearObj( const CObjBaseTemplate * pObj, int iSteps = 0, DWORD dwCan = CAN_C_WALK );
+	virtual bool MoveNear( CPointMap pt, int iSteps = 0 );
+	virtual bool MoveNearObj( const CObjBaseTemplate *pObj, int iSteps = 0 );
 
 	void inline SetNamePool_Fail( TCHAR * ppTitles );
 	bool SetNamePool( LPCTSTR pszName );
@@ -1097,7 +1097,7 @@ public:
 		return MoveToUpdate( pt, bForceFix);
 	}
 	bool MoveToCheck( const CPointMap & pt, CChar * pCharMover = NULL );
-	virtual bool MoveNearObj( const CObjBaseTemplate * pItem, int iSteps = 0, WORD wCan = CAN_C_WALK );
+	virtual bool MoveNearObj( const CObjBaseTemplate *pItem, int iSteps = 0 );
 
 	CItem* GetNext() const
 	{
@@ -3227,15 +3227,13 @@ public:
 		FixClimbHeight();
 	}
 	bool MoveToValidSpot(DIR_TYPE dir, int iDist, int iDistStart = 1, bool bFromShip = false);
-	virtual bool MoveNearObj( const CObjBaseTemplate * pObj, int iSteps = 0, DWORD dwCan = CAN_C_WALK )
+	virtual bool MoveNearObj( const CObjBaseTemplate *pObj, int iSteps = 0 )
 	{
-		UNREFERENCED_PARAMETER(dwCan);
-		return CObjBase::MoveNearObj( pObj, iSteps, GetMoveBlockFlags());
+		return CObjBase::MoveNearObj(pObj, iSteps);
 	}
-	bool MoveNear( CPointMap pt, int iSteps = 0, DWORD dwCan = CAN_C_WALK )
+	bool MoveNear( CPointMap pt, int iSteps = 0 )
 	{
-		UNREFERENCED_PARAMETER(dwCan);
-		return CObjBase::MoveNear( pt, iSteps, GetMoveBlockFlags());
+		return CObjBase::MoveNear(pt, iSteps);
 	}
 
 	CRegionBase * CanMoveWalkTo( CPointBase & pt, bool fCheckChars = true, bool fCheckOnly = false, DIR_TYPE dir = DIR_QTY, bool fPathFinding = false );

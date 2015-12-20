@@ -1414,22 +1414,22 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	return true;
 }
 
-bool CItem::MoveNearObj( const CObjBaseTemplate * pObj, int iSteps, WORD wCan )
+bool CItem::MoveNearObj( const CObjBaseTemplate *pObj, int iSteps )
 {
 	ADDTOCALLSTACK("CItem::MoveNearObj");
 	// Put in the same container as another item.
 	ASSERT(pObj);
-	CItemContainer * pPack = (dynamic_cast <CItemContainer*> (pObj->GetParent()));
-	if ( pPack != NULL )
+	CItemContainer *pPack = dynamic_cast<CItemContainer *>(pObj->GetParent());
+	if ( pPack )
 	{
 		// Put in same container (make sure they don't get re-combined)
-		pPack->ContentAdd( this, pObj->GetContainedPoint());
-		return( true );
+		pPack->ContentAdd(this, pObj->GetContainedPoint());
+		return true;
 	}
 	else 
 	{
 		// Equipped or on the ground so put on ground nearby.
-		return CObjBase::MoveNearObj( pObj, iSteps, wCan );
+		return CObjBase::MoveNearObj(pObj, iSteps);
 	}
 }
 

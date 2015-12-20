@@ -269,15 +269,15 @@ bool CObjBase::SetNamePool( LPCTSTR pszName )
 	return true;
 }
 
-bool CObjBase::MoveNearObj( const CObjBaseTemplate * pObj, int iSteps, DWORD dwCan )
+bool CObjBase::MoveNearObj( const CObjBaseTemplate *pObj, int iSteps )
 {
 	ADDTOCALLSTACK("CObjBase::MoveNearObj");
-	ASSERT( pObj );
-	if ( pObj->IsDisconnected())	// nothing is "near" a disconnected item.
+	ASSERT(pObj);
+	if ( pObj->IsDisconnected() )	// nothing is "near" a disconnected item.
 		return false;
 
 	pObj = pObj->GetTopLevelObj();
-	return( MoveNear( pObj->GetTopPoint(), iSteps, dwCan ) );
+	return MoveNear(pObj->GetTopPoint(), iSteps);
 }
 
 void CObjBase::r_WriteSafe( CScript & s )
@@ -470,44 +470,39 @@ void CObjBase::SpeakUTF8Ex( const NWORD * pText, HUE_TYPE wHue, TALKMODE_TYPE mo
 	g_World.SpeakUNICODE( this, pText, wHue, mode, font, lang );
 }
 
-bool CObjBase::MoveNear( CPointMap pt, int iSteps, DWORD dwCan )
+bool CObjBase::MoveNear( CPointMap pt, int iSteps )
 {
 	ADDTOCALLSTACK("CObjBase::MoveNear");
-	UNREFERENCED_PARAMETER(dwCan);
 	// Move to nearby this other object.
 	// Actually move it within +/- iSteps
 
-	DIR_TYPE dir = static_cast<DIR_TYPE>(Calc_GetRandVal( DIR_QTY ));
-	for (; iSteps > 0 ; --iSteps )
+	CPointBase ptOld = pt;
+	for ( size_t i = 0; i < iSteps; --i )
 	{
-		// Move to the right or left?
-		CPointBase pTest = pt;	// Save this so we can go back to it if we hit a blocking object.
-		pt.Move( dir );
-		if (!pt.IsValidPoint())
+		pt = ptOld;
+		pt.m_x += Calc_GetRandVal2(-iSteps, iSteps);
+		pt.m_y += Calc_GetRandVal2(-iSteps, iSteps);
+		if ( !pt.IsValidPoint() )	// hit the edge of the world, so go back to the previous valid position
 		{
-			// Hit the edge of the world, so go back to the previous valid position
-			pt = pTest;
-			break;	// stopped
+			pt = ptOld;
+			break;
 		}
-
-		dir = GetDirTurn( dir, Calc_GetRandVal(3)-1 );	// stagger ?
-
 	}
 
-	//	deny spawning outside the house, etc
 	if ( IsChar() )
 	{
-		CChar* pCharThis = STATIC_CAST<CChar*>(this);
-		ASSERT(pCharThis != NULL);
+		// Don't move to an position that we can't walk to
+		CChar *pChar = static_cast<CChar *>(this);
+		ASSERT(pChar);
 
-		pCharThis->m_zClimbHeight = 0;
-		if ( pCharThis->CanMoveWalkTo(pt, false, false, dir) == NULL )
-			return( false );
+		pChar->m_zClimbHeight = 0;
+		if ( pChar->CanMoveWalkTo(pt, false) == NULL )
+			return false;
 	}
 
 	if ( MoveTo(pt) )
 	{
-		if (IsItem())
+		if ( IsItem() )
 			Update();
 		return true;
 	}
