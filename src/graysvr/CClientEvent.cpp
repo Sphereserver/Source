@@ -240,7 +240,7 @@ void CClient::Event_Item_Drop_Fail( CItem *pItem )
 	ADDTOCALLSTACK("CClient::Event_Item_Drop_Fail");
 	// The item was in the LAYER_DRAGGING.
 	// Try to bounce it back to where it came from.
-	if ( !pItem )
+	if ( !pItem || pItem != m_pChar->LayerFind(LAYER_DRAGGING) )
 		return;
 
 	CItemContainer *pPrevCont = static_cast<CItemContainer *>(m_Targ_PrvUID.ItemFind());

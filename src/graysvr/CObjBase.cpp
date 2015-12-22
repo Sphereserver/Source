@@ -477,7 +477,7 @@ bool CObjBase::MoveNear( CPointMap pt, int iSteps )
 	// Actually move it within +/- iSteps
 
 	CPointBase ptOld = pt;
-	for ( size_t i = 0; i < iSteps; --i )
+	for ( int i = 0; i < iSteps; i++ )
 	{
 		pt = ptOld;
 		pt.m_x += Calc_GetRandVal2(-iSteps, iSteps);
