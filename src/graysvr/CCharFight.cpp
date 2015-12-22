@@ -3397,20 +3397,19 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			pItemHit = pCharTarg->LayerFind(LAYER_HAND2);
 			ParryChance = pCharTarg->Skill_GetBase(SKILL_PARRYING) / 40;
 		}
-		else if ( pCharTarg->LayerFind(LAYER_HAND1) )	// parry using weapon
+		else if ( pCharTarg->m_uidWeapon.IsItem() )		// parry using weapon
 		{
-			pItemHit = pCharTarg->LayerFind(LAYER_HAND1);
+			pItemHit = pCharTarg->m_uidWeapon.ItemFind();
 			ParryChance = pCharTarg->Skill_GetBase(SKILL_PARRYING) / 80;
 		}
 
 		if ( pCharTarg->Skill_GetBase(SKILL_PARRYING) >= 1000 )
 			ParryChance += 5;
 
-		int DexMod = 100;
-		if ( pCharTarg->Stat_GetVal(STAT_DEX) < 80 )
-			DexMod -= (80 - pCharTarg->Stat_GetVal(STAT_DEX));
+		int Dex = pCharTarg->Stat_GetAdjusted(STAT_DEX);
+		if ( Dex < 80 )
+			ParryChance = ParryChance * (20 + Dex) / 100;
 
-		ParryChance *= DexMod / 100;
 		if ( pCharTarg->Skill_UseQuick(SKILL_PARRYING, ParryChance, true, false) )
 		{
 			if ( IsPriv(PRIV_DETAIL) )
