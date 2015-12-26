@@ -210,7 +210,7 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_CorpEquip		= 0x89,
 	XCMD_GumpTextDisp	= 0x8b,
 	XCMD_Relay			= 0x8c,
-	XCMD_CreateKR		= 0x8d,
+	XCMD_CreateNew		= 0x8d,
 	//	0x90
 	XCMD_MapDisplay		= 0x90,
 	XCMD_CharListReq	= 0x91,
@@ -838,15 +838,14 @@ enum BBOARDF_TYPE	// Bulletin Board Flags. m_flag
 
 enum EXTCMD_TYPE
 {
-	EXTCMD_OPEN_SPELLBOOK	= 0x43,	// 67 = open spell book if we have one.
-	EXTCMD_ANIMATE			= 0xC7,	// "bow" or "salute"
-	EXTCMD_SKILL			= 0x24,	// Skill start "number of the skill"
-	EXTCMD_AUTOTARG			= 47,	// bizarre new autotarget mode. "target x y z"
-	EXTCMD_CAST_MACRO		= 86,	// macro spell. "spell number"
-	EXTCMD_CAST_BOOK		= 39,	// cast spell from book. "spell number"
-	EXTCMD_DOOR_AUTO		= 88,	// open door macro = Attempt to open a door around us.
-	EXTCMD_UNKGODCMD		= 107,  // Unknow god command
-	EXTCMD_INVOKE_VIRTUE	= 244	// invoke virtue
+	EXTCMD_SKILL			= 0x24,	// skill start. "skill number"
+	EXTCMD_CAST_BOOK		= 0x27,	// cast spell from book. "spell number"
+	EXTCMD_AUTOTARG			= 0x2f,	// bizarre new autotarget mode. "target x y z"
+	EXTCMD_OPEN_SPELLBOOK	= 0x43,	// open spell book if we have one. "book type"
+	EXTCMD_CAST_MACRO		= 0x56,	// macro spell. "spell number"
+	EXTCMD_DOOR_AUTO		= 0x58,	// open door macro
+	EXTCMD_ANIMATE			= 0xc7,	// "bow" or "salute"
+	EXTCMD_INVOKE_VIRTUE	= 0xf4	// invoke virtue
 };
 
 enum CHATMSG_TYPE	// Chat system messages.
@@ -1779,7 +1778,7 @@ struct CEvent	// event buffer from client to server..
 			CExtAosData m_u;
 		} ExtAosData;
 
-		struct // XCMD_CreateKR, size = ? // create a new char (uokr)
+		struct // XCMD_CreateNew, size = ? // create a new char (KR/SA)
 		{
 			BYTE m_Cmd;						// 0 = 0x8D
 			NWORD m_len;					// 1 - 2 = length

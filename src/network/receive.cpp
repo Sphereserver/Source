@@ -1486,17 +1486,17 @@ bool PacketCharDelete::onReceive(NetState* net)
 /***************************************************************************
  *
  *
- *	Packet 0x8D : PacketCreateKR		create new character request (KR)
+ *	Packet 0x8D : PacketCreateNew		create new character request (KR/SA)
  *
  *
  ***************************************************************************/
-PacketCreateKR::PacketCreateKR() : PacketCreate(0)
+PacketCreateNew::PacketCreateNew() : PacketCreate(0)
 {
 }
 
-bool PacketCreateKR::onReceive(NetState* net)
+bool PacketCreateNew::onReceive(NetState* net)
 {
-	ADDTOCALLSTACK("PacketCreateKR::onReceive");
+	ADDTOCALLSTACK("PacketCreateNew::onReceive");
 
 	skip(10); // 2=length, 4=pattern1, 4=pattern2
 	TCHAR charname[MAX_NAME_SIZE];
@@ -4136,7 +4136,7 @@ bool PacketUseHotbar::onReceive(NetState* net)
 /***************************************************************************
  *
  *
- *	Packet 0xEC : PacketEquipItemMacro				equip item(s) macro
+ *	Packet 0xEC : PacketEquipItemMacro				equip item(s) macro (KR)
  *
  *
  ***************************************************************************/
@@ -4155,10 +4155,12 @@ bool PacketEquipItemMacro::onReceive(NetState* net)
 		return false;
 
 	skip(2); // packet length
-	int itemCount = readByte();
+	BYTE itemCount = readByte();
+	if ( itemCount > 3 )	// prevent packet exploit sending fake values just to create heavy loops and overload server CPU
+		itemCount = 3;
 
 	CItem* item;
-	for (int i = 0; i < itemCount; i++)
+	for (BYTE i = 0; i < itemCount; i++)
 	{
 		item = CGrayUID(readInt32()).ItemFind();
 		if (item == NULL)
@@ -4180,7 +4182,7 @@ bool PacketEquipItemMacro::onReceive(NetState* net)
 /***************************************************************************
  *
  *
- *	Packet 0xED : PacketUnEquipItemMacro			unequip item(s) macro
+ *	Packet 0xED : PacketUnEquipItemMacro			unequip item(s) macro (KR)
  *
  *
  ***************************************************************************/
@@ -4199,11 +4201,13 @@ bool PacketUnEquipItemMacro::onReceive(NetState* net)
 		return false;
 
 	skip(2); // packet length
-	int layerCount = readByte();
+	BYTE itemCount = readByte();
+	if ( itemCount > 3 )	// prevent packet exploit sending fake values just to create heavy loops and overload server CPU
+		itemCount = 3;
 
 	LAYER_TYPE layer;
 	CItem* item;
-	for (int i = 0; i < layerCount; i++)
+	for (BYTE i = 0; i < itemCount; i++)
 	{
 		layer = static_cast<LAYER_TYPE>(readInt16());
 

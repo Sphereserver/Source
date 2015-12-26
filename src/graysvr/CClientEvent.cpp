@@ -2719,9 +2719,6 @@ void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName )
 			}
 			break;
 
-		case EXTCMD_UNKGODCMD: // 107, seen this but no idea what it does.
-			break;
-
 		case EXTCMD_INVOKE_VIRTUE:
 			if ((m_pChar != NULL) && ( IsTrigUsed(TRIGGER_USERVIRTUEINVOKE) ))
 			{
