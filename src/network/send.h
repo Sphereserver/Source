@@ -1786,14 +1786,14 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0xF2 : PacketTimeSyncRequest		time sync request (NORMAL)
+ *	Packet 0xF2 : PacketTimeSyncResponse	time sync request (NORMAL)
  *
  *
  ***************************************************************************/
-class PacketTimeSyncRequest : public PacketSend
+class PacketTimeSyncResponse : public PacketSend
 {
 public:
-	PacketTimeSyncRequest(const CClient* target);
+	PacketTimeSyncResponse(const CClient* target);
 
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)

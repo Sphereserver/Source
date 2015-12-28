@@ -1421,14 +1421,14 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0xF1 : PacketTimeSyncReply				time sync reply (KR/SA)
+ *	Packet 0xF1 : PacketTimeSyncRequest				time sync request (KR/SA)
  *
  *
  ***************************************************************************/
-class PacketTimeSyncReply : public Packet
+class PacketTimeSyncRequest : public Packet
 {
 public:
-	PacketTimeSyncReply();
+	PacketTimeSyncRequest();
 	virtual bool onReceive(NetState* net);
 };
 

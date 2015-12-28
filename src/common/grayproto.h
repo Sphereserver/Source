@@ -295,16 +295,16 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_MacroUnEquipItem		= 0xed,
 	XCMD_NewSeed				= 0xef,
 	//	0xF0
-	XCMD_WalkNew		= 0xf0,
-	XCMD_TSyncReply		= 0xf1,
-	XCMD_TSyncRequest	= 0xf2,
-	XCMD_PutNew			= 0xf3,
-	XCMD_CrashReport    = 0xf4,
-	XCMD_MapDisplayNew	= 0xf5,
-	XCMD_MoveShip		= 0xf6,
-	XCMD_PacketCont		= 0xf7,
-	XCMD_CreateHS		= 0xf8,
-	XCMD_QTY		= 0xf9
+	XCMD_WalkRequestNew		= 0xf0,
+	XCMD_TimeSyncRequest	= 0xf1,
+	XCMD_TimeSyncResponse	= 0xf2,
+	XCMD_PutNew				= 0xf3,
+	XCMD_CrashReport		= 0xf4,
+	XCMD_MapDisplayNew		= 0xf5,
+	XCMD_MoveShip			= 0xf6,
+	XCMD_PacketCont			= 0xf7,
+	XCMD_CreateHS			= 0xf8,
+	XCMD_QTY				= 0xf9
 };
 
 #define SEEDLENGTH_OLD (sizeof( DWORD ))
@@ -1213,7 +1213,7 @@ struct CEvent	// event buffer from client to server..
 
 		struct // size = 38
 		{
-			BYTE m_Cmd;		// 0     = 0xF0  XCMD_WalkNew
+			BYTE m_Cmd;		// 0     = 0xF0  XCMD_WalkRequestNew
 			NWORD m_len;	// 1-2   = length of packet
 			BYTE m_unk1;	// 3     = 01
 			NDWORD m_unk2;	// 4-7   = 00 00 01 22

@@ -659,8 +659,8 @@ void PacketManager::registerStandardPackets(void)
 	registerPacket(XCMD_UseHotbar, new PacketUseHotbar());						//
 	registerPacket(XCMD_MacroEquipItem, new PacketEquipItemMacro());			// equip item(s) macro (KR)
 	registerPacket(XCMD_MacroUnEquipItem, new PacketUnEquipItemMacro());		// unequip item(s) macro (KR)
-	registerPacket(XCMD_WalkNew, new PacketMovementReqNew());					// movement request (SA)
-	registerPacket(XCMD_TSyncReply, new PacketTimeSyncReply());					//
+	registerPacket(XCMD_WalkRequestNew, new PacketMovementReqNew());			// new movement request (KR/SA)
+	registerPacket(XCMD_TimeSyncRequest, new PacketTimeSyncRequest());			// time sync request (KR/SA)
 	registerPacket(XCMD_CrashReport, new PacketCrashReport());					//
 	registerPacket(XCMD_CreateHS, new PacketCreateHS());						// create character (HS)
 

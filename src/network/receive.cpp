@@ -4228,7 +4228,7 @@ bool PacketUnEquipItemMacro::onReceive(NetState* net)
 /***************************************************************************
  *
  *
- *	Packet 0xF0 : PacketMovementReqNew	movement request (KR/SA)
+ *	Packet 0xF0 : PacketMovementReqNew			new movement request (KR/SA)
  *
  *
  ***************************************************************************/
@@ -4239,11 +4239,17 @@ PacketMovementReqNew::PacketMovementReqNew() : Packet(0)
 bool PacketMovementReqNew::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketMovementReqNew::onReceive");
-	// This new walk packet is only used on SA enhanced clients.
-	// On classic clients this packet is used as 'Krrios special client' (?) which
+	// New walk packet used on enhanced clients (still incomplete)
+	// The client will only use it when requested by login flags on packet 0xA9.
+
+	// The 'timer' values used here are linked somehow to time sync packets
+	// 0xF1 (client request) / 0xF2 (server response) but I have no idea how it works.
+	// The client request an time resync at every 60 seconds.
+
+	// PS: On classic clients this packet is used as 'Krrios special client' (?) which
 	// does some useless weird stuff. Also classic clients using Injection 2014 will
 	// strangely send this packet to server when the player press the 'Chat' button,
-	// so it's better leave this packet disabled to prevent some exploits.
+	// so it's better leave this packet disabled on classic clients to prevent exploits.
 
 	CClient *client = net->getClient();
 	ASSERT(client);
@@ -4284,19 +4290,23 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 /***************************************************************************
  *
  *
- *	Packet 0xF1 : PacketTimeSyncReply				time sync reply (KR/SA)
+ *	Packet 0xF1 : PacketTimeSyncRequest				time sync request (KR/SA)
  *
  *
  ***************************************************************************/
-PacketTimeSyncReply::PacketTimeSyncReply() : Packet(9)
+PacketTimeSyncRequest::PacketTimeSyncRequest() : Packet(9)
 {
 }
 
-bool PacketTimeSyncReply::onReceive(NetState* net)
+bool PacketTimeSyncRequest::onReceive(NetState* net)
 {
-	ADDTOCALLSTACK("PacketTimeSyncReply::onReceive");
-	UNREFERENCED_PARAMETER(net);
-	//INT64 iTime = readInt64();
+	ADDTOCALLSTACK("PacketTimeSyncRequest::onReceive");
+
+	CClient* client = net->getClient();
+	ASSERT(client);
+
+	//INT64 iTime = readInt64();	// what we must do with this value?
+	new PacketTimeSyncResponse(client);
 	return true;
 }
 

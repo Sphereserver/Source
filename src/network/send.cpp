@@ -4736,25 +4736,27 @@ PacketToggleHotbar::PacketToggleHotbar(const CClient* target, bool enable) : Pac
 /***************************************************************************
  *
  *
- *	Packet 0xF2 : PacketTimeSyncRequest		time sync request (HIGH)
+ *	Packet 0xF2 : PacketTimeSyncResponse	time sync response (HIGH)
  *
  *
  ***************************************************************************/
-PacketTimeSyncRequest::PacketTimeSyncRequest(const CClient* target) : PacketSend(XCMD_TSyncRequest, 25, PRI_NORMAL)
+PacketTimeSyncResponse::PacketTimeSyncResponse(const CClient* target) : PacketSend(XCMD_TimeSyncResponse, 25, PRI_HIGH)
 {
-	ADDTOCALLSTACK("PacketTimeSyncRequest::PacketTimeSyncRequest");
-	time_t ltime;
-    time(&ltime);
+	ADDTOCALLSTACK("PacketTimeSyncResponse::PacketTimeSyncResponse");
 
 #ifdef WIN32
+	time_t ltime;
+	time(&ltime);
+
 	SYSTEMTIME st;
 	GetSystemTime(&st);
-	INT64 llTime = ((INT64)(ltime) * 1000) + st.wMilliseconds;
+	INT64 llTime = ((static_cast<INT64>(ltime) * 1000) + st.wMilliseconds) / 10000;
 #else
-	struct timeval tim; 
-	gettimeofday(&tim, NULL);    
-	INT64 llTime = ((INT64)(tim.tv_sec) * 1000) + tim.tv_usec;
+	struct timeval tim;
+	gettimeofday(&tim, NULL);
+	INT64 llTime = ((static_cast<INT64>(tim.tv_sec) * 1000) + tim.tv_usec) / 10000;
 #endif
+
 	writeInt64(llTime);
 	writeInt64(llTime+100);
 	writeInt64(llTime+100);	//No idea if different values make a difference. I didn't notice anything different when all values were the same.

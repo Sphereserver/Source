@@ -1132,7 +1132,6 @@ CWorld::CWorld()
 	m_bSaveNotificationSent = false;
 	m_timeSector.Init();
 	m_timeSave.Init();
-	m_timeSync.Init();
 	m_timeRespawn.Init();
 	m_timeStartup.Init();
 	m_timeCallUserFunc.Init();
@@ -2457,22 +2456,6 @@ void CWorld::OnTick()
 
 	if ( g_Serv.IsLoading() || !m_Clock.Advance() )
 		return;
-
-	if ( g_Cfg.m_iFeatureSA & FEATURE_SA_MOVEMENT )
-	{
-		if ( m_timeSync <= GetCurrentTime())
-		{
-			m_timeSync = GetCurrentTime() + SYNC_TICK_PERIOD;
-			ClientIterator it;
-			for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
-			{
-				CChar * tMe = pClient->GetChar();
-				if ( tMe == NULL )
-					continue;
-				new PacketTimeSyncRequest(pClient);
-			}
-		}
-	}
 
 	if ( m_timeSector <= GetCurrentTime())
 	{
