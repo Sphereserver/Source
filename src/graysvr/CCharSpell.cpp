@@ -1311,10 +1311,10 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				}
 				if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) && m_pPlayer )		// Curse also decrease max resistances on players
 				{
-					SetDefNum("RESFIREMAX", GetDefNum("RESFIREMAX", true) - 10);
-					SetDefNum("RESCOLDMAX", GetDefNum("RESCOLDMAX", true) - 10);
-					SetDefNum("RESPOISONMAX", GetDefNum("RESPOISONMAX", true) - 10);
-					SetDefNum("RESENERGYMAX", GetDefNum("RESENERGYMAX", true) - 10);
+					SetDefNum("RESFIREMAX", GetDefNum("RESFIREMAX", true, true) - 10);
+					SetDefNum("RESCOLDMAX", GetDefNum("RESCOLDMAX", true, true) - 10);
+					SetDefNum("RESPOISONMAX", GetDefNum("RESPOISONMAX", true, true) - 10);
+					SetDefNum("RESENERGYMAX", GetDefNum("RESENERGYMAX", true, true) - 10);
 				}
 				for ( int i = STAT_STR; i < STAT_BASE_QTY; i++ )
 					Stat_AddMod(static_cast<STAT_TYPE>(i), -iStatEffect);
@@ -1765,7 +1765,7 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 	{
 		if ( pSpellPrev->GetEquipLayer() != layer )
 			continue;
-		if ( pSpellPrev->m_itSpell.m_spell != spell )
+		if ( layer != LAYER_FLAG_Potion && pSpellPrev->m_itSpell.m_spell != spell )
 			continue;
 		if ( pSpellPrev->GetTimerAdjusted() == -1 )
 		{

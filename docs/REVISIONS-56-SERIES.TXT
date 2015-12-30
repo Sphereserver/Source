@@ -2778,3 +2778,5 @@ Changed: Improved the event handler when an item equip/drop request was denied. 
 
 30-12-2015, Coruja
 Fixed: New player chars not creating MALE_DEFAULT / FEMALE_DEFAULT newbie items when the player select Necromancer/Paladin/Ninja/Samurai as profession on character creation screen.
+Fixed: Potions not removing previous memories on layer 'layer_flag_potion' before equip new memories on this layer.
+Fixed: Curse spell not working correctly when COMBAT_ELEMENTAL_ENGINE is enabled.
