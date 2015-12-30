@@ -1226,84 +1226,66 @@ void CChar::SetID( CREID_TYPE id )
 }
 
 // Create a brand new Player char. Called directly from the packet.
-void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc  )
+void CChar::InitPlayer( CClient *pClient, const char *pszCharname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc )
 {
 	ADDTOCALLSTACK("CChar::InitPlayer");
 	ASSERT(pClient);
 	UNREFERENCED_PARAMETER(prProf);
 
-	CAccount * pAccount = pClient->GetAccount();
-	if (pAccount != NULL)
+	CAccount *pAccount = pClient->GetAccount();
+	if ( pAccount )
 		SetPlayerAccount(pAccount);
 
-	switch (rtRace)
+	switch ( rtRace )
 	{
 		default:
 		case RACETYPE_HUMAN:
-			SetID(( bFemale ) ? CREID_WOMAN : CREID_MAN );
+			SetID(bFemale ? CREID_WOMAN : CREID_MAN);
 			break;
 		case RACETYPE_ELF:
-			SetID(( bFemale ) ? CREID_ELFWOMAN : CREID_ELFMAN );
+			SetID(bFemale ? CREID_ELFWOMAN : CREID_ELFMAN);
 			break;
 		case RACETYPE_GARGOYLE:
-			SetID(( bFemale ) ? CREID_GARGWOMAN : CREID_GARGMAN );
+			SetID(bFemale ? CREID_GARGWOMAN : CREID_GARGMAN);
 			break;
 	}
 
 	// Set name
 	bool bNameIsAccepted = true;
-	TCHAR * zCharName = Str_GetTemp();
+	TCHAR *zCharName = Str_GetTemp();
 	strcpylen(zCharName, pszCharname, MAX_NAME_SIZE);
 
-	if ( !strlen(zCharName) || g_Cfg.IsObscene(zCharName) || Str_CheckName(zCharName) ||
-		!strnicmp(zCharName,"lord ", 5) || !strnicmp(zCharName,"lady ", 5) ||
-		!strnicmp(zCharName,"seer ", 5) || !strnicmp(zCharName,"gm ", 3) ||
-		!strnicmp(zCharName,"admin ", 6) || !strnicmp(zCharName,"counselor ", 10))
+	if ( !strlen(zCharName) || g_Cfg.IsObscene(zCharName) || Str_CheckName(zCharName) || !strnicmp(zCharName, "lord ", 5) || !strnicmp(zCharName, "lady ", 5) || !strnicmp(zCharName, "seer ", 5) || !strnicmp(zCharName, "gm ", 3) || !strnicmp(zCharName, "admin ", 6) || !strnicmp(zCharName, "counselor ", 10) )
 		bNameIsAccepted = false;
 
-	if (( bNameIsAccepted ) && ( IsTrigUsed(TRIGGER_RENAME) ))
+	if ( bNameIsAccepted && IsTrigUsed(TRIGGER_RENAME) )
 	{
 		CScriptTriggerArgs args;
 		args.m_s1 = zCharName;
 		args.m_pO1 = this;
-		if ( this->OnTrigger(CTRIG_Rename, this, &args) == TRIGRET_RET_TRUE )
+		if ( OnTrigger(CTRIG_Rename, this, &args) == TRIGRET_RET_TRUE )
 			bNameIsAccepted = false;
 	}
-	
+
 	if ( bNameIsAccepted )
 		SetName(zCharName);
 	else
-		SetNamePool( ( bFemale ) ? "#NAMES_HUMANFEMALE" : "#NAMES_HUMANMALE" );
+		SetNamePool(bFemale ? "#NAMES_HUMANFEMALE" : "#NAMES_HUMANMALE");
 
-	// start location id is 1-based, so decrement to get an index
-	if ( iStartLoc > 0 )
-		--iStartLoc;
-
-	if ( ! g_Cfg.m_StartDefs.IsValidIndex( iStartLoc ))
-	{
-		if ( g_Cfg.m_StartDefs.GetCount() > 0 )
-			m_ptHome = g_Cfg.m_StartDefs[0]->m_pt;
-		else
-			m_ptHome.InitPoint();
-	}
-	else
-	{
+	if ( g_Cfg.m_StartDefs.IsValidIndex(iStartLoc) )
 		m_ptHome = g_Cfg.m_StartDefs[iStartLoc]->m_pt;
-	}
+	else
+		m_ptHome.InitPoint();
 
-	if ( ! m_ptHome.IsValidPoint())
-	{
-		DEBUG_ERR(( "Invalid start location for character!\n" ));
-		if ( g_Cfg.m_StartDefs.GetCount() > 0 )
-			m_ptHome = g_Cfg.m_StartDefs[0]->m_pt;
-	}
+	if ( !m_ptHome.IsValidPoint() )
+		DEBUG_ERR(("Invalid start location '%d' for character!\n", iStartLoc));
 
-	SetUnkPoint( m_ptHome );	// Don't actually put me in the world yet.
+	SetUnkPoint(m_ptHome);	// don't actually put me in the world yet.
 
 	// randomize the skills first.
 	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
-		if ( g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
+		if ( g_Cfg.m_SkillIndexDefs.IsValidIndex(i) )
 			Skill_SetBase(static_cast<SKILL_TYPE>(i), Calc_GetRandVal(g_Cfg.m_iMaxBaseSkill));
 	}
 
@@ -1315,7 +1297,7 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 	if ( iSkillVal3 > 50 )	iSkillVal3 = 50;
 	if ( iSkillVal4 > 50 )	iSkillVal4 = 50;
 
-	if (skSkill4 != SKILL_NONE)
+	if ( skSkill4 != SKILL_NONE )
 	{
 		if ( (wStr + wDex + wInt) > 90 )
 			wStr = wDex = wInt = 30;
@@ -1336,22 +1318,22 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 	Stat_SetBase(STAT_DEX, wDex);
 	Stat_SetBase(STAT_INT, wInt);
 
-	if ( IsSkillBase(skSkill1) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill1))
+	if ( IsSkillBase(skSkill1) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill1) )
 		Skill_SetBase(skSkill1, iSkillVal1 * 10);
-	if ( IsSkillBase(skSkill2) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill2))
+	if ( IsSkillBase(skSkill2) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill2) )
 		Skill_SetBase(skSkill2, iSkillVal2 * 10);
-	if ( IsSkillBase(skSkill3) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill3))
+	if ( IsSkillBase(skSkill3) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill3) )
 		Skill_SetBase(skSkill3, iSkillVal3 * 10);
 	if ( skSkill4 != SKILL_NONE )
 	{
-		if ( IsSkillBase(skSkill4) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill4))
+		if ( IsSkillBase(skSkill4) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill4) )
 			Skill_SetBase(skSkill4, iSkillVal4 * 10);
 	}
 
 	m_fonttype = FONT_NORMAL;		// Set speech font type
 	m_sTitle.Empty();				// Set title
 
-	GetBank( LAYER_BANKBOX );		// Create bankbox
+	GetBank(LAYER_BANKBOX);			// Create bankbox
 	GetPackSafe();					// Create backpack
 
 	// Check skin hue
@@ -1359,29 +1341,29 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 	{
 		default:
 		case RACETYPE_HUMAN:
-			if (wSkinHue < HUE_SKIN_LOW)
+			if ( wSkinHue < HUE_SKIN_LOW )
 				wSkinHue = static_cast<HUE_TYPE>(HUE_SKIN_LOW);
-			if (wSkinHue > HUE_SKIN_HIGH)
+			if ( wSkinHue > HUE_SKIN_HIGH )
 				wSkinHue = static_cast<HUE_TYPE>(HUE_SKIN_HIGH);
 			break;
 
 		case RACETYPE_ELF:
+		{
+			static const int sm_ElfSkinHues[] = { 0x0BF, 0x24D, 0x24E, 0x24F, 0x353, 0x361, 0x367, 0x374, 0x375, 0x376, 0x381, 0x382, 0x383, 0x384, 0x385, 0x389, 0x3DE, 0x3E5, 0x3E6, 0x3E8, 0x3E9, 0x430, 0x4A7, 0x4DE, 0x51D, 0x53F, 0x579, 0x76B, 0x76C, 0x76D, 0x835, 0x903 };
+			int iMax = COUNTOF(sm_ElfSkinHues);
+			bool isValid = 0;
+			for ( int i = 0; i < iMax; i++ )
 			{
-				static const int sm_ElfSkinHues[] = { 0x0BF, 0x24D, 0x24E, 0x24F, 0x353, 0x361, 0x367, 0x374, 0x375, 0x376, 0x381, 0x382, 0x383, 0x384, 0x385, 0x389, 0x3DE, 0x3E5, 0x3E6, 0x3E8, 0x3E9, 0x430, 0x4A7, 0x4DE, 0x51D, 0x53F, 0x579, 0x76B, 0x76C, 0x76D, 0x835, 0x903 };
-				int iMax = COUNTOF(sm_ElfSkinHues);
-				bool isValid = 0;
-				for ( int i = 0; i < iMax; i++ )
+				if ( sm_ElfSkinHues[i] == wSkinHue )
 				{
-					if ( sm_ElfSkinHues[i] == wSkinHue )
-					{
-						isValid = 1;
-						break;
-					}
+					isValid = 1;
+					break;
 				}
-				if ( !isValid )
-					wSkinHue = static_cast<HUE_TYPE>(sm_ElfSkinHues[0]);
 			}
-			break;
+			if ( !isValid )
+				wSkinHue = static_cast<HUE_TYPE>(sm_ElfSkinHues[0]);
+		}
+		break;
 
 		case RACETYPE_GARGOYLE:
 			if ( wSkinHue < HUE_GARGSKIN_LOW )
@@ -1390,43 +1372,43 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 				wSkinHue = static_cast<HUE_TYPE>(HUE_GARGSKIN_HIGH);
 			break;
 	}
-	SetHue( (wSkinHue|HUE_UNDERWEAR) );
+	SetHue((wSkinHue|HUE_UNDERWEAR));
 
 	// Create hair
 	switch ( rtRace )
 	{
 		default:
 		case RACETYPE_HUMAN:
-			if ( !((( idHair >= ITEMID_HAIR_SHORT ) && ( idHair <= ITEMID_HAIR_PONYTAIL )) || (( idHair >= ITEMID_HAIR_MOHAWK ) && ( idHair <= ITEMID_HAIR_TOPKNOT ))) )
-				idHair = static_cast<ITEMID_TYPE>(0); // human can use only a restricted subset of hairs
+			if ( !(((idHair >= ITEMID_HAIR_SHORT) && (idHair <= ITEMID_HAIR_PONYTAIL)) || ((idHair >= ITEMID_HAIR_MOHAWK) && (idHair <= ITEMID_HAIR_TOPKNOT))) )
+				idHair = ITEMID_NOTHING;	// human can use only a restricted subset of hairs
 			if ( (bFemale && idHair == ITEMID_HAIR_RECEDING) || (!bFemale && idHair == ITEMID_HAIR_BUNS) )
-				idHair = static_cast<ITEMID_TYPE>(0);
+				idHair = ITEMID_NOTHING;
 			break;
 
 		case RACETYPE_ELF:
-			if ( !((( idHair >= ITEMID_HAIR_ML_ELF ) && ( idHair <= ITEMID_HAIR_ML_MULLET )) || (( idHair >= ITEMID_HAIR_ML_FLOWER ) && ( idHair <= ITEMID_HAIR_ML_SPYKE ))) )
-				idHair = static_cast<ITEMID_TYPE>(0); // elf can use only a restricted subset of hairs
+			if ( !(((idHair >= ITEMID_HAIR_ML_ELF) && (idHair <= ITEMID_HAIR_ML_MULLET)) || ((idHair >= ITEMID_HAIR_ML_FLOWER) && (idHair <= ITEMID_HAIR_ML_SPYKE))) )
+				idHair = ITEMID_NOTHING;	// elf can use only a restricted subset of hairs
 			if ( (bFemale && (idHair == ITEMID_HAIR_ML_LONG2 || idHair == ITEMID_HAIR_ML_ELF)) || (!bFemale && (idHair == ITEMID_HAIR_ML_FLOWER || idHair == ITEMID_HAIR_ML_LONG4)) )
-				idHair = static_cast<ITEMID_TYPE>(0);
+				idHair = ITEMID_NOTHING;
 			break;
 
 		case RACETYPE_GARGOYLE:
 			if ( bFemale )
 			{
 				if ( !((idHair == 0x4261 || idHair == 0x4262) || (idHair >= 0x4273 && idHair <= 0x4275) || (idHair == 0x42B0 || idHair == 0x42B1) || (idHair == 0x42AA || idHair == 0x42AB)) )
-					idHair = static_cast<ITEMID_TYPE>(0);
+					idHair = ITEMID_NOTHING;
 			}
 			else
 			{
-				if ( !(( idHair >= 0x4258 ) && ( idHair <= 0x425F )) )
-					idHair = static_cast<ITEMID_TYPE>(0);
+				if ( !((idHair >= 0x4258) && (idHair <= 0x425F)) )
+					idHair = ITEMID_NOTHING;
 			}
 			break;
 	}
 
 	if ( idHair )
 	{
-		CItem * pHair = CItem::CreateScript(idHair, this);
+		CItem *pHair = CItem::CreateScript(idHair, this);
 		ASSERT(pHair);
 		if ( !pHair->IsType(IT_HAIR) )
 			pHair->Delete();
@@ -1443,57 +1425,57 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 					break;
 
 				case RACETYPE_ELF:
+				{
+					static const int sm_ElfHairHues[] = { 0x034, 0x035, 0x036, 0x037, 0x038, 0x039, 0x058, 0x08E, 0x08F, 0x090, 0x091, 0x092, 0x101, 0x159, 0x15A, 0x15B, 0x15C, 0x15D, 0x15E, 0x128, 0x12F, 0x1BD, 0x1E4, 0x1F3, 0x207, 0x211, 0x239, 0x251, 0x26C, 0x2C3, 0x2C9, 0x31D, 0x31E, 0x31F, 0x320, 0x321, 0x322, 0x323, 0x324, 0x325, 0x326, 0x369, 0x386, 0x387, 0x388, 0x389, 0x38A, 0x59D, 0x6B8, 0x725, 0x853 };
+					int iMax = COUNTOF(sm_ElfHairHues);
+					bool isValid = 0;
+					for ( int i = 0; i < iMax; i++ )
 					{
-						static const int sm_ElfHairHues[] = { 0x034, 0x035, 0x036, 0x037, 0x038, 0x039, 0x058, 0x08E, 0x08F, 0x090, 0x091, 0x092, 0x101, 0x159, 0x15A, 0x15B, 0x15C, 0x15D, 0x15E, 0x128, 0x12F, 0x1BD, 0x1E4, 0x1F3, 0x207, 0x211, 0x239, 0x251, 0x26C, 0x2C3, 0x2C9, 0x31D, 0x31E, 0x31F, 0x320, 0x321, 0x322, 0x323, 0x324, 0x325, 0x326, 0x369, 0x386, 0x387, 0x388, 0x389, 0x38A, 0x59D, 0x6B8, 0x725, 0x853 };
-						int iMax = COUNTOF(sm_ElfHairHues);
-						bool isValid = 0;
-						for ( int i = 0; i < iMax; i++ )
+						if ( sm_ElfHairHues[i] == wHairHue )
 						{
-							if ( sm_ElfHairHues[i] == wHairHue )
-							{
-								isValid = 1;
-								break;
-							}
+							isValid = 1;
+							break;
 						}
-						if ( !isValid )
-							wHairHue = static_cast<HUE_TYPE>(sm_ElfHairHues[0]);
 					}
-					break;
+					if ( !isValid )
+						wHairHue = static_cast<HUE_TYPE>(sm_ElfHairHues[0]);
+				}
+				break;
 
 				case RACETYPE_GARGOYLE:
+				{
+					static const int sm_GargoyleHornHues[] = { 0x709, 0x70B, 0x70D, 0x70F, 0x711, 0x763, 0x765, 0x768, 0x76B, 0x6F3, 0x6F1, 0x6EF, 0x6E4, 0x6E2, 0x6E0, 0x709, 0x70B, 0x70D };
+					int iMax = COUNTOF(sm_GargoyleHornHues);
+					bool isValid = 0;
+					for ( int i = 0; i < iMax; i++ )
 					{
-						static const int sm_GargoyleHornHues[] = { 0x709, 0x70B, 0x70D, 0x70F, 0x711, 0x763, 0x765, 0x768, 0x76B, 0x6F3, 0x6F1, 0x6EF, 0x6E4, 0x6E2, 0x6E0, 0x709, 0x70B, 0x70D };
-						int iMax = COUNTOF(sm_GargoyleHornHues);
-						bool isValid = 0;
-						for ( int i = 0; i < iMax; i++ )
+						if ( sm_GargoyleHornHues[i] == wHairHue )
 						{
-							if ( sm_GargoyleHornHues[i] == wHairHue )
-							{
-								isValid = 1;
-								break;
-							}
+							isValid = 1;
+							break;
 						}
-						if ( !isValid )
-							wHairHue = static_cast<HUE_TYPE>(sm_GargoyleHornHues[0]);
 					}
-					break;
+					if ( !isValid )
+						wHairHue = static_cast<HUE_TYPE>(sm_GargoyleHornHues[0]);
+				}
+				break;
 			}
-			pHair->SetHue( wHairHue );
+			pHair->SetHue(wHairHue);
 			pHair->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
-			LayerAdd( pHair );	// add content
+			LayerAdd(pHair);	// add content
 		}
 	}
 
 	// Create beard
-	switch (rtRace)
+	switch ( rtRace )
 	{
 		case RACETYPE_HUMAN:
-			if ( !((( idBeard >= ITEMID_BEARD_LONG ) && ( idBeard <= ITEMID_BEARD_MOUSTACHE )) || (( idBeard >= ITEMID_BEARD_SH_M ) && ( idBeard <= ITEMID_BEARD_GO_M ))) )
-				idBeard = static_cast<ITEMID_TYPE>(0);
+			if ( !(((idBeard >= ITEMID_BEARD_LONG) && (idBeard <= ITEMID_BEARD_MOUSTACHE)) || ((idBeard >= ITEMID_BEARD_SH_M) && (idBeard <= ITEMID_BEARD_GO_M))) )
+				idBeard = ITEMID_NOTHING;
 
 		case RACETYPE_GARGOYLE:
 			if ( !((idBeard >= 0x42ad) && (idBeard <= 0x42b0)) )
-				idBeard = static_cast<ITEMID_TYPE>(0);
+				idBeard = ITEMID_NOTHING;
 			break;
 
 		default:
@@ -1501,11 +1483,11 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 	}
 
 	if ( bFemale || rtRace == RACETYPE_ELF )
-		idBeard = static_cast<ITEMID_TYPE>(0);
+		idBeard = ITEMID_NOTHING;
 
 	if ( idBeard )
 	{
-		CItem * pBeard = CItem::CreateScript( idBeard, this );
+		CItem *pBeard = CItem::CreateScript(idBeard, this);
 		ASSERT(pBeard);
 		if ( !pBeard->IsType(IT_BEARD) )
 			pBeard->Delete();
@@ -1520,35 +1502,35 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 						wBeardHue = static_cast<HUE_TYPE>(HUE_HAIR_HIGH);
 
 				case RACETYPE_GARGOYLE:
+				{
+					static const int sm_GargoyleBeardHues[] = { 0x709, 0x70B, 0x70D, 0x70F, 0x711, 0x763, 0x765, 0x768, 0x76B, 0x6F3, 0x6F1, 0x6EF, 0x6E4, 0x6E2, 0x6E0, 0x709, 0x70B, 0x70D };
+					int iMax = COUNTOF(sm_GargoyleBeardHues);
+					bool isValid = 0;
+					for ( int i = 0; i < iMax; i++ )
 					{
-						static const int sm_GargoyleBeardHues[] = { 0x709, 0x70B, 0x70D, 0x70F, 0x711, 0x763, 0x765, 0x768, 0x76B, 0x6F3, 0x6F1, 0x6EF, 0x6E4, 0x6E2, 0x6E0, 0x709, 0x70B, 0x70D };
-						int iMax = COUNTOF(sm_GargoyleBeardHues);
-						bool isValid = 0;
-						for ( int i = 0; i < iMax; i++ )
+						if ( sm_GargoyleBeardHues[i] == wHairHue )
 						{
-							if ( sm_GargoyleBeardHues[i] == wHairHue )
-							{
-								isValid = 1;
-								break;
-							}
+							isValid = 1;
+							break;
 						}
-						if ( !isValid )
-							wHairHue = static_cast<HUE_TYPE>(sm_GargoyleBeardHues[0]);
 					}
-					break;
+					if ( !isValid )
+						wHairHue = static_cast<HUE_TYPE>(sm_GargoyleBeardHues[0]);
+				}
+				break;
 
 				default:
 					break;
 			}
-			pBeard->SetHue( wBeardHue );
+			pBeard->SetHue(wBeardHue);
 			pBeard->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
-			LayerAdd( pBeard );	// add content
+			LayerAdd(pBeard);	// add content
 		}
 	}
 
 	// Get starting items for the profession / skills.
 	int iProfession = INT_MAX;
-	bool bCreateSkillItems = 1;
+	bool bCreateSkillItems = true;
 	switch ( prProf )
 	{
 		case PROFESSION_ADVANCED:
@@ -1565,22 +1547,26 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 			break;
 		case PROFESSION_NECROMANCER:
 			iProfession = RES_NEWBIE_PROF_NECROMANCER;
-			bCreateSkillItems = 0;
+			bCreateSkillItems = false;
 			break;
 		case PROFESSION_PALADIN:
 			iProfession = RES_NEWBIE_PROF_PALADIN;
-			bCreateSkillItems = 0;
+			bCreateSkillItems = false;
 			break;
 		case PROFESSION_SAMURAI:
 			iProfession = RES_NEWBIE_PROF_SAMURAI;
-			bCreateSkillItems = 0;
+			bCreateSkillItems = false;
 			break;
 		case PROFESSION_NINJA:
 			iProfession = RES_NEWBIE_PROF_NINJA;
-			bCreateSkillItems = 0;
+			bCreateSkillItems = false;
 			break;
 	}
+
 	CResourceLock s;
+	if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, bFemale ? RES_NEWBIE_FEMALE_DEFAULT : RES_NEWBIE_MALE_DEFAULT)) )
+		ReadScript(s);
+
 	if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iProfession, rtRace)) )
 		ReadScript(s);
 	else if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iProfession)) )
@@ -1588,14 +1574,11 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 
 	if ( bCreateSkillItems )
 	{
-		for ( int i = 0; i < 5; i++ )
+		for ( int i = 1; i < 5; i++ )
 		{
 			int iSkill = INT_MAX;
 			switch ( i )
 			{
-				case 0:
-					iSkill = ( bFemale ) ? RES_NEWBIE_FEMALE_DEFAULT : RES_NEWBIE_MALE_DEFAULT;
-					break;
 				case 1:
 					iSkill = skSkill1;
 					break;
@@ -1611,29 +1594,31 @@ void CChar::InitPlayer( CClient * pClient, const char * pszCharname, bool bFemal
 			}
 
 			if ( !g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iSkill, rtRace)) )
+			{
 				if ( !g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iSkill)) )
 					continue;
+			}
 			ReadScript(s);
 		}
 	}
 
-	CItem * pLayer = LayerFind(LAYER_SHIRT);
+	CItem *pLayer = LayerFind(LAYER_SHIRT);
 	if ( pLayer )
 	{
 		if ( wShirtHue < HUE_BLUE_LOW )
 			wShirtHue = HUE_BLUE_LOW;
 		if ( wShirtHue > HUE_DYE_HIGH )
 			wShirtHue = HUE_DYE_HIGH;
-		pLayer->SetHue( wShirtHue );
+		pLayer->SetHue(wShirtHue);
 	}
-	pLayer = LayerFind( LAYER_PANTS );
+	pLayer = LayerFind(LAYER_PANTS);
 	if ( pLayer )
 	{
 		if ( wPantsHue < HUE_BLUE_LOW )
 			wPantsHue = HUE_BLUE_LOW;
 		if ( wPantsHue > HUE_DYE_HIGH )
 			wPantsHue = HUE_DYE_HIGH;
-		pLayer->SetHue( wPantsHue );
+		pLayer->SetHue(wPantsHue);
 	}
 	CreateNewCharCheck();
 }

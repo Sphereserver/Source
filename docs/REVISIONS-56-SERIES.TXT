@@ -2775,3 +2775,6 @@ Fixed: Backpack not updating on death.
 
 18-12-2015, Coruja
 Changed: Improved the event handler when an item equip/drop request was denied. Now the item is dropped on its last location instead always drop it on player backpack.
+
+30-12-2015, Coruja
+Fixed: New player chars not creating MALE_DEFAULT / FEMALE_DEFAULT newbie items when the player select Necromancer/Paladin/Ninja/Samurai as profession on character creation screen.
