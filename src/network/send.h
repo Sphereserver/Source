@@ -1083,7 +1083,7 @@ public:
 class PacketCharacterList : public PacketSend
 {
 public:
-	PacketCharacterList(CClient* target, const CChar* lastCharacter);
+	PacketCharacterList(CClient* target);
 };
 
 /***************************************************************************

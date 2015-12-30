@@ -3889,22 +3889,18 @@ BYTE CClient::Setup_ListReq( const char * pszAccName, const char * pszPassword, 
 	CAccountRef pAcc = GetAccount();
 	ASSERT( pAcc );
 
-	CChar * pCharLast = pAcc->m_uidLastChar.CharFind();
-
-/*	if ( pCharLast &&
-		GetAccount()->IsMyAccountChar( pCharLast ) &&
-		GetAccount()->GetPrivLevel() <= PLEVEL_GM &&
-		! pCharLast->IsDisconnected())
+	/*CChar *pCharLast = pAcc->m_uidLastChar.CharFind();
+	if ( pCharLast && GetAccount()->IsMyAccountChar(pCharLast) && GetAccount()->GetPrivLevel() <= PLEVEL_GM && !pCharLast->IsDisconnected() )
 	{
 		// If the last char is lingering then log back into this char instantly.
 		// m_iClientLingerTime
 		if ( Setup_Start(pCharLast) )
 			return PacketLoginError::Success;
-		return PacketLoginError::Blocked; //Setup_Start() returns false only when login blocked by Return 1 in @Login
-	} */
+		return PacketLoginError::Blocked;	//Setup_Start() returns false only when login blocked by Return 1 in @Login
+	}*/
 
 	new PacketEnableFeatures(this, g_Cfg.GetPacketFlag(false, static_cast<RESDISPLAY_VERSION>(pAcc->GetResDisp()), static_cast<unsigned char>(maximum(pAcc->GetMaxChars(), pAcc->m_Chars.GetCharCount()))));
-	new PacketCharacterList(this, pCharLast);
+	new PacketCharacterList(this);
 
 	m_Targ_Mode = CLIMODE_SETUP_CHARLIST;
 	return PacketLoginError::Success;

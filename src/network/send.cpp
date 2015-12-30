@@ -3101,41 +3101,37 @@ void PacketServerList::writeServerEntry(const CServerRef& server, int index, boo
  *
  *
  ***************************************************************************/
-PacketCharacterList::PacketCharacterList(CClient* target, const CChar* lastCharacter) : PacketSend(XCMD_CharList, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketCharacterList::PacketCharacterList(CClient* target) : PacketSend(XCMD_CharList, 9, g_Cfg.m_fUsePacketPriorities ? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketCharacterList::PacketCharacterList");
 
 	const CAccountRef account = target->GetAccount();
 	ASSERT(account != NULL);
-	DWORD tmVer = static_cast<DWORD>(account->m_TagDefs.GetKeyNum("clientversion"));
-	DWORD tmVerReported = static_cast<DWORD>(account->m_TagDefs.GetKeyNum("reportedcliver"));
 
 	initLength();
 
 	size_t countPos = getPosition();
 	skip(1);
 
-	size_t count = target->Setup_FillCharList(this, lastCharacter);
-
+	size_t count = target->Setup_FillCharList(this, account->m_uidLastChar.CharFind());
 	seek(countPos);
+
 	writeByte(static_cast<BYTE>(count));
 	skip(count * 60);
 
-	
-	int startCount = g_Cfg.m_StartDefs.GetCount();
+	size_t startCount = g_Cfg.m_StartDefs.GetCount();
 	writeByte(static_cast<BYTE>(startCount));
-	
-	// since 7.0.13.0, start locations have extra information
-	bool includeExtraStartInfo = (tmVer >= MINCLIVER_EXTRASTARTINFO || tmVerReported >= MINCLIVER_EXTRASTARTINFO);
 
-	if (includeExtraStartInfo)
+	// since 7.0.13.0, start locations have extra information
+	DWORD tmVer = static_cast<DWORD>(account->m_TagDefs.GetKeyNum("clientversion"));
+	DWORD tmVerReported = static_cast<DWORD>(account->m_TagDefs.GetKeyNum("reportedcliver"));
+	if ( tmVer >= MINCLIVER_EXTRASTARTINFO || tmVerReported >= MINCLIVER_EXTRASTARTINFO )
 	{
 		// newer clients receive additional start info
-		for (int i = 0; i < startCount; i++)
+		for ( size_t i = 0; i < startCount; i++ )
 		{
-			const CStartLoc* start = g_Cfg.m_StartDefs[i];
-
-			writeByte(static_cast<BYTE>(i + 1));
+			const CStartLoc *start = g_Cfg.m_StartDefs[i];
+			writeByte(static_cast<BYTE>(i));
 			writeStringFixedASCII(static_cast<LPCTSTR>(start->m_sArea), MAX_NAME_SIZE + 2);
 			writeStringFixedASCII(static_cast<LPCTSTR>(start->m_sName), MAX_NAME_SIZE + 2);
 			writeInt32(start->m_pt.m_x);
@@ -3143,26 +3139,38 @@ PacketCharacterList::PacketCharacterList(CClient* target, const CChar* lastChara
 			writeInt32(start->m_pt.m_z);
 			writeInt32(start->m_pt.m_map);
 			writeInt32(start->iClilocDescription);
-			//writeInt32(1149559); // todo: add support for 'description' cliloc
 			writeInt32(0);
 		}
 	}
 	else
 	{
-		for (int i = 0; i < startCount; i++)
+		for ( size_t i = 0; i < startCount; i++ )
 		{
-			writeByte(static_cast<BYTE>(i + 1));
-			writeStringFixedASCII(static_cast<LPCTSTR>(g_Cfg.m_StartDefs[i]->m_sArea), MAX_NAME_SIZE + 1);
-			writeStringFixedASCII(static_cast<LPCTSTR>(g_Cfg.m_StartDefs[i]->m_sName), MAX_NAME_SIZE + 1);
+			const CStartLoc *start = g_Cfg.m_StartDefs[i];
+			writeByte(static_cast<BYTE>(i));
+			writeStringFixedASCII(static_cast<LPCTSTR>(start->m_sArea), MAX_NAME_SIZE + 1);
+			writeStringFixedASCII(static_cast<LPCTSTR>(start->m_sName), MAX_NAME_SIZE + 1);
 		}
 	}
+
 	int flags = g_Cfg.GetPacketFlag(true, static_cast<RESDISPLAY_VERSION>(account->GetResDisp()), maximum(account->GetMaxChars(), static_cast<BYTE>(account->m_Chars.GetCharCount())));
-	if (!target->GetNetState()->getClientType())
+	if ( !target->GetNetState()->getClientType() )
 		flags |= 0x400;
 	writeInt32(flags);
-	
-	if (includeExtraStartInfo)
-		writeInt16(0);
+
+	if ( target->GetNetState()->isClientSA() )
+	{
+		WORD iLastCharSlot = 0;
+		for ( size_t i = 0; i < count; i++ )
+		{
+			if ( account->m_Chars.GetChar(i) != account->m_uidLastChar )
+				continue;
+
+			iLastCharSlot = i;
+			break;
+		}
+		writeInt16(iLastCharSlot);
+	}
 
 	push(target);
 }
