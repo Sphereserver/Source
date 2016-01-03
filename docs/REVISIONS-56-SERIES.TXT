@@ -2780,3 +2780,7 @@ Changed: Improved the event handler when an item equip/drop request was denied. 
 Fixed: New player chars not creating MALE_DEFAULT / FEMALE_DEFAULT newbie items when the player select Necromancer/Paladin/Ninja/Samurai as profession on character creation screen.
 Fixed: Potions not removing previous memories on layer 'layer_flag_potion' before equip new memories on this layer.
 Fixed: Curse spell not working correctly when COMBAT_ELEMENTAL_ENGINE is enabled.
+
+03-01-2016, Coruja
+[sphereCrypt.ini]: Added crypt keys for clients 7.0.46 and 7.0.47 (thx XuN and Feeh, I found these values on their forum posts)
+[sphere_map_points0.scp]: Updated new player start locations.
