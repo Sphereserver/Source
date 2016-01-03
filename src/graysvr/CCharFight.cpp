@@ -2161,9 +2161,7 @@ void CChar::Memory_Fight_Retreat( CChar * pTarg, CItemMemory * pFight )
 		return;
 	}
 
-	SysMessagef( fCowardice ?
-		g_Cfg.GetDefaultMsg( DEFMSG_MSG_COWARD_1 ) :
-		g_Cfg.GetDefaultMsg( DEFMSG_MSG_COWARD_2 ), static_cast<LPCTSTR>(pTarg->GetName()));
+	SysMessagef(fCowardice ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_COWARD_1) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_COWARD_2), pTarg->GetName());
 
 	// Lose some fame.
 	if ( fCowardice )

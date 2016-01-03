@@ -587,7 +587,7 @@ bool CClient::addKick( CTextConsole * pSrc, bool fBlock )
 		return( false );
 
 	LPCTSTR pszAction = fBlock ? "KICK" : "DISCONNECT";
-	SysMessagef( "You have been %sed by '%s'", static_cast<LPCTSTR>(pszAction), static_cast<LPCTSTR>(pSrc->GetName()));
+	SysMessagef("You have been %sed by '%s'", pszAction, pSrc->GetName());
 
 	if ( IsConnectTypePacket() )
 	{
@@ -2103,14 +2103,13 @@ void CClient::addPlayerView( const CPointMap & pt, bool bFull )
 {
 	ADDTOCALLSTACK("CClient::addPlayerView");
 	// I moved = Change my point of view. Teleport etc..
-	// NotItems to not send or even do the checks, no client impact but server is not firing unnecessary loops and calls.
 
 	new PacketPlayerPosition(this);
 
 	if ( pt == m_pChar->GetTopPoint() )
 		return;		// not a real move i guess. might just have been a change in face dir.
 
-	m_Env.SetInvalid();	// Must resend environ stuff.
+	m_Env.SetInvalid();		// must resend environ stuff
 
 	if ( bFull )
 		addPlayerSee(pt);
@@ -2414,7 +2413,7 @@ int CClient::addShopItems(CChar * pVendor, LAYER_TYPE layer, bool bReal)
 
 	// Send a warning if the vendor somehow has more stock than the allowed limit
 	if ( pContainer->GetCount() > MAX_ITEMS_CONT )
-		g_Log.Event( LOGL_WARN, "Vendor 0%lx '%s' has exceeded their stock limit! (%d/%d items)\n", static_cast<DWORD>(pVendor->GetUID()), static_cast<LPCTSTR>(pVendor->GetName()), pContainer->GetCount(), MAX_ITEMS_CONT);
+		g_Log.Event( LOGL_WARN, "Vendor 0%lx '%s' has exceeded their stock limit! (%d/%d items)\n", static_cast<DWORD>(pVendor->GetUID()), pVendor->GetName(), pContainer->GetCount(), MAX_ITEMS_CONT);
 
 	return count;
 }
@@ -3914,7 +3913,7 @@ BYTE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 
 	if ( pAccount->IsPriv( PRIV_BLOCKED ))
 	{
-		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s' is blocked.\n", GetSocketID(), static_cast<LPCTSTR>(pAccount->GetName()));
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s' is blocked.\n", GetSocketID(), pAccount->GetName());
 		sMsg.Format( g_Cfg.GetDefaultMsg( DEFMSG_MSG_ACC_BLOCKED ), static_cast<LPCTSTR>(g_Serv.m_sEMail));
 		return( PacketLoginError::Blocked );
 	}
@@ -3953,7 +3952,7 @@ BYTE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 
 		if ( bInUse )
 		{
-			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s' already in use.\n", GetSocketID(), static_cast<LPCTSTR>(pAccount->GetName()));
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s' already in use.\n", GetSocketID(), pAccount->GetName());
 			sMsg = "Account already in use.";
 			return PacketLoginError::InUse;
 		}
@@ -3965,7 +3964,7 @@ BYTE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 		CSocketAddress SockName = GetPeer();
 		if ( ! GetPeer().IsLocalAddr() && SockName.GetAddrIP() != GetPeer().GetAddrIP() )
 		{
-			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s', maximum clients reached (only local connections allowed).\n", GetSocketID(), static_cast<LPCTSTR>(pAccount->GetName()));
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s', maximum clients reached (only local connections allowed).\n", GetSocketID(), pAccount->GetName());
 			sMsg = g_Cfg.GetDefaultMsg( DEFMSG_MSG_SERV_LD );
 			return( PacketLoginError::MaxClients );
 		}
@@ -3975,7 +3974,7 @@ BYTE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 		// Allow no one but Administrator on.
 		if ( pAccount->GetPrivLevel() < PLEVEL_Admin )
 		{
-			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s', maximum clients reached (only administrators allowed).\n", GetSocketID(), static_cast<LPCTSTR>(pAccount->GetName()));
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s', maximum clients reached (only administrators allowed).\n", GetSocketID(), pAccount->GetName());
 			sMsg = g_Cfg.GetDefaultMsg( DEFMSG_MSG_SERV_AO );
 			return( PacketLoginError::MaxClients );
 		}
@@ -3984,7 +3983,7 @@ BYTE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 		g_Serv.StatGet(SERV_STAT_CLIENTS) > g_Cfg.m_iClientsMax  )
 	{
 		// Give them a polite goodbye.
-		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s', maximum clients reached.\n", GetSocketID(), static_cast<LPCTSTR>(pAccount->GetName()));
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s', maximum clients reached.\n", GetSocketID(), pAccount->GetName());
 		sMsg = g_Cfg.GetDefaultMsg( DEFMSG_MSG_SERV_FULL );
 		return( PacketLoginError::MaxClients );
 	}
@@ -4089,7 +4088,7 @@ BYTE CClient::LogIn( LPCTSTR pszAccName, LPCTSTR pszPassword, CGString & sMsg )
 
 	if ( g_Cfg.m_iClientLoginMaxTries && !pAccount->CheckPasswordTries(GetPeer()) )
 	{
-		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: '%s' exceeded password tries in time lapse\n", GetSocketID(), static_cast<LPCTSTR>(pAccount->GetName()));
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: '%s' exceeded password tries in time lapse\n", GetSocketID(), pAccount->GetName());
 		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
 		return PacketLoginError::MaxPassTries;
 	}
@@ -4098,7 +4097,7 @@ BYTE CClient::LogIn( LPCTSTR pszAccName, LPCTSTR pszPassword, CGString & sMsg )
 	{
 		if ( ! pAccount->CheckPassword(pszPassword))
 		{
-			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: '%s' bad password\n", GetSocketID(), static_cast<LPCTSTR>(pAccount->GetName()));
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: '%s' bad password\n", GetSocketID(), pAccount->GetName());
 			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
 			return PacketLoginError::BadPass;
 		}

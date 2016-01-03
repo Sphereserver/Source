@@ -1461,7 +1461,7 @@ bool CScriptObj::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 				if ( ! r_WriteVal( s.GetArgStr(), sVal, pSrc ))
 					return( false );
 				TCHAR * pszMsg = Str_GetTemp();
-				sprintf(pszMsg, "'%s' for '%s' is '%s'\n", static_cast<LPCTSTR>(s.GetArgStr()), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(sVal));
+				sprintf(pszMsg, "'%s' for '%s' is '%s'\n", static_cast<LPCTSTR>(s.GetArgStr()), GetName(), static_cast<LPCTSTR>(sVal));
 				pSrc->SysMessage(pszMsg);
 				break;
 			}

@@ -1027,7 +1027,7 @@ void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, unsigned char gridI
 				CItemVendable *pItemVend = dynamic_cast<CItemVendable *>(pItem);
 				if ( !pItemVend )
 				{
-					g_Log.Event(LOGL_WARN, "Vendor non-vendable item: %s uid=0%lx, vendor: %s uid=0%lx\n", static_cast<LPCTSTR>(pItem->GetResourceName()), pItem->GetUID().GetObjUID(), GetContainer()->GetName(), GetContainer()->GetUID().GetObjUID());
+					g_Log.Event(LOGL_WARN, "Vendor non-vendable item: %s uid=0%lx, vendor: %s uid=0%lx\n", pItem->GetResourceName(), pItem->GetUID().GetObjUID(), GetContainer()->GetName(), GetContainer()->GetUID().GetObjUID());
 					pItem->Delete();
 					break;
 				}
@@ -1040,7 +1040,7 @@ void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, unsigned char gridI
 			// Can only place IT_GAME_PIECE inside here
 			if ( pItem->IsType(IT_GAME_PIECE) )
 				break;
-			g_Log.Event(LOGL_WARN, "Game board contains invalid item: %s uid=0%lx, board: %s uid=0%lx\n", static_cast<LPCTSTR>(pItem->GetResourceName()), pItem->GetUID().GetObjUID(), GetResourceName(), GetUID().GetObjUID());
+			g_Log.Event(LOGL_WARN, "Game board contains invalid item: %s uid=0%lx, board: %s uid=0%lx\n", pItem->GetResourceName(), pItem->GetUID().GetObjUID(), GetResourceName(), GetUID().GetObjUID());
 			pItem->Delete();
 			break;
 		default:
@@ -1397,9 +1397,9 @@ void CItemContainer::OnOpenEvent( CChar *pCharOpener, const CObjBaseTemplate *pO
 		int iStones = GetWeight() / WEIGHT_UNITS;
 		TCHAR *pszMsg = Str_GetTemp();
 		if ( pCharTop == pCharOpener )
-			sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_BVBOX_OPEN_SELF), iStones, static_cast<LPCTSTR>(GetName()));
+			sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_BVBOX_OPEN_SELF), iStones, GetName());
 		else
-			sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_BVBOX_OPEN_OTHER), pCharTop->GetPronoun(), iStones, static_cast<LPCTSTR>(pCharTop->GetPossessPronoun()), static_cast<LPCTSTR>(GetName()));
+			sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_BVBOX_OPEN_OTHER), pCharTop->GetPronoun(), iStones, pCharTop->GetPossessPronoun(), GetName());
 
 		pCharOpener->SysMessage(pszMsg);
 

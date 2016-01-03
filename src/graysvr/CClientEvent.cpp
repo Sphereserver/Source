@@ -942,7 +942,7 @@ bool CClient::Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode)
 	}
 
 	if ( GetPrivLevel() >= g_Cfg.m_iCommandLog )
-		g_Log.Event( LOGM_GM_CMDS, "%lx:'%s' commands '%s'=%d\n", GetSocketID(), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pszCommand), m_bAllowCommand);
+		g_Log.Event(LOGM_GM_CMDS, "%lx:'%s' commands '%s'=%d\n", GetSocketID(), GetName(), pszCommand, m_bAllowCommand);
 
 	return !m_bAllowSay;
 }
@@ -1422,7 +1422,7 @@ void CClient::Event_MailMsg( CGrayUID uid1, CGrayUID uid2 )
 	}
 	// Might be an NPC ?
 	TCHAR * pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MSG_MAILBAG_DROP_2 ), static_cast<LPCTSTR>(m_pChar->GetName()));
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MSG_MAILBAG_DROP_2 ), m_pChar->GetName());
 	pChar->SysMessage(pszMsg);
 }
 
@@ -1575,7 +1575,7 @@ void CClient::Event_PromptResp( LPCTSTR pszText, size_t len, DWORD context1, DWO
 
 	sMsg.Format("%s%s", pszPrefix, szText);
 	pItem->SetName(sMsg);
-	sMsg.Format(g_Cfg.GetDefaultMsg( DEFMSG_MSG_RENAME_SUCCESS ), pszReName, static_cast<LPCTSTR>(pItem->GetName()));
+	sMsg.Format(g_Cfg.GetDefaultMsg( DEFMSG_MSG_RENAME_SUCCESS ), pszReName, pItem->GetName());
 
 	SysMessage(sMsg);
 }

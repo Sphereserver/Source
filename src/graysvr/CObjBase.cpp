@@ -2407,7 +2407,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				{
 					if ( pCharSrc == NULL || !pCharSrc->CanTouch(this) )
 					{
-						pSrc->SysMessagef("Can't touch %s object %s", static_cast<LPCTSTR>(s.GetArgStr()), static_cast<LPCTSTR>(GetName()));
+						pSrc->SysMessagef("Can't touch %s object %s", static_cast<LPCTSTR>(s.GetArgStr()), GetName());
 						return false;
 					}
 				}
@@ -2421,7 +2421,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				//DEBUG_WARN(("pszVerb %s",pszVerb));
 				if ( !r_Verb(script, pSrc) )
 				{
-					DEBUG_ERR(( "Can't try %s object %s (0%lx)\n", static_cast<LPCTSTR>(pszVerb), static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(GetUID())));
+					DEBUG_ERR(( "Can't try %s object %s (0%lx)\n", pszVerb, GetName(), static_cast<DWORD>(GetUID())));
 					return( false );
 				}
 			}
@@ -2455,9 +2455,9 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				if ( pNewSrc == NULL )
 				{
 					if ( index == OV_TRYSRC )
-						DEBUG_ERR(( "Can't trysrc %s object %s (0%lx): invalid src uid 0%lx\n", static_cast<LPCTSTR>(pszVerb), static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(GetUID()), static_cast<DWORD>(NewSrc) ));
+						DEBUG_ERR(( "Can't trysrc %s object %s (0%lx): invalid src uid 0%lx\n", pszVerb, GetName(), static_cast<DWORD>(GetUID()), static_cast<DWORD>(NewSrc) ));
 					else
-						DEBUG_ERR(( "Can't trysrv %s object %s (0%lx)\n", static_cast<LPCTSTR>(pszVerb), static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(GetUID()) ));
+						DEBUG_ERR(( "Can't trysrv %s object %s (0%lx)\n", pszVerb, GetName(), static_cast<DWORD>(GetUID()) ));
 
 					return false;
 				}
@@ -2465,9 +2465,9 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				if (!r_Verb(script, pNewSrc))
 				{
 					if ( index == OV_TRYSRC )
-						DEBUG_ERR(( "Can't trysrc %s object %s (0%lx) with src %s (0%lx)\n", static_cast<LPCTSTR>(pszVerb), static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(GetUID()), static_cast<LPCTSTR>(pNewSrc->GetName()), static_cast<DWORD>(NewSrc) ));
+						DEBUG_ERR(( "Can't trysrc %s object %s (0%lx) with src %s (0%lx)\n", pszVerb, GetName(), static_cast<DWORD>(GetUID()), pNewSrc->GetName(), static_cast<DWORD>(NewSrc) ));
 					else
-						DEBUG_ERR(( "Can't trysrv %s object %s (0%lx)\n", static_cast<LPCTSTR>(pszVerb), static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(GetUID()) ));
+						DEBUG_ERR(( "Can't trysrv %s object %s (0%lx)\n", pszVerb, GetName(), static_cast<DWORD>(GetUID()) ));
 
 					return false;
 				}

@@ -3511,7 +3511,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				if ( pCharSrc == this )
 					sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_SELF), Food_GetLevelMessage( false, false ));
 				else
-					sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_OTHER), static_cast<LPCTSTR>(GetName()), Food_GetLevelMessage( false, false ));
+					sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_OTHER), GetName(), Food_GetLevelMessage( false, false ));
 				pCharSrc->ObjMessage(z, this);
 			}
 			break;
@@ -3553,7 +3553,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				Effect( EFFECT_LIGHTNING, ITEMID_NOTHING, pCharSrc );
 				OnTakeDamage( 10000, pCharSrc, DAMAGE_GOD );
 				Stat_SetVal( STAT_STR, 0 );
-				g_Log.Event( LOGL_EVENT|LOGM_KILLS|LOGM_GM_CMDS, "'%s' was KILLed by '%s'\n", static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pSrc->GetName()));
+				g_Log.Event( LOGL_EVENT|LOGM_KILLS|LOGM_GM_CMDS, "'%s' was KILLed by '%s'\n", GetName(), pSrc->GetName());
 			}
 			break;
 		case CHV_MAKEITEM:

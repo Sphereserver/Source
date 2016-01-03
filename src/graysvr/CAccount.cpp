@@ -661,7 +661,7 @@ size_t CAccount::AttachChar( CChar * pChar )
 		size_t iQty = m_Chars.GetCharCount();
 		if ( iQty > MAX_CHARS_PER_ACCT )
 		{
-			g_Log.Event( LOGM_ACCOUNTS|LOGL_ERROR, "Account '%s' has %" FMTSIZE_T " characters\n", static_cast<LPCTSTR>(GetName()), iQty );
+			g_Log.Event( LOGM_ACCOUNTS|LOGL_ERROR, "Account '%s' has %" FMTSIZE_T " characters\n", GetName(), iQty );
 		}
 	}
 
@@ -716,7 +716,7 @@ void CAccount::OnLogin( CClient * pClient )
 		// link the admin client.
 		g_Serv.m_iAdminClients++;
 	}
-	g_Log.Event( LOGM_CLIENTS_LOG, "%lx:Login '%s'\n", pClient->GetSocketID(), static_cast<LPCTSTR>(GetName()));
+	g_Log.Event( LOGM_CLIENTS_LOG, "%lx:Login '%s'\n", pClient->GetSocketID(), GetName());
 }
 
 void CAccount::OnLogout(CClient *pClient, bool bWasChar)
@@ -752,7 +752,7 @@ bool CAccount::Kick( CTextConsole * pSrc, bool fBlock )
 	if ( fBlock )
 	{
 		SetPrivFlags( PRIV_BLOCKED );
-		pSrc->SysMessagef( g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BLOCK), static_cast<LPCTSTR>(GetName()) );
+		pSrc->SysMessagef( g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BLOCK), GetName() );
 	}
 
 	LPCTSTR pszAction = fBlock ? "KICK" : "DISCONNECT";
@@ -1228,12 +1228,12 @@ bool CAccount::r_LoadVal( CScript & s )
 				CChar * pChar = uid.CharFind();
 				if (pChar == NULL)
 				{
-					DEBUG_ERR(( "Invalid CHARUID 0%lx for account '%s'\n", static_cast<DWORD>(uid), static_cast<LPCTSTR>(GetName())));
+					DEBUG_ERR(( "Invalid CHARUID 0%lx for account '%s'\n", static_cast<DWORD>(uid), GetName()));
 					return( false );
 				}
 				if ( ! IsMyAccountChar( pChar ))
 				{
-					DEBUG_ERR(( "CHARUID 0%lx (%s) not attached to account '%s'\n", static_cast<DWORD>(uid), static_cast<LPCTSTR>(pChar->GetName()), static_cast<LPCTSTR>(GetName())));
+					DEBUG_ERR(( "CHARUID 0%lx (%s) not attached to account '%s'\n", static_cast<DWORD>(uid), pChar->GetName(), GetName()));
 					return( false );
 				}
 				AttachChar(pChar);

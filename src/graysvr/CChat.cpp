@@ -462,7 +462,7 @@ void CChat::WhereIs(CChatChanMember * pBy, LPCTSTR pszName ) const
 		if (! pClient->IsChatActive() || !pClient->GetChannel())
 			sprintf(pszMsg, "%s is not currently in a conference.", pszName);
 		else
-			sprintf(pszMsg, "%s is in conference '%s'.", static_cast<LPCTSTR>(pszName), static_cast<LPCTSTR>(pClient->GetChannel()->GetName()));
+			sprintf(pszMsg, "%s is in conference '%s'.", pszName, pClient->GetChannel()->GetName());
 		CGString sFrom;
 		DecorateName(sFrom, NULL, true);
 		pBy->SendChatMsg(CHATMSG_PlayerTalk, sFrom, pszMsg);

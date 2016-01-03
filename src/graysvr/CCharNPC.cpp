@@ -38,15 +38,9 @@ void CChar::ClearPlayer()
 	if ( g_Serv.m_iModeCode != SERVMODE_Exiting )
 	{
 		if ( m_pPlayer->m_pAccount )
-		{
-			DEBUG_WARN(( "Player delete '%s' name '%s'\n",
-				(LPCTSTR) m_pPlayer->GetAccount()->GetName(), (LPCTSTR) GetName()));
-		}
+			DEBUG_WARN(("Player delete '%s' name '%s'\n", m_pPlayer->GetAccount()->GetName(), GetName()));
 		else
-		{
-			DEBUG_WARN(( "Player delete from account name '%s'\n",
-				(LPCTSTR) GetName()));
-		}
+			DEBUG_WARN(("Player delete from account name '%s'\n", GetName()));
 	}
 
 	// Is this valid ?

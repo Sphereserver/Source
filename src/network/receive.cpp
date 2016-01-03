@@ -87,13 +87,13 @@ bool PacketCreate::onReceive(NetState* net, bool hasExtraSkill)
 	if (net->isClientVersion(MINCLIVER_SA) || net->isClientSA())
 	{
 		/*
-			m_sex values from client 7.0.0.0+
-			0x2 = Human, Male
-			0x3 = Human, Female
-			0x4 = Elf, Male
-			0x5 = Elf, Female
-			0x6 = Gargoyle, Male
-			0x7 = Gargoyle, Female
+			m_sex values from clients 7.0.0.0+
+			0x2 = Human (male)
+			0x3 = Human (female)
+			0x4 = Elf (male)
+			0x5 = Elf (female)
+			0x6 = Gargoyle (male)
+			0x7 = Gargoyle (female)
 		*/
 		switch (sex)
 		{
@@ -111,6 +111,13 @@ bool PacketCreate::onReceive(NetState* net, bool hasExtraSkill)
 	}
 	else 
 	{
+		/*
+			m_sex values from clients pre-7.0.0.0
+			0x0 = Human (male)
+			0x1 = Human (female)
+			0x2 = Elf (male)
+			0x3 = Elf (female)
+		*/
 		if ((sex - 2) >= 0)
 			rtRace = RACETYPE_ELF;
 	}
@@ -200,10 +207,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 		return false;
 	}
 
-	g_Log.Event( LOGM_CLIENTS_LOG, "%lx:Setup_CreateDialog acct='%s', char='%s'\n",
-		net->id(), static_cast<LPCTSTR>(account->GetName()), static_cast<LPCTSTR>(pChar->GetName()));
-
-
+	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Setup_CreateDialog acct='%s', char='%s'\n", net->id(), account->GetName(), pChar->GetName());
 	client->Setup_Start(pChar);
 	return true;
 }
@@ -760,7 +764,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 	}
 
 	// combine goods into one list
-	CItemVendable* item;
+	CItemVendable *item = NULL;
 	for (size_t i = 0; i < itemCount; i++)
 	{
 		skip(1); // layer
@@ -2038,10 +2042,7 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
 			object->Update();
 		}
 
-		g_Log.Event( LOGM_GM_CMDS, "%lx:'%s' tweak uid=0%lx (%s) to '%s %s'=%d\n",
-			net->id(), static_cast<LPCTSTR>(client->GetName()),
-			static_cast<DWORD>(object->GetUID()), static_cast<LPCTSTR>(object->GetName()),
-			static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text), ret);
+		g_Log.Event(LOGM_GM_CMDS, "%lx:'%s' tweak uid=0%lx (%s) to '%s %s'=%d\n", net->id(), client->GetName(), static_cast<DWORD>(object->GetUID()), object->GetName(), static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text), ret);
 	}
 
 	return true;
@@ -3253,7 +3254,7 @@ bool PacketWheelBoatMove::onReceive(NetState* net)
 			if ((facing == DIR_N || facing == DIR_E || facing == DIR_S || facing == DIR_W) && pShipItem->m_itShip.m_DirFace != facing) //boat cannot face intermediate directions
 				pShipItem->Ship_Face(moving);
 
-			if (pShipItem->Ship_SetMoveDir(facing, speed, true))//pShipItem->m_itShip.m_DirMove = static_cast<unsigned char>(facing);
+			if (pShipItem->Ship_SetMoveDir(facing, speed, true))//pShipItem->m_itShip.m_DirMove = static_cast<BYTE>(facing);
 				pShipItem->Ship_Move(moving, speed);
 		}
 		else

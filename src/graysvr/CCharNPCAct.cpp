@@ -985,7 +985,7 @@ bool CChar::NPC_LookAtCharGuard( CChar * pChar, bool bFromTrigger )
 			return( false );
 
 		TCHAR *pszMsg = Str_GetTemp();
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg(sm_szSpeakGuardJeer[ Calc_GetRandVal( COUNTOF( sm_szSpeakGuardJeer )) ]), static_cast<LPCTSTR>(pChar->GetName()));
+		sprintf(pszMsg, g_Cfg.GetDefaultMsg(sm_szSpeakGuardJeer[ Calc_GetRandVal( COUNTOF( sm_szSpeakGuardJeer )) ]), pChar->GetName());
 		Speak(pszMsg);
 		UpdateDir(pChar);
 		return false;
@@ -2441,7 +2441,7 @@ bool CChar::NPC_Act_Talk()
 				g_Cfg.GetDefaultMsg( DEFMSG_NPC_GENERIC_GONE_2 )
 			};
 			TCHAR *pszMsg = Str_GetTemp();
-			sprintf(pszMsg, sm_szText[ Calc_GetRandVal( COUNTOF( sm_szText )) ], static_cast<LPCTSTR>(pChar->GetName()));
+			sprintf(pszMsg, sm_szText[ Calc_GetRandVal( COUNTOF( sm_szText )) ], pChar->GetName());
 			Speak(pszMsg);
 		}
 		return( false );
@@ -2485,7 +2485,7 @@ void CChar::NPC_Act_GoHome()
 		}
 		else
 		{
-			g_Log.Event( LOGL_WARN, "Guard 0%lx '%s' has no guard post (%s)!\n", static_cast<DWORD>(GetUID()), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(GetTopPoint().WriteUsed()));
+			g_Log.Event( LOGL_WARN, "Guard 0%lx '%s' has no guard post (%s)!\n", static_cast<DWORD>(GetUID()), GetName(), GetTopPoint().WriteUsed());
 
 			// If we arent conjured and still got no valid home
 			// then set our status to conjured and take our life.

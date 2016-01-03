@@ -189,9 +189,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_EQ_BANK_BOX:
 		case IT_EQ_VENDOR_BOX:
 			if ( !fScript )
-			g_Log.Event( LOGL_WARN|LOGM_CHEAT,
-				"%lx:Cheater '%s' is using 3rd party tools to open bank box\n",
-				GetSocketID(), static_cast<LPCTSTR>(GetAccount()->GetName()));
+				g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%lx:Cheater '%s' is using 3rd party tools to open bank box\n", GetSocketID(), GetAccount()->GetName());
 			return false;
 
 		case IT_CONTAINER_LOCKED:
@@ -456,7 +454,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_CANNON_BALL:
 			{
 				TCHAR *pszTemp = Str_GetTemp();
-				sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_CBALL_PROMT ), static_cast<LPCTSTR>(pItem->GetName()));
+				sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_CBALL_PROMT ), pItem->GetName());
 				addTarget(CLIMODE_TARG_USE_ITEM, pszTemp);
 			}
 			return true;
@@ -492,7 +490,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_PITCHER_EMPTY:
 			{ // not a crime.
 				TCHAR *pszTemp = Str_GetTemp();
-				sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_PITCHER_TARG ), static_cast<LPCTSTR>(pItem->GetName()));
+				sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_PITCHER_TARG ), pItem->GetName());
 				addTarget(CLIMODE_TARG_USE_ITEM, pszTemp, true);
 			}
 			return true;
@@ -502,7 +500,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 			if (fWasEquipped || !IsSetOF(OF_NoDClickTarget))
 			{	// Mine at the location. (possible crime?)
 				TCHAR *pszTemp = Str_GetTemp();
-				sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_MACEPICK_TARG ), static_cast<LPCTSTR>(pItem->GetName()));
+				sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_MACEPICK_TARG ), pItem->GetName());
 				m_pChar->m_atResource.m_ridType	= RESOURCE_ID(RES_TYPEDEF, IT_ROCK);
 				addTarget(CLIMODE_TARG_USE_ITEM, pszTemp, true, true);
 			}
@@ -602,7 +600,7 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_SEWING_KIT:	// IT_SEWING_KIT Sew with materials we have on hand.
 			{
 				TCHAR *pszTemp = Str_GetTemp();
-				sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_SEWKIT_PROMT ), static_cast<LPCTSTR>(pItem->GetName()));
+				sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_SEWKIT_PROMT ), pItem->GetName());
 				addTarget(CLIMODE_TARG_USE_ITEM, pszTemp);
 			}
 			return true;
@@ -660,7 +658,7 @@ void CClient::Cmd_EditItem( CObjBase * pObj, int iSelect )
 	}
 	
 	CMenuItem item[ minimum( COUNTOF( m_tmMenu.m_Item ), MAX_MENU_ITEMS ) ];	// Most as we want to display at one time.
-	item[0].m_sText.Format( "Contents of %s", static_cast<LPCTSTR>(pObj->GetName()));
+	item[0].m_sText.Format("Contents of %s", pObj->GetName());
 
 	size_t count = 0;
 	for ( CItem *pItem = pContainer->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )

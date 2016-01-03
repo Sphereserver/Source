@@ -124,10 +124,7 @@ void CClient::Cmd_GM_PageMenu( unsigned int iEntryStart )
 		ASSERT(count < COUNTOF(item));
 		item[count].m_id = count-1;
 		item[count].m_color = 0;
-		item[count].m_sText.Format( "%s %s %s",
-			static_cast<LPCTSTR>(pPage->GetName()),
-			pClient == NULL? "OFF" : "ON ",
-			static_cast<LPCTSTR>(pPage->GetReason()));
+		item[count].m_sText.Format("%s %s %s", pPage->GetName(), pClient ? "ON " : "OFF", pPage->GetReason());
 		m_tmMenu.m_Item[count] = entry;
 	}
 
@@ -146,14 +143,9 @@ void CClient::Cmd_GM_PageInfo()
 	ADDTOCALLSTACK("CClient::Cmd_GM_PageInfo");
 	// Show the current page.
 	// This should be a dialog !!!??? book or scroll.
-	ASSERT( m_pGMPage );
 
-	SysMessagef(
-		g_Cfg.GetDefaultMsg(DEFMSG_MSG_GMPAGES_CURRENT),
-		static_cast<LPCTSTR>(m_pGMPage->GetName()),
-		static_cast<LPCTSTR>(m_pGMPage->GetAccountStatus()),
-		static_cast<LPCTSTR>(m_pGMPage->GetReason()),
-		m_pGMPage->GetAge());
+	ASSERT(m_pGMPage);
+	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_GMPAGES_CURRENT), m_pGMPage->GetName(), m_pGMPage->GetAccountStatus(), m_pGMPage->GetReason(), m_pGMPage->GetAge());
 }
 
 enum GPV_TYPE

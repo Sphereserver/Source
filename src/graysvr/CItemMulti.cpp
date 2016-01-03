@@ -107,7 +107,7 @@ bool CItemMulti::MultiRealizeRegion()
 	m_pRegion->SetRegionFlags( dwFlags );
 
 	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, "%s (%s)", static_cast<LPCTSTR>(pRegionBack->GetName()), static_cast<LPCTSTR>(GetName()));
+	sprintf(pszTemp, "%s (%s)", pRegionBack->GetName(), GetName());
 	m_pRegion->SetName(pszTemp);
 
 	return m_pRegion->RealizeRegion();

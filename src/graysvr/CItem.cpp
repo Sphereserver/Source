@@ -689,7 +689,7 @@ int CItem::FixWeirdness()
 			}
 			else
 			{
-				DEBUG_ERR(( "'%s' Bad Link to 0%lx\n", static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(m_uidLink)));
+				DEBUG_ERR(("'%s' Bad Link to 0%lx\n", GetName(), static_cast<DWORD>(m_uidLink)));
 				m_uidLink.InitUID();
 				iResultCode = 0x2205;
 				return( iResultCode );	// get rid of it.
@@ -893,7 +893,7 @@ int CItem::FixWeirdness()
 			// blank unlinked keys.
 			if ( m_itKey.m_lockUID && ! IsValidUID())
 			{
-				DEBUG_ERR(( "Key '%s' has bad link to 0%lx, �blanked out\n", static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(m_itKey.m_lockUID)));
+				DEBUG_ERR(("Key '%s' has bad link to 0%lx, blanked out\n", GetName(), static_cast<DWORD>(m_itKey.m_lockUID)));
 				m_itKey.m_lockUID.ClearUID();
 			}
 			break;
@@ -4219,9 +4219,9 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 	{
 		DIR_TYPE dir = ptCoords.GetDir(pBoatSighted->GetTopPoint());
 		if (iBoatSighted == 1)
-			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SHIP_SINGLE), static_cast<LPCTSTR>(pBoatSighted->GetName()), CPointBase::sm_szDirs[dir] );
+			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SHIP_SINGLE), pBoatSighted->GetName(), CPointBase::sm_szDirs[dir]);
 		else
-			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SHIP_MANY), static_cast<LPCTSTR>(CPointBase::sm_szDirs[dir]));
+			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SHIP_MANY), CPointBase::sm_szDirs[dir]);
 		strcat( pResult, sSearch);
 	}
 
@@ -4894,9 +4894,9 @@ forcedamage:
 			{
 				// Tell hitter they scored !
 				if (pChar && pChar != pSrc)
-					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE1), static_cast<LPCTSTR>(pChar->GetName()), static_cast<LPCTSTR>(GetName()));
+					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE1), pChar->GetName(), GetName());
 				else
-					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE2), static_cast<LPCTSTR>(GetName()));
+					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE2), GetName());
 				pSrc->SysMessage(pszMsg);
 			}
 		}
@@ -4910,10 +4910,10 @@ forcedamage:
 				{
 					int iPercent = Armor_GetRepairPercent();
 					if (pChar->Skill_GetAdjusted(SKILL_ARMSLORE) / 10 > iPercent)
-						sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE3), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(Armor_GetRepairDesc()));
+						sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE3), GetName(), Armor_GetRepairDesc());
 				}
 				if (!*pszMsg)
-					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE4), static_cast<LPCTSTR>(GetName()));
+					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE4), GetName());
 				pChar->SysMessage(pszMsg);
 			}
 		}

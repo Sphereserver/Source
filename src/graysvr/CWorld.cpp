@@ -818,7 +818,7 @@ successalloc:
 	{
 		//NOTE: We cannot use Delete() in here because the UID will
 		//	still be assigned til the async cleanup time. Delete() will not work here!
-		DEBUG_ERR(( "UID conflict delete 0%lx, '%s'\n", dwIndex, static_cast<LPCTSTR>(pObjPrv->GetName())));
+		DEBUG_ERR(("UID conflict delete 0%lx, '%s'\n", dwIndex, pObjPrv->GetName()));
 		delete pObjPrv;
 	}
 	m_UIDs[dwIndex] = pObj;
@@ -853,7 +853,7 @@ int CWorldThread::FixObjTry( CObjBase * pObj, DWORD dwUID )
 		{
 			// Miss linked in the UID table !!! BAD
 			// Hopefully it was just not linked at all. else How the hell should i clean this up ???
-			DEBUG_ERR(( "UID 0%lx, '%s', Mislinked\n", dwUID, static_cast<LPCTSTR>(pObj->GetName())));
+			DEBUG_ERR(("UID 0%lx, '%s', Mislinked\n", dwUID, pObj->GetName()));
 			return 0x7101;
 		}
 	}
@@ -954,13 +954,13 @@ void CWorldThread::GarbageCollection_New()
 	m_ObjDelete.DeleteAll();	// clean up our delete list.
 
 	// Make sure all GM pages have accounts.
-	CGMPage * pPage = STATIC_CAST <CGMPage*>(g_World.m_GMPages.GetHead());
+	CGMPage *pPage = static_cast<CGMPage *>(g_World.m_GMPages.GetHead());
 	while ( pPage != NULL )
 	{
 		CGMPage * pPageNext = pPage->GetNext();
 		if ( ! pPage->FindAccount()) // Open script file
 		{
-			DEBUG_ERR(( "GC: GM Page has invalid account '%s'\n", static_cast<LPCTSTR>(pPage->GetName())));
+			DEBUG_ERR(("GC: GM Page has invalid account '%s'\n", pPage->GetName()));
 			delete pPage;
 		}
 		pPage = pPageNext;
@@ -2234,25 +2234,27 @@ void CWorld::Speak( const CObjBaseTemplate * pSrc, LPCTSTR pszText, HUE_TYPE wHu
 				pClient->addSound( sm_Sounds_Ghost[ Calc_GetRandVal( COUNTOF( sm_Sounds_Ghost )) ], pSrc );
 			}
 			
-			if ( ! fCanSee && pSrc )
+			if ( !fCanSee && pSrc )
 			{
-				//if ( sTextName.IsEmpty())
+				//if ( sTextName.IsEmpty() )
 				//{
-				//	sTextName.Format( "<%s>", (LPCTSTR) pSrc->GetName());
+				//	sTextName.Format("<%s>", pSrc->GetName());
 				//}
 				//myName = sTextName;
-				if(!*myName) sprintf(myName, "<%s>",pSrc->GetName());
+				if ( !*myName )
+					sprintf(myName, "<%s>", pSrc->GetName());
 			}
 		}
 
 		if ( ! fCanSee && pSrc && pClient->IsPriv( PRIV_HEARALL|PRIV_DEBUG ))
 		{
-			//if ( sTextUID.IsEmpty())
+			//if ( sTextUID.IsEmpty() )
 			//{
-			//	sTextUID.Format( "<%s [%lx]>", (LPCTSTR) pSrc->GetName(), (DWORD) pSrc->GetUID());
+			//	sTextUID.Format("<%s [%lx]>", pSrc->GetName(), (DWORD)pSrc->GetUID());
 			//}
 			//myName = sTextUID;
-			if(!*myName) sprintf(myName, "<%s [%lx]>",pSrc->GetName(), (DWORD)pSrc->GetUID());
+			if ( !*myName )
+				sprintf(myName, "<%s [%lx]>", pSrc->GetName(), (DWORD)pSrc->GetUID());
 		}
 		if (*myName)
 			pClient->addBarkParse( pszSpeak, pSrc, wHue, mode, font, false, myName );
@@ -2327,7 +2329,7 @@ void CWorld::SpeakUNICODE( const CObjBaseTemplate * pSrc, const NCHAR * pwText, 
 				if ( wTextName[0] == '\0' )
 				{
 					CGString sTextName;
-					sTextName.Format("<%s>", static_cast<LPCTSTR>(pSrc->GetName()));
+					sTextName.Format("<%s>", pSrc->GetName());
 					int iLen = CvtSystemToNUNICODE( wTextName, COUNTOF(wTextName), sTextName, -1 );
 					if ( wTextGhost[0] != '\0' )
 					{
@@ -2354,7 +2356,7 @@ void CWorld::SpeakUNICODE( const CObjBaseTemplate * pSrc, const NCHAR * pwText, 
 			if ( wTextUID[0] == '\0' )
 			{
 				TCHAR * pszMsg = Str_GetTemp();
-				sprintf(pszMsg, "<%s [%lx]>", static_cast<LPCTSTR>(pSrc->GetName()), static_cast<DWORD>(pSrc->GetUID()));
+				sprintf(pszMsg, "<%s [%lx]>", pSrc->GetName(), static_cast<DWORD>(pSrc->GetUID()));
 				int iLen = CvtSystemToNUNICODE( wTextUID, COUNTOF(wTextUID), pszMsg, -1 );
 				for ( size_t i = 0; pwText[i] && iLen < MAX_TALK_BUFFER - 1; i++, iLen++ )
 				{
