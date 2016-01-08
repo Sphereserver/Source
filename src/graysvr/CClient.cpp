@@ -669,13 +669,14 @@ bool CClient::r_LoadVal( CScript & s )
 	switch ( FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1 ))
 	{
 		case CC_ALLMOVE:
+			addRemoveAll(true, false);
 			GetAccount()->TogPrivFlags( PRIV_ALLMOVE, s.GetArgStr() );
 			if ( IsSetOF( OF_Command_Sysmsgs ) )
 				m_pChar->SysMessage( IsPriv(PRIV_ALLMOVE)? "Allmove ON" : "Allmove OFF" );
 			addPlayerView(NULL);
 			break;
 		case CC_ALLSHOW:
-			addRemoveAll(true, true);
+			addRemoveAll(false, true);
 			GetAccount()->TogPrivFlags( PRIV_ALLSHOW, s.GetArgStr() );
 			if ( IsSetOF( OF_Command_Sysmsgs ) )
 				m_pChar->SysMessage( IsPriv(PRIV_ALLSHOW)? "Allshow ON" : "Allshow OFF" );

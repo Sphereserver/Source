@@ -548,9 +548,6 @@ bool PacketResynchronize::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketResynchronize::onReceive");
 
-	//BYTE sequence = readByte();
-	//NOTO_TYPE noto = static_cast<NOTO_TYPE>(readByte());
-
 	CClient * client = net->getClient();
 	ASSERT(client);
 
@@ -558,9 +555,9 @@ bool PacketResynchronize::onReceive(NetState* net)
 	if ( !pChar )
 		return false;
 
-	new PacketPlayerPosition(client);
 	new PacketCharacter(client, pChar);
-	client->addPlayerView(NULL);
+	client->addPlayerUpdate();
+	client->addPlayerSee(NULL);
 	net->m_sequence = 0;
 	return true;
 }
@@ -4240,8 +4237,9 @@ PacketMovementReqNew::PacketMovementReqNew() : Packet(0)
 bool PacketMovementReqNew::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketMovementReqNew::onReceive");
-	// New walk packet used on enhanced clients (still incomplete)
-	// The client will only use it when requested by login flags on packet 0xA9.
+	// New walk packet used on newest clients (still incomplete)
+	// It must be enabled using login flags on packet 0xA9, otherwise the client will
+	// stay using the old walk packet 0x02.
 
 	// The 'timer' values used here are linked somehow to time sync packets
 	// 0xF1 (client request) / 0xF2 (server response) but I have no idea how it works.
@@ -4251,6 +4249,9 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 	// does some useless weird stuff. Also classic clients using Injection 2014 will
 	// strangely send this packet to server when the player press the 'Chat' button,
 	// so it's better leave this packet disabled on classic clients to prevent exploits.
+
+	if ( !(g_Cfg.m_iFeatureSA & FEATURE_SA_MOVEMENT) )
+		return false;
 
 	CClient *client = net->getClient();
 	ASSERT(client);
