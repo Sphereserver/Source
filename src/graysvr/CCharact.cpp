@@ -2926,7 +2926,7 @@ bool CChar::Death()
 		if ( pClient )
 		{
 			// OSI uses PacketDeathMenu to update client screen on death.
-			// If the user disable this packet, it must be updated using PacketPlayerPosition
+			// If the user disable this packet, it must be updated using addPlayerUpdate()
 			if ( g_Cfg.m_iPacketDeathAnimation )
 			{
 				// Display death animation to client ("You are dead")
@@ -2935,7 +2935,7 @@ bool CChar::Death()
 			}
 			else
 			{
-				new PacketPlayerPosition(pClient);
+				pClient->addPlayerUpdate();
 				pClient->addContainerSetup(GetPack());	// update backpack contents
 			}
 		}

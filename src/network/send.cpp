@@ -588,14 +588,14 @@ PacketRemoveObject::PacketRemoveObject(const CClient* target, CGrayUID uid) : Pa
 /***************************************************************************
  *
  *
- *	Packet 0x20 : PacketPlayerPosition		updates player position (NORMAL)
+ *	Packet 0x20 : PacketPlayerUpdate		update player character on screen (NORMAL)
  *
  *
  ***************************************************************************/
-PacketPlayerPosition::PacketPlayerPosition(const CClient* target) : PacketSend(XCMD_View, 19, PRI_NORMAL)
+PacketPlayerUpdate::PacketPlayerUpdate(const CClient* target) : PacketSend(XCMD_PlayerUpdate, 19, PRI_NORMAL)
 {
-	ADDTOCALLSTACK("PacketPlayerPosition::PacketPlayerPosition");
-	//PS: This packet remove weather effects on client screen
+	ADDTOCALLSTACK("PacketPlayerUpdate::PacketPlayerUpdate");
+	//PS: This packet remove weather effects on client screen.
 
 	const CChar* character = target->GetChar();
 	ASSERT(character);
@@ -2161,6 +2161,8 @@ PacketZoneChange::PacketZoneChange(const CClient* target, const CPointMap& pos) 
 PacketCharacterMove::PacketCharacterMove(const CClient* target, const CChar* character, BYTE direction) : PacketSend(XCMD_CharMove, 17, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketCharacterMove::PacketCharacterMove");
+	// NOTE: This packet move characters on screen, but can't move the
+	// client char receiving the packet (use packet 0x20 instead).
 
 	CREID_TYPE id;
 	HUE_TYPE hue;

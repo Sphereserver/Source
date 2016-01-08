@@ -149,7 +149,7 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_Speak			= 0x1c,
 	XCMD_Remove			= 0x1d,
 	//	0x20
-	XCMD_View			= 0x20,
+	XCMD_PlayerUpdate	= 0x20,
 	XCMD_WalkReject		= 0x21,
 	XCMD_WalkAck		= 0x22,
 	XCMD_DragAnim		= 0x23,

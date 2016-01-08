@@ -253,7 +253,7 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 							pt -= pdelta;
 							pClient->addPlayerSeeShip( pt );
 							if (pClient->GetNetState()->isClientSA())
-								new PacketPlayerPosition(pClient);
+								pClient->addPlayerUpdate();
 							break; //skip to next client
 						}
 					}

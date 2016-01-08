@@ -2104,7 +2104,7 @@ void CClient::addPlayerView( const CPointMap & pt, bool bFull )
 	ADDTOCALLSTACK("CClient::addPlayerView");
 	// I moved = Change my point of view. Teleport etc..
 
-	new PacketPlayerPosition(this);
+	addPlayerUpdate();
 
 	if ( pt == m_pChar->GetTopPoint() )
 		return;		// not a real move i guess. might just have been a change in face dir.
@@ -2157,6 +2157,18 @@ void CClient::addChangeServer()
 	CPointMap pt = m_pChar->GetTopPoint();
 
 	new PacketZoneChange(this, pt);
+}
+
+void CClient::addPlayerUpdate()
+{
+	ADDTOCALLSTACK("CClient::addPlayerUpdate");
+	// Update player character on screen (id / hue / notoriety / position / dir).
+	// NOTE: This will reset client-side walk sequence to 0, so reset it on side
+	// side too, to prevent client request an unnecessary 'resync' (packet 0x22)
+	// to server because client seq != server seq.
+
+	new PacketPlayerUpdate(this);
+	GetNetState()->m_sequence = 0;
 }
 
 void CClient::UpdateStats()

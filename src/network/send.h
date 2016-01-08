@@ -173,14 +173,14 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0x20 : PacketPlayerPosition		updates player position (NORMAL)
+ *	Packet 0x20 : PacketPlayerUpdate		update player character on screen (NORMAL)
  *
  *
  ***************************************************************************/
-class PacketPlayerPosition : public PacketSend
+class PacketPlayerUpdate : public PacketSend
 {
 public:
-	PacketPlayerPosition(const CClient* target);
+	PacketPlayerUpdate(const CClient* target);
 };
 
 /***************************************************************************

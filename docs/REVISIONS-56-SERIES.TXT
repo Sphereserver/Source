@@ -2784,3 +2784,6 @@ Fixed: Curse spell not working correctly when COMBAT_ELEMENTAL_ENGINE is enabled
 03-01-2016, Coruja
 [sphereCrypt.ini]: Added crypt keys for clients 7.0.46 and 7.0.47 (thx XuN and Feeh, I found these values on their forum posts)
 [sphere_map_points0.scp]: Updated new player start locations.
+
+08-01-2015, Coruja
+Fixed: Clients requesting unnecessary 'resync' packets to server.
