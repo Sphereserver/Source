@@ -432,24 +432,26 @@ void CChar::Noto_Murder()
 bool CChar::Noto_Criminal( CChar * pChar )
 {
 	ADDTOCALLSTACK("CChar::Noto_Criminal");
-	if ( IsPriv(PRIV_GM) || m_pNPC )
+	if ( m_pNPC || IsPriv(PRIV_GM) )
 		return false;
+
 	int decay = g_Cfg.m_iCriminalTimer;
-	CScriptTriggerArgs Args;
-	Args.m_iN1 = decay;
+
 	if ( IsTrigUsed(TRIGGER_CRIMINAL) )
 	{
+		CScriptTriggerArgs Args;
+		Args.m_iN1 = decay;
 		Args.m_pO1 = pChar;
-		if ( ( OnTrigger( CTRIG_Criminal, this, &Args ) ) == TRIGRET_RET_TRUE )
+		if ( OnTrigger(CTRIG_Criminal, this, &Args) == TRIGRET_RET_TRUE )
 			return false;
 
 		decay = static_cast<int>(Args.m_iN1);
 	}
-	if ( !IsStatFlag( STATF_Criminal) )
-		SysMessageDefault( DEFMSG_MSG_GUARDS );
 
-	Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Criminal, 0, decay, NULL);
-	NotoSave_Update();
+	if ( !IsStatFlag(STATF_Criminal) )
+		SysMessageDefault(DEFMSG_MSG_GUARDS);
+
+	Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Criminal, 0, decay);
 	return true;
 }
 
@@ -745,7 +747,7 @@ void CChar::NotoSave_Update()
 {
 	ADDTOCALLSTACK("CChar::NotoSave_Update");
 	NotoSave_Clear();
-	UpdateMode( NULL , false );
+	UpdateMode();
 	ResendTooltip();
 }
 
