@@ -4282,7 +4282,10 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 		//DWORD z = readInt32();
 
 		if ( !client->Event_Walk(direction, sequence) )
-			return true;
+		{
+			net->m_sequence = 0;
+			break;
+		}
 
 		steps--;
 	}

@@ -770,11 +770,12 @@ bool CClient::Event_Walk( BYTE rawdir, BYTE sequence ) // Player moves
 
 	CPointMap pt = m_pChar->GetTopPoint();
 	CPointMap ptOld = pt;
-	pt.Move(dir);
 
 	if ( dir == m_pChar->m_dirFace )
 	{
 		// Move in this dir.
+		pt.Move(dir);
+
 		if ( !Event_CheckWalkBuffer() )
 		{
 			new PacketMovementRej(this, sequence);
@@ -783,7 +784,7 @@ bool CClient::Event_Walk( BYTE rawdir, BYTE sequence ) // Player moves
 
 		// Check the z height here.
 		// The client already knows this but doesn't tell us.
-		if ( !m_pChar->CanMoveWalkTo(pt, true, false, dir) )
+		if ( m_pChar->CanMoveWalkTo(pt, true, false, dir) == NULL )
 		{
 			new PacketMovementRej(this, sequence);
 			return false;
@@ -795,8 +796,9 @@ bool CClient::Event_Walk( BYTE rawdir, BYTE sequence ) // Player moves
 			return false;
 		}
 
-		// Did i step on a telepad, trap, etc ?
-		if ( !m_pChar->CheckLocation(false) )
+		// Check if I stepped on any item/teleport
+		TRIGRET_TYPE iRet = m_pChar->CheckLocation(false);
+		if ( iRet == TRIGRET_RET_FALSE )
 		{
 			m_pChar->SetUnkPoint(ptOld);	// we already moved, so move back to previous location
 			new PacketMovementRej(this, sequence);
@@ -808,17 +810,21 @@ bool CClient::Event_Walk( BYTE rawdir, BYTE sequence ) // Player moves
 
 		// Set running flag if I'm running
 		m_pChar->StatFlag_Mod(STATF_Fly, (rawdir & 0x80));
-		m_timeLastEventWalk = CServTime::GetCurrentTime();
 
-		new PacketMovementAck(this);
-		m_pChar->UpdateMove(ptOld, this);	// Who now sees me ?
-		addPlayerSee(ptOld);				// What new stuff do I now see ?
+		if ( iRet == TRIGRET_RET_TRUE )
+		{
+			new PacketMovementAck(this, sequence);
+			m_pChar->UpdateMove(ptOld, this);	// Who now sees me ?
+			addPlayerSee(ptOld);				// What new stuff do I now see ?
+		}
+
+		m_timeLastEventWalk = CServTime::GetCurrentTime();
 		m_iWalkStepCount++;					// Increase step count to use on walk buffer checks
 	}
 	else
 	{
 		// Just a change in dir.
-		new PacketMovementAck(this);
+		new PacketMovementAck(this, sequence);
 		m_pChar->m_dirFace = dir;
 		m_pChar->UpdateMove(ptOld, this);	// Who now sees me ?
 	}

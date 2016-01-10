@@ -2787,3 +2787,6 @@ Fixed: Curse spell not working correctly when COMBAT_ELEMENTAL_ENGINE is enabled
 
 08-01-2015, Coruja
 Fixed: Clients requesting unnecessary 'resync' packets to server.
+
+10-01-2015, Coruja
+Fixed: Client packet problems when players teleport while walking.

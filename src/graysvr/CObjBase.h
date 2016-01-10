@@ -3238,7 +3238,7 @@ public:
 
 	CRegionBase * CanMoveWalkTo( CPointBase & pt, bool fCheckChars = true, bool fCheckOnly = false, DIR_TYPE dir = DIR_QTY, bool fPathFinding = false );
 	void CheckRevealOnMove();
-	bool CheckLocation( bool fStanding = false );
+	TRIGRET_TYPE CheckLocation( bool fStanding = false );
 
 public:
 	// Client Player specific stuff. -------------------------

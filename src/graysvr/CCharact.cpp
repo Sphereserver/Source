@@ -3159,8 +3159,11 @@ void CChar::CheckRevealOnMove()
 // We are at this location. What will happen?
 // This function is called at every second on ALL chars
 // (even walking or not), so avoid heavy codes here.
-// RETURN: false = we can't move there.
-bool CChar::CheckLocation( bool fStanding )
+// RETURN:
+//	true = we can move there
+//	false = we can't move there
+//	default = we teleported
+TRIGRET_TYPE CChar::CheckLocation( bool fStanding )
 {
 	ADDTOCALLSTACK("CChar::CheckLocation");
 
@@ -3169,7 +3172,7 @@ bool CChar::CheckLocation( bool fStanding )
 	{
 		// Stepping on items doesn't trigger anything whilst in design mode
 		if ( pClient->m_pHouseDesign->GetDesignArea().IsInside2d(GetTopPoint()) )
-			return true;
+			return TRIGRET_RET_TRUE;
 
 		pClient->m_pHouseDesign->EndCustomize(true);
 	}
@@ -3190,11 +3193,11 @@ bool CChar::CheckLocation( bool fStanding )
 		if ( IsTrigUsed(TRIGGER_STEP) )
 		{
 			if ( m_pArea->OnRegionTrigger( this, RTRIG_STEP ) == TRIGRET_RET_TRUE )
-				return false;
+				return TRIGRET_RET_FALSE;
 
 			CRegionBase *pRoom = GetTopPoint().GetRegion(REGION_TYPE_ROOM);
 			if ( pRoom && pRoom->OnRegionTrigger( this, RTRIG_STEP ) == TRIGRET_RET_TRUE )
-				return false;
+				return TRIGRET_RET_FALSE;
 		}
 	}
 
@@ -3233,7 +3236,7 @@ bool CChar::CheckLocation( bool fStanding )
 				if ( fStanding )
 					continue;
 				if ( Use_Item_Web(pItem) )	// we got stuck in a spider web
-					return false;
+					return TRIGRET_RET_FALSE;
 				continue;
 			case IT_FIRE:
 				{
@@ -3273,7 +3276,7 @@ bool CChar::CheckLocation( bool fStanding )
 				if ( fStanding )
 					continue;
 				Use_MoonGate(pItem);
-				return true;
+				return TRIGRET_RET_DEFAULT;
 			case IT_SHIP_PLANK:
 			case IT_ROPE:
 				if ( !fStanding && !IsStatFlag(STATF_Hovering) )
@@ -3282,7 +3285,7 @@ bool CChar::CheckLocation( bool fStanding )
 					if ( MoveToValidSpot(m_dirFace, g_Cfg.m_iMaxShipPlankTeleport, 1, true) )
 					{
 						//pItem->SetTimeout(5 * TICK_PER_SEC);	// autoclose the plank behind us
-						return true;
+						return TRIGRET_RET_TRUE;
 					}
 				}
 				continue;
@@ -3292,40 +3295,40 @@ bool CChar::CheckLocation( bool fStanding )
 	}
 
 	if ( fStanding || fStepCancel )
-		return false;
+		return TRIGRET_RET_FALSE;
 
 	// Check the map teleporters in this CSector (if any)
-	const CPointMap & pt = GetTopPoint();
+	const CPointMap &pt = GetTopPoint();
 	CSector *pSector = pt.GetSector();
 	if ( !pSector )
-		return false;
+		return TRIGRET_RET_FALSE;
 
 	const CTeleport *pTeleport = pSector->GetTeleport(pt);
 	if ( !pTeleport )
-		return true;
+		return TRIGRET_RET_TRUE;
 
 	if ( m_pNPC )
 	{
 		if ( !pTeleport->bNpc )
-			return false;
+			return TRIGRET_RET_FALSE;
 
 		if ( m_pNPC->m_Brain == NPCBRAIN_GUARD )
 		{
 			// Guards won't gate into unguarded areas.
 			const CRegionWorld *pArea = dynamic_cast<CRegionWorld*>(pTeleport->m_ptDst.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA));
 			if ( !pArea || !pArea->IsGuarded() )
-				return false;
+				return TRIGRET_RET_FALSE;
 		}
 		if ( Noto_IsCriminal() )
 		{
 			// wont teleport to guarded areas.
 			const CRegionWorld *pArea = dynamic_cast<CRegionWorld*>(pTeleport->m_ptDst.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA));
 			if ( !pArea || pArea->IsGuarded() )
-				return false;
+				return TRIGRET_RET_FALSE;
 		}
 	}
 	Spell_Teleport(pTeleport->m_ptDst, true, false, false);
-	return true;
+	return TRIGRET_RET_DEFAULT;
 }
 
 // Moving to a new region. or logging out (not in any region)

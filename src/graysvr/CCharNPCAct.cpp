@@ -917,7 +917,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 	MoveToChar(pMe);
 
 	EXC_SET("Check Location");
-	if ( !CheckLocation(false) )	// Look for teleports etc.
+	if ( CheckLocation(false) == TRIGRET_RET_FALSE )	// check if I stepped on any item/teleport
 	{
 		SetTopPoint(ptOld);		// we already moved, so move back to previous location
 		return 2;

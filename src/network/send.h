@@ -206,7 +206,7 @@ public:
 class PacketMovementAck : public PacketSend
 {
 public:
-	PacketMovementAck(const CClient* target);
+	PacketMovementAck(const CClient* target, BYTE sequence);
 };
 
 /***************************************************************************

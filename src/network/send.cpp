@@ -652,11 +652,11 @@ PacketMovementRej::PacketMovementRej(const CClient* target, BYTE sequence) : Pac
  *
  *
  ***************************************************************************/
-PacketMovementAck::PacketMovementAck(const CClient* target) : PacketSend(XCMD_WalkAck, 3, g_Cfg.m_fUsePacketPriorities? PRI_HIGHEST : PRI_NORMAL)
+PacketMovementAck::PacketMovementAck(const CClient* target, BYTE sequence) : PacketSend(XCMD_WalkAck, 3, g_Cfg.m_fUsePacketPriorities? PRI_HIGHEST : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMovementAck::PacketMovementAck");
 
-	writeByte(static_cast<BYTE>(target->GetNetState()->m_sequence));
+	writeByte(sequence);
 	writeByte(static_cast<BYTE>(target->GetChar()->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_NOTOINVUL), true)));
 	push(target);
 }
