@@ -1901,22 +1901,13 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 	}
 
 
-	if (( IsTrigUsed(TRIGGER_EQUIPTEST) ) || ( IsTrigUsed(TRIGGER_ITEMEQUIPTEST) ))
+	if ( IsTrigUsed(TRIGGER_EQUIPTEST) || IsTrigUsed(TRIGGER_ITEMEQUIPTEST) )
 	{
-		TRIGRET_TYPE iRet = pItem->OnTrigger(ITRIG_EQUIPTEST, this);
+		if ( pItem->OnTrigger(ITRIG_EQUIPTEST, this) == TRIGRET_RET_TRUE )
+			return false;
 
 		if ( pItem->IsDeleted() )
 			return false;
-
-		if (iRet == TRIGRET_RET_TRUE)
-		{
-			if (pItem->GetEquipLayer() == LAYER_DRAGGING || !pItem->GetContainer())  // dragging or no cont? else just do nothing
-			{
-				pItem->RemoveSelf();
-				ItemBounce(pItem);
-			}
-			return false;
-		}
 	}
 
 	// strong enough to equip this . etc ?
@@ -1926,13 +1917,9 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 	// remove it from the container so that nothing will be stacked with it if unequipped
 	pItem->RemoveSelf();
 
-	LAYER_TYPE layer = CanEquipLayer( pItem, LAYER_QTY, pCharMsg, false );
-
+	LAYER_TYPE layer = CanEquipLayer(pItem, LAYER_QTY, pCharMsg, false);
 	if ( layer == LAYER_NONE )
-	{
-		ItemBounce(pItem);
 		return false;
-	}
 
 	pItem->SetDecayTime(-1);	// Kill any decay timer.
 	LayerAdd(pItem, layer);
