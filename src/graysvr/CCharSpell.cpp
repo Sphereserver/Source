@@ -1761,24 +1761,6 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 	// NOTE:
 	//   ATTR_MAGIC without ATTR_MOVE_NEVER is dispellable !
 
-	// Check if there's any previous effect to clear before apply the new effect
-	for ( CItem *pSpellPrev = GetContentHead(); pSpellPrev != NULL; pSpellPrev = pSpellPrev->GetNext() )
-	{
-		if ( pSpellPrev->GetEquipLayer() != layer )
-			continue;
-		if ( layer != LAYER_FLAG_Potion && pSpellPrev->m_itSpell.m_spell != spell )
-			continue;
-		if ( pSpellPrev->GetTimerAdjusted() == -1 )
-		{
-			// Some spells create memories using TIMER=-1 intentionally to make the effect last forever
-			// or until death/logout. So casting this spell again will just remove the current effect.
-			pSpellPrev->Delete();
-			return NULL;
-		}
-		pSpellPrev->Delete();
-		break;
-	}
-
 	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
 	CItem *pSpell = CItem::CreateBase(pSpellDef ? pSpellDef->m_idSpell : ITEMID_RHAND_POINT_NW);
 	ASSERT(pSpell);
@@ -1803,9 +1785,10 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 	if ( pSrc )
 		pSpell->m_uidLink = pSrc->GetUID();
 
-	Spell_Effect_Add(pSpell);
 	if ( bEquip )
 		LayerAdd(pSpell, layer);
+
+	Spell_Effect_Add(pSpell);
 	return pSpell;
 }
 

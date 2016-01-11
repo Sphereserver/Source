@@ -359,11 +359,15 @@ LAYER_TYPE CChar::CanEquipLayer( CItem *pItem, LAYER_TYPE layer, CChar *pCharMsg
 				if ( !fTest )
 					pItemPrev->Delete();
 				break;
-			case LAYER_SPELL_STATS:			// already handled by CChar::Spell_Effect_Create()
-			case LAYER_SPELL_Blood_Oath:
-				break;
 			default:
 			{
+				if ( pItemPrev->IsType(IT_SPELL) )
+				{
+					if ( !fTest && !IsSetMagicFlags(MAGICF_STACKSTATS) )
+						pItemPrev->Delete();	// remove previous spell memory before equip the new one
+					break;
+				}
+
 				if ( !CanMove(pItemPrev) )
 					return LAYER_NONE;
 				if ( !fTest )
