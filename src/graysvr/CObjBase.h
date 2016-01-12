@@ -3940,7 +3940,7 @@ public:
 	bool ItemEquip( CItem * pItem, CChar * pCharMsg = NULL, bool fFromDClick = false );
 	bool ItemEquipWeapon( bool fForce );
 	bool ItemEquipArmor( bool fForce );
-	bool ItemBounce( CItem * pItem );
+	bool ItemBounce( CItem * pItem, bool bDisplayMsg = true );
 	bool ItemDrop( CItem * pItem, const CPointMap & pt );
 
 	void Flip();

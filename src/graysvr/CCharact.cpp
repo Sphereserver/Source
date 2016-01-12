@@ -1793,7 +1793,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 // We can't put this where we want to
 // So put in my pack if i can. else drop.
 // don't check where this came from !
-bool CChar::ItemBounce( CItem * pItem )
+bool CChar::ItemBounce( CItem * pItem, bool bDisplayMsg )
 {
 	ADDTOCALLSTACK("CChar::ItemBounce");
 	if ( pItem == NULL )
@@ -1819,7 +1819,7 @@ bool CChar::ItemBounce( CItem * pItem )
 			if ( pszWhere )
 				DEBUG_ERR(("No pack to place loot item '%s' for NPC '%s'\n", pItem->GetResourceName(), GetResourceName()));
 			else
-				DEBUG_ERR(("Loot item %s too heavy for NPC %s\n", pItem->GetResourceName(), GetResourceName()));
+				DEBUG_ERR(("Loot item '%s' too heavy for NPC '%s'\n", pItem->GetResourceName(), GetResourceName()));
 
 			pItem->Delete();
 			return false;
@@ -1829,7 +1829,8 @@ bool CChar::ItemBounce( CItem * pItem )
 		pItem->MoveToDecay(GetTopPoint(), pItem->GetDecayTime());	// drop it on ground
 	}
 
-	SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_ITEMPLACE ), pItem->GetName(), pszWhere );
+	if ( bDisplayMsg )
+		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_ITEMPLACE ), pItem->GetName(), pszWhere );
 	return true;
 }
 

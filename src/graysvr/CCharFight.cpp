@@ -3470,7 +3470,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	{
 		pAmmo->UnStackSplit(1);
 		if ( pCharTarg->m_pNPC && (40 >= Calc_GetRandVal(100)) )
-			pCharTarg->ItemBounce(pAmmo);
+			pCharTarg->ItemBounce(pAmmo, false);
 		else
 			pAmmo->Delete();
 	}

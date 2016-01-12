@@ -2607,18 +2607,16 @@ bool CChar::Spell_CastDone()
 			case SPELL_Create_Food:
 			{
 				RESOURCE_ID food = g_Cfg.ResourceGetIDType(RES_ITEMDEF, "DEFFOOD");
-				CItem * pItem = CItem::CreateScript((iT1 ? iT1 : static_cast<ITEMID_TYPE>(food.GetResIndex())), this);
-				if (pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ | SPELLFLAG_TARG_XYZ))
+				CItem *pItem = CItem::CreateScript((iT1 ? iT1 : static_cast<ITEMID_TYPE>(food.GetResIndex())), this);
+				ASSERT(pItem);
+				if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
 				{
 					pItem->MoveToCheck(m_Act_p, this);
 				}
 				else
 				{
-					TCHAR * pMsg = Str_GetTemp();
-					sprintf(pMsg, g_Cfg.GetDefaultMsg(DEFMSG_SPELL_CREATE_FOOD), pItem->GetName());
-					SysMessage(pMsg);
-					CItemContainer * pPack = GetPackSafe();
-					pPack->ContentAdd(pItem);
+					ItemBounce(pItem, false);
+					SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_SPELL_CREATE_FOOD), pItem->GetName());
 				}
 			}
 			break;

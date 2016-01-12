@@ -2590,7 +2590,7 @@ void CChar::NPC_Act_Looting()
 	if ( pCorpse )
 		Speak(g_Cfg.GetDefaultMsg(DEFMSG_LOOT_RUMMAGE), HUE_TEXT_DEF, TALKMODE_EMOTE);
 
-	ItemBounce(pItem);
+	ItemBounce(pItem, false);
 }
 
 void CChar::NPC_Act_Flee()
@@ -3178,7 +3178,7 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 	{
 		if ( OnTrigger( CTRIG_NPCAcceptItem, pCharSrc, &Args ) == TRIGRET_RET_TRUE )
 		{
-			pCharSrc->ItemBounce( pItem );
+			pCharSrc->ItemBounce(pItem, false);
 			pItem->Update();
 			return false;
 		}
@@ -3658,7 +3658,7 @@ void CChar::NPC_ExtraAI()
 	{
 		CItem *pLightSource = LayerFind(LAYER_HAND2);
 		if ( pLightSource && (pLightSource->IsType(IT_LIGHT_OUT) || pLightSource->IsType(IT_LIGHT_LIT)) )
-			ItemBounce(pLightSource);
+			ItemBounce(pLightSource, false);
 	}
 
 	EXC_CATCH;

@@ -667,13 +667,13 @@ void CItemContainer::Trade_Status( bool bCheck )
 	for ( CItem *pItem = pPartner->GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
 		pItemNext = pItem->GetNext();
-		pChar1->ItemBounce(pItem);
+		pChar1->ItemBounce(pItem, false);
 	}
 
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
 		pItemNext = pItem->GetNext();
-		pChar2->ItemBounce(pItem);
+		pChar2->ItemBounce(pItem, false);
 	}
 
 	// Transfer gold/platinum
@@ -785,7 +785,7 @@ void CItemContainer::Trade_Delete()
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
 		pItemNext = pItem->GetNext();
-		pChar->ItemBounce(pItem);
+		pChar->ItemBounce(pItem, false);
 	}
 
 	// Kill my trading partner.
