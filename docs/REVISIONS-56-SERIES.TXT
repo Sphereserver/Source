@@ -2793,3 +2793,6 @@ Fixed: Client packet problems when players teleport while walking.
 
 11-01-2015, Coruja
 Fixed: return 1 on char trigger @EquipTest / @ItemEquipTest making the item drop on char backpack instead on its last location.
+
+12-01-2015, Coruja
+Fixed: MAGICF_STACKSTATS magic flag not working correctly.

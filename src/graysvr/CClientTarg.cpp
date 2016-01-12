@@ -2004,6 +2004,7 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 
 			// Carve up Fish parts.
 			pItemTarg->SetID( ITEMID_FOOD_FISH_RAW );
+			pItemTarg->SetHue( HUE_DEFAULT );
 			pItemTarg->SetAmount( 4 * pItemTarg->GetAmount());
 			pItemTarg->Update();
 			return true;

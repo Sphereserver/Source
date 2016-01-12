@@ -3479,8 +3479,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 		case CHV_GONAME:
 			return TeleportToObj( 0, s.GetArgStr());
 		case CHV_GO:
-			Spell_Teleport( g_Cfg.GetRegionPoint( s.GetArgStr()), true, false );
-			break;
+			return Spell_Teleport( g_Cfg.GetRegionPoint(s.GetArgStr()), true, false );
 		case CHV_GOSOCK:	// sockid
 			return TeleportToCli( 0, s.GetArgVal());
 		case CHV_GOTYPE:

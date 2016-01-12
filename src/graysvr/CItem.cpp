@@ -4292,28 +4292,23 @@ LPCTSTR CItem::Use_Sextant( CPointMap pntCoords ) const
 bool CItem::Use_Light()
 {
 	ADDTOCALLSTACK("CItem::Use_Light");
-	ASSERT( IsType(IT_LIGHT_OUT) || IsType(IT_LIGHT_LIT) );
+	ASSERT(IsType(IT_LIGHT_OUT) || IsType(IT_LIGHT_LIT));
 
-	if ( IsType(IT_LIGHT_OUT) && IsItemInContainer())
-		return( false );
+	if ( IsType(IT_LIGHT_OUT) && IsItemInContainer() )
+		return false;
 
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(Light_GetOverride());
 	if ( id == ITEMID_NOTHING )
-		return( false );
+		return false;
 
-	SetID( id );	// this will set the new m_typez
+	SetTimeout(60 * TICK_PER_SEC);
+	if ( !m_itLight.m_charges )
+		m_itLight.m_charges = 20;
 
-	if ( IsType(IT_LIGHT_LIT))
-	{
-		SetTimeout( 10*60*TICK_PER_SEC );
-		if ( ! m_itLight.m_charges )
-			m_itLight.m_charges = 20;
-	}
-
-	Sound( 0x226 );
-	RemoveFromView();
+	SetID(id);	// this will set the new m_typez
+	Sound(0x226);
 	Update();
-	return( true );
+	return true;
 }
 
 int CItem::Light_GetOverride(const CItemBase * pBase) const
@@ -5082,37 +5077,36 @@ bool CItem::OnTick()
 
 		case IT_LIGHT_LIT:
 			{
-				if ( m_itLight.m_charges == USHRT_MAX )//infinit charges
+				if ( m_itLight.m_charges == USHRT_MAX )	// infinite charges
 					return true;
 
 				// use up the charges that this has .
 				EXC_SET("default behaviour::IT_LIGHT_LIT");
+				m_itLight.m_charges--;
 				if ( m_itLight.m_charges > 0 )
 				{
-					m_itLight.m_charges --;
-					SetTimeout( 10*60*TICK_PER_SEC );
+					SetTimeout(60 * TICK_PER_SEC);
 				}
 				else
 				{
 					// Torches should just go away but lanterns etc should not.
-					CItemBase * pItemDef = Item_GetDef();
+					CItemBase *pItemDef = Item_GetDef();
 					ITEMID_TYPE id = static_cast<ITEMID_TYPE>(pItemDef->m_ttEquippable.m_Light_Burnout.GetResIndex());
 
-					if ( id == GetID())
+					if ( id == GetID() )	// id has not changed when light goes out, so assume that it have infinite charges
 					{
-						// It really has infinite charges I guess.
 						m_itLight.m_charges = USHRT_MAX;
 						return true;
 					}
-					Emote( g_Cfg.GetDefaultMsg( DEFMSG_LIGHTSRC_BURN_OUT ) );
-					if ( ! id )	// burn out and be gone.
-						return false ;
+
+					Emote(g_Cfg.GetDefaultMsg(DEFMSG_LIGHTSRC_BURN_OUT));
+					if ( !id )	// burn out and be gone.
+						return false;
 					else
 					{
-						if ( IsAttr(ATTR_DECAY) ) //if attr_decay is set, just remove.
+						if ( IsAttr(ATTR_DECAY) )	// if attr_decay is set, just remove.
 							return false;
 						// Transform to the next shape.
-						m_itLight.m_charges = 0;
 						SetID(id);
 						Update();
 					}
