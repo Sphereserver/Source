@@ -1765,6 +1765,28 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 	CItem *pSpell = CItem::CreateBase(pSpellDef ? pSpellDef->m_idSpell : ITEMID_RHAND_POINT_NW);
 	ASSERT(pSpell);
 
+	// Check if there's any previous effect to clear before apply the new effect		
+	for ( CItem *pSpellPrev = GetContentHead(); pSpellPrev != NULL; pSpellPrev = pSpellPrev->GetNext() )
+	{
+		if ( layer != pSpellPrev->GetEquipLayer() )
+			continue;
+
+		// Some spells create the memory using TIMER=-1 to make the effect last until cast again,
+		// die or logout. So casting this same spell again will just remove the current effect.		
+		if ( pSpellPrev->GetTimerAdjusted() == -1 )
+		{
+			pSpellPrev->Delete();
+			return NULL;
+		}
+
+		// Check if stats spells can stack
+		if ( layer == LAYER_SPELL_STATS && spell != pSpellPrev->m_itSpell.m_spell && IsSetMagicFlags(MAGICF_STACKSTATS) )
+			continue;
+
+		pSpellPrev->Delete();
+		break;
+	}
+
 	switch ( layer )
 	{
 		case LAYER_FLAG_Criminal:		pSpell->SetName("Criminal Timer");			break;

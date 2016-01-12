@@ -224,6 +224,9 @@ LAYER_TYPE CChar::CanEquipLayer( CItem *pItem, LAYER_TYPE layer, CChar *pCharMsg
 	ASSERT(pCharDef);
 	ASSERT(pItem);
 
+	if ( pItem->IsType(IT_SPELL) )	// spell memory conflicts are handled by CChar::Spell_Effect_Create()
+		return layer;
+
 	const CItemBase *pItemDef = pItem->Item_GetDef();
 	if ( layer >= LAYER_QTY )
 	{
@@ -361,13 +364,6 @@ LAYER_TYPE CChar::CanEquipLayer( CItem *pItem, LAYER_TYPE layer, CChar *pCharMsg
 				break;
 			default:
 			{
-				if ( pItemPrev->IsType(IT_SPELL) )
-				{
-					if ( !fTest && !IsSetMagicFlags(MAGICF_STACKSTATS) )
-						pItemPrev->Delete();	// remove previous spell memory before equip the new one
-					break;
-				}
-
 				if ( !CanMove(pItemPrev) )
 					return LAYER_NONE;
 				if ( !fTest )
