@@ -1919,7 +1919,11 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 
 	LAYER_TYPE layer = CanEquipLayer(pItem, LAYER_QTY, pCharMsg, false);
 	if ( layer == LAYER_NONE )
+	{
+		if ( m_pNPC )	// only bounce to backpack if NPC, because players will call CClient::Event_Item_Drop_Fail() to drop the item back on its last location
+			ItemBounce(pItem);
 		return false;
+	}
 
 	pItem->SetDecayTime(-1);	// Kill any decay timer.
 	LayerAdd(pItem, layer);
