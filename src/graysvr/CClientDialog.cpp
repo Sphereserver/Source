@@ -673,10 +673,8 @@ bool CClient::addGumpDialogProps( CGrayUID uid )
 		return( false );
 
 	m_Prop_UID = m_Targ_UID = uid;
-	if ( uid.IsChar())
-	{
-		addSkillWindow(SKILL_QTY, true);
-	}
+	if ( uid.IsChar() )
+		addSkillWindow(static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill), true);
 
 	TCHAR *pszMsg = Str_GetTemp();
 	strcpy(pszMsg, pObj->IsItem() ? "d_ITEMPROP1" : "d_CHARPROP1" );

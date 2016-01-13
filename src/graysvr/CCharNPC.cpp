@@ -219,7 +219,7 @@ SKILL_TYPE CCharPlayer::Skill_GetLockType( LPCTSTR pszKey ) const
 	{
 		i = g_Cfg.FindSkillKey( ppArgs[1] );
 	}
-	if ( i >= SKILL_QTY )
+	if ( i >= g_Cfg.m_iMaxSkill )
 		return( SKILL_NONE );
 	return static_cast<SKILL_TYPE>(i);
 }
@@ -577,7 +577,7 @@ void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s )
 	}
 
 	EXC_SET("saving skill locks");
-	for ( size_t j = 0; j < SKILL_QTY; j++ )	// Don't write all lock states!
+	for ( size_t j = 0; j < g_Cfg.m_iMaxSkill; j++ )	// Don't write all lock states!
 	{
 		ASSERT(j < COUNTOF(m_SkillLock));
 		if ( ! m_SkillLock[j] )

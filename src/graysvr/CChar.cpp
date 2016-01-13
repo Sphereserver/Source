@@ -279,7 +279,7 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 	}
 	Stat_SetVal( STAT_FOOD, Stat_GetMax(STAT_FOOD) );
 
-	for ( i = 0; i < SKILL_QTY; i++ )
+	for ( i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
 		m_Skill[i] = 0;
 	}
@@ -663,7 +663,7 @@ int CChar::FixWeirdness()
 		//		m_iOverSkillMultiply disables this check if set to < 1
 		if (( GetPrivLevel() <= PLEVEL_Player ) && ( g_Cfg.m_iOverSkillMultiply > 0 ))
 		{
-			for ( size_t i = 0; i < SKILL_QTY; i++ )
+			for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 			{
 				int iSkillMax = Skill_GetMax(static_cast<SKILL_TYPE>(i));
 				int iSkillVal = Skill_GetBase(static_cast<SKILL_TYPE>(i));
@@ -694,7 +694,7 @@ int CChar::FixWeirdness()
 		}
 
 		// An NPC. Don't keep track of unused skills.
-		for ( size_t i = 0; i < SKILL_QTY; i++ )
+		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 		{
 			if ( m_Skill[i] > 0 && m_Skill[i] < g_Cfg.m_iSaveNPCSkills )
 				Skill_SetBase(static_cast<SKILL_TYPE>(i), 0);
@@ -813,7 +813,7 @@ bool CChar::DupeFrom( CChar * pChar, bool fNewbieItems )
 		m_Stat[i].m_regen = 0;
 	}
 
-	for ( size_t i = 0; i < SKILL_QTY; i++ )
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
 		m_Skill[i] = pChar->m_Skill[i];
 	}
@@ -1283,7 +1283,7 @@ void CChar::InitPlayer( CClient *pClient, const char *pszCharname, bool bFemale,
 	SetUnkPoint(m_ptHome);	// don't actually put me in the world yet.
 
 	// randomize the skills first.
-	for ( size_t i = 0; i < SKILL_QTY; i++ )
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
 		if ( g_Cfg.m_SkillIndexDefs.IsValidIndex(i) )
 			Skill_SetBase(static_cast<SKILL_TYPE>(i), Calc_GetRandVal(g_Cfg.m_iMaxBaseSkill));
@@ -3214,7 +3214,7 @@ void CChar::r_Write( CScript & s )
 	s.WriteKeyVal("MANA", Stat_GetVal(STAT_INT));
 	s.WriteKeyVal("FOOD", Stat_GetVal(STAT_FOOD));
 
-	for ( j = 0; j < SKILL_QTY; j++ )
+	for ( j = 0; j < g_Cfg.m_iMaxSkill; j++ )
 	{
 		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(j)) || Skill_GetBase(static_cast<SKILL_TYPE>(j)) == 0 )
 			continue;
@@ -3341,7 +3341,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 		case CHV_ALLSKILLS:
 			{
 				int iVal = s.GetArgVal();
-				for ( size_t i = 0; i < SKILL_QTY; i++ )
+				for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 				{
 					if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
 						continue;
@@ -4114,7 +4114,7 @@ int CChar::GetSkillTotal(int what, bool how)
 	int iTotal = 0;
 	int	iBase;
 
-	for ( size_t i = 0; i < SKILL_QTY; i++ )
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
 		iBase = Skill_GetBase(static_cast<SKILL_TYPE>(i));
 		if ( how )

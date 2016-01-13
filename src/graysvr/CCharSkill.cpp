@@ -362,7 +362,7 @@ SKILL_TYPE CChar::Skill_GetBest( unsigned int iRank ) const
 	ADDTOCALLSTACK("CChar::Skill_GetBest");
 	// Get the top n best skills.
 
-	if ( iRank >= SKILL_QTY )
+	if ( iRank >= g_Cfg.m_iMaxSkill )
 		iRank = 0;
 
 	DWORD * pdwSkills = new DWORD [iRank + 1];
@@ -370,7 +370,7 @@ SKILL_TYPE CChar::Skill_GetBest( unsigned int iRank ) const
 	memset(pdwSkills, 0, (iRank + 1) * sizeof(DWORD));
 
 	DWORD dwSkillTmp;
-	for ( size_t i = 0; i < SKILL_QTY; i++ )
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
 		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(i) )
 			continue;
@@ -527,7 +527,7 @@ int CChar::Skill_GetMax( SKILL_TYPE skill, bool ignoreLock ) const
 		const CSkillClassDef * pSkillClass = m_pPlayer->GetSkillClass();
 		ASSERT(pSkillClass);
 
-		if ( skill == SKILL_QTY )
+		if ( skill == static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill) )
 		{
 			pTagStorage = GetKey("OVERRIDE.SKILLSUM", true);
 			return pTagStorage ? static_cast<int>(pTagStorage->GetValNum()) : static_cast<int>(pSkillClass->m_SkillSumMax);
@@ -556,10 +556,10 @@ int CChar::Skill_GetMax( SKILL_TYPE skill, bool ignoreLock ) const
 	}
 	else
 	{
-		if ( skill == SKILL_QTY )
+		if ( skill == static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill) )
 		{
 			pTagStorage = GetKey("OVERRIDE.SKILLSUM", true);
-			return pTagStorage ? static_cast<int>(pTagStorage->GetValNum()) : (500 * SKILL_QTY);
+			return pTagStorage ? static_cast<int>(pTagStorage->GetValNum()) : (500 * g_Cfg.m_iMaxSkill);
 		}
 
 		int iSkillMax = 1000;
@@ -575,7 +575,7 @@ int CChar::Skill_GetSum() const
 {
 	ADDTOCALLSTACK("CChar::Skill_GetSum");
 	int iSkillSum = 0;
-	for ( size_t i = 0; i < SKILL_QTY; i++ )
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 		iSkillSum += Skill_GetBase(static_cast<SKILL_TYPE>(i));
 
 	return( iSkillSum );
@@ -590,7 +590,7 @@ void CChar::Skill_Decay()
 	int iSkillLevel = 0;
 
 	// Look for a skill to deduct from
-	for ( size_t i = 0; i < SKILL_QTY; ++i )
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 	{
 		if ( g_Cfg.m_SkillIndexDefs.IsValidIndex(i) == false )
 			continue;
@@ -653,10 +653,10 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 	if ( m_pPlayer )
 	{
 		int iSkillSum = 0;
-		for ( size_t i = 0; i < SKILL_QTY; i++ )
+		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 			iSkillSum += Skill_GetBase(static_cast<SKILL_TYPE>(i));
 
-		if ( iSkillSum >= Skill_GetMax(SKILL_QTY) )
+		if ( iSkillSum >= Skill_GetMax(static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill)) )
 			difficulty = 0;
 	}
 

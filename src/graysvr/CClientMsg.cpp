@@ -1745,7 +1745,7 @@ void CClient::addSkillWindow(SKILL_TYPE skill, bool bFromInfo) // Opens the skil
 	if (pChar == NULL)
 		pChar = m_pChar;
 
-	bool bAllSkills = (skill >= SKILL_QTY);
+	bool bAllSkills = (skill >= static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill));
 	if (bAllSkills == false && g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) == false)
 		return;
 

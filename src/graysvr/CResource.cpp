@@ -139,6 +139,7 @@ CResource::CResource()
 	m_iDistanceTalk		= UO_MAP_VIEW_SIZE;
 	m_iOptionFlags		= (OF_Command_Sysmsgs|OF_NoHouseMuteSpeech);
 
+	m_iMaxSkill			= SKILL_QTY;
 	m_iWalkBuffer		= 75;
 	m_iWalkRegen		= 25;
 	m_iWoolGrowthTime	= 30*60*TICK_PER_SEC;
@@ -2708,6 +2709,9 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			}
 			else
 			{
+				if ( rid.GetResIndex() >= g_Cfg.m_iMaxSkill )
+					g_Cfg.m_iMaxSkill = rid.GetResIndex() + 1;
+
 				// Just replace any previous CSkillDef
 				pSkill = new CSkillDef(static_cast<SKILL_TYPE>(rid.GetResIndex()));
 			}

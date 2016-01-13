@@ -1293,7 +1293,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			}
 			return( false );
 		case CV_SHOWSKILLS:
-			addSkillWindow(SKILL_QTY); // Reload the real skills
+			addSkillWindow(static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill)); // Reload the real skills
 			break;
 		case CV_SKILLMENU:				// Just put up another menu.
 			Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, s.GetArgStr()));

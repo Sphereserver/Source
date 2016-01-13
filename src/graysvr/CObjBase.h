@@ -2410,8 +2410,6 @@ private:
 	CCharNPC& operator=(const CCharNPC& other);
 };
 
-#define IS_SKILL_BASE(sk) ((sk) > SKILL_NONE && (sk) < SKILL_QTY)
-
 struct CCharPlayer
 {
 	// Stuff that is specific to a player character.
@@ -4127,13 +4125,13 @@ public:
 inline bool CChar::IsSkillBase( SKILL_TYPE skill ) // static
 {
 	// Is this in the base set of skills.
-	return( IS_SKILL_BASE(skill));
+	return (skill > SKILL_NONE && skill < static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill));
 }
 
 inline bool CChar::IsSkillNPC( SKILL_TYPE skill )  // static
 {
 	// Is this in the NPC set of skills.
-	return( skill >= NPCACT_FOLLOW_TARG && skill < NPCACT_QTY );
+	return (skill >= NPCACT_FOLLOW_TARG && skill < NPCACT_QTY);
 }
 
 #endif
