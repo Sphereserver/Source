@@ -1745,7 +1745,7 @@ void CClient::addSkillWindow(SKILL_TYPE skill, bool bFromInfo) // Opens the skil
 	if (pChar == NULL)
 		pChar = m_pChar;
 
-	bool bAllSkills = (skill >= SKILL_MAX);
+	bool bAllSkills = (skill >= SKILL_QTY);
 	if (bAllSkills == false && g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) == false)
 		return;
 
@@ -1756,7 +1756,7 @@ void CClient::addSkillWindow(SKILL_TYPE skill, bool bFromInfo) // Opens the skil
 			return;
 	}
 
-	if (bAllSkills == false && skill >= SKILL_SCRIPTED)
+	if (bAllSkills == false && skill >= SKILL_QTY)
 		return;
 
 	new PacketSkills(this, pChar, skill);
@@ -2163,7 +2163,7 @@ void CClient::addPlayerUpdate()
 {
 	ADDTOCALLSTACK("CClient::addPlayerUpdate");
 	// Update player character on screen (id / hue / notoriety / position / dir).
-	// NOTE: This will reset client-side walk sequence to 0, so reset it on side
+	// NOTE: This will reset client-side walk sequence to 0, so reset it on server
 	// side too, to prevent client request an unnecessary 'resync' (packet 0x22)
 	// to server because client seq != server seq.
 

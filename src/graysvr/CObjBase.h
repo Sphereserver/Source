@@ -2410,7 +2410,7 @@ private:
 	CCharNPC& operator=(const CCharNPC& other);
 };
 
-#define IS_SKILL_BASE(sk) ((sk) > SKILL_NONE && (sk) < SKILL_MAX )
+#define IS_SKILL_BASE(sk) ((sk) > SKILL_NONE && (sk) < SKILL_QTY)
 
 struct CCharPlayer
 {

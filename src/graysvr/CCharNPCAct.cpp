@@ -485,9 +485,9 @@ int CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 
 	// Train npc skill cap
 	int iMaxDecrease = 0;
-	if ((pCharSrc->GetSkillTotal() + iTrainVal) > pCharSrc->Skill_GetMax(SKILL_MAX))
+	if ( (pCharSrc->GetSkillTotal() + iTrainVal) > pCharSrc->Skill_GetMax(SKILL_QTY) )
 	{	
-		for (size_t i = SKILL_NONE + 1; i < g_Cfg.m_iMaxSkill; i++ )
+		for ( size_t i = SKILL_NONE + 1; i < SKILL_QTY; i++ )
 		{
 			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
 				continue;
@@ -571,9 +571,9 @@ bool CChar::NPC_TrainSkill( CChar * pCharSrc, SKILL_TYPE skill, int toTrain )
 {
 	ADDTOCALLSTACK("CChar::NPC_TrainSkill");
 	int iTrain = toTrain;
-	if ((pCharSrc->GetSkillTotal() + toTrain) > pCharSrc->Skill_GetMax(SKILL_MAX))
+	if ( (pCharSrc->GetSkillTotal() + toTrain) > pCharSrc->Skill_GetMax(SKILL_QTY) )
 	{	
-		for (size_t i = SKILL_NONE + 1; i < g_Cfg.m_iMaxSkill; i++ )
+		for ( size_t i = SKILL_NONE + 1; i < SKILL_QTY; i++ )
 		{
 			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
 				continue;
@@ -631,7 +631,7 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 	TemporaryString pszMsg;
 
 	size_t i = SKILL_NONE + 1;
-	for ( ; i < g_Cfg.m_iMaxSkill; i++ )
+	for ( ; i < SKILL_QTY; i++ )
 	{
 		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
 			continue;
@@ -663,7 +663,7 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 	LPCTSTR pPrvSkill = NULL;
 
 	size_t iCount = 0;
-	for ( i = (SKILL_NONE + 1); i < g_Cfg.m_iMaxSkill; i++ )
+	for ( i = (SKILL_NONE + 1); i < SKILL_QTY; i++ )
 	{
 		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
 			continue;

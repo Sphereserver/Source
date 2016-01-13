@@ -995,7 +995,7 @@ PacketSkills::PacketSkills(const CClient* target, const CChar* character, SKILL_
 		character = target->GetChar();
 
 	bool includeCaps = target->GetNetState()->isClientVersion(MINCLIVER_SKILLCAPS);
-	if (skill >= SKILL_MAX)
+	if (skill >= SKILL_QTY)
 	{
 		// all skills
 		if (includeCaps)
@@ -1003,7 +1003,7 @@ PacketSkills::PacketSkills(const CClient* target, const CChar* character, SKILL_
 		else
 			writeByte(0x00);
 
-		for (size_t i = 0; i < g_Cfg.m_iMaxSkill; i++)
+		for (size_t i = 0; i < SKILL_QTY; i++)
 		{
 			if (g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) == false)
 				continue;

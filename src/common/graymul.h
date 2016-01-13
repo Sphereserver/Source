@@ -1661,7 +1661,7 @@ enum SKILL_TYPE	// List of skill numbers (things that can be done at a given tim
 {
 	SKILL_NONE = -1,
 
-	SKILL_ALCHEMY = 0,
+	SKILL_ALCHEMY,
 	SKILL_ANATOMY,
 	SKILL_ANIMALLORE,
 	SKILL_ITEMID,
@@ -1671,7 +1671,7 @@ enum SKILL_TYPE	// List of skill numbers (things that can be done at a given tim
 	SKILL_BLACKSMITHING,
 	SKILL_BOWCRAFT,
 	SKILL_PEACEMAKING,
-	SKILL_CAMPING,	// 10
+	SKILL_CAMPING,
 	SKILL_CARPENTRY,
 	SKILL_CARTOGRAPHY,
 	SKILL_COOKING,
@@ -1681,17 +1681,17 @@ enum SKILL_TYPE	// List of skill numbers (things that can be done at a given tim
 	SKILL_HEALING,
 	SKILL_FISHING,
 	SKILL_FORENSICS,
-	SKILL_HERDING,	// 20
+	SKILL_HERDING,
 	SKILL_HIDING,
 	SKILL_PROVOCATION,
 	SKILL_INSCRIPTION,
 	SKILL_LOCKPICKING,
-	SKILL_MAGERY,		// 25
+	SKILL_MAGERY,
 	SKILL_MAGICRESISTANCE,
 	SKILL_TACTICS,
 	SKILL_SNOOPING,
 	SKILL_MUSICIANSHIP,
-	SKILL_POISONING,	// 30
+	SKILL_POISONING,
 	SKILL_ARCHERY,
 	SKILL_SPIRITSPEAK,
 	SKILL_STEALING,
@@ -1701,76 +1701,49 @@ enum SKILL_TYPE	// List of skill numbers (things that can be done at a given tim
 	SKILL_TINKERING,
 	SKILL_TRACKING,
 	SKILL_VETERINARY,
-	SKILL_SWORDSMANSHIP,	// 40
+	SKILL_SWORDSMANSHIP,
 	SKILL_MACEFIGHTING,
 	SKILL_FENCING,
-	SKILL_WRESTLING,		// 43
+	SKILL_WRESTLING,
 	SKILL_LUMBERJACKING,
 	SKILL_MINING,
 	SKILL_MEDITATION,
-	SKILL_STEALTH,			// 47
-	SKILL_REMOVETRAP,		// 48
-
-#define SKILL_AOS SKILL_NECROMANCY
+	SKILL_STEALTH,
+	SKILL_REMOVETRAP,
+	//AOS
 	SKILL_NECROMANCY,
-	SKILL_FOCUS,			// 50
-	SKILL_CHIVALRY,			// 51
-
-#define SKILL_SE SKILL_BUSHIDO
+	SKILL_FOCUS,
+	SKILL_CHIVALRY,
+	//SE
 	SKILL_BUSHIDO,
-	SKILL_NINJITSU,			// 53
-
-#define SKILL_ML SKILL_SPELLWEAVING
-	SKILL_SPELLWEAVING = 54,		// 54
- 
-#define SKILL_SA SKILL_IMBUEING
-	SKILL_MYSTICISM = 55,	// 55
+	SKILL_NINJITSU,
+	//ML
+	SKILL_SPELLWEAVING,
+	//SA
+	SKILL_MYSTICISM,
 	SKILL_IMBUING,
 	SKILL_THROWING,
-	SKILL_DEFAULT_MAX = 57,
 	
-
-#define SKILL_SCRIPTED SKILL_SCRIPTED00
-	SKILL_SCRIPTED00,		// 58
-	SKILL_SCRIPTED01,
-	SKILL_SCRIPTED02,
-	SKILL_SCRIPTED03,
-	SKILL_SCRIPTED04,
-	SKILL_SCRIPTED05,
-	SKILL_SCRIPTED06,
-	SKILL_SCRIPTED07,
-	SKILL_SCRIPTED08,
-	SKILL_SCRIPTED09,
-	SKILL_SCRIPTED10,		// 68
-	SKILL_SCRIPTED11,
-	SKILL_SCRIPTED12,
-	SKILL_SCRIPTED13,
-	SKILL_SCRIPTED14,
-	SKILL_SCRIPTED15,
-	SKILL_SCRIPTED16,
-	SKILL_SCRIPTED17,
-	SKILL_SCRIPTED18,
-	SKILL_SCRIPTED19,
-	SKILL_QTY,				// 78
+	SKILL_QTY,
 
 	// Actions a npc will perform. (no need to track skill level for these)
 	NPCACT_FOLLOW_TARG = 100,	// 100 = following a char.
-	NPCACT_STAY,			// 101
-	NPCACT_GOTO,			// 102 = Go to a location x,y. Pet command
-	NPCACT_WANDER,			// 103 = Wander aimlessly.
-	NPCACT_LOOKING,			// 104 = just look around intently.
-	NPCACT_FLEE,			// 105 = Run away from target. m_Act_Targ
-	NPCACT_TALK,			// 106 = Talking to my target. m_Act_Targ
-	NPCACT_TALK_FOLLOW,		// 107 = m_Act_Targ / m_Fight_Targ.
-	NPCACT_GUARD_TARG,		// 108 = Guard a targetted object. m_Act_Targ
-	NPCACT_GO_HOME,			// 109 =
-	NPCACT_BREATH,			// 110 = Using breath weapon. on m_Fight_Targ.
-	NPCACT_RIDDEN,			// 111 = Being ridden or shrunk as figurine.
-	NPCACT_THROWING,		// 112 = Throwing a stone at m_Fight_Targ.
-	NPCACT_TRAINING,		// 113 = using a training dummy etc.
-	NPCACT_Napping,			// 114 = just snoozong a little bit, but not sleeping.
-	NPCACT_FOOD,			// 115 = Searching for food
-	NPCACT_RUNTO,			// 116 = Run to a location x,y.
+	NPCACT_STAY,				// 101
+	NPCACT_GOTO,				// 102 = Go to a location x,y. Pet command
+	NPCACT_WANDER,				// 103 = Wander aimlessly.
+	NPCACT_LOOKING,				// 104 = just look around intently.
+	NPCACT_FLEE,				// 105 = Run away from target. m_Act_Targ
+	NPCACT_TALK,				// 106 = Talking to my target. m_Act_Targ
+	NPCACT_TALK_FOLLOW,			// 107 = m_Act_Targ / m_Fight_Targ.
+	NPCACT_GUARD_TARG,			// 108 = Guard a targetted object. m_Act_Targ
+	NPCACT_GO_HOME,				// 109 =
+	NPCACT_BREATH,				// 110 = Using breath weapon. on m_Fight_Targ.
+	NPCACT_RIDDEN,				// 111 = Being ridden or shrunk as figurine.
+	NPCACT_THROWING,			// 112 = Throwing a stone at m_Fight_Targ.
+	NPCACT_TRAINING,			// 113 = using a training dummy etc.
+	NPCACT_Napping,				// 114 = just snoozong a little bit, but not sleeping.
+	NPCACT_FOOD,				// 115 = Searching for food
+	NPCACT_RUNTO,				// 116 = Run to a location x,y.
 	NPCACT_QTY
 };
 

@@ -4060,10 +4060,10 @@ SKILL_TYPE CItem::Weapon_GetSkill() const
 	int iSkillOverride = static_cast<int>(m_TagDefs.GetKeyNum("OVERRIDE_SKILL", true) - 1);
 	if ( iSkillOverride == -1)
 		iSkillOverride = static_cast<int>(m_TagDefs.GetKeyNum("OVERRIDE.SKILL", true) - 1);
-	if ( iSkillOverride > SKILL_NONE && iSkillOverride < SKILL_MAX )
+	if ( iSkillOverride > SKILL_NONE && iSkillOverride < SKILL_QTY )
 		return static_cast<SKILL_TYPE>(iSkillOverride);
 
-	if ( pItemDef->m_iSkill > SKILL_NONE && pItemDef->m_iSkill < SKILL_MAX )
+	if ( pItemDef->m_iSkill > SKILL_NONE && pItemDef->m_iSkill < SKILL_QTY )
 		return pItemDef->m_iSkill;
 
 	switch ( pItemDef->GetType() )

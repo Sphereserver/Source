@@ -139,7 +139,6 @@ CResource::CResource()
 	m_iDistanceTalk		= UO_MAP_VIEW_SIZE;
 	m_iOptionFlags		= (OF_Command_Sysmsgs|OF_NoHouseMuteSpeech);
 
-	m_iMaxSkill			= SKILL_SCRIPTED;
 	m_iWalkBuffer		= 75;
 	m_iWalkRegen		= 25;
 	m_iWoolGrowthTime	= 30*60*TICK_PER_SEC;
@@ -489,7 +488,6 @@ enum RC_TYPE
 	RC_MAXSECTORCOMPLEXITY,		// m_iMaxSectorComplexity
 	RC_MAXSHIPPLANKTELEPORT,	// m_iMaxShipPlankTeleport
 	RC_MAXSIZEPERTICK,			// m_iNetMaxLengthPerTick
-	RC_MAXSKILL,
 	RC_MD5PASSWORDS,			// m_fMd5Passwords
 	RC_MEDIUMCANHEARGHOSTS,		// m_iMediumCanHearGhosts
 	RC_MINCHARDELETETIME,
@@ -718,7 +716,6 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "MAXSECTORCOMPLEXITY",	{ ELEM_INT,		OFFSETOF(CResource,m_iMaxSectorComplexity),	0 }},
 	{ "MAXSHIPPLANKTELEPORT",	{ ELEM_INT,		OFFSETOF(CResource,m_iMaxShipPlankTeleport),0 }},
 	{ "MAXSIZEPERTICK",			{ ELEM_INT,		OFFSETOF(CResource,m_iNetMaxLengthPerTick),	0 }},
-	{ "MAXSKILL",				{ ELEM_INT,		OFFSETOF(CResource,m_iMaxSkill),			0 }},
 	{ "MD5PASSWORDS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fMd5Passwords),		0 }},
 	{ "MEDIUMCANHEARGHOSTS",	{ ELEM_INT,		OFFSETOF(CResource,m_iMediumCanHearGhosts),	0 }},
 	{ "MINCHARDELETETIME",		{ ELEM_INT,		OFFSETOF(CResource,m_iMinCharDeleteTime),	0 }},
@@ -948,9 +945,6 @@ bool CResource::r_LoadVal( CScript &s )
 
 		return(false);
 	}
-
-	if ( i == RC_MAXSKILL && !g_Serv.IsLoading() )
-		return false;
 
 	switch (i)
 	{
@@ -2714,9 +2708,6 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			}
 			else
 			{
-				if ( rid.GetResIndex() >= SKILL_MAX )
-					g_Cfg.m_iMaxSkill = rid.GetResIndex() + 1;
-
 				// Just replace any previous CSkillDef
 				pSkill = new CSkillDef(static_cast<SKILL_TYPE>(rid.GetResIndex()));
 			}

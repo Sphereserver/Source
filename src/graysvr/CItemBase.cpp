@@ -1169,7 +1169,7 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 			break;
 		case IBC_SKILL:		// Skill to use.
 			{
-				if ( m_iSkill > SKILL_NONE && m_iSkill < SKILL_MAX )
+				if ( m_iSkill > SKILL_NONE && m_iSkill < SKILL_QTY )
 				{
 					sVal.FormatVal(m_iSkill);
 					break;
