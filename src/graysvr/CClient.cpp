@@ -310,15 +310,8 @@ bool CClient::CanHear( const CObjBaseTemplate * pSrc, TALKMODE_TYPE mode ) const
 	ADDTOCALLSTACK("CClient::CanHear");
 	// can we hear this text or sound.
 
-	if ( ! IsConnectTypePacket())
-	{
-		if (( GetConnectType() != CONNECT_TELNET ) && ( GetConnectType() != CONNECT_AXIS ))
-			return( false );
-		if ( mode == TALKMODE_BROADCAST ) // && GetAccount()
-			return( true );
+	if ( !IsConnectTypePacket() )
 		return( false );
-	}
-
 	if ( mode == TALKMODE_BROADCAST || pSrc == NULL )
 		return( true );
 	if ( m_pChar == NULL )
