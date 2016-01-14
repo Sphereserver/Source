@@ -605,11 +605,9 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 
 		case LAYER_SPELL_Paralyze:
 			StatFlag_Clear(STATF_Freeze);
+			UpdateMode();	// immediately tell the client that now he's able to move (without this, it will be able to move only on next tick update)
 			if (pClient)
-			{
 				pClient->removeBuff(BI_PARALYZE);
-				pClient->addCharMove(this);		// immediately tell the client that now he's able to move (without this, it will be able to move only on next tick update)
-			}
 			return;
 
 		case LAYER_SPELL_Strangle:	// TO-DO: NumBuff[0] and NumBuff[1] to hold the damage range values.
@@ -701,7 +699,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			if (pClient)
 			{
 				pClient->addChar(this);
-				pClient->addPlayerView(NULL);
+				pClient->addPlayerSee(NULL);
 			}
 			return;
 		case SPELL_Feeblemind:
@@ -1046,7 +1044,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			return;
 		case LAYER_SPELL_Paralyze:
 			StatFlag_Set(STATF_Freeze);
-			UpdateModeFlag();
+			UpdateMode();
 			if (pClient && IsSetOF(OF_Buffs))
 			{
 				pClient->removeBuff(BI_PARALYZE);
@@ -1268,7 +1266,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			if (pClient)
 			{
 				pClient->addChar(this);
-				pClient->addPlayerView(NULL);
+				pClient->addPlayerSee(NULL);
 			}
 			return;
 		case SPELL_Feeblemind:
@@ -1578,18 +1576,16 @@ bool CChar::Spell_Equip_OnTick( CItem * pItem )
 		case SPELL_Hallucination:
 		{
 			if (iCharges <= 0 || iLevel <= 0)
-			{
-				return(false);
-			}
+				return false;
+
 			if (IsClient())
 			{
-				static const SOUND_TYPE sm_sounds[] = { 0x243, 0x244, 0x245 };
+				static const SOUND_TYPE sm_sounds[] = { 0x243, 0x244 };
 				m_pClient->addSound(sm_sounds[Calc_GetRandVal(COUNTOF(sm_sounds))]);
 				m_pClient->addChar(this);
-				m_pClient->addPlayerView(NULL);
+				m_pClient->addPlayerSee(NULL);
 			}
-			// save the effect.
-			pItem->SetTimeout((15 + Calc_GetRandLLVal(15))*TICK_PER_SEC);
+			pItem->SetTimeout(Calc_GetRandLLVal2(15, 30) * TICK_PER_SEC);
 		}
 		break;
 
@@ -3060,15 +3056,14 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	if ( spell == SPELL_Poison_Field && IsStatFlag(STATF_Poisoned) )
 		return false;
 
+	bool fExplode = (pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) && !pSpellDef->IsSpellType(SPELLFLAG_GOOD));		// bolt (chasing) spells have explode = 1 by default (if not good spell)
 	bool fPotion = (pSourceItem && pSourceItem->IsType(IT_POTION));
-	static const SOUND_TYPE sm_DrinkSounds[] = { 0x030, 0x031 };
 	SOUND_TYPE iSound = pSpellDef->m_sound;
 	if ( fPotion )
+	{
+		static const SOUND_TYPE sm_DrinkSounds[] = { 0x030, 0x031 };
 		iSound = sm_DrinkSounds[Calc_GetRandVal(COUNTOF(sm_DrinkSounds))];
-
-	bool fExplode = false;
-	if (pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) && !pSpellDef->IsSpellType(SPELLFLAG_GOOD))	// bolt (chasing) spells have explode = 1 by default (if not good spell)
-		fExplode = true;
+	}
 
 	int iEffectMult = 1000;
 	CScriptTriggerArgs Args(static_cast<int>(spell), iSkillLevel, pSourceItem);
