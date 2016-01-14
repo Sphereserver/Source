@@ -949,7 +949,7 @@ public:
 	int		m_iLevelMode;
 	unsigned int m_iLevelNextAt;
 
-	int		m_iAutoResDisp;
+	bool	m_bAutoResDisp;
 	int		m_iAutoPrivFlags;
 
 	char	m_cCommandPrefix;

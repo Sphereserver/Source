@@ -173,7 +173,7 @@ CResource::CResource()
 	m_iNpcAi = 0;
 	m_iMaxLoopTimes = 100000;
 
-	m_iAutoResDisp = RDS_TOL;
+	m_bAutoResDisp = true;
 	m_iAutoPrivFlags = PRIV_DETAIL;
 
 	// Third Party Tools
@@ -377,7 +377,7 @@ enum RC_TYPE
 	RC_ATTACKINGISACRIME,		// m_fAttackingIsACrime
 	RC_AUTONEWBIEKEYS,			// m_fAutoNewbieKeys
 	RC_AUTOPRIVFLAGS,			// m_iAutoPrivFlags
-	RC_AUTORESDISP,				// m_iAutoResDisp
+	RC_AUTORESDISP,				// m_bAutoResDisp
 	RC_AUTOTOOLTIPRESEND,		// m_iAutoTooltipResend
 	RC_BACKUPLEVELS,			// m_iSaveBackupLevels
 	RC_BANKMAXITEMS,
@@ -605,7 +605,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "ATTACKINGISACRIME",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fAttackingIsACrime),	0 }},
 	{ "AUTONEWBIEKEYS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fAutoNewbieKeys),		0 }},
 	{ "AUTOPRIVFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iAutoPrivFlags),		0 }},
-	{ "AUTORESDISP",			{ ELEM_INT,		OFFSETOF(CResource,m_iAutoResDisp),			0 }},
+	{ "AUTORESDISP",			{ ELEM_BOOL,	OFFSETOF(CResource,m_bAutoResDisp),			0 }},
 	{ "AUTOTOOLTIPRESEND",		{ ELEM_INT,		OFFSETOF(CResource,m_iAutoTooltipResend),	0 }},
 	{ "BACKUPLEVELS",			{ ELEM_INT,		OFFSETOF(CResource,m_iSaveBackupLevels),	0 }},
 	{ "BANKMAXITEMS",			{ ELEM_INT,		OFFSETOF(CResource,m_iBankIMax),			0 }},

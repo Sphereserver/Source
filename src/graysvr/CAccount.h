@@ -216,6 +216,11 @@ public:
 		return false;
 	}
 	/**
+	* @brief Sets the resdisp on this CAccount based on pClient version.
+	* @return true if success, false otherwise.
+	*/
+	bool SetAutoResDisp(CClient *pClient);
+	/**
 	* @brief Check the current resdisp.
 	* @param what the resdisp to check.
 	* @return true if the current resdisp is equal to what, false otherwise.

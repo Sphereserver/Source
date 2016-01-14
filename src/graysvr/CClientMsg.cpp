@@ -1320,6 +1320,7 @@ void CClient::addPlayerStart( CChar * pChar )
 		m_pChar->ClientAttach( this );
 	}
 	ASSERT(m_pChar->m_pPlayer);
+	ASSERT(m_pAccount);
 
 	CPointMap pt = m_pChar->GetTopPoint();
 	CSector *pSector = pt.GetSector();
@@ -1328,8 +1329,12 @@ void CClient::addPlayerStart( CChar * pChar )
 	if ( pItemChange != NULL )
 		pItemChange->Delete();
 
+	if ( g_Cfg.m_bAutoResDisp )
+		m_pAccount->SetAutoResDisp(this);
+
 	ClearTargMode();	// clear death menu mode. etc. ready to walk about. cancel any previous modes
 	m_Env.SetInvalid();
+
 /*
 	CExtData ExtData;
 	ExtData.Party_Enable.m_state = 1;
@@ -1338,7 +1343,6 @@ void CClient::addPlayerStart( CChar * pChar )
 
 	new PacketPlayerStart(this);
 	addMapDiff();
-	//addChangeServer();		// we still need this?
 	m_pChar->MoveToChar(pt);	// make sure we are in active list
 	m_pChar->Update();
 	addPlayerWarMode();

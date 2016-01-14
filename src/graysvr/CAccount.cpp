@@ -553,8 +553,7 @@ CAccount::CAccount( LPCTSTR pszName, bool fGuest )
 		SetPrivLevel(PLEVEL_Guest);
 	else
 		SetPrivLevel(PLEVEL_Player);
-	
-	m_ResDisp = static_cast<unsigned char>(g_Cfg.m_iAutoResDisp);
+
 	m_PrivFlags = static_cast<WORD>(g_Cfg.m_iAutoPrivFlags);
 	m_MaxChars = 0;
 
@@ -1007,6 +1006,31 @@ void CAccount::SetNewPassword( LPCTSTR pszPassword )
 		m_sNewPassword.SetLength(MAX_ACCOUNT_PASSWORD_ENTER);
 }
 
+// Set account RESDISP automatically based on player client version
+bool CAccount::SetAutoResDisp(CClient *pClient)
+{
+	ADDTOCALLSTACK("CAccount::SetAutoResDisp");
+	if ( !pClient )
+		return false;
+
+	if ( pClient->GetNetState()->isClientVersion(MINCLIVER_TOL) )
+		return SetResDisp(RDS_TOL);
+	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_HS) )
+		return SetResDisp(RDS_HS);
+	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_SA) )
+		return SetResDisp(RDS_SA);
+	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_ML) )
+		return SetResDisp(RDS_ML);
+	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_SE) )
+		return SetResDisp(RDS_SE);
+	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_AOS) )
+		return SetResDisp(RDS_AOS);
+	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_LBR) )
+		return SetResDisp(RDS_LBR);
+	else
+		return SetResDisp(RDS_T2A);
+}
+
 enum AC_TYPE
 {
 	AC_ACCOUNT,
@@ -1309,7 +1333,7 @@ bool CAccount::r_LoadVal( CScript & s )
 			}
 			break;
 		case AC_RESDISP:
-			SetResDisp(static_cast<unsigned char>(s.GetArgVal()));
+			SetResDisp(static_cast<BYTE>(s.GetArgVal()));
 			break;
 		case AC_TAG0:
 			{
@@ -1357,7 +1381,7 @@ void CAccount::r_Write(CScript &s)
 	{
 		s.WriteKeyHex( "PRIV", m_PrivFlags &~( PRIV_BLOCKED | PRIV_JAILED ));
 	}
-	if ( GetResDisp() != g_Cfg.m_iAutoResDisp )
+	if ( GetResDisp() )
 	{
 		s.WriteKeyVal( "RESDISP", GetResDisp() );
 	}

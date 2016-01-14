@@ -2796,3 +2796,8 @@ Fixed: return 1 on char trigger @EquipTest / @ItemEquipTest making the item drop
 
 12-01-2015, Coruja
 Fixed: MAGICF_STACKSTATS magic flag not working correctly.
+
+15-01-2015, Coruja
+[Sphere.ini]: Changed AutoResDisp default value and functionality.
+	Previously this setting was used to set an fixed RESDISP value to new created accounts.
+	Now it's a boolean (1=on/0=off) and if enabled it will automatically set account RESDISP on @Login based on player client version.
