@@ -871,15 +871,18 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 						pAcc->m_TagDefs.DeleteKey("customerid");
 					}
 
-					DEBUG_MSG(( "%lx:xProcessClientSetup for %s, with AuthId %lu and CliVersion 0x%lx\n", GetSocketID(), 
-						pAcc->GetName(), tmSid, tmVer ));
+					DEBUG_MSG(( "%lx:xProcessClientSetup for %s, with AuthId %lu and CliVersion 0x%lx/0x%lx\n", GetSocketID(), pAcc->GetName(), tmSid, tmVer, tmVerReported ));
 
 					if ( tmSid != 0 && tmSid == pEvent->CharListReq.m_Account )
 					{
+						// request client version if the client has not reported it to server yet
+						if ( tmVerReported == 0 )
+							new PacketClientVersionReq(this);
+
 						if ( tmVer != 0 || tmVerReported != 0)
 						{
-							//// a client version change may toggle async mode, it's important
-							//// to flush pending data to the client before this happens
+							// a client version change may toggle async mode, it's important
+							// to flush pending data to the client before this happens
 							if ( tmVer != 0 )
 							{
 								m_Crypt.SetClientVerEnum(tmVer, false);

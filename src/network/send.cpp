@@ -3617,6 +3617,22 @@ PacketSeason::PacketSeason(const CClient* target, SEASON_TYPE season, bool playM
 
 
 /***************************************************************************
+*
+*
+*	Packet 0xBD : PacketClientVersionReq	request client version (HIGH)
+*
+*
+***************************************************************************/
+PacketClientVersionReq::PacketClientVersionReq(const CClient* target) : PacketSend(XCMD_ClientVersion, 3, PRI_HIGH)
+{
+	ADDTOCALLSTACK("PacketClientVersionReq::PacketClientVersionReq");
+
+	initLength();
+	push(target);
+}
+
+
+/***************************************************************************
  *
  *
  *	Packet 0xBF : PacketExtended			extended command

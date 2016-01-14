@@ -1236,6 +1236,19 @@ public:
 };
 
 /***************************************************************************
+*
+*
+*	Packet 0xBD : PacketClientVersionReq	request client version (HIGH)
+*
+*
+***************************************************************************/
+class PacketClientVersionReq : public PacketSend
+{
+public:
+	PacketClientVersionReq(const CClient* target);
+};
+
+/***************************************************************************
  *
  *
  *	Packet 0xBF : PacketExtended			extended command
