@@ -1977,8 +1977,8 @@ effect_bounce:
 		uType = static_cast<DAMAGE_TYPE>(Args.m_iN2);
 	}
 
-	int iDamageChance = static_cast<int>(Args.m_VarsLocal.GetKeyNum("ItemDamageChance",true));
-	if ( (iDamageChance > Calc_GetRandVal(100)) && !pCharDef->Can(CAN_C_NONHUMANOID) )
+	int iItemDamageChance = static_cast<int>(Args.m_VarsLocal.GetKeyNum("ItemDamageChance", true));
+	if ( (iItemDamageChance > Calc_GetRandVal(100)) && !pCharDef->Can(CAN_C_NONHUMANOID) )
 	{
 		int iHitRoll = Calc_GetRandVal(100);
 		BODYPART_TYPE iHitArea = ARMOR_HEAD;
@@ -2028,7 +2028,7 @@ effect_bounce:
 	}
 
 	// Disturb magic spells (only players can be disturbed)
-	if ( m_pPlayer && !(uType & DAMAGE_NODISTURB) && g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_MAGIC) )
+	if ( m_pPlayer && pSrc != this && !(uType & DAMAGE_NODISTURB) && g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_MAGIC) )
 	{
 		// Check if my spell can be interrupted
 		int iDisturbChance = 0;

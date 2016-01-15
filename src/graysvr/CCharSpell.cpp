@@ -3134,7 +3134,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			return false;
 
 		// Check if the spell can be reflected
-		if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_CHAR) && pCharSrc != NULL && pCharSrc != this )		// only spells with direct target can be reflected
+		if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_CHAR) && pCharSrc && pCharSrc != this )		// only spells with direct target can be reflected
 		{
 			if ( IsStatFlag(STATF_Reflection) )
 			{
@@ -3150,7 +3150,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				else
 				{
 					pCharSrc->OnSpellEffect( spell, NULL, iSkillLevel, pSourceItem );	// source can't be pCharSrc because it won't make effect if MAGICF_CANHARMSELF is disabled
-					return false;
+					return true;
 				}
 			}
 		}

@@ -2798,6 +2798,7 @@ Fixed: return 1 on char trigger @EquipTest / @ItemEquipTest making the item drop
 Fixed: MAGICF_STACKSTATS magic flag not working correctly.
 
 15-01-2015, Coruja
+Fixed: Damage spells disturbing the caster if casted on himself.
 Changed: Telnet connections will not receive B (broadcast) messages anymore.
 [Sphere.ini]: Changed AutoResDisp default value and functionality.
 	Previously this setting was used to set an fixed RESDISP value to new created accounts.
