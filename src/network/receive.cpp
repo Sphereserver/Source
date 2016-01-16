@@ -243,8 +243,13 @@ bool PacketMovementReq::onReceive(NetState* net)
 	{
 		// TO-DO: Poorly working. To make this thing work correctly
 		// we must compare timers using numbers with more precision
-		INT64 iDiff = (direction & 0x80) ? 1 : 2;
-		if ( -g_World.GetTimeDiff(client->m_timeLastEventWalk) < iDiff )
+		CChar *pChar = client->GetChar();
+		INT64 iMinDelay = 0;
+		if ( pChar->IsStatFlag(STATF_OnHorse) )
+			iMinDelay = (direction & 0x80) ? 1 : 2;
+		else
+			iMinDelay = (direction & 0x80) ? 2 : 4;
+		if ( -g_World.GetTimeDiff(client->m_timeLastEventWalk) < iMinDelay )
 			direction = DIR_QTY;	// setting invalid direction to intentionally reject the walk request
 	}
 
@@ -4270,9 +4275,16 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 
 		if ( IsSetEF(EF_FastWalkPrevention) )
 		{
-			bool fRun = (mode == 2);
+			// TO-DO: Poorly working. To make this thing work correctly
+			// we need an better integration with time packets 0xF1/0xF2
+			CChar *pChar = client->GetChar();
 			INT64 iTimeDiff = iTime2 - iTime1;
-			if ( (fRun && (iTimeDiff > 200)) || (!fRun && (iTimeDiff > 300)) )
+			INT64 iMinDelay = 0;
+			if ( pChar->IsStatFlag(STATF_OnHorse) )
+				iMinDelay = (direction & 0x80) ? 100 : 200;
+			else
+				iMinDelay = (direction & 0x80) ? 200 : 400;
+			if ( iTimeDiff < iMinDelay )
 				direction = DIR_QTY;	// setting invalid direction to intentionally reject the walk request
 		}
 
@@ -4280,6 +4292,7 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 		//DWORD x = readInt32();
 		//DWORD y = readInt32();
 		//DWORD z = readInt32();
+		skip(12);
 
 		if ( !client->Event_Walk(direction, sequence) )
 		{
