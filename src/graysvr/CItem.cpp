@@ -4013,7 +4013,7 @@ int CItem::Armor_GetDefense() const
 		return 0;
 
 	int iVal = m_defenseBase + m_ModAr;
-	if ( IsSetOF(OF_ScaleDamageByDurability) && m_itArmor.m_Hits_Cur > 0 && m_itArmor.m_Hits_Cur < m_itArmor.m_Hits_Max )
+	if ( IsSetOF(OF_ScaleDamageByDurability) && m_itArmor.m_Hits_Max > 0 && m_itArmor.m_Hits_Cur < m_itArmor.m_Hits_Max )
 	{
 		int iRepairPercent = 50 + ((50 * m_itArmor.m_Hits_Cur) / m_itArmor.m_Hits_Max);
 		iVal = IMULDIV( iVal, iRepairPercent, 100 );
@@ -4037,7 +4037,7 @@ int CItem::Weapon_GetAttack(bool bGetRange) const
 	if ( bGetRange )
 		iVal += m_attackRange;
 
-	if ( IsSetOF(OF_ScaleDamageByDurability) && m_itArmor.m_Hits_Cur > 0 && m_itArmor.m_Hits_Cur < m_itArmor.m_Hits_Max )
+	if ( IsSetOF(OF_ScaleDamageByDurability) && m_itArmor.m_Hits_Max > 0 && m_itArmor.m_Hits_Cur < m_itArmor.m_Hits_Max )
 	{
 		int iRepairPercent = 50 + ((50 * m_itArmor.m_Hits_Cur) / m_itArmor.m_Hits_Max);
 		iVal = IMULDIV( iVal, iRepairPercent, 100 );

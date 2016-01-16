@@ -2807,3 +2807,4 @@ Changed: Telnet connections will not receive B (broadcast) messages anymore.
 16-01-2015, Coruja
 Fixed: Exploit allowing instant hit on combat.
 Fixed: TARG/TARGPROP/TARGPRV char properties returning decimal values instead hex.
+Fixed: OF_ScaleDamageByDurability flag not working correctly on items using min durability (MORE1L) = 0.
