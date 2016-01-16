@@ -610,7 +610,7 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 					sVal.Format( "%lu,%lu", m_ScreenSize.x, m_ScreenSize.y );
 			} break;
 		case CC_TARG:
-			sVal.FormatVal( m_Targ_UID );
+			sVal.FormatHex(m_Targ_UID);
 			break;
 		case CC_TARGP:
 			if ( pszKey[5] == '.' )
@@ -620,10 +620,10 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			sVal = m_Targ_p.WriteUsed();
 			break;
 		case CC_TARGPROP:
-			sVal.FormatVal( m_Prop_UID );
+			sVal.FormatHex(m_Prop_UID);
 			break;
 		case CC_TARGPRV:
-			sVal.FormatVal( m_Targ_PrvUID );
+			sVal.FormatHex(m_Targ_PrvUID);
 			break;
 		case CC_TARGTXT:
 			sVal = m_Targ_Text;
