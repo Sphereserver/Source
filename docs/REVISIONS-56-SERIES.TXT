@@ -2803,3 +2803,6 @@ Changed: Telnet connections will not receive B (broadcast) messages anymore.
 [Sphere.ini]: Changed AutoResDisp default value and functionality.
 	Previously this setting was used to set an fixed RESDISP value to new created accounts.
 	Now it's a boolean (1=on/0=off) and if enabled it will automatically set account RESDISP on @Login based on player client version.
+
+16-01-2015, Coruja
+Fixed: Exploit allowing instant hit on combat.

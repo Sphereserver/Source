@@ -2838,8 +2838,7 @@ public:
 		// SKILL_INSCRIPTION
 		// SKILL_TAILORING:
 		// SKILL_TINKERING,
-
-		struct	// creation type skill.
+		struct
 		{
 			ITEMID_TYPE m_ItemID;		// ACTARG1=Making this item.
 			WORD m_Stroke_Count;		// ACTARG2=For smithing, tinkering, etc. all requiring multi strokes.
@@ -2851,7 +2850,6 @@ public:
 		// SKILL_FISHING
 		struct
 		{
-			DWORD		m_junk1;
 			DWORD		m_Stroke_Count;		// all requiring multi strokes.
 			DWORD		m_ridType;			// type of item we're harvesting
 		} m_atResource;
