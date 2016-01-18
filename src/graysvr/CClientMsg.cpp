@@ -2402,6 +2402,8 @@ int CClient::addShopItems(CChar * pVendor, LAYER_TYPE layer, bool bReal)
 
 	addItem(pContainer);
 	int count = 0;
+	//	Classic clients will crash without extra packets:
+	// if bReal is false this call will send the extra packets
 	if ( bReal )
 	{
 		addContents(pContainer, false, false, true, false);
@@ -2412,7 +2414,6 @@ int CClient::addShopItems(CChar * pVendor, LAYER_TYPE layer, bool bReal)
 		}
 		if (GetNetState()->isClientSA())
 		{
-			addContents(pContainer, false, false, false, true);
 			PacketVendorBuyList* cmd = new PacketVendorBuyList();
 			count = cmd->fillContainer(pContainer, pVendor->NPC_GetVendorMarkup(m_pChar), count);
 			cmd->push(this);
@@ -3560,6 +3561,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 		if (bShop && GetNetState()->isClientSA())
 		{
 			new PacketPropertyListVersion(this, pObj, propertyList->getVersion());
+			new PacketPropertyList(this, propertyList);
 		}
 		else
 		{
