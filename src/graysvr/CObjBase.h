@@ -2799,7 +2799,8 @@ public:
 	CPointBase  m_Act_p;			// Moving to this location. or location of forge we are working on.
 	int			m_StepStealth;		// Max steps allowed to walk invisible while using Stealth skill
 
-	union	// arg specific to the action type.(m_Act_SkillCurrent)
+	// Args related to specific actions type (m_Act_SkillCurrent)
+	union
 	{
 		struct
 		{
@@ -2816,50 +2817,41 @@ public:
 		// SKILL_SPELLWEAVING
 		struct
 		{
-			SPELL_TYPE	m_Spell;		// ACTARG1=Currently casting spell.
-			CREID_TYPE	m_SummonID;		// ACTARG2=A sub arg of the skill. (summoned type ?)
-			WORD	m_fSummonPet;		// ACTARG3=
+			SPELL_TYPE m_Spell;			// ACTARG1 = Currently casting spell.
+			CREID_TYPE m_SummonID;		// ACTARG2 = A sub arg of the skill. (summoned type ?)
+			WORD m_fSummonPet;			// ACTARG3 = Check if the char is being created by an summon spell or GM using '.add' command
 		} m_atMagery;
-
-		// SKILL_MUSICIANSHIP
-		// SKILL_ENTICEMENT
-		// SKILL_PROVOCATION
-		// SKILL_PEACEMAKING
-		struct
-		{
-			int m_iMusicDifficulty;		// ACTARG1=Base music diff, (whole thing won't work if this fails)
-		} m_atMusician;
 
 		// SKILL_ALCHEMY
 		// SKILL_BLACKSMITHING
 		// SKILL_BOWCRAFT
 		// SKILL_CARPENTRY
-		// SKILL_CARTOGRAPHY:
+		// SKILL_CARTOGRAPHY
 		// SKILL_INSCRIPTION
-		// SKILL_TAILORING:
-		// SKILL_TINKERING,
+		// SKILL_TAILORING
+		// SKILL_TINKERING
 		struct
 		{
-			ITEMID_TYPE m_ItemID;		// ACTARG1=Making this item.
-			WORD m_Stroke_Count;		// ACTARG2=For smithing, tinkering, etc. all requiring multi strokes.
-			WORD m_Amount;				// How many of this item are we making?
+			ITEMID_TYPE m_ItemID;		// ACTARG1 = Making this item.
+			WORD m_Stroke_Count;		// ACTARG2 = For smithing, tinkering, etc. all requiring multi strokes.
+			WORD m_Amount;				// ACTARG3 = How many of this item are we making?
 		} m_atCreate;
 
-		// SKILL_LUMBERJACKING,
+		// SKILL_LUMBERJACKING
 		// SKILL_MINING
 		// SKILL_FISHING
 		struct
 		{
-			DWORD		m_Stroke_Count;		// all requiring multi strokes.
-			DWORD		m_ridType;			// type of item we're harvesting
+			DWORD m_Stroke_Count;		// ACTARG1 = All requiring multi strokes.
+			DWORD m_ridType;			// ACTARG2 = Type of item we're harvesting
 		} m_atResource;
 
 		// SKILL_TAMING
 		// SKILL_MEDITATION
 		struct
 		{
-			DWORD m_junk1;
-			WORD m_Stroke_Count;		// all requiring multi strokes.
+			DWORD m_junk1;				// ACTARG1 = Unused
+			WORD m_Stroke_Count;		// ACTARG2 = All requiring multi strokes.
 		} m_atTaming;
 
 		// SKILL_ARCHERY
@@ -2870,51 +2862,46 @@ public:
 		// SKILL_THROWING
 		struct
 		{
-			WAR_SWING_TYPE	m_War_Swing_State;		// We are in the war mode swing.
-			CServTime		m_timeNextCombatSwing;	// Time to wait before start another combat swing.
+			WAR_SWING_TYPE m_War_Swing_State;		// ACTARG1 = We are in the war mode swing.
+			CServTime m_timeNextCombatSwing;		// ACTARG2 = Time to wait before start another combat swing.
 		} m_atFight;
 
 		// SKILL_TRACKING
 		struct
 		{
-			DIR_TYPE	m_PrvDir; // Previous direction of tracking target, used for when to notify player
+			DIR_TYPE m_PrvDir;			// ACTARG1 = Previous direction of tracking target, used for when to notify player
 		} m_atTracking;
 
 		// NPCACT_FOLLOW_TARG
 		struct
 		{
-			int	m_DistMin;		// Try to force this distance.
-			int	m_DistMax;		// Try to force this distance.
-			// m_Act_Targ = what am i folloiwng ?
+			int m_DistMin;				// ACTARG1 = Try to force this min distance.
+			int m_DistMax;				// ACTARG2 = Try to force this max distance.
+			// m_Act_Targ = what am i following ?
 		} m_atFollowTarg;
 
 		// NPCACT_RIDDEN
 		struct
 		{
-			CGrayUIDBase m_FigurineUID;	// This creature is being ridden by this object link. IT_FIGURINE IT_EQ_HORSE
+			CGrayUIDBase m_FigurineUID;		// ACTARG1 = This creature is being ridden by this object link. IT_FIGURINE IT_EQ_HORSE
 		} m_atRidden;
 
 		// NPCACT_TALK
 		// NPCACT_TALK_FOLLOW
 		struct
 		{
-			int	 m_HearUnknown;	// Speaking NPC has no idea what u're saying.
-			int  m_WaitCount;	// How long have i been waiting (xN sec)
+			int m_HearUnknown;			// ACTARG1 = Speaking NPC has no idea what u're saying.
+			int m_WaitCount;			// ACTARG2 = How long have i been waiting (xN sec)
 			// m_Act_Targ = who am i talking to ?
 		} m_atTalk;
 
 		// NPCACT_FLEE
-		// m_Act_Targ = who am i fleeing from ?
 		struct
 		{
-			int	 m_iStepsMax;	// how long should it take to get there.
-			int	 m_iStepsCurrent;	// how long has it taken ?
+			int m_iStepsMax;			// ACTARG1 = How long should it take to get there.
+			int m_iStepsCurrent;		// ACTARG2 = How long has it taken ?
+			// m_Act_Targ = who am i fleeing from ?
 		} m_atFlee;
-
-		// NPCACT_TRAINING
-		// m_Act_Targ = what am i training on
-		// m_Act_TargPrv = weapon
-		//
 	};
 
 public:
