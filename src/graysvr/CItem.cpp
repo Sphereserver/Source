@@ -1672,13 +1672,8 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 		case IT_LIGHT_LIT:
 		case IT_LIGHT_OUT:
 			// how many charges ?
-			if ( m_itLight.m_charges != USHRT_MAX )
-			{
-				if ( Light_GetOverride(pItemDef) )
-				{
-					len += sprintf( pTemp+len, " (%d %s)", m_itLight.m_charges, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_CHARGES ) );
-				}
-			}
+			if ( !IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC) )
+				len += sprintf(pTemp + len, " (%d %s)", m_itLight.m_charges, g_Cfg.GetDefaultMsg(DEFMSG_ITEMTITLE_CHARGES));
 			break;
 
 		default:
@@ -4294,36 +4289,41 @@ bool CItem::Use_Light()
 	ADDTOCALLSTACK("CItem::Use_Light");
 	ASSERT(IsType(IT_LIGHT_OUT) || IsType(IT_LIGHT_LIT));
 
-	if ( IsType(IT_LIGHT_OUT) && IsItemInContainer() )
+	if ( IsType(IT_LIGHT_OUT) && (m_itLight.m_burned || IsItemInContainer()) )
 		return false;
 
-	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(Light_GetOverride());
+	ITEMID_TYPE id = Light_GetOverride();
 	if ( id == ITEMID_NOTHING )
 		return false;
 
-	SetTimeout(60 * TICK_PER_SEC);
-	if ( !m_itLight.m_charges )
-		m_itLight.m_charges = 20;
-
 	SetID(id);	// this will set the new m_typez
-	Sound(0x226);
 	Update();
+
+	if ( IsType(IT_LIGHT_LIT) )
+	{
+		Sound(0x47);
+		SetTimeout(60 * TICK_PER_SEC);
+		if ( !m_itLight.m_charges )
+			m_itLight.m_charges = 20;
+	}
+	else if ( IsType(IT_LIGHT_OUT) )
+	{
+		Sound(m_itLight.m_burned ? 0x4b8 : 0x3be);
+		SetDecayTime();
+	}
+
 	return true;
 }
 
-int CItem::Light_GetOverride(const CItemBase * pBase) const
+ITEMID_TYPE CItem::Light_GetOverride() const
 {
 	ADDTOCALLSTACK("CItem::Light_GetOverride");
-	if ( !pBase )
-		pBase = Item_GetDef();
+	ITEMID_TYPE iOverride = static_cast<ITEMID_TYPE>(m_TagDefs.GetKeyNum("OVERRIDE_LIGHTID", true));
+	if ( iOverride )
+		return iOverride;
 
-	int ribReturn = pBase->m_ttEquippable.m_Light_ID.GetResIndex();
-
-	int iBase = static_cast<int>(m_TagDefs.GetKeyNum("OVERRIDE_LIGHTID",true));
-	if ( iBase )
-		ribReturn = iBase;
-
-	return( ribReturn );
+	CItemBase *pBase = Item_GetDef();
+	return static_cast<ITEMID_TYPE>(pBase->m_ttEquippable.m_Light_ID.GetResIndex());
 }
 
 
@@ -5077,39 +5077,19 @@ bool CItem::OnTick()
 
 		case IT_LIGHT_LIT:
 			{
-				if ( m_itLight.m_charges == USHRT_MAX )	// infinite charges
+				EXC_SET("default behaviour::IT_LIGHT_LIT");
+				if ( IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC) )	// infinite charges
 					return true;
 
-				// use up the charges that this has .
-				EXC_SET("default behaviour::IT_LIGHT_LIT");
 				m_itLight.m_charges--;
 				if ( m_itLight.m_charges > 0 )
-				{
 					SetTimeout(60 * TICK_PER_SEC);
-				}
 				else
 				{
-					// Torches should just go away but lanterns etc should not.
-					CItemBase *pItemDef = Item_GetDef();
-					ITEMID_TYPE id = static_cast<ITEMID_TYPE>(pItemDef->m_ttEquippable.m_Light_Burnout.GetResIndex());
-
-					if ( id == GetID() )	// id has not changed when light goes out, so assume that it have infinite charges
-					{
-						m_itLight.m_charges = USHRT_MAX;
-						return true;
-					}
-
+					// Burn out the light
 					Emote(g_Cfg.GetDefaultMsg(DEFMSG_LIGHTSRC_BURN_OUT));
-					if ( !id )	// burn out and be gone.
-						return false;
-					else
-					{
-						if ( IsAttr(ATTR_DECAY) )	// if attr_decay is set, just remove.
-							return false;
-						// Transform to the next shape.
-						SetID(id);
-						Update();
-					}
+					m_itLight.m_burned = 1;
+					Use_Light();
 				}
 			}
 			return true;

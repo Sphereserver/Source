@@ -673,7 +673,7 @@ public:
 			// CAN_I_LIGHT may be set for others as well..ie.Moon gate conflict
 			DWORD   m_junk1;
 			DWORD	m_junk2;
-			WORD	m_junk3;
+			BYTE	m_burned;	// morex = out of charges? (1=yes / 0=no)
 			WORD	m_charges;	// morey = how long will the torch last ?
 			BYTE	m_pattern;	// morez = light rotation pattern (LIGHT_PATTERN)
 		} m_itLight;
@@ -1293,7 +1293,7 @@ public:
 	void SetTrapState( IT_TYPE state, ITEMID_TYPE id, int iTimeSec );
 	int Use_Trap();
 	bool Use_Light();
-	int Light_GetOverride(const CItemBase * pBase = NULL) const;
+	ITEMID_TYPE Light_GetOverride() const;
 	int Use_LockPick( CChar * pCharSrc, bool fTest, bool fFail );
 	LPCTSTR Use_SpyGlass( CChar * pUser ) const;
 	LPCTSTR Use_Sextant( CPointMap pntCoords ) const;
