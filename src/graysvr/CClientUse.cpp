@@ -136,9 +136,10 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 	if ( pSpawn )
 		pSpawn->DelObj(pItem->GetUID());
 
-	SetTargMode();
-	m_Targ_UID = pItem->GetUID(); // probably already set anyhow.
-	m_tmUseItem.m_pParent = pItem->GetParent(); // Cheat Verify.
+	m_Targ_PrvUID = m_Targ_UID;
+	m_Targ_UID = pItem->GetUID();
+	m_tmUseItem.m_pParent = pItem->GetParent();	// Cheat Verify.
+
 	// Use types of items. (specific to client)
 	switch ( pItem->GetType() )
 	{
@@ -151,7 +152,6 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 					{
 						SysMessageDefault( DEFMSG_TRACKING_UNABLE );
 					}
-					m_Targ_UID = pItem->GetUID();
 					addTarget( CLIMODE_TARG_LINK, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_TRACKER_ATTUNE ) );
 				}
 			}
@@ -179,7 +179,6 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 				return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_bolts" ) );
 			}
 		case IT_FISH_POLE:	// Just be near water ?
-			m_pChar->m_atResource.m_ridType	= RESOURCE_ID( RES_TYPEDEF, IT_WATER );
 			addTarget( CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg( DEFMSG_FISHING_PROMT ), true );
 			return true;
 		case IT_DEED:
@@ -359,8 +358,6 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 
 					m_tmSkillMagery.m_Spell = spell;	// m_atMagery.m_Spell
 					m_pChar->m_atMagery.m_Spell = spell;
-					m_Targ_UID = pItem->GetUID();	// default target.
-					m_Targ_PrvUID = pItem->GetUID();
 					m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
 					return true;
 				}
@@ -429,9 +426,6 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 		case IT_WEAPON_SWORD:		// 23 =
 		case IT_WEAPON_FENCE:		// 24 = can't be used to chop trees.
 		case IT_WEAPON_AXE:
-			// set resource to trees
-			m_pChar->m_atResource.m_ridType	= RESOURCE_ID( RES_TYPEDEF, IT_TREE );
-
 		case IT_WEAPON_MACE_STAFF:
 		case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
 		{
@@ -501,7 +495,6 @@ bool CClient::Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript )
 			{	// Mine at the location. (possible crime?)
 				TCHAR *pszTemp = Str_GetTemp();
 				sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_MACEPICK_TARG ), pItem->GetName());
-				m_pChar->m_atResource.m_ridType	= RESOURCE_ID(RES_TYPEDEF, IT_ROCK);
 				addTarget(CLIMODE_TARG_USE_ITEM, pszTemp, true, true);
 			}
 			return true;

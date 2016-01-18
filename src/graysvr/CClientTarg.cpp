@@ -1879,6 +1879,7 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 		// Mine at the location. (shovel)
 		m_pChar->m_Act_p = pt;
 		m_pChar->m_Act_TargPrv = m_Targ_PrvUID;
+		m_pChar->m_atResource.m_ridType = RESOURCE_ID(RES_TYPEDEF, IT_ROCK);
 		return( m_pChar->Skill_Start( SKILL_MINING ));
 
 	case IT_WEAPON_MACE_CROOK:
@@ -1957,10 +1958,10 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 		case IT_FOLIAGE:
 		case IT_TREE:
 			// Just targetted a tree type
-
 			m_pChar->m_Act_TargPrv = m_Targ_PrvUID;
 			m_pChar->m_Act_Targ = m_Targ_UID;
 			m_pChar->m_Act_p = pt;
+			m_pChar->m_atResource.m_ridType = RESOURCE_ID(RES_TYPEDEF, IT_TREE);
 			return( m_pChar->Skill_Start( SKILL_LUMBERJACKING ));
 
 		case IT_LOG:
@@ -2312,6 +2313,7 @@ static LPCTSTR const sm_Txt_LoomUse[] =
 
 	case IT_FISH_POLE:
 		m_pChar->m_Act_p = pt;
+		m_pChar->m_atResource.m_ridType = RESOURCE_ID(RES_TYPEDEF, IT_WATER);
 		return( m_pChar->Skill_Start( SKILL_FISHING ));
 
 	case IT_LOCKPICK:
