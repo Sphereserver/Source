@@ -1528,8 +1528,6 @@ public:
 
 	int OnSkill_Info( SKILL_TYPE skill, CGrayUID uid, int iTestLevel, bool fTest );
 
-	inline bool Cmd_Use_Item_MustEquip( CItem * pItem, bool fFromDClick = false );
-
 	bool Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript = false );
 	void Cmd_EditItem( CObjBase * pObj, int iSelect );
 
