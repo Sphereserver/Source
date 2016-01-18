@@ -4292,11 +4292,15 @@ bool CItem::Use_Light()
 	if ( IsType(IT_LIGHT_OUT) && (m_itLight.m_burned || IsItemInContainer()) )
 		return false;
 
-	ITEMID_TYPE id = Light_GetOverride();
-	if ( id == ITEMID_NOTHING )
-		return false;
+	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(m_TagDefs.GetKeyNum("OVERRIDE_LIGHTID", true));
+	if ( !id )
+	{
+		id = static_cast<ITEMID_TYPE>(Item_GetDef()->m_ttEquippable.m_Light_ID.GetResIndex());
+		if ( !id )
+			return false;
+	}
 
-	SetID(id);	// this will set the new m_typez
+	SetID(id);
 	Update();
 
 	if ( IsType(IT_LIGHT_LIT) )
@@ -4314,18 +4318,6 @@ bool CItem::Use_Light()
 
 	return true;
 }
-
-ITEMID_TYPE CItem::Light_GetOverride() const
-{
-	ADDTOCALLSTACK("CItem::Light_GetOverride");
-	ITEMID_TYPE iOverride = static_cast<ITEMID_TYPE>(m_TagDefs.GetKeyNum("OVERRIDE_LIGHTID", true));
-	if ( iOverride )
-		return iOverride;
-
-	CItemBase *pBase = Item_GetDef();
-	return static_cast<ITEMID_TYPE>(pBase->m_ttEquippable.m_Light_ID.GetResIndex());
-}
-
 
 int CItem::Use_LockPick( CChar * pCharSrc, bool fTest, bool fFail )
 {

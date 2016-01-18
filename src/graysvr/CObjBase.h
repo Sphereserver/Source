@@ -1293,7 +1293,6 @@ public:
 	void SetTrapState( IT_TYPE state, ITEMID_TYPE id, int iTimeSec );
 	int Use_Trap();
 	bool Use_Light();
-	ITEMID_TYPE Light_GetOverride() const;
 	int Use_LockPick( CChar * pCharSrc, bool fTest, bool fFail );
 	LPCTSTR Use_SpyGlass( CChar * pUser ) const;
 	LPCTSTR Use_Sextant( CPointMap pntCoords ) const;
