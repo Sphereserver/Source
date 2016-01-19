@@ -2811,3 +2811,4 @@ Fixed: OF_ScaleDamageByDurability flag not working correctly on items using min 
 
 19-01-2015, Coruja
 Changed: Improved Detecting Hidden skill behavior.
+[Sphere.ini]: Changed GameMinuteLength default value.
