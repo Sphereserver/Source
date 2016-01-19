@@ -2006,43 +2006,48 @@ int CChar::Skill_DetectHidden( SKTRIG_TYPE stage )
 	// ??? Hidden objects ?
 
 	if ( stage == SKTRIG_START )
-		return( 10 );	// based on who is hiding ?
+		return 10;		// based on who is hiding ?
 
 	if ( stage == SKTRIG_FAIL || stage == SKTRIG_STROKE )
-		return( 0 );
+		return 0;
 
 	if ( stage != SKTRIG_SUCCESS )
 	{
 		ASSERT(0);
-		return( -SKTRIG_QTY );
+		return -SKTRIG_QTY;
 	}
 
-	int iRadius = ( Skill_GetAdjusted(SKILL_DETECTINGHIDDEN) / 8 ) + 1;
-	CWorldSearch Area( GetTopPoint(), iRadius );
-	bool fFound = false;
+	if ( !(g_Cfg.m_iRevealFlags & REVEALF_DETECTINGHIDDEN) )	// skill succeeded, but effect is disabled
+		return 0;
+
+	int iSkill = Skill_GetAdjusted(SKILL_DETECTINGHIDDEN);
+	int iRadius = iSkill / 100;
+
+	CWorldSearch Area(GetTopPoint(), iRadius);
+	bool bFound = false;
 	for (;;)
 	{
-		CChar * pChar = Area.GetChar();
+		CChar *pChar = Area.GetChar();
 		if ( pChar == NULL )
 			break;
-		if ( pChar == this )
+		if ( pChar == this || !pChar->IsStatFlag(STATF_Invisible|STATF_Hidden) )
 			continue;
-		if ( !pChar->IsStatFlag( STATF_Hidden ) || ( pChar->IsStatFlag( STATF_Invisible ) && !(g_Cfg.m_iRevealFlags & REVEALF_DETECTINGHIDDEN) ))
+
+		// Check chance to reveal the target
+		int iSkillSrc = iSkill + Calc_GetRandVal(210) - 100;
+		int iSkillTarg = pChar->Skill_GetAdjusted(SKILL_HIDING) + Calc_GetRandVal(210) - 100;
+		if ( iSkillSrc < iSkillTarg )
 			continue;
-		// Try to detect them.
-		if ( pChar->IsStatFlag( STATF_Hidden ))
-		{
-			// If there hiding skill is much better than our detect then stay hidden
-		}
+
 		pChar->Reveal();
-		SysMessagef(g_Cfg.GetDefaultMsg( DEFMSG_DETECTHIDDEN_SUCC ), pChar->GetName());
-		fFound = true;
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_DETECTHIDDEN_SUCC), pChar->GetName());
+		bFound = true;
 	}
 
-	if ( !fFound )
-		return( -SKTRIG_FAIL );
+	if ( !bFound )
+		return -SKTRIG_FAIL;
 
-	return( 0 );
+	return 0;
 }
 
 int CChar::Skill_Cartography( SKTRIG_TYPE stage )
