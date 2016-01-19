@@ -2831,8 +2831,8 @@ public:
 		// SKILL_TINKERING
 		struct
 		{
-			ITEMID_TYPE m_ItemID;		// ACTARG1 = Making this item.
-			WORD m_Stroke_Count;		// ACTARG2 = For smithing, tinkering, etc. all requiring multi strokes.
+			WORD m_Stroke_Count;		// ACTARG1 = For smithing, tinkering, etc. all requiring multi strokes.
+			ITEMID_TYPE m_ItemID;		// ACTARG2 = Making this item.
 			WORD m_Amount;				// ACTARG3 = How many of this item are we making?
 		} m_atCreate;
 
@@ -2841,16 +2841,16 @@ public:
 		// SKILL_FISHING
 		struct
 		{
-			DWORD m_Stroke_Count;		// ACTARG1 = All requiring multi strokes.
-			DWORD m_ridType;			// ACTARG2 = Type of item we're harvesting
+			WORD m_Stroke_Count;		// ACTARG1 = All requiring multi strokes.
+			bool m_bounceItem;			// ACTARG2 = Drop item on backpack (true) or drop it on ground (false)
+			DWORD m_ridType;			// ACTARG3 = Type of item we're harvesting
 		} m_atResource;
 
 		// SKILL_TAMING
 		// SKILL_MEDITATION
 		struct
 		{
-			DWORD m_junk1;				// ACTARG1 = Unused
-			WORD m_Stroke_Count;		// ACTARG2 = All requiring multi strokes.
+			WORD m_Stroke_Count;		// ACTARG1 = All requiring multi strokes.
 		} m_atTaming;
 
 		// SKILL_ARCHERY

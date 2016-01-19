@@ -1719,7 +1719,7 @@ int CChar::Skill_Mining( SKTRIG_TYPE stage )
 	ADDTOCALLSTACK("CChar::Skill_Mining");
 	// SKILL_MINING
 	// m_Act_p = the point we want to mine at.
-	// m_Act_TargPrv = Shovel
+	// m_Act_TargPrv = Pickaxe/Shovel
 	//
 	// Test the chance of precious ore.
 	// resource check  to IT_ORE. How much can we get ?
@@ -1729,98 +1729,74 @@ int CChar::Skill_Mining( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_FAIL )
 		return 0;
 
-	CItem * pShovel = m_Act_TargPrv.ItemFind();
-	if ( pShovel == NULL )
+	CItem *pTool = m_Act_TargPrv.ItemFind();
+	if ( !pTool )
 	{
-		SysMessageDefault( DEFMSG_MINING_TOOL );
-		return( -SKTRIG_ABORT );
+		SysMessageDefault(DEFMSG_MINING_TOOL);
+		return -SKTRIG_ABORT;
 	}
 
 	if ( m_Act_p.m_x == -1 )
 	{
-		SysMessageDefault( DEFMSG_MINING_4 );
-		return( -SKTRIG_QTY );
+		SysMessageDefault(DEFMSG_MINING_4);
+		return -SKTRIG_QTY;
 	}
 
 	// 3D distance check and LOS
-	if ( !CanSeeLOS( m_Act_p, NULL, 2 ))
+	CSkillDef *pSkillDef = g_Cfg.GetSkillDef(SKILL_MINING);
+	int iTargRange = GetTopPoint().GetDist(m_Act_p);
+	int iMaxRange = pSkillDef->m_Range;
+	if ( !iMaxRange )
 	{
-		const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(SKILL_MINING);
-		int Range = pSkillDef->m_Range;
-		if ( !pSkillDef->m_Range )
-		{
-			g_Log.EventError("Mining skill doesn't have a value for RANGE, defaulting to 2\n");
-			Range = 2;
-		}
-		if ( GetTopPoint().GetDist( m_Act_p ) > Range )
-			SysMessageDefault( DEFMSG_MINING_REACH );
-		else
-			SysMessageDefault( DEFMSG_MINING_LOS );
-		return( -SKTRIG_QTY );
+		g_Log.EventError("Mining skill doesn't have a value for RANGE, defaulting to 2\n");
+		iMaxRange = 2;
+	}
+	if ( iTargRange < 1 && !g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_NOMINDIST) )
+	{
+		SysMessageDefault(DEFMSG_MINING_CLOSE);
+		return -SKTRIG_QTY;
+	}
+	if ( iTargRange > iMaxRange )
+	{
+		SysMessageDefault(DEFMSG_MINING_REACH);
+		return -SKTRIG_QTY;
+	}
+	if ( !CanSeeLOS(m_Act_p, NULL, iMaxRange) )
+	{
+		SysMessageDefault(DEFMSG_MINING_LOS);
+		return -SKTRIG_QTY;
 	}
 
 	// Resource check
-	CItem * pResBit = g_World.CheckNaturalResource( m_Act_p, (IT_TYPE) GETINTRESOURCE(m_atResource.m_ridType), stage == SKTRIG_START, this );
-	if ( pResBit == NULL )
+	CItem *pResBit = g_World.CheckNaturalResource(m_Act_p, static_cast<IT_TYPE>(GETINTRESOURCE(m_atResource.m_ridType)), stage == SKTRIG_START, this);
+	if ( !pResBit )
 	{
-		SysMessageDefault( DEFMSG_MINING_1 );
-		return( -SKTRIG_QTY );
+		SysMessageDefault(DEFMSG_MINING_1);
+		return -SKTRIG_QTY;
 	}
 	if ( pResBit->GetAmount() == 0 )
 	{
-		SysMessageDefault( DEFMSG_MINING_2 );
-		return( -SKTRIG_QTY );
-	}
-
-	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOMINDIST ) )
-	{
-		if ( GetTopPoint().GetDist( m_Act_p ) < 1 )
-		{
-			SysMessageDefault( DEFMSG_MINING_CLOSE );
-			return( -SKTRIG_QTY );
-		}
+		SysMessageDefault(DEFMSG_MINING_2);
+		return -SKTRIG_QTY;
 	}
 
 	if ( stage == SKTRIG_START )
 	{
-		m_atResource.m_Stroke_Count = Calc_GetRandVal( 5 ) + 2;
-		return( Skill_NaturalResource_Setup( pResBit ));
+		m_atResource.m_Stroke_Count = Calc_GetRandVal(5) + 2;
+		return Skill_NaturalResource_Setup(pResBit);
 	}
 
-	// Useless now, strokes in SKF_GATHER are handled directly from Skill_Stage() and its code softcoded in their skill's triggers.
-	// However I do not remove this block because of people not updating a shit!
-	if ( stage == SKTRIG_STROKE )
+	CItem *pItem = Skill_NaturalResource_Create(pResBit, SKILL_MINING);
+	if ( !pItem )
 	{
-		UpdateDir( m_Act_p );
-		if ( IsSetEF(EF_DamageTools) )
-		{
-			if ( pShovel->m_itWeapon.m_Hits_Cur )
-				pShovel->OnTakeDamage( 1, this, DAMAGE_HIT_BLUNT );
-			else
-				pShovel->Delete();
-		}
-
-		if ( m_atResource.m_Stroke_Count )
-		{
-			int stroke = Skill_Stroke( true );
-			if ( stroke == -SKTRIG_ABORT  || stroke == -SKTRIG_STROKE)
-				return stroke;
-		}
-
-		return 0;
+		SysMessageDefault(DEFMSG_MINING_3);
+		return -SKTRIG_FAIL;
 	}
 
-	CItem * pItem = Skill_NaturalResource_Create( pResBit, SKILL_MINING );
-	if ( pItem == NULL )
-	{
-		SysMessageDefault( DEFMSG_MINING_3 );
-		return( -SKTRIG_FAIL );
-	}
-
-	if (m_atUnk.m_Arg2)
-		ItemBounce( pItem );
+	if ( m_atResource.m_bounceItem )
+		ItemBounce(pItem);
 	else
-		pItem->MoveToCheck( GetTopPoint(), this );	// put at my feet.
+		pItem->MoveToCheck(GetTopPoint(), this);	// put at my feet.
 
 	return 0;
 }
@@ -1842,110 +1818,83 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 
 	if ( m_Act_p.m_x == -1 )
 	{
-		SysMessageDefault( DEFMSG_FISHING_4 );
-		return( -SKTRIG_QTY );
+		SysMessageDefault(DEFMSG_FISHING_4);
+		return -SKTRIG_QTY;
 	}
 
-	CRegionBase * pRegion = GetTopPoint().GetRegion(REGION_TYPE_MULTI);		// are we in a house ?
-	if ( pRegion && ( !pRegion->IsFlag(REGION_FLAG_SHIP) ))
+	CRegionBase *pRegion = GetTopPoint().GetRegion(REGION_TYPE_MULTI);		// are we in a house ?
+	if ( pRegion && !pRegion->IsFlag(REGION_FLAG_SHIP) )
 	{
-		SysMessageDefault( DEFMSG_FISHING_3 );
-		return( -SKTRIG_QTY );
+		SysMessageDefault(DEFMSG_FISHING_3);
+		return -SKTRIG_QTY;
 	}
 
-	if (m_Act_p.GetRegion(REGION_TYPE_MULTI))	// do not allow him to fish through ship floor
+	if ( m_Act_p.GetRegion(REGION_TYPE_MULTI) )		// do not allow fishing through ship floor
 	{
-		SysMessageDefault( DEFMSG_FISHING_4 );
-		return( -SKTRIG_QTY );
+		SysMessageDefault(DEFMSG_FISHING_4);
+		return -SKTRIG_QTY;
 	}
 
 	// 3D distance check and LOS
-	const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(SKILL_FISHING);
-	int Range = pSkillDef->m_Range;
-	if ( ! pSkillDef->m_Range )
+	CSkillDef *pSkillDef = g_Cfg.GetSkillDef(SKILL_FISHING);
+	int iTargRange = GetTopPoint().GetDist(m_Act_p);
+	int iMaxRange = pSkillDef->m_Range;
+	if ( !iMaxRange )
 	{
 		g_Log.EventError("Fishing skill doesn't have a value for RANGE, defaulting to 4\n");
-		Range = 4;
+		iMaxRange = 4;
 	}
-
-	if (( m_pPlayer && g_Cfg.m_iAdvancedLos & ADVANCEDLOS_PLAYER ) || ( m_pNPC && g_Cfg.m_iAdvancedLos & ADVANCEDLOS_NPC ))
+	if ( iTargRange < 1 && !g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_NOMINDIST) ) // you cannot fish under your legs
 	{
-		if ( !CanSeeLOS( m_Act_p, NULL, 18, LOS_FISHING ))
+		SysMessageDefault(DEFMSG_FISHING_CLOSE);
+		return -SKTRIG_QTY;
+	}
+	if ( iTargRange > iMaxRange )
+	{
+		SysMessageDefault(DEFMSG_FISHING_REACH);
+		return -SKTRIG_QTY;
+	}
+	if ( (m_pPlayer && (g_Cfg.m_iAdvancedLos & ADVANCEDLOS_PLAYER)) || (m_pNPC && (g_Cfg.m_iAdvancedLos & ADVANCEDLOS_NPC)) )
+	{
+		if ( !CanSeeLOS(m_Act_p, NULL, iMaxRange, LOS_FISHING) )
 		{
-			SysMessageDefault( DEFMSG_FISHING_LOS );
-			return( -SKTRIG_QTY );
+			SysMessageDefault(DEFMSG_FISHING_LOS);
+			return -SKTRIG_QTY;
 		}
-	}
-
-	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOMINDIST ) )
-	{
-		if ( GetTopPoint().GetDist( m_Act_p ) < 2 ) // you cannot fish under your legs
-		{
-			SysMessageDefault( DEFMSG_FISHING_CLOSE );
-			return( -SKTRIG_QTY );
-		}
-	}
-	if ( GetTopPoint().GetDist( m_Act_p ) > Range )
-	{
-		SysMessageDefault( DEFMSG_FISHING_REACH );
-		return( -SKTRIG_QTY );
 	}
 
 	// Resource check
-	CItem * pResBit = g_World.CheckNaturalResource( m_Act_p, (IT_TYPE) GETINTRESOURCE(m_atResource.m_ridType), stage == SKTRIG_START, this );
-	if ( pResBit == NULL )
+	CItem *pResBit = g_World.CheckNaturalResource(m_Act_p, static_cast<IT_TYPE>(GETINTRESOURCE(m_atResource.m_ridType)), stage == SKTRIG_START, this);
+	if ( !pResBit )
 	{
-		SysMessageDefault( DEFMSG_FISHING_1 );
-		return( -SKTRIG_QTY );
+		SysMessageDefault(DEFMSG_FISHING_1);
+		return -SKTRIG_QTY;
 	}
 	if ( pResBit->GetAmount() == 0 )
 	{
-		SysMessageDefault( DEFMSG_FISHING_2 );
-		return( -SKTRIG_QTY );
+		SysMessageDefault(DEFMSG_FISHING_2);
+		return -SKTRIG_QTY;
 	}
 
 	if ( stage == SKTRIG_START )
 	{
 		m_atResource.m_Stroke_Count = 1;
 		m_Act_Targ = pResBit->GetUID();
-		return( Skill_NaturalResource_Setup( pResBit ));
+		return Skill_NaturalResource_Setup(pResBit);
 	}
 
-	if ( stage == SKTRIG_STROKE )	// Useless now, strokes in SKF_GATHER are handled directly from Skill_Stage() and its code softcoded in their skill's triggers.
-	// I remain this code active however for 'old code is better, updates sux, fuck u updates makers, i'll cry and tell this is not working even if its correctly working muahahaha', u know.
+	CItem *pFish = Skill_NaturalResource_Create(pResBit, SKILL_FISHING);
+	if ( !pFish )
 	{
-		UpdateDir( m_Act_p );
-		m_Act_Targ = pResBit->GetUID();
-		if ( m_atResource.m_Stroke_Count )
-		{
-			int stroke = Skill_Stroke( true );
-			if ( stroke == -SKTRIG_ABORT  || stroke == -SKTRIG_STROKE)
-				return stroke;
-		}
-
-		return 0;	// keep active.
+		SysMessageDefault(DEFMSG_FISHING_2);
+		return -SKTRIG_ABORT;
 	}
 
-	CItem * pFish = Skill_NaturalResource_Create( pResBit, SKILL_FISHING );
-	if ( pFish == NULL )
-	{
-		SysMessageDefault( DEFMSG_FISHING_2 );
-		return( -SKTRIG_ABORT );
-	}
-	SysMessagef(g_Cfg.GetDefaultMsg( DEFMSG_FISHING_SUCCESS ), pFish->GetName());
-
-	if (m_atUnk.m_Arg2)
-		ItemBounce( pFish );
+	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_FISHING_SUCCESS), pFish->GetName());
+	if ( m_atResource.m_bounceItem )
+		ItemBounce( pFish, false );
 	else
 		pFish->MoveToCheck( GetTopPoint(), this );	// put at my feet.
-
-	/*if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-		Sound( 0x364 );	// 0x027 old sound.
-	CItem * pItemFX = CItem::CreateBase( ITEMID_FX_SPLASH );
-	pItemFX->SetType(IT_WATER_WASH);	// can't fish here.
-	pItemFX->MoveToDecay( m_Act_p, 1*TICK_PER_SEC );*/
-
-	m_Act_Targ = pFish->GetUID();
 	return 0;
 }
 
@@ -1963,122 +1912,88 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 	if ( stage == SKTRIG_FAIL )
 		return 0;
 
-	CItem * pResBit = g_World.CheckNaturalResource( m_Act_p, (IT_TYPE) GETINTRESOURCE(m_atResource.m_ridType), stage == SKTRIG_START, this );
-	CItem * pAxe = m_Act_TargPrv.ItemFind();
-	/*if ( stage == SKTRIG_FAIL )
+	CItem *pTool = m_Act_TargPrv.ItemFind();
+	if ( pTool == NULL )
 	{
-		if ( (pAxe->IsType(IT_WEAPON_FENCE)) && ( pResBit->GetAmount() != 0 ) )
-		{
-			SysMessageDefault( DEFMSG_LUMBERJACKING_5 );
-			ItemBounce( CItem::CreateScript( ITEMID_KINDLING1, this ));
-			pResBit->ConsumeAmount(1);
-		}
-		return 0;
-	}*/
-
-	if ( pAxe == NULL )
-	{
-		SysMessageDefault( DEFMSG_LUMBERJACKING_TOOL );
-		return( -SKTRIG_ABORT );
+		SysMessageDefault(DEFMSG_LUMBERJACKING_TOOL);
+		return -SKTRIG_ABORT;
 	}
 
 	if ( m_Act_p.m_x == -1 )
 	{
-		SysMessageDefault( DEFMSG_LUMBERJACKING_6 );
-		return( -SKTRIG_QTY );
+		SysMessageDefault(DEFMSG_LUMBERJACKING_6);
+		return -SKTRIG_QTY;
 	}
 
 	// 3D distance check and LOS
-	const CSkillDef * pSkillDef = g_Cfg.GetSkillDef(SKILL_LUMBERJACKING);
-	int Range = pSkillDef->m_Range;
+	CSkillDef *pSkillDef = g_Cfg.GetSkillDef(SKILL_LUMBERJACKING);
+	int iTargRange = GetTopPoint().GetDist(m_Act_p);
+	int iMaxRange = pSkillDef->m_Range;
 	if ( !pSkillDef->m_Range )
 	{
 		g_Log.EventError("Lumberjacking skill doesn't have a value for RANGE, defaulting to 2\n");
-		Range = 2;
+		iMaxRange = 2;
 	}
-	if ( GetTopPoint().GetDist3D( m_Act_p ) > Range )
+	if ( iTargRange < 1 && !g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_NOMINDIST) )
 	{
-		SysMessageDefault( DEFMSG_LUMBERJACKING_REACH );
-		return( -SKTRIG_QTY );
+		SysMessageDefault(DEFMSG_LUMBERJACKING_CLOSE);
+		return -SKTRIG_QTY;
 	}
-	if ( !CanSeeLOS( m_Act_p, NULL, 2 ))
+	if ( iTargRange > iMaxRange )
 	{
-		SysMessageDefault( DEFMSG_LUMBERJACKING_LOS );
-		return( -SKTRIG_QTY );
+		SysMessageDefault(DEFMSG_LUMBERJACKING_REACH);
+		return -SKTRIG_QTY;
+	}
+	if ( !CanSeeLOS(m_Act_p, NULL, iMaxRange) )
+	{
+		SysMessageDefault(DEFMSG_LUMBERJACKING_LOS);
+		return -SKTRIG_QTY;
 	}
 
 	// Resource check
-	if ( pResBit == NULL )
+	CItem *pResBit = g_World.CheckNaturalResource(m_Act_p, static_cast<IT_TYPE>(GETINTRESOURCE(m_atResource.m_ridType)), stage == SKTRIG_START, this);
+	if ( !pResBit )
 	{
-		if ( pAxe->IsType(IT_WEAPON_FENCE) )	//dagger
-			SysMessageDefault( DEFMSG_LUMBERJACKING_3 );	// not a tree
+		if ( pTool->IsType(IT_WEAPON_FENCE) )	//dagger
+			SysMessageDefault(DEFMSG_LUMBERJACKING_3);	// not a tree
 		else
-			SysMessageDefault( DEFMSG_LUMBERJACKING_1 );
-		return( -SKTRIG_QTY );
+			SysMessageDefault(DEFMSG_LUMBERJACKING_1);
+		return -SKTRIG_QTY;
 	}
 	if ( pResBit->GetAmount() == 0 )
 	{
-		if ( pAxe->IsType(IT_WEAPON_FENCE) )	//dagger
-			SysMessageDefault( DEFMSG_LUMBERJACKING_4 );	// no wood to harvest
+		if ( pTool->IsType(IT_WEAPON_FENCE) )	//dagger
+			SysMessageDefault(DEFMSG_LUMBERJACKING_4);	// no wood to harvest
 		else
-			SysMessageDefault( DEFMSG_LUMBERJACKING_2 );
-		return( -SKTRIG_QTY );
-	}
-
-	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOMINDIST ) )
-	{
-		if ( GetTopPoint().GetDist( m_Act_p ) < 1 )
-		{
-			SysMessageDefault( DEFMSG_LUMBERJACKING_CLOSE );
-			return( -SKTRIG_QTY );
-		}
+			SysMessageDefault(DEFMSG_LUMBERJACKING_2);
+		return -SKTRIG_QTY;
 	}
 
 	if ( stage == SKTRIG_START )
 	{
-		m_atResource.m_Stroke_Count = Calc_GetRandVal( 5 ) + 2;
-		return( Skill_NaturalResource_Setup( pResBit ));
+		m_atResource.m_Stroke_Count = Calc_GetRandVal(5) + 2;
+		return Skill_NaturalResource_Setup(pResBit);
 	}
 
-	if ( stage == SKTRIG_STROKE )	// Useless now, strokes in SKF_GATHER are handled directly from Skill_Stage() and its code softcoded in their skill's triggers.
+	if ( pTool->IsType(IT_WEAPON_FENCE) )	//dagger end
 	{
-		UpdateDir( m_Act_p );
-		if (IsSetEF(EF_DamageTools) )
-		{
-			if ( pAxe->m_itWeapon.m_Hits_Cur )
-				pAxe->OnTakeDamage( 1, this, DAMAGE_HIT_BLUNT );
-			else
-				pAxe->Delete();
-		}
-
-		if ( m_atResource.m_Stroke_Count )
-		{
-			int stroke = Skill_Stroke( true );
-			if ( stroke == -SKTRIG_ABORT  || stroke == -SKTRIG_STROKE)
-				return stroke;
-		}
-		return SKTRIG_SUCCESS;// keep active.
-	}
-
-	if ( pAxe->IsType(IT_WEAPON_FENCE) ) //dagger end
-	{
-		SysMessageDefault( DEFMSG_LUMBERJACKING_5 );
-		ItemBounce( CItem::CreateScript( ITEMID_KINDLING1, this ));
+		SysMessageDefault(DEFMSG_LUMBERJACKING_5);
+		ItemBounce(CItem::CreateScript(ITEMID_KINDLING1, this));
 		pResBit->ConsumeAmount(1);
 		return 0;
 	}
 
-	CItem * pItem = Skill_NaturalResource_Create( pResBit, SKILL_LUMBERJACKING );
-	if ( pItem == NULL )
+	CItem *pItem = Skill_NaturalResource_Create(pResBit, SKILL_LUMBERJACKING);
+	if ( !pItem )
 	{
-		SysMessageDefault( DEFMSG_LUMBERJACKING_2 );
-		return( -SKTRIG_FAIL );
+		SysMessageDefault(DEFMSG_LUMBERJACKING_2);
+		return -SKTRIG_FAIL;
 	}
 
-	if (m_atUnk.m_Arg2)
-		ItemBounce( pItem );
+	if ( m_atResource.m_bounceItem )
+		ItemBounce(pItem);
 	else
-		pItem->MoveToCheck( GetTopPoint(), this );	// put at my feet.
+		pItem->MoveToCheck(GetTopPoint(), this);	// put at my feet.
 	return 0;
 }
 
@@ -3644,7 +3559,7 @@ int CChar::Skill_Stroke( bool fResource )
 		delay = args.m_VarsLocal.GetKeyNum("Delay", true);
 		anim = static_cast<ANIM_TYPE>(args.m_VarsLocal.GetKeyNum("Anim", true));
 		if ( fResource )
-			m_atResource.m_Stroke_Count = static_cast<DWORD>(args.m_VarsLocal.GetKeyNum("Strokes", false));
+			m_atResource.m_Stroke_Count = static_cast<WORD>(args.m_VarsLocal.GetKeyNum("Strokes", false));
 		else
 			m_atCreate.m_Stroke_Count = static_cast<WORD>(args.m_VarsLocal.GetKeyNum("Strokes", false));
 	}
@@ -3966,21 +3881,6 @@ int CChar::Skill_Done()
 		return -SKTRIG_FAIL;
 	}
 
-	//ACTARG2 will override fishing/mining/lumberjacking packing/grounding resources
-	//ACTARG2 = 1 //pack resources
-	//ACTARG2 = 0 //put resources on ground
-	//override those values on both @Success triggers to change the original behavior
-	//ps: ACTARG3 is the spawned used to harvest
-	if (skill == SKILL_FISHING)
-	{
-		m_atUnk.m_Arg2=0;
-	}
-	else if (skill == SKILL_MINING || skill == SKILL_LUMBERJACKING)
-	{
-		m_atUnk.m_Arg2=1;
-	}
-
-
 	if ( IsTrigUsed(TRIGGER_SKILLSUCCESS) )
 	{
 		if ( Skill_OnCharTrigger( skill, CTRIG_SkillSuccess ) == TRIGRET_RET_TRUE )
@@ -4149,7 +4049,10 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 			pArgs.m_VarsLocal.SetNum("CraftAmount",m_atCreate.m_Amount);
 		}
 		if ( bGatherSkill == true )
+		{
+			m_atResource.m_bounceItem = true;
 			pArgs.m_VarsLocal.SetNum("GatherStrokeCnt",m_atResource.m_Stroke_Count);
+		}
 
 		if ( IsTrigUsed(TRIGGER_SKILLSTART) )
 		{
@@ -4178,15 +4081,19 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 			if ( m_atCreate.m_Stroke_Count < 1)
 				m_atCreate.m_Stroke_Count = 1;
 			m_atCreate.m_Amount = static_cast<WORD>(pArgs.m_VarsLocal.GetKeyNum("CraftAmount",true));
-			// Casting sound & animation when starting, Skill_Stroke() will do it the next times.
-			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-				Sound( Skill_GetSound( Skill_GetActive() ));
-
-			if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
-				UpdateAnimate( Skill_GetAnim( Skill_GetActive() ) );
 		}
 		if ( bGatherSkill == true )
-			m_atResource.m_Stroke_Count = static_cast<DWORD>(pArgs.m_VarsLocal.GetKeyNum("GatherStrokeCnt",true));
+			m_atResource.m_Stroke_Count = static_cast<WORD>(pArgs.m_VarsLocal.GetKeyNum("GatherStrokeCnt",true));
+
+		// Casting sound & animation when starting, Skill_Stroke() will do it the next times.
+		if ( bCraftSkill || bGatherSkill )
+		{
+			if ( !g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_NOSFX) )
+				Sound(Skill_GetSound(Skill_GetActive()));
+
+			if ( !g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_NOANIM) )
+				UpdateAnimate(Skill_GetAnim(Skill_GetActive()));
+		}
 
 		if ( IsSkillBase(skill) )
 		{
