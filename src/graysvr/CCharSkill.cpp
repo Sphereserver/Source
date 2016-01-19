@@ -1883,18 +1883,18 @@ int CChar::Skill_Fishing( SKTRIG_TYPE stage )
 		return Skill_NaturalResource_Setup(pResBit);
 	}
 
-	CItem *pFish = Skill_NaturalResource_Create(pResBit, SKILL_FISHING);
-	if ( !pFish )
+	CItem *pItem = Skill_NaturalResource_Create(pResBit, SKILL_FISHING);
+	if ( !pItem )
 	{
 		SysMessageDefault(DEFMSG_FISHING_2);
 		return -SKTRIG_ABORT;
 	}
 
-	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_FISHING_SUCCESS), pFish->GetName());
+	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_FISHING_SUCCESS), pItem->GetName());
 	if ( m_atResource.m_bounceItem )
-		ItemBounce( pFish, false );
+		ItemBounce(pItem, false);
 	else
-		pFish->MoveToCheck( GetTopPoint(), this );	// put at my feet.
+		pItem->MoveToCheck(GetTopPoint(), this);	// put at my feet.
 	return 0;
 }
 
@@ -3424,28 +3424,28 @@ int CChar::Skill_Act_Training( SKTRIG_TYPE stage )
 
 	if ( stage == SKTRIG_START )
 	{
-		SetTimeout( 1*TICK_PER_SEC );
+		SetTimeout(1 * TICK_PER_SEC);
 		return 0;
 	}
 	if ( stage == SKTRIG_STROKE )
 		return 0;
 	if ( stage != SKTRIG_SUCCESS )
-		return( -SKTRIG_QTY );
+		return -SKTRIG_QTY;
 
 	if ( m_Act_TargPrv == m_uidWeapon )
 	{
-		CItem * pItem = m_Act_Targ.ItemFind();
+		CItem *pItem = m_Act_Targ.ItemFind();
 		if ( pItem )
 		{
-			switch ( pItem->GetType())
+			switch ( pItem->GetType() )
 			{
-				case IT_TRAIN_DUMMY:	// Train dummy.
+				case IT_TRAIN_DUMMY:
 					Use_Train_Dummy(pItem, false);
 					break;
 				case IT_TRAIN_PICKPOCKET:
 					Use_Train_PickPocketDip(pItem, false);
 					break;
-				case IT_ARCHERY_BUTTE:	// Archery Butte
+				case IT_ARCHERY_BUTTE:
 					Use_Train_ArcheryButte(pItem, false);
 					break;
 				default:
@@ -3453,7 +3453,6 @@ int CChar::Skill_Act_Training( SKTRIG_TYPE stage )
 			}
 		}
 	}
-
 	return 0;
 }
 
@@ -3461,83 +3460,64 @@ int CChar::Skill_Act_Training( SKTRIG_TYPE stage )
 // General skill stuff.
 ANIM_TYPE CChar::Skill_GetAnim( SKILL_TYPE skill )
 {
-	ANIM_TYPE anim = (ANIM_TYPE)-1;
 	switch ( skill )
 	{
-		/*case SKILL_FISHING:		//softcoded
-			anim = ANIM_ATTACK_2H_BASH;
-			break;*/
+		/*case SKILL_FISHING:	// softcoded
+			return ANIM_ATTACK_2H_BASH;*/
 		case SKILL_BLACKSMITHING:
-			anim = ANIM_ATTACK_1H_SLASH;
-			break;
+			return ANIM_ATTACK_1H_SLASH;
 		case SKILL_MINING:
-			anim = ANIM_ATTACK_1H_BASH;
-			break;
+			return ANIM_ATTACK_1H_BASH;
 		case SKILL_LUMBERJACKING:
-			anim = ANIM_ATTACK_2H_SLASH;
-			break;
+			return ANIM_ATTACK_2H_SLASH;
 		default:
-			break;
+			return static_cast<ANIM_TYPE>(-1);
 	}
-	return anim;
 }
 
 SOUND_TYPE CChar::Skill_GetSound( SKILL_TYPE skill )
 {
-	SOUND_TYPE sound = SOUND_NONE;
 	switch ( skill )
 	{
-		/*case SKILL_FISHING:	//softcoded
-			sound = 0x364;
-			break;
-		case SKILL_TINKERING:	//old value
-			sound = 0x241;
-			break;*/
+		/*case SKILL_FISHING:	// softcoded
+			return 0x364;*/
 		case SKILL_ALCHEMY:
-			sound = 0x242;
-			break;
+			return 0x242;
 		case SKILL_TAILORING:
-			sound = 0x248;
-			break;
+			return 0x248;
 		case SKILL_CARTOGRAPHY:
 		case SKILL_INSCRIPTION:
-			sound = 0x249;
-			break;
+			return 0x249;
 		case SKILL_BOWCRAFT:
-			sound = 0x055;
-			break;
+			return 0x055;
 		case SKILL_BLACKSMITHING:
-			sound = 0x02a;
-			break;
+			return 0x02a;
 		case SKILL_CARPENTRY:
-			sound = 0x23d;
-			break;
+			return 0x23d;
 		case SKILL_MINING:
-			sound = Calc_GetRandVal(2) ? 0x125 : 0x126;
-			break;
+			return Calc_GetRandVal(2) ? 0x125 : 0x126;
 		case SKILL_LUMBERJACKING:
-			sound = 0x13e;
-			break;
+			return 0x13e;
 		default:
-			break;
+			return SOUND_NONE;
 	}
-	return sound;
 }
 
 int CChar::Skill_Stroke( bool fResource )
 {
 	// fResource means decreasing m_atResource.m_Stroke_Count instead of m_atCreate.m_Stroke_Count
-	SOUND_TYPE sound = SOUND_NONE;
-	ANIM_TYPE anim = ANIM_WALK_UNARM;
 	SKILL_TYPE skill = Skill_GetActive();
+	SOUND_TYPE sound = SOUND_NONE;
+	INT64 delay = Skill_GetTimeout();
+	ANIM_TYPE anim = ANIM_WALK_UNARM;
 	if ( m_atCreate.m_Stroke_Count > 1 )
 	{
-		if ( !g_Cfg.IsSkillFlag( skill, SKF_NOSFX ) )
-			sound = Skill_GetSound( skill );
-		if ( !g_Cfg.IsSkillFlag( skill, SKF_NOANIM ) )
-			anim = Skill_GetAnim( skill );
+		if ( !g_Cfg.IsSkillFlag(skill, SKF_NOSFX) )
+			sound = Skill_GetSound(skill);
+		if ( !g_Cfg.IsSkillFlag(skill, SKF_NOANIM) )
+			anim = Skill_GetAnim(skill);
 	}
-	INT64 delay = Skill_GetTimeout();
+
 	if ( IsTrigUsed(TRIGGER_SKILLSTROKE) || (IsTrigUsed(TRIGGER_STROKE)) )
 	{
 		CScriptTriggerArgs args;
@@ -3550,10 +3530,10 @@ int CChar::Skill_Stroke( bool fResource )
 		else
 			args.m_VarsLocal.SetNum("Strokes", m_atCreate.m_Stroke_Count);
 
-		if ( OnTrigger( CTRIG_SkillStroke, this, &args ) == TRIGRET_RET_TRUE ) 
-			return(-SKTRIG_ABORT);
-		if ( Skill_OnTrigger( skill, SKTRIG_STROKE, &args ) == TRIGRET_RET_TRUE )
-			return(-SKTRIG_ABORT);
+		if ( OnTrigger(CTRIG_SkillStroke, this, &args) == TRIGRET_RET_TRUE )
+			return -SKTRIG_ABORT;
+		if ( Skill_OnTrigger(skill, SKTRIG_STROKE, &args) == TRIGRET_RET_TRUE )
+			return -SKTRIG_ABORT;
 
 		sound = static_cast<SOUND_TYPE>(args.m_VarsLocal.GetKeyNum("Sound", false));
 		delay = args.m_VarsLocal.GetKeyNum("Delay", true);
@@ -3566,27 +3546,30 @@ int CChar::Skill_Stroke( bool fResource )
 
 	if ( sound )
 		Sound(sound);
-	if ( delay < 10)
-		delay = 10;
 	if ( anim )
-		UpdateAnimate( anim );	// keep trying and updating the animation
+		UpdateAnimate(anim);	// keep trying and updating the animation
+
 	if ( fResource )
 	{
 		if ( m_atResource.m_Stroke_Count )
-			m_atResource.m_Stroke_Count --;
+			m_atResource.m_Stroke_Count--;
 		if ( m_atResource.m_Stroke_Count < 1 )
 			return SKTRIG_SUCCESS;
 	}
 	else
 	{
 		if ( m_atCreate.m_Stroke_Count )
-			m_atCreate.m_Stroke_Count --;
+			m_atCreate.m_Stroke_Count--;
 		if ( m_atCreate.m_Stroke_Count < 1 )
-			return( SKTRIG_SUCCESS );
+			return SKTRIG_SUCCESS;
 	}
+
+	if ( delay < 10 )
+		delay = 10;
+
+	//Skill_SetTimeout();	// old behaviour, removed to keep up dynamic delay coming in with the trigger @SkillStroke
 	SetTimeout(delay);
-	//Skill_SetTimeout();	//Old behaviour, removed to keep up dynamic delay coming in with the trigger @SkillStroke
-	return( -SKTRIG_STROKE );	// keep active.
+	return -SKTRIG_STROKE;	// keep active.
 }
 
 int CChar::Skill_Stage( SKTRIG_TYPE stage )
@@ -3596,7 +3579,7 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 	{
 		if ( g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_CRAFT) )
 			return Skill_Stroke(false);
-		
+
 		if ( g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_GATHER) )
 		{
 			UpdateDir(m_Act_p);
@@ -3604,11 +3587,11 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 		}
 	}
 
-	if ( g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_SCRIPTED ) )
-		return Skill_Scripted( stage );
-	else if ( g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_FIGHT ) )
+	if ( g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_SCRIPTED) )
+		return Skill_Scripted(stage);
+	else if ( g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_FIGHT) )
 		return Skill_Fighting(stage);
-	else if ( g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_MAGIC ) )
+	else if ( g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_MAGIC) )
 		return Skill_Magery(stage);
 	/*else if ( g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_CRAFT ) )
 		return Skill_MakeItem(stage);*/
@@ -3713,15 +3696,15 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 			return Skill_Act_Napping(stage);
 
 		default:
-			if ( ! IsSkillBase(Skill_GetActive()))
+			if ( !IsSkillBase(Skill_GetActive()) )
 			{
 				if ( stage == SKTRIG_STROKE )
-					return( -SKTRIG_STROKE ); // keep these active. (NPC modes)
+					return -SKTRIG_STROKE;	// keep these active. (NPC modes)
 				return 0;
 			}
 	}
 
-	SysMessageDefault( DEFMSG_SKILL_NOSKILL );
+	SysMessageDefault(DEFMSG_SKILL_NOSKILL);
 	return -SKTRIG_QTY;
 }
 
@@ -3739,35 +3722,33 @@ void CChar::Skill_Fail( bool fCancel )
 	if ( skill == SKILL_NONE )
 		return;
 
-	if ( ! IsSkillBase(skill))
+	if ( !IsSkillBase(skill) )
 	{
 		Skill_Cleanup();
 		return;
 	}
 
 	if ( m_Act_Difficulty > 0 )
-	{
-		m_Act_Difficulty = - m_Act_Difficulty;
-	}
+		m_Act_Difficulty = -m_Act_Difficulty;
 
 	if ( !fCancel )
 	{
 		if ( IsTrigUsed(TRIGGER_SKILLFAIL) )
 		{
-			if ( Skill_OnCharTrigger( skill, CTRIG_SkillFail ) == TRIGRET_RET_TRUE )
-				fCancel	= true;
+			if ( Skill_OnCharTrigger(skill, CTRIG_SkillFail) == TRIGRET_RET_TRUE )
+				fCancel = true;
 		}
-		if (( IsTrigUsed(TRIGGER_FAIL) ) && ( !fCancel ))
+		if ( IsTrigUsed(TRIGGER_FAIL) && !fCancel )
 		{
-			if ( Skill_OnTrigger( skill, SKTRIG_FAIL ) == TRIGRET_RET_TRUE )
-				fCancel	= true;
+			if ( Skill_OnTrigger(skill, SKTRIG_FAIL) == TRIGRET_RET_TRUE )
+				fCancel = true;
 		}
 	}
 	else
 	{
 		if ( IsTrigUsed(TRIGGER_SKILLABORT) )
 		{
-			if ( Skill_OnCharTrigger( skill, CTRIG_SkillAbort ) == TRIGRET_RET_TRUE )
+			if ( Skill_OnCharTrigger(skill, CTRIG_SkillAbort) == TRIGRET_RET_TRUE )
 			{
 				Skill_Cleanup();
 				return;
@@ -3775,7 +3756,7 @@ void CChar::Skill_Fail( bool fCancel )
 		}
 		if ( IsTrigUsed(TRIGGER_ABORT) )
 		{
-			if ( Skill_OnTrigger( skill, SKTRIG_ABORT ) == TRIGRET_RET_TRUE )
+			if ( Skill_OnTrigger(skill, SKTRIG_ABORT) == TRIGRET_RET_TRUE )
 			{
 				Skill_Cleanup();
 				return;
@@ -3783,69 +3764,70 @@ void CChar::Skill_Fail( bool fCancel )
 		}
 	}
 
-	if ( Skill_Stage( SKTRIG_FAIL ) >= 0 )
+	if ( Skill_Stage(SKTRIG_FAIL) >= 0 )
 	{
 		// Get some experience for failure ?
 		if ( !fCancel )
-			Skill_Experience( skill, m_Act_Difficulty );
+			Skill_Experience(skill, m_Act_Difficulty);
 	}
 
 	Skill_Cleanup();
 }
 
-TRIGRET_TYPE	CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage) 
+TRIGRET_TYPE CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE stage ) 
 {
 	CScriptTriggerArgs pArgs;
-	return Skill_OnTrigger(skill,stage,&pArgs);
+	return Skill_OnTrigger(skill, stage, &pArgs);
 }
 
-TRIGRET_TYPE	CChar::Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE  stage) 
+TRIGRET_TYPE CChar::Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE stage ) 
 {
 	CScriptTriggerArgs pArgs;
-	return Skill_OnCharTrigger(skill,stage,&pArgs);
+	return Skill_OnCharTrigger(skill, stage, &pArgs);
 }
 
 
-TRIGRET_TYPE	CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScriptTriggerArgs * pArgs ) 
+TRIGRET_TYPE CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScriptTriggerArgs *pArgs )
 {
 	ADDTOCALLSTACK("CChar::Skill_OnTrigger");
 	if ( !IsSkillBase(skill) )
 		return TRIGRET_RET_DEFAULT;
 
-	if ( ! (stage == SKTRIG_SELECT || stage == SKTRIG_GAIN || stage == SKTRIG_USEQUICK || stage == SKTRIG_WAIT || stage == SKTRIG_TARGETCANCEL ) )
+	if ( !(stage == SKTRIG_SELECT || stage == SKTRIG_GAIN || stage == SKTRIG_USEQUICK || stage == SKTRIG_WAIT || stage == SKTRIG_TARGETCANCEL) )
 		m_Act_SkillCurrent = skill;
 
 	pArgs->m_iN1 = skill;
-	if (g_Cfg.IsSkillFlag(skill, SKF_MAGIC))
-		pArgs->m_VarsLocal.SetNum("spell",m_atMagery.m_Spell,true);
+	if ( g_Cfg.IsSkillFlag(skill, SKF_MAGIC) )
+		pArgs->m_VarsLocal.SetNum("spell", m_atMagery.m_Spell, true);
+
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
-	CSkillDef* pSkillDef = g_Cfg.GetSkillDef(skill);
-	if ( pSkillDef != NULL && pSkillDef->HasTrigger( stage ) )
+	CSkillDef *pSkillDef = g_Cfg.GetSkillDef(skill);
+	if ( pSkillDef && pSkillDef->HasTrigger(stage) )
 	{
 		// RES_SKILL
 		CResourceLock s;
-		if ( pSkillDef->ResourceLock( s ))
-			iRet = CScriptObj::OnTriggerScript( s, CSkillDef::sm_szTrigName[stage], this, pArgs );
+		if ( pSkillDef->ResourceLock(s) )
+			iRet = CScriptObj::OnTriggerScript(s, CSkillDef::sm_szTrigName[stage], this, pArgs);
 	}
 
 	return iRet;
 }
 
-TRIGRET_TYPE	CChar::Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig, CScriptTriggerArgs * pArgs ) 
+TRIGRET_TYPE CChar::Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig, CScriptTriggerArgs *pArgs )
 {
 	ADDTOCALLSTACK("CChar::Skill_OnCharTrigger");
 	if ( !IsSkillBase(skill) )
 		return TRIGRET_RET_DEFAULT;
 
-	if ( ! (ctrig == CTRIG_SkillSelect || ctrig == CTRIG_SkillGain || ctrig == CTRIG_SkillUseQuick || ctrig == CTRIG_SkillWait || ctrig == CTRIG_SkillTargetCancel ) )
+	if ( !(ctrig == CTRIG_SkillSelect || ctrig == CTRIG_SkillGain || ctrig == CTRIG_SkillUseQuick || ctrig == CTRIG_SkillWait || ctrig == CTRIG_SkillTargetCancel) )
 		m_Act_SkillCurrent = skill;
 
 	pArgs->m_iN1 = skill;
-	if (g_Cfg.IsSkillFlag(skill, SKF_MAGIC))
-		pArgs->m_VarsLocal.SetNum("spell",m_atMagery.m_Spell,true);
+	if ( g_Cfg.IsSkillFlag(skill, SKF_MAGIC) )
+		pArgs->m_VarsLocal.SetNum("spell", m_atMagery.m_Spell, true);
 
-	return OnTrigger( ctrig, this, pArgs );
+	return OnTrigger(ctrig, this, pArgs);
 }
 
 
@@ -3873,26 +3855,22 @@ int CChar::Skill_Done()
 	// or stuff that never really fails.
 	int iRet = Skill_Stage(SKTRIG_STROKE);
 	if ( iRet < 0 )
-		return( iRet );
+		return iRet;
 
-	if ( m_Act_Difficulty < 0 )
-	{
-		// Was Bound to fail. But we had to wait for the timer anyhow.
+	if ( m_Act_Difficulty < 0 )		// was Bound to fail, but we had to wait for the timer anyhow.
 		return -SKTRIG_FAIL;
-	}
 
 	if ( IsTrigUsed(TRIGGER_SKILLSUCCESS) )
 	{
-		if ( Skill_OnCharTrigger( skill, CTRIG_SkillSuccess ) == TRIGRET_RET_TRUE )
+		if ( Skill_OnCharTrigger(skill, CTRIG_SkillSuccess) == TRIGRET_RET_TRUE )
 		{
 			Skill_Cleanup();
 			return -SKTRIG_ABORT;
 		}
 	}
-	
 	if ( IsTrigUsed(TRIGGER_SUCCESS) )
 	{
-		if ( Skill_OnTrigger( skill, SKTRIG_SUCCESS ) == TRIGRET_RET_TRUE )
+		if ( Skill_OnTrigger(skill, SKTRIG_SUCCESS) == TRIGRET_RET_TRUE )
 		{
 			Skill_Cleanup();
 			return -SKTRIG_ABORT;
@@ -3905,10 +3883,10 @@ int CChar::Skill_Done()
 		return iRet;
 
 	// Success = Advance the skill
-	Skill_Experience( skill, m_Act_Difficulty );
+	Skill_Experience(skill, m_Act_Difficulty);
 	Skill_Cleanup();
 
-	return( -SKTRIG_SUCCESS );
+	return -SKTRIG_SUCCESS;
 }
 
 bool CChar::Skill_Wait( SKILL_TYPE skilltry )
@@ -3917,16 +3895,18 @@ bool CChar::Skill_Wait( SKILL_TYPE skilltry )
 	// Some sort of push button skill.
 	// We want to do some new skill. Can we ?
 	// If this is the same skill then tell them to wait.
-	CScriptTriggerArgs pArgs(skilltry, Skill_GetActive());
+
+	SKILL_TYPE skill = Skill_GetActive();
+	CScriptTriggerArgs pArgs(skilltry, skill);
 
 	if ( IsTrigUsed(TRIGGER_SKILLWAIT) )
 	{
-		switch ( Skill_OnCharTrigger( skilltry, CTRIG_SkillWait, &pArgs ))
+		switch ( Skill_OnCharTrigger(skilltry, CTRIG_SkillWait, &pArgs) )
 		{
 			case TRIGRET_RET_TRUE:
 				return true;
 			case TRIGRET_RET_FALSE:
-				Skill_Fail( true );
+				Skill_Fail(true);
 				return false;
 			default:
 				break;
@@ -3934,52 +3914,49 @@ bool CChar::Skill_Wait( SKILL_TYPE skilltry )
 	}
 	if ( IsTrigUsed(TRIGGER_WAIT) )
 	{
-		switch ( Skill_OnTrigger( skilltry, SKTRIG_WAIT, &pArgs ))
+		switch ( Skill_OnTrigger(skilltry, SKTRIG_WAIT, &pArgs) )
 		{
 			case TRIGRET_RET_TRUE:
 				return true;
 			case TRIGRET_RET_FALSE:
-				Skill_Fail( true );
+				Skill_Fail(true);
 				return false;
 			default:
 				break;
 		}
 	}
 
-	if ( IsStatFlag( STATF_DEAD | STATF_Sleeping | STATF_Freeze | STATF_Stone ))
+	if ( IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Freeze|STATF_Stone) )
 	{
-		SysMessageDefault( DEFMSG_SKILLWAIT_1 );
-		return( true );
+		SysMessageDefault(DEFMSG_SKILLWAIT_1);
+		return true;
 	}
 
-	SKILL_TYPE skill = Skill_GetActive();
 	if ( skill == SKILL_NONE )	// not currently doing anything.
 	{
 		if ( skilltry != SKILL_STEALTH )
 			Reveal();
-		return( false );
+		return false;
 	}
 
-	// What if we are in combat mode ?
-	if ( IsStatFlag( STATF_War ))
+	if ( IsStatFlag(STATF_War) )
 	{
-		SysMessageDefault( DEFMSG_SKILLWAIT_2 );
-		return( true );
+		SysMessageDefault(DEFMSG_SKILLWAIT_2);
+		return true;
 	}
 
-	// Passive skills just cancel.
-	// SKILL_SPIRITSPEAK ?
+	// Cancel passive actions
 	if ( skilltry != skill )
 	{
-		if ( skill == SKILL_MEDITATION || skill == SKILL_HIDING || skill == SKILL_STEALTH )
+		if ( skill == SKILL_MEDITATION || skill == SKILL_HIDING || skill == SKILL_STEALTH )		// SKILL_SPIRITSPEAK ?
 		{
-			Skill_Fail( true );
-			return( false );
+			Skill_Fail(true);
+			return false;
 		}
 	}
 
-	SysMessageDefault( DEFMSG_SKILLWAIT_3 );
-	return ( true );
+	SysMessageDefault(DEFMSG_SKILLWAIT_3);
+	return true;
 }
 
 bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
@@ -3998,7 +3975,7 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 	{
 		if ( skill != SKILL_NONE && !IsSkillBase(skill) && !IsSkillNPC(skill) )
 		{
-			DEBUG_ERR(("UID:0%lx Bad Skill %d for '%s'\n", (DWORD)GetUID(), skill, GetName()));
+			DEBUG_ERR(("UID:0%lx Bad Skill %d for '%s'\n", static_cast<DWORD>(GetUID()), skill, GetName()));
 			return false;
 		}
 		m_Act_SkillCurrent = skill;
@@ -4006,18 +3983,18 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 	}
 
 	if ( Skill_GetActive() != SKILL_NONE )
-		Skill_Fail( true );	// Fail previous skill unfinished. (with NO skill gain!)
+		Skill_Fail(true);		// fail previous skill unfinished. (with NO skill gain!)
 
 	if ( skill != SKILL_NONE )
 	{
-		m_Act_SkillCurrent = skill;	// Start using a skill.
+		m_Act_SkillCurrent = skill;
 		m_Act_Difficulty = iDifficulty;
 
 		// Some skill can start right away. Need no targetting.
 		// 0-100 scale of Difficulty
 		if ( IsTrigUsed(TRIGGER_SKILLPRESTART) )
 		{
-			if ( Skill_OnCharTrigger( skill, CTRIG_SkillPreStart ) == TRIGRET_RET_TRUE )
+			if ( Skill_OnCharTrigger(skill, CTRIG_SkillPreStart) == TRIGRET_RET_TRUE )
 			{
 				Skill_Cleanup();
 				return false;
@@ -4025,38 +4002,37 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 		}
 		if ( IsTrigUsed(TRIGGER_PRESTART) )
 		{
-			if ( Skill_OnTrigger( skill, SKTRIG_PRESTART ) == TRIGRET_RET_TRUE )
+			if ( Skill_OnTrigger(skill, SKTRIG_PRESTART) == TRIGRET_RET_TRUE )
 			{
 				Skill_Cleanup();
 				return false;
 			}
 		}
+
 		m_Act_Difficulty = Skill_Stage(SKTRIG_START);
 
 		// Execute the @START trigger and pass various craft parameters there
 		CScriptTriggerArgs pArgs;
-		bool bFightSkill = g_Cfg.IsSkillFlag(skill, SKF_FIGHT);
 		bool bCraftSkill = g_Cfg.IsSkillFlag(skill, SKF_CRAFT);
 		bool bGatherSkill = g_Cfg.IsSkillFlag(skill, SKF_GATHER);
-		RESOURCE_ID pResBase(RES_ITEMDEF, bCraftSkill? m_atCreate.m_ItemID : 0, 0);
+		RESOURCE_ID pResBase(RES_ITEMDEF, bCraftSkill ? m_atCreate.m_ItemID : 0, 0);
 
-		if ( bCraftSkill == true )
-		{		
-			m_atCreate.m_Stroke_Count=1;		//This matches the new strokes amount used on OSI.
-			// set crafting parameters
-			pArgs.m_VarsLocal.SetNum("CraftItemdef",pResBase.GetPrivateUID());
-			pArgs.m_VarsLocal.SetNum("CraftStrokeCnt",m_atCreate.m_Stroke_Count);
-			pArgs.m_VarsLocal.SetNum("CraftAmount",m_atCreate.m_Amount);
-		}
-		if ( bGatherSkill == true )
+		if ( bCraftSkill )
 		{
-			m_atResource.m_bounceItem = true;
-			pArgs.m_VarsLocal.SetNum("GatherStrokeCnt",m_atResource.m_Stroke_Count);
+			m_atCreate.m_Stroke_Count = 1;		//This matches the new strokes amount used on OSI.
+			pArgs.m_VarsLocal.SetNum("CraftItemdef", pResBase.GetPrivateUID());
+			pArgs.m_VarsLocal.SetNum("CraftStrokeCnt", m_atCreate.m_Stroke_Count);
+			pArgs.m_VarsLocal.SetNum("CraftAmount", m_atCreate.m_Amount);
+		}
+		if ( bGatherSkill )
+		{
+			m_atResource.m_bounceItem = 1;
+			pArgs.m_VarsLocal.SetNum("GatherStrokeCnt", m_atResource.m_Stroke_Count);
 		}
 
 		if ( IsTrigUsed(TRIGGER_SKILLSTART) )
 		{
-			if (( Skill_OnCharTrigger( skill, CTRIG_SkillStart, &pArgs ) == TRIGRET_RET_TRUE ) || ( m_Act_Difficulty < 0 ))
+			if ( (Skill_OnCharTrigger(skill, CTRIG_SkillStart, &pArgs) == TRIGRET_RET_TRUE) || (m_Act_Difficulty < 0) )
 			{
 				Skill_Cleanup();
 				return false;
@@ -4065,25 +4041,23 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 
 		if ( IsTrigUsed(TRIGGER_START) )
 		{
-			if (( Skill_OnTrigger( skill, SKTRIG_START, &pArgs ) == TRIGRET_RET_TRUE ) || ( m_Act_Difficulty < 0 ))
+			if ( (Skill_OnTrigger(skill, SKTRIG_START, &pArgs) == TRIGRET_RET_TRUE) || (m_Act_Difficulty < 0) )
 			{
 				Skill_Cleanup();
 				return false;
 			}
 		}
 
-		if ( bCraftSkill == true )
+		if ( bCraftSkill )
 		{
 			// read crafting parameters
-			pResBase.SetPrivateUID(static_cast<DWORD>(pArgs.m_VarsLocal.GetKeyNum("CraftItemdef",true)));
+			pResBase.SetPrivateUID(static_cast<DWORD>(pArgs.m_VarsLocal.GetKeyNum("CraftItemdef", true)));
+			m_atCreate.m_Stroke_Count = static_cast<WORD>(maximum(1, pArgs.m_VarsLocal.GetKeyNum("CraftStrokeCnt", true)));
 			m_atCreate.m_ItemID = static_cast<ITEMID_TYPE>(pResBase.GetResIndex());
-			m_atCreate.m_Stroke_Count = static_cast<WORD>(pArgs.m_VarsLocal.GetKeyNum("CraftStrokeCnt",true));
-			if ( m_atCreate.m_Stroke_Count < 1)
-				m_atCreate.m_Stroke_Count = 1;
-			m_atCreate.m_Amount = static_cast<WORD>(pArgs.m_VarsLocal.GetKeyNum("CraftAmount",true));
+			m_atCreate.m_Amount = static_cast<WORD>(pArgs.m_VarsLocal.GetKeyNum("CraftAmount", true));
 		}
-		if ( bGatherSkill == true )
-			m_atResource.m_Stroke_Count = static_cast<WORD>(pArgs.m_VarsLocal.GetKeyNum("GatherStrokeCnt",true));
+		if ( bGatherSkill )
+			m_atResource.m_Stroke_Count = static_cast<WORD>(pArgs.m_VarsLocal.GetKeyNum("GatherStrokeCnt", true));
 
 		// Casting sound & animation when starting, Skill_Stroke() will do it the next times.
 		if ( bCraftSkill || bGatherSkill )
@@ -4097,28 +4071,29 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 
 		if ( IsSkillBase(skill) )
 		{
-			const CSkillDef* pSkillDef = g_Cfg.GetSkillDef(skill);
-			if (pSkillDef != NULL)
+			const CSkillDef *pSkillDef = g_Cfg.GetSkillDef(skill);
+			if ( pSkillDef )
 			{
-				int iWaitTime = pSkillDef->m_Delay.GetLinear( Skill_GetBase(skill) );
+				int iWaitTime = pSkillDef->m_Delay.GetLinear(Skill_GetBase(skill));
 				if ( iWaitTime != 0 )
-					SetTimeout( iWaitTime );	// How long before complete skill.
+					SetTimeout(iWaitTime);		// How long before complete skill.
 			}
 		}
 
-		if ( IsTimerExpired())
-			SetTimeout( 1 );	// the skill should have set it's own delay!?
+		if ( IsTimerExpired() )
+			SetTimeout(1);		// the skill should have set it's own delay!?
 
 		if ( m_Act_Difficulty > 0 )
 		{
+			bool bFightSkill = g_Cfg.IsSkillFlag(skill, SKF_FIGHT);
 			if ( !Skill_CheckSuccess(skill, m_Act_Difficulty, !bFightSkill) )
 				m_Act_Difficulty = -m_Act_Difficulty;	// will result in failure
 		}
 	}
 
 	// emote the action i am taking.
-	if (( g_Cfg.m_wDebugFlags & DEBUGF_NPC_EMOTE ) || IsStatFlag(STATF_EmoteAction))
-		Emote( Skill_GetName(true));
+	if ( (g_Cfg.m_wDebugFlags & DEBUGF_NPC_EMOTE) || IsStatFlag(STATF_EmoteAction) )
+		Emote(Skill_GetName(true));
 
-	return( true );
+	return true;
 }
