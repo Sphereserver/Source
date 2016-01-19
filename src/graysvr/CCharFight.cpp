@@ -2482,11 +2482,11 @@ bool CChar::Fight_Clear(const CChar *pChar, bool bForced)
 // This is just my intent.
 // RETURN:
 //  true = new attack is accepted.
-bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
+bool CChar::Fight_Attack( const CChar *pCharTarg, bool btoldByMaster )
 {
 	ADDTOCALLSTACK("CChar::Fight_Attack");
 
-	if ( pCharTarg == NULL || pCharTarg == this || pCharTarg->IsDisconnected() || !CanSee(pCharTarg) || pCharTarg->IsStatFlag(STATF_DEAD) || IsStatFlag(STATF_DEAD) )
+	if ( !pCharTarg || pCharTarg == this || pCharTarg->IsDisconnected() || !CanSee(pCharTarg) || pCharTarg->IsStatFlag(STATF_DEAD) || IsStatFlag(STATF_DEAD) )
 	{
 		// Not a valid target.
 		Fight_Clear(pCharTarg, true);
@@ -2499,9 +2499,9 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 		return false;
 	}
 
-	CChar * pTarget = const_cast<CChar*>(pCharTarg);
+	CChar *pTarget = const_cast<CChar *>(pCharTarg);
 
-	if ( g_Cfg.m_fAttackingIsACrime == TRUE )
+	if ( g_Cfg.m_fAttackingIsACrime )
 	{
 		if ( pCharTarg->Noto_GetFlag(this) == NOTO_GOOD )
 			CheckCrimeSeen(SKILL_NONE, pTarget, NULL, NULL);
@@ -2511,7 +2511,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	if ( btoldByMaster )
 		threat = 1000 + Attacker_GetHighestThreat();
 
-	if ( (m_Fight_Targ != pCharTarg->GetUID()) && ((IsTrigUsed(TRIGGER_ATTACK)) || (IsTrigUsed(TRIGGER_CHARATTACK))) )
+	if ( ((IsTrigUsed(TRIGGER_ATTACK)) || (IsTrigUsed(TRIGGER_CHARATTACK))) && m_Fight_Targ != pCharTarg->GetUID() )
 	{
 		CScriptTriggerArgs Args;
 		Args.m_iN1 = threat;
@@ -2520,21 +2520,24 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 		threat = Args.m_iN1;
 	}
 
-	if ( Attacker_Add(pTarget, threat) == false )
+	if ( !Attacker_Add(pTarget, threat) )
 		return false;
 	if ( Attacker_GetIgnore(pTarget) )
 		return false;
 
 	// I'm attacking (or defending)
-	StatFlag_Set(STATF_War);
-	UpdateModeFlag();
-	if ( IsClient() )
-		GetClient()->addPlayerWarMode();
+	if ( !IsStatFlag(STATF_War) )
+	{
+		StatFlag_Set(STATF_War);
+		UpdateModeFlag();
+		if ( IsClient() )
+			GetClient()->addPlayerWarMode();
+	}
 
 	SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
 	SKILL_TYPE skillActive = Skill_GetActive();
 
-	if (skillActive == skillWeapon && m_Fight_Targ == pCharTarg->GetUID())		// already attacking this same target using the same skill
+	if ( skillActive == skillWeapon && m_Fight_Targ == pCharTarg->GetUID() )		// already attacking this same target using the same skill
 		return true;
 
 	if ( m_pNPC && !btoldByMaster )		// call FindBestTarget when this CChar is a NPC and was not commanded to attack, otherwise it attack directly
@@ -2542,7 +2545,6 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 
 	m_Fight_Targ = pTarget ? pTarget->GetUID() : static_cast<CGrayUID>(UID_UNUSED);
 	Skill_Start(skillWeapon);
-
 	return true;
 }
 
@@ -2597,6 +2599,7 @@ void CChar::Fight_HitTry()
 
 	ASSERT(0);
 }
+
 // Add some enemy to my Attacker list
 bool CChar::Attacker_Add( CChar * pChar, INT64 threat )
 {
