@@ -2815,3 +2815,6 @@ Changed: Improved Detecting Hidden skill behavior.
 [sphere_monsters.scp]: Added missing stats/skills values on TOL dinosaurs.
 [sphere_item_char_icons.scp]: Renamed i_pet_anchisaurus -> i_pet_anchisaur
 [sphere_item_animations.scp/sphere_item_deco_lightsources.scp/sphere_item_deco_virtues.scp/sphere_item_profession_alchemist.scp/sphere_item_unsorted.scp]: Removed unused TDATA4 from all t_light_lit items.
+
+20-01-2015, Coruja
+Fixed: Console error when GM use commands to add objects on undefined regions.

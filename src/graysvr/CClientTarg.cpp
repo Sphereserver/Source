@@ -260,8 +260,8 @@ bool CClient::OnTarg_UnExtract( CObjBase * pObj, const CPointMap & pt )
 	// result of the MULTI command.
 	// Break a multi out of the multi.txt files and turn it into items.
 
-	if ( ! pt.IsValidPoint())
-		return( false );
+	if ( !pt.GetRegion(REGION_TYPE_AREA) )
+		return false;
 
 	CScript s;	// It is not really a valid script type file.
 	if ( ! g_Cfg.OpenResourceFind( s, m_Targ_Text ))
@@ -304,10 +304,10 @@ bool CClient::OnTarg_Item_Add( CObjBase * pObj, const CPointMap & pt )
 	ADDTOCALLSTACK("CClient::OnTarg_Item_Add");
 	// CLIMODE_ADDITEM
 	// m_tmAdd.m_id = new item id
+	ASSERT(m_pChar);
 
-	if ( ! pt.IsValidPoint())
-		return( false );
-	ASSERT( m_pChar );
+	if ( !pt.GetRegion(REGION_TYPE_AREA) )
+		return false;
 
 	CItem * pItem = CItem::CreateTemplate( m_tmAdd.m_id, NULL, m_pChar );
 	if ( pItem == NULL )
@@ -1601,8 +1601,8 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap &
 	ADDTOCALLSTACK("CClient::OnTarg_Use_Multi");
 	// Might be a IT_MULTI or it might not. place it anyhow.
 
-	if ( pItemDef == NULL )
-		return( NULL );
+	if ( pItemDef == NULL || !pt.GetRegion(REGION_TYPE_AREA) )
+		return NULL;
 
 	bool fShip = ( pItemDef->IsType(IT_SHIP));	// must be in water.
 
