@@ -56,8 +56,8 @@ void CClient::resendBuffs()
 		if ( !pItem->IsType(IT_SPELL) )
 			continue;
 
-		iStatEffect = static_cast<short>(pItem->m_itSpell.m_spelllevel);
-		iTimerEffect = static_cast<short>(pItem->GetTimerAdjusted());
+		iStatEffect = pItem->m_itSpell.m_spelllevel;
+		iTimerEffect = static_cast<WORD>(pItem->GetTimerAdjusted());
 
 		switch ( pItem->m_itSpell.m_spell )
 		{
@@ -155,8 +155,8 @@ void CClient::resendBuffs()
 				removeBuff(BuffIcon);
 				if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 				{
-					ITOA(static_cast<int>(-pItem->m_itSpell.m_PolyStr), NumBuff[0], 10);
-					ITOA(static_cast<int>(-pItem->m_itSpell.m_PolyDex / 10), NumBuff[1], 10);
+					ITOA(-pItem->m_itSpell.m_PolyStr, NumBuff[0], 10);
+					ITOA(-pItem->m_itSpell.m_PolyDex / 10, NumBuff[1], 10);
 					addBuff(BuffIcon, BuffCliloc, 1075815, iTimerEffect, pNumBuff, 2);
 				}
 				else
@@ -351,7 +351,7 @@ void CClient::addItem_OnGround( CItem * pItem ) // Send items (on ground)
 	// send corpse clothing
 	if (IsPriv(PRIV_DEBUG) == false && (pItem->GetDispID() == ITEMID_CORPSE && CCharBase::IsPlayableID(pItem->GetCorpseType())) )	// cloths on corpse
 	{
-		CItemCorpse* pCorpse = dynamic_cast <CItemCorpse*> (pItem);
+		CItemCorpse *pCorpse = static_cast<CItemCorpse *>(pItem);
 		if (pCorpse != NULL)
 		{
 			// send all the items on the corpse.
@@ -367,7 +367,7 @@ void CClient::addItem_OnGround( CItem * pItem ) // Send items (on ground)
 	if ( (pItem->IsType(IT_MULTI_CUSTOM)) && (m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= UO_MAP_VIEW_SIZE) )
 	{
 		// send house design version
-		CItemMultiCustom * pItemMulti = dynamic_cast <CItemMultiCustom*> (pItem);
+		CItemMultiCustom *pItemMulti = static_cast<CItemMultiCustom *>(pItem);
 		if (pItemMulti != NULL)
 			pItemMulti->SendVersionTo(this);
 	}
@@ -685,7 +685,7 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 
 	HUE_TYPE defaultHue = HUE_TEXT_DEF;
 	FONT_TYPE defaultFont = FONT_NORMAL;
-	int defaultUnicode = 0;
+	bool defaultUnicode = 0;
 
 	switch ( mode )
 	{
@@ -693,28 +693,28 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 		{
 			defaultHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_COLOR"));
 			defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_FONT"));
-			defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_UNICODE",true) != 0);
+			defaultUnicode = static_cast<bool>(g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_UNICODE", true));
 			break;
 		}
 		case TALKMODE_EMOTE:
 		{
 			defaultHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_COLOR"));
 			defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_FONT"));
-			defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_UNICODE",true) != 0);
+			defaultUnicode = static_cast<bool>(g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_UNICODE", true));
 			break;
 		}
 		case TALKMODE_SAY:
 		{
 			defaultHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("SAY_DEF_COLOR"));
 			defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("SAY_DEF_FONT"));
-			defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("SAY_DEF_UNICODE",true) != 0);
+			defaultUnicode = static_cast<bool>(g_Exp.m_VarDefs.GetKeyNum("SAY_DEF_UNICODE", true));
 			break;
 		}
 		case TALKMODE_OBJ:
 		{
 			defaultHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_COLOR"));
 			defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_FONT"));
-			defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_UNICODE",true) != 0);
+			defaultUnicode = static_cast<bool>(g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_UNICODE", true));
 			break;
 		}
 		case TALKMODE_ITEM:
@@ -722,14 +722,14 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 			if ( !pSrc->IsChar() )		// Don't override color on char names to prevent conflict with notoriety color
 				defaultHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_COLOR"));
 			defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_FONT"));
-			defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_UNICODE",true) != 0);
+			defaultUnicode = static_cast<bool>(g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_UNICODE", true));
 			break;
 		}
 		default:
 			break;
 	}
 
-	WORD Args[] = { wHue, static_cast<WORD>(font), (bUnicode ? (WORD)1 : (WORD)0) };
+	WORD Args[] = { static_cast<WORD>(wHue), static_cast<WORD>(font), static_cast<WORD>(bUnicode) };
 
 	if ( *pszText == '@' )
 	{
@@ -773,7 +773,7 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 
 	if ( m_BarkBuffer.IsEmpty())
 	{
-		m_BarkBuffer.Format( "%s%s", static_cast<LPCTSTR>(name), static_cast<LPCTSTR>(pszText));
+		m_BarkBuffer.Format( "%s%s", name, pszText);
 	}
 
 	switch ( Args[2] )
@@ -826,9 +826,7 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 		{
 bark_default:
 			if ( m_BarkBuffer.IsEmpty())
-			{
-				m_BarkBuffer.Format("%s%s", static_cast<LPCTSTR>(name), static_cast<LPCTSTR>(pszText));
-			}
+				m_BarkBuffer.Format("%s%s", name, pszText);
 
 			addBark( m_BarkBuffer.GetPtr(), pSrc, static_cast<HUE_TYPE>(Args[0]), mode, static_cast<FONT_TYPE>(Args[1]));
 			break;
@@ -1168,7 +1166,7 @@ void CClient::addItemName( const CItem * pItem )
 	{
 		CScriptTriggerArgs Args( this );
 		Args.m_VarsLocal.SetStrNew("ClickMsgText", &szName[0]);
-		Args.m_VarsLocal.SetNumNew("ClickMsgHue", static_cast<int>(wHue));
+		Args.m_VarsLocal.SetNumNew("ClickMsgHue", static_cast<INT64>(wHue));
 
 		TRIGRET_TYPE ret = dynamic_cast<CObjBase*>(const_cast<CItem*>(pItem))->OnTrigger( "@AfterClick", m_pChar, &Args );	// CTRIG_AfterClick, ITRIG_AfterClick
 
@@ -1288,7 +1286,7 @@ void CClient::addCharName( const CChar * pChar ) // Singleclick text for a chara
 	{
 		CScriptTriggerArgs Args( this );
 		Args.m_VarsLocal.SetStrNew("ClickMsgText", pszTemp);
-		Args.m_VarsLocal.SetNumNew("ClickMsgHue", static_cast<int>(wHue));
+		Args.m_VarsLocal.SetNumNew("ClickMsgHue", static_cast<INT64>(wHue));
 
 		TRIGRET_TYPE ret = dynamic_cast<CObjBase*>(const_cast<CChar*>(pChar))->OnTrigger( "@AfterClick", m_pChar, &Args );	// CTRIG_AfterClick, ITRIG_AfterClick
 
@@ -1388,7 +1386,7 @@ bool CClient::addBookOpen( CItem * pBook )
 	if (pBook->IsBookSystem() == false)
 	{
 		// User written book.
-		CItemMessage* pMsgItem = dynamic_cast<CItemMessage*>(pBook);
+		CItemMessage *pMsgItem = static_cast<CItemMessage *>(pBook);
 		if (pMsgItem == NULL)
 			return false;
 
@@ -1660,7 +1658,7 @@ bool CClient::addTargetChars( CLIMODE_TYPE mode, CREID_TYPE baseID, bool fNotoCh
 		return( false );
 
 	TCHAR * pszTemp = Str_GetTemp();
-	sprintf(pszTemp, "%s '%s'?", g_Cfg.GetDefaultMsg(DEFMSG_WHERE_TO_SUMMON), static_cast<LPCTSTR>(pBase->GetTradeName()));
+	sprintf(pszTemp, "%s '%s'?", g_Cfg.GetDefaultMsg(DEFMSG_WHERE_TO_SUMMON), pBase->GetTradeName());
 
 	addTarget(mode, pszTemp, true, fNotoCheck, iTimeout);
 	return true;
@@ -1841,7 +1839,7 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 	// Adjust to my new location, what do I now see here?
 	bool fAllShow = IsPriv(PRIV_ALLSHOW);
 	bool fOsiSight = IsSetOF(OF_OSIMultiSight);
-	BYTE tViewDist = static_cast<unsigned char>(m_pChar->GetSight());
+	BYTE tViewDist = static_cast<BYTE>(m_pChar->GetSight());
 	CRegionBase * pCurrentCharRegion = m_pChar->GetTopPoint().GetRegion(REGION_TYPE_MULTI);
 
 	//	Items on the ground
@@ -2000,7 +1998,7 @@ void CClient::addPlayerSeeShip( const CPointMap & ptold )
 	// Adjust to my new location, what do I now see here?
 	bool fAllShow = IsPriv(PRIV_ALLSHOW);
 	bool fOsiSight = IsSetOF(OF_OSIMultiSight);
-	BYTE tViewDist = static_cast<unsigned char>(m_pChar->GetSight());
+	BYTE tViewDist = static_cast<BYTE>(m_pChar->GetSight());
 
 	//	Items on the ground
 	CWorldSearch AreaItems(m_pChar->GetTopPoint(), UO_MAP_VIEW_RADAR);
@@ -2023,7 +2021,7 @@ void CClient::addPlayerSeeShip( const CPointMap & ptold )
 			{
 				if (dSeeItems < g_Cfg.m_iMaxItemComplexity * 30)
 				{
-					CItemMulti * pMulti = dynamic_cast<CItemMulti*>(pItem);
+					CItemMulti * pMulti = static_cast<CItemMulti*>(pItem);
 					CObjBase * ppObjs[MAX_MULTI_CONTENT];
 					DWORD	dMultiItems = 0;
 					dMultiItems = pMulti->Multi_ListObjs(ppObjs);
@@ -2054,7 +2052,7 @@ void CClient::addPlayerSeeShip( const CPointMap & ptold )
 			{
 				if (dSeeItems < g_Cfg.m_iMaxItemComplexity * 30)
 				{
-					CItemMulti * pMulti = dynamic_cast<CItemMulti*>(pItem);
+					CItemMulti * pMulti = static_cast<CItemMulti*>(pItem);
 					CObjBase * ppObjs[MAX_MULTI_CONTENT];
 					DWORD	dMultiItems = 0;
 					dMultiItems = pMulti->Multi_ListObjs(ppObjs);
@@ -2341,7 +2339,7 @@ void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
 void CClient::addCustomSpellbookOpen( CItem * pBook, DWORD gumpID )
 {
 	ADDTOCALLSTACK("CClient::addCustomSpellbookOpen");
-	const CItemContainer * pContainer = dynamic_cast <CItemContainer *> (pBook);
+	const CItemContainer *pContainer = static_cast<CItemContainer *>(pBook);
 	if ( !pContainer )
 		return;
 
@@ -2607,7 +2605,7 @@ bool CClient::addBBoardMessage( const CItemContainer * pBoard, BBOARDF_TYPE flag
 	ADDTOCALLSTACK("CClient::addBBoardMessage");
 	ASSERT(pBoard);
 
-	CItemMessage* pMsgItem = dynamic_cast<CItemMessage *>(uidMsg.ItemFind());
+	CItemMessage *pMsgItem = static_cast<CItemMessage *>(uidMsg.ItemFind());
 	if (pBoard->IsItemInside( pMsgItem ) == false)
 		return( false );
 
@@ -2728,7 +2726,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 
 		if (bNameOnly) // if we only want to display the name (FEATURE_AOS_UPDATE_B disabled)
 		{
-			unsigned long ClilocName = static_cast<unsigned long>(pObj->GetDefNum("NAMELOC", false, true));
+			DWORD ClilocName = static_cast<DWORD>(pObj->GetDefNum("NAMELOC", false, true));
 
 			if (ClilocName)
 				m_TooltipData.InsertAt(0, new CClientTooltip(ClilocName));
@@ -2751,7 +2749,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 
 			if ( iRet != TRIGRET_RET_TRUE )
 			{
-				unsigned long ClilocName = static_cast<unsigned long>(pObj->GetDefNum("NAMELOC", false, true));
+				DWORD ClilocName = static_cast<DWORD>(pObj->GetDefNum("NAMELOC", false, true));
 
 				if ( pItem )
 				{
@@ -2821,8 +2819,8 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 						{
 							if ( pGuildMember->GetTitle()[0] )
 							{
-								this->m_TooltipData.Add(t = new CClientTooltip(1060776));
-								t->FormatArgs( "%s\t%s", pGuildMember->GetTitle(), pGuildMember->GetParentStone()->GetName()); // ~1_val~, ~2_val~
+								this->m_TooltipData.Add(t = new CClientTooltip(1060776)); // ~1_val~, ~2_val~
+								t->FormatArgs( "%s\t%s", pGuildMember->GetTitle(), pGuildMember->GetParentStone()->GetName());
 							}
 							else
 							{
@@ -2837,8 +2835,32 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 				if ( pChar )
 				{
 					// Character specific stuff
-					if ( ( pChar->IsPriv( PRIV_GM ) ) && ( ! pChar->IsPriv( PRIV_PRIV_NOSHOW ) ) )
-						this->m_TooltipData.Add( new CClientTooltip( 1018085 ) ); // Game Master
+					if ( pChar->m_pPlayer )
+					{
+						if ( pChar->IsPriv(PRIV_GM) && !pChar->IsPriv(PRIV_PRIV_NOSHOW) )
+							this->m_TooltipData.Add( new CClientTooltip( 1018085 ) ); // Game Master
+					}
+					else if ( pChar->m_pNPC )
+					{
+						if ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE )
+						{
+							CREID_TYPE id = pChar->GetID();
+							if ( id == CREID_LLAMA_PACK || id == CREID_HORSE_PACK || id == CREID_GIANT_BEETLE )
+							{
+								int iWeight = pChar->GetWeight() / WEIGHT_UNITS;
+								this->m_TooltipData.Add( t = new CClientTooltip( iWeight == 1 ? 1072788 : 1072789 ) ); // Weight: ~1_WEIGHT~ stone / Weight: ~1_WEIGHT~ stones
+								t->FormatArgs( "%d", iWeight );
+							}
+
+							if ( pChar->Skill_GetActive() == NPCACT_GUARD_TARG )
+								this->m_TooltipData.Add( new CClientTooltip( 1080078 ) ); // guarding
+						}
+
+						if ( pChar->IsStatFlag(STATF_Conjured) )
+							this->m_TooltipData.Add( new CClientTooltip( 1049646 ) ); // (summoned)
+						else if ( pChar->IsStatFlag(STATF_Pet) )
+							this->m_TooltipData.Add( new CClientTooltip( pChar->m_pNPC->m_bonded ? 1049608 : 502006 ) ); // (bonded) / (tame)
+					}
 				}
 
 				if ( pItem )
@@ -2864,14 +2886,14 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 					{
 						if ( pItem->IsMovable() )
 						{
-							INT64 Weight = pItem->GetWeight() / WEIGHT_UNITS;
-							this->m_TooltipData.Add( t = new CClientTooltip( Weight == 1 ? 1072788 : 1072789 ) ); // Weight: ~1_WEIGHT~ stone / Weight: ~1_WEIGHT~ stones
-							t->FormatArgs( "%lld", Weight );
+							int iWeight = pItem->GetWeight() / WEIGHT_UNITS;
+							this->m_TooltipData.Add( t = new CClientTooltip( iWeight == 1 ? 1072788 : 1072789 ) ); // Weight: ~1_WEIGHT~ stone / Weight: ~1_WEIGHT~ stones
+							t->FormatArgs( "%d", iWeight );
 						}
 					}
 
-					CGrayUID uid( static_cast<unsigned long>(pItem->GetDefNum("CRAFTEDBY", true)) );
-					CChar * pCraftsman = uid.CharFind();
+					CGrayUID uid = static_cast<CGrayUID>(pItem->GetDefNum("CRAFTEDBY"));
+					CChar *pCraftsman = uid.CharFind();
 					if ( pCraftsman )
 					{
 						this->m_TooltipData.Add( t = new CClientTooltip( 1050043 ) ); // crafted by ~1_NAME~
@@ -3160,7 +3182,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 								}
 
 								this->m_TooltipData.Add( t = new CClientTooltip( 1060639 ) ); // durability ~1_val~ / ~2_val~
-								t->FormatArgs( "%u\t%u", pItem->m_itArmor.m_Hits_Cur, pItem->m_itArmor.m_Hits_Max );
+								t->FormatArgs( "%hu\t%hu", pItem->m_itArmor.m_Hits_Cur, pItem->m_itArmor.m_Hits_Max );
 							}
 							break;
 
@@ -3337,16 +3359,16 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 								}
 
 								this->m_TooltipData.Add( t = new CClientTooltip( 1061168 ) ); // weapon damage ~1_val~ - ~2_val~
-								t->FormatArgs( "%d\t%d", pItem->m_attackBase + pItem->m_ModAr, ( pItem->Weapon_GetAttack(true) ) );
+								t->FormatArgs( "%d\t%d", pItem->m_attackBase + pItem->m_ModAr, pItem->Weapon_GetAttack(true) );
 
 								this->m_TooltipData.Add( t = new CClientTooltip( 1061167 ) ); // weapon speed ~1_val~
-								t->FormatArgs( "%d", pItem->GetSpeed() );
+								t->FormatArgs( "%hhu", pItem->GetSpeed() );
 
-								int Range = pItem->RangeL();
+								BYTE Range = pItem->RangeL();
 								if ( Range > 1 )
 								{
 									this->m_TooltipData.Add( t = new CClientTooltip( 1061169 ) ); // range ~1_val~
-									t->FormatArgs( "%d", Range );
+									t->FormatArgs( "%hhu", Range );
 								}
 
 								INT64 StrengthRequirement = pItem->Item_GetDef()->m_ttEquippable.m_StrReq - pItem->GetDefNum("LOWERREQ", true, true);
@@ -3369,12 +3391,13 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 										case SKILL_MACEFIGHTING:	this->m_TooltipData.Add( new CClientTooltip( 1061173 ) );	break; // skill required: mace fighting
 										case SKILL_FENCING:			this->m_TooltipData.Add( new CClientTooltip( 1061174 ) );	break; // skill required: fencing
 										case SKILL_ARCHERY:			this->m_TooltipData.Add( new CClientTooltip( 1061175 ) );	break; // skill required: archery
+										case SKILL_THROWING:		this->m_TooltipData.Add( new CClientTooltip( 1112075 ) );	break; // skill required: throwing
 										default:					break;
 									}
 								}
 
 								this->m_TooltipData.Add( t = new CClientTooltip( 1060639 ) ); // durability ~1_val~ / ~2_val~
-								t->FormatArgs( "%u\t%u", pItem->m_itWeapon.m_Hits_Cur, pItem->m_itWeapon.m_Hits_Max );
+								t->FormatArgs( "%hu\t%hu", pItem->m_itWeapon.m_Hits_Cur, pItem->m_itWeapon.m_Hits_Max );
 							}
 							break;
 
@@ -3457,11 +3480,11 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 								this->m_TooltipData.Add( t = new CClientTooltip( 1060658 ) ); // ~1_val~: ~2_val~
 								t->FormatArgs( "Character\t%s", pszName ? pszName : "none" );
 								this->m_TooltipData.Add( t = new CClientTooltip( 1061169 ) ); // range ~1_val~
-								t->FormatArgs( "%d", pItem->m_itSpawnChar.m_DistMax );
-								this->m_TooltipData.Add( t = new CClientTooltip( 1074247 ) );
-								t->FormatArgs( "%lu\t%u", pItem->m_itSpawnChar.m_current, pItem->GetAmount() );
+								t->FormatArgs( "%hhu", pItem->m_itSpawnChar.m_DistMax );
+								this->m_TooltipData.Add( t = new CClientTooltip( 1074247 ) ); // Live Creatures: ~1_NUM~ / ~2_MAX~
+								t->FormatArgs( "%lu\t%hu", pItem->m_itSpawnChar.m_current, pItem->GetAmount() );
 								this->m_TooltipData.Add( t = new CClientTooltip( 1060659 ) ); // ~1_val~: ~2_val~
-								t->FormatArgs( "Min/max time\t%u min / %u min", pItem->m_itSpawnChar.m_TimeLoMin, pItem->m_itSpawnChar.m_TimeHiMin );
+								t->FormatArgs( "Time range\t%hu min / %hu max", pItem->m_itSpawnChar.m_TimeLoMin, pItem->m_itSpawnChar.m_TimeHiMin );
 								this->m_TooltipData.Add( t = new CClientTooltip( 1060660 ) ); // ~1_val~: ~2_val~
 								t->FormatArgs( "Time until next spawn\t%lld sec", pItem->GetTimerAdjusted() );
 							} break;
@@ -3469,40 +3492,39 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 						case IT_SPAWN_ITEM:
 							{
 								CResourceDef * pSpawnItemDef = g_Cfg.ResourceGetDef( pItem->m_itSpawnItem.m_ItemID );
+								CItemSpawn * pSpawn = static_cast<CItemSpawn *>(pItem);
+
 								this->m_TooltipData.Add( t = new CClientTooltip( 1060658 ) ); // ~1_val~: ~2_val~
-								t->FormatArgs( "Item\t%s", pSpawnItemDef ? pSpawnItemDef->GetName() : "none" );
-								this->m_TooltipData.Add( t = new CClientTooltip( 1060656 ) ); // amount to make: ~1_val~
-								t->FormatArgs( "%lu", pItem->m_itSpawnItem.m_pile );
-								this->m_TooltipData.Add( t = new CClientTooltip( 1074247 ) );
-								t->FormatArgs( "??\t%u", pItem->GetAmount() );
+								t->FormatArgs( "Item\t%lu %s", maximum(1, pItem->m_itSpawnItem.m_pile), pSpawnItemDef ? pSpawnItemDef->GetName() : "none" );
+								this->m_TooltipData.Add( t = new CClientTooltip( 1061169 ) ); // range ~1_val~
+								t->FormatArgs( "%hhu", pItem->m_itSpawnChar.m_DistMax );
+								this->m_TooltipData.Add( t = new CClientTooltip( 1074247 ) ); // Live Creatures: ~1_NUM~ / ~2_MAX~
+								t->FormatArgs( "%hhu\t%hu", pSpawn->GetCount(), pItem->GetAmount() );
 								this->m_TooltipData.Add( t = new CClientTooltip( 1060659 ) ); // ~1_val~: ~2_val~
-								t->FormatArgs( "Min/max time\t%u min / %u min", pItem->m_itSpawnItem.m_TimeLoMin, pItem->m_itSpawnItem.m_TimeHiMin );
+								t->FormatArgs( "Time range\t%hu min / %hu max", pItem->m_itSpawnItem.m_TimeLoMin, pItem->m_itSpawnItem.m_TimeHiMin );
 								this->m_TooltipData.Add( t = new CClientTooltip( 1060660 ) ); // ~1_val~: ~2_val~
 								t->FormatArgs( "Time until next spawn\t%lld sec", pItem->GetTimerAdjusted() );
 							} break;
 
 						case IT_COMM_CRYSTAL:
-							this->m_TooltipData.Add( t = new CClientTooltip( 1060658 ) ); // ~1_val~: ~2_val~
-							t->FormatArgs( "Linked\t%s", ( ( (DWORD) pItem->m_uidLink == 0x4FFFFFFF ) ? "No" : "Yes" ) );
-							break;
+							{
+								CItem *pLink = pItem->m_uidLink.ItemFind();
+								this->m_TooltipData.Add( new CClientTooltip( (pLink && pLink->IsType(IT_COMM_CRYSTAL)) ? 1060742 : 1060743 ) ); // active / inactive
+								this->m_TooltipData.Add( new CClientTooltip( 1060745 ) ); // broadcast
+							} break;
 
 						case IT_STONE_GUILD:
 							{
 								this->m_TooltipData.Clean(true);
-								this->m_TooltipData.Add( t = new CClientTooltip( 1041429 ) );
-								const CItemStone * thisStone = dynamic_cast<const CItemStone *>(pItem);
+								this->m_TooltipData.Add( t = new CClientTooltip( 1041429 ) ); // a guildstone
+								CItemStone *thisStone = static_cast<CItemStone *>(pItem);
 								if ( thisStone )
 								{
+									this->m_TooltipData.Add( t = new CClientTooltip( 1060802 ) ); // Guild name: ~1_val~
 									if ( thisStone->GetAbbrev()[0] )
-									{
-										this->m_TooltipData.Add( t = new CClientTooltip( 1060802 ) ); // Guild name: ~1_val~
 										t->FormatArgs( "%s [%s]", thisStone->GetName(), thisStone->GetAbbrev() );
-									}
 									else
-									{
-										this->m_TooltipData.Add( t = new CClientTooltip( 1060802 ) ); // Guild name: ~1_val~
 										t->FormatArgs( "%s", thisStone->GetName() );
-									}
 								}
 							} break;
 
@@ -3603,16 +3625,16 @@ void CClient::addShowDamage( int damage, DWORD uid_damage )
 		damage = 0;
 
 	if ( PacketCombatDamage::CanSendTo(GetNetState()) )
-		new PacketCombatDamage(this, static_cast<WORD>(damage), CGrayUID(uid_damage));
+		new PacketCombatDamage(this, static_cast<WORD>(damage), static_cast<CGrayUID>(uid_damage));
 	else if ( PacketCombatDamageOld::CanSendTo(GetNetState()) )
-		new PacketCombatDamageOld(this, static_cast<BYTE>(damage), CGrayUID(uid_damage));
+		new PacketCombatDamageOld(this, static_cast<BYTE>(damage), static_cast<CGrayUID>(uid_damage));
 }
 
-void CClient::addSpeedMode( int speedMode )
+void CClient::addSpeedMode( BYTE speedMode )
 {
 	ADDTOCALLSTACK("CClient::addSpeedMode");
 
-	new PacketSpeedMode(this, static_cast<unsigned char>(speedMode));
+	new PacketSpeedMode(this, speedMode);
 }
 
 void CClient::addVisualRange( BYTE visualRange )
@@ -3678,7 +3700,7 @@ void CClient::SendPacket( TCHAR * pszKey )
 		{
 			if ( toupper(*pszKey) == 'B' )
 				pszKey++;
-			BYTE iVal = static_cast<unsigned char>(Exp_GetVal(pszKey));
+			BYTE iVal = static_cast<BYTE>(Exp_GetVal(pszKey));
 
 			packet->writeByte(iVal);
 		}
@@ -3716,7 +3738,7 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	bool fQuickLogIn = !pChar->IsDisconnected();
 	if ( IsTrigUsed(TRIGGER_LOGIN) )
 	{
-		CScriptTriggerArgs Args( fNoMessages, fQuickLogIn, static_cast<INT64>(0) );
+		CScriptTriggerArgs Args( fNoMessages, fQuickLogIn );
 		if ( pChar->OnTrigger( CTRIG_LogIn, pChar, &Args ) == TRIGRET_RET_TRUE )
 		{
 			m_pChar->ClientDetach();

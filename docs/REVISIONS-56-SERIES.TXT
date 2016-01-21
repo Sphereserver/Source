@@ -2785,36 +2785,39 @@ Fixed: Curse spell not working correctly when COMBAT_ELEMENTAL_ENGINE is enabled
 [sphereCrypt.ini]: Added crypt keys for clients 7.0.46 and 7.0.47 (thx XuN and Feeh, I found these values on their forum posts)
 [sphere_map_points0.scp]: Updated new player start locations.
 
-08-01-2015, Coruja
+08-01-2016, Coruja
 Fixed: Clients requesting unnecessary 'resync' packets to server.
 
-10-01-2015, Coruja
+10-01-2016, Coruja
 Fixed: Client packet problems when players teleport while walking.
 
-11-01-2015, Coruja
+11-01-2016, Coruja
 Fixed: return 1 on char trigger @EquipTest / @ItemEquipTest making the item drop on char backpack instead on its last location.
 
-12-01-2015, Coruja
+12-01-2016, Coruja
 Fixed: MAGICF_STACKSTATS magic flag not working correctly.
 
-15-01-2015, Coruja
+15-01-2016, Coruja
 Fixed: Damage spells disturbing the caster if casted on himself.
 Changed: Telnet connections will not receive B (broadcast) messages anymore.
 [Sphere.ini]: Changed AutoResDisp default value and functionality.
 	Previously this setting was used to set an fixed RESDISP value to new created accounts.
 	Now it's a boolean (1=on/0=off) and if enabled it will automatically set account RESDISP on @Login based on player client version.
 
-16-01-2015, Coruja
+16-01-2016, Coruja
 Fixed: Exploit allowing instant hit on combat.
 Fixed: TARG/TARGPROP/TARGPRV char properties returning decimal values instead hex.
 Fixed: OF_ScaleDamageByDurability flag not working correctly on items using min durability (MORE1L) = 0.
 
-19-01-2015, Coruja
+19-01-2016, Coruja
 Changed: Improved Detecting Hidden skill behavior.
 [Sphere.ini]: Changed GameMinuteLength default value.
 [sphere_monsters.scp]: Added missing stats/skills values on TOL dinosaurs.
 [sphere_item_char_icons.scp]: Renamed i_pet_anchisaurus -> i_pet_anchisaur
 [sphere_item_animations.scp/sphere_item_deco_lightsources.scp/sphere_item_deco_virtues.scp/sphere_item_profession_alchemist.scp/sphere_item_unsorted.scp]: Removed unused TDATA4 from all t_light_lit items.
 
-20-01-2015, Coruja
+20-01-2016, Coruja
 Fixed: Console error when GM use commands to add objects on undefined regions.
+
+21-01-2015, Coruja
+Added: Missing tame/bonded/summoned tooltips on NPCs.

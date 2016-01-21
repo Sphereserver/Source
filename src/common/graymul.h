@@ -1432,6 +1432,7 @@ enum CREID_TYPE		// enum the creature art work. (dont allow any others !) also k
 	//	new monsters lies between this range
 	CREID_IRON_GOLEM		= 0x02f0,		// LBR
 	//..
+	CREID_GIANT_BEETLE		= 0x0317,
 	CREID_SWAMP_DRAGON1		= 0x031a,		// LBR
 	CREID_REPTILE_LORD		= 0x031d,		// LBR
 	CREID_ANCIENT_WYRM		= 0x031e,		// LBR

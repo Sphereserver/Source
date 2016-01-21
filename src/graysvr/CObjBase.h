@@ -2428,9 +2428,9 @@ public:
 	CGString m_sProfile;	// limited to SCRIPT_MAX_LINE_LEN-16
 
 	WORD m_wMurders;		// Murder count.
-	WORD m_wDeaths;		// How many times have i died ?
-	unsigned short int		m_speedMode;		// speed mode (0x0 = Normal movement, 0x1 = Fast movement, 0x2 = Slow movement, 0x3 and above = Hybrid movement)
-	DWORD			m_pflag;			// PFLAG
+	WORD m_wDeaths;			// How many times have i died ?
+	BYTE m_speedMode;		// speed mode (0x0 = Normal movement, 0x1 = Fast movement, 0x2 = Slow movement, 0x3 and above = Hybrid movement)
+	DWORD m_pflag;			// PFLAG
 
 	static LPCTSTR const sm_szLoadKeys[];
 

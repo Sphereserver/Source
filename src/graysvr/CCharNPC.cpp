@@ -499,7 +499,7 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 			} return true;
 		case CPC_SPEEDMODE:
 			{
-				m_speedMode = static_cast<unsigned short>(s.GetArgVal());
+				m_speedMode = static_cast<BYTE>(s.GetArgVal());
 				pChar->UpdateSpeedMode();
 			} return true;
 		case CPC_STATLOCK:
