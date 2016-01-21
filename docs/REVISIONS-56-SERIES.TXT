@@ -2821,3 +2821,5 @@ Fixed: Console error when GM use commands to add objects on undefined regions.
 
 21-01-2015, Coruja
 Added: Missing tame/bonded/summoned tooltips on NPCs.
+Fixed: t_spawn_item not saving/loading correctly spawned items.
+Fixed: Spawns (worldgem bit) not updating the tooltip when add/delete objects.
