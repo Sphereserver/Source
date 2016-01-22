@@ -2823,3 +2823,4 @@ Fixed: Console error when GM use commands to add objects on undefined regions.
 Added: Missing tame/bonded/summoned tooltips on NPCs.
 Fixed: t_spawn_item not saving/loading correctly spawned items.
 Fixed: Spawns (worldgem bit) not updating the tooltip when add/delete objects.
+Changed: Summon spells now will create NPCs with HOME and HOMEDIST=10 set by default.

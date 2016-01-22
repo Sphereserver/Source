@@ -303,6 +303,8 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 		pChar->StatFlag_Set(STATF_Conjured);	// conjured creates have no loot
 		pChar->NPC_LoadScript(false);
 		pChar->MoveToChar(pntTarg);
+		pChar->m_ptHome = pntTarg;
+		pChar->m_pNPC->m_Home_Dist_Wander = 10;
 		pChar->NPC_CreateTrigger();		// removed from NPC_LoadScript() and triggered after char placement
 		pChar->NPC_PetSetOwner(this);
 		pChar->OnSpellEffect(SPELL_Summon, this, Skill_GetAdjusted(static_cast<SKILL_TYPE>(skill)), NULL);
@@ -514,7 +516,10 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			if (m_pPlayer)	// summoned players ? thats odd.
 				return;
 			if (!g_Serv.IsLoading())
+			{
 				Effect(EFFECT_XYZ, ITEMID_FX_TELE_VANISH, this, 8, 20);
+				Sound(0x201);
+			}
 			if (!IsStatFlag(STATF_DEAD))	// fix for double @Destroy trigger
 				Delete();
 			return;
