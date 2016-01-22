@@ -2830,3 +2830,6 @@ Added: New pet command '* unfriend'.
 Changed: Many improvements on pet commands engine.
 [sphere_speech.scp]: Added UNFRIEND line on speech lists.
 [sphere_msgs.scp]: Added new messages 'npc_pet_confused' and 'npc_pet_targ_*'.
+
+23-01-2015, Coruja
+Fixed: Pets accepting items from its owner even when the owner can't access the pet backpack.

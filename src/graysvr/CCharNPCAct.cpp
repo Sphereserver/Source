@@ -2982,12 +2982,13 @@ void CChar::NPC_Act_Idle()
 	SetTimeout(TICK_PER_SEC * 1 + Calc_GetRandLLVal(TICK_PER_SEC*2));
 }
 
-bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
+bool CChar::NPC_OnItemGive( CChar *pCharSrc, CItem *pItem )
 {
 	ADDTOCALLSTACK("CChar::NPC_OnItemGive");
-	// Someone (Player) is giving me an item. Return true = accept
+	// Someone (Player) is giving me an item.
+	// return true = accept
 
-	if ( !pCharSrc || !m_pNPC )
+	if ( !m_pNPC || !pCharSrc )
 		return false;
 
 	CScriptTriggerArgs Args(pItem);
@@ -2997,13 +2998,9 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 			return false;
 	}
 
-	//	giving item to own pet
+	// Giving item to own pet
 	if ( NPC_IsOwnedBy(pCharSrc) )
 	{
-		if ( pCharSrc->IsPriv(PRIV_GM) )
-			return ItemEquip(pItem);
-
-		//	stuff and gold to vendor
 		if ( NPC_IsVendor() )
 		{
 			if ( pItem->IsType(IT_GOLD) )
@@ -3019,56 +3016,44 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 			return true;
 		}
 
-		//	humanoids
-		if ( NPC_CanSpeak() )
+		if ( Food_CanEat(pItem) )
 		{
-			if ( Food_CanEat(pItem) )
+			if ( Use_Eat(pItem, pItem->GetAmount()) )
 			{
-				if (( Food_GetLevelPercent() < 100 ) && Use_Eat(pItem) )
-				{
+				if ( NPC_CanSpeak() )
 					Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_FOOD_TY));
-					return true;
-				}
-				else
-					Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_FOOD_NO));
 
-				return false;
-			}
-
-			if ( pItem->IsType(IT_GOLD))
-				Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_THANKS));
-			else if ( !CanCarry(pItem) )
-			{
-				Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_WEAK));
-				return false;
-			}
-
-			if ( Use_Item(pItem) )
+				if ( !pItem->IsDeleted() )		// if the NPC don't eat the full stack, bounce back the remaining amount on player backpack
+					pCharSrc->ItemBounce(pItem);
 				return true;
+			}
 
-			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DROP));
-			GetPackSafe()->ContentAdd(pItem);
-			return true;
+			if ( NPC_CanSpeak() )
+				Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_FOOD_NO));
+			return false;
 		}
 
-		switch ( pItem->GetType() )
+		if ( pCharSrc->IsPriv(PRIV_GM) )
+			return ItemBounce(pItem);
+
+		if ( !CanCarry(pItem) )
 		{
-			case IT_POTION:
-			case IT_DRINK:
-			case IT_PITCHER:
-			case IT_WATER_WASH:
-			case IT_BOOZE:
-				if ( Use_Item(pItem) )
-					return true;
-			default:
-				break;
+			if ( NPC_CanSpeak() )
+				Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_WEAK));
+			return false;
 		}
+
+		// Place item on backpack
+		CItemContainer *pPack = GetPack();
+		if ( !pPack )
+			return false;
+		pPack->ContentAdd(pItem);
+		return true;
 	}
 
-	// have i paid the npc due to some order?
 	if ( pItem->IsType(IT_GOLD) )
 	{
-		CItemMemory * pMemory = Memory_FindObj(pCharSrc);
+		CItemMemory *pMemory = Memory_FindObj(pCharSrc);
 		if ( pMemory )
 		{
 			switch ( pMemory->m_itEqMemory.m_Action )
@@ -3081,55 +3066,29 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 					break;
 			}
 		}
-	}
 
-	//	do i wish to take this item?
-
-	CItemContainer * pPack = NULL;
-	if ( !NPC_WantThisItem(pItem) )
-	{
-		if ( IsTrigUsed(TRIGGER_NPCREFUSEITEM) )
-		{
-			if ( OnTrigger(CTRIG_NPCRefuseItem, pCharSrc, &Args) != TRIGRET_RET_TRUE )
-			{
-				if ( pCharSrc->IsClient() )
-					pCharSrc->GetClient()->addObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_DONTWANT), this);
-				return false;
-			} 
-		}
-
-		if ( pPack == NULL )
-			pPack = GetPackSafe();
-		pPack->ContentAdd( pItem );
-		return true;
-	}
-
-	//	gold goes to the bankbox or as a financial support to the NPC
-	if ( pItem->IsType(IT_GOLD) )
-	{
 		if ( m_pNPC->m_Brain == NPCBRAIN_BANKER )
 		{
-			TCHAR *pszMsg = Str_GetTemp();
-			sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_BANKER_DEPOSIT), pItem->GetAmount());
-			Speak(pszMsg);
-			pCharSrc->GetBank()->ContentAdd(pItem);
+			CItemContainer *pBankBox = pCharSrc->GetPackSafe();
+			if ( !pBankBox )
+				return false;
+
+			if ( NPC_CanSpeak() )
+			{
+				TCHAR *pszMsg = Str_GetTemp();
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_BANKER_DEPOSIT), pItem->GetAmount());
+				Speak(pszMsg);
+			}
+
+			pBankBox->ContentAdd(pItem);
 			return true;
 		}
-
-		if ( NPC_CanSpeak() )
-		{
-			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_THANKS));
-		}
-		if ( pPack == NULL )
-			pPack = GetPackSafe();
-		pPack->ContentAdd( pItem );
-		return true;
 	}
 
-	//	dropping item on vendor means quick sell
-	if ( NPC_IsVendor() )
+	if ( NPC_IsVendor() && !IsStatFlag(STATF_Pet) )
 	{
-		if ( pCharSrc->IsClient() && !IsStatFlag(STATF_Pet) )
+		// Dropping item on vendor means quick sell
+		if ( pCharSrc->IsClient() )
 		{
 			VendorItem item;
 			item.m_serial = pItem->GetUID();
@@ -3139,54 +3098,32 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 		return false;
 	}
 
-	// The NPC might want it ?
-	switch ( m_pNPC->m_Brain )
+	if ( !NPC_WantThisItem(pItem) )
 	{
-		case NPCBRAIN_DRAGON:
-		case NPCBRAIN_ANIMAL:
-		case NPCBRAIN_MONSTER:
-			// Might want food ?
-			if ( Food_CanEat(pItem))
+		if ( IsTrigUsed(TRIGGER_NPCREFUSEITEM) )
+		{
+			if ( OnTrigger(CTRIG_NPCRefuseItem, pCharSrc, &Args) != TRIGRET_RET_TRUE )
 			{
-				// ??? May know it is poisoned ?
-				if ( pItem->m_itFood.m_poison_skill )
-				{
-					if ( Calc_GetRandVal2(1, pItem->m_itFood.m_poison_skill) < (Skill_GetBase(SKILL_TASTEID) / 10) )
-					{
-						if ( NPC_CanSpeak() )
-						{
-							Speak(g_Cfg.GetDefaultMsg(DEFMSG_MSG_MURDERER));
-						}
-						// PC attacks NPC
-						return false;
-					}
-				}
-				// ??? May not be hungry
-				if ( Use_Eat( pItem, pItem->GetAmount() ))
-					return( true );
+				pCharSrc->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_DONTWANT));
+				return false;
 			}
-			break;
-
-		default:
-			break;
+		}
+		else
+			return false;
 	}
 
 	if ( IsTrigUsed(TRIGGER_NPCACCEPTITEM) )
 	{
-		if ( OnTrigger( CTRIG_NPCAcceptItem, pCharSrc, &Args ) == TRIGRET_RET_TRUE )
-		{
-			pCharSrc->ItemBounce(pItem, false);
-			pItem->Update();
+		if ( OnTrigger(CTRIG_NPCAcceptItem, pCharSrc, &Args) == TRIGRET_RET_TRUE )
 			return false;
-		}
 	}
 
-	if ( pPack == NULL )
-		pPack = GetPackSafe();
-	pPack->ContentAdd( pItem );
-	pItem->Update();
-
-	return( true );
+	// Place item on backpack
+	CItemContainer *pPack = GetPack();
+	if ( !pPack )
+		return false;
+	pPack->ContentAdd(pItem);
+	return true;
 }
 
 void CChar::NPC_OnTickAction()
