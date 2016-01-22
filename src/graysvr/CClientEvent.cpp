@@ -2318,7 +2318,7 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 		if ( pChar->IsPlayableCharacter() )
 			m_pPopupPacket->addOption(POPUP_PAPERDOLL, 6123, POPUPFLAG_COLOR, 0xFFFF);
 
-		if ( pChar->m_pNPC && !pChar->IsStatFlag(STATF_DEAD) )
+		if ( pChar->m_pNPC )
 		{
 			if ( pChar->m_pNPC->m_Brain == NPCBRAIN_BANKER )
 				m_pPopupPacket->addOption(POPUP_BANKBOX, 6105, POPUPFLAG_COLOR, 0xFFFF);
@@ -2334,27 +2334,34 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 				m_pPopupPacket->addOption(POPUP_VENDORSELL, 6104, POPUPFLAG_COLOR, 0xFFFF);
 			}
 
+			WORD iEnabled = pChar->IsStatFlag(STATF_DEAD) ? POPUPFLAG_LOCKED : POPUPFLAG_COLOR;
 			if ( pChar->NPC_IsOwnedBy(m_pChar, false) )
 			{
-				m_pPopupPacket->addOption(POPUP_PETGUARD, 6107, POPUPFLAG_COLOR, 0xFFFF);
+				CREID_TYPE id = pChar->GetID();
+				bool bBackpack = (id == CREID_LLAMA_PACK || id == CREID_HORSE_PACK || id == CREID_GIANT_BEETLE);
+
+				m_pPopupPacket->addOption(POPUP_PETGUARD, 6107, iEnabled, 0xFFFF);
 				m_pPopupPacket->addOption(POPUP_PETFOLLOW, 6108, POPUPFLAG_COLOR, 0xFFFF);
-				if ( pChar->GetPack() )
-					m_pPopupPacket->addOption(POPUP_PETDROP, 6109, POPUPFLAG_COLOR, 0xFFFF);
-				m_pPopupPacket->addOption(POPUP_PETKILL, 6111, POPUPFLAG_COLOR, 0xFFFF);
+				if ( bBackpack )
+					m_pPopupPacket->addOption(POPUP_PETDROP, 6109, iEnabled, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETKILL, 6111, iEnabled, 0xFFFF);
 				m_pPopupPacket->addOption(POPUP_PETSTOP, 6112, POPUPFLAG_COLOR, 0xFFFF);
 				m_pPopupPacket->addOption(POPUP_PETSTAY, 6114, POPUPFLAG_COLOR, 0xFFFF);
 				if ( !pChar->IsStatFlag(STATF_Conjured) )
 				{
-					m_pPopupPacket->addOption(POPUP_PETFRIEND, 6110, POPUPFLAG_COLOR, 0xFFFF);
+					m_pPopupPacket->addOption(POPUP_PETFRIEND_ADD, 6110, iEnabled, 0xFFFF);
+					m_pPopupPacket->addOption(POPUP_PETFRIEND_REMOVE, 6099, iEnabled, 0xFFFF);
 					m_pPopupPacket->addOption(POPUP_PETTRANSFER, 6113, POPUPFLAG_COLOR, 0xFFFF);
 				}
 				m_pPopupPacket->addOption(POPUP_PETRELEASE, 6118, POPUPFLAG_COLOR, 0xFFFF);
+				if ( bBackpack )
+					m_pPopupPacket->addOption(POPUP_BACKPACK, 6145, iEnabled, 0xFFFF);
 			}
 			else if ( pChar->Memory_FindObjTypes(m_pChar, MEMORY_FRIEND) )
 			{
-				m_pPopupPacket->addOption(POPUP_PETFOLLOW, 6108, POPUPFLAG_COLOR, 0xFFFF);
-				m_pPopupPacket->addOption(POPUP_PETSTOP, 6112, POPUPFLAG_COLOR, 0xFFFF);
-				m_pPopupPacket->addOption(POPUP_PETSTAY, 6114, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETFOLLOW, 6108, iEnabled, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETSTOP, 6112, iEnabled, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETSTAY, 6114, iEnabled, 0xFFFF);
 			}
 		}
 		else if ( pChar == m_pChar )
@@ -2482,8 +2489,12 @@ void CClient::Event_AOSPopupMenuSelect(DWORD uid, WORD EntryTag)	//do something 
 				pChar->NPC_OnHearPetCmd("stay", m_pChar);
 				break;
 
-			case POPUP_PETFRIEND:
+			case POPUP_PETFRIEND_ADD:
 				pChar->NPC_OnHearPetCmd("friend", m_pChar);
+				break;
+
+			case POPUP_PETFRIEND_REMOVE:
+				pChar->NPC_OnHearPetCmd("unfriend", m_pChar);
 				break;
 
 			case POPUP_PETTRANSFER:
@@ -2513,7 +2524,7 @@ void CClient::Event_AOSPopupMenuSelect(DWORD uid, WORD EntryTag)	//do something 
 			break;
 
 		case POPUP_BACKPACK:
-			m_pChar->Use_Obj(m_pChar->LayerFind(LAYER_PACK), false, false);
+			m_pChar->Use_Obj(pChar->LayerFind(LAYER_PACK), false);
 			break;
 
 		case POPUP_PARTY_ADD:

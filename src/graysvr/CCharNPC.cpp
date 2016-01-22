@@ -731,6 +731,8 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 	//Set as numbers only
 	case CNC_BONDED:
 		m_bonded = (s.GetArgVal() > 0);
+		if ( !g_Serv.IsLoading() )
+			pChar->ResendTooltip();
 		break;
 	case CNC_FOLLOWERSLOTS:
 		pChar->SetDefNum(s.GetKey(), s.GetArgVal(), false );

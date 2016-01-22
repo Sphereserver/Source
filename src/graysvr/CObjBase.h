@@ -2871,14 +2871,6 @@ public:
 			DIR_TYPE m_PrvDir;			// ACTARG1 = Previous direction of tracking target, used for when to notify player
 		} m_atTracking;
 
-		// NPCACT_FOLLOW_TARG
-		struct
-		{
-			int m_DistMin;				// ACTARG1 = Try to force this min distance.
-			int m_DistMax;				// ACTARG2 = Try to force this max distance.
-			// m_Act_Targ = what am i following ?
-		} m_atFollowTarg;
-
 		// NPCACT_RIDDEN
 		struct
 		{

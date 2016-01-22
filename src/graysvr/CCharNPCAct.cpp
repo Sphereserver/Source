@@ -1304,10 +1304,8 @@ bool CChar::NPC_LookAtChar( CChar * pChar, int iDist )
 	{
 		// follow my owner again. (Default action)
 		m_Act_Targ = pChar->GetUID();
-		m_atFollowTarg.m_DistMin = 1;
-		m_atFollowTarg.m_DistMax = 6;
 		m_pNPC->m_Act_Motivation = 50;
-		Skill_Start( Skill_GetActive() == NPCACT_FOLLOW_TARG? NPCACT_FOLLOW_TARG : NPCACT_GUARD_TARG );
+		Skill_Start(Skill_GetActive() == NPCACT_FOLLOW_TARG ? NPCACT_FOLLOW_TARG : NPCACT_GUARD_TARG);
 		return true;
 	}
 
@@ -1555,7 +1553,7 @@ void CChar::NPC_Act_Guard()
 	}
 
 	// Target is out of range or doesn't need protecting, so just follow for now
-	NPC_LookAtChar( pChar, 1 );
+	//NPC_LookAtChar(pChar, 1);
 	NPC_Act_Follow();
 }
 
