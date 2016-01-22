@@ -195,6 +195,11 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 			break;
 
 		case PC_TRANSFER:
+			if ( IsStatFlag(STATF_Conjured) )
+			{
+				pSrc->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_TARG_TRANSFER_SUMMONED));
+				return true;
+			}
 			pTargPrompt = g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_TARG_TRANSFER);
 			break;
 
