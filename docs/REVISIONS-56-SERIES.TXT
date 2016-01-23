@@ -2830,6 +2830,9 @@ Added: New pet command '* unfriend'.
 Changed: Many improvements on pet commands engine.
 [sphere_speech.scp]: Added UNFRIEND line on speech lists.
 [sphere_msgs.scp]: Added new messages 'npc_pet_confused' and 'npc_pet_targ_*'.
+[sphere_spells.scp]: Removed 'spellflag_targ_xyz' from most summon spells. The only summon spells that uses target is Blade Spirits and Energy Vortex.
+[items/sphere_item_magic_spellweaving.scp]: Added missing color on i_spellbook_spellweaving.
 
 23-01-2015, Coruja
 Fixed: Pets accepting items from its owner even when the owner can't access the pet backpack.
+Fixed: Polymorph spell and POLY function not working correctly.

@@ -3652,38 +3652,29 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 		break;
 
 		case CHV_POLY:	// result of poly spell script choice. (casting a spell)
+		{
+			const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Polymorph);
+			if ( !pSpellDef )
+				return false;
+
+			m_atMagery.m_Spell = SPELL_Polymorph;
+			m_atMagery.m_SummonID = static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, s.GetArgStr()));
+			m_Act_Targ = GetUID();
+			m_Act_TargPrv = GetUID();
+
+			if ( m_pClient && IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
 			{
-				const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Polymorph);
-				if (pSpellDef == NULL)
-					return( false );
-
-				m_atMagery.m_Spell = SPELL_Polymorph;
-				m_atMagery.m_SummonID = static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType( RES_CHARDEF, s.GetArgStr()));
-
-				if ( m_pClient != NULL )
-				{
-					m_Act_Targ = m_pClient->m_Targ_UID;
-					m_Act_TargPrv = m_pClient->m_Targ_PrvUID;
-				}
-				else
-				{
-					m_Act_Targ = GetUID();
-					m_Act_TargPrv = GetUID();
-				}
-
-				if ( IsClient() && IsSetMagicFlags( MAGICF_PRECAST ) && !pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ) )
-				{
-					Spell_CastDone();
-					break;
-				}
-
-				int skill;
-				if (!pSpellDef->GetPrimarySkill(&skill, NULL))
-					return( false );
-
-				Skill_Start(static_cast<SKILL_TYPE>(skill));
+				Spell_CastDone();
 				break;
 			}
+
+			int skill;
+			if ( !pSpellDef->GetPrimarySkill(&skill, NULL) )
+				return false;
+
+			Skill_Start(static_cast<SKILL_TYPE>(skill));
+			break;
+		}
 		case CHV_PRIVSET:
 			return( SetPrivLevel( pSrc, s.GetArgStr()));
 		case CHV_RELEASE:
