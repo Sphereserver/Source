@@ -2836,3 +2836,7 @@ Changed: Many improvements on pet commands engine.
 23-01-2015, Coruja
 Fixed: Pets accepting items from its owner even when the owner can't access the pet backpack.
 Fixed: Polymorph spell and POLY function not working correctly.
+
+27-01-2015, Coruja
+Fixed: Items disappearing when players try equip it without have required STR.
+Fixed: LOWERREQ item property not working correctly.

@@ -234,7 +234,7 @@ LAYER_TYPE CChar::CanEquipLayer( CItem *pItem, LAYER_TYPE layer, CChar *pCharMsg
 		if ( pItemDef->IsTypeEquippable() && CItemBase::IsVisibleLayer(layer) )
 		{
 			// Test only on players or if requested
-			if ( (m_pPlayer || fTest) && pItemDef->m_ttEquippable.m_StrReq && (Stat_GetAdjusted(STAT_STR) < pItemDef->m_ttEquippable.m_StrReq - pItemDef->m_BaseDefs.GetKeyNum("LOWERREQ", true) - m_BaseDefs.GetKeyNum("LOWERREQ", true)) )
+			if ( (m_pPlayer || fTest) && pItemDef->m_ttEquippable.m_StrReq && (Stat_GetAdjusted(STAT_STR) < pItemDef->m_ttEquippable.m_StrReq * (100 - pItem->GetDefNum("LOWERREQ", true, true)) / 100) )
 			{
 				if ( m_pPlayer )	// message only players
 				{

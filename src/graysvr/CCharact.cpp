@@ -1915,8 +1915,6 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 	// Move stuff already equipped.
    	if ( pItem->GetAmount() > 1 )
 		pItem->UnStackSplit(1, this);
-	// remove it from the container so that nothing will be stacked with it if unequipped
-	pItem->RemoveSelf();
 
 	LAYER_TYPE layer = CanEquipLayer(pItem, LAYER_QTY, pCharMsg, false);
 	if ( layer == LAYER_NONE )
@@ -1926,6 +1924,7 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 		return false;
 	}
 
+	pItem->RemoveSelf();		// Remove it from the container so that nothing will be stacked with it if unequipped
 	pItem->SetDecayTime(-1);	// Kill any decay timer.
 	LayerAdd(pItem, layer);
 	if ( !pItem->IsItemEquipped() )	// Equip failed ? (cursed?) Did it just go into pack ?
@@ -2701,9 +2700,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 	pCorpse->m_itCorpse.m_facing_dir = m_dirFace;
 	pCorpse->m_uidLink = GetUID();
 
-	// TO-DO: Fix SRC (or 'this') always seeing the corpse to the same dir (it works fine
-	// for nearby clients but not for SRC). Probably it could be something related to the
-	// Update() function making the corpse always get back to same default dir.
+	// TO-DO: Fix corpses always turning to the same dir (DIR_N) after resend it to clients
 
 	if (fFrontFall)
 		pCorpse->m_itCorpse.m_facing_dir = static_cast<DIR_TYPE>(m_dirFace|0x80);
