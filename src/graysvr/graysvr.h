@@ -739,6 +739,7 @@ enum CLIMODE_TYPE	// What mode is the client to server connection in ? (waiting 
 	CLIMODE_TARG_OBJ_FUNC,
 
 	CLIMODE_TARG_UNEXTRACT,			// break out multi items
+	CLIMODE_TARG_ADDCHAR,			// "ADDNPC" command
 	CLIMODE_TARG_ADDITEM,			// "ADDITEM" command
 	CLIMODE_TARG_LINK,				// "LINK" command
 	CLIMODE_TARG_TILE,				// "TILE" command
@@ -1069,12 +1070,12 @@ public:
 			int m_id;
 		} m_tmTile;
 
+		// CLIMODE_TARG_ADDCHAR
 		// CLIMODE_TARG_ADDITEM
 		struct
 		{
 			DWORD m_junk0;
-			ITEMID_TYPE m_id;
-			int		m_fStatic;
+			int m_id;
 		} m_tmAdd;
 
 		// CLIMODE_TARG_SKILL
@@ -1088,7 +1089,6 @@ public:
 		{
 			SPELL_TYPE m_Spell;			// targetting what spell ?
 			CREID_TYPE m_SummonID;
-			bool m_fSummonPet;
 		} m_tmSkillMagery;
 
 		// CLIMODE_TARG_USE_ITEM
@@ -1125,9 +1125,10 @@ private:
 	bool OnTarg_Obj_Info( CObjBase * pObj, const CPointMap & pt, ITEMID_TYPE id );
 	bool OnTarg_Obj_Function( CObjBase * pObj, const CPointMap & pt, ITEMID_TYPE id );
 
-	bool OnTarg_UnExtract( CObjBase * pObj, const CPointMap & pt ) ;
-	bool OnTarg_Stone_Recruit(CChar* pChar, bool bFull = false);
-	bool OnTarg_Item_Add( CObjBase * pObj, const CPointMap & pt ) ;
+	bool OnTarg_UnExtract( CObjBase * pObj, const CPointMap & pt );
+	bool OnTarg_Stone_Recruit( CChar * pChar, bool bFull = false );
+	bool OnTarg_Char_Add( CObjBase * pObj, const CPointMap & pt );
+	bool OnTarg_Item_Add( CObjBase * pObj, const CPointMap & pt );
 	bool OnTarg_Item_Link( CObjBase * pObj );
 	bool OnTarg_Tile( CObjBase * pObj, const CPointMap & pt );
 
@@ -1212,8 +1213,8 @@ private:
 	int Cmd_Extract( CScript * pScript, CRectMap &rect, int & zlowest );
 	size_t Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuItem* item, size_t iMaxSize, bool &fShowMenu, bool &fLimitReached );
 public:
-	bool Cmd_CreateItem( ITEMID_TYPE id, bool fStatic = false );
-	bool Cmd_CreateChar( CREID_TYPE id, SPELL_TYPE iSpell = SPELL_Summon, bool fPet = true );
+	bool Cmd_CreateItem( ITEMID_TYPE id );
+	bool Cmd_CreateChar( CREID_TYPE id );
 
 	void Cmd_GM_PageMenu( unsigned int iEntryStart = 0 );
 	void Cmd_GM_PageCmd( LPCTSTR pCmd );

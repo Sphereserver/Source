@@ -233,55 +233,45 @@ bool CChar::Spell_Teleport( CPointMap ptNew, bool bTakePets, bool bCheckAntiMagi
 	return true;
 }
 
-CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon )
+CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg )
 {
 	ADDTOCALLSTACK("CChar::Spell_Summon");
-	if ( id == CREID_INVALID )
+	// Summon an NPC using summon spells.
+
+	int skill;
+	CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
+	if ( !pSpellDef || !pSpellDef->GetPrimarySkill(&skill, NULL) )
 		return NULL;
 
-	CChar * pChar;
-	if ( !fSpellSummon )
-	{
-		// GM creates a char this way. "ADDNPC"
-		// More specific npc type from script ?
-		pChar = CreateNPC(id);
-		if ( pChar == NULL )
-			return NULL;
-		pChar->MoveToChar( pntTarg );
-	}
-	else
-	{
-		int skill;
-		CSpellDef *pSpellDef = g_Cfg.GetSpellDef(g_Cfg.IsSkillFlag(m_Act_SkillCurrent, SKF_MAGIC) ? m_atMagery.m_Spell : SPELL_Summon);
-		if ( !pSpellDef || !pSpellDef->GetPrimarySkill(&skill, NULL) )
-			return NULL;
+	if ( !pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
+		pntTarg = GetTopPoint();
 
-		if ( !IsPriv(PRIV_GM) )
+	CChar *pChar = CChar::CreateBasic(id);
+	if ( pChar == NULL )
+		return NULL;
+
+	if ( !IsPriv(PRIV_GM) )
+	{
+		if ( IsSetMagicFlags(MAGICF_SUMMONWALKCHECK) )	// check if the target location is valid
 		{
 			CCharBase *pSummonDef = CCharBase::FindCharBase(id);
-			if ( IsSetMagicFlags(MAGICF_SUMMONWALKCHECK) )	// check if the target location is valid
+			WORD wCan = 0xFFFF;
+			if ( pSummonDef != NULL )
+				wCan = pSummonDef->m_Can & CAN_C_MOVEMASK;
+
+			if ( wCan != 0xFFFF )
 			{
-				WORD wCan = 0xFFFF;
-				if ( pSummonDef != NULL )
-					wCan = pSummonDef->m_Can & CAN_C_MOVEMASK;
+				DWORD wBlockFlags = 0;
+				g_World.GetHeightPoint2(pntTarg, wBlockFlags, true);
 
-				if ( wCan != 0xFFFF )
+				if ( wBlockFlags & ~wCan )
 				{
-					DWORD wBlockFlags = 0;
-					g_World.GetHeightPoint2(pntTarg, wBlockFlags, true);
-
-					if ( wBlockFlags & ~wCan )
-					{
-						SysMessageDefault(DEFMSG_MSG_SUMMON_INVALIDTARG);
-						return NULL;
-					}
+					SysMessageDefault(DEFMSG_MSG_SUMMON_INVALIDTARG);
+					pChar->Delete();
+					return NULL;
 				}
 			}
 		}
-
-		pChar = CChar::CreateBasic(id);
-		if ( pChar == NULL )
-			return NULL;
 
 		if ( IsSetOF(OF_PetSlots) )
 		{
@@ -299,21 +289,21 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg, bool fSpellSummon
 			pChar->Delete();
 			return NULL;
 		}
-
-		pChar->StatFlag_Set(STATF_Conjured);	// conjured creates have no loot
-		pChar->NPC_LoadScript(false);
-		pChar->MoveToChar(pntTarg);
-		pChar->m_ptHome = pntTarg;
-		pChar->m_pNPC->m_Home_Dist_Wander = 10;
-		pChar->NPC_CreateTrigger();		// removed from NPC_LoadScript() and triggered after char placement
-		pChar->NPC_PetSetOwner(this);
-		pChar->OnSpellEffect(SPELL_Summon, this, Skill_GetAdjusted(static_cast<SKILL_TYPE>(skill)), NULL);
 	}
 
-	m_Act_Targ = pChar->GetUID();	// for last target stuff
+	pChar->StatFlag_Set(STATF_Conjured);	// conjured creates have no loot
+	pChar->NPC_LoadScript(false);
+	pChar->MoveToChar(pntTarg);
+	pChar->m_ptHome = pntTarg;
+	pChar->m_pNPC->m_Home_Dist_Wander = 10;
+	pChar->NPC_CreateTrigger();		// removed from NPC_LoadScript() and triggered after char placement
+	pChar->NPC_PetSetOwner(this);
+	pChar->OnSpellEffect(SPELL_Summon, this, Skill_GetAdjusted(static_cast<SKILL_TYPE>(skill)), NULL);
+
 	pChar->Update();
 	pChar->UpdateAnimate(ANIM_CAST_DIR);
 	pChar->SoundChar(CRESND_GETHIT);
+	m_Act_Targ = pChar->GetUID();	// for last target stuff
 	return pChar;
 }
 
@@ -2482,8 +2472,7 @@ bool CChar::Spell_CastDone()
 			if (iC1)
 			{
 				m_atMagery.m_SummonID = iC1;
-				m_atMagery.m_fSummonPet = true;
-				Spell_Summon(m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0);
+				Spell_Summon(m_atMagery.m_SummonID, m_Act_p);
 			}
 		}
 		else if (bIsSpellField)
@@ -2553,7 +2542,6 @@ bool CChar::Spell_CastDone()
 			Spell_Area(GetTopPoint(), areaRadius, iSkillLevel);
 		else
 			Spell_Area(m_Act_p, areaRadius, iSkillLevel);
-
 	}
 	else if (pSpellDef->IsSpellType(SPELLFLAG_SUMMON))
 	{
@@ -2593,8 +2581,7 @@ bool CChar::Spell_CastDone()
 			else
 				m_atMagery.m_SummonID = iC1;
 
-			m_atMagery.m_fSummonPet = true;
-			Spell_Summon(m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0);
+			Spell_Summon(m_atMagery.m_SummonID, m_Act_p);
 		}
 	}
 	else
@@ -2678,15 +2665,6 @@ bool CChar::Spell_CastDone()
 				}
 				break;
 
-			/*case SPELL_Summon: //not needed with SPELLFLAG_SUMMON
-			{
-				if (iC1)
-					m_atMagery.m_SummonID = iC1;
-
-				Spell_Summon(m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0);
-				break;
-			}*/
-
 			case SPELL_Flame_Strike:
 			{
 				// Display spell.
@@ -2753,13 +2731,12 @@ bool CChar::Spell_CastDone()
 				{
 					m_atMagery.m_SummonID = pCorpse->GetCorpseType();
 				}
-				m_atMagery.m_fSummonPet = true;
 
 				if (!pCorpse->IsTopLevel())
 				{
 					return(false);
 				}
-				CChar * pChar = Spell_Summon(m_atMagery.m_SummonID, pCorpse->GetTopPoint(), true);
+				CChar *pChar = Spell_Summon(m_atMagery.m_SummonID, pCorpse->GetTopPoint());
 				ASSERT(pChar);
 				if (!pChar->RaiseCorpse(pCorpse))
 				{

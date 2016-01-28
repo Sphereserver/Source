@@ -807,7 +807,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				if (( rid.GetResType() == RES_CHARDEF ) || ( rid.GetResType() == RES_SPAWN ))
 				{
 					m_Targ_PrvUID.InitUID();
-					return Cmd_CreateChar(static_cast<CREID_TYPE>(rid.GetResIndex()), SPELL_Summon, false );
+					return Cmd_CreateChar(static_cast<CREID_TYPE>(rid.GetResIndex()));
 				}
 
 				ITEMID_TYPE id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
@@ -1294,9 +1294,53 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		case CV_SKILLSELECT:
 			Event_Skill_Use( g_Cfg.FindSkillKey( s.GetArgStr() ) );
 			break;
-		case CV_SUMMON:	// from the spell skill script.
-			// m_Targ_PrvUID should already be set.
-			return Cmd_CreateChar(static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType( RES_CHARDEF, s.GetArgStr())), SPELL_Summon, true );
+		case CV_SUMMON:
+		{
+			ASSERT(m_pChar);
+			const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Summon);
+			if ( !pSpellDef )
+				return false;
+
+			m_pChar->m_Act_Targ = m_pChar->GetUID();
+			m_pChar->m_Act_TargPrv = m_pChar->GetUID();
+
+			if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
+			{
+				m_tmSkillMagery.m_Spell = SPELL_Summon;
+				m_tmSkillMagery.m_SummonID = static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, s.GetArgStr()));
+
+				LPCTSTR pPrompt = g_Cfg.GetDefaultMsg(DEFMSG_SELECT_MAGIC_TARGET);
+				if ( !pSpellDef->m_sTargetPrompt.IsEmpty() )
+					pPrompt = pSpellDef->m_sTargetPrompt;
+
+				int SpellTimeout = g_Cfg.m_iSpellTimeout * TICK_PER_SEC;
+				if ( GetDefNum("SPELLTIMEOUT", true) )
+					SpellTimeout = static_cast<int>(GetDefNum("SPELLTIMEOUT", true));
+
+				addTarget(CLIMODE_TARG_SKILL_MAGERY, pPrompt, pSpellDef->IsSpellType(SPELLFLAG_TARG_XYZ), pSpellDef->IsSpellType(SPELLFLAG_HARM), SpellTimeout);
+				break;
+			}
+			else
+			{
+				m_pChar->m_atMagery.m_Spell = SPELL_Summon;
+				m_pChar->m_atMagery.m_SummonID = static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, s.GetArgStr()));
+
+				if ( IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
+				{
+					m_pChar->Spell_CastDone();
+					break;
+				}
+				else
+				{
+					int skill;
+					if ( !pSpellDef->GetPrimarySkill(&skill, NULL) )
+						return false;
+
+					m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
+				}
+			}
+			break;
+		}
 		case CV_SMSG:
 		case CV_SYSMESSAGE:
 			SysMessage( s.GetArgStr() );

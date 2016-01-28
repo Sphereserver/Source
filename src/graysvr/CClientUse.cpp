@@ -648,32 +648,20 @@ void CClient::Cmd_EditItem( CObjBase *pObj, int iSelect )
 	addItemMenu(CLIMODE_MENU_EDIT, item, count, pObj);
 }
 
-bool CClient::Cmd_CreateItem( ITEMID_TYPE id, bool fStatic )
+bool CClient::Cmd_CreateItem( ITEMID_TYPE id )
 {
 	ADDTOCALLSTACK("CClient::Cmd_CreateItem");
-	// make an item near by.
+	// make an item near by (GM or script used only)
 	m_tmAdd.m_id = id;
-	m_tmAdd.m_fStatic = fStatic;
-	return addTargetItems(CLIMODE_TARG_ADDITEM, m_tmAdd.m_id);
+	return addTargetItems(CLIMODE_TARG_ADDITEM, static_cast<ITEMID_TYPE>(m_tmAdd.m_id));
 }
 
-bool CClient::Cmd_CreateChar( CREID_TYPE id, SPELL_TYPE iSpell, bool fPet )
+bool CClient::Cmd_CreateChar( CREID_TYPE id )
 {
 	ADDTOCALLSTACK("CClient::Cmd_CreateChar");
-	// make a creature near by. (GM or script used only)
-	// "ADDNPC"
-	// spell = SPELL_Summon
-
-	ASSERT(m_pChar);
-	m_tmSkillMagery.m_Spell = iSpell;		// m_atMagery.m_Spell
-	m_tmSkillMagery.m_SummonID = id;		// m_atMagery.m_SummonID
-	m_tmSkillMagery.m_fSummonPet = fPet;
-	if ( !m_Targ_PrvUID.IsValidUID() )
-		m_Targ_PrvUID = m_pChar->GetUID();	// what id this was already a scroll.
-
-	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(iSpell);
-	ASSERT(pSpellDef);
-	return addTargetChars(CLIMODE_TARG_SKILL_MAGERY, id, pSpellDef->IsSpellType(SPELLFLAG_HARM), g_Cfg.m_iSpellTimeout * TICK_PER_SEC);
+	// make a creature near by (GM or script used only)
+	m_tmAdd.m_id = id;
+	return addTargetChars(CLIMODE_TARG_ADDCHAR, id, false);
 }
 
 bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
@@ -967,16 +955,9 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase *pSrc )
 	m_Targ_UID = m_pChar->GetUID();		// Default target.
 	m_Targ_PrvUID = pSrc->GetUID();		// Source of the spell.
 
-	// Cast self
-	if ( !pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
+	switch ( iSpell )
 	{
-		m_pChar->m_Act_p = m_pChar->GetTopPoint();
-		m_pChar->m_Act_Targ = m_Targ_UID;
-		m_pChar->m_Act_TargPrv = m_Targ_PrvUID;
-		m_pChar->m_atMagery.m_Spell = iSpell;
-		m_Targ_p = m_pChar->GetTopPoint();
-
-		if ( iSpell == SPELL_Polymorph )
+		case SPELL_Polymorph:
 		{
 			if ( IsTrigUsed(TRIGGER_SKILLMENU) )
 			{
@@ -987,27 +968,6 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase *pSrc )
 			return Cmd_Skill_Menu(g_Cfg.ResourceGetIDType(RES_SKILLMENU, "sm_polymorph"));
 		}
 
-		// If NO PreCast -> Skill_Start()
-		if ( !IsSetMagicFlags(MAGICF_PRECAST) || pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
-		{
-			int skill;
-			if ( !pSpellDef->GetPrimarySkill(&skill, NULL) )
-				return false;
-
-			return m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
-		}
-		else
-		{
-			// But if we use PreCast use Spell_CastDone()
-			m_pChar->Spell_CastDone();
-			return true;
-		}
-	}
-
-	// We need a target!
-	LPCTSTR pPrompt = g_Cfg.GetDefaultMsg(DEFMSG_SELECT_MAGIC_TARGET);
-	switch ( iSpell )
-	{
 		case SPELL_Summon:
 		{
 			if ( IsTrigUsed(TRIGGER_SKILLMENU) )
@@ -1034,15 +994,41 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase *pSrc )
 			break;
 	}
 
-	if ( !pSpellDef->m_sTargetPrompt.IsEmpty() )
-		pPrompt = pSpellDef->m_sTargetPrompt;
-	
-	int SpellTimeout = g_Cfg.m_iSpellTimeout * TICK_PER_SEC;
-	if ( m_pChar->GetDefNum("SPELLTIMEOUT", true) )
-		SpellTimeout = static_cast<int>(m_pChar->GetDefNum("SPELLTIMEOUT", true));
+	// Targeted spells
+	if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
+	{
+		LPCTSTR pPrompt = g_Cfg.GetDefaultMsg(DEFMSG_SELECT_MAGIC_TARGET);
+		if ( !pSpellDef->m_sTargetPrompt.IsEmpty() )
+			pPrompt = pSpellDef->m_sTargetPrompt;
 
-	addTarget(CLIMODE_TARG_SKILL_MAGERY, pPrompt, pSpellDef->IsSpellType(SPELLFLAG_TARG_XYZ), pSpellDef->IsSpellType(SPELLFLAG_HARM), SpellTimeout);
-	return true;
+		int SpellTimeout = g_Cfg.m_iSpellTimeout * TICK_PER_SEC;
+		if ( m_pChar->GetDefNum("SPELLTIMEOUT", true) )
+			SpellTimeout = static_cast<int>(m_pChar->GetDefNum("SPELLTIMEOUT", true));
+
+		addTarget(CLIMODE_TARG_SKILL_MAGERY, pPrompt, pSpellDef->IsSpellType(SPELLFLAG_TARG_XYZ), pSpellDef->IsSpellType(SPELLFLAG_HARM), SpellTimeout);
+		return true;
+	}
+
+	// Non-targeted spells
+	m_pChar->m_Act_p = m_pChar->GetTopPoint();
+	m_pChar->m_Act_Targ = m_Targ_UID;
+	m_pChar->m_Act_TargPrv = m_Targ_PrvUID;
+	m_pChar->m_atMagery.m_Spell = iSpell;
+	m_Targ_p = m_pChar->GetTopPoint();
+
+	if ( IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
+	{
+		m_pChar->Spell_CastDone();
+		return true;
+	}
+	else
+	{
+		int skill;
+		if ( !pSpellDef->GetPrimarySkill(&skill, NULL) )
+			return false;
+
+		return m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
+	}
 }
 
 bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )

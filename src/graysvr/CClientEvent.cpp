@@ -2232,6 +2232,7 @@ void CClient::Event_Target(DWORD context, CGrayUID uid, CPointMap pt, BYTE flags
 		case CLIMODE_TARG_OBJ_FUNC:			OnTarg_Obj_Function( pTarget, pt, id );  break;
 
 		case CLIMODE_TARG_UNEXTRACT:		OnTarg_UnExtract( pTarget, pt ); break;
+		case CLIMODE_TARG_ADDCHAR:			OnTarg_Char_Add( pTarget, pt ); break;
 		case CLIMODE_TARG_ADDITEM:			OnTarg_Item_Add( pTarget, pt ); break;
 		case CLIMODE_TARG_LINK:				OnTarg_Item_Link( pTarget ); break;
 		case CLIMODE_TARG_TILE:				OnTarg_Tile( pTarget, pt );  break;

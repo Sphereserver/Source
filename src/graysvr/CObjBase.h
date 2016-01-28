@@ -2818,7 +2818,6 @@ public:
 		{
 			SPELL_TYPE m_Spell;			// ACTARG1 = Currently casting spell.
 			CREID_TYPE m_SummonID;		// ACTARG2 = A sub arg of the skill. (summoned type ?)
-			WORD m_fSummonPet;			// ACTARG3 = Check if the char is being created by an summon spell or GM using '.add' command
 		} m_atMagery;
 
 		// SKILL_ALCHEMY
@@ -3747,7 +3746,7 @@ private:
 	int Skill_Act_Training( SKTRIG_TYPE stage );
 
 	void Spell_Dispel( int iskilllevel );
-	CChar * Spell_Summon( CREID_TYPE id, CPointMap pt, bool fPet );
+	CChar * Spell_Summon( CREID_TYPE id, CPointMap pt );
 	bool Spell_Recall(CItem * pRune, bool fGate);
 	SPELL_TYPE Spell_GetIndex(SKILL_TYPE skill = SKILL_NONE);	//gets first spell for the magic skill given.
 	SPELL_TYPE Spell_GetMax(SKILL_TYPE skill = SKILL_NONE);	//gets first spell for the magic skill given.

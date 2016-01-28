@@ -2840,3 +2840,6 @@ Fixed: Polymorph spell and POLY function not working correctly.
 27-01-2015, Coruja
 Fixed: Items disappearing when players try equip it without have required STR.
 Fixed: LOWERREQ item property not working correctly.
+
+28-01-2015, Coruja
+Fixed: Summon Creature spell not working correctly.

@@ -299,50 +299,56 @@ bool CClient::OnTarg_UnExtract( CObjBase * pObj, const CPointMap & pt )
 	return true;
 }
 
-bool CClient::OnTarg_Item_Add( CObjBase * pObj, const CPointMap & pt )
+bool CClient::OnTarg_Char_Add( CObjBase * pObj, const CPointMap & pt )
 {
-	ADDTOCALLSTACK("CClient::OnTarg_Item_Add");
-	// CLIMODE_ADDITEM
-	// m_tmAdd.m_id = new item id
+	ADDTOCALLSTACK("CClient::OnTarg_Char_Add");
+	// CLIMODE_TARG_ADDCHAR
+	// m_tmAdd.m_id = char id
 	ASSERT(m_pChar);
 
 	if ( !pt.GetRegion(REGION_TYPE_AREA) )
 		return false;
+	if ( pObj && pObj->IsItemInContainer() )
+		return false;
 
-	CItem * pItem = CItem::CreateTemplate( m_tmAdd.m_id, NULL, m_pChar );
-	if ( pItem == NULL )
-		return( false );
-	if ( m_tmAdd.m_fStatic == 1)
-	{
-		// Lock this item down
-		pItem->SetAttr( ATTR_MOVE_NEVER );
-	}
+	CChar *pChar = CChar::CreateBasic(static_cast<CREID_TYPE>(m_tmAdd.m_id));
+	if ( !pChar )
+		return false;
+
+	pChar->NPC_LoadScript(false);
+	pChar->MoveToChar(pt);
+	pChar->NPC_CreateTrigger();		// removed from NPC_LoadScript() and triggered after char placement
+	pChar->Update();
+	pChar->UpdateAnimate(ANIM_CAST_DIR);
+	pChar->SoundChar(CRESND_GETHIT);
+	m_pChar->m_Act_Targ = pChar->GetUID();		// for last target stuff. (trigger stuff)
+	return true;
+}
+
+bool CClient::OnTarg_Item_Add( CObjBase * pObj, const CPointMap & pt )
+{
+	ADDTOCALLSTACK("CClient::OnTarg_Item_Add");
+	// CLIMODE_TARG_ADDITEM
+	// m_tmAdd.m_id = item id
+	ASSERT(m_pChar);
+
+	if ( !pt.GetRegion(REGION_TYPE_AREA) )
+		return false;
+	if ( pObj && pObj->IsItemInContainer() )
+		return false;
+
+	CItem *pItem = CItem::CreateTemplate(static_cast<ITEMID_TYPE>(m_tmAdd.m_id), NULL, m_pChar);
+	if ( !pItem )
+		return false;
 
 	if ( pItem->IsTypeMulti() )
 	{
-		CItem * pItemNew = OnTarg_Use_Multi( pItem->Item_GetDef(), pt, pItem->m_Attr, pItem->GetHue());
+		CItem *pMulti = OnTarg_Use_Multi(pItem->Item_GetDef(), pt, pItem->m_Attr, pItem->GetHue());
 		pItem->Delete();
-		if ( pItemNew == NULL )
-			return( false );
-		pItem = pItemNew;
-	}
-	else
-	{
-		if ( pObj &&
-			pObj->IsItemInContainer() &&
-			m_pChar->CanUse( STATIC_CAST<CItem*>(pObj), true ))
-		{
-			pItem->MoveNearObj( pObj );
-		}
-		else
-		{
-			CPointMap ptNew = pt;
-			ptNew.m_z ++;
-			pItem->MoveToCheck( ptNew, m_pChar );
-		}
+		return pMulti ? true : false;
 	}
 
-	m_pChar->m_Act_Targ = pItem->GetUID();	// for last target stuff. (trigger stuff)
+	pItem->MoveToCheck(pt, m_pChar);
 	return true;
 }
 
@@ -1435,20 +1441,8 @@ bool CClient::OnTarg_Skill_Magery( CObjBase * pObj, const CPointMap & pt )
 		}
 	}
 
-	if ( m_tmSkillMagery.m_Spell == SPELL_Polymorph )
-	{
-		if ( IsTrigUsed(TRIGGER_SKILLMENU) )
-		{
-			CScriptTriggerArgs args("sm_polymorph");
-			if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
-				return true;
-		}
-		return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_polymorph" ));
-	}
-
 	m_pChar->m_atMagery.m_Spell			= m_tmSkillMagery.m_Spell;
 	m_pChar->m_atMagery.m_SummonID		= m_tmSkillMagery.m_SummonID;
-	m_pChar->m_atMagery.m_fSummonPet	= m_tmSkillMagery.m_fSummonPet;
 
 	m_pChar->m_Act_TargPrv				= m_Targ_PrvUID;	// Source (wand or you?)
 	m_pChar->m_Act_Targ					= pObj ? (DWORD) pObj->GetUID() : UID_CLEAR ;
@@ -1803,13 +1797,12 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 	switch ( pItemUse->GetType() )
 	{
 	case IT_COMM_CRYSTAL:
-		if ( pItemTarg == NULL )
-			return( false );
-		if ( ! pItemTarg->IsType(IT_COMM_CRYSTAL))
-			return( false );
+		if ( !pItemTarg || !pItemTarg->IsType(IT_COMM_CRYSTAL) )
+			return false;
 		pItemUse->m_uidLink = pItemTarg->GetUID();
-		pItemUse->Speak( "Linked" );
-		return( true );
+		pItemUse->Speak("Linked");
+		pItemUse->ResendTooltip();
+		return true;
 
 	case IT_POTION:
 		// Use a potion on something else.
