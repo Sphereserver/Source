@@ -2549,7 +2549,7 @@ bool CChar::Spell_CastDone()
 		{
 			if (iC1)
 				m_atMagery.m_SummonID = iC1;
-			Spell_Summon(m_atMagery.m_SummonID, m_Act_p, m_atMagery.m_fSummonPet != 0);
+			Spell_Summon(m_atMagery.m_SummonID, m_Act_p);
 		}
 		else
 		{
