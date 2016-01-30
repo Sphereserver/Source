@@ -2779,8 +2779,8 @@ public:
 	{
 		short	m_base;
 		short	m_mod;			// signed for modifier
-		int		m_val;			// signed for karma
-		int		m_max;			// max
+		short	m_val;			// signed for karma
+		short	m_max;			// max
 		unsigned short m_regen;	// Tick time since last regen.
 	} m_Stat[STAT_QTY];
 
@@ -3131,12 +3131,12 @@ public:
 	void	Stat_SetMod( STAT_TYPE i, short iVal );
 	short	Stat_GetMod( STAT_TYPE i ) const;
 
-	void	Stat_SetVal( STAT_TYPE i, int iVal );
-	int		Stat_GetVal( STAT_TYPE i ) const;
+	void	Stat_SetVal( STAT_TYPE i, short iVal );
+	short	Stat_GetVal( STAT_TYPE i ) const;
 
-	void	Stat_SetMax( STAT_TYPE i, int iVal );
-	int		Stat_GetMax( STAT_TYPE i ) const;
-	int		Stat_GetSum() const;
+	void	Stat_SetMax( STAT_TYPE i, short iVal );
+	short	Stat_GetMax( STAT_TYPE i ) const;
+	short	Stat_GetSum() const;
 
 	short	Stat_GetLimit( STAT_TYPE i ) const;
 
@@ -3248,7 +3248,7 @@ public:
 	}
 
 	void UpdateStatsFlag() const;
-	void UpdateStatVal( STAT_TYPE x, int iChange = 0, int iLimit = 0 );
+	void UpdateStatVal( STAT_TYPE type, short iChange = 0, short iLimit = 0 );
 	void UpdateHitsFlag();
 	void UpdateModeFlag();
 	void UpdateManaFlag() const;
@@ -3926,7 +3926,7 @@ public:
 	bool Death();
 	bool Reveal( DWORD dwFlags = 0 );
 	void Jail( CTextConsole * pSrc, bool fSet, int iCell );
-	void EatAnim( LPCTSTR pszName, int iQty );
+	void EatAnim( LPCTSTR pszName, short iQty );
 	void CallGuards( CChar * pCriminal );
 
 	#define DEATH_NOFAMECHANGE 0x01
@@ -3951,8 +3951,8 @@ public:
 	LPCTSTR Guild_Abbrev( MEMORY_TYPE memtype ) const;
 	LPCTSTR Guild_AbbrevBracket( MEMORY_TYPE memtype ) const;
 
-	void Use_EatQty( CItem * pFood, int iQty = 1 );
-	bool Use_Eat( CItem * pItem, int iQty = 1 );
+	void Use_EatQty( CItem * pFood, short iQty = 1 );
+	bool Use_Eat( CItem * pItem, short iQty = 1 );
 	bool Use_MultiLockDown( CItem * pItemTarg );
 	void Use_CarveCorpse( CItemCorpse * pCorpse );
 	bool Use_Repair( CItem * pItem );

@@ -57,7 +57,7 @@ void CChar::Stat_AddMod( STAT_TYPE i, short iVal )
 	ASSERT(i >= 0 && i < STAT_QTY);
 	m_Stat[i].m_mod	+= iVal;
 
-	int iMaxValue = Stat_GetMax(i);		// make sure the current value is not higher than new max value
+	short iMaxValue = Stat_GetMax(i);		// make sure the current value is not higher than new max value
 	if ( m_Stat[i].m_val > iMaxValue )
 		m_Stat[i].m_val = iMaxValue;
 
@@ -68,7 +68,7 @@ void CChar::Stat_SetMod( STAT_TYPE i, short iVal )
 {
 	ADDTOCALLSTACK("CChar::Stat_SetMod");
 	ASSERT(i >= 0 && i < STAT_QTY);
-	int iStatVal = Stat_GetMod(i);
+	short iStatVal = Stat_GetMod(i);
 	if ( IsTrigUsed(TRIGGER_STATCHANGE) && !IsTriggerActive("CREATE") )
 	{
 		if ( i >= STAT_STR && i <= STAT_DEX )
@@ -85,7 +85,7 @@ void CChar::Stat_SetMod( STAT_TYPE i, short iVal )
 	}
 	m_Stat[i].m_mod = iVal;
 
-	int iMaxValue = Stat_GetMax(i);		// make sure the current value is not higher than new max value
+	short iMaxValue = Stat_GetMax(i);		// make sure the current value is not higher than new max value
 	if ( m_Stat[i].m_val > iMaxValue )
 		m_Stat[i].m_val = iMaxValue;
 
@@ -99,19 +99,19 @@ short CChar::Stat_GetMod( STAT_TYPE i ) const
 	return m_Stat[i].m_mod;
 }
 
-void CChar::Stat_SetVal( STAT_TYPE i, int iVal )
+void CChar::Stat_SetVal( STAT_TYPE i, short iVal )
 {
 	ADDTOCALLSTACK("CChar::Stat_SetVal");
 	if (i > STAT_BASE_QTY || i == STAT_FOOD) // Food must trigger Statchange. Redirect to Base value
 	{
-		Stat_SetBase(i, static_cast<short>(iVal));
+		Stat_SetBase(i, iVal);
 		return;
 	}
 	ASSERT(i >= 0 && i < STAT_QTY); // allow for food
 	m_Stat[i].m_val = iVal;
 }
 
-int CChar::Stat_GetVal( STAT_TYPE i ) const
+short CChar::Stat_GetVal( STAT_TYPE i ) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetVal");
 	if ( i > STAT_BASE_QTY || i == STAT_FOOD ) // Food must trigger Statchange. Redirect to Base value
@@ -121,7 +121,7 @@ int CChar::Stat_GetVal( STAT_TYPE i ) const
 }
 
 
-void CChar::Stat_SetMax( STAT_TYPE i, int iVal )
+void CChar::Stat_SetMax( STAT_TYPE i, short iVal )
 {
 	ADDTOCALLSTACK("CChar::Stat_SetMax");
 	ASSERT(i >= 0 && i < STAT_QTY); // allow for food
@@ -142,12 +142,12 @@ void CChar::Stat_SetMax( STAT_TYPE i, int iVal )
 				if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
 					return;
 				// do not restore argn1 to i, bad things will happen! leave it untouched. (matex)
-				iVal = static_cast<int>(args.m_iN3);
+				iVal = static_cast<short>(args.m_iN3);
 			}
 		}
 		m_Stat[i].m_max = iVal;
 
-		int iMaxValue = Stat_GetMax(i);		// make sure the current value is not higher than new max value
+		short iMaxValue = Stat_GetMax(i);		// make sure the current value is not higher than new max value
 		if ( m_Stat[i].m_val > iMaxValue )
 			m_Stat[i].m_val = iMaxValue;
 
@@ -160,10 +160,10 @@ void CChar::Stat_SetMax( STAT_TYPE i, int iVal )
 	}
 }
 
-int CChar::Stat_GetMax( STAT_TYPE i ) const
+short CChar::Stat_GetMax( STAT_TYPE i ) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetMax");
-	int	val;
+	short val;
 	ASSERT(i >= 0 && i < STAT_QTY); // allow for food
 	if ( m_Stat[i].m_max < 1 )
 	{
@@ -189,14 +189,14 @@ int CChar::Stat_GetMax( STAT_TYPE i ) const
 	return (val < 0 ? (m_pPlayer ? 1 : 0) : val);
 }
 
-int CChar::Stat_GetSum() const
+short CChar::Stat_GetSum() const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetSum");
-	int iStatSum = 0;
+	short iStatSum = 0;
 	for ( int i = 0; i < STAT_BASE_QTY; i++ )
 		iStatSum += Stat_GetBase(static_cast<STAT_TYPE>(i));
 
-	return( iStatSum );
+	return iStatSum;
 }
 
 short CChar::Stat_GetAdjusted( STAT_TYPE i ) const
@@ -296,7 +296,7 @@ void CChar::Stat_SetBase( STAT_TYPE i, short iVal )
 	
 	m_Stat[i].m_base = iVal;
 
-	int iMaxValue = Stat_GetMax(i);		// make sure the current value is not higher than new max value
+	short iMaxValue = Stat_GetMax(i);		// make sure the current value is not higher than new max value
 	if ( m_Stat[i].m_val > iMaxValue )
 		m_Stat[i].m_val = iMaxValue;
 

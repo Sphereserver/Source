@@ -1936,19 +1936,13 @@ effect_bounce:
 			if ( iDmgPhysical == 0 )		// if physical damage is not set, let's assume it as the remaining value
 				iDmgPhysical = 100 - (iDmgFire + iDmgCold + iDmgPoison + iDmgEnergy);
 
-			float iPhysicalDamage = iDmg * static_cast<float>(iDmgPhysical) / 100;
-			float iFireDamage = iDmg * static_cast<float>(iDmgFire) / 100;
-			float iColdDamage = iDmg * static_cast<float>(iDmgCold) / 100;
-			float iPoisonDamage = iDmg * static_cast<float>(iDmgPoison) / 100;
-			float iEnergyDamage = iDmg * static_cast<float>(iDmgEnergy) / 100;
+			int iPhysicalDamage = iDmg * iDmgPhysical * (100 - GetDefNum("RESPHYSICAL", true));
+			int iFireDamage = iDmg * iDmgFire * (100 - GetDefNum("RESFIRE", true));
+			int iColdDamage = iDmg * iDmgCold * (100 - GetDefNum("RESCOLD", true));
+			int iPoisonDamage = iDmg * iDmgPoison * (100 - GetDefNum("RESPOISON", true));
+			int iEnergyDamage = iDmg * iDmgEnergy * (100 - GetDefNum("RESENERGY", true));
 
-			iPhysicalDamage = iPhysicalDamage * (100 - GetDefNum("RESPHYSICAL", true)) / 100;
-			iFireDamage = iFireDamage * (100 - GetDefNum("RESFIRE", true)) / 100;
-			iColdDamage = iColdDamage * (100 - GetDefNum("RESCOLD", true)) / 100;
-			iPoisonDamage = iPoisonDamage * (100 - GetDefNum("RESPOISON", true)) / 100;
-			iEnergyDamage = iEnergyDamage * (100 - GetDefNum("RESENERGY", true)) / 100;
-
-			iDmg = static_cast<int>(iPhysicalDamage + iFireDamage + iColdDamage + iPoisonDamage + iEnergyDamage);
+			iDmg = (iPhysicalDamage + iFireDamage + iColdDamage + iPoisonDamage + iEnergyDamage) / 10000;
 		}
 		else
 		{
@@ -3524,7 +3518,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	if ( iDmg > 0 )
 	{
 		CItem *pCurseWeapon = LayerFind(LAYER_SPELL_Curse_Weapon);
-		int iHitLifeLeech = static_cast<int>(GetDefNum("HitLeechLife", true));
+		short iHitLifeLeech = static_cast<short>(GetDefNum("HitLeechLife", true));
 		if ( pWeapon && pCurseWeapon )
 			iHitLifeLeech += pCurseWeapon->m_itSpell.m_spelllevel;
 
@@ -3536,7 +3530,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			bMakeLeechSound = true;
 		}
 
-		int iHitManaLeech = static_cast<int>(GetDefNum("HitLeechMana", true));
+		short iHitManaLeech = static_cast<short>(GetDefNum("HitLeechMana", true));
 		if ( iHitManaLeech )
 		{
 			iHitManaLeech = Calc_GetRandVal2(0, (iDmg * iHitManaLeech * 40) / 10000);	// leech 0% ~ 40% of damage value
@@ -3550,7 +3544,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			bMakeLeechSound = true;
 		}
 
-		int iManaDrain = 0;
+		short iManaDrain = 0;
 		if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B )
 		{
 			CItem *pPoly = LayerFind(LAYER_SPELL_Polymorph);
@@ -3560,7 +3554,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( GetDefNum("HitManaDrain", true) > Calc_GetRandLLVal(100) )
 			iManaDrain += IMULDIV(iDmg, 20, 100);	// leech 20% of damage value
 
-		int iTargMana = pCharTarg->Stat_GetVal(STAT_INT);
+		short iTargMana = pCharTarg->Stat_GetVal(STAT_INT);
 		if ( iManaDrain > iTargMana )
 			iManaDrain = iTargMana;
 

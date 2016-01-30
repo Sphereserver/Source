@@ -834,7 +834,7 @@ bool CChar::Use_Repair( CItem * pItemArmor )
 	return fSuccess;
 }
 
-void CChar::Use_EatQty( CItem * pFood, int iQty )
+void CChar::Use_EatQty( CItem * pFood, short iQty )
 {
 	ADDTOCALLSTACK("CChar::Use_EatQty");
 	// low level eat
@@ -845,16 +845,16 @@ void CChar::Use_EatQty( CItem * pFood, int iQty )
 	if ( iQty > pFood->GetAmount() )
 		iQty = pFood->GetAmount();
 
-	int iRestore = 0;
+	short iRestore = 0;
 	if ( pFood->m_itFood.m_foodval )
-		iRestore = static_cast<int>(pFood->m_itFood.m_foodval);
+		iRestore = static_cast<short>(pFood->m_itFood.m_foodval);
 	else
 		iRestore = pFood->Item_GetDef()->GetVolume();	// some food should have more value than other !
 
 	if ( iRestore < 1 )
 		iRestore = 1;
 
-	int iSpace = Stat_GetMax(STAT_FOOD) - Stat_GetVal(STAT_FOOD);
+	short iSpace = Stat_GetMax(STAT_FOOD) - Stat_GetVal(STAT_FOOD);
 	if ( iSpace <= 0 )
 		return;
 
@@ -878,7 +878,7 @@ void CChar::Use_EatQty( CItem * pFood, int iQty )
 	pFood->ConsumeAmount(iQty);
 }
 
-bool CChar::Use_Eat( CItem * pItemFood, int iQty )
+bool CChar::Use_Eat( CItem * pItemFood, short iQty )
 {
 	ADDTOCALLSTACK("CChar::Use_Eat");
 	// What we can eat should depend on body type.

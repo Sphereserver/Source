@@ -501,11 +501,11 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 		if (iHitpointIncrease != 0)
 			Stat_SetMax(STAT_STR, Stat_GetMax(STAT_STR) - iHitpointIncrease);
 
-		int iStaminaIncrease = static_cast<int>(pItem->GetDefNum("BONUSSTAM", true, true));
+		short iStaminaIncrease = static_cast<short>(pItem->GetDefNum("BONUSSTAM", true, true));
 		if (iStaminaIncrease != 0)
 			Stat_SetMax(STAT_DEX, Stat_GetMax(STAT_DEX) - iStaminaIncrease);
 
-		int iManaIncrease = static_cast<int>(pItem->GetDefNum("BONUSMANA", true, true));
+		short iManaIncrease = static_cast<short>(pItem->GetDefNum("BONUSMANA", true, true));
 		if (iManaIncrease != 0)
 			Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) - iManaIncrease);
 
@@ -738,13 +738,13 @@ void CChar::UpdateRegenTimers(STAT_TYPE iStat, short iVal)
 	m_Stat[iStat].m_regen = iVal;
 }
 
-void CChar::UpdateStatVal( STAT_TYPE type, int iChange, int iLimit )
+void CChar::UpdateStatVal( STAT_TYPE type, short iChange, short iLimit )
 {
 	ADDTOCALLSTACK("CChar::UpdateStatVal");
-	int iValPrev = Stat_GetVal(type);
-	int iVal = iValPrev + iChange;
+	short iValPrev = Stat_GetVal(type);
+	short iVal = iValPrev + iChange;
 	if ( !iLimit )
-		iLimit = Stat_GetMax( type );
+		iLimit = Stat_GetMax(type);
 
 	if ( iVal < 0 )
 		iVal = 0;
@@ -1990,15 +1990,15 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 	if (iIntelligenceBonus != 0)
 		Stat_SetMod(STAT_INT, Stat_GetMod(STAT_INT) + iIntelligenceBonus);
 
-	int iHitpointIncrease = static_cast<int>(pItem->GetDefNum("BONUSHITS", true, true));
+	short iHitpointIncrease = static_cast<short>(pItem->GetDefNum("BONUSHITS", true, true));
 	if (iHitpointIncrease != 0)
 		Stat_SetMax(STAT_STR, Stat_GetMax(STAT_STR) + iHitpointIncrease);
 
-	int iStaminaIncrease = static_cast<int>(pItem->GetDefNum("BONUSSTAM", true, true));
+	short iStaminaIncrease = static_cast<short>(pItem->GetDefNum("BONUSSTAM", true, true));
 	if (iStaminaIncrease != 0)
 		Stat_SetMax(STAT_DEX, Stat_GetMax(STAT_DEX) + iStaminaIncrease);
 
-	int iManaIncrease = static_cast<int>(pItem->GetDefNum("BONUSMANA", true, true));
+	short iManaIncrease = static_cast<short>(pItem->GetDefNum("BONUSMANA", true, true));
 	if (iManaIncrease != 0)
 		Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) + iManaIncrease);
 
@@ -2051,7 +2051,7 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 // OnEat()
 // Generating eating animation
 // also calling @Eat and setting food's level (along with other possible stats 'local.hits',etc?)
-void CChar::EatAnim( LPCTSTR pszName, int iQty )
+void CChar::EatAnim( LPCTSTR pszName, short iQty )
 {
 	ADDTOCALLSTACK("CChar::EatAnim");
 	static const SOUND_TYPE sm_EatSounds[] = { 0x03a, 0x03b, 0x03c };
@@ -2061,14 +2061,14 @@ void CChar::EatAnim( LPCTSTR pszName, int iQty )
 		UpdateAnimate(ANIM_EAT);
 
 	TCHAR * pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EATSOME), static_cast<LPCTSTR>(pszName));
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EATSOME), pszName);
 	Emote(pszMsg);
 
-	int iHits = 0;
-	int iMana = 0;
-	int iStam = Calc_GetRandVal2(3, 6) + (iQty / 5);
-	int iFood = iQty;
-	int iStatsLimit = 0;
+	short iHits = 0;
+	short iMana = 0;
+	short iStam = Calc_GetRandVal2(3, 6) + (iQty / 5);
+	short iFood = iQty;
+	short iStatsLimit = 0;
 	if ( IsTrigUsed(TRIGGER_EAT) )
 	{
 		CScriptTriggerArgs Args;
@@ -2080,11 +2080,11 @@ void CChar::EatAnim( LPCTSTR pszName, int iQty )
 		if ( OnTrigger(CTRIG_Eat, this, &Args) == TRIGRET_RET_TRUE )
 			return;
 
-		iHits = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Hits", true)) + Stat_GetVal(STAT_STR);
-		iMana = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Mana", true)) + Stat_GetVal(STAT_INT);
-		iStam = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Stam", true)) + Stat_GetVal(STAT_DEX);
-		iFood = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Food", true)) + Stat_GetVal(STAT_FOOD);
-		iStatsLimit = static_cast<int>(Args.m_iN1);
+		iHits = static_cast<short>(Args.m_VarsLocal.GetKeyNum("Hits", true)) + Stat_GetVal(STAT_STR);
+		iMana = static_cast<short>(Args.m_VarsLocal.GetKeyNum("Mana", true)) + Stat_GetVal(STAT_INT);
+		iStam = static_cast<short>(Args.m_VarsLocal.GetKeyNum("Stam", true)) + Stat_GetVal(STAT_DEX);
+		iFood = static_cast<short>(Args.m_VarsLocal.GetKeyNum("Food", true)) + Stat_GetVal(STAT_FOOD);
+		iStatsLimit = static_cast<short>(Args.m_iN1);
 	}
 
 	if ( iHits )
@@ -3377,15 +3377,13 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 				{
 					if ( pNewArea->IsGuarded() )	// now under the protection
 					{
-						CVarDefContStr	*pVarStr = dynamic_cast <CVarDefContStr *>( pNewArea->m_TagDefs.GetKey("GUARDOWNER"));
-						SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_REGION_GUARDS_1 ),
-							( pVarStr != NULL ) ? static_cast<LPCTSTR>(pVarStr->GetValStr()) : g_Cfg.GetDefaultMsg( DEFMSG_MSG_REGION_GUARD_ART ) );
+						CVarDefContStr *pVarStr = dynamic_cast<CVarDefContStr *>(pNewArea->m_TagDefs.GetKey("GUARDOWNER"));
+						SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDS_1), (pVarStr != NULL) ? pVarStr->GetValStr() : g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARD_ART));
 					}
 					else							// have left the protection
 					{
-						CVarDefContStr	*pVarStr = dynamic_cast <CVarDefContStr *>( m_pArea->m_TagDefs.GetKey("GUARDOWNER"));
-						SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_REGION_GUARDS_2 ),
-							( pVarStr != NULL ) ? static_cast<LPCTSTR>(pVarStr->GetValStr()) : g_Cfg.GetDefaultMsg( DEFMSG_MSG_REGION_GUARD_ART ) );
+						CVarDefContStr *pVarStr = dynamic_cast<CVarDefContStr *>(m_pArea->m_TagDefs.GetKey("GUARDOWNER"));
+						SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDS_2), (pVarStr != NULL) ? pVarStr->GetValStr() : g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARD_ART));
 					}
 				}
 				if ( redNew != redOld )
