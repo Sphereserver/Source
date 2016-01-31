@@ -2845,5 +2845,6 @@ Fixed: LOWERREQ item property not working correctly.
 Fixed: Summon Creature spell not working correctly.
 
 31-01-2015, Coruja
+Fixed: Character stats gump (hits/mana/stam) showing wrong info for players on same party.
 Added: New function OPENTRADEWINDOW to start an trade window between 2 players (both clients must be in range and visible).
 	Usage: OPENTRADEWINDOW player_uid, item_uid (item uid is optional)

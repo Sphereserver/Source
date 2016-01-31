@@ -2246,11 +2246,14 @@ void CClient::addManaUpdate( CGrayUID uid )
 	if ( pChar == NULL )
 		return;
 
-	PacketManaUpdate cmd(pChar);
+	PacketManaUpdate cmd(pChar, true);
 	cmd.send(this);
 
 	if ( pChar->m_pParty )
-		pChar->m_pParty->AddStatsUpdate( pChar, &cmd );
+	{
+		PacketManaUpdate cmd2(pChar, false);
+		pChar->m_pParty->AddStatsUpdate(pChar, &cmd2);
+	}
 }
 
 void CClient::addStamUpdate( CGrayUID uid )
@@ -2260,11 +2263,14 @@ void CClient::addStamUpdate( CGrayUID uid )
 	if ( pChar == NULL )
 		return;
 
-	PacketStaminaUpdate cmd(pChar);
+	PacketStaminaUpdate cmd(pChar, true);
 	cmd.send(this);
 
 	if ( pChar->m_pParty )
-		pChar->m_pParty->AddStatsUpdate( pChar, &cmd );
+	{
+		PacketStaminaUpdate cmd2(pChar, false);
+		pChar->m_pParty->AddStatsUpdate(pChar, &cmd2);
+	}
 }
 
 void CClient::addHealthBarUpdate( const CChar * pChar )

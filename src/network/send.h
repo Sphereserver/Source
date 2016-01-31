@@ -1017,7 +1017,7 @@ public:
 class PacketManaUpdate : public PacketSend
 {
 public:
-	PacketManaUpdate(const CChar* character);
+	PacketManaUpdate(const CChar* character, bool full);
 };
 
 /***************************************************************************
@@ -1030,7 +1030,7 @@ public:
 class PacketStaminaUpdate : public PacketSend
 {
 public:
-	PacketStaminaUpdate(const CChar* character);
+	PacketStaminaUpdate(const CChar* character, bool full);
 };
 
 /***************************************************************************

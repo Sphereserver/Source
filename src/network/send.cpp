@@ -2904,17 +2904,15 @@ PacketHealthUpdate::PacketHealthUpdate(const CChar* character, bool full) : Pack
 
 	writeInt32(character->GetUID());
 
-	if (full == true)
+	if ( full )
 	{
 		writeInt16(static_cast<WORD>(character->Stat_GetMax(STAT_STR)));
 		writeInt16(static_cast<WORD>(character->Stat_GetVal(STAT_STR)));
 	}
 	else
 	{
-		int iMaxHits = maximum(character->Stat_GetMax(STAT_STR), 1);
-
-		writeInt16(50);
-		writeInt16(static_cast<WORD>((character->Stat_GetVal(STAT_STR) * 50) / iMaxHits));
+		writeInt16(100);
+		writeInt16(static_cast<WORD>((character->Stat_GetVal(STAT_STR) * 100) / maximum(character->Stat_GetMax(STAT_STR), 1)));
 	}
 }
 
@@ -2926,13 +2924,22 @@ PacketHealthUpdate::PacketHealthUpdate(const CChar* character, bool full) : Pack
  *
  *
  ***************************************************************************/
-PacketManaUpdate::PacketManaUpdate(const CChar* character) : PacketSend(XCMD_StatChngInt, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketManaUpdate::PacketManaUpdate(const CChar* character, bool full) : PacketSend(XCMD_StatChngInt, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketManaUpdate::PacketManaUpdate");
 
 	writeInt32(character->GetUID());
-	writeInt16(static_cast<WORD>(character->Stat_GetMax(STAT_INT)));
-	writeInt16(static_cast<WORD>(character->Stat_GetVal(STAT_INT)));
+
+	if ( full )
+	{
+		writeInt16(static_cast<WORD>(character->Stat_GetMax(STAT_INT)));
+		writeInt16(static_cast<WORD>(character->Stat_GetVal(STAT_INT)));
+	}
+	else
+	{
+		writeInt16(100);
+		writeInt16(static_cast<WORD>((character->Stat_GetVal(STAT_INT) * 100) / maximum(character->Stat_GetMax(STAT_INT), 1)));
+	}
 }
 
 
@@ -2943,13 +2950,22 @@ PacketManaUpdate::PacketManaUpdate(const CChar* character) : PacketSend(XCMD_Sta
  *
  *
  ***************************************************************************/
-PacketStaminaUpdate::PacketStaminaUpdate(const CChar* character) : PacketSend(XCMD_StatChngDex, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketStaminaUpdate::PacketStaminaUpdate(const CChar* character, bool full) : PacketSend(XCMD_StatChngDex, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketStaminaUpdate::PacketStaminaUpdate");
 
 	writeInt32(character->GetUID());
-	writeInt16(static_cast<WORD>(character->Stat_GetMax(STAT_DEX)));
-	writeInt16(static_cast<WORD>(character->Stat_GetVal(STAT_DEX)));
+
+	if ( full )
+	{
+		writeInt16(static_cast<WORD>(character->Stat_GetMax(STAT_DEX)));
+		writeInt16(static_cast<WORD>(character->Stat_GetVal(STAT_DEX)));
+	}
+	else
+	{
+		writeInt16(100);
+		writeInt16(static_cast<WORD>((character->Stat_GetVal(STAT_DEX) * 100) / maximum(character->Stat_GetMax(STAT_DEX), 1)));
+	}
 }
 
 
