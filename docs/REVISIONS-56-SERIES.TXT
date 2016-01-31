@@ -2843,3 +2843,7 @@ Fixed: LOWERREQ item property not working correctly.
 
 28-01-2015, Coruja
 Fixed: Summon Creature spell not working correctly.
+
+31-01-2015, Coruja
+Added: New function OPENTRADEWINDOW to start an trade window between 2 players (both clients must be in range and visible).
+	Usage: OPENTRADEWINDOW player_uid, item_uid (item uid is optional)

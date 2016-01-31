@@ -1246,8 +1246,30 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			}
 			if ( pChar )
 				addCharPaperdoll(pChar);
+			break;
 		}
-		break;
+
+		case CV_OPENTRADEWINDOW:
+		{
+			TCHAR *ppArgs[2];
+			Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
+
+			CChar *pChar = NULL;
+			CItem *pItem = NULL;
+			if ( ppArgs[0] )
+			{
+				CGrayUID uidChar = static_cast<CGrayUID>(Exp_GetVal(ppArgs[0]));
+				pChar = uidChar.CharFind();
+			}
+			if ( ppArgs[1] )
+			{
+				CGrayUID uidItem = static_cast<CGrayUID>(Exp_GetVal(ppArgs[1]));
+				pItem = uidItem.ItemFind();
+			}
+			if ( pChar )
+				Cmd_SecureTrade(pChar, pItem);
+			break;
+		}
 
 		case CV_PAGE:
 			Cmd_GM_PageCmd( s.GetArgStr());

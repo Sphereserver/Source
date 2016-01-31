@@ -1256,7 +1256,12 @@ bool CClient::Cmd_SecureTrade( CChar *pChar, CItem *pItem )
 {
 	ADDTOCALLSTACK("CClient::Cmd_SecureTrade");
 	// Begin secure trading with a char. (Make the initial offer)
-	if ( !pChar )
+	if ( !pChar || pChar == m_pChar )
+		return false;
+
+	// Make sure both clients can see each other, because trade window is an container
+	// and containers can be opened only after the object is already loaded on screen
+	if ( !m_pChar->CanSee(pChar) || !pChar->CanSee(m_pChar) )
 		return false;
 
 	if ( pItem && (IsTrigUsed(TRIGGER_DROPON_CHAR) || IsTrigUsed(TRIGGER_ITEMDROPON_CHAR)) )
