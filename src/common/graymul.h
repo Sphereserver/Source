@@ -1725,7 +1725,7 @@ enum SKILL_TYPE	// List of skill numbers (things that can be done at a given tim
 	SKILL_IMBUING,
 	SKILL_THROWING,
 	
-	SKILL_QTY,
+	SKILL_QTY = 99,
 
 	// Actions a npc will perform. (no need to track skill level for these)
 	NPCACT_FOLLOW_TARG = 100,	// 100 = following a char.
