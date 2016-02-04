@@ -456,6 +456,23 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 			m_iControls++;
 			return true;
 		}
+		case GUMPCTL_XMFHTMLTOK: // 9 = x y width height has_background has_scrollbar color cliloc_id @args
+		{
+			GET_RELATIVE(x, m_iOriginX);
+			GET_RELATIVE(y, m_iOriginY);
+			GET_ABSOLUTE(sX);
+			GET_ABSOLUTE(sY);
+			GET_ABSOLUTE(hasBack);
+			GET_ABSOLUTE(canScroll);
+			GET_ABSOLUTE(color);
+			GET_ABSOLUTE(cliloc);
+			SKIP_ALL(pszArgs);
+
+			m_sControls[m_iControls].Format("xmfhtmltok %d %d %d %d %d %d %d %d %s", x, y, sX, sY, hasBack, canScroll, color, cliloc, *pszArgs ? pszArgs : "");
+
+			m_iControls++;
+			return true;
+		}
 		default:
 			break;
 	}
