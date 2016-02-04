@@ -47,7 +47,7 @@ enum GUMPCTL_TYPE	// controls we can put in a gump.
 
 	GUMPCTL_XMFHTMLGUMP,		// 7 = x,y,sx,sy, cliloc(1003000) hasBack canScroll
 	GUMPCTL_XMFHTMLGUMPCOLOR,	// NEW: x,y,w,h ???
-	GUMPCTL_XMFHTMLTOK,			// new... syntax???
+	GUMPCTL_XMFHTMLTOK,			// 9 = x y width height has_background has_scrollbar color cliloc_id @args
 
 	GUMPCTL_QTY
 };
