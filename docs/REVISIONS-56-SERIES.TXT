@@ -2819,13 +2819,13 @@ Changed: Improved Detecting Hidden skill behavior.
 20-01-2016, Coruja
 Fixed: Console error when GM use commands to add objects on undefined regions.
 
-21-01-2015, Coruja
+21-01-2016, Coruja
 Added: Missing tame/bonded/summoned tooltips on NPCs.
 Fixed: t_spawn_item not saving/loading correctly spawned items.
 Fixed: Spawns (worldgem bit) not updating the tooltip when add/delete objects.
 Changed: Summon spells now will create NPCs with HOME and HOMEDIST=10 set by default.
 
-22-01-2015, Coruja
+22-01-2016, Coruja
 Added: New pet command '* unfriend'.
 Changed: Many improvements on pet commands engine.
 [sphere_speech.scp]: Added UNFRIEND line on speech lists.
@@ -2833,18 +2833,22 @@ Changed: Many improvements on pet commands engine.
 [sphere_spells.scp]: Removed 'spellflag_targ_xyz' from most summon spells. The only summon spells that uses target is Blade Spirits and Energy Vortex.
 [items/sphere_item_magic_spellweaving.scp]: Added missing color on i_spellbook_spellweaving.
 
-23-01-2015, Coruja
+23-01-2016, Coruja
 Fixed: Pets accepting items from its owner even when the owner can't access the pet backpack.
 Fixed: Polymorph spell and POLY function not working correctly.
 
-27-01-2015, Coruja
+27-01-2016, Coruja
 Fixed: Items disappearing when players try equip it without have required STR.
 Fixed: LOWERREQ item property not working correctly.
 
-28-01-2015, Coruja
+28-01-2016, Coruja
 Fixed: Summon Creature spell not working correctly.
 
-31-01-2015, Coruja
+31-01-2016, Coruja
 Fixed: Character stats gump (hits/mana/stam) showing wrong info for players on same party.
 Added: New function OPENTRADEWINDOW to start an trade window between 2 players (both clients must be in range and visible).
 	Usage: OPENTRADEWINDOW player_uid, item_uid (item uid is optional)
+
+05-02-2016, Vjaka
+Fixed: applied a patch by cbnolok fixing xmfhtmltok and sphere crashing on custom skils with index > 57.
+    Maximal skills has been set to 99
