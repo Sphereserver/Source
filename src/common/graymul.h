@@ -1724,8 +1724,11 @@ enum SKILL_TYPE	// List of skill numbers (things that can be done at a given tim
 	SKILL_MYSTICISM,
 	SKILL_IMBUING,
 	SKILL_THROWING,
-	
-	SKILL_QTY = 70,
+
+	/**
+	 * Skill level limit. Should not used directly, most cases are covered by g_Cfg.m_iMaxSkill instead
+	 */
+	SKILL_QTY = 99,
 
 	// Actions a npc will perform. (no need to track skill level for these)
 	NPCACT_FOLLOW_TARG = 100,	// 100 = following a char.

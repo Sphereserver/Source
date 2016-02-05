@@ -676,10 +676,10 @@ CItem *CChar::GetSpellbookRandom(SPELL_TYPE iSpell) const	// Retrieves a spellbo
 {
 	ADDTOCALLSTACK("CChar::GetSpellbook");
 	CItem *pBook = NULL;
-	CItem *pBooks[static_cast<int>(SKILL_QTY)];
+	CItem *pBooks[static_cast<int>(g_Cfg.m_iMaxSkill)];
 	// Search for suitable book in hands first
 	int count = 0;
-	for ( size_t i = 0; i < SKILL_QTY; i++ )
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
 		SKILL_TYPE skill = static_cast<SKILL_TYPE>(i);
 		CSkillDef *pSkillDef = g_Cfg.GetSkillDef(skill);

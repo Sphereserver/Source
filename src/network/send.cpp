@@ -1003,7 +1003,7 @@ PacketSkills::PacketSkills(const CClient* target, const CChar* character, SKILL_
 		else
 			writeByte(0x00);
 
-		for (size_t i = 0; i < SKILL_QTY; i++)
+		for (size_t i = 0; i < g_Cfg.m_iMaxSkill; i++)
 		{
 			if (g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) == false)
 				continue;
