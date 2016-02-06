@@ -396,7 +396,7 @@ SKILL_TYPE CChar::Skill_GetMagicRandom(unsigned short iVal)
 {
 	// Retrieves a random magic skill, if iVal is set it will only select from the ones with value > iVal
 	ADDTOCALLSTACK("CChar::Skill_GetMagicRandom");
-	SKILL_TYPE skills[g_Cfg.m_iMaxSkill];
+	SKILL_TYPE skills[SKILL_QTY];
 	int count = 0;
 	for ( char i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{

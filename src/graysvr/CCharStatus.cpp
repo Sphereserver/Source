@@ -676,7 +676,7 @@ CItem *CChar::GetSpellbookRandom(SPELL_TYPE iSpell) const	// Retrieves a spellbo
 {
 	ADDTOCALLSTACK("CChar::GetSpellbook");
 	CItem *pBook = NULL;
-	CItem *pBooks[static_cast<int>(g_Cfg.m_iMaxSkill)];
+	CItem *pBooks[static_cast<int>(SKILL_QTY)];
 	// Search for suitable book in hands first
 	int count = 0;
 	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
