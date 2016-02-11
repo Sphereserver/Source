@@ -399,7 +399,7 @@ LPCTSTR const CItem::sm_szTemplateTable[ITC_QTY+1] =
 	"ITEMNEWBIE",
 	"NEWBIESWAP",
 	"SELL",
-	NULL,
+	NULL
 };
 
 CItem * CItem::CreateTemplate( ITEMID_TYPE id, CObjBase * pCont, CChar * pSrc )	// static

@@ -315,7 +315,7 @@ bool CClient::OnTarg_Char_Add( CObjBase * pObj, const CPointMap & pt )
 	if ( !pChar )
 		return false;
 
-	pChar->NPC_LoadScript(false);
+	pChar->NPC_LoadScript(true);
 	pChar->MoveToChar(pt);
 	pChar->NPC_CreateTrigger();		// removed from NPC_LoadScript() and triggered after char placement
 	pChar->Update();
