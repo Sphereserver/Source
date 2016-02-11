@@ -2613,143 +2613,147 @@ void CClient::Event_UseToolbar(BYTE bType, DWORD dwArg)
 
 //----------------------------------------------------------------------
 
-void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName )
+void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR *pszName )
 {
 	ADDTOCALLSTACK("CClient::Event_ExtCmd");
+	if ( !m_pChar )
+		return;
 
-	if ( m_pChar )
+	if ( IsTrigUsed(TRIGGER_USEREXTCMD) )
 	{
-		if ( IsTrigUsed(TRIGGER_USEREXTCMD) )
-		{
-			CScriptTriggerArgs	Args( pszName );
-			Args.m_iN1	= type;
-			if ( m_pChar->OnTrigger( CTRIG_UserExtCmd, m_pChar, &Args ) == TRIGRET_RET_TRUE )
-				return;
-			strcpy( pszName, Args.m_s1 );
-		}
+		CScriptTriggerArgs Args(pszName);
+		Args.m_iN1 = type;
+		if ( m_pChar->OnTrigger(CTRIG_UserExtCmd, m_pChar, &Args) == TRIGRET_RET_TRUE )
+			return;
+		strcpy(pszName, Args.m_s1);
 	}
 
-	TCHAR * ppArgs[2];
-	Str_ParseCmds( pszName, ppArgs, COUNTOF(ppArgs), " " );
+	TCHAR *ppArgs[2];
+	Str_ParseCmds(pszName, ppArgs, COUNTOF(ppArgs), " ");
+
 	switch ( type )
 	{
-		case EXTCMD_OPEN_SPELLBOOK: // 67 = open spell book if we have one.
+		case EXTCMD_OPEN_SPELLBOOK:	// open spell book if we have one.
+		{
+			CItem *pBook = NULL;
+			switch ( ATOI(ppArgs[0]) )
 			{
-				if (m_pChar == NULL)
-					break;
-				CItem * pBook = m_pChar->GetSpellbook();
-				if ( pBook == NULL )
-				{
-					SysMessageDefault( DEFMSG_MSG_NOSPELLBOOK );
-					break;
-				}
-				// Must send proper context info or it will crash tha client.
-				// if ( pBook->GetParent() != m_pChar )
-				{
-					addItem( m_pChar->GetPackSafe());
-				}
-				addItem( pBook );
-				addSpellbookOpen( pBook );
+				default:
+				case 1:	pBook = m_pChar->GetSpellbook(SPELL_Clumsy);				break;	// magery
+				case 2:	pBook = m_pChar->GetSpellbook(SPELL_Animate_Dead_AOS);		break;	// necromancy
+				case 3:	pBook = m_pChar->GetSpellbook(SPELL_Cleanse_by_Fire);		break;	// paladin
+				case 4:	pBook = m_pChar->GetSpellbook(SPELL_Honorable_Execution);	break;	// bushido
+				case 5:	pBook = m_pChar->GetSpellbook(SPELL_Focus_Attack);			break;	// ninjitsu
+				case 6:	pBook = m_pChar->GetSpellbook(SPELL_Arcane_Circle);			break;	// spellweaving
+				case 7:	pBook = m_pChar->GetSpellbook(SPELL_Nether_Bolt);			break;	// mysticism
+				case 8:	pBook = m_pChar->GetSpellbook(SPELL_Inspire);				break;	// bard
 			}
-			break;
+			if ( pBook )
+				m_pChar->Use_Obj(pBook, true);
+			return;
+		}
 
-		case EXTCMD_ANIMATE: // Cmd_Animate
-			if (m_pChar == NULL)
-				break;
-			if ( !strcmpi( ppArgs[0],"bow"))
-				m_pChar->UpdateAnimate( ANIM_BOW );
-			else if ( ! strcmpi( ppArgs[0],"salute"))
-				m_pChar->UpdateAnimate( ANIM_SALUTE );
+		case EXTCMD_ANIMATE:
+		{
+			if ( !strcmpi(ppArgs[0], "bow") )
+				m_pChar->UpdateAnimate(ANIM_BOW);
+			else if ( !strcmpi(ppArgs[0], "salute") )
+				m_pChar->UpdateAnimate(ANIM_SALUTE);
 			else
-			{
-				DEBUG_ERR(( "%lx:Event Animate '%s'\n", GetSocketID(), ppArgs[0] ));
-			}
-			break;
+				DEBUG_ERR(("%lx:Event_ExtCmd Animate unk '%s'\n", GetSocketID(), ppArgs[0]));
+			return;
+		}
 
-		case EXTCMD_SKILL:			// Skill
-			Event_Skill_Use( (SKILL_TYPE) ATOI( ppArgs[0] ));
-			break;
+		case EXTCMD_SKILL:
+		{
+			Event_Skill_Use(static_cast<SKILL_TYPE>(ATOI(ppArgs[0])));
+			return;
+		}
 
-		case EXTCMD_AUTOTARG:	// bizarre new autotarget mode.
-			// "target x y z"
-			{
-				CGrayUID uid( ATOI( ppArgs[0] ));
-				CObjBase * pObj = uid.ObjFind();
-				if ( pObj )
-				{
-					DEBUG_ERR(( "%lx:Event Autotarget '%s' '%s'\n", GetSocketID(), pObj->GetName(), ppArgs[1] ));
-				}
-				else
-				{
-					DEBUG_ERR(( "%lx:Event Autotarget UNK '%s' '%s'\n", GetSocketID(), ppArgs[0], ppArgs[1] ));
-				}
-			}
-			break;
+		case EXTCMD_AUTOTARG:	// bizarre new autotarget mode. "target x y z"
+		{
+			CGrayUID uid = ATOI(ppArgs[0]);
+			CObjBase *pObj = uid.ObjFind();
+			if ( pObj )
+				DEBUG_ERR(("%lx:Event_ExtCmd AutoTarg '%s' '%s'\n", GetSocketID(), pObj->GetName(), ppArgs[1]));
+			else
+				DEBUG_ERR(("%lx:Event_ExtCmd AutoTarg unk '%s' '%s'\n", GetSocketID(), ppArgs[0], ppArgs[1]));
+			return;
+		}
 
-		case EXTCMD_CAST_MACRO:	// macro spell.
 		case EXTCMD_CAST_BOOK:	// cast spell from book.
-			if (m_pChar != NULL)
+		case EXTCMD_CAST_MACRO:	// macro spell.
+		{
+			SPELL_TYPE spell = static_cast<SPELL_TYPE>(ATOI(ppArgs[0]));
+			CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
+			if ( !pSpellDef )
+				return;
+
+			if ( IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
 			{
-				SPELL_TYPE spell = static_cast<SPELL_TYPE>(ATOI(ppArgs[0]));
-				const CSpellDef* pSpellDef = g_Cfg.GetSpellDef(spell);
-				if (pSpellDef == NULL)
+				int skill;
+				if ( !pSpellDef->GetPrimarySkill(&skill) )
 					return;
 
-				if ( IsSetMagicFlags( MAGICF_PRECAST ) && !pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ) )
-				{
-					int skill;
-					if (!pSpellDef->GetPrimarySkill(&skill, NULL))
-						return;
-
-					m_tmSkillMagery.m_Spell = spell;
-					m_pChar->m_atMagery.m_Spell = spell;	// m_atMagery.m_Spell
-					m_Targ_UID = m_pChar->GetUID();	// default target.
-					m_Targ_PrvUID = m_pChar->GetUID();
-					m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
-				}
-				else
-					Cmd_Skill_Magery(spell, m_pChar );
+				m_tmSkillMagery.m_Spell = spell;
+				m_pChar->m_atMagery.m_Spell = spell;
+				m_pChar->m_Act_p = m_pChar->GetTopPoint();
+				m_pChar->m_Act_Targ = m_Targ_UID;
+				m_pChar->m_Act_TargPrv = m_Targ_PrvUID;
+				m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
 			}
-			break;
+			else
+				Cmd_Skill_Magery(spell, m_pChar);
+			return;
+		}
 
-		case EXTCMD_DOOR_AUTO: // open door macro = Attempt to open a door around us.
-			if ( m_pChar && !m_pChar->IsStatFlag( STATF_DEAD ) )
+		case EXTCMD_DOOR_AUTO:	// open door macro
+		{
+			CPointMap pt = m_pChar->GetTopPoint();
+			signed char iCharZ = pt.m_z;
+
+			pt.Move(m_pChar->m_dirFace);
+			CWorldSearch Area(pt, 1);
+			for (;;)
 			{
-				CWorldSearch Area( m_pChar->GetTopPoint(), 3 );
-				for (;;)
-				{
-					CItem * pItem = Area.GetItem();
-					if ( pItem == NULL )
-						break;
-					switch ( pItem->GetType() )
-					{
-						case IT_PORT_LOCKED:	// Can only be trigered.
-						case IT_PORTCULIS:
-						case IT_DOOR_LOCKED:
-						case IT_DOOR:
-							m_pChar->Use_Obj( pItem, true );
-							return;
+				CItem *pItem = Area.GetItem();
+				if ( !pItem )
+					return;
 
-						default:
-							break;
-					}
+				switch ( pItem->GetType() )
+				{
+					case IT_DOOR:
+					case IT_DOOR_LOCKED:
+					case IT_PORTCULIS:
+					case IT_PORT_LOCKED:
+						if ( abs(iCharZ - pItem->GetTopPoint().m_z) < 20 )
+						{
+							m_pChar->SysMessageDefault(DEFMSG_MACRO_OPENDOOR);
+							m_pChar->Use_Obj(pItem, true);
+							return;
+						}
 				}
 			}
-			break;
+			return;
+		}
 
 		case EXTCMD_INVOKE_VIRTUE:
-			if ((m_pChar != NULL) && ( IsTrigUsed(TRIGGER_USERVIRTUEINVOKE) ))
-			{
-				int iVirtueID = ppArgs[0][0] - '0';	// 0x1=Honor, 0x2=Sacrifice, 0x3=Valor
-				CScriptTriggerArgs Args(m_pChar);
-				Args.m_iN1 = iVirtueID;
-				m_pChar->OnTrigger(CTRIG_UserVirtueInvoke, m_pChar, &Args);
-			}
-			break;
+		{
+			if ( !IsTrigUsed(TRIGGER_USERVIRTUEINVOKE) )
+				return;
+
+			int iVirtueID = ppArgs[0][0] - '0';		// 0x1=Honor, 0x2=Sacrifice, 0x3=Valor
+			CScriptTriggerArgs Args(m_pChar);
+			Args.m_iN1 = iVirtueID;
+			m_pChar->OnTrigger(CTRIG_UserVirtueInvoke, m_pChar, &Args);
+			return;
+		}
 
 		default:
-			DEBUG_ERR(( "%lx:Event_ExtCmd unk %d, '%s'\n", GetSocketID(), type, pszName ));
-			break;
+		{
+			DEBUG_ERR(("%lx:Event_ExtCmd unk %d, '%s'\n", GetSocketID(), type, pszName));
+			return;
+		}
 	}
 }
 
