@@ -2595,14 +2595,15 @@ int CChar::Skill_Hiding( SKTRIG_TYPE stage )
 
 	if ( stage == SKTRIG_SUCCESS )
 	{
-		ObjMessage( g_Cfg.GetDefaultMsg( DEFMSG_HIDING_SUCCESS ), this );
+		ObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_HIDING_SUCCESS), this);
+		StatFlag_Set(STATF_Hidden);
+		Reveal(STATF_Invisible);	// clear previous invisibility spell effect (this will not reveal the char because STATF_Hidden still set)
+		UpdateMode();
 		if ( IsClient() )
 		{
 			GetClient()->removeBuff( BI_HIDDEN );
 			GetClient()->addBuff( BI_HIDDEN , 1075655, 1075656 );
 		}
-		StatFlag_Set( STATF_Hidden );
-		UpdateMode();
 		return 0;
 	}
 

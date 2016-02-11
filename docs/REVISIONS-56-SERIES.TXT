@@ -2852,3 +2852,7 @@ Added: New function OPENTRADEWINDOW to start an trade window between 2 players (
 05-02-2016, Vjaka
 Fixed: applied a patch by cbnolok fixing xmfhtmltok and sphere crashing on custom skils with index > 57.
     Maximal skills has been set to 99
+
+11-02-2016, Coruja
+Fixed: Hiding skill not removing previous Invisibility spell effect on success.
+Fixed: Char STEPSTEALTH value being reseted to 0 when function REVEAL is called to clear a single flag but the char still invisible using other flags.

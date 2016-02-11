@@ -2136,7 +2136,6 @@ bool CChar::Reveal( DWORD dwFlags )
 		}
 	}
 
-	m_StepStealth = 0;
 	StatFlag_Clear(dwFlags);
 	CClient *pClient = GetClient();
 	if ( pClient )
@@ -2150,6 +2149,7 @@ bool CChar::Reveal( DWORD dwFlags )
 	if ( IsStatFlag(STATF_Invisible|STATF_Hidden|STATF_Insubstantial|STATF_Sleeping) )
 		return false;
 
+	m_StepStealth = 0;
 	UpdateMode(NULL, true);
 	SysMessageDefault(DEFMSG_HIDING_REVEALED);
 	return true;
