@@ -970,7 +970,7 @@ enum NOTO_TYPE
 #define MINCLIVER_ML				0x500000	// minimum client to activate ML packets (5.0.0a)
 #define MINCLIVER_SA				0x700000	// minimum client to activate SA packets (7.0.0.0)
 #define MINCLIVER_HS				0x700090	// minimum client to activate HS packets (7.0.9.0)
-#define MINCLIVER_TOL				0x700460	// minimum client to activate TOL packets (7.0.46.0)
+#define MINCLIVER_TOL				0x700460	// minimum client to activate TOL packets (7.0.45.65)
 
 // client versions (extended status gump info)
 #define MINCLIVER_STATUS_V2			0x300084	// minimum client to receive v2 of 0x11 packet (3.0.8d)
@@ -988,7 +988,7 @@ enum NOTO_TYPE
 #define MINCLIVER_CLOSEDIALOG		0x400040	// minimum client where close dialog does not trigger a client response
 #define MINCLIVER_COMPRESSDIALOG	0x500000	// minimum client to receive zlib compressed dialogs (5.0.0a)
 #define MINCLIVER_ITEMGRID			0x600017	// minimum client to use grid index (6.0.1.7)
-#define MINCLIVER_NEWSECURETRADE	0x700460	// minimum client to use virtual gold/platinum on trade window (7.0.46.0)
+#define MINCLIVER_NEWSECURETRADE	0x700460	// minimum client to use virtual gold/platinum on trade window (7.0.45.65)
 
 // client versions (packets)
 #define MAXCLIVER_REVERSEIP			0x400000	// maximum client to reverse ip in 0xA8 packet
@@ -1011,19 +1011,19 @@ enum NOTO_TYPE
 
 enum TALKMODE_TYPE	// Modes we can talk/bark in.
 {
-	TALKMODE_SYSTEM = 0,	// normal system message
-	TALKMODE_PROMPT,		// 1= Display as system prompt
-	TALKMODE_EMOTE,			// 2= :	*smiles* at object
-	TALKMODE_SAY,			// 3= A chacter speaking.
-	TALKMODE_OBJ,			// 4= At Object
-	TALKMODE_NOTHING,		// 5= Does not display
-	TALKMODE_ITEM,			// 6= text labeling an item. Preceeded by "You see"
-	TALKMODE_NOSCROLL,		// 7= As a status msg. Does not scroll
-	TALKMODE_WHISPER,		// 8= ;	only those close can here.
-	TALKMODE_YELL,			// 9= ! can be heard 2 screens away.
-	TALKMODE_SPELL,			// 10 = used by spells
-	TALKMODE_GUILD = 0xd,	// 13 = guild speech
-	TALKMODE_ALLIANCE,		// 14 = alliance speech
+	TALKMODE_SYSTEM = 0,	// 0 = Normal system message
+	TALKMODE_PROMPT,		// 1 = Display as system prompt
+	TALKMODE_EMOTE,			// 2 = *smiles* at object (client shortcut: :+space)
+	TALKMODE_SAY,			// 3 = A chacter speaking.
+	TALKMODE_OBJ,			// 4 = At object
+	TALKMODE_NOTHING,		// 5 = Does not display
+	TALKMODE_ITEM,			// 6 = text labeling an item. Preceeded by "You see"
+	TALKMODE_NOSCROLL,		// 7 = As a status msg. Does not scroll
+	TALKMODE_WHISPER,		// 8 = Only those close can here. (client shortcut: ;+space)
+	TALKMODE_YELL,			// 9 = Can be heard 2 screens away. (client shortcut: !+space)
+	TALKMODE_SPELL,			// 10 = Used by spells
+	TALKMODE_GUILD = 0xd,	// 13 = Used by guild chat (client shortcut: \)
+	TALKMODE_ALLIANCE,		// 14 = Used by alliance chat (client shortcut: shift+\)
 	TALKMODE_BROADCAST = 0xFF
 };
 

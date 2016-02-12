@@ -3493,7 +3493,7 @@ bool PacketHouseDesignBackup::onReceive(NetState* net)
 	if (house == NULL)
 		return true;
 
-	house->BackupStructure(client);
+	house->BackupStructure();
 	return true;
 }
 
@@ -3760,9 +3760,9 @@ bool PacketHouseDesignSwitch::onReceive(NetState* net)
 		return true;
 
 	skip(1); // 0x00
-	int level = readInt32();
+	DWORD level = readInt32();
 
-	house->SwitchToLevel(client, level);
+	house->SwitchToLevel(client, static_cast<unsigned char>(level));
 	return true;
 }
 

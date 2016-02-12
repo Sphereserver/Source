@@ -2507,9 +2507,9 @@ struct CUOMultiItemRec // (Multi.mul)
 	// Describe multi's like houses and boats. One single tile.
 	// From Multi.Idx and Multi.mul files.
 	WORD  m_wTileID;	// ITEMID_TYPE = Index to tile CUOItemTypeRec/CUOItemTypeRec2
-	short m_dx;		// signed delta.
-	short m_dy;
-	short m_dz;
+	signed short m_dx;	// signed delta.
+	signed short m_dy;
+	signed short m_dz;
 	DWORD m_visible;	// 0 or 1 (non-visible items are things like doors and signs)
 
 	ITEMID_TYPE GetDispID() const
@@ -2524,9 +2524,9 @@ struct CUOMultiItemRec2 // (Multi.mul, High Seas+)
 	// Describe multi's like houses and boats. One single tile.
 	// From Multi.Idx and Multi.mul files
 	WORD  m_wTileID;	// ITEMID_TYPE = Index to tile CUOItemTypeRec/CUOItemTypeRec2
-	short m_dx;			// signed delta.
-	short m_dy;
-	short m_dz;
+	signed short m_dx;	// signed delta.
+	signed short m_dy;
+	signed short m_dz;
 	DWORD m_visible;	// 0 or 1 (non-visible items are things like doors and signs)
 	DWORD m_unknown;	// unknown data
 
