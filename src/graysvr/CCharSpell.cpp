@@ -848,7 +848,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 		return;
 
 	WORD iStatEffect = pSpell->m_itSpell.m_spelllevel;
-	WORD iTimerEffect = static_cast<WORD>(pSpell->GetTimerAdjusted());
+	WORD iTimerEffect = static_cast<WORD>(maximum(pSpell->GetTimerAdjusted(), 0));
 
 	if (IsTrigUsed(TRIGGER_EFFECTADD))
 	{
@@ -864,10 +864,10 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 		else if (iRet == TRIGRET_RET_FALSE)		// return 0: we want the memory to be equipped but we want custom things to happen: don't remove memory but stop here,
 			return;
 	}
-	//Buffs related variables:
+
+	// Buffs related variables
 	TCHAR NumBuff[7][8];
 	LPCTSTR pNumBuff[7] = { NumBuff[0], NumBuff[1], NumBuff[2], NumBuff[3], NumBuff[4], NumBuff[5], NumBuff[6] };
-	//------------------------
 
 	switch (pSpellDef->m_idLayer)
 	{

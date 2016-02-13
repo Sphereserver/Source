@@ -57,7 +57,7 @@ void CClient::resendBuffs()
 			continue;
 
 		iStatEffect = pItem->m_itSpell.m_spelllevel;
-		iTimerEffect = static_cast<WORD>(pItem->GetTimerAdjusted());
+		iTimerEffect = static_cast<WORD>(maximum(pItem->GetTimerAdjusted(), 0));
 
 		switch ( pItem->m_itSpell.m_spell )
 		{

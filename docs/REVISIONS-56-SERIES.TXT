@@ -2858,3 +2858,6 @@ Fixed: Hiding skill not removing previous Invisibility spell effect on success.
 Fixed: Char STEPSTEALTH value being reseted to 0 when function REVEAL is called to clear a single flag but the char still invisible using other flags.
 Changed: Improved handling of 'Open Spellbook' and 'Open Door' client macro.
 [sphere_msgs.scp]: Added new message 'macro_opendoor' and removed 'msg_nospellbook', 'npc_generic_thanks', 'npc_pet_drop'
+
+13-02-2016, Coruja
+Fixed: Buff/Debuff bar showing wrong time left on spells memories using TIMER=-1.
