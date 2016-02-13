@@ -645,8 +645,8 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 		return;
 
 	difficulty *= 10;
-	if ( difficulty < 50 ) // SKills with values lower than 4.2 won't increase, setting them with a minimum of 5.0 for the gain checks.
-		difficulty = 50;
+	if ( difficulty < 1 )
+		difficulty = 1;
 	else if ( difficulty > 1000 )
 		difficulty = 1000;
 
@@ -679,8 +679,7 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 		return;
 	}
 
-	int iSkillAdj = iSkillLevelFixed + ( iSkillLevelFixed - difficulty );
-	INT64 iChance = pSkillDef->m_AdvRate.GetChancePercent( iSkillAdj );
+	INT64 iChance = pSkillDef->m_AdvRate.GetChancePercent(iSkillLevel);
 	INT64 iSkillMax = Skill_GetMax(skill);	// max advance for this skill.
 
 	CScriptTriggerArgs pArgs( 0 , iChance, iSkillMax);
