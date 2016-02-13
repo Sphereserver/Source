@@ -115,6 +115,7 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 	const CCharBase * otherDefinition = other->Char_GetDef();
 	ASSERT(otherDefinition != NULL);
 
+	BYTE version = 0;
 	bool canRename = (character != other && other->NPC_IsOwnedBy(character) && otherDefinition->GetHireDayWage() == 0 );
 
 	initLength();
@@ -128,7 +129,6 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 		writeInt16(static_cast<WORD>(other->Stat_GetMax(STAT_STR)));
 		writeBool(canRename);
 
-		BYTE version(0);
 		if (state->isClientVersion(MINCLIVER_STATUS_V6))
 			version = 6;
 		else if (state->isClientVersion(MINCLIVER_STATUS_V5))
@@ -141,17 +141,19 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 			version = 2;
 		else
 			version = 1;
-
-		int strength = other->Stat_GetAdjusted(STAT_STR);
-		if (strength < 0) strength = 0;
-
-		int dexterity = other->Stat_GetAdjusted(STAT_DEX);
-		if (dexterity < 0) dexterity = 0;
-
-		int intelligence = other->Stat_GetAdjusted(STAT_INT);
-		if (intelligence < 0) intelligence = 0;
-
 		writeByte(version);
+
+		short strength = other->Stat_GetAdjusted(STAT_STR);
+		if (strength < 0)
+			strength = 0;
+
+		short dexterity = other->Stat_GetAdjusted(STAT_DEX);
+		if (dexterity < 0)
+			dexterity = 0;
+
+		short intelligence = other->Stat_GetAdjusted(STAT_INT);
+		if (intelligence < 0)
+			intelligence = 0;
 
 		writeBool(otherDefinition->IsFemale());
 		writeInt16(static_cast<WORD>(strength));
@@ -263,29 +265,29 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
    Possible KR client status info... -Ben*/
 		if (target->GetNetState()->isClientKR() )
 		{
-			writeInt16((WORD)other->GetDefNum("INCREASEHITCHANCE", true, true));
-			writeInt16((WORD)other->GetDefNum("INCREASESWINGSPEED", true, true));
-			writeInt16((WORD)other->GetDefNum("INCREASEDAM", true, true));
-			writeInt16((WORD)other->GetDefNum("LOWERREAGENTCOST", true, true));
-			writeInt16((WORD)other->GetDefNum("REGENHITS", true, true));
-			writeInt16((WORD)other->GetDefNum("REGENSTAM", true, true));
-			writeInt16((WORD)other->GetDefNum("REGENMANA", true, true));
-			writeInt16((WORD)other->GetDefNum("REFLECTPHYSICALDAM", true, true));
-			writeInt16((WORD)other->GetDefNum("ENHANCEPOTIONS", true, true));
-			writeInt16((WORD)other->GetDefNum("INCREASEDEFCHANCE", true, true));
-			writeInt16((WORD)other->GetDefNum("INCREASESPELLDAM", true, true));
-			writeInt16((WORD)other->GetDefNum("FASTERCASTRECOVERY", true, true));
-			writeInt16((WORD)other->GetDefNum("FASTERCASTING", true, true));
-			writeInt16((WORD)other->GetDefNum("LOWERMANACOST", true, true));
-			writeInt16((WORD)other->GetDefNum("BONUSSTR", true, true));
-			writeInt16((WORD)other->GetDefNum("BONUSDEX", true, true));
-			writeInt16((WORD)other->GetDefNum("BONUSINT", true, true));
-			writeInt16((WORD)other->GetDefNum("BONUSHITS", true, true));
-			writeInt16((WORD)other->GetDefNum("BONUSSTAM", true, true));
-			writeInt16((WORD)other->GetDefNum("BONUSMANA", true, true));
-			writeInt16((WORD)other->GetDefNum("BONUSHITSMAX", true, true));
-			writeInt16((WORD)other->GetDefNum("BONUSSTAMMAX", true, true));
-			writeInt16((WORD)other->GetDefNum("BONUSMANAMAX", true, true));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEHITCHANCE", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASESWINGSPEED", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDAM", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERREAGENTCOST", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("REGENHITS", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("REGENSTAM", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("REGENMANA", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("REFLECTPHYSICALDAM", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("ENHANCEPOTIONS", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDEFCHANCE", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASESPELLDAM", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("FASTERCASTRECOVERY", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("FASTERCASTING", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERMANACOST", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSSTR", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSDEX", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSINT", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSHITS", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSSTAM", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSMANA", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSHITSMAX", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSSTAMMAX", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSMANAMAX", true, true)));
 		}
 	}
 	else
@@ -293,7 +295,7 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 		writeInt16(static_cast<WORD>((other->Stat_GetVal(STAT_STR) * 100) / maximum(other->Stat_GetMax(STAT_STR), 1)));
 		writeInt16(100);
 		writeBool(canRename);
-		writeByte(0);
+		writeByte(version);
 	}
 
 	push(target);
@@ -354,7 +356,7 @@ PacketItemWorld::PacketItemWorld(const CClient* target, CItem *item) : PacketSen
 	ADDTOCALLSTACK("PacketItemWorld::PacketItemWorld");
 
 	DWORD uid = item->GetUID();
-	long amount = ( item->GetAmount() > 1 ) ? item->GetAmount() : 0;
+	WORD amount = ( item->GetAmount() > 1 ) ? item->GetAmount() : 0;
 	ITEMID_TYPE id = item->GetDispID();
 	CPointMap p = item->GetTopPoint();
 	DIR_TYPE dir = DIR_N;
@@ -390,7 +392,7 @@ PacketItemWorld::PacketItemWorld(const CClient* target, CItem *item) : PacketSen
 	writeInt32(uid);
 	writeInt16(static_cast<WORD>(id));
 	if (amount > 0)
-		writeInt16(static_cast<WORD>(amount));
+		writeInt16(amount);
 	writeInt16(p.m_x);
 	writeInt16(p.m_y);
 	if (dir > 0)
@@ -404,7 +406,7 @@ PacketItemWorld::PacketItemWorld(const CClient* target, CItem *item) : PacketSen
 	push(target);
 }
 
-void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, long &amount, CPointMap &p, DIR_TYPE &dir, BYTE &flags, BYTE& light)
+void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, WORD &amount, CPointMap &p, DIR_TYPE &dir, BYTE &flags, BYTE& light)
 {
 	ADDTOCALLSTACK("PacketItemWorld::adjustItemData");
 
@@ -456,7 +458,6 @@ void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_
 	if (target->IsPriv(PRIV_DEBUG))
 	{
 		id = ITEMID_WorldGem;
-		p.m_z = character->GetTopZ();
 		amount = 0;
 		flags |= ITEMF_MOVABLE;
 	}
@@ -1145,7 +1146,8 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 				writeInt16(static_cast<WORD>(amount));
 				writeInt16(pos.m_x);
 				writeInt16(pos.m_y);
-				if (includeGrid)	writeByte(item->GetContainedGridIndex());
+				if (includeGrid)
+					writeByte(item->GetContainedGridIndex());
 				writeInt32(container->GetUID());
 				writeInt16(static_cast<WORD>(hue));
 				m_count++;
@@ -1208,7 +1210,8 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 				writeInt16(static_cast<WORD>(amount));
 				writeInt16(pos.m_x);
 				writeInt16(pos.m_y);
-				if (includeGrid)	writeByte(item->GetContainedGridIndex());
+				if (includeGrid)
+					writeByte(item->GetContainedGridIndex());
 				writeInt32(container->GetUID());
 				writeInt16(hue);
 				m_count++;
@@ -1254,7 +1257,8 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItem* spell
 		writeInt16(static_cast<WORD>(i));
 		writeInt16(0);
 		writeInt16(0);
-		if (includeGrid)	writeByte(static_cast<BYTE>(m_count));
+		if (includeGrid)
+			writeByte(static_cast<BYTE>(m_count));
 		writeInt32(spellbook->GetUID());
 		writeInt16(HUE_DEFAULT);
 
@@ -4677,7 +4681,7 @@ PacketBuff::PacketBuff(const CClient* target, const BUFF_ICONS iconId, const DWO
 	writeInt16(0x1);	// show
 
 	writeInt32(0);
-	writeInt16(maximum(time, 0));	//simple countdown without automatic remove
+	writeInt16(time);	//simple countdown without automatic remove
 	writeInt16(0);
 	writeByte(0);
 
@@ -4992,7 +4996,7 @@ PacketContainer::PacketContainer(const CClient* target, CObjBase** objects, size
 			CItem* item = dynamic_cast<CItem*>(object);
 			DataSource source = TileData;
 			DWORD uid = item->GetUID();
-			long amount = item->GetAmount();
+			WORD amount = item->GetAmount();
 			ITEMID_TYPE id = item->GetDispID();
 			CPointMap p = item->GetTopPoint();
 			DIR_TYPE dir = DIR_N;
@@ -5014,8 +5018,8 @@ PacketContainer::PacketContainer(const CClient* target, CObjBase** objects, size
 			writeInt32(uid);
 			writeInt16(static_cast<WORD>(id));
 			writeByte(static_cast<BYTE>(dir));
-			writeInt16(static_cast<WORD>(amount));
-			writeInt16(static_cast<WORD>(amount));
+			writeInt16(amount);
+			writeInt16(amount);
 			writeInt16(p.m_x);
 			writeInt16(p.m_y);
 			writeByte(p.m_z);
