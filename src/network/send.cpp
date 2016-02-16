@@ -4826,48 +4826,46 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : Pac
 {
 	ADDTOCALLSTACK("PacketItemWorldNew::PacketItemWorldNew");
 
-	DataSource source = TileData;
+	DataSource source;		// 0=Tiledata, 1=Character, 2=Multi
 	DWORD uid = item->GetUID();
-	long amount = item->GetAmount();
 	ITEMID_TYPE id = item->GetDispID();
-	CPointMap p = item->GetTopPoint();
 	DIR_TYPE dir = DIR_N;
+	WORD amount = item->GetAmount();
+	CPointMap pt = item->GetTopPoint();
 	HUE_TYPE hue = item->GetHue();
-	BYTE flags = 0;
 	BYTE light = 0;
+	BYTE flags = 0;
 
-	adjustItemData(target, item, id, hue, amount, p, dir, flags, light);
-	if (id == ITEMID_CORPSE)//dir is causing issues with corpse in this packet
-		dir = DIR_N;
+	adjustItemData(target, item, id, hue, amount, pt, dir, flags, light);
 
-	if (id >= ITEMID_MULTI)
+	if ( id >= ITEMID_MULTI )
 	{
-		id = static_cast<ITEMID_TYPE>(id - ITEMID_MULTI);
 		source = Multi;
+		id = static_cast<ITEMID_TYPE>(id & 0x3FFF);
 	}
-	else if (target->GetNetState()->isClientLessVersion(MINCLIVER_HS) && id >= ITEMID_MULTI_SA)
+	else
 	{
-		id = ITEMID_WorldGem;
+		source = TileData;
+		id = static_cast<ITEMID_TYPE>(id & 0xFFFF);
 	}
 
 	writeInt16(1);
-	writeByte(static_cast<BYTE>(source));// 0=tiledata,1=character,2=multi
+	writeByte(static_cast<BYTE>(source));
 	writeInt32(uid);
 	writeInt16(static_cast<WORD>(id));
 	writeByte(static_cast<BYTE>(dir));
-	writeInt16(static_cast<WORD>(amount));
-	writeInt16(static_cast<WORD>(amount));
-	writeInt16(p.m_x);
-	writeInt16(p.m_y);
-	writeByte(p.m_z);
+	writeInt16(amount);
+	writeInt16(amount);
+	writeInt16(pt.m_x & 0x7FFF);
+	writeInt16(pt.m_y & 0x3FFF);
+	writeByte(pt.m_z);
 	writeByte(light);
 	writeInt16(hue);
 	writeByte(flags);
 
-	if (target->GetNetState()->isClientVersion(MINCLIVER_HS))
-		// 0 = World Item, 1 = Player Item ( ?? why should a item on the ground be defined as player item? and what is the difference? )
-		writeInt16(0);
-	
+	if ( target->GetNetState()->isClientVersion(MINCLIVER_HS) )
+		writeInt16(0);		// 0 = World Item, 1 = Player Item (why should a item on the ground be defined as player item? and what is the difference?)
+
 	trim();
 	push(target);
 }
