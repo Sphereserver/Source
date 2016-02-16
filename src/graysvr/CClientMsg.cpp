@@ -2411,24 +2411,18 @@ int CClient::addShopItems(CChar * pVendor, LAYER_TYPE layer, bool bReal)
 	if ( bReal )
 	{
 		addContents(pContainer, false, false, true, false);
-		for (const CItem* item = pContainer->GetContentTail(); item != NULL && count < MAX_ITEMS_CONT; item = item->GetPrev())
+		for (const CItem* item = pContainer->GetContentHead(); item != NULL && count < MAX_ITEMS_CONT; item = item->GetNext())
 		{
 			addAOSTooltip(item, false, true);
 			count++;
 		}
-		if (GetNetState()->isClientSA())
-		{
-			PacketVendorBuyList* cmd = new PacketVendorBuyList();
-			count = cmd->fillContainer(pContainer, pVendor->NPC_GetVendorMarkup(m_pChar), count);
-			cmd->push(this);
-		}
 	}
 
-	if (!GetNetState()->isClientSA())
+	if ( (bReal && GetNetState()->isClientSA()) || !GetNetState()->isClientSA() )
 	{
 		int iConvertFactor = pVendor->NPC_GetVendorMarkup(m_pChar );
 		PacketVendorBuyList* cmd = new PacketVendorBuyList();
-		count = cmd->fillContainer(pContainer, iConvertFactor, bReal? MAX_ITEMS_CONT : 0);
+		count = cmd->fillContainer(pContainer, iConvertFactor, GetNetState()->isClientSA(), bReal? MAX_ITEMS_CONT : 0);
 		cmd->push(this);
 	}
 
@@ -3588,7 +3582,6 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 	{
 		if (bShop && GetNetState()->isClientSA())
 		{
-			new PacketPropertyListVersion(this, pObj, propertyList->getVersion());
 			new PacketPropertyList(this, propertyList);
 		}
 		else
