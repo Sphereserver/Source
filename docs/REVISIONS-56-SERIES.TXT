@@ -2865,3 +2865,9 @@ Fixed: Some skills not calling skillgain when action difficulty > skill value, m
 
 16-02-2016, Coruja
 Changed: Improved Sphere main timestamp engine.
+
+16-02-2016, Nolok
+Fixed: Ships moving but not updating the multi part on Enhanced Client with smooth sailing disabled.
+Changed: Removed useless screen updates when smooth sailing is on, making sailing more fluid.
+Fixed: Price of items sold by the vendor swapped on Enhanced Client.
+Changed: Removed useless packets sent when opening vendor sell gump on Enhanced Client.

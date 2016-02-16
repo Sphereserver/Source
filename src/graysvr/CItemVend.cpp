@@ -166,7 +166,7 @@ LONG CItemVendable::GetVendorPrice( int iConvertFactor )
 	//    0 = base price
 	// +100 = increase price by 100% (vendor selling to player?)
 
-	INT64 lPrice = m_price;
+	LONG lPrice = m_price;
 	if ( lPrice <= 0 )	// set on player vendor.
 	{
 		if ( lPrice == 0 )	// set a new randomized price for the item
@@ -184,7 +184,7 @@ LONG CItemVendable::GetVendorPrice( int iConvertFactor )
 				pItemDef = Item_GetDef();
 			}
 			lPrice = pItemDef->GetMakeValue(GetQuality());
-			m_price = static_cast<long>(-lPrice);
+			m_price = -lPrice;
 		}
 		else
 		{
@@ -198,7 +198,7 @@ LONG CItemVendable::GetVendorPrice( int iConvertFactor )
 	else if (lPrice <= 0)
 		return 0;
 	
-	return static_cast<long>(lPrice);
+	return lPrice;
 }
 
 bool CItemVendable::IsValidSaleItem( bool fBuyFromVendor ) const

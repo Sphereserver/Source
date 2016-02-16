@@ -1290,26 +1290,26 @@ void CClient::Event_VendorSell(CChar* pVendor, const VendorItem* items, size_t i
 			amount = pItem->GetAmount();
 		}
 
-		INT64 iPrice = (INT64)pItemSell->GetVendorPrice(iConvertFactor) * amount;
+		LONG lPrice = pItemSell->GetVendorPrice(iConvertFactor) * amount;
 
 
 		if (( IsTrigUsed(TRIGGER_SELL) ) || ( IsTrigUsed(TRIGGER_ITEMSELL) ))
 		{
-			CScriptTriggerArgs Args( amount, iPrice, pVendor );
+			CScriptTriggerArgs Args( amount, lPrice, pVendor );
 			if ( pItem->OnTrigger( ITRIG_Sell, this->GetChar(), &Args ) == TRIGRET_RET_TRUE )
 				continue;
 		}
 
 		// Can vendor afford this ?
-		if ( iPrice > pBank->m_itEqBankBox.m_Check_Amount )
+		if ( lPrice > pBank->m_itEqBankBox.m_Check_Amount )
 		{
 			fShortfall = true;
 			break;
 		}
-		pBank->m_itEqBankBox.m_Check_Amount -= static_cast<unsigned long>(iPrice);
+		pBank->m_itEqBankBox.m_Check_Amount -= static_cast<unsigned long>(lPrice);
 
 		// give them the appropriate amount of gold.
-		iGold += static_cast<int>(iPrice);
+		iGold += static_cast<int>(lPrice);
 
 		// Take the items from player.
 		// Put items in vendor inventory.
