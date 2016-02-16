@@ -2862,3 +2862,6 @@ Changed: Improved handling of 'Open Spellbook' and 'Open Door' client macro.
 13-02-2016, Coruja
 Fixed: Buff/Debuff bar showing wrong time left on spells memories using TIMER=-1.
 Fixed: Some skills not calling skillgain when action difficulty > skill value, making the skillgain chance always be 0%.
+
+16-02-2016, Coruja
+Changed: Improved Sphere main timestamp engine.

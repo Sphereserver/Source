@@ -282,8 +282,8 @@ class CWorldClock
 #endif
 
 private:
-	CServTime m_timeClock;		// the current relative tick time  (in TICK_PER_SEC)
-	DWORD  m_Clock_PrevSys;		// System time of the last OnTick(). (CLOCKS_PER_SEC)
+	CServTime m_timeClock;		// the current relative tick time (in TICK_PER_SEC)
+	INT64 m_Clock_SysPrev;		// System time of the last OnTick() (in CLOCKS_PER_SEC)
 public:
 	static const char *m_sClassName;
 	CWorldClock()
@@ -303,7 +303,7 @@ public:
 	{
 		return( m_timeClock );
 	}
-	static DWORD GetSystemClock();	// CLOCKS_PER_SEC
+	static INT64 GetSystemClock();		// CLOCKS_PER_SEC
 };
 
 class CTimedFunctionHandler

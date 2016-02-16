@@ -4,7 +4,7 @@
 #include "../network/send.h"
 
 #if !defined( _WIN32 )
-#include <sys/time.h>
+#include <time.h>
 #endif
 
 static const SOUND_TYPE sm_Sounds_Ghost[] =
@@ -1051,67 +1051,64 @@ void CWorldThread::GarbageCollection_UIDs()
 //////////////////////////////////////////////////////////////////
 // -CWorldClock
 
-DWORD CWorldClock::GetSystemClock() // static
+INT64 CWorldClock::GetSystemClock()
 {
 	ADDTOCALLSTACK("CWorldClock::GetSystemClock");
-	// CLOCKS_PER_SEC is the base units. clock_t shuld be the type but use DWORD instead.,
+	// CLOCKS_PER_SEC is the base unit
 #ifdef _WIN32
-	return( clock());
+	LARGE_INTEGER freq, time;
+	QueryPerformanceFrequency(&freq);
+	QueryPerformanceCounter(&time);
+	return (time.QuadPart * CLOCKS_PER_SEC) / freq.QuadPart;
 #else
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    DWORD TempTime;
-    TempTime = ((((tv.tv_sec - 912818000) * CLOCKS_PER_SEC) +
-		tv.tv_usec / CLOCKS_PER_SEC));
-	return (TempTime);
+	struct timespec ts;
+	clock_gettime(CLOCK_MONOTONIC, &ts);
+	return (ts.tv_sec * CLOCKS_PER_SEC) + (ts.tv_nsec / CLOCKS_PER_SEC);
 #endif
 }
 
 void CWorldClock::InitTime( INT64 lTimeBase )
 {
 	ADDTOCALLSTACK("CWorldClock::InitTime");
-	m_Clock_PrevSys = GetSystemClock();
+	m_Clock_SysPrev = GetSystemClock();
 	m_timeClock.InitTime(lTimeBase);
 }
 
 void CWorldClock::Init()
 {
 	ADDTOCALLSTACK("CWorldClock::Init");
-	m_Clock_PrevSys = GetSystemClock();
+	m_Clock_SysPrev = GetSystemClock();
 	m_timeClock.Init();
 }
 
 bool CWorldClock::Advance()
 {
 	ADDTOCALLSTACK("CWorldClock::Advance");
-	unsigned long Clock_Sys = GetSystemClock();	// get the system time.
+	INT64 Clock_Sys = GetSystemClock();
 
-	unsigned long iTimeSysDiff = Clock_Sys - m_Clock_PrevSys;
-	iTimeSysDiff = IMULDIVDOWN( TICK_PER_SEC, iTimeSysDiff, CLOCKS_PER_SEC );
-
-	if ( !iTimeSysDiff )
+	INT64 iTimeDiff = Clock_Sys - m_Clock_SysPrev;
+	iTimeDiff = IMULDIVDOWN(TICK_PER_SEC, iTimeDiff, CLOCKS_PER_SEC);
+	if ( !iTimeDiff )
 		return false;
-	else if ( iTimeSysDiff < 0 )	// assume this will happen sometimes.
+	else if ( iTimeDiff < 0 )
 	{
-		// This is normal. for daylight savings etc.
-
-		DEBUG_ERR(("WARNING:system clock 0%lxh overflow - recycle\n", Clock_Sys));
-		m_Clock_PrevSys = Clock_Sys;
-		// just wait til next cycle and we should be ok
+		// System clock has changed forward
+		// Just wait until next cycle and it should be ok
+		g_Log.Event(LOGL_WARN, "System clock has changed forward (daylight saving change, etc). This may cause strange behavior on some objects.\n", Clock_Sys);
+		m_Clock_SysPrev = Clock_Sys;
 		return false;
 	}
 
-	m_Clock_PrevSys = Clock_Sys;
-
-	CServTime Clock_New = m_timeClock + iTimeSysDiff;
+	m_Clock_SysPrev = Clock_Sys;
+	CServTime Clock_New = m_timeClock + iTimeDiff;
 
 	// CServTime is signed !
 	// NOTE: This will overflow after 7 or so years of run time !
-	if ( Clock_New < m_timeClock )	// should not happen! (overflow)
+	if ( Clock_New < m_timeClock )
 	{
-		//	Either TIME changed, or system lost hour as a daylight save. Not harmless
-		g_Log.Event(LOGL_WARN, "Clock overflow (daylight change in effect?), reset from 0%lld to 0%lld\n", m_timeClock.GetTimeRaw(), Clock_New.GetTimeRaw());
-		m_timeClock = Clock_New;	// this may cause may strange things.
+		// System clock has changed backward
+		g_Log.Event(LOGL_WARN, "System clock has changed backward (daylight saving change, etc). This may cause strange behavior on some objects.\n");
+		m_timeClock = Clock_New;
 		return false;
 	}
 
