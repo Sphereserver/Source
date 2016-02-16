@@ -142,32 +142,32 @@ size_t CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 		ppObjList[iCount++] = pChar;
 	}
 
-CWorldSearch AreaItem(GetTopPoint(), iMaxDist);
-AreaItem.SetSearchSquare(true);
-while (iCount < MAX_MULTI_LIST_OBJS)
-{
-	CItem * pItem = AreaItem.GetItem();
-	if (pItem == NULL)
-		break;
-	if (pItem == this)	// already listed.
-		continue;
-	if (!Multi_IsPartOf(pItem))
+	CWorldSearch AreaItem(GetTopPoint(), iMaxDist);
+	AreaItem.SetSearchSquare(true);
+	while (iCount < MAX_MULTI_LIST_OBJS)
 	{
-		if (!m_pRegion->IsInside2d(pItem->GetTopPoint()))
+		CItem * pItem = AreaItem.GetItem();
+		if (pItem == NULL)
+			break;
+		if (pItem == this)	// already listed.
 			continue;
-
-		//I guess we can allow items to be locked on the ships and still move... but disallow attr_static from moving
-		//if ( ! pItem->IsMovable() && !pItem->IsType(IT_CORPSE))
-		if (IsAttr(ATTR_STATIC))
-			continue;
-
-		int zdiff = pItem->GetTopZ() - iShipHeight;
-		if (zdiff < -2 || zdiff > PLAYER_HEIGHT)
-			continue;
+		if (!Multi_IsPartOf(pItem))
+		{
+			if (!m_pRegion->IsInside2d(pItem->GetTopPoint()))
+				continue;
+	
+			//I guess we can allow items to be locked on the ships and still move... but disallow attr_static from moving
+			//if ( ! pItem->IsMovable() && !pItem->IsType(IT_CORPSE))
+			if (IsAttr(ATTR_STATIC))
+				continue;
+	
+			int zdiff = pItem->GetTopZ() - iShipHeight;
+			if (zdiff < -2 || zdiff > PLAYER_HEIGHT)
+				continue;
+		}
+		ppObjList[iCount++] = pItem;
 	}
-	ppObjList[iCount++] = pItem;
-}
-return(iCount);
+	return(iCount);
 }
 
 bool CItemShip::Ship_MoveDelta(CPointBase pdelta)
