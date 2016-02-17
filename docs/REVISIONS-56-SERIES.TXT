@@ -2871,3 +2871,6 @@ Fixed: Ships moving but not updating the multi part on Enhanced Client with smoo
 Changed: Removed useless screen updates when smooth sailing is on, making sailing more fluid.
 Fixed: Price of items sold by the vendor swapped on Enhanced Client.
 Changed: Removed useless packets sent when opening vendor sell gump on Enhanced Client.
+
+17-02-2016, Nolok
+Fixed #2576: SpawnItem value is now readable under @Create trigger.
