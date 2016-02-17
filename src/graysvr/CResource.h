@@ -931,6 +931,7 @@ public:
 #define	NPC_AI_MOVEOBSTACLES	0x00200
 #define NPC_AI_PERSISTENTPATH	0x00400
 #define NPC_AI_THREAT			0x00800
+#define NPC_AI_OLDSPEED			0x01000		// Enable backwards MoveSpeed formula ()
 	int		m_iNpcAi;
 
 	//	Experience system

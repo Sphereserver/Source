@@ -2991,6 +2991,8 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 {
 	ADDTOCALLSTACK("CChar::CanMoveWalkTo");
 
+	if ( Can(CAN_C_NONMOVER) )
+		return NULL;
 	int iWeightLoadPercent = GetWeightLoadPercent(GetTotalWeight());
 	if ( !fCheckOnly )
 	{

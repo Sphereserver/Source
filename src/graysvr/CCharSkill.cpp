@@ -3530,6 +3530,7 @@ int CChar::Skill_Stroke( bool fResource )
 		args.m_VarsLocal.SetNum("Sound", sound);
 		args.m_VarsLocal.SetNum("Delay", delay);
 		args.m_VarsLocal.SetNum("Anim", anim);
+		args.m_iN1 = 1;	//UpdateDir() ?
 		if ( fResource )
 			args.m_VarsLocal.SetNum("Strokes", m_atResource.m_Stroke_Count);
 		else
@@ -3543,6 +3544,9 @@ int CChar::Skill_Stroke( bool fResource )
 		sound = static_cast<SOUND_TYPE>(args.m_VarsLocal.GetKeyNum("Sound", false));
 		delay = args.m_VarsLocal.GetKeyNum("Delay", true);
 		anim = static_cast<ANIM_TYPE>(args.m_VarsLocal.GetKeyNum("Anim", true));
+
+		if ( args.m_iN1 == 1 )
+			UpdateDir(m_Act_p);
 		if ( fResource )
 			m_atResource.m_Stroke_Count = static_cast<WORD>(args.m_VarsLocal.GetKeyNum("Strokes", false));
 		else
@@ -3586,10 +3590,7 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 			return Skill_Stroke(false);
 
 		if ( g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_GATHER) )
-		{
-			UpdateDir(m_Act_p);
 			return Skill_Stroke(true);
-		}
 	}
 
 	if ( g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_SCRIPTED) )

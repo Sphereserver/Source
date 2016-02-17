@@ -70,14 +70,14 @@ public:
 	}
 
 // Map Movement flags.
-#define CAN_C_GHOST			0x0001	// Moves thru doors etc.
-#define CAN_C_SWIM			0x0002	// dolphin, elemental or is water
-#define CAN_C_WALK			0x0004	// Can walk on land, climbed on walked over else Frozen by nature(Corpser) or can just swim
-#define CAN_C_PASSWALLS		0x0008	// Walk thru walls.
-#define CAN_C_FLY			0x0010	// Mongbat etc.
-#define CAN_C_FIRE_IMMUNE	0x0020	// Has some immunity to fire ? (will walk into it (lava))
-#define CAN_C_INDOORS		0x0040	// Can go under roof. Not really used except to mask.
-#define CAN_C_HOVER			0x0080	// Can hover.
+#define CAN_C_GHOST			0x00001	// Moves thru doors etc.
+#define CAN_C_SWIM			0x00002	// dolphin, elemental or is water
+#define CAN_C_WALK			0x00004	// Can walk on land, climbed on walked over else Frozen by nature(Corpser) or can just swim
+#define CAN_C_PASSWALLS		0x00008	// Walk thru walls.
+#define CAN_C_FLY			0x00010	// Mongbat etc.
+#define CAN_C_FIRE_IMMUNE	0x00020	// Has some immunity to fire ? (will walk into it (lava))
+#define CAN_C_INDOORS		0x00040	// Can go under roof. Not really used except to mask.
+#define CAN_C_HOVER			0x00080	// Can hover.
 
 #define CAN_I_DOOR			0x0001	// Is a door UFLAG4_DOOR
 #define CAN_I_WATER			0x0002	// Need to swim in it. UFLAG1_WATER
@@ -120,14 +120,15 @@ public:
 #define CAN_U_NONE			0x020
 
 	// CCharBase specific defs.
-#define CAN_C_EQUIP			0x0100	// Can equip stuff. (humanoid)
-#define CAN_C_USEHANDS		0x0200	// Can wield weapons (INT dependant), open doors ?, pick up/manipulate things
-#define CAN_C_MOUNT			0x0400	// can mount rides
-#define CAN_C_FEMALE		0x0800	// It is female by nature.
-#define CAN_C_NONHUMANOID	0x1000	// Body type for combat messages.
-#define CAN_C_RUN			0x2000	// Can run (not needed if they can fly)
-#define CAN_C_DCIGNORELOS	0x4000	// when dclicking sth., ignore LOS checks
-#define CAN_C_DCIGNOREDIST	0x8000	// when dclicking sth., ignore distance checks
+#define CAN_C_EQUIP			0x00100	// Can equip stuff. (humanoid)
+#define CAN_C_USEHANDS		0x00200	// Can wield weapons (INT dependant), open doors ?, pick up/manipulate things
+#define CAN_C_MOUNT			0x00400	// can mount rides
+#define CAN_C_FEMALE		0x00800	// It is female by nature.
+#define CAN_C_NONHUMANOID	0x01000	// Body type for combat messages.
+#define CAN_C_RUN			0x02000	// Can run (not needed if they can fly)
+#define CAN_C_DCIGNORELOS	0x04000	// when dclicking sth., ignore LOS checks
+#define CAN_C_DCIGNOREDIST	0x08000	// when dclicking sth., ignore distance checks
+#define CAN_C_NONMOVER		0x10000 // Just stay in place, avoid movement actions.
 
 public:
 	explicit CBaseBaseDef( RESOURCE_ID id ) :

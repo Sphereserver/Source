@@ -2969,6 +2969,10 @@ public:
 	{
 		return(( m_Can & wCan ) ? true : false );
 	}
+	bool Can( int wCan ) const
+	{
+		return( ( m_Can & static_cast< DWORD >( wCan ) ) ? true : false );
+	}
 	bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg );
 	bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg, DWORD dwArgResearch );
 

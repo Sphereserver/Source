@@ -745,6 +745,9 @@ int CChar::NPC_WalkToPoint( bool fRun )
 	//  0 = we are here.
 	//  1 = took the step.
 	//  2 = can't take this step right now. (obstacle)
+	if (Can(CAN_C_NONMOVER))
+		return 0;
+
 	int			iDex = Stat_GetAdjusted(STAT_DEX);
 	int			iInt = Stat_GetAdjusted(STAT_INT);
 	CPointMap	pMe = GetTopPoint();
@@ -1210,13 +1213,13 @@ bool CChar::NPC_LookAtCharHealer( CChar * pChar )
 	return true;
 }
 
+// I might want to go pickup this item ?
 bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 {
 	ADDTOCALLSTACK("CChar::NPC_LookAtItem");
-	// I might want to go pickup this item ?
 
-	CCharBase * pCharDef = Char_GetDef();
-	if ( !pCharDef->Can(CAN_C_USEHANDS) || !CanSee(pItem) )
+	// Checking if I can use hands (Can flags can be now changed in a single character, they are inheriting CCharBase::m_can automatically on CChar's constructor, no need to check CCharBase anymore).
+	if ( !Can(CAN_C_USEHANDS) || !CanSee(pItem) )
 		return false;
 
 	int iWantThisItem = NPC_WantThisItem(pItem);
@@ -1415,7 +1418,7 @@ bool CChar::NPC_LookAround( bool fForceCheckItems )
 		SoundChar( Calc_GetRandVal(2) ? CRESND_RAND1 : CRESND_RAND2 );
 	}
 
-	int iRange = UO_MAP_VIEW_SIZE;
+	int iRange = GetSight();
 	int iRangeBlur = UO_MAP_VIEW_SIGHT;
 
 	CCharBase * pCharDef = Char_GetDef();
@@ -1442,8 +1445,8 @@ bool CChar::NPC_LookAround( bool fForceCheckItems )
 			iRangeBlur /= 2;
 	}
 
-	// Lower the number of chars we look at if complex.
-	if ( pSector->GetCharComplexity() > (g_Cfg.m_iMaxCharComplexity / 2) )
+	// Lower the number of chars we look at.
+	if ( pSector->GetCharComplexity() > (g_Cfg.m_iMaxCharComplexity / 2) ) // if sector is to complex, lower our range to keep some performance.
 		iRange /= 4;
 
 	// Any interesting chars here ?
@@ -1506,6 +1509,8 @@ void CChar::NPC_Act_Wander()
 	// just wander aimlessly. (but within bounds)
 	// Stop wandering and re-eval frequently
 
+	if ( Can(CAN_C_NONMOVER) )
+		return;
 	if ( ! Calc_GetRandVal( 7 + ( Stat_GetVal(STAT_DEX) / 30 )))
 	{
 		// Stop wandering ?
@@ -1513,11 +1518,11 @@ void CChar::NPC_Act_Wander()
 		return;
 	}
 
-	if ( Calc_GetRandVal( 2 ) )
+	/*if ( Calc_GetRandVal( 2 ) )
 	{
 		if ( NPC_LookAround() )
 			return;
-	}
+	}*/
 
 	// Staggering Walk around.
 	m_Act_p = GetTopPoint();
@@ -1562,6 +1567,8 @@ bool CChar::NPC_Act_Follow( bool fFlee, int maxDistance, bool forceDistance )
 	ADDTOCALLSTACK("CChar::NPC_Act_Follow");
 	// Follow our target or owner. (m_Act_Targ) we may be fighting.
 	// false = can't follow any more. give up.
+	if ( Can(CAN_C_NONMOVER) )
+		return false;
 
 	EXC_TRY("NPC_Act_Follow")
 	CChar * pChar = Fight_IsActive() ? m_Fight_Targ.CharFind() : m_Act_Targ.CharFind();
