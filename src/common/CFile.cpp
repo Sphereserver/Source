@@ -179,10 +179,12 @@ CGString CGFile::GetMergedFileName( LPCTSTR pszBase, LPCTSTR pszName ) // static
 	{
 		strcpy( szFilePath, pszBase );
 		int len = static_cast<int>(strlen( szFilePath ));
-		if ( len && szFilePath[ len-1 ] != '\\' &&
-			szFilePath[ len-1 ] != '/' )	// Might be LINUX
-		{
-			strcat( szFilePath, "\\" );
+		if (len && szFilePath[len - 1] != '\\' && szFilePath[len - 1] != '/') {
+#ifdef _WIN32
+			strcat(szFilePath, "\\");
+#else
+			strcat(szFilePath, "/");
+#endif
 		}
 	}
 	else
