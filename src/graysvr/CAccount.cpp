@@ -550,8 +550,7 @@ CAccount::CAccount( LPCTSTR pszName, bool fGuest )
 		SetPrivLevel(PLEVEL_Guest);
 	else
 		SetPrivLevel(PLEVEL_Player);
-	
-	m_ResDisp = static_cast<unsigned char>(g_Cfg.m_iAutoResDisp);
+
 	m_PrivFlags = static_cast<WORD>(g_Cfg.m_iAutoPrivFlags);
 	m_MaxChars = 0;
 
@@ -658,7 +657,7 @@ size_t CAccount::AttachChar( CChar * pChar )
 		size_t iQty = m_Chars.GetCharCount();
 		if ( iQty > MAX_CHARS_PER_ACCT )
 		{
-			g_Log.Event( LOGM_ACCOUNTS|LOGL_ERROR, "Account '%s' has %" FMTSIZE_T " characters\n", static_cast<LPCTSTR>(GetName()), iQty );
+			g_Log.Event( LOGM_ACCOUNTS|LOGL_ERROR, "Account '%s' has %" FMTSIZE_T " characters\n", GetName(), iQty );
 		}
 	}
 
@@ -713,7 +712,7 @@ void CAccount::OnLogin( CClient * pClient )
 		// link the admin client.
 		g_Serv.m_iAdminClients++;
 	}
-	g_Log.Event( LOGM_CLIENTS_LOG, "%lx:Login '%s'\n", pClient->GetSocketID(), static_cast<LPCTSTR>(GetName()));
+	g_Log.Event( LOGM_CLIENTS_LOG, "%lx:Login '%s'\n", pClient->GetSocketID(), GetName());
 }
 
 void CAccount::OnLogout(CClient *pClient, bool bWasChar)
@@ -749,7 +748,7 @@ bool CAccount::Kick( CTextConsole * pSrc, bool fBlock )
 	if ( fBlock )
 	{
 		SetPrivFlags( PRIV_BLOCKED );
-		pSrc->SysMessagef( g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BLOCK), static_cast<LPCTSTR>(GetName()) );
+		pSrc->SysMessagef( g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BLOCK), GetName() );
 	}
 
 	LPCTSTR pszAction = fBlock ? "KICK" : "DISCONNECT";
@@ -1004,6 +1003,31 @@ void CAccount::SetNewPassword( LPCTSTR pszPassword )
 		m_sNewPassword.SetLength(MAX_ACCOUNT_PASSWORD_ENTER);
 }
 
+// Set account RESDISP automatically based on player client version
+bool CAccount::SetAutoResDisp(CClient *pClient)
+{
+	ADDTOCALLSTACK("CAccount::SetAutoResDisp");
+	if ( !pClient )
+		return false;
+
+	if ( pClient->GetNetState()->isClientVersion(MINCLIVER_TOL) )
+		return SetResDisp(RDS_TOL);
+	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_HS) )
+		return SetResDisp(RDS_HS);
+	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_SA) )
+		return SetResDisp(RDS_SA);
+	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_ML) )
+		return SetResDisp(RDS_ML);
+	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_SE) )
+		return SetResDisp(RDS_SE);
+	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_AOS) )
+		return SetResDisp(RDS_AOS);
+	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_LBR) )
+		return SetResDisp(RDS_LBR);
+	else
+		return SetResDisp(RDS_T2A);
+}
+
 enum AC_TYPE
 {
 	AC_ACCOUNT,
@@ -1225,12 +1249,12 @@ bool CAccount::r_LoadVal( CScript & s )
 				CChar * pChar = uid.CharFind();
 				if (pChar == NULL)
 				{
-					DEBUG_ERR(( "Invalid CHARUID 0%lx for account '%s'\n", static_cast<DWORD>(uid), static_cast<LPCTSTR>(GetName())));
+					DEBUG_ERR(( "Invalid CHARUID 0%lx for account '%s'\n", static_cast<DWORD>(uid), GetName()));
 					return( false );
 				}
 				if ( ! IsMyAccountChar( pChar ))
 				{
-					DEBUG_ERR(( "CHARUID 0%lx (%s) not attached to account '%s'\n", static_cast<DWORD>(uid), static_cast<LPCTSTR>(pChar->GetName()), static_cast<LPCTSTR>(GetName())));
+					DEBUG_ERR(( "CHARUID 0%lx (%s) not attached to account '%s'\n", static_cast<DWORD>(uid), pChar->GetName(), GetName()));
 					return( false );
 				}
 				AttachChar(pChar);
@@ -1306,7 +1330,7 @@ bool CAccount::r_LoadVal( CScript & s )
 			}
 			break;
 		case AC_RESDISP:
-			SetResDisp(static_cast<unsigned char>(s.GetArgVal()));
+			SetResDisp(static_cast<BYTE>(s.GetArgVal()));
 			break;
 		case AC_TAG0:
 			{
@@ -1354,7 +1378,7 @@ void CAccount::r_Write(CScript &s)
 	{
 		s.WriteKeyHex( "PRIV", m_PrivFlags &~( PRIV_BLOCKED | PRIV_JAILED ));
 	}
-	if ( GetResDisp() != g_Cfg.m_iAutoResDisp )
+	if ( GetResDisp() )
 	{
 		s.WriteKeyVal( "RESDISP", GetResDisp() );
 	}

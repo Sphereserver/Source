@@ -203,18 +203,12 @@ bool CChar::CanCarry( const CItem *pItem ) const
 	if ( IsPriv(PRIV_GM) )
 		return true;
 
-	const CObjBaseTemplate *pObjTop = pItem->GetTopLevelObj();
-	if ( pObjTop == this )
-	{
-		// We are already carrying it ?
-		if ( GetTotalWeight() > g_Cfg.Calc_MaxCarryWeight(this) )
-			return false;
-	}
-	else
-	{
-		if ( GetTotalWeight() + pItem->GetWeight() > g_Cfg.Calc_MaxCarryWeight(this) )
-			return false;
-	}
+	int iItemWeight = pItem->GetWeight();
+	if ( pItem->GetEquipLayer() == LAYER_DRAGGING )		// if we're dragging the item, its weight is already added on char so don't count it again
+		iItemWeight = 0;
+
+	if ( GetTotalWeight() + iItemWeight > g_Cfg.Calc_MaxCarryWeight(this) )
+		return false;
 
 	return true;
 }
@@ -230,6 +224,9 @@ LAYER_TYPE CChar::CanEquipLayer( CItem *pItem, LAYER_TYPE layer, CChar *pCharMsg
 	ASSERT(pCharDef);
 	ASSERT(pItem);
 
+	if ( pItem->IsType(IT_SPELL) )	// spell memory conflicts are handled by CChar::Spell_Effect_Create()
+		return layer;
+
 	const CItemBase *pItemDef = pItem->Item_GetDef();
 	if ( layer >= LAYER_QTY )
 	{
@@ -237,7 +234,7 @@ LAYER_TYPE CChar::CanEquipLayer( CItem *pItem, LAYER_TYPE layer, CChar *pCharMsg
 		if ( pItemDef->IsTypeEquippable() && CItemBase::IsVisibleLayer(layer) )
 		{
 			// Test only on players or if requested
-			if ( (m_pPlayer || fTest) && pItemDef->m_ttEquippable.m_StrReq && (Stat_GetAdjusted(STAT_STR) < pItemDef->m_ttEquippable.m_StrReq - pItemDef->m_BaseDefs.GetKeyNum("LOWERREQ", true) - m_BaseDefs.GetKeyNum("LOWERREQ", true)) )
+			if ( (m_pPlayer || fTest) && pItemDef->m_ttEquippable.m_StrReq && (Stat_GetAdjusted(STAT_STR) < pItemDef->m_ttEquippable.m_StrReq * (100 - pItem->GetDefNum("LOWERREQ", true, true)) / 100) )
 			{
 				if ( m_pPlayer )	// message only players
 				{
@@ -364,9 +361,6 @@ LAYER_TYPE CChar::CanEquipLayer( CItem *pItem, LAYER_TYPE layer, CChar *pCharMsg
 			case LAYER_HAIR:
 				if ( !fTest )
 					pItemPrev->Delete();
-				break;
-			case LAYER_SPELL_STATS:			// already handled by CChar::Spell_Effect_Create()
-			case LAYER_SPELL_Blood_Oath:
 				break;
 			default:
 			{
@@ -685,7 +679,7 @@ CItem *CChar::GetSpellbookRandom(SPELL_TYPE iSpell) const	// Retrieves a spellbo
 	CItem *pBooks[static_cast<int>(SKILL_QTY)];
 	// Search for suitable book in hands first
 	int count = 0;
-	for ( size_t i = 0; i < SKILL_QTY; i++ )
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
 		SKILL_TYPE skill = static_cast<SKILL_TYPE>(i);
 		CSkillDef *pSkillDef = g_Cfg.GetSkillDef(skill);

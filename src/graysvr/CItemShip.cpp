@@ -142,85 +142,81 @@ size_t CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 		ppObjList[iCount++] = pChar;
 	}
 
-	CWorldSearch AreaItem( GetTopPoint(), iMaxDist );
-	AreaItem.SetSearchSquare( true );
-	while ( iCount < MAX_MULTI_LIST_OBJS )
+	CWorldSearch AreaItem(GetTopPoint(), iMaxDist);
+	AreaItem.SetSearchSquare(true);
+	while (iCount < MAX_MULTI_LIST_OBJS)
 	{
 		CItem * pItem = AreaItem.GetItem();
-		if ( pItem == NULL )
+		if (pItem == NULL)
 			break;
-		if ( pItem == this )	// already listed.
+		if (pItem == this)	// already listed.
 			continue;
-		if ( ! Multi_IsPartOf( pItem ))
+		if (!Multi_IsPartOf(pItem))
 		{
-			if ( ! m_pRegion->IsInside2d( pItem->GetTopPoint()))
+			if (!m_pRegion->IsInside2d(pItem->GetTopPoint()))
 				continue;
-
+	
 			//I guess we can allow items to be locked on the ships and still move... but disallow attr_static from moving
 			//if ( ! pItem->IsMovable() && !pItem->IsType(IT_CORPSE))
-			if ( IsAttr(ATTR_STATIC) )
+			if (IsAttr(ATTR_STATIC))
 				continue;
-
+	
 			int zdiff = pItem->GetTopZ() - iShipHeight;
-			if ( zdiff < -2 || zdiff > PLAYER_HEIGHT )
+			if (zdiff < -2 || zdiff > PLAYER_HEIGHT)
 				continue;
 		}
 		ppObjList[iCount++] = pItem;
 	}
-	return( iCount );
+	return(iCount);
 }
 
-bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
+bool CItemShip::Ship_MoveDelta(CPointBase pdelta)
 {
 	ADDTOCALLSTACK("CItemShip::Ship_MoveDelta");
 	// Move the ship one space in some direction.
 
-	ASSERT( m_pRegion->m_iLinkedSectors );
+	ASSERT(m_pRegion->m_iLinkedSectors);
 
 	int znew = GetTopZ() + pdelta.m_z;
-	if ( pdelta.m_z > 0 )
+	if (pdelta.m_z > 0)
 	{
-		if ( znew >= (UO_SIZE_Z - PLAYER_HEIGHT )-1 )
-			return( false );
+		if (znew >= (UO_SIZE_Z - PLAYER_HEIGHT) - 1)
+			return(false);
 	}
-	else if ( pdelta.m_z < 0 )
+	else if (pdelta.m_z < 0)
 	{
-		if ( znew <= (UO_SIZE_MIN_Z + 3 ))
-			return( false );
+		if (znew <= (UO_SIZE_MIN_Z + 3))
+			return(false);
 	}
 
 	// Move the ship and everything on the deck
-	CObjBase * ppObjs[MAX_MULTI_LIST_OBJS+1];
-	size_t iCount = Ship_ListObjs( ppObjs );
+	CObjBase * ppObjs[MAX_MULTI_LIST_OBJS + 1];
+	size_t iCount = Ship_ListObjs(ppObjs);
 
-	for ( size_t i = 0; i < iCount; i++ )
+	for (size_t i = 0; i < iCount; i++)
 	{
 		CObjBase * pObj = ppObjs[i];
 		if (!pObj) continue;
 		CPointMap pt = pObj->GetTopPoint();
-		CPointMap ptOld(pt);
-
 		pt += pdelta;
-		pt.m_map = pObj->GetTopPoint().m_map;
-		if ( ! pt.IsValidPoint())  // boat goes out of bounds !
+
+		if (!pt.IsValidPoint())  // boat goes out of bounds !
 		{
-			DEBUG_ERR(( "Ship uid=0%lx out of bounds\n", (DWORD) GetUID()));
+			DEBUG_ERR(("Ship uid=0%lx out of bounds\n", (DWORD)GetUID()));
 			continue;
 		}
-
 		pObj->MoveTo(pt);
-
 	}
 
 	ClientIterator it;
 	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
 		CChar * tMe = pClient->GetChar();
-		if ( tMe == NULL )
+		if (tMe == NULL)
 			continue;
 
 		BYTE tViewDist = static_cast<unsigned char>(tMe->GetSight());
-		for ( size_t i = 0; i < iCount; i++ )
+		for (size_t i = 0; i < iCount; i++)
 		{
 			CObjBase * pObj = ppObjs[i];
 			if (!pObj) continue; //no object anymore? skip!
@@ -231,7 +227,7 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 			//Remove objects that just moved out of sight
 			if ((tMe->GetTopPoint().GetDistSight(pt) >= tViewDist) && (tMe->GetTopPoint().GetDistSight(ptOld) < tViewDist))
 			{
-				pClient->addObjectRemove( pObj );
+				pClient->addObjectRemove(pObj);
 				continue; //no need to keep going. skip!
 			}
 
@@ -239,39 +235,42 @@ bool CItemShip::Ship_MoveDelta( CPointBase pdelta )
 			{
 				if (pObj == this) //This is the ship (usually the first item in the list)
 				{
-					if ((pClient->GetNetState()->isClientVersion(MINCLIVER_HS) || pClient->GetNetState()->isClientSA()) && !IsSetOF(OF_NoSmoothSailing))
+					if (pClient->GetNetState()->isClientVersion(MINCLIVER_HS) || pClient->GetNetState()->isClientSA())
 					{
-						CPointMap ptdir = GetTopPoint();
-						ptdir += pdelta;
-
-						new PacketMoveShip(pClient, this, ppObjs, iCount, m_itShip.m_DirMove, m_itShip.m_DirFace, Multi_GetDef()->m_SpeedMode);
-
-						//Client is on Ship
-						if (tMe->GetRegion()->GetResourceID().GetObjUID() == GetUID())
+						if (!IsSetOF(OF_NoSmoothSailing))
 						{
-							pt = tMe->GetTopPoint();
-							pt -= pdelta;
-							pClient->addPlayerSeeShip( pt );
-							if (pClient->GetNetState()->isClientSA())
-								new PacketPlayerPosition(pClient);
-							break; //skip to next client
+							new PacketMoveShip(pClient, this, ppObjs, iCount, m_itShip.m_DirMove, m_itShip.m_DirFace, Multi_GetDef()->m_SpeedMode);
+
+							//If client is on Ship
+							if (tMe->GetRegion()->GetResourceID().GetObjUID() == GetUID())
+							{
+								pClient->addPlayerSeeShip(tMe->GetTopPoint());
+								break; //skip to next client
+							}
 						}
+						else if (pClient->GetNetState()->isClientSA())
+							pClient->addObjectRemove(pObj);	//it will be added again in the if clause below
 					}
 				}
 				if (pObj->IsItem())
 				{
-					CItem *pItem = dynamic_cast <CItem *>(pObj);
-					if ((tMe->GetTopPoint().GetDistSight(pt) < tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) >= tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HS) || pClient->GetNetState()->isClientSA()) || IsSetOF(OF_NoSmoothSailing)))
+					if ((tMe->GetTopPoint().GetDistSight(pt) < tViewDist)
+						&& ( (tMe->GetTopPoint().GetDistSight(ptOld) >= tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HS) || pClient->GetNetState()->isClientSA()) || IsSetOF(OF_NoSmoothSailing) ))
+					{
+						CItem *pItem = dynamic_cast <CItem *>(pObj);
 						pClient->addItem(pItem);
+					}
+						
 				}
 				else
 				{
 					CChar *pChar = dynamic_cast <CChar *>(pObj);
 					if (pClient == pChar->GetClient())
 						pClient->addPlayerView( ptOld );
-					else if ((tMe->GetTopPoint().GetDistSight(pt) <= tViewDist) && ((tMe->GetTopPoint().GetDistSight(ptOld) > tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HS) || pClient->GetNetState()->isClientSA()) || IsSetOF(OF_NoSmoothSailing)))
+					else if ((tMe->GetTopPoint().GetDistSight(pt) <= tViewDist)
+						&& ( (tMe->GetTopPoint().GetDistSight(ptOld) > tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HS) || pClient->GetNetState()->isClientSA()) || IsSetOF(OF_NoSmoothSailing) ))
 					{
-						if ((pt.GetDist(ptOld) > 1) && (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HS)) && (pChar->GetTopPoint().GetDistSight(ptOld) < tViewDist))
+						if ( (pt.GetDist(ptOld) > 1) && (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HS)) && (pChar->GetTopPoint().GetDistSight(ptOld) < tViewDist) )
 							pClient->addCharMove( pChar );
 						else
 						{

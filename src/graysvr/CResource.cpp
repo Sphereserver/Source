@@ -125,7 +125,7 @@ CResource::CResource()
 	m_iHitsUpdateRate	= TICK_PER_SEC;
 	m_iSpeedScaleFactor	= 80000;
 	m_iCombatFlags		= 0;
-	m_iCombatSpeedEra	= 2;	// default = 4 = SE
+	m_iCombatSpeedEra	= 3;
 	m_iMagicFlags		= 0;
 	m_iMaxPolyStats		= 150;
 	m_iRacialFlags		= 0;
@@ -139,7 +139,7 @@ CResource::CResource()
 	m_iDistanceTalk		= UO_MAP_VIEW_SIZE;
 	m_iOptionFlags		= (OF_Command_Sysmsgs|OF_NoHouseMuteSpeech);
 
-	m_iMaxSkill			= SKILL_SCRIPTED;
+	m_iMaxSkill			= SKILL_QTY;
 	m_iWalkBuffer		= 75;
 	m_iWalkRegen		= 25;
 	m_iWoolGrowthTime	= 30*60*TICK_PER_SEC;
@@ -173,7 +173,7 @@ CResource::CResource()
 	m_iNpcAi = 0;
 	m_iMaxLoopTimes = 100000;
 
-	m_iAutoResDisp = RDS_TOL;
+	m_bAutoResDisp = true;
 	m_iAutoPrivFlags = PRIV_DETAIL;
 
 	// Third Party Tools
@@ -377,7 +377,7 @@ enum RC_TYPE
 	RC_ATTACKINGISACRIME,		// m_fAttackingIsACrime
 	RC_AUTONEWBIEKEYS,			// m_fAutoNewbieKeys
 	RC_AUTOPRIVFLAGS,			// m_iAutoPrivFlags
-	RC_AUTORESDISP,				// m_iAutoResDisp
+	RC_AUTORESDISP,				// m_bAutoResDisp
 	RC_AUTOTOOLTIPRESEND,		// m_iAutoTooltipResend
 	RC_BACKUPLEVELS,			// m_iSaveBackupLevels
 	RC_BANKMAXITEMS,
@@ -489,7 +489,6 @@ enum RC_TYPE
 	RC_MAXSECTORCOMPLEXITY,		// m_iMaxSectorComplexity
 	RC_MAXSHIPPLANKTELEPORT,	// m_iMaxShipPlankTeleport
 	RC_MAXSIZEPERTICK,			// m_iNetMaxLengthPerTick
-	RC_MAXSKILL,
 	RC_MD5PASSWORDS,			// m_fMd5Passwords
 	RC_MEDIUMCANHEARGHOSTS,		// m_iMediumCanHearGhosts
 	RC_MINCHARDELETETIME,
@@ -606,7 +605,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "ATTACKINGISACRIME",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fAttackingIsACrime),	0 }},
 	{ "AUTONEWBIEKEYS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fAutoNewbieKeys),		0 }},
 	{ "AUTOPRIVFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iAutoPrivFlags),		0 }},
-	{ "AUTORESDISP",			{ ELEM_INT,		OFFSETOF(CResource,m_iAutoResDisp),			0 }},
+	{ "AUTORESDISP",			{ ELEM_BOOL,	OFFSETOF(CResource,m_bAutoResDisp),			0 }},
 	{ "AUTOTOOLTIPRESEND",		{ ELEM_INT,		OFFSETOF(CResource,m_iAutoTooltipResend),	0 }},
 	{ "BACKUPLEVELS",			{ ELEM_INT,		OFFSETOF(CResource,m_iSaveBackupLevels),	0 }},
 	{ "BANKMAXITEMS",			{ ELEM_INT,		OFFSETOF(CResource,m_iBankIMax),			0 }},
@@ -718,7 +717,6 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "MAXSECTORCOMPLEXITY",	{ ELEM_INT,		OFFSETOF(CResource,m_iMaxSectorComplexity),	0 }},
 	{ "MAXSHIPPLANKTELEPORT",	{ ELEM_INT,		OFFSETOF(CResource,m_iMaxShipPlankTeleport),0 }},
 	{ "MAXSIZEPERTICK",			{ ELEM_INT,		OFFSETOF(CResource,m_iNetMaxLengthPerTick),	0 }},
-	{ "MAXSKILL",				{ ELEM_INT,		OFFSETOF(CResource,m_iMaxSkill),			0 }},
 	{ "MD5PASSWORDS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fMd5Passwords),		0 }},
 	{ "MEDIUMCANHEARGHOSTS",	{ ELEM_INT,		OFFSETOF(CResource,m_iMediumCanHearGhosts),	0 }},
 	{ "MINCHARDELETETIME",		{ ELEM_INT,		OFFSETOF(CResource,m_iMinCharDeleteTime),	0 }},
@@ -948,9 +946,6 @@ bool CResource::r_LoadVal( CScript &s )
 
 		return(false);
 	}
-
-	if ( i == RC_MAXSKILL && !g_Serv.IsLoading() )
-		return false;
 
 	switch (i)
 	{
@@ -2714,7 +2709,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			}
 			else
 			{
-				if ( rid.GetResIndex() >= SKILL_MAX )
+				if ( rid.GetResIndex() >= g_Cfg.m_iMaxSkill )
 					g_Cfg.m_iMaxSkill = rid.GetResIndex() + 1;
 
 				// Just replace any previous CSkillDef

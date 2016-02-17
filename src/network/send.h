@@ -126,7 +126,7 @@ protected:
 public:
 	PacketItemWorld(const CClient* target, CItem* item);
 
-	void adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, long &amount, CPointMap &p, DIR_TYPE &dir, BYTE &flags, BYTE &light);
+	void adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, WORD &amount, CPointMap &p, DIR_TYPE &dir, BYTE &flags, BYTE &light);
 
 	virtual bool onSend(const CClient* client);
 };
@@ -173,14 +173,14 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0x20 : PacketPlayerPosition		updates player position (NORMAL)
+ *	Packet 0x20 : PacketPlayerUpdate		update player character on screen (NORMAL)
  *
  *
  ***************************************************************************/
-class PacketPlayerPosition : public PacketSend
+class PacketPlayerUpdate : public PacketSend
 {
 public:
-	PacketPlayerPosition(const CClient* target);
+	PacketPlayerUpdate(const CClient* target);
 };
 
 /***************************************************************************
@@ -206,7 +206,7 @@ public:
 class PacketMovementAck : public PacketSend
 {
 public:
-	PacketMovementAck(const CClient* target);
+	PacketMovementAck(const CClient* target, BYTE sequence);
 };
 
 /***************************************************************************
@@ -698,7 +698,7 @@ class PacketVendorBuyList : public PacketSend
 {
 public:
 	PacketVendorBuyList(void);
-	int fillContainer(const CItemContainer* container, int convertFactor, size_t maxItems = 115);
+	int fillContainer(const CItemContainer* container, int convertFactor, bool bClientSA, size_t maxItems = 115);
 };
 
 /***************************************************************************
@@ -1017,7 +1017,7 @@ public:
 class PacketManaUpdate : public PacketSend
 {
 public:
-	PacketManaUpdate(const CChar* character);
+	PacketManaUpdate(const CChar* character, bool full);
 };
 
 /***************************************************************************
@@ -1030,7 +1030,7 @@ public:
 class PacketStaminaUpdate : public PacketSend
 {
 public:
-	PacketStaminaUpdate(const CChar* character);
+	PacketStaminaUpdate(const CChar* character, bool full);
 };
 
 /***************************************************************************
@@ -1083,7 +1083,7 @@ public:
 class PacketCharacterList : public PacketSend
 {
 public:
-	PacketCharacterList(CClient* target, const CChar* lastCharacter);
+	PacketCharacterList(CClient* target);
 };
 
 /***************************************************************************
@@ -1236,6 +1236,19 @@ public:
 };
 
 /***************************************************************************
+*
+*
+*	Packet 0xBD : PacketClientVersionReq	request client version (HIGH)
+*
+*
+***************************************************************************/
+class PacketClientVersionReq : public PacketSend
+{
+public:
+	PacketClientVersionReq(const CClient* target);
+};
+
+/***************************************************************************
  *
  *
  *	Packet 0xBF : PacketExtended			extended command
@@ -1246,19 +1259,6 @@ class PacketExtended : public PacketSend
 {
 public:
 	PacketExtended(EXTDATA_TYPE type, size_t len = 0, Priority priority = PRI_NORMAL);
-};
-
-/***************************************************************************
- *
- *
- *	Packet 0xBF.0x01 : PacketFastWalk		send fask walk keys (NORMAL)
- *
- *
- ***************************************************************************/
-class PacketFastWalk : public PacketExtended
-{
-public:
-	PacketFastWalk(const CClient* target, DWORD* codes, size_t count, size_t sendCount);
 };
 
 /***************************************************************************
@@ -1799,14 +1799,14 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0xF2 : PacketTimeSyncRequest		time sync request (NORMAL)
+ *	Packet 0xF2 : PacketTimeSyncResponse	time sync request (NORMAL)
  *
  *
  ***************************************************************************/
-class PacketTimeSyncRequest : public PacketSend
+class PacketTimeSyncResponse : public PacketSend
 {
 public:
-	PacketTimeSyncRequest(const CClient* target);
+	PacketTimeSyncResponse(const CClient* target);
 
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)

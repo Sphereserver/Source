@@ -437,7 +437,7 @@ void CServer::ListClients( CTextConsole * pConsole ) const
 
 			sprintf(tmpMsg, "%lx:Acc='%s' (IP: %s) %s\n",
 				pClient->GetSocketID(),
-				pClient->GetAccount() != NULL ? static_cast<LPCTSTR>(pClient->GetAccount()->GetName()) : "<NA>",
+				pClient->GetAccount() != NULL ? pClient->GetAccount()->GetName() : "<NA>",
 				pClient->GetPeerStr(),
 				pszState);
 		}
@@ -958,9 +958,9 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 			if (profile.IsEnabled(static_cast<PROFILE_TYPE>(i)) == false)
 				continue;
 
-			pSrc->SysMessagef( "%-10s = %s\n", static_cast<LPCTSTR>(profile.GetName(static_cast<PROFILE_TYPE>(i))), static_cast<LPCTSTR>(profile.GetDescription(static_cast<PROFILE_TYPE>(i))) );
+			pSrc->SysMessagef( "%-10s = %s\n", profile.GetName(static_cast<PROFILE_TYPE>(i)), profile.GetDescription(static_cast<PROFILE_TYPE>(i)) );
 			if (ftDump != NULL)
-				ftDump->Printf( "%-10s = %s\n", static_cast<LPCTSTR>(profile.GetName(static_cast<PROFILE_TYPE>(i))), static_cast<LPCTSTR>(profile.GetDescription(static_cast<PROFILE_TYPE>(i))) );
+				ftDump->Printf( "%-10s = %s\n", profile.GetName(static_cast<PROFILE_TYPE>(i)), profile.GetDescription(static_cast<PROFILE_TYPE>(i)) );
 		}
 	}
 
@@ -1972,7 +1972,7 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 	EXC_SET("finilizing");
 #ifdef _WIN32
 	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, GRAY_TITLE " V" GRAY_VERSION " - %s", static_cast<LPCTSTR>(GetName()));
+	sprintf(pszTemp, GRAY_TITLE " V" GRAY_VERSION " - %s", GetName());
 	SetConsoleTitle(pszTemp);
 #endif
 

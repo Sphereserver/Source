@@ -27,12 +27,12 @@ bool CClient::OnTarg_Obj_Set( CObjBase * pObj )
 	{
 		const CItem * pItem = STATIC_CAST <CItem*> (pObj);
 		if ( pItem->GetAmount() > 1 )
-			sprintf(pszLogMsg, "'%s' commands uid=0%lx (%s) [amount=%u] to '%s'", static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(pObj->GetUID()), static_cast<LPCTSTR>(pObj->GetName()), pItem->GetAmount(), static_cast<LPCTSTR>(m_Targ_Text));
+			sprintf(pszLogMsg, "'%s' commands uid=0%lx (%s) [amount=%u] to '%s'", GetName(), static_cast<DWORD>(pObj->GetUID()), pObj->GetName(), pItem->GetAmount(), static_cast<LPCTSTR>(m_Targ_Text));
 		else
-			sprintf(pszLogMsg, "'%s' commands uid=0%lx (%s) to '%s'", static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(pObj->GetUID()), static_cast<LPCTSTR>(pObj->GetName()), static_cast<LPCTSTR>(m_Targ_Text));
+			sprintf(pszLogMsg, "'%s' commands uid=0%lx (%s) to '%s'", GetName(), static_cast<DWORD>(pObj->GetUID()), pObj->GetName(), static_cast<LPCTSTR>(m_Targ_Text));
 	}
 	else
-		sprintf(pszLogMsg, "'%s' commands uid=0%lx (%s) to '%s'", static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(pObj->GetUID()), static_cast<LPCTSTR>(pObj->GetName()), static_cast<LPCTSTR>(m_Targ_Text));
+		sprintf(pszLogMsg, "'%s' commands uid=0%lx (%s) to '%s'", GetName(), static_cast<DWORD>(pObj->GetUID()), pObj->GetName(), static_cast<LPCTSTR>(m_Targ_Text));
 
 	// Check priv level for the new verb.
 	if ( ! g_Cfg.CanUsePrivVerb( pObj, m_Targ_Text, this ))
@@ -153,8 +153,10 @@ bool CClient::Cmd_Control( CChar * pChar2 )
 	CChar * pChar1 = m_pChar;
 
 	// Put my newbie equipped items on it.
-	for ( CItem *pItem = pChar1->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	CItem *pItemNext = NULL;
+	for ( CItem *pItem = pChar1->GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
+		pItemNext = pItem->GetNext();
 		if ( !pItem->IsAttr(ATTR_MOVE_NEVER) )
 			continue; // keep GM stuff.
 		if ( !CItemBase::IsVisibleLayer(pItem->GetEquipLayer()) )
@@ -177,8 +179,9 @@ bool CClient::Cmd_Control( CChar * pChar2 )
 	CItemContainer *pPack2 = pChar2->GetPackSafe();
 	if ( pPack1 && pPack2 )
 	{
-		for ( CItem *pItem = pPack1->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+		for ( CItem *pItem = pPack1->GetContentHead(); pItem != NULL; pItem = pItemNext )
 		{
+			pItemNext = pItem->GetNext();
 			if ( !pItem->IsAttr(ATTR_MOVE_NEVER) )	// keep newbie stuff.
 				continue;
 			pPack2->ContentAdd(pItem);	// add content
@@ -257,8 +260,8 @@ bool CClient::OnTarg_UnExtract( CObjBase * pObj, const CPointMap & pt )
 	// result of the MULTI command.
 	// Break a multi out of the multi.txt files and turn it into items.
 
-	if ( ! pt.IsValidPoint())
-		return( false );
+	if ( !pt.GetRegion(REGION_TYPE_AREA) )
+		return false;
 
 	CScript s;	// It is not really a valid script type file.
 	if ( ! g_Cfg.OpenResourceFind( s, m_Targ_Text ))
@@ -296,50 +299,56 @@ bool CClient::OnTarg_UnExtract( CObjBase * pObj, const CPointMap & pt )
 	return true;
 }
 
+bool CClient::OnTarg_Char_Add( CObjBase * pObj, const CPointMap & pt )
+{
+	ADDTOCALLSTACK("CClient::OnTarg_Char_Add");
+	// CLIMODE_TARG_ADDCHAR
+	// m_tmAdd.m_id = char id
+	ASSERT(m_pChar);
+
+	if ( !pt.GetRegion(REGION_TYPE_AREA) )
+		return false;
+	if ( pObj && pObj->IsItemInContainer() )
+		return false;
+
+	CChar *pChar = CChar::CreateBasic(static_cast<CREID_TYPE>(m_tmAdd.m_id));
+	if ( !pChar )
+		return false;
+
+	pChar->NPC_LoadScript(true);
+	pChar->MoveToChar(pt);
+	pChar->NPC_CreateTrigger();		// removed from NPC_LoadScript() and triggered after char placement
+	pChar->Update();
+	pChar->UpdateAnimate(ANIM_CAST_DIR);
+	pChar->SoundChar(CRESND_GETHIT);
+	m_pChar->m_Act_Targ = pChar->GetUID();		// for last target stuff. (trigger stuff)
+	return true;
+}
+
 bool CClient::OnTarg_Item_Add( CObjBase * pObj, const CPointMap & pt )
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Item_Add");
-	// CLIMODE_ADDITEM
-	// m_tmAdd.m_id = new item id
+	// CLIMODE_TARG_ADDITEM
+	// m_tmAdd.m_id = item id
+	ASSERT(m_pChar);
 
-	if ( ! pt.IsValidPoint())
-		return( false );
-	ASSERT( m_pChar );
+	if ( !pt.GetRegion(REGION_TYPE_AREA) )
+		return false;
+	if ( pObj && pObj->IsItemInContainer() )
+		return false;
 
-	CItem * pItem = CItem::CreateTemplate( m_tmAdd.m_id, NULL, m_pChar );
-	if ( pItem == NULL )
-		return( false );
-	if ( m_tmAdd.m_fStatic == 1)
-	{
-		// Lock this item down
-		pItem->SetAttr( ATTR_MOVE_NEVER );
-	}
+	CItem *pItem = CItem::CreateTemplate(static_cast<ITEMID_TYPE>(m_tmAdd.m_id), NULL, m_pChar);
+	if ( !pItem )
+		return false;
 
 	if ( pItem->IsTypeMulti() )
 	{
-		CItem * pItemNew = OnTarg_Use_Multi( pItem->Item_GetDef(), pt, pItem->m_Attr, pItem->GetHue());
+		CItem *pMulti = OnTarg_Use_Multi(pItem->Item_GetDef(), pt, pItem->m_Attr, pItem->GetHue());
 		pItem->Delete();
-		if ( pItemNew == NULL )
-			return( false );
-		pItem = pItemNew;
-	}
-	else
-	{
-		if ( pObj &&
-			pObj->IsItemInContainer() &&
-			m_pChar->CanUse( STATIC_CAST<CItem*>(pObj), true ))
-		{
-			pItem->MoveNearObj( pObj );
-		}
-		else
-		{
-			CPointMap ptNew = pt;
-			ptNew.m_z ++;
-			pItem->MoveToCheck( ptNew, m_pChar );
-		}
+		return pMulti ? true : false;
 	}
 
-	m_pChar->m_Act_Targ = pItem->GetUID();	// for last target stuff. (trigger stuff)
+	pItem->MoveToCheck(pt, m_pChar);
 	return true;
 }
 
@@ -751,7 +760,7 @@ int CClient::OnSkill_AnimalLore( CGrayUID uid, int iSkillLevel, bool fTest )
 	// What kind of animal.
 	if ( pChar->IsIndividualName())
 	{
-		sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ANIMALLORE_RESULT ), static_cast<LPCTSTR>(pChar->GetName()), static_cast<LPCTSTR>(pChar->Char_GetDef()->GetTradeName()));
+		sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ANIMALLORE_RESULT ), pChar->GetName(), pChar->Char_GetDef()->GetTradeName());
 		addObjMessage(pszTemp, pChar);
 	}
 
@@ -759,11 +768,11 @@ int CClient::OnSkill_AnimalLore( CGrayUID uid, int iSkillLevel, bool fTest )
 	CChar * pCharOwner = pChar->NPC_PetGetOwner();
 	if ( pCharOwner == NULL )
 	{
-		sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ANIMALLORE_FREE ), static_cast<LPCTSTR>(pszHe), static_cast<LPCTSTR>(pszHis));
+		sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ANIMALLORE_FREE ), pszHe, pszHis);
 	}
 	else
 	{
-		sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ANIMALLORE_MASTER ), pszHe, ( pCharOwner == m_pChar ) ? g_Cfg.GetDefaultMsg( DEFMSG_ANIMALLORE_MASTER_YOU ) : static_cast<LPCTSTR>(pCharOwner->GetName()));
+		sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ANIMALLORE_MASTER ), pszHe, ( pCharOwner == m_pChar ) ? g_Cfg.GetDefaultMsg( DEFMSG_ANIMALLORE_MASTER_YOU ) : pCharOwner->GetName());
 		// How loyal to master ?
 	}
 	addObjMessage(pszTemp, pChar );
@@ -800,7 +809,7 @@ int CClient::OnSkill_ItemID( CGrayUID uid, int iSkillLevel, bool fTest )
 			return( 1 );
 		}
 
-		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_ITEMID_RESULT ), static_cast<LPCTSTR>(pChar->GetName()));
+		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_ITEMID_RESULT ), pChar->GetName());
 		return( 1 );
 	}
 
@@ -892,7 +901,7 @@ int CClient::OnSkill_EvalInt( CGrayUID uid, int iSkillLevel, bool fTest )
 	if ( static_cast<unsigned int>(iIntEntry) >= COUNTOF( sm_szIntDesc ))
 		iIntEntry = COUNTOF( sm_szIntDesc )-1;
 
-	SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_EVALINT_RESULT ), static_cast<LPCTSTR>(pChar->GetName()), static_cast<LPCTSTR>(sm_szIntDesc[iIntEntry]));
+	SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_EVALINT_RESULT ), pChar->GetName(), sm_szIntDesc[iIntEntry]);
 
 	static LPCTSTR const sm_szMagicDesc[] =
 	{
@@ -1108,14 +1117,11 @@ int CClient::OnSkill_Anatomy( CGrayUID uid, int iSkillLevel, bool fTest )
 		iDexEntry = COUNTOF( sm_szDexEval )-1;
 
 	TCHAR * pszTemp = Str_GetTemp();
-	sprintf(pszTemp, g_Cfg.GetDefaultMsg( DEFMSG_ANATOMY_RESULT ), static_cast<LPCTSTR>(pChar->GetName()),
-		sm_szStrEval[iStrEntry], sm_szDexEval[iDexEntry]);
+	sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_RESULT), pChar->GetName(), sm_szStrEval[iStrEntry], sm_szDexEval[iDexEntry]);
 	addObjMessage(pszTemp, pChar);
 
 	if ( pChar->IsStatFlag(STATF_Conjured) )
-	{
 		addObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_MAGIC), pChar);
-	}
 
 	// ??? looks hungry ?
 	return iSkillLevel;
@@ -1435,20 +1441,8 @@ bool CClient::OnTarg_Skill_Magery( CObjBase * pObj, const CPointMap & pt )
 		}
 	}
 
-	if ( m_tmSkillMagery.m_Spell == SPELL_Polymorph )
-	{
-		if ( IsTrigUsed(TRIGGER_SKILLMENU) )
-		{
-			CScriptTriggerArgs args("sm_polymorph");
-			if ( m_pChar->OnTrigger("@SkillMenu", m_pChar, &args) == TRIGRET_RET_TRUE )
-				return true;
-		}
-		return Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, "sm_polymorph" ));
-	}
-
 	m_pChar->m_atMagery.m_Spell			= m_tmSkillMagery.m_Spell;
 	m_pChar->m_atMagery.m_SummonID		= m_tmSkillMagery.m_SummonID;
-	m_pChar->m_atMagery.m_fSummonPet	= m_tmSkillMagery.m_fSummonPet;
 
 	m_pChar->m_Act_TargPrv				= m_Targ_PrvUID;	// Source (wand or you?)
 	m_pChar->m_Act_Targ					= pObj ? (DWORD) pObj->GetUID() : UID_CLEAR ;
@@ -1601,8 +1595,8 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap &
 	ADDTOCALLSTACK("CClient::OnTarg_Use_Multi");
 	// Might be a IT_MULTI or it might not. place it anyhow.
 
-	if ( pItemDef == NULL )
-		return( NULL );
+	if ( pItemDef == NULL || !pt.GetRegion(REGION_TYPE_AREA) )
+		return NULL;
 
 	bool fShip = ( pItemDef->IsType(IT_SHIP));	// must be in water.
 
@@ -1683,7 +1677,7 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap &
 				continue;
 			}
 
-			SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_MULTI_INTWAY ), static_cast<LPCTSTR>(pChar->GetName()));
+			SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_MULTI_INTWAY ), pChar->GetName());
 			if ( IsPriv(PRIV_GM) )
 			{
 				//	Teleport the char to self. At least I will be able to move him to someplace
@@ -1803,13 +1797,12 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 	switch ( pItemUse->GetType() )
 	{
 	case IT_COMM_CRYSTAL:
-		if ( pItemTarg == NULL )
-			return( false );
-		if ( ! pItemTarg->IsType(IT_COMM_CRYSTAL))
-			return( false );
+		if ( !pItemTarg || !pItemTarg->IsType(IT_COMM_CRYSTAL) )
+			return false;
 		pItemUse->m_uidLink = pItemTarg->GetUID();
-		pItemUse->Speak( "Linked" );
-		return( true );
+		pItemUse->Speak("Linked");
+		pItemUse->ResendTooltip();
+		return true;
 
 	case IT_POTION:
 		// Use a potion on something else.
@@ -1879,6 +1872,7 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 		// Mine at the location. (shovel)
 		m_pChar->m_Act_p = pt;
 		m_pChar->m_Act_TargPrv = m_Targ_PrvUID;
+		m_pChar->m_atResource.m_ridType = RESOURCE_ID(RES_TYPEDEF, IT_ROCK);
 		return( m_pChar->Skill_Start( SKILL_MINING ));
 
 	case IT_WEAPON_MACE_CROOK:
@@ -1957,10 +1951,10 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 		case IT_FOLIAGE:
 		case IT_TREE:
 			// Just targetted a tree type
-
 			m_pChar->m_Act_TargPrv = m_Targ_PrvUID;
 			m_pChar->m_Act_Targ = m_Targ_UID;
 			m_pChar->m_Act_p = pt;
+			m_pChar->m_atResource.m_ridType = RESOURCE_ID(RES_TYPEDEF, IT_TREE);
 			return( m_pChar->Skill_Start( SKILL_LUMBERJACKING ));
 
 		case IT_LOG:
@@ -2004,6 +1998,7 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 
 			// Carve up Fish parts.
 			pItemTarg->SetID( ITEMID_FOOD_FISH_RAW );
+			pItemTarg->SetHue( HUE_DEFAULT );
 			pItemTarg->SetAmount( 4 * pItemTarg->GetAmount());
 			pItemTarg->Update();
 			return true;
@@ -2311,6 +2306,7 @@ static LPCTSTR const sm_Txt_LoomUse[] =
 
 	case IT_FISH_POLE:
 		m_pChar->m_Act_p = pt;
+		m_pChar->m_atResource.m_ridType = RESOURCE_ID(RES_TYPEDEF, IT_WATER);
 		return( m_pChar->Skill_Start( SKILL_FISHING ));
 
 	case IT_LOCKPICK:
@@ -2537,10 +2533,10 @@ bool CClient::OnTarg_Party_Add( CChar * pChar )
 	}
 
 	TCHAR * sTemp = Str_GetTemp();
-	sprintf(sTemp, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_INVITE ), static_cast<LPCTSTR>(pChar->GetName()));
+	sprintf(sTemp, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_INVITE ), pChar->GetName());
 	m_pChar->SysMessage( sTemp );
 	sTemp = Str_GetTemp();
-	sprintf(sTemp, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_INVITE_TARG ), static_cast<LPCTSTR>(m_pChar->GetName()));
+	sprintf(sTemp, g_Cfg.GetDefaultMsg( DEFMSG_PARTY_INVITE_TARG ), m_pChar->GetName());
 	pChar->SysMessage( sTemp );
 
 	m_pChar->SetKeyNum("PARTY_LASTINVITE", static_cast<DWORD>(pChar->GetUID()));

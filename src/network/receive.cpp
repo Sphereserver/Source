@@ -87,13 +87,13 @@ bool PacketCreate::onReceive(NetState* net, bool hasExtraSkill)
 	if (net->isClientVersion(MINCLIVER_SA) || net->isClientSA())
 	{
 		/*
-			m_sex values from client 7.0.0.0+
-			0x2 = Human, Male
-			0x3 = Human, Female
-			0x4 = Elf, Male
-			0x5 = Elf, Female
-			0x6 = Gargoyle, Male
-			0x7 = Gargoyle, Female
+			m_sex values from clients 7.0.0.0+
+			0x2 = Human (male)
+			0x3 = Human (female)
+			0x4 = Elf (male)
+			0x5 = Elf (female)
+			0x6 = Gargoyle (male)
+			0x7 = Gargoyle (female)
 		*/
 		switch (sex)
 		{
@@ -111,6 +111,13 @@ bool PacketCreate::onReceive(NetState* net, bool hasExtraSkill)
 	}
 	else 
 	{
+		/*
+			m_sex values from clients pre-7.0.0.0
+			0x0 = Human (male)
+			0x1 = Human (female)
+			0x2 = Elf (male)
+			0x3 = Elf (female)
+		*/
 		if ((sex - 2) >= 0)
 			rtRace = RACETYPE_ELF;
 	}
@@ -200,10 +207,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 		return false;
 	}
 
-	g_Log.Event( LOGM_CLIENTS_LOG, "%lx:Setup_CreateDialog acct='%s', char='%s'\n",
-		net->id(), static_cast<LPCTSTR>(account->GetName()), static_cast<LPCTSTR>(pChar->GetName()));
-
-
+	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Setup_CreateDialog acct='%s', char='%s'\n", net->id(), account->GetName(), pChar->GetName());
 	client->Setup_Start(pChar);
 	return true;
 }
@@ -229,26 +233,31 @@ bool PacketMovementReq::onReceive(NetState* net)
 
 	BYTE direction = readByte();
 	BYTE sequence = readByte();
+	//DWORD crypt = readInt32();	// client fastwalk crypt (not used anymore)
 
-	bool bCanMove = true;
 	if ( net->m_sequence == 0 && sequence != 0 )
-		bCanMove = false;
-
-	if ( bCanMove && IsSetEF(EF_FastWalkPrevention) && net->isClientVersion(MINCLIVER_CHECKWALKCODE) )
 	{
-		DWORD crypt = readInt32();
-		if ( !client->Event_CheckFastwalkKey(crypt) )
-			bCanMove = false;
+		direction = DIR_QTY;	// setting invalid direction to intentionally reject the walk request
+	}
+	else if ( IsSetEF(EF_FastWalkPrevention) )
+	{
+		// TO-DO: Poorly working. To make this thing work correctly
+		// we must compare timers using numbers with more precision
+		CChar *pChar = client->GetChar();
+		INT64 iMinDelay = 0;
+		if ( pChar->IsStatFlag(STATF_OnHorse) )
+			iMinDelay = (direction & 0x80) ? 1 : 2;
+		else
+			iMinDelay = (direction & 0x80) ? 2 : 4;
+		if ( -g_World.GetTimeDiff(client->m_timeLastEventWalk) < iMinDelay )
+			direction = DIR_QTY;	// setting invalid direction to intentionally reject the walk request
 	}
 
-	if ( bCanMove )
-		bCanMove = client->Event_Walk(direction, sequence);
-
-	if ( bCanMove )
+	if ( client->Event_Walk(direction, sequence) )
 	{
-		if ( ++sequence == UCHAR_MAX )
-			sequence = 1;
-		net->m_sequence = sequence;
+		if ( sequence == UCHAR_MAX )
+			sequence = 0;
+		net->m_sequence = ++sequence;
 	}
 	else
 	{
@@ -507,9 +516,7 @@ bool PacketItemEquipReq::onReceive(NetState* net)
 		return false;
 
 	CItem* item = source->LayerFind(LAYER_DRAGGING);
-	if (item == NULL ||
-		client->GetTargMode() != CLIMODE_DRAG ||
-		item->GetUID() != itemSerial)
+	if ( item == NULL || client->GetTargMode() != CLIMODE_DRAG || item->GetUID() != itemSerial )
 	{
 		// I have no idea why i got here.
 		new PacketDragCancel(client, PacketDragCancel::Other);
@@ -519,13 +526,12 @@ bool PacketItemEquipReq::onReceive(NetState* net)
 	client->ClearTargMode(); // done dragging.
 
 	CChar* target = targetSerial.CharFind();
-	if ( target == NULL ||
-		 itemLayer >= LAYER_HORSE ||
-		!target->NPC_IsOwnedBy(source) || 
-		!target->CanCarry(item) ||
-		!target->ItemEquip(item, source) )
+	bool bCanCarry = target->CanCarry(item);
+	if ( target == NULL || (itemLayer >= LAYER_HORSE) || !target->NPC_IsOwnedBy(source) || !bCanCarry || !target->ItemEquip(item, source) )
 	{
-		source->ItemBounce(item); //cannot equip
+		client->Event_Item_Drop_Fail(item);		//cannot equip
+		if ( !bCanCarry )
+			client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_HEAVY));
 	}
 
 	return true;
@@ -547,9 +553,6 @@ bool PacketResynchronize::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketResynchronize::onReceive");
 
-	//BYTE sequence = readByte();
-	//NOTO_TYPE noto = static_cast<NOTO_TYPE>(readByte());
-
 	CClient * client = net->getClient();
 	ASSERT(client);
 
@@ -557,9 +560,9 @@ bool PacketResynchronize::onReceive(NetState* net)
 	if ( !pChar )
 		return false;
 
-	new PacketPlayerPosition(client);
 	new PacketCharacter(client, pChar);
-	client->addPlayerView(NULL);
+	client->addPlayerUpdate();
+	client->addPlayerSee(NULL);
 	net->m_sequence = 0;
 	return true;
 }
@@ -763,7 +766,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 	}
 
 	// combine goods into one list
-	CItemVendable* item;
+	CItemVendable *item = NULL;
 	for (size_t i = 0; i < itemCount; i++)
 	{
 		skip(1); // layer
@@ -1489,17 +1492,17 @@ bool PacketCharDelete::onReceive(NetState* net)
 /***************************************************************************
  *
  *
- *	Packet 0x8D : PacketCreateKR		create new character request (KR)
+ *	Packet 0x8D : PacketCreateNew		create new character request (KR/SA)
  *
  *
  ***************************************************************************/
-PacketCreateKR::PacketCreateKR() : PacketCreate(0)
+PacketCreateNew::PacketCreateNew() : PacketCreate(0)
 {
 }
 
-bool PacketCreateKR::onReceive(NetState* net)
+bool PacketCreateNew::onReceive(NetState* net)
 {
-	ADDTOCALLSTACK("PacketCreateKR::onReceive");
+	ADDTOCALLSTACK("PacketCreateNew::onReceive");
 
 	skip(10); // 2=length, 4=pattern1, 4=pattern2
 	TCHAR charname[MAX_NAME_SIZE];
@@ -2041,10 +2044,7 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
 			object->Update();
 		}
 
-		g_Log.Event( LOGM_GM_CMDS, "%lx:'%s' tweak uid=0%lx (%s) to '%s %s'=%d\n",
-			net->id(), static_cast<LPCTSTR>(client->GetName()),
-			static_cast<DWORD>(object->GetUID()), static_cast<LPCTSTR>(object->GetName()),
-			static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text), ret);
+		g_Log.Event(LOGM_GM_CMDS, "%lx:'%s' tweak uid=0%lx (%s) to '%s %s'=%d\n", net->id(), client->GetName(), static_cast<DWORD>(object->GetUID()), object->GetName(), static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text), ret);
 	}
 
 	return true;
@@ -3256,7 +3256,7 @@ bool PacketWheelBoatMove::onReceive(NetState* net)
 			if ((facing == DIR_N || facing == DIR_E || facing == DIR_S || facing == DIR_W) && pShipItem->m_itShip.m_DirFace != facing) //boat cannot face intermediate directions
 				pShipItem->Ship_Face(moving);
 
-			if (pShipItem->Ship_SetMoveDir(facing, speed, true))//pShipItem->m_itShip.m_DirMove = static_cast<unsigned char>(facing);
+			if (pShipItem->Ship_SetMoveDir(facing, speed, true))//pShipItem->m_itShip.m_DirMove = static_cast<BYTE>(facing);
 				pShipItem->Ship_Move(moving, speed);
 		}
 		else
@@ -3493,7 +3493,7 @@ bool PacketHouseDesignBackup::onReceive(NetState* net)
 	if (house == NULL)
 		return true;
 
-	house->BackupStructure(client);
+	house->BackupStructure();
 	return true;
 }
 
@@ -3760,9 +3760,9 @@ bool PacketHouseDesignSwitch::onReceive(NetState* net)
 		return true;
 
 	skip(1); // 0x00
-	int level = readInt32();
+	DWORD level = readInt32();
 
-	house->SwitchToLevel(client, level);
+	house->SwitchToLevel(client, static_cast<unsigned char>(level));
 	return true;
 }
 
@@ -4139,7 +4139,7 @@ bool PacketUseHotbar::onReceive(NetState* net)
 /***************************************************************************
  *
  *
- *	Packet 0xEC : PacketEquipItemMacro				equip item(s) macro
+ *	Packet 0xEC : PacketEquipItemMacro				equip item(s) macro (KR)
  *
  *
  ***************************************************************************/
@@ -4158,10 +4158,12 @@ bool PacketEquipItemMacro::onReceive(NetState* net)
 		return false;
 
 	skip(2); // packet length
-	int itemCount = readByte();
+	BYTE itemCount = readByte();
+	if ( itemCount > 3 )	// prevent packet exploit sending fake values just to create heavy loops and overload server CPU
+		itemCount = 3;
 
 	CItem* item;
-	for (int i = 0; i < itemCount; i++)
+	for (BYTE i = 0; i < itemCount; i++)
 	{
 		item = CGrayUID(readInt32()).ItemFind();
 		if (item == NULL)
@@ -4183,7 +4185,7 @@ bool PacketEquipItemMacro::onReceive(NetState* net)
 /***************************************************************************
  *
  *
- *	Packet 0xED : PacketUnEquipItemMacro			unequip item(s) macro
+ *	Packet 0xED : PacketUnEquipItemMacro			unequip item(s) macro (KR)
  *
  *
  ***************************************************************************/
@@ -4202,11 +4204,13 @@ bool PacketUnEquipItemMacro::onReceive(NetState* net)
 		return false;
 
 	skip(2); // packet length
-	int layerCount = readByte();
+	BYTE itemCount = readByte();
+	if ( itemCount > 3 )	// prevent packet exploit sending fake values just to create heavy loops and overload server CPU
+		itemCount = 3;
 
 	LAYER_TYPE layer;
 	CItem* item;
-	for (int i = 0; i < layerCount; i++)
+	for (BYTE i = 0; i < itemCount; i++)
 	{
 		layer = static_cast<LAYER_TYPE>(readInt16());
 
@@ -4227,7 +4231,7 @@ bool PacketUnEquipItemMacro::onReceive(NetState* net)
 /***************************************************************************
  *
  *
- *	Packet 0xF0 : PacketMovementReqNew	movement request (KR/SA)
+ *	Packet 0xF0 : PacketMovementReqNew			new movement request (KR/SA)
  *
  *
  ***************************************************************************/
@@ -4238,46 +4242,63 @@ PacketMovementReqNew::PacketMovementReqNew() : Packet(0)
 bool PacketMovementReqNew::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketMovementReqNew::onReceive");
-	// This new walk packet is only used on SA enhanced clients.
-	// On classic clients this packet is used as 'Krrios special client' (?) which
+	// New walk packet used on newest clients (still incomplete)
+	// It must be enabled using login flags on packet 0xA9, otherwise the client will
+	// stay using the old walk packet 0x02.
+
+	// The 'timer' values used here are linked somehow to time sync packets
+	// 0xF1 (client request) / 0xF2 (server response) but I have no idea how it works.
+	// The client request an time resync at every 60 seconds.
+
+	// PS: On classic clients this packet is used as 'Krrios special client' (?) which
 	// does some useless weird stuff. Also classic clients using Injection 2014 will
 	// strangely send this packet to server when the player press the 'Chat' button,
-	// so it's better leave this packet disabled to prevent some exploits.
+	// so it's better leave this packet disabled on classic clients to prevent exploits.
+
+	if ( !(g_Cfg.m_iFeatureSA & FEATURE_SA_MOVEMENT) )
+		return false;
 
 	CClient *client = net->getClient();
 	ASSERT(client);
 
 	skip(2);
-	bool bCanMove = true;
 	BYTE steps = readByte();
-	while (steps)
+	while ( steps )
 	{
 		INT64 iTime1 = readInt64();
 		INT64 iTime2 = readInt64();
 		BYTE sequence = readByte();
 		BYTE direction = readByte();
 		DWORD mode = readInt32();	// 1 = walk, 2 = run
-		if (mode == 2)
+		if ( mode == 2 )
 			direction |= 0x80;
 
 		if ( IsSetEF(EF_FastWalkPrevention) )
 		{
-			bool fRun = (mode == 2);
+			// TO-DO: Poorly working. To make this thing work correctly
+			// we need an better integration with time packets 0xF1/0xF2
+			CChar *pChar = client->GetChar();
 			INT64 iTimeDiff = iTime2 - iTime1;
-			if ( (fRun && (iTimeDiff > 200)) || (!fRun && (iTimeDiff > 300)) )
-				bCanMove = false;
+			INT64 iMinDelay = 0;
+			if ( pChar->IsStatFlag(STATF_OnHorse) )
+				iMinDelay = (direction & 0x80) ? 100 : 200;
+			else
+				iMinDelay = (direction & 0x80) ? 200 : 400;
+			if ( iTimeDiff < iMinDelay )
+				direction = DIR_QTY;	// setting invalid direction to intentionally reject the walk request
 		}
 
 		// The client send these values, but they're not really needed
 		//DWORD x = readInt32();
 		//DWORD y = readInt32();
 		//DWORD z = readInt32();
+		skip(12);
 
-		if ( bCanMove )
-			bCanMove = client->Event_Walk(direction, sequence);
-
-		if ( !bCanMove )
-			return false;
+		if ( !client->Event_Walk(direction, sequence) )
+		{
+			net->m_sequence = 0;
+			break;
+		}
 
 		steps--;
 	}
@@ -4287,19 +4308,23 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 /***************************************************************************
  *
  *
- *	Packet 0xF1 : PacketTimeSyncReply				time sync reply (KR/SA)
+ *	Packet 0xF1 : PacketTimeSyncRequest				time sync request (KR/SA)
  *
  *
  ***************************************************************************/
-PacketTimeSyncReply::PacketTimeSyncReply() : Packet(9)
+PacketTimeSyncRequest::PacketTimeSyncRequest() : Packet(9)
 {
 }
 
-bool PacketTimeSyncReply::onReceive(NetState* net)
+bool PacketTimeSyncRequest::onReceive(NetState* net)
 {
-	ADDTOCALLSTACK("PacketTimeSyncReply::onReceive");
-	UNREFERENCED_PARAMETER(net);
-	//INT64 iTime = readInt64();
+	ADDTOCALLSTACK("PacketTimeSyncRequest::onReceive");
+
+	CClient* client = net->getClient();
+	ASSERT(client);
+
+	//INT64 iTime = readInt64();	// what we must do with this value?
+	new PacketTimeSyncResponse(client);
 	return true;
 }
 

@@ -432,24 +432,26 @@ void CChar::Noto_Murder()
 bool CChar::Noto_Criminal( CChar * pChar )
 {
 	ADDTOCALLSTACK("CChar::Noto_Criminal");
-	if ( IsPriv(PRIV_GM) || m_pNPC )
+	if ( m_pNPC || IsPriv(PRIV_GM) )
 		return false;
+
 	int decay = g_Cfg.m_iCriminalTimer;
-	CScriptTriggerArgs Args;
-	Args.m_iN1 = decay;
+
 	if ( IsTrigUsed(TRIGGER_CRIMINAL) )
 	{
+		CScriptTriggerArgs Args;
+		Args.m_iN1 = decay;
 		Args.m_pO1 = pChar;
-		if ( ( OnTrigger( CTRIG_Criminal, this, &Args ) ) == TRIGRET_RET_TRUE )
+		if ( OnTrigger(CTRIG_Criminal, this, &Args) == TRIGRET_RET_TRUE )
 			return false;
 
 		decay = static_cast<int>(Args.m_iN1);
 	}
-	if ( !IsStatFlag( STATF_Criminal) )
-		SysMessageDefault( DEFMSG_MSG_GUARDS );
 
-	Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Criminal, 0, decay, NULL);
-	NotoSave_Update();
+	if ( !IsStatFlag(STATF_Criminal) )
+		SysMessageDefault(DEFMSG_MSG_GUARDS);
+
+	Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Criminal, 0, decay);
 	return true;
 }
 
@@ -745,7 +747,7 @@ void CChar::NotoSave_Update()
 {
 	ADDTOCALLSTACK("CChar::NotoSave_Update");
 	NotoSave_Clear();
-	UpdateMode( NULL , false );
+	UpdateMode();
 	ResendTooltip();
 }
 
@@ -941,14 +943,16 @@ CItemMemory * CChar::Memory_CreateObj( CGrayUID uid, WORD MemTypes )
 void CChar::Memory_ClearTypes( WORD MemTypes )
 {
 	ADDTOCALLSTACK("CChar::Memory_ClearTypes");
-	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	CItem *pItemNext = NULL;
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
+		pItemNext = pItem->GetNext();
 		if ( !pItem->IsMemoryTypes(MemTypes) )
 			continue;
 		CItemMemory * pMemory = dynamic_cast <CItemMemory *>(pItem);
-		if ( pMemory == NULL )
+		if ( !pMemory )
 			continue;
-		Memory_ClearTypes( pMemory, MemTypes );
+		Memory_ClearTypes(pMemory, MemTypes);
 	}
 }
 
@@ -958,13 +962,13 @@ CItemMemory * CChar::Memory_FindObj( CGrayUID uid ) const
 	ADDTOCALLSTACK("CChar::Memory_FindObj");
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		if ( ! pItem->IsType(IT_EQ_MEMORY_OBJ))
+		if ( !pItem->IsType(IT_EQ_MEMORY_OBJ) )
 			continue;
 		if ( pItem->m_uidLink != uid )
 			continue;
-		return( dynamic_cast <CItemMemory *>( pItem ));
+		return dynamic_cast<CItemMemory *>(pItem);
 	}
-	return( NULL );
+	return NULL;
 }
 
 // Do we have a certain type of memory.
@@ -974,13 +978,14 @@ CItemMemory * CChar::Memory_FindTypes( WORD MemTypes ) const
 	ADDTOCALLSTACK("CChar::Memory_FindTypes");
 	if ( !MemTypes )
 		return NULL;
+
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		if ( ! pItem->IsMemoryTypes(MemTypes))
+		if ( !pItem->IsMemoryTypes(MemTypes) )
 			continue;
-		return( dynamic_cast <CItemMemory *>( pItem ));
+		return dynamic_cast<CItemMemory *>(pItem);
 	}
-	return( NULL );
+	return NULL;
 }
 
 // Looping through all memories ( ForCharMemoryType ).
@@ -1931,19 +1936,13 @@ effect_bounce:
 			if ( iDmgPhysical == 0 )		// if physical damage is not set, let's assume it as the remaining value
 				iDmgPhysical = 100 - (iDmgFire + iDmgCold + iDmgPoison + iDmgEnergy);
 
-			float iPhysicalDamage = iDmg * static_cast<float>(iDmgPhysical) / 100;
-			float iFireDamage = iDmg * static_cast<float>(iDmgFire) / 100;
-			float iColdDamage = iDmg * static_cast<float>(iDmgCold) / 100;
-			float iPoisonDamage = iDmg * static_cast<float>(iDmgPoison) / 100;
-			float iEnergyDamage = iDmg * static_cast<float>(iDmgEnergy) / 100;
+			int iPhysicalDamage = iDmg * iDmgPhysical * (100 - GetDefNum("RESPHYSICAL", true));
+			int iFireDamage = iDmg * iDmgFire * (100 - GetDefNum("RESFIRE", true));
+			int iColdDamage = iDmg * iDmgCold * (100 - GetDefNum("RESCOLD", true));
+			int iPoisonDamage = iDmg * iDmgPoison * (100 - GetDefNum("RESPOISON", true));
+			int iEnergyDamage = iDmg * iDmgEnergy * (100 - GetDefNum("RESENERGY", true));
 
-			iPhysicalDamage = iPhysicalDamage * (100 - GetDefNum("RESPHYSICAL", true)) / 100;
-			iFireDamage = iFireDamage * (100 - GetDefNum("RESFIRE", true)) / 100;
-			iColdDamage = iColdDamage * (100 - GetDefNum("RESCOLD", true)) / 100;
-			iPoisonDamage = iPoisonDamage * (100 - GetDefNum("RESPOISON", true)) / 100;
-			iEnergyDamage = iEnergyDamage * (100 - GetDefNum("RESENERGY", true)) / 100;
-
-			iDmg = static_cast<int>(iPhysicalDamage + iFireDamage + iColdDamage + iPoisonDamage + iEnergyDamage);
+			iDmg = (iPhysicalDamage + iFireDamage + iColdDamage + iPoisonDamage + iEnergyDamage) / 10000;
 		}
 		else
 		{
@@ -1972,8 +1971,8 @@ effect_bounce:
 		uType = static_cast<DAMAGE_TYPE>(Args.m_iN2);
 	}
 
-	int iDamageChance = static_cast<int>(Args.m_VarsLocal.GetKeyNum("ItemDamageChance",true));
-	if ( (iDamageChance > Calc_GetRandVal(100)) && !pCharDef->Can(CAN_C_NONHUMANOID) )
+	int iItemDamageChance = static_cast<int>(Args.m_VarsLocal.GetKeyNum("ItemDamageChance", true));
+	if ( (iItemDamageChance > Calc_GetRandVal(100)) && !pCharDef->Can(CAN_C_NONHUMANOID) )
 	{
 		int iHitRoll = Calc_GetRandVal(100);
 		BODYPART_TYPE iHitArea = ARMOR_HEAD;
@@ -2023,7 +2022,7 @@ effect_bounce:
 	}
 
 	// Disturb magic spells (only players can be disturbed)
-	if ( m_pPlayer && !(uType & DAMAGE_NODISTURB) && g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_MAGIC) )
+	if ( m_pPlayer && pSrc != this && !(uType & DAMAGE_NODISTURB) && g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_MAGIC) )
 	{
 		// Check if my spell can be interrupted
 		int iDisturbChance = 0;
@@ -2158,9 +2157,7 @@ void CChar::Memory_Fight_Retreat( CChar * pTarg, CItemMemory * pFight )
 		return;
 	}
 
-	SysMessagef( fCowardice ?
-		g_Cfg.GetDefaultMsg( DEFMSG_MSG_COWARD_1 ) :
-		g_Cfg.GetDefaultMsg( DEFMSG_MSG_COWARD_2 ), static_cast<LPCTSTR>(pTarg->GetName()));
+	SysMessagef(fCowardice ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_COWARD_1) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_COWARD_2), pTarg->GetName());
 
 	// Lose some fame.
 	if ( fCowardice )
@@ -2433,8 +2430,10 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 void CChar::Fight_ClearAll()
 {
 	ADDTOCALLSTACK("CChar::Fight_ClearAll");
-	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	CItem *pItemNext = NULL;
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
+		pItemNext = pItem->GetNext();
 		if ( pItem->IsMemoryTypes(MEMORY_WAR_TARG) )
 			Memory_ClearTypes(static_cast<CItemMemory *>(pItem), MEMORY_WAR_TARG);
 	}
@@ -2477,11 +2476,11 @@ bool CChar::Fight_Clear(const CChar *pChar, bool bForced)
 // This is just my intent.
 // RETURN:
 //  true = new attack is accepted.
-bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
+bool CChar::Fight_Attack( const CChar *pCharTarg, bool btoldByMaster )
 {
 	ADDTOCALLSTACK("CChar::Fight_Attack");
 
-	if ( pCharTarg == NULL || pCharTarg == this || pCharTarg->IsDisconnected() || !CanSee(pCharTarg) || pCharTarg->IsStatFlag(STATF_DEAD) || IsStatFlag(STATF_DEAD) )
+	if ( !pCharTarg || pCharTarg == this || pCharTarg->IsDisconnected() || !CanSee(pCharTarg) || pCharTarg->IsStatFlag(STATF_DEAD) || IsStatFlag(STATF_DEAD) )
 	{
 		// Not a valid target.
 		Fight_Clear(pCharTarg, true);
@@ -2494,9 +2493,9 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 		return false;
 	}
 
-	CChar * pTarget = const_cast<CChar*>(pCharTarg);
+	CChar *pTarget = const_cast<CChar *>(pCharTarg);
 
-	if ( g_Cfg.m_fAttackingIsACrime == TRUE )
+	if ( g_Cfg.m_fAttackingIsACrime )
 	{
 		if ( pCharTarg->Noto_GetFlag(this) == NOTO_GOOD )
 			CheckCrimeSeen(SKILL_NONE, pTarget, NULL, NULL);
@@ -2506,7 +2505,7 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 	if ( btoldByMaster )
 		threat = 1000 + Attacker_GetHighestThreat();
 
-	if ( (m_Fight_Targ != pCharTarg->GetUID()) && ((IsTrigUsed(TRIGGER_ATTACK)) || (IsTrigUsed(TRIGGER_CHARATTACK))) )
+	if ( ((IsTrigUsed(TRIGGER_ATTACK)) || (IsTrigUsed(TRIGGER_CHARATTACK))) && m_Fight_Targ != pCharTarg->GetUID() )
 	{
 		CScriptTriggerArgs Args;
 		Args.m_iN1 = threat;
@@ -2515,21 +2514,24 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 		threat = Args.m_iN1;
 	}
 
-	if ( Attacker_Add(pTarget, threat) == false )
+	if ( !Attacker_Add(pTarget, threat) )
 		return false;
 	if ( Attacker_GetIgnore(pTarget) )
 		return false;
 
 	// I'm attacking (or defending)
-	StatFlag_Set(STATF_War);
-	UpdateModeFlag();
-	if ( IsClient() )
-		GetClient()->addPlayerWarMode();
+	if ( !IsStatFlag(STATF_War) )
+	{
+		StatFlag_Set(STATF_War);
+		UpdateModeFlag();
+		if ( IsClient() )
+			GetClient()->addPlayerWarMode();
+	}
 
 	SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
 	SKILL_TYPE skillActive = Skill_GetActive();
 
-	if (skillActive == skillWeapon && m_Fight_Targ == pCharTarg->GetUID())		// already attacking this same target using the same skill
+	if ( skillActive == skillWeapon && m_Fight_Targ == pCharTarg->GetUID() )		// already attacking this same target using the same skill
 		return true;
 
 	if ( m_pNPC && !btoldByMaster )		// call FindBestTarget when this CChar is a NPC and was not commanded to attack, otherwise it attack directly
@@ -2537,7 +2539,6 @@ bool CChar::Fight_Attack( const CChar * pCharTarg, bool btoldByMaster )
 
 	m_Fight_Targ = pTarget ? pTarget->GetUID() : static_cast<CGrayUID>(UID_UNUSED);
 	Skill_Start(skillWeapon);
-
 	return true;
 }
 
@@ -2592,6 +2593,7 @@ void CChar::Fight_HitTry()
 
 	ASSERT(0);
 }
+
 // Add some enemy to my Attacker list
 bool CChar::Attacker_Add( CChar * pChar, INT64 threat )
 {
@@ -3392,20 +3394,19 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			pItemHit = pCharTarg->LayerFind(LAYER_HAND2);
 			ParryChance = pCharTarg->Skill_GetBase(SKILL_PARRYING) / 40;
 		}
-		else if ( pCharTarg->LayerFind(LAYER_HAND1) )	// parry using weapon
+		else if ( pCharTarg->m_uidWeapon.IsItem() )		// parry using weapon
 		{
-			pItemHit = pCharTarg->LayerFind(LAYER_HAND1);
+			pItemHit = pCharTarg->m_uidWeapon.ItemFind();
 			ParryChance = pCharTarg->Skill_GetBase(SKILL_PARRYING) / 80;
 		}
 
 		if ( pCharTarg->Skill_GetBase(SKILL_PARRYING) >= 1000 )
 			ParryChance += 5;
 
-		int DexMod = 100;
-		if ( pCharTarg->Stat_GetVal(STAT_DEX) < 80 )
-			DexMod -= (80 - pCharTarg->Stat_GetVal(STAT_DEX));
+		int Dex = pCharTarg->Stat_GetAdjusted(STAT_DEX);
+		if ( Dex < 80 )
+			ParryChance = ParryChance * (20 + Dex) / 100;
 
-		ParryChance *= DexMod / 100;
 		if ( pCharTarg->Skill_UseQuick(SKILL_PARRYING, ParryChance, true, false) )
 		{
 			if ( IsPriv(PRIV_DETAIL) )
@@ -3466,7 +3467,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	{
 		pAmmo->UnStackSplit(1);
 		if ( pCharTarg->m_pNPC && (40 >= Calc_GetRandVal(100)) )
-			pCharTarg->ItemBounce(pAmmo);
+			pCharTarg->ItemBounce(pAmmo, false);
 		else
 			pAmmo->Delete();
 	}
@@ -3517,7 +3518,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	if ( iDmg > 0 )
 	{
 		CItem *pCurseWeapon = LayerFind(LAYER_SPELL_Curse_Weapon);
-		int iHitLifeLeech = static_cast<int>(GetDefNum("HitLeechLife", true));
+		short iHitLifeLeech = static_cast<short>(GetDefNum("HitLeechLife", true));
 		if ( pWeapon && pCurseWeapon )
 			iHitLifeLeech += pCurseWeapon->m_itSpell.m_spelllevel;
 
@@ -3529,7 +3530,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			bMakeLeechSound = true;
 		}
 
-		int iHitManaLeech = static_cast<int>(GetDefNum("HitLeechMana", true));
+		short iHitManaLeech = static_cast<short>(GetDefNum("HitLeechMana", true));
 		if ( iHitManaLeech )
 		{
 			iHitManaLeech = Calc_GetRandVal2(0, (iDmg * iHitManaLeech * 40) / 10000);	// leech 0% ~ 40% of damage value
@@ -3543,7 +3544,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			bMakeLeechSound = true;
 		}
 
-		int iManaDrain = 0;
+		short iManaDrain = 0;
 		if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B )
 		{
 			CItem *pPoly = LayerFind(LAYER_SPELL_Polymorph);
@@ -3553,7 +3554,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( GetDefNum("HitManaDrain", true) > Calc_GetRandLLVal(100) )
 			iManaDrain += IMULDIV(iDmg, 20, 100);	// leech 20% of damage value
 
-		int iTargMana = pCharTarg->Stat_GetVal(STAT_INT);
+		short iTargMana = pCharTarg->Stat_GetVal(STAT_INT);
 		if ( iManaDrain > iTargMana )
 			iManaDrain = iTargMana;
 

@@ -15,15 +15,6 @@ class CServerDef;
 
 typedef CServerDef * CServerRef;
 
-#define SKILL_MAX		(static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill))
-#define MAX_SKILL_SA	(static_cast<SKILL_TYPE>(58))	// The number of skills viewable by SA clients
-#define MAX_SKILL_KR	(static_cast<SKILL_TYPE>(55))	// The number of skills viewable by KR clients
-#define MAX_SKILL_ML	(static_cast<SKILL_TYPE>(55))	// The number of skills viewable by ML clients
-#define MAX_SKILL_SE	(static_cast<SKILL_TYPE>(54))	// The number of skills viewable by SE clients
-#define MAX_SKILL_AOS	(static_cast<SKILL_TYPE>(52))	// The number of skills viewable by AOS clients
-#define MAX_SKILL_LBR	(static_cast<SKILL_TYPE>(49))	// The number of skills viewable by LBR clients
-#define MAX_SKILL_T2A	(static_cast<SKILL_TYPE>(49))	// The number of skills viewable by T2A clients
-
 // option flags
 enum OF_TYPE
 {
@@ -861,12 +852,11 @@ public:
 	int		m_iWoolGrowthTime;	// how long till wool grows back on sheared sheep, in minutes
 	unsigned int m_iAttackerTimeout;	// Timeout for attacker.*
 	unsigned int m_iNotoTimeout;	// Timeout for NOTOriety checks.*
+	unsigned int m_iMaxSkill;
 
 	int		m_iDistanceYell;
 	int		m_iDistanceWhisper;
 	int		m_iDistanceTalk;
-
-	unsigned int m_iMaxSkill;
 
 	CGString	m_sSpeechSelf;
 	CGString	m_sSpeechPet;
@@ -959,7 +949,7 @@ public:
 	int		m_iLevelMode;
 	unsigned int m_iLevelNextAt;
 
-	int		m_iAutoResDisp;
+	bool	m_bAutoResDisp;
 	int		m_iAutoPrivFlags;
 
 	char	m_cCommandPrefix;

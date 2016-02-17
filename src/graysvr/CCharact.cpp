@@ -501,11 +501,11 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 		if (iHitpointIncrease != 0)
 			Stat_SetMax(STAT_STR, Stat_GetMax(STAT_STR) - iHitpointIncrease);
 
-		int iStaminaIncrease = static_cast<int>(pItem->GetDefNum("BONUSSTAM", true, true));
+		short iStaminaIncrease = static_cast<short>(pItem->GetDefNum("BONUSSTAM", true, true));
 		if (iStaminaIncrease != 0)
 			Stat_SetMax(STAT_DEX, Stat_GetMax(STAT_DEX) - iStaminaIncrease);
 
-		int iManaIncrease = static_cast<int>(pItem->GetDefNum("BONUSMANA", true, true));
+		short iManaIncrease = static_cast<short>(pItem->GetDefNum("BONUSMANA", true, true));
 		if (iManaIncrease != 0)
 			Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) - iManaIncrease);
 
@@ -594,7 +594,7 @@ void CChar::UnEquipAllItems( CItemContainer * pDest, bool bLeaveHands )
 		return;
 	CItemContainer *pPack = GetPackSafe();
 
-	CItem *pItemNext;
+	CItem *pItemNext = NULL;
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
 		pItemNext = pItem->GetNext();
@@ -738,13 +738,13 @@ void CChar::UpdateRegenTimers(STAT_TYPE iStat, short iVal)
 	m_Stat[iStat].m_regen = iVal;
 }
 
-void CChar::UpdateStatVal( STAT_TYPE type, int iChange, int iLimit )
+void CChar::UpdateStatVal( STAT_TYPE type, short iChange, short iLimit )
 {
 	ADDTOCALLSTACK("CChar::UpdateStatVal");
-	int iValPrev = Stat_GetVal(type);
-	int iVal = iValPrev + iChange;
+	short iValPrev = Stat_GetVal(type);
+	short iVal = iValPrev + iChange;
 	if ( !iLimit )
-		iLimit = Stat_GetMax( type );
+		iLimit = Stat_GetMax(type);
 
 	if ( iVal < 0 )
 		iVal = 0;
@@ -1793,7 +1793,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 // We can't put this where we want to
 // So put in my pack if i can. else drop.
 // don't check where this came from !
-bool CChar::ItemBounce( CItem * pItem )
+bool CChar::ItemBounce( CItem * pItem, bool bDisplayMsg )
 {
 	ADDTOCALLSTACK("CChar::ItemBounce");
 	if ( pItem == NULL )
@@ -1819,7 +1819,7 @@ bool CChar::ItemBounce( CItem * pItem )
 			if ( pszWhere )
 				DEBUG_ERR(("No pack to place loot item '%s' for NPC '%s'\n", pItem->GetResourceName(), GetResourceName()));
 			else
-				DEBUG_ERR(("Loot item %s too heavy for NPC %s\n", pItem->GetResourceName(), GetResourceName()));
+				DEBUG_ERR(("Loot item '%s' too heavy for NPC '%s'\n", pItem->GetResourceName(), GetResourceName()));
 
 			pItem->Delete();
 			return false;
@@ -1829,7 +1829,8 @@ bool CChar::ItemBounce( CItem * pItem )
 		pItem->MoveToDecay(GetTopPoint(), pItem->GetDecayTime());	// drop it on ground
 	}
 
-	SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_ITEMPLACE ), pItem->GetName(), pszWhere );
+	if ( bDisplayMsg )
+		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_ITEMPLACE ), pItem->GetName(), pszWhere );
 	return true;
 }
 
@@ -1901,39 +1902,29 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 	}
 
 
-	if (( IsTrigUsed(TRIGGER_EQUIPTEST) ) || ( IsTrigUsed(TRIGGER_ITEMEQUIPTEST) ))
+	if ( IsTrigUsed(TRIGGER_EQUIPTEST) || IsTrigUsed(TRIGGER_ITEMEQUIPTEST) )
 	{
-		TRIGRET_TYPE iRet = pItem->OnTrigger(ITRIG_EQUIPTEST, this);
+		if ( pItem->OnTrigger(ITRIG_EQUIPTEST, this) == TRIGRET_RET_TRUE )
+			return false;
 
 		if ( pItem->IsDeleted() )
 			return false;
-
-		if (iRet == TRIGRET_RET_TRUE)
-		{
-			if (pItem->GetEquipLayer() == LAYER_DRAGGING || !pItem->GetContainer())  // dragging or no cont? else just do nothing
-			{
-				pItem->RemoveSelf();
-				ItemBounce(pItem);
-			}
-			return false;
-		}
 	}
 
 	// strong enough to equip this . etc ?
 	// Move stuff already equipped.
    	if ( pItem->GetAmount() > 1 )
 		pItem->UnStackSplit(1, this);
-	// remove it from the container so that nothing will be stacked with it if unequipped
-	pItem->RemoveSelf();
 
-	LAYER_TYPE layer = CanEquipLayer( pItem, LAYER_QTY, pCharMsg, false );
-
+	LAYER_TYPE layer = CanEquipLayer(pItem, LAYER_QTY, pCharMsg, false);
 	if ( layer == LAYER_NONE )
 	{
-		ItemBounce(pItem);
+		if ( m_pNPC )	// only bounce to backpack if NPC, because players will call CClient::Event_Item_Drop_Fail() to drop the item back on its last location
+			ItemBounce(pItem);
 		return false;
 	}
 
+	pItem->RemoveSelf();		// Remove it from the container so that nothing will be stacked with it if unequipped
 	pItem->SetDecayTime(-1);	// Kill any decay timer.
 	LayerAdd(pItem, layer);
 	if ( !pItem->IsItemEquipped() )	// Equip failed ? (cursed?) Did it just go into pack ?
@@ -1999,15 +1990,15 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 	if (iIntelligenceBonus != 0)
 		Stat_SetMod(STAT_INT, Stat_GetMod(STAT_INT) + iIntelligenceBonus);
 
-	int iHitpointIncrease = static_cast<int>(pItem->GetDefNum("BONUSHITS", true, true));
+	short iHitpointIncrease = static_cast<short>(pItem->GetDefNum("BONUSHITS", true, true));
 	if (iHitpointIncrease != 0)
 		Stat_SetMax(STAT_STR, Stat_GetMax(STAT_STR) + iHitpointIncrease);
 
-	int iStaminaIncrease = static_cast<int>(pItem->GetDefNum("BONUSSTAM", true, true));
+	short iStaminaIncrease = static_cast<short>(pItem->GetDefNum("BONUSSTAM", true, true));
 	if (iStaminaIncrease != 0)
 		Stat_SetMax(STAT_DEX, Stat_GetMax(STAT_DEX) + iStaminaIncrease);
 
-	int iManaIncrease = static_cast<int>(pItem->GetDefNum("BONUSMANA", true, true));
+	short iManaIncrease = static_cast<short>(pItem->GetDefNum("BONUSMANA", true, true));
 	if (iManaIncrease != 0)
 		Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) + iManaIncrease);
 
@@ -2060,7 +2051,7 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 // OnEat()
 // Generating eating animation
 // also calling @Eat and setting food's level (along with other possible stats 'local.hits',etc?)
-void CChar::EatAnim( LPCTSTR pszName, int iQty )
+void CChar::EatAnim( LPCTSTR pszName, short iQty )
 {
 	ADDTOCALLSTACK("CChar::EatAnim");
 	static const SOUND_TYPE sm_EatSounds[] = { 0x03a, 0x03b, 0x03c };
@@ -2070,14 +2061,14 @@ void CChar::EatAnim( LPCTSTR pszName, int iQty )
 		UpdateAnimate(ANIM_EAT);
 
 	TCHAR * pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EATSOME), static_cast<LPCTSTR>(pszName));
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EATSOME), pszName);
 	Emote(pszMsg);
 
-	int iHits = 0;
-	int iMana = 0;
-	int iStam = Calc_GetRandVal2(3, 6) + (iQty / 5);
-	int iFood = iQty;
-	int iStatsLimit = 0;
+	short iHits = 0;
+	short iMana = 0;
+	short iStam = Calc_GetRandVal2(3, 6) + (iQty / 5);
+	short iFood = iQty;
+	short iStatsLimit = 0;
 	if ( IsTrigUsed(TRIGGER_EAT) )
 	{
 		CScriptTriggerArgs Args;
@@ -2089,11 +2080,11 @@ void CChar::EatAnim( LPCTSTR pszName, int iQty )
 		if ( OnTrigger(CTRIG_Eat, this, &Args) == TRIGRET_RET_TRUE )
 			return;
 
-		iHits = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Hits", true)) + Stat_GetVal(STAT_STR);
-		iMana = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Mana", true)) + Stat_GetVal(STAT_INT);
-		iStam = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Stam", true)) + Stat_GetVal(STAT_DEX);
-		iFood = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Food", true)) + Stat_GetVal(STAT_FOOD);
-		iStatsLimit = static_cast<int>(Args.m_iN1);
+		iHits = static_cast<short>(Args.m_VarsLocal.GetKeyNum("Hits", true)) + Stat_GetVal(STAT_STR);
+		iMana = static_cast<short>(Args.m_VarsLocal.GetKeyNum("Mana", true)) + Stat_GetVal(STAT_INT);
+		iStam = static_cast<short>(Args.m_VarsLocal.GetKeyNum("Stam", true)) + Stat_GetVal(STAT_DEX);
+		iFood = static_cast<short>(Args.m_VarsLocal.GetKeyNum("Food", true)) + Stat_GetVal(STAT_FOOD);
+		iStatsLimit = static_cast<short>(Args.m_iN1);
 	}
 
 	if ( iHits )
@@ -2145,7 +2136,6 @@ bool CChar::Reveal( DWORD dwFlags )
 		}
 	}
 
-	m_StepStealth = 0;
 	StatFlag_Clear(dwFlags);
 	CClient *pClient = GetClient();
 	if ( pClient )
@@ -2159,6 +2149,7 @@ bool CChar::Reveal( DWORD dwFlags )
 	if ( IsStatFlag(STATF_Invisible|STATF_Hidden|STATF_Insubstantial|STATF_Sleeping) )
 		return false;
 
+	m_StepStealth = 0;
 	UpdateMode(NULL, true);
 	SysMessageDefault(DEFMSG_HIDING_REVEALED);
 	return true;
@@ -2709,9 +2700,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 	pCorpse->m_itCorpse.m_facing_dir = m_dirFace;
 	pCorpse->m_uidLink = GetUID();
 
-	// TO-DO: Fix SRC (or 'this') always seeing the corpse to the same dir (it works fine
-	// for nearby clients but not for SRC). Probably it could be something related to the
-	// Update() function making the corpse always get back to same default dir.
+	// TO-DO: Fix corpses always turning to the same dir (DIR_N) after resend it to clients
 
 	if (fFrontFall)
 		pCorpse->m_itCorpse.m_facing_dir = static_cast<DIR_TYPE>(m_dirFace|0x80);
@@ -2755,8 +2744,10 @@ bool CChar::RaiseCorpse( CItemCorpse * pCorpse )
 	if ( pCorpse->GetCount() > 0 )
 	{
 		CItemContainer *pPack = GetPackSafe();
-		for ( CItem *pItem = pCorpse->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+		CItem *pItemNext = NULL;
+		for ( CItem *pItem = pCorpse->GetContentHead(); pItem != NULL; pItem = pItemNext )
 		{
+			pItemNext = pItem->GetNext();
 			if ( pItem->IsType(IT_HAIR) || pItem->IsType(IT_BEARD) )	// hair on corpse was copied!
 				continue;
 
@@ -2796,11 +2787,13 @@ bool CChar::Death()
 	}
 
 	// Look through memories of who I was fighting (make sure they knew they where fighting me)
-	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	CItem *pItemNext = NULL;
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
+		pItemNext = pItem->GetNext();
 		if ( pItem->IsType(IT_EQ_TRADE_WINDOW) )
 		{
-			CItemContainer * pCont = dynamic_cast<CItemContainer *>(pItem);
+			CItemContainer *pCont = dynamic_cast<CItemContainer *>(pItem);
 			if ( pCont )
 			{
 				pCont->Trade_Delete();
@@ -2922,7 +2915,7 @@ bool CChar::Death()
 		if ( pClient )
 		{
 			// OSI uses PacketDeathMenu to update client screen on death.
-			// If the user disable this packet, it must be updated using PacketPlayerPosition
+			// If the user disable this packet, it must be updated using addPlayerUpdate()
 			if ( g_Cfg.m_iPacketDeathAnimation )
 			{
 				// Display death animation to client ("You are dead")
@@ -2930,7 +2923,10 @@ bool CChar::Death()
 				new PacketDeathMenu(pClient, PacketDeathMenu::Ghost);
 			}
 			else
-				new PacketPlayerPosition(pClient);
+			{
+				pClient->addPlayerUpdate();
+				pClient->addContainerSetup(GetPack());	// update backpack contents
+			}
 		}
 
 		// Remove the characters which I can't see as dead from the screen
@@ -3152,17 +3148,20 @@ void CChar::CheckRevealOnMove()
 // We are at this location. What will happen?
 // This function is called at every second on ALL chars
 // (even walking or not), so avoid heavy codes here.
-// RETURN: false = we can't move there.
-bool CChar::CheckLocation( bool fStanding )
+// RETURN:
+//	true = we can move there
+//	false = we can't move there
+//	default = we teleported
+TRIGRET_TYPE CChar::CheckLocation( bool fStanding )
 {
 	ADDTOCALLSTACK("CChar::CheckLocation");
 
 	CClient *pClient = GetClient();
 	if ( pClient && pClient->m_pHouseDesign )
 	{
-		// stepping on items doesn't trigger anything whilst in design mode
+		// Stepping on items doesn't trigger anything whilst in design mode
 		if ( pClient->m_pHouseDesign->GetDesignArea().IsInside2d(GetTopPoint()) )
-			return false;
+			return TRIGRET_RET_TRUE;
 
 		pClient->m_pHouseDesign->EndCustomize(true);
 	}
@@ -3183,15 +3182,16 @@ bool CChar::CheckLocation( bool fStanding )
 		if ( IsTrigUsed(TRIGGER_STEP) )
 		{
 			if ( m_pArea->OnRegionTrigger( this, RTRIG_STEP ) == TRIGRET_RET_TRUE )
-				return false;
+				return TRIGRET_RET_FALSE;
 
 			CRegionBase *pRoom = GetTopPoint().GetRegion(REGION_TYPE_ROOM);
 			if ( pRoom && pRoom->OnRegionTrigger( this, RTRIG_STEP ) == TRIGRET_RET_TRUE )
-				return false;
+				return TRIGRET_RET_FALSE;
 		}
 	}
 
 	bool fStepCancel = false;
+	bool bSpellHit = false;
 	CWorldSearch AreaItems( GetTopPoint() );
 	for (;;)
 	{
@@ -3208,22 +3208,24 @@ bool CChar::CheckLocation( bool fStanding )
 			continue;
 		if ( IsTrigUsed(TRIGGER_STEP) || IsTrigUsed(TRIGGER_ITEMSTEP) )
 		{
-			CScriptTriggerArgs Args( fStanding? 1 : 0 );
-			if ( pItem->OnTrigger( ITRIG_STEP, this , &Args ) == TRIGRET_RET_TRUE )
+			CScriptTriggerArgs Args(fStanding ? 1 : 0);
+			TRIGRET_TYPE iRet = pItem->OnTrigger(ITRIG_STEP, this, &Args);
+			if ( iRet == TRIGRET_RET_TRUE )		// block walk
 			{
-				fStepCancel	= true;
+				fStepCancel = true;
 				continue;
 			}
+			if ( iRet == TRIGRET_RET_HALFBAKED )	// allow walk, skipping hardcoded checks below
+				continue;
 		}
 
-		bool bSpellHit = false;
 		switch ( pItem->GetType() )
 		{
 			case IT_WEB:
 				if ( fStanding )
 					continue;
 				if ( Use_Item_Web(pItem) )	// we got stuck in a spider web
-					return false;
+					return TRIGRET_RET_FALSE;
 				continue;
 			case IT_FIRE:
 				{
@@ -3260,10 +3262,10 @@ bool CChar::CheckLocation( bool fStanding )
 				continue;
 			case IT_MOONGATE:
 			case IT_TELEPAD:
-				if ( fStanding && !IsStatFlag(STATF_Freeze|STATF_Stone) )
+				if ( fStanding )
 					continue;
 				Use_MoonGate(pItem);
-				return true;
+				return TRIGRET_RET_DEFAULT;
 			case IT_SHIP_PLANK:
 			case IT_ROPE:
 				if ( !fStanding && !IsStatFlag(STATF_Hovering) )
@@ -3272,7 +3274,7 @@ bool CChar::CheckLocation( bool fStanding )
 					if ( MoveToValidSpot(m_dirFace, g_Cfg.m_iMaxShipPlankTeleport, 1, true) )
 					{
 						//pItem->SetTimeout(5 * TICK_PER_SEC);	// autoclose the plank behind us
-						return true;
+						return TRIGRET_RET_TRUE;
 					}
 				}
 				continue;
@@ -3282,40 +3284,40 @@ bool CChar::CheckLocation( bool fStanding )
 	}
 
 	if ( fStanding || fStepCancel )
-		return false;
+		return TRIGRET_RET_FALSE;
 
 	// Check the map teleporters in this CSector (if any)
-	const CPointMap & pt = GetTopPoint();
+	const CPointMap &pt = GetTopPoint();
 	CSector *pSector = pt.GetSector();
 	if ( !pSector )
-		return false;
+		return TRIGRET_RET_FALSE;
 
 	const CTeleport *pTeleport = pSector->GetTeleport(pt);
 	if ( !pTeleport )
-		return true;
+		return TRIGRET_RET_TRUE;
 
 	if ( m_pNPC )
 	{
 		if ( !pTeleport->bNpc )
-			return false;
+			return TRIGRET_RET_FALSE;
 
 		if ( m_pNPC->m_Brain == NPCBRAIN_GUARD )
 		{
 			// Guards won't gate into unguarded areas.
 			const CRegionWorld *pArea = dynamic_cast<CRegionWorld*>(pTeleport->m_ptDst.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA));
 			if ( !pArea || !pArea->IsGuarded() )
-				return false;
+				return TRIGRET_RET_FALSE;
 		}
 		if ( Noto_IsCriminal() )
 		{
 			// wont teleport to guarded areas.
 			const CRegionWorld *pArea = dynamic_cast<CRegionWorld*>(pTeleport->m_ptDst.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA));
 			if ( !pArea || pArea->IsGuarded() )
-				return false;
+				return TRIGRET_RET_FALSE;
 		}
 	}
 	Spell_Teleport(pTeleport->m_ptDst, true, false, false);
-	return true;
+	return TRIGRET_RET_DEFAULT;
 }
 
 // Moving to a new region. or logging out (not in any region)
@@ -3363,8 +3365,7 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 			if ( pNewArea->IsFlag(REGION_FLAG_ANNOUNCE) && !pNewArea->IsInside2d( GetTopPoint()) )	// new area.
 			{
 				CVarDefContStr * pVarStr = dynamic_cast <CVarDefContStr *>( pNewArea->m_TagDefs.GetKey("ANNOUNCEMENT"));
-				SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_REGION_ENTER ),
-					( pVarStr != NULL ) ? static_cast<LPCTSTR>(pVarStr->GetValStr()) : static_cast<LPCTSTR>(pNewArea->GetName()));
+				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_ENTER), (pVarStr != NULL) ? pVarStr->GetValStr() : pNewArea->GetName());
 			}
 
 			// Is it guarded / safe / non-pvp?
@@ -3376,15 +3377,13 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 				{
 					if ( pNewArea->IsGuarded() )	// now under the protection
 					{
-						CVarDefContStr	*pVarStr = dynamic_cast <CVarDefContStr *>( pNewArea->m_TagDefs.GetKey("GUARDOWNER"));
-						SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_REGION_GUARDS_1 ),
-							( pVarStr != NULL ) ? static_cast<LPCTSTR>(pVarStr->GetValStr()) : g_Cfg.GetDefaultMsg( DEFMSG_MSG_REGION_GUARD_ART ) );
+						CVarDefContStr *pVarStr = dynamic_cast<CVarDefContStr *>(pNewArea->m_TagDefs.GetKey("GUARDOWNER"));
+						SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDS_1), (pVarStr != NULL) ? pVarStr->GetValStr() : g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARD_ART));
 					}
 					else							// have left the protection
 					{
-						CVarDefContStr	*pVarStr = dynamic_cast <CVarDefContStr *>( m_pArea->m_TagDefs.GetKey("GUARDOWNER"));
-						SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_REGION_GUARDS_2 ),
-							( pVarStr != NULL ) ? static_cast<LPCTSTR>(pVarStr->GetValStr()) : g_Cfg.GetDefaultMsg( DEFMSG_MSG_REGION_GUARD_ART ) );
+						CVarDefContStr *pVarStr = dynamic_cast<CVarDefContStr *>(m_pArea->m_TagDefs.GetKey("GUARDOWNER"));
+						SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDS_2), (pVarStr != NULL) ? pVarStr->GetValStr() : g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARD_ART));
 					}
 				}
 				if ( redNew != redOld )
@@ -3916,10 +3915,11 @@ bool CChar::OnTick()
 	if ( iTimeDiff >= TICK_PER_SEC )		// don't bother with < 1 sec timers on the checks below
 	{
 		// Decay equipped items (memories/spells)
-		CItem *pItem = GetContentHead();
-		for ( size_t iCount = 0; pItem != NULL; pItem = GetAt(++iCount) )
+		CItem *pItemNext = NULL;
+		for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 		{
 			EXC_TRYSUB("Ticking items");
+			pItemNext = pItem->GetNext();
 			if ( !pItem->IsTimerSet() || !pItem->IsTimerExpired() )
 				continue;
 			if ( !OnTickEquip(pItem) )

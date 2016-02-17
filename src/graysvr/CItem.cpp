@@ -399,7 +399,7 @@ LPCTSTR const CItem::sm_szTemplateTable[ITC_QTY+1] =
 	"ITEMNEWBIE",
 	"NEWBIESWAP",
 	"SELL",
-	NULL,
+	NULL
 };
 
 CItem * CItem::CreateTemplate( ITEMID_TYPE id, CObjBase * pCont, CChar * pSrc )	// static
@@ -689,7 +689,7 @@ int CItem::FixWeirdness()
 			}
 			else
 			{
-				DEBUG_ERR(( "'%s' Bad Link to 0%lx\n", static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(m_uidLink)));
+				DEBUG_ERR(("'%s' Bad Link to 0%lx\n", GetName(), static_cast<DWORD>(m_uidLink)));
 				m_uidLink.InitUID();
 				iResultCode = 0x2205;
 				return( iResultCode );	// get rid of it.
@@ -893,7 +893,7 @@ int CItem::FixWeirdness()
 			// blank unlinked keys.
 			if ( m_itKey.m_lockUID && ! IsValidUID())
 			{
-				DEBUG_ERR(( "Key '%s' has bad link to 0%lx, �blanked out\n", static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(m_itKey.m_lockUID)));
+				DEBUG_ERR(("Key '%s' has bad link to 0%lx, blanked out\n", GetName(), static_cast<DWORD>(m_itKey.m_lockUID)));
 				m_itKey.m_lockUID.ClearUID();
 			}
 			break;
@@ -1414,22 +1414,22 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	return true;
 }
 
-bool CItem::MoveNearObj( const CObjBaseTemplate * pObj, int iSteps, WORD wCan )
+bool CItem::MoveNearObj( const CObjBaseTemplate *pObj, int iSteps )
 {
 	ADDTOCALLSTACK("CItem::MoveNearObj");
 	// Put in the same container as another item.
 	ASSERT(pObj);
-	CItemContainer * pPack = (dynamic_cast <CItemContainer*> (pObj->GetParent()));
-	if ( pPack != NULL )
+	CItemContainer *pPack = dynamic_cast<CItemContainer *>(pObj->GetParent());
+	if ( pPack )
 	{
 		// Put in same container (make sure they don't get re-combined)
-		pPack->ContentAdd( this, pObj->GetContainedPoint());
-		return( true );
+		pPack->ContentAdd(this, pObj->GetContainedPoint());
+		return true;
 	}
 	else 
 	{
 		// Equipped or on the ground so put on ground nearby.
-		return CObjBase::MoveNearObj( pObj, iSteps, wCan );
+		return CObjBase::MoveNearObj(pObj, iSteps);
 	}
 }
 
@@ -1672,13 +1672,8 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 		case IT_LIGHT_LIT:
 		case IT_LIGHT_OUT:
 			// how many charges ?
-			if ( m_itLight.m_charges != USHRT_MAX )
-			{
-				if ( Light_GetOverride(pItemDef) )
-				{
-					len += sprintf( pTemp+len, " (%d %s)", m_itLight.m_charges, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_CHARGES ) );
-				}
-			}
+			if ( !IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC) )
+				len += sprintf(pTemp + len, " (%d %s)", m_itLight.m_charges, g_Cfg.GetDefaultMsg(DEFMSG_ITEMTITLE_CHARGES));
 			break;
 
 		default:
@@ -4013,7 +4008,7 @@ int CItem::Armor_GetDefense() const
 		return 0;
 
 	int iVal = m_defenseBase + m_ModAr;
-	if ( IsSetOF(OF_ScaleDamageByDurability) && m_itArmor.m_Hits_Cur > 0 && m_itArmor.m_Hits_Cur < m_itArmor.m_Hits_Max )
+	if ( IsSetOF(OF_ScaleDamageByDurability) && m_itArmor.m_Hits_Max > 0 && m_itArmor.m_Hits_Cur < m_itArmor.m_Hits_Max )
 	{
 		int iRepairPercent = 50 + ((50 * m_itArmor.m_Hits_Cur) / m_itArmor.m_Hits_Max);
 		iVal = IMULDIV( iVal, iRepairPercent, 100 );
@@ -4037,7 +4032,7 @@ int CItem::Weapon_GetAttack(bool bGetRange) const
 	if ( bGetRange )
 		iVal += m_attackRange;
 
-	if ( IsSetOF(OF_ScaleDamageByDurability) && m_itArmor.m_Hits_Cur > 0 && m_itArmor.m_Hits_Cur < m_itArmor.m_Hits_Max )
+	if ( IsSetOF(OF_ScaleDamageByDurability) && m_itArmor.m_Hits_Max > 0 && m_itArmor.m_Hits_Cur < m_itArmor.m_Hits_Max )
 	{
 		int iRepairPercent = 50 + ((50 * m_itArmor.m_Hits_Cur) / m_itArmor.m_Hits_Max);
 		iVal = IMULDIV( iVal, iRepairPercent, 100 );
@@ -4060,10 +4055,10 @@ SKILL_TYPE CItem::Weapon_GetSkill() const
 	int iSkillOverride = static_cast<int>(m_TagDefs.GetKeyNum("OVERRIDE_SKILL", true) - 1);
 	if ( iSkillOverride == -1)
 		iSkillOverride = static_cast<int>(m_TagDefs.GetKeyNum("OVERRIDE.SKILL", true) - 1);
-	if ( iSkillOverride > SKILL_NONE && iSkillOverride < SKILL_MAX )
+	if ( iSkillOverride > SKILL_NONE && iSkillOverride < g_Cfg.m_iMaxSkill )
 		return static_cast<SKILL_TYPE>(iSkillOverride);
 
-	if ( pItemDef->m_iSkill > SKILL_NONE && pItemDef->m_iSkill < SKILL_MAX )
+	if ( pItemDef->m_iSkill > SKILL_NONE && pItemDef->m_iSkill < static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill) )
 		return pItemDef->m_iSkill;
 
 	switch ( pItemDef->GetType() )
@@ -4219,9 +4214,9 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 	{
 		DIR_TYPE dir = ptCoords.GetDir(pBoatSighted->GetTopPoint());
 		if (iBoatSighted == 1)
-			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SHIP_SINGLE), static_cast<LPCTSTR>(pBoatSighted->GetName()), CPointBase::sm_szDirs[dir] );
+			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SHIP_SINGLE), pBoatSighted->GetName(), CPointBase::sm_szDirs[dir]);
 		else
-			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SHIP_MANY), static_cast<LPCTSTR>(CPointBase::sm_szDirs[dir]));
+			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SHIP_MANY), CPointBase::sm_szDirs[dir]);
 		strcat( pResult, sSearch);
 	}
 
@@ -4292,45 +4287,37 @@ LPCTSTR CItem::Use_Sextant( CPointMap pntCoords ) const
 bool CItem::Use_Light()
 {
 	ADDTOCALLSTACK("CItem::Use_Light");
-	ASSERT( IsType(IT_LIGHT_OUT) || IsType(IT_LIGHT_LIT) );
+	ASSERT(IsType(IT_LIGHT_OUT) || IsType(IT_LIGHT_LIT));
 
-	if ( IsType(IT_LIGHT_OUT) && IsItemInContainer())
-		return( false );
+	if ( IsType(IT_LIGHT_OUT) && (m_itLight.m_burned || IsItemInContainer()) )
+		return false;
 
-	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(Light_GetOverride());
-	if ( id == ITEMID_NOTHING )
-		return( false );
-
-	SetID( id );	// this will set the new m_typez
-
-	if ( IsType(IT_LIGHT_LIT))
+	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(m_TagDefs.GetKeyNum("OVERRIDE_LIGHTID", true));
+	if ( !id )
 	{
-		SetTimeout( 10*60*TICK_PER_SEC );
-		if ( ! m_itLight.m_charges )
-			m_itLight.m_charges = 20;
+		id = static_cast<ITEMID_TYPE>(Item_GetDef()->m_ttEquippable.m_Light_ID.GetResIndex());
+		if ( !id )
+			return false;
 	}
 
-	Sound( 0x226 );
-	RemoveFromView();
+	SetID(id);
 	Update();
-	return( true );
+
+	if ( IsType(IT_LIGHT_LIT) )
+	{
+		Sound(0x47);
+		SetTimeout(60 * TICK_PER_SEC);
+		if ( !m_itLight.m_charges )
+			m_itLight.m_charges = 20;
+	}
+	else if ( IsType(IT_LIGHT_OUT) )
+	{
+		Sound(m_itLight.m_burned ? 0x4b8 : 0x3be);
+		SetDecayTime();
+	}
+
+	return true;
 }
-
-int CItem::Light_GetOverride(const CItemBase * pBase) const
-{
-	ADDTOCALLSTACK("CItem::Light_GetOverride");
-	if ( !pBase )
-		pBase = Item_GetDef();
-
-	int ribReturn = pBase->m_ttEquippable.m_Light_ID.GetResIndex();
-
-	int iBase = static_cast<int>(m_TagDefs.GetKeyNum("OVERRIDE_LIGHTID",true));
-	if ( iBase )
-		ribReturn = iBase;
-
-	return( ribReturn );
-}
-
 
 int CItem::Use_LockPick( CChar * pCharSrc, bool fTest, bool fFail )
 {
@@ -4894,9 +4881,9 @@ forcedamage:
 			{
 				// Tell hitter they scored !
 				if (pChar && pChar != pSrc)
-					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE1), static_cast<LPCTSTR>(pChar->GetName()), static_cast<LPCTSTR>(GetName()));
+					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE1), pChar->GetName(), GetName());
 				else
-					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE2), static_cast<LPCTSTR>(GetName()));
+					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE2), GetName());
 				pSrc->SysMessage(pszMsg);
 			}
 		}
@@ -4910,10 +4897,10 @@ forcedamage:
 				{
 					int iPercent = Armor_GetRepairPercent();
 					if (pChar->Skill_GetAdjusted(SKILL_ARMSLORE) / 10 > iPercent)
-						sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE3), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(Armor_GetRepairDesc()));
+						sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE3), GetName(), Armor_GetRepairDesc());
 				}
 				if (!*pszMsg)
-					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE4), static_cast<LPCTSTR>(GetName()));
+					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE4), GetName());
 				pChar->SysMessage(pszMsg);
 			}
 		}
@@ -5082,40 +5069,19 @@ bool CItem::OnTick()
 
 		case IT_LIGHT_LIT:
 			{
-				if ( m_itLight.m_charges == USHRT_MAX )//infinit charges
+				EXC_SET("default behaviour::IT_LIGHT_LIT");
+				if ( IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC) )	// infinite charges
 					return true;
 
-				// use up the charges that this has .
-				EXC_SET("default behaviour::IT_LIGHT_LIT");
+				m_itLight.m_charges--;
 				if ( m_itLight.m_charges > 0 )
-				{
-					m_itLight.m_charges --;
-					SetTimeout( 10*60*TICK_PER_SEC );
-				}
+					SetTimeout(60 * TICK_PER_SEC);
 				else
 				{
-					// Torches should just go away but lanterns etc should not.
-					CItemBase * pItemDef = Item_GetDef();
-					ITEMID_TYPE id = static_cast<ITEMID_TYPE>(pItemDef->m_ttEquippable.m_Light_Burnout.GetResIndex());
-
-					if ( id == GetID())
-					{
-						// It really has infinite charges I guess.
-						m_itLight.m_charges = USHRT_MAX;
-						return true;
-					}
-					Emote( g_Cfg.GetDefaultMsg( DEFMSG_LIGHTSRC_BURN_OUT ) );
-					if ( ! id )	// burn out and be gone.
-						return false ;
-					else
-					{
-						if ( IsAttr(ATTR_DECAY) ) //if attr_decay is set, just remove.
-							return false;
-						// Transform to the next shape.
-						m_itLight.m_charges = 0;
-						SetID(id);
-						Update();
-					}
+					// Burn out the light
+					Emote(g_Cfg.GetDefaultMsg(DEFMSG_LIGHTSRC_BURN_OUT));
+					m_itLight.m_burned = 1;
+					Use_Light();
 				}
 			}
 			return true;

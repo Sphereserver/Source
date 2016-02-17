@@ -505,7 +505,6 @@ public:
 			int	m_junk1;
 			int		   m_StrReq;	// REQSTR= Strength required to weild weapons/armor.
 			RESOURCE_ID_BASE m_Light_ID;	// TDATA3=Change light state to on/off
-			RESOURCE_ID_BASE m_Light_Burnout; // TDATA4 = what happens when burns out ? 1=delete ie.torch, 0=nothing ie. lantern
 		} m_ttEquippable;
 
 		// IT_WEAPON_BOW

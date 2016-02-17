@@ -1247,7 +1247,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 			{
 				SetAlignType(static_cast<STONEALIGN_TYPE>(s.GetArgVal()));
 				TCHAR *pszMsg = Str_GetTemp();
-				sprintf(pszMsg, "%s is now a %s %s\n", static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(GetAlignName()), static_cast<LPCTSTR>(GetTypeName()));
+				sprintf(pszMsg, "%s is now a %s %s\n", GetName(), GetAlignName(), GetTypeName());
 				Speak(pszMsg);
 			}
 			break;
@@ -1436,7 +1436,7 @@ CStoneMember * CItemStone::AddRecruit(const CChar * pChar, STONEPRIV_TYPE iPriv,
 	const CItemStone * pStone = pChar->Guild_Find( GetMemoryType());
 	if ( pStone && pStone != this )
 	{
-		sprintf(z, "%s appears to belong to %s. Must resign previous %s", static_cast<LPCTSTR>(pChar->GetName()), static_cast<LPCTSTR>(pStone->GetName()), static_cast<LPCTSTR>(GetTypeName()));
+		sprintf(z, "%s appears to belong to %s. Must resign previous %s", pChar->GetName(), pStone->GetName(), GetTypeName());
 		Speak(z);
 		return NULL;
 	}
@@ -1453,7 +1453,7 @@ CStoneMember * CItemStone::AddRecruit(const CChar * pChar, STONEPRIV_TYPE iPriv,
 		// I'm already a member of some sort.
 		if ( pMember->GetPriv() == iPriv || iPriv == STONEPRIV_CANDIDATE )
 		{
-			sprintf(z, "%s is already %s %s.", static_cast<LPCTSTR>(pChar->GetName()), static_cast<LPCTSTR>(pMember->GetPrivName()), static_cast<LPCTSTR>(GetName()));
+			sprintf(z, "%s is already %s %s.", pChar->GetName(), pMember->GetPrivName(), GetName());
 			Speak(z);
 			return NULL;
 		}
@@ -1477,7 +1477,7 @@ CStoneMember * CItemStone::AddRecruit(const CChar * pChar, STONEPRIV_TYPE iPriv,
 		ElectMaster();	// just in case this is the first.
 	}
 
-	sprintf(z, "%s is now %s %s", static_cast<LPCTSTR>(pChar->GetName()), static_cast<LPCTSTR>(pMember->GetPrivName()), static_cast<LPCTSTR>(GetName()));
+	sprintf(z, "%s is now %s %s", pChar->GetName(), pMember->GetPrivName(), GetName());
 	Speak(z);
 	return pMember;
 }

@@ -300,8 +300,10 @@ bool CChar::NPC_StablePetRetrieve( CChar * pCharPlayer )
 		return false;
 
 	int iCount = 0;
-	for ( CItem *pItem = GetBank()->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	CItem *pItemNext = NULL;
+	for ( CItem *pItem = GetBank()->GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
+		pItemNext = pItem->GetNext();
 		if ( pItem->IsType(IT_FIGURINE) && pItem->m_uidLink == pCharPlayer->GetUID() )
 		{
 			if ( !pCharPlayer->Use_Figurine(pItem) )
@@ -483,9 +485,9 @@ int CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 
 	// Train npc skill cap
 	int iMaxDecrease = 0;
-	if ((pCharSrc->GetSkillTotal() + iTrainVal) > pCharSrc->Skill_GetMax(SKILL_MAX))
+	if ( (pCharSrc->GetSkillTotal() + iTrainVal) > pCharSrc->Skill_GetMax(static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill)) )
 	{	
-		for (size_t i = SKILL_NONE + 1; i < g_Cfg.m_iMaxSkill; i++ )
+		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 		{
 			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
 				continue;
@@ -569,9 +571,9 @@ bool CChar::NPC_TrainSkill( CChar * pCharSrc, SKILL_TYPE skill, int toTrain )
 {
 	ADDTOCALLSTACK("CChar::NPC_TrainSkill");
 	int iTrain = toTrain;
-	if ((pCharSrc->GetSkillTotal() + toTrain) > pCharSrc->Skill_GetMax(SKILL_MAX))
+	if ( (pCharSrc->GetSkillTotal() + toTrain) > pCharSrc->Skill_GetMax(static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill)) )
 	{	
-		for (size_t i = SKILL_NONE + 1; i < g_Cfg.m_iMaxSkill; i++ )
+		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 		{
 			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
 				continue;
@@ -628,8 +630,7 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 	// Did they mention a skill name i recognize ?
 	TemporaryString pszMsg;
 
-	size_t i = SKILL_NONE + 1;
-	for ( ; i < g_Cfg.m_iMaxSkill; i++ )
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
 		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
 			continue;
@@ -661,7 +662,7 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 	LPCTSTR pPrvSkill = NULL;
 
 	size_t iCount = 0;
-	for ( i = (SKILL_NONE + 1); i < g_Cfg.m_iMaxSkill; i++ )
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
 		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
 			continue;
@@ -915,7 +916,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 	MoveToChar(pMe);
 
 	EXC_SET("Check Location");
-	if ( !CheckLocation(false) )	// Look for teleports etc.
+	if ( CheckLocation(false) == TRIGRET_RET_FALSE )	// check if I stepped on any item/teleport
 	{
 		SetTopPoint(ptOld);		// we already moved, so move back to previous location
 		return 2;
@@ -983,7 +984,7 @@ bool CChar::NPC_LookAtCharGuard( CChar * pChar, bool bFromTrigger )
 			return( false );
 
 		TCHAR *pszMsg = Str_GetTemp();
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg(sm_szSpeakGuardJeer[ Calc_GetRandVal( COUNTOF( sm_szSpeakGuardJeer )) ]), static_cast<LPCTSTR>(pChar->GetName()));
+		sprintf(pszMsg, g_Cfg.GetDefaultMsg(sm_szSpeakGuardJeer[ Calc_GetRandVal( COUNTOF( sm_szSpeakGuardJeer )) ]), pChar->GetName());
 		Speak(pszMsg);
 		UpdateDir(pChar);
 		return false;
@@ -1303,10 +1304,8 @@ bool CChar::NPC_LookAtChar( CChar * pChar, int iDist )
 	{
 		// follow my owner again. (Default action)
 		m_Act_Targ = pChar->GetUID();
-		m_atFollowTarg.m_DistMin = 1;
-		m_atFollowTarg.m_DistMax = 6;
 		m_pNPC->m_Act_Motivation = 50;
-		Skill_Start( Skill_GetActive() == NPCACT_FOLLOW_TARG? NPCACT_FOLLOW_TARG : NPCACT_GUARD_TARG );
+		Skill_Start(Skill_GetActive() == NPCACT_FOLLOW_TARG ? NPCACT_FOLLOW_TARG : NPCACT_GUARD_TARG);
 		return true;
 	}
 
@@ -1554,7 +1553,7 @@ void CChar::NPC_Act_Guard()
 	}
 
 	// Target is out of range or doesn't need protecting, so just follow for now
-	NPC_LookAtChar( pChar, 1 );
+	//NPC_LookAtChar(pChar, 1);
 	NPC_Act_Follow();
 }
 
@@ -2439,7 +2438,7 @@ bool CChar::NPC_Act_Talk()
 				g_Cfg.GetDefaultMsg( DEFMSG_NPC_GENERIC_GONE_2 )
 			};
 			TCHAR *pszMsg = Str_GetTemp();
-			sprintf(pszMsg, sm_szText[ Calc_GetRandVal( COUNTOF( sm_szText )) ], static_cast<LPCTSTR>(pChar->GetName()));
+			sprintf(pszMsg, sm_szText[ Calc_GetRandVal( COUNTOF( sm_szText )) ], pChar->GetName());
 			Speak(pszMsg);
 		}
 		return( false );
@@ -2483,7 +2482,7 @@ void CChar::NPC_Act_GoHome()
 		}
 		else
 		{
-			g_Log.Event( LOGL_WARN, "Guard 0%lx '%s' has no guard post (%s)!\n", static_cast<DWORD>(GetUID()), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(GetTopPoint().WriteUsed()));
+			g_Log.Event( LOGL_WARN, "Guard 0%lx '%s' has no guard post (%s)!\n", static_cast<DWORD>(GetUID()), GetName(), GetTopPoint().WriteUsed());
 
 			// If we arent conjured and still got no valid home
 			// then set our status to conjured and take our life.
@@ -2588,7 +2587,7 @@ void CChar::NPC_Act_Looting()
 	if ( pCorpse )
 		Speak(g_Cfg.GetDefaultMsg(DEFMSG_LOOT_RUMMAGE), HUE_TEXT_DEF, TALKMODE_EMOTE);
 
-	ItemBounce(pItem);
+	ItemBounce(pItem, false);
 }
 
 void CChar::NPC_Act_Flee()
@@ -2983,12 +2982,13 @@ void CChar::NPC_Act_Idle()
 	SetTimeout(TICK_PER_SEC * 1 + Calc_GetRandLLVal(TICK_PER_SEC*2));
 }
 
-bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
+bool CChar::NPC_OnItemGive( CChar *pCharSrc, CItem *pItem )
 {
 	ADDTOCALLSTACK("CChar::NPC_OnItemGive");
-	// Someone (Player) is giving me an item. Return true = accept
+	// Someone (Player) is giving me an item.
+	// return true = accept
 
-	if ( !pCharSrc || !m_pNPC )
+	if ( !m_pNPC || !pCharSrc )
 		return false;
 
 	CScriptTriggerArgs Args(pItem);
@@ -2998,13 +2998,9 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 			return false;
 	}
 
-	//	giving item to own pet
+	// Giving item to own pet
 	if ( NPC_IsOwnedBy(pCharSrc) )
 	{
-		if ( pCharSrc->IsPriv(PRIV_GM) )
-			return ItemEquip(pItem);
-
-		//	stuff and gold to vendor
 		if ( NPC_IsVendor() )
 		{
 			if ( pItem->IsType(IT_GOLD) )
@@ -3020,56 +3016,44 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 			return true;
 		}
 
-		//	humanoids
-		if ( NPC_CanSpeak() )
+		if ( Food_CanEat(pItem) )
 		{
-			if ( Food_CanEat(pItem) )
+			if ( Use_Eat(pItem, pItem->GetAmount()) )
 			{
-				if (( Food_GetLevelPercent() < 100 ) && Use_Eat(pItem) )
-				{
+				if ( NPC_CanSpeak() )
 					Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_FOOD_TY));
-					return true;
-				}
-				else
-					Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_FOOD_NO));
 
-				return false;
-			}
-
-			if ( pItem->IsType(IT_GOLD))
-				Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_THANKS));
-			else if ( !CanCarry(pItem) )
-			{
-				Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_WEAK));
-				return false;
-			}
-
-			if ( Use_Item(pItem) )
+				if ( !pItem->IsDeleted() )		// if the NPC don't eat the full stack, bounce back the remaining amount on player backpack
+					pCharSrc->ItemBounce(pItem);
 				return true;
+			}
 
-			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DROP));
-			GetPackSafe()->ContentAdd(pItem);
-			return true;
+			if ( NPC_CanSpeak() )
+				Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_FOOD_NO));
+			return false;
 		}
 
-		switch ( pItem->GetType() )
+		if ( pCharSrc->IsPriv(PRIV_GM) )
+			return ItemBounce(pItem);
+
+		if ( !CanCarry(pItem) )
 		{
-			case IT_POTION:
-			case IT_DRINK:
-			case IT_PITCHER:
-			case IT_WATER_WASH:
-			case IT_BOOZE:
-				if ( Use_Item(pItem) )
-					return true;
-			default:
-				break;
+			if ( NPC_CanSpeak() )
+				Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_WEAK));
+			return false;
 		}
+
+		// Place item on backpack
+		CItemContainer *pPack = GetPack();
+		if ( !pPack )
+			return false;
+		pPack->ContentAdd(pItem);
+		return true;
 	}
 
-	// have i paid the npc due to some order?
 	if ( pItem->IsType(IT_GOLD) )
 	{
-		CItemMemory * pMemory = Memory_FindObj(pCharSrc);
+		CItemMemory *pMemory = Memory_FindObj(pCharSrc);
 		if ( pMemory )
 		{
 			switch ( pMemory->m_itEqMemory.m_Action )
@@ -3082,55 +3066,29 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 					break;
 			}
 		}
-	}
 
-	//	do i wish to take this item?
-
-	CItemContainer * pPack = NULL;
-	if ( !NPC_WantThisItem(pItem) )
-	{
-		if ( IsTrigUsed(TRIGGER_NPCREFUSEITEM) )
-		{
-			if ( OnTrigger(CTRIG_NPCRefuseItem, pCharSrc, &Args) != TRIGRET_RET_TRUE )
-			{
-				if ( pCharSrc->IsClient() )
-					pCharSrc->GetClient()->addObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_DONTWANT), this);
-				return false;
-			} 
-		}
-
-		if ( pPack == NULL )
-			pPack = GetPackSafe();
-		pPack->ContentAdd( pItem );
-		return true;
-	}
-
-	//	gold goes to the bankbox or as a financial support to the NPC
-	if ( pItem->IsType(IT_GOLD) )
-	{
 		if ( m_pNPC->m_Brain == NPCBRAIN_BANKER )
 		{
-			TCHAR *pszMsg = Str_GetTemp();
-			sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_BANKER_DEPOSIT), pItem->GetAmount());
-			Speak(pszMsg);
-			pCharSrc->GetBank()->ContentAdd(pItem);
+			CItemContainer *pBankBox = pCharSrc->GetPackSafe();
+			if ( !pBankBox )
+				return false;
+
+			if ( NPC_CanSpeak() )
+			{
+				TCHAR *pszMsg = Str_GetTemp();
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_BANKER_DEPOSIT), pItem->GetAmount());
+				Speak(pszMsg);
+			}
+
+			pBankBox->ContentAdd(pItem);
 			return true;
 		}
-
-		if ( NPC_CanSpeak() )
-		{
-			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_THANKS));
-		}
-		if ( pPack == NULL )
-			pPack = GetPackSafe();
-		pPack->ContentAdd( pItem );
-		return true;
 	}
 
-	//	dropping item on vendor means quick sell
-	if ( NPC_IsVendor() )
+	if ( NPC_IsVendor() && !IsStatFlag(STATF_Pet) )
 	{
-		if ( pCharSrc->IsClient() && !IsStatFlag(STATF_Pet) )
+		// Dropping item on vendor means quick sell
+		if ( pCharSrc->IsClient() )
 		{
 			VendorItem item;
 			item.m_serial = pItem->GetUID();
@@ -3140,54 +3098,32 @@ bool CChar::NPC_OnItemGive( CChar * pCharSrc, CItem * pItem )
 		return false;
 	}
 
-	// The NPC might want it ?
-	switch ( m_pNPC->m_Brain )
+	if ( !NPC_WantThisItem(pItem) )
 	{
-		case NPCBRAIN_DRAGON:
-		case NPCBRAIN_ANIMAL:
-		case NPCBRAIN_MONSTER:
-			// Might want food ?
-			if ( Food_CanEat(pItem))
+		if ( IsTrigUsed(TRIGGER_NPCREFUSEITEM) )
+		{
+			if ( OnTrigger(CTRIG_NPCRefuseItem, pCharSrc, &Args) != TRIGRET_RET_TRUE )
 			{
-				// ??? May know it is poisoned ?
-				if ( pItem->m_itFood.m_poison_skill )
-				{
-					if ( Calc_GetRandVal2(1, pItem->m_itFood.m_poison_skill) < (Skill_GetBase(SKILL_TASTEID) / 10) )
-					{
-						if ( NPC_CanSpeak() )
-						{
-							Speak(g_Cfg.GetDefaultMsg(DEFMSG_MSG_MURDERER));
-						}
-						// PC attacks NPC
-						return false;
-					}
-				}
-				// ??? May not be hungry
-				if ( Use_Eat( pItem, pItem->GetAmount() ))
-					return( true );
+				pCharSrc->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_DONTWANT));
+				return false;
 			}
-			break;
-
-		default:
-			break;
+		}
+		else
+			return false;
 	}
 
 	if ( IsTrigUsed(TRIGGER_NPCACCEPTITEM) )
 	{
-		if ( OnTrigger( CTRIG_NPCAcceptItem, pCharSrc, &Args ) == TRIGRET_RET_TRUE )
-		{
-			pCharSrc->ItemBounce( pItem );
-			pItem->Update();
+		if ( OnTrigger(CTRIG_NPCAcceptItem, pCharSrc, &Args) == TRIGRET_RET_TRUE )
 			return false;
-		}
 	}
 
-	if ( pPack == NULL )
-		pPack = GetPackSafe();
-	pPack->ContentAdd( pItem );
-	pItem->Update();
-
-	return( true );
+	// Place item on backpack
+	CItemContainer *pPack = GetPack();
+	if ( !pPack )
+		return false;
+	pPack->ContentAdd(pItem);
+	return true;
 }
 
 void CChar::NPC_OnTickAction()
@@ -3653,7 +3589,7 @@ void CChar::NPC_ExtraAI()
 	{
 		CItem *pLightSource = LayerFind(LAYER_HAND2);
 		if ( pLightSource && (pLightSource->IsType(IT_LIGHT_OUT) || pLightSource->IsType(IT_LIGHT_LIT)) )
-			ItemBounce(pLightSource);
+			ItemBounce(pLightSource, false);
 	}
 
 	EXC_CATCH;

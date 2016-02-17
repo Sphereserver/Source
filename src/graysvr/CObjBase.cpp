@@ -269,15 +269,15 @@ bool CObjBase::SetNamePool( LPCTSTR pszName )
 	return true;
 }
 
-bool CObjBase::MoveNearObj( const CObjBaseTemplate * pObj, int iSteps, DWORD dwCan )
+bool CObjBase::MoveNearObj( const CObjBaseTemplate *pObj, int iSteps )
 {
 	ADDTOCALLSTACK("CObjBase::MoveNearObj");
-	ASSERT( pObj );
-	if ( pObj->IsDisconnected())	// nothing is "near" a disconnected item.
+	ASSERT(pObj);
+	if ( pObj->IsDisconnected() )	// nothing is "near" a disconnected item.
 		return false;
 
 	pObj = pObj->GetTopLevelObj();
-	return( MoveNear( pObj->GetTopPoint(), iSteps, dwCan ) );
+	return MoveNear(pObj->GetTopPoint(), iSteps);
 }
 
 void CObjBase::r_WriteSafe( CScript & s )
@@ -470,44 +470,39 @@ void CObjBase::SpeakUTF8Ex( const NWORD * pText, HUE_TYPE wHue, TALKMODE_TYPE mo
 	g_World.SpeakUNICODE( this, pText, wHue, mode, font, lang );
 }
 
-bool CObjBase::MoveNear( CPointMap pt, int iSteps, DWORD dwCan )
+bool CObjBase::MoveNear( CPointMap pt, int iSteps )
 {
 	ADDTOCALLSTACK("CObjBase::MoveNear");
-	UNREFERENCED_PARAMETER(dwCan);
 	// Move to nearby this other object.
 	// Actually move it within +/- iSteps
 
-	DIR_TYPE dir = static_cast<DIR_TYPE>(Calc_GetRandVal( DIR_QTY ));
-	for (; iSteps > 0 ; --iSteps )
+	CPointBase ptOld = pt;
+	for ( int i = 0; i < iSteps; i++ )
 	{
-		// Move to the right or left?
-		CPointBase pTest = pt;	// Save this so we can go back to it if we hit a blocking object.
-		pt.Move( dir );
-		if (!pt.IsValidPoint())
+		pt = ptOld;
+		pt.m_x += Calc_GetRandVal2(-iSteps, iSteps);
+		pt.m_y += Calc_GetRandVal2(-iSteps, iSteps);
+		if ( !pt.IsValidPoint() )	// hit the edge of the world, so go back to the previous valid position
 		{
-			// Hit the edge of the world, so go back to the previous valid position
-			pt = pTest;
-			break;	// stopped
+			pt = ptOld;
+			break;
 		}
-
-		dir = GetDirTurn( dir, Calc_GetRandVal(3)-1 );	// stagger ?
-
 	}
 
-	//	deny spawning outside the house, etc
 	if ( IsChar() )
 	{
-		CChar* pCharThis = STATIC_CAST<CChar*>(this);
-		ASSERT(pCharThis != NULL);
+		// Don't move to an position that we can't walk to
+		CChar *pChar = static_cast<CChar *>(this);
+		ASSERT(pChar);
 
-		pCharThis->m_zClimbHeight = 0;
-		if ( pCharThis->CanMoveWalkTo(pt, false, false, dir) == NULL )
-			return( false );
+		pChar->m_zClimbHeight = 0;
+		if ( pChar->CanMoveWalkTo(pt, false) == NULL )
+			return false;
 	}
 
 	if ( MoveTo(pt) )
 	{
-		if (IsItem())
+		if ( IsItem() )
 			Update();
 		return true;
 	}
@@ -2412,7 +2407,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				{
 					if ( pCharSrc == NULL || !pCharSrc->CanTouch(this) )
 					{
-						pSrc->SysMessagef("Can't touch %s object %s", static_cast<LPCTSTR>(s.GetArgStr()), static_cast<LPCTSTR>(GetName()));
+						pSrc->SysMessagef("Can't touch %s object %s", static_cast<LPCTSTR>(s.GetArgStr()), GetName());
 						return false;
 					}
 				}
@@ -2426,7 +2421,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				//DEBUG_WARN(("pszVerb %s",pszVerb));
 				if ( !r_Verb(script, pSrc) )
 				{
-					DEBUG_ERR(( "Can't try %s object %s (0%lx)\n", static_cast<LPCTSTR>(pszVerb), static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(GetUID())));
+					DEBUG_ERR(( "Can't try %s object %s (0%lx)\n", pszVerb, GetName(), static_cast<DWORD>(GetUID())));
 					return( false );
 				}
 			}
@@ -2460,9 +2455,9 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				if ( pNewSrc == NULL )
 				{
 					if ( index == OV_TRYSRC )
-						DEBUG_ERR(( "Can't trysrc %s object %s (0%lx): invalid src uid 0%lx\n", static_cast<LPCTSTR>(pszVerb), static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(GetUID()), static_cast<DWORD>(NewSrc) ));
+						DEBUG_ERR(( "Can't trysrc %s object %s (0%lx): invalid src uid 0%lx\n", pszVerb, GetName(), static_cast<DWORD>(GetUID()), static_cast<DWORD>(NewSrc) ));
 					else
-						DEBUG_ERR(( "Can't trysrv %s object %s (0%lx)\n", static_cast<LPCTSTR>(pszVerb), static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(GetUID()) ));
+						DEBUG_ERR(( "Can't trysrv %s object %s (0%lx)\n", pszVerb, GetName(), static_cast<DWORD>(GetUID()) ));
 
 					return false;
 				}
@@ -2470,9 +2465,9 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				if (!r_Verb(script, pNewSrc))
 				{
 					if ( index == OV_TRYSRC )
-						DEBUG_ERR(( "Can't trysrc %s object %s (0%lx) with src %s (0%lx)\n", static_cast<LPCTSTR>(pszVerb), static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(GetUID()), static_cast<LPCTSTR>(pNewSrc->GetName()), static_cast<DWORD>(NewSrc) ));
+						DEBUG_ERR(( "Can't trysrc %s object %s (0%lx) with src %s (0%lx)\n", pszVerb, GetName(), static_cast<DWORD>(GetUID()), pNewSrc->GetName(), static_cast<DWORD>(NewSrc) ));
 					else
-						DEBUG_ERR(( "Can't trysrv %s object %s (0%lx)\n", static_cast<LPCTSTR>(pszVerb), static_cast<LPCTSTR>(GetName()), static_cast<DWORD>(GetUID()) ));
+						DEBUG_ERR(( "Can't trysrv %s object %s (0%lx)\n", pszVerb, GetName(), static_cast<DWORD>(GetUID()) ));
 
 					return false;
 				}
@@ -2618,7 +2613,7 @@ void CObjBase::RemoveFromView( CClient * pClientExclude, bool fHardcoded )
 			continue;
 		if ( pChar->GetTopDistSight( pObjTop ) > UO_MAP_VIEW_SIZE ) //Client does not support removing of items which are farther (will be removed from the radar on the next step, cause the server won't resend it)
 			continue;
-		if (( pItem ) && ( pItem->IsItemEquipped() ) && ( !pChar->IsPriv(PRIV_GM) ))
+		if ( pItem && pItem->IsItemEquipped() )
 		{
 			if (( pItem->GetEquipLayer() > LAYER_HORSE ) && ( pItem->GetEquipLayer() != LAYER_BANKBOX ) && ( pItem->GetEquipLayer() != LAYER_DRAGGING ))
 				continue;

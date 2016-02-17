@@ -2766,3 +2766,111 @@ Fixed: Players randomly switching to another target on combat.
 06-12-2015, Coruja
 Changed: Improved walk packets on classic/enhanced clients.
 [Sphere.ini]: Moved DEBUGF_WALKCODES to new EF_FastWalkPrevention experimental setting (also improved, but still incomplete yet).
+
+17-12-2015, Coruja
+Fixed: House customization not allowing clients to walk.
+Fixed: Backpack not updating on death.
+[Sphere.ini]: Added new pre-AOS option on CombatSpeedEra setting.
+	-IMPORTANT: Option values got changed, check if the selected option is correct after update the script.
+
+18-12-2015, Coruja
+Changed: Improved the event handler when an item equip/drop request was denied. Now the item is dropped on its last location instead always drop it on player backpack.
+
+30-12-2015, Coruja
+Fixed: New player chars not creating MALE_DEFAULT / FEMALE_DEFAULT newbie items when the player select Necromancer/Paladin/Ninja/Samurai as profession on character creation screen.
+Fixed: Potions not removing previous memories on layer 'layer_flag_potion' before equip new memories on this layer.
+Fixed: Curse spell not working correctly when COMBAT_ELEMENTAL_ENGINE is enabled.
+
+03-01-2016, Coruja
+[sphereCrypt.ini]: Added crypt keys for clients 7.0.46 and 7.0.47 (thx XuN and Feeh, I found these values on their forum posts)
+[sphere_map_points0.scp]: Updated new player start locations.
+
+08-01-2016, Coruja
+Fixed: Clients requesting unnecessary 'resync' packets to server.
+
+10-01-2016, Coruja
+Fixed: Client packet problems when players teleport while walking.
+
+11-01-2016, Coruja
+Fixed: return 1 on char trigger @EquipTest / @ItemEquipTest making the item drop on char backpack instead on its last location.
+
+12-01-2016, Coruja
+Fixed: MAGICF_STACKSTATS magic flag not working correctly.
+
+15-01-2016, Coruja
+Fixed: Damage spells disturbing the caster if casted on himself.
+Changed: Telnet connections will not receive B (broadcast) messages anymore.
+[Sphere.ini]: Changed AutoResDisp default value and functionality.
+	Previously this setting was used to set an fixed RESDISP value to new created accounts.
+	Now it's a boolean (1=on/0=off) and if enabled it will automatically set account RESDISP on @Login based on player client version.
+
+16-01-2016, Coruja
+Fixed: Exploit allowing instant hit on combat.
+Fixed: TARG/TARGPROP/TARGPRV char properties returning decimal values instead hex.
+Fixed: OF_ScaleDamageByDurability flag not working correctly on items using min durability (MORE1L) = 0.
+
+19-01-2016, Coruja
+Changed: Improved Detecting Hidden skill behavior.
+[Sphere.ini]: Changed GameMinuteLength default value.
+[sphere_monsters.scp]: Added missing stats/skills values on TOL dinosaurs.
+[sphere_item_char_icons.scp]: Renamed i_pet_anchisaurus -> i_pet_anchisaur
+[sphere_item_animations.scp/sphere_item_deco_lightsources.scp/sphere_item_deco_virtues.scp/sphere_item_profession_alchemist.scp/sphere_item_unsorted.scp]: Removed unused TDATA4 from all t_light_lit items.
+
+20-01-2016, Coruja
+Fixed: Console error when GM use commands to add objects on undefined regions.
+
+21-01-2016, Coruja
+Added: Missing tame/bonded/summoned tooltips on NPCs.
+Fixed: t_spawn_item not saving/loading correctly spawned items.
+Fixed: Spawns (worldgem bit) not updating the tooltip when add/delete objects.
+Changed: Summon spells now will create NPCs with HOME and HOMEDIST=10 set by default.
+
+22-01-2016, Coruja
+Added: New pet command '* unfriend'.
+Changed: Many improvements on pet commands engine.
+[sphere_speech.scp]: Added UNFRIEND line on speech lists.
+[sphere_msgs.scp]: Added new messages 'npc_pet_confused' and 'npc_pet_targ_*'.
+[sphere_spells.scp]: Removed 'spellflag_targ_xyz' from most summon spells. The only summon spells that uses target is Blade Spirits and Energy Vortex.
+[items/sphere_item_magic_spellweaving.scp]: Added missing color on i_spellbook_spellweaving.
+
+23-01-2016, Coruja
+Fixed: Pets accepting items from its owner even when the owner can't access the pet backpack.
+Fixed: Polymorph spell and POLY function not working correctly.
+
+27-01-2016, Coruja
+Fixed: Items disappearing when players try equip it without have required STR.
+Fixed: LOWERREQ item property not working correctly.
+
+28-01-2016, Coruja
+Fixed: Summon Creature spell not working correctly.
+
+31-01-2016, Coruja
+Fixed: Character stats gump (hits/mana/stam) showing wrong info for players on same party.
+Added: New function OPENTRADEWINDOW to start an trade window between 2 players (both clients must be in range and visible).
+	Usage: OPENTRADEWINDOW player_uid, item_uid (item uid is optional)
+
+05-02-2016, Vjaka
+Fixed: applied a patch by cbnolok fixing xmfhtmltok and sphere crashing on custom skils with index > 57.
+    Maximal skills has been set to 99
+
+11-02-2016, Coruja
+Fixed: Hiding skill not removing previous Invisibility spell effect on success.
+Fixed: Char STEPSTEALTH value being reseted to 0 when function REVEAL is called to clear a single flag but the char still invisible using other flags.
+Changed: Improved handling of 'Open Spellbook' and 'Open Door' client macro.
+[sphere_msgs.scp]: Added new message 'macro_opendoor' and removed 'msg_nospellbook', 'npc_generic_thanks', 'npc_pet_drop'
+
+13-02-2016, Coruja
+Fixed: Buff/Debuff bar showing wrong time left on spells memories using TIMER=-1.
+Fixed: Some skills not calling skillgain when action difficulty > skill value, making the skillgain chance always be 0%.
+
+16-02-2016, Coruja
+Changed: Improved Sphere main timestamp engine.
+
+16-02-2016, Nolok
+Fixed: Ships moving but not updating the multi part on Enhanced Client with smooth sailing disabled.
+Changed: Removed useless screen updates when smooth sailing is on, making sailing more fluid.
+Fixed: Price of items sold by the vendor swapped on Enhanced Client.
+Changed: Removed useless packets sent when opening vendor sell gump on Enhanced Client.
+
+17-02-2016, Nolok
+Fixed #2576: SpawnItem value is now readable under @Create trigger.

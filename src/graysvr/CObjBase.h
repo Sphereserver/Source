@@ -308,8 +308,8 @@ public:
 	// Location
 	virtual bool MoveTo(CPointMap pt, bool bForceFix = false) = 0;	// Move to a location at top level.
 
-	virtual bool MoveNear( CPointMap pt, int iSteps = 0, DWORD dwCan = CAN_C_WALK );
-	virtual bool MoveNearObj( const CObjBaseTemplate * pObj, int iSteps = 0, DWORD dwCan = CAN_C_WALK );
+	virtual bool MoveNear( CPointMap pt, int iSteps = 0 );
+	virtual bool MoveNearObj( const CObjBaseTemplate *pObj, int iSteps = 0 );
 
 	void inline SetNamePool_Fail( TCHAR * ppTitles );
 	bool SetNamePool( LPCTSTR pszName );
@@ -673,7 +673,7 @@ public:
 			// CAN_I_LIGHT may be set for others as well..ie.Moon gate conflict
 			DWORD   m_junk1;
 			DWORD	m_junk2;
-			WORD	m_junk3;
+			BYTE	m_burned;	// morex = out of charges? (1=yes / 0=no)
 			WORD	m_charges;	// morey = how long will the torch last ?
 			BYTE	m_pattern;	// morez = light rotation pattern (LIGHT_PATTERN)
 		} m_itLight;
@@ -1097,7 +1097,7 @@ public:
 		return MoveToUpdate( pt, bForceFix);
 	}
 	bool MoveToCheck( const CPointMap & pt, CChar * pCharMover = NULL );
-	virtual bool MoveNearObj( const CObjBaseTemplate * pItem, int iSteps = 0, WORD wCan = CAN_C_WALK );
+	virtual bool MoveNearObj( const CObjBaseTemplate *pItem, int iSteps = 0 );
 
 	CItem* GetNext() const
 	{
@@ -1293,7 +1293,6 @@ public:
 	void SetTrapState( IT_TYPE state, ITEMID_TYPE id, int iTimeSec );
 	int Use_Trap();
 	bool Use_Light();
-	int Light_GetOverride(const CItemBase * pBase = NULL) const;
 	int Use_LockPick( CChar * pCharSrc, bool fTest, bool fFail );
 	LPCTSTR Use_SpyGlass( CChar * pUser ) const;
 	LPCTSTR Use_Sextant( CPointMap pntCoords ) const;
@@ -1736,7 +1735,7 @@ protected:
 	{
 		return( STATIC_CAST <const CItemBaseMulti *>( Base_GetDef()));
 	}
-	bool Multi_CreateComponent( ITEMID_TYPE id, int dx, int dy, int dz, DWORD dwKeyCode );
+	bool Multi_CreateComponent( ITEMID_TYPE id, signed short dx, signed short dy, signed char dz, DWORD dwKeyCode );
 
 public:
 	int Multi_GetMaxDist() const;
@@ -1838,7 +1837,7 @@ private:
 	virtual bool r_Verb( CScript & s, CTextConsole * pSrc ); // Execute command from script
 
 	const CPointMap GetComponentPoint(Component * pComponent) const;
-	const CPointMap GetComponentPoint(int dx, int dy, signed char dz) const;
+	const CPointMap GetComponentPoint(signed short dx, signed short dy, signed char dz) const;
 	void CopyDesign(DesignDetails * designFrom, DesignDetails * designTo);
 
 private:
@@ -1857,18 +1856,18 @@ private:
 
 public:
 	void BeginCustomize( CClient * pClientSrc );
-	void EndCustomize(bool bForce = false);
-	void SwitchToLevel( CClient * pClientSrc, int iLevel );
+	void EndCustomize( bool bForce = false );
+	void SwitchToLevel( CClient * pClientSrc, unsigned char iLevel );
 	void CommitChanges( CClient * pClientSrc = NULL );
-	void AddItem( CClient * pClientSrc, ITEMID_TYPE id, short x, short y, signed char z = -128, int iStairID = 0);
-	void AddStairs( CClient * pClientSrc, ITEMID_TYPE id, short x, short y, signed char z = -128, int iStairID = -1 );
-	void AddRoof( CClient * pClientSrc, ITEMID_TYPE id, short x, short y, signed char z);
-	void RemoveItem( CClient * pClientSrc, ITEMID_TYPE id, short x, short y, signed char z);
+	void AddItem( CClient * pClientSrc, ITEMID_TYPE id, signed short x, signed short y, signed char z = SCHAR_MIN, short iStairID = 0 );
+	void AddStairs( CClient * pClientSrc, ITEMID_TYPE id, signed short x, signed short y, signed char z = SCHAR_MIN, short iStairID = -1 );
+	void AddRoof( CClient * pClientSrc, ITEMID_TYPE id, signed short x, signed short y, signed char z );
+	void RemoveItem( CClient * pClientSrc, ITEMID_TYPE id, signed short x, signed short y, signed char z );
 	bool RemoveStairs( Component * pStairComponent );
-	void RemoveRoof( CClient * pClientSrc, ITEMID_TYPE id, short x, short y, signed char z);
+	void RemoveRoof( CClient * pClientSrc, ITEMID_TYPE id, signed short x, signed short y, signed char z );
 	void SendVersionTo( CClient * pClientSrc );
 	void SendStructureTo( CClient * pClientSrc );
-	void BackupStructure( CClient * pClientSrc = NULL );
+	void BackupStructure();
 	void RestoreStructure( CClient * pClientSrc = NULL );
 	void RevertChanges( CClient * pClientSrc = NULL );
 	void ResetStructure( CClient * pClientSrc = NULL );
@@ -1876,10 +1875,10 @@ public:
 	const CGrayMultiCustom * GetMultiItemDefs();
 	const CGRect GetDesignArea();
 	size_t GetFixtureCount(DesignDetails * pDesign = NULL);
-	size_t GetComponentsAt(short dx, short dy, signed char dz, Component ** pComponents, DesignDetails * pDesign = NULL);
+	size_t GetComponentsAt(signed short dx, signed short dy, signed char dz, Component ** pComponents, DesignDetails * pDesign = NULL);
 	int GetRevision(const CClient * pClientSrc = NULL) const;
-	int GetLevelCount();
-	int GetStairCount();
+	unsigned char GetLevelCount();
+	short GetStairCount();
 
 	static unsigned char GetPlane( signed char z );
 	static unsigned char GetPlane( Component * pComponent );
@@ -2410,8 +2409,6 @@ private:
 	CCharNPC& operator=(const CCharNPC& other);
 };
 
-#define IS_SKILL_BASE(sk) ((sk) > SKILL_NONE && (sk) < SKILL_MAX )
-
 struct CCharPlayer
 {
 	// Stuff that is specific to a player character.
@@ -2431,9 +2428,9 @@ public:
 	CGString m_sProfile;	// limited to SCRIPT_MAX_LINE_LEN-16
 
 	WORD m_wMurders;		// Murder count.
-	WORD m_wDeaths;		// How many times have i died ?
-	unsigned short int		m_speedMode;		// speed mode (0x0 = Normal movement, 0x1 = Fast movement, 0x2 = Slow movement, 0x3 and above = Hybrid movement)
-	DWORD			m_pflag;			// PFLAG
+	WORD m_wDeaths;			// How many times have i died ?
+	BYTE m_speedMode;		// speed mode (0x0 = Normal movement, 0x1 = Fast movement, 0x2 = Slow movement, 0x3 and above = Hybrid movement)
+	DWORD m_pflag;			// PFLAG
 
 	static LPCTSTR const sm_szLoadKeys[];
 
@@ -2782,8 +2779,8 @@ public:
 	{
 		short	m_base;
 		short	m_mod;			// signed for modifier
-		int		m_val;			// signed for karma
-		int		m_max;			// max
+		short	m_val;			// signed for karma
+		short	m_max;			// max
 		unsigned short m_regen;	// Tick time since last regen.
 	} m_Stat[STAT_QTY];
 
@@ -2801,7 +2798,8 @@ public:
 	CPointBase  m_Act_p;			// Moving to this location. or location of forge we are working on.
 	int			m_StepStealth;		// Max steps allowed to walk invisible while using Stealth skill
 
-	union	// arg specific to the action type.(m_Act_SkillCurrent)
+	// Args related to specific actions type (m_Act_SkillCurrent)
+	union
 	{
 		struct
 		{
@@ -2818,52 +2816,40 @@ public:
 		// SKILL_SPELLWEAVING
 		struct
 		{
-			SPELL_TYPE	m_Spell;		// ACTARG1=Currently casting spell.
-			CREID_TYPE	m_SummonID;		// ACTARG2=A sub arg of the skill. (summoned type ?)
-			WORD	m_fSummonPet;		// ACTARG3=
+			SPELL_TYPE m_Spell;			// ACTARG1 = Currently casting spell.
+			CREID_TYPE m_SummonID;		// ACTARG2 = A sub arg of the skill. (summoned type ?)
 		} m_atMagery;
-
-		// SKILL_MUSICIANSHIP
-		// SKILL_ENTICEMENT
-		// SKILL_PROVOCATION
-		// SKILL_PEACEMAKING
-		struct
-		{
-			int m_iMusicDifficulty;		// ACTARG1=Base music diff, (whole thing won't work if this fails)
-		} m_atMusician;
 
 		// SKILL_ALCHEMY
 		// SKILL_BLACKSMITHING
 		// SKILL_BOWCRAFT
 		// SKILL_CARPENTRY
-		// SKILL_CARTOGRAPHY:
+		// SKILL_CARTOGRAPHY
 		// SKILL_INSCRIPTION
-		// SKILL_TAILORING:
-		// SKILL_TINKERING,
-
-		struct	// creation type skill.
+		// SKILL_TAILORING
+		// SKILL_TINKERING
+		struct
 		{
-			ITEMID_TYPE m_ItemID;		// ACTARG1=Making this item.
-			WORD m_Stroke_Count;		// ACTARG2=For smithing, tinkering, etc. all requiring multi strokes.
-			WORD m_Amount;				// How many of this item are we making?
+			WORD m_Stroke_Count;		// ACTARG1 = For smithing, tinkering, etc. all requiring multi strokes.
+			ITEMID_TYPE m_ItemID;		// ACTARG2 = Making this item.
+			WORD m_Amount;				// ACTARG3 = How many of this item are we making?
 		} m_atCreate;
 
-		// SKILL_LUMBERJACKING,
+		// SKILL_LUMBERJACKING
 		// SKILL_MINING
 		// SKILL_FISHING
 		struct
 		{
-			DWORD		m_junk1;
-			DWORD		m_Stroke_Count;		// all requiring multi strokes.
-			DWORD		m_ridType;			// type of item we're harvesting
+			DWORD m_ridType;			// ACTARG1 = Type of item we're harvesting
+			BYTE m_bounceItem;			// ACTARG2 = Drop item on backpack (true) or drop it on ground (false)
+			WORD m_Stroke_Count;		// ACTARG3 = All requiring multi strokes.
 		} m_atResource;
 
 		// SKILL_TAMING
 		// SKILL_MEDITATION
 		struct
 		{
-			DWORD m_junk1;
-			WORD m_Stroke_Count;		// all requiring multi strokes.
+			WORD m_Stroke_Count;		// ACTARG1 = All requiring multi strokes.
 		} m_atTaming;
 
 		// SKILL_ARCHERY
@@ -2874,51 +2860,38 @@ public:
 		// SKILL_THROWING
 		struct
 		{
-			WAR_SWING_TYPE	m_War_Swing_State;		// We are in the war mode swing.
-			CServTime		m_timeNextCombatSwing;	// Time to wait before start another combat swing.
+			WAR_SWING_TYPE m_War_Swing_State;		// ACTARG1 = We are in the war mode swing.
+			CServTime m_timeNextCombatSwing;		// ACTARG2 = Time to wait before start another combat swing.
 		} m_atFight;
 
 		// SKILL_TRACKING
 		struct
 		{
-			DIR_TYPE	m_PrvDir; // Previous direction of tracking target, used for when to notify player
+			DIR_TYPE m_PrvDir;			// ACTARG1 = Previous direction of tracking target, used for when to notify player
 		} m_atTracking;
-
-		// NPCACT_FOLLOW_TARG
-		struct
-		{
-			int	m_DistMin;		// Try to force this distance.
-			int	m_DistMax;		// Try to force this distance.
-			// m_Act_Targ = what am i folloiwng ?
-		} m_atFollowTarg;
 
 		// NPCACT_RIDDEN
 		struct
 		{
-			CGrayUIDBase m_FigurineUID;	// This creature is being ridden by this object link. IT_FIGURINE IT_EQ_HORSE
+			CGrayUIDBase m_FigurineUID;		// ACTARG1 = This creature is being ridden by this object link. IT_FIGURINE IT_EQ_HORSE
 		} m_atRidden;
 
 		// NPCACT_TALK
 		// NPCACT_TALK_FOLLOW
 		struct
 		{
-			int	 m_HearUnknown;	// Speaking NPC has no idea what u're saying.
-			int  m_WaitCount;	// How long have i been waiting (xN sec)
+			int m_HearUnknown;			// ACTARG1 = Speaking NPC has no idea what u're saying.
+			int m_WaitCount;			// ACTARG2 = How long have i been waiting (xN sec)
 			// m_Act_Targ = who am i talking to ?
 		} m_atTalk;
 
 		// NPCACT_FLEE
-		// m_Act_Targ = who am i fleeing from ?
 		struct
 		{
-			int	 m_iStepsMax;	// how long should it take to get there.
-			int	 m_iStepsCurrent;	// how long has it taken ?
+			int m_iStepsMax;			// ACTARG1 = How long should it take to get there.
+			int m_iStepsCurrent;		// ACTARG2 = How long has it taken ?
+			// m_Act_Targ = who am i fleeing from ?
 		} m_atFlee;
-
-		// NPCACT_TRAINING
-		// m_Act_Targ = what am i training on
-		// m_Act_TargPrv = weapon
-		//
 	};
 
 public:
@@ -3158,12 +3131,12 @@ public:
 	void	Stat_SetMod( STAT_TYPE i, short iVal );
 	short	Stat_GetMod( STAT_TYPE i ) const;
 
-	void	Stat_SetVal( STAT_TYPE i, int iVal );
-	int		Stat_GetVal( STAT_TYPE i ) const;
+	void	Stat_SetVal( STAT_TYPE i, short iVal );
+	short	Stat_GetVal( STAT_TYPE i ) const;
 
-	void	Stat_SetMax( STAT_TYPE i, int iVal );
-	int		Stat_GetMax( STAT_TYPE i ) const;
-	int		Stat_GetSum() const;
+	void	Stat_SetMax( STAT_TYPE i, short iVal );
+	short	Stat_GetMax( STAT_TYPE i ) const;
+	short	Stat_GetSum() const;
 
 	short	Stat_GetLimit( STAT_TYPE i ) const;
 
@@ -3227,20 +3200,18 @@ public:
 		FixClimbHeight();
 	}
 	bool MoveToValidSpot(DIR_TYPE dir, int iDist, int iDistStart = 1, bool bFromShip = false);
-	virtual bool MoveNearObj( const CObjBaseTemplate * pObj, int iSteps = 0, DWORD dwCan = CAN_C_WALK )
+	virtual bool MoveNearObj( const CObjBaseTemplate *pObj, int iSteps = 0 )
 	{
-		UNREFERENCED_PARAMETER(dwCan);
-		return CObjBase::MoveNearObj( pObj, iSteps, GetMoveBlockFlags());
+		return CObjBase::MoveNearObj(pObj, iSteps);
 	}
-	bool MoveNear( CPointMap pt, int iSteps = 0, DWORD dwCan = CAN_C_WALK )
+	bool MoveNear( CPointMap pt, int iSteps = 0 )
 	{
-		UNREFERENCED_PARAMETER(dwCan);
-		return CObjBase::MoveNear( pt, iSteps, GetMoveBlockFlags());
+		return CObjBase::MoveNear(pt, iSteps);
 	}
 
 	CRegionBase * CanMoveWalkTo( CPointBase & pt, bool fCheckChars = true, bool fCheckOnly = false, DIR_TYPE dir = DIR_QTY, bool fPathFinding = false );
 	void CheckRevealOnMove();
-	bool CheckLocation( bool fStanding = false );
+	TRIGRET_TYPE CheckLocation( bool fStanding = false );
 
 public:
 	// Client Player specific stuff. -------------------------
@@ -3277,7 +3248,7 @@ public:
 	}
 
 	void UpdateStatsFlag() const;
-	void UpdateStatVal( STAT_TYPE x, int iChange = 0, int iLimit = 0 );
+	void UpdateStatVal( STAT_TYPE type, short iChange = 0, short iLimit = 0 );
 	void UpdateHitsFlag();
 	void UpdateModeFlag();
 	void UpdateManaFlag() const;
@@ -3775,7 +3746,7 @@ private:
 	int Skill_Act_Training( SKTRIG_TYPE stage );
 
 	void Spell_Dispel( int iskilllevel );
-	CChar * Spell_Summon( CREID_TYPE id, CPointMap pt, bool fPet );
+	CChar * Spell_Summon( CREID_TYPE id, CPointMap pt );
 	bool Spell_Recall(CItem * pRune, bool fGate);
 	SPELL_TYPE Spell_GetIndex(SKILL_TYPE skill = SKILL_NONE);	//gets first spell for the magic skill given.
 	SPELL_TYPE Spell_GetMax(SKILL_TYPE skill = SKILL_NONE);	//gets first spell for the magic skill given.
@@ -3942,7 +3913,7 @@ public:
 	bool ItemEquip( CItem * pItem, CChar * pCharMsg = NULL, bool fFromDClick = false );
 	bool ItemEquipWeapon( bool fForce );
 	bool ItemEquipArmor( bool fForce );
-	bool ItemBounce( CItem * pItem );
+	bool ItemBounce( CItem * pItem, bool bDisplayMsg = true );
 	bool ItemDrop( CItem * pItem, const CPointMap & pt );
 
 	void Flip();
@@ -3955,7 +3926,7 @@ public:
 	bool Death();
 	bool Reveal( DWORD dwFlags = 0 );
 	void Jail( CTextConsole * pSrc, bool fSet, int iCell );
-	void EatAnim( LPCTSTR pszName, int iQty );
+	void EatAnim( LPCTSTR pszName, short iQty );
 	void CallGuards( CChar * pCriminal );
 
 	#define DEATH_NOFAMECHANGE 0x01
@@ -3980,8 +3951,8 @@ public:
 	LPCTSTR Guild_Abbrev( MEMORY_TYPE memtype ) const;
 	LPCTSTR Guild_AbbrevBracket( MEMORY_TYPE memtype ) const;
 
-	void Use_EatQty( CItem * pFood, int iQty = 1 );
-	bool Use_Eat( CItem * pItem, int iQty = 1 );
+	void Use_EatQty( CItem * pFood, short iQty = 1 );
+	bool Use_Eat( CItem * pItem, short iQty = 1 );
 	bool Use_MultiLockDown( CItem * pItemTarg );
 	void Use_CarveCorpse( CItemCorpse * pCorpse );
 	bool Use_Repair( CItem * pItem );
@@ -4129,13 +4100,13 @@ public:
 inline bool CChar::IsSkillBase( SKILL_TYPE skill ) // static
 {
 	// Is this in the base set of skills.
-	return( IS_SKILL_BASE(skill));
+	return (skill > SKILL_NONE && skill < static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill));
 }
 
 inline bool CChar::IsSkillNPC( SKILL_TYPE skill )  // static
 {
 	// Is this in the NPC set of skills.
-	return( skill >= NPCACT_FOLLOW_TARG && skill < NPCACT_QTY );
+	return (skill >= NPCACT_FOLLOW_TARG && skill < NPCACT_QTY);
 }
 
 #endif

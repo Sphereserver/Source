@@ -48,10 +48,6 @@ CClient::CClient(NetState* state)
 	m_tmSetup.m_iConnect = 0;
 	m_tmSetup.m_bNewSeed = false;
 
-	memset( m_Walk_LIFO, 0, sizeof( m_Walk_LIFO ));	// Initialize the fast walk killer stuff
-	m_Walk_InvalidEchos = 0;
-	m_Walk_CodeQty = UINT_MAX;	// how many valid codes in here ?
-
 	m_Env.SetInvalid();
 
 	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Client connected [Total:%lu] ('%s' %ld/%ld)\n",
@@ -314,15 +310,8 @@ bool CClient::CanHear( const CObjBaseTemplate * pSrc, TALKMODE_TYPE mode ) const
 	ADDTOCALLSTACK("CClient::CanHear");
 	// can we hear this text or sound.
 
-	if ( ! IsConnectTypePacket())
-	{
-		if (( GetConnectType() != CONNECT_TELNET ) && ( GetConnectType() != CONNECT_AXIS ))
-			return( false );
-		if ( mode == TALKMODE_BROADCAST ) // && GetAccount()
-			return( true );
+	if ( !IsConnectTypePacket() )
 		return( false );
-	}
-
 	if ( mode == TALKMODE_BROADCAST || pSrc == NULL )
 		return( true );
 	if ( m_pChar == NULL )
@@ -621,7 +610,7 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 					sVal.Format( "%lu,%lu", m_ScreenSize.x, m_ScreenSize.y );
 			} break;
 		case CC_TARG:
-			sVal.FormatVal( m_Targ_UID );
+			sVal.FormatHex(m_Targ_UID);
 			break;
 		case CC_TARGP:
 			if ( pszKey[5] == '.' )
@@ -631,10 +620,10 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			sVal = m_Targ_p.WriteUsed();
 			break;
 		case CC_TARGPROP:
-			sVal.FormatVal( m_Prop_UID );
+			sVal.FormatHex(m_Prop_UID);
 			break;
 		case CC_TARGPRV:
-			sVal.FormatVal( m_Targ_PrvUID );
+			sVal.FormatHex(m_Targ_PrvUID);
 			break;
 		case CC_TARGTXT:
 			sVal = m_Targ_Text;
@@ -673,13 +662,14 @@ bool CClient::r_LoadVal( CScript & s )
 	switch ( FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1 ))
 	{
 		case CC_ALLMOVE:
+			addRemoveAll(true, false);
 			GetAccount()->TogPrivFlags( PRIV_ALLMOVE, s.GetArgStr() );
 			if ( IsSetOF( OF_Command_Sysmsgs ) )
 				m_pChar->SysMessage( IsPriv(PRIV_ALLMOVE)? "Allmove ON" : "Allmove OFF" );
 			addPlayerView(NULL);
 			break;
 		case CC_ALLSHOW:
-			addRemoveAll(true, true);
+			addRemoveAll(false, true);
 			GetAccount()->TogPrivFlags( PRIV_ALLSHOW, s.GetArgStr() );
 			if ( IsSetOF( OF_Command_Sysmsgs ) )
 				m_pChar->SysMessage( IsPriv(PRIV_ALLSHOW)? "Allshow ON" : "Allshow OFF" );
@@ -817,7 +807,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				if (( rid.GetResType() == RES_CHARDEF ) || ( rid.GetResType() == RES_SPAWN ))
 				{
 					m_Targ_PrvUID.InitUID();
-					return Cmd_CreateChar(static_cast<CREID_TYPE>(rid.GetResIndex()), SPELL_Summon, false );
+					return Cmd_CreateChar(static_cast<CREID_TYPE>(rid.GetResIndex()));
 				}
 
 				ITEMID_TYPE id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
@@ -1256,8 +1246,30 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			}
 			if ( pChar )
 				addCharPaperdoll(pChar);
+			break;
 		}
-		break;
+
+		case CV_OPENTRADEWINDOW:
+		{
+			TCHAR *ppArgs[2];
+			Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
+
+			CChar *pChar = NULL;
+			CItem *pItem = NULL;
+			if ( ppArgs[0] )
+			{
+				CGrayUID uidChar = static_cast<CGrayUID>(Exp_GetVal(ppArgs[0]));
+				pChar = uidChar.CharFind();
+			}
+			if ( ppArgs[1] )
+			{
+				CGrayUID uidItem = static_cast<CGrayUID>(Exp_GetVal(ppArgs[1]));
+				pItem = uidItem.ItemFind();
+			}
+			if ( pChar )
+				Cmd_SecureTrade(pChar, pItem);
+			break;
+		}
 
 		case CV_PAGE:
 			Cmd_GM_PageCmd( s.GetArgStr());
@@ -1296,7 +1308,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			}
 			return( false );
 		case CV_SHOWSKILLS:
-			addSkillWindow(SKILL_MAX); // Reload the real skills
+			addSkillWindow(static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill)); // Reload the real skills
 			break;
 		case CV_SKILLMENU:				// Just put up another menu.
 			Cmd_Skill_Menu( g_Cfg.ResourceGetIDType( RES_SKILLMENU, s.GetArgStr()));
@@ -1304,9 +1316,53 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		case CV_SKILLSELECT:
 			Event_Skill_Use( g_Cfg.FindSkillKey( s.GetArgStr() ) );
 			break;
-		case CV_SUMMON:	// from the spell skill script.
-			// m_Targ_PrvUID should already be set.
-			return Cmd_CreateChar(static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType( RES_CHARDEF, s.GetArgStr())), SPELL_Summon, true );
+		case CV_SUMMON:
+		{
+			ASSERT(m_pChar);
+			const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Summon);
+			if ( !pSpellDef )
+				return false;
+
+			m_pChar->m_Act_Targ = m_pChar->GetUID();
+			m_pChar->m_Act_TargPrv = m_pChar->GetUID();
+
+			if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
+			{
+				m_tmSkillMagery.m_Spell = SPELL_Summon;
+				m_tmSkillMagery.m_SummonID = static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, s.GetArgStr()));
+
+				LPCTSTR pPrompt = g_Cfg.GetDefaultMsg(DEFMSG_SELECT_MAGIC_TARGET);
+				if ( !pSpellDef->m_sTargetPrompt.IsEmpty() )
+					pPrompt = pSpellDef->m_sTargetPrompt;
+
+				int SpellTimeout = g_Cfg.m_iSpellTimeout * TICK_PER_SEC;
+				if ( GetDefNum("SPELLTIMEOUT", true) )
+					SpellTimeout = static_cast<int>(GetDefNum("SPELLTIMEOUT", true));
+
+				addTarget(CLIMODE_TARG_SKILL_MAGERY, pPrompt, pSpellDef->IsSpellType(SPELLFLAG_TARG_XYZ), pSpellDef->IsSpellType(SPELLFLAG_HARM), SpellTimeout);
+				break;
+			}
+			else
+			{
+				m_pChar->m_atMagery.m_Spell = SPELL_Summon;
+				m_pChar->m_atMagery.m_SummonID = static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, s.GetArgStr()));
+
+				if ( IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
+				{
+					m_pChar->Spell_CastDone();
+					break;
+				}
+				else
+				{
+					int skill;
+					if ( !pSpellDef->GetPrimarySkill(&skill, NULL) )
+						return false;
+
+					m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
+				}
+			}
+			break;
+		}
 		case CV_SMSG:
 		case CV_SYSMESSAGE:
 			SysMessage( s.GetArgStr() );

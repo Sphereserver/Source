@@ -427,14 +427,14 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0x8D : PacketCreateKR					create new character request (KR/SA)
+ *	Packet 0x8D : PacketCreateNew					create new character request (KR/SA)
  *
  *
  ***************************************************************************/
-class PacketCreateKR : public PacketCreate
+class PacketCreateNew : public PacketCreate
 {
 public:
-	PacketCreateKR();
+	PacketCreateNew();
 	virtual bool onReceive(NetState* net);
 };
 
@@ -1379,7 +1379,7 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0xEC : PacketEquipItemMacro				equip item(s) macro
+ *	Packet 0xEC : PacketEquipItemMacro				equip item(s) macro (KR)
  *
  *
  ***************************************************************************/
@@ -1393,7 +1393,7 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0xED : PacketUnEquipItemMacro			unequip item(s) macro
+ *	Packet 0xED : PacketUnEquipItemMacro			unequip item(s) macro (KR)
  *
  *
  ***************************************************************************/
@@ -1421,14 +1421,14 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0xF1 : PacketTimeSyncReply				time sync reply (KR/SA)
+ *	Packet 0xF1 : PacketTimeSyncRequest				time sync request (KR/SA)
  *
  *
  ***************************************************************************/
-class PacketTimeSyncReply : public Packet
+class PacketTimeSyncRequest : public Packet
 {
 public:
-	PacketTimeSyncReply();
+	PacketTimeSyncRequest();
 	virtual bool onReceive(NetState* net);
 };
 

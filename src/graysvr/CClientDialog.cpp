@@ -47,7 +47,7 @@ enum GUMPCTL_TYPE	// controls we can put in a gump.
 
 	GUMPCTL_XMFHTMLGUMP,		// 7 = x,y,sx,sy, cliloc(1003000) hasBack canScroll
 	GUMPCTL_XMFHTMLGUMPCOLOR,	// NEW: x,y,w,h ???
-	GUMPCTL_XMFHTMLTOK,			// new... syntax???
+	GUMPCTL_XMFHTMLTOK,			// 9 = x y width height has_background has_scrollbar color cliloc_id @args
 
 	GUMPCTL_QTY
 };
@@ -456,6 +456,23 @@ bool CDialogDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on t
 			m_iControls++;
 			return true;
 		}
+		case GUMPCTL_XMFHTMLTOK: // 9 = x y width height has_background has_scrollbar color cliloc_id @args
+		{
+			GET_RELATIVE(x, m_iOriginX);
+			GET_RELATIVE(y, m_iOriginY);
+			GET_ABSOLUTE(sX);
+			GET_ABSOLUTE(sY);
+			GET_ABSOLUTE(hasBack);
+			GET_ABSOLUTE(canScroll);
+			GET_ABSOLUTE(color);
+			GET_ABSOLUTE(cliloc);
+			SKIP_ALL(pszArgs);
+
+			m_sControls[m_iControls].Format("xmfhtmltok %d %d %d %d %d %d %d %d %s", x, y, sX, sY, hasBack, canScroll, color, cliloc, *pszArgs ? pszArgs : "");
+
+			m_iControls++;
+			return true;
+		}
 		default:
 			break;
 	}
@@ -673,10 +690,8 @@ bool CClient::addGumpDialogProps( CGrayUID uid )
 		return( false );
 
 	m_Prop_UID = m_Targ_UID = uid;
-	if ( uid.IsChar())
-	{
-		addSkillWindow(SKILL_MAX, true);
-	}
+	if ( uid.IsChar() )
+		addSkillWindow(static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill), true);
 
 	TCHAR *pszMsg = Str_GetTemp();
 	strcpy(pszMsg, pObj->IsItem() ? "d_ITEMPROP1" : "d_CHARPROP1" );

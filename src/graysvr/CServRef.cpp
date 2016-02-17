@@ -442,7 +442,7 @@ bool CServerDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 			sVal = GetName();
 			break;
 		}
-		sVal.Format("<a href=\"http://%s\">%s</a>", static_cast<LPCTSTR>(m_sURL), static_cast<LPCTSTR>(GetName()));
+		sVal.Format("<a href=\"http://%s\">%s</a>", static_cast<LPCTSTR>(m_sURL), GetName());
 		break;
 	case SC_VERSION:
 		sVal = GRAY_VERSION;

@@ -12,7 +12,6 @@ class CSector : public CScriptObj, public CSectorBase	// square region of the wo
 {
 	// A square region of the world. ex: MAP0.MUL Dungeon Sectors are 256 by 256 meters
 #define SECTOR_TICK_PERIOD (TICK_PER_SEC/4) // length of a pulse.
-#define SYNC_TICK_PERIOD (TICK_PER_SEC*60)
 
 public:
 	static const char *m_sClassName;
@@ -283,8 +282,8 @@ class CWorldClock
 #endif
 
 private:
-	CServTime m_timeClock;		// the current relative tick time  (in TICK_PER_SEC)
-	DWORD  m_Clock_PrevSys;		// System time of the last OnTick(). (CLOCKS_PER_SEC)
+	CServTime m_timeClock;		// the current relative tick time (in TICK_PER_SEC)
+	INT64 m_Clock_SysPrev;		// System time of the last OnTick() (in CLOCKS_PER_SEC)
 public:
 	static const char *m_sClassName;
 	CWorldClock()
@@ -304,7 +303,7 @@ public:
 	{
 		return( m_timeClock );
 	}
-	static DWORD GetSystemClock();	// CLOCKS_PER_SEC
+	static INT64 GetSystemClock();		// CLOCKS_PER_SEC
 };
 
 class CTimedFunctionHandler
@@ -354,7 +353,6 @@ private:
 	// Special purpose timers.
 	CServTime	m_timeSector;		// next time to do sector stuff.
 	CServTime	m_timeSave;		// when to auto save ?
-	CServTime	m_timeSync;		// next time to send client sync request.
 	bool		m_bSaveNotificationSent;	// has notification been sent?
 	CServTime	m_timeRespawn;	// when to res dead NPC's ?
 	CServTime	m_timeCallUserFunc;	// when to call next user func

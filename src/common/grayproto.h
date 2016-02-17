@@ -149,7 +149,7 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_Speak			= 0x1c,
 	XCMD_Remove			= 0x1d,
 	//	0x20
-	XCMD_View			= 0x20,
+	XCMD_PlayerUpdate	= 0x20,
 	XCMD_WalkReject		= 0x21,
 	XCMD_WalkAck		= 0x22,
 	XCMD_DragAnim		= 0x23,
@@ -210,7 +210,7 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_CorpEquip		= 0x89,
 	XCMD_GumpTextDisp	= 0x8b,
 	XCMD_Relay			= 0x8c,
-	XCMD_CreateKR		= 0x8d,
+	XCMD_CreateNew		= 0x8d,
 	//	0x90
 	XCMD_MapDisplay		= 0x90,
 	XCMD_CharListReq	= 0x91,
@@ -295,16 +295,16 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_MacroUnEquipItem		= 0xed,
 	XCMD_NewSeed				= 0xef,
 	//	0xF0
-	XCMD_WalkNew		= 0xf0,
-	XCMD_TSyncReply		= 0xf1,
-	XCMD_TSyncRequest	= 0xf2,
-	XCMD_PutNew			= 0xf3,
-	XCMD_CrashReport    = 0xf4,
-	XCMD_MapDisplayNew	= 0xf5,
-	XCMD_MoveShip		= 0xf6,
-	XCMD_PacketCont		= 0xf7,
-	XCMD_CreateHS		= 0xf8,
-	XCMD_QTY		= 0xf9
+	XCMD_WalkRequestNew		= 0xf0,
+	XCMD_TimeSyncRequest	= 0xf1,
+	XCMD_TimeSyncResponse	= 0xf2,
+	XCMD_PutNew				= 0xf3,
+	XCMD_CrashReport		= 0xf4,
+	XCMD_MapDisplayNew		= 0xf5,
+	XCMD_MoveShip			= 0xf6,
+	XCMD_PacketCont			= 0xf7,
+	XCMD_CreateHS			= 0xf8,
+	XCMD_QTY				= 0xf9
 };
 
 #define SEEDLENGTH_OLD (sizeof( DWORD ))
@@ -326,8 +326,8 @@ enum PARTYMSG_TYPE
 
 enum EXTDATA_TYPE
 {
-	EXTDATA_WalkCode_Prime	= 0x01,	// send to client
-	EXTDATA_WalkCode_Add	= 0x02,	// send to client
+	EXTDATA_Fastwalk_Init	= 0x01,	// send to client
+	EXTDATA_Fastwalk_Add	= 0x02,	// send to client
 	EXTDATA_Unk3,
 	EXTDATA_GumpChange		= 0x04,	// len=8 "00 00 00 67 00 00 00 00"
 	EXTDATA_ScreenSize		= 0x05,	// len=8 "00 00 02 80 00 00 00 0a"
@@ -838,15 +838,14 @@ enum BBOARDF_TYPE	// Bulletin Board Flags. m_flag
 
 enum EXTCMD_TYPE
 {
-	EXTCMD_OPEN_SPELLBOOK	= 0x43,	// 67 = open spell book if we have one.
-	EXTCMD_ANIMATE			= 0xC7,	// "bow" or "salute"
-	EXTCMD_SKILL			= 0x24,	// Skill start "number of the skill"
-	EXTCMD_AUTOTARG			= 47,	// bizarre new autotarget mode. "target x y z"
-	EXTCMD_CAST_MACRO		= 86,	// macro spell. "spell number"
-	EXTCMD_CAST_BOOK		= 39,	// cast spell from book. "spell number"
-	EXTCMD_DOOR_AUTO		= 88,	// open door macro = Attempt to open a door around us.
-	EXTCMD_UNKGODCMD		= 107,  // Unknow god command
-	EXTCMD_INVOKE_VIRTUE	= 244	// invoke virtue
+	EXTCMD_SKILL			= 0x24,	// skill start. "skill number"
+	EXTCMD_CAST_BOOK		= 0x27,	// cast spell from book. "spell number"
+	EXTCMD_AUTOTARG			= 0x2f,	// bizarre new autotarget mode. "target x y z"
+	EXTCMD_OPEN_SPELLBOOK	= 0x43,	// open spell book if we have one. "book type"
+	EXTCMD_CAST_MACRO		= 0x56,	// macro spell. "spell number"
+	EXTCMD_DOOR_AUTO		= 0x58,	// open door macro
+	EXTCMD_ANIMATE			= 0xc7,	// "bow" or "salute"
+	EXTCMD_INVOKE_VIRTUE	= 0xf4	// invoke virtue
 };
 
 enum CHATMSG_TYPE	// Chat system messages.
@@ -971,7 +970,7 @@ enum NOTO_TYPE
 #define MINCLIVER_ML				0x500000	// minimum client to activate ML packets (5.0.0a)
 #define MINCLIVER_SA				0x700000	// minimum client to activate SA packets (7.0.0.0)
 #define MINCLIVER_HS				0x700090	// minimum client to activate HS packets (7.0.9.0)
-#define MINCLIVER_TOL				0x700460	// minimum client to activate TOL packets (7.0.46.0)
+#define MINCLIVER_TOL				0x700460	// minimum client to activate TOL packets (7.0.45.65)
 
 // client versions (extended status gump info)
 #define MINCLIVER_STATUS_V2			0x300084	// minimum client to receive v2 of 0x11 packet (3.0.8d)
@@ -989,7 +988,7 @@ enum NOTO_TYPE
 #define MINCLIVER_CLOSEDIALOG		0x400040	// minimum client where close dialog does not trigger a client response
 #define MINCLIVER_COMPRESSDIALOG	0x500000	// minimum client to receive zlib compressed dialogs (5.0.0a)
 #define MINCLIVER_ITEMGRID			0x600017	// minimum client to use grid index (6.0.1.7)
-#define MINCLIVER_NEWSECURETRADE	0x700460	// minimum client to use virtual gold/platinum on trade window (7.0.46.0)
+#define MINCLIVER_NEWSECURETRADE	0x700460	// minimum client to use virtual gold/platinum on trade window (7.0.45.65)
 
 // client versions (packets)
 #define MAXCLIVER_REVERSEIP			0x400000	// maximum client to reverse ip in 0xA8 packet
@@ -1012,19 +1011,19 @@ enum NOTO_TYPE
 
 enum TALKMODE_TYPE	// Modes we can talk/bark in.
 {
-	TALKMODE_SYSTEM = 0,	// normal system message
-	TALKMODE_PROMPT,		// 1= Display as system prompt
-	TALKMODE_EMOTE,			// 2= :	*smiles* at object
-	TALKMODE_SAY,			// 3= A chacter speaking.
-	TALKMODE_OBJ,			// 4= At Object
-	TALKMODE_NOTHING,		// 5= Does not display
-	TALKMODE_ITEM,			// 6= text labeling an item. Preceeded by "You see"
-	TALKMODE_NOSCROLL,		// 7= As a status msg. Does not scroll
-	TALKMODE_WHISPER,		// 8= ;	only those close can here.
-	TALKMODE_YELL,			// 9= ! can be heard 2 screens away.
-	TALKMODE_SPELL,			// 10 = used by spells
-	TALKMODE_GUILD = 0xd,	// 13 = guild speech
-	TALKMODE_ALLIANCE,		// 14 = alliance speech
+	TALKMODE_SYSTEM = 0,	// 0 = Normal system message
+	TALKMODE_PROMPT,		// 1 = Display as system prompt
+	TALKMODE_EMOTE,			// 2 = *smiles* at object (client shortcut: :+space)
+	TALKMODE_SAY,			// 3 = A chacter speaking.
+	TALKMODE_OBJ,			// 4 = At object
+	TALKMODE_NOTHING,		// 5 = Does not display
+	TALKMODE_ITEM,			// 6 = text labeling an item. Preceeded by "You see"
+	TALKMODE_NOSCROLL,		// 7 = As a status msg. Does not scroll
+	TALKMODE_WHISPER,		// 8 = Only those close can here. (client shortcut: ;+space)
+	TALKMODE_YELL,			// 9 = Can be heard 2 screens away. (client shortcut: !+space)
+	TALKMODE_SPELL,			// 10 = Used by spells
+	TALKMODE_GUILD = 0xd,	// 13 = Used by guild chat (client shortcut: \)
+	TALKMODE_ALLIANCE,		// 14 = Used by alliance chat (client shortcut: shift+\)
 	TALKMODE_BROADCAST = 0xFF
 };
 
@@ -1214,7 +1213,7 @@ struct CEvent	// event buffer from client to server..
 
 		struct // size = 38
 		{
-			BYTE m_Cmd;		// 0     = 0xF0  XCMD_WalkNew
+			BYTE m_Cmd;		// 0     = 0xF0  XCMD_WalkRequestNew
 			NWORD m_len;	// 1-2   = length of packet
 			BYTE m_unk1;	// 3     = 01
 			NDWORD m_unk2;	// 4-7   = 00 00 01 22
@@ -1779,7 +1778,7 @@ struct CEvent	// event buffer from client to server..
 			CExtAosData m_u;
 		} ExtAosData;
 
-		struct // XCMD_CreateKR, size = ? // create a new char (uokr)
+		struct // XCMD_CreateNew, size = ? // create a new char (KR/SA)
 		{
 			BYTE m_Cmd;						// 0 = 0x8D
 			NWORD m_len;					// 1 - 2 = length

@@ -38,15 +38,9 @@ void CChar::ClearPlayer()
 	if ( g_Serv.m_iModeCode != SERVMODE_Exiting )
 	{
 		if ( m_pPlayer->m_pAccount )
-		{
-			DEBUG_WARN(( "Player delete '%s' name '%s'\n",
-				(LPCTSTR) m_pPlayer->GetAccount()->GetName(), (LPCTSTR) GetName()));
-		}
+			DEBUG_WARN(("Player delete '%s' name '%s'\n", m_pPlayer->GetAccount()->GetName(), GetName()));
 		else
-		{
-			DEBUG_WARN(( "Player delete from account name '%s'\n",
-				(LPCTSTR) GetName()));
-		}
+			DEBUG_WARN(("Player delete from account name '%s'\n", GetName()));
 	}
 
 	// Is this valid ?
@@ -505,7 +499,7 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 			} return true;
 		case CPC_SPEEDMODE:
 			{
-				m_speedMode = static_cast<unsigned short>(s.GetArgVal());
+				m_speedMode = static_cast<BYTE>(s.GetArgVal());
 				pChar->UpdateSpeedMode();
 			} return true;
 		case CPC_STATLOCK:
@@ -583,7 +577,7 @@ void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s )
 	}
 
 	EXC_SET("saving skill locks");
-	for ( size_t j = 0; j < g_Cfg.m_iMaxSkill; j++)	// Don't write all lock states!
+	for ( size_t j = 0; j < g_Cfg.m_iMaxSkill; j++ )	// Don't write all lock states!
 	{
 		ASSERT(j < COUNTOF(m_SkillLock));
 		if ( ! m_SkillLock[j] )
@@ -734,6 +728,8 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 	//Set as numbers only
 	case CNC_BONDED:
 		m_bonded = (s.GetArgVal() > 0);
+		if ( !g_Serv.IsLoading() )
+			pChar->ResendTooltip();
 		break;
 	case CNC_FOLLOWERSLOTS:
 		pChar->SetDefNum(s.GetKey(), s.GetArgVal(), false );

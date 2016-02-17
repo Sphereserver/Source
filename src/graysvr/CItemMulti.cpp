@@ -107,7 +107,7 @@ bool CItemMulti::MultiRealizeRegion()
 	m_pRegion->SetRegionFlags( dwFlags );
 
 	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, "%s (%s)", static_cast<LPCTSTR>(pRegionBack->GetName()), static_cast<LPCTSTR>(GetName()));
+	sprintf(pszTemp, "%s (%s)", pRegionBack->GetName(), GetName());
 	m_pRegion->SetName(pszTemp);
 
 	return m_pRegion->RealizeRegion();
@@ -135,16 +135,16 @@ void CItemMulti::MultiUnRealizeRegion()
 	}
 }
 
-bool CItemMulti::Multi_CreateComponent( ITEMID_TYPE id, int dx, int dy, int dz, DWORD dwKeyCode )
+bool CItemMulti::Multi_CreateComponent( ITEMID_TYPE id, signed short dx, signed short dy, signed char dz, DWORD dwKeyCode )
 {
 	ADDTOCALLSTACK("CItemMulti::Multi_CreateComponent");
 	CItem * pItem = CreateTemplate( id );
 	ASSERT(pItem);
 
 	CPointMap pt = GetTopPoint();
-	pt.m_x += static_cast<signed short>(dx);
-	pt.m_y += static_cast<signed short>(dy);
-	pt.m_z += static_cast<signed char>(dz);
+	pt.m_x += dx;
+	pt.m_y += dy;
+	pt.m_z += dz;
 
 	bool fNeedKey = false;
 
@@ -216,13 +216,8 @@ void CItemMulti::Multi_Create( CChar * pChar, DWORD dwKeyCode )
 	size_t iQty = pMultiDef->m_Components.GetCount();
 	for ( size_t i = 0; i < iQty; i++ )
 	{
-		const CItemBaseMulti::CMultiComponentItem & component = pMultiDef->m_Components.ElementAt(i);
-
-		fNeedKey |= Multi_CreateComponent(static_cast<ITEMID_TYPE>(component.m_id),
-										  component.m_dx,
-										  component.m_dy,
-										  component.m_dz,
-										  dwKeyCode );
+		const CItemBaseMulti::CMultiComponentItem &component = pMultiDef->m_Components.ElementAt(i);
+		fNeedKey |= Multi_CreateComponent(component.m_id, component.m_dx, component.m_dy, component.m_dz, dwKeyCode);
 	}
 
 	CItem * pKey = NULL;

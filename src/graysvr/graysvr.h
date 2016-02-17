@@ -739,6 +739,7 @@ enum CLIMODE_TYPE	// What mode is the client to server connection in ? (waiting 
 	CLIMODE_TARG_OBJ_FUNC,
 
 	CLIMODE_TARG_UNEXTRACT,			// break out multi items
+	CLIMODE_TARG_ADDCHAR,			// "ADDNPC" command
 	CLIMODE_TARG_ADDITEM,			// "ADDITEM" command
 	CLIMODE_TARG_LINK,				// "LINK" command
 	CLIMODE_TARG_TILE,				// "TILE" command
@@ -969,11 +970,6 @@ private:
 	int m_iWalkStepCount;		// Count the actual steps . Turning does not count.
 	LONGLONG m_timeWalkStep;	// the last %8 walk step time.
 
-	// Stupid Walk limiting code. (Not working really)
-	DWORD m_Walk_LIFO[16];	// Client > 1.26 must match these .
-	unsigned int m_Walk_InvalidEchos;
-	unsigned int m_Walk_CodeQty;
-
 	// Screensize
 	struct __screensize
 	{
@@ -1074,12 +1070,12 @@ public:
 			int m_id;
 		} m_tmTile;
 
+		// CLIMODE_TARG_ADDCHAR
 		// CLIMODE_TARG_ADDITEM
 		struct
 		{
 			DWORD m_junk0;
-			ITEMID_TYPE m_id;
-			int		m_fStatic;
+			int m_id;
 		} m_tmAdd;
 
 		// CLIMODE_TARG_SKILL
@@ -1093,7 +1089,6 @@ public:
 		{
 			SPELL_TYPE m_Spell;			// targetting what spell ?
 			CREID_TYPE m_SummonID;
-			bool m_fSummonPet;
 		} m_tmSkillMagery;
 
 		// CLIMODE_TARG_USE_ITEM
@@ -1130,9 +1125,10 @@ private:
 	bool OnTarg_Obj_Info( CObjBase * pObj, const CPointMap & pt, ITEMID_TYPE id );
 	bool OnTarg_Obj_Function( CObjBase * pObj, const CPointMap & pt, ITEMID_TYPE id );
 
-	bool OnTarg_UnExtract( CObjBase * pObj, const CPointMap & pt ) ;
-	bool OnTarg_Stone_Recruit(CChar* pChar, bool bFull = false);
-	bool OnTarg_Item_Add( CObjBase * pObj, const CPointMap & pt ) ;
+	bool OnTarg_UnExtract( CObjBase * pObj, const CPointMap & pt );
+	bool OnTarg_Stone_Recruit( CChar * pChar, bool bFull = false );
+	bool OnTarg_Char_Add( CObjBase * pObj, const CPointMap & pt );
+	bool OnTarg_Item_Add( CObjBase * pObj, const CPointMap & pt );
 	bool OnTarg_Item_Link( CObjBase * pObj );
 	bool OnTarg_Tile( CObjBase * pObj, const CPointMap & pt );
 
@@ -1161,7 +1157,6 @@ private:
 
 	// Commands from client
 	void Event_Skill_Use( SKILL_TYPE x ); // Skill is clicked on the skill list
-	inline void Event_Item_Drop_Fail( CItem * pItem );
 	void Event_Talk_Common(TCHAR * szText ); // PC speech
 	bool Event_Command( LPCTSTR pszCommand, TALKMODE_TYPE mode = TALKMODE_SYSTEM ); // Client entered a '/' command like /ADD
 
@@ -1178,6 +1173,7 @@ public:
 	bool Event_DoubleClick( CGrayUID uid, bool fMacro, bool fTestTouch, bool fScript = false );
 	void Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName );
 	void Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, unsigned char gridIndex = 0 ); // Item is dropped on ground
+	void Event_Item_Drop_Fail( CItem *pItem );
 	void Event_Item_Dye( CGrayUID uid, HUE_TYPE wHue );	// Rehue an item
 	void Event_Item_Pickup( CGrayUID uid, int amount ); // Client grabs an item
 	void Event_MailMsg( CGrayUID uid1, CGrayUID uid2 );
@@ -1197,7 +1193,6 @@ public:
 	void Event_VendorSell_Cheater( int iCode = 0 );
 	bool Event_Walk( BYTE rawdir, BYTE sequence = 0 ); // Player moves
 	bool Event_CheckWalkBuffer();
-	bool Event_CheckFastwalkKey( DWORD dwEcho );
 	
 	TRIGRET_TYPE Menu_OnSelect( RESOURCE_ID_BASE rid, int iSelect, CObjBase * pObj );
 	TRIGRET_TYPE Dialog_OnButton( RESOURCE_ID_BASE rid, DWORD dwButtonID, CObjBase * pObj, CDialogResponseArgs * pArgs );
@@ -1218,8 +1213,8 @@ private:
 	int Cmd_Extract( CScript * pScript, CRectMap &rect, int & zlowest );
 	size_t Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuItem* item, size_t iMaxSize, bool &fShowMenu, bool &fLimitReached );
 public:
-	bool Cmd_CreateItem( ITEMID_TYPE id, bool fStatic = false );
-	bool Cmd_CreateChar( CREID_TYPE id, SPELL_TYPE iSpell = SPELL_Summon, bool fPet = true );
+	bool Cmd_CreateItem( ITEMID_TYPE id );
+	bool Cmd_CreateChar( CREID_TYPE id );
 
 	void Cmd_GM_PageMenu( unsigned int iEntryStart = 0 );
 	void Cmd_GM_PageCmd( LPCTSTR pCmd );
@@ -1339,6 +1334,7 @@ public:
 	void addMap();
 	void addMapDiff();
 	void addChangeServer();
+	void addPlayerUpdate();
 
 	void addBark( LPCTSTR pText, const CObjBaseTemplate * pSrc, HUE_TYPE wHue = HUE_DEFAULT, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_BOLD );
 	void addBarkUNICODE( const NCHAR * pText, const CObjBaseTemplate * pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang = 0 );
@@ -1400,8 +1396,6 @@ public:
 	void addLoginComplete();
 	void addChatSystemMessage(CHATMSG_TYPE iType, LPCTSTR pszName1 = NULL, LPCTSTR pszName2 = NULL, CLanguageID lang = 0 );
 
-	bool addFastwalkKey( EXTDATA_TYPE iType, size_t iQty );
-
 	void addCharPaperdoll( CChar * pChar );
 
 	void addAOSTooltip( const CObjBase * pObj, bool bRequested = false, bool bShop = false );
@@ -1428,9 +1422,10 @@ private:
 	#define POPUP_PETKILL 44
 	#define POPUP_PETSTOP 45
 	#define POPUP_PETSTAY 46
-	#define POPUP_PETFRIEND 47
-	#define POPUP_PETTRANSFER 48
-	#define POPUP_PETRELEASE 49
+	#define POPUP_PETFRIEND_ADD 47
+	#define POPUP_PETFRIEND_REMOVE 48
+	#define POPUP_PETTRANSFER 49
+	#define POPUP_PETRELEASE 50
 	#define POPUP_STABLESTABLE 51
 	#define POPUP_STABLERETRIEVE 52
 	#define POPUP_TRAINSKILL 100
@@ -1443,7 +1438,7 @@ public:
 
 
 	void addShowDamage( int damage, DWORD uid_damage );
-	void addSpeedMode( int speedMode = 0 );
+	void addSpeedMode( BYTE speedMode = 0 );
 	void addVisualRange( BYTE visualRange = UO_MAP_VIEW_SIZE );
 	void addIdleWarning( BYTE message );
 	void addKRToolbar( bool bEnable );
@@ -1534,8 +1529,6 @@ public:
 	void Menu_Setup( RESOURCE_ID_BASE rid, CObjBase * pObj = NULL );
 
 	int OnSkill_Info( SKILL_TYPE skill, CGrayUID uid, int iTestLevel, bool fTest );
-
-	inline bool Cmd_Use_Item_MustEquip( CItem * pItem, bool fFromDClick = false );
 
 	bool Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript = false );
 	void Cmd_EditItem( CObjBase * pObj, int iSelect );

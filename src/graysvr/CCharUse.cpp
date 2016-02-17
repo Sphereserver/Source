@@ -128,18 +128,16 @@ void CChar::Use_MoonGate( CItem * pItem )
 	ADDTOCALLSTACK("CChar::Use_MoonGate");
 	ASSERT(pItem);
 
-	bool fQuiet = (pItem->m_itTelepad.m_fQuiet != 0);
-	CPointMap ptTeleport = pItem->m_itTelepad.m_pntMark;
+	CPointBase pt = pItem->m_itTelepad.m_pntMark;
+
 	if ( pItem->IsType(IT_MOONGATE) )
 	{
 		// RES_MOONGATES
 		// What gate are we at ?
-		size_t iCount = g_Cfg.m_MoonGates.GetCount();
 		size_t i = 0;
-		for ( ; ; i++ )
+		size_t iCount = g_Cfg.m_MoonGates.GetCount();
+		for ( ; i < iCount; i++ )
 		{
-			if ( i >= iCount )
-				return;
 			if ( GetTopPoint().GetDist(g_Cfg.m_MoonGates[i]) <= UO_MAP_VIEW_SIZE )
 				break;
 		}
@@ -153,7 +151,7 @@ void CChar::Use_MoonGate( CItem * pItem )
 
 		size_t iMoongateIndex = (i + (iTrammelPhase - iFeluccaPhase)) % iCount;
 		ASSERT(g_Cfg.m_MoonGates.IsValidIndex(iMoongateIndex));
-		ptTeleport = g_Cfg.m_MoonGates[iMoongateIndex];
+		pt = g_Cfg.m_MoonGates[iMoongateIndex];
 	}
 
 	if ( m_pNPC )
@@ -162,20 +160,21 @@ void CChar::Use_MoonGate( CItem * pItem )
 			return;
 		if ( m_pNPC->m_Brain == NPCBRAIN_GUARD )	// guards won't leave the guarded region
 		{
-			CRegionWorld *pArea = dynamic_cast<CRegionWorld *>(ptTeleport.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA));
+			CRegionBase *pArea = pt.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA);
 			if ( !pArea || !pArea->IsGuarded() )
 				return;
 		}
 		if ( Noto_IsCriminal() )	// criminals won't enter on guarded regions
 		{
-			CRegionWorld *pArea = dynamic_cast<CRegionWorld *>(ptTeleport.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA));
+			CRegionBase *pArea = pt.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA);
 			if ( !pArea || pArea->IsGuarded() )
 				return;
 		}
 	}
 
-	// Teleport me. and take a step.
-	Spell_Teleport(ptTeleport, true, pItem->IsAttr(ATTR_DECAY) ? true : false, !fQuiet);
+	bool bCheckAntiMagic = pItem->IsAttr(ATTR_DECAY);
+	bool bDisplayEffect = !pItem->m_itTelepad.m_fQuiet;
+	Spell_Teleport(pt, true, bCheckAntiMagic, bDisplayEffect);
 }
 
 bool CChar::Use_Kindling( CItem * pKindling )
@@ -835,7 +834,7 @@ bool CChar::Use_Repair( CItem * pItemArmor )
 	return fSuccess;
 }
 
-void CChar::Use_EatQty( CItem * pFood, int iQty )
+void CChar::Use_EatQty( CItem * pFood, short iQty )
 {
 	ADDTOCALLSTACK("CChar::Use_EatQty");
 	// low level eat
@@ -846,16 +845,16 @@ void CChar::Use_EatQty( CItem * pFood, int iQty )
 	if ( iQty > pFood->GetAmount() )
 		iQty = pFood->GetAmount();
 
-	int iRestore = 0;
+	short iRestore = 0;
 	if ( pFood->m_itFood.m_foodval )
-		iRestore = static_cast<int>(pFood->m_itFood.m_foodval);
+		iRestore = static_cast<short>(pFood->m_itFood.m_foodval);
 	else
 		iRestore = pFood->Item_GetDef()->GetVolume();	// some food should have more value than other !
 
 	if ( iRestore < 1 )
 		iRestore = 1;
 
-	int iSpace = Stat_GetMax(STAT_FOOD) - Stat_GetVal(STAT_FOOD);
+	short iSpace = Stat_GetMax(STAT_FOOD) - Stat_GetVal(STAT_FOOD);
 	if ( iSpace <= 0 )
 		return;
 
@@ -879,7 +878,7 @@ void CChar::Use_EatQty( CItem * pFood, int iQty )
 	pFood->ConsumeAmount(iQty);
 }
 
-bool CChar::Use_Eat( CItem * pItemFood, int iQty )
+bool CChar::Use_Eat( CItem * pItemFood, short iQty )
 {
 	ADDTOCALLSTACK("CChar::Use_Eat");
 	// What we can eat should depend on body type.
@@ -1040,7 +1039,7 @@ void CChar::Use_Drink( CItem * pItem )
 
 	// Create the empty bottle ?
 	if ( idbottle != ITEMID_NOTHING )
-		ItemBounce(CItem::CreateScript(idbottle, this));
+		ItemBounce(CItem::CreateScript(idbottle, this), false);
 }
 
 CChar * CChar::Use_Figurine( CItem * pItem, bool bCheckFollowerSlots )

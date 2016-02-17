@@ -12,8 +12,8 @@ enum SERV_STAT_TYPE
 	SERV_STAT_CHARS,
 	SERV_STAT_ITEMS,
 	SERV_STAT_ACCOUNTS,
-	SERV_STAT_QTY,
-	SERV_STAT_MEM = SERV_STAT_QTY	// virtual
+	SERV_STAT_MEM,		// virtual
+	SERV_STAT_QTY
 };
 
 enum ACCAPP_TYPE	// types of new account applications.

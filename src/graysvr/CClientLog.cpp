@@ -384,7 +384,7 @@ bool CClient::OnRxConsole( const BYTE * pData, size_t iLen )
 				iRet = g_Serv.OnConsoleCmd( m_Targ_Text, this );
 
 				if (g_Cfg.m_fTelnetLog && GetPrivLevel() >= g_Cfg.m_iCommandLog)
-					g_Log.Event(LOGM_GM_CMDS, "%lx:'%s' commands '%s'=%d\n", GetSocketID(), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(m_Targ_Text), iRet);
+					g_Log.Event(LOGM_GM_CMDS, "%lx:'%s' commands '%s'=%d\n", GetSocketID(), GetName(), static_cast<LPCTSTR>(m_Targ_Text), iRet);
 			}
 		}
 	}
@@ -519,7 +519,7 @@ bool CClient::OnRxPing( const BYTE * pData, size_t iLen )
 			// enter into remote admin mode. (look for password).
 			SetConnectType( CONNECT_TELNET );
 			m_zLogin[0] = 0;
-			SysMessagef( "%s %s Admin Telnet\n", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_WELCOME_1), static_cast<LPCTSTR>(g_Serv.GetName()));
+			SysMessagef("%s %s Admin Telnet\n", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_WELCOME_1), g_Serv.GetName());
 
 			if ( g_Cfg.m_fLocalIPAdmin )
 			{
@@ -869,15 +869,18 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 						pAcc->m_TagDefs.DeleteKey("customerid");
 					}
 
-					DEBUG_MSG(( "%lx:xProcessClientSetup for %s, with AuthId %lu and CliVersion 0x%lx\n", GetSocketID(), 
-						pAcc->GetName(), tmSid, tmVer ));
+					DEBUG_MSG(( "%lx:xProcessClientSetup for %s, with AuthId %lu and CliVersion 0x%lx/0x%lx\n", GetSocketID(), pAcc->GetName(), tmSid, tmVer, tmVerReported ));
 
 					if ( tmSid != 0 && tmSid == pEvent->CharListReq.m_Account )
 					{
+						// request client version if the client has not reported it to server yet
+						if ( tmVerReported == 0 )
+							new PacketClientVersionReq(this);
+
 						if ( tmVer != 0 || tmVerReported != 0)
 						{
-							//// a client version change may toggle async mode, it's important
-							//// to flush pending data to the client before this happens
+							// a client version change may toggle async mode, it's important
+							// to flush pending data to the client before this happens
 							if ( tmVer != 0 )
 							{
 								m_Crypt.SetClientVerEnum(tmVer, false);

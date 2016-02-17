@@ -235,28 +235,32 @@ void CClient::Event_Item_Pickup(CGrayUID uid, int amount) // Client grabs an ite
 	EXC_CATCH;
 }
 
-void inline CClient::Event_Item_Drop_Fail( CItem * pItem )
+void CClient::Event_Item_Drop_Fail( CItem *pItem )
 {
 	ADDTOCALLSTACK("CClient::Event_Item_Drop_Fail");
 	// The item was in the LAYER_DRAGGING.
 	// Try to bounce it back to where it came from.
-	if ( pItem == NULL )
+	if ( !pItem || pItem != m_pChar->LayerFind(LAYER_DRAGGING) )
 		return;
 
-	// Game pieces should be returned to their game boards.
-	if ( pItem->IsType(IT_GAME_PIECE) )
+	CItemContainer *pPrevCont = static_cast<CItemContainer *>(m_Targ_PrvUID.ItemFind());
+	if ( pPrevCont )
 	{
-		CItemContainer *pGame = dynamic_cast<CItemContainer *>( m_Targ_PrvUID.ItemFind() );
-		if ( pGame != NULL )
-			pGame->ContentAdd( pItem, m_Targ_p );
-		else
-			pItem->Delete();
-
+		pPrevCont->ContentAdd(pItem, m_Targ_p);
 		return;
 	}
 
-	if ( pItem == m_pChar->LayerFind( LAYER_DRAGGING ) )	// if still being dragged
-		m_pChar->ItemBounce( pItem );
+	CChar *pPrevChar = m_Targ_PrvUID.CharFind();
+	if ( pPrevChar )
+	{
+		pPrevChar->ItemEquip(pItem);
+		return;
+	}
+
+	if ( m_Targ_PrvUID )	// if there's a previous cont UID set but it's not a valid container/char, probably this container/char got removed. So drop the item at player foot
+		m_Targ_p = m_pChar->GetTopPoint();
+
+	pItem->MoveToCheck(m_Targ_p);
 }
 
 void CClient::Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, unsigned char gridIndex )
@@ -349,7 +353,7 @@ void CClient::Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, u
 			}
 			else if ( ! pChar->CanCarry( pItem ))
 			{
-				// SysMessage( "That is too heavy" );
+				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_HEAVY));
 				Event_Item_Drop_Fail( pItem );
 				return;
 			}
@@ -740,65 +744,6 @@ bool CClient::Event_CheckWalkBuffer()
 
 
 
-bool CClient::Event_CheckFastwalkKey( DWORD dwEcho )
-{
-	ADDTOCALLSTACK("CClient::Event_CheckFastwalkKey");
-	// look for the walk code, and remove it
-	// Client will send 0's if we have not given it any EXTDATA_WalkCode_Prime message.
-	// The client will use codes in order.
-	// But it will skip codes sometimes. so delete codes that get skipped.
-
-	// RETURN:
-	//  true = ok to walk.
-	//  false = the client is cheating. I did not send that code.
-
-	// If the LIFO stack has not been sent, send them out now
-	if ( m_Walk_CodeQty == UINT_MAX )
-		addFastwalkKey(EXTDATA_WalkCode_Prime, COUNTOF(m_Walk_LIFO));
-
-	// Keep track of echo'd 0's and invalid non 0's
-	// (you can get 1 to 4 of these legitimately when you first start walking)
-	ASSERT(m_Walk_CodeQty != UINT_MAX);
-
-	for ( unsigned int i = 0; i < m_Walk_CodeQty; i++ )
-	{
-		if ( m_Walk_LIFO[i] == dwEcho )	// found a good code.
-		{
-			// Move next to the head.
-			i++;
-			memmove(m_Walk_LIFO, m_Walk_LIFO + i, (m_Walk_CodeQty - i) * sizeof(DWORD));
-			m_Walk_CodeQty -= i;
-			m_Walk_InvalidEchos = UINT_MAX;		// set this to UINT_MAX so we know later if we've gotten at least 1 valid echo
-			addFastwalkKey(EXTDATA_WalkCode_Add, 1);
-			return true;
-		}
-	}
-
-	if ( m_Walk_InvalidEchos == UINT_MAX )
-	{
-		// If we're here, we got at least one valid echo....therefore
-		// we should never get another one
-		DEBUG_ERR(("%lx: Invalid walk echo (0%lx). Invalid after valid.\n", GetSocketID(), dwEcho));
-		return false;
-	}
-
-	// Increment # of invalids received. This is allowed at startup.
-	// These "should" always be 0's
-	if ( ++m_Walk_InvalidEchos >= COUNTOF(m_Walk_LIFO) )
-	{
-		// The most I ever got was 2 of these, but I've seen 4
-		// a couple of times on a real server...we might have to
-		// increase this # if it becomes a problem (but I doubt that)
-		DEBUG_ERR(("%lx: Invalid walk echo. Too many initial invalid.\n", GetSocketID()));
-		return false;
-	}
-
-	// Allow them to walk a bit till we catch up.
-	return true;
-}
-
-
-
 bool CClient::Event_Walk( BYTE rawdir, BYTE sequence ) // Player moves
 {
 	ADDTOCALLSTACK("CClient::Event_Walk");
@@ -816,22 +761,21 @@ bool CClient::Event_Walk( BYTE rawdir, BYTE sequence ) // Player moves
 	if ( !m_pChar )
 		return false;
 
-	m_timeLastEventWalk = CServTime::GetCurrentTime();
-
 	DIR_TYPE dir = static_cast<DIR_TYPE>(rawdir & 0x0F);
 	if ( dir >= DIR_QTY )
+	{
+		new PacketMovementRej(this, sequence);
 		return false;
-
-	bool fRun = (rawdir & 0x80);	// or flying
-	m_pChar->StatFlag_Mod(STATF_Fly, fRun);
+	}
 
 	CPointMap pt = m_pChar->GetTopPoint();
 	CPointMap ptOld = pt;
-	pt.Move(dir);
 
 	if ( dir == m_pChar->m_dirFace )
 	{
 		// Move in this dir.
+		pt.Move(dir);
+
 		if ( !Event_CheckWalkBuffer() )
 		{
 			new PacketMovementRej(this, sequence);
@@ -840,7 +784,7 @@ bool CClient::Event_Walk( BYTE rawdir, BYTE sequence ) // Player moves
 
 		// Check the z height here.
 		// The client already knows this but doesn't tell us.
-		if ( !m_pChar->CanMoveWalkTo(pt, true, false, dir) )
+		if ( m_pChar->CanMoveWalkTo(pt, true, false, dir) == NULL )
 		{
 			new PacketMovementRej(this, sequence);
 			return false;
@@ -852,8 +796,9 @@ bool CClient::Event_Walk( BYTE rawdir, BYTE sequence ) // Player moves
 			return false;
 		}
 
-		// Did i step on a telepad, trap, etc ?
-		if ( !m_pChar->CheckLocation(false) )
+		// Check if I stepped on any item/teleport
+		TRIGRET_TYPE iRet = m_pChar->CheckLocation(false);
+		if ( iRet == TRIGRET_RET_FALSE )
 		{
 			m_pChar->SetUnkPoint(ptOld);	// we already moved, so move back to previous location
 			new PacketMovementRej(this, sequence);
@@ -863,15 +808,23 @@ bool CClient::Event_Walk( BYTE rawdir, BYTE sequence ) // Player moves
 		// Are we invis ?
 		m_pChar->CheckRevealOnMove();
 
-		new PacketMovementAck(this);
-		m_pChar->UpdateMove(ptOld, this);	// Who now sees me ?
-		addPlayerSee(ptOld);				// What new stuff do I now see ?
+		// Set running flag if I'm running
+		m_pChar->StatFlag_Mod(STATF_Fly, (rawdir & 0x80));
+
+		if ( iRet == TRIGRET_RET_TRUE )
+		{
+			new PacketMovementAck(this, sequence);
+			m_pChar->UpdateMove(ptOld, this);	// Who now sees me ?
+			addPlayerSee(ptOld);				// What new stuff do I now see ?
+		}
+
+		m_timeLastEventWalk = CServTime::GetCurrentTime();
 		m_iWalkStepCount++;					// Increase step count to use on walk buffer checks
 	}
 	else
 	{
 		// Just a change in dir.
-		new PacketMovementAck(this);
+		new PacketMovementAck(this, sequence);
 		m_pChar->m_dirFace = dir;
 		m_pChar->UpdateMove(ptOld, this);	// Who now sees me ?
 	}
@@ -995,7 +948,7 @@ bool CClient::Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode)
 	}
 
 	if ( GetPrivLevel() >= g_Cfg.m_iCommandLog )
-		g_Log.Event( LOGM_GM_CMDS, "%lx:'%s' commands '%s'=%d\n", GetSocketID(), static_cast<LPCTSTR>(GetName()), static_cast<LPCTSTR>(pszCommand), m_bAllowCommand);
+		g_Log.Event(LOGM_GM_CMDS, "%lx:'%s' commands '%s'=%d\n", GetSocketID(), GetName(), pszCommand, m_bAllowCommand);
 
 	return !m_bAllowSay;
 }
@@ -1337,26 +1290,26 @@ void CClient::Event_VendorSell(CChar* pVendor, const VendorItem* items, size_t i
 			amount = pItem->GetAmount();
 		}
 
-		INT64 iPrice = (INT64)pItemSell->GetVendorPrice(iConvertFactor) * amount;
+		LONG lPrice = pItemSell->GetVendorPrice(iConvertFactor) * amount;
 
 
 		if (( IsTrigUsed(TRIGGER_SELL) ) || ( IsTrigUsed(TRIGGER_ITEMSELL) ))
 		{
-			CScriptTriggerArgs Args( amount, iPrice, pVendor );
+			CScriptTriggerArgs Args( amount, lPrice, pVendor );
 			if ( pItem->OnTrigger( ITRIG_Sell, this->GetChar(), &Args ) == TRIGRET_RET_TRUE )
 				continue;
 		}
 
 		// Can vendor afford this ?
-		if ( iPrice > pBank->m_itEqBankBox.m_Check_Amount )
+		if ( lPrice > pBank->m_itEqBankBox.m_Check_Amount )
 		{
 			fShortfall = true;
 			break;
 		}
-		pBank->m_itEqBankBox.m_Check_Amount -= static_cast<unsigned long>(iPrice);
+		pBank->m_itEqBankBox.m_Check_Amount -= static_cast<unsigned long>(lPrice);
 
 		// give them the appropriate amount of gold.
-		iGold += static_cast<int>(iPrice);
+		iGold += static_cast<int>(lPrice);
 
 		// Take the items from player.
 		// Put items in vendor inventory.
@@ -1475,7 +1428,7 @@ void CClient::Event_MailMsg( CGrayUID uid1, CGrayUID uid2 )
 	}
 	// Might be an NPC ?
 	TCHAR * pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MSG_MAILBAG_DROP_2 ), static_cast<LPCTSTR>(m_pChar->GetName()));
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MSG_MAILBAG_DROP_2 ), m_pChar->GetName());
 	pChar->SysMessage(pszMsg);
 }
 
@@ -1628,7 +1581,7 @@ void CClient::Event_PromptResp( LPCTSTR pszText, size_t len, DWORD context1, DWO
 
 	sMsg.Format("%s%s", pszPrefix, szText);
 	pItem->SetName(sMsg);
-	sMsg.Format(g_Cfg.GetDefaultMsg( DEFMSG_MSG_RENAME_SUCCESS ), pszReName, static_cast<LPCTSTR>(pItem->GetName()));
+	sMsg.Format(g_Cfg.GetDefaultMsg( DEFMSG_MSG_RENAME_SUCCESS ), pszReName, pItem->GetName());
 
 	SysMessage(sMsg);
 }
@@ -2279,6 +2232,7 @@ void CClient::Event_Target(DWORD context, CGrayUID uid, CPointMap pt, BYTE flags
 		case CLIMODE_TARG_OBJ_FUNC:			OnTarg_Obj_Function( pTarget, pt, id );  break;
 
 		case CLIMODE_TARG_UNEXTRACT:		OnTarg_UnExtract( pTarget, pt ); break;
+		case CLIMODE_TARG_ADDCHAR:			OnTarg_Char_Add( pTarget, pt ); break;
 		case CLIMODE_TARG_ADDITEM:			OnTarg_Item_Add( pTarget, pt ); break;
 		case CLIMODE_TARG_LINK:				OnTarg_Item_Link( pTarget ); break;
 		case CLIMODE_TARG_TILE:				OnTarg_Tile( pTarget, pt );  break;
@@ -2365,7 +2319,7 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 		if ( pChar->IsPlayableCharacter() )
 			m_pPopupPacket->addOption(POPUP_PAPERDOLL, 6123, POPUPFLAG_COLOR, 0xFFFF);
 
-		if ( pChar->m_pNPC && !pChar->IsStatFlag(STATF_DEAD) )
+		if ( pChar->m_pNPC )
 		{
 			if ( pChar->m_pNPC->m_Brain == NPCBRAIN_BANKER )
 				m_pPopupPacket->addOption(POPUP_BANKBOX, 6105, POPUPFLAG_COLOR, 0xFFFF);
@@ -2381,27 +2335,34 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 				m_pPopupPacket->addOption(POPUP_VENDORSELL, 6104, POPUPFLAG_COLOR, 0xFFFF);
 			}
 
+			WORD iEnabled = pChar->IsStatFlag(STATF_DEAD) ? POPUPFLAG_LOCKED : POPUPFLAG_COLOR;
 			if ( pChar->NPC_IsOwnedBy(m_pChar, false) )
 			{
-				m_pPopupPacket->addOption(POPUP_PETGUARD, 6107, POPUPFLAG_COLOR, 0xFFFF);
+				CREID_TYPE id = pChar->GetID();
+				bool bBackpack = (id == CREID_LLAMA_PACK || id == CREID_HORSE_PACK || id == CREID_GIANT_BEETLE);
+
+				m_pPopupPacket->addOption(POPUP_PETGUARD, 6107, iEnabled, 0xFFFF);
 				m_pPopupPacket->addOption(POPUP_PETFOLLOW, 6108, POPUPFLAG_COLOR, 0xFFFF);
-				if ( pChar->GetPack() )
-					m_pPopupPacket->addOption(POPUP_PETDROP, 6109, POPUPFLAG_COLOR, 0xFFFF);
-				m_pPopupPacket->addOption(POPUP_PETKILL, 6111, POPUPFLAG_COLOR, 0xFFFF);
+				if ( bBackpack )
+					m_pPopupPacket->addOption(POPUP_PETDROP, 6109, iEnabled, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETKILL, 6111, iEnabled, 0xFFFF);
 				m_pPopupPacket->addOption(POPUP_PETSTOP, 6112, POPUPFLAG_COLOR, 0xFFFF);
 				m_pPopupPacket->addOption(POPUP_PETSTAY, 6114, POPUPFLAG_COLOR, 0xFFFF);
 				if ( !pChar->IsStatFlag(STATF_Conjured) )
 				{
-					m_pPopupPacket->addOption(POPUP_PETFRIEND, 6110, POPUPFLAG_COLOR, 0xFFFF);
+					m_pPopupPacket->addOption(POPUP_PETFRIEND_ADD, 6110, iEnabled, 0xFFFF);
+					m_pPopupPacket->addOption(POPUP_PETFRIEND_REMOVE, 6099, iEnabled, 0xFFFF);
 					m_pPopupPacket->addOption(POPUP_PETTRANSFER, 6113, POPUPFLAG_COLOR, 0xFFFF);
 				}
 				m_pPopupPacket->addOption(POPUP_PETRELEASE, 6118, POPUPFLAG_COLOR, 0xFFFF);
+				if ( bBackpack )
+					m_pPopupPacket->addOption(POPUP_BACKPACK, 6145, iEnabled, 0xFFFF);
 			}
 			else if ( pChar->Memory_FindObjTypes(m_pChar, MEMORY_FRIEND) )
 			{
-				m_pPopupPacket->addOption(POPUP_PETFOLLOW, 6108, POPUPFLAG_COLOR, 0xFFFF);
-				m_pPopupPacket->addOption(POPUP_PETSTOP, 6112, POPUPFLAG_COLOR, 0xFFFF);
-				m_pPopupPacket->addOption(POPUP_PETSTAY, 6114, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETFOLLOW, 6108, iEnabled, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETSTOP, 6112, iEnabled, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETSTAY, 6114, iEnabled, 0xFFFF);
 			}
 		}
 		else if ( pChar == m_pChar )
@@ -2529,8 +2490,12 @@ void CClient::Event_AOSPopupMenuSelect(DWORD uid, WORD EntryTag)	//do something 
 				pChar->NPC_OnHearPetCmd("stay", m_pChar);
 				break;
 
-			case POPUP_PETFRIEND:
+			case POPUP_PETFRIEND_ADD:
 				pChar->NPC_OnHearPetCmd("friend", m_pChar);
+				break;
+
+			case POPUP_PETFRIEND_REMOVE:
+				pChar->NPC_OnHearPetCmd("unfriend", m_pChar);
 				break;
 
 			case POPUP_PETTRANSFER:
@@ -2560,7 +2525,7 @@ void CClient::Event_AOSPopupMenuSelect(DWORD uid, WORD EntryTag)	//do something 
 			break;
 
 		case POPUP_BACKPACK:
-			m_pChar->Use_Obj(m_pChar->LayerFind(LAYER_PACK), false, false);
+			m_pChar->Use_Obj(pChar->LayerFind(LAYER_PACK), false);
 			break;
 
 		case POPUP_PARTY_ADD:
@@ -2648,146 +2613,147 @@ void CClient::Event_UseToolbar(BYTE bType, DWORD dwArg)
 
 //----------------------------------------------------------------------
 
-void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName )
+void CClient::Event_ExtCmd( EXTCMD_TYPE type, TCHAR *pszName )
 {
 	ADDTOCALLSTACK("CClient::Event_ExtCmd");
+	if ( !m_pChar )
+		return;
 
-	if ( m_pChar )
+	if ( IsTrigUsed(TRIGGER_USEREXTCMD) )
 	{
-		if ( IsTrigUsed(TRIGGER_USEREXTCMD) )
-		{
-			CScriptTriggerArgs	Args( pszName );
-			Args.m_iN1	= type;
-			if ( m_pChar->OnTrigger( CTRIG_UserExtCmd, m_pChar, &Args ) == TRIGRET_RET_TRUE )
-				return;
-			strcpy( pszName, Args.m_s1 );
-		}
+		CScriptTriggerArgs Args(pszName);
+		Args.m_iN1 = type;
+		if ( m_pChar->OnTrigger(CTRIG_UserExtCmd, m_pChar, &Args) == TRIGRET_RET_TRUE )
+			return;
+		strcpy(pszName, Args.m_s1);
 	}
 
-	TCHAR * ppArgs[2];
-	Str_ParseCmds( pszName, ppArgs, COUNTOF(ppArgs), " " );
+	TCHAR *ppArgs[2];
+	Str_ParseCmds(pszName, ppArgs, COUNTOF(ppArgs), " ");
+
 	switch ( type )
 	{
-		case EXTCMD_OPEN_SPELLBOOK: // 67 = open spell book if we have one.
+		case EXTCMD_OPEN_SPELLBOOK:	// open spell book if we have one.
+		{
+			CItem *pBook = NULL;
+			switch ( ATOI(ppArgs[0]) )
 			{
-				if (m_pChar == NULL)
-					break;
-				CItem * pBook = m_pChar->GetSpellbook();
-				if ( pBook == NULL )
-				{
-					SysMessageDefault( DEFMSG_MSG_NOSPELLBOOK );
-					break;
-				}
-				// Must send proper context info or it will crash tha client.
-				// if ( pBook->GetParent() != m_pChar )
-				{
-					addItem( m_pChar->GetPackSafe());
-				}
-				addItem( pBook );
-				addSpellbookOpen( pBook );
+				default:
+				case 1:	pBook = m_pChar->GetSpellbook(SPELL_Clumsy);				break;	// magery
+				case 2:	pBook = m_pChar->GetSpellbook(SPELL_Animate_Dead_AOS);		break;	// necromancy
+				case 3:	pBook = m_pChar->GetSpellbook(SPELL_Cleanse_by_Fire);		break;	// paladin
+				case 4:	pBook = m_pChar->GetSpellbook(SPELL_Honorable_Execution);	break;	// bushido
+				case 5:	pBook = m_pChar->GetSpellbook(SPELL_Focus_Attack);			break;	// ninjitsu
+				case 6:	pBook = m_pChar->GetSpellbook(SPELL_Arcane_Circle);			break;	// spellweaving
+				case 7:	pBook = m_pChar->GetSpellbook(SPELL_Nether_Bolt);			break;	// mysticism
+				case 8:	pBook = m_pChar->GetSpellbook(SPELL_Inspire);				break;	// bard
 			}
-			break;
+			if ( pBook )
+				m_pChar->Use_Obj(pBook, true);
+			return;
+		}
 
-		case EXTCMD_ANIMATE: // Cmd_Animate
-			if (m_pChar == NULL)
-				break;
-			if ( !strcmpi( ppArgs[0],"bow"))
-				m_pChar->UpdateAnimate( ANIM_BOW );
-			else if ( ! strcmpi( ppArgs[0],"salute"))
-				m_pChar->UpdateAnimate( ANIM_SALUTE );
+		case EXTCMD_ANIMATE:
+		{
+			if ( !strcmpi(ppArgs[0], "bow") )
+				m_pChar->UpdateAnimate(ANIM_BOW);
+			else if ( !strcmpi(ppArgs[0], "salute") )
+				m_pChar->UpdateAnimate(ANIM_SALUTE);
 			else
-			{
-				DEBUG_ERR(( "%lx:Event Animate '%s'\n", GetSocketID(), ppArgs[0] ));
-			}
-			break;
+				DEBUG_ERR(("%lx:Event_ExtCmd Animate unk '%s'\n", GetSocketID(), ppArgs[0]));
+			return;
+		}
 
-		case EXTCMD_SKILL:			// Skill
-			Event_Skill_Use( (SKILL_TYPE) ATOI( ppArgs[0] ));
-			break;
+		case EXTCMD_SKILL:
+		{
+			Event_Skill_Use(static_cast<SKILL_TYPE>(ATOI(ppArgs[0])));
+			return;
+		}
 
-		case EXTCMD_AUTOTARG:	// bizarre new autotarget mode.
-			// "target x y z"
-			{
-				CGrayUID uid( ATOI( ppArgs[0] ));
-				CObjBase * pObj = uid.ObjFind();
-				if ( pObj )
-				{
-					DEBUG_ERR(( "%lx:Event Autotarget '%s' '%s'\n", GetSocketID(), pObj->GetName(), ppArgs[1] ));
-				}
-				else
-				{
-					DEBUG_ERR(( "%lx:Event Autotarget UNK '%s' '%s'\n", GetSocketID(), ppArgs[0], ppArgs[1] ));
-				}
-			}
-			break;
+		case EXTCMD_AUTOTARG:	// bizarre new autotarget mode. "target x y z"
+		{
+			CGrayUID uid = ATOI(ppArgs[0]);
+			CObjBase *pObj = uid.ObjFind();
+			if ( pObj )
+				DEBUG_ERR(("%lx:Event_ExtCmd AutoTarg '%s' '%s'\n", GetSocketID(), pObj->GetName(), ppArgs[1]));
+			else
+				DEBUG_ERR(("%lx:Event_ExtCmd AutoTarg unk '%s' '%s'\n", GetSocketID(), ppArgs[0], ppArgs[1]));
+			return;
+		}
 
-		case EXTCMD_CAST_MACRO:	// macro spell.
 		case EXTCMD_CAST_BOOK:	// cast spell from book.
-			if (m_pChar != NULL)
+		case EXTCMD_CAST_MACRO:	// macro spell.
+		{
+			SPELL_TYPE spell = static_cast<SPELL_TYPE>(ATOI(ppArgs[0]));
+			CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
+			if ( !pSpellDef )
+				return;
+
+			if ( IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
 			{
-				SPELL_TYPE spell = static_cast<SPELL_TYPE>(ATOI(ppArgs[0]));
-				const CSpellDef* pSpellDef = g_Cfg.GetSpellDef(spell);
-				if (pSpellDef == NULL)
+				int skill;
+				if ( !pSpellDef->GetPrimarySkill(&skill) )
 					return;
 
-				if ( IsSetMagicFlags( MAGICF_PRECAST ) && !pSpellDef->IsSpellType( SPELLFLAG_NOPRECAST ) )
-				{
-					int skill;
-					if (!pSpellDef->GetPrimarySkill(&skill, NULL))
-						return;
-
-					m_tmSkillMagery.m_Spell = spell;
-					m_pChar->m_atMagery.m_Spell = spell;	// m_atMagery.m_Spell
-					m_Targ_UID = m_pChar->GetUID();	// default target.
-					m_Targ_PrvUID = m_pChar->GetUID();
-					m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
-				}
-				else
-					Cmd_Skill_Magery(spell, m_pChar );
+				m_tmSkillMagery.m_Spell = spell;
+				m_pChar->m_atMagery.m_Spell = spell;
+				m_pChar->m_Act_p = m_pChar->GetTopPoint();
+				m_pChar->m_Act_Targ = m_Targ_UID;
+				m_pChar->m_Act_TargPrv = m_Targ_PrvUID;
+				m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
 			}
-			break;
+			else
+				Cmd_Skill_Magery(spell, m_pChar);
+			return;
+		}
 
-		case EXTCMD_DOOR_AUTO: // open door macro = Attempt to open a door around us.
-			if ( m_pChar && !m_pChar->IsStatFlag( STATF_DEAD ) )
+		case EXTCMD_DOOR_AUTO:	// open door macro
+		{
+			CPointMap pt = m_pChar->GetTopPoint();
+			signed char iCharZ = pt.m_z;
+
+			pt.Move(m_pChar->m_dirFace);
+			CWorldSearch Area(pt, 1);
+			for (;;)
 			{
-				CWorldSearch Area( m_pChar->GetTopPoint(), 3 );
-				for (;;)
-				{
-					CItem * pItem = Area.GetItem();
-					if ( pItem == NULL )
-						break;
-					switch ( pItem->GetType() )
-					{
-						case IT_PORT_LOCKED:	// Can only be trigered.
-						case IT_PORTCULIS:
-						case IT_DOOR_LOCKED:
-						case IT_DOOR:
-							m_pChar->Use_Obj( pItem, true );
-							return;
+				CItem *pItem = Area.GetItem();
+				if ( !pItem )
+					return;
 
-						default:
-							break;
-					}
+				switch ( pItem->GetType() )
+				{
+					case IT_DOOR:
+					case IT_DOOR_LOCKED:
+					case IT_PORTCULIS:
+					case IT_PORT_LOCKED:
+						if ( abs(iCharZ - pItem->GetTopPoint().m_z) < 20 )
+						{
+							m_pChar->SysMessageDefault(DEFMSG_MACRO_OPENDOOR);
+							m_pChar->Use_Obj(pItem, true);
+							return;
+						}
 				}
 			}
-			break;
-
-		case EXTCMD_UNKGODCMD: // 107, seen this but no idea what it does.
-			break;
+			return;
+		}
 
 		case EXTCMD_INVOKE_VIRTUE:
-			if ((m_pChar != NULL) && ( IsTrigUsed(TRIGGER_USERVIRTUEINVOKE) ))
-			{
-				int iVirtueID = ppArgs[0][0] - '0';	// 0x1=Honor, 0x2=Sacrifice, 0x3=Valor
-				CScriptTriggerArgs Args(m_pChar);
-				Args.m_iN1 = iVirtueID;
-				m_pChar->OnTrigger(CTRIG_UserVirtueInvoke, m_pChar, &Args);
-			}
-			break;
+		{
+			if ( !IsTrigUsed(TRIGGER_USERVIRTUEINVOKE) )
+				return;
+
+			int iVirtueID = ppArgs[0][0] - '0';		// 0x1=Honor, 0x2=Sacrifice, 0x3=Valor
+			CScriptTriggerArgs Args(m_pChar);
+			Args.m_iN1 = iVirtueID;
+			m_pChar->OnTrigger(CTRIG_UserVirtueInvoke, m_pChar, &Args);
+			return;
+		}
 
 		default:
-			DEBUG_ERR(( "%lx:Event_ExtCmd unk %d, '%s'\n", GetSocketID(), type, pszName ));
-			break;
+		{
+			DEBUG_ERR(("%lx:Event_ExtCmd unk %d, '%s'\n", GetSocketID(), type, pszName));
+			return;
+		}
 	}
 }
 

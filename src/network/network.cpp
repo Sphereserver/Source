@@ -623,7 +623,7 @@ void PacketManager::registerStandardPackets(void)
 	registerPacket(XCMD_MenuChoice, new PacketMenuChoice());					// select menu item
 	registerPacket(XCMD_ServersReq, new PacketServersReq());					// request server list
 	registerPacket(XCMD_CharDelete, new PacketCharDelete());					// delete character
-	registerPacket(XCMD_CreateKR, new PacketCreateKR());						// create character (KR/SA)
+	registerPacket(XCMD_CreateNew, new PacketCreateNew());						// create character (KR/SA)
 	registerPacket(XCMD_CharListReq, new PacketCharListReq());					// request character list
 	registerPacket(XCMD_BookOpen, new PacketBookHeaderEdit());					// edit book
 	registerPacket(XCMD_DyeVat, new PacketDyeObject());							// colour selection dialog
@@ -657,10 +657,10 @@ void PacketManager::registerStandardPackets(void)
 	registerPacket(XCMD_KRClientType, new PacketClientType());					// report client type (2d/kr/sa)
 	registerPacket(XCMD_HighlightUIRemove, new PacketRemoveUIHighlight());		//
 	registerPacket(XCMD_UseHotbar, new PacketUseHotbar());						//
-	registerPacket(XCMD_MacroEquipItem, new PacketEquipItemMacro());			//
-	registerPacket(XCMD_MacroUnEquipItem, new PacketUnEquipItemMacro());		//
-	registerPacket(XCMD_WalkNew, new PacketMovementReqNew());					// movement request (SA)
-	registerPacket(XCMD_TSyncReply, new PacketTimeSyncReply());					//
+	registerPacket(XCMD_MacroEquipItem, new PacketEquipItemMacro());			// equip item(s) macro (KR)
+	registerPacket(XCMD_MacroUnEquipItem, new PacketUnEquipItemMacro());		// unequip item(s) macro (KR)
+	registerPacket(XCMD_WalkRequestNew, new PacketMovementReqNew());			// new movement request (KR/SA)
+	registerPacket(XCMD_TimeSyncRequest, new PacketTimeSyncRequest());			// time sync request (KR/SA)
 	registerPacket(XCMD_CrashReport, new PacketCrashReport());					//
 	registerPacket(XCMD_CreateHS, new PacketCreateHS());						// create character (HS)
 
