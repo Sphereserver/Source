@@ -3358,17 +3358,10 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			}
 			break;
 		case CHV_ATTACK:
-			{
-				INT64 piCmd[1];
-				if ( Str_ParseCmds( s.GetArgRaw(), piCmd, COUNTOF(piCmd)) > 0 )
-				{
-					CGrayUID uid = static_cast<unsigned long>(piCmd[0]);
-					pCharSrc = uid.CharFind();
-				}
-				if ( pCharSrc )
-					Fight_Attack( pCharSrc );
-			}
+		{
+			Fight_Attack(CGrayUID(s.GetArgVal()).CharFind());
 			break;
+		}
 		case CHV_BANK:
 			// Open the bank box for this person
 			if ( pCharSrc == NULL || ! pCharSrc->IsClient() )
@@ -3381,10 +3374,11 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 		case CHV_BOUNCE: // uid
 			return ItemBounce( CGrayUID( s.GetArgVal()).ItemFind());
 		case CHV_BOW:
-			UpdateDir( pCharSrc );
-			UpdateAnimate( ANIM_BOW, true , false, 0, 0x0A );
+		{
+			UpdateDir(CGrayUID(s.GetArgVal()).ObjFind());
+			UpdateAnimate(ANIM_BOW);
 			break;
-
+		}
 		case CHV_CONTROL: // Possess
 			if ( pCharSrc == NULL || ! pCharSrc->IsClient())
 				return( false );
@@ -3448,17 +3442,10 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			// find my best waepon for my skill and equip it.
 			return ItemEquipWeapon(false);
 		case CHV_FACE:
-			{
-				CObjBase	*pTarget = pCharSrc;
-				INT64		piCmd[1];
-				if ( Str_ParseCmds(s.GetArgRaw(), piCmd, COUNTOF(piCmd)) > 0 )
-				{
-					CGrayUID uid = static_cast<unsigned long>(piCmd[0]);
-					pTarget = uid.ObjFind();
-				}
-				UpdateDir(pTarget);
-				break;
-			}
+		{
+			UpdateDir(CGrayUID(s.GetArgVal()).ObjFind());
+			break;
+		}
 		case CHV_FIXWEIGHT:
 			FixWeight();
 			break;
@@ -3716,18 +3703,11 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			Reveal(static_cast<DWORD>(s.GetArgVal()));
 			break;
 		case CHV_SALUTE:	//	salute to player
-			{
-				CObjBase	*pTarget = pCharSrc;
-				INT64		piCmd[1];
-				if ( Str_ParseCmds(s.GetArgRaw(), piCmd, COUNTOF(piCmd)) > 0 )
-				{
-					CGrayUID uid = static_cast<unsigned long>(piCmd[0]);
-					pTarget = uid.ObjFind();
-				}
-				UpdateDir(pTarget);
-				UpdateAnimate( ANIM_SALUTE, true );
-				break;
-			}
+		{
+			UpdateDir(CGrayUID(s.GetArgVal()).ObjFind());
+			UpdateAnimate(ANIM_SALUTE);
+			break;
+		}
 		case CHV_SKILL:
 			Skill_Start( g_Cfg.FindSkillKey( s.GetArgStr()));
 			break;

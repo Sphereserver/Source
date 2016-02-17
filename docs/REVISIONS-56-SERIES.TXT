@@ -2879,3 +2879,6 @@ Fixed #2576: SpawnItem value is now readable under @Create trigger.
 Fully enabled MT_NONMOVER from source, NPC's with this CAN flag will not move at all (avoiding glitching with dex 0 or using tag.nomovetill, which both could screw some things). Updated on sphere_defs.scp too.
 Added GetSight() to Char's range in NPC_LookAround to get a dynamic value of the VisualRange property, which was not working on NPCs.
 Changed: ARGN1 = 1 in @Stroke trigger(s) calling UpdateDir on character against it's target instead of forcing it to always turn if SKF_GATHER was present.
+
+17-02-2016, Coruja
+Fixed: Functions ATTACK/FACE/SALUTE crashing Sphere if called using too many args.
