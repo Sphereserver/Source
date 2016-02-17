@@ -183,7 +183,6 @@ void CItemSpawn::GenerateChar(CResourceDef *pDef)
 	pChar->NPC_LoadScript(true);
 	pChar->StatFlag_Set(STATF_Spawned);
 	pChar->MoveTo(pt);
-	pChar->NPC_CreateTrigger();		// removed from NPC_LoadScript() and triggered after char placement
 
 	// Check if the NPC can spawn in this region
 	CRegionBase *pRegion = GetTopPoint().GetRegion(REGION_TYPE_AREA);
@@ -194,6 +193,7 @@ void CItemSpawn::GenerateChar(CResourceDef *pDef)
 	}
 
 	AddObj(pChar->GetUID());
+	pChar->NPC_CreateTrigger();		// removed from NPC_LoadScript() and triggered after char placement and attachment to the spawnitem
 	pChar->Update();
 
 	size_t iCount = GetTopSector()->GetCharComplexity();
@@ -233,6 +233,7 @@ void CItemSpawn::DelObj(CGrayUID uid)
 			ResendTooltip();
 		break;
 	}
+	ResendTooltip();
 }
 
 void CItemSpawn::AddObj(CGrayUID uid)
@@ -289,6 +290,7 @@ void CItemSpawn::AddObj(CGrayUID uid)
 			break;
 		}
 	}
+	ResendTooltip();
 }
 
 void CItemSpawn::OnTick(bool fExec)
