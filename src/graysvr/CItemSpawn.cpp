@@ -233,7 +233,6 @@ void CItemSpawn::DelObj(CGrayUID uid)
 			ResendTooltip();
 		break;
 	}
-	ResendTooltip();
 }
 
 void CItemSpawn::AddObj(CGrayUID uid)
@@ -290,7 +289,6 @@ void CItemSpawn::AddObj(CGrayUID uid)
 			break;
 		}
 	}
-	ResendTooltip();
 }
 
 void CItemSpawn::OnTick(bool fExec)
