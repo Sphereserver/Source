@@ -1051,17 +1051,15 @@ void CWorldThread::GarbageCollection_UIDs()
 INT64 CWorldClock::GetSystemClock()
 {
 	ADDTOCALLSTACK("CWorldClock::GetSystemClock");
-	// CLOCKS_PER_SEC is the base unit
-	// These functions can return the time using microseconds precision,
-	// but the precision got intentionally lowered to tenths of second.
+	// Return system wall-clock using high resolution value (milliseconds)
 #ifdef _WIN32
-	LARGE_INTEGER time;
-	QueryPerformanceCounter(&time);
-	return (time.QuadPart * CLOCKS_PER_SEC) / llTimeProfileFrequency;
+	FILETIME ft;
+	GetSystemTimeAsFileTime(&ft);
+	return ((static_cast<INT64>(ft.dwHighDateTime) << 32) + ft.dwLowDateTime) / 10000;
 #else
 	struct timespec ts;
-	clock_gettime(CLOCK_MONOTONIC, &ts);
-	return (ts.tv_sec * CLOCKS_PER_SEC) + (ts.tv_nsec / CLOCKS_PER_SEC);
+	clock_gettime(CLOCK_REALTIME, &ts);
+	return ((ts.tv_sec * 10000) + (ts.tv_nsec / 100000)) / 10;
 #endif
 }
 

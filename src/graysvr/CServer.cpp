@@ -1767,8 +1767,7 @@ bool CServer::SocketsInit( CGSocket & socket )
 	int iRet = socket.Bind(SockAddr);
 	if ( iRet < 0 )			// Probably already a server running.
 	{
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to bind listen socket %s port %d - Error code: %i\n",
-			SockAddr.GetAddrStr(), SockAddr.GetPort(), iRet);
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to bind listen socket %s port %d (error code: %i)\n", SockAddr.GetAddrStr(), SockAddr.GetPort(), iRet);
 		return false;
 	}
 	socket.Listen();
