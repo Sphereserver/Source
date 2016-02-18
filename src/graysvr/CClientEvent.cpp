@@ -773,14 +773,35 @@ bool CClient::Event_Walk( BYTE rawdir, BYTE sequence ) // Player moves
 
 	if ( dir == m_pChar->m_dirFace )
 	{
-		// Move in this dir.
-		pt.Move(dir);
+		if ( IsSetEF(EF_FastWalkPrevention) )
+		{
+			// The fastest way to get system clock is using g_World.GetCurrentTime().GetTimeRaw() to
+			// read the value already stored by Sphere main timer. But this value is only updated at
+			// tenths of second precision, which won't work here because we need milliseconds precision.
+			// So to get this precision we must get the system clock manually at each walk request.
+			INT64 iCurTime = CWorldClock::GetSystemClock();
+			if ( iCurTime < m_timeNextEventWalk )		// fastwalk detected
+			{
+				new PacketMovementRej(this, sequence);
+				return false;
+			}
 
-		if ( !Event_CheckWalkBuffer() )
+			INT64 iDelay = 0;
+			if ( m_pChar->IsStatFlag(STATF_OnHorse|STATF_Hovering) )
+				iDelay = (rawdir & 0x80) ? 70 : 170;	// 100ms : 200ms
+			else
+				iDelay = (rawdir & 0x80) ? 170 : 370;	// 200ms : 400ms
+
+			m_timeNextEventWalk = iCurTime + iDelay;
+		}
+		else if ( !Event_CheckWalkBuffer() )
 		{
 			new PacketMovementRej(this, sequence);
 			return false;
 		}
+
+		// Move in this dir.
+		pt.Move(dir);
 
 		// Check the z height here.
 		// The client already knows this but doesn't tell us.

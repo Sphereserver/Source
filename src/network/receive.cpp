@@ -236,22 +236,7 @@ bool PacketMovementReq::onReceive(NetState* net)
 	//DWORD crypt = readInt32();	// client fastwalk crypt (not used anymore)
 
 	if ( net->m_sequence == 0 && sequence != 0 )
-	{
 		direction = DIR_QTY;	// setting invalid direction to intentionally reject the walk request
-	}
-	else if ( IsSetEF(EF_FastWalkPrevention) )
-	{
-		// TO-DO: Poorly working. To make this thing work correctly
-		// we must compare timers using numbers with more precision
-		CChar *pChar = client->GetChar();
-		INT64 iMinDelay = 0;
-		if ( pChar->IsStatFlag(STATF_OnHorse) )
-			iMinDelay = (direction & 0x80) ? 1 : 2;
-		else
-			iMinDelay = (direction & 0x80) ? 2 : 4;
-		if ( -g_World.GetTimeDiff(client->m_timeLastEventWalk) < iMinDelay )
-			direction = DIR_QTY;	// setting invalid direction to intentionally reject the walk request
-	}
 
 	if ( client->Event_Walk(direction, sequence) )
 	{
@@ -4246,9 +4231,11 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 	// It must be enabled using login flags on packet 0xA9, otherwise the client will
 	// stay using the old walk packet 0x02.
 
-	// The 'timer' values used here are linked somehow to time sync packets
-	// 0xF1 (client request) / 0xF2 (server response) but I have no idea how it works.
-	// The client request an time resync at every 60 seconds.
+	// The 'time' values here are used by fastwalk prevention, and linked somehow to
+	// time sync packets 0xF1 (client request) / 0xF2 (server response) but I have no
+	// idea how it works. The client request an time resync at every 60 seconds.
+	// Anyway, these values are not in use because Sphere already have another fastwalk
+	// detection engine from the old packet 0x02 (PacketMovementReq).
 
 	// PS: On classic clients this packet is used as 'Krrios special client' (?) which
 	// does some useless weird stuff. Also classic clients using Injection 2014 will
@@ -4265,28 +4252,13 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 	BYTE steps = readByte();
 	while ( steps )
 	{
-		INT64 iTime1 = readInt64();
-		INT64 iTime2 = readInt64();
+		skip(8);	//INT64 iTime1 = readInt64();
+		skip(8);	//INT64 iTime2 = readInt64();
 		BYTE sequence = readByte();
 		BYTE direction = readByte();
 		DWORD mode = readInt32();	// 1 = walk, 2 = run
 		if ( mode == 2 )
 			direction |= 0x80;
-
-		if ( IsSetEF(EF_FastWalkPrevention) )
-		{
-			// TO-DO: Poorly working. To make this thing work correctly
-			// we need an better integration with time packets 0xF1/0xF2
-			CChar *pChar = client->GetChar();
-			INT64 iTimeDiff = iTime2 - iTime1;
-			INT64 iMinDelay = 0;
-			if ( pChar->IsStatFlag(STATF_OnHorse) )
-				iMinDelay = (direction & 0x80) ? 100 : 200;
-			else
-				iMinDelay = (direction & 0x80) ? 200 : 400;
-			if ( iTimeDiff < iMinDelay )
-				direction = DIR_QTY;	// setting invalid direction to intentionally reject the walk request
-		}
 
 		// The client send these values, but they're not really needed
 		//DWORD x = readInt32();

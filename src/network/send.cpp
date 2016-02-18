@@ -4798,19 +4798,7 @@ PacketTimeSyncResponse::PacketTimeSyncResponse(const CClient* target) : PacketSe
 {
 	ADDTOCALLSTACK("PacketTimeSyncResponse::PacketTimeSyncResponse");
 
-#ifdef WIN32
-	time_t ltime;
-	time(&ltime);
-
-	SYSTEMTIME st;
-	GetSystemTime(&st);
-	INT64 llTime = ((static_cast<INT64>(ltime) * 1000) + st.wMilliseconds) / 10000;
-#else
-	struct timeval tim;
-	gettimeofday(&tim, NULL);
-	INT64 llTime = ((static_cast<INT64>(tim.tv_sec) * 1000) + tim.tv_usec) / 10000;
-#endif
-
+	INT64 llTime = g_World.GetCurrentTime().GetTimeRaw();
 	writeInt64(llTime);
 	writeInt64(llTime+100);
 	writeInt64(llTime+100);	//No idea if different values make a difference. I didn't notice anything different when all values were the same.

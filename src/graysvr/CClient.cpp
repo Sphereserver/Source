@@ -35,6 +35,7 @@ CClient::CClient(NetState* state)
 	m_timeLastSend =
 	m_timeLastEvent = CServTime::GetCurrentTime();
 	m_timeLastEventWalk = CServTime::GetCurrentTime();
+	m_timeNextEventWalk = 0;
 
 	m_iWalkStepCount = 0;
 	m_iWalkTimeAvg	= 100;
