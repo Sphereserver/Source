@@ -2709,7 +2709,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			}
 			else
 			{
-				if ( rid.GetResIndex() >= g_Cfg.m_iMaxSkill )
+				if ( rid.GetResIndex() >= static_cast<int>(g_Cfg.m_iMaxSkill) )
 					g_Cfg.m_iMaxSkill = rid.GetResIndex() + 1;
 
 				// Just replace any previous CSkillDef

@@ -4055,7 +4055,7 @@ SKILL_TYPE CItem::Weapon_GetSkill() const
 	int iSkillOverride = static_cast<int>(m_TagDefs.GetKeyNum("OVERRIDE_SKILL", true) - 1);
 	if ( iSkillOverride == -1)
 		iSkillOverride = static_cast<int>(m_TagDefs.GetKeyNum("OVERRIDE.SKILL", true) - 1);
-	if ( iSkillOverride > SKILL_NONE && iSkillOverride < g_Cfg.m_iMaxSkill )
+	if ( iSkillOverride > SKILL_NONE && iSkillOverride < static_cast<int>(g_Cfg.m_iMaxSkill) )
 		return static_cast<SKILL_TYPE>(iSkillOverride);
 
 	if ( pItemDef->m_iSkill > SKILL_NONE && pItemDef->m_iSkill < static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill) )

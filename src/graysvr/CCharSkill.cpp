@@ -398,7 +398,7 @@ SKILL_TYPE CChar::Skill_GetMagicRandom(unsigned short iVal)
 	ADDTOCALLSTACK("CChar::Skill_GetMagicRandom");
 	SKILL_TYPE skills[SKILL_QTY];
 	int count = 0;
-	for ( char i = 0; i < g_Cfg.m_iMaxSkill; i++ )
+	for ( unsigned char i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
 		SKILL_TYPE skill = static_cast<SKILL_TYPE>(i);
 		if (!g_Cfg.IsSkillFlag(skill, SKF_MAGIC))
@@ -421,7 +421,7 @@ SKILL_TYPE CChar::Skill_GetMagicBest()
 	ADDTOCALLSTACK("CChar::Skill_GetMagicBest");
 	SKILL_TYPE skill = SKILL_NONE;
 	int value = 0;
-	for ( char i = 0; i < g_Cfg.m_iMaxSkill; i++ )
+	for ( unsigned char i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
 		if (!g_Cfg.IsSkillFlag(skill, SKF_MAGIC))
 			continue;
