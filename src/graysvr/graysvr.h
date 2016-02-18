@@ -994,7 +994,6 @@ public:
 	CAccount * m_pAccount;		// The account name. we logged in on
 
 	CServTime m_timeLogin;			// World clock of login time. "LASTCONNECTTIME"
-	CServTime m_timeLastSend;		// Last time i tried to send to the client
 	CServTime m_timeLastEvent;		// Last time we got event from client.
 	CServTime m_timeLastEventWalk;	// Last time we got a walk event from client (only used to handle STATF_Fly char flag)
 	INT64 m_timeNextEventWalk;		// Fastwalk prevention: only allow more walk requests after this timer

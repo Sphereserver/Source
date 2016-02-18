@@ -32,7 +32,6 @@ CClient::CClient(NetState* state)
 	m_pGMPage = NULL;
 
 	m_timeLogin.Init();
-	m_timeLastSend =
 	m_timeLastEvent = CServTime::GetCurrentTime();
 	m_timeLastEventWalk = CServTime::GetCurrentTime();
 	m_timeNextEventWalk = 0;

@@ -2005,8 +2005,6 @@ int NetworkOut::proceedQueue(CClient* client, long priority)
 			break;
 		}
 
-		client->m_timeLastSend = time;
-
 		EXC_SET("check length");
 		if (length > maxClientLength)
 		{
@@ -3818,8 +3816,6 @@ size_t NetworkOutput::processPacketQueue(NetState* state, unsigned int priority)
 			state->markWriteClosed();
 			break;
 		}
-
-		client->m_timeLastSend = time;
 
 		EXC_CATCH;
 		EXC_DEBUG_START;
