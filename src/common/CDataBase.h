@@ -46,7 +46,6 @@ public:
 	//	set / get / info methods
 	bool isConnected();
 	bool OnTick();
-	int FixWeirdness();
 
 	virtual bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
 	virtual bool r_LoadVal( CScript & s );

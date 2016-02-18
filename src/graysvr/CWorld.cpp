@@ -1052,11 +1052,12 @@ INT64 CWorldClock::GetSystemClock()
 {
 	ADDTOCALLSTACK("CWorldClock::GetSystemClock");
 	// CLOCKS_PER_SEC is the base unit
+	// These functions can return the time using microseconds precision,
+	// but the precision got intentionally lowered to tenths of second.
 #ifdef _WIN32
-	LARGE_INTEGER freq, time;
-	QueryPerformanceFrequency(&freq);
+	LARGE_INTEGER time;
 	QueryPerformanceCounter(&time);
-	return (time.QuadPart * CLOCKS_PER_SEC) / freq.QuadPart;
+	return (time.QuadPart * CLOCKS_PER_SEC) / llTimeProfileFrequency;
 #else
 	struct timespec ts;
 	clock_gettime(CLOCK_MONOTONIC, &ts);
