@@ -228,11 +228,9 @@ void CItemSpawn::DelObj(CGrayUID uid)
 			i++;
 		}
 		m_obj[i].InitUID();								// Finished moving higher entries (if any) so we free the last entry.
-
-		if ( !g_Serv.IsLoading() )
-			ResendTooltip();
 		break;
 	}
+	ResendTooltip();
 }
 
 void CItemSpawn::AddObj(CGrayUID uid)
@@ -283,12 +281,13 @@ void CItemSpawn::AddObj(CGrayUID uid)
 					pChar->StatFlag_Set(STATF_Spawned);
 					pChar->m_ptHome = GetTopPoint();
 					pChar->m_pNPC->m_Home_Dist_Wander = static_cast<WORD>(m_itSpawnChar.m_DistMax);
-					ResendTooltip();
 				}
 			}
 			break;
 		}
 	}
+	if ( !g_Serv.IsLoading() )
+		ResendTooltip();
 }
 
 void CItemSpawn::OnTick(bool fExec)
