@@ -349,6 +349,7 @@ bool CClient::OnTarg_Item_Add( CObjBase * pObj, const CPointMap & pt )
 	}
 
 	pItem->MoveToCheck(pt, m_pChar);
+	m_pChar->m_Act_Targ = pItem->GetUID();		// for last target stuff (trigger stuff) and to make AxisII able to initialize placed spawn items.
 	return true;
 }
 
