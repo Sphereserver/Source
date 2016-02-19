@@ -2882,3 +2882,6 @@ Changed: ARGN1 = 1 in @Stroke trigger(s) calling UpdateDir on character against 
 
 17-02-2016, Coruja
 Fixed: Functions ATTACK/FACE/SALUTE crashing Sphere if called using too many args.
+
+19-02-2016, Nolok
+Fixed: ACT not being updated when using .add to add an item. This solves also AxisII being unable to initialize placed spawn items.
