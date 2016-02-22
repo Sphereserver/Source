@@ -2910,3 +2910,6 @@ Changed: now double clicking a T_SPAWN_ITEM spawnitem has the same effect it has
 	(remove existing items spawned from it) if the timer is running, otherwise starting it (forcing the spawn to work and create some items).
 [sphere_msgs.scp] Removed ITEMUSE_SPAWNCHAR_NEG, ITEMUSE_SPAWNCHAR_RSET, ITEMUSE_SPAWNITEM_TRIG and unified them as:
 	ITEMUSE_SPAWN_NEG and ITEMUSE_SPAWN_RESET.
+
+22-02-2016, Coruja
+Fixed: Enhanced clients not placing items on correct container GRID slot when using containers on 'list view' mode.

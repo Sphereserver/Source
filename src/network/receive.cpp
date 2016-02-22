@@ -395,23 +395,29 @@ bool PacketItemDropReq::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketItemDropReq::onReceive");
 
-	CGrayUID serial(readInt32());
+	CClient *client = net->getClient();
+	ASSERT(client);
+	const CChar *character = client->GetChar();
+	if ( !character )
+		return false;
+
+	CGrayUID serial = readInt32();
 	WORD x = readInt16();
 	WORD y = readInt16();
 	BYTE z = readByte();
 
-	BYTE grid(0);
-	if (net->isClientVersion(MINCLIVER_ITEMGRID) || net->isClientKR() || net->isClientSA())
+	BYTE grid = 0;
+	if ( net->isClientVersion(MINCLIVER_ITEMGRID) || net->isClientKR() || net->isClientSA() )
+	{
 		grid = readByte();
 
-	CGrayUID container(readInt32());
+		// Enhanced clients using containers on 'list view' mode always send grid=255 to server,
+		// this means that the item must placed on first grid slot free, and not on slot 255.
+		if ( grid == UCHAR_MAX )
+			grid = 0;
+	}
 
-	CClient* client = net->getClient();
-	ASSERT(client);
-	const CChar* character = client->GetChar();
-	if (character == NULL)
-		return false;
-	
+	CGrayUID container = readInt32();
 	CPointMap pt(x, y, z, character->GetTopMap());
 
 	client->Event_Item_Drop(serial, pt, container, grid);
