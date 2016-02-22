@@ -3482,7 +3482,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 								this->m_TooltipData.Add( t = new CClientTooltip( 1061169 ) ); // range ~1_val~
 								t->FormatArgs( "%hhu", pItem->m_itSpawnChar.m_DistMax );
 								this->m_TooltipData.Add( t = new CClientTooltip( 1074247 ) ); // Live Creatures: ~1_NUM~ / ~2_MAX~
-								t->FormatArgs( "%lu\t%hu", pItem->m_itSpawnChar.m_current, pItem->GetAmount() );
+								t->FormatArgs( "%hhu\t%hu", static_cast<CItemSpawn *>(pItem)->m_currentSpawned, pItem->GetAmount() );
 								this->m_TooltipData.Add( t = new CClientTooltip( 1060659 ) ); // ~1_val~: ~2_val~
 								t->FormatArgs( "Time range\t%hu min / %hu max", pItem->m_itSpawnChar.m_TimeLoMin, pItem->m_itSpawnChar.m_TimeHiMin );
 								this->m_TooltipData.Add( t = new CClientTooltip( 1060660 ) ); // ~1_val~: ~2_val~
@@ -3492,14 +3492,13 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 						case IT_SPAWN_ITEM:
 							{
 								CResourceDef * pSpawnItemDef = g_Cfg.ResourceGetDef( pItem->m_itSpawnItem.m_ItemID );
-								CItemSpawn * pSpawn = static_cast<CItemSpawn *>(pItem);
 
 								this->m_TooltipData.Add( t = new CClientTooltip( 1060658 ) ); // ~1_val~: ~2_val~
 								t->FormatArgs( "Item\t%lu %s", maximum(1, pItem->m_itSpawnItem.m_pile), pSpawnItemDef ? pSpawnItemDef->GetName() : "none" );
 								this->m_TooltipData.Add( t = new CClientTooltip( 1061169 ) ); // range ~1_val~
-								t->FormatArgs( "%hhu", pItem->m_itSpawnChar.m_DistMax );
+								t->FormatArgs( "%hhu", pItem->m_itSpawnItem.m_DistMax );
 								this->m_TooltipData.Add( t = new CClientTooltip( 1074247 ) ); // Live Creatures: ~1_NUM~ / ~2_MAX~
-								t->FormatArgs( "%hhu\t%hu", pSpawn->GetCount(), pItem->GetAmount() );
+								t->FormatArgs( "%hhu\t%hu", static_cast<CItemSpawn *>(pItem)->m_currentSpawned, pItem->GetAmount() );
 								this->m_TooltipData.Add( t = new CClientTooltip( 1060659 ) ); // ~1_val~: ~2_val~
 								t->FormatArgs( "Time range\t%hu min / %hu max", pItem->m_itSpawnItem.m_TimeLoMin, pItem->m_itSpawnItem.m_TimeHiMin );
 								this->m_TooltipData.Add( t = new CClientTooltip( 1060660 ) ); // ~1_val~: ~2_val~

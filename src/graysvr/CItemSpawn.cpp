@@ -2,6 +2,17 @@
 
 /////////////////////////////////////////////////////////////////////////////
 
+BYTE CItemSpawn::GetAmount()
+{
+	ADDTOCALLSTACK("CItemSpawn::GetAmount");
+	return m_iAmount;
+}
+
+void CItemSpawn::SetAmount(BYTE iAmount)
+{
+	ADDTOCALLSTACK("CItemSpawn::SetAmount");
+	m_iAmount = iAmount;
+}
 
 inline CCharBase *CItemSpawn::TryChar(CREID_TYPE &id)
 {
@@ -100,24 +111,11 @@ CItemSpawn::~CItemSpawn()
 	ADDTOCALLSTACK("CItemSpawn::~CItemSpawn");
 }
 
-unsigned char CItemSpawn::GetCount()
+BYTE CItemSpawn::GetCount()
 {
 	ADDTOCALLSTACK("CitemSpawn:GetCount");
-	if ( GetType() == IT_SPAWN_CHAR )
-		return static_cast<unsigned char>(m_itSpawnChar.m_current);
-	else if ( GetType() == IT_SPAWN_ITEM )
-	{
-		unsigned char iCount = 0;
-		unsigned char i = 0;
-		while ( m_obj[i].ItemFind() )
-		{
-			CGrayUID spawn = m_obj[i].ItemFind()->m_uidSpawnItem;
-			if ( spawn.IsValidUID() && (spawn == GetUID()) )
-				iCount++;
-			i++;
-		}
-		return iCount;
-	}
+	if ( (GetType() == IT_SPAWN_CHAR) || (GetType() == IT_SPAWN_ITEM) )
+		return m_currentSpawned;
 	return 0;
 }
 
@@ -129,7 +127,7 @@ void CItemSpawn::GenerateItem(CResourceDef *pDef)
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 
 	CItemContainer *pCont = dynamic_cast<CItemContainer *>(GetParent());
-	int iCount = pCont ? pCont->ContentCount(rid) : GetCount();
+	BYTE iCount = pCont ? pCont->ContentCount(rid) : GetCount();
 	if ( iCount >= GetAmount() )
 		return;
 
@@ -137,17 +135,13 @@ void CItemSpawn::GenerateItem(CResourceDef *pDef)
 	if ( pItem == NULL )
 		return;
 
-	int iAmountPile = m_itSpawnItem.m_pile;
+	WORD iAmountPile = static_cast<WORD>(minimum(USHRT_MAX,m_itSpawnItem.m_pile));
 	if ( iAmountPile > 1 )
 	{
 		CItemBase *pItemDef = pItem->Item_GetDef();
 		ASSERT(pItemDef);
 		if ( pItemDef->IsStackableType() )
-		{
-			if ( iAmountPile == 0 || iAmountPile > GetAmount() )
-				iAmountPile = GetAmount();
 			pItem->SetAmount(Calc_GetRandVal(iAmountPile) + 1);
-		}
 	}
 
 	pItem->SetAttr(m_Attr & (ATTR_OWNED | ATTR_MOVE_ALWAYS));
@@ -207,7 +201,7 @@ void CItemSpawn::DelObj(CGrayUID uid)
 	if ( !uid.IsValidUID() )
 		return;
 
-	unsigned char iMax = GetCount();
+	BYTE iMax = GetCount();
 	for ( unsigned char i = 0; i < iMax; i++ )
 	{
 		if ( m_obj[i] != uid )
@@ -216,11 +210,9 @@ void CItemSpawn::DelObj(CGrayUID uid)
 		CObjBase *pObj = uid.ObjFind();
 		pObj->m_uidSpawnItem.InitUID();
 
-		if ( GetType() == IT_SPAWN_CHAR )				// IT_SPAWN_ITEM uses MORE2 to store how much items to spawn at once, so we must not touch it.
-		{
+		m_currentSpawned--;
+		if ( GetType() == IT_SPAWN_CHAR )
 			uid.CharFind()->StatFlag_Clear(STATF_Spawned);
-			m_itSpawnChar.m_current--;
-		}
 
 		while ( m_obj[i + 1].IsValidUID() )				// searching for any entry higher than this one...
 		{
@@ -270,12 +262,14 @@ void CItemSpawn::AddObj(CGrayUID uid)
 		if ( !m_obj[i].IsValidUID() )
 		{
 			m_obj[i] = uid;
+
+			// objects are linked to the spawn at each server start
 			if ( !g_Serv.IsLoading() )
 			{
 				uid.ObjFind()->m_uidSpawnItem = GetUID();
+				m_currentSpawned++;
 				if ( bIsSpawnChar )
 				{
-					m_itSpawnChar.m_current++;
 					CChar *pChar = uid.CharFind();
 					ASSERT(pChar->m_pNPC);
 					pChar->StatFlag_Set(STATF_Spawned);
@@ -295,6 +289,7 @@ void CItemSpawn::OnTick(bool fExec)
 	ADDTOCALLSTACK("CitemSpawn:OnTick");
 
 	INT64 iMinutes;
+
 	if ( m_itSpawnChar.m_TimeHiMin <= 0 )
 		iMinutes = Calc_GetRandLLVal(30) + 1;
 	else
@@ -306,7 +301,7 @@ void CItemSpawn::OnTick(bool fExec)
 	if ( !fExec || IsTimerExpired() )
 		SetTimeout(iMinutes * 60 * TICK_PER_SEC);	// set time to check again.
 
-	if ( !fExec || m_itSpawnChar.m_current >= GetAmount() )
+	if ( !fExec || m_currentSpawned >= GetAmount() )
 		return;
 
 	CResourceDef *pDef = FixDef();
@@ -326,11 +321,10 @@ void CItemSpawn::OnTick(bool fExec)
 void CItemSpawn::KillChildren()
 {
 	ADDTOCALLSTACK("CitemSpawn:KillChildren");
-	WORD iTotal = (GetType() == IT_SPAWN_CHAR) ? static_cast<WORD>(m_itSpawnChar.m_current) : GetAmount();	//m_itSpawnItem doesn't have m_current, it uses MORE2 to set the amount of items spawned in each tick, so i'm using its amount to perform the loop
-	if ( iTotal <= 0 )
+	if (m_currentSpawned <= 0 )
 		return;
 
-	for ( WORD i = 0; i < iTotal; i++ )
+	for ( BYTE i = 0; i < m_currentSpawned; i++ )
 	{
 		CObjBase *pObj = m_obj[i].ObjFind();
 		if ( !pObj )
@@ -340,15 +334,23 @@ void CItemSpawn::KillChildren()
 		m_obj[i].InitUID();
 
 	}
-	m_itSpawnChar.m_current = 0;
+	m_currentSpawned = 0;
+
 	OnTick(false);
 }
 
 CCharBase *CItemSpawn::SetTrackID()
 {
 	ADDTOCALLSTACK("CitemSpawn:SetTrackID");
+	SetAttr(ATTR_INVIS);	// Indicate to GM's that it is invis.
+	if (GetHue() == 0)
+		SetHue(HUE_RED_DARK);
+
 	if ( !IsType(IT_SPAWN_CHAR) )
+	{
+		SetDispID(ITEMID_WorldGem_lg);
 		return NULL;
+	}
 
 	CCharBase *pCharDef = NULL;
 	RESOURCE_ID_BASE rid = m_itSpawnChar.m_CharID;
@@ -358,20 +360,16 @@ CCharBase *CItemSpawn::SetTrackID()
 		CREID_TYPE id = static_cast<CREID_TYPE>(rid.GetResIndex());
 		pCharDef = CCharBase::FindCharBase(id);
 	}
-	if ( pCharDef )
-		SetAttr(ATTR_INVIS);
-	if ( IsAttr(ATTR_INVIS) )	// They must want it to look like this.
-	{
+	if ( pCharDef )		// They must want it to look like this.
 		SetDispID(pCharDef ? pCharDef->m_trackID : ITEMID_TRACK_WISP);
-		if ( GetHue() == 0 )
-			SetHue(HUE_RED_DARK);	// Indicate to GM's that it is invis.
-	}
+		
 	return pCharDef;
 }
 
 enum ISPW_TYPE
 {
 	ISPW_ADDOBJ,
+	ISPW_AMOUNT,
 	ISPW_AT,
 	ISPW_COUNT,
 	ISPW_DELOBJ,
@@ -384,6 +382,7 @@ enum ISPW_TYPE
 LPCTSTR const CItemSpawn::sm_szLoadKeys[ISPW_QTY + 1] =
 {
 	"ADDOBJ",
+	"AMOUNT",
 	"AT",
 	"COUNT",
 	"DELOBJ",
@@ -397,7 +396,12 @@ bool CItemSpawn::r_WriteVal(LPCTSTR pszKey, CGString & sVal, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CitemSpawn:r_WriteVal");
 	EXC_TRY("WriteVal");
-	if ( !strnicmp(pszKey, "at.", 3) )
+	if (!strnicmp(pszKey, "amount", 6))
+	{
+		sVal.FormatVal(GetAmount());
+		return true;
+	}
+	else if ( !strnicmp(pszKey, "at.", 3) )
 	{
 		pszKey += 3;
 		int objIndex = Exp_GetVal(pszKey);
@@ -430,6 +434,11 @@ bool CItemSpawn::r_LoadVal(CScript & s)
 		case ISPW_ADDOBJ:
 		{
 			AddObj(static_cast<CGrayUID>(s.GetArgVal()));
+			return true;
+		}
+		case ISPW_AMOUNT:
+		{
+			SetAmount(static_cast<BYTE>(s.GetArgVal()));
 			return true;
 		}
 		case ISPW_DELOBJ:

@@ -498,7 +498,7 @@ public:
 	void SetTriggerActive(LPCTSTR trig = NULL) { static_cast<CObjBase*>(const_cast<CItem*>(this))->SetTriggerActive(trig); }
 
 	// Type specific info. IT_TYPE
-	union // 4(more1) + 4(more2) + 5(morep) = 13 bytes
+	union // 4(more1) + 4(more2) + 6(morep: (2 morex) (2 morey) (1 morez) (1morem) ) = 14 bytes
 	{
 		// IT_NORMAL
 		struct	// used only to save and restore all this junk.
@@ -690,21 +690,22 @@ public:
 		// IT_SPAWN_ITEM
 		struct
 		{
-			RESOURCE_ID_BASE m_ItemID;	// more1=The ITEMID_* or template for items)
-			DWORD	m_pile;			// more2=The max # of items to spawn per interval.  If this is 0, spawn up to the total amount
-			WORD	m_TimeLoMin;	// morex=Lo time in minutes.
-			WORD	m_TimeHiMin;	// morey=
-			BYTE	m_DistMax;		// morez=How far from this will it spawn?
+			RESOURCE_ID_BASE m_ItemID;	// more1=The ITEMID_* or template for items
+			DWORD	m_pile;				// more2=The max # of items to spawn per interval.  If this is 0, spawn up to the total amount.
+			WORD	m_TimeLoMin;		// morex=Lo time in minutes.
+			WORD	m_TimeHiMin;		// morey=Hi time in minutes.
+			BYTE	m_DistMax;			// morez=How far from this will it spawn?
 		} m_itSpawnItem;
+			// Remember that you can access the same bytes from both m_itSpawnChar and m_itSpawnItem, it doesn't matter if it's IT_SPAWN_ITEM or IT_SPAWN_CHAR.
 
 		// IT_SPAWN_CHAR
 		struct
 		{
-			RESOURCE_ID_BASE m_CharID;	// more1=CREID_*,  or (SPAWNTYPE_*,
-			DWORD	m_current;		// more2=The current spawned from here. m_amount = the max count.
-			WORD	m_TimeLoMin;	// morex=Lo time in minutes.
-			WORD	m_TimeHiMin;	// morey=
-			BYTE	m_DistMax;		// morez=How far from this will they wander ?
+			RESOURCE_ID_BASE m_CharID;	// more1=CREID_*,  or SPAWNTYPE_*,
+			DWORD	m_pile_unused;		// more2=used only by IT_SPAWN_ITEM, keeping it only for mantaining the structure of the union.
+			WORD	m_TimeLoMin;		// morex=Lo time in minutes.
+			WORD	m_TimeHiMin;		// morey=Hi time in minutes.
+			BYTE	m_DistMax;			// morez=How far from this will they wander?
 		} m_itSpawnChar;
 
 		// IT_EXPLOSION
@@ -1359,6 +1360,17 @@ private:
 
 public:
 	static const char *m_sClassName;
+	/* I don't want to inherit SetAmount, GetAmount and m_iAmount from the parent CItem class. I need to redefine them for CItemSpawn class
+	*	so that when i set AMOUNT to the spawn item, i don't really set the "item amount/quantity" property, but the "spawn item AMOUNT" property.
+	*	This way, even if there is a stackable spawn item (default in Enhanced Client), i won't increase the item stack quantity and i can't pick
+	*	from pile the spawn item. Plus, since the max amount of spawnable objects per single spawn item is the max size of a BYTE, we can change
+	*	the data type accepted/returned.
+	*/
+	void SetAmount(BYTE iAmount);
+	BYTE GetAmount();
+	BYTE m_iAmount;
+
+	BYTE m_currentSpawned;		// Current spawned from this spawn. Get it from scripts via count property (read-only).
 
 	/**
 	* @brief Overrides onTick for this class.
@@ -1376,19 +1388,19 @@ public:
 	void KillChildren();
 
 	/**
-	* @brief Setting display ID based on Character's Figurine (only for chars).
+	* @brief Setting display ID based on Character's Figurine or the default display ID if this is an IT_SPAWN_ITEM.
 	*/
 	CCharBase * SetTrackID();
 
 	/**
-	* @brief Setting display ID based on Character's Figurine (only for chars).
+	* @brief Generate a *pDef item from this spawn.
 	*
 	* @param pDef resource to create
 	*/
 	void GenerateItem( CResourceDef * pDef );
 
 	/**
-	* @brief Setting display ID based on Character's Figurine (only for chars).
+	* @brief Generate a *pDef char from this spawn.
 	*
 	* @param pDef resource to create
 	*/
@@ -1399,7 +1411,7 @@ public:
 	*
 	* @return the count of items/chars.
 	*/
-	unsigned char GetCount();
+	BYTE GetCount();
 
 	/**
 	* @brief Removing one UID in Spawn's m_obj[].

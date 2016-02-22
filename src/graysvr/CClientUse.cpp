@@ -270,26 +270,21 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 			addObjMessage(m_pChar->GetTopSector()->GetLocalGameTime(), pItem);
 			return true;
 
+		case IT_SPAWN_ITEM:
 		case IT_SPAWN_CHAR:
 		{
-			if ( pItem->m_itSpawnChar.m_current )
+			if (static_cast<CItemSpawn *>(pItem)->m_currentSpawned)
 			{
-				SysMessageDefault(DEFMSG_ITEMUSE_SPAWNCHAR_NEG);
-				static_cast<CItemSpawn *>(pItem)->KillChildren();	// Removing existing characters spawned from it ( RESET ).
+				SysMessageDefault(DEFMSG_ITEMUSE_SPAWN_NEG);
+				static_cast<CItemSpawn *>(pItem)->KillChildren();	// Removing existing objects spawned from it ( RESET ).
 			}
 			else
 			{
-				SysMessageDefault(DEFMSG_ITEMUSE_SPAWNCHAR_RSET);
-				static_cast<CItemSpawn*>(pItem)->OnTick(true);		// Forcing the spawn to work and create some NPCs ( START ).
+				SysMessageDefault(DEFMSG_ITEMUSE_SPAWN_RSET);
+				static_cast<CItemSpawn*>(pItem)->OnTick(true);		// Forcing the spawn to work and create some objects ( START ).
 			}
 			return true;
 		}
-
-		case IT_SPAWN_ITEM:
-			// To remove items already created like IT_SPAWN_CHAR does with creatures, just place here the same code than the other spawn type calling KillChildren on the CItemSpawn.
-			SysMessageDefault(DEFMSG_ITEMUSE_SPAWNITEM_TRIG);
-			static_cast<CItemSpawn*>(pItem)->OnTick(true);
-			return true;
 
 		case IT_SHRINE:
 		{
