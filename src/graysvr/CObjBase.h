@@ -702,7 +702,7 @@ public:
 		struct
 		{
 			RESOURCE_ID_BASE m_CharID;	// more1=CREID_*,  or SPAWNTYPE_*,
-			DWORD	m_pile_unused;		// more2=used only by IT_SPAWN_ITEM, keeping it only for mantaining the structure of the union.
+			DWORD	m_unused;		// more2=used only by IT_SPAWN_ITEM, keeping it only for mantaining the structure of the union.
 			WORD	m_TimeLoMin;		// morex=Lo time in minutes.
 			WORD	m_TimeHiMin;		// morey=Hi time in minutes.
 			BYTE	m_DistMax;			// morez=How far from this will they wander?
