@@ -114,9 +114,7 @@ CItemSpawn::~CItemSpawn()
 BYTE CItemSpawn::GetCount()
 {
 	ADDTOCALLSTACK("CitemSpawn:GetCount");
-	if ( (GetType() == IT_SPAWN_CHAR) || (GetType() == IT_SPAWN_ITEM) )
-		return m_currentSpawned;
-	return 0;
+	return m_currentSpawned;
 }
 
 void CItemSpawn::GenerateItem(CResourceDef *pDef)
