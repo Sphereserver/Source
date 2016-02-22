@@ -839,7 +839,9 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		WORD m_miny;
 		WORD m_maxx;
 		WORD m_maxy;
-	} sm_ContSize[] =
+	}
+	
+	sm_ContSize[] =
 	{
 		{ GUMP_RESERVED, 40, 50, 100, 100 },		// default.
 		{ GUMP_CORPSE, 20, 85, 80, 185 },
@@ -871,7 +873,12 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		{ GUMP_CHEST_WOOD_ORNATE, 10, 10, 150, 95 },
 		{ GUMP_TALL_CABINET, 10, 10, 150, 95 },
 		{ GUMP_CHEST_WOOD_FINISH, 10, 10, 150, 95 },
-		{ GUMP_HEART_SHAPED, 56, 30, 102, 74},
+		{ GUMP_GIFT_BOX_CUBE, 23, 51, 140, 100 },
+		{ GUMP_GIFT_BOX_CILINDER, 16, 51, 140, 115 },
+		{ GUMP_GIFT_BOX_OCTOGON, 25, 51, 140, 115 },
+		{ GUMP_GIFT_BOX_RECTANGLE, 16, 51, 140, 100 },
+		{ GUMP_GIFT_BOX_ANGEL, 21, 51, 140, 100 },
+		{ GUMP_HEART_SHAPED, 56, 30, 102, 74 },
 		{ GUMP_SECURE_TRADE, 1, 1, 66, 26 },
 		{ GUMP_GAME_BOARD,	 4, 10, 220, 185 },		// Chess or checker board.
 		{ GUMP_GAME_BACKGAM, 4, 10, 220, 185 },
