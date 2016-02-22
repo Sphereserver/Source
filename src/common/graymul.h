@@ -890,7 +890,8 @@ enum ITEMID_TYPE	// InsideUO is great for this stuff.
 
 	ITEMID_Bulletin1	= 0x1e5e,	// secure trades are here also. bboard
 	ITEMID_Bulletin2	= 0x1e5f,
-	ITEMID_WorldGem		= 0x1ea7,	// Typically a spawn item
+	ITEMID_WorldGem		= 0x1ea7,	// typically an uninitialized spawn item
+	ITEMID_WorldGem_lg	= 0x1f13,	// typically an initialized t_spawn_item
 
 	ITEMID_PICKPOCKET_NS = 0x1ec0,
 	ITEMID_PICKPOCKET_NS_FX,

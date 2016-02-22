@@ -2888,3 +2888,25 @@ Fixed: T_SPAWN_ITEM not working when DClicking the Spawn.
 
 19-02-2016, Nolok
 Fixed: ACT not being updated when using .add to add an item. This solves also AxisII being unable to initialize placed spawn items.
+
+22-02-2016, Nolok
+Fixed: T_SPAWN_ITEM not automatically setting attr_invis, whereas it happened with T_SPAWN_CHAR.
+Fixed: T_SPAWN_ITEM not removing spawned items when it got deleted.
+Fixed: forced T_SPAWN_ITEM and T_SPAWN_CHAR to be unstackable through an internal workaround, stopping the Enhanced Client behaviour
+	of "unstacking" spawn items with amount > 1 when trying to move them.
+Changed: T_SPAWN_ITEM now colours itself red, like t_spawn_char, and when initialized it changes the DispID to i_worldgem_lg,
+	in order to differentiate it from worldgem bits related to resource gathering and to make it more visible.
+Changed: the MORE2 of a T_SPAWN_CHAR does no more indicate the amount of chars spawned, for that there is the COUNT property
+	(read only, introduced time ago), which works also for T_SPAWN_ITEM.
+	MORE2 is used only by T_SPAWN_ITEM to indicate the maximum pile amount	of the spawned item (if this is 0, spawn up to the total amount).
+	COUNT property does not sum the amount of each spawned item.
+	This resolves the ambiguity of MORE2 meaning and saves some space in the save files (you may want to set MORE2=0 to your old T_SPAWN_CHARs).
+
+	-IMPORTANT: this change means that if in your scripts you get the amount of spawned chars with MORE2,
+		you should now reference to it with COUNT!
+
+Fixed: MORE2 property for T_SPAWN_ITEM not working as intended.
+Changed: now double clicking a T_SPAWN_ITEM spawnitem has the same effect it has on T_SPAWN_CHAR, that is resetting it
+	(remove existing items spawned from it) if the timer is running, otherwise starting it (forcing the spawn to work and create some items).
+[sphere_msgs.scp] Removed ITEMUSE_SPAWNCHAR_NEG, ITEMUSE_SPAWNCHAR_RSET, ITEMUSE_SPAWNITEM_TRIG and unified them as:
+	ITEMUSE_SPAWN_NEG and ITEMUSE_SPAWN_RESET.
