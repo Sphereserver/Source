@@ -2907,5 +2907,5 @@ Changed: the MORE2 of a T_SPAWN_CHAR does no more indicate the amount of chars s
 Fixed: MORE2 property for T_SPAWN_ITEM not working as intended.
 Changed: now double clicking a T_SPAWN_ITEM spawnitem has the same effect it has on T_SPAWN_CHAR, that is resetting it
 	(remove existing items spawned from it) if the timer is running, otherwise starting it (forcing the spawn to work and create some items).
-[sphere_msgs.scp] Removed ITEMUSE_SPAWNCHAR_NEG, ITEMUSE_SPAWNCHAR_RESET, ITEMUSE_SPAWNITEM_TRIG and unified them as:
+[sphere_msgs.scp] Removed ITEMUSE_SPAWNCHAR_NEG, ITEMUSE_SPAWNCHAR_RSET, ITEMUSE_SPAWNITEM_TRIG and unified them as:
 	ITEMUSE_SPAWN_NEG and ITEMUSE_SPAWN_RESET.
