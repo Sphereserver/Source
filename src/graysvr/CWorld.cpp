@@ -1090,7 +1090,7 @@ bool CWorldClock::Advance()
 	{
 		// System clock has changed forward
 		// Just wait until next cycle and it should be ok
-		g_Log.Event(LOGL_WARN, "System clock has changed forward (daylight saving change, etc). This may cause strange behavior on some objects.\n", Clock_Sys);
+		g_Log.Event(LOGL_WARN, "System clock has changed forward (daylight saving change, etc). This may cause strange behavior on some objects.\n");
 		m_Clock_SysPrev = Clock_Sys;
 		return false;
 	}

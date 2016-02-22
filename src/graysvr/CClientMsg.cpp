@@ -1107,7 +1107,7 @@ void CClient::addItemName( const CItem * pItem )
 		const CItemVendable * pVendItem = dynamic_cast <const CItemVendable *> (pItem);
 		if ( pVendItem )
 		{
-			len += sprintf( szName+len, " (%d gp)", pVendItem->GetBasePrice());
+			len += sprintf( szName+len, " (%lu gp)", pVendItem->GetBasePrice());
 		}
 	}
 

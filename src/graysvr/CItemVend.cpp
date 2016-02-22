@@ -135,22 +135,21 @@ void CItemVendable::Restock( bool fSellToPlayers )
 	}
 }
 
-void CItemVendable::SetPlayerVendorPrice( LONG lPrice )
+void CItemVendable::SetPlayerVendorPrice( DWORD lPrice )
 {
 	ADDTOCALLSTACK("CItemVendable::SetPlayerVendorPrice");
 	// This can only be inside a vendor container.
 	m_price = maximum(lPrice, 0);
 }
 
-LONG CItemVendable::GetBasePrice() const
+DWORD CItemVendable::GetBasePrice() const
 {
 	ADDTOCALLSTACK("CItemVendable::GetBasePrice");
 	// Get the price that the player set on his vendor
-	//if ( m_price < 0 ) return 0;
-	return( m_price );
+	return m_price;
 }
 
-LONG CItemVendable::GetVendorPrice( int iConvertFactor )
+DWORD CItemVendable::GetVendorPrice( int iConvertFactor )
 {
 	ADDTOCALLSTACK("CItemVendable::GetVendorPrice");
 	// Player is buying/selling from a vendor.
@@ -166,37 +165,27 @@ LONG CItemVendable::GetVendorPrice( int iConvertFactor )
 	//    0 = base price
 	// +100 = increase price by 100% (vendor selling to player?)
 
-	LONG lPrice = m_price;
+	DWORD lPrice = m_price;
 	if ( lPrice <= 0 )	// set on player vendor.
 	{
-		if ( lPrice == 0 )	// set a new randomized price for the item
+		CItemBase *pItemDef;
+		if ( IsType(IT_DEED) )
 		{
-			CItemBase * pItemDef;
-			if ( IsType( IT_DEED ))
-			{
-				// Deeds just represent the item they are deeding.
-				pItemDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(RES_GET_INDEX(m_itDeed.m_Type)));
-				if ( pItemDef == NULL )
-					return( 1 );
-			}
-			else
-			{
-				pItemDef = Item_GetDef();
-			}
-			lPrice = pItemDef->GetMakeValue(GetQuality());
-			m_price = -lPrice;
+			// Deeds just represent the item they are deeding.
+			pItemDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(RES_GET_INDEX(m_itDeed.m_Type)));
+			if ( !pItemDef )
+				return 1;
 		}
 		else
 		{
-			lPrice = -lPrice;
+			pItemDef = Item_GetDef();
 		}
+		lPrice = pItemDef->GetMakeValue(GetQuality());
 	}
 
-	lPrice += IMULDIV( lPrice, maximum(iConvertFactor, -100), 100 );
-	if (lPrice > LONG_MAX)
-		return LONG_MAX;
-	else if (lPrice <= 0)
-		return 0;
+	lPrice += IMULDIV(lPrice, maximum(iConvertFactor, -100), 100);
+	if ( lPrice > ULONG_MAX )
+		return ULONG_MAX;
 	
 	return lPrice;
 }
@@ -209,7 +198,7 @@ bool CItemVendable::IsValidSaleItem( bool fBuyFromVendor ) const
 	{
 		if ( fBuyFromVendor )
 		{
-			DEBUG_ERR(( "Vendor uid=0%lx selling unmovable item %s='%s'\n", (DWORD) GetTopLevelObj()->GetUID(), GetResourceName(), GetName()));
+			DEBUG_ERR(( "Vendor uid=0%lx selling unmovable item %s='%s'\n", static_cast<DWORD>(GetTopLevelObj()->GetUID()), GetResourceName(), GetName()));
 		}
 		return( false );
 	}
@@ -234,16 +223,15 @@ bool CItemVendable::IsValidNPCSaleItem() const
 
 	if ( m_price <= 0 && pItemDef->GetMakeValue(0) <= 0 )
 	{
-		DEBUG_ERR(( "Vendor uid=0%lx selling unpriced item %s='%s'\n", (DWORD) GetTopLevelObj()->GetUID(), GetResourceName(), GetName()));
+		DEBUG_ERR(( "Vendor uid=0%lx selling unpriced item %s='%s'\n", static_cast<DWORD>(GetTopLevelObj()->GetUID()), GetResourceName(), GetName()));
 		return( false );
 	}
 
 	if ( ! IsValidSaleItem( true ))
 	{
-		DEBUG_ERR(( "Vendor uid=0%lx selling bad item %s='%s'\n", (DWORD) GetTopLevelObj()->GetUID(), GetResourceName(), GetName()));
+		DEBUG_ERR(( "Vendor uid=0%lx selling bad item %s='%s'\n", static_cast<DWORD>(GetTopLevelObj()->GetUID()), GetResourceName(), GetName()));
 		return( false );
 	}
 
 	return( true );
 }
-

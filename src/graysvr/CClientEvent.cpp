@@ -1311,8 +1311,7 @@ void CClient::Event_VendorSell(CChar* pVendor, const VendorItem* items, size_t i
 			amount = pItem->GetAmount();
 		}
 
-		LONG lPrice = pItemSell->GetVendorPrice(iConvertFactor) * amount;
-
+		DWORD lPrice = pItemSell->GetVendorPrice(iConvertFactor) * amount;
 
 		if (( IsTrigUsed(TRIGGER_SELL) ) || ( IsTrigUsed(TRIGGER_ITEMSELL) ))
 		{
@@ -1327,7 +1326,7 @@ void CClient::Event_VendorSell(CChar* pVendor, const VendorItem* items, size_t i
 			fShortfall = true;
 			break;
 		}
-		pBank->m_itEqBankBox.m_Check_Amount -= static_cast<unsigned long>(lPrice);
+		pBank->m_itEqBankBox.m_Check_Amount -= lPrice;
 
 		// give them the appropriate amount of gold.
 		iGold += static_cast<int>(lPrice);

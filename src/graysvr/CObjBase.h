@@ -1468,7 +1468,7 @@ class CItemVendable : public CItem
 private:
 	static LPCTSTR const sm_szLoadKeys[];
 	WORD m_quality;		// 0-100 quality.
-	LONG m_price;		// The price of this item if on a vendor. (allow random (but remembered) pluctuations)
+	DWORD m_price;		// The price of this item if on a vendor. (allow random (but remembered) pluctuations)
 
 public:
 	static const char *m_sClassName;
@@ -1487,9 +1487,9 @@ public:
 		m_quality = quality;
 	}
 
-	void SetPlayerVendorPrice( LONG dwVal );
-	LONG GetBasePrice() const;
-	LONG GetVendorPrice( int iConvertFactor );
+	void SetPlayerVendorPrice( DWORD dwVal );
+	DWORD GetBasePrice() const;
+	DWORD GetVendorPrice( int iConvertFactor );
 
 	bool  IsValidSaleItem( bool fBuyFromVendor ) const;
 	bool  IsValidNPCSaleItem() const;

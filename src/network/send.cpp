@@ -2099,7 +2099,7 @@ int PacketVendorBuyList::fillContainer(const CItemContainer* container, int conv
 		if (venditem == NULL)
 			continue;
 
-		LONG price = venditem->GetVendorPrice(convertFactor);
+		DWORD price = venditem->GetVendorPrice(convertFactor);
 		if (price == 0)
 		{
 			venditem->Item_GetDef()->ResetMakeValue();
