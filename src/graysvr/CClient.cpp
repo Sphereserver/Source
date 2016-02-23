@@ -582,12 +582,9 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case CC_REPORTEDCLIVER:
 			{
 				pszKey += strlen(sm_szLoadKeys[index]);
-				GETNONWHITESPACE( pszKey );
+				GETNONWHITESPACE(pszKey);
 
-				int iCliVer = (GetNetState()->getReportedVersion() & 0xFFFFFF0);
-				if ( pszKey[0] != '\0' )
-					iCliVer = GetNetState()->getReportedVersion();
-
+				DWORD iCliVer = GetNetState()->getReportedVersion();
 				TCHAR szVersion[128];
 				sVal = CCrypt::WriteClientVerString( iCliVer, szVersion );
 			}

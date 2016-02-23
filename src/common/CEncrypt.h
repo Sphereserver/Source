@@ -88,7 +88,7 @@ public:
 private:
 	bool m_fInit;
 	bool m_fRelayPacket;
-	int m_iClientVersion;
+	DWORD m_iClientVersion;
 	ENCRYPTION_TYPE m_GameEnc;
 
 protected:
@@ -177,7 +177,7 @@ private:
 	int GetVersionFromString( LPCTSTR pszVersion );
 
 private:
-	void SetClientVersion( int iVer )
+	void SetClientVersion( DWORD iVer )
 	{
 		m_iClientVersion = iVer;
 	}
@@ -223,11 +223,11 @@ public:
 	void SetClientVer( const CCrypt & crypt );
 	bool SetClientVer( LPCTSTR pszVersion );
 	static int GetVerFromString( LPCTSTR pszVersion );
-	static int GetVerFromVersion( int maj, int min, int rev, int pat );
-	static TCHAR* WriteClientVerString( int iClientVersion, TCHAR * pStr );
+	static int GetVerFromNumber( DWORD maj, DWORD min, DWORD rev, DWORD pat );
+	static TCHAR* WriteClientVerString( DWORD iClientVersion, TCHAR * pStr );
 
 public:
-	int GetClientVer() const
+	DWORD GetClientVer() const
 	{
 		return( m_iClientVersion );
 	}

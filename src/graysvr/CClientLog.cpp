@@ -860,16 +860,19 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 				CAccountRef pAcc = g_Accounts.Account_Find( szAccount );
 				if (pAcc)
 				{
-					DWORD tmVer = static_cast<unsigned long>(pAcc->m_TagDefs.GetKeyNum("clientversion")); pAcc->m_TagDefs.DeleteKey("clientversion");
-					DWORD tmVerReported = static_cast<unsigned long>(pAcc->m_TagDefs.GetKeyNum("reportedcliver")); pAcc->m_TagDefs.DeleteKey("reportedcliver");
 					DWORD tmSid = 0x7f000001;
+					DWORD tmVer = static_cast<DWORD>(pAcc->m_TagDefs.GetKeyNum("clientversion"));
+					DWORD tmVerReported = static_cast<DWORD>(pAcc->m_TagDefs.GetKeyNum("reportedcliver"));
+					pAcc->m_TagDefs.DeleteKey("clientversion");
+					pAcc->m_TagDefs.DeleteKey("reportedcliver");
+
 					if ( g_Cfg.m_fUseAuthID )
 					{
-						tmSid = static_cast<unsigned long>(pAcc->m_TagDefs.GetKeyNum("customerid"));
+						tmSid = static_cast<DWORD>(pAcc->m_TagDefs.GetKeyNum("customerid"));
 						pAcc->m_TagDefs.DeleteKey("customerid");
 					}
 
-					DEBUG_MSG(( "%lx:xProcessClientSetup for %s, with AuthId %lu and CliVersion 0x%lx/0x%lx\n", GetSocketID(), pAcc->GetName(), tmSid, tmVer, tmVerReported ));
+					DEBUG_MSG(("%lx:xProcessClientSetup for %s, with AuthId %lu and CliVersion %lu / CliVersionReported %lu\n", GetSocketID(), pAcc->GetName(), tmSid, tmVer, tmVerReported));
 
 					if ( tmSid != 0 && tmSid == pEvent->CharListReq.m_Account )
 					{

@@ -1080,12 +1080,9 @@ void NetworkIn::tick(void)
 
 						if (received >= iSeedLen)
 						{
-							DEBUG_WARN(("%lx:New Login Handshake Detected. Client Version: %lu.%lu.%lu.%lu\n", client->id(),
-										 (DWORD)pEvent->NewSeed.m_Version_Maj, 
-										 (DWORD)pEvent->NewSeed.m_Version_Min, (DWORD)pEvent->NewSeed.m_Version_Rev, 
-										 (DWORD)pEvent->NewSeed.m_Version_Pat));
+							DEBUG_WARN(("%lx:New Login Handshake Detected. Client Version: %lu.%lu.%lu.%lu\n", client->id(), pEvent->NewSeed.m_Version_Maj, pEvent->NewSeed.m_Version_Min, pEvent->NewSeed.m_Version_Rev, pEvent->NewSeed.m_Version_Pat);
 
-							client->m_reportedVersion = CCrypt::GetVerFromVersion(pEvent->NewSeed.m_Version_Maj, pEvent->NewSeed.m_Version_Min, pEvent->NewSeed.m_Version_Rev, pEvent->NewSeed.m_Version_Pat);
+							client->m_reportedVersion = CCrypt::GetVerFromNumber(pEvent->NewSeed.m_Version_Maj, pEvent->NewSeed.m_Version_Min, pEvent->NewSeed.m_Version_Rev, pEvent->NewSeed.m_Version_Pat);
 							seed = (DWORD) pEvent->NewSeed.m_Seed;
 						}
 						else
@@ -3511,10 +3508,8 @@ bool NetworkInput::processUnknownClientData(NetState* state, Packet* buffer)
 				DWORD versionRevision = buffer->readInt32();
 				DWORD versionPatch = buffer->readInt32();
 
-				DEBUG_WARN(("%lx:New Login Handshake Detected. Client Version: %lu.%lu.%lu.%lu\n", state->id(),
-							versionMajor, versionMinor, versionRevision, versionPatch));
-					
-				state->m_reportedVersion = CCrypt::GetVerFromVersion(versionMajor, versionMinor, versionRevision, versionPatch);
+				DEBUG_WARN(("%lx:New Login Handshake Detected. Client Version: %lu.%lu.%lu.%lu\n", state->id(), versionMajor, versionMinor, versionRevision, versionPatch));
+				state->m_reportedVersion = CCrypt::GetVerFromNumber(versionMajor, versionMinor, versionRevision, versionPatch);
 			}
 			else
 			{

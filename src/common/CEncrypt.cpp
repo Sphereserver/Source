@@ -344,124 +344,73 @@ static const DWORD sm_dwInitData[18+1024] =
 int CCrypt::GetVerFromString( LPCTSTR pszVersion )
 {
 	ADDTOCALLSTACK("CCrypt::GetVerFromString");
-	// They have this annoying habit of putting letters at the end of the version string.
-	// 2.0.0d for example.
-	// Since 5.0.6.5 we also have a new formatting for client versions to consider.
-	
+	// Get version of old clients, which report the client version as ASCII string (eg: '5.0.2b')
+
 	if ( pszVersion == NULL || *pszVersion == '\0' )
 		return 0;
 
-	int iVer = 0;
-	int iPoint = 0;
-	int iDigPoint = 0;
+	int n = 0;
+	int iArgs[4] = { 0,0,0,0 };
+	size_t iMax = strlen(pszVersion);
+	TCHAR ch, chNext;
 
-	for ( size_t i = 0; ; i++ )
+	for ( size_t i = 0; i < iMax; i++ )
 	{
-		TCHAR ch = pszVersion[i];
-		if ( iPoint < 3 )
-		{
-			if ( IsDigit(ch))
-			{
-				iVer *= 0x10;
-				iVer += ( ch - '0' );
-				iDigPoint ++;
-				continue;
-			}
-
-			if ( iPoint )
-			{
-				if ( iDigPoint == 0 )
-				{
-					iVer *= 0x100;
-				}
-				else if ( iDigPoint == 1 )
-				{
-					int iTmp = iVer & 0x0f;
-					iVer &= ~0x0f;
-					iVer *= 0x10;
-					iVer += iTmp;
-				}
-			}
-			else
-			{
-				if ( i == 0 && tolower(ch) == 'i' )
-				{
-					continue;
-				}
-			}
-		}
-
+		ch = pszVersion[i];
 		if ( ch == '.' )
 		{
-			if ( ++iPoint > 3 )
-			{
-				iVer *= 0x10;
-				break;
-			}
-			iDigPoint = 0;
+			n++;
 			continue;
 		}
-	
-		if ( ! iPoint && ! IsAlpha(ch) && ! IsDigit(ch) )
-		{
-			iVer *= 0x10;
-			break;
-		}
 
-		while ( iPoint< 2 )
+		if ( IsDigit(ch) )
 		{
-			iVer *= 0x100;
-			iPoint++;
-		}
+			iArgs[n] = ch - '0';
 
-		// last char digit slot.
-		iVer *= 0x10;
-		if ( IsAlpha(ch))
-		{
-			iVer += ( tolower(ch) - 'a' ) + 1;
+			chNext = pszVersion[i + 1];
+			if ( IsDigit(chNext) )
+			{
+				iArgs[n] = (iArgs[n] * 10) + (chNext - '0');
+				i++;
+			}
 		}
-		else if ( IsDigit(ch) )
+		else if ( IsAlpha(ch) )
 		{
-			if ( !IsDigit(pszVersion[i + 1]))
-				iVer += ( ch - '0' ) + 1;
-			else
-				iVer += ((( ch - '0' ) * 10) + (pszVersion[i + 1] - '0') + 1) & 0x0F;
+			n++;
+			iArgs[n] = (ch - 'a') + 1;
 		}
-		break;
 	}
-	
-	return iVer;
+
+	return (iArgs[0] * 1000000) + (iArgs[1] * 10000) + (iArgs[2] * 100) + iArgs[3];
 }
 
-int CCrypt::GetVerFromVersion( int maj, int min, int rev, int pat )
+int CCrypt::GetVerFromNumber( DWORD maj, DWORD min, DWORD rev, DWORD pat )
 {
-	ADDTOCALLSTACK("CCrypt::SetClientVer");
+	ADDTOCALLSTACK("CCrypt::GetVerFromNumber");
+	// Get version of new clients (5.0.6.5+), which report the client version as numbers (eg: 5,0,6,5)
 
-	TCHAR *z = Str_GetTemp();
-	sprintf(z, "%d.%d.%d.%d", maj, min, rev, pat);
-
-	return GetVerFromString(z);
+	return (maj * 1000000) + (min * 10000) + (rev * 100) + pat;
 }
 
-TCHAR* CCrypt::WriteClientVerString( int iClientVersion, TCHAR * pStr )
+TCHAR* CCrypt::WriteClientVerString( DWORD iClientVersion, TCHAR * pStr )
 {
 	ADDTOCALLSTACK("CCrypt::WriteClientVerString");
-	if ( iClientVersion & 0x0f && iClientVersion >= 0x500066 )
+	if ( iClientVersion >= MINCLIVER_NEWVERSIONING )
 	{
-		sprintf( pStr, "%x.%x.%x.%d", iClientVersion/0x100000, (iClientVersion/0x1000)%0x100, (iClientVersion/0x10)%0x100, (iClientVersion & 0x0f) - 1 );
+		sprintf(pStr, "%d.%d.%d.%d", iClientVersion / 1000000, (iClientVersion / 10000) % 100, (iClientVersion % 10000) / 100, iClientVersion % 100);
 	}
 	else
 	{
-		int iLen = sprintf( pStr, "%x.%x.%x", iClientVersion/0x100000, (iClientVersion/0x1000)%0x100, (iClientVersion/0x10)%0x100 );
-
-		if ( iClientVersion & 0x0f )
+		int iLen = sprintf(pStr, "%d.%d.%d", iClientVersion / 1000000, (iClientVersion / 10000) % 100, (iClientVersion % 10000) / 100);
+		int iLetter = iClientVersion % 100;
+		if ( iLetter )
 		{
-			pStr[iLen++] = '.';
-			pStr[iLen++] = ( iClientVersion & 0x0f ) + 'a' - 1;
+			pStr[iLen++] = iLetter + 'a' - 1;
 			pStr[iLen] = '\0';
 		}
 	}
-	return( pStr );
+
+	return pStr;
 }
 
 int CCrypt::GetVersionFromString( LPCTSTR pszVersion )
