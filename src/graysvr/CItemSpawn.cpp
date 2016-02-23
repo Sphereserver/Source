@@ -254,18 +254,18 @@ void CItemSpawn::AddObj(CGrayUID uid)
 		}
 	}
 
-	unsigned char iMax = (GetAmount() > 0) ? static_cast<unsigned char>(GetAmount()) : 1;
+	unsigned char iMax = maximum(GetAmount(), 1);
 	for ( unsigned char i = 0; i < iMax; i++ )
 	{
 		if ( !m_obj[i].IsValidUID() )
 		{
 			m_obj[i] = uid;
+			m_currentSpawned++;
 
 			// objects are linked to the spawn at each server start
 			if ( !g_Serv.IsLoading() )
 			{
 				uid.ObjFind()->m_uidSpawnItem = GetUID();
-				m_currentSpawned++;
 				if ( bIsSpawnChar )
 				{
 					CChar *pChar = uid.CharFind();

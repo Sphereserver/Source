@@ -273,15 +273,19 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 		case IT_SPAWN_ITEM:
 		case IT_SPAWN_CHAR:
 		{
-			if (static_cast<CItemSpawn *>(pItem)->m_currentSpawned)
+			CItemSpawn *pSpawn = static_cast<CItemSpawn *>(pItem);
+			if ( !pSpawn )
+				return false;
+
+			if ( pSpawn->m_currentSpawned )
 			{
 				SysMessageDefault(DEFMSG_ITEMUSE_SPAWN_NEG);
-				static_cast<CItemSpawn *>(pItem)->KillChildren();	// Removing existing objects spawned from it ( RESET ).
+				pSpawn->KillChildren();		// Removing existing objects spawned from it ( RESET ).
 			}
 			else
 			{
 				SysMessageDefault(DEFMSG_ITEMUSE_SPAWN_RESET);
-				static_cast<CItemSpawn*>(pItem)->OnTick(true);		// Forcing the spawn to work and create some objects ( START ).
+				pSpawn->OnTick(true);		// Forcing the spawn to work and create some objects ( START ).
 			}
 			return true;
 		}

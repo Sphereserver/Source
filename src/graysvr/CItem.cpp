@@ -2748,8 +2748,8 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			break;
 		case IC_MORE2:
 			m_itNormal.m_more2 = s.GetArgVal();
-			if (IsType(IT_SPAWN_ITEM))
-				m_itSpawnItem.m_pile = static_cast<WORD>(minimum(UINT16_MAX,m_itNormal.m_more2));
+			if ( IsType(IT_SPAWN_ITEM) )
+				m_itSpawnItem.m_pile = minimum(USHRT_MAX, m_itNormal.m_more2);
 			return true;
 		case IC_MORE2h:
 			m_itNormal.m_more2 = MAKEDWORD( LOWORD(m_itNormal.m_more2), s.GetArgVal());

@@ -1099,7 +1099,7 @@ void NetworkIn::tick(void)
 						iSeedLen = NETWORK_SEEDLEN_OLD;
 					}
 
-					DEBUGNETWORK(("%lx:Client connected with a seed of 0x%lx (new handshake=%d, seed length=%" FMTSIZE_T ", received=%" FMTSIZE_T ", version=0x%lx).\n", client->id(), seed, client->m_newseed? 1 : 0, iSeedLen, received, client->m_reportedVersion));
+					DEBUGNETWORK(("%lx:Client connected with a seed of 0x%lx (new handshake=%d, seed length=%" FMTSIZE_T ", received=%" FMTSIZE_T ", version=%lu).\n", client->id(), seed, client->m_newseed? 1 : 0, iSeedLen, received, client->m_reportedVersion));
 
 					if ( !seed || iSeedLen > received )
 					{
@@ -3531,8 +3531,7 @@ bool NetworkInput::processUnknownClientData(NetState* state, Packet* buffer)
 			seed = buffer->readInt32();
 		}
 
-		DEBUGNETWORK(("%lx:Client connected with a seed of 0x%lx (new handshake=%d, version=0x%lx).\n",
-			state->id(), seed, state->m_newseed? 1 : 0, state->m_reportedVersion));
+		DEBUGNETWORK(("%lx:Client connected with a seed of 0x%lx (new handshake=%d, version=%lu).\n", state->id(), seed, state->m_newseed ? 1 : 0, state->m_reportedVersion));
 
 		if (seed == 0)
 		{
