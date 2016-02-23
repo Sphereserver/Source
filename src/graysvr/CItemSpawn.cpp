@@ -322,7 +322,7 @@ void CItemSpawn::KillChildren()
 	if (m_currentSpawned <= 0 )
 		return;
 
-	for ( BYTE i = 0; i < m_currentSpawned; i++ )
+	for ( unsigned char i = 0; i < m_currentSpawned; i++ )
 	{
 		CObjBase *pObj = m_obj[i].ObjFind();
 		if ( !pObj )
@@ -466,11 +466,13 @@ void  CItemSpawn::r_Write(CScript & s)
 	ADDTOCALLSTACK("CitemSpawn:r_Write");
 	EXC_TRY("Write");
 	CItem::r_Write(s);
+
+	s.WriteKeyVal("AMOUNT", GetAmount());
 	WORD iTotal = GetCount();
 	if ( iTotal <= 0 )
 		return;
 
-	for ( WORD i = 0; i < iTotal; i++ )
+	for ( unsigned char i = 0; i < iTotal; i++ )
 	{
 		if ( !m_obj[i].IsValidUID() )
 			continue;
