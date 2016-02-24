@@ -678,7 +678,7 @@ int CChar::FixWeirdness()
 			{
 				for ( int j = STAT_STR; j < STAT_BASE_QTY; j++ )
 				{
-					int iStatMax = Stat_GetLimit(static_cast<STAT_TYPE>(j));
+					short iStatMax = Stat_GetLimit(static_cast<STAT_TYPE>(j));
 					if ( Stat_GetAdjusted(static_cast<STAT_TYPE>(j)) > iStatMax*g_Cfg.m_iOverSkillMultiply )
 						Stat_SetBase(static_cast<STAT_TYPE>(j), static_cast<short>(iStatMax));
 				}
@@ -2735,17 +2735,56 @@ do_default:
 			m_wBloodHue = static_cast<HUE_TYPE>(s.GetArgVal());
 			break;
 		case CHC_MAXFOOD:
-			Stat_SetMax(STAT_FOOD, s.GetArgVal());
-			break;
+		{
+			long iStat;
+			if (s.HasArgs())
+			{
+				long iStatRaw = s.GetArgVal();
+				iStat = (iStatRaw > SHRT_MAX) ? SHRT_MAX : iStatRaw;
+			}
+			else
+				iStat = 0;
+			Stat_SetVal(STAT_FOOD, static_cast<short>(iStat));
+		} break;
 		case CHC_MAXHITS:
-			Stat_SetMax(STAT_STR, s.HasArgs() ? s.GetArgVal() : 0 );
-			break;
+			{
+				long iStat;
+				if (s.HasArgs())
+				{
+					long iStatRaw = s.GetArgVal();
+					iStat = (iStatRaw > SHRT_MAX) ? SHRT_MAX : iStatRaw;
+				}
+				else
+					iStat = 0;
+				Stat_SetVal(STAT_DEX, static_cast<short>(iStat));
+				UpdateHitsFlag();
+			} break;
 		case CHC_MAXMANA:
-			Stat_SetMax(STAT_INT, s.HasArgs() ? s.GetArgVal() : 0 );
-			break;
+			{
+				long iStat;
+				if (s.HasArgs())
+				{
+					long iStatRaw = s.GetArgVal();
+					iStat = (iStatRaw > SHRT_MAX) ? SHRT_MAX : iStatRaw;
+				}
+				else
+					iStat = 0;
+				Stat_SetVal(STAT_INT, static_cast<short>(iStat));
+				UpdateManaFlag();
+			} break;
 		case CHC_MAXSTAM:
-			Stat_SetMax(STAT_DEX, s.HasArgs() ? s.GetArgVal() : 0 );
-			break;
+			{
+				long iStat;
+				if (s.HasArgs())
+				{
+					long iStatRaw = s.GetArgVal();
+					iStat = (iStatRaw > SHRT_MAX) ? SHRT_MAX : iStatRaw;
+				}
+				else
+					iStat = 0;
+				Stat_SetVal(STAT_DEX, static_cast<short>(iStat));
+				UpdateStamFlag();
+			} break;
 		case CHC_ACCOUNT:
 			return SetPlayerAccount( s.GetArgStr());
 		case CHC_ACT:
@@ -2906,9 +2945,17 @@ do_default:
 				m_fonttype = FONT_NORMAL;
 			break;
 		case CHC_FOOD:
-			Stat_SetVal(STAT_FOOD, s.GetArgVal());
-			break;
-
+			{
+				long iStat;
+				if (s.HasArgs())
+				{
+					long iStatRaw = s.GetArgVal();
+					iStat = (iStatRaw > SHRT_MAX) ? SHRT_MAX : iStatRaw;
+				}
+				else
+					iStat = 0;
+				Stat_SetVal(STAT_FOOD, static_cast<short>(iStat));
+			} break;
 		case CHC_GOLD:
 			{
 				int currentGold = ContentCount(RESOURCE_ID(RES_TYPEDEF, IT_GOLD));
@@ -2917,16 +2964,14 @@ do_default:
 				if ( newGold >= 0 )
 				{
 					if( newGold < currentGold )
-					{
 						ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), currentGold - newGold);
-					}
 					else if( newGold > currentGold )
 					{
-						int amount = newGold - currentGold;
+						unsigned int amount = static_cast<unsigned int>(newGold - currentGold);
 						while ( amount > 0 )
 						{
 							CItem *pItem = CItem::CreateBase(ITEMID_GOLD_C1);
-							pItem->SetAmount(minimum(amount, pItem->GetMaxAmount()));
+							pItem->SetAmount( minimum(amount, pItem->GetMaxAmount()) );
 							amount -= pItem->GetAmount();
 							GetBank()->ContentAdd(pItem);
 						}
@@ -2937,25 +2982,70 @@ do_default:
 
 		case CHC_HITPOINTS:
 		case CHC_HITS:
-			Stat_SetVal(STAT_STR,  s.GetArgVal() );
-			UpdateHitsFlag();
-			break;
+			{
+				long iStat;
+				if (s.HasArgs())
+				{
+					long iStatRaw = s.GetArgVal();
+					iStat = (iStatRaw > SHRT_MAX) ? SHRT_MAX : iStatRaw;
+				}
+				else
+					iStat = 0;
+				Stat_SetVal(STAT_STR, static_cast<short>(iStat));
+				UpdateHitsFlag();
+			} break;
 		case CHC_MANA:
-			Stat_SetVal(STAT_INT,  s.GetArgVal() );
-			UpdateManaFlag();
-			break;
+			{
+				long iStat;
+				if (s.HasArgs())
+				{
+					long iStatRaw = s.GetArgVal();
+					iStat = (iStatRaw > SHRT_MAX) ? SHRT_MAX : iStatRaw;
+				}
+				else
+					iStat = 0;
+				Stat_SetVal(STAT_INT, static_cast<short>(iStat));
+				UpdateManaFlag();
+			} break;
 		case CHC_MODMAXWEIGHT:
-			m_ModMaxWeight = s.GetArgVal();
-			UpdateStatsFlag();
-			break;
+			{
+				long iStat;
+				if (s.HasArgs())
+				{
+					long iStatRaw = s.GetArgVal();
+					iStat = (iStatRaw > INT_MAX) ? INT_MAX : iStatRaw;
+				}
+				else
+					iStat = 0;
+				m_ModMaxWeight = static_cast<int>(iStat);
+				UpdateStatsFlag();
+			} break;
 		case CHC_STAM:
 		case CHC_STAMINA:
-			Stat_SetVal(STAT_DEX,  s.GetArgVal() );
-			UpdateStamFlag();
-			break;
+			{
+				long iStat;
+				if (s.HasArgs())
+				{
+					long iStatRaw = s.GetArgVal();
+					iStat = (iStatRaw > SHRT_MAX) ? SHRT_MAX : iStatRaw;
+				}
+				else
+					iStat = 0;
+				Stat_SetVal(STAT_DEX, static_cast<short>(iStat));
+				UpdateStamFlag();
+			} break;
 		case CHC_STEPSTEALTH:
-			m_StepStealth = s.GetArgVal();
-			break;
+			{
+				long iStat;
+				if (s.HasArgs())
+				{
+					long iStatRaw = s.GetArgVal();
+					iStat = (iStatRaw > INT_MAX) ? INT_MAX : iStatRaw;
+				}
+				else
+					iStat = 0;
+				m_StepStealth = static_cast<int>(iStat);
+			} break;
 		case CHC_HEIGHT:
 			m_height = static_cast<height_t>(s.GetArgVal());
 			break;
@@ -2979,14 +3069,12 @@ do_default:
 				}
 				else
 					SetName( s.GetArgStr() );
-			}
-			break;
+			} break;
 		case CHC_FAME:
 		case CHC_KARMA:
 			goto do_default;
 		case CHC_SKILLUSEQUICK:
 			{
-
 				if ( s.GetArgStr() )
 				{
 					TCHAR * ppArgs[2];

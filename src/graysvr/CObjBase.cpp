@@ -269,7 +269,7 @@ bool CObjBase::SetNamePool( LPCTSTR pszName )
 	return true;
 }
 
-bool CObjBase::MoveNearObj( const CObjBaseTemplate *pObj, int iSteps )
+bool CObjBase::MoveNearObj( const CObjBaseTemplate *pObj, WORD iSteps )
 {
 	ADDTOCALLSTACK("CObjBase::MoveNearObj");
 	ASSERT(pObj);
@@ -470,7 +470,7 @@ void CObjBase::SpeakUTF8Ex( const NWORD * pText, HUE_TYPE wHue, TALKMODE_TYPE mo
 	g_World.SpeakUNICODE( this, pText, wHue, mode, font, lang );
 }
 
-bool CObjBase::MoveNear( CPointMap pt, int iSteps )
+bool CObjBase::MoveNear( CPointMap pt, WORD iSteps )
 {
 	ADDTOCALLSTACK("CObjBase::MoveNear");
 	// Move to nearby this other object.
@@ -480,8 +480,8 @@ bool CObjBase::MoveNear( CPointMap pt, int iSteps )
 	for ( int i = 0; i < iSteps; i++ )
 	{
 		pt = ptOld;
-		pt.m_x += Calc_GetRandVal2(-iSteps, iSteps);
-		pt.m_y += Calc_GetRandVal2(-iSteps, iSteps);
+		pt.m_x += static_cast<WORD>(Calc_GetRandVal2(-iSteps, iSteps));
+		pt.m_y += static_cast<WORD>(Calc_GetRandVal2(-iSteps, iSteps));
 		if ( !pt.IsValidPoint() )	// hit the edge of the world, so go back to the previous valid position
 		{
 			pt = ptOld;
@@ -2068,7 +2068,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				pObjNear = uid.ObjFind();
 				if ( !pObjNear )
 					return false;
-				MoveNearObj( pObjNear, static_cast<int>(piCmd[1]) );
+				MoveNearObj( pObjNear, static_cast<WORD>(piCmd[1]) );
 				if ( piCmd[2] )
 					Update();
 			}
