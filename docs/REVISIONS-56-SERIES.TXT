@@ -2917,3 +2917,8 @@ Fixed: Enhanced clients not placing items on correct container GRID slot when us
 23-02-2015, Coruja
 Fixed: Some clients not parsing correctly the last number/letter of client version.
 Changed: Function REPORTEDCLIVER.1 got removed, it's no longer needed because now REPORTEDCLIVER will return the full client version by default.
+Fixed: Spawn items resetting COUNT and AMOUNT values to 0 on server restart.
+
+24-02-2015, Nolok
+Fixed: In certain situations returning 0 inside a custom trigger caused TRIGGER keyword to return 2. Also, potentially every value
+	between 0-8 could interfere with some internal check. Now any value < 100 can be safely returned and readed.
