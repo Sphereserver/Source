@@ -112,7 +112,8 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 		}
 	}
 
-	CItemSpawn *pSpawn = static_cast<CItemSpawn *>(pItem->m_uidSpawnItem.ItemFind());	// remove this item from its spawn when players DClick it from ground, no other way to take it out.
+	// remove this item from its spawn when players DClick it from ground, no other way to take it out.
+	CItemSpawn *pSpawn = static_cast<CItemSpawn *>(pItem->m_uidSpawnItem.ItemFind());
 	if ( pSpawn )
 		pSpawn->DelObj(pItem->GetUID());
 
@@ -273,19 +274,19 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 		case IT_SPAWN_ITEM:
 		case IT_SPAWN_CHAR:
 		{
-			CItemSpawn *pSpawn = static_cast<CItemSpawn *>(pItem);
-			if ( !pSpawn )
+			CItemSpawn *pSpawnItem = static_cast<CItemSpawn *>(pItem);
+			if ( !pSpawnItem)
 				return false;
 
-			if ( pSpawn->m_currentSpawned )
+			if ( pSpawnItem->m_currentSpawned )
 			{
 				SysMessageDefault(DEFMSG_ITEMUSE_SPAWN_NEG);
-				pSpawn->KillChildren();		// Removing existing objects spawned from it ( RESET ).
+				pSpawnItem->KillChildren();		// Removing existing objects spawned from it ( RESET ).
 			}
 			else
 			{
 				SysMessageDefault(DEFMSG_ITEMUSE_SPAWN_RESET);
-				pSpawn->OnTick(true);		// Forcing the spawn to work and create some objects ( START ).
+				pSpawnItem->OnTick(true);		// Forcing the spawn to work and create some objects ( START ).
 			}
 			return true;
 		}
