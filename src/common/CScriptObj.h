@@ -19,11 +19,12 @@
 		TRIGRUN_SINGLE_FALSE	// ignore just this line or blocked segment.
 	};
 
-	enum TRIGRET_TYPE	// trigger script returns.
+	enum TRIGRET_TYPE		// trigger script returns.
 	{
-		TRIGRET_RET_FALSE = 0,	// default return. (script might not have been handled)
-		TRIGRET_RET_TRUE = 1,
-		TRIGRET_RET_DEFAULT,	// we just came to the end of the script.
+		// Starting from 100 will allow scripts to use safely return values < than 100.
+		TRIGRET_RET_FALSE = 100,	// Default return. (script might not have been handled)
+		TRIGRET_RET_TRUE,			// Script successifully returned a value.
+		TRIGRET_RET_DEFAULT,		// We just came to the end of the script.
 		TRIGRET_ENDIF,
 		TRIGRET_ELSE,
 		TRIGRET_ELSEIF,

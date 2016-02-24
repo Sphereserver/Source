@@ -133,7 +133,7 @@ void CItemSpawn::GenerateItem(CResourceDef *pDef)
 	if ( pItem == NULL )
 		return;
 
-	WORD iAmountPile = static_cast<WORD>(minimum(USHRT_MAX,m_itSpawnItem.m_pile));
+	WORD iAmountPile = minimum(USHRT_MAX,m_itSpawnItem.m_pile);
 	if ( iAmountPile > 1 )
 	{
 		CItemBase *pItemDef = pItem->Item_GetDef();
@@ -200,7 +200,7 @@ void CItemSpawn::DelObj(CGrayUID uid)
 		return;
 
 	BYTE iMax = GetCount();
-	for ( unsigned char i = 0; i < iMax; i++ )
+	for ( BYTE i = 0; i < iMax; i++ )
 	{
 		if ( m_obj[i] != uid )
 			continue;
@@ -254,8 +254,8 @@ void CItemSpawn::AddObj(CGrayUID uid)
 		}
 	}
 
-	unsigned char iMax = maximum(GetAmount(), 1);
-	for ( unsigned char i = 0; i < iMax; i++ )
+	BYTE iMax = maximum(GetAmount(), 1);
+	for ( BYTE i = 0; i < iMax; i++ )
 	{
 		if ( !m_obj[i].IsValidUID() )
 		{
@@ -322,7 +322,7 @@ void CItemSpawn::KillChildren()
 	if (m_currentSpawned <= 0 )
 		return;
 
-	for ( unsigned char i = 0; i < m_currentSpawned; i++ )
+	for ( BYTE i = 0; i < m_currentSpawned; i++ )
 	{
 		CObjBase *pObj = m_obj[i].ObjFind();
 		if ( !pObj )
@@ -472,7 +472,7 @@ void  CItemSpawn::r_Write(CScript & s)
 	if ( iTotal <= 0 )
 		return;
 
-	for ( unsigned char i = 0; i < iTotal; i++ )
+	for ( BYTE i = 0; i < iTotal; i++ )
 	{
 		if ( !m_obj[i].IsValidUID() )
 			continue;
