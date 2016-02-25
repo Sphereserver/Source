@@ -1360,6 +1360,7 @@ private:
 
 public:
 	static const char *m_sClassName;
+
 	/* I don't want to inherit SetAmount, GetAmount and m_iAmount from the parent CItem class. I need to redefine them for CItemSpawn class
 	*	so that when i set AMOUNT to the spawn item, i don't really set the "item amount/quantity" property, but the "spawn item AMOUNT" property.
 	*	This way, even if there is a stackable spawn item (default in Enhanced Client), i won't increase the item stack quantity and i can't pick
@@ -1368,9 +1369,8 @@ public:
 	*/
 	void SetAmount(BYTE iAmount);
 	BYTE GetAmount();
-	BYTE m_iAmount;
-
-	BYTE m_currentSpawned;		// Current spawned from this spawn. Get it from scripts via count property (read-only).
+	BYTE m_iAmount;				// Amount of objects to spawn.
+	BYTE m_currentSpawned;		// Amount of current objects already spawned. Get it from scripts via COUNT property (read-only).
 
 	/**
 	* @brief Overrides onTick for this class.

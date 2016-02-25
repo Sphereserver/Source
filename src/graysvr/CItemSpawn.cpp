@@ -103,8 +103,9 @@ int CItemSpawn::GetName(TCHAR *pszOut) const
 CItemSpawn::CItemSpawn(ITEMID_TYPE id, CItemBase *pDef) : CItem(ITEMID_WorldGem, pDef)
 {
 	ADDTOCALLSTACK("CItemSpawn::CItemSpawn");
-	UNREFERENCED_PARAMETER(id);	//forced in CItem(ITEMID_WorldGem , )
+	UNREFERENCED_PARAMETER(id);		//forced in CItem(ITEMID_WorldGem, ...)
 	m_currentSpawned = 0;
+	m_iAmount = 1;
 }
 
 CItemSpawn::~CItemSpawn()
