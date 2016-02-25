@@ -2914,10 +2914,9 @@ Changed: now double clicking a T_SPAWN_ITEM spawnitem has the same effect it has
 22-02-2016, Coruja
 Fixed: Enhanced clients not placing items on correct container GRID slot when using containers on 'list view' mode.
 
-
 23-02-2016, Coruja
 Fixed: Some clients not parsing correctly the last number/letter of client version.
-Changed: Function REPORTEDCLIVER.1 got removed, it's no longer needed because now REPORTEDCLIVER will return the full client version by default.
+Fixed: Spawn items resetting COUNT and AMOUNT values to 0 on server restart.
 
 25-02-2016, XuN
 Improved the code of NPC's SpellCasting engine: removed some code and updated a bit the current. Also moved some spells to give them higher priority (Healing > cure poison > buffs ...)
@@ -2934,3 +2933,6 @@ Fixed some spells not being correctly found in case of having multiple books sin
 
 Script Pack:
 	-sphere_defs.scp: Added SKF_DISABLED
+
+25-02-2015, Nolok
+Fixed: Spawn items sometimes created with random COUNT property.

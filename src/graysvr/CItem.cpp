@@ -1414,7 +1414,7 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	return true;
 }
 
-bool CItem::MoveNearObj( const CObjBaseTemplate *pObj, int iSteps )
+bool CItem::MoveNearObj( const CObjBaseTemplate *pObj, WORD iSteps )
 {
 	ADDTOCALLSTACK("CItem::MoveNearObj");
 	// Put in the same container as another item.
