@@ -480,8 +480,8 @@ bool CObjBase::MoveNear( CPointMap pt, int iSteps )
 	for ( int i = 0; i < iSteps; i++ )
 	{
 		pt = ptOld;
-		pt.m_x += Calc_GetRandVal2(-iSteps, iSteps);
-		pt.m_y += Calc_GetRandVal2(-iSteps, iSteps);
+		pt.m_x += static_cast<short>(Calc_GetRandVal2(-iSteps, iSteps));
+		pt.m_y += static_cast<short>(Calc_GetRandVal2(-iSteps, iSteps));
 		if ( !pt.IsValidPoint() )	// hit the edge of the world, so go back to the previous valid position
 		{
 			pt = ptOld;

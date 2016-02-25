@@ -3132,8 +3132,8 @@ public:
 	bool CanUse( CItem * pItem, bool fMoveOrConsume ) const;
 	bool IsMountCapable() const;
 
-	int  Food_CanEat( CObjBase * pObj ) const;
-	int  Food_GetLevelPercent() const;
+	short  Food_CanEat( CObjBase * pObj ) const;
+	short  Food_GetLevelPercent() const;
 	LPCTSTR Food_GetLevelMessage( bool fPet, bool fHappy ) const;
 
 public:
@@ -4111,7 +4111,7 @@ public:
 	bool OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fPetsCommand = false, bool fShouldReveal = true );
 
 	bool OnTickEquip( CItem * pItem );
-	void OnTickFood( int iVal, int HitsHungerLoss );
+	void OnTickFood( short iVal, int HitsHungerLoss );
 	void OnTickStatusUpdate();
 	bool OnTick();
 

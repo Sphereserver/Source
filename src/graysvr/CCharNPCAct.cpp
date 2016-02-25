@@ -2683,7 +2683,7 @@ bool CChar::NPC_Act_Food()
 
 	m_pNPC->m_Act_Motivation = static_cast<unsigned char>((50 - (iFoodLevel / 2)));
 
-	int		iEatAmount = 1;
+	short	iEatAmount = 1;
 	int		iSearchDistance = 2;
 	CItem	*pClosestFood = NULL;
 	int		iClosestFood = 100;
@@ -2760,7 +2760,7 @@ bool CChar::NPC_Act_Food()
 		if ( iClosestFood <= 1 )
 		{
 			//	can take and eat just in place
-			int iEaten = pClosestFood->ConsumeAmount(iEatAmount);
+			short iEaten = static_cast<short>(pClosestFood->ConsumeAmount(iEatAmount));
 			EatAnim(pClosestFood->GetName(), iEaten);
 			if ( !pClosestFood->GetAmount() )
 			{
@@ -2825,7 +2825,7 @@ bool CChar::NPC_Act_Food()
 			CItem	*pResBit = g_World.CheckNaturalResource(GetTopPoint(), IT_GRASS, true, this);
 			if ( pResBit && pResBit->GetAmount() && ( pResBit->GetTopPoint().m_z == iMyZ ) )
 			{
-				int iEaten = pResBit->ConsumeAmount(10);
+				short iEaten = static_cast<short>(pResBit->ConsumeAmount(10));
 				EatAnim("grass", iEaten/10);
 
 				//	the bit is not needed in a worldsave, timeout of 10 minutes
@@ -3334,7 +3334,7 @@ void CChar::NPC_Food()
 
 	int		iFood = Stat_GetVal(STAT_FOOD);
 	int		iFoodLevel = Food_GetLevelPercent();
-	int		iEatAmount = 1;
+	short		iEatAmount = 1;
 	int		iSearchDistance = 2;
 	CItem	*pClosestFood = NULL;
 	int		iClosestFood = 100;
@@ -3400,7 +3400,7 @@ void CChar::NPC_Food()
 		{
 			//	can take and eat just in place
 			EXC_SET("eating nearby");
-			int iEaten = pClosestFood->ConsumeAmount(iEatAmount);
+			short iEaten = static_cast<short>(pClosestFood->ConsumeAmount(iEatAmount));
 			EatAnim(pClosestFood->GetName(), iEaten);
 			if ( !pClosestFood->GetAmount() )
 			{
@@ -3457,7 +3457,7 @@ void CChar::NPC_Food()
 			if ( pResBit && pResBit->GetAmount() && ( pResBit->GetTopPoint().m_z == iMyZ ) )
 			{
 				EXC_SET("eating grass");
-				int iEaten = pResBit->ConsumeAmount(15);
+				short iEaten = static_cast<short>(pResBit->ConsumeAmount(15));
 				EatAnim("grass", iEaten/10);
 
 				//	the bit is not needed in a worldsave, timeout of 10 minutes

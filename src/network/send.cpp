@@ -407,7 +407,7 @@ PacketItemWorld::PacketItemWorld(const CClient* target, CItem *item) : PacketSen
 void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, WORD &amount, CPointMap &p, DIR_TYPE &dir, BYTE &flags, BYTE& light)
 {
 	ADDTOCALLSTACK("PacketItemWorld::adjustItemData");
-
+	UNREFERENCED_PARAMETER(p);
 	const CChar* character = target->GetChar();
 	ASSERT(character);
 
@@ -3196,7 +3196,7 @@ PacketCharacterList::PacketCharacterList(CClient* target) : PacketSend(XCMD_Char
 			if ( account->m_Chars.GetChar(i) != account->m_uidLastChar )
 				continue;
 
-			iLastCharSlot = i;
+			iLastCharSlot = static_cast<WORD>(i);
 			break;
 		}
 		writeInt16(iLastCharSlot);

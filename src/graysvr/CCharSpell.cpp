@@ -407,7 +407,7 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 		return false;
 	}
 
-	int hits = IMULDIV(Stat_GetMax(STAT_STR), g_Cfg.m_iHitpointPercentOnRez, 100);
+	short hits = IMULDIV(Stat_GetMax(STAT_STR), static_cast<short>(g_Cfg.m_iHitpointPercentOnRez), 100);
 	if (!pCorpse)
 		pCorpse = FindMyCorpse();
 
@@ -416,7 +416,7 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 		CScriptTriggerArgs Args(hits, 0, pCorpse);
 		if (OnTrigger(CTRIG_Resurrect, pCharSrc, &Args) == TRIGRET_RET_TRUE)
 			return false;
-		hits = static_cast<int>(Args.m_iN1);
+		hits = static_cast<short>(Args.m_iN1);
 	}
 
 	SetID(m_prev_id);
@@ -1564,7 +1564,7 @@ bool CChar::Spell_Equip_OnTick( CItem * pItem )
 			}
 
 			// Gain HP.
-			UpdateStatVal(STAT_STR, g_Cfg.GetSpellEffect(spell, iLevel));
+			UpdateStatVal(STAT_STR, static_cast<short>(g_Cfg.GetSpellEffect(spell, iLevel)));
 			pItem->SetTimeout(2 * TICK_PER_SEC);
 		}	break;
 
@@ -2031,8 +2031,8 @@ bool CChar::Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool 
 	if ( !Skill_CanUse(static_cast<SKILL_TYPE>(skill)) )
 		return false;
 
-	int wManaUse = pSpellDef->m_wManaUse * (100 - minimum(static_cast<int>(GetDefNum("LOWERMANACOST", true, true)), 40)) / 100;
-	int wTithingUse = pSpellDef->m_wTithingUse * (100 - minimum(static_cast<int>(GetDefNum("LOWERREAGENTCOST", true, true)), 40)) / 100;
+	short wManaUse = static_cast<short>(pSpellDef->m_wManaUse * (100 - minimum(GetDefNum("LOWERMANACOST", true, true), 40)) / 100);
+	short wTithingUse = static_cast<short>(pSpellDef->m_wTithingUse * (100 - minimum(GetDefNum("LOWERREAGENTCOST", true, true), 40)) / 100);
 
 	if (pSrc != this)
 	{
@@ -2090,8 +2090,8 @@ bool CChar::Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool 
 			return( false );
 		spell = static_cast<SPELL_TYPE>(Args.m_iN1);
 	}
-	wManaUse = static_cast<int>(Args.m_iN2);
-	wTithingUse = static_cast<int>(Args.m_VarsLocal.GetKeyNum("TithingUse",true));
+	wManaUse = static_cast<short>(Args.m_iN2);
+	wTithingUse = static_cast<short>(Args.m_VarsLocal.GetKeyNum("TithingUse",true));
 
 	if ( pSrc != this )
 	{
@@ -2212,7 +2212,7 @@ bool CChar::Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool 
 		// Consume mana.
 		if (m_Act_Difficulty < 0)	// use diff amount of mana if we fail.
 		{
-			wManaUse = wManaUse / 2 + Calc_GetRandVal(wManaUse / 2 + wManaUse / 4);
+			wManaUse = wManaUse / 2 + static_cast<short>(Calc_GetRandVal(wManaUse / 2 + wManaUse / 4));
 		}
 		UpdateStatVal(STAT_INT, -wManaUse);
 	}
@@ -2230,7 +2230,7 @@ bool CChar::Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool 
 		// Consume points
 		if (m_Act_Difficulty < 0)	// use diff amount of points if we fail.
 		{
-			wTithingUse = wTithingUse / 2 + Calc_GetRandVal(wTithingUse / 2 + wTithingUse / 4);
+			wTithingUse = wTithingUse / 2 + static_cast<short>(Calc_GetRandVal(wTithingUse / 2 + wTithingUse / 4));
 		}
 		SetDefNum("Tithing", wTithing - wTithingUse);
 	}
@@ -2467,7 +2467,7 @@ bool CChar::Spell_CastDone()
 
 	iC1 = static_cast<CREID_TYPE>(Args.m_VarsLocal.GetKeyNum("CreateObject1", true) & 0xFFFF);
 	areaRadius = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("areaRadius", true)));
-	INT64 iDuration = maximum(0, Args.m_VarsLocal.GetKeyNum("duration", true));
+	int iDuration = maximum(0, static_cast<int>(Args.m_VarsLocal.GetKeyNum("duration", true)));
 	iColor = static_cast<HUE_TYPE>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor", true)));
 
 	// Consume the reagents/mana/scroll/charge
@@ -3060,7 +3060,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	int iResist = Skill_GetBase(SKILL_MAGICRESISTANCE);
 	int iFirst = iResist / 50;
 	int iSecond = iResist - (((pCharSrc->Skill_GetBase(SKILL_MAGERY) - 200) / 50) + (1 + (spell / 8)) * 50);
-	unsigned char iResistChance = maximum(iFirst, iSecond) / 30;
+	unsigned char iResistChance = static_cast<unsigned char>(maximum(iFirst, iSecond) / 30);
 	iResist = ( pSpellDef->IsSpellType(SPELLFLAG_RESIST) && Skill_UseQuick( SKILL_MAGICRESISTANCE, iResistChance, true, false ) ) ? 25 : 0; // If we successfully resist then we have a 25% damage reduction, 0 if we don't.
 	DAMAGE_TYPE iD1 = 0;
 	int iDmg = GetSpellEffect(spell, iSkillLevel, iEffectMult);
@@ -3288,7 +3288,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 		case SPELL_Heal:
 		case SPELL_Great_Heal:
-			UpdateStatVal( STAT_STR, GetSpellEffect( spell, iSkillLevel, iEffectMult ) );
+			UpdateStatVal( STAT_STR, static_cast<short>(GetSpellEffect( spell, iSkillLevel, iEffectMult )) );
 			break;
 
 		case SPELL_Night_Sight:
@@ -3382,8 +3382,8 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 					// Pre-AOS formula
 					iSkillLevel = iMax;
 				}
-				UpdateStatVal( STAT_INT, -iSkillLevel );
-				pCharSrc->UpdateStatVal( STAT_INT, +iSkillLevel );
+				UpdateStatVal( STAT_INT, static_cast<short>(-iSkillLevel) );
+				pCharSrc->UpdateStatVal( STAT_INT, static_cast<short>(+iSkillLevel) );
 			}
 			break;
 
@@ -3427,16 +3427,16 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			break;
 
 		case SPELL_Mana:
-			UpdateStatVal( STAT_INT, GetSpellEffect( spell, iSkillLevel, iEffectMult ) );
+			UpdateStatVal( STAT_INT, static_cast<short>(GetSpellEffect( spell, iSkillLevel, iEffectMult )) );
 			break;
 
 		case SPELL_Refresh:
-			UpdateStatVal( STAT_DEX, GetSpellEffect( spell, iSkillLevel, iEffectMult ) );
+			UpdateStatVal( STAT_DEX, static_cast<short>(GetSpellEffect( spell, iSkillLevel, iEffectMult )) );
 			break;
 
 		case SPELL_Restore:		// increases both your hit points and your stamina.
-			UpdateStatVal( STAT_DEX, GetSpellEffect( spell, iSkillLevel, iEffectMult ) );
-			UpdateStatVal( STAT_STR, GetSpellEffect( spell, iSkillLevel, iEffectMult ) );
+			UpdateStatVal( STAT_DEX, static_cast<short>(GetSpellEffect( spell, iSkillLevel, iEffectMult )) );
+			UpdateStatVal( STAT_STR, static_cast<short>(GetSpellEffect( spell, iSkillLevel, iEffectMult )) );
 			break;
 
 		case SPELL_Sustenance:		// 105 // serves to fill you up. (Remember, healing rate depends on how well fed you are!)

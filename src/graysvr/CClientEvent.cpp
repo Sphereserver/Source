@@ -833,7 +833,7 @@ bool CClient::Event_Walk( BYTE rawdir, BYTE sequence ) // Player moves
 		m_pChar->CheckRevealOnMove();
 
 		// Set running flag if I'm running
-		m_pChar->StatFlag_Mod(STATF_Fly, (rawdir & 0x80));
+		m_pChar->StatFlag_Mod(STATF_Fly, (rawdir & 0x80) ? true : false);
 
 		if ( iRet == TRIGRET_RET_TRUE )
 		{

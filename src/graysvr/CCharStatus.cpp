@@ -712,13 +712,13 @@ CItem *CChar::GetSpellbookRandom(SPELL_TYPE iSpell) const	// Retrieves a spellbo
 	return NULL;
 }
 
-int CChar::Food_GetLevelPercent() const
+short CChar::Food_GetLevelPercent() const
 {
 	ADDTOCALLSTACK("CChar::Food_GetLevelPercent");
 	int	max	= Stat_GetMax(STAT_FOOD);
 	if ( max == 0 )
 		return 100;
-	return IMULDIV(Stat_GetVal(STAT_FOOD), 100, max);
+	return static_cast<short>(IMULDIV(Stat_GetVal(STAT_FOOD), 100, max));
 }
 
 LPCTSTR CChar::Food_GetLevelMessage(bool fPet, bool fHappy) const
@@ -779,7 +779,7 @@ LPCTSTR CChar::Food_GetLevelMessage(bool fPet, bool fHappy) const
 	return sm_szFoodLevel[index];
 }
 
-int CChar::Food_CanEat( CObjBase *pObj ) const
+short CChar::Food_CanEat( CObjBase *pObj ) const
 {
 	ADDTOCALLSTACK("CChar::Food_CanEat");
 	// Would i want to eat this creature ? hehe
@@ -796,7 +796,7 @@ int CChar::Food_CanEat( CObjBase *pObj ) const
 
 	size_t iRet = pCharDef->m_FoodType.FindResourceMatch(pObj);
 	if ( iRet != pCharDef->m_FoodType.BadIndex() )
-		return static_cast<int>(pCharDef->m_FoodType[iRet].GetResQty());	// how bad do i want it?
+		return static_cast<short>(pCharDef->m_FoodType[iRet].GetResQty());	// how bad do i want it?
 
 	return 0;
 }

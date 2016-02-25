@@ -2735,16 +2735,16 @@ do_default:
 			m_wBloodHue = static_cast<HUE_TYPE>(s.GetArgVal());
 			break;
 		case CHC_MAXFOOD:
-			Stat_SetMax(STAT_FOOD, s.GetArgVal());
+			Stat_SetMax(STAT_FOOD, static_cast<short>(s.GetArgVal()));
 			break;
 		case CHC_MAXHITS:
-			Stat_SetMax(STAT_STR, s.HasArgs() ? s.GetArgVal() : 0 );
+			Stat_SetMax(STAT_STR, static_cast<short>(s.GetArgVal()));
 			break;
 		case CHC_MAXMANA:
-			Stat_SetMax(STAT_INT, s.HasArgs() ? s.GetArgVal() : 0 );
+			Stat_SetMax(STAT_INT, static_cast<short>(s.GetArgVal()));
 			break;
 		case CHC_MAXSTAM:
-			Stat_SetMax(STAT_DEX, s.HasArgs() ? s.GetArgVal() : 0 );
+			Stat_SetMax(STAT_DEX, static_cast<short>(s.GetArgVal()));
 			break;
 		case CHC_ACCOUNT:
 			return SetPlayerAccount( s.GetArgStr());
@@ -2906,7 +2906,7 @@ do_default:
 				m_fonttype = FONT_NORMAL;
 			break;
 		case CHC_FOOD:
-			Stat_SetVal(STAT_FOOD, s.GetArgVal());
+			Stat_SetVal(STAT_FOOD, static_cast<short>(s.GetArgVal()));
 			break;
 
 		case CHC_GOLD:
@@ -2937,24 +2937,24 @@ do_default:
 
 		case CHC_HITPOINTS:
 		case CHC_HITS:
-			Stat_SetVal(STAT_STR,  s.GetArgVal() );
+			Stat_SetVal(STAT_STR, static_cast<short>(s.GetArgVal()));
 			UpdateHitsFlag();
 			break;
 		case CHC_MANA:
-			Stat_SetVal(STAT_INT,  s.GetArgVal() );
+			Stat_SetVal(STAT_INT, static_cast<short>(s.GetArgVal()));
 			UpdateManaFlag();
 			break;
 		case CHC_MODMAXWEIGHT:
-			m_ModMaxWeight = s.GetArgVal();
+			m_ModMaxWeight = static_cast<int>(s.GetArgVal());
 			UpdateStatsFlag();
 			break;
 		case CHC_STAM:
 		case CHC_STAMINA:
-			Stat_SetVal(STAT_DEX,  s.GetArgVal() );
+			Stat_SetVal(STAT_DEX, static_cast<short>(s.GetArgVal()));
 			UpdateStamFlag();
 			break;
 		case CHC_STEPSTEALTH:
-			m_StepStealth = s.GetArgVal();
+			m_StepStealth =  static_cast<int>(s.GetArgVal());
 			break;
 		case CHC_HEIGHT:
 			m_height = static_cast<height_t>(s.GetArgVal());

@@ -2066,7 +2066,7 @@ void CChar::EatAnim( LPCTSTR pszName, short iQty )
 
 	short iHits = 0;
 	short iMana = 0;
-	short iStam = Calc_GetRandVal2(3, 6) + (iQty / 5);
+	short iStam = static_cast<short>( Calc_GetRandVal2(3, 6) + (iQty / 5) );
 	short iFood = iQty;
 	short iStatsLimit = 0;
 	if ( IsTrigUsed(TRIGGER_EAT) )
@@ -3046,7 +3046,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 		return NULL;
 
 	EXC_SET("Creature bumping");
-	int iStamReq = 0;
+	short iStamReq = 0;
 	if ( fCheckChars && !IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Insubstantial) )
 	{
 		CItem * pPoly = LayerFind(LAYER_SPELL_Polymorph);
@@ -3072,7 +3072,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			{
 				CScriptTriggerArgs Args(iStamReq);
 				iRet = pChar->OnTrigger(CTRIG_PersonalSpace, this, &Args);
-				iStamReq = static_cast<int>(Args.m_iN1);
+				iStamReq = static_cast<short>(Args.m_iN1);
 
 				if ( iRet == TRIGRET_RET_TRUE )
 					return NULL;
@@ -3843,7 +3843,7 @@ void CChar::OnTickStatusUpdate()
 
 // Food decay, decrease FOOD value.
 // Call for hunger penalties if food < 40%
-void CChar::OnTickFood(int iVal, int HitsHungerLoss)
+void CChar::OnTickFood(short iVal, int HitsHungerLoss)
 {
 	ADDTOCALLSTACK("CChar::OnTickFood");
 	if ( IsStatFlag(STATF_Conjured) || !Stat_GetMax(STAT_FOOD) )
@@ -3853,7 +3853,7 @@ void CChar::OnTickFood(int iVal, int HitsHungerLoss)
 	if ( IsStatFlag(STATF_Pet) && !NPC_CheckHirelingStatus() )
 		return;
 
-	long lFood = Stat_GetVal(STAT_FOOD) - iVal;
+	short lFood = Stat_GetVal(STAT_FOOD) - iVal;
 	if (lFood < 0)
 		lFood = 0;
 	Stat_SetVal(STAT_FOOD, lFood);

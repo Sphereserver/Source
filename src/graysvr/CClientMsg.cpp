@@ -693,28 +693,28 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 		{
 			defaultHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_COLOR"));
 			defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_FONT"));
-			defaultUnicode = static_cast<bool>(g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_UNICODE", true));
+			defaultUnicode = g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_UNICODE", true) > 0 ? true : false;
 			break;
 		}
 		case TALKMODE_EMOTE:
 		{
 			defaultHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_COLOR"));
 			defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_FONT"));
-			defaultUnicode = static_cast<bool>(g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_UNICODE", true));
+			defaultUnicode = g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_UNICODE", true) > 0 ? true : false;
 			break;
 		}
 		case TALKMODE_SAY:
 		{
 			defaultHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("SAY_DEF_COLOR"));
 			defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("SAY_DEF_FONT"));
-			defaultUnicode = static_cast<bool>(g_Exp.m_VarDefs.GetKeyNum("SAY_DEF_UNICODE", true));
+			defaultUnicode = g_Exp.m_VarDefs.GetKeyNum("SAY_DEF_UNICODE", true) > 0 ? true : false;
 			break;
 		}
 		case TALKMODE_OBJ:
 		{
 			defaultHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_COLOR"));
 			defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_FONT"));
-			defaultUnicode = static_cast<bool>(g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_UNICODE", true));
+			defaultUnicode = g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_UNICODE", true) > 0 ? true : false;
 			break;
 		}
 		case TALKMODE_ITEM:
@@ -722,7 +722,7 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 			if ( !pSrc->IsChar() )		// Don't override color on char names to prevent conflict with notoriety color
 				defaultHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_COLOR"));
 			defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_FONT"));
-			defaultUnicode = static_cast<bool>(g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_UNICODE", true));
+			defaultUnicode = g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_UNICODE", true) > 0 ? true : false;
 			break;
 		}
 		default:

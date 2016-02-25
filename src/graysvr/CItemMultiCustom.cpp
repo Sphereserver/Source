@@ -920,7 +920,7 @@ short CItemMultiCustom::GetStairCount()
 {
 	ADDTOCALLSTACK("CItemMultiCustom::GetStairCount");
 	// find and return the highest stair id
-	int iCount = 0;
+	short iCount = 0;
 	for (ComponentsContainer::iterator i = m_designWorking.m_vectorComponents.begin(); i != m_designWorking.m_vectorComponents.end(); ++i)
 	{
 		if ((*i)->m_isStair == 0)
@@ -1415,7 +1415,7 @@ bool CItemMultiCustom::r_LoadVal( CScript & s  )
 					static_cast<signed short>(ATOI(ppArgs[1])),
 					static_cast<signed short>(ATOI(ppArgs[2])),
 					static_cast<signed char>(ATOI(ppArgs[3])),
-					ATOI(ppArgs[4]));
+					static_cast<short>(ATOI(ppArgs[4])));
 			return true;
 		}
 		else if ( s.IsKey("REVISION") )

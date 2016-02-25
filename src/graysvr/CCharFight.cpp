@@ -1936,11 +1936,11 @@ effect_bounce:
 			if ( iDmgPhysical == 0 )		// if physical damage is not set, let's assume it as the remaining value
 				iDmgPhysical = 100 - (iDmgFire + iDmgCold + iDmgPoison + iDmgEnergy);
 
-			int iPhysicalDamage = iDmg * iDmgPhysical * (100 - GetDefNum("RESPHYSICAL", true));
-			int iFireDamage = iDmg * iDmgFire * (100 - GetDefNum("RESFIRE", true));
-			int iColdDamage = iDmg * iDmgCold * (100 - GetDefNum("RESCOLD", true));
-			int iPoisonDamage = iDmg * iDmgPoison * (100 - GetDefNum("RESPOISON", true));
-			int iEnergyDamage = iDmg * iDmgEnergy * (100 - GetDefNum("RESENERGY", true));
+			int iPhysicalDamage = iDmg * iDmgPhysical * (100 - static_cast<int>(GetDefNum("RESPHYSICAL", true)));
+			int iFireDamage = iDmg * iDmgFire * (100 - static_cast<int>(GetDefNum("RESFIRE", true)));
+			int iColdDamage = iDmg * iDmgCold * (100 - static_cast<int>(GetDefNum("RESCOLD", true)));
+			int iPoisonDamage = iDmg * iDmgPoison * (100 - static_cast<int>(GetDefNum("RESPOISON", true)));
+			int iEnergyDamage = iDmg * iDmgEnergy * (100 - static_cast<int>(GetDefNum("RESENERGY", true)));
 
 			iDmg = (iPhysicalDamage + iFireDamage + iColdDamage + iPoisonDamage + iEnergyDamage) / 10000;
 		}
@@ -2100,7 +2100,7 @@ effect_bounce:
 
 	// Apply damage
 	SoundChar(CRESND_GETHIT);
-	UpdateStatVal( STAT_STR, -iDmg );
+	UpdateStatVal( STAT_STR, static_cast<short>(-iDmg));
 	if ( pSrc->IsClient() )
 		pSrc->GetClient()->addHitsUpdate( GetUID() );	// always send updates to src
 
@@ -3525,7 +3525,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		bool bMakeLeechSound = false;
 		if ( iHitLifeLeech )
 		{
-			iHitLifeLeech = Calc_GetRandVal2(0, (iDmg * iHitLifeLeech * 30) / 10000);	// leech 0% ~ 30% of damage value
+			iHitLifeLeech = static_cast<short>(Calc_GetRandVal2(0, (iDmg * iHitLifeLeech * 30) / 10000));	// leech 0% ~ 30% of damage value
 			UpdateStatVal(STAT_STR, iHitLifeLeech, Stat_GetMax(STAT_STR));
 			bMakeLeechSound = true;
 		}
@@ -3533,14 +3533,14 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		short iHitManaLeech = static_cast<short>(GetDefNum("HitLeechMana", true));
 		if ( iHitManaLeech )
 		{
-			iHitManaLeech = Calc_GetRandVal2(0, (iDmg * iHitManaLeech * 40) / 10000);	// leech 0% ~ 40% of damage value
+			iHitManaLeech = static_cast<short>(Calc_GetRandVal2(0, (iDmg * iHitManaLeech * 40) / 10000));	// leech 0% ~ 40% of damage value
 			UpdateStatVal(STAT_INT, iHitManaLeech, Stat_GetMax(STAT_INT));
 			bMakeLeechSound = true;
 		}
 
 		if ( GetDefNum("HitLeechStam", true) > Calc_GetRandLLVal(100) )
 		{
-			UpdateStatVal(STAT_DEX, iDmg, Stat_GetMax(STAT_DEX));	// leech 100% of damage value
+			UpdateStatVal(STAT_DEX, static_cast<short>(iDmg), Stat_GetMax(STAT_DEX));	// leech 100% of damage value
 			bMakeLeechSound = true;
 		}
 
@@ -3552,7 +3552,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				iManaDrain += 5 + (15 * Skill_GetBase(SKILL_SPIRITSPEAK) / 1000);
 		}
 		if ( GetDefNum("HitManaDrain", true) > Calc_GetRandLLVal(100) )
-			iManaDrain += IMULDIV(iDmg, 20, 100);	// leech 20% of damage value
+			iManaDrain += IMULDIV(static_cast<short>(iDmg), 20, 100);	// leech 20% of damage value
 
 		short iTargMana = pCharTarg->Stat_GetVal(STAT_INT);
 		if ( iManaDrain > iTargMana )

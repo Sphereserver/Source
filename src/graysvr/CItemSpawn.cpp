@@ -125,7 +125,7 @@ void CItemSpawn::GenerateItem(CResourceDef *pDef)
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 
 	CItemContainer *pCont = dynamic_cast<CItemContainer *>(GetParent());
-	BYTE iCount = pCont ? pCont->ContentCount(rid) : GetCount();
+	BYTE iCount = pCont ? static_cast<unsigned char>(pCont->ContentCount(rid)) : GetCount();
 	if ( iCount >= GetAmount() )
 		return;
 
