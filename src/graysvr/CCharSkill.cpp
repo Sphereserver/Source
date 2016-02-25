@@ -48,7 +48,7 @@ void CChar::Action_StartSpecial( CREID_TYPE id )
 			return;
 	}
 
-	UpdateStatVal( STAT_DEX, -(5 + Calc_GetRandVal(5)) );	// the stamina cost
+	UpdateStatVal( STAT_DEX, static_cast<short>(-(5 + Calc_GetRandVal(5)) ));	// the stamina cost
 }
 
 void CChar::Stat_AddMod( STAT_TYPE i, short iVal )
@@ -392,9 +392,9 @@ SKILL_TYPE CChar::Skill_GetBest( unsigned int iRank ) const
 	return static_cast<SKILL_TYPE>(LOWORD( dwSkillTmp ));
 }
 
+// Retrieves a random magic skill, if iVal is set it will only select from the ones with value > iVal
 SKILL_TYPE CChar::Skill_GetMagicRandom(unsigned short iVal)
 {
-	// Retrieves a random magic skill, if iVal is set it will only select from the ones with value > iVal
 	ADDTOCALLSTACK("CChar::Skill_GetMagicRandom");
 	SKILL_TYPE skills[SKILL_QTY];
 	int count = 0;
@@ -411,9 +411,21 @@ SKILL_TYPE CChar::Skill_GetMagicRandom(unsigned short iVal)
 		skills[static_cast<SKILL_TYPE>(count)] = skill;
 	}
 	if ( count )
-		return skills[static_cast<SKILL_TYPE>(Calc_GetRandVal2(1, count))];
-	else
-		return SKILL_NONE;
+		return skills[static_cast<SKILL_TYPE>(Calc_GetRandVal2(0, count))];
+
+	return SKILL_NONE;
+}
+
+bool CChar::Skill_CanUse( SKILL_TYPE skill )
+{
+	ADDTOCALLSTACK("CChar::Skill_CanUse");
+	if ( g_Cfg.IsSkillFlag( skill, SKF_DISABLED ) )
+	{
+		SysMessageDefault(DEFMSG_SKILL_NOSKILL);
+		return false;
+	}
+	// Expansion checks? different flags for NPCs/Players?
+	return true;
 }
 
 SKILL_TYPE CChar::Skill_GetMagicBest()
@@ -795,7 +807,7 @@ bool CChar::Stats_Regen(INT64 iTimeDiff)
 		if (iRate < 0)
 			iRate = 0;
 
-		int mod = Stats_GetRegenVal(i,false);
+		short mod = Stats_GetRegenVal(i,false);
 		if ((i == STAT_STR) && (g_Cfg.m_iRacialFlags & RACIALF_HUMAN_TOUGH) && IsHuman())
 			mod += 2;		// Humans always have +2 hitpoint regeneration (Tough racial trait)
 
@@ -803,7 +815,7 @@ bool CChar::Stats_Regen(INT64 iTimeDiff)
 		if (m_Stat[i].m_regen < iRate)
 			continue;
 
-		int StatLimit = Stat_GetMax(i);
+		short StatLimit = Stat_GetMax(i);
 		int HitsHungerLoss = g_Cfg.m_iHitsHungerLoss ? g_Cfg.m_iHitsHungerLoss : 0;
 
 		if (IsTrigUsed(TRIGGER_REGENSTAT))
@@ -826,8 +838,8 @@ bool CChar::Stats_Regen(INT64 iTimeDiff)
 				i = STAT_STR;
 			else if (i > STAT_FOOD)
 				i = STAT_FOOD;
-			mod = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Value", true));
-			StatLimit = static_cast<int>(Args.m_VarsLocal.GetKeyNum("StatLimit", true));
+			mod = static_cast<short>(Args.m_VarsLocal.GetKeyNum("Value", true));
+			StatLimit = static_cast<unsigned short>(Args.m_VarsLocal.GetKeyNum("StatLimit", true));
 			if (i == STAT_FOOD)
 				HitsHungerLoss = static_cast<int>(Args.m_VarsLocal.GetKeyNum("HitsHungerLoss", true));
 		}
@@ -1781,7 +1793,7 @@ int CChar::Skill_Mining( SKTRIG_TYPE stage )
 
 	if ( stage == SKTRIG_START )
 	{
-		m_atResource.m_Stroke_Count = Calc_GetRandVal(5) + 2;
+		m_atResource.m_Stroke_Count = static_cast<WORD>(Calc_GetRandVal(5) + 2);
 		return Skill_NaturalResource_Setup(pResBit);
 	}
 
@@ -1970,7 +1982,7 @@ int CChar::Skill_Lumberjack( SKTRIG_TYPE stage )
 
 	if ( stage == SKTRIG_START )
 	{
-		m_atResource.m_Stroke_Count = Calc_GetRandVal(5) + 2;
+		m_atResource.m_Stroke_Count = static_cast<WORD>(Calc_GetRandVal(5) + 2);
 		return Skill_NaturalResource_Setup(pResBit);
 	}
 
@@ -2941,7 +2953,7 @@ int CChar::Skill_Healing( SKTRIG_TYPE stage )
 	}
 
 	// LAYER_FLAG_Bandage
-	pChar->UpdateStatVal( STAT_STR, pSkillDef->m_Effect.GetLinear(iSkillLevel));
+	pChar->UpdateStatVal( STAT_STR, static_cast<short>(pSkillDef->m_Effect.GetLinear(iSkillLevel)) );
 	return 0;
 }
 
@@ -3344,7 +3356,7 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 
 	if ( stage == SKTRIG_START )
 	{
-		UpdateStatVal( STAT_DEX, -( 4 + Calc_GetRandVal(6)));
+		UpdateStatVal( STAT_DEX, -static_cast<short>( 4 + Calc_GetRandVal(6) ) );
 		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOANIM ) )
 			UpdateAnimate( ANIM_MON_Stomp );
 
@@ -3987,6 +3999,9 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 		m_Act_SkillCurrent = skill;
 		return true;
 	}
+
+	if ( !Skill_CanUse(skill) )
+		return false;
 
 	if ( Skill_GetActive() != SKILL_NONE )
 		Skill_Fail(true);		// fail previous skill unfinished. (with NO skill gain!)

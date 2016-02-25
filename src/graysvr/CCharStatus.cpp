@@ -622,12 +622,18 @@ CItem *CChar::GetSpellbook(SPELL_TYPE iSpell) const	// Retrieves a spellbook fro
 {
 	ADDTOCALLSTACK("CChar::GetSpellbook");
 	// Search for suitable book in hands first
+	CItem *pReturn = NULL;
 	for ( CItem *pBook = GetContentHead(); pBook != NULL; pBook = pBook->GetNext() )
 	{
 		if ( !pBook->IsTypeSpellbook() )
 			continue;
 		if ( (iSpell > pBook->m_itSpellbook.m_baseid) && (iSpell - (pBook->m_itSpellbook.m_baseid + 1) < 96) )
-			return pBook;
+		{
+			if ( pBook->IsSpellInBook(iSpell) )	//We found a book with this same spell, nothing more to do.
+				return pBook;	
+			else
+				pReturn = pBook;	// We did not find the spell, but this book is of the same school ... we'll return this book if none better is found (NOTE: some book must be returned or the code will think that we don't have a book).
+		}
 	}
 
 	// Then search in the top level of the pack
@@ -639,10 +645,15 @@ CItem *CChar::GetSpellbook(SPELL_TYPE iSpell) const	// Retrieves a spellbook fro
 			if ( !pBook->IsTypeSpellbook() )
 				continue;
 			if ( (iSpell > pBook->m_itSpellbook.m_baseid) && (iSpell - (pBook->m_itSpellbook.m_baseid + 1) < 96) )
-				return pBook;
+			{
+				if ( pBook->IsSpellInBook(iSpell) )	//We found a book with this same spell, nothing more to do.
+					return pBook;	
+				else
+					pReturn = pBook;	// We did not find the spell, but this book is of the same school ... we'll return this book if none better is found (NOTE: some book must be returned or the code will think that we don't have a book).
+			}
 		}
 	}
-	return NULL;
+	return pReturn;
 }
 
 int CChar::GetSpellbookExtra(CItem *pBooks[], int &count) const	// Retrieves a spellbook from the magic school given in iSpell

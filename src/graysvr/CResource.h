@@ -617,7 +617,8 @@ enum SKF_TYPE
 	SKF_NOANIM			= 0x0080,		// prevents hardcoded animation from playing
 	SKF_NOSFX			= 0x0100,		// prevents hardcoded sound from playing
 	SKF_RANGED			= 0x0200,		// Considered a ranged skill (combine with SKF_FIGHT)
-	SKF_GATHER			= 0x0400		// Considered a gathering skill, using SkillStrokes as SKF_CRAFT
+	SKF_GATHER			= 0x0400,		// Considered a gathering skill, using SkillStrokes as SKF_CRAFT
+	SKF_DISABLED		= 0x0800		// Disabled skill, can't be used.
 };
 
 struct CSkillDef : public CResourceLink // For skill def table
@@ -824,6 +825,7 @@ public:
 	int  m_iCombatFlags;		// combat flags
 	int  m_iMagicFlags;			// magic flags
 	int  m_iRacialFlags;		// racial traits flags
+	unsigned char m_iSkillFlags;// Skill flags (expansion checks, etc)
 	int  m_iRevealFlags;		///* reveal flags used for SPELL_REVEAL (mostly for backwards).
 
 	// Criminal/Karma

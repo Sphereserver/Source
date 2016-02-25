@@ -1699,23 +1699,15 @@ int CCharNPC::Spells_GetCount()
 	return m_spells.size();
 
 	// This code was meant to check if found spells does really exist
-	unsigned int count = 0;
-	int real = 0;
-	for (;;)
+	int total = 0;
+	for (unsigned int count = 0; count < m_spells.size() ; count++)
 	{
-		if (count >= m_spells.size())
-			break;
 		Spells refSpell = m_spells.at(count);
 		if (!refSpell.id)
-		{
-			count++;
 			continue;
-		}
-		g_Log.EventDebug("Found spell %d at loop %d (%d)\n",refSpell.id,count,real);
-		count++;
-		real++;
+		total++;
 	}
-	return count;
+	return total;
 }
 
 // Retrieve the spell stored at index = n
@@ -1950,9 +1942,10 @@ bool CChar::NPC_FightCast(CObjBase * &pTarg, CObjBase * pSrc, SPELL_TYPE &spell,
 			iSkillTest = SKILL_MAGERY;
 		skill = static_cast<SKILL_TYPE>(iSkillTest);
 	}
-	if (pSpellDef->IsSpellType(SPELLFLAG_DISABLED | SPELLFLAG_PLAYERONLY))
+	if (!Spell_CanCast(spell, true, pSrc, false))
 		return false;
-	//g_Log.EventDebug("FightCast spell check = %d\n",spell);
+	if (pSpellDef->IsSpellType(SPELLFLAG_PLAYERONLY))
+		return false;
 
 	if (!pSpellDef->IsSpellType(SPELLFLAG_HARM))
 	{
@@ -1966,23 +1959,11 @@ bool CChar::NPC_FightCast(CObjBase * &pTarg, CObjBase * pSrc, SPELL_TYPE &spell,
 				int		iFriendIndex = 0;
 				CChar	*pTarget = pTarg->GetUID().CharFind();
 
-				//	since i scan the surface near me for this code, i need to be sure that it is neccessary
-				/*if ((spell != SPELL_Heal)	//Since only SpellFlag_Good can pass to here, and they are supossed to be good, why to deny npcs casting them?
-					&& (spell != SPELL_Great_Heal)
-					&& (spell != SPELL_Reactive_Armor)
-					&& (spell != SPELL_Cure)
-					&& (spell != SPELL_Protection)
-					&& (spell != SPELL_Bless)
-					&& (spell != SPELL_Magic_Reflect)
-					&& (spell != SPELL_Gift_of_Renewal)
-					&& (spell != SPELL_Cleansing_Winds)
-					) continue;*/
-
 				pFriend[0] = this;
 				pFriend[1] = pFriend[2] = pFriend[3] = NULL;
 				iFriendIndex = 1;
 
-				if (NPC_GetAiFlags()&NPC_AI_COMBAT )
+				if (NPC_GetAiFlags()&NPC_AI_COMBAT)
 				{
 					//	search for the neariest friend in combat
 					CWorldSearch AreaChars(GetTopPoint(), UO_MAP_VIEW_SIGHT);
@@ -2012,53 +1993,67 @@ bool CChar::NPC_FightCast(CObjBase * &pTarg, CObjBase * pSrc, SPELL_TYPE &spell,
 				for (iFriendIndex = 0; iFriendIndex < 4; iFriendIndex++)
 				{
 					pTarget = pFriend[iFriendIndex];
-					if (!pTarget) break;
+					if (!pTarget) 
+						break;
 					//	check if the target need that
 					switch (spell)
 					{
+						// Healing has the top priority?
 						case SPELL_Heal:
 						case SPELL_Great_Heal:
-							if (pTarget->Stat_GetVal(STAT_STR) < pTarget->Stat_GetAdjusted(STAT_STR) / 3) bSpellSuits = true;
+							if (pTarget->Stat_GetVal(STAT_STR) < pTarget->Stat_GetAdjusted(STAT_STR) / 3)
+								bSpellSuits = true;
 							break;
 						case SPELL_Gift_of_Renewal:
-							if (pTarget->Stat_GetVal(STAT_STR) < pTarget->Stat_GetAdjusted(STAT_STR) / 2) bSpellSuits = true;
+							if (pTarget->Stat_GetVal(STAT_STR) < pTarget->Stat_GetAdjusted(STAT_STR) / 2)
+								bSpellSuits = true;
 							break;
-						/*case SPELL_Reactive_Armor:
-							if (pTarget->LayerFind(LAYER_SPELL_Reactive) == NULL) bSpellSuits = true;
-							break;
+						// Then curing poison.
 						case SPELL_Cure:
-							if (pTarget->LayerFind(LAYER_FLAG_Poison) != NULL) bSpellSuits = true;
+							if (pTarget->LayerFind(LAYER_FLAG_Poison)) bSpellSuits = true;
+							break;
+
+						// Buffs are coming now.
+							
+						case SPELL_Reactive_Armor:	// Deffensive ones first
+							if (!pTarget->LayerFind(LAYER_SPELL_Reactive))
+								bSpellSuits = true;
 							break;
 						case SPELL_Protection:
-							if (pTarget->LayerFind(LAYER_SPELL_Protection) == NULL) bSpellSuits = true;
-							break;
-						case SPELL_Bless:
-							if (pTarget->LayerFind(LAYER_SPELL_STATS) == NULL) bSpellSuits = true;
+							if (!pTarget->LayerFind(LAYER_SPELL_Protection))
+								bSpellSuits = true;
 							break;
 						case SPELL_Magic_Reflect:
-							if (pTarget->LayerFind(LAYER_SPELL_Magic_Reflect) == NULL) bSpellSuits = true;
-							break;*/
+							if (!pTarget->LayerFind(LAYER_SPELL_Magic_Reflect))
+								bSpellSuits = true;
+							break;
+
+						case SPELL_Bless:		// time for the others ...
+							if (!pTarget->LayerFind(LAYER_SPELL_STATS))
+								bSpellSuits = true;
+							break;
 						default:
 							break;
 					}
-					if (bSpellSuits) break;
+					if (bSpellSuits)
+						break;
 
 					LAYER_TYPE layer = pSpellDef->m_idLayer;
-					if (layer != LAYER_NONE)
+					if (layer != LAYER_NONE)	// If the spell applies an effect.
 					{
-						if (pTarget->LayerFind(layer))
+						if (!pTarget->LayerFind(layer))	// and target doesn't have this effect already...
 						{
-							bSpellSuits = true;
+							bSpellSuits = true;	//then it may need it
 							break;
 						}
 					}
 
 				}
-				if (bSpellSuits && Spell_CanCast(spell, true, pSrc, false))
+				if (bSpellSuits)
 				{
 					pTarg = pTarget;
 					m_atMagery.m_Spell = spell;
-					goto TestCast;
+					return true;
 				}
 				return false;
 			}
@@ -2097,37 +2092,17 @@ bool CChar::NPC_FightCast(CObjBase * &pTarg, CObjBase * pSrc, SPELL_TYPE &spell,
 						break;
 				}
 
-				if (!bSpellSuits) return false;
-				if (bSpellSuits && Spell_CanCast(spell, true, pSrc, false))
-				{
-					pTarg = this;
-					m_atMagery.m_Spell = spell;
-					goto TestCast;
-				}
+				if (!bSpellSuits) 
+					return false;
+				pTarg = this;
+				m_atMagery.m_Spell = spell;
+				return true;
 			}
 		}
 		else if (pSpellDef->IsSpellType(SPELLFLAG_SUMMON))
 		{
-			goto TestCast;	// if flag is present ... we leave the rest at the incoming code
-
-			//	spell is good, but does not harm. the target should obey me. hoping sphere can do this ;)
-			/*switch (spell)	// Maybe we should allow every summon by default excepting SPELLFLAG_PLAYER_ONLY ? in this case this point wouldn't be reached.
-			{
-			case SPELL_Air_Elem:
-			case SPELL_Daemon:
-			case SPELL_Earth_Elem:
-			case SPELL_Fire_Elem:
-			case SPELL_Water_Elem:
-			case SPELL_Summon_Familiar:
-			case SPELL_Summon_Fey:
-			case SPELL_Summon_Fiend:
-			case SPELL_Animated_Weapon:
-			case SPELL_Rising_Collossus:
-			case SPELL_Summon_Undead:
-				goto TestCast;
-			default:
-				return false;
-			}*/
+			m_atMagery.m_Spell = spell;
+			return true;	// if flag is present ... we leave the rest to the incoming code
 		}
 	}
 	else
@@ -2145,13 +2120,7 @@ bool CChar::NPC_FightCast(CObjBase * &pTarg, CObjBase * pSrc, SPELL_TYPE &spell,
 		if (pSpellDef->IsSpellType(SPELLFLAG_FIELD) && Calc_GetRandVal(4))
 			return false;*/
 	}
-
-	TestCast:
-	if (!Spell_CanCast(spell, true, pSrc, false))
-		return false;
-	//g_Log.EventDebug("FightCast spell end check = %d\n", spell);
 	m_atMagery.m_Spell = spell;
-
 	return true;
 }
 

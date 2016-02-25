@@ -2985,18 +2985,20 @@ bool PacketSpellSelect::onReceive(NetState* net)
 	if (!spell)
 		 return false;
 
+	const CSpellDef* spellDef = g_Cfg.GetSpellDef(spell);
+	if (spellDef == NULL)
+		return true;
+
+	int skill;
+	if (spellDef->GetPrimarySkill(&skill, NULL) == false)
+		return true;
+	if ( !character->Skill_CanUse(static_cast<SKILL_TYPE>(skill)) )
+		return true;
+
 	if (IsSetMagicFlags(MAGICF_PRECAST))
 	{
-		const CSpellDef* spellDef = g_Cfg.GetSpellDef(spell);
-		if (spellDef == NULL)
-			return true;
-
 		if (spellDef->IsSpellType(SPELLFLAG_NOPRECAST) == false)
 		{
-			int skill;
-			if (spellDef->GetPrimarySkill(&skill, NULL) == false)
-				return true;
-
 			client->m_tmSkillMagery.m_Spell = spell;
 			character->m_atMagery.m_Spell = spell;
 			client->m_Targ_UID = character->GetUID();

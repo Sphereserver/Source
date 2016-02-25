@@ -558,6 +558,9 @@ void CClient::Event_Skill_Use( SKILL_TYPE skill ) // Skill is clicked on the ski
 		return;
 	}
 
+	if ( !m_pChar->Skill_CanUse(skill) )
+		return;
+
 	if ( m_pChar->Skill_Wait(skill) )
 		return;
 

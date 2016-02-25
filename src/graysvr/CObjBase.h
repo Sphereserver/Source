@@ -3682,6 +3682,15 @@ public:
 	unsigned short Skill_GetAdjusted(SKILL_TYPE skill) const;
 	SKILL_TYPE Skill_GetMagicRandom(unsigned short iMinValue = 0);
 	SKILL_TYPE Skill_GetMagicBest();
+
+	/**
+	* @brief Checks if the given skill can be used.
+	*
+	* @param skill: Skill to check
+	* @return if it can be used, or not....
+	*/
+	bool Skill_CanUse( SKILL_TYPE skill );
+
 	void Skill_SetBase( SKILL_TYPE skill, int iValue );
 	bool Skill_UseQuick( SKILL_TYPE skill, INT64 difficulty, bool bAllowGain = true, bool bUseBellCurve = true );
 

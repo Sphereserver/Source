@@ -2022,8 +2022,17 @@ bool CChar::Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool 
 	if ( pSpellDef->IsSpellType( SPELLFLAG_DISABLED ))
 		return( false );
 
+	int skill = SKILL_NONE;
+	int iSkillTest = 0;
+	if (!pSpellDef->GetPrimarySkill(&iSkillTest, NULL))
+		iSkillTest = SKILL_MAGERY;
+	skill = static_cast<SKILL_TYPE>(iSkillTest);
+
+	if ( !Skill_CanUse(static_cast<SKILL_TYPE>(skill)) )
+		return false;
+
 	int wManaUse = pSpellDef->m_wManaUse * (100 - minimum(static_cast<int>(GetDefNum("LOWERMANACOST", true, true)), 40)) / 100;
-	int wTithingUse = pSpellDef->m_wTithingUse * (100 - minimum(static_cast<int>(GetDefNum("LOWERREAGENTCOST", true, true)), 40)) / 100;;
+	int wTithingUse = pSpellDef->m_wTithingUse * (100 - minimum(static_cast<int>(GetDefNum("LOWERREAGENTCOST", true, true)), 40)) / 100;
 
 	if (pSrc != this)
 	{
@@ -2498,9 +2507,7 @@ bool CChar::Spell_CastDone()
 				Spell_Area(m_Act_p, areaRadius, iSkillLevel);
 		}
 		else if (pSpellDef->IsSpellType(SPELLFLAG_POLY))
-		{
 			return(false);
-		}
 		else
 		{
 			if (pObj)
@@ -3047,16 +3054,58 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		iSound = sm_DrinkSounds[Calc_GetRandVal(COUNTOF(sm_DrinkSounds))];
 	}
 
+	iSkillLevel = iSkillLevel/2 + Calc_GetRandVal(iSkillLevel/2);	// randomize the effect.
+
 	int iEffectMult = 1000;
+	int iResist = Skill_GetBase(SKILL_MAGICRESISTANCE);
+	int iFirst = iResist / 50;
+	int iSecond = iResist - (((pCharSrc->Skill_GetBase(SKILL_MAGERY) - 200) / 50) + (1 + (spell / 8)) * 50);
+	unsigned char iResistChance = maximum(iFirst, iSecond) / 30;
+	iResist = ( pSpellDef->IsSpellType(SPELLFLAG_RESIST) && Skill_UseQuick( SKILL_MAGICRESISTANCE, iResistChance, true, false ) ) ? 25 : 0; // If we successfully resist then we have a 25% damage reduction, 0 if we don't.
+	DAMAGE_TYPE iD1 = 0;
+	int iDmg = GetSpellEffect(spell, iSkillLevel, iEffectMult);
+	int iDmgPhysical = 0, iDmgFire = 0, iDmgCold = 0, iDmgPoison = 0, iDmgEnergy = 0;
+
+	if ( pSpellDef->IsSpellType(SPELLFLAG_DAMAGE) )
+	{
+		if ( IsSetMagicFlags(MAGICF_OSIFORMULAS) )
+		{
+			if (pCharSrc == NULL)
+				iDmg *= ((iSkillLevel * 3) / 1000) + 1;
+			else
+			{
+				// Evaluating Intelligence mult
+				iDmg *= ((pCharSrc->Skill_GetBase(SKILL_EVALINT) * 3) / 1000) + 1;
+
+				// Spell Damage Increase bonus
+				int DamageBonus = static_cast<int>(pCharSrc->GetDefNum("INCREASESPELLDAM",true));
+				if ( m_pPlayer && pCharSrc->m_pPlayer && DamageBonus > 15 )		// Spell Damage Increase is capped at 15% on PvP
+					DamageBonus = 15;
+
+				// INT bonus
+				DamageBonus += pCharSrc->Stat_GetAdjusted(STAT_INT) / 10;
+
+				// Inscription bonus
+				DamageBonus += pCharSrc->Skill_GetBase(SKILL_INSCRIPTION) / 100;
+
+				// Racial Bonus (Berserk), gargoyles gains +3% Spell Damage Increase per each 20 HP lost
+				if ( (g_Cfg.m_iRacialFlags & RACIALF_GARG_BERSERK) && IsGargoyle() )
+					DamageBonus += minimum(3 * ((Stat_GetMax(STAT_STR) - Stat_GetVal(STAT_STR)) / 20), 12);		// value is capped at 12%
+
+				iDmg += iDmg * DamageBonus / 100;
+			}
+		}
+	}
 	CScriptTriggerArgs Args(static_cast<int>(spell), iSkillLevel, pSourceItem);
 	Args.m_VarsLocal.SetNum("DamageType", 0);
 	Args.m_VarsLocal.SetNum("CreateObject1", pSpellDef->m_idEffect);
 	Args.m_VarsLocal.SetNum("Explode", fExplode);
 	Args.m_VarsLocal.SetNum("Sound", iSound);
+	Args.m_VarsLocal.SetNum("Dam",iDmg);
+	Args.m_VarsLocal.SetNum("Resist",iResist);
 	Args.m_iN3 = iEffectMult;
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
-	DAMAGE_TYPE iD1 = 0;
 	if ( IsTrigUsed(TRIGGER_SPELLEFFECT) )
 	{
 		iRet = OnTrigger( CTRIG_SpellEffect, pCharSrc ? pCharSrc : this, &Args );
@@ -3078,6 +3127,8 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		iSkillLevel = static_cast<int>(Args.m_iN2);
 		iEffectMult = static_cast<int>(Args.m_iN3);
 		iD1 = static_cast<DAMAGE_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("DamageType", true)));
+		iDmg = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Dam",true));
+		iResist = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Resist",true));
 
 		switch ( iRet )
 		{
@@ -3138,11 +3189,9 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		}
 	}
 
-	// Check if the spell can be resisted
-	bool fResisted = false;
+// Check if the spell is being resisted.
 	if ( pSpellDef->IsSpellType(SPELLFLAG_RESIST) && pCharSrc && !fPotion )
 	{
-		int iResist = Skill_GetBase(SKILL_MAGICRESISTANCE);
 		if (IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
 		{
 			CItem * pEvilOmen = LayerFind(LAYER_SPELL_Evil_Omen);
@@ -3151,14 +3200,6 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				iResist /= 2;	// Effect 3: Only 50% of magic resistance used in next resistable spell.
 				pEvilOmen->Delete();
 			}
-		}
-		int iFirst = iResist / 50;
-		int iSecond = iResist - (((pCharSrc->Skill_GetBase(SKILL_MAGERY) - 200) / 50) + (1 + (spell / 8)) * 50);
-		int iResistChance = maximum(iFirst, iSecond) / 30;
-		if ( Skill_UseQuick( SKILL_MAGICRESISTANCE, iResistChance, true, false ))
-		{
-			SysMessageDefault( DEFMSG_RESISTMAGIC );
-			fResisted = true;
 		}
 	}
 
@@ -3172,45 +3213,18 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	if (iSound)
 		Sound(iSound);
 
-	iSkillLevel = iSkillLevel/2 + Calc_GetRandVal(iSkillLevel/2);	// randomize the effect.
-
-	if ( pSpellDef->IsSpellType(SPELLFLAG_DAMAGE) )
+	if ( pSpellDef->IsSpellType( SPELLFLAG_DAMAGE ) )
 	{
-		int iDmg = GetSpellEffect(spell, iSkillLevel, iEffectMult);
-		if ( IsSetMagicFlags(MAGICF_OSIFORMULAS) )
+		if ( iResist > 0 )
 		{
-			if (pCharSrc == NULL)
-				iDmg *= ((iSkillLevel * 3) / 1000) + 1;
-			else
-			{
-				// Evaluating Intelligence mult
-				iDmg *= ((pCharSrc->Skill_GetBase(SKILL_EVALINT) * 3) / 1000) + 1;
-
-				// Spell Damage Increase bonus
-				int DamageBonus = static_cast<int>(pCharSrc->GetDefNum("INCREASESPELLDAM",true));
-				if ( m_pPlayer && pCharSrc->m_pPlayer && DamageBonus > 15 )		// Spell Damage Increase is capped at 15% on PvP
-					DamageBonus = 15;
-
-				// INT bonus
-				DamageBonus += pCharSrc->Stat_GetAdjusted(STAT_INT) / 10;
-
-				// Inscription bonus
-				DamageBonus += pCharSrc->Skill_GetBase(SKILL_INSCRIPTION) / 100;
-
-				// Racial Bonus (Berserk), gargoyles gains +3% Spell Damage Increase per each 20 HP lost
-				if ( (g_Cfg.m_iRacialFlags & RACIALF_GARG_BERSERK) && IsGargoyle() )
-					DamageBonus += minimum(3 * ((Stat_GetMax(STAT_STR) - Stat_GetVal(STAT_STR)) / 20), 12);		// value is capped at 12%
-
-				iDmg += iDmg * DamageBonus / 100;
-			}
+			SysMessageDefault( DEFMSG_RESISTMAGIC );
+			iDmg -= iDmg * iResist / 100;
+			if ( iDmg < 0 )
+				iDmg = 0;	//May not do damage, but aversion should be created from the target.
 		}
-
-		if ( fResisted )
-			iDmg = iDmg * 75 / 100;
-
 		if ( !iD1 )
 		{
-			switch (spell)
+			switch ( spell )
 			{
 				case SPELL_Magic_Arrow:
 				case SPELL_Fireball:
@@ -3240,7 +3254,6 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		}
 
 		// AOS damage types (used by COMBAT_ELEMENTAL_ENGINE)
-		int iDmgPhysical = 0, iDmgFire = 0, iDmgCold = 0, iDmgPoison = 0, iDmgEnergy = 0;
 		if ( iD1 & DAMAGE_FIRE )
 			iDmgFire = 100;
 		else if ( iD1 & DAMAGE_COLD )
@@ -3251,9 +3264,11 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			iDmgEnergy = 100;
 		else
 			iDmgPhysical = 100;
-
-		OnTakeDamage(iDmg, pCharSrc, iD1, iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy);
 	}
+
+	
+
+	OnTakeDamage(iDmg, pCharSrc, iD1, iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy);
 
 	switch ( spell )
 	{

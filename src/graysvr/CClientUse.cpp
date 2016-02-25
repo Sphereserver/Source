@@ -273,7 +273,7 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 		case IT_SPAWN_ITEM:
 		case IT_SPAWN_CHAR:
 		{
-			CItemSpawn *pSpawn = static_cast<CItemSpawn *>(pItem);
+			pSpawn = static_cast<CItemSpawn *>(pItem);
 			if ( !pSpawn )
 				return false;
 
