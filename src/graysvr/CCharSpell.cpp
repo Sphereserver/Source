@@ -3056,15 +3056,28 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 	iSkillLevel = iSkillLevel/2 + Calc_GetRandVal(iSkillLevel/2);	// randomize the effect.
 
-	int iEffectMult = 1000;
-	int iResist = Skill_GetBase(SKILL_MAGICRESISTANCE);
-	int iFirst = iResist / 50;
-	int iSecond = iResist - (((pCharSrc->Skill_GetBase(SKILL_MAGERY) - 200) / 50) + (1 + (spell / 8)) * 50);
-	unsigned char iResistChance = static_cast<unsigned char>(maximum(iFirst, iSecond) / 30);
-	iResist = ( pSpellDef->IsSpellType(SPELLFLAG_RESIST) && Skill_UseQuick( SKILL_MAGICRESISTANCE, iResistChance, true, false ) ) ? 25 : 0; // If we successfully resist then we have a 25% damage reduction, 0 if we don't.
 	DAMAGE_TYPE iD1 = 0;
+	int iEffectMult = 1000;
 	int iDmg = GetSpellEffect(spell, iSkillLevel, iEffectMult);
 	int iDmgPhysical = 0, iDmgFire = 0, iDmgCold = 0, iDmgPoison = 0, iDmgEnergy = 0;
+
+	// Check if the spell is being resisted
+	unsigned short iResist = 0;
+	if ( pSpellDef->IsSpellType(SPELLFLAG_RESIST) && pCharSrc && !fPotion )
+	{
+		iResist = Skill_GetBase(SKILL_MAGICRESISTANCE);
+		unsigned short iFirst = iResist / 50;
+		unsigned short iSecond = iResist - (((pCharSrc->Skill_GetBase(SKILL_MAGERY) - 200) / 50) + (1 + (spell / 8)) * 50);
+		unsigned char iResistChance = maximum(iFirst, iSecond) / 30;
+		iResist = Skill_UseQuick(SKILL_MAGICRESISTANCE, iResistChance, true, false) ? 25 : 0;	// If we successfully resist then we have a 25% damage reduction, 0 if we don't.
+
+		if ( IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) )
+		{
+			CItem *pEvilOmen = LayerFind(LAYER_SPELL_Evil_Omen);
+			if ( pEvilOmen )
+				iResist /= 2;	// Effect 3: Only 50% of magic resistance used in next resistable spell.
+		}
+	}
 
 	if ( pSpellDef->IsSpellType(SPELLFLAG_DAMAGE) )
 	{
@@ -3101,8 +3114,8 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	Args.m_VarsLocal.SetNum("CreateObject1", pSpellDef->m_idEffect);
 	Args.m_VarsLocal.SetNum("Explode", fExplode);
 	Args.m_VarsLocal.SetNum("Sound", iSound);
-	Args.m_VarsLocal.SetNum("Dam",iDmg);
-	Args.m_VarsLocal.SetNum("Resist",iResist);
+	Args.m_VarsLocal.SetNum("Dam", iDmg);
+	Args.m_VarsLocal.SetNum("Resist", iResist);
 	Args.m_iN3 = iEffectMult;
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
@@ -3128,7 +3141,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		iEffectMult = static_cast<int>(Args.m_iN3);
 		iD1 = static_cast<DAMAGE_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("DamageType", true)));
 		iDmg = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Dam",true));
-		iResist = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Resist",true));
+		iResist = static_cast<unsigned short>(Args.m_VarsLocal.GetKeyNum("Resist",true));
 
 		switch ( iRet )
 		{
@@ -3185,20 +3198,6 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 					pCharSrc->OnSpellEffect( spell, NULL, iSkillLevel, pSourceItem );	// source can't be pCharSrc because it won't make effect if MAGICF_CANHARMSELF is disabled
 					return true;
 				}
-			}
-		}
-	}
-
-// Check if the spell is being resisted.
-	if ( pSpellDef->IsSpellType(SPELLFLAG_RESIST) && pCharSrc && !fPotion )
-	{
-		if (IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
-		{
-			CItem * pEvilOmen = LayerFind(LAYER_SPELL_Evil_Omen);
-			if (pEvilOmen)
-			{
-				iResist /= 2;	// Effect 3: Only 50% of magic resistance used in next resistable spell.
-				pEvilOmen->Delete();
 			}
 		}
 	}
