@@ -469,12 +469,14 @@ void  CItemSpawn::r_Write(CScript & s)
 	EXC_TRY("Write");
 	CItem::r_Write(s);
 
-	s.WriteKeyVal("AMOUNT", GetAmount());
+	if ( GetAmount() != 1 )
+		s.WriteKeyVal("AMOUNT", GetAmount());
+
 	WORD iTotal = GetCount();
 	if ( iTotal <= 0 )
 		return;
 
-	for (BYTE i = 0; i < iTotal; i++ )
+	for ( BYTE i = 0; i < iTotal; i++ )
 	{
 		if ( !m_obj[i].IsValidUID() )
 			continue;
