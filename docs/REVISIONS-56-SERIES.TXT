@@ -2926,7 +2926,7 @@ WARNING: Following changes won't affect current scripts, but adapting them will 
 CHANGED: Moved formulas for SpellEffect's damage above @SpellEffect trigger, so these formulas will be calculated regardless of the returns of the trigger,
 			this will allow working with precise numbers instead of wondering what ARGN1 may be and creating own formulas to handle it.
 	Also added for this trigger:
-		-local.effect: The final spell effect (damage, status changed, etc).
+		-local.dam with final damage received (if any).
 		-local.resist: Damage reduction to apply, it's set to 25 automatically when the spell is going to be resisted, then sysmessage <DEFMSG.RESISTMAGIC> will be shown. Setting it to 0 will result in no resist and no sysmessage. You can force or totally remove resists here.
 NOTE: Since formulas will be calculated yes or yes from now, checks about spell's affecting this char or not should be moved to @SpellSuccess ( they should've been there from an start, but we all placed them in @SpellEffect :P) so @Effect won't even be called.
 Fixed some spells not being correctly found in case of having multiple books since the code for GetSpellbook() returned the first found book, and this may not have the requested spell.
@@ -2940,6 +2940,7 @@ Fixed: Spawn items sometimes created with random COUNT property.
 28-02-2015, Coruja
 Fixed: Buff spells acting like damage spells.
 Changed: Some changes on spell triggers (@Effect [spells] / @SpellEffect [chars]) to allow more user customization
-	-Added new LOCAL.Effect and LOCAL.Duration (read/write) to change spell effect (damage, stats changed, etc) and duration
+	-Renamed LOCAL.Dam to LOCAL.Effect, now it can be used on all spells (damage, buff, etc) instead only on damage spells
+	-Added new LOCAL.Duration to change spell duration
 	-ARGN2 [skill level] is now read-only
 	-ARGN3 [effect multiplicator] got removed, it's no longer needed since now the spell effect value/duration can be changed using LOCAL.Effect/LOCAL.Duration

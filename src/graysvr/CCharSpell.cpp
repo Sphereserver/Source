@@ -3115,7 +3115,6 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	Args.m_VarsLocal.SetNum("Effect", iEffect);
 	Args.m_VarsLocal.SetNum("Resist", iResist);
 	Args.m_VarsLocal.SetNum("Duration", iDuration);
-	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
 	if ( IsTrigUsed(TRIGGER_SPELLEFFECT) )
 	{
