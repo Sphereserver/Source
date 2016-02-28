@@ -2119,6 +2119,7 @@ int PacketVendorBuyList::fillContainer(const CItemContainer* container, int conv
 
 		writeByte(static_cast<BYTE>(len));
 		writeStringFixedASCII(name, len);
+		count++;
 	}
 
 	// seek back to write count
