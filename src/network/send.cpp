@@ -2080,17 +2080,15 @@ int PacketVendorBuyList::fillContainer(const CItemContainer* container, int conv
 
 	writeInt32(container->GetUID());
 
+	size_t count = 0;
 	size_t countpos = getPosition();
 	skip(1);
-	size_t count(0);
 
-	CItem* item;
-	if (bClientSA)
-		item = container->GetContentHead();
-	else
-		item = container->GetContentTail();
+	// TO-DO: Probably there's something wrong here, since sphere draw containers items
+	// using last->first order by default, but this packet is using first->last order on
+	// enhanced clients. Maybe both should use the same first->last order?
 
-	while (item != NULL && count < maxItems)
+	for (CItem* item = bClientSA ? container->GetContentHead() : container->GetContentTail(); item != NULL && count < maxItems; item = bClientSA ? item->GetNext() : item->GetPrev())
 	{
 		if (item->GetAmount() == 0)
 			continue;
@@ -2121,12 +2119,6 @@ int PacketVendorBuyList::fillContainer(const CItemContainer* container, int conv
 
 		writeByte(static_cast<BYTE>(len));
 		writeStringFixedASCII(name, len);
-
-		if (bClientSA)
-			item = item->GetNext();
-		else
-			item = item->GetPrev();
-		count++;
 	}
 
 	// seek back to write count
