@@ -1876,7 +1876,7 @@ void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, u
 	int maxY = minY+(fieldGauge - 1);
 
 	if (iDuration <= 0)
-		iDuration = GetSpellDuration( m_atMagery.m_Spell, iSkillLevel, 1000, pCharSrc );
+		iDuration = GetSpellDuration( m_atMagery.m_Spell, iSkillLevel, pCharSrc );
 
 	if ( IsSetMagicFlags( MAGICF_NOFIELDSOVERWALLS ) )
 	{
@@ -2419,7 +2419,7 @@ bool CChar::Spell_CastDone()
 	Args.m_VarsLocal.SetNum("fieldWidth", 0);
 	Args.m_VarsLocal.SetNum("fieldGauge", 0);
 	Args.m_VarsLocal.SetNum("areaRadius", 0);
-	Args.m_VarsLocal.SetNum("duration", GetSpellDuration(spell, iSkillLevel, 1000, this), true);
+	Args.m_VarsLocal.SetNum("duration", GetSpellDuration(spell, iSkillLevel, this), true);
 
 	if (bIsSpellField)
 	{
@@ -3045,9 +3045,11 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	if ( spell == SPELL_Poison_Field && IsStatFlag(STATF_Poisoned) )
 		return false;
 
+	int iEffect = g_Cfg.GetSpellEffect(spell, iSkillLevel);
+	int iDuration = pSpellDef->m_idLayer ? GetSpellDuration(spell, iSkillLevel, pCharSrc) : 0;
+	SOUND_TYPE iSound = pSpellDef->m_sound;
 	bool fExplode = (pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) && !pSpellDef->IsSpellType(SPELLFLAG_GOOD));		// bolt (chasing) spells have explode = 1 by default (if not good spell)
 	bool fPotion = (pSourceItem && pSourceItem->IsType(IT_POTION));
-	SOUND_TYPE iSound = pSpellDef->m_sound;
 	if ( fPotion )
 	{
 		static const SOUND_TYPE sm_DrinkSounds[] = { 0x030, 0x031 };
@@ -3055,11 +3057,6 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	}
 
 	iSkillLevel = iSkillLevel/2 + Calc_GetRandVal(iSkillLevel/2);	// randomize the effect.
-
-	DAMAGE_TYPE iD1 = 0;
-	int iEffectMult = 1000;
-	int iDmg = GetSpellEffect(spell, iSkillLevel, iEffectMult);
-	int iDmgPhysical = 0, iDmgFire = 0, iDmgCold = 0, iDmgPoison = 0, iDmgEnergy = 0;
 
 	// Check if the spell is being resisted
 	unsigned short iResist = 0;
@@ -3084,11 +3081,11 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		if ( IsSetMagicFlags(MAGICF_OSIFORMULAS) )
 		{
 			if (pCharSrc == NULL)
-				iDmg *= ((iSkillLevel * 3) / 1000) + 1;
+				iEffect *= ((iSkillLevel * 3) / 1000) + 1;
 			else
 			{
 				// Evaluating Intelligence mult
-				iDmg *= ((pCharSrc->Skill_GetBase(SKILL_EVALINT) * 3) / 1000) + 1;
+				iEffect *= ((pCharSrc->Skill_GetBase(SKILL_EVALINT) * 3) / 1000) + 1;
 
 				// Spell Damage Increase bonus
 				int DamageBonus = static_cast<int>(pCharSrc->GetDefNum("INCREASESPELLDAM",true));
@@ -3105,27 +3102,24 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				if ( (g_Cfg.m_iRacialFlags & RACIALF_GARG_BERSERK) && IsGargoyle() )
 					DamageBonus += minimum(3 * ((Stat_GetMax(STAT_STR) - Stat_GetVal(STAT_STR)) / 20), 12);		// value is capped at 12%
 
-				iDmg += iDmg * DamageBonus / 100;
+				iEffect += iEffect * DamageBonus / 100;
 			}
 		}
 	}
+
 	CScriptTriggerArgs Args(static_cast<int>(spell), iSkillLevel, pSourceItem);
 	Args.m_VarsLocal.SetNum("DamageType", 0);
 	Args.m_VarsLocal.SetNum("CreateObject1", pSpellDef->m_idEffect);
 	Args.m_VarsLocal.SetNum("Explode", fExplode);
 	Args.m_VarsLocal.SetNum("Sound", iSound);
-	Args.m_VarsLocal.SetNum("Dam", iDmg);
+	Args.m_VarsLocal.SetNum("Effect", iEffect);
 	Args.m_VarsLocal.SetNum("Resist", iResist);
-	Args.m_iN3 = iEffectMult;
+	Args.m_VarsLocal.SetNum("Duration", iDuration);
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
 	if ( IsTrigUsed(TRIGGER_SPELLEFFECT) )
 	{
-		iRet = OnTrigger( CTRIG_SpellEffect, pCharSrc ? pCharSrc : this, &Args );
-		spell = static_cast<SPELL_TYPE>(Args.m_iN1);
-		iD1 = static_cast<DAMAGE_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("DamageType", true)));
-
-		switch ( iRet )
+		switch ( OnTrigger(CTRIG_SpellEffect, pCharSrc ? pCharSrc : this, &Args) )
 		{
 			case TRIGRET_RET_TRUE:	return false;
 			case TRIGRET_RET_FALSE:	if ( pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
@@ -3135,29 +3129,29 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 	if ( IsTrigUsed(TRIGGER_EFFECT) )
 	{
-		iRet = Spell_OnTrigger( spell, SPTRIG_EFFECT, pCharSrc ? pCharSrc : this, &Args );
-		spell = static_cast<SPELL_TYPE>(Args.m_iN1);
-		iSkillLevel = static_cast<int>(Args.m_iN2);
-		iEffectMult = static_cast<int>(Args.m_iN3);
-		iD1 = static_cast<DAMAGE_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("DamageType", true)));
-		iDmg = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Dam",true));
-		iResist = static_cast<unsigned short>(Args.m_VarsLocal.GetKeyNum("Resist",true));
-
-		switch ( iRet )
+		switch ( Spell_OnTrigger(spell, SPTRIG_EFFECT, pCharSrc ? pCharSrc : this, &Args) )
 		{
 			case TRIGRET_RET_TRUE:	return false;
 			case TRIGRET_RET_FALSE:	if ( pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
 			default:				break;
 		}
 	}
+
+	spell = static_cast<SPELL_TYPE>(Args.m_iN1);
+	//iSkillLevel = static_cast<int>(Args.m_iN2);		//since effect/duration is now calculated before triggers, this iSkillLevel turned into a read-only value
+	DAMAGE_TYPE iDmgType = static_cast<DAMAGE_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("DamageType", true)));
+	ITEMID_TYPE iEffectID = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1", true)));
+	fExplode = Args.m_VarsLocal.GetKeyNum("EffectExplode", true) > 0 ? true : false;
+	iSound = static_cast<SOUND_TYPE>(Args.m_VarsLocal.GetKeyNum("Sound", true));
+	iEffect = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Effect", true));
+	iResist = static_cast<unsigned short>(Args.m_VarsLocal.GetKeyNum("Resist", true));
+	iDuration = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Duration", true));
+
 	HUE_TYPE iColor = static_cast<HUE_TYPE>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor", true)));
 	DWORD iRender = static_cast<DWORD>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectRender", true)));
-	fExplode = Args.m_VarsLocal.GetKeyNum("EffectExplode", true) > 0 ? true : false;
-	ITEMID_TYPE iT1 = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1", true)));
-	iSound = static_cast<SOUND_TYPE>(Args.m_VarsLocal.GetKeyNum("Sound", true));
 
-	if (iT1 > ITEMID_QTY)
-		iT1 = pSpellDef->m_idEffect;
+	if ( iEffectID > ITEMID_QTY )
+		iEffectID = pSpellDef->m_idEffect;
 
 	if ( pSpellDef->IsSpellType(SPELLFLAG_HARM) )
 	{
@@ -3205,11 +3199,11 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	if (pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED))
 		return true;
 
-	if (pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) && iT1)
-		Effect(EFFECT_BOLT, iT1, pCharSrc, 5, 1, fExplode, iColor, iRender);
-	if ( pSpellDef->IsSpellType(SPELLFLAG_FX_TARG) && iT1 )
-		Effect(EFFECT_OBJ, iT1, this, 0, 15, fExplode, iColor, iRender); // 9, 14
-	if (iSound)
+	if ( pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) && iEffectID )
+		Effect(EFFECT_BOLT, iEffectID, pCharSrc, 5, 1, fExplode, iColor, iRender);
+	if ( pSpellDef->IsSpellType(SPELLFLAG_FX_TARG) && iEffectID )
+		Effect(EFFECT_OBJ, iEffectID, this, 0, 15, fExplode, iColor, iRender); // 9, 14
+	if ( iSound )
 		Sound(iSound);
 
 	if ( pSpellDef->IsSpellType( SPELLFLAG_DAMAGE ) )
@@ -3217,11 +3211,11 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		if ( iResist > 0 )
 		{
 			SysMessageDefault( DEFMSG_RESISTMAGIC );
-			iDmg -= iDmg * iResist / 100;
-			if ( iDmg < 0 )
-				iDmg = 0;	//May not do damage, but aversion should be created from the target.
+			iEffect -= iEffect * iResist / 100;
+			if ( iEffect < 0 )
+				iEffect = 0;	//May not do damage, but aversion should be created from the target.
 		}
-		if ( !iD1 )
+		if ( !iDmgType )
 		{
 			switch ( spell )
 			{
@@ -3232,42 +3226,41 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				case SPELL_Flame_Strike:
 				case SPELL_Meteor_Swarm:
 				case SPELL_Fire_Bolt:
-					iD1 = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_NOREVEAL;
+					iDmgType = DAMAGE_MAGIC | DAMAGE_FIRE | DAMAGE_NOREVEAL;
 					break;
 
 				case SPELL_Harm:
 				case SPELL_Mind_Blast:
-					iD1 = DAMAGE_MAGIC | DAMAGE_COLD | DAMAGE_NOREVEAL;
+					iDmgType = DAMAGE_MAGIC | DAMAGE_COLD | DAMAGE_NOREVEAL;
 					break;
 
 				case SPELL_Lightning:
 				case SPELL_Energy_Bolt:
 				case SPELL_Chain_Lightning:
-					iD1 = DAMAGE_MAGIC | DAMAGE_ENERGY | DAMAGE_NOREVEAL;
+					iDmgType = DAMAGE_MAGIC | DAMAGE_ENERGY | DAMAGE_NOREVEAL;
 					break;
 
 				default:
-					iD1 = DAMAGE_MAGIC | DAMAGE_GENERAL | DAMAGE_NOREVEAL;
+					iDmgType = DAMAGE_MAGIC | DAMAGE_GENERAL | DAMAGE_NOREVEAL;
 					break;
 			}
 		}
 
 		// AOS damage types (used by COMBAT_ELEMENTAL_ENGINE)
-		if ( iD1 & DAMAGE_FIRE )
+		int iDmgPhysical = 0, iDmgFire = 0, iDmgCold = 0, iDmgPoison = 0, iDmgEnergy = 0;
+		if ( iDmgType & DAMAGE_FIRE )
 			iDmgFire = 100;
-		else if ( iD1 & DAMAGE_COLD )
+		else if ( iDmgType & DAMAGE_COLD )
 			iDmgCold = 100;
-		else if ( iD1 & DAMAGE_POISON )
+		else if ( iDmgType & DAMAGE_POISON )
 			iDmgPoison = 100;
-		else if ( iD1 & DAMAGE_ENERGY )
+		else if ( iDmgType & DAMAGE_ENERGY )
 			iDmgEnergy = 100;
 		else
 			iDmgPhysical = 100;
+
+		OnTakeDamage(iEffect, pCharSrc, iDmgType, iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy);
 	}
-
-	
-
-	OnTakeDamage(iDmg, pCharSrc, iD1, iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy);
 
 	switch ( spell )
 	{
@@ -3281,34 +3274,30 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		case SPELL_Bless:
 		case SPELL_Mana_Drain:
 		case SPELL_Mass_Curse:
-			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_STATS, iSkillLevel,
-					GetSpellDuration( spell, iSkillLevel, iEffectMult, pCharSrc ), pCharSrc );
+			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_STATS, iSkillLevel, iDuration, pCharSrc );
 			break;
 
 		case SPELL_Heal:
 		case SPELL_Great_Heal:
-			UpdateStatVal( STAT_STR, static_cast<short>(GetSpellEffect( spell, iSkillLevel, iEffectMult )) );
+			UpdateStatVal( STAT_STR, static_cast<short>(iEffect) );
 			break;
 
 		case SPELL_Night_Sight:
-			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Night_Sight, iSkillLevel,
-					GetSpellDuration( spell, iSkillLevel, iEffectMult, pCharSrc ), pCharSrc );
+			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Night_Sight, iSkillLevel, iDuration, pCharSrc );
 			break;
 
 		case SPELL_Reactive_Armor:
-			Spell_Effect_Create( spell, LAYER_SPELL_Reactive, iSkillLevel,
-					GetSpellDuration( spell, iSkillLevel, iEffectMult, pCharSrc ), pCharSrc );
+			Spell_Effect_Create( spell, LAYER_SPELL_Reactive, iSkillLevel, iDuration, pCharSrc );
 			break;
 
 		case SPELL_Magic_Reflect:
-			Spell_Effect_Create( spell, LAYER_SPELL_Magic_Reflect, iSkillLevel,
-					GetSpellDuration( spell, iSkillLevel, iEffectMult, pCharSrc ), pCharSrc );
+			Spell_Effect_Create( spell, LAYER_SPELL_Magic_Reflect, iSkillLevel, iDuration, pCharSrc );
 			break;
 
 		case SPELL_Poison:
 		case SPELL_Poison_Field:
 			if ( !fPotion )
-				Effect(EFFECT_OBJ, iT1, this, 0, 15, fExplode, iColor, iRender);
+				Effect(EFFECT_OBJ, iEffectID, this, 0, 15, fExplode, iColor, iRender);
 			SetPoison((pCharSrc->Skill_GetBase(SKILL_MAGERY) + pCharSrc->Skill_GetBase(SKILL_POISONING)) / 2, iSkillLevel / 50, pCharSrc);
 			break;
 
@@ -3322,13 +3311,11 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 		case SPELL_Protection:
 		case SPELL_Arch_Prot:
-			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Protection, iSkillLevel,
-				GetSpellDuration( spell, iSkillLevel, iEffectMult, pCharSrc ), pCharSrc );
+			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Protection, iSkillLevel, iDuration, pCharSrc );
 			break;
 
 		case SPELL_Summon:
-			Spell_Effect_Create( spell,	LAYER_SPELL_Summon, iSkillLevel,
-				GetSpellDuration( spell, iSkillLevel, iEffectMult, pCharSrc ), pCharSrc );
+			Spell_Effect_Create( spell,	LAYER_SPELL_Summon, iSkillLevel, iDuration, pCharSrc );
 			break;
 
 		case SPELL_Dispel:
@@ -3340,25 +3327,22 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		case SPELL_Reveal:
 			if ( ! Reveal())
 				break;
-			Effect(EFFECT_OBJ, iT1, this, 0, 15, fExplode, iColor, iRender);
+			Effect(EFFECT_OBJ, iEffectID, this, 0, 15, fExplode, iColor, iRender);
 			break;
 
 		case SPELL_Invis:
-			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Invis, iSkillLevel,
-				GetSpellDuration( spell, iSkillLevel, iEffectMult, pCharSrc ), pCharSrc );
+			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Invis, iSkillLevel, iDuration, pCharSrc );
 			break;
 
 		case SPELL_Incognito:
-			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Incognito, iSkillLevel,
-				GetSpellDuration( spell, iSkillLevel, iEffectMult, pCharSrc ), pCharSrc );
+			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Incognito, iSkillLevel, iDuration, pCharSrc );
 			break;
 
 		case SPELL_Paralyze:
 		case SPELL_Paralyze_Field:
 		case SPELL_Stone:
 		case SPELL_Particle_Form:
-			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Paralyze, iSkillLevel,
-				GetSpellDuration( spell, iSkillLevel, iEffectMult, pCharSrc ), pCharSrc );
+			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Paralyze, iSkillLevel, iDuration, pCharSrc );
 			break;
 
 		case SPELL_Mana_Vamp:
@@ -3387,7 +3371,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			break;
 
 		case SPELL_Meteor_Swarm:
-			Effect(EFFECT_BOLT, iT1, pCharSrc, 9, 6, fExplode, iColor, iRender);
+			Effect(EFFECT_BOLT, iEffectID, pCharSrc, 9, 6, fExplode, iColor, iRender);
 			break;
 	
 		case SPELL_Lightning:
@@ -3400,9 +3384,8 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			return Spell_Resurrection(NULL, pCharSrc, (pSourceItem && pSourceItem->IsType(IT_SHRINE)));
 
 		case SPELL_Light:
-			Effect(EFFECT_OBJ, iT1, this, 9, 6, fExplode, iColor, iRender);
-			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_NEWLIGHT, iSkillLevel,
-				GetSpellDuration( spell, iSkillLevel, iEffectMult, pCharSrc ), pCharSrc );
+			Effect(EFFECT_OBJ, iEffectID, this, 9, 6, fExplode, iColor, iRender);
+			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_NEWLIGHT, iSkillLevel, iDuration, pCharSrc );
 			break;
 
 		case SPELL_Hallucination:
@@ -3426,16 +3409,16 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			break;
 
 		case SPELL_Mana:
-			UpdateStatVal( STAT_INT, static_cast<short>(GetSpellEffect( spell, iSkillLevel, iEffectMult )) );
+			UpdateStatVal( STAT_INT, static_cast<short>(iEffect) );
 			break;
 
 		case SPELL_Refresh:
-			UpdateStatVal( STAT_DEX, static_cast<short>(GetSpellEffect( spell, iSkillLevel, iEffectMult )) );
+			UpdateStatVal( STAT_DEX, static_cast<short>(iEffect) );
 			break;
 
 		case SPELL_Restore:		// increases both your hit points and your stamina.
-			UpdateStatVal( STAT_DEX, static_cast<short>(GetSpellEffect( spell, iSkillLevel, iEffectMult )) );
-			UpdateStatVal( STAT_STR, static_cast<short>(GetSpellEffect( spell, iSkillLevel, iEffectMult )) );
+			UpdateStatVal( STAT_DEX, static_cast<short>(iEffect) );
+			UpdateStatVal( STAT_STR, static_cast<short>(iEffect) );
 			break;
 
 		case SPELL_Sustenance:		// 105 // serves to fill you up. (Remember, healing rate depends on how well fed you are!)
@@ -3466,33 +3449,28 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		case SPELL_Reaper_Form:
 		case SPELL_Polymorph:
 			{
-				Spell_Effect_Create(spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Polymorph, iSkillLevel,
-					GetSpellDuration(spell, iSkillLevel, iEffectMult, pCharSrc), pCharSrc);
+				Spell_Effect_Create(spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Polymorph, iSkillLevel, iDuration, pCharSrc);
 			}
 			break;
 
 		case SPELL_Chameleon:		// 106 // makes your skin match the colors of whatever is behind you.
 		case SPELL_BeastForm:		// 107 // polymorphs you into an animal for a while.
 		case SPELL_Monster_Form:	// 108 // polymorphs you into a monster for a while.
-			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Polymorph, iSkillLevel,
-				GetSpellDuration( spell, iSkillLevel, iEffectMult, pCharSrc ), pCharSrc );
+			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Polymorph, iSkillLevel, iDuration, pCharSrc );
 			break;
 
 		case SPELL_Trance:			// 111 // temporarily increases your meditation skill.
-			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_STATS, iSkillLevel,
-				GetSpellDuration( spell, iSkillLevel, iEffectMult, pCharSrc ), pCharSrc );
+			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_STATS, iSkillLevel, iDuration, pCharSrc );
 			break;
 
 		case SPELL_Shield:			// 113 // erects a temporary force field around you. Nobody approaching will be able to get within 1 tile of you, though you can move close to them if you wish.
 		case SPELL_Steelskin:		// 114 // turns your skin into steel, giving a boost to your AR.
 		case SPELL_Stoneskin:		// 115 // turns your skin into stone, giving a boost to your AR.
-			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Protection, iSkillLevel,
-				GetSpellDuration( spell, iSkillLevel, iEffectMult, pCharSrc ), pCharSrc );
+			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_SPELL_Protection, iSkillLevel, iDuration, pCharSrc );
 			break;
 
 		case SPELL_Regenerate:		// Set number of charges based on effect level.
 			{
-				int iDuration = GetSpellDuration( spell, iSkillLevel, iEffectMult, pCharSrc );
 				iDuration /= (2*TICK_PER_SEC);
 				if ( iDuration <= 0 )
 					iDuration = 1;
@@ -3503,31 +3481,31 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			break;
 
 		case SPELL_Blood_Oath:	// Blood Oath is a pact created between the casted and the target, memory is stored on the caster because one caster can have only 1 enemy, but one target can have the effect from various spells.
-			pCharSrc->Spell_Effect_Create(spell, LAYER_SPELL_Blood_Oath, iSkillLevel, GetSpellDuration(spell, iSkillLevel, iEffectMult, pCharSrc) , this);
+			pCharSrc->Spell_Effect_Create(spell, LAYER_SPELL_Blood_Oath, iSkillLevel, iDuration, this);
 			break;
 
 		case SPELL_Corpse_Skin:
-			Spell_Effect_Create(spell, LAYER_SPELL_Corpse_Skin, iSkillLevel, GetSpellDuration(spell, iSkillLevel, iEffectMult, pCharSrc), pCharSrc);
+			Spell_Effect_Create(spell, LAYER_SPELL_Corpse_Skin, iSkillLevel, iDuration, pCharSrc);
 			break;
 
 		case SPELL_Evil_Omen:
-			Spell_Effect_Create(spell, LAYER_SPELL_Evil_Omen, iSkillLevel, GetSpellDuration(spell, iSkillLevel, iEffectMult, pCharSrc), pCharSrc);
+			Spell_Effect_Create(spell, LAYER_SPELL_Evil_Omen, iSkillLevel, iDuration, pCharSrc);
 			break;
 
 		case SPELL_Mind_Rot:
-			Spell_Effect_Create(spell, LAYER_SPELL_Mind_Rot, iSkillLevel, GetSpellDuration(spell, iSkillLevel, iEffectMult, pCharSrc), pCharSrc);
+			Spell_Effect_Create(spell, LAYER_SPELL_Mind_Rot, iSkillLevel, iDuration, pCharSrc);
 			break;
 
 		case SPELL_Pain_Spike:
-			Spell_Effect_Create(spell, LAYER_SPELL_Pain_Spike, iSkillLevel, GetSpellDuration(spell, iSkillLevel, iEffectMult, pCharSrc), pCharSrc);
+			Spell_Effect_Create(spell, LAYER_SPELL_Pain_Spike, iSkillLevel, iDuration, pCharSrc);
 			break;
 
 		case SPELL_Strangle:
-			Spell_Effect_Create(spell, LAYER_SPELL_Strangle, iSkillLevel, GetSpellDuration(spell, iSkillLevel, iEffectMult, pCharSrc), pCharSrc);
+			Spell_Effect_Create(spell, LAYER_SPELL_Strangle, iSkillLevel, iDuration, pCharSrc);
 			break;
 
 		case SPELL_Curse_Weapon:
-			Spell_Effect_Create(spell, LAYER_SPELL_Curse_Weapon, iSkillLevel, GetSpellDuration(spell, iSkillLevel, iEffectMult, pCharSrc), pCharSrc);
+			Spell_Effect_Create(spell, LAYER_SPELL_Curse_Weapon, iSkillLevel, iDuration, pCharSrc);
 			break;
 
 		/*case SPELL_Animate_Dead_AOS:
@@ -3543,15 +3521,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 }
 
 
-
-int CChar::GetSpellEffect( SPELL_TYPE spell, int iSkillLevel, int iEffectMult )
-{
-	ADDTOCALLSTACK("CChar::GetSpellEffect");
-	int	iEffect = g_Cfg.GetSpellEffect( spell, iSkillLevel );
-	return (iEffect * iEffectMult ) / 1000;
-}
-
-int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult, CChar * pCharSrc )
+int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, CChar *pCharSrc )
 {
 	ADDTOCALLSTACK("CChar::GetSpellDuration");
 	int iDuration = -1;
@@ -3682,5 +3652,5 @@ int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, int iEffectMult,
 		iDuration = pSpellDef->m_Duration.GetLinear(iSkillLevel) / 10;
 	}
 
-	return ((iDuration * iEffectMult) / 1000) * TICK_PER_SEC;
+	return iDuration * TICK_PER_SEC;
 }
