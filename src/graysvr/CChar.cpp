@@ -3102,17 +3102,7 @@ do_default:
 			UpdateStatsFlag();
 			break;
 		case CHC_VISUALRANGE:
-			{
-				BYTE bIn = static_cast<unsigned char>(s.GetArgVal());
-				//changed UO_MAP_VIEW_SIZE (18) to UO_MAP_VIEW_RADAR (31) because of complainments of grey leaves on big trees
-				if ( bIn > UO_MAP_VIEW_RADAR )
-				{
-					DEBUG_ERR(("Illegal VisualRange Value %d, max. is %d, set to default\n", bIn, UO_MAP_VIEW_RADAR));
-					bIn = UO_MAP_VIEW_RADAR;
-//					return( false );
-				}
-				SetSight(bIn);
-			}
+			SetSight(static_cast<BYTE>(s.GetArgVal()));
 			break;
 		default:
 			return false;

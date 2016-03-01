@@ -3308,9 +3308,13 @@ PacketViewRange::PacketViewRange() : Packet(2)
 bool PacketViewRange::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketViewRange::onReceive");
-	UNREFERENCED_PARAMETER(net);
 
-	skip(1); // range
+	CChar *character = net->getClient()->GetChar();
+	if ( !character )
+		return false;
+
+	BYTE iVal = readByte();
+	character->SetSight(iVal);
 	return true;
 }
 

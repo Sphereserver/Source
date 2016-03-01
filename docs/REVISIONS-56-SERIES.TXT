@@ -2947,3 +2947,4 @@ Changed: Some changes on spell triggers (@Effect [spells] / @SpellEffect [chars]
 
 29-02-2015, Coruja
 Changed: Function REPORTEDCLIVER now will return the full client version string (eg: 5.0.2d) and REPORTEDCLIVER.1 will return the raw version number (eg: 5.0.2d = 5000204).
+Added: Support for [*]UpdateRange client macros.

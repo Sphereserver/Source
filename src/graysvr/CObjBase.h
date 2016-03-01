@@ -2972,7 +2972,7 @@ public:
 	}
 	void SetSight(BYTE newSight)
 	{
-		m_iVisualRange = newSight;
+		m_iVisualRange = minimum(newSight, 31);		// max value is 18 on classic clients and 31 on enhanced clients
 		if ( IsClient() )
 			GetClient()->addVisualRange(m_iVisualRange);
 	}
