@@ -1063,173 +1063,103 @@ PacketCloseVendor::PacketCloseVendor(const CClient* target, const CChar* vendor)
  *
  *
  ***************************************************************************/
-PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* container, bool isShop, bool filterLayers, bool bExtra) : PacketSend(XCMD_Content, 5, PRI_NORMAL), m_container(container->GetUID())
+PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* container, bool isShop, bool filterLayers) : PacketSend(XCMD_Content, 5, PRI_NORMAL), m_container(container->GetUID())
 {
 	ADDTOCALLSTACK("PacketItemContents::PacketItemContents");
-	UNREFERENCED_PARAMETER(bExtra);	//Disabled temporary, it seems to prevent buy list from being sent to some old Enhanced Clients
+
+	initLength();
+	skip(2);
+
+	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA());
+	bool isLayerSent[LAYER_HORSE];
+	memset(isLayerSent, 0, sizeof(isLayerSent));
+
 	const CChar* viewer = target->GetChar();
 	const CItemBase* itemDefinition;
-	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA());
+	ITEMID_TYPE id;
+	WORD amount;
+	HUE_TYPE hue;
+	LAYER_TYPE layer;
+	CPointMap pos;
+	m_count = 0;
 
-	/*if (!bExtra)
-	{*/
-		initLength();
-		skip(2);
+	for ( const CItem* item = container->GetContentHead(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetNext() )
+	{
+		itemDefinition = item->Item_GetDef();
+		id = item->GetDispID();
+		amount = item->GetAmount();
+		hue = item->GetHue() & HUE_MASK_HI;
+		pos = item->GetContainedPoint();
 
-		bool isLayerSent[LAYER_HORSE];
-		memset(isLayerSent, 0, sizeof(isLayerSent));
-
-		m_count = 0;
-		ITEMID_TYPE id;
-		HUE_TYPE hue;
-		LAYER_TYPE layer;
-		int amount;
-		CPointMap pos;
-
-		if (isShop)
+		if ( isShop )
 		{
-			for (const CItem* item = container->GetContentTail(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetPrev())
-			{
-				if (filterLayers == true)
-				{
-					layer = static_cast<LAYER_TYPE>(item->GetContainedLayer());
-					ASSERT(layer < LAYER_HORSE);
-					switch (layer) // don't put these on a corpse.
-					{
-						case LAYER_NONE:
-						case LAYER_PACK: // these display strange.
-							continue;
+			const CItemVendable* vendorItem = dynamic_cast<const CItemVendable *>(item);
+			if ( vendorItem == NULL || vendorItem->GetAmount() == 0 || vendorItem->IsType(IT_GOLD) )
+				continue;
 
-						case LAYER_NEWLIGHT:
-							continue;
-
-						default:
-							// make certain that no more than one of each layer goes out to client....crashes otherwise!!
-							if (isLayerSent[layer])
-								continue;
-							isLayerSent[layer] = true;
-							break;
-					}
-				}
-
-				itemDefinition = item->Item_GetDef();
-				id = item->GetDispID();
-				amount = item->GetAmount();
-
-				if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
-					id = static_cast<ITEMID_TYPE>(itemDefinition->GetResDispDnId());
-
-				const CItemVendable* vendorItem = dynamic_cast<const CItemVendable*>(item);
-				if (vendorItem == NULL || vendorItem->GetAmount() == 0 || vendorItem->IsType(IT_GOLD))
-					continue;
-
-				hue = item->GetHue() & HUE_MASK_HI;
-				amount = minimum(g_Cfg.m_iVendorMaxSell, amount);
-				pos.m_x = static_cast<signed short>(m_count + 1);
-				pos.m_y = 1;
-
-				if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
-				{
-					if (itemDefinition->GetResDispDnHue() != HUE_DEFAULT)
-						hue = itemDefinition->GetResDispDnHue() & HUE_MASK_HI;
-				}
-
-				if (hue > HUE_QTY)
-					hue &= HUE_MASK_LO; // restrict colors
-
-				// write item data
-				writeInt32(item->GetUID());
-				writeInt16(static_cast<WORD>(id));
-				writeByte(0);
-				writeInt16(static_cast<WORD>(amount));
-				writeInt16(pos.m_x);
-				writeInt16(pos.m_y);
-				if (includeGrid)
-					writeByte(item->GetContainedGridIndex());
-				writeInt32(container->GetUID());
-				writeInt16(static_cast<WORD>(hue));
-				m_count++;
-
-				// include tooltip
-				//target->addAOSTooltip(item, false, true);
-			}
+			amount = minimum(g_Cfg.m_iVendorMaxSell, item->GetAmount());
+			pos.m_x = static_cast<signed short>(m_count + 1);
+			pos.m_y = 1;
 		}
 		else
 		{
-			for (const CItem* item = container->GetContentTail(); item != NULL && m_count < MAX_ITEMS_CONT; item = item->GetPrev())
+			if ( item->IsAttr(ATTR_INVIS) && !viewer->CanSee(item) )
+				continue;
+		}
+
+		if ( filterLayers )
+		{
+			layer = static_cast<LAYER_TYPE>(item->GetContainedLayer());
+			ASSERT(layer < LAYER_HORSE);
+			switch ( layer )	// don't put these on a corpse.
 			{
-				if (item->IsAttr(ATTR_INVIS) && viewer->CanSee(item) == false)
+				case LAYER_NONE:
+				case LAYER_NEWLIGHT:
+				case LAYER_PACK: // these display strange.
 					continue;
 
-				if (filterLayers == true)
-				{
-					layer = static_cast<LAYER_TYPE>(item->GetContainedLayer());
-					ASSERT(layer < LAYER_HORSE);
-					switch (layer) // don't put these on a corpse.
-					{
-						case LAYER_NONE:
-						case LAYER_PACK: // these display strange.
-							continue;
-
-						case LAYER_NEWLIGHT:
-							continue;
-
-						default:
-							// make certain that no more than one of each layer goes out to client....crashes otherwise!!
-							if (isLayerSent[layer])
-								continue;
-							isLayerSent[layer] = true;
-							break;
-					}
-				}
-
-				itemDefinition = item->Item_GetDef();
-				id = item->GetDispID();
-				pos = item->GetContainedPoint();
-				hue = item->GetHue() & HUE_MASK_HI;
-				amount = item->GetAmount();
-
-				if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
-					id = static_cast<ITEMID_TYPE>(itemDefinition->GetResDispDnId());
-
-				if (itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel())
-				{
-					if (itemDefinition->GetResDispDnHue() != HUE_DEFAULT)
-						hue = itemDefinition->GetResDispDnHue() & HUE_MASK_HI;
-				}
-
-				if (hue > HUE_QTY)
-					hue &= HUE_MASK_LO; // restrict colors
-
-				// write item data
-				writeInt32(item->GetUID());
-				writeInt16(static_cast<WORD>(id));
-				writeByte(0);
-				writeInt16(static_cast<WORD>(amount));
-				writeInt16(pos.m_x);
-				writeInt16(pos.m_y);
-				if (includeGrid)
-					writeByte(item->GetContainedGridIndex());
-				writeInt32(container->GetUID());
-				writeInt16(hue);
-				m_count++;
-
-				// include tooltip
-				target->addAOSTooltip(item, false, false);
+				default:
+					// Make sure that no more than one of each layer goes out to client....crashes otherwise!!
+					if ( isLayerSent[layer] )
+						continue;
+					isLayerSent[layer] = true;
+					break;
 			}
 		}
+
+		if ( itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel() )
+		{
+			id = static_cast<ITEMID_TYPE>(itemDefinition->GetResDispDnId());
+
+			if ( itemDefinition->GetResDispDnHue() != HUE_DEFAULT )
+				hue = itemDefinition->GetResDispDnHue() & HUE_MASK_HI;
+		}
+
+		if ( hue > HUE_QTY )
+			hue &= HUE_MASK_LO;		// restrict colors
+
+		// write item data
+		writeInt32(item->GetUID());
+		writeInt16(static_cast<WORD>(id));
+		writeByte(0);
+		writeInt16(amount);
+		writeInt16(pos.m_x);
+		writeInt16(pos.m_y);
+		if ( includeGrid )
+			writeByte(item->GetContainedGridIndex());
+		writeInt32(container->GetUID());
+		writeInt16(static_cast<WORD>(hue));
+		m_count++;
+
+		// include tooltip
+		target->addAOSTooltip(item, false, isShop);
+	}
 
 	// write item count
 	size_t l = getPosition();
 	seek(3);
-	writeInt16(static_cast<WORD>(m_count));
+	writeInt16(m_count);
 	seek(l);
-	/*}
-	else
-	{
-		writeInt16(5);
-		writeInt16(0);
-	}*/
 
 	push(target);
 }
@@ -1266,7 +1196,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItem* spell
 	// write item count
 	size_t l = getPosition();
 	seek(3);
-	writeInt16(static_cast<WORD>(m_count));
+	writeInt16(m_count);
 	seek(l);
 
 	push(target);
@@ -1298,7 +1228,8 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItemContain
 		writeInt16(item->m_itSpell.m_spell);
 		writeInt16(0);
 		writeInt16(0);
-		if (includeGrid)	writeByte(static_cast<BYTE>(m_count));
+		if (includeGrid)
+			writeByte(static_cast<BYTE>(m_count));
 		writeInt32(spellbook->GetUID());
 		writeInt16(static_cast<WORD>(HUE_DEFAULT));
 
@@ -1308,7 +1239,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItemContain
 	// write item count
 	size_t l = getPosition();
 	seek(3);
-	writeInt16(static_cast<WORD>(m_count));
+	writeInt16(m_count);
 	seek(l);
 
 	push(target);
@@ -2084,16 +2015,12 @@ int PacketVendorBuyList::fillContainer(const CItemContainer* container, int conv
 	size_t countpos = getPosition();
 	skip(1);
 
-	// TO-DO: Probably there's something wrong here, since sphere draw containers items
-	// using last->first order by default, but this packet is using first->last order on
-	// enhanced clients. Maybe both should use the same first->last order?
-
-	for (CItem* item = bClientSA ? container->GetContentHead() : container->GetContentTail(); item != NULL && count < maxItems; item = bClientSA ? item->GetNext() : item->GetPrev())
+	for (CItem* item = container->GetContentHead(); item != NULL && count < maxItems; item = item->GetNext())
 	{
 		if (item->GetAmount() == 0)
 			continue;
 
-		CItemVendable* venditem = dynamic_cast<CItemVendable*>( item );
+		CItemVendable* venditem = static_cast<CItemVendable *>(item);
 		if (venditem == NULL)
 			continue;
 
@@ -2827,7 +2754,7 @@ size_t PacketVendorSellList::searchContainer(CClient* target, const CItemContain
 	if (item == NULL)
 		return 0;
 
-	size_t count(0);
+	size_t count = 0;
 	std::deque<const CItemContainer*> otherBoxes;
 
 	for (;;)
@@ -3054,9 +2981,9 @@ PacketServerList::PacketServerList(const CClient* target) : PacketSend(XCMD_Serv
 	initLength();
 	writeByte(0xFF);
 
-	size_t countPosition(getPosition());
+	WORD count = 0;
+	size_t countPosition = getPosition();
 	skip(2);
-	int count(0);
 
 	writeServerEntry(&g_Serv, ++count, reverseIp);
 
@@ -3074,7 +3001,7 @@ PacketServerList::PacketServerList(const CClient* target) : PacketSend(XCMD_Serv
 
 	size_t endPosition(getPosition());
 	seek(countPosition);
-	writeInt16(static_cast<WORD>(count));
+	writeInt16(count);
 	seek(endPosition);
 
 	push(target);
