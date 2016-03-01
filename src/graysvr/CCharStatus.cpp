@@ -213,6 +213,23 @@ bool CChar::CanCarry( const CItem *pItem ) const
 	return true;
 }
 
+bool CChar::CanEquipStr( CItem *pItem ) const
+{
+	ADDTOCALLSTACK("CChar::CanEquipStr");
+	if ( IsPriv(PRIV_GM) )
+		return true;
+
+	CItemBase *pItemDef = pItem->Item_GetDef();
+	LAYER_TYPE layer = pItemDef->GetEquipLayer();
+	if ( !pItemDef->IsTypeEquippable() || !CItemBase::IsVisibleLayer(layer) )
+		return true;
+
+	if ( Stat_GetAdjusted(STAT_STR) >= pItemDef->m_ttEquippable.m_StrReq * (100 - pItem->GetDefNum("LOWERREQ", true, true)) / 100 )
+		return true;
+
+	return false;
+}
+
 LAYER_TYPE CChar::CanEquipLayer( CItem *pItem, LAYER_TYPE layer, CChar *pCharMsg, bool fTest )
 {
 	ADDTOCALLSTACK("CChar::CanEquipLayer");
@@ -231,19 +248,16 @@ LAYER_TYPE CChar::CanEquipLayer( CItem *pItem, LAYER_TYPE layer, CChar *pCharMsg
 	if ( layer >= LAYER_QTY )
 	{
 		layer = pItemDef->GetEquipLayer();
-		if ( pItemDef->IsTypeEquippable() && CItemBase::IsVisibleLayer(layer) )
+
+		if ( (m_pPlayer || fTest) && !CanEquipStr(pItem) )
 		{
-			// Test only on players or if requested
-			if ( (m_pPlayer || fTest) && pItemDef->m_ttEquippable.m_StrReq && (Stat_GetAdjusted(STAT_STR) < pItemDef->m_ttEquippable.m_StrReq * (100 - pItem->GetDefNum("LOWERREQ", true, true)) / 100) )
+			if ( m_pPlayer )	// message only players
 			{
-				if ( m_pPlayer )	// message only players
-				{
-					SysMessagef("%s %s.", g_Cfg.GetDefaultMsg(DEFMSG_EQUIP_NOT_STRONG_ENOUGH), pItem->GetName());
-					if ( pCharMsg && pCharMsg != this )
-						pCharMsg->SysMessagef("%s %s.", g_Cfg.GetDefaultMsg(DEFMSG_EQUIP_NOT_STRONG_ENOUGH), pItem->GetName());
-				}
-				return LAYER_NONE;
+				SysMessagef("%s %s.", g_Cfg.GetDefaultMsg(DEFMSG_EQUIP_NOT_STRONG_ENOUGH), pItem->GetName());
+				if ( pCharMsg && pCharMsg != this )
+					pCharMsg->SysMessagef("%s %s.", g_Cfg.GetDefaultMsg(DEFMSG_EQUIP_NOT_STRONG_ENOUGH), pItem->GetName());
 			}
+			return LAYER_NONE;
 		}
 	}
 

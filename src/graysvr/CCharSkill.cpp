@@ -83,7 +83,23 @@ void CChar::Stat_SetMod( STAT_TYPE i, short iVal )
 			iVal = static_cast<short>(args.m_iN3);
 		}
 	}
+
 	m_Stat[i].m_mod = iVal;
+
+	if ( i == STAT_STR && iVal < iStatVal )
+	{
+		// ModSTR is being decreased, so check if the char still have enough STR to use current equipped items
+		CItem *pItemNext = NULL;
+		for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
+		{
+			pItemNext = pItem->GetNext();
+			if ( !CanEquipStr(pItem) )
+			{
+				SysMessagef("%s %s.", g_Cfg.GetDefaultMsg(DEFMSG_EQUIP_NOT_STRONG_ENOUGH), pItem->GetName());
+				ItemBounce(pItem, false);
+			}
+		}
+	}
 
 	short iMaxValue = Stat_GetMax(i);		// make sure the current value is not higher than new max value
 	if ( m_Stat[i].m_val > iMaxValue )
@@ -295,6 +311,21 @@ void CChar::Stat_SetBase( STAT_TYPE i, short iVal )
 	}
 	
 	m_Stat[i].m_base = iVal;
+
+	if ( i == STAT_STR && iVal < iStatVal )
+	{
+		// STR is being decreased, so check if the char still have enough STR to use current equipped items
+		CItem *pItemNext = NULL;
+		for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
+		{
+			pItemNext = pItem->GetNext();
+			if ( !CanEquipStr(pItem) )
+			{
+				SysMessagef("%s %s.", g_Cfg.GetDefaultMsg(DEFMSG_EQUIP_NOT_STRONG_ENOUGH), pItem->GetName());
+				ItemBounce(pItem, false);
+			}
+		}
+	}
 
 	short iMaxValue = Stat_GetMax(i);		// make sure the current value is not higher than new max value
 	if ( m_Stat[i].m_val > iMaxValue )

@@ -3350,6 +3350,8 @@ private:
 protected:
 	void OnRemoveOb( CGObListRec* pObRec );	// Override this = called when removed from list.
 public:
+	bool CanCarry( const CItem * pItem ) const;
+	bool CanEquipStr( CItem * pItem ) const;
 	LAYER_TYPE CanEquipLayer( CItem * pItem, LAYER_TYPE layer, CChar * pCharMsg, bool fTest );
 	CItem * LayerFind( LAYER_TYPE layer ) const;
 	void LayerAdd( CItem * pItem, LAYER_TYPE layer = LAYER_QTY );
@@ -3364,7 +3366,6 @@ public:
 		return( CContainer::GetTotalWeight());
 	}
 	int GetWeightLoadPercent( int iWeight ) const;
-	bool CanCarry( const CItem * pItem ) const;
 
 	CItem * GetSpellbook(SPELL_TYPE iSpell = SPELL_Clumsy) const;
 	int GetSpellbookExtra(CItem * pBooks[], int &count) const;
