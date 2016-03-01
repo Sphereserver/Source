@@ -585,8 +585,17 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 				GETNONWHITESPACE(pszKey);
 
 				DWORD iCliVer = GetNetState()->getReportedVersion();
-				TCHAR szVersion[128];
-				sVal = CCrypt::WriteClientVerString( iCliVer, szVersion );
+				if ( pszKey[0] == '\0' )
+				{
+					// Return full version string (eg: 5.0.2d)
+					TCHAR szVersion[128];
+					sVal = CCrypt::WriteClientVerString(iCliVer, szVersion);
+				}
+				else
+				{
+					// Return raw version number (eg: 5.0.2d = 5000204)
+					sVal.FormatUVal(iCliVer);
+				}
 			}
 			break;
 		case CC_SCREENSIZE:
