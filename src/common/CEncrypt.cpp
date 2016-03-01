@@ -359,6 +359,8 @@ int CCrypt::GetVerFromString( LPCTSTR pszVersion )
 		ch = pszVersion[i];
 		if ( ch == '.' )
 		{
+			if ( n == 3 )	//prevent array overflow
+				break;
 			n++;
 			continue;
 		}
@@ -376,6 +378,8 @@ int CCrypt::GetVerFromString( LPCTSTR pszVersion )
 		}
 		else if ( IsAlpha(ch) )
 		{
+			if ( n == 3 )	//prevent array overflow
+				break;
 			n++;
 			iArgs[n] = (ch - 'a') + 1;
 		}

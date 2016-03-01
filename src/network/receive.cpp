@@ -2413,8 +2413,18 @@ bool PacketClientVersion::onReceive(NetState* net)
 	if (Str_Check(versionStr))
 		return true;
 
-	if (strstr(versionStr, "UO:3D") != NULL)
+	if (strstr(versionStr, "UO:3D Client") != NULL)
+	{
+		// Old 3D clients will report version ending with 'UO:3D Client' (eg: '5.0.2b UO:3D Client')
+		// It must be removed from the string before continue
+		size_t iCnt = strlen(versionStr) - 12;
+		TCHAR *buf = Str_GetTemp();
+		strncpy(buf, versionStr, iCnt);
+		buf[iCnt] = '\0';
+
+		versionStr = buf;
 		net->m_clientType = CLIENTTYPE_3D;
+	}
 
 	length = Str_GetBare(versionStr, versionStr, length, " '`-+!\"#$%&()*,/:;<=>?@[\\]^{|}~");
 	if (length > 0)
@@ -2426,15 +2436,15 @@ bool PacketClientVersion::onReceive(NetState* net)
 		net->m_reportedVersion = version;
 		net->detectAsyncMode();
 
-		DEBUG_MSG(("Getting cliver 0x%lx/0x%lx\n", version, (version & 0xFFFFF0)));
+		DEBUG_MSG(("Getting CliVersionReported %lu\n", version));
 		
-		if (g_Serv.m_ClientVersion.GetClientVer() != 0 && ((version & 0xFFFFF0) != (DWORD)g_Serv.m_ClientVersion.GetClientVer()))
+		if ((g_Serv.m_ClientVersion.GetClientVer()) != 0 && (version != g_Serv.m_ClientVersion.GetClientVer()))
 		{
 			client->addLoginErr(PacketLoginError::BadVersion);
 		}
 		else if ((net->getCryptVersion() < MINCLIVER_TOOLTIP) && (version >= MINCLIVER_TOOLTIP) && (client->GetResDisp() >= RDS_AOS) && (IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))) //workaround for a "bug", which sends all items in LOS before processing this packet
 		{
-			DEBUG_MSG(("m_Crypt.GetClientVer()(%lx) != m_reportedCliver(%lx) == %x\n", net->getCryptVersion(), version, (net->getCryptVersion() != version)));
+			DEBUG_MSG(("m_Crypt.GetClientVer()(%lu) != m_reportedCliver(%lu) == %x\n", net->getCryptVersion(), version, (net->getCryptVersion() != version)));
 			client->addAOSPlayerSeeNoCrypt();
 		}
 	}

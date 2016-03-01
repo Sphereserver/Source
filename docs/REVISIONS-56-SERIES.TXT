@@ -2934,10 +2934,10 @@ Fixed some spells not being correctly found in case of having multiple books sin
 Script Pack:
 	-sphere_defs.scp: Added SKF_DISABLED
 
-25-02-2015, Nolok
+25-02-2016, Nolok
 Fixed: Spawn items sometimes created with random COUNT property.
 
-28-02-2015, Coruja
+28-02-2016, Coruja
 Fixed: Buff spells acting like damage spells.
 Changed: Some changes on spell triggers (@Effect [spells] / @SpellEffect [chars]) to allow more user customization
 	-Renamed LOCAL.Dam to LOCAL.Effect, now it can be used on all spells (damage, buff, etc) instead only on damage spells
@@ -2945,6 +2945,9 @@ Changed: Some changes on spell triggers (@Effect [spells] / @SpellEffect [chars]
 	-ARGN2 [skill level] is now read-only
 	-ARGN3 [effect multiplicator] got removed, it's no longer needed since now the spell effect value/duration can be changed using LOCAL.Effect/LOCAL.Duration
 
-29-02-2015, Coruja
+29-02-2016, Coruja
 Changed: Function REPORTEDCLIVER now will return the full client version string (eg: 5.0.2d) and REPORTEDCLIVER.1 will return the raw version number (eg: 5.0.2d = 5000204).
 Added: Support for [*]UpdateRange client macros.
+
+01-03-2016, Coruja
+Fixed: Sphere crash when any old UO:3D client try to connect.
