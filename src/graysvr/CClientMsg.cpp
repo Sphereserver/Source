@@ -2709,8 +2709,8 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 				m_TooltipData.InsertAt(0, new CClientTooltip(ClilocName));
 			else
 			{
-				m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
-				t->FormatArgs(" \t%s\t ", pObj->GetName());
+				m_TooltipData.InsertAt(0, t = new CClientTooltip(1042971)); // ~1_NOTHING~
+				t->FormatArgs("%s", pObj->GetName());
 			}
 		}
 		else // we have FEATURE_AOS_UPDATE_B enabled
@@ -2734,11 +2734,11 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 						m_TooltipData.InsertAt(0, new CClientTooltip(ClilocName));
 					else
 					{
-						m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
-						if ( ( pItem->GetAmount() != 1 ) && ( pItem->GetType() != IT_CORPSE ) )
-							t->FormatArgs("%d \t%s\t ", pItem->GetAmount(), pObj->GetName()); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
+						m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045)); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
+						if ( (pItem->GetAmount() != 1) && (pItem->GetType() != IT_CORPSE) )
+							t->FormatArgs("%d \t%s\t ", pItem->GetAmount(), pObj->GetName());
 						else
-							t->FormatArgs(" \t%s\t ", pObj->GetName()); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
+							t->FormatArgs(" \t%s\t ", pObj->GetName());
 					}
 				}
 				else if ( pChar )
@@ -2756,8 +2756,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 					strcpy(lpSuffix, pChar->GetKeyStr("NAME.SUFFIX"));
 
 					const CStoneMember * pGuildMember = pChar->Guild_FindMember(MEMORY_GUILD);
-					if ( pGuildMember != NULL &&
-						(pChar->IsStatFlag(STATF_Incognito) == false || GetPrivLevel() > pChar->GetPrivLevel()) )
+					if ( pGuildMember && (!pChar->IsStatFlag(STATF_Incognito) || GetPrivLevel() > pChar->GetPrivLevel()) )
 					{
 						const CItemStone * pParentStone = pGuildMember->GetParentStone();
 						ASSERT(pParentStone != NULL);
@@ -2774,16 +2773,11 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 						strcpy( lpSuffix, " " );
 
 					// The name
+					m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045)); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 					if (ClilocName)
-					{
-						m_TooltipData.InsertAt(0, t = new CClientTooltip(1116690));
-						t->FormatArgs("%s\t#%lu\t%s", lpPrefix, ClilocName, lpSuffix);
-					}
+						t->FormatArgs("%s\t%lu\t%s", lpPrefix, ClilocName, lpSuffix);
 					else
-					{
-						m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045));
-						t->FormatArgs("%s\t%s\t%s", lpPrefix, pObj->GetName(), lpSuffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
-					}
+						t->FormatArgs("%s\t%s\t%s", lpPrefix, pObj->GetName(), lpSuffix);
 
 					// Need to find a way to get the ushort inside hues.mul for index wHue to get this working.
 					// t->FormatArgs("<basefont color=\"#%02x%02x%02x\">%s\t%s\t%s</basefont>",
@@ -2839,8 +2833,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 							this->m_TooltipData.Add( new CClientTooltip( pChar->m_pNPC->m_bonded ? 1049608 : 502006 ) ); // (bonded) / (tame)
 					}
 				}
-
-				if ( pItem )
+				else if ( pItem )
 				{
 					if ( pItem->IsAttr( ATTR_LOCKEDDOWN ) )
 						this->m_TooltipData.Add( new CClientTooltip( 501643 ) ); // Locked Down
