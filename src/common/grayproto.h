@@ -980,7 +980,7 @@ enum NOTO_TYPE
 #define MINCLIVER_STATUS_V6			7003000	// minimum client to receive v6 of 0x11 packet (7.0.30.0)
 
 // client versions (behaviours)
-#define MINCLIVER_CHECKWALKCODE		1260000	// minimum client to allow checking walking crypt-codes
+#define MINCLIVER_CHECKWALKCODE		1260000	// minimum client to use walk crypt codes for fastwalk prevention (obsolete)
 #define MINCLIVER_PADCHARLIST		3000010	// minimum client to pad character list to at least 5 characters
 #define MINCLIVER_AUTOASYNC			4000000	// minimum client to auto-enable async networking
 #define MINCLIVER_NOTOINVUL			4000000	// minimum client required to view noto_invul health bar
@@ -992,18 +992,18 @@ enum NOTO_TYPE
 #define MINCLIVER_NEWSECURETRADE	7004565	// minimum client to use virtual gold/platinum on trade window (7.0.45.65)
 
 // client versions (packets)
-#define MAXCLIVER_REVERSEIP			4000000	// maximum client to reverse ip in 0xA8 packet
+#define MAXCLIVER_REVERSEIP			4000000	// maximum client to reverse IP in 0xA8 packet
 #define MINCLIVER_CUSTOMMULTI		4000000	// minimum client to receive custom multi packets
-#define MINCLIVER_DAMAGE			4000000	// minimum client to receive 0xBF.0x22 packet
 #define MINCLIVER_SPELLBOOK			4000000	// minimum client to receive 0xBF.0x1B packet (4.0.0a)
+#define MINCLIVER_DAMAGE			4000000	// minimum client to receive 0xBF.0x22 packet
 #define MINCLIVER_TOOLTIP			4000000	// minimum client to receive tooltip packets
 #define MINCLIVER_STATLOCKS			4000100	// minimum client to receive 0xBF.0x19.0x02 packet
 #define MINCLIVER_TOOLTIPHASH		4000500	// minimum client to receive 0xDC packet
 #define MINCLIVER_NEWDAMAGE			4000700	// minimum client to receive 0x0B packet (4.0.7a)
 #define MINCLIVER_NEWBOOK			5000000	// minimum client to receive 0xD4 packet
 #define MINCLIVER_BUFFS				5000202	// minimum client to receive buff packets (5.0.2b)
+#define MINCLIVER_NEWCONTEXTMENU	6000000	// minimun client to receive 0xBF.0x14.0x02 packet instead of 0xBF.0x14.0x01 (6.0.0.0)
 #define MINCLIVER_EXTRAFEATURES		6001402	// minimum client to receive 4-byte feature mask (6.0.14.2)
-#define MINCLIVER_NEWCONTEXTMENU	7000000	// minimun client to receive 0xBF.0x14.0x02 packet instead of 0xbf.0x14.0x01
 #define MINCLIVER_NEWMOBILEANIM		7000000	// minimum client to receive 0xE2 packet (7.0.0.0)
 #define MINCLIVER_SMOOTHSHIP		7000900	// minimum client to receive 0xF6 packet (7.0.9.0)
 #define MINCLIVER_NEWMAPDISPLAY		7001300	// minimum client to receive 0xF5 packet (7.0.13.0)

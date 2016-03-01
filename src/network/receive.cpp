@@ -2438,7 +2438,7 @@ bool PacketClientVersion::onReceive(NetState* net)
 
 		DEBUG_MSG(("Getting CliVersionReported %lu\n", version));
 		
-		if ((g_Serv.m_ClientVersion.GetClientVer()) != 0 && (version != g_Serv.m_ClientVersion.GetClientVer()))
+		if ((g_Serv.m_ClientVersion.GetClientVer() != 0) && (version != g_Serv.m_ClientVersion.GetClientVer()))
 		{
 			client->addLoginErr(PacketLoginError::BadVersion);
 		}
