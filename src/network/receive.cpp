@@ -2396,7 +2396,7 @@ bool PacketClientVersion::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketClientVersion::onReceive");
 
-	if (net->getReportedVersion() > 0)
+	if (net->getReportedVersion())
 		return true;
 
 	size_t length = readInt16();
@@ -2413,18 +2413,8 @@ bool PacketClientVersion::onReceive(NetState* net)
 	if (Str_Check(versionStr))
 		return true;
 
-	if (strstr(versionStr, "UO:3D Client") != NULL)
-	{
-		// Old 3D clients will report version ending with 'UO:3D Client' (eg: '5.0.2b UO:3D Client')
-		// It must be removed from the string before continue
-		size_t iCnt = strlen(versionStr) - 12;
-		TCHAR *buf = Str_GetTemp();
-		strncpy(buf, versionStr, iCnt);
-		buf[iCnt] = '\0';
-
-		versionStr = buf;
+	if (strstr(versionStr, "UO:3D") != NULL)
 		net->m_clientType = CLIENTTYPE_3D;
-	}
 
 	length = Str_GetBare(versionStr, versionStr, length, " '`-+!\"#$%&()*,/:;<=>?@[\\]^{|}~");
 	if (length > 0)

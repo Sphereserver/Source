@@ -350,7 +350,7 @@ int CCrypt::GetVerFromString( LPCTSTR pszVersion )
 		return 0;
 
 	int n = 0;
-	int iArgs[4] = { 0,0,0,0 };
+	int iArgs[] = { 0,0,0,0 };
 	size_t iMax = strlen(pszVersion);
 	TCHAR ch, chNext;
 
@@ -359,8 +359,6 @@ int CCrypt::GetVerFromString( LPCTSTR pszVersion )
 		ch = pszVersion[i];
 		if ( ch == '.' )
 		{
-			if ( n == 3 )	//prevent array overflow
-				break;
 			n++;
 			continue;
 		}
@@ -378,10 +376,9 @@ int CCrypt::GetVerFromString( LPCTSTR pszVersion )
 		}
 		else if ( IsAlpha(ch) )
 		{
-			if ( n == 3 )	//prevent array overflow
-				break;
 			n++;
 			iArgs[n] = (ch - 'a') + 1;
+			break;
 		}
 	}
 
