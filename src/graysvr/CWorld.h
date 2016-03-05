@@ -529,6 +529,7 @@ private:
 public:
 	void SetAllShow( bool fView ) { m_fAllShow = fView; }
 	void SetSearchSquare( bool fSquareSearch ) { m_fSearchSquare = fSquareSearch; }
+	void RestartSearch() { m_pObj = NULL; }		// Setting current obj to NULL will restart the search 
 	CChar * GetChar();
 	CItem * GetItem();
 };

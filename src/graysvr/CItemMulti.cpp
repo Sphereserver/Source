@@ -35,7 +35,8 @@ CItemMulti::~CItemMulti()
 			continue;
 		if ( ! Multi_IsPartOf( pItem ))
 			continue;
-		pItem->Delete();	// delete the key id for the door/key/sign.
+		pItem->Delete();		// delete the key id for the door/key/sign.
+		Area.RestartSearch();	// we removed an item and this will mess the search loop, so restart to fix it
 	}
 
 	delete m_pRegion;
