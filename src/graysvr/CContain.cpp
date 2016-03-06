@@ -1191,21 +1191,18 @@ bool CItemContainer::CanContainerHold( const CItem *pItem, const CChar *pCharMsg
 		return false;
 	}
 
-	size_t tContMaxI = MAX_ITEMS_CONT;
-	CVarDefCont *pTagTmp = GetKey("OVERRIDE.MAXITEMS", false);
-	if ( pTagTmp )
-		tContMaxI = static_cast<size_t>(pTagTmp->GetValNum());
-
-	if ( GetCount() >= (tContMaxI - 1) )
+	size_t pTagTmp = static_cast<size_t>(GetKeyNum("OVERRIDE.MAXITEMS", true));
+	size_t tMaxItemsCont = pTagTmp ? pTagTmp : MAX_ITEMS_CONT;
+	if ( GetCount() >= tMaxItemsCont )
 	{
 		pCharMsg->SysMessageDefault(DEFMSG_CONT_FULL);
 		return false;
 	}
 
-	pTagTmp = GetKey("OVERRIDE.MAXWEIGHT", false);
+	pTagTmp = static_cast<size_t>(GetKeyNum("OVERRIDE.MAXWEIGHT", true));
 	if ( pTagTmp )	// weightcheck does ALSO apply on backpack if tag is set!
 	{
-		if ( (GetWeight() + pItem->GetWeight()) > (pTagTmp->GetValNum() * WEIGHT_UNITS) )
+		if ( (GetWeight() + pItem->GetWeight()) > (pTagTmp * WEIGHT_UNITS) )
 		{
 			pCharMsg->SysMessageDefault(DEFMSG_CONT_FULL_WEIGHT);
 			return false;
@@ -1309,7 +1306,7 @@ bool CItemContainer::CanContainerHold( const CItem *pItem, const CChar *pCharMsg
 			}
 
 			// Check that this vendor box hasn't already reached its content limit
-			if ( GetCount() >= (MAX_ITEMS_CONT - 1) )
+			if ( GetCount() >= MAX_ITEMS_CONT )
 			{
 				pCharMsg->SysMessageDefault(DEFMSG_CONT_FULL);
 				return false;

@@ -1362,7 +1362,6 @@ public:
 	void addScrollResource( LPCTSTR szResourceName, SCROLL_TYPE type, DWORD dwcontext = 0 );
 
 	void addVendorClose( const CChar * pVendor );
-	int  addShopItems(CChar * pVendor, LAYER_TYPE layer, bool bReal = true);
 	bool addShopMenuBuy( CChar * pVendor );
 	bool addShopMenuSell( CChar * pVendor );
 	void addBankOpen( CChar * pChar, LAYER_TYPE layer = LAYER_BANKBOX );

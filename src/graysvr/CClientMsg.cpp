@@ -2391,39 +2391,6 @@ void CClient::addVendorClose( const CChar * pVendor )
 	new PacketCloseVendor(this, pVendor);
 }
 
-int CClient::addShopItems(CChar * pVendor, LAYER_TYPE layer, bool bReal)
-{
-	ADDTOCALLSTACK("CClient::addShopItems");
-	// Player buying from vendor.
-	// Show the Buy menu for the contents of this container
-	// RETURN: the number of items in container.
-	//   < 0 = error.
-	CItemContainer *pContainer = pVendor->GetBank(layer);
-	if ( !pContainer )
-		return -1;
-
-	addItem(pContainer);
-	int count = 0;
-
-	//	Classic clients will crash without extra packets:
-	// if bReal is false this call will send the extra packets
-	if ( bReal )
-		addContents(pContainer, false, false, true);
-
-	if ( (bReal && GetNetState()->isClientSA()) || !GetNetState()->isClientSA() )
-	{
-		PacketVendorBuyList *cmd = new PacketVendorBuyList();
-		count = cmd->fillContainer(pContainer, pVendor->NPC_GetVendorMarkup(m_pChar), GetNetState()->isClientSA(), bReal ? MAX_ITEMS_CONT : 0);
-		cmd->push(this);
-	}
-
-	// Send a warning if the vendor somehow has more stock than the allowed limit
-	if ( pContainer->GetCount() > MAX_ITEMS_CONT )
-		g_Log.Event( LOGL_WARN, "Vendor 0%lx '%s' has exceeded their stock limit! (%d/%d items)\n", static_cast<DWORD>(pVendor->GetUID()), pVendor->GetName(), pContainer->GetCount(), MAX_ITEMS_CONT);
-
-	return count;
-}
-
 bool CClient::addShopMenuBuy( CChar * pVendor )
 {
 	ADDTOCALLSTACK("CClient::addShopMenuBuy");
@@ -2437,15 +2404,29 @@ bool CClient::addShopMenuBuy( CChar * pVendor )
 	if ( !pVendor->IsStatFlag(STATF_Pet) )
 		pVendor->NPC_Vendor_Restock(false, true);
 
-	int iRes = addShopItems(pVendor, LAYER_VENDOR_STOCK);
-	if ( iRes < 0 )
+	CItemContainer *pContainer = pVendor->GetBank(LAYER_VENDOR_STOCK);
+	CItemContainer *pContainerExtra = pVendor->GetBank(LAYER_VENDOR_EXTRA);
+	if ( !pContainer || !pContainerExtra )
 		return false;
 
-	// Classic clients will crash without extra packets, let's provide some empty packets specialy for them
-	addShopItems(pVendor, LAYER_VENDOR_EXTRA, false);
+	// Get item list
+	addItem(pContainer);	//isso ta enviando tooltip completo do item ao inves de tooltip so com o nome
+	addContents(pContainer, false, false, true);
+	addItem(pContainerExtra);
 
-	addOpenGump(pVendor, GUMP_VENDOR_RECT, true);
-	return true;
+	// Get price list
+	PacketVendorBuyList *cmd = new PacketVendorBuyList();
+	size_t count = cmd->fillContainer(pContainer, pVendor->NPC_GetVendorMarkup(m_pChar));
+	cmd->push(this);
+
+	// Open gump
+	if ( count )
+	{
+		addOpenGump(pVendor, GUMP_VENDOR_RECT, true);
+		return true;
+	}
+
+	return false;
 }
 
 bool CClient::addShopMenuSell( CChar * pVendor )
@@ -2468,10 +2449,6 @@ bool CClient::addShopMenuSell( CChar * pVendor )
 	CItemContainer *pContainer2 = pVendor->GetBank(LAYER_VENDOR_STOCK);
 	addItem(pContainer1);
 	addItem(pContainer2);
-
-	// Classic clients will crash without extra packets, let's provide some empty packets specialy for them
-	CItemContainer *pContainer3 = pVendor->GetBank(LAYER_VENDOR_EXTRA);
-	addItem(pContainer3);
 
 	if ( pVendor->IsStatFlag(STATF_Pet) )	// player vendor
 		pContainer2 = NULL;		// no stock
