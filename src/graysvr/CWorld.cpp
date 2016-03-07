@@ -2170,12 +2170,14 @@ void CWorld::Speak( const CObjBaseTemplate * pSrc, LPCTSTR pszText, HUE_TYPE wHu
 	bool fSpeakAsGhost = false;	// I am a ghost ?
 	if ( pSrc )
 	{
-		if ( pSrc->IsChar())
+		if ( pSrc->IsChar() )
 		{
-			// Are they dead ? Garble the text. unless we have SpiritSpeak
-			const CChar * pCharSrc = dynamic_cast <const CChar*> (pSrc);
+			const CChar *pCharSrc = static_cast<const CChar *>(pSrc);
 			ASSERT(pCharSrc);
 			fSpeakAsGhost = pCharSrc->IsSpeakAsGhost();
+
+			if ( pCharSrc->m_pNPC )
+				wHue = pCharSrc->m_SpeechHue;
 		}
 	}
 	else
@@ -2202,19 +2204,17 @@ void CWorld::Speak( const CObjBaseTemplate * pSrc, LPCTSTR pszText, HUE_TYPE wHu
 
 		if ( pChar != NULL )
 		{
-			fCanSee = pChar->CanSee( pSrc );	
+			fCanSee = pChar->CanSee(pSrc);
 
-			if ( fSpeakAsGhost && ! pChar->CanUnderstandGhost())
+			if ( fSpeakAsGhost && !pChar->CanUnderstandGhost() )
 			{
-				if ( sTextGhost.IsEmpty())	// Garble ghost.
+				if ( sTextGhost.IsEmpty() )
 				{
 					sTextGhost = pszText;
-					for ( int i=0; i<sTextGhost.GetLength(); i++ )
+					for ( int i = 0; i < sTextGhost.GetLength(); i++ )
 					{
 						if ( sTextGhost[i] != ' ' &&  sTextGhost[i] != '\t' )
-						{
 							sTextGhost[i] = Calc_GetRandVal(2) ? 'O' : 'o';
-						}
 					}
 				}
 				pszSpeak = sTextGhost;

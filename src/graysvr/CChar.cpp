@@ -2911,6 +2911,11 @@ do_default:
 			if ( m_fonttype < 0 || m_fonttype >= FONT_QTY )
 				m_fonttype = FONT_NORMAL;
 			break;
+		case CHC_SPEECHCOLOR:
+			if ( m_pPlayer )	// read-only on players
+				return false;
+			m_SpeechHue = static_cast<HUE_TYPE>(s.GetArgVal());
+			break;
 		case CHC_FOOD:
 			Stat_SetVal(STAT_FOOD, static_cast<short>(s.GetArgVal()));
 			break;
