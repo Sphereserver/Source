@@ -1030,6 +1030,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			return;
 		case LAYER_SPELL_Invis:
 			StatFlag_Set(STATF_Invisible);
+			Reveal(STATF_Hidden);	// clear previous Hiding skill effect (this will not reveal the char because STATF_Invisibility still set)
 			UpdateModeFlag();
 			if (pClient && IsSetOF(OF_Buffs))
 			{

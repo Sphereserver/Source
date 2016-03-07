@@ -2952,3 +2952,10 @@ Added: Support for [*]UpdateRange client macros.
 01-03-2016, Coruja
 Fixed: Sphere crash when any old UO:3D client try to connect.
 Fixed: Chars not checking if it still have enough STR to use equipped items when decrease STR/MODSTR.
+
+05-03-2016, Coruja
+[sphere_monsters.scp]: Added new TOL NPCs Giant Gorilla, Tiger Cub, Tyrannosaurus Rex (incomplete yet).
+[sphere_map_points0/1.scp]: Updated MoonGates template.
+
+07-03-2016, Coruja
+Fixed: Invisibility spell not removing previous Hiding skill effect on success.
