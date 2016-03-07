@@ -2959,3 +2959,5 @@ Fixed: Chars not checking if it still have enough STR to use equipped items when
 
 07-03-2016, Coruja
 Fixed: Invisibility spell not removing previous Hiding skill effect on success.
+Changed: SPEECHCOLOR property now can be used on players too (read-only).
+Changed: WOPColor .ini setting now will inherit color from char SPEECHCOLOR value if set to 0.

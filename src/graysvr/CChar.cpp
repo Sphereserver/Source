@@ -232,6 +232,7 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 	m_UIDLastNewItem.InitUID();
 	m_dirFace = DIR_SE;
 	m_fonttype = FONT_NORMAL;
+	m_SpeechHue = HUE_TEXT_DEF;
 
 	m_height = 0;
 	m_ModMaxWeight = 0;
@@ -772,6 +773,7 @@ bool CChar::DupeFrom( CChar * pChar, bool fNewbieItems )
 
 	m_dirFace = pChar->m_dirFace;
 	m_fonttype = pChar->m_fonttype;
+	m_SpeechHue = pChar->m_SpeechHue;
 
 	m_height = pChar->m_height;
 	m_ModMaxWeight = pChar->m_ModMaxWeight;
@@ -1331,6 +1333,7 @@ void CChar::InitPlayer( CClient *pClient, const char *pszCharname, bool bFemale,
 	}
 
 	m_fonttype = FONT_NORMAL;		// Set speech font type
+	m_SpeechHue = HUE_TEXT_DEF;		// Set speech color
 	m_sTitle.Empty();				// Set title
 
 	GetBank(LAYER_BANKBOX);			// Create bankbox
@@ -2481,6 +2484,9 @@ do_default:
 		case CHC_FONT:
 			sVal.FormatVal( m_fonttype );
 			break;
+		case CHC_SPEECHCOLOR:
+			sVal.FormatVal( m_SpeechHue );
+			break;
 		case CHC_FOOD:
 			sVal.FormatVal( Stat_GetVal( STAT_FOOD ) );
 			break;
@@ -3136,6 +3142,8 @@ void CChar::r_Write( CScript & s )
 		s.WriteKey("TITLE", m_sTitle);
 	if ( m_fonttype != FONT_NORMAL )
 		s.WriteKeyVal("FONT", m_fonttype);
+	if ( m_SpeechHue != HUE_TEXT_DEF )
+		s.WriteKeyVal("SPEECHCOLOR", m_SpeechHue);
 	if ( m_dirFace != DIR_SE )
 		s.WriteKeyVal("DIR", m_dirFace);
 	if ( m_prev_id != GetID() )

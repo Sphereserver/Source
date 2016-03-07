@@ -2942,8 +2942,8 @@ int CChar::Spell_CastStart()
 
 	CScriptTriggerArgs Args(static_cast<int>(m_atMagery.m_Spell), iDifficulty, pItem);
 	Args.m_iN3 = iWaitTime;
-	Args.m_VarsLocal.SetNum("WOP",fWOP);
-	Args.m_VarsLocal.SetNum("WOPColor", m_pNPC ? m_pNPC->m_SpeechHue : g_Cfg.m_iWordsOfPowerColor, true);
+	Args.m_VarsLocal.SetNum("WOP", fWOP);
+	Args.m_VarsLocal.SetNum("WOPColor", g_Cfg.m_iWordsOfPowerColor > 0 ? g_Cfg.m_iWordsOfPowerColor : m_SpeechHue, true);
 	Args.m_VarsLocal.SetNum("WOPFont", g_Cfg.m_iWordsOfPowerFont, true);
 
 	if ( IsTrigUsed(TRIGGER_SPELLCAST) )
@@ -2974,19 +2974,16 @@ int CChar::Spell_CastStart()
 	m_atMagery.m_Spell = static_cast<SPELL_TYPE>(Args.m_iN1);
 	iDifficulty = static_cast<int>(Args.m_iN2);
 	iWaitTime = static_cast<INT64>(Args.m_iN3);
-	fWOP = Args.m_VarsLocal.GetKeyNum("WOP",true) > 0 ? true : false;
-	int WOPColor = static_cast<int>(Args.m_VarsLocal.GetKeyNum("WOPColor", true));
-	if (WOPColor < 0)
-		WOPColor = g_Cfg.m_iWordsOfPowerColor;
-	int WOPFont = static_cast<int>(Args.m_VarsLocal.GetKeyNum("WOPFont", true));
-	if (WOPFont < 0)
-		WOPFont = g_Cfg.m_iWordsOfPowerFont;
 
+	pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
+	if ( !pSpellDef )
+		return -1;
+
+	fWOP = Args.m_VarsLocal.GetKeyNum("WOP", true) > 0 ? true : false;
 	if ( fWOP )
 	{
-		pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
-		if ( !pSpellDef )
-			return -1;
+		INT64 WOPColor = Args.m_VarsLocal.GetKeyNum("WOPColor", true);
+		INT64 WOPFont = Args.m_VarsLocal.GetKeyNum("WOPFont", true);
 
 		if ( pSpellDef->m_sRunes[0] == '.' )
 		{

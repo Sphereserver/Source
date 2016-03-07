@@ -692,7 +692,6 @@ CCharNPC::CCharNPC( CChar * pChar, NPCBRAIN_TYPE NPCBrain )
 	m_Brain = NPCBrain;
 	m_Home_Dist_Wander = SHRT_MAX;	// as far as i want.
 	m_Act_Motivation = 0;
-	m_SpeechHue = HUE_TEXT_DEF;
 	m_bonded = 0;
 #ifndef _WIN32
 	for (int i_tmpN=0;i_tmpN < MAX_NPC_PATH_STORAGE_SIZE;i_tmpN++)
@@ -756,9 +755,6 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 		break;
 	case CNC_SPEECH:
 		return( m_Speech.r_LoadVal( s, RES_SPEECH ));
-	case CNC_SPEECHCOLOR:
-		m_SpeechHue = static_cast<HUE_TYPE>(s.GetArgVal());
-		break;
 
 	case CNC_VENDCAP:
 		{
@@ -846,9 +842,6 @@ bool CCharNPC::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 	case CNC_SPEECH:
 		m_Speech.WriteResourceRefList( sVal );
 		break;
-	case CNC_SPEECHCOLOR:
-		sVal.FormatVal( m_SpeechHue );
-		break;
 	case CNC_VENDCAP:
 		{
 			CItemContainer * pBank = pChar->GetBank();
@@ -900,11 +893,6 @@ void CCharNPC::r_WriteChar( CChar * pChar, CScript & s )
 	m_Speech.r_Write( s, "SPEECH" );
 	if (m_bonded)
 		s.WriteKeyVal("BONDED", m_bonded);
-
-	if ( m_SpeechHue != HUE_TEXT_DEF )
-	{
-		s.WriteKeyVal( "SPEECHCOLOR", m_SpeechHue );
-	}
 
 	if ( m_Need.GetResourceID().IsValidUID())
 	{

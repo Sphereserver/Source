@@ -1781,7 +1781,9 @@ void CClient::Event_Talk_Common(TCHAR * szText) // PC speech
 void CClient::Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bool bNoStrip) // PC speech
 {
 	ADDTOCALLSTACK("CClient::Event_Talk");
-	if ( !GetAccount() || !GetChar() )
+
+	CAccount *pAccount = GetAccount();
+	if ( !pAccount || !m_pChar )
 		return;
 
 	if ( mode < 0 || mode > 14 ) // Less or greater is an exploit
@@ -1791,11 +1793,12 @@ void CClient::Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bo
 	if ( mode == 1 || mode == 3 || mode == 4 || mode == 5 || mode == 6 || mode == 7 || mode == 10 || mode == 11 || mode == 12 )
 		return;
 
-	if (( wHue < 2 ) || ( wHue > 0x03e9 ))
+	if ( (wHue < 2) || (wHue > HUE_DYE_HIGH) )
 		wHue = HUE_TEXT_DEF;
 
-	// store the language of choice.
-	GetAccount()->m_lang.Set( NULL );	// default.
+	pAccount->m_lang.Set( NULL );	// default.
+	if ( mode == TALKMODE_SYSTEM )
+		m_pChar->m_SpeechHue = wHue;
 
 	// Rip out the unprintables first.
 	TCHAR szText[MAX_TALK_BUFFER];
@@ -1875,8 +1878,8 @@ void CClient::Event_TalkUNICODE( NWORD* wszText, int iTextLen, HUE_TYPE wHue, TA
 	// FRC = French
 	// mode == TALKMODE_SYSTEM if coming from player talking.
 
-	CAccount * pAccount = GetAccount();
-	if ( !pAccount || !GetChar() )	// this should not happen
+	CAccount *pAccount = GetAccount();
+	if ( !pAccount || !m_pChar )	// this should not happen
 		return;
 
 	if ( iTextLen <= 0 )
@@ -1889,11 +1892,12 @@ void CClient::Event_TalkUNICODE( NWORD* wszText, int iTextLen, HUE_TYPE wHue, TA
 	if ( mMode == 1 || mMode == 3 || mMode == 4 || mMode == 5 || mMode == 6 || mMode == 7 || mMode == 10 || mMode == 11 || mMode == 12 )
 		return;
 
-	if (( wHue < 0 ) || ( wHue > 0x03e9 ))
+	if ( (wHue < 0) || (wHue > HUE_DYE_HIGH) )
 		wHue = HUE_TEXT_DEF;
 
-	// store the default language of choice. CLanguageID
 	pAccount->m_lang.Set(pszLang);
+	if ( mMode == TALKMODE_SYSTEM )
+		m_pChar->m_SpeechHue = wHue;
 
 	TCHAR szText[MAX_TALK_BUFFER];
 	const NWORD * puText = wszText;

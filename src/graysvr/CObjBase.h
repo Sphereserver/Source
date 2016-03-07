@@ -2379,7 +2379,6 @@ public:
 
 	// We respond to what we here with this.
 	CResourceRefArray m_Speech;	// Speech fragment list (other stuff we know)
-	HUE_TYPE m_SpeechHue;
 
 	CResourceQty m_Need;	// What items might i need/Desire ? (coded as resource scripts) ex "10 gold,20 logs" etc.
 
@@ -2771,8 +2770,11 @@ public:
 	DIR_TYPE m_dirFace;			// facing this dir.
 	CGString m_sTitle;			// Special title such as "the guard" (replaces the normal skill title).
 	CPointMap m_ptHome;			// What is our "home" region. (towns and bounding of NPC's)
-	FONT_TYPE m_fonttype;		// Speech font to use // can client set this ?
 	INT64 m_virtualGold;		// Virtual gold used by TOL clients
+
+	// Speech
+	FONT_TYPE m_fonttype;		// speech font to use (client send this to server, but it's not used)
+	HUE_TYPE m_SpeechHue;		// speech hue to use
 
 	// In order to revert to original Hue and body.
 	CREID_TYPE m_prev_id;		// Backup of body type for ghosts and poly
