@@ -1202,7 +1202,7 @@ bool CItemContainer::CanContainerHold( const CItem *pItem, const CChar *pCharMsg
 	pTagTmp = static_cast<size_t>(GetKeyNum("OVERRIDE.MAXWEIGHT", true));
 	if ( pTagTmp )	// weightcheck does ALSO apply on backpack if tag is set!
 	{
-		if ( (GetWeight() + pItem->GetWeight()) > (pTagTmp * WEIGHT_UNITS) )
+		if ( (GetWeight() + pItem->GetWeight()) > (static_cast<int>(pTagTmp) * WEIGHT_UNITS) )
 		{
 			pCharMsg->SysMessageDefault(DEFMSG_CONT_FULL_WEIGHT);
 			return false;
