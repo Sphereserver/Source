@@ -682,7 +682,7 @@ void CChar::NotoSave_Add( CChar * pChar, NOTO_TYPE value, NOTO_TYPE color  )
 	ADDTOCALLSTACK("CChar::NotoSave_Add");
 	if ( !pChar )
 		return;
-	CGrayUID uid = static_cast<CGrayUID>(pChar->GetUID());
+	CGrayUID uid = pChar->GetUID();
 	if  ( m_notoSaves.size() )	// Checking if I already have him in the list, only if there 's any list.
 	{
 		for (std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); ++it)
@@ -2480,7 +2480,7 @@ bool CChar::Fight_Attack( const CChar *pCharTarg, bool btoldByMaster )
 {
 	ADDTOCALLSTACK("CChar::Fight_Attack");
 
-	if ( !pCharTarg || pCharTarg == this || pCharTarg->IsDisconnected() || !CanSee(pCharTarg) || pCharTarg->IsStatFlag(STATF_DEAD) || IsStatFlag(STATF_DEAD) )
+	if ( !pCharTarg || pCharTarg == this || pCharTarg->IsStatFlag(STATF_DEAD) || IsStatFlag(STATF_DEAD) )
 	{
 		// Not a valid target.
 		Fight_Clear(pCharTarg, true);
@@ -2490,6 +2490,11 @@ bool CChar::Fight_Attack( const CChar *pCharTarg, bool btoldByMaster )
 	{
 		SysMessageDefault(DEFMSG_MSG_GUEST);
 		Fight_Clear(pCharTarg);
+		return false;
+	}
+	else if ( m_pNPC && !CanSee(pCharTarg) )
+	{
+		Skill_Start(SKILL_NONE);
 		return false;
 	}
 
@@ -2598,7 +2603,7 @@ void CChar::Fight_HitTry()
 bool CChar::Attacker_Add( CChar * pChar, INT64 threat )
 {
 	ADDTOCALLSTACK("CChar::Attacker_Add");
-	CGrayUID uid = static_cast<CGrayUID>(pChar->GetUID());
+	CGrayUID uid = pChar->GetUID();
 	if ( m_lastAttackers.size() )	// Must only check for existing attackers if there are any attacker already.
 	{
 		for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it )

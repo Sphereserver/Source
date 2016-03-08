@@ -3238,6 +3238,8 @@ TRIGRET_TYPE CChar::CheckLocation( bool fStanding )
 
 					OnTakeDamage( g_Cfg.GetSpellEffect(SPELL_Fire_Field, iSkillLevel), NULL, DAMAGE_FIRE|DAMAGE_GENERAL, 0, 100, 0, 0, 0 );
 					Sound(0x15f);	// fire noise
+					if ( m_pNPC && fStanding )
+						NPC_Act_Runto();	// run away from the threat
 				}
 				continue;
 			case IT_SPELL:
@@ -3252,11 +3254,15 @@ TRIGRET_TYPE CChar::CheckLocation( bool fStanding )
 				{
 					OnSpellEffect(static_cast<SPELL_TYPE>(RES_GET_INDEX(pItem->m_itSpell.m_spell)), pItem->m_uidLink.CharFind(), static_cast<int>(pItem->m_itSpell.m_spelllevel), pItem);
 					bSpellHit = true;
+					if ( m_pNPC && fStanding )
+						NPC_Act_Runto();	// run away from the threat
 				}
 				continue;
 			case IT_TRAP:
 			case IT_TRAP_ACTIVE:
 				OnTakeDamage( pItem->Use_Trap(), NULL, DAMAGE_HIT_BLUNT|DAMAGE_GENERAL );
+				if ( m_pNPC && fStanding )
+					NPC_Act_Runto();	// run away from the threat
 				continue;
 			case IT_SWITCH:
 				if ( pItem->m_itSwitch.m_fStep )
