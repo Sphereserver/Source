@@ -4611,15 +4611,6 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		return false;
 	}
 
-	if ( IsType(IT_SPELL) && RES_GET_INDEX(m_itSpell.m_spell) == spell )
-	{
-		// On OSI the field item won't be placed if it overlap any other field spell already casted.
-		// But for backward compatibility, let's just override the old item with the new one, and only if it's the same field spell.
-		// This will prevent weird exploits, like cast many fire fields at same P to cause more damage.
-		Delete();
-		return true;
-	}
-
 	WORD uDamage = 0;
 	switch ( spell )
 	{
