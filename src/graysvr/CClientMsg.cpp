@@ -1846,7 +1846,7 @@ void CClient::addPlayerSee( const CPointMap & ptold )
 	AreaItems.SetSearchSquare(true);
 	DWORD	dSeeItems = 0;
 
-	if (GetNetState()->isClientVersion(MINCLIVER_HS) || GetNetState()->isClientSA())
+	if (GetNetState()->isClientVersion(MINCLIVER_HS) || GetNetState()->isClientEnhanced())
 	{
 		for (;;)
 		{
@@ -2410,13 +2410,13 @@ bool CClient::addShopMenuBuy( CChar * pVendor )
 		return false;
 
 	// Get item list
-	addItem(pContainer);	//isso ta enviando tooltip completo do item ao inves de tooltip so com o nome
+	addItem(pContainer);	// sending the full tooltip, instead of the one with just the name
 	addContents(pContainer, false, false, true);
 	addItem(pContainerExtra);
 
 	// Get price list
 	PacketVendorBuyList *cmd = new PacketVendorBuyList();
-	size_t count = cmd->fillContainer(pContainer, pVendor->NPC_GetVendorMarkup(m_pChar));
+	size_t count = cmd->fillContainer(pContainer, pVendor->NPC_GetVendorMarkup(m_pChar), GetNetState()->isClientEnhanced());
 	cmd->push(this);
 
 	// Open gump
@@ -3526,7 +3526,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 
 	if (propertyList->isEmpty() == false)
 	{
-		if (bShop && GetNetState()->isClientSA())
+		if (bShop && GetNetState()->isClientEnhanced())
 		{
 			new PacketPropertyList(this, propertyList);
 		}

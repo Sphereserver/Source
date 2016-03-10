@@ -2644,7 +2644,7 @@ void CObjBase::ResendOnEquip( bool fAllClients )
 	ClientIterator it;
 	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
-		if ( fAllClients == false && !pClient->GetNetState()->isClientSA() )
+		if ( fAllClients == false && !pClient->GetNetState()->isClientEnhanced() )
 			continue;
 		pChar = pClient->GetChar();
 		if ( pChar == NULL )

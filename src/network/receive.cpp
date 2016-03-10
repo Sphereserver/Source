@@ -84,7 +84,7 @@ bool PacketCreate::onReceive(NetState* net, bool hasExtraSkill)
 	RACE_TYPE rtRace = RACETYPE_HUMAN; // Human
 
 	// determine which race the client has selected
-	if (net->isClientVersion(MINCLIVER_SA) || net->isClientSA())
+	if (net->isClientVersion(MINCLIVER_SA) || net->isClientEnhanced())
 	{
 		/*
 			m_sex values from clients 7.0.0.0+
@@ -385,7 +385,7 @@ size_t PacketItemDropReq::getExpectedLength(NetState* net, Packet* packet)
 	UNREFERENCED_PARAMETER(packet);
 
 	// different size depending on client
-	if (net != NULL && (net->isClientVersion(MINCLIVER_ITEMGRID) || net->isClientKR() || net->isClientSA()))
+	if (net != NULL && (net->isClientVersion(MINCLIVER_ITEMGRID) || net->isClientKR() || net->isClientEnhanced()))
 		return 15;
 
 	return 14;
@@ -407,7 +407,7 @@ bool PacketItemDropReq::onReceive(NetState* net)
 	BYTE z = readByte();
 
 	BYTE grid = 0;
-	if ( net->isClientVersion(MINCLIVER_ITEMGRID) || net->isClientKR() || net->isClientSA() )
+	if ( net->isClientVersion(MINCLIVER_ITEMGRID) || net->isClientKR() || net->isClientEnhanced() )
 	{
 		grid = readByte();
 
