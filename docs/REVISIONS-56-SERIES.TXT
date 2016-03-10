@@ -2965,3 +2965,7 @@ Changed: WOPColor .ini setting now will inherit color from char SPEECHCOLOR valu
 08-03-2016, Coruja
 Fixed: NPCs permanently adding target to ignore list when they can't see it.
 Fixed: NPCs getting stuck over traps / field spells without walk away.
+
+10-03-2016, Coruja
+Fixed: Typedef t_booze returning console error when used more than once.
+Changed: SRC on char trigger @EffectAdd now will point to the spell caster instead target.

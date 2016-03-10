@@ -477,18 +477,16 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 {
 	ADDTOCALLSTACK("CChar::Spell_Effect_Remove");
 	// we are removing the spell effect.
-	ASSERT(pSpell);
+	// equipped wands do not confer effect.
+	if ( !pSpell || !pSpell->IsTypeSpellable() || pSpell->IsType(IT_WAND) )
+		return;
 
-	if ( !pSpell->IsTypeSpellable() )	// can this item have a spell effect ?
-		return;
-	if ( !pSpell->m_itSpell.m_spell )
-		return;
-	if ( pSpell->IsType(IT_WAND))	// equipped wands do not confer effect.
+	SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pSpell->m_itSpell.m_spell));
+	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
+	if ( !spell || !pSpellDef )
 		return;
 
 	CClient *pClient = GetClient();
-	SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pSpell->m_itSpell.m_spell));
-	CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
 	short iStatEffect = static_cast<short>(pSpell->m_itSpell.m_spelllevel);
 
 	switch (pSpellDef->m_idLayer)	// spell effects that are common for the same layer fits here
@@ -839,14 +837,13 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 	if ( !pSpell || !pSpell->IsTypeSpellable() || pSpell->IsType(IT_WAND) )
 		return;
 
-	CClient *pClient = GetClient();
-	CChar *pCaster = pSpell->m_uidLink.CharFind();
 	SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pSpell->m_itSpell.m_spell));
-	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
-
-	if ( !pSpellDef || !spell )
+	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
+	if ( !spell || !pSpellDef )
 		return;
 
+	CClient *pClient = GetClient();
+	CChar *pCaster = pSpell->m_uidLink.CharFind();
 	WORD iStatEffect = pSpell->m_itSpell.m_spelllevel;
 	WORD iTimerEffect = static_cast<WORD>(maximum(pSpell->GetTimerAdjusted(), 0));
 
@@ -855,7 +852,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 		CScriptTriggerArgs Args;
 		Args.m_pO1 = pSpell;
 		Args.m_iN1 = spell;
-		TRIGRET_TYPE iRet = OnTrigger(CTRIG_EffectAdd, this, &Args);
+		TRIGRET_TYPE iRet = OnTrigger(CTRIG_EffectAdd, pCaster, &Args);
 		if (iRet == TRIGRET_RET_TRUE)	// Return 1: We don't want nothing to happen, removing memory also.
 		{
 			pSpell->Delete(true);
@@ -1519,10 +1516,8 @@ bool CChar::Spell_Equip_OnTick( CItem * pItem )
 	ASSERT(pItem);
 
 	SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(pItem->m_itSpell.m_spell));
-
 	int iCharges = pItem->m_itSpell.m_spellcharges;
 	int iLevel = pItem->m_itSpell.m_spelllevel;
-
 
 	switch ( spell )
 	{
@@ -1530,39 +1525,32 @@ bool CChar::Spell_Equip_OnTick( CItem * pItem )
 		case SPELL_Wine:	// 91 = mild drunkeness ?
 		case SPELL_Liquor:	// 92 = extreme drunkeness ?
 		{
-			if ( iLevel <= 0 )
-				return false;
+			// Chance to get sober quickly
+			if ( 10 > Calc_GetRandVal(100) )
+				pItem->m_itSpell.m_spellcharges--;
 
-			// Change to get sober
-			if ( 10 > Calc_GetRandVal(100))
-				return false;
+			Stat_SetVal(STAT_INT, maximum(0, Stat_GetVal(STAT_INT) - 1));
+			Stat_SetVal(STAT_DEX, maximum(0, Stat_GetVal(STAT_DEX) - 1));
 
-			Stat_SetVal( STAT_INT, maximum(0, Stat_GetVal(STAT_INT)-1) );
-			Stat_SetVal( STAT_DEX, maximum(0, Stat_GetVal(STAT_DEX)-1) );
-
-			if ( !Calc_GetRandVal(3))
+			if ( !Calc_GetRandVal(3) )
 			{
-				Speak( g_Cfg.GetDefaultMsg( DEFMSG_SPELL_ALCOHOL_HIC ) );
-				if ( !IsStatFlag(STATF_OnHorse))
+				Speak(g_Cfg.GetDefaultMsg(DEFMSG_SPELL_ALCOHOL_HIC));
+				if ( !IsStatFlag(STATF_OnHorse) )
 				{
-					DIR_TYPE dir = static_cast<DIR_TYPE>(Calc_GetRandVal(8));
-					UpdateDir( dir );
-					UpdateAnimate( ANIM_BOW );
+					UpdateDir(static_cast<DIR_TYPE>(Calc_GetRandVal(8)));
+					UpdateAnimate(ANIM_BOW);
 				}
 			}
 
 			// We will have this effect again
-			//pItem->m_itSpell.m_spelllevel -= 10;
-			pItem->SetTimeout( 5*TICK_PER_SEC );
+			pItem->SetTimeout(5 * TICK_PER_SEC);
 		}
 		break;
 
 		case SPELL_Regenerate:
 		{
 			if (iCharges <= 0 || iLevel <= 0)
-			{
-				return(false);
-			}
+				return false;
 
 			// Gain HP.
 			UpdateStatVal(STAT_STR, static_cast<short>(g_Cfg.GetSpellEffect(spell, iLevel)));
@@ -1593,7 +1581,7 @@ bool CChar::Spell_Equip_OnTick( CItem * pItem )
 			static const int sm_iPoisonMax[] = { 2, 4, 6, 8, 10 };
 
 			if (iCharges <= 0)
-				return(false);
+				return false;
 
 			int iDmg = 0;
 			// The poison in your body is having an effect.
@@ -1729,13 +1717,13 @@ bool CChar::Spell_Equip_OnTick( CItem * pItem )
 		break;
 
 	default:
-		return( false );
+		return false;
 	}
 
 	// Total number of ticks to come back here.
-	if ( --pItem->m_itSpell.m_spellcharges )
-		return( true );
-	return( false );
+	if ( --pItem->m_itSpell.m_spellcharges > 0 )
+		return true;
+	return false;
 }
 
 CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSkillLevel, int iDuration, CObjBase * pSrc, bool bEquip )

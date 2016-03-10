@@ -963,28 +963,16 @@ void CChar::Use_Drink( CItem * pItem )
 
 	if ( pItem->IsType(IT_BOOZE) )
 	{
-		// Beer wine and liquor. vary strength of effect. m_itBooze.m_EffectStr
-		int iStrength = Calc_GetRandVal(300) + 10;
+		// Beer wine and liquor. vary strength of effect.
+		int iAlcohol = Calc_GetRandVal(4);
 
-		// Create ITEMID_PITCHER if drink a pitcher.
-		// GLASS or MUG or Bottle ?
-
-		// Get you Drunk, but check to see if we already are drunk
 		CItem *pDrunkLayer = LayerFind(LAYER_FLAG_Drunk);
-		if ( pDrunkLayer )
-		{
-			// lengthen/strengthen the effect
-			Spell_Effect_Remove(pDrunkLayer);
-			pDrunkLayer->m_itSpell.m_spellcharges += 10;
-			if ( pDrunkLayer->m_itSpell.m_spelllevel < 500 )
-				pDrunkLayer->m_itSpell.m_spelllevel += static_cast<WORD>(iStrength);
-			Spell_Effect_Add(pDrunkLayer);
-		}
-		else
-		{
-			CItem *pSpell = Spell_Effect_Create(SPELL_Liquor, LAYER_FLAG_Drunk, iStrength, 15 * TICK_PER_SEC, this);
-			pSpell->m_itSpell.m_spellcharges = 10;	// how long to last.
-		}
+		if ( !pDrunkLayer )
+			pDrunkLayer = Spell_Effect_Create(SPELL_Liquor, LAYER_FLAG_Drunk, 0, 5 * TICK_PER_SEC, this);
+
+		pDrunkLayer->m_itSpell.m_spellcharges += iAlcohol;
+		if ( pDrunkLayer->m_itSpell.m_spellcharges > 60 )
+			pDrunkLayer->m_itSpell.m_spellcharges = 60;
 	}
 
 	if ( pItem->IsType(IT_POTION) )
