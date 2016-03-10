@@ -2515,7 +2515,7 @@ struct CUOMultiItemRec // (Multi.mul)
 	WORD  m_wTileID;	// ITEMID_TYPE = Index to tile CUOItemTypeRec/CUOItemTypeRec2
 	signed short m_dx;	// signed delta.
 	signed short m_dy;
-	signed char m_dz;
+	signed short m_dz;
 	DWORD m_visible;	// 0 or 1 (non-visible items are things like doors and signs)
 
 	ITEMID_TYPE GetDispID() const
@@ -2532,7 +2532,7 @@ struct CUOMultiItemRec2 // (Multi.mul, High Seas+)
 	WORD  m_wTileID;	// ITEMID_TYPE = Index to tile CUOItemTypeRec/CUOItemTypeRec2
 	signed short m_dx;	// signed delta.
 	signed short m_dy;
-	signed char m_dz;
+	signed short m_dz;
 	DWORD m_visible;	// 0 or 1 (non-visible items are things like doors and signs)
 	DWORD m_unknown;	// unknown data
 
