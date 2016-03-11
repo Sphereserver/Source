@@ -2972,3 +2972,4 @@ Changed: SRC on char trigger @EffectAdd now will point to the spell caster inste
 
 11-03-2016, Coruja
 Fixed: Magic Reflection spell effect not working correctly.
+Fixed: Poison / Poison Field spells not calling trigger @EffectAdd on chars.

@@ -987,13 +987,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			return;
 		}
 		case LAYER_FLAG_Poison:
-			StatFlag_Set(STATF_Poisoned);
-			UpdateModeFlag();
-			if (pClient && IsSetOF(OF_Buffs))
-			{
-				pClient->removeBuff(BI_POISON);
-				pClient->addBuff(BI_POISON, 1017383, 1070722, 2);
-			}
+			SetPoison((pCaster->Skill_GetBase(SKILL_MAGERY) + pCaster->Skill_GetBase(SKILL_POISONING)) / 2, iStatEffect / 50, pCaster);
 			return;
 		case LAYER_SPELL_Night_Sight:
 			StatFlag_Set(STATF_NightSight);
@@ -3281,9 +3275,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 		case SPELL_Poison:
 		case SPELL_Poison_Field:
-			if ( !fPotion )
-				Effect(EFFECT_OBJ, iEffectID, this, 0, 15, fExplode, iColor, iRender);
-			SetPoison((pCharSrc->Skill_GetBase(SKILL_MAGERY) + pCharSrc->Skill_GetBase(SKILL_POISONING)) / 2, iSkillLevel / 50, pCharSrc);
+			Spell_Effect_Create( spell, LAYER_FLAG_Poison, iSkillLevel, iDuration, pCharSrc );
 			break;
 
 		case SPELL_Cure:
