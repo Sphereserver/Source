@@ -4549,9 +4549,10 @@ bool CItem::SetMagicLock( CChar * pCharSrc, int iSkillLevel )
 	return( true );
 }
 
-bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, CItem * pSourceItem )
+bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, CItem * pSourceItem, bool bReflecting )
 {
 	ADDTOCALLSTACK("CItem::OnSpellEffect");
+	UNREFERENCED_PARAMETER(bReflecting);	// items are not affected by Magic Reflection
 	// A spell is cast on this item.
 	// ARGS:
 	//  iSkillLevel = 0-1000 = difficulty. may be slightly larger . how advanced is this spell (might be from a wand)

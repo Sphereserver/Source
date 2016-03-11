@@ -3008,7 +3008,7 @@ int CChar::Spell_CastStart()
 }
 
 
-bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, CItem * pSourceItem )
+bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, CItem * pSourceItem, bool bReflecting )
 {
 	ADDTOCALLSTACK("CChar::OnSpellEffect");
 	// Spell has a direct effect on this char.
@@ -3140,7 +3140,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 	if ( pSpellDef->IsSpellType(SPELLFLAG_HARM) )
 	{
-		if ( pCharSrc == this && !IsSetMagicFlags(MAGICF_CANHARMSELF) )
+		if ( pCharSrc == this && !IsSetMagicFlags(MAGICF_CANHARMSELF) && !bReflecting )
 			return false;
 
 		if ( IsStatFlag(STATF_INVUL) )
@@ -3155,7 +3155,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			return false;
 		}
 
-		if ( !OnAttackedBy(pCharSrc, 1, false, !(pSpellDef->IsSpellType(SPELLFLAG_FIELD))) )
+		if ( !OnAttackedBy(pCharSrc, 1, false, !pSpellDef->IsSpellType(SPELLFLAG_FIELD)) )
 			return false;
 
 		// Check if the spell can be reflected
@@ -3174,7 +3174,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				}
 				else
 				{
-					pCharSrc->OnSpellEffect( spell, NULL, iSkillLevel, pSourceItem );	// source can't be pCharSrc because it won't make effect if MAGICF_CANHARMSELF is disabled
+					pCharSrc->OnSpellEffect(spell, pCharSrc, iSkillLevel, pSourceItem, true);
 					return true;
 				}
 			}
