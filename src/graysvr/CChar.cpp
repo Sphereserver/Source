@@ -2781,86 +2781,88 @@ do_default:
 		case CHC_ACTION:
 			return Skill_Start( g_Cfg.FindSkillKey( s.GetArgStr()));
 		case CHC_ATTACKER:
+		{
+			if ( strlen(pszKey) > 8 )
 			{
-				if ( strlen( pszKey ) > 8 )
+				pszKey += 8;
+				int attackerIndex = m_lastAttackers.size();
+				if ( *pszKey == '.' )
 				{
-					pszKey += 8;
-					int attackerIndex = m_lastAttackers.size();
-					if ( *pszKey == '.' )
+					pszKey++;
+					if ( !strnicmp(pszKey, "CLEAR", 5) )
 					{
-						pszKey++;
-						if( !strnicmp(pszKey, "CLEAR", 5) )
+						if ( m_lastAttackers.size() )
+							Fight_ClearAll();
+						return true;
+					}
+					else if ( !strnicmp(pszKey, "DELETE", 6) )
+					{
+						if ( m_lastAttackers.size() )
 						{
-							if (m_lastAttackers.size())
-								Fight_ClearAll();
-							return true;
-						}else if ( !strnicmp(pszKey, "DELETE", 6) )
-						{
-							if (m_lastAttackers.size())
-							{
-								CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
-								Attacker_Delete(pChar, false, ATTACKER_CLEAR_SCRIPT);
-							}
-							return true;
-						}else if ( !strnicmp(pszKey, "ADD", 3 ) )
-						{
-							CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
-							if (! pChar )
-								return false;
-							Fight_Attack(pChar);
-							return true;
+							CChar *pChar = static_cast<CChar *>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
+							Attacker_Delete(pChar, false, ATTACKER_CLEAR_SCRIPT);
 						}
-						else if (!strnicmp(pszKey, "TARGET", 6))
+						return true;
+					}
+					else if ( !strnicmp(pszKey, "ADD", 3) )
+					{
+						CChar *pChar = static_cast<CChar *>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
+						if ( !pChar )
+							return false;
+						Fight_Attack(pChar);
+						return true;
+					}
+					else if ( !strnicmp(pszKey, "TARGET", 6) )
+					{
+						CChar *pChar = static_cast<CChar *>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
+						if ( !pChar || pChar == this )	// can't set ourself as target
 						{
-							CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
-							if (!pChar || pChar == this)	// We canno't set ourselves as target.
-							{
-								m_Fight_Targ.InitUID();
-								return false;
-							}
-							m_Fight_Targ = pChar->GetUID();
-							return true;
+							m_Fight_Targ.InitUID();
+							return false;
 						}
-						else
-						{
-							attackerIndex = Exp_GetVal(pszKey);
-						}
+						m_Fight_Targ = pChar->GetUID();
+						return true;
+					}
 
-						SKIP_SEPARATORS(pszKey);
-						if ( attackerIndex < Attacker() )
+					attackerIndex = Exp_GetVal(pszKey);
+					if ( attackerIndex < 0 )
+						return false;
+
+					SKIP_SEPARATORS(pszKey);
+					if ( attackerIndex < Attacker() )
+					{
+						CChar *pChar = Attacker_GetUID(attackerIndex);
+						if ( !strnicmp(pszKey, "DAM", 3) )
 						{
-							CChar * pChar = Attacker_GetUID(attackerIndex);
-							if( !strnicmp(pszKey, "DAM", 3) )
-							{
-								Attacker_SetDam( pChar, s.GetArgVal());
-								return true;
-							}
-							else if( !strnicmp(pszKey, "ELAPSED", 7) )
-							{
-								Attacker_SetElapsed( pChar , s.GetArgVal() );
-								return true;
-							}
-							else if ( !strnicmp(pszKey, "THREAT", 6 ) )
-							{
-								Attacker_SetThreat( pChar , s.GetArgVal() );
-								return true;
-							}
-							else if (!strnicmp(pszKey, "DELETE", 6))
-							{
-								Attacker_Delete(pChar, false, ATTACKER_CLEAR_SCRIPT);
-								return true;
-							}
-							else if (!strnicmp(pszKey, "IGNORE", 6))
-							{
-								bool fIgnore = s.GetArgVal() < 1 ? 0 : 1;
-								Attacker_SetIgnore(pChar, fIgnore);
-								return true;
-							}
+							Attacker_SetDam(pChar, s.GetArgVal());
+							return true;
+						}
+						else if ( !strnicmp(pszKey, "ELAPSED", 7) )
+						{
+							Attacker_SetElapsed(pChar, s.GetArgVal());
+							return true;
+						}
+						else if ( !strnicmp(pszKey, "THREAT", 6) )
+						{
+							Attacker_SetThreat(pChar, s.GetArgVal());
+							return true;
+						}
+						else if ( !strnicmp(pszKey, "DELETE", 6) )
+						{
+							Attacker_Delete(pChar, false, ATTACKER_CLEAR_SCRIPT);
+							return true;
+						}
+						else if ( !strnicmp(pszKey, "IGNORE", 6) )
+						{
+							bool fIgnore = s.GetArgVal() < 1 ? 0 : 1;
+							Attacker_SetIgnore(pChar, fIgnore);
+							return true;
 						}
 					}
 				}
-				return false;
-			}break;
+			}
+			return false;
+		}
 		case CHC_BODY:
 			SetID(static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType( RES_CHARDEF, s.GetArgStr())));
 			break;
@@ -2921,30 +2923,36 @@ do_default:
 			break;
 
 		case CHC_GOLD:
-			{
-				int currentGold = ContentCount(RESOURCE_ID(RES_TYPEDEF, IT_GOLD));
-				int newGold = static_cast<int>(s.GetArgVal());
+		{
+			int currentGold = ContentCount(RESOURCE_ID(RES_TYPEDEF, IT_GOLD));
+			int newGold = static_cast<int>(s.GetArgVal());
 
-				if ( newGold >= 0 )
+			if ( newGold >= 0 )
+			{
+				if ( newGold < currentGold )
 				{
-					if( newGold < currentGold )
-					{
-						ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), currentGold - newGold);
-					}
-					else if( newGold > currentGold )
-					{
-						int amount = newGold - currentGold;
-						while ( amount > 0 )
-						{
-							CItem *pItem = CItem::CreateBase(ITEMID_GOLD_C1);
-							pItem->SetAmount(minimum(amount, pItem->GetMaxAmount()));
-							amount -= pItem->GetAmount();
-							GetBank()->ContentAdd(pItem);
-						}
-					}
-					UpdateStatsFlag();
+					ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), currentGold - newGold);
 				}
-			} break;
+				else if ( newGold > currentGold )
+				{
+					CItem *pGold = NULL;
+					CItemContainer *pBank = GetBank();
+					if ( !pBank )
+						return false;
+
+					int amount = newGold - currentGold;
+					while ( amount > 0 )
+					{
+						pGold = CItem::CreateBase(ITEMID_GOLD_C1);
+						pGold->SetAmount(minimum(amount, pGold->GetMaxAmount()));
+						amount -= pGold->GetAmount();
+						pBank->ContentAdd(pGold);
+					}
+				}
+				UpdateStatsFlag();
+			}
+			break;
+		}
 
 		case CHC_HITPOINTS:
 		case CHC_HITS:
