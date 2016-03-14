@@ -631,6 +631,21 @@ try_dec:
 
 					} break;
 
+					case INTRINSIC_ARCSIN:
+					{
+						if ( pszArgs && *pszArgs )
+						{
+							iCount = 1;
+							iResult = static_cast<INT64>(asin(static_cast<double>(GetVal(pszArgs))));
+						}
+						else
+						{
+							iCount = 0;
+							iResult = 0;
+						}
+
+					} break;
+
 					case INTRINSIC_COS:
 					{
 						if ( pszArgs && *pszArgs )
@@ -646,12 +661,42 @@ try_dec:
 
 					} break;
 
+					case INTRINSIC_ARCCOS:
+					{
+						if ( pszArgs && *pszArgs )
+						{
+							iCount = 1;
+							iResult = static_cast<INT64>(acos(static_cast<double>(GetVal(pszArgs))));
+						}
+						else
+						{
+							iCount = 0;
+							iResult = 0;
+						}
+
+					} break;
+
 					case INTRINSIC_TAN:
 					{
 						if ( pszArgs && *pszArgs )
 						{
 							iCount = 1;
 							iResult = static_cast<INT64>(tan(static_cast<double>(GetVal(pszArgs))));
+						}
+						else
+						{
+							iCount = 0;
+							iResult = 0;
+						}
+
+					} break;
+
+					case INTRINSIC_ARCTAN:
+					{
+						if ( pszArgs && *pszArgs )
+						{
+							iCount = 1;
+							iResult = static_cast<INT64>(atan(static_cast<double>(GetVal(pszArgs))));
 						}
 						else
 						{
