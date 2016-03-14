@@ -1707,19 +1707,16 @@ struct CArmorLayerType
 	const LAYER_TYPE * m_pLayers;
 };
 
-// OSI doesn't damage ARMOR_BACK and ARMOR_FEET at all.
-// But for backward compatibility, I decreased ARMOR_CHEST (-10%) and increased
-// ARMOR_BACK (+5%) and ARMOR_FEET (+5%) just to keep them getting some damage
 static const CArmorLayerType sm_ArmorLayers[ARMOR_QTY] =	// layers covering the armor zone.
 {
 	{ 15,	sm_ArmorLayerHead },	// ARMOR_HEAD
 	{ 7,	sm_ArmorLayerNeck },	// ARMOR_NECK
-	{ 5,	sm_ArmorLayerBack },	// ARMOR_BACK
-	{ 25,	sm_ArmorLayerChest },	// ARMOR_CHEST
+	{ 0,	sm_ArmorLayerBack },	// ARMOR_BACK
+	{ 35,	sm_ArmorLayerChest },	// ARMOR_CHEST
 	{ 14,	sm_ArmorLayerArms },	// ARMOR_ARMS
 	{ 7,	sm_ArmorLayerHands },	// ARMOR_HANDS
 	{ 22,	sm_ArmorLayerLegs },	// ARMOR_LEGS
-	{ 5,	sm_ArmorLayerFeet }		// ARMOR_FEET
+	{ 0,	sm_ArmorLayerFeet }		// ARMOR_FEET
 };
 
 // When armor is added or subtracted check this.
@@ -1732,15 +1729,10 @@ int CChar::CalcArmorDefense() const
 	int iDefenseTotal = 0;
 	int iArmorCount = 0;
 	WORD ArmorRegionMax[ARMOR_QTY];
-#ifndef _WIN32
-	for (int i_tmpN=0; i_tmpN < ARMOR_QTY; i_tmpN++)
-	{
-		ArmorRegionMax[i_tmpN]=0;
-	}
-#else
-	memset( ArmorRegionMax, 0, sizeof(ArmorRegionMax));
-#endif
-	for ( CItem* pItem=GetContentHead(); pItem!=NULL; pItem=pItem->GetNext())
+	for ( int i = 0; i < ARMOR_QTY; i++ )
+		ArmorRegionMax[i] = 0;
+
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
 		WORD iDefense = static_cast<WORD>(pItem->Armor_GetDefense());
 
@@ -1829,25 +1821,24 @@ int CChar::CalcArmorDefense() const
 				}
 				break;
 			case LAYER_HAND2:
-				// Shield effect.
-				if ( pItem->IsType( IT_SHIELD ))
+				if ( pItem->IsType(IT_SHIELD) )
 				{
-					iDefenseTotal += (iDefense) * ( Skill_GetAdjusted(SKILL_PARRYING) / 10 );
+					if ( IsSetCombatFlags(COMBAT_STACKARMOR) )
+						ArmorRegionMax[ ARMOR_HANDS ] += iDefense;
+					else
+						ArmorRegionMax[ ARMOR_HANDS ] = maximum( ArmorRegionMax[ ARMOR_HANDS ], iDefense );
 				}
-				continue;
+				break;
 			default:
 				continue;
 		}
-
-		iArmorCount ++;
+		iArmorCount++;
 	}
-	
+
 	if ( iArmorCount )
 	{
-		for ( int i=0; i<ARMOR_QTY; i++ )
-		{
+		for ( int i = 0; i < ARMOR_QTY; i++ )
 			iDefenseTotal += sm_ArmorLayers[i].m_wCoverage * ArmorRegionMax[i];
-		}
 	}
 
 	return maximum(( iDefenseTotal / 100 ) + m_ModAr, 0);
