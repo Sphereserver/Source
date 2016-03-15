@@ -725,7 +725,7 @@ PacketDragAnimation::PacketDragAnimation(const CChar* source, const CItem* item,
 bool PacketDragAnimation::canSendTo(const NetState* state) const
 {
 	// don't send to SA clients
-	if (state->isClientSA() || state->isClientVersion(MINCLIVER_SA))
+	if (state->isClientEnhanced() || state->isClientVersion(MINCLIVER_SA))
 		return false;
 
 	return PacketSend::canSendTo(state);
@@ -746,7 +746,7 @@ PacketContainerOpen::PacketContainerOpen(const CClient* target, const CObjBase* 
 	writeInt16(static_cast<WORD>(gump));
 
 	// HS clients needs an extra 'container type' byte (0x00 for vendors, 0x7D for spellbooks/containers)
-	if (target->GetNetState()->isClientVersion(MINCLIVER_HS) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA())
+	if (target->GetNetState()->isClientVersion(MINCLIVER_HS) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientEnhanced())
 	{
 		WORD ContType = IsVendorGump ? 0x00 : 0x7D;
 		writeInt16(ContType);
@@ -805,7 +805,7 @@ PacketItemContainer::PacketItemContainer(const CClient* target, const CItem* ite
 	writeInt16(pt.m_x);
 	writeInt16(pt.m_y);
 
-	if (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA())
+	if (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientEnhanced())
 		writeByte(item->GetContainedGridIndex());
 
 	writeInt32(container->GetUID());
@@ -831,7 +831,7 @@ void PacketItemContainer::completeForTarget(const CClient* target, const CItem* 
 {
 	ADDTOCALLSTACK("PacketItemContainer::completeForTarget");
 	
-	bool shouldIncludeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA());
+	bool shouldIncludeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientEnhanced());
 
 	if (getLength() >= 20)
 	{
@@ -1070,7 +1070,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 	initLength();
 	skip(2);
 
-	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA());
+	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientEnhanced());
 	bool isLayerSent[LAYER_HORSE];
 	memset(isLayerSent, 0, sizeof(isLayerSent));
 	m_count = 0;
@@ -1097,7 +1097,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 			if ( vendorItem == NULL || vendorItem->GetAmount() == 0 || vendorItem->IsType(IT_GOLD) )
 				continue;
 
-			amount = minimum(g_Cfg.m_iVendorMaxSell, amount);
+			amount = minimum(static_cast<WORD>(g_Cfg.m_iVendorMaxSell), amount);
 			pos.m_x = static_cast<signed short>(m_count + 1);
 			pos.m_y = 1;
 		}
@@ -1171,7 +1171,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItem* spell
 {
 	ADDTOCALLSTACK("PacketItemContents::PacketItemContents(2)");
 
-	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA());
+	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientEnhanced());
 
 	initLength();
 	skip(2);
@@ -1209,7 +1209,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItemContain
 {
 	ADDTOCALLSTACK("PacketItemContents::PacketItemContents(3)");
 
-	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA());
+	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientEnhanced());
 	const CSpellDef* spellDefinition;
 
 	initLength();
@@ -2005,7 +2005,7 @@ PacketVendorBuyList::PacketVendorBuyList(void) : PacketSend(XCMD_VendOpenBuy, 8,
 {
 }
 
-size_t PacketVendorBuyList::fillContainer(const CItemContainer* container, int convertFactor)
+size_t PacketVendorBuyList::fillContainer(const CItemContainer* container, int convertFactor, bool bIsClientEnhanced)
 {
 	ADDTOCALLSTACK("PacketVendorBuyList::fillContainer");
 
@@ -2018,7 +2018,8 @@ size_t PacketVendorBuyList::fillContainer(const CItemContainer* container, int c
 	size_t countpos = getPosition();
 	skip(1);
 
-	for (CItem* item = container->GetContentTail(); item != NULL; item = item->GetPrev())
+	// Enhanced Client wants the prices to be sent in reverse order
+	for ( CItem* item = (bIsClientEnhanced ? container->GetContentHead() : container->GetContentTail()) ; item != NULL ; item = (bIsClientEnhanced ? item->GetNext() : item->GetPrev()) )
 	{
 		CItemVendable* vendorItem = static_cast<CItemVendable *>(item);
 		if (vendorItem == NULL || vendorItem->GetAmount() == 0)
@@ -3108,7 +3109,7 @@ PacketCharacterList::PacketCharacterList(CClient* target) : PacketSend(XCMD_Char
 		flags |= 0x400;
 	writeInt32(flags);
 
-	if ( target->GetNetState()->isClientSA() )
+	if ( target->GetNetState()->isClientEnhanced() )
 	{
 		WORD iLastCharSlot = 0;
 		for ( size_t i = 0; i < count; i++ )
@@ -3282,7 +3283,7 @@ void PacketGumpDialog::writeControls(const CClient* target, const CGString* cont
 	ADDTOCALLSTACK("PacketGumpDialog::writeControls");
 
 	const NetState* net = target->GetNetState();
-	if (net->isClientVersion(MINCLIVER_COMPRESSDIALOG) || net->isClientKR() || net->isClientSA())
+	if (net->isClientVersion(MINCLIVER_COMPRESSDIALOG) || net->isClientKR() || net->isClientEnhanced())
 		writeCompressedControls(controls, controlCount, texts, textCount);
 	else
 		writeStandardControls(controls, controlCount, texts, textCount);
@@ -3538,7 +3539,7 @@ PacketArrowQuest::PacketArrowQuest(const CClient* target, int x, int y, int id) 
 	writeInt16(static_cast<WORD>(x));
 	writeInt16(static_cast<WORD>(y));
 
-	if (target->GetNetState()->isClientVersion(MINCLIVER_HS) || target->GetNetState()->isClientSA())
+	if (target->GetNetState()->isClientVersion(MINCLIVER_HS) || target->GetNetState()->isClientEnhanced())
 		writeInt32(id);
 	
 	trim();
@@ -3777,7 +3778,7 @@ PacketDisplayPopup::PacketDisplayPopup(const CClient* target, CGrayUID uid) : Pa
 	ADDTOCALLSTACK("PacketDisplayPopup::PacketDisplayPopup");
 
 	m_popupCount = 0;
-	m_newPacketFormat = target->GetNetState()->isClientKR() || target->GetNetState()->isClientSA() || target->GetNetState()->isClientVersion(MINCLIVER_NEWCONTEXTMENU);
+	m_newPacketFormat = target->GetNetState()->isClientKR() || target->GetNetState()->isClientEnhanced() || target->GetNetState()->isClientVersion(MINCLIVER_NEWCONTEXTMENU);
 
 	if (m_newPacketFormat)
 		writeInt16(2);

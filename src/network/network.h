@@ -167,7 +167,7 @@ public:
 
 	bool isClient3D(void) const { return m_clientType == CLIENTTYPE_3D; }; // is this a 3D client?
 	bool isClientKR(void) const { return m_clientType == CLIENTTYPE_KR; }; // is this a KR client?
-	bool isClientSA(void) const { return m_clientType == CLIENTTYPE_SA; }; // is this an SA client?
+	bool isClientEnhanced(void) const { return m_clientType == CLIENTTYPE_EC; }; // is this an enhanced client (SA)?
 
 	bool isCryptVersion(DWORD version) const { return m_clientVersion && m_clientVersion >= version; }; // check the minimum crypt version
 	bool isReportedVersion(DWORD version) const { return m_reportedVersion && m_reportedVersion >= version; }; // check the minimum reported verson

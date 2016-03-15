@@ -296,7 +296,7 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 		CPointMap pt(GetTopPoint());
 		pt.m_x += (*i)->m_item.m_dx;
 		pt.m_y += (*i)->m_item.m_dy;
-		pt.m_z += (*i)->m_item.m_dz;
+		pt.m_z += static_cast<signed char>((*i)->m_item.m_dz);
 
 		pItem->m_uidLink = GetUID();
 		pItem->ClrAttr(ATTR_DECAY|ATTR_CAN_DECAY);
@@ -433,7 +433,7 @@ void CItemMultiCustom::AddItem(CClient * pClientSrc, ITEMID_TYPE id, signed shor
 				if ( bFloor != pPrevComponents[i]->m_isFloor )
 					continue;
 
-				RemoveItem(NULL, pPrevComponents[i]->m_item.GetDispID(), pPrevComponents[i]->m_item.m_dx, pPrevComponents[i]->m_item.m_dy, pPrevComponents[i]->m_item.m_dz);
+				RemoveItem(NULL, pPrevComponents[i]->m_item.GetDispID(), pPrevComponents[i]->m_item.m_dx, pPrevComponents[i]->m_item.m_dy, static_cast<signed char>(pPrevComponents[i]->m_item.m_dz));
 			}
 		}
 	}
@@ -500,7 +500,7 @@ void CItemMultiCustom::AddStairs(CClient * pClientSrc, ITEMID_TYPE id, signed sh
 		if ( !pMultiItem->m_visible )
 			continue;
 
-		AddItem(NULL, pMultiItem->GetDispID(), x + pMultiItem->m_dx, y + pMultiItem->m_dy, z + pMultiItem->m_dz, iStairID);
+		AddItem(NULL, pMultiItem->GetDispID(), x + pMultiItem->m_dx, y + pMultiItem->m_dy, z + static_cast<signed char>(pMultiItem->m_dz), iStairID);
 	}
 	SendStructureTo(pClientSrc);
 }
@@ -642,7 +642,7 @@ bool CItemMultiCustom::RemoveStairs(Component * pStairComponent)
 
 			signed short x = (*i)->m_item.m_dx;
 			signed short y = (*i)->m_item.m_dy;
-			signed char z = (*i)->m_item.m_dz;
+			signed char z = static_cast<signed char>((*i)->m_item.m_dz);
 
 			i = m_designWorking.m_vectorComponents.erase(i);
 			m_designWorking.m_iRevision++;
@@ -885,7 +885,7 @@ void CItemMultiCustom::ResetStructure( CClient * pClientSrc )
 			if ( !pMultiItem->m_visible )
 				continue;
 
-			AddItem(NULL, pMultiItem->GetDispID(), pMultiItem->m_dx, pMultiItem->m_dy, pMultiItem->m_dz);
+			AddItem(NULL, pMultiItem->GetDispID(), pMultiItem->m_dx, pMultiItem->m_dy, static_cast<signed char>(pMultiItem->m_dz));
 		}
 	}
 
@@ -969,7 +969,7 @@ size_t CItemMultiCustom::GetComponentsAt(signed short x, signed short y, signed 
 		if ( pComponent->m_item.m_dx != x || pComponent->m_item.m_dy != y )
 			continue;
 
-		if ( z != SCHAR_MIN && GetPlane(pComponent->m_item.m_dz) != GetPlane(z) )
+		if ( z != SCHAR_MIN && GetPlane(static_cast<signed char>(pComponent->m_item.m_dz)) != GetPlane(z) )
 			continue;
 
 		pComponents[count++] = pComponent;
@@ -981,7 +981,7 @@ size_t CItemMultiCustom::GetComponentsAt(signed short x, signed short y, signed 
 const CPointMap CItemMultiCustom::GetComponentPoint(Component * pComp) const
 {
 	ADDTOCALLSTACK("CItemMultiCustom::GetComponentPoint");
-	return GetComponentPoint(pComp->m_item.m_dx, pComp->m_item.m_dy, pComp->m_item.m_dz);
+	return GetComponentPoint(pComp->m_item.m_dx, pComp->m_item.m_dy, static_cast<signed char>(pComp->m_item.m_dz));
 }
 
 const CPointMap CItemMultiCustom::GetComponentPoint(signed short dx, signed short dy, signed char dz) const
@@ -1450,7 +1450,7 @@ unsigned char CItemMultiCustom::GetPlane( signed char z )
 
 unsigned char CItemMultiCustom::GetPlane( Component * pComponent )
 {
-	return GetPlane(pComponent->m_item.m_dz);
+	return GetPlane(static_cast<signed char>(pComponent->m_item.m_dz));
 }
 
 signed char CItemMultiCustom::GetPlaneZ( unsigned char plane )

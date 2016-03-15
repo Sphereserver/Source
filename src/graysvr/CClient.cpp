@@ -552,7 +552,7 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			sVal.FormatVal( GetNetState()->isClientKR() );
 			break;
 		case CC_CLIENTISSA:
-			sVal.FormatVal( GetNetState()->isClientSA() );
+			sVal.FormatVal( GetNetState()->isClientEnhanced() );
 			break;
 		case CC_CLIENTVERSION:
 			{
