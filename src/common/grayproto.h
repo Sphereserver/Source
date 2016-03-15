@@ -1117,7 +1117,7 @@ enum GAMECLIENT_TYPE	// game client type, KR and SA are from the 0xE1 packet, ot
 	CLIENTTYPE_2D = 0x00,	// standard client
 	CLIENTTYPE_3D = 0x01,	// 3D client
 	CLIENTTYPE_KR = 0x02,	// KR client
-	CLIENTTYPE_SA = 0x03	// SA client
+	CLIENTTYPE_EC = 0x03	// Enhanced client
 };
 
 enum RACE_TYPE		// character race, used in new character creation (0x8D) and status (0x11) packets
