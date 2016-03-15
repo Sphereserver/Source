@@ -1370,10 +1370,10 @@ public:
 	void addCustomSpellbookOpen( CItem * pBook, DWORD gumpID );
 	bool addBookOpen( CItem * pBook );
 	void addBookPage( const CItem * pBook, size_t iPage, size_t iCount );
-	void addCharStatWindow( CGrayUID uid, bool fRequested = false ); // Opens the status window
-	void addHitsUpdate( CGrayUID uid );
-	void addManaUpdate( CGrayUID uid );
-	void addStamUpdate( CGrayUID uid );
+	void addCharStatWindow( CChar * pChar, bool fRequested = false ); // Opens the status window
+	void addHitsUpdate( CChar * pChar );
+	void addManaUpdate( CChar * pChar );
+	void addStamUpdate( CChar * pChar );
 	void addHealthBarUpdate( const CChar * pChar );
 	void addBondedStatus( const CChar * pChar, bool bIsDead );
 	void addSkillWindow(SKILL_TYPE skill, bool bFromInfo = false); // Opens the skills list

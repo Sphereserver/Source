@@ -2091,9 +2091,9 @@ effect_bounce:
 
 	// Apply damage
 	SoundChar(CRESND_GETHIT);
-	UpdateStatVal( STAT_STR, static_cast<short>(-iDmg));
+	UpdateStatVal(STAT_STR, static_cast<short>(-iDmg));
 	if ( pSrc->IsClient() )
-		pSrc->GetClient()->addHitsUpdate( GetUID() );	// always send updates to src
+		pSrc->GetClient()->addHitsUpdate(this);		// always send updates to src
 
 	if ( IsAosFlagEnabled( FEATURE_AOS_DAMAGE ) )
 	{

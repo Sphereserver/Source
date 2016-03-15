@@ -632,23 +632,19 @@ bool PacketCharStatusReq::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketCharStatusReq::onReceive");
 
-	skip(4); // 0xedededed
-	BYTE requestType = readByte();
-	CGrayUID targetSerial(readInt32());
-
 	CClient* client = net->getClient();
 	ASSERT(client);
-	if (client->GetChar() == NULL)
+	if ( !client->GetChar() )
 		return false;
 
+	skip(4);	// 0xedededed
+	BYTE requestType = readByte();
+	CGrayUID targetSerial = static_cast<CGrayUID>(readInt32());
+
 	if ( requestType == 4 )
-	{
-		client->addCharStatWindow(targetSerial, true);
-	}
+		client->addCharStatWindow(targetSerial.CharFind(), true);
 	else if ( requestType == 5 )
-	{
 		client->addSkillWindow(SKILL_QTY);
-	}
 	return true;
 }
 

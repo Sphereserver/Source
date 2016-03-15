@@ -2127,7 +2127,7 @@ void CClient::addReSync()
 	addLight();		// Current light level where I am.
 	addWeather();	// if any ...
 	addSpeedMode(m_pChar->m_pPlayer->m_speedMode);
-	addCharStatWindow(m_pChar->GetUID());
+	addCharStatWindow(m_pChar);
 }
 
 void CClient::addMap()
@@ -2179,40 +2179,39 @@ void CClient::UpdateStats()
 
 	if ( m_fUpdateStats & SF_UPDATE_STATUS )
 	{
-		addCharStatWindow( m_pChar->GetUID());
+		addCharStatWindow(m_pChar);
 		m_fUpdateStats = 0;
 	}
 	else
 	{
 		if ( m_fUpdateStats & SF_UPDATE_HITS )
 		{
-			addHitsUpdate( m_pChar->GetUID() );
+			addHitsUpdate(m_pChar);
 			m_fUpdateStats &= ~SF_UPDATE_HITS;
 		}
 		if ( m_fUpdateStats & SF_UPDATE_MANA )
 		{
-			addManaUpdate( m_pChar->GetUID() );
+			addManaUpdate(m_pChar);
 			m_fUpdateStats &= ~SF_UPDATE_MANA;
 		}
 
 		if ( m_fUpdateStats & SF_UPDATE_STAM )
 		{
-			addStamUpdate( m_pChar->GetUID() );
+			addStamUpdate(m_pChar);
 			m_fUpdateStats &= ~SF_UPDATE_STAM;
 		}
 	}
 }
 
-void CClient::addCharStatWindow( CGrayUID uid, bool fRequested ) // Opens the status window
+void CClient::addCharStatWindow( CChar *pChar, bool fRequested ) // Opens the status window
 {
 	ADDTOCALLSTACK("CClient::addCharStatWindow");
-	CChar * pChar = uid.CharFind();
 	if ( !pChar )
 		return;
 
 	if ( IsTrigUsed(TRIGGER_USERSTATS) )
 	{
-		CScriptTriggerArgs	Args(0, 0, uid.ObjFind());
+		CScriptTriggerArgs Args(0, 0, pChar);
 		Args.m_iN3 = fRequested;
 		if ( m_pChar->OnTrigger(CTRIG_UserStats, pChar, &Args) == TRIGRET_RET_TRUE )
 			return;
@@ -2220,28 +2219,27 @@ void CClient::addCharStatWindow( CGrayUID uid, bool fRequested ) // Opens the st
 
 	new PacketCharacterStatus(this, pChar);
 	if ( pChar == m_pChar )
+	{
 		m_fUpdateStats = 0;
-
-	if ( (pChar == m_pChar) && (pChar->m_pPlayer != NULL) && (PacketStatLocks::CanSendTo(GetNetState())) )
-		new PacketStatLocks(this, pChar);
+		if ( pChar->m_pPlayer && PacketStatLocks::CanSendTo(GetNetState()) )
+			new PacketStatLocks(this, pChar);
+	}
 }
 
-void CClient::addHitsUpdate( CGrayUID uid )
+void CClient::addHitsUpdate( CChar *pChar )
 {
 	ADDTOCALLSTACK("CClient::addHitsUpdate");
-	CChar * pChar = uid.CharFind();
-	if ( pChar == NULL )
+	if ( !pChar )
 		return;
 
 	PacketHealthUpdate cmd(pChar, pChar == m_pChar);
 	cmd.send(this);
 }
 
-void CClient::addManaUpdate( CGrayUID uid )
+void CClient::addManaUpdate( CChar *pChar )
 {
 	ADDTOCALLSTACK("CClient::addManaUpdate");
-	CChar * pChar = uid.CharFind();
-	if ( pChar == NULL )
+	if ( !pChar )
 		return;
 
 	PacketManaUpdate cmd(pChar, true);
@@ -2254,11 +2252,10 @@ void CClient::addManaUpdate( CGrayUID uid )
 	}
 }
 
-void CClient::addStamUpdate( CGrayUID uid )
+void CClient::addStamUpdate( CChar *pChar )
 {
 	ADDTOCALLSTACK("CClient::addStamUpdate");
-	CChar * pChar = uid.CharFind();
-	if ( pChar == NULL )
+	if ( !pChar )
 		return;
 
 	PacketStaminaUpdate cmd(pChar, true);
