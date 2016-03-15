@@ -678,7 +678,7 @@ int CItem::FixWeirdness()
 		// Make sure all my memories are valid !
 		if ( m_uidLink == GetUID() || m_uidLink.ObjFind() == NULL )
 		{
-			if ( m_type == IT_EQ_MEMORY_OBJ )
+			if ( m_type == IT_EQ_MEMORY_OBJ || m_type == IT_SPELL )
 			{
 				return 0; // get rid of it.	(this is not an ERROR per se)
 			}
