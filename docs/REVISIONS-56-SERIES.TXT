@@ -2985,3 +2985,7 @@ Changed: Slightly changed armor % distribution between layers to match old T2A s
 15-03-2016, Nolok
 Changed: Reverted ARGN2 on @Effect and @SpellEffect to be Read/Write, since someone still may need it, but keep in mind that effect/duration/etc are calculated before these triggers.
 	Also, since some commit, ARGN2 is the randomized spell "potency" used internally, not the original one used to cast/spelleffect the spell.
+
+16-03-2016, Coruja
+Fixed: Console error (object not placed in the world) when casting spells that equip memories with TIMER=-1.
+Fixed: Weird walk animation when NPCs step on traps / field spells.

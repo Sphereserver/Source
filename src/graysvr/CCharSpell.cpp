@@ -1735,18 +1735,14 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 	// NOTE:
 	//   ATTR_MAGIC without ATTR_MOVE_NEVER is dispellable !
 
-	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
-	CItem *pSpell = CItem::CreateBase(pSpellDef ? pSpellDef->m_idSpell : ITEMID_RHAND_POINT_NW);
-	ASSERT(pSpell);
-
-	// Check if there's any previous effect to clear before apply the new effect		
+	// Check if there's any previous effect to clear before apply the new effect
 	for ( CItem *pSpellPrev = GetContentHead(); pSpellPrev != NULL; pSpellPrev = pSpellPrev->GetNext() )
 	{
 		if ( layer != pSpellPrev->GetEquipLayer() )
 			continue;
 
 		// Some spells create the memory using TIMER=-1 to make the effect last until cast again,
-		// die or logout. So casting this same spell again will just remove the current effect.		
+		// die or logout. So casting this same spell again will just remove the current effect.
 		if ( pSpellPrev->GetTimerAdjusted() == -1 )
 		{
 			pSpellPrev->Delete();
@@ -1760,6 +1756,10 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 		pSpellPrev->Delete();
 		break;
 	}
+
+	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
+	CItem *pSpell = CItem::CreateBase(pSpellDef ? pSpellDef->m_idSpell : ITEMID_RHAND_POINT_NW);
+	ASSERT(pSpell);
 
 	switch ( layer )
 	{
@@ -3098,7 +3098,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		switch ( OnTrigger(CTRIG_SpellEffect, pCharSrc ? pCharSrc : this, &Args) )
 		{
 			case TRIGRET_RET_TRUE:	return false;
-			case TRIGRET_RET_FALSE:	if ( pSpellDef && pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
+			case TRIGRET_RET_FALSE:	if ( pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
 			default:				break;
 		}
 	}
@@ -3108,7 +3108,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		switch ( Spell_OnTrigger(spell, SPTRIG_EFFECT, pCharSrc ? pCharSrc : this, &Args) )
 		{
 			case TRIGRET_RET_TRUE:	return false;
-			case TRIGRET_RET_FALSE:	if ( pSpellDef && pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
+			case TRIGRET_RET_FALSE:	if ( pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
 			default:				break;
 		}
 	}
