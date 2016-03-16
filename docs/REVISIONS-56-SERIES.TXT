@@ -2981,3 +2981,7 @@ Fixed: Console error when NPCs cast buff/debuff spells on players and die, leavi
 Changed: Slightly changed armor % distribution between layers to match old T2A style.
 	-Distribution on shields is now 7% of ARMOR value instead [Item ARMOR * (Char PARRYING / 10)]. This could reduce a lot of ARMOR on shields, but there's no problem since shields are used to block the entire damage (parrying) and not to raise ARMOR.
 	-Some torso (robe, dress, etc) and foot layers now doesn't count on ARMOR list and also won't get damaged. Unfortunately on T2A age these layers don't have HITPOINTS and don't get damaged on hit, so if someone still want use HITPOINTS and damages on these layers I suggest an workaround like @GetHit -> FINDLAYER.x.DAMAGE 1
+
+15-03-2016, Nolok
+Changed: Reverted ARGN2 on @Effect and @SpellEffect to be Read/Write, since someone still may need it, but keep in mind that effect/duration/etc are calculated before these triggers.
+	Also, since some commit, ARGN2 is the randomized spell "potency" used internally, not the original one used to cast/spelleffect the spell.

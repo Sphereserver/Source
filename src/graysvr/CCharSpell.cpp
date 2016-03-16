@@ -2494,9 +2494,7 @@ bool CChar::Spell_CastDone()
 		else
 		{
 			if (pObj)
-			{
 				pObj->OnSpellEffect(spell, this, iSkillLevel, dynamic_cast <CItem*>(pObjSrc));
-			}
 		}
 	}
 	else if (bIsSpellField)
@@ -3025,6 +3023,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	if ( spell == SPELL_Poison_Field && IsStatFlag(STATF_Poisoned) )
 		return false;
 
+	iSkillLevel = iSkillLevel / 2 + Calc_GetRandVal(iSkillLevel / 2);	// randomize the potency
 	int iEffect = g_Cfg.GetSpellEffect(spell, iSkillLevel);
 	int iDuration = pSpellDef->m_idLayer ? GetSpellDuration(spell, iSkillLevel, pCharSrc) : 0;
 	SOUND_TYPE iSound = pSpellDef->m_sound;
@@ -3036,10 +3035,8 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		iSound = sm_DrinkSounds[Calc_GetRandVal(COUNTOF(sm_DrinkSounds))];
 	}
 
-	iSkillLevel = iSkillLevel/2 + Calc_GetRandVal(iSkillLevel/2);	// randomize the effect.
-
 	// Check if the spell is being resisted
-	unsigned short iResist = 0;
+	int iResist = 0;
 	if ( pSpellDef->IsSpellType(SPELLFLAG_RESIST) && pCharSrc && !fPotion )
 	{
 		iResist = Skill_GetBase(SKILL_MAGICRESISTANCE);
@@ -3101,7 +3098,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		switch ( OnTrigger(CTRIG_SpellEffect, pCharSrc ? pCharSrc : this, &Args) )
 		{
 			case TRIGRET_RET_TRUE:	return false;
-			case TRIGRET_RET_FALSE:	if ( pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
+			case TRIGRET_RET_FALSE:	if ( pSpellDef && pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
 			default:				break;
 		}
 	}
@@ -3111,19 +3108,19 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		switch ( Spell_OnTrigger(spell, SPTRIG_EFFECT, pCharSrc ? pCharSrc : this, &Args) )
 		{
 			case TRIGRET_RET_TRUE:	return false;
-			case TRIGRET_RET_FALSE:	if ( pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
+			case TRIGRET_RET_FALSE:	if ( pSpellDef && pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
 			default:				break;
 		}
 	}
 
 	spell = static_cast<SPELL_TYPE>(Args.m_iN1);
-	//iSkillLevel = static_cast<int>(Args.m_iN2);		//since effect/duration is now calculated before triggers, this iSkillLevel turned into a read-only value
+	iSkillLevel = static_cast<int>(Args.m_iN2);		// remember that effect/duration is calculated before triggers
 	DAMAGE_TYPE iDmgType = static_cast<DAMAGE_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("DamageType", true)));
 	ITEMID_TYPE iEffectID = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1", true)));
 	fExplode = Args.m_VarsLocal.GetKeyNum("EffectExplode", true) > 0 ? true : false;
 	iSound = static_cast<SOUND_TYPE>(Args.m_VarsLocal.GetKeyNum("Sound", true));
 	iEffect = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Effect", true));
-	iResist = static_cast<unsigned short>(Args.m_VarsLocal.GetKeyNum("Resist", true));
+	iResist = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Resist", true));
 	iDuration = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Duration", true));
 
 	HUE_TYPE iColor = static_cast<HUE_TYPE>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor", true)));
