@@ -105,7 +105,6 @@ enum COMBATFLAGS_TYPE
 	COMBAT_ELEMENTAL_ENGINE		= 0x0000008,	// use DAM*/RES* to split damage/resist into Physical/Fire/Cold/Poison/Energy (AOS) instead use old AR (pre-AOS)
 	COMBAT_DCLICKSELF_UNMOUNTS	= 0x0000020,	// unmount horse when dclicking self while in warmode
 	COMBAT_ALLOWHITFROMSHIP		= 0x0000040,	// allow attacking opponents from ships
-	COMBAT_OSIDAMAGEMOD			= 0x0000080,	// modify weapon damage OSI-style (taking anatomy, tactics, lumberjacking into account)
 	COMBAT_ARCHERYCANMOVE		= 0x0000100,	// allow firing bow while moving
 	COMBAT_STAYINRANGE			= 0x0000200,	// must be in range at the end of the swing or the hit will miss
 	COMBAT_STACKARMOR			= 0x0001000,	// if a region is covered by more than one armor part, all AR will count
@@ -817,7 +816,8 @@ public:
 	int  m_iArcheryMinDist;
 	int  m_iHitsUpdateRate;		// how often send my hits updates to visible clients
 	int  m_iSpeedScaleFactor;	// fight skill delay = m_iSpeedScaleFactor / ( (dex + 100) * Weapon Speed )
-	int  m_iCombatSpeedEra;		// defines which speed calculations to use
+	int  m_iCombatDamageEra;	// define damage formula to use on physical combat
+	int  m_iCombatSpeedEra;		// define swing speed formula to use on physical combat
 	int  m_iSkillPracticeMax;	// max skill level a player can practice on dummies/targets upto
 	bool m_iPacketDeathAnimation;	// packet 02c
 

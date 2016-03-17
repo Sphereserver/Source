@@ -551,7 +551,7 @@ void CChar::Skill_SetBase( SKILL_TYPE skill, int iValue )
 	if ( IsClient())
 		m_pClient->addSkillWindow(skill);	// update the skills list
 
-	if (IsSetCombatFlags(COMBAT_OSIDAMAGEMOD))
+	if ( g_Cfg.m_iCombatDamageEra )
 	{
 		if ( skill == SKILL_ANATOMY || skill == SKILL_TACTICS || skill == SKILL_LUMBERJACKING )
 			UpdateStatsFlag();		// those skills are used to calculate the char damage bonus, so we must update the client status gump

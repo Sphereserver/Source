@@ -125,6 +125,7 @@ CResource::CResource()
 	m_iHitsUpdateRate	= TICK_PER_SEC;
 	m_iSpeedScaleFactor	= 80000;
 	m_iCombatFlags		= 0;
+	m_iCombatDamageEra	= 0;
 	m_iCombatSpeedEra	= 3;
 	m_iMagicFlags		= 0;
 	m_iMaxPolyStats		= 150;
@@ -215,7 +216,7 @@ CResource::CResource()
 	m_iColorNotoEvil = 0x22;				// red
 	m_iColorNotoInvul = 0x35;				// yellow
 	m_iColorNotoInvulGameMaster = 0x0b;		// purple
-	m_iColorNotoDefault = 0x03b2;			// grey (if not any other)
+	m_iColorNotoDefault = 0x3b2;			// grey (if not any other)
 	
 	m_iColorInvis = 0;
 	m_iColorInvisSpell = 0;
@@ -403,6 +404,7 @@ enum RC_TYPE
 	RC_COLORNOTOINVUL,			// m_iColorNotoInvul
 	RC_COLORNOTOINVULGAMEMASTER,// m_iColorNotoInvulGameMaster
 	RC_COLORNOTONEUTRAL,		// m_iColorNotoNeutral
+	RC_COMBATDAMAGEERA,			// m_iCombatDamageEra
 	RC_COMBATFLAGS,				// m_iCombatFlags
 	RC_COMBATSPEEDERA,			// m_iCombatSpeedEra
 	RC_COMMANDLOG,
@@ -631,6 +633,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "COLORNOTOINVUL",			{ ELEM_WORD,	OFFSETOF(CResource,m_iColorNotoInvul),		0 }},
 	{ "COLORNOTOINVULGAMEMASTER",{ ELEM_WORD,	OFFSETOF(CResource,m_iColorNotoInvulGameMaster),	0 }},
 	{ "COLORNOTONEUTRAL",		{ ELEM_WORD,	OFFSETOF(CResource,m_iColorNotoNeutral),	0 }},
+	{ "COMBATDAMAGEERA",		{ ELEM_BYTE,	OFFSETOF(CResource,m_iCombatDamageEra),		0 }},
 	{ "COMBATFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iCombatFlags),			0 }},
 	{ "COMBATSPEEDERA",			{ ELEM_BYTE,	OFFSETOF(CResource,m_iCombatSpeedEra),		0 }},
 	{ "COMMANDLOG",				{ ELEM_INT,		OFFSETOF(CResource,m_iCommandLog),			0 }},

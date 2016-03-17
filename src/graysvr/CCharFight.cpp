@@ -2346,66 +2346,74 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 				iDmgBonus += 25;
 		}
 
-		if (IsSetCombatFlags(COMBAT_OSIDAMAGEMOD))
+		switch ( g_Cfg.m_iCombatDamageEra )
 		{
-			// AOS damage bonus
-			iDmgBonus += Skill_GetBase(SKILL_TACTICS) / 16;
-			if (Skill_GetBase(SKILL_TACTICS) >= 1000)
-				iDmgBonus += 6;	//6.25
-
-			iDmgBonus += Skill_GetBase(SKILL_ANATOMY) / 20;
-			if (Skill_GetBase(SKILL_ANATOMY) >= 1000)
-				iDmgBonus += 5;
-
-			if (pWeapon != NULL && pWeapon->IsType(IT_WEAPON_AXE))
+			default:
+			case 0:
 			{
-				iDmgBonus += Skill_GetBase(SKILL_LUMBERJACKING) / 50;
-				if (Skill_GetBase(SKILL_LUMBERJACKING) >= 1000)
-					iDmgBonus += 10;
+				// Sphere damage bonus (custom)
+				if ( !iStatBonus )
+					iStatBonus = static_cast<STAT_TYPE>(STAT_STR);
+				if ( !iStatBonusPercent )
+					iStatBonusPercent = 10;
+				iDmgBonus += Stat_GetAdjusted(iStatBonus) * iStatBonusPercent / 100;
+				break;
 			}
 
-			if (Stat_GetAdjusted(STAT_STR) >= 100)
-				iDmgBonus += 5;
-
-			if (!iStatBonus)
-				iStatBonus = static_cast<STAT_TYPE>(STAT_STR);
-			if (!iStatBonusPercent)
-				iStatBonusPercent = 30;
-			iDmgBonus += Stat_GetAdjusted(iStatBonus) * iStatBonusPercent / 100;
-
-
-			// pre-AOS damage bonus
-			/*iDmgBonus += (Skill_GetBase(SKILL_TACTICS) - 500) / 10;
-
-			iDmgBonus += Skill_GetBase(SKILL_ANATOMY) / 50;
-			if (Skill_GetBase(SKILL_ANATOMY) >= 1000)
-				iDmgBonus += 10;
-
-			if (pWeapon != NULL && pWeapon->IsType(IT_WEAPON_AXE))
+			case 1:
 			{
-				iDmgBonus += Skill_GetBase(SKILL_LUMBERJACKING) / 50;
-				if (Skill_GetBase(SKILL_LUMBERJACKING) >= 1000)
+				// pre-AOS damage bonus
+				iDmgBonus += (Skill_GetBase(SKILL_TACTICS) - 500) / 10;
+
+				iDmgBonus += Skill_GetBase(SKILL_ANATOMY) / 50;
+				if ( Skill_GetBase(SKILL_ANATOMY) >= 1000 )
 					iDmgBonus += 10;
+
+				if ( pWeapon != NULL && pWeapon->IsType(IT_WEAPON_AXE) )
+				{
+					iDmgBonus += Skill_GetBase(SKILL_LUMBERJACKING) / 50;
+					if ( Skill_GetBase(SKILL_LUMBERJACKING) >= 1000 )
+						iDmgBonus += 10;
+				}
+
+				if ( !iStatBonus )
+					iStatBonus = static_cast<STAT_TYPE>(STAT_STR);
+				if ( !iStatBonusPercent )
+					iStatBonusPercent = 20;
+				iDmgBonus += Stat_GetAdjusted(iStatBonus) * iStatBonusPercent / 100;
+				break;
 			}
 
-			if (!iStatBonus)
-				iStatBonus = static_cast<STAT_TYPE>(STAT_STR);
-			if (!iStatBonusPercent)
-				iStatBonusPercent = 20;
-			iDmgBonus += Stat_GetAdjusted(iStatBonus) * iStatBonusPercent / 100;*/
-		}
-		else
-		{
-			// Sphere damage bonus (custom)
-			if (!iStatBonus)
-				iStatBonus = static_cast<STAT_TYPE>(STAT_STR);
-			if (!iStatBonusPercent)
-				iStatBonusPercent = 10;
-			iDmgBonus = Stat_GetAdjusted(iStatBonus) * iStatBonusPercent / 100;
+			case 2:
+			{
+				// AOS damage bonus
+				iDmgBonus += Skill_GetBase(SKILL_TACTICS) / 16;
+				if ( Skill_GetBase(SKILL_TACTICS) >= 1000 )
+					iDmgBonus += 6;		//6.25
 
-			iDmgMin += iDmgBonus;
-			iDmgMax += iDmgBonus;
+				iDmgBonus += Skill_GetBase(SKILL_ANATOMY) / 20;
+				if ( Skill_GetBase(SKILL_ANATOMY) >= 1000 )
+					iDmgBonus += 5;
+
+				if ( pWeapon != NULL && pWeapon->IsType(IT_WEAPON_AXE) )
+				{
+					iDmgBonus += Skill_GetBase(SKILL_LUMBERJACKING) / 50;
+					if ( Skill_GetBase(SKILL_LUMBERJACKING) >= 1000 )
+						iDmgBonus += 10;
+				}
+
+				if ( Stat_GetAdjusted(STAT_STR) >= 100 )
+					iDmgBonus += 5;
+
+				if ( !iStatBonus )
+					iStatBonus = static_cast<STAT_TYPE>(STAT_STR);
+				if ( !iStatBonusPercent )
+					iStatBonusPercent = 30;
+				iDmgBonus += Stat_GetAdjusted(iStatBonus) * iStatBonusPercent / 100;
+				break;
+			}
 		}
+
 		iDmgMin += iDmgMin * iDmgBonus / 100;
 		iDmgMax += iDmgMax * iDmgBonus / 100;
 	}
