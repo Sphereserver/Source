@@ -2991,6 +2991,7 @@ Fixed: Console error (object not placed in the world) when casting spells that e
 Fixed: Weird walk animation when NPCs step on traps / field spells.
 
 17-03-2016, Coruja
+Fixed: Spells WOP sending an extra whitespace at the end (eg: "Rel Por ") breaking Razor/UOSteam WOP formatting feature.
 [Sphere.ini]:
 	-Removed COMBAT_OSIDAMAGEMOD combat flag.
 	-Added new CombatDamageEra setting, which does exactly the same thing using the same formulas, but now able to switch between 3 damage formulas instead 2.

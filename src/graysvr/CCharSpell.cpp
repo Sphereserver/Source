@@ -2971,19 +2971,18 @@ int CChar::Spell_CastStart()
 		}
 		else
 		{
+			TCHAR *pszTemp = Str_GetTemp();
 			size_t len = 0;
-			TCHAR * pszTemp = Str_GetTemp();
-
-			size_t i;
-			for ( i = 0; ; i++ )
+			for ( size_t i = 0; ; i++ )
 			{
 				TCHAR ch = pSpellDef->m_sRunes[i];
 				if ( !ch )
 					break;
-				len += strcpylen(pszTemp+len, g_Cfg.GetRune(ch));
-				pszTemp[len++] = ' ';
+				len += strcpylen(pszTemp + len, g_Cfg.GetRune(ch));
+				if ( pSpellDef->m_sRunes[i + 1] )
+					pszTemp[len++] = ' ';
 			}
-			if ( i > 0 )
+			if ( len > 0 )
 			{
 				pszTemp[len] = 0;
 				Speak(pszTemp, static_cast<HUE_TYPE>(WOPColor), TALKMODE_SPELL, static_cast<FONT_TYPE>(WOPFont));
