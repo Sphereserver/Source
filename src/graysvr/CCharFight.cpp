@@ -1692,6 +1692,11 @@ bool CChar::OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fCommandPet, bool
 	return( true );
 }
 
+// Armor layers that can be damaged on combat
+// PS: Hand layers (weapons/shields) are not included here
+static const LAYER_TYPE sm_ArmorDamageLayers[] = { LAYER_SHOES, LAYER_PANTS, LAYER_SHIRT, LAYER_HELM, LAYER_GLOVES, LAYER_COLLAR, LAYER_HALF_APRON, LAYER_CHEST, LAYER_TUNIC, LAYER_ARMS, LAYER_CAPE, LAYER_ROBE, LAYER_SKIRT, LAYER_LEGS };
+
+// Layers covering the armor zone
 static const LAYER_TYPE sm_ArmorLayerHead[] = { LAYER_HELM };															// ARMOR_HEAD
 static const LAYER_TYPE sm_ArmorLayerNeck[] = { LAYER_COLLAR };															// ARMOR_NECK
 static const LAYER_TYPE sm_ArmorLayerBack[] = { LAYER_SHIRT, LAYER_CHEST, LAYER_TUNIC, LAYER_CAPE, LAYER_ROBE };		// ARMOR_BACK
@@ -1707,7 +1712,7 @@ struct CArmorLayerType
 	const LAYER_TYPE * m_pLayers;
 };
 
-static const CArmorLayerType sm_ArmorLayers[ARMOR_QTY] =	// layers covering the armor zone.
+static const CArmorLayerType sm_ArmorLayers[ARMOR_QTY] =
 {
 	{ 15,	sm_ArmorLayerHead },	// ARMOR_HEAD
 	{ 7,	sm_ArmorLayerNeck },	// ARMOR_NECK
@@ -1952,6 +1957,7 @@ effect_bounce:
 	}
 
 	CScriptTriggerArgs Args( iDmg, uType, static_cast<INT64>(0) );
+	Args.m_VarsLocal.SetNum("ItemDamageLayer", sm_ArmorDamageLayers[Calc_GetRandVal(COUNTOF(sm_ArmorDamageLayers))]);
 	Args.m_VarsLocal.SetNum("ItemDamageChance", 40);
 
 	if ( IsTrigUsed(TRIGGER_GETHIT) )
@@ -1965,33 +1971,10 @@ effect_bounce:
 	int iItemDamageChance = static_cast<int>(Args.m_VarsLocal.GetKeyNum("ItemDamageChance", true));
 	if ( (iItemDamageChance > Calc_GetRandVal(100)) && !pCharDef->Can(CAN_C_NONHUMANOID) )
 	{
-		int iHitRoll = Calc_GetRandVal(100);
-		BODYPART_TYPE iHitArea = ARMOR_HEAD;
-		while ( iHitArea < (ARMOR_QTY - 1) )
-		{
-			iHitRoll -= sm_ArmorLayers[iHitArea].m_wCoverage;
-			if ( iHitRoll < 0 )
-				break;
-			iHitArea = static_cast<BODYPART_TYPE>( iHitArea + 1 );
-		}
-
-		LAYER_TYPE iHitLayer = LAYER_NONE;
-		switch ( iHitArea )
-		{
-			case ARMOR_HEAD:	iHitLayer = sm_ArmorLayerHead[Calc_GetRandVal(COUNTOF(sm_ArmorLayerHead))];		break;
-			case ARMOR_NECK:	iHitLayer = sm_ArmorLayerNeck[Calc_GetRandVal(COUNTOF(sm_ArmorLayerNeck))];		break;
-			case ARMOR_BACK:	iHitLayer = sm_ArmorLayerBack[Calc_GetRandVal(COUNTOF(sm_ArmorLayerBack))];		break;
-			case ARMOR_CHEST:	iHitLayer = sm_ArmorLayerChest[Calc_GetRandVal(COUNTOF(sm_ArmorLayerChest))];	break;
-			case ARMOR_ARMS:	iHitLayer = sm_ArmorLayerArms[Calc_GetRandVal(COUNTOF(sm_ArmorLayerArms))];		break;
-			case ARMOR_HANDS:	iHitLayer = sm_ArmorLayerHands[Calc_GetRandVal(COUNTOF(sm_ArmorLayerHands))];	break;
-			case ARMOR_LEGS:	iHitLayer = sm_ArmorLayerLegs[Calc_GetRandVal(COUNTOF(sm_ArmorLayerLegs))];		break;
-			case ARMOR_FEET:	iHitLayer = sm_ArmorLayerFeet[Calc_GetRandVal(COUNTOF(sm_ArmorLayerFeet))];		break;
-			default:			break;
-		}
-
-		CItem * pItemHit = LayerFind( iHitLayer );
-		if ( pItemHit != NULL )
-			pItemHit->OnTakeDamage( iDmg, pSrc, uType );
+		LAYER_TYPE iHitLayer = static_cast<LAYER_TYPE>(Args.m_VarsLocal.GetKeyNum("ItemDamageLayer", true));
+		CItem *pItemHit = LayerFind(iHitLayer);
+		if ( pItemHit )
+			pItemHit->OnTakeDamage(iDmg, pSrc, uType);
 	}
 
 	// Remove stuck/paralyze effect
