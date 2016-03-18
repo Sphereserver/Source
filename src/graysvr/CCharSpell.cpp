@@ -2865,9 +2865,9 @@ int CChar::Spell_CastStart()
 	// RETURN:
 	//  0-100
 	//  -1 = instant failure.
-	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
-	if ( pSpellDef == NULL )
-		return( -1 );
+	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
+	if ( !pSpellDef )
+		return -1;
 
 	if ( IsClient() && IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
 	{
@@ -2876,32 +2876,29 @@ int CChar::Spell_CastStart()
 		m_Act_TargPrv = GetClient()->m_Targ_PrvUID;
 
 		if ( !Spell_CanCast(m_atMagery.m_Spell, true, m_Act_TargPrv.ObjFind(), true) )
-			return(-1);
+			return -1;
 	}
 	else
 	{
 		if ( !Spell_TargCheck() )
-			return(-1);
+			return -1;
 	}
 
-	bool fWOP = ( GetPrivLevel() >= PLEVEL_Counsel ) ? g_Cfg.m_fWordsOfPowerStaff : g_Cfg.m_fWordsOfPowerPlayer;
+	int iSkill;
+	int iDifficulty;
+	if ( !pSpellDef->GetPrimarySkill(&iSkill, &iDifficulty) )
+		return -1;
+
+	iDifficulty /= 10;		// adjust to 0 - 100
+	bool fWOP = (GetPrivLevel() >= PLEVEL_Counsel) ? g_Cfg.m_fWordsOfPowerStaff : g_Cfg.m_fWordsOfPowerPlayer;
 	if ( !NPC_CanSpeak() || IsStatFlag(STATF_Insubstantial) )
 		fWOP = false;
 
-	int iDifficulty;
-	int iSkill;
-	if ( !pSpellDef->GetPrimarySkill( &iSkill, &iDifficulty ) )
-		return -1;
-
-	// Adjust to 0 - 100
-	iDifficulty	/= 10;
-
-	CGrayUID uid(m_Act_TargPrv);
-	CItem * pItem = uid.ItemFind();
 	bool fAllowEquip = false;
-	if ( pItem != NULL )
+	CItem *pItem = m_Act_TargPrv.ItemFind();
+	if ( pItem )
 	{
-		if ( pItem->IsType(IT_WAND))
+		if ( pItem->IsType(IT_WAND) )
 		{
 			// Wand use no words of power. and require no magery.
 			fAllowEquip = true;
@@ -2942,14 +2939,10 @@ int CChar::Spell_CastStart()
 	if ( !g_Cfg.m_fEquippedCast && !fAllowEquip )
 	{
 		if ( !Spell_Unequip(LAYER_HAND1) )
-			return( -1 );
+			return -1;
 		if ( !Spell_Unequip(LAYER_HAND2) )
-			return( -1 );
+			return -1;
 	}
-
-	// Animate casting.
-	if ( !pSpellDef->IsSpellType(SPELLFLAG_NO_CASTANIM) && !IsSetMagicFlags(MAGICF_NOANIM) )
-		UpdateAnimate( (pSpellDef->IsSpellType(SPELLFLAG_DIR_ANIM)) ? ANIM_CAST_DIR : ANIM_CAST_AREA );
 
 	m_atMagery.m_Spell = static_cast<SPELL_TYPE>(Args.m_iN1);
 	iDifficulty = static_cast<int>(Args.m_iN2);
@@ -2958,6 +2951,15 @@ int CChar::Spell_CastStart()
 	pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
 	if ( !pSpellDef )
 		return -1;
+
+	if ( g_Cfg.m_iRevealFlags & REVEALF_SPELLCAST )
+		Reveal(STATF_Hidden|STATF_Invisible);
+	else
+		Reveal(STATF_Hidden);
+
+	// Animate casting
+	if ( !pSpellDef->IsSpellType(SPELLFLAG_NO_CASTANIM) && !IsSetMagicFlags(MAGICF_NOANIM) )
+		UpdateAnimate(pSpellDef->IsSpellType(SPELLFLAG_DIR_ANIM) ? ANIM_CAST_DIR : ANIM_CAST_AREA);
 
 	fWOP = Args.m_VarsLocal.GetKeyNum("WOP", true) > 0 ? true : false;
 	if ( fWOP )
@@ -2989,10 +2991,6 @@ int CChar::Spell_CastStart()
 			}
 		}
 	}
-	if ( g_Cfg.m_iRevealFlags & REVEALF_SPELLCAST )
-		Reveal(STATF_Hidden|STATF_Invisible);
-	else
-		Reveal(STATF_Hidden);
 
 	SetTimeout(iWaitTime);
 	return iDifficulty;
