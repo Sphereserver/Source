@@ -2149,7 +2149,7 @@ CChar * CChar::NPC_FightFindBestTarget()
 			pChar = static_cast<CChar*>(static_cast<CGrayUID>(refAttacker.charUID).CharFind());
 			if ( !pChar )
 				continue;
-			if ( pChar->IsStatFlag(STATF_DEAD) )	// dead chars can't be selected as target
+			if ( pChar->IsStatFlag(STATF_DEAD|STATF_Stone|STATF_Invisible|STATF_Insubstantial|STATF_Hidden) )
 			{
 				pChar = NULL;
 				continue;

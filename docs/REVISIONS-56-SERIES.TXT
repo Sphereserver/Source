@@ -2995,3 +2995,6 @@ Fixed: Spells WOP sending an extra whitespace at the end (eg: "Rel Por ") breaki
 [Sphere.ini]:
 	-Removed COMBAT_OSIDAMAGEMOD combat flag.
 	-Added new CombatDamageEra setting, which does exactly the same thing using the same formulas, but now able to switch between 3 damage formulas instead 2.
+
+18-03-2016, Coruja
+Fixed: NPCs getting stuck without move when their combat target use hiding/invisibility.
