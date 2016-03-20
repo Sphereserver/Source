@@ -880,21 +880,18 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 						if ( tmVerReported == 0 )
 							new PacketClientVersionReq(this);
 
-						if ( tmVer != 0 || tmVerReported != 0)
+						if ( tmVerReported != 0 )
 						{
-							// a client version change may toggle async mode, it's important
-							// to flush pending data to the client before this happens
-							if ( tmVer != 0 )
-							{
-								m_Crypt.SetClientVerEnum(tmVer, false);
-								GetNetState()->m_clientVersion = tmVer;
-							}
-
-							if ( tmVerReported != 0)
-								GetNetState()->m_reportedVersion = tmVerReported;
-
-							GetNetState()->detectAsyncMode();
+							GetNetState()->m_reportedVersion = tmVerReported;
 						}
+						else if ( tmVer != 0 )
+						{
+							m_Crypt.SetClientVerEnum(tmVer, false);
+							GetNetState()->m_clientVersion = tmVer;
+						}
+
+						// client version change may toggle async mode, it's important to flush pending data to the client before this happens
+						GetNetState()->detectAsyncMode();
 
 						if ( !xCanEncLogin(true) )
 							lErr = PacketLoginError::BadVersion;

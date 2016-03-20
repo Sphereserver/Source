@@ -2998,3 +2998,6 @@ Fixed: Spells WOP sending an extra whitespace at the end (eg: "Rel Por ") breaki
 18-03-2016, Coruja
 Fixed: NPCs getting stuck without move when their combat target use hiding/invisibility.
 Added: New LOCAL.ItemDamageLayer (read/write) on trigger @GetHit to get/select the char LAYER that will be damaged on hit.
+
+20-03-2016, Coruja
+Fixed: Sphere not storing correct client version on some specific clients, making it send unsupported packets to these clients (resulting in client crash).
