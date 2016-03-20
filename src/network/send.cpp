@@ -738,7 +738,7 @@ bool PacketDragAnimation::canSendTo(const NetState* state) const
  *
  *
  ***************************************************************************/
-PacketContainerOpen::PacketContainerOpen(const CClient* target, const CObjBase* container, GUMP_TYPE gump, bool IsVendorGump) : PacketSend(XCMD_ContOpen, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL), m_container(container->GetUID())
+PacketContainerOpen::PacketContainerOpen(const CClient* target, const CObjBase* container, GUMP_TYPE gump) : PacketSend(XCMD_ContOpen, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL), m_container(container->GetUID())
 {
 	ADDTOCALLSTACK("PacketContainerOpen::PacketContainerOpen");
 
@@ -748,7 +748,7 @@ PacketContainerOpen::PacketContainerOpen(const CClient* target, const CObjBase* 
 	// HS clients needs an extra 'container type' byte (0x00 for vendors, 0x7D for spellbooks/containers)
 	if (target->GetNetState()->isClientVersion(MINCLIVER_HS) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientEnhanced())
 	{
-		WORD ContType = IsVendorGump ? 0x00 : 0x7D;
+		WORD ContType = (gump == GUMP_VENDOR_RECT) ? 0x00 : 0x7D;
 		writeInt16(ContType);
 	}
 
@@ -1073,7 +1073,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 	bool includeGrid = (target->GetNetState()->isClientVersion(MINCLIVER_ITEMGRID) || target->GetNetState()->isClientKR() || target->GetNetState()->isClientEnhanced());
 	bool isLayerSent[LAYER_HORSE];
 	memset(isLayerSent, 0, sizeof(isLayerSent));
-	m_count = 0;
+	size_t count = 0;
 
 	const CChar* viewer = target->GetChar();
 	const CItemBase* itemDefinition;
@@ -1098,7 +1098,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 				continue;
 
 			amount = minimum(static_cast<WORD>(g_Cfg.m_iVendorMaxSell), amount);
-			pos.m_x = static_cast<signed short>(m_count + 1);
+			pos.m_x = static_cast<signed short>(count + 1);
 			pos.m_y = 1;
 		}
 		else
@@ -1149,19 +1149,18 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 			writeByte(item->GetContainedGridIndex());
 		writeInt32(container->GetUID());
 		writeInt16(static_cast<WORD>(hue));
-		m_count++;
 
 		// include tooltip
 		target->addAOSTooltip(item, false, isShop);
 
-		if ( m_count > MAX_ITEMS_CONT )
+		if ( ++count >= MAX_ITEMS_CONT )
 			break;
 	}
 
 	// write item count
 	size_t l = getPosition();
 	seek(3);
-	writeInt16(m_count);
+	writeInt16(count);
 	seek(l);
 
 	push(target);
@@ -1176,7 +1175,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItem* spell
 	initLength();
 	skip(2);
 
-	m_count = 0;
+	size_t count = 0;
 	for (int i = SPELL_Clumsy; i <= SPELL_MAGERY_QTY; i++)
 	{
 		if (spellbook->IsSpellInBook(static_cast<SPELL_TYPE>(i)) == false)
@@ -1189,17 +1188,17 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItem* spell
 		writeInt16(0);
 		writeInt16(0);
 		if (includeGrid)
-			writeByte(static_cast<BYTE>(m_count));
+			writeByte(static_cast<BYTE>(count));
 		writeInt32(spellbook->GetUID());
 		writeInt16(HUE_DEFAULT);
 
-		m_count++;
+		count++;
 	}
 
 	// write item count
 	size_t l = getPosition();
 	seek(3);
-	writeInt16(m_count);
+	writeInt16(count);
 	seek(l);
 
 	push(target);
@@ -1215,7 +1214,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItemContain
 	initLength();
 	skip(2);
 
-	m_count = 0;
+	size_t count = 0;
 	for (CItem* item = spellbook->GetContentHead(); item != NULL; item = item->GetNext())
 	{
 		if (item->IsType(IT_SCROLL) == false)
@@ -1232,17 +1231,17 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItemContain
 		writeInt16(0);
 		writeInt16(0);
 		if (includeGrid)
-			writeByte(static_cast<BYTE>(m_count));
+			writeByte(static_cast<BYTE>(count));
 		writeInt32(spellbook->GetUID());
 		writeInt16(static_cast<WORD>(HUE_DEFAULT));
 
-		m_count++;
+		count++;
 	}
 
 	// write item count
 	size_t l = getPosition();
 	seek(3);
-	writeInt16(m_count);
+	writeInt16(count);
 	seek(l);
 
 	push(target);
@@ -1252,8 +1251,6 @@ bool PacketItemContents::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketItemContents::onSend");
 
-	if (m_count <= 0)
-		return false;
 #ifndef _MTNETWORK
 	if (g_NetworkOut.isActive())
 #else
@@ -2412,9 +2409,9 @@ PacketCorpseEquipment::PacketCorpseEquipment(CClient* target, const CItemContain
 	writeInt32(corpse->GetUID());
 
 	LAYER_TYPE layer;
-	m_count = 0;
+	size_t count = 0;
 
-	for (const CItem* item = corpse->GetContentHead(); item != NULL && m_count <= MAX_ITEMS_CONT; item = item->GetNext())
+	for (const CItem* item = corpse->GetContentHead(); item != NULL; item = item->GetNext())
 	{
 		if (item->IsAttr(ATTR_INVIS) && viewer->CanSee(item) == false)
 			continue;
@@ -2441,10 +2438,12 @@ PacketCorpseEquipment::PacketCorpseEquipment(CClient* target, const CItemContain
 
 		writeByte(static_cast<BYTE>(layer));
 		writeInt32(item->GetUID());
-		m_count++;
 
 		// include tooltip
 		target->addAOSTooltip(item);
+
+		if (++count > MAX_ITEMS_CONT)
+			break;
 	}
 
 	writeByte(0); // terminator
@@ -2455,8 +2454,6 @@ bool PacketCorpseEquipment::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketCorpseEquipment::onSend");
 
-	if (m_count <= 0)
-		return false;
 #ifndef _MTNETWORK
 	if (g_NetworkOut.isActive())
 #else

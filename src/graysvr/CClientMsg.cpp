@@ -439,12 +439,12 @@ void CClient::addContents( const CItemContainer * pContainer, bool fCorpseEquip,
 
 
 
-void CClient::addOpenGump( const CObjBase * pContainer, GUMP_TYPE gump, bool IsVendorGump )
+void CClient::addOpenGump( const CObjBase * pContainer, GUMP_TYPE gump )
 {
 	ADDTOCALLSTACK("CClient::addOpenGump");
 	// NOTE: if pContainer has not already been sent to the client
 	//  this will crash client.
-	new PacketContainerOpen(this, pContainer, gump, IsVendorGump);
+	new PacketContainerOpen(this, pContainer, gump);
 }
 
 bool CClient::addContainerSetup( const CItemContainer * pContainer ) // Send Backpack (with items)
@@ -2419,7 +2419,7 @@ bool CClient::addShopMenuBuy( CChar * pVendor )
 	// Open gump
 	if ( count )
 	{
-		addOpenGump(pVendor, GUMP_VENDOR_RECT, true);
+		addOpenGump(pVendor, GUMP_VENDOR_RECT);
 		return true;
 	}
 

@@ -237,7 +237,7 @@ private:
 	CGrayUID m_container;
 
 public:
-	PacketContainerOpen(const CClient* target, const CObjBase* container, GUMP_TYPE gump, bool IsVendorGump = false);
+	PacketContainerOpen(const CClient* target, const CObjBase* container, GUMP_TYPE gump);
 
 	virtual bool onSend(const CClient* client);
 };
@@ -400,7 +400,6 @@ class PacketItemContents : public PacketSend
 {
 private:
 	CGrayUID m_container;
-	WORD m_count;
 
 public:
 	PacketItemContents(CClient* target, const CItemContainer* container, bool isShop, bool filterLayers); // standard content
@@ -877,7 +876,6 @@ class PacketCorpseEquipment : public PacketSend
 {
 private:
 	CGrayUID m_corpse;
-	int m_count;
 
 public:
 	PacketCorpseEquipment(CClient* target, const CItemContainer* corpse);
