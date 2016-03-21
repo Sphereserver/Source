@@ -3001,3 +3001,6 @@ Added: New LOCAL.ItemDamageLayer (read/write) on trigger @GetHit to get/select t
 
 20-03-2016, Coruja
 Fixed: Sphere not storing correct client version on some specific clients, making it send unsupported packets to these clients (resulting in client crash).
+
+21-03-2016, Coruja
+Changed: Multi placement target now will center to the multi front door (as OSI does) instead multi center.

@@ -1607,6 +1607,15 @@ PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetT
 {
 	ADDTOCALLSTACK("PacketAddTarget::PacketAddTarget(2)");
 
+	CItemBase *pItemDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(RES_GET_INDEX(id)));
+	if ( !pItemDef )
+		return;
+
+	WORD y = 0;
+	CItemBaseMulti *pMultiDef = static_cast<CItemBaseMulti *>(pItemDef);
+	if ( pMultiDef && pMultiDef->m_rect.m_bottom > 0 )
+		y = pMultiDef->m_rect.m_bottom - 1;
+
 	writeByte(static_cast<BYTE>(type));
 	writeInt32(context);
 	writeByte(static_cast<BYTE>(flags));
@@ -1617,16 +1626,12 @@ PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetT
 	writeByte(0);
 
 	writeInt16(static_cast<WORD>(id - ITEMID_MULTI));
+	writeInt16(0);	// x
+	writeInt16(y);	// y
+	writeInt16(0);	// z
 
-	writeInt16(0); // x
-	writeInt16(0); // y
-	writeInt16(0); // z
-
-	if (target->GetNetState()->isClientVersion(MINCLIVER_HS))
-	{
-		writeInt16(0);
-		writeInt16(0); // hue
-	}
+	if ( target->GetNetState()->isClientVersion(MINCLIVER_HS) )
+		writeInt32(0);	// hue
 
 	trim();
 	push(target);

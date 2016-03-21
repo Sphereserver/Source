@@ -325,7 +325,7 @@ bool CClient::OnTarg_Char_Add( CObjBase * pObj, const CPointMap & pt )
 	return true;
 }
 
-bool CClient::OnTarg_Item_Add( CObjBase * pObj, const CPointMap & pt )
+bool CClient::OnTarg_Item_Add( CObjBase * pObj, CPointMap & pt )
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Item_Add");
 	// CLIMODE_TARG_ADDITEM
@@ -1571,7 +1571,7 @@ bool CClient::OnTarg_Pet_Stable( CChar * pCharPet )
 //-----------------------------------------------------------------------
 // Targetted items with special props.
 
-bool CClient::OnTarg_Use_Deed( CItem * pDeed, const CPointMap & pt )
+bool CClient::OnTarg_Use_Deed( CItem * pDeed, CPointMap & pt )
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Use_Deed");
 	// Place the house/ship here. (if possible)
@@ -1591,7 +1591,7 @@ bool CClient::OnTarg_Use_Deed( CItem * pDeed, const CPointMap & pt )
 	return true;
 }
 
-CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap & pt, DWORD dwAttr, HUE_TYPE wHue )
+CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, CPointMap & pt, DWORD dwAttr, HUE_TYPE wHue )
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Use_Multi");
 	// Might be a IT_MULTI or it might not. place it anyhow.
@@ -1606,6 +1606,9 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap &
 	// Check water/mountains/etc.
 	if ( pMultiDef != NULL && ! (dwAttr&ATTR_MAGIC))
 	{
+		if ( pMultiDef->m_rect.m_bottom > 0 )
+			pt.m_y -= pMultiDef->m_rect.m_bottom - 1;
+
 		// Check for items in the way and bumpy terrain.
 
 		CGRect rect = pMultiDef->m_rect;

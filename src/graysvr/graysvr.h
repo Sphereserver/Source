@@ -1128,15 +1128,15 @@ private:
 	bool OnTarg_UnExtract( CObjBase * pObj, const CPointMap & pt );
 	bool OnTarg_Stone_Recruit( CChar * pChar, bool bFull = false );
 	bool OnTarg_Char_Add( CObjBase * pObj, const CPointMap & pt );
-	bool OnTarg_Item_Add( CObjBase * pObj, const CPointMap & pt );
+	bool OnTarg_Item_Add( CObjBase * pObj, CPointMap & pt );
 	bool OnTarg_Item_Link( CObjBase * pObj );
 	bool OnTarg_Tile( CObjBase * pObj, const CPointMap & pt );
 
 	// Normal user stuff.
-	bool OnTarg_Use_Deed( CItem * pDeed, const CPointMap &pt );
+	bool OnTarg_Use_Deed( CItem * pDeed, CPointMap & pt );
 	bool OnTarg_Use_Item( CObjBase * pObj, CPointMap & pt, ITEMID_TYPE id );
 	bool OnTarg_Party_Add( CChar * pChar );
-	CItem* OnTarg_Use_Multi( const CItemBase * pItemDef, const CPointMap & pt, DWORD dwAttr, HUE_TYPE wHue );
+	CItem *OnTarg_Use_Multi( const CItemBase * pItemDef, CPointMap & pt, DWORD dwAttr, HUE_TYPE wHue );
 
 	int OnSkill_AnimalLore( CGrayUID uid, int iTestLevel, bool fTest );
 	int OnSkill_Anatomy( CGrayUID uid, int iTestLevel, bool fTest );
