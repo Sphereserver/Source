@@ -3878,60 +3878,44 @@ void CChar::OnTickStatusUpdate()
 void CChar::OnTickFood(short iVal, int HitsHungerLoss)
 {
 	ADDTOCALLSTACK("CChar::OnTickFood");
-	if ( IsStatFlag(STATF_Conjured) || !Stat_GetMax(STAT_FOOD) )
-		return;	// No need for food.
-
-	// This may be money instead of food
-	if ( IsStatFlag(STATF_Pet) && !NPC_CheckHirelingStatus() )
+	if ( IsStatFlag(STATF_DEAD|STATF_Conjured|STATF_Spawned) || !Stat_GetMax(STAT_FOOD) )
+		return;
+	if ( IsStatFlag(STATF_Pet) && !NPC_CheckHirelingStatus() )		// this may be money instead of food
 		return;
 
-	short lFood = Stat_GetVal(STAT_FOOD) - iVal;
-	if (lFood < 0)
-		lFood = 0;
-	Stat_SetVal(STAT_FOOD, lFood);
+	// Decrease food level
+	short iFood = Stat_GetVal(STAT_FOOD) - iVal;
+	if ( iFood < 0 )
+		iFood = 0;
+	Stat_SetVal(STAT_FOOD, iFood);
 
-	int  nFoodLevel = Food_GetLevelPercent();
-	if ( nFoodLevel < 40) 	// start looking for food at 40%
- 	{
-		// Tell everyone we look hungry.
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_HUNGER), Food_GetLevelMessage(false, false));
-		CHAR_OnTickFood( nFoodLevel , HitsHungerLoss );
-	}
-}
-
-// Check Food usage.
-// Are we hungry enough to take some new action ?
-// RETURN: true = we have taken an action.
-bool CChar::CHAR_OnTickFood( int nFoodLevel , int HitsHungerLoss )
-{
-	ADDTOCALLSTACK("CChar::CHAR_OnTickFood");
-
-	if ( HitsHungerLoss <= 0 )
-		return false;
-	if ( !m_pArea || m_pArea->IsFlag(REGION_FLAG_SAFE))
-		return false;
-	if ( IsStatFlag(STATF_INVUL|STATF_DEAD|STATF_Sleeping|STATF_Stone|STATF_Spawned))
-		return false;
+	// Show hunger damage if food level is getting low
+	short iFoodLevel = Food_GetLevelPercent();
+	if ( iFoodLevel > 40 )
+		return;
+	if ( HitsHungerLoss <= 0 || IsStatFlag(STATF_Sleeping|STATF_Stone) )
+		return;
 
 	bool bPet = IsStatFlag(STATF_Pet);
+	LPCTSTR pszMsgLevel = Food_GetLevelMessage(bPet, false);
+	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_HUNGER), pszMsgLevel);
+
 	char *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_LOOKS), Food_GetLevelMessage(bPet, false));
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_LOOKS), pszMsgLevel);
 	CItem *pMountItem = Horse_GetMountItem();
 	if ( pMountItem )
 		pMountItem->Emote(pszMsg);
 	else
 		Emote(pszMsg);
 
-	if ( nFoodLevel <= 0 )
+	// Get hunger damage if food level reach 0
+	if ( iFoodLevel <= 0 )
 	{
 		OnTakeDamage(HitsHungerLoss, this, DAMAGE_FIXED);
 		SoundChar(CRESND_RAND2);
 		if ( bPet )
 			NPC_PetDesert();
-		return true;
 	}
-
-	return false;
 }
 
 // Assume this is only called 1 time per sec.

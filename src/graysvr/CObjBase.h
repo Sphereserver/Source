@@ -4066,9 +4066,7 @@ private:
 	bool NPC_Act_Food();
 
 	void NPC_ActStart_SpeakTo( CChar * pSrc );
-
 	void NPC_OnTickAction();
-	bool CHAR_OnTickFood( int nHungerPercent , int HitsHungerLoss);
 
 public:
 	void NPC_Pathfinding();		//	NPC thread AI - pathfinding
