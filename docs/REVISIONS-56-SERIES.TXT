@@ -3004,3 +3004,6 @@ Fixed: Sphere not storing correct client version on some specific clients, makin
 
 21-03-2016, Coruja
 Changed: Multi placement target now will center to the multi front door (as OSI does) instead multi center.
+
+24-03-2016, Coruja
+Changed: As many users requested, walk through hidden/invisible chars won't require full stamina to pass anymore (this can be customized using ARGN1 on @PersonalSpace trigger)

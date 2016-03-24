@@ -3079,7 +3079,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 				return NULL;
 
 			iStamReq = 10;
-			if ( IsPriv(PRIV_GM) || pChar->IsStatFlag(STATF_DEAD) )
+			if ( IsPriv(PRIV_GM) || pChar->IsStatFlag(STATF_DEAD|STATF_Invisible|STATF_Hidden) )
 				iStamReq = 0;
 			else if ( pPoly && pPoly->m_itSpell.m_spell == SPELL_Wraith_Form && GetTopMap() == 0 )		// chars under Wraith Form effect can always walk through chars in Felucca
 				iStamReq = 0;
