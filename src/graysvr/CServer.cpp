@@ -382,7 +382,7 @@ LPCTSTR CServer::GetStatusString( BYTE iIndex ) const
 
 //*********************************************************
 
-void CServer::ListClients( CTextConsole * pConsole ) const
+void CServer::ListClients( CTextConsole *pConsole ) const
 {
 	ADDTOCALLSTACK("CServer::ListClients");
 	// Mask which clients we want ?
@@ -390,60 +390,53 @@ void CServer::ListClients( CTextConsole * pConsole ) const
 	if ( pConsole == NULL )
 		return;
 
-	const CChar * pCharCmd = pConsole->GetChar();
-	TCHAR * pszMsg = Str_GetTemp();
-	TCHAR * tmpMsg = Str_GetTemp();
+	const CChar *pCharCmd = pConsole->GetChar();
+	const CChar *pChar = NULL;
+	const CAccount *pAcc = NULL;
+	TCHAR *pszMsg = Str_GetTemp();
+	TCHAR *tmpMsg = Str_GetTemp();
+	TCHAR chRank = NULL;
+	LPCTSTR pszState = NULL;
 	size_t numClients = 0;
 
 	ClientIterator it;
-	for (const CClient * pClient = it.next(); pClient != NULL; pClient = it.next())
+	for ( const CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
 		numClients++;
-		const CChar * pChar = pClient->GetChar();
-		if ( pChar != NULL )
+		pChar = pClient->GetChar();
+		pAcc = pClient->GetAccount();
+		chRank = (pAcc && pAcc->GetPrivLevel() > PLEVEL_Player) ? '+' : '=';
+
+		if ( pChar )
 		{
-			if ( pCharCmd != NULL && pCharCmd->CanDisturb( pChar ) == false )
+			if ( pCharCmd && !pCharCmd->CanDisturb(pChar) )
 				continue;
 
-			TCHAR chRank = '=';
-			if ( pClient->IsPriv(PRIV_GM) || pClient->GetPrivLevel() >= PLEVEL_Counsel )
-				chRank = '+';
-
-			sprintf(tmpMsg, "%lx:Acc%c'%s', Char='%s' (IP: %s)\n",
-				pClient->GetSocketID(),
-				chRank,
-				pClient->GetAccount()->GetName(),
-				pChar->GetName(),
-				pClient->GetPeerStr());
+			sprintf(tmpMsg, "%lx:Acc%c'%s', Char='%s' (IP: %s)\n", pClient->GetSocketID(), chRank, pAcc->GetName(), pChar->GetName(), pClient->GetPeerStr());
 		}
 		else
 		{
-			if ( pConsole->GetPrivLevel() < pClient->GetPrivLevel())
+			if ( pConsole->GetPrivLevel() < pClient->GetPrivLevel() )
 				continue;
 
-			LPCTSTR pszState;
 			switch ( pClient->GetConnectType() )
 			{
-				case CONNECT_TELNET:
-					pszState = "TELNET";
-					break;
 				case CONNECT_HTTP:
 					pszState = "WEB";
+					break;
+				case CONNECT_TELNET:
+					pszState = "TELNET";
 					break;
 				default:
 					pszState = "NOT LOGGED IN";
 					break;
 			}
 
-			sprintf(tmpMsg, "%lx:Acc='%s' (IP: %s) %s\n",
-				pClient->GetSocketID(),
-				pClient->GetAccount() != NULL ? pClient->GetAccount()->GetName() : "<NA>",
-				pClient->GetPeerStr(),
-				pszState);
+			sprintf(tmpMsg, "%lx:Acc%c'%s' (IP: %s) %s\n", pClient->GetSocketID(), chRank, pAcc ? pAcc->GetName() : "<NA>", pClient->GetPeerStr(), pszState);
 		}
 
 		// If we have many clients, SCRIPT_MAX_LINE_LEN may be too short ;) (matex)
-		if (strlen(pszMsg) + strlen(tmpMsg) >= SCRIPT_MAX_LINE_LEN)
+		if ( strlen(pszMsg) + strlen(tmpMsg) >= SCRIPT_MAX_LINE_LEN )
 		{
 			pConsole->SysMessage(pszMsg);
 			pszMsg[0] = '\0';
@@ -452,12 +445,12 @@ void CServer::ListClients( CTextConsole * pConsole ) const
 		strcat(pszMsg, tmpMsg);
 	}
 
-	if (numClients <= 0)
-		sprintf(tmpMsg, "%s\n", g_Cfg.GetDefaultMsg( DEFMSG_HL_NO_CLIENT ) );
-	else if (numClients == 1)
-		sprintf(tmpMsg, "%s\n", g_Cfg.GetDefaultMsg( DEFMSG_HL_ONE_CLIENT ));
+	if ( numClients <= 0 )
+		sprintf(tmpMsg, "%s\n", g_Cfg.GetDefaultMsg(DEFMSG_HL_NO_CLIENT));
+	else if ( numClients == 1 )
+		sprintf(tmpMsg, "%s\n", g_Cfg.GetDefaultMsg(DEFMSG_HL_ONE_CLIENT));
 	else
-		sprintf(tmpMsg, "%s %" FMTSIZE_T "\n", g_Cfg.GetDefaultMsg( DEFMSG_HL_MANY_CLIENTS ), numClients);
+		sprintf(tmpMsg, "%s %" FMTSIZE_T "\n", g_Cfg.GetDefaultMsg(DEFMSG_HL_MANY_CLIENTS), numClients);
 
 	pConsole->SysMessage(pszMsg);
 	pConsole->SysMessage(tmpMsg);
