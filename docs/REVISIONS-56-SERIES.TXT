@@ -3008,5 +3008,8 @@ Changed: Multi placement target now will center to the multi front door (as OSI 
 24-03-2016, Coruja
 Changed: As many users requested, walk through hidden/invisible chars won't require full stamina to pass anymore (this can be customized using ARGN1 on @PersonalSpace trigger)
 
-25-03-2015, Coruja
+25-03-2016, Coruja
 [sphere_msgs.scp]: Added new CMSG_DEF_FONT and CMSG_DEF_UNICODE settings to customize character name on single click.
+
+30-03-2016, Coruja
+Added: TAG.OVERRIDE.TRAINSKILLCOST on NPCs vendors to override NPCTrainCost value from sphere.ini

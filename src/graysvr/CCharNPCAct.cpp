@@ -536,8 +536,12 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem * pGold)
 		return false;
 	}
 
-	int iTrainCost = NPC_OnTrainCheck(pCharSrc, skill) * g_Cfg.m_iTrainSkillCost;
-	if (( iTrainCost <= 0 ) || !pGold )
+	int iTrainCost = static_cast<int>(GetKeyNum("OVERRIDE.TRAINSKILLCOST", true));
+	if ( !iTrainCost )
+		iTrainCost = g_Cfg.m_iTrainSkillCost;
+
+	iTrainCost *= NPC_OnTrainCheck(pCharSrc, skill);
+	if ( (iTrainCost <= 0) || !pGold )
 		return false;
 
 	Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_SUCCESS ) );
