@@ -152,47 +152,58 @@ void CItemSpawn::GenerateItem(CResourceDef *pDef)
 
 void CItemSpawn::GenerateChar(CResourceDef *pDef)
 {
-	ADDTOCALLSTACK("CitemSpawn:GenerateChar");
-	if ( !IsTopLevel() )
-		return;
-
-	RESOURCE_ID_BASE rid = pDef->GetResourceID();
-	if ( rid.GetResType() == RES_SPAWN )
-	{
-		const CRandGroupDef *pSpawnGroup = static_cast<const CRandGroupDef *>(pDef);
-		ASSERT(pSpawnGroup);
-		size_t i = pSpawnGroup->GetRandMemberIndex();
-		if ( i != pSpawnGroup->BadMemberIndex() )
-			rid = pSpawnGroup->GetMemberID(i);
-	}
-
-	if ( (rid.GetResType() != RES_CHARDEF) && (rid.GetResType() != RES_UNKNOWN) )
-		return;
-
-	CChar *pChar = CChar::CreateBasic(static_cast<CREID_TYPE>(rid.GetResIndex()));
-	if ( !pChar )
-		return;
-
-	CPointMap pt = GetTopPoint();
-	pChar->NPC_LoadScript(true);
-	pChar->StatFlag_Set(STATF_Spawned);
-	pChar->MoveTo(pt);
-
-	// Check if the NPC can spawn in this region
-	CRegionBase *pRegion = GetTopPoint().GetRegion(REGION_TYPE_AREA);
-	if ( !pRegion || (pRegion->IsGuarded() && pChar->Noto_IsEvil()) )
-	{
-		pChar->Delete();
-		return;
-	}
-
-	AddObj(pChar->GetUID());
-	pChar->NPC_CreateTrigger();		// removed from NPC_LoadScript() and triggered after char placement and attachment to the spawnitem
-	pChar->Update();
-
-	size_t iCount = GetTopSector()->GetCharComplexity();
-	if ( iCount > g_Cfg.m_iMaxCharComplexity )
-		g_Log.Event(LOGL_WARN, "%d chars at %s. Sector too complex!\n", iCount, GetTopSector()->GetBasePoint().WriteUsed());
+    ADDTOCALLSTACK("CitemSpawn:GenerateChar");
+    if ( !IsTopLevel() )
+        return;
+ 
+    RESOURCE_ID_BASE rid = pDef->GetResourceID();
+    if ( rid.GetResType() == RES_SPAWN )
+    {
+        const CRandGroupDef *pSpawnGroup = static_cast<const CRandGroupDef *>(pDef);
+        ASSERT(pSpawnGroup);
+        size_t i = pSpawnGroup->GetRandMemberIndex();
+        if ( i != pSpawnGroup->BadMemberIndex() )
+            rid = pSpawnGroup->GetMemberID(i);
+    }
+ 
+    if ( (rid.GetResType() != RES_CHARDEF) && (rid.GetResType() != RES_UNKNOWN) )
+        return;
+ 
+    CChar *pChar = CChar::CreateBasic(static_cast<CREID_TYPE>(rid.GetResIndex()));
+    if ( !pChar )
+        return;
+ 
+    CPointMap pt = GetTopPoint();
+    int iDistMax = m_itSpawnChar.m_DistMax;
+    pChar->NPC_LoadScript(true);
+    pChar->StatFlag_Set(STATF_Spawned);
+    // Try placing this char near the spawn
+    if ( !pChar->MoveNearObj(this, iDistMax ? Calc_GetRandVal(iDistMax) : 1) )
+    {
+        // If this fails, try placing the char ON the spawn
+        if (!pChar->MoveTo(pt))
+        {
+            DEBUG_ERR(("Spawner UID:0%lx is unable to place a character inside the world, deleted the character", (DWORD)(this->GetUID())));
+            pChar->Delete();
+            return;
+        }
+    }
+ 
+    // Check if the NPC can spawn in this region
+    CRegionBase *pRegion = pt.GetRegion(REGION_TYPE_AREA);
+    if ( !pRegion || (pRegion->IsGuarded() && pChar->Noto_IsEvil()) )
+    {
+        pChar->Delete();
+        return;
+    }
+ 
+    AddObj(pChar->GetUID());
+    pChar->NPC_CreateTrigger();     // removed from NPC_LoadScript() and triggered after char placement and attachment to the spawnitem
+    pChar->Update();
+ 
+    size_t iCount = GetTopSector()->GetCharComplexity();
+    if ( iCount > g_Cfg.m_iMaxCharComplexity )
+        g_Log.Event(LOGL_WARN, "%d chars at %s. Sector too complex!\n", iCount, GetTopSector()->GetBasePoint().WriteUsed());
 }
 
 void CItemSpawn::DelObj(CGrayUID uid)
