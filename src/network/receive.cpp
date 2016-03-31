@@ -2424,15 +2424,8 @@ bool PacketClientVersion::onReceive(NetState* net)
 
 		DEBUG_MSG(("Getting CliVersionReported %lu\n", version));
 		
-		if ((g_Serv.m_ClientVersion.GetClientVer() != 0) && (version != g_Serv.m_ClientVersion.GetClientVer()))
-		{
+		if ((g_Serv.m_ClientVersion.GetClientVer() != 0) && (g_Serv.m_ClientVersion.GetClientVer() != version))
 			client->addLoginErr(PacketLoginError::BadVersion);
-		}
-		else if ((net->getCryptVersion() < MINCLIVER_TOOLTIP) && (version >= MINCLIVER_TOOLTIP) && (client->GetResDisp() >= RDS_AOS) && (IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))) //workaround for a "bug", which sends all items in LOS before processing this packet
-		{
-			DEBUG_MSG(("m_Crypt.GetClientVer()(%lu) != m_reportedCliver(%lu) == %x\n", net->getCryptVersion(), version, (net->getCryptVersion() != version)));
-			client->addAOSPlayerSeeNoCrypt();
-		}
 	}
 
 	return true;
@@ -3199,7 +3192,7 @@ bool PacketGargoyleFly::onReceive(NetState* net)
 /***************************************************************************
  *
  *
- *	Packet 0xBF.0x33 : PacketWheelBoatMove			gargoyle toggle flying
+ *	Packet 0xBF.0x33 : PacketWheelBoatMove			use mouse as boat wheel
  *
  *
  ***************************************************************************/
