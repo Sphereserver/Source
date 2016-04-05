@@ -3013,3 +3013,7 @@ Changed: As many users requested, walk through hidden/invisible chars won't requ
 
 30-03-2016, Coruja
 Added: TAG.OVERRIDE.TRAINSKILLCOST on NPCs vendors to override NPCTrainCost value from sphere.ini
+[sphere_map0.scp]: Fixed RECT values on Green Acres and Green Acres 3.
+
+05-04-2016, Coruja
+Fixed: Ship planks allowing usage from distances > MaxShipPlankTeleport setting on Sphere.ini, allowing the player enter on the ship on locations that he won't be able to exit.

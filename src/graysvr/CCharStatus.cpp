@@ -1760,47 +1760,44 @@ bool CChar::CanTouch( const CObjBase *pObj ) const
 		return false;
 
 	const CItem *pItem = NULL;
-	const CChar *pChar = NULL;
 	const CObjBaseTemplate *pObjTop = pObj->GetTopLevelObj();
 	int iDist = GetTopDist3D(pObjTop);
-	bool fDeathImmune = IsPriv(PRIV_GM);
 
 	if ( pObj->IsItem() )	// some objects can be used anytime. (even by the dead.)
 	{
-		pItem = dynamic_cast<const CItem*>(pObj);
+		pItem = static_cast<const CItem *>(pObj);
 		if ( !pItem )
 			return false;
 
+		bool bDeathImmune = IsPriv(PRIV_GM);
 		switch ( pItem->GetType() )
 		{
 			case IT_SIGN_GUMP:	// can be seen from a distance.
-				return iDist < pObjTop->GetVisualRange();
+				return (iDist <= pObjTop->GetVisualRange());
 
-			case IT_TELESCOPE:
 			case IT_SHRINE:		// We can use shrines when dead !!
-				fDeathImmune = true;
+			case IT_TELESCOPE:
+				bDeathImmune = true;
 				break;
 
+			case IT_SHIP_PLANK:
 			case IT_SHIP_SIDE:
 			case IT_SHIP_SIDE_LOCKED:
-			case IT_SHIP_PLANK:
-			case IT_ARCHERY_BUTTE:	// use from distance.
 			case IT_ROPE:
 				if ( IsStatFlag(STATF_Sleeping|STATF_Freeze|STATF_Stone) )
 					break;
-				return GetTopDist3D(pItem->GetTopLevelObj()) <= UO_MAP_VIEW_SIZE;
+				return (iDist <= g_Cfg.m_iMaxShipPlankTeleport);
+
 			default:
 				break;
 		}
-	}
 
-	if ( !fDeathImmune )
-	{
-		if ( IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Freeze|STATF_Stone) )
+		if ( !bDeathImmune && IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Freeze|STATF_Stone) )
 			return false;
 	}
 
 	//	search up to top level object
+	const CChar *pChar = NULL;
 	if ( pObjTop && (pObjTop != this) )
 	{
 		if ( pObjTop->IsChar() )
@@ -1811,16 +1808,16 @@ bool CChar::CanTouch( const CObjBase *pObj ) const
 			if ( pChar == this )
 				return true;
 			if ( IsPriv(PRIV_GM) )
-				return GetPrivLevel() >= pChar->GetPrivLevel();
+				return (GetPrivLevel() >= pChar->GetPrivLevel());
 			if ( pChar->IsStatFlag(STATF_DEAD|STATF_Stone) )
 				return false;
 		}
 
-		CObjBase *pObjCont;
+		CObjBase *pObjCont = NULL;
 		const CObjBase *pObjTest = pObj;
 		for (;;)
 		{
-			pItem = dynamic_cast<const CItem*>(pObjTest);
+			pItem = static_cast<const CItem *>(pObjTest);
 			if ( !pItem )
 				break;
 
@@ -1830,7 +1827,7 @@ bool CChar::CanTouch( const CObjBase *pObj ) const
 				break;
 
 			pObjTest = pObjCont;
-			if ( !CanSeeInContainer(dynamic_cast<const CItemContainer*>(pObjTest)) )
+			if ( !CanSeeInContainer(static_cast<const CItemContainer *>(pObjTest)) )
 				return false;
 		}
 	}
