@@ -3017,3 +3017,4 @@ Added: TAG.OVERRIDE.TRAINSKILLCOST on NPCs vendors to override NPCTrainCost valu
 
 05-04-2016, Coruja
 Fixed: Ship planks allowing usage from distances > MaxShipPlankTeleport setting on Sphere.ini, allowing the player enter on the ship on locations that he won't be able to exit.
+Fixed: Magic Reflection flagging criminal the char receiving the spell instead the caster.

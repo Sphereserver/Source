@@ -3143,7 +3143,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			return false;
 		}
 
-		if ( !OnAttackedBy(pCharSrc, 1, false, !pSpellDef->IsSpellType(SPELLFLAG_FIELD)) )
+		if ( !OnAttackedBy(pCharSrc, 1, false, !pSpellDef->IsSpellType(SPELLFLAG_FIELD)) && !bReflecting )
 			return false;
 
 		// Check if the spell can be reflected
@@ -3151,14 +3151,17 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		{
 			if ( IsStatFlag(STATF_Reflection) )
 			{
-				CItem *pMagicReflect = LayerFind(LAYER_SPELL_Magic_Reflect);
-				pMagicReflect->Delete();
 				Effect(EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 5);
+				CItem *pMagicReflect = LayerFind(LAYER_SPELL_Magic_Reflect);
+				if ( pMagicReflect )
+					pMagicReflect->Delete();
+
 				if ( pCharSrc->IsStatFlag(STATF_Reflection) )		// caster is under reflection effect too, so the spell will reflect back to default target
 				{
-					pMagicReflect = pCharSrc->LayerFind(LAYER_SPELL_Magic_Reflect);
-					pMagicReflect->Delete();
 					pCharSrc->Effect(EFFECT_OBJ, ITEMID_FX_GLOW, pCharSrc, 10, 5);
+					pMagicReflect = pCharSrc->LayerFind(LAYER_SPELL_Magic_Reflect);
+					if ( pMagicReflect )
+						pMagicReflect->Delete();
 				}
 				else
 				{

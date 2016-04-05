@@ -2540,7 +2540,7 @@ void CChar::Fight_HitTry()
 	ASSERT( m_atFight.m_War_Swing_State == (WAR_SWING_READY|WAR_SWING_SWINGING) );
 
 	CChar *pCharTarg = m_Fight_Targ.CharFind();
-	if ( !pCharTarg || pCharTarg->Fight_IsAttackable() )
+	if ( !pCharTarg || !pCharTarg->Fight_IsAttackable() )
 	{
 		// I can't hit this target, try switch to another one
 		if ( !Fight_Attack(NPC_FightFindBestTarget()) )
