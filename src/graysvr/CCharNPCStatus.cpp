@@ -604,7 +604,7 @@ int CChar::NPC_GetAttackContinueMotivation( CChar * pChar, int iMotivation ) con
 	if ( !m_pNPC )
 		return 0;
 
-	if ( pChar->IsStatFlag( STATF_DEAD | STATF_INVUL | STATF_Stone ))
+	if ( !pChar->Fight_IsAttackable() )
 		return( -100 );
 	if ( m_pNPC->m_Brain == NPCBRAIN_GUARD )
 		return( 100 );
