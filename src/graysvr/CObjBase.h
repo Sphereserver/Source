@@ -3879,7 +3879,7 @@ public:
 
 	bool Fight_IsAttackable()
 	{
-		return IsStatFlag(STATF_DEAD|STATF_Stone|STATF_Invisible|STATF_Insubstantial|STATF_Hidden);
+		return !IsStatFlag(STATF_DEAD|STATF_Stone|STATF_Invisible|STATF_Insubstantial|STATF_Hidden);
 	}
 
 	// Attacker System
