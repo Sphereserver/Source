@@ -3877,6 +3877,11 @@ public:
 	WAR_SWING_TYPE Fight_Hit( CChar * pCharTarg );
 	int  Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom = false, bool bGetMax = true ) const;
 
+	bool Fight_IsAttackable()
+	{
+		return IsStatFlag(STATF_DEAD|STATF_Stone|STATF_Invisible|STATF_Insubstantial|STATF_Hidden);
+	}
+
 	// Attacker System
 
 	enum ATTACKER_CLEAR_TYPE
