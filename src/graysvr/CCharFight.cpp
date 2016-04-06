@@ -3557,7 +3557,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			Sound(0x44d);
 
 		// Make blood effects
-		if ( m_wBloodHue != static_cast<HUE_TYPE>(-1) )
+		if ( pCharTarg->m_wBloodHue != static_cast<HUE_TYPE>(-1) )
 		{
 			static const ITEMID_TYPE sm_Blood[] = { ITEMID_BLOOD1, ITEMID_BLOOD2, ITEMID_BLOOD3, ITEMID_BLOOD4, ITEMID_BLOOD5, ITEMID_BLOOD6, ITEMID_BLOOD_SPLAT };
 			int iBloodQty = (g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE) ? Calc_GetRandVal2(4, 5) : Calc_GetRandVal2(1, 2);
