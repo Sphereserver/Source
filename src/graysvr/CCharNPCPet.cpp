@@ -213,6 +213,8 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 			Skill_Start(SKILL_NONE);
 			NPC_PetClearOwners();
 			ResendTooltip();
+			break;
+			
 		case PC_DROP:
 		{
 			// Drop backpack items on ground
