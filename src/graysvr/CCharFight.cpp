@@ -2279,6 +2279,12 @@ bool CChar::Fight_IsActive() const
 	return g_Cfg.IsSkillFlag( iSkillActive, SKF_FIGHT );
 }
 
+bool CChar::Fight_IsAttackable()
+{
+	ADDTOCALLSTACK("CChar::IsAttackable");
+	return !IsStatFlag(STATF_DEAD|STATF_Stone|STATF_Invisible|STATF_Insubstantial|STATF_Hidden|STATF_INVUL);
+}
+
 // Calculating base DMG (also used for STATUS value)
 int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax ) const
 {
