@@ -987,7 +987,13 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			return;
 		}
 		case LAYER_FLAG_Poison:
-			SetPoison((pCaster->Skill_GetBase(SKILL_MAGERY) + pCaster->Skill_GetBase(SKILL_POISONING)) / 2, iStatEffect / 50, pCaster);
+			StatFlag_Set(STATF_Poisoned);
+			UpdateModeFlag();		
+			if (pClient && IsSetOF(OF_Buffs))		
+			{		
+				pClient->removeBuff(BI_POISON);		
+				pClient->addBuff(BI_POISON, 1017383, 1070722, 2);		
+			}
 			return;
 		case LAYER_SPELL_Night_Sight:
 			StatFlag_Set(STATF_NightSight);
