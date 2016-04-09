@@ -446,6 +446,7 @@ void CItemMulti::r_Write( CScript & s )
 		m_pRegion->r_WriteBody( s, "REGION." );
 	}
 }
+
 bool CItemMulti::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 {
 	ADDTOCALLSTACK("CItemMulti::r_WriteVal");
@@ -507,60 +508,9 @@ bool CItemMulti::r_LoadVal( CScript & s  )
 	EXC_DEBUG_END;
 	return false;
 }
+
 void CItemMulti::DupeCopy( const CItem * pItem )
 {
 	ADDTOCALLSTACK("CItemMulti::DupeCopy");
 	CItem::DupeCopy(pItem);
-}
-
-
-size_t CItemMulti::Multi_ListObjs(CObjBase ** ppObjList)
-{
-	ADDTOCALLSTACK("CItemMulti::Multi_ListObjs");
-	// List all the objects in the structure.
-
-	if (!IsTopLevel())
-		return 0;
-
-	int iMaxDist = Multi_GetMaxDist();
-
-	// always list myself first. All other items must see my new region !
-	size_t iCount = 0;
-	ppObjList[iCount++] = this;
-
-	CWorldSearch AreaChar(GetTopPoint(), iMaxDist);
-	AreaChar.SetAllShow(true);
-	AreaChar.SetSearchSquare(true);
-	while (iCount < MAX_MULTI_CONTENT)
-	{
-		CChar * pChar = AreaChar.GetChar();
-		if (pChar == NULL)
-			break;
-		if (!m_pRegion->IsInside2d(pChar->GetTopPoint()))
-			continue;
-		if (pChar->IsDisconnected() && pChar->m_pNPC)
-			continue;
-
-		ppObjList[iCount++] = pChar;
-	}
-
-	CWorldSearch AreaItem(GetTopPoint(), iMaxDist);
-	AreaItem.SetSearchSquare(true);
-	while (iCount < MAX_MULTI_CONTENT)
-	{
-		CItem * pItem = AreaItem.GetItem();
-		if (pItem == NULL)
-			break;
-		if (pItem == this)	// already listed.
-			continue;
-		if (!Multi_IsPartOf(pItem))
-		{
-			if (!m_pRegion->IsInside2d(pItem->GetTopPoint()))
-				continue;
-			if (!pItem->IsMovable())
-				continue;
-		}
-		ppObjList[iCount++] = pItem;
-	}
-	return(iCount);
 }

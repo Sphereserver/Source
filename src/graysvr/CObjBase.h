@@ -1751,7 +1751,6 @@ protected:
 
 public:
 	int Multi_GetMaxDist() const;
-	size_t  Multi_ListObjs(CObjBase ** ppObjList);
 	struct ShipSpeed // speed of a ship
 	{
 		unsigned char period;	// time between movement

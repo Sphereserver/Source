@@ -628,35 +628,21 @@ int CChar::NPC_GetAttackMotivation( CChar * pChar, int iMotivation ) const
 	// Am I stronger than he is ? Should I continue fighting ?
 	// Take into consideration AC, health, skills, etc..
 	// RETURN:
-	// <-1 = dead meat. (run away)
-	// 0 = I'm have no interest.
-	// 50 = even match.
-	// 100 = he's a push over.
+	//   < 0 = dead meat. (run away)
+	//   0 = I'm have no interest.
+	//   50 = even match.
+	//   100 = he's a push over.
 
 	if ( !m_pNPC || !pChar || !pChar->m_pArea )
 		return 0;
-	if ( Stat_GetVal(STAT_STR) <= 0 )
-		return -1;		// I'm dead
-	// Is the target interesting ?
-	if ( pChar->m_pArea->IsFlag( REGION_FLAG_SAFE ))	// universal
+	if ( IsStatFlag(STATF_DEAD) || pChar->IsStatFlag(STATF_DEAD) )
 		return 0;
-	if ( pChar->IsStatFlag(STATF_DEAD) && pChar->m_pNPC && pChar->m_pNPC->m_bonded )
+	if ( pChar->m_pArea->IsFlag(REGION_FLAG_SAFE) )
 		return 0;
-	// If the area is guarded then think better of this.
-	if ( pChar->m_pArea->IsGuarded() && m_pNPC->m_Brain != NPCBRAIN_GUARD )		// too smart for this.
-	{
-		iMotivation -= Stat_GetAdjusted(STAT_INT) / 20;
-	}
 
-	// Owned by or is one of my kind ?
-
-	iMotivation += NPC_GetHostilityLevelToward( pChar );
-
+	iMotivation += NPC_GetHostilityLevelToward(pChar);
 	if ( iMotivation > 0 )
-	{
-		// Am i injured etc ?
-		iMotivation = NPC_GetAttackContinueMotivation( pChar, iMotivation );
-	}
+		iMotivation = NPC_GetAttackContinueMotivation(pChar, iMotivation);		// Am i injured etc ?
+
 	return iMotivation;
 }
-
