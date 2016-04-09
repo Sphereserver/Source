@@ -2162,7 +2162,7 @@ bool CClient::addShopMenuBuy( CChar * pVendor )
 
 	// Get price list
 	PacketVendorBuyList *cmd = new PacketVendorBuyList();
-	size_t count = cmd->fillContainer(pContainer, pVendor->NPC_GetVendorMarkup(m_pChar), GetNetState()->isClientEnhanced());
+	size_t count = cmd->fillContainer(pContainer, pVendor->NPC_GetVendorMarkup(), GetNetState()->isClientEnhanced());
 	cmd->push(this);
 
 	// Open gump
@@ -2200,7 +2200,7 @@ bool CClient::addShopMenuSell( CChar * pVendor )
 		pContainer2 = NULL;		// no stock
 
 	PacketVendorSellList cmd(pVendor);
-	size_t count = cmd.searchContainer(this, m_pChar->GetPackSafe(), pContainer1, pContainer2, -pVendor->NPC_GetVendorMarkup(m_pChar));
+	size_t count = cmd.searchContainer(this, m_pChar->GetPackSafe(), pContainer1, pContainer2, -pVendor->NPC_GetVendorMarkup());
 	if (count <= 0)
 		return false;
 	

@@ -1404,31 +1404,19 @@ bool CChar::NPC_LookAround( bool fForceCheckItems )
 	// RETURN:
 	//   true = found something better to do.
 
-	if ( NPC_GetAiFlags()&NPC_AI_INTFOOD )
-	{
-		bool fFood = NPC_Act_Food();
-		//DEBUG_ERR(("2 fFood %d\n",fFood));
-		if ( fFood ) //are we hungry?
-			return true;
-	}
-
 	CSector *pSector = GetTopSector();
 	if ( !m_pNPC || !pSector )
 		return false;
 
-	if ( m_pNPC->m_Brain == NPCBRAIN_BERSERK || ! Calc_GetRandVal(6))
-	{
-		// Make some random noise
-		SoundChar( Calc_GetRandVal(2) ? CRESND_RAND1 : CRESND_RAND2 );
-	}
+	if ( m_pNPC->m_Brain == NPCBRAIN_BERSERK || !Calc_GetRandVal(6) )
+		SoundChar(Calc_GetRandVal(2) ? CRESND_RAND1 : CRESND_RAND2);		// Make some random noise
 
 	int iRange = GetSight();
 	int iRangeBlur = UO_MAP_VIEW_SIGHT;
 
-	CCharBase * pCharDef = Char_GetDef();
-
 	// If I can't move don't look to far.
-	if ( !pCharDef->Can(CAN_C_WALK|CAN_C_FLY|CAN_C_SWIM) || IsStatFlag(STATF_Stone|STATF_Freeze) )
+	CCharBase *pCharDef = Char_GetDef();
+	if ( !pCharDef->Can(CAN_C_SWIM|CAN_C_WALK|CAN_C_FLY|CAN_C_HOVER|CAN_C_RUN) || IsStatFlag(STATF_Freeze|STATF_Stone) )
 	{
 		if ( !NPC_FightMayCast() )	// And i have no distance attack.
 			iRange = iRangeBlur = 2;
@@ -1440,31 +1428,33 @@ bool CChar::NPC_LookAround( bool fForceCheckItems )
 		{
 			// I should move. Someone lit a fire under me.
 			m_Act_p = GetTopPoint();
-			m_Act_p.Move(static_cast<DIR_TYPE>(Calc_GetRandVal( DIR_QTY )));
-			NPC_WalkToPoint( true );
-			return( true );
+			m_Act_p.Move(static_cast<DIR_TYPE>(Calc_GetRandVal(DIR_QTY)));
+			NPC_WalkToPoint(true);
+			return true;
 		}
 
 		if ( Stat_GetAdjusted(STAT_INT) < 50 )
 			iRangeBlur /= 2;
 	}
 
-	// Lower the number of chars we look at.
-	if ( pSector->GetCharComplexity() > (g_Cfg.m_iMaxCharComplexity / 2) ) // if sector is to complex, lower our range to keep some performance.
+	// If sector is too complex, lower the number of chars we look at to keep some performance
+	if ( pSector->GetCharComplexity() > (g_Cfg.m_iMaxCharComplexity / 2) )
 		iRange /= 4;
 
 	// Any interesting chars here ?
+	int iDist = 0;
+	CChar *pChar = NULL;
 	CWorldSearch AreaChars(GetTopPoint(), iRange);
 	for (;;)
 	{
-		CChar	*pChar = AreaChars.GetChar();
+		pChar = AreaChars.GetChar();
 		if ( !pChar )
 			break;
 		if ( pChar == this )	// just myself.
 			continue;
 
-		int iDist = GetTopDist3D(pChar);
-		if ( iDist > iRangeBlur && !pChar->IsStatFlag(STATF_Fly) )
+		iDist = GetTopDist3D(pChar);
+		if ( iDist > iRangeBlur )
 		{
 			if ( Calc_GetRandVal(iDist) )
 				continue;	// can't see them.
@@ -1474,24 +1464,20 @@ bool CChar::NPC_LookAround( bool fForceCheckItems )
 	}
 
 	// Check the ground for good stuff.
-	if ( !fForceCheckItems &&
-		Stat_GetAdjusted(STAT_INT) > 10 &&
-		! IsSkillBase( Skill_GetActive()) &&
-		! Calc_GetRandVal( 3 ))
-	{
+	if ( !fForceCheckItems && (Stat_GetAdjusted(STAT_INT) > 10) && !IsSkillBase(Skill_GetActive()) && !Calc_GetRandVal(3) )
 		fForceCheckItems = true;
-	}
 
 	if ( fForceCheckItems )
 	{
-		CWorldSearch AreaItems( GetTopPoint(), iRange );
+		CItem *pItem = NULL;
+		CWorldSearch AreaItems(GetTopPoint(), iRange);
 		for (;;)
 		{
-			CItem	*pItem = AreaItems.GetItem();
+			pItem = AreaItems.GetItem();
 			if ( !pItem )
 				break;
 
-			int iDist = GetTopDist3D(pItem);
+			iDist = GetTopDist3D(pItem);
 			if ( iDist > iRangeBlur )
 			{
 				if ( Calc_GetRandVal(iDist) )

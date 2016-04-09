@@ -4096,7 +4096,7 @@ public:
 		return (m_pNPC->GetNpcAiFlags(this));
 	}
 	bool NPC_Vendor_Restock(bool bForce = false, bool bFillStock = false);
-	int NPC_GetVendorMarkup( const CChar * pChar ) const;
+	int NPC_GetVendorMarkup() const;
 
 	void NPC_OnPetCommand( bool fSuccess, CChar * pMaster );
 	bool NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets = false );

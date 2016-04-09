@@ -1283,7 +1283,7 @@ void CClient::Event_VendorSell(CChar* pVendor, const VendorItem* items, size_t i
 		return;
 	}
 
-	int iConvertFactor = -pVendor->NPC_GetVendorMarkup(m_pChar);
+	int iConvertFactor = -pVendor->NPC_GetVendorMarkup();
 
 	int iGold = 0;
 	bool fShortfall = false;

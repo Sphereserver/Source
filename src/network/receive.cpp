@@ -733,7 +733,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 		return true;
 	}
 
-	int iConvertFactor = vendor->NPC_GetVendorMarkup(buyer);
+	int iConvertFactor = vendor->NPC_GetVendorMarkup();
 
 	VendorItem items[MAX_ITEMS_CONT];
 	memset(items, 0, sizeof(items));
@@ -4228,9 +4228,11 @@ PacketMovementReqNew::PacketMovementReqNew() : Packet(0)
 bool PacketMovementReqNew::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketMovementReqNew::onReceive");
-	// New walk packet used on newest clients (still incomplete)
+	// New walk packet used on KR/SA clients (still incomplete)
 	// It must be enabled using login flags on packet 0xA9, otherwise the client will
 	// stay using the old walk packet 0x02.
+	// PS: Strangely some encrypted clients always use this packet even without receive
+	// login flags to enable it. This doesn't happen on no-crypt clients.
 
 	// The 'time' values here are used by fastwalk prevention, and linked somehow to
 	// time sync packets 0xF1 (client request) / 0xF2 (server response) but I have no
