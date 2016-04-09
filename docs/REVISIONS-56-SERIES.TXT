@@ -3019,3 +3019,7 @@ Added: TAG.OVERRIDE.TRAINSKILLCOST on NPCs vendors to override NPCTrainCost valu
 Fixed: Ship planks allowing usage from distances > MaxShipPlankTeleport setting on Sphere.ini, allowing the player enter on the ship on locations that he won't be able to exit.
 Fixed: Magic Reflection flagging criminal the char receiving the spell instead the caster.
 Fixed: Chars creating blood on combat even when BLOODCOLOR=-1 is set to prevent the blood creation.
+
+09-04-2016, Coruja
+Changed: Reverted changes on pet command STOP. Now it will act as an duplicated command of STAY instead make the pet stop all current actions and start follow his owner again.
+[sphereCrypt.ini]: Updated all crypts to use the new client version format.

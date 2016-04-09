@@ -187,11 +187,8 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 			break;
 
 		case PC_STAY:
-			Skill_Start(NPCACT_STAY);
-			break;
-
 		case PC_STOP:
-			Skill_Start(SKILL_NONE);
+			Skill_Start(NPCACT_STAY);
 			break;
 
 		case PC_TRANSFER:
