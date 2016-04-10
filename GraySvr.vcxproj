@@ -64,7 +64,7 @@
     <PreBuildEvent>
       <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; src/common/version/GitRevision.h
 for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
-set /a gitver = %gitver%+410
+set /a gitver = %gitver%-2808
 echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
@@ -89,7 +89,7 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
     <PreBuildEvent>
       <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; src/common/version/GitRevision.h
 for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
-set /a gitver = %gitver%+410
+set /a gitver = %gitver%-2808
 echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
@@ -114,7 +114,7 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
     <PreBuildEvent>
       <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; src/common/version/GitRevision.h
 for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
-set /a gitver = %gitver%+410
+set /a gitver = %gitver%-2808
 echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
@@ -139,7 +139,7 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
     <PreBuildEvent>
       <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; src/common/version/GitRevision.h
 for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
-set /a gitver = %gitver%+410
+set /a gitver = %gitver%-2808
 echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
