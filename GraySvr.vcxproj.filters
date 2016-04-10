@@ -717,6 +717,9 @@
   <ItemGroup>
     <Text Include="docs\REVISIONS-51-54-SERIES.TXT" />
     <Text Include="docs\REVISIONS-55-SERIES.TXT" />
+    <Text Include="docs\REVISIONS-56a-Pre_release.TXT" />
+    <Text Include="docs\REVISIONS-56b-Pre_release.TXT" />
+    <Text Include="docs\REVISIONS-56c-Pre_release.TXT" />
     <Text Include="docs\REVISIONS-56-Pre_release.TXT" />
     <Text Include="docs\REVISIONS-56-SERIES.TXT" />
   </ItemGroup>

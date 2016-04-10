@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <TargetName>SphereSvr</TargetName>
-    <ProjectName>0.56c</ProjectName>
+    <ProjectName>0.56d</ProjectName>
     <ProjectGuid>{40CA07B5-BCC7-A9C8-A6E6-DEFC536EE8CB}</ProjectGuid>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -64,7 +64,7 @@
     <PreBuildEvent>
       <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; src/common/version/GitRevision.h
 for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
-set /a gitver = %gitver%-2808
+set /a gitver = %gitver%-2406
 echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
@@ -89,7 +89,7 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
     <PreBuildEvent>
       <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; src/common/version/GitRevision.h
 for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
-set /a gitver = %gitver%-2808
+set /a gitver = %gitver%-2406
 echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
@@ -114,7 +114,7 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
     <PreBuildEvent>
       <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; src/common/version/GitRevision.h
 for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
-set /a gitver = %gitver%-2808
+set /a gitver = %gitver%-2406
 echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
@@ -139,7 +139,7 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
     <PreBuildEvent>
       <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; src/common/version/GitRevision.h
 for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
-set /a gitver = %gitver%-2808
+set /a gitver = %gitver%-2406
 echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
@@ -414,6 +414,9 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
     <None Include="src\tables\triggers.tbl" />
     <Text Include="docs\REVISIONS-51-54-SERIES.TXT" />
     <Text Include="docs\REVISIONS-55-SERIES.TXT" />
+    <Text Include="docs\REVISIONS-56a-Pre_release.TXT" />
+    <Text Include="docs\REVISIONS-56b-Pre_release.TXT" />
+    <Text Include="docs\REVISIONS-56c-Pre_release.TXT" />
     <Text Include="docs\REVISIONS-56-Pre_release.TXT" />
     <Text Include="docs\REVISIONS-56-SERIES.TXT" />
     <ResourceCompile Include="src\graysvr\GraySvr.rc" />
