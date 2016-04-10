@@ -1612,79 +1612,44 @@ void CClient::Event_PromptResp( LPCTSTR pszText, size_t len, DWORD context1, DWO
 
 
 
-void CClient::Event_Talk_Common(TCHAR * szText) // PC speech
+void CClient::Event_Talk_Common(TCHAR *szText)	// PC speech
 {
 	ADDTOCALLSTACK("CClient::Event_Talk_Common");
-	// ??? Allow NPC's to talk to each other in the future.
-	// Do hearing here so there is not feedback loop with NPC's talking to each other.
 	if ( !m_pChar || !m_pChar->m_pPlayer || !m_pChar->m_pArea )
 		return;
 
-	if ( ! strnicmp( szText, "I resign from my guild", 22 ))
-	{
-		m_pChar->Guild_Resign(MEMORY_GUILD);
-		return;
-	}
-	if ( ! strnicmp( szText, "I resign from my town", 21 ))
-	{
-		m_pChar->Guild_Resign(MEMORY_TOWN);
-		return;
-	}
-
-	static LPCTSTR const sm_szTextMurderer[] =
-	{
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_TEXT_MURD_1 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_TEXT_MURD_2 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_TEXT_MURD_3 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_TEXT_MURD_4 )
-	};
-
-	if ( ! strnicmp( szText, "I must consider my sins", 23 ))
-	{
-		unsigned int i = m_pChar->m_pPlayer->m_wMurders;
-		if ( i >= COUNTOF(sm_szTextMurderer))
-			i = COUNTOF(sm_szTextMurderer)-1;
-		SysMessage( sm_szTextMurderer[i] );
-		return;
-	}
-
 	// Guards are special
-	// They can't hear u if your dead.
-	bool fGhostSpeak = m_pChar->IsSpeakAsGhost();
-
-	LPCTSTR pszCallWord = g_Exp.m_VarDefs.GetKeyStr("guardcall");
-	if (!strnicmp(szText, "", 0))
-		pszCallWord = "GUARD,GUARDS";
-
-	if ( ! fGhostSpeak && FindStrWord( szText, pszCallWord ) > 0)
+	LPCTSTR pszMsgGuards = g_Exp.m_VarDefs.GetKeyStr("guardcall");
+	if ( !strnicmp(pszMsgGuards, "", 0) )
+		pszMsgGuards = "GUARD,GUARDS";
+	if ( FindStrWord(szText, pszMsgGuards) > 0 )
 		m_pChar->CallGuards(NULL);
 
 	// Are we in a region that can hear ?
-	if ( m_pChar->m_pArea->GetResourceID().IsItem())
+	if ( m_pChar->m_pArea->GetResourceID().IsItem() )
 	{
-		CItemMulti * pItemMulti = dynamic_cast <CItemMulti *>( m_pChar->m_pArea->GetResourceID().ItemFind());
+		CItemMulti *pItemMulti = static_cast<CItemMulti *>(m_pChar->m_pArea->GetResourceID().ItemFind());
 		if ( pItemMulti )
-			pItemMulti->OnHearRegion( szText, m_pChar );
+			pItemMulti->OnHearRegion(szText, m_pChar);
 	}
 
 	// Are there items on the ground that might hear u ?
-	CSector * pSector = m_pChar->GetTopSector();
-	if ( pSector->HasListenItems())
-	{
-		pSector->OnHearItem( m_pChar, szText );
-	}
+	CSector *pSector = m_pChar->GetTopSector();
+	if ( pSector->HasListenItems() )
+		pSector->OnHearItem(m_pChar, szText);
 
 	// Find an NPC that may have heard us.
-	CChar * pCharAlt = NULL;
-	int iAltDist = UO_MAP_VIEW_SIGHT;
-	CChar * pChar = NULL;
+	CChar *pChar = NULL;
+	CChar *pCharAlt = NULL;
 	size_t i = 0;
+	int iAltDist = UO_MAP_VIEW_SIGHT;
+	bool bGhostSpeak = m_pChar->IsSpeakAsGhost();
 
-	CWorldSearch AreaChars( m_pChar->GetTopPoint(), UO_MAP_VIEW_SIGHT );
+	CWorldSearch AreaChars(m_pChar->GetTopPoint(), UO_MAP_VIEW_SIGHT);
 	for (;;)
 	{
 		pChar = AreaChars.GetChar();
-		if ( pChar == NULL )
+		if ( !pChar )
 			break;
 
 		if ( pChar->IsStatFlag(STATF_COMM_CRYSTAL) )
@@ -1695,45 +1660,37 @@ void CClient::Event_Talk_Common(TCHAR * szText) // PC speech
 
 		if ( pChar == m_pChar )
 			continue;
-
-		if ( fGhostSpeak && ! pChar->CanUnderstandGhost())
+		if ( bGhostSpeak && !pChar->CanUnderstandGhost() )
 			continue;
 
-		bool fNamed = false;
+		bool bNamed = false;
 		i = 0;
-		if ( ! strnicmp( szText, "PETS", 4 ))
-			i = 5;
-		else if ( ! strnicmp( szText, "ALL ", 4 ))
+		if ( !strnicmp(szText, "ALL ", 4) )
 			i = 4;
 		else
 		{
 			// Named the char specifically ?
-			i = pChar->NPC_OnHearName( szText );
-			fNamed = true;
+			i = pChar->NPC_OnHearName(szText);
+			bNamed = true;
 		}
 		if ( i > 0 )
 		{
-			while ( ISWHITESPACE( szText[i] ))
+			while ( ISWHITESPACE(szText[i]) )
 				i++;
 
-			if ( pChar->NPC_OnHearPetCmd( szText+i, m_pChar, !fNamed ))
+			if ( pChar->NPC_OnHearPetCmd(szText + i, m_pChar, !bNamed) )
 			{
-				if ( fNamed )
+				if ( bNamed || (GetTargMode() == CLIMODE_TARG_PET_CMD) )
 					return;
-				if ( GetTargMode() == CLIMODE_TARG_PET_CMD )
-					return;
-				// The command might apply to other pets.
-				continue;
+				continue;	// the command might apply to others pets
 			}
-			if ( fNamed )
+			if ( bNamed )
 				break;
 		}
 
 		// Are we close to the char ?
-		int iDist = m_pChar->GetTopDist3D( pChar );
-
-		if ( pChar->Skill_GetActive() == NPCACT_TALK &&
-			pChar->m_Act_Targ == m_pChar->GetUID()) // already talking to him
+		int iDist = m_pChar->GetTopDist3D(pChar);
+		if ( pChar->Skill_GetActive() == NPCACT_TALK && pChar->m_Act_Targ == m_pChar->GetUID() )	// already talking to him
 		{
 			pCharAlt = pChar;
 			iAltDist = 1;
@@ -1748,31 +1705,21 @@ void CClient::Event_Talk_Common(TCHAR * szText) // PC speech
 			pCharAlt = pChar;
 			iAltDist = iDist;
 		}
-
-		// NPC's with special key words ?
-		if ( pChar->m_pNPC )
-		{
-			if ( pChar->m_pNPC->m_Brain == NPCBRAIN_BANKER )
-			{
-				if ( FindStrWord( szText, "BANK" ) > 0)
-					break;
-			}
-		}
 	}
 
-	if ( pChar == NULL )
+	if ( !pChar )
 	{
 		i = 0;
 		pChar = pCharAlt;
-		if ( pChar == NULL )
+		if ( !pChar )
 			return;	// no one heard it.
 	}
 
 	// Change to all upper case for ease of search. ???
-	_strupr( szText );
+	_strupr(szText);
 
 	// The char hears you say this.
-	pChar->NPC_OnHear( &szText[i], m_pChar );
+	pChar->NPC_OnHear(&szText[i], m_pChar);
 }
 
 

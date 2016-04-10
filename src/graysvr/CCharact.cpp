@@ -3882,6 +3882,8 @@ void CChar::OnTickFood(short iVal, int HitsHungerLoss)
 		return;
 	if ( IsStatFlag(STATF_Pet) && !NPC_CheckHirelingStatus() )		// this may be money instead of food
 		return;
+	if ( IsPriv(PRIV_GM) )
+		return;
 
 	// Decrease food level
 	short iFood = Stat_GetVal(STAT_FOOD) - iVal;
@@ -3889,7 +3891,7 @@ void CChar::OnTickFood(short iVal, int HitsHungerLoss)
 		iFood = 0;
 	Stat_SetVal(STAT_FOOD, iFood);
 
-	// Show hunger damage if food level is getting low
+	// Show hunger message if food level is getting low
 	short iFoodLevel = Food_GetLevelPercent();
 	if ( iFoodLevel > 40 )
 		return;

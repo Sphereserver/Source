@@ -3023,3 +3023,9 @@ Fixed: Chars creating blood on combat even when BLOODCOLOR=-1 is set to prevent 
 09-04-2016, Coruja
 Changed: Reverted changes on pet command STOP. Now it will act as an duplicated command of STAY instead make the pet stop all current actions and start follow his owner again.
 [sphereCrypt.ini]: Updated all crypts to use the new client version format.
+
+10-04-2016, Coruja
+Changed: Food level won't decrease on GM chars anymore.
+[sphere_msgs.scp]: Removed messages 'npc_text_murd_*'.
+[sphere_speech.scp]: Moved hardcoded speech commands 'I must consider my sins', 'I resign from my guild' and 'I resign from my town' to scripts.
+	-IMPORTANT: It's HIGHLY recommended update this script, or these speech commands will stop working.
