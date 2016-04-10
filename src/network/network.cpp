@@ -541,7 +541,7 @@ HistoryIP& IPHistoryManager::getHistoryForIP(const CSocketAddressIP& ip)
 
 	// create a new entry
 	HistoryIP hist;
-	memset(&hist, 0, sizeof(hist));
+	memset(&hist, 0, sizeof(HistoryIP));
 	hist.m_ip = ip;
 	hist.m_pingDecay = NETHISTORY_PINGDECAY;
 	hist.update();
