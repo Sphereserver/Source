@@ -2,6 +2,7 @@
 #define __NETWORK_H__
 #pragma once
 
+#include <deque>
 #include "packet.h"
 #include "../common/common.h"
 #include "../sphere/containers.h"
