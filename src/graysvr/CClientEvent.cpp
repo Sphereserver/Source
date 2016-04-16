@@ -1623,7 +1623,7 @@ void CClient::Event_Talk_Common(TCHAR *szText)	// PC speech
 	if ( !strnicmp(pszMsgGuards, "", 0) )
 		pszMsgGuards = "GUARD,GUARDS";
 	if ( FindStrWord(szText, pszMsgGuards) > 0 )
-		m_pChar->CallGuards(NULL);
+		m_pChar->CallGuards();
 
 	// Are we in a region that can hear ?
 	if ( m_pChar->m_pArea->GetResourceID().IsItem() )

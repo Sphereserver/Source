@@ -1054,7 +1054,7 @@ bool CResource::r_LoadVal( CScript &s )
 				m_iMaxKarma = m_iMinKarma;
 			break;
 		case RC_MINCHARDELETETIME:
-			m_iMinCharDeleteTime = s.GetArgVal()*60*TICK_PER_SEC;
+			m_iMinCharDeleteTime = s.GetArgVal()*TICK_PER_SEC;
 			break;
 		case RC_MINKARMA:
 			m_iMinKarma = s.GetArgVal();
@@ -1581,7 +1581,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			sVal.FormatVal( m_iMaxKarma );
 			break;
 		case RC_MINCHARDELETETIME:
-			sVal.FormatVal( m_iMinCharDeleteTime /( 60*TICK_PER_SEC ));
+			sVal.FormatVal( m_iMinCharDeleteTime /TICK_PER_SEC );
 			break;
 		case RC_MINKARMA:
 			sVal.FormatVal( m_iMinKarma );

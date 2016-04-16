@@ -217,12 +217,40 @@ NotoReturn:
 		return Noto;
 }
 
+//		NOTO_GOOD		= 0x01
+//		NOTO_GUILD_SAME	= 0x02
+//		NOTO_NEUTRAL	= 0x04
+//		NOTO_CRIMINAL	= 0x08
+//		NOTO_GUILD_WAR	= 0x10
+//		NOTO_EVIL		= 0x20
+//		NOTO_INVUL		= 0x40
 NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, bool fAllowInvul ) const
 {
-	ADDTOCALLSTACK("CChar::Noto_CalcFlag");
+	ADDTOCALLSTACK("CChar::Noto_GetFlag");
+	// What is this char to the viewer ?
+	// This allows the noto attack check in the client.
+	// NOTO_GOOD = it is criminal to attack me.
+
 	NOTO_TYPE iNotoFlag = static_cast<NOTO_TYPE>(m_TagDefs.GetKeyNum("OVERRIDE.NOTO", true));
 	if ( iNotoFlag != NOTO_INVALID )
 		return iNotoFlag;
+
+	TCHAR * getNoto = Str_GetTemp(); // get the override tag for this viewer
+	sprintf(getNoto, "OVERRIDE.NOTO.0%lx", (DWORD) pCharViewer->GetUID() );
+	iNotoFlag = static_cast<NOTO_TYPE>(m_TagDefs.GetKeyNum(getNoto));
+
+	if ( iNotoFlag != NOTO_INVALID )
+		return iNotoFlag;
+
+	if ( fAllowIncog && IsStatFlag( STATF_Incognito ))
+	{
+		return NOTO_NEUTRAL;
+	}
+
+	if ( fAllowInvul && IsStatFlag( STATF_INVUL ) )
+	{
+		return NOTO_INVUL;
+	}
 
 	if ( this != pCharViewer )
 	{
@@ -238,7 +266,7 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 				{
 					// return master's notoriety
 					++sm_iReentrant;
-					NOTO_TYPE notoMaster = pMaster->Noto_GetFlag(pCharViewer, fAllowIncog, fAllowInvul);
+					NOTO_TYPE notoMaster = pMaster->Noto_GetFlag(pCharViewer, false, false);
 					--sm_iReentrant;
 
 					// check if notoriety is inheritable based on bitmask setting:
@@ -248,9 +276,8 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 					//		NOTO_CRIMINAL	= 0x08
 					//		NOTO_GUILD_WAR	= 0x10
 					//		NOTO_EVIL		= 0x20
-					//		NOTO_INVUL		= 0x40
-					int iNotoFlags = 1 << (notoMaster - 1);
-					if ( (g_Cfg.m_iPetsInheritNotoriety & iNotoFlags) == iNotoFlags )
+					iNotoFlag = 1 << (notoMaster - 1);
+					if ( (g_Cfg.m_iPetsInheritNotoriety & iNotoFlag) == iNotoFlag )
 						return notoMaster;
 				}
 				else
@@ -260,62 +287,91 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 				}
 			}
 		}
-	}
-
-	if ( fAllowInvul && IsStatFlag(STATF_INVUL))
-		return NOTO_INVUL;
-	if ( IsStatFlag(STATF_Criminal))	// criminal to everyone.
-		return NOTO_CRIMINAL;
-	if ( fAllowIncog && IsStatFlag(STATF_Incognito))
-		return NOTO_NEUTRAL;
-	if ( m_pArea && m_pArea->IsFlag(REGION_FLAG_ARENA))
-		return NOTO_NEUTRAL;			// everyone is neutral here.
-	if ( Noto_IsEvil())
-		return NOTO_EVIL;
-	if ( Noto_IsNeutral())
-		return NOTO_NEUTRAL;
-
-	if ( this != pCharViewer ) // Am I checking myself?
-	{
-		// If they saw me commit a crime or I am their aggressor then criminal to just them.
-		CItemMemory * pMemory = pCharViewer->Memory_FindObjTypes(this, MEMORY_SAWCRIME|MEMORY_AGGREIVED|MEMORY_HARMEDBY);
-		if ( pMemory != NULL )
-			return( NOTO_CRIMINAL );
 
 		// Are we in the same party ?
 		if ( m_pParty && m_pParty == pCharViewer->m_pParty )
 		{
 			if ( m_pParty->GetLootFlag(this))
+			{
 				return(NOTO_GUILD_SAME);
+			}
 		}
+	}
 
+	if ( Noto_IsEvil())
+	{
+		return( NOTO_EVIL );
+	}
+
+	if ( this != pCharViewer ) // Am I checking myself?
+	{
 		// Check the guild stuff
+		CItemStone * pMyTown = Guild_Find(MEMORY_TOWN);
 		CItemStone * pMyGuild = Guild_Find(MEMORY_GUILD);
-		if ( pMyGuild )
+		if ( pMyGuild || pMyTown )
 		{
 			CItemStone * pViewerGuild = pCharViewer->Guild_Find(MEMORY_GUILD);
-			if ( pViewerGuild )
-			{
-				if ( pViewerGuild == pMyGuild )
-					return NOTO_GUILD_SAME;
-				if ( pMyGuild->IsAlliedWith(pViewerGuild))
-					return NOTO_GUILD_SAME;
-				if ( pMyGuild->IsAtWarWith(pViewerGuild))
-					return NOTO_GUILD_WAR;
-			}
-		}
-
-		// Check the town stuff
-		CItemStone * pMyTown = Guild_Find(MEMORY_TOWN);
-		if ( pMyTown )
-		{
 			CItemStone * pViewerTown = pCharViewer->Guild_Find(MEMORY_TOWN);
-			if ( pViewerTown )
+			// Are we both in a guild?
+			if ( pViewerGuild || pViewerTown )
 			{
-				if ( pMyTown->IsAtWarWith(pViewerTown))
-					return NOTO_GUILD_WAR;
+				if ( pMyGuild && pMyGuild->IsPrivMember(this))
+				{
+					if ( pViewerGuild && pViewerGuild->IsPrivMember(pCharViewer))
+					{
+						if ( pViewerGuild == pMyGuild ) // Same guild?
+							return NOTO_GUILD_SAME; // return green
+						if ( pMyGuild->IsAlliedWith(pViewerGuild))
+							return NOTO_GUILD_SAME;
+						// Are we in different guilds but at war? (not actually a crime right?)
+						if ( pMyGuild->IsAtWarWith(pViewerGuild))
+							return NOTO_GUILD_WAR; // return orange
+					}
+					if ( pMyGuild->IsAtWarWith(pViewerTown))
+						return NOTO_GUILD_WAR; // return orange
+				}
+				if ( pMyTown && pMyTown->IsPrivMember(this))
+				{
+					if ( pViewerGuild && pViewerGuild->IsPrivMember(pCharViewer))
+					{
+						if ( pMyTown->IsAtWarWith(pViewerGuild))
+							return NOTO_GUILD_WAR; // return orange
+					}
+					if ( pMyTown->IsAtWarWith(pViewerTown))
+						return NOTO_GUILD_WAR; // return orange
+				}
 			}
 		}
+	}
+
+	if ( IsStatFlag( STATF_Criminal ))	// criminal to everyone.
+	{
+		return( NOTO_CRIMINAL );
+	}
+
+	if ( this != pCharViewer ) // Am I checking myself?
+	{
+		if ( NPC_IsOwnedBy( pCharViewer, false ))	// All pets are neutral to their owners.
+			return( NOTO_NEUTRAL );
+
+		// If they saw me commit a crime or I am their aggressor then
+		// criminal to just them.
+		CItemMemory * pMemory = pCharViewer->Memory_FindObjTypes( this, MEMORY_SAWCRIME | MEMORY_AGGREIVED );
+		if ( pMemory != NULL )
+		{
+			return( NOTO_CRIMINAL );
+		}
+	}
+
+	if ( m_pArea && m_pArea->IsFlag(REGION_FLAG_ARENA))
+	{
+		// everyone is neutral here.
+		return( NOTO_NEUTRAL );
+	}
+
+	if ( Noto_IsNeutral() || m_TagDefs.GetKeyNum("NOTO.PERMAGREY", true))
+	{
+		return( NOTO_NEUTRAL );
 	}
 
 	return( NOTO_GOOD );
@@ -866,6 +922,9 @@ bool CChar::Memory_UpdateFlags( CItemMemory * pMemory )
 	else
 		iCheckTime = 20*60*TICK_PER_SEC;
 	pMemory->SetTimeout( iCheckTime );	// update it's decay time.
+	CChar * pCharLink = pMemory->m_uidLink.CharFind();
+	if (pCharLink)
+		NotoSave_Delete(pCharLink);
 	return( true );
 }
 
@@ -1073,13 +1132,10 @@ void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 	ADDTOCALLSTACK("CChar::OnNoticeCrime");
 	if ( !pCriminal || pCriminal == this || pCriminal == pCharMark || pCriminal->IsPriv(PRIV_GM) || pCriminal->GetNPCBrain() == NPCBRAIN_GUARD )
 		return;
-	if ( pCriminal->Noto_Criminal(this) )
+	NOTO_TYPE iNoto = pCharMark->Noto_GetFlag(pCriminal);
+	if ( iNoto == NOTO_CRIMINAL || iNoto == NOTO_EVIL )
 		return;
 
-	// Make my owner criminal too (if I have one)
-	CChar * pOwner = pCriminal->NPC_PetGetOwner();
-	if ( pOwner != NULL && pOwner != this )
-		OnNoticeCrime( pOwner, pCharMark );
 
 	if ( m_pPlayer )
 	{
@@ -1158,6 +1214,9 @@ bool CChar::CheckCrimeSeen( SKILL_TYPE SkillToSee, CChar * pCharMark, const CObj
 			continue;	// I saw myself before.
 		if ( ! pChar->CanSeeLOS( this, LOS_NB_WINDOWS )) //what if I was standing behind a window when I saw a crime? :)
 			continue;
+		// If a GM sees you it it not a crime.
+		if ( pChar->GetPrivLevel() > GetPrivLevel())
+			continue;
 
 		bool fYour = ( pCharMark == pChar );
 
@@ -1172,9 +1231,6 @@ bool CChar::CheckCrimeSeen( SKILL_TYPE SkillToSee, CChar * pCharMark, const CObj
 			pChar->ObjMessage(z, this);
 		}
 
-		// If a GM sees you it it not a crime.
-		if ( pChar->GetPrivLevel() > GetPrivLevel())
-			continue;
 		fSeen = true;
 
 		// They are not a criminal til someone calls the guards !!!
@@ -1203,11 +1259,9 @@ bool CChar::CheckCrimeSeen( SKILL_TYPE SkillToSee, CChar * pCharMark, const CObj
 				pChar->NPC_OnNoticeSnoop( this, pCharMark );
 		}
 		else
-		{
 			pChar->OnNoticeCrime( this, pCharMark );
-		}
 	}
-	return( fSeen );
+	return fSeen;
 }
 
 // Assume the container is not locked.
@@ -1483,13 +1537,50 @@ cantsteal:
 	return( 0 );
 }
 
-// I just yelled for guards.
-void CChar::CallGuards( CChar * pCriminal )
+void CChar::CallGuards()
 {
 	ADDTOCALLSTACK("CChar::CallGuards");
+	if ( !m_pArea || !m_pArea->IsGuarded() || IsStatFlag(STATF_DEAD) )
+		return;
+
+	if ( CServTime::GetCurrentTime().GetTimeRaw() - m_timeLastCallGuards < TICK_PER_SEC)	// Spamm check, not calling this more than once per tick, which will cause an excess of calls and checks on crowded areas because of the 2 CWorldSearch.
+		return;
+
+	// We don't have any target yet, let's check everyone nearby
+	CChar * pCriminal;
+	CWorldSearch AreaCrime( GetTopPoint(), UO_MAP_VIEW_SIZE );
+	while (( pCriminal = AreaCrime.GetChar() ) != NULL)
+	{
+		if (pCriminal == this)
+			continue;
+		if (!pCriminal->m_pArea->IsGuarded())
+			continue;
+		if (!CanDisturb( pCriminal ))	// don't allow guards to be called on someone we can't disturb
+			continue;
+
+		// Mark person as criminal if I saw him criming
+		// Only players call guards this way. NPC's flag criminal instantly
+		if (m_pPlayer && Memory_FindObjTypes( pCriminal, MEMORY_SAWCRIME ))
+			pCriminal->Noto_Criminal();
+
+		if (!pCriminal->IsStatFlag( STATF_Criminal ) || ( pCriminal->Noto_IsEvil() && !g_Cfg.m_fGuardsOnMurderers ))
+			continue;
+
+		CallGuards( pCriminal );
+	}
+	m_timeLastCallGuards = CServTime::GetCurrentTime().GetTimeRaw();
+	return;
+}
+
+void CChar::CallGuards( CChar * pCriminal )
+{
+	ADDTOCALLSTACK("CChar::CallGuards1");
 	if ( !m_pArea || (pCriminal == this) )
 		return;
-	if ( IsStatFlag(STATF_DEAD) || (pCriminal && (pCriminal->IsStatFlag(STATF_DEAD) || pCriminal->IsPriv(PRIV_GM))) )
+	if ( IsStatFlag(STATF_DEAD) || (pCriminal && (pCriminal->IsStatFlag(STATF_DEAD|STATF_INVUL) || pCriminal->IsPriv(PRIV_GM))) )
+		return;
+	
+	if ( !pCriminal->m_pArea->IsGuarded() )
 		return;
 
 	CChar *pGuard = NULL;
@@ -1505,107 +1596,46 @@ void CChar::CallGuards( CChar * pCriminal )
 		CChar *pGuardFound = NULL;
 		while ( (pGuardFound = AreaGuard.GetChar()) != NULL )
 		{
-			if ( pGuardFound->m_pNPC && (pGuardFound->m_pNPC->m_Brain == NPCBRAIN_GUARD) && !pGuardFound->IsStatFlag(STATF_War) )
+			if ( pGuardFound->m_pNPC && (pGuardFound->m_pNPC->m_Brain == NPCBRAIN_GUARD) && // Char found must be a guard
+				( pGuardFound->m_Fight_Targ == pCriminal->GetUID() || !pGuardFound->IsStatFlag(STATF_War)) )	// and will be eligible to fight this target if it's not already on a fight or if its already attacking this target (to avoid spamming docens of guards at the same target).
 			{
 				pGuard = pGuardFound;
 				break;
 			}
 		}
 	}
-	
-	if ( pCriminal )
+
+	CVarDefCont *pVarDef = pCriminal->m_pArea->m_TagDefs.GetKey("OVERRIDE.GUARDS");
+	RESOURCE_ID rid = g_Cfg.ResourceGetIDType(RES_CHARDEF, (pVarDef ? pVarDef->GetValStr() : "GUARDS"));
+	if ( IsTrigUsed(TRIGGER_CALLGUARDS) )
 	{
-		if ( !pCriminal->m_pArea->IsGuarded() )
+		CScriptTriggerArgs Args(pGuard);
+		Args.m_iN1 = rid.GetResIndex();
+		Args.m_iN2 = 0;
+		Args.m_VarObjs.Insert(1, pCriminal, true);
+
+		if ( OnTrigger(CTRIG_CallGuards, pCriminal, &Args) == TRIGRET_RET_TRUE )
 			return;
 
-		CVarDefCont *pVarDef = pCriminal->m_pArea->m_TagDefs.GetKey("OVERRIDE.GUARDS");
-		RESOURCE_ID rid = g_Cfg.ResourceGetIDType(RES_CHARDEF, (pVarDef ? pVarDef->GetValStr() : "GUARDS"));
-		if ( IsTrigUsed(TRIGGER_CALLGUARDS) )
-		{
-			CScriptTriggerArgs Args(pGuard);
-			Args.m_iN1 = rid.GetResIndex();
-			Args.m_iN2 = 0;
-			Args.m_VarObjs.Insert(1, pCriminal, true);
-
-			if ( OnTrigger(CTRIG_CallGuards, pCriminal, &Args) == TRIGRET_RET_TRUE )
-				return;
-
-			if ( static_cast<int>(Args.m_iN1) != rid.GetResIndex() )
-				rid = RESOURCE_ID(RES_CHARDEF, static_cast<int>(Args.m_iN1));
-			if ( Args.m_iN2 > 0 )
-				pGuard = NULL;
-		}
-		if ( !pGuard )		//	spawn a new guard
-		{
-			if ( !rid.IsValidUID() )
-				return;
-			pGuard = CChar::CreateNPC(static_cast<CREID_TYPE>(rid.GetResIndex()));
-			if ( !pGuard )
-				return;
-
-			if ( pCriminal->m_pArea->m_TagDefs.GetKeyNum("RED", true) )
-				pGuard->m_TagDefs.SetNum("NAME.HUE", g_Cfg.m_iColorNotoEvil, true);
-			pGuard->Spell_Effect_Create(SPELL_Summon, LAYER_SPELL_Summon, 1000, g_Cfg.m_iGuardLingerTime);
-			pGuard->Spell_Teleport(pCriminal->GetTopPoint(), false, false);
-		}
-		pGuard->NPC_LookAtCharGuard(pCriminal, true);
+		if ( static_cast<int>(Args.m_iN1) != rid.GetResIndex() )
+			rid = RESOURCE_ID(RES_CHARDEF, static_cast<int>(Args.m_iN1));
+		if ( Args.m_iN2 > 0 )	//ARGN2: If set to 1, a new guard will be spawned regardless of whether a nearby guard is available.
+			pGuard = NULL;
 	}
-	else
+	if ( !pGuard )		//	spawn a new guard
 	{
-		// We don't have any target yet, let's check everyone nearby
-		CWorldSearch AreaCrime(GetTopPoint(), UO_MAP_VIEW_SIZE);
-		while ( (pCriminal = AreaCrime.GetChar()) != NULL )
-		{
-			if ( pCriminal == this )
-				continue;
-			if ( !pCriminal->m_pArea->IsGuarded() )
-				continue;
-			if ( !CanDisturb(pCriminal) )	// don't allow guards to be called on someone we can't disturb
-				continue;
+		if ( !rid.IsValidUID() )
+			return;
+		pGuard = CChar::CreateNPC(static_cast<CREID_TYPE>(rid.GetResIndex()));
+		if ( !pGuard )
+			return;
 
-			// Mark person as criminal if I saw him criming
-			// Only players call guards this way. NPC's flag criminal instantly
-			if ( m_pPlayer && Memory_FindObjTypes(pCriminal, MEMORY_SAWCRIME) )
-				pCriminal->Noto_Criminal();
-
-			bool bCriminal = (pCriminal->IsStatFlag(STATF_Criminal) || (pCriminal->Noto_IsEvil() && g_Cfg.m_fGuardsOnMurderers));
-			if ( !bCriminal )
-				continue;
-
-			CVarDefCont *pVarDef = pCriminal->m_pArea->m_TagDefs.GetKey("OVERRIDE.GUARDS");
-			RESOURCE_ID rid = g_Cfg.ResourceGetIDType(RES_CHARDEF, (pVarDef ? pVarDef->GetValStr() : "GUARDS"));
-			if ( IsTrigUsed(TRIGGER_CALLGUARDS) )
-			{
-				CScriptTriggerArgs Args(pGuard);
-				Args.m_iN1 = rid.GetResIndex();
-				Args.m_iN2 = 0;
-				Args.m_VarObjs.Insert(1, pCriminal, true);
-
-				if ( OnTrigger(CTRIG_CallGuards, pCriminal, &Args) == TRIGRET_RET_TRUE )
-					return;
-
-				if ( static_cast<int>(Args.m_iN1) != rid.GetResIndex() )
-					rid = RESOURCE_ID(RES_CHARDEF, static_cast<int>(Args.m_iN1));
-				if ( Args.m_iN2 > 0 )
-					pGuard = NULL;
-			}
-			if ( !pGuard )		//	spawn a new guard
-			{
-				if ( !rid.IsValidUID() )
-					return;
-				pGuard = CChar::CreateNPC(static_cast<CREID_TYPE>(rid.GetResIndex()));
-				if ( !pGuard )
-					return;
-
-				if ( pCriminal->m_pArea->m_TagDefs.GetKeyNum("RED", true) )
-					pGuard->m_TagDefs.SetNum("NAME.HUE", g_Cfg.m_iColorNotoEvil, true);
-				pGuard->Spell_Effect_Create(SPELL_Summon, LAYER_SPELL_Summon, 1000, g_Cfg.m_iGuardLingerTime);
-				pGuard->Spell_Teleport(pCriminal->GetTopPoint(), false, false);
-			}
-			pGuard->NPC_LookAtCharGuard(pCriminal, true);
-			pGuard = NULL;	// we can't still using the same guard when calling guards on many targets at once
-		}
+		if ( pCriminal->m_pArea->m_TagDefs.GetKeyNum("RED", true) )
+			pGuard->m_TagDefs.SetNum("NAME.HUE", g_Cfg.m_iColorNotoEvil, true);
+		pGuard->Spell_Effect_Create(SPELL_Summon, LAYER_SPELL_Summon, 1000, g_Cfg.m_iGuardLingerTime);
+		pGuard->Spell_Teleport(pCriminal->GetTopPoint(), false, false);
 	}
+	pGuard->NPC_LookAtCharGuard(pCriminal, true);
 }
 
 // i notice a Crime or attack against me ..
@@ -1670,17 +1700,14 @@ bool CChar::OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fCommandPet, bool
 	// Are they a criminal for it ? Is attacking me a crime ?
 	if ( Noto_GetFlag(pCharSrc) == NOTO_GOOD )
 	{
-		/*if ( IsClient())
-		{
-			// I decide if this is a crime.
+		if ( IsClient())	// I decide if this is a crime.
 			OnNoticeCrime( pCharSrc, this );
-		}
-		else
-		{*/
+		else		
+		{
 			// If it is a pet then this a crime others can report.
 			CChar * pCharMark = IsStatFlag(STATF_Pet) ? NPC_PetGetOwner() : this;
 			pCharSrc->CheckCrimeSeen(Skill_GetActive(), pCharMark, NULL, NULL);
-		//}
+		}
 	}
 
 	if ( ! fCommandPet )

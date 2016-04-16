@@ -1666,7 +1666,6 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 		{
 			fDrop = true;	// we can always drop it out of own pack !
 		}
-		return -1;
 	}
 
 	ITRIG_TYPE trigger;
