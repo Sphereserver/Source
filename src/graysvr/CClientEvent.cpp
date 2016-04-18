@@ -358,6 +358,16 @@ void CClient::Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, u
 				return;
 			}
 		}
+		if (pObjTop->IsItem())
+		{
+			CItemContainer * pTopContainer = dynamic_cast<CItemContainer*>( pObjTop );
+			if (pTopContainer && !pTopContainer->CanContainerHold( pItem, m_pChar ))
+			{
+				Event_Item_Drop_Fail( pItem );
+				return;
+			}
+		}
+
 		if ( pContItem != NULL )
 		{
 			//	bug with shifting selling list by gold coins
@@ -396,7 +406,6 @@ void CClient::Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, u
 
 		if ( pContItem != NULL )
 		{
-			// pChar->GetBank()->IsItemInside( pContItem )
 			bool isCheating = false;
 			bool isBank = pContItem->IsType( IT_EQ_BANK_BOX );
 
@@ -406,11 +415,6 @@ void CClient::Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, u
 			else
 				isCheating = m_pChar->GetBank()->IsItemInside( pContItem ) &&
 						m_pChar->GetBank()->m_itEqBankBox.m_pntOpen != m_pChar->GetTopPoint();
-
-//			g_Log.Event( LOGL_WARN, "%lx:IsBank '%d', IsItemInside '%d'\n", m_Socket.GetSocket(), isBank, isBank ? -1 : m_pChar->GetBank()->IsItemInside( pContItem ) );
-
-//			if ( pContItem->IsType( IT_EQ_BANK_BOX ) && pContItem->m_itEqBankBox.m_pntOpen != m_pChar->GetTopPoint() )
-
 			if ( isCheating )
 			{
 				Event_Item_Drop_Fail( pItem );

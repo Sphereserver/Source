@@ -879,6 +879,9 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_CAN:
 			sVal.FormatHex( m_Can );
 			break;
+		case OC_MODMAXWEIGHT:
+			sVal.FormatVal( m_ModMaxWeight );
+			return( true );
 
 		case OC_CANSEE:
 		case OC_CANSEELOS:
@@ -1715,6 +1718,9 @@ bool CObjBase::r_LoadVal( CScript & s )
 
 		case OC_CAN:
 			m_Can = s.GetArgVal();
+			break;
+		case OC_MODMAXWEIGHT:
+			m_ModMaxWeight = static_cast<int>(s.GetArgVal());
 			break;
 		case OC_COLOR:
 			if ( ! strcmpi( s.GetArgStr(), "match_shirt" ) || ! strcmpi( s.GetArgStr(), "match_hair" ))

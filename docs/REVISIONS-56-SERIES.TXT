@@ -4,3 +4,10 @@ Changed: Food level won't decrease on GM chars anymore.
 [sphere_msgs.scp]: Removed messages 'npc_text_murd_*'.
 [sphere_speech.scp]: Moved hardcoded speech commands 'I must consider my sins', 'I resign from my guild' and 'I resign from my town' to scripts.
 	-IMPORTANT: It's HIGHLY recommended update this script, or these speech commands will stop working.
+
+18-04-2016, XuN
+Removed TAG.OVERRIDE.MAXWEIGHT and added ModMaxWeight on it's place for Banks and Corpses.
+Fixed stackable items not checking maxweight on corpses.
+Removed all references to MEMORY_WAR_TARG since they are not needed anymore, targets are handled by 'Attacker' now.
+Added back old HitChance formula under CombatDamageEra = 0
+Updated checks on @NotoSend trigger: it will not check anymore if ARGN1 > NOTO_INVUL, so you can create custom notoriety.

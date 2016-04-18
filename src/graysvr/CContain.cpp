@@ -1199,12 +1199,11 @@ bool CItemContainer::CanContainerHold( const CItem *pItem, const CChar *pCharMsg
 		return false;
 	}
 
-	pTagTmp = static_cast<size_t>(GetKeyNum("OVERRIDE.MAXWEIGHT", true));
-	if ( pTagTmp )	// weightcheck does ALSO apply on backpack if tag is set!
+	if (m_ModMaxWeight)
 	{
-		if ( (GetWeight() + pItem->GetWeight()) > (static_cast<int>(pTagTmp) * WEIGHT_UNITS) )
+		if (( GetWeight( GetType() ==  IT_CORPSE ? 1 : 0 ) + pItem->GetWeight() ) > ( m_ModMaxWeight * WEIGHT_UNITS ))
 		{
-			pCharMsg->SysMessageDefault(DEFMSG_CONT_FULL_WEIGHT);
+			pCharMsg->SysMessageDefault( DEFMSG_CONT_FULL_WEIGHT );
 			return false;
 		}
 	}
@@ -1249,9 +1248,7 @@ bool CItemContainer::CanContainerHold( const CItem *pItem, const CChar *pCharMsg
 			}
 
 			int iBankWMax = g_Cfg.m_iBankWMax;
-			pTagTemp = GetKey("OVERRIDE.MAXWEIGHT", false);
-			if ( pTagTemp )
-				iBankWMax = static_cast<int>(pTagTemp->GetValNum()) * WEIGHT_UNITS;
+			iBankWMax += m_ModMaxWeight * WEIGHT_UNITS;
 
 			if ( iBankWMax >= 0 )
 			{

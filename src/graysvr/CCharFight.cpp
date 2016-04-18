@@ -183,8 +183,8 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 	ADDTOCALLSTACK("CChar::Noto_GetFlag");
 	CChar * pThis = const_cast<CChar*>(this);
 	CChar * pTarget = const_cast<CChar*>(pCharViewer);
-	NOTO_TYPE Noto;
-	NOTO_TYPE color = NOTO_INVALID;
+	NOTO_TYPE iNoto = NOTO_INVALID;
+	NOTO_TYPE iColor = NOTO_INVALID;
 	if ( pThis->m_notoSaves.size() )
 	{
 		int id = -1;
@@ -196,35 +196,32 @@ NOTO_TYPE CChar::Noto_GetFlag( const CChar * pCharViewer, bool fAllowIncog, bool
 		if ( id != -1 )
 			return pThis->NotoSave_GetValue( id, bOnlyColor );
 	}
-	if (IsTrigUsed(TRIGGER_NOTOSEND))
+	if ( IsTrigUsed(TRIGGER_NOTOSEND) )
 	{
 		CScriptTriggerArgs args;
 		pThis->OnTrigger(CTRIG_NotoSend, pTarget, &args);
-		Noto = static_cast<NOTO_TYPE>(args.m_iN1);
-		color = static_cast<NOTO_TYPE>(args.m_iN2);
-		if (Noto > NOTO_INVALID && Noto <= NOTO_INVUL) // if Notoriety is between NOTO_GOOD and NOTO_INVUL its ok
-		{
-			pThis->NotoSave_Add( pTarget, Noto, color);
-			goto NotoReturn;
-		}
+		iNoto = static_cast<NOTO_TYPE>(args.m_iN1);
+		iColor = static_cast<NOTO_TYPE>(args.m_iN2);
+		if ( iNoto < NOTO_INVALID )
+			iNoto = NOTO_INVALID;
 	}
-	Noto = Noto_CalcFlag( pCharViewer, fAllowIncog, fAllowInvul);
-	pThis->NotoSave_Add(pTarget, Noto, color);
-NotoReturn:
-	if (bOnlyColor && color != 0)
-		return color;
-	else
-		return Noto;
+	if ( iNoto == NOTO_INVALID )
+		iNoto = Noto_CalcFlag( pCharViewer, fAllowIncog, fAllowInvul);
+	if ( iColor == NOTO_INVALID )
+		iColor = iNoto;
+	pThis->NotoSave_Add(pTarget, iNoto, iColor);
+		
+	return bOnlyColor ? iColor : iNoto ;
 }
 
-//		NOTO_GOOD		= 0x01
-//		NOTO_GUILD_SAME	= 0x02
-//		NOTO_NEUTRAL	= 0x04
-//		NOTO_CRIMINAL	= 0x08
-//		NOTO_GUILD_WAR	= 0x10
-//		NOTO_EVIL		= 0x20
-//		NOTO_INVUL		= 0x40
-NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, bool fAllowInvul ) const
+// NOTO_GOOD            1
+// NOTO_GUILD_SAME      2
+// NOTO_NEUTRAL         3
+// NOTO_CRIMINAL        4
+// NOTO_GUILD_WAR       5
+// NOTO_EVIL            6
+// NOTO_INVUL           7
+NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, bool fAllowInvul) const
 {
 	ADDTOCALLSTACK("CChar::Noto_GetFlag");
 	// What is this char to the viewer ?
@@ -235,22 +232,11 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 	if ( iNotoFlag != NOTO_INVALID )
 		return iNotoFlag;
 
-	TCHAR * getNoto = Str_GetTemp(); // get the override tag for this viewer
-	sprintf(getNoto, "OVERRIDE.NOTO.0%lx", (DWORD) pCharViewer->GetUID() );
-	iNotoFlag = static_cast<NOTO_TYPE>(m_TagDefs.GetKeyNum(getNoto));
-
-	if ( iNotoFlag != NOTO_INVALID )
-		return iNotoFlag;
-
 	if ( fAllowIncog && IsStatFlag( STATF_Incognito ))
-	{
 		return NOTO_NEUTRAL;
-	}
 
 	if ( fAllowInvul && IsStatFlag( STATF_INVUL ) )
-	{
 		return NOTO_INVUL;
-	}
 
 	if ( this != pCharViewer )
 	{
@@ -258,33 +244,27 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 		{
 			// Do we have a master to inherit notoriety from?
 			CChar* pMaster = NPC_PetGetOwner();
-			if (pMaster != NULL && pMaster != pCharViewer) // master doesn't want to see their own status
+			CChar* pCurrent = pMaster;
+			while (pCurrent)
 			{
-				// protect against infinite loop
-				static int sm_iReentrant = 0;
-				if (sm_iReentrant < 32)
-				{
-					// return master's notoriety
-					++sm_iReentrant;
-					NOTO_TYPE notoMaster = pMaster->Noto_GetFlag(pCharViewer, false, false);
-					--sm_iReentrant;
+				pMaster = pCurrent;
+				pCurrent = pCurrent->NPC_PetGetOwner();
+			}
+			if (pMaster != NULL && pMaster != pCharViewer ) // master doesn't want to see their own status
+			{
+				// return master's notoriety
+				NOTO_TYPE notoMaster = pMaster->Noto_GetFlag(pCharViewer, fAllowIncog, fAllowInvul);
 
-					// check if notoriety is inheritable based on bitmask setting:
-					//		NOTO_GOOD		= 0x01
-					//		NOTO_GUILD_SAME	= 0x02
-					//		NOTO_NEUTRAL	= 0x04
-					//		NOTO_CRIMINAL	= 0x08
-					//		NOTO_GUILD_WAR	= 0x10
-					//		NOTO_EVIL		= 0x20
-					iNotoFlag = 1 << (notoMaster - 1);
-					if ( (g_Cfg.m_iPetsInheritNotoriety & iNotoFlag) == iNotoFlag )
-						return notoMaster;
-				}
-				else
-				{
-					DEBUG_ERR(("Too many owners (circular ownership?) to continue acquiring notoriety towards %s uid=0%lx\n", pMaster->GetName(), pMaster->GetUID().GetPrivateUID()));
-					// too many owners, return the notoriety for however far we got down the chain
-				}
+				// check if notoriety is inheritable based on bitmask setting:
+				//		NOTO_GOOD		= 0x01
+				//		NOTO_GUILD_SAME	= 0x02
+				//		NOTO_NEUTRAL	= 0x04
+				//		NOTO_CRIMINAL	= 0x08
+				//		NOTO_GUILD_WAR	= 0x10
+				//		NOTO_EVIL		= 0x20
+				int iPetNotoFlag = 1 << (notoMaster - 1);
+				if ( (g_Cfg.m_iPetsInheritNotoriety & iPetNotoFlag) == iPetNotoFlag )
+					return notoMaster;
 			}
 		}
 
@@ -299,9 +279,7 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 	}
 
 	if ( Noto_IsEvil())
-	{
 		return( NOTO_EVIL );
-	}
 
 	if ( this != pCharViewer ) // Am I checking myself?
 	{
@@ -345,9 +323,7 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 	}
 
 	if ( IsStatFlag( STATF_Criminal ))	// criminal to everyone.
-	{
 		return( NOTO_CRIMINAL );
-	}
 
 	if ( this != pCharViewer ) // Am I checking myself?
 	{
@@ -363,16 +339,11 @@ NOTO_TYPE CChar::Noto_CalcFlag( const CChar * pCharViewer, bool fAllowIncog, boo
 		}
 	}
 
-	if ( m_pArea && m_pArea->IsFlag(REGION_FLAG_ARENA))
-	{
-		// everyone is neutral here.
+	if ( m_pArea && m_pArea->IsFlag(REGION_FLAG_ARENA))	// everyone is neutral here.
 		return( NOTO_NEUTRAL );
-	}
 
 	if ( Noto_IsNeutral() || m_TagDefs.GetKeyNum("NOTO.PERMAGREY", true))
-	{
 		return( NOTO_NEUTRAL );
-	}
 
 	return( NOTO_GOOD );
 }
@@ -385,6 +356,9 @@ HUE_TYPE CChar::Noto_GetHue( const CChar * pCharViewer, bool fIncog ) const
 		return  static_cast<HUE_TYPE>(sVal->GetValNum());
 
 	NOTO_TYPE color = Noto_GetFlag(pCharViewer, fIncog, true,true);
+	CChar *pChar = NPC_PetGetOwner();
+	if ( !pChar )
+		pChar = const_cast<CChar*>(this);
 	switch ( color )
 	{
 		case NOTO_GOOD:			return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoGood);		// Blue
@@ -393,7 +367,7 @@ HUE_TYPE CChar::Noto_GetHue( const CChar * pCharViewer, bool fIncog ) const
 		case NOTO_CRIMINAL:		return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoCriminal);	// Grey (criminal)
 		case NOTO_GUILD_WAR:		return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoGuildWar);	// Orange (enemy guild)
 		case NOTO_EVIL:			return static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoEvil);		// Red
-		case NOTO_INVUL:		return IsPriv(PRIV_GM)? static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoInvulGameMaster) : static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoInvul);		// Purple / Yellow
+		case NOTO_INVUL:		return pChar->IsPriv(PRIV_GM)? static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoInvulGameMaster) : static_cast<HUE_TYPE>(g_Cfg.m_iColorNotoInvul);		// Purple / Yellow
 		default:			return static_cast<HUE_TYPE>(color > NOTO_INVUL ? color : g_Cfg.m_iColorNotoDefault);	// Grey
 	}
 }
@@ -904,15 +878,11 @@ bool CChar::Memory_UpdateFlags( CItemMemory * pMemory )
 	WORD wMemTypes = pMemory->GetMemoryTypes();
 
 	if ( !wMemTypes )	// No memories here anymore so kill it.
-	{
 		return false;
-	}
 
 	INT64 iCheckTime;
 	if ( wMemTypes & MEMORY_IPET )
-	{
 		StatFlag_Set( STATF_Pet );
-	}
 	if ( wMemTypes & MEMORY_FIGHT )	// update more often to check for retreat.
 		iCheckTime = 30*TICK_PER_SEC;
 	else if ( wMemTypes & ( MEMORY_IPET | MEMORY_GUARD | MEMORY_GUILD | MEMORY_TOWN ))
@@ -921,11 +891,14 @@ bool CChar::Memory_UpdateFlags( CItemMemory * pMemory )
 		iCheckTime = 5*60*TICK_PER_SEC;
 	else
 		iCheckTime = 20*60*TICK_PER_SEC;
-	pMemory->SetTimeout( iCheckTime );	// update it's decay time.
+	pMemory->SetTimeout( iCheckTime );	// update it's decay time.	
 	CChar * pCharLink = pMemory->m_uidLink.CharFind();
 	if (pCharLink)
-		NotoSave_Delete(pCharLink);
-	return( true );
+	{
+		pCharLink->NotoSave_Update();	// Clear my notoriety from the target.
+		NotoSave_Update();		// iAggressor is stored in the other char, so the call should be reverted.
+	}
+	return true;
 }
 
 // Just clear these flags but do not delete the memory.
@@ -944,9 +917,7 @@ bool CChar::Memory_UpdateClearTypes( CItemMemory * pMemory, WORD MemTypes )
 	{
 		// Am i still a pet of some sort ?
 		if ( Memory_FindTypes( MEMORY_IPET ) == NULL )
-		{
 			StatFlag_Clear( STATF_Pet );
-		}
 	}
 
 	return fMore && Memory_UpdateFlags( pMemory );
@@ -987,7 +958,7 @@ CItemMemory * CChar::Memory_CreateObj( CGrayUID uid, WORD MemTypes )
 
 	CItemMemory * pMemory = dynamic_cast <CItemMemory *>(CItem::CreateBase( ITEMID_MEMORY ));
 	if ( pMemory == NULL )
-		return( NULL );
+		return NULL;
 
 	pMemory->SetType(IT_EQ_MEMORY_OBJ);
 	pMemory->SetAttr(ATTR_NEWBIE);
@@ -995,7 +966,7 @@ CItemMemory * CChar::Memory_CreateObj( CGrayUID uid, WORD MemTypes )
 
 	Memory_AddTypes( pMemory, MemTypes );
 	LayerAdd( pMemory, LAYER_SPECIAL );
-	return( pMemory );
+	return pMemory;
 }
 
 // Remove all the memories of this type.
@@ -2181,7 +2152,7 @@ bool CChar::Memory_Fight_OnTick( CItemMemory * pMemory )
 	// Attacker.Elapsed = -1 means no combat end for this attacker.
 	// g_Cfg.m_iAttackerTimeout = 0 means attackers doesnt decay. (but cleared when the attacker is killed or the char dies)
 
-	if ( GetDist(pTarg) > UO_MAP_VIEW_RADAR || ( g_Cfg.m_iAttackerTimeout != 0 && elapsed > static_cast<INT64>(g_Cfg.m_iAttackerTimeout) && elapsed >= 0 ) )
+	if ( GetDist(pTarg) > UO_MAP_VIEW_RADAR || ( g_Cfg.m_iAttackerTimeout != 0 && elapsed >= 0 && (unsigned int)elapsed > g_Cfg.m_iAttackerTimeout ) )
 	{
 		Memory_Fight_Retreat( pTarg, pMemory );
 clearit:
@@ -2236,23 +2207,19 @@ void CChar::Memory_Fight_Start( const CChar * pTarg )
 			// Hmm, I must have started this i guess.
 			MemTypes = MEMORY_IAGGRESSOR;
 		}
-		pMemory = Memory_CreateObj( pTarg, MEMORY_FIGHT|MEMORY_WAR_TARG|MemTypes );
+		pMemory = Memory_CreateObj( pTarg, MEMORY_FIGHT|MemTypes );
 	}
 	else
 	{
-		// I have a memory of them.
-		bool fMemPrvType = pMemory->IsMemoryTypes(MEMORY_WAR_TARG);
-		if ( fMemPrvType )
+		if ( Attacker_GetID(pTarg->GetUID()) )	// I'm already in fight against pTarg, no need of more code
 			return;
 		if ( pMemory->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_SAWCRIME|MEMORY_AGGREIVED))
 			MemTypes = 0;	// I am defending myself rightly.
 		else
 			MemTypes = MEMORY_IAGGRESSOR;
 
-		// Update the fights status
-		Memory_AddTypes( pMemory, MEMORY_FIGHT|MEMORY_WAR_TARG|MemTypes );
+		Memory_AddTypes( pMemory, MEMORY_FIGHT|MemTypes );// Update the fight status.
 	}
-	//Attacker_Add(const_cast<CChar*>(pTarg));
 	if ( IsClient() && m_Fight_Targ == pTarg->GetUID() && !IsSetCombatFlags(COMBAT_NODIRCHANGE))
 	{
 		// This may be a useless command. How do i say the fight is over ?
@@ -2445,14 +2412,6 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 void CChar::Fight_ClearAll()
 {
 	ADDTOCALLSTACK("CChar::Fight_ClearAll");
-	CItem *pItemNext = NULL;
-	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
-	{
-		pItemNext = pItem->GetNext();
-		if ( pItem->IsMemoryTypes(MEMORY_WAR_TARG) )
-			Memory_ClearTypes(static_cast<CItemMemory *>(pItem), MEMORY_WAR_TARG);
-	}
-
 	Attacker_Clear();
 	if ( Fight_IsActive() )
 	{
@@ -2933,7 +2892,6 @@ bool CChar::Attacker_Delete( int index, bool bForced, ATTACKER_CLEAR_TYPE type )
 	ADDTOCALLSTACK("CChar::Attacker_Delete(int)");
 	if ( !m_lastAttackers.size() || index < 0 || static_cast<int>(m_lastAttackers.size()) <= index )
 		return false;
-
 	LastAttackers &refAttacker = m_lastAttackers.at(index);
 	CChar *pChar = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
 	if ( !pChar )
@@ -2942,17 +2900,14 @@ bool CChar::Attacker_Delete( int index, bool bForced, ATTACKER_CLEAR_TYPE type )
 	if ( IsTrigUsed(TRIGGER_COMBATDELETE) )
 	{
 		CScriptTriggerArgs Args;
-		Args.m_iN1 = 0;
+		Args.m_iN1 = bForced;
 		Args.m_iN2 = static_cast<int>(type);
 		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatDelete,pChar,&Args);
-		if ( tRet == TRIGRET_RET_TRUE || Args.m_iN1 == 1 )
+		if ( tRet == TRIGRET_RET_TRUE )
 			return false;
-		bForced = Args.m_iN1 ? true : false;
 	}
 	std::vector<LastAttackers>::iterator it = m_lastAttackers.begin() + index;
-	CItemMemory *pFight = Memory_FindObj(pChar->GetUID());	// My memory of the fight.
-	if ( pFight && bForced )
-		Memory_ClearTypes(pFight, MEMORY_WAR_TARG);
+
 
 	m_lastAttackers.erase(it);
 	if ( m_Fight_Targ == pChar->GetUID() )
@@ -3003,12 +2958,9 @@ void CChar::Attacker_CheckTimeout()
 		for (int count = 0; count < static_cast<int>(m_lastAttackers.size()); count++)
 		{
 			LastAttackers & refAttacker = m_lastAttackers.at(count);
-			if ((++(refAttacker.elapsed) > g_Cfg.m_iAttackerTimeout) && (g_Cfg.m_iAttackerTimeout > 0))
-			{
-				CChar *pEnemy = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
-				if (pEnemy && (pEnemy->Attacker_GetElapsed(pEnemy->Attacker_GetID(this))> g_Cfg.m_iAttackerTimeout) && (g_Cfg.m_iAttackerTimeout > 0))	//Do not remove if I kept attacking him.
-					Attacker_Delete(count, true, ATTACKER_CLEAR_ELAPSED);
-			}
+			CChar *pEnemy = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
+			if (pEnemy && (++(refAttacker.elapsed) > g_Cfg.m_iAttackerTimeout) && g_Cfg.m_iAttackerTimeout > 0)
+				Attacker_Delete(count, true, ATTACKER_CLEAR_ELAPSED);
 		}
 	}
 }

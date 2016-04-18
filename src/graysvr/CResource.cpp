@@ -144,7 +144,7 @@ CResource::CResource()
 	m_iWalkBuffer		= 75;
 	m_iWalkRegen		= 25;
 	m_iWoolGrowthTime	= 30*60*TICK_PER_SEC;
-	m_iAttackerTimeout	= 300;
+	m_iAttackerTimeout	= 30;
 
 	m_iCommandLog		= 0;
 	m_fTelnetLog		= true;
@@ -959,7 +959,7 @@ bool CResource::r_LoadVal( CScript &s )
 			m_sAcctBaseDir = CGFile::GetMergedFileName( s.GetArgStr(), "" );
 			break;
 		case RC_ATTACKERTIMEOUT:
-			m_iAttackerTimeout = s.GetArgVal() * TICK_PER_SEC;
+			m_iAttackerTimeout = s.GetArgVal();
 			break;
 		case RC_BANKMAXWEIGHT:
 			m_iBankWMax = s.GetArgVal() * WEIGHT_UNITS;
@@ -1505,7 +1505,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 	switch (index)
 	{
 		case RC_ATTACKERTIMEOUT:
-			sVal.FormatVal(m_iAttackerTimeout / TICK_PER_SEC);
+			sVal.FormatVal(m_iAttackerTimeout);
 			break;
 		case RC_BANKMAXWEIGHT:
 			sVal.FormatVal( m_iBankWMax / WEIGHT_UNITS );

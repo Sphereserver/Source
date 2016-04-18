@@ -23,10 +23,7 @@ enum MEMORY_TYPE
 	MEMORY_ISPAWNED		= 0x0200,	// UNUSED!!!! I am spawned from this item. (never time out)
 	MEMORY_GUILD		= 0x0400,	// This is my guild stone. (never time out) only have 1
 	MEMORY_TOWN			= 0x0800,	// This is my town stone. (never time out) only have 1
-	MEMORY_UNUSED		= 0x1000,	// UNUSED!!!! I am following this Object (never time out)
-	MEMORY_WAR_TARG		= 0x2000,	// This is one of my current war targets.
 	MEMORY_FRIEND		= 0x4000,	// They can command me but not release me. (not primary blame)
-	MEMORY_UNUSED2		= 0x8000	// UNUSED!!!! Gump record memory (More1 = Context, More2 = Uid)
 };
 
 enum NPC_MEM_ACT_TYPE	// A simgle primary memory about the object.
@@ -65,7 +62,8 @@ public:
 	CVarDefMap m_TagDefs;		// attach extra tags here.
 	CVarDefMap m_BaseDefs;		// New Variable storage system
 	DWORD	m_Can;
-	
+	int m_ModMaxWeight;
+
 	WORD	m_attackBase;	// dam for weapons
 	WORD	m_attackRange;	// variable range of attack damage.
 
@@ -2755,7 +2753,6 @@ public:
 
 	height_t m_height;			// Height set in-game or under some trigger (height=) - for both items and chars
 
-	int m_ModMaxWeight;
 	CGrayUID m_UIDLastNewItem;	///< Last item created, used to store on this CChar the UID of the last created item via ITEM or ITEMNEWBIe in @Create and @Restock to prevent COLOR, etc properties to be called with no reference when the item was not really created, ie: ITEM=i_dagger,R5
 	unsigned int m_exp;			// character experience
 	unsigned int m_level;		// character experience level
@@ -3799,8 +3796,8 @@ public:
 	bool Spell_Teleport( CPointMap pt, bool bTakePets = false, bool bCheckAntiMagic = true, bool bDisplayEffect = true, ITEMID_TYPE iEffect = ITEMID_NOTHING, SOUND_TYPE iSound = SOUND_NONE );
 	bool Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool fFailMsg, bool fCheckAntiMagic = true );
 	int	GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, CChar * pCharSrc = NULL );
+	
 	// Memories about objects in the world. -------------------
-private:
 	bool Memory_OnTick( CItemMemory * pMemory );
 	bool Memory_UpdateFlags( CItemMemory * pMemory );
 	bool Memory_UpdateClearTypes( CItemMemory * pMemory, WORD MemTypes );
