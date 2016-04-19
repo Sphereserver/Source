@@ -126,6 +126,7 @@ CResource::CResource()
 	m_iSpeedScaleFactor	= 80000;
 	m_iCombatFlags		= 0;
 	m_iCombatDamageEra	= 0;
+	m_iCombatHitChanceEra = 0;
 	m_iCombatSpeedEra	= 3;
 	m_iMagicFlags		= 0;
 	m_iMaxPolyStats		= 150;
@@ -406,6 +407,7 @@ enum RC_TYPE
 	RC_COLORNOTONEUTRAL,		// m_iColorNotoNeutral
 	RC_COMBATDAMAGEERA,			// m_iCombatDamageEra
 	RC_COMBATFLAGS,				// m_iCombatFlags
+	RC_COMBATHITCHANCEERA,		// m_iCombatHitChanceEra
 	RC_COMBATSPEEDERA,			// m_iCombatSpeedEra
 	RC_COMMANDLOG,
 	RC_COMMANDPREFIX,
@@ -635,6 +637,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "COLORNOTONEUTRAL",		{ ELEM_WORD,	OFFSETOF(CResource,m_iColorNotoNeutral),	0 }},
 	{ "COMBATDAMAGEERA",		{ ELEM_BYTE,	OFFSETOF(CResource,m_iCombatDamageEra),		0 }},
 	{ "COMBATFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iCombatFlags),			0 }},
+	{ "COMBATHITCHANCEERA",		{ ELEM_BYTE,	OFFSETOF(CResource,m_iCombatHitChanceEra),	0 }},
 	{ "COMBATSPEEDERA",			{ ELEM_BYTE,	OFFSETOF(CResource,m_iCombatSpeedEra),		0 }},
 	{ "COMMANDLOG",				{ ELEM_INT,		OFFSETOF(CResource,m_iCommandLog),			0 }},
 	{ "COMMANDPREFIX",			{ ELEM_BYTE,	OFFSETOF(CResource,m_cCommandPrefix),		0 }},

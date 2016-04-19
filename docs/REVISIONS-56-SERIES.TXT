@@ -14,3 +14,4 @@ Updated checks on @NotoSend trigger: it will not check anymore if ARGN1 > NOTO_I
 
 19-04-2016, Coruja
 Fixed: Protection spell not working correctly if COMBAT_ELEMENTAL_ENGINE combat flag is disabled.
+[Sphere.ini]: Added new CombatHitChanceEra setting to switch between Hit Chance formulas on physical combat.
