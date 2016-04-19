@@ -3454,12 +3454,12 @@ public:
 	* Actually 2 values are stored in this vectored list: Notoriety (the notoriety level) and Color (the color we are showing in the HP bar and in our character for the viewer).
 	* Calls @NotoSend trigger with src = pChar, argn1 = notoriety level, argn2 = color to send.
 	* @param pChar is the CChar that needs to know what I am (good, evil, criminal, neutral...) to him.
-	* @param fIncog if set to true (usually because of Incognito spell), this character will be gray for the viever (pChar).
-	* @param fInvul if set to true invulnerable characters will return NOTO_INVUL (yellow bar, etc).
+	* @param bAllowIncog if set to true (usually because of Incognito spell), this character will be gray for the viever (pChar).
+	* @param bAllowInvul if set to true invulnerable characters will return NOTO_INVUL (yellow bar, etc).
 	* @param bGetColor if set to true only the color will be returned and not the notoriety (note that they can differ if set to so in the @NotoSend trigger).
 	* @return NOTO_TYPE notoriety level.
 	*/
-	NOTO_TYPE Noto_GetFlag( const CChar * pChar, bool fIncog = false, bool fInvul = false, bool bGetColor = false ) const;
+	NOTO_TYPE Noto_GetFlag(const CChar *pChar, bool bAllowIncog = false, bool bAllowInvul = false, bool bGetColor = false) const;
 
 	/**
 	* @brief Notoriety calculations
@@ -3467,29 +3467,29 @@ public:
 	* TAG.OVERRIDE.NOTO will override everything and use the value in the tag for everyone, regardless of what I really are for them.
 	* If this char is a pet, check if notoriety must be inherited from it's master or do regular checks for it.
 	* @param pChar is the CChar that needs to know what I am (good, evil, criminal, neutral...) to him.
-	* @param fIncog if set to true (usually because of Incognito spell), this character will be gray for the viever (pChar).
-	* @param fInvul if set to true invulnerable characters will return NOTO_INVUL (yellow bar, etc).
+	* @param bAllowIncog if set to true (usually because of Incognito spell), this character will be gray for the viever (pChar).
+	* @param bAllowInvul if set to true invulnerable characters will return NOTO_INVUL (yellow bar, etc).
 	* @return NOTO_TYPE notoriety level.
 	*/
-	NOTO_TYPE Noto_CalcFlag( const CChar * pChar, bool fIncog = false, bool fInvul = false ) const;
+	NOTO_TYPE Noto_CalcFlag(const CChar *pChar, bool bAllowIncog = false, bool bAllowInvul = false) const;
 
 	/**
 	* @brief What color should the viewer see from me?
 	*
 	* Used to retrieve color for character and corpse's names.
 	* @param pChar is the CChar that needs to know what I am (good, evil, criminal, neutral...) to him.
-	* @param fIncog if set to true (usually because of Incognito spell), this character will be gray for the viever (pChar).
+	* @param bAllowIncog if set to true (usually because of Incognito spell), this character will be gray for the viever (pChar).
 	* @return HUE_TYPE my color.
 	*/
-	HUE_TYPE Noto_GetHue( const CChar * pChar, bool fIncog = false ) const;
+	HUE_TYPE Noto_GetHue(const CChar *pChar, bool bAllowIncog = false) const;
 
 	/**
 	* @brief I'm neutral?
 	*
 	* @return true if I am.
 	*/
-
 	bool Noto_IsNeutral() const;
+
 	/**
 	* @brief I'm murderer?
 	*
@@ -3502,8 +3502,8 @@ public:
 	*
 	* @return true if I am.
 	*/
-
 	bool Noto_IsEvil() const;
+
 	/**
 	* @brief I'm a criminal?
 	*
@@ -3511,9 +3511,8 @@ public:
 	*/
 	bool Noto_IsCriminal() const
 	{
-		// do the guards hate me ?
-		if ( IsStatFlag( STATF_Criminal ))
-			return( true );
+		if ( IsStatFlag(STATF_Criminal) )
+			return true;
 		return Noto_IsEvil();
 	}
 
