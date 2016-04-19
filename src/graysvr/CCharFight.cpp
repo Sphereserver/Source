@@ -1729,108 +1729,126 @@ int CChar::CalcArmorDefense() const
 {
 	ADDTOCALLSTACK("CChar::CalcArmorDefense");
 
-	int iDefenseTotal = 0;
-	int iArmorCount = 0;
+	WORD iArmorCount = 0;
+	WORD iDefense = 0;
+	WORD iDefenseTotal = 0;
 	WORD ArmorRegionMax[ARMOR_QTY];
 	for ( int i = 0; i < ARMOR_QTY; i++ )
 		ArmorRegionMax[i] = 0;
 
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		WORD iDefense = static_cast<WORD>(pItem->Armor_GetDefense());
+		iDefense = static_cast<WORD>(pItem->Armor_GetDefense());
+		if ( !iDefense )
+			continue;
 
 		// reverse of sm_ArmorLayers
-		switch ( pItem->GetEquipLayer())
+		switch ( pItem->GetEquipLayer() )
 		{
-			case LAYER_HELM:		// 6
-				if (IsSetCombatFlags(COMBAT_STACKARMOR))
-					ArmorRegionMax[ ARMOR_HEAD ] += iDefense;
+			case LAYER_HELM:
+				if ( IsSetCombatFlags(COMBAT_STACKARMOR) )
+					ArmorRegionMax[ARMOR_HEAD] += iDefense;
 				else
-					ArmorRegionMax[ ARMOR_HEAD ] = maximum( ArmorRegionMax[ ARMOR_HEAD ], iDefense );
+					ArmorRegionMax[ARMOR_HEAD] = maximum(ArmorRegionMax[ARMOR_HEAD], iDefense);
 
 				break;
-			case LAYER_COLLAR:	// 10 = gorget or necklace.
-				if (IsSetCombatFlags(COMBAT_STACKARMOR))
-					ArmorRegionMax[ ARMOR_NECK ] += iDefense;
+			case LAYER_COLLAR:
+				if ( IsSetCombatFlags(COMBAT_STACKARMOR) )
+					ArmorRegionMax[ARMOR_NECK] += iDefense;
 				else
-					ArmorRegionMax[ ARMOR_NECK ] = maximum( ArmorRegionMax[ ARMOR_NECK ], iDefense );
+					ArmorRegionMax[ARMOR_NECK] = maximum(ArmorRegionMax[ARMOR_NECK], iDefense);
 				break;
 			case LAYER_SHIRT:
-			case LAYER_CHEST:	// 13 = armor chest
-			case LAYER_TUNIC:	// 17 = jester suit
-				if (IsSetCombatFlags(COMBAT_STACKARMOR)) {
-					ArmorRegionMax[ ARMOR_CHEST ] += iDefense;
-					ArmorRegionMax[ ARMOR_BACK ] += iDefense;
-				} else {
-					ArmorRegionMax[ ARMOR_CHEST ] = maximum( ArmorRegionMax[ ARMOR_CHEST ], iDefense );
-					ArmorRegionMax[ ARMOR_BACK ] = maximum( ArmorRegionMax[ ARMOR_BACK ], iDefense );
+			case LAYER_CHEST:
+			case LAYER_TUNIC:
+				if ( IsSetCombatFlags(COMBAT_STACKARMOR) )
+				{
+					ArmorRegionMax[ARMOR_CHEST] += iDefense;
+					ArmorRegionMax[ARMOR_BACK] += iDefense;
+				}
+				else
+				{
+					ArmorRegionMax[ARMOR_CHEST] = maximum(ArmorRegionMax[ARMOR_CHEST], iDefense);
+					ArmorRegionMax[ARMOR_BACK] = maximum(ArmorRegionMax[ARMOR_BACK], iDefense);
 				}
 				break;
-			case LAYER_ARMS:		// 19 = armor
-				if (IsSetCombatFlags(COMBAT_STACKARMOR)) 
-					ArmorRegionMax[ ARMOR_ARMS ] += iDefense;
+			case LAYER_ARMS:
+				if ( IsSetCombatFlags(COMBAT_STACKARMOR) )
+					ArmorRegionMax[ARMOR_ARMS] += iDefense;
 				else
-					ArmorRegionMax[ ARMOR_ARMS ] = maximum( ArmorRegionMax[ ARMOR_ARMS ], iDefense );
+					ArmorRegionMax[ARMOR_ARMS] = maximum(ArmorRegionMax[ARMOR_ARMS], iDefense);
 				break;
 			case LAYER_PANTS:
 			case LAYER_SKIRT:
 			case LAYER_HALF_APRON:
-				if (IsSetCombatFlags(COMBAT_STACKARMOR)) 
-					ArmorRegionMax[ ARMOR_LEGS ] += iDefense;
+				if ( IsSetCombatFlags(COMBAT_STACKARMOR) )
+					ArmorRegionMax[ARMOR_LEGS] += iDefense;
 				else
-					ArmorRegionMax[ ARMOR_LEGS ] = maximum( ArmorRegionMax[ ARMOR_LEGS ], iDefense );
+					ArmorRegionMax[ARMOR_LEGS] = maximum(ArmorRegionMax[ARMOR_LEGS], iDefense);
 				break;
 			case LAYER_SHOES:
-				if (IsSetCombatFlags(COMBAT_STACKARMOR)) 
-					ArmorRegionMax[ ARMOR_FEET ] += iDefense;
+				if ( IsSetCombatFlags(COMBAT_STACKARMOR) )
+					ArmorRegionMax[ARMOR_FEET] += iDefense;
 				else
-					ArmorRegionMax[ ARMOR_FEET ] = maximum( ArmorRegionMax[ ARMOR_FEET ], iDefense );
+					ArmorRegionMax[ARMOR_FEET] = maximum(ArmorRegionMax[ARMOR_FEET], iDefense);
 				break;
-			case LAYER_GLOVES:	// 7
-				if (IsSetCombatFlags(COMBAT_STACKARMOR)) 
-					ArmorRegionMax[ ARMOR_HANDS ] += iDefense;
+			case LAYER_GLOVES:
+				if ( IsSetCombatFlags(COMBAT_STACKARMOR) )
+					ArmorRegionMax[ARMOR_HANDS] += iDefense;
 				else
-					ArmorRegionMax[ ARMOR_HANDS ] = maximum( ArmorRegionMax[ ARMOR_HANDS ], iDefense );
+					ArmorRegionMax[ARMOR_HANDS] = maximum(ArmorRegionMax[ARMOR_HANDS], iDefense);
 				break;
-			case LAYER_CAPE:		// 20 = cape
-				if (IsSetCombatFlags(COMBAT_STACKARMOR)) {
-					ArmorRegionMax[ ARMOR_BACK ] += iDefense;
-					ArmorRegionMax[ ARMOR_ARMS ] += iDefense;
-				} else {
-					ArmorRegionMax[ ARMOR_BACK ] = maximum( ArmorRegionMax[ ARMOR_BACK ], iDefense );
-					ArmorRegionMax[ ARMOR_ARMS ] = maximum( ArmorRegionMax[ ARMOR_ARMS ], iDefense );
+			case LAYER_CAPE:
+				if ( IsSetCombatFlags(COMBAT_STACKARMOR) )
+				{
+					ArmorRegionMax[ARMOR_BACK] += iDefense;
+					ArmorRegionMax[ARMOR_ARMS] += iDefense;
+				}
+				else
+				{
+					ArmorRegionMax[ARMOR_BACK] = maximum(ArmorRegionMax[ARMOR_BACK], iDefense);
+					ArmorRegionMax[ARMOR_ARMS] = maximum(ArmorRegionMax[ARMOR_ARMS], iDefense);
 				}
 				break;
-			case LAYER_ROBE:		// 22 = robe over all.
-				if (IsSetCombatFlags(COMBAT_STACKARMOR)) {
-					ArmorRegionMax[ ARMOR_CHEST ] += iDefense;
-					ArmorRegionMax[ ARMOR_BACK ] += iDefense;
-					ArmorRegionMax[ ARMOR_ARMS ] += iDefense;
-					ArmorRegionMax[ ARMOR_LEGS ] += iDefense;
-				} else {
-					ArmorRegionMax[ ARMOR_CHEST ] = maximum( ArmorRegionMax[ ARMOR_CHEST ], iDefense );
-					ArmorRegionMax[ ARMOR_BACK ] = maximum( ArmorRegionMax[ ARMOR_BACK ], iDefense );
-					ArmorRegionMax[ ARMOR_ARMS ] = maximum( ArmorRegionMax[ ARMOR_ARMS ], iDefense );
-					ArmorRegionMax[ ARMOR_LEGS ] = maximum( ArmorRegionMax[ ARMOR_LEGS ], iDefense );
+			case LAYER_ROBE:
+				if ( IsSetCombatFlags(COMBAT_STACKARMOR) )
+				{
+					ArmorRegionMax[ARMOR_CHEST] += iDefense;
+					ArmorRegionMax[ARMOR_BACK] += iDefense;
+					ArmorRegionMax[ARMOR_ARMS] += iDefense;
+					ArmorRegionMax[ARMOR_LEGS] += iDefense;
+				}
+				else
+				{
+					ArmorRegionMax[ARMOR_CHEST] = maximum(ArmorRegionMax[ARMOR_CHEST], iDefense);
+					ArmorRegionMax[ARMOR_BACK] = maximum(ArmorRegionMax[ARMOR_BACK], iDefense);
+					ArmorRegionMax[ARMOR_ARMS] = maximum(ArmorRegionMax[ARMOR_ARMS], iDefense);
+					ArmorRegionMax[ARMOR_LEGS] = maximum(ArmorRegionMax[ARMOR_LEGS], iDefense);
 				}
 				break;
 			case LAYER_LEGS:
-				if (IsSetCombatFlags(COMBAT_STACKARMOR)) {
-					ArmorRegionMax[ ARMOR_LEGS ] += iDefense;
-					ArmorRegionMax[ ARMOR_FEET ] += iDefense;
-				} else {
-					ArmorRegionMax[ ARMOR_LEGS ] = maximum( ArmorRegionMax[ ARMOR_LEGS ], iDefense );
-					ArmorRegionMax[ ARMOR_FEET ] = maximum( ArmorRegionMax[ ARMOR_FEET ], iDefense );
+				if ( IsSetCombatFlags(COMBAT_STACKARMOR) )
+				{
+					ArmorRegionMax[ARMOR_LEGS] += iDefense;
+					ArmorRegionMax[ARMOR_FEET] += iDefense;
+				}
+				else
+				{
+					ArmorRegionMax[ARMOR_LEGS] = maximum(ArmorRegionMax[ARMOR_LEGS], iDefense);
+					ArmorRegionMax[ARMOR_FEET] = maximum(ArmorRegionMax[ARMOR_FEET], iDefense);
 				}
 				break;
 			case LAYER_HAND2:
 				if ( pItem->IsType(IT_SHIELD) )
 				{
 					if ( IsSetCombatFlags(COMBAT_STACKARMOR) )
-						ArmorRegionMax[ ARMOR_HANDS ] += iDefense;
+						ArmorRegionMax[ARMOR_HANDS] += iDefense;
 					else
-						ArmorRegionMax[ ARMOR_HANDS ] = maximum( ArmorRegionMax[ ARMOR_HANDS ], iDefense );
+						ArmorRegionMax[ARMOR_HANDS] = maximum(ArmorRegionMax[ARMOR_HANDS], iDefense);
 				}
+				break;
+			case LAYER_SPELL_Protection:
+				iDefenseTotal += pItem->m_itSpell.m_spelllevel * 100;
 				break;
 			default:
 				continue;
@@ -1844,7 +1862,7 @@ int CChar::CalcArmorDefense() const
 			iDefenseTotal += sm_ArmorLayers[i].m_wCoverage * ArmorRegionMax[i];
 	}
 
-	return maximum(( iDefenseTotal / 100 ) + m_ModAr, 0);
+	return (iDefenseTotal / 100) + m_ModAr;
 }
 
 // Someone hit us.

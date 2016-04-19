@@ -791,7 +791,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			}
 			else
 			{
-				m_defense -= iStatEffect;
+				m_defense = static_cast<WORD>(CalcArmorDefense());
 			}
 			if (pClient)
 			{
@@ -1466,12 +1466,12 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				}
 				else
 				{
-					m_defense += iStatEffect;
+					m_defense = static_cast<WORD>(CalcArmorDefense());
 				}
 				if (pClient && IsSetOF(OF_Buffs))
 				{
 					BUFF_ICONS BuffIcon = BI_PROTECTION;
-					unsigned long BuffCliloc = 1075814;
+					DWORD BuffCliloc = 1075814;
 					if ( spell == SPELL_Arch_Prot )
 					{
 						BuffIcon = BI_ARCHPROTECTION;

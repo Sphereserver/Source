@@ -11,3 +11,6 @@ Fixed stackable items not checking maxweight on corpses.
 Removed all references to MEMORY_WAR_TARG since they are not needed anymore, targets are handled by 'Attacker' now.
 Added back old HitChance formula under CombatDamageEra = 0
 Updated checks on @NotoSend trigger: it will not check anymore if ARGN1 > NOTO_INVUL, so you can create custom notoriety.
+
+19-04-2016, Coruja
+Fixed: Protection spell not working correctly if COMBAT_ELEMENTAL_ENGINE combat flag is disabled.
