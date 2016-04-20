@@ -18,3 +18,4 @@ Fixed: Protection spell not working correctly if COMBAT_ELEMENTAL_ENGINE combat 
 
 20-04-2016, Coruja
 Changed: Console errors/warnings now will be colored white again (as it was on old sphere builds).
+Fixed: Movement checks not allowing climb some stairs/mounds.

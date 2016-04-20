@@ -2296,6 +2296,7 @@ CRegionBase *CChar::CheckValidMove( CPointBase &ptDest, WORD *pwBlockFlags, DIR_
 		else if ( (wBlockFlags & CAN_I_HOVER) && (pCharDef->Can(CAN_C_HOVER) || IsStatFlag(STATF_Hovering)) )
 			wBlockFlags &= ~CAN_I_BLOCK;
 
+		// Check if we can walk/climb this height
 		if ( !pCharDef->Can(CAN_C_FLY) )
 		{
 			if ( !(wBlockFlags & CAN_I_CLIMB) ) // we can climb anywhere
@@ -2303,11 +2304,16 @@ CRegionBase *CChar::CheckValidMove( CPointBase &ptDest, WORD *pwBlockFlags, DIR_
 				WARNWALK(("block.m_Lowest.m_z %d  block.m_Bottom.m_z %d  block.m_Top.m_z %d\n", block.m_Lowest.m_z, block.m_Bottom.m_z, block.m_Top.m_z));
 				if ( block.m_Bottom.m_dwTile > TERRAIN_QTY )
 				{
-					if ( block.m_Bottom.m_z > ptDest.m_z + m_zClimbHeight + 2 ) // Too high to climb.
+					// Stepping on dynamic item
+					if ( block.m_Bottom.m_z > ptDest.m_z + m_zClimbHeight + 2 )
 						return NULL;
 				}
-				else if ( block.m_Bottom.m_z > ptDest.m_z + m_zClimbHeight + GetHeightMount() + 3 )
-					return NULL;
+				else
+				{
+					// Stepping on map tile
+					if ( block.m_Bottom.m_z > ptDest.m_z + m_zClimbHeight + 12 )
+						return NULL;
+				}
 			}
 		}
 
