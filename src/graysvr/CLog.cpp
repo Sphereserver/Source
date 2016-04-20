@@ -46,21 +46,27 @@ bool CLog::OpenLog( LPCTSTR pszBaseDirName )	// name set previously.
 
 void CLog::SetColor(Color color)
 {
-	switch (color)
+	switch ( color )
 	{
 #ifdef _WIN32
-        case YELLOW:
-            NTWindow_PostMsgColor(RGB(127,127,0));
-            break;
-        case RED:
-            NTWindow_PostMsgColor(RGB(255,0,0));
-            break;
-        case CYAN:
-            NTWindow_PostMsgColor(RGB(0,127,255));
-            break;
-        default:
-            NTWindow_PostMsgColor(0);
+		case WHITE:
+			NTWindow_PostMsgColor(RGB(255, 255, 255));
+			break;
+		case YELLOW:
+			NTWindow_PostMsgColor(RGB(127, 127, 0));
+			break;
+		case RED:
+			NTWindow_PostMsgColor(RGB(255, 0, 0));
+			break;
+		case CYAN:
+			NTWindow_PostMsgColor(RGB(0, 127, 255));
+			break;
+		default:
+			NTWindow_PostMsgColor(0);
 #else
+		case WHITE:
+			g_UnixTerminal.setColor(UnixTerminal::COL_WHITE);
+			break;
 		case YELLOW:
 			g_UnixTerminal.setColor(UnixTerminal::COL_YELLOW);
 			break;
@@ -158,7 +164,7 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 		{
 			SetColor(RED);
 			g_Serv.PrintStr( pszLabel );
-			SetColor(DEFAULT);
+			SetColor(WHITE);
 		}
 
 		if ( szScriptContext[0] )

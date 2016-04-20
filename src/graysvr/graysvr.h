@@ -298,9 +298,13 @@ private:
 	enum Color
 	{
 		DEFAULT,
-		YELLOW,
 		RED,
-		CYAN
+		GREEN,
+		YELLOW,
+		BLUE,
+		MAGENTA,
+		CYAN,
+		WHITE
 	};
 
 	/**
