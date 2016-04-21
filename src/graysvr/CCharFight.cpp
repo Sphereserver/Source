@@ -1691,7 +1691,7 @@ int CChar::CalcArmorDefense() const
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
 		iDefense = static_cast<WORD>(pItem->Armor_GetDefense());
-		if ( !iDefense )
+		if ( !iDefense && !pItem->IsType(IT_SPELL) )
 			continue;
 
 		// reverse of sm_ArmorLayers
