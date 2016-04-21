@@ -751,7 +751,7 @@ bool CItemStone::r_LoadVal( CScript & s ) // Load an item Script
 		case STC_ALIGN: // "ALIGN"
 			SetAlignType(static_cast<STONEALIGN_TYPE>(s.GetArgVal()));
 			return true;
-		case STC_MasterUid:
+		case STC_MASTERUID:
 			{
 				if ( s.HasArgs() )
 				{
@@ -1041,7 +1041,7 @@ bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 		case STC_WEBPAGE: // "WEBPAGE"
 			sVal = GetWebPageURL();
 			return true;
-		case STC_AbbreviationToggle:
+		case STC_ABBREVIATIONTOGGLE:
 			{
 				CStoneMember * pMember = GetMember(pCharSrc);
 				CVarDefCont * pResult = NULL;
@@ -1059,11 +1059,11 @@ bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 				sVal = pResult ? pResult->GetValStr() : "";
 			}
 			return true;
-		case STC_AlignType:
+		case STC_ALIGNTYPE:
 			sVal = GetAlignName();
 			return true;
 
-		case STC_LoyalTo:
+		case STC_LOYALTO:
 			{
 				CStoneMember * pMember = GetMember(pCharSrc);
 				CVarDefCont * pResult = NULL;
@@ -1090,14 +1090,14 @@ bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 			}
 			return( true );
 	
-		case STC_Master:
+		case STC_MASTER:
 			{
 				CChar * pMaster = GetMaster();
 				sVal = (pMaster) ? pMaster->GetName() : g_Exp.m_VarDefs.GetKeyStr("STONECONFIG_VARIOUSNAME_PENDVOTE");
 			}
 			return( true );
 	
-		case STC_MasterGenderTitle:
+		case STC_MASTERGENDERTITLE:
 			{
 				CChar * pMaster = GetMaster();
 				if ( pMaster == NULL )
@@ -1109,14 +1109,14 @@ bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 			}
 			return( true );
 	
-		case STC_MasterTitle:
+		case STC_MASTERTITLE:
 			{
 				CStoneMember * pMember = GetMasterMember();
 				sVal = (pMember) ? pMember->GetTitle() : "";
 			}
 			return( true );
 	
-		case STC_MasterUid:
+		case STC_MASTERUID:
 			{
 				CChar * pMaster = GetMaster();
 				if ( pMaster )
