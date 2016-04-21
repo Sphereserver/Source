@@ -48,26 +48,48 @@ void CStoneMember::SetPriv(STONEPRIV_TYPE iPriv) { m_iPriv = iPriv; }
 bool CStoneMember::IsPrivMaster() const { return m_iPriv == STONEPRIV_MASTER; }
 bool CStoneMember::IsPrivMember() const { return( m_iPriv == STONEPRIV_MASTER || m_iPriv == STONEPRIV_MEMBER ); }
 
-// If the member is really a war flag (STONEPRIV_ENEMY)
-void CStoneMember::SetWeDeclared(bool f)
+// If the member is really a alliance flag (STONEPRIV_ALLY)
+void CStoneMember::SetWeDeclaredAlly(bool f)
 {
-	ADDTOCALLSTACK("CStoneMember::SetWeDeclared");
+	ADDTOCALLSTACK("CStoneMember::SetWeDeclaredAlly");
+	m_Ally.m_fWeDeclared = f;
+}
+bool CStoneMember::GetWeDeclaredAlly() const
+{
+	ADDTOCALLSTACK("CStoneMember::GetWeDeclaredAlly");
+	return m_Ally.m_fWeDeclared ? true : false;
+}
+void CStoneMember::SetTheyDeclaredAlly(bool f)
+{
+	ADDTOCALLSTACK("CStoneMember::SetTheyDeclaredAlly");
+	m_Ally.m_fTheyDeclared = f;
+}
+bool CStoneMember::GetTheyDeclaredAlly() const
+{
+	ADDTOCALLSTACK("CStoneMember::GetTheyDeclaredAlly");
+	return m_Ally.m_fTheyDeclared ? true : false;
+}
+
+// If the member is really a war flag (STONEPRIV_ENEMY)
+void CStoneMember::SetWeDeclaredWar(bool f)
+{
+	ADDTOCALLSTACK("CStoneMember::SetWeDeclaredWar");
 	m_Enemy.m_fWeDeclared = f;
 }
-bool CStoneMember::GetWeDeclared() const
+bool CStoneMember::GetWeDeclaredWar() const
 {
-	ADDTOCALLSTACK("CStoneMember::GetWeDeclared");
-	return ( m_Enemy.m_fWeDeclared ) ? true : false;
+	ADDTOCALLSTACK("CStoneMember::GetWeDeclaredWar");
+	return m_Enemy.m_fWeDeclared ? true : false;
 }
-void CStoneMember::SetTheyDeclared(bool f)
+void CStoneMember::SetTheyDeclaredWar(bool f)
 {
-	ADDTOCALLSTACK("CStoneMember::SetTheyDeclared");
+	ADDTOCALLSTACK("CStoneMember::SetTheyDeclaredWar");
 	m_Enemy.m_fTheyDeclared = f;
 }
-bool CStoneMember::GetTheyDeclared() const
+bool CStoneMember::GetTheyDeclaredWar() const
 {
-	ADDTOCALLSTACK("CStoneMember::GetTheyDeclared");
-	return ( m_Enemy.m_fTheyDeclared ) ? true : false;
+	ADDTOCALLSTACK("CStoneMember::GetTheyDeclaredWar");
+	return m_Enemy.m_fTheyDeclared ? true : false;
 }
 
 // Member
@@ -191,17 +213,19 @@ bool CStoneMember::r_LoadVal( CScript & s ) // Load an item Script
 		switch ( iIndex )
 		{
 			case STMM_GUILD_THEYALLIANCE:
+				SetTheyDeclaredAlly(s.GetArgVal() ? true : false);
 				break;
 
 			case STMM_GUILD_THEYWAR:
-				SetTheyDeclared(s.GetArgVal() ? true : false);
+				SetTheyDeclaredWar(s.GetArgVal() ? true : false);
 				break;
 
 			case STMM_GUILD_WEALLIANCE:
+				SetWeDeclaredAlly(s.GetArgVal() ? true : false);
 				break;
 
 			case STMM_GUILD_WEWAR:
-				SetWeDeclared(s.GetArgVal() ? true : false);
+				SetWeDeclaredWar(s.GetArgVal() ? true : false);
 				break;
 
 			default:
@@ -269,20 +293,23 @@ bool CStoneMember::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 	{
 		switch ( iIndex )
 		{
+			case STMM_GUILD_ISALLY:
+				sVal.FormatVal(GetWeDeclaredAlly() && GetTheyDeclaredAlly());
+				break;
 			case STMM_GUILD_ISENEMY:
-				sVal.FormatVal(GetWeDeclared() && GetTheyDeclared());
-				break;
-			case STMM_GUILD_THEYWAR:
-				sVal.FormatVal(GetTheyDeclared());
-				break;
-			case STMM_GUILD_WEWAR:
-				sVal.FormatVal(GetWeDeclared());
-				break;
-			case STMM_GUILD_WEALLIANCE:
-				sVal.FormatVal(0);
+				sVal.FormatVal(GetWeDeclaredWar() && GetTheyDeclaredWar());
 				break;
 			case STMM_GUILD_THEYALLIANCE:
-				sVal.FormatVal(0);
+				sVal.FormatVal(GetTheyDeclaredAlly());
+				break;
+			case STMM_GUILD_THEYWAR:
+				sVal.FormatVal(GetTheyDeclaredWar());
+				break;
+			case STMM_GUILD_WEALLIANCE:
+				sVal.FormatVal(GetWeDeclaredAlly());
+				break;
+			case STMM_GUILD_WEWAR:
+				sVal.FormatVal(GetWeDeclaredWar());
 				break;
 			default:
 				{
@@ -477,7 +504,7 @@ LPCTSTR CItemStone::GetWebPageURL() const
 	return( m_sWebPageURL );
 }
 
-void CItemStone::SetWebPage( LPCTSTR pWebPage )
+void CItemStone::SetWebPageURL( LPCTSTR pWebPage )
 {
 	m_sWebPageURL = pWebPage;
 }
@@ -528,26 +555,22 @@ void CItemStone::r_Write( CScript & s )
 {
 	ADDTOCALLSTACK_INTENSIVE("CItemStone::r_Write");
 	CItem::r_Write( s );
-	s.WriteKeyVal( "ALIGN", GetAlignType());
-	if ( ! m_sAbbrev.IsEmpty())
-	{
-		s.WriteKey( "ABBREV", m_sAbbrev );
-	}
+	s.WriteKeyVal("ALIGN", GetAlignType());
+	if ( !m_sAbbrev.IsEmpty() )
+		s.WriteKey("ABBREV", m_sAbbrev);
 
 	TemporaryString pszTemp;
 	for ( unsigned int i = 0; i < COUNTOF(m_sCharter); i++ )
 	{
-		if ( ! m_sCharter[i].IsEmpty())
+		if ( !m_sCharter[i].IsEmpty() )
 		{
 			sprintf(pszTemp, "CHARTER%u", i);
-			s.WriteKey(pszTemp, m_sCharter[i] );
+			s.WriteKey(pszTemp, m_sCharter[i]);
 		}
 	}
 
-	if ( ! m_sWebPageURL.IsEmpty())
-	{
-		s.WriteKey( "WEBPAGE", GetWebPageURL() );
-	}
+	if ( !m_sWebPageURL.IsEmpty() )
+		s.WriteKey("WEBPAGE", GetWebPageURL());
 
 	// s.WriteKey( "//", "uid,title,priv,loyaluid,abbr&theydecl,wedecl");
 
@@ -923,11 +946,11 @@ bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 					if ( pMember->GetLinkUID().IsChar() )
 						continue;
 
-					if ( ( iToCheck == 1 ) && ( pMember->GetWeDeclared() && !pMember->GetTheyDeclared() ) )
+					if ( ( iToCheck == 1 ) && ( pMember->GetWeDeclaredWar() && !pMember->GetTheyDeclaredWar() ) )
 						i++;
-					else if ( ( iToCheck == 2 ) && ( !pMember->GetWeDeclared() && pMember->GetTheyDeclared() ) )
+					else if ( ( iToCheck == 2 ) && ( !pMember->GetWeDeclaredWar() && pMember->GetTheyDeclaredWar() ) )
 						i++;
-					else if ( ( iToCheck == 3 ) && ( pMember->GetWeDeclared() && pMember->GetTheyDeclared() ) )
+					else if ( ( iToCheck == 3 ) && ( pMember->GetWeDeclaredWar() && pMember->GetTheyDeclaredWar() ) )
 						i++;
 				}
 			}
@@ -1164,15 +1187,15 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 								{
 									pMember->r_Verb(scriptVerb, pSrc);
 								}
-								else if ( ( iFlags == 1 ) && ( pMember->GetWeDeclared() && !pMember->GetTheyDeclared() ) )
+								else if ( ( iFlags == 1 ) && ( pMember->GetWeDeclaredWar() && !pMember->GetTheyDeclaredWar() ) )
 								{
 									pMember->r_Verb(scriptVerb, pSrc);
 								}
-								else if ( ( iFlags == 2 ) && ( !pMember->GetWeDeclared() && pMember->GetTheyDeclared() ) )
+								else if ( ( iFlags == 2 ) && ( !pMember->GetWeDeclaredWar() && pMember->GetTheyDeclaredWar() ) )
 								{
 									pMember->r_Verb(scriptVerb, pSrc);
 								}
-								else if ( ( iFlags == 3 ) && ( pMember->GetWeDeclared() && pMember->GetTheyDeclared() ) )
+								else if ( ( iFlags == 3 ) && ( pMember->GetWeDeclaredWar() && pMember->GetTheyDeclaredWar() ) )
 								{
 									pMember->r_Verb(scriptVerb, pSrc);
 								}
@@ -1295,9 +1318,9 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 								pMemberGuild = new CStoneMember(this, pGuildUid, STONEPRIV_ENEMY);
 
 							if ( bWeDeclared )
-								pMemberGuild->SetWeDeclared(true);
+								pMemberGuild->SetWeDeclaredWar(true);
 							else
-								pMemberGuild->SetTheyDeclared(true);
+								pMemberGuild->SetTheyDeclaredWar(true);
 						}
 					}
 				}
@@ -1626,9 +1649,9 @@ bool CItemStone::CheckValidMember( CStoneMember * pMember )
 				CStoneMember * pEnemyMember = pEnemyStone->GetMember(this);
 				if ( pEnemyMember == NULL )
 					break;
-				if ( pMember->GetWeDeclared() && ! pEnemyMember->GetTheyDeclared())
+				if ( pMember->GetWeDeclaredWar() && ! pEnemyMember->GetTheyDeclaredWar() )
 					break;
-				if ( pMember->GetTheyDeclared() && ! pEnemyMember->GetWeDeclared())
+				if ( pMember->GetTheyDeclaredWar() && ! pEnemyMember->GetWeDeclaredWar() )
 					break;
 			}
 			return( true );
@@ -1700,8 +1723,19 @@ bool CItemStone::IsAlliedWith( const CItemStone * pStone) const
 		}
 	}
 
-	return( GetAlignType() != STONEALIGN_STANDARD &&
-		GetAlignType() == pStone->GetAlignType());
+	// Just based on align type.
+	if ( GetAlignType() != STONEALIGN_STANDARD && GetAlignType() == pStone->GetAlignType() )
+		return true;
+
+	// we have declared or they declared.
+	CStoneMember * pAllyMember = GetMember(pStone);
+	if ( pAllyMember ) // Ok, we might be ally
+	{
+		if ( pAllyMember->GetTheyDeclaredAlly() && pAllyMember->GetWeDeclaredAlly() )
+			return true;
+	}
+
+	return false;
 }
 
 bool CItemStone::IsAtWarWith( const CItemStone * pEnemyStone ) const
@@ -1729,18 +1763,14 @@ bool CItemStone::IsAtWarWith( const CItemStone * pEnemyStone ) const
 	}
 
 	// Just based on align type.
-	if ( IsType(IT_STONE_GUILD) &&
-		GetAlignType() != STONEALIGN_STANDARD &&
-		pEnemyStone->GetAlignType() != STONEALIGN_STANDARD )
-	{
-		return( GetAlignType() != pEnemyStone->GetAlignType());
-	}
+	if ( IsType(IT_STONE_GUILD) && GetAlignType() != STONEALIGN_STANDARD && pEnemyStone->GetAlignType() != STONEALIGN_STANDARD )
+		return (GetAlignType() != pEnemyStone->GetAlignType());
 
 	// we have declared or they declared.
 	CStoneMember * pEnemyMember = GetMember(pEnemyStone);
 	if (pEnemyMember) // Ok, we might be at war
 	{
-		if ( pEnemyMember->GetTheyDeclared() && pEnemyMember->GetWeDeclared())
+		if ( pEnemyMember->GetTheyDeclaredWar() && pEnemyMember->GetWeDeclaredWar() )
 			return true;
 	}
 
@@ -1798,14 +1828,14 @@ bool CItemStone::WeDeclareWar(CItemStone * pEnemyStone)
 	CStoneMember * pMember = GetMember(pEnemyStone);
 	if ( pMember )
 	{
-		if ( pMember->GetWeDeclared())
+		if ( pMember->GetWeDeclaredWar() )
 			return true;
 	}
 	else // They haven't, make a record of this
 	{
 		pMember = new CStoneMember( this, pEnemyStone->GetUID(), STONEPRIV_ENEMY );
 	}
-	pMember->SetWeDeclared(true);
+	pMember->SetWeDeclaredWar(true);
 
 	// Now inform the other stone
 	// See if they have already declared war on us
@@ -1813,7 +1843,7 @@ bool CItemStone::WeDeclareWar(CItemStone * pEnemyStone)
 	if (!pEnemyMember) // Not yet it seems
 		pEnemyMember = new CStoneMember( pEnemyStone, GetUID(), STONEPRIV_ENEMY );
 
-	pEnemyMember->SetTheyDeclared(true);
+	pEnemyMember->SetTheyDeclaredWar(true);
 	return( true );
 }
 
@@ -1826,12 +1856,12 @@ void CItemStone::TheyDeclarePeace( CItemStone* pEnemyStone, bool fForcePeace )
 	if ( ! pEnemyMember )
 		return;
 
-	bool fPrevTheyDeclared = pEnemyMember->GetTheyDeclared();
+	bool fPrevTheyDeclared = pEnemyMember->GetTheyDeclaredWar();
 
-	if (!pEnemyMember->GetWeDeclared() || fForcePeace) // If we're not at war with them, delete this record
+	if ( !pEnemyMember->GetWeDeclaredWar() || fForcePeace ) // If we're not at war with them, delete this record
 		delete pEnemyMember;
 	else
-		pEnemyMember->SetTheyDeclared(false);
+		pEnemyMember->SetTheyDeclaredWar(false);
 
 	if ( ! fPrevTheyDeclared )
 		return;
@@ -1849,10 +1879,10 @@ void CItemStone::WeDeclarePeace(CGrayUID uid, bool fForcePeace)
 		return;
 
 	// Set my flags on the subject.
-	if (!pMember->GetTheyDeclared() || fForcePeace) // If they're not at war with us, delete this record
+	if (!pMember->GetTheyDeclaredWar() || fForcePeace) // If they're not at war with us, delete this record
 		delete pMember;
 	else
-		pMember->SetWeDeclared(false);
+		pMember->SetWeDeclaredWar(false);
 
 	pEnemyStone->TheyDeclarePeace( this, fForcePeace );
 }

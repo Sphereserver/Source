@@ -2081,8 +2081,9 @@ enum STONEPRIV_TYPE // Priv level for this char
 	STONEPRIV_MEMBER,
 	STONEPRIV_MASTER,
 	STONEPRIV_UNUSED,
-	STONEPRIV_ACCEPTED,	// The candidate has been accepted. But they have not dclicked on the stone yet.
-	STONEPRIV_ENEMY = 100	// this is an enemy town/guild.
+	STONEPRIV_ACCEPTED,		// The candidate has been accepted. But they have not dclicked on the stone yet.
+	STONEPRIV_ALLY = 100,	// This is an ally town/guild.
+	STONEPRIV_ENEMY			// This is an enemy town/guild.
 };
 
 class CStoneMember : public CGObListRec, public CScriptObj	// Members for various stones, and links to stones at war with
@@ -2105,6 +2106,12 @@ private:
 			int m_Val2;
 			int m_Val3;
 		} m_UnDef;
+
+		struct // STONEPRIV_ALLY
+		{
+			int m_fTheyDeclared;
+			int m_fWeDeclared;
+		} m_Ally;
 
 		struct // STONEPRIV_ENEMY
 		{
@@ -2141,11 +2148,17 @@ public:
 	bool IsPrivMember() const;
 	LPCTSTR GetPrivName() const;
 
+	// If the member is really a war flag (STONEPRIV_ALLY)
+	void SetWeDeclaredAlly(bool f);
+	bool GetWeDeclaredAlly() const;
+	void SetTheyDeclaredAlly(bool f);
+	bool GetTheyDeclaredAlly() const;
+
 	// If the member is really a war flag (STONEPRIV_ENEMY)
-	void SetWeDeclared(bool f);
-	bool GetWeDeclared() const;
-	void SetTheyDeclared(bool f);
-	bool GetTheyDeclared() const;
+	void SetWeDeclaredWar(bool f);
+	bool GetWeDeclaredWar() const;
+	void SetTheyDeclaredWar(bool f);
+	bool GetTheyDeclaredWar() const;
 
 	// Member
 	bool IsAbbrevOn() const;
@@ -2217,7 +2230,7 @@ private:
 	LPCTSTR GetCharter(unsigned int iLine) const;
 	void SetCharter( unsigned int iLine, LPCTSTR pCharter );
 	LPCTSTR GetWebPageURL() const;
-	void SetWebPage( LPCTSTR pWebPage );
+	void SetWebPageURL( LPCTSTR pWebPage );
 	void ElectMaster();
 public:
 	static const char *m_sClassName;

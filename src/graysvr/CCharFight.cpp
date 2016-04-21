@@ -260,9 +260,6 @@ NOTO_TYPE CChar::Noto_CalcFlag(const CChar *pCharViewer, bool bAllowIncog, bool 
 	if ( Noto_IsEvil() )
 		return NOTO_EVIL;
 
-	if ( IsStatFlag(STATF_Criminal) )	// criminal to everyone.
-		return NOTO_CRIMINAL;
-
 	if ( pCharViewer != this )
 	{
 		// If they saw me commit a crime or I am their aggressor then criminal to just them.
@@ -296,6 +293,9 @@ NOTO_TYPE CChar::Noto_CalcFlag(const CChar *pCharViewer, bool bAllowIncog, bool 
 			}
 		}
 	}
+
+	if ( IsStatFlag(STATF_Criminal) )	// criminal to everyone.
+		return NOTO_CRIMINAL;
 
 	if ( Noto_IsNeutral() )
 		return NOTO_NEUTRAL;
