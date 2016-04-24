@@ -68,7 +68,8 @@ CObjBase::CObjBase( bool fItem )
 	m_PropertyHash = 0;
 	m_PropertyRevision = 0;
 	m_uidSpawnItem = UID_UNUSED;
-
+	m_ModMaxWeight = 0;
+	
 	if ( g_Serv.IsLoading())
 	{
 		// Don't do this yet if we are loading. UID will be set later.
