@@ -48,8 +48,8 @@ NO	= -fno-rtti -fno-exceptions
 EX	= -fexceptions -fnon-call-exceptions
 SPECIAL = $(EX) $(DEBUG)
 
-GITHASHCMD = "$(shell git log -1 HEAD --format=%h)"
-GITREVISIONCMD = $(shell echo $(shell git rev-list --count HEAD) + 410 | bc)
+GITHASH = "$(shell git log -1 HEAD --format=%h)"
+GITREVISION = $(shell expr $(shell git rev-list --count HEAD) - 2406)
 
 PROF	= -pg
 PIPE	= -pipe
@@ -191,9 +191,9 @@ tags:	$(SRC)
 	ctags $(SRC)
 
 git:
-	@echo '#define __GITHASH__ ${GITHASHCMD}' > ./src/common/version/GitRevision.h
-	@echo '#define __GITREVISION__ ${GITREVISIONCMD}' >> ./src/common/version/GitRevision.h
-	@echo 'Git Hash is ${GITHASHCMD}. Revision No. is ${GITREVISIONCMD}'
+	@echo '#define __GITHASH__ ${GITHASH}' > ./src/common/version/GitRevision.h
+	@echo '#define __GITREVISION__ ${GITREVISION}' >> ./src/common/version/GitRevision.h
+	@echo 'Current build revision: ${GITREVISION} (GIT hash: ${GITHASH})'
 
 gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
 
