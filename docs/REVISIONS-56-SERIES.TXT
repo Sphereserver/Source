@@ -22,3 +22,7 @@ Fixed: Movement checks not allowing climb some stairs/mounds.
 
 21-04-2016, Coruja
 Added: New guild functions ISALLY/WEALLIANCE/THEYALLIANCE, it works exactly in the same way as ISENEMY/WEWAR/THEYWAR but used to set alliances instead wars.
+
+29-04-2016, Coruja
+Fixed: COMBAT_ARCHERYCANMOVE combat feature not working correctly.
+Fixed: Invisible (statf_invisible) chars not being revealed when others chars walk over him.

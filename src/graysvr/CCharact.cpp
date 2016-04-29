@@ -3106,10 +3106,10 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 				SysMessage(pszMsg);
 				return NULL;
 			}
-			else if ( pChar->IsStatFlag(STATF_Hidden) )
+			else if ( pChar->IsStatFlag(STATF_Invisible|STATF_Hidden) )
 			{
 				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_HIDING_STUMBLE), pChar->GetName());
-				pChar->Reveal(STATF_Hidden);
+				pChar->Reveal(STATF_Invisible|STATF_Hidden);
 			}
 			else if ( pChar->IsStatFlag(STATF_Sleeping) )
 				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_STEPON_BODY), pChar->GetName());
@@ -3186,15 +3186,8 @@ TRIGRET_TYPE CChar::CheckLocation( bool fStanding )
 
 	if ( !fStanding )
 	{
-		SKILL_TYPE iSkillActive	= Skill_GetActive();
-		if ( g_Cfg.IsSkillFlag(iSkillActive, SKF_IMMOBILE) )
-			Skill_Fail(false);
-		else if ( g_Cfg.IsSkillFlag(iSkillActive, SKF_FIGHT) && g_Cfg.IsSkillFlag(iSkillActive, SKF_RANGED) && !IsSetCombatFlags(COMBAT_ARCHERYCANMOVE) && !IsStatFlag(STATF_ArcherCanMove) )
-		{
-			// Keep timer active holding the swing action until the char stops moving
-			m_atFight.m_War_Swing_State = WAR_SWING_EQUIPPING;
-			SetTimeout(TICK_PER_SEC);
-		}
+		if ( g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_IMMOBILE) )
+			Skill_Fail();
 
 		// This could get REALLY EXPENSIVE !
 		if ( IsTrigUsed(TRIGGER_STEP) )

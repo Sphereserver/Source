@@ -267,29 +267,32 @@ NOTO_TYPE CChar::Noto_CalcFlag(const CChar *pCharViewer, bool bAllowIncog, bool 
 		if ( pMemory )
 			return NOTO_CRIMINAL;
 
-		// Check the guild stuff
-		CItemStone *pMyGuild = Guild_Find(MEMORY_GUILD);
-		if ( pMyGuild )
+		if ( m_pPlayer )
 		{
-			CItemStone *pViewerGuild = pCharViewer->Guild_Find(MEMORY_GUILD);
-			if ( pViewerGuild )
+			// Check the guild stuff
+			CItemStone *pMyGuild = Guild_Find(MEMORY_GUILD);
+			if ( pMyGuild )
 			{
-				if ( (pViewerGuild == pMyGuild) || pMyGuild->IsAlliedWith(pViewerGuild) )
-					return NOTO_GUILD_SAME;
-				if ( pMyGuild->IsAtWarWith(pViewerGuild))
-					return NOTO_GUILD_WAR;
+				CItemStone *pViewerGuild = pCharViewer->Guild_Find(MEMORY_GUILD);
+				if ( pViewerGuild )
+				{
+					if ( (pViewerGuild == pMyGuild) || pMyGuild->IsAlliedWith(pViewerGuild) )
+						return NOTO_GUILD_SAME;
+					if ( pMyGuild->IsAtWarWith(pViewerGuild) )
+						return NOTO_GUILD_WAR;
+				}
 			}
-		}
 
-		// Check the town stuff
-		CItemStone *pMyTown = Guild_Find(MEMORY_TOWN);
-		if ( pMyTown )
-		{
-			CItemStone *pViewerTown = pCharViewer->Guild_Find(MEMORY_TOWN);
-			if ( pViewerTown )
+			// Check the town stuff
+			CItemStone *pMyTown = Guild_Find(MEMORY_TOWN);
+			if ( pMyTown )
 			{
-				if ( pMyTown->IsAtWarWith(pViewerTown))
-					return NOTO_GUILD_WAR;
+				CItemStone *pViewerTown = pCharViewer->Guild_Find(MEMORY_TOWN);
+				if ( pViewerTown )
+				{
+					if ( pMyTown->IsAtWarWith(pViewerTown) )
+						return NOTO_GUILD_WAR;
+				}
 			}
 		}
 	}
@@ -1350,20 +1353,20 @@ cantsteal:
 			return( -SKTRIG_ABORT );
 		}
 	}
-   CItem * pCItem = dynamic_cast <CItem *> (pItem->GetContainer());
-   if ( pCItem )
-   {
-	   if ( pCItem->GetType() == IT_GAME_BOARD )
-	   {
-		   SysMessageDefault( DEFMSG_STEALING_GAMEBOARD );
-		   return( -SKTRIG_ABORT );
-	   }
-	   if ( pCItem->GetType() == IT_EQ_TRADE_WINDOW )
-	   {
-		   SysMessageDefault( DEFMSG_STEALING_TRADE );
-		   return( -SKTRIG_ABORT );
-	   }
-   }
+	CItem * pCItem = dynamic_cast <CItem *> (pItem->GetContainer());
+	if ( pCItem )
+	{
+		if ( pCItem->GetType() == IT_GAME_BOARD )
+		{
+			SysMessageDefault( DEFMSG_STEALING_GAMEBOARD );
+			return( -SKTRIG_ABORT );
+		}
+		if ( pCItem->GetType() == IT_EQ_TRADE_WINDOW )
+		{
+			SysMessageDefault( DEFMSG_STEALING_TRADE );
+			return( -SKTRIG_ABORT );
+		}
+	}
 	CItemCorpse * pCorpse = dynamic_cast <CItemCorpse *> (pItem);
 	if ( pCorpse )
 	{
@@ -2972,7 +2975,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		pArgs.m_iN2 = iTyp;
 		TRIGRET_TYPE tRet = OnTrigger(CTRIG_HitCheck, pCharTarg, &pArgs);
 		if ( tRet == TRIGRET_RET_TRUE )
-			return (WAR_SWING_TYPE)pArgs.m_iN1;
+			return static_cast<WAR_SWING_TYPE>(pArgs.m_iN1);
 		if ( tRet == -1 )
 			return WAR_SWING_INVALID;
 
@@ -3032,7 +3035,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	}
 
 	// Very basic check on possibility to hit
-	if ( IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Freeze|STATF_Stone) || pCharTarg->IsStatFlag(STATF_DEAD|STATF_INVUL|STATF_Stone|STATF_Ridden) )
+	if ( IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Freeze|STATF_Stone) || !pCharTarg->Fight_IsAttackable() )
 		return WAR_SWING_INVALID;
 	if ( pCharTarg->m_pArea && pCharTarg->m_pArea->IsFlag(REGION_FLAG_SAFE) )
 		return WAR_SWING_INVALID;
@@ -3137,6 +3140,12 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			SysMessageDefault(DEFMSG_ITEMUSE_BOW_SHIELD);
 			return WAR_SWING_INVALID;
 		}
+		else if ( !IsSetCombatFlags(COMBAT_ARCHERYCANMOVE) && !IsStatFlag(STATF_ArcherCanMove) )
+		{
+			// Only start swing 1sec after the char stop moving	(TO-DO: add .ini option to customize this delay -> SE:250ms / AOS:500ms / pre-AOS:1000ms)
+			if ( m_pClient && -g_World.GetTimeDiff(m_pClient->m_timeLastEventWalk) < TICK_PER_SEC )
+				return WAR_SWING_EQUIPPING;
+		}
 
 		int	iMinDist = pWeapon ? pWeapon->RangeH() : g_Cfg.m_iArcheryMinDist;
 		int	iMaxDist = pWeapon ? pWeapon->RangeL() : g_Cfg.m_iArcheryMaxDist;
@@ -3149,13 +3158,13 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		{
 			SysMessageDefault(DEFMSG_COMBAT_ARCH_TOOCLOSE);
 			if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
-				return(WAR_SWING_READY);
+				return WAR_SWING_READY;
 			return WAR_SWING_EQUIPPING;
 		}
 		else if ( dist > iMaxDist )
 		{
 			if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
-				return(WAR_SWING_READY);
+				return WAR_SWING_READY;
 			return WAR_SWING_EQUIPPING;
 		}
 		if ( pType )
