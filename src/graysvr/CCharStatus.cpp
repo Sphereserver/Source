@@ -2190,10 +2190,11 @@ bool CChar::IsVerticalSpace( CPointMap ptDest, bool fForceMount )
 	if ( wBlockFlags & CAN_C_WALK )
 		wBlockFlags |= CAN_I_CLIMB;
 
-	CGrayMapBlockState block(wBlockFlags, ptDest.m_z, ptDest.m_z + m_zClimbHeight + GetHeightMount(), ptDest.m_z + m_zClimbHeight + 2, GetHeightMount());
+	height_t iCharHeight = GetHeight();
+	CGrayMapBlockState block(wBlockFlags, ptDest.m_z, ptDest.m_z + m_zClimbHeight + iCharHeight, ptDest.m_z + m_zClimbHeight + 2, iCharHeight);
 	g_World.GetHeightPoint(ptDest, block, true);
 
-	if ( GetHeightMount() + ptDest.m_z + (fForceMount ? 4 : 0) >= block.m_Top.m_z )		// 4 is the mount height
+	if ( iCharHeight + ptDest.m_z + (fForceMount ? 4 : 0) >= block.m_Top.m_z )		// 4 is the mount height
 		return false;
 	return true;
 }
@@ -2247,8 +2248,9 @@ CRegionBase *CChar::CheckValidMove( CPointBase &ptDest, WORD *pwBlockFlags, DIR_
 		WARNWALK(("wBlockFlags (0%x) wCan(0%x)\n", wBlockFlags, wCan));
 	}
 
-	CGrayMapBlockState block(wBlockFlags, ptDest.m_z, ptDest.m_z + m_zClimbHeight + GetHeightMount(), ptDest.m_z + m_zClimbHeight + 3, GetHeightMount());
-	WARNWALK(("\t\tCGrayMapBlockState block( 0%x, %d, %d, %d );ptDest.m_z(%d) m_zClimbHeight(%d)\n", wBlockFlags, ptDest.m_z, ptDest.m_z + m_zClimbHeight + GetHeightMount(), ptDest.m_z + m_zClimbHeight + 2, ptDest.m_z, m_zClimbHeight));
+	height_t iCharHeight = GetHeight();
+	CGrayMapBlockState block(wBlockFlags, ptDest.m_z, ptDest.m_z + m_zClimbHeight + iCharHeight, ptDest.m_z + m_zClimbHeight + 3, iCharHeight);
+	WARNWALK(("\t\tCGrayMapBlockState block( 0%x, %d, %d, %d );ptDest.m_z(%d) m_zClimbHeight(%d)\n", wBlockFlags, ptDest.m_z, ptDest.m_z + m_zClimbHeight + iCharHeight, ptDest.m_z + m_zClimbHeight + 2, ptDest.m_z, m_zClimbHeight));
 
 	if ( !ptDest.IsValidPoint() )
 	{
@@ -2265,7 +2267,7 @@ CRegionBase *CChar::CheckValidMove( CPointBase &ptDest, WORD *pwBlockFlags, DIR_
 		wBlockFlags |= CAN_I_ROOF;	// we are covered by something.
 
 		WARNWALK(("block.m_Top.m_z (%d) > ptDest.m_z (%d) + m_zClimbHeight (%d) + (block.m_Top.m_dwTile (0x%lx) > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT/2 )(%d)\n", block.m_Top.m_z, ptDest.m_z, m_zClimbHeight, block.m_Top.m_dwTile, ptDest.m_z - (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2))));
-		if ( block.m_Top.m_z < block.m_Bottom.m_z + (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? GetHeightMount() : GetHeightMount() / 2)) )
+		if ( block.m_Top.m_z < block.m_Bottom.m_z + (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? iCharHeight : iCharHeight / 2)) )
 			wBlockFlags |= CAN_I_BLOCK;		// we can't fit under this!
 	}
 
@@ -2311,7 +2313,7 @@ CRegionBase *CChar::CheckValidMove( CPointBase &ptDest, WORD *pwBlockFlags, DIR_
 				else
 				{
 					// Stepping on map tile
-					if ( block.m_Bottom.m_z > ptDest.m_z + m_zClimbHeight + 12 )
+					if ( block.m_Bottom.m_z > ptDest.m_z + m_zClimbHeight + iCharHeight )
 						return NULL;
 				}
 			}
@@ -2322,14 +2324,14 @@ CRegionBase *CChar::CheckValidMove( CPointBase &ptDest, WORD *pwBlockFlags, DIR_
 		//WORD wMoveBlock = (wBlockFlags & CAN_I_MOVEMASK) &~ (CAN_I_CLIMB);
 		//WORD wMoveBlock = (wBlockFlags & CAN_I_MOVEMASK) &~ (CAN_I_CLIMB|CAN_I_ROOF);
 		//if ( wMoveBlock &~ wCan )
-		if ( (wBlockFlags & CAN_I_BLOCK) && (!pCharDef->Can(CAN_C_PASSWALLS)) )
+		if ( (wBlockFlags & CAN_I_BLOCK) && !pCharDef->Can(CAN_C_PASSWALLS) )
 			return NULL;
 		if ( block.m_Bottom.m_z >= UO_SIZE_Z )
 			return NULL;
 	}
 
-	WARNWALK(("GetHeightMount() %d  block.m_Top.m_z  %d ptDest.m_z  %d\n", GetHeightMount(), block.m_Top.m_z, ptDest.m_z));
-	if ( (GetHeightMount() + ptDest.m_z >= block.m_Top.m_z) && g_Cfg.m_iMountHeight && !IsPriv(PRIV_GM) && !IsPriv(PRIV_ALLMOVE) )
+	WARNWALK(("iCharHeight %d  block.m_Top.m_z  %d ptDest.m_z  %d\n", iCharHeight, block.m_Top.m_z, ptDest.m_z));
+	if ( (iCharHeight + ptDest.m_z >= block.m_Top.m_z) && g_Cfg.m_iMountHeight && !IsPriv(PRIV_GM) && !IsPriv(PRIV_ALLMOVE) )
 	{
 		SysMessageDefault(DEFMSG_MSG_MOUNT_CEILING);
 		return NULL;
@@ -2347,8 +2349,9 @@ CRegionBase *CChar::CheckValidMove( CPointBase &ptDest, WORD *pwBlockFlags, DIR_
 void CChar::FixClimbHeight()
 {
 	ADDTOCALLSTACK("CChar::FixClimbHeight");
+	height_t iCharHeight = GetHeight();
 	CPointBase pt = GetTopPoint();
-	CGrayMapBlockState block(CAN_I_CLIMB, pt.m_z, pt.m_z + GetHeightMount() + 3, pt.m_z + 2, GetHeightMount());
+	CGrayMapBlockState block(CAN_I_CLIMB, pt.m_z, pt.m_z + iCharHeight + 3, pt.m_z + 2, iCharHeight);
 	g_World.GetHeightPoint(pt, block, true);
 
 	if ( (block.m_Bottom.m_z == pt.m_z) && (block.m_dwBlockFlags & CAN_I_CLIMB) )	// we are standing on stairs
