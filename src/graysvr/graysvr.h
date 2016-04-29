@@ -997,10 +997,11 @@ public:
 	CONNECT_TYPE	m_iConnectType;	// what sort of a connection is this ?
 	CAccount * m_pAccount;		// The account name. we logged in on
 
-	CServTime m_timeLogin;			// World clock of login time. "LASTCONNECTTIME"
-	CServTime m_timeLastEvent;		// Last time we got event from client.
-	CServTime m_timeLastEventWalk;	// Last time we got a walk event from client (only used to handle STATF_Fly char flag)
-	INT64 m_timeNextEventWalk;		// Fastwalk prevention: only allow more walk requests after this timer
+	CServTime m_timeLogin;					// World clock of login time. "LASTCONNECTTIME"
+	CServTime m_timeLastEvent;				// Last time we got event from client.
+	CServTime m_timeLastEventItemPickup;	// Last time we had picked up an item (used by fastloot prevention)
+	CServTime m_timeLastEventWalk;			// Last time we got a walk event from client (only used to handle STATF_Fly char flag)
+	INT64 m_timeNextEventWalk;				// Fastwalk prevention: only allow more walk requests after this timer
 
 	// GM only stuff.
 	CGMPage * m_pGMPage;		// Current GM page we are connected to.
@@ -1572,7 +1573,6 @@ public:
 	char		m_zLastMessage[SCRIPT_MAX_LINE_LEN];	// last sysmessage
 	char		m_zLastObjMessage[SCRIPT_MAX_LINE_LEN];	// last message
 	char		m_zLogin[64];
-	CServTime	m_tNextPickup;
 	CVarDefMap	m_TagDefs;
 	CVarDefMap	m_BaseDefs;		// New Variable storage system
 	typedef std::map<DWORD, std::pair<std::pair<DWORD,DWORD>, CPointMap> > OpenedContainerMap_t;

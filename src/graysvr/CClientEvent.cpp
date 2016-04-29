@@ -188,11 +188,11 @@ void CClient::Event_Item_Pickup(CGrayUID uid, int amount) // Client grabs an ite
 	ADDTOCALLSTACK("CClient::Event_Item_Pickup");
 	EXC_TRY("CClient::Event_Item_Pickup");
 	// Player/client is picking up an item.
-	if ( m_pChar == NULL )
+	if ( !m_pChar )
 		return;
 
 	EXC_SET("Item");
-	CItem	*pItem = uid.ItemFind();
+	CItem *pItem = uid.ItemFind();
 	if ( !pItem || pItem->IsWeird() )
 	{
 		EXC_SET("Item - addObjectRemove(uid)");
@@ -203,19 +203,20 @@ void CClient::Event_Item_Pickup(CGrayUID uid, int amount) // Client grabs an ite
 	}
 
 	EXC_SET("FastLoot");
-	//	fastloot (,emptycontainer) protection
-	if ( m_tNextPickup > m_tNextPickup.GetCurrentTime() )
+	// FastLoot prevention (,emptycontainer)
+	CServTime CurTime = g_World.GetCurrentTime();
+	if ( CurTime < m_timeLastEventItemPickup + 5 )
 	{
 		EXC_SET("FastLoot - addItemDragCancel(0)");
 		new PacketDragCancel(this, PacketDragCancel::CannotLift);
 		return;
 	}
-	m_tNextPickup = m_tNextPickup.GetCurrentTime() + 3;
+	m_timeLastEventItemPickup = CurTime;
 
-	EXC_SET("origin");
+	EXC_SET("Origin");
 	// Where is the item coming from ? (just in case we have to toss it back)
-	CObjBase * pObjParent = dynamic_cast <CObjBase *>(pItem->GetParent());
-	m_Targ_PrvUID = ( pObjParent ) ? (DWORD) pObjParent->GetUID() : UID_CLEAR;
+	CObjBase *pObjParent = dynamic_cast<CObjBase *>(pItem->GetParent());
+	m_Targ_PrvUID = pObjParent ? pObjParent->GetUID() : UID_CLEAR;
 	m_Targ_p = pItem->GetUnkPoint();
 
 	EXC_SET("ItemPickup");
@@ -226,8 +227,6 @@ void CClient::Event_Item_Pickup(CGrayUID uid, int amount) // Client grabs an ite
 		new PacketDragCancel(this, PacketDragCancel::CannotLift);
 		return;
 	}
-	else if ( amount > 1 )
-		m_tNextPickup = m_tNextPickup + 2;	// +100 msec if amount should slow down the client
 
 	EXC_SET("TargMode");
 	SetTargMode(CLIMODE_DRAG);
@@ -1912,7 +1911,7 @@ void CClient::Event_SetName( CGrayUID uid, const char * pszCharName )
 	if ( !pChar || !m_pChar )
 		return;
 
-   if ( Str_CheckName(pszCharName) || !strlen(pszCharName) )
+	if ( Str_CheckName(pszCharName) || !strlen(pszCharName) )
 		return;
 
 	// Do we have the right to do this ?
@@ -2217,7 +2216,7 @@ void CClient::Event_Target(DWORD context, CGrayUID uid, CPointMap pt, BYTE flags
 
 		// Player stuff.
 		case CLIMODE_TARG_SKILL:			OnTarg_Skill( pTarget ); break;
-		case CLIMODE_TARG_SKILL_MAGERY:     OnTarg_Skill_Magery( pTarget, pt ); break;
+		case CLIMODE_TARG_SKILL_MAGERY:		OnTarg_Skill_Magery( pTarget, pt ); break;
 		case CLIMODE_TARG_SKILL_HERD_DEST:  OnTarg_Skill_Herd_Dest( pTarget, pt ); break;
 		case CLIMODE_TARG_SKILL_POISON:		OnTarg_Skill_Poison( pTarget ); break;
 		case CLIMODE_TARG_SKILL_PROVOKE:	OnTarg_Skill_Provoke( pTarget ); break;

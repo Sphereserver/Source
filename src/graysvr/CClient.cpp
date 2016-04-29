@@ -33,6 +33,7 @@ CClient::CClient(NetState* state)
 
 	m_timeLogin.Init();
 	m_timeLastEvent = CServTime::GetCurrentTime();
+	m_timeLastEventItemPickup = CServTime::GetCurrentTime();
 	m_timeLastEventWalk = CServTime::GetCurrentTime();
 	m_timeNextEventWalk = 0;
 
@@ -55,7 +56,6 @@ CClient::CClient(NetState* state)
 
 	m_zLastMessage[0] = 0;
 	m_zLastObjMessage[0] = 0;
-	m_tNextPickup.Init();
 
 	m_BfAntiCheat.lastvalue = m_BfAntiCheat.count = 0x0;
 	m_ScreenSize.x = m_ScreenSize.y = 0x0;
