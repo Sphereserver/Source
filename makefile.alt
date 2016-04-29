@@ -48,7 +48,7 @@ NO	= -fno-rtti -fno-exceptions
 EX	= -fexceptions -fnon-call-exceptions
 SPECIAL = $(EX) $(DEBUG)
 
-GITHASH = "$(shell git log -1 HEAD --format=%h)"
+GITHASH = $(shell git log -1 HEAD --format=%h)
 GITREVISION = $(shell expr $(shell git rev-list --count HEAD) - 2406)
 
 PROF	= -pg
@@ -191,7 +191,7 @@ tags:	$(SRC)
 	ctags $(SRC)
 
 git:
-	@echo '#define __GITHASH__ ${GITHASH}' > ./src/common/version/GitRevision.h
+	@echo '#define __GITHASH__ "${GITHASH}"' > ./src/common/version/GitRevision.h
 	@echo '#define __GITREVISION__ ${GITREVISION}' >> ./src/common/version/GitRevision.h
 	@echo 'Current build revision: ${GITREVISION} (GIT hash: ${GITHASH})'
 

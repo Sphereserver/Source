@@ -39,7 +39,7 @@ SPECIAL = $(EX) $(STRICT) $(DEBUG)
 PROF	= -pg
 PIPE	= -pipe
 
-GITHASH = "$(shell git log -1 HEAD --format=%h)"
+GITHASH = $(shell git log -1 HEAD --format=%h)
 GITREVISION = $(shell expr $(shell git rev-list --count HEAD) - 2406)
 
 SRC	:= 	./src/graysvr/CAccount.cpp \
@@ -177,7 +177,7 @@ tags:	$(SRC)
 	ctags $(SRC)
 
 git:
-	@echo '#define __GITHASH__ ${GITHASH}' > ./src/common/version/GitRevision.h
+	@echo '#define __GITHASH__ "${GITHASH}"' > ./src/common/version/GitRevision.h
 	@echo '#define __GITREVISION__ ${GITREVISION}' >> ./src/common/version/GitRevision.h
 	@echo 'Current build revision: ${GITREVISION} (GIT hash: ${GITHASH})'
 
