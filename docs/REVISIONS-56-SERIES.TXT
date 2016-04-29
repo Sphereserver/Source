@@ -26,3 +26,4 @@ Added: New guild functions ISALLY/WEALLIANCE/THEYALLIANCE, it works exactly in t
 29-04-2016, Coruja
 Fixed: COMBAT_ARCHERYCANMOVE combat feature not working correctly.
 Fixed: Invisible (statf_invisible) chars not being revealed when others chars walk over him.
+Fixed: Vendor buy menu showing wrong char 'gold available' value.

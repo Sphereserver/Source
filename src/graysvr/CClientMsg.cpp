@@ -9,11 +9,11 @@
 // Original code found at: http://www.cse.yorku.ca/~oz/hash.html
 unsigned long HashString(LPCTSTR str, size_t length)
 {
-    unsigned long hash = 5381;
-    for (size_t i = 0; i < length; i++)
-	    hash = ((hash << 5) + hash) + *str++;
+	unsigned long hash = 5381;
+	for ( size_t i = 0; i < length; i++ )
+		hash = ((hash << 5) + hash) + *str++;
 
-    return hash;
+	return hash;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -442,8 +442,7 @@ void CClient::addContents( const CItemContainer * pContainer, bool fCorpseEquip,
 void CClient::addOpenGump( const CObjBase * pContainer, GUMP_TYPE gump )
 {
 	ADDTOCALLSTACK("CClient::addOpenGump");
-	// NOTE: if pContainer has not already been sent to the client
-	//  this will crash client.
+	// NOTE: if pContainer has not already been sent to the client this will crash client
 	new PacketContainerOpen(this, pContainer, gump);
 }
 
@@ -488,10 +487,7 @@ void CClient::LogOpenedContainer(const CItemContainer* pContainer) // record a c
 	else
 		dwTopContainerUID = dwTopMostContainerUID;
 
-	m_openedContainers[pContainer->GetUID().GetPrivateUID()] = std::make_pair(
-																std::make_pair( dwTopContainerUID, dwTopMostContainerUID ),
-																pTopMostContainer->GetTopPoint()
-															    );
+	m_openedContainers[pContainer->GetUID().GetPrivateUID()] = std::make_pair(std::make_pair(dwTopContainerUID, dwTopMostContainerUID), pTopMostContainer->GetTopPoint());
 }
 
 void CClient::addSeason(SEASON_TYPE season)
@@ -785,7 +781,7 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 	{
 		case 3:	// Extended localized message (with affixed ASCII text)
 		{
-            TCHAR * ppArgs[256];
+			TCHAR *ppArgs[256];
 			size_t iQty = Str_ParseCmds(const_cast<TCHAR *>(m_BarkBuffer.GetPtr()), ppArgs, COUNTOF(ppArgs), "," );
 			int iClilocId = Exp_GetVal( ppArgs[0] );
 			int iAffixType = Exp_GetVal( ppArgs[1] );
@@ -803,7 +799,7 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 
 		case 2:	// Localized
 		{
-            TCHAR * ppArgs[256];
+			TCHAR *ppArgs[256];
 			size_t iQty = Str_ParseCmds(const_cast<TCHAR *>(m_BarkBuffer.GetPtr()), ppArgs, COUNTOF(ppArgs), "," );
 			int iClilocId = Exp_GetVal( ppArgs[0] );
 			CGString CArgs;
@@ -871,7 +867,7 @@ void CClient::addObjMessage( LPCTSTR pMsg, const CObjBaseTemplate * pSrc, HUE_TY
 	if ( !pMsg )
 		return;
 
-	if ( IsSetOF(OF_Flood_Protection) && ( GetPrivLevel() <= PLEVEL_Player )  )
+	if ( IsSetOF(OF_Flood_Protection) && (GetPrivLevel() <= PLEVEL_Player) )
 	{
 		if ( !strcmpi(pMsg, m_zLastObjMessage) )
 			return;
@@ -1328,7 +1324,7 @@ void CClient::addPlayerStart( CChar * pChar )
 	CPointMap pt = m_pChar->GetTopPoint();
 	CSector *pSector = pt.GetSector();
 
-	CItem * pItemChange = m_pChar->LayerFind(LAYER_FLAG_ClientLinger);
+	CItem *pItemChange = m_pChar->LayerFind(LAYER_FLAG_ClientLinger);
 	if ( pItemChange != NULL )
 		pItemChange->Delete();
 
@@ -1338,11 +1334,11 @@ void CClient::addPlayerStart( CChar * pChar )
 	ClearTargMode();	// clear death menu mode. etc. ready to walk about. cancel any previous modes
 	m_Env.SetInvalid();
 
-/*
+	/*
 	CExtData ExtData;
 	ExtData.Party_Enable.m_state = 1;
-	addExtData( EXTDATA_Party_Enable, &ExtData, sizeof(ExtData.Party_Enable));
-*/
+	addExtData(EXTDATA_Party_Enable, &ExtData, sizeof(ExtData.Party_Enable));
+	*/
 
 	new PacketPlayerStart(this);
 	addMapDiff();
@@ -1500,7 +1496,7 @@ void CClient::SetTargMode( CLIMODE_TYPE targmode, LPCTSTR pPrompt, int iTimeout 
 			if ( IsTrigUsed(TRIGGER_TARGON_CANCEL) )
 			{
 				CScriptTriggerArgs Args;
-				Args.m_s1 =  m_Targ_Text;
+				Args.m_s1 = m_Targ_Text;
 				if ( GetChar()->OnTrigger( CTRIG_Targon_Cancel, m_pChar, &Args ) == TRIGRET_RET_TRUE )
 					bSuppressCancelMessage = true;
 			}
@@ -2169,6 +2165,7 @@ bool CClient::addShopMenuBuy( CChar * pVendor )
 	if ( count )
 	{
 		addOpenGump(pVendor, GUMP_VENDOR_RECT);
+		new PacketCharacterStatus(this, m_pChar);		// make sure the gump is showing updated char 'gold avaible' value
 		return true;
 	}
 
@@ -3710,14 +3707,14 @@ BYTE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 			return( PacketLoginError::MaxClients );
 		}
 	}
-	if ( pAccount->GetPrivLevel() < PLEVEL_GM &&
-		g_Serv.StatGet(SERV_STAT_CLIENTS) > g_Cfg.m_iClientsMax  )
+	if ( pAccount->GetPrivLevel() < PLEVEL_GM && g_Serv.StatGet(SERV_STAT_CLIENTS) > g_Cfg.m_iClientsMax )
 	{
 		// Give them a polite goodbye.
 		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s', maximum clients reached.\n", GetSocketID(), pAccount->GetName());
-		sMsg = g_Cfg.GetDefaultMsg( DEFMSG_MSG_SERV_FULL );
-		return( PacketLoginError::MaxClients );
+		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_FULL);
+		return PacketLoginError::MaxClients;
 	}
+
 	//	Do the scripts allow to login this account?
 	pAccount->m_Last_IP = GetPeer();
 	CScriptTriggerArgs Args;
