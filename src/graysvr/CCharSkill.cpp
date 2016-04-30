@@ -450,11 +450,15 @@ SKILL_TYPE CChar::Skill_GetMagicRandom(unsigned short iVal)
 bool CChar::Skill_CanUse( SKILL_TYPE skill )
 {
 	ADDTOCALLSTACK("CChar::Skill_CanUse");
-	if ( g_Cfg.IsSkillFlag( skill, SKF_DISABLED ) )
+	if ( g_Cfg.IsSkillFlag(skill, SKF_DISABLED) )	// skill disabled
 	{
 		SysMessageDefault(DEFMSG_SKILL_NOSKILL);
 		return false;
 	}
+
+	if ( Skill_GetActive() == NPCACT_RIDDEN )		// ridden mounts can't use skills
+		return false;
+
 	// Expansion checks? different flags for NPCs/Players?
 	return true;
 }
@@ -3426,7 +3430,7 @@ int CChar::Skill_Act_Throwing( SKTRIG_TYPE stage )
 	}
 
 	CVarDefCont * pRock = GetDefKey("THROWOBJ",true);
-    if ( pRock )
+	if ( pRock )
 	{
 		LPCTSTR t_Str = pRock->GetValStr();
 		RESOURCE_ID_BASE rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str ));

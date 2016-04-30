@@ -907,15 +907,7 @@ int CWorldThread::FixObj( CObjBase * pObj, DWORD dwUID )
 		}
 
 		ReportGarbageCollection(pObj, iResultCode);
-
-		if ( iResultCode == 0x1203 || iResultCode == 0x1103 )
-		{
-			CChar * pChar = dynamic_cast <CChar*>(pObj);
-			if ( pChar )
-				pChar->Skill_Start( NPCACT_RIDDEN );
-		}
-		else
-			pObj->Delete();
+		pObj->Delete();
 	}
 	catch ( const CGrayError& e )	// catch all
 	{
@@ -2246,7 +2238,7 @@ void CWorld::Speak( const CObjBaseTemplate * pSrc, LPCTSTR pszText, HUE_TYPE wHu
 		if (*myName)
 			pClient->addBarkParse( pszSpeak, pSrc, wHue, mode, font, false, myName );
 		else
-            pClient->addBarkParse( pszSpeak, pSrc, wHue, mode, font );
+			pClient->addBarkParse( pszSpeak, pSrc, wHue, mode, font );
 	}
 }
 
