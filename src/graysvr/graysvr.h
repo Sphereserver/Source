@@ -366,9 +366,9 @@ public:
 	void r_Write( CScript & s ) const;
 	bool r_LoadVal( CScript & s );
 
-	CGMPage * GetNext() const
+	CGMPage *GetNext() const
 	{
-		return( STATIC_CAST <CGMPage*>( CGObListRec::GetNext()));
+		return static_cast<CGMPage *>(CGObListRec::GetNext());
 	}
 };
 
@@ -593,9 +593,9 @@ private:
 	CChat& operator=(const CChat& other);
 
 public:
-	CChatChannel * GetFirstChannel() const
+	CChatChannel *GetFirstChannel() const
 	{
-		return STATIC_CAST <CChatChannel *>(m_Channels.GetHead());
+		return static_cast<CChatChannel *>(m_Channels.GetHead());
 	}
 
 	void EventMsg( CClient * pClient, const NCHAR * pszText, int len, CLanguageID lang ); // Text from a client
@@ -981,13 +981,6 @@ private:
 		DWORD y;
 	} m_ScreenSize;
 
-	// OxBF - 0x24 AntiCheat
-	struct __bfanticheat
-	{
-		BYTE lastvalue;
-		BYTE count;
-	} m_BfAntiCheat;
-
 	// Promptconsole
 	CLIMODE_TYPE m_Prompt_Mode;	// type of prompt
 	CGrayUID m_Prompt_Uid;		// context uid
@@ -1059,12 +1052,6 @@ public:
 			int	m_iCmd;
 			bool m_fAllPets;
 		} m_tmPetCmd;	// which pet command am i targetting ?
-
-		// CLIMODE_TARG_CHAR_BANK
-		struct
-		{
-			LAYER_TYPE m_Layer;	// gm command targetting what layer ?
-		} m_tmCharBank;
 
 		// CLIMODE_TARG_TILE
 		// CLIMODE_TARG_UNEXTRACT
@@ -1250,9 +1237,9 @@ private:
 public:
 	void CharDisconnect();
 
-	CClient* GetNext() const
+	CClient *GetNext() const
 	{
-		return( STATIC_CAST <CClient*>( CGObListRec::GetNext()));
+		return static_cast<CClient *>(CGObListRec::GetNext());
 	}
 
 	virtual bool r_Verb( CScript & s, CTextConsole * pSrc ); // Execute script type command on me
@@ -1651,7 +1638,6 @@ public:
 	CTextConsole * m_fResyncRequested;		// A resync pause has been requested by this source.
 
 	CGSocket m_SocketMain;	// This is the incoming monitor socket.(might be multiple ports?)
-	CGSocket m_SocketGod;	// This is for god clients.
 
 	// admin console.
 	int m_iAdminClients;		// how many of my clients are admin consoles ?
@@ -1752,7 +1738,6 @@ protected:
 //////////////////////////////////////////////////////////////
 
 extern LPCTSTR g_szServerDescription;
-extern int g_szServerBuild;
 extern LPCTSTR const g_Stat_Name[STAT_QTY];
 extern CGStringList g_AutoComplete;
 

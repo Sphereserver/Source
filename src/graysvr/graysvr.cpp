@@ -362,8 +362,6 @@ LPCTSTR const g_Stat_Name[STAT_QTY] =	// not sorted obviously.
 
 LPCTSTR g_szServerDescription =	GRAY_TITLE " Version " GRAY_VERSION " " GRAY_VER_FILEOS_STR	" by www.spherecommunity.net";
 
-int g_szServerBuild = 0;
-
 size_t CObjBase::sm_iCount = 0;	// UID table.
 LONGLONG llTimeProfileFrequency = 1000;	// time profiler
 

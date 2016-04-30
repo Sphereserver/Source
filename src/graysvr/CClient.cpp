@@ -57,7 +57,6 @@ CClient::CClient(NetState* state)
 	m_zLastMessage[0] = 0;
 	m_zLastObjMessage[0] = 0;
 
-	m_BfAntiCheat.lastvalue = m_BfAntiCheat.count = 0x0;
 	m_ScreenSize.x = m_ScreenSize.y = 0x0;
 	m_pPopupPacket = NULL;
 	m_pHouseDesign = NULL;
@@ -948,19 +947,21 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			break;
 		case CV_BADSPAWN:
 			{
-				//	Loop the world searching for bad spawns
+				// Loop the world searching for bad spawns
 				bool fFound = false;
 				for ( int m = 0; m < 256 && !fFound; m++ )
 				{
-					if ( !g_MapList.m_maps[m] ) continue;
+					if ( !g_MapList.m_maps[m] )
+						continue;
 
 					for ( int d = 0; d < g_MapList.GetSectorQty(m) && !fFound; d++ )
 					{
-						CSector	*pSector = g_World.GetSector(m, d);
-						if ( !pSector ) continue;
+						CSector *pSector = g_World.GetSector(m, d);
+						if ( !pSector )
+							continue;
 
-						CItem	*pNext;
-						CItem	*pItem = STATIC_CAST <CItem*>(pSector->m_Items_Inert.GetHead());
+						CItem *pNext;
+						CItem *pItem = static_cast<CItem *>(pSector->m_Items_Inert.GetHead());
 						for ( ; pItem != NULL && !fFound; pItem = pNext )
 						{
 							pNext = pItem->GetNext();
@@ -968,23 +969,23 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 							if ( pItem->IsType(IT_SPAWN_ITEM) || pItem->IsType(IT_SPAWN_CHAR) )
 							{
 								CItemSpawn *pSpawn = static_cast<CItemSpawn*>(pItem);
-								CResourceDef	*pDef = pSpawn->FixDef();
+								CResourceDef *pDef = pSpawn->FixDef();
 								if ( !pDef )
 								{
-									RESOURCE_ID_BASE	rid = ( pItem->IsType(IT_SPAWN_ITEM) ? pItem->m_itSpawnItem.m_ItemID : pItem->m_itSpawnChar.m_CharID);
+									RESOURCE_ID_BASE rid = pItem->IsType(IT_SPAWN_ITEM) ? pItem->m_itSpawnItem.m_ItemID : pItem->m_itSpawnChar.m_CharID;
 
-									CPointMap	pt = pItem->GetTopPoint();
+									CPointMap pt = pItem->GetTopPoint();
 									m_pChar->Spell_Teleport(pt, true, false);
 									m_pChar->m_Act_Targ = pItem->GetUID();
-									SysMessagef("Bad spawn (0%lx, id=%s). Set as ACT", (DWORD)pItem->GetUID(), g_Cfg.ResourceGetName(rid));
+									SysMessagef("Bad spawn (0%lx, id=%s). Set as ACT", static_cast<DWORD>(pItem->GetUID()), g_Cfg.ResourceGetName(rid));
 									fFound = true;
 								}
 							}
 						}
 					}
 				}
-				if ( ! fFound )
-					SysMessage(g_Cfg.GetDefaultMsg( DEFMSG_NO_BAD_SPAWNS ));
+				if ( !fFound )
+					SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NO_BAD_SPAWNS));
 			}
 			break;
 		case CV_BANKSELF: // open my own bank
