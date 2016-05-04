@@ -456,7 +456,7 @@ bool CChar::Skill_CanUse( SKILL_TYPE skill )
 		return false;
 	}
 
-	if ( Skill_GetActive() == NPCACT_RIDDEN )		// ridden mounts can't use skills
+	if ( IsStatFlag(STATF_Ridden) )		// ridden mounts can't use skills
 		return false;
 
 	// Expansion checks? different flags for NPCs/Players?

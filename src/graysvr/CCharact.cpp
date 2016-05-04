@@ -2210,35 +2210,32 @@ void CChar::Speak( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE
 }
 
 // Convert me into a figurine
-CItem * CChar::Make_Figurine( CGrayUID uidOwner, ITEMID_TYPE id )
+CItem *CChar::Make_Figurine( CGrayUID uidOwner, ITEMID_TYPE id )
 {
 	ADDTOCALLSTACK("CChar::Make_Figurine");
-	if ( IsDisconnected() || m_pPlayer )
+	if ( !m_pNPC || IsDisconnected() )
 		return NULL;
 
-	CCharBase* pCharDef = Char_GetDef();
-
-	// turn creature into a figurine.
-	CItem * pItem = CItem::CreateScript( ( id == ITEMID_NOTHING ) ? pCharDef->m_trackID : id, this );
+	CCharBase *pCharDef = Char_GetDef();
+	CItem *pItem = CItem::CreateScript((id == ITEMID_NOTHING) ? pCharDef->m_trackID : id, this);
 	if ( !pItem )
 		return NULL;
 
 	pItem->SetType(IT_FIGURINE);
 	pItem->SetName(GetName());
 	pItem->SetHue(GetHue());
-	pItem->m_itFigurine.m_ID = GetID();	// Base type of creature.
+	pItem->m_itFigurine.m_ID = GetID();
 	pItem->m_itFigurine.m_UID = GetUID();
 	pItem->m_uidLink = uidOwner;
 
 	if ( IsStatFlag(STATF_Insubstantial) )
 		pItem->SetAttr(ATTR_INVIS);
 
-	SoundChar(CRESND_RAND1);	// Horse winny
-	StatFlag_Set(STATF_Ridden);
+	SoundChar(CRESND_RAND1);	// horse winny
 	Skill_Start(NPCACT_RIDDEN);
+	StatFlag_Set(STATF_Ridden);
 	SetDisconnected();
 	m_atRidden.m_FigurineUID = pItem->GetUID();
-
 	return pItem;
 }
 
