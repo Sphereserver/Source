@@ -843,26 +843,29 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 	
 	sm_ContSize[] =
 	{
-		{ GUMP_RESERVED, 40, 50, 100, 100 },		// default.
-		{ GUMP_CORPSE, 20, 85, 80, 185 },
-		{ GUMP_PACK, 44, 65, 142, 150 },			// Open backpack
-		{ GUMP_BAG, 29, 34, 93, 119 },				// Leather Bag
-		{ GUMP_BARREL, 33, 36, 98, 139 },			// Barrel
-		{ GUMP_BASKET_SQ, 19, 47, 138, 114 },		// Square picknick Basket
-		{ GUMP_BOX_WOOD, 16, 51, 140, 115 },		// small wood box with a lock
-		{ GUMP_BASKET_RO, 33, 36,  98, 134 },		// Round Basket
-		{ GUMP_CHEST_GO_SI, 18, 105, 118, 169 },	// Gold and Silver Chest.
-		{ GUMP_BOX_WOOD_OR, 16, 51, 140, 115 },		// Small wood box (ornate)(no lock)
-		{ GUMP_CRATE, 20, 10, 126, 91 },			// Wood Crate
-		{ GUMP_DRAWER_DK, 16, 17, 110, 85 },
-		{ GUMP_CHEST_WO_GO, 18, 105, 118, 169 },	// Wood with gold trim.
-		{ GUMP_CHEST_SI, 18, 105, 118, 169 },		// silver chest.
-		{ GUMP_BOX_GO_LO, 16, 51, 140, 115 },		// Gold/Brass box with a lock.
-		{ GUMP_SHIP_HOLD, 46, 74, 152, 175 },
-		{ GUMP_BOOK_SHELF, 76, 12, 96, 59 },
-		{ GUMP_CABINET_DK, 24, 96, 91, 143 },
-		{ GUMP_CABINET_LT, 24, 96, 91, 143 },
-		{ GUMP_DRAWER_LT, 16, 17, 110, 85 },
+		{ GUMP_RESERVED, 0, 0, 200, 200 },			// default
+		{ GUMP_SCROLL, 30, 30, 240, 140 },
+		{ GUMP_CORPSE, 20, 85, 104, 111 },
+		{ GUMP_BACKPACK, 44, 65, 142, 94 },
+		{ GUMP_BAG, 29, 34, 108, 94 },
+		{ GUMP_BARREL, 33, 36, 109, 112 },
+		{ GUMP_BASKET_SQUARE, 19, 47, 163, 76 },
+		{ GUMP_BOX_WOOD, 16, 38, 136, 87 },
+		{ GUMP_BASKET_ROUND, 35, 38, 110, 78 },
+		{ GUMP_CHEST_METAL_GOLD, 18, 105, 144, 73 },
+		{ GUMP_BOX_WOOD_ORNATE, 16, 51, 168, 73 },
+		{ GUMP_CRATE, 20, 10, 150, 90 },
+		{ GUMP_LEATHER, 16, 10, 132, 128 },
+		{ GUMP_DRAWER_DARK, 16, 10, 138, 84 },
+		{ GUMP_CHEST_WOOD, 18, 105, 144, 73 },
+		{ GUMP_CHEST_METAL, 18, 105, 144, 73 },
+		{ GUMP_BOX_METAL, 16, 51, 168, 73 },
+		{ GUMP_SHIP_HATCH, 46, 74, 150, 110 },
+		{ GUMP_BOOK_SHELF, 76, 12, 64, 56 },
+		{ GUMP_CABINET_DARK, 24, 96, 172, 56 },
+		{ GUMP_CABINET_LIGHT, 24, 96, 172, 56 },
+		{ GUMP_DRAWER_LIGHT, 16, 10, 138, 84 },
+		{ GUMP_BULLETIN_BOARD, 0, 0, 110, 62 },
 		{ GUMP_GIFT_BOX, 35, 10, 155, 85 },
 		{ GUMP_ARMOIRE_RED, 10, 10, 150, 95 },
 		{ GUMP_ARMOIRE_MAPLE, 10, 10, 150, 95 },
@@ -880,8 +883,9 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		{ GUMP_GIFT_BOX_ANGEL, 21, 51, 140, 100 },
 		{ GUMP_HEART_SHAPED, 56, 30, 102, 74 },
 		{ GUMP_SECURE_TRADE, 1, 1, 66, 26 },
-		{ GUMP_GAME_BOARD,	 4, 10, 220, 185 },		// Chess or checker board.
-		{ GUMP_GAME_BACKGAM, 4, 10, 220, 185 },
+		{ GUMP_BOARD_CHECKER, 0, 0, 282, 230 },
+		{ GUMP_BOARD_BACKGAMMON, 0, 0, 282, 210 },
+		{ GUMP_PLAGUE_BEAST, 60, 33, 400, 411 }
 	};
 
 	// ??? pItemDef->m_ttContainer.m_dwMinXY to m_dwMaxXY

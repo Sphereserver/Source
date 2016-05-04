@@ -2071,53 +2071,54 @@ enum LIGHT_PATTERN	// What pattern (m_light_pattern) does the light source (CAN_
 
 enum GUMP_TYPE	// The gumps. (most of these are not useful to the server.)
 {
-	GUMP_NONE				= 0,
-	GUMP_RESERVED			= 1,
-
-	GUMP_CORPSE				= 0x09,
-	GUMP_VENDOR_RECT		= 0x30,	// Big blue rectangle for vendor mask.
-	GUMP_PACK				= 0x3c,	// Open backpack
-	GUMP_BAG				= 0x3D,	// Leather Bag
-	GUMP_BARREL				= 0x3E,	// Barrel
-	GUMP_BASKET_SQ			= 0x3F,	// Square picknick Basket
-	GUMP_BOX_WOOD			= 0x40,	// Small wood box with a lock
-	GUMP_BASKET_RO			= 0x41,	// Round Basket
-	GUMP_CHEST_GO_SI		= 0x42,	// Gold and Silver Chest.
-	GUMP_BOX_WOOD_OR		= 0x43,	// Small wood box (ornate)(no lock)
-	GUMP_CRATE				= 0x44,	// Wood Crate
-	GUMP_DRAWER_DK			= 0x48,
-	GUMP_CHEST_WO_GO		= 0x49,	// Wood with gold trim
-	GUMP_CHEST_SI			= 0x4a,	// Silver chest
-	GUMP_BOX_GO_LO			= 0x4b,	// Gold/Brass box with a lock
-	GUMP_SHIP_HOLD			= 0x4c,
+	GUMP_NONE				= 0x0,
+	GUMP_RESERVED			= 0x1,
+	GUMP_SCROLL				= 0x7,
+	GUMP_CORPSE				= 0x9,
+	GUMP_VENDOR_RECT		= 0x30,
+	GUMP_BACKPACK			= 0x3c,
+	GUMP_BAG				= 0x3d,
+	GUMP_BARREL				= 0x3e,
+	GUMP_BASKET_SQUARE		= 0x3f,
+	GUMP_BOX_WOOD			= 0x40,
+	GUMP_BASKET_ROUND		= 0x41,
+	GUMP_CHEST_METAL_GOLD	= 0x42,
+	GUMP_BOX_WOOD_ORNATE	= 0x43,
+	GUMP_CRATE				= 0x44,
+	GUMP_LEATHER			= 0x47,
+	GUMP_DRAWER_DARK		= 0x48,
+	GUMP_CHEST_WOOD			= 0x49,
+	GUMP_CHEST_METAL		= 0x4a,
+	GUMP_BOX_METAL			= 0x4b,
+	GUMP_SHIP_HATCH			= 0x4c,
 	GUMP_BOOK_SHELF			= 0x4d,
-	GUMP_CABINET_DK			= 0x4e,
-	GUMP_CABINET_LT			= 0x4f,
-	GUMP_DRAWER_LT			= 0x51,
+	GUMP_CABINET_DARK		= 0x4e,
+	GUMP_CABINET_LIGHT		= 0x4f,
+	GUMP_DRAWER_LIGHT		= 0x51,
+	GUMP_BULLETIN_BOARD		= 0x52,
 	GUMP_GIFT_BOX			= 0x102,
 	GUMP_ARMOIRE_RED		= 0x105,
 	GUMP_ARMOIRE_MAPLE		= 0x106,
 	GUMP_ARMOIRE_CHERRY		= 0x107,
 	GUMP_BASKET_TALL		= 0x108,
 	GUMP_CHEST_WOOD_PLAIN	= 0x109,
-	GUMP_CHEST_WOOD_GILDED	= 0x10A,
-	GUMP_CHEST_WOOD_ORNATE	= 0x10B,
-	GUMP_TALL_CABINET		= 0x10C,
-	GUMP_CHEST_WOOD_FINISH	= 0x10D,
-	GUMP_GIFT_BOX_CUBE		= 0x11B,
-	GUMP_GIFT_BOX_CILINDER	= 0x11C,
-	GUMP_GIFT_BOX_OCTOGON	= 0x11D,
-	GUMP_GIFT_BOX_RECTANGLE	= 0x11E,
-	GUMP_GIFT_BOX_ANGEL		= 0x11F,
+	GUMP_CHEST_WOOD_GILDED	= 0x10a,
+	GUMP_CHEST_WOOD_ORNATE	= 0x10b,
+	GUMP_TALL_CABINET		= 0x10c,
+	GUMP_CHEST_WOOD_FINISH	= 0x10d,
+	GUMP_GIFT_BOX_CUBE		= 0x11b,
+	GUMP_GIFT_BOX_CILINDER	= 0x11c,
+	GUMP_GIFT_BOX_OCTOGON	= 0x11d,
+	GUMP_GIFT_BOX_RECTANGLE	= 0x11e,
+	GUMP_GIFT_BOX_ANGEL		= 0x11f,
 	GUMP_HEART_SHAPED		= 0x120,
-
 	GUMP_SECURE_TRADE		= 0x866,
-	GUMP_VENDOR_1			= 0x870,
-	GUMP_GAME_BOARD			= 0x91a,	// Chess or checker board.
-	GUMP_GAME_BACKGAM		= 0x92e,	// backgammon board.
+	GUMP_BOARD_CHECKER		= 0x91a,
+	GUMP_BOARD_BACKGAMMON	= 0x92e,
 	GUMP_MAP_2_NORTH		= 0x139d,
+	GUMP_PLAGUE_BEAST		= 0x2a63,
 	GUMP_QTY				= 0xfffe,
-	GUMP_OPEN_SPELLBOOK		= 0xFFFF
+	GUMP_OPEN_SPELLBOOK		= 0xffff
 };
 
 typedef WORD		TERRAIN_TYPE;
