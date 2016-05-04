@@ -738,7 +738,7 @@ void CItemContainer::Trade_UpdateGold( DWORD platinum, DWORD gold )
 		return;
 
 	bool bUpdateChar1 = false;
-	bool bUpdateChar2 = pChar2->GetClient()->GetNetState()->isClientVersion(MINCLIVER_NEWSECURETRADE);
+	bool bUpdateChar2 = pChar2->GetClient()->GetNetState()->isClientVersion(MINCLIVER_TOL);
 
 	// To prevent cheating, check if the char really have these gold/platinum values
 	INT64 iMaxValue = pChar1->m_virtualGold;

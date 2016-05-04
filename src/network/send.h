@@ -1369,7 +1369,7 @@ public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
-		return state->isClientVersion(MINCLIVER_TOOLTIP);
+		return state->isClientVersion(MINCLIVER_AOS);
 	}
 };
 
@@ -1484,7 +1484,7 @@ public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
-	    return state->isClientVersion(MINCLIVER_SPELLBOOK);
+	    return state->isClientVersion(MINCLIVER_AOS);
 	}
 };
 
@@ -1516,7 +1516,7 @@ public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
-		return state->isClientVersion(MINCLIVER_CUSTOMMULTI) || state->isClientKR() || state->isClientEnhanced();
+		return state->isClientVersion(MINCLIVER_AOS) || state->isClientKR() || state->isClientEnhanced();
 	}
 };
 
@@ -1548,7 +1548,7 @@ public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
-		return state->isClientVersion(MINCLIVER_DAMAGE);
+		return state->isClientVersion(MINCLIVER_AOS);
 	}
 };
 
@@ -1632,7 +1632,7 @@ public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
-		return state->isClientVersion(MINCLIVER_NEWBOOK) || state->isClientKR() || state->isClientEnhanced();
+		return state->isClientVersion(MINCLIVER_ML) || state->isClientKR() || state->isClientEnhanced();
 	}
 };
 
@@ -1666,7 +1666,7 @@ public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
-		return state->isClientVersion(MINCLIVER_TOOLTIP);
+		return state->isClientVersion(MINCLIVER_AOS);
 	}
 };
 
@@ -1715,7 +1715,7 @@ public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
-		return state->isClientVersion(MINCLIVER_CUSTOMMULTI) || state->isClientKR() || state->isClientEnhanced();
+		return state->isClientVersion(MINCLIVER_AOS) || state->isClientKR() || state->isClientEnhanced();
 	}
 };
 
@@ -1738,7 +1738,7 @@ public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
-		return state->isClientVersion(MINCLIVER_TOOLTIPHASH);
+		return state->isClientVersion(MINCLIVER_SE);
 	}
 };
 

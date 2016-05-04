@@ -2823,7 +2823,7 @@ bool PacketAosTooltipInfo::onReceive(NetState* net)
 	if (character == NULL)
 		return false;
 
-	if (net->isClientVersion(MINCLIVER_TOOLTIP) == false)
+	if (net->isClientVersion(MINCLIVER_AOS) == false)
 		return true;
 	else if (client->GetResDisp() < RDS_AOS || !IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
 		return true;
@@ -3177,7 +3177,7 @@ bool PacketGargoyleFly::onReceive(NetState* net)
 	ClientIterator it;
 	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
-		if ( !pClient->GetNetState()->isClientVersion(MINCLIVER_NEWMOBILEANIM) )
+		if ( !pClient->GetNetState()->isClientVersion(MINCLIVER_SA) )
 			continue;
 		if ( !pClient->CanSee(character) )
 			continue;
@@ -3384,7 +3384,7 @@ bool PacketAOSTooltipReq::onReceive(NetState* net)
 	if (character == NULL)
 		return false;
 
-	if (net->isClientVersion(MINCLIVER_TOOLTIP) == false)
+	if (net->isClientVersion(MINCLIVER_AOS) == false)
 		return true;
 	else if (client->GetResDisp() < RDS_AOS || !IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
 		return true;

@@ -656,7 +656,7 @@ PacketMovementAck::PacketMovementAck(const CClient* target, BYTE sequence) : Pac
 	ADDTOCALLSTACK("PacketMovementAck::PacketMovementAck");
 
 	writeByte(sequence);
-	writeByte(static_cast<BYTE>(target->GetChar()->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_NOTOINVUL), true)));
+	writeByte(static_cast<BYTE>(target->GetChar()->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_AOS), true)));
 	push(target);
 }
 
@@ -993,7 +993,7 @@ PacketSkills::PacketSkills(const CClient* target, const CChar* character, SKILL_
 	if (character == NULL)
 		character = target->GetChar();
 
-	bool includeCaps = target->GetNetState()->isClientVersion(MINCLIVER_SKILLCAPS);
+	bool includeCaps = target->GetNetState()->isClientVersion(MINCLIVER_AOS);
 	if (skill >= SKILL_QTY)
 	{
 		// all skills
@@ -2113,7 +2113,7 @@ PacketCharacterMove::PacketCharacterMove(const CClient* target, const CChar* cha
 	writeByte(direction);
 	writeInt16(hue);
 	writeByte(character->GetModeFlag(target));
-	writeByte(static_cast<BYTE>(character->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_NOTOINVUL), true)));
+	writeByte(static_cast<BYTE>(character->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_AOS), true)));
 
 	push(target);
 }
@@ -2147,7 +2147,7 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 	writeByte(character->GetDirFlag());
 	writeInt16(hue);
 	writeByte(character->GetModeFlag(target));
-	writeByte(static_cast<BYTE>(character->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_NOTOINVUL), true)));
+	writeByte(static_cast<BYTE>(character->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_AOS), true)));
 
 	bool isNewMobilePacket = target->GetNetState()->isClientVersion(MINCLIVER_NEWMOBINCOMING);
 
@@ -2979,7 +2979,7 @@ PacketServerList::PacketServerList(const CClient* target) : PacketSend(XCMD_Serv
 	ADDTOCALLSTACK("PacketServerList::PacketServerList");
 
 	// clients before 4.0.0 require serverlist ips to be in reverse
-	bool reverseIp = target->GetNetState()->isClientLessVersion(MAXCLIVER_REVERSEIP);
+	bool reverseIp = target->GetNetState()->isClientLessVersion(MINCLIVER_AOS);
 
 	initLength();
 	writeByte(0xFF);
@@ -3285,7 +3285,7 @@ void PacketGumpDialog::writeControls(const CClient* target, const CGString* cont
 	ADDTOCALLSTACK("PacketGumpDialog::writeControls");
 
 	const NetState* net = target->GetNetState();
-	if (net->isClientVersion(MINCLIVER_COMPRESSDIALOG) || net->isClientKR() || net->isClientEnhanced())
+	if (net->isClientVersion(MINCLIVER_ML) || net->isClientKR() || net->isClientEnhanced())
 		writeCompressedControls(controls, controlCount, texts, textCount);
 	else
 		writeStandardControls(controls, controlCount, texts, textCount);

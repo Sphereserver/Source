@@ -333,7 +333,7 @@ void NetState::detectAsyncMode(void)
 	//   without async networking (but should switch over as soon as it has been determined)
 	// - a minor issue with this is that for clients without encryption we cannot determine their version
 	//   until after they have fully logged into the game server and sent a client version packet.
-	else if (isClientVersion(MINCLIVER_AUTOASYNC) || isClientKR() || isClientEnhanced())
+	else if (isClientVersion(MINCLIVER_AOS) || isClientKR() || isClientEnhanced())
 		setAsyncMode(true);
 	else
 		setAsyncMode(false);
@@ -807,8 +807,8 @@ Packet* PacketManager::getEncodedHandler(unsigned int id) const
 #ifndef _MTNETWORK
 ClientIterator::ClientIterator(const NetworkIn* network)
 {
-	m_network = (network == NULL? &g_NetworkIn : network);
-	m_nextClient = STATIC_CAST <CClient*> (m_network->m_clients.GetHead());
+	m_network = ((network == NULL) ? &g_NetworkIn : network);
+	m_nextClient = static_cast<CClient *>(m_network->m_clients.GetHead());
 }
 #else
 ClientIterator::ClientIterator(const NetworkManager* network)

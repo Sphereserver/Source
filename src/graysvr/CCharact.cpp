@@ -365,7 +365,7 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when removed from list.
 {
 	ADDTOCALLSTACK("CChar::OnRemoveOb");
-	CItem * pItem = STATIC_CAST <CItem*>(pObRec);
+	CItem *pItem = static_cast<CItem *>(pObRec);
 	if ( !pItem )
 		return;
 
@@ -1188,7 +1188,7 @@ bool CChar::UpdateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward , BY
 			continue;
 		if (pClient->GetNetState()->isClientEnhanced() && pClient->GetNetState()->m_reportedVersion < 6700351)	//Enhanced client always used this packet, at least until ~ 4.0.35 (6700351)
 			cmdnew->send(pClient);
-		else if (pClient->GetNetState()->isClientVersion(MINCLIVER_NEWMOBILEANIM) && (IsGargoyle()) && (action1 >= 0))	// On classic clients only send new packets for gargoyles
+		else if (pClient->GetNetState()->isClientVersion(MINCLIVER_SA) && (IsGargoyle()) && (action1 >= 0))	// On classic clients only send new packets for gargoyles
 			cmdnew->send(pClient);
 		else
 			cmd->send(pClient);

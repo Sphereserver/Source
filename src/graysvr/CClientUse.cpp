@@ -1364,12 +1364,12 @@ bool CClient::Cmd_SecureTrade( CChar *pChar, CItem *pItem )
 	if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD )
 	{
 		PacketTradeAction cmd2(SECURE_TRADE_UPDATELEDGER);
-		if ( GetNetState()->isClientVersion(MINCLIVER_NEWSECURETRADE) )
+		if ( GetNetState()->isClientVersion(MINCLIVER_TOL) )
 		{
 			cmd2.prepareUpdateLedger(pCont1, static_cast<DWORD>(m_pChar->m_virtualGold % 1000000000), static_cast<DWORD>(m_pChar->m_virtualGold / 1000000000));
 			cmd2.send(this);
 		}
-		if ( pChar->GetClient()->GetNetState()->isClientVersion(MINCLIVER_NEWSECURETRADE) )
+		if ( pChar->GetClient()->GetNetState()->isClientVersion(MINCLIVER_TOL) )
 		{
 			cmd2.prepareUpdateLedger(pCont2, static_cast<DWORD>(pChar->m_virtualGold % 1000000000), static_cast<DWORD>(pChar->m_virtualGold / 1000000000));
 			cmd2.send(pChar->GetClient());
