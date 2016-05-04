@@ -2798,9 +2798,8 @@ bool CChar::Death()
 
 	// Give credit for the kill to my attacker(s)
 	int iKillers = 0;
-	CChar *pShare[] = { NULL };
-	CChar *pKiller = NULL;
-	TCHAR *pszKillStr = Str_GetTemp();
+	CChar * pKiller = NULL;
+	TCHAR * pszKillStr = Str_GetTemp();
 	int iKillStrLen = sprintf( pszKillStr, g_Cfg.GetDefaultMsg(DEFMSG_MSG_KILLED_BY), (m_pPlayer)? 'P':'N', GetNameWithoutIncognito() );
 
 	for ( size_t count = 0; count < m_lastAttackers.size(); count++ )
@@ -2816,19 +2815,10 @@ bool CChar::Death()
 					continue;
 			}
 
-			if ( pKiller->IsStatFlag(STATF_Pet) )
-				pShare[++iKillers] = pKiller->NPC_PetGetOwner();
-
 			pKiller->Noto_Kill( this, IsStatFlag(STATF_Pet), Attacker() );
 			iKillStrLen += sprintf( pszKillStr+iKillStrLen, "%s%c'%s'", iKillers ? ", " : "", (pKiller->m_pPlayer) ? 'P':'N', pKiller->GetNameWithoutIncognito() );
 			++iKillers;
 		}
-	}
-
-	// Split fame/karma/exp to all valid killers
-	for ( size_t count = 0; count < COUNTOF(pShare); count++ )
-	{
-		pKiller = pShare[count];
 	}
 
 	// Record the kill event for posterity
