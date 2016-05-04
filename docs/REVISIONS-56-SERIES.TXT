@@ -31,3 +31,6 @@ Fixed: Vendor buy menu showing wrong char 'gold available' value.
 
 30-04-2016, Coruja
 Fixed: Mounts disappearing on worldsave on some specific situations.
+
+04-05-2016, Coruja
+Fixed: Wrestling using wrong attack animation when unmounted.
