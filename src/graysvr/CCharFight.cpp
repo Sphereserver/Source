@@ -262,11 +262,6 @@ NOTO_TYPE CChar::Noto_CalcFlag(const CChar *pCharViewer, bool bAllowIncog, bool 
 
 	if ( pCharViewer != this )
 	{
-		// If they saw me commit a crime or I am their aggressor then criminal to just them.
-		CItemMemory *pMemory = pCharViewer->Memory_FindObjTypes(this, MEMORY_SAWCRIME|MEMORY_AGGREIVED|MEMORY_HARMEDBY);
-		if ( pMemory )
-			return NOTO_CRIMINAL;
-
 		if ( m_pPlayer )
 		{
 			// Check the guild stuff
@@ -295,6 +290,11 @@ NOTO_TYPE CChar::Noto_CalcFlag(const CChar *pCharViewer, bool bAllowIncog, bool 
 				}
 			}
 		}
+
+		// If they saw me commit a crime or I am their aggressor then criminal to just them
+		CItemMemory *pMemory = pCharViewer->Memory_FindObjTypes(this, MEMORY_SAWCRIME|MEMORY_AGGREIVED|MEMORY_HARMEDBY);
+		if ( pMemory )
+			return NOTO_CRIMINAL;
 	}
 
 	if ( IsStatFlag(STATF_Criminal) )	// criminal to everyone.
