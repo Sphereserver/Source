@@ -39,3 +39,6 @@ Fixed: Wrestling using wrong attack animation when unmounted.
 Changed: Enhanced clients now will always have tooltips enabled (even if this feature is disabled on Sphere.ini). These clients uses tooltips instead @Click calls, so it's a must-have feature.
 Fixed: Spellbook gump not working correctly on enhanced clients.
 Fixed: Criminal notoriety incorrectly overriding guild notoriety (war/ally) on chars.
+
+08-05-2016, Coruja
+Fixed: Explosion potions not working correctly.

@@ -255,6 +255,7 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 				pItem->m_itPotion.m_ignited = 1;	// ignite it
 				pItem->m_uidLink = m_pChar->GetUID();
 				pItem->SetTimeout(TICK_PER_SEC);
+				m_tmUseItem.m_pParent = pItem->GetParent();
 				addTarget(CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg(DEFMSG_SELECT_POTION_TARGET), true, true, pItem->m_itPotion.m_tick * TICK_PER_SEC);
 				return true;
 			}
