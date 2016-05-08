@@ -42,3 +42,4 @@ Fixed: Criminal notoriety incorrectly overriding guild notoriety (war/ally) on c
 
 08-05-2016, Coruja
 Fixed: Explosion potions not working correctly.
+Fixed: Functions SKILLLOCK/STATLOCK not updating the lock icon on client skills/stats window.

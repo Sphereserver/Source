@@ -233,7 +233,7 @@ SKILLLOCK_TYPE CCharPlayer::Skill_GetLock( SKILL_TYPE skill ) const
 void CCharPlayer::Skill_SetLock( SKILL_TYPE skill, SKILLLOCK_TYPE state )
 {
 	ASSERT( skill >= 0 && static_cast<size_t>(skill) < COUNTOF(m_SkillLock));
-	m_SkillLock[skill] = static_cast<unsigned char>(state);
+	m_SkillLock[skill] = static_cast<BYTE>(state);
 }
 
 // only players can have stat locks.
@@ -271,7 +271,7 @@ SKILLLOCK_TYPE CCharPlayer::Stat_GetLock( STAT_TYPE stat ) const
 void CCharPlayer::Stat_SetLock( STAT_TYPE stat, SKILLLOCK_TYPE state )
 {
 	ASSERT( stat >= 0 && static_cast<size_t>(stat) < COUNTOF(m_StatLock));
-	m_StatLock[stat] = static_cast<unsigned char>(state);
+	m_StatLock[stat] = static_cast<BYTE>(state);
 }
 
 bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
@@ -489,13 +489,15 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 			return SetSkillClass( pChar, g_Cfg.ResourceGetIDType( RES_SKILLCLASS, s.GetArgStr()));
 		case CPC_SKILLLOCK:
 			{
-				SKILL_TYPE skill = Skill_GetLockType( s.GetKey());
+				SKILL_TYPE skill = Skill_GetLockType(s.GetKey());
 				if ( skill <= SKILL_NONE )
 					return false;
-				int bState = s.GetArgVal();
-				if ( bState < SKILLLOCK_UP || bState > SKILLLOCK_LOCK )
+				long flag = s.GetArgVal();
+				if ( flag < SKILLLOCK_UP || flag > SKILLLOCK_LOCK )
 					return false;
-				Skill_SetLock(skill, static_cast<SKILLLOCK_TYPE>(bState));
+				Skill_SetLock(skill, static_cast<SKILLLOCK_TYPE>(flag));
+				if ( pChar->IsClient() )
+					pChar->GetClient()->addSkillWindow(skill);
 			} return true;
 		case CPC_SPEEDMODE:
 			{
@@ -504,13 +506,15 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 			} return true;
 		case CPC_STATLOCK:
 			{
-				STAT_TYPE stat = Stat_GetLockType( s.GetKey());
-				if (( stat <= STAT_NONE ) || ( stat >= STAT_BASE_QTY ))
+				STAT_TYPE stat = Stat_GetLockType(s.GetKey());
+				if ( (stat <= STAT_NONE) || (stat >= STAT_BASE_QTY) )
 					return false;
-				int bState = s.GetArgVal();
-				if ( bState < SKILLLOCK_UP || bState > SKILLLOCK_LOCK )
+				long flag = s.GetArgVal();
+				if ( flag < SKILLLOCK_UP || flag > SKILLLOCK_LOCK )
 					return false;
-				Stat_SetLock(stat, static_cast<SKILLLOCK_TYPE>(bState));
+				Stat_SetLock(stat, static_cast<SKILLLOCK_TYPE>(flag));
+				if ( pChar->IsClient() )
+					pChar->GetClient()->addCharStatWindow(pChar);
 			} return true;
 
 		default:
@@ -625,11 +629,11 @@ bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc )
 			{
 				pszKey += 1;
 				CItemStone *pMyGuild = Guild_Find(bIsGuild ? MEMORY_GUILD : MEMORY_TOWN);
-                if ( pMyGuild )
-                {
-                        CScript sToParse(pszKey, s.GetArgRaw());
-                        return pMyGuild->r_Verb(sToParse, pSrc);
-                }
+				if ( pMyGuild )
+				{
+					CScript sToParse(pszKey, s.GetArgRaw());
+					return pMyGuild->r_Verb(sToParse, pSrc);
+				}
 			}
 			return false;
 		}
@@ -734,16 +738,14 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 		pChar->SetDefNum(s.GetKey(), s.GetArgVal(), false );
 		break;
 	case CNC_ACTPRI:
-		m_Act_Motivation = static_cast<unsigned char>(s.GetArgVal());
+		m_Act_Motivation = static_cast<BYTE>(s.GetArgVal());
 		break;
 	case CNC_NPC:
 		m_Brain = static_cast<NPCBRAIN_TYPE>(s.GetArgVal());
 		break;
 	case CNC_HOMEDIST:
-		if ( ! pChar->m_ptHome.IsValidPoint())
-		{
+		if ( !pChar->m_ptHome.IsValidPoint() )
 			pChar->m_ptHome = pChar->GetTopPoint();
-		}
 		m_Home_Dist_Wander = static_cast<WORD>(s.GetArgVal());
 		break;
 	case CNC_NEED:
@@ -904,8 +906,6 @@ void CCharNPC::r_WriteChar( CChar * pChar, CScript & s )
 
 int CCharNPC::GetNpcAiFlags( const CChar *pChar ) const 
 {
-	CVarDefCont *pVar = pChar->GetKey( "OVERRIDE.NPCAI", true );
-	if (pVar != NULL)
-        	return static_cast<int>(pVar->GetValNum());
-	return g_Cfg.m_iNpcAi;
+	CVarDefCont *pVar = pChar->GetKey("OVERRIDE.NPCAI", true);
+	return pVar ? static_cast<int>(pVar->GetValNum()) : g_Cfg.m_iNpcAi;
 }
