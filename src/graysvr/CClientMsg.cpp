@@ -376,23 +376,23 @@ void CClient::addItem_Equipped( const CItem * pItem )
 	ADDTOCALLSTACK("CClient::addItem_Equipped");
 	ASSERT(pItem);
 	// Equip a single item on a CChar.
-	CChar * pChar = dynamic_cast <CChar*> (pItem->GetParent());
-	ASSERT( pChar != NULL );
+	CChar *pChar = static_cast<CChar *>(pItem->GetParent());
+	ASSERT(pChar);
 
-	if ( ! m_pChar->CanSeeItem( pItem ) && m_pChar != pChar )
+	if ( !m_pChar->CanSeeItem(pItem) && m_pChar != pChar )
 		return;
 
 	new PacketItemEquipped(this, pItem);
 
-	addAOSTooltip( pItem );
+	//addAOSTooltip(pItem);		// tooltips for equipped items are handled on packet 0x78 (PacketCharacter)
 }
 
 void CClient::addItem_InContainer( const CItem * pItem )
 {
 	ADDTOCALLSTACK("CClient::addItem_InContainer");
 	ASSERT(pItem);
-	CItemContainer * pCont = dynamic_cast <CItemContainer*> (pItem->GetParent());
-	if ( pCont == NULL )
+	CItemContainer *pCont = static_cast<CItemContainer *>(pItem->GetParent());
+	if ( !pCont )
 		return;
 
 	new PacketItemContainer(this, pItem);
@@ -400,7 +400,7 @@ void CClient::addItem_InContainer( const CItem * pItem )
 	if ( PacketDropAccepted::CanSendTo(GetNetState()) )
 		new PacketDropAccepted(this);
 
-	addAOSTooltip( pItem );
+	//addAOSTooltip(pItem);		// tooltips for items inside containers are handled on packet 0x3C (PacketItemContents)
 }
 
 void CClient::addItem( CItem * pItem )
@@ -2035,50 +2035,27 @@ void CClient::addBondedStatus( const CChar * pChar, bool bIsDead )
 void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
 {
 	ADDTOCALLSTACK("CClient::addSpellbookOpen");
+	// Open the spellbook content and fill it with some data.
+	// NOTE: Client will crash if open spellbook gump when spellbook item is not loaded yet.
+	// TO-DO: Enhanced clients sometimes crash when closing the spellbook gump. This needs further investigation.
 
 	if ( !m_pChar )
 		return;
 
 	if ( IsTrigUsed(TRIGGER_SPELLBOOK) )
 	{
-		CScriptTriggerArgs	Args( 0, 0, pBook );
-		if ( m_pChar->OnTrigger( CTRIG_SpellBook, m_pChar, &Args ) == TRIGRET_RET_TRUE )
+		CScriptTriggerArgs Args(0, 0, pBook);
+		if ( m_pChar->OnTrigger(CTRIG_SpellBook, m_pChar, &Args) == TRIGRET_RET_TRUE )
 			return;
 	}
 
-	// NOTE: if the spellbook item is not present on the client it will crash.
-	// count what spells I have.
-
-	if ( pBook->GetDispID() == ITEMID_SPELLBOOK2 )
-	{
-		// weird client bug.
-		pBook->SetDispID( ITEMID_SPELLBOOK );
-		pBook->Update();
-		return;
-	}
-
-	int count = pBook->GetSpellcountInBook();
-	if ( count == -1 )
-		return;
-
 	OpenPacketTransaction transaction(this, PacketSend::PRI_NORMAL);
-	addOpenGump( pBook, GUMP_OPEN_SPELLBOOK );
+	addOpenGump(pBook, GUMP_OPEN_SPELLBOOK);
 
-	//
-	// New AOS spellbook packet required by client 4.0.0 and above.
-	// Old packet is still required if both FEATURE_AOS_TOOLTIP and FEATURE_AOS_UPDATE aren't sent.
-	//
-	if ( PacketSpellbookContent::CanSendTo(GetNetState()) && GetNetState()->isClientVersion(MINCLIVER_AOS) && IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) )
-	{
-		// Handle new AOS spellbook stuff (old packets no longer work)
+	if ( PacketSpellbookContent::CanSendTo(GetNetState()) )
 		new PacketSpellbookContent(this, pBook, offset);
-		return;
-	}
-
-	if (count <= 0)
-		return;
-
-	new PacketItemContents(this, pBook);
+	else
+		new PacketItemContents(this, pBook);
 }
 
 
@@ -2370,25 +2347,20 @@ void CClient::addCharPaperdoll( CChar * pChar )
 void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop )
 {
 	ADDTOCALLSTACK("CClient::addAOSTooltip");
+	// NOTE: Tooltips are always enabled on shop items and enhanced clients
 	if ( !pObj )
 		return;
 
 	if ( PacketPropertyList::CanSendTo(GetNetState()) == false )
 		return;
 
-	bool bNameOnly = false;
-	if (!IsResClient(RDS_AOS) || !IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
-	{
-		if ( !bShop )
-			return;
+	// Check if we must send the full tooltip or just the obj name
+	bool bSendFull = ((IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) && IsResClient(RDS_AOS)) || GetNetState()->isClientKR() || GetNetState()->isClientEnhanced());
+	if ( !bSendFull && !bShop )
+		return;
 
-		// shop items use tooltips whether they're disabled or not,
-		// so we can just send a basic tooltip with the item name
-		bNameOnly = true;
-	}
-
-	//DEBUG_MSG(("(( m_pChar->GetTopPoint().GetDistSight(pObj->GetTopPoint()) (%x) > UO_MAP_VIEW_SIZE (%x) ) && ( !bShop ) (%x) )", m_pChar->GetTopPoint().GetDistSight(pObj->GetTopPoint()), UO_MAP_VIEW_SIZE, ( !bShop )));
-	if (( m_pChar->GetTopPoint().GetDistSight(pObj->GetTopPoint()) > UO_MAP_VIEW_SIZE ) && ( m_pChar->GetTopPoint().GetDistSight(pObj->GetTopPoint()) <= UO_MAP_VIEW_RADAR ) && ( !bShop ) ) //we do not need to send tooltips for items not in LOS (multis/ships)
+	// Don't send tooltips for items out of LOS (multis/ships)
+	if ( (m_pChar->GetTopPoint().GetDistSight(pObj->GetTopPoint()) > UO_MAP_VIEW_SIZE) && (m_pChar->GetTopPoint().GetDistSight(pObj->GetTopPoint()) <= UO_MAP_VIEW_RADAR) && !bShop )
 		return;
 
 	// We check here if we are sending a tooltip for a static/non-movable items
@@ -2421,7 +2393,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 
 		//DEBUG_MSG(("Preparing tooltip for 0%lx (%s)\n", (DWORD)pObj->GetUID(), pObj->GetName()));
 
-		if (bNameOnly) // if we only want to display the name (FEATURE_AOS_UPDATE_B disabled)
+		if ( !bSendFull ) // if we only want to display the name
 		{
 			DWORD ClilocName = static_cast<DWORD>(pObj->GetDefNum("NAMELOC", false, true));
 
@@ -2433,7 +2405,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 				t->FormatArgs("%s", pObj->GetName());
 			}
 		}
-		else // we have FEATURE_AOS_UPDATE_B enabled
+		else
 		{
 			TRIGRET_TYPE iRet = TRIGRET_RET_FALSE;
 
@@ -2450,21 +2422,24 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 
 				if ( pItem )
 				{
-					if (ClilocName)
+					if ( ClilocName )
+					{
 						m_TooltipData.InsertAt(0, new CClientTooltip(ClilocName));
+					}
+					else if ( (pItem->GetAmount() > 1) && (pItem->GetType() != IT_CORPSE) )
+					{
+						m_TooltipData.InsertAt(0, t = new CClientTooltip(1050039)); // ~1_NUMBER~ ~2_ITEMNAME~
+						t->FormatArgs("%hu\t%s", pItem->GetAmount(), pObj->GetName());
+					}
 					else
 					{
 						m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045)); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
-						if ( (pItem->GetAmount() != 1) && (pItem->GetType() != IT_CORPSE) )
-							t->FormatArgs("%d \t%s\t ", pItem->GetAmount(), pObj->GetName());
-						else
-							t->FormatArgs(" \t%s\t ", pObj->GetName());
+						t->FormatArgs(" \t%s\t ", pObj->GetName());
 					}
 				}
 				else if ( pChar )
 				{
 					LPCTSTR lpPrefix = pChar->GetKeyStr("NAME.PREFIX");
-					// HUE_TYPE wHue = m_pChar->Noto_GetHue( pChar, true );
 
 					if ( ! *lpPrefix )
 						lpPrefix = pChar->Noto_GetFameTitle();
@@ -3258,7 +3233,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 
 		// cache the property list for next time, unless property list is
 		// incomplete (name only) or caching is disabled
-		if (bNameOnly == false && g_Cfg.m_iTooltipCache > 0)
+		if (bSendFull && g_Cfg.m_iTooltipCache > 0)
 		{
 			if (pItem != NULL)
 				pItem->SetPropertyList(propertyList);

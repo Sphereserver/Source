@@ -1472,7 +1472,7 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0xBF.0x1B : PacketSpellbookContent	spellbook content (NORMAL)
+ *	Packet 0xBF.0x1B : PacketSpellbookContent	fill spellbook content (NORMAL)
  *
  *
  ***************************************************************************/
@@ -1484,7 +1484,7 @@ public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
-	    return state->isClientVersion(MINCLIVER_AOS);
+	    return (state->isClientVersion(MINCLIVER_AOS) && IsAosFlagEnabled(FEATURE_AOS_UPDATE_B)) || state->isClientKR() || state->isClientEnhanced();
 	}
 };
 
@@ -1666,7 +1666,7 @@ public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
-		return state->isClientVersion(MINCLIVER_AOS);
+		return state->isClientVersion(MINCLIVER_AOS) || state->isClientKR() || state->isClientEnhanced();
 	}
 };
 
@@ -1738,7 +1738,7 @@ public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
-		return state->isClientVersion(MINCLIVER_SE);
+		return state->isClientVersion(MINCLIVER_SE) || state->isClientKR() || state->isClientEnhanced();
 	}
 };
 

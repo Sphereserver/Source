@@ -2823,11 +2823,6 @@ bool PacketAosTooltipInfo::onReceive(NetState* net)
 	if (character == NULL)
 		return false;
 
-	if (net->isClientVersion(MINCLIVER_AOS) == false)
-		return true;
-	else if (client->GetResDisp() < RDS_AOS || !IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
-		return true;
-
 	const CObjBase* object = CGrayUID(readInt32()).ObjFind();
 	if (object != NULL && character->CanSee(object))
 		client->addAOSTooltip(object, true);
@@ -3383,11 +3378,6 @@ bool PacketAOSTooltipReq::onReceive(NetState* net)
 	const CChar* character = client->GetChar();
 	if (character == NULL)
 		return false;
-
-	if (net->isClientVersion(MINCLIVER_AOS) == false)
-		return true;
-	else if (client->GetResDisp() < RDS_AOS || !IsAosFlagEnabled(FEATURE_AOS_UPDATE_B))
-		return true;
 
 	const CObjBase* object;
 	for (WORD length = readInt16(); length > sizeof(DWORD); length -= sizeof(DWORD))
