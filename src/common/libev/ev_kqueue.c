@@ -1,19 +1,19 @@
 /*
  * libev kqueue backend
  *
- * Copyright (c) 2007,2008,2009,2010 Marc Alexander Lehmann <libev@schmorp.de>
+ * Copyright (c) 2007,2008,2009,2010,2011,2012,2013 Marc Alexander Lehmann <libev@schmorp.de>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modifica-
  * tion, are permitted provided that the following conditions are met:
- * 
+ *
  *   1.  Redistributions of source code must retain the above copyright notice,
  *       this list of conditions and the following disclaimer.
- * 
+ *
  *   2.  Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MER-
  * CHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
@@ -103,12 +103,12 @@ kqueue_poll (EV_P_ ev_tstamp timeout)
   kqueue_changecnt = 0;
 
   if (expect_false (res < 0))
-    { 
+    {
       if (errno != EINTR)
         ev_syserr ("(libev) kevent");
 
       return;
-    } 
+    }
 
   for (i = 0; i < res; ++i)
     {
@@ -155,15 +155,16 @@ kqueue_poll (EV_P_ ev_tstamp timeout)
 int inline_size
 kqueue_init (EV_P_ int flags)
 {
-  /* Initialize the kernel queue */
+  /* initialize the kernel queue */
+  kqueue_fd_pid = getpid ();
   if ((backend_fd = kqueue ()) < 0)
     return 0;
 
   fcntl (backend_fd, F_SETFD, FD_CLOEXEC); /* not sure if necessary, hopefully doesn't hurt */
 
-  backend_fudge  = 0.;
-  backend_modify = kqueue_modify;
-  backend_poll   = kqueue_poll;
+  backend_mintime = 1e-9; /* apparently, they did the right thing in freebsd */
+  backend_modify  = kqueue_modify;
+  backend_poll    = kqueue_poll;
 
   kqueue_eventmax = 64; /* initial number of events receivable per poll */
   kqueue_events = (struct kevent *)ev_malloc (sizeof (struct kevent) * kqueue_eventmax);
@@ -185,8 +186,20 @@ kqueue_destroy (EV_P)
 void inline_size
 kqueue_fork (EV_P)
 {
-  close (backend_fd);
+  /* some BSD kernels don't just destroy the kqueue itself,
+   * but also close the fd, which isn't documented, and
+   * impossible to support properly.
+   * we remember the pid of the kqueue call and only close
+   * the fd if the pid is still the same.
+   * this leaks fds on sane kernels, but BSD interfaces are
+   * notoriously buggy and rarely get fixed.
+   */
+  pid_t newpid = getpid ();
 
+  if (newpid == kqueue_fd_pid)
+    close (backend_fd);
+
+  kqueue_fd_pid = newpid;
   while ((backend_fd = kqueue ()) < 0)
     ev_syserr ("(libev) kqueue");
 
@@ -195,4 +208,7 @@ kqueue_fork (EV_P)
   /* re-register interest in fds */
   fd_rearm_all (EV_A);
 }
+
+/* sys/event.h defines EV_ERROR */
+#undef EV_ERROR
 

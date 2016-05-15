@@ -1,19 +1,19 @@
 /*
  * libev select fd activity backend
  *
- * Copyright (c) 2007,2008,2009,2010 Marc Alexander Lehmann <libev@schmorp.de>
+ * Copyright (c) 2007,2008,2009,2010,2011 Marc Alexander Lehmann <libev@schmorp.de>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modifica-
  * tion, are permitted provided that the following conditions are met:
- * 
+ *
  *   1.  Redistributions of source code must retain the above copyright notice,
  *       this list of conditions and the following disclaimer.
- * 
+ *
  *   2.  Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MER-
  * CHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
@@ -39,8 +39,11 @@
 
 #ifndef _WIN32
 /* for unix systems */
-# include <sys/select.h>
 # include <inttypes.h>
+# ifndef __hpux
+/* for REAL unix systems */
+#  include <sys/select.h>
+# endif
 #endif
 
 #ifndef EV_SELECT_USE_FD_SET
@@ -192,7 +195,12 @@ select_poll (EV_P_ ev_tstamp timeout)
        */
       if (errno == EINVAL)
         {
-          ev_sleep (timeout);
+          if (timeout)
+            {
+              unsigned long ms = timeout * 1e3;
+              Sleep (ms ? ms : 1);
+            }
+
           return;
         }
       #endif
@@ -266,9 +274,9 @@ select_poll (EV_P_ ev_tstamp timeout)
 int inline_size
 select_init (EV_P_ int flags)
 {
-  backend_fudge  = 0.; /* posix says this is zero */
-  backend_modify = select_modify;
-  backend_poll   = select_poll;
+  backend_mintime = 1e-6;
+  backend_modify  = select_modify;
+  backend_poll    = select_poll;
 
 #if EV_SELECT_USE_FD_SET
   vec_ri  = ev_malloc (sizeof (fd_set)); FD_ZERO ((fd_set *)vec_ri);
@@ -280,10 +288,10 @@ select_init (EV_P_ int flags)
   #endif
 #else
   vec_max = 0;
-  vec_ri  = 0; 
-  vec_ro  = 0;   
-  vec_wi  = 0; 
-  vec_wo  = 0; 
+  vec_ri  = 0;
+  vec_ro  = 0;
+  vec_wi  = 0;
+  vec_wo  = 0;
   #ifdef _WIN32
   vec_eo  = 0;
   #endif
@@ -303,5 +311,4 @@ select_destroy (EV_P)
   ev_free (vec_eo);
   #endif
 }
-
 
