@@ -46,3 +46,4 @@ Fixed: Functions SKILLLOCK/STATLOCK not updating the lock icon on client skills/
 
 15-05-2016, Coruja
 Changed: Updated internal Libev libs v4.1 to v4.22.
+Changed: Updated internal SQLite libs v3.8.11 to v3.12.2.
