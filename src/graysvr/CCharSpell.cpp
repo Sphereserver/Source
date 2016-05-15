@@ -3048,7 +3048,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		int iResistChance = maximum(iFirst, iSecond) / 30;
 		iResist = Skill_UseQuick(SKILL_MAGICRESISTANCE, iResistChance, true, false) ? 25 : 0;	// If we successfully resist then we have a 25% damage reduction, 0 if we don't.
 
-		if ( IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) )
+		if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B )
 		{
 			CItem *pEvilOmen = LayerFind(LAYER_SPELL_Evil_Omen);
 			if ( pEvilOmen )

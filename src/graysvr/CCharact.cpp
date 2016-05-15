@@ -2597,7 +2597,7 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 		pPoison->m_itSpell.m_spellcharges = iTicks;		// effect duration
 	}
 
-	if ( IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) )
+	if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B )
 	{
 		CItem *pEvilOmen = LayerFind(LAYER_SPELL_Evil_Omen);
 		if ( pEvilOmen )
@@ -3919,17 +3919,8 @@ bool CChar::OnTick()
 	if ( IsDisconnected() )
 		return true;
 
-	CClient *pClient = GetClient();
-	if ( pClient )
-	{
-		// Clear 'running' flag when the client stop running
-		if ( -g_World.GetTimeDiff(pClient->m_timeLastEventWalk) > 2 )
-			StatFlag_Clear(STATF_Fly);
-
-		// Check targeting timeout, if set
-		if ( pClient->m_Targ_Timeout.IsTimeValid() && g_World.GetTimeDiff(pClient->m_Targ_Timeout) <= 0 )
-			pClient->addTargetCancel();
-	}
+	if ( m_pClient && -g_World.GetTimeDiff(m_pClient->m_timeLastEventWalk) > 2 )	// clear 'running' flag when the client stop running
+		StatFlag_Clear(STATF_Fly);
 
 	if ( iTimeDiff >= TICK_PER_SEC )		// don't bother with < 1 sec timers on the checks below
 	{
@@ -3949,6 +3940,9 @@ bool CChar::OnTick()
 			EXC_SET("regen stats");
 			Stats_Regen(iTimeDiff);
 		}
+
+		if ( m_pClient && m_pClient->m_Targ_Timeout.IsTimeValid() && g_World.GetTimeDiff(m_pClient->m_Targ_Timeout) <= 0 )
+			m_pClient->addTargetCancel();
 	}
 
 	EXC_SET("update stats");

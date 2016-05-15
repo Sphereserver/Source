@@ -2846,15 +2846,11 @@ bool PacketPopupReq::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketPopupReq::onReceive");
 
-	CClient* client = net->getClient();
+	DWORD serial = readInt32();
+
+	CClient *client = net->getClient();
 	ASSERT(client);
-
-	if (IsAosFlagEnabled( FEATURE_AOS_POPUP ) && client->GetResDisp() >= RDS_AOS)
-	{
-		DWORD serial(readInt32());
-		client->Event_AOSPopupMenuRequest(serial);
-	}
-
+	client->Event_AOSPopupMenuRequest(serial);
 	return true;
 }
 
@@ -2874,17 +2870,12 @@ bool PacketPopupSelect::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketPopupSelect::onReceive");
 
-	CClient* client = net->getClient();
+	DWORD serial = readInt32();
+	WORD tag = readInt16();
+
+	CClient *client = net->getClient();
 	ASSERT(client);
-
-	if (IsAosFlagEnabled( FEATURE_AOS_POPUP ) && client->GetResDisp() >= RDS_AOS)
-	{
-		DWORD serial = readInt32();
-		WORD tag = readInt16();
-
-		client->Event_AOSPopupMenuSelect(serial, tag);
-	}
-
+	client->Event_AOSPopupMenuSelect(serial, tag);
 	return true;
 }
 

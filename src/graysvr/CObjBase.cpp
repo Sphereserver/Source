@@ -2749,23 +2749,22 @@ void CObjBase::ResendTooltip(bool bSendFull, bool bUseCache)
 	// Send tooltip packet to all nearby clients
 	m_fStatusUpdate &= ~SU_UPDATE_TOOLTIP;
 
-	if ( IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) == false )
-		return; // tooltips are disabled.
-	else if ( IsDisconnected())
+	if ( !(g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B) )
+		return;	// tooltips are disabled.
+	else if ( IsDisconnected() )
 		return;	// not in the world.
 
-	if (bUseCache == false)
+	if ( !bUseCache )
 		FreePropertyList();
 
-	CChar * pChar = NULL;
-
+	CChar *pChar = NULL;
 	ClientIterator it;
-	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
+	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
 		pChar = pClient->GetChar();
-		if ( pChar == NULL )
+		if ( !pChar )
 			continue;
-		if ( !pChar->CanSee( this ) )
+		if ( !pChar->CanSee(this) )
 			continue;
 
 		pClient->addAOSTooltip(this, bSendFull);

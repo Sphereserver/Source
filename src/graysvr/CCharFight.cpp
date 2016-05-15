@@ -1870,7 +1870,7 @@ effect_bounce:
 		return( 0 );
 
 	// Apply Necromancy cursed effects
-	if ( IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) )
+	if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B )
 	{
 		CItem * pEvilOmen = LayerFind(LAYER_SPELL_Evil_Omen);
 		if ( pEvilOmen )
@@ -2049,7 +2049,7 @@ effect_bounce:
 	if ( pSrc->IsClient() )
 		pSrc->GetClient()->addHitsUpdate(this);		// always send updates to src
 
-	if ( IsAosFlagEnabled( FEATURE_AOS_DAMAGE ) )
+	if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_DAMAGE )
 	{
 		if ( IsClient() )
 			m_pClient->addShowDamage( iDmg, static_cast<DWORD>(GetUID()) );

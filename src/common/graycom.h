@@ -121,12 +121,9 @@
 	void STRREV( char* string );
 #endif
 
-// Macro for fast NoCrypt Client version check
-#define IsAosFlagEnabled( value )	( g_Cfg.m_iFeatureAOS & (value) )
-#define IsResClient( value )		( GetAccount()->GetResDisp() >= (value) )
-
 #define FEATURE_T2A_UPDATE 			0x01
 #define FEATURE_T2A_CHAT 			0x02
+
 #define FEATURE_LBR_UPDATE			0x01
 #define FEATURE_LBR_SOUND			0x02
 

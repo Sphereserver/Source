@@ -1484,7 +1484,7 @@ public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
-	    return (state->isClientVersion(MINCLIVER_AOS) && IsAosFlagEnabled(FEATURE_AOS_UPDATE_B)) || state->isClientKR() || state->isClientEnhanced();
+	    return (state->isClientVersion(MINCLIVER_AOS) && (g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B)) || state->isClientKR() || state->isClientEnhanced();
 	}
 };
 

@@ -2355,7 +2355,7 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 		return;
 
 	// Check if we must send the full tooltip or just the obj name
-	bool bSendFull = ((IsAosFlagEnabled(FEATURE_AOS_UPDATE_B) && IsResClient(RDS_AOS)) || GetNetState()->isClientKR() || GetNetState()->isClientEnhanced());
+	bool bSendFull = (((g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B) && (GetAccount()->GetResDisp() >= RDS_AOS)) || GetNetState()->isClientKR() || GetNetState()->isClientEnhanced());
 	if ( !bSendFull && !bShop )
 		return;
 
@@ -3319,7 +3319,7 @@ void CClient::addIdleWarning( BYTE message )
 void CClient::addKRToolbar( bool bEnable )
 {
 	ADDTOCALLSTACK("CClient::addKRToolbar");
-	if ( PacketToggleHotbar::CanSendTo(GetNetState()) == false || !IsResClient(RDS_KR) || ( GetConnectType() != CONNECT_GAME ))
+	if ( !PacketToggleHotbar::CanSendTo(GetNetState()) || (GetAccount()->GetResDisp() < RDS_KR) || (GetConnectType() != CONNECT_GAME) )
 		return;
 
 	new PacketToggleHotbar(this, bEnable);
