@@ -669,7 +669,7 @@ public:
 		struct
 		{
 			// CAN_I_LIGHT may be set for others as well..ie.Moon gate conflict
-			DWORD   m_junk1;
+			DWORD	m_junk1;
 			DWORD	m_junk2;
 			BYTE	m_burned;	// morex = out of charges? (1=yes / 0=no)
 			WORD	m_charges;	// morey = how long will the torch last ?
@@ -721,7 +721,7 @@ public:
 		struct
 		{
 			RESOURCE_ID_BASE m_ResID;	// more1 = preconfigured book id from RES_BOOK or Time date stamp for the book/message creation. (if |0x80000000)
-			//CServTime   	 m_Time;	// more2= Time date stamp for the book/message creation. (Now Placed inside TIMESTAMP for INT64 support)
+			//CServTime		 m_Time;	// more2= Time date stamp for the book/message creation. (Now Placed inside TIMESTAMP for INT64 support)
 		} m_itBook;
 
 		// IT_DEED
@@ -2013,10 +2013,10 @@ class CItemMap : public CItemVendable
 public:
 	static const char *m_sClassName;
 	enum
-    {
-        MAX_PINS = 128,
+	{
+		MAX_PINS = 128,
 		DEFAULT_SIZE = 200
-    };
+	};
 
 	bool m_fPlotMode;	// should really be per-client based but oh well.
 	CGTypedArray<CMapPinRec,CMapPinRec&> m_Pins;
@@ -2807,12 +2807,10 @@ public:
 		unsigned short m_regen;	// Tick time since last regen.
 	} m_Stat[STAT_QTY];
 
-	CServTime m_timeLastRegen;	// When did i get my last regen tick ?
-	CServTime m_timeCreate;		// When was i created ?
-
-	CServTime m_timeLastHitsUpdate;
-
-	UINT64 m_timeLastCallGuards;
+	CServTime	m_timeLastRegen;	// When did i get my last regen tick ?
+	CServTime	m_timeCreate;		// When was i created ?
+	CServTime	m_timeLastHitsUpdate;
+	INT64		m_timeLastCallGuards;
 
 	// Some character action in progress.
 	SKILL_TYPE	m_Act_SkillCurrent;	// Currently using a skill. Could be combat skill.
