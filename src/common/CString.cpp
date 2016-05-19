@@ -261,9 +261,8 @@ void CGString::FormatHex(DWORD dwVal)
 	// If iVal is negative we MUST hexformat it as
 	// 64 bit int or reinterpreting it in a 
 	// script might completely mess up
-	long long dwVal64 = ((int)dwVal);
-	if (dwVal64 < 0)
-		return FormatLLHex(dwVal64);
+	if (dwVal > (DWORD)INT32_MIN)			// if negative (remember two's complement)
+		return FormatLLHex(dwVal);
 	Format("0%lx", dwVal);
 }
 
