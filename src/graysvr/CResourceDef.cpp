@@ -199,7 +199,7 @@ enum SKC_TYPE
 	SKC_EFFECT,
 	SKC_FLAGS,
 	SKC_GAINRADIUS,
-    SKC_GROUP,
+	SKC_GROUP,
 	SKC_KEY,
 	SKC_NAME,
 	SKC_PROMPT_MSG,
@@ -1044,7 +1044,6 @@ bool CRandGroupDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * p
 size_t CRandGroupDef::GetRandMemberIndex( CChar * pCharSrc, bool bTrigger ) const
 {
 	ADDTOCALLSTACK("CRandGroupDef::GetRandMemberIndex");
-	int rid;
 	size_t iCount = m_Members.GetCount();
 	if ( iCount <= 0 )
 		return m_Members.BadIndex();
@@ -1067,19 +1066,21 @@ size_t CRandGroupDef::GetRandMemberIndex( CChar * pCharSrc, bool bTrigger ) cons
 	}
 
 	CGPtrTypeArray<size_t> members;
+	CRegionResourceDef *pOreDef = NULL;
+	ITEMID_TYPE rid;
 
 	// calculate weight only of items pCharSrc can get
 	int iTotalWeight = 0;
 	for ( i = 0; i < iCount; i++ )
 	{
-		CRegionResourceDef * pOreDef = dynamic_cast <CRegionResourceDef *>( g_Cfg.ResourceGetDef( m_Members[i].GetResourceID() ) );
 		// If no regionresource, return just some random entry!
-		if (pOreDef != NULL)
+		pOreDef = static_cast<CRegionResourceDef *>(g_Cfg.ResourceGetDef(m_Members[i].GetResourceID()));
+		if (pOreDef)
 		{
 			rid = pOreDef->m_ReapItem;
-			if (rid != 0)
+			if (rid)
 			{
-				if (!pCharSrc->Skill_MakeItem(static_cast<ITEMID_TYPE>(rid), UID_CLEAR, SKTRIG_SELECT))
+				if (!pCharSrc->Skill_MakeItem(rid, UID_CLEAR, SKTRIG_SELECT))
 					continue;
 				if (IsTrigUsed(TRIGGER_RESOURCETEST))
 				{
