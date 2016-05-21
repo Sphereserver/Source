@@ -256,12 +256,9 @@ void CGString::FormatUVal(unsigned long iVal)
 
 void CGString::FormatHex(DWORD dwVal)
 {
-	// In principle, all values in sphere logic are
-	// signed.. 
-	// If iVal is negative we MUST hexformat it as
-	// 64 bit int or reinterpreting it in a 
-	// script might completely mess up
-	if (dwVal > (DWORD)INT32_MIN)			// if negative (remember two's complement)
+	// In principle, all values in sphere logic are signed.. 
+	// If iVal is negative we MUST hexformat it as 64 bit int or reinterpreting it in a script might completely mess up
+	if (dwVal > static_cast<DWORD>(INT_MIN))	// if negative (remember two's complement)
 		return FormatLLHex(dwVal);
 	Format("0%lx", dwVal);
 }
