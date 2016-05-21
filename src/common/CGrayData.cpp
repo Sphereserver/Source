@@ -158,7 +158,7 @@ CGrayItemInfo::CGrayItemInfo( ITEMID_TYPE id )
 		m_layer = LAYER_NONE;
 		m_dwAnim = 0;
 		m_height = 0;
-		strcpy( m_name, ( id <= ITEMID_SHIP6_W ) ? "ship" : "structure" );
+		strcpy(m_name, (id <= ITEMID_GALLEON_BRIT2_W) ? "ship" : "structure");
 		return;
 	}
 

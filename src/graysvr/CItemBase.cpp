@@ -451,9 +451,9 @@ bool CItemBase::IsID_DoorOpen( ITEMID_TYPE id ) // static
 {
 	ADDTOCALLSTACK("CItemBase::IsID_DoorOpen");
   	int doordir = IsID_Door(id)-1;
-    if ( doordir < 0 )
+	if ( doordir < 0 )
 		return false;
-    if ( doordir & DOOR_OPENED )
+	if ( doordir & DOOR_OPENED )
 		return true;
 	return( false );
 }
@@ -461,16 +461,18 @@ bool CItemBase::IsID_DoorOpen( ITEMID_TYPE id ) // static
 bool IsID_Ship( ITEMID_TYPE id )
 {
 	// IT_SHIP
-	return( id >= ITEMID_MULTI && id <= ITEMID_SHIP6_W );
+	return( id >= ITEMID_SHIP_SMALL_N && id <= ITEMID_GALLEON_BRIT2_W );
 }
 
 bool IsID_GamePiece( ITEMID_TYPE id ) // static
 {
+	// IT_GAME_PIECE
 	return( id >= ITEMID_GAME1_CHECKER && id <= ITEMID_GAME_HI );
 }
 
 bool IsID_Track( ITEMID_TYPE id ) // static
 {
+	// IT_FIGURINE
 	return( id >= ITEMID_TRACK_BEGIN && id <= ITEMID_TRACK_END );
 }
 
