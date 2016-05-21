@@ -603,7 +603,7 @@ int CChar::FixWeirdness()
 	if ( IsStatFlag( STATF_Ridden ))
 	{
 		// Move the ridden creature to the same location as it's rider.
-		if ( m_pPlayer || ! IsDisconnected())
+		if ( !m_pNPC || !IsDisconnected() )
 			StatFlag_Clear( STATF_Ridden );
 		else
 		{
@@ -2476,7 +2476,7 @@ do_default:
 			sVal.FormatVal( IsStatFlag( STATF_EmoteAction ));
 			break;
 		case CHC_FLAGS:
-			sVal.FormatHex( m_StatFlag );
+			sVal.FormatLLHex( m_StatFlag );
 			break;
 		case CHC_FONT:
 			sVal.FormatVal( m_fonttype );
@@ -2902,7 +2902,7 @@ do_default:
 			}
 			break;
 		case CHC_FLAGS:		// DO NOT MODIFY STATF_SaveParity, STATF_Spawned, STATF_Pet
-			m_StatFlag = ( s.GetArgVal() &~ (STATF_SaveParity|STATF_Pet|STATF_Spawned)) | ( m_StatFlag & (STATF_SaveParity|STATF_Pet|STATF_Spawned) );
+			m_StatFlag = ( s.GetArgLLVal() &~ (STATF_SaveParity|STATF_Pet|STATF_Spawned)) | ( m_StatFlag & (STATF_SaveParity|STATF_Pet|STATF_Spawned) );
 			NotoSave_Update();
 			break;
 		case CHC_FONT:

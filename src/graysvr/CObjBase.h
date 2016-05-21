@@ -2720,7 +2720,7 @@ private:
 #define STATF_Ridden		0x40000000	// This is the horse. (don't display me) I am being ridden
 #define STATF_OnHorse		0x80000000	// Mounted on horseback.
 
-	DWORD m_StatFlag;		// Flags above
+	unsigned long long m_StatFlag;		// Flags above
 
 #define SKILL_VARIANCE 100		// Difficulty modifier for determining success. 10.0 %
 	unsigned short m_Skill[SKILL_QTY];	// List of skills ( skill * 10 )
