@@ -867,6 +867,8 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		{ GUMP_DRAWER_LIGHT, 16, 10, 138, 84 },
 		{ GUMP_BULLETIN_BOARD, 0, 0, 110, 62 },
 		{ GUMP_GIFT_BOX, 35, 10, 155, 85 },
+		{ GUMP_STOCKING, 41, 21, 145, 90 },
+		{ GUMP_ARMOIRE_ELVEN_WASH, 10, 10, 160, 105 },
 		{ GUMP_ARMOIRE_RED, 10, 10, 150, 95 },
 		{ GUMP_ARMOIRE_MAPLE, 10, 10, 150, 95 },
 		{ GUMP_ARMOIRE_CHERRY, 10, 10, 150, 95 },
@@ -876,16 +878,21 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		{ GUMP_CHEST_WOOD_ORNATE, 10, 10, 150, 95 },
 		{ GUMP_TALL_CABINET, 10, 10, 150, 95 },
 		{ GUMP_CHEST_WOOD_FINISH, 10, 10, 150, 95 },
+		{ GUMP_MAIL_BOX, 0, 0, 0, 0 },				// TO-DO: confirm gump size
 		{ GUMP_GIFT_BOX_CUBE, 23, 51, 140, 100 },
-		{ GUMP_GIFT_BOX_CILINDER, 16, 51, 140, 115 },
+		{ GUMP_GIFT_BOX_CYLINDER, 16, 51, 140, 115 },
 		{ GUMP_GIFT_BOX_OCTOGON, 25, 51, 140, 115 },
 		{ GUMP_GIFT_BOX_RECTANGLE, 16, 51, 140, 100 },
 		{ GUMP_GIFT_BOX_ANGEL, 21, 51, 140, 100 },
 		{ GUMP_HEART_SHAPED, 56, 30, 102, 74 },
+		{ GUMP_GIFT_BOX_TALL, 0, 0, 0, 0 },			// TO-DO: confirm gump size
+		{ GUMP_FOUNTAIN_LIFE, 0, 0, 0, 0 },			// TO-DO: confirm gump size
+		{ GUMP_SECRET_CHEST, 0, 0, 0, 0 },			// TO-DO: confirm gump size
 		{ GUMP_SECURE_TRADE, 1, 1, 66, 26 },
 		{ GUMP_BOARD_CHECKER, 0, 0, 282, 230 },
 		{ GUMP_BOARD_BACKGAMMON, 0, 0, 282, 210 },
-		{ GUMP_PLAGUE_BEAST, 60, 33, 400, 411 }
+		{ GUMP_PLAGUE_BEAST, 60, 33, 400, 411 },
+		{ GUMP_KING_COLLECTION_BOX, 0, 0, 0, 0 }	// TO-DO: confirm gump size
 	};
 
 	// ??? pItemDef->m_ttContainer.m_dwMinXY to m_dwMaxXY
