@@ -395,7 +395,7 @@ void CServer::ListClients( CTextConsole *pConsole ) const
 	const CAccount *pAcc = NULL;
 	TCHAR *pszMsg = Str_GetTemp();
 	TCHAR *tmpMsg = Str_GetTemp();
-	TCHAR chRank = NULL;
+	TCHAR chRank;
 	LPCTSTR pszState = NULL;
 	size_t numClients = 0;
 
