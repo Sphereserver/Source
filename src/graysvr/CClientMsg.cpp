@@ -2359,8 +2359,9 @@ void CClient::addAOSTooltip( const CObjBase * pObj, bool bRequested, bool bShop 
 	if ( !bSendFull && !bShop )
 		return;
 
-	// Don't send tooltips for items out of LOS (multis/ships)
-	if ( (m_pChar->GetTopPoint().GetDistSight(pObj->GetTopPoint()) > UO_MAP_VIEW_SIZE) && (m_pChar->GetTopPoint().GetDistSight(pObj->GetTopPoint()) <= UO_MAP_VIEW_RADAR) && !bShop )
+	// Don't send tooltips for items out of LOS
+	const CObjBaseTemplate *pObjTop = pObj->GetTopLevelObj();
+	if ( !pObjTop || (m_pChar->GetTopPoint().GetDistSight(pObjTop->GetTopPoint()) > UO_MAP_VIEW_SIZE + 1) )
 		return;
 
 	// We check here if we are sending a tooltip for a static/non-movable items

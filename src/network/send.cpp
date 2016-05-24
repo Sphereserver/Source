@@ -3760,10 +3760,6 @@ bool PacketPropertyListVersionOld::onSend(const CClient* client)
 	if (character == NULL)
 		return false;
 
-	const CObjBase* object = m_object.ObjFind();
-	if (object == NULL || character->GetTopDistSight(object->GetTopLevelObj()) > UO_MAP_VIEW_SIZE)
-		return false;
-
 	return true;
 }
 
@@ -4355,10 +4351,6 @@ bool PacketPropertyList::onSend(const CClient* client)
 	if (character == NULL)
 		return false;
 
-	const CObjBase* object = m_object.ObjFind();
-	if (object == NULL || character->GetTopDistSight(object->GetTopLevelObj()) > UO_MAP_VIEW_SIZE)
-		return false;
-
 	if (hasExpired(TICK_PER_SEC * 30))
 		return false;
 
@@ -4368,7 +4360,7 @@ bool PacketPropertyList::onSend(const CClient* client)
 bool PacketPropertyList::hasExpired(int timeout) const
 {
 	ADDTOCALLSTACK("PacketPropertyList::hasExpired");
-	return static_cast<long long>(m_time + timeout) < g_World.GetCurrentTime().GetTimeRaw();
+	return (g_World.GetCurrentTime().GetTimeRaw() > static_cast<INT64>(m_time + timeout));
 }
 
 
@@ -4576,10 +4568,6 @@ bool PacketPropertyListVersion::onSend(const CClient* client)
 
 	const CChar* character = client->GetChar();
 	if (character == NULL)
-		return false;
-
-	const CObjBase* object = m_object.ObjFind();
-	if (object == NULL || character->GetTopDistSight(object->GetTopLevelObj()) > UO_MAP_VIEW_SIZE)
 		return false;
 
 	return true;
