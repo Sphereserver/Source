@@ -2187,7 +2187,7 @@ void CClient::Event_Target(DWORD context, CGrayUID uid, CPointMap pt, BYTE flags
 		else
 		{
 			// the point must be valid
-			if (m_pChar->GetTopDistSight(pt) > UO_MAP_VIEW_SIZE)
+			if (m_pChar->GetTopPoint().GetDistSight(pt) > UO_MAP_VIEW_SIZE)
 				return;
 		}
 	}

@@ -168,11 +168,6 @@ public:
 		return( GetTopPoint().GetDist( pObj->GetTopPoint()));
 	}
 
-	int GetTopDistSight( const CPointMap & pt ) const
-	{
-		return( GetTopPoint().GetDistSight( pt ));
-	}
-
 	int GetTopDistSight( const CObjBaseTemplate * pObj ) const
 	{
 		// don't check for logged out.
