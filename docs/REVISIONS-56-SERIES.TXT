@@ -57,3 +57,6 @@ Fixed #62: High value FLAGS showing wrong value when retrieved.
 
 24-05-2016, Coruja
 Fixed: Tooltips not showing on disconnected chars when ALLSHOW is enabled.
+
+28-05-2016, Coruja
+Fixed: Function MOVENEAR not working correctly.

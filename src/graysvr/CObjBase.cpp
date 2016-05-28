@@ -477,35 +477,25 @@ bool CObjBase::MoveNear( CPointMap pt, WORD iSteps )
 	// Move to nearby this other object.
 	// Actually move it within +/- iSteps
 
-	CPointBase ptOld = pt;
-	for ( int i = 0; i < iSteps; i++ )
+	CChar *pChar = IsChar() ? static_cast<CChar *>(this) : NULL;
+	CPointMap ptOld = pt;
+
+	for ( WORD i = 0; i < iSteps; i++ )
 	{
 		pt = ptOld;
 		pt.m_x += static_cast<signed short>(Calc_GetRandVal2(-iSteps, iSteps));
 		pt.m_y += static_cast<signed short>(Calc_GetRandVal2(-iSteps, iSteps));
-		
-		if ( !pt.IsValidPoint() )	// hit the edge of the world, so go back to the previous valid position
+
+		if ( !MoveTo(pt) )
+			continue;
+
+		if ( pChar )
 		{
-			pt = ptOld;
-			break;
+			pChar->m_zClimbHeight = 0;
+			if ( !pChar->CanMoveWalkTo(pt, false) )
+				continue;
 		}
-	}
-
-	if ( IsChar() )
-	{
-		// Don't move to an position that we can't walk to
-		CChar *pChar = static_cast<CChar *>(this);
-		ASSERT(pChar);
-
-		pChar->m_zClimbHeight = 0;
-		if ( pChar->CanMoveWalkTo(pt, false) == NULL )
-			return false;
-	}
-
-	if ( MoveTo(pt) )
-	{
-		if ( IsItem() )
-			Update();
+		Update();
 		return true;
 	}
 	return false;
