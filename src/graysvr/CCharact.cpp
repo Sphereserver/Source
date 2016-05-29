@@ -129,90 +129,74 @@ bool CChar::TeleportToCli( int iType, int iArgs )
 	return( false );
 }
 
-void CChar::Jail( CTextConsole * pSrc, bool fSet, int iCell )
+void CChar::Jail( CTextConsole *pSrc, bool fSet, int iCell )
 {
 	ADDTOCALLSTACK("CChar::Jail");
 
-	CScriptTriggerArgs Args( fSet? 1 : 0, static_cast<INT64>(iCell), static_cast<INT64>(0));
-
-	if ( fSet )	// set the jailed flag.
+	if ( IsTrigUsed(TRIGGER_JAILED) )
 	{
-		if ( IsTrigUsed(TRIGGER_JAILED) )
-		{
-			if ( OnTrigger( CTRIG_Jailed, pSrc, &Args ) == TRIGRET_RET_TRUE )
-				return;
-		}
-
-		if ( m_pPlayer )	// allow setting of this to offline chars.
-		{
-			CAccount *pAccount = m_pPlayer->GetAccount();
-			ASSERT(pAccount != NULL);
-
-			pAccount->SetPrivFlags( PRIV_JAILED );
-			pAccount->m_TagDefs.SetNum("JailCell", iCell, true);
-		}
-		if ( IsClient())
-		{
-			m_pClient->SetPrivFlags( PRIV_JAILED );
-		}
-		TCHAR szJailName[ 128 ];
-		if ( iCell )
-		{
-			sprintf( szJailName, "jail%d", iCell );
-		}
-		else
-		{
-			strcpy( szJailName, "jail" );
-		}
-		Spell_Teleport( g_Cfg.GetRegionPoint( szJailName ), true, false );
-		SysMessageDefault( DEFMSG_MSG_JAILED );
+		CScriptTriggerArgs Args(fSet ? 1 : 0, static_cast<INT64>(iCell), static_cast<INT64>(0));
+		if ( OnTrigger(CTRIG_Jailed, pSrc, &Args) == TRIGRET_RET_TRUE )
+			return;
 	}
-	else	// forgive.
-	{
-		if ( IsTrigUsed(TRIGGER_JAILED) )
-		{
-			if ( OnTrigger( CTRIG_Jailed, pSrc, &Args ) == TRIGRET_RET_TRUE )
-				return;
-		}
 
-		if ( IsClient())
-		{
-			if ( ! m_pClient->IsPriv( PRIV_JAILED ))
-				return;
-			m_pClient->ClearPrivFlags( PRIV_JAILED );
-		}
+	if ( fSet )
+	{
 		if ( m_pPlayer )
 		{
 			CAccount *pAccount = m_pPlayer->GetAccount();
-			ASSERT(pAccount != NULL);
-
-			pAccount->ClearPrivFlags( PRIV_JAILED );
-			if ( pAccount->m_TagDefs.GetKey("JailCell") != NULL )
-				pAccount->m_TagDefs.DeleteKey("JailCell");
+			ASSERT(pAccount);
+			pAccount->SetPrivFlags(PRIV_JAILED);
+			pAccount->m_TagDefs.SetNum("JailCell", iCell, true);
 		}
-		SysMessageDefault( DEFMSG_MSG_FORGIVEN );
+
+		TCHAR szJailName[128];
+		if ( iCell )
+			sprintf(szJailName, "jail%d", iCell);
+		else
+			strcpy(szJailName, "jail");
+
+		CPointMap ptJail = g_Cfg.GetRegionPoint(szJailName);
+		if ( ptJail.IsValidPoint() && (GetTopPoint().GetRegion(REGION_TYPE_AREA) != ptJail.GetRegion(REGION_TYPE_AREA)) )
+			Spell_Teleport(ptJail, true, false);
+		SysMessageDefault(DEFMSG_MSG_JAILED);
+	}
+	else
+	{
+		if ( m_pPlayer )
+		{
+			CAccount *pAccount = m_pPlayer->GetAccount();
+			ASSERT(pAccount);
+			if ( !pAccount->IsPriv(PRIV_JAILED) )
+				return;
+			pAccount->ClearPrivFlags(PRIV_JAILED);
+			pAccount->m_TagDefs.DeleteKey("JailCell");
+		}
+		SysMessageDefault(DEFMSG_MSG_FORGIVEN);
 	}
 }
 
 // A vendor is giving me gold. put it in my pack or other place.
-void CChar::AddGoldToPack( int iAmount, CItemContainer * pPack )
+void CChar::AddGoldToPack( int iAmount, CItemContainer *pPack )
 {
 	ADDTOCALLSTACK("CChar::AddGoldToPack");
 
-	if ( pPack == NULL )
+	if ( !pPack )
 		pPack = GetPackSafe();
 
+	CItem *pGold = NULL;
+	int iGoldStack = 0;
 	while ( iAmount > 0 )
 	{
-		CItem * pGold = CItem::CreateScript( ITEMID_GOLD_C1, this );
-
-		int iGoldStack = minimum( iAmount, USHRT_MAX );
-		pGold->SetAmount( iGoldStack );
-
-		Sound( pGold->GetDropSound( pPack ));
-		pPack->ContentAdd( pGold );
+		iGoldStack = minimum(iAmount, g_Cfg.m_iItemsMaxAmount);
+		pGold = CItem::CreateScript(ITEMID_GOLD_C1, this);
+		pGold->SetAmount(iGoldStack);
+		pPack->ContentAdd(pGold);
 		iAmount -= iGoldStack;
 	}
+
+	if ( pGold && (pPack->GetEquipLayer() == LAYER_PACK) )
+		Sound(pGold->GetDropSound(pPack));
 }
 
 // add equipped items.

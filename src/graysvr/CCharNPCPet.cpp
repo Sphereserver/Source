@@ -65,7 +65,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 	//  false = this is not a command we know.
 	//  if ( GetTargMode() == CLIMODE_TARG_PET_CMD ) it needs a target.
 
-	if ( !pSrc->IsClient() || m_pPlayer || !m_pNPC )
+	if ( !pSrc->IsClient() || !m_pNPC )
 		return false;
 
 	m_fIgnoreNextPetCmd = false;	// We clear this incase it's true from previous pet cmds.
@@ -153,10 +153,8 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 			break;
 
 		case PC_COME:
-		case PC_GUARD_ME:
 		case PC_FOLLOW_ME:
-			m_Act_Targ = pSrc->GetUID();
-			Skill_Start(NPCACT_FOLLOW_TARG);
+			NPC_OnHearPetCmdTarg(PC_FOLLOW, pSrc, pSrc, NULL, NULL);
 			break;
 
 		case PC_FOLLOW:
@@ -184,6 +182,10 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 		case PC_GUARD:
 			pTargPrompt = g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_TARG_GUARD);
 			bCheckCrime = true;
+			break;
+
+		case PC_GUARD_ME:
+			NPC_OnHearPetCmdTarg(PC_GUARD, pSrc, pSrc, NULL, NULL);
 			break;
 
 		case PC_STAY:

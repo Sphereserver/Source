@@ -2932,19 +2932,10 @@ do_default:
 				}
 				else if ( newGold > currentGold )
 				{
-					CItem *pGold = NULL;
 					CItemContainer *pBank = GetBank();
 					if ( !pBank )
 						return false;
-
-					int amount = newGold - currentGold;
-					while ( amount > 0 )
-					{
-						pGold = CItem::CreateBase(ITEMID_GOLD_C1);
-						pGold->SetAmount(minimum(amount, pGold->GetMaxAmount()));
-						amount -= pGold->GetAmount();
-						pBank->ContentAdd(pGold);
-					}
+					AddGoldToPack(newGold - currentGold, pBank);
 				}
 				UpdateStatsFlag();
 			}
