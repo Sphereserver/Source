@@ -1232,6 +1232,7 @@ enum GUMP_TYPE	// The gumps. (most of these are not useful to the server.)
 	GUMP_MAP_2_NORTH			= 0x139d,
 	GUMP_PLAGUE_BEAST			= 0x2a63,
 	GUMP_KING_COLLECTION_BOX	= 0x4d0c,
+	GUMP_GIFT_BOX_CHRISTMAS		= 0x777a,
 	GUMP_QTY					= 0xfffe,
 	GUMP_OPEN_SPELLBOOK			= 0xffff
 };
