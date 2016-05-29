@@ -226,13 +226,6 @@ bool CContainer::ContentFindKeyFor( CItem *pLocked ) const
 	return (pLocked->m_itContainer.m_lockUID && (ContentFind(RESOURCE_ID(RES_TYPEDEF, IT_KEY), pLocked->m_itContainer.m_lockUID) != NULL));
 }
 
-CItem *CContainer::ContentFindRandom() const
-{
-	ADDTOCALLSTACK("CContainer::ContentFindRandom");
-	// returns Pointer of random item, NULL if player carrying none
-	return dynamic_cast<CItem *>(GetAt(Calc_GetRandVal(GetCount())));
-}
-
 int CContainer::ContentConsume( RESOURCE_ID_BASE rid, int amount, bool fTest, DWORD dwArg )
 {
 	ADDTOCALLSTACK("CContainer::ContentConsume");

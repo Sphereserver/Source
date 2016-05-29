@@ -1334,11 +1334,11 @@ cantsteal:
 			SysMessageDefault( DEFMSG_STEALING_EMPTY );
 			return( -SKTRIG_QTY );
 		}
-		pItem = pPack->ContentFindRandom();
-		if ( pItem == NULL )
-		{
+
+		pItem = static_cast<CItem *>(pPack->GetAt(Calc_GetRandVal(pPack->GetCount())));		// random item on backpack
+		if ( !pItem )
 			goto cantsteal;
-		}
+
 		m_Act_Targ = pItem->GetUID();
 	}
 

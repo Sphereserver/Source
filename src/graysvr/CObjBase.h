@@ -1550,7 +1550,6 @@ public:
 	bool ContentFindKeyFor( CItem * pLocked ) const;
 	// bool IsItemInside( CItem * pItem ) const;
 
-	CItem * ContentFindRandom() const;
 	void ContentsDump( const CPointMap & pt, DWORD dwAttr = 0 );
 	void ContentsTransfer( CItemContainer * pCont, bool fNoNewbie );
 	void ContentAttrMod( DWORD dwAttr, bool fSet );
