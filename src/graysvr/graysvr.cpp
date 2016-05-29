@@ -103,13 +103,9 @@ void TriglistPrint()
 	for ( it = g_triggers.begin(); it != g_triggers.end(); ++it )
 	{
 		if ( it->m_used )
-		{
-			g_Serv.SysMessagef("Trigger %s : used %ld time%s.\n", it->m_name, it->m_used, (it->m_used > 1) ? "s" : "");
-		} 
+			g_Serv.SysMessagef("Trigger %-25s Used %ld time%s\n", it->m_name, it->m_used, (it->m_used > 1) ? "s" : "");
 		else
-		{
-			g_Serv.SysMessagef("Trigger %s : NOT used.\n", it->m_name);
-		}
+			g_Serv.SysMessagef("Trigger %-25s Unused\n", it->m_name);
 	}
 }
 

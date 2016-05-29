@@ -477,23 +477,25 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 	{
 		case '?':
 			pSrc->SysMessagef(
-				"Available Commands:\n"
-				"# = Immediate Save world (## to save both world and statics)\n"
-				"A = Accounts file update\n"
-				"B message = Broadcast a message\n"
-				"C = Clients List (%lu)\n"
-				"D = Dump data to external file (DA to dump areas)\n"
-				"E = Clear internal variables (like script profile)\n"
-				"G = Garbage collection\n"
-				"H = Hear all that is said (%s)\n"
-				"I = Information\n"
-				"L = Toggle log file (%s)\n"
-				"P = Profile Info (%s) (P# to dump to profiler_dump.txt)\n"
-				"R = Resync Pause\n"
-				"S = Secure mode toggle (%s)\n"
-				"T = List of active Threads\n"
-				"U = List used triggers\n"
-				"X = immediate exit of the server (X# to save world and statics before exit)\n"
+				"Available commands:\n"
+				"#         Immediate save world (## to save both world and statics)\n"
+				"A         Update pending changes on Accounts file\n"
+				"B [msg]   Broadcast message to all clients\n"
+				"C         List of online Clients (%lu)\n"
+				"DA        Dump Areas to external file\n"
+				"DUI       Dump Unscripted Items to external file\n"
+				"E         Clear internal variables (like script profile)\n"
+				"G         Garbage collection\n"
+				"H         Hear all that is said (%s)\n"
+				"I         View server Information\n"
+				"L         Toggle log file (%s)\n"
+				"P         Profile Info (%s) (P# to dump to profiler_dump.txt)\n"
+				"R         Resync Pause\n"
+				"S         Secure mode toggle (%s)\n"
+				"STRIP     Dump all script templates to external file\n"
+				"T         List of active Threads\n"
+				"U         List used triggers\n"
+				"X         Immediate exit the server (X# to save world and statics before exit)\n"
 				,
 				StatGet(SERV_STAT_CLIENTS),
 				g_Log.IsLoggedMask( LOGM_PLAYER_SPEAK ) ? "ON" : "OFF",
@@ -567,27 +569,24 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 			} break;
 		case 'e':
 			{
-				if ( IsSetEF(EF_Script_Profiler) )
+				if ( IsSetEF(EF_Script_Profiler) && (g_profiler.initstate == 0xf1) )
 				{
-					if ( g_profiler.initstate == 0xf1 )
-					{
-						TScriptProfiler::TScriptProfilerFunction	*pFun;
-						TScriptProfiler::TScriptProfilerTrigger		*pTrig;
+					TScriptProfiler::TScriptProfilerFunction *pFun;
+					TScriptProfiler::TScriptProfilerTrigger *pTrig;
 
-						for ( pFun = g_profiler.FunctionsHead; pFun != NULL; pFun = pFun->next )
-						{
-							pFun->average = pFun->max = pFun->min = pFun->total = pFun->called = 0;
-						}
-						for ( pTrig = g_profiler.TriggersHead; pTrig != NULL; pTrig = pTrig->next )
-						{
-							pTrig->average = pTrig->max = pTrig->min = pTrig->total = pTrig->called = 0;
-						}
+					for ( pFun = g_profiler.FunctionsHead; pFun != NULL; pFun = pFun->next )
+						pFun->average = pFun->max = pFun->min = pFun->total = pFun->called = 0;
 
-						g_profiler.total = g_profiler.called = 0;
-						pSrc->SysMessage("Scripts profiler info cleared\n");
-					}
+					for ( pTrig = g_profiler.TriggersHead; pTrig != NULL; pTrig = pTrig->next )
+						pTrig->average = pTrig->max = pTrig->min = pTrig->total = pTrig->called = 0;
+
+					g_profiler.total = g_profiler.called = 0;
+					pSrc->SysMessage("Scripts profiler info cleared.\n");
 				}
-				pSrc->SysMessage("Complete!\n");
+				else
+				{
+					pSrc->SysMessage("Script profiler feature is not enabled on Sphere.ini.\n");
+				}
 			} break;
 		case 'g':
 			{
@@ -630,7 +629,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 			{
 				if ( pSrc != this ) // not from console
 				{
-					pSrc->SysMessage("Not allowed to use 'r' command via telnet. Use 'resync' instead.\n");
+					pSrc->SysMessage("Not allowed to use 'r' command via Telnet. Use 'resync' instead.\n");
 				} 
 				else 
 				{
@@ -646,14 +645,13 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 			} break;
 		case 't':
 			{
-				pSrc->SysMessagef("Current active threads: %d.\n", ThreadHolder::getActiveThreads());
+				pSrc->SysMessagef("Current active threads: %d\n", ThreadHolder::getActiveThreads());
 				size_t iThreadCount = ThreadHolder::getActiveThreads();
 				for ( size_t iThreads = 0; iThreads < iThreadCount; ++iThreads )
 				{
-					IThread * thrCurrent = ThreadHolder::getThreadAt(iThreads);
-					if ( thrCurrent != NULL )
-						pSrc->SysMessagef("%" FMTSIZE_T " - Id: %u, Priority: %d, Name: %s.\n", iThreads + 1, thrCurrent->getId(), 
-											thrCurrent->getPriority(), thrCurrent->getName() );
+					IThread *thrCurrent = ThreadHolder::getThreadAt(iThreads);
+					if ( thrCurrent )
+						pSrc->SysMessagef("%" FMTSIZE_T " - ID: %u, Priority: %d, Name: %s\n", iThreads + 1, thrCurrent->getId(), thrCurrent->getPriority(), thrCurrent->getName());
 				}
 			} break;
 		case 'u':
@@ -661,25 +659,24 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 			break;
 		case 'x':
 			{
-				if (( len > 1 ) && ( sText[1] == '#' ))	//	X# - exit with save. Such exit is not protected by secure mode
+				bool bSave = ((len > 1) && (sText[1] == '#'));
+				if ( g_Cfg.m_fSecure && !bSave )
 				{
-					if ( g_Serv.m_fResyncPause )
-						goto do_resync;
-
-					g_World.Save(true);
-					g_World.SaveStatics();
-					g_Log.Event( LOGL_FATAL, "Immediate Shutdown initialized!\n");
-					SetExitFlag(1);
-				}
-				else if ( g_Cfg.m_fSecure )
-				{
-					pSrc->SysMessage( "NOTE: Secure mode prevents keyboard exit!\n" );
+					pSrc->SysMessage("NOTE: Secure mode prevents keyboard exit!\n");
 					fRet = false;
 				}
 				else
 				{
-					g_Log.Event( LOGL_FATAL, "Immediate Shutdown initialized!\n");
-					SetExitFlag( 1 );
+					if ( bSave )
+					{
+						if ( g_Serv.m_fResyncPause )
+							goto do_resync;
+
+						g_World.Save(true);
+						g_World.SaveStatics();
+					}
+					g_Log.Event(LOGL_FATAL, "Immediate Shutdown initialized!\n");
+					SetExitFlag(1);
 				}
 			} break;
 #ifdef _TESTEXCEPTION
@@ -909,56 +906,58 @@ PLEVEL_TYPE CServer::GetPrivLevel() const
 	return PLEVEL_Owner;
 }
 
-void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
+void CServer::ProfileDump( CTextConsole *pSrc, bool bDump )
 {
 	ADDTOCALLSTACK("CServer::ProfileDump");
 	if ( !pSrc )
 		return;
 
-	CFileText * ftDump = NULL;
-
+	CFileText *ftDump = NULL;
 	if ( bDump )
 	{
 		ftDump = new CFileText();
-		if ( ! ftDump->Open("profiler_dump.txt", OF_CREATE|OF_TEXT) )
+		if ( !ftDump->Open("profiler_dump.txt", OF_CREATE|OF_TEXT) )
 		{
 			delete ftDump;
 			ftDump = NULL;
 		}
 	}
 
-	pSrc->SysMessagef("Profiles %s: (%d sec total)\n", CurrentProfileData.IsActive() ? "ON" : "OFF", CurrentProfileData.GetActiveWindow());
-	if (ftDump != NULL)
+	if ( ftDump )
 		ftDump->Printf("Profiles %s: (%d sec total)\n", CurrentProfileData.IsActive() ? "ON" : "OFF", CurrentProfileData.GetActiveWindow());
-
-	size_t iThreadCount = ThreadHolder::getActiveThreads();
-	for ( size_t iThreads = 0; iThreads < iThreadCount; ++iThreads)
-	{
-		IThread* thrCurrent = ThreadHolder::getThreadAt(iThreads);
-		if (thrCurrent == NULL)
-			continue;
-
-		const ProfileData& profile = STATIC_CAST<AbstractSphereThread*>(thrCurrent)->m_profile;
-		if (profile.IsEnabled() == false)
-			continue;
-
-		pSrc->SysMessagef("Thread %u, Name=%s\n", thrCurrent->getId(), thrCurrent->getName());
-		if (ftDump != NULL)
-			ftDump->Printf("Thread %u, Name=%s\n", thrCurrent->getId(), thrCurrent->getName());
-
-		for (int i = 0; i < PROFILE_QTY; i++)
-		{
-			if (profile.IsEnabled(static_cast<PROFILE_TYPE>(i)) == false)
-				continue;
-
-			pSrc->SysMessagef( "%-10s = %s\n", profile.GetName(static_cast<PROFILE_TYPE>(i)), profile.GetDescription(static_cast<PROFILE_TYPE>(i)) );
-			if (ftDump != NULL)
-				ftDump->Printf( "%-10s = %s\n", profile.GetName(static_cast<PROFILE_TYPE>(i)), profile.GetDescription(static_cast<PROFILE_TYPE>(i)) );
-		}
-	}
+	else
+		pSrc->SysMessagef("Profiles %s: (%d sec total)\n", CurrentProfileData.IsActive() ? "ON" : "OFF", CurrentProfileData.GetActiveWindow());
 
 	if ( IsSetEF(EF_Script_Profiler) )
 	{
+		size_t iThreadCount = ThreadHolder::getActiveThreads();
+		for ( size_t iThreads = 0; iThreads < iThreadCount; ++iThreads )
+		{
+			IThread *thrCurrent = ThreadHolder::getThreadAt(iThreads);
+			if ( thrCurrent == NULL )
+				continue;
+
+			const ProfileData &profile = static_cast<AbstractSphereThread *>(thrCurrent)->m_profile;
+			if ( profile.IsEnabled() == false )
+				continue;
+
+			if ( ftDump )
+				ftDump->Printf("Thread %u, Name=%s\n", thrCurrent->getId(), thrCurrent->getName());
+			else
+				pSrc->SysMessagef("Thread %u, Name=%s\n", thrCurrent->getId(), thrCurrent->getName());
+
+			for ( int i = 0; i < PROFILE_QTY; i++ )
+			{
+				if ( profile.IsEnabled(static_cast<PROFILE_TYPE>(i)) == false )
+					continue;
+
+				if ( ftDump )
+					ftDump->Printf("%-10s = %s\n", profile.GetName(static_cast<PROFILE_TYPE>(i)), profile.GetDescription(static_cast<PROFILE_TYPE>(i)));
+				else
+					pSrc->SysMessagef("%-10s = %s\n", profile.GetName(static_cast<PROFILE_TYPE>(i)), profile.GetDescription(static_cast<PROFILE_TYPE>(i)));
+			}
+		}
+
 		if ( g_profiler.initstate != 0xf1 )
 			pSrc->SysMessagef("Scripts profiler is not initialized\n");
 		else if ( !g_profiler.called )
@@ -966,19 +965,20 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 		else
 		{
 			LONGLONG average = g_profiler.total / g_profiler.called;
-			TScriptProfiler::TScriptProfilerFunction * pFun;
-			TScriptProfiler::TScriptProfilerTrigger * pTrig;
+			TScriptProfiler::TScriptProfilerFunction *pFun;
+			TScriptProfiler::TScriptProfilerTrigger *pTrig;
 			LONGLONG divby = llTimeProfileFrequency / 1000;
 
-			pSrc->SysMessagef( "Scripts: called %lu times and took %i.%04i msec (%i.%04i msec average). Reporting with highest average.\n",
+			if ( ftDump )
+				ftDump->Printf("Scripts: called %lu times and took %i.%04i ms (%i.%04i ms average). Reporting with highest average.\n",
 					g_profiler.called,
 					static_cast<int>(g_profiler.total / divby),
 					static_cast<int>(((g_profiler.total * 10000) / (divby)) % 10000),
 					static_cast<int>(average / divby),
 					static_cast<int>(((average * 10000) / (divby)) % 10000)
-			);
-			if (ftDump != NULL)
-				ftDump->Printf("Scripts: called %lu times and took %i.%04i msec (%i.%04i msec average). Reporting with highest average.\n",
+				);
+			else
+				pSrc->SysMessagef("Scripts: called %lu times and took %i.%04i ms (%i.%04i ms average). Reporting with highest average.\n",
 					g_profiler.called,
 					static_cast<int>(g_profiler.total / divby),
 					static_cast<int>(((g_profiler.total * 10000) / (divby)) % 10000),
@@ -990,26 +990,27 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 			{
 				if ( pFun->average > average )
 				{
-					pSrc->SysMessagef( "FUNCTION '%s' called %lu times, took %i.%04i msec average (%i.%04i min, %i.%04i max), total: %i.%04i msec\n",
-						pFun->name,
-						pFun->called,
-						static_cast<int>(pFun->average / divby),
-						static_cast<int>(((pFun->average * 10000) / (divby)) % 10000),
-						static_cast<int>(pFun->min / divby),
-						static_cast<int>(((pFun->min * 10000) / (divby)) % 10000),
-						static_cast<int>(pFun->max / divby),
-						static_cast<int>(((pFun->max * 10000) / (divby)) % 10000),
-						static_cast<int>(pFun->total / divby),
-						static_cast<int>(((pFun->total * 10000) / (divby)) % 10000)
-					);
-					if (ftDump != NULL)
-						ftDump->Printf("FUNCTION '%s' called %lu times, took %i.%04i msec average (%i.%04i min, %i.%04i max), total: %i.%04i msec\n",
+					if ( ftDump )
+						ftDump->Printf("FUNCTION '%-30s' called %6lu times (%6i.%04i min, %6i.%04i avg, %6i.%04i max) [total: %6i.%04i ms]\n",
 							pFun->name,
 							pFun->called,
-							static_cast<int>(pFun->average / divby),
-							static_cast<int>(((pFun->average * 10000) / (divby)) % 10000),
 							static_cast<int>(pFun->min / divby),
 							static_cast<int>(((pFun->min * 10000) / (divby)) % 10000),
+							static_cast<int>(pFun->average / divby),
+							static_cast<int>(((pFun->average * 10000) / (divby)) % 10000),
+							static_cast<int>(pFun->max / divby),
+							static_cast<int>(((pFun->max * 10000) / (divby)) % 10000),
+							static_cast<int>(pFun->total / divby),
+							static_cast<int>(((pFun->total * 10000) / (divby)) % 10000)
+						);
+					else
+						pSrc->SysMessagef("FUNCTION '%-30s' called %6lu times (%6i.%04i min, %6i.%04i avg, %6i.%04i max) [total: %6i.%04i ms]\n",
+							pFun->name,
+							pFun->called,
+							static_cast<int>(pFun->min / divby),
+							static_cast<int>(((pFun->min * 10000) / (divby)) % 10000),
+							static_cast<int>(pFun->average / divby),
+							static_cast<int>(((pFun->average * 10000) / (divby)) % 10000),
 							static_cast<int>(pFun->max / divby),
 							static_cast<int>(((pFun->max * 10000) / (divby)) % 10000),
 							static_cast<int>(pFun->total / divby),
@@ -1021,26 +1022,27 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 			{
 				if ( pTrig->average > average )
 				{
-					pSrc->SysMessagef( "TRIGGER '%s' called %lu times, took %i.%04i msec average (%i.%04i min, %i.%04i max), total: %i.%04i msec\n",
-						pTrig->name,
-						pTrig->called,
-						static_cast<int>(pTrig->average / divby),
-						static_cast<int>(((pTrig->average * 10000) / (divby)) % 10000),
-						static_cast<int>(pTrig->min / divby),
-						static_cast<int>(((pTrig->min * 10000) / (divby)) % 10000),
-						static_cast<int>(pTrig->max / divby),
-						static_cast<int>(((pTrig->max * 10000) / (divby)) % 10000),
-						static_cast<int>(pTrig->total / divby),
-						static_cast<int>(((pTrig->total * 10000) / (divby)) % 10000)
-					);
-					if (ftDump != NULL)
-						ftDump->Printf("TRIGGER '%s' called %lu times, took %i.%04i msec average (%i.%04i min, %i.%04i max), total: %i.%04i msec\n",
+					if ( ftDump )
+						ftDump->Printf("TRIGGER '%-25s' called %6lu times (%6i.%04i min, %6i.%04i avg, %6i.%04i max), total: %6i.%04i ms\n",
 							pTrig->name,
 							pTrig->called,
-							static_cast<int>(pTrig->average / divby),
-							static_cast<int>(((pTrig->average * 10000) / (divby)) % 10000),
 							static_cast<int>(pTrig->min / divby),
 							static_cast<int>(((pTrig->min * 10000) / (divby)) % 10000),
+							static_cast<int>(pTrig->average / divby),
+							static_cast<int>(((pTrig->average * 10000) / (divby)) % 10000),
+							static_cast<int>(pTrig->max / divby),
+							static_cast<int>(((pTrig->max * 10000) / (divby)) % 10000),
+							static_cast<int>(pTrig->total / divby),
+							static_cast<int>(((pTrig->total * 10000) / (divby)) % 10000)
+						);
+					else
+						pSrc->SysMessagef("TRIGGER '%-25s' called %6lu times (%6i.%04i min, %6i.%04i avg, %6i.%04i max), total: %6i.%04i ms\n",
+							pTrig->name,
+							pTrig->called,
+							static_cast<int>(pTrig->min / divby),
+							static_cast<int>(((pTrig->min * 10000) / (divby)) % 10000),
+							static_cast<int>(pTrig->average / divby),
+							static_cast<int>(((pTrig->average * 10000) / (divby)) % 10000),
 							static_cast<int>(pTrig->max / divby),
 							static_cast<int>(((pTrig->max * 10000) / (divby)) % 10000),
 							static_cast<int>(pTrig->total / divby),
@@ -1054,10 +1056,10 @@ void CServer::ProfileDump( CTextConsole * pSrc, bool bDump )
 	}
 	else
 	{
-		pSrc->SysMessage("Script profiler is turned OFF\n");
+		pSrc->SysMessage("Script profiler feature is not enabled on Sphere.ini.\n");
 	}
 
-	if ( ftDump != NULL )
+	if ( ftDump )
 	{
 		ftDump->Close();
 		delete ftDump;

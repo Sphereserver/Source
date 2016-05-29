@@ -64,3 +64,4 @@ Fixed: Function MOVENEAR not working correctly.
 29-05-2016, Coruja
 Fixed: Pet command 'guard me' making the pet follow the owner instead guard him.
 Fixed: Jailed players being teleported to the same jail region with no reason when the client login.
+Changed: Improved text formatting of basic console commands.
