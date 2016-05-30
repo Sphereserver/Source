@@ -415,7 +415,7 @@ int CContainer::ResourceConsume( const CResourceQtyArray *pResources, int iRepli
 		RESOURCE_ID rid = pResources->GetAt(i).GetResourceID();
 		if ( rid.GetResType() == RES_SKILL )
 		{
-			CChar *pChar = static_cast<CChar *>(this);
+			CChar *pChar = dynamic_cast<CChar *>(this);
 			if ( !pChar )
 				continue;
 			if ( pChar->Skill_GetBase(static_cast<SKILL_TYPE>(rid.GetResIndex())) < iResQty )
@@ -444,7 +444,7 @@ int CContainer::ContentCountAll() const
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
 		iTotal++;
-		const CItemContainer *pCont = static_cast<const CItemContainer *>(pItem);
+		const CItemContainer *pCont = dynamic_cast<const CItemContainer *>(pItem);
 		if ( !pCont )
 			continue;
 		//if ( !pCont->IsSearchable() )
@@ -601,7 +601,7 @@ bool CItemContainer::IsItemInTrade()
 		return false;
 	else if ( pObj->IsType(IT_EQ_TRADE_WINDOW) )
 		return true;
-	CItemContainer *pObj2 = static_cast<CItemContainer *>(GetContainer());
+	CItemContainer *pObj2 = dynamic_cast<CItemContainer *>(GetContainer());
 	return pObj2->IsItemInTrade();
 }
 
@@ -609,14 +609,14 @@ void CItemContainer::Trade_Status( bool bCheck )
 {
 	ADDTOCALLSTACK("CItemContainer::Trade_Status");
 	// Update trade status check boxes to both sides.
-	CItemContainer *pPartner = static_cast<CItemContainer *>(m_uidLink.ItemFind());
+	CItemContainer *pPartner = dynamic_cast<CItemContainer*>(m_uidLink.ItemFind());
 	if ( !pPartner )
 		return;
 
-	CChar *pChar1 = static_cast<CChar *>(GetParent());
+	CChar *pChar1 = dynamic_cast<CChar *>(GetParent());
 	if ( !pChar1 || !pChar1->IsClient() )
 		return;
-	CChar *pChar2 = static_cast<CChar *>(pPartner->GetParent());
+	CChar *pChar2 = dynamic_cast<CChar *>(pPartner->GetParent());
 	if ( !pChar2 || !pChar2->IsClient() )
 		return;
 
@@ -723,10 +723,10 @@ void CItemContainer::Trade_UpdateGold( DWORD platinum, DWORD gold )
 	CItemContainer *pPartner = dynamic_cast<CItemContainer *>(m_uidLink.ItemFind());
 	if ( !pPartner )
 		return;
-	CChar *pChar1 = static_cast<CChar *>(GetParent());
+	CChar *pChar1 = dynamic_cast<CChar *>(GetParent());
 	if ( !pChar1 || !pChar1->IsClient() )
 		return;
-	CChar *pChar2 = static_cast<CChar *>(pPartner->GetParent());
+	CChar *pChar2 = dynamic_cast<CChar *>(pPartner->GetParent());
 	if ( !pChar2 || !pChar2->IsClient() )
 		return;
 
@@ -781,7 +781,7 @@ void CItemContainer::Trade_Delete()
 	}
 
 	// Kill my trading partner.
-	CItemContainer *pPartner = static_cast<CItemContainer *>(m_uidLink.ItemFind());
+	CItemContainer *pPartner = dynamic_cast<CItemContainer *>(m_uidLink.ItemFind());
 	if ( !pPartner )
 		return;
 
@@ -951,7 +951,7 @@ void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, unsigned char gridI
 			{
 				// Can't be put into any sort of a container.
 				// delete all it's pieces.
-				CItemContainer *pCont = static_cast<CItemContainer *>(pItem);
+				CItemContainer *pCont = dynamic_cast<CItemContainer *>(pItem);
 				ASSERT(pCont);
 				pCont->DeleteAll();
 				break;
