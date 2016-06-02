@@ -152,58 +152,59 @@ void CItemSpawn::GenerateItem(CResourceDef *pDef)
 
 void CItemSpawn::GenerateChar(CResourceDef *pDef)
 {
-    ADDTOCALLSTACK("CitemSpawn:GenerateChar");
-    if ( !IsTopLevel() )
-        return;
- 
-    RESOURCE_ID_BASE rid = pDef->GetResourceID();
-    if ( rid.GetResType() == RES_SPAWN )
-    {
-        const CRandGroupDef *pSpawnGroup = static_cast<const CRandGroupDef *>(pDef);
-        ASSERT(pSpawnGroup);
-        size_t i = pSpawnGroup->GetRandMemberIndex();
-        if ( i != pSpawnGroup->BadMemberIndex() )
-            rid = pSpawnGroup->GetMemberID(i);
-    }
- 
-    if ( (rid.GetResType() != RES_CHARDEF) && (rid.GetResType() != RES_UNKNOWN) )
-        return;
- 
-    CChar *pChar = CChar::CreateBasic(static_cast<CREID_TYPE>(rid.GetResIndex()));
-    if ( !pChar )
-        return;
- 
-    CPointMap pt = GetTopPoint();
-    int iDistMax = m_itSpawnChar.m_DistMax;
-    pChar->NPC_LoadScript(true);
-    pChar->StatFlag_Set(STATF_Spawned);
-    // Try placing this char near the spawn
-    if ( !pChar->MoveNearObj(this, iDistMax ? Calc_GetRandVal(iDistMax) : 1) )
-    {
-        // If this fails, try placing the char ON the spawn
-        if (!pChar->MoveTo(pt))
-        {
-            DEBUG_ERR(("Spawner UID:0%lx is unable to place a character inside the world, deleted the character", (DWORD)(this->GetUID())));
-            pChar->Delete();
-            return;
-        }
-    }
- 
-    // Check if the NPC can spawn in this region
-    CRegionBase *pRegion = pt.GetRegion(REGION_TYPE_AREA);
-    if ( !pRegion || (pRegion->IsGuarded() && pChar->Noto_IsEvil()) )
-    {
-        pChar->Delete();
-        return;
-    }
- 
-    AddObj(pChar->GetUID());
-    pChar->NPC_CreateTrigger();     // removed from NPC_LoadScript() and triggered after char placement and attachment to the spawnitem
-    pChar->Update();
- 
-    size_t iCount = GetTopSector()->GetCharComplexity();
-    if ( iCount > g_Cfg.m_iMaxCharComplexity )
-        g_Log.Event(LOGL_WARN, "%d chars at %s. Sector too complex!\n", iCount, GetTopSector()->GetBasePoint().WriteUsed());
+	ADDTOCALLSTACK("CitemSpawn:GenerateChar");
+	if ( !IsTopLevel() )
+		return;
+
+	RESOURCE_ID_BASE rid = pDef->GetResourceID();
+	if ( rid.GetResType() == RES_SPAWN )
+	{
+		const CRandGroupDef *pSpawnGroup = static_cast<const CRandGroupDef *>(pDef);
+		ASSERT(pSpawnGroup);
+		size_t i = pSpawnGroup->GetRandMemberIndex();
+		if ( i != pSpawnGroup->BadMemberIndex() )
+			rid = pSpawnGroup->GetMemberID(i);
+	}
+
+	if ( (rid.GetResType() != RES_CHARDEF) && (rid.GetResType() != RES_UNKNOWN) )
+		return;
+
+	CChar *pChar = CChar::CreateBasic(static_cast<CREID_TYPE>(rid.GetResIndex()));
+	if ( !pChar )
+		return;
+
+	CPointMap pt = GetTopPoint();
+	int iDistMax = m_itSpawnChar.m_DistMax;
+	pChar->NPC_LoadScript(true);
+	pChar->StatFlag_Set(STATF_Spawned);
+
+	// Try placing this char near the spawn
+	if ( !pChar->MoveNearObj(this, iDistMax ? Calc_GetRandVal(iDistMax) : 1) )
+	{
+		// If this fails, try placing the char ON the spawn
+		if ( !pChar->MoveTo(pt) )
+		{
+			DEBUG_ERR(("Spawn UID:0%lx is unable to place a character inside the world, deleted the character", static_cast<DWORD>(GetUID())));
+			pChar->Delete();
+			return;
+		}
+	}
+
+	// Check if the NPC can spawn in this region
+	CRegionBase *pRegion = pt.GetRegion(REGION_TYPE_AREA);
+	if ( !pRegion || (pRegion->IsGuarded() && pChar->Noto_IsEvil()) )
+	{
+		pChar->Delete();
+		return;
+	}
+
+	AddObj(pChar->GetUID());
+	pChar->NPC_CreateTrigger();		// removed from NPC_LoadScript() and triggered after char placement and attachment to the spawnitem
+	pChar->Update();
+
+	size_t iCount = GetTopSector()->GetCharComplexity();
+	if ( iCount > g_Cfg.m_iMaxCharComplexity )
+		g_Log.Event(LOGL_WARN, "%d chars at %s. Sector too complex!\n", iCount, GetTopSector()->GetBasePoint().WriteUsed());
 }
 
 void CItemSpawn::DelObj(CGrayUID uid)
@@ -474,7 +475,7 @@ bool CItemSpawn::r_LoadVal(CScript & s)
 	return false;
 }
 
-void  CItemSpawn::r_Write(CScript & s)
+void CItemSpawn::r_Write(CScript & s)
 {
 	ADDTOCALLSTACK("CitemSpawn:r_Write");
 	EXC_TRY("Write");
@@ -927,15 +928,14 @@ int CItemMemory::Guild_SetLoyalTo(CGrayUID uid)
 {
 	ADDTOCALLSTACK("CItemMemory::Guild_SetLoyalTo");
 	// Some other place checks to see if this is a valid member.
-	return GetTagDefs()->SetNum("LoyalTo", (DWORD)uid, false);
+	return GetTagDefs()->SetNum("LoyalTo", static_cast<INT64>(uid));
 }
 
 CGrayUID CItemMemory::Guild_GetLoyalTo() const
 {
 	ADDTOCALLSTACK("CItemMemory::Guild_GetLoyalTo");
 	CItemMemory *pObj = const_cast<CItemMemory *>(this);
-	CGrayUID iUid(static_cast<DWORD>(pObj->GetTagDefs()->GetKeyNum("LoyalTo", true)));
-	return iUid;
+	return static_cast<CGrayUID>(pObj->GetTagDefs()->GetKeyNum("LoyalTo", true));
 }
 
 int CItemMemory::Guild_SetTitle(LPCTSTR pszTitle)
@@ -947,7 +947,7 @@ int CItemMemory::Guild_SetTitle(LPCTSTR pszTitle)
 LPCTSTR CItemMemory::Guild_GetTitle() const
 {
 	ADDTOCALLSTACK("CItemMemory::Guild_GetTitle");
-	return m_TagDefs.GetKeyStr("Title", false);
+	return m_TagDefs.GetKeyStr("Title");
 }
 
 int CItemMemory::FixWeirdness()
@@ -957,33 +957,21 @@ int CItemMemory::FixWeirdness()
 	if ( iResultCode )
 		return iResultCode;
 
-	if ( !IsItemEquipped() || GetEquipLayer() != LAYER_SPECIAL || !GetMemoryTypes() )	// has to be a memory of some sort.
-	{
-		iResultCode = 0x4222;
-		return iResultCode;	// get rid of it.
-	}
+	if ( !IsItemEquipped() || (GetEquipLayer() != LAYER_SPECIAL) || !GetMemoryTypes() )	// has to be a memory of some sort.
+		return 0x4222;	// get rid of it.
 
-	CChar *pChar = dynamic_cast<CChar*>(GetParent());
+	CChar *pChar = dynamic_cast<CChar *>(GetParent());
 	if ( !pChar )
-	{
-		iResultCode = 0x4223;
-		return iResultCode;	// get rid of it.
-	}
+		return 0x4223;	// get rid of it.
 
 	// If it is my guild make sure I am linked to it correctly !
 	if ( IsMemoryTypes(MEMORY_GUILD|MEMORY_TOWN) )
 	{
 		const CItemStone *pStone = pChar->Guild_Find(static_cast<MEMORY_TYPE>(GetMemoryTypes()));
 		if ( !pStone || pStone->GetUID() != m_uidLink )
-		{
-			iResultCode = 0x4224;
-			return iResultCode;	// get rid of it.
-		}
+			return 0x4224;	// get rid of it.
 		if ( !pStone->GetMember(pChar) )
-		{
-			iResultCode = 0x4225;
-			return iResultCode;	// get rid of it.
-		}
+			return 0x4225;	// get rid of it.
 	}
 	return 0;
 }

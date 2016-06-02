@@ -448,60 +448,36 @@ int CChar::IsWeird() const
 	if ( iResultCode )
 		return iResultCode;
 
-	if ( IsDisconnected())
+	if ( IsDisconnected() )
 	{
-		if ( ! GetTopSector()->IsCharDisconnectedIn( this ))
-		{
-			iResultCode = 0x1102;
-			return iResultCode;
-		}
+		if ( !GetTopSector()->IsCharDisconnectedIn(this) )
+			return 0x1102;
+
 		if ( m_pNPC )
 		{
-			if ( IsStatFlag( STATF_Ridden ))
+			if ( IsStatFlag(STATF_Ridden) )
 			{
 				if ( Skill_GetActive() != NPCACT_RIDDEN )
-				{
-					iResultCode = 0x1103;
-					return iResultCode;
-				}
+					return 0x1103;
 
 				// Make sure we are still linked back to the world.
-				CItem * pItem = Horse_GetMountItem();
-				if ( pItem == NULL )
-				{
-					iResultCode = 0x1104;
-					return iResultCode;
-				}
-				if ( pItem->m_itFigurine.m_UID != GetUID())
-				{
-					iResultCode = 0x1105;
-					return iResultCode;
-				}
+				CItem *pItem = Horse_GetMountItem();
+				if ( !pItem )
+					return 0x1104;
+				if ( pItem->m_itFigurine.m_UID != GetUID() )
+					return 0x1105;
 			}
-			else
-			{
-				if ( ! IsStatFlag( STATF_DEAD ))
-				{
-					iResultCode = 0x1106;
-					return iResultCode;
-				}
-			}
+			else if ( !IsStatFlag(STATF_DEAD) )
+				return 0x1106;
 		}
 	}
 
-	if ( ! m_pPlayer && ! m_pNPC )
-	{
-		iResultCode = 0x1107;
-		return iResultCode;
-	}
+	if ( !m_pPlayer && !m_pNPC )
+		return 0x1107;
+	if ( !GetTopPoint().IsValidPoint() )
+		return 0x1108;
 
-	if ( ! GetTopPoint().IsValidPoint())
-	{
-		iResultCode = 0x1108;
-		return iResultCode;
-	}
-
-	return( 0 );
+	return 0;
 }
 
 // Get the Z we should be at
@@ -565,82 +541,74 @@ signed char CChar::GetFixZ( CPointMap pt, unsigned long wBlockFlags)
 int CChar::FixWeirdness()
 {
 	ADDTOCALLSTACK("CChar::FixWeirdness");
-
-	int iResultCode = CObjBase::IsWeird();
-	if ( iResultCode )
-		// Not recoverable - must try to delete the object.
-		return( iResultCode );
-
+	// Make sure my flags are good.
 	// NOTE: Stats and skills may go negative temporarily.
 
-	CCharBase * pCharDef = Char_GetDef();
+	int iResultCode = CObjBase::IsWeird();
+	if ( iResultCode )		// Not recoverable - must try to delete the object.
+		return iResultCode;
 
-	// Make sure my flags are good.
-
-	if ( IsStatFlag( STATF_HasShield ))
+	CCharBase *pCharDef = Char_GetDef();
+	if ( IsStatFlag(STATF_HasShield) )
 	{
-		CItem * pShield = LayerFind( LAYER_HAND2 );
-		if ( pShield == NULL )
-			StatFlag_Clear( STATF_HasShield );
+		CItem *pShield = LayerFind(LAYER_HAND2);
+		if ( !pShield )
+			StatFlag_Clear(STATF_HasShield);
 	}
-	if ( IsStatFlag( STATF_OnHorse ))
+	if ( IsStatFlag(STATF_OnHorse) )
 	{
-		CItem * pHorse = LayerFind( LAYER_HORSE );
-		if ( pHorse == NULL )
-			StatFlag_Clear( STATF_OnHorse );
+		CItem *pHorse = LayerFind(LAYER_HORSE);
+		if ( !pHorse )
+			StatFlag_Clear(STATF_OnHorse);
 	}
-	if ( IsStatFlag( STATF_Spawned ))
+	if ( IsStatFlag(STATF_Spawned) )
 	{
 		if ( !m_uidSpawnItem.ItemFind() )
-			StatFlag_Clear( STATF_Spawned );
+			StatFlag_Clear(STATF_Spawned);
 	}
-	if ( IsStatFlag( STATF_Pet ))
+	if ( IsStatFlag(STATF_Pet) )
 	{
-		CItemMemory *pMemory = Memory_FindTypes( MEMORY_IPET );
-		if ( pMemory == NULL )
-			StatFlag_Clear( STATF_Pet );
+		CItemMemory *pMemory = Memory_FindTypes(MEMORY_IPET);
+		if ( !pMemory )
+			StatFlag_Clear(STATF_Pet);
 	}
-	if ( IsStatFlag( STATF_Ridden ))
+	if ( IsStatFlag(STATF_Ridden) )
 	{
 		// Move the ridden creature to the same location as it's rider.
 		if ( !m_pNPC || !IsDisconnected() )
-			StatFlag_Clear( STATF_Ridden );
+			StatFlag_Clear(STATF_Ridden);
 		else
 		{
 			if ( Skill_GetActive() != NPCACT_RIDDEN )
-			{
-				iResultCode = 0x1203;
-				return iResultCode;
-			}
-			CItem * pFigurine = Horse_GetMountItem();
-			if ( pFigurine == NULL )
-			{
-				iResultCode = 0x1204;
-				return iResultCode;
-			}
+				return 0x1203;
+
+			CItem *pFigurine = Horse_GetMountItem();
+			if ( !pFigurine )
+				return 0x1204;
+
 			CPointMap pt = pFigurine->GetTopLevelObj()->GetTopPoint();
-			if ( pt != GetTopPoint())
+			if ( pt != GetTopPoint() )
 			{
-				MoveToChar( pt );
+				MoveToChar(pt);
 				SetDisconnected();
 			}
 		}
 	}
-	if ( IsStatFlag( STATF_Criminal ))
+	if ( IsStatFlag(STATF_Criminal) )
 	{
-		CItem * pMemory = LayerFind( LAYER_FLAG_Criminal );
-		if ( pMemory == NULL )
-			StatFlag_Clear( STATF_Criminal );
+		CItem *pMemory = LayerFind(LAYER_FLAG_Criminal);
+		if ( !pMemory )
+			StatFlag_Clear(STATF_Criminal);
 	}
 
-	if ( ! IsIndividualName() && pCharDef->GetTypeName()[0] == '#' )
-		SetName( pCharDef->GetTypeName());
+	if ( !IsIndividualName() && pCharDef->GetTypeName()[0] == '#' )
+		SetName(pCharDef->GetTypeName());
 
 	// Automatic transition from old to new spawn engine
 	CItemMemory *pMemory = Memory_FindTypes(MEMORY_ISPAWNED);
 	if ( pMemory )
 	{
-		CItemSpawn *pSpawn = static_cast<CItemSpawn*>(pMemory->m_uidLink.ItemFind());
+		CItemSpawn *pSpawn = static_cast<CItemSpawn *>(pMemory->m_uidLink.ItemFind());
 		pMemory->Delete();
 		if ( pSpawn )
 		{
@@ -649,20 +617,20 @@ int CChar::FixWeirdness()
 		}
 	}
 
-	if ( m_pPlayer )	// Player char.
+	if ( m_pPlayer )
 	{
-		Memory_ClearTypes( MEMORY_IPET );
-		StatFlag_Clear( STATF_Ridden );
+		Memory_ClearTypes(MEMORY_IPET);
+		StatFlag_Clear(STATF_Ridden);
 
 		if ( m_pPlayer->GetSkillClass() == NULL )	// this should never happen.
 		{
-			m_pPlayer->SetSkillClass( this, RESOURCE_ID( RES_SKILLCLASS ));
+			m_pPlayer->SetSkillClass(this, RESOURCE_ID(RES_SKILLCLASS));
 			ASSERT(m_pPlayer->GetSkillClass());
 		}
 
 		// Make sure players don't get ridiculous stats.
 		//		m_iOverSkillMultiply disables this check if set to < 1
-		if (( GetPrivLevel() <= PLEVEL_Player ) && ( g_Cfg.m_iOverSkillMultiply > 0 ))
+		if ( (GetPrivLevel() <= PLEVEL_Player) && (g_Cfg.m_iOverSkillMultiply > 0) )
 		{
 			for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 			{
@@ -675,7 +643,7 @@ int CChar::FixWeirdness()
 			}
 
 			// ??? What if magically enhanced !!!
-			if ( IsPlayableCharacter() && ( GetPrivLevel() < PLEVEL_Counsel ) && !IsStatFlag( STATF_Polymorph ))
+			if ( IsPlayableCharacter() && (GetPrivLevel() < PLEVEL_Counsel) && !IsStatFlag(STATF_Polymorph) )
 			{
 				for ( int j = STAT_STR; j < STAT_BASE_QTY; j++ )
 				{
@@ -688,11 +656,8 @@ int CChar::FixWeirdness()
 	}
 	else
 	{
-		if ( ! m_pNPC )
-		{
-			iResultCode = 0x1205;
-			return iResultCode;
-		}
+		if ( !m_pNPC )
+			return 0x1205;
 
 		// An NPC. Don't keep track of unused skills.
 		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
@@ -702,7 +667,7 @@ int CChar::FixWeirdness()
 		}
 	}
 
-	if ( GetTimerAdjusted() > 60*60 )
+	if ( GetTimerAdjusted() > 60 * 60 )
 		SetTimeout(1);	// unreasonably long for a char?
 
 	return IsWeird();
@@ -3243,27 +3208,24 @@ bool CChar::r_Load( CScript & s ) // Load a character from script
 	ADDTOCALLSTACK("CChar::r_Load");
 	CScriptObj::r_Load(s);
 
-	if (m_pNPC)
-	{
+	if ( m_pNPC )
 		NPC_GetAllSpellbookSpells();
-	}
+
 	// Init the STATF_SaveParity flag.
-	// StatFlag_Mod( STATF_SaveParity, g_World.m_fSaveParity );
+	// StatFlag_Mod(STATF_SaveParity, g_World.m_fSaveParity);
 
 	// Make sure everything is ok.
-	if (( m_pPlayer && ! IsClient()) ||
-		( m_pNPC && IsStatFlag( STATF_Ridden )))	// ridden npc
-	{
+	if ( (m_pPlayer && !IsClient()) || (m_pNPC && IsStatFlag(STATF_Ridden)) )	// ridden npc
 		SetDisconnected();
-	}
+
 	int iResultCode = CObjBase::IsWeird();
 	if ( iResultCode )
 	{
-		DEBUG_ERR(( "Char 0%lx Invalid, id='%s', code=0%x\n", static_cast<DWORD>(GetUID()), static_cast<LPCTSTR>(GetResourceName()), iResultCode ));
+		DEBUG_ERR(("Char 0%lx Invalid, id='%s', code=0%x\n", static_cast<DWORD>(GetUID()), static_cast<LPCTSTR>(GetResourceName()), iResultCode));
 		Delete();
 	}
 
-	return( true );
+	return true;
 }
 
 enum CHV_TYPE

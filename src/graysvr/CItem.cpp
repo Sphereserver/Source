@@ -27,7 +27,7 @@ LPCTSTR const CItem::sm_szTrigName[ITRIG_QTY+1] =	// static
 	"@DropOn_Trade",
 	//"@Dye",					// My color has been changed
 	"@EQUIP",		// I have been unequipped
-    "@EQUIPTEST",
+	"@EQUIPTEST",
 	"@MemoryEquip",
 	"@PICKUP_GROUND",	// I was picked up off the ground.
 	"@PICKUP_PACK",	// picked up from inside some container.
@@ -588,41 +588,32 @@ int CItem::IsWeird() const
 	// Does item i have a "link to reality"?
 	// (Is the container it is in still there)
 	// RETURN: 0 = success ok
+
 	int iResultCode = CObjBase::IsWeird();
 	if ( iResultCode )
-	{
-		return( iResultCode );
-	}
-	CItemBase * pItemDef = Item_GetDef();
-	if ( pItemDef == NULL )
-	{
-		iResultCode = 0x2102;
-		return( iResultCode );
-	}
+		return iResultCode;
+
+	CItemBase *pItemDef = Item_GetDef();
+	if ( !pItemDef )
+		return 0x2102;
+
 	if ( pItemDef->GetID() == 0 )
-	{
-		iResultCode = 0x2103;
-		return( iResultCode );
-	}
+		return 0x2103;
+
 	if ( IsDisconnected() )	// Should be connected to the world.
+		return 0x2104;
+
+	if ( IsTopLevel() )
 	{
-		iResultCode = 0x2104;
-		return( iResultCode );
-	}
-	if ( IsTopLevel())
-	{
-		// no container = must be at valid point.
-		if ( ! GetTopPoint().IsValidPoint())
-		{
-			iResultCode = 0x2105;
-			return( iResultCode );
-		}
-		return( 0 );
+		// No container = must be at valid point.
+		if ( !GetTopPoint().IsValidPoint() )
+			return 0x2105;
+		return 0;
 	}
 
 	// The container must be valid.
-	CObjBase * ptCont = GetContainer(); 
-	return( ( ptCont == NULL ) ? 0x2106 : ptCont->IsWeird() );
+	CObjBase *ptCont = GetContainer(); 
+	return !ptCont ? 0x2106 : ptCont->IsWeird();
 }
 
 signed char CItem::GetFixZ( CPointMap pt, unsigned long wBlockFlags )
@@ -646,76 +637,51 @@ int CItem::FixWeirdness()
 	// Check for weirdness and fix it if possible.
 	// RETURN: 0 = i can't fix this.
 
-	if ( IsType(IT_EQ_MEMORY_OBJ) && ! IsValidUID())
-	{
-		SetUID( UID_CLEAR, true );	// some cases we don't get our UID because we are created during load.
-	}
+	if ( IsType(IT_EQ_MEMORY_OBJ) && !IsValidUID() )
+		SetUID(UID_CLEAR, true);	// some cases we don't get our UID because we are created during load.
 
 	int iResultCode = CObjBase::IsWeird();
 	if ( iResultCode )
-	{
-		return( iResultCode );
-	}
+		return iResultCode;
 
-	CItemBase * pItemDef = Item_GetDef();
+	CItemBase *pItemDef = Item_GetDef();
 	ASSERT(pItemDef);
 
-	CChar * pChar;
-	if ( IsItemEquipped())
+	CChar *pChar = NULL;
+	if ( IsItemEquipped() )
 	{
-		pChar = dynamic_cast <CChar*>( GetParent());
-		if ( ! pChar )
-		{
-			iResultCode = 0x2202;
-			return( iResultCode );
-		}
+		pChar = dynamic_cast<CChar *>(GetParent());
+		if ( !pChar )
+			return 0x2202;
 	}
-	else pChar = NULL;
 
 	// Make sure the link is valid.
-	if ( m_uidLink.IsValidUID())
+	if ( m_uidLink.IsValidUID() )
 	{
 		// Make sure all my memories are valid !
 		if ( m_uidLink == GetUID() || m_uidLink.ObjFind() == NULL )
 		{
 			if ( m_type == IT_EQ_MEMORY_OBJ || m_type == IT_SPELL )
-			{
-				return 0; // get rid of it.	(this is not an ERROR per se)
-			}
-			if ( IsAttr(ATTR_STOLEN))
-			{
-				// The item has been laundered.
-				m_uidLink.InitUID();
-			}
+				return 0;	// get rid of it.	(this is not an ERROR per se)
+
+			if ( IsAttr(ATTR_STOLEN) )
+				m_uidLink.InitUID();	// the item has been laundered.
 			else
 			{
 				DEBUG_ERR(("'%s' Bad Link to 0%lx\n", GetName(), static_cast<DWORD>(m_uidLink)));
 				m_uidLink.InitUID();
-				iResultCode = 0x2205;
-				return( iResultCode );	// get rid of it.
+				return 0x2205;	// get rid of it.
 			}
 		}
 	}
 
 	// Check Amount - Only stackable items should set amount ?
-
-	if ( GetAmount() != 1 &&
-		! IsType( IT_SPAWN_CHAR ) &&
-		! IsType( IT_SPAWN_ITEM ) &&
-		! IsStackableException())
+	if ( GetAmount() != 1 && !IsType(IT_SPAWN_CHAR) && !IsType(IT_SPAWN_ITEM) && !IsStackableException() )
 	{
-		// This should only exist in vendors restock boxes & spawns.
-		if ( ! GetAmount())
-		{
-			SetAmount( 1 );
-		}
-		// stacks of these should not exist.
-		else if ( ! pItemDef->IsStackableType() &&
-			! IsType( IT_CORPSE ) &&
-			! IsType( IT_EQ_MEMORY_OBJ ))
-		{
-			SetAmount( 1 );
-		}
+		if ( !GetAmount() )		// this should only exist in vendors restock boxes & spawns.
+			SetAmount(1);
+		else if ( !pItemDef->IsStackableType() && !IsType(IT_CORPSE) && !IsType(IT_EQ_MEMORY_OBJ) )		// stacks of these should not exist.
+			SetAmount(1);
 	}
 
 	// Check Attributes
@@ -724,7 +690,7 @@ int CItem::FixWeirdness()
 	if ( !IsType(IT_EQ_MEMORY_OBJ) )
 		ClrAttr(ATTR_CURSED|ATTR_CURSED2|ATTR_BLESSED|ATTR_BLESSED2);
 	else if ( IsAttr(ATTR_CURSED|ATTR_CURSED2) && IsAttr(ATTR_BLESSED|ATTR_BLESSED2) )
-		ClrAttr( ATTR_CURSED|ATTR_CURSED2|ATTR_BLESSED|ATTR_BLESSED2 );
+		ClrAttr(ATTR_CURSED|ATTR_CURSED2|ATTR_BLESSED|ATTR_BLESSED2);
 
 	if ( IsMovableType() )
 	{
@@ -732,84 +698,67 @@ int CItem::FixWeirdness()
 			SetAttr(ATTR_MOVE_NEVER);
 	}
 
-	switch ( GetID())
+	switch ( GetID() )
 	{
 		case ITEMID_SPELLBOOK2:	// weird client bug with these.
-			SetDispID( ITEMID_SPELLBOOK );
+			SetDispID(ITEMID_SPELLBOOK);
 			break;
-	
+
 		case ITEMID_DEATHSHROUD:	// be on a dead person only.
 		case ITEMID_GM_ROBE:
+		{
+			pChar = dynamic_cast<CChar *>(GetTopLevelObj());
+			if ( !pChar )
+				return 0x2206;	// get rid of it.
+
+			if ( GetID() == ITEMID_DEATHSHROUD )
 			{
-				pChar = dynamic_cast<CChar*>( GetTopLevelObj());
-				if ( pChar == NULL )
-				{
-					iResultCode = 0x2206;
-					return( iResultCode );	// get rid of it.
-				}
-				if ( GetID() == ITEMID_DEATHSHROUD )
-				{
-					if ( IsAttr( ATTR_MAGIC ) && IsAttr( ATTR_NEWBIE ))
-						break;	// special
-					if ( ! pChar->IsStatFlag( STATF_DEAD ))
-					{
-						iResultCode = 0x2207;
-						return( iResultCode );	// get rid of it.
-					}
-				}
-				else
-				{
-					// Only GM/counsel can have robe.
-					// Not a GM til read *ACCT.SCP
-					if ( pChar->GetPrivLevel() < PLEVEL_Counsel )
-					{
-						iResultCode = 0x2208;
-						return( iResultCode );	// get rid of it.
-					}
-				}
+				if ( IsAttr(ATTR_MAGIC) && IsAttr(ATTR_NEWBIE) )
+					break;	// special
+				if ( !pChar->IsStatFlag(STATF_DEAD) )
+					return 0x2207;	// get rid of it.
+			}
+			else
+			{
+				// Only GM/counsel can have robe.
+				// Not a GM til read *ACCT.SCP
+				if ( pChar->GetPrivLevel() < PLEVEL_Counsel )
+					return 0x2208;	// get rid of it.
 			}
 			break;
-	
+		}
+
 		case ITEMID_VENDOR_BOX:
-			if ( ! IsItemEquipped())
-			{
+		{
+			if ( !IsItemEquipped() )
 				SetID(ITEMID_BACKPACK);
-			}
 			else if ( GetEquipLayer() == LAYER_BANKBOX )
-			{
 				SetID(ITEMID_BANK_BOX);
-			}
 			else
-			{
 				SetType(IT_EQ_VENDOR_BOX);
-			}
 			break;
-	
+		}
+
 		case ITEMID_BANK_BOX:
+		{
 			// These should only be bank boxes and that is it !
-			if ( ! IsItemEquipped())
-			{
+			if ( !IsItemEquipped() )
 				SetID(ITEMID_BACKPACK);
-			}
 			else if ( GetEquipLayer() != LAYER_BANKBOX )
-			{
 				SetID(ITEMID_VENDOR_BOX);
-			}
 			else
-			{
-				SetType( IT_EQ_BANK_BOX );
-			}
+				SetType(IT_EQ_BANK_BOX);
 			break;
-	
+		}
+
 		case ITEMID_MEMORY:
+		{
 			// Memory or other flag in my head.
 			// Should not exist except equipped.
-			if ( ! IsItemEquipped())
-			{
-				iResultCode = 0x2222;
-				return( iResultCode );	// get rid of it.
-			}
+			if ( !IsItemEquipped() )
+				return 0x2222;	// get rid of it.
 			break;
+		}
 
 		default:
 			break;
@@ -820,213 +769,167 @@ int CItem::FixWeirdness()
 		case IT_EQ_TRADE_WINDOW:
 			// Should not exist except equipped.
 			if ( !IsItemEquipped() || GetEquipLayer() != LAYER_NONE || !pChar || !pChar->m_pPlayer || !pChar->IsClient() )
-			{
-				iResultCode = 0x2220;
-				return( iResultCode );	// get rid of it.
-			}
+				return 0x2220;	// get rid of it.
 			break;
-	
+
 		case IT_EQ_CLIENT_LINGER:
 			// Should not exist except equipped.
 			if ( !IsItemEquipped() || GetEquipLayer() != LAYER_FLAG_ClientLinger || !pChar || !pChar->m_pPlayer )
-			{
-				iResultCode = 0x2221;
-				return( iResultCode );	// get rid of it.
-			}
+				return 0x2221;	// get rid of it.
 			break;
-	
+
 		case IT_EQ_MEMORY_OBJ:
-			{
-				// Should not exist except equipped.
-				CItemMemory * pItemTemp = dynamic_cast <CItemMemory*>(this);
-				if ( pItemTemp == NULL )
-				{
-					iResultCode = 0x2222;
-					return( iResultCode );	// get rid of it.
-				}
-			}
+		{
+			// Should not exist except equipped.
+			CItemMemory *pItemTemp = dynamic_cast<CItemMemory *>(this);
+			if ( !pItemTemp )
+				return 0x2222;	// get rid of it.
 			break;
-	
+		}
+
 		case IT_EQ_HORSE:
 			// These should only exist eqipped.
 			if ( !IsItemEquipped() || GetEquipLayer() != LAYER_HORSE )
-			{
-				iResultCode = 0x2226;
-				return( iResultCode );	// get rid of it.
-			}
+				return 0x2226;	// get rid of it.
 			break;
-	
+
 		case IT_HAIR:
-		case IT_BEARD:	// 62 = just for grouping purposes.
+		case IT_BEARD:
 			// Hair should only be on person or equipped. (can get lost in pack)
 			// Hair should only be on person or on corpse.
 			if ( !IsItemEquipped() )
 			{
-				CItemContainer * pCont = dynamic_cast<CItemContainer*>(GetParent());
-				if ( pCont == NULL || (pCont->GetType() != IT_CORPSE && pCont->GetType() != IT_EQ_VENDOR_BOX) )
-				{
-					iResultCode = 0x2227;
-					return( iResultCode );	// get rid of it.
-				}
+				CItemContainer *pCont = dynamic_cast<CItemContainer *>(GetParent());
+				if ( !pCont || ((pCont->GetType() != IT_CORPSE) && (pCont->GetType() != IT_EQ_VENDOR_BOX)) )
+					return 0x2227;	// get rid of it.
 			}
 			else
 			{
-				SetAttr( ATTR_MOVE_NEVER );
-				if ( GetEquipLayer() != LAYER_HAIR && GetEquipLayer() != LAYER_BEARD )
-				{
-					iResultCode = 0x2228;
-					return( iResultCode );	// get rid of it.
-				}
+				SetAttr(ATTR_MOVE_NEVER);
+				if ( (GetEquipLayer() != LAYER_HAIR) && (GetEquipLayer() != LAYER_BEARD) )
+					return 0x2228;	// get rid of it.
 			}
 			break;
-	
+
 		case IT_GAME_PIECE:
 			// This should only be in a game.
-			if ( ! IsItemInContainer())
-			{
-				iResultCode = 0x2229;
-				return( iResultCode );	// get rid of it.
-			}
+			if ( !IsItemInContainer() )
+				return 0x2229;	// get rid of it.
 			break;
-	
+
 		case IT_KEY:
 			// blank unlinked keys.
-			if ( m_itKey.m_lockUID && ! IsValidUID())
+			if ( m_itKey.m_lockUID && !IsValidUID() )
 			{
 				DEBUG_ERR(("Key '%s' has bad link to 0%lx, blanked out\n", GetName(), static_cast<DWORD>(m_itKey.m_lockUID)));
 				m_itKey.m_lockUID.ClearUID();
 			}
 			break;
-	
+
 		case IT_SPAWN_CHAR:
 		case IT_SPAWN_ITEM:
+		{
+			CItemSpawn *pSpawn = static_cast<CItemSpawn *>(this);
+			if ( pSpawn )
 			{
-				CItemSpawn *pSpawn = static_cast<CItemSpawn*>(this);
-				if (pSpawn)
-				{
-					pSpawn->FixDef();
-					pSpawn->SetTrackID();
-				}
+				pSpawn->FixDef();
+				pSpawn->SetTrackID();
 			}
 			break;
-	
+		}
+
 		case IT_CONTAINER_LOCKED:
 		case IT_SHIP_HOLD_LOCK:
 		case IT_DOOR_LOCKED:
 			// Doors and containers must have a lock complexity set.
-			if ( ! m_itContainer.m_lock_complexity )
-			{
-				m_itContainer.m_lock_complexity = 500 + Calc_GetRandVal( 600 );
-			}
+			if ( !m_itContainer.m_lock_complexity )
+				m_itContainer.m_lock_complexity = 500 + Calc_GetRandVal(600);
 			break;
-	
+
 		case IT_POTION:
 			if ( m_itPotion.m_skillquality == 0 ) // store bought ?
-			{
 				m_itPotion.m_skillquality = Calc_GetRandVal(950);
-			}
 			break;
+
 		case IT_MAP_BLANK:
 			if ( m_itNormal.m_more1 || m_itNormal.m_more2 )
-			{
-				SetType( IT_MAP );
-			}
+				SetType(IT_MAP);
 			break;
-	
+
 		default:
 			if ( GetType() > IT_QTY )
 			{
 				if ( GetType() < IT_TRIGGER )
-				{
 					m_type = pItemDef->GetType();
-				}
 			}
 	}
 
-	if ( IsItemEquipped())
+	if ( IsItemEquipped() )
 	{
-		ASSERT( pChar );
-
-		switch ( GetEquipLayer())
+		ASSERT(pChar);
+		switch ( GetEquipLayer() )
 		{
 			case LAYER_NONE:
 				// Only Trade windows should be equipped this way..
 				if ( m_type != IT_EQ_TRADE_WINDOW )
-				{
-					iResultCode = 0x2230;
-					return( iResultCode );	// get rid of it.
-				}
+					return 0x2230;	// get rid of it.
 				break;
 			case LAYER_SPECIAL:
-				switch ( GetType())
+				switch ( GetType() )
 				{
 					case IT_EQ_MEMORY_OBJ:
 					case IT_EQ_SCRIPT:	// pure script.
 						break;
 					default:
-						iResultCode = 0x2231;
-						return( iResultCode );	// get rid of it.
+						return 0x2231;	// get rid of it.
 				}
 				break;
 			case LAYER_VENDOR_STOCK:
 			case LAYER_VENDOR_EXTRA:
 			case LAYER_VENDOR_BUYS:
-				if ( pChar->m_pPlayer != NULL )	// players never need carry these,
+				if ( pChar->m_pPlayer )	// players never need carry these,
 					return 0;
 				SetAttr(ATTR_MOVE_NEVER);
 				break;
-	
+
 			case LAYER_PACK:
 			case LAYER_BANKBOX:
 				SetAttr(ATTR_MOVE_NEVER);
 				break;
-	
+
 			case LAYER_HORSE:
 				if ( m_type != IT_EQ_HORSE )
-				{
-					iResultCode = 0x2233;
-					return( iResultCode );	// get rid of it.
-				}
+					return 0x2233;	// get rid of it.
+
 				SetAttr(ATTR_MOVE_NEVER);
-				pChar->StatFlag_Set( STATF_OnHorse );
+				pChar->StatFlag_Set(STATF_OnHorse);
 				break;
 			case LAYER_FLAG_ClientLinger:
 				if ( m_type != IT_EQ_CLIENT_LINGER )
-				{
-					iResultCode = 0x2234;
-					return( iResultCode );	// get rid of it.
-				}
+					return 0x2234;	// get rid of it.
 				break;
-	
+
 			case LAYER_FLAG_Murders:
-				if ( ! pChar->m_pPlayer ||
-					pChar->m_pPlayer->m_wMurders <= 0 )
-				{
-					iResultCode = 0x2235;
-					return( iResultCode );	// get rid of it.
-				}
+				if ( !pChar->m_pPlayer || pChar->m_pPlayer->m_wMurders <= 0 )
+					return 0x2235;	// get rid of it.
 				break;
 
 			default:
 				break;
 		}
 	}
-
-	else if ( IsTopLevel())
+	else if ( IsTopLevel() )
 	{
-		if ( IsAttr(ATTR_DECAY) && ! IsTimerSet())
-		{
-			iResultCode = 0x2236;
-			return( iResultCode );	// get rid of it.
-		}
+		if ( IsAttr(ATTR_DECAY) && !IsTimerSet() )
+			return 0x2236;	// get rid of it.
 
 		// unreasonably long for a top level item ?
-		if ( GetTimerAdjusted() > 90*24*60*60 )
-			SetTimeout(60*60);
+		if ( GetTimerAdjusted() > 90 * 24 * 60 * 60 )
+			SetTimeout(60 * 60);
 	}
 
 	// is m_BaseDef just set bad ?
-	return( IsWeird());
+	return IsWeird();
 }
 
 CItem * CItem::UnStackSplit( int amount, CChar * pCharSrc )
@@ -2845,25 +2748,22 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 bool CItem::r_Load( CScript & s ) // Load an item from script
 {
 	ADDTOCALLSTACK("CItem::r_Load");
-	CScriptObj::r_Load( s );
+	CScriptObj::r_Load(s);
 	if ( GetContainer() == NULL )	// Place into the world.
 	{
-		if ( GetTopPoint().IsCharValid())
-		{
-			MoveToUpdate( GetTopPoint());
-		}
+		if ( GetTopPoint().IsCharValid() )
+			MoveToUpdate(GetTopPoint());
 	}
 
 	int iResultCode = CObjBase::IsWeird();
 	if ( iResultCode )
 	{
-		DEBUG_ERR(( "Item 0%lx Invalid, id=%s, code=0%x\n",
-		(DWORD) GetUID(), GetResourceName(), iResultCode ));
+		DEBUG_ERR(("Item 0%lx Invalid, id=%s, code=0%x\n", static_cast<DWORD>(GetUID()), GetResourceName(), iResultCode));
 		Delete();
-		return( true );
+		return true;
 	}
 
-	return( true );
+	return true;
 }
 
 enum CIV_TYPE
@@ -4488,7 +4388,7 @@ bool CItem::SetMagicLock( CChar * pCharSrc, int iSkillLevel )
 		pCharSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_LOCK_UNLOCKEABLE ) );
 		return false;
 	}
-   if ( IsAttr( ATTR_OWNED ) )
+	if ( IsAttr(ATTR_OWNED) )
 	{
 		pCharSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_LOCK_MAY_NOT ) );
 		return false;

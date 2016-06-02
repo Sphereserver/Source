@@ -14,7 +14,6 @@ int CObjBaseTemplate::IsWeird() const
 	ADDTOCALLSTACK_INTENSIVE("CObjBaseTemplate::IsWeird");
 	if ( !GetParent() )
 		return 0x3101;
-
 	if ( !IsValidUID() )
 		return 0x3102;
 
@@ -159,17 +158,14 @@ int CObjBase::IsWeird() const
 	ADDTOCALLSTACK_INTENSIVE("CObjBase::IsWeird");
 	int iResultCode = CObjBaseTemplate::IsWeird();
 	if ( iResultCode )
-	{
-		return( iResultCode );
-	}
-	if ( ! g_Serv.IsLoading())
+		return iResultCode;
+
+	if ( !g_Serv.IsLoading() )
 	{
 		if ( GetUID().ObjFind() != this )	// make sure it's linked both ways correctly.
-		{
-			return( 0x3201 );
-		}
+			return 0x3201;
 	}
-	return( 0 );
+	return 0;
 }
 
 void CObjBase::SetUID( DWORD dwIndex, bool fItem )
