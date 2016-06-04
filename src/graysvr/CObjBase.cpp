@@ -2737,7 +2737,7 @@ void CObjBase::ResendTooltip(bool bSendFull, bool bUseCache)
 
 	if ( !(g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B) )
 		return;	// tooltips are disabled.
-	else if ( IsDisconnected() )
+	else if ( IsDisconnected() || g_Serv.IsLoading() )
 		return;	// not in the world.
 
 	if ( !bUseCache )

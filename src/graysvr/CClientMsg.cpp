@@ -2380,8 +2380,10 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 		CItem *pItem = pObj->IsItem() ? const_cast<CItem *>(static_cast<const CItem *>(pObj)) : NULL;
 		CChar *pChar = pObj->IsChar() ? const_cast<CChar *>(static_cast<const CChar *>(pObj)) : NULL;
 
-		if ( pItem || pChar )
+		if ( pItem )
 			pItem->FreePropertyList();
+		else if ( pChar )
+			pChar->FreePropertyList();
 
 		CClientTooltip *t = NULL;
 		m_TooltipData.Clean(true);
@@ -3211,8 +3213,10 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 		// we still want to generate a hash though, so we don't have to increment
 		// the revision number if the tooltip hasn't actually been changed
 		DWORD revision = 0;
-		if ( pItem || pChar )
+		if ( pItem )
 			revision = pItem->UpdatePropertyRevision(hash);
+		else if ( pChar )
+			revision = pChar->UpdatePropertyRevision(hash);
 
 		propertyList = new PacketPropertyList(pObj, revision, &m_TooltipData);
 
@@ -3220,8 +3224,10 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 		// incomplete (name only) or caching is disabled
 		if ( bSendFull && g_Cfg.m_iTooltipCache > 0 )
 		{
-			if ( pItem || pChar )
+			if ( pItem )
 				pItem->SetPropertyList(propertyList);
+			else if ( pChar )
+				pChar->SetPropertyList(propertyList);
 		}
 	}
 
