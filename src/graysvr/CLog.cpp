@@ -7,8 +7,7 @@
 bool CLog::OpenLog( LPCTSTR pszBaseDirName )	// name set previously.
 {
 	if ( m_fLockOpen )	// the log is already locked open
-		return( false );
-
+		return false;
 	if ( m_sBaseDir == NULL )
 		return false;
 
@@ -31,12 +30,11 @@ bool CLog::OpenLog( LPCTSTR pszBaseDirName )	// name set previously.
 	// Get the new name based on date.
 	m_dateStamp = CGTime::GetCurrentTime();
 	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, GRAY_FILE "%d-%02d-%02d.log",
-		m_dateStamp.GetYear(), m_dateStamp.GetMonth(), m_dateStamp.GetDay());
+	sprintf(pszTemp, GRAY_FILE "%d-%02d-%02d.log", m_dateStamp.GetYear(), m_dateStamp.GetMonth(), m_dateStamp.GetDay());
 	CGString sFileName = GetMergedFileName(m_sBaseDir, pszTemp);
 
 	// Use the OF_READWRITE to append to an existing file.
-	if ( CFileText::Open( sFileName, OF_SHARE_DENY_NONE|OF_READWRITE|OF_TEXT ) )
+	if ( CFileText::Open(sFileName, OF_SHARE_DENY_NONE|OF_READWRITE|OF_TEXT) )
 	{
 		setvbuf(m_pStream, NULL, _IONBF, 0);
 		return true;
@@ -44,7 +42,7 @@ bool CLog::OpenLog( LPCTSTR pszBaseDirName )	// name set previously.
 	return false;
 }
 
-void CLog::SetColor(Color color)
+void CLog::SetColor( Color color )
 {
 	switch ( color )
 	{
@@ -95,57 +93,49 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 
 	try
 	{
-
-		// Put up the date/time.
-		CGTime datetime = CGTime::GetCurrentTime();	// last real time stamp.
-
-		if ( datetime.GetDaysTotal() != m_dateStamp.GetDaysTotal())
+		CGTime datetime = CGTime::GetCurrentTime();
+		if ( datetime.GetDay() != m_dateStamp.GetDay() )	// it's a new day, open with new day name.
 		{
-			// it's a new day, open with new day name.
 			Close();	// LINUX should alrady be closed.
-
-			OpenLog( NULL );
-			Printf( "%s", datetime.Format(NULL));
+			OpenLog();
+			Printf("%s", datetime.Format(NULL));
 		}
+#ifndef _WIN32
 		else
 		{
-#ifndef _WIN32
-			UINT	mode = OF_READWRITE|OF_TEXT;
-			mode |= OF_SHARE_DENY_WRITE;
-			Open(NULL, mode);	// LINUX needs to close and re-open for each log line !
-#endif
+			Open(NULL, OF_READWRITE|OF_TEXT|OF_SHARE_DENY_WRITE);	// LINUX needs to close and re-open for each log line !
 		}
+#endif
 
 		TCHAR szTime[32];
 		sprintf(szTime, "%02d:%02d:", datetime.GetHour(), datetime.GetMinute());
 		m_dateStamp = datetime;
 
 		LPCTSTR pszLabel = NULL;
-
-		switch (wMask & 0x07)
+		switch ( wMask & 0x07 )
 		{
-			case LOGL_FATAL:	// fatal error !
+			case LOGL_FATAL:
 				pszLabel = "FATAL:";
 				break;
-			case LOGL_CRIT:	// critical.
+			case LOGL_CRIT:
 				pszLabel = "CRITICAL:";
 				break;
-			case LOGL_ERROR:	// non-fatal errors.
+			case LOGL_ERROR:
 				pszLabel = "ERROR:";
 				break;
 			case LOGL_WARN:
 				pszLabel = "WARNING:";
 				break;
 		}
-		if ( !pszLabel && ( wMask & LOGM_DEBUG ) && !( wMask & LOGM_INIT ))
+		if ( !pszLabel && (wMask & LOGM_DEBUG) && !(wMask & LOGM_INIT) )
 			pszLabel = "DEBUG:";
 
 		// Get the script context. (if there is one)
-		TCHAR szScriptContext[ _MAX_PATH + 16 ];
-		if ( !( wMask&LOGM_NOCONTEXT ) && m_pScriptContext )
+		TCHAR szScriptContext[_MAX_PATH + 16];
+		if ( !(wMask & LOGM_NOCONTEXT) && m_pScriptContext )
 		{
 			CScriptLineContext LineContext = m_pScriptContext->GetContext();
-			sprintf( szScriptContext, "(%s,%d)", m_pScriptContext->GetFileTitle(), LineContext.m_iLineNum );
+			sprintf(szScriptContext, "(%s,%d)", m_pScriptContext->GetFileTitle(), LineContext.m_iLineNum);
 		}
 		else
 		{
@@ -153,39 +143,38 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 		}
 
 		// Print to screen.
-		if ( ! ( wMask & LOGM_INIT ) && ! g_Serv.IsLoading())
+		if ( !(wMask & LOGM_INIT) && !g_Serv.IsLoading() )
 		{
 			SetColor(YELLOW);
-			g_Serv.PrintStr( szTime );
+			g_Serv.PrintStr(szTime);
 			SetColor(DEFAULT);
 		}
 
 		if ( pszLabel )	// some sort of error
 		{
 			SetColor(RED);
-			g_Serv.PrintStr( pszLabel );
+			g_Serv.PrintStr(pszLabel);
 			SetColor(WHITE);
 		}
 
 		if ( szScriptContext[0] )
 		{
 			SetColor(CYAN);
-			g_Serv.PrintStr( szScriptContext );
+			g_Serv.PrintStr(szScriptContext);
 			SetColor(DEFAULT);
 		}
-		g_Serv.PrintStr( pszMsg );
+		g_Serv.PrintStr(pszMsg);
 
 		// Back to normal color.
 		SetColor(DEFAULT);
 
 		// Print to log file.
-		WriteString( szTime );
-		if ( pszLabel )	WriteString( pszLabel );
+		WriteString(szTime);
+		if ( pszLabel )
+			WriteString(pszLabel);
 		if ( szScriptContext[0] )
-		{
-			WriteString( szScriptContext );
-		}
-		WriteString( pszMsg );
+			WriteString(szScriptContext);
+		WriteString(pszMsg);
 
 		iRet = 1;
 
@@ -193,7 +182,7 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 		Close();
 #endif
 	}
-	catch (...)
+	catch ( ... )
 	{
 		// Not much we can do about this
 		iRet = 0;
@@ -201,17 +190,17 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 	}
 
 	m_mutex.unlock();
-
-	return( iRet );
+	return iRet;
 }
 
 CGTime CLog::sm_prevCatchTick;
 
-void _cdecl CLog::CatchEvent( const CGrayError * pErr, LPCTSTR pszCatchContext, ... )
+void _cdecl CLog::CatchEvent( const CGrayError *pErr, LPCTSTR pszCatchContext, ... )
 {
 	CGTime timeCurrent = CGTime::GetCurrentTime();
 	if ( sm_prevCatchTick.GetTime() == timeCurrent.GetTime() )	// prevent message floods.
 		return;
+
 	// Keep a record of what we catch.
 	try
 	{
@@ -221,7 +210,7 @@ void _cdecl CLog::CatchEvent( const CGrayError * pErr, LPCTSTR pszCatchContext, 
 		if ( pErr != NULL )
 		{
 			eSeverity = pErr->m_eSeverity;
-			const CGrayAssert * pAssertErr = dynamic_cast<const CGrayAssert*>(pErr);
+			const CGrayAssert *pAssertErr = dynamic_cast<const CGrayAssert *>(pErr);
 			if ( pAssertErr )
 				pAssertErr->GetErrorMessage(szMsg, sizeof(szMsg), 0);
 			else
@@ -235,18 +224,18 @@ void _cdecl CLog::CatchEvent( const CGrayError * pErr, LPCTSTR pszCatchContext, 
 			iLen = strlen(szMsg);
 		}
 
-		iLen += sprintf( szMsg+iLen, ", in " );
+		iLen += sprintf(szMsg + iLen, ", in ");
 
 		va_list vargs;
 		va_start(vargs, pszCatchContext);
 
-		iLen += vsprintf(szMsg+iLen, pszCatchContext, vargs);
-		iLen += sprintf(szMsg+iLen, "\n");
+		iLen += vsprintf(szMsg + iLen, pszCatchContext, vargs);
+		iLen += sprintf(szMsg + iLen, "\n");
 
 		EventStr(eSeverity, szMsg);
 		va_end(vargs);
 	}
-	catch(...)
+	catch ( ... )
 	{
 		// Not much we can do about this.
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);

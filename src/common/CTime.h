@@ -13,6 +13,7 @@ class CGTime	// similar to the MFC CTime and CTimeSpan or COleDateTime
 #undef GetCurrentTime
 private:
 	time_t m_time;
+
 public:
 	static const char *m_sClassName;
 
@@ -27,37 +28,37 @@ public:
 	{
 		m_time = time;
 	}
-	CGTime(const CGTime& timeSrc)
+	CGTime(const CGTime &timeSrc)
 	{
 		m_time = timeSrc.m_time;
 	}
 
-	CGTime( struct tm time );
+	CGTime(struct tm time);
 	CGTime(int nYear, int nMonth, int nDay, int nHour, int nMin, int nSec, int nDST = -1);
 
-	const CGTime& operator=(const CGTime& timeSrc)
+	const CGTime &operator=(const CGTime &timeSrc)
 	{
 		m_time = timeSrc.m_time;
 		return *this;
 	}
 
-	const CGTime& operator=(time_t t)
+	const CGTime &operator=(time_t t)
 	{
 		m_time = t;
 		return *this;
 	}
 
-	bool operator<=( time_t t ) const
+	bool operator<=(time_t t) const
 	{
-		return( m_time <= t );
+		return (m_time <= t);
 	}
-	bool operator==( time_t t ) const
+	bool operator==(time_t t) const
 	{
-		return( m_time == t );
+		return (m_time == t);
 	}
-	bool operator!=( time_t t ) const
+	bool operator!=(time_t t) const
 	{
-		return( m_time != t );
+		return (m_time != t);
 	}
 
 	time_t GetTime() const
@@ -66,11 +67,11 @@ public:
 	}
 
 	// Attributes
-	struct tm* GetLocalTm(struct tm* ptm = NULL) const;
+	struct tm *GetLocalTm(struct tm *ptm = NULL) const;
 
 	int GetYear() const
 	{
-		return (GetLocalTm(NULL)->tm_year) + 1900;
+		return GetLocalTm(NULL)->tm_year + 1900;
 	}
 	int GetMonth() const       // month of year (1 = Jan)
 	{
@@ -94,19 +95,19 @@ public:
 	LPCTSTR FormatGmt(LPCTSTR pszFormat) const;
 
 	// non CTime operations.
-	bool Read( TCHAR * pVal );
+	bool Read(TCHAR *pVal);
 	void Init()
 	{
 		m_time = -1;
 	}
 	bool IsTimeValid() const
 	{
-		return(( m_time && m_time != -1 ) ? true : false );
+		return (m_time && (m_time != -1));
 	}
 	int GetDaysTotal() const
 	{
 		// Needs to be more consistant than accurate. just for compares.
-		return(( GetYear() * 366) + (GetMonth()*31) + GetDay() );
+		return (GetYear() * 365) + (GetMonth() * 30) + GetDay();
 	}
 };
 
