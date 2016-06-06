@@ -65,3 +65,8 @@ Fixed: Function MOVENEAR not working correctly.
 Fixed: Pet command 'guard me' making the pet follow the owner instead guard him.
 Fixed: Jailed players being teleported to the same jail region with no reason when the client login.
 Changed: Improved text formatting of basic console commands.
+
+06-06-2016, Coruja
+Fixed: Paperdoll and character profile gump showing wrong info.
+[sphere_msgs.scp]: Added message 'msg_acc_age' and removed unused 'tooltip_tag_armor', 'tooltip_tag_destination'.
+[sphereCrypt.ini]: Added crypt key for client 7.0.50

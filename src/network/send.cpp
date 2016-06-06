@@ -2349,47 +2349,25 @@ PacketPaperdoll::PacketPaperdoll(const CClient* target, const CChar* character) 
 {
 	ADDTOCALLSTACK("PacketPaperdoll::PacketPaperdoll");
 
-	unsigned int mode = 0;
+	TCHAR *name = Str_GetTemp();
+	LPCTSTR title = character->GetTradeTitle();
+	if ( title[0] )
+		sprintf(name, "%s, %s", character->Noto_GetTitle(), title);
+	else
+		sprintf(name, "%s", character->Noto_GetTitle());
+
+	BYTE flags = 0;
 	if (character->IsStatFlag(STATF_War))
-		mode |= (target->GetNetState()->isClientVersion(MINCLIVER_ML)) ? 0x1 : 0x40;
-	if (target->GetNetState()->isClientVersion(MINCLIVER_ML))
+		flags |= (target->GetNetState()->isClientVersion(MINCLIVER_AOS)) ? 0x1 : 0x40;
+	if (target->GetNetState()->isClientVersion(MINCLIVER_AOS))
 	{
-		if (character == target->GetChar() ||
-		(g_Cfg.m_fCanUndressPets? (character->NPC_IsOwnedBy(target->GetChar())) : (target->IsPriv(PRIV_GM) && target->GetPrivLevel() > character->GetPrivLevel())) )
-		mode |= 0x2;
+		if (character == target->GetChar() || (g_Cfg.m_fCanUndressPets ? character->NPC_IsOwnedBy(target->GetChar()) : (target->IsPriv(PRIV_GM) && target->GetPrivLevel() > character->GetPrivLevel())))
+			flags |= 0x2;
 	}
 
 	writeInt32(character->GetUID());
-
-	if (character->IsStatFlag(STATF_Incognito))
-	{
-		writeStringFixedASCII(character->GetName(), 60);
-	}
-	else
-	{
-		TCHAR* text = Str_GetTemp();
-		int len = 0;
-
-		const CStoneMember* guildMember = character->Guild_FindMember(MEMORY_GUILD);
-		if (guildMember != NULL && guildMember->IsAbbrevOn() && guildMember->GetParentStone()->GetAbbrev()[0])
-		{
-			len = sprintf(text, "%s [%s], %s", character->Noto_GetTitle(), guildMember->GetParentStone()->GetAbbrev(),
-							guildMember->GetTitle()[0]? guildMember->GetTitle() : character->GetTradeTitle());
-		}
-		
-		if (len <= 0)
-		{
-			const char *title = character->GetTradeTitle();
-			if ( title[0] )
-				sprintf(text, "%s, %s", character->Noto_GetTitle(), title);
-			else
-				sprintf(text, "%s", character->Noto_GetTitle());
-		}
-
-		writeStringFixedASCII(text, 60);
-	}
-
-	writeByte(static_cast<BYTE>(mode));
+	writeStringFixedASCII(name, 60);
+	writeByte(flags);
 	push(target);
 }
 
@@ -3469,31 +3447,32 @@ PacketProfile::PacketProfile(const CClient* target, const CChar* character) : Pa
 {
 	ADDTOCALLSTACK("PacketProfile::PacketProfile");
 
-	// alter profile when viewing an incognitoed player, unless being viewed by a GM or the profile is our own
-	bool isIncognito = character->IsStatFlag(STATF_Incognito) && !target->IsPriv(PRIV_GM) && character != target->GetChar();
-
 	initLength();
-
 	writeInt32(character->GetUID());
-	writeStringASCII(character->GetName());
 
-	if (isIncognito == false)
+	TCHAR *name = Str_GetTemp();
+	LPCTSTR title = character->GetTradeTitle();
+	if ( title[0] )
+		sprintf(name, "%s, %s", character->Noto_GetTitle(), title);
+	else
+		sprintf(name, "%s", character->Noto_GetTitle());
+	writeStringASCII(name);
+
+	if ( character == target->GetChar() )
 	{
-		CGString sConstText;
-		sConstText.Format("%s, %s", character->Noto_GetTitle(), character->GetTradeTitle());
-
-		writeStringNUNICODE(static_cast<LPCTSTR>(sConstText));
-
-		if (character->m_pPlayer != NULL)
-			writeStringNUNICODE(static_cast<LPCTSTR>(character->m_pPlayer->m_sProfile));
-		else
-			writeCharNUNICODE('\0');
+		const CAccountRef account = target->GetAccount();
+		ASSERT(account);
+		TCHAR *age = Str_GetTemp();
+		sprintf(age, g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_AGE), (CGTime::GetCurrentTime().GetDaysTotal() - account->m_dateFirstConnect.GetDaysTotal()) / 30);
+		writeStringNUNICODE(age);
 	}
 	else
-	{
-		writeStringNUNICODE(character->Noto_GetTitle());
 		writeCharNUNICODE('\0');
-	}
+
+	if ( character->m_pPlayer )
+		writeStringNUNICODE(static_cast<LPCTSTR>(character->m_pPlayer->m_sProfile));
+	else
+		writeCharNUNICODE('\0');
 
 	push(target);
 }
