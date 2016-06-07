@@ -825,12 +825,8 @@ LPCTSTR CChar::GetTradeTitle() const // Paperdoll title for character p (2)
 	CCharBase *pCharDef = Char_GetDef();
 	ASSERT(pCharDef);
 
-	// Incognito ?
-	// If polymorphed then use the poly name.
-	if ( IsStatFlag(STATF_Incognito) || !IsPlayableCharacter() || (m_pNPC && pCharDef->GetTypeName() != pCharDef->GetTradeName()) )
+	if ( m_pNPC && (pCharDef->GetTypeName() != pCharDef->GetTradeName()) )
 	{
-		if ( !IsIndividualName() )
-			return "";	// same as type anyhow.
 		sprintf(pTemp, "%s %s", pCharDef->IsFemale() ? g_Cfg.GetDefaultMsg(DEFMSG_TRADETITLE_ARTICLE_FEMALE) : g_Cfg.GetDefaultMsg(DEFMSG_TRADETITLE_ARTICLE_MALE), pCharDef->GetTradeName());
 		return pTemp;
 	}
@@ -846,7 +842,7 @@ LPCTSTR CChar::GetTradeTitle() const // Paperdoll title for character p (2)
 		static const CValStr sm_SkillTitles[] =
 		{
 			{ "", INT_MIN },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NEOPHYTE),	static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NEOPHYTE", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NEOPHYTE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NEOPHYTE", true)) },
 			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NOVICE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NOVICE", true)) },
 			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_APPRENTICE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_APPRENTICE", true)) },
 			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_JOURNEYMAN), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_JOURNEYMAN", true)) },
@@ -865,7 +861,7 @@ LPCTSTR CChar::GetTradeTitle() const // Paperdoll title for character p (2)
 		static const CValStr sm_SkillTitles[] =
 		{
 			{ "", INT_MIN },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NEOPHYTE),	static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NEOPHYTE", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NEOPHYTE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NEOPHYTE", true)) },
 			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NOVICE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NOVICE", true)) },
 			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_APPRENTICE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_APPRENTICE", true)) },
 			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_JOURNEYMAN), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_JOURNEYMAN", true)) },
@@ -884,14 +880,14 @@ LPCTSTR CChar::GetTradeTitle() const // Paperdoll title for character p (2)
 		static const CValStr sm_SkillTitles[] =
 		{
 			{ "", INT_MIN },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NEOPHYTE),	static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NEOPHYTE", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NEOPHYTE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NEOPHYTE", true)) },
 			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NOVICE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NOVICE", true)) },
 			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_APPRENTICE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_APPRENTICE", true)) },
 			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_JOURNEYMAN), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_JOURNEYMAN", true)) },
 			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_EXPERT), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_EXPERT", true)) },
 			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ADEPT), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_ADEPT", true)) },
 			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_MASTER), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_MASTER", true)) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_GRANDMASTER),static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_GRANDMASTER", true)) },
+			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_GRANDMASTER), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_GRANDMASTER", true)) },
 			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ELDER), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_ELDER", true)) },
 			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_LEGENDARY), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_LEGENDARY", true)) },
 			{ NULL, INT_MAX }
@@ -1722,7 +1718,7 @@ bool CChar::CanSeeLOS( const CObjBaseTemplate *pObj, WORD wFlags ) const
 		return false;
 
 	pObj = pObj->GetTopLevelObj();
-	if ( !pObj  )
+	if ( !pObj )
 		return false;
 
 	if ( (m_pPlayer && (g_Cfg.m_iAdvancedLos & ADVANCEDLOS_PLAYER)) || (m_pNPC && (g_Cfg.m_iAdvancedLos & ADVANCEDLOS_NPC)) )

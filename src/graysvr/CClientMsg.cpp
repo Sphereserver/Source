@@ -1200,33 +1200,21 @@ void CClient::addCharName( const CChar * pChar ) // Singleclick text for a chara
 	strcat( pszTemp, pChar->GetName() );
 	strcat( pszTemp, pChar->GetKeyStr( "NAME.SUFFIX" ) );
 
-	if ( !pChar->IsStatFlag(STATF_Incognito) || ( GetPrivLevel() > pChar->GetPrivLevel() ))
-	{
-		// Guild abbrev.
-		LPCTSTR pAbbrev = pChar->Guild_AbbrevBracket(MEMORY_TOWN);
-		if ( pAbbrev )
-		{
-			strcat( pszTemp, pAbbrev );
-		}
-		pAbbrev = pChar->Guild_AbbrevBracket(MEMORY_GUILD);
-		if ( pAbbrev )
-		{
-			strcat( pszTemp, pAbbrev );
-		}
-	}
-	else
-		strcpy( pszTemp, pChar->GetName() );
+	LPCTSTR pAbbrev = pChar->Guild_AbbrevBracket(MEMORY_TOWN);
+	if ( pAbbrev )
+		strcat( pszTemp, pAbbrev );
 
-	if ( pChar->m_pNPC && g_Cfg.m_fVendorTradeTitle )
+	pAbbrev = pChar->Guild_AbbrevBracket(MEMORY_GUILD);
+	if ( pAbbrev )
+		strcat( pszTemp, pAbbrev );
+
+	if ( pChar->m_pNPC && g_Cfg.m_fVendorTradeTitle && (pChar->GetNPCBrain() == NPCBRAIN_HUMAN) )
 	{
-		if ( pChar->GetNPCBrain() == NPCBRAIN_HUMAN )
+		LPCTSTR title = pChar->GetTradeTitle();
+		if ( *title )
 		{
-			LPCTSTR title = pChar->GetTradeTitle();
-			if ( *title )
-			{
-				strcat( pszTemp, " " );
-				strcat( pszTemp, title );
-			}
+			strcat( pszTemp, " " );
+			strcat( pszTemp, title );
 		}
 	}
 
@@ -2438,8 +2426,18 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 					TCHAR *lpSuffix = Str_GetTemp();
 					strcpy(lpSuffix, pChar->GetKeyStr("NAME.SUFFIX"));
 
+					if ( pChar->m_pNPC && g_Cfg.m_fVendorTradeTitle && (pChar->GetNPCBrain() == NPCBRAIN_HUMAN) )
+					{
+						LPCTSTR title = pChar->GetTradeTitle();
+						if ( *title )
+						{
+							strcat(lpSuffix, " ");
+							strcat(lpSuffix, title);
+						}
+					}
+
 					const CStoneMember *pGuildMember = pChar->Guild_FindMember(MEMORY_GUILD);
-					if ( pGuildMember && (!pChar->IsStatFlag(STATF_Incognito) || (GetPrivLevel() > pChar->GetPrivLevel())) )
+					if ( pGuildMember )
 					{
 						const CItemStone *pParentStone = pGuildMember->GetParentStone();
 						ASSERT(pParentStone);
@@ -2466,20 +2464,13 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 					//	(BYTE)((((int)wHue) & 0x7C00) >> 7), (BYTE)((((int)wHue) & 0x3E0) >> 2),
 					//	(BYTE)((((int)wHue) & 0x1F) << 3),lpPrefix, pObj->GetName(), lpSuffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 
-					if ( !pChar->IsStatFlag(STATF_Incognito) || (GetPrivLevel() > pChar->GetPrivLevel()) )
+					if ( pGuildMember && pGuildMember->IsAbbrevOn() )
 					{
-						if ( pGuildMember && pGuildMember->IsAbbrevOn() )
-						{
-							if ( pGuildMember->GetTitle()[0] )
-							{
-								m_TooltipData.Add(t = new CClientTooltip(1060776)); // ~1_val~, ~2_val~
-								t->FormatArgs("%s\t%s", pGuildMember->GetTitle(), pGuildMember->GetParentStone()->GetName());
-							}
-							else
-							{
-								m_TooltipData.Add(new CClientTooltip(1070722, pGuildMember->GetParentStone()->GetName())); // ~1_NOTHING~
-							}
-						}
+						m_TooltipData.Add(t = new CClientTooltip(1042971)); // ~1_NOTHING~
+						if ( pGuildMember->GetTitle()[0] )
+							t->FormatArgs("%s, %s", pGuildMember->GetTitle(), pGuildMember->GetParentStone()->GetName());
+						else
+							t->FormatArgs("%s", pGuildMember->GetParentStone()->GetName());
 					}
 				}
 

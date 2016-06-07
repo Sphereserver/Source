@@ -73,3 +73,7 @@ Fixed: Paperdoll and character profile gump showing wrong info.
 
 07-06-2016, Coruja
 Fixed: Incognito spell considering char notoriety neutral/not-neutral on different actions. To avoid problems, now Incognito will always consider the char neutral (gray), which is the correct effect.
+Added: Missing features on Incognito spell
+	-It will change char name to a random human male/female name instead always use Man/Woman.
+	-It will change char body/hair/beard to a random color temporarily.
+	-It won't hide guild abbreviation anymore (the player can choose hide/show it using guild menu).

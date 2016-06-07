@@ -582,15 +582,26 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 		}
 
 		case LAYER_SPELL_Incognito:
+		{
 			StatFlag_Clear(STATF_Incognito);
-			SetName(pSpell->GetName());	// restore your name
-			pSpell->SetName("");	// clear the name from the item (might be a worn item)
-			if (!IsStatFlag(STATF_Polymorph))
+			SetName(pSpell->GetName());		// restore your name
+
+			if (!IsStatFlag(STATF_Polymorph) && IsPlayableCharacter())
 				SetHue(m_prev_Hue);
+
+			CItem *pHair = LayerFind(LAYER_HAIR);
+			if (pHair)
+				pHair->SetHue(static_cast<HUE_TYPE>(pSpell->GetTagDefs()->GetKeyNum("COLOR.HAIR")));
+
+			CItem *pBeard = LayerFind(LAYER_BEARD);
+			if (pBeard)
+				pBeard->SetHue(static_cast<HUE_TYPE>(pSpell->GetTagDefs()->GetKeyNum("COLOR.BEARD")));
+
 			if (pClient)
 				pClient->removeBuff(BI_INCOGNITO);
 			NotoSave_Update();
 			return;
+		}
 
 		case LAYER_SPELL_Invis:
 			Reveal(STATF_Invisible);
@@ -940,10 +951,6 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			CCharBase * pCharDef = Char_GetDef();
 			ASSERT(pCharDef);
 
-			// re-apply our incognito name
-			if (IsStatFlag(STATF_Incognito))
-				SetName(pCharDef->GetTypeName());
-
 			// set to creature type stats
 			if (IsSetMagicFlags(MAGICF_POLYMORPHSTATS))
 			{
@@ -1008,16 +1015,33 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			}
 			return;
 		case LAYER_SPELL_Incognito:
-			if (!IsStatFlag(STATF_Incognito))
 			{
 				const CCharBase * pCharDef = Char_GetDef();
 				ASSERT(pCharDef);
 				StatFlag_Set(STATF_Incognito);
-				pSpell->SetName(GetName());	// Give it my name
-				SetName(pCharDef->GetTypeName());	// Give me general name for the type
-				if (!IsStatFlag(STATF_Polymorph) && IsPlayableCharacter())
-					SetHue((HUE_UNDERWEAR | HUE_SKIN_LOW) + static_cast<HUE_TYPE>(Calc_GetRandVal(HUE_SKIN_HIGH - HUE_SKIN_LOW)));
 
+				pSpell->SetName(GetName());
+				SetName(pCharDef->IsFemale() ? "#NAMES_HUMANFEMALE" : "#NAMES_HUMANMALE");
+
+				if (IsPlayableCharacter())
+					SetHue(static_cast<HUE_TYPE>(Calc_GetRandVal2(HUE_SKIN_LOW, HUE_SKIN_HIGH)) | HUE_UNDERWEAR);
+
+				HUE_TYPE RandomHairHue = static_cast<HUE_TYPE>(Calc_GetRandVal2(HUE_HAIR_LOW, HUE_HAIR_HIGH));
+				CItem *pHair = LayerFind(LAYER_HAIR);
+				if (pHair)
+				{
+					pSpell->GetTagDefs()->SetNum("COLOR.HAIR", static_cast<INT64>(pHair->GetHue()));
+					pHair->SetHue(RandomHairHue);
+				}
+
+				CItem *pBeard = LayerFind(LAYER_BEARD);
+				if (pBeard)
+				{
+					pSpell->GetTagDefs()->SetNum("COLOR.BEARD", static_cast<INT64>(pBeard->GetHue()));
+					pBeard->SetHue(RandomHairHue);
+				}
+
+				NotoSave_Update();
 				if (pClient && IsSetOF(OF_Buffs))
 				{
 					pClient->removeBuff(BI_INCOGNITO);
@@ -3551,6 +3575,14 @@ int CChar::GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, CChar *pCharSrc 
 
 			case SPELL_Blade_Spirit:
 				iDuration = 120;
+				break;
+
+			case SPELL_Incognito:
+				{
+					iDuration = 1 + ((6 * pCharSrc->Skill_GetBase(SKILL_MAGERY)) / 50);
+					if ( iDuration > 144 )
+						iDuration = 144;
+				}
 				break;
 
 			case SPELL_Paralyze:
