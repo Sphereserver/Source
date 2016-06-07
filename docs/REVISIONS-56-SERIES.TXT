@@ -68,7 +68,7 @@ Changed: Improved text formatting of basic console commands.
 
 06-06-2016, Coruja
 Fixed: Paperdoll and character profile gump showing wrong info.
-[sphere_msgs.scp]: Added message 'msg_acc_age' and removed unused 'tooltip_tag_armor', 'tooltip_tag_destination'.
+[sphere_msgs.scp]: Added message 'msg_acc_age' and removed unused 'tooltip_tag_armor', 'tooltip_tag_destination', 'incognito_name_male', 'incognito_name_female'.
 [sphereCrypt.ini]: Added crypt key for client 7.0.50
 
 07-06-2016, Coruja

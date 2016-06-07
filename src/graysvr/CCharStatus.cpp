@@ -895,7 +895,7 @@ LPCTSTR CChar::GetTradeTitle() const // Paperdoll title for character p (2)
 		len = sprintf(pTemp, "%s ", sm_SkillTitles->FindName(Skill_GetBase(skill)));
 	}
 
-	sprintf(pTemp + len, g_Cfg.GetSkillDef(skill)->m_sTitle, pCharDef->IsFemale() ? g_Cfg.GetDefaultMsg(DEFMSG_INCOGNITO_NAME_FEMALE) : g_Cfg.GetDefaultMsg(DEFMSG_INCOGNITO_NAME_MALE));
+	sprintf(pTemp + len, g_Cfg.GetSkillDef(skill)->m_sTitle);
 	return pTemp;
 }
 
