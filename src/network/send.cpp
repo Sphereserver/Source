@@ -656,7 +656,7 @@ PacketMovementAck::PacketMovementAck(const CClient* target, BYTE sequence) : Pac
 	ADDTOCALLSTACK("PacketMovementAck::PacketMovementAck");
 
 	writeByte(sequence);
-	writeByte(static_cast<BYTE>(target->GetChar()->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_AOS), true)));
+	writeByte(static_cast<BYTE>(target->GetChar()->Noto_GetFlag(target->GetChar(), target->GetNetState()->isClientVersion(MINCLIVER_AOS), true)));
 	push(target);
 }
 
@@ -2113,7 +2113,7 @@ PacketCharacterMove::PacketCharacterMove(const CClient* target, const CChar* cha
 	writeByte(direction);
 	writeInt16(hue);
 	writeByte(character->GetModeFlag(target));
-	writeByte(static_cast<BYTE>(character->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_AOS), true)));
+	writeByte(static_cast<BYTE>(character->Noto_GetFlag(target->GetChar(), target->GetNetState()->isClientVersion(MINCLIVER_AOS), true)));
 
 	push(target);
 }
@@ -2147,7 +2147,7 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 	writeByte(character->GetDirFlag());
 	writeInt16(hue);
 	writeByte(character->GetModeFlag(target));
-	writeByte(static_cast<BYTE>(character->Noto_GetFlag(target->GetChar(), false, target->GetNetState()->isClientVersion(MINCLIVER_AOS), true)));
+	writeByte(static_cast<BYTE>(character->Noto_GetFlag(target->GetChar(), target->GetNetState()->isClientVersion(MINCLIVER_AOS), true)));
 
 	bool isNewMobilePacket = target->GetNetState()->isClientVersion(MINCLIVER_NEWMOBINCOMING);
 

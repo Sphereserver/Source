@@ -2482,43 +2482,39 @@ do_default:
 			sVal.FormatVal( Stat_GetMax(STAT_DEX) );
 			break;
 		case CHC_HIT:
-			{
-			}break;
 		case CHC_HITTRY:
-			{
-			}break;
+			break;
 		case CHC_HOME:
 			sVal = m_ptHome.WriteUsed();
 			break;
 		case CHC_NIGHTSIGHT:
-			{
-				//sVal.FormatVal(IsStatFlag(STATF_NightSight));
-				CVarDefCont * pVar = GetDefKey(pszKey, true);
-				sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
-				}break;
-		case CHC_NOTOGETFLAG:
-			{
-				pszKey += 11;
-				GETNONWHITESPACE(pszKey);
-
-				CGrayUID uid = Exp_GetVal( pszKey );
-				SKIP_ARGSEP( pszKey );
-				bool fAllowIncog = ( Exp_GetVal( pszKey ) >= 1 );
-				SKIP_ARGSEP( pszKey );
-				bool fAllowInvul = ( Exp_GetVal( pszKey ) >= 1 );
-				CChar * pChar;
-
-				if ( ! uid.IsValidUID() )
-					pChar = pCharSrc;
-				else
-				{
-					pChar = uid.CharFind();
-					if ( ! pChar )
-						pChar = pCharSrc;
-				}
-				sVal.FormatVal( Noto_GetFlag( pChar, fAllowIncog, fAllowInvul ) );
-			}
+		{
+			CVarDefCont *pVar = GetDefKey(pszKey, true);
+			sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
 			break;
+		}
+		case CHC_NOTOGETFLAG:
+		{
+			pszKey += 11;
+			GETNONWHITESPACE(pszKey);
+
+			CGrayUID uid = Exp_GetVal(pszKey);
+			SKIP_ARGSEP(pszKey);
+			bool bAllowInvul = (Exp_GetVal(pszKey) >= 1);
+
+			CChar *pChar = NULL;
+			if ( !uid.IsValidUID() )
+				pChar = pCharSrc;
+			else
+			{
+				pChar = uid.CharFind();
+				if ( !pChar )
+					pChar = pCharSrc;
+			}
+			sVal.FormatVal(Noto_GetFlag(pChar, bAllowInvul));
+			break;
+		}
+
 		case CHC_NPC:
 			goto do_default;
 

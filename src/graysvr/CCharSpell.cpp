@@ -2791,18 +2791,17 @@ bool CChar::Spell_CastDone()
 		}
 	}
 
-	if ( g_Cfg.m_fHelpingCriminalsIsACrime && pSpellDef->IsSpellType(SPELLFLAG_GOOD) && pObj != NULL && pObj->IsChar() && pObj != this )
+	if ( g_Cfg.m_fHelpingCriminalsIsACrime && pSpellDef->IsSpellType(SPELLFLAG_GOOD) && pObj && pObj->IsChar() && (pObj != this) )
 	{
-		CChar * pChar = dynamic_cast <CChar*> ( pObj );
-		ASSERT( pChar );
-		switch ( pChar->Noto_GetFlag( this, false ))
+		CChar *pChar = dynamic_cast<CChar *>(pObj);
+		ASSERT(pChar);
+		switch ( pChar->Noto_GetFlag(this) )
 		{
 			case NOTO_CRIMINAL:
 			case NOTO_GUILD_WAR:
 			case NOTO_EVIL:
 				Noto_Criminal();
 				break;
-
 			default:
 				break;
 		}

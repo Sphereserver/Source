@@ -1116,11 +1116,9 @@ void CClient::addItemName( const CItem * pItem )
 	const CItemCorpse * pCorpseItem = dynamic_cast <const CItemCorpse *>(pItem);
 	if ( pCorpseItem )
 	{
-		CChar * pCharCorpse = pCorpseItem->m_uidLink.CharFind();
+		CChar *pCharCorpse = pCorpseItem->m_uidLink.CharFind();
 		if ( pCharCorpse )
-		{
-			wHue = pCharCorpse->Noto_GetHue( m_pChar, true );
-		}
+			wHue = pCharCorpse->Noto_GetHue(m_pChar);
 	}
 
 	if ( IsPriv( PRIV_GM ))
@@ -1191,7 +1189,7 @@ void CClient::addCharName( const CChar * pChar ) // Singleclick text for a chara
 	// Karma wHue codes ?
 	ASSERT( pChar );
 
-	HUE_TYPE wHue	= pChar->Noto_GetHue( m_pChar, true );
+	HUE_TYPE wHue = pChar->Noto_GetHue(m_pChar);
 
 	TCHAR *pszTemp = Str_GetTemp();
 	LPCTSTR prefix = pChar->GetKeyStr( "NAME.PREFIX" );

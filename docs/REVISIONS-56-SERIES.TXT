@@ -70,3 +70,6 @@ Changed: Improved text formatting of basic console commands.
 Fixed: Paperdoll and character profile gump showing wrong info.
 [sphere_msgs.scp]: Added message 'msg_acc_age' and removed unused 'tooltip_tag_armor', 'tooltip_tag_destination'.
 [sphereCrypt.ini]: Added crypt key for client 7.0.50
+
+07-06-2016, Coruja
+Fixed: Incognito spell considering char notoriety neutral/not-neutral on different actions. To avoid problems, now Incognito will always consider the char neutral (gray), which is the correct effect.

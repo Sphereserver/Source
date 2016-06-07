@@ -167,7 +167,7 @@ bool CChar::Noto_IsNeutral() const
 	return (iKarma < 0);
 }
 
-NOTO_TYPE CChar::Noto_GetFlag(const CChar *pCharViewer, bool bAllowIncog, bool bAllowInvul, bool bGetColor) const
+NOTO_TYPE CChar::Noto_GetFlag(const CChar *pCharViewer, bool bAllowInvul, bool bGetColor) const
 {
 	ADDTOCALLSTACK("CChar::Noto_GetFlag");
 	CChar *pThis = const_cast<CChar *>(this);
@@ -196,7 +196,7 @@ NOTO_TYPE CChar::Noto_GetFlag(const CChar *pCharViewer, bool bAllowIncog, bool b
 	}
 
 	if ( iNoto == NOTO_INVALID )
-		iNoto = Noto_CalcFlag(pCharViewer, bAllowIncog, bAllowInvul);
+		iNoto = Noto_CalcFlag(pCharViewer, bAllowInvul);
 	if ( iColor == NOTO_INVALID )
 		iColor = iNoto;
 	pThis->NotoSave_Add(pTarget, iNoto, iColor);
@@ -204,14 +204,14 @@ NOTO_TYPE CChar::Noto_GetFlag(const CChar *pCharViewer, bool bAllowIncog, bool b
 	return bGetColor ? iColor : iNoto;
 }
 
-NOTO_TYPE CChar::Noto_CalcFlag(const CChar *pCharViewer, bool bAllowIncog, bool bAllowInvul) const
+NOTO_TYPE CChar::Noto_CalcFlag(const CChar *pCharViewer, bool bAllowInvul) const
 {
 	ADDTOCALLSTACK("CChar::Noto_CalcFlag");
 	NOTO_TYPE NotoFlag = static_cast<NOTO_TYPE>(m_TagDefs.GetKeyNum("OVERRIDE.NOTO", true));
 	if ( NotoFlag != NOTO_INVALID )
 		return NotoFlag;
 
-	if ( bAllowIncog && IsStatFlag(STATF_Incognito) )
+	if ( IsStatFlag(STATF_Incognito) )
 		return NOTO_NEUTRAL;
 
 	if ( bAllowInvul && IsStatFlag(STATF_INVUL) )
@@ -234,7 +234,7 @@ NOTO_TYPE CChar::Noto_CalcFlag(const CChar *pCharViewer, bool bAllowIncog, bool 
 				{
 					// Get master's notoriety
 					++sm_iReentrant;
-					NOTO_TYPE NotoMaster = pMaster->Noto_GetFlag(pCharViewer, bAllowIncog, bAllowInvul);
+					NOTO_TYPE NotoMaster = pMaster->Noto_GetFlag(pCharViewer, bAllowInvul);
 					--sm_iReentrant;
 
 					// Check if this notoriety is inheritable based on bitmask settings
@@ -306,14 +306,14 @@ NOTO_TYPE CChar::Noto_CalcFlag(const CChar *pCharViewer, bool bAllowIncog, bool 
 	return NOTO_GOOD;
 }
 
-HUE_TYPE CChar::Noto_GetHue(const CChar *pCharViewer, bool bAllowIncog) const
+HUE_TYPE CChar::Noto_GetHue(const CChar *pCharViewer) const
 {
 	ADDTOCALLSTACK("CChar::Noto_GetHue");
 	CVarDefCont *sVal = GetKey("NAME.HUE", true);
 	if ( sVal )
 		return static_cast<HUE_TYPE>(sVal->GetValNum());
 
-	NOTO_TYPE Noto = Noto_GetFlag(pCharViewer, bAllowIncog, true, true);
+	NOTO_TYPE Noto = Noto_GetFlag(pCharViewer, true, true);
 	switch ( Noto )
 	{
 		case NOTO_GOOD:			return g_Cfg.m_iColorNotoGood;		// Blue
@@ -572,7 +572,7 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iTotalKillers)
 		return;
 
 	// What was there noto to me ?
-	NOTO_TYPE NotoThem = pKill->Noto_GetFlag( this, false );
+	NOTO_TYPE NotoThem = pKill->Noto_GetFlag(this);
 
 	// Fight is over now that i have won. (if i was fighting at all )
 	// ie. Magery cast might not be a "fight"
@@ -702,7 +702,7 @@ NOTO_TYPE CChar::NotoSave_GetValue( int id, bool bGetColor )
 	if ( static_cast<int>(m_notoSaves.size()) <= id )
 		return NOTO_INVALID;
 	NotoSaves & refNotoSave = m_notoSaves.at(id);
-	if (bGetColor && refNotoSave.color != 0 )	// retrieving color if requested... only if a color is greater than 0 (to avoid possible crashes).
+	if ( bGetColor && (refNotoSave.color > 0) )	// retrieving color if requested... only if a color is greater than 0 (to avoid possible crashes).
 		return refNotoSave.color;
 	else
 		return refNotoSave.value;
@@ -732,8 +732,7 @@ void CChar::NotoSave_Update()
 {
 	ADDTOCALLSTACK("CChar::NotoSave_Update");
 	NotoSave_Clear();
-	UpdateMode();
-	ResendTooltip();
+	UpdateMode(NULL, true);
 }
 
 void CChar::NotoSave_CheckTimeout()
@@ -772,8 +771,8 @@ void CChar::NotoSave_Resend( int id )
 		return;
 	NotoSave_Delete( pChar );
 	CObjBaseTemplate *pObj = pChar->GetTopLevelObj();
-	if (  GetDist( pObj ) < UO_MAP_VIEW_SIGHT )
-		Noto_GetFlag( pChar, true , true );
+	if ( GetDist(pObj) < UO_MAP_VIEW_SIGHT )
+		Noto_GetFlag(pChar, true);
 }
 
 int CChar::NotoSave_GetID( CChar * pChar )
@@ -1335,7 +1334,7 @@ cantsteal:
 			return( -SKTRIG_QTY );
 		}
 
-		pItem = static_cast<CItem *>(pPack->GetAt(Calc_GetRandVal(pPack->GetCount())));		// random item on backpack
+		pItem = pPack->GetAt(Calc_GetRandVal(pPack->GetCount()));		// random item on backpack
 		if ( !pItem )
 			goto cantsteal;
 

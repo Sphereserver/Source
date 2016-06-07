@@ -1172,7 +1172,7 @@ bool CChar::NPC_LookAtCharHealer( CChar * pChar )
 	// What noto is this char to me ?
 	bool ImEvil = Noto_IsEvil();
 	bool ImNeutral = Noto_IsNeutral();
-	NOTO_TYPE NotoThem = pChar->Noto_GetFlag( this, true );
+	NOTO_TYPE NotoThem = pChar->Noto_GetFlag(this);
 
 	if ( !IsStatFlag( STATF_Criminal ) && NotoThem == NOTO_CRIMINAL )
 	{
@@ -2462,7 +2462,7 @@ void CChar::NPC_Act_GoHome()
 
 	if ( !m_ptHome.IsValidPoint() || !GetTopPoint().IsValidPoint() || ( GetTopPoint().GetDist(m_ptHome) < m_pNPC->m_Home_Dist_Wander ))
 	{
-   		Skill_Start(SKILL_NONE);
+		Skill_Start(SKILL_NONE);
 		return;
 	}
 
@@ -2484,10 +2484,10 @@ void CChar::NPC_Act_GoHome()
 		}
 	}
 
-   	m_Act_p = m_ptHome;
-   	if ( !NPC_WalkToPoint() ) // get there
-   	{
-   		Skill_Start(SKILL_NONE);
+	m_Act_p = m_ptHome;
+	if ( !NPC_WalkToPoint() ) // get there
+	{
+		Skill_Start(SKILL_NONE);
 		return;
 	}
 }
