@@ -667,7 +667,7 @@
     <CustomBuild Include="src\tables\defmessages.tbl">
       <Filter>tables</Filter>
     </CustomBuild>
-    <CustomBuild Include="src\Sphere.ini" />
+    <CustomBuild Include="src\sphere.ini" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\sphereCrypt.ini" />

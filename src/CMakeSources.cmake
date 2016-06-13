@@ -281,7 +281,7 @@ SET (docs_TEXT
 ../docs/REVISIONS-55-SERIES.TXT
 ../docs/REVISIONS-56-Pre_release.TXT
 ../docs/REVISIONS-56-SERIES.TXT
-Sphere.ini
+sphere.ini
 sphereCrypt.ini
 )
 

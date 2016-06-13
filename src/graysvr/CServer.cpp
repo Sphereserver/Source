@@ -585,7 +585,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 				}
 				else
 				{
-					pSrc->SysMessage("Script profiler feature is not enabled on Sphere.ini.\n");
+					pSrc->SysMessage("Script profiler feature is not enabled on " GRAY_FILE ".ini.\n");
 				}
 			} break;
 		case 'g':
@@ -973,17 +973,17 @@ void CServer::ProfileDump( CTextConsole *pSrc, bool bDump )
 				ftDump->Printf("Scripts: called %lu times and took %i.%04i ms (%i.%04i ms average). Reporting with highest average.\n",
 					g_profiler.called,
 					static_cast<int>(g_profiler.total / divby),
-					static_cast<int>(((g_profiler.total * 10000) / (divby)) % 10000),
+					static_cast<int>(((g_profiler.total * 10000) / divby) % 10000),
 					static_cast<int>(average / divby),
-					static_cast<int>(((average * 10000) / (divby)) % 10000)
+					static_cast<int>(((average * 10000) / divby) % 10000)
 				);
 			else
 				pSrc->SysMessagef("Scripts: called %lu times and took %i.%04i ms (%i.%04i ms average). Reporting with highest average.\n",
 					g_profiler.called,
 					static_cast<int>(g_profiler.total / divby),
-					static_cast<int>(((g_profiler.total * 10000) / (divby)) % 10000),
+					static_cast<int>(((g_profiler.total * 10000) / divby) % 10000),
 					static_cast<int>(average / divby),
-					static_cast<int>(((average * 10000) / (divby)) % 10000)
+					static_cast<int>(((average * 10000) / divby) % 10000)
 				);
 
 			for ( pFun = g_profiler.FunctionsHead; pFun != NULL; pFun = pFun->next )
@@ -995,26 +995,26 @@ void CServer::ProfileDump( CTextConsole *pSrc, bool bDump )
 							pFun->name,
 							pFun->called,
 							static_cast<int>(pFun->min / divby),
-							static_cast<int>(((pFun->min * 10000) / (divby)) % 10000),
+							static_cast<int>(((pFun->min * 10000) / divby) % 10000),
 							static_cast<int>(pFun->average / divby),
-							static_cast<int>(((pFun->average * 10000) / (divby)) % 10000),
+							static_cast<int>(((pFun->average * 10000) / divby) % 10000),
 							static_cast<int>(pFun->max / divby),
-							static_cast<int>(((pFun->max * 10000) / (divby)) % 10000),
+							static_cast<int>(((pFun->max * 10000) / divby) % 10000),
 							static_cast<int>(pFun->total / divby),
-							static_cast<int>(((pFun->total * 10000) / (divby)) % 10000)
+							static_cast<int>(((pFun->total * 10000) / divby) % 10000)
 						);
 					else
 						pSrc->SysMessagef("FUNCTION '%-30s' called %6lu times (%6i.%04i min, %6i.%04i avg, %6i.%04i max) [total: %6i.%04i ms]\n",
 							pFun->name,
 							pFun->called,
 							static_cast<int>(pFun->min / divby),
-							static_cast<int>(((pFun->min * 10000) / (divby)) % 10000),
+							static_cast<int>(((pFun->min * 10000) / divby) % 10000),
 							static_cast<int>(pFun->average / divby),
-							static_cast<int>(((pFun->average * 10000) / (divby)) % 10000),
+							static_cast<int>(((pFun->average * 10000) / divby) % 10000),
 							static_cast<int>(pFun->max / divby),
-							static_cast<int>(((pFun->max * 10000) / (divby)) % 10000),
+							static_cast<int>(((pFun->max * 10000) / divby) % 10000),
 							static_cast<int>(pFun->total / divby),
-							static_cast<int>(((pFun->total * 10000) / (divby)) % 10000)
+							static_cast<int>(((pFun->total * 10000) / divby) % 10000)
 						);
 				}
 			}
@@ -1027,26 +1027,26 @@ void CServer::ProfileDump( CTextConsole *pSrc, bool bDump )
 							pTrig->name,
 							pTrig->called,
 							static_cast<int>(pTrig->min / divby),
-							static_cast<int>(((pTrig->min * 10000) / (divby)) % 10000),
+							static_cast<int>(((pTrig->min * 10000) / divby) % 10000),
 							static_cast<int>(pTrig->average / divby),
-							static_cast<int>(((pTrig->average * 10000) / (divby)) % 10000),
+							static_cast<int>(((pTrig->average * 10000) / divby) % 10000),
 							static_cast<int>(pTrig->max / divby),
-							static_cast<int>(((pTrig->max * 10000) / (divby)) % 10000),
+							static_cast<int>(((pTrig->max * 10000) / divby) % 10000),
 							static_cast<int>(pTrig->total / divby),
-							static_cast<int>(((pTrig->total * 10000) / (divby)) % 10000)
+							static_cast<int>(((pTrig->total * 10000) / divby) % 10000)
 						);
 					else
 						pSrc->SysMessagef("TRIGGER '%-25s' called %6lu times (%6i.%04i min, %6i.%04i avg, %6i.%04i max), total: %6i.%04i ms\n",
 							pTrig->name,
 							pTrig->called,
 							static_cast<int>(pTrig->min / divby),
-							static_cast<int>(((pTrig->min * 10000) / (divby)) % 10000),
+							static_cast<int>(((pTrig->min * 10000) / divby) % 10000),
 							static_cast<int>(pTrig->average / divby),
-							static_cast<int>(((pTrig->average * 10000) / (divby)) % 10000),
+							static_cast<int>(((pTrig->average * 10000) / divby) % 10000),
 							static_cast<int>(pTrig->max / divby),
-							static_cast<int>(((pTrig->max * 10000) / (divby)) % 10000),
+							static_cast<int>(((pTrig->max * 10000) / divby) % 10000),
 							static_cast<int>(pTrig->total / divby),
-							static_cast<int>(((pTrig->total * 10000) / (divby)) % 10000)
+							static_cast<int>(((pTrig->total * 10000) / divby) % 10000)
 						);
 				}
 			}
@@ -1056,7 +1056,7 @@ void CServer::ProfileDump( CTextConsole *pSrc, bool bDump )
 	}
 	else
 	{
-		pSrc->SysMessage("Script profiler feature is not enabled on Sphere.ini.\n");
+		pSrc->SysMessage("Script profiler feature is not enabled on " GRAY_FILE ".ini.\n");
 	}
 
 	if ( ftDump )
@@ -1938,7 +1938,7 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 
 	if (!g_Cfg.m_bAgree)
 	{
-		g_Log.EventError("Please write AGREE=1 in Sphere.ini file to acknowledge that\nyou understand the terms of use for nightly builds.\n");
+		g_Log.EventError("Please write AGREE=1 in " GRAY_FILE ".ini file to acknowledge that\nyou understand the terms of use for nightly builds.\n");
 		return false;
 	}
 #endif

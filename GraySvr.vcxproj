@@ -394,7 +394,7 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
     <CustomBuild Include="src\tables\defmessages.tbl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="src\Sphere.ini">
+    <CustomBuild Include="src\sphere.ini">
       <FileType>Document</FileType>
     </CustomBuild>
     <None Include="src\common\twofish\Makefile" />
