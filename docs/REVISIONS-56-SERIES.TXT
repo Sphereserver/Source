@@ -82,3 +82,4 @@ Added: Missing features on Incognito spell
 Fixed: Boat/ship parts resetting TYPE after use 'turn' commands.
 Fixed: Server crash when Injection clients connect using fake client version exploit.
 Changed: Renamed file Sphere.ini -> sphere.ini to avoid case-sensitive problems on Linux builds.
+Changed: Updated internal SQLite libs v3.12.2 to v3.13.0.
