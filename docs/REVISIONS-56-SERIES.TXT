@@ -77,3 +77,6 @@ Added: Missing features on Incognito spell
 	-It will change char name to a random human male/female name instead always use Man/Woman.
 	-It will change char body/hair/beard to a random color temporarily.
 	-It won't hide guild abbreviation anymore (the player can choose hide/show it using guild menu).
+
+13-06-2016, Coruja
+Fixed: Boat/ship parts resetting TYPE after use 'turn' commands.

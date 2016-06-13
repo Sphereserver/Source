@@ -413,7 +413,9 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 					if ((xdiff == component.m_dx) && (ydiff == component.m_dy) && ((pItem->GetTopZ()-GetTopZ()) == component.m_dz))
 					{
 						const CItemBaseMulti::CMultiComponentItem & componentnew = pMultiNew->m_Components.ElementAt(j);
+						IT_TYPE oldType = pItem->GetType();
 						pItem->SetID(componentnew.m_id);
+						pItem->SetType(oldType);
 						pt.m_x = GetTopPoint().m_x + componentnew.m_dx;
 						pt.m_y = GetTopPoint().m_y + componentnew.m_dy;
 					}
