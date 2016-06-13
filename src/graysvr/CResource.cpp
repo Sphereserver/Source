@@ -70,7 +70,7 @@ CResource::CResource()
 	m_iSaveStepMaxComplexity = 500;
 
 	// In game effects.
-	m_fCanUndressPets   = true;
+	m_fCanUndressPets	= true;
 	m_fMonsterFight		= false;
 	m_fMonsterFear		= false;
 	m_iLightDungeon		= 27;
@@ -127,7 +127,7 @@ CResource::CResource()
 	m_iCombatFlags		= 0;
 	m_iCombatDamageEra	= 0;
 	m_iCombatHitChanceEra = 0;
-	m_iCombatSpeedEra	= 3;
+	m_iCombatSpeedEra	= 0;
 	m_iMagicFlags		= 0;
 	m_iMaxPolyStats		= 150;
 	m_iRacialFlags		= 0;
@@ -542,7 +542,7 @@ enum RC_TYPE
 	RC_SAVEBACKGROUND,			// m_iSaveBackgroundTime
 	RC_SAVEPERIOD,
 	RC_SAVESECTORSPERTICK,		// m_iSaveSectorsPerTick
-    RC_SAVESTEPMAXCOMPLEXITY,	// m_iSaveStepMaxComplexity
+	RC_SAVESTEPMAXCOMPLEXITY,	// m_iSaveStepMaxComplexity
 	RC_SCPFILES,
 	RC_SECTORSLEEP,				// m_iSectorSleepMask
 	RC_SECURE,
@@ -1079,7 +1079,7 @@ bool CResource::r_LoadVal( CScript &s )
 				size_t threadCount = ThreadHolder::getActiveThreads();
 				for (size_t j = 0; j < threadCount; j++)
 				{
-					AbstractSphereThread* thread = STATIC_CAST<AbstractSphereThread*>(ThreadHolder::getThreadAt(j));
+					AbstractSphereThread *thread = static_cast<AbstractSphereThread *>(ThreadHolder::getThreadAt(j));
 					if (thread != NULL)
 						thread->m_profile.SetActive(seconds);
 				}
@@ -1146,15 +1146,15 @@ bool CResource::r_LoadVal( CScript &s )
 			m_iSaveBackgroundTime = s.GetArgVal() * 60 * TICK_PER_SEC;
 			break;
 
-                case RC_SAVESECTORSPERTICK:
-                        m_iSaveSectorsPerTick = s.GetArgVal();
-                        if( m_iSaveSectorsPerTick <= 0 )
-                                m_iSaveSectorsPerTick = 1;
-                        break;
-                case RC_SAVESTEPMAXCOMPLEXITY:
-                        m_iSaveStepMaxComplexity = s.GetArgVal();
-                        break;
+		case RC_SAVESECTORSPERTICK:
+			m_iSaveSectorsPerTick = s.GetArgVal();
+			if ( m_iSaveSectorsPerTick <= 0 )
+				m_iSaveSectorsPerTick = 1;
+			break;
 
+		case RC_SAVESTEPMAXCOMPLEXITY:
+			m_iSaveStepMaxComplexity = s.GetArgVal();
+			break;
 
 		case RC_WORLDSAVE: // Put save files here.
 			m_sWorldBaseDir = CGFile::GetMergedFileName( s.GetArgStr(), "" );
@@ -1223,14 +1223,12 @@ const CSkillDef * CResource::SkillLookup( LPCTSTR pszKey )
 {
 	ADDTOCALLSTACK("CResource::SkillLookup");
 
-	size_t iLen = strlen( pszKey );
-    const CSkillDef * pDef;
+	size_t iLen = strlen(pszKey);
+	const CSkillDef *pDef;
 	for ( size_t i = 0; i < m_SkillIndexDefs.GetCount(); ++i )
 	{
-		pDef = STATIC_CAST<const CSkillDef *>(m_SkillIndexDefs[i]);
-		if ( pDef->m_sName.IsEmpty() ?
-				!strnicmp( pszKey, pDef->GetKey(), iLen )
-			:	!strnicmp( pszKey, pDef->m_sName, iLen ) )
+		pDef = static_cast<const CSkillDef *>(m_SkillIndexDefs[i]);
+		if ( pDef->m_sName.IsEmpty() ? !strnicmp(pszKey, pDef->GetKey(), iLen) : !strnicmp(pszKey, pDef->m_sName, iLen) )
 			return pDef;
 	}
 	return NULL;
@@ -1673,12 +1671,12 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		case RC_SAVEBACKGROUND:
 			sVal.FormatVal( m_iSaveBackgroundTime / (60 * TICK_PER_SEC));
 			break;
-                case RC_SAVESECTORSPERTICK:
-                        sVal.FormatVal( m_iSaveSectorsPerTick );
-                        break;
-                case RC_SAVESTEPMAXCOMPLEXITY:
-                        sVal.FormatVal( m_iSaveStepMaxComplexity );
-                        break;
+		case RC_SAVESECTORSPERTICK:
+			sVal.FormatVal(m_iSaveSectorsPerTick);
+			break;
+		case RC_SAVESTEPMAXCOMPLEXITY:
+			sVal.FormatVal(m_iSaveStepMaxComplexity);
+			break;
 		case RC_SPELLTIMEOUT:
 			sVal.FormatVal(m_iSpellTimeout / TICK_PER_SEC);
 			break;
@@ -1850,7 +1848,7 @@ CServerRef CResource::Server_GetDef( size_t index )
 	ADDTOCALLSTACK("CResource::Server_GetDef");
 	if ( ! m_Servers.IsValidIndex(index))
 		return( NULL );
-	return( CServerRef( STATIC_CAST <CServerDef*>( m_Servers[index] )));
+	return CServerRef(static_cast<CServerDef *>(m_Servers[index]));
 }
 
 CWebPageDef * CResource::FindWebPage( LPCTSTR pszPath ) const
@@ -1861,7 +1859,7 @@ CWebPageDef * CResource::FindWebPage( LPCTSTR pszPath ) const
 		if ( m_WebPages.GetCount() <= 0 )
 			return( NULL );
 		// Take this as the default page.
-		return( STATIC_CAST <CWebPageDef*>( m_WebPages[0] ));
+		return static_cast<CWebPageDef *>(m_WebPages[0]);
 	}
 
 	LPCTSTR pszTitle = CGFile::GetFilesTitle(pszPath);
@@ -1872,14 +1870,14 @@ CWebPageDef * CResource::FindWebPage( LPCTSTR pszPath ) const
 		if ( m_WebPages.GetCount() <= 0 )
 			return( NULL );
 		// Take this as the default page.
-		return( STATIC_CAST <CWebPageDef*>( m_WebPages[0] ));
+		return static_cast<CWebPageDef *>(m_WebPages[0]);
 	}
 
 	for ( size_t i = 0; i < m_WebPages.GetCount(); i++ )
 	{
 		if ( m_WebPages[i] == NULL )	// not sure why this would happen
 			continue;
-		CWebPageDef * pWeb = STATIC_CAST <CWebPageDef*>(m_WebPages[i] );
+		CWebPageDef *pWeb = static_cast<CWebPageDef *>(m_WebPages[i]);
 		ASSERT(pWeb);
 		if ( pWeb->IsMatch(pszTitle))
 			return( pWeb );
@@ -2083,7 +2081,7 @@ bool CResource::CanUsePrivVerb( const CScriptObj * pObjTarg, LPCTSTR pszCmd, CTe
 		ilevel = GetPrivCommandLevel( myCmd );
 		if ( ilevel > pSrc->GetPrivLevel())
 			return( false );
-        myCmd=pOd+1; //skip dot
+		myCmd = pOd + 1; //skip dot
 	}
 
 
@@ -2421,20 +2419,20 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		CVarDefCont * pVarBase = g_Exp.m_VarDefs.GetKey( pszDef );
 		pVarNum = NULL;
 		if ( pVarBase )
-			pVarNum = dynamic_cast <CVarDefContNum*>( pVarBase );
+			pVarNum = static_cast<CVarDefContNum *>(pVarBase);
 		if ( !pVarNum )
 		{
 			g_Log.Event( LOGL_WARN|LOGM_INIT, "Resource '%s' not found\n", pszDef );
 			return false;
 		}
 
-		rid.SetPrivateUID( static_cast<unsigned long>(pVarNum->GetValNum()) );
+		rid.SetPrivateUID( static_cast<DWORD>(pVarNum->GetValNum()) );
 		restype	= rid.GetResType();
 
-		CResourceDef *	pRes = NULL;
-		size_t index = m_ResHash.FindKey( rid );
+		CResourceDef *pRes = NULL;
+		size_t index = m_ResHash.FindKey(rid);
 		if ( index != m_ResHash.BadIndex() )
-			pRes = dynamic_cast <CResourceDef*> (m_ResHash.GetAt( rid, index ) );
+			pRes = m_ResHash.GetAt(rid, index);
 
 		if ( pRes == NULL )
 		{
@@ -3678,7 +3676,7 @@ void CResource::OnTick( bool fNow )
 			EXC_TRY("WebTick");
 			if ( !m_WebPages[i] )
 				continue;
-			CWebPageDef * pWeb = STATIC_CAST <CWebPageDef *>(m_WebPages[i]);
+			CWebPageDef *pWeb = static_cast<CWebPageDef *>(m_WebPages[i]);
 			if ( pWeb )
 			{
 				pWeb->WebPageUpdate(fNow, NULL, &g_Serv);
@@ -3687,7 +3685,7 @@ void CResource::OnTick( bool fNow )
 			EXC_CATCH;
 
 			EXC_DEBUG_START;
-			CWebPageDef * pWeb = STATIC_CAST <CWebPageDef *>(m_WebPages[i]);
+			CWebPageDef *pWeb = static_cast<CWebPageDef *>(m_WebPages[i]);
 			g_Log.EventDebug("web '%s' dest '%s' now '%d' index '%" FMTSIZE_T "'/'%" FMTSIZE_T "'\n",
 				pWeb ? pWeb->GetName() : "", pWeb ? pWeb->GetDstName() : "",
 				fNow? 1 : 0, i, m_WebPages.GetCount());
