@@ -80,3 +80,4 @@ Added: Missing features on Incognito spell
 
 13-06-2016, Coruja
 Fixed: Boat/ship parts resetting TYPE after use 'turn' commands.
+Fixed: Server crash when Injection clients connect using fake client version exploit.

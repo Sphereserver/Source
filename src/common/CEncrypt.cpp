@@ -349,40 +349,21 @@ int CCrypt::GetVerFromString( LPCTSTR pszVersion )
 	if ( pszVersion == NULL || *pszVersion == '\0' )
 		return 0;
 
-	int n = 0;
-	int iArgs[] = { 0,0,0,0 };
+	int iLetter = 0;
 	size_t iMax = strlen(pszVersion);
-	TCHAR ch, chNext;
-
 	for ( size_t i = 0; i < iMax; i++ )
 	{
-		ch = pszVersion[i];
-		if ( ch == '.' )
+		if ( IsAlpha(pszVersion[i]) )
 		{
-			n++;
-			continue;
-		}
-
-		if ( IsDigit(ch) )
-		{
-			iArgs[n] = ch - '0';
-
-			chNext = pszVersion[i + 1];
-			if ( IsDigit(chNext) )
-			{
-				iArgs[n] = (iArgs[n] * 10) + (chNext - '0');
-				i++;
-			}
-		}
-		else if ( IsAlpha(ch) )
-		{
-			n++;
-			iArgs[n] = (ch - 'a') + 1;
+			iLetter = (pszVersion[i] - 'a') + 1;
 			break;
 		}
 	}
 
-	return (iArgs[0] * 1000000) + (iArgs[1] * 10000) + (iArgs[2] * 100) + iArgs[3];
+	TCHAR *piVer[3];
+	Str_ParseCmds(const_cast<TCHAR *>(pszVersion), piVer, COUNTOF(piVer), ".");
+
+	return (ATOI(piVer[0]) * 1000000) + (ATOI(piVer[1]) * 10000) + (ATOI(piVer[2]) * 100) + iLetter;
 }
 
 int CCrypt::GetVerFromNumber( DWORD maj, DWORD min, DWORD rev, DWORD pat )
@@ -429,13 +410,13 @@ TCHAR* CCrypt::WriteClientVer( TCHAR * pStr ) const
 bool CCrypt::SetClientVerEnum( DWORD iVer, bool bSetEncrypt )
 {
 	ADDTOCALLSTACK("CCrypt::SetClientVerEnum");
-	for (size_t i = 0; i < client_keys.size(); i++ )
+	iVer -= iVer % 100;		// ignore last digit (eg: 7.0.49.2 -> 7.0.49)
+	for ( size_t i = 0; i < client_keys.size(); i++ )
 	{
-		CCryptClientKey * key = client_keys.at(i);
-
+		CCryptClientKey *key = client_keys.at(i);
 		if ( iVer == key->m_client )
 		{
-			if ( SetClientVerIndex( i, bSetEncrypt ))
+			if ( SetClientVerIndex(i, bSetEncrypt) )
 				return true;
 		}
 	}
@@ -470,20 +451,17 @@ void CCrypt::SetClientVer( const CCrypt & crypt )
 
 bool CCrypt::SetClientVer( LPCTSTR pszVersion )
 {
-	ADDTOCALLSTACK("CCrypt::SetClientVer");
-	int iVer = 0;
-	
-	iVer = GetVersionFromString(pszVersion);
-
+	ADDTOCALLSTACK("CCrypt::SetClientVer(2)");
+	int iVer = GetVersionFromString(pszVersion);
 	m_fInit = false;
 
-	if ( ! SetClientVerEnum( iVer ) )
+	if ( !SetClientVerEnum(iVer) )
 	{
-		DEBUG_ERR(( "Unsupported ClientVersion '%s'/'0x%x'. Use Ignition?\n", pszVersion, iVer ));
-		return( false );
+		DEBUG_ERR(("Unsupported ClientVersion '%s'/'%d'. Use Ignition?\n", pszVersion, iVer));
+		return false;
 	}
 
-	return( true );
+	return true;
 }
 
 // ---------------------------------------------------------------------------------------------------------------
