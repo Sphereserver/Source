@@ -141,8 +141,6 @@ EV_CPP(extern "C" {)
 # define EV_WALK_ENABLE 0 /* not yet */
 #endif
 
-#define EV_API_STATIC 1
-
 /*****************************************************************************/
 
 #if EV_CHILD_ENABLE && !EV_SIGNAL_ENABLE
