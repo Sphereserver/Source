@@ -2363,15 +2363,6 @@ bool CChar::Spell_Unequip( LAYER_TYPE layer )
 	return( true );
 }
 
-inline bool CChar::Spell_SimpleEffect( CObjBase * pObj, CObjBase * pObjSrc, SPELL_TYPE &spell, int &iSkillLevel )
-{
-	ADDTOCALLSTACK("CChar::Spell_SimpleEffect");
-	if ( pObj == NULL )
-		return( false );
-	pObj->OnSpellEffect( spell, this, iSkillLevel, dynamic_cast <CItem*>( pObjSrc ));
-	return( true );
-}
-
 bool CChar::Spell_CastDone()
 {
 	ADDTOCALLSTACK("CChar::Spell_CastDone");
@@ -2686,23 +2677,21 @@ bool CChar::Spell_CastDone()
 			case SPELL_Flame_Strike:
 			{
 				// Display spell.
-				if (!iT1)
-					iT1 = ITEMID_FX_FLAMESTRIKE;
-
-				if (pObj == NULL)
+				if (pObj)
 				{
-					CItem * pItem = CItem::CreateBase(iT1);
+					if (!pObj->OnSpellEffect(spell, this, iSkillLevel, static_cast<CItem *>(pObjSrc)))
+						return false;
+				}
+				else
+				{
+					if (!iT1)
+						iT1 = ITEMID_FX_FLAMESTRIKE;
+
+					CItem *pItem = CItem::CreateBase(iT1);
 					ASSERT(pItem);
 					pItem->SetType(IT_SPELL);
 					pItem->m_itSpell.m_spell = SPELL_Flame_Strike;
 					pItem->MoveToDecay(m_Act_p, 2 * TICK_PER_SEC);
-				}
-				else
-				{
-					// Burn person at location.
-					//pObj->Effect(EFFECT_OBJ, iT1, pObj, 10, 30, false, iColor, iRender);
-					if (!Spell_SimpleEffect(pObj, pObjSrc, spell, iSkillLevel))
-						return(false);
 				}
 				break;
 			}
@@ -2719,15 +2708,14 @@ bool CChar::Spell_CastDone()
 			case SPELL_Vampiric_Embrace:
 			case SPELL_Stone_Form:
 			case SPELL_Reaper_Form:
+			{
 				// This has a menu select for client.
-				if (GetPrivLevel() < PLEVEL_Seer)
-				{
-					if (pObj != this)
-						return(false);
-				}
-				if (!Spell_SimpleEffect(pObj, pObjSrc, spell, iSkillLevel))
-					return(false);
+				if (!pObj || ((pObj != this) && (GetPrivLevel() < PLEVEL_Seer)))
+					return false;
+				if (!pObj->OnSpellEffect(spell, this, iSkillLevel, static_cast<CItem *>(pObjSrc)))
+					return false;
 				break;
+			}
 
 			case SPELL_Animate_Dead:
 			{
@@ -2809,9 +2797,11 @@ bool CChar::Spell_CastDone()
 			break;
 
 			default:
-				if (!Spell_SimpleEffect(pObj, pObjSrc, spell, iSkillLevel))
-					return(false);
+			{
+				if (!pObj || !pObj->OnSpellEffect(spell, this, iSkillLevel, static_cast<CItem *>(pObjSrc)))
+					return false;
 				break;
+			}
 		}
 	}
 
