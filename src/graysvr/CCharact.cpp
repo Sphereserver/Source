@@ -1902,17 +1902,14 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 
 	Spell_Effect_Add(pItem);	// if it has a magic effect.
 
-	SOUND_TYPE iSound = 0x57;
-	CVarDefCont * pVar = GetDefKey("EQUIPSOUND", true);
-	if ( pVar )
+	if ( CItemBase::IsVisibleLayer(layer) )
 	{
-		if ( pVar->GetValNum() )
-		{
+		SOUND_TYPE iSound = 0x57;
+		CVarDefCont *pVar = GetDefKey("EQUIPSOUND", true);
+		if ( pVar )
 			iSound = static_cast<SOUND_TYPE>(pVar->GetValNum());
-		}
-	}
-	if ( CItemBase::IsVisibleLayer(layer) )	// visible layer ?
 		Sound(iSound);
+	}
 
 	if ( fFromDClick )
 		pItem->ResendOnEquip();
@@ -3205,12 +3202,14 @@ TRIGRET_TYPE CChar::CheckLocation( bool fStanding )
 					if ( IsStatFlag(STATF_Fly) )
 						iSkillLevel /= 2;
 
-					OnTakeDamage( g_Cfg.GetSpellEffect(SPELL_Fire_Field, iSkillLevel), NULL, DAMAGE_FIRE|DAMAGE_GENERAL, 0, 100, 0, 0, 0 );
-					Sound(0x15f);	// fire noise
-					if ( m_pNPC && fStanding )
+					if ( OnTakeDamage(g_Cfg.GetSpellEffect(SPELL_Fire_Field, iSkillLevel), NULL, DAMAGE_FIRE|DAMAGE_GENERAL, 0, 100, 0, 0, 0) != -1 )
 					{
-						m_Act_p.Move(static_cast<DIR_TYPE>(Calc_GetRandVal(DIR_QTY)));
-						NPC_WalkToPoint(true);		// run away from the threat
+						Sound(0x15f);	// fire noise
+						if ( m_pNPC && fStanding )
+						{
+							m_Act_p.Move(static_cast<DIR_TYPE>(Calc_GetRandVal(DIR_QTY)));
+							NPC_WalkToPoint(true);		// run away from the threat
+						}
 					}
 				}
 				continue;
@@ -3222,9 +3221,10 @@ TRIGRET_TYPE CChar::CheckLocation( bool fStanding )
 				// will immediately paralyze again with 0ms delay at each damage tick.
 				// On OSI if the player cast multiple fields on the same tile, it will remove the previous field
 				// tile that got overlapped. But Sphere doesn't use this method, so this workaround is needed.
-				if ( !bSpellHit )
+				if ( bSpellHit )
+					continue;
+				if ( OnSpellEffect(static_cast<SPELL_TYPE>(RES_GET_INDEX(pItem->m_itSpell.m_spell)), pItem->m_uidLink.CharFind(), static_cast<int>(pItem->m_itSpell.m_spelllevel), pItem) )
 				{
-					OnSpellEffect(static_cast<SPELL_TYPE>(RES_GET_INDEX(pItem->m_itSpell.m_spell)), pItem->m_uidLink.CharFind(), static_cast<int>(pItem->m_itSpell.m_spelllevel), pItem);
 					bSpellHit = true;
 					if ( m_pNPC && fStanding )
 					{
@@ -3235,11 +3235,13 @@ TRIGRET_TYPE CChar::CheckLocation( bool fStanding )
 				continue;
 			case IT_TRAP:
 			case IT_TRAP_ACTIVE:
-				OnTakeDamage( pItem->Use_Trap(), NULL, DAMAGE_HIT_BLUNT|DAMAGE_GENERAL );
-				if ( m_pNPC && fStanding )
+				if ( OnTakeDamage(pItem->Use_Trap(), NULL, DAMAGE_HIT_BLUNT|DAMAGE_GENERAL) )
 				{
-					m_Act_p.Move(static_cast<DIR_TYPE>(Calc_GetRandVal(DIR_QTY)));
-					NPC_WalkToPoint(true);		// run away from the threat
+					if ( m_pNPC && fStanding )
+					{
+						m_Act_p.Move(static_cast<DIR_TYPE>(Calc_GetRandVal(DIR_QTY)));
+						NPC_WalkToPoint(true);		// run away from the threat
+					}
 				}
 				continue;
 			case IT_SWITCH:
@@ -3952,15 +3954,18 @@ bool CChar::OnTick()
 		{
 			ProfileTask aiTask(PROFILE_NPC_AI);
 			EXC_SET("NPC action");
-			NPC_OnTickAction();
-
-			if ( !IsStatFlag(STATF_DEAD) )
+			if ( !IsStatFlag(STATF_Freeze) )
 			{
-				int iAiFlags = NPC_GetAiFlags();
-				if ( (iAiFlags & NPC_AI_FOOD) && !(iAiFlags & NPC_AI_INTFOOD) )
-					NPC_Food();
-				if ( iAiFlags & NPC_AI_EXTRA )
-					NPC_ExtraAI();
+				NPC_OnTickAction();
+
+				if ( !IsStatFlag(STATF_DEAD) )
+				{
+					int iAiFlags = NPC_GetAiFlags();
+					if ( (iAiFlags & NPC_AI_FOOD) && !(iAiFlags & NPC_AI_INTFOOD) )
+						NPC_Food();
+					if ( iAiFlags & NPC_AI_EXTRA )
+						NPC_ExtraAI();
+				}
 			}
 		}
 	}

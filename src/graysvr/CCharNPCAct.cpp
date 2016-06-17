@@ -3096,19 +3096,19 @@ void CChar::NPC_OnTickAction()
 	// What action should we take now ?
 	EXC_TRY("NPC_TickAction");
 
-	if ( !m_pNPC )
+	if ( !m_pNPC || !m_pArea )
 		return;
 	SKILL_TYPE iSkillActive = Skill_GetActive();
-	if ( g_Cfg.IsSkillFlag( iSkillActive, SKF_SCRIPTED ) )
+	if ( g_Cfg.IsSkillFlag(iSkillActive, SKF_SCRIPTED) )
 	{
 		// SCRIPTED SKILL OnTickAction
 	}
-	else if (g_Cfg.IsSkillFlag(iSkillActive, SKF_FIGHT))
+	else if ( g_Cfg.IsSkillFlag(iSkillActive, SKF_FIGHT) )
 	{
 		EXC_SET("fighting");
 		NPC_Act_Fight();
 	}
-	else if (g_Cfg.IsSkillFlag(iSkillActive, SKF_MAGIC))
+	else if ( g_Cfg.IsSkillFlag(iSkillActive, SKF_MAGIC) )
 	{
 		EXC_SET("fighting-magic");
 		NPC_Act_Fight();
@@ -3134,17 +3134,6 @@ void CChar::NPC_OnTickAction()
 					break;
 				EXC_SET("idle: Hidding");
 				NPC_Act_Idle();
-				break;
-
-			case SKILL_ARCHERY:
-			case SKILL_FENCING:
-			case SKILL_MACEFIGHTING:
-			case SKILL_SWORDSMANSHIP:
-			case SKILL_WRESTLING:
-			case SKILL_THROWING:
-				// If we are fighting . Periodically review our targets.
-				EXC_SET("fight");
-				NPC_Act_Fight();
 				break;
 
 			case NPCACT_GUARD_TARG:
@@ -3234,7 +3223,7 @@ void CChar::NPC_OnTickAction()
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("'%s' [0%lx]\n", GetName(), (DWORD)GetUID());
+	g_Log.EventDebug("'%s' [0%lx]\n", GetName(), static_cast<DWORD>(GetUID()));
 	EXC_DEBUG_END;
 }
 
@@ -3310,7 +3299,7 @@ void CChar::NPC_Pathfinding()
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("'%s' point '%d,%d,%d,%d' [0%lx]\n", GetName(), local.m_x, local.m_y, local.m_z, local.m_map, (DWORD)GetUID());
+	g_Log.EventDebug("'%s' point '%d,%d,%d,%d' [0%lx]\n", GetName(), local.m_x, local.m_y, local.m_z, local.m_map, static_cast<DWORD>(GetUID()));
 	EXC_DEBUG_END;
 }
 
