@@ -47,26 +47,26 @@ private:
 public:
 	CObjBaseTemplate * GetNext() const
 	{
-		return( STATIC_CAST <CObjBaseTemplate*> ( CGObListRec::GetNext()));
+		return static_cast<CObjBaseTemplate *>(CGObListRec::GetNext());
 	}
 	CObjBaseTemplate * GetPrev() const
 	{
-		return( STATIC_CAST <CObjBaseTemplate*> ( CGObListRec::GetPrev()));
+		return static_cast<CObjBaseTemplate *>(CGObListRec::GetPrev());
 	}
 
-	CGrayUID GetUID() const			{	return( m_UID ); }
-	bool IsItem() const				{	return( m_UID.IsItem()); }
-	bool IsChar() const				{	return( m_UID.IsChar()); }
-	bool IsItemInContainer() const	{	return( m_UID.IsItemInContainer() ); }
-	bool IsItemEquipped() const		{	return( m_UID.IsItemEquipped() ); }
-	bool IsDisconnected() const		{	return( m_UID.IsObjDisconnected() ); }
-	bool IsTopLevel() const			{	return( m_UID.IsObjTopLevel() ); }
-	bool IsValidUID() const			{	return( m_UID.IsValidUID() ); }
+	CGrayUID GetUID() const			{ return m_UID; }
+	bool IsItem() const				{ return m_UID.IsItem(); }
+	bool IsChar() const				{ return m_UID.IsChar(); }
+	bool IsItemInContainer() const	{ return m_UID.IsItemInContainer(); }
+	bool IsItemEquipped() const		{ return m_UID.IsItemEquipped(); }
+	bool IsDisconnected() const		{ return m_UID.IsObjDisconnected(); }
+	bool IsTopLevel() const			{ return m_UID.IsObjTopLevel(); }
+	bool IsValidUID() const			{ return m_UID.IsValidUID(); }
 	bool IsDeleted() const;
 
 	void SetContainerFlags( DWORD dwFlags = 0 )
 	{
-		m_UID.SetObjContainerFlags( dwFlags );
+		m_UID.SetObjContainerFlags(dwFlags);
 	}
 
 	virtual int IsWeird() const;

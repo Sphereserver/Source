@@ -247,11 +247,11 @@ void CNTWindow::CStatusWnd::FillStats()
 	size_t iThreadCount = ThreadHolder::getActiveThreads();
 	for ( size_t iThreads = 0; iThreads < iThreadCount; ++iThreads)
 	{
-		IThread* thrCurrent = ThreadHolder::getThreadAt(iThreads);
+		IThread *thrCurrent = ThreadHolder::getThreadAt(iThreads);
 		if (thrCurrent == NULL)
 			continue;
 
-		const ProfileData& profile = STATIC_CAST<AbstractSphereThread*>(thrCurrent)->m_profile;
+		const ProfileData &profile = static_cast<AbstractSphereThread *>(thrCurrent)->m_profile;
 		if (profile.IsEnabled() == false)
 			continue;
 

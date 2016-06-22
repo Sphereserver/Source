@@ -362,8 +362,8 @@ enum IT_TYPE		// double click type action.
 	IT_BBOARD,			// 106 = a container and bboard object.
 	IT_SPELLBOOK,			// 107 = spellbook (with spells)
 	IT_CORPSE,			// 108 = special type of item.
-	IT_TRACK_ITEM,		// 109 - track a id or type of item.
-	IT_TRACK_CHAR,		// 110 = track a char or range of char id's
+	IT_UNUSED_109,		// 109
+	IT_UNUSED_110,		// 110
 	IT_WEAPON_ARROW,		// 111
 	IT_WEAPON_BOLT,		// 112
 	IT_EQ_VENDOR_BOX,		// 113 = an equipped vendor .
@@ -649,6 +649,7 @@ public:
 	static bool IsTypeSpellbook( IT_TYPE type );
 	static bool IsTypeMulti( IT_TYPE type );
 	static IT_TYPE GetTypeBase( ITEMID_TYPE id, const CUOItemTypeRec2 &tile );
+
 	WORD GetMaxAmount();
 	bool SetMaxAmount(WORD amount);
 
@@ -686,7 +687,7 @@ public:
 		return static_cast<LAYER_TYPE>(m_layer);
 	}
 	bool IsTypeEquippable() const;
-	GUMP_TYPE IsTypeContainer() const;
+	GUMP_TYPE GetContainerGumpID() const;
 
 	LPCTSTR GetName() const;
 	LPCTSTR GetArticleAndSpace() const;

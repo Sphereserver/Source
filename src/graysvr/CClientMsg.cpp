@@ -450,14 +450,14 @@ bool CClient::addContainerSetup( const CItemContainer * pContainer ) // Send Bac
 {
 	ADDTOCALLSTACK("CClient::addContainerSetup");
 	ASSERT(pContainer);
-	ASSERT( pContainer->IsItem());
+	ASSERT(pContainer->IsItem());
 
 	// open the container with the proper GUMP.
-	CItemBase * pItemDef = pContainer->Item_GetDef();
-	GUMP_TYPE gump = pItemDef->IsTypeContainer();
-	if (!pItemDef)
+	CItemBase *pItemDef = pContainer->Item_GetDef();
+	if ( !pItemDef )
 		return false;
 
+	GUMP_TYPE gump = pItemDef->GetContainerGumpID();
 	if ( gump <= GUMP_RESERVED )
 		return false;
 

@@ -362,8 +362,8 @@ public:
 };
 
 #define ADDTOCALLSTACK(_function_)	StackDebugInformation debugStack(_function_)
-#define PAUSECALLSTACK STATIC_CAST<AbstractSphereThread *>(ThreadHolder::current())->freezeCallStack(true)
-#define UNPAUSECALLSTACK STATIC_CAST<AbstractSphereThread *>(ThreadHolder::current())->freezeCallStack(false)
+#define PAUSECALLSTACK static_cast<AbstractSphereThread *>(ThreadHolder::current())->freezeCallStack(true)
+#define UNPAUSECALLSTACK static_cast<AbstractSphereThread *>(ThreadHolder::current())->freezeCallStack(false)
 #ifdef _WIN32
 // gcc doesn't seem to optimise addtocallstack very well and cpu usage is maxed out with methods are
 // called extremely often. the _INTENSIVE macro can be used to disable these particular methods from

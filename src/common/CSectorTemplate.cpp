@@ -14,9 +14,9 @@ void CCharsActiveList::OnRemoveOb( CGObListRec * pObRec )
 {
 	ADDTOCALLSTACK("CCharsActiveList::OnRemoveOb");
 	// Override this = called when removed from group.
-	CChar * pChar = STATIC_CAST <CChar*>(pObRec);
-	ASSERT( pChar );
-	if ( pChar->IsClient())
+	CChar *pChar = static_cast<CChar *>(pObRec);
+	ASSERT(pChar);
+	if ( pChar->IsClient() )
 	{
 		ClientDetach();
 		m_timeLastClient = CServTime::GetCurrentTime();	// mark time in case it's the last client
@@ -58,13 +58,11 @@ void CItemsList::OnRemoveOb( CGObListRec * pObRec )
 {
 	ADDTOCALLSTACK("CItemsList::OnRemoveOb");
 	// Item is picked up off the ground. (may be put right back down though)
-	CItem * pItem = STATIC_CAST <CItem*>(pObRec);
-	ASSERT( pItem );
+	CItem *pItem = static_cast<CItem *>(pObRec);
+	ASSERT(pItem);
 
-	if ( ! sm_fNotAMove )
-	{
+	if ( !sm_fNotAMove )
 		pItem->OnMoveFrom();	// IT_MULTI, IT_SHIP and IT_COMM_CRYSTAL
-	}
 
 	CGObList::OnRemoveOb(pObRec);
 	pItem->SetContainerFlags(UID_O_DISCONNECT);	// It is no place for the moment.

@@ -116,7 +116,7 @@ private:
 public:
 	CGStringListRec * GetNext() const
 	{
-		return STATIC_CAST<CGStringListRec *>( CGObListRec::GetNext() );
+		return static_cast<CGStringListRec *>(CGObListRec::GetNext());
 	}
 };
 
@@ -132,7 +132,7 @@ private:
 public:
 	CGStringListRec * GetHead() const
 	{
-		return STATIC_CAST<CGStringListRec *>( CGObList::GetHead() );
+		return static_cast<CGStringListRec *>(CGObList::GetHead());
 	}
 	void AddHead( LPCTSTR pszVal )
 	{

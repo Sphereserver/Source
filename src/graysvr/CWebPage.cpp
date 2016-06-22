@@ -185,77 +185,77 @@ bool CWebPageDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on 
 	switch ( iHeadKey )
 	{
 		case WV_WEBPAGE:
-			{
+		{
 			// serv a web page to the pSrc
-				CClient * pClient = dynamic_cast <CClient *>(pSrc);
-				if ( pClient == NULL )
-					return( false );
-				return ServPage( pClient, s.GetArgStr(), NULL );
-			}
+			CClient *pClient = dynamic_cast<CClient *>(pSrc);
+			if ( !pClient )
+				return false;
+			return ServPage(pClient, s.GetArgStr(), NULL);
+		}
 	
 		case WV_CLIENTLIST:
+		{
+			ClientIterator it;
+			for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 			{
-				ClientIterator it;
-				for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
-				{
-					CChar * pChar = pClient->GetChar();
-					if ( pChar == NULL )
-						continue;
-					if (( pChar->IsStatFlag(STATF_Insubstantial) ) && (!pChar->IsStatFlag(STATF_DEAD)))
-						continue;
-	
-					sm_iListIndex++;
-	
-					LPCTSTR pszArgs = s.GetArgStr();
-					if ( pszArgs[0] == '\0' )
-						pszArgs = "<tr><td>%NAME%</td><td>%REGION.NAME%</td></tr>\n";
-					strcpy( pszTmp2, pszArgs );
-					pChar->ParseText( Str_MakeFiltered( pszTmp2 ), &g_Serv, 1 );
-					pSrc->SysMessage( pszTmp2 );
-				}
+				CChar *pChar = pClient->GetChar();
+				if ( !pChar )
+					continue;
+				if ( pChar->IsStatFlag(STATF_Insubstantial) && !pChar->IsStatFlag(STATF_DEAD) )
+					continue;
+
+				sm_iListIndex++;
+
+				LPCTSTR pszArgs = s.GetArgStr();
+				if ( pszArgs[0] == '\0' )
+					pszArgs = "<tr><td>%NAME%</td><td>%REGION.NAME%</td></tr>\n";
+				strcpy(pszTmp2, pszArgs);
+				pChar->ParseText(Str_MakeFiltered(pszTmp2), &g_Serv, 1);
+				pSrc->SysMessage(pszTmp2);
 			}
 			break;
+		}
 	
 		case WV_GUILDLIST:
 		case WV_TOWNLIST:
+		{
+			if ( !s.HasArgs() )
+				return false;
+
+			IT_TYPE	needtype = (iHeadKey == WV_GUILDLIST) ? IT_STONE_GUILD : IT_STONE_TOWN;
+
+			for ( size_t i = 0; i < g_World.m_Stones.GetCount(); i++ )
 			{
-				if ( !s.HasArgs() )
-					return false;
+				CItemStone *pStone = g_World.m_Stones[i];
+				if ( !pStone || !pStone->IsType(needtype) )
+					continue;
 
-				IT_TYPE	needtype = ( iHeadKey == WV_GUILDLIST ) ? IT_STONE_GUILD : IT_STONE_TOWN;
+				sm_iListIndex++;
 
-				for ( size_t i = 0; i < g_World.m_Stones.GetCount(); i++ )
-				{
-					CItemStone * pStone = g_World.m_Stones[i];
-					if ( !pStone || !pStone->IsType(needtype) )
-						continue;
-	
-					sm_iListIndex++;
-	
-					strcpy(pszTmp2, s.GetArgStr());
-					pStone->ParseText(Str_MakeFiltered(pszTmp2), &g_Serv, 1);
-					pSrc->SysMessage(pszTmp2);
-				}
+				strcpy(pszTmp2, s.GetArgStr());
+				pStone->ParseText(Str_MakeFiltered(pszTmp2), &g_Serv, 1);
+				pSrc->SysMessage(pszTmp2);
 			}
 			break;
+		}
 
 		case WV_GMPAGELIST:
+		{
+			if ( !s.HasArgs() )
+				return false;
+			CGMPage *pPage = static_cast<CGMPage *>(g_World.m_GMPages.GetHead());
+			for ( ; pPage != NULL; pPage = pPage->GetNext() )
 			{
-				if ( ! s.HasArgs())
-					return( false );
-				CGMPage * pPage = STATIC_CAST <CGMPage*>( g_World.m_GMPages.GetHead());
-				for ( ; pPage!=NULL; pPage = pPage->GetNext())
-				{
-					sm_iListIndex++;
-					strcpy( pszTmp2, s.GetArgStr() );
-					pPage->ParseText( Str_MakeFiltered( pszTmp2 ), &g_Serv, 1 );
-					pSrc->SysMessage( pszTmp2 );
-				}
+				sm_iListIndex++;
+				strcpy(pszTmp2, s.GetArgStr());
+				pPage->ParseText(Str_MakeFiltered(pszTmp2), &g_Serv, 1);
+				pSrc->SysMessage(pszTmp2);
 			}
 			break;
+		}
 	
 		default:
-			return( CResourceLink::r_Verb(s,pSrc));
+			return CResourceLink::r_Verb(s, pSrc);
 	}
 	return true;
 	EXC_CATCH;

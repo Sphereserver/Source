@@ -503,7 +503,7 @@ bool CScriptObj::r_Call( LPCTSTR pszFunction, CTextConsole * pSrc, CScriptTrigge
 	if ( index == g_Cfg.m_Functions.BadIndex() )
 		return false;
 
-	CResourceNamed * pFunction = STATIC_CAST <CResourceNamed *>( g_Cfg.m_Functions[index] );
+	CResourceNamed *pFunction = static_cast<CResourceNamed *>(g_Cfg.m_Functions[index]);
 	ASSERT(pFunction);
 	CResourceLock sFunction;
 	if ( pFunction->ResourceLock(sFunction) )
@@ -3389,11 +3389,11 @@ bool CFileObjContainer::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole
 	ADDTOCALLSTACK("CFileObjContainer::r_WriteVal");
 	EXC_TRY("WriteVal");
 
-	if ( !strnicmp("FIRSTUSED.",pszKey,10) )
+	if ( !strnicmp("FIRSTUSED.", pszKey, 10) )
 	{
-		pszKey += 10; 
+		pszKey += 10;
 
-		CFileObj * pFirstUsed = NULL;
+		CFileObj *pFirstUsed = NULL;
 		for ( std::vector<CFileObj *>::iterator i = sFileList.begin(); i != sFileList.end(); ++i )
 		{
 			if ( (*i)->IsInUse() )
@@ -3403,51 +3403,46 @@ bool CFileObjContainer::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole
 			}
 		}
 
-		if ( pFirstUsed != NULL ) 
-		{ 
-			return STATIC_CAST<CScriptObj *>(pFirstUsed)->r_WriteVal(pszKey, sVal, pSrc);
-		}
+		if ( pFirstUsed )
+			return static_cast<CScriptObj *>(pFirstUsed)->r_WriteVal(pszKey, sVal, pSrc);
 
-		return( false );
+		return false;
 	}
 
-	int iIndex = FindTableHeadSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 );
+	int iIndex = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
 
 	if ( iIndex < 0 )
 	{
-		size_t nNumber = static_cast<size_t>( Exp_GetVal(pszKey) );
+		size_t nNumber = static_cast<size_t>(Exp_GetVal(pszKey));
 		SKIP_SEPARATORS(pszKey);
 
 		if ( nNumber >= sFileList.size() )
-			return( false );
+			return false;
 
-		CFileObj * pFile = sFileList.at(nNumber);
-
-		if ( pFile != NULL ) 
+		CFileObj *pFile = sFileList.at(nNumber);
+		if ( pFile )
 		{
-			CScriptObj * pObj = dynamic_cast<CScriptObj*>( pFile );
-			if (pObj != NULL)
+			CScriptObj *pObj = dynamic_cast<CScriptObj*>(pFile);
+			if ( pObj )
 				return pObj->r_WriteVal(pszKey, sVal, pSrc);
 		}
 
-		return( false );
+		return false;
 	}
 
 	switch ( iIndex )
 	{
 		case CFO_OBJECTPOOL:
-			sVal.FormatVal( GetFilenumber() );
+			sVal.FormatVal(GetFilenumber());
 			break;
-
 		case CFO_GLOBALTIMEOUT:
-			sVal.FormatVal(iGlobalTimeout/TICK_PER_SEC);
+			sVal.FormatVal(iGlobalTimeout / TICK_PER_SEC);
 			break;
-
 		default:
 			return false;
 	}
 
-	return( true );
+	return true;
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
@@ -3464,11 +3459,11 @@ bool CFileObjContainer::r_Verb( CScript & s, CTextConsole * pSrc )
 
 	LPCTSTR pszKey = s.GetKey();
 
-	if ( !strnicmp("FIRSTUSED.",pszKey,10) )
+	if ( !strnicmp("FIRSTUSED.", pszKey, 10) )
 	{
-		pszKey += 10; 
+		pszKey += 10;
 
-		CFileObj * pFirstUsed = NULL;
+		CFileObj *pFirstUsed = NULL;
 		for ( std::vector<CFileObj *>::iterator i = sFileList.begin(); i != sFileList.end(); ++i )
 		{
 			if ( (*i)->IsInUse() )
@@ -3478,75 +3473,75 @@ bool CFileObjContainer::r_Verb( CScript & s, CTextConsole * pSrc )
 			}
 		}
 
-		if ( pFirstUsed != NULL )
+		if ( pFirstUsed )
 		{
-			return STATIC_CAST<CScriptObj *>(pFirstUsed)->r_Verb(s,pSrc);
+			return static_cast<CScriptObj *>(pFirstUsed)->r_Verb(s, pSrc);
 		}
 
-		return( false );
+		return false;
 	}
 
-	int index = FindTableSorted( pszKey, sm_szVerbKeys, COUNTOF( sm_szVerbKeys )-1 );
+	int index = FindTableSorted(pszKey, sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
 
 	if ( index < 0 )
 	{
-		if ( strchr( pszKey, '.') ) // 0.blah format
+		if ( strchr(pszKey, '.') ) // 0.blah format
 		{
-			size_t nNumber = static_cast<size_t>( Exp_GetVal(pszKey) );
-
+			size_t nNumber = static_cast<size_t>(Exp_GetVal(pszKey));
 			if ( nNumber < sFileList.size() )
 			{
 				SKIP_SEPARATORS(pszKey);
 
-				CFileObj * pFile = sFileList.at(nNumber);
+				CFileObj *pFile = sFileList.at(nNumber);
 
-				if ( pFile != NULL ) 
-				{ 
-					CScriptObj* pObj = dynamic_cast<CScriptObj*>(pFile);
-					if (pObj != NULL)
+				if ( pFile )
+				{
+					CScriptObj *pObj = dynamic_cast<CScriptObj*>(pFile);
+					if ( pObj )
 					{
 						CScript psContinue(pszKey, s.GetArgStr());
 						return pObj->r_Verb(psContinue, pSrc);
 					}
 				}
 
-				return( false );
+				return false;
 			}
 		}
 
-		return( this->r_LoadVal( s ) );
-	}	
+		return r_LoadVal(s);
+	}
 
 	switch ( index )
 	{
 		case CFOV_CLOSEOBJECT:
 		case CFOV_RESETOBJECT:
 		{
-			bool bResetObject = ( index == CFOV_RESETOBJECT );
+			bool bResetObject = (index == CFOV_RESETOBJECT);
 			if ( s.HasArgs() )
 			{
-				size_t nNumber = static_cast<size_t>( s.GetArgVal() );
+				size_t nNumber = static_cast<size_t>(s.GetArgVal());
 				if ( nNumber >= sFileList.size() )
-					return( false );
+					return false;
 
-				CFileObj * pObjVerb = sFileList.at(nNumber);
+				CFileObj *pObjVerb = sFileList.at(nNumber);
 				if ( bResetObject )
 				{
 					delete pObjVerb;
 					sFileList.at(nNumber) = new CFileObj();
-				} 
+				}
 				else
 				{
 					pObjVerb->FlushAndClose();
 				}
 			}
-		} break;
+			break;
+		}
 
 		default:
-			return( false );
+			return false;
 	}
 
-	return( true );
+	return true;
 	EXC_CATCH;
 
 	EXC_DEBUG_START;

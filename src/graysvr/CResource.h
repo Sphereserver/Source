@@ -1162,10 +1162,10 @@ public:
 	{
 		// Find the skill name in the alpha sorted list.
 		// RETURN: SKILL_NONE = error.
-		size_t i = m_SkillNameDefs.FindKey( pszKey );
+		size_t i = m_SkillNameDefs.FindKey(pszKey);
 		if ( i == m_SkillNameDefs.BadIndex() )
-			return( NULL );
-		return( STATIC_CAST <const CSkillDef*>(m_SkillNameDefs[i]));
+			return NULL;
+		return static_cast<const CSkillDef *>(m_SkillNameDefs[i]);
 	}
 	const CSkillDef* SkillLookup( LPCTSTR pszKey );
 	SKILL_TYPE FindSkillKey( LPCTSTR pszKey ) const;

@@ -368,16 +368,16 @@ bool CCharBase::r_Load( CScript & s )
 CCharBase * CCharBase::FindCharBase( CREID_TYPE baseID ) // static
 {
 	ADDTOCALLSTACK("CCharBase::FindCharBase");
-	RESOURCE_ID rid = RESOURCE_ID( RES_CHARDEF, baseID );
+	RESOURCE_ID rid = RESOURCE_ID(RES_CHARDEF, baseID);
 	size_t index = g_Cfg.m_ResHash.FindKey(rid);
 	if ( index == g_Cfg.m_ResHash.BadIndex() )
 		return NULL;
 
-	CResourceLink * pBaseLink = STATIC_CAST <CResourceLink *> ( g_Cfg.m_ResHash.GetAt(rid,index));
+	CResourceLink *pBaseLink = static_cast<CResourceLink *>(g_Cfg.m_ResHash.GetAt(rid, index));
 	ASSERT(pBaseLink);
-	CCharBase * pBase = dynamic_cast <CCharBase *> (pBaseLink);
+	CCharBase *pBase = dynamic_cast<CCharBase *>(pBaseLink);
 	if ( pBase )
-		return( pBase );	// already loaded.
+		return pBase;	// already loaded
 
 	// create a new base.
 	pBase = new CCharBase(baseID);
@@ -389,11 +389,8 @@ CCharBase * CCharBase::FindCharBase( CREID_TYPE baseID ) // static
 
 	// load it's data on demand.
 	CResourceLock s;
-	if ( !pBase->ResourceLock(s))
-		return( NULL );
-	if ( !pBase->r_Load(s))
-		return( NULL );
+	if ( !pBase->ResourceLock(s) || !pBase->r_Load(s) )
+		return NULL;
 
 	return pBase;
 }
-

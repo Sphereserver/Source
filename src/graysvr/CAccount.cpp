@@ -236,9 +236,9 @@ void CAccounts::Account_Add( CAccount * pAccount )
 CAccountRef CAccounts::Account_Get( size_t index )
 {
 	ADDTOCALLSTACK("CAccounts::Account_Get");
-	if ( ! m_Accounts.IsValidIndex(index))
-		return( NULL );
-	return( CAccountRef( STATIC_CAST <CAccount *>( m_Accounts[index])));
+	if ( !m_Accounts.IsValidIndex(index) )
+		return NULL;
+	return CAccountRef(static_cast<CAccount *>(m_Accounts[index]));
 }
 
 bool CAccounts::Cmd_AddNew( CTextConsole * pSrc, LPCTSTR pszName, LPCTSTR pszArg, bool md5 )

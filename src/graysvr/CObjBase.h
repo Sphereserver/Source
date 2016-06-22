@@ -73,9 +73,9 @@ public:
 
 	CResourceRefArray m_OEvents;
 	static size_t sm_iCount;	// how many total objects in the world ?
-	CVarDefMap * GetTagDefs()
+	CVarDefMap *GetTagDefs()
 	{
-		return( &m_TagDefs );
+		return &m_TagDefs;
 	}
 	virtual void DeletePrepare();
 	bool IsTriggerActive(LPCTSTR trig) ;
@@ -108,7 +108,7 @@ public:
 	{
 		CVarDefCont	* pVar = GetDefKey( pszKey, fDef );
 		if ( pVar == NULL )
-			return (fZero ? "0" : "");
+			return fZero ? "0" : "";
 		return pVar->GetValStr();
 	}
 
@@ -116,7 +116,7 @@ public:
 	{
 		CVarDefCont	* pVar = GetDefKey( pszKey, fDef );
 		if ( pVar == NULL )
-			return (fZero ? 0 : NULL);
+			return fZero ? 0 : NULL;
 		return pVar->GetValNum();
 	}
 
@@ -141,13 +141,13 @@ public:
 		if ( !fDef || pVar )	return pVar;
 		if (IsItem())
 		{
-			CItemBase * pItemDef = STATIC_CAST <CItemBase*>( Base_GetDef());
+			CItemBase *pItemDef = static_cast<CItemBase *>(Base_GetDef());
 			ASSERT(pItemDef);
 			return pItemDef-> m_BaseDefs.GetKey( pszKey );
 		}
 		else
 		{
-			CCharBase * pCharDef = STATIC_CAST <CCharBase*>( Base_GetDef());
+			CCharBase *pCharDef = static_cast<CCharBase *>( Base_GetDef());
 			ASSERT(pCharDef);
 			return pCharDef-> m_BaseDefs.GetKey( pszKey );
 		}
@@ -157,7 +157,7 @@ public:
 	{
 		CVarDefCont	* pVar = GetKey( pszKey, fDef );
 		if ( pVar == NULL )
-			return (fZero ? "0" : "");
+			return fZero ? "0" : "";
 		return pVar->GetValStr();
 	}
 
@@ -165,25 +165,26 @@ public:
 	{
 		CVarDefCont	* pVar = GetKey( pszKey, fDef );
 		if ( pVar == NULL )
-			return (fZero ? 0 : NULL);
+			return fZero ? 0 : NULL;
 		return pVar->GetValNum();
 	}
 
 	CVarDefCont * GetKey( LPCTSTR pszKey, bool fDef ) const
 	{
-		CVarDefCont	* pVar	= m_TagDefs.GetKey( pszKey );
-		if ( !fDef || pVar )	return pVar;
-		if (IsItem())
+		CVarDefCont	*pVar = m_TagDefs.GetKey(pszKey);
+		if ( !fDef || pVar )
+			return pVar;
+		if ( IsItem() )
 		{
-			CItemBase * pItemDef = STATIC_CAST <CItemBase*>( Base_GetDef());
+			CItemBase *pItemDef = static_cast<CItemBase *>(Base_GetDef());
 			ASSERT(pItemDef);
-			return pItemDef-> m_TagDefs.GetKey( pszKey );
+			return pItemDef->m_TagDefs.GetKey(pszKey);
 		}
 		else
 		{
-			CCharBase * pCharDef = STATIC_CAST <CCharBase*>( Base_GetDef());
+			CCharBase *pCharDef = static_cast<CCharBase *>(Base_GetDef());
 			ASSERT(pCharDef);
-			return pCharDef-> m_TagDefs.GetKey( pszKey );
+			return pCharDef->m_TagDefs.GetKey(pszKey);
 		}
 	}
 
@@ -226,21 +227,21 @@ public:
 	virtual WORD GetBaseID() const = 0;
 	CBaseBaseDef * Base_GetDef() const
 	{
-		return( STATIC_CAST <CBaseBaseDef *>( m_BaseRef.GetRef() ));
+		return static_cast<CBaseBaseDef *>(m_BaseRef.GetRef());
 	}
 
 	void SetUID( DWORD dwVal, bool fItem );
-	CObjBase* GetNext() const
+	CObjBase *GetNext() const
 	{
-		return( STATIC_CAST <CObjBase*>( CGObListRec::GetNext()));
+		return static_cast<CObjBase *>(CGObListRec::GetNext());
 	}
-	CObjBase* GetPrev() const
+	CObjBase *GetPrev() const
 	{
-		return( STATIC_CAST <CObjBase*>( CGObListRec::GetPrev()));
+		return static_cast<CObjBase *>(CGObListRec::GetPrev());
 	}
 	virtual LPCTSTR GetName() const	// resolve ambiguity w/CScriptObj
 	{
-		return( CObjBaseTemplate::GetName());
+		return CObjBaseTemplate::GetName();
 	}
 	LPCTSTR GetResourceName() const
 	{
@@ -252,7 +253,7 @@ public:
 	void SetHue( HUE_TYPE wHue, bool bAvoidTrigger = true, CTextConsole *pSrc = NULL, CObjBase *SourceObj = NULL, long long sound = 0 );
 	HUE_TYPE GetHue() const
 	{
-		return( m_wHue );
+		return m_wHue;
 	}
 
 protected:
@@ -260,7 +261,7 @@ protected:
 	{
 		// IT_EQ_MEMORY_OBJ = MEMORY_TYPE mask
 		// IT_EQ_VENDOR_BOX = restock time.
-		return( m_wHue );
+		return m_wHue;
 	}
 	void SetHueAlt( HUE_TYPE wHue )
 	{
@@ -272,34 +273,34 @@ public:
 	virtual void SetTimeout( INT64 iDelayInTicks );
 	bool IsTimerSet() const
 	{
-		return( m_timeout.IsTimeValid());
+		return m_timeout.IsTimeValid();
 	}
 	INT64 GetTimerDiff() const;	// return: < 0 = in the past ( m_timeout - CServTime::GetCurrentTime() )
 	bool IsTimerExpired() const
 	{
-		return( GetTimerDiff() <= 0 );
+		return (GetTimerDiff() <= 0);
 	}
 
 	INT64 GetTimerAdjusted() const
 	{
 		// RETURN: time in seconds from now.
 		if ( ! IsTimerSet())
-			return( -1 );
+			return -1;
 		INT64 iDiffInTicks = GetTimerDiff();
 		if ( iDiffInTicks < 0 )
-			return( 0 );
-		return( iDiffInTicks / TICK_PER_SEC );
+			return 0;
+		return iDiffInTicks / TICK_PER_SEC;
 	}
 
 	INT64 GetTimerDAdjusted() const
 	{
 		// RETURN: time in seconds from now.
 		if ( ! IsTimerSet())
-			return( -1 );
+			return -1;
 		INT64 iDiffInTicks = GetTimerDiff();
 		if ( iDiffInTicks < 0 )
-			return( 0 );
-		return( iDiffInTicks );
+			return 0;
+		return iDiffInTicks;
 	}
 
 public:
@@ -367,13 +368,13 @@ public:
 	virtual void OnTickStatusUpdate();
 
 protected:
-	PacketPropertyList* m_PropertyList;	// currently cached property list packet
+	PacketPropertyList *m_PropertyList;	// currently cached property list packet
 	DWORD m_PropertyHash;				// latest property list hash
 	DWORD m_PropertyRevision;			// current property list revision
 
 public:
-	PacketPropertyList* GetPropertyList(void) const { return m_PropertyList; }
-	void SetPropertyList(PacketPropertyList* propertyList);
+	PacketPropertyList *GetPropertyList(void) const { return m_PropertyList; }
+	void SetPropertyList(PacketPropertyList *propertyList);
 	void FreePropertyList(void);
 	DWORD UpdatePropertyRevision(DWORD hash);
 	void UpdatePropertyFlag(int mask);
@@ -955,21 +956,21 @@ public:
 		UNREFERENCED_PARAMETER(pSrc);
 	}
 
-	CItemBase * Item_GetDef() const
+	CItemBase *Item_GetDef() const
 	{
-		return( STATIC_CAST <CItemBase*>( Base_GetDef()));
+		return static_cast<CItemBase *>(Base_GetDef());
 	}
 
 	ITEMID_TYPE GetID() const
 	{
-		const CItemBase * pItemDef = Item_GetDef();
+		const CItemBase *pItemDef = Item_GetDef();
 		ASSERT(pItemDef);
-		return( pItemDef->GetID());
+		return pItemDef->GetID();
 	}
 	WORD GetBaseID() const
 	{
 		// future: strongly typed enums will remove the need for this cast
-		return( static_cast<WORD>(GetID()));
+		return static_cast<WORD>(GetID());
 	}
 	bool SetBaseID( ITEMID_TYPE id );
 	bool SetID( ITEMID_TYPE id );
@@ -977,13 +978,13 @@ public:
 	{
 		// This is what the item looks like.
 		// May not be the same as the item that defines it's type.
-		return( m_dwDispIndex );
+		return m_dwDispIndex;
 	}
 	bool IsSameDispID( ITEMID_TYPE id ) const	// account for flipped types ?
 	{
-		const CItemBase * pItemDef = Item_GetDef();
+		const CItemBase *pItemDef = Item_GetDef();
 		ASSERT(pItemDef);
-		return( pItemDef->IsSameDispID( id ));
+		return pItemDef->IsSameDispID(id);
 	}
 	bool SetDispID( ITEMID_TYPE id );
 	void SetAnim( ITEMID_TYPE id, int iTime );
@@ -1001,7 +1002,7 @@ public:
 	}
 	bool IsAttr( DWORD dwAttr ) const	// ATTR_DECAY
 	{
-		return(( m_Attr & dwAttr ) ? true : false );
+		return (m_Attr & dwAttr) ? true : false;
 	}
 	void SetCanUse( DWORD dwCanUse )
 	{
@@ -1013,7 +1014,7 @@ public:
 	}
 	bool IsCanUse( DWORD dwCanUse ) const	// CanUse_None
 	{
-		return(( m_CanUse & dwCanUse ) ? true : false );
+		return (m_CanUse & dwCanUse) ? true : false;
 	}
 
 	height_t GetHeight() const;
@@ -1025,21 +1026,19 @@ public:
 	bool IsMovable() const;
 	int GetVisualRange() const	// virtual
 	{
-		if ( GetDispID() >= ITEMID_MULTI ) // ( IsTypeMulti() ) why not this?
-			return( UO_MAP_VIEW_RADAR );
-		return( UO_MAP_VIEW_SIZE );
+		return (GetDispID() >= ITEMID_MULTI) ? UO_MAP_VIEW_RADAR : UO_MAP_VIEW_SIZE;	// ( IsTypeMulti() ) why not this?
 	}
 
-	bool  IsStackableException() const;
-	bool  IsStackable( const CItem * pItem ) const;
-	bool  IsStackableType() const
+	bool IsStackableException() const;
+	bool IsStackable( const CItem * pItem ) const;
+	bool IsStackableType() const
 	{
-		return(Can(CAN_I_PILE));
+		return Can(CAN_I_PILE);
 	}
 
 	bool Can(WORD wCan) const
 	{
-		return((m_Can & wCan) ? true : false);
+		return (m_Can & wCan) ? true : false;
 	}
 	virtual bool  IsSameType( const CObjBase * pObj ) const;
 	bool  Stack( CItem * pItem );
@@ -1058,7 +1057,7 @@ public:
 	WORD GetMaxAmount();
 	bool SetMaxAmount( WORD amount );
 	void SetAmountUpdate( unsigned int amount );
-	WORD GetAmount() const { return( m_amount ); }
+	WORD GetAmount() const { return m_amount; }
 
 	LPCTSTR GetName() const;	// allowed to be default name.
 	LPCTSTR GetNameFull( bool fIdentified ) const;
@@ -1067,15 +1066,15 @@ public:
 
 	virtual int GetWeight(WORD amount = 0) const
 	{		
-		int iWeight = m_weight * (amount ? amount : GetAmount());
-		CVarDefCont * pReduction = GetDefKey("WEIGHTREDUCTION", true);
-		if (pReduction)
+		WORD iWeight = m_weight * (amount ? amount : GetAmount());
+		CVarDefCont *pReduction = GetDefKey("WEIGHTREDUCTION", true);
+		if ( pReduction )
 		{
-			iWeight -= static_cast<int>(IMULDIV( iWeight, pReduction->GetValNum(), 100 ));
-			if ( iWeight < 0)
+			iWeight -= static_cast<WORD>(IMULDIV(iWeight, pReduction->GetValNum(), 100));
+			if ( iWeight < 0 )
 				iWeight = 0;
 		}
-		return( iWeight );
+		return iWeight;
 	}
 
 	void SetTimeout( INT64 iDelay );
@@ -1098,28 +1097,28 @@ public:
 	bool MoveToCheck( const CPointMap & pt, CChar * pCharMover = NULL );
 	virtual bool MoveNearObj( const CObjBaseTemplate *pItem, WORD iSteps = 0 );
 
-	CItem* GetNext() const
+	CItem *GetNext() const
 	{
-		return( STATIC_CAST <CItem*>( CObjBase::GetNext()));
+		return static_cast<CItem *>(CObjBase::GetNext());
 	}
-	CItem* GetPrev() const
+	CItem *GetPrev() const
 	{
-		return( STATIC_CAST <CItem*>( CObjBase::GetPrev()));
+		return static_cast<CItem *>(CObjBase::GetPrev());
 	}
-	CObjBase * GetContainer() const
+	CObjBase *GetContainer() const
 	{
 		// What is this CItem contained in ?
 		// Container should be a CChar or CItemContainer
-		return( dynamic_cast <CObjBase*> (GetParent()));
+		return dynamic_cast<CObjBase *>(GetParent());
 	}
-	CObjBaseTemplate * GetTopLevelObj() const
+	CObjBaseTemplate *GetTopLevelObj() const
 	{
 		// recursively get the item that is at "top" level.
-		const CObjBase* pObj = GetContainer();
+		const CObjBase *pObj = GetContainer();
 		if ( !pObj )
-			return const_cast <CItem*>(this);
-		else if ( pObj == this )		// to avoid script errors setting same CONT
-			return const_cast <CItem*>(this);
+			return const_cast<CItem *>(this);
+		if ( pObj == this )		// to avoid script errors setting same CONT
+			return const_cast<CItem *>(this);
 		return pObj->GetTopLevelObj();
 	}
 
@@ -1157,17 +1156,17 @@ public:
 	TRIGRET_TYPE OnTrigger( ITRIG_TYPE trigger, CTextConsole * pSrc, CScriptTriggerArgs * pArgs = NULL )
 	{
 		ASSERT( trigger < ITRIG_QTY );
-		return( OnTrigger( MAKEINTRESOURCE(trigger), pSrc, pArgs ));
+		return OnTrigger(MAKEINTRESOURCE(trigger), pSrc, pArgs);
 	}
 
 	// Item type specific stuff.
 	bool IsType( IT_TYPE type ) const
 	{
-		return( m_type == type );
+		return (m_type == type);
 	}
 	IT_TYPE GetType() const
 	{
-		return( m_type );
+		return m_type;
 	}
 	CItem * SetType( IT_TYPE type );
 	bool IsTypeLit() const
@@ -1181,9 +1180,9 @@ public:
 			case IT_CAMPFIRE:
 			case IT_LAVA:
 			case IT_WINDOW:
-				return( true );
+				return true;
 			default:
-				return( false );
+				return false;
 		}
 	}
 	bool IsTypeBook() const
@@ -1192,31 +1191,31 @@ public:
 		{
 			case IT_BOOK:
 			case IT_MESSAGE:
-				return( true );
+				return true;
 			default:
-				return( false );
+				return false;
 		}
 	}
 	bool IsTypeSpellbook() const
 	{
-		return( CItemBase::IsTypeSpellbook(m_type));
+		return CItemBase::IsTypeSpellbook(m_type);
 	}
 	bool IsTypeArmor() const
 	{
-		return( CItemBase::IsTypeArmor(m_type));
+		return CItemBase::IsTypeArmor(m_type);
 	}
 	bool IsTypeWeapon() const
 	{
-		return( CItemBase::IsTypeWeapon(m_type));
+		return CItemBase::IsTypeWeapon(m_type);
 	}
 	bool IsTypeMulti() const
 	{
-		return( CItemBase::IsTypeMulti(m_type));
+		return CItemBase::IsTypeMulti(m_type);
 	}
 	bool IsTypeArmorWeapon() const
 	{
 		// Armor or weapon.
-		return( IsTypeArmor() || IsTypeWeapon());
+		return (IsTypeArmor() || IsTypeWeapon());
 	}
 	bool IsTypeLocked() const
 	{
@@ -1226,9 +1225,9 @@ public:
 			case IT_CONTAINER_LOCKED:
 			case IT_SHIP_HOLD_LOCK:
 			case IT_DOOR_LOCKED:
-				return( true );
+				return true;
 			default:
-				return( false );
+				return false;
 		}
 	}
 	bool IsTypeLockable() const
@@ -1242,9 +1241,9 @@ public:
 			case IT_SHIP_PLANK:
 			case IT_SHIP_HOLD:
 			//case IT_ROPE:
-				return( true );
+				return true;
 			default:
-				return( IsTypeLocked() );
+				return IsTypeLocked();
 		}
 	}
 	bool IsTypeSpellable() const
@@ -1255,9 +1254,9 @@ public:
 			case IT_SCROLL:
 			case IT_SPELL:
 			case IT_FIRE:
-				return( true );
+				return true;
 			default:
-				return( IsTypeArmorWeapon() );
+				return IsTypeArmorWeapon();
 		}
 	}
 
@@ -1267,7 +1266,7 @@ public:
 	bool IsValidLockUID() const;
 	bool IsKeyLockFit( DWORD dwLockUID ) const
 	{
-		return( m_itKey.m_lockUID == dwLockUID );
+		return (m_itKey.m_lockUID == dwLockUID);
 	}
 
 	void ConvertBolttoCloth();
@@ -1298,11 +1297,11 @@ public:
 
 	bool IsBookWritable() const
 	{
-		return( m_itBook.m_ResID.GetPrivateUID() == 0 && GetTimeStamp().GetTimeRaw() == 0 );
+		return (m_itBook.m_ResID.GetPrivateUID() == 0 && GetTimeStamp().GetTimeRaw() == 0);
 	}
 	bool IsBookSystem() const	// stored in RES_BOOK
 	{
-		return( m_itBook.m_ResID.GetResType() == RES_BOOK );
+		return (m_itBook.m_ResID.GetResType() == RES_BOOK);
 	}
 
 	void OnExplosion();
@@ -1319,9 +1318,9 @@ public:
 	bool IsMemoryTypes( WORD wType ) const
 	{
 		// MEMORY_FIGHT
-		if ( ! IsType( IT_EQ_MEMORY_OBJ ))
-			return( false );
-		return(( GetHueAlt() & wType ) ? true : false );
+		if ( !IsType(IT_EQ_MEMORY_OBJ) )
+			return false;
+		return (GetHueAlt() & wType) ? true : false;
 	}
 
 	bool Ship_Plank( bool fOpen );
@@ -1529,21 +1528,21 @@ private:
 	CContainer& operator=(const CContainer& other);
 
 public:
-	CItem * GetAt( size_t index ) const
+	CItem *GetAt( size_t index ) const
 	{
-		return( dynamic_cast <CItem*>( CGObList::GetAt( index )));
+		return dynamic_cast<CItem *>(CGObList::GetAt(index));
 	}
 	int	GetTotalWeight() const
 	{
-		return( m_totalweight );
+		return m_totalweight;
 	}
-	CItem* GetContentHead() const
+	CItem *GetContentHead() const
 	{
-		return( STATIC_CAST <CItem*>( GetHead()));
+		return static_cast<CItem *>(GetHead());
 	}
-	CItem* GetContentTail() const
+	CItem *GetContentTail() const
 	{
-		return( STATIC_CAST <CItem*>( GetTail()));
+		return static_cast<CItem *>(GetTail());
 	}
 	int FixWeight();
 
@@ -1633,7 +1632,7 @@ public:
 
 	virtual int GetWeight(WORD amount = 0) const
 	{	// true weight == container item + contents.
-		return( CItem::GetWeight(amount) + CContainer::GetTotalWeight());
+		return CItem::GetWeight(amount) + CContainer::GetTotalWeight();
 	}
 	void OnWeightChange( int iChange );
 
@@ -1715,7 +1714,7 @@ public:
 		UNREFERENCED_PARAMETER(amount);
 		// GetAmount is messed up.
 		// true weight == container item + contents.
-		return( 1 + CContainer::GetTotalWeight());
+		return 1 + CContainer::GetTotalWeight();
 	}
 };
 
@@ -1731,7 +1730,7 @@ private:
 	static LPCTSTR const sm_szVerbKeys[];
 
 protected:
-	CRegionWorld * m_pRegion;		// we own this region.
+	CRegionWorld *m_pRegion;		// we own this region.
 	bool Multi_IsPartOf( const CItem * pItem ) const;
 	void MultiUnRealizeRegion();
 	bool MultiRealizeRegion();
@@ -1740,9 +1739,9 @@ protected:
 	CItem * Multi_FindItemComponent( int iComp ) const;
 
 
-	const CItemBaseMulti * Multi_GetDef() const
+	const CItemBaseMulti *Multi_GetDef() const
 	{
-		return( STATIC_CAST <const CItemBaseMulti *>( Base_GetDef()));
+		return static_cast<const CItemBaseMulti *>(Base_GetDef());
 	}
 	bool Multi_CreateComponent( ITEMID_TYPE id, signed short dx, signed short dy, signed char dz, DWORD dwKeyCode );
 
@@ -1834,9 +1833,9 @@ private:
 	DesignDetails m_designBackup;
 	DesignDetails m_designRevert;
 
-	CClient * m_pArchitect;
+	CClient *m_pArchitect;
 	CRectMap m_rectDesignArea;
-	CGrayMultiCustom * m_pGrayMulti;
+	CGrayMultiCustom *m_pGrayMulti;
 
 	virtual bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
 	virtual void r_Write( CScript & s );
@@ -1909,7 +1908,7 @@ private:
 
 	int Ship_GetFaceOffset() const
 	{
-		return( GetID() & 3 );
+		return (GetID() & 3);
 	}
 	size_t  Ship_ListObjs( CObjBase ** ppObjList );
 	bool Ship_CanMoveTo( const CPointMap & pt ) const;
@@ -1972,13 +1971,13 @@ private:
 public:
 	WORD SetMemoryTypes( WORD wType )	// For memory type objects.
 	{
-		SetHueAlt( wType );
-		return( wType );
+		SetHueAlt(wType);
+		return wType;
 	}
 	
 	WORD GetMemoryTypes() const
 	{
-		return( GetHueAlt());	// MEMORY_FIGHT
+		return GetHueAlt();		// MEMORY_FIGHT
 	}
 	
 	bool Guild_IsAbbrevOn() const;
@@ -2440,7 +2439,7 @@ private:
 
 public:
 	static const char *m_sClassName;
-	CAccount * m_pAccount;	// The account index. (for idle players mostly)
+	CAccount *m_pAccount;	// The account index. (for idle players mostly)
 	static LPCTSTR const sm_szVerbKeys[];
 
 	CServTime m_timeLastUsed;	// Time the player char was last used.
@@ -2726,7 +2725,7 @@ private:
 
 	// This is a character that can either be NPC or PC.
 	// Player vs NPC Stuff
-	CClient * m_pClient;	// is the char a logged in m_pPlayer ?
+	CClient *m_pClient;		// is the char a logged in m_pPlayer ?
 
 public:
 	struct LastAttackers {
@@ -2747,11 +2746,11 @@ public:
 	std::vector<NotoSaves> m_notoSaves;
 
 	static const char *m_sClassName;
-	CCharPlayer * m_pPlayer;	// May even be an off-line player !
-	CCharNPC * m_pNPC;			// we can be both a player and an NPC if "controlled" ?
-	CPartyDef * m_pParty;		// What party am i in ?
-	CRegionWorld * m_pArea;		// What region are we in now. (for guarded message)
-	CRegionBase * m_pRoom;		// What room we are in now.
+	CCharPlayer *m_pPlayer;		// May even be an off-line player !
+	CCharNPC *m_pNPC;			// we can be both a player and an NPC if "controlled" ?
+	CPartyDef *m_pParty;		// What party am i in ?
+	CRegionWorld *m_pArea;		// What region are we in now. (for guarded message)
+	CRegionBase *m_pRoom;		// What room we are in now.
 
 	static LPCTSTR const sm_szRefKeys[];
 	static LPCTSTR const sm_szLoadKeys[];
@@ -2933,7 +2932,7 @@ public:
 	virtual bool NotifyDelete();
 	bool IsStatFlag( DWORD dwStatFlag ) const
 	{
-		return(( m_StatFlag & dwStatFlag) ? true : false );
+		return (m_StatFlag & dwStatFlag) ? true : false;
 	}
 	void StatFlag_Set( DWORD dwStatFlag )
 	{
@@ -2952,27 +2951,27 @@ public:
 	}
 	bool IsPriv( WORD flag ) const
 	{	// PRIV_GM flags
-		if ( m_pPlayer == NULL )
-			return( false );	// NPC's have no privs.
-		return( m_pPlayer->GetAccount()->IsPriv( flag ));
+		if ( !m_pPlayer )
+			return false;	// NPC's have no privs.
+		return m_pPlayer->GetAccount()->IsPriv(flag);
 	}
 	PLEVEL_TYPE GetPrivLevel() const
 	{
 		// The higher the better. // PLEVEL_Counsel
-		if ( ! m_pPlayer )
-			return( PLEVEL_Player );
-		return( m_pPlayer->GetAccount()->GetPrivLevel());
+		if ( !m_pPlayer )
+			return PLEVEL_Player;
+		return m_pPlayer->GetAccount()->GetPrivLevel();
 	}
 
-	CCharBase * Char_GetDef() const
+	CCharBase *Char_GetDef() const
 	{
-		return( STATIC_CAST <CCharBase*>( Base_GetDef()));
+		return static_cast<CCharBase *>(Base_GetDef());
 	}
-	CRegionWorld * GetRegion() const
+	CRegionWorld *GetRegion() const
 	{
 		return m_pArea; // What region are we in now. (for guarded message)
 	}
-	CRegionBase * GetRoom() const
+	CRegionBase *GetRoom() const
 	{
 		return m_pRoom; // What room are we in now.
 	}
@@ -2989,45 +2988,43 @@ public:
 	
 	bool Can( WORD wCan ) const
 	{
-		return(( m_Can & wCan ) ? true : false );
+		return (m_Can & wCan) ? true : false;
 	}
 	bool Can( int wCan ) const
 	{
-		return( ( m_Can & static_cast< DWORD >( wCan ) ) ? true : false );
+		return (m_Can & static_cast<DWORD>(wCan)) ? true : false;
 	}
 	bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg );
 	bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg, DWORD dwArgResearch );
 
 	bool IsSpeakAsGhost() const
 	{
-		return( IsStatFlag(STATF_DEAD) &&
-			! IsStatFlag( STATF_SpiritSpeak ) &&
-			! IsPriv( PRIV_GM ));
+		return (IsStatFlag(STATF_DEAD) && !IsStatFlag(STATF_SpiritSpeak) && !IsPriv(PRIV_GM));
 	}
 	bool CanUnderstandGhost() const
 	{
 		// Can i understand player ghost speak ?
-		if ( m_pNPC && m_pNPC->m_Brain == NPCBRAIN_HEALER )
-			return( true );
-		if ( Skill_GetBase( SKILL_SPIRITSPEAK ) >= g_Cfg.m_iMediumCanHearGhosts )
-			return( true );
-		return( IsStatFlag( STATF_SpiritSpeak|STATF_DEAD ) || IsPriv( PRIV_GM|PRIV_HEARALL ));
+		if ( m_pNPC && (m_pNPC->m_Brain == NPCBRAIN_HEALER) )
+			return true;
+		if ( Skill_GetBase(SKILL_SPIRITSPEAK) >= g_Cfg.m_iMediumCanHearGhosts )
+			return true;
+		return (IsStatFlag(STATF_SpiritSpeak|STATF_DEAD) || IsPriv(PRIV_GM|PRIV_HEARALL));
 	}
 	bool IsPlayableCharacter() const
 	{
-		return( IsHuman() || IsElf() || IsGargoyle() );
+		return (IsHuman() || IsElf() || IsGargoyle());
 	}
 	bool IsHuman() const
 	{
-		return( CCharBase::IsHumanID( GetDispID()));
+		return CCharBase::IsHumanID(GetDispID());
 	}
 	bool IsElf() const
 	{
-		return( CCharBase::IsElfID( GetDispID()));
+		return CCharBase::IsElfID(GetDispID());
 	}
 	bool IsGargoyle() const
 	{
-		return( CCharBase::IsGargoyleID( GetDispID()));
+		return CCharBase::IsGargoyleID(GetDispID());
 	}
 	int	 GetHealthPercent() const;
 	LPCTSTR GetTradeTitle() const; // Paperdoll title for character p (2)
@@ -3035,20 +3032,20 @@ public:
 	// Information about us.
 	CREID_TYPE GetID() const
 	{
-		CCharBase * pCharDef = Char_GetDef();
+		CCharBase *pCharDef = Char_GetDef();
 		ASSERT(pCharDef);
-		return( pCharDef->GetID());
+		return pCharDef->GetID();
 	}
 	WORD GetBaseID() const
 	{
 		// future: strongly typed enums will remove the need for this cast
-		return( static_cast<WORD>(GetID()));
+		return static_cast<WORD>(GetID());
 	}
 	CREID_TYPE GetDispID() const
 	{
-		CCharBase * pCharDef = Char_GetDef();
+		CCharBase *pCharDef = Char_GetDef();
 		ASSERT(pCharDef);
-		return( pCharDef->GetDispID());
+		return pCharDef->GetDispID();
 	}
 	void SetID( CREID_TYPE id );
 
@@ -3059,17 +3056,16 @@ public:
 
 	LPCTSTR GetNameWithoutIncognito() const
 	{
-		if ( IsStatFlag( STATF_Incognito ) )
+		if ( IsStatFlag(STATF_Incognito) )
 		{
-			CItem * pSpell = NULL;
+			CItem *pSpell = NULL;
 			pSpell = LayerFind(LAYER_SPELL_Incognito);
-			if ( pSpell == NULL )
+			if ( !pSpell )
 				pSpell = LayerFind(LAYER_FLAG_Potion);
 
-			if ( pSpell && pSpell->IsType(IT_SPELL) && (pSpell->m_itSpell.m_spell == SPELL_Incognito))
+			if ( pSpell && pSpell->IsType(IT_SPELL) && (pSpell->m_itSpell.m_spell == SPELL_Incognito) )
 				return pSpell->GetName();
 		}
-
 		return GetName();
 	}
 
@@ -3077,17 +3073,17 @@ public:
 	{
 		if ( fAllowAlt )
 		{
-			LPCTSTR pAltName = GetKeyStr( "NAME.ALT" );
+			LPCTSTR pAltName = GetKeyStr("NAME.ALT");
 			if ( pAltName && *pAltName )
 				return pAltName;
 		}
-		if ( ! IsIndividualName())			// allow some creatures to go unnamed.
+		if ( !IsIndividualName() )			// allow some creatures to go unnamed.
 		{
-			CCharBase * pCharDef = Char_GetDef();
+			CCharBase *pCharDef = Char_GetDef();
 			ASSERT(pCharDef);
-			return( pCharDef->GetTypeName());	// Just use it's type name instead.
+			return pCharDef->GetTypeName();	// Just use it's type name instead.
 		}
-		return( CObjBase::GetName());
+		return CObjBase::GetName();
 	}
 
 	bool SetName( LPCTSTR pName );
@@ -3132,7 +3128,7 @@ public:
 			if (!pItem->m_TagDefs.GetKeyNum(uidCheck, false))
 				return false;
 		}
-		return( true );
+		return true;
 	}
 	bool CanTouch( const CPointMap & pt ) const;
 	bool CanTouch( const CObjBase * pObj ) const;
@@ -3197,21 +3193,21 @@ private:
 	bool IsVerticalSpace( CPointMap ptDest, bool fForceMount = false );
 
 public:
-	CChar* GetNext() const
+	CChar *GetNext() const
 	{
-		return( STATIC_CAST <CChar*>( CObjBase::GetNext()));
+		return static_cast<CChar *>(CObjBase::GetNext());
 	}
-	CObjBaseTemplate * GetTopLevelObj() const
+	CObjBaseTemplate *GetTopLevelObj() const
 	{
 		// Get the object that has a location in the world. (Ground level)
-		return const_cast<CChar*>(this);
+		return const_cast<CChar *>(this);
 	}
 
 	bool IsSwimming() const;
 
 	bool MoveToRegionReTest( DWORD dwType )
 	{
-		return( MoveToRegion( dynamic_cast <CRegionWorld *>( GetTopPoint().GetRegion( dwType )), false));
+		return MoveToRegion(dynamic_cast<CRegionWorld *>(GetTopPoint().GetRegion(dwType)), false);
 	}
 	bool MoveToChar(CPointMap pt, bool bForceFix = false);
 	bool MoveTo(CPointMap pt, bool bForceFix = false)
@@ -3243,10 +3239,10 @@ public:
 	// Client Player specific stuff. -------------------------
 	void ClientAttach( CClient * pClient );
 	void ClientDetach();
-	bool IsClient() const { return( m_pClient != NULL ); }
-	CClient * GetClient() const
+	bool IsClient() const { return (m_pClient != NULL); }
+	CClient *GetClient() const
 	{
-		return( m_pClient );
+		return m_pClient;
 	}
 
 	bool SetPrivLevel( CTextConsole * pSrc, LPCTSTR pszFlags );
@@ -3301,7 +3297,7 @@ public:
 	{
 		// future: strongly typed enums will remove the need for this cast
 		BYTE dir = static_cast<BYTE>(m_dirFace);
-		ASSERT( dir<DIR_QTY );
+		ASSERT(dir < DIR_QTY);
 
 		if ( fSquelchForwardStep )
 		{
@@ -3315,36 +3311,36 @@ public:
 				case DIR_W:
 					return 0x60;
 				default:
-					return ( dir | 0x08 );
+					return dir|0x08;
 			}
 		}
 
-		if ( IsStatFlag( STATF_Fly ))
-			dir |= 0x80; // running/flying ?
+		if ( IsStatFlag(STATF_Fly) )
+			dir |= 0x80;	// running/flying ?
 		
-		return( dir );
+		return dir;
 	}
 	DWORD GetMoveBlockFlags(bool bIgnoreGM = false) const
 	{
 		// What things block us ?
-		if ( IsPriv(PRIV_GM|PRIV_ALLMOVE) && !bIgnoreGM)	// nothing blocks us.
-			return( 0xFFFF );
-		
+		if ( !bIgnoreGM && IsPriv(PRIV_GM|PRIV_ALLMOVE) )	// nothing blocks us.
+			return 0xFFFF;
+
 		DWORD dwCan = m_Can;
-		CCharBase * pCharDef = Char_GetDef();
-		if ((pCharDef) && (pCharDef->Can(CAN_C_GHOST)))
+		CCharBase *pCharDef = Char_GetDef();
+		if ( pCharDef && pCharDef->Can(CAN_C_GHOST) )
 			dwCan |= CAN_C_GHOST;
 
 		if ( IsStatFlag(STATF_Hovering) )
 			dwCan |= CAN_C_HOVER;
 
 		// Inversion of MT_INDOORS, so MT_INDOORS should be named MT_NOINDOORS now.
-		if (dwCan & CAN_C_INDOORS)
+		if ( dwCan & CAN_C_INDOORS )
 			dwCan &= ~CAN_C_INDOORS;
 		else
 			dwCan |= CAN_C_INDOORS;
 
-		return( dwCan & CAN_C_MOVEMASK );
+		return (dwCan & CAN_C_MOVEMASK);
 	}
 
 	int FixWeirdness();
@@ -3373,21 +3369,21 @@ public:
 	int GetWeight(WORD amount = 0) const
 	{
 		UNREFERENCED_PARAMETER(amount);
-		return( CContainer::GetTotalWeight());
+		return CContainer::GetTotalWeight();
 	}
 	int GetWeightLoadPercent( int iWeight ) const;
 
 	CItem * GetSpellbook(SPELL_TYPE iSpell = SPELL_Clumsy) const;
 	int GetSpellbookExtra(CItem * pBooks[], int &count) const;
 	CItem * GetSpellbookRandom(SPELL_TYPE iSpell = SPELL_Clumsy) const;
-	CItemContainer * GetPack() const
+	CItemContainer *GetPack() const
 	{
-		return( dynamic_cast <CItemContainer *>(LayerFind( LAYER_PACK )));
+		return dynamic_cast<CItemContainer *>(LayerFind(LAYER_PACK));
 	}
 	CItemContainer * GetBank( LAYER_TYPE layer = LAYER_BANKBOX );
 	CItemContainer * GetPackSafe()
 	{
-		return( GetBank(LAYER_PACK));
+		return GetBank(LAYER_PACK);
 	}
 	CItem * GetBackpackItem(ITEMID_TYPE item);
 	void AddGoldToPack( int iAmount, CItemContainer * pPack=NULL );
@@ -3410,7 +3406,7 @@ public:
 	TRIGRET_TYPE OnTrigger( CTRIG_TYPE trigger, CTextConsole * pSrc, CScriptTriggerArgs * pArgs = NULL )
 	{
 		ASSERT( trigger < CTRIG_QTY );
-		return( OnTrigger( MAKEINTRESOURCE(trigger), pSrc, pArgs ));
+		return OnTrigger(MAKEINTRESOURCE(trigger), pSrc, pArgs);
 	}
 
 private:
@@ -3670,21 +3666,21 @@ public:
 	SKILL_TYPE Skill_GetBest( unsigned int iRank = 0 ) const; // Which skill is the highest for character p
 	SKILL_TYPE Skill_GetActive() const
 	{
-		return( m_Act_SkillCurrent );
+		return m_Act_SkillCurrent;
 	}
 	LPCTSTR Skill_GetName( bool fUse = false ) const;
 	unsigned short Skill_GetBase( SKILL_TYPE skill ) const
 	{
-		ASSERT( IsSkillBase(skill));
-		return( m_Skill[skill] );
+		ASSERT(IsSkillBase(skill));
+		return m_Skill[skill];
 	}
 	int Skill_GetMax( SKILL_TYPE skill, bool ignoreLock = false ) const;
 	int Skill_GetSum() const;
 	SKILLLOCK_TYPE Skill_GetLock( SKILL_TYPE skill ) const
 	{
-		if ( ! m_pPlayer )
-			return( SKILLLOCK_UP );
-		return( m_pPlayer->Skill_GetLock(skill));
+		if ( !m_pPlayer )
+			return SKILLLOCK_UP;
+		return m_pPlayer->Skill_GetLock(skill);
 	}
 	unsigned short Skill_GetAdjusted(SKILL_TYPE skill) const;
 	SKILL_TYPE Skill_GetMagicRandom(unsigned short iMinValue = 0);
@@ -3820,8 +3816,8 @@ public:
 	CItemMemory * Memory_FindObj( CGrayUID uid ) const;
 	CItemMemory * Memory_FindObj( const CObjBase * pObj ) const
 	{
-		if ( pObj == NULL )
-			return( NULL );
+		if ( !pObj )
+			return NULL;
 		return Memory_FindObj( pObj->GetUID());
 	}
 	CItemMemory * Memory_AddObjTypes( CGrayUID uid, WORD MemTypes );
@@ -3833,12 +3829,12 @@ public:
 	CItemMemory * Memory_FindTypes( WORD MemTypes ) const;
 	CItemMemory * Memory_FindObjTypes( const CObjBase * pObj, WORD MemTypes ) const
 	{
-		CItemMemory * pMemory = Memory_FindObj(pObj);
-		if ( pMemory == NULL )
-			return( NULL );
-		if ( ! pMemory->IsMemoryTypes( MemTypes ))
-			return( NULL );
-		return( pMemory );
+		CItemMemory *pMemory = Memory_FindObj(pObj);
+		if ( !pMemory )
+			return NULL;
+		if ( !pMemory->IsMemoryTypes(MemTypes) )
+			return NULL;
+		return pMemory;
 	}
 	// -------- Public alias for MemoryCreateObj ------------------
 	CItemMemory * Memory_AddObj( CGrayUID uid, WORD MemTypes )
@@ -4106,9 +4102,9 @@ public:
 	}
 	int NPC_GetAiFlags()
 	{
-		if(m_pNPC == NULL)
+		if( !m_pNPC )
 			return 0;
-		return (m_pNPC->GetNpcAiFlags(this));
+		return m_pNPC->GetNpcAiFlags(this);
 	}
 	bool NPC_Vendor_Restock(bool bForce = false, bool bFillStock = false);
 	int NPC_GetVendorMarkup() const;

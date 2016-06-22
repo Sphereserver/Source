@@ -892,7 +892,7 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 	// Get a random location in the container.
 
 	CItemBase *pItemDef = Item_GetDef();
-	GUMP_TYPE gump = pItemDef->IsTypeContainer();
+	GUMP_TYPE gump = pItemDef->GetContainerGumpID();
 
 	// check for custom values in TDATA3/TDATA4
 	if ( pItemDef->m_ttContainer.m_dwMaxXY )

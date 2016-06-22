@@ -198,7 +198,7 @@ LPCTSTR ProfileData::GetDescription(PROFILE_TYPE id) const
 //
 ProfileTask::ProfileTask(PROFILE_TYPE id) : m_context(NULL), m_previousTask(PROFILE_OVERHEAD)
 {
-	m_context = STATIC_CAST<AbstractSphereThread *>(ThreadHolder::current());
+	m_context = static_cast<AbstractSphereThread *>(ThreadHolder::current());
 	if (m_context != NULL)
 	{
 		m_previousTask = m_context->m_profile.GetCurrentTask();

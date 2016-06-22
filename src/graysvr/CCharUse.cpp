@@ -1088,7 +1088,7 @@ CChar * CChar::Use_Figurine( CItem * pItem, bool bCheckFollowerSlots )
 	pPet->NPC_PetSetOwner(this);
 	pPet->MoveToChar(pItem->GetTopLevelObj()->GetTopPoint());
 	pPet->Update();
-	pPet->Skill_Start(SKILL_NONE);	// was NPCACT_RIDDEN
+	pPet->Skill_Start(SKILL_NONE);
 	pPet->SoundChar(CRESND_RAND1);
 	return pPet;
 }
@@ -1392,8 +1392,7 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 	if (!pItem)
 		return false;
 
-	if (m_pNPC && (IsTrigUsed(TRIGGER_DCLICK) ||
-	               IsTrigUsed(TRIGGER_ITEMDCLICK)))        // for players, DClick was called before this function
+	if (m_pNPC && (IsTrigUsed(TRIGGER_DCLICK) || IsTrigUsed(TRIGGER_ITEMDCLICK)))	// for players, DClick was called before this function
 	{
 		if (pItem->OnTrigger(ITRIG_DCLICK, this) == TRIGRET_RET_TRUE)
 			return false;
@@ -1401,7 +1400,7 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 
 	CItemSpawn *pSpawn = static_cast<CItemSpawn *>(pItem->m_uidSpawnItem.ItemFind());
 	if (pSpawn)
-		pSpawn->DelObj(pItem->GetUID());    // remove this item from it's spawn when DClicks it
+		pSpawn->DelObj(pItem->GetUID());	// remove this item from it's spawn when DClicks it
 
 	int fAction = true;
 	switch(pItem->GetType()) {
@@ -1561,10 +1560,9 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 				SysMessageDefault(DEFMSG_MSG_KEY_DOORLOCKED);
 				if (!pItem->IsTopLevel())
 					return false;
-				if (pItem->IsAttr(ATTR_MAGIC))    // show it's magic face
+				if (pItem->IsAttr(ATTR_MAGIC))	// show it's magic face
 				{
-					ITEMID_TYPE id = (GetDispID() & DOOR_NORTHSOUTH) ? ITEMID_DOOR_MAGIC_SI_NS
-					                                                 : ITEMID_DOOR_MAGIC_SI_EW;
+					ITEMID_TYPE id = (GetDispID() & DOOR_NORTHSOUTH) ? ITEMID_DOOR_MAGIC_SI_NS : ITEMID_DOOR_MAGIC_SI_EW;
 					CItem *pFace = CItem::CreateBase(id);
 					ASSERT(pFace);
 					pFace->MoveToDecay(pItem->GetTopPoint(), 4 * TICK_PER_SEC);
@@ -1575,7 +1573,7 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 		case IT_DOOR_OPEN:
 		case IT_DOOR: {
 			bool fOpen = pItem->Use_DoorNew(fLink);
-			if (fLink || !fOpen)    // don't link if we are just closing the door
+			if (fLink || !fOpen)	// don't link if we are just closing the door
 				return true;
 		}
 			break;
@@ -1634,8 +1632,8 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 			return true;
 		}
 
-		case IT_LIGHT_OUT:        // can the light be lit?
-		case IT_LIGHT_LIT:        // can the light be doused?
+		case IT_LIGHT_OUT:		// can the light be lit?
+		case IT_LIGHT_LIT:		// can the light be doused?
 			fAction = pItem->Use_Light();
 			break;
 
@@ -1697,12 +1695,11 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 			if (fLink)
 				return false;
 
-			if ((GetTopPoint().m_map <= 1) && (GetTopPoint().m_x > UO_SIZE_X_REAL))    // dungeons and T2A lands
+			if ((GetTopPoint().m_map <= 1) && (GetTopPoint().m_x > UO_SIZE_X_REAL))		// dungeons and T2A lands
 				ObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SEXTANT_T2A), this);
 			else {
 				TCHAR *pszMsg = Str_GetTemp();
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SEXTANT), m_pArea->GetName(),
-				        pItem->Use_Sextant(GetTopPoint()));
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SEXTANT), m_pArea->GetName(), pItem->Use_Sextant(GetTopPoint()));
 				ObjMessage(pszMsg, this);
 			}
 			return true;
@@ -1730,7 +1727,7 @@ bool CChar::Use_Item(CItem *pItem, bool fLink) {
 	return (result & ~MASK_RETURN_FOLLOW_LINKS) ? true : false;
 }
 
-bool CChar::Use_Obj( CObjBase * pObj, bool fTestTouch, bool fScript  )
+bool CChar::Use_Obj( CObjBase * pObj, bool fTestTouch, bool fScript )
 {
 	ADDTOCALLSTACK("CChar::Use_Obj");
 	if ( !pObj )

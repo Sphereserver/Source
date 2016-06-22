@@ -76,17 +76,10 @@ void CImportFile::CheckLast()
 		if ( m_pCurObj != NULL && m_pCurSer->m_pObj == m_pCurObj )
 		{
 			// Do we even want it ?
-			if ( m_iDist &&
-				m_ptCenter.IsValidPoint() &&
-				m_pCurSer->IsTopLevel() &&
-				m_ptCenter.GetDist( m_pCurObj->GetTopPoint()) > m_iDist )
-			{
+			if ( m_iDist && m_ptCenter.IsValidPoint() && m_pCurSer->IsTopLevel() && (m_ptCenter.GetDist(m_pCurObj->GetTopPoint()) > m_iDist) )
 				delete m_pCurSer;
-			}
 			else
-			{
 				m_pCurObj = NULL;	// accept it.
-			}
 		}
 		else
 		{
@@ -107,15 +100,14 @@ void CImportFile::ImportFix()
 	// adjust all the containered items and eliminate duplicates.
 
 	CheckLast();
-
 	int iRemoved = 0;
 
-	CImportSer * pSerNext;
-	m_pCurSer = STATIC_CAST <CImportSer*> ( m_ListSer.GetHead());
+	CImportSer *pSerNext;
+	m_pCurSer = static_cast<CImportSer *>(m_ListSer.GetHead());
 	for ( ; m_pCurSer != NULL; m_pCurSer = pSerNext )
 	{
-		pSerNext = STATIC_CAST <CImportSer*> ( m_pCurSer->GetNext());
-		if ( m_pCurSer->m_pObj == NULL )		// NEver created correctly
+		pSerNext = static_cast<CImportSer *>(m_pCurSer->GetNext());
+		if ( m_pCurSer->m_pObj == NULL )		// never created correctly
 		{
 			delete m_pCurSer;
 			continue;
@@ -123,38 +115,34 @@ void CImportFile::ImportFix()
 
 		// Make sure this item is not a dupe ?
 
-		CItem * pItemTest;
-		if ( m_pCurSer->IsTopLevel())	// top level only
+		CItem *pItemTest;
+		if ( m_pCurSer->IsTopLevel() )	// top level only
 		{
-			if ( m_pCurSer->m_pObj->IsItem())
+			if ( m_pCurSer->m_pObj->IsItem() )
 			{
-				CItem * pItemCheck = dynamic_cast <CItem*>( m_pCurSer->m_pObj );
+				CItem *pItemCheck = dynamic_cast<CItem *>(m_pCurSer->m_pObj);
 				ASSERT(pItemCheck);
 				pItemCheck->SetAttr(ATTR_MOVE_NEVER);
-				CWorldSearch AreaItems( m_pCurSer->m_pObj->GetTopPoint());
+				CWorldSearch AreaItems(m_pCurSer->m_pObj->GetTopPoint());
 				for (;;)
 				{
-					CItem * pItem = AreaItems.GetItem();
+					CItem *pItem = AreaItems.GetItem();
 					if ( pItem == NULL )
 						break;
-					if ( ! pItem->IsSameType( m_pCurSer->m_pObj ))
+					if ( !pItem->IsSameType(m_pCurSer->m_pObj) )
 						continue;
-					pItem->SetName( m_pCurSer->m_pObj->GetName());
-					if ( ! ( m_pCurSer->m_pObj->GetTopZ() == pItem->GetTopZ()))
+					pItem->SetName(m_pCurSer->m_pObj->GetName());
+					if ( !(m_pCurSer->m_pObj->GetTopZ() == pItem->GetTopZ()) )
 						continue;
 
 					goto item_delete;
 				}
 			}
-			else
-			{
-				// dupe char ?
-			}
 
 			// Make sure the top level object is placed correctly.
-			m_pCurSer->m_pObj->MoveTo( m_pCurSer->m_pObj->GetTopPoint());
+			m_pCurSer->m_pObj->MoveTo(m_pCurSer->m_pObj->GetTopPoint());
 			m_pCurSer->m_pObj->Update();
-			if ( ! m_pCurSer->m_pObj->IsContainer())
+			if ( !m_pCurSer->m_pObj->IsContainer() )
 				delete m_pCurSer;
 			continue;
 		}
@@ -170,50 +158,47 @@ void CImportFile::ImportFix()
 		}
 
 		// Find it's container.
-		CImportSer* pSerCont = STATIC_CAST <CImportSer*> ( m_ListSer.GetHead());
-		CObjBase * pObjCont = NULL;
-		for ( ; pSerCont != NULL; pSerCont = STATIC_CAST <CImportSer*> ( pSerCont->GetNext()))
+		CImportSer *pSerCont = static_cast<CImportSer *>(m_ListSer.GetHead());
+		CObjBase *pObjCont = NULL;
+		for ( ; pSerCont != NULL; pSerCont = static_cast<CImportSer *>(pSerCont->GetNext()) )
 		{
 			if ( pSerCont->m_pObj == NULL )
 				continue;
 			if ( pSerCont->m_dwSer == m_pCurSer->m_dwContSer )
 			{
 				pObjCont = pSerCont->m_pObj;
-				if ( ! pItemTest->LoadSetContainer( pObjCont->GetUID(), m_pCurSer->m_layer ))
-				{
+				if ( !pItemTest->LoadSetContainer(pObjCont->GetUID(), m_pCurSer->m_layer) )
 					goto item_delete;	// not in a cont ?
-				}
+
 				m_pCurSer->m_dwContSer = UID_UNUSED;	// found it.
 				break;
 			}
 		}
-		if ( ! m_pCurSer->IsTopLevel() || pObjCont == NULL)
-		{
+		if ( !m_pCurSer->IsTopLevel() || pObjCont == NULL )
 			goto item_delete;
-		}
 
 		// Is it a dupe in the container or equipped ?
-		for ( CItem *pItem = dynamic_cast<CContainer*>(pObjCont)->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+		for ( CItem *pItem = dynamic_cast<CContainer *>(pObjCont)->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 		{
 			if ( pItemTest == pItem )
 				continue;
-			if ( pItemTest->IsItemEquipped())
+			if ( pItemTest->IsItemEquipped() )
 			{
-				if ( pItemTest->GetEquipLayer() != pItem->GetEquipLayer())
+				if ( pItemTest->GetEquipLayer() != pItem->GetEquipLayer() )
 					continue;
 			}
 			else
 			{
-				if ( ! pItemTest->GetContainedPoint().IsSame2D( pItem->GetContainedPoint()))
+				if ( !pItemTest->GetContainedPoint().IsSame2D(pItem->GetContainedPoint()) )
 					continue;
 			}
-			if ( ! pItemTest->IsSameType( pItem ))
+			if ( !pItemTest->IsSameType(pItem) )
 				continue;
 			goto item_delete;
 		}
 
 		// done with it if not a container.
-		if ( ! pItemTest->IsContainer())
+		if ( !pItemTest->IsContainer() )
 			delete m_pCurSer;
 	}
 

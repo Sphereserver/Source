@@ -25,7 +25,7 @@ bool CClient::OnTarg_Obj_Set( CObjBase * pObj )
 
 	if ( pObj->IsItem() )
 	{
-		const CItem * pItem = STATIC_CAST <CItem*> (pObj);
+		const CItem *pItem = static_cast<CItem *>(pObj);
 		if ( pItem->GetAmount() > 1 )
 			sprintf(pszLogMsg, "'%s' commands uid=0%lx (%s) [amount=%u] to '%s'", GetName(), static_cast<DWORD>(pObj->GetUID()), pObj->GetName(), pItem->GetAmount(), static_cast<LPCTSTR>(m_Targ_Text));
 		else
@@ -803,7 +803,7 @@ int CClient::OnSkill_ItemID( CGrayUID uid, int iSkillLevel, bool fTest )
 
 	if ( pObj->IsChar())
 	{
-		CChar * pChar = STATIC_CAST <CChar*>(pObj);
+		CChar *pChar = static_cast<CChar *>(pObj);
 		ASSERT(pChar);
 		if ( fTest )
 		{
@@ -814,8 +814,8 @@ int CClient::OnSkill_ItemID( CGrayUID uid, int iSkillLevel, bool fTest )
 		return( 1 );
 	}
 
-	CItem * pItem = STATIC_CAST <CItem*>(pObj);
-	ASSERT( pItem );
+	CItem *pItem = static_cast<CItem *>(pObj);
+	ASSERT(pItem);
 
 	if ( fTest )
 	{

@@ -85,10 +85,6 @@
 		#define ASSERT(exp)			(void)( (exp) || (Assert_CheckFail(#exp, __FILE__, __LINE__), 0) )
 	#endif	// ASSERT
 
-	#ifndef STATIC_CAST
-		#define STATIC_CAST dynamic_cast
-	#endif
-
 #else	// _DEBUG
 
 	#ifndef ASSERT
@@ -102,10 +98,6 @@
 			#define ASSERT(exp)
 		/*#endif*/
 	#endif	// ASSERT
-
-	#ifndef STATIC_CAST
-		#define STATIC_CAST static_cast
-	#endif
 
 #endif	// ! _DEBUG
 

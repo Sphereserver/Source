@@ -280,30 +280,6 @@ bool CItemBase::IsTypeWeapon( IT_TYPE type )  // static
 	}
 }
 
-GUMP_TYPE CItemBase::IsTypeContainer() const
-{
-	ADDTOCALLSTACK("CItemBase::IsTypeContainer");
-	// IT_CONTAINER
-	// return the container gump id.
-
-	switch ( m_type )
-	{
-		case IT_CONTAINER:
-		case IT_SIGN_GUMP:
-		case IT_SHIP_HOLD:
-		case IT_BBOARD:
-		case IT_CORPSE:
-		case IT_TRASH_CAN:
-		case IT_GAME_BOARD:
-		case IT_EQ_BANK_BOX:
-		case IT_EQ_VENDOR_BOX:
-		case IT_KEYRING:
-			return(	m_ttContainer.m_gumpid );
-		default:
-			return( GUMP_NONE );
-	}
-}
-
 bool CItemBase::IsTypeSpellbook( IT_TYPE type )  // static
 {
 	switch( type )
@@ -835,6 +811,30 @@ IT_TYPE CItemBase::GetTypeBase( ITEMID_TYPE id, const CUOItemTypeRec2 &tiledata 
 	}
 
 	return IT_NORMAL;	// Get from script i guess.
+}
+
+GUMP_TYPE CItemBase::GetContainerGumpID() const
+{
+	ADDTOCALLSTACK("CItemBase::GetContainerGumpID");
+	// IT_CONTAINER
+	// return the container gump id.
+
+	switch ( m_type )
+	{
+		case IT_CONTAINER:
+		case IT_SIGN_GUMP:
+		case IT_SHIP_HOLD:
+		case IT_BBOARD:
+		case IT_CORPSE:
+		case IT_TRASH_CAN:
+		case IT_GAME_BOARD:
+		case IT_EQ_BANK_BOX:
+		case IT_EQ_VENDOR_BOX:
+		case IT_KEYRING:
+			return m_ttContainer.m_gumpid;
+		default:
+			return GUMP_NONE;
+	}
 }
 
 ITEMID_TYPE CItemBase::GetNextFlipID( ITEMID_TYPE id ) const
