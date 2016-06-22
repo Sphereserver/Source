@@ -2224,60 +2224,63 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 		case OV_TARGET:
 			{
 				EXC_SET("TARGET");
-				if ( pClientSrc == NULL )
-					return( false );
-				pszKey	+= 6;
-				bool		fGround		= false;
-				bool		fCrim		= false;
-				bool		fFunction	= false;
-				bool		fMulti		= false;
-				TCHAR		low = static_cast<TCHAR>(tolower(*pszKey));
+				if ( !pClientSrc )
+					return false;
+				pszKey += 6;
+				bool bAllowGround = false;
+				bool bCheckCrime = false;
+				bool bFunction = false;
+				bool bMulti = false;
+				TCHAR low = static_cast<TCHAR>(tolower(*pszKey));
 
-				while (( low >= 'a' ) && ( low <= 'z' ))
+				while ( (low >= 'a') && (low <= 'z') )
 				{
 					if ( low == 'f' )
-						fFunction = true;
+						bFunction = true;
 					else if ( low == 'g' )
-						fGround = true;
+						bAllowGround = true;
 					else if ( low == 'w' )
-						fCrim = true;
+						bCheckCrime = true;
 					else if ( low == 'm' )
-						fMulti = true;
+						bMulti = true;
 
 					low = static_cast<TCHAR>(tolower(*(++pszKey)));
 				}
 
 				pClientSrc->m_Targ_UID = GetUID();
-				pClientSrc->m_tmUseItem.m_pParent = GetParent();	// Cheat Verify
+				pClientSrc->m_tmUseItem.m_pParent = GetParent();	// cheat verify
 
-				if ( fFunction )
+				if ( bFunction )
 				{
-					if ( fMulti )
+					if ( bMulti )
 					{
 						if ( IsStrEmpty(s.GetArgStr()) )
 							break;
-						char * ppArg[2];
-						Str_ParseCmds( s.GetArgStr(), ppArg, COUNTOF(ppArg), "," );
-						if ( !IsStrNumeric( ppArg[1] ))
+						char *ppArg[3];
+						Str_ParseCmds(s.GetArgStr(), ppArg, COUNTOF(ppArg), ",");
+						if ( !IsStrNumeric(ppArg[1]) )
 							DEBUG_ERR(("Invalid argument in Target Multi\n"));
 						ITEMID_TYPE itemid = static_cast<ITEMID_TYPE>(Exp_GetVal(ppArg[1]));
-						pClientSrc->addTargetFunctionMulti( ppArg[0], itemid, fGround );
+						HUE_TYPE color = static_cast<HUE_TYPE>(Exp_GetVal(ppArg[2]));
+						pClientSrc->addTargetFunctionMulti(ppArg[0], itemid, color, bAllowGround);
 					}
 					else
-						pClientSrc->addTargetFunction( s.GetArgStr(), fGround, fCrim );
+						pClientSrc->addTargetFunction(s.GetArgStr(), bAllowGround, bCheckCrime);
 				}
 				else
 				{
-					if ( fMulti )
+					if ( bMulti )
 					{
-						if ( !IsStrNumeric( s.GetArgStr() ))
+						char *ppArg[2];
+						Str_ParseCmds(s.GetArgStr(), ppArg, COUNTOF(ppArg), ",");
+						if ( !IsStrNumeric(ppArg[0]) )
 							DEBUG_ERR(("Invalid argument in Target Multi\n"));
-						LPCTSTR arg = s.GetArgStr();
-						ITEMID_TYPE itemid = static_cast<ITEMID_TYPE>(Exp_GetVal(arg));
-						pClientSrc->addTargetItems( CLIMODE_TARG_USE_ITEM, itemid, fGround );
+						ITEMID_TYPE itemid = static_cast<ITEMID_TYPE>(Exp_GetVal(ppArg[0]));
+						HUE_TYPE color = static_cast<HUE_TYPE>(Exp_GetVal(ppArg[1]));
+						pClientSrc->addTargetItems(CLIMODE_TARG_USE_ITEM, itemid, color, bAllowGround);
 					}
 					else
-						pClientSrc->addTarget( CLIMODE_TARG_USE_ITEM, s.GetArgStr(), fGround, fCrim );
+						pClientSrc->addTarget(CLIMODE_TARG_USE_ITEM, s.GetArgStr(), bAllowGround, bCheckCrime);
 				}
 			}
 			break;

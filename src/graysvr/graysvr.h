@@ -1337,14 +1337,14 @@ public:
 	void addDyeOption( const CObjBase * pBase );
 	void addWebLaunch( LPCTSTR pMsg ); // Direct client to a web page
 
-	void addPromptConsole( CLIMODE_TYPE mode, LPCTSTR pMsg, CGrayUID context1 = 0, CGrayUID context2 = 0, bool bUnicode = false );
-	void addTarget( CLIMODE_TYPE targmode, LPCTSTR pMsg, bool fAllowGround = false, bool fCheckCrime = false, int iTimeout = 0 ); // Send targetting cursor to client
+	void addPromptConsole( CLIMODE_TYPE mode, LPCTSTR pMsg, CGrayUID context1 = UID_CLEAR, CGrayUID context2 = UID_CLEAR, bool bUnicode = false );
+	void addTarget( CLIMODE_TYPE mode, LPCTSTR pMsg, bool bAllowGround = false, bool bCheckCrime = false, int iTimeout = 0 ); // Send targetting cursor to client
 	void addTargetDeed( const CItem * pDeed );
-	bool addTargetItems( CLIMODE_TYPE targmode, ITEMID_TYPE id, bool fGround = true );
-	bool addTargetChars( CLIMODE_TYPE mode, CREID_TYPE id, bool fNoto, int iTimeout = 0 );
+	bool addTargetItems( CLIMODE_TYPE mode, ITEMID_TYPE id, HUE_TYPE color = HUE_DEFAULT, bool bAllowGround = true );
+	bool addTargetChars( CLIMODE_TYPE mode, CREID_TYPE id, bool bCheckCrime, int iTimeout = 0 );
 	void addTargetVerb( LPCTSTR pCmd, LPCTSTR pArg );
-	void addTargetFunctionMulti( LPCTSTR pszFunction, ITEMID_TYPE itemid, bool fGround );
-	void addTargetFunction( LPCTSTR pszFunction, bool fAllowGround, bool fCheckCrime );
+	void addTargetFunctionMulti( LPCTSTR pszFunction, ITEMID_TYPE itemid, HUE_TYPE color = HUE_DEFAULT, bool bAllowGround = true );
+	void addTargetFunction( LPCTSTR pszFunction, bool bAllowGround, bool bCheckCrime );
 	void addTargetCancel();
 	void addPromptConsoleFunction( LPCTSTR pszFunction, LPCTSTR pszSysmessage, bool bUnicode = false );
 

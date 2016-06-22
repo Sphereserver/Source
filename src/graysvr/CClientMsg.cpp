@@ -1612,18 +1612,15 @@ void CClient::addPromptConsole( CLIMODE_TYPE mode, LPCTSTR pPrompt, CGrayUID con
 	new PacketAddPrompt(this, context1, context2, bUnicode);
 }
 
-void CClient::addTarget( CLIMODE_TYPE targmode, LPCTSTR pPrompt, bool fAllowGround, bool fCheckCrime, int iTimeout ) // Send targetting cursor to client
+void CClient::addTarget( CLIMODE_TYPE mode, LPCTSTR pPrompt, bool bAllowGround, bool bCheckCrime, int iTimeout )
 {
 	ADDTOCALLSTACK("CClient::addTarget");
+	// Send targetting cursor to client
 	// Expect XCMD_Target back.
 	// ??? will this be selective for us ? objects only or chars only ? not on the ground (statics) ?
 
-	SetTargMode( targmode, pPrompt, iTimeout );
-
-	new PacketAddTarget(this,
-						fAllowGround? PacketAddTarget::Ground : PacketAddTarget::Object,
-						targmode,
-						fCheckCrime? PacketAddTarget::Harmful : PacketAddTarget::None);
+	SetTargMode(mode, pPrompt, iTimeout);
+	new PacketAddTarget(this, bAllowGround ? PacketAddTarget::Ground : PacketAddTarget::Object, mode, bCheckCrime ? PacketAddTarget::Harmful : PacketAddTarget::None);
 }
 
 void CClient::addTargetDeed( const CItem * pDeed )
@@ -1631,13 +1628,13 @@ void CClient::addTargetDeed( const CItem * pDeed )
 	ADDTOCALLSTACK("CClient::addTargetDeed");
 	// Place an item from a deed. preview all the stuff
 
-	ASSERT( m_Targ_UID == pDeed->GetUID());
-	ITEMID_TYPE iddef = static_cast<ITEMID_TYPE>(RES_GET_INDEX(pDeed->m_itDeed.m_Type));
-	m_tmUseItem.m_pParent = pDeed->GetParent();	// Cheat Verify.
-	addTargetItems( CLIMODE_TARG_USE_ITEM, iddef );
+	ASSERT(m_Targ_UID == pDeed->GetUID());
+	ITEMID_TYPE itemid = static_cast<ITEMID_TYPE>(RES_GET_INDEX(pDeed->m_itDeed.m_Type));
+	m_tmUseItem.m_pParent = pDeed->GetParent();		// cheat verify
+	addTargetItems(CLIMODE_TARG_USE_ITEM, itemid, pDeed->GetHue());
 }
 
-bool CClient::addTargetChars( CLIMODE_TYPE mode, CREID_TYPE baseID, bool fNotoCheck, int iTimeout )
+bool CClient::addTargetChars( CLIMODE_TYPE mode, CREID_TYPE baseID, bool bCheckCrime, int iTimeout )
 {
 	ADDTOCALLSTACK("CClient::addTargetChars");
 	CCharBase * pBase = CCharBase::FindCharBase( baseID );
@@ -1647,11 +1644,11 @@ bool CClient::addTargetChars( CLIMODE_TYPE mode, CREID_TYPE baseID, bool fNotoCh
 	TCHAR * pszTemp = Str_GetTemp();
 	sprintf(pszTemp, "%s '%s'?", g_Cfg.GetDefaultMsg(DEFMSG_WHERE_TO_SUMMON), pBase->GetTradeName());
 
-	addTarget(mode, pszTemp, true, fNotoCheck, iTimeout);
+	addTarget(mode, pszTemp, true, bCheckCrime, iTimeout);
 	return true;
 }
 
-bool CClient::addTargetItems( CLIMODE_TYPE targmode, ITEMID_TYPE id, bool fGround )
+bool CClient::addTargetItems( CLIMODE_TYPE mode, ITEMID_TYPE id, HUE_TYPE color, bool bAllowGround )
 {
 	ADDTOCALLSTACK("CClient::addTargetItems");
 	// Add a list of items to place at target.
@@ -1688,16 +1685,15 @@ bool CClient::addTargetItems( CLIMODE_TYPE targmode, ITEMID_TYPE id, bool fGroun
 	TCHAR *pszTemp = Str_GetTemp();
 	sprintf(pszTemp, "%s %s?", g_Cfg.GetDefaultMsg(DEFMSG_WHERE_TO_PLACE), pszName);
 
-	if ( CItemBase::IsID_Multi( id ))	// a multi we get from Multi.mul
+	if ( CItemBase::IsID_Multi(id) )	// a multi we get from multi.mul
 	{
-		SetTargMode(targmode, pszTemp);
-
-		new PacketAddTarget(this, fGround? PacketAddTarget::Ground : PacketAddTarget::Object, targmode, PacketAddTarget::None, id);
+		SetTargMode(mode, pszTemp);
+		new PacketAddTarget(this, bAllowGround ? PacketAddTarget::Ground : PacketAddTarget::Object, mode, PacketAddTarget::None, id, color);
 		return true;
 	}
 
 	// preview not supported by this ver?
-	addTarget(targmode, pszTemp, true);
+	addTarget(mode, pszTemp, true);
 	return true;
 }
 
@@ -2225,7 +2221,7 @@ blank_map:
 	PacketMapPlot plot(pMap, MAP_ADD, false);
 	for ( size_t i = 0; i < pMap->m_Pins.GetCount(); i++ )
 	{
-		plot.setPin(pMap->m_Pins[i].m_x, pMap->m_Pins[i].m_y);
+		plot.setPin(static_cast<WORD>(pMap->m_Pins[i].m_x), static_cast<WORD>(pMap->m_Pins[i].m_y));
 		plot.send(this);
 	}
 }
@@ -2523,6 +2519,11 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 						m_TooltipData.Add(new CClientTooltip(3010064)); // Magic
 					if ( pItem->IsAttr(ATTR_NEWBIE) )
 						m_TooltipData.Add(new CClientTooltip(1070722, g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_NEWBIE))); // ~1_NOTHING~
+					if ( pItem->IsAttr(ATTR_NODROPTRADE) )
+					{
+						m_TooltipData.Add(new CClientTooltip(1076253)); // NO-DROP
+						m_TooltipData.Add(new CClientTooltip(1076255)); // NO-TRADE
+					}
 
 					if ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE )
 					{

@@ -87,3 +87,8 @@ Changed: Updated internal SQLite libs v3.12.2 to v3.13.0.
 17-06-2016, Coruja
 Fixed: Paralyze / Paralyze Field making NPCs flood too many attack actions.
 Fixed: Console error when for some reason an NPC got created/moved to an invalid region.
+
+22-06-2016, Coruja
+Added: Support for colored multis on target functions (only compatible with HS clients 7.0.9.0+)
+	-Target functions can set the multi color using TARGETM [multiID, color] and TARGETFM [function, multiID, color]
+	-Target will inherit the deed color when got triggered from an deed

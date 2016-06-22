@@ -367,7 +367,7 @@ void CClient::addTargetVerb( LPCTSTR pszCmd, LPCTSTR pszArg )
 	addTarget(CLIMODE_TARG_OBJ_SET, pszMsg);
 }
 
-void CClient::addTargetFunctionMulti( LPCTSTR pszFunction, ITEMID_TYPE itemid, bool fGround )
+void CClient::addTargetFunctionMulti( LPCTSTR pszFunction, ITEMID_TYPE itemid, HUE_TYPE color, bool bAllowGround )
 {
 	ADDTOCALLSTACK("CClient::addTargetFunctionMulti");
 	// Target a verb at some object .
@@ -376,16 +376,15 @@ void CClient::addTargetFunctionMulti( LPCTSTR pszFunction, ITEMID_TYPE itemid, b
 	SKIP_SEPARATORS(pszFunction);
 
 	m_Targ_Text = pszFunction;
-	if ( CItemBase::IsID_Multi( itemid ))	// a multi we get from Multi.mul
+	if ( CItemBase::IsID_Multi(itemid) )	// a multi we get from multi.mul
 	{
-		SetTargMode(CLIMODE_TARG_OBJ_FUNC, "");
-
-		new PacketAddTarget(this, fGround? PacketAddTarget::Ground : PacketAddTarget::Object, CLIMODE_TARG_OBJ_FUNC, PacketAddTarget::None, itemid);
+		SetTargMode(CLIMODE_TARG_OBJ_FUNC);
+		new PacketAddTarget(this, bAllowGround ? PacketAddTarget::Ground : PacketAddTarget::Object, CLIMODE_TARG_OBJ_FUNC, PacketAddTarget::None, itemid, color);
 	}
-	addTargetFunction( pszFunction, fGround, false );
+	addTargetFunction(pszFunction, bAllowGround, false);
 }
 
-void CClient::addTargetFunction( LPCTSTR pszFunction, bool fAllowGround, bool fCheckCrime )
+void CClient::addTargetFunction( LPCTSTR pszFunction, bool bAllowGround, bool bCheckCrime )
 {
 	ADDTOCALLSTACK("CClient::addTargetFunction");
 	// Target a verb at some object .
@@ -394,7 +393,7 @@ void CClient::addTargetFunction( LPCTSTR pszFunction, bool fAllowGround, bool fC
 	SKIP_SEPARATORS(pszFunction);
 
 	m_Targ_Text = pszFunction;
-	addTarget( CLIMODE_TARG_OBJ_FUNC, "", fAllowGround, fCheckCrime );
+	addTarget(CLIMODE_TARG_OBJ_FUNC, NULL, bAllowGround, bCheckCrime);
 }
 
 void CClient::addPromptConsoleFunction( LPCTSTR pszFunction, LPCTSTR pszSysmessage, bool bUnicode )
@@ -403,7 +402,7 @@ void CClient::addPromptConsoleFunction( LPCTSTR pszFunction, LPCTSTR pszSysmessa
 	// Target a verb at some object .
 	ASSERT(pszFunction);
 	m_Prompt_Text = pszFunction;
-	addPromptConsole( CLIMODE_PROMPT_SCRIPT_VERB, pszSysmessage, 0, 0, bUnicode );
+	addPromptConsole(CLIMODE_PROMPT_SCRIPT_VERB, pszSysmessage, 0, 0, bUnicode);
 }
 
 

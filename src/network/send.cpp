@@ -1439,13 +1439,13 @@ PacketMapPlot::PacketMapPlot(const CItem* map, MAPCMD_TYPE mode, bool edit) : Pa
 	writeBool(edit);
 }
 
-void PacketMapPlot::setPin(int x, int y)
+void PacketMapPlot::setPin(WORD x, WORD y)
 {
-	ADDTOCALLSTACK("PacketMapPlot::PacketMapPlot");
+	ADDTOCALLSTACK("PacketMapPlot::setPin");
 
 	seek(7);
-	writeInt16(static_cast<WORD>(x));
-	writeInt16(static_cast<WORD>(y));
+	writeInt16(x);
+	writeInt16(y);
 }
 
 
@@ -1603,7 +1603,7 @@ PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetT
 	push(target);
 }
 
-PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetType type, DWORD context, PacketAddTarget::Flags flags, ITEMID_TYPE id) : PacketSend(XCMD_TargetMulti, 30, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetType type, DWORD context, PacketAddTarget::Flags flags, ITEMID_TYPE id, HUE_TYPE color) : PacketSend(XCMD_TargetMulti, 30, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketAddTarget::PacketAddTarget(2)");
 
@@ -1631,7 +1631,7 @@ PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetT
 	writeInt16(0);	// z
 
 	if ( target->GetNetState()->isClientVersion(MINCLIVER_HS) )
-		writeInt32(0);	// hue
+		writeInt32(static_cast<DWORD>(color));
 
 	trim();
 	push(target);
