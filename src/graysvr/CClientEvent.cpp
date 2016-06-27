@@ -783,8 +783,8 @@ bool CClient::Event_Walk( BYTE rawdir, BYTE sequence ) // Player moves
 		{
 			// The fastest way to get system clock is using g_World.GetCurrentTime().GetTimeRaw() to
 			// read the value already stored by Sphere main timer. But this value is only updated at
-			// tenths of second precision, which won't work here because we need milliseconds precision.
-			// So to get this precision we must get the system clock manually at each walk request.
+			// tenths of second precision, which won't work here because we need millisecs precision.
+			// So to reach this precision we must get the system clock manually at each walk request.
 			INT64 iCurTime = CWorldClock::GetSystemClock();
 			if ( iCurTime < m_timeNextEventWalk )		// fastwalk detected
 			{
@@ -794,10 +794,14 @@ bool CClient::Event_Walk( BYTE rawdir, BYTE sequence ) // Player moves
 
 			INT64 iDelay = 0;
 			if ( m_pChar->IsStatFlag(STATF_OnHorse|STATF_Hovering) )
-				iDelay = (rawdir & 0x80) ? 70 : 170;	// 100ms : 200ms
+				iDelay = (rawdir & 0x80) ? 100 : 200;
 			else
-				iDelay = (rawdir & 0x80) ? 170 : 370;	// 200ms : 400ms
-
+				iDelay = (rawdir & 0x80) ? 200 : 400;
+#ifdef _WIN32
+			// Windows OS doesn't use high precision timing, so values must be lowered in a few milliseconds
+			// to avoid false-positives results. But this will also decrease the fastwalk detection accuracy
+			iDelay -= 35;
+#endif
 			m_timeNextEventWalk = iCurTime + iDelay;
 		}
 		else if ( !Event_CheckWalkBuffer() )
@@ -2244,10 +2248,9 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 	if ( !IsSetOF(OF_NoContextMenuLOS) && !m_pChar->CanSeeLOS(pObj) )
 		return;
 
-	if ( m_pPopupPacket != NULL )
+	if ( m_pPopupPacket )
 	{
 		DEBUG_ERR(("New popup packet being formed before previous one has been released.\n"));
-
 		delete m_pPopupPacket;
 		m_pPopupPacket = NULL;
 	}
@@ -2355,17 +2358,19 @@ void CClient::Event_AOSPopupMenuRequest( DWORD uid ) //construct packet after a 
 		}
 		else
 		{
-			if ( m_pChar->m_pParty == NULL && pChar->m_pParty == NULL )
-				m_pPopupPacket->addOption(POPUP_PARTY_ADD, 197, POPUPFLAG_COLOR, 0xFFFF);
-			else if ( m_pChar->m_pParty != NULL && m_pChar->m_pParty->IsPartyMaster(m_pChar) )
+			if ( GetNetState()->isClientVersion(MINCLIVER_NEWCONTEXTMENU) )
 			{
-				if ( m_pChar->m_pParty == NULL )
+				if ( !m_pChar->m_pParty && !pChar->m_pParty )
 					m_pPopupPacket->addOption(POPUP_PARTY_ADD, 197, POPUPFLAG_COLOR, 0xFFFF);
-				else if ( pChar->m_pParty == m_pChar->m_pParty )
-					m_pPopupPacket->addOption(POPUP_PARTY_REMOVE, 198, POPUPFLAG_COLOR, 0xFFFF);
+				else if ( m_pChar->m_pParty && m_pChar->m_pParty->IsPartyMaster(m_pChar) )
+				{
+					if ( !pChar->m_pParty )
+						m_pPopupPacket->addOption(POPUP_PARTY_ADD, 197, POPUPFLAG_COLOR, 0xFFFF);
+					else if ( pChar->m_pParty == m_pChar->m_pParty )
+						m_pPopupPacket->addOption(POPUP_PARTY_REMOVE, 198, POPUPFLAG_COLOR, 0xFFFF);
+				}
 			}
-
-			if ( GetNetState()->isClientVersion(MINCLIVER_TOL) && m_pChar->GetDist(pChar) <= 2 )
+			if ( GetNetState()->isClientVersion(MINCLIVER_TOL) && (m_pChar->GetDist(pChar) <= 2) )
 				m_pPopupPacket->addOption(POPUP_TRADE_OPEN, 1077728, POPUPFLAG_COLOR, 0xFFFF);
 		}
 
