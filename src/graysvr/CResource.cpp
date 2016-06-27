@@ -909,7 +909,7 @@ bool CResource::r_LoadVal( CScript &s )
 					}
 				}
 	
-				DEBUG_ERR(("Bad usage of MAPx. Check your sphere.ini or scripts (SERV.MAP is a read only property)\n"));
+				DEBUG_ERR(("Bad usage of MAPx. Check your " GRAY_FILE ".ini or scripts (SERV.MAP is a read only property)\n"));
 				return false;
 			}
 		}
@@ -3770,7 +3770,7 @@ bool CResource::LoadIni( bool fTest )
 	{
 		if( !fTest )
 		{
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, GRAY_FILE ".ini has not been found, server probably would be not usable.\n");
+			g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing, server probably would be not usable.\n");
 			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Navigate to http://prerelease.sphereserver.net/ to download sample config.\n");
 		}
 		return( false );
@@ -3788,8 +3788,7 @@ bool CResource::LoadCryptIni( void )
 	ADDTOCALLSTACK("CResource::LoadCryptIni");
 	if ( ! OpenResourceFind( m_scpCryptIni, GRAY_FILE "Crypt.ini", false ))
 	{
-		g_Log.Event( LOGL_WARN|LOGM_INIT, "Could not open " GRAY_FILE "Crypt.ini, encryption might not be available\n");
-
+		g_Log.Event(LOGL_WARN|LOGM_INIT, "File " GRAY_FILE "Crypt.ini is corrupt or missing, client encryption list might not be available.\n");
 		return( false );
 	}
 
@@ -3857,14 +3856,14 @@ bool CResource::Load( bool fResync )
 	// ARGS:
 	//  fResync = just look for changes.
 
-	if ( ! fResync )
-	{
-		g_Install.FindInstall();
-	}
-	else
+	if ( fResync )
 	{
 		m_scpIni.ReSync();
 		m_scpIni.CloseForce();
+	}
+	else
+	{
+		g_Install.FindInstall();
 	}
 
 	// Open the MUL files I need.
@@ -3879,8 +3878,8 @@ bool CResource::Load( bool fResync )
 		);
 	if ( i != VERFILE_QTY )
 	{
-		g_Log.Event( LOGL_FATAL|LOGM_INIT, "The " GRAY_FILE ".INI file is corrupt or missing\n" );
-		g_Log.Event( LOGL_FATAL|LOGM_INIT, "MUL File '%s' not found...\n", static_cast<LPCTSTR>(g_Install.GetBaseFileName(i)));
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing.\n");
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "MUL File '%s' not found...\n", static_cast<LPCTSTR>(g_Install.GetBaseFileName(i)));
 		return( false );
 	}
 
@@ -3891,40 +3890,41 @@ bool CResource::Load( bool fResync )
 	}
 	catch ( const CGrayError& e )
 	{
-		g_Log.Event( LOGL_FATAL|LOGM_INIT, "The " GRAY_FILE ".INI file is corrupt or missing\n" );
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing.\n");
 		g_Log.CatchEvent( &e, "g_VerData.Load" );
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return( false );
 	}
 	catch(...)
 	{
-		g_Log.Event( LOGL_FATAL|LOGM_INIT, "The " GRAY_FILE ".INI file is corrupt or missing\n" );
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing.\n");
 		g_Log.CatchEvent( NULL, "g_VerData.Load" );
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return( false );
 	}
 
 	// Now load the *TABLES.SCP file.
-	if ( ! fResync )
+	if ( fResync )
 	{
-		if ( ! OpenResourceFind( m_scpTables, GRAY_FILE "tables" ))
+		m_scpTables.ReSync();
+	}
+	else
+	{
+		if ( !OpenResourceFind(m_scpTables, GRAY_FILE "tables") )
 		{
-			g_Log.Event( LOGL_FATAL|LOGM_INIT, "The " GRAY_FILE ".INI file is corrupt or missing\n" );
-			g_Log.Event( LOGL_FATAL|LOGM_INIT, "Error opening table definitions file...\n" );
-			return false;
+			g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing.\n");
+			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Error opening table definitions file...\n");
+			return( false );
 		}
 
 		LoadResourcesOpen(&m_scpTables);
 		m_scpTables.Close();
 	}
-	else
-	{
-		m_scpTables.ReSync();
-	}
 	m_scpTables.CloseForce();
 
-	//	Initialize the world sectors
-	g_World.Init();
+	// Initialize world sectors on server startup
+	if ( !fResync )
+		g_World.Init();
 
 	// open and index all my script files i'm going to use.
 	AddResourceDir( m_sSCPBaseDir );		// if we want to get *.SCP files from elsewhere.
@@ -3938,16 +3938,20 @@ bool CResource::Load( bool fResync )
 		if ( !pResFile )
 			break;
 
-		if ( !fResync )
-			LoadResources( pResFile );
-		else
+		if ( fResync )
 			pResFile->ReSync();
+		else
+			LoadResources(pResFile);
 
 #ifdef _WIN32
 		NTWindow_OnTick(0);
 #endif
 		g_Serv.PrintPercent(j + 1, count);
 	}
+
+	// Reload world sectors after server resync to prevent dynamic multi regions get replaced by static regions loaded from scripts
+	if ( fResync )
+		g_World.Init();
 
 	// Make sure we have the basics.
 	if ( g_Serv.GetName()[0] == '\0' )	// make sure we have a set name
@@ -3964,15 +3968,6 @@ bool CResource::Load( bool fResync )
 		ASSERT(pSkillClass);
 		m_ResHash.AddSortKey( RESOURCE_ID( RES_SKILLCLASS, 0 ), pSkillClass );
 	}
-
-	if ( !fResync )
-	{
-		long total, used;
-		Triglist(total, used);
-		g_Serv.SysMessagef("Done loading scripts (%ld of %ld triggers used).\n", used, total);
-	}
-	else
-		g_Log.Event(LOGM_INIT, "Done loading scripts.\n");
 
 	if ( m_StartDefs.GetCount() <= 0 )
 	{
@@ -4025,18 +4020,20 @@ bool CResource::Load( bool fResync )
 	}
 
 	LoadSortSpells();
-	g_Serv.SysMessage("\n");
 
+	long total, used;
+	Triglist(total, used);
+	g_Serv.SysMessagef("Done loading scripts (%ld of %ld triggers used)\n\n", used, total);
 
 	// Load crypt keys from SphereCrypt.ini
-	if ( ! fResync )
-	{
-		LoadCryptIni();
-	}
-	else
+	if ( fResync )
 	{
 		m_scpCryptIni.ReSync();
 		m_scpCryptIni.CloseForce();
+	}
+	else
+	{
+		LoadCryptIni();
 	}
 
 	// Yay for crypt version

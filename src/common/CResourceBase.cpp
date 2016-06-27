@@ -1107,22 +1107,22 @@ bool CResourceRefArray::r_LoadVal( CScript & s, RES_TYPE restype )
 			}
 			if ( g_Cfg.m_pEventsPetLink.ContainsPtr(pResourceLink) )
 			{
-				DEBUG_ERR(("'%s' already defined in sphere.ini - skipping\n", pResourceLink->GetName()));
+				DEBUG_ERR(("'%s' already defined in " GRAY_FILE ".ini - skipping\n", pResourceLink->GetName()));
 				continue;
 			}
 			else if ( g_Cfg.m_pEventsPlayerLink.ContainsPtr(pResourceLink) )
 			{
-				DEBUG_ERR(("'%s' already defined in sphere.ini - skipping\n", pResourceLink->GetName()));
+				DEBUG_ERR(("'%s' already defined in " GRAY_FILE ".ini - skipping\n", pResourceLink->GetName()));
 				continue;
 			}
-			else if ( restype == RES_REGIONTYPE && g_Cfg.m_pEventsRegionLink.ContainsPtr(pResourceLink) )
+			else if ( (restype == RES_REGIONTYPE) && g_Cfg.m_pEventsRegionLink.ContainsPtr(pResourceLink) )
 			{
-				DEBUG_ERR(("'%s' already defined in sphere.ini - skipping\n", pResourceLink->GetName()));
+				DEBUG_ERR(("'%s' already defined in " GRAY_FILE ".ini - skipping\n", pResourceLink->GetName()));
 				continue;
 			}
 			else if ( g_Cfg.m_iEventsItemLink.ContainsPtr(pResourceLink) )
 			{
-				DEBUG_ERR(("'%s' already defined in sphere.ini - skipping\n", pResourceLink->GetName()));
+				DEBUG_ERR(("'%s' already defined in " GRAY_FILE ".ini - skipping\n", pResourceLink->GetName()));
 				continue;
 			}
 
