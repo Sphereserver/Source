@@ -92,3 +92,6 @@ Fixed: Console error when for some reason an NPC got created/moved to an invalid
 Added: Support for colored multis on target functions (only compatible with HS clients 7.0.9.0+)
 	-Target functions can set the multi color using TARGETM [multiID, color] and TARGETFM [function, multiID, color]
 	-Target will inherit the deed color when got triggered from an deed
+
+27-06-2016, Coruja
+Fixed: Function f_onchar_delete not being called if the player char get deleted in any other way different from client Character Selecion menu.

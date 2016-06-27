@@ -386,31 +386,43 @@ void CChar::ClientAttach( CClient * pClient )
 void CChar::SetDisconnected()
 {
 	ADDTOCALLSTACK("CChar::SetDisconnected");
-	if ( IsClient())
+	if ( IsClient() )
 	{
 		GetClient()->GetNetState()->markReadClosed();
 		return;
 	}
+
 	if ( m_pParty )
 	{
-		m_pParty->RemoveMember( GetUID(), (DWORD) GetUID() );
+		m_pParty->RemoveMember(GetUID(), GetUID());
 		m_pParty = NULL;
 	}
-	if ( IsDisconnected())
+	if ( IsDisconnected() )
 		return;
-	RemoveFromView();	// Remove from views.
-	MoveToRegion(NULL,false);
-	GetTopSector()->m_Chars_Disconnect.InsertHead( this );
+
+	RemoveFromView();
+	MoveToRegion(NULL, false);
+	GetTopSector()->m_Chars_Disconnect.InsertHead(this);
 }
 
 // Called before Delete()
-// @Destroy can prevent the deletion
-bool CChar::NotifyDelete()
+// Return true on @Destroy or f_onchar_delete can prevent the deletion
+// pClient is the client deleting the char (only set when the function is triggered from client Character Selection menu)
+bool CChar::NotifyDelete(CClient *pClient)
 {
 	if ( IsTrigUsed(TRIGGER_DESTROY) )
 	{
-		//We can forbid the deletion in here with no pain
-		if (CChar::OnTrigger(CTRIG_Destroy, &g_Serv) == TRIGRET_RET_TRUE)
+		if ( CChar::OnTrigger(CTRIG_Destroy, &g_Serv) == TRIGRET_RET_TRUE )
+			return false;
+	}
+
+	if ( m_pPlayer )
+	{
+		TRIGRET_TYPE tr;
+		CScriptTriggerArgs Args;
+		Args.m_pO1 = pClient;
+		r_Call("f_onchar_delete", this, &Args, NULL, &tr);
+		if ( tr == TRIGRET_RET_TRUE )
 			return false;
 	}
 
@@ -418,17 +430,17 @@ bool CChar::NotifyDelete()
 	return true;
 }
 
-void CChar::Delete(bool bforce)
+void CChar::Delete(bool bforce, CClient *pClient)
 {
 	ADDTOCALLSTACK("CChar::Delete");
 
-	if (( NotifyDelete() == false ) && !bforce)
+	if ( !NotifyDelete(pClient) && !bforce )
 		return;
 
 	// Character has been deleted
 	if ( IsClient() )
 	{
-		CClient* pClient = GetClient();
+		CClient *pClient = GetClient();
 		pClient->CharDisconnect();
 		pClient->GetNetState()->markReadClosed();
 	}
@@ -3051,7 +3063,7 @@ do_default:
 			m_sTitle = s.GetArgStr();
 			break;
 		case CHC_LIGHT:
-			m_LocalLight = static_cast<unsigned char>(s.GetArgVal());
+			m_LocalLight = static_cast<BYTE>(s.GetArgVal());
 			break;
 		case CHC_EXP:
 			m_exp = s.GetArgVal();
@@ -3306,8 +3318,8 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				INT64 Arg_piCmd[3];		// Maximum parameters in one line
 				size_t Arg_Qty = Str_ParseCmds(s.GetArgRaw(), Arg_piCmd, COUNTOF(Arg_piCmd));
 				return UpdateAnimate(static_cast<ANIM_TYPE>(Arg_piCmd[0]), true, false,
-					(Arg_Qty > 1) ? static_cast<unsigned char>(Arg_piCmd[1]) : 1,
-					(Arg_Qty > 2) ? static_cast<unsigned char>(Arg_piCmd[2]) : 1);
+					(Arg_Qty > 1) ? static_cast<BYTE>(Arg_piCmd[1]) : 1,
+					(Arg_Qty > 2) ? static_cast<BYTE>(Arg_piCmd[2]) : 1);
 			}
 			break;
 		case CHV_ATTACK:

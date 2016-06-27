@@ -2928,8 +2928,8 @@ public:
 	// Status and attributes ------------------------------------
 	int IsWeird() const;
 	signed char GetFixZ( CPointMap pt, unsigned long wBlockFlags = 0);
-	virtual void Delete(bool bforce = false);
-	virtual bool NotifyDelete();
+	virtual void Delete(bool bforce = false, CClient *pClient = NULL);
+	virtual bool NotifyDelete(CClient *pClient = NULL);
 	bool IsStatFlag( DWORD dwStatFlag ) const
 	{
 		return (m_StatFlag & dwStatFlag) ? true : false;

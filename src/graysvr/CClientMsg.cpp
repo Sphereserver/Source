@@ -3507,22 +3507,16 @@ BYTE CClient::Setup_Delete( DWORD iSlot ) // Deletion of character
 		}
 	}
 
-	//	Do the scripts allow to delete the char?
-	enum TRIGRET_TYPE tr;
-	CScriptTriggerArgs Args;
-	Args.m_pO1 = this;
-	pChar->r_Call("f_onchar_delete", pChar, &Args, NULL, &tr);
-	if ( tr == TRIGRET_RET_TRUE )
-	{
+	CGrayUID CharUID = pChar->GetUID();
+	LPCTSTR CharName = pChar->GetName();
+	LPCTSTR AccountName = GetAccount()->GetName();
+
+	pChar->Delete(false, this);
+	if ( !pChar->IsDeleted() )
 		return PacketDeleteError::InvalidRequest;
-	}
 
-	g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "%lx:Account '%s' deleted char '%s' [0%lx] on client login screen.\n", GetSocketID(), GetAccount()->GetName(), pChar->GetName(), static_cast<DWORD>(pChar->GetUID()));
-	pChar->Delete();
-
-	// refill the list.
+	g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "%lx:Account '%s' deleted char '%s' [0%lx] on client login screen.\n", GetSocketID(), AccountName, CharName, static_cast<DWORD>(CharUID));
 	new PacketCharacterListUpdate(this, GetAccount()->m_uidLastChar.CharFind());
-
 	return PacketDeleteError::Success;
 }
 
