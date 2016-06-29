@@ -110,3 +110,4 @@ Fixed: Popup menu on players returning parsing error when send Party clilocs to 
 
 29-06-2016, Coruja
 Fixed: Attack/Kill command on pets allowing select the pet itself as target, making it attack his owner.
+Fixed: WOP flood when casting spells using extremely short delays.
