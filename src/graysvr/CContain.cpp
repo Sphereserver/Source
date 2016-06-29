@@ -835,57 +835,63 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 	
 	sm_ContSize[] =
 	{
-		{ GUMP_RESERVED, 0, 0, 200, 200 },			// default
-		{ GUMP_SCROLL, 30, 30, 240, 140 },
-		{ GUMP_CORPSE, 20, 85, 104, 111 },
-		{ GUMP_BACKPACK, 44, 65, 142, 94 },
-		{ GUMP_BAG, 29, 34, 108, 94 },
-		{ GUMP_BARREL, 33, 36, 109, 112 },
-		{ GUMP_BASKET_SQUARE, 19, 47, 163, 76 },
-		{ GUMP_BOX_WOOD, 16, 38, 136, 87 },
-		{ GUMP_BASKET_ROUND, 35, 38, 110, 78 },
-		{ GUMP_CHEST_METAL_GOLD, 18, 105, 144, 73 },
-		{ GUMP_BOX_WOOD_ORNATE, 16, 51, 168, 73 },
-		{ GUMP_CRATE, 20, 10, 150, 90 },
-		{ GUMP_LEATHER, 16, 10, 132, 128 },
-		{ GUMP_DRAWER_DARK, 16, 10, 138, 84 },
-		{ GUMP_CHEST_WOOD, 18, 105, 144, 73 },
-		{ GUMP_CHEST_METAL, 18, 105, 144, 73 },
-		{ GUMP_BOX_METAL, 16, 51, 168, 73 },
-		{ GUMP_SHIP_HATCH, 46, 74, 150, 110 },
-		{ GUMP_BOOK_SHELF, 76, 12, 64, 56 },
-		{ GUMP_CABINET_DARK, 24, 96, 172, 56 },
-		{ GUMP_CABINET_LIGHT, 24, 96, 172, 56 },
-		{ GUMP_DRAWER_LIGHT, 16, 10, 138, 84 },
+		{ GUMP_RESERVED, 0, 0, 200, 200 },			// generic value to use when container value is not found
+		{ GUMP_SCROLL, 30, 30, 270, 170 },
+		{ GUMP_CORPSE, 20, 85, 124, 196 },
+		{ GUMP_BACKPACK, 44, 65, 186, 159 },
+		{ GUMP_BAG, 29, 34, 137, 128 },
+		{ GUMP_BARREL, 33, 36, 142, 148 },
+		{ GUMP_BASKET_SQUARE, 19, 47, 182, 123 },
+		{ GUMP_BOX_WOOD, 16, 38, 152, 125 },
+		{ GUMP_BASKET_ROUND, 35, 38, 145, 116 },
+		{ GUMP_CHEST_METAL_GOLD, 18, 105, 162, 178 },
+		{ GUMP_BOX_WOOD_ORNATE, 16, 51, 184, 124 },
+		{ GUMP_CRATE, 20, 10, 170, 100 },
+		{ GUMP_LEATHER, 16, 10, 148, 138 },
+		{ GUMP_DRAWER_DARK, 16, 10, 154, 94 },
+		{ GUMP_CHEST_WOOD, 18, 105, 162, 178 },
+		{ GUMP_CHEST_METAL, 18, 105, 162, 178 },
+		{ GUMP_BOX_METAL, 16, 51, 184, 124 },
+		{ GUMP_SHIP_HATCH, 46, 74, 196, 184 },
+		{ GUMP_BOOK_SHELF, 76, 12, 140, 68 },
+		{ GUMP_CABINET_DARK, 24, 96, 196, 152 },
+		{ GUMP_CABINET_LIGHT, 24, 96, 196, 152 },
+		{ GUMP_DRAWER_LIGHT, 16, 10, 154, 94 },
 		{ GUMP_BULLETIN_BOARD, 0, 0, 110, 62 },
-		{ GUMP_GIFT_BOX, 35, 10, 155, 85 },
-		{ GUMP_STOCKING, 41, 21, 145, 90 },
-		{ GUMP_ARMOIRE_ELVEN_WASH, 10, 10, 160, 105 },
-		{ GUMP_ARMOIRE_RED, 10, 10, 150, 95 },
-		{ GUMP_ARMOIRE_MAPLE, 10, 10, 150, 95 },
-		{ GUMP_ARMOIRE_CHERRY, 10, 10, 150, 95 },
-		{ GUMP_BASKET_TALL, 10, 10, 116, 71 },
-		{ GUMP_CHEST_WOOD_PLAIN, 10, 10, 150, 95 },
-		{ GUMP_CHEST_WOOD_GILDED, 10, 10, 150, 95 },
-		{ GUMP_CHEST_WOOD_ORNATE, 10, 10, 150, 95 },
-		{ GUMP_TALL_CABINET, 10, 10, 150, 95 },
-		{ GUMP_CHEST_WOOD_FINISH, 10, 10, 150, 95 },
-		{ GUMP_MAIL_BOX, 0, 0, 0, 0 },				// TO-DO: confirm gump size
-		{ GUMP_GIFT_BOX_CUBE, 23, 51, 140, 100 },
-		{ GUMP_GIFT_BOX_CYLINDER, 16, 51, 140, 115 },
-		{ GUMP_GIFT_BOX_OCTOGON, 25, 51, 140, 115 },
-		{ GUMP_GIFT_BOX_RECTANGLE, 16, 51, 140, 100 },
-		{ GUMP_GIFT_BOX_ANGEL, 21, 51, 140, 100 },
-		{ GUMP_HEART_SHAPED, 56, 30, 102, 74 },
-		{ GUMP_GIFT_BOX_TALL, 0, 0, 0, 0 },			// TO-DO: confirm gump size
-		{ GUMP_FOUNTAIN_LIFE, 0, 0, 0, 0 },			// TO-DO: confirm gump size
-		{ GUMP_SECRET_CHEST, 0, 0, 0, 0 },			// TO-DO: confirm gump size
-		{ GUMP_SECURE_TRADE, 1, 1, 66, 26 },
+		{ GUMP_GIFT_BOX, 35, 10, 190, 95 },
+		{ GUMP_STOCKING, 41, 21, 186, 111 },
+		{ GUMP_ARMOIRE_ELVEN_WASH, 10, 10, 170, 115 },
+		{ GUMP_ARMOIRE_RED, 10, 10, 160, 105 },
+		{ GUMP_ARMOIRE_MAPLE, 10, 10, 160, 105 },
+		{ GUMP_ARMOIRE_CHERRY, 10, 10, 160, 105 },
+		{ GUMP_BASKET_TALL, 10, 10, 126, 81 },
+		{ GUMP_CHEST_WOOD_PLAIN, 10, 10, 160, 105 },
+		{ GUMP_CHEST_WOOD_GILDED, 10, 10, 160, 105 },
+		{ GUMP_CHEST_WOOD_ORNATE, 10, 10, 160, 105 },
+		{ GUMP_TALL_CABINET, 10, 10, 160, 105 },
+		{ GUMP_CHEST_WOOD_FINISH, 10, 10, 160, 105 },
+		{ GUMP_CHEST_WOOD_FINISH2, 10, 10, 160, 105 },
+		//{ GUMP_BLESSED_STATUE, 0, 0, 0, 0 },		// TO-DO: confirm gump size
+		//{ GUMP_MAIL_BOX, 0, 0, 0, 0 },			// TO-DO: confirm gump size
+		{ GUMP_GIFT_BOX_CUBE, 23, 51, 163, 151 },
+		{ GUMP_GIFT_BOX_CYLINDER, 16, 51, 156, 166 },
+		{ GUMP_GIFT_BOX_OCTOGON, 25, 51, 165, 166 },
+		{ GUMP_GIFT_BOX_RECTANGLE, 16, 51, 156, 151 },
+		{ GUMP_GIFT_BOX_ANGEL, 21, 51, 161, 151 },
+		{ GUMP_HEART_SHAPED, 56, 30, 158, 104 },
+		//{ GUMP_GIFT_BOX_TALL, 0, 0, 0, 0 },		// TO-DO: confirm gump size
+		//{ GUMP_CHEST_PIRATE, 0, 0, 0, 0 },		// TO-DO: confirm gump size
+		//{ GUMP_FOUNTAIN_LIFE, 0, 0, 0, 0 },		// TO-DO: confirm gump size
+		//{ GUMP_SECRET_CHEST, 0, 0, 0, 0 },		// TO-DO: confirm gump size
+		//{ GUMP_SECURE_TRADE, 1, 1, 66, 26 },		// TO-DO: confirm gump size
 		{ GUMP_BOARD_CHECKER, 0, 0, 282, 230 },
 		{ GUMP_BOARD_BACKGAMMON, 0, 0, 282, 210 },
-		{ GUMP_PLAGUE_BEAST, 60, 33, 400, 411 },
-		{ GUMP_KING_COLLECTION_BOX, 0, 0, 0, 0 },	// TO-DO: confirm gump size
-		{ GUMP_GIFT_BOX_CHRISTMAS, 0, 0, 0, 0 }		// TO-DO: confirm gump size
+		{ GUMP_PLAGUE_BEAST, 60, 33, 460, 444 },
+		//{ GUMP_KING_COLLECTION_BOX, 0, 0, 0, 0 },	// TO-DO: confirm gump size
+		{ GUMP_BACKPACK_UNK1, 44, 65, 186, 159 },
+		{ GUMP_BACKPACK_UNK2, 44, 65, 186, 159 },
+		{ GUMP_BACKPACK_UNK3, 44, 65, 186, 159 }
+		//{ GUMP_GIFT_BOX_CHRISTMAS, 0, 0, 0, 0 }	// TO-DO: confirm gump size
 	};
 
 	// ??? pItemDef->m_ttContainer.m_dwMinXY to m_dwMaxXY

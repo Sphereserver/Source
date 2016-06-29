@@ -50,9 +50,9 @@ enum HUE_CODE
 
 	// Strange mixed colors.
 	HUE_HAIR_LOW		= 0x44E,
+	HUE_HAIR_HIGH		= 0x47D,
 	HUE_WHITE			= 0x481,
 	HUE_STONE			= 0x482,
-	HUE_HAIR_HIGH		= 0x4AD,
 
 	HUE_GARGSKIN_LOW	= 0x6DB,
 	HUE_GARGSKIN_HIGH	= 0x6F3,
@@ -1216,6 +1216,8 @@ enum GUMP_TYPE	// The gumps. (most of these are not useful to the server.)
 	GUMP_CHEST_WOOD_ORNATE		= 0x10b,
 	GUMP_TALL_CABINET			= 0x10c,
 	GUMP_CHEST_WOOD_FINISH		= 0x10d,
+	GUMP_CHEST_WOOD_FINISH2		= 0x10e,
+	GUMP_BLESSED_STATUE			= 0x116,
 	GUMP_MAIL_BOX				= 0x11a,
 	GUMP_GIFT_BOX_CUBE			= 0x11b,
 	GUMP_GIFT_BOX_CYLINDER		= 0x11c,
@@ -1224,6 +1226,7 @@ enum GUMP_TYPE	// The gumps. (most of these are not useful to the server.)
 	GUMP_GIFT_BOX_ANGEL			= 0x11f,
 	GUMP_HEART_SHAPED			= 0x120,
 	GUMP_GIFT_BOX_TALL			= 0x121,
+	GUMP_CHEST_PIRATE			= 0x423,
 	GUMP_FOUNTAIN_LIFE			= 0x484,
 	GUMP_SECRET_CHEST			= 0x58e,
 	GUMP_SECURE_TRADE			= 0x866,
@@ -1232,6 +1235,9 @@ enum GUMP_TYPE	// The gumps. (most of these are not useful to the server.)
 	GUMP_MAP_2_NORTH			= 0x139d,
 	GUMP_PLAGUE_BEAST			= 0x2a63,
 	GUMP_KING_COLLECTION_BOX	= 0x4d0c,
+	GUMP_BACKPACK_UNK1			= 0x775e,
+	GUMP_BACKPACK_UNK2			= 0x7760,
+	GUMP_BACKPACK_UNK3			= 0x7762,
 	GUMP_GIFT_BOX_CHRISTMAS		= 0x777a,
 	GUMP_QTY					= 0xfffe,
 	GUMP_OPEN_SPELLBOOK			= 0xffff
