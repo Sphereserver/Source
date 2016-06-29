@@ -397,7 +397,7 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar *pSrc, CObjBase *pObj, const C
 		case PC_ATTACK:
 		case PC_KILL:
 		{
-			if ( !pCharTarg || pCharTarg == pSrc )
+			if ( !pCharTarg || pCharTarg == this || pCharTarg == pSrc )
 				break;
 			bSuccess = pCharTarg->OnAttackedBy(pSrc, 1, true);	// we know who told them to do this.
 			if ( bSuccess )

@@ -98,3 +98,15 @@ Fixed: Function f_onchar_delete not being called if the player char get deleted 
 Fixed: Multi dynamic regions getting replaced by script static regions on server resync.
 Fixed: EF_FastWalkPrevention not working correctly.
 Fixed: Popup menu on players returning parsing error when send Party clilocs to unsupported clients < 6.0.0.0
+
+28-06-2016, Coruja
+[sphere_item_unsorted.scp]: Fixed wrong TYPE / TDATA2 on i_fountain_life, i_chest_combination.
+[sphere_item_deco_carvings_statues.scp]: Fixed wrong TYPE / TDATA2 on i_statue_stone_blessed.
+[sphere_item_deco_furniture.scp]: Fixed wrong TDATA2 on i_chest_kings_collection.
+[sphere_serv_triggers.scp]: Updated 'f_onchar_delete' comments.
+[sphere_defs.scp]: Updated 'mount_items' and 'mem_flags' values.
+[sphere_skills.scp]: Reordered properties to follow the same default order on all skills (nothing was changed, just reordered).
+[speakhuman.scp]: Fixed 'train' command returning console error when used on guards NPCs.
+
+29-06-2016, Coruja
+Fixed: Attack/Kill command on pets allowing select the pet itself as target, making it attack his owner.
