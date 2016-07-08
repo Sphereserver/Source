@@ -112,3 +112,9 @@ Fixed: Popup menu on players returning parsing error when send Party clilocs to 
 Fixed: Attack/Kill command on pets allowing select the pet itself as target, making it attack his owner.
 Fixed: WOP flood when casting spells using extremely short delays.
 Fixed: Containers using wrong rect area.
+
+30-06-2016, Coruja / azmanomer
+[sphere_item_unsorted.scp/sphere_template.scp]: Updated more giftbox itemdefs.
+
+08-07-2016, Coruja
+Changed: Some misc improvements and optimizations on combat engine.

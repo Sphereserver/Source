@@ -145,7 +145,7 @@ CResource::CResource()
 	m_iWalkBuffer		= 75;
 	m_iWalkRegen		= 25;
 	m_iWoolGrowthTime	= 30*60*TICK_PER_SEC;
-	m_iAttackerTimeout	= 30;
+	m_iAttackerTimeout	= 300;
 
 	m_iCommandLog		= 0;
 	m_fTelnetLog		= true;

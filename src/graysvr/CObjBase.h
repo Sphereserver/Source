@@ -3865,7 +3865,6 @@ private:
 public:
 	int CalcArmorDefense() const;
 
-	void Memory_Fight_Retreat( CChar * pTarg, CItemMemory * pFight );
 	void Memory_Fight_Start( const CChar * pTarg );
 	bool Memory_Fight_OnTick( CItemMemory * pMemory );
 
@@ -3896,7 +3895,6 @@ public:
 	bool Attacker_Delete(CChar * pChar, bool bForced = false, ATTACKER_CLEAR_TYPE type = ATTACKER_CLEAR_FORCED);
 	bool Attacker_Delete(int id, bool bForced = false, ATTACKER_CLEAR_TYPE type = ATTACKER_CLEAR_FORCED);
 	void Attacker_RemoveChar();
-	void Attacker_Clear();
 	void Attacker_CheckTimeout();
 	INT64 Attacker_GetDam( int attacker );
 	void  Attacker_SetDam( CChar * pChar, INT64 value );

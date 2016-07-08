@@ -61,7 +61,7 @@ void CChar::Guild_Resign( MEMORY_TYPE MemType )
 		{
 			CItemStone * pMyStone = pMember->GetParentStone();
 			ASSERT(pMyStone);
-			SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_GUILDRESIGN ), static_cast<LPCTSTR>(pMyStone->GetTypeName()) );
+			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_GUILDRESIGN), pMyStone->GetTypeName());
 		}
 	}
 
@@ -354,14 +354,17 @@ LPCTSTR CChar::Noto_GetFameTitle() const
 		}
 		switch ( GetPrivLevel() )
 		{
-			case PLEVEL_Seer: return g_Cfg.GetDefaultMsg( DEFMSG_TITLE_SEER );	//"Seer ";
-			case PLEVEL_Counsel: return g_Cfg.GetDefaultMsg( DEFMSG_TITLE_COUNSEL );	//"Counselor ";
-			default: break;
+			case PLEVEL_Seer:
+				return g_Cfg.GetDefaultMsg( DEFMSG_TITLE_SEER );	//"Seer ";
+			case PLEVEL_Counsel:
+				return g_Cfg.GetDefaultMsg( DEFMSG_TITLE_COUNSEL );	//"Counselor ";
+			default:
+				break;
 		}
 	}
 
-	if (( Stat_GetAdjusted(STAT_FAME) > 9900 ) && (m_pPlayer || !g_Cfg.m_NPCNoFameTitle))
-		return Char_GetDef()->IsFemale() ? g_Cfg.GetDefaultMsg( DEFMSG_TITLE_LADY ) : g_Cfg.GetDefaultMsg( DEFMSG_TITLE_LORD );	//"Lady " : "Lord ";
+	if ( (m_pPlayer || !g_Cfg.m_NPCNoFameTitle) && (Stat_GetAdjusted(STAT_FAME) >= 10000) )
+		return g_Cfg.GetDefaultMsg(Char_GetDef()->IsFemale() ? DEFMSG_TITLE_LADY : DEFMSG_TITLE_LORD);	//"Lady " : "Lord "
 
 	return "";
 }
@@ -474,11 +477,8 @@ void CChar::Noto_ChangeDeltaMsg( int iDelta, LPCTSTR pszType )
 void CChar::Noto_ChangeNewMsg( int iPrvLevel )
 {
 	ADDTOCALLSTACK("CChar::Noto_ChangeNewMsg");
-	if ( iPrvLevel != Noto_GetLevel())
-	{
-		// reached a new title level ?
-		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MSG_NOTO_GETTITLE ), static_cast<LPCTSTR>(Noto_GetTitle()));
-	}
+	if ( iPrvLevel != Noto_GetLevel() )		// reached a new title level ?
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_GETTITLE), Noto_GetTitle());
 }
 
 void CChar::Noto_Fame( int iFameChange )
@@ -738,15 +738,13 @@ void CChar::NotoSave_Update()
 void CChar::NotoSave_CheckTimeout()
 {
 	ADDTOCALLSTACK("CChar::NotoSave_CheckTimeout");
-	if (g_Cfg.m_iNotoTimeout <= 0)	// No value = no expiration.
-		return;
 	if (m_notoSaves.size())
 	{
 		int count = 0;
 		for (std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); ++it)
 		{
 			NotoSaves & refNoto = *it;
-			if (++(refNoto.time) > g_Cfg.m_iNotoTimeout)	// updating timer while checking ini's value.
+			if (++refNoto.time > g_Cfg.m_iNotoTimeout)	// updating timer while checking ini's value.
 			{
 				//m_notoSaves.erase(it);
 				NotoSave_Resend(count);
@@ -2081,33 +2079,6 @@ effect_bounce:
 //*******************************************************************************
 // Fight specific memories.
 
-// The fight is over because somebody ran away.
-void CChar::Memory_Fight_Retreat( CChar * pTarg, CItemMemory * pFight )
-{
-	ADDTOCALLSTACK("CChar::Memory_Fight_Retreat");
-	if ( pTarg == NULL || pTarg->IsStatFlag( STATF_DEAD ))
-		return;
-
-	ASSERT(pFight);
-	int iMyDistFromBattle = GetTopPoint().GetDist( pFight->m_itEqMemory.m_pt );
-	int iHisDistFromBattle = pTarg->GetTopPoint().GetDist( pFight->m_itEqMemory.m_pt );
-
-	bool fCowardice = (iMyDistFromBattle > iHisDistFromBattle);
-	Attacker_Delete(pTarg, false, ATTACKER_CLEAR_DISTANCE);
-
-	if ( fCowardice && ! pFight->IsMemoryTypes( MEMORY_IAGGRESSOR ))
-	{
-		// cowardice is ok if i was attacked.
-		return;
-	}
-
-	SysMessagef(fCowardice ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_COWARD_1) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_COWARD_2), pTarg->GetName());
-
-	// Lose some fame.
-	if ( fCowardice )
-		Noto_Fame( -1 );
-}
-
 // Check on the status of the fight.
 // return: false = delete the memory completely.
 //  true = skip it.
@@ -2116,32 +2087,23 @@ bool CChar::Memory_Fight_OnTick( CItemMemory * pMemory )
 	ADDTOCALLSTACK("CChar::Memory_Fight_OnTick");
 
 	ASSERT(pMemory);
-	CChar * pTarg = pMemory->m_uidLink.CharFind();
-	if ( pTarg == NULL )
-		return( false );	// They are gone for some reason ?
+	CChar *pTarg = pMemory->m_uidLink.CharFind();
+	if ( !pTarg )
+		return false;
 
-	unsigned int elapsed = static_cast<unsigned int>(Attacker_GetElapsed(Attacker_GetID(pTarg)));
-	// Attacker.Elapsed = -1 means no combat end for this attacker.
-	// g_Cfg.m_iAttackerTimeout = 0 means attackers doesnt decay. (but cleared when the attacker is killed or the char dies)
-
-	if ( GetDist(pTarg) > UO_MAP_VIEW_RADAR || (g_Cfg.m_iAttackerTimeout != 0 && elapsed >= 0 && elapsed > g_Cfg.m_iAttackerTimeout) )
+	if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) && (GetDist(pTarg) > UO_MAP_VIEW_RADAR) )
 	{
-		Memory_Fight_Retreat( pTarg, pMemory );
-clearit:
-		Memory_ClearTypes( pMemory, MEMORY_FIGHT|MEMORY_IAGGRESSOR|MEMORY_AGGREIVED );
-		return( true );
+		Attacker_Delete(pTarg, true, ATTACKER_CLEAR_DISTANCE);
+		if ( m_pPlayer && pTarg->m_pPlayer )	// only show retreat msg on PvP
+		{
+			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_COWARD_1), pTarg->GetName());
+			pTarg->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_COWARD_2), GetName());
+		}
+		return false;
 	}
 
-	INT64 iTimeDiff = - g_World.GetTimeDiff( pMemory->GetTimeStamp() );
-
-	// If am fully healthy then it's not much of a fight.
-	if ( iTimeDiff > 60*60*TICK_PER_SEC )
-		goto clearit;
-	if ( pTarg->GetHealthPercent() >= 100 && iTimeDiff > 2*60*TICK_PER_SEC )
-		goto clearit;
-
-	pMemory->SetTimeout(20*TICK_PER_SEC);
-	return( true );	// reschedule it.
+	pMemory->SetTimeout(20 * TICK_PER_SEC);
+	return true;	// reschedule it
 }
 
 void CChar::Memory_Fight_Start( const CChar * pTarg )
@@ -2380,18 +2342,23 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 }
 
 // Clear all my active targets. Toggle out of war mode.
-// Should I add @CombatEnd trigger here too?
 void CChar::Fight_ClearAll()
 {
 	ADDTOCALLSTACK("CChar::Fight_ClearAll");
-	Attacker_Clear();
+	if ( IsTrigUsed(TRIGGER_COMBATEND) )
+		OnTrigger(CTRIG_CombatEnd, this, 0);
+
+	m_lastAttackers.clear();
 	if ( Fight_IsActive() )
 	{
 		Skill_Start(SKILL_NONE);
 		m_Fight_Targ.InitUID();
+		if ( m_pNPC )
+		{
+			StatFlag_Clear(STATF_War);
+			UpdateModeFlag();
+		}
 	}
-
-	UpdateModeFlag();
 }
 
 // I no longer want to attack this char.
@@ -2793,25 +2760,6 @@ bool CChar::Attacker_GetIgnore(int id)
 	return (refAttacker.ignore != 0);
 }
 
-// Clear the whole attacker's list, combat ended.
-void CChar::Attacker_Clear()
-{
-	ADDTOCALLSTACK("CChar::Attacker_Clear");
-	if ( IsTrigUsed(TRIGGER_COMBATEND) )
-		OnTrigger(CTRIG_CombatEnd, this, 0);
-
-	m_lastAttackers.clear();
-	if ( Fight_IsActive() )
-	{
-		Skill_Start(SKILL_NONE);
-		m_Fight_Targ.InitUID();
-		if ( m_pNPC )
-			StatFlag_Clear(STATF_War);
-	}
-
-	UpdateModeFlag();
-}
-
 // Get nID value of attacker list from the given pChar
 int CChar::Attacker_GetID( CChar * pChar )
 {
@@ -2878,10 +2826,14 @@ bool CChar::Attacker_Delete( int index, bool bForced, ATTACKER_CLEAR_TYPE type )
 		if ( tRet == TRIGRET_RET_TRUE )
 			return false;
 	}
+
 	std::vector<LastAttackers>::iterator it = m_lastAttackers.begin() + index;
-
-
 	m_lastAttackers.erase(it);
+
+	CItemMemory *pMemory = Memory_FindObj(pChar);
+	if ( pMemory )
+		Memory_ClearTypes(pMemory, MEMORY_FIGHT|MEMORY_IAGGRESSOR|MEMORY_AGGREIVED);
+
 	if ( m_Fight_Targ == pChar->GetUID() )
 	{
 		m_Fight_Targ.InitUID();
@@ -2889,7 +2841,7 @@ bool CChar::Attacker_Delete( int index, bool bForced, ATTACKER_CLEAR_TYPE type )
 			Fight_Attack(NPC_FightFindBestTarget());
 	}
 	if ( !m_lastAttackers.size() )
-		Attacker_Clear();
+		Fight_ClearAll();
 	return true;
 }
 
@@ -2910,13 +2862,13 @@ void CChar::Attacker_RemoveChar()
 	ADDTOCALLSTACK("CChar::Attacker_RemoveChar");
 	if ( m_lastAttackers.size() )
 	{
-		for ( int count = 0 ; count < static_cast<int>(m_lastAttackers.size()); count++)
+		for ( size_t count = 0; count < m_lastAttackers.size(); count++ )
 		{
-			LastAttackers & refAttacker = m_lastAttackers.at(count);
-			CChar * pSrc = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
-			if ( !pSrc )
+			LastAttackers &refAttacker = m_lastAttackers.at(count);
+			CChar *pEnemy = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
+			if ( !pEnemy )
 				continue;
-			pSrc->Attacker_Delete(pSrc->Attacker_GetID(this), false, ATTACKER_CLEAR_REMOVEDCHAR);
+			pEnemy->Attacker_Delete(pEnemy->Attacker_GetID(this), false, ATTACKER_CLEAR_REMOVEDCHAR);
 		}
 	}
 }
@@ -2925,14 +2877,23 @@ void CChar::Attacker_RemoveChar()
 void CChar::Attacker_CheckTimeout()
 {
 	ADDTOCALLSTACK("CChar::Attacker_CheckTimeout");
-	if (m_lastAttackers.size())
+	if ( m_lastAttackers.size() )
 	{
-		for (int count = 0; count < static_cast<int>(m_lastAttackers.size()); count++)
+		for ( size_t count = 0; count < m_lastAttackers.size(); count++ )
 		{
-			LastAttackers & refAttacker = m_lastAttackers.at(count);
+			LastAttackers &refAttacker = m_lastAttackers.at(count);
 			CChar *pEnemy = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
-			if (pEnemy && (++(refAttacker.elapsed) > g_Cfg.m_iAttackerTimeout) && g_Cfg.m_iAttackerTimeout > 0)
-				Attacker_Delete(count, true, ATTACKER_CLEAR_ELAPSED);
+			if ( !pEnemy )
+				continue;
+			if ( (++refAttacker.elapsed > g_Cfg.m_iAttackerTimeout) )
+			{
+				Attacker_Delete(static_cast<int>(count), true, ATTACKER_CLEAR_ELAPSED);
+				if ( m_pPlayer && pEnemy->m_pPlayer )	// only show retreat msg on PvP
+				{
+					SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_COWARD_1), pEnemy->GetName());
+					pEnemy->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_COWARD_2), GetName());
+				}
+			}
 		}
 	}
 }
@@ -2942,10 +2903,10 @@ int CChar::CalcFightRange( CItem * pWeapon )
 {
 	ADDTOCALLSTACK("CChar::CalcFightRange");
 
-	int iCharRange = RangeL();
-	int iWeaponRange = pWeapon ? pWeapon->RangeL() : 0;
+	BYTE iCharRange = RangeL();
+	BYTE iWeaponRange = pWeapon ? pWeapon->RangeL() : 0;
 
-	return ( maximum(iCharRange , iWeaponRange) );
+	return maximum(iCharRange, iWeaponRange);
 }
 
 
@@ -3039,14 +3000,9 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	if ( pCharTarg->m_pArea && pCharTarg->m_pArea->IsFlag(REGION_FLAG_SAFE) )
 		return WAR_SWING_INVALID;
 
-	int dist = GetTopDist3D(pCharTarg);
-	if ( dist > UO_MAP_VIEW_RADAR )
-	{
-		if ( IsSetCombatFlags(COMBAT_STAYINRANGE) )
-			return WAR_SWING_EQUIPPING;
-
-		return WAR_SWING_INVALID;
-	}
+	int iDist = GetTopDist3D(pCharTarg);
+	if ( iDist > UO_MAP_VIEW_RADAR )
+		return WAR_SWING_EQUIPPING;
 
 	// I am on ship. Should be able to combat only inside the ship to avoid free sea and ground characters hunting
 	if ( (m_pArea != pCharTarg->m_pArea) && !IsSetCombatFlags(COMBAT_ALLOWHITFROMSHIP) )
@@ -3083,8 +3039,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		INT64 diff = GetKeyNum("LastHit", true) - g_World.GetCurrentTime().GetTimeRaw();
 		if ( diff > 0 )
 		{
-			diff = (diff > 50) ? 50 : diff;
-			SetTimeout(diff);
+			SetTimeout(minimum(diff, 50));
 			return WAR_SWING_READY;
 		}
 	}
@@ -3153,19 +3108,14 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( !iMinDist )
 			iMinDist = g_Cfg.m_iArcheryMinDist;
 
-		if ( dist < iMinDist )
+		if ( iDist < iMinDist )
 		{
 			SysMessageDefault(DEFMSG_COMBAT_ARCH_TOOCLOSE);
-			if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
-				return WAR_SWING_READY;
 			return WAR_SWING_EQUIPPING;
 		}
-		else if ( dist > iMaxDist )
-		{
-			if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
-				return WAR_SWING_READY;
+		if ( iDist > iMaxDist )
 			return WAR_SWING_EQUIPPING;
-		}
+
 		if ( pType )
 		{
 			t_Str = pType->GetValStr();
@@ -3206,12 +3156,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	{
 		int	iMinDist = pWeapon ? pWeapon->RangeH() : 0;
 		int	iMaxDist = CalcFightRange(pWeapon);
-		if ( dist < iMinDist || dist > iMaxDist )
-		{
-			if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) || m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
-				return(WAR_SWING_READY);
+		if ( iDist < iMinDist || iDist > iMaxDist )
 			return WAR_SWING_EQUIPPING;
-		}
 	}
 
 	// Start the swing

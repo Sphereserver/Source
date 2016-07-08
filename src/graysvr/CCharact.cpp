@@ -3913,10 +3913,12 @@ bool CChar::OnTick()
 		m_timeLastRegen = CServTime::GetCurrentTime();
 
 		EXC_SET("last attackers");
-		Attacker_CheckTimeout();
+		if ( g_Cfg.m_iAttackerTimeout > 0 )
+			Attacker_CheckTimeout();
 
 		EXC_SET("NOTO timeout");
-		NotoSave_CheckTimeout();
+		if ( g_Cfg.m_iNotoTimeout > 0 )
+			NotoSave_CheckTimeout();
 
 		if ( !IsStatFlag(STATF_DEAD) )
 		{
