@@ -3120,8 +3120,8 @@ int CChar::Skill_Fighting( SKTRIG_TYPE stage )
 
 	if ( stage == SKTRIG_START )
 	{
-		m_atFight.m_War_Swing_State = WAR_SWING_EQUIPPING;
-		INT64 iRemainingDelay = g_World.GetTimeDiff(m_atFight.m_timeNextCombatSwing);
+		m_atFight.m_Swing_State = WAR_SWING_EQUIPPING;
+		INT64 iRemainingDelay = g_World.GetTimeDiff(m_atFight.m_Swing_NextAction);
 		if ( iRemainingDelay < 0 || iRemainingDelay > 255)
 			iRemainingDelay = 0;
 
@@ -3131,15 +3131,15 @@ int CChar::Skill_Fighting( SKTRIG_TYPE stage )
 
 	if ( stage == SKTRIG_STROKE )
 	{
-		// Hit or miss my current target.
+		// Waited my recoil time, so I'm ready to hit my current target
 		if ( !IsStatFlag(STATF_War) )
 			return -SKTRIG_ABORT;
 
-		if ( m_atFight.m_War_Swing_State != WAR_SWING_SWINGING )
-			m_atFight.m_War_Swing_State = WAR_SWING_READY;  // Waited my recoil time. So I'm ready.
+		if ( m_atFight.m_Swing_State != WAR_SWING_SWINGING )
+			m_atFight.m_Swing_State = WAR_SWING_READY;
 
-		Fight_HitTry();	// this cleans up itself.
-		return -SKTRIG_STROKE;	// Stay in the skill till we hit.
+		Fight_HitTry();
+		return -SKTRIG_STROKE;
 	}
 
 	return -SKTRIG_QTY;

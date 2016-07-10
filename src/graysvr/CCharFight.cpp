@@ -2070,7 +2070,7 @@ effect_bounce:
 		return( iDmg );
 	}
 
-	if (m_atFight.m_War_Swing_State != WAR_SWING_SWINGING)	// don't interrupt my swing animation
+	if ( m_atFight.m_Swing_State != WAR_SWING_SWINGING )	// don't interrupt my swing animation
 		UpdateAnimate(ANIM_GET_HIT);
 
 	return( iDmg );
@@ -2091,7 +2091,7 @@ bool CChar::Memory_Fight_OnTick( CItemMemory * pMemory )
 	if ( !pTarg )
 		return false;
 
-	if ( !IsSetCombatFlags(COMBAT_STAYINRANGE) && (GetDist(pTarg) > UO_MAP_VIEW_RADAR) )
+	if ( GetDist(pTarg) > UO_MAP_VIEW_RADAR )
 	{
 		Attacker_Delete(pTarg, true, ATTACKER_CLEAR_DISTANCE);
 		if ( m_pPlayer && pTarg->m_pPlayer )	// only show retreat msg on PvP
@@ -2467,8 +2467,8 @@ void CChar::Fight_HitTry()
 {
 	ADDTOCALLSTACK("CChar::Fight_HitTry");
 
-	ASSERT( Fight_IsActive() );
-	ASSERT( m_atFight.m_War_Swing_State == (WAR_SWING_READY|WAR_SWING_SWINGING) );
+	ASSERT(Fight_IsActive());
+	ASSERT(m_atFight.m_Swing_State == (WAR_SWING_READY|WAR_SWING_SWINGING));
 
 	CChar *pCharTarg = m_Fight_Targ.CharFind();
 	if ( !pCharTarg || !pCharTarg->Fight_IsAttackable() )
@@ -2931,7 +2931,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	if ( IsTrigUsed(TRIGGER_HITCHECK) )
 	{
 		CScriptTriggerArgs pArgs;
-		pArgs.m_iN1 = m_atFight.m_War_Swing_State;
+		pArgs.m_iN1 = m_atFight.m_Swing_State;
 		pArgs.m_iN2 = iTyp;
 		TRIGRET_TYPE tRet = OnTrigger(CTRIG_HitCheck, pCharTarg, &pArgs);
 		if ( tRet == TRIGRET_RET_TRUE )
@@ -2939,10 +2939,10 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( tRet == -1 )
 			return WAR_SWING_INVALID;
 
-		m_atFight.m_War_Swing_State = static_cast<WAR_SWING_TYPE>(pArgs.m_iN1);
+		m_atFight.m_Swing_State = static_cast<WAR_SWING_TYPE>(pArgs.m_iN1);
 		iTyp = static_cast<DAMAGE_TYPE>(pArgs.m_iN2);
 
-		if ( (m_atFight.m_War_Swing_State == WAR_SWING_SWINGING) && (iTyp & DAMAGE_FIXED) )
+		if ( (m_atFight.m_Swing_State == WAR_SWING_SWINGING) && (iTyp & DAMAGE_FIXED) )
 		{
 			if ( tRet == TRIGRET_RET_DEFAULT )
 				return WAR_SWING_EQUIPPING;
@@ -3001,8 +3001,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		return WAR_SWING_INVALID;
 
 	int iDist = GetTopDist3D(pCharTarg);
-	if ( iDist > UO_MAP_VIEW_RADAR )
-		return WAR_SWING_EQUIPPING;
+	if ( iDist > UO_MAP_VIEW_SIZE )
+		return IsSetCombatFlags(COMBAT_STAYINRANGE) ? WAR_SWING_EQUIPPING : WAR_SWING_INVALID;
 
 	// I am on ship. Should be able to combat only inside the ship to avoid free sea and ground characters hunting
 	if ( (m_pArea != pCharTarg->m_pArea) && !IsSetCombatFlags(COMBAT_ALLOWHITFROMSHIP) )
@@ -3034,7 +3034,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			return WAR_SWING_READY;
 	}
 
-	if ( IsSetCombatFlags(COMBAT_PREHIT) && (m_atFight.m_War_Swing_State == WAR_SWING_READY) )
+	if ( IsSetCombatFlags(COMBAT_PREHIT) && (m_atFight.m_Swing_State == WAR_SWING_READY) )
 	{
 		INT64 diff = GetKeyNum("LastHit", true) - g_World.GetCurrentTime().GetTimeRaw();
 		if ( diff > 0 )
@@ -3111,10 +3111,10 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( iDist < iMinDist )
 		{
 			SysMessageDefault(DEFMSG_COMBAT_ARCH_TOOCLOSE);
-			return WAR_SWING_EQUIPPING;
+			return IsSetCombatFlags(COMBAT_STAYINRANGE) ? WAR_SWING_EQUIPPING : WAR_SWING_READY;
 		}
 		if ( iDist > iMaxDist )
-			return WAR_SWING_EQUIPPING;
+			return IsSetCombatFlags(COMBAT_STAYINRANGE) ? WAR_SWING_EQUIPPING : WAR_SWING_READY;
 
 		if ( pType )
 		{
@@ -3157,11 +3157,11 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		int	iMinDist = pWeapon ? pWeapon->RangeH() : 0;
 		int	iMaxDist = CalcFightRange(pWeapon);
 		if ( iDist < iMinDist || iDist > iMaxDist )
-			return WAR_SWING_EQUIPPING;
+			return IsSetCombatFlags(COMBAT_STAYINRANGE) ? WAR_SWING_EQUIPPING : WAR_SWING_READY;
 	}
 
 	// Start the swing
-	if ( m_atFight.m_War_Swing_State == WAR_SWING_READY )
+	if ( m_atFight.m_Swing_State == WAR_SWING_READY )
 	{
 		if ( !CanSeeLOS(pCharTarg) )
 			return WAR_SWING_EQUIPPING;
@@ -3173,7 +3173,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( IsTrigUsed(TRIGGER_HITTRY) )
 		{
 			CScriptTriggerArgs Args(iSwingDelay, 0, pWeapon);
-			Args.m_VarsLocal.SetNum("Anim", (int)anim);
+			Args.m_VarsLocal.SetNum("Anim", static_cast<int>(anim));
 			Args.m_VarsLocal.SetNum("AnimDelay", animDelay);
 			if ( OnTrigger(CTRIG_HitTry, pCharTarg, &Args) == TRIGRET_RET_TRUE )
 				return WAR_SWING_READY;
@@ -3187,8 +3187,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				animDelay = 0;
 		}
 
-		m_atFight.m_War_Swing_State = WAR_SWING_SWINGING;
-		m_atFight.m_timeNextCombatSwing = CServTime::GetCurrentTime() + iSwingDelay;
+		m_atFight.m_Swing_State = WAR_SWING_SWINGING;
+		m_atFight.m_Swing_Delay = iSwingDelay - animDelay;
 
 		if ( IsSetCombatFlags(COMBAT_PREHIT) )
 		{
@@ -3204,6 +3204,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		UpdateAnimate(anim, false, false, static_cast<BYTE>(animDelay / TICK_PER_SEC));
 		return WAR_SWING_SWINGING;
 	}
+
+	m_atFight.m_Swing_NextAction = CServTime::GetCurrentTime() + m_atFight.m_Swing_Delay;
 
 	if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
 	{
@@ -3230,7 +3232,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	}
 
 	// We made our swing. so we must recoil.
-	m_atFight.m_War_Swing_State = WAR_SWING_EQUIPPING;
+	m_atFight.m_Swing_State = WAR_SWING_EQUIPPING;
 
 	// We missed
 	if ( m_Act_Difficulty < 0 )

@@ -2375,7 +2375,7 @@ do_default:
 			}
 			return( true );
 		case CHC_SWING:
-			sVal.FormatVal( m_atFight.m_War_Swing_State );
+			sVal.FormatVal(m_atFight.m_Swing_State);
 			break;
 		case CHC_TOWNABBREV:
 			{
@@ -3054,9 +3054,9 @@ do_default:
 			break;
 		case CHC_SWING:
 			{
-				if ( s.GetArgVal() && (s.GetArgVal() < -1 || s.GetArgVal() > WAR_SWING_SWINGING ))
+				if ( s.GetArgVal() && ((s.GetArgVal() < WAR_SWING_INVALID) || (s.GetArgVal() > WAR_SWING_SWINGING)) )
 					return false;
-				m_atFight.m_War_Swing_State = (WAR_SWING_TYPE)s.GetArgVal();
+				m_atFight.m_Swing_State = static_cast<WAR_SWING_TYPE>(s.GetArgVal());
 			}
 			break;
 		case CHC_TITLE:

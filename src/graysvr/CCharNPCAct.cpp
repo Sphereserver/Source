@@ -2226,9 +2226,7 @@ void CChar::NPC_Act_Fight()
 	}
 	int iDist = GetDist( pChar );
 
-	if ( m_pNPC->m_Brain == NPCBRAIN_GUARD &&
-		m_atFight.m_War_Swing_State == WAR_SWING_READY &&
-		! Calc_GetRandVal(3))
+	if ( (m_pNPC->m_Brain == NPCBRAIN_GUARD) && (m_atFight.m_Swing_State == WAR_SWING_READY) && !Calc_GetRandVal(3) )
 	{
 		// If a guard is ever too far away (missed a chance to swing)
 		// Teleport me closer.
@@ -3208,7 +3206,7 @@ void CChar::NPC_OnTickAction()
 	}
 
 	EXC_SET("timer expired");
-	if ( IsTimerExpired() && IsStatFlag(STATF_War) && !(IsSetCombatFlags(COMBAT_PREHIT) && m_atFight.m_War_Swing_State == WAR_SWING_SWINGING))	// Was not reset? PREHIT forces timer to be 0, so it get's defaulted here breaking NPC's speed when PREHIT is enabled. Must not check in this case.
+	if ( IsTimerExpired() && IsStatFlag(STATF_War) && !(IsSetCombatFlags(COMBAT_PREHIT) && m_atFight.m_Swing_State == WAR_SWING_SWINGING) )	// Was not reset? PREHIT forces timer to be 0, so it get's defaulted here breaking NPC's speed when PREHIT is enabled. Must not check in this case.
 	{
 		INT64 timeout	= maximum((150-Stat_GetAdjusted(STAT_DEX))/2, 0);
 		timeout = Calc_GetRandLLVal2(timeout/2, timeout);
