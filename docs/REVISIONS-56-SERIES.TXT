@@ -118,3 +118,7 @@ Fixed: Containers using wrong rect area.
 
 08-07-2016, Coruja
 Changed: Some misc improvements and optimizations on combat engine.
+
+13-07-2016, Coruja
+Fixed: Chars not able to climb some small mounds.
+Fixed: Spawns (worldgem bit) not updating DISPID when set SPAWNDEF on MORE1.

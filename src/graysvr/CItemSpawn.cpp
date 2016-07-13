@@ -320,7 +320,7 @@ void CItemSpawn::OnTick(bool fExec)
 	if ( !pDef )
 	{
 		RESOURCE_ID_BASE rid = IsType(IT_SPAWN_ITEM) ? m_itSpawnItem.m_ItemID : m_itSpawnChar.m_CharID;
-		DEBUG_ERR(("Bad Spawn point uid=0%lx, id=%s\n", (DWORD)GetUID(), g_Cfg.ResourceGetName(rid)));
+		DEBUG_ERR(("Bad Spawn point uid=0%lx, id=%s\n", static_cast<DWORD>(GetUID()), g_Cfg.ResourceGetName(rid)));
 		return;
 	}
 
@@ -355,7 +355,7 @@ CCharBase *CItemSpawn::SetTrackID()
 {
 	ADDTOCALLSTACK("CitemSpawn:SetTrackID");
 	SetAttr(ATTR_INVIS);	// Indicate to GM's that it is invis.
-	if (GetHue() == 0)
+	if ( GetHue() == 0 )
 		SetHue(HUE_RED_DARK);
 
 	if ( !IsType(IT_SPAWN_CHAR) )
@@ -366,15 +366,10 @@ CCharBase *CItemSpawn::SetTrackID()
 
 	CCharBase *pCharDef = NULL;
 	RESOURCE_ID_BASE rid = m_itSpawnChar.m_CharID;
-
 	if ( rid.GetResType() == RES_CHARDEF )
-	{
-		CREID_TYPE id = static_cast<CREID_TYPE>(rid.GetResIndex());
-		pCharDef = CCharBase::FindCharBase(id);
-	}
-	if ( pCharDef )		// They must want it to look like this.
-		SetDispID(pCharDef ? pCharDef->m_trackID : ITEMID_TRACK_WISP);
-		
+		pCharDef = CCharBase::FindCharBase(static_cast<CREID_TYPE>(rid.GetResIndex()));
+
+	SetDispID(pCharDef ? pCharDef->m_trackID : ITEMID_TRACK_WISP);
 	return pCharDef;
 }
 

@@ -1798,7 +1798,7 @@ bool CChar::CanTouch( const CObjBase *pObj ) const
 	{
 		if ( pObjTop->IsChar() )
 		{
-			pChar = dynamic_cast<const CChar*>(pObjTop);
+			pChar = dynamic_cast<const CChar *>(pObjTop);
 			if ( !pChar )
 				return false;
 			if ( pChar == this )
@@ -1835,9 +1835,9 @@ bool CChar::CanTouch( const CObjBase *pObj ) const
 	{
 		if ( GetAbilityFlags() & CAN_C_DCIGNORELOS )
 			return true;
-		else if ( pObj->IsChar() && (pChar != NULL) && (pChar->GetAbilityFlags() & CAN_C_DCIGNORELOS) )
+		else if ( pChar && (pChar->GetAbilityFlags() & CAN_C_DCIGNORELOS) )
 			return true;
-		else if ( pObj->IsItem() && (pItem != NULL) && (pItem->GetAbilityFlags() & CAN_I_DCIGNORELOS) )
+		else if ( pItem && (pItem->GetAbilityFlags() & CAN_I_DCIGNORELOS) )
 			return true;
 		else
 			return false;
@@ -1846,9 +1846,9 @@ bool CChar::CanTouch( const CObjBase *pObj ) const
 	{
 		if ( GetAbilityFlags() & CAN_C_DCIGNOREDIST )
 			return true;
-		else if ( pObj->IsChar() && (pChar != NULL) && (pChar->GetAbilityFlags() & CAN_C_DCIGNOREDIST) )
+		else if ( pChar && (pChar->GetAbilityFlags() & CAN_C_DCIGNOREDIST) )
 			return true;
-		else if ( pObj->IsItem() && (pItem != NULL) && (pItem->GetAbilityFlags() & CAN_I_DCIGNOREDIST) )
+		else if ( pItem && (pItem->GetAbilityFlags() & CAN_I_DCIGNOREDIST) )
 			return true;
 		else
 			return false;
@@ -2028,7 +2028,7 @@ bool CChar::CanMove( CItem *pItem, bool fMsg ) const
 		{
 			pItem->SetAttr(ATTR_IDENTIFIED);
 			if ( fMsg )
-				SysMessagef("%s %s", static_cast<LPCTSTR>(pItem->GetName()), g_Cfg.GetDefaultMsg(DEFMSG_CANTMOVE_CURSED));
+				SysMessagef("%s %s", pItem->GetName(), g_Cfg.GetDefaultMsg(DEFMSG_CANTMOVE_CURSED));
 
 			return false;
 		}
@@ -2091,8 +2091,8 @@ bool CChar::IsTakeCrime( const CItem *pItem, CChar ** ppCharMark ) const
 		return false;
 
 	CObjBaseTemplate *pObjTop = pItem->GetTopLevelObj();
-	CChar *pCharMark = dynamic_cast<CChar*>(pObjTop);
-	if ( ppCharMark != NULL )
+	CChar *pCharMark = dynamic_cast<CChar *>(pObjTop);
+	if ( ppCharMark )
 		*ppCharMark = pCharMark;
 
 	if ( static_cast<const CChar*>(pObjTop) == this )
@@ -2117,7 +2117,7 @@ bool CChar::IsTakeCrime( const CItem *pItem, CChar ** ppCharMark ) const
 		return false;	// I guess it's not a crime
 	}
 
-	if ( pCharMark->NPC_IsOwnedBy(this) || pCharMark->Memory_FindObjTypes(this, MEMORY_FRIEND) != NULL )	// he let's you
+	if ( pCharMark->NPC_IsOwnedBy(this) || pCharMark->Memory_FindObjTypes(this, MEMORY_FRIEND) )	// he let's you
 		return false;
 
 	// Pack animal has no owner ?
@@ -2234,7 +2234,7 @@ CRegionBase *CChar::CheckValidMove( CPointBase &ptDest, WORD *pwBlockFlags, DIR_
 
 	WORD wCan = static_cast<WORD>(GetMoveBlockFlags());
 	WARNWALK(("GetMoveBlockFlags() (0x%x)\n",wCan));
-	if ( !(wCan & (CAN_C_SWIM| CAN_C_WALK|CAN_C_FLY|CAN_C_RUN|CAN_C_HOVER)) )
+	if ( !(wCan & (CAN_C_SWIM|CAN_C_WALK|CAN_C_FLY|CAN_C_RUN|CAN_C_HOVER)) )
 		return NULL;	// cannot move at all, so WTF?
 
 	WORD wBlockFlags = wCan;
@@ -2245,6 +2245,9 @@ CRegionBase *CChar::CheckValidMove( CPointBase &ptDest, WORD *pwBlockFlags, DIR_
 	}
 
 	height_t iCharHeight = GetHeight();
+	if ( m_pPlayer )	// always consider mount height on players
+		iCharHeight += 4;
+
 	CGrayMapBlockState block(wBlockFlags, ptDest.m_z, ptDest.m_z + m_zClimbHeight + iCharHeight, ptDest.m_z + m_zClimbHeight + 3, iCharHeight);
 	WARNWALK(("\t\tCGrayMapBlockState block( 0%x, %d, %d, %d );ptDest.m_z(%d) m_zClimbHeight(%d)\n", wBlockFlags, ptDest.m_z, ptDest.m_z + m_zClimbHeight + iCharHeight, ptDest.m_z + m_zClimbHeight + 2, ptDest.m_z, m_zClimbHeight));
 
@@ -2300,16 +2303,16 @@ CRegionBase *CChar::CheckValidMove( CPointBase &ptDest, WORD *pwBlockFlags, DIR_
 			if ( !(wBlockFlags & CAN_I_CLIMB) ) // we can climb anywhere
 			{
 				WARNWALK(("block.m_Lowest.m_z %d  block.m_Bottom.m_z %d  block.m_Top.m_z %d\n", block.m_Lowest.m_z, block.m_Bottom.m_z, block.m_Top.m_z));
-				if ( block.m_Bottom.m_dwTile > TERRAIN_QTY )
+				if ( block.m_Bottom.m_dwTile < TERRAIN_QTY )
 				{
-					// Stepping on dynamic item
-					if ( block.m_Bottom.m_z > ptDest.m_z + m_zClimbHeight + 2 )
+					// Stepping on map terrain
+					if ( block.m_Bottom.m_z > ptDest.m_z + m_zClimbHeight + iCharHeight + 6 )
 						return NULL;
 				}
 				else
 				{
-					// Stepping on map tile
-					if ( block.m_Bottom.m_z > ptDest.m_z + m_zClimbHeight + iCharHeight )
+					// Stepping on dynamic item
+					if ( block.m_Bottom.m_z > ptDest.m_z + m_zClimbHeight + 2 )
 						return NULL;
 				}
 			}
@@ -2327,7 +2330,7 @@ CRegionBase *CChar::CheckValidMove( CPointBase &ptDest, WORD *pwBlockFlags, DIR_
 	}
 
 	WARNWALK(("iCharHeight %d  block.m_Top.m_z  %d ptDest.m_z  %d\n", iCharHeight, block.m_Top.m_z, ptDest.m_z));
-	if ( (iCharHeight + ptDest.m_z >= block.m_Top.m_z) && g_Cfg.m_iMountHeight && !IsPriv(PRIV_GM) && !IsPriv(PRIV_ALLMOVE) )
+	if ( g_Cfg.m_iMountHeight && (iCharHeight + ptDest.m_z >= block.m_Top.m_z) && !IsPriv(PRIV_GM|PRIV_ALLMOVE) )
 	{
 		SysMessageDefault(DEFMSG_MSG_MOUNT_CEILING);
 		return NULL;
@@ -2346,8 +2349,11 @@ void CChar::FixClimbHeight()
 {
 	ADDTOCALLSTACK("CChar::FixClimbHeight");
 	height_t iCharHeight = GetHeight();
+	if ( m_pPlayer )	// always consider mount height on players
+		iCharHeight += 4;
+
 	CPointBase pt = GetTopPoint();
-	CGrayMapBlockState block(CAN_I_CLIMB, pt.m_z, pt.m_z + iCharHeight + 3, pt.m_z + 2, iCharHeight);
+	CGrayMapBlockState block(CAN_I_CLIMB, pt.m_z, pt.m_z + iCharHeight + 6, pt.m_z + 2, iCharHeight);
 	g_World.GetHeightPoint(pt, block, true);
 
 	if ( (block.m_Bottom.m_z == pt.m_z) && (block.m_dwBlockFlags & CAN_I_CLIMB) )	// we are standing on stairs
