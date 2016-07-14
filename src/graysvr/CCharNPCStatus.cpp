@@ -112,22 +112,26 @@ int CChar::NPC_GetVendorMarkup() const
 		return 0;
 
 	// Use char value
-	CVarDefCont	*pVar = NULL;
-	pVar = m_TagDefs.GetKey("VENDORMARKUP");
+	CVarDefCont *pVar = m_TagDefs.GetKey("VENDORMARKUP");
 	if ( pVar )
 		return static_cast<int>(pVar->GetValNum());
 
 	// Use region value
-	pVar = GetRegion()->m_TagDefs.GetKey("VENDORMARKUP");
-	if ( pVar )
-		return static_cast<int>(pVar->GetValNum());
+	if ( m_pArea )
+	{
+		pVar = m_pArea->m_TagDefs.GetKey("VENDORMARKUP");
+		if ( pVar )
+			return static_cast<int>(pVar->GetValNum());
+	}
 
 	// Use chardef value
 	CCharBase *pCharDef = Char_GetDef();
 	if ( pCharDef )
+	{
 		pVar = pCharDef->m_TagDefs.GetKey("VENDORMARKUP");
-	if ( pVar )
-		return static_cast<int>(pVar->GetValNum());
+		if ( pVar )
+			return static_cast<int>(pVar->GetValNum());
+	}
 
 	// Use default value
 	return 15;
@@ -438,33 +442,20 @@ int CChar::NPC_GetHostilityLevelToward( const CChar * pCharTarg ) const
 	// What is my general hostility level toward this type of creature ?
 	//
 	// based on:
-	//  npc vs player, (evil npc's don't like players regurdless of align, xcept in town)
-	//  karma (we are of different alignments)
-	//  creature body type. (allie groups)
-	//  hunger, (they could be food)
-	//  memories of this creature.
-	//
-	// DO NOT consider:
-	//   strength, he is far stronger or waeker than me.
-	//	 health, i may be near death.
-	//   location (guarded area), (xcept in the case that evil people like other evils in town)
-	//   loot, etc.
+	//  npc vs player (evil npc's don't like players)
+	//  creature body type (allie groups)
 	//
 	// RETURN:
 	//   100 = extreme hatred.
 	//   0 = neutral.
 	//   -100 = love them
-	//
 
-
-	if ( !pCharTarg || !m_pNPC )
+	if ( !m_pNPC || !pCharTarg )
 		return 0;
 
-	int iHostility = 0;
-
-	// if it is a pet - register it the same as it's master.
-	CChar * pCharOwn = pCharTarg->NPC_PetGetOwner();
-	if ( pCharOwn != NULL && pCharOwn != this )
+	// If it's a pet, inherit hostility from it's master
+	CChar *pCharOwn = pCharTarg->NPC_PetGetOwner();
+	if ( pCharOwn && pCharOwn != this )
 	{
 		static int sm_iReentrant = 0;
 		if (sm_iReentrant > 32)
@@ -474,101 +465,31 @@ int CChar::NPC_GetHostilityLevelToward( const CChar * pCharTarg ) const
 		}
 
 		++sm_iReentrant;
-		iHostility = NPC_GetHostilityLevelToward( pCharOwn );
+		int iHostility = NPC_GetHostilityLevelToward(pCharOwn);
 		--sm_iReentrant;
-
 		return iHostility;
 	}
 
-	int iKarma = Stat_GetAdjusted(STAT_KARMA);
+	if ( m_pNPC->m_Brain == NPCBRAIN_BERSERK )		// Beserks always hate everyone
+		return 100;
+	if ( pCharTarg->m_pPlayer )
+		return 100;
 
-	bool fDoMemBase = false;
-
-	if ( Noto_IsEvil() &&	// i am evil.
-		(m_pArea && !m_pArea->IsGuarded()) &&	// we are not in an evil town.
-		pCharTarg->m_pPlayer )	// my target is a player.
+	if ( pCharTarg->m_pNPC )
 	{
-		// If i'm evil i give no benefit to players with bad karma.
-		// I hate all players.
-		// Unless i'm in a guarded area. then they are cool.
-		iHostility = 51;
-	}
-	else if ( m_pNPC->m_Brain == NPCBRAIN_BERSERK )	// i'm beserk.
-	{
-		// beserks just hate everyone all the time.
-		iHostility = 100;
-	}
-	else if ( pCharTarg->m_pNPC &&	// my target is an NPC
-		pCharTarg->m_pNPC->m_Brain != NPCBRAIN_BERSERK &&	// ok to hate beserks.
-		! g_Cfg.m_fMonsterFight )		// monsters are not supposed to fight other monsters !
-	{
-		iHostility = -50;
-		fDoMemBase = true;	// set this low in case we are defending ourselves. but not attack for hunger.
-	}
-	else
-	{
-		// base hostillity on karma diff.
+		if ( !g_Cfg.m_fMonsterFight )	// Monsters are not supposed to fight other monsters!
+			return 0;
+		if ( GetDispID() == pCharTarg->GetDispID() )	// I will never attack those of my own kind
+			return -100;
+		else if ( NPC_GetAllyGroupType(GetDispID()) == NPC_GetAllyGroupType(pCharTarg->GetDispID()) )
+			return -50;
+		else if ( m_pNPC->m_Brain == pCharTarg->m_pNPC->m_Brain )
+			return -30;
 
-		int iKarmaTarg = pCharTarg->Stat_GetAdjusted(STAT_KARMA);
-
-		if ( Noto_IsEvil())
-		{
-			// I'm evil.
-			if ( iKarmaTarg > 0 )
-			{
-				iHostility += ( iKarmaTarg ) / 1024;
-			}
-		}
-		else if ( iKarma > 300 )
-		{
-			// I'm good and my target is evil.
-			if ( iKarmaTarg < -100 )
-			{
-				iHostility += ( -iKarmaTarg ) / 1024;
-			}
-		}
+		return 100;
 	}
-
-	// Based on just creature type.
-
-	if ( ! fDoMemBase )
-	{
-		if ( pCharTarg->m_pNPC )
-		{
-			// Human NPC's will attack humans .
-
-			if ( GetDispID() == pCharTarg->GetDispID())
-			{
-				// I will never attack those of my own kind...even if starving
-				iHostility -= 100;
-			}
-			else if ( NPC_GetAllyGroupType( GetDispID()) == NPC_GetAllyGroupType(pCharTarg->GetDispID()))
-			{
-				iHostility -= 50;
-			}
-			else if ( pCharTarg->m_pNPC->m_Brain == m_pNPC->m_Brain )	// My basic kind
-			{
-				// Won't attack other monsters. (unless very hungry)
-				iHostility -= 30;
-			}
-		}
-		else
-		{
-			// Not immediately hostile if looks the same as me.
-			if ( ! IsPlayableCharacter() && NPC_GetAllyGroupType( GetDispID()) == NPC_GetAllyGroupType(pCharTarg->GetDispID()))
-			{
-				iHostility -= 51;
-			}
-		}
-	}
-
-	// I have been attacked/angered by this creature before ?
-	CItemMemory * pMemory = Memory_FindObjTypes( pCharTarg, MEMORY_FIGHT|MEMORY_HARMEDBY|MEMORY_IRRITATEDBY|MEMORY_SAWCRIME|MEMORY_AGGREIVED );
-	if ( pMemory )
-	{
-		iHostility += 50;
-	}
-	return( iHostility );
+	
+	return 0;
 }
 
 int CChar::NPC_GetAttackContinueMotivation( CChar * pChar, int iMotivation ) const
@@ -587,26 +508,25 @@ int CChar::NPC_GetAttackContinueMotivation( CChar * pChar, int iMotivation ) con
 	// 100 = he's a push over.
 	if ( !m_pNPC )
 		return 0;
-
 	if ( !pChar->Fight_IsAttackable() )
-		return( -100 );
+		return 0;
 	if ( m_pNPC->m_Brain == NPCBRAIN_GUARD )
-		return( 100 );
+		return 100;
 	if ( m_pNPC->m_Brain == NPCBRAIN_BERSERK )
-		return( iMotivation + 80 - GetDist( pChar ));	// less interested the further away they are
+		return iMotivation + 80 - GetDist(pChar);	// less interested the further away they are
 
 	// Try to stay on one target.
-	if ( Fight_IsActive() && m_Act_Targ == pChar->GetUID())
+	if ( Fight_IsActive() && (m_Act_Targ == pChar->GetUID()) )
 		iMotivation += 8;
 
 	// Less interested the further away they are.
-	iMotivation -= GetDist( pChar );
+	iMotivation -= GetDist(pChar);
 
 	if ( !g_Cfg.m_fMonsterFear )
-		return( iMotivation );
+		return iMotivation;
 
 	// I'm just plain stronger.
-	iMotivation += ( Stat_GetAdjusted(STAT_STR) - pChar->Stat_GetAdjusted(STAT_STR));
+	iMotivation += Stat_GetAdjusted(STAT_STR) - pChar->Stat_GetAdjusted(STAT_STR);
 
 	// I'm healthy.
 	int iTmp = GetHealthPercent() - pChar->GetHealthPercent();
@@ -618,7 +538,7 @@ int CChar::NPC_GetAttackContinueMotivation( CChar * pChar, int iMotivation ) con
 	// I'm smart and therefore more cowardly. (if injured)
 	iMotivation -= Stat_GetAdjusted(STAT_INT) / 16;
 
-	return( iMotivation );
+	return iMotivation;
 }
 
 int CChar::NPC_GetAttackMotivation( CChar * pChar, int iMotivation ) const
@@ -634,8 +554,6 @@ int CChar::NPC_GetAttackMotivation( CChar * pChar, int iMotivation ) const
 	//   100 = he's a push over.
 
 	if ( !m_pNPC || !pChar || !pChar->m_pArea )
-		return 0;
-	if ( IsStatFlag(STATF_DEAD) || pChar->IsStatFlag(STATF_DEAD) )
 		return 0;
 	if ( pChar->m_pArea->IsFlag(REGION_FLAG_SAFE) )
 		return 0;

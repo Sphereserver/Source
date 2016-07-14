@@ -2413,11 +2413,6 @@ public:
 	bool r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & s );
 	bool r_LoadVal( CChar * pChar, CScript & s );
 
-	bool IsVendor() const
-	{
-		return( m_Brain == NPCBRAIN_HEALER || m_Brain == NPCBRAIN_BANKER || m_Brain == NPCBRAIN_VENDOR || m_Brain == NPCBRAIN_STABLE );
-	}
-
 	int GetNpcAiFlags( const CChar *pChar ) const;
 public:
 	CCharNPC( CChar * pChar, NPCBRAIN_TYPE NPCBrain );
@@ -4097,8 +4092,14 @@ public:
 
 	bool NPC_IsVendor() const
 	{
-		return (m_pNPC && m_pNPC->IsVendor());
+		return (m_pNPC && (m_pNPC->m_Brain == NPCBRAIN_HEALER || m_pNPC->m_Brain == NPCBRAIN_BANKER || m_pNPC->m_Brain == NPCBRAIN_VENDOR || m_pNPC->m_Brain == NPCBRAIN_STABLE));
 	}
+
+	bool NPC_IsMonster() const
+	{
+		return (m_pNPC && (m_pNPC->m_Brain == NPCBRAIN_MONSTER || m_pNPC->m_Brain == NPCBRAIN_BERSERK || m_pNPC->m_Brain == NPCBRAIN_DRAGON));
+	}
+
 	int NPC_GetAiFlags()
 	{
 		if( !m_pNPC )

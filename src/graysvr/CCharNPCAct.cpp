@@ -975,23 +975,23 @@ bool CChar::NPC_LookAtCharGuard( CChar * pChar, bool bFromTrigger )
 	if ( !pChar || pChar->IsStatFlag(STATF_INVUL|STATF_DEAD) || pChar->IsPriv(PRIV_JAILED) || !bFromTrigger )	//|| !pChar->Noto_IsCriminal()
 		return false;
 
-	static UINT const sm_szSpeakGuardJeer[] =
-	{
-		DEFMSG_NPC_GUARD_THREAT_1,
-		DEFMSG_NPC_GUARD_THREAT_2,
-		DEFMSG_NPC_GUARD_THREAT_3,
-		DEFMSG_NPC_GUARD_THREAT_4,
-		DEFMSG_NPC_GUARD_THREAT_5
-	};
-
-	if ( ! pChar->m_pArea->IsGuarded())
+	if ( !pChar->m_pArea->IsGuarded() )
 	{
 		// At least jeer at the criminal.
-		if ( Calc_GetRandVal(10))
-			return( false );
+		if ( Calc_GetRandVal(10) )
+			return false;
+
+		static UINT const sm_szSpeakGuardJeer[] =
+		{
+			DEFMSG_NPC_GUARD_THREAT_1,
+			DEFMSG_NPC_GUARD_THREAT_2,
+			DEFMSG_NPC_GUARD_THREAT_3,
+			DEFMSG_NPC_GUARD_THREAT_4,
+			DEFMSG_NPC_GUARD_THREAT_5
+		};
 
 		TCHAR *pszMsg = Str_GetTemp();
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg(sm_szSpeakGuardJeer[ Calc_GetRandVal( COUNTOF( sm_szSpeakGuardJeer )) ]), pChar->GetName());
+		sprintf(pszMsg, g_Cfg.GetDefaultMsg(sm_szSpeakGuardJeer[Calc_GetRandVal(COUNTOF(sm_szSpeakGuardJeer))]), pChar->GetName());
 		Speak(pszMsg);
 		UpdateDir(pChar);
 		return false;
@@ -1006,23 +1006,20 @@ bool CChar::NPC_LookAtCharGuard( CChar * pChar, bool bFromTrigger )
 		DEFMSG_NPC_GUARD_STRIKE_5
 	};
 
-	if ( GetTopDist3D(pChar) > 1 )
-	{
-		if ( g_Cfg.m_fGuardsInstantKill || pChar->Skill_GetBase(SKILL_MAGERY) )
-			Spell_Teleport(pChar->GetTopPoint(), false, false);
+	if ( (GetTopDist3D(pChar) > 1) && (g_Cfg.m_fGuardsInstantKill || pChar->Skill_GetBase(SKILL_MAGERY)) )
+		Spell_Teleport(pChar->GetTopPoint(), false, false);
 
-		// If we got intant kill guards enabled, allow the guards to swing immidiately
-		if ( g_Cfg.m_fGuardsInstantKill )
-		{
-			pChar->Stat_SetVal(STAT_STR, 1);
-			Fight_Hit(pChar);
-		}
+	if ( g_Cfg.m_fGuardsInstantKill || pChar->IsStatFlag(STATF_Conjured) )		// if intant kill is enabled, allow the guard to swing immediately
+	{
+		Speak(g_Cfg.GetDefaultMsg(sm_szSpeakGuardStrike[Calc_GetRandVal(COUNTOF(sm_szSpeakGuardStrike))]));
+		pChar->Stat_SetVal(STAT_STR, 1);
+		Fight_Hit(pChar);
 	}
-	if ( !IsStatFlag(STATF_War) || m_Act_Targ != pChar->GetUID() )
+	else if ( !IsStatFlag(STATF_War) || m_Act_Targ != pChar->GetUID() )
 	{
 		Speak(g_Cfg.GetDefaultMsg(sm_szSpeakGuardStrike[Calc_GetRandVal(COUNTOF(sm_szSpeakGuardStrike))]));
 		Fight_Attack(pChar);
-		Attacker_SetThreat(Attacker_GetID(pChar),10000);
+		Attacker_SetThreat(Attacker_GetID(pChar), 10000);
 	}
 	return true;
 }
@@ -1033,40 +1030,30 @@ bool CChar::NPC_LookAtCharMonster( CChar * pChar )
 	// return:
 	//   true = take new action.
 	//   false = continue with any previous action.
-	//  motivation level =
-	//  0 = not at all.
-	//  100 = definitly.
-	//
+	// motivation level:
+	//   0 = not at all.
+	//   100 = definitely.
 
 	if ( !m_pNPC )
 		return false;
-	int iFoodLevel = Food_GetLevelPercent();
-
-	// Attacks those not of my kind.
-	if ( ! Noto_IsCriminal() && iFoodLevel > 40 )		// I am not evil ?
-	{
-		return NPC_LookAtCharHuman( pChar );
-	}
+	if ( Fight_IsActive() && m_Act_Targ == pChar->GetUID() )	// same targ.
+		return false;
 
 	// Attack if i am stronger.
 	// or i'm just stupid.
-	int iActMotivation = NPC_GetAttackMotivation( pChar );
+	int iActMotivation = NPC_GetAttackMotivation(pChar);
 	if ( iActMotivation <= 0 )
-		return( false );
-	if ( Fight_IsActive() && m_Act_Targ == pChar->GetUID())	// same targ.
-		return( false );
+		return false;
 	if ( iActMotivation < m_pNPC->m_Act_Motivation )
-		return( false );
+		return false;
 
-	int iDist = GetTopDist3D( pChar );
-	if ( IsStatFlag( STATF_Hidden ) &&
-		! NPC_FightMayCast() &&
-		iDist > 1 )
+	if ( IsStatFlag(STATF_Hidden) && !NPC_FightMayCast() && GetTopDist3D(pChar) > 1 )
 		return false;	// element of suprise.
 
-	if ( Fight_Attack( pChar ) == false )
+	if ( !Fight_Attack(pChar) )
 		return false;
-	m_pNPC->m_Act_Motivation = static_cast<unsigned char>(iActMotivation);
+
+	m_pNPC->m_Act_Motivation = static_cast<BYTE>(iActMotivation);
 	return true;
 }
 
@@ -1076,42 +1063,30 @@ bool CChar::NPC_LookAtCharHuman( CChar * pChar )
 	if ( !m_pNPC || pChar->IsStatFlag(STATF_DEAD) )
 		return false;
 
-	if ( Noto_IsEvil())		// I am evil.
-	{
-		// Attack others if we are evil.
-		return( NPC_LookAtCharMonster( pChar ));
-	}
-
-	if (( ! pChar->Noto_IsEvil() &&  g_Cfg.m_fGuardsOnMurderers) && (! pChar->IsStatFlag( STATF_Criminal ))) 	// not interesting.
-		return( false );
+	bool bCriminal = (pChar->IsStatFlag(STATF_Criminal) || (pChar->Noto_IsEvil() && g_Cfg.m_fGuardsOnMurderers) || pChar->NPC_IsMonster());
+	if ( !bCriminal )
+		return false;
 
 	// Yell for guard if we see someone evil.
-	if ( NPC_CanSpeak() && m_pArea->IsGuarded() && !IsStatFlag(STATF_DEAD) && ! Calc_GetRandVal( 3 ))
+	if ( NPC_CanSpeak() && m_pArea->IsGuarded() && !Calc_GetRandVal(3) )
 	{
-		if ( m_pNPC->m_Brain == NPCBRAIN_GUARD )
-			return( NPC_LookAtCharGuard( pChar ));
-
-		Speak( pChar->IsStatFlag( STATF_Criminal) ?
-			 g_Cfg.GetDefaultMsg( DEFMSG_NPC_GENERIC_SEECRIM ) :
-			g_Cfg.GetDefaultMsg( DEFMSG_NPC_GENERIC_SEEMONS ) );
+		Speak(pChar->IsStatFlag(STATF_Criminal) ? g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_SEECRIM) : g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_SEEMONS));
 
 		// Find a guard.
-		CallGuards( pChar );
-		if ( IsStatFlag( STATF_War ))
-			return( false );
+		CallGuards(pChar);
+		if ( IsStatFlag(STATF_War) )
+			return false;
 
 		// run away like a coward.
 		m_Act_Targ = pChar->GetUID();
 		m_atFlee.m_iStepsMax = 20;	// how long should it take to get there.
 		m_atFlee.m_iStepsCurrent = 0;	// how long has it taken ?
-		Skill_Start( NPCACT_FLEE );
+		Skill_Start(NPCACT_FLEE);
 		m_pNPC->m_Act_Motivation = 80;
 		return true;
 	}
 
-	// Attack an evil creature ?
-
-	return( false );
+	return false;
 }
 
 bool CChar::NPC_LookAtCharHealer( CChar * pChar )
@@ -1120,97 +1095,88 @@ bool CChar::NPC_LookAtCharHealer( CChar * pChar )
 	if ( !pChar->IsStatFlag(STATF_DEAD) || (pChar->m_pNPC && pChar->m_pNPC->m_bonded) )
 		return false;
 
-	static LPCTSTR const sm_szHealerRefuseEvils[] =
-	{
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_EVIL_1 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_EVIL_2 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_EVIL_3 )
-	};
-	static LPCTSTR const sm_szHealerRefuseCriminals[] =
-	{
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_CRIM_1 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_CRIM_2 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_CRIM_3 )
-	};
-	static LPCTSTR const sm_szHealerRefuseGoods[] =
-	{
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_GOOD_1 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_GOOD_2 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_REF_GOOD_3 )
-	};
-	static LPCTSTR const sm_szHealer[] =
-	{
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_RES_1 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_RES_2 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_RES_3 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_RES_4 ),
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_RES_5 )
-	};
+	int iDist = GetDist(pChar);
+	UpdateDir(pChar);
 
-	UpdateDir( pChar );
-
-	LPCTSTR pszRefuseMsg;
-
-	int iDist = GetDist( pChar );
-	if ( pChar->IsStatFlag( STATF_Insubstantial ))
+	if ( pChar->IsStatFlag(STATF_Insubstantial) )
 	{
-		pszRefuseMsg = g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_MANIFEST );
 		if ( Calc_GetRandVal(5) || iDist > 3 )
 			return false;
-		Speak( pszRefuseMsg );
+		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_MANIFEST));
 		return true;
 	}
 
 	if ( iDist > 3 )
 	{
-		if ( Calc_GetRandVal(5))
+		if ( Calc_GetRandVal(5) )
 			return false;
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_RANGE ) );
-		return( true );
+		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_RANGE));
+		return true;
 	}
 
 	// What noto is this char to me ?
-	bool ImEvil = Noto_IsEvil();
-	bool ImNeutral = Noto_IsNeutral();
+	NOTO_TYPE Noto = Noto_GetFlag(this);
 	NOTO_TYPE NotoThem = pChar->Noto_GetFlag(this);
 
-	if ( !IsStatFlag( STATF_Criminal ) && NotoThem == NOTO_CRIMINAL )
+	if ( !IsStatFlag(STATF_Criminal) && NotoThem == NOTO_CRIMINAL )
 	{
-		pszRefuseMsg = sm_szHealerRefuseCriminals[ Calc_GetRandVal( COUNTOF( sm_szHealerRefuseCriminals )) ];
+		static LPCTSTR const sm_szHealerRefuseCriminals[] =
+		{
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_REF_CRIM_1),
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_REF_CRIM_2),
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_REF_CRIM_3)
+		};
+
 		if ( Calc_GetRandVal(5) || iDist > 3 )
 			return false;
-		Speak( pszRefuseMsg );
+		Speak(sm_szHealerRefuseCriminals[Calc_GetRandVal(COUNTOF(sm_szHealerRefuseCriminals))]);
 		return true;
 	}
 
-	if (( !ImNeutral && !ImEvil) && NotoThem >= NOTO_NEUTRAL )
+	if ( (Noto == NOTO_GOOD) && (NotoThem == NOTO_CRIMINAL || NotoThem == NOTO_EVIL) )
 	{
-		pszRefuseMsg = sm_szHealerRefuseEvils[ Calc_GetRandVal( COUNTOF( sm_szHealerRefuseEvils )) ];
+		static LPCTSTR const sm_szHealerRefuseEvils[] =
+		{
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_REF_EVIL_1),
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_REF_EVIL_2),
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_REF_EVIL_3)
+		};
+
 		if ( Calc_GetRandVal(5) || iDist > 3 )
 			return false;
-		Speak( pszRefuseMsg );
+		Speak(sm_szHealerRefuseEvils[Calc_GetRandVal(COUNTOF(sm_szHealerRefuseEvils))]);
 		return true;
 	}
 
-	if (( ImNeutral || ImEvil ) && NotoThem == NOTO_GOOD )
+	if ( (NotoThem == NOTO_GOOD) && (Noto == NOTO_CRIMINAL || Noto == NOTO_EVIL) )
 	{
-		pszRefuseMsg = sm_szHealerRefuseGoods[ Calc_GetRandVal( COUNTOF( sm_szHealerRefuseGoods )) ];
+		static LPCTSTR const sm_szHealerRefuseGoods[] =
+		{
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_REF_GOOD_1),
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_REF_GOOD_2),
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_REF_GOOD_3)
+		};
+
 		if ( Calc_GetRandVal(5) || iDist > 3 )
 			return false;
-		Speak( pszRefuseMsg );
+		Speak(sm_szHealerRefuseGoods[Calc_GetRandVal(COUNTOF(sm_szHealerRefuseGoods))]);
 		return true;
 	}
 
-	// Attempt to res.
-	Speak( sm_szHealer[ Calc_GetRandVal( COUNTOF( sm_szHealer )) ] );
-	UpdateAnimate( ANIM_CAST_AREA );
-	if ( ! pChar->OnSpellEffect( SPELL_Resurrection, this, 1000, NULL ))
+	// Attempt to resurrect
+	static LPCTSTR const sm_szHealer[] =
 	{
-		if ( Calc_GetRandVal(2))
-			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_FAIL_1 ) );
-		else
-			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_HEALER_FAIL_2 ) );
-	}
+		g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_RES_1),
+		g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_RES_2),
+		g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_RES_3),
+		g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_RES_4),
+		g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_RES_5)
+	};
+
+	Speak(sm_szHealer[Calc_GetRandVal(COUNTOF(sm_szHealer))]);
+	UpdateAnimate(ANIM_CAST_AREA);
+	if ( !pChar->OnSpellEffect(SPELL_Resurrection, this, 1000, NULL) )
+		Speak(g_Cfg.GetDefaultMsg(Calc_GetRandVal(2) ? DEFMSG_NPC_HEALER_FAIL_1 : DEFMSG_NPC_HEALER_FAIL_2));
 
 	return true;
 }
@@ -1346,28 +1312,9 @@ bool CChar::NPC_LookAtChar( CChar * pChar, int iDist )
 			break;
 
 		case NPCBRAIN_MONSTER:
-		case NPCBRAIN_DRAGON:
-			if ( NPC_LookAtCharMonster( pChar ))
-				return( true );
-			break;
-
 		case NPCBRAIN_BERSERK:
-			// Blades or EV.
-			// ??? Attack everyone you touch !
-			if ( iDist <= CalcFightRange( m_uidWeapon.ItemFind() ) )
-			{
-				Fight_Hit( pChar );
-			}
-			if ( Fight_IsActive()) // Is this a better target than my last ?
-			{
-				CChar * pCharTarg = m_Act_Targ.CharFind();
-				if ( pCharTarg != NULL )
-				{
-					if ( iDist >= GetTopDist3D( pCharTarg ))
-						break;
-				}
-			}
-			if ( Fight_Attack( pChar ) )
+		case NPCBRAIN_DRAGON:
+			if ( NPC_LookAtCharMonster(pChar) )
 				return true;
 			break;
 
