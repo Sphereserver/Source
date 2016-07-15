@@ -124,18 +124,16 @@ void CItemSpawn::GenerateItem(CResourceDef *pDef)
 	ADDTOCALLSTACK("CitemSpawn:GenerateItem");
 
 	RESOURCE_ID_BASE rid = pDef->GetResourceID();
-	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
-
 	CItemContainer *pCont = dynamic_cast<CItemContainer *>(GetParent());
-	BYTE iCount = pCont ? static_cast<unsigned char>(pCont->ContentCount(rid)) : GetCount();
+	BYTE iCount = pCont ? static_cast<BYTE>(pCont->ContentCount(rid)) : GetCount();
 	if ( iCount >= GetAmount() )
 		return;
 
-	CItem *pItem = CreateTemplate(id);
-	if ( pItem == NULL )
+	CItem *pItem = CreateTemplate(static_cast<ITEMID_TYPE>(rid.GetResIndex()));
+	if ( !pItem )
 		return;
 
-	WORD iAmountPile = static_cast<WORD>(minimum(USHRT_MAX,m_itSpawnItem.m_pile));
+	WORD iAmountPile = static_cast<WORD>(minimum(USHRT_MAX, m_itSpawnItem.m_pile));
 	if ( iAmountPile > 1 )
 	{
 		CItemBase *pItemDef = pItem->Item_GetDef();
@@ -144,7 +142,7 @@ void CItemSpawn::GenerateItem(CResourceDef *pDef)
 			pItem->SetAmount(Calc_GetRandVal(iAmountPile) + 1);
 	}
 
-	pItem->SetAttr(m_Attr & (ATTR_OWNED | ATTR_MOVE_ALWAYS));
+	pItem->SetAttr(m_Attr & (ATTR_OWNED|ATTR_MOVE_ALWAYS));
 	pItem->SetDecayTime(g_Cfg.m_iDecay_Item);	// it will decay eventually to be replaced later
 	pItem->MoveNearObj(this, m_itSpawnItem.m_DistMax);
 	AddObj(pItem->GetUID());
@@ -153,8 +151,6 @@ void CItemSpawn::GenerateItem(CResourceDef *pDef)
 void CItemSpawn::GenerateChar(CResourceDef *pDef)
 {
 	ADDTOCALLSTACK("CitemSpawn:GenerateChar");
-	if ( !IsTopLevel() )
-		return;
 
 	RESOURCE_ID_BASE rid = pDef->GetResourceID();
 	if ( rid.GetResType() == RES_SPAWN )
@@ -169,33 +165,28 @@ void CItemSpawn::GenerateChar(CResourceDef *pDef)
 	if ( (rid.GetResType() != RES_CHARDEF) && (rid.GetResType() != RES_UNKNOWN) )
 		return;
 
+	CPointMap pt = GetTopPoint();
+	CRegionBase *pRegion = pt.GetRegion(REGION_TYPE_AREA);
+	if ( !pRegion )
+		return;
+
 	CChar *pChar = CChar::CreateBasic(static_cast<CREID_TYPE>(rid.GetResIndex()));
 	if ( !pChar )
 		return;
 
-	CPointMap pt = GetTopPoint();
-	int iDistMax = m_itSpawnChar.m_DistMax;
 	pChar->NPC_LoadScript(true);
 	pChar->StatFlag_Set(STATF_Spawned);
 
-	// Try placing this char near the spawn
-	if ( !pChar->MoveNearObj(this, iDistMax ? Calc_GetRandVal(iDistMax) : 1) )
+	// Try placing the char near the spawn
+	if ( !pChar->MoveNearObj(this, m_itSpawnChar.m_DistMax) || !pChar->CanSeeLOS(pt) )
 	{
-		// If this fails, try placing the char ON the spawn
+		// If this fails, try placing the char over the spawn
 		if ( !pChar->MoveTo(pt) )
 		{
-			DEBUG_ERR(("Spawn UID:0%lx is unable to place a character inside the world, deleted the character", static_cast<DWORD>(GetUID())));
+			DEBUG_ERR(("Spawn UID:0%lx is unable to place a character inside the world.\n", static_cast<DWORD>(GetUID())));
 			pChar->Delete();
 			return;
 		}
-	}
-
-	// Check if the NPC can spawn in this region
-	CRegionBase *pRegion = pt.GetRegion(REGION_TYPE_AREA);
-	if ( !pRegion || (pRegion->IsGuarded() && pChar->Noto_IsEvil()) )
-	{
-		pChar->Delete();
-		return;
 	}
 
 	AddObj(pChar->GetUID());
@@ -314,6 +305,8 @@ void CItemSpawn::OnTick(bool fExec)
 		SetTimeout(iMinutes * 60 * TICK_PER_SEC);	// set time to check again.
 
 	if ( !fExec || m_currentSpawned >= GetAmount() )
+		return;
+	if ( !IsTopLevel() )
 		return;
 
 	CResourceDef *pDef = FixDef();

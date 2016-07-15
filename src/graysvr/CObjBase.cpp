@@ -491,7 +491,8 @@ bool CObjBase::MoveNear( CPointMap pt, WORD iSteps )
 			if ( !pChar->CanMoveWalkTo(pt, false) )
 				continue;
 		}
-		Update();
+		if ( IsItem() )
+			Update();
 		return true;
 	}
 	return false;
