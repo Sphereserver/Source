@@ -141,7 +141,7 @@ bool CNTWindow::CAboutDlg::OnInitDialog()
 {
 	char *z = Str_GetTemp();
 	sprintf(z, "%s %s", GRAY_TITLE, GRAY_VERSION);
-	#ifdef __GITREVISION__
+	#if defined(__GITREVISION__) && defined(__GITHASH__)
 	 sprintf(z, "%s (build %d / GIT hash %s)", z, __GITREVISION__, __GITHASH__);
 	#endif
 	SetDlgItemText(IDC_ABOUT_VERSION, z);

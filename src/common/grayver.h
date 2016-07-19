@@ -1,10 +1,8 @@
-#ifdef _SUBVERSION
- #include "./version/GitRevision.h"
-#endif
-#ifdef __GITREVISION__
- #define GRAY_VER_BUILD			__GITREVISION__
+#include "./version/GitRevision.h"
+#if defined(__GITREVISION__)
+ #define GRAY_VER_BUILD				__GITREVISION__
 #else
- #define GRAY_VER_BUILD			0
+ #define GRAY_VER_BUILD				0
 #endif
 
 #define GRAY_VER_FILEVERSION		0,56,4,GRAY_VER_BUILD		// version to be set on generated .exe file

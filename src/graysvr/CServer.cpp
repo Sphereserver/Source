@@ -1,12 +1,10 @@
 #include "graysvr.h"	// predef header.
 
 #include "../common/grayver.h"	// sphere version
+#include "../common/version/GitRevision.h"
 #include "../common/CAssoc.h"
 #include "../common/CFileList.h"
 #include "../network/network.h"
-#ifdef _SUBVERSION
- #include "../common/version/GitRevision.h"
-#endif
 
 #ifdef _WIN32
 	#include "ntservice.h"	// g_Service
@@ -1914,7 +1912,7 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 	EXC_SET("log write");
 	g_Log.WriteString("\n");
 
-#ifdef __GITREVISION__
+#if defined(__GITREVISION__) && defined(__GITHASH__)
 	g_Log.Event(LOGM_INIT, "%s, compiled at %s (%s) [build %d / GIT hash %s]\n", g_szServerDescription, __DATE__, __TIME__, __GITREVISION__, __GITHASH__);
 #else
 	g_Log.Event(LOGM_INIT, "%s, compiled at %s (%s)\n", g_szServerDescription, __DATE__, __TIME__);

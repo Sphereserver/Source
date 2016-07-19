@@ -2,9 +2,6 @@
 #include "../common/grayver.h"
 #include "../common/CFileList.h"
 #include "../network/network.h"
-#ifdef _SUBVERSION
- #include "../common/version/GitRevision.h"
-#endif
 
 CResource::CResource()
 {
@@ -1512,8 +1509,8 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			sVal.FormatVal( m_iBankWMax / WEIGHT_UNITS );
 			break;
 		case RC_BUILD:
-			#ifdef __GITREVISION__
-			 sVal.FormatVal(__GITREVISION__);
+			#ifdef GRAY_VER_BUILD
+			 sVal.FormatVal(GRAY_VER_BUILD);
 			#else
 			 sVal = __DATE__;
 			#endif

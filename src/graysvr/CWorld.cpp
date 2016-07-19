@@ -1882,7 +1882,7 @@ void CWorld::r_Write( CScript & s )
 	// Write out the safe header.
 	s.WriteKey("TITLE", GRAY_TITLE " World Script");
 	s.WriteKey("VERSION", GRAY_VERSION);
-	s.WriteKeyVal("PREVBUILD", __GITREVISION__);
+	s.WriteKeyVal("PREVBUILD", GRAY_VER_BUILD);
 	s.WriteKeyVal( "TIME", GetCurrentTime().GetTimeRaw() );
 	s.WriteKeyVal( "SAVECOUNT", m_iSaveCountID );
 	s.Flush();	// Force this out to the file now.
