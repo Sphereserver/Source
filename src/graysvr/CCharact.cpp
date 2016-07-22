@@ -1594,17 +1594,20 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 		return -1;
 	}
 
-	const CItemCorpse * pCorpse = dynamic_cast<const CItemCorpse *>(pObjTop);
-	if ( pCorpse && pCorpse->m_uidLink == GetUID() )
+	const CItemCorpse *pCorpse = dynamic_cast<const CItemCorpse *>(pObjTop);
+	if ( pCorpse )
 	{
-		if ( g_Cfg.m_iRevealFlags & REVEALF_LOOTINGSELF )
-			Reveal();
-	}
-	else 
-	{
-		CheckCorpseCrime(pCorpse, true, false);
-		if ( g_Cfg.m_iRevealFlags & REVEALF_LOOTINGOTHERS )
-			Reveal();
+		if ( pCorpse->m_uidLink == GetUID() )
+		{
+			if ( g_Cfg.m_iRevealFlags & REVEALF_LOOTINGSELF )
+				Reveal();
+		}
+		else
+		{
+			CheckCorpseCrime(pCorpse, true, false);
+			if ( g_Cfg.m_iRevealFlags & REVEALF_LOOTINGOTHERS )
+				Reveal();
+		}
 	}
 
 	int iAmountMax = pItem->GetAmount();
@@ -1656,9 +1659,11 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 	if ( trigger == ITRIG_PICKUP_GROUND )
 	{
 		//	bug with taking static/movenever items -or- catching the spell effects
-		if ( IsPriv(PRIV_ALLMOVE|PRIV_GM) ) ;
-		else if ( pItem->IsAttr(ATTR_STATIC|ATTR_MOVE_NEVER) || pItem->IsType(IT_SPELL) )
-			return -1;
+		if ( !IsPriv(PRIV_ALLMOVE|PRIV_GM) )
+		{
+			if ( pItem->IsAttr(ATTR_STATIC|ATTR_MOVE_NEVER) || pItem->IsType(IT_SPELL) )
+				return -1;
+		}
 	}
 
 	if ( trigger != ITRIG_UNEQUIP )	// unequip is done later.

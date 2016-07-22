@@ -473,10 +473,10 @@ bool CObjBase::MoveNear( CPointMap pt, WORD iSteps )
 	// Move to nearby this other object.
 	// Actually move it within +/- iSteps
 
-	CChar *pChar = IsChar() ? static_cast<CChar *>(this) : NULL;
+	CChar *pChar = dynamic_cast<CChar *>(this);
 	CPointMap ptOld = pt;
 
-	for ( WORD i = 0; i < iSteps; i++ )
+	for ( WORD i = 0; i < 20; i++ )
 	{
 		pt = ptOld;
 		pt.m_x += static_cast<signed short>(Calc_GetRandVal2(-iSteps, iSteps));

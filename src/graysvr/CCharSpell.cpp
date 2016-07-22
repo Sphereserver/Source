@@ -2678,16 +2678,10 @@ bool CChar::Spell_CastDone()
 			{
 				// Display spell.
 				if (pObj)
-				{
-					if (!pObj->OnSpellEffect(spell, this, iSkillLevel, static_cast<CItem *>(pObjSrc)))
-						return false;
-				}
+					pObj->OnSpellEffect(spell, this, iSkillLevel, dynamic_cast<CItem *>(pObjSrc));
 				else
 				{
-					if (!iT1)
-						iT1 = ITEMID_FX_FLAMESTRIKE;
-
-					CItem *pItem = CItem::CreateBase(iT1);
+					CItem *pItem = CItem::CreateBase(iT1 ? iT1 : ITEMID_FX_FLAMESTRIKE);
 					ASSERT(pItem);
 					pItem->SetType(IT_SPELL);
 					pItem->m_itSpell.m_spell = SPELL_Flame_Strike;
@@ -2697,8 +2691,8 @@ bool CChar::Spell_CastDone()
 			}
 
 			case SPELL_Gate_Travel:
-				if (!Spell_Recall(dynamic_cast <CItem*> (pObj), true))
-					return(false);
+				if (!Spell_Recall(dynamic_cast<CItem *>(pObj), true))
+					return false;
 				break;
 
 			case SPELL_Polymorph:
@@ -2712,8 +2706,7 @@ bool CChar::Spell_CastDone()
 				// This has a menu select for client.
 				if (!pObj || ((pObj != this) && (GetPrivLevel() < PLEVEL_Seer)))
 					return false;
-				if (!pObj->OnSpellEffect(spell, this, iSkillLevel, static_cast<CItem *>(pObjSrc)))
-					return false;
+				pObj->OnSpellEffect(spell, this, iSkillLevel, dynamic_cast<CItem *>(pObjSrc));
 				break;
 			}
 
@@ -2798,8 +2791,9 @@ bool CChar::Spell_CastDone()
 
 			default:
 			{
-				if (!pObj || !pObj->OnSpellEffect(spell, this, iSkillLevel, static_cast<CItem *>(pObjSrc)))
+				if (!pObj)
 					return false;
+				pObj->OnSpellEffect(spell, this, iSkillLevel, dynamic_cast<CItem *>(pObjSrc));
 				break;
 			}
 		}

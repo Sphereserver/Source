@@ -126,3 +126,9 @@ Fixed: Spawns (worldgem bit) not updating DISPID when set SPAWNDEF on MORE1.
 14-07-2016, Coruja
 Changed: Improved some NPCs interactions with players.
 Fixed: Spawns (worldgem bit) creating chars on stuck locations.
+
+22-07-2016, Coruja
+Fixed: Security issue setting account login as chat name when newest clients try to setup the chat window for the first time and the char name is not available.
+Fixed: Invisible chars being incorrectly revealed by REVEALF_LOOTINGOTHERS reveal flag when picking items from the ground.
+Fixed: Return 0/1 on spell triggers not working correctly.
+Fixed: Function MOVENEAR not working correctly.
