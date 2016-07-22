@@ -43,7 +43,7 @@ BEGIN
 			VALUE "FileDescription",	"SphereServer " GRAY_VER_STR
 			VALUE "FileVersion",		GRAY_VERSION
 			VALUE "InternalName",		"SphereSvr"
-			VALUE "LegalCopyright",		"Copyright 1998-2015 by Menasoft"
+			VALUE "LegalCopyright",		"Copyright 1998-2016 by Menasoft"
 			VALUE "OriginalFilename",	"SphereSvr.exe"
 			VALUE "ProductName",		"SphereServer"
 			VALUE "ProductVersion",		GRAY_VERSION
@@ -99,7 +99,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Sphere Status"
 FONT 8, "Courier", 0, 0, 0x0
 BEGIN
-	LTEXT		"Statistics:",	0, 5, 2, 50, 8
+	LTEXT		"Statistics:", 0, 5, 2, 50, 8
 	LISTBOX		IDC_STAT_STATS, 5, 12, 370, 90, LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
 	LTEXT		"Clients:", 2, 5, 105, 50, 8
 	LISTBOX		IDC_STAT_CLIENTS, 5, 115, 370, 180, LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP

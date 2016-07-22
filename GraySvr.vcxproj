@@ -62,10 +62,13 @@
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
     </ProjectReference>
     <PreBuildEvent>
-      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; src/common/version/GitRevision.h
-for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
-set /a gitver = %gitver%-2406
-echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h</Command>
+      <Command>for /f %%r in ('git rev-list --count HEAD') do set /a GitRev=%%r-2406
+for /f %%h in ('git rev-parse --short HEAD') do set GitHash=%%h
+if defined GitRev (
+	echo Current build revision: %GitRev% ^(GIT hash: %GitHash%^)
+	echo #define __GITREVISION__ %GitRev% &gt; src/common/version/GitRevision.h
+	echo #define __GITHASH__ "%GitHash%" &gt;&gt; src/common/version/GitRevision.h
+)</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
@@ -87,10 +90,13 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
       <SubSystem>Windows</SubSystem>
     </Link>
     <PreBuildEvent>
-      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; src/common/version/GitRevision.h
-for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
-set /a gitver = %gitver%-2406
-echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h</Command>
+      <Command>for /f %%r in ('git rev-list --count HEAD') do set /a GitRev=%%r-2406
+for /f %%h in ('git rev-parse --short HEAD') do set GitHash=%%h
+if defined GitRev (
+	echo Current build revision: %GitRev% ^(GIT hash: %GitHash%^)
+	echo #define __GITREVISION__ %GitRev% &gt; src/common/version/GitRevision.h
+	echo #define __GITHASH__ "%GitHash%" &gt;&gt; src/common/version/GitRevision.h
+)</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
@@ -112,10 +118,13 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
       <SubSystem>Windows</SubSystem>
     </Link>
     <PreBuildEvent>
-      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; src/common/version/GitRevision.h
-for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
-set /a gitver = %gitver%-2406
-echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h</Command>
+      <Command>for /f %%r in ('git rev-list --count HEAD') do set /a GitRev=%%r-2406
+for /f %%h in ('git rev-parse --short HEAD') do set GitHash=%%h
+if defined GitRev (
+	echo Current build revision: %GitRev% ^(GIT hash: %GitHash%^)
+	echo #define __GITREVISION__ %GitRev% &gt; src/common/version/GitRevision.h
+	echo #define __GITHASH__ "%GitHash%" &gt;&gt; src/common/version/GitRevision.h
+)</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
@@ -137,10 +146,13 @@ echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h<
       <SubSystem>Windows</SubSystem>
     </Link>
     <PreBuildEvent>
-      <Command>git log -1 HEAD --format="#define __GITHASH__ \"%%h\"" &gt; src/common/version/GitRevision.h
-for /f %%i in ('git rev-list --count HEAD') do set gitver=%%i
-set /a gitver = %gitver%-2406
-echo #define __GITREVISION__ %gitver% &gt;&gt; src/common/version/GitRevision.h</Command>
+      <Command>for /f %%r in ('git rev-list --count HEAD') do set /a GitRev=%%r-2406
+for /f %%h in ('git rev-parse --short HEAD') do set GitHash=%%h
+if defined GitRev (
+	echo Current build revision: %GitRev% ^(GIT hash: %GitHash%^)
+	echo #define __GITREVISION__ %GitRev% &gt; src/common/version/GitRevision.h
+	echo #define __GITHASH__ "%GitHash%" &gt;&gt; src/common/version/GitRevision.h
+)</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
