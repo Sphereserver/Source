@@ -285,7 +285,6 @@ void CClient::Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, un
 		CChar *pChar = dynamic_cast<CChar *>(pObjOn->GetTopLevelObj());
 		if ( pObjOn->IsChar() )
 		{
-			SysMessage("no char");
 			// Dropped directly over an char
 			if ( pChar != m_pChar )
 			{
@@ -302,7 +301,6 @@ void CClient::Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, un
 
 		if ( pChar && pContOn )
 		{
-			SysMessage("dentro do char");
 			// Dropped on container inside an char
 			if ( !pChar->NPC_IsOwnedBy(m_pChar) )
 			{

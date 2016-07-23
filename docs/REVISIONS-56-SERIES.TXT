@@ -132,3 +132,6 @@ Fixed: Security issue setting account login as chat name when newest clients try
 Fixed: Invisible chars being incorrectly revealed by REVEALF_LOOTINGOTHERS reveal flag when picking items from the ground.
 Fixed: Return 0/1 on spell triggers not working correctly.
 Fixed: Function MOVENEAR not working correctly.
+
+23-07-2016, Coruja
+Fixed: Corpses being created without MORE2 set (last attacker UID) when the char die.

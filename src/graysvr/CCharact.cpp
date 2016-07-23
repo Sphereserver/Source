@@ -2822,7 +2822,6 @@ bool CChar::Death()
 	SetPoisonCure(0, true);
 	Skill_Cleanup();
 	Spell_Dispel(100);			// get rid of all spell effects (moved here to prevent double @Destroy trigger)
-	m_lastAttackers.clear();	// clear list of attackers
 
 	if ( m_pPlayer )		// if I'm NPC then my mount goes with me
 		Horse_UnMount();
@@ -2837,6 +2836,7 @@ bool CChar::Death()
 			OnTrigger(CTRIG_DeathCorpse, this, &Args);
 		}
 	}
+	m_lastAttackers.clear();	// clear list of attackers
 
 	// Play death animation (fall on ground)
 	UpdateCanSee(new PacketDeath(this, pCorpse), m_pClient);
