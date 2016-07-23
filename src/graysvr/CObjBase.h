@@ -1020,7 +1020,7 @@ public:
 	height_t GetHeight() const;
 	INT64  GetDecayTime() const;
 	void SetDecayTime( INT64 iTime = 0 );
-	SOUND_TYPE GetDropSound( const CObjBase * pObjOn ) const;
+	SOUND_TYPE GetDropSound(const CObjBase *pObjOn) const;
 	bool IsTopLevelMultiLocked() const;
 	bool IsMovableType() const;
 	bool IsMovable() const;
@@ -1655,6 +1655,7 @@ public:
 	virtual void DupeCopy( const CItem * pItem );
 
 	CPointMap GetRandContainerLoc() const;
+	SOUND_TYPE GetDropSound() const;
 
 	void OnOpenEvent( CChar * pCharOpener, const CObjBaseTemplate * pObjTop );
 };

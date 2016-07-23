@@ -1169,56 +1169,39 @@ void CItem::SetDecayTime( INT64 iTime )
 	}
 }
 
-SOUND_TYPE CItem::GetDropSound( const CObjBase * pObjOn ) const
+SOUND_TYPE CItem::GetDropSound(const CObjBase *pObjOn) const
 {
 	ADDTOCALLSTACK("CItem::GetDropSound");
-	// Get a special drop sound for the item.
-	CItemBase * pItemDef = Item_GetDef();
-	ASSERT(pItemDef);
-	SOUND_TYPE iSnd = 0;
+	// Try get drop sound from item
+	SOUND_TYPE iSnd = static_cast<SOUND_TYPE>(GetDefNum("DROPSOUND", true, true));
+	if ( iSnd )
+		return iSnd;
 
-	switch ( pItemDef->GetType())
+	if ( IsType(IT_GOLD) || IsType(IT_COIN) )
 	{
-		case IT_COIN:
-		case IT_GOLD:
-			// depends on amount.
-			switch ( GetAmount())
-			{
-				case 1: iSnd = 0x035; break;
-				case 2: iSnd = 0x032; break;
-				case 3:
-				case 4:	iSnd = 0x036; break;
-				default: iSnd = 0x037;
-			}
-			break;
-		case IT_GEM:
-			iSnd = (( GetID() > ITEMID_GEMS ) ? 0x034 : 0x032 );  // Small vs Large Gems
-			break;
-		case IT_INGOT:  // Any Ingot
-			if ( pObjOn == NULL )
-			{
-				iSnd = 0x033;
-			}
-			break;
-
-		default:
-			break;
+		WORD iAmount = GetAmount();
+		if ( iAmount <= 1 )
+			return SOUND_DROP_MONEY1;
+		else if ( iAmount <= 5 )
+			return SOUND_DROP_MONEY2;
+		else
+			return SOUND_DROP_MONEY3;
 	}
 
-	CVarDefCont * pVar = GetDefKey("DROPSOUND", true);
-	if ( pVar )
+	// Try get drop sound from container
+	if ( pObjOn )
 	{
-		if ( pVar->GetValNum() )
+		const CItemContainer *pCont = dynamic_cast<const CItemContainer *>(pObjOn);
+		if ( pCont )
 		{
-			iSnd = static_cast<SOUND_TYPE>(pVar->GetValNum());
+			iSnd = pCont->GetDropSound();
+			if ( iSnd )
+				return iSnd;
 		}
 	}
 
-	// normal drop sound for what dropped in/on.
-	if ( iSnd == 0 )
-		return( pObjOn ? 0x057 : 0x042 );
-	else
-		return ( iSnd );
+	// Use default sound if nothing was found
+	return SOUND_HAMMER;
 }
 
 bool CItem::MoveTo(CPointMap pt, bool bForceFix) // Put item on the ground here.

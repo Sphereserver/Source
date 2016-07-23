@@ -215,6 +215,7 @@ void CClient::Event_Item_Pickup(CGrayUID uid, int amount)
 		new PacketDragCancel(this, PacketDragCancel::CannotLift);
 		return;
 	}
+	addSound(SOUND_USE_CLOTH);
 
 	EXC_SET("TargMode");
 	SetTargMode(CLIMODE_DRAG);

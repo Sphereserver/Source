@@ -822,7 +822,20 @@ void CItemContainer::OnWeightChange( int iChange )
 CPointMap CItemContainer::GetRandContainerLoc() const
 {
 	ADDTOCALLSTACK("CItemContainer::GetRandContainerLoc");
-	// Max/Min Container Sizes.
+	// Get a random location inside container rect.
+	CItemBase *pItemDef = Item_GetDef();
+	GUMP_TYPE gump = pItemDef->GetContainerGumpID();
+
+	// Check for custom values in TDATA3/TDATA4
+	if ( pItemDef->m_ttContainer.m_dwMaxXY )
+	{
+		int tmp_MinX = (pItemDef->m_ttContainer.m_dwMinXY & 0xFFFF0000) >> 16;
+		int tmp_MinY = (pItemDef->m_ttContainer.m_dwMinXY & 0xFFFF);
+		int tmp_MaxX = (pItemDef->m_ttContainer.m_dwMaxXY & 0xFFFF0000) >> 16;
+		int tmp_MaxY = (pItemDef->m_ttContainer.m_dwMaxXY & 0xFFFF);
+		DEBUG_WARN(("Custom container gump id %d for item 0%x\n", gump, GetDispID()));
+		return CPointMap(static_cast<WORD>(Calc_GetRandVal2(tmp_MinX, tmp_MaxX)), static_cast<WORD>(Calc_GetRandVal2(tmp_MinY, tmp_MaxY)));
+	}
 
 	static const struct // we can probably get this from MUL file some place.
 	{
@@ -832,10 +845,10 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		WORD m_maxx;
 		WORD m_maxy;
 	}
-	
-	sm_ContSize[] =
+
+	sm_ContainerRect[] =
 	{
-		{ GUMP_RESERVED, 0, 0, 200, 200 },			// generic value to use when container value is not found
+		{ GUMP_RESERVED, 0, 0, 200, 200 },			// generic value to use when gump is not found
 		{ GUMP_SCROLL, 30, 30, 270, 170 },
 		{ GUMP_CORPSE, 20, 85, 124, 196 },
 		{ GUMP_BACKPACK, 44, 65, 186, 159 },
@@ -894,43 +907,28 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		//{ GUMP_GIFT_BOX_CHRISTMAS, 0, 0, 0, 0 }	// TO-DO: confirm gump size
 	};
 
-	// ??? pItemDef->m_ttContainer.m_dwMinXY to m_dwMaxXY
-	// Get a random location in the container.
+	for ( int i = 0; i < COUNTOF(sm_ContainerRect); i++ )
+	{
+		if ( gump != sm_ContainerRect[i].m_gump )
+			continue;
+		return CPointMap(static_cast<WORD>(Calc_GetRandVal2(sm_ContainerRect[i].m_minx, sm_ContainerRect[i].m_maxx)), static_cast<WORD>(Calc_GetRandVal2(sm_ContainerRect[i].m_miny, sm_ContainerRect[i].m_maxy)));
+	}
 
+	DEBUG_WARN(("Unknown container gump id %d for item 0%x\n", gump, GetDispID()));
+	return CPointMap(static_cast<WORD>(Calc_GetRandVal2(sm_ContainerRect[0].m_minx, sm_ContainerRect[0].m_maxx)), static_cast<WORD>(Calc_GetRandVal2(sm_ContainerRect[0].m_miny, sm_ContainerRect[0].m_maxy)));
+}
+
+SOUND_TYPE CItemContainer::GetDropSound() const
+{
 	CItemBase *pItemDef = Item_GetDef();
 	GUMP_TYPE gump = pItemDef->GetContainerGumpID();
 
-	// check for custom values in TDATA3/TDATA4
-	if ( pItemDef->m_ttContainer.m_dwMaxXY )
-	{
-		int tmp_MinX = (pItemDef->m_ttContainer.m_dwMinXY & 0xFFFF0000) >> 16;
-		int tmp_MinY = (pItemDef->m_ttContainer.m_dwMinXY & 0xFFFF);
-		int tmp_MaxX = (pItemDef->m_ttContainer.m_dwMaxXY & 0xFFFF0000) >> 16;
-		int tmp_MaxY = (pItemDef->m_ttContainer.m_dwMaxXY & 0xFFFF);
-		DEBUG_WARN(("Custom container gump id %d for 0%x\n", gump, GetDispID()));
-		return CPointMap(
-			static_cast<WORD>(tmp_MinX + Calc_GetRandVal(tmp_MaxX - tmp_MinX)),
-			static_cast<WORD>(tmp_MinY + Calc_GetRandVal(tmp_MaxY - tmp_MinY)),
-			0);
-	}
+	if ( (gump == GUMP_BACKPACK) || (gump == GUMP_BAG) )
+		return SOUND_LEATHER;
+	if ( (gump == GUMP_BASKET_SQUARE) || (gump == GUMP_BASKET_ROUND) || (gump == GUMP_BASKET_TALL) )
+		return SOUND_RUSTLE;
 
-	unsigned int i = 0;
-	for ( ; ; i++ )
-	{
-		if ( i >= COUNTOF(sm_ContSize) )
-		{
-			i = 0;	// set to default
-			DEBUG_WARN(("Unknown container gump id %d for 0%x\n", gump, GetDispID()));
-			break;
-		}
-		if ( sm_ContSize[i].m_gump == gump )
-			break;
-	}
-
-	return CPointMap(
-		static_cast<WORD>(sm_ContSize[i].m_minx + Calc_GetRandVal(sm_ContSize[i].m_maxx - sm_ContSize[i].m_minx)),
-		static_cast<WORD>(sm_ContSize[i].m_miny + Calc_GetRandVal(sm_ContSize[i].m_maxy - sm_ContSize[i].m_miny)),
-		0);
+	return SOUND_NONE;
 }
 
 void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, unsigned char gridIndex )

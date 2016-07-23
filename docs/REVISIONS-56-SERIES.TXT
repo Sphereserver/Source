@@ -135,3 +135,4 @@ Fixed: Function MOVENEAR not working correctly.
 
 23-07-2016, Coruja
 Fixed: Corpses being created without MORE2 set (last attacker UID) when the char die.
+Changed: Updated pick/drop sound on items/containers.
