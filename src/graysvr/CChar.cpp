@@ -1329,21 +1329,20 @@ void CChar::InitPlayer( CClient *pClient, const char *pszCharname, bool bFemale,
 
 		case RACETYPE_ELF:
 		{
-			static const int sm_ElfSkinHues[] = { 0x0BF, 0x24D, 0x24E, 0x24F, 0x353, 0x361, 0x367, 0x374, 0x375, 0x376, 0x381, 0x382, 0x383, 0x384, 0x385, 0x389, 0x3DE, 0x3E5, 0x3E6, 0x3E8, 0x3E9, 0x430, 0x4A7, 0x4DE, 0x51D, 0x53F, 0x579, 0x76B, 0x76C, 0x76D, 0x835, 0x903 };
-			int iMax = COUNTOF(sm_ElfSkinHues);
-			bool isValid = 0;
-			for ( int i = 0; i < iMax; i++ )
+			static const HUE_TYPE sm_ElfSkinHues[] = { 0xBF, 0x24D, 0x24E, 0x24F, 0x353, 0x361, 0x367, 0x374, 0x375, 0x376, 0x381, 0x382, 0x383, 0x384, 0x385, 0x389, 0x3DE, 0x3E5, 0x3E6, 0x3E8, 0x3E9, 0x430, 0x4A7, 0x4DE, 0x51D, 0x53F, 0x579, 0x76B, 0x76C, 0x76D, 0x835, 0x903 };
+			bool bValid = false;
+			for ( size_t i = 0; i < COUNTOF(sm_ElfSkinHues); i++ )
 			{
 				if ( sm_ElfSkinHues[i] == wSkinHue )
 				{
-					isValid = 1;
+					bValid = true;
 					break;
 				}
 			}
-			if ( !isValid )
-				wSkinHue = static_cast<HUE_TYPE>(sm_ElfSkinHues[0]);
+			if ( !bValid )
+				wSkinHue = sm_ElfSkinHues[0];
+			break;
 		}
-		break;
 
 		case RACETYPE_GARGOYLE:
 			if ( wSkinHue < HUE_GARGSKIN_LOW )
@@ -1406,39 +1405,37 @@ void CChar::InitPlayer( CClient *pClient, const char *pszCharname, bool bFemale,
 
 				case RACETYPE_ELF:
 				{
-					static const int sm_ElfHairHues[] = { 0x034, 0x035, 0x036, 0x037, 0x038, 0x039, 0x058, 0x08E, 0x08F, 0x090, 0x091, 0x092, 0x101, 0x159, 0x15A, 0x15B, 0x15C, 0x15D, 0x15E, 0x128, 0x12F, 0x1BD, 0x1E4, 0x1F3, 0x207, 0x211, 0x239, 0x251, 0x26C, 0x2C3, 0x2C9, 0x31D, 0x31E, 0x31F, 0x320, 0x321, 0x322, 0x323, 0x324, 0x325, 0x326, 0x369, 0x386, 0x387, 0x388, 0x389, 0x38A, 0x59D, 0x6B8, 0x725, 0x853 };
-					int iMax = COUNTOF(sm_ElfHairHues);
-					bool isValid = 0;
-					for ( int i = 0; i < iMax; i++ )
+					static const HUE_TYPE sm_ElfHairHues[] = { 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x58, 0x8E, 0x8F, 0x90, 0x91, 0x92, 0x101, 0x159, 0x15A, 0x15B, 0x15C, 0x15D, 0x15E, 0x128, 0x12F, 0x1BD, 0x1E4, 0x1F3, 0x207, 0x211, 0x239, 0x251, 0x26C, 0x2C3, 0x2C9, 0x31D, 0x31E, 0x31F, 0x320, 0x321, 0x322, 0x323, 0x324, 0x325, 0x326, 0x369, 0x386, 0x387, 0x388, 0x389, 0x38A, 0x59D, 0x6B8, 0x725, 0x853 };
+					bool bValid = false;
+					for ( size_t i = 0; i < COUNTOF(sm_ElfHairHues); i++ )
 					{
 						if ( sm_ElfHairHues[i] == wHairHue )
 						{
-							isValid = 1;
+							bValid = true;
 							break;
 						}
 					}
-					if ( !isValid )
-						wHairHue = static_cast<HUE_TYPE>(sm_ElfHairHues[0]);
+					if ( !bValid )
+						wHairHue = sm_ElfHairHues[0];
+					break;
 				}
-				break;
 
 				case RACETYPE_GARGOYLE:
 				{
-					static const int sm_GargoyleHornHues[] = { 0x709, 0x70B, 0x70D, 0x70F, 0x711, 0x763, 0x765, 0x768, 0x76B, 0x6F3, 0x6F1, 0x6EF, 0x6E4, 0x6E2, 0x6E0, 0x709, 0x70B, 0x70D };
-					int iMax = COUNTOF(sm_GargoyleHornHues);
-					bool isValid = 0;
-					for ( int i = 0; i < iMax; i++ )
+					static const HUE_TYPE sm_GargoyleHornHues[] = { 0x709, 0x70B, 0x70D, 0x70F, 0x711, 0x763, 0x765, 0x768, 0x76B, 0x6F3, 0x6F1, 0x6EF, 0x6E4, 0x6E2, 0x6E0, 0x709, 0x70B, 0x70D };
+					bool bValid = false;
+					for ( size_t i = 0; i < COUNTOF(sm_GargoyleHornHues); i++ )
 					{
 						if ( sm_GargoyleHornHues[i] == wHairHue )
 						{
-							isValid = 1;
+							bValid = true;
 							break;
 						}
 					}
-					if ( !isValid )
-						wHairHue = static_cast<HUE_TYPE>(sm_GargoyleHornHues[0]);
+					if ( !bValid )
+						wHairHue = sm_GargoyleHornHues[0];
+					break;
 				}
-				break;
 			}
 			pHair->SetHue(wHairHue);
 			pHair->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
@@ -1480,24 +1477,24 @@ void CChar::InitPlayer( CClient *pClient, const char *pszCharname, bool bFemale,
 						wBeardHue = static_cast<HUE_TYPE>(HUE_HAIR_LOW);
 					if ( wBeardHue > HUE_HAIR_HIGH )
 						wBeardHue = static_cast<HUE_TYPE>(HUE_HAIR_HIGH);
+					break;
 
 				case RACETYPE_GARGOYLE:
 				{
-					static const int sm_GargoyleBeardHues[] = { 0x709, 0x70B, 0x70D, 0x70F, 0x711, 0x763, 0x765, 0x768, 0x76B, 0x6F3, 0x6F1, 0x6EF, 0x6E4, 0x6E2, 0x6E0, 0x709, 0x70B, 0x70D };
-					int iMax = COUNTOF(sm_GargoyleBeardHues);
-					bool isValid = 0;
-					for ( int i = 0; i < iMax; i++ )
+					static const HUE_TYPE sm_GargoyleBeardHues[] = { 0x709, 0x70B, 0x70D, 0x70F, 0x711, 0x763, 0x765, 0x768, 0x76B, 0x6F3, 0x6F1, 0x6EF, 0x6E4, 0x6E2, 0x6E0, 0x709, 0x70B, 0x70D };
+					bool bValid = false;
+					for ( size_t i = 0; i < COUNTOF(sm_GargoyleBeardHues); i++ )
 					{
 						if ( sm_GargoyleBeardHues[i] == wHairHue )
 						{
-							isValid = 1;
+							bValid = true;
 							break;
 						}
 					}
-					if ( !isValid )
-						wHairHue = static_cast<HUE_TYPE>(sm_GargoyleBeardHues[0]);
+					if ( !bValid )
+						wHairHue = sm_GargoyleBeardHues[0];
+					break;
 				}
-				break;
 
 				default:
 					break;

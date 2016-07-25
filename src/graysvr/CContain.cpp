@@ -907,7 +907,7 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		//{ GUMP_GIFT_BOX_CHRISTMAS, 0, 0, 0, 0 }	// TO-DO: confirm gump size
 	};
 
-	for ( int i = 0; i < COUNTOF(sm_ContainerRect); i++ )
+	for ( size_t i = 0; i < COUNTOF(sm_ContainerRect); i++ )
 	{
 		if ( gump != sm_ContainerRect[i].m_gump )
 			continue;
