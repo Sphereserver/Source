@@ -1715,10 +1715,6 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, CPointMap & pt, D
 		pStone->AddRecruit( m_pChar, STONEPRIV_MASTER );
 		addPromptConsole( CLIMODE_PROMPT_STONE_NAME, g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_GUILDSTONE_NEW ), pItemNew->GetUID() );
 	}
-	else if ( fShip )
-	{
-		pItemNew->Sound( Calc_GetRandVal(2)? 0x12:0x13 );
-	}
 
 	return pItemNew;
 }

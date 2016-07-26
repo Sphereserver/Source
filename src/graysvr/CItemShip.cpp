@@ -82,9 +82,6 @@ bool CItemShip::Ship_SetMoveDir(DIR_TYPE dir, BYTE speed, bool bWheelMove)
 	else if ( !speed )
 		speed = 1;
 
-	if ( !IsAttr(ATTR_MAGIC) && !Calc_GetRandVal(10) )	// make sound.
-		Sound(Calc_GetRandVal(2) ? 0x12 : 0x13);
-
 	m_itShip.m_fSail = minimum(speed, 2);	// checking here that packet is legit from client and not modified by 3rd party tools to send speed > 2.
 	GetTopSector()->SetSectorWakeStatus();	// may get here b4 my client does.
 	CItemMulti *pItemMulti = static_cast<CItemMulti *>(this);

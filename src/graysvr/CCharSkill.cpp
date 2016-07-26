@@ -1314,13 +1314,8 @@ bool CChar::Skill_MakeItem_Success()
 	}
 	else if ( iRet == TRIGRET_RET_DEFAULT )
 	{
-		if ( !g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_NOSFX) )
-		{
-			if ( pItem->IsType(IT_POTION) )
-				Sound(0x240);
-			else if ( pItem->IsType(IT_MAP) )
-				Sound(0x255);
-		}
+		if ( !g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_NOSFX) && pItem->IsType(IT_POTION) )
+			Sound(SOUND_LIQUID);
 		if ( *pszMsg )
 			SysMessage(pszMsg);
 	}
@@ -1571,8 +1566,6 @@ bool CChar::Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg )
 	pt.m_z += 8;	// on top of the forge.
 	pItemEffect->SetAttr( ATTR_MOVE_NEVER );
 	pItemEffect->MoveToDecay( pt, TICK_PER_SEC );
-	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-		Sound( 0x2b );
 
 	UpdateDir( m_Act_p );
 	if ( pItemOre->IsAttr(ATTR_MAGIC|ATTR_BLESSED|ATTR_BLESSED2))	// not magic items
@@ -2391,7 +2384,7 @@ int CChar::Skill_Poisoning( SKTRIG_TYPE stage )
 	}
 
 	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-		Sound( 0x247 );	// powdering.
+		Sound(SOUND_RUSTLE);	// powdering.
 
 	switch ( pItem->GetType() )
 	{
@@ -2760,7 +2753,7 @@ int CChar::Skill_SpiritSpeak( SKTRIG_TYPE stage )
 		if ( IsStatFlag( STATF_SpiritSpeak ))
 			return( -SKTRIG_ABORT );
 		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-			Sound( 0x24a );
+			Sound(SOUND_SPIRITSPEAK);
 
 		SysMessageDefault( DEFMSG_SPIRITSPEAK_SUCCESS );
 		Spell_Effect_Create( SPELL_NONE, LAYER_FLAG_SpiritSpeak, 1, 4*60*TICK_PER_SEC, this );
@@ -2816,7 +2809,7 @@ int CChar::Skill_Meditation( SKTRIG_TYPE stage )
 			{
 				if ( IsClient() )
 					GetClient()->addBuff(BI_ACTIVEMEDITATION, 1075657, 1075658);
-				Sound( 0x0f9 );
+				Sound(SOUND_SFX6);
 			}
 		}
 		m_atTaming.m_Stroke_Count++;
@@ -3241,9 +3234,6 @@ int CChar::Skill_Carpentry( SKTRIG_TYPE stage )
 	// m_atCreate.m_ItemID = new item we are making
 	// m_atCreate.m_Amount = amount of said item.
 
-	if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-		Sound( 0x23d );
-
 	if ( stage == SKTRIG_START )
 		m_atCreate.m_Stroke_Count = 2;	// + Calc_GetRandVal( 3 )
 
@@ -3366,11 +3356,11 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 	EFFECT_TYPE effect = static_cast<EFFECT_TYPE>(GetDefNum("BREATH.TYPE",true));
 	if ( !id )
 		id = ITEMID_FX_FIRE_BALL;
-	if (! effect )
+	if ( !effect )
 		effect = EFFECT_BOLT;
-	Sound( 0x227 );
-	pChar->Effect( effect, id, this, 20, 30, false, hue );
-	pChar->OnTakeDamage( iDamage, this, DAMAGE_FIRE, 0, 100, 0, 0, 0 );
+	Sound(SOUND_FLAME5);
+	pChar->Effect(effect, id, this, 20, 30, false, hue);
+	pChar->OnTakeDamage(iDamage, this, DAMAGE_FIRE, 0, 100, 0, 0, 0);
 	return 0;
 }
 

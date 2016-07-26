@@ -1369,22 +1369,22 @@ void CChar::SoundChar( CRESND_TYPE type )
 		case CREID_GARGGHOSTWOMAN:
 		{
 			id = 0;
-
-			static const SOUND_TYPE sm_Snd_Man_Die[] = { 0x15a, 0x15b, 0x15c, 0x15d };
-			static const SOUND_TYPE sm_Snd_Man_Omf[] = { 0x154, 0x155, 0x156, 0x157, 0x158, 0x159 };
-			static const SOUND_TYPE sm_Snd_Wom_Die[] = { 0x150, 0x151, 0x152, 0x153 };
-			static const SOUND_TYPE sm_Snd_Wom_Omf[] = { 0x14b, 0x14c, 0x14d, 0x14e, 0x14f };
-
 			if ( pCharDef->IsFemale())
 			{
 				switch ( type )
 				{
 					case CRESND_GETHIT:
-						id = sm_Snd_Wom_Omf[ Calc_GetRandVal( COUNTOF(sm_Snd_Wom_Omf)) ];
+					{
+						static const SOUND_TYPE sm_Snd_Wom_Omf[] = { 0x14b, 0x14c, 0x14d, 0x14e, 0x14f };
+						id = sm_Snd_Wom_Omf[Calc_GetRandVal(COUNTOF(sm_Snd_Wom_Omf))];
 						break;
+					}
 					case CRESND_DIE:
-						id = sm_Snd_Wom_Die[ Calc_GetRandVal( COUNTOF(sm_Snd_Wom_Die)) ];
+					{
+						static const SOUND_TYPE sm_Snd_Wom_Die[] = { 0x150, 0x151, 0x152, 0x153 };
+						id = sm_Snd_Wom_Die[Calc_GetRandVal(COUNTOF(sm_Snd_Wom_Die))];
 						break;
+					}
 					default:
 						break;
 				}
@@ -1394,11 +1394,17 @@ void CChar::SoundChar( CRESND_TYPE type )
 				switch ( type )
 				{
 					case CRESND_GETHIT:
-						id = sm_Snd_Man_Omf[ Calc_GetRandVal( COUNTOF(sm_Snd_Man_Omf)) ];
+					{
+						static const SOUND_TYPE sm_Snd_Man_Omf[] = { 0x154, 0x155, 0x156, 0x157, 0x158, 0x159 };
+						id = sm_Snd_Man_Omf[Calc_GetRandVal(COUNTOF(sm_Snd_Man_Omf))];
 						break;
+					}
 					case CRESND_DIE:
-						id = sm_Snd_Man_Die[ Calc_GetRandVal( COUNTOF(sm_Snd_Man_Die)) ];
+					{
+						static const SOUND_TYPE sm_Snd_Man_Die[] = { 0x15a, 0x15b, 0x15c, 0x15d };
+						id = sm_Snd_Man_Die[Calc_GetRandVal(COUNTOF(sm_Snd_Man_Die))];
 						break;
+					}
 					default:
 						break;
 				}
@@ -3209,7 +3215,7 @@ TRIGRET_TYPE CChar::CheckLocation( bool fStanding )
 
 					if ( OnTakeDamage(g_Cfg.GetSpellEffect(SPELL_Fire_Field, iSkillLevel), NULL, DAMAGE_FIRE|DAMAGE_GENERAL, 0, 100, 0, 0, 0) != -1 )
 					{
-						Sound(0x15f);	// fire noise
+						Sound(SOUND_FLAMESTRIKE);
 						if ( m_pNPC && fStanding )
 						{
 							m_Act_p.Move(static_cast<DIR_TYPE>(Calc_GetRandVal(DIR_QTY)));

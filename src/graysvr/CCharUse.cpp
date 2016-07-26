@@ -199,7 +199,6 @@ bool CChar::Use_Kindling( CItem * pKindling )
 	pKindling->SetAmount(1);	// all kindling is set to one fire
 	pKindling->m_itLight.m_pattern = LIGHT_LARGE;
 	pKindling->Update();
-	pKindling->Sound(0x226);
 	return true;
 }
 
@@ -299,8 +298,9 @@ bool CChar::Use_Train_Dummy( CItem * pItem, bool fSetup )
 	}
 	else
 	{
+		static const SOUND_TYPE sm_TrainingDummySounds[] = { 0x3A4, 0x3A6, 0x3A9, 0x3AE, 0x3B4, 0x3B6 };
+		pItem->Sound(sm_TrainingDummySounds[Calc_GetRandVal(COUNTOF(sm_TrainingDummySounds))]);
 		pItem->SetAnim(static_cast<ITEMID_TYPE>(pItem->GetID() + 1), 3 * TICK_PER_SEC);
-		pItem->Sound(0x033);
 		Skill_UseQuick(skill, Calc_GetRandLLVal(40));
 	}
 	return true;
@@ -350,15 +350,14 @@ bool CChar::Use_Train_PickPocketDip( CItem *pItem, bool fSetup )
 	}
 	else if ( !Skill_UseQuick(SKILL_STEALING, Calc_GetRandLLVal(40)) )
 	{
-		pItem->Sound(0x041);
+		pItem->Sound(SOUND_RUSTLE);
+		pItem->Sound(SOUND_GLASS_BREAK4);
 		pItem->SetAnim(fNS ? ITEMID_PICKPOCKET_NS_FX : ITEMID_PICKPOCKET_EW_FX, 3 * TICK_PER_SEC);
 		UpdateAnimate(ANIM_ATTACK_WEAPON);
 	}
 	else
-	{
 		SysMessageDefault(DEFMSG_ITEMUSE_PDUMMY_OK);
-		//pItem->Sound(0x033);
-	}
+
 	return true;
 }
 
@@ -536,7 +535,7 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 	AmmoRender = pVarAnimRender ? static_cast<DWORD>(pVarAnimRender->GetValNum()) : 0;
 	
 	pButte->Effect(EFFECT_BOLT, AmmoAnim, this, 16, 0, false, AmmoHue, AmmoRender);
-	pButte->Sound(0x224);
+	pButte->Sound(SOUND_CROSSBOW);
 
 	// Did we destroy the ammo?
 	const CItemBase *pAmmoDef = NULL;
@@ -1269,8 +1268,6 @@ bool CChar::Use_KeyChange( CItem * pItemTarg )
 			SysMessageDefault(DEFMSG_MSG_KEY_TARG_NOLOCK);
 			return false;
 	}
-
-	pItemTarg->Sound(0x049);
 	return true;
 }
 

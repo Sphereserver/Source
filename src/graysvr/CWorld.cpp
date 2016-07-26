@@ -7,15 +7,6 @@
 #include <time.h>
 #endif
 
-static const SOUND_TYPE sm_Sounds_Ghost[] =
-{
-	SOUND_GHOST_1,
-	SOUND_GHOST_2,
-	SOUND_GHOST_3,
-	SOUND_GHOST_4,
-	SOUND_GHOST_5
-};
-
 LPCTSTR GetReasonForGarbageCode(int iCode = -1)
 {
 	LPCTSTR pStr;
@@ -2210,7 +2201,9 @@ void CWorld::Speak( const CObjBaseTemplate * pSrc, LPCTSTR pszText, HUE_TYPE wHu
 					}
 				}
 				pszSpeak = sTextGhost;
-				pClient->addSound( sm_Sounds_Ghost[ Calc_GetRandVal( COUNTOF( sm_Sounds_Ghost )) ], pSrc );
+
+				static const SOUND_TYPE sm_GhostSounds[] = { 0x17E, 0x17F, 0x180, 0x181, 0x182 };
+				pClient->addSound(sm_GhostSounds[Calc_GetRandVal(COUNTOF(sm_GhostSounds))], pSrc);
 			}
 			
 			if ( !fCanSee && pSrc )
@@ -2299,7 +2292,9 @@ void CWorld::SpeakUNICODE( const CObjBaseTemplate * pSrc, const NCHAR * pwText, 
 					wTextGhost[i] = '\0';
 				}
 				pwSpeak = wTextGhost;
-				pClient->addSound( sm_Sounds_Ghost[ Calc_GetRandVal( COUNTOF( sm_Sounds_Ghost )) ], pSrc );
+
+				static const SOUND_TYPE sm_GhostSounds[] = { 0x17E, 0x17F, 0x180, 0x181, 0x182 };
+				pClient->addSound(sm_GhostSounds[Calc_GetRandVal(COUNTOF(sm_GhostSounds))], pSrc);
 			}
 			
 			// Must label the text.
