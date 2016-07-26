@@ -892,6 +892,7 @@ bool CChar::Stats_Regen(INT64 iTimeDiff)
 	}
 	return true;
 }
+
 unsigned short CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool bGetTicks)
 {
 	ADDTOCALLSTACK("CChar::Stats_GetRegenVal");
@@ -1351,10 +1352,11 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 	// SKILL_BLACKSMITHING
 	// SKILL_BOWCRAFT
 	// SKILL_CARPENTRY
+	// SKILL_CARTOGRAPHY
 	// SKILL_COOKING
 	// SKILL_INSCRIPTION
-	// SKILL_TAILORING:
-	// SKILL_TINKERING,
+	// SKILL_TAILORING
+	// SKILL_TINKERING
 	//
 	// Confer the new item.
 	// Test for consumable items.
@@ -2089,22 +2091,6 @@ int CChar::Skill_DetectHidden( SKTRIG_TYPE stage )
 		return -SKTRIG_FAIL;
 
 	return 0;
-}
-
-int CChar::Skill_Cartography( SKTRIG_TYPE stage )
-{
-	ADDTOCALLSTACK("CChar::Skill_Cartography");
-	// SKILL_CARTOGRAPHY
-	// m_atCreate.m_ItemID = map we are making.
-	// m_atCreate.m_Amount = amount of said item.
-
-	if ( stage == SKTRIG_START )
-	{
-		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-			Sound( 0x249 );
-	}
-
-	return( Skill_MakeItem( stage ));
 }
 
 int CChar::Skill_Musicianship( SKTRIG_TYPE stage )
@@ -3172,32 +3158,6 @@ int CChar::Skill_MakeItem( SKTRIG_TYPE stage )
 	return( -SKTRIG_QTY );
 }
 
-int CChar::Skill_Tailoring( SKTRIG_TYPE stage )
-{
-	ADDTOCALLSTACK("CChar::Skill_Tailoring");
-	if ( stage == SKTRIG_SUCCESS )
-	{
-		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-			Sound( SOUND_SNIP );	// snip noise
-	}
-
-	return( Skill_MakeItem( stage ));
-}
-
-int CChar::Skill_Inscription( SKTRIG_TYPE stage )
-{
-	ADDTOCALLSTACK("CChar::Skill_Inscription");
-	if ( stage == SKTRIG_START )
-	{
-		// Can we even attempt to make this scroll ?
-		// m_atCreate.m_ItemID = create this item
-		if ( !g_Cfg.IsSkillFlag( Skill_GetActive(), SKF_NOSFX ) )
-			Sound( 0x249 );
-	}
-
-	return( Skill_MakeItem( stage ));
-}
-
 int CChar::Skill_Blacksmith( SKTRIG_TYPE stage )
 {
 	ADDTOCALLSTACK("CChar::Skill_Blacksmith");
@@ -3651,6 +3611,9 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 			return 0;
 		case SKILL_ALCHEMY:
 		case SKILL_BOWCRAFT:
+		case SKILL_CARTOGRAPHY:
+		case SKILL_INSCRIPTION:
+		case SKILL_TAILORING:
 		case SKILL_TINKERING:
 			return Skill_MakeItem(stage);
 		case SKILL_ANATOMY:
@@ -3669,8 +3632,6 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 			return Skill_Peacemaking(stage);
 		case SKILL_CARPENTRY:
 			return Skill_Carpentry(stage);
-		case SKILL_CARTOGRAPHY:
-			return Skill_Cartography(stage);
 		case SKILL_COOKING:
 			return Skill_Cooking(stage);
 		case SKILL_DETECTINGHIDDEN:
@@ -3688,8 +3649,6 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 			return Skill_Hiding(stage);
 		case SKILL_PROVOCATION:
 			return Skill_Provocation(stage);
-		case SKILL_INSCRIPTION:
-			return Skill_Inscription(stage);
 		case SKILL_LOCKPICKING:
 			return Skill_Lockpicking(stage);
 		case SKILL_MAGERY:
@@ -3717,8 +3676,6 @@ int CChar::Skill_Stage( SKTRIG_TYPE stage )
 			return Skill_SpiritSpeak(stage);
 		case SKILL_STEALING:
 			return Skill_Stealing(stage);
-		case SKILL_TAILORING:
-			return Skill_Tailoring(stage);
 		case SKILL_TAMING:
 			return Skill_Taming(stage);
 		case SKILL_TRACKING:
@@ -3819,19 +3776,6 @@ void CChar::Skill_Fail( bool fCancel )
 	Skill_Cleanup();
 }
 
-TRIGRET_TYPE CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE stage ) 
-{
-	CScriptTriggerArgs pArgs;
-	return Skill_OnTrigger(skill, stage, &pArgs);
-}
-
-TRIGRET_TYPE CChar::Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE stage ) 
-{
-	CScriptTriggerArgs pArgs;
-	return Skill_OnCharTrigger(skill, stage, &pArgs);
-}
-
-
 TRIGRET_TYPE CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScriptTriggerArgs *pArgs )
 {
 	ADDTOCALLSTACK("CChar::Skill_OnTrigger");
@@ -3874,7 +3818,6 @@ TRIGRET_TYPE CChar::Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig, CSc
 
 	return OnTrigger(ctrig, this, pArgs);
 }
-
 
 int CChar::Skill_Done()
 {

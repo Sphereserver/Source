@@ -3702,11 +3702,8 @@ public:
 	ANIM_TYPE Skill_GetAnim( SKILL_TYPE skill);
 	SOUND_TYPE Skill_GetSound( SKILL_TYPE skill);
 	int Skill_Stage( SKTRIG_TYPE stage );
-	TRIGRET_TYPE	Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage);
-	TRIGRET_TYPE	Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScriptTriggerArgs * pArgs); //pArgs.m_iN1 will be rewritten with skill
-
-	TRIGRET_TYPE	Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig);
-	TRIGRET_TYPE	Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig, CScriptTriggerArgs * pArgs); //pArgs.m_iN1 will be rewritten with skill
+	TRIGRET_TYPE Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScriptTriggerArgs *pArgs = NULL);		//pArgs.m_iN1 will be rewritten with skill
+	TRIGRET_TYPE Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig, CScriptTriggerArgs *pArgs = NULL);	//pArgs.m_iN1 will be rewritten with skill
 
 	bool Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg );
 	bool Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax = SHRT_MAX );
@@ -3733,7 +3730,6 @@ private:
 
 	int	Skill_Scripted( SKTRIG_TYPE stage );
 
-	int Skill_Inscription( SKTRIG_TYPE stage );
 	int Skill_MakeItem( SKTRIG_TYPE stage );
 	int Skill_Information( SKTRIG_TYPE stage );
 	int Skill_Hiding( SKTRIG_TYPE stage );
@@ -3744,7 +3740,6 @@ private:
 	int Skill_Lumberjack( SKTRIG_TYPE stage );
 	int Skill_Taming( SKTRIG_TYPE stage );
 	int Skill_Fishing( SKTRIG_TYPE stage );
-	int Skill_Cartography(SKTRIG_TYPE stage);
 	int Skill_DetectHidden(SKTRIG_TYPE stage);
 	int Skill_Herding(SKTRIG_TYPE stage);
 	int Skill_Blacksmith(SKTRIG_TYPE stage);
@@ -3763,7 +3758,6 @@ private:
 	int Skill_Tracking( SKTRIG_TYPE stage );
 	int Skill_Fighting( SKTRIG_TYPE stage );
 	int Skill_Musicianship( SKTRIG_TYPE stage );
-	int Skill_Tailoring( SKTRIG_TYPE stage );
 
 	int Skill_Act_Napping(SKTRIG_TYPE stage);
 	int Skill_Act_Throwing(SKTRIG_TYPE stage);
