@@ -933,7 +933,7 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 					case ITC_BUY:
 					case ITC_SELL:
 						{
-							CItemContainer * pCont = GetBank((iCmd == ITC_SELL) ? LAYER_VENDOR_STOCK : LAYER_VENDOR_BUYS );
+							CItemContainer *pCont = GetContainerCreate((iCmd == ITC_SELL) ? LAYER_VENDOR_STOCK : LAYER_VENDOR_BUYS);
 							if ( pCont )
 							{
 								pItem = CItem::CreateHeader(s.GetArgRaw(), pCont, false);
@@ -1195,11 +1195,11 @@ void CChar::SetID( CREID_TYPE id )
 	{
 		CItem *pHand = LayerFind(LAYER_HAND1);
 		if ( pHand )
-			GetPackSafe()->ContentAdd(pHand);
+			GetContainerCreate(LAYER_PACK)->ContentAdd(pHand);
 
 		pHand = LayerFind(LAYER_HAND2);
 		if ( pHand )
-			GetPackSafe()->ContentAdd(pHand);
+			GetContainerCreate(LAYER_PACK)->ContentAdd(pHand);
 	}
 	UpdateMode(NULL, true);
 }
@@ -1313,8 +1313,8 @@ void CChar::InitPlayer( CClient *pClient, const char *pszCharname, bool bFemale,
 	m_SpeechHue = HUE_TEXT_DEF;		// Set speech color
 	m_sTitle.Empty();				// Set title
 
-	GetBank(LAYER_BANKBOX);			// Create bankbox
-	GetPackSafe();					// Create backpack
+	GetContainerCreate(LAYER_BANKBOX);		// Create bankbox
+	GetContainerCreate(LAYER_PACK);			// Create backpack
 
 	// Check skin hue
 	switch ( rtRace )
@@ -2131,7 +2131,7 @@ do_default:
 			sVal.FormatLLVal( -( g_World.GetTimeDiff(m_timeCreate) / ( TICK_PER_SEC * 60 * 60 *24 ) )); //displayed in days
 			return( true );
 		case CHC_BANKBALANCE:
-			sVal.FormatVal( GetBank()->ContentCount( RESOURCE_ID(RES_TYPEDEF,IT_GOLD)));
+			sVal.FormatVal(GetContainerCreate(LAYER_BANKBOX)->ContentCount(RESOURCE_ID(RES_TYPEDEF, IT_GOLD)));
 			return true;
 		case CHC_CANCAST:
 			{
@@ -2902,7 +2902,7 @@ do_default:
 				}
 				else if ( newGold > currentGold )
 				{
-					CItemContainer *pBank = GetBank();
+					CItemContainer *pBank = GetContainerCreate(LAYER_BANKBOX);
 					if ( !pBank )
 						return false;
 					AddGoldToPack(newGold - currentGold, pBank);
@@ -3551,9 +3551,9 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				while ( amount > 0 )
 				{
 					CItem *pItem = CItem::CreateScript(ITEMID_GOLD_C1, this);
-					pItem->SetAmount( minimum(amount, pItem->GetMaxAmount()) );
+					pItem->SetAmount(minimum(amount, pItem->GetMaxAmount()));
 					amount -= pItem->GetAmount();
-					GetPackSafe()->ContentAdd(pItem);
+					GetContainerCreate(LAYER_PACK)->ContentAdd(pItem);
 				}
 				UpdateStatsFlag();
 			} break;

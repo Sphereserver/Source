@@ -69,19 +69,20 @@ bool CChar::IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwAmount, DWORD dwArgRe
 	}
 }
 
-CItemContainer *CChar::GetBank( LAYER_TYPE layer )
+CItemContainer *CChar::GetContainerCreate(LAYER_TYPE layer)
 {
-	ADDTOCALLSTACK("CChar::GetBank");
-	// Get our bank box or vendor box.
-	// If we dont have 1 then create it.
+	ADDTOCALLSTACK("CChar::GetContainerCreate");
+	// Get container on the given layer, or create if it doesn't exist yet
 
+	CItem *pItemTest = LayerFind(layer);
+	CItemContainer *pCont = dynamic_cast<CItemContainer *>(pItemTest);
+	if ( pCont || g_Serv.IsLoading() )
+		return pCont;
+
+	// Add new container if not found
 	ITEMID_TYPE id;
 	switch ( layer )
 	{
-		case LAYER_PACK:
-			id = ITEMID_BACKPACK;
-			break;
-
 		case LAYER_VENDOR_STOCK:
 		case LAYER_VENDOR_EXTRA:
 		case LAYER_VENDOR_BUYS:
@@ -90,38 +91,27 @@ CItemContainer *CChar::GetBank( LAYER_TYPE layer )
 			id = ITEMID_VENDOR_BOX;
 			break;
 
-		default:
+		case LAYER_BANKBOX:
 			id = ITEMID_BANK_BOX;
-			layer = LAYER_BANKBOX;
+			break;
+
+		default:
+			id = ITEMID_BACKPACK;
 			break;
 	}
 
-	CItem *pItemTest = LayerFind(layer);
-	CItemContainer *pBankBox = dynamic_cast<CItemContainer *>(pItemTest);
-	if ( pBankBox )
-		return pBankBox;
-
-	if ( !g_Serv.IsLoading() )
-	{
-		if ( pItemTest )
-		{
-			DEBUG_ERR(("Junk in bank box layer %d!\n", layer));
-			pItemTest->Delete();
-		}
-
-		// Add new bank box if not found
-		pBankBox = dynamic_cast<CItemContainer *>(CItem::CreateScript(id, this));
-		ASSERT(pBankBox);
-		pBankBox->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
-		LayerAdd(pBankBox, layer);
-	}
-	return pBankBox;
+	pCont = dynamic_cast<CItemContainer *>(CItem::CreateScript(id, this));
+	ASSERT(pCont);
+	if ( (layer == LAYER_PACK) || ((layer >= LAYER_VENDOR_STOCK) && (layer <= LAYER_BANKBOX)) )
+		pCont->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
+	LayerAdd(pCont, layer);
+	return pCont;
 }
 
 CItem *CChar::GetBackpackItem(ITEMID_TYPE id)
 {
 	ADDTOCALLSTACK("CChar::GetBackpackItem");
-	CItemContainer *pPack = GetPack();
+	CItemContainer *pPack = GetContainer(LAYER_PACK);
 	if ( pPack )
 	{
 		for ( CItem *pItem = pPack->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
@@ -651,7 +641,7 @@ CItem *CChar::GetSpellbook(SPELL_TYPE iSpell) const	// Retrieves a spellbook fro
 	}
 
 	// Then search in the top level of the pack
-	CItemContainer *pPack = GetPack();
+	CItemContainer *pPack = GetContainer(LAYER_PACK);
 	if ( pPack )
 	{
 		for ( CItem *pBook = pPack->GetContentHead(); pBook != NULL; pBook = pBook->GetNext() )
@@ -683,7 +673,7 @@ int CChar::GetSpellbookExtra(CItem *pBooks[], int &count) const	// Retrieves a s
 	}
 
 	// Then search in the top level of the pack
-	CItemContainer *pPack = GetPack();
+	CItemContainer *pPack = GetContainer(LAYER_PACK);
 	if ( pPack )
 	{
 		for ( CItem *pBook = pPack->GetContentHead(); pBook != NULL; pBook = pBook->GetNext() )
@@ -998,7 +988,7 @@ bool CChar::CanSee( const CObjBaseTemplate *pObj ) const
 		if ( !pItem || !CanSeeItem(pItem) )
 			return false;
 
-		CObjBase *pObjCont = pItem->GetContainer();
+		CObjBase *pObjCont = pItem->GetParentObj();
 		if ( pObjCont )
 		{
 			if ( !CanSeeInContainer(dynamic_cast<const CItemContainer*>(pObjCont)) )
@@ -1818,7 +1808,7 @@ bool CChar::CanTouch( const CObjBase *pObj ) const
 				break;
 
 			// What is this inside of ?
-			pObjCont = pItem->GetContainer();
+			pObjCont = pItem->GetParentObj();
 			if ( !pObjCont )
 				break;
 
@@ -2013,9 +2003,9 @@ bool CChar::CanMove( CItem *pItem, bool fMsg ) const
 	else	// equipped or in a container.
 	{
 		// Can't move items from the trade window (client limitation)
-		if ( pItem->GetContainer()->IsContainer() )
+		if ( pItem->GetParentObj()->IsContainer() )
 		{
-			CItemContainer *pItemCont = dynamic_cast<CItemContainer *> (pItem->GetContainer());
+			CItemContainer *pItemCont = dynamic_cast<CItemContainer *>(pItem->GetParentObj());
 			if ( pItemCont && pItemCont->IsItemInTrade() )
 			{
 				SysMessageDefault(DEFMSG_MSG_TRADE_CANTMOVE);

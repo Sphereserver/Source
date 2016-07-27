@@ -367,7 +367,7 @@ CItem * CItem::CreateHeader( TCHAR * pArg, CObjBase * pCont, bool fDupeCheck, CC
 		// Is the item movable ?
 		if ( ! pItem->IsMovableType() && pCont && pCont->IsItem())
 		{
-			DEBUG_ERR(( "Script Error: 0%x item is not movable type, cont=0%lx\n", id, (DWORD)(pCont->GetUID()) ));
+			DEBUG_ERR(("Script Error: 0%x item is not movable type, cont=0%lx\n", id, static_cast<DWORD>((pCont->GetUID()))));
 			pItem->Delete();
 			return( NULL );
 		}
@@ -444,8 +444,8 @@ CItem * CItem::ReadTemplate( CResourceLock & s, CObjBase * pCont ) // static
 		pVendor = dynamic_cast <CChar*>( pCont->GetTopLevelObj());
 		if ( pVendor != NULL && pVendor->NPC_IsVendor())
 		{
-			pVendorSell = pVendor->GetBank( LAYER_VENDOR_STOCK );
-			pVendorBuy = pVendor->GetBank( LAYER_VENDOR_BUYS );
+			pVendorSell = pVendor->GetContainerCreate(LAYER_VENDOR_STOCK);
+			pVendorBuy = pVendor->GetContainerCreate(LAYER_VENDOR_BUYS);
 		}
 	}
 
@@ -612,7 +612,7 @@ int CItem::IsWeird() const
 	}
 
 	// The container must be valid.
-	CObjBase *ptCont = GetContainer(); 
+	CObjBase *ptCont = GetParentObj();
 	return !ptCont ? 0x2106 : ptCont->IsWeird();
 }
 
@@ -1690,8 +1690,7 @@ bool CItem::SetBaseID( ITEMID_TYPE id )
 	CItemBase * pItemDef = CItemBase::FindItemBase( id );
 	if ( pItemDef == NULL )
 	{
-		DEBUG_ERR(( "SetBaseID 0%x invalid item uid=0%lx\n",
-		id, (DWORD) GetUID()));
+		DEBUG_ERR(("SetBaseID 0%x invalid item uid=0%lx\n", id, static_cast<DWORD>(GetUID())));
 		return false;
 	}
 	SetBase( pItemDef );	// set new m_type etc
@@ -1808,7 +1807,7 @@ void CItem::WriteUOX( CScript & s, int index )
 	ADDTOCALLSTACK("CItem::WriteUOX");
 	s.Printf( "SECTION WORLDITEM %d\n", index );
 	s.Printf( "{\n" );
-	s.Printf( "SERIAL %lu\n", (DWORD) GetUID());
+	s.Printf( "SERIAL %lu\n", static_cast<DWORD>(GetUID()));
 	s.Printf( "NAME %s\n", GetName());
 	s.Printf( "ID %d\n", GetDispID());
 	s.Printf( "X %d\n", GetTopPoint().m_x );
@@ -1951,7 +1950,7 @@ void CItem::r_Write( CScript & s )
 	if ( m_itNormal.m_morep.m_x || m_itNormal.m_morep.m_y || m_itNormal.m_morep.m_z || m_itNormal.m_morep.m_map )
 		s.WriteKey("MOREP", m_itNormal.m_morep.WriteUsed());
 
-	CObjBase *pCont = GetContainer();
+	CObjBase *pCont = GetParentObj();
 	if ( pCont )
 	{
 		if ( pCont->IsChar() )
@@ -1982,7 +1981,7 @@ bool CItem::LoadSetContainer( CGrayUID uid, LAYER_TYPE layer )
 	CObjBase * pObjCont = uid.ObjFind();
 	if ( pObjCont == NULL )
 	{
-		DEBUG_ERR(( "Invalid container 0%lx\n", (DWORD) uid ));
+		DEBUG_ERR(("Invalid container 0%lx\n", static_cast<DWORD>(uid)));
 		return( false );	// not valid object.
 	}
 
@@ -2019,7 +2018,7 @@ bool CItem::LoadSetContainer( CGrayUID uid, LAYER_TYPE layer )
 		}
 	}
 
-	DEBUG_ERR(( "Non container uid=0%lx,id=0%x\n", (DWORD) uid, pObjCont->GetBaseID() ));
+	DEBUG_ERR(("Non container uid=0%lx,id=0%x\n", static_cast<DWORD>(uid), pObjCont->GetBaseID()));
 	return( false );	// not a container.
 }
 
@@ -2052,7 +2051,7 @@ bool CItem::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 			case ICR_CONT:
 				if ( pszKey[-1] != '.' )
 					break;
-				pRef = GetContainer();
+				pRef = GetParentObj();
 				return( true );
 			case ICR_LINK:
 				if ( pszKey[-1] != '.' )
@@ -2224,12 +2223,10 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_CONT:
 			{
 				if ( pszKey[4] == '.' )
-				{
-					return( CScriptObj::r_WriteVal( pszKey, sVal, pSrc ));
-				}
+					return(CScriptObj::r_WriteVal(pszKey, sVal, pSrc));
 
-				CObjBase * pCont = GetContainer();
-				sVal.FormatHex( pCont ? ((DWORD) pCont->GetUID() ) : 0 );
+				CObjBase *pCont = GetParentObj();
+				sVal.FormatHex(pCont ? (static_cast<DWORD>(pCont->GetUID())) : 0);
 			}
 			break;
 		case IC_CONTGRID:
@@ -2239,8 +2236,8 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			break;
 		case IC_CONTP:
 			{
-				CObjBase * pContainer = GetContainer();
-				if (( IsItem() ) && ( IsItemInContainer() ) && ( pContainer->IsValidUID() ) && ( pContainer->IsContainer() ) && ( pContainer->IsItem() ))
+				CObjBase *pContainer = GetParentObj();
+				if ( IsItem() && IsItemInContainer() && pContainer->IsValidUID() && pContainer->IsContainer() && pContainer->IsItem() )
 					sVal = GetContainedPoint().WriteUsed();
 				else
 					return false;
@@ -2554,10 +2551,10 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 							break;
 					}
 				}
-				CObjBase * pContainer = GetContainer();
-				if (( IsItem() ) && ( IsItemInContainer() ) && ( pContainer->IsValidUID() ) && ( pContainer->IsContainer() ) && ( pContainer->IsItem() ))
+				CObjBase *pContainer = GetParentObj();
+				if ( IsItem() && IsItemInContainer() && pContainer->IsValidUID() && pContainer->IsContainer() && pContainer->IsItem() )
 				{
-					CItemContainer * pCont = dynamic_cast <CItemContainer *> ( pContainer );
+					CItemContainer *pCont = dynamic_cast<CItemContainer *>(pContainer);
 					pCont->ContentAdd( this, pt );
 				}
 				else
@@ -2573,9 +2570,8 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_HITS:
 			{
 				int maxHits = HIWORD(m_itNormal.m_more1);
-				if( maxHits == 0 ) {
+				if( maxHits == 0 )
 					maxHits = s.GetArgVal();
-				}
 				m_itNormal.m_more1 = MAKEDWORD(s.GetArgVal(), maxHits);
 			}
 			break;
@@ -2594,11 +2590,10 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			return SetID(static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr())));
 		case IC_LAYER:
 			// used only during load.
-			if ( ! IsDisconnected() && ! IsItemInContainer() && ! IsItemEquipped())
-			{
-				return( false );
-			}
-			SetUnkZ( static_cast<signed char>(s.GetArgVal())); // GetEquipLayer()
+			if ( !IsDisconnected() && !IsItemInContainer() && !IsItemEquipped())
+				return false;
+
+			SetUnkZ(static_cast<signed char>(s.GetArgVal()));
 			return true;
 		case IC_LINK:
 			m_uidLink = s.GetArgVal();
@@ -2732,7 +2727,7 @@ bool CItem::r_Load( CScript & s ) // Load an item from script
 {
 	ADDTOCALLSTACK("CItem::r_Load");
 	CScriptObj::r_Load(s);
-	if ( GetContainer() == NULL )	// Place into the world.
+	if ( !GetParentObj() )	// place into the world
 	{
 		if ( GetTopPoint().IsCharValid() )
 			MoveToUpdate(GetTopPoint());
@@ -2821,7 +2816,7 @@ bool CItem::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from s
 				int iCount = s.GetArgVal();
 				if ( iCount <= 0 ) 
 					iCount = 1;
-				if ( !GetContainer() && ( static_cast<unsigned int>(iCount) > g_Cfg.m_iMaxItemComplexity ))	// if top-level, obey the complexity
+				if ( !GetParentObj() && (static_cast<unsigned int>(iCount) > g_Cfg.m_iMaxItemComplexity) )	// if top-level, obey the complexity
 					iCount = g_Cfg.m_iMaxItemComplexity;
 				while ( iCount-- )
 				{
@@ -2990,13 +2985,10 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 			if ( pResourceLink == NULL )
 			{
 				if ( pChar )
-				{
-					DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d] for 0%lx '%s'\n", (DWORD) GetUID(), GetName(), GetType(), (DWORD) pChar->GetUID(), pChar->GetName()));
-				}
+					DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d] for 0%lx '%s'\n", static_cast<DWORD>(GetUID()), GetName(), GetType(), static_cast<DWORD>(pChar->GetUID()), pChar->GetName()));
 				else
-				{
-					DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d]\n", (DWORD) GetUID(), GetName(), GetType() ));
-				}
+					DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d]\n", static_cast<DWORD>(GetUID()), GetName(), GetType() ));
+
 				m_type = Item_GetDef()->GetType();
 				iRet = TRIGRET_RET_DEFAULT;
 				goto stopandret;//return( TRIGRET_RET_DEFAULT );
@@ -3038,7 +3030,7 @@ stopandret:
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("trigger '%s' action '%d' char '0%lx' [0%lx]\n", pszTrigName, iAction, (pSrc && pSrc->GetChar()) ? (DWORD)pSrc->GetChar()->GetUID() : 0, (DWORD)GetUID());
+	g_Log.EventDebug("trigger '%s' action '%d' char '0%lx' [0%lx]\n", pszTrigName, iAction, (pSrc && pSrc->GetChar()) ? static_cast<DWORD>(pSrc->GetChar()->GetUID()) : 0, static_cast<DWORD>(GetUID()));
 	EXC_DEBUG_END;
 	return iRet;
 }
@@ -3148,13 +3140,10 @@ TRIGRET_TYPE CItem::OnTriggerCreate( CTextConsole * pSrc, CScriptTriggerArgs * p
 			if ( pResourceLink == NULL )
 			{
 				if ( pChar )
-				{
-					DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d] for 0%lx '%s'\n", (DWORD) GetUID(), GetName(), GetType(), (DWORD) pChar->GetUID(), pChar->GetName()));
-				}
+					DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d] for 0%lx '%s'\n", static_cast<DWORD>(GetUID()), GetName(), GetType(), static_cast<DWORD>(pChar->GetUID()), pChar->GetName()));
 				else
-				{
-					DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d]\n", (DWORD) GetUID(), GetName(), GetType() ));
-				}
+					DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d]\n", static_cast<DWORD>(GetUID()), GetName(), GetType() ));
+
 				m_type = Item_GetDef()->GetType();
 				return( TRIGRET_RET_DEFAULT );
 			}
@@ -3177,7 +3166,7 @@ TRIGRET_TYPE CItem::OnTriggerCreate( CTextConsole * pSrc, CScriptTriggerArgs * p
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("trigger '%s' action '%d' char '0%lx' [0%lx]\n", pszTrigName, iAction, (pSrc && pSrc->GetChar()) ? (DWORD)pSrc->GetChar()->GetUID() : 0, (DWORD)GetUID());
+	g_Log.EventDebug("trigger '%s' action '%d' char '0%lx' [0%lx]\n", pszTrigName, iAction, (pSrc && pSrc->GetChar()) ? static_cast<DWORD>(pSrc->GetChar()->GetUID()) : 0, static_cast<DWORD>(GetUID()));
 	EXC_DEBUG_END;
 	return iRet;
 }
@@ -3322,7 +3311,7 @@ void CItem::ConvertBolttoCloth()
 
 	// Start the conversion
 	int iOutAmount = GetAmount();
-	CItemContainer * pCont = dynamic_cast <CItemContainer*> ( GetContainer() );
+	CItemContainer *pCont = dynamic_cast<CItemContainer *>(GetParentObj());
 	Delete();
 
 	for ( size_t i = 0; i < pDefCloth->m_BaseResources.GetCount(); i++ )
@@ -5100,7 +5089,7 @@ bool CItem::OnTick()
 		return false;
 
 	EXC_SET("default behaviour4");
-	DEBUG_ERR(( "Timer expired without DECAY flag '%s' (UID=0%lx)?\n", GetName(), (DWORD)GetUID()));
+	DEBUG_ERR(("Timer expired without DECAY flag '%s' (UID=0%lx)?\n", GetName(), static_cast<DWORD>(GetUID())));
 	
 #ifndef _WIN32
 	}
@@ -5108,13 +5097,13 @@ bool CItem::OnTick()
 	catch ( const CGrayError& e )
 	{
 		EXC_CATCH_EXCEPTION(&e);
-		g_Log.EventError("'%s' item [0%lx] - CGrayError\n", GetName(), (DWORD)GetUID());
+		g_Log.EventError("'%s' item [0%lx] - CGrayError\n", GetName(), static_cast<DWORD>(GetUID()));
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 	catch (...)
 	{
 		EXC_CATCH_EXCEPTION(NULL);
-		g_Log.EventError("'%s' item [0%lx] - ...\n", GetName(), (DWORD)GetUID());
+		g_Log.EventError("'%s' item [0%lx] - ...\n", GetName(), static_cast<DWORD>(GetUID()));
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 #endif
@@ -5122,7 +5111,7 @@ bool CItem::OnTick()
 	EXC_CATCH;
 	
 	EXC_DEBUG_START;
-	g_Log.EventDebug("'%s' item [0%lx]\n", GetName(), (DWORD)GetUID());
+	g_Log.EventDebug("'%s' item [0%lx]\n", GetName(), static_cast<DWORD>(GetUID()));
 	//g_Log.EventError("'%s' item [0%lx]\n", GetName(), GetUID());
 	EXC_DEBUG_END;
 #endif

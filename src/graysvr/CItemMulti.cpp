@@ -246,11 +246,11 @@ void CItemMulti::Multi_Create( CChar * pChar, DWORD dwKeyCode )
 		if ( pKey )
 		{
 			// Put in your pack
-			pChar->GetPackSafe()->ContentAdd( pKey );
+			pChar->GetContainerCreate(LAYER_PACK)->ContentAdd( pKey );
 
 			// Put dupe key in the bank.
 			pKey = CreateDupeItem( pKey );
-			pChar->GetBank()->ContentAdd( pKey );
+			pChar->GetContainerCreate(LAYER_BANKBOX)->ContentAdd( pKey );
 			pChar->SysMessageDefault(DEFMSG_MSG_KEY_DUPEBANK);
 		}
 	}

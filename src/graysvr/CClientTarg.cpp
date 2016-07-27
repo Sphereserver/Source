@@ -175,8 +175,8 @@ bool CClient::Cmd_Control( CChar * pChar2 )
 	}
 
 	// Put my GM pack stuff in it's inventory.
-	CItemContainer *pPack1 = pChar1->GetPack();
-	CItemContainer *pPack2 = pChar2->GetPackSafe();
+	CItemContainer *pPack1 = pChar1->GetContainer(LAYER_PACK);
+	CItemContainer *pPack2 = pChar2->GetContainerCreate(LAYER_PACK);
 	if ( pPack1 && pPack2 )
 	{
 		for ( CItem *pItem = pPack1->GetContentHead(); pItem != NULL; pItem = pItemNext )
@@ -1542,7 +1542,7 @@ bool CClient::OnTarg_Pet_Stable( CChar * pCharPet )
 		return( false );
 	}
 
-	CItemContainer * pPack = pCharPet->GetPack();
+	CItemContainer *pPack = pCharPet->GetContainer(LAYER_PACK);
 	if ( pPack )
 	{
 		if ( ! pPack->IsEmpty() )
@@ -1563,7 +1563,7 @@ bool CClient::OnTarg_Pet_Stable( CChar * pCharPet )
 	if ( IsSetOF(OF_PetSlots) )
 		m_pChar->FollowersUpdate(pCharPet, static_cast<short>(-maximum(1, pCharPet->GetDefNum("FOLLOWERSLOTS", true, true))));
 
-	pCharMaster->GetBank()->ContentAdd( pPetItem );
+	pCharMaster->GetContainerCreate(LAYER_BANKBOX)->ContentAdd( pPetItem );
 	pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_CLAIM ) );
 	return true;
 }
@@ -2114,7 +2114,7 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 		if ( pItemTarg == pItemUse )
 		{
 			// Use a keyring on self = remove all keys.
-			pKeyRing->ContentsTransfer( m_pChar->GetPack(), false );
+			pKeyRing->ContentsTransfer(m_pChar->GetContainer(LAYER_PACK), false);
 			return( true );
 		}
 

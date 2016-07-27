@@ -760,14 +760,14 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 
 	case CNC_VENDCAP:
 		{
-			CItemContainer * pBank = pChar->GetBank();
+			CItemContainer *pBank = pChar->GetContainerCreate(LAYER_BANKBOX);
 			if ( pBank )
 				pBank->m_itEqBankBox.m_Check_Restock = s.GetArgVal();
 		}
 		break;
 	case CNC_VENDGOLD:
 		{
-			CItemContainer * pBank = pChar->GetBank();
+			CItemContainer *pBank = pChar->GetContainerCreate(LAYER_BANKBOX);
 			if ( pBank )
 				pBank->m_itEqBankBox.m_Check_Amount = s.GetArgVal();
 		}
@@ -846,14 +846,14 @@ bool CCharNPC::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 		break;
 	case CNC_VENDCAP:
 		{
-			CItemContainer * pBank = pChar->GetBank();
+			CItemContainer *pBank = pChar->GetContainerCreate(LAYER_BANKBOX);
 			if ( pBank )
 				sVal.FormatVal( pBank->m_itEqBankBox.m_Check_Restock );
 		}
 		break;
 	case CNC_VENDGOLD:
 		{
-			CItemContainer * pBank = pChar->GetBank();
+			CItemContainer *pBank = pChar->GetContainerCreate(LAYER_BANKBOX);
 			if ( pBank )
 				sVal.FormatVal( pBank->m_itEqBankBox.m_Check_Amount );
 		}

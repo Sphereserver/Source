@@ -297,7 +297,7 @@ void CClient::Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, un
 					return;
 				}
 			}
-			pObjOn = pChar->GetBank(LAYER_PACK);
+			pObjOn = pChar->GetContainerCreate(LAYER_PACK);
 		}
 
 		if ( pChar && pContOn )
@@ -316,7 +316,7 @@ void CClient::Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, un
 					pItem->ClrAttr(ATTR_NEWBIE);
 			}
 
-			CItemContainer *pBankBox = pChar->GetBank();
+			CItemContainer *pBankBox = pChar->GetContainerCreate(LAYER_BANKBOX);
 			if ( pBankBox->IsItemInside(pContOn) )
 			{
 				// Dropped on bank box
@@ -390,7 +390,7 @@ void CClient::Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, un
 
 		if ( IsTrigUsed(TRIGGER_DROPON_ITEM) || IsTrigUsed(TRIGGER_ITEMDROPON_ITEM) )
 		{
-			CObjBase *pOldObj = pItem->GetContainer();
+			CObjBase *pOldObj = pItem->GetParentObj();
 
 			CScriptTriggerArgs Args(pObjOn);
 			if ( pItem->OnTrigger(ITRIG_DROPON_ITEM, m_pChar, &Args) == TRIGRET_RET_TRUE )
@@ -399,7 +399,7 @@ void CClient::Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, un
 				return;
 			}
 
-			if ( pOldObj != pItem->GetContainer() )		// the trigger moved the item to another location
+			if ( pOldObj != pItem->GetParentObj() )		// the trigger moved the item to another location
 				return;
 		}
 
@@ -944,8 +944,8 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 
 #define MAX_COST (INT_MAX / 2)
 	bool bPlayerVendor = pVendor->IsStatFlag(STATF_Pet);
-	pVendor->GetBank(LAYER_VENDOR_STOCK);
-	CItemContainer *pPack = m_pChar->GetPackSafe();
+	pVendor->GetContainerCreate(LAYER_VENDOR_STOCK);
+	CItemContainer *pPack = m_pChar->GetContainerCreate(LAYER_PACK);
 
 	CItemVendable *pItem;
 	INT64 costtotal = 0;
@@ -1014,7 +1014,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 		}
 		else
 		{
-			int iGold = m_pChar->GetPackSafe()->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), static_cast<int>(costtotal), true);
+			int iGold = m_pChar->GetContainerCreate(LAYER_PACK)->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), static_cast<int>(costtotal), true);
 			if ( !g_Cfg.m_fPayFromPackOnly && iGold )
 				iGold = m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), static_cast<int>(costtotal), true);
 
@@ -1154,11 +1154,11 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 	// Take the gold and add it to the vendor
 	if ( !bBoss )
 	{
-		int iGold = m_pChar->GetPackSafe()->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), static_cast<int>(costtotal));
+		int iGold = m_pChar->GetContainerCreate(LAYER_PACK)->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), static_cast<int>(costtotal));
 		if ( !g_Cfg.m_fPayFromPackOnly && iGold )
 			m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), iGold);
 
-		pVendor->GetBank()->m_itEqBankBox.m_Check_Amount += static_cast<DWORD>(costtotal);
+		pVendor->GetContainerCreate(LAYER_BANKBOX)->m_itEqBankBox.m_Check_Amount += static_cast<DWORD>(costtotal);
 	}
 
 	// Clear the vendor display.
@@ -1192,10 +1192,10 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 	if ( !m_pChar || !pVendor || !items || (itemCount <= 0) )
 		return;
 
-	CItemContainer *pBank = pVendor->GetBank();
-	CItemContainer *pContStock = pVendor->GetBank(LAYER_VENDOR_STOCK);
-	CItemContainer *pContBuy = pVendor->GetBank(LAYER_VENDOR_BUYS);
-	CItemContainer *pContExtra = pVendor->GetBank(LAYER_VENDOR_EXTRA);
+	CItemContainer *pBank = pVendor->GetContainerCreate(LAYER_BANKBOX);
+	CItemContainer *pContStock = pVendor->GetContainerCreate(LAYER_VENDOR_STOCK);
+	CItemContainer *pContBuy = pVendor->GetContainerCreate(LAYER_VENDOR_BUYS);
+	CItemContainer *pContExtra = pVendor->GetContainerCreate(LAYER_VENDOR_EXTRA);
 	if ( !pBank || !pContStock )
 	{
 		addVendorClose(pVendor);
@@ -1954,11 +1954,11 @@ bool CClient::Event_DoubleClick(CGrayUID uid, bool fMacro, bool fTestTouch, bool
 			{
 				case CREID_HORSE_PACK:
 				case CREID_LLAMA_PACK:
-					return Cmd_Use_Item(pChar->GetPackSafe(), fTestTouch);	// pack animals open container
+					return Cmd_Use_Item(pChar->GetContainerCreate(LAYER_PACK), fTestTouch);	// pack animals open container
 
 				default:
 					if ( IsPriv(PRIV_GM) )
-						return Cmd_Use_Item(pChar->GetPackSafe(), false);	// snoop the creature
+						return Cmd_Use_Item(pChar->GetContainerCreate(LAYER_PACK), false);	// snoop the creature
 					return false;
 			}
 		}

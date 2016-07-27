@@ -1200,9 +1200,9 @@ bool CChar::Skill_Snoop_Check( const CItemContainer * pItem )
 	ASSERT( pItem->IsItem());
 	if ( pItem->IsContainer() )
 	{
-		CItemContainer * pItemCont = dynamic_cast <CItemContainer *> (pItem->GetContainer());
-			if  ( ( pItemCont->IsItemInTrade() == true )  && ( g_Cfg.m_iTradeWindowSnooping == false ) )
-				return( false );
+		CItemContainer *pItemCont = dynamic_cast<CItemContainer *>(pItem->GetParentObj());
+		if ( !g_Cfg.m_iTradeWindowSnooping && pItemCont->IsItemInTrade() )
+			return false;
 	}
 
 	if ( ! IsPriv(PRIV_GM))
@@ -1324,7 +1324,7 @@ int CChar::Skill_Stealing( SKTRIG_TYPE stage )
 			SysMessageDefault( DEFMSG_STEALING_NOTHING );
 			return( -SKTRIG_QTY );
 		}
-		CItemContainer * pPack = pCharMark->GetPack();
+		CItemContainer *pPack = pCharMark->GetContainer(LAYER_PACK);
 		if ( pPack == NULL )
 		{
 cantsteal:
@@ -1340,17 +1340,17 @@ cantsteal:
 	}
 
 	// Special cases.
-	CContainer * pContainer = dynamic_cast <CContainer *> (pItem->GetContainer());
+	CContainer *pContainer = dynamic_cast<CContainer *>(pItem->GetParentObj());
 	if ( pContainer )
 	{
-		CItemCorpse * pCorpse = dynamic_cast <CItemCorpse *> (pContainer);
+		CItemCorpse *pCorpse = dynamic_cast<CItemCorpse *>(pContainer);
 		if ( pCorpse )
 		{
 			SysMessageDefault( DEFMSG_STEALING_CORPSE );
 			return( -SKTRIG_ABORT );
 		}
 	}
-	CItem * pCItem = dynamic_cast <CItem *> (pItem->GetContainer());
+	CItem *pCItem = dynamic_cast<CItem *>(pItem->GetParentObj());
 	if ( pCItem )
 	{
 		if ( pCItem->GetType() == IT_GAME_BOARD )
@@ -1441,8 +1441,8 @@ cantsteal:
 	if ( stage == SKTRIG_SUCCESS || fGround )
 	{
 		pItem->ClrAttr(ATTR_OWNED);	// Now it's mine
-		CItemContainer * pPack = GetPack();
-		if ( pItem->GetParent() != pPack && pPack )
+		CItemContainer *pPack = GetContainer(LAYER_PACK);
+		if ( pPack && (pItem->GetParent() != pPack) )
 		{
 			pItem->RemoveFromView();
 			// Put in my invent.

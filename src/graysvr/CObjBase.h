@@ -1105,7 +1105,7 @@ public:
 	{
 		return static_cast<CItem *>(CObjBase::GetPrev());
 	}
-	CObjBase *GetContainer() const
+	CObjBase *GetParentObj() const
 	{
 		// What is this CItem contained in ?
 		// Container should be a CChar or CItemContainer
@@ -1114,7 +1114,7 @@ public:
 	CObjBaseTemplate *GetTopLevelObj() const
 	{
 		// recursively get the item that is at "top" level.
-		const CObjBase *pObj = GetContainer();
+		const CObjBase *pObj = GetParentObj();
 		if ( !pObj )
 			return const_cast<CItem *>(this);
 		if ( pObj == this )		// to avoid script errors setting same CONT
@@ -3373,15 +3373,11 @@ public:
 	CItem * GetSpellbook(SPELL_TYPE iSpell = SPELL_Clumsy) const;
 	int GetSpellbookExtra(CItem * pBooks[], int &count) const;
 	CItem * GetSpellbookRandom(SPELL_TYPE iSpell = SPELL_Clumsy) const;
-	CItemContainer *GetPack() const
+	CItemContainer *GetContainer(LAYER_TYPE layer) const
 	{
-		return dynamic_cast<CItemContainer *>(LayerFind(LAYER_PACK));
+		return dynamic_cast<CItemContainer *>(LayerFind(layer));
 	}
-	CItemContainer * GetBank( LAYER_TYPE layer = LAYER_BANKBOX );
-	CItemContainer * GetPackSafe()
-	{
-		return GetBank(LAYER_PACK);
-	}
+	CItemContainer *GetContainerCreate(LAYER_TYPE layer);
 	CItem * GetBackpackItem(ITEMID_TYPE item);
 	void AddGoldToPack( int iAmount, CItemContainer * pPack=NULL );
 

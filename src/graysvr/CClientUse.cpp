@@ -34,10 +34,11 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 						DWORD dwTopMostContainerUID = (((*itContainerFound).second).first).second;
 						CPointMap ptOpenedContainerPosition = ((*itContainerFound).second).second;
 						const CObjBaseTemplate *pObjTop = pItem->GetTopLevelObj();
+						const CObjBase *pObjParent = pContainer->GetParentObj();
 
 						DWORD dwTopContainerUID_ToCheck = 0;
-						if ( pContainer->GetContainer() )
-							dwTopContainerUID_ToCheck = pContainer->GetContainer()->GetUID().GetPrivateUID();
+						if ( pObjParent )
+							dwTopContainerUID_ToCheck = pObjParent->GetUID().GetPrivateUID();
 						else
 							dwTopContainerUID_ToCheck = pObjTop->GetUID().GetPrivateUID();
 
@@ -164,7 +165,7 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 
 		case IT_CONTAINER_LOCKED:
 		case IT_SHIP_HOLD_LOCK:
-			if ( !m_pChar->GetPackSafe()->ContentFindKeyFor(pItem) )
+			if ( !m_pChar->GetContainerCreate(LAYER_PACK)->ContentFindKeyFor(pItem) )
 			{
 				SysMessageDefault(DEFMSG_ITEMUSE_LOCKED);
 				if ( !IsPriv(PRIV_GM) )

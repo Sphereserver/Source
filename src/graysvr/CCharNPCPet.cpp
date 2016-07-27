@@ -218,7 +218,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 		{
 			// Drop backpack items on ground
 			// NOTE: This is also called on pet release
-			CItemContainer *pPack = GetPack();
+			CItemContainer *pPack = GetContainer(LAYER_PACK);
 			if ( pPack )
 			{
 				pPack->ContentsDump(GetTopPoint(), ATTR_OWNED);
@@ -248,11 +248,11 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 				break;
 
 			unsigned int iWage = pCharDef->GetHireDayWage();
-			CItemContainer *pBank = GetBank();
+			CItemContainer *pBank = GetContainerCreate(LAYER_BANKBOX);
 			TCHAR *pszMsg = Str_GetTemp();
 			if ( NPC_IsVendor() )
 			{
-				CItemContainer *pCont = GetBank(LAYER_VENDOR_STOCK);
+				CItemContainer *pCont = GetContainerCreate(LAYER_VENDOR_STOCK);
 				TCHAR *pszTemp1 = Str_GetTemp();
 				TCHAR *pszTemp2 = Str_GetTemp();
 				TCHAR *pszTemp3 = Str_GetTemp();
@@ -284,7 +284,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 			if ( !NPC_IsVendor() )
 				return false;
 
-			CItemContainer *pBank = GetBank();
+			CItemContainer *pBank = GetContainerCreate(LAYER_BANKBOX);
 			if ( pBank )
 			{
 				unsigned int iWage = pCharDef->GetHireDayWage();
@@ -518,14 +518,14 @@ void CChar::NPC_PetClearOwners()
 		StatFlag_Clear(STATF_INVUL);
 		if ( pOwner )	// give back to NPC owner all the stuff we are trying to sell
 		{
-			CItemContainer * pBankVendor = GetBank();
-			CItemContainer * pBankOwner = pOwner->GetBank();
+			CItemContainer *pBankVendor = GetContainerCreate(LAYER_BANKBOX);
+			CItemContainer *pBankOwner = pOwner->GetContainerCreate(LAYER_BANKBOX);
 			pOwner->AddGoldToPack( pBankVendor->m_itEqBankBox.m_Check_Amount, pBankOwner );
 			pBankVendor->m_itEqBankBox.m_Check_Amount = 0;
 
 			for ( size_t i = 0; i < COUNTOF(sm_VendorLayers); i++ )
 			{
-				CItemContainer * pCont = GetBank( sm_VendorLayers[i] );
+				CItemContainer *pCont = GetContainerCreate(sm_VendorLayers[i]);
 				if ( !pCont )
 					continue;
 
@@ -571,7 +571,7 @@ bool CChar::NPC_PetSetOwner( CChar * pChar )
 	if ( NPC_IsVendor() )
 	{
 		// Clear my cash total.
-		CItemContainer * pBank = GetBank();
+		CItemContainer *pBank = GetContainerCreate(LAYER_BANKBOX);
 		pBank->m_itEqBankBox.m_Check_Amount = 0;
 		StatFlag_Set(STATF_INVUL);
 	}
@@ -608,7 +608,7 @@ bool CChar::NPC_CheckHirelingStatus()
 	if ( iPeriodWage <= 0 )
 		iPeriodWage = 1;
 
-	CItemContainer * pBank = GetBank();
+	CItemContainer *pBank = GetContainerCreate(LAYER_BANKBOX);
 	if ( pBank->m_itEqBankBox.m_Check_Amount > iPeriodWage )
 	{
 		pBank->m_itEqBankBox.m_Check_Amount -= iPeriodWage;
@@ -646,18 +646,16 @@ void CChar::NPC_OnHirePayMore( CItem * pGold, bool fHire )
 	// We have been handed money.
 	// similar to PC_STATUS
 
-	CCharBase * pCharDef = Char_GetDef();
+	CCharBase *pCharDef = Char_GetDef();
 	unsigned int iWage = pCharDef->GetHireDayWage();
-	CItemContainer	*pBank = GetBank();
+	CItemContainer *pBank = GetContainerCreate(LAYER_BANKBOX);
 	if ( !iWage || !pBank )
 		return;
 
 	if ( pGold )
 	{
 		if ( fHire )
-		{
-			pBank->m_itEqBankBox.m_Check_Amount = 0;	// zero any previous balance.
-		}
+			pBank->m_itEqBankBox.m_Check_Amount = 0;	// clear previous balance
 
 		pBank->m_itEqBankBox.m_Check_Amount += pGold->GetAmount();
 		Sound( pGold->GetDropSound( NULL ));

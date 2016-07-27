@@ -2181,12 +2181,12 @@ bool CChar::Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool 
 			}
 
 			// check for reagents
-			if ( g_Cfg.m_fReagentsRequired && ! m_pNPC && pSrc == this )
+			if ( g_Cfg.m_fReagentsRequired && !m_pNPC && (pSrc == this) )
 			{
 				if ( GetDefNum("LOWERREAGENTCOST", true, true) <= Calc_GetRandVal(100))
 				{
-					const CResourceQtyArray * pRegs = &(pSpellDef->m_Reags);
-					CItemContainer * pPack = GetPack();
+					const CResourceQtyArray *pRegs = &(pSpellDef->m_Reags);
+					CItemContainer *pPack = GetContainer(LAYER_PACK);
 					size_t iMissing = pPack->ResourceConsumePart( pRegs, 1, 100, fTest );
 					if ( iMissing != pRegs->BadIndex() )
 					{

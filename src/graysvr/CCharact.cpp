@@ -182,7 +182,7 @@ void CChar::AddGoldToPack( int iAmount, CItemContainer *pPack )
 	ADDTOCALLSTACK("CChar::AddGoldToPack");
 
 	if ( !pPack )
-		pPack = GetPackSafe();
+		pPack = GetContainerCreate(LAYER_PACK);
 
 	CItem *pGold = NULL;
 	int iGoldStack = 0;
@@ -548,17 +548,13 @@ void CChar::DropAll( CItemContainer * pCorpse, DWORD dwAttr )
 	if ( IsStatFlag( STATF_Conjured ))
 		return;	// drop nothing.
 
-	CItemContainer * pPack = GetPack();
-	if ( pPack != NULL )
+	CItemContainer *pPack = GetContainer(LAYER_PACK);
+	if ( pPack )
 	{
-		if ( pCorpse == NULL )
-		{
-			pPack->ContentsDump( GetTopPoint(), dwAttr );
-		}
+		if ( pCorpse )
+			pPack->ContentsTransfer(pCorpse, true);
 		else
-		{
-			pPack->ContentsTransfer( pCorpse, true );
-		}
+			pPack->ContentsDump(GetTopPoint(), dwAttr);
 	}
 
 	// transfer equipped items to corpse or your pack (if newbie).
@@ -576,7 +572,7 @@ void CChar::UnEquipAllItems( CItemContainer * pDest, bool bLeaveHands )
 
 	if ( GetCount() <= 0 )
 		return;
-	CItemContainer *pPack = GetPackSafe();
+	CItemContainer *pPack = GetContainerCreate(LAYER_PACK);
 
 	CItem *pItemNext = NULL;
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
@@ -1542,8 +1538,8 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 			CChar * pCharTop = dynamic_cast<CChar *>(const_cast<CObjBaseTemplate *>(pObjTop));
 			if ( pCharTop != NULL )
 			{
-				bool bItemContIsInsideBankBox = pCharTop->GetBank()->IsItemInside( pItemCont );
-				if ( bItemContIsInsideBankBox && ( pCharTop->GetBank()->m_itEqBankBox.m_pntOpen != GetTopPoint() ))
+				CItemContainer *pBank = pCharTop->GetContainerCreate(LAYER_BANKBOX);
+				if ( pBank->IsItemInside(pItemCont) && (pBank->m_itEqBankBox.m_pntOpen != GetTopPoint()) )
 					return -1;
 			}
 
@@ -1557,8 +1553,8 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 				CPointMap ptOpenedContainerPosition = ((*itContainerFound).second).second;
 
 				DWORD dwTopContainerUID_ToCheck = 0;
-				if ( pItemCont->GetContainer() )
-					dwTopContainerUID_ToCheck = pItemCont->GetContainer()->GetUID().GetPrivateUID();
+				if ( pItemCont->GetParentObj() )
+					dwTopContainerUID_ToCheck = pItemCont->GetParentObj()->GetUID().GetPrivateUID();
 				else
 					dwTopContainerUID_ToCheck = pObjTop->GetUID().GetPrivateUID();
 
@@ -1633,10 +1629,8 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 	if ( GetWeightLoadPercent(GetTotalWeight() + iItemWeight) > 300 )
 	{
 		SysMessageDefault(DEFMSG_MSG_HEAVY);
-		if (( pChar == this ) && ( pItem->GetParent() == GetPack() ))
-		{
+		if ( (pChar == this) && (pItem->GetParent() == GetContainer(LAYER_PACK)) )
 			fDrop = true;	// we can always drop it out of own pack !
-		}
 	}
 
 	ITRIG_TYPE trigger;
@@ -1645,7 +1639,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 		bool bCanTake = false;
 		if (pChar == this) // we can always take our own items
 			bCanTake = true;
-		else if (pItem->GetContainer() != pChar || g_Cfg.m_fCanUndressPets == true) // our owners can take items from us (with CanUndressPets=true, they can undress us too)
+		else if ((pItem->GetParentObj() != pChar) || g_Cfg.m_fCanUndressPets) // our owners can take items from us (with CanUndressPets=true, they can undress us too)
 			bCanTake = pChar->NPC_IsOwnedBy(this);
 		else  // higher priv players can take items and undress us
 			bCanTake = IsPriv(PRIV_GM) && GetPrivLevel() > pChar->GetPrivLevel();
@@ -1682,7 +1676,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 		}
 		if (( trigger == ITRIG_PICKUP_PACK ) && (( IsTrigUsed(TRIGGER_PICKUP_SELF) ) || ( IsTrigUsed(TRIGGER_ITEMPICKUP_SELF) )))
 		{
-			CItem * pContItem = dynamic_cast <CItem*> ( pItem->GetContainer() );
+			CItem *pContItem = dynamic_cast<CItem *>(pItem->GetParentObj());
 			if ( pContItem )
 			{
 				CScriptTriggerArgs Args1(pItem);
@@ -1771,7 +1765,7 @@ bool CChar::ItemBounce( CItem * pItem, bool bDisplayMsg )
 	if ( pItem == NULL )
 		return false;
 
-	CItemContainer * pPack = GetPackSafe();
+	CItemContainer *pPack = GetContainerCreate(LAYER_PACK);
 	if ( pItem->GetParent() == pPack )
 		return true;
 
@@ -2726,7 +2720,7 @@ bool CChar::RaiseCorpse( CItemCorpse * pCorpse )
 
 	if ( pCorpse->GetCount() > 0 )
 	{
-		CItemContainer *pPack = GetPackSafe();
+		CItemContainer *pPack = GetContainerCreate(LAYER_PACK);
 		CItem *pItemNext = NULL;
 		for ( CItem *pItem = pCorpse->GetContentHead(); pItem != NULL; pItem = pItemNext )
 		{
@@ -2909,7 +2903,7 @@ bool CChar::Death()
 			else
 			{
 				pClient->addPlayerUpdate();
-				pClient->addContainerSetup(GetPack());	// update backpack contents
+				pClient->addContainerSetup(GetContainer(LAYER_PACK));	// update backpack contents
 			}
 		}
 

@@ -1306,11 +1306,9 @@ bool CChar::Skill_MakeItem_Success()
 	}
 	m_Act_Targ = uidOldAct;		// restore
 
-	CObjBase *pItemCont = pItem->GetContainer();
 	if ( iRet == TRIGRET_RET_TRUE )
 	{
-		if ( pItem->GetContainer() == pItemCont )
-			pItem->Delete();
+		pItem->Delete();
 		return false;
 	}
 	else if ( iRet == TRIGRET_RET_DEFAULT )

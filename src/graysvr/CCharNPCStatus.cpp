@@ -400,7 +400,7 @@ int CChar::NPC_WantThisItem( CItem * pItem ) const
 			return 100;
 
 		// Is it something I would buy?
-		CItemVendable * pItemSell = NPC_FindVendableItem(dynamic_cast<CItemVendable *>(pItem), const_cast<CChar *>(this)->GetBank(LAYER_VENDOR_BUYS), const_cast<CChar *>(this)->GetBank(LAYER_VENDOR_STOCK));
+		CItemVendable *pItemSell = NPC_FindVendableItem(dynamic_cast<CItemVendable *>(pItem), const_cast<CChar *>(this)->GetContainerCreate(LAYER_VENDOR_BUYS), const_cast<CChar *>(this)->GetContainerCreate(LAYER_VENDOR_STOCK));
 		if ( pItemSell )
 			return pItemSell->GetVendorPrice(0);
 	}

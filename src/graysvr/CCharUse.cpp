@@ -1414,7 +1414,7 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 				}
 				pItem->SetTimeout(pItem->m_itItemStone.m_wRegenTime * TICK_PER_SEC);
 			}
-			ItemBounce(CItem::CreateTemplate(pItem->m_itItemStone.m_ItemID, GetPackSafe(), this));
+			ItemBounce(CItem::CreateTemplate(pItem->m_itItemStone.m_ItemID, GetContainerCreate(LAYER_PACK), this));
 			if (pItem->m_itItemStone.m_wAmount != 0) {
 				pItem->m_itItemStone.m_wAmount--;
 				if (pItem->m_itItemStone.m_wAmount == 0)
@@ -1741,7 +1741,7 @@ bool CChar::ItemEquipArmor( bool fForce )
 	// Equip ourselves as best as possible.
 
 	CCharBase *pCharDef = Char_GetDef();
-	CItemContainer *pPack = GetPack();
+	CItemContainer *pPack = GetContainer(LAYER_PACK);
 	if ( !pPack || !pCharDef || !pCharDef->Can(CAN_C_EQUIP) )
 		return false;
 
@@ -1797,8 +1797,7 @@ bool CChar::ItemEquipWeapon( bool fForce )
 		return true;
 
 	CCharBase *pCharDef = Char_GetDef();
-	CItemContainer *pPack = GetPack();
-
+	CItemContainer *pPack = GetContainer(LAYER_PACK);
 	if ( !pPack || !pCharDef || !pCharDef->Can(CAN_C_USEHANDS) )
 		return false;
 

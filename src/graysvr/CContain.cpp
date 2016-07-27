@@ -596,12 +596,11 @@ bool CItemContainer::IsItemInTrade()
 {
 	// recursively get the item that is at "top" level.
 	CItemContainer *pObj = dynamic_cast<CItemContainer *>(this);
-	//const CObjBase *pObj = pItem->GetContainer();
 	if ( !pObj )
 		return false;
-	else if ( pObj->IsType(IT_EQ_TRADE_WINDOW) )
+	if ( pObj->IsType(IT_EQ_TRADE_WINDOW) )
 		return true;
-	CItemContainer *pObj2 = dynamic_cast<CItemContainer *>(GetContainer());
+	CItemContainer *pObj2 = dynamic_cast<CItemContainer *>(GetParentObj());
 	return pObj2->IsItemInTrade();
 }
 
@@ -1042,7 +1041,7 @@ void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, unsigned char gridI
 				CItemVendable *pItemVend = dynamic_cast<CItemVendable *>(pItem);
 				if ( !pItemVend )
 				{
-					g_Log.Event(LOGL_WARN, "Vendor non-vendable item: %s uid=0%lx, vendor: %s uid=0%lx\n", pItem->GetResourceName(), pItem->GetUID().GetObjUID(), GetContainer()->GetName(), GetContainer()->GetUID().GetObjUID());
+					g_Log.Event(LOGL_WARN, "Vendor non-vendable item: %s uid=0%lx, vendor: %s uid=0%lx\n", pItem->GetResourceName(), pItem->GetUID().GetObjUID(), GetParentObj()->GetName(), GetParentObj()->GetUID().GetObjUID());
 					pItem->Delete();
 					break;
 				}

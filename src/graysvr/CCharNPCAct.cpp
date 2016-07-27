@@ -196,7 +196,7 @@ bool CChar::NPC_Vendor_Restock(bool bForce, bool bFillStock)
 
 		for ( size_t i = 0; i < COUNTOF(sm_VendorLayers); ++i )
 		{
-			CItemContainer *pCont = GetBank(sm_VendorLayers[i]);
+			CItemContainer *pCont = GetContainerCreate(sm_VendorLayers[i]);
 			if ( !pCont )
 				return false;
 
@@ -217,7 +217,9 @@ bool CChar::NPC_Vendor_Restock(bool bForce, bool bFillStock)
 			}
 
 			//	we need restock vendor money as well
-			GetBank()->Restock();
+			CItemContainer *pCont = GetContainer(LAYER_BANKBOX);
+			if ( pCont )
+				pCont->Restock();
 		}
 
 		// remember that the stock was filled (or considered up-to-date)
@@ -239,7 +241,7 @@ bool CChar::NPC_StablePetSelect( CChar * pCharPlayer )
 
 	// Might have too many pets already ?
 	int iCount = 0;
-	CItemContainer * pBank = GetBank();
+	CItemContainer *pBank = GetContainerCreate(LAYER_BANKBOX);
 	if ( pBank->GetCount() >= MAX_ITEMS_CONT )
 	{
 		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_FULL ) );
@@ -301,7 +303,7 @@ bool CChar::NPC_StablePetRetrieve( CChar * pCharPlayer )
 
 	int iCount = 0;
 	CItem *pItemNext = NULL;
-	for ( CItem *pItem = GetBank()->GetContentHead(); pItem != NULL; pItem = pItemNext )
+	for ( CItem *pItem = GetContainerCreate(LAYER_BANKBOX)->GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
 		pItemNext = pItem->GetNext();
 		if ( pItem->IsType(IT_FIGURINE) && pItem->m_uidLink == pCharPlayer->GetUID() )
@@ -564,7 +566,7 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem * pGold)
 		// Give change back.
 		pGold->UnStackSplit( iTrainCost, pCharSrc );
 	}
-	GetPackSafe()->ContentAdd( pGold );	// take my cash.
+	GetContainerCreate(LAYER_PACK)->ContentAdd(pGold);		// take my cash
 
 	// Give credit for training.
 	NPC_TrainSkill( pCharSrc, skill, iTrainCost );
@@ -1723,7 +1725,7 @@ bool CChar::NPC_GetAllSpellbookSpells()	// Retrieves a spellbook from the magic 
 	}
 
 	//	then search in the top level of the pack
-	CItemContainer *pPack = GetPack();
+	CItemContainer *pPack = GetContainer(LAYER_PACK);
 	if (pPack)
 	{
 		for ( CItem *pBook = pPack->GetContentHead(); pBook != NULL; pBook = pBook->GetNext() )
@@ -2623,7 +2625,7 @@ bool CChar::NPC_Act_Food()
 	bool	bSearchGrass = false;
 	CItem	* pCropItem = NULL;
 
-	CItemContainer	*pPack = GetPack();
+	CItemContainer *pPack = GetContainer(LAYER_PACK);
 	if ( pPack )
 	{
 		for ( CItem *pFood = pPack->GetContentHead(); pFood != NULL; pFood = pFood->GetNext() )
@@ -2919,7 +2921,7 @@ bool CChar::NPC_OnItemGive( CChar *pCharSrc, CItem *pItem )
 			else
 			{
 				Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_SELL));
-				GetBank(LAYER_VENDOR_STOCK)->ContentAdd(pItem);
+				GetContainerCreate(LAYER_VENDOR_STOCK)->ContentAdd(pItem);
 			}
 			return true;
 		}
@@ -2952,7 +2954,7 @@ bool CChar::NPC_OnItemGive( CChar *pCharSrc, CItem *pItem )
 		}
 
 		// Place item on backpack
-		CItemContainer *pPack = GetPack();
+		CItemContainer *pPack = GetContainer(LAYER_PACK);
 		if ( !pPack )
 			return false;
 		pPack->ContentAdd(pItem);
@@ -2977,7 +2979,7 @@ bool CChar::NPC_OnItemGive( CChar *pCharSrc, CItem *pItem )
 
 		if ( m_pNPC->m_Brain == NPCBRAIN_BANKER )
 		{
-			CItemContainer *pBankBox = pCharSrc->GetPackSafe();
+			CItemContainer *pBankBox = pCharSrc->GetContainerCreate(LAYER_BANKBOX);
 			if ( !pBankBox )
 				return false;
 
@@ -3027,7 +3029,7 @@ bool CChar::NPC_OnItemGive( CChar *pCharSrc, CItem *pItem )
 	}
 
 	// Place item on backpack
-	CItemContainer *pPack = GetPack();
+	CItemContainer *pPack = GetContainer(LAYER_PACK);
 	if ( !pPack )
 		return false;
 	pPack->ContentAdd(pItem);
@@ -3265,7 +3267,7 @@ void CChar::NPC_Food()
 	if ( iFood >= 10 ) return;							//	search for food is starving or very hungry
 	if ( iFoodLevel > 40 ) return;						// and it is at least 60% hungry
 
-	CItemContainer	*pPack = GetPack();
+	CItemContainer *pPack = GetContainer(LAYER_PACK);
 	if ( pPack )
 	{
 		EXC_SET("searching in pack");
@@ -3454,11 +3456,11 @@ void CChar::NPC_ExtraAI()
 		CItem *pShield = LayerFind(LAYER_HAND2);
 		if ( !pShield || !pShield->IsTypeArmor() )
 		{
-			CItemContainer * pPack = GetPack();
-			if (pPack)
+			CItemContainer *pPack = GetContainer(LAYER_PACK);
+			if ( pPack )
 			{
 				pShield = pPack->ContentFind(RESOURCE_ID(RES_TYPEDEF, IT_SHIELD));
-				if (pShield)
+				if ( pShield )
 					ItemEquip(pShield);
 			}
 		}

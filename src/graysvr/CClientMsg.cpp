@@ -473,16 +473,16 @@ bool CClient::addContainerSetup( const CItemContainer * pContainer ) // Send Bac
 void CClient::LogOpenedContainer(const CItemContainer* pContainer) // record a container in opened container list
 {
 	ADDTOCALLSTACK("CClient::LogOpenedContainer");
-	if (pContainer == NULL)
+	if ( !pContainer )
 		return;
 
-	CObjBaseTemplate * pTopMostContainer = pContainer->GetTopLevelObj();
-	CObjBase * pTopContainer = pContainer->GetContainer();
+	CObjBaseTemplate *pTopMostContainer = pContainer->GetTopLevelObj();
+	CObjBase *pTopContainer = pContainer->GetParentObj();
 
 	DWORD dwTopMostContainerUID = pTopMostContainer->GetUID().GetPrivateUID();
 	DWORD dwTopContainerUID = 0;
 	
-	if ( pTopContainer != NULL )
+	if ( pTopContainer )
 		dwTopContainerUID = pTopContainer->GetUID().GetPrivateUID();
 	else
 		dwTopContainerUID = dwTopMostContainerUID;
@@ -2105,8 +2105,8 @@ bool CClient::addShopMenuBuy( CChar * pVendor )
 	if ( !pVendor->IsStatFlag(STATF_Pet) )
 		pVendor->NPC_Vendor_Restock(false, true);
 
-	CItemContainer *pContainer = pVendor->GetBank(LAYER_VENDOR_STOCK);
-	CItemContainer *pContainerExtra = pVendor->GetBank(LAYER_VENDOR_EXTRA);
+	CItemContainer *pContainer = pVendor->GetContainerCreate(LAYER_VENDOR_STOCK);
+	CItemContainer *pContainerExtra = pVendor->GetContainerCreate(LAYER_VENDOR_EXTRA);
 	if ( !pContainer || !pContainerExtra )
 		return false;
 
@@ -2147,8 +2147,8 @@ bool CClient::addShopMenuSell( CChar * pVendor )
 	if ( !pVendor->IsStatFlag(STATF_Pet) )
 		pVendor->NPC_Vendor_Restock(false, true);
 
-	CItemContainer *pContainer1 = pVendor->GetBank(LAYER_VENDOR_BUYS);
-	CItemContainer *pContainer2 = pVendor->GetBank(LAYER_VENDOR_STOCK);
+	CItemContainer *pContainer1 = pVendor->GetContainerCreate(LAYER_VENDOR_BUYS);
+	CItemContainer *pContainer2 = pVendor->GetContainerCreate(LAYER_VENDOR_STOCK);
 	addItem(pContainer1);
 	addItem(pContainer2);
 
@@ -2156,7 +2156,7 @@ bool CClient::addShopMenuSell( CChar * pVendor )
 		pContainer2 = NULL;		// no stock
 
 	PacketVendorSellList cmd(pVendor);
-	size_t count = cmd.searchContainer(this, m_pChar->GetPackSafe(), pContainer1, pContainer2, -pVendor->NPC_GetVendorMarkup());
+	size_t count = cmd.searchContainer(this, m_pChar->GetContainerCreate(LAYER_PACK), pContainer1, pContainer2, -pVendor->NPC_GetVendorMarkup());
 	if (count <= 0)
 		return false;
 	
@@ -2170,7 +2170,7 @@ void CClient::addBankOpen( CChar * pChar, LAYER_TYPE layer )
 	// open it up for this pChar.
 	ASSERT( pChar );
 
-	CItemContainer * pBankBox = pChar->GetBank(layer);
+	CItemContainer *pBankBox = pChar->GetContainerCreate(layer);
 	ASSERT(pBankBox);
 	addItem( pBankBox );	// may crash client if we dont do this.
 
@@ -2349,7 +2349,7 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 	if ( pObj->IsItem() )
 	{
 		const CItem *pItem = static_cast<const CItem *>(pObj);
-		if ( !pItem->GetContainer() && pItem->IsAttr(/*ATTR_MOVE_NEVER|*/ATTR_STATIC) )
+		if ( !pItem->GetParentObj() && pItem->IsAttr(/*ATTR_MOVE_NEVER|*/ATTR_STATIC) )
 		{
 			if ( !GetChar()->IsPriv(PRIV_GM) && !GetChar()->IsPriv(PRIV_ALLMOVE) )
 				return;
