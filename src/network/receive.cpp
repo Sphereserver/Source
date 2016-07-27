@@ -3100,7 +3100,7 @@ bool PacketBandageMacro::onReceive(NetState* net)
 	client->m_tmUseItem.m_pParent = bandage->GetParent();
 	client->SetTargMode(CLIMODE_TARG_USE_ITEM);
 
-	client->Event_Target(CLIMODE_TARG_USE_ITEM, target->GetUID(), target->GetUnkPoint());
+	client->Event_Target(CLIMODE_TARG_USE_ITEM, target->GetUID(), target->GetTopPoint());
 	return true;
 }
 

@@ -395,21 +395,21 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 
 			if ( s.IsKey("X" ))
 			{
-				CPointMap pt = pItem->GetUnkPoint();
+				CPointMap pt = pItem->GetTopPoint();
 				pt.m_x = static_cast<short>( ATOI(pArg) );
 				pItem->SetUnkPoint(pt);
 				continue;
 			}
 			else if ( s.IsKey("Y" ))
 			{
-				CPointMap pt = pItem->GetUnkPoint();
+				CPointMap pt = pItem->GetTopPoint();
 				pt.m_y = static_cast<short>( ATOI(pArg) );
 				pItem->SetUnkPoint(pt);
 				continue;
 			}
 			else if ( s.IsKey("Z" ))
 			{
-				CPointMap pt = pItem->GetUnkPoint();
+				CPointMap pt = pItem->GetTopPoint();
 				pt.m_z = static_cast<signed char>( ATOI(pArg) );
 				pItem->SetUnkPoint(pt);
 				continue;
@@ -491,21 +491,21 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 
 			if ( s.IsKey("X" ))
 			{
-				CPointMap pt = pChar->GetUnkPoint();
+				CPointMap pt = pChar->GetTopPoint();
 				pt.m_x = static_cast<signed short>(ATOI(pArg));
 				pChar->SetUnkPoint(pt);
 				continue;
 			}
 			else if ( s.IsKey("Y" ))
 			{
-				CPointMap pt = pChar->GetUnkPoint();
+				CPointMap pt = pChar->GetTopPoint();
 				pt.m_y = static_cast<signed short>(ATOI(pArg));
 				pChar->SetUnkPoint(pt);
 				continue;
 			}
 			else if ( s.IsKey("Z" ))
 			{
-				CPointMap pt = pChar->GetUnkPoint();
+				CPointMap pt = pChar->GetTopPoint();
 				pt.m_z = static_cast<signed char>(ATOI(pArg));
 				pChar->SetUnkPoint(pt);
 				continue;

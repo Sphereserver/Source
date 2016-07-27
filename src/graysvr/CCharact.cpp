@@ -380,11 +380,10 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 				StatFlag_Clear( STATF_HasShield );
 				UpdateStatsFlag();
 			}
-			if (( this->m_Act_SkillCurrent == SKILL_MINING ) || ( this->m_Act_SkillCurrent == SKILL_FISHING ) || ( this->m_Act_SkillCurrent == SKILL_LUMBERJACKING ))
-			{
+			if ( (m_Act_SkillCurrent == SKILL_MINING) || (m_Act_SkillCurrent == SKILL_FISHING) || (m_Act_SkillCurrent == SKILL_LUMBERJACKING) )
 				Skill_Cleanup();
-			}
 			break;
+
 		case LAYER_SHOES:
 		case LAYER_PANTS:
 		case LAYER_SHIRT:
@@ -406,9 +405,11 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 			StatFlag_Clear( STATF_Criminal );
 			NotoSave_Update();
 			break;
+
 		case LAYER_FLAG_SpiritSpeak:
 			StatFlag_Clear( STATF_SpiritSpeak );
 			break;
+
 		case LAYER_FLAG_Stuck:
 			StatFlag_Clear( STATF_Freeze );
 			if ( IsClient() )
@@ -417,6 +418,7 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 				GetClient()->addCharMove(this);		// immediately tell the client that now he's able to move (without this, it will be able to move only on next tick update)
 			}
 			break;
+
 		default:
 			break;
 	}
@@ -3520,7 +3522,7 @@ bool CChar::MoveToChar(CPointMap pt, bool bForceFix)
 	if ( !MoveToRoom(pRoomNew, true) )
 		return false;
 
-	CPointMap ptOld = GetUnkPoint();
+	CPointMap ptOld = GetTopPoint();
 	bool fSectorChange = pt.GetSector()->MoveCharToSector(this);
 	SetTopPoint(pt);
 

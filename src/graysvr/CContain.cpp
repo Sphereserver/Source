@@ -1084,7 +1084,7 @@ void CItemContainer::ContentAdd( CItem *pItem )
 		return;	// already here.
 	CPointMap pt;	// invalid point.
 	if ( g_Serv.IsLoading() )
-		pt = pItem->GetUnkPoint();
+		pt = pItem->GetTopPoint();
 
 	ContentAdd(pItem, pt);
 }

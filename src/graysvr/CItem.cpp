@@ -2510,12 +2510,9 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			return true;
 		case IC_CONT:	// needs special processing.
 			{
-				bool normcont = LoadSetContainer(s.GetArgVal(), static_cast<LAYER_TYPE>(GetUnkZ()));
-				if ( !normcont && ( g_Serv.m_iModeCode == SERVMODE_Loading ))
-				{
-					//	since the item is no longer in container, it should be deleted
-					Delete();
-				}
+				bool normcont = LoadSetContainer(s.GetArgVal(), static_cast<LAYER_TYPE>(GetTopZ()));
+				if ( !normcont && (g_Serv.m_iModeCode == SERVMODE_Loading) )
+					Delete();	// since the item is no longer in container, it should be deleted
 				return normcont;
 			}
 		case IC_CONTGRID:

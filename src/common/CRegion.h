@@ -142,15 +142,6 @@ public:
 	{
 		m_pt = pt;
 	}
-	const CPointMap & GetUnkPoint() const
-	{
-		// don't care where this
-		return( m_pt );
-	}
-	signed char GetUnkZ() const	// Equal to GetTopZ ?
-	{
-		return( m_pt.m_z );
-	}
 
 	// Distance and direction
 	int GetTopDist( const CPointMap & pt ) const

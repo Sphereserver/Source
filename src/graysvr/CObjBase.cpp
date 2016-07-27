@@ -1291,7 +1291,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			break;
 			}
 		case OC_MAP:
-			sVal.FormatVal( GetUnkPoint().m_map);
+			sVal.FormatVal(GetTopPoint().m_map);
 			break;
 		case OC_MODAR:
 		case OC_MODAC:
@@ -1302,10 +1302,9 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			break;
 		case OC_P:
 			if ( pszKey[1] == '.' )
-			{
-				return( GetUnkPoint().r_WriteVal( pszKey+2, sVal ));
-			}
-			sVal = GetUnkPoint().WriteUsed();
+				return(GetTopPoint().r_WriteVal(pszKey + 2, sVal));
+
+			sVal = GetTopPoint().WriteUsed();
 			break;
 		case OC_TAG0:
 			fZero	= true;
@@ -1369,7 +1368,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 				if ( *pszKey )
 					pt = g_Cfg.GetRegionPoint( pszKey );
 				else
-					pt = this->GetUnkPoint();
+					pt = GetTopPoint();
 
 				if ( !pt.IsValidPoint() )
 					return( false );
@@ -1378,7 +1377,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		} break;
 		case OC_SPEED:
 		{
-			if ( !this->IsItem() )
+			if ( !IsItem() )
 				return false;
 			CItem * pItem = static_cast<CItem*>(this);
 			sVal.FormatVal(pItem->GetSpeed());
@@ -1390,10 +1389,10 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			sVal = GRAY_VERSION;
 			break;
 		case OC_WEIGHT:
-			sVal.FormatVal( GetWeight());
+			sVal.FormatVal(GetWeight());
 			break;
 		case OC_Z:
-			sVal.FormatVal( GetUnkZ());
+			sVal.FormatVal(GetTopZ());
 			break;
 		case OC_TAGAT:
 			{
@@ -1933,8 +1932,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				size_t iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
 				if ( iArgQty < 2 )
 					return( false );
-				CObjBase *	pThis	= this;
-				//DEBUG_ERR(("this->GetUID() 0%x \n", (DWORD)this->GetUID()));
+				CObjBase *pThis	= this;
 				if ( piCmd[0] == -1 )
 				{
 					if ( pCharSrc )
@@ -1945,7 +1943,6 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 					}
 
 				}
-				//DEBUG_ERR(("this->GetUID() 0%x pThis->GetUID() 0%x pCharSrc->GetUID() 0%x\n",(DWORD)this->GetUID(),(DWORD)pThis->GetUID(),(DWORD)pCharSrc->GetUID()));
 				pThis->Effect( static_cast<EFFECT_TYPE>(piCmd[0]), static_cast<ITEMID_TYPE>(RES_GET_INDEX(piCmd[1])),
 					pCharSrc,
 					(iArgQty >= 3)? static_cast<unsigned char>(piCmd[2]) : 5,		// BYTE bSpeedSeconds = 5,
@@ -2494,37 +2491,33 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 
 		case OV_CLICK:
 			EXC_SET("CLICK");
-
-			if (!pCharSrc)
-				return(false);
-
-			if (!pCharSrc->IsClient())
+			if ( !pCharSrc )
 				return false;
-
-			if (s.HasArgs())
+			if ( !pCharSrc->IsClient() )
+				return false;
+			if ( s.HasArgs() )
 			{
 				CGrayUID uid = s.GetArgVal();
-				if ((!uid.ObjFind()) || (!this->IsChar()))
-					return(false);
+				if ( !uid.ObjFind() || !IsChar() )
+					return false;
+
 				pCharSrc->GetClient()->Event_SingleClick(uid);
 			}
 			else
-				pCharSrc->GetClient()->Event_SingleClick(this->GetUID());
+				pCharSrc->GetClient()->Event_SingleClick(GetUID());
 			return true;
 
 		case OV_DCLICK:
 			EXC_SET("DCLICK");
-			if (!pCharSrc)
-				return(false);
-			if (s.HasArgs())
+			if ( !pCharSrc )
+				return false;
+			if ( s.HasArgs() )
 			{
 				CGrayUID uid = s.GetArgVal();
+				if ( !uid.ObjFind() || !IsChar() )
+					return false;
 
-				if ((!uid.ObjFind()) || (!this->IsChar()))
-					return(false);
-
-				CChar *pChar = dynamic_cast <CChar *> (this);
-
+				CChar *pChar = dynamic_cast<CChar *>(this);
 				return pChar->Use_Obj(uid.ObjFind(), true, true);
 			}
 			else
@@ -2532,21 +2525,19 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 
 		case OV_USEITEM:
 			EXC_SET("USEITEM");
-			if ( ! pCharSrc )
-				return( false );
+			if ( !pCharSrc )
+				return false;
 			if ( s.HasArgs() )
 			{
 				CGrayUID uid = s.GetArgVal();
+				if ( !uid.ObjFind() || !IsChar() )
+					return false;
 
-				if (( ! uid.ObjFind()) || ( ! this->IsChar() ))
-					return( false );
-
-				CChar *pChar = dynamic_cast <CChar *> (this);
-
-				return pChar->Use_Obj( uid.ObjFind(), false, true );
+				CChar *pChar = dynamic_cast<CChar *>(this);
+				return pChar->Use_Obj(uid.ObjFind(), false, true);
 			}
 			else
-				return pCharSrc->Use_Obj( this, false, true );
+				return pCharSrc->Use_Obj(this, false, true);
 
 		case OV_FIX:
 			s.GetArgStr()[0] = '\0';
@@ -2617,7 +2608,7 @@ void CObjBase::RemoveFromView( CClient * pClientExclude, bool fHardcoded )
 				continue;
 		}
 
-		if (this->GetEquipLayer() == LAYER_BANKBOX)
+		if ( GetEquipLayer() == LAYER_BANKBOX )
 			pClient->closeContainer(this);
 
 		pClient->addObjectRemove( this );
@@ -2660,7 +2651,7 @@ void CObjBase::ResendOnEquip( bool fAllClients )
 				continue;
 		}
 
-		if (this->GetEquipLayer() == LAYER_BANKBOX)
+		if ( GetEquipLayer() == LAYER_BANKBOX )
 			pClient->closeContainer(this);
 		
 		pClient->addObjectRemove( this );

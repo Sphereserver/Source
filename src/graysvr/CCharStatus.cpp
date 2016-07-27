@@ -1197,10 +1197,9 @@ bool CChar::CanSeeLOS_New( const CPointMap &ptDst, CPointMap *pptBlock, int iMax
 	CPointMap ptSrc = GetTopPoint();
 	CPointMap ptNow(ptSrc);
 
-	if ( ptSrc.m_map != ptDst.m_map )	// Different map
-		return this->CanSeeLOS_New_Failed(pptBlock, ptNow);
-		
-	if ( ptSrc == ptDst )	// Same point ^^
+	if ( ptSrc.m_map != ptDst.m_map )
+		return CanSeeLOS_New_Failed(pptBlock, ptNow);
+	if ( ptSrc == ptDst )
 		return true;
 
 	ptSrc.m_z = minimum(ptSrc.m_z + GetHeightMount(true), UO_SIZE_Z);	//true - substract one from the height because of eyes height
@@ -1495,13 +1494,13 @@ bool CChar::CanSeeLOS_New( const CPointMap &ptDst, CPointMap *pptBlock, int iMax
 					pItem = AreaItems.GetItem();
 					if ( !pItem )
 						break;
-					if ( pItem->GetUnkPoint().m_x != ptNow.m_x || pItem->GetUnkPoint().m_y != ptNow.m_y )
+					if ( pItem->GetTopPoint().m_x != ptNow.m_x || pItem->GetTopPoint().m_y != ptNow.m_y )
 						continue;
 					if ( !CanSeeItem(pItem) )
 						continue;
 
 					//Fix for Stacked items blocking view
-					if ( (pItem->GetUnkPoint().m_x == ptDst.m_x) && (pItem->GetUnkPoint().m_y == ptDst.m_y) && (pItem->GetUnkPoint().m_z >= GetTopZ()) && (pItem->GetUnkPoint().m_z <= ptSrc.m_z) )
+					if ( (pItem->GetTopPoint().m_x == ptDst.m_x) && (pItem->GetTopPoint().m_y == ptDst.m_y) && (pItem->GetTopPoint().m_z >= GetTopZ()) && (pItem->GetTopPoint().m_z <= ptSrc.m_z) )
 						continue;
 
 					pItemDef = CItemBase::FindItemBase(pItem->GetDispID());
@@ -1532,7 +1531,7 @@ bool CChar::CanSeeLOS_New( const CPointMap &ptDst, CPointMap *pptBlock, int iMax
 							pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pItem->GetDispID()));
 							if ( !pDupeDef )
 							{
-								g_Log.EventDebug("Failed to get non-parent reference (dynamic) (DispID 0%x) (X: %d Y: %d Z: %d)\n", pItem->GetDispID(), ptNow.m_x, ptNow.m_y, pItem->GetUnkZ());
+								g_Log.EventDebug("Failed to get non-parent reference (dynamic) (DispID 0%x) (X: %d Y: %d Z: %d)\n", pItem->GetDispID(), ptNow.m_x, ptNow.m_y, pItem->GetTopZ());
 								wTFlags = pItemDef->GetTFlags();
 								Height = pItemDef->GetHeight();
 							}
@@ -1551,8 +1550,8 @@ bool CChar::CanSeeLOS_New( const CPointMap &ptDst, CPointMap *pptBlock, int iMax
 
 						if ( ((wTFlags & (UFLAG1_WALL|UFLAG1_BLOCK|UFLAG2_PLATFORM)) || pItemDef->m_Can & CAN_I_BLOCKLOS) && !((wTFlags & UFLAG2_WINDOW) && (flags & LOS_NB_WINDOWS)) )
 						{
-							WARNLOS(("pItem %0lx(%0x) %d,%d,%d - %d\n", (DWORD)pItem->GetUID(), pItem->GetDispID(), pItem->GetUnkPoint().m_x, pItem->GetUnkPoint().m_y, pItem->GetUnkPoint().m_z, Height));
-							min_z = pItem->GetUnkPoint().m_z;
+							WARNLOS(("pItem %0lx(%0x) %d,%d,%d - %d\n", (DWORD)pItem->GetUID(), pItem->GetDispID(), pItem->GetTopPoint().m_x, pItem->GetTopPoint().m_y, pItem->GetTopPoint().m_z, Height));
+							min_z = pItem->GetTopZ();
 							max_z = minimum(Height + min_z, UO_SIZE_Z);
 							WARNLOS(("wTFlags(0%lx)\n", wTFlags));
 

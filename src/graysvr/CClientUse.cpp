@@ -1393,7 +1393,7 @@ bool CClient::Cmd_SecureTrade( CChar *pChar, CItem *pItem )
 				return false;
 			}
 		}
-		pCont1->ContentAdd(pItem, pCont1->GetUnkPoint());
+		pCont1->ContentAdd(pItem, pCont1->GetTopPoint());
 	}
 	return true;
 }

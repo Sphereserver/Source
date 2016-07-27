@@ -452,7 +452,7 @@ bool CClient::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 				pRef = m_pHouseDesign;
 				return( true );
 			case CLIR_PARTY:
-				if ( !this->m_pChar->m_pParty )
+				if ( !m_pChar->m_pParty )
 				{
 					LPCTSTR oldKey = pszKey;
 					if ( !strnicmp(pszKey, "CREATE", 7) )
@@ -464,12 +464,12 @@ bool CClient::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 						return false;
 					if ( !pChar->IsClient() )
 						return false;
-					CPartyDef::AcceptEvent( pChar , this->GetChar()->GetUID(), true);
-					if ( !this->m_pChar->m_pParty )
+					CPartyDef::AcceptEvent(pChar, GetChar()->GetUID(), true);
+					if ( !m_pChar->m_pParty )
 						return false;
 					pszKey = oldKey;	// Restoring back to real pszKey, so we don't get errors for giving an uid instead of PDV_CREATE.
 				}
-				pRef = this->m_pChar->m_pParty;
+				pRef = m_pChar->m_pParty;
 				return true;
 			case CLIR_TARG:
 				pRef = m_Targ_UID.ObjFind();
@@ -820,10 +820,10 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			}
 			else
 			{
-				if ( IsValidDef( "d_add" ) )
-					Dialog_Setup( CLIMODE_DIALOG, g_Cfg.ResourceGetIDType(RES_DIALOG, "d_add"), 0, this->GetChar() );
+				if ( IsValidDef("d_add") )
+					Dialog_Setup(CLIMODE_DIALOG, g_Cfg.ResourceGetIDType(RES_DIALOG, "d_add"), 0, GetChar());
 				else
-					Menu_Setup( g_Cfg.ResourceGetIDType( RES_MENU, "MENU_ADDITEM"));	
+					Menu_Setup(g_Cfg.ResourceGetIDType(RES_MENU, "MENU_ADDITEM"));
 			}
 			break;
 		case CV_ADDBUFF:
@@ -885,7 +885,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 
 				if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
 					g_Log.EventDebug("SCRIPT: addcliloc(%lu,'%s')\n", clilocid, static_cast<LPCTSTR>(LocArgs));
-				this->m_TooltipData.Add(new CClientTooltip(clilocid, LocArgs));
+				m_TooltipData.Add(new CClientTooltip(clilocid, LocArgs));
 			}
 			break;
 		case CV_ADDCONTEXTENTRY:
@@ -1192,7 +1192,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				CObjBase * pObj = m_pChar->m_Act_Targ.ObjFind();
 				if ( pObj != NULL )
 				{
-					Event_Target(GetTargMode(), pObj->GetUID(), pObj->GetUnkPoint());
+					Event_Target(GetTargMode(), pObj->GetUID(), pObj->GetTopPoint());
 					addTargetCancel();
 				}
 				break;
