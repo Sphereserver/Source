@@ -3783,9 +3783,12 @@ TRIGRET_TYPE CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScri
 	if ( !(stage == SKTRIG_SELECT || stage == SKTRIG_GAIN || stage == SKTRIG_USEQUICK || stage == SKTRIG_WAIT || stage == SKTRIG_TARGETCANCEL) )
 		m_Act_SkillCurrent = skill;
 
-	pArgs->m_iN1 = skill;
-	if ( g_Cfg.IsSkillFlag(skill, SKF_MAGIC) )
-		pArgs->m_VarsLocal.SetNum("spell", m_atMagery.m_Spell, true);
+	if ( pArgs )
+	{
+		pArgs->m_iN1 = skill;
+		if ( g_Cfg.IsSkillFlag(skill, SKF_MAGIC) )
+			pArgs->m_VarsLocal.SetNum("spell", m_atMagery.m_Spell, true);
+	}
 
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
@@ -3810,9 +3813,12 @@ TRIGRET_TYPE CChar::Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig, CSc
 	if ( !(ctrig == CTRIG_SkillSelect || ctrig == CTRIG_SkillGain || ctrig == CTRIG_SkillUseQuick || ctrig == CTRIG_SkillWait || ctrig == CTRIG_SkillTargetCancel) )
 		m_Act_SkillCurrent = skill;
 
-	pArgs->m_iN1 = skill;
-	if ( g_Cfg.IsSkillFlag(skill, SKF_MAGIC) )
-		pArgs->m_VarsLocal.SetNum("spell", m_atMagery.m_Spell, true);
+	if ( pArgs )
+	{
+		pArgs->m_iN1 = skill;
+		if ( g_Cfg.IsSkillFlag(skill, SKF_MAGIC) )
+			pArgs->m_VarsLocal.SetNum("spell", m_atMagery.m_Spell, true);
+	}
 
 	return OnTrigger(ctrig, this, pArgs);
 }
