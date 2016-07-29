@@ -263,7 +263,7 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 	m_Can = pCharDef->m_Can;
 	m_wBloodHue = pCharDef->m_wBloodHue;	// when damaged , what color is the blood (-1) = no blood
 
-	SetName( pCharDef->GetTypeName());	// set the name in case there is a name template.
+	SetName(pCharDef->GetName());	// set the name in case there is a name template.
 
 	Skill_Cleanup();
 

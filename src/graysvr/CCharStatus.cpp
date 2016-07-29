@@ -973,12 +973,8 @@ bool CChar::CanSee( const CObjBaseTemplate *pObj ) const
 	if ( !pObj || IsDisconnected() || !pObj->GetTopLevelObj()->GetTopPoint().IsValidPoint() )
 		return false;
 
-	// If an object is normally visible at radar distance, then it is not affected by GetSight()
-	int iVisualRange = pObj->GetVisualRange();
-	if (iVisualRange < UO_MAP_VIEW_RADAR)
-		iVisualRange = GetSight();
-
 	// First check the distance since if this will fail, we do not need to scan all subcontainers to find this result ;)
+	int iVisualRange = GetSight();
 	if ( pObj->GetTopLevelObj()->GetTopPoint().GetDistSight(GetTopPoint()) > iVisualRange )
 		return false;
 
@@ -1082,7 +1078,7 @@ bool CChar::CanSee( const CObjBaseTemplate *pObj ) const
 	}
 
 	if ( IsPriv(PRIV_ALLSHOW) && (pObj->IsTopLevel() || pObj->IsDisconnected()) )		// don't exclude for logged out and diff maps
-		return (GetTopPoint().GetDistSightBase(pObj->GetTopPoint()) <= pObj->GetVisualRange());
+		return (GetTopPoint().GetDistSightBase(pObj->GetTopPoint()) <= UO_MAP_VIEW_SIZE);
 
 	return true;
 }
@@ -1716,10 +1712,10 @@ bool CChar::CanSeeLOS( const CObjBaseTemplate *pObj, WORD wFlags ) const
 		const CChar *pChar = dynamic_cast<const CChar*>(pObj);
 		if ( pChar )
 			pt.m_z = minimum(pt.m_z + pChar->GetHeightMount(true), UO_SIZE_Z);
-		return CanSeeLOS_New(pt, NULL, pObj->GetVisualRange(), wFlags);
+		return CanSeeLOS_New(pt, NULL, UO_MAP_VIEW_SIZE, wFlags);
 	}
 	else
-		return CanSeeLOS(pObj->GetTopPoint(), NULL, pObj->GetVisualRange(), wFlags);
+		return CanSeeLOS(pObj->GetTopPoint(), NULL, UO_MAP_VIEW_SIZE, wFlags);
 }
 
 bool CChar::CanTouch( const CPointMap &pt ) const
@@ -1758,7 +1754,7 @@ bool CChar::CanTouch( const CObjBase *pObj ) const
 		switch ( pItem->GetType() )
 		{
 			case IT_SIGN_GUMP:	// can be seen from a distance.
-				return (iDist <= pObjTop->GetVisualRange());
+				return (iDist <= UO_MAP_VIEW_SIGHT);
 
 			case IT_SHRINE:		// We can use shrines when dead !!
 			case IT_TELESCOPE:

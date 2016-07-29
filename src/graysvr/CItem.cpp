@@ -2590,7 +2590,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			if ( !IsDisconnected() && !IsItemInContainer() && !IsItemEquipped())
 				return false;
 
-			SetUnkZ(static_cast<signed char>(s.GetArgVal()));
+			SetTopZ(static_cast<signed char>(s.GetArgVal()));
 			return true;
 		case IC_LINK:
 			m_uidLink = s.GetArgVal();

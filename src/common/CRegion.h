@@ -26,10 +26,6 @@ protected:
 		// don't set container flags through here.
 		m_UID.SetObjUID( dwIndex );	// Will have UID_F_ITEM as well.
 	}
-	void SetUnkZ( signed char z )
-	{
-		m_pt.m_z = z;
-	}
 
 public:
 	static const char *m_sClassName;
@@ -201,11 +197,6 @@ public:
 		ASSERT( pObj );
 		pObj = pObj->GetTopLevelObj();
 		return( GetTopDir( pObj, DirDefault ));
-	}
-
-	virtual int GetVisualRange() const
-	{
-		return( UO_MAP_VIEW_SIZE );
 	}
 
 	// Names

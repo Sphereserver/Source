@@ -205,17 +205,6 @@ public:
 	*/
 	BYTE GetResDisp() const { return m_ResDisp; }
 	/**
-	* @brief Updates the resdisp if the current is lesser.
-	* @param what the resdisp to update.
-	* @return true if success, false otherwise.
-	*/
-	bool SetGreaterResDisp(BYTE what)
-	{
-		if ( what > m_ResDisp )
-			return SetResDisp( what );	
-		return false;
-	}
-	/**
 	* @brief Sets the resdisp on this CAccount based on pClient version.
 	* @return true if success, false otherwise.
 	*/

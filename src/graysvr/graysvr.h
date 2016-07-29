@@ -1478,12 +1478,6 @@ public:
 			return( false );
 		return ( GetAccount()->SetResDisp( res ) );
 	}
-	bool SetGreaterResDisp( BYTE res )
-	{
-		if ( GetAccount() == NULL )
-			return( false );
-		return( GetAccount()->SetGreaterResDisp( res ) );
-	}
 	// ------------------------------------------------
 	void SetScreenSize(DWORD x, DWORD y)
 	{

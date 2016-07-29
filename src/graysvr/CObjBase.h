@@ -1024,11 +1024,6 @@ public:
 	bool IsTopLevelMultiLocked() const;
 	bool IsMovableType() const;
 	bool IsMovable() const;
-	int GetVisualRange() const	// virtual
-	{
-		return (GetDispID() >= ITEMID_MULTI) ? UO_MAP_VIEW_RADAR : UO_MAP_VIEW_SIZE;	// ( IsTypeMulti() ) why not this?
-	}
-
 	bool IsStackableException() const;
 	bool IsStackable( const CItem * pItem ) const;
 	bool IsStackableType() const

@@ -540,13 +540,8 @@ enum CREID_TYPE		// enum the creature art work. (dont allow any others !) also k
 
 	CREID_QTY				= 0x800,	// max number of base character types, based on art work
 
-	// re-use artwork to make other types on NPC's
-	NPCID_SCRIPT			= 0x801,
-
-	NPCID_SCRIPT2			= 0x4000,	// safe area for server specific NPC defintions
-	NPCID_Qty				= 0x8000,	// spawn types start here
-
-	SPAWNTYPE_START			= 0x8001
+	NPCID_SCRIPT			= 0x4000,	// safe area for server specific NPC defintions
+	SPAWNTYPE_START			= 0x8000
 };
 
 enum ANIM_TYPE	// not all creatures animate the same for some reason.
@@ -869,9 +864,7 @@ enum LAYER_TYPE		// defined by UO. Only one item can be in a slot.
 	LAYER_SKIRT,	// 23 = skirt or kilt.
 	LAYER_LEGS,		// 24= 0x18 = plate legs.
 
-#define LAYER_IS_VISIBLE(layer) ((layer)> LAYER_NONE && (layer) <= LAYER_HORSE )
-
-	// These are not part of the paper doll (but get sent to the client)
+	// These are not part of the paperdoll (but get sent to the client)
 	LAYER_HORSE,		// 25 = 0x19 = ride this object. (horse objects are strange?)
 	LAYER_VENDOR_STOCK,	// 26 = 0x1a = the stuff the vendor will restock and sell to the players
 	LAYER_VENDOR_EXTRA,	// 27 = 0x1b = the stuff the vendor will resell to players but is not restocked. (bought from players)
@@ -1290,8 +1283,7 @@ enum VERFILE_TYPE		// skew list. (verdata.mul)
 enum VERFILE_FORMAT	// mul formats
 {
 	VERFORMAT_ORIGINAL = 0x01,	// original mul format
-	VERFORMAT_HIGHSEAS = 0x02,	// high seas mul format
-	VERFORMAT_QTY
+	VERFORMAT_HIGHSEAS = 0x02	// high seas mul format
 };
 
 struct CUOVersionBlock	// skew list. (verdata.mul)
@@ -1480,12 +1472,7 @@ struct CUOMapMeter	// 3 bytes (map0.mul)
 	signed char m_z;
 	static bool IsTerrainNull( WORD wTerrainIndex )
 	{
-		switch ( wTerrainIndex )
-		{
-			case 0x244: //580
-				return true;
-		}
-		return false;
+		return (wTerrainIndex == 0x244) ? true : false;
 	}
 } PACK_NEEDED;
 
@@ -1668,12 +1655,10 @@ struct CUOHuesRec // (Hues.mul)
 
 #define LIGHT_BRIGHT	0
 #define LIGHT_DARK		30
-#define LIGHT_BLACK		32
 
 // Turn off structure packing.
 #if defined _WIN32 && (!__MINGW32__)
 #pragma pack()
 #endif
-
 
 #endif // _INC_GRAYMUL_H

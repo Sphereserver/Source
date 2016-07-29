@@ -577,19 +577,6 @@ public:
 			int m_iYChange;		// tdata4= Y position to change
 		} m_ttDoor;
 
-		// IT_GAME_PIECE
-		struct
-		{
-			int m_iStartPosX;	// tdata1=
-			int m_iStartPosY;	// tdata2=
-		} m_ttGamePiece;
-
-		// IT_BED
-		struct
-		{
-			int m_iDir;		// tdata1= direction of the bed. DIR_TYPE
-		} m_ttBed;
-
 		// IT_FOLIAGE - is not consumed on reap (unless eaten then will regrow invis)
 		// IT_CROPS	- is consumed and will regrow invis.
 		struct
@@ -866,7 +853,7 @@ public:
 
 inline bool CItemBase::IsVisibleLayer( LAYER_TYPE layer ) // static
 {
-	return( LAYER_IS_VISIBLE( layer ));
+	return ( layer > LAYER_NONE && layer <= LAYER_HORSE );
 }
 
 inline bool CItemBase::IsValidDispID( ITEMID_TYPE id ) // static

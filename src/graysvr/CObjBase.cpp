@@ -909,7 +909,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 					pChar = GetUID().CharFind();
 
 					if ( pChar )
-						sVal.FormatVal(bCanSee ? pChar->CanSee(pObj) : pChar->CanSeeLOS(pt, NULL, pChar->GetVisualRange(), static_cast<WORD>(flags)));
+						sVal.FormatVal(bCanSee ? pChar->CanSee(pObj) : pChar->CanSeeLOS(pt, NULL, UO_MAP_VIEW_SIZE, static_cast<WORD>(flags)));
 					else
 						sVal.FormatVal(0);
 
@@ -2541,18 +2541,16 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 
 		case OV_FIX:
 			s.GetArgStr()[0] = '\0';
-		case OV_Z:	//	ussually in "SETZ" form
+		case OV_Z:
 			EXC_SET("FIX or Z");
-			if ( IsItemEquipped())
-				return( false );
-			if ( s.HasArgs())
+			if ( IsItemEquipped() )
+				return false;
+			if ( s.HasArgs() )
+				SetTopZ(static_cast<signed char>(s.GetArgVal()));
+			else if ( IsTopLevel() )
 			{
-				SetUnkZ( static_cast<signed char>(s.GetArgVal()));
-			}
-			else if ( IsTopLevel())
-			{
-				CChar *pChar = dynamic_cast <CChar *>(this);
-				CItem *pItem = dynamic_cast <CItem *>(this);
+				CChar *pChar = dynamic_cast<CChar *>(this);
+				CItem *pItem = dynamic_cast<CItem *>(this);
 				if ( pChar )
 					SetTopZ(pChar->GetFixZ(GetTopPoint()));
 				else if ( pItem )
