@@ -5,11 +5,11 @@ addons:
     packages:
     - gcc-4.6-multilib
     - g++-4.6-multilib
-    - linux-libc-dev
+    - linux-libc-dev:i386
     - libmysqld-dev
     - libmysql++-dev
     - libmysqlclient-dev
 sudo: required
 before_script:
-  - sudo ln -s /usr/include/i386-linux-gnu/asm /usr/include/asm
+  - sudo ln -s /usr/include/asm-generic /usr/include/asm
 script: make
