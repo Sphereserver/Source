@@ -1,11 +1,6 @@
 language: cpp
 compiler: gcc
-addons:
-  apt:
-    packages:
-    - gcc-4.6-multilib
-    - g++-4.6-multilib
-sudo: required
-before_script:
-  - sudo ln -s /usr/include/asm-generic /usr/include/asm
+before_install:
+  - sudo apt-get install libmysql++
+  - sudo apt-get install libmysqlclient:i686
 script: make
