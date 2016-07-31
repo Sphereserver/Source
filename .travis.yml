@@ -1,6 +1,6 @@
 language: cpp
 compiler: gcc
 before_install:
-  - sudo apt-get install libmysql++
-  - sudo apt-get install libmysqlclient:i686
+  - sudo apt-get install libmysql++3
+  - sudo apt-get install libmysqlclient18
 script: make
