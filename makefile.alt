@@ -16,7 +16,7 @@ DEBUG	= -s
 endif
 
 # DB includes + libs
-DBINCL	= -I/usr/include/mysql
+DBINCL	= -I/usr/include/mysql -L/usr/lib/mysql
 DBLIBS	= -lmysqlclient
 
 # Linux
@@ -210,4 +210,3 @@ $(EXE): git flags gray
 %.co:	%.c
 	@echo " Compiling $<"
 	@$(CCO) -c $(CO_FLAGS) $(CC_FLAGS) $< -o $(@:.co=.o)
-
