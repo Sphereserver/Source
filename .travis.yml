@@ -3,8 +3,7 @@ compiler: gcc
 before_install:
   - sudo apt-get install libmysql++3
   - sudo apt-get install libmysqlclient18
-  - sudo ls /usr/include/mysql
-  - sudo locate libmysqlclient
-  - sudo apt-get install gcc-4.6-multilib
-  - sudo apt-get install g++-4.6-multilib
+  - sudo ln -s /usr/lib64/libmysqlclient.so.18 /usr/lib/libmysqlclient.so.18
+  - sudo apt-get install gcc-4.8-multilib
+  - sudo apt-get install g++-4.8-multilib
 script: make
