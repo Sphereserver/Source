@@ -9,4 +9,7 @@ addons:
     - libmysqld-dev
     - libmysql++-dev
     - libmysqlclient-dev
+sudo: required
+before_script:
+  - sudo ln -s /usr/include/i386-linux-gnu/asm /usr/include/asm
 script: make
