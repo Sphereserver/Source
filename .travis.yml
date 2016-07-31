@@ -5,4 +5,7 @@ addons:
     packages:
     - gcc-4.6-multilib
     - g++-4.6-multilib
+    - libmysqld-dev
+    - libmysql++-dev
+    - libmysqlclient-dev:i386
 script: make
