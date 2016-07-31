@@ -7,5 +7,6 @@ addons:
     - g++-4.6-multilib
     - libmysqld-dev
     - libmysql++-dev
+    - libmysqlclient-dev
     - libmysqlclient-dev:i386
 script: make
