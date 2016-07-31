@@ -9,7 +9,7 @@ WARN	= -Wall -Wextra -Wno-unknown-pragmas -Wno-invalid-offsetof -Wno-switch
 DEBUG	= -s
 
 # DB includes + libs
-DBINCL	= -I/usr/include/mysql -L/usr/lib/mysql
+DBINCL	= -I/usr/include/mysql
 DBLIBS	= -lmysqlclient
 #DBDEFS	= -D_DBPLUGIN
 
