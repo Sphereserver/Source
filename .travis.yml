@@ -1,8 +1,8 @@
 language: cpp
 compiler: gcc
 sudo: required
-before_install:
-  sudo apt-get install libmysqld-dev
-  sudo apt-get install libmysql++ libmysql++-dev
-  sudo apt-get install libmysqlclient-dev:i386
+before_script:
+  - sudo apt-get install libmysqld-dev
+  - sudo apt-get install libmysql++ libmysql++-dev
+  - sudo apt-get install libmysqlclient-dev:i386
 script: make
