@@ -5,6 +5,7 @@ addons:
     packages:
     - gcc-4.6-multilib
     - g++-4.6-multilib
+    - libmysqlclient-dev
 sudo: required
 before_script:
   - sudo ln -s /usr/include/asm-generic /usr/include/asm
