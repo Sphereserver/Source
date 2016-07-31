@@ -1,3 +1,5 @@
 language: cpp
 compiler: gcc
+sudo: required
+before_install: sudo apt-get install gcc-multilib
 script: make
