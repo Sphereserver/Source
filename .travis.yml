@@ -5,6 +5,7 @@ addons:
     packages:
     - gcc-4.6-multilib
     - g++-4.6-multilib
+    - linux-libc-dev
     - libmysqld-dev
     - libmysql++-dev
     - libmysqlclient-dev
