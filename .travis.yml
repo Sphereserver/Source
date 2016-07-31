@@ -8,5 +8,4 @@ addons:
     - libmysqld-dev
     - libmysql++-dev
     - libmysqlclient-dev
-    - libmysqlclient-dev:i386
 script: make
