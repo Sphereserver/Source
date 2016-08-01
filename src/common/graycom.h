@@ -11,6 +11,7 @@
 #include <stdarg.h>
 #include <ctype.h>
 #include <assert.h>
+#include <cinttypes>
 
 #ifdef _WIN32
 // NOTE: If we want a max number of sockets we must compile for it !

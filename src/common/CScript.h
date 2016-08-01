@@ -215,19 +215,11 @@ public:
 
 	void WriteKeyVal( LPCTSTR pszKey, INT64 dwVal )
 	{
-#ifdef __MINGW32__
-		WriteKeyFormat( pszKey, "%I64d", dwVal );
-#else  // __MINGW32__
-		WriteKeyFormat( pszKey, "%lld", dwVal );
-#endif  // __MINGW32__
+		WriteKeyFormat(pszKey, "%" PRId64, dwVal);
 	}
 	void WriteKeyHex( LPCTSTR pszKey, INT64 dwVal )
 	{
-#ifdef __MINGW32__
-		WriteKeyFormat( pszKey, "0%I64x", dwVal );
-#else  // __MINGW32__
-		WriteKeyFormat( pszKey, "0%llx", dwVal );
-#endif  // __MINGW32__
+		WriteKeyFormat(pszKey, "0%" PRIx64, dwVal);
 	}
 
 	CScript();
