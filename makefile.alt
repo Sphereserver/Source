@@ -1,7 +1,7 @@
 SHELL   = /bin/bash
 
 # Generic makefile
-MARCH = -march=i686 -m32
+MARCH = -march=i686
 OPTDEFAULT = -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
 COPTDEFAULT = -fno-omit-frame-pointer -ffast-math $(MARCH)
 OPT 	= -O0 -fno-expensive-optimizations $(OPTDEFAULT)
