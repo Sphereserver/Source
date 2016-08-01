@@ -5,6 +5,10 @@ addons:
     packages:
     - gcc-4.6-multilib
     - g++-4.6-multilib
+    - libdbi-perl:i386
+    - libdbd-mysql-perl:i386
+    - perl:i386
+    - libterm-readkey-perl:i386
     - libmysqlclient-dev:i386
     - libmysqlclient18:i386
     - mysql-client-5.5:i386
