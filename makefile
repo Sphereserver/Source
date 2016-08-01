@@ -1,28 +1,45 @@
 SHELL   = /bin/bash
 
 # Generic makefile
-OPTDEFAULT = -fno-omit-frame-pointer -ffast-math -fpermissive
+ifdef FORCE32
+MARCH = -march=i686 -m32
+endif
+
+OPTDEFAULT = -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
+COPTDEFAULT = -fno-omit-frame-pointer -ffast-math $(MARCH)
 OPT 	= -O0 -fno-expensive-optimizations $(OPTDEFAULT)
-WARN	= -Wall -Wextra -Wno-unknown-pragmas -Wno-invalid-offsetof -Wno-switch
-#WARN	= -w
+COPT	= -O0 -fno-expensive-optimizations $(COPTDEFAULT)
+WARN	= -Wall -Wno-unknown-pragmas -Wno-invalid-offsetof -Wno-unused-but-set-variable -Wno-switch
+CWARN	= -Wall -Wno-unknown-pragmas -Wno-unused-but-set-variable -Wno-switch -Wno-implicit-function-declaration
+
+ifdef DBG
+DEBUG	= -s -ggdb3
+else
 DEBUG	= -s
+endif
 
 # DB includes + libs
 DBINCL	= -I/usr/include/mysql
 DBLIBS	= -lmysqlclient
-#DBDEFS	= -D_DBPLUGIN
 
 # Linux
 INCLUDE	= -I./src/common $(DBINCL)
 LIBS	= -dynamic -L/usr/lib -lpthread $(DBLIBS) -lrt -ldl
 DEFNIX  = -D_LINUX
 
-# Nightly and Debug flags are activated by dedicated rules later on
-NIGHTLYDEFS = -D_NIGHTLYBUILD -DTHREAD_TRACK_CALLSTACK
-DEBUGDEFS = -D_DEBUG -D_PACKETDUMP -D_TESTEXCEPTION -DDEBUG_CRYPT_MSGS
+ifdef NIGHTLY
+NIGHTLYDEFS = -D_NIGHTLYBUILD
+# NIGHTLYDEFS = -D_NIGHTLYBUILD -DTHREAD_TRACK_CALLSTACK
+endif
+
+ifdef DBG
+DEBUGDEFS = -D_DEBUG -DTHREAD_TRACK_CALLSTACK
+DBGWARN = -Wno-unused-variable
+# DEBUGDEFS = -D_DEBUG -D_PACKETDUMP -D_TESTEXCEPTION -DDEBUG_CRYPT_MSGS
+endif
 
 EXTRADEFS = -D_MTNETWORK
-DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFNIX) $(EXTRADEFS) $(DBDEFS)
+DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFNIX) $(NIGHTLYDEFS) $(EXTRADEFS) $(DEBUGDEFS)
 
 EXE	= spheresvr
 
@@ -31,14 +48,13 @@ CCO	= gcc
 
 NO	= -fno-rtti -fno-exceptions
 EX	= -fexceptions -fnon-call-exceptions
-STRICT  = # -mstrict-align
-SPECIAL = $(EX) $(STRICT) $(DEBUG)
-
-PROF	= -pg
-PIPE	= -pipe
+SPECIAL = $(EX) $(DEBUG)
 
 GITHASH = $(shell git log -1 HEAD --format=%h)
 GITREVISION = $(shell expr $(shell git rev-list --count HEAD) - 2406)
+
+PROF	= -pg
+PIPE	= -pipe
 
 SRC	:= 	./src/graysvr/CAccount.cpp \
 		./src/graysvr/CBase.cpp \
@@ -148,11 +164,13 @@ SRC	:= 	./src/graysvr/CAccount.cpp \
 		./src/network/send.cpp \
 		./src/network/receive.cpp
 
-O_FLAGS	= $(WARN) $(PIPE) $(SPECIAL)
-C_FLAGS	= $(OPT) $(INCLUDE) $(DEFINES)
+O_FLAGS		= $(WARN) $(DBGWARN) $(PIPE) $(SPECIAL)
+CO_FLAGS	= $(CWARN) $(DBGWARN) $(PIPE) $(SPECIAL)
+C_FLAGS		= $(OPT) $(INCLUDE) $(DEFINES)
+CC_FLAGS	= $(COPT) $(INCLUDE) $(DEFINES)
 
 
-.PHONY:	all clean tidy debug-nightly
+.PHONY:	all clean tidy
 
 all:	$(EXE)
 
@@ -181,12 +199,9 @@ git:
 
 gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
 
+
 flags:  
 	@echo "Compiler Flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)"
-
-debug: ; $(eval DEFINES := $(DEFINES) $(DEBUGDEFS) $(NIGHTLYDEFS))
-
-nightly: debug $(EXE)	
 
 $(EXE): git flags gray
 	@$(CC) $(O_FLAGS) $(C_FLAGS) -o $(EXE) ./src/graysvr/*.o ./src/common/*.o ./src/common/twofish/*.o ./src/common/libev/*.o ./src/common/zlib/*.o ./src/common/sqlite/*.o ./src/sphere/*.o ./src/network/*.o $(LIBS)
@@ -197,4 +212,4 @@ $(EXE): git flags gray
 
 %.co:	%.c
 	@echo " Compiling $<"
-	@$(CCO) -c $(O_FLAGS) $(C_FLAGS) $< -o $(@:.co=.o)
+	@$(CCO) -c $(CO_FLAGS) $(CC_FLAGS) $< -o $(@:.co=.o)
