@@ -7,6 +7,6 @@ addons:
     - g++-4.6-multilib
     - libmysqlclient-dev:i386
     - libmysqlclient18:i386
-    - mysql-client:i386
-    - mysql-server:i386
+    - mysql-client-5.5:i386
+    - mysql-server-5.5:i386
 script: make NIGHTLY=1 -f makefile.alt
