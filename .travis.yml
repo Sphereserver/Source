@@ -1,14 +1,12 @@
 language: cpp
 compiler: gcc
-sudo: required
-before_install:
-  - sudo apt-get install perl:i386
-  - sudo apt-get install libdbi-perl:i386
-  - sudo apt-get install mysql-client-5.5:i386
-  - sudo apt-get install mysql-server-5.5:i386
-  - sudo apt-get install libmysql++3:i386
-  - sudo apt-get install libmysqlclient18:i386
-  - sudo apt-get install libmysqlclient-dev:i386
-  - sudo apt-get install gcc-4.6-multilib
-  - sudo apt-get install g++-4.6-multilib
+addons:
+  apt:
+    packages:
+    - gcc-4.6-multilib
+    - g++-4.6-multilib
+    - libmysqlclient-dev:i386
+    - libmysqlclient18:i386
+    - mysql-client:i386
+    - mysql-server:i386
 script: make NIGHTLY=1 -f makefile.alt
