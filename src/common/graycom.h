@@ -2,6 +2,10 @@
 #define _INC_GRAYCOM_H
 #pragma once
 
+#ifndef __STDC_FORMAT_MACROS
+	#define __STDC_FORMAT_MACROS	// required to make inttypes.h set defs correctly
+#endif
+
 //---------------------------SYSTEM DEFINITIONS---------------------------
 
 #include <stdio.h>
