@@ -3,6 +3,9 @@ compiler: gcc
 sudo: required
 before_install:
   - sudo apt-get install mysql-server-5.5:i386
+  - sudo apt-get install mysql-client-5.5:i386
+  - sudo apt-get install libdbi-perl:i386
+  - sudo apt-get install perl:i386
   - sudo apt-get install libmysql++3:i386
   - sudo apt-get install libmysqlclient18:i386
   - sudo apt-get install libmysqlclient-dev:i386
