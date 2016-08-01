@@ -1,9 +1,8 @@
 SHELL   = /bin/bash
 
 # Generic makefile
-MARCH = -march=i686
-OPTDEFAULT = -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
-COPTDEFAULT = -fno-omit-frame-pointer -ffast-math $(MARCH)
+OPTDEFAULT = -fno-omit-frame-pointer -ffast-math -fpermissive
+COPTDEFAULT = -fno-omit-frame-pointer -ffast-math
 OPT 	= -O0 -fno-expensive-optimizations $(OPTDEFAULT)
 COPT	= -O0 -fno-expensive-optimizations $(COPTDEFAULT)
 WARN	= -Wall -Wno-unknown-pragmas -Wno-invalid-offsetof -Wno-unused-but-set-variable -Wno-switch
