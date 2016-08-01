@@ -5,16 +5,6 @@ addons:
     packages:
     - gcc-4.6-multilib
     - g++-4.6-multilib
-    - perlapi-5.14.2:i386
-    - libplrpc-perl:i386
-    - libdbi-perl:i386
-    - libdbd-mysql-perl:i386
-    - perl-base:i386
-    - perl-modules:i386
-    - perl:i386
-    - libterm-readkey-perl:i386
-    - libmysqlclient-dev:i386
+    - libmysql++3:i386
     - libmysqlclient18:i386
-    - mysql-client-5.5:i386
-    - mysql-server-5.5:i386
 script: make NIGHTLY=1 -f makefile.alt
