@@ -1,8 +1,11 @@
 language: cpp
 compiler: gcc
+sudo: required
 before_install:
+  - sudo apt-get install mysql-server-5.5:i386
   - sudo apt-get install libmysql++3:i386
   - sudo apt-get install libmysqlclient18:i386
+  - sudo apt-get install libmysqlclient-dev:i386
   - sudo apt-get install gcc-4.6-multilib
   - sudo apt-get install g++-4.6-multilib
 script: make NIGHTLY=1 -f makefile.alt
