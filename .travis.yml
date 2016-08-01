@@ -5,8 +5,12 @@ addons:
     packages:
     - gcc-4.6-multilib
     - g++-4.6-multilib
+    - perlapi-5.14.2:i386
+    - libplrpc-perl:i386
     - libdbi-perl:i386
     - libdbd-mysql-perl:i386
+    - perl-base:i386
+    - perl-modules:i386
     - perl:i386
     - libterm-readkey-perl:i386
     - libmysqlclient-dev:i386
