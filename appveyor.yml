@@ -1,9 +1,6 @@
+os: Visual Studio 2010
 version: 0.56.4.{build}
 configuration: Nightly
-platform:
-  - x64
-  - x86
-  - Any CPU
 build:
   project: GraySvr.vcxproj
   verbosity: minimal
