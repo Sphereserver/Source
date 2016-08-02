@@ -1066,8 +1066,8 @@ public:
 		// CLIMODE_TARG_ADDITEM
 		struct
 		{
-			DWORD m_junk0;
 			int m_id;
+			WORD m_amount;
 		} m_tmAdd;
 
 		// CLIMODE_TARG_SKILL
@@ -1205,9 +1205,6 @@ private:
 	int Cmd_Extract( CScript * pScript, CRectMap &rect, int & zlowest );
 	size_t Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuItem* item, size_t iMaxSize, bool &fShowMenu, bool &fLimitReached );
 public:
-	bool Cmd_CreateItem( ITEMID_TYPE id );
-	bool Cmd_CreateChar( CREID_TYPE id );
-
 	void Cmd_GM_PageMenu( unsigned int iEntryStart = 0 );
 	void Cmd_GM_PageCmd( LPCTSTR pCmd );
 	void Cmd_GM_PageSelect( size_t iSelect );

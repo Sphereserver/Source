@@ -797,26 +797,31 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 	switch (index)
 	{
 		case CV_ADD:
-			if ( s.HasArgs())
+			if ( s.HasArgs() )
 			{
-				// FindItemName ???
-				TCHAR * pszArgs = s.GetArgStr();
-				if ( !IsValidGameObjDef( static_cast<LPCTSTR>(pszArgs) ) )
+				TCHAR *ppArgs[2];
+				size_t iQty = Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
+
+				if ( !IsValidGameObjDef(static_cast<LPCTSTR>(ppArgs[0])) )
 				{
-					g_Log.EventWarn("Invalid ADD argument '%s'\n", pszArgs);
-					SysMessageDefault( DEFMSG_CMD_INVALID );
+					g_Log.EventWarn("Invalid ADD argument '%s'\n", ppArgs[0]);
+					SysMessageDefault(DEFMSG_CMD_INVALID);
 					return true;
 				}
 
-				RESOURCE_ID rid = g_Cfg.ResourceGetID( RES_QTY, const_cast<LPCTSTR &>(reinterpret_cast<LPTSTR &>(pszArgs)));
-				if (( rid.GetResType() == RES_CHARDEF ) || ( rid.GetResType() == RES_SPAWN ))
+				RESOURCE_ID rid = g_Cfg.ResourceGetID(RES_QTY, const_cast<LPCTSTR &>(ppArgs[0]));
+				m_tmAdd.m_id = rid.GetResIndex();
+				m_tmAdd.m_amount = (iQty > 1) ? static_cast<WORD>(maximum(ATOI(ppArgs[1]), 1)) : 1;
+
+				if ( (rid.GetResType() == RES_CHARDEF) || (rid.GetResType() == RES_SPAWN) )
 				{
 					m_Targ_PrvUID.InitUID();
-					return Cmd_CreateChar(static_cast<CREID_TYPE>(rid.GetResIndex()));
+					return addTargetChars(CLIMODE_TARG_ADDCHAR, static_cast<CREID_TYPE>(m_tmAdd.m_id), false);
 				}
-
-				ITEMID_TYPE id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
-				return Cmd_CreateItem( id );
+				else
+				{
+					return addTargetItems(CLIMODE_TARG_ADDITEM, static_cast<ITEMID_TYPE>(m_tmAdd.m_id));
+				}
 			}
 			else
 			{

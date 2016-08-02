@@ -650,22 +650,6 @@ void CClient::Cmd_EditItem( CObjBase *pObj, int iSelect )
 	addItemMenu(CLIMODE_MENU_EDIT, item, count, pObj);
 }
 
-bool CClient::Cmd_CreateItem( ITEMID_TYPE id )
-{
-	ADDTOCALLSTACK("CClient::Cmd_CreateItem");
-	// make an item near by (GM or script used only)
-	m_tmAdd.m_id = id;
-	return addTargetItems(CLIMODE_TARG_ADDITEM, static_cast<ITEMID_TYPE>(m_tmAdd.m_id));
-}
-
-bool CClient::Cmd_CreateChar( CREID_TYPE id )
-{
-	ADDTOCALLSTACK("CClient::Cmd_CreateChar");
-	// make a creature near by (GM or script used only)
-	m_tmAdd.m_id = id;
-	return addTargetChars(CLIMODE_TARG_ADDCHAR, id, false);
-}
-
 bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 {
 	ADDTOCALLSTACK("CClient::Cmd_Skill_Menu");

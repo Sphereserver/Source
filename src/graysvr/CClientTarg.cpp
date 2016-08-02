@@ -303,7 +303,8 @@ bool CClient::OnTarg_Char_Add( CObjBase * pObj, const CPointMap & pt )
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Char_Add");
 	// CLIMODE_TARG_ADDCHAR
-	// m_tmAdd.m_id = char id
+	// m_tmAdd.m_id
+	// m_tmAdd.m_amount
 	ASSERT(m_pChar);
 
 	if ( !pt.GetRegion(REGION_TYPE_AREA) )
@@ -311,17 +312,20 @@ bool CClient::OnTarg_Char_Add( CObjBase * pObj, const CPointMap & pt )
 	if ( pObj && pObj->IsItemInContainer() )
 		return false;
 
-	CChar *pChar = CChar::CreateBasic(static_cast<CREID_TYPE>(m_tmAdd.m_id));
-	if ( !pChar )
-		return false;
+	for ( WORD i = 0; i < m_tmAdd.m_amount; i++ )
+	{
+		CChar *pChar = CChar::CreateBasic(static_cast<CREID_TYPE>(m_tmAdd.m_id));
+		if ( !pChar )
+			return false;
 
-	pChar->NPC_LoadScript(true);
-	pChar->MoveToChar(pt);
-	pChar->NPC_CreateTrigger();		// removed from NPC_LoadScript() and triggered after char placement
-	pChar->Update();
-	pChar->UpdateAnimate(ANIM_CAST_DIR);
-	pChar->SoundChar(CRESND_GETHIT);
-	m_pChar->m_Act_Targ = pChar->GetUID();		// for last target stuff. (trigger stuff)
+		pChar->NPC_LoadScript(true);
+		pChar->MoveToChar(pt);
+		pChar->NPC_CreateTrigger();		// removed from NPC_LoadScript() and triggered after char placement
+		pChar->Update();
+		pChar->UpdateAnimate(ANIM_CAST_DIR);
+		pChar->SoundChar(CRESND_GETHIT);
+		m_pChar->m_Act_Targ = pChar->GetUID();		// for last target stuff (trigger stuff)
+	}
 	return true;
 }
 
@@ -329,7 +333,8 @@ bool CClient::OnTarg_Item_Add( CObjBase * pObj, CPointMap & pt )
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Item_Add");
 	// CLIMODE_TARG_ADDITEM
-	// m_tmAdd.m_id = item id
+	// m_tmAdd.m_id
+	// m_tmAdd.m_amount
 	ASSERT(m_pChar);
 
 	if ( !pt.GetRegion(REGION_TYPE_AREA) )
@@ -348,6 +353,7 @@ bool CClient::OnTarg_Item_Add( CObjBase * pObj, CPointMap & pt )
 		return pMulti ? true : false;
 	}
 
+	pItem->SetAmount(m_tmAdd.m_amount);
 	pItem->MoveToCheck(pt, m_pChar);
 	m_pChar->m_Act_Targ = pItem->GetUID();		// for last target stuff (trigger stuff) and to make AxisII able to initialize placed spawn items.
 	return true;
