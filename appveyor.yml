@@ -1,5 +1,6 @@
 version: 0.56.4.{build}
 configuration: Nightly
+platform: Any CPU
 build:
   project: GraySvr.vcxproj
   verbosity: minimal

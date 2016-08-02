@@ -5,4 +5,7 @@ before_install:
   - sudo apt-get install libmysql++3:i386
   - sudo apt-get install gcc-4.6-multilib
   - sudo apt-get install g++-4.6-multilib
-script: make NIGHTLY=1 -f makefile
+script:
+  - make NIGHTLY=1 -f makefile
+notifications:
+  email: false
