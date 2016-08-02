@@ -1774,6 +1774,15 @@ bool CChar::ItemBounce( CItem * pItem, bool bDisplayMsg )
 	LPCTSTR pszWhere = NULL;
 	if ( pPack && CanCarry(pItem) )		// this can happen at load time
 	{
+		if ( IsTrigUsed(TRIGGER_DROPON_ITEM) )
+		{
+			CScriptTriggerArgs Args(pPack);
+			pItem->OnTrigger(ITRIG_DROPON_ITEM, this, &Args);
+
+			if ( pItem->IsDeleted() )	// the trigger had deleted the item
+				return false;
+		}
+
 		pszWhere = g_Cfg.GetDefaultMsg( DEFMSG_MSG_BOUNCE_PACK );
 		pItem->RemoveFromView();
 		pPack->ContentAdd(pItem);		// add it to pack

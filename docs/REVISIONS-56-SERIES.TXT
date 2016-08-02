@@ -136,3 +136,7 @@ Fixed: Function MOVENEAR not working correctly.
 23-07-2016, Coruja
 Fixed: Corpses being created without MORE2 set (last attacker UID) when the char die.
 Changed: Updated pick/drop sound on items/containers.
+
+01-08-2016, Coruja
+Fixed: Items inside trade window not firing @DropOn_Item trigger when the trade move the item to player bacpkack.
+	PS: Using return 1 here will not cancel the trade, this must be done directly on @TradeAccepted/@CharTradeAccepted triggers.
