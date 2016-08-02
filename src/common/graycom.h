@@ -2,10 +2,6 @@
 #define _INC_GRAYCOM_H
 #pragma once
 
-#ifndef __STDC_FORMAT_MACROS
-	#define __STDC_FORMAT_MACROS	// required to make inttypes.h set defs correctly
-#endif
-
 //---------------------------SYSTEM DEFINITIONS---------------------------
 
 #include <stdio.h>
@@ -15,7 +11,6 @@
 #include <stdarg.h>
 #include <ctype.h>
 #include <assert.h>
-#include <inttypes.h>
 
 #ifdef _WIN32
 // NOTE: If we want a max number of sockets we must compile for it !
