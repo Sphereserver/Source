@@ -547,14 +547,14 @@ public:
 	TRIGRET_TYPE OnRegionTrigger( CTextConsole * pChar, RTRIG_TYPE trig );
 
 public:
-	LPCTSTR GetDefStr( LPCTSTR pszKey, bool fZero = false ) const
+	LPCTSTR GetDefStr(LPCTSTR pszKey, bool fZero = false) const
 	{
-		return m_BaseDefs.GetKeyStr( pszKey, fZero );
+		return m_BaseDefs.GetKeyStr(pszKey, fZero);
 	}
 
-	INT64 GetDefNum( LPCTSTR pszKey, bool fZero = false ) const
+	INT64 GetDefNum(LPCTSTR pszKey) const
 	{
-		return m_BaseDefs.GetKeyNum( pszKey, fZero );
+		return m_BaseDefs.GetKeyNum(pszKey);
 	}
 
 	void SetDefNum(LPCTSTR pszKey, INT64 iVal, bool fZero = true)

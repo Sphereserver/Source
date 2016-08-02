@@ -923,7 +923,7 @@ CGrayUID CItemMemory::Guild_GetLoyalTo() const
 {
 	ADDTOCALLSTACK("CItemMemory::Guild_GetLoyalTo");
 	CItemMemory *pObj = const_cast<CItemMemory *>(this);
-	return static_cast<CGrayUID>(pObj->GetTagDefs()->GetKeyNum("LoyalTo", true));
+	return static_cast<CGrayUID>(pObj->GetTagDefs()->GetKeyNum("LoyalTo"));
 }
 
 int CItemMemory::Guild_SetTitle(LPCTSTR pszTitle)

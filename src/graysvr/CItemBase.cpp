@@ -154,7 +154,7 @@ void CItemBase::CopyBasic( const CItemBase * pBase )
 	m_flip_id	= pBase->m_flip_id;
 	m_type		= pBase->m_type;
 	m_layer		= pBase->m_layer;
-	SetDefNum("RANGE",pBase->GetDefNum("RANGE",true)); //m_range		= pBase->m_range;
+	SetDefNum("RANGE", pBase->GetDefNum("RANGE"));	// m_range = pBase->m_range;
 
 	// Just applies to weapons/armor.
 	m_ttNormal.m_tData1 = pBase->m_ttNormal.m_tData1;
@@ -943,9 +943,8 @@ int CItemBase::CalculateMakeValue( int iQualityLevel ) const
 
 BYTE CItemBase::GetSpeed() const
 {
-	if (m_TagDefs.GetKey("OVERRIDE.SPEED"))
-		return static_cast<BYTE>(m_TagDefs.GetKeyNum("OVERRIDE.SPEED"));
-	return m_speed;
+	BYTE iSpeed = static_cast<BYTE>(m_TagDefs.GetKeyNum("OVERRIDE.SPEED"));
+	return iSpeed ? iSpeed : m_speed;
 }
 
 int CItemBase::GetMakeValue( int iQualityLevel )
@@ -1071,9 +1070,8 @@ bool CItemBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pCha
 		case IBC_BONUSHITSMAX:
 		case IBC_BONUSSTAMMAX:
 		case IBC_BONUSMANAMAX:
-			sVal.FormatLLVal(GetDefNum(pszKey, true));
+			sVal.FormatLLVal(GetDefNum(pszKey));
 			break;
-
 
 		case IBC_MAXAMOUNT:
 			sVal.FormatVal(GetMaxAmount());
@@ -2159,7 +2157,7 @@ WORD CItemBase::GetMaxAmount()
 	if (!IsStackableType())
 		return 0;
 
-	WORD pMax = static_cast<WORD>(GetDefNum("MaxAmount", false));
+	WORD pMax = static_cast<WORD>(GetDefNum("MaxAmount"));
 	return pMax ? pMax : static_cast<WORD>(g_Cfg.m_iItemsMaxAmount);
 };
 

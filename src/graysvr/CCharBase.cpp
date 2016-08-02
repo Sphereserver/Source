@@ -147,7 +147,7 @@ bool CCharBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		case CBC_MAXFOLLOWER:
 		case CBC_BONDED:
 		case CBC_TITHING:
-			sVal.FormatLLVal(GetDefNum(pszKey, true));
+			sVal.FormatLLVal(GetDefNum(pszKey));
 			break;
 		case CBC_ANIM:
 			sVal.FormatHex( m_Anims );

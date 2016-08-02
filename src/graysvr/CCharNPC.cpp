@@ -816,7 +816,7 @@ bool CCharNPC::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 		sVal.FormatVal( m_bonded );
 		break;
 	case CNC_FOLLOWERSLOTS:
-		sVal.FormatLLVal(pChar->GetDefNum(pszKey, true, true));
+		sVal.FormatLLVal(pChar->GetDefNum(pszKey, true));
 		break;
 	case CNC_ACTPRI:
 		sVal.FormatVal( m_Act_Motivation );

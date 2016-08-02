@@ -1198,7 +1198,7 @@ bool CItemContainer::CanContainerHold( const CItem *pItem, const CChar *pCharMsg
 		return false;
 	}
 
-	size_t pTagTmp = static_cast<size_t>(GetKeyNum("OVERRIDE.MAXITEMS", true));
+	size_t pTagTmp = static_cast<size_t>(GetKeyNum("OVERRIDE.MAXITEMS"));
 	size_t tMaxItemsCont = pTagTmp ? pTagTmp : MAX_ITEMS_CONT;
 	if ( GetCount() >= tMaxItemsCont )
 	{

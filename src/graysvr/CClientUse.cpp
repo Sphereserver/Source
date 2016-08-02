@@ -987,9 +987,9 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase *pSrc )
 		if ( !pSpellDef->m_sTargetPrompt.IsEmpty() )
 			pPrompt = pSpellDef->m_sTargetPrompt;
 
-		int SpellTimeout = g_Cfg.m_iSpellTimeout * TICK_PER_SEC;
-		if ( m_pChar->GetDefNum("SPELLTIMEOUT", true) )
-			SpellTimeout = static_cast<int>(m_pChar->GetDefNum("SPELLTIMEOUT", true));
+		int SpellTimeout = static_cast<int>(m_pChar->GetDefNum("SPELLTIMEOUT"));
+		if ( !SpellTimeout )
+			SpellTimeout = g_Cfg.m_iSpellTimeout * TICK_PER_SEC;
 
 		addTarget(CLIMODE_TARG_SKILL_MAGERY, pPrompt, pSpellDef->IsSpellType(SPELLFLAG_TARG_XYZ), pSpellDef->IsSpellType(SPELLFLAG_HARM), SpellTimeout);
 		return true;
@@ -1262,7 +1262,7 @@ bool CClient::Cmd_SecureTrade( CChar *pChar, CItem *pItem )
 	if ( !pChar->IsClient() )	// and also offline players
 		return false;
 
-	if ( pChar->GetDefNum("REFUSETRADES", true) )
+	if ( pChar->GetDefNum("REFUSETRADES") )
 	{
 		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_REFUSE), pChar->GetName());
 		return false;

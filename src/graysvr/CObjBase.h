@@ -104,20 +104,18 @@ public:
 		m_timestamp.InitTime(t_time);
 	}
 
-	LPCTSTR GetDefStr( LPCTSTR pszKey, bool fZero = false, bool fDef = false ) const
+	LPCTSTR GetDefStr(LPCTSTR pszKey, bool fZero = false, bool fDef = false) const
 	{
-		CVarDefCont	* pVar = GetDefKey( pszKey, fDef );
+		CVarDefCont	*pVar = GetDefKey(pszKey, fDef);
 		if ( pVar == NULL )
 			return fZero ? "0" : "";
 		return pVar->GetValStr();
 	}
 
-	INT64 GetDefNum( LPCTSTR pszKey, bool fZero = false, bool fDef = false ) const
+	INT64 GetDefNum(LPCTSTR pszKey, bool fDef = false) const
 	{
-		CVarDefCont	* pVar = GetDefKey( pszKey, fDef );
-		if ( pVar == NULL )
-			return fZero ? 0 : NULL;
-		return pVar->GetValNum();
+		CVarDefCont	*pVar = GetDefKey(pszKey, fDef);
+		return pVar ? pVar->GetValNum() : 0;
 	}
 
 	void SetDefNum(LPCTSTR pszKey, INT64 iVal, bool fZero = true)
@@ -161,12 +159,10 @@ public:
 		return pVar->GetValStr();
 	}
 
-	INT64 GetKeyNum( LPCTSTR pszKey, bool fZero = false, bool fDef = false ) const
+	INT64 GetKeyNum( LPCTSTR pszKey, bool fDef = false ) const
 	{
-		CVarDefCont	* pVar = GetKey( pszKey, fDef );
-		if ( pVar == NULL )
-			return fZero ? 0 : NULL;
-		return pVar->GetValNum();
+		CVarDefCont	*pVar = GetKey(pszKey, fDef);
+		return pVar ? pVar->GetValNum() : 0;
 	}
 
 	CVarDefCont * GetKey( LPCTSTR pszKey, bool fDef ) const
@@ -1060,15 +1056,11 @@ public:
 	virtual bool SetName( LPCTSTR pszName );
 
 	virtual int GetWeight(WORD amount = 0) const
-	{		
+	{
 		WORD iWeight = m_weight * (amount ? amount : GetAmount());
 		CVarDefCont *pReduction = GetDefKey("WEIGHTREDUCTION", true);
 		if ( pReduction )
-		{
-			iWeight -= static_cast<WORD>(IMULDIV(iWeight, pReduction->GetValNum(), 100));
-			if ( iWeight < 0 )
-				iWeight = 0;
-		}
+			iWeight -= static_cast<WORD>(IMULDIV(iWeight, maximum(pReduction->GetValNum(), 0), 100));
 		return iWeight;
 	}
 
@@ -1276,7 +1268,7 @@ public:
 
 	//Doors
 	bool IsDoorOpen() const;
-	bool Use_Door( bool fJustOpen );
+	bool Use_Door( bool bJustOpen );
 	bool Use_DoorNew( bool bJustOpen );
 	bool Use_Portculis();
 	SOUND_TYPE Use_Music( bool fWell ) const;
@@ -3117,7 +3109,7 @@ public:
 			TCHAR *uidCheck = Str_GetTemp();
 			sprintf(uidCheck, "SeenBy_0%lx", static_cast<DWORD>(GetUID()));
 
-			if (!pItem->m_TagDefs.GetKeyNum(uidCheck, false))
+			if (!pItem->m_TagDefs.GetKeyNum(uidCheck))
 				return false;
 		}
 		return true;

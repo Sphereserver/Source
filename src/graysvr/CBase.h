@@ -44,14 +44,14 @@ public:
 	DWORD	m_Can;			// Base attribute flags. CAN_C_GHOST
 
 public:
-	LPCTSTR GetDefStr( LPCTSTR pszKey, bool fZero = false ) const
+	LPCTSTR GetDefStr(LPCTSTR pszKey, bool fZero = false) const
 	{
-		return m_BaseDefs.GetKeyStr( pszKey, fZero );
+		return m_BaseDefs.GetKeyStr(pszKey, fZero);
 	}
 
-	INT64 GetDefNum( LPCTSTR pszKey, bool fZero = false ) const
+	INT64 GetDefNum(LPCTSTR pszKey) const
 	{
-		return m_BaseDefs.GetKeyNum( pszKey, fZero );
+		return m_BaseDefs.GetKeyNum(pszKey);
 	}
 
 	void SetDefNum(LPCTSTR pszKey, INT64 iVal, bool fZero = true)
@@ -192,16 +192,14 @@ public:
 		return( m_sName.IsValid());
 	}
 
-	BYTE	RangeL() const
+	BYTE RangeL() const
 	{
-		return static_cast<BYTE>(GetDefNum("RANGE",true) & 0xff);
-		//return (m_range & 0xff);
+		return static_cast<BYTE>(GetDefNum("RANGE") & 0xff);
 	}
 
-	BYTE	RangeH() const
+	BYTE RangeH() const
 	{
-		return static_cast<BYTE>((GetDefNum("RANGE",true)>>8) & 0xff);
-		//return ((m_range>>8) & 0xff);
+		return static_cast<BYTE>((GetDefNum("RANGE") >> 8) & 0xff);
 	}
 
 	height_t GetHeight() const

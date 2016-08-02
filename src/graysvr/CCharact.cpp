@@ -451,89 +451,89 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 
 		if ( pItem->IsTypeArmorWeapon() )
 		{
-			SetDefNum("DAMPHYSICAL", GetDefNum("DAMPHYSICAL", true) - pItem->GetDefNum("DAMPHYSICAL", true, true));
-			SetDefNum("DAMFIRE", GetDefNum("DAMFIRE", true) - pItem->GetDefNum("DAMFIRE", true, true));
-			SetDefNum("DAMCOLD", GetDefNum("DAMCOLD", true) - pItem->GetDefNum("DAMCOLD", true, true));
-			SetDefNum("DAMPOISON", GetDefNum("DAMPOISON", true) - pItem->GetDefNum("DAMPOISON", true, true));
-			SetDefNum("DAMENERGY", GetDefNum("DAMENERGY", true) - pItem->GetDefNum("DAMENERGY", true, true));
+			SetDefNum("DAMPHYSICAL", GetDefNum("DAMPHYSICAL") - pItem->GetDefNum("DAMPHYSICAL", true));
+			SetDefNum("DAMFIRE", GetDefNum("DAMFIRE") - pItem->GetDefNum("DAMFIRE", true));
+			SetDefNum("DAMCOLD", GetDefNum("DAMCOLD") - pItem->GetDefNum("DAMCOLD", true));
+			SetDefNum("DAMPOISON", GetDefNum("DAMPOISON") - pItem->GetDefNum("DAMPOISON", true));
+			SetDefNum("DAMENERGY", GetDefNum("DAMENERGY") - pItem->GetDefNum("DAMENERGY", true));
 
-			SetDefNum("RESPHYSICAL", GetDefNum("RESPHYSICAL", true) - pItem->GetDefNum("RESPHYSICAL", true, true));
-			SetDefNum("RESFIRE", GetDefNum("RESFIRE", true) - pItem->GetDefNum("RESFIRE", true, true));
-			SetDefNum("RESCOLD", GetDefNum("RESCOLD", true) - pItem->GetDefNum("RESCOLD", true, true));
-			SetDefNum("RESPOISON", GetDefNum("RESPOISON", true) - pItem->GetDefNum("RESPOISON", true, true));
-			SetDefNum("RESENERGY", GetDefNum("RESENERGY", true) - pItem->GetDefNum("RESENERGY", true, true));
+			SetDefNum("RESPHYSICAL", GetDefNum("RESPHYSICAL") - pItem->GetDefNum("RESPHYSICAL", true));
+			SetDefNum("RESFIRE", GetDefNum("RESFIRE") - pItem->GetDefNum("RESFIRE", true));
+			SetDefNum("RESCOLD", GetDefNum("RESCOLD") - pItem->GetDefNum("RESCOLD", true));
+			SetDefNum("RESPOISON", GetDefNum("RESPOISON") - pItem->GetDefNum("RESPOISON", true));
+			SetDefNum("RESENERGY", GetDefNum("RESENERGY") - pItem->GetDefNum("RESENERGY", true));
 		}
 
 		if ( pItem->IsTypeWeapon() )
 		{
 			CItem * pCursedMemory = LayerFind(LAYER_SPELL_Curse_Weapon);	// Remove the cursed state from SPELL_Curse_Weapon.
 			if (pCursedMemory)
-				pItem->SetDefNum("HitLeechLife", pItem->GetDefNum("HitLeechLife", true) - pCursedMemory->m_itSpell.m_spelllevel, true);
+				pItem->SetDefNum("HitLeechLife", pItem->GetDefNum("HitLeechLife") - pCursedMemory->m_itSpell.m_spelllevel, true);
 		}
 
-		short iStrengthBonus = static_cast<short>(pItem->GetDefNum("BONUSSTR", true, true));
+		short iStrengthBonus = static_cast<short>(pItem->GetDefNum("BONUSSTR", true));
 		if (iStrengthBonus != 0)
 			Stat_SetMod(STAT_STR, Stat_GetMod(STAT_STR) - iStrengthBonus);
 
-		short iDexterityBonus = static_cast<short>(pItem->GetDefNum("BONUSDEX", true, true));
+		short iDexterityBonus = static_cast<short>(pItem->GetDefNum("BONUSDEX", true));
 		if (iDexterityBonus != 0)
 			Stat_SetMod(STAT_DEX, Stat_GetMod(STAT_DEX) - iDexterityBonus);
 
-		short iIntelligenceBonus = static_cast<short>(pItem->GetDefNum("BONUSINT", true, true));
+		short iIntelligenceBonus = static_cast<short>(pItem->GetDefNum("BONUSINT", true));
 		if (iIntelligenceBonus != 0)
 			Stat_SetMod(STAT_INT, Stat_GetMod(STAT_INT) - iIntelligenceBonus);
 
-		short iHitpointIncrease = static_cast<short>(pItem->GetDefNum("BONUSHITS", true, true));
+		short iHitpointIncrease = static_cast<short>(pItem->GetDefNum("BONUSHITS", true));
 		if (iHitpointIncrease != 0)
 			Stat_SetMax(STAT_STR, Stat_GetMax(STAT_STR) - iHitpointIncrease);
 
-		short iStaminaIncrease = static_cast<short>(pItem->GetDefNum("BONUSSTAM", true, true));
+		short iStaminaIncrease = static_cast<short>(pItem->GetDefNum("BONUSSTAM", true));
 		if (iStaminaIncrease != 0)
 			Stat_SetMax(STAT_DEX, Stat_GetMax(STAT_DEX) - iStaminaIncrease);
 
-		short iManaIncrease = static_cast<short>(pItem->GetDefNum("BONUSMANA", true, true));
+		short iManaIncrease = static_cast<short>(pItem->GetDefNum("BONUSMANA", true));
 		if (iManaIncrease != 0)
 			Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) - iManaIncrease);
 
-		INT64 iDamageIncrease = pItem->GetDefNum("INCREASEDAM", true, true);
+		INT64 iDamageIncrease = pItem->GetDefNum("INCREASEDAM", true);
 		if ( iDamageIncrease != 0 )
-			SetDefNum("INCREASEDAM", GetDefNum("INCREASEDAM", true) - iDamageIncrease);
+			SetDefNum("INCREASEDAM", GetDefNum("INCREASEDAM") - iDamageIncrease);
 
-		INT64 iDefenseChanceIncrease = pItem->GetDefNum("INCREASEDEFCHANCE", true, true);
+		INT64 iDefenseChanceIncrease = pItem->GetDefNum("INCREASEDEFCHANCE", true);
 		if ( iDefenseChanceIncrease != 0 )
-			SetDefNum("INCREASEDEFCHANCE", GetDefNum("INCREASEDEFCHANCE", true) - iDefenseChanceIncrease);
+			SetDefNum("INCREASEDEFCHANCE", GetDefNum("INCREASEDEFCHANCE") - iDefenseChanceIncrease);
 
-		INT64 iFasterCasting = pItem->GetDefNum("FASTERCASTING", true, true);
+		INT64 iFasterCasting = pItem->GetDefNum("FASTERCASTING", true);
 		if ( iFasterCasting != 0 )
-			SetDefNum("FASTERCASTING", GetDefNum("FASTERCASTING", true) - iFasterCasting);
+			SetDefNum("FASTERCASTING", GetDefNum("FASTERCASTING") - iFasterCasting);
 
-		INT64 iHitChanceIncrease = pItem->GetDefNum("INCREASEHITCHANCE", true, true);
+		INT64 iHitChanceIncrease = pItem->GetDefNum("INCREASEHITCHANCE", true);
 		if ( iHitChanceIncrease != 0 )
-			SetDefNum("INCREASEHITCHANCE", GetDefNum("INCREASEHITCHANCE", true) - iHitChanceIncrease);
+			SetDefNum("INCREASEHITCHANCE", GetDefNum("INCREASEHITCHANCE") - iHitChanceIncrease);
 
-		INT64 iSpellDamageIncrease = pItem->GetDefNum("INCREASESPELLDAM", true, true);
+		INT64 iSpellDamageIncrease = pItem->GetDefNum("INCREASESPELLDAM", true);
 		if ( iSpellDamageIncrease != 0 )
-			SetDefNum("INCREASESPELLDAM", GetDefNum("INCREASESPELLDAM", true) - iSpellDamageIncrease);
+			SetDefNum("INCREASESPELLDAM", GetDefNum("INCREASESPELLDAM") - iSpellDamageIncrease);
 
-		INT64 iSwingSpeedIncrease = pItem->GetDefNum("INCREASESWINGSPEED", true, true);
+		INT64 iSwingSpeedIncrease = pItem->GetDefNum("INCREASESWINGSPEED", true);
 		if ( iSwingSpeedIncrease != 0 )
-			SetDefNum("INCREASESWINGSPEED", GetDefNum("INCREASESWINGSPEED", true) - iSwingSpeedIncrease);
+			SetDefNum("INCREASESWINGSPEED", GetDefNum("INCREASESWINGSPEED") - iSwingSpeedIncrease);
 
-		INT64 iEnhancePotions = pItem->GetDefNum("ENHANCEPOTIONS", true, true);
+		INT64 iEnhancePotions = pItem->GetDefNum("ENHANCEPOTIONS", true);
 		if (iEnhancePotions != 0)
-			SetDefNum("ENHANCEPOTIONS", GetDefNum("ENHANCEPOTIONS", true) - iEnhancePotions);
+			SetDefNum("ENHANCEPOTIONS", GetDefNum("ENHANCEPOTIONS") - iEnhancePotions);
 
-		INT64 iLowerManaCost = pItem->GetDefNum("LOWERMANACOST", true, true);
+		INT64 iLowerManaCost = pItem->GetDefNum("LOWERMANACOST", true);
 		if (iLowerManaCost != 0)
-			SetDefNum("LOWERMANACOST", GetDefNum("LOWERMANACOST", true) - iLowerManaCost);
+			SetDefNum("LOWERMANACOST", GetDefNum("LOWERMANACOST") - iLowerManaCost);
 
-		INT64 iLuck = pItem->GetDefNum("LUCK", true, true);
+		INT64 iLuck = pItem->GetDefNum("LUCK", true);
 		if ( iLuck != 0 )
-			SetDefNum("LUCK", GetDefNum("LUCK", true) - iLuck);
+			SetDefNum("LUCK", GetDefNum("LUCK") - iLuck);
 
-		if ( pItem->GetDefNum("NIGHTSIGHT", true, true))
+		if ( pItem->GetDefNum("NIGHTSIGHT", true))
 		{
-			StatFlag_Mod( STATF_NightSight, 0 );
+			StatFlag_Mod(STATF_NightSight, 0);
 			if ( IsClient() )
 				m_pClient->addLight();
 		}
@@ -1932,87 +1932,87 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 
 	if (pItem->IsTypeArmorWeapon())
 	{
-		SetDefNum("DAMPHYSICAL", GetDefNum("DAMPHYSICAL", true) + pItem->GetDefNum("DAMPHYSICAL", true, true));
-		SetDefNum("DAMFIRE", GetDefNum("DAMFIRE", true) + pItem->GetDefNum("DAMFIRE", true, true));
-		SetDefNum("DAMCOLD", GetDefNum("DAMCOLD", true) + pItem->GetDefNum("DAMCOLD", true, true));
-		SetDefNum("DAMPOISON", GetDefNum("DAMPOISON", true) + pItem->GetDefNum("DAMPOISON", true, true));
-		SetDefNum("DAMENERGY", GetDefNum("DAMENERGY", true) + pItem->GetDefNum("DAMENERGY", true, true));
+		SetDefNum("DAMPHYSICAL", GetDefNum("DAMPHYSICAL") + pItem->GetDefNum("DAMPHYSICAL", true));
+		SetDefNum("DAMFIRE", GetDefNum("DAMFIRE") + pItem->GetDefNum("DAMFIRE", true));
+		SetDefNum("DAMCOLD", GetDefNum("DAMCOLD") + pItem->GetDefNum("DAMCOLD", true));
+		SetDefNum("DAMPOISON", GetDefNum("DAMPOISON") + pItem->GetDefNum("DAMPOISON", true));
+		SetDefNum("DAMENERGY", GetDefNum("DAMENERGY") + pItem->GetDefNum("DAMENERGY", true));
 
-		SetDefNum("RESPHYSICAL", GetDefNum("RESPHYSICAL", true) + pItem->GetDefNum("RESPHYSICAL", true, true));
-		SetDefNum("RESFIRE", GetDefNum("RESFIRE", true) + pItem->GetDefNum("RESFIRE", true, true));
-		SetDefNum("RESCOLD", GetDefNum("RESCOLD", true) + pItem->GetDefNum("RESCOLD", true, true));
-		SetDefNum("RESPOISON", GetDefNum("RESPOISON", true) + pItem->GetDefNum("RESPOISON", true, true));
-		SetDefNum("RESENERGY", GetDefNum("RESENERGY", true) + pItem->GetDefNum("RESENERGY", true, true));
+		SetDefNum("RESPHYSICAL", GetDefNum("RESPHYSICAL") + pItem->GetDefNum("RESPHYSICAL", true));
+		SetDefNum("RESFIRE", GetDefNum("RESFIRE") + pItem->GetDefNum("RESFIRE", true));
+		SetDefNum("RESCOLD", GetDefNum("RESCOLD") + pItem->GetDefNum("RESCOLD", true));
+		SetDefNum("RESPOISON", GetDefNum("RESPOISON") + pItem->GetDefNum("RESPOISON", true));
+		SetDefNum("RESENERGY", GetDefNum("RESENERGY") + pItem->GetDefNum("RESENERGY", true));
 	}
 
 	if (pItem->IsTypeWeapon())
 	{
 		CItem * pCursedMemory = LayerFind(LAYER_SPELL_Curse_Weapon);	// Mark the weapon as cursed if SPELL_Curse_Weapon is active.
 		if (pCursedMemory)
-			pItem->SetDefNum("HitLeechLife", pItem->GetDefNum("HitLeechLife", true) + pCursedMemory->m_itSpell.m_spelllevel, true);
+			pItem->SetDefNum("HitLeechLife", pItem->GetDefNum("HitLeechLife") + pCursedMemory->m_itSpell.m_spelllevel, true);
 	}
 
-	short iStrengthBonus = static_cast<short>(pItem->GetDefNum("BONUSSTR", true, true));
+	short iStrengthBonus = static_cast<short>(pItem->GetDefNum("BONUSSTR", true));
 	if (iStrengthBonus != 0)
 		Stat_SetMod(STAT_STR, Stat_GetMod(STAT_STR) + iStrengthBonus);
 
-	short iDexterityBonus = static_cast<short>(pItem->GetDefNum("BONUSDEX", true, true));
+	short iDexterityBonus = static_cast<short>(pItem->GetDefNum("BONUSDEX", true));
 	if (iDexterityBonus != 0)
 		Stat_SetMod(STAT_DEX, Stat_GetMod(STAT_DEX) + iDexterityBonus);
 
-	short iIntelligenceBonus = static_cast<short>(pItem->GetDefNum("BONUSINT", true, true));
+	short iIntelligenceBonus = static_cast<short>(pItem->GetDefNum("BONUSINT", true));
 	if (iIntelligenceBonus != 0)
 		Stat_SetMod(STAT_INT, Stat_GetMod(STAT_INT) + iIntelligenceBonus);
 
-	short iHitpointIncrease = static_cast<short>(pItem->GetDefNum("BONUSHITS", true, true));
+	short iHitpointIncrease = static_cast<short>(pItem->GetDefNum("BONUSHITS", true));
 	if (iHitpointIncrease != 0)
 		Stat_SetMax(STAT_STR, Stat_GetMax(STAT_STR) + iHitpointIncrease);
 
-	short iStaminaIncrease = static_cast<short>(pItem->GetDefNum("BONUSSTAM", true, true));
+	short iStaminaIncrease = static_cast<short>(pItem->GetDefNum("BONUSSTAM", true));
 	if (iStaminaIncrease != 0)
 		Stat_SetMax(STAT_DEX, Stat_GetMax(STAT_DEX) + iStaminaIncrease);
 
-	short iManaIncrease = static_cast<short>(pItem->GetDefNum("BONUSMANA", true, true));
+	short iManaIncrease = static_cast<short>(pItem->GetDefNum("BONUSMANA", true));
 	if (iManaIncrease != 0)
 		Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) + iManaIncrease);
 
-	INT64 iDamageIncrease = pItem->GetDefNum("INCREASEDAM", true, true);
+	INT64 iDamageIncrease = pItem->GetDefNum("INCREASEDAM", true);
 	if (iDamageIncrease != 0)
-		SetDefNum("INCREASEDAM", GetDefNum("INCREASEDAM", true) + iDamageIncrease);
+		SetDefNum("INCREASEDAM", GetDefNum("INCREASEDAM") + iDamageIncrease);
 
-	INT64 iDefenseChanceIncrease = pItem->GetDefNum("INCREASEDEFCHANCE", true, true);
+	INT64 iDefenseChanceIncrease = pItem->GetDefNum("INCREASEDEFCHANCE", true);
 	if (iDefenseChanceIncrease != 0)
-		SetDefNum("INCREASEDEFCHANCE", GetDefNum("INCREASEDEFCHANCE", true) + iDefenseChanceIncrease);
+		SetDefNum("INCREASEDEFCHANCE", GetDefNum("INCREASEDEFCHANCE") + iDefenseChanceIncrease);
 
-	INT64 iFasterCasting = pItem->GetDefNum("FASTERCASTING", true, true);
+	INT64 iFasterCasting = pItem->GetDefNum("FASTERCASTING", true);
 	if (iFasterCasting != 0)
-		SetDefNum("FASTERCASTING", GetDefNum("FASTERCASTING", true) + iFasterCasting);
+		SetDefNum("FASTERCASTING", GetDefNum("FASTERCASTING") + iFasterCasting);
 
-	INT64 iHitChanceIncrease = pItem->GetDefNum("INCREASEHITCHANCE", true, true);
+	INT64 iHitChanceIncrease = pItem->GetDefNum("INCREASEHITCHANCE", true);
 	if (iHitChanceIncrease != 0)
-		SetDefNum("INCREASEHITCHANCE", GetDefNum("INCREASEHITCHANCE", true) + iHitChanceIncrease);
+		SetDefNum("INCREASEHITCHANCE", GetDefNum("INCREASEHITCHANCE") + iHitChanceIncrease);
 
-	INT64 iSpellDamageIncrease = pItem->GetDefNum("INCREASESPELLDAM", true, true);
+	INT64 iSpellDamageIncrease = pItem->GetDefNum("INCREASESPELLDAM", true);
 	if (iSpellDamageIncrease != 0)
-		SetDefNum("INCREASESPELLDAM", GetDefNum("INCREASESPELLDAM", true) + iSpellDamageIncrease);
+		SetDefNum("INCREASESPELLDAM", GetDefNum("INCREASESPELLDAM") + iSpellDamageIncrease);
 
-	INT64 iSwingSpeedIncrease = pItem->GetDefNum("INCREASESWINGSPEED", true, true);
+	INT64 iSwingSpeedIncrease = pItem->GetDefNum("INCREASESWINGSPEED", true);
 	if (iSwingSpeedIncrease != 0)
-		SetDefNum("INCREASESWINGSPEED", GetDefNum("INCREASESWINGSPEED", true) + iSwingSpeedIncrease);
+		SetDefNum("INCREASESWINGSPEED", GetDefNum("INCREASESWINGSPEED") + iSwingSpeedIncrease);
 
-	INT64 iEnhancePotions = pItem->GetDefNum("ENHANCEPOTIONS", true, true);
+	INT64 iEnhancePotions = pItem->GetDefNum("ENHANCEPOTIONS", true);
 	if (iEnhancePotions != 0)
-		SetDefNum("ENHANCEPOTIONS", GetDefNum("ENHANCEPOTIONS", true) + iEnhancePotions);
+		SetDefNum("ENHANCEPOTIONS", GetDefNum("ENHANCEPOTIONS") + iEnhancePotions);
 
-	INT64 iLowerManaCost = pItem->GetDefNum("LOWERMANACOST", true, true);
+	INT64 iLowerManaCost = pItem->GetDefNum("LOWERMANACOST", true);
 	if (iLowerManaCost != 0)
-		SetDefNum("LOWERMANACOST", GetDefNum("LOWERMANACOST", true) + iLowerManaCost);
+		SetDefNum("LOWERMANACOST", GetDefNum("LOWERMANACOST") + iLowerManaCost);
 
-	INT64 iLuck = pItem->GetDefNum("LUCK", true, true);
+	INT64 iLuck = pItem->GetDefNum("LUCK", true);
 	if (iLuck != 0)
-		SetDefNum("LUCK", GetDefNum("LUCK", true) + iLuck);
+		SetDefNum("LUCK", GetDefNum("LUCK") + iLuck);
 
-	if (pItem->GetDefNum("NIGHTSIGHT", true, true))
+	if (pItem->GetDefNum("NIGHTSIGHT", true))
 	{
 		StatFlag_Mod(STATF_NightSight, 1);
 		if (IsClient())
@@ -2054,10 +2054,10 @@ void CChar::EatAnim( LPCTSTR pszName, short iQty )
 		if ( OnTrigger(CTRIG_Eat, this, &Args) == TRIGRET_RET_TRUE )
 			return;
 
-		iHits = static_cast<short>(Args.m_VarsLocal.GetKeyNum("Hits", true)) + Stat_GetVal(STAT_STR);
-		iMana = static_cast<short>(Args.m_VarsLocal.GetKeyNum("Mana", true)) + Stat_GetVal(STAT_INT);
-		iStam = static_cast<short>(Args.m_VarsLocal.GetKeyNum("Stam", true)) + Stat_GetVal(STAT_DEX);
-		iFood = static_cast<short>(Args.m_VarsLocal.GetKeyNum("Food", true)) + Stat_GetVal(STAT_FOOD);
+		iHits = static_cast<short>(Args.m_VarsLocal.GetKeyNum("Hits")) + Stat_GetVal(STAT_STR);
+		iMana = static_cast<short>(Args.m_VarsLocal.GetKeyNum("Mana")) + Stat_GetVal(STAT_INT);
+		iStam = static_cast<short>(Args.m_VarsLocal.GetKeyNum("Stam")) + Stat_GetVal(STAT_DEX);
+		iFood = static_cast<short>(Args.m_VarsLocal.GetKeyNum("Food")) + Stat_GetVal(STAT_FOOD);
 		iStatsLimit = static_cast<short>(Args.m_iN1);
 	}
 
@@ -2665,7 +2665,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 {
 	ADDTOCALLSTACK("CChar::MakeCorpse");
 
-	WORD wFlags = static_cast<WORD>(m_TagDefs.GetKeyNum("DEATHFLAGS", true));
+	WORD wFlags = static_cast<WORD>(m_TagDefs.GetKeyNum("DEATHFLAGS"));
 	if (wFlags & DEATH_NOCORPSE)
 		return( NULL );
 	if (IsStatFlag(STATF_Conjured) && !(wFlags & (DEATH_NOCONJUREDEFFECT|DEATH_HASCORPSE)))
@@ -2871,7 +2871,7 @@ bool CChar::Death()
 	if ( m_pPlayer )
 	{
 		ChangeExperience(-(static_cast<int>(m_exp) / 10), pKiller);
-		if ( !(m_TagDefs.GetKeyNum("DEATHFLAGS", true) & DEATH_NOFAMECHANGE) )
+		if ( !(m_TagDefs.GetKeyNum("DEATHFLAGS") & DEATH_NOFAMECHANGE) )
 			Noto_Fame( -Stat_GetAdjusted(STAT_FAME)/10 );
 
 		LPCTSTR pszGhostName = NULL;
@@ -2944,7 +2944,7 @@ bool CChar::OnFreezeCheck()
 
 	if ( IsStatFlag(STATF_Freeze|STATF_Stone) && !IsPriv(PRIV_GM) )
 		return true;
-	if ( GetKeyNum("NoMoveTill", true) > g_World.GetCurrentTime().GetTimeRaw() )
+	if ( GetKeyNum("NoMoveTill") > g_World.GetCurrentTime().GetTimeRaw() )
 		return true;
 
 	if ( m_pPlayer )
@@ -3375,8 +3375,8 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 			// Is it guarded / safe / non-pvp?
 			else if ( m_pArea && !IsStatFlag(STATF_DEAD) )
 			{
-				bool redNew = ( pNewArea->m_TagDefs.GetKeyNum("RED", true) != 0 );
-				bool redOld = ( m_pArea->m_TagDefs.GetKeyNum("RED", true) != 0 );
+				bool redNew = (pNewArea->m_TagDefs.GetKeyNum("RED") != 0);
+				bool redOld = (m_pArea->m_TagDefs.GetKeyNum("RED") != 0);
 				if ( pNewArea->IsGuarded() != m_pArea->IsGuarded() )
 				{
 					if ( pNewArea->IsGuarded() )	// now under the protection

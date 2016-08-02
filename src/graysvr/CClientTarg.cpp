@@ -1567,7 +1567,7 @@ bool CClient::OnTarg_Pet_Stable( CChar * pCharPet )
 	}
 
 	if ( IsSetOF(OF_PetSlots) )
-		m_pChar->FollowersUpdate(pCharPet, static_cast<short>(-maximum(1, pCharPet->GetDefNum("FOLLOWERSLOTS", true, true))));
+		m_pChar->FollowersUpdate(pCharPet, static_cast<short>(-maximum(1, pCharPet->GetDefNum("FOLLOWERSLOTS", true))));
 
 	pCharMaster->GetContainerCreate(LAYER_BANKBOX)->ContentAdd( pPetItem );
 	pCharMaster->Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_CLAIM ) );
@@ -2518,7 +2518,7 @@ bool CClient::OnTarg_Party_Add( CChar * pChar )
 		return( false );
 	}
 
-	if ( pChar->GetKeyNum("PARTY_AUTODECLINEINVITE", true) )
+	if ( pChar->GetKeyNum("PARTY_AUTODECLINEINVITE") )
 	{
 		SysMessageDefault( DEFMSG_PARTY_AUTODECLINE );
 		return( false );

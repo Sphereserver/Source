@@ -145,7 +145,7 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 		case OBC_WEIGHTREDUCTION:
 		case OBC_COMBATBONUSSTAT:
 		case OBC_COMBATBONUSPERCENT:
-			sVal.FormatLLVal(GetDefNum(pszKey, true));
+			sVal.FormatLLVal(GetDefNum(pszKey));
 			break;
 
 		case OBC_DEFNAME:

@@ -2636,8 +2636,8 @@ bool PacketArrowClick::onReceive(NetState* net)
 		CScriptTriggerArgs Args;
 		Args.m_iN1 = (rightClick == true? 1 : 0);
 #ifdef _ALPHASPHERE
-		Args.m_iN2 = character->GetKeyNum("ARROWQUEST_X", true);
-		Args.m_iN3 = character->GetKeyNum("ARROWQUEST_Y", true);
+		Args.m_iN2 = character->GetKeyNum("ARROWQUEST_X");
+		Args.m_iN3 = character->GetKeyNum("ARROWQUEST_Y");
 #endif
 
 		character->OnTrigger(CTRIG_UserQuestArrowClick, character, &Args);

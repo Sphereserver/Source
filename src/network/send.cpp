@@ -168,7 +168,7 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 			writeInt32(other->ContentCount(RESOURCE_ID(RES_TYPEDEF,IT_GOLD)));
 		
 		if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESPHYSICAL", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESPHYSICAL", true)));
 		else
 			writeInt16(other->m_defense + otherDefinition->m_defense);
 
@@ -216,8 +216,8 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 		{
 			if (other->m_pPlayer != NULL)
 			{
-				writeByte(static_cast<BYTE>(other->GetDefNum("CURFOLLOWER", true, true)));
-				writeByte(static_cast<BYTE>(other->GetDefNum("MAXFOLLOWER", true, true)));
+				writeByte(static_cast<BYTE>(other->GetDefNum("CURFOLLOWER", true)));
+				writeByte(static_cast<BYTE>(other->GetDefNum("MAXFOLLOWER", true)));
 			}
 			else
 			{
@@ -228,64 +228,64 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 
 		if (version >= 4) // AOS attributes
 		{
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESFIRE", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESCOLD", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESPOISON", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESENERGY", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("LUCK", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESFIRE", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESCOLD", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESPOISON", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESENERGY", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("LUCK", true)));
 
 			const CItem* weapon = other->m_uidWeapon.ItemFind();
 			writeInt16(static_cast<WORD>(other->Fight_CalcDamage(weapon, true, false)));
 			writeInt16(static_cast<WORD>(other->Fight_CalcDamage(weapon, true, true)));
 
-			writeInt32(static_cast<DWORD>(other->GetDefNum("TITHING", true, true)));
+			writeInt32(static_cast<DWORD>(other->GetDefNum("TITHING", true)));
 		}
 
 		if (version >= 6)	// SA attributes
 		{
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESPHYSICALMAX", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESFIREMAX", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESCOLDMAX", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESPOISONMAX", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESENERGYMAX", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDEFCHANCE", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDEFCHANCEMAX", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEHITCHANCE", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASESWINGSPEED", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDAM", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERREAGENTCOST", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASESPELLDAM", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("FASTERCASTRECOVERY", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("FASTERCASTING", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERMANACOST", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESPHYSICALMAX", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESFIREMAX", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESCOLDMAX", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESPOISONMAX", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("RESENERGYMAX", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDEFCHANCE", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDEFCHANCEMAX", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEHITCHANCE", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASESWINGSPEED", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDAM", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERREAGENTCOST", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASESPELLDAM", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("FASTERCASTRECOVERY", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("FASTERCASTING", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERMANACOST", true)));
 		}
 /* We really don't know what is going on here. RUOSI Packet Guide was way off... -Khaos
    Possible KR client status info... -Ben*/
 		if (target->GetNetState()->isClientKR() )
 		{
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEHITCHANCE", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASESWINGSPEED", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDAM", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERREAGENTCOST", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("REGENHITS", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("REGENSTAM", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("REGENMANA", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("REFLECTPHYSICALDAM", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("ENHANCEPOTIONS", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDEFCHANCE", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASESPELLDAM", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("FASTERCASTRECOVERY", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("FASTERCASTING", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERMANACOST", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSSTR", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSDEX", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSINT", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSHITS", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSSTAM", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSMANA", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSHITSMAX", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSSTAMMAX", true, true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSMANAMAX", true, true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEHITCHANCE", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASESWINGSPEED", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDAM", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERREAGENTCOST", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("REGENHITS", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("REGENSTAM", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("REGENMANA", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("REFLECTPHYSICALDAM", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("ENHANCEPOTIONS", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDEFCHANCE", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASESPELLDAM", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("FASTERCASTRECOVERY", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("FASTERCASTING", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERMANACOST", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSSTR", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSDEX", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSINT", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSHITS", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSSTAM", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSMANA", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSHITSMAX", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSSTAMMAX", true)));
+			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSMANAMAX", true)));
 		}
 	}
 	else
@@ -353,16 +353,16 @@ PacketItemWorld::PacketItemWorld(const CClient* target, CItem *item) : PacketSen
 {
 	ADDTOCALLSTACK("PacketItemWorld::PacketItemWorld");
 
-	DWORD uid = item->GetUID();
-	WORD amount = ( item->GetAmount() > 1 ) ? item->GetAmount() : 0;
+	DWORD uid = static_cast<DWORD>(item->GetUID());
+	WORD amount = item->GetAmount();
 	ITEMID_TYPE id = item->GetDispID();
-	CPointMap p = item->GetTopPoint();
+	CPointMap pt = item->GetTopPoint();
 	DIR_TYPE dir = DIR_N;
 	HUE_TYPE hue = item->GetHue();
 	BYTE flags = 0;
 	BYTE light = 0;
 
-	adjustItemData(target, item, id, hue, amount, p, dir, flags, light);
+	adjustItemData(target, item, id, hue, amount, pt, dir, flags, light);
 
 	// this packet only supports item ids up to 0x3fff, and multis start from 0x4000 (ITEMID_MULTI_LEGACY)
 	// multis need to be adjusted to the lower range, and items between 03fff and 08000 need to be adjusted
@@ -375,29 +375,30 @@ PacketItemWorld::PacketItemWorld(const CClient* target, CItem *item) : PacketSen
 	if (amount > 0)
 		uid |= 0x80000000;
 	else
-		uid &= 0x7fffffff;
+		uid &= 0x7FFFFFFF;
 
-	p.m_x &= 0x7fff;
+	pt.m_x &= 0x7FFF;
 	if (dir > 0)
-		p.m_x |= 0x8000;
-	p.m_y &= 0x3fff;
+		pt.m_x |= 0x8000;
+
+	pt.m_y &= 0x3fff;
 	if (hue > 0)
-		p.m_y |= 0x8000;
+		pt.m_y |= 0x8000;
 	if (flags > 0)
-		p.m_y |= 0x4000;
+		pt.m_y |= 0x4000;
 
 	initLength();
 	writeInt32(uid);
 	writeInt16(static_cast<WORD>(id));
 	if (amount > 0)
 		writeInt16(amount);
-	writeInt16(p.m_x);
-	writeInt16(p.m_y);
+	writeInt16(static_cast<WORD>(pt.m_x));
+	writeInt16(static_cast<WORD>(pt.m_y));
 	if (dir > 0)
 		writeByte(static_cast<BYTE>(dir));
-	writeByte(p.m_z);
+	writeByte(pt.m_z);
 	if (hue > 0)
-		writeInt16(hue);
+		writeInt16(static_cast<WORD>(hue));
 	if (flags > 0)
 		writeByte(flags);
 
@@ -711,7 +712,7 @@ PacketDragAnimation::PacketDragAnimation(const CChar* source, const CItem* item,
 		const CObjBaseTemplate* target = item->GetTopLevelObj();
 		const CPointMap& targetpos = target->GetTopPoint();
 
-		writeInt32((target == item)? 0 : (DWORD)target->GetUID());
+		writeInt32((target == item)? 0 : static_cast<DWORD>(target->GetUID()));
 		writeInt16(targetpos.m_x);
 		writeInt16(targetpos.m_y);
 		writeByte(targetpos.m_z);
@@ -3232,8 +3233,8 @@ PacketDeath::PacketDeath(CChar* dead, CItemCorpse* corpse) : PacketSend(XCMD_Cha
 {
 	ADDTOCALLSTACK("PacketDeath::PacketDeath");
 
-	writeInt32(dead->GetUID());
-	writeInt32(corpse == NULL? 0 : (DWORD)corpse->GetUID());
+	writeInt32(static_cast<DWORD>(dead->GetUID()));
+	writeInt32(corpse ? static_cast<DWORD>(corpse->GetUID()) : 0);
 	writeInt32(0);
 }
 
@@ -4413,14 +4414,14 @@ bool PacketHouseDesign::writePlaneData(int plane, int itemCount, BYTE* data, int
 	{
 		// an error occured with this floor, but we should be able to continue to the next without problems
 		delete[] compressBuffer;
-		g_Log.EventError("Compress failed with error %d when generating house design for floor %d on building 0%lx.\n", error, plane, (DWORD)m_house->GetUID());
+		g_Log.EventError("Compress failed with error %d when generating house design for floor %d on building 0%lx.\n", error, plane, static_cast<DWORD>(m_house->GetUID()));
 		return false;
 	}
 	else if ( compressLength <= 0 || compressLength >= PLANEDATA_BUFFER )
 	{
 		// too much data, but we should be able to continue to the next floor without problems
 		delete[] compressBuffer;
-		g_Log.EventWarn("Floor %d on building 0%lx too large with compressed length of %lu.\n", plane, (DWORD)m_house->GetUID(), compressLength);
+		g_Log.EventWarn("Floor %d on building 0%lx too large with compressed length of %lu.\n", plane, static_cast<DWORD>(m_house->GetUID()), compressLength);
 		return false;
 	}
 
@@ -4474,14 +4475,14 @@ void PacketHouseDesign::flushStairData(void)
 	{
 		// an error occured with this block, but we should be able to continue to the next without problems
 		delete[] compressBuffer;
-		g_Log.EventError("Compress failed with error %d when generating house design on building 0%lx.\n", error, (DWORD)m_house->GetUID());
+		g_Log.EventError("Compress failed with error %d when generating house design on building 0%lx.\n", error, static_cast<DWORD>(m_house->GetUID()));
 		return;
 	}
 	else if (compressLength <= 0 || compressLength >= STAIRDATA_BUFFER)
 	{
 		// too much data, but we should be able to continue to the next block without problems
 		delete[] compressBuffer;
-		g_Log.EventWarn("Building 0%lx too large with compressed length of %lu.\n", (DWORD)m_house->GetUID(), compressLength);
+		g_Log.EventWarn("Building 0%lx too large with compressed length of %lu.\n", static_cast<DWORD>(m_house->GetUID()), compressLength);
 		return;
 	}
 
@@ -4713,7 +4714,6 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : Pac
 	ADDTOCALLSTACK("PacketItemWorldNew::PacketItemWorldNew");
 
 	DataSource source;		// 0=Tiledata, 1=Character, 2=Multi
-	DWORD uid = item->GetUID();
 	ITEMID_TYPE id = item->GetDispID();
 	DIR_TYPE dir = DIR_N;
 	WORD amount = item->GetAmount();
@@ -4732,21 +4732,21 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : Pac
 	else
 	{
 		source = TileData;
-		id = static_cast<ITEMID_TYPE>(id & 0xFFFF);
+		id = static_cast<ITEMID_TYPE>(id & 0x7FFF);
 	}
 
 	writeInt16(1);
 	writeByte(static_cast<BYTE>(source));
-	writeInt32(uid);
+	writeInt32(static_cast<DWORD>(item->GetUID()));
 	writeInt16(static_cast<WORD>(id));
 	writeByte(static_cast<BYTE>(dir));
 	writeInt16(amount);
 	writeInt16(amount);
-	writeInt16(pt.m_x & 0x7FFF);
-	writeInt16(pt.m_y & 0x3FFF);
-	writeByte(pt.m_z);
+	writeInt16(static_cast<WORD>(pt.m_x & 0x7FFF));
+	writeInt16(static_cast<WORD>(pt.m_y & 0x3FFF));
+	writeByte(static_cast<BYTE>(pt.m_z));
 	writeByte(light);
-	writeInt16(hue);
+	writeInt16(static_cast<WORD>(hue));
 	writeByte(flags);
 
 	if ( target->GetNetState()->isClientVersion(MINCLIVER_HS) )

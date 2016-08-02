@@ -44,7 +44,7 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 	CPointMap pnt = pCorpse->GetTopLevelObj()->GetTopPoint();
 
 	UpdateAnimate(ANIM_BOW);
-	if ( pCorpse->m_TagDefs.GetKeyNum("BLOOD", true) )
+	if ( pCorpse->m_TagDefs.GetKeyNum("BLOOD") )
 	{
 		CItem *pBlood = CItem::CreateBase(ITEMID_BLOOD4);
 		ASSERT(pBlood);
@@ -987,7 +987,7 @@ void CChar::Use_Drink( CItem * pItem )
 		int iSkillQuality = pItem->m_itPotion.m_skillquality;
 		if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B )
 		{
-			int iEnhance = static_cast<int>(GetDefNum("EnhancePotions", false));
+			int iEnhance = static_cast<int>(GetDefNum("EnhancePotions"));
 			if ( iEnhance )
 				iSkillQuality += IMULDIV(iSkillQuality, iEnhance, 100);
 		}
@@ -1070,7 +1070,7 @@ CChar * CChar::Use_Figurine( CItem * pItem, bool bCheckFollowerSlots )
 
 	if ( bCheckFollowerSlots && IsSetOF(OF_PetSlots) )
 	{
-		if ( !FollowersUpdate(pPet, static_cast<short>(maximum(1, pPet->GetDefNum("FOLLOWERSLOTS", true, true))), true) )
+		if ( !FollowersUpdate(pPet, static_cast<short>(maximum(1, pPet->GetDefNum("FOLLOWERSLOTS", true))), true) )
 		{
 			SysMessageDefault(DEFMSG_PETSLOTS_TRY_CONTROL);
 			if ( bCreatedNewNpc )
@@ -1110,8 +1110,8 @@ bool CChar::FollowersUpdate( CChar * pChar, short iFollowerSlots, bool bCheckOnl
 		iFollowerSlots = static_cast<short>(Args.m_iN2);
 	}
 
-	short iCurFollower = static_cast<short>(GetDefNum("CURFOLLOWER", true, true));
-	short iMaxFollower = static_cast<short>(GetDefNum("MAXFOLLOWER", true, true));
+	short iCurFollower = static_cast<short>(GetDefNum("CURFOLLOWER", true));
+	short iMaxFollower = static_cast<short>(GetDefNum("MAXFOLLOWER", true));
 	short iSetFollower = iCurFollower + iFollowerSlots;
 
 	if ( (iSetFollower > iMaxFollower) && !IsPriv(PRIV_GM) )

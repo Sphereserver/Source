@@ -1774,10 +1774,6 @@ do_default:
 
 	switch ( iKeyNum )
 	{
-		//return as decimal number or 0 if not set
-		case CHC_CURFOLLOWER:
-			sVal.FormatLLVal(GetDefNum(pszKey,true));
-			break;
 		//On these ones, check BaseDef if not found on dynamic
 		case CHC_FASTERCASTRECOVERY:
 		case CHC_FASTERCASTING:
@@ -1790,6 +1786,7 @@ do_default:
 		case CHC_LOWERMANACOST:
 		case CHC_LOWERREAGENTCOST:
 		case CHC_LUCK:
+		case CHC_CURFOLLOWER:
 		case CHC_MAXFOLLOWER:
 		case CHC_RESPHYSICAL:
 		case CHC_RESPHYSICALMAX:
@@ -1811,7 +1808,7 @@ do_default:
 		case CHC_REGENVALMANA:
 		case CHC_SPELLTIMEOUT:
 		case CHC_TITHING:
-			sVal.FormatLLVal(GetDefNum(pszKey, true));
+			sVal.FormatLLVal(GetDefNum(pszKey));
 			break;
 		case CHC_ATTACKER:
 			{

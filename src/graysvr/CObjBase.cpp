@@ -287,7 +287,7 @@ void CObjBase::r_WriteSafe( CScript & s )
 		uid = GetUID();
 
 		//	objects with TAG.NOSAVE set are not saved
-		if ( m_TagDefs.GetKeyNum("NOSAVE", true) )
+		if ( m_TagDefs.GetKeyNum("NOSAVE") )
 			return;
 
 		if ( !g_Cfg.m_fSaveGarbageCollect )
@@ -1629,93 +1629,90 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_REGENVALMANA:
 		case OC_COMBATBONUSSTAT:
 		case OC_COMBATBONUSPERCENT:
-			{
-				SetDefNum(s.GetKey(),s.GetArgVal());
+		{
+			SetDefNum(s.GetKey(), s.GetArgVal());
 
-				// This should be used in case items with these properties updates the character in the moment without any script to make status reflect the update.
-				// Maybe too a cliver check to not send update if not needed.
-				if (IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE))
-				{
-					CChar * pChar = dynamic_cast <CChar*>(GetTopLevelObj());
-					if (pChar)
-						pChar->UpdateStatsFlag();
-				}
-				break;
-			}
-		case OC_ARMOR:
+			// This should be used in case items with these properties updates the character in the moment without any script to make status reflect the update.
+			// Maybe too a cliver check to not send update if not needed.
+			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
-				if ( IsChar() )
-					return false;
-
-				INT64 piVal[2];
-				size_t iQty = Str_ParseCmds( s.GetArgStr(), piVal, COUNTOF(piVal));
-				m_defenseBase = static_cast<unsigned char>(piVal[0]);
-				if ( iQty > 1 )
-					m_defenseRange = static_cast<unsigned char>(piVal[1]) - m_defenseBase;
-				else
-					m_defenseRange = 0;
-				CChar * pChar = dynamic_cast <CChar*>(GetTopLevelObj());
+				CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
 				if ( pChar )
 					pChar->UpdateStatsFlag();
-				break;
-			}
-		case OC_DAM:
-			{
-				INT64 piVal[2];
-				size_t iQty = Str_ParseCmds( s.GetArgStr(), piVal, COUNTOF(piVal));
-				m_attackBase = static_cast<unsigned char>(piVal[0]);
-				if ( iQty > 1 )
-					m_attackRange = static_cast<unsigned char>(piVal[1]) - m_attackBase;
-				else
-					m_attackRange = 0;
-				CChar * pChar = dynamic_cast <CChar*>(GetTopLevelObj());
-				if (pChar)
-					pChar->UpdateStatsFlag();
 			}
 			break;
+		}
+		case OC_ARMOR:
+		{
+			if ( IsChar() )
+				return false;
+
+			INT64 piVal[2];
+			size_t iQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
+			m_defenseBase = static_cast<WORD>(piVal[0]);
+			m_defenseRange = (iQty > 1) ? static_cast<WORD>(piVal[1]) - m_defenseBase : 0;
+
+			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
+			if ( pChar )
+				pChar->UpdateStatsFlag();
+			break;
+		}
+		case OC_DAM:
+		{
+			INT64 piVal[2];
+			size_t iQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
+			m_attackBase = static_cast<WORD>(piVal[0]);
+			m_attackRange = (iQty > 1) ? static_cast<unsigned char>(piVal[1]) - m_attackBase : 0;
+
+			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
+			if ( pChar )
+				pChar->UpdateStatsFlag();
+			break;
+		}
 		case OC_WEIGHTREDUCTION:
+		{
+			int oldweight = GetWeight();
+			SetDefNum(s.GetKey(), s.GetArgVal(), false);
+			CContainer *pCont = dynamic_cast<CContainer *>(GetParent());
+			if ( pCont )
 			{
-				int oldweight = GetWeight();
-				SetDefNum(s.GetKey(),s.GetArgVal(), false);
-				CContainer * pCont = dynamic_cast <CContainer*> (GetParent());
-				if (pCont)
-				{
-					ASSERT( IsItemEquipped() || IsItemInContainer());
-					pCont->OnWeightChange(GetWeight() - oldweight);
-				}
+				ASSERT(IsItemEquipped() || IsItemInContainer());
+				pCont->OnWeightChange(GetWeight() - oldweight);
 			}
 			return true;
+		}
 
 		case OC_RANGE:
+		{
+			INT64 piVal[2];
+			size_t iQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
+			if ( iQty > 1 )
 			{
-				INT64 piVal[2];
-				size_t iQty = Str_ParseCmds( s.GetArgStr(), piVal, COUNTOF(piVal));
-				if ( iQty > 1 )
-				{
-					INT64 iRange = ((piVal[0] & 0xff) << 8) & 0xff00;
-					iRange |= (piVal[1] & 0xff);
-					SetDefNum(s.GetKey(),iRange, false);
-				}
-				else
-				{
-					SetDefNum(s.GetKey(),piVal[0], false);
-				}
+				INT64 iRange = ((piVal[0] & 0xff) << 8) & 0xff00;
+				iRange |= (piVal[1] & 0xff);
+				SetDefNum(s.GetKey(), iRange, false);
+			}
+			else
+			{
+				SetDefNum(s.GetKey(), piVal[0], false);
 			}
 			break;
+		}
 
 		case OC_CAN:
-			m_Can = s.GetArgVal();
+			m_Can = static_cast<DWORD>(s.GetArgVal());
 			break;
 		case OC_MODMAXWEIGHT:
 			m_ModMaxWeight = static_cast<int>(s.GetArgVal());
 			break;
 		case OC_COLOR:
-			if ( ! strcmpi( s.GetArgStr(), "match_shirt" ) || ! strcmpi( s.GetArgStr(), "match_hair" ))
+		{
+			if ( !strcmpi(s.GetArgStr(), "match_shirt") || !strcmpi(s.GetArgStr(), "match_hair") )
 			{
-				CChar * pChar = dynamic_cast <CChar*>(GetTopLevelObj());
+				CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
 				if ( pChar )
 				{
-					CItem * pHair = pChar->LayerFind( ! strcmpi( s.GetArgStr()+6, "shirt" ) ? LAYER_SHIRT : LAYER_HAIR );
+					CItem *pHair = pChar->LayerFind(!strcmpi(s.GetArgStr() + 6, "shirt") ? LAYER_SHIRT : LAYER_HAIR);
 					if ( pHair )
 					{
 						m_wHue = pHair->GetHue();
@@ -1725,35 +1722,36 @@ bool CObjBase::r_LoadVal( CScript & s )
 				m_wHue = HUE_GRAY;
 				break;
 			}
-			RemoveFromView();
-			SetHue(static_cast<HUE_TYPE>(s.GetArgVal()), false, &g_Serv); //@Dye is called from @Create/.xcolor/script command here // since we can not receive pSrc on this r_LoadVal function ARGO/SRC will be null
+			SetHue(static_cast<HUE_TYPE>(s.GetArgVal()), false, &g_Serv);	// @Dye is called from @Create/.xcolor/script command here. Since we can not receive pSrc on this r_LoadVal function ARGO/SRC will be null
 			Update();
 			break;
+		}
 		case OC_EVENTS:
-			return( m_OEvents.r_LoadVal( s, RES_EVENTS ));
+			return m_OEvents.r_LoadVal(s, RES_EVENTS);
 		case OC_MAP:
+		{
 			// Move to another map
-			if ( ! IsTopLevel())
-				return( false );
-			{
-				CPointMap pt = GetTopPoint();
-				pt.m_map = static_cast<unsigned char>(s.GetArgVal());
+			if ( !IsTopLevel() )
+				return false;
 
-				//	is the desired mapplane allowed?
-				if ( !g_MapList.m_maps[pt.m_map] )
-					return false;
+			CPointMap pt = GetTopPoint();
+			pt.m_map = static_cast<BYTE>(s.GetArgVal());
 
-				MoveTo(pt);
-				if (IsItem())
-					Update();
-			}
+			// Is the desired mapplane allowed?
+			if ( !g_MapList.m_maps[pt.m_map] )
+				return false;
+
+			MoveTo(pt);
+			if ( IsItem() )
+				Update();
 			break;
+		}
 		case OC_MODAR:
 		case OC_MODAC:
 			{
 				m_ModAr = s.GetArgVal();
-				CChar * pChar = dynamic_cast <CChar*>(GetTopLevelObj());
-				if ( pChar && pChar->IsChar() )
+				CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
+				if ( pChar )
 				{
 					pChar->m_defense = static_cast<WORD>(pChar->CalcArmorDefense());
 					pChar->UpdateStatsFlag();
@@ -1761,24 +1759,24 @@ bool CObjBase::r_LoadVal( CScript & s )
 			}
 			break;
 		case OC_NAME:
-			SetName( s.GetArgStr());
+			SetName(static_cast<LPCTSTR>(s.GetArgStr()));
 			break;
 		case OC_P:	// Must set the point via the CItem or CChar methods.
-			return(false);
+			return false;
 		case OC_SPEED:
 		{
-			if (!this->IsItem())
+			if ( !IsItem() )
 				return false;
-			CItem * pItem = static_cast<CItem*>(this);
+			CItem *pItem = static_cast<CItem *>(this);
 			pItem->m_speed = static_cast<BYTE>(s.GetArgVal());
 			pItem->ResendTooltip();
 			return true;
 		}
 		case OC_TIMER:
-			SetTimeout( s.GetArgLLVal() * TICK_PER_SEC );
+			SetTimeout(s.GetArgLLVal() * TICK_PER_SEC);
 			break;
 		case OC_TIMERD:
-			SetTimeout( s.GetArgLLVal());
+			SetTimeout(s.GetArgLLVal());
 			break;
 		case OC_TIMESTAMP:
 			SetTimeStamp( s.GetArgLLVal());
@@ -1791,7 +1789,7 @@ bool CObjBase::r_LoadVal( CScript & s )
 		case OC_UID:
 		case OC_SERIAL:
 			// Don't set container flags through this.
-			SetUID( s.GetArgVal(), (dynamic_cast <CItem*>(this)) ? true : false );
+			SetUID(s.GetArgVal(), dynamic_cast<CItem *>(this) ? true : false);
 			break;
 		default:
 			return false;
@@ -2500,7 +2498,6 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 				CGrayUID uid = s.GetArgVal();
 				if ( !uid.ObjFind() || !IsChar() )
 					return false;
-
 				pCharSrc->GetClient()->Event_SingleClick(uid);
 			}
 			else

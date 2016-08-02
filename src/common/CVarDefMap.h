@@ -153,7 +153,7 @@ public:
 
 	CVarDefCont * GetAt( size_t at ) const;
 	CVarDefCont * GetKey( LPCTSTR pszKey ) const;
-	INT64 GetKeyNum( LPCTSTR pszKey, bool fZero = false ) const;
+	INT64 GetKeyNum( LPCTSTR pszKey ) const;
 	LPCTSTR GetKeyStr( LPCTSTR pszKey, bool fZero = false ) const;
 	CVarDefCont * GetParseKey( LPCTSTR & pArgs ) const;
 	CVarDefCont * CheckParseKey( LPCTSTR & pszArgs ) const;

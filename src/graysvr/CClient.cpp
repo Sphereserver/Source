@@ -1347,9 +1347,9 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				if ( !pSpellDef->m_sTargetPrompt.IsEmpty() )
 					pPrompt = pSpellDef->m_sTargetPrompt;
 
-				int SpellTimeout = g_Cfg.m_iSpellTimeout * TICK_PER_SEC;
-				if ( GetDefNum("SPELLTIMEOUT", true) )
-					SpellTimeout = static_cast<int>(GetDefNum("SPELLTIMEOUT", true));
+				int SpellTimeout = static_cast<int>(GetDefNum("SPELLTIMEOUT"));
+				if ( !SpellTimeout )
+					SpellTimeout = g_Cfg.m_iSpellTimeout * TICK_PER_SEC;
 
 				addTarget(CLIMODE_TARG_SKILL_MAGERY, pPrompt, pSpellDef->IsSpellType(SPELLFLAG_TARG_XYZ), pSpellDef->IsSpellType(SPELLFLAG_HARM), SpellTimeout);
 				break;

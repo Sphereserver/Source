@@ -266,7 +266,7 @@ CItem * CItem::GenerateScript( CChar * pSrc)
 				int iBlood = 0;
 				if ( pItemDef )
 				{
-					iBlood = static_cast<int>(pItemDef->m_TagDefs.GetKeyNum("MAXBLOOD", true));
+					iBlood = static_cast<int>(pItemDef->m_TagDefs.GetKeyNum("MAXBLOOD"));
 				}
 				if ( !iBlood )
 					iBlood = 5;
@@ -1173,7 +1173,7 @@ SOUND_TYPE CItem::GetDropSound(const CObjBase *pObjOn) const
 {
 	ADDTOCALLSTACK("CItem::GetDropSound");
 	// Try get drop sound from item
-	SOUND_TYPE iSnd = static_cast<SOUND_TYPE>(GetDefNum("DROPSOUND", true, true));
+	SOUND_TYPE iSnd = static_cast<SOUND_TYPE>(GetDefNum("DROPSOUND", true));
 	if ( iSnd )
 		return iSnd;
 
@@ -3576,7 +3576,7 @@ bool CItem::Use_Portculis()
 {
 	ADDTOCALLSTACK("CItem::Use_Portculis");
 	// Set to the new z location.
-	if ( ! IsTopLevel())
+	if ( !IsTopLevel() )
 		return false;
 
 	CPointMap pt = GetTopPoint();
@@ -3585,28 +3585,16 @@ bool CItem::Use_Portculis()
 	else
 		pt.m_z = static_cast<signed char>(m_itPortculis.m_z1);
 
-	if ( pt.m_z == GetTopZ())
+	if ( pt.m_z == GetTopZ() )
 		return false;
 
-	MoveToUpdate( pt );
+	SOUND_TYPE iSnd = static_cast<SOUND_TYPE>(GetDefNum("PORTCULISSOUND"));
+	if ( !iSnd )
+		iSnd = 0x21D;
 
-	SOUND_TYPE iSnd = 0x21d;
-	if (GetDefNum("PORTCULISSOUND"))
-		iSnd = static_cast<SOUND_TYPE>(GetDefNum("PORTCULISSOUND"));
-	/*CVarDefCont * pTagStorage = NULL; 
-	pTagStorage = GetKey("OVERRIDE.PORTCULISSOUND", true);
-	if ( pTagStorage )
-	{
-		if ( pTagStorage->GetValNum() )
-			iSnd = static_cast<SOUND_TYPE>(pTagStorage->GetValNum());
-		else
-			iSnd = 0x21d;
-	} else 
-		iSnd = 0x21d;*/
-
-	Sound( iSnd );
-
-	return( true );
+	MoveToUpdate(pt);
+	Sound(iSnd);
+	return true;
 }
 
 SOUND_TYPE CItem::Use_Music( bool fWell ) const
@@ -3626,58 +3614,70 @@ bool CItem::Use_DoorNew( bool bJustOpen )
 {
 	ADDTOCALLSTACK("CItem::Use_DoorNew");
 
-	if (! IsTopLevel())
-		return( false );
+	if ( !IsTopLevel() )
+		return false;
 
 	bool bClosing = IsAttr(ATTR_OPENED);
 	if ( bJustOpen && bClosing )
-		return( true );	// links just open
+		return true;	// links just open
 
-	CItemBase * pItemDef = Item_GetDef();
+	CItemBase *pItemDef = Item_GetDef();
+	ITEMID_TYPE idSwitch = static_cast<ITEMID_TYPE>(GetDefNum("DOOROPENID"));
+	if ( !idSwitch )
+	{
+		idSwitch = pItemDef->m_ttDoor.m_idSwitch;
+		if ( !idSwitch )
+			return Use_Door(bJustOpen);
+	}
 
-	//default or override ID
-	ITEMID_TYPE idSwitch = GetDefNum("DOOROPENID") ? static_cast<ITEMID_TYPE>(GetDefNum("DOOROPENID", true)) : pItemDef->m_ttDoor.m_idSwitch;
-	if (!idSwitch)
-		return Use_Door(bJustOpen);
-
-	//default or override locations
-	short sDifX = m_itNormal.m_morep.m_x ? m_itNormal.m_morep.m_x : static_cast<short>(pItemDef->m_ttDoor.m_iXChange);
-	short sDifY = m_itNormal.m_morep.m_y ? m_itNormal.m_morep.m_y : static_cast<short>(pItemDef->m_ttDoor.m_iYChange);
-
-	
-	//default sounds
-	SOUND_TYPE iCloseSnd = pItemDef->m_ttDoor.m_iSoundClose ? pItemDef->m_ttDoor.m_iSoundClose : 0x00f1;
-	SOUND_TYPE iOpenSnd = pItemDef->m_ttDoor.m_iSoundOpen ? pItemDef->m_ttDoor.m_iSoundOpen : 0x00ea;
-
-	//override sounds
-	if (GetDefNum("DOORCLOSESOUND"))
-		iCloseSnd = static_cast<SOUND_TYPE>(GetDefNum("DOORCLOSESOUND"));
-	if (GetDefNum("DOOROPENSOUND"))
-		iOpenSnd = static_cast<SOUND_TYPE>(GetDefNum("DOOROPENSOUND"));
+	short sDifX = m_itNormal.m_morep.m_x;
+	if ( !sDifX )
+		sDifX = static_cast<short>(pItemDef->m_ttDoor.m_iXChange);
+	short sDifY = m_itNormal.m_morep.m_y;
+	if ( !sDifY )
+		sDifY = static_cast<short>(pItemDef->m_ttDoor.m_iYChange);
 
 	CPointMap pt = GetTopPoint();
-	if (bClosing)
+	SOUND_TYPE iSnd;
+	if ( bClosing )
 	{
+		ClrAttr(ATTR_OPENED);
+		SetTimeout(-1);
 		pt.m_x -= sDifX;
 		pt.m_y -= sDifY;
+
+		iSnd = static_cast<SOUND_TYPE>(GetDefNum("DOORCLOSESOUND"));
+		if ( !iSnd )
+		{
+			iSnd = pItemDef->m_ttDoor.m_iSoundClose;
+			if ( !iSnd )
+				iSnd = 0xF1;
+		}
 	}
 	else
 	{
+		SetAttr(ATTR_OPENED);
+		SetTimeout(20 * TICK_PER_SEC);
 		pt.m_x += sDifX;
 		pt.m_y += sDifY;
+
+		iSnd = static_cast<SOUND_TYPE>(GetDefNum("DOOROPENSOUND"));
+		if ( !iSnd )
+		{
+			iSnd = pItemDef->m_ttDoor.m_iSoundOpen;
+			if ( !iSnd )
+				iSnd = 0xEA;
+		}
 	}
 
 	SetDefNum("DOOROPENID", GetDispID());
 	SetDispID(idSwitch);
-
 	MoveToUpdate(pt);
-	Sound( bClosing ? iCloseSnd : iOpenSnd );
-	SetTimeout( bClosing ? -1 : 20*TICK_PER_SEC );
-	bClosing ? ClrAttr(ATTR_OPENED) : SetAttr(ATTR_OPENED);
-	return( ! bClosing );
+	Sound(iSnd);
+	return !bClosing;
 }
 
-bool CItem::Use_Door( bool fJustOpen )
+bool CItem::Use_Door( bool bJustOpen )
 {
 	ADDTOCALLSTACK("CItem::Use_Door");
 	// don't call this directly but call CChar::Use_Item() instead.
@@ -3686,16 +3686,15 @@ bool CItem::Use_Door( bool fJustOpen )
 	//  true = open
 
 	ITEMID_TYPE id = GetDispID();
-	int doordir = CItemBase::IsID_Door( id )-1;
-	if ( doordir < 0 || ! IsTopLevel())
-		return( false );
+	int doordir = CItemBase::IsID_Door(id) - 1;
+	if ( !IsTopLevel() || (doordir < 0) )
+		return false;
 
 	id = static_cast<ITEMID_TYPE>(id - doordir);
-	// IT_TYPE typelock = m_type;
 
-	bool fClosing = ( doordir & DOOR_OPENED );	// currently open
-	if ( fJustOpen && fClosing )
-		return( true );	// links just open
+	bool bClosing = (doordir & DOOR_OPENED);	// currently open
+	if ( bJustOpen && bClosing )
+		return true;	// links just open
 
 	CPointMap pt = GetTopPoint();
 	switch ( doordir )
@@ -3774,56 +3773,72 @@ bool CItem::Use_Door( bool fJustOpen )
 			break;
 	}
 
-	SetDispID(static_cast<ITEMID_TYPE>(id + doordir));
-	// SetType( typelock );	// preserve the fact that it was locked.
-	MoveToUpdate(pt);
-
-	//CVarDefCont * pTagStorage = NULL; 
-	SOUND_TYPE iCloseSnd = 0x00f1;
-	SOUND_TYPE iOpenSnd = 0x00ea;
-
-	switch ( id )
+	SOUND_TYPE iSnd;
+	if ( bClosing )
 	{
-		case ITEMID_DOOR_SECRET_1:
-		case ITEMID_DOOR_SECRET_2:
-		case ITEMID_DOOR_SECRET_3:
-		case ITEMID_DOOR_SECRET_4:
-		case ITEMID_DOOR_SECRET_5:
-		case ITEMID_DOOR_SECRET_6:
-			iCloseSnd = 0x002e;
-			iOpenSnd = 0x002f;
-			break;
-		case ITEMID_DOOR_METAL_S:
-		case ITEMID_DOOR_BARRED:
-		case ITEMID_DOOR_METAL_L:
-		case ITEMID_DOOR_IRONGATE_1:
-		case ITEMID_DOOR_IRONGATE_2:
-			iCloseSnd = 0x00f3;
-			iOpenSnd = 0x00eb;
-			break;
-		default:
-			break;
+		SetTimeout(-1);
+
+		iSnd = static_cast<SOUND_TYPE>(GetDefNum("DOORCLOSESOUND"));
+		if ( !iSnd )
+		{
+			switch ( id )
+			{
+				case ITEMID_DOOR_SECRET_1:
+				case ITEMID_DOOR_SECRET_2:
+				case ITEMID_DOOR_SECRET_3:
+				case ITEMID_DOOR_SECRET_4:
+				case ITEMID_DOOR_SECRET_5:
+				case ITEMID_DOOR_SECRET_6:
+					iSnd = 0x2E;
+					break;
+				case ITEMID_DOOR_METAL_S:
+				case ITEMID_DOOR_BARRED:
+				case ITEMID_DOOR_METAL_L:
+				case ITEMID_DOOR_IRONGATE_1:
+				case ITEMID_DOOR_IRONGATE_2:
+					iSnd = 0xF3;
+					break;
+				default:
+					iSnd = 0xF1;
+					break;
+			}
+		}
+	}
+	else
+	{
+		SetTimeout(60 * TICK_PER_SEC);
+
+		iSnd = static_cast<SOUND_TYPE>(GetDefNum("DOOROPENSOUND"));
+		if ( !iSnd )
+		{
+			switch ( id )
+			{
+				case ITEMID_DOOR_SECRET_1:
+				case ITEMID_DOOR_SECRET_2:
+				case ITEMID_DOOR_SECRET_3:
+				case ITEMID_DOOR_SECRET_4:
+				case ITEMID_DOOR_SECRET_5:
+				case ITEMID_DOOR_SECRET_6:
+					iSnd = 0x2F;
+					break;
+				case ITEMID_DOOR_METAL_S:
+				case ITEMID_DOOR_BARRED:
+				case ITEMID_DOOR_METAL_L:
+				case ITEMID_DOOR_IRONGATE_1:
+				case ITEMID_DOOR_IRONGATE_2:
+					iSnd = 0xEB;
+					break;
+				default:
+					iSnd = 0xEA;
+					break;
+			}
+		}
 	}
 
-	//override sounds
-	if (GetDefNum("DOORCLOSESOUND"))
-		iCloseSnd = static_cast<SOUND_TYPE>(GetDefNum("DOORCLOSESOUND"));
-	if (GetDefNum("DOOROPENSOUND"))
-		iOpenSnd = static_cast<SOUND_TYPE>(GetDefNum("DOOROPENSOUND"));
-
-	/*pTagStorage = GetKey("OVERRIDE.DOORSOUND_CLOSE", true);
-	if ( pTagStorage )
-		iCloseSnd = static_cast<SOUND_TYPE>(pTagStorage->GetValNum());
-	pTagStorage = NULL;
-	pTagStorage = GetKey("OVERRIDE.DOORSOUND_OPEN", true);
-	if ( pTagStorage )
-		iOpenSnd = static_cast<SOUND_TYPE>(pTagStorage->GetValNum());*/
-
-	Sound( fClosing ? iCloseSnd : iOpenSnd );
-
-	// Auto close the door in n seconds.
-	SetTimeout( fClosing ? -1 : 60*TICK_PER_SEC );
-	return( ! fClosing );
+	SetDispID(static_cast<ITEMID_TYPE>(id + doordir));
+	MoveToUpdate(pt);
+	Sound(iSnd);
+	return !bClosing;
 }
 
 bool CItem::Armor_IsRepairable() const
@@ -3923,13 +3938,11 @@ SKILL_TYPE CItem::Weapon_GetSkill() const
 	CItemBase * pItemDef = Item_GetDef();
 	ASSERT(pItemDef);
 
-	int iSkillOverride = static_cast<int>(m_TagDefs.GetKeyNum("OVERRIDE_SKILL", true) - 1);
-	if ( iSkillOverride == -1)
-		iSkillOverride = static_cast<int>(m_TagDefs.GetKeyNum("OVERRIDE.SKILL", true) - 1);
-	if ( iSkillOverride > SKILL_NONE && iSkillOverride < static_cast<int>(g_Cfg.m_iMaxSkill) )
+	unsigned int iSkillOverride = static_cast<unsigned int>(m_TagDefs.GetKeyNum("OVERRIDE.SKILL"));
+	if ( (iSkillOverride > SKILL_NONE) && (iSkillOverride < g_Cfg.m_iMaxSkill) )
 		return static_cast<SKILL_TYPE>(iSkillOverride);
 
-	if ( pItemDef->m_iSkill > SKILL_NONE && pItemDef->m_iSkill < static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill) )
+	if ( (pItemDef->m_iSkill > SKILL_NONE) && (pItemDef->m_iSkill < static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill)) )
 		return pItemDef->m_iSkill;
 
 	switch ( pItemDef->GetType() )
@@ -4163,7 +4176,7 @@ bool CItem::Use_Light()
 	if ( IsType(IT_LIGHT_OUT) && (m_itLight.m_burned || IsItemInContainer()) )
 		return false;
 
-	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(m_TagDefs.GetKeyNum("OVERRIDE_LIGHTID", true));
+	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(m_TagDefs.GetKeyNum("OVERRIDE_LIGHTID"));
 	if ( !id )
 	{
 		id = static_cast<ITEMID_TYPE>(Item_GetDef()->m_ttEquippable.m_Light_ID.GetResIndex());
@@ -4609,7 +4622,7 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	if ( iDmg <= 0 )
 		return( 0 );
 
-	INT64 iSelfRepair = GetDefNum("SELFREPAIR", true, true);
+	INT64 iSelfRepair = GetDefNum("SELFREPAIR", true);
 	if ( iSelfRepair > Calc_GetRandVal(10) )
 	{
 		m_itArmor.m_Hits_Cur += 2;

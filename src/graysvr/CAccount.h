@@ -87,8 +87,14 @@ private:
 	CAccount& operator=(const CAccount& other);
 public:
 
-	LPCTSTR GetDefStr( LPCTSTR pszKey, bool fZero = false ) const { return m_BaseDefs.GetKeyStr( pszKey, fZero ); }
-	INT64 GetDefNum( LPCTSTR pszKey, bool fZero = false ) const	{ return m_BaseDefs.GetKeyNum( pszKey, fZero );	}
+	LPCTSTR GetDefStr(LPCTSTR pszKey, bool fZero = false) const
+	{
+		return m_BaseDefs.GetKeyStr(pszKey, fZero);
+	}
+	INT64 GetDefNum(LPCTSTR pszKey) const
+	{
+		return m_BaseDefs.GetKeyNum(pszKey);
+	}
 	void SetDefNum(LPCTSTR pszKey, INT64 iVal, bool fZero = true) 
 	{ 
 		m_BaseDefs.SetNum(pszKey, iVal, fZero);
@@ -97,7 +103,10 @@ public:
 	{
 		m_BaseDefs.SetStr(pszKey, fQuoted, pszVal, fZero);
 	}
-	void DeleteDef(LPCTSTR pszKey) { m_BaseDefs.DeleteKey(pszKey); }
+	void DeleteDef(LPCTSTR pszKey)
+	{
+		m_BaseDefs.DeleteKey(pszKey);
+	}
 
 	
 	/**

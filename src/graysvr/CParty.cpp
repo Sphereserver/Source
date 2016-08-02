@@ -156,7 +156,7 @@ bool CPartyDef::GetLootFlag( const CChar *pChar )
 	ADDTOCALLSTACK("CPartyDef::GetLootFlag");
 	ASSERT(pChar);
 	if ( IsInParty(pChar) )
-		return (pChar->GetKeyNum("PARTY_CANLOOTME", true) != 0);
+		return (pChar->GetKeyNum("PARTY_CANLOOTME") != 0);
 
 	return false;
 }

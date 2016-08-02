@@ -983,7 +983,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 			CCharBase *pPetDef = CCharBase::FindCharBase(pItem->m_itFigurine.m_ID);
 			if ( pPetDef )
 			{
-				if ( !m_pChar->FollowersUpdate(pVendor, static_cast<short>(maximum(1, pPetDef->GetDefNum("FOLLOWERSLOTS", true)))) )
+				if ( !m_pChar->FollowersUpdate(pVendor, static_cast<short>(maximum(1, pPetDef->GetDefNum("FOLLOWERSLOTS")))) )
 				{
 					m_pChar->SysMessageDefault(DEFMSG_PETSLOTS_TRY_CONTROL);
 					return;
@@ -2214,7 +2214,7 @@ void CClient::Event_AOSPopupMenuRequest(DWORD uid) //construct packet after a cl
 			m_pPopupPacket->addOption(POPUP_BACKPACK, 6145, POPUPFLAG_COLOR, 0xFFFF);
 			if ( GetNetState()->isClientVersion(MINCLIVER_STATUS_V6) )
 			{
-				if ( pChar->GetDefNum("REFUSETRADES", true) )
+				if ( pChar->GetDefNum("REFUSETRADES") )
 					m_pPopupPacket->addOption(POPUP_TRADE_ALLOW, 1154112, POPUPFLAG_COLOR, 0xFFFF);
 				else
 					m_pPopupPacket->addOption(POPUP_TRADE_REFUSE, 1154113, POPUPFLAG_COLOR, 0xFFFF);

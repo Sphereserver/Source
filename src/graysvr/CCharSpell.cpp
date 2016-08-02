@@ -118,7 +118,7 @@ bool CChar::Spell_Teleport( CPointMap ptNew, bool bTakePets, bool bCheckAntiMagi
 
 			int iCell = 0;
 			if ( m_pPlayer && m_pPlayer->GetAccount() )
-				iCell = static_cast<int>(m_pPlayer->GetAccount()->m_TagDefs.GetKeyNum("JailCell", true));
+				iCell = static_cast<int>(m_pPlayer->GetAccount()->m_TagDefs.GetKeyNum("JailCell"));
 
 			if ( iCell )
 			{
@@ -275,7 +275,7 @@ CChar * CChar::Spell_Summon( CREID_TYPE id, CPointMap pntTarg )
 
 		if ( IsSetOF(OF_PetSlots) )
 		{
-			if ( !FollowersUpdate(pChar, static_cast<short>(maximum(1, pChar->GetDefNum("FOLLOWERSLOTS", true, true))), true) )
+			if ( !FollowersUpdate(pChar, static_cast<short>(maximum(1, pChar->GetDefNum("FOLLOWERSLOTS", true))), true) )
 			{
 				SysMessageDefault(DEFMSG_PETSLOTS_TRY_SUMMON);
 				pChar->Delete();
@@ -524,28 +524,28 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 					break;
 				case SPELL_Horrific_Beast:
 					iBuffIcon = BI_HORRIFICBEAST;
-					SetDefNum("RegenHitsVal", GetDefNum("RegenHitsVal", true) - pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("RegenHitsVal", GetDefNum("RegenHitsVal") - pSpell->m_itSpell.m_spellcharges);
 					break;
 				case SPELL_Lich_Form:
 					iBuffIcon = BI_LICHFORM;
-					SetDefNum("RegenManaVal", GetDefNum("RegenManaVal", true) - pSpell->m_itSpell.m_PolyStr);
-					SetDefNum("RegenHitsVal", GetDefNum("RegenHitsVal", true) + pSpell->m_itSpell.m_PolyDex);
-					SetDefNum("ResFire", GetDefNum("ResFire", true) + pSpell->m_itSpell.m_spellcharges);
-					SetDefNum("ResPoison", GetDefNum("ResPoison", true) - pSpell->m_itSpell.m_spellcharges);
-					SetDefNum("ResCold", GetDefNum("ResCold", true) - pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("RegenManaVal", GetDefNum("RegenManaVal") - pSpell->m_itSpell.m_PolyStr);
+					SetDefNum("RegenHitsVal", GetDefNum("RegenHitsVal") + pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("ResFire", GetDefNum("ResFire") + pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("ResPoison", GetDefNum("ResPoison") - pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("ResCold", GetDefNum("ResCold") - pSpell->m_itSpell.m_spellcharges);
 					break;
 				case SPELL_Vampiric_Embrace:
 					iBuffIcon = BI_VAMPIRICEMBRACE;
-					SetDefNum("HitLeechLife", GetDefNum("HitLeechLife", true) - pSpell->m_itSpell.m_PolyStr);
-					SetDefNum("RegenStamVal", GetDefNum("RegenStamVal", true) - pSpell->m_itSpell.m_PolyDex);
-					SetDefNum("RegenManaVal", GetDefNum("RegenManaVal", true) - pSpell->m_itSpell.m_spellcharges);
-					SetDefNum("ResFire", GetDefNum("ResFire", true) + pSpell->m_itSpell.m_spelllevel);
+					SetDefNum("HitLeechLife", GetDefNum("HitLeechLife") - pSpell->m_itSpell.m_PolyStr);
+					SetDefNum("RegenStamVal", GetDefNum("RegenStamVal") - pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("RegenManaVal", GetDefNum("RegenManaVal") - pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("ResFire", GetDefNum("ResFire") + pSpell->m_itSpell.m_spelllevel);
 					break;
 				case SPELL_Wraith_Form:
 					iBuffIcon = BI_WRAITHFORM;
-					SetDefNum("ResPhysical", GetDefNum("ResPhysical", true) - 15);
-					SetDefNum("ResFire", GetDefNum("ResFire", true) + 5);
-					SetDefNum("ResEnergy", GetDefNum("ResEnergy", true) + 5);
+					SetDefNum("ResPhysical", GetDefNum("ResPhysical") - 15);
+					SetDefNum("ResFire", GetDefNum("ResFire") + 5);
+					SetDefNum("ResEnergy", GetDefNum("ResEnergy") + 5);
 					break;
 				case SPELL_Reaper_Form:
 					iBuffIcon = BI_REAPERFORM;
@@ -720,10 +720,10 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 		{
 			if ( m_pPlayer )
 			{
-				SetDefNum("RESFIREMAX", GetDefNum("RESFIREMAX", true, true) + 10);
-				SetDefNum("RESCOLDMAX", GetDefNum("RESCOLDMAX", true, true) + 10);
-				SetDefNum("RESPOISONMAX", GetDefNum("RESPOISONMAX", true, true) + 10);
-				SetDefNum("RESENERGYMAX", GetDefNum("RESENERGYMAX", true, true) + 10);
+				SetDefNum("RESFIREMAX", GetDefNum("RESFIREMAX", true) + 10);
+				SetDefNum("RESCOLDMAX", GetDefNum("RESCOLDMAX", true) + 10);
+				SetDefNum("RESPOISONMAX", GetDefNum("RESPOISONMAX", true) + 10);
+				SetDefNum("RESENERGYMAX", GetDefNum("RESENERGYMAX", true) + 10);
 			}
 			for (int i = STAT_STR; i < STAT_BASE_QTY; i++ )
 				Stat_AddMod(static_cast<STAT_TYPE>(i), iStatEffect);
@@ -762,11 +762,11 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 		case SPELL_Reactive_Armor:
 			if (IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE))
 			{
-				SetDefNum("RESPHYSICAL", GetDefNum("RESPHYSICAL", true) - pSpell->m_itSpell.m_spelllevel);
-				SetDefNum("RESFIRE", GetDefNum("RESFIRE", true) + 5);
-				SetDefNum("RESCOLD", GetDefNum("RESCOLD", true) + 5);
-				SetDefNum("RESPOISON", GetDefNum("RESPOISON", true) + 5);
-				SetDefNum("RESENERGY", GetDefNum("RESENERGY", true) + 5);
+				SetDefNum("RESPHYSICAL", GetDefNum("RESPHYSICAL") - pSpell->m_itSpell.m_spelllevel);
+				SetDefNum("RESFIRE", GetDefNum("RESFIRE") + 5);
+				SetDefNum("RESCOLD", GetDefNum("RESCOLD") + 5);
+				SetDefNum("RESPOISON", GetDefNum("RESPOISON") + 5);
+				SetDefNum("RESENERGY", GetDefNum("RESENERGY") + 5);
 			}
 			else
 			{
@@ -779,11 +779,11 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			StatFlag_Clear(STATF_Reflection);
 			if (IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE))
 			{
-				SetDefNum("RESPHYSICAL", GetDefNum("RESPHYSICAL", true) + pSpell->m_itSpell.m_spelllevel);
-				SetDefNum("RESFIRE", GetDefNum("RESFIRE", true) - 10);
-				SetDefNum("RESCOLD", GetDefNum("RESCOLD", true) - 10);
-				SetDefNum("RESPOISON", GetDefNum("RESPOISON", true) - 10);
-				SetDefNum("RESENERGY", GetDefNum("RESENERGY", true) - 10);
+				SetDefNum("RESPHYSICAL", GetDefNum("RESPHYSICAL") + pSpell->m_itSpell.m_spelllevel);
+				SetDefNum("RESFIRE", GetDefNum("RESFIRE") - 10);
+				SetDefNum("RESCOLD", GetDefNum("RESCOLD") - 10);
+				SetDefNum("RESPOISON", GetDefNum("RESPOISON") - 10);
+				SetDefNum("RESENERGY", GetDefNum("RESENERGY") - 10);
 			}
 			if (pClient)
 				pClient->removeBuff(BI_MAGICREFLECTION);
@@ -796,8 +796,8 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			Effect(EFFECT_OBJ, ITEMID_FX_SPARKLE, this, 9, 20);
 			if (IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE))
 			{
-				SetDefNum("RESPHYSICAL", GetDefNum("RESPHYSICAL", true) + pSpell->m_itSpell.m_PolyStr);
-				SetDefNum("FASTERCASTING", GetDefNum("FASTERCASTING", true) + 2);
+				SetDefNum("RESPHYSICAL", GetDefNum("RESPHYSICAL") + pSpell->m_itSpell.m_PolyStr);
+				SetDefNum("FASTERCASTING", GetDefNum("FASTERCASTING") + 2);
 				Skill_SetBase(SKILL_MAGICRESISTANCE, minimum(Skill_GetMax(SKILL_MAGICRESISTANCE, true), Skill_GetBase(SKILL_MAGICRESISTANCE) + pSpell->m_itSpell.m_PolyDex));
 			}
 			else
@@ -828,7 +828,7 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			{
 				CItem * pWeapon = m_uidWeapon.ItemFind();
 				if (pWeapon)
-					pWeapon->SetDefNum("HitLeechLife", pWeapon->GetDefNum("HitLeechLife", true) - pSpell->m_itSpell.m_spelllevel, true);	// Adding 50% HitLeechLife to the weapon, since damaging with it should return 50% of the damage dealt.
+					pWeapon->SetDefNum("HitLeechLife", pWeapon->GetDefNum("HitLeechLife") - pSpell->m_itSpell.m_spelllevel, true);	// Adding 50% HitLeechLife to the weapon, since damaging with it should return 50% of the damage dealt.
 			}
 			return;
 		default:
@@ -896,11 +896,11 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pSpell->m_itSpell.m_PolyDex = 5;			// -RegenHitsVal
 					pSpell->m_itSpell.m_spellcharges = 10;	// -ResFire, +ResPoison, +ResCold
 					m_atMagery.m_SummonID = CREID_LICH;
-					SetDefNum("RegenManaVal", GetDefNum("RegenManaVal", true) + pSpell->m_itSpell.m_PolyStr);	// RegenManaVal
-					SetDefNum("RegenHitsVal", GetDefNum("RegenHitsVal", true) - pSpell->m_itSpell.m_PolyDex);	// RegenHitsVal
-					SetDefNum("ResFire", GetDefNum("ResFire", true) - pSpell->m_itSpell.m_spellcharges);		// ResFire, ResPoison, ResCold
-					SetDefNum("ResPoison", GetDefNum("ResPoison", true) + pSpell->m_itSpell.m_spellcharges);
-					SetDefNum("ResCold", GetDefNum("ResCold", true) + pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("RegenManaVal", GetDefNum("RegenManaVal") + pSpell->m_itSpell.m_PolyStr);	// RegenManaVal
+					SetDefNum("RegenHitsVal", GetDefNum("RegenHitsVal") - pSpell->m_itSpell.m_PolyDex);	// RegenHitsVal
+					SetDefNum("ResFire", GetDefNum("ResFire") - pSpell->m_itSpell.m_spellcharges);		// ResFire, ResPoison, ResCold
+					SetDefNum("ResPoison", GetDefNum("ResPoison") + pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("ResCold", GetDefNum("ResCold") + pSpell->m_itSpell.m_spellcharges);
 					iBuffIcon = BI_LICHFORM;
 					break;
 				case SPELL_Wraith_Form:
@@ -908,9 +908,9 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pSpell->m_itSpell.m_PolyStr = 5;
 					m_atMagery.m_SummonID = CREID_SPECTRE;
 					iBuffIcon = BI_WRAITHFORM;
-					SetDefNum("ResPhysical", GetDefNum("ResPhysical", true) + 15);
-					SetDefNum("ResFire", GetDefNum("ResFire", true) - 5);
-					SetDefNum("ResEnergy", GetDefNum("ResEnergy", true) - 5);
+					SetDefNum("ResPhysical", GetDefNum("ResPhysical") + 15);
+					SetDefNum("ResFire", GetDefNum("ResFire") - 5);
+					SetDefNum("ResEnergy", GetDefNum("ResEnergy") - 5);
 					break;
 				case SPELL_Horrific_Beast:
 					pSpell->m_itSpell.m_PolyStr = 5;			// UnArmed DamLo
@@ -918,7 +918,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pSpell->m_itSpell.m_spelllevel = 25;		// Melee Damage Increase
 					pSpell->m_itSpell.m_spellcharges = 20;	// RegenHitsVal
 					m_atMagery.m_SummonID = CREID_Horrific_Beast;
-					SetDefNum("RegenHitsVal", GetDefNum("RegenHitsVal", true) + pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("RegenHitsVal", GetDefNum("RegenHitsVal") + pSpell->m_itSpell.m_spellcharges);
 					iBuffIcon = BI_HORRIFICBEAST;
 					break;
 				case SPELL_Vampiric_Embrace:
@@ -927,10 +927,10 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pSpell->m_itSpell.m_spellcharges = 3;	// +RegenManaVal
 					pSpell->m_itSpell.m_spelllevel = 25;		// -ResFire
 					m_atMagery.m_SummonID = CREID_Vampire_Bat;
-					SetDefNum("HitLeechLife", GetDefNum("HitLeechLife", true) + pSpell->m_itSpell.m_PolyStr);		// +Hit Leech Life
-					SetDefNum("RegenStamVal", GetDefNum("RegenStamVal", true) + pSpell->m_itSpell.m_PolyDex);		// +RegenStamVal
-					SetDefNum("RegenManaVal", GetDefNum("RegenManaVal", true) + pSpell->m_itSpell.m_spellcharges);	// RegenManaVal
-					SetDefNum("ResFire", GetDefNum("ResFire", true) - pSpell->m_itSpell.m_spelllevel);				// ResFire
+					SetDefNum("HitLeechLife", GetDefNum("HitLeechLife") + pSpell->m_itSpell.m_PolyStr);		// +Hit Leech Life
+					SetDefNum("RegenStamVal", GetDefNum("RegenStamVal") + pSpell->m_itSpell.m_PolyDex);		// +RegenStamVal
+					SetDefNum("RegenManaVal", GetDefNum("RegenManaVal") + pSpell->m_itSpell.m_spellcharges);	// RegenManaVal
+					SetDefNum("ResFire", GetDefNum("ResFire") - pSpell->m_itSpell.m_spelllevel);				// ResFire
 					iBuffIcon = BI_VAMPIRICEMBRACE;
 					break;
 				case SPELL_Stone_Form:
@@ -1214,7 +1214,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				}
 				iStatEffect = 50;	// +50% HitLeechLife
 				pSpell->m_itSpell.m_spelllevel = iStatEffect;
-				pWeapon->SetDefNum("HitLeechLife", pWeapon->GetDefNum("HitLeechLife", true) + pSpell->m_itSpell.m_spelllevel, true);	// Adding 50% HitLeechLife to the weapon, since damaging with it should return 50% of the damage dealt.
+				pWeapon->SetDefNum("HitLeechLife", pWeapon->GetDefNum("HitLeechLife") + pSpell->m_itSpell.m_spelllevel, true);	// Adding 50% HitLeechLife to the weapon, since damaging with it should return 50% of the damage dealt.
 			}
 			return;
 		default:
@@ -1229,11 +1229,11 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				iStatEffect = 15 + (pCaster->Skill_GetBase(SKILL_INSCRIPTION) / 200);
 				pSpell->m_itSpell.m_spelllevel = iStatEffect;
 
-				SetDefNum("RESPHYSICAL", GetDefNum("RESPHYSICAL", true) + iStatEffect);
-				SetDefNum("RESFIRE", GetDefNum("RESFIRE", true) - 5);
-				SetDefNum("RESCOLD", GetDefNum("RESCOLD", true) - 5);
-				SetDefNum("RESPOISON", GetDefNum("RESPOISON", true) - 5);
-				SetDefNum("RESENERGY", GetDefNum("RESENERGY", true) - 5);
+				SetDefNum("RESPHYSICAL", GetDefNum("RESPHYSICAL") + iStatEffect);
+				SetDefNum("RESFIRE", GetDefNum("RESFIRE") - 5);
+				SetDefNum("RESCOLD", GetDefNum("RESCOLD") - 5);
+				SetDefNum("RESPOISON", GetDefNum("RESPOISON") - 5);
+				SetDefNum("RESENERGY", GetDefNum("RESENERGY") - 5);
 			}
 			else
 			{
@@ -1327,10 +1327,10 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				}
 				if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) && m_pPlayer )		// Curse also decrease max resistances on players
 				{
-					SetDefNum("RESFIREMAX", GetDefNum("RESFIREMAX", true, true) - 10);
-					SetDefNum("RESCOLDMAX", GetDefNum("RESCOLDMAX", true, true) - 10);
-					SetDefNum("RESPOISONMAX", GetDefNum("RESPOISONMAX", true, true) - 10);
-					SetDefNum("RESENERGYMAX", GetDefNum("RESENERGYMAX", true, true) - 10);
+					SetDefNum("RESFIREMAX", GetDefNum("RESFIREMAX", true) - 10);
+					SetDefNum("RESCOLDMAX", GetDefNum("RESCOLDMAX", true) - 10);
+					SetDefNum("RESPOISONMAX", GetDefNum("RESPOISONMAX", true) - 10);
+					SetDefNum("RESENERGYMAX", GetDefNum("RESENERGYMAX", true) - 10);
 				}
 				for ( int i = STAT_STR; i < STAT_BASE_QTY; i++ )
 					Stat_AddMod(static_cast<STAT_TYPE>(i), -iStatEffect);
@@ -1444,11 +1444,11 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				iStatEffect = 25 - (pCaster->Skill_GetBase(SKILL_INSCRIPTION) / 200);
 				pSpell->m_itSpell.m_spelllevel = iStatEffect;
 
-				SetDefNum("RESPHYSICAL", GetDefNum("RESPHYSICAL", true) - iStatEffect);
-				SetDefNum("RESFIRE", GetDefNum("RESFIRE", true) + 10);
-				SetDefNum("RESCOLD", GetDefNum("RESCOLD", true) + 10);
-				SetDefNum("RESPOISON", GetDefNum("RESPOISON", true) + 10);
-				SetDefNum("RESENERGY", GetDefNum("RESENERGY", true) + 10);
+				SetDefNum("RESPHYSICAL", GetDefNum("RESPHYSICAL") - iStatEffect);
+				SetDefNum("RESFIRE", GetDefNum("RESFIRE") + 10);
+				SetDefNum("RESCOLD", GetDefNum("RESCOLD") + 10);
+				SetDefNum("RESPOISON", GetDefNum("RESPOISON") + 10);
+				SetDefNum("RESENERGY", GetDefNum("RESENERGY") + 10);
 			}
 			if (pClient && IsSetOF(OF_Buffs))
 			{
@@ -1484,8 +1484,8 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					pSpell->m_itSpell.m_PolyStr = static_cast<short>(iPhysicalResist);
 					pSpell->m_itSpell.m_PolyDex = static_cast<short>(iMagicResist);
 
-					SetDefNum("RESPHYSICAL", GetDefNum("RESPHYSICAL", true) - iPhysicalResist);
-					SetDefNum("FASTERCASTING", GetDefNum("FASTERCASTING", true) - 2);
+					SetDefNum("RESPHYSICAL", GetDefNum("RESPHYSICAL") - iPhysicalResist);
+					SetDefNum("FASTERCASTING", GetDefNum("FASTERCASTING") - 2);
 					Skill_SetBase(SKILL_MAGICRESISTANCE, Skill_GetBase(SKILL_MAGICRESISTANCE) - iMagicResist);
 				}
 				else
@@ -2044,8 +2044,8 @@ bool CChar::Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool 
 	if ( !Skill_CanUse(static_cast<SKILL_TYPE>(skill)) )
 		return false;
 
-	short wManaUse = static_cast<short>(pSpellDef->m_wManaUse * (100 - minimum(GetDefNum("LOWERMANACOST", true, true), 40)) / 100);
-	short wTithingUse = static_cast<short>(pSpellDef->m_wTithingUse * (100 - minimum(GetDefNum("LOWERREAGENTCOST", true, true), 40)) / 100);
+	short wManaUse = static_cast<short>(pSpellDef->m_wManaUse * (100 - minimum(GetDefNum("LOWERMANACOST", true), 40)) / 100);
+	short wTithingUse = static_cast<short>(pSpellDef->m_wTithingUse * (100 - minimum(GetDefNum("LOWERREAGENTCOST", true), 40)) / 100);
 
 	if (pSrc != this)
 	{
@@ -2104,7 +2104,7 @@ bool CChar::Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool 
 		spell = static_cast<SPELL_TYPE>(Args.m_iN1);
 	}
 	wManaUse = static_cast<short>(Args.m_iN2);
-	wTithingUse = static_cast<short>(Args.m_VarsLocal.GetKeyNum("TithingUse",true));
+	wTithingUse = static_cast<short>(Args.m_VarsLocal.GetKeyNum("TithingUse"));
 
 	if ( pSrc != this )
 	{
@@ -2183,7 +2183,7 @@ bool CChar::Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool 
 			// check for reagents
 			if ( g_Cfg.m_fReagentsRequired && !m_pNPC && (pSrc == this) )
 			{
-				if ( GetDefNum("LOWERREAGENTCOST", true, true) <= Calc_GetRandVal(100))
+				if ( GetDefNum("LOWERREAGENTCOST", true) <= Calc_GetRandVal(100))
 				{
 					const CResourceQtyArray *pRegs = &(pSpellDef->m_Reags);
 					CItemContainer *pPack = GetContainer(LAYER_PACK);
@@ -2461,18 +2461,18 @@ bool CChar::Spell_CastDone()
 	if (bIsSpellField)
 	{
 		//Setting new IDs as another variables to pass as different arguments to the field function.
-		it1test = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1", true)));
-		it2test = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject2", true)));
+		it1test = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1")));
+		it2test = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject2")));
 		//Can't be < 0, so max it to 0
-		fieldWidth = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("fieldWidth", true)));
-		fieldGauge = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("fieldGauge", true)));
+		fieldWidth = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("fieldWidth")));
+		fieldGauge = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("fieldGauge")));
 
 	}
 
-	iC1 = static_cast<CREID_TYPE>(Args.m_VarsLocal.GetKeyNum("CreateObject1", true) & 0xFFFF);
-	areaRadius = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("areaRadius", true)));
-	int iDuration = maximum(0, static_cast<int>(Args.m_VarsLocal.GetKeyNum("duration", true)));
-	iColor = static_cast<HUE_TYPE>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor", true)));
+	iC1 = static_cast<CREID_TYPE>(Args.m_VarsLocal.GetKeyNum("CreateObject1") & 0xFFFF);
+	areaRadius = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("areaRadius")));
+	int iDuration = maximum(0, static_cast<int>(Args.m_VarsLocal.GetKeyNum("duration")));
+	iColor = static_cast<HUE_TYPE>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor")));
 
 	// Consume the reagents/mana/scroll/charge
 	if (!Spell_CanCast(spell, false, pObjSrc, true))
@@ -2846,10 +2846,10 @@ void CChar::Spell_CastFail()
 			return;
 	}
 
-	HUE_TYPE iColor = static_cast<HUE_TYPE>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor", true)));
-	DWORD iRender = static_cast<DWORD>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectRender", true)));
+	HUE_TYPE iColor = static_cast<HUE_TYPE>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor")));
+	DWORD iRender = static_cast<DWORD>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectRender")));
 
-	iT1 = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1", true)));
+	iT1 = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1")));
 	if (iT1)
 		Effect(EFFECT_OBJ, iT1, this, 1, 30, false, iColor, iRender);
 	Sound( SOUND_SPELL_FIZZLE );
@@ -2926,7 +2926,7 @@ int CChar::Spell_CastStart()
 	}
 
 	INT64 iWaitTime = pSpellDef->m_CastTime.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(iSkill)));
-	iWaitTime -= GetDefNum("FASTERCASTING", true, true) * 2;	//correct value is 0.25, but sphere can handle only 0.2.
+	iWaitTime -= GetDefNum("FASTERCASTING", true) * 2;	//correct value is 0.25, but sphere can handle only 0.2.
 	if ( iWaitTime < 1 || IsPriv(PRIV_GM) )
 		iWaitTime = 1;
 
@@ -2974,11 +2974,11 @@ int CChar::Spell_CastStart()
 	if ( !pSpellDef->IsSpellType(SPELLFLAG_NO_CASTANIM) && !IsSetMagicFlags(MAGICF_NOANIM) )
 		UpdateAnimate(pSpellDef->IsSpellType(SPELLFLAG_DIR_ANIM) ? ANIM_CAST_DIR : ANIM_CAST_AREA);
 
-	fWOP = Args.m_VarsLocal.GetKeyNum("WOP", true) > 0 ? true : false;
+	fWOP = (Args.m_VarsLocal.GetKeyNum("WOP") > 0) ? true : false;
 	if ( fWOP )
 	{
-		INT64 WOPColor = Args.m_VarsLocal.GetKeyNum("WOPColor", true);
-		INT64 WOPFont = Args.m_VarsLocal.GetKeyNum("WOPFont", true);
+		INT64 WOPColor = Args.m_VarsLocal.GetKeyNum("WOPColor");
+		INT64 WOPFont = Args.m_VarsLocal.GetKeyNum("WOPFont");
 
 		// Correct talk mode for spells WOP is TALKMODE_SPELL, but since sphere doesn't have any delay between spell casts this can allow WOP flood on screen.
 		// So to avoid this problem we must use TALKMODE_SAY, which is not the correct type but with this type the client only show last 3 messages on screen.
@@ -3077,7 +3077,7 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				iEffect *= ((pCharSrc->Skill_GetBase(SKILL_EVALINT) * 3) / 1000) + 1;
 
 				// Spell Damage Increase bonus
-				int DamageBonus = static_cast<int>(pCharSrc->GetDefNum("INCREASESPELLDAM",true));
+				int DamageBonus = static_cast<int>(pCharSrc->GetDefNum("INCREASESPELLDAM"));
 				if ( m_pPlayer && pCharSrc->m_pPlayer && DamageBonus > 15 )		// Spell Damage Increase is capped at 15% on PvP
 					DamageBonus = 15;
 
@@ -3127,16 +3127,16 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 	spell = static_cast<SPELL_TYPE>(Args.m_iN1);
 	iSkillLevel = static_cast<int>(Args.m_iN2);		// remember that effect/duration is calculated before triggers
-	DAMAGE_TYPE iDmgType = static_cast<DAMAGE_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("DamageType", true)));
-	ITEMID_TYPE iEffectID = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1", true)));
-	fExplode = Args.m_VarsLocal.GetKeyNum("EffectExplode", true) > 0 ? true : false;
-	iSound = static_cast<SOUND_TYPE>(Args.m_VarsLocal.GetKeyNum("Sound", true));
-	iEffect = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Effect", true));
-	iResist = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Resist", true));
-	iDuration = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Duration", true));
+	DAMAGE_TYPE iDmgType = static_cast<DAMAGE_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("DamageType")));
+	ITEMID_TYPE iEffectID = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1")));
+	fExplode = (Args.m_VarsLocal.GetKeyNum("EffectExplode") > 0) ? true : false;
+	iSound = static_cast<SOUND_TYPE>(Args.m_VarsLocal.GetKeyNum("Sound"));
+	iEffect = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Effect"));
+	iResist = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Resist"));
+	iDuration = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Duration"));
 
-	HUE_TYPE iColor = static_cast<HUE_TYPE>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor", true)));
-	DWORD iRender = static_cast<DWORD>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectRender", true)));
+	HUE_TYPE iColor = static_cast<HUE_TYPE>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor")));
+	DWORD iRender = static_cast<DWORD>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectRender")));
 
 	if ( iEffectID > ITEMID_QTY )
 		iEffectID = pSpellDef->m_idEffect;

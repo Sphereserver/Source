@@ -112,7 +112,7 @@ bool CChar::Noto_IsEvil() const
 	short iKarma = Stat_GetAdjusted(STAT_KARMA);
 
 	//	guarded areas could be both RED and BLUE ones.
-	if ( m_pArea && m_pArea->IsGuarded() && m_pArea->m_TagDefs.GetKeyNum("RED", true) )
+	if ( m_pArea && m_pArea->IsGuarded() && m_pArea->m_TagDefs.GetKeyNum("RED") )
 	{
 		//	red zone is opposite to blue - murders are considered normal here
 		//	while people with 0 kills and good karma are considered bad here
@@ -207,7 +207,7 @@ NOTO_TYPE CChar::Noto_GetFlag(const CChar *pCharViewer, bool bAllowInvul, bool b
 NOTO_TYPE CChar::Noto_CalcFlag(const CChar *pCharViewer, bool bAllowInvul) const
 {
 	ADDTOCALLSTACK("CChar::Noto_CalcFlag");
-	NOTO_TYPE NotoFlag = static_cast<NOTO_TYPE>(m_TagDefs.GetKeyNum("OVERRIDE.NOTO", true));
+	NOTO_TYPE NotoFlag = static_cast<NOTO_TYPE>(m_TagDefs.GetKeyNum("OVERRIDE.NOTO"));
 	if ( NotoFlag != NOTO_INVALID )
 		return NotoFlag;
 
@@ -1553,7 +1553,7 @@ void CChar::CallGuards( CChar * pCriminal )
 		if ( !pGuard )
 			return;
 
-		if ( pCriminal->m_pArea->m_TagDefs.GetKeyNum("RED", true) )
+		if ( pCriminal->m_pArea->m_TagDefs.GetKeyNum("RED") )
 			pGuard->m_TagDefs.SetNum("NAME.HUE", g_Cfg.m_iColorNotoEvil, true);
 		pGuard->Spell_Effect_Create(SPELL_Summon, LAYER_SPELL_Summon, 1000, g_Cfg.m_iGuardLingerTime);
 		pGuard->Spell_Teleport(pCriminal->GetTopPoint(), false, false);
@@ -1900,11 +1900,11 @@ effect_bounce:
 			if ( iDmgPhysical == 0 )		// if physical damage is not set, let's assume it as the remaining value
 				iDmgPhysical = 100 - (iDmgFire + iDmgCold + iDmgPoison + iDmgEnergy);
 
-			int iPhysicalDamage = iDmg * iDmgPhysical * (100 - static_cast<int>(GetDefNum("RESPHYSICAL", true)));
-			int iFireDamage = iDmg * iDmgFire * (100 - static_cast<int>(GetDefNum("RESFIRE", true)));
-			int iColdDamage = iDmg * iDmgCold * (100 - static_cast<int>(GetDefNum("RESCOLD", true)));
-			int iPoisonDamage = iDmg * iDmgPoison * (100 - static_cast<int>(GetDefNum("RESPOISON", true)));
-			int iEnergyDamage = iDmg * iDmgEnergy * (100 - static_cast<int>(GetDefNum("RESENERGY", true)));
+			int iPhysicalDamage = iDmg * iDmgPhysical * (100 - static_cast<int>(GetDefNum("RESPHYSICAL")));
+			int iFireDamage = iDmg * iDmgFire * (100 - static_cast<int>(GetDefNum("RESFIRE")));
+			int iColdDamage = iDmg * iDmgCold * (100 - static_cast<int>(GetDefNum("RESCOLD")));
+			int iPoisonDamage = iDmg * iDmgPoison * (100 - static_cast<int>(GetDefNum("RESPOISON")));
+			int iEnergyDamage = iDmg * iDmgEnergy * (100 - static_cast<int>(GetDefNum("RESENERGY")));
 
 			iDmg = (iPhysicalDamage + iFireDamage + iColdDamage + iPoisonDamage + iEnergyDamage) / 10000;
 		}
@@ -1936,10 +1936,10 @@ effect_bounce:
 		uType = static_cast<DAMAGE_TYPE>(Args.m_iN2);
 	}
 
-	int iItemDamageChance = static_cast<int>(Args.m_VarsLocal.GetKeyNum("ItemDamageChance", true));
+	int iItemDamageChance = static_cast<int>(Args.m_VarsLocal.GetKeyNum("ItemDamageChance"));
 	if ( (iItemDamageChance > Calc_GetRandVal(100)) && !pCharDef->Can(CAN_C_NONHUMANOID) )
 	{
-		LAYER_TYPE iHitLayer = static_cast<LAYER_TYPE>(Args.m_VarsLocal.GetKeyNum("ItemDamageLayer", true));
+		LAYER_TYPE iHitLayer = static_cast<LAYER_TYPE>(Args.m_VarsLocal.GetKeyNum("ItemDamageLayer"));
 		CItem *pItemHit = LayerFind(iHitLayer);
 		if ( pItemHit )
 			pItemHit->OnTakeDamage(iDmg, pSrc, uType);
@@ -2249,7 +2249,7 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 
 	if ( m_pPlayer )	// only players can have damage bonus
 	{
-		int iDmgBonus = minimum(static_cast<int>(GetDefNum("INCREASEDAM", true, true)), 100);		// Damage Increase is capped at 100%
+		int iDmgBonus = minimum(static_cast<int>(GetDefNum("INCREASEDAM", true)), 100);		// Damage Increase is capped at 100%
 
 		// Racial Bonus (Berserk), gargoyles gains +15% Damage Increase per each 20 HP lost
 		if ((g_Cfg.m_iRacialFlags & RACIALF_GARG_BERSERK) && IsGargoyle())
@@ -2983,11 +2983,11 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				Fight_CalcDamage(m_uidWeapon.ItemFind()),
 				this,
 				iTyp,
-				static_cast<int>(GetDefNum("DAMPHYSICAL", true)),
-				static_cast<int>(GetDefNum("DAMFIRE", true)),
-				static_cast<int>(GetDefNum("DAMCOLD", true)),
-				static_cast<int>(GetDefNum("DAMPOISON", true)),
-				static_cast<int>(GetDefNum("DAMENERGY", true))
+				static_cast<int>(GetDefNum("DAMPHYSICAL")),
+				static_cast<int>(GetDefNum("DAMFIRE")),
+				static_cast<int>(GetDefNum("DAMCOLD")),
+				static_cast<int>(GetDefNum("DAMPOISON")),
+				static_cast<int>(GetDefNum("DAMENERGY"))
 				);
 
 			return WAR_SWING_EQUIPPING;
@@ -3036,7 +3036,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	if ( IsSetCombatFlags(COMBAT_PREHIT) && (m_atFight.m_Swing_State == WAR_SWING_READY) )
 	{
-		INT64 diff = GetKeyNum("LastHit", true) - g_World.GetCurrentTime().GetTimeRaw();
+		INT64 diff = GetKeyNum("LastHit") - g_World.GetCurrentTime().GetTimeRaw();
 		if ( diff > 0 )
 		{
 			SetTimeout(minimum(diff, 50));
@@ -3179,8 +3179,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				return WAR_SWING_READY;
 
 			iSwingDelay = static_cast<int>(Args.m_iN1);
-			anim = static_cast<ANIM_TYPE>(Args.m_VarsLocal.GetKeyNum("Anim", false));
-			animDelay = static_cast<int>(Args.m_VarsLocal.GetKeyNum("AnimDelay", true));
+			anim = static_cast<ANIM_TYPE>(Args.m_VarsLocal.GetKeyNum("Anim"));
+			animDelay = static_cast<int>(Args.m_VarsLocal.GetKeyNum("AnimDelay"));
 			if ( iSwingDelay < 0 )
 				iSwingDelay = 0;
 			if ( animDelay < 0 )
@@ -3257,7 +3257,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 		SOUND_TYPE iSound = 0;
 		if ( pWeapon )
-			iSound = static_cast<SOUND_TYPE>(pWeapon->GetDefNum("AMMOSOUNDMISS", true));
+			iSound = static_cast<SOUND_TYPE>(pWeapon->GetDefNum("AMMOSOUNDMISS"));
 		if ( !iSound )
 		{
 			if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
@@ -3387,7 +3387,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		}
 
 		// Check if the weapon will be damaged
-		int iDamageChance = static_cast<int>(Args.m_VarsLocal.GetKeyNum("ItemDamageChance", true));
+		int iDamageChance = static_cast<int>(Args.m_VarsLocal.GetKeyNum("ItemDamageChance"));
 		if ( iDamageChance > Calc_GetRandVal(100) )
 			pWeapon->OnTakeDamage(iDmg, pCharTarg);
 	}
@@ -3407,17 +3407,17 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		iDmg,
 		this,
 		iTyp,
-		static_cast<int>(GetDefNum("DAMPHYSICAL", true, true)),
-		static_cast<int>(GetDefNum("DAMFIRE", true, true)),
-		static_cast<int>(GetDefNum("DAMCOLD", true, true)),
-		static_cast<int>(GetDefNum("DAMPOISON", true, true)),
-		static_cast<int>(GetDefNum("DAMENERGY", true, true))
+		static_cast<int>(GetDefNum("DAMPHYSICAL", true)),
+		static_cast<int>(GetDefNum("DAMFIRE", true)),
+		static_cast<int>(GetDefNum("DAMCOLD", true)),
+		static_cast<int>(GetDefNum("DAMPOISON", true)),
+		static_cast<int>(GetDefNum("DAMENERGY", true))
 		);
 
 	if ( iDmg > 0 )
 	{
 		CItem *pCurseWeapon = LayerFind(LAYER_SPELL_Curse_Weapon);
-		short iHitLifeLeech = static_cast<short>(GetDefNum("HitLeechLife", true));
+		short iHitLifeLeech = static_cast<short>(GetDefNum("HitLeechLife"));
 		if ( pWeapon && pCurseWeapon )
 			iHitLifeLeech += pCurseWeapon->m_itSpell.m_spelllevel;
 
@@ -3429,7 +3429,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			bMakeLeechSound = true;
 		}
 
-		short iHitManaLeech = static_cast<short>(GetDefNum("HitLeechMana", true));
+		short iHitManaLeech = static_cast<short>(GetDefNum("HitLeechMana"));
 		if ( iHitManaLeech )
 		{
 			iHitManaLeech = static_cast<short>(Calc_GetRandVal2(0, (iDmg * iHitManaLeech * 40) / 10000));	// leech 0% ~ 40% of damage value
@@ -3437,7 +3437,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			bMakeLeechSound = true;
 		}
 
-		if ( GetDefNum("HitLeechStam", true) > Calc_GetRandLLVal(100) )
+		if ( GetDefNum("HitLeechStam") > Calc_GetRandLLVal(100) )
 		{
 			UpdateStatVal(STAT_DEX, static_cast<short>(iDmg), Stat_GetMax(STAT_DEX));	// leech 100% of damage value
 			bMakeLeechSound = true;
@@ -3450,7 +3450,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			if ( pPoly && pPoly->m_itSpell.m_spell == SPELL_Wraith_Form )
 				iManaDrain += 5 + (15 * Skill_GetBase(SKILL_SPIRITSPEAK) / 1000);
 		}
-		if ( GetDefNum("HitManaDrain", true) > Calc_GetRandLLVal(100) )
+		if ( GetDefNum("HitManaDrain") > Calc_GetRandLLVal(100) )
 			iManaDrain += IMULDIV(static_cast<short>(iDmg), 20, 100);	// leech 20% of damage value
 
 		short iTargMana = pCharTarg->Stat_GetVal(STAT_INT);

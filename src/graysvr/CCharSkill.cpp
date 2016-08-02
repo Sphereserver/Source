@@ -721,7 +721,7 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 	int iGainRadius = pSkillDef->m_GainRadius;
 	if ((iGainRadius > 0) && ((difficulty + iGainRadius) < iSkillLevelFixed))
 	{
-		if ( GetKeyNum("NOSKILLMSG", true) )
+		if ( GetKeyNum("NOSKILLMSG") )
 			SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_GAINRADIUS_NOT_MET) );
 		return;
 	}
@@ -870,15 +870,15 @@ bool CChar::Stats_Regen(INT64 iTimeDiff)
 				continue;
 			}
 
-			i = static_cast<STAT_TYPE>(Args.m_VarsLocal.GetKeyNum("StatID", true));
+			i = static_cast<STAT_TYPE>(Args.m_VarsLocal.GetKeyNum("StatID"));
 			if (i < STAT_STR)
 				i = STAT_STR;
 			else if (i > STAT_FOOD)
 				i = STAT_FOOD;
-			mod = static_cast<short>(Args.m_VarsLocal.GetKeyNum("Value", true));
-			StatLimit = static_cast<short>(Args.m_VarsLocal.GetKeyNum("StatLimit", true));
+			mod = static_cast<short>(Args.m_VarsLocal.GetKeyNum("Value"));
+			StatLimit = static_cast<short>(Args.m_VarsLocal.GetKeyNum("StatLimit"));
 			if (i == STAT_FOOD)
-				HitsHungerLoss = static_cast<int>(Args.m_VarsLocal.GetKeyNum("HitsHungerLoss", true));
+				HitsHungerLoss = static_cast<int>(Args.m_VarsLocal.GetKeyNum("HitsHungerLoss"));
 		}
 		if (mod == 0)
 			continue;
@@ -925,7 +925,7 @@ unsigned short CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool bGetTicks)
 		if ( bGetTicks )
 		{
 			sprintf(sRegen, "REGEN%s", stat);
-			unsigned short iRate = static_cast<unsigned short>( GetDefNum(sRegen, true) ) * TICK_PER_SEC;
+			unsigned short iRate = static_cast<unsigned short>(GetDefNum(sRegen)) * TICK_PER_SEC;
 			if ( iRate )
 				return maximum(0, iRate);
 
@@ -934,7 +934,7 @@ unsigned short CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool bGetTicks)
 		else
 		{
 			sprintf(sRegen, "REGENVAL%s", stat);
-			return static_cast<unsigned short>(maximum(1, GetDefNum(sRegen, true)));
+			return static_cast<unsigned short>(maximum(1, GetDefNum(sRegen)));
 		}
 	}
 	return 0;
@@ -3299,7 +3299,7 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 	if ( pntMe.GetDist( m_Act_p ) > UO_MAP_VIEW_SIGHT )
 		m_Act_p.StepLinePath( pntMe, UO_MAP_VIEW_SIGHT );
 
-	int iDamage = static_cast<int>(GetDefNum("BREATH.DAM", true));
+	int iDamage = static_cast<int>(GetDefNum("BREATH.DAM"));
 	if ( !iDamage )
 	{
 		iDamage = (Stat_GetVal(STAT_STR) * 5) / 100;
@@ -3309,9 +3309,9 @@ int CChar::Skill_Act_Breath( SKTRIG_TYPE stage )
 			iDamage = 200;
 	}
 
-	HUE_TYPE hue = static_cast<HUE_TYPE>(GetDefNum("BREATH.HUE", true));
-	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(GetDefNum("BREATH.ANIM", true));
-	EFFECT_TYPE effect = static_cast<EFFECT_TYPE>(GetDefNum("BREATH.TYPE",true));
+	HUE_TYPE hue = static_cast<HUE_TYPE>(GetDefNum("BREATH.HUE"));
+	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(GetDefNum("BREATH.ANIM"));
+	EFFECT_TYPE effect = static_cast<EFFECT_TYPE>(GetDefNum("BREATH.TYPE"));
 	if ( !id )
 		id = ITEMID_FX_FIRE_BALL;
 	if ( !effect )
@@ -3538,16 +3538,16 @@ int CChar::Skill_Stroke( bool fResource )
 		if ( Skill_OnTrigger(skill, SKTRIG_STROKE, &args) == TRIGRET_RET_TRUE )
 			return -SKTRIG_ABORT;
 
-		sound = static_cast<SOUND_TYPE>(args.m_VarsLocal.GetKeyNum("Sound", false));
-		delay = args.m_VarsLocal.GetKeyNum("Delay", true);
-		anim = static_cast<ANIM_TYPE>(args.m_VarsLocal.GetKeyNum("Anim", true));
+		sound = static_cast<SOUND_TYPE>(args.m_VarsLocal.GetKeyNum("Sound"));
+		delay = args.m_VarsLocal.GetKeyNum("Delay");
+		anim = static_cast<ANIM_TYPE>(args.m_VarsLocal.GetKeyNum("Anim"));
 
 		if ( args.m_iN1 == 1 )
 			UpdateDir(m_Act_p);
 		if ( fResource )
-			m_atResource.m_Stroke_Count = static_cast<WORD>(args.m_VarsLocal.GetKeyNum("Strokes", false));
+			m_atResource.m_Stroke_Count = static_cast<WORD>(args.m_VarsLocal.GetKeyNum("Strokes"));
 		else
-			m_atCreate.m_Stroke_Count = static_cast<WORD>(args.m_VarsLocal.GetKeyNum("Strokes", false));
+			m_atCreate.m_Stroke_Count = static_cast<WORD>(args.m_VarsLocal.GetKeyNum("Strokes"));
 	}
 
 	if ( sound )
@@ -4046,13 +4046,13 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 		if ( bCraftSkill )
 		{
 			// read crafting parameters
-			pResBase.SetPrivateUID(static_cast<DWORD>(pArgs.m_VarsLocal.GetKeyNum("CraftItemdef", true)));
-			m_atCreate.m_Stroke_Count = static_cast<WORD>(maximum(1, pArgs.m_VarsLocal.GetKeyNum("CraftStrokeCnt", true)));
+			pResBase.SetPrivateUID(static_cast<DWORD>(pArgs.m_VarsLocal.GetKeyNum("CraftItemdef")));
+			m_atCreate.m_Stroke_Count = static_cast<WORD>(maximum(1, pArgs.m_VarsLocal.GetKeyNum("CraftStrokeCnt")));
 			m_atCreate.m_ItemID = static_cast<ITEMID_TYPE>(pResBase.GetResIndex());
-			m_atCreate.m_Amount = static_cast<WORD>(pArgs.m_VarsLocal.GetKeyNum("CraftAmount", true));
+			m_atCreate.m_Amount = static_cast<WORD>(pArgs.m_VarsLocal.GetKeyNum("CraftAmount"));
 		}
 		if ( bGatherSkill )
-			m_atResource.m_Stroke_Count = static_cast<WORD>(pArgs.m_VarsLocal.GetKeyNum("GatherStrokeCnt", true));
+			m_atResource.m_Stroke_Count = static_cast<WORD>(pArgs.m_VarsLocal.GetKeyNum("GatherStrokeCnt"));
 
 		// Casting sound & animation when starting, Skill_Stroke() will do it the next times.
 		if ( bCraftSkill || bGatherSkill )

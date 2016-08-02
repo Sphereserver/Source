@@ -538,7 +538,7 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem * pGold)
 		return false;
 	}
 
-	int iTrainCost = static_cast<int>(GetKeyNum("OVERRIDE.TRAINSKILLCOST", true));
+	int iTrainCost = static_cast<int>(GetKeyNum("OVERRIDE.TRAINSKILLCOST"));
 	if ( !iTrainCost )
 		iTrainCost = g_Cfg.m_iTrainSkillCost;
 
@@ -2197,10 +2197,10 @@ void CChar::NPC_Act_Fight()
 			case TRIGRET_RET_FALSE:	fSkipHardcoded	= true;	break;
 			case static_cast<TRIGRET_TYPE>(2):
 			{
-				SKILL_TYPE iSkillforced = static_cast<SKILL_TYPE>(Args.m_VarsLocal.GetKeyNum("skill", false));
+				SKILL_TYPE iSkillforced = static_cast<SKILL_TYPE>(Args.m_VarsLocal.GetKeyNum("skill"));
 				if (iSkillforced)
 				{
-					SPELL_TYPE iSpellforced = static_cast<SPELL_TYPE>(Args.m_VarsLocal.GetKeyNum("spell", false));
+					SPELL_TYPE iSpellforced = static_cast<SPELL_TYPE>(Args.m_VarsLocal.GetKeyNum("spell"));
 					if (g_Cfg.IsSkillFlag(iSkillforced, SKF_MAGIC))
 						m_atMagery.m_Spell = iSpellforced;
 
@@ -2462,7 +2462,7 @@ void CChar::NPC_Act_Looting()
 
 	if ( !(NPC_GetAiFlags() & NPC_AI_LOOTING) )
 		return;
-	if ( !m_pNPC || m_pNPC->m_Brain != NPCBRAIN_MONSTER || !Can(CAN_C_USEHANDS) || IsStatFlag(STATF_Conjured|STATF_Pet) || (m_TagDefs.GetKeyNum("DEATHFLAGS", true) & DEATH_NOCORPSE) )
+	if ( !m_pNPC || m_pNPC->m_Brain != NPCBRAIN_MONSTER || !Can(CAN_C_USEHANDS) || IsStatFlag(STATF_Conjured|STATF_Pet) || (m_TagDefs.GetKeyNum("DEATHFLAGS") & DEATH_NOCORPSE) )
 		return;
 	if ( m_pArea->IsFlag(REGION_FLAG_SAFE|REGION_FLAG_GUARDED) )
 		return;
