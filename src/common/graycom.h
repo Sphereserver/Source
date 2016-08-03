@@ -34,8 +34,6 @@
 	#define strnicmp	_strnicmp
 
 	extern const OSVERSIONINFO * GRAY_GetOSInfo();
-	#define INT64			__int64
-	#define INT32			__int32
 
 #else	// _WIN32 else assume LINUX
 
@@ -57,8 +55,6 @@
 	#define FAR
 	#define E_FAIL			0x80004005
 	#define BOOL			unsigned short
-	#define INT64			int64_t
-	#define INT32			int32_t
 
 	#ifdef _BSD
 		int getTimezone();
@@ -78,6 +74,9 @@
 	#define strnicmp	strncasecmp
 	#define _vsnprintf	vsnprintf
 #endif // !_WIN32
+
+#define INT32		int
+#define INT64		long long
 
 #ifdef _DEBUG
 	#ifndef ASSERT
