@@ -948,7 +948,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 	CItemContainer *pPack = m_pChar->GetContainerCreate(LAYER_PACK);
 
 	CItemVendable *pItem;
-	INT64 costtotal = 0;
+	DWORD costtotal = 0;
 
 	// Check if the vendor really has so much items
 	for ( size_t i = 0; i < itemCount; ++i )
@@ -1145,8 +1145,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 	TCHAR *pszTemp1 = Str_GetTemp();
 	TCHAR *pszTemp2 = Str_GetTemp();
 	sprintf(pszTemp1, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_HYARE), m_pChar->GetName());
-	sprintf(pszTemp2, bBoss ? g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_S1) : g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_B1),
-		costtotal, (costtotal == 1) ? "" : g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CA));
+	sprintf(pszTemp2, bBoss ? g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_S1) : g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_B1), static_cast<INT64>(costtotal), (costtotal == 1) ? "" : g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CA));
 	sprintf(sMsg, "%s %s %s", pszTemp1, pszTemp2, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_TY));
 	pVendor->Speak(sMsg);
 
@@ -1205,7 +1204,7 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 
 	int iConvertFactor = -pVendor->NPC_GetVendorMarkup();
 
-	int iGold = 0;
+	DWORD iGold = 0;
 	bool bShortfall = false;
 
 	for ( size_t i = 0; i < itemCount; i++ )
@@ -1249,7 +1248,7 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 		pBank->m_itEqBankBox.m_Check_Amount -= lPrice;
 
 		// give them the appropriate amount of gold.
-		iGold += static_cast<int>(lPrice);
+		iGold += lPrice;
 
 		// Take the items from player.
 		// Put items in vendor inventory.
@@ -1276,8 +1275,7 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 	if ( iGold )
 	{
 		char *z = Str_GetTemp();
-		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELL_TY),
-			iGold, (iGold == 1) ? "" : g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CA));
+		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELL_TY), static_cast<int>(iGold), (iGold == 1) ? "" : g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CA));
 		pVendor->Speak(z);
 
 		if ( bShortfall )
