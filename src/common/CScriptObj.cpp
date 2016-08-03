@@ -2534,14 +2534,14 @@ jump_in:
 					{
 						EXC_SET("FullTrigger");
 						CGString sVal;
-						TCHAR * piCmd[7];
+						TCHAR *piCmd[7];
 						TCHAR *psTmp = Str_GetTemp();
-						strcpy( psTmp, s.GetArgRaw() );
-						size_t iArgQty = Str_ParseCmds( psTmp, piCmd, COUNTOF( piCmd ), " ,\t" );
+						strcpy(psTmp, s.GetArgRaw());
+						size_t iArgQty = Str_ParseCmds(psTmp, piCmd, COUNTOF(piCmd), " ,\t");
 						CScriptObj *pRef = this;
 						if ( iArgQty == 2 )
 						{
-							CGrayUID uid = (int)piCmd[1];
+							CGrayUID uid = static_cast<CGrayUID>(ATOI(piCmd[1]));
 							if ( uid.ObjFind() )
 								pRef = uid.ObjFind();
 						}

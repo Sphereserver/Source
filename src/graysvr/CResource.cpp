@@ -1396,7 +1396,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 
 			if (iNumber < 0 || iNumber >= m_Functions.GetCount()) //invalid index can potentially crash the server, this check is strongly needed
 			{
-				g_Log.EventError("Invalid command index %d\n",iNumber);
+				g_Log.EventError("Invalid command index %" FMTSIZE_T "\n", iNumber);
 				return false;
 			}
 

@@ -195,7 +195,7 @@ void CItemSpawn::GenerateChar(CResourceDef *pDef)
 
 	size_t iCount = GetTopSector()->GetCharComplexity();
 	if ( iCount > g_Cfg.m_iMaxCharComplexity )
-		g_Log.Event(LOGL_WARN, "%d chars at %s. Sector too complex!\n", iCount, GetTopSector()->GetBasePoint().WriteUsed());
+		g_Log.Event(LOGL_WARN, "%" FMTSIZE_T " chars at %s. Sector too complex!\n", iCount, GetTopSector()->GetBasePoint().WriteUsed());
 }
 
 void CItemSpawn::DelObj(CGrayUID uid)

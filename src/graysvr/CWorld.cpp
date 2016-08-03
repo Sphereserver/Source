@@ -1846,11 +1846,11 @@ bool CWorld::LoadAll() // Load world from script
 			// Is this area too complex ?
 			iCount = pSector->GetItemComplexity();
 			if ( iCount > g_Cfg.m_iMaxSectorComplexity )
-				g_Log.Event(LOGL_WARN, "%d items at %s. Sector too complex!\n", iCount, pSector->GetBasePoint().WriteUsed());
+				g_Log.Event(LOGL_WARN, "%" FMTSIZE_T " items at %s. Sector too complex!\n", iCount, pSector->GetBasePoint().WriteUsed());
 
 			iCount = pSector->GetCharComplexity();
 			if ( iCount > g_Cfg.m_iMaxCharComplexity )
-				g_Log.Event(LOGL_WARN, "%d chars at %s. Sector too complex!\n", iCount, pSector->GetBasePoint().WriteUsed());
+				g_Log.Event(LOGL_WARN, "%" FMTSIZE_T " chars at %s. Sector too complex!\n", iCount, pSector->GetBasePoint().WriteUsed());
 		}
 		EXC_CATCHSUB("Sector light levels");
 	}

@@ -1270,7 +1270,7 @@ bool CChar::CanSeeLOS_New( const CPointMap &ptDst, CPointMap *pptBlock, int iMax
 		return CanSeeLOS_New_Failed(pptBlock, ptNow);
 	}
 	
-	WARNLOS(("Path calculated %d\n", path.size()));
+	WARNLOS(("Path calculated %" FMTSIZE_T "\n", path.size()));
 	// Ok now we should loop through all the points and checking for maptile, staticx, items, multis.
 	// If something is in the way and it has the wrong flags LOS return false
 	

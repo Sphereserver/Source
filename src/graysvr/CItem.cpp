@@ -1222,7 +1222,7 @@ bool CItem::MoveTo(CPointMap pt, bool bForceFix) // Put item on the ground here.
 	{
 		size_t iCount = pSector->GetItemComplexity();
 		if ( iCount > g_Cfg.m_iMaxSectorComplexity )
-			g_Log.Event(LOGL_WARN, "%d items at %s. Sector too complex!\n", iCount, pt.WriteUsed());
+			g_Log.Event(LOGL_WARN, "%" FMTSIZE_T " items at %s. Sector too complex!\n", iCount, pt.WriteUsed());
 	}
 
 	SetTopPoint( pt );
@@ -3938,8 +3938,8 @@ SKILL_TYPE CItem::Weapon_GetSkill() const
 	CItemBase * pItemDef = Item_GetDef();
 	ASSERT(pItemDef);
 
-	unsigned int iSkillOverride = static_cast<unsigned int>(m_TagDefs.GetKeyNum("OVERRIDE.SKILL"));
-	if ( (iSkillOverride > SKILL_NONE) && (iSkillOverride < g_Cfg.m_iMaxSkill) )
+	int iSkillOverride = static_cast<int>(m_TagDefs.GetKeyNum("OVERRIDE.SKILL"));
+	if ( (iSkillOverride > SKILL_NONE) && (iSkillOverride < static_cast<int>(g_Cfg.m_iMaxSkill)) )
 		return static_cast<SKILL_TYPE>(iSkillOverride);
 
 	if ( (pItemDef->m_iSkill > SKILL_NONE) && (pItemDef->m_iSkill < static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill)) )

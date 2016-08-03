@@ -643,7 +643,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 			} break;
 		case 't':
 			{
-				pSrc->SysMessagef("Current active threads: %d\n", ThreadHolder::getActiveThreads());
+				pSrc->SysMessagef("Current active threads: %" FMTSIZE_T "\n", ThreadHolder::getActiveThreads());
 				size_t iThreadCount = ThreadHolder::getActiveThreads();
 				for ( size_t iThreads = 0; iThreads < iThreadCount; ++iThreads )
 				{
@@ -1504,7 +1504,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 			pszMsg = Str_GetTemp();
 			g_Cfg.m_fSecure = s.GetArgFlag( g_Cfg.m_fSecure, true ) != 0;
 			SetSignals();
-			sprintf(pszMsg, "Secure mode %s.\n", g_Cfg.m_fSecure ? "re-enabled" : "disabled" );
+			sprintf(pszMsg, "Secure mode %s.\n", g_Cfg.m_fSecure ? "enabled" : "disabled" );
 			break;
 		case SV_SHRINKMEM:
 			{
