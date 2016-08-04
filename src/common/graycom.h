@@ -11,6 +11,8 @@
 #include <stdarg.h>
 #include <ctype.h>
 #include <assert.h>
+#include <limits>
+#include <sys/timeb.h>
 
 #ifdef _WIN32
 // NOTE: If we want a max number of sockets we must compile for it !
@@ -25,10 +27,7 @@
 	#include <winsock2.h>
 	#include <windows.h>
 	#include <dos.h>
-	#include <limits.h>	// INT_MAX, etc
-	#include <limits>	// std::numeric_limits
 	#include <conio.h>
-	#include <sys/timeb.h>
 
 	#define strcmpi		_strcmpi	// Non ANSI equiv functions ?
 	#define strnicmp	_strnicmp
@@ -38,9 +37,6 @@
 #else	// _WIN32 else assume LINUX
 
 	#include <sys/types.h>
-	#include <sys/timeb.h>
-	#include <limits.h>	// INT_MAX, etc
-	#include <limits>	// std::numeric_limits
 
 	#define HANDLE			DWORD
 	#define _cdecl
@@ -75,8 +71,8 @@
 	#define _vsnprintf	vsnprintf
 #endif // !_WIN32
 
-#define INT32		int
-#define INT64		long long
+#define INT32		int32_t
+#define INT64		int64_t
 
 #ifdef _DEBUG
 	#ifndef ASSERT
