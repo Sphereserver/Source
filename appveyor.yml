@@ -3,3 +3,6 @@ configuration: Nightly
 build:
   project: GraySvr.vcxproj
   verbosity: minimal
+artifacts:
+- path: $(configuration)\SphereSvr.exe
+  name: SphereSvr
