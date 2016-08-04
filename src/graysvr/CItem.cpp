@@ -3935,36 +3935,39 @@ SKILL_TYPE CItem::Weapon_GetSkill() const
 	ADDTOCALLSTACK("CItem::Weapon_GetSkill");
 	// assuming this is a weapon. What skill does it apply to.
 
-	CItemBase * pItemDef = Item_GetDef();
+	CVarDefCont *pVar = m_TagDefs.GetKey("OVERRIDE.SKILL");
+	if ( pVar )
+	{
+		SKILL_TYPE iSkillOverride = static_cast<SKILL_TYPE>(pVar->GetValNum());
+		if ( (iSkillOverride > SKILL_NONE) && (iSkillOverride < static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill)) )
+			return iSkillOverride;
+	}
+
+	CItemBase *pItemDef = Item_GetDef();
 	ASSERT(pItemDef);
-
-	int iSkillOverride = static_cast<int>(m_TagDefs.GetKeyNum("OVERRIDE.SKILL"));
-	if ( (iSkillOverride > SKILL_NONE) && (iSkillOverride < static_cast<int>(g_Cfg.m_iMaxSkill)) )
-		return static_cast<SKILL_TYPE>(iSkillOverride);
-
 	if ( (pItemDef->m_iSkill > SKILL_NONE) && (pItemDef->m_iSkill < static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill)) )
 		return pItemDef->m_iSkill;
 
 	switch ( pItemDef->GetType() )
 	{
+		case IT_WEAPON_MACE_SMITH:
+		case IT_WEAPON_MACE_SHARP:
+		case IT_WEAPON_MACE_STAFF:
 		case IT_WEAPON_MACE_CROOK:
 		case IT_WEAPON_MACE_PICK:
-		case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
-		case IT_WEAPON_MACE_STAFF:
-		case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
-			return( SKILL_MACEFIGHTING );
+			return SKILL_MACEFIGHTING;
 		case IT_WEAPON_SWORD:
 		case IT_WEAPON_AXE:
-			return( SKILL_SWORDSMANSHIP );
+			return SKILL_SWORDSMANSHIP;
 		case IT_WEAPON_FENCE:
-			return( SKILL_FENCING );
+			return SKILL_FENCING;
 		case IT_WEAPON_BOW:
 		case IT_WEAPON_XBOW:
-			return( SKILL_ARCHERY );
+			return SKILL_ARCHERY;
 		case IT_WEAPON_THROWING:
-			return ( SKILL_THROWING );
+			return SKILL_THROWING;
 		default:
-			return( SKILL_WRESTLING );
+			return SKILL_WRESTLING;
 	}
 }
 
