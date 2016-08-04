@@ -12,6 +12,7 @@
 #include <ctype.h>
 #include <assert.h>
 #include <limits.h>
+#include <limits>
 #include <sys/timeb.h>
 
 #ifdef _WIN32
