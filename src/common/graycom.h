@@ -11,7 +11,7 @@
 #include <stdarg.h>
 #include <ctype.h>
 #include <assert.h>
-#include <limits>
+#include <limits.h>
 #include <sys/timeb.h>
 
 #ifdef _WIN32
@@ -71,8 +71,8 @@
 	#define _vsnprintf	vsnprintf
 #endif // !_WIN32
 
-#define INT32		int32_t
-#define INT64		int64_t
+#define INT32		int
+#define INT64		long long
 
 #ifdef _DEBUG
 	#ifndef ASSERT
