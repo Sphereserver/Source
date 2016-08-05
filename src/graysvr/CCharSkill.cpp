@@ -3086,23 +3086,17 @@ int CChar::Skill_Magery( SKTRIG_TYPE stage )
 int CChar::Skill_Fighting( SKTRIG_TYPE stage )
 {
 	ADDTOCALLSTACK("CChar::Skill_Fighting");
-	// SKILL_ARCHERY:
-	// SKILL_SWORDSMANSHIP:
-	// SKILL_MACEFIGHTING:
-	// SKILL_FENCING:
-	// SKILL_WRESTLING:
-	// SKILL_THROWING:
-	//
-	// m_Fight_Targ = attack target.
+	// SKILL_ARCHERY
+	// SKILL_SWORDSMANSHIP
+	// SKILL_MACEFIGHTING
+	// SKILL_FENCING
+	// SKILL_WRESTLING
+	// SKILL_THROWING
 
 	if ( stage == SKTRIG_START )
 	{
 		m_atFight.m_Swing_State = WAR_SWING_EQUIPPING;
-		INT64 iRemainingDelay = g_World.GetTimeDiff(m_atFight.m_Swing_NextAction);
-		if ( iRemainingDelay < 0 || iRemainingDelay > 255)
-			iRemainingDelay = 0;
-
-		SetTimeout(iRemainingDelay);
+		SetTimeout(static_cast<INT64>(maximum(g_World.GetTimeDiff(m_atFight.m_Swing_NextAction), 0)));
 		return g_Cfg.Calc_CombatChanceToHit(this, m_Fight_Targ.CharFind(), Skill_GetActive());
 	}
 
@@ -3125,14 +3119,15 @@ int CChar::Skill_Fighting( SKTRIG_TYPE stage )
 int CChar::Skill_MakeItem( SKTRIG_TYPE stage )
 {
 	ADDTOCALLSTACK("CChar::Skill_MakeItem");
-	// SKILL_ALCHEMY:
-	// SKILL_BLACKSMITHING:
-	// SKILL_BOWCRAFT:
-	// SKILL_CARPENTRY:
-	// SKILL_COOKING:
-	// SKILL_INSCRIPTION:
-	// SKILL_TAILORING:
-	// SKILL_TINKERING:
+	// SKILL_ALCHEMY
+	// SKILL_BLACKSMITHING
+	// SKILL_BOWCRAFT
+	// SKILL_CARPENTRY
+	// SKILL_CARTOGRAPHY
+	// SKILL_COOKING
+	// SKILL_INSCRIPTION
+	// SKILL_TAILORING
+	// SKILL_TINKERING
 	//
 	// m_Act_Targ = the item we want to be part of this process.
 	// m_atCreate.m_ItemID = new item we are making

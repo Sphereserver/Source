@@ -267,7 +267,10 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 			{
 				m_uidWeapon = pItem->GetUID();
 				if ( Fight_IsActive() )
+				{
+					m_atFight.m_Swing_NextAction = CServTime::GetCurrentTime() + g_Cfg.Calc_CombatAttackSpeed(this, pItem);
 					Skill_Start(Fight_GetWeaponSkill());	// update char action
+				}
 			}
 			else if ( pItem->IsTypeArmor())
 			{
@@ -371,7 +374,10 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 			{
 				m_uidWeapon.InitUID();
 				if ( Fight_IsActive() )
+				{
+					m_atFight.m_Swing_NextAction = CServTime::GetCurrentTime() + g_Cfg.Calc_CombatAttackSpeed(this, NULL);
 					Skill_Start(Fight_GetWeaponSkill());	// update char action
+				}
 			}
 			else if ( pItem->IsTypeArmor())
 			{

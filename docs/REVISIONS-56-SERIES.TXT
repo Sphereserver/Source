@@ -143,4 +143,7 @@ Fixed: Items inside trade window not firing @DropOn_Item trigger when the trade 
 	PS: Using return 1 here will not cancel the trade, this must be done directly on @TradeAccepted/@CharTradeAccepted triggers.
 
 03-08-2016, Coruja
-Changed: Max item capacity on containers changed from 255 to 125. This is required to make containers works properly on Enhanced Clients.
+Changed: Max item capacity on containers changed from 255 to 125. This is required to make containers work properly on Enhanced Clients.
+
+05-08-2016, Coruja
+Fixed: Combat swing delay not getting updated immediately when the char switch weapons on hands.
