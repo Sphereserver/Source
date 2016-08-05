@@ -362,18 +362,25 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 	const CItemBaseMulti * pMultiOld = Multi_GetDef( GetID() );
 
 	// Reorient everything on the deck
-	CObjBase * ppObjs[MAX_MULTI_LIST_OBJS+1];
-	size_t iCount = Ship_ListObjs( ppObjs );
+	CObjBase *ppObjs[MAX_MULTI_LIST_OBJS + 1];
+	size_t iCount = Ship_ListObjs(ppObjs);
+
+	CObjBase *pObj = NULL;
+	CItem *pItem = NULL;
+	CChar *pChar = NULL;
+
+	CPointMap pt;
+	int xd, xdiff, yd, ydiff;
+
 	for ( size_t i = 0; i < iCount; ++i )
 	{
-		CObjBase *pObj = ppObjs[i];
-
-		CPointMap pt = pObj->GetTopPoint();
+		pObj = ppObjs[i];
+		pt = pObj->GetTopPoint();
 		
-		int xdiff = pt.m_x - GetTopPoint().m_x;
-		int ydiff = pt.m_y - GetTopPoint().m_y;
-		int xd = xdiff;
-		int yd = ydiff;
+		xdiff = pt.m_x - GetTopPoint().m_x;
+		ydiff = pt.m_y - GetTopPoint().m_y;
+		xd = xdiff;
+		yd = ydiff;
 		switch ( iTurn )
 		{
 			case 2: // right
@@ -395,7 +402,10 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 		pt.m_y = static_cast<short>(GetTopPoint().m_y + yd);
 		if ( pObj->IsItem() )
 		{
-			CItem *pItem = static_cast<CItem *>(pObj);
+			pItem = static_cast<CItem *>(pObj);
+			if ( !pItem )
+				continue;
+
 			if ( pItem == this )
 			{
 				m_pRegion->UnRealizeRegion();
@@ -406,8 +416,8 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 			{
 				for ( size_t j = 0; j < pMultiOld->m_Components.GetCount(); j++ )
 				{
-					const CItemBaseMulti::CMultiComponentItem & component = pMultiOld->m_Components.ElementAt(j);
-					if ((xdiff == component.m_dx) && (ydiff == component.m_dy) && ((pItem->GetTopZ()-GetTopZ()) == component.m_dz))
+					const CItemBaseMulti::CMultiComponentItem &component = pMultiOld->m_Components.ElementAt(j);
+					if ( (xdiff == component.m_dx) && (ydiff == component.m_dy) && ((pItem->GetTopZ() - GetTopZ()) == component.m_dz) )
 					{
 						const CItemBaseMulti::CMultiComponentItem & componentnew = pMultiNew->m_Components.ElementAt(j);
 						IT_TYPE oldType = pItem->GetType();
@@ -427,7 +437,10 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 		}
 		else if ( pObj->IsChar() )
 		{
-			CChar *pChar = static_cast<CChar *>(pObj);
+			pChar = static_cast<CChar *>(pObj);
+			if ( !pChar )
+				continue;
+
 			pChar->m_dirFace = GetDirTurn(pChar->m_dirFace, iTurn);
 			pChar->RemoveFromView();
 		}
@@ -436,7 +449,7 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 
 	for ( size_t i = 0; i < iCount; i++ )
 	{
-		CObjBase * pObj = ppObjs[i];
+		pObj = ppObjs[i];
 		pObj->Update();
 	}
 

@@ -170,6 +170,9 @@ bool CChar::Noto_IsNeutral() const
 NOTO_TYPE CChar::Noto_GetFlag(const CChar *pCharViewer, bool bAllowInvul, bool bGetColor) const
 {
 	ADDTOCALLSTACK("CChar::Noto_GetFlag");
+	if ( !pCharViewer )
+		return NOTO_INVALID;
+
 	CChar *pThis = const_cast<CChar *>(this);
 	CChar *pTarget = const_cast<CChar *>(pCharViewer);
 	NOTO_TYPE iNoto = NOTO_INVALID;
@@ -207,6 +210,9 @@ NOTO_TYPE CChar::Noto_GetFlag(const CChar *pCharViewer, bool bAllowInvul, bool b
 NOTO_TYPE CChar::Noto_CalcFlag(const CChar *pCharViewer, bool bAllowInvul) const
 {
 	ADDTOCALLSTACK("CChar::Noto_CalcFlag");
+	if ( !pCharViewer )
+		return NOTO_INVALID;
+
 	NOTO_TYPE NotoFlag = static_cast<NOTO_TYPE>(m_TagDefs.GetKeyNum("OVERRIDE.NOTO"));
 	if ( NotoFlag != NOTO_INVALID )
 		return NotoFlag;
@@ -1498,12 +1504,11 @@ void CChar::CallGuards()
 void CChar::CallGuards( CChar * pCriminal )
 {
 	ADDTOCALLSTACK("CChar::CallGuards1");
-	if ( !m_pArea || (pCriminal == this) )
+	if ( !pCriminal || (pCriminal == this) )
 		return;
-	if ( IsStatFlag(STATF_DEAD) || (pCriminal && (pCriminal->IsStatFlag(STATF_DEAD|STATF_INVUL) || pCriminal->IsPriv(PRIV_GM))) )
+	if ( !m_pArea || !pCriminal->m_pArea->IsGuarded() )
 		return;
-	
-	if ( !pCriminal->m_pArea->IsGuarded() )
+	if ( IsStatFlag(STATF_DEAD) || pCriminal->IsStatFlag(STATF_DEAD|STATF_INVUL) || pCriminal->IsPriv(PRIV_GM) )
 		return;
 
 	CChar *pGuard = NULL;

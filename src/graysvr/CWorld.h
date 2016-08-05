@@ -351,15 +351,15 @@ private:
 	CWorldClock m_Clock;		// the current relative tick time  (in TICK_PER_SEC)
 
 	// Special purpose timers.
-	CServTime	m_timeSector;		// next time to do sector stuff.
-	CServTime	m_timeSave;		// when to auto save ?
+	CServTime	m_timeSector;				// next time to do sector stuff.
+	CServTime	m_timeSave;					// when to auto save ?
 	bool		m_bSaveNotificationSent;	// has notification been sent?
-	CServTime	m_timeRespawn;	// when to res dead NPC's ?
-	CServTime	m_timeCallUserFunc;	// when to call next user func
-	unsigned int m_Sector_Pulse;		// Slow some stuff down that doesn't need constant processing.
+	CServTime	m_timeRespawn;				// when to res dead NPC's ?
+	CServTime	m_timeCallUserFunc;			// when to call next user func
+	unsigned int m_Sector_Pulse;			// Slow some stuff down that doesn't need constant processing.
 
-	int m_iSaveStage;	// Current stage of the background save.
-	LONGLONG	m_savetimer; // Time it takes to save
+	int m_iSaveStage;			// Current stage of the background save.
+	ULONGLONG	m_savetimer;	// Time it takes to save
 
 public:
 	static const char *m_sClassName;

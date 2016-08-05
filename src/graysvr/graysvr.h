@@ -972,7 +972,7 @@ private:
 	// Walk limiting code
 	int	m_iWalkTimeAvg;
 	int m_iWalkStepCount;		// Count the actual steps . Turning does not count.
-	LONGLONG m_timeWalkStep;	// the last %8 walk step time.
+	ULONGLONG m_timeWalkStep;	// the last %8 walk step time.
 
 	// Screensize
 	struct __screensize
@@ -1763,58 +1763,32 @@ inline CChar * CGrayUIDBase::CharFind() const
 
 // ---------------------------------------------------------------------------------------------
 
-
 struct TScriptProfiler
 {
-	unsigned char	initstate;
+	BYTE		initstate;
 	DWORD		called;
-	LONGLONG	total;
+	ULONGLONG	total;
 	struct TScriptProfilerFunction
 	{
 		TCHAR		name[128];	// name of the function
 		DWORD		called;		// how many times called
-		LONGLONG	total;		// total executions time
-		LONGLONG	min;		// minimal executions time
-		LONGLONG	max;		// maximal executions time
-		LONGLONG	average;	// average executions time
+		ULONGLONG	total;		// total executions time
+		ULONGLONG	min;		// minimal executions time
+		ULONGLONG	max;		// maximal executions time
+		ULONGLONG	average;	// average executions time
 		TScriptProfilerFunction *next;
 	}		*FunctionsHead, *FunctionsTail;
 	struct TScriptProfilerTrigger
 	{
 		TCHAR		name[128];	// name of the trigger
 		DWORD		called;		// how many times called
-		LONGLONG	total;		// total executions time
-		LONGLONG	min;		// minimal executions time
-		LONGLONG	max;		// maximal executions time
-		LONGLONG	average;	// average executions time
+		ULONGLONG	total;		// total executions time
+		ULONGLONG	min;		// minimal executions time
+		ULONGLONG	max;		// maximal executions time
+		ULONGLONG	average;	// average executions time
 		TScriptProfilerTrigger *next;
 	}		*TriggersHead, *TriggersTail;
 };
 extern TScriptProfiler g_profiler;
 
-//	Time measurement macros
-extern LONGLONG llTimeProfileFrequency;
-
-#ifdef _WIN32
-
-#define	TIME_PROFILE_INIT	\
-	LONGLONG llTicks(0), llTicksEnd
-#define	TIME_PROFILE_START	\
-	if ( !QueryPerformanceCounter((LARGE_INTEGER *)&llTicks)) llTicks = GetTickCount()
-#define TIME_PROFILE_END	if ( !QueryPerformanceCounter((LARGE_INTEGER *)&llTicksEnd)) llTicksEnd = GetTickCount()
-
-#else
-
-#define	TIME_PROFILE_INIT	\
-	LONGLONG llTicks(0), llTicksEnd
-#define	TIME_PROFILE_START	\
-	llTicks = GetTickCount()
-#define TIME_PROFILE_END	llTicksEnd = GetTickCount();
-
 #endif
-
-#define TIME_PROFILE_GET_HI	((llTicksEnd - llTicks)/(llTimeProfileFrequency/1000))
-#define	TIME_PROFILE_GET_LO	((((llTicksEnd - llTicks)*10000)/(llTimeProfileFrequency/1000))%10000)
-
-#endif
-

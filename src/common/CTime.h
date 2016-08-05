@@ -4,7 +4,7 @@
 #include <time.h>
 
 #ifndef _WIN32
-LONGLONG GetTickCount();
+	ULONGLONG GetTickCount64();
 #endif
 
 class CGTime	// similar to the MFC CTime and CTimeSpan or COleDateTime

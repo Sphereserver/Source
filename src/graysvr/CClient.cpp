@@ -39,7 +39,7 @@ CClient::CClient(NetState* state)
 
 	m_iWalkStepCount = 0;
 	m_iWalkTimeAvg	= 100;
-	m_timeWalkStep = GetTickCount();
+	m_timeWalkStep = GetTickCount64();
 
 	m_Targ_Timeout.Init();
 	m_Targ_Mode = CLIMODE_SETUP_CONNECTING;

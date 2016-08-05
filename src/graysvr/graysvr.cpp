@@ -359,7 +359,7 @@ LPCTSTR const g_Stat_Name[STAT_QTY] =	// not sorted obviously.
 LPCTSTR g_szServerDescription =	GRAY_TITLE " Version " GRAY_VERSION " " GRAY_VER_FILEOS_STR	" by www.spherecommunity.net";
 
 size_t CObjBase::sm_iCount = 0;	// UID table.
-LONGLONG llTimeProfileFrequency = 1000;	// time profiler
+ULONGLONG llTimeProfileFrequency = 1000;	// time profiler
 
 // game servers stuff.
 CWorld		g_World;	// the world. (we save this stuff)
@@ -592,7 +592,7 @@ int Sphere_InitServer( int argc, char *argv[] )
 	ASSERT((std::numeric_limits<size_t>::min)() == 0); // ensure unsigned
 
 #ifdef _WIN32
-	if ( !QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER *>(&llTimeProfileFrequency)))
+	if ( !QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER *>(&llTimeProfileFrequency)) )
 		llTimeProfileFrequency = 1000;
 
 	EXC_SET("setting exception catcher");

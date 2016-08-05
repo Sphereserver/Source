@@ -31,7 +31,7 @@ class ProfileData
 protected:
 	struct ProfileDataRec
 	{
-		LONGLONG m_Time;	// accumulated time in msec.
+		ULONGLONG m_Time;	// accumulated time in msec.
 		int m_iCount;		// how many passes made into this.
 	};
 
@@ -43,11 +43,11 @@ protected:
 	int m_iActiveWindowSeconds;	// The sample window size in seconds. 0=off
 	int	m_iAverageCount;
 
-	LONGLONG m_TimeTotal;	// Average this over a total time period.
+	ULONGLONG m_TimeTotal;		// Average this over a total time period.
 
 	// Store the last time start time.
 	PROFILE_TYPE  m_CurrentTask;	// What task are we currently processing ?
-	LONGLONG m_CurrentTime;			// QueryPerformanceCount()
+	ULONGLONG m_CurrentTime;		// QueryPerformanceCount()
 
 public:
 	ProfileData();

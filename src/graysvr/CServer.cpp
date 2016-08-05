@@ -410,7 +410,7 @@ void CServer::ListClients( CTextConsole *pConsole ) const
 			if ( pCharCmd && !pCharCmd->CanDisturb(pChar) )
 				continue;
 
-			sprintf(tmpMsg, "%lx:Acc%c'%s', Char='%s' (IP: %s)\n", pClient->GetSocketID(), chRank, pAcc->GetName(), pChar->GetName(), pClient->GetPeerStr());
+			sprintf(tmpMsg, "%lx:Acc%c'%s', Char='%s' (IP: %s)\n", pClient->GetSocketID(), chRank, pAcc ? pAcc->GetName() : "<NA>", pChar->GetName(), pClient->GetPeerStr());
 		}
 		else
 		{
@@ -962,10 +962,10 @@ void CServer::ProfileDump( CTextConsole *pSrc, bool bDump )
 			pSrc->SysMessagef("Script profiler is not yet informational\n");
 		else
 		{
-			LONGLONG average = g_profiler.total / g_profiler.called;
+			ULONGLONG average = g_profiler.total / g_profiler.called;
 			TScriptProfiler::TScriptProfilerFunction *pFun;
 			TScriptProfiler::TScriptProfilerTrigger *pTrig;
-			LONGLONG divby = llTimeProfileFrequency / 1000;
+			ULONGLONG divby = llTimeProfileFrequency / 1000;
 
 			if ( ftDump )
 				ftDump->Printf("Scripts: called %lu times and took %i.%04i ms (%i.%04i ms average). Reporting with highest average.\n",

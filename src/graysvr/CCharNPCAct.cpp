@@ -1813,7 +1813,7 @@ bool CChar::NPC_FightMagery(CChar * pChar)
 	unsigned char iRandSpell = pWand ? 1 : 0;	// Having wand adding +1 spell to the total count
 	iRandSpell += static_cast<unsigned char>(Calc_GetRandVal2(0, iSpellCount-1));	// spells are being stored using a vector, so it's assumed to be zero-based.
 
-	if (iRandSpell > iSpellCount)	// if iRandSpell > iSpellCount then we've got the roll pointing to use the wand's spell.
+	if (pWand && (iRandSpell > iSpellCount))	// if iRandSpell > iSpellCount then we've got the roll pointing to use the wand's spell.
 	{
 		SPELL_TYPE spell = static_cast<SPELL_TYPE>(pWand->m_itWeapon.m_spell);
 		const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);

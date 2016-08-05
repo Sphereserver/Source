@@ -10,11 +10,11 @@
 #ifndef _WIN32
 #include <sys/time.h>
 
-LONGLONG GetTickCount()
+ULONGLONG GetTickCount64()
 {
 	struct timeval tv;
-	gettimeofday( &tv, NULL );
-	return (LONGLONG) (((LONGLONG) tv.tv_sec * 1000) + ((LONGLONG) tv.tv_usec/1000));
+	gettimeofday(&tv, NULL);
+	return static_cast<ULONGLONG>((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 #endif
 

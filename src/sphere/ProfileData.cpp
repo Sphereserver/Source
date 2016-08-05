@@ -14,10 +14,10 @@ ProfileData::ProfileData()
 	m_iActiveWindowSeconds = 10;
 	m_iAverageCount = 1;
 
-	LONGLONG llTicks;
+	TIME_PROFILE_INIT;
 	TIME_PROFILE_START;
 
-	m_CurrentTime = llTicks;
+	m_CurrentTime = llTicksStart;
 	m_CurrentTask = PROFILE_IDLE;
 	m_TimeTotal = 0;
 }
@@ -36,10 +36,10 @@ void ProfileData::SetActive(int iSampleSec)
 	if (m_iActiveWindowSeconds == 0)
 		return;
 
-	LONGLONG llTicks;
+	TIME_PROFILE_INIT;
 	TIME_PROFILE_START;
 
-	m_CurrentTime = llTicks;
+	m_CurrentTime = llTicksStart;
 	m_CurrentTask = PROFILE_OVERHEAD;
 	m_TimeTotal = 0;
 }
@@ -87,17 +87,17 @@ void ProfileData::Start(PROFILE_TYPE id)
 	}
 
 	// Get the current precise time.
-	LONGLONG llTicks;
+	TIME_PROFILE_INIT;
 	TIME_PROFILE_START;
 
 	// accumulate the time for this task.
-	LONGLONG Diff = ( llTicks - m_CurrentTime );
+	ULONGLONG Diff = llTicksStart - m_CurrentTime;
 	m_TimeTotal += Diff;
 	m_CurrentTimes[m_CurrentTask].m_Time += Diff;
 	m_CurrentTimes[m_CurrentTask].m_iCount ++;
 
 	// We are now on to the new task.
-	m_CurrentTime = llTicks;
+	m_CurrentTime = llTicksStart;
 	m_CurrentTask = id;
 }
 
@@ -167,29 +167,24 @@ LPCTSTR ProfileData::GetName(PROFILE_TYPE id) const
 LPCTSTR ProfileData::GetDescription(PROFILE_TYPE id) const
 {
 	ADDTOCALLSTACK("ProfileData::GetDesc");
-	TCHAR * pszTmp = Str_GetTemp();
+	TCHAR *pszTmp = Str_GetTemp();
 	int iCount	= m_PreviousTimes[id].m_iCount;
 
 	if ( id >= PROFILE_DATA_QTY )
-	{
-		sprintf(pszTmp, "%i (total: %i) instances", static_cast<int>(m_PreviousTimes[id].m_Time), static_cast<int>(m_AverageTimes[id].m_Time));
-	}
+		sprintf(pszTmp, "%llu (total: %llu) instances", m_PreviousTimes[id].m_Time, m_AverageTimes[id].m_Time);
 	else if ( id >= PROFILE_TIME_QTY )
-	{
-		sprintf(pszTmp, "%i (avg: %i) bytes", static_cast<int>(m_PreviousTimes[id].m_Time), static_cast<int>(m_AverageTimes[id].m_Time));
-	}
+		sprintf(pszTmp, "%llu (avg: %llu) bytes", m_PreviousTimes[id].m_Time, m_AverageTimes[id].m_Time);
 	else
 	{
-		sprintf( pszTmp, "%3i.%04is  avg: %3i.%04is  [samples:%6i  avg:%6i ]  runtime: %is",
-			static_cast<int>( m_PreviousTimes[id].m_Time / ( llTimeProfileFrequency )),
-			static_cast<int>((( m_PreviousTimes[id].m_Time * 10000 ) / ( llTimeProfileFrequency )) % 10000 ),
-			static_cast<int>( m_AverageTimes[id].m_Time / ( llTimeProfileFrequency )),
-			static_cast<int>((( m_AverageTimes[id].m_Time * 10000 ) / ( llTimeProfileFrequency )) % 10000 ),
+		sprintf(pszTmp, "%3i.%04is  avg: %3i.%04is  [samples:%6i  avg:%6i]  runtime: %is",
+			static_cast<int>(m_PreviousTimes[id].m_Time / llTimeProfileFrequency),
+			static_cast<int>(((m_PreviousTimes[id].m_Time * 10000) / llTimeProfileFrequency) % 10000),
+			static_cast<int>(m_AverageTimes[id].m_Time / llTimeProfileFrequency),
+			static_cast<int>(((m_AverageTimes[id].m_Time * 10000) / llTimeProfileFrequency) % 10000),
 			iCount,
-			static_cast<int>(m_AverageTimes[id].m_iCount),
-			m_iAverageCount );
+			m_AverageTimes[id].m_iCount,
+			m_iAverageCount);
 	}
-
 	return pszTmp;
 }
 

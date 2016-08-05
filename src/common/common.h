@@ -81,24 +81,20 @@ typedef unsigned int	ERROR_CODE;
 //	Time measurement macroses
 // -----------------------------
 
-extern LONGLONG llTimeProfileFrequency;
+extern ULONGLONG llTimeProfileFrequency;
 
 #ifdef _WIN32
-	#define	TIME_PROFILE_INIT	\
-		LONGLONG llTicks(0), llTicksEnd
-	#define	TIME_PROFILE_START	\
-		if ( !QueryPerformanceCounter((LARGE_INTEGER *)&llTicks)) llTicks = GetTickCount()
-	#define TIME_PROFILE_END	if ( !QueryPerformanceCounter((LARGE_INTEGER *)&llTicksEnd)) llTicksEnd = GetTickCount()
+	#define	TIME_PROFILE_INIT	ULONGLONG llTicksStart, llTicksEnd
+	#define	TIME_PROFILE_START	if (!QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER *>(&llTicksStart)))	llTicksStart = GetTickCount64()
+	#define TIME_PROFILE_END	if (!QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER *>(&llTicksEnd)))	llTicksEnd = GetTickCount64()
 #else
-	#define	TIME_PROFILE_INIT	\
-		LONGLONG llTicks(0), llTicksEnd
-	#define	TIME_PROFILE_START	\
-		llTicks = GetTickCount()
-	#define TIME_PROFILE_END	llTicksEnd = GetTickCount();
+	#define	TIME_PROFILE_INIT	ULONGLONG llTicksStart, llTicksEnd
+	#define	TIME_PROFILE_START	llTicksStart = GetTickCount64()
+	#define TIME_PROFILE_END	llTicksEnd = GetTickCount64();
 #endif
 
-#define TIME_PROFILE_GET_HI	((llTicksEnd - llTicks)/(llTimeProfileFrequency/1000))
-#define	TIME_PROFILE_GET_LO	((((llTicksEnd - llTicks)*10000)/(llTimeProfileFrequency/1000))%10000)
+#define TIME_PROFILE_GET_HI		((llTicksEnd - llTicksStart) / (llTimeProfileFrequency / 1000))
+#define	TIME_PROFILE_GET_LO		((((llTicksEnd - llTicksStart) * 10000) / (llTimeProfileFrequency / 1000)) % 10000)
 
 // -----------------------------
 //	CEventLog
