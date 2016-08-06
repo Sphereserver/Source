@@ -14,7 +14,7 @@ ProfileData::ProfileData()
 	m_iActiveWindowSeconds = 10;
 	m_iAverageCount = 1;
 
-	TIME_PROFILE_INIT;
+	ULONGLONG llTicksStart;
 	TIME_PROFILE_START;
 
 	m_CurrentTime = llTicksStart;
@@ -31,12 +31,12 @@ void ProfileData::SetActive(int iSampleSec)
 	memset(m_PreviousTimes, 0, sizeof(m_PreviousTimes));
 
 	m_iActiveWindowSeconds = iSampleSec;
-	m_iAverageCount		= 1;
+	m_iAverageCount = 1;
 
 	if (m_iActiveWindowSeconds == 0)
 		return;
 
-	TIME_PROFILE_INIT;
+	ULONGLONG llTicksStart;
 	TIME_PROFILE_START;
 
 	m_CurrentTime = llTicksStart;
@@ -87,7 +87,7 @@ void ProfileData::Start(PROFILE_TYPE id)
 	}
 
 	// Get the current precise time.
-	TIME_PROFILE_INIT;
+	ULONGLONG llTicksStart;
 	TIME_PROFILE_START;
 
 	// accumulate the time for this task.

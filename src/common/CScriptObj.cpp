@@ -509,7 +509,7 @@ bool CScriptObj::r_Call( LPCTSTR pszFunction, CTextConsole * pSrc, CScriptTrigge
 	if ( pFunction->ResourceLock(sFunction) )
 	{
 		TScriptProfiler::TScriptProfilerFunction *pFun = NULL;
-		TIME_PROFILE_INIT;
+		ULONGLONG llTicksStart, llTicksEnd;
 
 		//	If functions profiler is on, search this function record and get pointer to it
 		//	if not, create the corresponding record
@@ -1983,7 +1983,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerScript( CScript & s, LPCTSTR pszTrigName, CTex
 	ProfileTask scriptsTask(PROFILE_SCRIPTS);
 
 	TScriptProfiler::TScriptProfilerTrigger	*pTrig = NULL;
-	TIME_PROFILE_INIT;
+	ULONGLONG llTicksStart, llTicksEnd;
 
 	//	If script profiler is on, search this trigger record and get pointer to it
 	//	if not, create the corresponding record

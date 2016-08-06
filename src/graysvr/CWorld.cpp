@@ -1331,8 +1331,7 @@ bool CWorld::SaveStage() // Save world state in stages.
 		g_Log.Event(LOGM_SAVE, "Multi data saved   (%s).\n", static_cast<LPCTSTR>(m_FileMultis.GetFilePath()));
 		g_Log.Event(LOGM_SAVE, "Context data saved (%s).\n", static_cast<LPCTSTR>(m_FileData.GetFilePath()));
 
-		TIME_PROFILE_INIT;
-		llTicksStart = m_savetimer;
+		ULONGLONG llTicksStart = m_savetimer, llTicksEnd;
 		TIME_PROFILE_END;
 
 		TCHAR * time = Str_GetTemp();
@@ -1466,31 +1465,20 @@ bool CWorld::SaveTry( bool fForceImmediate ) // Save world state
 		GarbageCollection();
 	}
 
-	TIME_PROFILE_INIT;
+	ULONGLONG llTicksStart;
 	TIME_PROFILE_START;
 	m_savetimer = llTicksStart;
 
 	// Determine the save name based on the time.
 	// exponentially degrade the saves over time.
-	if ( ! OpenScriptBackup( m_FileData, g_Cfg.m_sWorldBaseDir, "data", m_iSaveCountID ))
-	{
+	if ( !OpenScriptBackup(m_FileData, g_Cfg.m_sWorldBaseDir, "data", m_iSaveCountID) )
 		return false;
-	}
-
-	if ( ! OpenScriptBackup( m_FileWorld, g_Cfg.m_sWorldBaseDir, "world", m_iSaveCountID ))
-	{
+	if ( !OpenScriptBackup(m_FileWorld, g_Cfg.m_sWorldBaseDir, "world", m_iSaveCountID) )
 		return false;
-	}
-
-	if ( ! OpenScriptBackup( m_FilePlayers, g_Cfg.m_sWorldBaseDir, "chars", m_iSaveCountID ))
-	{
+	if ( !OpenScriptBackup(m_FilePlayers, g_Cfg.m_sWorldBaseDir, "chars", m_iSaveCountID) )
 		return false;
-	}
-
-	if ( ! OpenScriptBackup( m_FileMultis, g_Cfg.m_sWorldBaseDir, "multis", m_iSaveCountID ))
-	{
+	if ( !OpenScriptBackup(m_FileMultis, g_Cfg.m_sWorldBaseDir, "multis", m_iSaveCountID) )
 		return false;
-	}
 
 	m_fSaveParity = ! m_fSaveParity; // Flip the parity of the save.
 	m_iSaveStage = -1;
@@ -1503,10 +1491,9 @@ bool CWorld::SaveTry( bool fForceImmediate ) // Save world state
 	r_Write(m_FilePlayers);
 	r_Write(m_FileMultis);
 
-	if ( fForceImmediate || ! g_Cfg.m_iSaveBackgroundTime )	// Save now !
-	{
+	if ( fForceImmediate || !g_Cfg.m_iSaveBackgroundTime )	// Save now !
 		return SaveForce();
-	}
+
 	return true;
 	EXC_CATCH;
 

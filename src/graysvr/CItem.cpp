@@ -887,7 +887,7 @@ int CItem::FixWeirdness()
 			case LAYER_VENDOR_STOCK:
 			case LAYER_VENDOR_EXTRA:
 			case LAYER_VENDOR_BUYS:
-				if ( pChar->m_pPlayer )	// players never need carry these,
+				if ( pChar && pChar->m_pPlayer )	// players never need carry these,
 					return 0;
 				SetAttr(ATTR_MOVE_NEVER);
 				break;
@@ -910,7 +910,7 @@ int CItem::FixWeirdness()
 				break;
 
 			case LAYER_FLAG_Murders:
-				if ( !pChar->m_pPlayer || pChar->m_pPlayer->m_wMurders <= 0 )
+				if ( !pChar || !pChar->m_pPlayer || (pChar->m_pPlayer->m_wMurders <= 0) )
 					return 0x2235;	// get rid of it.
 				break;
 

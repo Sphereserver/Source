@@ -84,11 +84,9 @@ typedef unsigned int	ERROR_CODE;
 extern ULONGLONG llTimeProfileFrequency;
 
 #ifdef _WIN32
-	#define	TIME_PROFILE_INIT	ULONGLONG llTicksStart, llTicksEnd
 	#define	TIME_PROFILE_START	if (!QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER *>(&llTicksStart)))	llTicksStart = GetTickCount64()
 	#define TIME_PROFILE_END	if (!QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER *>(&llTicksEnd)))	llTicksEnd = GetTickCount64()
 #else
-	#define	TIME_PROFILE_INIT	ULONGLONG llTicksStart, llTicksEnd
 	#define	TIME_PROFILE_START	llTicksStart = GetTickCount64()
 	#define TIME_PROFILE_END	llTicksEnd = GetTickCount64();
 #endif
