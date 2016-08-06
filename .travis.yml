@@ -1,10 +1,11 @@
 language: cpp
 compiler: gcc
-sudo: required
-before_install:
-  - sudo apt-get install libmysql++3:i386
-  - sudo apt-get install gcc-4.6-multilib
-  - sudo apt-get install g++-4.6-multilib
+addons:
+  apt:
+    packages:
+    - libmysql++3:i386
+    - gcc-4.6-multilib
+    - g++-4.6-multilib
 script:
   - make NIGHTLY=1 -f makefile
 notifications:

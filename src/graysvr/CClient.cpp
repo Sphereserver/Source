@@ -993,7 +993,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			}
 			break;
 		case CV_BANKSELF: // open my own bank
-			addBankOpen( m_pChar, static_cast<LAYER_TYPE>(s.GetArgVal()));
+			addBankOpen(m_pChar, LAYER_BANKBOX);
 			break;
 		case CV_CAST:
 			{
