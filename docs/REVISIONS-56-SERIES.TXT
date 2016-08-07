@@ -147,3 +147,6 @@ Changed: Max item capacity on containers changed from 255 to 125. This is requir
 
 05-08-2016, Coruja
 Fixed: Combat swing delay not getting updated immediately when the char switch weapons on hands.
+
+07-08-2016, Coruja
+Fixed: ARGN1 on char trigger @SkillPreStart not working correctly.

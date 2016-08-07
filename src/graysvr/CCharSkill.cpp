@@ -3981,39 +3981,30 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 
 	if ( skill != SKILL_NONE )
 	{
-		m_Act_SkillCurrent = skill;
-		m_Act_Difficulty = iDifficulty;
+		CScriptTriggerArgs pArgs;
+		pArgs.m_iN1 = skill;
 
-		// Some skill can start right away. Need no targetting.
-		// 0-100 scale of Difficulty
 		if ( IsTrigUsed(TRIGGER_SKILLPRESTART) )
 		{
-			if ( Skill_OnCharTrigger(skill, CTRIG_SkillPreStart) == TRIGRET_RET_TRUE )
-			{
-				Skill_Cleanup();
+			if ( Skill_OnCharTrigger(skill, CTRIG_SkillPreStart, &pArgs) == TRIGRET_RET_TRUE )
 				return false;
-			}
 		}
 		if ( IsTrigUsed(TRIGGER_PRESTART) )
 		{
 			if ( Skill_OnTrigger(skill, SKTRIG_PRESTART) == TRIGRET_RET_TRUE )
-			{
-				Skill_Cleanup();
 				return false;
-			}
 		}
 
+		m_Act_SkillCurrent = skill;
 		m_Act_Difficulty = Skill_Stage(SKTRIG_START);
 
-		// Execute the @START trigger and pass various craft parameters there
-		CScriptTriggerArgs pArgs;
 		bool bCraftSkill = g_Cfg.IsSkillFlag(skill, SKF_CRAFT);
 		bool bGatherSkill = g_Cfg.IsSkillFlag(skill, SKF_GATHER);
 		RESOURCE_ID pResBase(RES_ITEMDEF, bCraftSkill ? m_atCreate.m_ItemID : 0, 0);
 
 		if ( bCraftSkill )
 		{
-			m_atCreate.m_Stroke_Count = 1;		//This matches the new strokes amount used on OSI.
+			m_atCreate.m_Stroke_Count = 1;
 			pArgs.m_VarsLocal.SetNum("CraftItemdef", pResBase.GetPrivateUID());
 			pArgs.m_VarsLocal.SetNum("CraftStrokeCnt", m_atCreate.m_Stroke_Count);
 			pArgs.m_VarsLocal.SetNum("CraftAmount", m_atCreate.m_Amount);
@@ -4032,7 +4023,6 @@ bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
 				return false;
 			}
 		}
-
 		if ( IsTrigUsed(TRIGGER_START) )
 		{
 			if ( (Skill_OnTrigger(skill, SKTRIG_START, &pArgs) == TRIGRET_RET_TRUE) || (m_Act_Difficulty < 0) )
