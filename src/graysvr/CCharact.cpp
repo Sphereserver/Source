@@ -2657,7 +2657,7 @@ void CChar::SleepStart( bool fFrontFall )
 	}
 
 	// Play death animation (fall on ground)
-	UpdateCanSee(new PacketDeath(this, pCorpse), m_pClient);
+	UpdateCanSee(new PacketDeath(this, pCorpse, fFrontFall), m_pClient);
 
 	SetID(m_prev_id);
 	StatFlag_Set(STATF_Sleeping);
@@ -2693,8 +2693,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 	pCorpse->m_itCorpse.m_BaseID = m_prev_id;	// id the corpse type here !
 	pCorpse->m_itCorpse.m_facing_dir = m_dirFace;
 	pCorpse->m_uidLink = GetUID();
-
-	// TO-DO: Fix corpses always turning to the same dir (DIR_N) after resend it to clients
+	pCorpse->m_ModMaxWeight = g_Cfg.Calc_MaxCarryWeight(this) / 10;		// set corpse maxweight to prevent weight exploit when someone place many items on an player corpse just to make this player get stuck on resurrect
 
 	if (fFrontFall)
 		pCorpse->m_itCorpse.m_facing_dir = static_cast<DIR_TYPE>(m_dirFace|0x80);
@@ -2702,7 +2701,7 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 	int iDecayTimer = -1;	// never decay
 	if (IsStatFlag(STATF_DEAD))
 	{
-		iDecayTimer = (m_pPlayer) ? g_Cfg.m_iDecay_CorpsePlayer : g_Cfg.m_iDecay_CorpseNPC;
+		iDecayTimer = m_pPlayer ? g_Cfg.m_iDecay_CorpsePlayer : g_Cfg.m_iDecay_CorpseNPC;
 		pCorpse->SetTimeStamp(CServTime::GetCurrentTime().GetTimeRaw());	// death time
 		if (Attacker_GetLast())
 			pCorpse->m_itCorpse.m_uidKiller = Attacker_GetLast()->GetUID();
@@ -2721,7 +2720,6 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 	if ( !(wFlags & DEATH_NOLOOTDROP) )		// move non-newbie contents of the pack to corpse
 		DropAll( pCorpse );
 
-	pCorpse->m_ModMaxWeight = g_Cfg.Calc_MaxCarryWeight(this) / 10;		// set corpse maxweight to prevent weird exploits like when someone place many items on an player corpse just to make this player get stuck on resurrect
 	pCorpse->MoveToDecay(GetTopPoint(), iDecayTimer);
 	return( pCorpse );
 }
@@ -2844,7 +2842,8 @@ bool CChar::Death()
 		Horse_UnMount();
 
 	// Create the corpse item
-	CItemCorpse * pCorpse = MakeCorpse(Calc_GetRandVal(2) > 1 ? true : false);
+	bool bFrontFall = (Calc_GetRandVal(2) > 0);
+	CItemCorpse *pCorpse = MakeCorpse(bFrontFall);
 	if ( pCorpse )
 	{
 		if ( IsTrigUsed(TRIGGER_DEATHCORPSE) )
@@ -2856,7 +2855,7 @@ bool CChar::Death()
 	m_lastAttackers.clear();	// clear list of attackers
 
 	// Play death animation (fall on ground)
-	UpdateCanSee(new PacketDeath(this, pCorpse), m_pClient);
+	UpdateCanSee(new PacketDeath(this, pCorpse, bFrontFall), m_pClient);
 
 	if ( m_pNPC )
 	{
@@ -2898,8 +2897,8 @@ bool CChar::Death()
 		}
 		ASSERT(pszGhostName != NULL);
 
-		if ( !IsStatFlag(STATF_War) )
-			StatFlag_Set(STATF_Insubstantial);	// manifest war mode for ghosts
+		StatFlag_Set(STATF_Insubstantial);
+		StatFlag_Clear(STATF_War);
 
 		m_pPlayer->m_wDeaths++;
 		SetHue( HUE_DEFAULT );	// get all pale
@@ -2909,8 +2908,6 @@ bool CChar::Death()
 		CClient * pClient = GetClient();
 		if ( pClient )
 		{
-			// OSI uses PacketDeathMenu to update client screen on death.
-			// If the user disable this packet, it must be updated using addPlayerUpdate()
 			if ( g_Cfg.m_iPacketDeathAnimation )
 			{
 				// Display death animation to client ("You are dead")
@@ -2919,7 +2916,10 @@ bool CChar::Death()
 			}
 			else
 			{
+				// OSI uses PacketDeathMenu to update client screen on death. If this packet is disabled,
+				// the client must be updated manually using these others packets as workaround
 				pClient->addPlayerUpdate();
+				pClient->addPlayerWarMode();
 				pClient->addContainerSetup(GetContainer(LAYER_PACK));	// update backpack contents
 			}
 		}

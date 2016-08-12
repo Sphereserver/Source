@@ -158,3 +158,4 @@ Fixed: ARGN1 on char trigger @SkillPreStart not working correctly.
 12-08-2016, Coruja
 Fixed: SA+ clients showing corpses on wrong direction.
 Fixed: pre-SA clients showing wrong light pattern on light sources (candle, torch, etc).
+Fixed: Client war mode flag not being removed on death.
