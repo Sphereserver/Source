@@ -154,3 +154,7 @@ Fixed: ARGN1 on char trigger @SkillPreStart not working correctly.
 10-08-2016, Coruja
 [sphereCrypt.ini]: Added crypt keys for clients 7.0.51 and 7.0.52.
 [sphere_monsters.scp]: Added new TOL chardefs (Turanchula, Myrmidex Drone, Myrmidex Warrior, Myrmidex Queen, Dr. Spector, Golem Aztec).
+
+12-08-2016, Coruja
+Fixed: SA+ clients showing corpses on wrong direction.
+Fixed: pre-SA clients showing wrong light pattern on light sources (candle, torch, etc).

@@ -357,16 +357,14 @@ PacketItemWorld::PacketItemWorld(const CClient* target, CItem *item) : PacketSen
 	WORD amount = item->GetAmount();
 	ITEMID_TYPE id = item->GetDispID();
 	CPointMap pt = item->GetTopPoint();
-	DIR_TYPE dir = DIR_N;
 	HUE_TYPE hue = item->GetHue();
+	BYTE layer = 0;
 	BYTE flags = 0;
-	BYTE light = 0;
 
-	adjustItemData(target, item, id, hue, amount, pt, dir, flags, light);
+	adjustItemData(target, item, id, hue, amount, layer, flags);
 
-	// this packet only supports item ids up to 0x3fff, and multis start from 0x4000 (ITEMID_MULTI_LEGACY)
-	// multis need to be adjusted to the lower range, and items between 03fff and 08000 need to be adjusted
-	// to something safer
+	// This packet only supports item IDs up to 0x3FFF, and multis start from 0x4000 (ITEMID_MULTI_LEGACY) multis need
+	// to be adjusted to the lower range, and items between 03FFF and 08000 need to be adjusted to something safer
 	if (id >= ITEMID_MULTI)
 		id = static_cast<ITEMID_TYPE>(id - (ITEMID_MULTI - ITEMID_MULTI_LEGACY));
 	else if (id >= ITEMID_MULTI_LEGACY)
@@ -378,10 +376,10 @@ PacketItemWorld::PacketItemWorld(const CClient* target, CItem *item) : PacketSen
 		uid &= 0x7FFFFFFF;
 
 	pt.m_x &= 0x7FFF;
-	if (dir > 0)
+	if (layer > 0)
 		pt.m_x |= 0x8000;
 
-	pt.m_y &= 0x3fff;
+	pt.m_y &= 0x3FFF;
 	if (hue > 0)
 		pt.m_y |= 0x8000;
 	if (flags > 0)
@@ -394,9 +392,9 @@ PacketItemWorld::PacketItemWorld(const CClient* target, CItem *item) : PacketSen
 		writeInt16(amount);
 	writeInt16(static_cast<WORD>(pt.m_x));
 	writeInt16(static_cast<WORD>(pt.m_y));
-	if (dir > 0)
-		writeByte(static_cast<BYTE>(dir));
-	writeByte(pt.m_z);
+	if (layer > 0)
+		writeByte(layer);
+	writeByte(static_cast<BYTE>(pt.m_z));
 	if (hue > 0)
 		writeInt16(static_cast<WORD>(hue));
 	if (flags > 0)
@@ -405,10 +403,10 @@ PacketItemWorld::PacketItemWorld(const CClient* target, CItem *item) : PacketSen
 	push(target);
 }
 
-void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, WORD &amount, CPointMap &p, DIR_TYPE &dir, BYTE &flags, BYTE& light)
+void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, WORD &amount, BYTE &layer, BYTE &flags)
 {
 	ADDTOCALLSTACK("PacketItemWorld::adjustItemData");
-	UNREFERENCED_PARAMETER(p);
+	// Layer value can return both 'light' (on light sources) or 'direction' (on corpses)
 	const CChar* character = target->GetChar();
 	ASSERT(character);
 
@@ -448,7 +446,7 @@ void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_
 		else
 			hue &= HUE_MASK_HI | HUE_UNDERWEAR | HUE_TRANSLUCENT;
 
-		dir = item->m_itCorpse.m_facing_dir;
+		layer = static_cast<BYTE>(item->m_itCorpse.m_facing_dir);
 	}
 
 	if (character->CanMove(item, false))
@@ -468,9 +466,9 @@ void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_
 		if (item->Item_GetDef()->Can(CAN_I_LIGHT))
 		{
 			if (item->IsTypeLit())
-				light = item->m_itLight.m_pattern;
+				layer = item->m_itLight.m_pattern;
 			else
-				light = LIGHT_LARGE;
+				layer = static_cast<BYTE>(LIGHT_LARGE);
 		}
 	}
 }
@@ -511,7 +509,7 @@ PacketPlayerStart::PacketPlayerStart(const CClient* target) : PacketSend(XCMD_St
 	writeInt16(pt.m_z);
 	writeByte(character->GetDirFlag());
 	writeByte(0);
-	writeInt32(0xffffffff);
+	writeInt32(0xFFFFFFFF);
 	writeInt16(0);
 	writeInt16(0);
 	writeInt16(pt.m_map > 0 ? static_cast<WORD>(g_MapList.GetX(pt.m_map)) : 0x1800);
@@ -2405,10 +2403,8 @@ PacketCorpseEquipment::PacketCorpseEquipment(CClient* target, const CItemContain
 		switch (layer) // don't put these on a corpse.
 		{
 			case LAYER_NONE:
-			case LAYER_PACK: // these display strange.
-				continue;
-
 			case LAYER_NEWLIGHT:
+			case LAYER_PACK:
 				continue;
 
 			default:
@@ -2419,11 +2415,9 @@ PacketCorpseEquipment::PacketCorpseEquipment(CClient* target, const CItemContain
 				break;
 		}
 
-
 		writeByte(static_cast<BYTE>(layer));
 		writeInt32(item->GetUID());
 
-		// include tooltip
 		target->addAOSTooltip(item);
 
 		if (++count > MAX_ITEMS_CONT)
@@ -3229,13 +3223,13 @@ PacketMessageUNICODE::PacketMessageUNICODE(const CClient* target, const NWORD* p
  *
  *
  ***************************************************************************/
-PacketDeath::PacketDeath(CChar* dead, CItemCorpse* corpse) : PacketSend(XCMD_CharDeath, 13, PRI_NORMAL)
+PacketDeath::PacketDeath(CChar *dead, CItemCorpse *corpse, bool bFrontFall) : PacketSend(XCMD_CharDeath, 13, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketDeath::PacketDeath");
 
 	writeInt32(static_cast<DWORD>(dead->GetUID()));
-	writeInt32(corpse ? static_cast<DWORD>(corpse->GetUID()) : 0);
-	writeInt32(0);
+	writeInt32(static_cast<DWORD>(corpse ? corpse->GetUID() : 0));
+	writeInt32(static_cast<DWORD>(bFrontFall));
 }
 
 
@@ -4713,16 +4707,15 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : Pac
 {
 	ADDTOCALLSTACK("PacketItemWorldNew::PacketItemWorldNew");
 
-	DataSource source;		// 0=Tiledata, 1=Character, 2=Multi
+	DataSource source;
 	ITEMID_TYPE id = item->GetDispID();
-	DIR_TYPE dir = DIR_N;
-	WORD amount = item->GetAmount();
-	CPointMap pt = item->GetTopPoint();
 	HUE_TYPE hue = item->GetHue();
-	BYTE light = 0;
+	CPointMap pt = item->GetTopPoint();
+	WORD amount = item->GetAmount();
+	BYTE layer = 0;
 	BYTE flags = 0;
 
-	adjustItemData(target, item, id, hue, amount, pt, dir, flags, light);
+	adjustItemData(target, item, id, hue, amount, layer, flags);
 
 	if ( id >= ITEMID_MULTI )
 	{
@@ -4739,13 +4732,13 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : Pac
 	writeByte(static_cast<BYTE>(source));
 	writeInt32(static_cast<DWORD>(item->GetUID()));
 	writeInt16(static_cast<WORD>(id));
-	writeByte(static_cast<BYTE>(dir));
+	writeByte(0);
 	writeInt16(amount);
 	writeInt16(amount);
 	writeInt16(static_cast<WORD>(pt.m_x & 0x7FFF));
 	writeInt16(static_cast<WORD>(pt.m_y & 0x3FFF));
 	writeByte(static_cast<BYTE>(pt.m_z));
-	writeByte(light);
+	writeByte(layer);
 	writeInt16(static_cast<WORD>(hue));
 	writeByte(flags);
 
@@ -4759,27 +4752,26 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : Pac
 PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CChar* mobile) : PacketItemWorld(XCMD_PutNew, 26, mobile->GetUID())
 {
 	DataSource source = Character;
-	DWORD uid = mobile->GetUID();
 	CREID_TYPE id = mobile->GetDispID();
-	CPointMap p = mobile->GetTopPoint();
-	BYTE dir = static_cast<BYTE>(mobile->m_dirFace);
+	DIR_TYPE dir = mobile->m_dirFace;
 	HUE_TYPE hue = mobile->GetHue();
+	CPointMap pt = mobile->GetTopPoint();
 
 	writeInt16(1);
 	writeByte(static_cast<BYTE>(source));
-	writeInt32(uid);
+	writeInt32(static_cast<DWORD>(mobile->GetUID()));
 	writeInt16(static_cast<WORD>(id));
-	writeByte(dir);
+	writeByte(static_cast<BYTE>(dir));
 	writeInt16(1);
 	writeInt16(1);
-	writeInt16(p.m_x);
-	writeInt16(p.m_y);
-	writeByte(p.m_z);
+	writeInt16(static_cast<WORD>(pt.m_x));
+	writeInt16(static_cast<WORD>(pt.m_y));
+	writeByte(static_cast<WORD>(pt.m_z));
 	writeByte(0);
 	writeInt16(hue);
 	writeByte(0);
 
-	if (target->GetNetState()->isClientVersion(MINCLIVER_HS))
+	if ( target->GetNetState()->isClientVersion(MINCLIVER_HS) )
 		writeInt16(0);
 
 	trim();
@@ -4879,35 +4871,33 @@ PacketContainer::PacketContainer(const CClient* target, CObjBase** objects, size
 		{
 			CItem* item = dynamic_cast<CItem*>(object);
 			DataSource source = TileData;
-			DWORD uid = item->GetUID();
-			WORD amount = item->GetAmount();
 			ITEMID_TYPE id = item->GetDispID();
-			CPointMap p = item->GetTopPoint();
-			DIR_TYPE dir = DIR_N;
 			HUE_TYPE hue = item->GetHue();
+			CPointMap pt = item->GetTopPoint();
+			WORD amount = item->GetAmount();
+			BYTE layer = 0;
 			BYTE flags = 0;
-			BYTE light = 0;
 
-			adjustItemData(target, item, id, hue, amount, p, dir, flags, light);
+			adjustItemData(target, item, id, hue, amount, layer, flags);
 
-			if (id >= ITEMID_MULTI)
-				id = static_cast<ITEMID_TYPE>(id - ITEMID_MULTI);
-
-			if (item->IsTypeMulti())
+			if ( id >= ITEMID_MULTI )
+			{
 				source = Multi;
+				id = static_cast<ITEMID_TYPE>(id - ITEMID_MULTI);
+			}
 
 			writeByte(0xF3);
 			writeInt16(1);
 			writeByte(static_cast<BYTE>(source));
-			writeInt32(uid);
+			writeInt32(static_cast<DWORD>(item->GetUID()));
 			writeInt16(static_cast<WORD>(id));
-			writeByte(static_cast<BYTE>(dir));
+			writeByte(0);
 			writeInt16(amount);
 			writeInt16(amount);
-			writeInt16(p.m_x);
-			writeInt16(p.m_y);
-			writeByte(p.m_z);
-			writeByte(light);
+			writeInt16(static_cast<WORD>(pt.m_x));
+			writeInt16(static_cast<WORD>(pt.m_y));
+			writeByte(static_cast<BYTE>(pt.m_z));
+			writeByte(layer);
 			writeInt16(static_cast<WORD>(hue));
 			writeByte(flags);
 			writeInt16(0);
@@ -4916,25 +4906,24 @@ PacketContainer::PacketContainer(const CClient* target, CObjBase** objects, size
 		{
 			CChar* mobile = dynamic_cast<CChar*>(object);
 			DataSource source = Character;
-			DWORD uid = mobile->GetUID();
 			CREID_TYPE id = mobile->GetDispID();
-			CPointMap p = mobile->GetTopPoint();
-			BYTE dir = static_cast<BYTE>(mobile->m_dirFace);
 			HUE_TYPE hue = mobile->GetHue();
+			CPointMap pt = mobile->GetTopPoint();
+			DIR_TYPE dir = mobile->m_dirFace;
 
 			writeByte(0xF3);
 			writeInt16(1);
 			writeByte(static_cast<BYTE>(source));
-			writeInt32(uid);
+			writeInt32(static_cast<DWORD>(mobile->GetUID()));
 			writeInt16(static_cast<WORD>(id));
-			writeByte(dir);
+			writeByte(static_cast<BYTE>(dir));
 			writeInt16(1);
 			writeInt16(1);
-			writeInt16(p.m_x);
-			writeInt16(p.m_y);
-			writeByte(p.m_z);
+			writeInt16(static_cast<WORD>(pt.m_x));
+			writeInt16(static_cast<WORD>(pt.m_y));
+			writeByte(static_cast<BYTE>(pt.m_z));
 			writeByte(0);
-			writeInt16(hue);
+			writeInt16(static_cast<WORD>(hue));
 			writeByte(0);
 			writeInt16(0);
 		}

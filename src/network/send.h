@@ -126,7 +126,7 @@ protected:
 public:
 	PacketItemWorld(const CClient* target, CItem* item);
 
-	void adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, WORD &amount, CPointMap &p, DIR_TYPE &dir, BYTE &flags, BYTE &light);
+	void adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, WORD &amount, BYTE &layer, BYTE &flags);
 
 	virtual bool onSend(const CClient* client);
 };
@@ -1133,7 +1133,7 @@ public:
 class PacketDeath : public PacketSend
 {
 public:
-	PacketDeath(CChar* dead, CItemCorpse* corpse);
+	PacketDeath(CChar* dead, CItemCorpse* corpse, bool bFrontFall);
 };
 
 /***************************************************************************
