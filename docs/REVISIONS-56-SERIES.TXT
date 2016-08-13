@@ -160,3 +160,6 @@ Fixed: SA+ clients showing corpses on wrong direction.
 Fixed: pre-SA clients showing wrong light pattern on light sources (candle, torch, etc).
 Fixed: Client war mode flag not being removed on death.
 Fixed: Multi regions not reloading correctly after server resync.
+
+13-08-2016, Coruja
+Fixed: Guards not working correctly.

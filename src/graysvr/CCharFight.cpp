@@ -1471,33 +1471,30 @@ void CChar::CallGuards()
 	ADDTOCALLSTACK("CChar::CallGuards");
 	if ( !m_pArea || !m_pArea->IsGuarded() || IsStatFlag(STATF_DEAD) )
 		return;
-
-	if ( CServTime::GetCurrentTime().GetTimeRaw() - m_timeLastCallGuards < TICK_PER_SEC)	// Spamm check, not calling this more than once per tick, which will cause an excess of calls and checks on crowded areas because of the 2 CWorldSearch.
+	if ( g_World.GetCurrentTime().GetTimeRaw() - m_timeLastCallGuards < TICK_PER_SEC )	// flood check to avoid waste CPU performance with excessive calls of this function
 		return;
 
 	// We don't have any target yet, let's check everyone nearby
-	CChar * pCriminal;
-	CWorldSearch AreaCrime( GetTopPoint(), UO_MAP_VIEW_SIZE );
-	while (( pCriminal = AreaCrime.GetChar() ) != NULL)
+	CChar *pCriminal = NULL;
+	CWorldSearch AreaCrime(GetTopPoint(), UO_MAP_VIEW_SIZE);
+	while ( (pCriminal = AreaCrime.GetChar()) != NULL )
 	{
-		if (pCriminal == this)
+		if ( pCriminal == this )
 			continue;
-		if (!pCriminal->m_pArea->IsGuarded())
+		if ( !pCriminal->m_pArea->IsGuarded() )
 			continue;
-		if (!CanDisturb( pCriminal ))	// don't allow guards to be called on someone we can't disturb
+		if ( !CanDisturb(pCriminal) )	// don't allow guards to be called on someone we can't disturb
 			continue;
 
 		// Mark person as criminal if I saw him criming
 		// Only players call guards this way. NPC's flag criminal instantly
-		if (m_pPlayer && Memory_FindObjTypes( pCriminal, MEMORY_SAWCRIME ))
+		if ( m_pPlayer && Memory_FindObjTypes(pCriminal, MEMORY_SAWCRIME) )
 			pCriminal->Noto_Criminal();
 
-		if (!pCriminal->IsStatFlag( STATF_Criminal ) || ( pCriminal->Noto_IsEvil() && !g_Cfg.m_fGuardsOnMurderers ))
-			continue;
-
-		CallGuards( pCriminal );
+		if ( pCriminal->IsStatFlag(STATF_Criminal) || (g_Cfg.m_fGuardsOnMurderers && pCriminal->Noto_IsEvil()) )
+			CallGuards(pCriminal);
 	}
-	m_timeLastCallGuards = CServTime::GetCurrentTime().GetTimeRaw();
+	m_timeLastCallGuards = g_World.GetCurrentTime().GetTimeRaw();
 	return;
 }
 
