@@ -1626,6 +1626,7 @@ public:
 	SERVMODE_TYPE m_iModeCode;  // Just some error code to return to system.
 	int  m_iExitFlag;	// identifies who caused the exit. <0 = error
 	bool m_fResyncPause;		// Server is temporarily halted so files can be updated.
+	bool m_fResyncMultiRegions;	// An AREADEF/ROOMDEF resource got changed on server resync, so multi regions on world must be reloaded too
 	CTextConsole * m_fResyncRequested;		// A resync pause has been requested by this source.
 
 	CGSocket m_SocketMain;	// This is the incoming monitor socket.(might be multiple ports?)

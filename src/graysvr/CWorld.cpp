@@ -1594,24 +1594,24 @@ void CWorld::SaveStatics()
 #endif
 
 		//	loop through all sectors and save static items
+		CSector *pSector;
+		CItem *pItem, *pNext;
 		for ( int m = 0; m < 256; m++ )
 		{
-			if ( !g_MapList.m_maps[m] ) continue;
+			if ( !g_MapList.m_maps[m] )
+				continue;
 
 			for ( int d = 0; d < g_MapList.GetSectorQty(m); d++ )
 			{
-				CItem	*pNext, *pItem;
-				CSector	*pSector = GetSector(m, d);
-
-				if ( !pSector ) continue;
+				pSector = GetSector(m, d);
+				if ( !pSector )
+					continue;
 
 				pItem = static_cast<CItem *>(pSector->m_Items_Inert.GetHead());
 				for ( ; pItem != NULL; pItem = pNext )
 				{
 					pNext = pItem->GetNext();
-					if ( pItem->IsType(IT_MULTI_CUSTOM) )
-						continue;
-					if ( !pItem->IsAttr(ATTR_STATIC) )
+					if ( !pItem->IsAttr(ATTR_STATIC) || pItem->IsType(IT_MULTI_CUSTOM) )
 						continue;
 
 					pItem->r_WriteSafe(m_FileStatics);
@@ -1621,9 +1621,7 @@ void CWorld::SaveStatics()
 				for ( ; pItem != NULL; pItem = pNext )
 				{
 					pNext = pItem->GetNext();
-					if ( pItem->IsType(IT_MULTI_CUSTOM) )
-						continue;
-					if ( !pItem->IsAttr(ATTR_STATIC) )
+					if ( !pItem->IsAttr(ATTR_STATIC) || pItem->IsType(IT_MULTI_CUSTOM) )
 						continue;
 					
 					pItem->r_WriteSafe(m_FileStatics);
@@ -2073,6 +2071,58 @@ void CWorld::Restock()
 	}
 
 	g_Serv.SetServerMode(SERVMODE_Run);
+}
+
+void CWorld::ResyncMultiRegions()
+{
+	ADDTOCALLSTACK("CWorld::ResyncMultiRegions");
+	// Loop through all multi items on world to reload the multi region.
+	// This must be called after server resync, when dynamic regions from multis
+	// already placed on world got replaced by static regions loaded from scripts
+	CSector	*pSector = NULL;
+	CItem *pItem = NULL;
+	CItemMulti *pMulti = NULL;
+
+	for ( int m = 0; m < 256; m++ )
+	{
+		if ( !g_MapList.m_maps[m] )
+			continue;
+
+		for ( int d = 0; d < g_MapList.GetSectorQty(m); d++ )
+		{
+			pSector = g_World.GetSector(m, d);
+			if ( !pSector )
+				continue;
+
+			pItem = static_cast<CItem *>(pSector->m_Items_Inert.GetHead());
+			for ( ; pItem != NULL; pItem = pItem->GetNext() )
+			{
+				if ( !pItem->IsTypeMulti() )
+					continue;
+
+				pMulti = static_cast<CItemMulti *>(pItem);
+				if ( pMulti && pMulti->m_pRegion )
+				{
+					pMulti->m_pRegion->UnRealizeRegion();
+					pMulti->MultiRealizeRegion();
+				}
+			}
+
+			pItem = static_cast<CItem *>(pSector->m_Items_Timer.GetHead());
+			for ( ; pItem != NULL; pItem = pItem->GetNext() )
+			{
+				if ( !pItem->IsTypeMulti() )
+					continue;
+
+				pMulti = static_cast<CItemMulti *>(pItem);
+				if ( pMulti && pMulti->m_pRegion )
+				{
+					pMulti->m_pRegion->UnRealizeRegion();
+					pMulti->MultiRealizeRegion();
+				}
+			}
+		}
+	}
 }
 
 void CWorld::Close()

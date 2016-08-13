@@ -3228,7 +3228,7 @@ PacketDeath::PacketDeath(CChar *dead, CItemCorpse *corpse, bool bFrontFall) : Pa
 	ADDTOCALLSTACK("PacketDeath::PacketDeath");
 
 	writeInt32(static_cast<DWORD>(dead->GetUID()));
-	writeInt32(static_cast<DWORD>(corpse ? corpse->GetUID() : 0));
+	writeInt32(corpse ? static_cast<DWORD>(corpse->GetUID()) : 0);
 	writeInt32(static_cast<DWORD>(bFrontFall));
 }
 

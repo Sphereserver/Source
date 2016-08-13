@@ -150,6 +150,7 @@ CServer::CServer() : CServerDef( GRAY_TITLE, CSocketAddressIP( SOCKET_LOCAL_ADDR
 	m_iExitFlag = 0;
 	m_fResyncPause = false;
 	m_fResyncRequested = NULL;
+	m_fResyncMultiRegions = false;
 
 	m_iAdminClients = 0;
 

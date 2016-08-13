@@ -2375,11 +2375,15 @@ bool CResource::LoadResourceSection( CScript * pScript )
 	{
 		restype			= RES_AREA;
 		fNewStyleDef	= true;
+		if ( g_Serv.m_fResyncPause )
+			g_Serv.m_fResyncMultiRegions = true;
 	}
 	else if ( !strnicmp( pszSection, "ROOMDEF", 7 ) )
 	{
 		restype			= RES_ROOM;
 		fNewStyleDef	= true;
+		if ( g_Serv.m_fResyncPause )
+			g_Serv.m_fResyncMultiRegions = true;
 	}
 	else if ( !strnicmp( pszSection, "GLOBALS", 7 ) )
 	{
@@ -3946,7 +3950,6 @@ bool CResource::Load( bool fResync )
 		g_Serv.PrintPercent(j + 1, count);
 	}
 
-	// Reload world sectors after server resync to prevent dynamic multi regions get replaced by static regions loaded from scripts
 	if ( fResync )
 		g_World.Init();
 
@@ -3973,15 +3976,19 @@ bool CResource::Load( bool fResync )
 	}
 
 	// Make region DEFNAMEs
+	size_t iMax = g_Cfg.m_RegionDefs.GetCount();
+	for ( size_t k = 0; k < iMax; k++ )
 	{
-		size_t iMax = g_Cfg.m_RegionDefs.GetCount();
-		for ( size_t k = 0; k < iMax; k++ )
-		{
-			CRegionBase * pRegion = dynamic_cast <CRegionBase*> (g_Cfg.m_RegionDefs.GetAt(i));
-			if ( !pRegion )
-				continue;
-			pRegion->MakeRegionName();
-		}
+		CRegionBase *pRegion = dynamic_cast<CRegionBase *>(g_Cfg.m_RegionDefs.GetAt(i));
+		if ( !pRegion )
+			continue;
+		pRegion->MakeRegionName();
+	}
+
+	if ( fResync && g_Serv.m_fResyncMultiRegions )
+	{
+		g_World.ResyncMultiRegions();
+		g_Serv.m_fResyncMultiRegions = false;
 	}
 
 	// parse eventsitem

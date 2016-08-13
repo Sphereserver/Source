@@ -82,9 +82,9 @@ bool CItemMulti::MultiRealizeRegion()
 
 	// Get Background region.
 	CPointMap pt = GetTopPoint();
-	const CRegionWorld * pRegionBack = dynamic_cast <CRegionWorld*> (pt.GetRegion( REGION_TYPE_AREA ));
-	ASSERT( pRegionBack );
-	ASSERT( pRegionBack != m_pRegion );
+	const CRegionWorld *pRegionBack = dynamic_cast<CRegionWorld *>(pt.GetRegion(REGION_TYPE_AREA));
+	if ( !pRegionBack || (pRegionBack == m_pRegion) )
+		return false;
 
 	// Create the new region rectangle.
 	CRectMap rect;
