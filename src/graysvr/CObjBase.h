@@ -1718,14 +1718,9 @@ private:
 	static LPCTSTR const sm_szVerbKeys[];
 
 protected:
-	CRegionWorld *m_pRegion;		// we own this region.
 	bool Multi_IsPartOf( const CItem * pItem ) const;
-	void MultiUnRealizeRegion();
-	bool MultiRealizeRegion();
-
 	CItem * Multi_FindItemType( IT_TYPE type ) const;
 	CItem * Multi_FindItemComponent( int iComp ) const;
-
 
 	const CItemBaseMulti *Multi_GetDef() const
 	{
@@ -1734,6 +1729,9 @@ protected:
 	bool Multi_CreateComponent( ITEMID_TYPE id, signed short dx, signed short dy, signed char dz, DWORD dwKeyCode );
 
 public:
+	CRegionWorld *m_pRegion;	// we own this region
+	bool MultiRealizeRegion();
+	void MultiUnRealizeRegion();
 	int Multi_GetMaxDist() const;
 	struct ShipSpeed // speed of a ship
 	{
