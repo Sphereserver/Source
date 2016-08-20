@@ -165,4 +165,7 @@ Fixed: Multi regions not reloading correctly after server resync.
 Fixed: Guards not working correctly.
 
 19-08-2016, Coruja
-Changed: Updated internal SQLite libs v3.13.0 to v3.14.1
+Changed: Updated internal SQLite libs v3.13.0 to v3.14.1.
+
+20-08-2016, Coruja
+Changed: Small improvements on tooltip engine.

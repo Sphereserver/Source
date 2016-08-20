@@ -3079,9 +3079,7 @@ PacketCharacterList::PacketCharacterList(CClient* target) : PacketSend(XCMD_Char
 		}
 	}
 
-	int flags = g_Cfg.GetPacketFlag(true, static_cast<RESDISPLAY_VERSION>(account->GetResDisp()), maximum(account->GetMaxChars(), static_cast<BYTE>(account->m_Chars.GetCharCount())));
-	if ( !target->GetNetState()->getClientType() )
-		flags |= 0x400;
+	int flags = g_Cfg.GetPacketFlag(true, target, static_cast<RESDISPLAY_VERSION>(account->GetResDisp()), maximum(account->GetMaxChars(), static_cast<BYTE>(account->m_Chars.GetCharCount())));
 	writeInt32(flags);
 
 	if ( target->GetNetState()->isClientEnhanced() )

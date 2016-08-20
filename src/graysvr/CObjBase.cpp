@@ -2721,13 +2721,10 @@ void CObjBase::OnTickStatusUpdate()
 void CObjBase::ResendTooltip(bool bSendFull, bool bUseCache)
 {
 	ADDTOCALLSTACK("CObjBase::ResendTooltip");
-
 	// Send tooltip packet to all nearby clients
-	m_fStatusUpdate &= ~SU_UPDATE_TOOLTIP;
 
-	if ( !(g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B) )
-		return;	// tooltips are disabled.
-	else if ( IsDisconnected() || g_Serv.IsLoading() )
+	m_fStatusUpdate &= ~SU_UPDATE_TOOLTIP;
+	if ( IsDisconnected() || g_Serv.IsLoading() )
 		return;	// not in the world.
 
 	if ( !bUseCache )
@@ -2737,10 +2734,11 @@ void CObjBase::ResendTooltip(bool bSendFull, bool bUseCache)
 	ClientIterator it;
 	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
-		pChar = pClient->GetChar();
-		if ( !pChar )
+		if ( !pClient->m_TooltipEnabled )
 			continue;
-		if ( !pChar->CanSee(this) )
+
+		pChar = pClient->GetChar();
+		if ( !pChar || !pChar->CanSee(this) )
 			continue;
 
 		pClient->addAOSTooltip(this, bSendFull);

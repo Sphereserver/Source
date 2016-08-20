@@ -1480,7 +1480,7 @@ bool CItemMultiCustom::IsValidItem( ITEMID_TYPE id, CClient * pClientSrc, bool b
 		return false;
 
 	// check if client enabled features contains the item FeatureMask
-	int iFeatureFlag = g_Cfg.GetPacketFlag(false, static_cast<RESDISPLAY_VERSION>(pClientSrc->GetResDisp()));
+	int iFeatureFlag = g_Cfg.GetPacketFlag(false, pClientSrc, static_cast<RESDISPLAY_VERSION>(pClientSrc->GetResDisp()));
 	if ( (iFeatureFlag & it->second) != it->second )
 		return false;
 

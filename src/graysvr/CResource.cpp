@@ -2198,7 +2198,7 @@ void CResource::LoadSortSpells()
 
 //*************************************************************
 
-int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned char chars )
+int CResource::GetPacketFlag( bool bCharlist, CClient *pClient, RESDISPLAY_VERSION res, BYTE chars )
 {
 	int retValue = 0;
 	bool bResOk = false;
@@ -2229,6 +2229,13 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 			retValue |= ( m_iFeatureAOS & FEATURE_AOS_UPDATE_B ) ? 0x020 : 0x00;
 		}
 
+		if ( pClient )
+		{
+			if ( pClient->GetNetState()->isClientKR() || pClient->GetNetState()->isClientEnhanced() )	// tooltips must be always enabled on enhanced clients
+				retValue |= 0x020;
+			pClient->m_TooltipEnabled = (retValue & 0x020);
+		}
+
 		bResOk = ( res >= RDS_SE );
 		if ( bResOk )
 		{
@@ -2257,6 +2264,9 @@ int CResource::GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res, unsigned c
 		retValue |= ( chars == 1 ) ? 0x0014 : 0x00;
 		retValue |= ( chars >= 6 ) ? 0x0040 : 0x00;
 		retValue |= ( chars >= 7 ) ? 0x1000 : 0x00;
+
+		if ( !pClient->GetNetState()->getClientType() )
+			retValue |= 0x400;
 	}
 	else
 	{

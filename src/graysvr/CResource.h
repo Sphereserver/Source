@@ -1099,7 +1099,7 @@ public:
 	void PrintEFOFFlags( bool bEF = true, bool bOF = true, CTextConsole *pSrc = NULL );
 
 	// ResDisp Flag
-	int GetPacketFlag( bool bCharlist, RESDISPLAY_VERSION res = RDS_T2A, unsigned char chars = 5 );
+	int GetPacketFlag( bool bCharlist, CClient *pClient, RESDISPLAY_VERSION res = RDS_NONE, BYTE chars = 5 );
 
 	// Specialized resource accessors.
 

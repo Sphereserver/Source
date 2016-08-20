@@ -2340,8 +2340,7 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 	// Check if we must send the full tooltip or just the obj name
 	// NOTE: Always enable tooltips on enhanced clients even if this feature is disabled on Sphere settings,
 	//		 because these clients only use tooltips and doesn't have the old 'single click' behavior anymore
-	bool bSendFull = (((g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B) && (GetAccount()->GetResDisp() >= RDS_AOS)) || GetNetState()->isClientKR() || GetNetState()->isClientEnhanced());
-	if ( !bSendFull && !bShop )
+	if ( !m_TooltipEnabled && !bShop )
 		return;
 
 	// We check here if we are sending a tooltip for a static/non-movable items
@@ -2370,7 +2369,7 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 		CClientTooltip *t = NULL;
 		m_TooltipData.Clean(true);
 
-		if ( !bSendFull ) // if we only want to display the name
+		if ( !m_TooltipEnabled ) // if we only want to display the name
 		{
 			DWORD ClilocName = static_cast<DWORD>(pObj->GetDefNum("NAMELOC", true));
 			if ( ClilocName )
@@ -3212,7 +3211,7 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 
 		// cache the property list for next time, unless property list is
 		// incomplete (name only) or caching is disabled
-		if ( bSendFull && g_Cfg.m_iTooltipCache > 0 )
+		if ( m_TooltipEnabled && (g_Cfg.m_iTooltipCache > 0) )
 		{
 			if ( pItem )
 				pItem->SetPropertyList(propertyList);
@@ -3223,30 +3222,22 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 
 	if ( !propertyList->isEmpty() )
 	{
-		if ( bShop && (GetNetState()->isClientKR() || GetNetState()->isClientEnhanced()) )
+		switch ( g_Cfg.m_iTooltipMode )
 		{
-			// Always send full tooltip for shop items on enhanced clients
-			new PacketPropertyList(this, propertyList);
-		}
-		else
-		{
-			switch ( g_Cfg.m_iTooltipMode )
-			{
-				case TOOLTIPMODE_SENDVERSION:	// send property list version (client will send a request the full tooltip if needed)
-					if ( !bRequested && !bShop )
-					{
-						if ( PacketPropertyListVersion::CanSendTo(GetNetState()) )
-							new PacketPropertyListVersion(this, pObj, propertyList->getVersion());
-						else
-							new PacketPropertyListVersionOld(this, pObj, propertyList->getVersion());
-						break;
-					}
-
-				case TOOLTIPMODE_SENDFULL:		// send full property list
-				default:
-					new PacketPropertyList(this, propertyList);
+			case TOOLTIPMODE_SENDVERSION:	// send property list version (client will send a request the full tooltip if needed)
+				if ( !bRequested && !bShop )
+				{
+					if ( PacketPropertyListVersion::CanSendTo(GetNetState()) )
+						new PacketPropertyListVersion(this, pObj, propertyList->getVersion());
+					else
+						new PacketPropertyListVersionOld(this, pObj, propertyList->getVersion());
 					break;
-			}
+				}
+
+			case TOOLTIPMODE_SENDFULL:		// send full property list
+			default:
+				new PacketPropertyList(this, propertyList);
+				break;
 		}
 	}
 	
@@ -3569,7 +3560,7 @@ BYTE CClient::Setup_ListReq( const char * pszAccName, const char * pszPassword, 
 		return PacketLoginError::Blocked;	//Setup_Start() returns false only when login blocked by Return 1 in @Login
 	}*/
 
-	new PacketEnableFeatures(this, g_Cfg.GetPacketFlag(false, static_cast<RESDISPLAY_VERSION>(pAcc->GetResDisp()), static_cast<unsigned char>(maximum(pAcc->GetMaxChars(), pAcc->m_Chars.GetCharCount()))));
+	new PacketEnableFeatures(this, g_Cfg.GetPacketFlag(false, this, static_cast<RESDISPLAY_VERSION>(pAcc->GetResDisp()), static_cast<BYTE>(maximum(pAcc->GetMaxChars(), pAcc->m_Chars.GetCharCount()))));
 	new PacketCharacterList(this);
 
 	m_Targ_Mode = CLIMODE_SETUP_CHARLIST;

@@ -118,7 +118,8 @@ public:
 
 enum RESDISPLAY_VERSION
 {
-	RDS_T2A = 1,
+	RDS_NONE,
+	RDS_T2A,
 	RDS_LBR,
 	RDS_AOS,
 	RDS_SE,
@@ -987,8 +988,9 @@ private:
 	CGString m_Prompt_Text;		// text (i.e. callback function)
 
 public:
-	CONNECT_TYPE	m_iConnectType;	// what sort of a connection is this ?
-	CAccount * m_pAccount;		// The account name. we logged in on
+	CONNECT_TYPE m_iConnectType;	// what sort of a connection is this ?
+	CAccount * m_pAccount;			// The account name. we logged in on
+	bool m_TooltipEnabled;			// is tooltip feature enabled on this client?
 
 	CServTime m_timeLogin;					// World clock of login time. "LASTCONNECTTIME"
 	CServTime m_timeLastEvent;				// Last time we got event from client.
@@ -1012,7 +1014,7 @@ public:
 	CGrayUID m_Targ_UID;			// The object of interest to apply to the target.
 	CGrayUID m_Targ_PrvUID;		// The object of interest before this.
 	CGString m_Targ_Text;		// Text transfered up from client.
-	CPointMap  m_Targ_p;			// For script targeting,
+	CPointMap m_Targ_p;			// For script targeting,
 	CServTime m_Targ_Timeout;	// timeout time for targeting
 
 	// Context of the targetting setup. depends on CLIMODE_TYPE m_Targ_Mode
