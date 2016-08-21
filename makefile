@@ -50,7 +50,7 @@ NO	= -fno-rtti -fno-exceptions
 EX	= -fexceptions -fnon-call-exceptions
 SPECIAL = $(EX) $(DEBUG)
 
-GITREVISION = $(shell expr $(git rev-list --count HEAD) - 2406)
+GITREVISION = $(shell expr $(shell git rev-list --count HEAD) - 2406)
 GITHASH = $(shell git rev-parse --short HEAD)
 
 PROF	= -pg
