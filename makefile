@@ -51,7 +51,7 @@ EX	= -fexceptions -fnon-call-exceptions
 SPECIAL = $(EX) $(DEBUG)
 
 GITREVISION = $(shell expr $(git rev-list --count HEAD) - 2406)
-GITHASH = $(shell rev-parse --short HEAD)
+GITHASH = $(shell git rev-parse --short HEAD)
 
 PROF	= -pg
 PIPE	= -pipe
@@ -194,9 +194,9 @@ tags:	$(SRC)
 
 git:
 ifdef GITREVISION
-	@echo 'Current build revision: ${GITREVISION} (GIT hash: ${GITHASH})'
-	@echo '#define __GITREVISION__ ${GITREVISION}' > ./src/common/version/GitRevision.h
-	@echo '#define __GITHASH__ "${GITHASH}"' >> ./src/common/version/GitRevision.h
+	@echo 'Current build revision: $(GITREVISION) (GIT hash: $(GITHASH))'
+	@echo '#define __GITREVISION__ $(GITREVISION)' > ./src/common/version/GitRevision.h
+	@echo '#define __GITHASH__ "$(GITHASH)"' >> ./src/common/version/GitRevision.h
 endif
 
 gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
