@@ -6,6 +6,8 @@ addons:
     - libmysql++3:i386
     - gcc-4.6-multilib
     - g++-4.6-multilib
+git:
+  depth: 1
 script:
   - make NIGHTLY=1 -f makefile
 notifications:
