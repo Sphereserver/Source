@@ -11,89 +11,89 @@ CREID_TYPE CChar::NPC_GetAllyGroupType(CREID_TYPE idTest)	// static
 		case CREID_WOMAN:
 		case CREID_GHOSTMAN:
 		case CREID_GHOSTWOMAN:
-			return( CREID_MAN );
+			return CREID_MAN;
 		case CREID_ELFMAN:
 		case CREID_ELFWOMAN:
 		case CREID_ELFGHOSTMAN:
 		case CREID_ELFGHOSTWOMAN:
-			return( CREID_ELFMAN );
+			return CREID_ELFMAN;
 		case CREID_GARGMAN:
 		case CREID_GARGWOMAN:
 		case CREID_GARGGHOSTMAN:
 		case CREID_GARGGHOSTWOMAN:
-			return( CREID_GARGMAN );
+			return CREID_GARGMAN;
 		case CREID_ETTIN:
 		case CREID_ETTIN_AXE:
-			return( CREID_ETTIN );
+			return CREID_ETTIN;
 		case CREID_ORC_LORD:
 		case CREID_ORC:
 		case CREID_ORC_CLUB:
-			return( CREID_ORC );
+			return CREID_ORC;
 		case CREID_DAEMON:
 		case CREID_DAEMON_SWORD:
-			return( CREID_DAEMON );
+			return CREID_DAEMON;
 		case CREID_DRAGON_GREY:
 		case CREID_DRAGON_RED:
 		case CREID_DRAKE_GREY:
 		case CREID_DRAKE_RED:
-			return( CREID_DRAGON_GREY );
+			return CREID_DRAGON_GREY;
 		case CREID_LIZMAN:
 		case CREID_LIZMAN_SPEAR:
 		case CREID_LIZMAN_MACE:
-			return( CREID_LIZMAN );
+			return CREID_LIZMAN;
 		case CREID_RATMAN:
 		case CREID_RATMAN_CLUB:
 		case CREID_RATMAN_SWORD:
-			return( CREID_RATMAN );
+			return CREID_RATMAN;
 		case CREID_SKELETON:
 		case CREID_SKEL_AXE:
 		case CREID_SKEL_SW_SH:
-			return( CREID_SKELETON );
+			return CREID_SKELETON;
 		case CREID_TROLL_SWORD:
 		case CREID_TROLL:
 		case CREID_TROLL_MACE:
-			return( CREID_TROLL );
+			return CREID_TROLL;
 		case CREID_Tera_Warrior:
 		case CREID_Tera_Drone:
 		case CREID_Tera_Matriarch:
-			return( CREID_Tera_Drone );
+			return CREID_Tera_Drone;
 		case CREID_Ophid_Mage:
 		case CREID_Ophid_Warrior:
 		case CREID_Ophid_Queen:
-			return( CREID_Ophid_Warrior );
+			return CREID_Ophid_Warrior;
 		case CREID_HORSE1:
 		case CREID_HORSE4:
 		case CREID_HORSE2:
 		case CREID_HORSE3:
 		case CREID_HORSE_PACK:
-			return( CREID_HORSE1 );
+			return CREID_HORSE1;
 		case CREID_BrownBear:
 		case CREID_GrizzlyBear:
 		case CREID_PolarBear:
-			return( CREID_BrownBear );
+			return CREID_BrownBear;
 		case CREID_Cow_BW:
 		case CREID_Cow2:
 		case CREID_Bull_Brown:
 		case CREID_Bull2:
-			return( CREID_Bull_Brown );
+			return CREID_Bull_Brown;
 		case CREID_Ostard_Desert:
 		case CREID_Ostard_Frenz:
 		case CREID_Ostard_Forest:
-			return( CREID_Ostard_Forest );
+			return CREID_Ostard_Forest;
 		case CREID_Sheep:
 		case CREID_Sheep_Sheered:
-			return( CREID_Sheep );
+			return CREID_Sheep;
 		case CREID_Hart:
 		case CREID_Deer:
-			return( CREID_Deer );
+			return CREID_Deer;
 		case CREID_Pig:
 		case CREID_Boar:
-			return( CREID_Pig );
+			return CREID_Pig;
 		case CREID_Llama:
 		case CREID_LLAMA_PACK:
-			return( CREID_Llama );
+			return CREID_Llama;
 		default:
-			return( idTest );
+			return idTest;
 	}
 }
 
@@ -137,7 +137,7 @@ int CChar::NPC_GetVendorMarkup() const
 	return 15;
 }
 
-size_t CChar::NPC_OnHearName( LPCTSTR pszText ) const
+size_t CChar::NPC_OnHearName(LPCTSTR pszText) const
 {
 	ADDTOCALLSTACK("CChar::NPC_OnHearName");
 	// Did I just hear my name in this text ?
@@ -147,54 +147,38 @@ size_t CChar::NPC_OnHearName( LPCTSTR pszText ) const
 
 	LPCTSTR pszName = GetName();
 
-	size_t i = FindStrWord( pszText, pszName );
+	size_t i = FindStrWord(pszText, pszName);
 	if ( i )
-		return( i );
-
-	if ( m_pNPC )
-	{
-		// My title ?
-		if ( m_pNPC->m_Brain == NPCBRAIN_GUARD )
-		{
-			if ( ! strnicmp( pszText, "GUARD ", 6 ))
-				return 6;
-		}
-		else if ( NPC_IsVendor())
-		{
-			if ( ! strnicmp( pszText, "VENDOR ", 7 ))
-				return 7;
-		}
-	}
-
-	CCharBase * pCharDef = Char_GetDef();
+		return i;
 
 	// Named the chars type ? (must come first !)
+	CCharBase *pCharDef = Char_GetDef();
 	pszName = pCharDef->GetTradeName();
 	for ( i = 0; pszText[i] != '\0'; i++ )
 	{
 		if ( pszName[i] == '\0' )
 		{
-			// found name.
-			while ( ISWHITESPACE( pszText[i] ))
+			// found name
+			while ( ISWHITESPACE(pszText[i]) )
 				i++;
-			return( i );	// Char name found
+			return i;	// char name found
 		}
-		if ( toupper( pszName[i] ) != toupper( pszText[i] ))	// not the name.
+		if ( toupper(pszName[i]) != toupper(pszText[i]) )	// not the name
 			break;
 	}
 
-	return( 0 );
+	return 0;
 }
 
 bool CChar::NPC_CanSpeak() const
 {
 	ADDTOCALLSTACK("CChar::NPC_CanSpeak");
 	//	players and chars with speech can
-	if ( m_pNPC == NULL || m_pNPC->m_Speech.GetCount() > 0 )
+	if ( !m_pNPC || (m_pNPC->m_Speech.GetCount() > 0) )
 		return true;
 
-	CCharBase * pCharDef = Char_GetDef();
-	return( pCharDef != NULL && pCharDef->m_Speech.GetCount() > 0 );
+	CCharBase *pCharDef = Char_GetDef();
+	return (pCharDef && (pCharDef->m_Speech.GetCount() > 0));
 }
 
 bool CChar::NPC_FightMayCast(bool fCheckSkill) const
@@ -203,9 +187,9 @@ bool CChar::NPC_FightMayCast(bool fCheckSkill) const
 	// This NPC could cast spells if they wanted to ?
 	// check mana and anti-magic
 	// Dont check for skill if !fCheckSkill
-	if (!m_pNPC)
+	if ( !m_pNPC )
 		return false;
-	if (fCheckSkill && !const_cast<CChar*>(this)->Skill_GetMagicRandom(300))
+	if ( fCheckSkill && !const_cast<CChar *>(this)->Skill_GetMagicRandom(300) )
 		return false;
 	if ( m_pArea && m_pArea->IsFlag(REGION_ANTIMAGIC_DAMAGE|REGION_FLAG_SAFE) )
 		return false;
@@ -215,32 +199,26 @@ bool CChar::NPC_FightMayCast(bool fCheckSkill) const
 	return true;
 }
 
-bool CChar::NPC_IsOwnedBy( const CChar * pChar, bool fAllowGM ) const
+bool CChar::NPC_IsOwnedBy(const CChar *pChar, bool fAllowGM) const
 {
 	ADDTOCALLSTACK("CChar::NPC_IsOwnedBy");
 	// Is pChar my master ?
 	// BESERK will not listen to commands tho.
 	// fAllowGM = consider GM's to be owners of all NPC's
 
-	if ( pChar == NULL )
-		return( false );
-	if ( this == pChar )
-		return( true );
-
-	if ( fAllowGM && pChar->IsPriv( PRIV_GM ))
-		return( pChar->GetPrivLevel() > GetPrivLevel());
-
-	if ( ! IsStatFlag( STATF_Pet ) || m_pPlayer )	// shortcut - i'm not a pet.
-		return( false );
-	if ( m_pNPC == NULL )
-		return( false );
+	if ( !pChar || pChar == this )
+		return false;
+	if ( fAllowGM && pChar->IsPriv(PRIV_GM) )
+		return (pChar->GetPrivLevel() > GetPrivLevel());
+	if ( !m_pNPC || !IsStatFlag(STATF_Pet) )	// shortcut - i'm not a pet.
+		return false;
 	if ( m_pNPC->m_Brain == NPCBRAIN_BERSERK )	// i cannot be commanded.
-		return( false );
+		return false;
 
-	return( Memory_FindObjTypes( pChar, MEMORY_IPET ) != NULL );
+	return (Memory_FindObjTypes(pChar, MEMORY_IPET) != NULL);
 }
 
-CChar * CChar::NPC_PetGetOwner() const
+CChar *CChar::NPC_PetGetOwner() const
 {
 	ADDTOCALLSTACK("CChar::NPC_PetGetOwner");
 	// Assume i am a pet. Get my first (primary) owner. not just friends. used for blame .
@@ -255,29 +233,25 @@ CChar * CChar::NPC_PetGetOwner() const
 	return pMemory->m_uidLink.CharFind();
 }
 
-int CChar::NPC_GetTrainMax( const CChar * pStudent, SKILL_TYPE Skill ) const
+int CChar::NPC_GetTrainMax(const CChar *pStudent, SKILL_TYPE Skill) const
 {
 	ADDTOCALLSTACK("CChar::NPC_GetTrainMax");
 	// What is the max I can train to ?
 	int iMax;
 	int iMaxAllowed;
 
-	CVarDefCont * pValue = GetKey("OVERRIDE.TRAINSKILLMAXPERCENT",true);
-	if ( pValue ) 
-	{
-		iMax = static_cast<int>(IMULDIV( pValue->GetValNum(), Skill_GetBase(Skill), 100 ));
-	} else {
-		iMax = IMULDIV( g_Cfg.m_iTrainSkillPercent, Skill_GetBase(Skill), 100 );
-	}
+	CVarDefCont *pValue = GetKey("OVERRIDE.TRAINSKILLMAXPERCENT", true);
+	if ( pValue )
+		iMax = static_cast<int>(IMULDIV(pValue->GetValNum(), Skill_GetBase(Skill), 100));
+	else
+		iMax = static_cast<int>(IMULDIV(g_Cfg.m_iTrainSkillPercent, Skill_GetBase(Skill), 100));
 
-	pValue = GetKey("OVERRIDE.TRAINSKILLMAX",true);
-	if ( pValue ) 
-	{
+	pValue = GetKey("OVERRIDE.TRAINSKILLMAX", true);
+	if ( pValue )
 		iMaxAllowed = static_cast<int>(pValue->GetValNum());
-	} else {
+	else
 		iMaxAllowed = g_Cfg.m_iTrainSkillMax;
-	}
-	
+
 	if ( iMax > iMaxAllowed )
 		return minimum(iMaxAllowed, pStudent->Skill_GetMax(Skill));
 
@@ -285,7 +259,7 @@ int CChar::NPC_GetTrainMax( const CChar * pStudent, SKILL_TYPE Skill ) const
 	return minimum(iMax, pStudent->Skill_GetMax(Skill));
 }
 
-bool CChar::NPC_CheckWalkHere( const CPointBase & pt, const CRegionBase * pArea, WORD wBlockFlags ) const
+bool CChar::NPC_CheckWalkHere(const CPointBase &pt, const CRegionBase *pArea, WORD wBlockFlags) const
 {
 	ADDTOCALLSTACK("CChar::NPC_CheckWalkHere");
 	UNREFERENCED_PARAMETER(wBlockFlags);
@@ -295,7 +269,7 @@ bool CChar::NPC_CheckWalkHere( const CPointBase & pt, const CRegionBase * pArea,
 	if ( !pt.IsValidXY() )
 		return true;
 
-	if ( m_pArea != NULL )
+	if ( m_pArea )
 	{
 		if ( m_pNPC->m_Brain == NPCBRAIN_GUARD && !IsStatFlag(STATF_War) )	// guards will want to stay in guard range
 		{
@@ -312,10 +286,10 @@ bool CChar::NPC_CheckWalkHere( const CPointBase & pt, const CRegionBase * pArea,
 
 	// Is there a nasty object here that will hurt us ?
 	CWorldSearch AreaItems(pt);
-	for (;;)
+	for ( ;;)
 	{
-		CItem * pItem = AreaItems.GetItem();
-		if ( pItem == NULL )
+		CItem *pItem = AreaItems.GetItem();
+		if ( !pItem )
 			break;
 
 		if ( abs(pItem->GetTopZ() - pt.m_z) > 5 )
@@ -339,9 +313,7 @@ bool CChar::NPC_CheckWalkHere( const CPointBase & pt, const CRegionBase * pArea,
 	return true;
 }
 
-
-
-CItemVendable * CChar::NPC_FindVendableItem( CItemVendable * pVendItem, CItemContainer * pContBuy, CItemContainer * pContStock ) // static
+CItemVendable *CChar::NPC_FindVendableItem(CItemVendable *pVendItem, CItemContainer *pContBuy, CItemContainer *pContStock) // static
 {
 	ADDTOCALLSTACK("CChar::NPC_FindVendableItem");
 	UNREFERENCED_PARAMETER(pContStock);
@@ -349,14 +321,14 @@ CItemVendable * CChar::NPC_FindVendableItem( CItemVendable * pVendItem, CItemCon
 	if ( !pVendItem || !pContBuy || !pVendItem->IsValidSaleItem(false) )
 		return NULL;
 
-	CItem * pItemTest = pContBuy->ContentFind(RESOURCE_ID(RES_ITEMDEF, pVendItem->GetID()));
-	if ( pItemTest == NULL )
+	CItem *pItemTest = pContBuy->ContentFind(RESOURCE_ID(RES_ITEMDEF, pVendItem->GetID()));
+	if ( !pItemTest )
 		return NULL;
 
-	CItemVendable * pItemSell = dynamic_cast<CItemVendable *>(pItemTest);
-	if ( pItemSell == NULL )	// the item is not vendable
+	CItemVendable *pItemSell = static_cast<CItemVendable *>(pItemTest);
+	if ( !pItemSell )	// the item is not vendable
 		return NULL;
-	if ( pVendItem->GetType() != pItemSell->GetType())	// sanity check
+	if ( pVendItem->GetType() != pItemSell->GetType() )	// sanity check
 		return NULL;
 
 	return pItemSell;
@@ -366,7 +338,7 @@ CItemVendable * CChar::NPC_FindVendableItem( CItemVendable * pVendItem, CItemCon
 // This stuff is still questionable.
 
 
-int CChar::NPC_WantThisItem( CItem * pItem ) const
+int CChar::NPC_WantThisItem(CItem *pItem) const
 {
 	ADDTOCALLSTACK("CChar::NPC_WantThisItem");
 	//  This should be the ULTIMATE place to check if the NPC wants this in any way.
@@ -382,15 +354,15 @@ int CChar::NPC_WantThisItem( CItem * pItem ) const
 	if ( !CanMove(pItem, false) )
 		return 0;
 
-	CCharBase * pCharDef = Char_GetDef();
-	ASSERT(pCharDef != NULL);
+	CCharBase *pCharDef = Char_GetDef();
+	ASSERT(pCharDef);
 	size_t iRet = pCharDef->m_Desires.FindResourceMatch(pItem);
 	if ( iRet != pCharDef->m_Desires.BadIndex() )
 		return static_cast<int>(pCharDef->m_Desires[iRet].GetResQty());
 
 	// I'm hungry and this is food ?
 	int iFoodLevel = Food_GetLevelPercent();
-	if ( Food_CanEat(pItem) && iFoodLevel < 100 )
+	if ( Food_CanEat(pItem) && (iFoodLevel < 100) )
 		return 100 - iFoodLevel;
 
 	if ( NPC_IsVendor() )
@@ -400,7 +372,7 @@ int CChar::NPC_WantThisItem( CItem * pItem ) const
 			return 100;
 
 		// Is it something I would buy?
-		CItemVendable *pItemSell = NPC_FindVendableItem(dynamic_cast<CItemVendable *>(pItem), const_cast<CChar *>(this)->GetContainerCreate(LAYER_VENDOR_BUYS), const_cast<CChar *>(this)->GetContainerCreate(LAYER_VENDOR_STOCK));
+		CItemVendable *pItemSell = NPC_FindVendableItem(static_cast<CItemVendable *>(pItem), const_cast<CChar *>(this)->GetContainerCreate(LAYER_VENDOR_BUYS), const_cast<CChar *>(this)->GetContainerCreate(LAYER_VENDOR_STOCK));
 		if ( pItemSell )
 			return pItemSell->GetVendorPrice(0);
 	}
@@ -408,7 +380,7 @@ int CChar::NPC_WantThisItem( CItem * pItem ) const
 	return 0;
 }
 
-int CChar::NPC_GetWeaponUseScore( CItem * pWeapon )
+int CChar::NPC_GetWeaponUseScore(CItem *pWeapon)
 {
 	ADDTOCALLSTACK("CChar::NPC_GetWeaponUseScore");
 	// How good would i be at this weapon ?
@@ -422,21 +394,21 @@ int CChar::NPC_GetWeaponUseScore( CItem * pWeapon )
 		// Is it a weapon ?
 		skill = pWeapon->Weapon_GetSkill();
 		if ( skill == SKILL_WRESTLING )
-			return( 0 );
+			return 0;
 
 		// I can't equip this anyhow.
-		if ( CanEquipLayer( pWeapon, LAYER_QTY, NULL, true ) == LAYER_NONE )
-			return( 0 );
+		if ( CanEquipLayer(pWeapon, LAYER_QTY, NULL, true) == LAYER_NONE )
+			return 0;
 		// How much damage could i do with this ?
 	}
 
-	int iDmg = Fight_CalcDamage( pWeapon );
-	int iSkillLevel = Skill_GetAdjusted( skill );
+	int iDmg = Fight_CalcDamage(pWeapon);
+	int iSkillLevel = Skill_GetAdjusted(skill);
 
-	return( iSkillLevel + iDmg * 50 );
+	return iSkillLevel + iDmg * 50;
 }
 
-int CChar::NPC_GetHostilityLevelToward( const CChar * pCharTarg ) const
+int CChar::NPC_GetHostilityLevelToward(const CChar *pCharTarg) const
 {
 	ADDTOCALLSTACK("CChar::NPC_GetHostilityLevelToward");
 	// What is my general hostility level toward this type of creature ?
@@ -455,10 +427,10 @@ int CChar::NPC_GetHostilityLevelToward( const CChar * pCharTarg ) const
 
 	// If it's a pet, inherit hostility from it's master
 	CChar *pCharOwn = pCharTarg->NPC_PetGetOwner();
-	if ( pCharOwn && pCharOwn != this )
+	if ( pCharOwn && (pCharOwn != this) )
 	{
 		static int sm_iReentrant = 0;
-		if (sm_iReentrant > 32)
+		if ( sm_iReentrant > 32 )
 		{
 			DEBUG_ERR(("Too many owners (circular ownership?) to continue acquiring hostility level towards %s uid=0%lx\n", pCharOwn->GetName(), pCharOwn->GetUID().GetPrivateUID()));
 			return 0;
@@ -488,11 +460,11 @@ int CChar::NPC_GetHostilityLevelToward( const CChar * pCharTarg ) const
 
 		return 100;
 	}
-	
+
 	return 0;
 }
 
-int CChar::NPC_GetAttackContinueMotivation( CChar * pChar, int iMotivation ) const
+int CChar::NPC_GetAttackContinueMotivation(CChar *pChar, int iMotivation) const
 {
 	ADDTOCALLSTACK("CChar::NPC_GetAttackContinueMotivation");
 	// I have seen fit to attack them.
@@ -541,7 +513,7 @@ int CChar::NPC_GetAttackContinueMotivation( CChar * pChar, int iMotivation ) con
 	return iMotivation;
 }
 
-int CChar::NPC_GetAttackMotivation( CChar * pChar, int iMotivation ) const
+int CChar::NPC_GetAttackMotivation(CChar *pChar, int iMotivation) const
 {
 	ADDTOCALLSTACK("CChar::NPC_GetAttackMotivation");
 	// Some sort of monster.

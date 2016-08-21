@@ -485,15 +485,15 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 		if ( pCont )
 		{
 			//check for UID
-			CGrayUID uidCont = static_cast<DWORD>(pCont->GetValNum());
-			CItemContainer *pNewCont = dynamic_cast<CItemContainer*>(uidCont.ItemFind());
+			CGrayUID uidCont = static_cast<CGrayUID>(pCont->GetValNum());
+			CItemContainer *pNewCont = dynamic_cast<CItemContainer *>(uidCont.ItemFind());
 			if ( !pNewCont )	//if no UID, check for ITEMID_TYPE
 			{
 				t_Str = pCont->GetValStr();
 				RESOURCE_ID_BASE rContid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, t_Str));
 				ITEMID_TYPE ContID = static_cast<ITEMID_TYPE>(rContid.GetResIndex());
 				if ( ContID )
-					pNewCont = dynamic_cast<CItemContainer*>(ContentFind(rContid));
+					pNewCont = dynamic_cast<CItemContainer *>(ContentFind(rContid));
 			}
 
 			if ( pNewCont )
@@ -519,8 +519,8 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 	CVarDefCont *pVarAnimColor = pWeapon->GetDefKey("AMMOANIMHUE", true);
 	CVarDefCont *pVarAnimRender = pWeapon->GetDefKey("AMMOANIMRENDER", true);
 	ITEMID_TYPE AmmoAnim;
-	DWORD AmmoHue;
-	DWORD AmmoRender;
+	DWORD AmmoHue = pVarAnimColor ? static_cast<DWORD>(pVarAnimColor->GetValNum()) : 0;
+	DWORD AmmoRender = pVarAnimRender ? static_cast<DWORD>(pVarAnimRender->GetValNum()) : 0;
 
 	if ( pVarAnim )
 	{
@@ -531,9 +531,6 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 	else
 		AmmoAnim = static_cast<ITEMID_TYPE>(pWeaponDef->m_ttWeaponBow.m_idAmmoX.GetResIndex());
 
-	AmmoHue = pVarAnimColor ? static_cast<DWORD>(pVarAnimColor->GetValNum()) : 0;
-	AmmoRender = pVarAnimRender ? static_cast<DWORD>(pVarAnimRender->GetValNum()) : 0;
-	
 	pButte->Effect(EFFECT_BOLT, AmmoAnim, this, 16, 0, false, AmmoHue, AmmoRender);
 	pButte->Sound(SOUND_CROSSBOW);
 
@@ -744,7 +741,7 @@ bool CChar::Use_Repair( CItem * pItemArmor )
 		return false;
 	}
 
-	m_Act_p = g_World.FindItemTypeNearby(GetTopPoint(), IT_ANVIL, 2, false);
+	m_Act_p = g_World.FindItemTypeNearby(GetTopPoint(), IT_ANVIL, 2);
 	if ( !m_Act_p.IsValidPoint() )
 	{
 		SysMessageDefault(DEFMSG_REPAIR_ANVIL);
@@ -1386,38 +1383,44 @@ bool CChar::Use_BedRoll( CItem * pItem )
 int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 {
 	ADDTOCALLSTACK("CChar::Do_Use_Item");
-	if (!pItem)
+	if ( !pItem )
 		return false;
 
-	if (m_pNPC && (IsTrigUsed(TRIGGER_DCLICK) || IsTrigUsed(TRIGGER_ITEMDCLICK)))	// for players, DClick was called before this function
+	if ( m_pNPC && (IsTrigUsed(TRIGGER_DCLICK) || IsTrigUsed(TRIGGER_ITEMDCLICK)) )	// for players, DClick was called before this function
 	{
-		if (pItem->OnTrigger(ITRIG_DCLICK, this) == TRIGRET_RET_TRUE)
+		if ( pItem->OnTrigger(ITRIG_DCLICK, this) == TRIGRET_RET_TRUE )
 			return false;
 	}
 
 	CItemSpawn *pSpawn = static_cast<CItemSpawn *>(pItem->m_uidSpawnItem.ItemFind());
-	if (pSpawn)
+	if ( pSpawn )
 		pSpawn->DelObj(pItem->GetUID());	// remove this item from it's spawn when DClicks it
 
 	int fAction = true;
-	switch(pItem->GetType()) {
-		case IT_ITEM_STONE: {
+	switch ( pItem->GetType() )
+	{
+		case IT_ITEM_STONE:
+		{
 			// Give them this item
-			if (pItem->m_itItemStone.m_wAmount == USHRT_MAX) {
+			if ( pItem->m_itItemStone.m_wAmount == USHRT_MAX )
+			{
 				SysMessageDefault(DEFMSG_MSG_IT_IS_DEAD);
 				return true;
 			}
-			if (pItem->m_itItemStone.m_wRegenTime) {
-				if (pItem->IsTimerSet()) {
+			if ( pItem->m_itItemStone.m_wRegenTime )
+			{
+				if ( pItem->IsTimerSet() )
+				{
 					SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_STONEREG_TIME), pItem->GetTimerDiff() / TICK_PER_SEC);
 					return true;
 				}
 				pItem->SetTimeout(pItem->m_itItemStone.m_wRegenTime * TICK_PER_SEC);
 			}
 			ItemBounce(CItem::CreateTemplate(pItem->m_itItemStone.m_ItemID, GetContainerCreate(LAYER_PACK), this));
-			if (pItem->m_itItemStone.m_wAmount != 0) {
+			if ( pItem->m_itItemStone.m_wAmount != 0 )
+			{
 				pItem->m_itItemStone.m_wAmount--;
-				if (pItem->m_itItemStone.m_wAmount == 0)
+				if ( pItem->m_itItemStone.m_wAmount == 0 )
 					pItem->m_itItemStone.m_wAmount = USHRT_MAX;
 			}
 			return true;
@@ -1432,8 +1435,9 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 		case IT_KINDLING:
 			return Use_Kindling(pItem);
 
-		case IT_SPINWHEEL: {
-			if (fLink)
+		case IT_SPINWHEEL:
+		{
+			if ( fLink )
 				return false;
 
 			// Just make them spin
@@ -1442,70 +1446,83 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 			return true;
 		}
 
-		case IT_TRAIN_DUMMY: {
-			if (fLink)
+		case IT_TRAIN_DUMMY:
+		{
+			if ( fLink )
 				return false;
 
 			Use_Train_Dummy(pItem, true);
 			return true;
 		}
 
-		case IT_TRAIN_PICKPOCKET: {
-			if (fLink)
+		case IT_TRAIN_PICKPOCKET:
+		{
+			if ( fLink )
 				return false;
 
 			Use_Train_PickPocketDip(pItem, true);
 			return true;
 		}
 
-		case IT_ARCHERY_BUTTE: {
-			if (fLink)
+		case IT_ARCHERY_BUTTE:
+		{
+			if ( fLink )
 				return false;
 
 			Use_Train_ArcheryButte(pItem, true);
 			return true;
 		}
 
-		case IT_LOOM: {
-			if (fLink)
+		case IT_LOOM:
+		{
+			if ( fLink )
 				return false;
 
 			SysMessageDefault(DEFMSG_ITEMUSE_LOOM);
 			return true;
 		}
 
-		case IT_BEE_HIVE: {
-			if (fLink)
+		case IT_BEE_HIVE:
+		{
+			if ( fLink )
 				return false;
 
 			// Get honey from it
 			ITEMID_TYPE id = ITEMID_NOTHING;
-			if (!pItem->m_itBeeHive.m_honeycount)
+			if ( !pItem->m_itBeeHive.m_honeycount )
 				SysMessageDefault(DEFMSG_ITEMUSE_BEEHIVE);
-			else {
-				switch(Calc_GetRandVal(3)) {
+			else
+			{
+				switch ( Calc_GetRandVal(3) )
+				{
 					case 1:
 						id = ITEMID_JAR_HONEY;
 						break;
 					case 2:
 						id = ITEMID_BEE_WAX;
 						break;
+					default:
+						break;
 				}
 			}
-			if (id) {
+			if ( id )
+			{
 				ItemBounce(CItem::CreateScript(id, this));
 				pItem->m_itBeeHive.m_honeycount--;
 			}
-			else {
+			else
+			{
 				SysMessageDefault(DEFMSG_ITEMUSE_BEEHIVE_STING);
-				OnTakeDamage(Calc_GetRandVal(5), this, DAMAGE_POISON | DAMAGE_GENERAL);
+				OnTakeDamage(Calc_GetRandVal(5), this, DAMAGE_POISON|DAMAGE_GENERAL);
 			}
 			pItem->SetTimeout(15 * 60 * TICK_PER_SEC);
 			return true;
 		}
 
-		case IT_MUSICAL: {
-			if (!Skill_Wait(SKILL_MUSICIANSHIP)) {
+		case IT_MUSICAL:
+		{
+			if ( !Skill_Wait(SKILL_MUSICIANSHIP) )
+			{
 				m_Act_Targ = pItem->GetUID();
 				Skill_Start(SKILL_MUSICIANSHIP);
 			}
@@ -1513,29 +1530,33 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 		}
 
 		case IT_CROPS:
-		case IT_FOLIAGE: {
+		case IT_FOLIAGE:
+		{
 			// Pick cotton/hay/etc
 			fAction = pItem->Plant_Use(this);
 			break;
 		}
 
-		case IT_FIGURINE: {
+		case IT_FIGURINE:
+		{
 			// Create the creature here
-			if (Use_Figurine(pItem) != NULL)
+			if ( Use_Figurine(pItem) )
 				pItem->Delete();
 			return true;
 		}
 
 		case IT_TRAP:
-		case IT_TRAP_ACTIVE: {
+		case IT_TRAP_ACTIVE:
+		{
 			// Activate the trap (plus any linked traps)
 			int iDmg = pItem->Use_Trap();
-			if (CanTouch(pItem->GetTopLevelObj()->GetTopPoint()))
-				OnTakeDamage(iDmg, NULL, DAMAGE_HIT_BLUNT | DAMAGE_GENERAL);
+			if ( CanTouch(pItem->GetTopLevelObj()->GetTopPoint()) )
+				OnTakeDamage(iDmg, NULL, DAMAGE_HIT_BLUNT|DAMAGE_GENERAL);
 			break;
 		}
 
-		case IT_SWITCH: {
+		case IT_SWITCH:
+		{
 			// Switches can be linked to gates and doors and such.
 			// Flip the switch graphic.
 			pItem->SetSwitchState();
@@ -1543,7 +1564,8 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 		}
 
 		case IT_PORT_LOCKED:
-			if (!fLink && !IsPriv(PRIV_GM)) {
+			if ( !fLink && !IsPriv(PRIV_GM) )
+			{
 				SysMessageDefault(DEFMSG_ITEMUSE_PORT_LOCKED);
 				return true;
 			}
@@ -1553,38 +1575,43 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 			break;
 
 		case IT_DOOR_LOCKED:
-			if (!ContentFindKeyFor(pItem)) {
+			if ( !ContentFindKeyFor(pItem) )
+			{
 				SysMessageDefault(DEFMSG_MSG_KEY_DOORLOCKED);
-				if (!pItem->IsTopLevel())
+				if ( !pItem->IsTopLevel() )
 					return false;
-				if (pItem->IsAttr(ATTR_MAGIC))	// show it's magic face
+				if ( pItem->IsAttr(ATTR_MAGIC) )	// show it's magic face
 				{
 					ITEMID_TYPE id = (GetDispID() & DOOR_NORTHSOUTH) ? ITEMID_DOOR_MAGIC_SI_NS : ITEMID_DOOR_MAGIC_SI_EW;
 					CItem *pFace = CItem::CreateBase(id);
 					ASSERT(pFace);
 					pFace->MoveToDecay(pItem->GetTopPoint(), 4 * TICK_PER_SEC);
 				}
-				if (!IsPriv(PRIV_GM))
+				if ( !IsPriv(PRIV_GM) )
 					return true;
 			}
 		case IT_DOOR_OPEN:
-		case IT_DOOR: {
-			bool fOpen = pItem->Use_DoorNew(fLink);
-			if (fLink || !fOpen)	// don't link if we are just closing the door
+		case IT_DOOR:
+		{
+			if ( fLink || !pItem->Use_DoorNew(fLink) )	// don't link if we are just closing the door
 				return true;
 		}
-			break;
+		break;
 
-		case IT_SHIP_PLANK: {
+		case IT_SHIP_PLANK:
+		{
 			// Close the plank if I'm inside the ship
-			if (m_pArea->IsFlag(REGION_FLAG_SHIP) && m_pArea->GetResourceID() == pItem->m_uidLink) {
-				if (pItem->m_itShipPlank.m_itSideType == IT_SHIP_SIDE_LOCKED && !ContentFindKeyFor(pItem)) {
+			if ( m_pArea->IsFlag(REGION_FLAG_SHIP) && m_pArea->GetResourceID() == pItem->m_uidLink )
+			{
+				if ( pItem->m_itShipPlank.m_itSideType == IT_SHIP_SIDE_LOCKED && !ContentFindKeyFor(pItem) )
+				{
 					SysMessageDefault(DEFMSG_ITEMUSE_SHIPSIDE);
 					return true;
 				}
 				return pItem->Ship_Plank(false);
 			}
-			else if (pItem->IsTopLevel()) {
+			else if ( pItem->IsTopLevel() )
+			{
 				// Teleport to plank if I'm outside the ship
 				CPointMap pntTarg = pItem->GetTopPoint();
 				pntTarg.m_z++;
@@ -1594,7 +1621,8 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 		}
 
 		case IT_SHIP_SIDE_LOCKED:
-			if (!ContentFindKeyFor(pItem)) {
+			if ( !ContentFindKeyFor(pItem) )
+			{
 				SysMessageDefault(DEFMSG_ITEMUSE_SHIPSIDE);
 				return true;
 			}
@@ -1609,8 +1637,9 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 		case IT_FRUIT:
 		case IT_FOOD:
 		case IT_FOOD_RAW:
-		case IT_MEAT_RAW: {
-			if (fLink)
+		case IT_MEAT_RAW:
+		{
+			if ( fLink )
 				return false;
 
 			Use_Eat(pItem);
@@ -1621,8 +1650,9 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 		case IT_DRINK:
 		case IT_PITCHER:
 		case IT_WATER_WASH:
-		case IT_BOOZE: {
-			if (fLink)
+		case IT_BOOZE:
+		{
+			if ( fLink )
 				return false;
 
 			Use_Drink(pItem);
@@ -1649,52 +1679,57 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 		case IT_WEAPON_XBOW:
 		case IT_WEAPON_MACE_STAFF:
 		case IT_JEWELRY:
-		case IT_WEAPON_THROWING: {
-			if (fLink)
+		case IT_WEAPON_THROWING:
+		{
+			if ( fLink )
 				return false;
 
 			return ItemEquip(pItem);
 		}
 
-		case IT_WEB: {
-			if (fLink)
+		case IT_WEB:
+		{
+			if ( fLink )
 				return false;
 
 			Use_Item_Web(pItem);
 			return true;
 		}
 
-		case IT_SPY_GLASS: {
-			if (fLink)
+		case IT_SPY_GLASS:
+		{
+			if ( fLink )
 				return false;
 
 			// Spyglass will tell you the moon phases
 			static LPCTSTR const sm_sPhases[8] =
-					{
-							g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M1),
-							g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M2),
-							g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M3),
-							g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M4),
-							g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M5),
-							g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M6),
-							g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M7),
-							g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M8)
-					};
+			{
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M1),
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M2),
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M3),
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M4),
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M5),
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M6),
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M7),
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M8)
+			};
 			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_TR), sm_sPhases[g_World.GetMoonPhase(false)]);
 			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_FE), sm_sPhases[g_World.GetMoonPhase(true)]);
 
-			if (m_pArea && m_pArea->IsFlag(REGION_FLAG_SHIP))
+			if ( m_pArea && m_pArea->IsFlag(REGION_FLAG_SHIP) )
 				ObjMessage(pItem->Use_SpyGlass(this), this);
 			return true;
 		}
 
-		case IT_SEXTANT: {
-			if (fLink)
+		case IT_SEXTANT:
+		{
+			if ( fLink )
 				return false;
 
-			if ((GetTopPoint().m_map <= 1) && (GetTopPoint().m_x > UO_SIZE_X_REAL))		// dungeons and T2A lands
+			if ( (GetTopPoint().m_map <= 1) && (GetTopPoint().m_x > UO_SIZE_X_REAL) )		// dungeons and T2A lands
 				ObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SEXTANT_T2A), this);
-			else {
+			else
+			{
 				TCHAR *pszMsg = Str_GetTemp();
 				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SEXTANT), m_pArea->GetName(), pItem->Use_Sextant(GetTopPoint()));
 				ObjMessage(pszMsg, this);
@@ -1708,16 +1743,19 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 	return fAction | MASK_RETURN_FOLLOW_LINKS;
 }
 
-bool CChar::Use_Item(CItem *pItem, bool fLink) {
+bool CChar::Use_Item(CItem *pItem, bool fLink)
+{
 	ADDTOCALLSTACK("CChar::Use_Item");
 	int result = Do_Use_Item(pItem, fLink);
-	if ((result & MASK_RETURN_FOLLOW_LINKS) == MASK_RETURN_FOLLOW_LINKS) {
+	if ( (result & MASK_RETURN_FOLLOW_LINKS) == MASK_RETURN_FOLLOW_LINKS )
+	{
 		CItem *pLinkItem = pItem;
-		for (int i = 0; i < 64; i++) { // dumb protection for endless loop
+		for ( int i = 0; i < 64; i++ )	// dumb protection for endless loop
+		{
 			pLinkItem = pLinkItem->m_uidLink.ItemFind();
-			if (pLinkItem == NULL || pLinkItem == pItem) {
+			if ( !pLinkItem || pLinkItem == pItem )
 				break;
-			}
+
 			result |= Do_Use_Item(pLinkItem, true);
 		}
 	}
@@ -1732,7 +1770,7 @@ bool CChar::Use_Obj( CObjBase * pObj, bool fTestTouch, bool fScript )
 	if ( IsClient() )
 		return GetClient()->Event_DoubleClick(pObj->GetUID(), false, fTestTouch, fScript);
 	else
-		return Use_Item(dynamic_cast<CItem*>(pObj), fTestTouch);
+		return Use_Item(dynamic_cast<CItem *>(pObj), fTestTouch);
 }
 
 bool CChar::ItemEquipArmor( bool fForce )
@@ -1756,7 +1794,7 @@ bool CChar::ItemEquipArmor( bool fForce )
 		for ( size_t i = 0; i < COUNTOF(iBestScore); i++ )
 		{
 			pBestArmor[i] = LayerFind(static_cast<LAYER_TYPE>(i));
-			if ( pBestArmor[i] != NULL )
+			if ( pBestArmor[i] )
 				iBestScore[i] = INT_MAX;
 		}
 	}
