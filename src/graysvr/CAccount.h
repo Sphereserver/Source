@@ -199,14 +199,13 @@ public:
 	* @param what resdisp to set.
 	* @return true on success, false otherwise.
 	*/
-	bool SetResDisp(BYTE what)
+	bool SetResDisp(BYTE ResDisp)
 	{
-		if (what >= RDS_T2A && what < RDS_QTY)
-		{
-			m_ResDisp = what;
-			return true;
-		}
-		return false;
+		if ( (ResDisp < RDS_NONE) || (ResDisp >= RDS_QTY) )
+			return false;
+
+		m_ResDisp = ResDisp;
+		return true;
 	}
 	/**
 	* @brief Gets the current resdisp on this CAccount.
@@ -218,12 +217,6 @@ public:
 	* @return true if success, false otherwise.
 	*/
 	bool SetAutoResDisp(CClient *pClient);
-	/**
-	* @brief Check the current resdisp.
-	* @param what the resdisp to check.
-	* @return true if the current resdisp is equal to what, false otherwise.
-	*/
-	bool IsResDisp(BYTE what) const { return ( m_ResDisp == what ); }
 
 	/************************************************************************
 	* Privileges related section.

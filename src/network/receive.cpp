@@ -123,7 +123,7 @@ bool PacketCreate::onReceive(NetState* net, bool hasExtraSkill)
 	}
 
 	// validate race against resdisp
-	BYTE resdisp = net->getClient()->GetAccount() != NULL? net->getClient()->GetAccount()->GetResDisp() : (BYTE)RDS_T2A;
+	RESDISPLAY_VERSION resdisp = net->getClient()->GetAccount() ? static_cast<RESDISPLAY_VERSION>(net->getClient()->GetAccount()->GetResDisp()) : RDS_NONE;
 	if (resdisp < RDS_ML) // prior to ML, only human
 	{
 		if (rtRace >= RACETYPE_ELF)

@@ -142,7 +142,7 @@ public:
 		m_Height			= 0;
 		m_Can			= CAN_C_INDOORS;	// most things can cover us from the weather.
 		SetDefNum("RANGE",1); //m_range			= 1;
-		m_ResLevel		= RDS_T2A;
+		m_ResLevel		= RDS_NONE;
 		m_ResDispDnHue	= HUE_DEFAULT;
 		m_ResDispDnId = 0;
 		m_BaseResources.setNoMergeOnLoad();
@@ -218,12 +218,11 @@ public:
 	}
 	bool SetResLevel( BYTE ResLevel )
 	{
-		if ( ResLevel >= RDS_T2A && ResLevel < RDS_QTY )
-		{
-			m_ResLevel = ResLevel;
-			return true;
-		}
-		return false;
+		if ( (ResLevel < RDS_NONE) || (ResLevel >= RDS_QTY) )
+			return false;
+
+		m_ResLevel = ResLevel;
+		return true;
 	}
 	HUE_TYPE GetResDispDnHue() const
 	{

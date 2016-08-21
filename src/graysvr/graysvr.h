@@ -1459,12 +1459,6 @@ public:
 	}
 
 	// ------------------------------------------------
-	bool IsResDisp( BYTE flag ) const
-	{
-		if ( GetAccount() == NULL )
-			return( false );
-		return( GetAccount()->IsResDisp( flag ) );
-	}
 	BYTE GetResDisp() const
 	{
 		if ( GetAccount() == NULL )

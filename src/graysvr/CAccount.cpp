@@ -1024,8 +1024,10 @@ bool CAccount::SetAutoResDisp(CClient *pClient)
 		return SetResDisp(RDS_AOS);
 	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_LBR) )
 		return SetResDisp(RDS_LBR);
-	else
+	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_T2A) )
 		return SetResDisp(RDS_T2A);
+	else
+		return SetResDisp(RDS_NONE);
 }
 
 enum AC_TYPE

@@ -964,6 +964,7 @@ enum NOTO_TYPE
 };
 
 // client versions (expansions)
+#define MINCLIVER_T2A				1253502	// minimum client to activate T2A packets (1.25.35b)
 #define MINCLIVER_LBR				3000702	// minimum client to activate LBR packets (3.0.7b)
 #define MINCLIVER_AOS				4000000	// minimum client to activate AOS packets (4.0.0a)
 #define MINCLIVER_SE				4000500	// minimum client to activate SE packets (4.0.5a)
