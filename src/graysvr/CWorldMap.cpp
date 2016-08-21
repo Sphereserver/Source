@@ -499,7 +499,7 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 
 		if ( ! pItem->IsType( iType ) && ! pItem->Item_GetDef()->IsType(iType) )
 			continue;
-		if ( bLimitZ && ( pItem->GetTopPoint().m_z != pt.m_z ))
+		if ( bLimitZ && (abs(pItem->GetTopPoint().m_z - pt.m_z) > PLAYER_HEIGHT) )
 			continue;
 
 		iTestDistance = pt.GetDist(pItem->GetTopPoint());
@@ -528,7 +528,7 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 
 			if ( !pMeter )
 				continue;
-			if ( bLimitZ && ( pMeter->m_z != pt.m_z ) )
+			if ( bLimitZ && (abs(pMeter->m_z - pt.m_z) > PLAYER_HEIGHT) )
 				continue;
 
 			ptTest.m_z = pMeter->m_z;
@@ -581,7 +581,7 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 			for ( size_t i = 0; i < iQty; i++, pStatic = NULL, pItemDef = NULL )
 			{
 				pStatic = pMapBlock->m_Statics.GetStatic( i );
-				if ( bLimitZ && ( pStatic->m_z != ptTest.m_z ) )
+				if ( bLimitZ && (abs(pStatic->m_z - ptTest.m_z) > PLAYER_HEIGHT) )
 					continue;
 
 				// inside the range we want ?
@@ -652,7 +652,7 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 								continue;
 							if ( pMultiItem->m_dx != x2 || pMultiItem->m_dy != y2 )
 								continue;
-							if ( bLimitZ && (pMultiItem->m_dz != ptTest.m_z))
+							if ( bLimitZ && (abs(pMultiItem->m_dz - ptTest.m_z) > PLAYER_HEIGHT) )
 								continue;
 
 							iTestDistance = pt.GetDist(ptTest);

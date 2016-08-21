@@ -1237,8 +1237,8 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	ADDTOCALLSTACK("CItem::MoveToCheck");
 	// Make noise and try to pile it and such.
 
-	CPointMap ptNewPlace;
-	if ( pt.IsValidPoint() && !g_World.IsItemTypeNear(pt, IT_WALL, 0, true) )
+	CPointMap ptNewPlace = g_World.FindItemTypeNearby(pt, IT_WALL, 0, true, true);
+	if ( pt.IsValidPoint() && !ptNewPlace.IsValidPoint() )
 		ptNewPlace = pt;
 	else if ( pCharMover )
 	{
@@ -1250,10 +1250,10 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 
 	MoveTo(ptNewPlace);
 
-	long long iDecayTime = GetDecayTime();
+	INT64 iDecayTime = GetDecayTime();
 	if ( iDecayTime > 0 )
 	{
-		const CRegionBase * pRegion = ptNewPlace.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA|REGION_TYPE_ROOM);
+		const CRegionBase *pRegion = ptNewPlace.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA|REGION_TYPE_ROOM);
 		if ( pRegion != NULL && pRegion->IsFlag(REGION_FLAG_NODECAY) )
 			iDecayTime = -1;
 	}
@@ -1270,33 +1270,32 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 
 		iDecayTime = args.m_iN1;
 	}
+	Update();
 
-	if ( ttResult != TRIGRET_RET_TRUE )
+	if ( ttResult == TRIGRET_RET_TRUE )
+		return true;
+
+	// Check if there's too many items on the same spot
+	unsigned int iItemCount = 0;
+	CItem *pItem = NULL;
+	CWorldSearch AreaItems(ptNewPlace);
+	for (;;)
 	{
-		// Check if there's too many items on the same spot
-		unsigned int iItemCount = 0;
-		CItem * pItem = NULL;
-		CWorldSearch AreaItems(ptNewPlace);
-		for (;;)
+		pItem = AreaItems.GetItem();
+		if ( !pItem )
+			break;
+
+		iItemCount++;
+		if ( iItemCount > g_Cfg.m_iMaxItemComplexity )
 		{
-			pItem = AreaItems.GetItem();
-			if ( pItem == NULL )
-				break;
-
-			iItemCount ++;
-			if ( iItemCount > g_Cfg.m_iMaxItemComplexity )
-			{
-				Speak("Too many items here!");
-				iDecayTime = 60 * TICK_PER_SEC;		// force decay (even when REGION_FLAG_NODECAY is set)
-				break;
-			}
+			Speak("Too many items here!");
+			iDecayTime = 60 * TICK_PER_SEC;		// force decay (even when REGION_FLAG_NODECAY is set)
+			break;
 		}
-
-		SetDecayTime(iDecayTime);
-		Sound(GetDropSound(NULL));
 	}
 
-	Update();
+	SetDecayTime(iDecayTime);
+	Sound(GetDropSound(NULL));
 	return true;
 }
 

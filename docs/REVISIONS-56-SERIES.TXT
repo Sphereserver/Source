@@ -170,3 +170,7 @@ Changed: Updated internal SQLite libs v3.13.0 to v3.14.1.
 20-08-2016, Coruja
 Changed: Small improvements on tooltip engine.
 Added: Missing RESDISP/RESLEVEL 0 (pre-T2A). Default RESDISP/RESLEVEL value for new created objects is now 0 (pre-T2A) instead 1 (T2A).
+
+21-08-2016, Coruja
+Fixed: Internal check to prevent drop items inside walls preventing the item drop even when the wall is on another floor.
+Fixed: Message "Too many items here!" not showing correctly when items are dropped on areas with too many items.
