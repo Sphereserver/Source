@@ -6,8 +6,8 @@ addons:
     - libmysql++3:i386
     - gcc-4.6-multilib
     - g++-4.6-multilib
-git:
-  depth: 1
+before_install:
+  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
 script:
   - make NIGHTLY=1 -f makefile
 notifications:
