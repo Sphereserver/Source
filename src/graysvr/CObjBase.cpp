@@ -1124,53 +1124,44 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 		case OC_ISNEARTYPETOP:
 		case OC_ISNEARTYPE:
 			{
-				bool fP = false;
-				pszKey	+= ( index == OC_ISNEARTYPETOP ) ? 13 : 10;
-				if ( !strnicmp( pszKey, ".P", 2 ) )
+				bool bReturnP = false;
+				pszKey += (index == OC_ISNEARTYPETOP) ? 13 : 10;
+				if ( !strnicmp(pszKey, ".P", 2) )
 				{
-					fP	= true;
-					pszKey	+= 2;
+					bReturnP = true;
+					pszKey += 2;
 				}
-				SKIP_SEPARATORS( pszKey );
-				SKIP_ARGSEP( pszKey );
+				SKIP_SEPARATORS(pszKey);
+				SKIP_ARGSEP(pszKey);
 
 				if ( !GetTopPoint().IsValidPoint() )
-					sVal.FormatVal( 0 );
+					sVal.FormatVal(0);
 				else
 				{
-					int iType = g_Cfg.ResourceGetIndexType( RES_TYPEDEF, pszKey );
-					int iDistance;
-					bool bCheckMulti;
+					IT_TYPE iType = static_cast<IT_TYPE>(g_Cfg.ResourceGetIndexType(RES_TYPEDEF, pszKey));
 
-					SKIP_IDENTIFIERSTRING( pszKey );
-					SKIP_SEPARATORS( pszKey );
-					SKIP_ARGSEP( pszKey );
+					SKIP_IDENTIFIERSTRING(pszKey);
+					SKIP_SEPARATORS(pszKey);
+					SKIP_ARGSEP(pszKey);
 
-					if ( !*pszKey )
-						iDistance	= 0;
-					else
-						iDistance	= Exp_GetVal( pszKey );
+					int iDistance = *pszKey ? Exp_GetVal(pszKey) : 0;
+					bool bCheckMulti = *pszKey ? (Exp_GetVal(pszKey) != 0) : false;
+					bool bLimitZ = *pszKey ? (Exp_GetVal(pszKey) != 0) : false;
 
-					if ( !*pszKey )
-						bCheckMulti = false;
-					else
-						bCheckMulti = Exp_GetVal( pszKey ) != 0;
-
-					if ( fP )
+					if ( bReturnP )
 					{
-						CPointMap pt = ( index == OC_ISNEARTYPETOP ) ? ( g_World.FindTypeNear_Top(GetTopPoint(), static_cast<IT_TYPE>(iType), iDistance ) ) : ( g_World.FindItemTypeNearby(GetTopPoint(), static_cast<IT_TYPE>(iType), iDistance, bCheckMulti ) );
+						CPointMap pt = (index == OC_ISNEARTYPETOP) ? g_World.FindTypeNear_Top(GetTopPoint(), iType, iDistance) : g_World.FindItemTypeNearby(GetTopPoint(), iType, iDistance, bCheckMulti, bLimitZ);
 
 						if ( !pt.IsValidPoint() )
-							sVal.FormatVal( 0 );
+							sVal.FormatVal(0);
 						else
 							sVal = pt.WriteUsed();
 					}
 					else
-						sVal.FormatVal( ( index == OC_ISNEARTYPETOP ) ? ( g_World.IsTypeNear_Top(GetTopPoint(), static_cast<IT_TYPE>(iType), iDistance ) ) : ( g_World.IsItemTypeNear(GetTopPoint(), static_cast<IT_TYPE>(iType), iDistance, bCheckMulti ) ) );
+						sVal.FormatVal((index == OC_ISNEARTYPETOP) ? g_World.IsTypeNear_Top(GetTopPoint(), iType, iDistance) : g_World.IsItemTypeNear(GetTopPoint(), iType, iDistance, bCheckMulti, bLimitZ));
 				}
 				return true;
 			}
-			break;
 		case OC_ISPLAYER:
 			{
 				CChar * pChar = dynamic_cast<CChar*>(this);

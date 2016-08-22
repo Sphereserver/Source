@@ -1237,8 +1237,8 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	ADDTOCALLSTACK("CItem::MoveToCheck");
 	// Make noise and try to pile it and such.
 
-	CPointMap ptNewPlace = g_World.FindItemTypeNearby(pt, IT_WALL, 0, true, true);
-	if ( pt.IsValidPoint() && !ptNewPlace.IsValidPoint() )
+	CPointMap ptNewPlace;
+	if ( !g_World.IsItemTypeNear(pt, IT_WALL, 0, true, true) )
 		ptNewPlace = pt;
 	else if ( pCharMover )
 	{

@@ -741,7 +741,7 @@ bool CChar::Use_Repair( CItem * pItemArmor )
 		return false;
 	}
 
-	m_Act_p = g_World.FindItemTypeNearby(GetTopPoint(), IT_ANVIL, 2);
+	m_Act_p = g_World.FindItemTypeNearby(GetTopPoint(), IT_ANVIL, 2, false, true);
 	if ( !m_Act_p.IsValidPoint() )
 	{
 		SysMessageDefault(DEFMSG_REPAIR_ANVIL);
@@ -1290,7 +1290,7 @@ bool CChar::Use_Seed( CItem * pSeed, CPointMap * pPoint )
 	}
 
 	// is there soil here ? IT_DIRT
-	if ( !IsPriv(PRIV_GM) && !g_World.IsItemTypeNear(pt, IT_DIRT, 0, false) )
+	if ( !IsPriv(PRIV_GM) && !g_World.IsItemTypeNear(pt, IT_DIRT, 0, false, true) )
 	{
 		SysMessageDefault(DEFMSG_MSG_SEED_TARGSOIL);
 		return(false);

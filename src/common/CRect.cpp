@@ -563,20 +563,19 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		case PT_ISNEARTYPE:
 		{
 			pszKey += 10;
-			SKIP_SEPARATORS( pszKey );
-			SKIP_ARGSEP( pszKey );
+			SKIP_SEPARATORS(pszKey);
+			SKIP_ARGSEP(pszKey);
 
-			int iType = g_Cfg.ResourceGetIndexType( RES_TYPEDEF, pszKey );
-			int iDistance = 0;
-			bool bCheckMulti = false;
+			IT_TYPE iType = static_cast<IT_TYPE>(g_Cfg.ResourceGetIndexType(RES_TYPEDEF, pszKey));
 
-			SKIP_IDENTIFIERSTRING( pszKey );
-			SKIP_SEPARATORS( pszKey );
-			SKIP_ARGSEP( pszKey );
+			SKIP_IDENTIFIERSTRING(pszKey);
+			SKIP_SEPARATORS(pszKey);
+			SKIP_ARGSEP(pszKey);
 
-			if ( *pszKey ) iDistance = Exp_GetVal(pszKey);
-			if ( *pszKey ) bCheckMulti = Exp_GetVal(pszKey) != 0;
-			sVal.FormatVal( g_World.IsItemTypeNear(*this, static_cast<IT_TYPE>(iType), iDistance, bCheckMulti));
+			int iDistance = *pszKey ? Exp_GetVal(pszKey) : 0;
+			bool bCheckMulti = *pszKey ? (Exp_GetVal(pszKey) != 0) : false;
+			bool bLimitZ = *pszKey ? (Exp_GetVal(pszKey) != 0) : false;
+			sVal.FormatVal(g_World.IsItemTypeNear(*this, iType, iDistance, bCheckMulti, bLimitZ));
 			break;
 		}
 		case PT_REGION:

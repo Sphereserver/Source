@@ -174,3 +174,7 @@ Added: Missing RESDISP/RESLEVEL 0 (pre-T2A). Default RESDISP/RESLEVEL value for 
 21-08-2016, Coruja
 Fixed: Internal check to prevent drop items inside walls preventing the item drop even when the wall is on another floor.
 Fixed: Message "Too many items here!" not showing correctly when items are dropped on areas with too many items.
+
+22-08-2016, Coruja
+Added: ISNEARTYPE function now supports an new 4th argument to only search objects on the same floor.
+	-Syntax: ISNEARTYPE item_type, distance, check_multi, check_floor

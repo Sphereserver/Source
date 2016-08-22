@@ -468,13 +468,13 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 #undef RESOURCE_Z_CHECK
 }
 
-bool CWorld::IsItemTypeNear( const CPointMap & pt, IT_TYPE iType, int iDistance, bool bCheckMulti )
+bool CWorld::IsItemTypeNear(const CPointMap & pt, IT_TYPE iType, int iDistance, bool bCheckMulti, bool bLimitZ)
 {
 	ADDTOCALLSTACK("CWorld::IsItemTypeNear");
 	if ( !pt.IsValidPoint() )
 		return false;
-	CPointMap ptn = FindItemTypeNearby( pt, iType, iDistance, bCheckMulti );
-	return( ptn.IsValidPoint());
+	CPointMap ptTest = FindItemTypeNearby(pt, iType, iDistance, bCheckMulti, bLimitZ);
+	return ptTest.IsValidPoint();
 }
 
 CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iDistance, bool bCheckMulti, bool bLimitZ)
