@@ -206,8 +206,10 @@ bool CChar::NPC_IsOwnedBy(const CChar *pChar, bool fAllowGM) const
 	// BESERK will not listen to commands tho.
 	// fAllowGM = consider GM's to be owners of all NPC's
 
-	if ( !pChar || pChar == this )
+	if ( !pChar )
 		return false;
+	if ( pChar == this )
+		return true;
 	if ( fAllowGM && pChar->IsPriv(PRIV_GM) )
 		return (pChar->GetPrivLevel() > GetPrivLevel());
 	if ( !m_pNPC || !IsStatFlag(STATF_Pet) )	// shortcut - i'm not a pet.
@@ -286,7 +288,7 @@ bool CChar::NPC_CheckWalkHere(const CPointBase &pt, const CRegionBase *pArea, WO
 
 	// Is there a nasty object here that will hurt us ?
 	CWorldSearch AreaItems(pt);
-	for ( ;;)
+	for (;;)
 	{
 		CItem *pItem = AreaItems.GetItem();
 		if ( !pItem )
