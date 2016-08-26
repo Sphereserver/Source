@@ -178,3 +178,6 @@ Fixed: Message "Too many items here!" not showing correctly when items are dropp
 22-08-2016, Coruja
 Added: ISNEARTYPE function now supports an new 4th argument to only search objects on the same floor.
 	-Syntax: ISNEARTYPE item_type, distance, check_multi, check_floor
+
+26-08-2016, Coruja
+Changed: Some internal improvements on Tracking skill.

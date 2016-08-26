@@ -127,8 +127,7 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 	{
 		case IT_TRACKER:
 		{
-			DIR_TYPE dir = static_cast<DIR_TYPE>(DIR_QTY + 1); // invalid value.
-			if ( !m_pChar->Skill_Tracking(pItem->m_uidLink, dir) )
+			if ( !m_pChar->Skill_Tracking(pItem->m_uidLink) )
 			{
 				if ( pItem->m_uidLink.IsValidUID() )
 					SysMessageDefault(DEFMSG_TRACKING_UNABLE);
@@ -1017,16 +1016,16 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase *pSrc )
 	}
 }
 
-bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )
+bool CClient::Cmd_Skill_Tracking( WORD track_sel, bool bExec )
 {
 	ADDTOCALLSTACK("CClient::Cmd_Skill_Tracking");
 	// look around for stuff.
 
 	ASSERT(m_pChar);
-	if ( track_sel == UINT_MAX )
+	if ( track_sel == USHRT_MAX )
 	{
-		// Tacking (unlike other skills) is used during menu setup.
-		m_pChar->Skill_Cleanup();	// clean up current skill.
+		// Unlike others skills, Tracking is used during menu setup
+		m_pChar->Skill_Cleanup();	// clean up current skill
 
 		CMenuItem item[6];
 		item[0].m_sText = g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_SKILLMENU_TITLE);
@@ -1052,18 +1051,18 @@ bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )
 	if ( track_sel > 0 ) // Not Cancelled
 	{
 		ASSERT(track_sel < COUNTOF(m_tmMenu.m_Item));
-		if ( fExec )
+		if ( bExec )
 		{
 			// Tracking menu got us here. Start tracking the selected creature.
 			m_pChar->SetTimeout(1 * TICK_PER_SEC);
-			m_pChar->m_Act_Targ = m_tmMenu.m_Item[track_sel];	// selected UID
+			m_pChar->m_Act_Targ = static_cast<CGrayUID>(m_tmMenu.m_Item[track_sel]);
 			m_pChar->Skill_Start(SKILL_TRACKING);
 			return true;
 		}
 
 		static const NPCBRAIN_TYPE sm_Track_Brain[] =
 		{
-			NPCBRAIN_QTY,	// not used here.
+			NPCBRAIN_QTY,	// not used here
 			NPCBRAIN_ANIMAL,
 			NPCBRAIN_MONSTER,
 			NPCBRAIN_HUMAN,
@@ -1086,24 +1085,24 @@ bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )
 			CChar *pChar = AreaChars.GetChar();
 			if ( !pChar )
 				break;
-			if ( m_pChar == pChar )
+			if ( pChar == m_pChar )
 				continue;
 
-			if ( GetPrivLevel() < pChar->GetPrivLevel() && pChar->IsStatFlag(STATF_Insubstantial) )
+			NPCBRAIN_TYPE brain_type = pChar->GetNPCBrain();
+			if ( (brain_type == NPCBRAIN_BERSERK) || (brain_type == NPCBRAIN_DRAGON) )
+				brain_type = NPCBRAIN_MONSTER;
+			else if ( (brain_type == NPCBRAIN_HEALER) || (brain_type == NPCBRAIN_GUARD) || (brain_type == NPCBRAIN_BANKER) || (brain_type == NPCBRAIN_VENDOR) || (brain_type == NPCBRAIN_STABLE) )
+				brain_type = NPCBRAIN_HUMAN;
+
+			if ( brain_type != track_type )			// no match
+				continue;
+			if ( pChar->IsStatFlag(STATF_DEAD) )	// can't track ghosts
 				continue;
 
-			CCharBase *pCharDef = pChar->Char_GetDef();
-			NPCBRAIN_TYPE basic_type = pChar->GetNPCBrain();
-			if ( basic_type == NPCBRAIN_DRAGON )
-				basic_type = NPCBRAIN_MONSTER;
-
-			if ( track_type != basic_type && track_type != NPCBRAIN_QTY )
+			if ( pChar->m_pPlayer )
 			{
-				if ( track_type != NPCBRAIN_NONE )		// no match.
-					continue;
-				if ( pChar->IsStatFlag(STATF_DEAD) )	// can't track ghosts
-					continue;
-				if ( !pChar->m_pPlayer )
+				// Prevent track hidden GMs
+				if ( pChar->IsStatFlag(STATF_Insubstantial) && (pChar->GetPrivLevel() > GetPrivLevel()) )
 					continue;
 
 				// Check action difficulty when trying to track players
@@ -1126,17 +1125,21 @@ bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )
 					continue;
 			}
 
+			CCharBase *pCharDef = pChar->Char_GetDef();
+			if ( !pCharDef )
+				continue;
+
 			count++;
 			item[count].m_id = static_cast<WORD>(pCharDef->m_trackID);
 			item[count].m_color = 0;
 			item[count].m_sText = pChar->GetName();
 			m_tmMenu.m_Item[count] = pChar->GetUID();
 
-			if ( count >= (COUNTOF(item) - 1) )
+			if ( count >= COUNTOF(item) - 1 )
 				break;
 		}
 
-		// Some credit for trying.
+		// Some credit for trying
 		if ( count > 0 )
 		{
 			m_pChar->Skill_UseQuick(SKILL_TRACKING, 20 + Calc_GetRandLLVal(30));
@@ -1150,14 +1153,14 @@ bool CClient::Cmd_Skill_Tracking( unsigned int track_sel, bool fExec )
 		}
 	}
 
-	// Tracking failed or was cancelled.
+	// Tracking failed or cancelled
 	static LPCTSTR const sm_Track_FailMsg[] =
 	{
-		g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_CANCEL ),
-		g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_FAIL_ANIMAL ),
-		g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_FAIL_MONSTER ),
-		g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_FAIL_HUMAN ),
-		g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_FAIL_HUMAN )
+		g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_CANCEL),
+		g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_FAIL_ANIMAL),
+		g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_FAIL_MONSTER),
+		g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_FAIL_HUMAN),
+		g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_FAIL_HUMAN)
 	};
 
 	if ( track_sel >= COUNTOF(sm_Track_FailMsg) )

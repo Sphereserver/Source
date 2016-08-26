@@ -484,7 +484,7 @@ SKILL_TYPE CChar::Skill_GetMagicBest()
 	return skill;
 }
 
-unsigned short CChar::Skill_GetAdjusted( SKILL_TYPE skill ) const
+WORD CChar::Skill_GetAdjusted( SKILL_TYPE skill ) const
 {
 	ADDTOCALLSTACK("CChar::Skill_GetAdjusted");
 	// Get the skill adjusted for str,dex,int = 0-1000
@@ -1662,37 +1662,32 @@ bool CChar::Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg )
 	return true;
 }
 
-bool CChar::Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax )
+bool CChar::Skill_Tracking( CGrayUID uidTarg, int iDistMax )
 {
 	ADDTOCALLSTACK("CChar::Skill_Tracking");
 	// SKILL_TRACKING
-	UNREFERENCED_PARAMETER(dirPrv);
 
 	if ( !IsClient() )		// abort action if the client get disconnected
 		return false;
 
-	const CObjBase * pObj = uidTarg.ObjFind();
-	if ( pObj == NULL )
+	const CObjBaseTemplate *pObj = uidTarg.ObjFind();
+	if ( !pObj )
 		return false;
 
-	const CObjBaseTemplate * pObjTop = pObj->GetTopLevelObj();
-	if ( pObjTop == NULL )
+	const CChar *pChar = uidTarg.CharFind();
+	if ( !pChar )
 		return false;
 
-	int dist = GetTopDist3D(pObjTop);	// disconnect = SHRT_MAX
+	int dist = GetTopDist3D(pObj);	// disconnected = SHRT_MAX
 	if ( dist > iDistMax )
 		return false;
 
-	if ( pObjTop->IsChar() )
-	{
-		// Prevent tracking of hidden staff
-		const CChar * pChar = dynamic_cast<const CChar *>(pObjTop);
-		if ( pChar && pChar->IsStatFlag(STATF_Insubstantial) && pChar->GetPrivLevel() > GetPrivLevel() )
-			return false;
-	}
+	// Prevent track hidden GMs
+	if ( pChar->IsStatFlag(STATF_Insubstantial) && (pChar->GetPrivLevel() > GetPrivLevel()) )
+		return false;
 
-	DIR_TYPE dir = GetDir(pObjTop);
-	ASSERT(dir >= 0 && static_cast<unsigned int>(dir) < COUNTOF(CPointBase::sm_szDirs));
+	DIR_TYPE dir = GetDir(pObj);
+	ASSERT((dir > DIR_INVALID) && (static_cast<size_t>(dir) < COUNTOF(CPointBase::sm_szDirs)));
 
 	// Select tracking message based on distance
 	LPCTSTR pszDef;
@@ -1710,7 +1705,7 @@ bool CChar::Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax )
 	if ( pszDef[0] )
 	{
 		TCHAR *pszMsg = Str_GetTemp();
-		sprintf(pszMsg, pszDef, pObj->GetName(), pObjTop->IsDisconnected() ? g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT_DISC) : CPointBase::sm_szDirs[dir]);
+		sprintf(pszMsg, pszDef, pChar->GetName(), pChar->IsDisconnected() ? g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT_DISC) : CPointBase::sm_szDirs[dir]);
 		ObjMessage(pszMsg, this);
 	}
 
@@ -1725,34 +1720,34 @@ int CChar::Skill_Tracking( SKTRIG_TYPE stage )
 	ADDTOCALLSTACK("CChar::Skill_Tracking");
 	// SKILL_TRACKING
 	// m_Act_Targ = what am i tracking ?
-	// m_atTracking.m_PrvDir = the previous dir it was in.
 
 	if ( stage == SKTRIG_START )
-		return( 0 );	// already checked difficulty earlier
+		return 0;	// already checked difficulty earlier
 
 	if ( stage == SKTRIG_FAIL )
 	{
 		// This skill didn't fail, it just ended/went out of range, etc...
-		ObjMessage( g_Cfg.GetDefaultMsg( DEFMSG_TRACKING_END ), this ); // say this instead of the failure message
-		return( -SKTRIG_ABORT );
+		ObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_END), this);		// say this instead of the failure message
+		return -SKTRIG_ABORT;
 	}
 
 	if ( stage == SKTRIG_STROKE )
 	{
 		if ( Skill_Stroke(false) == -SKTRIG_ABORT )
-			return( -SKTRIG_ABORT );
+			return -SKTRIG_ABORT;
 
-		int iSkillLevel = Skill_GetAdjusted(SKILL_TRACKING);
+		WORD iSkillLevel = Skill_GetAdjusted(SKILL_TRACKING);
 		if ( (g_Cfg.m_iRacialFlags & RACIALF_HUMAN_JACKOFTRADES) && IsHuman() )
-			iSkillLevel = maximum( iSkillLevel, 200 );			// humans always have a 20.0 minimum skill (racial traits)
+			iSkillLevel = maximum(iSkillLevel, 200);			// humans always have a 20.0 minimum skill (racial traits)
 
-		if ( !Skill_Tracking( m_Act_Targ, m_atTracking.m_PrvDir, iSkillLevel/10 + 10 ))
-			return( -SKTRIG_ABORT );
-		Skill_SetTimeout();			// next update.
-		return( -SKTRIG_STROKE );	// keep it active.
+		if ( !Skill_Tracking(m_Act_Targ, iSkillLevel / 10 + 10) )
+			return -SKTRIG_ABORT;
+
+		Skill_SetTimeout();			// next update
+		return -SKTRIG_STROKE;		// keep it active
 	}
 
-	return( -SKTRIG_ABORT );
+	return -SKTRIG_ABORT;
 }
 
 int CChar::Skill_Mining( SKTRIG_TYPE stage )

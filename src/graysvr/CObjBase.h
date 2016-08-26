@@ -2867,12 +2867,6 @@ public:
 			BYTE m_Swing_Delay;					// ACTARG3 = Delay of the current swing occurring (in tenths of second).
 		} m_atFight;
 
-		// SKILL_TRACKING
-		struct
-		{
-			DIR_TYPE m_PrvDir;			// ACTARG1 = Previous direction of tracking target, used for when to notify player
-		} m_atTracking;
-
 		// NPCACT_RIDDEN
 		struct
 		{
@@ -3660,7 +3654,7 @@ public:
 			return SKILLLOCK_UP;
 		return m_pPlayer->Skill_GetLock(skill);
 	}
-	unsigned short Skill_GetAdjusted(SKILL_TYPE skill) const;
+	WORD Skill_GetAdjusted(SKILL_TYPE skill) const;
 	SKILL_TYPE Skill_GetMagicRandom(unsigned short iMinValue = 0);
 	SKILL_TYPE Skill_GetMagicBest();
 
@@ -3687,7 +3681,7 @@ public:
 	TRIGRET_TYPE Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig, CScriptTriggerArgs *pArgs = NULL);	//pArgs.m_iN1 will be rewritten with skill
 
 	bool Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg );
-	bool Skill_Tracking( CGrayUID uidTarg, DIR_TYPE & dirPrv, int iDistMax = SHRT_MAX );
+	bool Skill_Tracking( CGrayUID uidTarg, int iDistMax = SHRT_MAX );
 	bool Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly = false, int iReplicationQty = 1 );
 	bool Skill_MakeItem_Success();
 	bool Skill_Snoop_Check( const CItemContainer * pItem );
