@@ -96,7 +96,7 @@ void CItemMultiCustom::BeginCustomize(CClient * pClientSrc)
 	if ( m_pArchitect != NULL )
 		EndCustomize(true);
 
-	if ( PacketHouseBeginCustomise::CanSendTo(pClientSrc->GetNetState()) == false )
+	if ( !PacketHouseBeginCustomise::CanSendTo(pClientSrc->m_NetState) )
 		return;
 
 	// copy the main design to working, ready for editing
@@ -692,8 +692,7 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 	// client
 	if ( pClientSrc == NULL || pClientSrc->GetChar() == NULL || pClientSrc->IsPriv(PRIV_DEBUG) )
 		return;
-
-	if ( PacketHouseDesign::CanSendTo(pClientSrc->GetNetState()) == false )
+	if ( !PacketHouseDesign::CanSendTo(pClientSrc->m_NetState) )
 		return;
 
 	DesignDetails * pDesign = NULL;

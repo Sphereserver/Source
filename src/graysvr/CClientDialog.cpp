@@ -601,7 +601,7 @@ bool CClient::Dialog_Setup( CLIMODE_TYPE mode, RESOURCE_ID_BASE rid, int iPage, 
 	// Now pack it up to send,
 	// m_tmGumpDialog.m_ResourceID = rid;
 	DWORD context = (DWORD)rid;
-	if ( GetNetState()->isClientKR() )
+	if ( m_NetState->isClientKR() )
 	{
 		// translate to KR's equivalent DialogID
 		context = g_Cfg.GetKRDialog( context );
@@ -759,7 +759,7 @@ bool CClient::Dialog_Close( CObjBase * pObj, DWORD rid, int buttonID )
 
 	new PacketGumpChange(this, gumpContext, buttonID);
 
-	if ( GetNetState()->isClientVersion(MINCLIVER_CLOSEDIALOG) )
+	if ( m_NetState->isClientVersion(MINCLIVER_CLOSEDIALOG) )
 	{
 		CChar * pSrc = dynamic_cast<CChar*>( pObj );
 		if ( pSrc )
@@ -778,7 +778,7 @@ bool CClient::Dialog_Close( CObjBase * pObj, DWORD rid, int buttonID )
 				packet.writeInt32(0);
 
 				packet.seek(1);
-				packet.onReceive(GetNetState());
+				packet.onReceive(m_NetState);
 			}
 		}
 	}

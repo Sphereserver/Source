@@ -227,7 +227,7 @@ bool CItemShip::Ship_MoveDelta(CPointBase pdelta)
 			{
 				if (pObj == this) //This is the ship (usually the first item in the list)
 				{
-					if (pClient->GetNetState()->isClientVersion(MINCLIVER_HS) || pClient->GetNetState()->isClientEnhanced())
+					if (pClient->m_NetState->isClientVersion(MINCLIVER_HS) || pClient->m_NetState->isClientEnhanced())
 					{
 						if (!IsSetOF(OF_NoSmoothSailing))
 						{
@@ -240,14 +240,14 @@ bool CItemShip::Ship_MoveDelta(CPointBase pdelta)
 								break; //skip to next client
 							}
 						}
-						else if (pClient->GetNetState()->isClientEnhanced())
+						else if (pClient->m_NetState->isClientEnhanced())
 							pClient->addObjectRemove(pObj);	//it will be added again in the if clause below
 					}
 				}
 				if (pObj->IsItem())
 				{
 					if ((tMe->GetTopPoint().GetDistSight(pt) < tViewDist)
-						&& ( (tMe->GetTopPoint().GetDistSight(ptOld) >= tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HS) || pClient->GetNetState()->isClientEnhanced()) || IsSetOF(OF_NoSmoothSailing) ))
+						&& ( (tMe->GetTopPoint().GetDistSight(ptOld) >= tViewDist) || !(pClient->m_NetState->isClientVersion(MINCLIVER_HS) || pClient->m_NetState->isClientEnhanced()) || IsSetOF(OF_NoSmoothSailing) ))
 					{
 						CItem *pItem = static_cast<CItem *>(pObj);
 						pClient->addItem(pItem);
@@ -260,9 +260,9 @@ bool CItemShip::Ship_MoveDelta(CPointBase pdelta)
 					if (pClient == pChar->m_pClient)
 						pClient->addPlayerView( ptOld );
 					else if ((tMe->GetTopPoint().GetDistSight(pt) <= tViewDist)
-						&& ( (tMe->GetTopPoint().GetDistSight(ptOld) > tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HS) || pClient->GetNetState()->isClientEnhanced()) || IsSetOF(OF_NoSmoothSailing) ))
+						&& ( (tMe->GetTopPoint().GetDistSight(ptOld) > tViewDist) || !(pClient->m_NetState->isClientVersion(MINCLIVER_HS) || pClient->m_NetState->isClientEnhanced()) || IsSetOF(OF_NoSmoothSailing) ))
 					{
-						if ( (pt.GetDist(ptOld) > 1) && (pClient->GetNetState()->isClientLessVersion(MINCLIVER_HS)) && (pChar->GetTopPoint().GetDistSight(ptOld) < tViewDist) )
+						if ( (pt.GetDist(ptOld) > 1) && (pClient->m_NetState->isClientLessVersion(MINCLIVER_HS)) && (pChar->GetTopPoint().GetDistSight(ptOld) < tViewDist) )
 							pClient->addCharMove( pChar );
 						else
 						{

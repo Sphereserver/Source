@@ -3163,7 +3163,7 @@ bool PacketGargoyleFly::onReceive(NetState* net)
 	ClientIterator it;
 	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
-		if ( !pClient->GetNetState()->isClientVersion(MINCLIVER_SA) )
+		if ( !pClient->m_NetState->isClientVersion(MINCLIVER_SA) )
 			continue;
 		if ( !pClient->CanSee(character) )
 			continue;

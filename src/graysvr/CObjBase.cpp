@@ -1186,7 +1186,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 					RESOURCE_ID rid = g_Cfg.ResourceGetIDType( RES_DIALOG, pszKey );
 					int context;
 
-					if ( pClientToCheck->GetNetState()->isClientKR() )
+					if ( pClientToCheck->m_NetState->isClientKR() )
 					{
 						context = g_Cfg.GetKRDialog( (DWORD)rid ) & 0x00FFFFFF;
 					}
@@ -2335,7 +2335,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 					RESOURCE_ID rid = g_Cfg.ResourceGetIDType( RES_DIALOG, Arg_ppCmd[0] );
 					int context;
 
-					if ( pClientSrc->GetNetState()->isClientKR() )
+					if ( pClientSrc->m_NetState->isClientKR() )
 					{
 						context = g_Cfg.GetKRDialog( (DWORD)rid ) & 0x00FFFFFF;
 					}
@@ -2365,7 +2365,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 					return false;
 
 				DWORD rid = g_Cfg.ResourceGetIDType( RES_DIALOG, Arg_ppCmd[0] );
-				if ( pClientSrc->GetNetState()->isClientKR() )
+				if ( pClientSrc->m_NetState->isClientKR() )
 					rid = g_Cfg.GetKRDialog( rid );
 
 				pClientSrc->Dialog_Close( this, rid, iQty > 1 ? Exp_GetVal( Arg_ppCmd[1]) : 0 );
@@ -2618,7 +2618,7 @@ void CObjBase::ResendOnEquip( bool fAllClients )
 	ClientIterator it;
 	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
-		if ( fAllClients == false && !pClient->GetNetState()->isClientEnhanced() )
+		if ( !fAllClients && !pClient->m_NetState->isClientEnhanced() )
 			continue;
 		pChar = pClient->GetChar();
 		if ( pChar == NULL )

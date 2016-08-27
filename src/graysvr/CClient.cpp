@@ -13,7 +13,7 @@
 CClient::CClient(NetState* state)
 {
 	// This may be a web connection or Telnet ?
-	m_net = state;
+	m_NetState = state;
 	SetConnectType( CONNECT_UNK );	// don't know what sort of connect this is yet.
 
 	// update ip history
@@ -98,7 +98,7 @@ CClient::~CClient()
 		m_pPopupPacket = NULL;
 	}
 
-	if (m_net->isClosed() == false)
+	if (!m_NetState->isClosed())
 		g_Log.EventError("Client being deleted without being safely removed from the network system\n");
 }
 
@@ -540,13 +540,13 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			sVal.FormatVal( IsPriv( PRIV_ALLSHOW ));
 			break;
 		case CC_CLIENTIS3D:
-			sVal.FormatVal( GetNetState()->isClient3D() );
+			sVal.FormatVal( m_NetState->isClient3D() );
 			break;
 		case CC_CLIENTISKR:
-			sVal.FormatVal( GetNetState()->isClientKR() );
+			sVal.FormatVal( m_NetState->isClientKR() );
 			break;
 		case CC_CLIENTISSA:
-			sVal.FormatVal( GetNetState()->isClientEnhanced() );
+			sVal.FormatVal( m_NetState->isClientEnhanced() );
 			break;
 		case CC_CLIENTVERSION:
 			{
@@ -578,7 +578,7 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 				pszKey += strlen(sm_szLoadKeys[index]);
 				GETNONWHITESPACE(pszKey);
 
-				DWORD iCliVer = GetNetState()->getReportedVersion();
+				DWORD iCliVer = m_NetState->getReportedVersion();
 				if ( pszKey[0] == '\0' )
 				{
 					// Return full version string (eg: 5.0.2d)
@@ -1288,7 +1288,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 #ifndef _MTNETWORK
 			g_NetworkOut.flush(this);
 #else
-			g_NetworkManager.flush(GetNetState());
+			g_NetworkManager.flush(m_NetState);
 #endif
 			break;
 		case CV_RESEND:
@@ -1519,15 +1519,15 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 
 long CClient::GetSocketID() const
 {
-	return m_net->id();
+	return m_NetState->id();
 }
 
 CSocketAddress &CClient::GetPeer()
 {
-	return m_net->m_peerAddress;
+	return m_NetState->m_peerAddress;
 }
 
 LPCTSTR CClient::GetPeerStr() const
 {
-	return m_net->m_peerAddress.GetAddrStr();
+	return m_NetState->m_peerAddress.GetAddrStr();
 }

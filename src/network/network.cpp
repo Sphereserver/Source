@@ -829,11 +829,11 @@ CClient* ClientIterator::next(bool includeClosing)
 	for (CClient* current = m_nextClient; current != NULL; current = current->GetNext())
 	{
 		// skip clients without a state, or whose state is invalid/closed
-		if (current->GetNetState() == NULL || current->GetNetState()->isInUse(current) == false || current->GetNetState()->isClosed())
+		if (!current->m_NetState || !current->m_NetState->isInUse(current) || current->m_NetState->isClosed())
 			continue;
 
 		// skip clients whose connection is being closed
-		if (includeClosing == false && current->GetNetState()->isClosing())
+		if (!includeClosing && current->m_NetState->isClosing())
 			continue;
 
 		m_nextClient = current->GetNext();
@@ -1591,9 +1591,8 @@ void NetworkIn::periodic(void)
 			{
 				if (++connecting > connectingMax)
 				{
-					DEBUGNETWORK(("%lx:Closing client since '%ld' connecting overlaps '%ld'\n", client->m_net->id(), connecting, connectingMax));
-
-					client->m_net->markReadClosed();
+					DEBUGNETWORK(("%lx:Closing client since '%ld' connecting overlaps '%ld'\n", client->m_NetState->id(), connecting, connectingMax));
+					client->m_NetState->markReadClosed();
 				}
 			}
 			if (connecting > connectingMax)
@@ -1763,7 +1762,7 @@ void NetworkOut::tick(void)
 	SafeClientIterator clients;
 	while (CClient* client = clients.next())
 	{
-		const NetState* state = client->GetNetState();
+		const NetState* state = client->m_NetState;
 		ASSERT(state != NULL);
 
 		EXC_SET("highest");
@@ -1890,7 +1889,7 @@ void NetworkOut::flush(CClient* client)
 
 	ASSERT(client != NULL);
 	
-	NetState* state = client->GetNetState();
+	NetState* state = client->m_NetState;
 	ASSERT(state != NULL);
 	if (state->isInUse(client) == false)
 		return;
@@ -1923,7 +1922,7 @@ void NetworkOut::proceedFlush(void)
 	SafeClientIterator clients;
 	while (CClient* client = clients.next(true))
 	{
-		NetState* state = client->GetNetState();
+		NetState* state = client->m_NetState;
 		ASSERT(state != NULL);
 
 		if (state->isWriteClosed())
@@ -1945,7 +1944,7 @@ int NetworkOut::proceedQueue(CClient* client, long priority)
 	long maxClientLength = NETWORK_MAXPACKETLEN;
 	CServTime time = CServTime::GetCurrentTime();
 
-	NetState* state = client->GetNetState();
+	NetState* state = client->m_NetState;
 	ASSERT(state != NULL);
 
 	if (state->isWriteClosed() || (state->m_outgoing.queue[priority].empty() && state->m_outgoing.currentTransaction == NULL))
@@ -2022,7 +2021,7 @@ int NetworkOut::proceedQueueAsync(CClient* client)
 {
 	ADDTOCALLSTACK("NetworkOut::proceedQueueAsync");
 
-	NetState* state = client->GetNetState();
+	NetState* state = client->m_NetState;
 	ASSERT(state != NULL);
 
 	if (state->isWriteClosed() || state->isAsyncMode() == false)
@@ -2073,7 +2072,7 @@ void NetworkOut::proceedQueueBytes(CClient* client)
 {
 	ADDTOCALLSTACK("NetworkOut::proceedQueueBytes");
 
-	NetState* state = client->GetNetState();
+	NetState* state = client->m_NetState;
 	ASSERT(state != NULL);
 	
 	if (state->isWriteClosed() || state->m_outgoing.bytes.GetDataQty() <= 0)
@@ -2110,7 +2109,7 @@ bool NetworkOut::sendPacket(CClient* client, PacketSend* packet)
 {
 	ADDTOCALLSTACK("NetworkOut::sendPacket");
 
-	NetState* state = client->GetNetState();
+	NetState* state = client->m_NetState;
 	ASSERT(state != NULL);
 
 	// only allow high-priority packets to be sent to queued for closed sockets
@@ -2161,7 +2160,7 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 {
 	ADDTOCALLSTACK("NetworkOut::sendPacketNow");
 
-	NetState* state = client->GetNetState();
+	NetState* state = client->m_NetState;
 	ASSERT(state != NULL);
 
 	EXC_TRY("proceedQueue");
@@ -2275,7 +2274,7 @@ int NetworkOut::sendBytesNow(CClient* client, const BYTE* data, DWORD length)
 {
 	ADDTOCALLSTACK("NetworkOut::sendBytesNow");
 
-	NetState* state = client->GetNetState();
+	NetState* state = client->m_NetState;
 	ASSERT(state != NULL);
 
 	EXC_TRY("sendBytesNow");

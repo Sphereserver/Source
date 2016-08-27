@@ -2231,7 +2231,7 @@ int CResource::GetPacketFlag( bool bCharlist, CClient *pClient, RESDISPLAY_VERSI
 
 		if ( pClient )
 		{
-			if ( pClient->GetNetState()->isClientKR() || pClient->GetNetState()->isClientEnhanced() )	// tooltips must be always enabled on enhanced clients
+			if ( pClient->m_NetState->isClientKR() || pClient->m_NetState->isClientEnhanced() )	// tooltips must be always enabled on enhanced clients
 				retValue |= 0x020;
 			pClient->m_TooltipEnabled = (retValue & 0x020);
 		}
@@ -2265,7 +2265,7 @@ int CResource::GetPacketFlag( bool bCharlist, CClient *pClient, RESDISPLAY_VERSI
 		retValue |= ( chars >= 6 ) ? 0x0040 : 0x00;
 		retValue |= ( chars >= 7 ) ? 0x1000 : 0x00;
 
-		if ( !pClient->GetNetState()->getClientType() )
+		if ( !pClient->m_NetState->getClientType() )
 			retValue |= 0x400;
 	}
 	else

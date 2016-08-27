@@ -136,7 +136,7 @@ bool CClient::addLoginErr(BYTE code)
 	}
 
 	new PacketLoginError(this, static_cast<PacketLoginError::Reason>(code));
-	GetNetState()->markReadClosed();
+	m_NetState->markReadClosed();
 	return( false );
 }
 
@@ -186,7 +186,7 @@ bool CClient::addRelay( const CServerDef * pServ )
 
 	if ( ipAddr.IsLocalAddr())	// local server address not yet filled in.
 	{
-		ipAddr = m_net->m_socket.GetSockName();
+		ipAddr = m_NetState->m_socket.GetSockName();
 		DEBUG_MSG(( "%lx:Login_Relay to %s\n", GetSocketID(), ipAddr.GetAddrStr() ));
 	}
 
@@ -701,25 +701,25 @@ bool CClient::OnRxWebPageRequest( BYTE * pRequest, size_t iLen )
 	// when async networking is used, otherwise data may not be completely sent
 	if ( fKeepAlive == false )
 	{
-		fKeepAlive = m_net->isAsyncMode();
+		fKeepAlive = m_NetState->isAsyncMode();
 
 		// must switch to a blocking socket when the connection is not being kept
 		// alive, or else pending data will be lost when the socket shuts down
 
 		if ( fKeepAlive == false )
-			m_net->m_socket.SetNonBlocking(false);
+			m_NetState->m_socket.SetNonBlocking(false);
 	}
 
 	linger llinger;
 	llinger.l_onoff = 1;
 	llinger.l_linger = 500;	// in mSec
-	m_net->m_socket.SetSockOpt(SO_LINGER, reinterpret_cast<char *>(&llinger), sizeof(linger));
+	m_NetState->m_socket.SetSockOpt(SO_LINGER, reinterpret_cast<char *>(&llinger), sizeof(linger));
 	BOOL nbool = true;
-	m_net->m_socket.SetSockOpt(SO_KEEPALIVE, &nbool, sizeof(BOOL));
+	m_NetState->m_socket.SetSockOpt(SO_KEEPALIVE, &nbool, sizeof(BOOL));
 
 	// disable NAGLE algorythm for data compression
 	nbool = true;
-	m_net->m_socket.SetSockOpt( TCP_NODELAY, &nbool, sizeof(BOOL), IPPROTO_TCP);
+	m_NetState->m_socket.SetSockOpt( TCP_NODELAY, &nbool, sizeof(BOOL), IPPROTO_TCP);
 	
 	if ( memcmp(ppLines[0], "POST", 4) == 0 )
 	{
@@ -790,7 +790,7 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 	ASSERT( iLen <= sizeof(bincopy));
 	memcpy( bincopy.m_Raw, pEvent->m_Raw, iLen );
 
-	if ( !m_Crypt.Init( m_net->m_seed, bincopy.m_Raw, iLen, GetNetState()->isClientKR() ) )
+	if ( !m_Crypt.Init(m_NetState->m_seed, bincopy.m_Raw, iLen, m_NetState->isClientKR()) )
 	{
 		DEBUG_MSG(( "%lx:Odd login message length %" FMTSIZE_T "?\n", GetSocketID(), iLen ));
 #ifdef _DEBUG
@@ -800,7 +800,7 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 		return( false );
 	}
 	
-	GetNetState()->detectAsyncMode();
+	m_NetState->detectAsyncMode();
 	SetConnectType( m_Crypt.GetConnectType() );
 
 	if ( !xCanEncLogin() )
@@ -835,7 +835,7 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 				if (pAcc)
 				{
 					pAcc->m_TagDefs.SetNum("clientversion", m_Crypt.GetClientVer());
-					pAcc->m_TagDefs.SetNum("reportedcliver", GetNetState()->getReportedVersion());
+					pAcc->m_TagDefs.SetNum("reportedcliver", m_NetState->getReportedVersion());
 				}
 				else
 				{
@@ -882,16 +882,16 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 
 						if ( tmVerReported != 0 )
 						{
-							GetNetState()->m_reportedVersion = tmVerReported;
+							m_NetState->m_reportedVersion = tmVerReported;
 						}
 						else if ( tmVer != 0 )
 						{
 							m_Crypt.SetClientVerEnum(tmVer, false);
-							GetNetState()->m_clientVersion = tmVer;
+							m_NetState->m_clientVersion = tmVer;
 						}
 
 						// client version change may toggle async mode, it's important to flush pending data to the client before this happens
-						GetNetState()->detectAsyncMode();
+						m_NetState->detectAsyncMode();
 
 						if ( !xCanEncLogin(true) )
 							lErr = PacketLoginError::BadVersion;

@@ -566,7 +566,7 @@ void CAccount::DeleteChars()
 	CClient * pClient = FindClient();
 	if ( pClient != NULL )
 	{	// we have no choice but to kick them.
-		pClient->GetNetState()->markReadClosed();
+		pClient->m_NetState->markReadClosed();
 	}
 
 	// Now track down all my disconnected chars !
@@ -1010,21 +1010,21 @@ bool CAccount::SetAutoResDisp(CClient *pClient)
 	if ( !pClient )
 		return false;
 
-	if ( pClient->GetNetState()->isClientVersion(MINCLIVER_TOL) )
+	if ( pClient->m_NetState->isClientVersion(MINCLIVER_TOL) )
 		return SetResDisp(RDS_TOL);
-	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_HS) )
+	else if ( pClient->m_NetState->isClientVersion(MINCLIVER_HS) )
 		return SetResDisp(RDS_HS);
-	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_SA) )
+	else if ( pClient->m_NetState->isClientVersion(MINCLIVER_SA) )
 		return SetResDisp(RDS_SA);
-	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_ML) )
+	else if ( pClient->m_NetState->isClientVersion(MINCLIVER_ML) )
 		return SetResDisp(RDS_ML);
-	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_SE) )
+	else if ( pClient->m_NetState->isClientVersion(MINCLIVER_SE) )
 		return SetResDisp(RDS_SE);
-	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_AOS) )
+	else if ( pClient->m_NetState->isClientVersion(MINCLIVER_AOS) )
 		return SetResDisp(RDS_AOS);
-	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_LBR) )
+	else if ( pClient->m_NetState->isClientVersion(MINCLIVER_LBR) )
 		return SetResDisp(RDS_LBR);
-	else if ( pClient->GetNetState()->isClientVersion(MINCLIVER_T2A) )
+	else if ( pClient->m_NetState->isClientVersion(MINCLIVER_T2A) )
 		return SetResDisp(RDS_T2A);
 	else
 		return SetResDisp(RDS_NONE);
@@ -1511,7 +1511,7 @@ bool CAccount::r_Verb( CScript &s, CTextConsole * pSrc )
 				if ( pClient )
 				{
 					pClient->CharDisconnect();
-					pClient->GetNetState()->markReadClosed();
+					pClient->m_NetState->markReadClosed();
 				}
 
 				char *z = Str_GetTemp();

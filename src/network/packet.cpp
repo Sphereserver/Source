@@ -1229,8 +1229,8 @@ void PacketSend::target(const CClient* client)
 	m_target = NULL;
 
 	//	validate that the current slot is still taken by this client
-	if (client != NULL && client->GetNetState()->isInUse(client))
-		m_target = client->GetNetState();
+	if (client && client->m_NetState->isInUse(client))
+		m_target = client->m_NetState;
 }
 
 bool PacketSend::onSend(const CClient* client)
@@ -1292,13 +1292,13 @@ OpenPacketTransaction::OpenPacketTransaction(const CClient* client, long priorit
 {
 	ASSERT(client != NULL);
 
-	m_client = client->GetNetState();
-	if (m_client != NULL)
+	m_client = client->m_NetState;
+	if (m_client)
 		m_client->beginTransaction(priority);
 }
 
 OpenPacketTransaction::~OpenPacketTransaction(void)
 {
-	if (m_client != NULL)
+	if (m_client)
 		m_client->endTransaction();
 }

@@ -962,9 +962,9 @@ public:
 	static LPCTSTR const sm_szRefKeys[];
 	static LPCTSTR const sm_szLoadKeys[];
 	static LPCTSTR const sm_szVerbKeys[];
+	NetState *m_NetState;
 private:
 	CChar * m_pChar;			// What char are we playing ?
-	NetState* m_net; // network state
 
 	// Client last know state stuff.
 	CSectorEnviron m_Env;		// Last Environment Info Sent. so i don't have to keep resending if it's the same.
@@ -1533,8 +1533,6 @@ public:
 	}
 
 	bool IsConnecting() const;
-
-	NetState* GetNetState(void) const { return m_net; };
 
 private:
 	CGString	m_BarkBuffer;

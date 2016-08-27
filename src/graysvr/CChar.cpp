@@ -306,7 +306,7 @@ CChar::~CChar()
 	}
 
 	if ( m_pClient )	// this should never happen
-		m_pClient->GetNetState()->markReadClosed();
+		m_pClient->m_NetState->markReadClosed();
 
 	Guild_Resign(MEMORY_GUILD);
 	Guild_Resign(MEMORY_TOWN);
@@ -385,7 +385,7 @@ void CChar::SetDisconnected()
 	ADDTOCALLSTACK("CChar::SetDisconnected");
 	if ( m_pClient )
 	{
-		m_pClient->GetNetState()->markReadClosed();
+		m_pClient->m_NetState->markReadClosed();
 		return;
 	}
 
@@ -438,7 +438,7 @@ void CChar::Delete(bool bforce, CClient *pClient)
 	if ( m_pClient )
 	{
 		m_pClient->CharDisconnect();
-		m_pClient->GetNetState()->markReadClosed();
+		m_pClient->m_NetState->markReadClosed();
 	}
 
 	// Detach from account now

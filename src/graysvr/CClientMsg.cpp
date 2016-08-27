@@ -24,7 +24,7 @@ void CClient::resendBuffs()
 	// These checks are in addBuff too, but it would be useless to call it so many times
 	if ( !IsSetOF(OF_Buffs) )
 		return;
-	if ( PacketBuff::CanSendTo(GetNetState()) == false )
+	if ( !PacketBuff::CanSendTo(m_NetState) )
 		return;
 
 	CChar *pChar = GetChar();
@@ -210,7 +210,7 @@ void CClient::addBuff( const BUFF_ICONS IconId, const DWORD ClilocOne, const DWO
 	ADDTOCALLSTACK("CClient::addBuff");
 	if ( !IsSetOF(OF_Buffs) )
 		return;
-	if ( PacketBuff::CanSendTo(GetNetState()) == false )
+	if ( !PacketBuff::CanSendTo(m_NetState) )
 		return;
 
 	new PacketBuff(this, IconId, ClilocOne, ClilocTwo, Time, pArgs, iArgCount);
@@ -221,7 +221,7 @@ void CClient::removeBuff(const BUFF_ICONS IconId)
 	ADDTOCALLSTACK("CClient::removeBuff");
 	if ( !IsSetOF(OF_Buffs) )
 		return;
-	if ( PacketBuff::CanSendTo(GetNetState()) == false )
+	if ( !PacketBuff::CanSendTo(m_NetState) )
 		return;
 
 	new PacketBuff(this, IconId);
@@ -333,13 +333,13 @@ void CClient::addItem_OnGround( CItem * pItem ) // Send items (on ground)
 	if ( !pItem )
 		return;
 	
-	if ( PacketItemWorldNew::CanSendTo(GetNetState()) )
+	if ( PacketItemWorldNew::CanSendTo(m_NetState) )
 		new PacketItemWorldNew(this, pItem);
 	else
 		new PacketItemWorld(this, pItem);
 
 	// send KR drop confirmation
-	if ( PacketDropAccepted::CanSendTo(GetNetState()) )
+	if ( PacketDropAccepted::CanSendTo(m_NetState) )
 		new PacketDropAccepted(this);
 
 	// send item sound
@@ -397,7 +397,7 @@ void CClient::addItem_InContainer( const CItem * pItem )
 
 	new PacketItemContainer(this, pItem);
 	
-	if ( PacketDropAccepted::CanSendTo(GetNetState()) )
+	if ( PacketDropAccepted::CanSendTo(m_NetState) )
 		new PacketDropAccepted(this);
 
 	//addAOSTooltip(pItem);		// tooltips for items inside containers are handled on packet 0x3C (PacketItemContents)
@@ -573,7 +573,7 @@ bool CClient::addKick( CTextConsole * pSrc, bool fBlock )
 	ASSERT( pSrc );
 	if ( !m_pAccount )
 	{
-		GetNetState()->markReadClosed();
+		m_NetState->markReadClosed();
 		return true;
 	}
 
@@ -586,7 +586,7 @@ bool CClient::addKick( CTextConsole * pSrc, bool fBlock )
 	if ( IsConnectTypePacket() )
 		new PacketKick(this);
 
-	GetNetState()->markReadClosed();
+	m_NetState->markReadClosed();
 	return true;
 }
 
@@ -1366,7 +1366,7 @@ bool CClient::addBookOpen( CItem * pBook )
 		return false;
 
 	size_t iPagesNow = 0;
-	bool bNewPacket = PacketDisplayBookNew::CanSendTo(GetNetState());
+	bool bNewPacket = PacketDisplayBookNew::CanSendTo(m_NetState);
 
 	if (pBook->IsBookSystem() == false)
 	{
@@ -1451,7 +1451,7 @@ int CClient::Setup_FillCharList(Packet* pPacket, const CChar * pCharFirst)
 	// always show max count for some stupid reason. (client bug)
 	// pad out the rest of the chars.
 	size_t iClientMin = 5;
-	if (GetNetState()->isClientVersion(MINCLIVER_PADCHARLIST) || !GetNetState()->getCryptVersion())
+	if ( m_NetState->isClientVersion(MINCLIVER_PADCHARLIST) || !m_NetState->getCryptVersion() )
 		iClientMin = maximum(iQty, 5);
 
 	for ( ; count < iClientMin; count++)
@@ -1892,7 +1892,7 @@ void CClient::addPlayerUpdate()
 	// to server because client seq != server seq.
 
 	new PacketPlayerUpdate(this);
-	GetNetState()->m_sequence = 0;
+	m_NetState->m_sequence = 0;
 }
 
 void CClient::UpdateStats()
@@ -1945,7 +1945,7 @@ void CClient::addCharStatWindow( CChar *pChar, bool fRequested ) // Opens the st
 	if ( pChar == m_pChar )
 	{
 		m_fUpdateStats = 0;
-		if ( pChar->m_pPlayer && PacketStatLocks::CanSendTo(GetNetState()) )
+		if ( pChar->m_pPlayer && PacketStatLocks::CanSendTo(m_NetState) )
 			new PacketStatLocks(this, pChar);
 	}
 }
@@ -1998,7 +1998,7 @@ void CClient::addHealthBarUpdate( const CChar * pChar )
 	if ( pChar == NULL )
 		return;
 
-	if ( PacketHealthBarUpdate::CanSendTo(GetNetState()) )
+	if ( PacketHealthBarUpdate::CanSendTo(m_NetState) )
 		new PacketHealthBarUpdate(this, pChar);
 }
 
@@ -2031,7 +2031,7 @@ void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
 	OpenPacketTransaction transaction(this, PacketSend::PRI_NORMAL);
 	addOpenGump(pBook, GUMP_OPEN_SPELLBOOK);
 
-	if ( PacketSpellbookContent::CanSendTo(GetNetState()) )
+	if ( PacketSpellbookContent::CanSendTo(m_NetState) )
 		new PacketSpellbookContent(this, pBook, offset);
 	else
 		new PacketItemContents(this, pBook);
@@ -2114,7 +2114,7 @@ bool CClient::addShopMenuBuy( CChar * pVendor )
 
 	// Get price list
 	PacketVendorBuyList *cmd = new PacketVendorBuyList();
-	size_t count = cmd->fillContainer(pContainer, pVendor->NPC_GetVendorMarkup(), GetNetState()->isClientEnhanced());
+	size_t count = cmd->fillContainer(pContainer, pVendor->NPC_GetVendorMarkup(), m_NetState->isClientEnhanced());
 	cmd->push(this);
 
 	// Open gump
@@ -2207,7 +2207,7 @@ blank_map:
 	if ( rect.IsRectEmpty())
 		goto blank_map;
 
-	if ( PacketDisplayMapNew::CanSendTo(GetNetState()))
+	if ( PacketDisplayMapNew::CanSendTo(m_NetState) )
 		new PacketDisplayMapNew(this, pMap, rect);
 	else
 		new PacketDisplayMap(this, pMap, rect);
@@ -2326,7 +2326,7 @@ void CClient::addCharPaperdoll( CChar * pChar )
 void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 {
 	ADDTOCALLSTACK("CClient::addAOSTooltip");
-	if ( !pObj || !PacketPropertyList::CanSendTo(GetNetState()) )
+	if ( !pObj || !PacketPropertyList::CanSendTo(m_NetState) )
 		return;
 
 	// Don't send tooltips for items out of LOS
@@ -3224,7 +3224,7 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 			case TOOLTIPMODE_SENDVERSION:	// send property list version (client will send a request the full tooltip if needed)
 				if ( !bRequested && !bShop )
 				{
-					if ( PacketPropertyListVersion::CanSendTo(GetNetState()) )
+					if ( PacketPropertyListVersion::CanSendTo(m_NetState) )
 						new PacketPropertyListVersion(this, pObj, propertyList->getVersion());
 					else
 						new PacketPropertyListVersionOld(this, pObj, propertyList->getVersion());
@@ -3249,9 +3249,9 @@ void CClient::addShowDamage( int damage, DWORD uid_damage )
 	if ( damage < 0 )
 		damage = 0;
 
-	if ( PacketCombatDamage::CanSendTo(GetNetState()) )
+	if ( PacketCombatDamage::CanSendTo(m_NetState) )
 		new PacketCombatDamage(this, static_cast<WORD>(damage), static_cast<CGrayUID>(uid_damage));
-	else if ( PacketCombatDamageOld::CanSendTo(GetNetState()) )
+	else if ( PacketCombatDamageOld::CanSendTo(m_NetState) )
 		new PacketCombatDamageOld(this, static_cast<BYTE>(damage), static_cast<CGrayUID>(uid_damage));
 }
 
@@ -3281,7 +3281,7 @@ void CClient::addIdleWarning( BYTE message )
 void CClient::addKRToolbar( bool bEnable )
 {
 	ADDTOCALLSTACK("CClient::addKRToolbar");
-	if ( !PacketToggleHotbar::CanSendTo(GetNetState()) || (m_pAccount->GetResDisp() < RDS_KR) || (GetConnectType() != CONNECT_GAME) )
+	if ( !PacketToggleHotbar::CanSendTo(m_NetState) || (m_pAccount->GetResDisp() < RDS_KR) || (GetConnectType() != CONNECT_GAME) )
 		return;
 
 	new PacketToggleHotbar(this, bEnable);
@@ -3601,7 +3601,7 @@ BYTE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 				if ( IsConnectTypePacket() && pClientPrev->IsConnectTypePacket())
 				{
 					pClientPrev->CharDisconnect();
-					pClientPrev->GetNetState()->markReadClosed();
+					pClientPrev->m_NetState->markReadClosed();
 				}
 				else if ( GetConnectType() == pClientPrev->GetConnectType() ) bInUse = true;
 			}
