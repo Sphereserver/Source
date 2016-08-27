@@ -614,7 +614,7 @@ CClient * CAccount::FindClient( const CClient * pExclude ) const
 	{
 		if ( pClient == pExclude )
 			continue;
-		if ( this == pClient->GetAccount())
+		if ( pClient->m_pAccount == this )
 			break;
 	}
 	return( pClient );
@@ -627,7 +627,7 @@ bool CAccount::IsMyAccountChar( const CChar * pChar ) const
 		return( false );
 	if ( pChar->m_pPlayer == NULL )
 		return( false );
-	return(	pChar->m_pPlayer->GetAccount() == this );
+	return(	pChar->m_pPlayer->m_pAccount == this );
 }
 
 size_t CAccount::DetachChar( CChar * pChar )

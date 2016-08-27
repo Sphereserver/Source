@@ -1435,41 +1435,37 @@ public:
 	void LogOpenedContainer(const CItemContainer* pContainer);
 
 	// Test what I can do
-	CAccountRef GetAccount() const
+	bool IsPriv( WORD flag ) const		// PRIV_GM
 	{
-		return( m_pAccount );
-	}
-	bool IsPriv( WORD flag ) const
-	{	// PRIV_GM
-		if ( GetAccount() == NULL )
-			return( false );
-		return( GetAccount()->IsPriv( flag ));
+		if ( m_pAccount )
+			return m_pAccount->IsPriv(flag);
+		return false;
 	}
 	void SetPrivFlags( WORD wPrivFlags )
 	{
-		if ( GetAccount() == NULL )
-			return;
-		GetAccount()->SetPrivFlags( wPrivFlags );
+		if ( m_pAccount )
+			m_pAccount->SetPrivFlags(wPrivFlags);
+		return;
 	}
 	void ClearPrivFlags( WORD wPrivFlags )
 	{
-		if ( GetAccount() == NULL )
-			return;
-		GetAccount()->ClearPrivFlags( wPrivFlags );
+		if ( m_pAccount )
+			m_pAccount->ClearPrivFlags(wPrivFlags);
+		return;
 	}
 
 	// ------------------------------------------------
 	BYTE GetResDisp() const
 	{
-		if ( GetAccount() == NULL )
-			return( UCHAR_MAX );
-		return( GetAccount()->GetResDisp() );
+		if ( m_pAccount )
+			return m_pAccount->GetResDisp();
+		return UCHAR_MAX;
 	}
 	bool SetResDisp( BYTE res )
 	{
-		if ( GetAccount() == NULL )
-			return( false );
-		return ( GetAccount()->SetResDisp( res ) );
+		if ( m_pAccount )
+			return m_pAccount->SetResDisp(res);
+		return false;
 	}
 	// ------------------------------------------------
 	void SetScreenSize(DWORD x, DWORD y)
@@ -1478,18 +1474,17 @@ public:
 		m_ScreenSize.y = y;
 	}
 
-	PLEVEL_TYPE GetPrivLevel() const
+	PLEVEL_TYPE GetPrivLevel() const	// PLEVEL_Counsel
 	{
-		// PLEVEL_Counsel
-		if ( GetAccount() == NULL )
-			return( PLEVEL_Guest );
-		return( GetAccount()->GetPrivLevel());
+		if ( m_pAccount )
+			return m_pAccount->GetPrivLevel();
+		return PLEVEL_Guest;
 	}
 	LPCTSTR GetName() const
 	{
-		if ( GetAccount() == NULL )
-			return( "NA" );
-		return( GetAccount()->GetName());
+		if ( m_pAccount )
+			return m_pAccount->GetName();
+		return "NA";
 	}
 	CChar * GetChar() const
 	{

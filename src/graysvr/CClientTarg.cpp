@@ -200,12 +200,12 @@ bool CClient::Cmd_Control( CChar * pChar2 )
 	CCharPlayer * pPlayer1 = pChar1->m_pPlayer;
 	if ( pPlayer1 )
 	{
-		pPlayer1->GetAccount()->DetachChar(pChar1);
+		pPlayer1->m_pAccount->DetachChar(pChar1);
 	}
 	CCharPlayer * pPlayer2 = pChar2->m_pPlayer;
 	if ( pPlayer2 )
 	{
-		pPlayer2->GetAccount()->DetachChar(pChar2);
+		pPlayer2->m_pAccount->DetachChar(pChar2);
 	}
 
 	// swap m_pPlayer (if they even are both players.)
@@ -219,11 +219,11 @@ bool CClient::Cmd_Control( CChar * pChar2 )
 
 	if ( pPlayer1 )
 	{
-		pPlayer1->GetAccount()->AttachChar(pChar2);
+		pPlayer1->m_pAccount->AttachChar(pChar2);
 	}
 	if ( pPlayer2 )
 	{
-		pPlayer2->GetAccount()->AttachChar(pChar1);
+		pPlayer2->m_pAccount->AttachChar(pChar1);
 	}
 	if ( pClient2 )
 	{

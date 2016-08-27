@@ -371,7 +371,7 @@ void CChar::ClientAttach( CClient * pClient )
 	ADDTOCALLSTACK("CChar::ClientAttach");
 	if ( GetClient() == pClient )
 		return;
-	if ( ! SetPlayerAccount( pClient->GetAccount()))	// i now own this char.
+	if ( !SetPlayerAccount(pClient->m_pAccount) )	// i now own this char.
 		return;
 
 	ASSERT(m_pPlayer);
@@ -1211,7 +1211,7 @@ void CChar::InitPlayer( CClient *pClient, const char *pszCharname, bool bFemale,
 	ASSERT(pClient);
 	UNREFERENCED_PARAMETER(prProf);
 
-	CAccount *pAccount = pClient->GetAccount();
+	CAccount *pAccount = pClient->m_pAccount;
 	if ( pAccount )
 		SetPlayerAccount(pAccount);
 
@@ -1639,7 +1639,7 @@ bool CChar::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 			case CHR_ACCOUNT:
 				if ( pszKey[-1] != '.' )	// only used as a ref !
 					break;
-				pRef = m_pPlayer ? m_pPlayer->GetAccount() : NULL;
+				pRef = m_pPlayer ? m_pPlayer->m_pAccount : NULL;
 				return true;
 			case CHR_ACT:
 				if ( pszKey[-1] != '.' )	// only used as a ref !
@@ -2388,7 +2388,7 @@ do_default:
 					pszKey += 7;
 					SKIP_SEPARATORS(pszKey);
 
-					CScriptObj * pRef = m_pPlayer->GetAccount();
+					CScriptObj * pRef = m_pPlayer->m_pAccount;
 					if ( pRef )
 					{
 						if ( pRef->r_WriteVal( pszKey, sVal, pSrc ) )
@@ -2400,7 +2400,7 @@ do_default:
 			if ( m_pPlayer == NULL )
 				sVal.Empty();
 			else
-				sVal = m_pPlayer->GetAccount()->GetName();
+				sVal = m_pPlayer->m_pAccount->GetName();
 			break;
 		case CHC_ACT:
 			if ( pszKey[3] == '.' )	// used as a ref ?

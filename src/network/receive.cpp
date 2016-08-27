@@ -123,7 +123,7 @@ bool PacketCreate::onReceive(NetState* net, bool hasExtraSkill)
 	}
 
 	// validate race against resdisp
-	RESDISPLAY_VERSION resdisp = net->getClient()->GetAccount() ? static_cast<RESDISPLAY_VERSION>(net->getClient()->GetAccount()->GetResDisp()) : RDS_NONE;
+	RESDISPLAY_VERSION resdisp = net->getClient()->m_pAccount ? static_cast<RESDISPLAY_VERSION>(net->getClient()->m_pAccount->GetResDisp()) : RDS_NONE;
 	if (resdisp < RDS_ML) // prior to ML, only human
 	{
 		if (rtRace >= RACETYPE_ELF)
@@ -148,7 +148,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 
 	CClient* client = net->getClient();
 	ASSERT(client);
-	const CAccountRef account = client->GetAccount();
+	const CAccountRef account = client->m_pAccount;
 	ASSERT(account);
 
 	if (client->GetChar() != NULL)
@@ -2706,7 +2706,7 @@ bool PacketLanguage::onReceive(NetState* net)
 	TCHAR language[4];
 	readStringNullASCII(language, COUNTOF(language));
 
-	client->GetAccount()->m_lang.Set(language);
+	client->m_pAccount->m_lang.Set(language);
 	return true;
 }
 

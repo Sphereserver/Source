@@ -52,7 +52,7 @@ void CClient::Cmd_GM_Page( LPCTSTR pszReason ) // Help button (Calls GM Call Men
 	CGMPage *pPage = static_cast<CGMPage *>(g_World.m_GMPages.GetHead());
 	for ( ; pPage != NULL; pPage = pPage->GetNext())
 	{
-		if (strcmpi( pPage->GetName(), GetAccount()->GetName()) == 0)
+		if (strcmpi( pPage->GetName(), m_pAccount->GetName()) == 0)
 			break;
 	}
 
@@ -65,7 +65,7 @@ void CClient::Cmd_GM_Page( LPCTSTR pszReason ) // Help button (Calls GM Call Men
 	else
 	{
 		// Queue a GM page. (based on account)
-		pPage = new CGMPage( GetAccount()->GetName());
+		pPage = new CGMPage(m_pAccount->GetName());
 		pPage->SetReason( pszReason );	// Description of reason for call.
 	}
 

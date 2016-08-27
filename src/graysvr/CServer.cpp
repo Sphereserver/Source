@@ -271,15 +271,15 @@ void CServer::SysMessage( LPCTSTR pszMsg ) const
 
 void CServer::PrintTelnet( LPCTSTR pszMsg ) const
 {
-	if ( ! m_iAdminClients )
+	if ( !m_iAdminClients )
 		return;
 
 	ClientIterator it;
-	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
+	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
-		if (( pClient->GetConnectType() == CONNECT_TELNET ) && pClient->GetAccount() )
+		if ( (pClient->GetConnectType() == CONNECT_TELNET) && pClient->m_pAccount )
 		{
-			if ( !pClient->GetAccount()->IsPriv(PRIV_TELNET_SHORT) )	// this client accepts broadcasts
+			if ( !pClient->m_pAccount->IsPriv(PRIV_TELNET_SHORT) )	// this client accepts broadcasts
 				pClient->SysMessage(pszMsg);
 		}
 	}
@@ -403,7 +403,7 @@ void CServer::ListClients( CTextConsole *pConsole ) const
 	{
 		numClients++;
 		pChar = pClient->GetChar();
-		pAcc = pClient->GetAccount();
+		pAcc = pClient->m_pAccount;
 		chRank = (pAcc && pAcc->GetPrivLevel() > PLEVEL_Player) ? '+' : '=';
 
 		if ( pChar )

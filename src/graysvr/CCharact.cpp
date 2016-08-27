@@ -144,7 +144,7 @@ void CChar::Jail( CTextConsole *pSrc, bool fSet, int iCell )
 	{
 		if ( m_pPlayer )
 		{
-			CAccount *pAccount = m_pPlayer->GetAccount();
+			CAccount *pAccount = m_pPlayer->m_pAccount;
 			ASSERT(pAccount);
 			pAccount->SetPrivFlags(PRIV_JAILED);
 			pAccount->m_TagDefs.SetNum("JailCell", iCell, true);
@@ -165,7 +165,7 @@ void CChar::Jail( CTextConsole *pSrc, bool fSet, int iCell )
 	{
 		if ( m_pPlayer )
 		{
-			CAccount *pAccount = m_pPlayer->GetAccount();
+			CAccount *pAccount = m_pPlayer->m_pAccount;
 			ASSERT(pAccount);
 			if ( !pAccount->IsPriv(PRIV_JAILED) )
 				return;
@@ -3615,7 +3615,7 @@ bool CChar::SetPrivLevel(CTextConsole * pSrc, LPCTSTR pszFlags)
 	if ( !m_pPlayer || !pszFlags[0] || (pSrc->GetPrivLevel() < PLEVEL_Admin) || (pSrc->GetPrivLevel() < GetPrivLevel()) )
 		return false;
 
-	CAccount *pAccount = m_pPlayer->GetAccount();
+	CAccount *pAccount = m_pPlayer->m_pAccount;
 	PLEVEL_TYPE PrivLevel = CAccount::GetPrivLevelText(pszFlags);
 
 	// Remove Previous GM Robe

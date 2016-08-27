@@ -2454,8 +2454,6 @@ public:
 
 	bool getKrToolbarStatus();
 
-	CAccountRef GetAccount() const;
-
 public:
 	CCharPlayer( CChar * pChar, CAccount * pAccount );
 	~CCharPlayer();
@@ -2929,14 +2927,14 @@ public:
 	{	// PRIV_GM flags
 		if ( !m_pPlayer )
 			return false;	// NPC's have no privs.
-		return m_pPlayer->GetAccount()->IsPriv(flag);
+		return m_pPlayer->m_pAccount->IsPriv(flag);
 	}
 	PLEVEL_TYPE GetPrivLevel() const
 	{
 		// The higher the better. // PLEVEL_Counsel
 		if ( !m_pPlayer )
 			return PLEVEL_Player;
-		return m_pPlayer->GetAccount()->GetPrivLevel();
+		return m_pPlayer->m_pAccount->GetPrivLevel();
 	}
 
 	CCharBase *Char_GetDef() const

@@ -86,10 +86,9 @@ CClient::~CClient()
 	m_TagDefs.Empty();
 	m_TooltipData.Clean(true);
 
-	CAccount * pAccount = GetAccount();
-	if ( pAccount )
+	if ( m_pAccount )
 	{
-		pAccount->OnLogout(this, bWasChar);
+		m_pAccount->OnLogout(this, bWasChar);
 		m_pAccount = NULL;
 	}
 
@@ -239,7 +238,7 @@ void CClient::SysMessage( LPCTSTR pszMsg ) const // System message (In lower lef
 void CClient::Announce( bool fArrive ) const
 {
 	ADDTOCALLSTACK("CClient::Announce");
-	if ( !GetAccount() || !GetChar() || !GetChar()->m_pPlayer )
+	if ( !m_pAccount || !GetChar() || !GetChar()->m_pPlayer )
 		return;
 
 	// We have logged in or disconnected.
@@ -443,7 +442,7 @@ bool CClient::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 			case CLIR_ACCOUNT:
 				if ( pszKey[-1] != '.' )	// only used as a ref !
 					break;
-				pRef = GetAccount();
+				pRef = m_pAccount;
 				return( true );
 			case CLIR_GMPAGEP:
 				pRef = m_pGMPage;
@@ -649,7 +648,7 @@ bool CClient::r_LoadVal( CScript & s )
 {
 	ADDTOCALLSTACK("CClient::r_LoadVal");
 	EXC_TRY("LoadVal");
-	if ( GetAccount() == NULL )
+	if ( !m_pAccount )
 		return( false );
 
 	LPCTSTR pszKey = s.GetKey();
@@ -668,41 +667,41 @@ bool CClient::r_LoadVal( CScript & s )
 	{
 		case CC_ALLMOVE:
 			addRemoveAll(true, false);
-			GetAccount()->TogPrivFlags( PRIV_ALLMOVE, s.GetArgStr() );
+			m_pAccount->TogPrivFlags( PRIV_ALLMOVE, s.GetArgStr() );
 			if ( IsSetOF( OF_Command_Sysmsgs ) )
 				m_pChar->SysMessage( IsPriv(PRIV_ALLMOVE)? "Allmove ON" : "Allmove OFF" );
 			addPlayerView(NULL);
 			break;
 		case CC_ALLSHOW:
 			addRemoveAll(false, true);
-			GetAccount()->TogPrivFlags( PRIV_ALLSHOW, s.GetArgStr() );
+			m_pAccount->TogPrivFlags( PRIV_ALLSHOW, s.GetArgStr() );
 			if ( IsSetOF( OF_Command_Sysmsgs ) )
 				m_pChar->SysMessage( IsPriv(PRIV_ALLSHOW)? "Allshow ON" : "Allshow OFF" );
 			addPlayerView(NULL);
 			break;
 		case CC_DEBUG:
 			addRemoveAll(true, false);
-			GetAccount()->TogPrivFlags( PRIV_DEBUG, s.GetArgStr() );
+			m_pAccount->TogPrivFlags( PRIV_DEBUG, s.GetArgStr() );
 			if ( IsSetOF( OF_Command_Sysmsgs ) )
 					m_pChar->SysMessage( IsPriv(PRIV_DEBUG)? "Debug ON" : "Debug OFF" );
 			addPlayerView(NULL);
 			break;
 		case CC_DETAIL:
-			GetAccount()->TogPrivFlags( PRIV_DETAIL, s.GetArgStr() );
+			m_pAccount->TogPrivFlags( PRIV_DETAIL, s.GetArgStr() );
 			if ( IsSetOF( OF_Command_Sysmsgs ) )
 					m_pChar->SysMessage( IsPriv(PRIV_DETAIL)? "Detail ON" : "Detail OFF" );
 			break;
 		case CC_GM: // toggle your GM status on/off
 			if ( GetPrivLevel() >= PLEVEL_GM )
 			{
-				GetAccount()->TogPrivFlags( PRIV_GM, s.GetArgStr() );
+				m_pAccount->TogPrivFlags( PRIV_GM, s.GetArgStr() );
 				m_pChar->ResendTooltip();
 				if ( IsSetOF( OF_Command_Sysmsgs ) )
 					m_pChar->SysMessage( IsPriv(PRIV_GM)? "GM ON" : "GM OFF" );
 			}
 			break;
 		case CC_HEARALL:
-			GetAccount()->TogPrivFlags( PRIV_HEARALL, s.GetArgStr() );
+			m_pAccount->TogPrivFlags( PRIV_HEARALL, s.GetArgStr() );
 			if ( IsSetOF( OF_Command_Sysmsgs ) )
 					m_pChar->SysMessage( IsPriv(PRIV_HEARALL)? "Hearall ON" : "Hearall OFF" );
 			break;
@@ -712,15 +711,15 @@ bool CClient::r_LoadVal( CScript & s )
 			{
 				if ( ! s.HasArgs())
 				{
-					GetAccount()->TogPrivFlags( PRIV_PRIV_NOSHOW, NULL );
+					m_pAccount->TogPrivFlags( PRIV_PRIV_NOSHOW, NULL );
 				}
 				else if ( s.GetArgVal() )
 				{
-					GetAccount()->ClearPrivFlags( PRIV_PRIV_NOSHOW );
+					m_pAccount->ClearPrivFlags( PRIV_PRIV_NOSHOW );
 				}
 				else
 				{
-					GetAccount()->SetPrivFlags( PRIV_PRIV_NOSHOW );
+					m_pAccount->SetPrivFlags( PRIV_PRIV_NOSHOW );
 				}
 				m_pChar->ResendTooltip();
 				if ( IsSetOF( OF_Command_Sysmsgs ) )

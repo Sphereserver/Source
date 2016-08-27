@@ -1913,7 +1913,8 @@ PacketBulletinBoard::PacketBulletinBoard(const CClient* target, BBOARDF_TYPE act
 		LPCTSTR author = message->m_sAuthor;
 
 		lenstr = strlen(author) + 1;
-		if (lenstr > 255) lenstr = 255;
+		if (lenstr > UCHAR_MAX) 
+			lenstr = UCHAR_MAX;
 
 		writeByte(static_cast<BYTE>(lenstr));
 		writeStringFixedASCII(author, lenstr);
@@ -1921,7 +1922,8 @@ PacketBulletinBoard::PacketBulletinBoard(const CClient* target, BBOARDF_TYPE act
 
 	// message title
 	lenstr = strlen(message->GetName()) + 1;
-	if (lenstr > 255) lenstr = 255;
+	if (lenstr > UCHAR_MAX)
+		lenstr = UCHAR_MAX;
 
 	writeByte(static_cast<BYTE>(lenstr));
 	writeStringFixedASCII(message->GetName(), lenstr);
@@ -1948,7 +1950,8 @@ PacketBulletinBoard::PacketBulletinBoard(const CClient* target, BBOARDF_TYPE act
 				continue;
 
 			lenstr = strlen(text) + 2;
-			if (lenstr > 255) lenstr = 255;
+			if (lenstr > UCHAR_MAX)
+				lenstr = UCHAR_MAX;
 
 			writeByte(static_cast<BYTE>(lenstr));
 			writeStringFixedASCII(text, lenstr);
@@ -2232,7 +2235,8 @@ PacketDisplayMenu::PacketDisplayMenu(const CClient* target, CLIMODE_TYPE mode, c
 	writeInt16(static_cast<WORD>(mode));
 
 	int len = items[0].m_sText.GetLength();
-	if (len > 255) len = 255;
+	if (len > UCHAR_MAX)
+		len = UCHAR_MAX;
 	writeByte(static_cast<BYTE>(len));
 	writeStringFixedASCII(static_cast<LPCTSTR>(items[0].m_sText), len);
 
@@ -2243,7 +2247,8 @@ PacketDisplayMenu::PacketDisplayMenu(const CClient* target, CLIMODE_TYPE mode, c
 		writeInt16(items[i].m_color);
 
 		len = items[i].m_sText.GetLength();
-		if (len > 255) len = 255;
+		if (len > UCHAR_MAX )
+			len = UCHAR_MAX;
 		writeByte(static_cast<BYTE>(len));
 		writeStringFixedASCII(static_cast<LPCTSTR>(items[i].m_sText), len);
 	}
@@ -3031,8 +3036,8 @@ PacketCharacterList::PacketCharacterList(CClient* target) : PacketSend(XCMD_Char
 {
 	ADDTOCALLSTACK("PacketCharacterList::PacketCharacterList");
 
-	const CAccountRef account = target->GetAccount();
-	ASSERT(account != NULL);
+	const CAccountRef account = target->m_pAccount;
+	ASSERT(account);
 
 	initLength();
 
@@ -3133,7 +3138,8 @@ PacketGumpValueInput::PacketGumpValueInput(const CClient* target, bool cancel, I
 	writeInt16(CLIMODE_INPVAL);
 
 	int len = strlen(text) + 1;
-	if (len > 255) len = 255;
+	if (len > USHRT_MAX)
+		len = USHRT_MAX;
 
 	writeInt16(static_cast<WORD>(len));
 	writeStringFixedASCII(text, len);
@@ -3161,7 +3167,8 @@ PacketGumpValueInput::PacketGumpValueInput(const CClient* target, bool cancel, I
 			break;
 	}
 
-	if (len > 255) len = 255;
+	if (len > USHRT_MAX)
+		len = USHRT_MAX;
 	writeInt16(static_cast<WORD>(len));
 	writeStringFixedASCII(z, len);
 
@@ -3453,7 +3460,7 @@ PacketProfile::PacketProfile(const CClient* target, const CChar* character) : Pa
 
 	if ( character == target->GetChar() )
 	{
-		const CAccountRef account = target->GetAccount();
+		const CAccountRef account = target->m_pAccount;
 		ASSERT(account);
 		TCHAR *age = Str_GetTemp();
 		sprintf(age, g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_AGE), (CGTime::GetCurrentTime().GetDaysTotal() - account->m_dateFirstConnect.GetDaysTotal()) / 30);
@@ -3482,8 +3489,8 @@ PacketEnableFeatures::PacketEnableFeatures(const CClient* target, DWORD flags) :
 {
 	ADDTOCALLSTACK("PacketEnableFeatures::PacketEnableFeatures");
 
-	const CAccountRef account = target->GetAccount();
-	ASSERT(account != NULL);
+	const CAccountRef account = target->m_pAccount;
+	ASSERT(account);
 	DWORD tmVer = static_cast<DWORD>(account->m_TagDefs.GetKeyNum("clientversion"));
 	DWORD tmVerReported = static_cast<DWORD>(account->m_TagDefs.GetKeyNum("reportedcliver"));
 	

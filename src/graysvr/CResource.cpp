@@ -2049,7 +2049,7 @@ bool CResource::CanUsePrivVerb( const CScriptObj * pObjTarg, LPCTSTR pszCmd, CTe
 		if ( pClient )
 		{
 			// We are not logged in as a player char ? so we cannot do much !
-			if ( pClient->GetAccount() == NULL )
+			if ( !pClient->m_pAccount )
 			{
 				// must be a console or web page ?
 				// I guess we can just login !

@@ -202,12 +202,12 @@ bool CClient::addRelay( const CServerDef * pServ )
 	if ( g_Cfg.m_fUseAuthID )
 	{
 		CGString sCustomerID(pServ->GetName());
-		sCustomerID.Add(GetAccount()->GetName());
+		sCustomerID.Add(m_pAccount->GetName());
 
 		dwCustomerId = z_crc32(0L, Z_NULL, 0);
 		dwCustomerId = z_crc32(dwCustomerId, reinterpret_cast<const z_Bytef *>(sCustomerID.GetPtr()), sCustomerID.GetLength());
 
-		GetAccount()->m_TagDefs.SetNum("customerid", dwCustomerId);
+		m_pAccount->m_TagDefs.SetNum("customerid", dwCustomerId);
 	}
 
 	DEBUG_MSG(( "%lx:Login_Relay to server %s with AuthId %lu\n", GetSocketID(), ipAddr.GetAddrStr(), dwCustomerId ));
@@ -220,7 +220,7 @@ bool CClient::addRelay( const CServerDef * pServ )
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("account '%s'\n", GetAccount() ? GetAccount()->GetName() : "");
+	g_Log.EventDebug("account '%s'\n", m_pAccount ? m_pAccount->GetName() : "");
 	EXC_DEBUG_END;
 	return( false );
 }
@@ -334,12 +334,12 @@ bool CClient::OnRxConsole( const BYTE * pData, size_t iLen )
 
 	while ( iLen -- )
 	{
-		int iRet = OnConsoleKey( m_Targ_Text, *pData++, GetAccount() != NULL );
+		int iRet = OnConsoleKey( m_Targ_Text, *pData++, m_pAccount != NULL );
 		if ( ! iRet )
 			return( false );
 		if ( iRet == 2 )
 		{
-			if ( GetAccount() == NULL )
+			if ( !m_pAccount )
 			{
 				if ( !m_zLogin[0] )
 				{
@@ -399,12 +399,12 @@ bool CClient::OnRxAxis( const BYTE * pData, size_t iLen )
 
 	while ( iLen -- )
 	{
-		int iRet = OnConsoleKey( m_Targ_Text, *pData++, GetAccount() != NULL );
+		int iRet = OnConsoleKey( m_Targ_Text, *pData++, m_pAccount != NULL );
 		if ( ! iRet )
 			return( false );
 		if ( iRet == 2 )
 		{
-			if ( GetAccount() == NULL )
+			if ( !m_pAccount )
 			{
 				if ( !m_zLogin[0] )
 				{

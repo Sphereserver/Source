@@ -117,8 +117,8 @@ bool CChar::Spell_Teleport( CPointMap ptNew, bool bTakePets, bool bCheckAntiMagi
 			SysMessage(sm_szPunishMsg[Calc_GetRandVal(COUNTOF(sm_szPunishMsg))]);
 
 			int iCell = 0;
-			if ( m_pPlayer && m_pPlayer->GetAccount() )
-				iCell = static_cast<int>(m_pPlayer->GetAccount()->m_TagDefs.GetKeyNum("JailCell"));
+			if ( m_pPlayer && m_pPlayer->m_pAccount )
+				iCell = static_cast<int>(m_pPlayer->m_pAccount->m_TagDefs.GetKeyNum("JailCell"));
 
 			if ( iCell )
 			{
@@ -2274,10 +2274,10 @@ bool CChar::Spell_TargCheck()
 	// Is the spells target or target pos valid ?
 
 	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
-	if ( pSpellDef == NULL )
+	if ( !pSpellDef )
 	{
-		DEBUG_ERR(( "Bad Spell %d, uid 0%0lx\n", m_atMagery.m_Spell, (DWORD) GetUID()));
-		return( false );
+		DEBUG_ERR(("Bad Spell %d, uid 0%0lx\n", m_atMagery.m_Spell, static_cast<DWORD>(GetUID())));
+		return false;
 	}
 
 	CObjBase * pObj = m_Act_Targ.ObjFind();

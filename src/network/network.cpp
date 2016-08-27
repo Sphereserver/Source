@@ -27,7 +27,7 @@ NetworkManager g_NetworkManager;
 void xRecordPacketData(const CClient* client, const BYTE* data, size_t length, LPCTSTR heading)
 {
 #ifdef _DUMPSUPPORT
-	if (client->GetAccount() != NULL && strnicmp(client->GetAccount()->GetName(), (LPCTSTR) g_Cfg.m_sDumpAccPackets, strlen( client->GetAccount()->GetName())))
+	if (client->m_pAccount && strnicmp(client->m_pAccount->GetName(), (LPCTSTR)g_Cfg.m_sDumpAccPackets, strlen(client->m_pAccount->GetName())))
 		return;
 #else
 	if (!(g_Cfg.m_wDebugFlags & DEBUGF_PACKETS))
@@ -41,7 +41,7 @@ void xRecordPacketData(const CClient* client, const BYTE* data, size_t length, L
 void xRecordPacket(const CClient* client, Packet* packet, LPCTSTR heading)
 {
 #ifdef _DUMPSUPPORT
-	if (client->GetAccount() != NULL && strnicmp(client->GetAccount()->GetName(), (LPCTSTR) g_Cfg.m_sDumpAccPackets, strlen( client->GetAccount()->GetName())))
+	if (client->m_pAccount && strnicmp(client->m_pAccount->GetName(), (LPCTSTR)g_Cfg.m_sDumpAccPackets, strlen(client->m_pAccount->GetName())))
 		return;
 #else
 	if (!(g_Cfg.m_wDebugFlags & DEBUGF_PACKETS))
@@ -59,8 +59,8 @@ void xRecordPacket(const CClient* client, Packet* packet, LPCTSTR heading)
 	// build file name
 	TCHAR fname[64];
 	strcpy(fname, "packets_");
-	if (client->GetAccount())
-		strcat(fname, client->GetAccount()->GetName());
+	if (client->m_pAccount)
+		strcat(fname, client->m_pAccount->GetName());
 	else
 	{
 		strcat(fname, "(");
@@ -1346,7 +1346,7 @@ void NetworkIn::tick(void)
 		client->m_packetExceptions++;
 		if (client->m_packetExceptions > 10 && client->m_client != NULL)
 		{
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%lx:Disconnecting client from account '%s' since it is causing exceptions problems\n", client->id(), client->m_client->GetAccount() ? client->m_client->GetAccount()->GetName() : "");
+			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%lx:Disconnecting client from account '%s' since it is causing exceptions problems\n", client->id(), client->m_client->m_pAccount ? client->m_client->m_pAccount->GetName() : "");
 			client->m_client->addKick(&g_Serv, false);
 		}
 
@@ -3339,7 +3339,7 @@ bool NetworkInput::processGameClientData(NetState* state, Packet* buffer)
 	state->m_packetExceptions++;
 	if (state->m_packetExceptions > 10)
 	{
-		g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%lx:Disconnecting client from account '%s' since it is causing exceptions problems\n", state->id(), client != NULL && client->GetAccount() ? client->GetAccount()->GetName() : "");
+		g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%lx:Disconnecting client from account '%s' since it is causing exceptions problems\n", state->id(), client && client->m_pAccount ? client->m_pAccount->GetName() : "");
 		if (client != NULL)
 			client->addKick(&g_Serv, false);
 		else

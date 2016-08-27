@@ -38,13 +38,13 @@ void CChar::ClearPlayer()
 	if ( g_Serv.m_iModeCode != SERVMODE_Exiting )
 	{
 		if ( m_pPlayer->m_pAccount )
-			DEBUG_WARN(("Player delete '%s' name '%s'\n", m_pPlayer->GetAccount()->GetName(), GetName()));
+			DEBUG_WARN(("Player delete '%s' name '%s'\n", m_pPlayer->m_pAccount->GetName(), GetName()));
 		else
 			DEBUG_WARN(("Player delete from account name '%s'\n", GetName()));
 	}
 
 	// Is this valid ?
-	m_pPlayer->GetAccount()->DetachChar( this );
+	m_pPlayer->m_pAccount->DetachChar( this );
 	delete m_pPlayer;
 	m_pPlayer = NULL;
 }
@@ -58,10 +58,10 @@ bool CChar::SetPlayerAccount(CAccount *pAccount)
 
 	if ( m_pPlayer )
 	{
-		if ( m_pPlayer->GetAccount() == pAccount )
+		if ( m_pPlayer->m_pAccount == pAccount )
 			return true;
 
-		DEBUG_ERR(("SetPlayerAccount '%s' already set '%s' != '%s'!\n", GetName(), m_pPlayer->GetAccount()->GetName(), pAccount->GetName()));
+		DEBUG_ERR(("SetPlayerAccount '%s' already set '%s' != '%s'!\n", GetName(), m_pPlayer->m_pAccount->GetName(), pAccount->GetName()));
 		return false;
 	}
 
@@ -98,19 +98,19 @@ bool CChar::SetNPCBrain( NPCBRAIN_TYPE NPCBrain )
 	if ( NPCBrain == NPCBRAIN_NONE )
 		return false;
 
-	if ( m_pPlayer != NULL )
+	if ( m_pPlayer )
 	{
-		if ( m_pPlayer->GetAccount() != NULL )
-			DEBUG_ERR(( "SetNPCBrain to Player Account '%s'\n", m_pPlayer->GetAccount()->GetName() ));
+		if ( m_pPlayer->m_pAccount )
+			DEBUG_ERR(("SetNPCBrain to Player Account '%s'\n", m_pPlayer->m_pAccount->GetName()));
 		else
-			DEBUG_ERR(( "SetNPCBrain to Player Name '%s'\n", GetName()));
+			DEBUG_ERR(("SetNPCBrain to Player Name '%s'\n", GetName()));
 		return false;
 	}
 
-	if ( m_pNPC == NULL )
-		m_pNPC = new CCharNPC( this, NPCBrain );
-	else
+	if ( m_pNPC )
 		m_pNPC->m_Brain = NPCBrain;		// just replace existing brain
+	else
+		m_pNPC = new CCharNPC(this, NPCBrain);
 	return true;
 }
 
@@ -149,12 +149,6 @@ CCharPlayer::CCharPlayer(CChar *pChar, CAccount *pAccount) : m_pAccount(pAccount
 CCharPlayer::~CCharPlayer()
 {
 	m_Speech.RemoveAll();
-}
-
-CAccountRef CCharPlayer::GetAccount() const
-{
-	ASSERT( m_pAccount );
-	return( m_pAccount );
 }
 
 bool CCharPlayer::getKrToolbarStatus()
@@ -279,7 +273,7 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 	ADDTOCALLSTACK("CCharPlayer::r_WriteVal");
 	EXC_TRY("WriteVal");
 
-	if ( !pChar || !GetAccount() )
+	if ( !pChar || !m_pAccount )
 		return false;
 
 	if ( !strnicmp(pszKey, "SKILLCLASS.", 11) )
@@ -309,7 +303,7 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 	switch ( FindTableHeadSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
 		case CPC_ACCOUNT:
-			sVal = GetAccount()->GetName();
+			sVal = m_pAccount->GetName();
 			return( true );
 		case CPC_DEATHS:
 			sVal.FormatVal( m_wDeaths );
@@ -539,7 +533,7 @@ void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s )
 	UNREFERENCED_PARAMETER(pChar);
 	EXC_TRY("r_WriteChar");
 
-	s.WriteKey("ACCOUNT", GetAccount()->GetName());
+	s.WriteKey("ACCOUNT", m_pAccount->GetName());
 
 	if ( m_wDeaths )
 		s.WriteKeyVal( "DEATHS", m_wDeaths );
@@ -551,7 +545,7 @@ void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s )
 		s.WriteKeyVal( "PFLAG", m_pflag );
 	if ( m_speedMode )
 		s.WriteKeyVal("SPEEDMODE", m_speedMode);
-	if (( GetAccount()->GetResDisp() >= RDS_KR ) && m_bKrToolbarEnabled )
+	if ( (m_pAccount->GetResDisp() >= RDS_KR) && m_bKrToolbarEnabled )
 		s.WriteKeyVal("KRTOOLBARSTATUS", m_bKrToolbarEnabled);
 
 	EXC_SET("saving dynamic speech");
@@ -656,8 +650,8 @@ bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc )
 				}
 			}
 
-			CAccount * pAccount = m_pPlayer->GetAccount();
-			ASSERT(pAccount != NULL);
+			CAccount *pAccount = m_pPlayer->m_pAccount;
+			ASSERT(pAccount);
 
 			if ( !s.HasArgs() )
 			{

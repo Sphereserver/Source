@@ -159,7 +159,7 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 		case IT_EQ_BANK_BOX:
 		case IT_EQ_VENDOR_BOX:
 			if ( !fScript )
-				g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%lx:Cheater '%s' is using 3rd party tools to open bank box\n", GetSocketID(), GetAccount()->GetName());
+				g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%lx:Cheater '%s' is using 3rd party tools to open bank box\n", GetSocketID(), m_pAccount->GetName());
 			return false;
 
 		case IT_CONTAINER_LOCKED:

@@ -975,9 +975,9 @@ bool CChar::CanSee( const CObjBaseTemplate *pObj ) const
 							StackDebugInformation::printStackTrace();
 #endif
 							g_Log.EventDebug("%lx:EF_FixCanSeeInClosedConts prevents %s, (0%lx, '%s') from seeing item uid=0%lx (%s, '%s') in container uid=0%lx (%s, '%s')\n",
-								pClient->GetSocketID(), pClient->GetAccount()->GetName(), (DWORD)GetUID(), GetName(false),
-								(DWORD)pItem->GetUID(), pItem->GetResourceName(), pItem->GetName(),
-								(DWORD)pObjCont->GetUID(), pObjCont->GetResourceName(), pObjCont->GetName());
+								pClient->GetSocketID(), pClient->m_pAccount->GetName(), static_cast<DWORD>(GetUID()), GetName(false),
+								static_cast<DWORD>(pItem->GetUID()), pItem->GetResourceName(), pItem->GetName(),
+								static_cast<DWORD>(pObjCont->GetUID()), pObjCont->GetResourceName(), pObjCont->GetName());
 						}
 #endif
 
@@ -1516,12 +1516,12 @@ bool CChar::CanSeeLOS_New( const CPointMap &ptDst, CPointMap *pptBlock, int iMax
 
 						if ( ((wTFlags & (UFLAG1_WALL|UFLAG1_BLOCK|UFLAG2_PLATFORM)) || pItemDef->m_Can & CAN_I_BLOCKLOS) && !((wTFlags & UFLAG2_WINDOW) && (flags & LOS_NB_WINDOWS)) )
 						{
-							WARNLOS(("pItem %0lx(%0x) %d,%d,%d - %d\n", (DWORD)pItem->GetUID(), pItem->GetDispID(), pItem->GetTopPoint().m_x, pItem->GetTopPoint().m_y, pItem->GetTopPoint().m_z, Height));
+							WARNLOS(("pItem %0lx(%0x) %d,%d,%d - %d\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetDispID(), pItem->GetTopPoint().m_x, pItem->GetTopPoint().m_y, pItem->GetTopPoint().m_z, Height));
 							min_z = pItem->GetTopZ();
 							max_z = minimum(Height + min_z, UO_SIZE_Z);
 							WARNLOS(("wTFlags(0%lx)\n", wTFlags));
 
-							WARNLOS(("pItem %0lx(%0x) Z check: %d,%d (Now: %d) (Dest: %d).\n", (DWORD)pItem->GetUID(), pItem->GetDispID(), min_z, max_z, ptNow.m_z, ptDst.m_z));
+							WARNLOS(("pItem %0lx(%0x) Z check: %d,%d (Now: %d) (Dest: %d).\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetDispID(), min_z, max_z, ptNow.m_z, ptDst.m_z));
 							if ( min_z <= ptNow.m_z && max_z >= ptNow.m_z )
 							{
 								if ( ptNow.m_x != ptDst.m_x || ptNow.m_y != ptDst.m_y || min_z > ptDst.m_z || max_z < ptDst.m_z )

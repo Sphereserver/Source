@@ -536,7 +536,7 @@ int CWebPageDef::ServPageRequest( CClient * pClient, LPCTSTR pszURLArgs, CGTime 
 
 	if ( m_privlevel )
 	{
-		if ( pClient->GetAccount() == NULL )
+		if ( !pClient->m_pAccount )
 			return 401;	// Authorization required
 		if ( pClient->GetPrivLevel() < m_privlevel )
 			return 403;	// Forbidden

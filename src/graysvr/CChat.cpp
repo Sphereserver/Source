@@ -1380,5 +1380,5 @@ const CClient * CChatChanMember::GetClient() const
 LPCTSTR CChatChanMember::GetChatName() const
 {
 	ADDTOCALLSTACK("CChatChanMember::GetChatName");
-	return( GetClient()->GetAccount()->m_sChatName );
+	return( GetClient()->m_pAccount->m_sChatName );
 }
