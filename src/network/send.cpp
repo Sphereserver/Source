@@ -804,7 +804,7 @@ PacketItemContainer::PacketItemContainer(const CClient* target, const CItem* ite
 	writeInt16(pt.m_x);
 	writeInt16(pt.m_y);
 
-	if (target->m_NetState->isClientVersion(MINCLIVER_ITEMGRID) || target->m_NetState->isClientKR() || target->m_NetState->isClientEnhanced())
+	if (target->m_ContainerGridEnabled)
 		writeByte(item->GetContainedGridIndex());
 
 	writeInt32(container->GetUID());
@@ -830,19 +830,17 @@ void PacketItemContainer::completeForTarget(const CClient* target, const CItem* 
 {
 	ADDTOCALLSTACK("PacketItemContainer::completeForTarget");
 	
-	bool shouldIncludeGrid = (target->m_NetState->isClientVersion(MINCLIVER_ITEMGRID) || target->m_NetState->isClientKR() || target->m_NetState->isClientEnhanced());
-
 	if (getLength() >= 20)
 	{
 		// only append the additional information if it needs to be changed
-		bool containsGrid = getLength() == 21;
-		if (shouldIncludeGrid == containsGrid)
+		bool containsGrid = (getLength() == 21) ? true : false;
+		if (target->m_ContainerGridEnabled == containsGrid)
 			return;
 	}
 
 	seek(14);
 
-	if (shouldIncludeGrid)
+	if (target->m_ContainerGridEnabled)
 		writeByte(0);
 
 	writeInt32(spellbook->GetUID());
@@ -1069,7 +1067,6 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 	initLength();
 	skip(2);
 
-	bool includeGrid = (target->m_NetState->isClientVersion(MINCLIVER_ITEMGRID) || target->m_NetState->isClientKR() || target->m_NetState->isClientEnhanced());
 	bool isLayerSent[LAYER_HORSE];
 	memset(isLayerSent, 0, sizeof(isLayerSent));
 	size_t count = 0;
@@ -1144,7 +1141,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 		writeInt16(amount);
 		writeInt16(pos.m_x);
 		writeInt16(pos.m_y);
-		if ( includeGrid )
+		if ( target->m_ContainerGridEnabled )
 			writeByte(item->GetContainedGridIndex());
 		writeInt32(container->GetUID());
 		writeInt16(static_cast<WORD>(hue));
@@ -1169,8 +1166,6 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItem* spell
 {
 	ADDTOCALLSTACK("PacketItemContents::PacketItemContents(2)");
 
-	bool includeGrid = (target->m_NetState->isClientVersion(MINCLIVER_ITEMGRID) || target->m_NetState->isClientKR() || target->m_NetState->isClientEnhanced());
-
 	initLength();
 	skip(2);
 
@@ -1186,7 +1181,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItem* spell
 		writeInt16(static_cast<WORD>(i));
 		writeInt16(0);
 		writeInt16(0);
-		if (includeGrid)
+		if (target->m_ContainerGridEnabled)
 			writeByte(static_cast<BYTE>(count));
 		writeInt32(spellbook->GetUID());
 		writeInt16(HUE_DEFAULT);
@@ -1207,7 +1202,6 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItemContain
 {
 	ADDTOCALLSTACK("PacketItemContents::PacketItemContents(3)");
 
-	bool includeGrid = (target->m_NetState->isClientVersion(MINCLIVER_ITEMGRID) || target->m_NetState->isClientKR() || target->m_NetState->isClientEnhanced());
 	const CSpellDef* spellDefinition;
 
 	initLength();
@@ -1229,7 +1223,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItemContain
 		writeInt16(item->m_itSpell.m_spell);
 		writeInt16(0);
 		writeInt16(0);
-		if (includeGrid)
+		if (target->m_ContainerGridEnabled)
 			writeByte(static_cast<BYTE>(count));
 		writeInt32(spellbook->GetUID());
 		writeInt16(static_cast<WORD>(HUE_DEFAULT));

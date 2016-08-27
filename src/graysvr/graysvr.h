@@ -992,6 +992,7 @@ public:
 	CONNECT_TYPE m_iConnectType;	// what sort of a connection is this ?
 	CAccount * m_pAccount;			// The account name. we logged in on
 	bool m_TooltipEnabled;			// is tooltip feature enabled on this client?
+	bool m_ContainerGridEnabled;	// is container grid feature enabled on this client?
 
 	CServTime m_timeLogin;					// World clock of login time. "LASTCONNECTTIME"
 	CServTime m_timeLastEvent;				// Last time we got event from client.

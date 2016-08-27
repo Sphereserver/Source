@@ -384,11 +384,7 @@ size_t PacketItemDropReq::getExpectedLength(NetState* net, Packet* packet)
 	ADDTOCALLSTACK("PacketItemDropReq::getExpectedLength");
 	UNREFERENCED_PARAMETER(packet);
 
-	// different size depending on client
-	if (net != NULL && (net->isClientVersion(MINCLIVER_ITEMGRID) || net->isClientKR() || net->isClientEnhanced()))
-		return 15;
-
-	return 14;
+	return (net && net->m_client->m_ContainerGridEnabled) ? 15 : 14;
 }
 
 bool PacketItemDropReq::onReceive(NetState* net)
@@ -407,7 +403,7 @@ bool PacketItemDropReq::onReceive(NetState* net)
 	BYTE z = readByte();
 
 	BYTE grid = 0;
-	if ( net->isClientVersion(MINCLIVER_ITEMGRID) || net->isClientKR() || net->isClientEnhanced() )
+	if ( client->m_ContainerGridEnabled )
 	{
 		grid = readByte();
 

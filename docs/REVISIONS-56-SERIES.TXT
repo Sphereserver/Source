@@ -182,3 +182,6 @@ Added: ISNEARTYPE function now supports an new 4th argument to only search objec
 26-08-2016, Coruja
 Changed: Some internal improvements on Tracking skill.
 [sphere_msgs.scp]: Updated messages 'tracking_*'.
+
+27-08-2016, Coruja
+Changed: Small improvements on container grid engine.

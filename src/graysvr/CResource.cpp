@@ -2234,6 +2234,7 @@ int CResource::GetPacketFlag( bool bCharlist, CClient *pClient, RESDISPLAY_VERSI
 			if ( pClient->m_NetState->isClientKR() || pClient->m_NetState->isClientEnhanced() )	// tooltips must be always enabled on enhanced clients
 				retValue |= 0x020;
 			pClient->m_TooltipEnabled = (retValue & 0x020);
+			pClient->m_ContainerGridEnabled = (pClient->m_NetState->isClientVersion(MINCLIVER_ITEMGRID) || pClient->m_NetState->isClientKR() || pClient->m_NetState->isClientEnhanced());
 		}
 
 		bResOk = ( res >= RDS_SE );
