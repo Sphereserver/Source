@@ -1038,7 +1038,7 @@ bool CClient::Cmd_Skill_Tracking( WORD track_sel, bool bExec )
 		item[2].m_sText = g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_SKILLMENU_MONSTERS);
 		item[3].m_id = ITEMID_TRACK_MAN;
 		item[3].m_color = 0;
-		item[3].m_sText = g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_SKILLMENU_HUMANS);
+		item[3].m_sText = g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_SKILLMENU_NPCS);
 		item[4].m_id = ITEMID_TRACK_WOMAN;
 		item[4].m_color = 0;
 		item[4].m_sText = g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_SKILLMENU_PLAYERS);
@@ -1088,13 +1088,7 @@ bool CClient::Cmd_Skill_Tracking( WORD track_sel, bool bExec )
 			if ( pChar == m_pChar )
 				continue;
 
-			NPCBRAIN_TYPE brain_type = pChar->GetNPCBrain();
-			if ( (brain_type == NPCBRAIN_BERSERK) || (brain_type == NPCBRAIN_DRAGON) )
-				brain_type = NPCBRAIN_MONSTER;
-			else if ( (brain_type == NPCBRAIN_HEALER) || (brain_type == NPCBRAIN_GUARD) || (brain_type == NPCBRAIN_BANKER) || (brain_type == NPCBRAIN_VENDOR) || (brain_type == NPCBRAIN_STABLE) )
-				brain_type = NPCBRAIN_HUMAN;
-
-			if ( brain_type != track_type )			// no match
+			if ( pChar->GetNPCBrain() != track_type )
 				continue;
 			if ( pChar->IsStatFlag(STATF_DEAD) )	// can't track ghosts
 				continue;
@@ -1149,24 +1143,21 @@ bool CClient::Cmd_Skill_Tracking( WORD track_sel, bool bExec )
 		}
 		else
 		{
+			// Tracking failed or cancelled
 			m_pChar->Skill_UseQuick(SKILL_TRACKING, 10 + Calc_GetRandLLVal(30));
+
+			static LPCTSTR const sm_Track_FailMsg[] =
+			{
+				g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_FAIL_ANIMAL),
+				g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_FAIL_MONSTER),
+				g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_FAIL_PEOPLE),
+				g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_FAIL_PEOPLE)
+			};
+
+			if ( sm_Track_FailMsg[track_sel - 1] )
+				SysMessage(sm_Track_FailMsg[track_sel - 1]);
 		}
 	}
-
-	// Tracking failed or cancelled
-	static LPCTSTR const sm_Track_FailMsg[] =
-	{
-		g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_CANCEL),
-		g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_FAIL_ANIMAL),
-		g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_FAIL_MONSTER),
-		g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_FAIL_HUMAN),
-		g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_FAIL_HUMAN)
-	};
-
-	if ( track_sel >= COUNTOF(sm_Track_FailMsg) )
-		track_sel = COUNTOF(sm_Track_FailMsg) - 1;
-
-	SysMessage(sm_Track_FailMsg[track_sel]);
 	return false;
 }
 
