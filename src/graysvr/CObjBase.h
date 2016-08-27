@@ -3227,7 +3227,7 @@ public:
 	bool SetPlayerAccount( CAccount * pAccount );
 	bool SetPlayerAccount( LPCTSTR pszAccount );
 	bool SetNPCBrain( NPCBRAIN_TYPE NPCBrain );
-	NPCBRAIN_TYPE GetNPCBrain( bool fDefault = true ) const; // return 1 for animal, 2 for monster, 3 for NPC humans and PCs
+	NPCBRAIN_TYPE GetNPCBrain(bool bGroupTypes = true) const;
 	void ClearNPC();
 	void ClearPlayer();
 

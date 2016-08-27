@@ -102,7 +102,7 @@ LPCTSTR CChar::Guild_AbbrevBracket( MEMORY_TYPE MemType ) const
 bool CChar::Noto_IsMurderer() const
 {
 	ADDTOCALLSTACK("CChar::Noto_IsMurderer");
-	return( m_pPlayer && m_pPlayer->m_wMurders > g_Cfg.m_iMurderMinCount );
+	return (m_pPlayer && (m_pPlayer->m_wMurders > g_Cfg.m_iMurderMinCount));
 }
 
 // I'm evil?
@@ -128,7 +128,10 @@ bool CChar::Noto_IsEvil() const
 	if ( Noto_IsMurderer() )
 		return true;
 
-	switch ( GetNPCBrain() )
+	if ( m_pPlayer )
+		return (iKarma < g_Cfg.m_iPlayerKarmaEvil);
+
+	switch ( GetNPCBrain(false) )
 	{
 		case NPCBRAIN_MONSTER:
 		case NPCBRAIN_DRAGON:
@@ -138,33 +141,28 @@ bool CChar::Noto_IsEvil() const
 		case NPCBRAIN_ANIMAL:
 			return (iKarma <= -800);
 		default:
-			break;
+			return (iKarma < -3000);
 	}
-
-	if ( m_pPlayer )
-		return (iKarma < g_Cfg.m_iPlayerKarmaEvil);
-
-	return (iKarma < -3000);
 }
 
 bool CChar::Noto_IsNeutral() const
 {
 	ADDTOCALLSTACK("CChar::Noto_IsNeutral");
 	short iKarma = Stat_GetAdjusted(STAT_KARMA);
-	switch ( GetNPCBrain() )
+	if ( m_pPlayer )
+		return (iKarma < g_Cfg.m_iPlayerKarmaNeutral);
+
+	switch ( GetNPCBrain(false) )
 	{
 		case NPCBRAIN_MONSTER:
+		case NPCBRAIN_DRAGON:
 		case NPCBRAIN_BERSERK:
 			return (iKarma <= 0);
 		case NPCBRAIN_ANIMAL:
 			return (iKarma <= 100);
 		default:
-			break;
+			return (iKarma < 0);
 	}
-	if ( m_pPlayer )
-		return (iKarma < g_Cfg.m_iPlayerKarmaNeutral);
-
-	return (iKarma < 0);
 }
 
 NOTO_TYPE CChar::Noto_GetFlag(const CChar *pCharViewer, bool bAllowInvul, bool bGetColor) const
@@ -1059,7 +1057,7 @@ bool CChar::Memory_OnTick( CItemMemory * pMemory )
 void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 {
 	ADDTOCALLSTACK("CChar::OnNoticeCrime");
-	if ( !pCriminal || pCriminal == this || pCriminal == pCharMark || pCriminal->IsPriv(PRIV_GM) || pCriminal->GetNPCBrain() == NPCBRAIN_GUARD )
+	if ( !pCriminal || pCriminal == this || pCriminal == pCharMark || pCriminal->IsPriv(PRIV_GM) || pCriminal->GetNPCBrain(false) == NPCBRAIN_GUARD )
 		return;
 	NOTO_TYPE iNoto = pCharMark->Noto_GetFlag(pCriminal);
 	if ( iNoto == NOTO_CRIMINAL || iNoto == NOTO_EVIL )

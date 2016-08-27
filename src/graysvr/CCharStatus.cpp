@@ -464,60 +464,30 @@ bool CChar::IsSwimming() const
 	return false;
 }
 
-NPCBRAIN_TYPE CChar::GetNPCBrain(bool fDefault) const
+NPCBRAIN_TYPE CChar::GetNPCBrain(bool bGroupTypes) const
 {
 	ADDTOCALLSTACK("CChar::GetNPCBrain");
-	// return 1 for animal, 2 for monster, 3 for NPC humans and PCs
-	// For tracking and other purposes.
+	if ( !m_pNPC )
+		return NPCBRAIN_NONE;
 
-	if ( m_pNPC && fDefault )
+	if ( bGroupTypes )
 	{
-		if ( (m_pNPC->m_Brain >= NPCBRAIN_HUMAN) && (m_pNPC->m_Brain <= NPCBRAIN_STABLE) )
-			return NPCBRAIN_HUMAN;
-
-		return m_pNPC->m_Brain;
-	}
-
-	// Handle the exceptions
-	CREID_TYPE id = GetDispID();
-	if ( id >= CREID_IRON_GOLEM )
-	{
-		switch ( id )
+		switch ( m_pNPC->m_Brain )
 		{
-			case CREID_SERPENTINE_DRAGON:
-			case CREID_SKELETAL_DRAGON:
-			case CREID_REPTILE_LORD:
-			case CREID_ANCIENT_WYRM:
-			case CREID_SWAMP_DRAGON1:
-			case CREID_SWAMP_DRAGON2:
-				return NPCBRAIN_DRAGON;
+			case NPCBRAIN_HEALER:
+			case NPCBRAIN_GUARD:
+			case NPCBRAIN_BANKER:
+			case NPCBRAIN_VENDOR:
+			case NPCBRAIN_STABLE:
+				return NPCBRAIN_HUMAN;
+			case NPCBRAIN_BERSERK:
+			case NPCBRAIN_DRAGON:
+				return NPCBRAIN_MONSTER;
 			default:
 				break;
 		}
-		return NPCBRAIN_MONSTER;
 	}
-
-	if ( id == CREID_VORTEX || id == CREID_BLADES )
-		return NPCBRAIN_BERSERK;
-
-	if ( id >= CREID_MAN )
-		return NPCBRAIN_HUMAN;
-
-	if ( id >= CREID_HORSE1 )
-		return NPCBRAIN_ANIMAL;
-
-	switch ( id )
-	{
-		case CREID_EAGLE:
-		case CREID_BIRD:
-		case CREID_GORILLA:
-		case CREID_Snake:
-		case CREID_Bull_Frog:
-		case CREID_Dolphin:
-			return NPCBRAIN_ANIMAL;
-		default:
-			return NPCBRAIN_MONSTER;
-	}
+	return m_pNPC->m_Brain;
 }
 
 LPCTSTR CChar::GetPronoun() const
@@ -2106,7 +2076,7 @@ bool CChar::IsTakeCrime( const CItem *pItem, CChar ** ppCharMark ) const
 		return false;
 
 	// Pack animal has no owner ?
-	if ( pCharMark->m_pNPC && pCharMark->GetNPCBrain() == NPCBRAIN_ANIMAL && !pCharMark->IsStatFlag(STATF_Pet) )
+	if ( (pCharMark->GetNPCBrain(false) == NPCBRAIN_ANIMAL) && !pCharMark->IsStatFlag(STATF_Pet) )
 		return false;
 
 	return true;
