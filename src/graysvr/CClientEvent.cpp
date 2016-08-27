@@ -1596,7 +1596,7 @@ void CClient::Event_Talk_Common(TCHAR *szText)
 			pCharAlt = pChar;
 			iAltDist = 1;
 		}
-		else if ( pChar->IsClient() && (iAltDist >= 2) )	// PC's have higher priority
+		else if ( pChar->m_pClient && (iAltDist >= 2) )	// PC's have higher priority
 		{
 			pCharAlt = pChar;
 			iAltDist = 2;	// high priority
@@ -2363,7 +2363,7 @@ void CClient::Event_AOSPopupMenuSelect(DWORD uid, WORD EntryTag)	//do something 
 	switch ( EntryTag )
 	{
 		case POPUP_PAPERDOLL:
-			m_pChar->GetClient()->addCharPaperdoll(pChar);
+			m_pChar->m_pClient->addCharPaperdoll(pChar);
 			break;
 
 		case POPUP_BACKPACK:
@@ -2371,7 +2371,7 @@ void CClient::Event_AOSPopupMenuSelect(DWORD uid, WORD EntryTag)	//do something 
 			break;
 
 		case POPUP_PARTY_ADD:
-			m_pChar->GetClient()->OnTarg_Party_Add(pChar);
+			m_pChar->m_pClient->OnTarg_Party_Add(pChar);
 			break;
 
 		case POPUP_PARTY_REMOVE:

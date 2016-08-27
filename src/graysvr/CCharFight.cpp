@@ -1301,7 +1301,7 @@ int CChar::Skill_Snooping( SKTRIG_TYPE stage )
 
 	if ( stage == SKTRIG_SUCCESS )
 	{
-		if ( IsClient())
+		if ( m_pClient )
 			m_pClient->addContainerSetup( pCont );	// open the container
 	}
 	return( 0 );
@@ -1623,7 +1623,7 @@ bool CChar::OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fCommandPet, bool
 	// Are they a criminal for it ? Is attacking me a crime ?
 	if ( Noto_GetFlag(pCharSrc) == NOTO_GOOD )
 	{
-		if ( IsClient())	// I decide if this is a crime.
+		if ( m_pClient )	// I decide if this is a crime.
 			OnNoticeCrime( pCharSrc, this );
 		else		
 		{
@@ -2043,21 +2043,21 @@ effect_bounce:
 	// Apply damage
 	SoundChar(CRESND_GETHIT);
 	UpdateStatVal(STAT_STR, static_cast<short>(-iDmg));
-	if ( pSrc->IsClient() )
-		pSrc->GetClient()->addHitsUpdate(this);		// always send updates to src
+	if ( pSrc->m_pClient )
+		pSrc->m_pClient->addHitsUpdate(this);		// always send updates to src
 
 	if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_DAMAGE )
 	{
-		if ( IsClient() )
+		if ( m_pClient )
 			m_pClient->addShowDamage( iDmg, static_cast<DWORD>(GetUID()) );
-		if ( pSrc->IsClient() && (pSrc != this) )
+		if ( pSrc->m_pClient && (pSrc != this) )
 			pSrc->m_pClient->addShowDamage( iDmg, static_cast<DWORD>(GetUID()) );
 		else
 		{
 			CChar * pSrcOwner = pSrc->NPC_PetGetOwner();
 			if ( pSrcOwner != NULL )
 			{
-				if ( pSrcOwner->IsClient() )
+				if ( pSrcOwner->m_pClient )
 					pSrcOwner->m_pClient->addShowDamage( iDmg, static_cast<DWORD>(GetUID()) );
 			}
 		}
@@ -2154,11 +2154,11 @@ void CChar::Memory_Fight_Start( const CChar * pTarg )
 
 		Memory_AddTypes( pMemory, MEMORY_FIGHT|MemTypes );// Update the fight status.
 	}
-	if ( IsClient() && m_Fight_Targ == pTarg->GetUID() && !IsSetCombatFlags(COMBAT_NODIRCHANGE))
+	if ( m_pClient && m_Fight_Targ == pTarg->GetUID() && !IsSetCombatFlags(COMBAT_NODIRCHANGE))
 	{
 		// This may be a useless command. How do i say the fight is over ?
 		// This causes the funny turn to the target during combat !
-		new PacketSwing(GetClient(), pTarg);
+		new PacketSwing(m_pClient, pTarg);
 	}
 	else
 	{
@@ -2442,8 +2442,8 @@ bool CChar::Fight_Attack( const CChar *pCharTarg, bool btoldByMaster )
 	{
 		StatFlag_Set(STATF_War);
 		UpdateModeFlag();
-		if ( IsClient() )
-			GetClient()->addPlayerWarMode();
+		if ( m_pClient )
+			m_pClient->addPlayerWarMode();
 	}
 
 	SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
@@ -2563,13 +2563,13 @@ bool CChar::Attacker_Add( CChar * pChar, INT64 threat )
 		//if ( GetTopSector()->GetCharComplexity() < 7 )
 		//{
 			sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKO), GetName(), pChar->GetName());
-			UpdateObjMessage(z, NULL, pChar->GetClient(), HUE_TEXT_DEF, TALKMODE_EMOTE);
+			UpdateObjMessage(z, NULL, pChar->m_pClient, HUE_TEXT_DEF, TALKMODE_EMOTE);
 		//}
 
-		if ( pChar->IsClient() && pChar->CanSee(this) )
+		if ( pChar->m_pClient && pChar->CanSee(this) )
 		{
 			sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKS), GetName());
-			pChar->GetClient()->addBarkParse(z, this, HUE_TEXT_DEF, TALKMODE_EMOTE);
+			pChar->m_pClient->addBarkParse(z, this, HUE_TEXT_DEF, TALKMODE_EMOTE);
 		}
 	}
 	return true;
@@ -3027,7 +3027,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	}
 
 	// Fix of the bounce back effect with dir update for clients to be able to run in combat easily
-	if ( IsClient() && IsSetCombatFlags(COMBAT_FACECOMBAT) )
+	if ( m_pClient && IsSetCombatFlags(COMBAT_FACECOMBAT) )
 	{
 		DIR_TYPE dirOpponent = GetDir(pCharTarg, m_dirFace);
 		if ( (dirOpponent != m_dirFace) && (dirOpponent != GetDirTurn(m_dirFace, -1)) && (dirOpponent != GetDirTurn(m_dirFace, 1)) )

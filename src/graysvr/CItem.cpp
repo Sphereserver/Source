@@ -303,14 +303,14 @@ CItem * CItem::GenerateScript( CChar * pSrc)
 		}
 	}
 
-	if (( pSrc && pSrc->IsClient() ) && ( IsTrigUsed(TRIGGER_ITEMCREATE) ))
+	if ( (pSrc && pSrc->m_pClient) && IsTrigUsed(TRIGGER_ITEMCREATE) )
 	{
 		CScriptTriggerArgs	args;
 		args.m_pO1 = this;
 		pSrc->OnTrigger("@ItemCreate", pSrc, &args);
 	}
 
-	return(this);
+	return this;
 }
 
 CItem * CItem::CreateHeader( TCHAR * pArg, CObjBase * pCont, bool fDupeCheck, CChar * pSrc )
@@ -768,7 +768,7 @@ int CItem::FixWeirdness()
 	{
 		case IT_EQ_TRADE_WINDOW:
 			// Should not exist except equipped.
-			if ( !IsItemEquipped() || GetEquipLayer() != LAYER_NONE || !pChar || !pChar->m_pPlayer || !pChar->IsClient() )
+			if ( !IsItemEquipped() || GetEquipLayer() != LAYER_NONE || !pChar || !pChar->m_pPlayer || !pChar->m_pClient )
 				return 0x2220;	// get rid of it.
 			break;
 

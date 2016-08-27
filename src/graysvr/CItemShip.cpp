@@ -257,7 +257,7 @@ bool CItemShip::Ship_MoveDelta(CPointBase pdelta)
 				else
 				{
 					CChar *pChar = static_cast<CChar *>(pObj);
-					if (pClient == pChar->GetClient())
+					if (pClient == pChar->m_pClient)
 						pClient->addPlayerView( ptOld );
 					else if ((tMe->GetTopPoint().GetDistSight(pt) <= tViewDist)
 						&& ( (tMe->GetTopPoint().GetDistSight(ptOld) > tViewDist) || !(pClient->GetNetState()->isClientVersion(MINCLIVER_HS) || pClient->GetNetState()->isClientEnhanced()) || IsSetOF(OF_NoSmoothSailing) ))

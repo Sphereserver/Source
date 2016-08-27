@@ -416,8 +416,9 @@ private:
 	CChatChanMember& operator=(const CChatChanMember& other);
 
 public:
-	CClient * GetClient();
-	const CClient * GetClient() const;
+	CClient *m_pClient;
+	CClient *GetClient();
+	const CClient *GetClient() const;
 
 	bool IsChatActive() const
 	{

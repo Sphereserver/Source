@@ -331,7 +331,7 @@ void CChat::DoCommand(CChatChanMember * pBy, LPCTSTR szMsg)
 
 	CGString sFrom;
 	CChatChannel * pChannel = pBy->GetChannel();
-	CClient * pByClient = pBy->GetClient();
+	CClient * pByClient = pBy->m_pClient;
 	ASSERT(pByClient != NULL);
 
 	switch ( FindTableSorted( pszCommand, sm_szCmd_Chat, COUNTOF(sm_szCmd_Chat)))
@@ -617,11 +617,11 @@ void CChat::CreateJoinChannel(CChatChanMember * pByMember, LPCTSTR pszName, LPCT
 	ADDTOCALLSTACK("CChat::CreateJoinChannel");
 	if ( ! IsValidName( pszName, false ))
 	{
-		pByMember->GetClient()->addChatSystemMessage( CHATMSG_InvalidConferenceName );
+		pByMember->m_pClient->addChatSystemMessage( CHATMSG_InvalidConferenceName );
 	}
 	else if (IsDuplicateChannelName(pszName))
 	{
-		pByMember->GetClient()->addChatSystemMessage( CHATMSG_AlreadyAConference );
+		pByMember->m_pClient->addChatSystemMessage( CHATMSG_AlreadyAConference );
 	}
 	else
 	{
@@ -652,7 +652,7 @@ bool CChat::JoinChannel(CChatChanMember * pMember, LPCTSTR pszChannel, LPCTSTR p
 {
 	ADDTOCALLSTACK("CChat::JoinChannel");
 	ASSERT(pMember != NULL);
-	CClient * pMemberClient = pMember->GetClient();
+	CClient * pMemberClient = pMember->m_pClient;
 	ASSERT(pMemberClient != NULL);
 
 	// Are we in a channel now?
@@ -724,8 +724,8 @@ void CChatChannel::WhoIs(LPCTSTR pszBy, LPCTSTR pszMember)
 	ADDTOCALLSTACK("CChatChannel::WhoIs");
 	CChatChanMember * pBy = FindMember(pszBy);
 	CChatChanMember * pMember = FindMember(pszMember);
-	CChar * pChar = pMember? pMember->GetClient()->GetChar() : NULL;
-	if (!pMember||!pChar)
+	CChar * pChar = pMember? pMember->m_pClient->GetChar() : NULL;
+	if (!pMember || !pChar)
 	{
 		pBy->SendChatMsg(CHATMSG_NoPlayer, pszMember);
 	}
@@ -858,9 +858,8 @@ void CChatChannel::RemoveMember(CChatChanMember * pMember)
 	for ( size_t i = 0; i < m_Members.GetCount(); )
 	{
 		// Tell the other clients in this channel (if any) you are leaving (including yourself)
-		CClient * pClient = m_Members[i]->GetClient();
-
-		if ( pClient == NULL )		//	auto-remove offline clients
+		CClient *pClient = m_Members[i]->m_pClient;
+		if (!pClient)		//	auto-remove offline clients
 		{
 			m_Members[i]->SetChannel(NULL);
 			m_Members.RemoveAt(i);
@@ -1053,7 +1052,7 @@ void CChatChannel::ChangePassword(CChatChanMember * pByMember, LPCTSTR pszPasswo
 	ADDTOCALLSTACK("CChatChannel::ChangePassword");
 	if (!IsModerator(pByMember->GetChatName()))
 	{
-		pByMember->GetClient()->addChatSystemMessage(CHATMSG_MustHaveOps);
+		pByMember->m_pClient->addChatSystemMessage(CHATMSG_MustHaveOps);
 	}
 	else
 	{
@@ -1226,20 +1225,17 @@ void CChatChanMember::SetChatActive()
 	if ( IsChatActive() )
 		return;
 
-	CClient * pClient = GetClient();
-	if ( pClient )
+	if ( m_pClient )
 	{
 		m_fChatActive = true;
 
 		// Tell the client to open the chat window dialog
-		pClient->addChatSystemMessage( CHATMSG_OpenChatWindow, GetChatName() );
+		m_pClient->addChatSystemMessage( CHATMSG_OpenChatWindow, GetChatName() );
 
 		// Send all existing channel names to this client
 		const CChatChannel *pChannel = g_Serv.m_Chats.GetFirstChannel();
 		for ( ; pChannel != NULL; pChannel = pChannel->GetNext() )
-		{
-			pClient->addChatSystemMessage(CHATMSG_SendChannelName, pChannel->GetName(), pChannel->GetModeString());
-		}
+			m_pClient->addChatSystemMessage(CHATMSG_SendChannelName, pChannel->GetName(), pChannel->GetModeString());
 	}
 }
 
@@ -1330,14 +1326,14 @@ void CChatChanMember::RenameChannel(LPCTSTR pszName)
 void CChatChanMember::SendChatMsg(CHATMSG_TYPE iType, LPCTSTR pszName1, LPCTSTR pszName2, CLanguageID lang )
 {
 	ADDTOCALLSTACK("CChatChanMember::SendChatMsg");
-	GetClient()->addChatSystemMessage(iType, pszName1, pszName2, lang );
+	m_pClient->addChatSystemMessage(iType, pszName1, pszName2, lang );
 }
 
 void CChatChanMember::ToggleReceiving()
 {
 	ADDTOCALLSTACK("CChatChanMember::ToggleReceiving");
 	m_fReceiving = !m_fReceiving;
-	GetClient()->addChatSystemMessage((m_fReceiving) ? CHATMSG_ReceivingPrivate : CHATMSG_NoLongerReceivingPrivate);
+	m_pClient->addChatSystemMessage((m_fReceiving) ? CHATMSG_ReceivingPrivate : CHATMSG_NoLongerReceivingPrivate);
 }
 
 void CChatChanMember::PermitWhoIs()
@@ -1362,23 +1358,23 @@ void CChatChanMember::ToggleWhoIs()
 {
 	ADDTOCALLSTACK("CChatChanMember::ToggleWhoIs");
 	SetWhoIs(!GetWhoIs());
-	SendChatMsg((GetWhoIs() == true) ? CHATMSG_ShowingName : CHATMSG_NotShowingName);
+	SendChatMsg(GetWhoIs() ? CHATMSG_ShowingName : CHATMSG_NotShowingName);
 }
 
-CClient * CChatChanMember::GetClient()
+CClient *CChatChanMember::GetClient()
 {
 	ADDTOCALLSTACK("CChatChanMember::GetClient");
-	return( static_cast <CClient*>( this ));
+	return static_cast<CClient *>(this);
 }
 
-const CClient * CChatChanMember::GetClient() const
+const CClient *CChatChanMember::GetClient() const
 {
-	ADDTOCALLSTACK("CChatChanMember::GetClient");
-	return( static_cast <const CClient*>( this ));
+	ADDTOCALLSTACK("CChatChanMember::GetClient(2)");
+	return static_cast<const CClient *>(this);
 }
 
 LPCTSTR CChatChanMember::GetChatName() const
 {
 	ADDTOCALLSTACK("CChatChanMember::GetChatName");
-	return( GetClient()->m_pAccount->m_sChatName );
+	return m_pClient->m_pAccount->m_sChatName;
 }

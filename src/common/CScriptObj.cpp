@@ -1822,11 +1822,11 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop( CScript &s, int iType, CTextConsole *
 						goto toomanyloops;
 
 					CChar * pChar = AreaChars.GetChar();
-					if ( pChar == NULL )
+					if ( !pChar )
 						break;
-					if ( ( iType & 0x10 ) && ( ! pChar->IsClient() ) )	// FORCLIENTS
+					if ( (iType & 0x10) && !pChar->m_pClient )	// FORCLIENTS
 						continue;
-					if ( ( iType & 0x20 ) && ( pChar->m_pPlayer == NULL ) )	// FORPLAYERS
+					if ( (iType & 0x20) && !pChar->m_pPlayer )	// FORPLAYERS
 						continue;
 					TRIGRET_TYPE iRet = pChar->OnTriggerRun( s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult );
 					if ( iRet == TRIGRET_BREAK )

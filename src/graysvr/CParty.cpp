@@ -174,8 +174,8 @@ void CPartyDef::AddStatsUpdate( CChar *pChar, PacketSend *pPacket )
 		CChar *pCharNow = m_Chars.GetChar(i).CharFind();
 		if ( pCharNow && pCharNow != pChar )
 		{
-			if ( pCharNow->IsClient() && pCharNow->CanSee(pChar) )
-				pPacket->send(pCharNow->GetClient());
+			if ( pCharNow->m_pClient && pCharNow->CanSee(pChar) )
+				pPacket->send(pCharNow->m_pClient);
 		}
 	}
 }
@@ -216,13 +216,11 @@ bool CPartyDef::SendMemberMsg( CChar *pCharDest, PacketSend *pPacket )
 		return true;
 	}
 
-	if ( pCharDest->IsClient() )
+	if ( pCharDest->m_pClient )
 	{
-		CClient *pClient = pCharDest->GetClient();
-		ASSERT(pClient);
-		pPacket->send(pClient);
+		pPacket->send(pCharDest->m_pClient);
 		if ( *pPacket->getData() == PARTYMSG_Remove )
-			pClient->addReSync();
+			pCharDest->m_pClient->addReSync();
 	}
 
 	return true;
@@ -318,7 +316,7 @@ bool CPartyDef::MessageEvent( CGrayUID uidDst, CGrayUID uidSrc, const NCHAR *pTe
 	}
 
 	if ( g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) )
-		g_Log.Event(LOGM_PLAYER_SPEAK, "%lx:'%s' Says '%s' in party to '%s'\n", pFrom->GetClient()->GetSocketID(), pFrom->GetName(), szText, pTo ? pTo->GetName() : "all");
+		g_Log.Event(LOGM_PLAYER_SPEAK, "%lx:'%s' Says '%s' in party to '%s'\n", pFrom->m_pClient->GetSocketID(), pFrom->GetName(), szText, pTo ? pTo->GetName() : "all");
 
 	sprintf(szText, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_MSG), pText);
 	PacketPartyChat cmd(pFrom, pText);
@@ -477,7 +475,7 @@ bool CPartyDef::AcceptEvent( CChar *pCharAccept, CGrayUID uidInviter, bool bForc
 	// Party master is only one that can add ! GetChar(0)
 
 	CChar *pCharInviter = uidInviter.CharFind();
-	if ( !pCharInviter || !pCharInviter->IsClient() || !pCharAccept || !pCharAccept->IsClient() || pCharInviter == pCharAccept )
+	if ( !pCharInviter || !pCharInviter->m_pClient || !pCharAccept || !pCharAccept->m_pClient || (pCharInviter == pCharAccept) )
 		return false;
 
 	CPartyDef *pParty = pCharInviter->m_pParty;

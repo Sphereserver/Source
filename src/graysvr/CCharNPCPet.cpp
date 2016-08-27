@@ -65,7 +65,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 	//  false = this is not a command we know.
 	//  if ( GetTargMode() == CLIMODE_TARG_PET_CMD ) it needs a target.
 
-	if ( !pSrc->IsClient() || !m_pNPC )
+	if ( !pSrc->m_pClient || !m_pNPC )
 		return false;
 
 	m_fIgnoreNextPetCmd = false;	// We clear this incase it's true from previous pet cmds.
@@ -306,7 +306,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 			if ( !NPC_IsVendor() )
 				return false;
 			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_ITEMS_BUY));
-			pSrc->GetClient()->addBankOpen(this, LAYER_VENDOR_EXTRA);
+			pSrc->m_pClient->addBankOpen(this, LAYER_VENDOR_EXTRA);
 			break;
 
 		case PC_PRICE:
@@ -319,7 +319,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 			if ( !NPC_IsVendor() )
 				return false;
 			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_ITEMS_SAMPLE));
-			pSrc->GetClient()->addBankOpen(this, LAYER_VENDOR_BUYS);
+			pSrc->m_pClient->addBankOpen(this, LAYER_VENDOR_BUYS);
 			break;
 
 		case PC_STOCK:
@@ -327,7 +327,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 			if ( !NPC_IsVendor() )
 				return false;
 			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_ITEMS_SELL));
-			pSrc->GetClient()->addBankOpen(this, LAYER_VENDOR_STOCK);
+			pSrc->m_pClient->addBankOpen(this, LAYER_VENDOR_STOCK);
 			break;
 
 		default:
@@ -472,7 +472,7 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar *pSrc, CObjBase *pObj, const C
 			break;
 
 		case PC_TRANSFER:
-			if ( !pCharTarg || !pCharTarg->IsClient() )
+			if ( !pCharTarg || !pCharTarg->m_pClient )
 				break;
 			if ( IsSetOF(OF_PetSlots) )
 			{
@@ -486,7 +486,7 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar *pSrc, CObjBase *pObj, const C
 			break;
 
 		case PC_PRICE:	// "PRICE" the vendor item.
-			if ( !pItemTarg || !NPC_IsVendor() || !pSrc->IsClient() )
+			if ( !pItemTarg || !NPC_IsVendor() || !pSrc->m_pClient )
 				break;
 			if ( IsDigit(pszArgs[0]) )	// did they name a price
 				return NPC_SetVendorPrice(pItemTarg, ATOI(pszArgs));

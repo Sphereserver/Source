@@ -310,8 +310,8 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 			return;
 		case LAYER_FLAG_Stuck:
 			StatFlag_Set( STATF_Freeze );
-			if ( IsClient() )
-				GetClient()->addBuff(BI_PARALYZE, 1075827, 1075828, static_cast<WORD>(pItem->GetTimerAdjusted()));
+			if ( m_pClient )
+				m_pClient->addBuff(BI_PARALYZE, 1075827, 1075828, static_cast<WORD>(pItem->GetTimerAdjusted()));
 			break;
 		default:
 			break;
@@ -418,10 +418,10 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 
 		case LAYER_FLAG_Stuck:
 			StatFlag_Clear( STATF_Freeze );
-			if ( IsClient() )
+			if ( m_pClient )
 			{
-				GetClient()->removeBuff(BI_PARALYZE);
-				GetClient()->addCharMove(this);		// immediately tell the client that now he's able to move (without this, it will be able to move only on next tick update)
+				m_pClient->removeBuff(BI_PARALYZE);
+				m_pClient->addCharMove(this);		// immediately tell the client that now he's able to move (without this, it will be able to move only on next tick update)
 			}
 			break;
 
@@ -540,7 +540,7 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 		if ( pItem->GetDefNum("NIGHTSIGHT", true))
 		{
 			StatFlag_Mod(STATF_NightSight, 0);
-			if ( IsClient() )
+			if ( m_pClient )
 				m_pClient->addLight();
 		}
 
@@ -673,8 +673,8 @@ void CChar::UpdateStatsFlag() const
 	if ( g_Serv.IsLoading() )
 		return;
 
-	if ( IsClient() )
-		GetClient()->addUpdateStatsFlag();
+	if ( m_pClient )
+		m_pClient->addUpdateStatsFlag();
 }
 
 // queue updates
@@ -687,8 +687,8 @@ void CChar::UpdateHitsFlag()
 
 	m_fStatusUpdate |= SU_UPDATE_HITS;
 
-	if ( IsClient() )
-		GetClient()->addUpdateHitsFlag();
+	if ( m_pClient )
+		m_pClient->addUpdateHitsFlag();
 }
 
 void CChar::UpdateModeFlag()
@@ -706,8 +706,8 @@ void CChar::UpdateManaFlag() const
 	if ( g_Serv.IsLoading() )
 		return;
 
-	if ( IsClient() )
-		GetClient()->addUpdateManaFlag();
+	if ( m_pClient )
+		m_pClient->addUpdateManaFlag();
 }
 
 void CChar::UpdateStamFlag() const
@@ -716,8 +716,8 @@ void CChar::UpdateStamFlag() const
 	if ( g_Serv.IsLoading() )
 		return;
 
-	if ( IsClient() )
-		GetClient()->addUpdateStamFlag();
+	if ( m_pClient )
+		m_pClient->addUpdateStamFlag();
 }
 
 void CChar::UpdateRegenTimers(STAT_TYPE iStat, short iVal)
@@ -1206,8 +1206,8 @@ void CChar::UpdateSpeedMode()
 	if ( g_Serv.IsLoading() || !m_pPlayer )
 		return;
 
-	if ( IsClient() )
-		GetClient()->addSpeedMode( m_pPlayer->m_speedMode );
+	if ( m_pClient )
+		m_pClient->addSpeedMode( m_pPlayer->m_speedMode );
 }
 
 void CChar::UpdateVisualRange()
@@ -1218,8 +1218,8 @@ void CChar::UpdateVisualRange()
 
 	DEBUG_WARN(("CChar::UpdateVisualRange called, m_iVisualRange is %d\n", m_iVisualRange));
 
-	if ( IsClient() )
-		GetClient()->addVisualRange( m_iVisualRange );
+	if ( m_pClient )
+		m_pClient->addVisualRange( m_iVisualRange );
 }
 
 // Who now sees this char ?
@@ -1531,9 +1531,8 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 
 	const CObjBaseTemplate * pObjTop = pItem->GetTopLevelObj();
 
-	if( IsClient() )
+	if ( m_pClient )
 	{
-		CClient * client = GetClient();
 		const CItem * pItemCont	= dynamic_cast <const CItem*> (pItem->GetParent());
 		
 		if ( pItemCont != NULL )
@@ -1553,8 +1552,8 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 
 			// protect from ,snoop - disallow picking from not opened containers
 			bool isInOpenedContainer = false;
-			CClient::OpenedContainerMap_t::iterator itContainerFound = client->m_openedContainers.find( pItemCont->GetUID().GetPrivateUID() );
-			if ( itContainerFound != client->m_openedContainers.end() )
+			CClient::OpenedContainerMap_t::iterator itContainerFound = m_pClient->m_openedContainers.find(pItemCont->GetUID().GetPrivateUID());
+			if ( itContainerFound != m_pClient->m_openedContainers.end() )
 			{
 				DWORD dwTopContainerUID = (((*itContainerFound).second).first).first;
 				DWORD dwTopMostContainerUID = (((*itContainerFound).second).first).second;
@@ -1588,7 +1587,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 				}
 			}
 
-			if( !isInOpenedContainer )
+			if ( !isInOpenedContainer )
 				return -1;
 		}
 	}
@@ -2021,7 +2020,7 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 	if (pItem->GetDefNum("NIGHTSIGHT", true))
 	{
 		StatFlag_Mod(STATF_NightSight, 1);
-		if (IsClient())
+		if (m_pClient)
 			m_pClient->addLight();
 	}
 
@@ -2088,13 +2087,13 @@ bool CChar::Reveal( DWORD dwFlags )
 	if ( !IsStatFlag(dwFlags) )
 		return false;
 
-	if ( IsClient() && GetClient()->m_pHouseDesign )
+	if ( m_pClient && m_pClient->m_pHouseDesign )
 	{
 		// No reveal whilst in house design (unless they somehow got out)
-		if ( GetClient()->m_pHouseDesign->GetDesignArea().IsInside2d(GetTopPoint()) )
+		if ( m_pClient->m_pHouseDesign->GetDesignArea().IsInside2d(GetTopPoint()) )
 			return false;
 
-		GetClient()->m_pHouseDesign->EndCustomize(true);
+		m_pClient->m_pHouseDesign->EndCustomize(true);
 	}
 
 	if ( (dwFlags & STATF_Sleeping) && IsStatFlag(STATF_Sleeping) )
@@ -2117,13 +2116,12 @@ bool CChar::Reveal( DWORD dwFlags )
 	}
 
 	StatFlag_Clear(dwFlags);
-	CClient *pClient = GetClient();
-	if ( pClient )
+	if ( m_pClient )
 	{
 		if ( !IsStatFlag(STATF_Hidden|STATF_Insubstantial) )
-			pClient->removeBuff(BI_HIDDEN);
+			m_pClient->removeBuff(BI_HIDDEN);
 		if ( !IsStatFlag(STATF_Invisible) )
-			pClient->removeBuff(BI_INVISIBILITY);
+			m_pClient->removeBuff(BI_INVISIBILITY);
 	}
 
 	if ( IsStatFlag(STATF_Invisible|STATF_Hidden|STATF_Insubstantial|STATF_Sleeping) )
@@ -2610,11 +2608,10 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 		}
 	}
 
-	CClient *pClient = GetClient();
-	if ( pClient && IsSetOF(OF_Buffs) )
+	if ( m_pClient && IsSetOF(OF_Buffs) )
 	{
-		pClient->removeBuff(BI_POISON);
-		pClient->addBuff(BI_POISON, 1017383, 1070722, static_cast<WORD>(pPoison->m_itSpell.m_spellcharges));
+		m_pClient->removeBuff(BI_POISON);
+		m_pClient->addBuff(BI_POISON, 1017383, 1070722, static_cast<WORD>(pPoison->m_itSpell.m_spellcharges));
 	}
 
 	SysMessageDefault(DEFMSG_JUST_BEEN_POISONED);
@@ -2905,22 +2902,21 @@ bool CChar::Death()
 		SetID( static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType( RES_CHARDEF, pszGhostName )) );
 		LayerAdd( CItem::CreateScript( ITEMID_DEATHSHROUD, this ) );
 
-		CClient * pClient = GetClient();
-		if ( pClient )
+		if ( m_pClient )
 		{
 			if ( g_Cfg.m_iPacketDeathAnimation )
 			{
 				// Display death animation to client ("You are dead")
-				new PacketDeathMenu(pClient, PacketDeathMenu::ServerSent);
-				new PacketDeathMenu(pClient, PacketDeathMenu::Ghost);
+				new PacketDeathMenu(m_pClient, PacketDeathMenu::ServerSent);
+				new PacketDeathMenu(m_pClient, PacketDeathMenu::Ghost);
 			}
 			else
 			{
 				// OSI uses PacketDeathMenu to update client screen on death. If this packet is disabled,
 				// the client must be updated manually using these others packets as workaround
-				pClient->addPlayerUpdate();
-				pClient->addPlayerWarMode();
-				pClient->addContainerSetup(GetContainer(LAYER_PACK));	// update backpack contents
+				m_pClient->addPlayerUpdate();
+				m_pClient->addPlayerWarMode();
+				m_pClient->addContainerSetup(GetContainer(LAYER_PACK));	// update backpack contents
 			}
 		}
 
@@ -2935,7 +2931,7 @@ bool CChar::Death()
 				if ( !pChar )
 					break;
 				if ( !CanSeeAsDead(pChar) )
-					pClient->addObjectRemove(pChar);						
+					m_pClient->addObjectRemove(pChar);
 			}
 		}
 	}
@@ -3010,10 +3006,9 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 		}
 	}
 
-	CClient *pClient = GetClient();
-	if ( pClient && pClient->m_pHouseDesign )
+	if ( m_pClient && m_pClient->m_pHouseDesign )
 	{
-		if ( pClient->m_pHouseDesign->GetDesignArea().IsInside2d(ptDst) )
+		if ( m_pClient->m_pHouseDesign->GetDesignArea().IsInside2d(ptDst) )
 		{
 			ptDst.m_z = GetTopZ();
 			return ptDst.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA);
@@ -3153,14 +3148,13 @@ TRIGRET_TYPE CChar::CheckLocation( bool fStanding )
 {
 	ADDTOCALLSTACK("CChar::CheckLocation");
 
-	CClient *pClient = GetClient();
-	if ( pClient && pClient->m_pHouseDesign )
+	if ( m_pClient && m_pClient->m_pHouseDesign )
 	{
 		// Stepping on items doesn't trigger anything whilst in design mode
-		if ( pClient->m_pHouseDesign->GetDesignArea().IsInside2d(GetTopPoint()) )
+		if ( m_pClient->m_pHouseDesign->GetDesignArea().IsInside2d(GetTopPoint()) )
 			return TRIGRET_RET_TRUE;
 
-		pClient->m_pHouseDesign->EndCustomize(true);
+		m_pClient->m_pHouseDesign->EndCustomize(true);
 	}
 
 	if ( !fStanding )
@@ -3370,7 +3364,7 @@ bool CChar::MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject )
 			}
 		}
 
-		if ( IsClient() && pNewArea )
+		if ( m_pClient && pNewArea )
 		{
 			if ( pNewArea->IsFlag(REGION_FLAG_ANNOUNCE) && !pNewArea->IsInside2d( GetTopPoint()) )	// new area.
 			{
@@ -3514,8 +3508,7 @@ bool CChar::MoveToChar(CPointMap pt, bool bForceFix)
 	if ( !pt.IsValidPoint() )
 		return false;
 
-	CClient *pClient = GetClient();
-	if ( m_pPlayer && !pClient )	// moving a logged out client !
+	if ( m_pPlayer && !m_pClient )	// moving a logged out client !
 	{
 		CSector *pSector = pt.GetSector();
 		if ( !pSector )
@@ -3825,8 +3818,8 @@ void CChar::OnTickStatusUpdate()
 {
 	ADDTOCALLSTACK("CChar::OnTickStatusUpdate");
 
-	if ( IsClient() )
-		GetClient()->UpdateStats();
+	if ( m_pClient )
+		m_pClient->UpdateStats();
 
 	INT64 iTimeDiff = - g_World.GetTimeDiff( m_timeLastHitsUpdate );
 	if ( g_Cfg.m_iHitsUpdateRate && ( iTimeDiff >= g_Cfg.m_iHitsUpdateRate ) )

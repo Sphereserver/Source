@@ -305,18 +305,15 @@ CChar::~CChar()
 		}
 	}
 
-	if ( IsClient())	// this should never happen.
-	{
-		ASSERT( m_pClient );
+	if ( m_pClient )	// this should never happen
 		m_pClient->GetNetState()->markReadClosed();
-	}
 
 	Guild_Resign(MEMORY_GUILD);
 	Guild_Resign(MEMORY_TOWN);
 
 	if ( m_pParty )
 	{
-		m_pParty->RemoveMember( GetUID(), (DWORD) GetUID() );
+		m_pParty->RemoveMember(GetUID(), static_cast<DWORD>(GetUID()));
 		m_pParty = NULL;
 	}
 	Attacker_RemoveChar();	// Removing me from enemy's attacker list (I asume that if he is on my list, I'm on his one and no one have me on their list if I dont have them)
@@ -340,7 +337,7 @@ void CChar::ClientDetach()
 		if ( pItem->IsType(IT_EQ_TRADE_WINDOW) )
 			pItem->Delete();
 	}
-	if ( !IsClient() )
+	if ( !m_pClient )
 		return;
 
 	if ( m_pParty && m_pParty->IsPartyMaster( this ))
@@ -369,7 +366,7 @@ void CChar::ClientDetach()
 void CChar::ClientAttach( CClient * pClient )
 {
 	ADDTOCALLSTACK("CChar::ClientAttach");
-	if ( GetClient() == pClient )
+	if ( pClient == m_pClient )
 		return;
 	if ( !SetPlayerAccount(pClient->m_pAccount) )	// i now own this char.
 		return;
@@ -386,9 +383,9 @@ void CChar::ClientAttach( CClient * pClient )
 void CChar::SetDisconnected()
 {
 	ADDTOCALLSTACK("CChar::SetDisconnected");
-	if ( IsClient() )
+	if ( m_pClient )
 	{
-		GetClient()->GetNetState()->markReadClosed();
+		m_pClient->GetNetState()->markReadClosed();
 		return;
 	}
 
@@ -438,11 +435,10 @@ void CChar::Delete(bool bforce, CClient *pClient)
 		return;
 
 	// Character has been deleted
-	if ( IsClient() )
+	if ( m_pClient )
 	{
-		CClient *pClient = GetClient();
-		pClient->CharDisconnect();
-		pClient->GetNetState()->markReadClosed();
+		m_pClient->CharDisconnect();
+		m_pClient->GetNetState()->markReadClosed();
 	}
 
 	// Detach from account now
@@ -1700,7 +1696,7 @@ bool CChar::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 {
 	ADDTOCALLSTACK("CChar::r_WriteVal");
 
-	if ( IsClient() && GetClient()->r_WriteVal(pszKey, sVal, pSrc) )
+	if ( m_pClient && m_pClient->r_WriteVal(pszKey, sVal, pSrc) )
 		return true;
 
 	EXC_TRY("WriteVal");
@@ -2278,7 +2274,7 @@ do_default:
 		case CHC_ISONLINE:
 			if ( m_pPlayer != NULL )
 			{
-				sVal = IsClient() ? "1" : "0";
+				sVal = m_pClient ? "1" : "0";
 				return ( true );
 			}
 			if ( m_pNPC != NULL )
@@ -2996,7 +2992,7 @@ do_default:
 					 fNightsight = !IsStatFlag(STATF_NightSight);
 				SetDefNum(s.GetKey(), fNightsight, false);
 				StatFlag_Mod( STATF_NightSight, fNightsight > 0 ? true : false );
-				if ( IsClient() )
+				if ( m_pClient )
 					m_pClient->addLight();
 			}
 			break;
@@ -3041,7 +3037,7 @@ do_default:
 				if ( fChange )
 				{
 					UpdateMode(NULL, true);
-					if ( IsClient() )
+					if ( m_pClient )
 						m_pClient->addCharMove(this);
 				}
 			}
@@ -3217,7 +3213,7 @@ bool CChar::r_Load( CScript & s ) // Load a character from script
 	// StatFlag_Mod(STATF_SaveParity, g_World.m_fSaveParity);
 
 	// Make sure everything is ok.
-	if ( (m_pPlayer && !IsClient()) || (m_pNPC && IsStatFlag(STATF_Ridden)) )	// ridden npc
+	if ( (m_pPlayer && !m_pClient) || (m_pNPC && IsStatFlag(STATF_Ridden)) )	// ridden npc
 		SetDisconnected();
 
 	int iResultCode = CObjBase::IsWeird();
@@ -3251,7 +3247,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 	ADDTOCALLSTACK("CChar::r_Verb");
 	if ( !pSrc )
 		return false;
-	if ( IsClient() && GetClient()->r_Verb(s, pSrc) )
+	if ( m_pClient && m_pClient->r_Verb(s, pSrc) )
 		return true;
 
 	EXC_TRY("Verb");
@@ -3323,9 +3319,9 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 		}
 		case CHV_BANK:
 			// Open the bank box for this person
-			if ( pCharSrc == NULL || ! pCharSrc->IsClient() )
+			if ( !pCharSrc || !pCharSrc->m_pClient )
 				return( false );
-			pCharSrc->GetClient()->addBankOpen( this, ((s.HasArgs()) ? static_cast<LAYER_TYPE>(s.GetArgVal()) : LAYER_BANKBOX ));
+			pCharSrc->m_pClient->addBankOpen(this, s.HasArgs() ? static_cast<LAYER_TYPE>(s.GetArgVal()) : LAYER_BANKBOX);
 			break;
 		case CHV_BARK:
 			SoundChar( ( s.HasArgs() ? static_cast<CRESND_TYPE>(s.GetArgVal()) : ( Calc_GetRandVal(2) ? CRESND_RAND1 : CRESND_RAND2 )));
@@ -3339,9 +3335,9 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			break;
 		}
 		case CHV_CONTROL: // Possess
-			if ( pCharSrc == NULL || ! pCharSrc->IsClient())
+			if ( !pCharSrc || !pCharSrc->m_pClient )
 				return( false );
-			return( pCharSrc->GetClient()->Cmd_Control( this ));
+			return pCharSrc->m_pClient->Cmd_Control(this);
 
 		case CHV_CONSUME:
 			{
@@ -3362,10 +3358,8 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			break;
 		case CHV_DISCONNECT:
 			// Push a player char off line. CLIENTLINGER thing
-			if ( IsClient())
-			{
-				return GetClient()->addKick( pSrc, false );
-			}
+			if ( m_pClient )
+				return m_pClient->addKick(pSrc, false);
 			SetDisconnected();
 			break;
 		case CHV_DROP:	// uid
@@ -3464,15 +3458,15 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				UpdateMode(NULL, true);
 				if ( IsStatFlag(STATF_Insubstantial) )
 				{
-					if ( IsClient() )
-						GetClient()->addBuff(BI_HIDDEN, 1075655, 1075656);
+					if ( m_pClient )
+						m_pClient->addBuff(BI_HIDDEN, 1075655, 1075656);
 					if ( IsSetOF(OF_Command_Sysmsgs) )
 						pSrc->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_INVIS_ON));
 				}
 				else
 				{
-					if ( IsClient() && !IsStatFlag(STATF_Hidden) )
-						GetClient()->removeBuff(BI_HIDDEN);
+					if ( m_pClient && !IsStatFlag(STATF_Hidden) )
+						m_pClient->removeBuff(BI_HIDDEN);
 					if ( IsSetOF(OF_Command_Sysmsgs) )
 						pSrc->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_INVIS_OFF));
 				}
@@ -3515,7 +3509,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			}
 			//DEBUG_ERR(( "CHV_MAKEITEM iTmp is %d, arg was %s\n",iTmp,psTmp ));
  
-			if ( IsClient() )
+			if ( m_pClient )
 			{
 				m_Act_Targ = m_pClient->m_Targ_UID;
 			}
@@ -3577,7 +3571,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			break;
 
 		case CHV_PACK:
-			if ( pCharSrc == NULL || ! pCharSrc->IsClient())
+			if ( !pCharSrc || !pCharSrc->m_pClient )
 				return( false );
 			pCharSrc->m_pClient->addBankOpen( this, LAYER_PACK ); // Send Backpack (with items)
 			break;
@@ -3633,8 +3627,8 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 					pSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_CMD_REMOVE_PLAYER) );
 					return( false );
 				}
-				if ( IsClient() )
-					GetClient()->addObjectRemove(this);
+				if ( m_pClient )
+					m_pClient->addObjectRemove(this);
 			}
 			Delete();
 			break;
@@ -3646,8 +3640,8 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 					pSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_CMD_REMOVE_PLAYER) );
 					return( false );
 				}
-				if ( IsClient() )
-					GetClient()->addObjectRemove(this);
+				if ( m_pClient )
+					m_pClient->addObjectRemove(this);
 			}
 			Delete(true);
 			break;
@@ -3728,8 +3722,8 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			// just eat this if it's not a client.
 			break;
 		case CHV_TARGETCLOSE:
-			if ( IsClient() )
-				GetClient()->addTargetCancel();
+			if ( m_pClient )
+				m_pClient->addTargetCancel();
 			break;
 		case CHV_UNDERWEAR:
 			if ( ! IsPlayableCharacter())

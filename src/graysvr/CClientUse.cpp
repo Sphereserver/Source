@@ -1253,7 +1253,7 @@ bool CClient::Cmd_SecureTrade( CChar *pChar, CItem *pItem )
 
 	if ( pChar->m_pNPC )		// NPC's can't use trade windows
 		return pItem ? pChar->NPC_OnItemGive(m_pChar, pItem) : false;
-	if ( !pChar->IsClient() )	// and also offline players
+	if ( !pChar->m_pClient )	// and also offline players
 		return false;
 
 	if ( pChar->GetDefNum("REFUSETRADES") )
@@ -1339,7 +1339,7 @@ bool CClient::Cmd_SecureTrade( CChar *pChar, CItem *pItem )
 	cmd.prepareContainerOpen(pChar, pCont1, pCont2);
 	cmd.send(this);
 	cmd.prepareContainerOpen(m_pChar, pCont2, pCont1);
-	cmd.send(pChar->GetClient());
+	cmd.send(pChar->m_pClient);
 
 	if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD )
 	{
@@ -1349,15 +1349,15 @@ bool CClient::Cmd_SecureTrade( CChar *pChar, CItem *pItem )
 			cmd2.prepareUpdateLedger(pCont1, static_cast<DWORD>(m_pChar->m_virtualGold % 1000000000), static_cast<DWORD>(m_pChar->m_virtualGold / 1000000000));
 			cmd2.send(this);
 		}
-		if ( pChar->GetClient()->GetNetState()->isClientVersion(MINCLIVER_TOL) )
+		if ( pChar->m_pClient->GetNetState()->isClientVersion(MINCLIVER_TOL) )
 		{
 			cmd2.prepareUpdateLedger(pCont2, static_cast<DWORD>(pChar->m_virtualGold % 1000000000), static_cast<DWORD>(pChar->m_virtualGold / 1000000000));
-			cmd2.send(pChar->GetClient());
+			cmd2.send(pChar->m_pClient);
 		}
 	}
 
 	LogOpenedContainer(pCont2);
-	pChar->GetClient()->LogOpenedContainer(pCont1);
+	pChar->m_pClient->LogOpenedContainer(pCont1);
 
 	if ( pItem )
 	{

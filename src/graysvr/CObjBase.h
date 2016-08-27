@@ -2704,7 +2704,6 @@ private:
 
 	// This is a character that can either be NPC or PC.
 	// Player vs NPC Stuff
-	CClient *m_pClient;		// is the char a logged in m_pPlayer ?
 
 public:
 	struct LastAttackers {
@@ -2725,6 +2724,7 @@ public:
 	std::vector<NotoSaves> m_notoSaves;
 
 	static const char *m_sClassName;
+	CClient *m_pClient;			// Is the char a logged in m_pPlayer ?
 	CCharPlayer *m_pPlayer;		// May even be an off-line player !
 	CCharNPC *m_pNPC;			// we can be both a player and an NPC if "controlled" ?
 	CPartyDef *m_pParty;		// What party am i in ?
@@ -2956,8 +2956,8 @@ public:
 	void SetSight(BYTE newSight)
 	{
 		m_iVisualRange = minimum(newSight, 31);		// max value is 18 on classic clients and 31 on enhanced clients
-		if ( IsClient() )
-			GetClient()->addVisualRange(m_iVisualRange);
+		if ( m_pClient )
+			m_pClient->addVisualRange(m_iVisualRange);
 	}
 	
 	bool Can( WORD wCan ) const
@@ -3213,11 +3213,6 @@ public:
 	// Client Player specific stuff. -------------------------
 	void ClientAttach( CClient * pClient );
 	void ClientDetach();
-	bool IsClient() const { return (m_pClient != NULL); }
-	CClient *GetClient() const
-	{
-		return m_pClient;
-	}
 
 	bool SetPrivLevel( CTextConsole * pSrc, LPCTSTR pszFlags );
 	bool CanDisturb( const CChar * pChar ) const;
@@ -3232,15 +3227,15 @@ public:
 public:
 	void ObjMessage( LPCTSTR pMsg, const CObjBase * pSrc ) const
 	{
-		if ( ! IsClient())
-			return;
-		GetClient()->addObjMessage( pMsg, pSrc );
+		if ( m_pClient )
+			m_pClient->addObjMessage(pMsg, pSrc);
+		return;
 	}
 	void SysMessage( LPCTSTR pMsg ) const	// Push a message back to the client if there is one.
 	{
-		if ( ! IsClient())
-			return;
-		GetClient()->SysMessage( pMsg );
+		if ( m_pClient )
+			m_pClient->SysMessage(pMsg);
+		return;
 	}
 
 	void UpdateStatsFlag() const;

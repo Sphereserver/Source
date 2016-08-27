@@ -1297,10 +1297,10 @@ void CClient::addPlayerStart( CChar * pChar )
 	{
 		// This must be a CONTROL command ?
 		CharDisconnect();
-		if ( pChar->IsClient())	// not sure why this would happen but take care of it anyhow.
-			pChar->GetClient()->CharDisconnect();
+		if ( pChar->m_pClient )		// not sure why this would happen but take care of it anyhow.
+			pChar->m_pClient->CharDisconnect();
 		m_pChar = pChar;
-		m_pChar->ClientAttach( this );
+		m_pChar->ClientAttach(this);
 	}
 	ASSERT(m_pChar->m_pPlayer);
 	ASSERT(m_pAccount);

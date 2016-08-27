@@ -931,9 +931,11 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 			}
 		case OC_CTAGCOUNT:
 			{
-				CChar * pChar = dynamic_cast<CChar*>(this);
-				if ( !pChar ) sVal.FormatVal( 0 );
-				else sVal.FormatVal( pChar->IsClient() ? (pChar->GetClient()->m_TagDefs.GetCount()) : 0 );
+				CChar *pChar = dynamic_cast<CChar *>(this);
+				if ( !pChar )
+					sVal.FormatVal(0);
+				else
+					sVal.FormatVal(pChar->m_pClient ? pChar->m_pClient->m_TagDefs.GetCount() : 0);
 			}
 			break;
 		case OC_TEXTF:
@@ -976,7 +978,7 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 					SKIP_SEPARATORS( pszKey );
 					GETNONWHITESPACE( pszKey );
 
-					CClient * pThisClient = pSrc->GetChar() ? ( pSrc->GetChar()->IsClient() ? pSrc->GetChar()->GetClient() : NULL ) : NULL;
+					CClient *pThisClient = pSrc->GetChar() ? (pSrc->GetChar()->m_pClient ? pSrc->GetChar()->m_pClient : NULL) : NULL;
 					sVal.FormatVal(0);
 
 					if ( pThisClient )
@@ -1176,8 +1178,8 @@ bool CObjBase::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 				pszKey += 12;
 				SKIP_SEPARATORS( pszKey );
 				GETNONWHITESPACE( pszKey );
-				CChar * pCharToCheck = dynamic_cast<CChar*>(this);
-				CClient * pClientToCheck = (pCharToCheck && pCharToCheck->IsClient()) ? (pCharToCheck->GetClient()) : NULL ;
+				CChar * pCharToCheck = dynamic_cast<CChar *>(this);
+				CClient * pClientToCheck = (pCharToCheck && pCharToCheck->m_pClient) ? pCharToCheck->m_pClient : NULL;
 
 				if ( pClientToCheck )
 				{
@@ -1865,7 +1867,7 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 		return CScriptObj::r_Verb(s, pSrc);
 
 	CChar * pCharSrc = pSrc->GetChar();
-	CClient * pClientSrc = (pCharSrc && pCharSrc->IsClient()) ? (pCharSrc->GetClient()) : NULL ;
+	CClient * pClientSrc = (pCharSrc && pCharSrc->m_pClient) ? pCharSrc->m_pClient : NULL;
 
 	switch (index)
 	{
@@ -2480,19 +2482,17 @@ bool CObjBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fro
 
 		case OV_CLICK:
 			EXC_SET("CLICK");
-			if ( !pCharSrc )
-				return false;
-			if ( !pCharSrc->IsClient() )
+			if ( !pCharSrc || !pCharSrc->m_pClient )
 				return false;
 			if ( s.HasArgs() )
 			{
 				CGrayUID uid = s.GetArgVal();
 				if ( !uid.ObjFind() || !IsChar() )
 					return false;
-				pCharSrc->GetClient()->Event_SingleClick(uid);
+				pCharSrc->m_pClient->Event_SingleClick(uid);
 			}
 			else
-				pCharSrc->GetClient()->Event_SingleClick(GetUID());
+				pCharSrc->m_pClient->Event_SingleClick(GetUID());
 			return true;
 
 		case OV_DCLICK:

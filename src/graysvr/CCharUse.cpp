@@ -1173,8 +1173,8 @@ bool CChar::Use_Key( CItem * pKey, CItem * pItemTarg )
 	}
 	if ( pKey == pItemTarg )	// rename the key
 	{
-		if ( IsClient() )
-			GetClient()->addPromptConsole(CLIMODE_PROMPT_NAME_KEY, g_Cfg.GetDefaultMsg(DEFMSG_MSG_KEY_SETNAME), pKey->GetUID());
+		if ( m_pClient )
+			m_pClient->addPromptConsole(CLIMODE_PROMPT_NAME_KEY, g_Cfg.GetDefaultMsg(DEFMSG_MSG_KEY_SETNAME), pKey->GetUID());
 		return false;
 	}
 
@@ -1212,8 +1212,8 @@ bool CChar::Use_KeyChange( CItem * pItemTarg )
 	{
 		case IT_SIGN_GUMP:
 			// We may rename the sign.
-			if ( IsClient() )
-				GetClient()->addPromptConsole(CLIMODE_PROMPT_NAME_SIGN, g_Cfg.GetDefaultMsg(DEFMSG_MSG_KEY_TARG_SIGN), pItemTarg->GetUID());
+			if ( m_pClient )
+				m_pClient->addPromptConsole(CLIMODE_PROMPT_NAME_SIGN, g_Cfg.GetDefaultMsg(DEFMSG_MSG_KEY_TARG_SIGN), pItemTarg->GetUID());
 			return true;
 		case IT_CONTAINER:
 			pItemTarg->SetType(IT_CONTAINER_LOCKED);
@@ -1241,8 +1241,8 @@ bool CChar::Use_KeyChange( CItem * pItemTarg )
 			SysMessageDefault(DEFMSG_MSG_KEY_TARG_DOOR_ULOCK);
 			break;
 		case IT_SHIP_TILLER:
-			if ( IsClient() )
-				GetClient()->addPromptConsole(CLIMODE_PROMPT_NAME_SHIP, g_Cfg.GetDefaultMsg(DEFMSG_MSG_SHIPNAME_PROMT), pItemTarg->GetUID());
+			if ( m_pClient )
+				m_pClient->addPromptConsole(CLIMODE_PROMPT_NAME_SHIP, g_Cfg.GetDefaultMsg(DEFMSG_MSG_SHIPNAME_PROMT), pItemTarg->GetUID());
 			return true;
 		case IT_SHIP_PLANK:
 			pItemTarg->Ship_Plank(false);	// just close it.
@@ -1767,8 +1767,8 @@ bool CChar::Use_Obj( CObjBase * pObj, bool fTestTouch, bool fScript )
 	ADDTOCALLSTACK("CChar::Use_Obj");
 	if ( !pObj )
 		return false;
-	if ( IsClient() )
-		return GetClient()->Event_DoubleClick(pObj->GetUID(), false, fTestTouch, fScript);
+	if ( m_pClient )
+		return m_pClient->Event_DoubleClick(pObj->GetUID(), false, fTestTouch, fScript);
 	else
 		return Use_Item(dynamic_cast<CItem *>(pObj), fTestTouch);
 }

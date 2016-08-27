@@ -325,7 +325,7 @@ void NetState::detectAsyncMode(void)
 		setAsyncMode(true);
 
 	// http clients do not want to be using async networking unless they have keep-alive set
-	else if (getClient() != NULL && getClient()->GetConnectType() == CONNECT_HTTP)
+	else if (m_client && m_client->GetConnectType() == CONNECT_HTTP)
 		setAsyncMode(false);
 
 	// only use async with clients newer than 4.0.0
@@ -875,14 +875,14 @@ CClient* SafeClientIterator::next(bool includeClosing)
 		const NetState* state = m_network->m_states[m_id];
 
 		// skip states which do not have a valid client, or are closed
-		if (state->isInUse(state->getClient()) == false || state->isClosed())
+		if (state->isInUse(state->m_client) == false || state->isClosed())
 			continue;
 
 		// skip states which are being closed
 		if (includeClosing == false && state->isClosing())
 			continue;
 
-		return state->getClient();
+		return state->m_client;
 	}
 
 	return NULL;
@@ -996,8 +996,7 @@ void NetworkIn::tick(void)
 		ASSERT(client != NULL);
 
 		EXC_SET("messages - check client");
-		if (client->isInUse() == false || client->isClosing() ||
-			client->getClient() == NULL || client->m_socket.IsOpen() == false)
+		if (!client->isInUse() || client->isClosing() || !client->m_client || !client->m_socket.IsOpen())
 			continue;
 
 		EXC_SET("messages - check frozen");
@@ -1140,7 +1139,7 @@ void NetworkIn::tick(void)
 					DEBUG_WARN(("UOKR Client Detected.\n"));
 					client->m_client->SetConnectType(CONNECT_CRYPT);
 					client->m_clientType = CLIENTTYPE_KR;
-					new PacketKREncryption(client->getClient());
+					new PacketKREncryption(client->m_client);
 				}
 				continue;
 			}
@@ -1419,7 +1418,7 @@ int NetworkIn::checkForData(fd_set* storage)
 						DEBUGNETWORK(("%lx:Flushing data for client.\n", state->id()));
 
 						EXC_SET("flush data");
-						g_NetworkOut.flush(state->getClient());
+						g_NetworkOut.flush(state->m_client);
 					}
 					else
 					{
@@ -1540,7 +1539,7 @@ void NetworkIn::acceptConnection(void)
 
 				EXC_SET("recording client");
 				if (m_states[slot]->m_client != NULL)
-					m_clients.InsertHead(m_states[slot]->getClient());
+					m_clients.InsertHead(m_states[slot]->m_client);
 
 				DEBUGNETWORK(("%lx:Client successfully initialised.\n", slot));
 			}
@@ -2103,8 +2102,8 @@ void NetworkOut::onAsyncSendComplete(NetState* state, bool success)
 	if (success == false)
 		return;
 
-	if (proceedQueueAsync(state->getClient()) != 0)
-		proceedQueueBytes(state->getClient());
+	if (proceedQueueAsync(state->m_client) != 0)
+		proceedQueueBytes(state->m_client);
 }
 
 bool NetworkOut::sendPacket(CClient* client, PacketSend* packet)
@@ -2625,8 +2624,8 @@ void NetworkManager::acceptNewConnection(void)
 	DEBUGNETWORK(("%lx:State initialised, registering client instance.\n", state->id()));
 
 	EXC_SET("recording client");
-	if (state->getClient() != NULL)
-		m_clients.InsertHead(state->getClient());
+	if (state->m_client)
+		m_clients.InsertHead(state->m_client);
 
 	EXC_SET("assigning thread");
 	DEBUGNETWORK(("%lx:Selecting a thread to assign to.\n", state->id()));
@@ -3094,7 +3093,7 @@ void NetworkInput::processData()
 		EXC_SET("start network profile");
 		ProfileTask networkTask(PROFILE_NETWORK_RX);
 
-		const CClient* client = state->getClient();
+		const CClient* client = state->m_client;
 		ASSERT(client != NULL);
 
 		EXC_SET("check message");
@@ -3222,7 +3221,7 @@ bool NetworkInput::processData(NetState* state, Packet* buffer)
 	ADDTOCALLSTACK("NetworkInput::processData");
 	ASSERT(state != NULL);
 	ASSERT(buffer != NULL);
-	CClient* client = state->getClient();
+	CClient* client = state->m_client;
 	ASSERT(client != NULL);
 
 	if (client->GetConnectType() == CONNECT_UNK)
@@ -3242,7 +3241,7 @@ bool NetworkInput::processGameClientData(NetState* state, Packet* buffer)
 	EXC_TRY("ProcessGameData");
 	ASSERT(state != NULL);
 	ASSERT(buffer != NULL);
-	CClient* client = state->getClient();
+	CClient* client = state->m_client;
 	ASSERT(client != NULL);
 
 	EXC_SET("decrypt message");
@@ -3369,7 +3368,7 @@ bool NetworkInput::processOtherClientData(NetState* state, Packet* buffer)
 	EXC_TRY("ProcessOtherClientData");
 	ASSERT(state != NULL);
 	ASSERT(buffer != NULL);
-	CClient* client = state->getClient();
+	CClient* client = state->m_client;
 	ASSERT(client != NULL);
 
 	switch (client->GetConnectType())
@@ -3443,7 +3442,7 @@ bool NetworkInput::processUnknownClientData(NetState* state, Packet* buffer)
 	EXC_TRY("ProcessNewClient");
 	ASSERT(state != NULL);
 	ASSERT(buffer != NULL);
-	CClient* client = state->getClient();
+	CClient* client = state->m_client;
 	ASSERT(client != NULL);
 
 	if (state->m_seeded == false)
@@ -3754,7 +3753,7 @@ size_t NetworkOutput::processPacketQueue(NetState* state, unsigned int priority)
 		(state->m_outgoing.queue[priority].empty() && state->m_outgoing.currentTransaction == NULL))
 		return 0;
 
-	CClient* client = state->getClient();
+	CClient* client = state->m_client;
 	ASSERT(client != NULL);
 
 	CServTime time = CServTime::GetCurrentTime();
@@ -3845,7 +3844,7 @@ size_t NetworkOutput::processAsyncQueue(NetState* state)
 	if (state->m_outgoing.asyncQueue.empty() || state->isSendingAsync())
 		return 0;
 
-	const CClient* client = state->getClient();
+	const CClient* client = state->m_client;
 	ASSERT(client != NULL);
 
 	// select the next packet to send
@@ -3943,7 +3942,7 @@ bool NetworkOutput::sendPacketData(NetState* state, PacketSend* packet)
 	ASSERT(!m_thread->isActive() || m_thread->isCurrentThread());
 #endif
 
-	CClient* client = state->getClient();
+	CClient* client = state->m_client;
 	ASSERT(client != NULL);
 
 	EXC_TRY("sendPacketData");

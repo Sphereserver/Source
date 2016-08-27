@@ -309,28 +309,24 @@ bool CClient::CanHear( const CObjBaseTemplate * pSrc, TALKMODE_TYPE mode ) const
 	// can we hear this text or sound.
 
 	if ( !IsConnectTypePacket() )
-		return( false );
-	if ( mode == TALKMODE_BROADCAST || pSrc == NULL )
-		return( true );
-	if ( m_pChar == NULL )
-		return( false );
+		return false;
+	if ( !pSrc || (mode == TALKMODE_BROADCAST) )
+		return true;
+	if ( !m_pChar )
+		return false;
 
-	if ( IsPriv( PRIV_HEARALL ) &&
-		pSrc->IsChar()&&
-		( mode == TALKMODE_SYSTEM || mode == TALKMODE_SAY || mode == TALKMODE_WHISPER || mode == TALKMODE_YELL ))
+	if ( IsPriv(PRIV_HEARALL) && pSrc->IsChar() && (mode == TALKMODE_SYSTEM || mode == TALKMODE_SAY || mode == TALKMODE_WHISPER || mode == TALKMODE_YELL) )
 	{
-		const CChar * pCharSrc = dynamic_cast <const CChar*> ( pSrc );
+		const CChar *pCharSrc = dynamic_cast<const CChar *>(pSrc);
 		ASSERT(pCharSrc);
-		if ( pCharSrc && pCharSrc->IsClient())
+		if ( pCharSrc && pCharSrc->m_pClient )
 		{
-			if ( pCharSrc->GetPrivLevel() <= GetPrivLevel())
-			{
-				return( true );
-			}
+			if ( pCharSrc->GetPrivLevel() <= GetPrivLevel() )
+				return true;
 		}
 	}
 
-	return( m_pChar->CanHear( pSrc, mode ));
+	return m_pChar->CanHear(pSrc, mode);
 }
 
 ////////////////////////////////////////////////////
@@ -461,7 +457,7 @@ bool CClient::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 					CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind());
 					if ( !pChar )
 						return false;
-					if ( !pChar->IsClient() )
+					if ( !pChar->m_pClient )
 						return false;
 					CPartyDef::AcceptEvent(pChar, GetChar()->GetUID(), true);
 					if ( !m_pChar->m_pParty )

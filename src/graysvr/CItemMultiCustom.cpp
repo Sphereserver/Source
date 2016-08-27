@@ -1208,10 +1208,10 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 			if ( s.HasArgs() )
 				pChar = CGrayUID(s.GetArgVal()).CharFind();
 
-			if ( pChar == NULL || !pChar->IsClient() )
+			if ( !pChar || !pChar->m_pClient )
 				return false;
 
-			BeginCustomize(pChar->GetClient());
+			BeginCustomize(pChar->m_pClient);
 		} break;
 
 		case IMCV_ENDCUSTOMIZE:
@@ -1243,10 +1243,10 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 			if ( s.HasArgs() )
 				pChar = CGrayUID(s.GetArgVal()).CharFind();
 
-			if ( pChar == NULL || !pChar->IsClient() )
+			if ( !pChar || !pChar->m_pClient )
 				return false;
 
-			SendStructureTo(pChar->GetClient());
+			SendStructureTo(pChar->m_pClient);
 		} break;
 
 		case IMCV_REVERT:

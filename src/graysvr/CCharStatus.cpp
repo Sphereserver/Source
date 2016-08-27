@@ -963,10 +963,9 @@ bool CChar::CanSee( const CObjBaseTemplate *pObj ) const
 			if ( IsSetEF(EF_FixCanSeeInClosedConts) )
 			{
 				// A client cannot see the contents of someone else's container, unless they have opened it first
-				if ( IsClient() && pObjCont->IsItem() && pObjCont->GetTopLevelObj() != this )
+				if ( m_pClient && pObjCont->IsItem() && (pObjCont->GetTopLevelObj() != this) )
 				{
-					CClient *pClient = GetClient();
-					if ( pClient && pClient->m_openedContainers.find(pObjCont->GetUID().GetPrivateUID()) == pClient->m_openedContainers.end() )
+					if ( m_pClient && m_pClient->m_openedContainers.find(pObjCont->GetUID().GetPrivateUID()) == m_pClient->m_openedContainers.end() )
 					{
 #ifdef _DEBUG
 						if ( CanSee(pObjCont) )
@@ -975,7 +974,7 @@ bool CChar::CanSee( const CObjBaseTemplate *pObj ) const
 							StackDebugInformation::printStackTrace();
 #endif
 							g_Log.EventDebug("%lx:EF_FixCanSeeInClosedConts prevents %s, (0%lx, '%s') from seeing item uid=0%lx (%s, '%s') in container uid=0%lx (%s, '%s')\n",
-								pClient->GetSocketID(), pClient->m_pAccount->GetName(), static_cast<DWORD>(GetUID()), GetName(false),
+								m_pClient->GetSocketID(), m_pClient->m_pAccount->GetName(), static_cast<DWORD>(GetUID()), GetName(false),
 								static_cast<DWORD>(pItem->GetUID()), pItem->GetResourceName(), pItem->GetName(),
 								static_cast<DWORD>(pObjCont->GetUID()), pObjCont->GetResourceName(), pObjCont->GetName());
 						}
@@ -1860,7 +1859,7 @@ bool CChar::CanHear( const CObjBaseTemplate *pSrc, TALKMODE_TYPE mode ) const
 	ADDTOCALLSTACK("CChar::CanHear");
 	// can we hear text or sound. (not necessarily understand it (ghost))
 	// Can't hear TALKMODE_SAY through house walls.
-	// NOTE: Assume pClient->CanHear() has already been called. (if it matters)
+	// NOTE: Assume m_pClient->CanHear() has already been called. (if it matters)
 
 	if ( !pSrc )	// must be broadcast I guess
 		return true;

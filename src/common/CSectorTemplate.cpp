@@ -16,7 +16,7 @@ void CCharsActiveList::OnRemoveOb( CGObListRec * pObRec )
 	// Override this = called when removed from group.
 	CChar *pChar = static_cast<CChar *>(pObRec);
 	ASSERT(pChar);
-	if ( pChar->IsClient() )
+	if ( pChar->m_pClient )
 	{
 		ClientDetach();
 		m_timeLastClient = CServTime::GetCurrentTime();	// mark time in case it's the last client
@@ -30,10 +30,8 @@ void CCharsActiveList::AddCharToSector( CChar * pChar )
 	ADDTOCALLSTACK("CCharsActiveList::AddCharToSector");
 	ASSERT( pChar );
 	// ASSERT( pChar->m_pt.IsValid());
-	if ( pChar->IsClient())
-	{
+	if ( pChar->m_pClient )
 		ClientAttach();
-	}
 	CGObList::InsertHead(pChar);
 }
 

@@ -65,7 +65,6 @@ class NetState
 protected:
 	long m_id; // net id
 	CGSocket m_socket; // socket
-	CClient* m_client; // client
 	CSocketAddress m_peerAddress; // client address
 #ifdef _MTNETWORK
 	NetworkThread* m_parent;
@@ -117,6 +116,7 @@ protected:
 	int m_packetExceptions; // number of packet exceptions
 
 public:
+	CClient *m_client;
 	GAMECLIENT_TYPE m_clientType; // type of client
 	DWORD m_clientVersion; // client version (encryption)
 	DWORD m_reportedVersion; // client version (reported)
@@ -163,8 +163,6 @@ public:
 
 	void markFlush(bool needsFlush) volatile; // mark socket as needing a flush
 	bool needsFlush(void) const volatile { return m_needsFlush; } // does the socket need to be flushed?
-
-	CClient* getClient(void) const { return m_client; } // get linked client
 
 	bool isClient3D(void) const { return m_clientType == CLIENTTYPE_3D; }; // is this a 3D client?
 	bool isClientKR(void) const { return m_clientType == CLIENTTYPE_KR; }; // is this a KR client?

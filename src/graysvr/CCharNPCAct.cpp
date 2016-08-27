@@ -60,15 +60,13 @@ bool CChar::NPC_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command fro
 	case NV_BUY:
 	{
 		// Open up the buy dialog.
-		if ( pCharSrc == NULL || !pCharSrc->IsClient())
+		if ( !pCharSrc || !pCharSrc->m_pClient )
 			return false;
 
-		CClient * pClientSrc = pCharSrc->GetClient();
-		ASSERT(pClientSrc != NULL);
-		if ( !pClientSrc->addShopMenuBuy(this) )
+		if ( !pCharSrc->m_pClient->addShopMenuBuy(this) )
 			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_NO_GOODS));
 		else
-			pClientSrc->m_TagDefs.SetNum("BUYSELLTIME", g_World.GetCurrentTime().GetTimeRaw());
+			pCharSrc->m_pClient->m_TagDefs.SetNum("BUYSELLTIME", g_World.GetCurrentTime().GetTimeRaw());
 		break;
 	}
 	case NV_BYE:
@@ -109,15 +107,13 @@ bool CChar::NPC_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command fro
 	case NV_SELL:
 	{
 		// Open up the sell dialog.
-		if ( pCharSrc == NULL || !pCharSrc->IsClient() )
+		if ( !pCharSrc || !pCharSrc->m_pClient )
 			return false;
 
-		CClient * pClientSrc = pCharSrc->GetClient();
-		ASSERT(pClientSrc != NULL);
-		if ( ! pClientSrc->addShopMenuSell( this ))
+		if ( !pCharSrc->m_pClient->addShopMenuSell(this) )
 			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_NOTHING_BUY));
 		else
-			pClientSrc->m_TagDefs.SetNum("BUYSELLTIME", g_World.GetCurrentTime().GetTimeRaw());
+			pCharSrc->m_pClient->m_TagDefs.SetNum("BUYSELLTIME", g_World.GetCurrentTime().GetTimeRaw());
 		break;
 	}
 	case NV_SHRINK:
@@ -234,9 +230,7 @@ bool CChar::NPC_StablePetSelect( CChar * pCharPlayer )
 	// I am a stable master.
 	// I will stable a pet for the player.
 
-	if ( pCharPlayer == NULL )
-		return( false );
-	if ( ! pCharPlayer->IsClient())
+	if ( !pCharPlayer || !pCharPlayer->m_pClient )
 		return( false );
 
 	// Might have too many pets already ?
@@ -2998,12 +2992,12 @@ bool CChar::NPC_OnItemGive( CChar *pCharSrc, CItem *pItem )
 	if ( NPC_IsVendor() && !IsStatFlag(STATF_Pet) )
 	{
 		// Dropping item on vendor means quick sell
-		if ( pCharSrc->IsClient() )
+		if ( pCharSrc->m_pClient )
 		{
 			VendorItem item;
 			item.m_serial = pItem->GetUID();
 			item.m_amount = pItem->GetAmount();
-			pCharSrc->GetClient()->Event_VendorSell(this, &item, 1);
+			pCharSrc->m_pClient->Event_VendorSell(this, &item, 1);
 		}
 		return false;
 	}

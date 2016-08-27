@@ -412,7 +412,7 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 				if ( ppChar == NULL )
 					return false;
 
-				CClient *pClient = ppChar->GetClient();
+				CClient *pClient = ppChar->m_pClient;
 				if ( pClient == NULL )
 					return false;
 
@@ -424,7 +424,7 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 			}
 			else if ( pPage->FindGMHandler() )
 			{
-				CClient* pClient = pChar->GetClient();
+				CClient *pClient = pChar->m_pClient;
 				if ( pClient != NULL && pClient->GetChar() != NULL )
 					pClient->Cmd_GM_PageCmd(pszKey);
 			}
@@ -463,8 +463,8 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 			return true;
 		case CPC_KRTOOLBARSTATUS:
 			m_bKrToolbarEnabled = ( s.GetArgVal() != 0 );
-			if ( pChar->IsClient() )
-				pChar->GetClient()->addKRToolbar( m_bKrToolbarEnabled );
+			if ( pChar->m_pClient )
+				pChar->m_pClient->addKRToolbar( m_bKrToolbarEnabled );
 			return true;
 		case CPC_LASTUSED:
 			m_timeLastUsed = CServTime::GetCurrentTime() - ( s.GetArgVal() * TICK_PER_SEC );
@@ -490,8 +490,8 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 				if ( flag < SKILLLOCK_UP || flag > SKILLLOCK_LOCK )
 					return false;
 				Skill_SetLock(skill, static_cast<SKILLLOCK_TYPE>(flag));
-				if ( pChar->IsClient() )
-					pChar->GetClient()->addSkillWindow(skill);
+				if ( pChar->m_pClient )
+					pChar->m_pClient->addSkillWindow(skill);
 			} return true;
 		case CPC_SPEEDMODE:
 			{
@@ -507,8 +507,8 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 				if ( flag < SKILLLOCK_UP || flag > SKILLLOCK_LOCK )
 					return false;
 				Stat_SetLock(stat, static_cast<SKILLLOCK_TYPE>(flag));
-				if ( pChar->IsClient() )
-					pChar->GetClient()->addCharStatWindow(pChar);
+				if ( pChar->m_pClient )
+					pChar->m_pClient->addCharStatWindow(pChar);
 			} return true;
 
 		default:
@@ -636,7 +636,7 @@ bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc )
 	switch ( cpVerb )
 	{
 		case CPV_KICK: // "KICK" = kick and block the account
-			return (IsClient() && GetClient()->addKick(pSrc));
+			return (m_pClient && m_pClient->addKick(pSrc));
 
 		case CPV_PASSWORD:	// "PASSWORD"
 		{

@@ -389,9 +389,7 @@ CStoneMember::~CStoneMember()
 
 		CChar * pChar = GetLinkUID().CharFind();
 		if ( pChar )
-		{
 			pChar->Memory_ClearTypes(static_cast<WORD>(pStone->GetMemoryType())); 	// Make them forget they were ever in this guild
-		}
 	}
 }
 
@@ -579,10 +577,10 @@ void CItemStone::r_Write( CScript & s )
 	{
 		if (pMember->GetLinkUID().IsValidUID()) // To protect against characters that were deleted!
 		{
-			s.WriteKeyFormat( "MEMBER",
+			s.WriteKeyFormat("MEMBER",
 				"0%lx,%s,%i,0%lx,%i,%i,%i",
-				(DWORD) pMember->GetLinkUID() | (pMember->GetLinkUID().IsItem() ? UID_F_ITEM : 0),
-				static_cast<LPCTSTR>(pMember->GetTitle()),
+				static_cast<DWORD>(pMember->GetLinkUID() | (pMember->GetLinkUID().IsItem() ? UID_F_ITEM : 0)),
+				pMember->GetTitle(),
 				pMember->GetPriv(),
 				static_cast<DWORD>(pMember->GetLoyalToUID()),
 				pMember->m_UnDef.m_Val1,
@@ -753,18 +751,18 @@ bool CItemStone::r_LoadVal( CScript & s ) // Load an item Script
 			{
 				if ( s.HasArgs() )
 				{
-					CGrayUID pNewMasterUid = (DWORD) s.GetArgVal();
+					CGrayUID pNewMasterUid = static_cast<DWORD>(s.GetArgVal());
 					CChar * pChar = pNewMasterUid.CharFind();
 					if ( !pChar )
 					{
-						DEBUG_ERR(( "MASTERUID called on non char 0%lx uid.\n", (DWORD)pNewMasterUid ));
+						DEBUG_ERR(("MASTERUID called on non char 0%lx uid.\n", static_cast<DWORD>(pNewMasterUid)));
 						return( false );
 					}
 
 					CStoneMember * pNewMaster = GetMember( pChar );
 					if ( !pNewMaster )
 					{
-						DEBUG_ERR(( "MASTERUID called on char 0%lx (%s) that is not a valid member of stone with 0x%lx uid.\n", (DWORD)pNewMasterUid, pChar->GetName(), (DWORD)GetUID() ));
+						DEBUG_ERR(("MASTERUID called on char 0%lx (%s) that is not a valid member of stone with 0x%lx uid.\n", static_cast<DWORD>(pNewMasterUid), pChar->GetName(), static_cast<DWORD>(GetUID())));
 						return( false );
 					}
 
@@ -1117,10 +1115,7 @@ bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 		case STC_MASTERUID:
 			{
 				CChar * pMaster = GetMaster();
-				if ( pMaster )
-					sVal.FormatHex( (DWORD) pMaster->GetUID() );
-				else
-					sVal.FormatHex( (DWORD) 0 );
+				sVal.FormatHex(pMaster ? static_cast<DWORD>(pMaster->GetUID()) : 0);
 			}
 			return( true );
 			
@@ -1659,8 +1654,7 @@ bool CItemStone::CheckValidMember( CStoneMember * pMember )
 	}
 
 	// just delete this member. (it is mislinked)
-	DEBUG_ERR(( "Stone UID=0%lx has mislinked member uid=0%lx\n", 
-		(DWORD) GetUID(), (DWORD) pMember->GetLinkUID()));
+	DEBUG_ERR(("Stone UID=0%lx has mislinked member uid=0%lx\n", static_cast<DWORD>(GetUID()), static_cast<DWORD>(pMember->GetLinkUID())));
 	return( false );
 }
 
@@ -1804,12 +1798,12 @@ void CItemStone::AnnounceWar( const CItemStone * pEnemyStone, bool fWeDeclare, b
 	CStoneMember *pMember = static_cast<CStoneMember *>(GetHead());
 	for ( ; pMember != NULL; pMember = pMember->GetNext())
 	{
-		CChar * pChar = pMember->GetLinkUID().CharFind();
-		if ( pChar == NULL )
+		CChar *pChar = pMember->GetLinkUID().CharFind();
+		if ( !pChar )
 			continue;
-		if ( ! pChar->IsClient())
+		if ( !pChar->m_pClient )
 			continue;
-		pChar->SysMessage( pszTemp );
+		pChar->SysMessage(pszTemp);
 	}
 }
 

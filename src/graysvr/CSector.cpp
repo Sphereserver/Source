@@ -424,17 +424,9 @@ bool CSector::v_AllClients( CScript & s, CTextConsole * pSrc )
 	while ( i > 0 )
 	{
 		pChar = static_cast<CChar *>(m_Chars_Active.GetAt(--i));
-
-		// Check that a character was returned and keep looking if not.
-		if (pChar == NULL)
+		if ( !pChar || !pChar->m_pClient )
 			continue;
 
-		// Check that the character is a client (we only want to affect
-		// clients with this)
-		if ( ! pChar->IsClient())
-			continue;
-
-		// Execute the verb on the client
 		fRet |= pChar->r_Verb(script, pSrc);
 	}
 	return fRet;
@@ -618,19 +610,16 @@ void CSector::SetLightNow( bool fFlash )
 		if ( pChar->IsStatFlag( STATF_DEAD | STATF_NightSight ))
 			continue;
 
-		if ( pChar->IsClient())
+		if ( pChar->m_pClient )
 		{
-			CClient * pClient = pChar->GetClient();
-			ASSERT(pClient);
-
 			if ( fFlash )	// This does not seem to work predicably !
 			{
 				BYTE bPrvLight = m_Env.m_Light;
 				m_Env.m_Light = LIGHT_BRIGHT;	// full bright.
-				pClient->addLight();
+				pChar->m_pClient->addLight();
 				m_Env.m_Light = bPrvLight;	// back to previous.
 			}
-			pClient->addLight();
+			pChar->m_pClient->addLight();
 		}
 
 		// don't fire trigger when server is loading or light is flashing
@@ -713,14 +702,14 @@ void CSector::SetWeather( WEATHER_TYPE w )
 
 	m_Env.m_Weather = w;
 
-	CChar * pChar = static_cast<CChar *>( m_Chars_Active.GetHead());
+	CChar *pChar = static_cast<CChar *>( m_Chars_Active.GetHead());
 	for ( ; pChar != NULL; pChar = pChar->GetNext())
 	{
-		if ( pChar->IsClient())
-			pChar->GetClient()->addWeather( w );
+		if ( pChar->m_pClient )
+			pChar->m_pClient->addWeather(w);
 
 		if ( IsTrigUsed(TRIGGER_ENVIRONCHANGE) )
-			pChar->OnTrigger( CTRIG_EnvironChange, pChar );
+			pChar->OnTrigger(CTRIG_EnvironChange, pChar);
 	}
 }
 
@@ -737,8 +726,8 @@ void CSector::SetSeason( SEASON_TYPE season )
 	CChar * pChar = static_cast<CChar *>( m_Chars_Active.GetHead());
 	for ( ; pChar != NULL; pChar = pChar->GetNext())
 	{
-		if ( pChar->IsClient() )
-			pChar->GetClient()->addSeason(season);
+		if ( pChar->m_pClient )
+			pChar->m_pClient->addSeason(season);
 
 		if ( IsTrigUsed(TRIGGER_ENVIRONCHANGE) )
 			pChar->OnTrigger(CTRIG_EnvironChange, pChar);
@@ -1058,31 +1047,29 @@ void CSector::OnTick(int iPulseCount)
 		EXC_TRYSUB("TickChar");
 
 		pCharNext = pChar->GetNext();
-		if (( fEnvironChange ) && ( IsTrigUsed(TRIGGER_ENVIRONCHANGE) ))
+		if ( fEnvironChange && IsTrigUsed(TRIGGER_ENVIRONCHANGE) )
 			pChar->OnTrigger(CTRIG_EnvironChange, pChar);
 
-		if ( pChar->IsClient())
+		if ( pChar->m_pClient )
 		{
-			CClient * pClient = pChar->GetClient();
-			ASSERT( pClient );
 			if ( sound )
-				pClient->addSound(sound, pChar);
+				pChar->m_pClient->addSound(sound, pChar);
 
-			if ( fLightChange && ! pChar->IsStatFlag( STATF_DEAD | STATF_NightSight ))
-				pClient->addLight();
+			if ( fLightChange && !pChar->IsStatFlag(STATF_DEAD|STATF_NightSight) )
+				pChar->m_pClient->addLight();
 
 			if ( fWeatherChange )
-				pClient->addWeather(GetWeather());
+				pChar->m_pClient->addWeather(GetWeather());
 
 			if ( iRegionPeriodic && pChar->m_pArea )
 			{
-				if (( iRegionPeriodic == 2 )&&( IsTrigUsed(TRIGGER_REGPERIODIC) ))
+				if ( (iRegionPeriodic == 2) && IsTrigUsed(TRIGGER_REGPERIODIC) )
 				{
-					pChar->m_pArea->OnRegionTrigger( pChar, RTRIG_REGPERIODIC );
+					pChar->m_pArea->OnRegionTrigger(pChar, RTRIG_REGPERIODIC);
 					iRegionPeriodic--;
 				}
 				if ( IsTrigUsed(TRIGGER_CLIPERIODIC) )
-					pChar->m_pArea->OnRegionTrigger( pChar, RTRIG_CLIPERIODIC );
+					pChar->m_pArea->OnRegionTrigger(pChar, RTRIG_CLIPERIODIC);
 			}
 		}
 		// Can only die on your own tick.
