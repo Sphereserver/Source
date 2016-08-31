@@ -3076,8 +3076,7 @@ PacketCharacterList::PacketCharacterList(CClient* target) : PacketSend(XCMD_Char
 		}
 	}
 
-	int flags = g_Cfg.GetPacketFlag(target, true);
-	writeInt32(flags);
+	writeInt32(target->m_CharacterListFlags);
 
 	if ( target->m_NetState->isClientEnhanced() )
 	{

@@ -985,7 +985,7 @@ enum NOTO_TYPE
 #define MINCLIVER_PADCHARLIST		3000010	// minimum client to pad character list to at least 5 characters
 #define MINCLIVER_CLOSEDIALOG		4000400	// minimum client where close dialog does not trigger a client response
 #define MINCLIVER_NEWVERSIONING		5000605	// minimum client to use the new versioning format (after 5.0.6e it change to 5.0.6.5)
-#define MINCLIVER_ITEMGRID			6000107	// minimum client to use grid index (6.0.1.7)
+#define MINCLIVER_CONTAINERGRID		6000107	// minimum client to use container grid index (6.0.1.7)
 
 // client versions (packets)
 #define MINCLIVER_STATLOCKS			4000100	// minimum client to receive 0xBF.0x19.0x02 packet

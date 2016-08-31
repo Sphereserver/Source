@@ -1,4 +1,4 @@
-#include "graysvr.h"	// predef header.
+﻿#include "graysvr.h"	// predef header.
 #include "CClient.h"
 #include "../network/network.h"
 #include "../network/send.h"
@@ -400,6 +400,190 @@ void CClient::addPromptConsoleFunction( LPCTSTR pszFunction, LPCTSTR pszSysmessa
 	addPromptConsole(CLIMODE_PROMPT_SCRIPT_VERB, pszSysmessage, 0, 0, bUnicode);
 }
 
+////////////////////////////////////////////////////
+
+void CClient::UpdateFeatureFlags()
+{
+	ADDTOCALLSTACK("CClient::UpdateFeatureFlags");
+	// Update ingame features enabled on this client
+	// NOTE: Flags > 0x10000 requires at least client 6.0.14.2
+
+	// 0x000001		Enable T2A features
+	// 0x000002		Enable Renaissance features (play MP3 instead midi, ...)
+	// 0x000004		Enable TD features
+	// 0x000008		Enable LBR features
+	// 0x000010		Enable AOS features (necro/paladin, house customization engine, ...)
+	// 0x000020		Sixth character slot
+	// 0x000040		Enable SE features
+	// 0x000080		Enable ML features
+	// 0x000100		8th age
+	// 0x000200		9th age (enable crystal/shadow custom house tiles)
+	// 0x000400		10th age
+	// 0x000800		Increased house/bank storage
+	// 0x001000		Seventh character slot
+	// 0x002000		KR custom character faces
+	// 0x004000		Trial account
+	// 0x008000		Live account (required on clients 4.0.0+, otherwise bits 3..14 will be ignored)
+	// 0x010000		Enable SA features
+	// 0x020000		Enable HS features
+	// 0x040000		Enable gothic custom house tiles
+	// 0x080000		Enable rustic custom house tiles
+	// 0x100000		Enable jungle custom house tiles
+	// 0x200000		Enable shadowguard custom house tiles
+	// 0x400000		Enable TOL features
+
+	if ( !m_pAccount )
+		return;
+
+	RESDISPLAY_VERSION iResdisp = static_cast<RESDISPLAY_VERSION>(m_pAccount->GetResDisp());
+	BYTE iMaxChars = static_cast<BYTE>(maximum(m_pAccount->GetMaxChars(), m_pAccount->m_Chars.GetCharCount()));
+	m_FeatureFlags = 0;
+
+	// Expansion features
+	if ( iResdisp >= RDS_T2A )
+	{
+		if ( g_Cfg.m_iFeatureT2A & FEATURE_T2A_UPDATE )
+			m_FeatureFlags |= 0x4;
+		if ( g_Cfg.m_iFeatureT2A & FEATURE_T2A_CHAT )
+			m_FeatureFlags |= 0x1;
+	}
+
+	if ( iResdisp >= RDS_LBR )
+	{
+		if ( g_Cfg.m_iFeatureLBR & FEATURE_LBR_UPDATE )
+			m_FeatureFlags |= 0x8;
+		if ( g_Cfg.m_iFeatureLBR & FEATURE_LBR_SOUND )
+			m_FeatureFlags |= 0x2;
+	}
+
+	if ( iResdisp >= RDS_AOS )
+	{
+		if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_A )
+			m_FeatureFlags |= 0x8000|0x10;
+	}
+
+	if ( iResdisp >= RDS_SE )
+	{
+		if ( g_Cfg.m_iFeatureSE & FEATURE_SE_NINJASAM )
+			m_FeatureFlags |= 0x40;
+	}
+
+	if ( iResdisp >= RDS_ML )
+	{
+		if ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE )
+			m_FeatureFlags |= 0x80;
+	}
+
+	if ( iResdisp >= RDS_SA )
+	{
+		if ( g_Cfg.m_iFeatureSA & FEATURE_SA_UPDATE )
+			m_FeatureFlags |= 0x10000;
+	}
+
+	if ( iResdisp >= RDS_TOL )
+	{
+		if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_UPDATE )
+			m_FeatureFlags |= 0x400000;
+	}
+
+	// Max character slots
+	if ( iMaxChars > 6 )
+		m_FeatureFlags |= 0x1000;
+	if ( iMaxChars == 6 )
+		m_FeatureFlags |= 0x20;
+
+	// Extra housing features (enable expansion items on house customization engine)
+	// PS: main expansion items are already enabled with flags 0x10 (AOS), 0x40 (SE), 0x80 (ML), 0x10000 (SA) and 0x400000 (TOL)
+	if ( g_Cfg.m_iFeatureExtra & FEATURE_EXTRA_CRYSTAL )
+		m_FeatureFlags |= 0x200;
+	if ( g_Cfg.m_iFeatureExtra & FEATURE_EXTRA_GOTHIC )
+		m_FeatureFlags |= 0x40000;
+	if ( g_Cfg.m_iFeatureExtra & FEATURE_EXTRA_RUSTIC )
+		m_FeatureFlags |= 0x80000;
+	if ( g_Cfg.m_iFeatureExtra & FEATURE_EXTRA_JUNGLE )
+		m_FeatureFlags |= 0x100000;
+	if ( g_Cfg.m_iFeatureExtra & FEATURE_EXTRA_SHADOWGUARD )
+		m_FeatureFlags |= 0x200000;
+}
+
+void CClient::UpdateCharacterListFlags()
+{
+	ADDTOCALLSTACK("CClient::UpdateCharacterListFlags");
+	// Update character list features enabled on this client
+
+	// 0x0001		Unknown
+	// 0x0002		Overwrite config buttons
+	// 0x0004		Single character slot
+	// 0x0008		Context menus
+	// 0x0010		Limit character slots
+	// 0x0020		Enable AOS features (tooltip, fight book)
+	// 0x0040		Sixth character slot
+	// 0x0080		Enable SE features
+	// 0x0100		Enable ML features
+	// 0x0200		Unknown (KR)
+	// 0x0400		Enable KR/SA packet 0xE1 at character list (possibly other unknown effects)
+	// 0x0800		Unknown (KR/SA)
+	// 0x1000		Seventh character slot
+	// 0x2000		Unknown (SA)
+	// 0x4000		Enable new SA movement packets 0xF0 / 0xF1 / 0xF2
+	// 0x8000		New Felucca areas / faction strongholds (uses map0x.mul, statics0x.mul, etc) - client 7.0.6+
+
+	if ( !m_pAccount )
+		return;
+
+	RESDISPLAY_VERSION iResdisp = static_cast<RESDISPLAY_VERSION>(m_pAccount->GetResDisp());
+	BYTE iMaxChars = static_cast<BYTE>(maximum(m_pAccount->GetMaxChars(), m_pAccount->m_Chars.GetCharCount()));
+	m_CharacterListFlags = 0;
+
+	// Expansion features
+	if ( iResdisp >= RDS_AOS )
+	{
+		if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B )
+			m_CharacterListFlags |= 0x20;
+		if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_POPUP )
+			m_CharacterListFlags |= 0x8;
+	}
+
+	if ( iResdisp >= RDS_SE )
+	{
+		if ( g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE )
+			m_CharacterListFlags |= 0x80;
+	}
+
+	if ( iResdisp >= RDS_ML )
+	{
+		if ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE )
+			m_CharacterListFlags |= 0x100;
+	}
+
+	if ( iResdisp >= RDS_KR )
+	{
+		if ( g_Cfg.m_iFeatureKR & FEATURE_KR_UPDATE )
+			m_CharacterListFlags |= 0x200;
+	}
+
+	if ( iResdisp >= RDS_SA )
+	{
+		if ( g_Cfg.m_iFeatureSA & FEATURE_SA_MOVEMENT )
+			m_CharacterListFlags |= 0x4000;
+	}
+
+	// Max character slots
+	if ( iMaxChars > 6 )
+		m_CharacterListFlags |= 0x1000;
+	else if ( iMaxChars == 6 )
+		m_CharacterListFlags |= 0x40;
+	else if ( iMaxChars == 1 )
+		m_CharacterListFlags |= 0x10|0x4;
+
+	// Misc
+	if ( m_NetState->isClientKR() || m_NetState->isClientEnhanced() )		// tooltips must be always enabled on enhanced clients
+		m_CharacterListFlags |= 0x400|0x20;
+	m_TooltipEnabled = (m_CharacterListFlags & 0x20);
+	m_ContainerGridEnabled = (m_NetState->isClientVersion(MINCLIVER_CONTAINERGRID) || m_NetState->isClientKR() || m_NetState->isClientEnhanced());
+}
+
+////////////////////////////////////////////////////
 
 enum CLIR_TYPE
 {

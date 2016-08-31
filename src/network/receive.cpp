@@ -927,19 +927,19 @@ bool PacketCharPlay::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketCharPlay::onReceive");
 
-	skip(4); // 0xedededed
-	skip(MAX_NAME_SIZE); // char name
-	skip(MAX_NAME_SIZE); // char pass
-	unsigned int slot = readInt32();
-	skip(4); // ip
+	skip(4);	// 0xEDEDEDED
+	skip(MAX_NAME_SIZE);	// char name
+	skip(2);
+	LOGIN_FLAG flags = static_cast<LOGIN_FLAG>(readInt32());	// not really used, Sphere already have AutoResDisp feature to set ResDisp based on client version
+	skip(24);
+	DWORD slot = readInt32();
+	skip(4);	// IP
 
-	CClient* client = net->m_client;
-	if (!client)	//Sometimes seems to happen? returning here to avoid console errors because of assert
+	CClient *client = net->m_client;
+	if (!client)	// sometimes seems to happen?
 		return false;
-	//ASSERT(client);
 
 	BYTE err = client->Setup_Play(slot);
-
 	client->addLoginErr(err);
 	return true;
 }

@@ -3560,7 +3560,10 @@ BYTE CClient::Setup_ListReq( const char * pszAccName, const char * pszPassword, 
 	if ( g_Cfg.m_bAutoResDisp )
 		m_pAccount->SetAutoResDisp(this);
 
-	new PacketEnableFeatures(this, g_Cfg.GetPacketFlag(this, false));
+	UpdateFeatureFlags();
+	new PacketEnableFeatures(this, m_FeatureFlags);
+
+	UpdateCharacterListFlags();
 	new PacketCharacterList(this);
 
 	m_Targ_Mode = CLIMODE_SETUP_CHARLIST;

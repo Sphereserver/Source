@@ -1473,14 +1473,13 @@ bool CItemMultiCustom::IsValidItem( ITEMID_TYPE id, CClient * pClientSrc, bool b
 	if ( !LoadValidItems() )
 		return false;
 
-	// check the item exists in the database
+	// check if the item exists in the database
 	ValidItemsContainer::iterator it = sm_mapValidItems.find(id);
 	if ( it == sm_mapValidItems.end() )
 		return false;
 
-	// check if client enabled features contains the item FeatureMask
-	int iFeatureFlag = g_Cfg.GetPacketFlag(pClientSrc, false);
-	if ( (iFeatureFlag & it->second) != it->second )
+	// check if the item is enabled on client feature flags
+	if ( (pClientSrc->m_FeatureFlags & it->second) != it->second )
 		return false;
 
 	return true;

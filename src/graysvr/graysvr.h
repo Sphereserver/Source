@@ -116,6 +116,20 @@ public:
 	static CServTime GetCurrentTime();
 };
 
+enum LOGIN_FLAG		// client send these flags on login, based on client version/expansion
+{
+	None		= 0x0,
+	Felucca		= 0x1,
+	Trammel		= 0x2,
+	Ilshenar	= 0x4,
+	Malas		= 0x8,
+	Tokuno		= 0x10,
+	TerMur		= 0x20,
+	UO3D		= 0x40,
+	Unknown		= 0x80,		// maybe reserved to facet 6?
+	UOTD		= 0x100
+};
+
 enum RESDISPLAY_VERSION
 {
 	RDS_NONE,
@@ -991,6 +1005,8 @@ private:
 public:
 	CONNECT_TYPE m_iConnectType;	// what sort of a connection is this ?
 	CAccount * m_pAccount;			// The account name. we logged in on
+	DWORD m_FeatureFlags;			// features enabled on this client
+	DWORD m_CharacterListFlags;		// character list features enabled on this client
 	bool m_TooltipEnabled;			// is tooltip feature enabled on this client?
 	bool m_ContainerGridEnabled;	// is container grid feature enabled on this client?
 
@@ -1280,6 +1296,8 @@ public:
 		m_fUpdateStats |= SF_UPDATE_STAM;
 	}
 	void UpdateStats();
+	void UpdateFeatureFlags();
+	void UpdateCharacterListFlags();
 	bool addDeleteErr(BYTE code, DWORD iSlot);
 	void addSeason(SEASON_TYPE season);
 	void addTime( bool bCurrent = false );

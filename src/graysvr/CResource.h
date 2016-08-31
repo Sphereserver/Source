@@ -1098,9 +1098,6 @@ public:
 	
 	void PrintEFOFFlags( bool bEF = true, bool bOF = true, CTextConsole *pSrc = NULL );
 
-	// ResDisp Flag
-	int GetPacketFlag( CClient *pClient, bool bCharList );
-
 	// Specialized resource accessors.
 
 	bool CanUsePrivVerb( const CScriptObj * pObjTarg, LPCTSTR pszCmd, CTextConsole * pSrc ) const;
