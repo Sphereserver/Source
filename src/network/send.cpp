@@ -3048,9 +3048,7 @@ PacketCharacterList::PacketCharacterList(CClient* target) : PacketSend(XCMD_Char
 	writeByte(static_cast<BYTE>(startCount));
 
 	// since 7.0.13.0, start locations have extra information
-	DWORD tmVer = static_cast<DWORD>(account->m_TagDefs.GetKeyNum("clientversion"));
-	DWORD tmVerReported = static_cast<DWORD>(account->m_TagDefs.GetKeyNum("reportedcliver"));
-	if ( tmVer >= MINCLIVER_EXTRASTARTINFO || tmVerReported >= MINCLIVER_EXTRASTARTINFO )
+	if ( target->m_NetState->isClientVersion(MINCLIVER_EXTRASTARTINFO) )
 	{
 		// newer clients receive additional start info
 		for ( size_t i = 0; i < startCount; i++ )
@@ -3078,7 +3076,7 @@ PacketCharacterList::PacketCharacterList(CClient* target) : PacketSend(XCMD_Char
 		}
 	}
 
-	int flags = g_Cfg.GetPacketFlag(true, target, static_cast<RESDISPLAY_VERSION>(account->GetResDisp()), maximum(account->GetMaxChars(), static_cast<BYTE>(account->m_Chars.GetCharCount())));
+	int flags = g_Cfg.GetPacketFlag(target, true);
 	writeInt32(flags);
 
 	if ( target->m_NetState->isClientEnhanced() )
@@ -3483,13 +3481,8 @@ PacketEnableFeatures::PacketEnableFeatures(const CClient* target, DWORD flags) :
 {
 	ADDTOCALLSTACK("PacketEnableFeatures::PacketEnableFeatures");
 
-	const CAccountRef account = target->m_pAccount;
-	ASSERT(account);
-	DWORD tmVer = static_cast<DWORD>(account->m_TagDefs.GetKeyNum("clientversion"));
-	DWORD tmVerReported = static_cast<DWORD>(account->m_TagDefs.GetKeyNum("reportedcliver"));
-	
-	// since 6.0.14.2, feature flags are 4 bytes instead of 2.
-	if (tmVer >= MINCLIVER_EXTRAFEATURES || tmVerReported >= MINCLIVER_EXTRAFEATURES)
+	// Since client 6.0.14.2, feature flags are 4 bytes instead of 2
+	if ( target->m_NetState->isClientVersion(MINCLIVER_EXTRAFEATURES) )
 		writeInt32(flags);
 	else
 		writeInt16(static_cast<WORD>(flags));

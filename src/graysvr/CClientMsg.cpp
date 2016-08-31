@@ -1309,11 +1309,8 @@ void CClient::addPlayerStart( CChar * pChar )
 	CSector *pSector = pt.GetSector();
 
 	CItem *pItemChange = m_pChar->LayerFind(LAYER_FLAG_ClientLinger);
-	if ( pItemChange != NULL )
+	if ( pItemChange )
 		pItemChange->Delete();
-
-	if ( g_Cfg.m_bAutoResDisp )
-		m_pAccount->SetAutoResDisp(this);
 
 	ClearTargMode();	// clear death menu mode. etc. ready to walk about. cancel any previous modes
 	m_Env.SetInvalid();
@@ -2335,8 +2332,6 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 		return;
 
 	// Check if we must send the full tooltip or just the obj name
-	// NOTE: Always enable tooltips on enhanced clients even if this feature is disabled on Sphere settings,
-	//		 because these clients only use tooltips and doesn't have the old 'single click' behavior anymore
 	if ( !m_TooltipEnabled && !bShop )
 		return;
 
@@ -3350,11 +3345,16 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 
 	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Setup_Start acct='%s', char='%s', IP='%s'\n", GetSocketID(), m_pAccount->GetName(), pChar->GetName(), GetPeerStr());
 
-	if ( GetPrivLevel() > PLEVEL_Player )		// GMs should login with invul and without allshow flag set
+	// GMs should login with invul and without allshow flag set
+	if ( GetPrivLevel() > PLEVEL_Player )
 	{
 		ClearPrivFlags(PRIV_ALLSHOW);
 		pChar->StatFlag_Set(STATF_INVUL);
 	}
+
+	// Max sight range on classic clients is 18, so lower it if for some reason it was higher
+	if ( (pChar->GetSight() > 18) && (m_NetState->getClientType() <= CLIENTTYPE_3D) )
+		pChar->SetSight(18);
 
 	addPlayerStart( pChar );
 	ASSERT(m_pChar);
@@ -3436,12 +3436,12 @@ BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to pl
 	return PacketLoginError::Success;
 }
 
-BYTE CClient::Setup_Play( unsigned int iSlot ) // After hitting "Play Character" button
+BYTE CClient::Setup_Play( DWORD iSlot ) // After hitting "Play Character" button
 {
 	ADDTOCALLSTACK("CClient::Setup_Play");
 	// Mode == CLIMODE_SETUP_CHARLIST
 
-	DEBUG_MSG(("%lx:Setup_Play slot %u\n", GetSocketID(), iSlot));
+	DEBUG_MSG(("%lx:Setup_Play slot %lu\n", GetSocketID(), iSlot));
 
 	if ( !m_pAccount )
 		return PacketLoginError::Invalid;
@@ -3460,9 +3460,8 @@ BYTE CClient::Setup_Play( unsigned int iSlot ) // After hitting "Play Character"
 	}
 
 	// LastLogged update
-	CGTime datetime = CGTime::GetCurrentTime();
 	m_pAccount->m_TagDefs.SetStr("LastLogged", false, m_pAccount->m_dateLastConnect.Format(NULL));
-	m_pAccount->m_dateLastConnect = datetime;
+	m_pAccount->m_dateLastConnect = CGTime::GetCurrentTime();
 
 	return Setup_Start(pChar);
 }
@@ -3555,7 +3554,13 @@ BYTE CClient::Setup_ListReq( const char * pszAccName, const char * pszPassword, 
 		return PacketLoginError::Blocked;	//Setup_Start() returns false only when login blocked by Return 1 in @Login
 	}*/
 
-	new PacketEnableFeatures(this, g_Cfg.GetPacketFlag(false, this, static_cast<RESDISPLAY_VERSION>(m_pAccount->GetResDisp()), static_cast<BYTE>(maximum(m_pAccount->GetMaxChars(), m_pAccount->m_Chars.GetCharCount()))));
+	//m_NetState->detectAsyncMode();	// disabled because of unstability
+
+	// Set resdisp based on client version
+	if ( g_Cfg.m_bAutoResDisp )
+		m_pAccount->SetAutoResDisp(this);
+
+	new PacketEnableFeatures(this, g_Cfg.GetPacketFlag(this, false));
 	new PacketCharacterList(this);
 
 	m_Targ_Mode = CLIMODE_SETUP_CHARLIST;
@@ -3644,7 +3649,23 @@ BYTE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 		return PacketLoginError::MaxClients;
 	}
 
-	//	Do the scripts allow to login this account?
+	// Getting client version on login behavior is a bit tricky. When the client send the login request, the server
+	// will reply back with the server list, and only after this proccess the client will report its version to the
+	// server. But when the user select an server to play, the client disconnects and connect again now directly on
+	// this server address but without report the client version again. So we need to store the reported value from
+	// the 1st connection on an temporary tag, to read it here (on the 2nd connection).
+	DWORD tmVerReported = static_cast<DWORD>(pAccount->m_TagDefs.GetKeyNum("ReportedCliVer"));
+	if ( tmVerReported )
+	{
+		m_NetState->m_reportedVersion = tmVerReported;
+		pAccount->m_TagDefs.DeleteKey("ReportedCliVer");
+	}
+	else if ( m_NetState->getReportedVersion() )
+		pAccount->m_TagDefs.SetNum("ReportedCliVer", m_NetState->getReportedVersion());
+	else
+		new PacketClientVersionReq(this);
+
+	// Do the scripts allow to login this account?
 	pAccount->m_Last_IP = GetPeer();
 	CScriptTriggerArgs Args;
 	Args.Init(pAccount->GetName());
@@ -3762,5 +3783,3 @@ BYTE CClient::LogIn( LPCTSTR pszAccName, LPCTSTR pszPassword, CGString & sMsg )
 
 	return LogIn(pAccount, sMsg);
 }
-
-

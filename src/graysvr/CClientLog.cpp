@@ -207,7 +207,7 @@ bool CClient::addRelay( const CServerDef * pServ )
 		dwCustomerId = z_crc32(0L, Z_NULL, 0);
 		dwCustomerId = z_crc32(dwCustomerId, reinterpret_cast<const z_Bytef *>(sCustomerID.GetPtr()), sCustomerID.GetLength());
 
-		m_pAccount->m_TagDefs.SetNum("customerid", dwCustomerId);
+		m_pAccount->m_TagDefs.SetNum("CustomerID", dwCustomerId);
 	}
 
 	DEBUG_MSG(( "%lx:Login_Relay to server %s with AuthId %lu\n", GetSocketID(), ipAddr.GetAddrStr(), dwCustomerId ));
@@ -225,7 +225,7 @@ bool CClient::addRelay( const CServerDef * pServ )
 	return( false );
 }
 
-bool CClient::Login_Relay( unsigned int iRelay ) // Relay player to a selected IP
+bool CClient::Login_Relay( WORD iRelay ) // Relay player to a selected IP
 {
 	ADDTOCALLSTACK("CClient::Login_Relay");
 	// Client wants to be relayed to another server. XCMD_ServerSelect
@@ -832,16 +832,8 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 			{
 				Str_GetBare( szAccount, pEvent->ServersReq.m_acctname, sizeof(szAccount)-1 );
 				CAccountRef pAcc = g_Accounts.Account_Find( szAccount );
-				if (pAcc)
-				{
-					pAcc->m_TagDefs.SetNum("clientversion", m_Crypt.GetClientVer());
-					pAcc->m_TagDefs.SetNum("reportedcliver", m_NetState->getReportedVersion());
-				}
-				else
-				{
-					// If i can't set the tag is better to stop login now
+				if ( !pAcc )
 					lErr = PacketLoginError::Invalid;
-				}
 			}
 
 			break;
@@ -860,39 +852,17 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 				CAccountRef pAcc = g_Accounts.Account_Find( szAccount );
 				if (pAcc)
 				{
-					DWORD tmSid = 0x7f000001;
-					DWORD tmVer = static_cast<DWORD>(pAcc->m_TagDefs.GetKeyNum("clientversion"));
-					DWORD tmVerReported = static_cast<DWORD>(pAcc->m_TagDefs.GetKeyNum("reportedcliver"));
-					pAcc->m_TagDefs.DeleteKey("clientversion");
-					pAcc->m_TagDefs.DeleteKey("reportedcliver");
-
+					DWORD CustomerID = 0x7f000001;
 					if ( g_Cfg.m_fUseAuthID )
 					{
-						tmSid = static_cast<DWORD>(pAcc->m_TagDefs.GetKeyNum("customerid"));
-						pAcc->m_TagDefs.DeleteKey("customerid");
+						CustomerID = static_cast<DWORD>(pAcc->m_TagDefs.GetKeyNum("CustomerID"));
+						pAcc->m_TagDefs.DeleteKey("CustomerID");
 					}
 
-					DEBUG_MSG(("%lx:xProcessClientSetup for %s, with AuthId %lu and CliVersion %lu / CliVersionReported %lu\n", GetSocketID(), pAcc->GetName(), tmSid, tmVer, tmVerReported));
+					DEBUG_MSG(("%lx:xProcessClientSetup for %s, with AuthId %lu and CliVersion %lu / CliVersionReported %lu\n", GetSocketID(), pAcc->GetName(), CustomerID, m_Crypt.GetClientVer(), m_NetState->getReportedVersion()));
 
-					if ( tmSid != 0 && tmSid == pEvent->CharListReq.m_Account )
+					if ( CustomerID != 0 && CustomerID == pEvent->CharListReq.m_Account )
 					{
-						// request client version if the client has not reported it to server yet
-						if ( tmVerReported == 0 )
-							new PacketClientVersionReq(this);
-
-						if ( tmVerReported != 0 )
-						{
-							m_NetState->m_reportedVersion = tmVerReported;
-						}
-						else if ( tmVer != 0 )
-						{
-							m_Crypt.SetClientVerEnum(tmVer, false);
-							m_NetState->m_clientVersion = tmVer;
-						}
-
-						// client version change may toggle async mode, it's important to flush pending data to the client before this happens
-						m_NetState->detectAsyncMode();
-
 						if ( !xCanEncLogin(true) )
 							lErr = PacketLoginError::BadVersion;
 					}

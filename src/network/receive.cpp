@@ -1899,7 +1899,7 @@ bool PacketServerSelect::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketServerSelect::onReceive");
 
-	unsigned int server = readInt16();
+	WORD server = readInt16();
 
 	net->m_client->Login_Relay(server);
 	return true;
@@ -2422,6 +2422,10 @@ bool PacketClientVersion::onReceive(NetState* net)
 		
 		if ((g_Serv.m_ClientVersion.GetClientVer() != 0) && (g_Serv.m_ClientVersion.GetClientVer() != version))
 			client->addLoginErr(PacketLoginError::BadVersion);
+
+		// Store the value on a temporary tag, it will be needed later
+		if ( client->m_pAccount )
+			client->m_pAccount->m_TagDefs.SetNum("ReportedCliVer", version);
 	}
 
 	return true;

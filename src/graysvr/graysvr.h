@@ -1193,13 +1193,13 @@ public:
 	TRIGRET_TYPE Menu_OnSelect( RESOURCE_ID_BASE rid, int iSelect, CObjBase * pObj );
 	TRIGRET_TYPE Dialog_OnButton( RESOURCE_ID_BASE rid, DWORD dwButtonID, CObjBase * pObj, CDialogResponseArgs * pArgs );
 
-	bool Login_Relay( unsigned int iServer ); // Relay player to a certain IP
+	bool Login_Relay( WORD iServer ); // Relay player to a certain IP
 	BYTE Login_ServerList( const char * pszAccount, const char * pszPassword ); // Initial login (Login on "loginserver", new format)
 
 	BYTE Setup_Delete( DWORD iSlot ); // Deletion of character
 	int Setup_FillCharList(Packet* pPacket, const CChar * pCharFirst); // Write character list to packet
 	BYTE Setup_ListReq( const char * pszAccount, const char * pszPassword, bool fTest ); // Gameserver login and character listing
-	BYTE Setup_Play( unsigned int iSlot ); // After hitting "Play Character" button
+	BYTE Setup_Play( DWORD iSlot ); // After hitting "Play Character" button
 	BYTE Setup_Start( CChar * pChar ); // Send character startup stuff to player
 	
 

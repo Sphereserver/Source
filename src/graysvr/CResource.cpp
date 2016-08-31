@@ -2198,12 +2198,16 @@ void CResource::LoadSortSpells()
 
 //*************************************************************
 
-int CResource::GetPacketFlag( bool bCharlist, CClient *pClient, RESDISPLAY_VERSION res, BYTE chars )
+int CResource::GetPacketFlag(CClient *pClient, bool bCharList )
 {
-	int retValue = 0;
-	bool bResOk = false;
+	if ( !pClient || !pClient->m_pAccount )
+		return 0;
 
-	if ( bCharlist )
+	RESDISPLAY_VERSION res = static_cast<RESDISPLAY_VERSION>(pClient->m_pAccount->GetResDisp());
+	BYTE iMaxChars = static_cast<BYTE>(maximum(pClient->m_pAccount->GetMaxChars(), pClient->m_pAccount->m_Chars.GetCharCount()));
+	int iRet = 0;
+
+	if ( bCharList )
 	{
 		//	BYTE[4] Flags
 		//		0x0001	= unknown
@@ -2221,53 +2225,49 @@ int CResource::GetPacketFlag( bool bCharlist, CClient *pClient, RESDISPLAY_VERSI
 		//		0x4000	= New walk packets
 		//		0x8000  = New faction strongholds (uses map0x.mul, statics0x.mul, etc) - 7.0.6
 
-		// T2A - LBR don't have char list flags
-		bResOk = ( res >= RDS_AOS );
-		if ( bResOk )
+		if ( res >= RDS_AOS )
 		{
-			retValue |= ( m_iFeatureAOS & FEATURE_AOS_POPUP ) ? 0x008 : 0x00;
-			retValue |= ( m_iFeatureAOS & FEATURE_AOS_UPDATE_B ) ? 0x020 : 0x00;
+			if ( m_iFeatureAOS & FEATURE_AOS_POPUP )
+				iRet |= 0x8;
+			if ( m_iFeatureAOS & FEATURE_AOS_UPDATE_B )
+				iRet |= 0x20;
 		}
 
-		if ( pClient )
+		if ( res >= RDS_SE )
 		{
-			if ( pClient->m_NetState->isClientKR() || pClient->m_NetState->isClientEnhanced() )	// tooltips must be always enabled on enhanced clients
-				retValue |= 0x020;
-			pClient->m_TooltipEnabled = (retValue & 0x020);
-			pClient->m_ContainerGridEnabled = (pClient->m_NetState->isClientVersion(MINCLIVER_ITEMGRID) || pClient->m_NetState->isClientKR() || pClient->m_NetState->isClientEnhanced());
+			if ( m_iFeatureSE & FEATURE_SE_UPDATE )
+				iRet |= 0x80;
 		}
 
-		bResOk = ( res >= RDS_SE );
-		if ( bResOk )
+		if ( res >= RDS_ML )
 		{
-			retValue |= ( m_iFeatureSE & FEATURE_SE_UPDATE ) ? 0x080 : 0x00;
+			if ( m_iFeatureML & FEATURE_ML_UPDATE )
+				iRet |= 0x100;
 		}
 
-		bResOk = ( res >= RDS_ML );
-		if ( bResOk )
+		if ( res >= RDS_KR )
 		{
-			retValue |= ( m_iFeatureML & FEATURE_ML_UPDATE ) ? 0x0100 : 0x00;
+			if ( m_iFeatureKR & FEATURE_KR_UPDATE )
+				iRet |= 0x200;
 		}
 
-		bResOk = ( res >= RDS_KR );
-		if ( bResOk )
+		if ( res >= RDS_SA )
 		{
-			retValue |= ( m_iFeatureKR & FEATURE_KR_UPDATE ) ? 0x200 : 0x00;
-			retValue |= ( m_iFeatureKR & FEATURE_KR_CLIENTTYPE ) ? 0x400 : 0x00;
+			if ( m_iFeatureSA & FEATURE_SA_MOVEMENT )
+				iRet |= 0x4000;
 		}
 
-		bResOk = ( res >= RDS_SA );
-		if ( bResOk )
-		{
-			retValue |= ( m_iFeatureSA & FEATURE_SA_MOVEMENT ) ? 0x4000 : 0x00;
-		}
-		
-		retValue |= ( chars == 1 ) ? 0x0014 : 0x00;
-		retValue |= ( chars >= 6 ) ? 0x0040 : 0x00;
-		retValue |= ( chars >= 7 ) ? 0x1000 : 0x00;
+		if ( iMaxChars > 6 )
+			iRet |= 0x1000;
+		else if ( iMaxChars == 6 )
+			iRet |= 0x40;
+		else if ( iMaxChars == 1 )
+			iRet |= 0x10|0x4;
 
-		if ( !pClient->m_NetState->getClientType() )
-			retValue |= 0x400;
+		if ( pClient->m_NetState->isClientKR() || pClient->m_NetState->isClientEnhanced() )		// tooltips must be always enabled on enhanced clients
+			iRet |= 0x400|0x20;
+		pClient->m_TooltipEnabled = (iRet & 0x20);
+		pClient->m_ContainerGridEnabled = (pClient->m_NetState->isClientVersion(MINCLIVER_ITEMGRID) || pClient->m_NetState->isClientKR() || pClient->m_NetState->isClientEnhanced());
 	}
 	else
 	{
@@ -2304,61 +2304,70 @@ int CResource::GetPacketFlag( bool bCharlist, CClient *pClient, RESDISPLAY_VERSI
 		//	Note3: a 3 doesn�t seem to �hurt� older (NON LBR) clients.
 		//	Note4: value is BYTE[2] prior to client 6.0.14.2
 
-		bResOk = ( res >= RDS_T2A );
-		if ( bResOk )
+		if ( res >= RDS_T2A )
 		{
-			retValue |= ( m_iFeatureT2A & FEATURE_T2A_UPDATE ) ? CLI_FEAT_T2A_FULL : 0x00;
-			retValue |= ( m_iFeatureT2A & FEATURE_T2A_CHAT ) ? CLI_FEAT_T2A_CHAT : 0x00;
+			if ( m_iFeatureT2A & FEATURE_T2A_UPDATE )
+				iRet |= 0x4;
+			if ( m_iFeatureT2A & FEATURE_T2A_CHAT )
+				iRet |= 0x1;
 		}
 
-		bResOk = ( res >= RDS_LBR );
-		if ( bResOk )
+		if ( res >= RDS_LBR )
 		{
-			retValue |= ( m_iFeatureLBR & FEATURE_LBR_UPDATE ) ? CLI_FEAT_LBR_FULL : 0x00;
-			retValue |= ( m_iFeatureLBR & FEATURE_LBR_SOUND  ) ? CLI_FEAT_LBR_SOUND : 0x00;
+			if ( m_iFeatureLBR & FEATURE_LBR_UPDATE )
+				iRet |= 0x8;
+			if ( m_iFeatureLBR & FEATURE_LBR_SOUND )
+				iRet |= 0x2;
 		}
 
-		bResOk = ( res >= RDS_AOS );
-		if ( bResOk )
+		if ( res >= RDS_AOS )
 		{
-			retValue |= ( m_iFeatureAOS & FEATURE_AOS_UPDATE_A ) ? 0x08010 : 0x00;
+			if ( m_iFeatureAOS & FEATURE_AOS_UPDATE_A )
+				iRet |= 0x8010;
 		}
 
-		bResOk = ( res >= RDS_SE );
-		if ( bResOk )
+		if ( res >= RDS_SE )
 		{
-			retValue |= ( m_iFeatureSE & FEATURE_SE_NINJASAM ) ? 0x040 : 0x00;
+			if ( m_iFeatureSE & FEATURE_SE_NINJASAM )
+				iRet |= 0x40;
 		}
 
-		bResOk = ( res >= RDS_ML );
-		if ( bResOk )
+		if ( res >= RDS_ML )
 		{
-			retValue |= ( m_iFeatureML & FEATURE_ML_UPDATE ) ? 0x080 : 0x00;
+			if ( m_iFeatureML & FEATURE_ML_UPDATE )
+				iRet |= 0x80;
 		}
 
-		bResOk = ( res >= RDS_SA );
-		if ( bResOk )
+		if ( res >= RDS_SA )
 		{
-			retValue |= ( m_iFeatureSA & FEATURE_SA_UPDATE ) ? 0x10000 : 0x00;
+			if ( m_iFeatureSA & FEATURE_SA_UPDATE )
+				iRet |= 0x10000;
 		}
 
-		bResOk = ( res >= RDS_TOL );
-		if ( bResOk )
+		if ( res >= RDS_TOL )
 		{
-			retValue |= ( m_iFeatureTOL & FEATURE_TOL_UPDATE ) ? 0x400000 : 0x00;
+			if ( m_iFeatureTOL & FEATURE_TOL_UPDATE )
+				iRet |= 0x400000;
 		}
 
-		retValue |= ( m_iFeatureExtra & FEATURE_EXTRA_CRYSTAL ) ? 0x0200 : 0x00;
-		retValue |= ( m_iFeatureExtra & FEATURE_EXTRA_GOTHIC ) ? 0x40000 : 0x00;
-		retValue |= ( m_iFeatureExtra & FEATURE_EXTRA_RUSTIC ) ? 0x80000 : 0x00;
-		retValue |= ( m_iFeatureExtra & FEATURE_EXTRA_JUNGLE ) ? 0x100000 : 0x00;
-		retValue |= ( m_iFeatureExtra & FEATURE_EXTRA_SHADOWGUARD ) ? 0x200000 : 0x00;
-		
-		retValue |= ( chars >= 6 ) ? 0x0020 : 0x00;
-		retValue |= ( chars >= 7 ) ? 0x1000 : 0x00;
+		if ( m_iFeatureExtra & FEATURE_EXTRA_CRYSTAL )
+			iRet |= 0x200;
+		if ( m_iFeatureExtra & FEATURE_EXTRA_GOTHIC )
+			iRet |= 0x40000;
+		if ( m_iFeatureExtra & FEATURE_EXTRA_RUSTIC )
+			iRet |= 0x80000;
+		if ( m_iFeatureExtra & FEATURE_EXTRA_JUNGLE )
+			iRet |= 0x100000;
+		if ( m_iFeatureExtra & FEATURE_EXTRA_SHADOWGUARD )
+			iRet |= 0x200000;
+
+		if ( iMaxChars >= 7 )
+			iRet |= 0x1000;
+		if ( iMaxChars >= 6 )
+			iRet |= 0x20;
 	}
 
-	return( retValue );
+	return iRet;
 }
 
 

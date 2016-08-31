@@ -185,3 +185,6 @@ Changed: Some internal improvements on Tracking skill.
 
 27-08-2016, Coruja
 Changed: Small improvements on container grid engine.
+
+31-08-2016, Coruja
+Changed: Some improvements to make client login proccess more reliable.

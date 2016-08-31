@@ -2990,13 +2990,6 @@ struct CCommand	// command buffer from server to client.
 
 		struct // size = 3	// enable features on client
 		{
-#define CLI_FEAT_T2A_CHAT	0x0001
-#define CLI_FEAT_LBR_SOUND	0x0002
-#define CLI_FEAT_T2A_FULL	0x0004
-#define CLI_FEAT_LBR_FULL	0x0008
-#define CLI_FEAT_T2A		(CLI_FEAT_T2A_CHAT|CLI_FEAT_T2A_FULL)
-#define CLI_FEAT_LBR		(CLI_FEAT_LBR_SOUND|CLI_FEAT_LBR_FULL)
-#define CLI_FEAT_T2A_LBR	(CLI_FEAT_T2A|CLI_FEAT_LBR)
 			BYTE m_Cmd;		// 0 = 0xb9
 			NWORD m_enable;
 		} FeaturesEnable;
