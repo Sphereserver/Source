@@ -930,7 +930,7 @@ bool PacketCharPlay::onReceive(NetState* net)
 	skip(4);	// 0xEDEDEDED
 	skip(MAX_NAME_SIZE);	// char name
 	skip(2);
-	LOGIN_FLAG flags = static_cast<LOGIN_FLAG>(readInt32());	// not really used, Sphere already have AutoResDisp feature to set ResDisp based on client version
+	skip(4);	//LOGIN_FLAG flags = static_cast<LOGIN_FLAG>(readInt32());	// not really used, Sphere already have AutoResDisp feature to set ResDisp based on client version
 	skip(24);
 	DWORD slot = readInt32();
 	skip(4);	// IP

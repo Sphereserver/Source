@@ -3656,15 +3656,20 @@ BYTE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
 	// will reply back with the server list, and only after this proccess the client will report its version to the
 	// server. But when the user select an server to play, the client disconnects and connect again now directly on
 	// this server address but without report the client version again. So we need to store the reported value from
-	// the 1st connection on an temporary tag, to read it here (on the 2nd connection).
+	// 1st connection on an temporary tag, to read it here on 2nd connection.
+	DWORD tmVer = static_cast<DWORD>(pAccount->m_TagDefs.GetKeyNum("ClientVersion"));
 	DWORD tmVerReported = static_cast<DWORD>(pAccount->m_TagDefs.GetKeyNum("ReportedCliVer"));
-	if ( tmVerReported )
+	if ( tmVerReported  )
 	{
 		m_NetState->m_reportedVersion = tmVerReported;
 		pAccount->m_TagDefs.DeleteKey("ReportedCliVer");
 	}
-	else if ( m_NetState->getReportedVersion() )
-		pAccount->m_TagDefs.SetNum("ReportedCliVer", m_NetState->getReportedVersion());
+	else if ( tmVer  )
+	{
+		m_Crypt.SetClientVerEnum(tmVer, false);
+		m_NetState->m_clientVersion = tmVer;
+		pAccount->m_TagDefs.DeleteKey("ClientVersion");
+	}
 	else
 		new PacketClientVersionReq(this);
 

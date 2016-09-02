@@ -126,7 +126,7 @@ enum LOGIN_FLAG		// client send these flags on login, based on client version/ex
 	Tokuno		= 0x10,
 	TerMur		= 0x20,
 	UO3D		= 0x40,
-	Unknown		= 0x80,		// maybe reserved to facet 6?
+	//Unknown	= 0x80,
 	UOTD		= 0x100
 };
 

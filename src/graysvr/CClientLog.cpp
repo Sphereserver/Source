@@ -343,7 +343,7 @@ bool CClient::OnRxConsole( const BYTE * pData, size_t iLen )
 			{
 				if ( !m_zLogin[0] )
 				{
-					if ( static_cast<unsigned int>(m_Targ_Text.GetLength()) > (COUNTOF(m_zLogin) - 1) )
+					if ( static_cast<size_t>(m_Targ_Text.GetLength()) > COUNTOF(m_zLogin) - 1 )
 					{
 						SysMessage("Login:\n");
 					}
@@ -832,8 +832,15 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 			{
 				Str_GetBare( szAccount, pEvent->ServersReq.m_acctname, sizeof(szAccount)-1 );
 				CAccountRef pAcc = g_Accounts.Account_Find( szAccount );
-				if ( !pAcc )
+				if ( pAcc )
+				{
+					pAcc->m_TagDefs.SetNum("ClientVersion", m_Crypt.GetClientVer());
+					pAcc->m_TagDefs.SetNum("ReportedCliVer", m_NetState->getReportedVersion());
+				}
+				else
+				{
 					lErr = PacketLoginError::Invalid;
+				}
 			}
 
 			break;
