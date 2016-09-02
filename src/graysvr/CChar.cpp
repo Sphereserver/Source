@@ -437,8 +437,8 @@ void CChar::Delete(bool bforce, CClient *pClient)
 	// Character has been deleted
 	if ( m_pClient )
 	{
-		m_pClient->CharDisconnect();
 		m_pClient->m_NetState->markReadClosed();
+		m_pClient->CharDisconnect();
 	}
 
 	// Detach from account now
@@ -3627,8 +3627,6 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 					pSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_CMD_REMOVE_PLAYER) );
 					return( false );
 				}
-				if ( m_pClient )
-					m_pClient->addObjectRemove(this);
 			}
 			Delete();
 			break;
@@ -3640,8 +3638,6 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 					pSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_CMD_REMOVE_PLAYER) );
 					return( false );
 				}
-				if ( m_pClient )
-					m_pClient->addObjectRemove(this);
 			}
 			Delete(true);
 			break;

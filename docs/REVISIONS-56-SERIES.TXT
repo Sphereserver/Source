@@ -188,3 +188,8 @@ Changed: Small improvements on container grid engine.
 
 31-08-2016, Coruja
 Changed: Some improvements to make client login proccess more reliable.
+
+02-09-2016, Coruja
+Fixed: Console error when an online account got deleted.
+Fixed: Function f_onchar_delete not being called correctly when the account get deleted.
+Fixed: Players with STATF_Stone flag set taking 1hr to disconnect (client linger time) after logout.

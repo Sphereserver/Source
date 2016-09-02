@@ -563,27 +563,19 @@ CAccount::CAccount( LPCTSTR pszName, bool fGuest )
 void CAccount::DeleteChars()
 {
 	ADDTOCALLSTACK("CAccount::DeleteChars");
-	CClient * pClient = FindClient();
-	if ( pClient != NULL )
-	{	// we have no choice but to kick them.
-		pClient->m_NetState->markReadClosed();
-	}
+	if ( g_Serv.IsLoading() )
+		return;
 
-	// Now track down all my disconnected chars !
-	if ( ! g_Serv.IsLoading())
+	size_t iMax = m_Chars.GetCharCount();
+	for ( size_t i = 0; i < iMax; i-- )
 	{
-		size_t i = m_Chars.GetCharCount();
-		while (i > 0)
+		CChar *pChar = m_Chars.GetChar(i).CharFind();
+		if ( pChar )
 		{
-			CChar * pChar = m_Chars.GetChar(--i).CharFind();
-			if (pChar != NULL)
-			{
-				pChar->Delete();
-				pChar->ClearPlayer();
-			}
-
-			m_Chars.DetachChar(i);
+			pChar->ClearPlayer();
+			pChar->Delete();
 		}
+		m_Chars.DetachChar(i);
 	}
 }
 
