@@ -2207,9 +2207,9 @@ bool CChar::Fight_IsActive() const
 	return g_Cfg.IsSkillFlag( iSkillActive, SKF_FIGHT );
 }
 
-bool CChar::Fight_IsAttackable()
+bool CChar::Fight_IsAttackable() const
 {
-	ADDTOCALLSTACK("CChar::IsAttackable");
+	ADDTOCALLSTACK("CChar::Fight_IsAttackable");
 	return !IsStatFlag(STATF_DEAD|STATF_Stone|STATF_Invisible|STATF_Insubstantial|STATF_Hidden|STATF_INVUL);
 }
 
@@ -2393,7 +2393,7 @@ bool CChar::Fight_Attack( const CChar *pCharTarg, bool btoldByMaster )
 {
 	ADDTOCALLSTACK("CChar::Fight_Attack");
 
-	if ( !pCharTarg || pCharTarg == this || pCharTarg->IsStatFlag(STATF_DEAD) || IsStatFlag(STATF_DEAD) )
+	if ( !pCharTarg || pCharTarg == this || !pCharTarg->Fight_IsAttackable() || IsStatFlag(STATF_DEAD) )
 	{
 		// Not a valid target.
 		Fight_Clear(pCharTarg, true);
@@ -2407,6 +2407,7 @@ bool CChar::Fight_Attack( const CChar *pCharTarg, bool btoldByMaster )
 	}
 	else if ( m_pNPC && !CanSee(pCharTarg) )
 	{
+		Fight_Clear(pCharTarg);
 		Skill_Start(SKILL_NONE);
 		return false;
 	}
@@ -3019,13 +3020,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		}
 	}
 
-	// Guards should remove conjured NPCs
-	if ( m_pNPC && m_pNPC->m_Brain == NPCBRAIN_GUARD && pCharTarg->m_pNPC && pCharTarg->IsStatFlag(STATF_Conjured) )
-	{
-		pCharTarg->Delete();
-		return WAR_SWING_EQUIPPING;
-	}
-
 	// Fix of the bounce back effect with dir update for clients to be able to run in combat easily
 	if ( m_pClient && IsSetCombatFlags(COMBAT_FACECOMBAT) )
 	{
@@ -3391,7 +3385,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( iDamageChance > Calc_GetRandVal(100) )
 			pWeapon->OnTakeDamage(iDmg, pCharTarg);
 	}
-	else if ( m_pNPC && m_pNPC->m_Brain == NPCBRAIN_MONSTER )
+	else if ( NPC_IsMonster() )
 	{
 		// Base poisoning for NPCs
 		if ( !IsSetCombatFlags(COMBAT_NOPOISONHIT) && 50 >= Calc_GetRandVal(100) )

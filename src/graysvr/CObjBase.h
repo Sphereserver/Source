@@ -3821,6 +3821,7 @@ private:
 
 	SKILL_TYPE Fight_GetWeaponSkill() const;
 	bool Fight_IsActive() const;
+	bool Fight_IsAttackable() const;
 public:
 	int CalcArmorDefense() const;
 
@@ -3833,8 +3834,6 @@ public:
 	void Fight_HitTry();
 	WAR_SWING_TYPE Fight_Hit( CChar * pCharTarg );
 	int  Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom = false, bool bGetMax = true ) const;
-
-	bool Fight_IsAttackable();
 
 	// Attacker System
 
