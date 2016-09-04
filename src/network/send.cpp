@@ -1999,25 +1999,19 @@ PacketPingAck::PacketPingAck(const CClient* target, BYTE value) : PacketSend(XCM
  *
  *
  ***************************************************************************/
-PacketVendorBuyList::PacketVendorBuyList(void) : PacketSend(XCMD_VendOpenBuy, 8, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketVendorBuyList::PacketVendorBuyList(const CClient* target, const CChar* vendor, const CItemContainer* contParent, int convertFactor, bool bIsClientEnhanced) : PacketSend(XCMD_VendOpenBuy, 8, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
-}
+	ADDTOCALLSTACK("PacketVendorBuyList::PacketVendorBuyList");
 
-size_t PacketVendorBuyList::fillContainer(const CItemContainer* container, int convertFactor, bool bIsClientEnhanced)
-{
-	ADDTOCALLSTACK("PacketVendorBuyList::fillContainer");
-
-	seek(1); // just to be sure
 	initLength();
-
-	writeInt32(container->GetUID());
+	writeInt32(contParent->GetUID());
 
 	size_t count = 0;
 	size_t countpos = getPosition();
 	skip(1);
 
 	// Enhanced Client wants the prices to be sent in reverse order
-	for ( CItem* item = (bIsClientEnhanced ? container->GetContentHead() : container->GetContentTail()) ; item != NULL ; item = (bIsClientEnhanced ? item->GetNext() : item->GetPrev()) )
+	for ( CItem* item = (bIsClientEnhanced ? contParent->GetContentHead() : contParent->GetContentTail()); item != NULL; item = (bIsClientEnhanced ? item->GetNext() : item->GetPrev()) )
 	{
 		CItemVendable* vendorItem = static_cast<CItemVendable *>(item);
 		if (vendorItem == NULL || vendorItem->GetAmount() == 0)
@@ -2055,7 +2049,7 @@ size_t PacketVendorBuyList::fillContainer(const CItemContainer* container, int c
 	writeByte(static_cast<BYTE>(count));
 	seek(endpos);
 
-	return count;
+	push(target);
 }
 
 
@@ -2356,7 +2350,7 @@ PacketPaperdoll::PacketPaperdoll(const CClient* target, const CChar* character) 
 
 	BYTE flags = 0;
 	if (character->IsStatFlag(STATF_War))
-		flags |= (target->m_NetState->isClientVersion(MINCLIVER_AOS)) ? 0x1 : 0x40;
+		flags |= target->m_NetState->isClientVersion(MINCLIVER_AOS) ? 0x1 : 0x40;
 	if (target->m_NetState->isClientVersion(MINCLIVER_AOS))
 	{
 		if (character == target->GetChar() || (g_Cfg.m_fCanUndressPets ? character->NPC_IsOwnedBy(target->GetChar()) : (target->IsPriv(PRIV_GM) && target->GetPrivLevel() > character->GetPrivLevel())))
@@ -2709,47 +2703,39 @@ PacketAddPrompt::PacketAddPrompt(const CClient* target, CGrayUID context1, CGray
  *
  *
  ***************************************************************************/
-PacketVendorSellList::PacketVendorSellList(const CChar* vendor) : PacketSend(XCMD_VendOpenSell, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketVendorSellList::PacketVendorSellList(const CClient* target, const CChar* vendor, const CItemContainer* contParent, CItemContainer* contBuy, int convertFactor) : PacketSend(XCMD_VendOpenSell, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketVendorSellList::PacketVendorSellList");
 
 	initLength();
 	writeInt32(vendor->GetUID());
-}
 
-size_t PacketVendorSellList::searchContainer(CClient* target, const CItemContainer* container, CItemContainer* stock1, CItemContainer* stock2, int convertFactor)
-{
-	ADDTOCALLSTACK("PacketVendorSellList::searchContainer");
-
-	seek(7); // just to be sure
-
+	size_t count = 0;
 	size_t countpos = getPosition();
 	skip(2);
 
-	CItem* item = container->GetContentHead();
-	if (item == NULL)
-		return 0;
+	CItem* item = contParent->GetContentHead();
+	if (!item)
+		return;
 
-	size_t count = 0;
 	std::deque<const CItemContainer*> otherBoxes;
-
 	for (;;)
 	{
-		if (item != NULL)
+		if (item)
 		{
-			container = dynamic_cast<CItemContainer*>(item);
-			if (container != NULL && container->GetCount() > 0)
+			contParent = dynamic_cast<CItemContainer*>(item);
+			if (contParent && (contParent->GetCount() > 0))
 			{
-				if (container->IsSearchable())
-					otherBoxes.push_back(container);
+				if (contParent->IsSearchable())
+					otherBoxes.push_back(contParent);
 			}
 			else
 			{
 				CItemVendable* vendItem = dynamic_cast<CItemVendable*>(item);
-				if (vendItem != NULL)
+				if (vendItem)
 				{
-					CItemVendable* vendSell = CChar::NPC_FindVendableItem(vendItem, stock1, stock2);
-					if (vendSell != NULL)
+					CItemVendable* vendSell = CChar::NPC_FindVendableItem(vendItem, contBuy);
+					if (vendSell)
 					{
 						HUE_TYPE hue = vendItem->GetHue() & HUE_MASK_HI;
 						if (hue > HUE_QTY)
@@ -2776,15 +2762,14 @@ size_t PacketVendorSellList::searchContainer(CClient* target, const CItemContain
 
 			item = item->GetNext();
 		}
-
-		if (item == NULL)
+		else
 		{
 			if (otherBoxes.empty())
 				break;
 
-			container = otherBoxes.front();
+			contParent = otherBoxes.front();
 			otherBoxes.pop_front();
-			item = container->GetContentHead();
+			item = contParent->GetContentHead();
 		}
 	}
 
@@ -2794,7 +2779,7 @@ size_t PacketVendorSellList::searchContainer(CClient* target, const CItemContain
 	writeInt16(static_cast<WORD>(count));
 	seek(endpos);
 
-	return count;
+	push(target);
 }
 
 

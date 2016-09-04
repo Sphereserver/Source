@@ -4050,7 +4050,7 @@ public:
 	bool NPC_IsOwnedBy( const CChar * pChar, bool fAllowGM = true ) const;
 	bool NPC_CanSpeak() const;
 
-	static CItemVendable * NPC_FindVendableItem( CItemVendable * pVendItem, CItemContainer * pVend1, CItemContainer * pVend2 );
+	static CItemVendable *NPC_FindVendableItem(CItemVendable *pVendItem, CItemContainer *pContBuy);
 
 	bool NPC_IsVendor() const
 	{

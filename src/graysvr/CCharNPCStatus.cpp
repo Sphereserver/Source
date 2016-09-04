@@ -315,10 +315,9 @@ bool CChar::NPC_CheckWalkHere(const CPointBase &pt, const CRegionBase *pArea, WO
 	return true;
 }
 
-CItemVendable *CChar::NPC_FindVendableItem(CItemVendable *pVendItem, CItemContainer *pContBuy, CItemContainer *pContStock) // static
+CItemVendable *CChar::NPC_FindVendableItem(CItemVendable *pVendItem, CItemContainer *pContBuy)	// static
 {
 	ADDTOCALLSTACK("CChar::NPC_FindVendableItem");
-	UNREFERENCED_PARAMETER(pContStock);
 	// Does the NPC want to buy this item?
 	if ( !pVendItem || !pContBuy || !pVendItem->IsValidSaleItem(false) )
 		return NULL;
@@ -374,7 +373,7 @@ int CChar::NPC_WantThisItem(CItem *pItem) const
 			return 100;
 
 		// Is it something I would buy?
-		CItemVendable *pItemSell = NPC_FindVendableItem(static_cast<CItemVendable *>(pItem), const_cast<CChar *>(this)->GetContainerCreate(LAYER_VENDOR_BUYS), const_cast<CChar *>(this)->GetContainerCreate(LAYER_VENDOR_STOCK));
+		CItemVendable *pItemSell = NPC_FindVendableItem(static_cast<CItemVendable *>(pItem), const_cast<CChar *>(this)->GetContainerCreate(LAYER_VENDOR_BUYS));
 		if ( pItemSell )
 			return pItemSell->GetVendorPrice(0);
 	}
@@ -387,27 +386,17 @@ int CChar::NPC_GetWeaponUseScore(CItem *pWeapon)
 	ADDTOCALLSTACK("CChar::NPC_GetWeaponUseScore");
 	// How good would i be at this weapon ?
 
-	SKILL_TYPE skill;
-
-	if ( !pWeapon )
-		skill = SKILL_WRESTLING;
-	else
+	SKILL_TYPE skill = SKILL_WRESTLING;
+	if ( pWeapon )
 	{
-		// Is it a weapon ?
 		skill = pWeapon->Weapon_GetSkill();
 		if ( skill == SKILL_WRESTLING )
 			return 0;
-
-		// I can't equip this anyhow.
-		if ( CanEquipLayer(pWeapon, LAYER_QTY, NULL, true) == LAYER_NONE )
+		if ( CanEquipLayer(pWeapon, LAYER_QTY, NULL, true) == LAYER_NONE )		// I can't equip this
 			return 0;
-		// How much damage could i do with this ?
 	}
 
-	int iDmg = Fight_CalcDamage(pWeapon);
-	int iSkillLevel = Skill_GetAdjusted(skill);
-
-	return iSkillLevel + iDmg * 50;
+	return Skill_GetAdjusted(skill) + Fight_CalcDamage(pWeapon) * 50;
 }
 
 int CChar::NPC_GetHostilityLevelToward(const CChar *pCharTarg) const
@@ -480,7 +469,7 @@ int CChar::NPC_GetAttackContinueMotivation(CChar *pChar, int iMotivation) const
 	// 0 = I'm have no interest.
 	// 50 = even match.
 	// 100 = he's a push over.
-	if ( !m_pNPC )
+	if ( !m_pNPC || !pChar )
 		return 0;
 	if ( !pChar->Fight_IsAttackable() )
 		return 0;

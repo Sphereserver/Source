@@ -1221,7 +1221,7 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 			continue;
 
 		// Find the valid sell item from vendors stuff.
-		CItemVendable *pItemSell = CChar::NPC_FindVendableItem(pItem, pContBuy, pContStock);
+		CItemVendable *pItemSell = CChar::NPC_FindVendableItem(pItem, pContBuy);
 		if ( !pItemSell )
 			continue;
 

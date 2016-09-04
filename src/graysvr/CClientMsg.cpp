@@ -2093,36 +2093,29 @@ bool CClient::addShopMenuBuy( CChar * pVendor )
 	if ( !pVendor || !pVendor->NPC_IsVendor() )
 		return false;
 
-	OpenPacketTransaction transaction(this, PacketSend::PRI_HIGH);
+	//OpenPacketTransaction transaction(this, PacketSend::PRI_HIGH);
 
 	// Non-player vendors could be restocked on-the-fly
 	if ( !pVendor->IsStatFlag(STATF_Pet) )
 		pVendor->NPC_Vendor_Restock(false, true);
 
-	CItemContainer *pContainer = pVendor->GetContainerCreate(LAYER_VENDOR_STOCK);
+	CItemContainer *pContainerStock = pVendor->GetContainerCreate(LAYER_VENDOR_STOCK);
 	CItemContainer *pContainerExtra = pVendor->GetContainerCreate(LAYER_VENDOR_EXTRA);
-	if ( !pContainer || !pContainerExtra )
+	if ( !pContainerStock || !pContainerExtra )
 		return false;
 
 	// Get item list
-	addItem(pContainer);	// sending the full tooltip, instead of the one with just the name
-	addContents(pContainer, false, false, true);
+	addItem(pContainerStock);	// sending the full tooltip, instead of the one with just the name
+	addContents(pContainerStock, false, false, true);
 	addItem(pContainerExtra);
 
 	// Get price list
-	PacketVendorBuyList *cmd = new PacketVendorBuyList();
-	size_t count = cmd->fillContainer(pContainer, pVendor->NPC_GetVendorMarkup(), m_NetState->isClientEnhanced());
-	cmd->push(this);
+	new PacketVendorBuyList(this, pVendor, pContainerStock, pVendor->NPC_GetVendorMarkup(), m_NetState->isClientEnhanced());
 
 	// Open gump
-	if ( count )
-	{
-		addOpenGump(pVendor, GUMP_VENDOR_RECT);
-		new PacketCharacterStatus(this, m_pChar);		// make sure the gump is showing updated char 'gold avaible' value
-		return true;
-	}
-
-	return false;
+	addOpenGump(pVendor, GUMP_VENDOR_RECT);
+	new PacketCharacterStatus(this, m_pChar);		// make sure the gump is showing updated char 'gold avaible' value
+	return true;
 }
 
 bool CClient::addShopMenuSell( CChar * pVendor )
@@ -2135,26 +2128,18 @@ bool CClient::addShopMenuSell( CChar * pVendor )
 	if ( !pVendor || !pVendor->NPC_IsVendor() )
 		return false;
 
-	OpenPacketTransaction transaction(this, PacketSend::PRI_LOW);
+	//OpenPacketTransaction transaction(this, PacketSend::PRI_LOW);
 
-	//	non-player vendors could be restocked on-the-fly
+	// Non-player vendors could be restocked on-the-fly
 	if ( !pVendor->IsStatFlag(STATF_Pet) )
 		pVendor->NPC_Vendor_Restock(false, true);
 
-	CItemContainer *pContainer1 = pVendor->GetContainerCreate(LAYER_VENDOR_BUYS);
-	CItemContainer *pContainer2 = pVendor->GetContainerCreate(LAYER_VENDOR_STOCK);
-	addItem(pContainer1);
-	addItem(pContainer2);
+	CItemContainer *pContainerBuy = pVendor->GetContainerCreate(LAYER_VENDOR_BUYS);
+	CItemContainer *pContainerStock = pVendor->GetContainerCreate(LAYER_VENDOR_STOCK);
+	addItem(pContainerBuy);
+	addItem(pContainerStock);
 
-	if ( pVendor->IsStatFlag(STATF_Pet) )	// player vendor
-		pContainer2 = NULL;		// no stock
-
-	PacketVendorSellList cmd(pVendor);
-	size_t count = cmd.searchContainer(this, m_pChar->GetContainerCreate(LAYER_PACK), pContainer1, pContainer2, -pVendor->NPC_GetVendorMarkup());
-	if (count <= 0)
-		return false;
-	
-	cmd.send(this);
+	new PacketVendorSellList(this, pVendor, m_pChar->GetContainerCreate(LAYER_PACK), pContainerBuy, -pVendor->NPC_GetVendorMarkup());
 	return true;
 }
 
