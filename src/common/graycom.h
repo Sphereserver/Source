@@ -126,13 +126,12 @@
 #define FEATURE_ML_UPDATE			0x01 	// 0x00100 on charlist and 0x0080 for feature to activate
 
 #define FEATURE_KR_UPDATE			0x01	// 0x00200 in 0xA9 (KR crapness)
-#define FEATURE_KR_CLIENTTYPE		0x02	// 0x00400 in 0xA9 (enables 0xE1 packet)
 
 #define FEATURE_SA_UPDATE			0x01	// 0x10000 feature (unlock gargoyle character, housing items)
 #define FEATURE_SA_MOVEMENT			0x02	// 0x04000 on charlist (new movement packets)
 
 #define FEATURE_TOL_UPDATE			0x01	// 0x400000 feature
-#define FEATURE_TOL_VIRTUALGOLD		0x02	// Not related to login flags
+#define FEATURE_TOL_VIRTUALGOLD		0x02	// Use virtual gold/platinum instead physical gold. Not related to login flags
 
 #define FEATURE_EXTRA_CRYSTAL		0x01	// 0x200 feature (unlock ML crystal items on house design)
 #define FEATURE_EXTRA_GOTHIC		0x02	// 0x40000 feature (unlock SA gothic items on house design)

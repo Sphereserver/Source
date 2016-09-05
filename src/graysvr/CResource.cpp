@@ -1171,7 +1171,7 @@ bool CResource::r_LoadVal( CScript &s )
 			//PrintEFOFFlags(false, true);
 			break;
 		case RC_TIMERCALL:
-			m_iTimerCall = s.GetArgVal() * TICK_PER_SEC;
+			m_iTimerCall = s.GetArgVal() * 60 * TICK_PER_SEC;
 			break;
 
 		case RC_TOOLTIPCACHE:
@@ -1684,7 +1684,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			sVal.FormatLLVal( ( - g_World.GetTimeDiff( g_World.m_timeStartup )) / TICK_PER_SEC );
 			return( true );
 		case RC_TIMERCALL:
-			sVal.FormatVal(m_iTimerCall / TICK_PER_SEC);
+			sVal.FormatVal(m_iTimerCall / (60 * TICK_PER_SEC));
 			break;
 		case RC_VERSION:
 			sVal = g_szServerDescription;

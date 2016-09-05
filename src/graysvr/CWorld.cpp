@@ -2526,12 +2526,11 @@ void CWorld::OnTick()
 	m_TimedFunctions.OnTick();
 	EXC_CATCHSUB("TimerFunction");
 
-	if ( (m_bSaveNotificationSent == false) && ((m_timeSave - (10 * TICK_PER_SEC)) <= GetCurrentTime()) )
+	if ( !m_bSaveNotificationSent && (m_timeSave - (10 * TICK_PER_SEC) <= GetCurrentTime()) )
 	{
 		Broadcast( g_Cfg.GetDefaultMsg( DEFMSG_SERVER_WORLDSAVE_NOTIFY ) );
 		m_bSaveNotificationSent = true;
 	}
-
 	if ( m_timeSave <= GetCurrentTime())
 	{
 		// Auto save world
@@ -2545,14 +2544,11 @@ void CWorld::OnTick()
 		m_timeRespawn = GetCurrentTime() + (20*60*TICK_PER_SEC);
 		RespawnDeadNPCs();
 	}
-	if ( m_timeCallUserFunc < GetCurrentTime() )
+	if ( g_Cfg.m_iTimerCall && (m_timeCallUserFunc < GetCurrentTime()) )
 	{
-		if ( g_Cfg.m_iTimerCall )
-		{
-			m_timeCallUserFunc = GetCurrentTime() + g_Cfg.m_iTimerCall*60*TICK_PER_SEC;
-			CScriptTriggerArgs args(g_Cfg.m_iTimerCall);
-			g_Serv.r_Call("f_onserver_timer", &g_Serv, &args);
-		}
+		m_timeCallUserFunc = GetCurrentTime() + g_Cfg.m_iTimerCall;
+		CScriptTriggerArgs Args(g_Cfg.m_iTimerCall / (60 * TICK_PER_SEC));
+		g_Serv.r_Call("f_onserver_timer", &g_Serv, &Args);
 	}
 }
 
