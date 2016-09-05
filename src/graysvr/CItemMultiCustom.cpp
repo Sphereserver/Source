@@ -1136,7 +1136,7 @@ bool CItemMultiCustom::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 		return true;
 	}
 
-	return( CItemMulti::r_GetRef( pszKey, pRef ));
+	return CItemMulti::r_GetRef(pszKey, pRef);
 }
 
 bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from script
@@ -1148,9 +1148,7 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 
 	int iCmd = FindTableSorted( s.GetKey(), sm_szVerbKeys, COUNTOF( sm_szVerbKeys )-1 );
 	if ( iCmd < 0 )
-	{
-		return( CItemMulti::r_Verb( s, pSrc ));
-	}
+		return CItemMulti::r_Verb(s, pSrc);
 
 	CChar * pChar = (pSrc != NULL? pSrc->GetChar() : NULL);
 
@@ -1479,7 +1477,7 @@ bool CItemMultiCustom::IsValidItem( ITEMID_TYPE id, CClient * pClientSrc, bool b
 		return false;
 
 	// check if the item is enabled on client feature flags
-	if ( (pClientSrc->m_FeatureFlags & it->second) != it->second )
+	if ( (static_cast<int>(pClientSrc->m_FeatureFlags) & it->second) != it->second )
 		return false;
 
 	return true;
@@ -1550,7 +1548,7 @@ bool CItemMultiCustom::LoadValidItems()
 	}
 
 	// make sure we have at least 1 item
-	sm_mapValidItems[ITEMID_NOTHING] = 0xFFFFFFFF;
+	sm_mapValidItems[ITEMID_NOTHING] = UINT_MAX;
 	return true;
 	EXC_CATCH;
 

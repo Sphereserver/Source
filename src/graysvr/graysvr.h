@@ -116,7 +116,7 @@ public:
 	static CServTime GetCurrentTime();
 };
 
-enum LOGIN_FLAG		// client send these flags on login, based on client version/expansion
+enum LOGINFLAGS_TYPE		// client send these flags on login, based on client version/expansion
 {
 	None		= 0x0,
 	Felucca		= 0x1,
