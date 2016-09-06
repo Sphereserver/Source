@@ -1873,10 +1873,6 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 	if ( !pItem )
 		return false;
 
-	// In theory someone else could be dressing me ?
-	if ( !pCharMsg )
-		pCharMsg = this;
-
 	if ( pItem->GetParent() == this )
 	{
 		if ( pItem->GetEquipLayer() != LAYER_DRAGGING ) // already equipped.
@@ -1901,7 +1897,9 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 	LAYER_TYPE layer = CanEquipLayer(pItem, LAYER_QTY, pCharMsg, false);
 	if ( layer == LAYER_NONE )
 	{
-		if ( m_pNPC )	// only bounce to backpack if NPC, because players will call CClient::Event_Item_Drop_Fail() to drop the item back on its last location
+		// When the item is being moved by an client, just call 'return false' to make CClient::Event_Item_Drop_Fail() return
+		// the item to it's previous location. Otherwise bounce the item on backpack to prevent it stay unplaced on world.
+		if ( !pCharMsg || !pCharMsg->m_pClient )
 			ItemBounce(pItem);
 		return false;
 	}

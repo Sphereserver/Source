@@ -200,3 +200,7 @@ Fixed: NPCs not clearing fight action correctly when the current target get out 
 05-09-2016, Coruja
 Fixed: TimerCall setting on sphere.ini using wrong time format (hours instead minutes) to call f_onserver_timer function.
 [sphere.ini]: Removed unused FEATURE_KR_UPDATE_B feature flag.
+
+06-09-2016, Coruja
+Fixed: Items getting equipped on invalid layer or unplaced on world when EQUIP / NEWITEM functions can't equip the item on char.
+	-This also fixes new account characters being created with some starting items missing.
