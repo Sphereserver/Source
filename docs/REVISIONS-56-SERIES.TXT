@@ -202,5 +202,7 @@ Fixed: TimerCall setting on sphere.ini using wrong time format (hours instead mi
 [sphere.ini]: Removed unused FEATURE_KR_UPDATE_B feature flag.
 
 06-09-2016, Coruja
+Added: Support for races on MALE_DEFAULT / FEMALE_DEFAULT starting items template.
 Fixed: Items getting equipped on invalid layer or unplaced on world when EQUIP / NEWITEM functions can't equip the item on char.
 	-This also fixes new account characters being created with some starting items missing.
+[sphere_newb.scp]: Added gargoyle race templates.

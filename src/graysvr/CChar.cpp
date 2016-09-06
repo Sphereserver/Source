@@ -1205,7 +1205,6 @@ void CChar::InitPlayer( CClient *pClient, const char *pszCharname, bool bFemale,
 {
 	ADDTOCALLSTACK("CChar::InitPlayer");
 	ASSERT(pClient);
-	UNREFERENCED_PARAMETER(prProf);
 
 	CAccount *pAccount = pClient->m_pAccount;
 	if ( pAccount )
@@ -1356,15 +1355,31 @@ void CChar::InitPlayer( CClient *pClient, const char *pszCharname, bool bFemale,
 		case RACETYPE_HUMAN:
 			if ( !(((idHair >= ITEMID_HAIR_SHORT) && (idHair <= ITEMID_HAIR_PONYTAIL)) || ((idHair >= ITEMID_HAIR_MOHAWK) && (idHair <= ITEMID_HAIR_TOPKNOT))) )
 				idHair = ITEMID_NOTHING;	// human can use only a restricted subset of hairs
-			if ( (bFemale && idHair == ITEMID_HAIR_RECEDING) || (!bFemale && idHair == ITEMID_HAIR_BUNS) )
-				idHair = ITEMID_NOTHING;
+			if ( bFemale )
+			{
+				if ( idHair == ITEMID_HAIR_RECEDING )
+					idHair = ITEMID_NOTHING;
+			}
+			else
+			{
+				if ( idHair == ITEMID_HAIR_BUNS )
+					idHair = ITEMID_NOTHING;
+			}
 			break;
 
 		case RACETYPE_ELF:
 			if ( !(((idHair >= ITEMID_HAIR_ML_ELF) && (idHair <= ITEMID_HAIR_ML_MULLET)) || ((idHair >= ITEMID_HAIR_ML_FLOWER) && (idHair <= ITEMID_HAIR_ML_SPYKE))) )
 				idHair = ITEMID_NOTHING;	// elf can use only a restricted subset of hairs
-			if ( (bFemale && (idHair == ITEMID_HAIR_ML_LONG2 || idHair == ITEMID_HAIR_ML_ELF)) || (!bFemale && (idHair == ITEMID_HAIR_ML_FLOWER || idHair == ITEMID_HAIR_ML_LONG4)) )
-				idHair = ITEMID_NOTHING;
+			if ( bFemale )
+			{
+				if ( idHair == ITEMID_HAIR_ML_LONG2 || idHair == ITEMID_HAIR_ML_ELF )
+					idHair = ITEMID_NOTHING;
+			}
+			else
+			{
+				if ( idHair == ITEMID_HAIR_ML_FLOWER || idHair == ITEMID_HAIR_ML_LONG4 )
+					idHair = ITEMID_NOTHING;
+			}
 			break;
 
 		case RACETYPE_GARGOYLE:
@@ -1537,7 +1552,9 @@ void CChar::InitPlayer( CClient *pClient, const char *pszCharname, bool bFemale,
 	}
 
 	CResourceLock s;
-	if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, bFemale ? RES_NEWBIE_FEMALE_DEFAULT : RES_NEWBIE_MALE_DEFAULT)) )
+	if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, bFemale ? RES_NEWBIE_FEMALE_DEFAULT : RES_NEWBIE_MALE_DEFAULT, rtRace)) )
+		ReadScript(s);
+	else if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, bFemale ? RES_NEWBIE_FEMALE_DEFAULT : RES_NEWBIE_MALE_DEFAULT)) )
 		ReadScript(s);
 
 	if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iProfession, rtRace)) )
@@ -1566,12 +1583,10 @@ void CChar::InitPlayer( CClient *pClient, const char *pszCharname, bool bFemale,
 					break;
 			}
 
-			if ( !g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iSkill, rtRace)) )
-			{
-				if ( !g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iSkill)) )
-					continue;
-			}
-			ReadScript(s);
+			if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iSkill, rtRace)) )
+				ReadScript(s);
+			else if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iSkill)) )
+				ReadScript(s);
 		}
 	}
 

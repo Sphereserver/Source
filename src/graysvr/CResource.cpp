@@ -3152,7 +3152,7 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 			pszName = pArg1;
 			TCHAR * pArg2;
 			Str_Parse( pArg1, &pArg2 );
-			if ( ! strcmpi( pArg2, "HUMAN" ))
+			if ( pArg2[0] == '\0' || ! strcmpi( pArg2, "HUMAN" ))
 				iPage = RACETYPE_HUMAN;
 			else if ( ! strcmpi( pArg2, "ELF" ))
 				iPage = RACETYPE_ELF;
