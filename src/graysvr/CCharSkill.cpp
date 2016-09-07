@@ -2149,7 +2149,7 @@ int CChar::Skill_Peacemaking( SKTRIG_TYPE stage )
 							pChar->Fight_Attack(this);
 					}
 					else
-						pChar->Fight_ClearAll();
+						pChar->Fight_Clear();
 
 					break;
 				}

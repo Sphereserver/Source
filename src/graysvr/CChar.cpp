@@ -2762,7 +2762,7 @@ do_default:
 					if ( !strnicmp(pszKey, "CLEAR", 5) )
 					{
 						if ( m_lastAttackers.size() )
-							Fight_ClearAll();
+							Fight_Clear();
 						return true;
 					}
 					else if ( !strnicmp(pszKey, "DELETE", 6) )

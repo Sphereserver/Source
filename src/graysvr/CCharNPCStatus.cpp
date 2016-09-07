@@ -455,56 +455,7 @@ int CChar::NPC_GetHostilityLevelToward(const CChar *pCharTarg) const
 	return 0;
 }
 
-int CChar::NPC_GetAttackContinueMotivation(CChar *pChar, int iMotivation) const
-{
-	ADDTOCALLSTACK("CChar::NPC_GetAttackContinueMotivation");
-	// I have seen fit to attack them.
-	// How much do i want to continue an existing fight ? cowardice ?
-	// ARGS:
-	//  iMotivation = My base motivation toward this creature.
-	//
-	// RETURN:
-	// -101 = ? dead meat. (run away)
-	//
-	// 0 = I'm have no interest.
-	// 50 = even match.
-	// 100 = he's a push over.
-	if ( !m_pNPC || !pChar )
-		return 0;
-	if ( !pChar->Fight_IsAttackable() )
-		return 0;
-	if ( m_pNPC->m_Brain == NPCBRAIN_GUARD )
-		return 100;
-	if ( m_pNPC->m_Brain == NPCBRAIN_BERSERK )
-		return iMotivation + 80 - GetDist(pChar);	// less interested the further away they are
-
-	// Try to stay on one target.
-	if ( Fight_IsActive() && (m_Act_Targ == pChar->GetUID()) )
-		iMotivation += 8;
-
-	// Less interested the further away they are.
-	iMotivation -= GetDist(pChar);
-
-	if ( !g_Cfg.m_fMonsterFear )
-		return iMotivation;
-
-	// I'm just plain stronger.
-	iMotivation += Stat_GetAdjusted(STAT_STR) - pChar->Stat_GetAdjusted(STAT_STR);
-
-	// I'm healthy.
-	int iTmp = GetHealthPercent() - pChar->GetHealthPercent();
-	if ( iTmp < -50 )
-		iMotivation -= 50;
-	else if ( iTmp > 50 )
-		iMotivation += 50;
-
-	// I'm smart and therefore more cowardly. (if injured)
-	iMotivation -= Stat_GetAdjusted(STAT_INT) / 16;
-
-	return iMotivation;
-}
-
-int CChar::NPC_GetAttackMotivation(CChar *pChar, int iMotivation) const
+int CChar::NPC_GetAttackMotivation(CChar *pChar) const
 {
 	ADDTOCALLSTACK("CChar::NPC_GetAttackMotivation");
 	// Some sort of monster.
@@ -521,9 +472,26 @@ int CChar::NPC_GetAttackMotivation(CChar *pChar, int iMotivation) const
 	if ( pChar->m_pArea->IsFlag(REGION_FLAG_SAFE) )
 		return 0;
 
-	iMotivation += NPC_GetHostilityLevelToward(pChar);
-	if ( iMotivation > 0 )
-		iMotivation = NPC_GetAttackContinueMotivation(pChar, iMotivation);		// Am i injured etc ?
+	int iMotivation = NPC_GetHostilityLevelToward(pChar);
+	if ( iMotivation <= 0 )
+		return iMotivation;
 
+	if ( !pChar->Fight_IsAttackable() )
+		return 0;
+	if ( (m_pNPC->m_Brain == NPCBRAIN_BERSERK) || (m_pNPC->m_Brain == NPCBRAIN_GUARD) )
+		return 100;
+
+	// Try to stay on one target
+	if ( Fight_IsActive() && (m_Act_Targ == pChar->GetUID()) )
+		iMotivation += 10;
+
+	// Less interested the further away they are
+	iMotivation -= GetDist(pChar);
+
+	if ( g_Cfg.m_fMonsterFear )
+	{
+		if ( GetHealthPercent() < 50 )
+			iMotivation -= 50 + (Stat_GetAdjusted(STAT_INT) / 16);
+	}
 	return iMotivation;
 }

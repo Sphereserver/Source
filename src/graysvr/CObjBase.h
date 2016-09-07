@@ -3828,8 +3828,7 @@ public:
 	bool Memory_Fight_OnTick( CItemMemory * pMemory );
 
 	bool Fight_Attack( const CChar * pCharTarg, bool toldByMaster = false );
-	bool Fight_Clear( const CChar * pCharTarg , bool bForced = false );
-	void Fight_ClearAll();
+	void Fight_Clear();
 	void Fight_HitTry();
 	WAR_SWING_TYPE Fight_Hit( CChar * pCharTarg );
 	int  Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom = false, bool bGetMax = true ) const;
@@ -3849,7 +3848,7 @@ public:
 	int	 Attacker() { return static_cast<int>(m_lastAttackers.size()); }
 	bool Attacker_Add(CChar * pChar, INT64 threat = 0);
 	CChar * Attacker_GetLast();
-	bool Attacker_Delete(CChar * pChar, bool bForced = false, ATTACKER_CLEAR_TYPE type = ATTACKER_CLEAR_FORCED);
+	bool Attacker_Delete(CChar *pChar, bool bForced = false, ATTACKER_CLEAR_TYPE type = ATTACKER_CLEAR_FORCED);
 	bool Attacker_Delete(int id, bool bForced = false, ATTACKER_CLEAR_TYPE type = ATTACKER_CLEAR_FORCED);
 	void Attacker_RemoveChar();
 	void Attacker_CheckTimeout();
@@ -3982,8 +3981,7 @@ private:
 	int NPC_GetWeaponUseScore( CItem * pItem );
 
 	int  NPC_GetHostilityLevelToward( const CChar * pCharTarg ) const;
-	int	 NPC_GetAttackContinueMotivation( CChar * pChar, int iMotivation = 0 ) const;
-	int  NPC_GetAttackMotivation( CChar * pChar, int iMotivation = 0 ) const;
+	int  NPC_GetAttackMotivation(CChar *pChar) const;
 	bool NPC_CheckHirelingStatus();
 	int  NPC_GetTrainMax( const CChar * pStudent, SKILL_TYPE Skill ) const;
 

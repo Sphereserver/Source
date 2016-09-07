@@ -580,7 +580,7 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iTotalKillers)
 
 	// Fight is over now that i have won. (if i was fighting at all )
 	// ie. Magery cast might not be a "fight"
-	Fight_Clear(pKill);
+	Attacker_Delete(pKill);
 	if ( pKill == this )
 		return;
 
@@ -2342,9 +2342,9 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 }
 
 // Clear all my active targets. Toggle out of war mode.
-void CChar::Fight_ClearAll()
+void CChar::Fight_Clear()
 {
-	ADDTOCALLSTACK("CChar::Fight_ClearAll");
+	ADDTOCALLSTACK("CChar::Fight_Clear");
 	if ( IsTrigUsed(TRIGGER_COMBATEND) )
 		OnTrigger(CTRIG_CombatEnd, this, 0);
 
@@ -2361,29 +2361,6 @@ void CChar::Fight_ClearAll()
 	}
 }
 
-// I no longer want to attack this char.
-bool CChar::Fight_Clear(const CChar *pChar, bool bForced)
-{
-	ADDTOCALLSTACK("CChar::Fight_Clear");
-	if ( !pChar || !Attacker_Delete(const_cast<CChar*>(pChar), bForced, ATTACKER_CLEAR_FORCED) )
-		return false;
-
-	// Go to my next target.
-	if (m_Fight_Targ == pChar->GetUID())
-		m_Fight_Targ.InitUID();
-
-	if ( m_pNPC )
-	{
-		pChar = NPC_FightFindBestTarget();
-		if ( pChar )
-			Fight_Attack(pChar);
-		else
-			Fight_ClearAll();
-	}
-
-	return (pChar != NULL);	// I did not know about this ?
-}
-
 // We want to attack some one.
 // But they won't notice til we actually hit them.
 // This is just my intent.
@@ -2393,26 +2370,26 @@ bool CChar::Fight_Attack( const CChar *pCharTarg, bool btoldByMaster )
 {
 	ADDTOCALLSTACK("CChar::Fight_Attack");
 
-	if ( !pCharTarg || pCharTarg == this || !pCharTarg->Fight_IsAttackable() || IsStatFlag(STATF_DEAD) )
+	if ( !pCharTarg || (pCharTarg == this) || !pCharTarg->Fight_IsAttackable() || IsStatFlag(STATF_DEAD) )
 	{
-		// Not a valid target.
-		Fight_Clear(pCharTarg, true);
-		return false;
-	}
-	else if ( GetPrivLevel() <= PLEVEL_Guest && pCharTarg->m_pPlayer && pCharTarg->GetPrivLevel() > PLEVEL_Guest )
-	{
-		SysMessageDefault(DEFMSG_MSG_GUEST);
-		Fight_Clear(pCharTarg);
-		return false;
-	}
-	else if ( m_pNPC && !CanSee(pCharTarg) )
-	{
-		Fight_Clear(pCharTarg);
-		Skill_Start(SKILL_NONE);
+		// Not a valid target
+		Attacker_Delete(const_cast<CChar *>(pCharTarg), true);
 		return false;
 	}
 
 	CChar *pTarget = const_cast<CChar *>(pCharTarg);
+	if ( pCharTarg->m_pPlayer && (GetPrivLevel() <= PLEVEL_Guest) && (pCharTarg->GetPrivLevel() > PLEVEL_Guest) )
+	{
+		SysMessageDefault(DEFMSG_MSG_GUEST);
+		Attacker_Delete(pTarget);
+		return false;
+	}
+	else if ( m_pNPC && !CanSee(pCharTarg) )
+	{
+		Attacker_Delete(pTarget);
+		Skill_Start(SKILL_NONE);
+		return false;
+	}
 
 	if ( g_Cfg.m_fAttackingIsACrime )
 	{
@@ -2424,7 +2401,7 @@ bool CChar::Fight_Attack( const CChar *pCharTarg, bool btoldByMaster )
 	if ( btoldByMaster )
 		threat = 1000 + Attacker_GetHighestThreat();
 
-	if ( ((IsTrigUsed(TRIGGER_ATTACK)) || (IsTrigUsed(TRIGGER_CHARATTACK))) && m_Fight_Targ != pCharTarg->GetUID() )
+	if ( (IsTrigUsed(TRIGGER_ATTACK) || IsTrigUsed(TRIGGER_CHARATTACK)) && (m_Fight_Targ != pCharTarg->GetUID()) )
 	{
 		CScriptTriggerArgs Args;
 		Args.m_iN1 = threat;
@@ -2448,7 +2425,7 @@ bool CChar::Fight_Attack( const CChar *pCharTarg, bool btoldByMaster )
 	SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
 	SKILL_TYPE skillActive = Skill_GetActive();
 
-	if ( skillActive == skillWeapon && m_Fight_Targ == pCharTarg->GetUID() )		// already attacking this same target using the same skill
+	if ( (skillActive == skillWeapon) && (m_Fight_Targ == pCharTarg->GetUID()) )		// already attacking this same target using the same skill
 		return true;
 
 	if ( m_pNPC && !btoldByMaster )		// call FindBestTarget when this CChar is a NPC and was not commanded to attack, otherwise it attack directly
@@ -2487,7 +2464,7 @@ void CChar::Fight_HitTry()
 	{
 		case WAR_SWING_INVALID:		// target is invalid
 		{
-			Fight_Clear(pCharTarg);
+			Attacker_Delete(pCharTarg);
 			if ( m_pNPC )
 				Fight_Attack(NPC_FightFindBestTarget());
 			return;
@@ -2791,19 +2768,15 @@ bool CChar::Attacker_Delete( int index, bool bForced, ATTACKER_CLEAR_TYPE type )
 			Fight_Attack(NPC_FightFindBestTarget());
 	}
 	if ( !m_lastAttackers.size() )
-		Fight_ClearAll();
+		Fight_Clear();
 	return true;
 }
 
 // Removing pChar from list
-bool CChar::Attacker_Delete(CChar * pChar, bool bForced, ATTACKER_CLEAR_TYPE type)
+bool CChar::Attacker_Delete(CChar *pChar, bool bForced, ATTACKER_CLEAR_TYPE type)
 {		
 	ADDTOCALLSTACK("CChar::Attacker_Delete(CChar)");
-	if ( !pChar )
-		return false;
-	if ( ! m_lastAttackers.size() )
-		return false;
-	return Attacker_Delete( Attacker_GetID( pChar), bForced, type );
+	return Attacker_Delete(Attacker_GetID(pChar), bForced, type);
 }
 
 // Removing everyone
