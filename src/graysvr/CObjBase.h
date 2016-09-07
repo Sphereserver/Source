@@ -2711,7 +2711,6 @@ public:
 		DWORD	charUID;
 		INT64	amountDone;
 		INT64	threat;
-		bool	ignore;
 	};
 	std::vector<LastAttackers> m_lastAttackers;
 	
@@ -3864,10 +3863,6 @@ public:
 	INT64  Attacker_GetThreat( int attacker );
 	void  Attacker_SetThreat( CChar * pChar, INT64 value );
 	void  Attacker_SetThreat(int pChar, INT64 value);
-	bool Attacker_GetIgnore(int pChar);
-	bool Attacker_GetIgnore(CChar * pChar);
-	void Attacker_SetIgnore(int pChar, bool fIgnore);
-	void Attacker_SetIgnore(CChar * pChar, bool fIgnore);
 	INT64 Attacker_GetHighestThreat();
 	int  Attacker_GetID( CChar * pChar );
 	int  Attacker_GetID( CGrayUID pChar );

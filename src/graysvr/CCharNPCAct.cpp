@@ -2084,22 +2084,6 @@ CChar * CChar::NPC_FightFindBestTarget()
 				pChar = NULL;
 				continue;
 			}
-			if ( refAttacker.ignore )
-			{
-				bool bIgnore = true;
-				if ( IsTrigUsed(TRIGGER_HITIGNORE) )
-				{
-					CScriptTriggerArgs Args;
-					Args.m_iN1 = bIgnore;
-					OnTrigger(CTRIG_HitIgnore, pChar, &Args);
-					bIgnore = Args.m_iN1 ? true : false;
-				}
-				if ( bIgnore )
-				{
-					pChar = NULL;
-					continue;
-				}
-			}
 			if ( !pClosest )
 				pClosest = pChar;
 
@@ -2157,16 +2141,6 @@ void CChar::NPC_Act_Fight()
 	if (pChar == NULL || !pChar->IsTopLevel()) // target is not valid anymore ?
 		return;
 
-	if (Attacker_GetIgnore(pChar))
-	{
-		if (!NPC_FightFindBestTarget())
-		{
-			Skill_Start(SKILL_NONE);
-			StatFlag_Clear(STATF_War);
-			m_Fight_Targ.InitUID();
-			return;
-		}
-	}
 	int iDist = GetDist( pChar );
 
 	if ( (m_pNPC->m_Brain == NPCBRAIN_GUARD) && (m_atFight.m_Swing_State == WAR_SWING_READY) && !Calc_GetRandVal(3) )

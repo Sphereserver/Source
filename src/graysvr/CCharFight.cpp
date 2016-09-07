@@ -2435,8 +2435,6 @@ bool CChar::Fight_Attack( const CChar *pCharTarg, bool btoldByMaster )
 
 	if ( !Attacker_Add(pTarget, threat) )
 		return false;
-	if ( Attacker_GetIgnore(pTarget) )
-		return false;
 
 	// I'm attacking (or defending)
 	if ( !IsStatFlag(STATF_War) )
@@ -2536,42 +2534,36 @@ bool CChar::Attacker_Add( CChar * pChar, INT64 threat )
 	}
 
 	CScriptTriggerArgs Args;
-	bool fIgnore = false;
 	Args.m_iN1 = threat;
-	Args.m_iN2 = fIgnore;
 	if ( IsTrigUsed(TRIGGER_COMBATADD) )
 	{
 		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatAdd, pChar, &Args);
 		if ( tRet == TRIGRET_RET_TRUE )
 			return false;
 		threat = Args.m_iN1;
-		fIgnore = (Args.m_iN2 != 0);
 	}
 
 	LastAttackers attacker;
 	attacker.amountDone = 0;
 	attacker.charUID = uid;
 	attacker.elapsed = 0;
-	attacker.threat = (m_pPlayer) ? 0 : threat;
-	attacker.ignore = fIgnore;
+	attacker.threat = m_pPlayer ? 0 : threat;
 	m_lastAttackers.push_back(attacker);
 
 	// Record the start of the fight.
 	Memory_Fight_Start(pChar);
 	char *z = Str_GetTemp();
-	if ( !attacker.ignore )
-	{
-		//if ( GetTopSector()->GetCharComplexity() < 7 )
-		//{
-			sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKO), GetName(), pChar->GetName());
-			UpdateObjMessage(z, NULL, pChar->m_pClient, HUE_TEXT_DEF, TALKMODE_EMOTE);
-		//}
 
-		if ( pChar->m_pClient && pChar->CanSee(this) )
-		{
-			sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKS), GetName());
-			pChar->m_pClient->addBarkParse(z, this, HUE_TEXT_DEF, TALKMODE_EMOTE);
-		}
+	//if ( GetTopSector()->GetCharComplexity() < 7 )
+	//{
+		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKO), GetName(), pChar->GetName());
+		UpdateObjMessage(z, NULL, pChar->m_pClient, HUE_TEXT_DEF, TALKMODE_EMOTE);
+	//}
+
+	if ( pChar->m_pClient && pChar->CanSee(this) )
+	{
+		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKS), GetName());
+		pChar->m_pClient->addBarkParse(z, this, HUE_TEXT_DEF, TALKMODE_EMOTE);
 	}
 	return true;
 }
@@ -2716,49 +2708,6 @@ void CChar::Attacker_SetThreat(int pChar, INT64 value)
 		return;
 	LastAttackers & refAttacker = m_lastAttackers.at(pChar);
 	refAttacker.threat = value;
-}
-
-// Ignoring this pChar on Hit checks
-void CChar::Attacker_SetIgnore(CChar * pChar, bool fIgnore)
-{
-	ADDTOCALLSTACK("CChar::Attacker_SetIgnore(CChar)");
-
-	return Attacker_SetIgnore(Attacker_GetID(pChar), fIgnore);
-}
-
-// Ignoring this pChar on Hit checks
-void CChar::Attacker_SetIgnore(int pChar, bool fIgnore)
-{
-	ADDTOCALLSTACK("CChar::Attacker_SetIgnore(int)");
-	if (pChar < 0)
-		return;
-	if (!m_lastAttackers.size())
-		return;
-	if (static_cast<int>(m_lastAttackers.size()) <= pChar)
-		return;
-	LastAttackers & refAttacker = m_lastAttackers.at(pChar);
-	refAttacker.ignore = fIgnore;
-}
-
-// I'm ignoring pChar?
-bool CChar::Attacker_GetIgnore(CChar * pChar)
-{
-	ADDTOCALLSTACK("CChar::Attacker_GetIgnore(CChar)");
-	return Attacker_GetIgnore(Attacker_GetID(pChar));
-}
-
-// I'm ignoring pChar?
-bool CChar::Attacker_GetIgnore(int id)
-{
-	ADDTOCALLSTACK("CChar::Attacker_GetIgnore(int)");
-	if (!m_lastAttackers.size())
-		return false;
-	if (static_cast<int>(m_lastAttackers.size()) <= id)
-		return false;
-	if (id < 0)
-		return false;
-	LastAttackers & refAttacker = m_lastAttackers.at(id);
-	return (refAttacker.ignore != 0);
 }
 
 // Get nID value of attacker list from the given pChar

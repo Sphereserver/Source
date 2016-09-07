@@ -206,3 +206,6 @@ Added: Support for races on MALE_DEFAULT / FEMALE_DEFAULT starting items templat
 Fixed: Items getting equipped on invalid layer or unplaced on world when EQUIP / NEWITEM functions can't equip the item on char.
 	-This also fixes new account characters being created with some starting items missing.
 [sphere_newb.scp]: Added gargoyle race templates.
+
+07-09-2016, Coruja
+Changed: Temporarily disabled ATTACKER.x.IGNORE function and @HitIgnore trigger until we find a way to fix its broken functionality.

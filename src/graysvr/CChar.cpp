@@ -1914,11 +1914,6 @@ do_default:
 								sVal.FormatLLVal(refAttacker.threat);
 								return true;
 							}
-							else if ((!strnicmp(pszKey, "IGNORE", 6)))
-							{
-								sVal.FormatVal(refAttacker.ignore ? 1:0);
-								return true;
-							}
 						}
 					}
 				}
@@ -2825,12 +2820,6 @@ do_default:
 						else if ( !strnicmp(pszKey, "DELETE", 6) )
 						{
 							Attacker_Delete(pChar, false, ATTACKER_CLEAR_SCRIPT);
-							return true;
-						}
-						else if ( !strnicmp(pszKey, "IGNORE", 6) )
-						{
-							bool fIgnore = s.GetArgVal() < 1 ? 0 : 1;
-							Attacker_SetIgnore(pChar, fIgnore);
 							return true;
 						}
 					}
