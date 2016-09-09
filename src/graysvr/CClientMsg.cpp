@@ -2012,8 +2012,9 @@ void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
 {
 	ADDTOCALLSTACK("CClient::addSpellbookOpen");
 	// Open the spellbook content and fill it with some data.
-	// NOTE: Client will crash if open spellbook gump when spellbook item is not loaded yet.
-	// TO-DO: Enhanced clients sometimes crash when closing the spellbook gump. This needs further investigation.
+	// NOTE: New spellbook types needs tooltip feature enabled to display gump content.
+	//		 Enhanced clients need tooltip on all spellbook types otherwise it will crash.
+	//		 Clients can also crash if open spellbook gump when spellbook item is not loaded yet.
 
 	if ( !m_pChar )
 		return;
@@ -2114,7 +2115,7 @@ bool CClient::addShopMenuBuy( CChar * pVendor )
 
 	// Open gump
 	addOpenGump(pVendor, GUMP_VENDOR_RECT);
-	new PacketCharacterStatus(this, m_pChar);		// make sure the gump is showing updated char 'gold avaible' value
+	new PacketCharacterStatus(this, m_pChar);		// update char 'gold available' value on gump
 	return true;
 }
 
@@ -3223,38 +3224,33 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 		delete propertyList;
 }
 
-void CClient::addShowDamage( int damage, DWORD uid_damage )
+void CClient::addShowDamage( int damage, DWORD uid )
 {
 	ADDTOCALLSTACK("CClient::addShowDamage");
 	if ( damage < 0 )
 		damage = 0;
 
 	if ( PacketCombatDamage::CanSendTo(m_NetState) )
-		new PacketCombatDamage(this, static_cast<WORD>(damage), static_cast<CGrayUID>(uid_damage));
+		new PacketCombatDamage(this, static_cast<WORD>(damage), uid);
 	else if ( PacketCombatDamageOld::CanSendTo(m_NetState) )
-		new PacketCombatDamageOld(this, static_cast<BYTE>(damage), static_cast<CGrayUID>(uid_damage));
+		new PacketCombatDamageOld(this, static_cast<BYTE>(damage), uid);
 }
 
 void CClient::addSpeedMode( BYTE speedMode )
 {
 	ADDTOCALLSTACK("CClient::addSpeedMode");
-
 	new PacketSpeedMode(this, speedMode);
 }
 
 void CClient::addVisualRange( BYTE visualRange )
 {
 	ADDTOCALLSTACK("CClient::addVisualRange");
-
-	//DEBUG_ERR(("addVisualRange called with argument %d\n", visualRange));
-
 	new PacketVisualRange(this, visualRange);
 }
 
 void CClient::addIdleWarning( BYTE message )
 {
 	ADDTOCALLSTACK("CClient::addIdleWarning");
-
 	new PacketWarningMessage(this, static_cast<PacketWarningMessage::Message>(message));
 }
 
@@ -3269,45 +3265,39 @@ void CClient::addKRToolbar( bool bEnable )
 
 
 // --------------------------------------------------------------------
-void CClient::SendPacket( TCHAR * pszKey )
+void CClient::SendPacket( TCHAR *pszKey )
 {
 	ADDTOCALLSTACK("CClient::SendPacket");
-	PacketSend* packet = new PacketSend(0, 0, PacketSend::PRI_NORMAL);
+	PacketSend *packet = new PacketSend(0, 0, PacketSend::PRI_NORMAL);
 	packet->seek();
 
 	while ( *pszKey )
 	{
 		if ( packet->getLength() > SCRIPT_MAX_LINE_LEN - 4 )
-		{	// we won't get here because this lenght is enforced in all scripts
+		{
+			// We won't get here because this lenght is enforced in all scripts
 			DEBUG_ERR(("SENDPACKET too big.\n"));
-
 			delete packet;
 			return;
 		}
 
-		GETNONWHITESPACE( pszKey );
+		GETNONWHITESPACE(pszKey);
 
 		if ( toupper(*pszKey) == 'D' )
 		{
-			++pszKey;
-			DWORD iVal = Exp_GetVal(pszKey);
-
-			packet->writeInt32(iVal);
+			pszKey++;
+			packet->writeInt32(static_cast<DWORD>(Exp_GetVal(pszKey)));
 		}
 		else if ( toupper(*pszKey) == 'W' )
 		{
-			++pszKey;
-			WORD iVal = static_cast<WORD>(Exp_GetVal(pszKey));
-
-			packet->writeInt16(iVal);
+			pszKey++;
+			packet->writeInt16(static_cast<WORD>(Exp_GetVal(pszKey)));
 		}
 		else
 		{
 			if ( toupper(*pszKey) == 'B' )
 				pszKey++;
-			BYTE iVal = static_cast<BYTE>(Exp_GetVal(pszKey));
-
-			packet->writeByte(iVal);
+			packet->writeByte(static_cast<BYTE>(Exp_GetVal(pszKey)));
 		}
 	}
 
@@ -3318,110 +3308,304 @@ void CClient::SendPacket( TCHAR * pszKey )
 // ---------------------------------------------------------------------
 // Login type stuff.
 
-BYTE CClient::Setup_Start( CChar * pChar ) // Send character startup stuff to player
+BYTE CClient::LogIn(LPCTSTR pszAccName, LPCTSTR pszPassword, CGString &sMsg)
 {
-	ADDTOCALLSTACK("CClient::Setup_Start");
-	// Play this char.
-	ASSERT(m_pAccount);
-	ASSERT(pChar);
+	ADDTOCALLSTACK("CClient::LogIn");
+	// Try to validate this account.
+	// Do not send output messages as this might be a console or web page or game client.
+	// NOTE: addLoginErr() will get called after this.
 
-	CharDisconnect();	// I'm already logged in as someone else ?
-	m_pAccount->m_uidLastChar = pChar->GetUID();
+	if ( m_pAccount )	// already logged in
+		return PacketLoginError::Success;
 
-	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Setup_Start acct='%s', char='%s', IP='%s'\n", GetSocketID(), m_pAccount->GetName(), pChar->GetName(), GetPeerStr());
-
-	// GMs should login with invul and without allshow flag set
-	if ( GetPrivLevel() > PLEVEL_Player )
+	TCHAR szTmp[MAX_NAME_SIZE];
+	size_t iLen1 = strlen(pszAccName);
+	size_t iLen2 = strlen(pszPassword);
+	size_t iLen3 = Str_GetBare(szTmp, pszAccName, MAX_NAME_SIZE);
+	if ( (iLen1 == 0) || (iLen1 != iLen3) || (iLen1 > MAX_NAME_SIZE) )	// a corrupt message
 	{
-		ClearPrivFlags(PRIV_ALLSHOW);
-		pChar->StatFlag_Set(STATF_INVUL);
+		TCHAR szVersion[256];
+		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_WCLI), static_cast<LPCTSTR>(m_Crypt.WriteClientVer(szVersion)));
+		return PacketLoginError::BadAccount;
 	}
 
-	// Max sight range on classic clients is 18, so lower it if for some reason it was higher
-	if ( (pChar->GetSight() > 18) && (m_NetState->getClientType() <= CLIENTTYPE_3D) )
-		pChar->SetSight(18);
-
-	addPlayerStart( pChar );
-	ASSERT(m_pChar);
-
-	bool fNoMessages = false;
-	bool fQuickLogIn = !pChar->IsDisconnected();
-	if ( IsTrigUsed(TRIGGER_LOGIN) )
+	iLen3 = Str_GetBare(szTmp, pszPassword, MAX_NAME_SIZE);
+	if ( iLen2 != iLen3 )	// a corrupt message
 	{
-		CScriptTriggerArgs Args( fNoMessages, fQuickLogIn );
-		if ( pChar->OnTrigger( CTRIG_LogIn, pChar, &Args ) == TRIGRET_RET_TRUE )
-		{
-			m_pChar->ClientDetach();
-			pChar->SetDisconnected();
-			return PacketLoginError::Blocked;
-		}
-		fNoMessages	= (Args.m_iN1 != 0);
-		fQuickLogIn	= (Args.m_iN2 != 0);
+		TCHAR szVersion[256];
+		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_WCLI), static_cast<LPCTSTR>(m_Crypt.WriteClientVer(szVersion)));
+		return PacketLoginError::BadPassword;
 	}
 
-	TCHAR *z = Str_GetTemp();
-	if ( !fQuickLogIn )
+	TCHAR szName[MAX_ACCOUNT_NAME_SIZE];
+	if ( !CAccount::NameStrip(szName, pszAccName) || Str_Check(pszAccName) )
+		return PacketLoginError::BadAccount;
+	if ( Str_Check(pszPassword) )
+		return PacketLoginError::BadPassword;
+
+	bool bGuestAccount = !strnicmp(pszAccName, "GUEST", 5);
+	if ( bGuestAccount )
 	{
-		if ( !fNoMessages )
+		// Trying to log in as some sort of guest.
+		// Find or create a new guest account.
+		TCHAR *pszTemp = Str_GetTemp();
+		for ( int i = 0; ; i++ )
 		{
-			addBark(g_szServerDescription, NULL, HUE_YELLOW, TALKMODE_SYSTEM, FONT_NORMAL);
-
-			sprintf(z, (g_Serv.StatGet(SERV_STAT_CLIENTS)==2) ?
-				g_Cfg.GetDefaultMsg( DEFMSG_LOGIN_PLAYER ) : g_Cfg.GetDefaultMsg( DEFMSG_LOGIN_PLAYERS ),
-				g_Serv.StatGet(SERV_STAT_CLIENTS)-1 );
-			addSysMessage(z);
-
-			sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_LOGIN_LASTLOGGED), m_pAccount->m_TagDefs.GetKeyStr("LastLogged"));
-			addSysMessage(z);
-		}
-		if ( m_pChar->m_pArea && m_pChar->m_pArea->IsGuarded() && !m_pChar->m_pArea->IsFlag(REGION_FLAG_ANNOUNCE) )
-		{
-			const CVarDefContStr * pVarStr = dynamic_cast <CVarDefContStr *>( m_pChar->m_pArea->m_TagDefs.GetKey("GUARDOWNER"));
-			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDSP), ( pVarStr ) ? pVarStr->GetValStr() : g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDSPT));
-			if ( m_pChar->m_pArea->m_TagDefs.GetKeyNum("RED") )
-				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDDEF), g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDENTER));
-		}
-	}
-
-	if ( IsPriv(PRIV_GM_PAGE) && g_World.m_GMPages.GetCount() > 0 )
-	{
-		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_GMPAGES), static_cast<int>(g_World.m_GMPages.GetCount()), g_Cfg.m_cCommandPrefix);
-		addSysMessage(z);
-	}
-	if ( IsPriv(PRIV_JAILED) )
-		m_pChar->Jail(&g_Serv, true, static_cast<int>(m_pAccount->m_TagDefs.GetKeyNum("JailCell")));
-	if ( g_Serv.m_timeShutdown.IsTimeValid() )
-		addBarkParse(g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_SHUTDOWN_SOON), NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM, FONT_BOLD);
-
-	m_pAccount->m_TagDefs.DeleteKey("LastLogged");
-	Announce(true);		// announce you to the world
-
-	// Don't login on the water, bring us to nearest shore (unless I can swim)
-	if ( !IsPriv(PRIV_GM) && !m_pChar->Char_GetDef()->Can(CAN_C_SWIM) && m_pChar->IsSwimming() )
-	{
-		int iDist = 1;
-		int i;
-		for ( i = 0; i < 20; i++ )
-		{
-			int iDistNew = iDist + 20;
-			for ( int iDir = DIR_NE; iDir <= DIR_NW; iDir += 2 )	// try diagonal in all directions
+			if ( i >= g_Cfg.m_iGuestsMax )
 			{
-				if ( m_pChar->MoveToValidSpot(static_cast<DIR_TYPE>(iDir), iDistNew, iDist) )
-				{
-					i = 100;
-					break;
-				}
+				sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_GUSED);
+				return PacketLoginError::MaxGuests;
 			}
-			iDist = iDistNew;
+
+			sprintf(pszTemp, "GUEST%d", i);
+			CAccountRef pAccount = g_Accounts.Account_FindCreate(pszTemp, true);
+			ASSERT(pAccount);
+			if ( !pAccount->FindClient() )
+			{
+				pszAccName = pAccount->GetName();
+				break;
+			}
 		}
-		addSysMessage( g_Cfg.GetDefaultMsg( i < 100 ? DEFMSG_MSG_REGION_WATER_1 : DEFMSG_MSG_REGION_WATER_2) );
+	}
+	else
+	{
+		if ( pszPassword[0] == '\0' )
+		{
+			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_NEEDPASS);
+			return PacketLoginError::BadPassword;
+		}
 	}
 
-	DEBUG_MSG(( "%lx:Setup_Start done\n", GetSocketID()));
+	bool bAutoCreate = ((g_Serv.m_eAccApp == ACCAPP_Free) || (g_Serv.m_eAccApp == ACCAPP_GuestAuto) || (g_Serv.m_eAccApp == ACCAPP_GuestTrial));
+	CAccountRef pAccount = g_Accounts.Account_FindCreate(pszAccName, bAutoCreate);
+	if ( !pAccount )
+	{
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s' does not exist\n", GetSocketID(), pszAccName);
+		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_UNK), pszAccName);
+		return PacketLoginError::Invalid;
+	}
+
+	if ( g_Cfg.m_iClientLoginMaxTries && !pAccount->CheckPasswordTries(GetPeer()) )
+	{
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: '%s' exceeded password tries in time lapse\n", GetSocketID(), pAccount->GetName());
+		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
+		return PacketLoginError::MaxPassTries;
+	}
+
+	if ( !bGuestAccount && !pAccount->IsPriv(PRIV_BLOCKED) )
+	{
+		if ( !pAccount->CheckPassword(pszPassword) )
+		{
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: '%s' bad password\n", GetSocketID(), pAccount->GetName());
+			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
+			return PacketLoginError::BadPass;
+		}
+	}
+
+	return LogIn(pAccount, sMsg);
+}
+
+BYTE CClient::LogIn(CAccountRef pAccount, CGString &sMsg)
+{
+	ADDTOCALLSTACK("CClient::LogIn");
+	if ( !pAccount )
+		return PacketLoginError::Invalid;
+
+	if ( pAccount->IsPriv(PRIV_BLOCKED) )
+	{
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s' is blocked\n", GetSocketID(), pAccount->GetName());
+		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BLOCKED), static_cast<LPCTSTR>(g_Serv.m_sEMail));
+		return PacketLoginError::Blocked;
+	}
+
+	// Check if account is already in use
+	CClient *pClientPrev = pAccount->FindClient(this);
+	if ( pClientPrev )
+	{
+		// Only if it's from a diff IP?
+		ASSERT(pClientPrev != this);
+		bool bInUse = false;
+
+		// Different IP - no reconnect
+		if ( !GetPeer().IsSameIP(pClientPrev->GetPeer()) )
+			bInUse = true;
+		else
+		{
+			// Same IP - allow reconnect if the old char is lingering out
+			CChar *pCharOld = pClientPrev->GetChar();
+			if ( pCharOld )
+			{
+				CItem *pItem = pCharOld->LayerFind(LAYER_FLAG_ClientLinger);
+				if ( !pItem )
+					bInUse = true;
+			}
+			if ( !bInUse )
+			{
+				if ( IsConnectTypePacket() && pClientPrev->IsConnectTypePacket() )
+				{
+					pClientPrev->CharDisconnect();
+					pClientPrev->m_NetState->markReadClosed();
+				}
+				else if ( GetConnectType() == pClientPrev->GetConnectType() )
+					bInUse = true;
+			}
+		}
+		if ( bInUse )
+		{
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s' already in use\n", GetSocketID(), pAccount->GetName());
+			sMsg = "Account already in use.";
+			return PacketLoginError::InUse;
+		}
+	}
+
+	if ( g_Cfg.m_iClientsMax <= 0 )
+	{
+		// Only allow local connections
+		CSocketAddress SockName = GetPeer();
+		if ( !GetPeer().IsLocalAddr() && (SockName.GetAddrIP() != GetPeer().GetAddrIP()) )
+		{
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s', maximum clients reached (only local connections allowed)\n", GetSocketID(), pAccount->GetName());
+			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_LD);
+			return PacketLoginError::MaxClients;
+		}
+	}
+	if ( g_Cfg.m_iClientsMax <= 1 )
+	{
+		// Only allow admin connections
+		if ( pAccount->GetPrivLevel() < PLEVEL_Admin )
+		{
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s', maximum clients reached (only administrators allowed)\n", GetSocketID(), pAccount->GetName());
+			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_AO);
+			return PacketLoginError::MaxClients;
+		}
+	}
+	if ( (g_Serv.StatGet(SERV_STAT_CLIENTS) > g_Cfg.m_iClientsMax) && (pAccount->GetPrivLevel() < PLEVEL_GM) )
+	{
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s', maximum clients reached\n", GetSocketID(), pAccount->GetName());
+		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_FULL);
+		return PacketLoginError::MaxClients;
+	}
+
+	// Getting client version on login behavior is a bit tricky. When the client send the login request, the server
+	// will reply back with the server list, and only after this proccess the client will report its version to the
+	// server. But when the user select an server to play, the client disconnects and connect again now directly on
+	// this server address but without report the client version again. So we need to store the reported value from
+	// 1st connection on an temporary tag, to read it here on 2nd connection.
+	DWORD tmVer = static_cast<DWORD>(pAccount->m_TagDefs.GetKeyNum("ClientVersion"));
+	DWORD tmVerReported = static_cast<DWORD>(pAccount->m_TagDefs.GetKeyNum("ReportedCliVer"));
+	if ( tmVerReported )
+	{
+		m_NetState->m_reportedVersion = tmVerReported;
+		pAccount->m_TagDefs.DeleteKey("ReportedCliVer");
+	}
+	else if ( tmVer )
+	{
+		m_Crypt.SetClientVerEnum(tmVer, false);
+		m_NetState->m_clientVersion = tmVer;
+		pAccount->m_TagDefs.DeleteKey("ClientVersion");
+	}
+	else
+		new PacketClientVersionReq(this);
+
+	// Do the scripts allow to login this account?
+	pAccount->m_Last_IP = GetPeer();
+	CScriptTriggerArgs Args;
+	Args.Init(pAccount->GetName());
+	Args.m_iN1 = GetConnectType();
+	Args.m_pO1 = this;
+	enum TRIGRET_TYPE tr;
+	g_Serv.r_Call("f_onaccount_login", &g_Serv, &Args, NULL, &tr);
+	if ( tr == TRIGRET_RET_TRUE )
+	{
+		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_DENIED);
+		return PacketLoginError::Blocked;
+	}
+
+	m_pAccount = pAccount;
+	m_pAccount->OnLogin(this);
 	return PacketLoginError::Success;
 }
 
-BYTE CClient::Setup_Play( DWORD iSlot ) // After hitting "Play Character" button
+BYTE CClient::Setup_ListReq(const char *pszAccName, const char *pszPassword, bool bTest)
+{
+	ADDTOCALLSTACK("CClient::Setup_ListReq");
+	// XCMD_CharListReq
+	// Gameserver login and request character listing
+
+	if ( GetConnectType() != CONNECT_GAME )	// Not a game connection ?
+		return PacketLoginError::Other;
+
+	if ( GetTargMode() == CLIMODE_SETUP_RELAY )
+		ClearTargMode();
+
+	CGString sMsg;
+	BYTE lErr = LogIn(pszAccName, pszPassword, sMsg);
+	if ( lErr != PacketLoginError::Success )
+	{
+		if ( bTest && (lErr != PacketLoginError::Other) )
+		{
+			if ( !sMsg.IsEmpty() )
+				SysMessage(sMsg);
+		}
+		return lErr;
+	}
+
+	ASSERT(m_pAccount);
+
+	// If the last char is lingering then log back into this char instantly
+	/*CChar *pCharLast = m_pAccount->m_uidLastChar.CharFind();
+	if ( pCharLast && m_pAccount->IsMyAccountChar(pCharLast) && !pCharLast->IsDisconnected() )
+		return Setup_Start(pCharLast);*/
+
+	//m_NetState->detectAsyncMode();	// disabled because of unstability
+
+	// Set resdisp based on client version
+	if ( g_Cfg.m_bAutoResDisp )
+		m_pAccount->SetAutoResDisp(this);
+
+	UpdateFeatureFlags();
+	new PacketEnableFeatures(this, m_FeatureFlags);
+
+	UpdateCharacterListFlags();
+	new PacketCharacterList(this);
+
+	m_Targ_Mode = CLIMODE_SETUP_CHARLIST;
+	return PacketLoginError::Success;
+}
+
+BYTE CClient::Setup_Delete(DWORD iSlot) // Deletion of character
+{
+	ADDTOCALLSTACK("CClient::Setup_Delete");
+	ASSERT(m_pAccount);
+	DEBUG_MSG(("%lx:Setup_Delete slot=%lu\n", GetSocketID(), iSlot));
+	if ( iSlot >= COUNTOF(m_tmSetupCharList) )
+		return PacketDeleteError::InvalidRequest;
+
+	CChar *pChar = m_tmSetupCharList[iSlot].CharFind();
+	if ( !m_pAccount->IsMyAccountChar(pChar) )
+		return PacketDeleteError::BadPass;
+	if ( !pChar->IsDisconnected() )
+		return PacketDeleteError::InUse;
+
+	// Make sure the char is at least x days old
+	if ( g_Cfg.m_iMinCharDeleteTime && (-g_World.GetTimeDiff(pChar->m_timeCreate) < g_Cfg.m_iMinCharDeleteTime) )
+	{
+		if ( GetPrivLevel() < PLEVEL_Counsel )
+			return PacketDeleteError::NotOldEnough;
+	}
+
+	CGrayUID CharUID = pChar->GetUID();
+	LPCTSTR CharName = pChar->GetName();;
+
+	pChar->Delete(false, this);
+	if ( !pChar->IsDeleted() )
+		return PacketDeleteError::InvalidRequest;
+
+	g_Log.Event(LOGM_ACCOUNTS | LOGL_EVENT, "%lx:Account '%s' deleted char '%s' [0%lx] on client character selection menu\n", GetSocketID(), m_pAccount->GetName(), CharName, static_cast<DWORD>(CharUID));
+	return PacketDeleteError::Success;
+}
+
+BYTE CClient::Setup_Play(DWORD iSlot) // After hitting "Play Character" button
 {
 	ADDTOCALLSTACK("CClient::Setup_Play");
 	// Mode == CLIMODE_SETUP_CHARLIST
@@ -3444,335 +3628,108 @@ BYTE CClient::Setup_Play( DWORD iSlot ) // After hitting "Play Character" button
 		return PacketLoginError::CharIdle;
 	}
 
-	// LastLogged update
 	m_pAccount->m_TagDefs.SetStr("LastLogged", false, m_pAccount->m_dateLastConnect.Format(NULL));
 	m_pAccount->m_dateLastConnect = CGTime::GetCurrentTime();
-
 	return Setup_Start(pChar);
 }
 
-BYTE CClient::Setup_Delete( DWORD iSlot ) // Deletion of character
+BYTE CClient::Setup_Start(CChar *pChar) // Send character startup stuff to player
 {
-	ADDTOCALLSTACK("CClient::Setup_Delete");
-	ASSERT( m_pAccount );
-	DEBUG_MSG(( "%lx:Setup_Delete slot=%lu\n", GetSocketID(), iSlot ));
-	if ( iSlot >= COUNTOF(m_tmSetupCharList))
-		return PacketDeleteError::NotExist;
-
-	CChar * pChar = m_tmSetupCharList[iSlot].CharFind();
-	if ( ! m_pAccount->IsMyAccountChar( pChar ))
-		return PacketDeleteError::BadPass;
-
-	if ( ! pChar->IsDisconnected())
-	{
-		return PacketDeleteError::InUse;
-	}
-
-	// Make sure the char is at least x days old.
-	if ( g_Cfg.m_iMinCharDeleteTime &&
-		(- g_World.GetTimeDiff( pChar->m_timeCreate )) < g_Cfg.m_iMinCharDeleteTime )
-	{
-		if ( GetPrivLevel() < PLEVEL_Counsel )
-		{
-			return PacketDeleteError::NotOldEnough;
-		}
-	}
-
-	CGrayUID CharUID = pChar->GetUID();
-	LPCTSTR CharName = pChar->GetName();
-	LPCTSTR AccountName = m_pAccount->GetName();
-
-	pChar->Delete(false, this);
-	if ( !pChar->IsDeleted() )
-		return PacketDeleteError::InvalidRequest;
-
-	g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "%lx:Account '%s' deleted char '%s' [0%lx] on client login screen.\n", GetSocketID(), AccountName, CharName, static_cast<DWORD>(CharUID));
-	new PacketCharacterListUpdate(this, m_pAccount->m_uidLastChar.CharFind());
-	return PacketDeleteError::Success;
-}
-
-BYTE CClient::Setup_ListReq( const char * pszAccName, const char * pszPassword, bool fTest )
-{
-	ADDTOCALLSTACK("CClient::Setup_ListReq");
-	// XCMD_CharListReq
-	// Gameserver login and request character listing
-
-	if ( GetConnectType() != CONNECT_GAME )	// Not a game connection ?
-	{
-		return(PacketLoginError::Other);
-	}
-
-	switch ( GetTargMode())
-	{
-		case CLIMODE_SETUP_RELAY:
-			ClearTargMode();
-			break;
-
-		default:
-			break;
-	}
-
-	CGString sMsg;
-	BYTE lErr = LogIn( pszAccName, pszPassword, sMsg );
-
-	if ( lErr != PacketLoginError::Success )
-	{
-		if ( fTest && lErr != PacketLoginError::Other )
-		{
-			if ( ! sMsg.IsEmpty())
-			{
-				SysMessage( sMsg );
-			}
-		}
-		return( lErr );
-	}
-
+	ADDTOCALLSTACK("CClient::Setup_Start");
+	// Play this char.
 	ASSERT(m_pAccount);
+	ASSERT(pChar);
 
-	/*CChar *pCharLast = m_pAccount->m_uidLastChar.CharFind();
-	if ( pCharLast && m_pAccount->IsMyAccountChar(pCharLast) && m_pAccount->GetPrivLevel() <= PLEVEL_GM && !pCharLast->IsDisconnected() )
+	CharDisconnect();	// I'm already logged in as someone else ?
+	m_pAccount->m_uidLastChar = pChar->GetUID();
+
+	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Setup_Start acct='%s', char='%s', IP='%s'\n", GetSocketID(), m_pAccount->GetName(), pChar->GetName(), GetPeerStr());
+
+	// GMs should login with invul and without allshow flag set
+	if ( GetPrivLevel() > PLEVEL_Player )
 	{
-		// If the last char is lingering then log back into this char instantly.
-		// m_iClientLingerTime
-		if ( Setup_Start(pCharLast) )
-			return PacketLoginError::Success;
-		return PacketLoginError::Blocked;	//Setup_Start() returns false only when login blocked by Return 1 in @Login
-	}*/
-
-	//m_NetState->detectAsyncMode();	// disabled because of unstability
-
-	// Set resdisp based on client version
-	if ( g_Cfg.m_bAutoResDisp )
-		m_pAccount->SetAutoResDisp(this);
-
-	UpdateFeatureFlags();
-	new PacketEnableFeatures(this, m_FeatureFlags);
-
-	UpdateCharacterListFlags();
-	new PacketCharacterList(this);
-
-	m_Targ_Mode = CLIMODE_SETUP_CHARLIST;
-	return PacketLoginError::Success;
-}
-
-BYTE CClient::LogIn( CAccountRef pAccount, CGString & sMsg )
-{
-	ADDTOCALLSTACK("CClient::LogIn");
-	if ( pAccount == NULL )
-		return( PacketLoginError::Invalid );
-
-	if ( pAccount->IsPriv( PRIV_BLOCKED ))
-	{
-		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s' is blocked.\n", GetSocketID(), pAccount->GetName());
-		sMsg.Format( g_Cfg.GetDefaultMsg( DEFMSG_MSG_ACC_BLOCKED ), static_cast<LPCTSTR>(g_Serv.m_sEMail));
-		return( PacketLoginError::Blocked );
+		ClearPrivFlags(PRIV_ALLSHOW);
+		pChar->StatFlag_Set(STATF_INVUL);
 	}
 
-	// Look for this account already in use.
-	CClient * pClientPrev = pAccount->FindClient( this );
-	if ( pClientPrev != NULL )
+	// Max sight range on classic clients is 18, so lower it if for some reason it was higher
+	if ( (pChar->GetSight() > 18) && (m_NetState->getClientType() <= CLIENTTYPE_3D) )
+		pChar->SetSight(18);
+
+	addPlayerStart(pChar);
+	ASSERT(m_pChar);
+
+	bool bNoMessages = false;
+	bool bQuickLogIn = !pChar->IsDisconnected();
+	if ( IsTrigUsed(TRIGGER_LOGIN) )
 	{
-		// Only if it's from a diff ip ?
-		ASSERT( pClientPrev != this );
-
-		bool bInUse = false;
-
-		//	different ip - no reconnect
-		if ( ! GetPeer().IsSameIP( pClientPrev->GetPeer() )) bInUse = true;
-		else
+		CScriptTriggerArgs Args(bNoMessages, bQuickLogIn);
+		if ( pChar->OnTrigger(CTRIG_LogIn, pChar, &Args) == TRIGRET_RET_TRUE )
 		{
-			//	from same ip - allow reconnect if the old char is lingering out
-			CChar *pCharOld = pClientPrev->GetChar();
-			if ( pCharOld )
-			{
-				CItem	*pItem = pCharOld->LayerFind(LAYER_FLAG_ClientLinger);
-				if ( !pItem ) bInUse = true;
-			}
+			m_pChar->ClientDetach();
+			pChar->SetDisconnected();
+			return PacketLoginError::Blocked;
+		}
+		bNoMessages = (Args.m_iN1 != 0);
+		bQuickLogIn = (Args.m_iN2 != 0);
+	}
 
-			if ( !bInUse )
+	TCHAR *z = Str_GetTemp();
+	if ( !bQuickLogIn )
+	{
+		if ( !bNoMessages )
+		{
+			addBark(g_szServerDescription, NULL, HUE_YELLOW, TALKMODE_SYSTEM, FONT_NORMAL);
+			sprintf(z, (g_Serv.StatGet(SERV_STAT_CLIENTS) == 2) ? g_Cfg.GetDefaultMsg(DEFMSG_LOGIN_PLAYER) : g_Cfg.GetDefaultMsg(DEFMSG_LOGIN_PLAYERS), g_Serv.StatGet(SERV_STAT_CLIENTS) - 1);
+			addSysMessage(z);
+
+			sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_LOGIN_LASTLOGGED), m_pAccount->m_TagDefs.GetKeyStr("LastLogged"));
+			addSysMessage(z);
+		}
+		if ( m_pChar->m_pArea && m_pChar->m_pArea->IsGuarded() && !m_pChar->m_pArea->IsFlag(REGION_FLAG_ANNOUNCE) )
+		{
+			const CVarDefContStr *pVarStr = dynamic_cast<CVarDefContStr *>(m_pChar->m_pArea->m_TagDefs.GetKey("GUARDOWNER"));
+			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDSP), pVarStr ? pVarStr->GetValStr() : g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDSPT));
+			if ( m_pChar->m_pArea->m_TagDefs.GetKeyNum("RED") )
+				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDDEF), g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDENTER));
+		}
+	}
+
+	if ( IsPriv(PRIV_GM_PAGE) && (g_World.m_GMPages.GetCount() > 0) )
+	{
+		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_GMPAGES), static_cast<int>(g_World.m_GMPages.GetCount()), g_Cfg.m_cCommandPrefix);
+		addSysMessage(z);
+	}
+	if ( IsPriv(PRIV_JAILED) )
+		m_pChar->Jail(&g_Serv, true, static_cast<int>(m_pAccount->m_TagDefs.GetKeyNum("JailCell")));
+	if ( g_Serv.m_timeShutdown.IsTimeValid() )
+		addBarkParse(g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_SHUTDOWN_SOON), NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM, FONT_BOLD);
+
+	m_pAccount->m_TagDefs.DeleteKey("LastLogged");
+	Announce(true);		// announce you to the world
+
+	// Don't login on the water, bring us to nearest shore (unless I can swim)
+	if ( !IsPriv(PRIV_GM) && !m_pChar->Char_GetDef()->Can(CAN_C_SWIM) && m_pChar->IsSwimming() )
+	{
+		int i = 0;
+		int iDist = 1;
+		int iDistNew = 0;
+		for ( ; i < 20; i++ )
+		{
+			iDistNew = iDist + 20;
+			for ( int iDir = DIR_N; iDir < DIR_QTY; iDir++ )	// try in all directions
 			{
-				if ( IsConnectTypePacket() && pClientPrev->IsConnectTypePacket())
+				if ( m_pChar->MoveToValidSpot(static_cast<DIR_TYPE>(iDir), iDistNew, iDist) )
 				{
-					pClientPrev->CharDisconnect();
-					pClientPrev->m_NetState->markReadClosed();
+					i = 100;
+					break;
 				}
-				else if ( GetConnectType() == pClientPrev->GetConnectType() ) bInUse = true;
 			}
+			iDist = iDistNew;
 		}
-
-		if ( bInUse )
-		{
-			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s' already in use.\n", GetSocketID(), pAccount->GetName());
-			sMsg = "Account already in use.";
-			return PacketLoginError::InUse;
-		}
+		addSysMessage(g_Cfg.GetDefaultMsg(i < 100 ? DEFMSG_MSG_REGION_WATER_1 : DEFMSG_MSG_REGION_WATER_2));
 	}
 
-	if ( g_Cfg.m_iClientsMax <= 0 )
-	{
-		// Allow no one but locals on.
-		CSocketAddress SockName = GetPeer();
-		if ( ! GetPeer().IsLocalAddr() && SockName.GetAddrIP() != GetPeer().GetAddrIP() )
-		{
-			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s', maximum clients reached (only local connections allowed).\n", GetSocketID(), pAccount->GetName());
-			sMsg = g_Cfg.GetDefaultMsg( DEFMSG_MSG_SERV_LD );
-			return( PacketLoginError::MaxClients );
-		}
-	}
-	if ( g_Cfg.m_iClientsMax <= 1 )
-	{
-		// Allow no one but Administrator on.
-		if ( pAccount->GetPrivLevel() < PLEVEL_Admin )
-		{
-			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s', maximum clients reached (only administrators allowed).\n", GetSocketID(), pAccount->GetName());
-			sMsg = g_Cfg.GetDefaultMsg( DEFMSG_MSG_SERV_AO );
-			return( PacketLoginError::MaxClients );
-		}
-	}
-	if ( pAccount->GetPrivLevel() < PLEVEL_GM && g_Serv.StatGet(SERV_STAT_CLIENTS) > g_Cfg.m_iClientsMax )
-	{
-		// Give them a polite goodbye.
-		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s', maximum clients reached.\n", GetSocketID(), pAccount->GetName());
-		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_FULL);
-		return PacketLoginError::MaxClients;
-	}
-
-	// Getting client version on login behavior is a bit tricky. When the client send the login request, the server
-	// will reply back with the server list, and only after this proccess the client will report its version to the
-	// server. But when the user select an server to play, the client disconnects and connect again now directly on
-	// this server address but without report the client version again. So we need to store the reported value from
-	// 1st connection on an temporary tag, to read it here on 2nd connection.
-	DWORD tmVer = static_cast<DWORD>(pAccount->m_TagDefs.GetKeyNum("ClientVersion"));
-	DWORD tmVerReported = static_cast<DWORD>(pAccount->m_TagDefs.GetKeyNum("ReportedCliVer"));
-	if ( tmVerReported  )
-	{
-		m_NetState->m_reportedVersion = tmVerReported;
-		pAccount->m_TagDefs.DeleteKey("ReportedCliVer");
-	}
-	else if ( tmVer  )
-	{
-		m_Crypt.SetClientVerEnum(tmVer, false);
-		m_NetState->m_clientVersion = tmVer;
-		pAccount->m_TagDefs.DeleteKey("ClientVersion");
-	}
-	else
-		new PacketClientVersionReq(this);
-
-	// Do the scripts allow to login this account?
-	pAccount->m_Last_IP = GetPeer();
-	CScriptTriggerArgs Args;
-	Args.Init(pAccount->GetName());
-	Args.m_iN1 = GetConnectType();
-	Args.m_pO1 = this;
-	enum TRIGRET_TYPE tr;
-	g_Serv.r_Call("f_onaccount_login", &g_Serv, &Args, NULL, &tr);
-	if ( tr == TRIGRET_RET_TRUE )
-	{
-		sMsg = g_Cfg.GetDefaultMsg( DEFMSG_MSG_ACC_DENIED );
-		return (PacketLoginError::Blocked);
-	}
-
-	m_pAccount = pAccount;
-	m_pAccount->OnLogin( this );
-
-	return( PacketLoginError::Success );
-}
-
-BYTE CClient::LogIn( LPCTSTR pszAccName, LPCTSTR pszPassword, CGString & sMsg )
-{
-	ADDTOCALLSTACK("CClient::LogIn");
-	// Try to validate this account.
-	// Do not send output messages as this might be a console or web page or game client.
-	// NOTE: addLoginErr() will get called after this.
-
-	if ( m_pAccount ) // already logged in.
-		return( PacketLoginError::Success );
-
-	TCHAR szTmp[ MAX_NAME_SIZE ];
-	size_t iLen1 = strlen( pszAccName );
-	size_t iLen2 = strlen( pszPassword );
-	size_t iLen3 = Str_GetBare( szTmp, pszAccName, MAX_NAME_SIZE );
-	if ( iLen1 == 0 || iLen1 != iLen3 || iLen1 > MAX_NAME_SIZE )	// a corrupt message.
-	{
-		TCHAR szVersion[ 256 ];
-		sMsg.Format( g_Cfg.GetDefaultMsg( DEFMSG_MSG_ACC_WCLI ), static_cast<LPCTSTR>(m_Crypt.WriteClientVer( szVersion )));
-		return( PacketLoginError::BadAccount );
-	}
-
-	iLen3 = Str_GetBare( szTmp, pszPassword, MAX_NAME_SIZE );
-	if ( iLen2 != iLen3 )	// a corrupt message.
-	{
-		TCHAR szVersion[ 256 ];
-		sMsg.Format( g_Cfg.GetDefaultMsg( DEFMSG_MSG_ACC_WCLI ), static_cast<LPCTSTR>(m_Crypt.WriteClientVer( szVersion )));
-		return( PacketLoginError::BadPassword );
-	}
-
-
-	TCHAR szName[ MAX_ACCOUNT_NAME_SIZE ];
-	if ( !CAccount::NameStrip(szName, pszAccName) || Str_Check(pszAccName) )
-		return( PacketLoginError::BadAccount );
-	else if ( Str_Check(pszPassword) )
-		return( PacketLoginError::BadPassword );
-
-	bool fGuestAccount = ! strnicmp( pszAccName, "GUEST", 5 );
-	if ( fGuestAccount )
-	{
-		// trying to log in as some sort of guest.
-		// Find or create a new guest account.
-		TCHAR *pszTemp = Str_GetTemp();
-		for ( int i = 0; ; i++ )
-		{
-			if ( i>=g_Cfg.m_iGuestsMax )
-			{
-				sMsg = g_Cfg.GetDefaultMsg( DEFMSG_MSG_ACC_GUSED );
-				return( PacketLoginError::MaxGuests );
-			}
-
-			sprintf(pszTemp, "GUEST%d", i);
-			CAccountRef pAccount = g_Accounts.Account_FindCreate(pszTemp, true );
-			ASSERT( pAccount );
-
-			if ( pAccount->FindClient() == NULL )
-			{
-				pszAccName = pAccount->GetName();
-				break;
-			}
-		}
-	}
-	else
-	{
-		if ( pszPassword[0] == '\0' )
-		{
-			sMsg = g_Cfg.GetDefaultMsg( DEFMSG_MSG_ACC_NEEDPASS );
-			return( PacketLoginError::BadPassword );
-		}
-	}
-
-	bool fAutoCreate = ( g_Serv.m_eAccApp == ACCAPP_Free || g_Serv.m_eAccApp == ACCAPP_GuestAuto || g_Serv.m_eAccApp == ACCAPP_GuestTrial );
-	CAccountRef pAccount = g_Accounts.Account_FindCreate(pszAccName, fAutoCreate);
-	if ( ! pAccount )
-	{
-		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s' does not exist\n", GetSocketID(), pszAccName);
-		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_UNK), pszAccName);
-		return PacketLoginError::Invalid;
-	}
-
-	if ( g_Cfg.m_iClientLoginMaxTries && !pAccount->CheckPasswordTries(GetPeer()) )
-	{
-		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: '%s' exceeded password tries in time lapse\n", GetSocketID(), pAccount->GetName());
-		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
-		return PacketLoginError::MaxPassTries;
-	}
-
-	if ( ! fGuestAccount && ! pAccount->IsPriv(PRIV_BLOCKED) )
-	{
-		if ( ! pAccount->CheckPassword(pszPassword))
-		{
-			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: '%s' bad password\n", GetSocketID(), pAccount->GetName());
-			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
-			return PacketLoginError::BadPass;
-		}
-	}
-
-	return LogIn(pAccount, sMsg);
+	DEBUG_MSG(("%lx:Setup_Start done\n", GetSocketID()));
+	return PacketLoginError::Success;
 }

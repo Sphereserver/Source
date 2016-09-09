@@ -1124,8 +1124,8 @@ private:
 	bool OnRxPing( const BYTE * pData, size_t len );
 	bool OnRxWebPageRequest( BYTE * pRequest, size_t len );
 
-	BYTE LogIn( CAccountRef pAccount, CGString & sMsg );
-	BYTE LogIn( LPCTSTR pszName, LPCTSTR pPassword, CGString & sMsg );
+	BYTE LogIn(LPCTSTR pszName, LPCTSTR pPassword, CGString &sMsg);
+	BYTE LogIn(CAccountRef pAccount, CGString &sMsg);
 
 	bool CanInstantLogOut() const;
 	void Cmd_GM_PageClear();
@@ -1212,11 +1212,11 @@ public:
 	bool Login_Relay( WORD iServer ); // Relay player to a certain IP
 	BYTE Login_ServerList( const char * pszAccount, const char * pszPassword ); // Initial login (Login on "loginserver", new format)
 
-	BYTE Setup_Delete( DWORD iSlot ); // Deletion of character
 	int Setup_FillCharList(Packet* pPacket, const CChar * pCharFirst); // Write character list to packet
-	BYTE Setup_ListReq( const char * pszAccount, const char * pszPassword, bool fTest ); // Gameserver login and character listing
-	BYTE Setup_Play( DWORD iSlot ); // After hitting "Play Character" button
-	BYTE Setup_Start( CChar * pChar ); // Send character startup stuff to player
+	BYTE Setup_ListReq(const char *pszAccount, const char *pszPassword, bool bTest); // Gameserver login and character listing
+	BYTE Setup_Delete(DWORD iSlot); // Deletion of character
+	BYTE Setup_Play(DWORD iSlot); // After hitting "Play Character" button
+	BYTE Setup_Start(CChar *pChar); // Send character startup stuff to player
 	
 
 	// translated commands.
@@ -1445,13 +1445,13 @@ public:
 	void Event_AOSPopupMenuRequest( DWORD uid );
 
 
-	void addShowDamage( int damage, DWORD uid_damage );
+	void addShowDamage( int damage, DWORD uid );
 	void addSpeedMode( BYTE speedMode = 0 );
 	void addVisualRange( BYTE visualRange = UO_MAP_VIEW_SIZE );
 	void addIdleWarning( BYTE message );
 	void addKRToolbar( bool bEnable );
 
-	void SendPacket( TCHAR * pszPacket );
+	void SendPacket( TCHAR *pszPacket );
 	void LogOpenedContainer(const CItemContainer* pContainer);
 
 	// Test what I can do
