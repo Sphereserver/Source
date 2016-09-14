@@ -454,6 +454,12 @@ void CClient::Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, un
 			Event_Item_Drop_Fail(pItem);
 			return;
 		}
+
+		if ( g_World.IsItemTypeNear(pt, IT_WALL, 0, true, true) )
+		{
+			Event_Item_Drop_Fail(pItem);
+			return;
+		}
 	}
 
 	// Game pieces can only be dropped on game boards
@@ -482,7 +488,11 @@ void CClient::Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, un
 	{
 		// On ground
 		m_pChar->UpdateDrag(pItem, NULL, &pt);
-		m_pChar->ItemDrop(pItem, pt);
+		if ( !m_pChar->ItemDrop(pItem, pt) )
+		{
+			Event_Item_Drop_Fail(pItem);
+			return;
+		}
 	}
 }
 

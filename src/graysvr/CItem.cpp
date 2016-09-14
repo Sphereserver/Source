@@ -1237,48 +1237,37 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	ADDTOCALLSTACK("CItem::MoveToCheck");
 	// Make noise and try to pile it and such.
 
-	CPointMap ptNewPlace;
-	if ( !g_World.IsItemTypeNear(pt, IT_WALL, 0, true, true) )
-		ptNewPlace = pt;
-	else if ( pCharMover )
-	{
-		pCharMover->ItemBounce(this);
+	if ( !pt.IsValidPoint() )
 		return false;
-	}
-	else
-		ptNewPlace.ValidatePoint();
-
-	MoveTo(ptNewPlace);
 
 	INT64 iDecayTime = GetDecayTime();
 	if ( iDecayTime > 0 )
 	{
-		const CRegionBase *pRegion = ptNewPlace.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA|REGION_TYPE_ROOM);
-		if ( pRegion != NULL && pRegion->IsFlag(REGION_FLAG_NODECAY) )
+		const CRegionBase *pRegion = pt.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA|REGION_TYPE_ROOM);
+		if ( pRegion && pRegion->IsFlag(REGION_FLAG_NODECAY) )
 			iDecayTime = -1;
 	}
 
-	TRIGRET_TYPE ttResult = TRIGRET_RET_DEFAULT;
 	if ( IsTrigUsed(TRIGGER_DROPON_GROUND) || IsTrigUsed(TRIGGER_ITEMDROPON_GROUND) )
 	{
-		CScriptTriggerArgs args;
-		args.m_iN1 = iDecayTime;		// ARGN1 = Decay time for the dropped item (in ticks)
-		ttResult = OnTrigger(ITRIG_DROPON_GROUND, pCharMover, &args);
-
+		CScriptTriggerArgs Args;
+		Args.m_iN1 = iDecayTime;		// ARGN1 = Decay time for the dropped item (in ticks)
+		Args.m_s1 = pt.WriteUsed();		// ARGS = Location that the item was dropped at
+		if ( OnTrigger(ITRIG_DROPON_GROUND, pCharMover, &Args) == TRIGRET_RET_TRUE )
+			return false;
 		if ( IsDeleted() )
 			return false;
 
-		iDecayTime = args.m_iN1;
+		iDecayTime = Args.m_iN1;
 	}
-	Update();
 
-	if ( ttResult == TRIGRET_RET_TRUE )
-		return true;
+	MoveTo(pt);
+	Update();
 
 	// Check if there's too many items on the same spot
 	unsigned int iItemCount = 0;
 	CItem *pItem = NULL;
-	CWorldSearch AreaItems(ptNewPlace);
+	CWorldSearch AreaItems(pt);
 	for (;;)
 	{
 		pItem = AreaItems.GetItem();
