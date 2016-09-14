@@ -209,3 +209,6 @@ Fixed: Items getting equipped on invalid layer or unplaced on world when EQUIP /
 
 07-09-2016, Coruja
 Changed: Temporarily disabled ATTACKER.x.IGNORE function and @HitIgnore trigger until we find a way to fix its broken functionality.
+
+14-09-2016, Coruja
+Fixed: Rubberband effect when using @Step trigger with MOVE/GO function + return 1.

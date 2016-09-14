@@ -759,9 +759,12 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 		TRIGRET_TYPE iRet = m_pChar->CheckLocation();
 		if ( iRet == TRIGRET_RET_FALSE )
 		{
-			m_pChar->SetUnkPoint(ptOld);	// we already moved, so move back to previous location
-			new PacketMovementRej(this, sequence);
-			return false;
+			if ( m_pChar->GetTopPoint() == pt )	// check if position still the same, because the movement can't be rejected if the char already got moved/teleported
+			{
+				m_pChar->SetUnkPoint(ptOld);	// we already moved, so move back to previous location
+				new PacketMovementRej(this, sequence);
+				return false;
+			}
 		}
 
 		// Check if invisible chars will be revealed
