@@ -48,28 +48,6 @@ void CStoneMember::SetPriv(STONEPRIV_TYPE iPriv) { m_iPriv = iPriv; }
 bool CStoneMember::IsPrivMaster() const { return m_iPriv == STONEPRIV_MASTER; }
 bool CStoneMember::IsPrivMember() const { return( m_iPriv == STONEPRIV_MASTER || m_iPriv == STONEPRIV_MEMBER ); }
 
-// If the member is really a alliance flag (STONEPRIV_ALLY)
-void CStoneMember::SetWeDeclaredAlly(bool f)
-{
-	ADDTOCALLSTACK("CStoneMember::SetWeDeclaredAlly");
-	m_Ally.m_fWeDeclared = f;
-}
-bool CStoneMember::GetWeDeclaredAlly() const
-{
-	ADDTOCALLSTACK("CStoneMember::GetWeDeclaredAlly");
-	return m_Ally.m_fWeDeclared ? true : false;
-}
-void CStoneMember::SetTheyDeclaredAlly(bool f)
-{
-	ADDTOCALLSTACK("CStoneMember::SetTheyDeclaredAlly");
-	m_Ally.m_fTheyDeclared = f;
-}
-bool CStoneMember::GetTheyDeclaredAlly() const
-{
-	ADDTOCALLSTACK("CStoneMember::GetTheyDeclaredAlly");
-	return m_Ally.m_fTheyDeclared ? true : false;
-}
-
 // If the member is really a war flag (STONEPRIV_ENEMY)
 void CStoneMember::SetWeDeclaredWar(bool f)
 {
@@ -90,6 +68,28 @@ bool CStoneMember::GetTheyDeclaredWar() const
 {
 	ADDTOCALLSTACK("CStoneMember::GetTheyDeclaredWar");
 	return m_Enemy.m_fTheyDeclared ? true : false;
+}
+
+// If the member is really a alliance flag (STONEPRIV_ALLY)
+void CStoneMember::SetWeDeclaredAlly(bool f)
+{
+	ADDTOCALLSTACK("CStoneMember::SetWeDeclaredAlly");
+	m_Ally.m_fWeDeclared = f;
+}
+bool CStoneMember::GetWeDeclaredAlly() const
+{
+	ADDTOCALLSTACK("CStoneMember::GetWeDeclaredAlly");
+	return m_Ally.m_fWeDeclared ? true : false;
+}
+void CStoneMember::SetTheyDeclaredAlly(bool f)
+{
+	ADDTOCALLSTACK("CStoneMember::SetTheyDeclaredAlly");
+	m_Ally.m_fTheyDeclared = f;
+}
+bool CStoneMember::GetTheyDeclaredAlly() const
+{
+	ADDTOCALLSTACK("CStoneMember::GetTheyDeclaredAlly");
+	return m_Ally.m_fTheyDeclared ? true : false;
 }
 
 // Member
@@ -341,6 +341,11 @@ CStoneMember::CStoneMember( CItemStone * pStone, CGrayUID uid, STONEPRIV_TYPE iT
 		m_Enemy.m_fTheyDeclared = fVal1;
 		m_Enemy.m_fWeDeclared = fVal2;
 	}
+	if ( iType == STONEPRIV_ALLY )
+	{
+		m_Ally.m_fTheyDeclared = fVal1;
+		m_Ally.m_fWeDeclared = fVal2;
+	}
 	else
 	{
 		m_Member.m_fAbbrev = fVal1;
@@ -376,7 +381,7 @@ CStoneMember::~CStoneMember()
 	if ( m_iPriv == STONEPRIV_ENEMY )
 	{
 		// same as declaring peace.
-		CItemStone * pStoneEnemy = dynamic_cast <CItemStone *>( GetLinkUID().ItemFind());
+		CItemStone * pStoneEnemy = static_cast<CItemStone *>(GetLinkUID().ItemFind());
 		if ( pStoneEnemy != NULL )
 		{
 			pStoneEnemy->TheyDeclarePeace( pStone, true );
@@ -396,7 +401,7 @@ CStoneMember::~CStoneMember()
 CItemStone * CStoneMember::GetParentStone() const
 {
 	ADDTOCALLSTACK("CStoneMember::GetParentStone");
-	return dynamic_cast <CItemStone *>( GetParent());
+	return dynamic_cast<CItemStone *>(GetParent());
 }
 
 LPCTSTR CStoneMember::GetPrivName() const
@@ -1281,7 +1286,7 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 				CItem * pEnemyItem = pMemberUid.ItemFind();
 				if ( pEnemyItem )
 				{
-					CItemStone * pNewEnemy = dynamic_cast<CItemStone*>(pEnemyItem);
+					CItemStone * pNewEnemy = static_cast<CItemStone *>(pEnemyItem);
 					if ( pNewEnemy )
 					{
 						WeDeclareWar(pNewEnemy);
@@ -1613,49 +1618,64 @@ bool CItemStone::CheckValidMember( CStoneMember * pMember )
 {
 	ADDTOCALLSTACK("CItemStone::CheckValidMember");
 	ASSERT(pMember);
-	ASSERT( pMember->GetParent() == this );
+	ASSERT(pMember->GetParent() == this);
 
-	if ( GetAmount()==0 || g_Serv.m_iExitFlag )	// no reason to elect new if the stone is dead.
-		return( true );	// we are deleting anyhow.
+	if ( (GetAmount() == 0) || g_Serv.m_iExitFlag )	// no reason to elect new if the stone is dead.
+		return true;	// we are deleting anyhow.
 
-	switch ( pMember->GetPriv())
+	switch ( pMember->GetPriv() )
 	{
 		case STONEPRIV_MASTER:
 		case STONEPRIV_MEMBER:
 		case STONEPRIV_CANDIDATE:
 		case STONEPRIV_ACCEPTED:
-			if ( GetMemoryType())
+		{
+			if ( GetMemoryType() )
 			{
 				// Make sure the member has a memory that links them back here.
-				CChar * pChar = pMember->GetLinkUID().CharFind();
-				if ( pChar == NULL )
+				CChar *pChar = pMember->GetLinkUID().CharFind();
+				if ( !pChar )
 					break;
-				if ( pChar->Guild_Find( GetMemoryType()) != this )
+				if ( pChar->Guild_Find(GetMemoryType()) != this )
 					break;
 			}
-			return( true );
+			return true;
+		}
 		case STONEPRIV_ENEMY:
-			{
-				CItemStone * pEnemyStone = dynamic_cast <CItemStone *>( pMember->GetLinkUID().ItemFind());
-				if ( pEnemyStone == NULL )
-					break;
-				CStoneMember * pEnemyMember = pEnemyStone->GetMember(this);
-				if ( pEnemyMember == NULL )
-					break;
-				if ( pMember->GetWeDeclaredWar() && ! pEnemyMember->GetTheyDeclaredWar() )
-					break;
-				if ( pMember->GetTheyDeclaredWar() && ! pEnemyMember->GetWeDeclaredWar() )
-					break;
-			}
-			return( true );
-
+		{
+			CItemStone *pEnemyStone = static_cast<CItemStone *>(pMember->GetLinkUID().ItemFind());
+			if ( !pEnemyStone )
+				break;
+			CStoneMember *pEnemyMember = pEnemyStone->GetMember(this);
+			if ( !pEnemyMember )
+				break;
+			if ( pMember->GetWeDeclaredWar() && !pEnemyMember->GetTheyDeclaredWar() )
+				break;
+			if ( pMember->GetTheyDeclaredWar() && !pEnemyMember->GetWeDeclaredWar() )
+				break;
+			return true;
+		}
+		case STONEPRIV_ALLY:
+		{
+			CItemStone *pAllyStone = static_cast<CItemStone *>(pMember->GetLinkUID().ItemFind());
+			if ( !pAllyStone )
+				break;
+			CStoneMember *pAllyMember = pAllyStone->GetMember(this);
+			if ( !pAllyMember )
+				break;
+			if ( pMember->GetWeDeclaredAlly() && !pAllyMember->GetTheyDeclaredAlly() )
+				break;
+			if ( pMember->GetTheyDeclaredAlly() && !pAllyMember->GetWeDeclaredAlly() )
+				break;
+			return true;
+		}
 		default:
 			break;
 	}
 
 	// just delete this member. (it is mislinked)
 	DEBUG_ERR(("Stone UID=0%lx has mislinked member uid=0%lx\n", static_cast<DWORD>(GetUID()), static_cast<DWORD>(pMember->GetLinkUID())));
-	return( false );
+	return false;
 }
 
 int CItemStone::FixWeirdness()
@@ -1859,7 +1879,7 @@ void CItemStone::TheyDeclarePeace( CItemStone* pEnemyStone, bool fForcePeace )
 void CItemStone::WeDeclarePeace(CGrayUID uid, bool fForcePeace)
 {
 	ADDTOCALLSTACK("CItemStone::WeDeclarePeace");
-	CItemStone * pEnemyStone = dynamic_cast <CItemStone*>( uid.ItemFind());
+	CItemStone * pEnemyStone = static_cast<CItemStone *>(uid.ItemFind());
 	if (!pEnemyStone)
 		return;
 

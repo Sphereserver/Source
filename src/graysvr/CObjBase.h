@@ -2066,8 +2066,8 @@ enum STONEPRIV_TYPE // Priv level for this char
 	STONEPRIV_MASTER,
 	STONEPRIV_UNUSED,
 	STONEPRIV_ACCEPTED,		// The candidate has been accepted. But they have not dclicked on the stone yet.
-	STONEPRIV_ALLY = 100,	// This is an ally town/guild.
-	STONEPRIV_ENEMY			// This is an enemy town/guild.
+	STONEPRIV_ENEMY = 100,	// This is an enemy town/guild.
+	STONEPRIV_ALLY			// This is an ally town/guild.
 };
 
 class CStoneMember : public CGObListRec, public CScriptObj	// Members for various stones, and links to stones at war with
@@ -2091,19 +2091,19 @@ private:
 			int m_Val3;
 		} m_UnDef;
 
-		struct // STONEPRIV_ALLY
-		{
-			int m_fTheyDeclared;
-			int m_fWeDeclared;
-		} m_Ally;
-
 		struct // STONEPRIV_ENEMY
 		{
 			int m_fTheyDeclared;
 			int m_fWeDeclared;
 		} m_Enemy;
 
-		struct	// a char member (NOT STONEPRIV_ENEMY)
+		struct // STONEPRIV_ALLY
+		{
+			int m_fTheyDeclared;
+			int m_fWeDeclared;
+		} m_Ally;
+
+		struct	// a char member (not STONEPRIV_ENEMY / STONEPRIV_ALLY)
 		{
 			int m_fAbbrev;			// Do they have their guild abbrev on or not ?
 			int m_iVoteTally;		// Temporary space to calculate votes for me.
@@ -2132,17 +2132,17 @@ public:
 	bool IsPrivMember() const;
 	LPCTSTR GetPrivName() const;
 
-	// If the member is really a war flag (STONEPRIV_ALLY)
-	void SetWeDeclaredAlly(bool f);
-	bool GetWeDeclaredAlly() const;
-	void SetTheyDeclaredAlly(bool f);
-	bool GetTheyDeclaredAlly() const;
-
 	// If the member is really a war flag (STONEPRIV_ENEMY)
 	void SetWeDeclaredWar(bool f);
 	bool GetWeDeclaredWar() const;
 	void SetTheyDeclaredWar(bool f);
 	bool GetTheyDeclaredWar() const;
+
+	// If the member is really a ally flag (STONEPRIV_ALLY)
+	void SetWeDeclaredAlly(bool f);
+	bool GetWeDeclaredAlly() const;
+	void SetTheyDeclaredAlly(bool f);
+	bool GetTheyDeclaredAlly() const;
 
 	// Member
 	bool IsAbbrevOn() const;
