@@ -1763,7 +1763,7 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 	if ( pObjTarg == NULL )
 	{
 		m_Targ_UID.ClearUID();
-		if ( pt.IsCharValid())
+		if ( pt.IsValidPoint() )
 		{
 			if ( !IsSetOF(OF_DClickNoTurn) )
 				m_pChar->UpdateDir(pt);

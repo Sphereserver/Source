@@ -62,10 +62,9 @@ public:
 	int GetDistSight( const CPointBase & pt ) const; // Distance between points based on UO sight
 	int GetDist3D( const CPointBase & pt ) const; // 3D Distance between points
 
-	bool IsValidZ() const;
 	bool IsValidXY() const;
+	bool IsValidZ() const;
 	bool IsValidPoint() const;
-	bool IsCharValid() const;
 
 	void ValidatePoint();
 

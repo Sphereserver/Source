@@ -28,16 +28,13 @@ CTeleport::CTeleport( TCHAR * pszArgs )
 bool CTeleport::RealizeTeleport()
 {
 	ADDTOCALLSTACK("CTeleport::RealizeTeleport");
-	if ( ! IsCharValid() || ! m_ptDst.IsCharValid())
+	if ( !IsValidPoint() || !m_ptDst.IsValidPoint() )
 	{
-		DEBUG_ERR(( "CTeleport bad coords %s\n", WriteUsed() ));
+		DEBUG_ERR(("CTeleport bad coords %s\n", WriteUsed()));
 		return false;
 	}
 	CSector *pSector = GetSector();
-	if ( pSector )
-		return pSector->AddTeleport(this);
-	else
-		return false;
+	return pSector ? pSector->AddTeleport(this) : false;
 }
 
 //*************************************************************************

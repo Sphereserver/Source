@@ -79,11 +79,11 @@ void CPointBase::ZeroPoint()
 }
 int CPointBase::GetDistZ( const CPointBase & pt ) const
 {
-	return( abs(m_z-pt.m_z));
+	return abs(m_z - pt.m_z);
 }
 int CPointBase::GetDistZAdj( const CPointBase & pt ) const
 {
-	return( GetDistZ(pt) / (PLAYER_HEIGHT/2) );
+	return GetDistZ(pt) / (PLAYER_HEIGHT / 2);
 }
 int CPointBase::GetDistBase( const CPointBase & pt ) const // Distance between points
 {
@@ -147,42 +147,36 @@ int CPointBase::GetDist3D( const CPointBase & pt ) const // Distance between poi
 	return static_cast<int>(( (realdist - floor(realdist)) > 0.5 ) ? (ceil(realdist)) : (floor(realdist)));*/
 }
 
-bool CPointBase::IsValidZ() const
-{
-	return( m_z > -UO_SIZE_Z && m_z < UO_SIZE_Z );
-}
-
 bool CPointBase::IsValidXY() const
 {
 	if ( m_x < 0 || m_x >= g_MapList.GetX(m_map) )
-		return( false );
+		return false;
 	if ( m_y < 0 || m_y >= g_MapList.GetY(m_map) )
-		return( false );
-	return( true );
+		return false;
+	return true;
+}
+
+bool CPointBase::IsValidZ() const
+{
+	return ((m_z > -UO_SIZE_Z) && (m_z < UO_SIZE_Z));
 }
 
 bool CPointBase::IsValidPoint() const
 {
-	return( IsValidXY() && IsValidZ());
-}
-
-bool CPointBase::IsCharValid() const
-{
-	if ( m_z <= -UO_SIZE_Z || m_z >= UO_SIZE_Z )
-		return( false );
-	if (m_x <= 0 || m_x >= static_cast<signed short>(g_MapList.GetX(m_map)))
-		return( false );
-	if (m_y <= 0 || m_y >= static_cast<signed short>(g_MapList.GetY(m_map)))
-		return( false );
-	return( true );
+	return (IsValidXY() && IsValidZ());
 }
 
 void CPointBase::ValidatePoint()
 {
-	if ( m_x < 0 ) m_x = 0;
-	if (m_x >= static_cast<signed short>(g_MapList.GetX(m_map))) m_x = static_cast<signed short>(g_MapList.GetX(m_map) - 1);
-	if ( m_y < 0 ) m_y = 0;
-	if (m_y >= static_cast<signed short>(g_MapList.GetY(m_map))) m_y = static_cast<signed short>(g_MapList.GetY(m_map) - 1);
+	if ( m_x < 0 )
+		m_x = 0;
+	if ( m_x >= static_cast<signed short>(g_MapList.GetX(m_map)) )
+		m_x = static_cast<signed short>(g_MapList.GetX(m_map) - 1);
+
+	if ( m_y < 0 )
+		m_y = 0;
+	if ( m_y >= static_cast<signed short>(g_MapList.GetY(m_map)) )
+		m_y = static_cast<signed short>(g_MapList.GetY(m_map) - 1);
 }
 
 bool CPointBase::IsSame2D( const CPointBase & pt ) const

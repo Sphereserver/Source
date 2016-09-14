@@ -89,7 +89,7 @@ bool CChar::Spell_Teleport( CPointMap ptNew, bool bTakePets, bool bCheckAntiMagi
 	// ex. ships plank.
 	// RETURN: true = it worked.
 
-	if ( !ptNew.IsCharValid() )
+	if ( !ptNew.IsValidPoint() )
 		return false;
 
 	ptNew.m_z = GetFixZ(ptNew);

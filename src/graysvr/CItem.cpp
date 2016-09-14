@@ -1453,7 +1453,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_BLANK ) );
 			break;
 		case IT_RUNE:
-			if ( ! m_itRune.m_pntMark.IsCharValid())
+			if ( !m_itRune.m_pntMark.IsValidPoint() )
 				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_BLANK ) );
 			else if ( ! m_itRune.m_Strength )
 				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_FADED ) );
@@ -2714,7 +2714,7 @@ bool CItem::r_Load( CScript & s ) // Load an item from script
 	CScriptObj::r_Load(s);
 	if ( !GetParentObj() )	// place into the world
 	{
-		if ( GetTopPoint().IsCharValid() )
+		if ( GetTopPoint().IsValidPoint() )
 			MoveToUpdate(GetTopPoint());
 	}
 
