@@ -29,7 +29,7 @@ bool CChar::Use_MultiLockDown( CItem * pItemTarg )
 	return false;
 }
 
-void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
+bool CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 {
 	ADDTOCALLSTACK("CChar::Use_CarveCorpse");
 	CREID_TYPE CorpseID = pCorpse->m_itCorpse.m_BaseID;
@@ -37,7 +37,7 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 	if ( !pCorpseDef || pCorpse->m_itCorpse.m_carved )
 	{
 		SysMessageDefault(DEFMSG_CARVE_CORPSE_NOTHING);
-		return;
+		return false;
 	}
 
 	CChar *pChar = pCorpse->m_uidLink.CharFind();
@@ -121,9 +121,10 @@ void CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 
 	if ( pChar && pChar->m_pPlayer )
 		pCorpse->SetTimeout(0);		// reset corpse timer to make it turn bones
+	return true;
 }
 
-void CChar::Use_MoonGate( CItem * pItem )
+bool CChar::Use_MoonGate( CItem * pItem )
 {
 	ADDTOCALLSTACK("CChar::Use_MoonGate");
 	ASSERT(pItem);
@@ -157,24 +158,24 @@ void CChar::Use_MoonGate( CItem * pItem )
 	if ( m_pNPC )
 	{
 		if ( pItem->m_itTelepad.m_fPlayerOnly )
-			return;
+			return false;
 		if ( m_pNPC->m_Brain == NPCBRAIN_GUARD )	// guards won't leave the guarded region
 		{
 			CRegionBase *pArea = pt.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA);
 			if ( !pArea || !pArea->IsGuarded() )
-				return;
+				return false;
 		}
 		if ( Noto_IsCriminal() )	// criminals won't enter on guarded regions
 		{
 			CRegionBase *pArea = pt.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA);
 			if ( !pArea || pArea->IsGuarded() )
-				return;
+				return false;
 		}
 	}
 
 	bool bCheckAntiMagic = pItem->IsAttr(ATTR_DECAY);
 	bool bDisplayEffect = !pItem->m_itTelepad.m_fQuiet;
-	Spell_Teleport(pt, true, bCheckAntiMagic, bDisplayEffect);
+	return Spell_Teleport(pt, true, bCheckAntiMagic, bDisplayEffect);
 }
 
 bool CChar::Use_Kindling( CItem * pKindling )
@@ -830,13 +831,13 @@ bool CChar::Use_Repair( CItem * pItemArmor )
 	return fSuccess;
 }
 
-void CChar::Use_EatQty( CItem * pFood, short iQty )
+bool CChar::Use_EatQty( CItem * pFood, short iQty )
 {
 	ADDTOCALLSTACK("CChar::Use_EatQty");
 	// low level eat
 	ASSERT(pFood);
 	if ( iQty <= 0 )
-		return;
+		return false;
 
 	if ( iQty > pFood->GetAmount() )
 		iQty = pFood->GetAmount();
@@ -852,7 +853,7 @@ void CChar::Use_EatQty( CItem * pFood, short iQty )
 
 	short iSpace = Stat_GetMax(STAT_FOOD) - Stat_GetVal(STAT_FOOD);
 	if ( iSpace <= 0 )
-		return;
+		return false;
 
 	if ( iQty > 1 && (iRestore * iQty > iSpace) )
 		iQty = maximum(1, iSpace / iRestore);
@@ -872,6 +873,7 @@ void CChar::Use_EatQty( CItem * pFood, short iQty )
 	UpdateDir(pFood);
 	EatAnim(pFood->GetName(), iRestore * iQty);
 	pFood->ConsumeAmount(iQty);
+	return true;
 }
 
 bool CChar::Use_Eat( CItem * pItemFood, short iQty )
@@ -939,7 +941,7 @@ bool CChar::Use_Eat( CItem * pItemFood, short iQty )
 	return true;
 }
 
-void CChar::Use_Drink( CItem * pItem )
+bool CChar::Use_Drink( CItem * pItem )
 {
 	ADDTOCALLSTACK("CChar::Use_Drink");
 	// IT_POTION:
@@ -951,7 +953,7 @@ void CChar::Use_Drink( CItem * pItem )
 	if ( !CanMove(pItem) )
 	{
 		SysMessageDefault(DEFMSG_DRINK_CANTMOVE);
-		return;
+		return false;
 	}
 
 	const CItemBase *pItemDef = pItem->Item_GetDef();
@@ -977,7 +979,7 @@ void CChar::Use_Drink( CItem * pItem )
 		if ( LayerFind(LAYER_FLAG_PotionUsed) )
 		{
 			SysMessageDefault(DEFMSG_DRINK_POTION_DELAY);
-			return;
+			return false;
 		}
 
 		// Convey the effect of the potion.
@@ -1009,7 +1011,7 @@ void CChar::Use_Drink( CItem * pItem )
 		if ( Stat_GetVal(STAT_FOOD) >= Stat_GetMax(STAT_FOOD) )
 		{
 			SysMessageDefault(DEFMSG_DRINK_FULL);
-			return;
+			return false;
 		}
 
 		Stat_SetVal(STAT_FOOD, Stat_GetVal(STAT_FOOD) + iRestore);
@@ -1024,6 +1026,7 @@ void CChar::Use_Drink( CItem * pItem )
 	// Create the empty bottle ?
 	if ( idbottle != ITEMID_NOTHING )
 		ItemBounce(CItem::CreateScript(idbottle, this), false);
+	return true;
 }
 
 CChar * CChar::Use_Figurine( CItem * pItem, bool bCheckFollowerSlots )

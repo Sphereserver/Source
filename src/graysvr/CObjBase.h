@@ -3941,16 +3941,16 @@ public:
 	LPCTSTR Guild_Abbrev( MEMORY_TYPE memtype ) const;
 	LPCTSTR Guild_AbbrevBracket( MEMORY_TYPE memtype ) const;
 
-	void Use_EatQty( CItem * pFood, short iQty = 1 );
+	bool Use_EatQty( CItem * pFood, short iQty = 1 );
 	bool Use_Eat( CItem * pItem, short iQty = 1 );
 	bool Use_MultiLockDown( CItem * pItemTarg );
-	void Use_CarveCorpse( CItemCorpse * pCorpse );
+	bool Use_CarveCorpse( CItemCorpse * pCorpse );
 	bool Use_Repair( CItem * pItem );
 	int  Use_PlayMusic( CItem * pInstrument, int iDifficultyToPlay );
-	void Use_Drink(CItem *pItem);
+	bool Use_Drink( CItem * pItem );
 	bool Use_Cannon_Feed( CItem * pCannon, CItem * pFeed );
 	bool Use_Item_Web( CItem * pItem );
-	void Use_MoonGate( CItem * pItem );
+	bool Use_MoonGate( CItem * pItem );
 	bool Use_Kindling( CItem * pKindling );
 	bool Use_BedRoll( CItem * pItem );
 	bool Use_Seed( CItem * pItem, CPointMap * pPoint );

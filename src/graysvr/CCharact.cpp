@@ -3266,8 +3266,9 @@ TRIGRET_TYPE CChar::CheckLocation( bool fStanding )
 			case IT_TELEPAD:
 				if ( fStanding )
 					continue;
-				Use_MoonGate(pItem);
-				return TRIGRET_RET_DEFAULT;
+				if ( Use_MoonGate(pItem) )
+					return TRIGRET_RET_DEFAULT;
+				continue;
 			case IT_SHIP_PLANK:
 			case IT_ROPE:
 				if ( !fStanding && !IsStatFlag(STATF_Hovering) )
