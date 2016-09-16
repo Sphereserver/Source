@@ -1450,11 +1450,11 @@ void CChar::NPC_Act_Wander()
 		return;
 	}
 
-	/*if ( Calc_GetRandVal( 2 ) )
+	if ( Calc_GetRandVal( 2 ) )
 	{
 		if ( NPC_LookAround() )
 			return;
-	}*/
+	}
 
 	// Staggering Walk around.
 	m_Act_p = GetTopPoint();
