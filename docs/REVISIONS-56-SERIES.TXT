@@ -213,3 +213,6 @@ Changed: Temporarily disabled ATTACKER.x.IGNORE function and @HitIgnore trigger 
 14-09-2016, Coruja
 Fixed: Rubberband effect when using @Step trigger with MOVE/GO function + return 1.
 Changed: return 1 now can be used on @[Item]DropOn_Ground trigger, it will cancel the drop and return the item to its previous location.
+
+16-09-2016, Coruja
+Fixed: DAM/ARMOR properties going to 65535 when set any value > 255.

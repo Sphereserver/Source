@@ -160,17 +160,13 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 					SKIP_SEPARATORS( pszKey );
 
 					if ( !strnicmp( pszKey, "LO", 2 ) )
-					{
-						sVal.Format( "%d", m_defenseBase );
-					}
+						sVal.Format( "%hu", m_defenseBase );
 					else if ( !strnicmp( pszKey, "HI", 2 ) )
-					{
-						sVal.Format( "%d", m_defenseBase+m_defenseRange );
-					}
+						sVal.Format( "%hu", m_defenseBase+m_defenseRange );
 				}
 				else
 				{
-					sVal.Format( "%d,%d", m_defenseBase, m_defenseBase+m_defenseRange );
+					sVal.Format( "%hu,%hu", m_defenseBase, m_defenseBase+m_defenseRange );
 				}
 			} break;
 		case OBC_DAM:
@@ -181,17 +177,13 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 					SKIP_SEPARATORS( pszKey );
 
 					if ( !strnicmp( pszKey, "LO", 2 ) )
-					{
-						sVal.Format( "%d", m_attackBase );
-					}
+						sVal.Format( "%hu", m_attackBase );
 					else if ( !strnicmp( pszKey, "HI", 2 ) )
-					{
-						sVal.Format( "%d", m_attackBase+m_attackRange );
-					}
+						sVal.Format( "%hu", m_attackBase+m_attackRange );
 				}
 				else
 				{
-					sVal.Format( "%d,%d", m_attackBase, m_attackBase+m_attackRange );
+					sVal.Format( "%hu,%hu", m_attackBase, m_attackBase+m_attackRange );
 				}
 			} break;
 		case OBC_BASEID:
@@ -208,21 +200,23 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 			}
 			break;
 		case OBC_INSTANCES:
-			sVal.FormatVal( GetRefInstances());
+			sVal.FormatUVal( GetRefInstances());
 			break;
 		case OBC_NAME:
 			sVal = GetName();
 			break;
 
 		case OBC_RANGE:
-			if ( RangeH() == 0 ) sVal.Format( "%d", RangeL() );
-			else sVal.Format( "%d,%d", RangeH(), RangeL() );
+			if ( RangeH() == 0 )
+				sVal.Format("%hhu", RangeL());
+			else
+				sVal.Format("%hhu,%hhu", RangeH(), RangeL());
 			break;
 		case OBC_RANGEL: // internally: rangel seems to be Range Highest value
-			sVal.FormatVal( RangeH() );
+			sVal.FormatUVal( RangeH() );
 			break;
 		case OBC_RANGEH: // but rangeh seems to be the Range Lowest value.
-			sVal.FormatVal( RangeL() );
+			sVal.FormatUVal( RangeL() );
 			break;
 
 		case OBC_RESOURCES:		// Print the resources
@@ -265,7 +259,7 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 			}
 			break;
 		case OBC_RESLEVEL:
-			sVal.FormatVal( GetResLevel() );
+			sVal.FormatUVal( GetResLevel() );
 			break;
 		case OBC_RESDISPDNHUE:
 			sVal.FormatHex( GetResDispDnHue() );
@@ -446,30 +440,22 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 			{
 				INT64 piVal[2];
 				size_t iQty = Str_ParseCmds( s.GetArgStr(), piVal, COUNTOF(piVal));
-				m_defenseBase = static_cast<unsigned char>(piVal[0]);
+				m_defenseBase = static_cast<WORD>(piVal[0]);
 				if ( iQty > 1 )
-				{
-					m_defenseRange = static_cast<unsigned char>(piVal[1]) - m_defenseBase;
-				}
+					m_defenseRange = static_cast<WORD>(piVal[1]) - m_defenseBase;
 				else
-				{
 					m_defenseRange = 0;
-				}
 			}
 			return( true );
 		case OBC_DAM:
 			{
 				INT64 piVal[2];
 				size_t iQty = Str_ParseCmds( s.GetArgStr(), piVal, COUNTOF(piVal));
-				m_attackBase = static_cast<unsigned char>(piVal[0]);
+				m_attackBase = static_cast<WORD>(piVal[0]);
 				if ( iQty > 1 )
-				{
-					m_attackRange = static_cast<unsigned char>(piVal[1]) - m_attackBase;
-				}
+					m_attackRange = static_cast<WORD>(piVal[1]) - m_attackBase;
 				else
-				{
 					m_attackRange = 0;
-				}
 			}
 			return( true );
 		case OBC_BASEID:
@@ -512,7 +498,7 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 			m_BaseResources.Load( s.GetArgStr());
 			return( true );
 		case OBC_RESLEVEL:
-			return( SetResLevel(static_cast<unsigned char>(s.GetArgVal())) );
+			return( SetResLevel(static_cast<BYTE>(s.GetArgVal())) );
 		case OBC_RESDISPDNHUE:
 			SetResDispDnHue(static_cast<HUE_TYPE>(s.GetArgVal()));
 			return( true );
