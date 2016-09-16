@@ -1096,38 +1096,36 @@ LPCTSTR CChar::Skill_GetName( bool fUse ) const
 	// Name the current skill we are doing.
 
 	SKILL_TYPE skill = Skill_GetActive();
-	if ( skill <= SKILL_NONE )
-		return( "Idling" );
-
-	if ( IsSkillBase(skill))
+	if ( IsSkillBase(skill) )
 	{
 		if ( !fUse )
-			return( g_Cfg.GetSkillKey(skill));
+			return g_Cfg.GetSkillKey(skill);
 
-		TCHAR * pszText = Str_GetTemp();
-		sprintf( pszText, "%s %s", g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_USING), g_Cfg.GetSkillKey(skill));
-		return( pszText );
+		TCHAR *pszText = Str_GetTemp();
+		sprintf(pszText, "%s %s", g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_USING), g_Cfg.GetSkillKey(skill));
+		return pszText;
 	}
 
 	switch ( skill )
 	{
-		case NPCACT_FOLLOW_TARG:	return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_FOLLOWING) );
-		case NPCACT_STAY:			return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_STAYING) );
-		case NPCACT_GOTO:			return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GOINGTO) );
-		case NPCACT_WANDER:			return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_WANDERING) );
-		case NPCACT_FLEE:			return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_FLEEING) );
-		case NPCACT_TALK:			return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TALKING) );
-		case NPCACT_TALK_FOLLOW:	return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TALKFOLLOW) );
-		case NPCACT_GUARD_TARG:		return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GUARDING) );
-		case NPCACT_GO_HOME:		return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GOINGHOME) );
-		case NPCACT_BREATH:			return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_BREATHING) );
-		case NPCACT_THROWING:		return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_THROWING) );
-		case NPCACT_LOOKING:		return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_LOOKING) );
-		case NPCACT_TRAINING:		return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TRAINING) );
-		case NPCACT_Napping:		return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_NAPPING) );
-		case NPCACT_FOOD:			return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_SEARCHINGFOOD) );
-		case NPCACT_RUNTO:			return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_RUNNINGTO) );
-		default:					return( g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_THINKING) );
+		case NPCACT_FOLLOW_TARG:	return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_FOLLOWING);
+		case NPCACT_STAY:			return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_STAYING);
+		case NPCACT_GOTO:			return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GOINGTO);
+		case NPCACT_WANDER:			return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_WANDERING);
+		case NPCACT_LOOKING:		return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_LOOKING);
+		case NPCACT_FLEE:			return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_FLEEING);
+		case NPCACT_TALK:			return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TALKING);
+		case NPCACT_TALK_FOLLOW:	return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TALKFOLLOW);
+		case NPCACT_GUARD_TARG:		return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GUARDING);
+		case NPCACT_GO_HOME:		return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_GOINGHOME);
+		case NPCACT_BREATH:			return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_BREATHING);
+		case NPCACT_RIDDEN:			return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_RIDDEN);
+		case NPCACT_THROWING:		return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_THROWING);
+		case NPCACT_TRAINING:		return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TRAINING);
+		case NPCACT_Napping:		return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_NAPPING);
+		case NPCACT_FOOD:			return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_SEARCHINGFOOD);
+		case NPCACT_RUNTO:			return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_RUNNINGTO);
+		default:					return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_IDLING);
 	}
 }
 
