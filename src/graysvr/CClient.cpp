@@ -286,7 +286,7 @@ bool CClient::CanSee( const CObjBaseTemplate * pObj ) const
 
 	if (!IsPriv(PRIV_ALLSHOW) && pObj->IsChar())
 	{
-		const CChar *pChar = static_cast<const CChar*>(pObj);
+		const CChar *pChar = dynamic_cast<const CChar *>(pObj);
 		if (pChar->IsDisconnected())
 			return false;
 	}
@@ -449,7 +449,7 @@ void CClient::UpdateFeatureFlags()
 	if ( iResdisp >= RDS_AOS )
 	{
 		if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_A )
-			m_FeatureFlags |= 0x8000|0x10;
+			m_FeatureFlags |= (0x8000|0x10);
 	}
 
 	if ( iResdisp >= RDS_SE )
@@ -564,11 +564,11 @@ void CClient::UpdateCharacterListFlags()
 	else if ( iMaxChars == 6 )
 		m_CharacterListFlags |= 0x40;
 	else if ( iMaxChars == 1 )
-		m_CharacterListFlags |= 0x10|0x4;
+		m_CharacterListFlags |= (0x10|0x4);
 
 	// Misc
 	if ( m_NetState->isClientKR() || m_NetState->isClientEnhanced() )		// tooltips must be always enabled on enhanced clients
-		m_CharacterListFlags |= 0x400|0x20;
+		m_CharacterListFlags |= (0x400|0x20);
 	m_TooltipEnabled = (m_CharacterListFlags & 0x20);
 	m_ContainerGridEnabled = (m_NetState->isClientVersion(MINCLIVER_CONTAINERGRID) || m_NetState->isClientKR() || m_NetState->isClientEnhanced());
 }

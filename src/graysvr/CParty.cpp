@@ -98,7 +98,7 @@ CPartyDef::CPartyDef( CChar *pChar1, CChar *pChar2 )
 	AttachChar(pChar1);
 	AttachChar(pChar2);
 	SendAddList(NULL);		// send full list to all
-	m_sName.Format("Party_0%lx", (DWORD)pChar1->GetUID());
+	m_sName.Format("Party_0%lx", static_cast<DWORD>(pChar1->GetUID()));
 }
 
 // ---------------------------------------------------------
@@ -293,7 +293,7 @@ bool CPartyDef::MessageEvent( CGrayUID uidDst, CGrayUID uidSrc, const NCHAR *pTe
 
 	CChar *pFrom = uidSrc.CharFind();
 	CChar *pTo = NULL;
-	if ( uidDst != (DWORD)0 )
+	if ( uidDst )
 		pTo = uidDst.CharFind();
 
 	TCHAR *szText = Str_GetTemp();
@@ -453,7 +453,7 @@ bool CPartyDef::DeclineEvent( CChar *pCharDecline, CGrayUID uidInviter )	// stat
 		return false;
 
 	CVarDefCont *sTempVal = pCharInviter->GetTagDefs()->GetKey("PARTY_LASTINVITE");
-	if ( !sTempVal || (DWORD)sTempVal->GetValNum() != (DWORD)pCharDecline->GetUID() )
+	if ( !sTempVal || (static_cast<CGrayUID>(sTempVal->GetValNum()) != pCharDecline->GetUID()) )
 		return false;
 
 	pCharInviter->DeleteKey("PARTY_LASTINVITE");
@@ -482,7 +482,7 @@ bool CPartyDef::AcceptEvent( CChar *pCharAccept, CGrayUID uidInviter, bool bForc
 	if ( !bForced )
 	{
 		CVarDefCont *sTempVal = pCharInviter->GetTagDefs()->GetKey("PARTY_LASTINVITE");
-		if ( !sTempVal || (DWORD)sTempVal->GetValNum() != (DWORD)pCharAccept->GetUID() )
+		if ( !sTempVal || (static_cast<CGrayUID>(sTempVal->GetValNum()) != pCharAccept->GetUID()) )
 			return false;
 
 		pCharInviter->DeleteKey("PARTY_LASTINVITE");
@@ -607,7 +607,7 @@ bool CPartyDef::r_LoadVal( CScript &s )
 		case PDC_SPEECHFILTER:
 		{
 			if ( !s.HasArgs() )
-				this->m_pSpeechFunction.Empty();
+				m_pSpeechFunction.Empty();
 			else
 			{
 				LPCTSTR pszArg = s.GetArgStr();
@@ -616,7 +616,7 @@ bool CPartyDef::r_LoadVal( CScript &s )
 				if ( !m_pTestEvent )
 					return false;
 
-				this->m_pSpeechFunction.Format("%s", pszArg);
+				m_pSpeechFunction.Format("%s", pszArg);
 			}
 
 		} break;
@@ -656,9 +656,9 @@ bool CPartyDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc )
 		}
 		if ( pszKey[0] == '\0' )	// we where just testing the ref.
 		{
-			CObjBase *pObj = dynamic_cast<CObjBase*>(pRef);
+			CObjBase *pObj = dynamic_cast<CObjBase *>(pRef);
 			if ( pObj )
-				sVal.FormatHex((DWORD)pObj->GetUID());
+				sVal.FormatHex(static_cast<DWORD>(pObj->GetUID()));
 			else
 				sVal.FormatVal(1);
 			return true;
@@ -675,10 +675,10 @@ bool CPartyDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc )
 			GETNONWHITESPACE(pszKey);
 			if ( pszKey[0] != '\0' )
 			{
-				CGrayUID charToCheck(static_cast<DWORD>(Exp_GetVal(pszKey)));
-				CChar *pCharToCheck = charToCheck.CharFind();
+				CGrayUID uidToCheck = static_cast<CGrayUID>(Exp_GetVal(pszKey));
+				CChar *pCharToCheck = uidToCheck.CharFind();
 
-				sVal.FormatVal(pCharToCheck && pCharToCheck->m_pParty == this);
+				sVal.FormatVal(pCharToCheck && (pCharToCheck->m_pParty == this));
 			}
 			else
 				return false;
@@ -689,7 +689,7 @@ bool CPartyDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc )
 			break;
 
 		case PDC_SPEECHFILTER:
-			sVal = this->m_pSpeechFunction.IsEmpty() ? "" : this->m_pSpeechFunction;
+			sVal = m_pSpeechFunction.IsEmpty() ? "" : m_pSpeechFunction;
 			break;
 
 		case PDC_TAG0:
@@ -780,7 +780,7 @@ bool CPartyDef::r_Verb( CScript &s, CTextConsole *pSrc )
 		case PDV_ADDMEMBERFORCED:
 		{
 			bool bForced = (iIndex == PDV_ADDMEMBERFORCED);
-			CGrayUID toAdd = (DWORD)s.GetArgVal();
+			CGrayUID toAdd = static_cast<CGrayUID>(s.GetArgVal());
 			CChar *pCharAdd = toAdd.CharFind();
 			CChar *pCharMaster = GetMaster().CharFind();
 			if ( !pCharAdd || IsInParty(pCharAdd) )
@@ -822,9 +822,9 @@ bool CPartyDef::r_Verb( CScript &s, CTextConsole *pSrc )
 				toRemove = m_Chars.GetChar(nMember);
 			}
 			else
-				toRemove = (DWORD)s.GetArgVal();
+				toRemove = static_cast<CGrayUID>(s.GetArgVal());
 
-			if ( toRemove != (DWORD)0 )
+			if ( toRemove )
 				return RemoveMember(toRemove, GetMaster());
 
 			return false;
@@ -844,9 +844,9 @@ bool CPartyDef::r_Verb( CScript &s, CTextConsole *pSrc )
 				newMaster = m_Chars.GetChar(nMember);
 			}
 			else
-				newMaster = (DWORD)s.GetArgVal();
+				newMaster = static_cast<CGrayUID>(s.GetArgVal());
 
-			if ( newMaster != (DWORD)0 )
+			if ( newMaster )
 				return SetMaster(newMaster.CharFind());
 
 			return false;
@@ -889,12 +889,12 @@ bool CPartyDef::r_Verb( CScript &s, CTextConsole *pSrc )
 				}
 				strcpylen(pUid, __pszArg, ++x);
 
-				toSysmessage = static_cast<DWORD>(Exp_GetVal(pUid));
+				toSysmessage = static_cast<CGrayUID>(Exp_GetVal(pUid));
 			}
 
 			SKIP_SEPARATORS(pszArg);
 
-			if ( toSysmessage != (DWORD)0 )
+			if ( toSysmessage )
 			{
 				CChar *pSend = toSysmessage.CharFind();
 				pSend->SysMessage(pszArg);

@@ -313,7 +313,7 @@ CChar::~CChar()
 
 	if ( m_pParty )
 	{
-		m_pParty->RemoveMember(GetUID(), static_cast<DWORD>(GetUID()));
+		m_pParty->RemoveMember(GetUID(), GetUID());
 		m_pParty = NULL;
 	}
 	Attacker_RemoveChar();	// Removing me from enemy's attacker list (I asume that if he is on my list, I'm on his one and no one have me on their list if I dont have them)
@@ -843,27 +843,27 @@ bool CChar::DupeFrom( CChar * pChar, bool fNewbieItems )
 
 					CChar *pTest = static_cast<CChar*>(static_cast<CGrayUID>(pItemCont->m_itNormal.m_more1).CharFind());
 					if ( pTest && pTest == pChar )
-						pItemCont->m_itNormal.m_more1 = this->GetUID();
+						pItemCont->m_itNormal.m_more1 = static_cast<DWORD>(GetUID());
 
 					CChar *pTest2 = static_cast<CChar*>(static_cast<CGrayUID>(pItemCont->m_itNormal.m_more2).CharFind());
 					if ( pTest2 && pTest2 == pChar )
-						pItemCont->m_itNormal.m_more2 = this->GetUID();
+						pItemCont->m_itNormal.m_more2 = static_cast<DWORD>(GetUID());
 
 					CChar *pTest3 = static_cast<CChar*>(static_cast<CGrayUID>(pItemCont->m_uidLink).CharFind());
 					if ( pTest3 && pTest3 == pChar )
-						pItemCont->m_uidLink = this->GetUID();
+						pItemCont->m_uidLink = GetUID();
 				}
 			}
 		}
 		CChar * pTest = static_cast<CChar*>(static_cast<CGrayUID>(pItem->m_itNormal.m_more1).CharFind());
 		if ( pTest && pTest == pChar)
-			pItem->m_itNormal.m_more1 = this->GetUID();
+			pItem->m_itNormal.m_more1 = static_cast<DWORD>(GetUID());
 
 		CChar * pTest2 = static_cast<CChar*>(static_cast<CGrayUID>(pItem->m_itNormal.m_more2).CharFind());
 		if ( pTest2)
 		{
 			if ( pTest2 == pChar)
-				pItem->m_itNormal.m_more2 = this->GetUID();
+				pItem->m_itNormal.m_more2 = static_cast<DWORD>(GetUID());
 			else if ( pTest2->NPC_IsOwnedBy(pChar, true) )	// Mount's fix
 			{
 				if ( fNewbieItems )	// Removing any mount references for the memory, so when character dies or dismounts ... no mount will appear.
@@ -883,7 +883,7 @@ bool CChar::DupeFrom( CChar * pChar, bool fNewbieItems )
 
 		CChar * pTest3 = static_cast<CChar*>(static_cast<CGrayUID>(pItem->m_uidLink).CharFind());
 		if ( pTest3 && pTest3 == pChar)
-			pItem->m_uidLink = this->GetUID();
+			pItem->m_uidLink = GetUID();
 		
 	}
 	// End copying items.
@@ -1045,7 +1045,7 @@ void CChar::NPC_LoadScript( bool fRestock )
 	// 1) CHARDEF trigger
 	if ( m_pPlayer == NULL ) //	CHARDEF triggers (based on body type)
 	{
-		CChar * pChar = this->GetChar();
+		CChar * pChar = GetChar();
 		if ( pChar != NULL )
 		{
 			CGrayUID uidOldAct = pChar->m_Act_Targ;
@@ -2942,7 +2942,7 @@ do_default:
 					CScriptTriggerArgs args;
 					args.m_s1 = s.GetArgStr();
 					args.m_pO1 = this;
-					if ( this->OnTrigger(CTRIG_Rename, this, &args) == TRIGRET_RET_TRUE )
+					if ( OnTrigger(CTRIG_Rename, this, &args) == TRIGRET_RET_TRUE )
 						return( false );
 
 					SetName( args.m_s1 );
@@ -2975,18 +2975,18 @@ do_default:
 		case CHC_MEMORY:
 			{
 				INT64 piCmd[2];
-				size_t iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd) );
+				size_t iArgQty = Str_ParseCmds(s.GetArgStr(), piCmd, COUNTOF(piCmd));
 				if ( iArgQty < 2 )
-					return( false );
+					return false;
 
-				CGrayUID	uid		= static_cast<unsigned long>(piCmd[0]);
-				DWORD		dwFlags	= static_cast<unsigned long>(piCmd[1]);
+				CGrayUID uid = static_cast<CGrayUID>(piCmd[0]);
+				WORD wFlags = static_cast<WORD>(piCmd[1]);
 
-				CItemMemory * pMemory = Memory_FindObj( uid );
-				if ( pMemory != NULL )
-					pMemory->SetMemoryTypes( static_cast<WORD>(dwFlags) );
+				CItemMemory *pMemory = Memory_FindObj(uid);
+				if ( pMemory )
+					pMemory->SetMemoryTypes(wFlags);
 				else
-					pMemory = Memory_AddObjTypes( uid, static_cast<WORD>(dwFlags) );
+					pMemory = Memory_AddObjTypes(uid, wFlags);
 			}
 			break;
 		case CHC_NIGHTSIGHT:
@@ -3559,7 +3559,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				{
 					CItem *pItem = CItem::CreateHeader(s.GetArgStr(), NULL, false, this);
 					if ( !pItem )
-						g_World.m_uidNew = (DWORD)0;
+						g_World.m_uidNew = static_cast<CGrayUID>(UID_CLEAR);
 					else
 					{
 						ItemEquip(pItem);

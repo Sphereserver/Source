@@ -428,7 +428,7 @@ bool CScriptObj::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 	else if ( !strnicmp(pszKey, "UID.", 4) )
 	{
 		pszKey += 4;
-		CGrayUID uid = static_cast<DWORD>(Exp_GetVal(pszKey));
+		CGrayUID uid = static_cast<CGrayUID>(Exp_GetVal(pszKey));
 		SKIP_SEPARATORS(pszKey);
 		pRef = uid.ObjFind();
 		return true;
@@ -436,13 +436,13 @@ bool CScriptObj::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 	else if ( ! strnicmp( pszKey, "OBJ.", 4 ))
 	{
 		pszKey += 4;
-		pRef = ( (DWORD)g_World.m_uidObj ) ? g_World.m_uidObj.ObjFind() : NULL;
+		pRef = g_World.m_uidObj ? g_World.m_uidObj.ObjFind() : NULL;
 		return true;
 	}
 	else if ( !strnicmp(pszKey, "NEW.", 4) )
 	{
 		pszKey += 4;
-		pRef = ( (DWORD)g_World.m_uidNew ) ? g_World.m_uidNew.ObjFind() : NULL;
+		pRef = g_World.m_uidNew ? g_World.m_uidNew.ObjFind() : NULL;
 		return true;
 	}
 	else if ( !strnicmp(pszKey, "I.", 2) )
@@ -454,19 +454,19 @@ bool CScriptObj::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 	else if ( IsSetOF( OF_FileCommands ) && !strnicmp(pszKey, "FILE.", 5) )
 	{
 		pszKey += 5;
-		pRef = &(g_Serv.fhFile);
+		pRef = &g_Serv.fhFile;
 		return true;
 	}
 	else if ( !strnicmp(pszKey, "DB.", 3) )
 	{
 		pszKey += 3;
-		pRef = &(g_Serv.m_hdb);
+		pRef = &g_Serv.m_hdb;
 		return true;
 	}
 	else if ( !strnicmp(pszKey, "LDB.", 4) )
 	{
 		pszKey += 4;
-		pRef = &(g_Serv.m_hldb);
+		pRef = &g_Serv.m_hldb;
 		return true;
 	}
 	return false;
@@ -756,7 +756,7 @@ bool CScriptObj::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 		{
 			pObj = dynamic_cast<CObjBase*>(pRef);
 			if ( pObj )
-				sVal.FormatHex( (DWORD) pObj->GetUID() );
+				sVal.FormatHex( static_cast<DWORD>(pObj->GetUID()) );
 			else
 				sVal.FormatVal( 1 );
 			return( true );
@@ -851,12 +851,14 @@ badcmd:
 			sVal = (CWebPageDef::sm_iListIndex&1) ? "bgcolor=\"#E8E8E8\"" : "";
 			return( true );
 		case SSC_OBJ:
-			if ( !g_World.m_uidObj.ObjFind() ) g_World.m_uidObj = 0;
-			sVal.FormatHex((DWORD)g_World.m_uidObj);
+			if ( !g_World.m_uidObj.ObjFind() )
+				g_World.m_uidObj = 0;
+			sVal.FormatHex(static_cast<DWORD>(g_World.m_uidObj));
 			return true;
 		case SSC_NEW:
-			if ( !g_World.m_uidNew.ObjFind() ) g_World.m_uidNew = 0;
-			sVal.FormatHex((DWORD)g_World.m_uidNew);
+			if ( !g_World.m_uidNew.ObjFind() )
+				g_World.m_uidNew = 0;
+			sVal.FormatHex(static_cast<DWORD>(g_World.m_uidNew));
 			return true;
 		case SSC_SRC:
 			if ( pSrc == NULL )
@@ -875,7 +877,7 @@ badcmd:
 			if ( !*pszKey )
 			{
 				pObj = dynamic_cast <CObjBase*> (pRef);	// if it can be converted .
-				sVal.FormatHex( pObj ? (DWORD) pObj->GetUID() : 0 );
+				sVal.FormatHex( pObj ? static_cast<DWORD>(pObj->GetUID()) : 0 );
 				return true;
 			}
 			return pRef->r_WriteVal( pszKey, sVal, pSrc );
@@ -963,11 +965,11 @@ badcmd:
 				INT64 bit = Exp_GetLLVal(pszKey);
 
 				if ( index == SSC_ISBIT )
-					sVal.FormatLLVal(val & ( (INT64)(1) << bit ));
+					sVal.FormatLLVal(val & (static_cast<INT64>(1) << bit));
 				else if ( index == SSC_SETBIT )
-					sVal.FormatLLVal(val | ( (INT64)(1) << bit ));
+					sVal.FormatLLVal(val | (static_cast<INT64>(1) << bit));
 				else
-					sVal.FormatLLVal(val & (~ ( (INT64)(1) << bit )));
+					sVal.FormatLLVal(val & ~(static_cast<INT64>(1) << bit));
 				break;
 			}
 		case SSC_ISEMPTY:
@@ -1388,7 +1390,7 @@ bool CScriptObj::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 				CItem *pItem = CItem::CreateHeader(ppCmd[0], NULL, false, pSrc->GetChar());
 				if ( !pItem )
 				{
-					g_World.m_uidNew = (DWORD)0;
+					g_World.m_uidNew = static_cast<CGrayUID>(UID_CLEAR);
 					return false;
 				}
 				
@@ -1436,7 +1438,7 @@ bool CScriptObj::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 				CChar * pChar = CChar::CreateNPC(id);
 				if ( !pChar )
 				{
-					g_World.m_uidNew = (DWORD)0;
+					g_World.m_uidNew = static_cast<CGrayUID>(UID_CLEAR);
 					return false;
 				}
 
@@ -2237,7 +2239,7 @@ jump_in:
 			case SK_FOR:			EXC_SET("for");			iRet = OnTriggerForLoop( s, 4, pSrc, pArgs, pResult );			break;
 			case SK_WHILE:			EXC_SET("while");		iRet = OnTriggerForLoop( s, 8, pSrc, pArgs, pResult );			break;
 			case SK_FORINSTANCE:	EXC_SET("forinstance");	iRet = OnTriggerForLoop( s, 0x40, pSrc, pArgs, pResult );		break;
-			case SK_FORTIMERF:		EXC_SET("fortimerf");	iRet = OnTriggerForLoop(s, 0x100, pSrc, pArgs, pResult);			break;
+			case SK_FORTIMERF:		EXC_SET("fortimerf");	iRet = OnTriggerForLoop( s, 0x100, pSrc, pArgs, pResult );		break;
 			case SK_FORCHARLAYER:
 			case SK_FORCHARMEMORYTYPE:
 				{
@@ -2280,7 +2282,7 @@ jump_in:
 							TCHAR *tempPoint = porigValue;
 							ParseText( tempPoint, pSrc, 0, pArgs );
 							
-							CGrayUID pCurUid = static_cast<DWORD>(Exp_GetVal(tempPoint));
+							CGrayUID pCurUid = static_cast<CGrayUID>(Exp_GetVal(tempPoint));
 							if ( pCurUid.IsValidUID() )
 							{
 								CObjBase * pObj = pCurUid.ObjFind();
@@ -2343,19 +2345,19 @@ jump_in:
 								}
 								else
 								{
-									DEBUG_ERR(( "FORCONT[id/type] called on container 0%lx with incorrect arguments.\n", (DWORD)pObjCont->GetUID() ));
+									DEBUG_ERR(( "FORCONT[id/type] called on container 0%lx with incorrect arguments.\n", static_cast<DWORD>(pObjCont->GetUID()) ));
 									iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 								}
 							}
 							else
 							{
-								DEBUG_ERR(( "FORCONT[id/type] called on container 0%lx with incorrect arguments.\n", (DWORD)pObjCont->GetUID() ));
+								DEBUG_ERR(( "FORCONT[id/type] called on container 0%lx with incorrect arguments.\n", static_cast<DWORD>(pObjCont->GetUID()) ));
 								iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 							}
 						}
 						else
 						{
-							DEBUG_ERR(( "FORCONT[id/type] called on container 0%lx without arguments.\n", (DWORD)pObjCont->GetUID() ));
+							DEBUG_ERR(( "FORCONT[id/type] called on container 0%lx without arguments.\n", static_cast<DWORD>(pObjCont->GetUID()) ));
 							iRet = OnTriggerRun( s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, pResult );
 						}
 					}
