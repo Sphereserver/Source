@@ -616,12 +616,12 @@ int CItem::IsWeird() const
 	return !ptCont ? 0x2106 : ptCont->IsWeird();
 }
 
-signed char CItem::GetFixZ( CPointMap pt, unsigned long wBlockFlags )
+signed char CItem::GetFixZ( CPointMap pt, DWORD dwBlockFlags )
 {
-	height_t zHeight = CItemBase::GetItemHeight( GetDispID(), wBlockFlags );
-	CGrayMapBlockState block( wBlockFlags, pt.m_z, pt.m_z + zHeight, pt.m_z + 2, zHeight );
-	g_World.GetFixPoint( pt, block);
-	return(block.m_Bottom.m_z);
+	height_t zHeight = CItemBase::GetItemHeight(GetDispID(), dwBlockFlags);
+	CGrayMapBlockState block(dwBlockFlags, pt.m_z, pt.m_z + zHeight, pt.m_z + 2, zHeight);
+	g_World.GetFixPoint(pt, block);
+	return block.m_Bottom.m_z;
 }
 
 CItem * CItem::SetType(IT_TYPE type)
@@ -2442,13 +2442,13 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		{
 			INT64 amount = s.GetArgLLVal();
 			SetDefNum(s.GetKey(), amount, false);
-			CVarDefCont * pVar = GetDefKey("Usescur", true);
+			CVarDefCont * pVar = GetDefKey("UsesCur", true);
 			if (!pVar)
 				SetDefNum("UsesCur", amount, false);
 		}	break;
 
 		case IC_MAXAMOUNT:
-			if (!SetMaxAmount(static_cast<unsigned short>(s.GetArgVal())))
+			if (!SetMaxAmount(static_cast<WORD>(s.GetArgVal())))
 				return false;
 			break;
 		case IC_ADDCIRCLE:
@@ -2506,7 +2506,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_CONTGRID:
 			if ( !IsItemInContainer() )
 				return false;
-			SetContainedGridIndex(static_cast<unsigned char>(s.GetArgVal()));
+			SetContainedGridIndex(static_cast<BYTE>(s.GetArgVal()));
 			return true;
 		case IC_CONTP:
 			{
@@ -2624,7 +2624,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			m_itNormal.m_more2 = MAKEDWORD( s.GetArgVal(), HIWORD(m_itNormal.m_more2));
 			break;
 		case IC_MOREM:
-			m_itNormal.m_morep.m_map = static_cast<unsigned char>(s.GetArgVal());
+			m_itNormal.m_morep.m_map = static_cast<BYTE>(s.GetArgVal());
 			break;
 		case IC_MOREP:
 			{
@@ -2633,7 +2633,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				strcpy( pszTemp, s.GetArgStr() );
 				GETNONWHITESPACE( pszTemp );
 				size_t iArgs = 0;
-				if ( IsDigit( pszTemp[0] ) || pszTemp[0] == '-' )
+				if ( IsDigit( pszTemp[0] ) || (pszTemp[0] == '-') )
 				{
 					pt.m_map = 0; pt.m_z = 0;
 					TCHAR * ppVal[4];
@@ -2641,16 +2641,12 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 					switch ( iArgs )
 					{
 						default:
-						case 4:	// m_map
-							if ( IsDigit(ppVal[3][0]))
-							{
-								pt.m_map = static_cast<unsigned char>(ATOI(ppVal[3]));
-							}
-						case 3: // m_z
-							if ( IsDigit(ppVal[2][0]) || ppVal[2][0] == '-' )
-							{
+						case 4:
+							if ( IsDigit(ppVal[3][0]) )
+								pt.m_map = static_cast<BYTE>(ATOI(ppVal[3]));
+						case 3:
+							if ( IsDigit(ppVal[2][0]) || (ppVal[2][0] == '-') )
 								pt.m_z = static_cast<signed char>(ATOI(ppVal[2]));
-							}
 						case 2:
 							pt.m_y = static_cast<short>(ATOI(ppVal[1]));
 						case 1:

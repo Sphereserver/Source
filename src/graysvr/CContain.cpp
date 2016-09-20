@@ -319,7 +319,7 @@ void CContainer::ContentsDump( const CPointMap &pt, DWORD dwAttrLeave )
 {
 	ADDTOCALLSTACK("CContainer::ContentsDump");
 	// Just dump the contents onto the ground.
-	dwAttrLeave |= ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_CURSED2|ATTR_BLESSED2;
+	dwAttrLeave |= (ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_CURSED2|ATTR_BLESSED2);
 	CItem *pItemNext = NULL;
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
@@ -930,7 +930,7 @@ SOUND_TYPE CItemContainer::GetDropSound() const
 	return SOUND_NONE;
 }
 
-void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, unsigned char gridIndex )
+void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, BYTE gridIndex )
 {
 	ADDTOCALLSTACK("CItemContainer::ContentAdd");
 	// Add to CItemContainer
@@ -1023,7 +1023,7 @@ void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, unsigned char gridI
 	// if an item needs OnTickStatusUpdate called on the next tick, it needs
 	// to be added to a separate list since it won't receive ticks whilst in
 	// this container
-	if ( pItem->m_fStatusUpdate != 0 && g_World.m_ObjStatusUpdates.ContainsPtr(pItem) == false )
+	if ( pItem->m_fStatusUpdate && !g_World.m_ObjStatusUpdates.ContainsPtr(pItem) )
 		g_World.m_ObjStatusUpdates.Add(pItem);
 
 	switch ( GetType() )
@@ -1034,7 +1034,7 @@ void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, unsigned char gridI
 		case IT_EQ_VENDOR_BOX:
 			if ( !IsItemEquipped() )	// vendor boxes should ALWAYS be equipped !
 			{
-				DEBUG_ERR(("Un-equipped vendor box uid=0%lx is bad\n", (DWORD)GetUID()));
+				DEBUG_ERR(("Un-equipped vendor box uid=0%lx is bad\n", static_cast<DWORD>(GetUID())));
 				break;
 			}
 			{
@@ -1047,7 +1047,7 @@ void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, unsigned char gridI
 				}
 
 				pItemVend->SetPlayerVendorPrice(0);	// unpriced yet.
-				pItemVend->SetContainedLayer(static_cast<unsigned char>(pItem->GetAmount()));
+				pItemVend->SetContainedLayer(static_cast<BYTE>(pItem->GetAmount()));
 			}
 			break;
 		case IT_GAME_BOARD:
@@ -1663,7 +1663,7 @@ bool CItemContainer::r_Verb( CScript &s, CTextConsole *pSrc )
 					if ( s.HasArgs() )
 					{
 						pChar->m_pClient->addItem(this);
-						pChar->m_pClient->addCustomSpellbookOpen(this, s.GetArgVal());
+						pChar->m_pClient->addCustomSpellbookOpen(this, static_cast<GUMP_TYPE>(s.GetArgVal()));
 						return true;
 					}
 					pChar->m_pClient->addItem(this);	// may crash client if we dont do this.
@@ -1731,7 +1731,7 @@ CChar *CItemCorpse::IsCorpseSleeping() const
 	// CItemCorpse
 	if ( !IsType(IT_CORPSE) )
 	{
-		DEBUG_ERR(("Corpse (0%lx) doesn't have type T_CORPSE! (it has %d)\n", (DWORD)GetUID(), GetType()));
+		DEBUG_ERR(("Corpse (0%lx) doesn't have type T_CORPSE! (it has %d)\n", static_cast<DWORD>(GetUID()), GetType()));
 		return NULL;
 	}
 

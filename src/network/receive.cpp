@@ -2846,7 +2846,7 @@ bool PacketPopupReq::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketPopupReq::onReceive");
 
-	DWORD serial = readInt32();
+	CGrayUID serial = static_cast<CGrayUID>(readInt32());
 
 	CClient *client = net->m_client;
 	ASSERT(client);
@@ -2870,7 +2870,7 @@ bool PacketPopupSelect::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketPopupSelect::onReceive");
 
-	DWORD serial = readInt32();
+	CGrayUID serial = static_cast<CGrayUID>(readInt32());
 	WORD tag = readInt16();
 
 	CClient *client = net->m_client;
@@ -3729,7 +3729,7 @@ bool PacketHouseDesignSwitch::onReceive(NetState* net)
 	skip(1); // 0x00
 	DWORD level = readInt32();
 
-	house->SwitchToLevel(client, static_cast<unsigned char>(level));
+	house->SwitchToLevel(client, level);
 	return true;
 }
 

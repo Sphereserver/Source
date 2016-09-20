@@ -211,7 +211,7 @@ void CItemMultiCustom::EndCustomize(bool bForced)
 	}
 }
 
-void CItemMultiCustom::SwitchToLevel( CClient * pClientSrc, unsigned char iLevel )
+void CItemMultiCustom::SwitchToLevel( CClient * pClientSrc, DWORD iLevel )
 {
 	ADDTOCALLSTACK("CItemMultiCustom::SwitchToLevel");
 	// switch the client to the given level of the building
@@ -220,7 +220,7 @@ void CItemMultiCustom::SwitchToLevel( CClient * pClientSrc, unsigned char iLevel
 	if ( pChar == NULL )
 		return;
 
-	unsigned char iMaxLevel = GetLevelCount();
+	DWORD iMaxLevel = GetLevelCount();
 	if ( iLevel < 0 )
 		iLevel = 0;
 	else if ( iLevel > iMaxLevel )
@@ -903,7 +903,7 @@ int CItemMultiCustom::GetRevision(const CClient * pClientSrc) const
 	return m_designMain.m_iRevision;
 }
 
-unsigned char CItemMultiCustom::GetLevelCount()
+DWORD CItemMultiCustom::GetLevelCount()
 {
 	ADDTOCALLSTACK("CItemMultiCustom::GetLevelCount");
 	// return how many levels (including the roof) there are
@@ -1431,7 +1431,7 @@ bool CItemMultiCustom::r_LoadVal( CScript & s  )
 	return false;
 }
 
-unsigned char CItemMultiCustom::GetPlane( signed char z )
+BYTE CItemMultiCustom::GetPlane( signed char z )
 {
 	if ( z >= 67 )
 		return 4;
@@ -1445,12 +1445,12 @@ unsigned char CItemMultiCustom::GetPlane( signed char z )
 		return 0;
 }
 
-unsigned char CItemMultiCustom::GetPlane( Component * pComponent )
+BYTE CItemMultiCustom::GetPlane( Component * pComponent )
 {
 	return GetPlane(static_cast<signed char>(pComponent->m_item.m_dz));
 }
 
-signed char CItemMultiCustom::GetPlaneZ( unsigned char plane )
+signed char CItemMultiCustom::GetPlaneZ( BYTE plane )
 {
 	return 7 + ((plane - 1) * 20);
 }

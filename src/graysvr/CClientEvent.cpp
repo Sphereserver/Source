@@ -251,7 +251,7 @@ void CClient::Event_Item_Drop_Fail(CItem *pItem)
 }
 
 // Client dropped an item somewhere
-void CClient::Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, unsigned char gridIndex)
+void CClient::Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, BYTE gridIndex)
 {
 	ADDTOCALLSTACK("CClient::Event_Item_Drop");
 	if ( !m_pChar || (GetTargMode() != CLIMODE_DRAG) )
@@ -2066,11 +2066,11 @@ void CClient::Event_Target(DWORD context, CGrayUID uid, CPointMap pt, BYTE flags
 	}
 }
 
-void CClient::Event_AOSPopupMenuRequest(DWORD uid) //construct packet after a client request
+void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a client request
 {
 	ADDTOCALLSTACK("CClient::Event_AOSPopupMenuRequest");
-	CGrayUID uObj = uid;
-	CObjBaseTemplate *pObj = uObj.ObjFind();
+
+	CObjBaseTemplate *pObj = uid.ObjFind();
 	if ( !m_pChar || m_pChar->IsStatFlag(STATF_DEAD) || !CanSee(pObj) )
 		return;
 	if ( !IsSetOF(OF_NoContextMenuLOS) && !m_pChar->CanSeeLOS(pObj) )
@@ -2086,8 +2086,8 @@ void CClient::Event_AOSPopupMenuRequest(DWORD uid) //construct packet after a cl
 
 	CScriptTriggerArgs Args;
 	bool bPreparePacket = false;
-	CItem *pItem = uObj.ItemFind();
-	CChar *pChar = uObj.CharFind();
+	CItem *pItem = uid.ItemFind();
+	CChar *pChar = uid.CharFind();
 
 	if ( pItem )
 	{
@@ -2221,21 +2221,20 @@ void CClient::Event_AOSPopupMenuRequest(DWORD uid) //construct packet after a cl
 	m_pPopupPacket = NULL;
 }
 
-void CClient::Event_AOSPopupMenuSelect(DWORD uid, WORD EntryTag)	//do something after a player selected something from a pop-up menu
+void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD EntryTag)	//do something after a player selected something from a pop-up menu
 {
 	ADDTOCALLSTACK("CClient::Event_AOSPopupMenuSelect");
 	if ( !m_pChar || !EntryTag )
 		return;
 
-	CGrayUID uObj = uid;
-	CObjBase *pObj = uObj.ObjFind();
+	CObjBase *pObj = uid.ObjFind();
 	if ( !CanSee(pObj) )
 		return;
 	if ( !IsSetOF(OF_NoContextMenuLOS) && !m_pChar->CanSeeLOS(pObj) )
 		return;
 
 	CScriptTriggerArgs Args;
-	CItem *pItem = uObj.ItemFind();
+	CItem *pItem = uid.ItemFind();
 	if ( pItem )
 	{
 		if ( IsTrigUsed(TRIGGER_CONTEXTMENUSELECT) || IsTrigUsed(TRIGGER_ITEMCONTEXTMENUSELECT) )
@@ -2246,7 +2245,7 @@ void CClient::Event_AOSPopupMenuSelect(DWORD uid, WORD EntryTag)	//do something 
 		return;		// there's no hardcoded stuff for items
 	}
 
-	CChar *pChar = uObj.CharFind();
+	CChar *pChar = uid.CharFind();
 	if ( !pChar )
 		return;
 

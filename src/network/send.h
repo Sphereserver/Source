@@ -56,7 +56,7 @@ public:
 class PacketCombatDamage : public PacketSend
 {
 public:
-	PacketCombatDamage(const CClient* target, WORD damage, DWORD uid);
+	PacketCombatDamage(const CClient* target, WORD damage, CGrayUID uid);
 
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
@@ -1541,7 +1541,7 @@ public:
 class PacketCombatDamageOld : public PacketExtended
 {
 public:
-	PacketCombatDamageOld(const CClient* target, BYTE damage, DWORD uid);
+	PacketCombatDamageOld(const CClient* target, BYTE damage, CGrayUID uid);
 
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)

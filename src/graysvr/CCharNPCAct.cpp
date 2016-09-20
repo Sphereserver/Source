@@ -475,9 +475,9 @@ int CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 		return 0;
 	}
 
-	int iSkillSrcVal = pCharSrc->Skill_GetBase(Skill);
-	int iSkillVal = Skill_GetBase(Skill);
-	int iTrainVal = NPC_GetTrainMax(pCharSrc, Skill) - iSkillSrcVal;
+	WORD iSkillSrcVal = pCharSrc->Skill_GetBase(Skill);
+	WORD iSkillVal = Skill_GetBase(Skill);
+	WORD iTrainVal = NPC_GetTrainMax(pCharSrc, Skill) - iSkillSrcVal;
 
 	// Train npc skill cap
 	int iMaxDecrease = 0;
@@ -567,10 +567,10 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem * pGold)
 	return( true );
 }
 
-bool CChar::NPC_TrainSkill( CChar * pCharSrc, SKILL_TYPE skill, int toTrain )
+bool CChar::NPC_TrainSkill( CChar * pCharSrc, SKILL_TYPE skill, WORD toTrain )
 {
 	ADDTOCALLSTACK("CChar::NPC_TrainSkill");
-	int iTrain = toTrain;
+	WORD iTrain = toTrain;
 	if ( (pCharSrc->GetSkillTotal() + toTrain) > pCharSrc->Skill_GetMax(static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill)) )
 	{	
 		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
@@ -1632,7 +1632,7 @@ int CCharNPC::Spells_GetCount()
 
 	// This code was meant to check if found spells does really exist
 	int total = 0;
-	for (unsigned int count = 0; count < m_spells.size() ; count++)
+	for (size_t count = 0; count < m_spells.size() ; count++)
 	{
 		Spells refSpell = m_spells.at(count);
 		if (!refSpell.id)
@@ -1643,7 +1643,7 @@ int CCharNPC::Spells_GetCount()
 }
 
 // Retrieve the spell stored at index = n
-SPELL_TYPE CCharNPC::Spells_GetAt(unsigned char id)
+SPELL_TYPE CCharNPC::Spells_GetAt(BYTE id)
 {
 	ADDTOCALLSTACK("CCharNPC::Spells_GetAt");
 	if (m_spells.empty())
@@ -1657,7 +1657,7 @@ SPELL_TYPE CCharNPC::Spells_GetAt(unsigned char id)
 }
 
 // Delete the spell at the given index
-bool CCharNPC::Spells_DelAt(unsigned char id)
+bool CCharNPC::Spells_DelAt(BYTE id)
 {
 	ADDTOCALLSTACK("CCharNPC::Spells_DelAt");
 	if (m_spells.empty())
@@ -1694,7 +1694,7 @@ int CCharNPC::Spells_FindSpell(SPELL_TYPE spellID)
 	if (m_spells.empty())
 		return -1;
 
-	unsigned int count = 0;
+	size_t count = 0;
 	while (count < m_spells.size())
 	{
 		Spells spell = m_spells.at(count);
@@ -1804,8 +1804,8 @@ bool CChar::NPC_FightMagery(CChar * pChar)
 	}
 
 	// We have the total count of spells inside iSpellCount, so we use 'iRandSpell' to store a rand representing the spell that will be casted
-	unsigned char iRandSpell = pWand ? 1 : 0;	// Having wand adding +1 spell to the total count
-	iRandSpell += static_cast<unsigned char>(Calc_GetRandVal2(0, iSpellCount-1));	// spells are being stored using a vector, so it's assumed to be zero-based.
+	BYTE iRandSpell = pWand ? 1 : 0;	// Having wand adding +1 spell to the total count
+	iRandSpell += static_cast<BYTE>(Calc_GetRandVal2(0, iSpellCount - 1));	// spells are being stored using a vector, so it's assumed to be zero-based.
 
 	if (pWand && (iRandSpell > iSpellCount))	// if iRandSpell > iSpellCount then we've got the roll pointing to use the wand's spell.
 	{
@@ -2583,7 +2583,7 @@ bool CChar::NPC_Act_Food()
 	if ( iFoodLevel > 40 )
 		return false;							// and it is at least 60% hungry
 
-	m_pNPC->m_Act_Motivation = static_cast<unsigned char>((50 - (iFoodLevel / 2)));
+	m_pNPC->m_Act_Motivation = static_cast<BYTE>((50 - (iFoodLevel / 2)));
 
 	short	iEatAmount = 1;
 	int		iSearchDistance = 2;

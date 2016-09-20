@@ -983,7 +983,7 @@ private:
 	// Client last know state stuff.
 	CSectorEnviron m_Env;		// Last Environment Info Sent. so i don't have to keep resending if it's the same.
 
-	unsigned char m_fUpdateStats;	// update our own status (weight change) when done with the cycle.
+	BYTE m_fUpdateStats;		// update our own status (weight change) when done with the cycle.
 
 	// Walk limiting code
 	int	m_iWalkTimeAvg;
@@ -1184,7 +1184,7 @@ public:
 	void Event_CombatMode( bool fWar ); // Only for switching to combat mode
 	bool Event_DoubleClick( CGrayUID uid, bool fMacro, bool fTestTouch, bool fScript = false );
 	void Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName );
-	void Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, unsigned char gridIndex = 0 ); // Item is dropped on ground
+	void Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, BYTE gridIndex = 0 ); // Item is dropped on ground
 	void Event_Item_Drop_Fail( CItem *pItem );
 	void Event_Item_Dye( CGrayUID uid, HUE_TYPE wHue );	// Rehue an item
 	void Event_Item_Pickup( CGrayUID uid, int amount ); // Client grabs an item
@@ -1376,7 +1376,7 @@ public:
 	void addBankOpen( CChar * pChar, LAYER_TYPE layer = LAYER_BANKBOX );
 
 	void addSpellbookOpen( CItem * pBook, WORD offset = 1 );
-	void addCustomSpellbookOpen( CItem * pBook, DWORD gumpID );
+	void addCustomSpellbookOpen( CItem * pBook, GUMP_TYPE gumpID );
 	bool addBookOpen( CItem * pBook );
 	void addBookPage( const CItem * pBook, size_t iPage, size_t iCount );
 	void addCharStatWindow( CChar * pChar, bool fRequested = false ); // Opens the status window
@@ -1441,11 +1441,11 @@ private:
 	PacketDisplayPopup* m_pPopupPacket;
 
 public:
-	void Event_AOSPopupMenuSelect( DWORD uid, WORD EntryTag );
-	void Event_AOSPopupMenuRequest( DWORD uid );
+	void Event_AOSPopupMenuSelect( CGrayUID uid, WORD EntryTag );
+	void Event_AOSPopupMenuRequest( CGrayUID uid );
 
 
-	void addShowDamage( int damage, DWORD uid );
+	void addShowDamage( CGrayUID uid, int damage );
 	void addSpeedMode( BYTE speedMode = 0 );
 	void addVisualRange( BYTE visualRange = UO_MAP_VIEW_SIZE );
 	void addIdleWarning( BYTE message );

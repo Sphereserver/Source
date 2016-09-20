@@ -84,14 +84,14 @@ void PacketWeb::setData(const BYTE * data, size_t length)
  *
  *
  ***************************************************************************/
-PacketCombatDamage::PacketCombatDamage(const CClient* target, WORD damage, DWORD uid) : PacketSend(XCMD_DamagePacket, 7, PRI_NORMAL)
+PacketCombatDamage::PacketCombatDamage(const CClient* target, WORD damage, CGrayUID uid) : PacketSend(XCMD_DamagePacket, 7, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketCombatDamage::PacketCombatDamage");
 
-	if ( damage >= USHRT_MAX )
+	if ( damage > USHRT_MAX )
 		damage = USHRT_MAX;
 
-	writeInt32(uid);
+	writeInt32(static_cast<DWORD>(uid));
 	writeInt16(damage);
 	push(target);
 }
@@ -206,8 +206,9 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 
 		if (version >= 2) // T2A attributes
 		{
-			unsigned short statcap = other->Stat_GetLimit(STAT_QTY);
-			if (statcap < 0) statcap = 0;
+			WORD statcap = other->Stat_GetLimit(STAT_QTY);
+			if (statcap < 0)
+				statcap = 0;
 
 			writeInt16(statcap);
 		}
@@ -1009,7 +1010,7 @@ PacketSkills::PacketSkills(const CClient* target, const CChar* character, SKILL_
 			writeInt16(character->Skill_GetBase(static_cast<SKILL_TYPE>(i)));
 			writeByte(static_cast<BYTE>(character->Skill_GetLock(static_cast<SKILL_TYPE>(i))));
 			if (includeCaps)
-				writeInt16(static_cast<WORD>(character->Skill_GetMax(static_cast<SKILL_TYPE>(i))));
+				writeInt16(character->Skill_GetMax(static_cast<SKILL_TYPE>(i)));
 		}
 
 		writeInt16(0);
@@ -1027,7 +1028,7 @@ PacketSkills::PacketSkills(const CClient* target, const CChar* character, SKILL_
 		writeInt16(character->Skill_GetBase(skill));
 		writeByte(static_cast<BYTE>(character->Skill_GetLock(skill)));
 		if (includeCaps)
-			writeInt16(static_cast<WORD>(character->Skill_GetMax(skill)));
+			writeInt16(character->Skill_GetMax(skill));
 	}
 
 	push(target);
@@ -4012,15 +4013,15 @@ PacketHouseEndCustomise::PacketHouseEndCustomise(const CClient* target, const CI
  *
  *
  ***************************************************************************/
-PacketCombatDamageOld::PacketCombatDamageOld(const CClient* target, BYTE damage, DWORD uid) : PacketExtended(EXTDATA_DamagePacketOld, 11, PRI_NORMAL)
+PacketCombatDamageOld::PacketCombatDamageOld(const CClient* target, BYTE damage, CGrayUID uid) : PacketExtended(EXTDATA_DamagePacketOld, 11, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketCombatDamageOld::PacketCombatDamageOld");
 
-	if ( damage >= UCHAR_MAX )
+	if ( damage > UCHAR_MAX )
 		damage = UCHAR_MAX;
 
 	writeByte(0x1);
-	writeInt32(uid);
+	writeInt32(static_cast<DWORD>(uid));
 	writeByte(damage);
 
 	push(target);

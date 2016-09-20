@@ -585,9 +585,7 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			{
 				SKILL_TYPE skill = static_cast<SKILL_TYPE>(ATOI( &(s.GetKey()[5])));
 				if ( pChar->IsSkillBase(skill) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) )
-				{
-					pChar->Skill_SetBase( skill, ATOI(pArg));
-				}
+					pChar->Skill_SetBase(skill, static_cast<WORD>(ATOI(pArg)));
 			}
 			else if ( s.IsKey("ACCOUNT" ))
 			{

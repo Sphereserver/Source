@@ -360,7 +360,7 @@ public:
 #define SU_UPDATE_HITS			0x01	// update hits to others
 #define SU_UPDATE_MODE			0x02	// update mode to all
 #define SU_UPDATE_TOOLTIP		0x04	// update tooltip to all
-	unsigned char m_fStatusUpdate;	// update flags for next tick
+	BYTE m_fStatusUpdate;				// update flags for next tick
 	virtual void OnTickStatusUpdate();
 
 protected:
@@ -451,7 +451,7 @@ private:
 	ITEMID_TYPE m_dwDispIndex;		// The current display type. ITEMID_TYPE
 	WORD m_amount;		// Amount of items in pile. 64K max (or corpse type)
 	IT_TYPE m_type;		// What does this item do when dclicked ? defines dynamic_cast type
-	unsigned char m_containedGridIndex;	// Which grid have i been placed in ? (when in a container)
+	BYTE m_containedGridIndex;	// Which grid have i been placed in ? (when in a container)
 	DWORD	m_CanUse;		// Base attribute flags. can_u_all/male/female..
 	WORD	m_weight;
 
@@ -986,7 +986,7 @@ public:
 	void SetAnim( ITEMID_TYPE id, int iTime );
 
 	int IsWeird() const;
-	signed char GetFixZ(CPointMap pt, unsigned long wBlockFlags = 0 );
+	signed char GetFixZ(CPointMap pt, DWORD dwBlockFlags = 0);
 	BYTE GetSpeed() const;
 	void SetAttr( DWORD dwAttr )
 	{
@@ -1109,12 +1109,12 @@ public:
 		return pObj->GetTopLevelObj();
 	}
 
-	unsigned char GetContainedGridIndex() const
+	BYTE GetContainedGridIndex() const
 	{
 		return m_containedGridIndex;
 	}
 
-	void SetContainedGridIndex(unsigned char index)
+	void SetContainedGridIndex(BYTE index)
 	{
 		m_containedGridIndex = index;
 	}
@@ -1623,8 +1623,8 @@ public:
 	}
 	void OnWeightChange( int iChange );
 
-	void ContentAdd( CItem * pItem );
-	void ContentAdd( CItem * pItem, CPointMap pt, unsigned char gridIndex = 0 );
+	void ContentAdd( CItem *pItem );
+	void ContentAdd( CItem *pItem, CPointMap pt, BYTE gridIndex = 0 );
 protected:
 	void OnRemoveOb( CGObListRec* pObRec );	// Override this = called when removed from list.
 public:
@@ -1735,8 +1735,8 @@ public:
 	int Multi_GetMaxDist() const;
 	struct ShipSpeed // speed of a ship
 	{
-		unsigned char period;	// time between movement
-		unsigned char tiles;	// distance to move
+		BYTE period;	// time between movement
+		BYTE tiles;		// distance to move
 	};
 	ShipSpeed m_shipSpeed; // Speed of ships (IT_SHIP)
 	BYTE m_SpeedMode;
@@ -1850,7 +1850,7 @@ private:
 public:
 	void BeginCustomize( CClient * pClientSrc );
 	void EndCustomize( bool bForce = false );
-	void SwitchToLevel( CClient * pClientSrc, unsigned char iLevel );
+	void SwitchToLevel( CClient * pClientSrc, DWORD iLevel );
 	void CommitChanges( CClient * pClientSrc = NULL );
 	void AddItem( CClient * pClientSrc, ITEMID_TYPE id, signed short x, signed short y, signed char z = SCHAR_MIN, short iStairID = 0 );
 	void AddStairs( CClient * pClientSrc, ITEMID_TYPE id, signed short x, signed short y, signed char z = SCHAR_MIN, short iStairID = -1 );
@@ -1870,12 +1870,12 @@ public:
 	size_t GetFixtureCount(DesignDetails * pDesign = NULL);
 	size_t GetComponentsAt(signed short dx, signed short dy, signed char dz, Component ** pComponents, DesignDetails * pDesign = NULL);
 	int GetRevision(const CClient * pClientSrc = NULL) const;
-	unsigned char GetLevelCount();
+	DWORD GetLevelCount();
 	short GetStairCount();
 
-	static unsigned char GetPlane( signed char z );
-	static unsigned char GetPlane( Component * pComponent );
-	static signed char GetPlaneZ( unsigned char plane );
+	static BYTE GetPlane( signed char z );
+	static BYTE GetPlane( Component * pComponent );
+	static signed char GetPlaneZ( BYTE plane );
 	static bool IsValidItem( ITEMID_TYPE id, CClient * pClientSrc, bool bMulti );
 };
 
@@ -2389,8 +2389,8 @@ public:
 	std::vector<Spells> m_spells;	// Spells stored in this NPC
 
 	int Spells_GetCount();
-	SPELL_TYPE Spells_GetAt(unsigned char id);
-	bool Spells_DelAt(unsigned char id);
+	SPELL_TYPE Spells_GetAt(BYTE id);
+	bool Spells_DelAt(BYTE id);
 	bool Spells_Add(SPELL_TYPE spell);
 	int Spells_FindSpell(SPELL_TYPE spell);
 
@@ -2700,7 +2700,7 @@ private:
 	unsigned long long m_StatFlag;		// Flags above
 
 #define SKILL_VARIANCE 100		// Difficulty modifier for determining success. 10.0 %
-	unsigned short m_Skill[SKILL_QTY];	// List of skills ( skill * 10 )
+	WORD m_Skill[SKILL_QTY];	// List of skills ( skill * 10 )
 
 	// This is a character that can either be NPC or PC.
 	// Player vs NPC Stuff
@@ -2780,7 +2780,7 @@ public:
 		short	m_mod;			// signed for modifier
 		short	m_val;			// signed for karma
 		short	m_max;			// max
-		unsigned short m_regen;	// Tick time since last regen.
+		WORD	m_regen;		// Tick time since last regen.
 	} m_Stat[STAT_QTY];
 
 	CServTime	m_timeLastRegen;	// When did i get my last regen tick ?
@@ -2900,7 +2900,7 @@ private:
 public:
 	// Status and attributes ------------------------------------
 	int IsWeird() const;
-	signed char GetFixZ( CPointMap pt, unsigned long wBlockFlags = 0);
+	signed char GetFixZ(CPointMap pt, DWORD dwBlockFlags = 0);
 	virtual void Delete(bool bforce = false, CClient *pClient = NULL);
 	virtual bool NotifyDelete(CClient *pClient = NULL);
 	bool IsStatFlag( DWORD dwStatFlag ) const
@@ -3137,7 +3137,7 @@ public:
 
 	bool Stat_Decrease( STAT_TYPE stat, SKILL_TYPE skill = (SKILL_TYPE)NULL);
 	bool Stats_Regen(INT64 iTimeDiff);
-	unsigned short Stats_GetRegenVal(STAT_TYPE iStat, bool bGetTicks);
+	WORD Stats_GetRegenVal(STAT_TYPE iStat, bool bGetTicks);
 
 	SKILLLOCK_TYPE Stat_GetLock(STAT_TYPE stat)
 	{
@@ -3621,7 +3621,7 @@ public:
 	* @param ppCharDead from who we gained the experience.
 	*/
 	void ChangeExperience(int delta = 0, CChar *pCharDead = NULL);
-	int GetSkillTotal(int what = 0, bool how = true);
+	WORD GetSkillTotal(int what = 0, bool how = true);
 
 	// skills and actions. -------------------------------------------
 	static bool IsSkillBase( SKILL_TYPE skill );
@@ -3633,13 +3633,12 @@ public:
 		return m_Act_SkillCurrent;
 	}
 	LPCTSTR Skill_GetName( bool fUse = false ) const;
-	unsigned short Skill_GetBase( SKILL_TYPE skill ) const
+	WORD Skill_GetBase( SKILL_TYPE skill ) const
 	{
 		ASSERT(IsSkillBase(skill));
 		return m_Skill[skill];
 	}
-	int Skill_GetMax( SKILL_TYPE skill, bool ignoreLock = false ) const;
-	int Skill_GetSum() const;
+	WORD Skill_GetMax( SKILL_TYPE skill, bool ignoreLock = false ) const;
 	SKILLLOCK_TYPE Skill_GetLock( SKILL_TYPE skill ) const
 	{
 		if ( !m_pPlayer )
@@ -3647,7 +3646,7 @@ public:
 		return m_pPlayer->Skill_GetLock(skill);
 	}
 	WORD Skill_GetAdjusted(SKILL_TYPE skill) const;
-	SKILL_TYPE Skill_GetMagicRandom(unsigned short iMinValue = 0);
+	SKILL_TYPE Skill_GetMagicRandom(WORD iMinValue = 0);
 	SKILL_TYPE Skill_GetMagicBest();
 
 	/**
@@ -3658,7 +3657,7 @@ public:
 	*/
 	bool Skill_CanUse( SKILL_TYPE skill );
 
-	void Skill_SetBase( SKILL_TYPE skill, int iValue );
+	void Skill_SetBase( SKILL_TYPE skill, WORD iValue );
 	bool Skill_UseQuick( SKILL_TYPE skill, INT64 difficulty, bool bAllowGain = true, bool bUseBellCurve = true );
 
 	bool Skill_CheckSuccess( SKILL_TYPE skill, int difficulty, bool bUseBellCurve = true ) const;
@@ -3993,7 +3992,7 @@ public:
 	int	 NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill );
 	bool NPC_OnTrainPay( CChar * pCharSrc, CItemMemory * pMemory, CItem * pGold );
 	bool NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pCmd );
-	bool NPC_TrainSkill( CChar * pCharSrc, SKILL_TYPE skill, int toTrain );
+	bool NPC_TrainSkill( CChar * pCharSrc, SKILL_TYPE skill, WORD toTrain );
 private:
 	bool NPC_CheckWalkHere( const CPointBase & pt, const CRegionBase * pArea, WORD wBlockFlags ) const;
 	void NPC_OnNoticeSnoop( CChar * pCharThief, CChar * pCharMark );

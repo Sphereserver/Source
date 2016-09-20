@@ -489,36 +489,36 @@ int CChar::IsWeird() const
 }
 
 // Get the Z we should be at
-signed char CChar::GetFixZ( CPointMap pt, unsigned long wBlockFlags)
+signed char CChar::GetFixZ( CPointMap pt, DWORD dwBlockFlags)
 {
-	if (! wBlockFlags )
-		wBlockFlags = GetMoveBlockFlags();
+	if ( !dwBlockFlags )
+		dwBlockFlags = GetMoveBlockFlags();
 	DWORD dwCan = GetMoveBlockFlags();
 	if ( dwCan & CAN_C_WALK )
-		wBlockFlags |= CAN_I_CLIMB; // If we can walk than we can climb. Ignore CAN_C_FLY at all here
+		dwBlockFlags |= CAN_I_CLIMB; // If we can walk than we can climb. Ignore CAN_C_FLY at all here
 
-	CGrayMapBlockState block( wBlockFlags, pt.m_z, pt.m_z + m_zClimbHeight + GetHeightMount( false ), pt.m_z + m_zClimbHeight + 2, GetHeightMount( false ) );
+	CGrayMapBlockState block( dwBlockFlags, pt.m_z, pt.m_z + m_zClimbHeight + GetHeightMount( false ), pt.m_z + m_zClimbHeight + 2, GetHeightMount( false ) );
 	g_World.GetFixPoint( pt, block );
 
-	wBlockFlags = block.m_Bottom.m_dwBlockFlags;
+	dwBlockFlags = block.m_Bottom.m_dwBlockFlags;
 	if ( block.m_Top.m_dwBlockFlags )
 	{
-		wBlockFlags |= CAN_I_ROOF;	// we are covered by something.
+		dwBlockFlags |= CAN_I_ROOF;	// we are covered by something.
 		if ( block.m_Top.m_z < pt.m_z + (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? GetHeightMount( false ) : GetHeightMount( false )/2 )) )
-			wBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
+			dwBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
 	}
-	if (( dwCan != 0xFFFF ) && ( wBlockFlags != 0x0 ))
+	if (( dwCan != 0xFFFF ) && ( dwBlockFlags != 0x0 ))
 	{
 
-		if ( ( wBlockFlags & CAN_I_DOOR ) && Can( CAN_C_GHOST ))
-			wBlockFlags &= ~CAN_I_BLOCK;
+		if ( ( dwBlockFlags & CAN_I_DOOR ) && Can( CAN_C_GHOST ))
+			dwBlockFlags &= ~CAN_I_BLOCK;
 
-		if ( ( wBlockFlags & CAN_I_WATER ) && Can( CAN_C_SWIM ))
-			wBlockFlags &= ~CAN_I_BLOCK;
+		if ( ( dwBlockFlags & CAN_I_WATER ) && Can( CAN_C_SWIM ))
+			dwBlockFlags &= ~CAN_I_BLOCK;
 
 		if ( ! Can( CAN_C_FLY ))
 		{
-			if ( ! ( wBlockFlags & CAN_I_CLIMB ) ) // we can climb anywhere
+			if ( ! ( dwBlockFlags & CAN_I_CLIMB ) ) // we can climb anywhere
 			{
 				if ( block.m_Bottom.m_dwTile > TERRAIN_QTY )
 				{
@@ -529,7 +529,7 @@ signed char CChar::GetFixZ( CPointMap pt, unsigned long wBlockFlags)
 					return pt.m_z;
 			}
 		}
-		if (( wBlockFlags & CAN_I_BLOCK ) && ( ! Can( CAN_C_PASSWALLS )) )
+		if (( dwBlockFlags & CAN_I_BLOCK ) && ( ! Can( CAN_C_PASSWALLS )) )
 			return pt.m_z;
 
 		if ( block.m_Bottom.m_z >= UO_SIZE_Z )
@@ -642,8 +642,8 @@ int CChar::FixWeirdness()
 		{
 			for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 			{
-				int iSkillMax = Skill_GetMax(static_cast<SKILL_TYPE>(i));
-				int iSkillVal = Skill_GetBase(static_cast<SKILL_TYPE>(i));
+				WORD iSkillMax = Skill_GetMax(static_cast<SKILL_TYPE>(i));
+				WORD iSkillVal = Skill_GetBase(static_cast<SKILL_TYPE>(i));
 				if ( iSkillVal < 0 )
 					Skill_SetBase(static_cast<SKILL_TYPE>(i), 0);
 				if ( iSkillVal > iSkillMax * g_Cfg.m_iOverSkillMultiply )
@@ -1260,7 +1260,7 @@ void CChar::InitPlayer( CClient *pClient, const char *pszCharname, bool bFemale,
 	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
 		if ( g_Cfg.m_SkillIndexDefs.IsValidIndex(i) )
-			Skill_SetBase(static_cast<SKILL_TYPE>(i), Calc_GetRandVal(g_Cfg.m_iMaxBaseSkill));
+			Skill_SetBase(static_cast<SKILL_TYPE>(i), static_cast<WORD>(Calc_GetRandVal(g_Cfg.m_iMaxBaseSkill)));
 	}
 
 	if ( wStr > 60 )		wStr = 60;
@@ -1775,8 +1775,8 @@ do_default:
 		if ( IsSkillBase(static_cast<SKILL_TYPE>(i)))
 		{
 			// Check some skill name.
-			unsigned short iVal = Skill_GetBase( static_cast<SKILL_TYPE>(i) );
-			sVal.Format( "%i.%i", iVal/10, iVal%10 );
+			WORD iVal = Skill_GetBase( static_cast<SKILL_TYPE>(i) );
+			sVal.Format( "%hu.%hu", iVal/10, iVal%10 );
 			return( true );
 		}
 
@@ -2605,7 +2605,7 @@ do_default:
 			if ( i != SKILL_NONE )
 			{
 				// Check some skill name.
-				Skill_SetBase(static_cast<SKILL_TYPE>(i), s.GetArgVal() );
+				Skill_SetBase(static_cast<SKILL_TYPE>(i), static_cast<WORD>(s.GetArgVal()));
 				return true;
 			}
 
@@ -3296,13 +3296,13 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 
 		case CHV_ALLSKILLS:
 			{
-				int iVal = s.GetArgVal();
+				WORD iVal = static_cast<WORD>(s.GetArgVal());
 				for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 				{
 					if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
 						continue;
 
-					Skill_SetBase(static_cast<SKILL_TYPE>(i), iVal );
+					Skill_SetBase(static_cast<SKILL_TYPE>(i), iVal);
 				}
 			}
 			break;
@@ -4029,7 +4029,7 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 }
 
 // returns <SkillTotal>
-int CChar::GetSkillTotal(int what, bool how)
+WORD CChar::GetSkillTotal(int what, bool how)
 {
 	ADDTOCALLSTACK("CChar::GetSkillTotal");
 	int iTotal = 0;

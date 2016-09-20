@@ -2049,16 +2049,16 @@ effect_bounce:
 	if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_DAMAGE )
 	{
 		if ( m_pClient )
-			m_pClient->addShowDamage( iDmg, static_cast<DWORD>(GetUID()) );
+			m_pClient->addShowDamage(GetUID(), iDmg);
 		if ( pSrc->m_pClient && (pSrc != this) )
-			pSrc->m_pClient->addShowDamage( iDmg, static_cast<DWORD>(GetUID()) );
+			pSrc->m_pClient->addShowDamage(GetUID(), iDmg);
 		else
 		{
 			CChar * pSrcOwner = pSrc->NPC_PetGetOwner();
 			if ( pSrcOwner != NULL )
 			{
 				if ( pSrcOwner->m_pClient )
-					pSrcOwner->m_pClient->addShowDamage( iDmg, static_cast<DWORD>(GetUID()) );
+					pSrcOwner->m_pClient->addShowDamage(GetUID(), iDmg);
 			}
 		}
 	}
@@ -2589,7 +2589,7 @@ INT64 CChar::Attacker_GetHighestThreat()
 	if ( !m_lastAttackers.size() )
 		return -1;
 	INT64 highThreat = 0;
-	for ( unsigned int count = 0; count < m_lastAttackers.size(); count++ )
+	for ( size_t count = 0; count < m_lastAttackers.size(); count++ )
 	{
 		LastAttackers & refAttacker = m_lastAttackers.at(count);
 		if ( refAttacker.threat > highThreat )

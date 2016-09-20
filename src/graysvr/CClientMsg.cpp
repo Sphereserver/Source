@@ -1157,7 +1157,7 @@ void CClient::addItemName( const CItem * pItem )
 		}
 	}
 	if ( IsPriv(PRIV_DEBUG) )
-		len += sprintf(szName+len, " [0%lx]", (DWORD) pItem->GetUID());
+		len += sprintf(szName+len, " [0%lx]", static_cast<DWORD>(pItem->GetUID()));
 
 	if (( IsTrigUsed(TRIGGER_AFTERCLICK) ) || ( IsTrigUsed(TRIGGER_ITEMAFTERCLICK) ))
 	{
@@ -1247,7 +1247,7 @@ void CClient::addCharName( const CChar * pChar ) // Singleclick text for a chara
 			if ( pChar->IsStatFlag(STATF_Spawned) )
 				strcat(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SPAWN));
 			if ( IsPriv( PRIV_DEBUG ))
-				sprintf(pszTemp+strlen(pszTemp), " [0%lx]", (DWORD) pChar->GetUID());
+				sprintf(pszTemp+strlen(pszTemp), " [0%lx]", static_cast<DWORD>(pChar->GetUID()));
 		}
 	}
 	if ( ! fAllShow && pChar->Skill_GetActive() == NPCACT_Napping )
@@ -2036,7 +2036,7 @@ void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
 }
 
 
-void CClient::addCustomSpellbookOpen( CItem * pBook, DWORD gumpID )
+void CClient::addCustomSpellbookOpen( CItem * pBook, GUMP_TYPE gumpID )
 {
 	ADDTOCALLSTACK("CClient::addCustomSpellbookOpen");
 	const CItemContainer *pContainer = static_cast<CItemContainer *>(pBook);
@@ -2046,14 +2046,14 @@ void CClient::addCustomSpellbookOpen( CItem * pBook, DWORD gumpID )
 	int count=0;
 	for ( CItem *pItem = pContainer->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		if ( !pItem->IsType( IT_SCROLL ) )
+		if ( !pItem->IsType(IT_SCROLL) )
 			continue;
 		count++;
 	}
 
 	OpenPacketTransaction transaction(this, PacketSend::PRI_NORMAL);
-	addOpenGump( pBook, static_cast<GUMP_TYPE>(gumpID));
-	if (count <= 0)
+	addOpenGump(pBook, gumpID);
+	if ( count <= 0 )
 		return;
 
 	new PacketItemContents(this, pContainer);
@@ -3224,7 +3224,7 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 		delete propertyList;
 }
 
-void CClient::addShowDamage( int damage, DWORD uid )
+void CClient::addShowDamage( CGrayUID uid, int damage )
 {
 	ADDTOCALLSTACK("CClient::addShowDamage");
 	if ( damage < 0 )
