@@ -356,7 +356,7 @@ LPCTSTR CServer::GetStatusString( BYTE iIndex ) const
 				TCHAR szVersion[128];
 				sprintf(pTemp, GRAY_TITLE ", Name=%s, Port=%d, Ver=" GRAY_VERSION ", TZ=%d, EMail=%s, URL=%s, Lang=%s, CliVer=%s\n",
 					GetName(), m_ip.GetPort(), m_TimeZone, static_cast<LPCTSTR>(m_sEMail), static_cast<LPCTSTR>(m_sURL), static_cast<LPCTSTR>(m_sLang),
-					m_ClientVersion.WriteClientVer(szVersion));
+					m_ClientVersion.WriteClientVerString(m_ClientVersion.GetClientVer(), szVersion));
 			}
 			break;
 		case 0x22: // '"'
@@ -1954,7 +1954,7 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 	if ( m_ClientVersion.GetClientVer() )
 	{
 		TCHAR szVersion[128];
-		g_Log.Event(LOGM_INIT, "ClientVersion=%s\n", static_cast<LPCTSTR>(m_ClientVersion.WriteClientVer(szVersion)));
+		g_Log.Event(LOGM_INIT, "ClientVersion=%s\n", static_cast<LPCTSTR>(m_ClientVersion.WriteClientVerString(m_ClientVersion.GetClientVer(), szVersion)));
 		if ( !m_ClientVersion.IsValid() )
 		{
 			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Bad Client Version '%s'\n", szVersion);

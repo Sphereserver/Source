@@ -174,9 +174,6 @@ private:
 	// ------------- EOF Old Encryption ------------------
 
 private:
-	int GetVersionFromString( LPCTSTR pszVersion );
-
-private:
 	void SetClientVersion( DWORD iVer )
 	{
 		m_iClientVersion = iVer;
@@ -217,14 +214,13 @@ private:
 	}
 
 public:
-	TCHAR* WriteClientVer( TCHAR * pStr ) const;
 	bool SetClientVerEnum( DWORD iVer, bool bSetEncrypt = true );
 	bool SetClientVerIndex( size_t iVer, bool bSetEncrypt = true );
-	void SetClientVer( const CCrypt & crypt );
+	void SetClientVer( const CCrypt &crypt );
 	bool SetClientVer( LPCTSTR pszVersion );
-	static int GetVerFromString( LPCTSTR pszVersion );
-	static int GetVerFromNumber( DWORD maj, DWORD min, DWORD rev, DWORD pat );
-	static TCHAR* WriteClientVerString( DWORD iClientVersion, TCHAR * pStr );
+	static DWORD GetVerFromString( LPCTSTR pszVersion );
+	static DWORD GetVerFromNumber( DWORD maj, DWORD min, DWORD rev, DWORD pat );
+	static TCHAR *WriteClientVerString( DWORD iClientVersion, TCHAR *pStr );
 
 public:
 	DWORD GetClientVer() const

@@ -341,7 +341,7 @@ static const DWORD sm_dwInitData[18+1024] =
 // ---------------------------------------------------------------------------------------------------------------
 // ===============================================================================================================
 
-int CCrypt::GetVerFromString( LPCTSTR pszVersion )
+DWORD CCrypt::GetVerFromString( LPCTSTR pszVersion )
 {
 	ADDTOCALLSTACK("CCrypt::GetVerFromString");
 	// Get version of old clients, which report the client version as ASCII string (eg: '5.0.2b')
@@ -366,7 +366,7 @@ int CCrypt::GetVerFromString( LPCTSTR pszVersion )
 	return (ATOI(piVer[0]) * 1000000) + (ATOI(piVer[1]) * 10000) + (ATOI(piVer[2]) * 100) + iLetter;
 }
 
-int CCrypt::GetVerFromNumber( DWORD maj, DWORD min, DWORD rev, DWORD pat )
+DWORD CCrypt::GetVerFromNumber( DWORD maj, DWORD min, DWORD rev, DWORD pat )
 {
 	ADDTOCALLSTACK("CCrypt::GetVerFromNumber");
 	// Get version of new clients (5.0.6.5+), which report the client version as numbers (eg: 5,0,6,5)
@@ -374,7 +374,7 @@ int CCrypt::GetVerFromNumber( DWORD maj, DWORD min, DWORD rev, DWORD pat )
 	return (maj * 1000000) + (min * 10000) + (rev * 100) + pat;
 }
 
-TCHAR* CCrypt::WriteClientVerString( DWORD iClientVersion, TCHAR * pStr )
+TCHAR *CCrypt::WriteClientVerString( DWORD iClientVersion, TCHAR *pStr )
 {
 	ADDTOCALLSTACK("CCrypt::WriteClientVerString");
 	if ( iClientVersion >= MINCLIVER_NEWVERSIONING )
@@ -393,18 +393,6 @@ TCHAR* CCrypt::WriteClientVerString( DWORD iClientVersion, TCHAR * pStr )
 	}
 
 	return pStr;
-}
-
-int CCrypt::GetVersionFromString( LPCTSTR pszVersion )
-{
-	ADDTOCALLSTACK("CCrypt::GetVersionFromString");
-	return CCrypt::GetVerFromString( pszVersion );
-}
-
-TCHAR* CCrypt::WriteClientVer( TCHAR * pStr ) const
-{
-	ADDTOCALLSTACK("CCrypt::WriteClientVer");
-	return( CCrypt::WriteClientVerString( GetClientVer(), pStr ) );
 }
 
 bool CCrypt::SetClientVerEnum( DWORD iVer, bool bSetEncrypt )
@@ -440,7 +428,7 @@ bool CCrypt::SetClientVerIndex( size_t iVer, bool bSetEncrypt )
 	return true;
 }
 
-void CCrypt::SetClientVer( const CCrypt & crypt )
+void CCrypt::SetClientVer( const CCrypt &crypt )
 {
 	ADDTOCALLSTACK("CCrypt::SetClientVer");
 	m_fInit = false;
@@ -452,7 +440,7 @@ void CCrypt::SetClientVer( const CCrypt & crypt )
 bool CCrypt::SetClientVer( LPCTSTR pszVersion )
 {
 	ADDTOCALLSTACK("CCrypt::SetClientVer(2)");
-	int iVer = GetVersionFromString(pszVersion);
+	DWORD iVer = GetVerFromString(pszVersion);
 	m_fInit = false;
 
 	if ( !SetClientVerEnum(iVer) )

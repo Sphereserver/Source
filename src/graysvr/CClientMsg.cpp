@@ -3324,16 +3324,16 @@ BYTE CClient::LogIn(LPCTSTR pszAccName, LPCTSTR pszPassword, CGString &sMsg)
 	size_t iLen3 = Str_GetBare(szTmp, pszAccName, MAX_NAME_SIZE);
 	if ( (iLen1 == 0) || (iLen1 != iLen3) || (iLen1 > MAX_NAME_SIZE) )	// a corrupt message
 	{
-		TCHAR szVersion[256];
-		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_WCLI), static_cast<LPCTSTR>(m_Crypt.WriteClientVer(szVersion)));
+		TCHAR szVersion[128];
+		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_WCLI), static_cast<LPCTSTR>(m_Crypt.WriteClientVerString(m_Crypt.GetClientVer(), szVersion)));
 		return PacketLoginError::BadAccount;
 	}
 
 	iLen3 = Str_GetBare(szTmp, pszPassword, MAX_NAME_SIZE);
 	if ( iLen2 != iLen3 )	// a corrupt message
 	{
-		TCHAR szVersion[256];
-		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_WCLI), static_cast<LPCTSTR>(m_Crypt.WriteClientVer(szVersion)));
+		TCHAR szVersion[128];
+		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_WCLI), static_cast<LPCTSTR>(m_Crypt.WriteClientVerString(m_Crypt.GetClientVer(), szVersion)));
 		return PacketLoginError::BadPassword;
 	}
 

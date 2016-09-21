@@ -724,8 +724,8 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			break;
 		case CC_CLIENTVERSION:
 			{
-				TCHAR szVersion[ 128 ];
-				sVal = m_Crypt.WriteClientVer( szVersion );
+				TCHAR szVersion[128];
+				sVal = m_Crypt.WriteClientVerString(m_Crypt.GetClientVer(), szVersion);
 			}
 			break;
 		case CC_DEBUG:
