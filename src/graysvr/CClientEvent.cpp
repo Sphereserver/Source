@@ -276,10 +276,6 @@ void CClient::Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, BY
 		if ( !m_pChar->CanTouch(pObjOn) )
 			return Event_Item_Drop_Fail(pItem);
 
-		pContOn = dynamic_cast<CItemContainer *>(pObjOn);
-		if ( !pContOn )
-			pContOn = dynamic_cast<CItemContainer *>(pObjOn->GetParent());
-
 		CChar *pChar = dynamic_cast<CChar *>(pObjOn->GetTopLevelObj());
 		if ( pObjOn->IsChar() )
 		{
@@ -293,6 +289,10 @@ void CClient::Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, BY
 			}
 			pObjOn = pChar->GetContainerCreate(LAYER_PACK);
 		}
+
+		pContOn = dynamic_cast<CItemContainer *>(pObjOn);
+		if ( !pContOn )
+			pContOn = dynamic_cast<CItemContainer *>(pObjOn->GetParent());
 
 		if ( pChar && pContOn )
 		{

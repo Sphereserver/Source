@@ -218,3 +218,6 @@ Changed: return 1 now can be used on @[Item]DropOn_Ground trigger, it will cance
 Fixed: DAM/ARMOR properties going to 65535 when set any value > 255.
 Fixed: NPCs not looking around anymore after start wandering action.
 [sphere_msgs.scp]: Updated messages 'skillact_*'.
+
+23-09-2016, Coruja
+Fixed: Items not going to backpack when dropped over backpack icon on char paperdoll.
