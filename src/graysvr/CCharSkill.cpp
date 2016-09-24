@@ -1328,7 +1328,7 @@ int CChar::SkillResourceTest( const CResourceQtyArray * pResources )
 }
 
 
-bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly, int iReplicationQty )
+bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly, WORD iReplicationQty )
 {
 	ADDTOCALLSTACK("CChar::Skill_MakeItem");
 	// "MAKEITEM"
@@ -1408,7 +1408,7 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 
 		m_Act_Targ = uidTarg;	// targetted item to start the make process
 		m_atCreate.m_ItemID = id;
-		m_atCreate.m_Amount = static_cast<WORD>(iReplicationQty);
+		m_atCreate.m_Amount = iReplicationQty;
 
 		CResourceQty RetMainSkill = pItemDef->m_SkillMake[i];
 		return Skill_Start(static_cast<SKILL_TYPE>(RetMainSkill.GetResIndex()), static_cast<int>(RetMainSkill.GetResQty() / 10));
@@ -1416,7 +1416,7 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 
 	if ( stage == SKTRIG_SUCCESS )
 	{
-		m_atCreate.m_Amount = static_cast<WORD>(iReplicationQty); // how much resources we really consumed
+		m_atCreate.m_Amount = iReplicationQty;	// how much resources we really consumed
 		return Skill_MakeItem_Success();
 	}
 
@@ -1486,7 +1486,7 @@ CItem * CChar::Skill_NaturalResource_Create( CItem * pResBit, SKILL_TYPE skill )
 	//Creating the 'id' variable with the local given through->by the trigger(s) instead on top of method
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(RES_GET_INDEX( Args.m_VarsLocal.GetKeyNum("ResourceID")));
 
-	iAmount = pResBit->ConsumeAmount( static_cast<int>(Args.m_iN1) );	// amount i used up.
+	iAmount = pResBit->ConsumeAmount( static_cast<WORD>(Args.m_iN1) );	// amount i used up.
 	if ( iAmount <= 0 )
 		return( NULL );
 
@@ -1566,8 +1566,8 @@ bool CChar::Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg )
 	Emote(pszMsg);
 
 	int iMiningSkill = Skill_GetAdjusted(SKILL_MINING);
-	int iOreQty = pItemOre->GetAmount();
-	int iIngotQty = 0;
+	WORD iOreQty = pItemOre->GetAmount();
+	WORD iIngotQty = 0;
 	const CItemBase * pIngotDef = NULL;
 
 	if ( pOreDef->IsType( IT_ORE ))
@@ -1596,7 +1596,7 @@ bool CChar::Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg )
 				CItem * pGem = CItem::CreateScript(pBaseDef->GetID(), this);
 				if ( pGem )
 				{
-					pGem->SetAmount(static_cast<unsigned int>(iOreQty * pBaseDef->m_BaseResources[i].GetResQty()));
+					pGem->SetAmount(static_cast<WORD>(iOreQty * pBaseDef->m_BaseResources[i].GetResQty()));
 					ItemBounce(pGem);
 				}
 				continue;
@@ -1609,7 +1609,7 @@ bool CChar::Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg )
 					continue;
 				}
 				pIngotDef = pBaseDef;
-				iIngotQty = static_cast<int>(pOreDef->m_BaseResources[i].GetResQty());
+				iIngotQty = static_cast<WORD>(pOreDef->m_BaseResources[i].GetResQty());
 			}
 		}
 	}

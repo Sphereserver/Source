@@ -235,22 +235,22 @@ CChar *CChar::NPC_PetGetOwner() const
 	return pMemory->m_uidLink.CharFind();
 }
 
-int CChar::NPC_GetTrainMax(const CChar *pStudent, SKILL_TYPE Skill) const
+WORD CChar::NPC_GetTrainMax(const CChar *pStudent, SKILL_TYPE Skill) const
 {
 	ADDTOCALLSTACK("CChar::NPC_GetTrainMax");
 	// What is the max I can train to ?
-	int iMax;
-	int iMaxAllowed;
+	WORD iMax;
+	WORD iMaxAllowed;
 
 	CVarDefCont *pValue = GetKey("OVERRIDE.TRAINSKILLMAXPERCENT", true);
 	if ( pValue )
-		iMax = static_cast<int>(IMULDIV(pValue->GetValNum(), Skill_GetBase(Skill), 100));
+		iMax = static_cast<WORD>(IMULDIV(pValue->GetValNum(), Skill_GetBase(Skill), 100));
 	else
-		iMax = static_cast<int>(IMULDIV(g_Cfg.m_iTrainSkillPercent, Skill_GetBase(Skill), 100));
+		iMax = static_cast<WORD>(IMULDIV(g_Cfg.m_iTrainSkillPercent, Skill_GetBase(Skill), 100));
 
 	pValue = GetKey("OVERRIDE.TRAINSKILLMAX", true);
 	if ( pValue )
-		iMaxAllowed = static_cast<int>(pValue->GetValNum());
+		iMaxAllowed = static_cast<WORD>(pValue->GetValNum());
 	else
 		iMaxAllowed = g_Cfg.m_iTrainSkillMax;
 

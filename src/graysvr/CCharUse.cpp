@@ -98,7 +98,7 @@ bool CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 		}
 
 		if ( iQty > 1 )
-			pPart->SetAmount(static_cast<unsigned int>(iQty));
+			pPart->SetAmount(static_cast<WORD>(iQty));
 
 		if ( pChar && pChar->m_pPlayer )
 		{
@@ -259,7 +259,7 @@ bool CChar::Use_Train_Dummy( CItem * pItem, bool fSetup )
 	char skilltag[32];
 	sprintf(skilltag, "OVERRIDE.PracticeMax.SKILL_%d", skill &~0xD2000000);
 	CVarDefCont *pSkillTag = pItem->GetKey(skilltag, true);
-	int iMaxSkill = pSkillTag ? static_cast<int>(pSkillTag->GetValNum()) : g_Cfg.m_iSkillPracticeMax;
+	WORD iMaxSkill = pSkillTag ? static_cast<WORD>(pSkillTag->GetValNum()) : g_Cfg.m_iSkillPracticeMax;
 
 	if ( Skill_GetBase(skill) > iMaxSkill )
 	{

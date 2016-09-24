@@ -706,7 +706,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "MAGICFLAGS",				{ ELEM_INT,		OFFSETOF(CResource,m_iMagicFlags),			0 }},
 	{ "MAGICUNLOCKDOOR",		{ ELEM_INT,		OFFSETOF(CResource,m_iMagicUnlockDoor),		0 }},
 	{ "MAPCACHETIME",			{ ELEM_INT,		OFFSETOF(CResource,m_iMapCacheTime),		0 }},
-	{ "MAXBASESKILL",			{ ELEM_INT,		OFFSETOF(CResource,m_iMaxBaseSkill),		0 }},
+	{ "MAXBASESKILL",			{ ELEM_WORD,	OFFSETOF(CResource,m_iMaxBaseSkill),		0 }},
 	{ "MAXCHARSPERACCOUNT",		{ ELEM_BYTE,	OFFSETOF(CResource,m_iMaxCharsPerAccount),	0 }},
 	{ "MAXCOMPLEXITY",			{ ELEM_INT,		OFFSETOF(CResource,m_iMaxCharComplexity),	0 }},
 	{ "MAXFAME",				{ ELEM_INT,		OFFSETOF(CResource,m_iMaxFame),				0 }},
@@ -747,8 +747,8 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "NPCAI",					{ ELEM_INT,		OFFSETOF(CResource,m_iNpcAi),				0 }},
 	{ "NPCNOFAMETITLE",			{ ELEM_BOOL,	OFFSETOF(CResource,m_NPCNoFameTitle),		0 }},
 	{ "NPCSKILLSAVE",			{ ELEM_INT,		OFFSETOF(CResource,m_iSaveNPCSkills),		0 }},
-	{ "NPCTRAINCOST",			{ ELEM_INT,		OFFSETOF(CResource,m_iTrainSkillCost),		0 }},
-	{ "NPCTRAINMAX",			{ ELEM_INT,		OFFSETOF(CResource,m_iTrainSkillMax),		0 }},
+	{ "NPCTRAINCOST",			{ ELEM_WORD,	OFFSETOF(CResource,m_iTrainSkillCost),		0 }},
+	{ "NPCTRAINMAX",			{ ELEM_WORD,	OFFSETOF(CResource,m_iTrainSkillMax),		0 }},
 	{ "NPCTRAINPERCENT",		{ ELEM_INT,		OFFSETOF(CResource,m_iTrainSkillPercent),	0 }},
 	{ "NTSERVICE",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fUseNTService),		0 }},
 	{ "OPTIONFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iOptionFlags),			0 }},
@@ -773,7 +773,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "SCPFILES",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sSCPBaseDir),			0 }},
 	{ "SECTORSLEEP",			{ ELEM_INT,		OFFSETOF(CResource,m_iSectorSleepMask),		0 }},
 	{ "SECURE",					{ ELEM_BOOL,	OFFSETOF(CResource,m_fSecure),				0 }},
-	{ "SKILLPRACTICEMAX",		{ ELEM_INT,		OFFSETOF(CResource,m_iSkillPracticeMax),	0 }},
+	{ "SKILLPRACTICEMAX",		{ ELEM_WORD,	OFFSETOF(CResource,m_iSkillPracticeMax),	0 }},
 	{ "SNOOPCRIMINAL",			{ ELEM_INT,		OFFSETOF(CResource,m_iSnoopCriminal),		0 }},
 	{ "SPEECHOTHER",			{ ELEM_CSTRING,	OFFSETOF(CResource,m_sSpeechOther),			0 }},
 	{ "SPEECHPET",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sSpeechPet),			0 }},
@@ -1122,7 +1122,7 @@ bool CResource::r_LoadVal( CScript &s )
 			break;
 
 		case RC_SKILLPRACTICEMAX:
-			m_iSkillPracticeMax = s.GetArgVal();
+			m_iSkillPracticeMax = static_cast<WORD>(s.GetArgVal());
 			break;
 
 		case RC_SAVEPERIOD:

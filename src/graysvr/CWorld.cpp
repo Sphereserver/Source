@@ -176,10 +176,8 @@ LPCTSTR GetReasonForGarbageCode(int iCode = -1)
 
 void ReportGarbageCollection(CObjBase * pObj, int iResultCode)
 {
-	ASSERT(pObj != NULL);
-
-	DEBUG_ERR(("UID=0%lx, id=0%x '%s', Invalid code=%0x (%s)\n",
-		(DWORD)pObj->GetUID(), pObj->GetBaseID(), pObj->GetName(), iResultCode, GetReasonForGarbageCode(iResultCode)));
+	ASSERT(pObj);
+	DEBUG_ERR(("UID=0%lx, id=0%hx '%s', Invalid code=%0x (%s)\n", static_cast<DWORD>(pObj->GetUID()), pObj->GetBaseID(), pObj->GetName(), iResultCode, GetReasonForGarbageCode(iResultCode)));
 }
 
 //////////////////////////////////////////////////////////////////
@@ -516,17 +514,17 @@ int CTimedFunctionHandler::Load( const char *pszName, bool fQuoted, const char *
 void CTimedFunctionHandler::r_Write( CScript & s )
 {
 	ADDTOCALLSTACK("CTimedFunctionHandler::r_Write");
-	s.WriteKeyFormat( "CurTick", "%i", m_curTick );
+	s.WriteKeyFormat( "CurTick", "%d", m_curTick );
 	for ( int tick = 0; tick < TICK_PER_SEC; tick++ )
 	{
 		std::vector<TimedFunction *>::iterator it;
 		for ( it = m_timedFunctions[tick].begin(); it != m_timedFunctions[tick].end(); ++it )
 		{
-			TimedFunction* tf = *it;
+			TimedFunction *tf = *it;
 			if ( tf->uid.IsValidUID() )
 			{
-				s.WriteKeyFormat( "TimerFCall", "%s", tf->funcname );
-				s.WriteKeyFormat( "TimerFNumbers", "%i,%lu,%i", tick, tf->uid.GetObjUID(), tf->elapsed );
+				s.WriteKeyFormat("TimerFCall", "%s", tf->funcname);
+				s.WriteKeyFormat("TimerFNumbers", "%d,%lu,%d", tick, tf->uid.GetObjUID(), tf->elapsed);
 			}
 		}
 	}
@@ -884,7 +882,7 @@ int CWorldThread::FixObj( CObjBase * pObj, DWORD dwUID )
 
 	try
 	{
-		dwUID = (DWORD)pObj->GetUID();
+		dwUID = static_cast<DWORD>(pObj->GetUID());
 
 		// is it a real error ?
 		if ( pObj->IsItem())
@@ -1180,11 +1178,7 @@ void CWorld::GetBackupName( CGString & sArchive, LPCTSTR pszBaseDir, TCHAR chTyp
 			break;
 		iCount >>= 3;
 	}
-	sArchive.Format( "%s" GRAY_FILE "b%d%d%c%s",
-		pszBaseDir,
-		iGroup, iCount&0x07,
-		chType,
-		GRAY_SCRIPT );
+	sArchive.Format("%s" GRAY_FILE "b%d%d%c%s", pszBaseDir, iGroup, iCount & 0x07, chType, GRAY_SCRIPT);
 }
 
 bool CWorld::OpenScriptBackup( CScript & s, LPCTSTR pszBaseDir, LPCTSTR pszBaseName, int iSaveCount ) // static
@@ -1362,7 +1356,7 @@ bool CWorld::SaveStage() // Save world state in stages.
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("stage '%d' qty '%d' time '%lld'\n", m_iSaveStage, m_SectorsQty, m_timeSave.GetTimeRaw());
+	g_Log.EventDebug("stage '%d' qty '%u' time '%lld'\n", m_iSaveStage, m_SectorsQty, m_timeSave.GetTimeRaw());
 	EXC_DEBUG_END;
 
 	m_iSaveStage++;	// to avoid loops, we need to skip the current operation in world save
@@ -1421,7 +1415,7 @@ bool CWorld::SaveForce() // Save world state
 		}
 		catch ( const CGrayError& e )
 		{
-			g_Log.CatchEvent(&e, "Save FAILED for stage %u (%s).", m_iSaveStage, pCurBlock);
+			g_Log.CatchEvent(&e, "Save FAILED for stage %d (%s).", m_iSaveStage, pCurBlock);
 			bSuccess = false;
 			CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		}
@@ -1432,7 +1426,7 @@ bool CWorld::SaveForce() // Save world state
 		}
 		continue;
 failedstage:
-		g_Log.CatchEvent( NULL, "Save FAILED for stage %u (%s).", m_iSaveStage, pCurBlock);
+		g_Log.CatchEvent( NULL, "Save FAILED for stage %d (%s).", m_iSaveStage, pCurBlock);
 		bSuccess = false;
 	}
 
@@ -1498,7 +1492,7 @@ bool CWorld::SaveTry( bool fForceImmediate ) // Save world state
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("immidiate '%d'\n", fForceImmediate? 1 : 0);
+	g_Log.EventDebug("immediate '%d'\n", fForceImmediate ? 1 : 0);
 	EXC_DEBUG_END;
 	return false;
 }
@@ -2259,11 +2253,11 @@ void CWorld::Speak( const CObjBaseTemplate * pSrc, LPCTSTR pszText, HUE_TYPE wHu
 		{
 			//if ( sTextUID.IsEmpty() )
 			//{
-			//	sTextUID.Format("<%s [%lx]>", pSrc->GetName(), (DWORD)pSrc->GetUID());
+			//	sTextUID.Format("<%s [%lx]>", pSrc->GetName(), static_cast<DWORD>(pSrc->GetUID()));
 			//}
 			//myName = sTextUID;
 			if ( !*myName )
-				sprintf(myName, "<%s [%lx]>", pSrc->GetName(), (DWORD)pSrc->GetUID());
+				sprintf(myName, "<%s [%lx]>", pSrc->GetName(), static_cast<DWORD>(pSrc->GetUID()));
 		}
 		if (*myName)
 			pClient->addBarkParse( pszSpeak, pSrc, wHue, mode, font, false, myName );

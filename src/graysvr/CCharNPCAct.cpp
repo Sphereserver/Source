@@ -462,12 +462,11 @@ void CChar::NPC_OnHear( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 	}
 }
 
-int CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
+WORD CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 {
 	ADDTOCALLSTACK("CChar::NPC_OnTrainCheck");
 	// Can we train in this skill ?
 	// RETURN: Amount of skill we can train.
-	//
 
 	if ( !IsSkillBase(Skill) )
 	{
@@ -480,7 +479,7 @@ int CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 	WORD iTrainVal = NPC_GetTrainMax(pCharSrc, Skill) - iSkillSrcVal;
 
 	// Train npc skill cap
-	int iMaxDecrease = 0;
+	WORD iMaxDecrease = 0;
 	if ( (pCharSrc->GetSkillTotal() + iTrainVal) > pCharSrc->Skill_GetMax(static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill)) )
 	{	
 		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
@@ -513,10 +512,10 @@ int CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 	}
 	else
 	{
-		return( iMaxDecrease );
+		return iMaxDecrease;
 	}
 
-	char	*z = Str_GetTemp();
+	char *z = Str_GetTemp();
 	sprintf(z, pszMsg, g_Cfg.GetSkillKey(Skill));
 	Speak(z);
 	return 0;
@@ -532,7 +531,7 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem * pGold)
 		return false;
 	}
 
-	int iTrainCost = static_cast<int>(GetKeyNum("OVERRIDE.TRAINSKILLCOST"));
+	WORD iTrainCost = static_cast<WORD>(GetKeyNum("OVERRIDE.TRAINSKILLCOST"));
 	if ( !iTrainCost )
 		iTrainCost = g_Cfg.m_iTrainSkillCost;
 
@@ -640,11 +639,11 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 			continue;
 
 		// Can we train in this ?
-		int iTrainCost = NPC_OnTrainCheck(pCharSrc, static_cast<SKILL_TYPE>(i)) * g_Cfg.m_iTrainSkillCost;
+		WORD iTrainCost = NPC_OnTrainCheck(pCharSrc, static_cast<SKILL_TYPE>(i)) * g_Cfg.m_iTrainSkillCost;
 		if ( iTrainCost <= 0 )
 			return true;
 
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE), iTrainCost, static_cast<LPCTSTR>(pSkillKey));
+		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE), static_cast<int>(iTrainCost), static_cast<LPCTSTR>(pSkillKey));
 		Speak(pszMsg);
 		CItemMemory * pMemory = Memory_AddObjTypes( pCharSrc, MEMORY_SPEAK );
 		if ( pMemory )
@@ -667,7 +666,7 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
 			continue;
 
-		int iDiff = NPC_GetTrainMax(pCharSrc, static_cast<SKILL_TYPE>(i)) - pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i));
+		WORD iDiff = NPC_GetTrainMax(pCharSrc, static_cast<SKILL_TYPE>(i)) - pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i));
 		if ( iDiff <= 0 )
 			continue;
 

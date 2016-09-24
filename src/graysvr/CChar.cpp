@@ -2134,7 +2134,7 @@ do_default:
 			sVal.FormatLLVal( -( g_World.GetTimeDiff(m_timeCreate) / ( TICK_PER_SEC * 60 * 60 *24 ) )); //displayed in days
 			return( true );
 		case CHC_BANKBALANCE:
-			sVal.FormatVal(GetContainerCreate(LAYER_BANKBOX)->ContentCount(RESOURCE_ID(RES_TYPEDEF, IT_GOLD)));
+			sVal.FormatUVal(GetContainerCreate(LAYER_BANKBOX)->ContentCount(RESOURCE_ID(RES_TYPEDEF, IT_GOLD)));
 			return true;
 		case CHC_CANCAST:
 			{
@@ -2226,9 +2226,8 @@ do_default:
 			return true;
 
 		case CHC_GOLD:
-			{
-				sVal.FormatVal(ContentCount(RESOURCE_ID(RES_TYPEDEF, IT_GOLD)));
-			} break;
+			sVal.FormatUVal(ContentCount(RESOURCE_ID(RES_TYPEDEF, IT_GOLD)));
+			break;
 
 		case CHC_MOUNT:
 			{
@@ -3502,25 +3501,18 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			strcpy( psTmp, s.GetArgRaw() );
 			GETNONWHITESPACE( psTmp );
 			TCHAR * ttVal[2];
-			int iTmp = 1;
+			WORD iReplicationQty = 1;
 			size_t iArg = Str_ParseCmds( psTmp, ttVal, COUNTOF( ttVal ), " ,\t" );
 			if ( iArg == 2 )
 			{
-				if ( IsDigit( ttVal[1][0] ) )
-				{
-					iTmp = ATOI( ttVal[1] );
-				}
+				if ( IsDigit(ttVal[1][0]) )
+					iReplicationQty = static_cast<WORD>(ATOI(ttVal[1]));
 			}
-			//DEBUG_ERR(( "CHV_MAKEITEM iTmp is %d, arg was %s\n",iTmp,psTmp ));
  
 			if ( m_pClient )
-			{
 				m_Act_Targ = m_pClient->m_Targ_UID;
-			}
 
-			return Skill_MakeItem(
-				static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, ttVal[0])),
-				m_Act_Targ, SKTRIG_START, false, iTmp );
+			return Skill_MakeItem(static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType(RES_ITEMDEF, ttVal[0])), m_Act_Targ, SKTRIG_START, false, iReplicationQty);
 		}
 
 		case CHV_MOUNT:

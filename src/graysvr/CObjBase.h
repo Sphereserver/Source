@@ -1033,7 +1033,7 @@ public:
 	}
 	virtual bool  IsSameType( const CObjBase * pObj ) const;
 	bool  Stack( CItem * pItem );
-	int ConsumeAmount( int iQty = 1, bool fTest = false );
+	WORD ConsumeAmount( WORD iQty = 1, bool fTest = false );
 
 	CREID_TYPE GetCorpseType() const
 	{
@@ -1044,10 +1044,10 @@ public:
 		// future: strongly typed enums will remove the need for this cast
 		m_amount = static_cast<WORD>(id);	// m_corpse_DispID
 	}
-	void SetAmount( unsigned int amount );
+	void SetAmount( WORD amount );
 	WORD GetMaxAmount();
 	bool SetMaxAmount( WORD amount );
-	void SetAmountUpdate( unsigned int amount );
+	void SetAmountUpdate( WORD amount );
 	WORD GetAmount() const { return m_amount; }
 
 	LPCTSTR GetName() const;	// allowed to be default name.
@@ -1318,7 +1318,7 @@ public:
 	bool Plant_Use( CChar * pChar );
 
 	virtual void DupeCopy( const CItem * pItem );
-	CItem * UnStackSplit( int amount, CChar * pCharSrc = NULL );
+	CItem * UnStackSplit( WORD amount, CChar * pCharSrc = NULL );
 
 	static CItem * CreateBase( ITEMID_TYPE id );
 	static CItem * CreateHeader( TCHAR * pArg, CObjBase * pCont = NULL, bool fDupeCheck = false, CChar * pSrc = NULL );
@@ -1542,15 +1542,15 @@ public:
 	void ContentNotifyDelete();
 
 	// For resource usage and gold.
-	CItem * ContentFind( RESOURCE_ID_BASE rid, DWORD dwArg = 0, int iDecendLevels = 255 ) const;
-	TRIGRET_TYPE OnContTriggerForLoop( CScript &s, CTextConsole * pSrc, CScriptTriggerArgs * pArgs, CGString * pResult, CScriptLineContext & StartContext, CScriptLineContext & EndContext, RESOURCE_ID_BASE rid, DWORD dwArg = 0, int iDecendLevels = 255 );
-	TRIGRET_TYPE OnGenericContTriggerForLoop( CScript &s, CTextConsole * pSrc, CScriptTriggerArgs * pArgs, CGString * pResult, CScriptLineContext & StartContext, CScriptLineContext & EndContext, int iDecendLevels = 255 );
-	int ContentCount( RESOURCE_ID_BASE rid, DWORD dwArg = 0 );
-	int ContentCountAll() const;
-	int ContentConsume( RESOURCE_ID_BASE rid, int iQty = 1, bool fTest = false, DWORD dwArg = 0 );
+	CItem *ContentFind( RESOURCE_ID_BASE rid, DWORD dwArg = 0, int iDecendLevels = 255 ) const;
+	TRIGRET_TYPE OnContTriggerForLoop( CScript &s, CTextConsole *pSrc, CScriptTriggerArgs *pArgs, CGString *pResult, CScriptLineContext &StartContext, CScriptLineContext &EndContext, RESOURCE_ID_BASE rid, DWORD dwArg = 0, int iDecendLevels = 255 );
+	TRIGRET_TYPE OnGenericContTriggerForLoop( CScript &s, CTextConsole *pSrc, CScriptTriggerArgs *pArgs, CGString *pResult, CScriptLineContext &StartContext, CScriptLineContext &EndContext, int iDecendLevels = 255 );
+	WORD ContentCount( RESOURCE_ID_BASE rid, DWORD dwArg = 0 );
+	WORD ContentCountAll() const;
+	WORD ContentConsume( RESOURCE_ID_BASE rid, WORD iQty = 1, bool fTest = false, DWORD dwArg = 0 );
 
-	int ResourceConsume( const CResourceQtyArray * pResources, int iReplicationQty, bool fTest = false, DWORD dwArg = 0 );
-	size_t ResourceConsumePart( const CResourceQtyArray * pResources, int iReplicationQty, int iFailPercent, bool fTest = false, DWORD dwArg = 0 );
+	WORD ResourceConsume( const CResourceQtyArray *pResources, WORD iReplicationQty, bool fTest = false, DWORD dwArg = 0 );
+	size_t ResourceConsumePart( const CResourceQtyArray *pResources, WORD iReplicationQty, int iFailPercent, bool fTest = false, DWORD dwArg = 0 );
 
 	virtual void OnWeightChange( int iChange );
 	virtual void ContentAdd( CItem * pItem ) = 0;
@@ -3673,7 +3673,7 @@ public:
 
 	bool Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg );
 	bool Skill_Tracking( CGrayUID uidTarg, int iDistMax = SHRT_MAX );
-	bool Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly = false, int iReplicationQty = 1 );
+	bool Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly = false, WORD iReplicationQty = 1 );
 	bool Skill_MakeItem_Success();
 	bool Skill_Snoop_Check( const CItemContainer * pItem );
 	void Skill_Cleanup();	 // may have just cancelled targetting.
@@ -3982,14 +3982,14 @@ private:
 	int  NPC_GetHostilityLevelToward( const CChar * pCharTarg ) const;
 	int  NPC_GetAttackMotivation(CChar *pChar) const;
 	bool NPC_CheckHirelingStatus();
-	int  NPC_GetTrainMax( const CChar * pStudent, SKILL_TYPE Skill ) const;
+	WORD NPC_GetTrainMax( const CChar *pStudent, SKILL_TYPE Skill ) const;
 
 	bool NPC_OnVerb( CScript &s, CTextConsole * pSrc = NULL );
 	void NPC_OnHirePayMore( CItem * pGold, bool fHire = false );
 public:
 	bool NPC_OnHirePay( CChar * pCharSrc, CItemMemory * pMemory, CItem * pGold );
 	bool NPC_OnHireHear( CChar * pCharSrc );
-	int	 NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill );
+	WORD NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill );
 	bool NPC_OnTrainPay( CChar * pCharSrc, CItemMemory * pMemory, CItem * pGold );
 	bool NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pCmd );
 	bool NPC_TrainSkill( CChar * pCharSrc, SKILL_TYPE skill, WORD toTrain );

@@ -18,108 +18,108 @@ typedef CServerDef * CServerRef;
 // option flags
 enum OF_TYPE
 {
-	OF_NoDClickTarget			= 0x0000001,
-	OF_NoSmoothSailing			= 0x0000002,
-	OF_ScaleDamageByDurability	= 0x0000004,
-	OF_Command_Sysmsgs			= 0x0000008,
-	OF_PetSlots					= 0x0000010,
-	OF_OSIMultiSight			= 0x0000020,
-	OF_Items_AutoName			= 0x0000040,
-	OF_FileCommands				= 0x0000080,
-	OF_NoItemNaming				= 0x0000100,
-	OF_NoHouseMuteSpeech		= 0x0000200,
-	OF_NoContextMenuLOS			= 0x0000400,
-	OF_Flood_Protection			= 0x0001000,
-	OF_Buffs					= 0x0002000,
-	OF_NoPrefix					= 0x0004000,
-	OF_DyeType					= 0x0008000,
-	OF_DrinkIsFood				= 0x0010000,
-	OF_DClickNoTurn				= 0x0020000
+	OF_NoDClickTarget			= 0x00001,
+	OF_NoSmoothSailing			= 0x00002,
+	OF_ScaleDamageByDurability	= 0x00004,
+	OF_Command_Sysmsgs			= 0x00008,
+	OF_PetSlots					= 0x00010,
+	OF_OSIMultiSight			= 0x00020,
+	OF_Items_AutoName			= 0x00040,
+	OF_FileCommands				= 0x00080,
+	OF_NoItemNaming				= 0x00100,
+	OF_NoHouseMuteSpeech		= 0x00200,
+	OF_NoContextMenuLOS			= 0x00400,
+	OF_Flood_Protection			= 0x01000,
+	OF_Buffs					= 0x02000,
+	OF_NoPrefix					= 0x04000,
+	OF_DyeType					= 0x08000,
+	OF_DrinkIsFood				= 0x10000,
+	OF_DClickNoTurn				= 0x20000
 };
 
 enum EF_TYPE
 {
-	EF_NoDiagonalCheckLOS			= 0x0000001,
-	EF_Dynamic_Backsave				= 0x0000002,
-	EF_ItemStacking					= 0x0000004,
-	EF_ItemStackDrop				= 0x0000008,
-	EF_FastWalkPrevention			= 0x0000010,
-	EF_Intrinsic_Locals				= 0x0000020,
-	EF_Item_Strict_Comparison		= 0x0000040,
-	EF_AllowTelnetPacketFilter		= 0x0000200,
-	EF_Script_Profiler				= 0x0000400,
-	EF_DamageTools					= 0x0002000,
-	EF_UsePingServer				= 0x0008000,
-	EF_FixCanSeeInClosedConts		= 0x0020000,
+	EF_NoDiagonalCheckLOS		= 0x000001,
+	EF_Dynamic_Backsave			= 0x000002,
+	EF_ItemStacking				= 0x000004,
+	EF_ItemStackDrop			= 0x000008,
+	EF_FastWalkPrevention		= 0x000010,
+	EF_Intrinsic_Locals			= 0x000020,
+	EF_Item_Strict_Comparison	= 0x000040,
+	EF_AllowTelnetPacketFilter	= 0x000200,
+	EF_Script_Profiler			= 0x000400,
+	EF_DamageTools				= 0x002000,
+	EF_UsePingServer			= 0x008000,
+	EF_FixCanSeeInClosedConts	= 0x020000,
 #ifndef _MTNETWORK
-	EF_NetworkOutThread				= 0x0800000,
+	EF_NetworkOutThread			= 0x800000
 #endif
 };
 
 enum MAGICFLAGS_TYPE
 {
-	MAGICF_NODIRCHANGE			= 0x0000001,	// not rotate player when casting/targeting
-	MAGICF_PRECAST				= 0x0000002,	// use precasting (cast spell before targeting)
-	MAGICF_IGNOREAR				= 0x0000004,	// magic ignore ar
-	MAGICF_CANHARMSELF			= 0x0000008,	// i can do damage on self
-	MAGICF_STACKSTATS			= 0x0000010,	// allow multiple stat spells at once
-	MAGICF_FREEZEONCAST			= 0x0000020,	// disallow movement whilst casting
-	MAGICF_SUMMONWALKCHECK		= 0x0000040,	// disallow summoning creatures to places they can't normally step
-	MAGICF_NOFIELDSOVERWALLS	= 0x0000080,	// prevent fields from being formed over blocking objects.
-	MAGICF_NOANIM				= 0x0000100,	// auto spellflag_no_anim on all spells
-	MAGICF_OSIFORMULAS			= 0x0000200,	// calculated damage and duration based on OSI formulas
-	MAGICF_NOCASTFROZENHANDS	= 0x0000400,	// can't cast spells if got paralyzed holding something on hands
-	MAGICF_POLYMORPHSTATS		= 0x0000800,	// Polymorph spells give out stats based on base chars (old behaviour backwards).
-	MAGICF_OVERRIDEFIELDS		= 0x0001000,	// Prevent cast multiple field spells on the same tile, making the new field tile remove the previous field
+	MAGICF_NODIRCHANGE			= 0x0001,		// Not rotate player when casting/targeting
+	MAGICF_PRECAST				= 0x0002,		// Precasting (cast spell before target prompt)
+	MAGICF_IGNOREAR				= 0x0004,		// Magic damage ignore ar
+	MAGICF_CANHARMSELF			= 0x0008,		// Magic can do damage on self
+	MAGICF_STACKSTATS			= 0x0010,		// Different stat spells don't cancel each other out
+	MAGICF_FREEZEONCAST			= 0x0020,		// No movement whilst casting
+	MAGICF_SUMMONWALKCHECK		= 0x0040,		// Summoned creatures should be able to walk on the target location (e.g. water creatures to be summoned on water)
+	MAGICF_NOFIELDSOVERWALLS	= 0x0080,		// Field spells cannot cross over blocking objects
+	MAGICF_NOANIM				= 0x0100,		// Auto SPELLFLAG_NO_ANIM in every spell
+	MAGICF_OSIFORMULAS			= 0x0200,		// Calculate spell damage and duration based on OSI formulas
+	MAGICF_NOCASTFROZENHANDS	= 0x0400,		// Can't cast spells if got paralyzed holding something on hands
+	MAGICF_POLYMORPHSTATS		= 0x0800,		// Polymorph spells give out stats based on base chars (old behaviour backwards)
+	MAGICF_OVERRIDEFIELDS		= 0x1000		// Prevent cast multiple field spells on the same tile, making the new field tile remove the previous field
 };
 
 enum REVEALFLAGS_TYPE
 {
-	REVEALF_DETECTINGHIDDEN		= 0x001,		///* Reveal Spell with Detecting Hidden Skill.
-	REVEALF_LOOTINGSELF			= 0x002,		///* Reveal when looting self bodies.
-	REVEALF_LOOTINGOTHERS		= 0x004,		///* Reveal when looting bodies of other Players or NPCs.
-	REVEALF_SPEAK				= 0x008,		///* Reveal when speaking.
-	REVEALF_SPELLCAST			= 0x010			///* Reveal when starting to cast a Spell.
+	REVEALF_DETECTINGHIDDEN		= 0x01,			// Reveal when someone use Detecting Hidden skill
+	REVEALF_LOOTINGSELF			= 0x02,			// Reveal when loot self bodies
+	REVEALF_LOOTINGOTHERS		= 0x04,			// Reveal when loot others bodies
+	REVEALF_SPEAK				= 0x08,			// Reveal when speak
+	REVEALF_SPELLCAST			= 0x10			// Reveal when cast spells
 };
 
 enum RACIALFLAGS_TYPE
 {
-	RACIALF_HUMAN_STRONGBACK	= 0x0001,		// Increase carrying capacity (+60 stones of weight)
-	RACIALF_HUMAN_TOUGH			= 0x0002,		// Regenerate hitpoints faster (+2 Hit Point Regeneration)
-	RACIALF_HUMAN_WORKHORSE		= 0x0004,		// Find more resources while gathering hides, ore and lumber
-	RACIALF_HUMAN_JACKOFTRADES	= 0x0008,		// Skill calculations always consider 20.0 minimum ability on untrained skills
-	RACIALF_ELF_NIGHTSIGHT		= 0x0010,		// Permanent night sight effect
-	RACIALF_ELF_DIFFTRACK		= 0x0020,		// Increase difficulty to be tracked while hidden/invisible
-	RACIALF_ELF_WISDOM			= 0x0040,		// Permanent max mana bonus (+20 Mana Increase)
-	RACIALF_GARG_FLY			= 0x0080,		// Enable gargoyle fly ability (FEATURE_AOS_UPDATE_B is required to enable gargoyle ability book)
-	RACIALF_GARG_BERSERK		= 0x0100,		// Increase ferocity in situations of danger (15% Damage Increase + 3% Spell Damage Increase for each 20hp lost)
-	RACIALF_GARG_DEADLYAIM		= 0x0200,		// Throwing calculations always consider 20.0 minimum ability when untrained
-	RACIALF_GARG_MYSTICINSIGHT	= 0x0400		// Mysticism calculations always consider 30.0 minimum ability when untrained
+	RACIALF_HUMAN_STRONGBACK	= 0x001,		// Increase carrying capacity (+60 stones of weight)
+	RACIALF_HUMAN_TOUGH			= 0x002,		// Regenerate hitpoints faster (+2 Hit Point Regeneration)
+	RACIALF_HUMAN_WORKHORSE		= 0x004,		// Find more resources while gathering hides, ore and lumber
+	RACIALF_HUMAN_JACKOFTRADES	= 0x008,		// Skill calculations always consider 20.0 minimum ability on untrained skills
+	RACIALF_ELF_NIGHTSIGHT		= 0x010,		// Permanent night sight effect
+	RACIALF_ELF_DIFFTRACK		= 0x020,		// Increase difficulty to be tracked while hidden/invisible
+	RACIALF_ELF_WISDOM			= 0x040,		// Permanent max mana bonus (+20 Mana Increase)
+	RACIALF_GARG_FLY			= 0x080,		// Enable gargoyle fly ability (FEATURE_AOS_UPDATE_B is required to enable gargoyle ability book)
+	RACIALF_GARG_BERSERK		= 0x100,		// Increase ferocity in situations of danger (15% Damage Increase + 3% Spell Damage Increase for each 20hp lost)
+	RACIALF_GARG_DEADLYAIM		= 0x200,		// Throwing calculations always consider 20.0 minimum ability when untrained
+	RACIALF_GARG_MYSTICINSIGHT	= 0x400			// Mysticism calculations always consider 30.0 minimum ability when untrained
 };
 
 enum COMBATFLAGS_TYPE
 {
-	COMBAT_NODIRCHANGE			= 0x0000001,	// not rotate player when fighting
-	COMBAT_FACECOMBAT			= 0x0000002,	// allow faced combat only
-	COMBAT_PREHIT				= 0x0000004,	// allow prehit for close combat. first hit is instant (delay 0.1sec)
-	COMBAT_ELEMENTAL_ENGINE		= 0x0000008,	// use DAM*/RES* to split damage/resist into Physical/Fire/Cold/Poison/Energy (AOS) instead use old AR (pre-AOS)
-	COMBAT_DCLICKSELF_UNMOUNTS	= 0x0000020,	// unmount horse when dclicking self while in warmode
-	COMBAT_ALLOWHITFROMSHIP		= 0x0000040,	// allow attacking opponents from ships
-	COMBAT_ARCHERYCANMOVE		= 0x0000100,	// allow firing bow while moving
-	COMBAT_STAYINRANGE			= 0x0000200,	// must be in range at the end of the swing or the hit will miss
-	COMBAT_STACKARMOR			= 0x0001000,	// if a region is covered by more than one armor part, all AR will count
-	COMBAT_NOPOISONHIT			= 0x0002000		// Uses old (55i like) poisoning style: Poisoning > 30.0 && (RAND(100.0)> Poisoning) for monsters OR weapon.morez && (RAND(100) < weapon.morez ) for poisoned weapons.
+	COMBAT_NODIRCHANGE			= 0x0001,		// Not rotate player when fighting (like was in 0.51a)
+	COMBAT_FACECOMBAT			= 0x0002,		// Allow faced combat only (recommended)
+	COMBAT_PREHIT				= 0x0004,		// Allow prehit for close combat. first hit is instant (delay 0.1sec)
+	COMBAT_ELEMENTAL_ENGINE		= 0x0008,		// Use DAM*/RES* to split damage/resist into Physical/Fire/Cold/Poison/Energy (AOS) instead use old AR (pre-AOS)
+	COMBAT_DCLICKSELF_UNMOUNTS	= 0x0020,		// Unmount horse when dclicking self while in warmode
+	COMBAT_ALLOWHITFROMSHIP		= 0x0040,		// Allow attacking opponents from ships
+	COMBAT_ARCHERYCANMOVE		= 0x0100,		// Allow firing bow while moving
+	COMBAT_STAYINRANGE			= 0x0200,		// Abort attack swing when out of range instead of waiting to come back in range
+	COMBAT_STACKARMOR			= 0x1000,		// If a region is covered by more than one armor part, all AR will count
+	COMBAT_NOPOISONHIT			= 0x2000		// Disables old (55i like) poisoning style (0~100% chance based on Poisoning skill for monsters, or 50% chance for poisoned weapons)
 };
 
 enum TOOLTIPMODE_TYPE
 {
-	TOOLTIPMODE_SENDFULL	= 0x00,	// always send full tooltip packet
-	TOOLTIPMODE_SENDVERSION	= 0x01	// send version packet and wait for client to request full tooltip
+	TOOLTIPMODE_SENDFULL		= 0x0,			// Always send full tooltip
+	TOOLTIPMODE_SENDVERSION		= 0x1			// Send only tooltip version and wait for client to request full tooltip
 };
 
 enum BODYPART_TYPE
 {
-	ARMOR_HEAD = 0,
+	ARMOR_HEAD,
 	ARMOR_NECK,
 	ARMOR_BACK,
 	ARMOR_CHEST,	// or thorax
@@ -145,20 +145,20 @@ enum BODYPART_TYPE
 	BODYPART_QTY
 };
 
-#define DAMAGE_GOD			0x0001	// Nothing can block this.
-#define DAMAGE_HIT_BLUNT	0x0002	// Physical hit of some sort.
-#define DAMAGE_MAGIC		0x0004	// Magic blast of some sort. (we can be immune to magic to some extent)
-#define DAMAGE_POISON		0x0008	// Or biological of some sort ? (HARM spell)
-#define DAMAGE_FIRE			0x0010	// Fire damage of course.  (Some creatures are immune to fire)
-#define DAMAGE_ENERGY		0x0020	// lightning.
-#define DAMAGE_GENERAL		0x0080	// All over damage. As apposed to hitting just one point.
-#define DAMAGE_ACIDIC		0x0100	// damages armor
-#define DAMAGE_COLD			0x0200	// cold or water based damage
-#define DAMAGE_HIT_SLASH	0x0400	// sword
-#define DAMAGE_HIT_PIERCE	0x0800	// spear.
-#define DAMAGE_NODISTURB	0x2000	// victim won't be disturbed
-#define DAMAGE_NOREVEAL		0x4000	// Attacker is not revealed for this
-#define DAMAGE_NOUNPARALYZE	0x8000  // victim won't be unparalyzed
+#define DAMAGE_GOD			0x00001	// Nothing can block this.
+#define DAMAGE_HIT_BLUNT	0x00002	// Physical hit of some sort.
+#define DAMAGE_MAGIC		0x00004	// Magic blast of some sort. (we can be immune to magic to some extent)
+#define DAMAGE_POISON		0x00008	// Or biological of some sort ? (HARM spell)
+#define DAMAGE_FIRE			0x00010	// Fire damage of course.  (Some creatures are immune to fire)
+#define DAMAGE_ENERGY		0x00020	// lightning.
+#define DAMAGE_GENERAL		0x00080	// All over damage. As apposed to hitting just one point.
+#define DAMAGE_ACIDIC		0x00100	// damages armor
+#define DAMAGE_COLD			0x00200	// cold or water based damage
+#define DAMAGE_HIT_SLASH	0x00400	// sword
+#define DAMAGE_HIT_PIERCE	0x00800	// spear.
+#define DAMAGE_NODISTURB	0x02000	// victim won't be disturbed
+#define DAMAGE_NOREVEAL		0x04000	// Attacker is not revealed for this
+#define DAMAGE_NOUNPARALYZE	0x08000	// victim won't be unparalyzed
 #define DAMAGE_FIXED		0x10000	// already fixed damage, don't do calcs ... only create blood, anim, sounds... and update memories and attacker
 
 typedef DWORD DAMAGE_TYPE;		// describe a type of damage.
@@ -804,9 +804,9 @@ public:
 	int  m_iStaminaLossAtWeight;	// %Weight at which characters begin to lose stamina
 	int  m_iHitpointPercentOnRez;	// How many hitpoints do they get when they are rez'd?
 	int  m_iHitsHungerLoss;		// How many % of HP will loose char on starving
-	int  m_iMaxBaseSkill;		// Maximum value for base skills at char creation
-	int	 m_iTrainSkillCost;
-	int	 m_iTrainSkillMax;
+	WORD m_iMaxBaseSkill;		// Maximum value for base skills at char creation
+	WORD m_iTrainSkillCost;
+	WORD m_iTrainSkillMax;
 	int  m_iTrainSkillPercent;	// How much can NPC's train up to ?
 	int  m_fDeadCannotSeeLiving;
 	int  m_iMediumCanHearGhosts;	// At this Spirit Speak skill level players can understand ghosts speech instead hear 'oOOoO ooO'
@@ -819,14 +819,13 @@ public:
 	int  m_iCombatDamageEra;	// define damage formula to use on physical combat
 	int  m_iCombatHitChanceEra;	// define hit chance formula to use on physical combat
 	int  m_iCombatSpeedEra;		// define swing speed formula to use on physical combat
-	int  m_iSkillPracticeMax;	// max skill level a player can practice on dummies/targets upto
+	WORD m_iSkillPracticeMax;	// max skill level a player can practice on dummies/targets upto
 	bool m_iPacketDeathAnimation;	// packet 02c
 
 	// Flags for controlling pvp/pvm behaviour of players
 	int  m_iCombatFlags;		// combat flags
 	int  m_iMagicFlags;			// magic flags
 	int  m_iRacialFlags;		// racial traits flags
-	unsigned char m_iSkillFlags;// Skill flags (expansion checks, etc)
 	int  m_iRevealFlags;		///* reveal flags used for SPELL_REVEAL (mostly for backwards).
 
 	// Criminal/Karma

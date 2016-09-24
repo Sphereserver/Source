@@ -226,7 +226,7 @@ bool CContainer::ContentFindKeyFor( CItem *pLocked ) const
 	return (pLocked->m_itContainer.m_lockUID && (ContentFind(RESOURCE_ID(RES_TYPEDEF, IT_KEY), pLocked->m_itContainer.m_lockUID) != NULL));
 }
 
-int CContainer::ContentConsume( RESOURCE_ID_BASE rid, int amount, bool fTest, DWORD dwArg )
+WORD CContainer::ContentConsume( RESOURCE_ID_BASE rid, WORD amount, bool fTest, DWORD dwArg )
 {
 	ADDTOCALLSTACK("CContainer::ContentConsume");
 	// ARGS:
@@ -270,11 +270,11 @@ int CContainer::ContentConsume( RESOURCE_ID_BASE rid, int amount, bool fTest, DW
 	return amount;
 }
 
-int CContainer::ContentCount( RESOURCE_ID_BASE rid, DWORD dwArg )
+WORD CContainer::ContentCount( RESOURCE_ID_BASE rid, DWORD dwArg )
 {
 	ADDTOCALLSTACK("CContainer::ContentCount");
 	// Calculate total (gold or other items) in this recursed container
-	return INT_MAX - ContentConsume(rid, INT_MAX, true, dwArg);
+	return USHRT_MAX - ContentConsume(rid, USHRT_MAX, true, dwArg);
 }
 
 void CContainer::ContentAttrMod( DWORD dwAttr, bool fSet )
@@ -348,7 +348,7 @@ void CContainer::ContentsTransfer( CItemContainer *pCont, bool fNoNewbie )
 	}
 }
 
-size_t CContainer::ResourceConsumePart( const CResourceQtyArray *pResources, int iReplicationQty, int iDamagePercent, bool fTest, DWORD dwArg )
+size_t CContainer::ResourceConsumePart( const CResourceQtyArray *pResources, WORD iReplicationQty, int iDamagePercent, bool fTest, DWORD dwArg )
 {
 	ADDTOCALLSTACK("CContainer::ResourceConsumePart");
 	// Consume just some of the resources.
@@ -386,7 +386,7 @@ size_t CContainer::ResourceConsumePart( const CResourceQtyArray *pResources, int
 	return iMissing;
 }
 
-int CContainer::ResourceConsume( const CResourceQtyArray *pResources, int iReplicationQty, bool fTest, DWORD dwArg )
+WORD CContainer::ResourceConsume( const CResourceQtyArray *pResources, WORD iReplicationQty, bool fTest, DWORD dwArg )
 {
 	ADDTOCALLSTACK("CContainer::ResourceConsume");
 	// Consume or test all the required resources.
@@ -404,14 +404,14 @@ int CContainer::ResourceConsume( const CResourceQtyArray *pResources, int iRepli
 		iReplicationQty = ResourceConsume(pResources, iReplicationQty, true, dwArg);
 	}
 
-	int iQtyMin = INT_MAX;
+	WORD iQtyMin = USHRT_MAX;
 	for ( size_t i = 0; i < pResources->GetCount(); i++ )
 	{
-		int iResQty = static_cast<int>(pResources->GetAt(i).GetResQty());
+		WORD iResQty = static_cast<WORD>(pResources->GetAt(i).GetResQty());
 		if ( iResQty <= 0 ) // not sure why this would be true
 			continue;
 
-		int iQtyTotal = (iResQty * iReplicationQty);
+		WORD iQtyTotal = iResQty * iReplicationQty;
 		RESOURCE_ID rid = pResources->GetAt(i).GetResourceID();
 		if ( rid.GetResType() == RES_SKILL )
 		{
@@ -423,32 +423,30 @@ int CContainer::ResourceConsume( const CResourceQtyArray *pResources, int iRepli
 			continue;
 		}
 
-		int iQtyCur = iQtyTotal - ContentConsume(rid, iQtyTotal, fTest, dwArg);
+		WORD iQtyCur = iQtyTotal - ContentConsume(rid, iQtyTotal, fTest, dwArg);
 		iQtyCur /= iResQty;
 		if ( iQtyCur < iQtyMin )
 			iQtyMin = iQtyCur;
 	}
 
-	if ( iQtyMin == INT_MAX )	// it has no resources ? So i guess we can make it from nothing ?
+	if ( iQtyMin == USHRT_MAX )		// it has no resources ? So i guess we can make it from nothing ?
 		return iReplicationQty;
 
 	return iQtyMin;
 }
 
-int CContainer::ContentCountAll() const
+WORD CContainer::ContentCountAll() const
 {
 	ADDTOCALLSTACK("CContainer::ContentCountAll");
 	// RETURN:
 	//  A count of all the items in this container and sub contianers.
-	int iTotal = 0;
+	WORD iTotal = 0;
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
 		iTotal++;
 		const CItemContainer *pCont = dynamic_cast<const CItemContainer *>(pItem);
 		if ( !pCont )
 			continue;
-		//if ( !pCont->IsSearchable() )
-		//	continue;	// found a sub
 		iTotal += pCont->ContentCountAll();
 	}
 	return iTotal;
@@ -511,26 +509,26 @@ bool CContainer::r_WriteValContainer( LPCTSTR pszKey, CGString &sVal, CTextConso
 	{
 		case 0:			//	count
 		{
-			int iTotal = 0;
+			WORD iTotal = 0;
 			for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 				iTotal++;
 
-			sVal.FormatVal(iTotal);
+			sVal.FormatUVal(iTotal);
 			break;
 		}
 
 		case 1:			//	fcount
-			sVal.FormatVal(ContentCountAll());
+			sVal.FormatUVal(ContentCountAll());
 			break;
 
 		case 2:			//	rescount
-			sVal.FormatVal(*pKey ? ContentCount(g_Cfg.ResourceGetID(RES_ITEMDEF, pKey)) : GetCount());
+			sVal.FormatUVal(*pKey ? ContentCount(g_Cfg.ResourceGetID(RES_ITEMDEF, pKey)) : GetCount());
 			break;
 
 		case 3:			//	restest
 		{
 			CResourceQtyArray Resources;
-			sVal.FormatVal(Resources.Load(pKey) ? ResourceConsume(&Resources, 1, true) : 0);
+			sVal.FormatUVal(Resources.Load(pKey) ? ResourceConsume(&Resources, 1, true) : 0);
 			break;
 		}
 

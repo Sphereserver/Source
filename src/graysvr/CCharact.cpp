@@ -1216,7 +1216,7 @@ void CChar::UpdateVisualRange()
 	if ( g_Serv.IsLoading() || !m_pPlayer )
 		return;
 
-	DEBUG_WARN(("CChar::UpdateVisualRange called, m_iVisualRange is %d\n", m_iVisualRange));
+	DEBUG_WARN(("CChar::UpdateVisualRange called, m_iVisualRange is %hhu\n", m_iVisualRange));
 
 	if ( m_pClient )
 		m_pClient->addVisualRange( m_iVisualRange );
@@ -1844,10 +1844,7 @@ bool CChar::ItemDrop( CItem * pItem, const CPointMap & pt )
 			ptStack.m_z += maximum(pStack->GetHeight(), 1);
 			//DEBUG_ERR(("(%d > %d) || (%d > %d)\n", ptStack.m_z, iStackMaxZ, ptStack.m_z + maximum(pItem->GetHeight(), 1), iStackMaxZ + 3));
 			if ( (ptStack.m_z > iStackMaxZ) || (ptStack.m_z + maximum(pItem->GetHeight(), 1) > iStackMaxZ + 3) )
-			{
-				ItemBounce( pItem );		// put the item on backpack (or drop it on ground if it's too heavy)
 				return false;
-			}
 		}
 		return( pItem->MoveToCheck( ptStack, this ));	// don't flip the item if it got stacked
 	}
@@ -2266,8 +2263,7 @@ CItem * CChar::Horse_GetMountItem() const
 					const_cast<CGrayUIDBase&>(m_atRidden.m_FigurineUID) = pItemMount->GetUID();
 					pItem = pItemMount;
 
-					DEBUG_ERR(("UID=0%lx, id=0%x '%s', Fixed mount item UID=0%lx, id=0%x '%s'\n",
-						(DWORD)GetUID(), GetBaseID(), GetName(), (DWORD)(pItem->GetUID()), pItem->GetBaseID(), pItem->GetName()));
+					DEBUG_ERR(("UID=0%lx, id=0%x '%s', Fixed mount item UID=0%lx, id=0%x '%s'\n", static_cast<DWORD>(GetUID()), GetBaseID(), GetName(), static_cast<DWORD>(pItem->GetUID()), pItem->GetBaseID(), pItem->GetName()));
 				}
 			}
 		}
@@ -3611,7 +3607,7 @@ bool CChar::SetPrivLevel(CTextConsole * pSrc, LPCTSTR pszFlags)
 	PLEVEL_TYPE PrivLevel = CAccount::GetPrivLevelText(pszFlags);
 
 	// Remove Previous GM Robe
-	ContentConsume(RESOURCE_ID(RES_ITEMDEF, ITEMID_GM_ROBE), INT_MAX);
+	ContentConsume(RESOURCE_ID(RES_ITEMDEF, ITEMID_GM_ROBE), USHRT_MAX);
 
 	if ( PrivLevel >= PLEVEL_Counsel )
 	{
@@ -3807,7 +3803,7 @@ stopandret:
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("trigger '%s' action '%d' [0%lx]\n", pszTrigName, iAction, (DWORD)GetUID());
+	g_Log.EventDebug("trigger '%s' action '%d' [0%lx]\n", pszTrigName, iAction, static_cast<DWORD>(GetUID()));
 	EXC_DEBUG_END;
 	return iRet;
 }

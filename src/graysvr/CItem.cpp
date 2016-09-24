@@ -254,20 +254,18 @@ CItem * CItem::GenerateScript( CChar * pSrc)
 		case IT_CONTAINER_LOCKED:
 			{
 				// At this level it just means to add a key for it.
-				CItemContainer * pCont = dynamic_cast <CItemContainer *> ( this );
+				CItemContainer *pCont = static_cast<CItemContainer *>(this);
 				ASSERT(pCont);
 				pCont->MakeKey();
 			}
 			break;
 		case IT_CORPSE:
 			{
-				//	initialize TAG.BLOOD as the amount of blood inside
-				CItemBase	*pItemDef = Item_GetDef();
-				int iBlood = 0;
+				// Initialize TAG.BLOOD as the amount of blood inside
+				CItemBase *pItemDef = Item_GetDef();
+				INT64 iBlood = 0;
 				if ( pItemDef )
-				{
-					iBlood = static_cast<int>(pItemDef->m_TagDefs.GetKeyNum("MAXBLOOD"));
-				}
+					iBlood = pItemDef->m_TagDefs.GetKeyNum("MAXBLOOD");
 				if ( !iBlood )
 					iBlood = 5;
 				else if ( iBlood < 0 )
@@ -367,7 +365,7 @@ CItem * CItem::CreateHeader( TCHAR * pArg, CObjBase * pCont, bool fDupeCheck, CC
 		// Is the item movable ?
 		if ( ! pItem->IsMovableType() && pCont && pCont->IsItem())
 		{
-			DEBUG_ERR(("Script Error: 0%x item is not movable type, cont=0%lx\n", id, static_cast<DWORD>((pCont->GetUID()))));
+			DEBUG_ERR(("Script Error: 0%x item is not movable type, cont=0%lx\n", id, static_cast<DWORD>(pCont->GetUID())));
 			pItem->Delete();
 			return( NULL );
 		}
@@ -473,7 +471,7 @@ CItem * CItem::ReadTemplate( CResourceLock & s, CObjBase * pCont ) // static
 					if ( pItem->IsItemInContainer())
 					{
 						fItemAttrib = true;
-						pItem->SetContainedLayer( static_cast<signed char>(pItem->GetAmount()));	// set the Restock amount.
+						pItem->SetContainedLayer(static_cast<BYTE>(pItem->GetAmount()));	// set the Restock amount.
 					}
 				}
 				continue;
@@ -486,7 +484,7 @@ CItem * CItem::ReadTemplate( CResourceLock & s, CObjBase * pCont ) // static
 					{
 						continue;
 					}
-					pCont = dynamic_cast <CItemContainer *> ( pItem );
+					pCont = static_cast<CItemContainer *>(pItem);
 					if ( pCont == NULL )
 					{
 						DEBUG_ERR(( "CreateTemplate CContainer %s is not a container\n", pItem->GetResourceName() ));
@@ -576,9 +574,9 @@ bool CItem::IsMovable() const
 // Doing this way lets speed be changed for all created weapons from the script itself instead of rewriting one by one.
 BYTE CItem::GetSpeed() const
 {
-	if (m_TagDefs.GetKey("OVERRIDE.SPEED"))
+	if ( m_TagDefs.GetKey("OVERRIDE.SPEED") )
 		return static_cast<BYTE>(m_TagDefs.GetKeyNum("OVERRIDE.SPEED"));
-	CItemBase * pItemDef = dynamic_cast<CItemBase *>(Base_GetDef());
+	CItemBase *pItemDef = static_cast<CItemBase *>(Base_GetDef());
 	return pItemDef->GetSpeed();
 }
 
@@ -781,7 +779,7 @@ int CItem::FixWeirdness()
 		case IT_EQ_MEMORY_OBJ:
 		{
 			// Should not exist except equipped.
-			CItemMemory *pItemTemp = dynamic_cast<CItemMemory *>(this);
+			CItemMemory *pItemTemp = static_cast<CItemMemory *>(this);
 			if ( !pItemTemp )
 				return 0x2222;	// get rid of it.
 			break;
@@ -932,7 +930,7 @@ int CItem::FixWeirdness()
 	return IsWeird();
 }
 
-CItem * CItem::UnStackSplit( int amount, CChar * pCharSrc )
+CItem * CItem::UnStackSplit( WORD amount, CChar * pCharSrc )
 {
 	ADDTOCALLSTACK("CItem::UnStackSplit");
 	// Set this item to have this amount.
@@ -1378,7 +1376,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 	}
 	else
 	{
-		pszTitle = "%u ";
+		pszTitle = "%hu ";
 		len += sprintf( pTemp+len, pszTitle, GetAmount());
 	}
 
@@ -1515,7 +1513,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 
 		case IT_STONE_TOWN:
 			{
-				const CItemStone * pStone = dynamic_cast <const CItemStone*>(this);
+				const CItemStone *pStone = static_cast<const CItemStone*>(this);
 				ASSERT(pStone);
 				len += sprintf( pTemp+len, " (pop:%" FMTSIZE_T ")", pStone->GetCount());
 			}
@@ -1547,7 +1545,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 		case IT_LIGHT_OUT:
 			// how many charges ?
 			if ( !IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC) )
-				len += sprintf(pTemp + len, " (%d %s)", m_itLight.m_charges, g_Cfg.GetDefaultMsg(DEFMSG_ITEMTITLE_CHARGES));
+				len += sprintf(pTemp + len, " (%hu %s)", m_itLight.m_charges, g_Cfg.GetDefaultMsg(DEFMSG_ITEMTITLE_CHARGES));
 			break;
 
 		default:
@@ -1598,33 +1596,28 @@ height_t CItem::GetHeight() const
 {
 	ADDTOCALLSTACK("CItem::GetHeight");
 
-	height_t tmpHeight;
-
-	char * heightDef = Str_GetTemp();
-
+	char *heightDef = Str_GetTemp();
 	sprintf(heightDef, "itemheight_0%x", static_cast<unsigned int>(GetDispID()));
-	tmpHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(heightDef));
-	//DEBUG_ERR(("2 tmpHeight %d\n",tmpHeight));
-	if ( tmpHeight ) //set by a defname ([DEFNAME charheight]  height_0a)
+
+	height_t tmpHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(heightDef));
+	if ( tmpHeight )	// set by a defname ([DEFNAME charheight]  height_0a)
 		return tmpHeight;
 
 	sprintf(heightDef, "itemheight_%u", static_cast<unsigned int>(GetDispID()));
 	tmpHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(heightDef));
-	//DEBUG_ERR(("3 tmpHeight %d\n",tmpHeight));
-	if ( tmpHeight ) //set by a defname ([DEFNAME charheight]  height_10)
+	if ( tmpHeight )	// set by a defname ([DEFNAME charheight]  height_10)
 		return tmpHeight;
 
 	const CItemBase * pItemDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(GetDispID()));
-	const CItemBaseDupe * pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(GetDispID()));
 	if (pItemDef != NULL)
 	{
-		tmpHeight = (pDupeDef ? pDupeDef->GetHeight() : pItemDef->GetHeight());
-		if (tmpHeight)
+		const CItemBaseDupe * pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(GetDispID()));
+		tmpHeight = pDupeDef ? pDupeDef->GetHeight() : pItemDef->GetHeight();
+		if ( tmpHeight )
 			return tmpHeight;
 	}
 
-	//DEBUG_ERR(("PLAYER_HEIGHT %d\n",PLAYER_HEIGHT));
-	return 0; //if everything fails
+	return 0;	//if everything fails
 }
 
 bool CItem::SetBase( CItemBase * pItemDef )
@@ -1720,17 +1713,17 @@ bool CItem::SetDispID( ITEMID_TYPE id )
 	return( true );
 }
 
-void CItem::SetAmount( unsigned int amount )
+void CItem::SetAmount( WORD amount )
 {
 	ADDTOCALLSTACK("CItem::SetAmount");
 	// propagate the weight change.
 	// Setting to 0 might be legal if we are deleteing it ?
 
-	unsigned int oldamount = GetAmount();
+	WORD oldamount = GetAmount();
 	if ( oldamount == amount )
 		return;
 
-	m_amount = static_cast<WORD>(amount);
+	m_amount = amount;
 	// sometimes the diff graphics for the types are not in the client.
 	if ( IsType(IT_ORE))
 	{
@@ -1748,7 +1741,7 @@ void CItem::SetAmount( unsigned int amount )
 	if (pParentCont)
 	{
 		ASSERT( IsItemEquipped() || IsItemInContainer());
-		pParentCont->OnWeightChange(GetWeight(static_cast<WORD>(amount)) - GetWeight(static_cast<WORD>(oldamount)));
+		pParentCont->OnWeightChange(GetWeight(amount) - GetWeight(oldamount));
 	}
 	
 	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_AMOUNT);
@@ -1777,16 +1770,13 @@ bool CItem::SetMaxAmount(WORD amount)
 	return true;
 }
 
-void CItem::SetAmountUpdate( unsigned int amount )
+void CItem::SetAmountUpdate( WORD amount )
 {
 	ADDTOCALLSTACK("CItem::SetAmountUpdate");
-	unsigned int oldamount = GetAmount();
-	SetAmount( amount );
-	if ( oldamount < 5 || amount < 5 )	// beyond this make no visual diff.
-	{
-		// Strange client thing. You have to remove before it will update this.
-		RemoveFromView();
-	}
+	WORD oldamount = GetAmount();
+	SetAmount(amount);
+	if ( oldamount < 5 || amount < 5 )	// beyond this make no visual diff
+		RemoveFromView();		// strange client thing, you have to remove before it will update this
 	Update();
 }
 
@@ -1798,12 +1788,12 @@ void CItem::WriteUOX( CScript & s, int index )
 	s.Printf( "SERIAL %lu\n", static_cast<DWORD>(GetUID()));
 	s.Printf( "NAME %s\n", GetName());
 	s.Printf( "ID %d\n", GetDispID());
-	s.Printf( "X %d\n", GetTopPoint().m_x );
-	s.Printf( "Y %d\n", GetTopPoint().m_y );
-	s.Printf( "Z %d\n", GetTopZ());
+	s.Printf( "X %hd\n", GetTopPoint().m_x );
+	s.Printf( "Y %hd\n", GetTopPoint().m_y );
+	s.Printf( "Z %hhd\n", GetTopZ());
 	s.Printf( "CONT %d\n", -1 );
 	s.Printf( "TYPE %d\n", m_type );
-	s.Printf( "AMOUNT %d\n", m_amount );
+	s.Printf( "AMOUNT %hu\n", m_amount );
 	s.Printf( "COLOR %d\n", GetHue());
 	//ATT 5
 	//VALUE 1
@@ -1976,15 +1966,13 @@ bool CItem::LoadSetContainer( CGrayUID uid, LAYER_TYPE layer )
 
 	if ( IsTypeSpellbook() && pObjCont->GetTopLevelObj()->IsChar())	// Intercepting the spell's addition here for NPCs, they store the spells on vector <Spells>m_spells for better access from their AI.
 	{
-		CChar * pChar = dynamic_cast <CObjBase*>(pObjCont->GetTopLevelObj())->GetUID().CharFind();// ? dynamic_cast <CObjBase*>(GetTopLevelObj())->GetUID().CharFind()->m_pNPC : NULL;
+		CChar *pChar = dynamic_cast<CObjBase *>(pObjCont->GetTopLevelObj())->GetUID().CharFind();
 		if (pChar->m_pNPC)
 			pChar->NPC_AddSpellsFromBook(this);
 	}
 	if ( pObjCont->IsItem())
 	{
-		// layer is not used here of course.
-
-		CItemContainer * pCont = dynamic_cast <CItemContainer *> (pObjCont);
+		CItemContainer *pCont = dynamic_cast<CItemContainer *>(pObjCont);
 		if ( pCont != NULL )
 		{
 			pCont->ContentAdd( this );
@@ -2006,7 +1994,7 @@ bool CItem::LoadSetContainer( CGrayUID uid, LAYER_TYPE layer )
 		}
 	}
 
-	DEBUG_ERR(("Non container uid=0%lx,id=0%x\n", static_cast<DWORD>(uid), pObjCont->GetBaseID()));
+	DEBUG_ERR(("Non container uid=0%lx,id=0%hx\n", static_cast<DWORD>(uid), pObjCont->GetBaseID()));
 	return( false );	// not a container.
 }
 
@@ -2482,19 +2470,19 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				return(true);
 			}
 		case IC_AMOUNT:
-			SetAmountUpdate( s.GetArgVal());
+			SetAmountUpdate(static_cast<WORD>(s.GetArgVal()));
 			return true;
 		case IC_ATTR:
-			m_Attr = s.GetArgVal();
+			m_Attr = static_cast<DWORD>(s.GetArgVal());
 			break;
 		case IC_BASEWEIGHT:
-			m_weight = (WORD)s.GetArgVal();
+			m_weight = static_cast<WORD>(s.GetArgVal());
 			return true;
 		case IC_CAN:
-			m_Can = s.GetArgVal();
+			m_Can = static_cast<DWORD>(s.GetArgVal());
 			return true;
 		case IC_CANUSE:
-			m_CanUse = s.GetArgVal();
+			m_CanUse = static_cast<DWORD>(s.GetArgVal());
 			return true;
 		case IC_CONT:	// needs special processing.
 			{
@@ -2646,7 +2634,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 								pt.m_map = static_cast<BYTE>(ATOI(ppVal[3]));
 						case 3:
 							if ( IsDigit(ppVal[2][0]) || (ppVal[2][0] == '-') )
-								pt.m_z = static_cast<signed char>(ATOI(ppVal[2]));
+								pt.m_z = static_cast<char>(ATOI(ppVal[2]));
 						case 2:
 							pt.m_y = static_cast<short>(ATOI(ppVal[1]));
 						case 1:
@@ -2674,7 +2662,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			if ( IsTypeSpellbook() )
 				m_itSpellbook.m_baseid = static_cast<WORD>(s.GetArgVal());
 			else
-				m_itNormal.m_morep.m_z = static_cast<signed char>(s.GetArgVal());
+				m_itNormal.m_morep.m_z = static_cast<char>(s.GetArgVal());
 			break;
 		case IC_P:
 			// Loading or import ONLY ! others use the r_Verb
@@ -2769,7 +2757,7 @@ bool CItem::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from s
 			{
 				if ( IsContainer() )
 				{
-					CContainer * pCont = dynamic_cast<CContainer*>(this);
+					CContainer *pCont = dynamic_cast<CContainer*>(this);
 					CResourceQtyArray Resources;
 					Resources.Load( s.GetArgStr() );
 					pCont->ResourceConsume( &Resources, 1, false );
@@ -3278,9 +3266,14 @@ void CItem::ConvertBolttoCloth()
 
 	// We need to check all cloth_bolt items
 	bool correctID = false;
-	for (int i = static_cast<int>(ITEMID_CLOTH_BOLT1); i <= static_cast<int>(ITEMID_CLOTH_BOLT8); i++)
-		if ( IsSameDispID(static_cast<ITEMID_TYPE>(i) ))
+	for ( int i = static_cast<int>(ITEMID_CLOTH_BOLT1); i <= static_cast<int>(ITEMID_CLOTH_BOLT8); i++ )
+	{
+		if ( IsSameDispID(static_cast<ITEMID_TYPE>(i)) )
+		{
 			correctID = true;
+			break;
+		}
+	}
 
 	if ( !correctID )
 		return;
@@ -3291,7 +3284,7 @@ void CItem::ConvertBolttoCloth()
 		return;
 
 	// Start the conversion
-	int iOutAmount = GetAmount();
+	WORD iOutAmount = GetAmount();
 	CItemContainer *pCont = dynamic_cast<CItemContainer *>(GetParentObj());
 	Delete();
 
@@ -3307,21 +3300,17 @@ void CItem::ConvertBolttoCloth()
 
 		CItem * pItemNew = CItem::CreateTemplate( pBaseDef->GetID() );
 		ASSERT(pItemNew);
-		pItemNew->SetAmount( iOutAmount * static_cast<int>(pDefCloth->m_BaseResources[i].GetResQty()) );
-		if ( pItemNew->IsType( IT_CLOTH ))
-			pItemNew->SetHue( GetHue() );
+		pItemNew->SetAmount(static_cast<WORD>(iOutAmount * pDefCloth->m_BaseResources[i].GetResQty()));
+		if ( pItemNew->IsType(IT_CLOTH) )
+			pItemNew->SetHue(GetHue());
 		if ( pCont )
-		{
-			pCont->ContentAdd( pItemNew );
-		}
+			pCont->ContentAdd(pItemNew);
 		else
-		{
 			pItemNew->MoveToDecay(GetTopPoint(), g_Cfg.m_iDecay_Item);
-		}
 	}
 }
 
-int CItem::ConsumeAmount( int iQty, bool fTest )
+WORD CItem::ConsumeAmount( WORD iQty, bool fTest )
 {
 	ADDTOCALLSTACK("CItem::ConsumeAmount");
 	// Eat or drink specific item. delete it when gone.
@@ -3329,7 +3318,7 @@ int CItem::ConsumeAmount( int iQty, bool fTest )
 	if ( this == NULL )	// can use none if there is nothing? or can we use all?
 		return iQty;
 
-	int iQtyMax = GetAmount();
+	WORD iQtyMax = GetAmount();
 	if ( iQty < iQtyMax )
 	{
 		if ( ! fTest )
@@ -5109,7 +5098,6 @@ bool CItem::OnTick()
 	
 	EXC_DEBUG_START;
 	g_Log.EventDebug("'%s' item [0%lx]\n", GetName(), static_cast<DWORD>(GetUID()));
-	//g_Log.EventError("'%s' item [0%lx]\n", GetName(), GetUID());
 	EXC_DEBUG_END;
 #endif
 

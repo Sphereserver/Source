@@ -982,9 +982,9 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 		}
 		else
 		{
-			int iGold = m_pChar->GetContainerCreate(LAYER_PACK)->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), static_cast<int>(costtotal), true);
+			WORD iGold = m_pChar->GetContainerCreate(LAYER_PACK)->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), static_cast<WORD>(costtotal), true);
 			if ( !g_Cfg.m_fPayFromPackOnly && iGold )
-				iGold = m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), static_cast<int>(costtotal), true);
+				iGold = m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), static_cast<WORD>(costtotal), true);
 
 			if ( iGold )
 			{
@@ -1121,7 +1121,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 	// Take the gold and add it to the vendor
 	if ( !bBoss )
 	{
-		int iGold = m_pChar->GetContainerCreate(LAYER_PACK)->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), static_cast<int>(costtotal));
+		int iGold = m_pChar->GetContainerCreate(LAYER_PACK)->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), static_cast<WORD>(costtotal));
 		if ( !g_Cfg.m_fPayFromPackOnly && iGold )
 			m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), iGold);
 
@@ -1453,7 +1453,7 @@ void CClient::Event_PromptResp(LPCTSTR pszText, size_t len, DWORD context1, DWOR
 		}
 
 		default:
-			//DEBUG_ERR(("%x:Unrequested Prompt mode %d\n", m_Socket.GetSocket(), PrvTargMode));
+			//DEBUG_ERR(("%lx:Unrequested Prompt mode %d\n", GetSocketID(), promptMode));
 			SysMessageDefault(DEFMSG_MSG_PROMPT_UNEXPECTED);
 			return;
 	}
