@@ -2416,7 +2416,6 @@ bool PacketClientVersion::onReceive(NetState* net)
 
 		DWORD version = CCrypt::GetVerFromString(versionStr);
 		net->m_reportedVersion = version;
-		net->detectAsyncMode();
 
 		DEBUG_MSG(("Getting CliVersionReported %lu\n", version));
 		

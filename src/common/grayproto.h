@@ -963,7 +963,7 @@ enum NOTO_TYPE
 	NOTO_INVUL			// 7= invulnerable
 };
 
-// client versions (expansions)
+// Client versions (expansions)
 #define MINCLIVER_T2A				1253502	// minimum client to activate T2A packets (1.25.35b)
 #define MINCLIVER_LBR				3000702	// minimum client to activate LBR packets (3.0.7b)
 #define MINCLIVER_AOS				4000000	// minimum client to activate AOS packets (4.0.0a)
@@ -973,21 +973,21 @@ enum NOTO_TYPE
 #define MINCLIVER_HS				7000900	// minimum client to activate HS packets (7.0.9.0)
 #define MINCLIVER_TOL				7004565	// minimum client to activate TOL packets (7.0.45.65)
 
-// client versions (extended status gump info)
+// Client versions (extended status gump info)
 #define MINCLIVER_STATUS_V2			3000804	// minimum client to receive v2 of 0x11 packet (3.0.8d)
 #define MINCLIVER_STATUS_V3			3000810	// minimum client to receive v3 of 0x11 packet (3.0.8j)
 #define MINCLIVER_STATUS_V4			4000000	// minimum client to receive v4 of 0x11 packet (4.0.0a)
 #define MINCLIVER_STATUS_V5			5000000	// minimum client to receive v5 of 0x11 packet (5.0.0a)
 #define MINCLIVER_STATUS_V6			7003000	// minimum client to receive v6 of 0x11 packet (7.0.30.0)
 
-// client versions (behaviours)
+// Client versions (behaviours)
 #define MINCLIVER_CHECKWALKCODE		1260000	// minimum client to use walk crypt codes for fastwalk prevention (obsolete)
 #define MINCLIVER_PADCHARLIST		3000010	// minimum client to pad character list to at least 5 characters
 #define MINCLIVER_CLOSEDIALOG		4000400	// minimum client where close dialog does not trigger a client response
 #define MINCLIVER_NEWVERSIONING		5000605	// minimum client to use the new versioning format (after 5.0.6e it change to 5.0.6.5)
 #define MINCLIVER_CONTAINERGRID		6000107	// minimum client to use container grid index (6.0.1.7)
 
-// client versions (packets)
+// Client versions (packets)
 #define MINCLIVER_STATLOCKS			4000100	// minimum client to receive 0xBF.0x19.0x02 packet
 #define MINCLIVER_NEWDAMAGE			4000700	// minimum client to receive 0x0B packet (4.0.7a)
 #define MINCLIVER_BUFFS				5000202	// minimum client to receive buff packets (5.0.2b)
@@ -996,6 +996,10 @@ enum NOTO_TYPE
 #define MINCLIVER_NEWMAPDISPLAY		7001300	// minimum client to receive 0xF5 packet (7.0.13.0)
 #define MINCLIVER_EXTRASTARTINFO 	7001300	// minimum client to receive extra start info (7.0.13.0)
 #define MINCLIVER_NEWMOBINCOMING	7003301	// minimun client to receive 0x78 packet (7.0.33.1)
+
+// Enhanced clients report version to server using masks, so the formula 'reported version - mask' must be used to get the real value.
+// Eg: SA enhanced client 4.0.52.0 will report 67.0.52.0 to server, so the real value is 67.0.52.0 - mask = 4.0.52.0
+#define MASK_CLIENTTYPE_EC			63000000	// SA+ enhanced clients starts on version 4.0.0.0
 
 enum TALKMODE_TYPE	// Modes we can talk/bark in.
 {

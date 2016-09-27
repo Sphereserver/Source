@@ -780,95 +780,122 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 	// try to figure out which client version we are talking to.
 	// (CEvent::ServersReq) or (CEvent::CharListReq)
 	// NOTE: Anything else we get at this point is tossed !
-	ASSERT( GetConnectType() == CONNECT_CRYPT );
-	ASSERT( !m_Crypt.IsInit());
-	ASSERT( pEvent != NULL );
-	ASSERT( iLen > 0 );
+	ASSERT(GetConnectType() == CONNECT_CRYPT);
+	ASSERT(!m_Crypt.IsInit());
+	ASSERT(pEvent);
+	ASSERT(iLen > 0);
 
 	// Try all client versions on the msg.
-	CEvent bincopy;		// in buffer. (from client)
-	ASSERT( iLen <= sizeof(bincopy));
-	memcpy( bincopy.m_Raw, pEvent->m_Raw, iLen );
+	CEvent bincopy;		// in buffer (from client)
+	ASSERT(iLen <= sizeof(bincopy));
+	memcpy(bincopy.m_Raw, pEvent->m_Raw, iLen);
 
 	if ( !m_Crypt.Init(m_NetState->m_seed, bincopy.m_Raw, iLen, m_NetState->isClientKR()) )
 	{
-		DEBUG_MSG(( "%lx:Odd login message length %" FMTSIZE_T "?\n", GetSocketID(), iLen ));
+		DEBUG_MSG(("%lx:Odd login message length %" FMTSIZE_T "?\n", GetSocketID(), iLen));
 #ifdef _DEBUG
 		xRecordPacketData(this, (const BYTE *)pEvent, iLen, "client->server");
 #endif
-		addLoginErr( PacketLoginError::BadEncLength );
-		return( false );
+		addLoginErr(PacketLoginError::BadEncLength);
+		return false;
 	}
 	
-	m_NetState->detectAsyncMode();
-	SetConnectType( m_Crypt.GetConnectType() );
+	SetConnectType(m_Crypt.GetConnectType());
 
 	if ( !xCanEncLogin() )
 	{
-		addLoginErr(static_cast<unsigned char>((m_Crypt.GetEncryptionType() == ENC_NONE? PacketLoginError::EncNoCrypt : PacketLoginError::EncCrypt) ));
-		return( false );
+		addLoginErr(m_Crypt.GetEncryptionType() == ENC_NONE ? PacketLoginError::EncNoCrypt : PacketLoginError::EncCrypt);
+		return false;
 	}
-	else if ( m_Crypt.GetConnectType() == CONNECT_LOGIN && !xCanEncLogin(true) )
+	else if ( (m_Crypt.GetConnectType() == CONNECT_LOGIN) && !xCanEncLogin(true) )
 	{
-		addLoginErr( PacketLoginError::BadVersion );
-		return( false );
+		addLoginErr(PacketLoginError::BadVersion);
+		return false;
 	}
 	
 	BYTE lErr = PacketLoginError::EncUnknown;
-	
-	m_Crypt.Decrypt( pEvent->m_Raw, bincopy.m_Raw, iLen );
-	
-	TCHAR szAccount[MAX_ACCOUNT_NAME_SIZE+3];
+	m_Crypt.Decrypt(pEvent->m_Raw, bincopy.m_Raw, iLen);
+	TCHAR szAccount[MAX_ACCOUNT_NAME_SIZE + 3];
 
 	switch ( pEvent->Default.m_Cmd )
 	{
 		case XCMD_ServersReq:
 		{
-			if ( iLen < sizeof( pEvent->ServersReq ))
-				return(false);
+			if ( iLen < sizeof(pEvent->ServersReq) )
+				return false;
 
-			lErr = Login_ServerList( pEvent->ServersReq.m_acctname, pEvent->ServersReq.m_acctpass );
+			lErr = Login_ServerList(pEvent->ServersReq.m_acctname, pEvent->ServersReq.m_acctpass);
 			if ( lErr == PacketLoginError::Success )
 			{
-				Str_GetBare( szAccount, pEvent->ServersReq.m_acctname, sizeof(szAccount)-1 );
-				CAccountRef pAcc = g_Accounts.Account_Find( szAccount );
+				Str_GetBare(szAccount, pEvent->ServersReq.m_acctname, sizeof(szAccount) - 1);
+				CAccountRef pAcc = g_Accounts.Account_Find(szAccount);
 				if ( pAcc )
 				{
-					pAcc->m_TagDefs.SetNum("ClientVersion", m_Crypt.GetClientVer());
-					pAcc->m_TagDefs.SetNum("ReportedCliVer", m_NetState->getReportedVersion());
+					// On login proccess, the client will connect on IP only to request the servers list, and after select an server,
+					// it will disconnect from this IP and connect again now on server IP to request the account character list. But
+					// on the 2nd connection the client doesn't report its version to server again, so we must use tags to temporarily
+					// store the client version on XCMD_ServersReq and restore it on XCMD_CharListReq.
+					if ( m_Crypt.GetClientVer() )
+						pAcc->m_TagDefs.SetNum("ClientVersion", m_Crypt.GetClientVer());
+					if ( m_NetState->getReportedVersion() )
+						pAcc->m_TagDefs.SetNum("ReportedCliVer", m_NetState->getReportedVersion());
+					else
+						new PacketClientVersionReq(this);
 				}
 				else
 				{
 					lErr = PacketLoginError::Invalid;
 				}
 			}
-
 			break;
 		}
 
 		case XCMD_CharListReq:
 		{
-			if ( iLen < sizeof( pEvent->CharListReq ))
-				return(false);
+			if ( iLen < sizeof(pEvent->CharListReq) )
+				return false;
 
-			lErr = Setup_ListReq( pEvent->CharListReq.m_acctname, pEvent->CharListReq.m_acctpass, true );
+			Str_GetBare(szAccount, pEvent->CharListReq.m_acctname, sizeof(szAccount) - 1);
+			CAccountRef pAcc = g_Accounts.Account_Find(szAccount);
+			DWORD dwCustomerID = 0x7f000001;
+			if ( pAcc )
+			{
+				if ( g_Cfg.m_fUseAuthID )
+				{
+					dwCustomerID = static_cast<DWORD>(pAcc->m_TagDefs.GetKeyNum("CustomerID"));
+					pAcc->m_TagDefs.DeleteKey("CustomerID");
+				}
+
+				DWORD tmVer = static_cast<DWORD>(pAcc->m_TagDefs.GetKeyNum("ClientVersion"));
+				if ( tmVer )
+				{
+					m_Crypt.SetClientVerEnum(tmVer, false);
+					m_NetState->m_clientVersion = tmVer;
+					pAcc->m_TagDefs.DeleteKey("ClientVersion");
+				}
+
+				DWORD tmVerReported = static_cast<DWORD>(pAcc->m_TagDefs.GetKeyNum("ReportedCliVer"));
+				if ( tmVerReported )
+				{
+					m_NetState->m_reportedVersion = tmVerReported;
+					pAcc->m_TagDefs.DeleteKey("ReportedCliVer");
+				}
+
+				// Enhanced clients must enable some specific features on UpdateFeatureFlags() but they only report the
+				// client type to server after this function, so we must estimate the client type based on client version
+				// to enable these features properly even when the client don't reported its client type to server yet.
+				if ( m_NetState->isClientVersion(MASK_CLIENTTYPE_EC) )
+					m_NetState->m_clientType = CLIENTTYPE_EC;
+			}
+
+			lErr = Setup_ListReq(pEvent->CharListReq.m_acctname, pEvent->CharListReq.m_acctpass, true);
 			if ( lErr == PacketLoginError::Success )
 			{
-				// pass detected client version to the game server to make valid cliver used
-				Str_GetBare( szAccount, pEvent->CharListReq.m_acctname, sizeof(szAccount)-1 );
-				CAccountRef pAcc = g_Accounts.Account_Find( szAccount );
-				if (pAcc)
+				if ( pAcc )
 				{
-					DWORD CustomerID = 0x7f000001;
-					if ( g_Cfg.m_fUseAuthID )
-					{
-						CustomerID = static_cast<DWORD>(pAcc->m_TagDefs.GetKeyNum("CustomerID"));
-						pAcc->m_TagDefs.DeleteKey("CustomerID");
-					}
-
 					DEBUG_MSG(("%lx:xProcessClientSetup for %s, with AuthId %lu and CliVersion %lu / CliVersionReported %lu\n", GetSocketID(), pAcc->GetName(), CustomerID, m_Crypt.GetClientVer(), m_NetState->getReportedVersion()));
 
-					if ( CustomerID != 0 && CustomerID == pEvent->CharListReq.m_Account )
+					if ( (dwCustomerID != 0) && (dwCustomerID == pEvent->CharListReq.m_Account) )
 					{
 						if ( !xCanEncLogin(true) )
 							lErr = PacketLoginError::BadVersion;
@@ -883,26 +910,21 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 					lErr = PacketLoginError::Invalid;
 				}
 			}
-
 			break;
 		}
 
 #ifdef _DEBUG
 		default:
-		{
 			DEBUG_ERR(("Unknown/bad packet to receive at this time: 0x%X\n", pEvent->Default.m_Cmd));
-		}
 #endif
 	}
 	
 	xRecordPacketData(this, (const BYTE *)pEvent, iLen, "client->server");
 
 	if ( lErr != PacketLoginError::Success )	// it never matched any crypt format.
-	{
-		addLoginErr( lErr );
-	}
+		addLoginErr(lErr);
 
-	return( lErr == PacketLoginError::Success );
+	return (lErr == PacketLoginError::Success);
 }
 
 bool CClient::xCanEncLogin(bool bCheckCliver)

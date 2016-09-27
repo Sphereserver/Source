@@ -3486,27 +3486,6 @@ BYTE CClient::LogIn(CAccountRef pAccount, CGString &sMsg)
 		return PacketLoginError::MaxClients;
 	}
 
-	// Getting client version on login behavior is a bit tricky. When the client send the login request, the server
-	// will reply back with the server list, and only after this proccess the client will report its version to the
-	// server. But when the user select an server to play, the client disconnects and connect again now directly on
-	// this server address but without report the client version again. So we need to store the reported value from
-	// 1st connection on an temporary tag, to read it here on 2nd connection.
-	DWORD tmVer = static_cast<DWORD>(pAccount->m_TagDefs.GetKeyNum("ClientVersion"));
-	DWORD tmVerReported = static_cast<DWORD>(pAccount->m_TagDefs.GetKeyNum("ReportedCliVer"));
-	if ( tmVerReported )
-	{
-		m_NetState->m_reportedVersion = tmVerReported;
-		pAccount->m_TagDefs.DeleteKey("ReportedCliVer");
-	}
-	else if ( tmVer )
-	{
-		m_Crypt.SetClientVerEnum(tmVer, false);
-		m_NetState->m_clientVersion = tmVer;
-		pAccount->m_TagDefs.DeleteKey("ClientVersion");
-	}
-	else
-		new PacketClientVersionReq(this);
-
 	// Do the scripts allow to login this account?
 	pAccount->m_Last_IP = GetPeer();
 	CScriptTriggerArgs Args;
