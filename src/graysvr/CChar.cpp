@@ -294,6 +294,9 @@ CChar::CChar( CREID_TYPE baseID ) : CObjBase( false )
 // Delete character
 CChar::~CChar() 
 {
+	if ( m_pClient )	// this should never happen
+		m_pClient->m_NetState->markReadClosed();
+
 	DeletePrepare();	// remove me early so virtuals will work.
 	if ( IsStatFlag( STATF_Ridden ))
 	{
@@ -305,9 +308,6 @@ CChar::~CChar()
 		}
 	}
 
-	if ( m_pClient )	// this should never happen
-		m_pClient->m_NetState->markReadClosed();
-
 	Guild_Resign(MEMORY_GUILD);
 	Guild_Resign(MEMORY_TOWN);
 
@@ -316,7 +316,7 @@ CChar::~CChar()
 		m_pParty->RemoveMember(GetUID(), GetUID());
 		m_pParty = NULL;
 	}
-	Attacker_RemoveChar();	// Removing me from enemy's attacker list (I asume that if he is on my list, I'm on his one and no one have me on their list if I dont have them)
+	Attacker_RemoveChar();	// Remove me from enemies attacker list (I assume that if he is on my list, I'm on his one and no one have me on their list if I dont have them)
 	NPC_PetClearOwners();	// Clear follower slots on pet owner
 	DeleteAll();			// Remove me early so virtuals will work
 	ClearNPC();
@@ -409,7 +409,7 @@ bool CChar::NotifyDelete(CClient *pClient)
 {
 	if ( IsTrigUsed(TRIGGER_DESTROY) )
 	{
-		if ( CChar::OnTrigger(CTRIG_Destroy, &g_Serv) == TRIGRET_RET_TRUE )
+		if ( OnTrigger(CTRIG_Destroy, &g_Serv) == TRIGRET_RET_TRUE )
 			return false;
 	}
 
@@ -1599,7 +1599,7 @@ void CChar::InitPlayer( CClient *pClient, const char *pszCharname, bool bFemale,
 			wShirtHue = HUE_DYE_HIGH;
 		pLayer->SetHue(wShirtHue);
 	}
-	pLayer = LayerFind(LAYER_PANTS);
+	pLayer = bFemale ? LayerFind(LAYER_SKIRT) : LayerFind(LAYER_PANTS);
 	if ( pLayer )
 	{
 		if ( wPantsHue < HUE_BLUE_LOW )
@@ -3222,7 +3222,7 @@ bool CChar::r_Load( CScript & s ) // Load a character from script
 	int iResultCode = CObjBase::IsWeird();
 	if ( iResultCode )
 	{
-		DEBUG_ERR(("Char 0%lx Invalid, id='%s', code=0%x\n", static_cast<DWORD>(GetUID()), static_cast<LPCTSTR>(GetResourceName()), iResultCode));
+		DEBUG_ERR(("Char 0%lx Invalid, id='%s', code=0%x\n", static_cast<DWORD>(GetUID()), GetResourceName(), iResultCode));
 		Delete();
 	}
 

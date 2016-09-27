@@ -225,4 +225,5 @@ Fixed: Items not going to backpack when dropped over backpack icon on char paper
 26-09-2016, Coruja
 Fixed: HTTP server not working correctly.
 Fixed: Console error when deleting account characters.
+Fixed: Account character creation not coloring skirt on female characters.
 [sphere_msgs.scp]: Removed message 'msg_guildresign'.
