@@ -227,3 +227,6 @@ Fixed: HTTP server not working correctly.
 Fixed: Console error when deleting account characters.
 Fixed: Account character creation not coloring skirt on female characters.
 [sphere_msgs.scp]: Removed message 'msg_guildresign'.
+
+27-09-2016, Coruja
+Changed: Updated internal SQLite libs v3.14.1 to v3.14.2.
