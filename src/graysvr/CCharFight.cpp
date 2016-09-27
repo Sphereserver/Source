@@ -41,31 +41,13 @@ CStoneMember * CChar::Guild_FindMember( MEMORY_TYPE MemType ) const
 	return( pMember );
 }
 
-// response to "I resign from my guild" or "town"
-// Are we in an active battle ?
+// Resign me from my guild
 void CChar::Guild_Resign( MEMORY_TYPE MemType )
 {
 	ADDTOCALLSTACK("CChar::Guild_Resign");
-
-	if ( IsStatFlag( STATF_DEAD ))
-		return;
-
 	CStoneMember * pMember = Guild_FindMember(MemType);
-	if ( pMember == NULL )
-		return ;
-
-	if ( pMember->IsPrivMember())
-	{
-		CItemMemory * pMemFight = Memory_FindTypes( MEMORY_FIGHT );
-		if ( pMemFight )
-		{
-			CItemStone * pMyStone = pMember->GetParentStone();
-			ASSERT(pMyStone);
-			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_GUILDRESIGN), pMyStone->GetTypeName());
-		}
-	}
-
-	delete pMember;
+	if ( pMember )
+		delete pMember;
 }
 
 // Get my guild abbrev if i have chosen to turn it on.
@@ -1057,7 +1039,7 @@ bool CChar::Memory_OnTick( CItemMemory * pMemory )
 void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 {
 	ADDTOCALLSTACK("CChar::OnNoticeCrime");
-	if ( !pCriminal || pCriminal == this || pCriminal == pCharMark || pCriminal->IsPriv(PRIV_GM) || pCriminal->GetNPCBrain(false) == NPCBRAIN_GUARD )
+	if ( !pCriminal || (pCriminal == this) || (pCriminal == pCharMark) || pCriminal->IsPriv(PRIV_GM) || (pCriminal->GetNPCBrain(false) == NPCBRAIN_GUARD) )
 		return;
 	NOTO_TYPE iNoto = pCharMark->Noto_GetFlag(pCriminal);
 	if ( iNoto == NOTO_CRIMINAL || iNoto == NOTO_EVIL )
@@ -1501,9 +1483,9 @@ void CChar::CallGuards( CChar * pCriminal )
 	ADDTOCALLSTACK("CChar::CallGuards1");
 	if ( !pCriminal || (pCriminal == this) )
 		return;
-	if ( !m_pArea || !pCriminal->m_pArea->IsGuarded() )
+	if ( !m_pArea || !pCriminal->m_pArea->IsGuarded() || IsStatFlag(STATF_DEAD) )
 		return;
-	if ( IsStatFlag(STATF_DEAD) || pCriminal->IsStatFlag(STATF_DEAD|STATF_INVUL) || pCriminal->IsPriv(PRIV_GM) )
+	if ( pCriminal->IsStatFlag(STATF_DEAD|STATF_INVUL) || pCriminal->IsPriv(PRIV_GM) )
 		return;
 
 	CChar *pGuard = NULL;
@@ -1964,7 +1946,7 @@ effect_bounce:
 	}
 
 	// Disturb magic spells (only players can be disturbed)
-	if ( m_pPlayer && pSrc != this && !(uType & DAMAGE_NODISTURB) && g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_MAGIC) )
+	if ( m_pPlayer && (pSrc != this) && !(uType & DAMAGE_NODISTURB) && g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_MAGIC) )
 	{
 		// Check if my spell can be interrupted
 		int iDisturbChance = 0;
@@ -1989,7 +1971,7 @@ effect_bounce:
 			Skill_Fail();
 	}
 
-	if ( pSrc && pSrc != this )
+	if ( pSrc && (pSrc != this) )
 	{
 		// Update attacker list
 		bool bAttackerExists = false;
@@ -2846,7 +2828,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 {
 	ADDTOCALLSTACK("CChar::Fight_Hit");
 
-	if ( !pCharTarg || pCharTarg == this )
+	if ( !pCharTarg || (pCharTarg == this) )
 		return WAR_SWING_INVALID;
 
 	DAMAGE_TYPE iTyp = DAMAGE_HIT_BLUNT;

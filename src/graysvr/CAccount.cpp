@@ -563,14 +563,14 @@ void CAccount::DeleteChars()
 	if ( g_Serv.IsLoading() )
 		return;
 
-	size_t iMax = m_Chars.GetCharCount();
-	for ( size_t i = 0; i < iMax; i-- )
+	size_t i = m_Chars.GetCharCount();
+	while ( i > 0 )
 	{
-		CChar *pChar = m_Chars.GetChar(i).CharFind();
+		CChar *pChar = m_Chars.GetChar(--i).CharFind();
 		if ( pChar )
 		{
-			pChar->ClearPlayer();
 			pChar->Delete();
+			pChar->ClearPlayer();
 		}
 		m_Chars.DetachChar(i);
 	}
