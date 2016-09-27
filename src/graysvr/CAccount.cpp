@@ -346,8 +346,7 @@ bool CAccounts::Cmd_ListUnused(CTextConsole * pSrc, LPCTSTR pszDays, LPCTSTR psz
 		if ( ! strcmpi( pszVerb, "DELETE" ) && pAccount->GetPrivLevel() > PLEVEL_Player )
 		{
 			iCount--;
-			pSrc->SysMessagef( "Can't Delete PrivLevel %d Account '%s' this way.\n",
-				pAccount->GetPrivLevel(), static_cast<LPCTSTR>(pAccount->GetName()) );
+			pSrc->SysMessagef("Can't delete PrivLevel %d account '%s' this way.\n", pAccount->GetPrivLevel(), pAccount->GetName());
 		}
 		else
 		{
@@ -356,16 +355,14 @@ bool CAccounts::Cmd_ListUnused(CTextConsole * pSrc, LPCTSTR pszDays, LPCTSTR psz
 		}
 	}
 
-	pSrc->SysMessagef( "Matched %" FMTSIZE_T " of %" FMTSIZE_T " accounts unused for %d days\n",
-		iCount, iCountOrig, iDaysTest );
+	pSrc->SysMessagef("Matched %" FMTSIZE_T " of %" FMTSIZE_T " accounts unused for %d days\n", iCount, iCountOrig, iDaysTest);
 
 	if ( pszVerb && ! strcmpi(pszVerb, "DELETE") )
 	{
 		size_t iDeleted = iCountOrig - Account_GetCount();
 
 		if ( iDeleted < iCount )
-			pSrc->SysMessagef("%" FMTSIZE_T " deleted, %" FMTSIZE_T " cleared of characters (must try to delete again)\n",
-				iDeleted, iCount - iDeleted );
+			pSrc->SysMessagef("%" FMTSIZE_T " deleted, %" FMTSIZE_T " cleared of characters (must try to delete again)\n", iDeleted, iCount - iDeleted);
 		else if ( iDeleted > 0 )
 			pSrc->SysMessagef("All %" FMTSIZE_T " unused accounts deleted.\n", iDeleted);
 		else
@@ -796,7 +793,7 @@ bool CAccount::CheckPasswordTries(CSocketAddress csaPeerName)
 				}
 				else if ( itResult.second == iAccountMaxTries )
 				{
-					ttsData.m_Delay = ttsData.m_Last + static_cast<long long>(g_Cfg.m_iClientLoginTempBan);
+					ttsData.m_Delay = ttsData.m_Last + static_cast<INT64>(g_Cfg.m_iClientLoginTempBan);
 					bReturn = false;
 				}
 			}
@@ -831,11 +828,11 @@ void CAccount::ClearPasswordTries(bool bAll)
 		return;
 	}
 
-	long long timeCurrent = CServTime::GetCurrentTime().GetTimeRaw();
+	INT64 timeCurrent = CServTime::GetCurrentTime().GetTimeRaw();
 	for ( BlockLocalTime_t::iterator itData = m_BlockIP.begin(); itData != m_BlockIP.end(); ++itData )
 	{
 		BlockLocalTimePair_t itResult = (*itData).second;
-		if ( (timeCurrent - itResult.first.m_Last) > g_Cfg.m_iClientLoginTempBan )
+		if ( timeCurrent - itResult.first.m_Last > g_Cfg.m_iClientLoginTempBan )
 			m_BlockIP.erase(itData);
 
 		if ( itData != m_BlockIP.begin() )
@@ -1288,20 +1285,20 @@ bool CAccount::r_LoadVal( CScript & s )
 			m_lang.Set( s.GetArgStr());
 			break;
 		case AC_LASTCHARUID:
-			m_uidLastChar = s.GetArgVal();
+			m_uidLastChar = static_cast<CGrayUID>(s.GetArgVal());
 			break;
 		case AC_LASTCONNECTDATE:
 			m_dateLastConnect.Read( s.GetArgStr());
 			break;
 		case AC_LASTCONNECTTIME:
 			// Previous total amount of time in game
-			m_Last_Connect_Time = s.GetArgVal();
+			m_Last_Connect_Time = s.GetArgLLVal();
 			break;
 		case AC_LASTIP:
 			m_Last_IP.SetAddrStr( s.GetArgStr());
 			break;
 		case AC_MAXCHARS:
-			SetMaxChars( static_cast<unsigned char>(s.GetArgVal()) );
+			SetMaxChars( static_cast<BYTE>(s.GetArgVal()) );
 			break;
 		case AC_MD5PASSWORD:
 			SetPassword( s.GetArgStr(), true);
@@ -1319,7 +1316,7 @@ bool CAccount::r_LoadVal( CScript & s )
 			m_PrivFlags = static_cast<WORD>(s.GetArgVal());
 			if ( m_PrivFlags & PRIV_UNUSED )
 			{
-				g_Log.EventError("Fixing PRIV field (0%x) for account %s have not supported flags set (caught by mask 0%x).\n", m_PrivFlags, GetName(), (WORD)PRIV_UNUSED);
+				g_Log.EventError("Fixing PRIV field (0%hx) for account %s have not supported flags set (caught by mask 0%hx).\n", m_PrivFlags, GetName(), static_cast<WORD>(PRIV_UNUSED));
 				m_PrivFlags &= ~PRIV_UNUSED;
 			}
 			break;
@@ -1341,7 +1338,7 @@ bool CAccount::r_LoadVal( CScript & s )
 
 		case AC_TOTALCONNECTTIME:
 			// Previous total amount of time in game
-			m_Total_Connect_Time = s.GetArgVal();
+			m_Total_Connect_Time = s.GetArgLLVal();
 			break;
 
 		default:
