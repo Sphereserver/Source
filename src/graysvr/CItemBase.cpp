@@ -2158,7 +2158,7 @@ WORD CItemBase::GetMaxAmount()
 		return 0;
 
 	WORD pMax = static_cast<WORD>(GetDefNum("MaxAmount"));
-	return pMax ? pMax : static_cast<WORD>(g_Cfg.m_iItemsMaxAmount);
+	return pMax ? pMax : g_Cfg.m_iItemsMaxAmount;
 };
 
 bool CItemBase::SetMaxAmount(WORD amount)

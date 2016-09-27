@@ -788,11 +788,11 @@ public:
 	bool m_fCharTags;			// Show [NPC] tags over chars.
 	bool m_fVendorTradeTitle;	// Show job title on vendor names.
 	bool m_fFlipDroppedItems;	// Flip dropped items.
-	int  m_iItemsMaxAmount;		// Max amount allowed for stackable items.
+	WORD m_iItemsMaxAmount;		// Max amount allowed for stackable items.
 	bool m_fCanUndressPets;		// Can players undress their pets?
 	bool m_fMonsterFight;		// Will creatures fight amoung themselves.
 	bool m_fMonsterFear;		// will they run away if hurt ?
-	int	 m_iBankIMax;			// Maximum number of items allowed in bank.
+	DWORD m_iBankIMax;			// Maximum number of items allowed in bank.
 	int  m_iBankWMax;			// Maximum weight in WEIGHT_UNITS stones allowed in bank.
 	int  m_iVendorMaxSell;		// Max things a vendor will sell in one shot.
 	unsigned int  m_iMaxCharComplexity;		// How many chars per sector.

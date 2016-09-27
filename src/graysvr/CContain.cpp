@@ -226,7 +226,7 @@ bool CContainer::ContentFindKeyFor( CItem *pLocked ) const
 	return (pLocked->m_itContainer.m_lockUID && (ContentFind(RESOURCE_ID(RES_TYPEDEF, IT_KEY), pLocked->m_itContainer.m_lockUID) != NULL));
 }
 
-WORD CContainer::ContentConsume( RESOURCE_ID_BASE rid, WORD amount, bool fTest, DWORD dwArg )
+DWORD CContainer::ContentConsume( RESOURCE_ID_BASE rid, DWORD amount, bool fTest, DWORD dwArg )
 {
 	ADDTOCALLSTACK("CContainer::ContentConsume");
 	// ARGS:
@@ -270,11 +270,11 @@ WORD CContainer::ContentConsume( RESOURCE_ID_BASE rid, WORD amount, bool fTest, 
 	return amount;
 }
 
-WORD CContainer::ContentCount( RESOURCE_ID_BASE rid, DWORD dwArg )
+DWORD CContainer::ContentCount( RESOURCE_ID_BASE rid, DWORD dwArg )
 {
 	ADDTOCALLSTACK("CContainer::ContentCount");
 	// Calculate total (gold or other items) in this recursed container
-	return USHRT_MAX - ContentConsume(rid, USHRT_MAX, true, dwArg);
+	return ULONG_MAX - ContentConsume(rid, ULONG_MAX, true, dwArg);
 }
 
 void CContainer::ContentAttrMod( DWORD dwAttr, bool fSet )
@@ -347,7 +347,7 @@ void CContainer::ContentsTransfer( CItemContainer *pCont, bool fNoNewbie )
 	}
 }
 
-size_t CContainer::ResourceConsumePart( const CResourceQtyArray *pResources, WORD iReplicationQty, int iDamagePercent, bool fTest, DWORD dwArg )
+size_t CContainer::ResourceConsumePart( const CResourceQtyArray *pResources, DWORD iReplicationQty, int iDamagePercent, bool fTest, DWORD dwArg )
 {
 	ADDTOCALLSTACK("CContainer::ResourceConsumePart");
 	// Consume just some of the resources.
@@ -369,7 +369,7 @@ size_t CContainer::ResourceConsumePart( const CResourceQtyArray *pResources, WOR
 		if ( iResQty <= 0 ) // not sure why this would be true
 			continue;
 
-		int iQtyTotal = (iResQty * iReplicationQty);
+		DWORD iQtyTotal = iResQty * iReplicationQty;
 		if ( iQtyTotal <= 0 )
 			continue;
 		iQtyTotal = IMULDIV(iQtyTotal, iDamagePercent, 100);
@@ -377,7 +377,7 @@ size_t CContainer::ResourceConsumePart( const CResourceQtyArray *pResources, WOR
 			continue;
 
 		RESOURCE_ID rid = pResources->GetAt(i).GetResourceID();
-		int iRet = ContentConsume(rid, iQtyTotal, fTest, dwArg);
+		DWORD iRet = ContentConsume(rid, iQtyTotal, fTest, dwArg);
 		if ( iRet )
 			iMissing = i;
 	}
@@ -385,7 +385,7 @@ size_t CContainer::ResourceConsumePart( const CResourceQtyArray *pResources, WOR
 	return iMissing;
 }
 
-WORD CContainer::ResourceConsume( const CResourceQtyArray *pResources, WORD iReplicationQty, bool fTest, DWORD dwArg )
+DWORD CContainer::ResourceConsume( const CResourceQtyArray *pResources, DWORD iReplicationQty, bool fTest, DWORD dwArg )
 {
 	ADDTOCALLSTACK("CContainer::ResourceConsume");
 	// Consume or test all the required resources.
@@ -403,14 +403,14 @@ WORD CContainer::ResourceConsume( const CResourceQtyArray *pResources, WORD iRep
 		iReplicationQty = ResourceConsume(pResources, iReplicationQty, true, dwArg);
 	}
 
-	WORD iQtyMin = USHRT_MAX;
+	DWORD iQtyMin = ULONG_MAX;
 	for ( size_t i = 0; i < pResources->GetCount(); i++ )
 	{
 		WORD iResQty = static_cast<WORD>(pResources->GetAt(i).GetResQty());
 		if ( iResQty <= 0 ) // not sure why this would be true
 			continue;
 
-		WORD iQtyTotal = iResQty * iReplicationQty;
+		DWORD iQtyTotal = iResQty * iReplicationQty;
 		RESOURCE_ID rid = pResources->GetAt(i).GetResourceID();
 		if ( rid.GetResType() == RES_SKILL )
 		{
@@ -422,24 +422,24 @@ WORD CContainer::ResourceConsume( const CResourceQtyArray *pResources, WORD iRep
 			continue;
 		}
 
-		WORD iQtyCur = iQtyTotal - ContentConsume(rid, iQtyTotal, fTest, dwArg);
+		DWORD iQtyCur = iQtyTotal - ContentConsume(rid, iQtyTotal, fTest, dwArg);
 		iQtyCur /= iResQty;
 		if ( iQtyCur < iQtyMin )
 			iQtyMin = iQtyCur;
 	}
 
-	if ( iQtyMin == USHRT_MAX )		// it has no resources ? So i guess we can make it from nothing ?
+	if ( iQtyMin == ULONG_MAX )		// it has no resources ? So i guess we can make it from nothing ?
 		return iReplicationQty;
 
 	return iQtyMin;
 }
 
-WORD CContainer::ContentCountAll() const
+DWORD CContainer::ContentCountAll() const
 {
 	ADDTOCALLSTACK("CContainer::ContentCountAll");
 	// RETURN:
 	//  A count of all the items in this container and sub contianers.
-	WORD iTotal = 0;
+	DWORD iTotal = 0;
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
 		iTotal++;
@@ -1228,27 +1228,24 @@ bool CItemContainer::CanContainerHold( const CItem *pItem, const CChar *pCharMsg
 			// Check if the bankbox will allow this item to be dropped into it.
 			// Too many items or too much weight?
 
-			int iBankIMax = g_Cfg.m_iBankIMax;
+			DWORD iBankIMax = g_Cfg.m_iBankIMax;
 			CVarDefCont *pTagTemp = GetKey("OVERRIDE.MAXITEMS", false);
 			if ( pTagTemp )
-				iBankIMax = static_cast<int>(pTagTemp->GetValNum());
+				iBankIMax = static_cast<DWORD>(pTagTemp->GetValNum());
 
-			if ( iBankIMax >= 0 )
+			// Check if the item dropped in the bank is a container. If it is
+			// we need to calculate the number of items in that too.
+			DWORD iItemsInContainer = 0;
+			const CItemContainer *pContItem = dynamic_cast<const CItemContainer *>(pItem);
+			if ( pContItem )
+				iItemsInContainer = pContItem->ContentCountAll();
+
+			// Check the total number of items in the bankbox and the ev.
+			// container put into it.
+			if ( (ContentCountAll() + iItemsInContainer) > iBankIMax )
 			{
-				// Check if the item dropped in the bank is a container. If it is
-				// we need to calculate the number of items in that too.
-				int iItemsInContainer = 0;
-				const CItemContainer *pContItem = dynamic_cast<const CItemContainer *>(pItem);
-				if ( pContItem )
-					iItemsInContainer = pContItem->ContentCountAll();
-
-				// Check the total number of items in the bankbox and the ev.
-				// container put into it.
-				if ( (ContentCountAll() + iItemsInContainer) > iBankIMax )
-				{
-					pCharMsg->SysMessageDefault(DEFMSG_BVBOX_FULL_ITEMS);
-					return false;
-				}
+				pCharMsg->SysMessageDefault(DEFMSG_BVBOX_FULL_ITEMS);
+				return false;
 			}
 
 			int iBankWMax = g_Cfg.m_iBankWMax;

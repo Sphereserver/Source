@@ -982,9 +982,9 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 		}
 		else
 		{
-			WORD iGold = m_pChar->GetContainerCreate(LAYER_PACK)->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), static_cast<WORD>(costtotal), true);
+			DWORD iGold = m_pChar->GetContainerCreate(LAYER_PACK)->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), costtotal, true);
 			if ( !g_Cfg.m_fPayFromPackOnly && iGold )
-				iGold = m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), static_cast<WORD>(costtotal), true);
+				iGold = m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), costtotal, true);
 
 			if ( iGold )
 			{
@@ -1121,11 +1121,11 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 	// Take the gold and add it to the vendor
 	if ( !bBoss )
 	{
-		int iGold = m_pChar->GetContainerCreate(LAYER_PACK)->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), static_cast<WORD>(costtotal));
+		DWORD iGold = m_pChar->GetContainerCreate(LAYER_PACK)->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), costtotal);
 		if ( !g_Cfg.m_fPayFromPackOnly && iGold )
 			m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), iGold);
 
-		pVendor->GetContainerCreate(LAYER_BANKBOX)->m_itEqBankBox.m_Check_Amount += static_cast<DWORD>(costtotal);
+		pVendor->GetContainerCreate(LAYER_BANKBOX)->m_itEqBankBox.m_Check_Amount += costtotal;
 	}
 
 	// Clear the vendor display.

@@ -1033,7 +1033,7 @@ public:
 	}
 	virtual bool  IsSameType( const CObjBase * pObj ) const;
 	bool  Stack( CItem * pItem );
-	WORD ConsumeAmount( WORD iQty = 1, bool fTest = false );
+	DWORD ConsumeAmount( DWORD iQty = 1, bool fTest = false );
 
 	CREID_TYPE GetCorpseType() const
 	{
@@ -1545,12 +1545,12 @@ public:
 	CItem *ContentFind( RESOURCE_ID_BASE rid, DWORD dwArg = 0, int iDecendLevels = 255 ) const;
 	TRIGRET_TYPE OnContTriggerForLoop( CScript &s, CTextConsole *pSrc, CScriptTriggerArgs *pArgs, CGString *pResult, CScriptLineContext &StartContext, CScriptLineContext &EndContext, RESOURCE_ID_BASE rid, DWORD dwArg = 0, int iDecendLevels = 255 );
 	TRIGRET_TYPE OnGenericContTriggerForLoop( CScript &s, CTextConsole *pSrc, CScriptTriggerArgs *pArgs, CGString *pResult, CScriptLineContext &StartContext, CScriptLineContext &EndContext, int iDecendLevels = 255 );
-	WORD ContentCount( RESOURCE_ID_BASE rid, DWORD dwArg = 0 );
-	WORD ContentCountAll() const;
-	WORD ContentConsume( RESOURCE_ID_BASE rid, WORD iQty = 1, bool fTest = false, DWORD dwArg = 0 );
+	DWORD ContentCount( RESOURCE_ID_BASE rid, DWORD dwArg = 0 );
+	DWORD ContentCountAll() const;
+	DWORD ContentConsume( RESOURCE_ID_BASE rid, DWORD iQty = 1, bool fTest = false, DWORD dwArg = 0 );
 
-	WORD ResourceConsume( const CResourceQtyArray *pResources, WORD iReplicationQty, bool fTest = false, DWORD dwArg = 0 );
-	size_t ResourceConsumePart( const CResourceQtyArray *pResources, WORD iReplicationQty, int iFailPercent, bool fTest = false, DWORD dwArg = 0 );
+	DWORD ResourceConsume( const CResourceQtyArray *pResources, DWORD iReplicationQty, bool fTest = false, DWORD dwArg = 0 );
+	size_t ResourceConsumePart( const CResourceQtyArray *pResources, DWORD iReplicationQty, int iFailPercent, bool fTest = false, DWORD dwArg = 0 );
 
 	virtual void OnWeightChange( int iChange );
 	virtual void ContentAdd( CItem * pItem ) = 0;
@@ -3350,7 +3350,7 @@ public:
 	}
 	CItemContainer *GetContainerCreate(LAYER_TYPE layer);
 	CItem * GetBackpackItem(ITEMID_TYPE item);
-	void AddGoldToPack( int iAmount, CItemContainer * pPack=NULL );
+	void AddGoldToPack( DWORD iAmount, CItemContainer * pPack=NULL );
 
 //private:
 	virtual TRIGRET_TYPE OnTrigger( LPCTSTR pTrigName, CTextConsole * pSrc, CScriptTriggerArgs * pArgs );
@@ -3673,7 +3673,7 @@ public:
 
 	bool Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg );
 	bool Skill_Tracking( CGrayUID uidTarg, int iDistMax = SHRT_MAX );
-	bool Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly = false, WORD iReplicationQty = 1 );
+	bool Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly = false, DWORD iReplicationQty = 1 );
 	bool Skill_MakeItem_Success();
 	bool Skill_Snoop_Check( const CItemContainer * pItem );
 	void Skill_Cleanup();	 // may have just cancelled targetting.

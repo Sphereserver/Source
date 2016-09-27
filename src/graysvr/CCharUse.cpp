@@ -482,7 +482,7 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 
 	if ( m_pPlayer && AmmoID )
 	{
-		int iFound = 1;
+		DWORD iFound = 1;
 		if ( pCont )
 		{
 			//check for UID
@@ -507,7 +507,7 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 		if ( iFound )
 		{
 			SysMessageDefault(DEFMSG_ITEMUSE_ARCHB_NOAMMO);
-			return(true);
+			return true;
 		}
 	}
 

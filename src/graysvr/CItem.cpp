@@ -1754,8 +1754,8 @@ WORD CItem::GetMaxAmount()
 	if (!IsStackableType())
 		return 0;
 
-	CVarDefCont * pMax = GetDefKey("MaxAmount", false);
-	return static_cast<WORD>(pMax ? pMax->GetValNum() : g_Cfg.m_iItemsMaxAmount);
+	CVarDefCont *pMax = GetDefKey("MaxAmount", false);
+	return pMax ? static_cast<WORD>(pMax->GetValNum()) : g_Cfg.m_iItemsMaxAmount;
 };
 
 bool CItem::SetMaxAmount(WORD amount)
@@ -2751,7 +2751,7 @@ bool CItem::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from s
 			pCharSrc->ItemBounce( this );
 			break;
 		case CIV_CONSUME:
-			ConsumeAmount( s.HasArgs() ? s.GetArgVal() : 1 );
+			ConsumeAmount( s.HasArgs() ? static_cast<DWORD>(s.GetArgVal()) : 1 );
 			break;
 		case CIV_CONTCONSUME:
 			{
@@ -3310,7 +3310,7 @@ void CItem::ConvertBolttoCloth()
 	}
 }
 
-WORD CItem::ConsumeAmount( WORD iQty, bool fTest )
+DWORD CItem::ConsumeAmount( DWORD iQty, bool fTest )
 {
 	ADDTOCALLSTACK("CItem::ConsumeAmount");
 	// Eat or drink specific item. delete it when gone.

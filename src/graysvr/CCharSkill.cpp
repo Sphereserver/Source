@@ -1328,7 +1328,7 @@ int CChar::SkillResourceTest( const CResourceQtyArray * pResources )
 }
 
 
-bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly, WORD iReplicationQty )
+bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly, DWORD iReplicationQty )
 {
 	ADDTOCALLSTACK("CChar::Skill_MakeItem");
 	// "MAKEITEM"
@@ -1486,7 +1486,7 @@ CItem * CChar::Skill_NaturalResource_Create( CItem * pResBit, SKILL_TYPE skill )
 	//Creating the 'id' variable with the local given through->by the trigger(s) instead on top of method
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(RES_GET_INDEX( Args.m_VarsLocal.GetKeyNum("ResourceID")));
 
-	iAmount = pResBit->ConsumeAmount( static_cast<WORD>(Args.m_iN1) );	// amount i used up.
+	iAmount = pResBit->ConsumeAmount( static_cast<DWORD>(Args.m_iN1) );	// amount i used up.
 	if ( iAmount <= 0 )
 		return( NULL );
 

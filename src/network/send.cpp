@@ -163,9 +163,9 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 		writeInt16(static_cast<WORD>(other->Stat_GetMax(STAT_INT)));
 
 		if ( g_Cfg.m_fPayFromPackOnly )
-			writeInt32(static_cast<DWORD>(other->GetContainerCreate(LAYER_PACK)->ContentCount(RESOURCE_ID(RES_TYPEDEF,IT_GOLD))));
+			writeInt32(other->GetContainerCreate(LAYER_PACK)->ContentCount(RESOURCE_ID(RES_TYPEDEF,IT_GOLD)));
 		else
-			writeInt32(static_cast<DWORD>(other->ContentCount(RESOURCE_ID(RES_TYPEDEF,IT_GOLD))));
+			writeInt32(other->ContentCount(RESOURCE_ID(RES_TYPEDEF,IT_GOLD)));
 		
 		if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			writeInt16(static_cast<WORD>(other->GetDefNum("RESPHYSICAL", true)));

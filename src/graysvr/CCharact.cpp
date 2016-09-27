@@ -177,7 +177,7 @@ void CChar::Jail( CTextConsole *pSrc, bool fSet, int iCell )
 }
 
 // A vendor is giving me gold. put it in my pack or other place.
-void CChar::AddGoldToPack( int iAmount, CItemContainer *pPack )
+void CChar::AddGoldToPack( DWORD iAmount, CItemContainer *pPack )
 {
 	ADDTOCALLSTACK("CChar::AddGoldToPack");
 
@@ -185,7 +185,7 @@ void CChar::AddGoldToPack( int iAmount, CItemContainer *pPack )
 		pPack = GetContainerCreate(LAYER_PACK);
 
 	CItem *pGold = NULL;
-	int iGoldStack = 0;
+	WORD iGoldStack = 0;
 	while ( iAmount > 0 )
 	{
 		iGoldStack = minimum(iAmount, g_Cfg.m_iItemsMaxAmount);
@@ -3607,7 +3607,7 @@ bool CChar::SetPrivLevel(CTextConsole * pSrc, LPCTSTR pszFlags)
 	PLEVEL_TYPE PrivLevel = CAccount::GetPrivLevelText(pszFlags);
 
 	// Remove Previous GM Robe
-	ContentConsume(RESOURCE_ID(RES_ITEMDEF, ITEMID_GM_ROBE), USHRT_MAX);
+	ContentConsume(RESOURCE_ID(RES_ITEMDEF, ITEMID_GM_ROBE), ULONG_MAX);
 
 	if ( PrivLevel >= PLEVEL_Counsel )
 	{

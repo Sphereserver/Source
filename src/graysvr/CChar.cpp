@@ -2887,8 +2887,8 @@ do_default:
 
 		case CHC_GOLD:
 		{
-			int currentGold = ContentCount(RESOURCE_ID(RES_TYPEDEF, IT_GOLD));
-			int newGold = static_cast<int>(s.GetArgVal());
+			DWORD currentGold = ContentCount(RESOURCE_ID(RES_TYPEDEF, IT_GOLD));
+			DWORD newGold = static_cast<DWORD>(s.GetArgVal());
 
 			if ( newGold >= 0 )
 			{
@@ -3501,12 +3501,12 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			strcpy( psTmp, s.GetArgRaw() );
 			GETNONWHITESPACE( psTmp );
 			TCHAR * ttVal[2];
-			WORD iReplicationQty = 1;
+			DWORD iReplicationQty = 1;
 			size_t iArg = Str_ParseCmds( psTmp, ttVal, COUNTOF( ttVal ), " ,\t" );
 			if ( iArg == 2 )
 			{
 				if ( IsDigit(ttVal[1][0]) )
-					iReplicationQty = static_cast<WORD>(ATOI(ttVal[1]));
+					iReplicationQty = static_cast<DWORD>(ATOI(ttVal[1]));
 			}
  
 			if ( m_pClient )
@@ -3534,13 +3534,17 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 
 		case CHV_NEWGOLD:
 			{
-				long amount = s.GetArgVal();
-				while ( amount > 0 )
+				CItemContainer *pPack = GetContainerCreate(LAYER_PACK);
+				CItem *pGold = NULL;
+				WORD iGoldStack = 0;
+				DWORD iAmount = s.GetArgLLVal();
+				while ( iAmount > 0 )
 				{
-					CItem *pItem = CItem::CreateScript(ITEMID_GOLD_C1, this);
-					pItem->SetAmount(minimum(amount, pItem->GetMaxAmount()));
-					amount -= pItem->GetAmount();
-					GetContainerCreate(LAYER_PACK)->ContentAdd(pItem);
+					iGoldStack = minimum(iAmount, g_Cfg.m_iItemsMaxAmount);
+					pGold = CItem::CreateScript(ITEMID_GOLD_C1, this);
+					pGold->SetAmount(iGoldStack);
+					pPack->ContentAdd(pGold);
+					iAmount -= iGoldStack;
 				}
 				UpdateStatsFlag();
 			} break;
