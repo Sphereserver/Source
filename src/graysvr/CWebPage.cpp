@@ -201,7 +201,7 @@ bool CWebPageDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on 
 				CChar *pChar = pClient->GetChar();
 				if ( !pChar )
 					continue;
-				if ( pChar->IsStatFlag(STATF_Insubstantial) && !pChar->IsStatFlag(STATF_DEAD) )
+				if ( pChar->IsStatFlag(STATF_Insubstantial) && (pClient->GetPrivLevel() > PLEVEL_Player) )
 					continue;
 
 				sm_iListIndex++;
@@ -579,7 +579,7 @@ int CWebPageDef::ServPageRequest( CClient * pClient, LPCTSTR pszURLArgs, CGTime 
 
 	const char *sDate = datetime.FormatGmt(NULL);	// current date.
 
-	if ( !fGenerate || !pdateIfModifiedSince || (pdateIfModifiedSince->IsTimeValid() && pdateIfModifiedSince->GetTime() > dateChange) )
+	if ( !fGenerate && !pdateIfModifiedSince && (pdateIfModifiedSince->IsTimeValid() && pdateIfModifiedSince->GetTime() > dateChange) )
 	{
 		TCHAR *pszTemp = Str_GetTemp();
 		sprintf(pszTemp, "HTTP/1.1 304 Not Modified\r\nDate: %s\r\nServer: " GRAY_TITLE " V " GRAY_VERSION "\r\nContent-Length: 0\r\n\r\n", sDate);

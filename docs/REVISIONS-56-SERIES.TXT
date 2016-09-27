@@ -221,3 +221,6 @@ Fixed: NPCs not looking around anymore after start wandering action.
 
 23-09-2016, Coruja
 Fixed: Items not going to backpack when dropped over backpack icon on char paperdoll.
+
+26-09-2016, Coruja
+Fixed: HTTP server not working correctly.
