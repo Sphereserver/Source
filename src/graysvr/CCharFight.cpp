@@ -14,7 +14,7 @@ CItemStone * CChar::Guild_Find( MEMORY_TYPE MemType ) const
 	CItemMemory * pMyGMem = Memory_FindTypes(static_cast<WORD>(MemType));
 	if ( ! pMyGMem )
 		return( NULL );
-	CItemStone * pMyStone = dynamic_cast <CItemStone*>( pMyGMem->m_uidLink.ItemFind());
+	CItemStone * pMyStone = static_cast<CItemStone *>(pMyGMem->m_uidLink.ItemFind());
 	if ( pMyStone == NULL )
 	{
 		// Some sort of mislink ! fix it.
@@ -894,7 +894,7 @@ CItemMemory * CChar::Memory_CreateObj( CGrayUID uid, WORD MemTypes )
 {
 	ADDTOCALLSTACK("CChar::Memory_CreateObj");
 
-	CItemMemory * pMemory = dynamic_cast <CItemMemory *>(CItem::CreateBase( ITEMID_MEMORY ));
+	CItemMemory * pMemory = static_cast<CItemMemory *>(CItem::CreateBase( ITEMID_MEMORY ));
 	if ( pMemory == NULL )
 		return NULL;
 
@@ -917,7 +917,7 @@ void CChar::Memory_ClearTypes( WORD MemTypes )
 		pItemNext = pItem->GetNext();
 		if ( !pItem->IsMemoryTypes(MemTypes) )
 			continue;
-		CItemMemory * pMemory = dynamic_cast <CItemMemory *>(pItem);
+		CItemMemory * pMemory = static_cast<CItemMemory *>(pItem);
 		if ( !pMemory )
 			continue;
 		Memory_ClearTypes(pMemory, MemTypes);
@@ -934,7 +934,7 @@ CItemMemory * CChar::Memory_FindObj( CGrayUID uid ) const
 			continue;
 		if ( pItem->m_uidLink != uid )
 			continue;
-		return dynamic_cast<CItemMemory *>(pItem);
+		return static_cast<CItemMemory *>(pItem);
 	}
 	return NULL;
 }
@@ -951,7 +951,7 @@ CItemMemory * CChar::Memory_FindTypes( WORD MemTypes ) const
 	{
 		if ( !pItem->IsMemoryTypes(MemTypes) )
 			continue;
-		return dynamic_cast<CItemMemory *>(pItem);
+		return static_cast<CItemMemory *>(pItem);
 	}
 	return NULL;
 }
@@ -1237,7 +1237,7 @@ int CChar::Skill_Snooping( SKTRIG_TYPE stage )
 		return( 0 );
 
 	// Assume the container is not locked.
-	CItemContainer * pCont = dynamic_cast <CItemContainer *>(m_Act_Targ.ItemFind());
+	CItemContainer * pCont = static_cast<CItemContainer *>(m_Act_Targ.ItemFind());
 	if ( pCont == NULL )
 		return( -SKTRIG_QTY );
 
@@ -1350,7 +1350,7 @@ cantsteal:
 			return( -SKTRIG_ABORT );
 		}
 	}
-	CItemCorpse * pCorpse = dynamic_cast <CItemCorpse *> (pItem);
+	CItemCorpse * pCorpse = static_cast<CItemCorpse *>(pItem);
 	if ( pCorpse )
 	{
 		SysMessageDefault( DEFMSG_STEALING_CORPSE );
@@ -3028,14 +3028,14 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			if ( pCont )
 			{
 				CGrayUID uidCont = static_cast<CGrayUID>(static_cast<DWORD>(pCont->GetValNum()));
-				CItemContainer *pNewCont = dynamic_cast<CItemContainer*>(uidCont.ItemFind());
+				CItemContainer *pNewCont = static_cast<CItemContainer *>(uidCont.ItemFind());
 				if ( !pNewCont )	//if no UID, check for ITEMID_TYPE
 				{
 					t_Str = pCont->GetValStr();
 					RESOURCE_ID_BASE rContid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, t_Str));
 					ITEMID_TYPE ContID = static_cast<ITEMID_TYPE>(rContid.GetResIndex());
 					if ( ContID )
-						pNewCont = dynamic_cast<CItemContainer*>(ContentFind(rContid));
+						pNewCont = static_cast<CItemContainer *>(ContentFind(rContid));
 				}
 
 				pAmmo = (pNewCont) ? pNewCont->ContentFind(rid) : ContentFind(rid);

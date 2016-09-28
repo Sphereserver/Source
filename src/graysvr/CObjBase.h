@@ -3793,15 +3793,6 @@ public:
 			return NULL;
 		return pMemory;
 	}
-	// -------- Public alias for MemoryCreateObj ------------------
-	CItemMemory * Memory_AddObj( CGrayUID uid, WORD MemTypes )
-	{
-		return Memory_CreateObj( uid, MemTypes );
-	}
-	CItemMemory * Memory_AddObj( const CObjBase * pObj, WORD MemTypes )
-	{
-		return Memory_CreateObj( pObj, MemTypes );
-	}
 	// ------------------------------------------------------------
 
 public:
