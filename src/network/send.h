@@ -696,7 +696,7 @@ public:
 class PacketVendorBuyList : public PacketSend
 {
 public:
-	PacketVendorBuyList(const CClient* target, const CChar* vendor, const CItemContainer* contParent, int convertFactor, bool bIsClientEnhanced);
+	PacketVendorBuyList(const CClient* target, const CChar* vendor, const CItemContainer* contParent, int convertFactor);
 };
 
 /***************************************************************************
@@ -1215,7 +1215,7 @@ public:
 class PacketArrowQuest : public PacketSend
 {
 public:
-	PacketArrowQuest(const CClient* target, int x, int y, int id);
+	PacketArrowQuest(const CClient* target, WORD x, WORD y, DWORD id);
 };
 
 /***************************************************************************
@@ -1482,7 +1482,7 @@ public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
-	    return (state->isClientVersion(MINCLIVER_AOS) && (g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B)) || state->isClientKR() || state->isClientEnhanced();
+	    return state->m_client->m_TooltipEnabled;
 	}
 };
 
@@ -1573,7 +1573,7 @@ public:
 class PacketMessageLocalised : public PacketSend
 {
 public:
-	PacketMessageLocalised(const CClient* target, int cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR args);
+	PacketMessageLocalised(const CClient* target, DWORD cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR args);
 };
 
 /***************************************************************************
@@ -1599,7 +1599,7 @@ public:
 class PacketMessageLocalisedEx : public PacketSend
 {
 public:
-	PacketMessageLocalisedEx(const CClient* target, int cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, AFFIX_TYPE affixType, LPCTSTR affix, LPCTSTR args);
+	PacketMessageLocalisedEx(const CClient* target, DWORD cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, AFFIX_TYPE affixType, LPCTSTR affix, LPCTSTR args);
 };
 
 /***************************************************************************
@@ -1664,7 +1664,7 @@ public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
-		return state->isClientVersion(MINCLIVER_AOS) || state->isClientKR() || state->isClientEnhanced();
+		return state->m_client->m_TooltipEnabled;
 	}
 };
 

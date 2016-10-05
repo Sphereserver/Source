@@ -844,7 +844,6 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 
 	sm_ContainerRect[] =
 	{
-		{ GUMP_RESERVED, 0, 0, 200, 200 },			// generic value to use when gump is not found
 		{ GUMP_SCROLL, 30, 30, 270, 170 },
 		{ GUMP_CORPSE, 20, 85, 124, 196 },
 		{ GUMP_BACKPACK, 44, 65, 186, 159 },
@@ -911,7 +910,7 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 	}
 
 	DEBUG_WARN(("Unknown container gump id %d for item 0%x\n", gump, GetDispID()));
-	return CPointMap(static_cast<WORD>(Calc_GetRandVal2(sm_ContainerRect[0].m_minx, sm_ContainerRect[0].m_maxx)), static_cast<WORD>(Calc_GetRandVal2(sm_ContainerRect[0].m_miny, sm_ContainerRect[0].m_maxy)));
+	return CPointMap(static_cast<WORD>(Calc_GetRandVal2(0, 200)), static_cast<WORD>(Calc_GetRandVal2(0, 200)));
 }
 
 SOUND_TYPE CItemContainer::GetDropSound() const

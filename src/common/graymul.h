@@ -1153,8 +1153,7 @@ enum LIGHT_PATTERN	// What pattern (m_light_pattern) does the light source (CAN_
 
 enum GUMP_TYPE	// The gumps. (most of these are not useful to the server.)
 {
-	GUMP_NONE					= 0x0,
-	GUMP_RESERVED				= 0x1,
+	GUMP_NONE					= -1,
 	GUMP_SCROLL					= 0x7,
 	GUMP_CORPSE					= 0x9,
 	GUMP_VENDOR_RECT			= 0x30,
@@ -1212,9 +1211,7 @@ enum GUMP_TYPE	// The gumps. (most of these are not useful to the server.)
 	GUMP_BACKPACK_UNK1			= 0x775e,
 	GUMP_BACKPACK_UNK2			= 0x7760,
 	GUMP_BACKPACK_UNK3			= 0x7762,
-	GUMP_GIFT_BOX_CHRISTMAS		= 0x777a,
-	GUMP_QTY					= 0xfffe,
-	GUMP_OPEN_SPELLBOOK			= 0xffff
+	GUMP_GIFT_BOX_CHRISTMAS		= 0x777a
 };
 
 typedef WORD		TERRAIN_TYPE;

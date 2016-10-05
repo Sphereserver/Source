@@ -2000,7 +2000,7 @@ PacketPingAck::PacketPingAck(const CClient* target, BYTE value) : PacketSend(XCM
  *
  *
  ***************************************************************************/
-PacketVendorBuyList::PacketVendorBuyList(const CClient* target, const CChar* vendor, const CItemContainer* contParent, int convertFactor, bool bIsClientEnhanced) : PacketSend(XCMD_VendOpenBuy, 8, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketVendorBuyList::PacketVendorBuyList(const CClient* target, const CChar* vendor, const CItemContainer* contParent, int convertFactor) : PacketSend(XCMD_VendOpenBuy, 8, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketVendorBuyList::PacketVendorBuyList");
 
@@ -2012,7 +2012,9 @@ PacketVendorBuyList::PacketVendorBuyList(const CClient* target, const CChar* ven
 	skip(1);
 
 	// Enhanced Client wants the prices to be sent in reverse order
-	for ( CItem* item = (bIsClientEnhanced ? contParent->GetContentHead() : contParent->GetContentTail()); item != NULL; item = (bIsClientEnhanced ? item->GetNext() : item->GetPrev()) )
+	bool bIsClientEnhanced = target->m_NetState->isClientEnhanced();
+
+	for ( CItem *item = (bIsClientEnhanced ? contParent->GetContentHead() : contParent->GetContentTail()); item != NULL; item = (bIsClientEnhanced ? item->GetNext() : item->GetPrev()) )
 	{
 		CItemVendable* vendorItem = static_cast<CItemVendable *>(item);
 		if (vendorItem == NULL || vendorItem->GetAmount() == 0)
@@ -2026,7 +2028,6 @@ PacketVendorBuyList::PacketVendorBuyList(const CClient* target, const CChar* ven
 
 			if (price == 0 && vendorItem->IsValidNPCSaleItem())
 				price = vendorItem->GetBasePrice();
-
 			if (price == 0)
 				price = 100000;
 		}
@@ -3487,13 +3488,13 @@ PacketEnableFeatures::PacketEnableFeatures(const CClient* target, DWORD flags) :
  *
  *
  ***************************************************************************/
-PacketArrowQuest::PacketArrowQuest(const CClient* target, int x, int y, int id) : PacketSend(XCMD_Arrow, 10, PRI_NORMAL)
+PacketArrowQuest::PacketArrowQuest(const CClient* target, WORD x, WORD y, DWORD id) : PacketSend(XCMD_Arrow, 10, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketArrowQuest::PacketArrowQuest");
 
 	writeBool(x && y);
-	writeInt16(static_cast<WORD>(x));
-	writeInt16(static_cast<WORD>(y));
+	writeInt16(x);
+	writeInt16(y);
 
 	if (target->m_NetState->isClientVersion(MINCLIVER_HS) || target->m_NetState->isClientEnhanced())
 		writeInt32(id);
@@ -4052,7 +4053,7 @@ PacketSpeedMode::PacketSpeedMode(const CClient* target, BYTE mode) : PacketExten
  *
  *
  ***************************************************************************/
-PacketMessageLocalised::PacketMessageLocalised(const CClient* target, int cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR args) : PacketSend(XCMD_SpeakLocalized, 50, PRI_NORMAL)
+PacketMessageLocalised::PacketMessageLocalised(const CClient* target, DWORD cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR args) : PacketSend(XCMD_SpeakLocalized, 50, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMessageLocalised::PacketMessageLocalised");
 
@@ -4113,7 +4114,7 @@ PacketVisualRange::PacketVisualRange(const CClient* target, BYTE range) : Packet
  *
  *
  ***************************************************************************/
-PacketMessageLocalisedEx::PacketMessageLocalisedEx(const CClient* target, int cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, AFFIX_TYPE affixType, LPCTSTR affix, LPCTSTR args) : PacketSend(XCMD_SpeakLocalizedEx, 52, PRI_NORMAL)
+PacketMessageLocalisedEx::PacketMessageLocalisedEx(const CClient* target, DWORD cliloc, const CObjBaseTemplate* source, HUE_TYPE hue, TALKMODE_TYPE mode, FONT_TYPE font, AFFIX_TYPE affixType, LPCTSTR affix, LPCTSTR args) : PacketSend(XCMD_SpeakLocalizedEx, 52, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMessageLocalisedEx::PacketMessageLocalisedEx");
 
@@ -4136,7 +4137,7 @@ PacketMessageLocalisedEx::PacketMessageLocalisedEx(const CClient* target, int cl
 	}
 
 	writeByte(static_cast<BYTE>(mode));
-	writeInt16(hue);
+	writeInt16(static_cast<WORD>(hue));
 	writeInt16(static_cast<WORD>(font));
 	writeInt32(cliloc);
 	writeByte(static_cast<BYTE>(affixType));

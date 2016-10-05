@@ -125,9 +125,9 @@ enum LOGINFLAGS_TYPE		// client send these flags on login, based on client versi
 	Malas		= 0x8,
 	Tokuno		= 0x10,
 	TerMur		= 0x20,
-	UO3D		= 0x40,
-	//Unknown	= 0x80,
-	UOTD		= 0x100
+	ClientEC	= 0x40,
+	Unk			= 0x80,		// unknown, only sent by enhanced clients
+	Client3D	= 0x100
 };
 
 enum RESDISPLAY_VERSION
@@ -1336,7 +1336,7 @@ public:
 	void addWeather( WEATHER_TYPE weather = WEATHER_DEFAULT ); // Send new weather to player
 	void addLight();
 	void addMusic( MIDI_TYPE id );
-	void addArrowQuest( int x, int y, int id );
+	void addArrowQuest( WORD x, WORD y, DWORD id );
 	void addEffect( EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate * pDst, const CObjBaseTemplate * pSrc, BYTE speed = 5, BYTE loop = 1, bool explode = false, DWORD color = 0, DWORD render = 0, WORD effectid = 0, DWORD explodeid = 0, WORD explodesound = 0, DWORD effectuid = 0, BYTE type = 0 );
 	void addSound( SOUND_TYPE id, const CObjBaseTemplate * pBase = NULL, int iRepeat = 1 );
 	void addReSync();
@@ -1347,8 +1347,8 @@ public:
 
 	void addBark( LPCTSTR pText, const CObjBaseTemplate * pSrc, HUE_TYPE wHue = HUE_DEFAULT, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_BOLD );
 	void addBarkUNICODE( const NCHAR * pText, const CObjBaseTemplate * pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang = 0 );
-	void addBarkLocalized( int iClilocId, const CObjBaseTemplate * pSrc, HUE_TYPE wHue = HUE_DEFAULT, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_BOLD, LPCTSTR pArgs = NULL );
-	void addBarkLocalizedEx( int iClilocId, const CObjBaseTemplate * pSrc, HUE_TYPE wHue = HUE_DEFAULT, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_BOLD, AFFIX_TYPE affix = AFFIX_APPEND, LPCTSTR pAffix = NULL, LPCTSTR pArgs = NULL );
+	void addBarkLocalized( DWORD iClilocId, const CObjBaseTemplate * pSrc, HUE_TYPE wHue = HUE_DEFAULT, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_BOLD, LPCTSTR pArgs = NULL );
+	void addBarkLocalizedEx( DWORD iClilocId, const CObjBaseTemplate * pSrc, HUE_TYPE wHue = HUE_DEFAULT, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_BOLD, AFFIX_TYPE affix = AFFIX_APPEND, LPCTSTR pAffix = NULL, LPCTSTR pArgs = NULL );
 	void addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font = FONT_NORMAL, bool bUnicode = false, LPCTSTR name = "" );
 	void addSysMessage( LPCTSTR pMsg ); // System message (In lower left corner)
 	void addObjMessage( LPCTSTR pMsg, const CObjBaseTemplate * pSrc, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_OBJ ); // The message when an item is clicked

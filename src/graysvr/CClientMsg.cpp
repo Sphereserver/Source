@@ -376,7 +376,7 @@ void CClient::addItem_Equipped( const CItem * pItem )
 	ADDTOCALLSTACK("CClient::addItem_Equipped");
 	ASSERT(pItem);
 	// Equip a single item on a CChar.
-	CChar *pChar = static_cast<CChar *>(pItem->GetParent());
+	CChar *pChar = dynamic_cast<CChar *>(pItem->GetParent());
 	ASSERT(pChar);
 
 	if ( !m_pChar->CanSeeItem(pItem) && m_pChar != pChar )
@@ -391,7 +391,7 @@ void CClient::addItem_InContainer( const CItem * pItem )
 {
 	ADDTOCALLSTACK("CClient::addItem_InContainer");
 	ASSERT(pItem);
-	CItemContainer *pCont = static_cast<CItemContainer *>(pItem->GetParent());
+	CItemContainer *pCont = dynamic_cast<CItemContainer *>(pItem->GetParent());
 	if ( !pCont )
 		return;
 
@@ -458,7 +458,7 @@ bool CClient::addContainerSetup( const CItemContainer * pContainer ) // Send Bac
 		return false;
 
 	GUMP_TYPE gump = pItemDef->GetContainerGumpID();
-	if ( gump <= GUMP_RESERVED )
+	if ( gump <= GUMP_NONE )
 		return false;
 
 	OpenPacketTransaction transaction(this, PacketSend::PRI_NORMAL);
@@ -552,7 +552,7 @@ void CClient::addLight()
 	new PacketGlobalLight(this, iLight);
 }
 
-void CClient::addArrowQuest( int x, int y, int id )
+void CClient::addArrowQuest( WORD x, WORD y, DWORD id )
 {
 	ADDTOCALLSTACK("CClient::addArrowQuest");
 
@@ -633,7 +633,7 @@ void CClient::addBarkUNICODE( const NCHAR * pwText, const CObjBaseTemplate * pSr
 	new PacketMessageUNICODE(this, pwText, pSrc, wHue, mode, font, lang);
 }
 
-void CClient::addBarkLocalized( int iClilocId, const CObjBaseTemplate * pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR pArgs )
+void CClient::addBarkLocalized( DWORD iClilocId, const CObjBaseTemplate * pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR pArgs )
 {
 	ADDTOCALLSTACK("CClient::addBarkLocalized");
 	if ( iClilocId <= 0 )
@@ -651,7 +651,7 @@ void CClient::addBarkLocalized( int iClilocId, const CObjBaseTemplate * pSrc, HU
 	new PacketMessageLocalised(this, iClilocId, pSrc, wHue, mode, font, pArgs);
 }
 
-void CClient::addBarkLocalizedEx( int iClilocId, const CObjBaseTemplate * pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, AFFIX_TYPE affix, LPCTSTR pAffix, LPCTSTR pArgs )
+void CClient::addBarkLocalizedEx( DWORD iClilocId, const CObjBaseTemplate * pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, AFFIX_TYPE affix, LPCTSTR pAffix, LPCTSTR pArgs )
 {
 	ADDTOCALLSTACK("CClient::addBarkLocalizedEx");
 	if ( iClilocId <= 0 )
@@ -781,7 +781,7 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 		{
 			TCHAR *ppArgs[256];
 			size_t iQty = Str_ParseCmds(const_cast<TCHAR *>(m_BarkBuffer.GetPtr()), ppArgs, COUNTOF(ppArgs), "," );
-			int iClilocId = Exp_GetVal( ppArgs[0] );
+			DWORD iClilocId = Exp_GetVal( ppArgs[0] );
 			int iAffixType = Exp_GetVal( ppArgs[1] );
 			CGString CArgs;
 			for ( size_t i = 3; i < iQty; i++ )
@@ -799,7 +799,7 @@ void CClient::addBarkParse( LPCTSTR pszText, const CObjBaseTemplate * pSrc, HUE_
 		{
 			TCHAR *ppArgs[256];
 			size_t iQty = Str_ParseCmds(const_cast<TCHAR *>(m_BarkBuffer.GetPtr()), ppArgs, COUNTOF(ppArgs), "," );
-			int iClilocId = Exp_GetVal( ppArgs[0] );
+			DWORD iClilocId = Exp_GetVal( ppArgs[0] );
 			CGString CArgs;
 			for ( size_t i = 1; i < iQty; i++ )
 			{
@@ -2027,7 +2027,7 @@ void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
 	}
 
 	OpenPacketTransaction transaction(this, PacketSend::PRI_NORMAL);
-	addOpenGump(pBook, GUMP_OPEN_SPELLBOOK);
+	addOpenGump(pBook, GUMP_NONE);
 
 	if ( PacketSpellbookContent::CanSendTo(m_NetState) )
 		new PacketSpellbookContent(this, pBook, offset);
@@ -2111,7 +2111,7 @@ bool CClient::addShopMenuBuy( CChar * pVendor )
 	addItem(pContainerExtra);
 
 	// Get price list
-	new PacketVendorBuyList(this, pVendor, pContainerStock, pVendor->NPC_GetVendorMarkup(), m_NetState->isClientEnhanced());
+	new PacketVendorBuyList(this, pVendor, pContainerStock, pVendor->NPC_GetVendorMarkup());
 
 	// Open gump
 	addOpenGump(pVendor, GUMP_VENDOR_RECT);
@@ -2312,13 +2312,13 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 	if ( !pObj || !PacketPropertyList::CanSendTo(m_NetState) )
 		return;
 
+	// Check if we must send the full tooltip or just the obj name
+	if ( !m_TooltipEnabled && !bShop )
+		return;
+
 	// Don't send tooltips for items out of LOS
 	const CObjBaseTemplate *pObjTop = pObj->GetTopLevelObj();
 	if ( !pObjTop || (m_pChar->GetTopPoint().GetDistSight(pObjTop->GetTopPoint()) > UO_MAP_VIEW_SIZE + 1) )
-		return;
-
-	// Check if we must send the full tooltip or just the obj name
-	if ( !m_TooltipEnabled && !bShop )
 		return;
 
 	// We check here if we are sending a tooltip for a static/non-movable items
