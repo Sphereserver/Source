@@ -230,3 +230,7 @@ Fixed: Account character creation not coloring skirt on female characters.
 
 27-09-2016, Coruja
 Changed: Updated internal SQLite libs v3.14.1 to v3.14.2.
+
+05-10-2016, Coruja
+Fixed: Guards NPCs already placed on world not attacking criminal/murderer chars walking nearby.
+Fixed: Potions creating cooldown memory (layer_flag_potionused) using wrong name.

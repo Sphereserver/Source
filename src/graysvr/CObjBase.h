@@ -3989,7 +3989,7 @@ private:
 	void NPC_OnNoticeSnoop( CChar * pCharThief, CChar * pCharMark );
 
 	void NPC_LootMemory( CItem * pItem );
-	bool NPC_LookAtCharGuard( CChar * pChar, bool bFromTrigger = false );
+	bool NPC_LookAtCharGuard( CChar * pChar );
 	bool NPC_LookAtCharHealer( CChar * pChar );
 	bool NPC_LookAtCharHuman( CChar * pChar );
 	bool NPC_LookAtCharMonster( CChar * pChar );

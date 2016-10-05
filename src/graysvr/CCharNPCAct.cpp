@@ -961,13 +961,12 @@ int CChar::NPC_WalkToPoint( bool fRun )
 	return 1;
 }
 
-bool CChar::NPC_LookAtCharGuard( CChar * pChar, bool bFromTrigger )
+bool CChar::NPC_LookAtCharGuard( CChar * pChar )
 {
 	ADDTOCALLSTACK("CChar::NPC_LookAtCharGuard");
 	// Does the guard hate the target ?
 
-	//	do not waste time on invul+dead, non-criminal and jailed chars
-	if ( !pChar || pChar->IsStatFlag(STATF_INVUL|STATF_DEAD) || pChar->IsPriv(PRIV_JAILED) || !bFromTrigger )	//|| !pChar->Noto_IsCriminal()
+	if ( !pChar || pChar->IsStatFlag(STATF_INVUL|STATF_DEAD) || pChar->IsPriv(PRIV_GM|PRIV_JAILED) || !pChar->Noto_IsCriminal() )
 		return false;
 
 	if ( !pChar->m_pArea->IsGuarded() )

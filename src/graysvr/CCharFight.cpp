@@ -1540,7 +1540,7 @@ void CChar::CallGuards( CChar * pCriminal )
 		pGuard->Spell_Effect_Create(SPELL_Summon, LAYER_SPELL_Summon, 1000, g_Cfg.m_iGuardLingerTime);
 		pGuard->Spell_Teleport(pCriminal->GetTopPoint(), false, false);
 	}
-	pGuard->NPC_LookAtCharGuard(pCriminal, true);
+	pGuard->NPC_LookAtCharGuard(pCriminal);
 }
 
 // i notice a Crime or attack against me ..

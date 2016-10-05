@@ -1791,9 +1791,9 @@ CItem * CChar::Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSki
 	switch ( layer )
 	{
 		case LAYER_FLAG_Criminal:		pSpell->SetName("Criminal Timer");			break;
-		case LAYER_FLAG_Potion:			pSpell->SetName("Potion Cooldown");			break;
 		case LAYER_FLAG_Drunk:			pSpell->SetName("Drunk Effect");			break;
 		case LAYER_FLAG_Hallucination:	pSpell->SetName("Hallucination Effect");	break;
+		case LAYER_FLAG_PotionUsed:		pSpell->SetName("Potion Cooldown");			break;
 		case LAYER_FLAG_Murders:		pSpell->SetName("Murder Decay");			break;
 		default:						break;
 	}
