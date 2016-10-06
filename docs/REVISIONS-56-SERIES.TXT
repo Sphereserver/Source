@@ -234,3 +234,15 @@ Changed: Updated internal SQLite libs v3.14.1 to v3.14.2.
 05-10-2016, Coruja
 Fixed: Guards NPCs already placed on world not attacking criminal/murderer chars walking nearby.
 Fixed: Potions creating cooldown memory (layer_flag_potionused) using wrong name.
+
+06-10-2016, Ares
+Changed: New Options for export to exclude own character (SRC) when performing export. The options are now:
+	- 1: Only items
+	- 2: Only characters without own character.
+	- 3: Items and characters without own character. [1+2]
+	- (4: Include own Character. But this is meaningless without flag 2)
+	- (5: Only items including own character makes no sense. ;-) )
+	- 6: Only characters including own character. [2+4]
+	- 7: Items and characters including own character. [1+2+4]
+Fixed: A rarely occuring bug when importing characters: Sometimes when characters are imported, there is a chance for identical items at same place (in backpack), which are deleted. This shouldn't happen anymore.
+Fixed: Importing items with same BASEID and different DISPID at the same place in world removes one of the items unexpectedly. This is especially the case for WSC imports, where same DISPIDs of the same BASEID are is almost always intended. (For example when a part of the static is in game for a while, or migrated between CentrED and a Building-Sphere-Server) The fix is: Such items are not deleted anymore, only when the dispid (and other stuff) matches as well.

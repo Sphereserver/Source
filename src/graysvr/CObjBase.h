@@ -1032,6 +1032,7 @@ public:
 		return (m_Can & wCan) ? true : false;
 	}
 	virtual bool  IsSameType( const CObjBase * pObj ) const;
+	virtual bool  IsIdentical( const CObjBase * pObj );
 	bool  Stack( CItem * pItem );
 	DWORD ConsumeAmount( DWORD iQty = 1, bool fTest = false );
 
