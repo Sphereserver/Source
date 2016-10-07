@@ -991,6 +991,27 @@ bool CItem::IsSameType( const CObjBase * pObj ) const
 	return( true );
 }
 
+// Checks whether the items are fully identical.
+bool CItem::IsIdentical( const CObjBase * pObj )
+{
+	ADDTOCALLSTACK("CItem::IsIdentical");
+	const CItem * pItem = dynamic_cast <const CItem*> ( pObj );
+
+	if ( !IsSameType(pItem) )
+		return ( false );
+
+	// Do not compare with dupelist here, the item should be really identical.
+	if ( ! CItemBase::IsValidDispID( pItem->GetDispID() ))
+		return( false );
+	if ( pItem->GetDispID() != GetDispID())
+		return( false );
+
+	if (!m_TagDefs.Compare( &( pItem->m_TagDefs ) ))
+		return false ;
+
+	return( true );
+}
+
 bool CItem::IsStackableException() const
 {
 	ADDTOCALLSTACK("CItem::IsStackableException");

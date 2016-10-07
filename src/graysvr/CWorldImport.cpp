@@ -61,7 +61,8 @@ private:
 
 public:
 	void CheckLast();
-	void ImportFix();
+	void MergeDupes();
+	void Migrate();
 	bool ImportSCP( CScript & s, WORD wModeFlags );
 	bool ImportWSC( CScript & s, WORD wModeFlags );
 };
@@ -94,10 +95,10 @@ void CImportFile::CheckLast()
 	}
 }
 
-void CImportFile::ImportFix()
+void CImportFile::MergeDupes()
 {
-	ADDTOCALLSTACK("CImportFile::ImportFix");
-	// adjust all the containered items and eliminate duplicates.
+	ADDTOCALLSTACK("CImportFile::MergeDupes");
+	// place all items and eliminate duplicates.
 
 	CheckLast();
 	int iRemoved = 0;
@@ -129,7 +130,7 @@ void CImportFile::ImportFix()
 					CItem *pItem = AreaItems.GetItem();
 					if ( pItem == NULL )
 						break;
-					if ( !pItem->IsSameType(m_pCurSer->m_pObj) )
+					if ( !pItem->IsIdentical(m_pCurSer->m_pObj ))
 						continue;
 					pItem->SetName(m_pCurSer->m_pObj->GetName());
 					if ( !(m_pCurSer->m_pObj->GetTopZ() == pItem->GetTopZ()) )
@@ -157,7 +158,59 @@ void CImportFile::ImportFix()
 			continue;
 		}
 
-		// Find it's container.
+		delete m_pCurSer;
+	}
+
+	if ( iRemoved )
+	{
+		DEBUG_ERR(( "Import: removed %d bad items\n", iRemoved ));
+	}
+
+	m_ListSer.DeleteAll();	// done with the list now.
+}
+
+void CImportFile::Migrate()
+{
+	ADDTOCALLSTACK("CImportFile::Migrate");
+	// place and adjust all the containered items
+
+	CheckLast();
+
+	int iRemoved = 0;
+
+	CImportSer * pSerNext;
+	m_pCurSer = static_cast <CImportSer*> ( m_ListSer.GetHead());
+	for ( ; m_pCurSer != NULL; m_pCurSer = pSerNext )
+	{
+		pSerNext = static_cast <CImportSer*> ( m_pCurSer->GetNext());
+		if ( m_pCurSer->m_pObj == NULL )		// NEver created correctly
+		{
+			delete m_pCurSer;
+			continue;
+		}
+
+		CItem * pItemTest;
+		if ( m_pCurSer->IsTopLevel())	// top level only
+		{
+			// Make sure the top level object is placed correctly.
+			m_pCurSer->m_pObj->MoveTo( m_pCurSer->m_pObj->GetTopPoint());
+			m_pCurSer->m_pObj->Update();
+			if ( ! m_pCurSer->m_pObj->IsContainer())
+				delete m_pCurSer;
+			continue;
+		}
+
+		pItemTest = dynamic_cast <CItem*> (m_pCurSer->m_pObj);
+		if ( pItemTest == NULL )
+		{
+		item_delete:
+			delete m_pCurSer->m_pObj;
+			delete m_pCurSer;
+			iRemoved ++;
+			continue;
+		}
+
+		// Find it's container and add it to the correct container
 		CImportSer *pSerCont = static_cast<CImportSer *>(m_ListSer.GetHead());
 		CObjBase *pObjCont = NULL;
 		for ( ; pSerCont != NULL; pSerCont = static_cast<CImportSer *>(pSerCont->GetNext()) )
@@ -174,9 +227,14 @@ void CImportFile::ImportFix()
 				break;
 			}
 		}
+
+		// If neither top level nor in an existing container remove the item
 		if ( !m_pCurSer->IsTopLevel() || pObjCont == NULL )
 			goto item_delete;
 
+		/* Commented by Ares because this may causes errors while restoring player characters
+		   Example:
+		    - Items placed at the same positon in a container.
 		// Is it a dupe in the container or equipped ?
 		for ( CItem *pItem = dynamic_cast<CContainer *>(pObjCont)->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 		{
@@ -192,10 +250,10 @@ void CImportFile::ImportFix()
 				if ( !pItemTest->GetContainedPoint().IsSame2D(pItem->GetContainedPoint()) )
 					continue;
 			}
-			if ( !pItemTest->IsSameType(pItem) )
+			if ( !pItemTest->IsIdentical(pItem) )
 				continue;
 			goto item_delete;
-		}
+		}*/
 
 		// done with it if not a container.
 		if ( !pItemTest->IsContainer() )
@@ -224,7 +282,7 @@ bool CImportFile::ImportSCP( CScript & s, WORD wModeFlags )
 		}
 		else if ( s.IsSectionType( "WORLDCHAR" ) || s.IsSectionType("WC"))
 		{
-			ImportFix();
+			Migrate();
 			if ( wModeFlags & IMPFLAGS_CHARS )
 			{
 				m_pCurObj = CChar::CreateBasic(static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, s.GetArgStr())));
@@ -657,16 +715,17 @@ bool CWorld::Import( LPCTSTR pszFilename, const CChar * pSrc, WORD wModeFlags, i
 	{
 		if ( ! fImport.ImportWSC(s, wModeFlags ))
 			return( false );
+
+		fImport.MergeDupes();
 	}
 	else
 	{
 		// This is one of our files. ".SCP"
 		if ( ! fImport.ImportSCP(s, wModeFlags ))
 			return( false );
-	}
 
-	// now fix the contained items.
-	fImport.ImportFix();
+		fImport.Migrate();
+	}
 
 	GarbageCollection();
 	return( true );
@@ -756,6 +815,15 @@ bool CWorld::Export( LPCTSTR pszFilename, const CChar * pSrc, WORD wModeFlags, i
 			CChar * pChar = AreaChars.GetChar();
 			if ( pChar == NULL )
 				break;
+			
+			if ( !(wModeFlags & IMPFLAGS_SELF) )
+			{
+				if ( pChar->GetUID() == pSrc->GetUID() )
+				{
+					continue;
+				}
+			}
+			
 			pChar->r_WriteSafe( s );
 		}
 	}

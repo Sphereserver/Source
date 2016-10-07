@@ -204,7 +204,7 @@ enum IMPFLAGS_TYPE	// IMPORT and EXPORT flags.
 	IMPFLAGS_ITEMS = 0x01,		// 0x01 = items,
 	IMPFLAGS_CHARS = 0x02,		// 0x02 = characters
 	IMPFLAGS_BOTH  = 0x03,		// 0x03 = both
-	IMPFLAGS_PLAYERS = 0x04,
+	IMPFLAGS_SELF = 0x04,		// 0x04 = including self
 	IMPFLAGS_RELATIVE = 0x10,	// 0x10 = distance relative. dx, dy to you
 	IMPFLAGS_ACCOUNT = 0x20		// 0x20 = recover just this account/char	(and all it is carrying)
 };
