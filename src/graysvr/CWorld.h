@@ -177,7 +177,11 @@ public:
 		m_Chars_Active.ClientDetach();
 	}
 	bool MoveCharToSector( CChar * pChar );
+	bool MoveDisconnectedCharToSector(CChar * pChar);
+private:
+	void CheckSaveParity(CChar* pChar);
 
+public:
 	// General.
 	virtual bool r_LoadVal( CScript & s );
 	virtual bool r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc );
