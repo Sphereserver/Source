@@ -3511,7 +3511,7 @@ bool CChar::MoveToChar(CPointMap pt, bool bForceFix)
 
 		// We cannot put this char in non-disconnect state.
 		SetDisconnected();
-		pSector->m_Chars_Disconnect.InsertHead(this);
+		pSector->MoveDisconnectedCharToSector(this);
 		SetUnkPoint(pt);
 		return true;
 	}

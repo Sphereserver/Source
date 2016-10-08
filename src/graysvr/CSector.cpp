@@ -798,16 +798,15 @@ void CSector::MoveItemToSector( CItem * pItem, bool fActive )
 	}
 }
 
-bool CSector::MoveCharToSector( CChar * pChar )
+
+void CSector::CheckSaveParity(CChar* pChar)
 {
-	ADDTOCALLSTACK("CSector::MoveCharToSector");
-	// Move a CChar into this CSector.
-	// ASSUME: called from CChar.MoveToChar() assume ACtive char.
+	ADDTOCALLSTACK("CSector::CheckSaveParity");
+	// NOTE:
+	// pChar is not yet added to any charlist of this sector
+	// ASSUME: called from CSector.MoveCharToSector() or CSector.MoveDisconnectedCharToSector().
 
-	if ( IsCharActiveIn(pChar) )
-		return false;	// already here
-
-	// Check my save parity vs. this sector's
+	// Check my save parity vs. this sector's and save out if not saved yet
 	if ( pChar->IsStatFlag( STATF_SaveParity ) != m_fSaveParity )
 	{
 		if ( g_World.IsSaving())
@@ -827,8 +826,39 @@ bool CSector::MoveCharToSector( CChar * pChar )
 			}
 		}
 	}
+}
+
+bool CSector::MoveCharToSector(CChar * pChar)
+{
+	ADDTOCALLSTACK("CSector::MoveCharToSector");
+	// Move a CChar into this CSector.
+	// NOTE:
+	//   m_pt is still the old location. Not moved yet!
+	// ASSUME: called from CChar.MoveToChar() assume Active char.
+
+	if (IsCharActiveIn(pChar))
+		return false;	// already here
+
+	CheckSaveParity(pChar);
 
 	m_Chars_Active.AddCharToSector(pChar);	// remove from previous spot.
+	return(true);
+}
+
+bool CSector::MoveDisconnectedCharToSector(CChar * pChar)
+{
+	ADDTOCALLSTACK("CSector::MoveDisconnectedCharToSector");
+	// Move a CChar into this CSector.
+	// NOTE:
+	//   m_pt is still the old location. Not moved yet!
+	// ASSUME: called from CChar.MoveToChar() assume disconnected char.
+
+	if (IsCharDisconnectedIn(pChar))
+		return false;	// already here
+
+	CheckSaveParity(pChar);
+
+	m_Chars_Disconnect.InsertHead(pChar);	// remove from previous spot.
 	return true;
 }
 
