@@ -34,7 +34,9 @@ void CClient::resendBuffs()
 	// time will stay cached on client, making it not display the remaining time if the server
 	// send this same buff again. To avoid this, we must remove the buff before send it.
 
-	if ( pChar->IsStatFlag(STATF_Hidden | STATF_Insubstantial) )
+	if ( pChar->IsStatFlag(STATF_NightSight) )
+		addBuff(BI_NIGHTSIGHT, 1075643, 1075644);
+	if ( pChar->IsStatFlag(STATF_Hidden|STATF_Insubstantial) )
 		addBuff(BI_HIDDEN, 1075655, 1075656);
 
 	CItem *pStuck = pChar->LayerFind(LAYER_FLAG_Stuck);

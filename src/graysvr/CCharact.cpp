@@ -541,7 +541,10 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 		{
 			StatFlag_Mod(STATF_NightSight, 0);
 			if ( m_pClient )
+			{
 				m_pClient->addLight();
+				m_pClient->removeBuff(BI_NIGHTSIGHT);
+			}
 		}
 
 		// If items are magical then remove effect here.
@@ -2015,8 +2018,11 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 	if (pItem->GetDefNum("NIGHTSIGHT", true))
 	{
 		StatFlag_Mod(STATF_NightSight, 1);
-		if (m_pClient)
+		if ( m_pClient )
+		{
 			m_pClient->addLight();
+			m_pClient->addBuff(BI_NIGHTSIGHT, 1075643, 1075644);
+		}
 	}
 
 	return true;

@@ -252,3 +252,4 @@ Fixed: Critical Bug in background save mechanism where an unsaved offline player
 
 17-10-2016, Coruja
 Fixed: NPCs losing 'statf_spawned' flag after server restart.
+Fixed: Nightsight buff icon not being enabled/disabled when using NIGHTSIGHT function or changing 'statf_nightsight' char flag.

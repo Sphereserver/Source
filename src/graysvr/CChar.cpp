@@ -2998,12 +2998,19 @@ do_default:
 		case CHC_NIGHTSIGHT:
 			{
 				long fNightsight = s.GetArgVal();
-				if (!fNightsight)	// Keep old 'switch' from 0 to 1 and viceversa behaviour while no args are given.
-					 fNightsight = !IsStatFlag(STATF_NightSight);
+				if ( !fNightsight )		// keep old 'switch' from 0 to 1 and viceversa behaviour while no args are given
+					fNightsight = !IsStatFlag(STATF_NightSight);
+
 				SetDefNum(s.GetKey(), fNightsight, false);
-				StatFlag_Mod( STATF_NightSight, fNightsight > 0 ? true : false );
+				StatFlag_Mod(STATF_NightSight, fNightsight > 0 ? true : false);
 				if ( m_pClient )
+				{
 					m_pClient->addLight();
+					if ( fNightsight )
+						m_pClient->addBuff(BI_NIGHTSIGHT, 1075643, 1075644);
+					else
+						m_pClient->removeBuff(BI_NIGHTSIGHT);
+				}
 			}
 			break;
 		case CHC_NPC:
