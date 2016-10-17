@@ -1041,37 +1041,7 @@ enum DELETE_ERR_TYPE
 	DELETE_ERR_NOT_OLD_ENOUGH, // 3 That character is not old enough to delete. The character must be 7 days old before it can be deleted.
 	DELETE_SUCCESS = 255
 };
-/*
-enum LOGIN_ERR_TYPE	// error codes sent to client.
-{
-	LOGIN_ERR_NONE = 0,			// no account
-	LOGIN_ERR_USED = 1,			// already in use.
-	LOGIN_ERR_BLOCKED = 2,		// client blocked
-	LOGIN_ERR_BAD_PASS = 3,		// incorrect password
-	LOGIN_ERR_OTHER = 4,		// like timeout.
 
-	// the error codes below are not sent to or understood by the client,
-	// and should be translated into one of the codes above
-	LOGIN_ERR_BAD_CLIVER,		// cliver not permitted
-	LOGIN_ERR_BAD_CHAR,			// bad character selected
-	LOGIN_ERR_BAD_AUTHID,		// bad auth id
-	LOGIN_ERR_BAD_ACCTNAME,		// bad account name (length, characters)
-	LOGIN_ERR_BAD_PASSWORD,		// bad password (length, characters)
-	LOGIN_ERR_ENC_BADLENGTH,	// bad message length
-	LOGIN_ERR_ENC_UNKNOWN,		// unknown encryption
-	LOGIN_ERR_ENC_CRYPT,		// crypted client not allowed
-	LOGIN_ERR_ENC_NOCRYPT,		// non-crypted client not allowed
-	LOGIN_ERR_CHARIDLE,			// character is already ingame
-	LOGIN_ERR_TOOMANYCHARS,		// account has too many characters
-	LOGIN_ERR_BLOCKED_IP,		// ip is blocked
-	LOGIN_ERR_BLOCKED_MAXCLIENTS,	// max clients reached
-	LOGIN_ERR_BLOCKED_MAXGUESTS,	// max guests reached
-	LOGIN_ERR_MAXPASSTRIES,		// max password tries reached
-
-	// this 'error' code indicates there was no error
-	LOGIN_SUCCESS	= 255
-};
-*/
 enum BUGREPORT_TYPE	// bug report codes
 {
 	BUGREPORT_ENVIRONMENT	= 0x01,
@@ -1105,18 +1075,18 @@ enum PROFESSION_TYPE	// profession ids
 
 enum GAMECLIENT_TYPE	// game client type, KR and SA are from the 0xE1 packet, other values are for convenience
 {
-	CLIENTTYPE_2D = 0x00,	// standard client
-	CLIENTTYPE_3D = 0x01,	// 3D client
-	CLIENTTYPE_KR = 0x02,	// KR client
-	CLIENTTYPE_EC = 0x03	// Enhanced client
+	CLIENTTYPE_2D	= 0x0,	// 2D classic client
+	CLIENTTYPE_3D	= 0x1,	// 3D classic client
+	CLIENTTYPE_KR	= 0x2,	// KR client
+	CLIENTTYPE_EC	= 0x3	// Enhanced client
 };
 
 enum RACE_TYPE		// character race, used in new character creation (0x8D) and status (0x11) packets
 {
-	RACETYPE_UNDEFINED = 0x00,	// none of the below
-	RACETYPE_HUMAN = 0x01,		// human
-	RACETYPE_ELF = 0x02,		// elf
-	RACETYPE_GARGOYLE = 0x03	// gargoyle
+	RACETYPE_UNDEFINED	= 0x0,
+	RACETYPE_HUMAN		= 0x1,
+	RACETYPE_ELF		= 0x2,
+	RACETYPE_GARGOYLE	= 0x3
 };
 
 struct CEventCharDef
@@ -1142,8 +1112,6 @@ struct CEvent	// event buffer from client to server..
 	union
 	{
 		BYTE m_Raw[ MAX_BUFFER ];
-
-		DWORD m_CryptHeader;	// This may just be a crypt header from the client.
 
 		struct
 		{
@@ -1924,47 +1892,6 @@ struct CEvent	// event buffer from client to server..
 			NDWORD m_address[1];		// 306-.. = address
 		} CrashReport;
 
-		/*
-			BYTE m_Cmd;		// 0=0
-			NDWORD m_pattern1; // 0xedededed
-			NDWORD m_pattern2; // 0xffffffff
-			BYTE m_kuoc; // KUOC Signal (0x00 normally. 0xff for Krrios' client)
-
-			char m_charname[MAX_NAME_SIZE];		// 10
-			//char m_charpass[MAX_NAME_SIZE];		// Not used anymore
-			
-			BYTE m_unk8[2];
-			NDWORD m_flags;
-			BYTE m_unk10[8];
-			BYTE m_prof;
-			BYTE m_unk11[15];
-
-			BYTE m_sex;		// 70, 0 = male
-			BYTE m_str;		// 71
-			BYTE m_dex;		// 72
-			BYTE m_int;		// 73
-
-			BYTE m_skill1;
-			BYTE m_val1;
-			BYTE m_skill2;
-			BYTE m_val2;
-			BYTE m_skill3;
-			BYTE m_val3;
-
-			NWORD m_wSkinHue;	// 0x50 // HUE_TYPE
-			NWORD m_hairid;
-			NWORD m_hairHue;
-			NWORD m_beardid;
-			NWORD m_beardHue;	// 0x58
-			BYTE m_unk2;
-			BYTE m_startloc;
-			BYTE m_unk3;
-			BYTE m_unk4;
-			BYTE m_unk5;
-			BYTE m_slot;
-			BYTE m_clientip[4];
-			NWORD m_shirtHue;
-			NWORD m_pantsHue;*/
 		struct // XCMD_CreateHS, size = 106 // create a new char (uohs)
 		{
 			BYTE m_Cmd;						// 0 = 0xF8
@@ -2119,8 +2046,6 @@ struct CCommand	// command buffer from server to client.
  
 		struct // size = ? change colour of hp bar, SA
 		{
-#define HEALTHCOLOR_GREEN	1
-#define HEALTHCOLOR_YELLOW	2
 			BYTE m_Cmd;		// 0 = 0x17 / XCMD_HealthBarColor
 			NWORD m_len;	// 1-2 = len
 			NDWORD m_UID;	// 3-6 = character serial
