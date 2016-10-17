@@ -249,3 +249,6 @@ Fixed: Importing items with same BASEID and different DISPID at the same place i
 
 08-10-2016, Ares
 Fixed: Critical Bug in background save mechanism where an unsaved offline player character disappears from worldsave when moved to an already saved sector.
+
+17-10-2016, Coruja
+Fixed: NPCs losing 'statf_spawned' flag after server restart.

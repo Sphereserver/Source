@@ -2867,8 +2867,15 @@ do_default:
 				StatFlag_Mod(STATF_EmoteAction,fSet);
 			}
 			break;
-		case CHC_FLAGS:		// DO NOT MODIFY STATF_SaveParity, STATF_Spawned, STATF_Pet
-			m_StatFlag = ( s.GetArgLLVal() &~ (STATF_SaveParity|STATF_Pet|STATF_Spawned)) | ( m_StatFlag & (STATF_SaveParity|STATF_Pet|STATF_Spawned) );
+		case CHC_FLAGS:
+			if ( g_Serv.IsLoading() )
+			{
+				// Don't set STATF_SaveParity at server startup, otherwise the first worldsave will not save these chars
+				m_StatFlag = s.GetArgLLVal() & ~STATF_SaveParity;
+				break;
+			}
+			// Don't modify STATF_SaveParity, STATF_Pet, STATF_Spawned here
+			m_StatFlag = (m_StatFlag & (STATF_SaveParity|STATF_Pet|STATF_Spawned)) | (s.GetArgLLVal() & ~(STATF_SaveParity|STATF_Pet|STATF_Spawned));
 			NotoSave_Update();
 			break;
 		case CHC_FONT:
