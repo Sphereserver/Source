@@ -817,12 +817,10 @@ bool CClient::Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode)
 	else
 		return false;
 
-	bool bAllowCommand = true;
-	bool bAllowSay = true;
-
 	pszCommand += 1;
 	GETNONWHITESPACE(pszCommand);
-	bAllowCommand = g_Cfg.CanUsePrivVerb(this, pszCommand, this);
+	bool bAllowCommand = g_Cfg.CanUsePrivVerb(this, pszCommand, this);
+	bool bAllowSay = true;
 
 	if ( !bAllowCommand )
 		bAllowSay = (GetPrivLevel() <= PLEVEL_Player);
