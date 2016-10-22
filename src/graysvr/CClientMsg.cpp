@@ -3688,6 +3688,8 @@ BYTE CClient::Setup_Start(CChar *pChar) // Send character startup stuff to playe
 
 	m_pAccount->m_TagDefs.DeleteKey("LastLogged");
 	Announce(true);		// announce you to the world
+	CScriptTriggerArgs LoginArgs;
+	m_pChar->r_Call("f_onchar_login", m_pChar, &LoginArgs);
 
 	// Don't login on the water, bring us to nearest shore (unless I can swim)
 	if ( !IsPriv(PRIV_GM) && !m_pChar->Char_GetDef()->Can(CAN_C_SWIM) && m_pChar->IsSwimming() )
