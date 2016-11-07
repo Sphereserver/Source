@@ -888,6 +888,8 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		{ GUMP_GIFT_BOX_ANGEL, 21, 51, 161, 151 },
 		{ GUMP_HEART_SHAPED, 56, 30, 158, 104 },
 		//{ GUMP_GIFT_BOX_TALL, 0, 0, 0, 0 },		// TO-DO: confirm gump size
+		{ GUMP_GIFT_BOX_CHRISTMAS, 16, 51, 156, 166 },
+		//{ GUMP_WALL_SAFE, 0, 0, 0, 0 },			// TO-DO: confirm gump size
 		//{ GUMP_CHEST_PIRATE, 0, 0, 0, 0 },		// TO-DO: confirm gump size
 		//{ GUMP_FOUNTAIN_LIFE, 0, 0, 0, 0 },		// TO-DO: confirm gump size
 		//{ GUMP_SECRET_CHEST, 0, 0, 0, 0 },		// TO-DO: confirm gump size
@@ -896,10 +898,11 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		{ GUMP_BOARD_BACKGAMMON, 0, 0, 282, 210 },
 		{ GUMP_PLAGUE_BEAST, 60, 33, 460, 444 },
 		//{ GUMP_KING_COLLECTION_BOX, 0, 0, 0, 0 },	// TO-DO: confirm gump size
-		{ GUMP_BACKPACK_UNK1, 44, 65, 186, 159 },
-		{ GUMP_BACKPACK_UNK2, 44, 65, 186, 159 },
-		{ GUMP_BACKPACK_UNK3, 44, 65, 186, 159 }
-		//{ GUMP_GIFT_BOX_CHRISTMAS, 0, 0, 0, 0 }	// TO-DO: confirm gump size
+		{ GUMP_BACKPACK_SUEDE, 44, 65, 186, 159 },
+		{ GUMP_BACKPACK_POLAR_BEAR, 44, 65, 186, 159 },
+		{ GUMP_BACKPACK_GHOUL_SKIN, 44, 65, 186, 159 },
+		//{ GUMP_GIFT_BOX_SQUARE, 0, 0, 0, 0 },		// TO-DO: confirm gump size
+		{ GUMP_BOW_WOODEN_STAND, 24, 96, 196, 152 }
 	};
 
 	for ( size_t i = 0; i < COUNTOF(sm_ContainerRect); i++ )

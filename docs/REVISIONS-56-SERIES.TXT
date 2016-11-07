@@ -254,3 +254,12 @@ Fixed: Critical Bug in background save mechanism where an unsaved offline player
 Fixed: NPCs losing 'statf_spawned' flag after server restart.
 Fixed: Nightsight buff icon not being enabled/disabled when using NIGHTSIGHT function or changing 'statf_nightsight' char flag.
 Changed: Updated internal SQLite libs v3.14.2 to v3.15.0.
+
+06-11-2016, Coruja
+[sphere_item_char_icons.scp]: Added char icons for Tarantula, Dr. Spector, Tyrannosaurus Rex, Unicorn (Rainbow)
+[sphere_item_unsorted.scp]: Added ITEMDEF for TOL christmas giftbox (i_giftbox_christmas)
+[sphere_monsters.scp]: Updated some TOL chardefs
+[sphere_map0_ml.scp]: Added TOL regions
+[sphere_map5.scp]: Moved a_valley_of_eodon, a_shadowguard to sphere_map0_ml.scp
+[sphere_defs.scp]: Added mount memory for Ancient Hellhound, Tarantula, Unicorn (Rainbow)
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.53 and enhanced clients 4.0.33 ~ 4.0.53
