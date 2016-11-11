@@ -11,6 +11,7 @@ before_install:
 script:
   - make NIGHTLY=1 -f makefile
 after_success:
-  "curl -T Nightly/spheresvr -u $FTP_USER:$FTP_PASSWORD ftp://revenger.6te.net/sphere_nightly"
+  "tar -czvf SphereSvr[Linux].tar.gz spheresvr"
+  "curl -T SphereSvr[Linux].tar.gz -u $FTP_USER:$FTP_PASSWORD ftp://revenger.6te.net/sphere_nightly"
 notifications:
   email: false
