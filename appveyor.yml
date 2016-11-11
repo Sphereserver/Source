@@ -5,7 +5,7 @@ pull_requests:
 build:
   project: GraySvr.vcxproj
   verbosity: minimal
-after-build:
+after_build:
 - cmd: 7z a SphereSvr-Win32.zip $(configuration)\SphereSvr.exe
 artifacts:
 - path: SphereSvr-Win32.zip
