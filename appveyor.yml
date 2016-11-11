@@ -6,7 +6,7 @@ build:
   project: GraySvr.vcxproj
   verbosity: minimal
 after-build:
-  cmd: 7z a SphereSvr-Win32.zip $(configuration)\SphereSvr.exe
+- 7z a SphereSvr-Win32.zip $(configuration)\SphereSvr.exe
 artifacts:
 - path: SphereSvr-Win32.zip
   name: SphereSvr
@@ -18,4 +18,4 @@ deploy:
     secure: FeZDtksWkubb3mE/+X03khg1vgiS2xWso3ESRUoE2ZA=
   password:
     secure: WBZe/32QQ9iMEmGnfrSKmA==
-  artifact: $(configuration)\SphereSvr.exe
+  artifact: SphereSvr-Win32.zip
