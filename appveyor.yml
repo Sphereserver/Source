@@ -5,8 +5,10 @@ pull_requests:
 build:
   project: GraySvr.vcxproj
   verbosity: minimal
+after-build:
+  cmd: 7z a SphereSvr-Win32.zip $(configuration)\SphereSvr.exe
 artifacts:
-- path: $(configuration)\SphereSvr.exe
+- path: SphereSvr-Win32.zip
   name: SphereSvr
 deploy:
   provider: FTP
