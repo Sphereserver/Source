@@ -8,3 +8,13 @@ build:
 artifacts:
 - path: $(configuration)\SphereSvr.exe
   name: SphereSvr
+deploy:
+  provider: FTP
+  protocol: ftp
+  host: revenger.6te.net
+  username:
+    secure: FeZDtksWkubb3mE/+X03khg1vgiS2xWso3ESRUoE2ZA=
+  password:
+    secure: WBZe/32QQ9iMEmGnfrSKmA==
+  folder: sphere_nightly_test
+  artifact: $(configuration)\SphereSvr.exe
