@@ -467,7 +467,8 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 	}
 
 	CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Resurrection);
-	Effect(EFFECT_OBJ, pSpellDef->m_idEffect, this, 10, 16);
+	if ( pSpellDef->m_idEffect )
+		Effect(EFFECT_OBJ, pSpellDef->m_idEffect, this, 10, 16);
 	Sound(pSpellDef->m_sound);
 	return true;
 }
@@ -3187,10 +3188,13 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	if (pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED))
 		return true;
 
-	if ( pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) && iEffectID )
-		Effect(EFFECT_BOLT, iEffectID, pCharSrc, 5, 1, fExplode, iColor, iRender);
-	if ( pSpellDef->IsSpellType(SPELLFLAG_FX_TARG) && iEffectID )
-		Effect(EFFECT_OBJ, iEffectID, this, 0, 15, fExplode, iColor, iRender); // 9, 14
+	if ( iEffectID )
+	{
+		if ( pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) )
+			Effect(EFFECT_BOLT, iEffectID, pCharSrc, 5, 1, fExplode, iColor, iRender);
+		if ( pSpellDef->IsSpellType(SPELLFLAG_FX_TARG) )
+			Effect(EFFECT_OBJ, iEffectID, this, 0, 15, fExplode, iColor, iRender);
+	}
 	if ( iSound )
 		Sound(iSound);
 
@@ -3313,7 +3317,8 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		case SPELL_Reveal:
 			if ( ! Reveal())
 				break;
-			Effect(EFFECT_OBJ, iEffectID, this, 0, 15, fExplode, iColor, iRender);
+			if ( iEffectID )
+				Effect(EFFECT_OBJ, iEffectID, this, 0, 15, fExplode, iColor, iRender);
 			break;
 
 		case SPELL_Invis:
@@ -3357,7 +3362,8 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			break;
 
 		case SPELL_Meteor_Swarm:
-			Effect(EFFECT_BOLT, iEffectID, pCharSrc, 9, 6, fExplode, iColor, iRender);
+			if ( iEffectID )
+				Effect(EFFECT_BOLT, iEffectID, pCharSrc, 9, 6, fExplode, iColor, iRender);
 			break;
 	
 		case SPELL_Lightning:
@@ -3370,7 +3376,8 @@ bool CChar::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			return Spell_Resurrection(NULL, pCharSrc, (pSourceItem && pSourceItem->IsType(IT_SHRINE)));
 
 		case SPELL_Light:
-			Effect(EFFECT_OBJ, iEffectID, this, 9, 6, fExplode, iColor, iRender);
+			if ( iEffectID )
+				Effect(EFFECT_OBJ, iEffectID, this, 9, 6, fExplode, iColor, iRender);
 			Spell_Effect_Create( spell, fPotion ? LAYER_FLAG_Potion : LAYER_NEWLIGHT, iSkillLevel, iDuration, pCharSrc );
 			break;
 

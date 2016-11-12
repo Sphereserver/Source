@@ -264,3 +264,9 @@ Changed: Updated internal SQLite libs v3.15.0 to v3.15.1.
 [sphere_map5.scp]: Moved a_valley_of_eodon, a_shadowguard to sphere_map0_ml.scp
 [sphere_defs.scp]: Added mount memory for Ancient Hellhound, Tarantula, Unicorn (Rainbow)
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.53 and enhanced clients 4.0.33 ~ 4.0.53
+
+12-11-2016, Coruja
+Fixed: Resurrect, Reveal, Meteor Swarm and Lightning spells showing effect animation even when EFFECT_ID=0 is set
+[sphereCrypt.ini]: Added crypt key for classic clients 7.0.54 ~ 7.0.55 and enhanced clients 4.0.54 ~ 4.0.55
+[sphere_map0.scp]: Added missing 'region_flag_guarded' on a_townOcclo
+[sphere_map1.scp]: Added missing 'region_flag_guarded' on a_old_haven_town and a_new_haven_town
