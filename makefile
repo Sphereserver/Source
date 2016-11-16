@@ -1,9 +1,9 @@
 SHELL   = /bin/bash
 
 # Generic makefile
-ifdef FORCE32
+#ifdef FORCE32
 MARCH = -march=i686 -m32
-endif
+#endif
 
 OPTDEFAULT = -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
 COPTDEFAULT = -fno-omit-frame-pointer -ffast-math $(MARCH)
@@ -19,7 +19,7 @@ DEBUG	= -s
 endif
 
 # DB includes + libs
-DBINCL	= -I/usr/include/mysql -L/usr/lib/mysql -L/usr/lib64/mysql
+DBINCL	= -I/usr/include/mysql -L/usr/lib/mysql
 DBLIBS	= -lmysqlclient
 
 # Linux
