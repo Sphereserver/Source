@@ -6,6 +6,7 @@ addons:
     - libmysql++3:i386
     - gcc-4.6-multilib
     - g++-4.6-multilib
+    - libc6-dev-i386
 before_install:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
 script:
