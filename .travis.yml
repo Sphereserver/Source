@@ -4,6 +4,7 @@ addons:
   apt:
     packages:
     - linux-libc-dev:i386
+    - libmysqlclient-dev:i386
     - libmysql++3:i386
     - gcc-4.6-multilib
     - g++-4.6-multilib
