@@ -9,7 +9,8 @@ Game server for UO
 [Automatic builds](http://nightly.prerelease.sphere.torfo.org/)
 
 ## Building
-Project files can be build with CMake for both Linux (GCC) and Windows (MSVC and MinGW), old project files are still present in the source for now.
+Project files can be build with CMake for both Linux (GCC) and Windows (MSVC and MinGW).
+Even using 64bit OS, Sphere must be compiled/executed in 32bit mode to work properly (included project files already compile it in 32bit mode by default).
 
 ### Windows
 #### Visual Studio
@@ -20,19 +21,19 @@ Project files can be build with CMake for both Linux (GCC) and Windows (MSVC and
 You can compile using provided CMake files.
 
 ### Linux
-* Open the terminal on sphere source dir and use the command "makefile NIGHTLY=1 -f makefile" to compile
+* Open the terminal on sphere source dir and use the command "makefile NIGHTLY=1 -f makefile" to compile using GCC.
 
-MySQL libs will be required if not installed yet. You can install using these commands:
+Some libs are required to compile/execute Sphere on Linux. You can install them using these commands:
 
 #### Ubuntu
 * sudo apt-get install libmysqld-dev
 * sudo apt-get install libmysql++ libmysql++-dev
 * sudo apt-get install libmysqlclient-dev:i386
 
-#### CentOS
-* yum install mysql
-* yum install mysql-libs
-* yum install mysql-devel
+#### CentOS 7
+* yum install mysql mysql-libs mysql-devel
+* yum install mysql-community-libs-compat.i686
+* yum install glibc-devel.i686
 
 ## Coding notes for new contributors
 * Make sure you can compile and run the program before pushing a commit.

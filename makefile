@@ -19,7 +19,7 @@ DEBUG	= -s
 endif
 
 # DB includes + libs
-DBINCL	= -I/usr/include/mysql -L/usr/lib/mysql
+DBINCL	= -I/usr/include/mysql
 DBLIBS	= -lmysqlclient
 
 # Linux
