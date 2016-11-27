@@ -110,6 +110,7 @@ public:
 #define CAN_I_RECYCLE		0x400000	// Can items be recycled.
 #define CAN_I_REFORGE		0x800000	// Can items be Runic Reforged.
 #define CAN_I_FORCEDC		0x1000000	// Can force DClick skipping other checks (LOS,Distance, Cont...).
+#define CAN_I_DAMAGEABLE	0x2000000	// Display item health bar on HS clients >= 7.0.30.0 (MORE1L = cur hitpoints / MORE1H = max hitpoints)
 
 #define CAN_U_ALL			0x000
 #define CAN_U_MALE			0x001

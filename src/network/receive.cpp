@@ -638,7 +638,7 @@ bool PacketCharStatusReq::onReceive(NetState* net)
 	CGrayUID targetSerial = static_cast<CGrayUID>(readInt32());
 
 	if ( requestType == 4 )
-		client->addCharStatWindow(targetSerial.CharFind(), true);
+		client->addHealthBarInfo(targetSerial.ObjFind(), true);
 	else if ( requestType == 5 )
 		client->addSkillWindow(SKILL_QTY);
 	return true;
@@ -1730,7 +1730,6 @@ bool PacketAllNamesReq::onReceive(NetState* net)
 		return false;
 
 	const CObjBase* object;
-
 	for (WORD length = readInt16(); length > sizeof(DWORD); length -= sizeof(DWORD))
 	{
 		object = CGrayUID(readInt32()).ObjFind();

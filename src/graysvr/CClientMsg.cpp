@@ -1850,7 +1850,7 @@ void CClient::addReSync()
 	addLight();		// Current light level where I am.
 	addWeather();	// if any ...
 	addSpeedMode(m_pChar->m_pPlayer->m_speedMode);
-	addCharStatWindow(m_pChar);
+	addHealthBarInfo(m_pChar);
 }
 
 void CClient::addMap()
@@ -1902,7 +1902,7 @@ void CClient::UpdateStats()
 
 	if ( m_fUpdateStats & SF_UPDATE_STATUS )
 	{
-		addCharStatWindow(m_pChar);
+		addHealthBarInfo(m_pChar);
 		m_fUpdateStats = 0;
 	}
 	else
@@ -1926,26 +1926,26 @@ void CClient::UpdateStats()
 	}
 }
 
-void CClient::addCharStatWindow( CChar *pChar, bool fRequested ) // Opens the status window
+void CClient::addHealthBarInfo( CObjBase * pObj, bool fRequested ) // Opens the status window
 {
-	ADDTOCALLSTACK("CClient::addCharStatWindow");
-	if ( !pChar )
+	ADDTOCALLSTACK("CClient::addHealthBarInfo");
+	if ( !pObj )
 		return;
 
 	if ( IsTrigUsed(TRIGGER_USERSTATS) )
 	{
-		CScriptTriggerArgs Args(0, 0, pChar);
+		CScriptTriggerArgs Args(0, 0, pObj);
 		Args.m_iN3 = fRequested;
-		if ( m_pChar->OnTrigger(CTRIG_UserStats, pChar, &Args) == TRIGRET_RET_TRUE )
+		if ( m_pChar->OnTrigger(CTRIG_UserStats, reinterpret_cast<CTextConsole *>(pObj), &Args) == TRIGRET_RET_TRUE )
 			return;
 	}
 
-	new PacketCharacterStatus(this, pChar);
-	if ( pChar == m_pChar )
+	new PacketHealthBarInfo(this, pObj);
+	if ( pObj == m_pChar )
 	{
 		m_fUpdateStats = 0;
-		if ( pChar->m_pPlayer && PacketStatLocks::CanSendTo(m_NetState) )
-			new PacketStatLocks(this, pChar);
+		if ( PacketStatLocks::CanSendTo(m_NetState) )
+			new PacketStatLocks(this, m_pChar);
 	}
 }
 
@@ -2117,7 +2117,7 @@ bool CClient::addShopMenuBuy( CChar * pVendor )
 
 	// Open gump
 	addOpenGump(pVendor, GUMP_VENDOR_RECT);
-	new PacketCharacterStatus(this, m_pChar);		// update char 'gold available' value on gump
+	new PacketHealthBarInfo(this, m_pChar);		// update char 'gold available' value on gump
 	return true;
 }
 

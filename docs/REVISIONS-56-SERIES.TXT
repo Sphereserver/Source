@@ -270,3 +270,7 @@ Fixed: Resurrect, Reveal, Meteor Swarm and Lightning spells showing effect anima
 [sphereCrypt.ini]: Added crypt key for classic clients 7.0.54 ~ 7.0.55 and enhanced clients 4.0.54 ~ 4.0.55
 [sphere_map0.scp]: Added missing 'region_flag_guarded' on a_townOcclo
 [sphere_map1.scp]: Added missing 'region_flag_guarded' on a_old_haven_town and a_new_haven_town
+
+27-11-2016, Coruja
+Added: Support for items health bar on HS clients >= 7.0.30.0
+[sphere_defs.scp]: Added new CAN flag 'can_i_damageable' to enable health bar on items (MORE1L = cur hitpoints / MORE1H = max hitpoints)

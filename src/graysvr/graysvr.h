@@ -1379,7 +1379,7 @@ public:
 	void addCustomSpellbookOpen( CItem * pBook, GUMP_TYPE gumpID );
 	bool addBookOpen( CItem * pBook );
 	void addBookPage( const CItem * pBook, size_t iPage, size_t iCount );
-	void addCharStatWindow( CChar * pChar, bool fRequested = false ); // Opens the status window
+	void addHealthBarInfo( CObjBase * pObj, bool fRequested = false );
 	void addHitsUpdate( CChar * pChar );
 	void addManaUpdate( CChar * pChar );
 	void addStamUpdate( CChar * pChar );

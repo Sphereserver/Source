@@ -1027,7 +1027,7 @@ public:
 		return Can(CAN_I_PILE);
 	}
 
-	bool Can(WORD wCan) const
+	bool Can(DWORD wCan) const
 	{
 		return (m_Can & wCan) ? true : false;
 	}

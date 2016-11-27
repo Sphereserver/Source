@@ -88,6 +88,8 @@ PacketCombatDamage::PacketCombatDamage(const CClient* target, WORD damage, CGray
 {
 	ADDTOCALLSTACK("PacketCombatDamage::PacketCombatDamage");
 
+	if ( damage <= 0 )
+		return;
 	if ( damage > USHRT_MAX )
 		damage = USHRT_MAX;
 
@@ -100,33 +102,31 @@ PacketCombatDamage::PacketCombatDamage(const CClient* target, WORD damage, CGray
 /***************************************************************************
  *
  *
- *	Packet 0x11 : PacketCharacterStatus		sends status window data (LOW)
+ *	Packet 0x11 : PacketHealthBarInfo		sends health bar info (LOW)
  *
  *
  ***************************************************************************/
-PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other) : PacketSend(XCMD_Status, 7, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketHealthBarInfo::PacketHealthBarInfo(const CClient *target, CObjBase *object) : PacketSend(XCMD_Status, 7, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
-	ADDTOCALLSTACK("PacketCharacterStatus::PacketCharacterStatus");
+	ADDTOCALLSTACK("PacketHealthBarInfo::PacketHealthBarInfo");
 
-	const NetState * state = target->m_NetState;
-	const CChar* character = target->GetChar();
-	const CCharBase * otherDefinition = other->Char_GetDef();
-	ASSERT(otherDefinition != NULL);
-
+	const CChar *character = target->GetChar();
+	const CChar *objectChar = object->IsChar() ? static_cast<const CChar *>(object) : NULL;
+	bool canRename = false;
 	BYTE version = 0;
-	bool canRename = (character != other && other->NPC_IsOwnedBy(character) && otherDefinition->GetHireDayWage() == 0 );
 
 	initLength();
 
-	writeInt32(other->GetUID());
-	writeStringFixedASCII(other->GetName(), 30);
+	writeInt32(object->GetUID());
+	writeStringFixedASCII(object->GetName(), 30);
 
-	if (character == other)
+	if (objectChar == character)
 	{
-		writeInt16(static_cast<WORD>(other->Stat_GetVal(STAT_STR)));
-		writeInt16(static_cast<WORD>(other->Stat_GetMax(STAT_STR)));
+		writeInt16(static_cast<WORD>(objectChar->Stat_GetVal(STAT_STR)));
+		writeInt16(static_cast<WORD>(objectChar->Stat_GetMax(STAT_STR)));
 		writeBool(canRename);
 
+		const NetState *state = target->m_NetState;
 		if (state->isClientVersion(MINCLIVER_STATUS_V6))
 			version = 6;
 		else if (state->isClientVersion(MINCLIVER_STATUS_V5))
@@ -141,44 +141,45 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 			version = 1;
 		writeByte(version);
 
-		short strength = other->Stat_GetAdjusted(STAT_STR);
+		short strength = objectChar->Stat_GetAdjusted(STAT_STR);
 		if (strength < 0)
 			strength = 0;
 
-		short dexterity = other->Stat_GetAdjusted(STAT_DEX);
+		short dexterity = objectChar->Stat_GetAdjusted(STAT_DEX);
 		if (dexterity < 0)
 			dexterity = 0;
 
-		short intelligence = other->Stat_GetAdjusted(STAT_INT);
+		short intelligence = objectChar->Stat_GetAdjusted(STAT_INT);
 		if (intelligence < 0)
 			intelligence = 0;
 
-		writeBool(otherDefinition->IsFemale());
+		const CCharBase *objectCharDef = objectChar->Char_GetDef();
+		writeBool(objectCharDef->IsFemale());
 		writeInt16(static_cast<WORD>(strength));
 		writeInt16(static_cast<WORD>(dexterity));
 		writeInt16(static_cast<WORD>(intelligence));
-		writeInt16(static_cast<WORD>(other->Stat_GetVal(STAT_DEX)));
-		writeInt16(static_cast<WORD>(other->Stat_GetMax(STAT_DEX)));
-		writeInt16(static_cast<WORD>(other->Stat_GetVal(STAT_INT)));
-		writeInt16(static_cast<WORD>(other->Stat_GetMax(STAT_INT)));
+		writeInt16(static_cast<WORD>(objectChar->Stat_GetVal(STAT_DEX)));
+		writeInt16(static_cast<WORD>(objectChar->Stat_GetMax(STAT_DEX)));
+		writeInt16(static_cast<WORD>(objectChar->Stat_GetVal(STAT_INT)));
+		writeInt16(static_cast<WORD>(objectChar->Stat_GetMax(STAT_INT)));
 
 		if ( g_Cfg.m_fPayFromPackOnly )
-			writeInt32(other->GetContainerCreate(LAYER_PACK)->ContentCount(RESOURCE_ID(RES_TYPEDEF,IT_GOLD)));
+			writeInt32(const_cast<CChar *>(objectChar)->GetContainerCreate(LAYER_PACK)->ContentCount(RESOURCE_ID(RES_TYPEDEF,IT_GOLD)));
 		else
-			writeInt32(other->ContentCount(RESOURCE_ID(RES_TYPEDEF,IT_GOLD)));
+			writeInt32(const_cast<CChar *>(objectChar)->ContentCount(RESOURCE_ID(RES_TYPEDEF,IT_GOLD)));
 		
 		if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESPHYSICAL", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("RESPHYSICAL", true)));
 		else
-			writeInt16(other->m_defense + otherDefinition->m_defense);
+			writeInt16(objectChar->m_defense + objectCharDef->m_defense);
 
-		writeInt16(static_cast<WORD>(other->GetTotalWeight() / WEIGHT_UNITS));
+		writeInt16(static_cast<WORD>(objectChar->GetTotalWeight() / WEIGHT_UNITS));
 
 		if (version >= 5) // ML attributes
 		{
-			writeInt16(static_cast<WORD>(g_Cfg.Calc_MaxCarryWeight(other) / WEIGHT_UNITS));
+			writeInt16(static_cast<WORD>(g_Cfg.Calc_MaxCarryWeight(objectChar) / WEIGHT_UNITS));
 
-			switch (other->GetDispID())
+			switch (objectChar->GetDispID())
 			{
 				case CREID_MAN:
 				case CREID_WOMAN:
@@ -206,7 +207,7 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 
 		if (version >= 2) // T2A attributes
 		{
-			WORD statcap = other->Stat_GetLimit(STAT_QTY);
+			WORD statcap = objectChar->Stat_GetLimit(STAT_QTY);
 			if (statcap < 0)
 				statcap = 0;
 
@@ -215,83 +216,86 @@ PacketCharacterStatus::PacketCharacterStatus(const CClient* target, CChar* other
 
 		if (version >= 3) // Renaissance attributes
 		{
-			if (other->m_pPlayer != NULL)
-			{
-				writeByte(static_cast<BYTE>(other->GetDefNum("CURFOLLOWER", true)));
-				writeByte(static_cast<BYTE>(other->GetDefNum("MAXFOLLOWER", true)));
-			}
-			else
-			{
-				writeByte(0);
-				writeByte(0);
-			}
+			writeByte(static_cast<BYTE>(object->GetDefNum("CURFOLLOWER", true)));
+			writeByte(static_cast<BYTE>(object->GetDefNum("MAXFOLLOWER", true)));
 		}
 
 		if (version >= 4) // AOS attributes
 		{
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESFIRE", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESCOLD", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESPOISON", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESENERGY", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("LUCK", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("RESFIRE", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("RESCOLD", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("RESPOISON", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("RESENERGY", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("LUCK", true)));
 
-			const CItem* weapon = other->m_uidWeapon.ItemFind();
-			writeInt16(static_cast<WORD>(other->Fight_CalcDamage(weapon, true, false)));
-			writeInt16(static_cast<WORD>(other->Fight_CalcDamage(weapon, true, true)));
+			const CItem *weapon = objectChar->m_uidWeapon.ItemFind();
+			writeInt16(static_cast<WORD>(objectChar->Fight_CalcDamage(weapon, true, false)));
+			writeInt16(static_cast<WORD>(objectChar->Fight_CalcDamage(weapon, true, true)));
 
-			writeInt32(static_cast<DWORD>(other->GetDefNum("TITHING", true)));
+			writeInt32(static_cast<DWORD>(object->GetDefNum("TITHING", true)));
 		}
 
 		if (version >= 6)	// SA attributes
 		{
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESPHYSICALMAX", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESFIREMAX", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESCOLDMAX", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESPOISONMAX", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("RESENERGYMAX", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDEFCHANCE", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDEFCHANCEMAX", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEHITCHANCE", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASESWINGSPEED", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDAM", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERREAGENTCOST", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASESPELLDAM", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("FASTERCASTRECOVERY", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("FASTERCASTING", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERMANACOST", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("RESPHYSICALMAX", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("RESFIREMAX", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("RESCOLDMAX", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("RESPOISONMAX", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("RESENERGYMAX", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASEDEFCHANCE", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASEDEFCHANCEMAX", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASEHITCHANCE", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASESWINGSPEED", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASEDAM", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("LOWERREAGENTCOST", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASESPELLDAM", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("FASTERCASTRECOVERY", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("FASTERCASTING", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("LOWERMANACOST", true)));
 		}
 /* We really don't know what is going on here. RUOSI Packet Guide was way off... -Khaos
    Possible KR client status info... -Ben*/
 		if (target->m_NetState->isClientKR())
 		{
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEHITCHANCE", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASESWINGSPEED", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDAM", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERREAGENTCOST", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("REGENHITS", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("REGENSTAM", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("REGENMANA", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("REFLECTPHYSICALDAM", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("ENHANCEPOTIONS", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASEDEFCHANCE", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("INCREASESPELLDAM", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("FASTERCASTRECOVERY", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("FASTERCASTING", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("LOWERMANACOST", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSSTR", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSDEX", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSINT", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSHITS", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSSTAM", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSMANA", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSHITSMAX", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSSTAMMAX", true)));
-			writeInt16(static_cast<WORD>(other->GetDefNum("BONUSMANAMAX", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASEHITCHANCE", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASESWINGSPEED", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASEDAM", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("LOWERREAGENTCOST", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("REGENHITS", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("REGENSTAM", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("REGENMANA", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("REFLECTPHYSICALDAM", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("ENHANCEPOTIONS", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASEDEFCHANCE", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASESPELLDAM", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("FASTERCASTRECOVERY", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("FASTERCASTING", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("LOWERMANACOST", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("BONUSSTR", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("BONUSDEX", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("BONUSINT", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("BONUSHITS", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("BONUSSTAM", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("BONUSMANA", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("BONUSHITSMAX", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("BONUSSTAMMAX", true)));
+			writeInt16(static_cast<WORD>(object->GetDefNum("BONUSMANAMAX", true)));
 		}
 	}
 	else
 	{
-		writeInt16(static_cast<WORD>((other->Stat_GetVal(STAT_STR) * 100) / maximum(other->Stat_GetMax(STAT_STR), 1)));
+		if ( objectChar )
+		{
+			canRename = objectChar->NPC_IsOwnedBy(character);
+			writeInt16(static_cast<WORD>((objectChar->Stat_GetVal(STAT_STR) * 100) / maximum(objectChar->Stat_GetMax(STAT_STR), 1)));
+		}
+		else
+		{
+			const CItem *objectItem = object->IsItem() ? static_cast<const CItem *>(object) : NULL;
+			if ( objectItem )
+				writeInt16(static_cast<WORD>((objectItem->m_itArmor.m_Hits_Cur * 100) / maximum(objectItem->m_itArmor.m_Hits_Max, 1)));
+		}
+
 		writeInt16(100);
 		writeBool(canRename);
 		writeByte(version);
@@ -4018,6 +4022,8 @@ PacketCombatDamageOld::PacketCombatDamageOld(const CClient* target, BYTE damage,
 {
 	ADDTOCALLSTACK("PacketCombatDamageOld::PacketCombatDamageOld");
 
+	if ( damage <= 0 )
+		return;
 	if ( damage > UCHAR_MAX )
 		damage = UCHAR_MAX;
 
@@ -4705,7 +4711,7 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : Pac
 	}
 	else
 	{
-		source = TileData;
+		source = (item->Can(CAN_I_DAMAGEABLE) && (target->m_NetState->isClientVersion(MINCLIVER_STATUS_V6))) ? Damageable : TileData;
 		id = static_cast<ITEMID_TYPE>(id & 0x7FFF);
 	}
 

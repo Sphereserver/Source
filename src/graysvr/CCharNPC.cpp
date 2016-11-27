@@ -508,7 +508,7 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 					return false;
 				Stat_SetLock(stat, static_cast<SKILLLOCK_TYPE>(flag));
 				if ( pChar->m_pClient )
-					pChar->m_pClient->addCharStatWindow(pChar);
+					pChar->m_pClient->addHealthBarInfo(pChar);
 			} return true;
 
 		default:

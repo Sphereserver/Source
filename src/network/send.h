@@ -68,14 +68,14 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0x11 : PacketCharacterStatus		sends status window data (LOW)
+ *	Packet 0x11 : PacketHealthBarInfo		sends health bar info (LOW)
  *
  *
  ***************************************************************************/
-class PacketCharacterStatus : public PacketSend
+class PacketHealthBarInfo : public PacketSend
 {
 public:
-	PacketCharacterStatus(const CClient* target, CChar* other);
+	PacketHealthBarInfo(const CClient* target, CObjBase* other);
 };
 
 /***************************************************************************
@@ -1826,9 +1826,10 @@ protected:
 public:
 	enum DataSource
 	{
-		TileData = 0x0,
-		Character = 0x1,
-		Multi = 0x2
+		TileData	= 0x0,
+		Character	= 0x1,
+		Multi		= 0x2,
+		Damageable	= 0x3
 	};
 
 	PacketItemWorldNew(const CClient* target, CItem* item);
