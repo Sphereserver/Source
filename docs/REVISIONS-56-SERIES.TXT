@@ -272,5 +272,9 @@ Fixed: Resurrect, Reveal, Meteor Swarm and Lightning spells showing effect anima
 [sphere_map1.scp]: Added missing 'region_flag_guarded' on a_old_haven_town and a_new_haven_town
 
 27-11-2016, Coruja
+Fixed: Console error related to client internal chat engine when some clients connect on server
+Fixed: Worldsave not saving DAM/ARMOR properties set manually on chars/items already placed on world
+	-NOTE: Changing DAM/ARMOR directly on ITEMDEF/CHARDEF scripts won't update all objects already created anymore, because Sphere will now read DAM/ARMOR values from save files instead read from scripts.
+	 To update DAM/ARMOR on objects already created, it will be needed an function like FORINSTANCES to loop through all objects where the value must be updated
 Added: Support for items health bar on HS clients >= 7.0.30.0
 [sphere_defs.scp]: Added new CAN flag 'can_i_damageable' to enable health bar on items (MORE1L = cur hitpoints / MORE1H = max hitpoints)

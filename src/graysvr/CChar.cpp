@@ -3131,6 +3131,10 @@ void CChar::r_Write( CScript & s )
 		s.WriteKeyHex("FLAGS", m_StatFlag);
 	if ( m_LocalLight )
 		s.WriteKeyHex("LIGHT", m_LocalLight);
+	if ( m_attackBase )
+		s.WriteKeyFormat("DAM", "%hu,%hu", m_attackBase, m_attackBase + m_attackRange);
+	if ( m_defense )
+		s.WriteKeyVal("ARMOR", m_defense);
 
 	if ( Skill_GetActive() != SKILL_NONE )
 	{
