@@ -278,3 +278,6 @@ Fixed: Worldsave not saving DAM/ARMOR properties set manually on chars/items alr
 	 To update DAM/ARMOR on objects already created, it will be needed an function like FORINSTANCES to loop through all objects where the value must be updated
 Added: Support for items health bar on HS clients >= 7.0.30.0
 [sphere_defs.scp]: Added new CAN flag 'can_i_damageable' to enable health bar on items (MORE1L = cur hitpoints / MORE1H = max hitpoints)
+
+30-11-2016, Coruja
+Fixed: Server crash when custom clients connect using invalid client version.

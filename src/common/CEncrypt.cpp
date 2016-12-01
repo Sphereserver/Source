@@ -349,7 +349,7 @@ DWORD CCrypt::GetVerFromString( LPCTSTR pszVersion )
 	if ( pszVersion == NULL || *pszVersion == '\0' )
 		return 0;
 
-	int iLetter = 0;
+	BYTE iLetter = 0;
 	size_t iMax = strlen(pszVersion);
 	for ( size_t i = 0; i < iMax; i++ )
 	{
@@ -362,6 +362,11 @@ DWORD CCrypt::GetVerFromString( LPCTSTR pszVersion )
 
 	TCHAR *piVer[3];
 	Str_ParseCmds(const_cast<TCHAR *>(pszVersion), piVer, COUNTOF(piVer), ".");
+
+	// Don't rely on all values reported by client, because it can be easily faked. Injection users can report any
+	// client version they want, and some custom clients may also report client version as "Custom" instead X.X.Xy
+	if ( !piVer[0] || !piVer[1] || !piVer[2] || (iLetter > 26) )
+		return 0;
 
 	return (ATOI(piVer[0]) * 1000000) + (ATOI(piVer[1]) * 10000) + (ATOI(piVer[2]) * 100) + iLetter;
 }
