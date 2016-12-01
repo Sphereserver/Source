@@ -484,7 +484,7 @@ int CTimedFunctionHandler::Load( const char *pszName, bool fQuoted, const char *
 				}
 				else
 				{
-					g_Log.Event( LOGM_INIT|LOGL_ERROR, "Invalid Timerf in %sdata.scp. Each TimerFCall and TimerFNumbers pair must be in that order.\n", GRAY_FILE );
+					g_Log.Event( LOGM_INIT|LOGL_ERROR, "Invalid Timerf in %sdata.scp. Each TimerFCall and TimerFNumbers pair must be in that order\n", GRAY_FILE );
 				}
 			}
 			else
@@ -504,7 +504,7 @@ int CTimedFunctionHandler::Load( const char *pszName, bool fQuoted, const char *
 		strcpy( tf->funcname, pszVal );
 		if ( !isNew )
 		{
-			g_Log.Event( LOGM_INIT|LOGL_ERROR, "Invalid Timerf in %sdata.scp. Each TimerFCall and TimerFNumbers pair must be in that order.\n", GRAY_FILE );
+			g_Log.Event( LOGM_INIT|LOGL_ERROR, "Invalid Timerf in %sdata.scp. Each TimerFCall and TimerFNumbers pair must be in that order\n", GRAY_FILE );
 		}
 	}
 
@@ -1071,7 +1071,7 @@ bool CWorldClock::Advance()
 	{
 		// System clock has changed forward
 		// Just wait until next cycle and it should be ok
-		g_Log.Event(LOGL_WARN, "System clock has changed forward (daylight saving change, etc). This may cause strange behavior on some objects.\n");
+		g_Log.Event(LOGL_WARN, "System clock has changed forward (daylight saving change, etc). This may cause strange behavior on some objects\n");
 		m_Clock_SysPrev = Clock_Sys;
 		return false;
 	}
@@ -1084,7 +1084,7 @@ bool CWorldClock::Advance()
 	if ( Clock_New < m_timeClock )
 	{
 		// System clock has changed backward
-		g_Log.Event(LOGL_WARN, "System clock has changed backward (daylight saving change, etc). This may cause strange behavior on some objects.\n");
+		g_Log.Event(LOGL_WARN, "System clock has changed backward (daylight saving change, etc). This may cause strange behavior on some objects\n");
 		m_timeClock = Clock_New;
 		return false;
 	}
@@ -1320,10 +1320,10 @@ bool CWorld::SaveStage() // Save world state in stages.
 		m_iSaveCountID++;	// Save only counts if we get to the end winout trapping.
 		m_timeSave = GetCurrentTime() + g_Cfg.m_iSavePeriod;	// next save time.
 
-		g_Log.Event(LOGM_SAVE, "World data saved   (%s).\n", static_cast<LPCTSTR>(m_FileWorld.GetFilePath()));
-		g_Log.Event(LOGM_SAVE, "Player data saved  (%s).\n", static_cast<LPCTSTR>(m_FilePlayers.GetFilePath()));
-		g_Log.Event(LOGM_SAVE, "Multi data saved   (%s).\n", static_cast<LPCTSTR>(m_FileMultis.GetFilePath()));
-		g_Log.Event(LOGM_SAVE, "Context data saved (%s).\n", static_cast<LPCTSTR>(m_FileData.GetFilePath()));
+		g_Log.Event(LOGM_SAVE, "World data saved   (%s)\n", static_cast<LPCTSTR>(m_FileWorld.GetFilePath()));
+		g_Log.Event(LOGM_SAVE, "Player data saved  (%s)\n", static_cast<LPCTSTR>(m_FilePlayers.GetFilePath()));
+		g_Log.Event(LOGM_SAVE, "Multi data saved   (%s)\n", static_cast<LPCTSTR>(m_FileMultis.GetFilePath()));
+		g_Log.Event(LOGM_SAVE, "Context data saved (%s)\n", static_cast<LPCTSTR>(m_FileData.GetFilePath()));
 
 		ULONGLONG llTicksStart = m_savetimer, llTicksEnd;
 		TIME_PROFILE_END;
@@ -1415,7 +1415,7 @@ bool CWorld::SaveForce() // Save world state
 		}
 		catch ( const CGrayError& e )
 		{
-			g_Log.CatchEvent(&e, "Save FAILED for stage %d (%s).", m_iSaveStage, pCurBlock);
+			g_Log.CatchEvent(&e, "Save FAILED for stage %d (%s)", m_iSaveStage, pCurBlock);
 			bSuccess = false;
 			CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		}
@@ -1426,7 +1426,7 @@ bool CWorld::SaveForce() // Save world state
 		}
 		continue;
 failedstage:
-		g_Log.CatchEvent( NULL, "Save FAILED for stage %d (%s).", m_iSaveStage, pCurBlock);
+		g_Log.CatchEvent( NULL, "Save FAILED for stage %d (%s)", m_iSaveStage, pCurBlock);
 		bSuccess = false;
 	}
 
@@ -1541,7 +1541,7 @@ bool CWorld::Save( bool fForceImmediate ) // Save world state
 	}
 	catch ( const CGrayError& e )
 	{
-		g_Log.CatchEvent( &e, "Save FAILED." );
+		g_Log.CatchEvent( &e, "Save FAILED" );
 		Broadcast("Save FAILED. " GRAY_TITLE " is UNSTABLE!");
 		m_FileData.Close();	// close if not already closed.
 		m_FileWorld.Close();	// close if not already closed.
@@ -1625,16 +1625,16 @@ void CWorld::SaveStatics()
 
 		m_FileStatics.WriteSection( "EOF" );
 		m_FileStatics.Close();
-		g_Log.Event(LOGM_SAVE, "Statics data saved (%s).\n", static_cast<LPCTSTR>(m_FileStatics.GetFilePath()));
+		g_Log.Event(LOGM_SAVE, "Statics data saved (%s)\n", static_cast<LPCTSTR>(m_FileStatics.GetFilePath()));
 	}
 	catch (const CGrayError& e)
 	{
-		g_Log.CatchEvent(&e, "Statics Save FAILED.");
+		g_Log.CatchEvent(&e, "Statics save FAILED");
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 	catch (...)
 	{
-		g_Log.CatchEvent(NULL, "Statics Save FAILED.");
+		g_Log.CatchEvent(NULL, "Statics save FAILED");
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 }
@@ -2481,7 +2481,7 @@ void CWorld::OnTick()
 
 				CSector	*pSector = GetSector(m, s);
 				if ( !pSector )
-					g_Log.EventError("Ticking NULL sector %d on map %d.\n", s, m);
+					g_Log.EventError("Ticking NULL sector %d on map %d\n", s, m);
 				else
 					pSector->OnTick( m_Sector_Pulse );
 
@@ -2556,7 +2556,7 @@ CSector *CWorld::GetSector(int map, int i)	// gets sector # from one map
 
 	if ( i >= g_MapList.GetSectorQty(map) )
 	{
-		g_Log.EventError("Unsupported sector #%d for map #%d specified.\n", i, map);
+		g_Log.EventError("Unsupported sector #%d for map #%d specified\n", i, map);
 		return NULL;
 	}
 

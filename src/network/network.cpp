@@ -132,10 +132,10 @@ void NetState::clear(void)
 	if (client != NULL)
 	{
 		m_client = NULL;
+		CAccount *account = client->m_pAccount;
 
 		g_Serv.StatDec(SERV_STAT_CLIENTS);
-		g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Client disconnected [Total:%lu] ('%s')\n",
-			m_id, g_Serv.StatGet(SERV_STAT_CLIENTS), m_peerAddress.GetAddrStr());
+		g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Client disconnected [Total:%lu] ('%s', acct='%s')\n", m_id, g_Serv.StatGet(SERV_STAT_CLIENTS), m_peerAddress.GetAddrStr(), account ? account->GetName() : "<NA>");
 		
 #if !defined(_WIN32) || defined(_LIBEV)
 		if (m_socket.IsOpen() && g_Cfg.m_fUseAsyncNetwork != 0)

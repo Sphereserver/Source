@@ -917,11 +917,11 @@ bool CResource::r_LoadVal( CScript &s )
 			{
 				char *args = s.GetArgRaw();
 				if ( !args || ( strlen(args) >= 31 ))
-					g_Log.EventError("Invalid function name for packet filtering (limit is 30 chars).\n");
+					g_Log.EventError("Invalid function name for packet filtering (limit is 30 chars)\n");
 				else
 				{
 					strcpy(g_Serv.m_PacketFilter[index], args);
-					DEBUG_MSG(("PACKET FILTER: Hooked packet 0x%x with function %s.\n", index, args));
+					DEBUG_MSG(("PACKET FILTER: Hooked packet 0x%x with function %s\n", index, args));
 					return true;
 				}
 			}
@@ -935,11 +935,11 @@ bool CResource::r_LoadVal( CScript &s )
 			{
 				char *args = s.GetArgRaw();
 				if ( !args || ( strlen(args) >= 31 ))
-					g_Log.EventError("Invalid function name for outgoing packet filtering (limit is 30 chars).\n");
+					g_Log.EventError("Invalid function name for outgoing packet filtering (limit is 30 chars)\n");
 				else
 				{
 					strcpy(g_Serv.m_OutPacketFilter[index], args);
-					DEBUG_MSG(("OUTGOING PACKET FILTER: Hooked packet 0x%x with function %s.\n", index, args));
+					DEBUG_MSG(("OUTGOING PACKET FILTER: Hooked packet 0x%x with function %s\n", index, args));
 					return true;
 				}
 			}
@@ -1916,7 +1916,7 @@ bool CResource::SetKRDialogMap(DWORD rid, DWORD idKRDialog)
 		if ( it->second == idKRDialog )	// already mapped to this kr dialog
 			return true;
 
-		g_Log.Event( LOGL_WARN, "Dialog '%s' is already mapped to KR dialog '%lu'.\n", ResourceGetName(RESOURCE_ID(RES_DIALOG, rid)), it->second);
+		g_Log.Event(LOGL_WARN, "Dialog '%s' is already mapped to KR dialog '%lu'\n", ResourceGetName(RESOURCE_ID(RES_DIALOG, rid)), it->second);
 	}
 
 	// prevent double mapping of KR dialog
@@ -1925,7 +1925,7 @@ bool CResource::SetKRDialogMap(DWORD rid, DWORD idKRDialog)
 		if (it->second != idKRDialog)
 			continue;
 
-		DEBUG_ERR(("KR Dialog '%lu' is already mapped to dialog '%s'.\n", idKRDialog, ResourceGetName(RESOURCE_ID(RES_DIALOG, it->first))));
+		DEBUG_ERR(("KR Dialog '%lu' is already mapped to dialog '%s'\n", idKRDialog, ResourceGetName(RESOURCE_ID(RES_DIALOG, it->first))));
 		return false;
 	}
 
@@ -2442,7 +2442,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		{
 			if (pScript->ReadKey() == false)
 			{
-				g_Log.Event(LOGM_INIT|LOGL_ERROR, "NOTOTITLES section is missing the list of karma levels.\n");
+				g_Log.Event(LOGM_INIT|LOGL_ERROR, "NOTOTITLES section is missing the list of karma levels\n");
 				return true;
 			}
 
@@ -2458,7 +2458,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 
 			if (pScript->ReadKey() == false)
 			{
-				g_Log.Event(LOGM_INIT|LOGL_ERROR, "NOTOTITLES section is missing the list of fame levels.\n");
+				g_Log.Event(LOGM_INIT|LOGL_ERROR, "NOTOTITLES section is missing the list of fame levels\n");
 				return true;
 			}
 
@@ -2482,7 +2482,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			}
 
 			if (m_NotoTitles.GetCount() != ((m_NotoKarmaLevels.GetCount() + 1) * (m_NotoFameLevels.GetCount() + 1)))
-				g_Log.Event(LOGM_INIT|LOGL_WARN, "Expected %" FMTSIZE_T " titles in NOTOTITLES section but found %" FMTSIZE_T ".\n", (m_NotoKarmaLevels.GetCount() + 1) * (m_NotoFameLevels.GetCount() + 1), m_NotoTitles.GetCount());
+				g_Log.Event(LOGM_INIT|LOGL_WARN, "Expected %" FMTSIZE_T " titles in NOTOTITLES section but found %" FMTSIZE_T "\n", (m_NotoKarmaLevels.GetCount() + 1) * (m_NotoFameLevels.GetCount() + 1), m_NotoTitles.GetCount());
 		}
 		return( true );
 	case RES_OBSCENE:
@@ -3616,8 +3616,8 @@ bool CResource::LoadIni( bool fTest )
 	{
 		if( !fTest )
 		{
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing, server probably would be not usable.\n");
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Navigate to http://prerelease.sphereserver.net/ to download sample config.\n");
+			g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing, server probably would be not usable\n");
+			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Navigate to http://prerelease.sphereserver.net/ to download sample config\n");
 		}
 		return( false );
 	}
@@ -3634,7 +3634,7 @@ bool CResource::LoadCryptIni( void )
 	ADDTOCALLSTACK("CResource::LoadCryptIni");
 	if ( ! OpenResourceFind( m_scpCryptIni, GRAY_FILE "Crypt.ini", false ))
 	{
-		g_Log.Event(LOGL_WARN|LOGM_INIT, "File " GRAY_FILE "Crypt.ini is corrupt or missing, client encryption list might not be available.\n");
+		g_Log.Event(LOGL_WARN|LOGM_INIT, "File " GRAY_FILE "Crypt.ini is corrupt or missing, client encryption list might not be available\n");
 		return( false );
 	}
 
@@ -3642,7 +3642,7 @@ bool CResource::LoadCryptIni( void )
 	m_scpCryptIni.Close();
 	m_scpCryptIni.CloseForce();
 
-	g_Log.Event( LOGM_INIT, "Loaded %" FMTSIZE_T " client encryption keys.\n", CCrypt::client_keys.size() );
+	g_Log.Event( LOGM_INIT, "Loaded %" FMTSIZE_T " client encryption keys\n", CCrypt::client_keys.size() );
 
 	return( true );
 }
@@ -3724,7 +3724,7 @@ bool CResource::Load( bool fResync )
 		);
 	if ( i != VERFILE_QTY )
 	{
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing.\n");
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing\n");
 		g_Log.Event(LOGL_FATAL|LOGM_INIT, "MUL File '%s' not found...\n", static_cast<LPCTSTR>(g_Install.GetBaseFileName(i)));
 		return( false );
 	}
@@ -3736,14 +3736,14 @@ bool CResource::Load( bool fResync )
 	}
 	catch ( const CGrayError& e )
 	{
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing.\n");
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing\n");
 		g_Log.CatchEvent( &e, "g_VerData.Load" );
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return( false );
 	}
 	catch(...)
 	{
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing.\n");
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing\n");
 		g_Log.CatchEvent( NULL, "g_VerData.Load" );
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return( false );
@@ -3758,7 +3758,7 @@ bool CResource::Load( bool fResync )
 	{
 		if ( !OpenResourceFind(m_scpTables, GRAY_FILE "tables") )
 		{
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing.\n");
+			g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing\n");
 			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Error opening table definitions file...\n");
 			return( false );
 		}
@@ -3816,7 +3816,7 @@ bool CResource::Load( bool fResync )
 
 	if ( m_StartDefs.GetCount() <= 0 )
 	{
-		g_Log.Event(LOGM_INIT|LOGL_ERROR, "No START locations specified. Add them and try again.\n");
+		g_Log.Event(LOGM_INIT|LOGL_ERROR, "No START locations specified. Add them and try again\n");
 		return false;
 	}
 

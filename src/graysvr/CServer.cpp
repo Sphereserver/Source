@@ -5,6 +5,7 @@
 #include "../common/CAssoc.h"
 #include "../common/CFileList.h"
 #include "../network/network.h"
+#include "../graysvr/PingServer.h"
 
 #ifdef _WIN32
 	#include "ntservice.h"	// g_Service
@@ -1807,7 +1808,9 @@ bool CServer::SocketsInit() // Initialize sockets
 			ip.SetAddrIP(*((DWORD*)(pHost->h_addr_list[i]))); // 0.1.2.3
 			if ( !m_ip.IsLocalAddr() && !m_ip.IsSameIP(ip) )
 				continue;
-			g_Log.Event(LOGM_INIT, "Monitoring IP %s:%d\n", ip.GetAddrStr(), m_ip.GetPort());
+			g_Log.Event(LOGM_INIT, "Monitoring IP %s:%d (TCP) - Main server\n", ip.GetAddrStr(), m_ip.GetPort());
+			if ( IsSetEF(EF_UsePingServer) )
+				g_Log.Event(LOGM_INIT, "Monitoring IP %s:%d (UDP) - Ping server\n", ip.GetAddrStr(), PINGSERVER_PORT);
 		}
 	}
 	return true;

@@ -237,7 +237,7 @@ bool CClient::addDeleteErr(BYTE code, DWORD iSlot)
 	if ( code == PacketDeleteError::Success )
 		return true;
 	CChar *pChar = m_tmSetupCharList[iSlot].CharFind();
-	g_Log.EventWarn("%lx:Bad Char Delete Attempted %d (acct='%s', char='%s', IP='%s')\n", GetSocketID(), code, m_pAccount->GetName(), (pChar ? pChar->GetName() : ""), GetPeerStr());
+	g_Log.EventWarn("%lx:Account '%s' got bad character delete attempt (char='%s', code='%d')\n", GetSocketID(), m_pAccount->GetName(), pChar ? pChar->GetName() : "<NA>", code);
 	new PacketDeleteError(this, static_cast<PacketDeleteError::Reason>(code));
 	return false;
 }
@@ -3382,14 +3382,14 @@ BYTE CClient::LogIn(LPCTSTR pszAccName, LPCTSTR pszPassword, CGString &sMsg)
 	CAccountRef pAccount = g_Accounts.Account_FindCreate(pszAccName, bAutoCreate);
 	if ( !pAccount )
 	{
-		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s' does not exist\n", GetSocketID(), pszAccName);
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' does not exist\n", GetSocketID(), pszAccName);
 		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_UNK), pszAccName);
 		return PacketLoginError::Invalid;
 	}
 
 	if ( g_Cfg.m_iClientLoginMaxTries && !pAccount->CheckPasswordTries(GetPeer()) )
 	{
-		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: '%s' exceeded password tries in time lapse\n", GetSocketID(), pAccount->GetName());
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' exceeded password tries in time lapse\n", GetSocketID(), pAccount->GetName());
 		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
 		return PacketLoginError::MaxPassTries;
 	}
@@ -3398,7 +3398,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccName, LPCTSTR pszPassword, CGString &sMsg)
 	{
 		if ( !pAccount->CheckPassword(pszPassword) )
 		{
-			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: '%s' bad password\n", GetSocketID(), pAccount->GetName());
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' inserted bad password\n", GetSocketID(), pAccount->GetName());
 			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
 			return PacketLoginError::BadPass;
 		}
@@ -3415,7 +3415,7 @@ BYTE CClient::LogIn(CAccountRef pAccount, CGString &sMsg)
 
 	if ( pAccount->IsPriv(PRIV_BLOCKED) )
 	{
-		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s' is blocked\n", GetSocketID(), pAccount->GetName());
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' is blocked\n", GetSocketID(), pAccount->GetName());
 		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BLOCKED), static_cast<LPCTSTR>(g_Serv.m_sEMail));
 		return PacketLoginError::Blocked;
 	}
@@ -3454,7 +3454,7 @@ BYTE CClient::LogIn(CAccountRef pAccount, CGString &sMsg)
 		}
 		if ( bInUse )
 		{
-			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s' already in use\n", GetSocketID(), pAccount->GetName());
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' already in use\n", GetSocketID(), pAccount->GetName());
 			sMsg = "Account already in use.";
 			return PacketLoginError::InUse;
 		}
@@ -3466,7 +3466,7 @@ BYTE CClient::LogIn(CAccountRef pAccount, CGString &sMsg)
 		CSocketAddress SockName = GetPeer();
 		if ( !GetPeer().IsLocalAddr() && (SockName.GetAddrIP() != GetPeer().GetAddrIP()) )
 		{
-			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s', maximum clients reached (only local connections allowed)\n", GetSocketID(), pAccount->GetName());
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' can't connect, server maximum clients reached (only local connections allowed)\n", GetSocketID(), pAccount->GetName());
 			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_LD);
 			return PacketLoginError::MaxClients;
 		}
@@ -3476,14 +3476,14 @@ BYTE CClient::LogIn(CAccountRef pAccount, CGString &sMsg)
 		// Only allow admin connections
 		if ( pAccount->GetPrivLevel() < PLEVEL_Admin )
 		{
-			g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s', maximum clients reached (only administrators allowed)\n", GetSocketID(), pAccount->GetName());
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' can't connect, server maximum clients reached (only administrators allowed)\n", GetSocketID(), pAccount->GetName());
 			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_AO);
 			return PacketLoginError::MaxClients;
 		}
 	}
 	if ( (g_Serv.StatGet(SERV_STAT_CLIENTS) > g_Cfg.m_iClientsMax) && (pAccount->GetPrivLevel() < PLEVEL_GM) )
 	{
-		g_Log.Event(LOGM_CLIENTS_LOG, "%lx: Account '%s', maximum clients reached\n", GetSocketID(), pAccount->GetName());
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' can't connect, server maximum clients reached\n", GetSocketID(), pAccount->GetName());
 		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_FULL);
 		return PacketLoginError::MaxClients;
 	}
@@ -3624,7 +3624,7 @@ BYTE CClient::Setup_Start(CChar *pChar) // Send character startup stuff to playe
 	CharDisconnect();	// I'm already logged in as someone else ?
 	m_pAccount->m_uidLastChar = pChar->GetUID();
 
-	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Setup_Start acct='%s', char='%s', IP='%s'\n", GetSocketID(), m_pAccount->GetName(), pChar->GetName(), GetPeerStr());
+	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' logged on char '%s' ('%s')\n", GetSocketID(), m_pAccount->GetName(), pChar->GetName(), GetPeerStr());
 
 	// GMs should login with invul and without allshow flag set
 	if ( GetPrivLevel() > PLEVEL_Player )
