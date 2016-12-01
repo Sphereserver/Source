@@ -2918,6 +2918,7 @@ bool CChar::Death()
 				m_pClient->addPlayerWarMode();
 				m_pClient->addContainerSetup(GetContainer(LAYER_PACK));	// update backpack contents
 			}
+			m_pClient->addSeason(SEASON_Desolate);
 		}
 
 		// Remove the characters which I can't see as dead from the screen

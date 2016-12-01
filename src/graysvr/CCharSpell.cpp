@@ -432,12 +432,17 @@ bool CChar::Spell_Resurrection(CItemCorpse * pCorpse, CChar * pCharSrc, bool bNo
 		if (!pClient->CanSee(this))
 			continue;
 
-		if ( pClient == m_pClient )
-			pClient->addPlayerView(NULL, g_Cfg.m_fDeadCannotSeeLiving ? true : false);
-
 		pClient->addChar(this);
 		if ( m_pNPC )
 			pClient->addBondedStatus(this, false);
+	}
+
+	if (m_pClient)
+	{
+		m_pClient->addPlayerView(NULL, g_Cfg.m_fDeadCannotSeeLiving ? true : false);
+		CSector *pSector = GetTopPoint().GetSector();
+		if (pSector)
+			m_pClient->addSeason(pSector->GetSeason());
 	}
 
 	bool bRaisedCorpse = false;
