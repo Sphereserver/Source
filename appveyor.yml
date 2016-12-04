@@ -13,9 +13,9 @@ artifacts:
 deploy:
   provider: FTP
   protocol: ftp
-  host: revenger.6te.net
+  host: spherecommunity.net
   username:
-    secure: FeZDtksWkubb3mE/+X03khg1vgiS2xWso3ESRUoE2ZA=
+    secure: UAZaqnbj2s8C/ObEXIg6xA==
   password:
-    secure: WBZe/32QQ9iMEmGnfrSKmA==
+    secure: 4QZxkFb+hk0DMpbglPiI2KLs3uL7W2Iz/uarUbkxeTU=
   artifact: SphereSvr-Win32.zip
