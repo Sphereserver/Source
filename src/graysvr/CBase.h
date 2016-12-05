@@ -174,9 +174,9 @@ public:
 		GETNONWHITESPACE( pszName );
 		m_sName = pszName;
 	}
-	bool Can( WORD wCan ) const
+	bool Can(DWORD wCan) const
 	{
-		return(( m_Can & wCan ) ? true : false );
+		return (m_Can & wCan) ? true : false;
 	}
 	virtual void UnLink()
 	{
@@ -816,8 +816,8 @@ public:
 	};
 	struct ShipSpeed // speed of a ship
 	{
-		unsigned char period;	// time between movement
-		unsigned char tiles;	// distance to move
+		BYTE period;	// time between movement
+		BYTE tiles;		// distance to move
 	};
 
 	CGTypedArray<CMultiComponentItem,CMultiComponentItem&> m_Components;

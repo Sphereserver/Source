@@ -865,12 +865,6 @@ public:
 			DWORD m_Hits_Cur;	// more1 = how much damage the web can take.
 		} m_itWeb;
 
-		// IT_DREAM_GATE
-		struct
-		{
-			int m_index;	// more1 = how much damage the web can take.
-		} m_itDreamGate;
-
 		// IT_TRAP
 		// IT_TRAP_ACTIVE
 		// IT_TRAP_INACTIVE
@@ -2960,13 +2954,9 @@ public:
 			m_pClient->addVisualRange(m_iVisualRange);
 	}
 	
-	bool Can( WORD wCan ) const
+	bool Can(DWORD wCan) const
 	{
 		return (m_Can & wCan) ? true : false;
-	}
-	bool Can( int wCan ) const
-	{
-		return (m_Can & static_cast<DWORD>(wCan)) ? true : false;
 	}
 	bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg );
 	bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg, DWORD dwArgResearch );
