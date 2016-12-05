@@ -6,7 +6,7 @@ build:
   project: GraySvr.vcxproj
   verbosity: minimal
 after_build:
-- cmd: 7z a SphereSvr-Win32.zip %APPVEYOR_BUILD_FOLDER%\%CONFIGURATION%\SphereSvr.exe
+- cmd: 7z a SphereSvr-Win32.zip %APPVEYOR_BUILD_FOLDER%\%CONFIGURATION%\SphereSvr.exe \src\sphere.ini \src\sphereCrypt.ini
 artifacts:
 - path: SphereSvr-Win32.zip
   name: SphereSvr
