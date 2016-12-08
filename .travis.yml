@@ -15,7 +15,7 @@ script:
 after_success:
   - cd src
   - mkdir accounts logs save scripts
-  - tar -czvf SphereSvr-Linux32.tar.gz accounts logs save scripts ../spheresvr sphere.ini sphereCrypt.ini
+  - tar -czvfP SphereSvr-Linux32.tar.gz accounts/ logs/ save/ scripts/ ./spheresvr sphere.ini sphereCrypt.ini
   - curl -T SphereSvr-Linux32.tar.gz -u $FTP_USER:$FTP_PASSWORD ftp://spherecommunity.net
 notifications:
   email: false
