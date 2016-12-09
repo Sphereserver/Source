@@ -287,3 +287,4 @@ Changed: Updated internal SQLite libs v3.15.1 to v3.15.2.
 
 09-12-2016, Coruja
 Changed: Sphere can now startup properly without save files instead return "FATAL: missing save files" and close the server. This can make Sphere setup easier for new users.
+Changed: Merged TNGSTRIP, STRIP AXIS, STRIP TNG console commands into a single STRIP command.

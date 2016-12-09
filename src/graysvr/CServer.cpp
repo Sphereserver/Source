@@ -741,140 +741,77 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 	goto endconsole;
 
 longcommand:
-	if ((( len > 1 ) && ( sText[1] != ' ' )) || ( low == 'b' ))
+	if ( ((len > 1) && (sText[1] != ' ')) || (low == 'b') )
 	{
 		LPCTSTR	pszText = sText;
-		
-		if ( !strnicmp(pszText, "strip", 5) || !strnicmp(pszText, "tngstrip", 8))
-		{
-			size_t			i = 0;
-			CResourceScript	*script;
-			FILE			*f, *f1;
-			char			*z = Str_GetTemp();
-			char			*y = Str_GetTemp();
-			char			*x;
-			LPCTSTR			dirname;
 
+		if ( !strnicmp(pszText, "strip", 5) )
+		{
 			if ( g_Cfg.m_sStripPath.IsEmpty() )
 			{
-				pSrc->SysMessage("StripPath not defined, function aborted.\n");
-				return( false );
+				pSrc->SysMessage("StripPath not defined on " GRAY_FILE ".ini, function aborted.\n");
+				return false;
 			}
 
-			dirname = g_Cfg.m_sStripPath;
+			FILE *stripFile, *scriptFile;
+			char *x;
+			char *y = Str_GetTemp();
+			char *z = Str_GetTemp();
 
+			strcpy(z, g_Cfg.m_sStripPath);
+			strcat(z, "sphere_strip" GRAY_SCRIPT);
+			pSrc->SysMessagef("StripPath is %s\n", z);
 
-			if ( !strnicmp(pszText, "strip tng", 9) || !strnicmp(pszText, "tngstrip", 8))
+			stripFile = fopen(z, "w");
+			if ( !stripFile )
 			{
-				strcpy(z, dirname);
-				strcat(z, "sphere_strip_tng" GRAY_SCRIPT);
-				pSrc->SysMessagef("StripFile is %s.\n", z);
-			
-				f1 = fopen(z, "w");
-			
-				if ( !f1 )
-				{
-					pSrc->SysMessagef("Cannot open file %s for writing.\n", z);
-					return( false );
-				}
-
-				while ( (script = g_Cfg.GetResourceFile(i++)) != NULL )
-				{
-					strcpy(z, script->GetFilePath());
-					f = fopen(z, "r");
-					if ( !f )
-					{
-						pSrc->SysMessagef("Cannot open file %s for reading.\n", z);
-						continue;
-					}
-
-					while ( !feof(f) )
-					{
-						z[0] = 0;
-						y[0] = 0;
-						fgets(y, SCRIPT_MAX_LINE_LEN, f);
-
-						x = y;
-						GETNONWHITESPACE(x);
-						strcpy(z,x);
-
-						_strlwr(z);
-
-						if ( (( z[0] == '[' ) && strnicmp(z, "[eof]", 5) != 0) || !strnicmp(z, "defname", 7) ||
-							!strnicmp(z, "name", 4) || !strnicmp(z, "type", 4) || !strnicmp(z, "id", 2) ||
-							!strnicmp(z, "weight", 6) || !strnicmp(z, "value", 5) || !strnicmp(z, "dam", 3) ||
-							!strnicmp(z, "armor", 5) || !strnicmp(z, "skillmake", 9) || !strnicmp(z, "on=@", 4) ||
-							!strnicmp(z, "dupeitem", 8) || !strnicmp(z, "dupelist", 8) || !strnicmp(z, "p=", 2) ||
-							!strnicmp(z, "can", 3) || !strnicmp(z, "tevents", 7) || !strnicmp(z, "subsection", 10) ||
-							!strnicmp(z, "description", 11) || !strnicmp(z, "category", 8) || !strnicmp(z, "color", 5) ||
-							!strnicmp(z, "resources", 9) )
-						{
-							fputs(y, f1);
-						}
-					}
-					fclose(f);
-				}
-				fclose(f1);
-				pSrc->SysMessagef("Scripts have just been stripped.\n");
-				return( true );
+				pSrc->SysMessagef("Cannot open file %s for writing.\n", z);
+				return false;
 			}
-			else if ( !strnicmp(pszText, "strip axis", 10) || !strnicmp(pszText, "strip", 5) )
+
+			bool bValidTemplate = false;
+			size_t i = 0;
+			CResourceScript	*script;
+			while ( (script = g_Cfg.GetResourceFile(i++)) != NULL )
 			{
-				strcpy(z, dirname);
-				strcat(z, "sphere_strip_axis" GRAY_SCRIPT);
-				pSrc->SysMessagef("StripFile is %s.\n", z);
-			
-				f1 = fopen(z, "w");
-			
-				if ( !f1 )
+				strcpy(z, script->GetFilePath());
+				scriptFile = fopen(z, "r");
+				if ( !scriptFile )
 				{
-					pSrc->SysMessagef("Cannot open file %s for writing.\n", z);
-					return( false );
+					pSrc->SysMessagef("Cannot open file %s for reading.\n", z);
+					continue;
 				}
 
-				while ( (script = g_Cfg.GetResourceFile(i++)) != NULL )
+				while ( !feof(scriptFile) )
 				{
-					strcpy(z, script->GetFilePath());
-					f = fopen(z, "r");
-					if ( !f )
+					z[0] = 0;
+					y[0] = 0;
+					fgets(y, SCRIPT_MAX_LINE_LEN, scriptFile);
+
+					x = y;
+					GETNONWHITESPACE(x);
+					strcpy(z, x);
+					_strlwr(z);
+
+					if ( ((z[0] == '[') && strnicmp(z, "[EOF]", 5) != 0) || !strnicmp(z, "DEFNAME", 7) || !strnicmp(z, "NAME", 4) ||
+						!strnicmp(z, "ID", 2) || !strnicmp(z, "TYPE", 4) || !strnicmp(z, "WEIGHT", 6) || !strnicmp(z, "VALUE", 5) ||
+						!strnicmp(z, "DAM", 3) || !strnicmp(z, "ARMOR", 5) || !strnicmp(z, "SKILLMAKE", 9) || !strnicmp(z, "RESOURCES", 9) ||
+						!strnicmp(z, "DUPEITEM", 8) || !strnicmp(z, "DUPELIST", 8) || !strnicmp(z, "CAN", 3) || !strnicmp(z, "TEVENTS", 7) ||
+						!strnicmp(z, "CATEGORY", 8) || !strnicmp(z, "SUBSECTION", 10) || !strnicmp(z, "DESCRIPTION", 11) || !strnicmp(z, "COLOR", 5) ||
+						!strnicmp(z, "GROUP", 5) || !strnicmp(z, "P=", 2) || !strnicmp(z, "RECT=", 5) || !strnicmp(z, "ON=@", 4) )
 					{
-						pSrc->SysMessagef("Cannot open file %s for reading.\n", z);
-						continue;
+						fputs(y, stripFile);
 					}
-
-					while ( !feof(f) )
-					{
-						z[0] = 0;
-						y[0] = 0;
-						fgets(y, SCRIPT_MAX_LINE_LEN, f);
-
-						x = y;
-						GETNONWHITESPACE(x);
-						strcpy(z,x);
-
-						_strlwr(z);
-
-						if ( (( z[0] == '[' ) && strnicmp(z, "[eof]", 5) != 0) || !strnicmp(z, "defname", 7) ||
-							!strnicmp(z, "name", 4) || !strnicmp(z, "type", 4) || !strnicmp(z, "id", 2) ||
-							!strnicmp(z, "weight", 6) || !strnicmp(z, "value", 5) || !strnicmp(z, "dam", 3) ||
-							!strnicmp(z, "armor", 5) || !strnicmp(z, "skillmake", 9) || !strnicmp(z, "on=@", 4) ||
-							!strnicmp(z, "dupeitem", 8) || !strnicmp(z, "dupelist", 8) || !strnicmp(z, "can", 3) ||
-							!strnicmp(z, "tevents", 7) || !strnicmp(z, "subsection", 10) || !strnicmp(z, "description", 11) ||
-							!strnicmp(z, "category", 8) || !strnicmp(z, "p=", 2) || !strnicmp(z, "resources", 9) ||
-							!strnicmp(z, "group", 5) || !strnicmp(z, "rect=", 5) )
-						{
-							fputs(y, f1);
-						}
-					}
-					fclose(f);
 				}
-				fclose(f1);
-				pSrc->SysMessagef("Scripts have just been stripped.\n");
-				return( true );
+				fclose(scriptFile);
 			}
+			fclose(stripFile);
+			pSrc->SysMessagef("Scripts have just been stripped.\n", stripFile);
+			return true;
 		}
 
-		if ( g_Cfg.IsConsoleCmd(low) ) pszText++;
+		if ( g_Cfg.IsConsoleCmd(low) )
+			pszText++;
 
 		CScript	script(pszText);
 		if ( !g_Cfg.CanUsePrivVerb(this, pszText, pSrc) )
@@ -896,7 +833,7 @@ longcommand:
 
 endconsole:
 	sText.Empty();
-	return( fRet );
+	return fRet;
 }
 
 //************************************************

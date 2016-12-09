@@ -1719,8 +1719,11 @@ void CWorld::LoadWorld() // Load world from script
 		LoadFile(sDataName, false);
 		LoadFile(sStaticsName, false);
 		LoadFile(sMultisName, false);
-		LoadFile(sWorldName, false);
-		LoadFile(sCharsName, false);
+		if ( LoadFile(sWorldName, false) )
+		{
+			if ( LoadFile(sCharsName, false) )
+				return;
+		}
 
 		// If we could not open the file at all then it was a bust!
 		if ( m_iSaveCountID == iPrevSaveCount ) break;
