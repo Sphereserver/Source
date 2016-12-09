@@ -615,9 +615,9 @@ int Sphere_InitServer( int argc, char *argv[] )
 	EXC_SET("sockets init");
 	if ( !g_Serv.SocketsInit() )
 		return -9;
+
 	EXC_SET("load world");
-	if ( !g_World.LoadAll() )
-		return -8;
+	g_World.LoadAll();
 
 	//	load auto-complete dictionary
 	EXC_SET("auto-complete");
@@ -647,22 +647,21 @@ int Sphere_InitServer( int argc, char *argv[] )
 					}
 				}
 			}
-			g_Log.Event(LOGM_INIT, "Auto-complete dictionary loaded (contains %" FMTSIZE_T " words).\n", count);
+			g_Log.Event(LOGM_INIT, "Auto-complete dictionary loaded (contains %" FMTSIZE_T " words)\n", count);
 			dict.Close();
 		}
 	}
 	g_Serv.SetServerMode(SERVMODE_Run);	// ready to go.
 
-	// Display EF/OF Flags
-	g_Cfg.PrintEFOFFlags();
-
 	EXC_SET("finilizing");
-	g_Log.Event(LOGM_INIT, "%s", g_Serv.GetStatusString(0x24));
-	g_Log.Event(LOGM_INIT, "Startup complete. items=%lu, chars=%lu\n", g_Serv.StatGet(SERV_STAT_ITEMS), g_Serv.StatGet(SERV_STAT_CHARS));
+	g_Log.Event(LOGM_INIT, "Startup complete (Items=%lu, Chars=%lu, Accounts=%lu)\n", g_Serv.StatGet(SERV_STAT_ITEMS), g_Serv.StatGet(SERV_STAT_CHARS), g_Serv.StatGet(SERV_STAT_ACCOUNTS));
 
 #ifdef _WIN32
 	g_Log.Event(LOGM_INIT, "Press '?' for console commands\n");
 #endif
+
+	if ( !g_Accounts.Account_GetCount() )
+		g_Log.Event(LOGL_WARN|LOGM_INIT, "The server has no accounts. To create admin account you must type:\n  ACCOUNT ADD [login] [password]\n  ACCOUNT [login] PLEVEL 7\n");
 
 	// Trigger server start
 	g_Serv.r_Call("f_onserver_start", &g_Serv, NULL);

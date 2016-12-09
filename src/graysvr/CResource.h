@@ -1092,10 +1092,6 @@ public:
 	bool LoadResourceSection( CScript * pScript );
 	void LoadSortSpells();
 	CResourceDef * ResourceGetDef( RESOURCE_ID_BASE rid ) const;
-	
-	// Print EF/OF Flags
-	
-	void PrintEFOFFlags( bool bEF = true, bool bOF = true, CTextConsole *pSrc = NULL );
 
 	// Specialized resource accessors.
 

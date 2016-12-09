@@ -397,7 +397,7 @@ public:
 
 private:
 	bool LoadFile( LPCTSTR pszName, bool fError = true );
-	bool LoadWorld();
+	void LoadWorld();
 
 	bool SaveTry(bool fForceImmediate); // Save world state
 	bool SaveStage();
@@ -498,7 +498,7 @@ public:
 	bool Import( LPCTSTR pszFilename, const CChar* pSrc, WORD iModeFlags = IMPFLAGS_ITEMS, int iDist = SHRT_MAX, TCHAR *pszAgs1 = NULL, TCHAR *pszAgs2 = NULL );
 	bool Save( bool fForceImmediate ); // Save world state
 	void SaveStatics();
-	bool LoadAll();
+	void LoadAll();
 	bool DumpAreas( CTextConsole * pSrc, LPCTSTR pszFilename );
 	void Close();
 

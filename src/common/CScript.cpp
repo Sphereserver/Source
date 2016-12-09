@@ -262,7 +262,7 @@ bool CScript::Open( LPCTSTR pszFilename, UINT wFlags )
 	{
 		if ( ! ( wFlags & OF_NONCRIT ))
 		{
-			g_Log.Event(LOGL_WARN, "'%s' not found...\n", static_cast<LPCTSTR>(GetFilePath()));
+			g_Log.Event(LOGL_WARN, "'%s' not found\n", static_cast<LPCTSTR>(GetFilePath()));
 		}
 		return( false );
 	}

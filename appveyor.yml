@@ -7,7 +7,7 @@ build:
   verbosity: minimal
 after_build:
 - cmd: mkdir accounts logs save scripts
-- cmd: 7z a SphereSvr-Win32.zip accounts logs save scripts %APPVEYOR_BUILD_FOLDER%\%CONFIGURATION%\SphereSvr.exe %APPVEYOR_BUILD_FOLDER%\src\sphere.ini %APPVEYOR_BUILD_FOLDER%\src\sphereCrypt.ini
+- cmd: 7z a SphereSvr-Win32.zip accounts\ logs\ save\ scripts\ %APPVEYOR_BUILD_FOLDER%\%CONFIGURATION%\SphereSvr.exe %APPVEYOR_BUILD_FOLDER%\src\sphere.ini %APPVEYOR_BUILD_FOLDER%\src\sphereCrypt.ini
 artifacts:
 - path: SphereSvr-Win32.zip
   name: SphereSvr

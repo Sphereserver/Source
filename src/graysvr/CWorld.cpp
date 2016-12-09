@@ -1196,11 +1196,9 @@ bool CWorld::OpenScriptBackup( CScript & s, LPCTSTR pszBaseDir, LPCTSTR pszBaseN
 	CGString sSaveName;
 	sSaveName.Format( "%s" GRAY_FILE "%s%s", pszBaseDir, pszBaseName, GRAY_SCRIPT );
 
-	if ( rename( sSaveName, sArchive ))
-	{
-		// May not exist if this is the first time.
-		g_Log.Event(LOGM_SAVE|LOGL_WARN, "Rename %s to '%s' FAILED code %d?\n", static_cast<LPCTSTR>(sSaveName), static_cast<LPCTSTR>(sArchive), CGFile::GetLastError() );
-	}
+	rename(sSaveName, sArchive);
+	//if ( rename(sSaveName, sArchive) )	// may not exist if this is the first time
+	//	g_Log.Event(LOGM_SAVE|LOGL_WARN, "Rename %s to '%s' FAILED code %d?\n", static_cast<LPCTSTR>(sSaveName), static_cast<LPCTSTR>(sArchive), CGFile::GetLastError());
 
 	if ( ! s.Open( sSaveName, OF_WRITE|OF_TEXT|OF_DEFAULTMODE ))
 	{
@@ -1643,17 +1641,11 @@ void CWorld::SaveStatics()
 
 bool CWorld::LoadFile( LPCTSTR pszLoadName, bool fError ) // Load world from script
 {
-	CScript s;
-	if ( ! s.Open( pszLoadName, OF_READ|OF_TEXT|OF_DEFAULTMODE ) )
-	{
-		if ( fError )
-			g_Log.Event(LOGM_INIT|LOGL_ERROR, "Can't Load %s\n", static_cast<LPCTSTR>(pszLoadName));
-		else
-			g_Log.Event(LOGM_INIT|LOGL_WARN, "Can't Load %s\n", static_cast<LPCTSTR>(pszLoadName));
-		return( false );
-	}
-
 	g_Log.Event(LOGM_INIT, "Loading %s...\n", static_cast<LPCTSTR>(pszLoadName));
+
+	CScript s;
+	if ( !s.Open(pszLoadName, OF_READ|OF_TEXT|OF_DEFAULTMODE) )
+		return false;
 
 	// Find the size of the file.
 	DWORD lLoadSize = s.GetLength();
@@ -1699,7 +1691,7 @@ bool CWorld::LoadFile( LPCTSTR pszLoadName, bool fError ) // Load world from scr
 }
 
 
-bool CWorld::LoadWorld() // Load world from script
+void CWorld::LoadWorld() // Load world from script
 {
 	EXC_TRY("LoadWorld");
 	// Auto change to the most recent previous backup !
@@ -1727,11 +1719,8 @@ bool CWorld::LoadWorld() // Load world from script
 		LoadFile(sDataName, false);
 		LoadFile(sStaticsName, false);
 		LoadFile(sMultisName, false);
-		if ( LoadFile(sWorldName) )
-		{
-			if ( LoadFile(sCharsName) )
-				return true;
-		}
+		LoadFile(sWorldName, false);
+		LoadFile(sCharsName, false);
 
 		// If we could not open the file at all then it was a bust!
 		if ( m_iSaveCountID == iPrevSaveCount ) break;
@@ -1786,25 +1775,21 @@ bool CWorld::LoadWorld() // Load world from script
 		sDataName = sArchive;
 	}
 
-	g_Log.Event(LOGL_FATAL|LOGM_INIT, "No previous backup available ?\n");
 	EXC_CATCH;
-	return false;
 }
 
 
-bool CWorld::LoadAll() // Load world from script
+void CWorld::LoadAll() // Load world from script
 {
 	// start count. (will grow as needed)
 	m_UIDs.SetCount(8 * 1024);
 	m_Clock.Init();		// will be loaded from the world file.
 
 	// Load all the accounts.
-	if ( !g_Accounts.Account_LoadAll(false) )
-		return false;
+	g_Accounts.Account_LoadAll(false);
 
 	// Try to load the world and chars files .
-	if ( !LoadWorld() )
-		return false;
+	LoadWorld();
 
 	m_timeStartup = GetCurrentTime();
 	m_timeSave = GetCurrentTime() + g_Cfg.m_iSavePeriod;	// next save time.
@@ -1840,8 +1825,6 @@ bool CWorld::LoadAll() // Load world from script
 
 	// Set the current version now.
 	r_SetVal("VERSION", GRAY_VERSION);	// Set m_iLoadVersion
-
-	return true;
 }
 
 /////////////////////////////////////////////////////////////////

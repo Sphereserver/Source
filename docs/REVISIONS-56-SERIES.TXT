@@ -284,3 +284,6 @@ Fixed: Server crash when custom clients connect using invalid client version.
 Fixed: Ghost mode not setting desolated season on clients.
 Changed: Small changes on some console messages to make them standard and provide more relevant data.
 Changed: Updated internal SQLite libs v3.15.1 to v3.15.2.
+
+09-12-2016, Coruja
+Changed: Sphere can now startup properly without save files instead return "FATAL: missing save files" and close the server. This can make Sphere setup easier for new users.

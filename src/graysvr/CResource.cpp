@@ -1163,13 +1163,12 @@ bool CResource::r_LoadVal( CScript &s )
 
 		case RC_EXPERIMENTAL:
 			g_Cfg.m_iExperimental = s.GetArgVal();
-			//PrintEFOFFlags(true, false);
 			break;
 
 		case RC_OPTIONFLAGS:
 			g_Cfg.m_iOptionFlags = s.GetArgVal();
-			//PrintEFOFFlags(false, true);
 			break;
+
 		case RC_TIMERCALL:
 			m_iTimerCall = s.GetArgVal() * 60 * TICK_PER_SEC;
 			break;
@@ -1691,11 +1690,9 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			break;
 		case RC_EXPERIMENTAL:
 			sVal.FormatHex( g_Cfg.m_iExperimental );
-			//PrintEFOFFlags(true, false, pSrc);
 			break;
 		case RC_OPTIONFLAGS:
 			sVal.FormatHex( g_Cfg.m_iOptionFlags );
-			//PrintEFOFFlags(false, true, pSrc);
 			break;
 		case RC_CLIENTS:		// this is handled by CServerDef as SV_CLIENTS
 			return false;
@@ -2962,7 +2959,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 
 			if ( !pListBase )
 			{
-				DEBUG_ERR(("Unable to create list '%s'...\n", pScript->GetArgStr()));
+				DEBUG_ERR(("Unable to create list '%s'\n", pScript->GetArgStr()));
 
 				return false;
 			}
@@ -2970,7 +2967,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			while ( pScript->ReadKeyParse() )
 			{
 				if ( !pListBase->r_LoadVal(*pScript) )
-					DEBUG_ERR(("Unable to add element '%s' to list '%s'...\n", pScript->GetArgStr(), pListBase->GetKey()));
+					DEBUG_ERR(("Unable to add element '%s' to list '%s'\n", pScript->GetArgStr(), pListBase->GetKey()));
 			}
 		}
 		return true;
@@ -3004,7 +3001,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			}
 			else
 			{
-				DEBUG_ERR(("Dialog '%s' not found...\n", pScript->GetKey()));
+				DEBUG_ERR(("Dialog '%s' not found\n", pScript->GetKey()));
 			}
 		}
 		return true;
@@ -3548,66 +3545,6 @@ void CResource::OnTick( bool fNow )
 	strcat(a, b); \
 }
 
-void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
-{
-	ADDTOCALLSTACK("CResource::PrintEFOFFlags");
-	if ( g_Serv.IsLoading() ) return;
-	if ( bOF )
-	{
-		TCHAR zOptionFlags[512];
-		zOptionFlags[0] = '\0';
-
-		if ( IsSetOF(OF_NoDClickTarget) ) catresname(zOptionFlags, "NoDClickTarget");
-		if ( IsSetOF(OF_NoSmoothSailing) ) catresname(zOptionFlags, "NoSmoothSailing");
-		if ( IsSetOF(OF_ScaleDamageByDurability) ) catresname(zOptionFlags, "ScaleDamageByDurability");
-		if ( IsSetOF(OF_Command_Sysmsgs) ) catresname(zOptionFlags, "CommandSysmessages");
-		if ( IsSetEF(OF_PetSlots) ) catresname(zOptionFlags, "PetSlots");
-		if ( IsSetOF(OF_OSIMultiSight) ) catresname(zOptionFlags, "OSIMultiSight");
-		if ( IsSetOF(OF_Items_AutoName) ) catresname(zOptionFlags, "ItemsAutoName");
-		if ( IsSetOF(OF_FileCommands) ) catresname(zOptionFlags, "FileCommands");
-		if ( IsSetOF(OF_NoItemNaming) ) catresname(zOptionFlags, "NoItemNaming");
-		if ( IsSetOF(OF_NoHouseMuteSpeech) ) catresname(zOptionFlags, "NoHouseMuteSpeech");
-		if ( IsSetOF(OF_NoContextMenuLOS) ) catresname(zOptionFlags, "NoContextMenuLOS");
-		if ( IsSetOF(OF_Flood_Protection) ) catresname(zOptionFlags, "FloodProtection");
-		if ( IsSetOF(OF_Buffs) ) catresname(zOptionFlags, "Buffs");
-		if ( IsSetOF(OF_NoPrefix) ) catresname(zOptionFlags, "NoPrefix");
-		if ( IsSetOF(OF_DyeType) ) catresname(zOptionFlags, "DyeType");
-		if ( IsSetOF(OF_DrinkIsFood) ) catresname(zOptionFlags, "DrinkIsFood");
-		if ( IsSetOF(OF_DClickNoTurn) ) catresname(zOptionFlags, "DClickNoTurn");
-
-		if ( zOptionFlags[0] != '\0' )
-		{
-			if ( pSrc ) pSrc->SysMessagef("Option flags: %s\n", zOptionFlags);
-			else g_Log.Event(LOGM_INIT, "Option flags: %s\n", zOptionFlags);
-		}
-	}
-	if ( bEF )
-	{
-		TCHAR zExperimentalFlags[512];
-		zExperimentalFlags[0] = '\0';
-
-		if ( IsSetEF(EF_NoDiagonalCheckLOS) ) catresname(zExperimentalFlags, "NoDiagonalCheckLOS");
-		if ( IsSetEF(EF_ItemStacking) ) catresname(zExperimentalFlags, "ItemStacking");
-		if ( IsSetEF(EF_ItemStackDrop) ) catresname(zExperimentalFlags, "ItemStackDrop");
-		if ( IsSetEF(EF_Intrinsic_Locals) ) catresname(zExperimentalFlags, "IntrinsicLocals");
-		if ( IsSetEF(EF_Item_Strict_Comparison) ) catresname(zExperimentalFlags, "ItemStrictComparison");
-		if ( IsSetEF(EF_AllowTelnetPacketFilter) ) catresname(zExperimentalFlags, "TelnetPacketFilter");
-		if ( IsSetEF(EF_Script_Profiler) ) catresname(zExperimentalFlags, "ScriptProfiler");
-		if ( IsSetEF(EF_DamageTools) ) catresname(zExperimentalFlags, "DamageTools");
-		if ( IsSetEF(EF_UsePingServer) ) catresname(zExperimentalFlags, "UsePingServer");
-		if ( IsSetEF(EF_FixCanSeeInClosedConts) ) catresname(zExperimentalFlags, "FixCanSeeInClosedConts");
-#ifndef _MTNETWORK
-		if ( IsSetEF(EF_NetworkOutThread) ) catresname(zExperimentalFlags, "NetworkOutThread");
-#endif
-
-		if ( zExperimentalFlags[0] != '\0' )
-		{
-			if ( pSrc ) pSrc->SysMessagef("Experimental flags: %s\n", zExperimentalFlags);
-			else g_Log.Event(LOGM_INIT, "Experimental flags: %s\n", zExperimentalFlags);
-		}
-	}
-}
-
 bool CResource::LoadIni( bool fTest )
 {
 	ADDTOCALLSTACK("CResource::LoadIni");
@@ -3725,7 +3662,7 @@ bool CResource::Load( bool fResync )
 	if ( i != VERFILE_QTY )
 	{
 		g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing\n");
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "MUL File '%s' not found...\n", static_cast<LPCTSTR>(g_Install.GetBaseFileName(i)));
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "MUL File '%s' not found\n", static_cast<LPCTSTR>(g_Install.GetBaseFileName(i)));
 		return( false );
 	}
 
@@ -3759,7 +3696,7 @@ bool CResource::Load( bool fResync )
 		if ( !OpenResourceFind(m_scpTables, GRAY_FILE "tables") )
 		{
 			g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing\n");
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Error opening table definitions file...\n");
+			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Error opening table definitions file\n");
 			return( false );
 		}
 
