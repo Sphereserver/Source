@@ -1350,12 +1350,6 @@ cantsteal:
 			return( -SKTRIG_ABORT );
 		}
 	}
-	CItemCorpse * pCorpse = static_cast<CItemCorpse *>(pItem);
-	if ( pCorpse )
-	{
-		SysMessageDefault( DEFMSG_STEALING_CORPSE );
-		return( -SKTRIG_ABORT );
-	}
 	if ( pItem->IsType(IT_TRAIN_PICKPOCKET))
 	{
 		SysMessageDefault( DEFMSG_STEALING_PICKPOCKET );
