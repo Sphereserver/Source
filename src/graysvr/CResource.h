@@ -1024,7 +1024,6 @@ public:
 
 	bool		m_NPCNoFameTitle;
 
-	bool		m_bAgree;
 	int			m_iMaxPolyStats;
 
 	// End INI file options.

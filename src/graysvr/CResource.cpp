@@ -17,7 +17,6 @@ CResource::CResource()
 	m_wDebugFlags = 0; //DEBUGF_NPC_EMOTE
 	m_fSecure = true;
 	m_iFreezeRestartTime = 60;
-	m_bAgree = false;
 	m_fMd5Passwords = false;
 
 	//Magic
@@ -365,7 +364,6 @@ enum RC_TYPE
 {
 	RC_ACCTFILES,				// m_sAcctBaseDir
 	RC_ADVANCEDLOS,				// m_iAdvancedLos
-	RC_AGREE,
 	RC_ALLOWBUYSELLAGENT,		// m_bAllowBuySellAgent
 	RC_ALLOWLIGHTOVERRIDE,		// m_bAllowLightOverride
 	RC_ALLOWNEWBTRANSFER,		// m_bAllowNewbTransfer
@@ -552,7 +550,7 @@ enum RC_TYPE
 	RC_SPELLTIMEOUT,
 	RC_STAMINALOSSATWEIGHT,		// m_iStaminaLossAtWeight
 	RC_STATSFLAGS,				// m_iStatFlag
-	RC_STRIPPATH,				// for TNG
+	RC_STRIPPATH,				// m_sStripPath
 	RC_SUPPRESSCAPITALS,
 	RC_TELEPORTEFFECTNPC,		// m_iSpell_Teleport_Effect_NPC
 	RC_TELEPORTEFFECTPLAYERS,	// m_iSpell_Teleport_Effect_Players
@@ -595,7 +593,6 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 {
 	{ "ACCTFILES",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sAcctBaseDir),			0 }},
 	{ "ADVANCEDLOS",			{ ELEM_INT,		OFFSETOF(CResource,m_iAdvancedLos),			0 }},
-	{ "AGREE",					{ ELEM_BOOL,	OFFSETOF(CResource,m_bAgree),				0 }},
 	{ "ALLOWBUYSELLAGENT",		{ ELEM_BOOL,	OFFSETOF(CResource,m_bAllowBuySellAgent),	0 }},
 	{ "ALLOWLIGHTOVERRIDE",		{ ELEM_BOOL,	OFFSETOF(CResource,m_bAllowLightOverride),	0 }},
 	{ "ALLOWNEWBTRANSFER",		{ ELEM_BOOL,	OFFSETOF(CResource,m_bAllowNewbTransfer),	0 }},
@@ -952,9 +949,6 @@ bool CResource::r_LoadVal( CScript &s )
 
 	switch (i)
 	{
-		case RC_AGREE:
-			m_bAgree = (s.GetArgVal() != 0);
-			break;
 		case RC_ACCTFILES:	// Put acct files here.
 			m_sAcctBaseDir = CGFile::GetMergedFileName( s.GetArgStr(), "" );
 			break;

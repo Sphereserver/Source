@@ -769,7 +769,6 @@ longcommand:
 				return false;
 			}
 
-			bool bValidTemplate = false;
 			size_t i = 0;
 			CResourceScript	*script;
 			while ( (script = g_Cfg.GetResourceFile(i++)) != NULL )
@@ -806,7 +805,7 @@ longcommand:
 				fclose(scriptFile);
 			}
 			fclose(stripFile);
-			pSrc->SysMessagef("Scripts have just been stripped.\n", stripFile);
+			pSrc->SysMessagef("Scripts have just been stripped.\n");
 			return true;
 		}
 
@@ -1867,19 +1866,17 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 
 #ifdef _NIGHTLYBUILD
 	g_Log.EventWarn("\r\n"
-					"This is a nightly build of SphereServer. This build is to be used\r\n"
-					"for testing and/or bug reporting ONLY. DO NOT run this build on a\r\n"
-					"live shard unless you know what you are doing!\r\n"
-					"Nightly builds are automatically made every night from source and\r\n"
-					"might contain errors, might be unstable or even destroy your\r\n"
-					"shard as they are mostly untested!\r\n"
-					"-----------------------------------------------------------------\r\n\r\n");
-
-	if (!g_Cfg.m_bAgree)
-	{
-		g_Log.EventError("Please write AGREE=1 in " GRAY_FILE ".ini file to acknowledge that\nyou understand the terms of use for nightly builds.\n");
-		return false;
-	}
+					"This is a NIGHTLY build of SphereServer. Nightly builds are compiled automatically\r\n"
+					"from the source code with the latest updates, but might contain errors or might be\r\n"
+					"unstable. Take caution when using it on live servers.\r\n"
+					"----------------------------------------------------------------------------------\r\n\r\n");
+#endif
+#ifdef _DEBUG
+	g_Log.EventWarn("\r\n"
+					"This is a DEBUG build of SphereServer. Debug builds are compiled manually by developers\r\n"
+					"for testing purposes. It have many extra debug behavior that are useful for development\r\n"
+					"but will make the server slower. Do not use it on live servers.\r\n"
+					"---------------------------------------------------------------------------------------\r\n\r\n");
 #endif
 
 	EXC_SET("setting signals");
