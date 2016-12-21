@@ -295,3 +295,4 @@ Changed: Users doesn't have to write AGREE=1 on sphere.ini to use nightly builds
 
 21-12-2016, Coruja
 Changed: Updated functionality of all polymorph-like spells (Polymorph, Horrific Beast, Lich Form, Vampiric Embrace, Wraith Form, Reaper Form, Stone Form)
+Fixed: Mass Curse spell not working correctly.

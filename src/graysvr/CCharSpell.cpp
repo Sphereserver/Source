@@ -746,8 +746,9 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 				m_pClient->removeBuff(BI_WEAKEN);
 			return;
 		case SPELL_Curse:
+		case SPELL_Mass_Curse:
 		{
-			if ( m_pPlayer )
+			if ( m_pPlayer && (spell == SPELL_Curse) )
 			{
 				SetDefNum("RESFIREMAX", GetDefNum("RESFIREMAX", true) + 10);
 				SetDefNum("RESCOLDMAX", GetDefNum("RESCOLDMAX", true) + 10);
@@ -757,7 +758,12 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 			for (int i = STAT_STR; i < STAT_BASE_QTY; i++ )
 				Stat_AddMod(static_cast<STAT_TYPE>(i), iStatEffect);
 			if (m_pClient)
-				m_pClient->removeBuff(BI_CURSE);
+			{
+				if (spell == SPELL_Curse)
+					m_pClient->removeBuff(BI_CURSE);
+				else
+					m_pClient->removeBuff(BI_MASSCURSE);
+			}
 			return;
 		}
 		case SPELL_Agility:
@@ -922,10 +928,11 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 					{
 						CResourceDef *pCharDefNew = g_Cfg.ResourceGetDef(RESOURCE_ID(RES_CHARDEF, m_atMagery.m_SummonID));
 						LPCTSTR pszName = pCharDefNew->GetName();
+						_strlwr(const_cast<TCHAR *>(pszName));
 						if ( pszName[0] == '#' )
 							pszName = "creature";
 						strcpy(NumBuff[0], Str_GetArticleAndSpace(pszName));
-						strcpy(NumBuff[1], _strlwr(const_cast<TCHAR *>(pszName)));
+						strcpy(NumBuff[1], pszName);
 						NumBuff[0][strlen(NumBuff[0]) - 1] = '\0';		// trim whitespace from "a " / "an " strings
 						m_pClient->removeBuff(BI_POLYMORPH);
 						m_pClient->addBuff(BI_POLYMORPH, 1075824, 1075823, iTimerEffect, pNumBuff, 2);
@@ -1459,13 +1466,14 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			}
 			return;
 		case SPELL_Curse:
+		case SPELL_Mass_Curse:
 			{
 				if ( pCaster != NULL && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
 				{
 					iStatEffect = 8 + (pCaster->Skill_GetBase(SKILL_EVALINT) / 100) - (Skill_GetBase(SKILL_MAGICRESISTANCE) / 100);
 					pSpell->m_itSpell.m_spelllevel = iStatEffect;
 				}
-				if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) && m_pPlayer )		// Curse also decrease max resistances on players
+				if ( (spell == SPELL_Curse) && IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) && m_pPlayer )		// Curse also decrease max resistances on players (not applied to Mass Curse)
 				{
 					SetDefNum("RESFIREMAX", GetDefNum("RESFIREMAX", true) - 10);
 					SetDefNum("RESCOLDMAX", GetDefNum("RESCOLDMAX", true) - 10);
@@ -1475,21 +1483,29 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				for ( int i = STAT_STR; i < STAT_BASE_QTY; i++ )
 					Stat_AddMod(static_cast<STAT_TYPE>(i), -iStatEffect);
 
-				if (m_pClient && IsSetOF(OF_Buffs))
+				if ( m_pClient && IsSetOF(OF_Buffs) )
 				{
-					m_pClient->removeBuff(BI_CURSE);
+					BUFF_ICONS BuffIcon = BI_CURSE;
+					DWORD BuffCliloc = 1075835;
+					if ( spell == SPELL_Mass_Curse )
+					{
+						BuffIcon = BI_MASSCURSE;
+						BuffCliloc = 1075839;
+					}
+
+					m_pClient->removeBuff(BuffIcon);
 					for ( int idx = STAT_STR; idx < STAT_BASE_QTY; ++idx )
 						ITOA(iStatEffect, NumBuff[idx], 10);
-					if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+					if ( (spell == SPELL_Curse) && IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 					{
 						for ( int idx = 3; idx < 7; ++idx )
 							ITOA(10, NumBuff[idx], 10);
 
-						m_pClient->addBuff(BI_CURSE, 1075835, 1075836, iTimerEffect, pNumBuff, 7);
+						m_pClient->addBuff(BuffIcon, BuffCliloc, 1075836, iTimerEffect, pNumBuff, 7);
 					}
 					else
 					{
-						m_pClient->addBuff(BI_CURSE, 1075835, 1075840, iTimerEffect, pNumBuff, 3);
+						m_pClient->addBuff(BuffIcon, BuffCliloc, 1075840, iTimerEffect, pNumBuff, 3);
 					}
 				}
 			}
