@@ -1346,7 +1346,7 @@ void CChar::InitPlayer( CClient *pClient, const char *pszCharname, bool bFemale,
 				wSkinHue = static_cast<HUE_TYPE>(HUE_GARGSKIN_HIGH);
 			break;
 	}
-	SetHue((wSkinHue|HUE_UNDERWEAR));
+	SetHue((wSkinHue|HUE_MASK_UNDERWEAR));
 
 	// Create hair
 	switch ( rtRace )
@@ -3742,7 +3742,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 		case CHV_UNDERWEAR:
 			if ( ! IsPlayableCharacter())
 				return( false );
-			SetHue( GetHue() ^ HUE_UNDERWEAR /*, false, pSrc*/ ); //call @Dye on underwear?
+			SetHue( GetHue() ^ HUE_MASK_UNDERWEAR /*, false, pSrc*/ ); //call @Dye on underwear?
 			UpdateMode();
 			break;
 		case CHV_UNEQUIP:	// uid

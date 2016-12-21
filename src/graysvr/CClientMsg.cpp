@@ -950,9 +950,9 @@ void CClient::GetAdjustedItemID( const CChar * pChar, const CItem * pItem, ITEMI
 				wHue = pItemDef->GetResDispDnHue();
 
 		if (( wHue & HUE_MASK_HI ) > HUE_QTY )
-			wHue &= HUE_MASK_LO | HUE_UNDERWEAR | HUE_TRANSLUCENT;
+			wHue &= HUE_MASK_LO | HUE_MASK_UNDERWEAR | HUE_MASK_TRANSLUCENT;
 		else
-			wHue &= HUE_MASK_HI | HUE_UNDERWEAR | HUE_TRANSLUCENT;
+			wHue &= HUE_MASK_HI | HUE_MASK_UNDERWEAR | HUE_MASK_TRANSLUCENT;
 
 	}
 
@@ -1010,9 +1010,9 @@ void CClient::GetAdjustedCharID( const CChar * pChar, CREID_TYPE &id, HUE_TYPE &
 			wHue = pChar->GetHue();
 			// Allow transparency and underwear colors
 			if ( (wHue & HUE_MASK_HI) > HUE_QTY )
-				wHue &= HUE_MASK_LO | HUE_UNDERWEAR | HUE_TRANSLUCENT;
+				wHue &= HUE_MASK_LO | HUE_MASK_UNDERWEAR | HUE_MASK_TRANSLUCENT;
 			else
-				wHue &= HUE_MASK_HI | HUE_UNDERWEAR | HUE_TRANSLUCENT;
+				wHue &= HUE_MASK_HI | HUE_MASK_UNDERWEAR | HUE_MASK_TRANSLUCENT;
 		}
 	}
 

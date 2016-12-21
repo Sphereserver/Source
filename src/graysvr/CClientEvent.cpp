@@ -124,7 +124,7 @@ void CClient::Event_Item_Dye(CGrayUID uid, HUE_TYPE wHue)
 		wHue = HUE_DYE_HIGH;
 
 	if ( pObj->IsChar() )
-		wHue |= HUE_UNDERWEAR;
+		wHue |= HUE_MASK_UNDERWEAR;
 
 	pObj->SetHue(wHue, false, GetChar(), pObj);
 	pObj->Update();

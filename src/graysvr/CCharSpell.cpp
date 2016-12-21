@@ -518,6 +518,9 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 		}
 		case LAYER_SPELL_Polymorph:
 		{
+			SetHue(m_prev_Hue);
+			SetID(m_prev_id);
+
 			BUFF_ICONS iBuffIcon = BI_START;
 			switch (spell)
 			{
@@ -528,12 +531,15 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 					break;
 				case SPELL_Horrific_Beast:
 					iBuffIcon = BI_HORRIFICBEAST;
-					SetDefNum("RegenHitsVal", GetDefNum("RegenHitsVal") - pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("RegenHits", GetDefNum("RegenHits") - pSpell->m_itSpell.m_PolyStr);
+					SetDefNum("IncreaseDam", GetDefNum("IncreaseDam") - pSpell->m_itSpell.m_PolyDex);
+					m_attackBase -= pSpell->m_itSpell.m_spellcharges;
+					m_attackRange -= pSpell->m_itSpell.m_spelllevel;
 					break;
 				case SPELL_Lich_Form:
 					iBuffIcon = BI_LICHFORM;
-					SetDefNum("RegenManaVal", GetDefNum("RegenManaVal") - pSpell->m_itSpell.m_PolyStr);
-					SetDefNum("RegenHitsVal", GetDefNum("RegenHitsVal") + pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("RegenHits", GetDefNum("RegenHits") + pSpell->m_itSpell.m_PolyStr);
+					SetDefNum("RegenMana", GetDefNum("RegenMana") - pSpell->m_itSpell.m_PolyDex);
 					SetDefNum("ResFire", GetDefNum("ResFire") + pSpell->m_itSpell.m_spellcharges);
 					SetDefNum("ResPoison", GetDefNum("ResPoison") - pSpell->m_itSpell.m_spellcharges);
 					SetDefNum("ResCold", GetDefNum("ResCold") - pSpell->m_itSpell.m_spellcharges);
@@ -541,28 +547,47 @@ void CChar::Spell_Effect_Remove(CItem * pSpell)
 				case SPELL_Vampiric_Embrace:
 					iBuffIcon = BI_VAMPIRICEMBRACE;
 					SetDefNum("HitLeechLife", GetDefNum("HitLeechLife") - pSpell->m_itSpell.m_PolyStr);
-					SetDefNum("RegenStamVal", GetDefNum("RegenStamVal") - pSpell->m_itSpell.m_PolyDex);
-					SetDefNum("RegenManaVal", GetDefNum("RegenManaVal") - pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("RegenStam", GetDefNum("RegenStam") - pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("RegenMana", GetDefNum("RegenMana") - pSpell->m_itSpell.m_spellcharges);
 					SetDefNum("ResFire", GetDefNum("ResFire") + pSpell->m_itSpell.m_spelllevel);
 					break;
 				case SPELL_Wraith_Form:
 					iBuffIcon = BI_WRAITHFORM;
-					SetDefNum("ResPhysical", GetDefNum("ResPhysical") - 15);
-					SetDefNum("ResFire", GetDefNum("ResFire") + 5);
-					SetDefNum("ResEnergy", GetDefNum("ResEnergy") + 5);
+					SetDefNum("ResPhysical", GetDefNum("ResPhysical") - pSpell->m_itSpell.m_PolyStr);
+					SetDefNum("ResEnergy", GetDefNum("ResEnergy") + pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("ResFire", GetDefNum("ResFire") + pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("HitLeechMana", GetDefNum("HitLeechMana") - pSpell->m_itSpell.m_spellcharges);
 					break;
 				case SPELL_Reaper_Form:
 					iBuffIcon = BI_REAPERFORM;
+					SetDefNum("IncreaseSwingSpeed", GetDefNum("IncreaseSwingSpeed") - pSpell->m_itSpell.m_PolyStr);
+					SetDefNum("IncreaseSpellDam", GetDefNum("IncreaseSpellDam") - pSpell->m_itSpell.m_PolyStr);
+					SetDefNum("ResPhysical", GetDefNum("ResPhysical") - pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("ResCold", GetDefNum("ResCold") - pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("ResPoison", GetDefNum("ResPoison") - pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("ResEnergy", GetDefNum("ResEnergy") - pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("ResFire", GetDefNum("ResFire") + pSpell->m_itSpell.m_spellcharges);
 					break;
 				case SPELL_Stone_Form:
 					iBuffIcon = BI_STONEFORM;
+					SetDefNum("IncreaseSwingSpeed", GetDefNum("IncreaseSwingSpeed") + pSpell->m_itSpell.m_PolyStr);
+					SetDefNum("FasterCasting", GetDefNum("FasterCasting") + pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("ResPhysical", GetDefNum("ResPhysical") - pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("ResFire", GetDefNum("ResFire") - pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("ResCold", GetDefNum("ResCold") - pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("ResPoison", GetDefNum("ResPoison") - pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("ResEnergy", GetDefNum("ResEnergy") - pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("ResPhysicalMax", GetDefNum("ResPhysicalMax") - pSpell->m_itSpell.m_spelllevel);
+					SetDefNum("ResFireMax", GetDefNum("ResFireMax") - pSpell->m_itSpell.m_spelllevel);
+					SetDefNum("ResColdMax", GetDefNum("ResColdMax") - pSpell->m_itSpell.m_spelllevel);
+					SetDefNum("ResPoisonMax", GetDefNum("ResPoisonMax") - pSpell->m_itSpell.m_spelllevel);
+					SetDefNum("ResEnergyMax", GetDefNum("ResEnergyMax") - pSpell->m_itSpell.m_spelllevel);
+					SetDefNum("IncreaseDam", GetDefNum("IncreaseDam") - pSpell->m_itSpell.m_PolyStr);
 					break;
 				default:
 					break;
 			}
-
-			SetID(m_prev_id);
-			if ( IsSetMagicFlags(MAGICF_POLYMORPHSTATS) && spell == SPELL_Polymorph )
+			if ( (spell == SPELL_Polymorph) && IsSetMagicFlags(MAGICF_POLYMORPHSTATS) )
 			{
 				Stat_AddMod(STAT_STR, -pSpell->m_itSpell.m_PolyStr);
 				Stat_AddMod(STAT_DEX, -pSpell->m_itSpell.m_PolyDex);
@@ -886,114 +911,226 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			break;
 		case LAYER_SPELL_Polymorph:
 		{
-			BUFF_ICONS iBuffIcon = BI_START;
+			CCharBase *pCharDef = Char_GetDef();
 			switch (spell)
 			{
+				case SPELL_Polymorph:
 				case SPELL_BeastForm:		// 107 // polymorphs you into an animal for a while.
 				case SPELL_Monster_Form:	// 108 // polymorphs you into a monster for a while.
-				case SPELL_Polymorph:
-					iBuffIcon = BI_POLYMORPH;
+				{
+					if ( m_pClient && IsSetOF(OF_Buffs) )
+					{
+						CResourceDef *pCharDefNew = g_Cfg.ResourceGetDef(RESOURCE_ID(RES_CHARDEF, m_atMagery.m_SummonID));
+						LPCTSTR pszName = pCharDefNew->GetName();
+						if ( pszName[0] == '#' )
+							pszName = "creature";
+						strcpy(NumBuff[0], Str_GetArticleAndSpace(pszName));
+						strcpy(NumBuff[1], _strlwr(const_cast<TCHAR *>(pszName)));
+						NumBuff[0][strlen(NumBuff[0]) - 1] = '\0';		// trim whitespace from "a " / "an " strings
+						m_pClient->removeBuff(BI_POLYMORPH);
+						m_pClient->addBuff(BI_POLYMORPH, 1075824, 1075823, iTimerEffect, pNumBuff, 2);
+					}
 					break;
+				}
+				case SPELL_Horrific_Beast:
+				{
+					m_atMagery.m_SummonID = CREID_HORRIFIC_BEAST;
+					pSpell->m_itSpell.m_PolyStr = 20;						// Hitpoint Regeneration
+					pSpell->m_itSpell.m_PolyDex = 25;						// Damage Increase
+					pSpell->m_itSpell.m_spellcharges = 5 - m_attackBase;	// Char min base damage
+					pSpell->m_itSpell.m_spelllevel = 10 - m_attackRange;	// Char max base damage
+					SetDefNum("RegenHits", GetDefNum("RegenHits") + pSpell->m_itSpell.m_PolyStr);
+					SetDefNum("IncreaseDam", GetDefNum("IncreaseDam") + pSpell->m_itSpell.m_PolyDex);
+					m_attackBase += pSpell->m_itSpell.m_spellcharges;
+					m_attackRange += pSpell->m_itSpell.m_spelllevel;
+
+					if ( m_pClient && IsSetOF(OF_Buffs) )
+					{
+						ITOA(pSpell->m_itSpell.m_PolyStr, NumBuff[0], 10);
+						ITOA(pSpell->m_itSpell.m_PolyDex, NumBuff[1], 10);
+						m_pClient->removeBuff(BI_HORRIFICBEAST);
+						m_pClient->addBuff(BI_HORRIFICBEAST, 1060514, 1153763, iTimerEffect, pNumBuff, 2);
+					}
+					break;
+				}
 				case SPELL_Lich_Form:
-					pSpell->m_itSpell.m_PolyStr = 13;		// +RegenManaVal
-					pSpell->m_itSpell.m_PolyDex = 5;			// -RegenHitsVal
-					pSpell->m_itSpell.m_spellcharges = 10;	// -ResFire, +ResPoison, +ResCold
-					m_atMagery.m_SummonID = CREID_LICH;
-					SetDefNum("RegenManaVal", GetDefNum("RegenManaVal") + pSpell->m_itSpell.m_PolyStr);	// RegenManaVal
-					SetDefNum("RegenHitsVal", GetDefNum("RegenHitsVal") - pSpell->m_itSpell.m_PolyDex);	// RegenHitsVal
-					SetDefNum("ResFire", GetDefNum("ResFire") - pSpell->m_itSpell.m_spellcharges);		// ResFire, ResPoison, ResCold
+				{
+					m_atMagery.m_SummonID = CREID_LICH_FORM;
+					pSpell->m_itSpell.m_PolyStr = 5;		// Hitpoint Regeneration
+					pSpell->m_itSpell.m_PolyDex = 13;		// Mana Regeneration
+					pSpell->m_itSpell.m_spellcharges = 10;	// Fire/Poison/Cold Resist
+					SetDefNum("RegenHits", GetDefNum("RegenHits") - pSpell->m_itSpell.m_PolyStr);
+					SetDefNum("RegenMana", GetDefNum("RegenMana") + pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("ResFire", GetDefNum("ResFire") - pSpell->m_itSpell.m_spellcharges);
 					SetDefNum("ResPoison", GetDefNum("ResPoison") + pSpell->m_itSpell.m_spellcharges);
 					SetDefNum("ResCold", GetDefNum("ResCold") + pSpell->m_itSpell.m_spellcharges);
-					iBuffIcon = BI_LICHFORM;
+
+					if ( m_pClient && IsSetOF(OF_Buffs) )
+					{
+						ITOA(pSpell->m_itSpell.m_PolyStr, NumBuff[0], 10);
+						ITOA(pSpell->m_itSpell.m_PolyDex, NumBuff[1], 10);
+						ITOA(pSpell->m_itSpell.m_spellcharges, NumBuff[2], 10);
+						ITOA(pSpell->m_itSpell.m_spellcharges, NumBuff[3], 10);
+						ITOA(pSpell->m_itSpell.m_spellcharges, NumBuff[4], 10);
+						m_pClient->removeBuff(BI_LICHFORM);
+						m_pClient->addBuff(BI_LICHFORM, 1060515, 1153767, iTimerEffect, pNumBuff, 5);
+					}
 					break;
-				case SPELL_Wraith_Form:
-					pSpell->m_itSpell.m_PolyDex = 15;
-					pSpell->m_itSpell.m_PolyStr = 5;
-					m_atMagery.m_SummonID = CREID_SPECTRE;
-					iBuffIcon = BI_WRAITHFORM;
-					SetDefNum("ResPhysical", GetDefNum("ResPhysical") + 15);
-					SetDefNum("ResFire", GetDefNum("ResFire") - 5);
-					SetDefNum("ResEnergy", GetDefNum("ResEnergy") - 5);
-					break;
-				case SPELL_Horrific_Beast:
-					pSpell->m_itSpell.m_PolyStr = 5;			// UnArmed DamLo
-					pSpell->m_itSpell.m_PolyDex = 9;			// UnArmed DamHi
-					pSpell->m_itSpell.m_spelllevel = 25;		// Melee Damage Increase
-					pSpell->m_itSpell.m_spellcharges = 20;	// RegenHitsVal
-					m_atMagery.m_SummonID = CREID_Horrific_Beast;
-					SetDefNum("RegenHitsVal", GetDefNum("RegenHitsVal") + pSpell->m_itSpell.m_spellcharges);
-					iBuffIcon = BI_HORRIFICBEAST;
-					break;
+				}
 				case SPELL_Vampiric_Embrace:
-					pSpell->m_itSpell.m_PolyStr = 13;		// +Hit Leech Life
-					pSpell->m_itSpell.m_PolyDex = 5;			// +RegenStamVal
-					pSpell->m_itSpell.m_spellcharges = 3;	// +RegenManaVal
-					pSpell->m_itSpell.m_spelllevel = 25;		// -ResFire
-					m_atMagery.m_SummonID = CREID_Vampire_Bat;
-					SetDefNum("HitLeechLife", GetDefNum("HitLeechLife") + pSpell->m_itSpell.m_PolyStr);		// +Hit Leech Life
-					SetDefNum("RegenStamVal", GetDefNum("RegenStamVal") + pSpell->m_itSpell.m_PolyDex);		// +RegenStamVal
-					SetDefNum("RegenManaVal", GetDefNum("RegenManaVal") + pSpell->m_itSpell.m_spellcharges);	// RegenManaVal
-					SetDefNum("ResFire", GetDefNum("ResFire") - pSpell->m_itSpell.m_spelllevel);				// ResFire
-					iBuffIcon = BI_VAMPIRICEMBRACE;
+				{
+					if ( IsGargoyle() )
+						m_atMagery.m_SummonID = pCharDef->IsFemale() ? CREID_GARGWOMAN : CREID_GARGMAN;
+					else
+						m_atMagery.m_SummonID = pCharDef->IsFemale() ? CREID_VAMPIREWOMAN : CREID_VAMPIREMAN;
+
+					SetHue(0x847E);
+					pSpell->m_itSpell.m_PolyStr = 20;		// Hit Life Leech
+					pSpell->m_itSpell.m_PolyDex = 15;		// Stamina Regeneration
+					pSpell->m_itSpell.m_spellcharges = 3;	// Mana Regeneration
+					pSpell->m_itSpell.m_spelllevel = 25;	// Fire Resist
+					SetDefNum("HitLeechLife", GetDefNum("HitLeechLife") + pSpell->m_itSpell.m_PolyStr);
+					SetDefNum("RegenStam", GetDefNum("RegenStam") + pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("RegenMana", GetDefNum("RegenMana") + pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("ResFire", GetDefNum("ResFire") - pSpell->m_itSpell.m_spelllevel);
+
+					if ( m_pClient && IsSetOF(OF_Buffs) )
+					{
+						ITOA(pSpell->m_itSpell.m_PolyStr, NumBuff[0], 10);
+						ITOA(pSpell->m_itSpell.m_PolyDex, NumBuff[1], 10);
+						ITOA(pSpell->m_itSpell.m_spellcharges, NumBuff[2], 10);
+						ITOA(pSpell->m_itSpell.m_spelllevel, NumBuff[3], 10);
+						m_pClient->removeBuff(BI_VAMPIRICEMBRACE);
+						m_pClient->addBuff(BI_VAMPIRICEMBRACE, 1060521, 1153768, iTimerEffect, pNumBuff, 4);
+					}
 					break;
-				case SPELL_Stone_Form:
-					m_atMagery.m_SummonID = CREID_Stone_Form;
-					iBuffIcon = BI_STONEFORM;
+				}
+				case SPELL_Wraith_Form:
+				{
+					if ( pCharDef->IsFemale() )
+						m_atMagery.m_SummonID = CREID_WAILING_BANSHEE2;
+					else
+					{
+						m_atMagery.m_SummonID = CREID_WRAITH;
+						SetHue(HUE_TRANSLUCENT);
+					}
+
+					pSpell->m_itSpell.m_PolyStr = 15;		// Physical Resist
+					pSpell->m_itSpell.m_PolyDex = 5;		// Energy/Fire Resist
+					pSpell->m_itSpell.m_spellcharges = 5 + (15 * pCaster->Skill_GetBase(SKILL_SPIRITSPEAK) / 1000);		// Hit Mana Drain
+					SetDefNum("ResPhysical", GetDefNum("ResPhysical") + pSpell->m_itSpell.m_PolyStr);
+					SetDefNum("ResEnergy", GetDefNum("ResEnergy") - pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("ResFire", GetDefNum("ResFire") - pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("HitLeechMana", GetDefNum("HitLeechMana") + pSpell->m_itSpell.m_spellcharges);
+
+					if ( m_pClient && IsSetOF(OF_Buffs) )
+					{
+						ITOA(pSpell->m_itSpell.m_PolyStr, NumBuff[0], 10);
+						ITOA(pSpell->m_itSpell.m_PolyDex, NumBuff[1], 10);
+						ITOA(pSpell->m_itSpell.m_PolyDex, NumBuff[2], 10);
+						ITOA(pSpell->m_itSpell.m_PolyDex, NumBuff[3], 10);
+						m_pClient->removeBuff(BI_WRAITHFORM);
+						m_pClient->addBuff(BI_WRAITHFORM, 1060524, 1153829, iTimerEffect, pNumBuff, 4);
+					}
 					break;
+				}
 				case SPELL_Reaper_Form:
-					m_atMagery.m_SummonID = CREID_Stone_Form;
-					iBuffIcon = BI_REAPERFORM;
+				{
+					m_atMagery.m_SummonID = CREID_REAPER_FORM;
+					pSpell->m_itSpell.m_PolyStr = 10;		// Swing Speed Increase, Spell Damage Increase
+					pSpell->m_itSpell.m_PolyDex = 5;		// Physical/Cold/Poison/Energy Resist
+					pSpell->m_itSpell.m_spellcharges = 25;	// Fire Resist
+					SetDefNum("IncreaseSwingSpeed", GetDefNum("IncreaseSwingSpeed") + pSpell->m_itSpell.m_PolyStr);
+					SetDefNum("IncreaseSpellDam", GetDefNum("IncreaseSpellDam") + pSpell->m_itSpell.m_PolyStr);
+					SetDefNum("ResPhysical", GetDefNum("ResPhysical") + pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("ResCold", GetDefNum("ResCold") + pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("ResPoison", GetDefNum("ResPoison") + pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("ResEnergy", GetDefNum("ResEnergy") + pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("ResFire", GetDefNum("ResFire") - pSpell->m_itSpell.m_spellcharges);
+
+					if ( m_pClient && IsSetOF(OF_Buffs) )
+					{
+						ITOA(pSpell->m_itSpell.m_PolyStr, NumBuff[0], 10);
+						ITOA(pSpell->m_itSpell.m_PolyStr, NumBuff[1], 10);
+						ITOA(pSpell->m_itSpell.m_PolyDex, NumBuff[2], 10);
+						ITOA(pSpell->m_itSpell.m_PolyDex, NumBuff[3], 10);
+						ITOA(pSpell->m_itSpell.m_PolyDex, NumBuff[4], 10);
+						ITOA(pSpell->m_itSpell.m_PolyDex, NumBuff[5], 10);
+						ITOA(pSpell->m_itSpell.m_spellcharges, NumBuff[6], 10);
+						m_pClient->removeBuff(BI_REAPERFORM);
+						m_pClient->addBuff(BI_REAPERFORM, 1071034, 1153781, iTimerEffect, pNumBuff, 7);
+					}
 					break;
+				}
+				case SPELL_Stone_Form:
+				{
+					m_atMagery.m_SummonID = CREID_STONE_FORM;
+					pSpell->m_itSpell.m_PolyStr = 10;		// Swing Speed Increase / Damage Increase
+					pSpell->m_itSpell.m_PolyDex = 2;		// Faster Casting
+					pSpell->m_itSpell.m_spellcharges = (pCaster->Skill_GetBase(SKILL_MYSTICISM) + pCaster->Skill_GetBase(SKILL_FOCUS)) / 240;		// All Resists
+					pSpell->m_itSpell.m_spelllevel = maximum(2, (pCaster->Skill_GetBase(SKILL_MYSTICISM) + pCaster->Skill_GetBase(SKILL_IMBUING)) / 480);		// All Resists Max
+					SetDefNum("IncreaseSwingSpeed", GetDefNum("IncreaseSwingSpeed") - pSpell->m_itSpell.m_PolyStr);
+					SetDefNum("FasterCasting", GetDefNum("FasterCasting") - pSpell->m_itSpell.m_PolyDex);
+					SetDefNum("ResPhysical", GetDefNum("ResPhysical") + pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("ResFire", GetDefNum("ResFire") + pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("ResCold", GetDefNum("ResCold") + pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("ResPoison", GetDefNum("ResPoison") + pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("ResEnergy", GetDefNum("ResEnergy") + pSpell->m_itSpell.m_spellcharges);
+					SetDefNum("ResPhysicalMax", GetDefNum("ResPhysicalMax") + pSpell->m_itSpell.m_spelllevel);
+					SetDefNum("ResFireMax", GetDefNum("ResFireMax") + pSpell->m_itSpell.m_spelllevel);
+					SetDefNum("ResColdMax", GetDefNum("ResColdMax") + pSpell->m_itSpell.m_spelllevel);
+					SetDefNum("ResPoisonMax", GetDefNum("ResPoisonMax") + pSpell->m_itSpell.m_spelllevel);
+					SetDefNum("ResEnergyMax", GetDefNum("ResEnergyMax") + pSpell->m_itSpell.m_spelllevel);
+					SetDefNum("IncreaseDam", GetDefNum("IncreaseDam") + pSpell->m_itSpell.m_PolyStr);
+
+					if ( m_pClient && IsSetOF(OF_Buffs) )
+					{
+						ITOA(-pSpell->m_itSpell.m_PolyStr, NumBuff[0], 10);
+						ITOA(-pSpell->m_itSpell.m_PolyDex, NumBuff[1], 10);
+						ITOA(pSpell->m_itSpell.m_spellcharges, NumBuff[2], 10);
+						ITOA(pSpell->m_itSpell.m_spellcharges, NumBuff[3], 10);
+						ITOA(pSpell->m_itSpell.m_PolyStr, NumBuff[4], 10);
+						m_pClient->removeBuff(BI_STONEFORM);
+						m_pClient->addBuff(BI_STONEFORM, 1080145, 1080146, iTimerEffect, pNumBuff, 5);
+					}
+					break;
+				}
 				default:
 					break;
 			}
 
-			short SPELL_MAX_POLY_STAT = static_cast<short>(g_Cfg.m_iMaxPolyStats);
-			SetID(m_atMagery.m_SummonID);
-
-			CCharBase * pCharDef = Char_GetDef();
-			ASSERT(pCharDef);
-
 			// set to creature type stats
-			if (IsSetMagicFlags(MAGICF_POLYMORPHSTATS))
+			if ( (spell == SPELL_Polymorph) && IsSetMagicFlags(MAGICF_POLYMORPHSTATS) )
 			{
-				if (pCharDef->m_Str)
+				short SPELL_MAX_POLY_STAT = static_cast<short>(g_Cfg.m_iMaxPolyStats);
+				if ( pCharDef->m_Str )
 				{
 					short iChange = pCharDef->m_Str - Stat_GetBase(STAT_STR);
-					if (iChange > SPELL_MAX_POLY_STAT)			// Can't pass from SPELL_MAX_POLY_STAT defined in .ini (MaxPolyStats)
+					if ( iChange > SPELL_MAX_POLY_STAT )			// Can't pass from SPELL_MAX_POLY_STAT defined in .ini (MaxPolyStats)
 						iChange = SPELL_MAX_POLY_STAT;
-					else if ( iChange < 0 && iChange * -1 > SPELL_MAX_POLY_STAT )	// Limit it to negative values too
+					else if ( (iChange < 0) && (iChange * -1 > SPELL_MAX_POLY_STAT) )	// Limit it to negative values too
 						iChange = -SPELL_MAX_POLY_STAT;
-					if (iChange + Stat_GetBase(STAT_STR) < 0)
+					if ( iChange + Stat_GetBase(STAT_STR) < 0 )
 						iChange = -Stat_GetBase(STAT_STR);
 					Stat_AddMod(STAT_STR, iChange);
 					pSpell->m_itSpell.m_PolyStr = iChange;
 				}
-				else
-					pSpell->m_itSpell.m_PolyStr = 0;
-
-				if (pCharDef->m_Dex)
+				if ( pCharDef->m_Dex )
 				{
 					short iChange = pCharDef->m_Dex - Stat_GetBase(STAT_DEX);
-					if (iChange > SPELL_MAX_POLY_STAT)
+					if ( iChange > SPELL_MAX_POLY_STAT )
 						iChange = SPELL_MAX_POLY_STAT;
-					else if (iChange < 0 && iChange * -1 > SPELL_MAX_POLY_STAT)	// Limit it to negative values too
+					else if ( (iChange < 0) && (iChange * -1 > SPELL_MAX_POLY_STAT) )	// Limit it to negative values too
 						iChange = -SPELL_MAX_POLY_STAT;
-					if (iChange + Stat_GetBase(STAT_DEX) < 0)
+					if ( iChange + Stat_GetBase(STAT_DEX) < 0 )
 						iChange = -Stat_GetBase(STAT_DEX);
 					Stat_AddMod(STAT_DEX, iChange);
 					pSpell->m_itSpell.m_PolyDex = iChange;
 				}
-				else
-					pSpell->m_itSpell.m_PolyDex = 0;
 			}
 
+			SetID(m_atMagery.m_SummonID);
 			StatFlag_Set(STATF_Polymorph);
-			if (m_pClient && IsSetOF(OF_Buffs) && iBuffIcon)
-			{
-				m_pClient->removeBuff(iBuffIcon);
-				m_pClient->addBuff(iBuffIcon, 1075824, 1070722, iTimerEffect);
-			}
 			return;
 		}
 		case LAYER_FLAG_Poison:
@@ -1027,7 +1164,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 				SetName(pCharDef->IsFemale() ? "#NAMES_HUMANFEMALE" : "#NAMES_HUMANMALE");
 
 				if (IsPlayableCharacter())
-					SetHue(static_cast<HUE_TYPE>(Calc_GetRandVal2(HUE_SKIN_LOW, HUE_SKIN_HIGH)) | HUE_UNDERWEAR);
+					SetHue(static_cast<HUE_TYPE>(Calc_GetRandVal2(HUE_SKIN_LOW, HUE_SKIN_HIGH)) | HUE_MASK_UNDERWEAR);
 
 				HUE_TYPE RandomHairHue = static_cast<HUE_TYPE>(Calc_GetRandVal2(HUE_HAIR_LOW, HUE_HAIR_HIGH));
 				CItem *pHair = LayerFind(LAYER_HAIR);
@@ -1091,7 +1228,7 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 		case LAYER_SPELL_Gift_Of_Renewal:
 			if (m_pClient && IsSetOF(OF_Buffs))
 			{
-				ITOA(pSpell->m_itSpell.m_spelllevel,NumBuff[0], 10);
+				ITOA(pSpell->m_itSpell.m_spelllevel, NumBuff[0], 10);
 				m_pClient->removeBuff(BI_GIFTOFRENEWAL);
 				m_pClient->addBuff(BI_GIFTOFRENEWAL, 1075796, 1075797, iTimerEffect, pNumBuff, 1);
 			}
@@ -1526,8 +1663,6 @@ void CChar::Spell_Effect_Add( CItem * pSpell )
 			return;
 
 		/*case SPELL_Chameleon:		// 106 // makes your skin match the colors of whatever is behind you.
-		case SPELL_BeastForm:		// 107 // polymorphs you into an animal for a while.
-		case SPELL_Monster_Form:	// 108 // polymorphs you into a monster for a while.
 		case SPELL_Shield:			// 113 // erects a temporary force field around you. Nobody approaching will be able to get within 1 tile of you, though you can move close to them if you wish.
 			return;*/
 	}
@@ -2569,25 +2704,25 @@ bool CChar::Spell_CastDone()
 			{
 				switch (spell)
 				{
-				case SPELL_Blade_Spirit:	m_atMagery.m_SummonID = CREID_BLADES;		break;
-				case SPELL_Vortex:			m_atMagery.m_SummonID = CREID_VORTEX;		break;
-				case SPELL_Air_Elem:		m_atMagery.m_SummonID = CREID_AIR_ELEM;		break;
-				case SPELL_Daemon:			m_atMagery.m_SummonID = CREID_DAEMON;		break;
-				case SPELL_Earth_Elem:		m_atMagery.m_SummonID = CREID_EARTH_ELEM;	break;
-				case SPELL_Fire_Elem:		m_atMagery.m_SummonID = CREID_FIRE_ELEM;	break;
-				case SPELL_Water_Elem:		m_atMagery.m_SummonID = CREID_WATER_ELEM;	break;
-				case SPELL_Summon_Undead:
-					switch (Calc_GetRandVal(15))
-					{
-					case 1:					m_atMagery.m_SummonID = CREID_LICH;			break;
-					case 3:
-					case 5:
-					case 7:
-					case 9:					m_atMagery.m_SummonID = CREID_SKELETON;		break;
-					default:				m_atMagery.m_SummonID = CREID_ZOMBIE;		break;
-					}
-				case SPELL_Vengeful_Spirit:	m_atMagery.m_SummonID = CREID_Revenant;		break;
-				default: break;
+					case SPELL_Blade_Spirit:	m_atMagery.m_SummonID = CREID_BLADES;		break;
+					case SPELL_Vortex:			m_atMagery.m_SummonID = CREID_VORTEX;		break;
+					case SPELL_Air_Elem:		m_atMagery.m_SummonID = CREID_AIR_ELEM;		break;
+					case SPELL_Daemon:			m_atMagery.m_SummonID = CREID_DAEMON;		break;
+					case SPELL_Earth_Elem:		m_atMagery.m_SummonID = CREID_EARTH_ELEM;	break;
+					case SPELL_Fire_Elem:		m_atMagery.m_SummonID = CREID_FIRE_ELEM;	break;
+					case SPELL_Water_Elem:		m_atMagery.m_SummonID = CREID_WATER_ELEM;	break;
+					case SPELL_Summon_Undead:
+						switch (Calc_GetRandVal(15))
+						{
+							case 1:				m_atMagery.m_SummonID = CREID_LICH;			break;
+							case 3:
+							case 5:
+							case 7:
+							case 9:				m_atMagery.m_SummonID = CREID_SKELETON;		break;
+							default:			m_atMagery.m_SummonID = CREID_ZOMBIE;		break;
+						}
+					case SPELL_Vengeful_Spirit:	m_atMagery.m_SummonID = CREID_REVENANT;		break;
+					default: break;
 				}
 			}
 			else

@@ -32,38 +32,29 @@ typedef WORD HUE_TYPE;		// Index into the hues.mul table.
 
 enum HUE_CODE
 {
-	HUE_DEFAULT			= 0x0,
-
-	HUE_BLUE_LOW		= 0x2,		// lowest dyeable color
-	HUE_BLUE_NAVY		= 0x3,
-	HUE_RED_DARK		= 0x20,
-	HUE_RED				= 0x22,
-	HUE_YELLOW			= 0x35,
-	HUE_GRAY			= 0x387,
-
-	HUE_TEXT_DEF		= 0x3B2,	// light gray color
-
-	HUE_DYE_HIGH		= 0x3E9,	// highest dyeable color
-
-	HUE_SKIN_LOW		= 0x3EA,
-	HUE_SKIN_HIGH		= 0x422,
-
-	// Strange mixed colors.
-	HUE_HAIR_LOW		= 0x44E,
-	HUE_HAIR_HIGH		= 0x47D,
-	HUE_WHITE			= 0x481,
-	HUE_STONE			= 0x482,
-
-	HUE_GARGSKIN_LOW	= 0x6DB,
-	HUE_GARGSKIN_HIGH	= 0x6F3,
-
-	HUE_MASK_LO			= 0x7FF,	// mask for items. (not really a valid thing to do i know)
-
-	HUE_QTY				= 0xBB8,	// number of valid colors in hue table
-	HUE_MASK_HI			= 0xFFF,
-
-	HUE_TRANSLUCENT		= 0x4000,	// almost invis. may crash if not equipped ?
-	HUE_UNDERWEAR		= 0x8000	// Only can be used on humans.
+	HUE_DEFAULT				= 0x0,
+	HUE_BLUE_LOW			= 0x2,		// lowest dyeable color
+	HUE_BLUE_NAVY			= 0x3,
+	HUE_RED_DARK			= 0x20,
+	HUE_RED					= 0x22,
+	HUE_YELLOW				= 0x35,
+	HUE_GRAY				= 0x387,
+	HUE_TEXT_DEF			= 0x3B2,	// light gray color
+	HUE_DYE_HIGH			= 0x3E9,	// highest dyeable color
+	HUE_SKIN_LOW			= 0x3EA,
+	HUE_SKIN_HIGH			= 0x422,
+	HUE_HAIR_LOW			= 0x44E,
+	HUE_HAIR_HIGH			= 0x47D,
+	HUE_WHITE				= 0x481,
+	HUE_STONE				= 0x482,
+	HUE_GARGSKIN_LOW		= 0x6DB,
+	HUE_GARGSKIN_HIGH		= 0x6F3,
+	HUE_MASK_LO				= 0x7FF,	// mask for items. (not really a valid thing to do i know)
+	HUE_QTY					= 0xBB8,	// number of valid colors in hue table
+	HUE_MASK_HI				= 0xFFF,
+	HUE_MASK_TRANSLUCENT	= 0x4000,
+	HUE_TRANSLUCENT			= 0x4001,
+	HUE_MASK_UNDERWEAR		= 0x8000	// can be used only on chars
 };
 
 typedef WORD SOUND_TYPE;	// Sound ID
@@ -489,18 +480,17 @@ enum CREID_TYPE		// enum the creature art work. (dont allow any others !) also k
 	CREID_Sheep_Sheered		= 0xDF,
 	CREID_HORSE2			= 0xE2,
 	CREID_HORSE3			= 0xE4,
-	CREID_Reaper_Form		= 0xE6,
 	CREID_Cow2				= 0xE7,
 	CREID_Bull_Brown		= 0xE8,		// light brown
 	CREID_Bull2				= 0xE9,		// dark brown
 	CREID_Hart				= 0xEA,
 	CREID_Deer				= 0xED,
 
+	CREID_REAPER_FORM		= 0x11D,
+
 	CREID_Boar				= 0x122,	// large pig
 	CREID_HORSE_PACK		= 0x123,
 	CREID_LLAMA_PACK		= 0x124,
-
-	CREID_Vampire_Bat		= 0x13D,
 
 	// all below here are humanish or clothing
 	CREID_MAN				= 0x190,
@@ -523,10 +513,15 @@ enum CREID_TYPE		// enum the creature art work. (dont allow any others !) also k
 	CREID_GARGGHOSTMAN		= 0x2B6,
 	CREID_GARGGHOSTWOMAN	= 0x2B7,
 
-	CREID_Stone_Form		= 0x2C1,
+	CREID_STONE_FORM		= 0x2C1,
 
-	CREID_Horrific_Beast	= 0x2EA,
-	CREID_Revenant			= 0x2EE,
+	CREID_VAMPIREMAN		= 0x2E8,
+	CREID_VAMPIREWOMAN		= 0x2E9,
+	CREID_HORRIFIC_BEAST	= 0x2EA,
+	CREID_WAILING_BANSHEE2	= 0x2EB,
+	CREID_WRAITH			= 0x2EC,
+	CREID_LICH_FORM			= 0x2ED,
+	CREID_REVENANT			= 0x2EE,
 
 	CREID_IRON_GOLEM		= 0x2F0,
 

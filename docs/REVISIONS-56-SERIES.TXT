@@ -292,3 +292,6 @@ Changed: Merged TNGSTRIP, STRIP AXIS, STRIP TNG console commands into a single S
 17-12-2016, Coruja
 Fixed: Stealing skill not working correctly.
 Changed: Users doesn't have to write AGREE=1 on sphere.ini to use nightly builds anymore. Sphere 56d nightlies are really stable and bug-free so it's safe to use on live servers.
+
+21-12-2016, Coruja
+Changed: Updated functionality of all polymorph-like spells (Polymorph, Horrific Beast, Lich Form, Vampiric Embrace, Wraith Form, Reaper Form, Stone Form)

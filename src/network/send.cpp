@@ -427,12 +427,12 @@ void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_
 		}
 
 		// on monster this just colors the underwear. thats it.
-		if (hue & HUE_UNDERWEAR)
+		if (hue & HUE_MASK_UNDERWEAR)
 			hue = 0;
 		else if ((hue & HUE_MASK_HI) > HUE_QTY)
-			hue &= HUE_MASK_LO | HUE_TRANSLUCENT;
+			hue &= HUE_MASK_LO | HUE_MASK_TRANSLUCENT;
 		else
-			hue &= HUE_MASK_HI | HUE_TRANSLUCENT;
+			hue &= HUE_MASK_HI | HUE_MASK_TRANSLUCENT;
 	}
 	else
 	{
@@ -445,11 +445,11 @@ void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_
 				hue = charDefinition->GetResDispDnHue();
 		}
 		
-		// allow HUE_UNDERWEAR colours only on corpses
+		// allow HUE_MASK_UNDERWEAR colours only on corpses
 		if ((hue & HUE_MASK_HI) > HUE_QTY)
-			hue &= HUE_MASK_LO | HUE_UNDERWEAR | HUE_TRANSLUCENT;
+			hue &= HUE_MASK_LO | HUE_MASK_UNDERWEAR | HUE_MASK_TRANSLUCENT;
 		else
-			hue &= HUE_MASK_HI | HUE_UNDERWEAR | HUE_TRANSLUCENT;
+			hue &= HUE_MASK_HI | HUE_MASK_UNDERWEAR | HUE_MASK_TRANSLUCENT;
 
 		layer = static_cast<BYTE>(item->m_itCorpse.m_facing_dir);
 	}
