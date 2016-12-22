@@ -491,7 +491,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 				"L         Toggle log file (%s)\n"
 				"P         Profile Info (%s) (P# to dump to profiler_dump.txt)\n"
 				"R         Resync Pause\n"
-				"S         Secure mode toggle (%s)\n"
+				"S         Toggle Secure mode (%s)\n"
 				"STRIP     Dump all script templates to external file\n"
 				"T         List of active Threads\n"
 				"U         List used triggers\n"
@@ -651,7 +651,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 				{
 					IThread *thrCurrent = ThreadHolder::getThreadAt(iThreads);
 					if ( thrCurrent )
-						pSrc->SysMessagef("%" FMTSIZE_T " - ID: %u, Priority: %d, Name: %s\n", iThreads + 1, thrCurrent->getId(), thrCurrent->getPriority(), thrCurrent->getName());
+						pSrc->SysMessagef("Thread %" FMTSIZE_T ": %s (ID=%u, Priority=%d)\n", iThreads + 1, thrCurrent->getName(), thrCurrent->getId(), thrCurrent->getPriority());
 				}
 			} break;
 		case 'u':
@@ -790,7 +790,6 @@ longcommand:
 					x = y;
 					GETNONWHITESPACE(x);
 					strcpy(z, x);
-					_strlwr(z);
 
 					if ( ((z[0] == '[') && strnicmp(z, "[EOF]", 5) != 0) || !strnicmp(z, "DEFNAME", 7) || !strnicmp(z, "NAME", 4) ||
 						!strnicmp(z, "ID", 2) || !strnicmp(z, "TYPE", 4) || !strnicmp(z, "WEIGHT", 6) || !strnicmp(z, "VALUE", 5) ||
@@ -1735,7 +1734,7 @@ bool CServer::SocketsInit() // Initialize sockets
 			strcpy(szName, pHost->h_name);
 	}
 
-	g_Log.Event( LOGM_INIT, "Server started on hostname '%s'\n", szName);
+	g_Log.Event(LOGM_INIT, "\nServer started on hostname '%s'\n", szName);
 	if ( !iRet && pHost && pHost->h_addr )
 	{
 		for ( size_t i = 0; pHost->h_addr_list[i] != NULL; i++ )
@@ -1838,7 +1837,7 @@ bool CServer::Load()
 			}
 			else
 			{
-nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
+nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "WinSock 1.1 not found!\n");
 				return( false );
 			}
 			sprintf(wSockInfo, "Using WinSock ver %d.%d (%s)\n", HIBYTE(wsaData.wVersion), LOBYTE(wsaData.wVersion), wsaData.szDescription);
@@ -1847,15 +1846,16 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 #endif
 
 	EXC_SET("loading ini");
-	g_Cfg.LoadIni(false);
+	if ( !g_Cfg.LoadIni(false) )
+		return false;
 
 	EXC_SET("log write");
 	g_Log.WriteString("\n");
 
 #if defined(__GITREVISION__) && defined(__GITHASH__)
-	g_Log.Event(LOGM_INIT, "%s, compiled at %s (%s) [build %d / GIT hash %s]\n", g_szServerDescription, __DATE__, __TIME__, __GITREVISION__, __GITHASH__);
+	g_Log.Event(LOGM_INIT, "%s\nCompiled: %s (%s) [build %d / GIT hash %s]\n\n", g_szServerDescription, __DATE__, __TIME__, __GITREVISION__, __GITHASH__);
 #else
-	g_Log.Event(LOGM_INIT, "%s, compiled at %s (%s)\n", g_szServerDescription, __DATE__, __TIME__);
+	g_Log.Event(LOGM_INIT, "%s\nCompiled: %s (%s)\n\n", g_szServerDescription, __DATE__, __TIME__);
 #endif
 
 #ifdef _WIN32
@@ -1863,20 +1863,26 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 		g_Log.Event(LOGM_INIT, wSockInfo);
 #endif
 
-
 #ifdef _NIGHTLYBUILD
-	g_Log.EventWarn("\r\n"
-					"This is a NIGHTLY build of SphereServer. Nightly builds are compiled automatically\r\n"
-					"from the source code with the latest updates, but might contain errors or might be\r\n"
-					"unstable. Take caution when using it on live servers.\r\n"
-					"----------------------------------------------------------------------------------\r\n\r\n");
+	g_Log.EventWarn("\n"
+					"This is a NIGHTLY build of SphereServer. Nightly builds are compiled automatically\n"
+					"from the source code with the latest updates, but might contain errors or might be\n"
+					"unstable. Take caution when using it on live servers.\n"
+					"----------------------------------------------------------------------------------\n\n");
 #endif
 #ifdef _DEBUG
-	g_Log.EventWarn("\r\n"
-					"This is a DEBUG build of SphereServer. Debug builds are compiled manually by developers\r\n"
-					"for testing purposes. It have many extra debug behavior that are useful for development\r\n"
-					"but will make the server slower. Do not use it on live servers.\r\n"
-					"---------------------------------------------------------------------------------------\r\n\r\n");
+	g_Log.EventWarn("\n"
+					"This is a DEBUG build of SphereServer. Debug builds are compiled manually by developers\n"
+					"for testing purposes. It have extra debug behaviors that are useful for development but\n"
+					"will decrease server performance. Do not use it on live servers.\n"
+					"---------------------------------------------------------------------------------------\n\n");
+#endif
+#ifdef _PRIVATEBUILD
+	g_Log.EventWarn("\n"
+					"This is a CUSTOM build of SphereServer. Custom builds are non-official builds, which\n"
+					"have custom changes on source code not verified by official Sphere development team.\n"
+					"Use it as your own risk.\n"
+					"------------------------------------------------------------------------------------\n\n");
 #endif
 
 	EXC_SET("setting signals");
@@ -1885,21 +1891,9 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 	EXC_SET("loading scripts");
 	TriglistInit();
 	if ( !g_Cfg.Load(false) )
-		return( false );
+		return false;
 
-	EXC_SET("init encryption");
-	if ( m_ClientVersion.GetClientVer() )
-	{
-		TCHAR szVersion[128];
-		g_Log.Event(LOGM_INIT, "ClientVersion=%s\n", static_cast<LPCTSTR>(m_ClientVersion.WriteClientVerString(m_ClientVersion.GetClientVer(), szVersion)));
-		if ( !m_ClientVersion.IsValid() )
-		{
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Bad Client Version '%s'\n", szVersion);
-			return false;
-		}
-	}
-
-	EXC_SET("finilizing");
+	EXC_SET("finalizing");
 #ifdef _WIN32
 	TCHAR *pszTemp = Str_GetTemp();
 	sprintf(pszTemp, GRAY_TITLE " V" GRAY_VERSION " - %s", GetName());

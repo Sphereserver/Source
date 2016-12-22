@@ -3543,15 +3543,8 @@ bool CResource::LoadIni( bool fTest )
 {
 	ADDTOCALLSTACK("CResource::LoadIni");
 	// Load my INI file first.
-	if ( ! OpenResourceFind( m_scpIni, GRAY_FILE ".ini", !fTest )) // Open script file
-	{
-		if( !fTest )
-		{
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing, server probably would be not usable\n");
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Navigate to http://prerelease.sphereserver.net/ to download sample config\n");
-		}
-		return( false );
-	}
+	if ( !OpenResourceFind(m_scpIni, GRAY_FILE ".ini", !fTest) ) // Open script file
+		return false;
 
 	LoadResourcesOpen(&m_scpIni);
 	m_scpIni.Close();
@@ -3563,19 +3556,18 @@ bool CResource::LoadIni( bool fTest )
 bool CResource::LoadCryptIni( void )
 {
 	ADDTOCALLSTACK("CResource::LoadCryptIni");
-	if ( ! OpenResourceFind( m_scpCryptIni, GRAY_FILE "Crypt.ini", false ))
+	if ( !OpenResourceFind(m_scpCryptIni, GRAY_FILE "Crypt.ini", false) )
 	{
-		g_Log.Event(LOGL_WARN|LOGM_INIT, "File " GRAY_FILE "Crypt.ini is corrupt or missing, client encryption list might not be available\n");
-		return( false );
+		g_Log.Event(LOGL_WARN|LOGM_INIT, "File " GRAY_FILE "Crypt.ini is corrupt or missing\n");
+		return false;
 	}
 
 	LoadResourcesOpen(&m_scpCryptIni);
 	m_scpCryptIni.Close();
 	m_scpCryptIni.CloseForce();
 
-	g_Log.Event( LOGM_INIT, "Loaded %" FMTSIZE_T " client encryption keys\n", CCrypt::client_keys.size() );
-
-	return( true );
+	//g_Log.Event(LOGM_INIT, "Loaded %" FMTSIZE_T " client encryption keys\n", CCrypt::client_keys.size());
+	return true;
 }
 
 void CResource::Unload( bool fResync )
@@ -3641,23 +3633,22 @@ bool CResource::Load( bool fResync )
 	else
 	{
 		g_Install.FindInstall();
+
+		CGString sMulPath = g_Install.GetMulFilesPath();
+		if ( sMulPath.IsEmpty() )
+		{
+			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to find Ultima Online MUL files automatically, please insert 'MulFiles' path manually on " GRAY_FILE ".ini\n");
+			return false;
+		}
+		g_Log.Event(LOGM_INIT, "Loading MUL files from path: '%s'\n", sMulPath);
 	}
 
 	// Open the MUL files I need.
-	VERFILE_TYPE i = g_Install.OpenFiles(
-		(1<<VERFILE_MAP)|
-		(1<<VERFILE_STAIDX)|
-		(1<<VERFILE_STATICS)|
-		(1<<VERFILE_TILEDATA)|
-		(1<<VERFILE_MULTIIDX)|
-		(1<<VERFILE_MULTI)|
-		(1<<VERFILE_VERDATA)
-		);
+	VERFILE_TYPE i = g_Install.OpenFiles((1 << VERFILE_MAP)|(1 << VERFILE_STAIDX)|(1 << VERFILE_STATICS)|(1 << VERFILE_TILEDATA)|(1 << VERFILE_MULTIIDX)|(1 << VERFILE_MULTI)|(1 << VERFILE_VERDATA));
 	if ( i != VERFILE_QTY )
 	{
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing\n");
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "MUL File '%s' not found\n", static_cast<LPCTSTR>(g_Install.GetBaseFileName(i)));
-		return( false );
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "MUL file '%s' is corrupt or missing\n", static_cast<LPCTSTR>(g_Install.GetBaseFileName(i)));
+		return false;
 	}
 
 	// Load the optional verdata cache. (modifies MUL stuff)
@@ -3689,9 +3680,8 @@ bool CResource::Load( bool fResync )
 	{
 		if ( !OpenResourceFind(m_scpTables, GRAY_FILE "tables") )
 		{
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing\n");
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Error opening table definitions file\n");
-			return( false );
+			g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE "tables." GRAY_SCRIPT " is corrupt or missing\n");
+			return false;
 		}
 
 		LoadResourcesOpen(&m_scpTables);
@@ -3803,9 +3793,9 @@ bool CResource::Load( bool fResync )
 
 	long total, used;
 	Triglist(total, used);
-	g_Serv.SysMessagef("Done loading scripts (%ld of %ld triggers used)\n\n", used, total);
+	g_Log.Event(LOGM_INIT, "Done loading scripts (%ld of %ld triggers used)\n", used, total);
 
-	// Load crypt keys from SphereCrypt.ini
+	// Load client crypt keys from sphereCrypt.ini
 	if ( fResync )
 	{
 		m_scpCryptIni.ReSync();
@@ -3814,9 +3804,8 @@ bool CResource::Load( bool fResync )
 	else
 	{
 		LoadCryptIni();
+		g_Log.Event(LOGM_INIT, "\n");
 	}
-
-	// Yay for crypt version
 	g_Serv.SetCryptVersion();
 
 	return true;

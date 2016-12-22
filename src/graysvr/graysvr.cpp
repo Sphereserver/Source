@@ -612,12 +612,12 @@ int Sphere_InitServer( int argc, char *argv[] )
 
 	WritePidFile(2);
 
+	EXC_SET("load world");
+	g_World.LoadAll();
+
 	EXC_SET("sockets init");
 	if ( !g_Serv.SocketsInit() )
 		return -9;
-
-	EXC_SET("load world");
-	g_World.LoadAll();
 
 	//	load auto-complete dictionary
 	EXC_SET("auto-complete");
@@ -657,7 +657,7 @@ int Sphere_InitServer( int argc, char *argv[] )
 	g_Log.Event(LOGM_INIT, "Startup complete (Items=%lu, Chars=%lu, Accounts=%lu)\n", g_Serv.StatGet(SERV_STAT_ITEMS), g_Serv.StatGet(SERV_STAT_CHARS), g_Serv.StatGet(SERV_STAT_ACCOUNTS));
 
 #ifdef _WIN32
-	g_Log.Event(LOGM_INIT, "Press '?' for console commands\n");
+	g_Log.Event(LOGM_INIT, "Press '?' for console commands\n\n");
 #endif
 
 	if ( !g_Accounts.Account_GetCount() )

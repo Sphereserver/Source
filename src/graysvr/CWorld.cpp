@@ -1002,7 +1002,7 @@ void CWorldThread::GarbageCollection_UIDs()
 	}
 	else
 	{
-		g_Log.Event(LOGL_EVENT, "GC: %" FMTSIZE_T " Objects accounted for\n", iCount);
+		g_Log.Event(LOGL_EVENT, "GC: %" FMTSIZE_T " objects accounted for\n", iCount);
 	}
 
 	if ( m_FreeUIDs != NULL )	// new UID engine - search for empty holes and store it in a huge array
@@ -1136,15 +1136,34 @@ void CWorld::Init()
 	}
 
 	m_Sectors = new CSector*[sectors];
-	TemporaryString z;
-	TemporaryString z1;
+	TemporaryString pszSectors;
+	TemporaryString pszMapSectors;
+	TCHAR *pszMaps = Str_GetTemp();
+	TCHAR *pszMapName = Str_GetTemp();
 
 	for ( m = 0; m < 256; m++ )
 	{
-		if ( !g_MapList.m_maps[m] ) continue;
+		if ( !g_MapList.m_maps[m] )
+			continue;
 
-		sprintf(z1, " %d=%d", m, g_MapList.GetSectorQty(m));
-		strcat(z, z1);
+		// Get map name
+		switch ( m )
+		{
+			case 0:		sprintf(pszMapName, "%d='Felucca'", m);			break;
+			case 1:		sprintf(pszMapName, "%d='Trammel'", m);			break;
+			case 2:		sprintf(pszMapName, "%d='Ilshenar'", m);		break;
+			case 3:		sprintf(pszMapName, "%d='Malas'", m);			break;
+			case 4:		sprintf(pszMapName, "%d='Tokuno Islands'", m);	break;
+			case 5:		sprintf(pszMapName, "%d='Ter Mur'", m);			break;
+			default:	sprintf(pszMapName, "%d='[Custom]'", m);		break;
+		}
+		if ( *pszMaps )
+			strcat(pszMaps, ", ");
+		strcat(pszMaps, pszMapName);
+
+		// Initialize sectors
+		sprintf(pszMapSectors, " %d='%d'", m, g_MapList.GetSectorQty(m));
+		strcat(pszSectors, pszMapSectors);
 		for ( int s = 0; s < g_MapList.GetSectorQty(m); s++ )
 		{
 			CSector	*pSector = new CSector;
@@ -1155,7 +1174,9 @@ void CWorld::Init()
 	}
 	ASSERT(m_SectorsQty);
 
-	g_Log.Event(LOGM_INIT, "Allocating map sectors:%s\n", static_cast<LPCTSTR>(z));
+	if ( *pszMaps )
+		g_Log.Event(LOGM_INIT, "Expansion maps supported by your MUL files: %s\n", pszMaps);
+	g_Log.Event(LOGM_INIT, "Allocating map sectors:%s\n\n", static_cast<LPCTSTR>(pszSectors));
 	EXC_CATCH;
 }
 
@@ -1641,7 +1662,7 @@ void CWorld::SaveStatics()
 
 bool CWorld::LoadFile( LPCTSTR pszLoadName, bool fError ) // Load world from script
 {
-	g_Log.Event(LOGM_INIT, "Loading %s...\n", static_cast<LPCTSTR>(pszLoadName));
+	g_Log.Event(LOGM_INIT, "Loading %s%s\n", static_cast<LPCTSTR>(pszLoadName), GRAY_SCRIPT);
 
 	CScript s;
 	if ( !s.Open(pszLoadName, OF_READ|OF_TEXT|OF_DEFAULTMODE) )

@@ -69,7 +69,7 @@ bool CAccounts::Account_LoadAll( bool fChanges, bool fClearChanges )
 	strcat(z, pszBaseName);
 
 	if ( !fChanges )
-		g_Log.Event(LOGM_INIT, "Loading %s...\n", z);
+		g_Log.Event(LOGM_INIT, "Loading %s%s\n", z, GRAY_SCRIPT);
 
 	CScript s;
 	if ( ! s.Open(z, OF_READ|OF_TEXT|OF_DEFAULTMODE| ( fChanges ? OF_NONCRIT : 0) ))
