@@ -3576,7 +3576,7 @@ BYTE CClient::Setup_Delete(DWORD iSlot) // Deletion of character
 	}
 
 	CGrayUID CharUID = pChar->GetUID();
-	LPCTSTR CharName = pChar->GetName();;
+	LPCTSTR CharName = pChar->GetName();
 
 	pChar->Delete(false, this);
 	if ( !pChar->IsDeleted() )
