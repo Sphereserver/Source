@@ -1033,7 +1033,7 @@ bool CResource::r_LoadVal( CScript &s )
 			m_iMapCacheTime = s.GetArgVal() * TICK_PER_SEC;
 			break;
 		case RC_MAXCHARSPERACCOUNT:
-			m_iMaxCharsPerAccount = static_cast<unsigned char>(s.GetArgVal());
+			m_iMaxCharsPerAccount = static_cast<BYTE>(s.GetArgVal());
 			if ( m_iMaxCharsPerAccount > MAX_CHARS_PER_ACCT )
 				m_iMaxCharsPerAccount = MAX_CHARS_PER_ACCT;
 			break;
@@ -1277,7 +1277,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 					case 4:
 						if ( IsDigit(ppVal[3][0]) )
 						{
-							pt.m_map = static_cast<unsigned char>(ATOI(ppVal[3]));
+							pt.m_map = static_cast<BYTE>(ATOI(ppVal[3]));
 						}
 					case 3:
 						if ( IsDigit(ppVal[2][0]) || (( iArgs == 4 ) && ( ppVal[2][0] == '-' )) )
@@ -1285,7 +1285,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 							pt.m_z = static_cast<signed char>(( iArgs == 4 ) ? ATOI(ppVal[2]) : 0);
 							if ( iArgs == 3 )
 							{
-								pt.m_map = static_cast<unsigned char>(ATOI(ppVal[2]));
+								pt.m_map = static_cast<BYTE>(ATOI(ppVal[2]));
 							}
 						}
 					case 2:
@@ -1374,12 +1374,12 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 
 			if ( !strnicmp( pszCmd, "COUNT", 5 ))
 			{
-				sVal.FormatVal(static_cast<size_t>(m_Functions.GetCount()));
-				return( true );
+				sVal.FormatVal(m_Functions.GetCount());
+				return true;
 			}
 			else if ( m_Functions.ContainsKey(pszCmd) )
 			{
-				sVal.FormatVal(static_cast<int>(GetPrivCommandLevel(pszCmd)));
+				sVal.FormatVal(static_cast<long>(GetPrivCommandLevel(pszCmd)));
 				return true;
 			}
 
@@ -1400,7 +1400,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			}
 			else if ( !strnicmp( pszCmd, "PLEVEL", 5 ))
 			{
-				sVal.FormatVal(static_cast<int>(GetPrivCommandLevel(m_Functions.GetAt(iNumber)->GetName())));
+				sVal.FormatVal(static_cast<long>(GetPrivCommandLevel(m_Functions.GetAt(iNumber)->GetName())));
 				return true;
 			}
 		}
@@ -2283,7 +2283,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 
 	if ( restype < 0 )
 	{
-		g_Log.Event( LOGL_WARN|LOGM_INIT, "Unknown section '%s' in '%s'\n", static_cast<LPCTSTR>(pScript->GetKey()), static_cast<LPCTSTR>(pScript->GetFileTitle()));
+		g_Log.Event(LOGL_WARN|LOGM_INIT, "Unknown section '%s' in '%s'\n", pScript->GetKey(), static_cast<LPCTSTR>(pScript->GetFileTitle()));
 		return false;
 	}
 	else
@@ -2485,7 +2485,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 	case RES_PLEVEL:
 		{
 			int index = rid.GetResIndex();
-			if ( index < 0 || static_cast<unsigned int>(index) >= COUNTOF(m_PrivCommands) )
+			if ( (index < 0) || (static_cast<size_t>(index) >= COUNTOF(m_PrivCommands)) )
 				return false;
 			while ( pScript->ReadKey() )
 			{
@@ -3262,11 +3262,11 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 							return( ResourceGetNewID(restype, pVarStr->GetValStr(), ppVarNum, fNewStyleDef) );
 					}
 					default:
-						DEBUG_ERR(( "Re-Using name '%s' to define block\n", static_cast<LPCTSTR>(pszName) ));
+						DEBUG_ERR(("Re-Using name '%s' to define block\n", pszName));
 						return( ridinvalid );
 				}
 			}
-			rid.SetPrivateUID( static_cast<unsigned long>(pVarNum->GetValNum()));
+			rid.SetPrivateUID(static_cast<DWORD>(pVarNum->GetValNum()));
 			if ( restype != rid.GetResType())
 			{
 				switch ( restype )
@@ -3280,11 +3280,11 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 						// These are not truly defining a new DEFNAME
 						break;
 					default:
-						DEBUG_ERR(( "Redefined name '%s' from %s to %s\n", static_cast<LPCTSTR>(pszName), static_cast<LPCTSTR>(GetResourceBlockName(rid.GetResType())), static_cast<LPCTSTR>(GetResourceBlockName(restype)) ));
-						return( ridinvalid );
+						DEBUG_ERR(("Redefined name '%s' from %s to %s\n", pszName, GetResourceBlockName(rid.GetResType()), GetResourceBlockName(restype)));
+						return ridinvalid;
 				}
 			}
-			else if ( fNewStyleDef && static_cast<DWORD>(pVarNum->GetValNum()) != rid.GetPrivateUID() )
+			else if ( fNewStyleDef && (static_cast<DWORD>(pVarNum->GetValNum()) != rid.GetPrivateUID()) )
 			{
 				DEBUG_ERR(( "WARNING: region redefines DEFNAME '%s' for another region!\n", pszName ));
 			}
@@ -3295,13 +3295,9 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 				if ( g_Serv.m_iModeCode != SERVMODE_ResyncLoad )
 				{
 					if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
-					{
-						g_pLog->EventWarn("Redef resource '%s'\n", static_cast<LPCTSTR>(pszName));
-					}
+						g_pLog->EventWarn("Redef resource '%s'\n", pszName);
 					else
-					{
-						DEBUG_WARN(( "Redef resource '%s'\n", static_cast<LPCTSTR>(pszName) ));
-					}
+						DEBUG_WARN(("Redef resource '%s'\n", pszName));
 				}
 			}
 			rid = RESOURCE_ID( restype, rid.GetResIndex(), iPage );
@@ -3640,14 +3636,14 @@ bool CResource::Load( bool fResync )
 			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to find Ultima Online MUL files automatically, please insert 'MulFiles' path manually on " GRAY_FILE ".ini\n");
 			return false;
 		}
-		g_Log.Event(LOGM_INIT, "Loading MUL files from path: '%s'\n", sMulPath);
+		g_Log.Event(LOGM_INIT, "Loading MUL files from path: '%s'\n", static_cast<LPCTSTR>(sMulPath));
 	}
 
 	// Open the MUL files I need.
 	VERFILE_TYPE i = g_Install.OpenFiles((1 << VERFILE_MAP)|(1 << VERFILE_STAIDX)|(1 << VERFILE_STATICS)|(1 << VERFILE_TILEDATA)|(1 << VERFILE_MULTIIDX)|(1 << VERFILE_MULTI)|(1 << VERFILE_VERDATA));
 	if ( i != VERFILE_QTY )
 	{
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "MUL file '%s' is corrupt or missing\n", static_cast<LPCTSTR>(g_Install.GetBaseFileName(i)));
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "MUL file '%s' is corrupt or missing\n", g_Install.GetBaseFileName(i));
 		return false;
 	}
 
