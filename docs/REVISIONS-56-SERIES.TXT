@@ -299,3 +299,4 @@ Fixed: Mass Curse spell not working correctly.
 
 22-12-2016, Coruja
 Changed: Improved console startup messages to provide more user-friendly information.
+Added: Missing buff icon for Criminal flag.

@@ -304,6 +304,8 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 		case LAYER_FLAG_Criminal:
 			StatFlag_Set( STATF_Criminal );
 			NotoSave_Update();
+			if ( m_pClient )
+				m_pClient->addBuff(BI_CRIMINALSTATUS, 1153802, 1153828);
 			return;
 		case LAYER_FLAG_SpiritSpeak:
 			StatFlag_Set( STATF_SpiritSpeak );
@@ -410,6 +412,8 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 		case LAYER_FLAG_Criminal:
 			StatFlag_Clear( STATF_Criminal );
 			NotoSave_Update();
+			if ( m_pClient )
+				m_pClient->removeBuff(BI_CRIMINALSTATUS);
 			break;
 
 		case LAYER_FLAG_SpiritSpeak:
