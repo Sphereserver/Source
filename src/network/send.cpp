@@ -3077,6 +3077,8 @@ PacketCharacterList::PacketCharacterList(CClient* target) : PacketSend(XCMD_Char
 		WORD iLastCharSlot = 0;
 		for ( size_t i = 0; i < count; i++ )
 		{
+			if ( !account->m_Chars.IsValidIndex(i) )
+				continue;
 			if ( account->m_Chars.GetChar(i) != account->m_uidLastChar )
 				continue;
 

@@ -298,8 +298,9 @@ Changed: Updated functionality of all polymorph-like spells (Polymorph, Horrific
 Fixed: Mass Curse spell not working correctly.
 
 22-12-2016, Coruja
-Changed: Improved console startup messages to provide more user-friendly information.
 Added: Missing buff icon for Criminal flag.
+Fixed: Enhanced clients not able to login on accounts with no created chars.
+Changed: Improved console startup messages to provide more user-friendly information.
 [sphere_defs.scp]: Updated DEFs 'passive_buff_icons', 'debuff_icons', 'buff_icons', 'buff_clilocs'
 [sphere_admin.scp]: Dialog 'd_sphereplayertweak' now show the client type (classic/enhanced) being used
 [sphere_monsters.scp]: Updated some chardefs (Turkey, Giant Turkey, Tyrannosaurus Rex)
