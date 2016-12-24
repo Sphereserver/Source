@@ -2268,10 +2268,10 @@ PacketChangeCharacter::PacketChangeCharacter(CClient* target) : PacketSend(XCMD_
 	skip(1);
 
 	writeByte(0);
-	size_t count = target->Setup_FillCharList(this, target->GetChar());
+	BYTE count = target->Setup_FillCharList(this);
 
 	seek(countPos);
-	writeByte(static_cast<BYTE>(count));
+	writeByte(count);
 	skip((count * 60) + 1);
 
 	push(target);
@@ -2321,18 +2321,15 @@ PacketCharacterListUpdate::PacketCharacterListUpdate(CClient* target) : PacketSe
 {
 	ADDTOCALLSTACK("PacketCharacterListUpdate::PacketCharacterListUpdate");
 
-	const CAccountRef account = target->m_pAccount;
-	ASSERT(account);
-
 	initLength();
 
 	size_t countPos = getPosition();
 	skip(1);
 
-	size_t count = target->Setup_FillCharList(this, account->m_uidLastChar.CharFind());
+	BYTE count = target->Setup_FillCharList(this);
 
 	seek(countPos);
-	writeByte(static_cast<BYTE>(count));
+	writeByte(count);
 	skip(count * 60);
 
 	push(target);
@@ -3032,10 +3029,10 @@ PacketCharacterList::PacketCharacterList(CClient* target) : PacketSend(XCMD_Char
 	size_t countPos = getPosition();
 	skip(1);
 
-	size_t count = target->Setup_FillCharList(this, account->m_uidLastChar.CharFind());
+	BYTE count = target->Setup_FillCharList(this);
 
 	seek(countPos);
-	writeByte(static_cast<BYTE>(count));
+	writeByte(count);
 	skip(count * 60);
 
 	size_t startCount = g_Cfg.m_StartDefs.GetCount();
@@ -3072,21 +3069,18 @@ PacketCharacterList::PacketCharacterList(CClient* target) : PacketSend(XCMD_Char
 
 	writeInt32(target->m_CharacterListFlags);
 
-	if ( target->m_NetState->isClientEnhanced() )
+	WORD iLastCharSlot = 0;
+	for ( size_t i = 0; i < count; i++ )
 	{
-		WORD iLastCharSlot = 0;
-		for ( size_t i = 0; i < count; i++ )
-		{
-			if ( !account->m_Chars.IsValidIndex(i) )
-				continue;
-			if ( account->m_Chars.GetChar(i) != account->m_uidLastChar )
-				continue;
+		if ( !account->m_Chars.IsValidIndex(i) )
+			continue;
+		if ( account->m_Chars.GetChar(i) != account->m_uidLastChar )
+			continue;
 
-			iLastCharSlot = static_cast<WORD>(i);
-			break;
-		}
-		writeInt16(iLastCharSlot);
+		iLastCharSlot = static_cast<WORD>(i);
+		break;
 	}
+	writeInt16(iLastCharSlot);
 
 	push(target);
 }

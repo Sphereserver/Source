@@ -1258,7 +1258,7 @@ public:
 	bool Login_Relay( WORD iServer ); // Relay player to a certain IP
 	BYTE Login_ServerList( const char * pszAccount, const char * pszPassword ); // Initial login (Login on "loginserver", new format)
 
-	int Setup_FillCharList(Packet* pPacket, const CChar * pCharFirst); // Write character list to packet
+	BYTE Setup_FillCharList(Packet *pPacket); // Write character list to packet
 	BYTE Setup_ListReq(const char *pszAccount, const char *pszPassword, bool bTest); // Gameserver login and character listing
 	BYTE Setup_Delete(DWORD iSlot); // Deletion of character
 	BYTE Setup_Play(DWORD iSlot); // After hitting "Play Character" button

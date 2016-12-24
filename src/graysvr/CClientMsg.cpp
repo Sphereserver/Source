@@ -1403,48 +1403,31 @@ void CClient::addBookPage( const CItem * pBook, size_t iPage, size_t iCount )
 	new PacketBookPageContent(this, pBook, iPage, iCount );
 }
 
-int CClient::Setup_FillCharList(Packet* pPacket, const CChar * pCharFirst)
+BYTE CClient::Setup_FillCharList(Packet *pPacket)
 {
 	ADDTOCALLSTACK("CClient::Setup_FillCharList");
-	// list available chars for your account that are idle.
+	// List available chars on account
 	ASSERT(m_pAccount);
 
-	size_t count = 0;
-
-	if ( pCharFirst && m_pAccount->IsMyAccountChar( pCharFirst ))
-	{
-		m_tmSetupCharList[0] = pCharFirst->GetUID();
-
-		pPacket->writeStringFixedASCII(pCharFirst->GetName(), MAX_NAME_SIZE);
-		pPacket->writeStringFixedASCII("", MAX_NAME_SIZE);
-
-		count++;
-	}
-
-	
+	size_t iCount = 0;
 	size_t iMax = minimum(maximum(m_pAccount->m_Chars.GetCharCount(), m_pAccount->GetMaxChars()), MAX_CHARS_PER_ACCT);
-
 	size_t iQty = m_pAccount->m_Chars.GetCharCount();
-	if (iQty > iMax)
+	if ( iQty > iMax )
 		iQty = iMax;
 
-	for (size_t i = 0; i < iQty; i++)
+	for ( size_t i = 0; i < iQty; i++ )
 	{
 		CGrayUID uid = m_pAccount->m_Chars.GetChar(i);
-		CChar* pChar = uid.CharFind();
-		if ( pChar == NULL )
+		CChar *pChar = uid.CharFind();
+		if ( !pChar )
 			continue;
-		if ( pCharFirst == pChar )
-			continue;
-		if ( count >= iMax )
+		if ( iCount >= iMax )
 			break;
 
-		m_tmSetupCharList[count] = uid;
-
+		m_tmSetupCharList[iCount] = uid;
 		pPacket->writeStringFixedASCII(pChar->GetName(), MAX_NAME_SIZE);
 		pPacket->writeStringFixedASCII("", MAX_NAME_SIZE);
-
-		count++;
+		iCount++;
 	}
 
 	// always show max count for some stupid reason. (client bug)
@@ -1453,13 +1436,12 @@ int CClient::Setup_FillCharList(Packet* pPacket, const CChar * pCharFirst)
 	if ( m_NetState->isClientVersion(MINCLIVER_PADCHARLIST) || !m_NetState->getCryptVersion() )
 		iClientMin = maximum(iQty, 5);
 
-	for ( ; count < iClientMin; count++)
+	for ( ; iCount < iClientMin; iCount++ )
 	{
 		pPacket->writeStringFixedASCII("", MAX_NAME_SIZE);
 		pPacket->writeStringFixedASCII("", MAX_NAME_SIZE);
 	}
-
-	return count;
+	return static_cast<BYTE>(iCount);
 }
 
 void CClient::SetTargMode( CLIMODE_TYPE targmode, LPCTSTR pPrompt, int iTimeout )
@@ -2320,7 +2302,7 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 
 	// Don't send tooltips for items out of LOS
 	const CObjBaseTemplate *pObjTop = pObj->GetTopLevelObj();
-	if ( !pObjTop || (m_pChar->GetTopPoint().GetDistSight(pObjTop->GetTopPoint()) > UO_MAP_VIEW_SIZE + 1) )
+	if ( !pObjTop || (GetChar()->GetTopPoint().GetDistSight(pObjTop->GetTopPoint()) > UO_MAP_VIEW_SIZE + 1) )
 		return;
 
 	// We check here if we are sending a tooltip for a static/non-movable items
