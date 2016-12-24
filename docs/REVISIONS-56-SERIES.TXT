@@ -308,5 +308,6 @@ Changed: Improved console startup messages to provide more user-friendly informa
 24-12-2016, Coruja
 Added: Support for character face style on enhanced clients. It works like hairs/beards, just create the item and equip it on character.
 [sphere_item_profession_barber.scp]: Added character face styles ITEMDEFs
+[sphere.ini]: Added new FEATURE_EXTRA_ROLEPLAYFACES feature to enable extra roleplay face styles on character creation
 [sphere_defs.scp]: Renamed layer 'layer_light' to 'layer_face'
 [sphere_newb.scp]: Fixed wrong ITEMDEF on elf templates (i_leaf_tunic -> i_leaf_chest)

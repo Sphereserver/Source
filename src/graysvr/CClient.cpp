@@ -406,7 +406,7 @@ void CClient::UpdateFeatureFlags()
 	// 0x000400		10th age
 	// 0x000800		Increased house/bank storage
 	// 0x001000		Seventh character slot
-	// 0x002000		KR custom character faces
+	// 0x002000		Enable extra roleplay face styles on character creation	(enhanced clients only)
 	// 0x004000		Trial account
 	// 0x008000		Live account (required on clients 4.0.0+, otherwise bits 3..14 will be ignored)
 	// 0x010000		Enable SA features
@@ -489,6 +489,13 @@ void CClient::UpdateFeatureFlags()
 		m_FeatureFlags |= 0x100000;
 	if ( g_Cfg.m_iFeatureExtra & FEATURE_EXTRA_SHADOWGUARD )
 		m_FeatureFlags |= 0x200000;
+
+	// Misc
+	if ( m_NetState->isClientKR() || m_NetState->isClientEnhanced() )
+	{
+		if ( g_Cfg.m_iFeatureExtra & FEATURE_EXTRA_ROLEPLAYFACES )
+			m_FeatureFlags |= 0x2000;
+	}
 }
 
 void CClient::UpdateCharacterListFlags()
