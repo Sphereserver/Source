@@ -1201,7 +1201,7 @@ void CChar::SetID( CREID_TYPE id )
 }
 
 // Create a brand new Player char. Called directly from the packet.
-void CChar::InitPlayer( CClient *pClient, const char *pszCharname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc )
+void CChar::InitPlayer(CClient *pClient, const char *pszCharname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, ITEMID_TYPE idFace, int iStartLoc)
 {
 	ADDTOCALLSTACK("CChar::InitPlayer");
 	ASSERT(pClient);
@@ -1346,7 +1346,7 @@ void CChar::InitPlayer( CClient *pClient, const char *pszCharname, bool bFemale,
 				wSkinHue = static_cast<HUE_TYPE>(HUE_GARGSKIN_HIGH);
 			break;
 	}
-	SetHue((wSkinHue|HUE_MASK_UNDERWEAR));
+	SetHue(wSkinHue|HUE_MASK_UNDERWEAR);
 
 	// Create hair
 	switch ( rtRace )
@@ -1450,7 +1450,7 @@ void CChar::InitPlayer( CClient *pClient, const char *pszCharname, bool bFemale,
 			}
 			pHair->SetHue(wHairHue);
 			pHair->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
-			LayerAdd(pHair);	// add content
+			LayerAdd(pHair);
 		}
 	}
 
@@ -1512,8 +1512,31 @@ void CChar::InitPlayer( CClient *pClient, const char *pszCharname, bool bFemale,
 			}
 			pBeard->SetHue(wBeardHue);
 			pBeard->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
-			LayerAdd(pBeard);	// add content
+			LayerAdd(pBeard);
 		}
+	}
+
+	// Create face (enhanced clients only)
+	if ( idFace )
+	{
+		switch ( rtRace )
+		{
+			case RACETYPE_GARGOYLE:
+				if ( !((idFace >= ITEMID_FACE_1_GARG) && (idFace <= ITEMID_FACE_6_GARG)) )
+					idFace = ITEMID_NOTHING;
+				break;
+
+			default:
+				if ( !(((idFace >= ITEMID_FACE_1) && (idFace <= ITEMID_FACE_10)) || ((idFace >= ITEMID_FACE_ANIME) && (idFace <= ITEMID_FACE_VAMPIRE))) )
+					idFace = ITEMID_NOTHING;
+				break;
+		}
+
+		CItem *pFace = CItem::CreateScript(idFace, this);
+		ASSERT(pFace);
+		pFace->SetHue(wSkinHue);
+		pFace->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
+		LayerAdd(pFace);
 	}
 
 	// Get starting items for the profession / skills.
@@ -3407,7 +3430,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 					pItem->Item_GetDef()->m_ttNormal.m_tData4 = 0;
 				}
 				pItem->SetAttr(ATTR_MOVE_NEVER);
-				LayerAdd( pItem, LAYER_NEWLIGHT );
+				LayerAdd(pItem, LAYER_FACE);
 			}
 			return( true );
 		case CHV_EQUIPARMOR:

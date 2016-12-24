@@ -316,8 +316,7 @@ LAYER_TYPE CChar::CanEquipLayer( CItem *pItem, LAYER_TYPE layer, CChar *pCharMsg
 			break;
 		}
 
-		case LAYER_NEWLIGHT:
-			// DEBUG_ERR(( "ALERT: Weird layer %d used for '%s' check this\n", LAYER_HIDDEN, pItem->GetResourceName()));
+		case LAYER_FACE:
 		case LAYER_COLLAR:
 		case LAYER_RING:
 		case LAYER_EARS:

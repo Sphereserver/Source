@@ -330,6 +330,27 @@ enum ITEMID_TYPE	// InsideUO is great for this stuff.
 	ITEMID_FX_FIRE_F_EW			= 0x398C,
 	ITEMID_FX_FIRE_F_NS			= 0x3996,
 
+	ITEMID_FACE_1				= 0x3B44,
+	ITEMID_FACE_2				= 0x3B45,
+	ITEMID_FACE_3				= 0x3B46,
+	ITEMID_FACE_4				= 0x3B47,
+	ITEMID_FACE_5				= 0x3B48,
+	ITEMID_FACE_6				= 0x3B49,
+	ITEMID_FACE_7				= 0x3B4A,
+	ITEMID_FACE_8				= 0x3B4B,
+	ITEMID_FACE_9				= 0x3B4C,
+	ITEMID_FACE_10				= 0x3B4D,
+	ITEMID_FACE_ANIME			= 0x3B4E,
+	ITEMID_FACE_HELLIAN			= 0x3B4F,
+	ITEMID_FACE_JUKA			= 0x3B50,
+	ITEMID_FACE_UNDEAD			= 0x3B51,
+	ITEMID_FACE_MEER			= 0x3B52,
+	ITEMID_FACE_ELDER			= 0x3B53,
+	ITEMID_FACE_ORC				= 0x3B54,
+	ITEMID_FACE_PIRATE			= 0x3B55,
+	ITEMID_FACE_NATIVE_PAPUAN	= 0x3B56,
+	ITEMID_FACE_VAMPIRE			= 0x3B57,
+
 	ITEMID_HEALING_STONE		= 0x4078,
 	ITEMID_DOOR_WALLSET3		= 0x409B,
 
@@ -338,6 +359,13 @@ enum ITEMID_TYPE	// InsideUO is great for this stuff.
 	ITEMID_DOOR_WALLSET1		= 0x41CF,
 
 	ITEMID_DOOR_QUEEN			= 0x4D1A,
+
+	ITEMID_FACE_1_GARG			= 0x5679,
+	ITEMID_FACE_2_GARG			= 0x567A,
+	ITEMID_FACE_3_GARG			= 0x567B,
+	ITEMID_FACE_4_GARG			= 0x567C,
+	ITEMID_FACE_5_GARG			= 0x567D,
+	ITEMID_FACE_6_GARG			= 0x567E,
 
 	// Large composite objects here.
 	ITEMID_MULTI_LEGACY			= 0x4000,	// ITEMID_MULTI for old clients (< 7.0.0.0)
@@ -848,7 +876,7 @@ enum LAYER_TYPE		// defined by UO. Only one item can be in a slot.
 	LAYER_HALF_APRON,// 12 = 0x0c =
 	LAYER_CHEST,	// 13 = 0x0d = armor chest
 	LAYER_WRIST,	// 14 = 0x0e = watch
-	LAYER_NEWLIGHT,	// 15 = Unused (use it for: a ITEMID_LIGHT_SRC equip item can be put here.)
+	LAYER_FACE,		// 15 = character face style on enhanced clients (can be also used for light halo 'ITEMID_LIGHT_SRC')
 	LAYER_BEARD,	// 16 = try to have only men have this.
 	LAYER_TUNIC,	// 17 = jester suit or full apron.
 	LAYER_EARS,		// 18 = earrings

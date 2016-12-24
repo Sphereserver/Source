@@ -1115,7 +1115,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 			switch ( layer )	// don't put these on a corpse.
 			{
 				case LAYER_NONE:
-				case LAYER_NEWLIGHT:
+				case LAYER_FACE:
 				case LAYER_PACK: // these display strange.
 					continue;
 
@@ -2405,7 +2405,7 @@ PacketCorpseEquipment::PacketCorpseEquipment(CClient* target, const CItemContain
 		switch (layer) // don't put these on a corpse.
 		{
 			case LAYER_NONE:
-			case LAYER_NEWLIGHT:
+			case LAYER_FACE:
 			case LAYER_PACK:
 				continue;
 
@@ -3913,7 +3913,7 @@ PacketStatLocks::PacketStatLocks(const CClient* target, const CChar* character) 
 /***************************************************************************
 *
 *
-*	Packet 0xBF.0x19 : BondedStatuss			set bonded status (NORMAL)
+*	Packet 0xBF.0x19 : BondedStatus				set bonded status (NORMAL)
 *
 *
 ***************************************************************************/

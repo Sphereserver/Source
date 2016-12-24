@@ -139,10 +139,10 @@ bool PacketCreate::onReceive(NetState* net, bool hasExtraSkill)
 		strength, dexterity, intelligence, prof,
 		skill1, skillval1, skill2, skillval2, skill3, skillval3, skill4, skillval4,
 		hue, hairid, hairhue, beardid, beardhue, shirthue, pantshue,
-		startloc, 0, flags);
+		ITEMID_NOTHING, startloc, flags);
 }
 
-bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc, int iPortrait, int iFlags)
+bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, ITEMID_TYPE idFace, int iStartLoc, DWORD iFlags)
 {
 	ADDTOCALLSTACK("PacketCreate::doCreate");
 
@@ -155,7 +155,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 	{
 		// logging in as a new player whilst already online !
 		client->addSysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ALREADYONLINE));
-		DEBUG_ERR(("%lx:Setup_CreateDialog acct='%s' already online!\n", net->id(), account->GetName()));
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' already in use\n", net->id(), account->GetName());
 		return false;
 	}
 
@@ -180,34 +180,30 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 			return false;
 		}
 	}
-	
 
-	CChar* pChar = CChar::CreateBasic(CREID_MAN);
-	ASSERT(pChar != NULL);
-
-	TRIGRET_TYPE tr;
 	CScriptTriggerArgs createArgs;
 	createArgs.m_iN1 = iFlags;
 	createArgs.m_iN2 = prProf;
 	createArgs.m_iN3 = rtRace;
-	createArgs.m_VarsLocal.SetNum("PORTRAIT", iPortrait);
 	createArgs.m_s1 = account->GetName();
 	createArgs.m_pO1 = client;
 	
 	//Creating the pChar
-	pChar->InitPlayer(client, charname, bFemale, rtRace, wStr, wDex, wInt, prProf, skSkill1, iSkillVal1, skSkill2, iSkillVal2, skSkill3, iSkillVal3, skSkill4, iSkillVal4, wSkinHue, idHair, wHairHue, idBeard, wBeardHue, wShirtHue, wPantsHue, iStartLoc);
+	CChar *pChar = CChar::CreateBasic(CREID_MAN);
+	ASSERT(pChar);
+	pChar->InitPlayer(client, charname, bFemale, rtRace, wStr, wDex, wInt, prProf, skSkill1, iSkillVal1, skSkill2, iSkillVal2, skSkill3, iSkillVal3, skSkill4, iSkillVal4, wSkinHue, idHair, wHairHue, idBeard, wBeardHue, wShirtHue, wPantsHue, idFace, iStartLoc);
 
 	//Calling the function after the char creation, it can't be done before or the function won't have SRC
+	TRIGRET_TYPE tr;
 	client->r_Call("f_onchar_create", pChar, &createArgs, NULL, &tr);
-	
-	if ( tr == 1 )
+	if ( tr == TRIGRET_RET_TRUE )
 	{
 		client->addLoginErr(PacketLoginError::CreationBlocked);
-		pChar->Delete();	//Delete it if function is returning 1 or the char will remain created
+		pChar->Delete();
 		return false;
 	}
 
-	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Setup_CreateDialog acct='%s', char='%s'\n", net->id(), account->GetName(), pChar->GetName());
+	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' created new char '%s' [0%lx]\n", net->id(), account->GetName(), pChar->GetName(), static_cast<DWORD>(pChar->GetUID()));
 	client->Setup_Start(pChar);
 	return true;
 }
@@ -1492,7 +1488,7 @@ bool PacketCreateNew::onReceive(NetState* net)
 	readStringASCII(charname, MAX_NAME_SIZE);
 	skip(30);
 	PROFESSION_TYPE profession = static_cast<PROFESSION_TYPE>(readByte());
-	skip(1);
+	BYTE flags = readByte();
 	BYTE sex = readByte();
 	RACE_TYPE race = static_cast<RACE_TYPE>(readByte());
 	BYTE strength = readByte();
@@ -1511,8 +1507,8 @@ bool PacketCreateNew::onReceive(NetState* net)
 	skip(26);
 	HUE_TYPE hairhue = static_cast<HUE_TYPE>(readInt16());
 	ITEMID_TYPE hairid = static_cast<ITEMID_TYPE>(readInt16());
-	skip(14); // unk
-	BYTE portrait = readByte();
+	skip(13);
+	ITEMID_TYPE faceid = static_cast<ITEMID_TYPE>(readInt16());
 	skip(1);
 	HUE_TYPE beardhue = static_cast<HUE_TYPE>(readInt16());
 	ITEMID_TYPE beardid = static_cast<ITEMID_TYPE>(readInt16());
@@ -1623,7 +1619,7 @@ bool PacketCreateNew::onReceive(NetState* net)
 		strength, dexterity, intelligence, profession,
 		skill1, skillval1, skill2, skillval2, skill3, skillval3, skill4, skillval4,
 		hue, hairid, hairhue, beardid, beardhue, HUE_DEFAULT, HUE_DEFAULT,
-		0, portrait, 0xFFFFFFFF);
+		faceid, 0, flags);
 }
 
 

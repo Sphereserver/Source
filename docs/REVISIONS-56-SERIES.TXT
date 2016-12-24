@@ -304,3 +304,9 @@ Changed: Improved console startup messages to provide more user-friendly informa
 [sphere_defs.scp]: Updated DEFs 'passive_buff_icons', 'debuff_icons', 'buff_icons', 'buff_clilocs'
 [sphere_admin.scp]: Dialog 'd_sphereplayertweak' now show the client type (classic/enhanced) being used
 [sphere_monsters.scp]: Updated some chardefs (Turkey, Giant Turkey, Tyrannosaurus Rex)
+
+24-12-2016, Coruja
+Added: Support for character face style on enhanced clients. It works like hairs/beards, just create the item and equip it on character.
+[sphere_item_profession_barber.scp]: Added character face styles ITEMDEFs
+[sphere_defs.scp]: Renamed layer 'layer_light' to 'layer_face'
+[sphere_newb.scp]: Fixed wrong ITEMDEF on elf templates (i_leaf_tunic -> i_leaf_chest)
