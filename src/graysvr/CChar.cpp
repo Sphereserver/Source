@@ -1256,13 +1256,7 @@ void CChar::InitPlayer(CClient *pClient, const char *pszCharname, bool bFemale, 
 
 	SetUnkPoint(m_ptHome);	// don't actually put me in the world yet.
 
-	// randomize the skills first.
-	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
-	{
-		if ( g_Cfg.m_SkillIndexDefs.IsValidIndex(i) )
-			Skill_SetBase(static_cast<SKILL_TYPE>(i), static_cast<WORD>(Calc_GetRandVal(g_Cfg.m_iMaxBaseSkill)));
-	}
-
+	// Set stats
 	if ( wStr > 60 )		wStr = 60;
 	if ( wDex > 60 )		wDex = 60;
 	if ( wInt > 60 )		wInt = 60;
@@ -1287,11 +1281,16 @@ void CChar::InitPlayer(CClient *pClient, const char *pszCharname, bool bFemale, 
 		if ( (iSkillVal1 + iSkillVal2 + iSkillVal3) > 100 )
 			iSkillVal3 = 1;
 	}
-
 	Stat_SetBase(STAT_STR, wStr);
 	Stat_SetBase(STAT_DEX, wDex);
 	Stat_SetBase(STAT_INT, wInt);
 
+	// Set skills
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
+	{
+		if ( g_Cfg.m_SkillIndexDefs.IsValidIndex(i) )
+			Skill_SetBase(static_cast<SKILL_TYPE>(i), static_cast<WORD>(Calc_GetRandVal(g_Cfg.m_iMaxBaseSkill)));
+	}
 	if ( IsSkillBase(skSkill1) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill1) )
 		Skill_SetBase(skSkill1, iSkillVal1 * 10);
 	if ( IsSkillBase(skSkill2) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill2) )
@@ -1301,14 +1300,7 @@ void CChar::InitPlayer(CClient *pClient, const char *pszCharname, bool bFemale, 
 	if ( IsSkillBase(skSkill4) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill4) )
 		Skill_SetBase(skSkill4, iSkillVal4 * 10);
 
-	m_fonttype = FONT_NORMAL;		// Set speech font type
-	m_SpeechHue = HUE_TEXT_DEF;		// Set speech color
-	m_sTitle.Empty();				// Set title
-
-	GetContainerCreate(LAYER_BANKBOX);		// Create bankbox
-	GetContainerCreate(LAYER_PACK);			// Create backpack
-
-	// Check skin hue
+	// Validate skin hue
 	switch ( rtRace )
 	{
 		default:
@@ -1345,13 +1337,18 @@ void CChar::InitPlayer(CClient *pClient, const char *pszCharname, bool bFemale, 
 	}
 	SetHue(wSkinHue|HUE_MASK_UNDERWEAR);
 
+	// Create basic resources
+	GetContainerCreate(LAYER_BANKBOX);
+	GetContainerCreate(LAYER_PACK);
+	CreateNewCharCheck();
+
 	// Create hair
 	switch ( rtRace )
 	{
 		default:
 		case RACETYPE_HUMAN:
 			if ( !(((idHair >= ITEMID_HAIR_SHORT) && (idHair <= ITEMID_HAIR_PONYTAIL)) || ((idHair >= ITEMID_HAIR_MOHAWK) && (idHair <= ITEMID_HAIR_TOPKNOT))) )
-				idHair = ITEMID_NOTHING;	// human can use only a restricted subset of hairs
+				idHair = ITEMID_NOTHING;
 			if ( bFemale )
 			{
 				if ( idHair == ITEMID_HAIR_RECEDING )
@@ -1366,7 +1363,7 @@ void CChar::InitPlayer(CClient *pClient, const char *pszCharname, bool bFemale, 
 
 		case RACETYPE_ELF:
 			if ( !(((idHair >= ITEMID_HAIR_ML_ELF) && (idHair <= ITEMID_HAIR_ML_MULLET)) || ((idHair >= ITEMID_HAIR_ML_FLOWER) && (idHair <= ITEMID_HAIR_ML_SPYKE))) )
-				idHair = ITEMID_NOTHING;	// elf can use only a restricted subset of hairs
+				idHair = ITEMID_NOTHING;
 			if ( bFemale )
 			{
 				if ( (idHair == ITEMID_HAIR_ML_LONG2) || (idHair == ITEMID_HAIR_ML_ELF) )

@@ -106,6 +106,7 @@ bool CObjBase::IsContainer() const
 
 void CObjBase::SetHue(HUE_TYPE wHue, bool bAvoidTrigger, CTextConsole *pSrc, CObjBase *SourceObj, long long sound)
 {
+	ADDTOCALLSTACK("CObjBase::SetHue");
 	if ( g_Serv.IsLoading() )	// we do not want tons of @Dye being called during world load, just set the hue then continue...
 	{
 		m_wHue = wHue;
@@ -135,10 +136,18 @@ void CObjBase::SetHue(HUE_TYPE wHue, bool bAvoidTrigger, CTextConsole *pSrc, COb
 			return;
 	}
 
+	m_wHue = static_cast<HUE_TYPE>(args.m_iN1);
+
 	if ( args.m_iN2 > 0 )	// no sound? no checks for who can hear, packets....
 		Sound(static_cast<SOUND_TYPE>(args.m_iN2));
 
-	m_wHue = static_cast<SOUND_TYPE>(args.m_iN1);
+	if ( IsChar() )
+	{
+		// When changing body hue, check if face hue must be changed too
+		CItem *pFace = static_cast<CChar *>(this)->LayerFind(LAYER_FACE);
+		if ( pFace )
+			pFace->SetHue(m_wHue, bAvoidTrigger, pSrc, SourceObj);
+	}
 }
 
 int CObjBase::IsWeird() const

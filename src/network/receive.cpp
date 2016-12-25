@@ -1545,8 +1545,8 @@ bool PacketCreateNew::onReceive(NetState* net)
 			break;
 		case PROFESSION_BLACKSMITH:
 			strength = 60;
-			dexterity = 10;
-			intelligence = 10;
+			dexterity = 15;
+			intelligence = 15;
 			skill1 = SKILL_BLACKSMITHING;
 			skillval1 = 30;
 			skill2 = SKILL_MINING;
@@ -1564,7 +1564,7 @@ bool PacketCreateNew::onReceive(NetState* net)
 			skillval1 = 30;
 			skill2 = SKILL_SPIRITSPEAK;
 			skillval2 = 30;
-			skill3 = SKILL_FENCING;
+			skill3 = SKILL_SWORDSMANSHIP;
 			skillval3 = 30;
 			skill4 = SKILL_MEDITATION;
 			skillval4 = 30;
@@ -1585,7 +1585,7 @@ bool PacketCreateNew::onReceive(NetState* net)
 		case PROFESSION_SAMURAI:
 			strength = 40;
 			dexterity = 30;
-			intelligence = 10;
+			intelligence = 20;
 			skill1 = SKILL_BUSHIDO;
 			skillval1 = 30;
 			skill2 = SKILL_SWORDSMANSHIP;
@@ -1598,7 +1598,7 @@ bool PacketCreateNew::onReceive(NetState* net)
 		case PROFESSION_NINJA:
 			strength = 40;
 			dexterity = 30;
-			intelligence = 10;
+			intelligence = 20;
 			skill1 = SKILL_NINJITSU;
 			skillval1 = 30;
 			skill2 = SKILL_FENCING;
@@ -1611,7 +1611,7 @@ bool PacketCreateNew::onReceive(NetState* net)
 		case PROFESSION_ADVANCED:
 			break;
 		default:
-			DEBUG_WARN(("Unknown profession '%d' selected.\n", profession));
+			g_Log.Event(LOGL_ERROR, "%lx:Invalid profession '%d' selected on character creation screen\n", net->id(), profession);
 			break;
 	}
 

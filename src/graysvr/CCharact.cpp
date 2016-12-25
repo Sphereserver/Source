@@ -1866,31 +1866,25 @@ bool CChar::ItemDrop( CItem * pItem, const CPointMap & pt )
 
 // Equip visible stuff. else throw into our pack.
 // Pay no attention to where this came from.
-// Bounce anything in the slot we want to go to. (if possible)
-// Adding 'equip benefics' to the char
+// If items not placed on world fail to get equipped, bounce it to char pack.
 // NOTE: This can be used from scripts as well to equip memories etc.
 // ASSUME this is ok for me to use. (movable etc)
 bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 {
 	ADDTOCALLSTACK("CChar::ItemEquip");
-
 	if ( !pItem )
 		return false;
-
-	if ( pItem->GetParent() == this )
-	{
-		if ( pItem->GetEquipLayer() != LAYER_DRAGGING ) // already equipped.
-			return true;
-	}
-
+	if ( (pItem->GetParent() == this) && (pItem->GetEquipLayer() != LAYER_DRAGGING) )	// item is already equipped
+		return true;
 
 	if ( IsTrigUsed(TRIGGER_EQUIPTEST) || IsTrigUsed(TRIGGER_ITEMEQUIPTEST) )
 	{
 		if ( pItem->OnTrigger(ITRIG_EQUIPTEST, this) == TRIGRET_RET_TRUE )
+		{
+			if ( !pItem->IsDeleted() && (!pCharMsg || !pCharMsg->m_pClient) )
+				ItemBounce(pItem);
 			return false;
-
-		if ( pItem->IsDeleted() )
-			return false;
+		}
 	}
 
 	// strong enough to equip this . etc ?
@@ -1901,8 +1895,6 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 	LAYER_TYPE layer = CanEquipLayer(pItem, LAYER_QTY, pCharMsg, false);
 	if ( layer == LAYER_NONE )
 	{
-		// When the item is being moved by an client, just call 'return false' to make CClient::Event_Item_Drop_Fail() return
-		// the item to it's previous location. Otherwise bounce the item on backpack to prevent it stay unplaced on world.
 		if ( !pCharMsg || !pCharMsg->m_pClient )
 			ItemBounce(pItem);
 		return false;
@@ -1914,10 +1906,14 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 	if ( !pItem->IsItemEquipped() )	// Equip failed ? (cursed?) Did it just go into pack ?
 		return false;
 
-	if (( IsTrigUsed(TRIGGER_EQUIP) ) || ( IsTrigUsed(TRIGGER_ITEMEQUIP) ))
+	if ( IsTrigUsed(TRIGGER_EQUIP) || IsTrigUsed(TRIGGER_ITEMEQUIP) )
 	{
 		if ( pItem->OnTrigger(ITRIG_EQUIP, this) == TRIGRET_RET_TRUE )
+		{
+			if ( !pItem->IsDeleted() && (!pCharMsg || !pCharMsg->m_pClient) )
+				ItemBounce(pItem);
 			return false;
+		}
 	}
 
 	if ( !pItem->IsItemEquipped() )	// Equip failed ? (cursed?) Did it just go into pack ?
@@ -1927,7 +1923,7 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 
 	if ( CItemBase::IsVisibleLayer(layer) )
 	{
-		SOUND_TYPE iSound = 0x57;
+		SOUND_TYPE iSound = SOUND_USE_CLOTH;
 		CVarDefCont *pVar = GetDefKey("EQUIPSOUND", true);
 		if ( pVar )
 			iSound = static_cast<SOUND_TYPE>(pVar->GetValNum());
