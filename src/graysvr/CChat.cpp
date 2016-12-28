@@ -10,26 +10,10 @@ void CChat::EventMsg( CClient * pClient, const NCHAR * pszText, int len, CLangua
 	ADDTOCALLSTACK("CChat::EventMsg");
 	// ARGS:
 	//  len = length of the pszText string in NCHAR's.
-	//
 
-	CChatChanMember * pMe = pClient;
-	ASSERT(pMe);
-
-	// newer clients do not send the 'chat button' packet, leading to all kinds of problems
-	// with the client not being initialised properly for chat (e.g. blank name and exceptions
-	// when leaving a chat room) - if chat is not active then we must simulate the chat button
-	// event before processing the chat message
-	if (pMe->IsChatActive() == false)
-	{
-		// simulate the chat button being clicked
-		pClient->Event_ChatButton(NULL);
-
-		// if chat isn't active now then cancel processing the event
-		if (pMe->IsChatActive() == false)
-			return;
-	}
-
-	CChatChannel * pChannel =  pMe->GetChannel();
+	CChatChanMember *pMe = static_cast<CChatChanMember *>(pClient);
+	CChatChannel *pChannel = pMe->GetChannel();
+	pMe->m_pClient = pClient;
 
 	TCHAR szText[MAX_TALK_BUFFER * 2];
 	CvtNUNICODEToSystem( szText, sizeof(szText), pszText, len );
@@ -99,7 +83,8 @@ not_in_a_channel:
 				break;
 			}
 		}
-		CreateJoinChannel(pMe, szMsg, pszPassword);
+		if ( CreateChannel(szMsg, pszPassword, pMe) )
+			JoinChannel(pMe, szMsg, pszPassword);
 		break;
 	};
 	case 'd':	// d = (/rename x) rename conference
@@ -558,7 +543,7 @@ void CChat::DecorateName(CGString &sName, const CChatChanMember * pMember, bool 
 	if (!pMember || !pChannel)
 		sName.Format("%i%s", iResult, "SYSTEM");
 	else
-		sName.Format("%i%s", iResult, static_cast<LPCTSTR>(pMember->GetChatName()));
+		sName.Format("%i%s", iResult, pMember->GetChatName());
 }
 
 void CChat::GenerateChatName(CGString &sName, const CClient * pClient) // static
@@ -581,7 +566,7 @@ void CChat::GenerateChatName(CGString &sName, const CClient * pClient) // static
 		sTempName.Empty();
 
 		// append (n) to the name to make it unique
-		for (unsigned int attempts = 2; attempts <= g_Accounts.Account_GetCount(); attempts++)
+		for (unsigned int attempts = 100; attempts <= g_Accounts.Account_GetCount(); attempts++)
 		{
 			sTempName.Format("%s (%u)", pszName, attempts);
 			if (g_Accounts.Account_FindChat(static_cast<LPCTSTR>(sTempName)) == NULL)
@@ -612,24 +597,6 @@ void CChat::Broadcast(CChatChanMember *pFrom, LPCTSTR pszText, CLanguageID lang,
 	}
 }
 
-void CChat::CreateJoinChannel(CChatChanMember * pByMember, LPCTSTR pszName, LPCTSTR pszPassword)
-{
-	ADDTOCALLSTACK("CChat::CreateJoinChannel");
-	if ( ! IsValidName( pszName, false ))
-	{
-		pByMember->m_pClient->addChatSystemMessage( CHATMSG_InvalidConferenceName );
-	}
-	else if (IsDuplicateChannelName(pszName))
-	{
-		pByMember->m_pClient->addChatSystemMessage( CHATMSG_AlreadyAConference );
-	}
-	else
-	{
-		if ( CreateChannel(pszName, ((pszPassword != NULL) ? pszPassword : ""), pByMember))
-			JoinChannel(pByMember, pszName, ((pszPassword != NULL) ? pszPassword : ""));
-	}
-}
-
 bool CChat::CreateChannel(LPCTSTR pszName, LPCTSTR pszPassword, CChatChanMember * pMember)
 {
 	ADDTOCALLSTACK("CChat::CreateChannel");
@@ -640,6 +607,17 @@ bool CChat::CreateChannel(LPCTSTR pszName, LPCTSTR pszPassword, CChatChanMember 
 		pMember->SendChatMsg(CHATMSG_PlayerTalk, sName, "Conference creation is disabled.");
 		return false;
 	}
+	else if (!IsValidName(pszName, false))
+	{
+		pMember->SendChatMsg(CHATMSG_InvalidConferenceName);
+		return false;
+	}
+	else if (IsDuplicateChannelName(pszName))
+	{
+		pMember->SendChatMsg(CHATMSG_AlreadyAConference);
+		return false;
+	}
+
 	CChatChannel * pChannel = new CChatChannel( pszName, pszPassword );
 	m_Channels.InsertTail( pChannel );
 	pChannel->SetModerator(pMember->GetChatName());
@@ -676,7 +654,7 @@ bool CChat::JoinChannel(CChatChanMember * pMember, LPCTSTR pszChannel, LPCTSTR p
 	}
 
 	// If there's a password, is it the correct one?
-	if (strcmp(pNewChannel->GetPassword(), pszPassword) != 0)
+	if ( pszPassword && (strcmp(pNewChannel->GetPassword(), pszPassword) != 0) )
 	{
 		pMemberClient->addChatSystemMessage(CHATMSG_IncorrectPassword);
 		return false;
@@ -1359,18 +1337,6 @@ void CChatChanMember::ToggleWhoIs()
 	ADDTOCALLSTACK("CChatChanMember::ToggleWhoIs");
 	SetWhoIs(!GetWhoIs());
 	SendChatMsg(GetWhoIs() ? CHATMSG_ShowingName : CHATMSG_NotShowingName);
-}
-
-CClient *CChatChanMember::GetClient()
-{
-	ADDTOCALLSTACK("CChatChanMember::GetClient");
-	return static_cast<CClient *>(this);
-}
-
-const CClient *CChatChanMember::GetClient() const
-{
-	ADDTOCALLSTACK("CChatChanMember::GetClient(2)");
-	return static_cast<const CClient *>(this);
 }
 
 LPCTSTR CChatChanMember::GetChatName() const

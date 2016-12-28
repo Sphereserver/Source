@@ -399,7 +399,7 @@ private:
 	CChatChannel * m_pChannel;	// I can only be a member of one chan at a time.
 public:
 	static const char *m_sClassName;
-	CGObArray< CGString * > m_IgnoredMembers;	// Player's list of ignored members
+	CGObArray<CGString *> m_IgnoredMembers;	// Player's list of ignored members
 private:
 	friend class CChatChannel;
 	friend class CChat;
@@ -431,8 +431,6 @@ private:
 
 public:
 	CClient *m_pClient;
-	CClient *GetClient();
-	const CClient *GetClient() const;
 
 	bool IsChatActive() const
 	{
@@ -476,9 +474,9 @@ private:
 	bool m_fVoiceDefault;	// give others voice by default.
 public:
 	static const char *m_sClassName;
-	CGObArray< CGString * > m_NoVoices;// Current list of channel members with no voice
-	CGObArray< CGString * > m_Moderators;// Current list of channel's moderators (may or may not be currently in the channel)
-	CGPtrTypeArray< CChatChanMember* > m_Members;	// Current list of members in this channel
+	CGObArray<CGString *> m_NoVoices;	// Current list of channel members with no voice
+	CGObArray<CGString *> m_Moderators;	// Current list of channel's moderators (may or may not be currently in the channel)
+	CGPtrTypeArray<CChatChanMember *> m_Members;	// Current list of members in this channel
 private:
 	void SetModerator(LPCTSTR pszName, bool fFlag = true);
 	void SetVoice(LPCTSTR pszName, bool fFlag = true);
@@ -586,7 +584,6 @@ private:
 	void KillChannels();
 	bool JoinChannel(CChatChanMember * pMember, LPCTSTR pszChannel, LPCTSTR pszPassword);
 	bool CreateChannel(LPCTSTR pszName, LPCTSTR pszPassword, CChatChanMember * pMember);
-	void CreateJoinChannel(CChatChanMember * pByMember, LPCTSTR pszName, LPCTSTR pszPassword);
 	CChatChannel * FindChannel(LPCTSTR pszChannel) const
 	{
 		CChatChannel * pChannel = GetFirstChannel();
