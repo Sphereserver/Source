@@ -1204,8 +1204,9 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		}
 		case CV_CHARLIST:		// usually just a gm command
 		{
+			if ( !PacketChangeCharacter::CanSendTo(m_NetState) )
+				break;
 			new PacketChangeCharacter(this);
-
 			CharDisconnect();	// since there is no undoing this in the client.
 			SetTargMode(CLIMODE_SETUP_CHARLIST);
 			break;

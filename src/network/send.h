@@ -767,6 +767,12 @@ class PacketChangeCharacter : public PacketSend
 {
 public:
 	PacketChangeCharacter(CClient* target);
+
+	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
+	static bool CanSendTo(const NetState* state)
+	{
+		return !(state->isClientKR() || state->isClientEnhanced());
+	}
 };
 
 /***************************************************************************

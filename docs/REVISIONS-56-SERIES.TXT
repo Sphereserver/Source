@@ -311,3 +311,6 @@ Added: Support for character face style on enhanced clients. It works like hairs
 [sphere.ini]: Added new FEATURE_EXTRA_ROLEPLAYFACES feature to enable extra roleplay face styles on character creation
 [sphere_defs.scp]: Renamed layer 'layer_light' to 'layer_face'
 [sphere_newb.scp]: Fixed wrong ITEMDEF on elf templates (i_leaf_tunic -> i_leaf_chest)
+
+28-12-2016, Coruja
+Removed: Support for CHARLIST function on enhanced clients, they don't have support for this packet anymore, so disabling it will prevent client crash.
