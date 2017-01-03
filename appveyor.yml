@@ -18,5 +18,5 @@ deploy:
   username:
     secure: UAZaqnbj2s8C/ObEXIg6xA==
   password:
-    secure: 9IOVDaWT/0rMf+FRRjQQ526HT46mwxL7Clud9j44Mkk=
+    secure: 0tC8NEgCp8IBChlZ0ssFdzgwkD+iX3FykjKaRQe+03k=
   artifact: SphereSvr-Win32.zip
