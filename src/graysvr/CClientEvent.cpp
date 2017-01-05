@@ -1973,7 +1973,7 @@ void CClient::Event_SingleClick(CGrayUID uid)
 	SysMessagef("Bogus item UID=0%lx?", static_cast<DWORD>(uid));
 }
 
-void CClient::Event_Target(DWORD context, CGrayUID uid, CPointMap pt, BYTE flags, ITEMID_TYPE id)
+void CClient::Event_Target(CLIMODE_TYPE context, CGrayUID uid, CPointMap pt, BYTE flags, ITEMID_TYPE id)
 {
 	ADDTOCALLSTACK("CClient::Event_Target");
 	// XCMD_Target

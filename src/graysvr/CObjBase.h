@@ -994,18 +994,6 @@ public:
 	{
 		return (m_Attr & dwAttr) ? true : false;
 	}
-	void SetCanUse( DWORD dwCanUse )
-	{
-		m_CanUse |= dwCanUse;
-	}
-	void ClrCanUse( DWORD dwCanUse )
-	{
-		m_CanUse &= ~dwCanUse;
-	}
-	bool IsCanUse( DWORD dwCanUse ) const	// CanUse_None
-	{
-		return (m_CanUse & dwCanUse) ? true : false;
-	}
 
 	height_t GetHeight() const;
 	INT64  GetDecayTime() const;
@@ -3653,7 +3641,7 @@ public:
 
 	bool Skill_CheckSuccess( SKILL_TYPE skill, int difficulty, bool bUseBellCurve = true ) const;
 	bool Skill_Wait( SKILL_TYPE skilltry );
-	bool Skill_Start( SKILL_TYPE skill, int iDifficulty = 0 ); // calc skill progress.
+	bool Skill_Start( SKILL_TYPE skill );
 	void Skill_Fail( bool fCancel = false );
 	int Skill_Stroke( bool fResource);				// Strokes in crafting skills, calling for SkillStroke trig
 	ANIM_TYPE Skill_GetAnim( SKILL_TYPE skill);
@@ -3984,7 +3972,7 @@ private:
 	bool NPC_LookAtCharHealer( CChar * pChar );
 	bool NPC_LookAtCharHuman( CChar * pChar );
 	bool NPC_LookAtCharMonster( CChar * pChar );
-	bool NPC_LookAtChar( CChar * pChar, int iDist );
+	bool NPC_LookAtChar( CChar * pChar );
 	bool NPC_LookAtItem( CItem * pItem, int iDist );
 	bool NPC_LookAround( bool fForceCheckItems = false );
 	int  NPC_WalkToPoint(bool fRun = false);

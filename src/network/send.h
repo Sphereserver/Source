@@ -696,7 +696,7 @@ public:
 class PacketVendorBuyList : public PacketSend
 {
 public:
-	PacketVendorBuyList(const CClient* target, const CChar* vendor, const CItemContainer* contParent, int convertFactor);
+	PacketVendorBuyList(const CClient* target, const CItemContainer* contParent, int convertFactor);
 };
 
 /***************************************************************************

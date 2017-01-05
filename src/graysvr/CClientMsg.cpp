@@ -2095,7 +2095,7 @@ bool CClient::addShopMenuBuy( CChar * pVendor )
 	addItem(pContainerExtra);
 
 	// Get price list
-	new PacketVendorBuyList(this, pVendor, pContainerStock, pVendor->NPC_GetVendorMarkup());
+	new PacketVendorBuyList(this, pContainerStock, pVendor->NPC_GetVendorMarkup());
 
 	// Open gump
 	addOpenGump(pVendor, GUMP_VENDOR_RECT);

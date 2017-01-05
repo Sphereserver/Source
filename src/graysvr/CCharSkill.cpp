@@ -1411,7 +1411,7 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 		m_atCreate.m_Amount = iReplicationQty;
 
 		CResourceQty RetMainSkill = pItemDef->m_SkillMake[i];
-		return Skill_Start(static_cast<SKILL_TYPE>(RetMainSkill.GetResIndex()), static_cast<int>(RetMainSkill.GetResQty() / 10));
+		return Skill_Start(static_cast<SKILL_TYPE>(RetMainSkill.GetResIndex()));
 	}
 
 	if ( stage == SKTRIG_SUCCESS )
@@ -3932,15 +3932,13 @@ bool CChar::Skill_Wait( SKILL_TYPE skilltry )
 	return true;
 }
 
-bool CChar::Skill_Start( SKILL_TYPE skill, int iDifficulty )
+bool CChar::Skill_Start( SKILL_TYPE skill )
 {
 	ADDTOCALLSTACK("CChar::Skill_Start");
 	// We have all the info we need to do the skill. (targeting etc)
 	// Set up how long we have to wait before we get the desired results from this skill.
 	// Set up any animations/sounds in the mean time.
 	// Calc if we will succeed or fail.
-	// ARGS:
-	//  iDifficulty = 0-100
 	// RETURN:
 	//  false = failed outright with no wait. "You have no chance of taming this"
 

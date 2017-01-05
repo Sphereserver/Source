@@ -893,7 +893,7 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 			{
 				if ( pAcc )
 				{
-					DEBUG_MSG(("%lx:xProcessClientSetup for %s, with AuthId %lu and CliVersion %lu / CliVersionReported %lu\n", GetSocketID(), pAcc->GetName(), CustomerID, m_Crypt.GetClientVer(), m_NetState->getReportedVersion()));
+					DEBUG_MSG(("%lx:xProcessClientSetup for %s, with AuthId %lu and CliVersion %lu / CliVersionReported %lu\n", GetSocketID(), pAcc->GetName(), dwCustomerID, m_Crypt.GetClientVer(), m_NetState->getReportedVersion()));
 
 					if ( (dwCustomerID != 0) && (dwCustomerID == pEvent->CharListReq.m_Account) )
 					{

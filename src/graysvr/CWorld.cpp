@@ -1660,7 +1660,7 @@ void CWorld::SaveStatics()
 
 /////////////////////////////////////////////////////////////////////
 
-bool CWorld::LoadFile( LPCTSTR pszLoadName, bool fError ) // Load world from script
+bool CWorld::LoadFile(LPCTSTR pszLoadName)	// Load world from script
 {
 	g_Log.Event(LOGM_INIT, "Loading %s%s\n", static_cast<LPCTSTR>(pszLoadName), GRAY_SCRIPT);
 
@@ -1737,12 +1737,12 @@ void CWorld::LoadWorld() // Load world from script
 	long iPrevSaveCount = m_iSaveCountID;
 	for (;;)
 	{
-		LoadFile(sDataName, false);
-		LoadFile(sStaticsName, false);
-		LoadFile(sMultisName, false);
-		if ( LoadFile(sWorldName, false) )
+		LoadFile(sDataName);
+		LoadFile(sStaticsName);
+		LoadFile(sMultisName);
+		if ( LoadFile(sWorldName) )
 		{
-			if ( LoadFile(sCharsName, false) )
+			if ( LoadFile(sCharsName) )
 				return;
 		}
 

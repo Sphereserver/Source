@@ -438,7 +438,7 @@ void CChar::NPC_OnHear( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 	// hard code some default reactions.
 	if ( m_pNPC->m_Brain == NPCBRAIN_HEALER	|| Skill_GetBase( SKILL_SPIRITSPEAK ) >= 1000 )
 	{
-		if ( NPC_LookAtChar( pSrc, 1 ))
+		if ( NPC_LookAtChar(pSrc) )
 			return;
 	}
 
@@ -1243,7 +1243,7 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 
 
 
-bool CChar::NPC_LookAtChar( CChar * pChar, int iDist )
+bool CChar::NPC_LookAtChar( CChar *pChar )
 {
 	ADDTOCALLSTACK("CChar::NPC_LookAtChar");
 	// I see a char.
@@ -1399,7 +1399,7 @@ bool CChar::NPC_LookAround( bool fForceCheckItems )
 			if ( Calc_GetRandVal(iDist) )
 				continue;	// can't see them.
 		}
-		if ( NPC_LookAtChar(pChar, iDist) )
+		if ( NPC_LookAtChar(pChar) )
 			return true;
 	}
 
@@ -1488,7 +1488,7 @@ void CChar::NPC_Act_Guard()
 	}
 
 	// Target is out of range or doesn't need protecting, so just follow for now
-	//NPC_LookAtChar(pChar, 1);
+	//NPC_LookAtChar(pChar);
 	NPC_Act_Follow();
 }
 
@@ -1627,17 +1627,6 @@ int CCharNPC::Spells_GetCount()
 	if (m_spells.empty())
 		return -1;
 	return m_spells.size();
-
-	// This code was meant to check if found spells does really exist
-	int total = 0;
-	for (size_t count = 0; count < m_spells.size() ; count++)
-	{
-		Spells refSpell = m_spells.at(count);
-		if (!refSpell.id)
-			continue;
-		total++;
-	}
-	return total;
 }
 
 // Retrieve the spell stored at index = n
@@ -2145,7 +2134,7 @@ void CChar::NPC_Act_Fight()
 	{
 		// If a guard is ever too far away (missed a chance to swing)
 		// Teleport me closer.
-		NPC_LookAtChar( pChar, iDist );
+		NPC_LookAtChar(pChar);
 	}
 
 
@@ -3058,7 +3047,7 @@ void CChar::NPC_OnTickAction()
 			case NPCACT_FOLLOW_TARG:
 				// continue to follow our target.
 				EXC_SET("look at char");
-				NPC_LookAtChar( m_Act_Targ.CharFind(), 1 );
+				NPC_LookAtChar(m_Act_Targ.CharFind());
 				EXC_SET("follow char");
 				NPC_Act_Follow();
 				break;

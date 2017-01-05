@@ -2619,10 +2619,10 @@ bool CChar::Spell_CastDone()
 		iSkillLevel = 300;	// Racial trait (Mystic Insight). Gargoyles always have a minimum of 30.0 Mysticism.
 
 	CScriptTriggerArgs	Args(spell, iSkillLevel, pObjSrc);
-	Args.m_VarsLocal.SetNum("fieldWidth", 0);
-	Args.m_VarsLocal.SetNum("fieldGauge", 0);
-	Args.m_VarsLocal.SetNum("areaRadius", 0);
-	Args.m_VarsLocal.SetNum("duration", GetSpellDuration(spell, iSkillLevel, this), true);
+	Args.m_VarsLocal.SetNum("FieldWidth", 0);
+	Args.m_VarsLocal.SetNum("FieldGauge", 0);
+	Args.m_VarsLocal.SetNum("AreaRadius", 0);
+	Args.m_VarsLocal.SetNum("Duration", GetSpellDuration(spell, iSkillLevel, this), true);
 
 	if ( bIsSpellField )
 	{
@@ -2662,14 +2662,14 @@ bool CChar::Spell_CastDone()
 		it1test = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1")));
 		it2test = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject2")));
 		//Can't be < 0, so max it to 0
-		fieldWidth = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("fieldWidth")));
-		fieldGauge = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("fieldGauge")));
+		fieldWidth = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("FieldWidth")));
+		fieldGauge = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("FieldGauge")));
 
 	}
 
 	iC1 = static_cast<CREID_TYPE>(Args.m_VarsLocal.GetKeyNum("CreateObject1") & 0xFFFF);
-	areaRadius = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("areaRadius")));
-	int iDuration = maximum(0, static_cast<int>(Args.m_VarsLocal.GetKeyNum("duration")));
+	areaRadius = static_cast<unsigned int>(maximum(0, Args.m_VarsLocal.GetKeyNum("AreaRadius")));
+	int iDuration = maximum(0, static_cast<int>(Args.m_VarsLocal.GetKeyNum("Duration")));
 	iColor = static_cast<HUE_TYPE>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor")));
 
 	// Consume the reagents/mana/scroll/charge
@@ -2749,46 +2749,36 @@ bool CChar::Spell_CastDone()
 	}
 	else if ( pSpellDef->IsSpellType(SPELLFLAG_SUMMON) )
 	{
-		if ( spell == SPELL_Summon )
-		{
-			if ( iC1 )
-				m_atMagery.m_SummonID = iC1;
-			Spell_Summon(m_atMagery.m_SummonID, m_Act_p);
-		}
+		if ( iC1 )
+			m_atMagery.m_SummonID = iC1;
 		else
 		{
-			if ( !iC1 )
+			switch ( spell )
 			{
-				switch ( spell )
+				case SPELL_Blade_Spirit:	m_atMagery.m_SummonID = CREID_BLADES;		break;
+				case SPELL_Vortex:			m_atMagery.m_SummonID = CREID_VORTEX;		break;
+				case SPELL_Air_Elem:		m_atMagery.m_SummonID = CREID_AIR_ELEM;		break;
+				case SPELL_Daemon:			m_atMagery.m_SummonID = CREID_DAEMON;		break;
+				case SPELL_Earth_Elem:		m_atMagery.m_SummonID = CREID_EARTH_ELEM;	break;
+				case SPELL_Fire_Elem:		m_atMagery.m_SummonID = CREID_FIRE_ELEM;	break;
+				case SPELL_Water_Elem:		m_atMagery.m_SummonID = CREID_WATER_ELEM;	break;
+				case SPELL_Vengeful_Spirit:	m_atMagery.m_SummonID = CREID_REVENANT;		break;
+				case SPELL_Summon_Undead:
 				{
-					case SPELL_Blade_Spirit:	m_atMagery.m_SummonID = CREID_BLADES;		break;
-					case SPELL_Vortex:			m_atMagery.m_SummonID = CREID_VORTEX;		break;
-					case SPELL_Air_Elem:		m_atMagery.m_SummonID = CREID_AIR_ELEM;		break;
-					case SPELL_Daemon:			m_atMagery.m_SummonID = CREID_DAEMON;		break;
-					case SPELL_Earth_Elem:		m_atMagery.m_SummonID = CREID_EARTH_ELEM;	break;
-					case SPELL_Fire_Elem:		m_atMagery.m_SummonID = CREID_FIRE_ELEM;	break;
-					case SPELL_Water_Elem:		m_atMagery.m_SummonID = CREID_WATER_ELEM;	break;
-					case SPELL_Summon_Undead:
+					switch ( Calc_GetRandVal(15) )
 					{
-						switch ( Calc_GetRandVal(15) )
-						{
-							case 1:				m_atMagery.m_SummonID = CREID_LICH;			break;
-							case 3:
-							case 5:
-							case 7:
-							case 9:				m_atMagery.m_SummonID = CREID_SKELETON;		break;
-							default:			m_atMagery.m_SummonID = CREID_ZOMBIE;		break;
-						}
+						case 1:				m_atMagery.m_SummonID = CREID_LICH;			break;
+						case 3:
+						case 5:
+						case 7:
+						case 9:				m_atMagery.m_SummonID = CREID_SKELETON;		break;
+						default:			m_atMagery.m_SummonID = CREID_ZOMBIE;		break;
 					}
-					case SPELL_Vengeful_Spirit:	m_atMagery.m_SummonID = CREID_REVENANT;		break;
-					default: break;
 				}
+				default: break;
 			}
-			else
-				m_atMagery.m_SummonID = iC1;
-
-			Spell_Summon(m_atMagery.m_SummonID, m_Act_p);
 		}
+		Spell_Summon(m_atMagery.m_SummonID, m_Act_p);
 	}
 	else
 	{
@@ -3136,7 +3126,7 @@ int CChar::Spell_CastStart()
 
 	m_atMagery.m_Spell = static_cast<SPELL_TYPE>(Args.m_iN1);
 	iDifficulty = static_cast<int>(Args.m_iN2);
-	iWaitTime = static_cast<INT64>(Args.m_iN3);
+	iWaitTime = Args.m_iN3;
 
 	pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
 	if ( !pSpellDef )
@@ -3154,13 +3144,13 @@ int CChar::Spell_CastStart()
 	fWOP = (Args.m_VarsLocal.GetKeyNum("WOP") > 0);
 	if ( fWOP )
 	{
-		INT64 WOPColor = Args.m_VarsLocal.GetKeyNum("WOPColor");
-		INT64 WOPFont = Args.m_VarsLocal.GetKeyNum("WOPFont");
+		HUE_TYPE WOPColor = static_cast<HUE_TYPE>(Args.m_VarsLocal.GetKeyNum("WOPColor"));
+		FONT_TYPE WOPFont = static_cast<FONT_TYPE>(Args.m_VarsLocal.GetKeyNum("WOPFont"));
 
 		// Correct talk mode for spells WOP is TALKMODE_SPELL, but since sphere doesn't have any delay between spell casts this can allow WOP flood on screen.
 		// So to avoid this problem we must use TALKMODE_SAY, which is not the correct type but with this type the client only show last 3 messages on screen.
 		if ( pSpellDef->m_sRunes[0] == '.' )
-			Speak((pSpellDef->m_sRunes.GetPtr()) + 1, static_cast<HUE_TYPE>(WOPColor), TALKMODE_SAY, static_cast<FONT_TYPE>(WOPFont));
+			Speak((pSpellDef->m_sRunes.GetPtr()) + 1, WOPColor, TALKMODE_SAY, WOPFont);
 		else
 		{
 			TCHAR *pszTemp = Str_GetTemp();
@@ -3177,7 +3167,7 @@ int CChar::Spell_CastStart()
 			if ( len > 0 )
 			{
 				pszTemp[len] = 0;
-				Speak(pszTemp, static_cast<HUE_TYPE>(WOPColor), TALKMODE_SAY, static_cast<FONT_TYPE>(WOPFont));
+				Speak(pszTemp, WOPColor, TALKMODE_SAY, WOPFont);
 			}
 		}
 	}

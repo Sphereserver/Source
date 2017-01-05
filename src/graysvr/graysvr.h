@@ -1238,7 +1238,7 @@ public:
 	void Event_SingleClick( CGrayUID uid );
 	void Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bool bNoStrip = false ); // PC speech
 	void Event_TalkUNICODE( NWORD* wszText, int iTextLen, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR pszLang );
-	void Event_Target( DWORD context, CGrayUID uid, CPointMap pt, BYTE flags = 0, ITEMID_TYPE id = ITEMID_NOTHING );
+	void Event_Target( CLIMODE_TYPE context, CGrayUID uid, CPointMap pt, BYTE flags = 0, ITEMID_TYPE id = ITEMID_NOTHING );
 	void Event_Tips( WORD i ); // Tip of the day window
 	void Event_ToolTip( CGrayUID uid );
 	void Event_UseToolbar(BYTE bType, DWORD dwArg);

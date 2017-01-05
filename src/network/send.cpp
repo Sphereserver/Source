@@ -1084,7 +1084,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 	CPointMap pos;
 	LAYER_TYPE layer;
 
-	for ( const CItem* item = container->GetContentTail(); item != NULL; item = item->GetPrev() )
+	for ( CItem* item = container->GetContentTail(); item != NULL; item = item->GetPrev() )
 	{
 		itemDefinition = item->Item_GetDef();
 		id = item->GetDispID();
@@ -2004,7 +2004,7 @@ PacketPingAck::PacketPingAck(const CClient* target, BYTE value) : PacketSend(XCM
  *
  *
  ***************************************************************************/
-PacketVendorBuyList::PacketVendorBuyList(const CClient* target, const CChar* vendor, const CItemContainer* contParent, int convertFactor) : PacketSend(XCMD_VendOpenBuy, 8, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketVendorBuyList::PacketVendorBuyList(const CClient* target, const CItemContainer* contParent, int convertFactor) : PacketSend(XCMD_VendOpenBuy, 8, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketVendorBuyList::PacketVendorBuyList");
 
@@ -2152,7 +2152,7 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 		bool isLayerSent[LAYER_HORSE + 1];
 		memset(isLayerSent, 0, sizeof(isLayerSent));
 
-		for (const CItem* item = character->GetContentHead(); item != NULL; item = item->GetNext())
+		for (CItem* item = character->GetContentHead(); item != NULL; item = item->GetNext())
 		{
 			LAYER_TYPE layer = item->GetEquipLayer();
 			if (CItemBase::IsVisibleLayer(layer) == false)
@@ -2392,7 +2392,7 @@ PacketCorpseEquipment::PacketCorpseEquipment(CClient* target, const CItemContain
 	LAYER_TYPE layer;
 	size_t count = 0;
 
-	for (const CItem* item = corpse->GetContentHead(); item != NULL; item = item->GetNext())
+	for (CItem* item = corpse->GetContentHead(); item != NULL; item = item->GetNext())
 	{
 		if (item->IsAttr(ATTR_INVIS) && viewer->CanSee(item) == false)
 			continue;

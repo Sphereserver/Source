@@ -396,7 +396,7 @@ public:
 	CGPtrTypeArray<CObjBase*> m_ObjStatusUpdates; // objects that need OnTickStatusUpdate called
 
 private:
-	bool LoadFile( LPCTSTR pszName, bool fError = true );
+	bool LoadFile(LPCTSTR pszName);
 	void LoadWorld();
 
 	bool SaveTry(bool fForceImmediate); // Save world state

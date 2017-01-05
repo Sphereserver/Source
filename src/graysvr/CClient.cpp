@@ -571,7 +571,7 @@ void CClient::UpdateCharacterListFlags()
 	// Misc
 	if ( m_NetState->isClientKR() || m_NetState->isClientEnhanced() )		// tooltips must be always enabled on enhanced clients
 		m_CharacterListFlags |= (0x400|0x20);
-	m_TooltipEnabled = (m_CharacterListFlags & 0x20);
+	m_TooltipEnabled = (m_CharacterListFlags & 0x20) ? true : false;
 	m_ContainerGridEnabled = (m_NetState->isClientVersion(MINCLIVER_CONTAINERGRID) || m_NetState->isClientKR() || m_NetState->isClientEnhanced());
 }
 
@@ -1603,11 +1603,9 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
 			if ( iArgQty > 1 )
 			{
-				HUE_TYPE hue = -1;
+				HUE_TYPE hue = HUE_TEXT_DEF;
 				if ( ppArgs[0] )
 					hue = Exp_GetVal(ppArgs[0]);
-				if ( hue == -1 )
-					hue = HUE_TEXT_DEF;
 
 				DWORD iClilocId = Exp_GetVal(ppArgs[1]);
 
@@ -1630,12 +1628,10 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
 			if ( iArgQty > 2 )
 			{
-				HUE_TYPE hue = -1;
+				HUE_TYPE hue = HUE_TEXT_DEF;
 				int affix = 0;
 				if ( ppArgs[0] )
 					hue = Exp_GetVal(ppArgs[0]);
-				if ( hue == -1 )
-					hue = HUE_TEXT_DEF;
 
 				DWORD iClilocId = Exp_GetVal(ppArgs[1]);
 
