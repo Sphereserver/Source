@@ -317,3 +317,5 @@ Removed: Support for CHARLIST function on enhanced clients, they don't have supp
 
 05-01-2016, Coruja
 Changed: Updated internal SQLite libs v3.15.2 to v3.16.1.
+Changed: Item i_light_source (function EQUIPHALO) now will be equipped on layer_hand2 (2) instead layer_face (15), which previously was an unused layer but now is used by character faces on enhanced clients.
+[sphere_item_unsorted.scp]: Updated LAYER value on i_dark_source / i_light_source

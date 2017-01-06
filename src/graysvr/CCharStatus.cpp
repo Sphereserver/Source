@@ -296,8 +296,11 @@ LAYER_TYPE CChar::CanEquipLayer( CItem *pItem, LAYER_TYPE layer, CChar *pCharMsg
 		{
 			if ( !pItemDef->IsTypeEquippable() || !pCharDef->Can(CAN_C_USEHANDS) )
 			{
-				fCantEquip = true;
-				break;
+				if ( pItemDef->GetDispID() != ITEMID_LIGHT_SRC )	// this light source item is a memory equipped on LAYER_HAND2, so it's ok to equip it even without proper TYPE/CAN
+				{
+					fCantEquip = true;
+					break;
+				}
 			}
 
 			if ( layer == LAYER_HAND2 )

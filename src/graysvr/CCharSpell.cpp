@@ -74,7 +74,7 @@ void CChar::Spell_Dispel(int iLevel)
 		pItemNext = pItem->GetNext();
 		if ( (iLevel <= 100) && pItem->IsAttr(ATTR_MOVE_NEVER) )	// we don't lose this.
 			continue;
-		if ( (pItem->GetEquipLayer() == LAYER_FACE) || ((pItem->GetEquipLayer() >= LAYER_SPELL_STATS) && (pItem->GetEquipLayer() <= LAYER_SPELL_Summon)) )
+		if ( ((pItem->GetEquipLayer() >= LAYER_SPELL_STATS) && (pItem->GetEquipLayer() <= LAYER_SPELL_Summon)) )
 			pItem->Delete();
 	}
 }
@@ -3539,7 +3539,7 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 		case SPELL_Light:
 			if ( iEffectID )
 				Effect(EFFECT_OBJ, iEffectID, this, 9, 6, fExplode, iColor, iRender);
-			Spell_Effect_Create(spell, fPotion ? LAYER_FLAG_Potion : LAYER_FACE, iSkillLevel, iDuration, pCharSrc);
+			Spell_Effect_Create(spell, LAYER_FLAG_Potion, iSkillLevel, iDuration, pCharSrc);
 			break;
 
 		case SPELL_Hallucination:

@@ -1049,7 +1049,7 @@ bool PacketTarget::onReceive(NetState* net)
 		return false;
 
 	skip(1); // target type
-	DWORD context = readInt32();
+	CLIMODE_TYPE context = static_cast<CLIMODE_TYPE>(readInt32());
 	BYTE flags = readByte();
 	CGrayUID targetSerial(readInt32());
 	WORD x = readInt16();

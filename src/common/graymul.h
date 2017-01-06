@@ -888,20 +888,20 @@ enum LAYER_TYPE		// defined by UO. Only one item can be in a slot.
 {
 	LAYER_NONE = 0,	// spells that are layed on the CChar ?
 	LAYER_HAND1,	// 1 = spellbook or weapon.
-	LAYER_HAND2,	// 2 = other hand or 2 handed thing. = shield
+	LAYER_HAND2,	// 2 = other hand or 2 handed thing. = shield (also used for light halo 'ITEMID_LIGHT_SRC')
 	LAYER_SHOES,	// 3
 	LAYER_PANTS,	// 4 = bone legs + pants.
 	LAYER_SHIRT,
 	LAYER_HELM,		// 6
 	LAYER_GLOVES,	// 7
 	LAYER_RING,
-	LAYER_TALISMAN,	// 9 = talisman item (it was _LIGHT)
+	LAYER_TALISMAN,	// 9 = talisman item
 	LAYER_COLLAR,	// 10 = gorget or necklace.
 	LAYER_HAIR,		// 11 = 0x0b =
 	LAYER_HALF_APRON,// 12 = 0x0c =
 	LAYER_CHEST,	// 13 = 0x0d = armor chest
 	LAYER_WRIST,	// 14 = 0x0e = watch
-	LAYER_FACE,		// 15 = character face style on enhanced clients (can be also used for light halo 'ITEMID_LIGHT_SRC')
+	LAYER_FACE,		// 15 = character face style on enhanced clients
 	LAYER_BEARD,	// 16 = try to have only men have this.
 	LAYER_TUNIC,	// 17 = jester suit or full apron.
 	LAYER_EARS,		// 18 = earrings

@@ -1115,7 +1115,6 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 			switch ( layer )	// don't put these on a corpse.
 			{
 				case LAYER_NONE:
-				case LAYER_FACE:
 				case LAYER_PACK: // these display strange.
 					continue;
 
@@ -2402,7 +2401,6 @@ PacketCorpseEquipment::PacketCorpseEquipment(CClient* target, const CItemContain
 		switch (layer) // don't put these on a corpse.
 		{
 			case LAYER_NONE:
-			case LAYER_FACE:
 			case LAYER_PACK:
 				continue;
 

@@ -3429,7 +3429,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 					pItem->Item_GetDef()->m_ttNormal.m_tData4 = 0;
 				}
 				pItem->SetAttr(ATTR_MOVE_NEVER);
-				LayerAdd(pItem, LAYER_FACE);
+				LayerAdd(pItem, LAYER_HAND2);
 			}
 			return( true );
 		case CHV_EQUIPARMOR:
