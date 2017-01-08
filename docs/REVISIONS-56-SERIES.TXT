@@ -315,7 +315,16 @@ Added: Support for character face style on enhanced clients. It works like hairs
 28-12-2016, Coruja
 Removed: Support for CHARLIST function on enhanced clients, they don't have support for this packet anymore, so disabling it will prevent client crash.
 
-05-01-2016, Coruja
+05-01-2017, Coruja
 Changed: Updated internal SQLite libs v3.15.2 to v3.16.1.
 Changed: Item i_light_source (function EQUIPHALO) now will be equipped on layer_hand2 (2) instead layer_face (15), which previously was an unused layer but now is used by character faces on enhanced clients.
 [sphere_item_unsorted.scp]: Updated LAYER value on i_dark_source / i_light_source
+[sphere_spells.scp]: Fixed Blade Spirits spell using wrong RUNES value
+[sphere_newb.scp]: Fixed typo i_sword_dream -> i_sword_dread
+
+07-01-2017, Coruja
+[sphere_map*.scp]: Reworked all maps files moving regions/teleports to new files based on map/expansion, and also added many missing SE/ML/SA/TOL info.
+[spheretables.scp]: Updated RESOURCES list with the new map files.
+
+08-01-2017, Coruja
+Changed: Updated internal Libev libs v4.22 to v4.24.

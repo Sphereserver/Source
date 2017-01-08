@@ -119,7 +119,7 @@ BEGIN
 	CTEXT		"___________________________________________________________________________", 6, 0, 32, 320, 8
 	LTEXT		"This software makes use of:", 7, 10, 42, 100, 8
 	LTEXT		"DEELX Regular Expression Engine (v1.2)\nCopyright (C) 2006 RegExLab.com", 8, 20, 56, 300, 16
-	LTEXT		"Libev library (v4.22)\nCopyright (C) 2007-2015 Marc Alexander Lehmann", 9, 20, 80, 300, 16
+	LTEXT		"Libev library (v4.24)\nCopyright (C) 2007-2016 Marc Alexander Lehmann", 9, 20, 80, 300, 16
 	LTEXT		"Mersenne Twister random number generator (v1.1)\nCopyright (C) 1997-2002 Makoto Matsumoto, Takuji Nishimura\nCopyright (C) 2000-2009 Richard J. Wagner", 10, 20, 104, 300, 24
 	LTEXT		"MySQL Connector/C (v6.1.6)\nGeneral Public License (GPL) 2000-2015 Oracle", 11, 20, 136, 300, 16
 	LTEXT		"SQLite library (v3.16.1)\nGeneral Public License (GPL) 2000-2017", 12, 20, 160, 300, 16
