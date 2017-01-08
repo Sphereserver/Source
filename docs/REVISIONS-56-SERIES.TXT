@@ -329,3 +329,4 @@ Changed: Item i_light_source (function EQUIPHALO) now will be equipped on layer_
 08-01-2017, Coruja
 Changed: Updated internal Libev libs v4.22 to v4.24.
 Changed: Updated internal Zlib libs v1.2.8 to v1.2.10.
+Fixed: Function 'CRIMINAL 0' not updating char notoriety/buff when removing criminal flag.

@@ -341,8 +341,6 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 			default:
 				break;
 		}
-
-		
 	}
 
 	pItem->Update();
@@ -2446,12 +2444,6 @@ bool CChar::OnTickEquip( CItem * pItem )
 				pItem->SetTimeout( TICK_PER_SEC );
 				return true;
 			}
-
-		case LAYER_FLAG_Criminal:
-			// update char notoriety when criminal timer goes off
-			StatFlag_Clear( STATF_Criminal );
-			NotoSave_Update();
-			return( false );
 
 		case LAYER_FLAG_Murders:
 			// decay the murder count.
