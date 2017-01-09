@@ -208,7 +208,7 @@ void CClient::Event_Item_Pickup(CGrayUID uid, int amount)
 	m_Targ_p = pItem->GetTopPoint();
 
 	EXC_SET("ItemPickup");
-	amount = m_pChar->ItemPickup(pItem, amount);
+	amount = m_pChar->ItemPickup(pItem, static_cast<WORD>(amount));
 	if ( amount < 0 )
 	{
 		EXC_SET("ItemPickup - addItemDragCancel(0)");

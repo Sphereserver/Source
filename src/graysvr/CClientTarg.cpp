@@ -1613,7 +1613,7 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, CPointMap & pt, D
 	if ( pMultiDef != NULL && ! (dwAttr&ATTR_MAGIC))
 	{
 		if ( pMultiDef->m_rect.m_bottom > 0 && (pMultiDef->IsType(IT_MULTI) || pMultiDef->IsType(IT_MULTI_CUSTOM)) )
-			pt.m_y -= pMultiDef->m_rect.m_bottom - 1;
+			pt.m_y -= static_cast<short>(pMultiDef->m_rect.m_bottom) - 1;
 
 		// Check for items in the way and bumpy terrain.
 
@@ -2168,7 +2168,7 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 				return( false );
 
 			// Cut up cloth.
-			int iOutQty = 0;
+			WORD iOutQty = 0;
 			ITEMID_TYPE iOutID = ITEMID_BANDAGES1;
 
 			switch ( pItemTarg->GetType())
@@ -2183,7 +2183,7 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 					break;
 				case IT_CLOTHING:
 					// Cut up for bandages.
-					iOutQty = pItemTarg->GetWeight()/WEIGHT_UNITS;
+					iOutQty = static_cast<WORD>(pItemTarg->GetWeight()) / WEIGHT_UNITS;
 					break;
 				case IT_HIDE:
 					// IT_LEATHER
@@ -2215,79 +2215,63 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 	case IT_THREAD:
 		// Use this on a loom.
 		// use on a spinning wheel.
-		if ( pItemTarg == NULL )
-			break;
-		if ( ! pItemTarg->IsType( IT_LOOM ))
-			break;
-		if ( ! m_pChar->CanUse( pItemTarg, false ))
-			return( false );
-
 		{
-static LPCTSTR const sm_Txt_LoomUse[] =
-{
-	g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_BOLT_1 ),
-	g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_BOLT_2 ),
-	g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_BOLT_3 ),
-	g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_BOLT_4 ),
-	g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_BOLT_5 )
-};
+			if ( !pItemTarg )
+				break;
+			if ( !pItemTarg->IsType(IT_LOOM) )
+				break;
+			if ( !m_pChar->CanUse(pItemTarg, false) )
+				return false;
 
-		// pItemTarg->SetAnim(static_cast<ITEMID_TYPE>(pItemTarg->GetID() + 1), 2 * TICK_PER_SEC );
+			// pItemTarg->SetAnim(static_cast<ITEMID_TYPE>(pItemTarg->GetID() + 1), 2 * TICK_PER_SEC );
 
-		// Use more1 to record the type of resource last used on this object
-		// Use more2 to record the number of resources used so far
-		// Check what was used last.
-		if ( pItemTarg->m_itLoom.m_ClothID != pItemUse->GetDispID() &&
-			pItemTarg->m_itLoom.m_ClothID )
-		{
-			// throw away what was on here before
-			SysMessageDefault( DEFMSG_ITEMUSE_LOOM_REMOVE );
-			CItem * pItemCloth = CItem::CreateTemplate( pItemTarg->m_itLoom.m_ClothID, NULL, m_pChar );
-			pItemCloth->SetAmount( pItemTarg->m_itLoom.m_ClothQty );
-			pItemTarg->m_itLoom.m_ClothQty = 0;
-			pItemTarg->m_itLoom.m_ClothID = ITEMID_NOTHING;
-			m_pChar->ItemBounce( pItemCloth );
-			return true;
-		}
-
-		pItemTarg->m_itLoom.m_ClothID = pItemUse->GetDispID();
-
-		int iUsed = 0;
-		int iNeed = COUNTOF( sm_Txt_LoomUse ) - 1;
-		int iHave = pItemTarg->m_itLoom.m_ClothQty;
-		if ( iHave < iNeed )
-		{
-			iNeed -= iHave;
-			iUsed = pItemUse->ConsumeAmount( iNeed );
-		}
-
-		if ( static_cast<unsigned int>(iHave  + iUsed) < (COUNTOF( sm_Txt_LoomUse ) - 1) )
-		{
-			pItemTarg->m_itLoom.m_ClothQty += iUsed;
-			SysMessage( sm_Txt_LoomUse[ pItemTarg->m_itLoom.m_ClothQty ] );
-		}
-		else
-		{
-			SysMessage( sm_Txt_LoomUse[ COUNTOF( sm_Txt_LoomUse ) - 1 ] );
-			pItemTarg->m_itLoom.m_ClothQty = 0;
-			pItemTarg->m_itLoom.m_ClothID = ITEMID_NOTHING;
-
-/*
-			CItemBase * pItemDef = pItemTarg->Item_GetDef(); 
-
-			if ( pItemDef->m_ttNormal.m_tData3 != 0 )
+			// Use more1 to record the type of resource last used on this object
+			// Use more2 to record the number of resources used so far
+			// Check what was used last.
+			if ( pItemTarg->m_itLoom.m_ClothID != pItemUse->GetDispID() && pItemTarg->m_itLoom.m_ClothID )
 			{
-				for ( int clothcount=1; clothcount < pItemDef->m_ttNormal.m_tData3; clothcount++)
-				{
-					m_pChar->ItemBounce( CItem::CreateScript(ITEMID_CLOTH_BOLT1, m_pChar ));
-				}
-			} else {
-*/
+				// throw away what was on here before
+				SysMessageDefault( DEFMSG_ITEMUSE_LOOM_REMOVE );
+				CItem * pItemCloth = CItem::CreateTemplate( pItemTarg->m_itLoom.m_ClothID, NULL, m_pChar );
+				pItemCloth->SetAmount( pItemTarg->m_itLoom.m_ClothQty );
+				pItemTarg->m_itLoom.m_ClothQty = 0;
+				pItemTarg->m_itLoom.m_ClothID = ITEMID_NOTHING;
+				m_pChar->ItemBounce( pItemCloth );
+				return true;
+			}
 
+			static LPCTSTR const sm_Txt_LoomUse[] =
+			{
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_BOLT_1),
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_BOLT_2),
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_BOLT_3),
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_BOLT_4),
+				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_BOLT_5)
+			};
+
+			pItemTarg->m_itLoom.m_ClothID = pItemUse->GetDispID();
+
+			WORD iUsed = 0;
+			WORD iNeed = COUNTOF(sm_Txt_LoomUse) - 1;
+			WORD iHave = pItemTarg->m_itLoom.m_ClothQty;
+			if ( iHave < iNeed )
+			{
+				iNeed -= iHave;
+				iUsed = pItemUse->ConsumeAmount( iNeed );
+			}
+
+			if ( iHave + iUsed < COUNTOF(sm_Txt_LoomUse) - 1 )
+			{
+				pItemTarg->m_itLoom.m_ClothQty += iUsed;
+				SysMessage( sm_Txt_LoomUse[ pItemTarg->m_itLoom.m_ClothQty ] );
+			}
+			else
+			{
+				SysMessage( sm_Txt_LoomUse[ COUNTOF( sm_Txt_LoomUse ) - 1 ] );
+				pItemTarg->m_itLoom.m_ClothQty = 0;
+				pItemTarg->m_itLoom.m_ClothID = ITEMID_NOTHING;
 				m_pChar->ItemBounce( CItem::CreateScript(ITEMID_CLOTH_BOLT1, m_pChar ));
-/*			}	
-*/
-		}
+			}
 		}
 		return true;
 

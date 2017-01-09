@@ -139,7 +139,7 @@ void CItemSpawn::GenerateItem(CResourceDef *pDef)
 		CItemBase *pItemDef = pItem->Item_GetDef();
 		ASSERT(pItemDef);
 		if ( pItemDef->IsStackableType() )
-			pItem->SetAmount(Calc_GetRandVal(iAmountPile) + 1);
+			pItem->SetAmount(static_cast<WORD>(Calc_GetRandVal(iAmountPile)) + 1);
 	}
 
 	pItem->SetAttr(m_Attr & (ATTR_OWNED|ATTR_MOVE_ALWAYS));

@@ -392,7 +392,7 @@ TCHAR *CCrypt::WriteClientVerString( DWORD iClientVersion, TCHAR *pStr )
 		int iPatch = iClientVersion % 100;
 		if ( iPatch )
 		{
-			pStr[iVer++] = iPatch + 'a' - 1;
+			pStr[iVer++] = static_cast<TCHAR>(iPatch + 'a' - 1);
 			pStr[iVer] = '\0';
 		}
 	}

@@ -142,7 +142,7 @@ bool PacketCreate::onReceive(NetState* net, bool hasExtraSkill)
 		ITEMID_NOTHING, startloc, flags);
 }
 
-bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, ITEMID_TYPE idFace, int iStartLoc, DWORD iFlags)
+bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, BYTE iSkillVal1, SKILL_TYPE skSkill2, BYTE iSkillVal2, SKILL_TYPE skSkill3, BYTE iSkillVal3, SKILL_TYPE skSkill4, BYTE iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, ITEMID_TYPE idFace, int iStartLoc, DWORD iFlags)
 {
 	ADDTOCALLSTACK("PacketCreate::doCreate");
 
@@ -355,7 +355,7 @@ bool PacketItemPickupReq::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketItemPickupReq::onReceive");
 
 	CGrayUID serial(readInt32());
-	int amount = readInt16();
+	WORD amount = readInt16();
 	
 	CClient* client = net->m_client;
 	ASSERT(client);
@@ -1500,10 +1500,10 @@ bool PacketCreateNew::onReceive(NetState* net)
 	BYTE skillval1 = readByte();
 	SKILL_TYPE skill2 = static_cast<SKILL_TYPE>(readByte());
 	BYTE skillval2 = readByte();
-	SKILL_TYPE skill4 = static_cast<SKILL_TYPE>(readByte());
-	BYTE skillval4 = readByte();
 	SKILL_TYPE skill3 = static_cast<SKILL_TYPE>(readByte());
 	BYTE skillval3 = readByte();
+	SKILL_TYPE skill4 = static_cast<SKILL_TYPE>(readByte());
+	BYTE skillval4 = readByte();
 	skip(26);
 	HUE_TYPE hairhue = static_cast<HUE_TYPE>(readInt16());
 	ITEMID_TYPE hairid = static_cast<ITEMID_TYPE>(readInt16());
@@ -3721,7 +3721,7 @@ bool PacketHouseDesignSwitch::onReceive(NetState* net)
 		return true;
 
 	skip(1); // 0x00
-	DWORD level = readInt32();
+	BYTE level = static_cast<BYTE>(readInt32());
 
 	house->SwitchToLevel(client, level);
 	return true;

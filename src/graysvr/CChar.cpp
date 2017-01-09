@@ -1201,7 +1201,7 @@ void CChar::SetID( CREID_TYPE id )
 }
 
 // Create a brand new Player char. Called directly from the packet.
-void CChar::InitPlayer(CClient *pClient, const char *pszCharname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, ITEMID_TYPE idFace, int iStartLoc)
+void CChar::InitPlayer(CClient *pClient, const char *pszCharname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, BYTE iSkillVal1, SKILL_TYPE skSkill2, BYTE iSkillVal2, SKILL_TYPE skSkill3, BYTE iSkillVal3, SKILL_TYPE skSkill4, BYTE iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, ITEMID_TYPE idFace, int iStartLoc)
 {
 	ADDTOCALLSTACK("CChar::InitPlayer");
 	ASSERT(pClient);
@@ -3554,12 +3554,12 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			strcpy( psTmp, s.GetArgRaw() );
 			GETNONWHITESPACE( psTmp );
 			TCHAR * ttVal[2];
-			DWORD iReplicationQty = 1;
+			WORD iReplicationQty = 1;
 			size_t iArg = Str_ParseCmds( psTmp, ttVal, COUNTOF( ttVal ), " ,\t" );
 			if ( iArg == 2 )
 			{
 				if ( IsDigit(ttVal[1][0]) )
-					iReplicationQty = static_cast<DWORD>(ATOI(ttVal[1]));
+					iReplicationQty = static_cast<WORD>(ATOI(ttVal[1]));
 			}
  
 			if ( m_pClient )
@@ -3590,10 +3590,10 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 				CItemContainer *pPack = GetContainerCreate(LAYER_PACK);
 				CItem *pGold = NULL;
 				WORD iGoldStack = 0;
-				DWORD iAmount = s.GetArgLLVal();
+				DWORD iAmount = static_cast<DWORD>(s.GetArgLLVal());
 				while ( iAmount > 0 )
 				{
-					iGoldStack = minimum(iAmount, g_Cfg.m_iItemsMaxAmount);
+					iGoldStack = minimum(static_cast<WORD>(iAmount), g_Cfg.m_iItemsMaxAmount);
 					pGold = CItem::CreateScript(ITEMID_GOLD_C1, this);
 					pGold->SetAmount(iGoldStack);
 					pPack->ContentAdd(pGold);
@@ -4081,8 +4081,8 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 WORD CChar::GetSkillTotal(int what, bool how)
 {
 	ADDTOCALLSTACK("CChar::GetSkillTotal");
-	int iTotal = 0;
-	int	iBase;
+	WORD iTotal = 0;
+	WORD iBase = 0;
 
 	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
@@ -4092,7 +4092,7 @@ WORD CChar::GetSkillTotal(int what, bool how)
 			if ( what < 0 )
 			{
 				if ( iBase >= -what )
-				continue;
+					continue;
 			}
 			else if ( iBase < what )
 				continue;
@@ -4103,12 +4103,11 @@ WORD CChar::GetSkillTotal(int what, bool how)
 			const CSkillDef * pSkill = g_Cfg.GetSkillDef(static_cast<SKILL_TYPE>(i));
 			if ( !pSkill )
 				continue;
-			if ( !( pSkill->m_dwGroup & what ) )
+			if ( !(pSkill->m_dwGroup & what) )
 				continue;
 		}
 		iTotal += iBase;
 	}
-
 	return iTotal;
 }
 

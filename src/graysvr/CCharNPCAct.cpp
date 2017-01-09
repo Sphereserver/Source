@@ -2572,7 +2572,7 @@ bool CChar::NPC_Act_Food()
 
 	m_pNPC->m_Act_Motivation = static_cast<BYTE>((50 - (iFoodLevel / 2)));
 
-	short	iEatAmount = 1;
+	WORD	iEatAmount = 1;
 	int		iSearchDistance = 2;
 	CItem	*pClosestFood = NULL;
 	int		iClosestFood = 100;
@@ -2649,12 +2649,10 @@ bool CChar::NPC_Act_Food()
 		if ( iClosestFood <= 1 )
 		{
 			//	can take and eat just in place
-			short iEaten = static_cast<short>(pClosestFood->ConsumeAmount(iEatAmount));
+			WORD iEaten = pClosestFood->ConsumeAmount(iEatAmount);
 			EatAnim(pClosestFood->GetName(), iEaten);
 			if ( !pClosestFood->GetAmount() )
-			{
 				pClosestFood->Plant_CropReset();	// set growth if this is a plant
-			}
 		}
 		else
 		{
@@ -2714,7 +2712,7 @@ bool CChar::NPC_Act_Food()
 			CItem	*pResBit = g_World.CheckNaturalResource(GetTopPoint(), IT_GRASS, true, this);
 			if ( pResBit && pResBit->GetAmount() && ( pResBit->GetTopPoint().m_z == iMyZ ) )
 			{
-				short iEaten = static_cast<short>(pResBit->ConsumeAmount(10));
+				WORD iEaten = pResBit->ConsumeAmount(10);
 				EatAnim("grass", iEaten/10);
 
 				//	the bit is not needed in a worldsave, timeout of 10 minutes
@@ -3212,7 +3210,7 @@ void CChar::NPC_Food()
 
 	int		iFood = Stat_GetVal(STAT_FOOD);
 	int		iFoodLevel = Food_GetLevelPercent();
-	short		iEatAmount = 1;
+	WORD	iEatAmount = 1;
 	int		iSearchDistance = 2;
 	CItem	*pClosestFood = NULL;
 	int		iClosestFood = 100;
@@ -3278,12 +3276,10 @@ void CChar::NPC_Food()
 		{
 			//	can take and eat just in place
 			EXC_SET("eating nearby");
-			short iEaten = static_cast<short>(pClosestFood->ConsumeAmount(iEatAmount));
+			WORD iEaten = pClosestFood->ConsumeAmount(iEatAmount);
 			EatAnim(pClosestFood->GetName(), iEaten);
 			if ( !pClosestFood->GetAmount() )
-			{
 				pClosestFood->Plant_CropReset();	// set growth if this is a plant
-			}
 		}
 		else
 		{
@@ -3335,7 +3331,7 @@ void CChar::NPC_Food()
 			if ( pResBit && pResBit->GetAmount() && ( pResBit->GetTopPoint().m_z == iMyZ ) )
 			{
 				EXC_SET("eating grass");
-				short iEaten = static_cast<short>(pResBit->ConsumeAmount(15));
+				WORD iEaten = pResBit->ConsumeAmount(15);
 				EatAnim("grass", iEaten/10);
 
 				//	the bit is not needed in a worldsave, timeout of 10 minutes

@@ -447,17 +447,17 @@ class PacketWarningMessage : public PacketSend
 public:
 	enum Message
 	{
-		BadPassword = 0x00,
-		NoCharacter = 0x01,
-		CharacterExists = 0x02,
-		Other = 0x03,
-		Other2 = 0x04,
-		CharacterInWorld = 0x05,
-		SyncError = 0x06,
-		Idle = 0x07,
-		CouldntAttachServer = 0x08,
-		CharacterTransfer = 0x09,
-		InvalidName = 0x0A
+		BadPassword =			0x00,
+		NoCharacter =			0x01,
+		CharacterExists =		0x02,
+		NoFreeCharacterSlots =	0x03,	// enhanced client only
+		AuthenticationError =	0x04,	// enhanced client only
+		CharacterInWorld =		0x05,
+		SyncError =				0x06,
+		Idle =					0x07,
+		CouldntAttachServer =	0x08,
+		CharacterTransfer =		0x09,
+		InvalidName =			0x0A
 	};
 
 	PacketWarningMessage(const CClient* target, Message code);

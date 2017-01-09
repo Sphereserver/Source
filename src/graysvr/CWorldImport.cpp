@@ -438,7 +438,7 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			}
 			else if ( s.IsKey("CONT" ))
 			{
-				m_pCurSer->m_dwContSer = ATOI(pArg);
+				m_pCurSer->m_dwContSer = static_cast<DWORD>(ATOI(pArg));
 			}
 			else if ( s.IsKey("LAYER" ))
 			{
@@ -454,21 +454,21 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			if ( s.IsKey("X" ))
 			{
 				CPointMap pt = pItem->GetTopPoint();
-				pt.m_x = static_cast<short>( ATOI(pArg) );
+				pt.m_x = static_cast<short>(ATOI(pArg));
 				pItem->SetUnkPoint(pt);
 				continue;
 			}
 			else if ( s.IsKey("Y" ))
 			{
 				CPointMap pt = pItem->GetTopPoint();
-				pt.m_y = static_cast<short>( ATOI(pArg) );
+				pt.m_y = static_cast<short>(ATOI(pArg));
 				pItem->SetUnkPoint(pt);
 				continue;
 			}
 			else if ( s.IsKey("Z" ))
 			{
 				CPointMap pt = pItem->GetTopPoint();
-				pt.m_z = static_cast<signed char>( ATOI(pArg) );
+				pt.m_z = static_cast<char>(ATOI(pArg));
 				pItem->SetUnkPoint(pt);
 				continue;
 			}
@@ -479,7 +479,7 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			}
 			else if ( s.IsKey("AMOUNT" ))
 			{
-				pItem->SetAmount( ATOI(pArg));
+				pItem->SetAmount(static_cast<WORD>(ATOI(pArg)));
 				continue;
 			}
 			else if ( s.IsKey("MOREX" ))
@@ -494,17 +494,17 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			}
 			else if ( s.IsKey("MOREZ" ))
 			{
-				pItem->m_itNormal.m_morep.m_z = static_cast<signed char>( ATOI(pArg) );
+				pItem->m_itNormal.m_morep.m_z = static_cast<char>(ATOI(pArg));
 				continue;
 			}
 			else if ( s.IsKey("MORE" ))
 			{
-				pItem->m_itNormal.m_more1 = ATOI(pArg);
+				pItem->m_itNormal.m_more1 = static_cast<DWORD>(ATOI(pArg));
 				continue;
 			}
 			else if ( s.IsKey("MORE2" ))
 			{
-				pItem->m_itNormal.m_more2 = ATOI(pArg);
+				pItem->m_itNormal.m_more2 = static_cast<DWORD>(ATOI(pArg));
 				continue;
 			}
 			else if ( s.IsKey("DYEABLE" ))
@@ -515,7 +515,7 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			}
 			else if ( s.IsKey("ATT" ))
 			{
-				// pItem->m_pDef->m_attackBase = ATOI(pArg);
+				//pItem->m_pDef->m_attackBase = static_cast<WORD>(ATOI(pArg));
 			}
 			else if ( s.IsKey("TYPE" ))
 			{
@@ -550,21 +550,21 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			if ( s.IsKey("X" ))
 			{
 				CPointMap pt = pChar->GetTopPoint();
-				pt.m_x = static_cast<signed short>(ATOI(pArg));
+				pt.m_x = static_cast<short>(ATOI(pArg));
 				pChar->SetUnkPoint(pt);
 				continue;
 			}
 			else if ( s.IsKey("Y" ))
 			{
 				CPointMap pt = pChar->GetTopPoint();
-				pt.m_y = static_cast<signed short>(ATOI(pArg));
+				pt.m_y = static_cast<short>(ATOI(pArg));
 				pChar->SetUnkPoint(pt);
 				continue;
 			}
 			else if ( s.IsKey("Z" ))
 			{
 				CPointMap pt = pChar->GetTopPoint();
-				pt.m_z = static_cast<signed char>(ATOI(pArg));
+				pt.m_z = static_cast<char>(ATOI(pArg));
 				pChar->SetUnkPoint(pt);
 				continue;
 			}

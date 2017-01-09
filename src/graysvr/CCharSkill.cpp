@@ -576,7 +576,7 @@ WORD CChar::Skill_GetMax( SKILL_TYPE skill, bool ignoreLock ) const
 		if ( skill == static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill) )
 		{
 			pTagStorage = GetKey("OVERRIDE.SKILLSUM", true);
-			return pTagStorage ? static_cast<int>(pTagStorage->GetValNum()) : static_cast<int>(pSkillClass->m_SkillSumMax);
+			return pTagStorage ? static_cast<WORD>(pTagStorage->GetValNum()) : static_cast<WORD>(pSkillClass->m_SkillSumMax);
 		}
 
 		ASSERT( IsSkillBase(skill) );
@@ -605,7 +605,7 @@ WORD CChar::Skill_GetMax( SKILL_TYPE skill, bool ignoreLock ) const
 		if ( skill == static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill) )
 		{
 			pTagStorage = GetKey("OVERRIDE.SKILLSUM", true);
-			return pTagStorage ? static_cast<int>(pTagStorage->GetValNum()) : (500 * g_Cfg.m_iMaxSkill);
+			return pTagStorage ? static_cast<WORD>(pTagStorage->GetValNum()) : static_cast<WORD>(g_Cfg.m_iMaxSkill) * 500;
 		}
 
 		WORD iSkillMax = 1000;
@@ -1459,11 +1459,11 @@ CItem * CChar::Skill_NaturalResource_Create( CItem * pResBit, SKILL_TYPE skill )
 		return( NULL );		// I intended for there to be nothing here
 
 	// Reap amount is semi-random
-	int iAmount = pOreDef->m_ReapAmount.GetRandomLinear( Skill_GetBase(skill) );
+	WORD iAmount = static_cast<WORD>(pOreDef->m_ReapAmount.GetRandomLinear(Skill_GetBase(skill)));
 	if ( !iAmount )		// if REAPAMOUNT wasn't defined
 	{
-		iAmount = pOreDef->m_Amount.GetRandomLinear( Skill_GetBase(skill) ) / 2;
-		int	maxAmount = pResBit->GetAmount();
+		iAmount = static_cast<WORD>(pOreDef->m_Amount.GetRandomLinear(Skill_GetBase(skill)) / 2);
+		WORD maxAmount = pResBit->GetAmount();
 		if ( iAmount < 1 )
 			iAmount = 1;
 		if ( iAmount > maxAmount )
@@ -1486,7 +1486,7 @@ CItem * CChar::Skill_NaturalResource_Create( CItem * pResBit, SKILL_TYPE skill )
 	//Creating the 'id' variable with the local given through->by the trigger(s) instead on top of method
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(RES_GET_INDEX( Args.m_VarsLocal.GetKeyNum("ResourceID")));
 
-	iAmount = pResBit->ConsumeAmount( static_cast<DWORD>(Args.m_iN1) );	// amount i used up.
+	iAmount = pResBit->ConsumeAmount(static_cast<WORD>(Args.m_iN1));	// amount i used up.
 	if ( iAmount <= 0 )
 		return( NULL );
 
@@ -1630,7 +1630,7 @@ bool CChar::Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg )
 	if ( !iIngotQty || !Skill_UseQuick( SKILL_MINING, iDifficulty ))
 	{
 		SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_MINING_NOTHING ), pItemOre->GetName());
-		pItemOre->ConsumeAmount( Calc_GetRandVal( pItemOre->GetAmount() / 2 ) + 1 );	// lose up to half the resources.
+		pItemOre->ConsumeAmount(static_cast<WORD>(Calc_GetRandVal(pItemOre->GetAmount() / 2)) + 1);		// lose up to half the resources.
 		return( false );
 	}
 

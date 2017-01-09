@@ -325,12 +325,12 @@ CItem * CItem::CreateHeader( TCHAR * pArg, CObjBase * pCont, bool fDupeCheck, CC
 	if ( rid.GetResIndex() == 0 )
 		return( NULL );
 
-	int amount = 1;
+	WORD amount = 1;
 	if ( Str_Parse( pArg, &pArg ))
 	{
 		if ( pArg[0] != 'R' )
 		{
-			amount = Exp_GetVal( pArg );
+			amount = static_cast<WORD>(Exp_GetVal(pArg));
 			Str_Parse( pArg, &pArg );
 		}
 		if ( pArg[0] == 'R' )
@@ -1083,7 +1083,7 @@ bool CItem::Stack( CItem * pItem )
 	if ( IsAttr(ATTR_LOCKEDDOWN) != pItem->IsAttr(ATTR_LOCKEDDOWN) )
 		return false;
 
-	int amount = pItem->GetAmount() + GetAmount();
+	WORD amount = pItem->GetAmount() + GetAmount();
 	if ( amount > pItem->GetMaxAmount() )
 	{
 		amount = pItem->GetMaxAmount() - pItem->GetAmount();
@@ -2776,7 +2776,7 @@ bool CItem::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from s
 			pCharSrc->ItemBounce( this );
 			break;
 		case CIV_CONSUME:
-			ConsumeAmount( s.HasArgs() ? static_cast<DWORD>(s.GetArgVal()) : 1 );
+			ConsumeAmount(s.HasArgs() ? static_cast<WORD>(s.GetArgVal()) : 1);
 			break;
 		case CIV_CONTCONSUME:
 			{
@@ -3335,7 +3335,7 @@ void CItem::ConvertBolttoCloth()
 	}
 }
 
-DWORD CItem::ConsumeAmount( DWORD iQty, bool fTest )
+WORD CItem::ConsumeAmount( WORD iQty, bool fTest )
 {
 	ADDTOCALLSTACK("CItem::ConsumeAmount");
 	// Eat or drink specific item. delete it when gone.
@@ -3346,23 +3346,19 @@ DWORD CItem::ConsumeAmount( DWORD iQty, bool fTest )
 	WORD iQtyMax = GetAmount();
 	if ( iQty < iQtyMax )
 	{
-		if ( ! fTest )
-		{
-			SetAmountUpdate( iQtyMax - iQty );
-		}
-		return( iQty );
+		if ( !fTest )
+			SetAmountUpdate(iQtyMax - iQty);
+		return iQty;
 	}
 
-	if ( ! fTest )
+	if ( !fTest )
 	{
-		SetAmount( 0 );	// let there be 0 amount here til decay.
-		if ( ! IsTopLevel() || ! IsAttr( ATTR_INVIS ))	// don't delete resource locators.
-		{
+		SetAmount(0);	// let there be 0 amount here til decay.
+		if ( !IsTopLevel() || !IsAttr(ATTR_INVIS) )	// don't delete resource locators.
 			Delete();
-		}
 	}
 
-	return( iQtyMax );
+	return iQtyMax;
 }
 
 SPELL_TYPE CItem::GetScrollSpell() const
@@ -4738,7 +4734,7 @@ forcedamage:
 		{
 			if ( previousDefense != Armor_GetDefense() )
 			{
-				pChar->m_defense = static_cast<WORD>(pChar->CalcArmorDefense());
+				pChar->m_defense = pChar->CalcArmorDefense();
 				pChar->UpdateStatsFlag();
 			}
 			else if ( previousDamage != Weapon_GetAttack() )

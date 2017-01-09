@@ -1074,7 +1074,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 
 	bool isLayerSent[LAYER_HORSE];
 	memset(isLayerSent, 0, sizeof(isLayerSent));
-	size_t count = 0;
+	WORD count = 0;
 
 	const CChar* viewer = target->GetChar();
 	const CItemBase* itemDefinition;
@@ -1099,7 +1099,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 				continue;
 
 			amount = minimum(static_cast<WORD>(g_Cfg.m_iVendorMaxSell), amount);
-			pos.m_x = static_cast<signed short>(count + 1);
+			pos.m_x = count + 1;
 			pos.m_y = 1;
 		}
 		else
@@ -1173,7 +1173,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItem* spell
 	initLength();
 	skip(2);
 
-	size_t count = 0;
+	WORD count = 0;
 	for (int i = SPELL_Clumsy; i <= SPELL_MAGERY_QTY; i++)
 	{
 		if (spellbook->IsSpellInBook(static_cast<SPELL_TYPE>(i)) == false)
@@ -1211,7 +1211,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItemContain
 	initLength();
 	skip(2);
 
-	size_t count = 0;
+	WORD count = 0;
 	for (CItem* item = spellbook->GetContentHead(); item != NULL; item = item->GetNext())
 	{
 		if (item->IsType(IT_SCROLL) == false)
@@ -1611,7 +1611,7 @@ PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetT
 	WORD y = 0;
 	CItemBaseMulti *pMultiDef = static_cast<CItemBaseMulti *>(pItemDef);
 	if ( pMultiDef && pMultiDef->m_rect.m_bottom > 0 && (pMultiDef->IsType(IT_MULTI) || pMultiDef->IsType(IT_MULTI_CUSTOM)) )
-		y = pMultiDef->m_rect.m_bottom - 1;
+		y = static_cast<WORD>(pMultiDef->m_rect.m_bottom) - 1;
 
 	writeByte(static_cast<BYTE>(type));
 	writeInt32(context);

@@ -821,14 +821,14 @@ public:
 		struct
 		{
 			ITEMID_TYPE m_ClothID;	// more1 = the cloth type currenctly loaded here.
-			int m_ClothQty;			// more2 = IS the loom loaded with cloth ?
+			WORD m_ClothQty;		// more2 = IS the loom loaded with cloth ?
 		} m_itLoom;
 
 		// IT_ARCHERY_BUTTE
 		struct
 		{
 			ITEMID_TYPE m_AmmoType;	// more1 = arrow or bolt currently stuck in it.
-			int m_AmmoCount;		// more2 = how many arrows or bolts ?
+			WORD m_AmmoCount;		// more2 = how many arrows or bolts ?
 		} m_itArcheryButte;
 
 		// IT_CANNON_MUZZLE
@@ -1015,8 +1015,8 @@ public:
 	}
 	virtual bool  IsSameType( const CObjBase * pObj ) const;
 	virtual bool  IsIdentical( const CObjBase * pObj );
-	bool  Stack( CItem * pItem );
-	DWORD ConsumeAmount( DWORD iQty = 1, bool fTest = false );
+	bool Stack( CItem * pItem );
+	WORD ConsumeAmount( WORD iQty = 1, bool fTest = false );
 
 	CREID_TYPE GetCorpseType() const
 	{
@@ -1833,7 +1833,7 @@ private:
 public:
 	void BeginCustomize( CClient * pClientSrc );
 	void EndCustomize( bool bForce = false );
-	void SwitchToLevel( CClient * pClientSrc, DWORD iLevel );
+	void SwitchToLevel( CClient * pClientSrc, BYTE iLevel );
 	void CommitChanges( CClient * pClientSrc = NULL );
 	void AddItem( CClient * pClientSrc, ITEMID_TYPE id, signed short x, signed short y, signed char z = SCHAR_MIN, short iStairID = 0 );
 	void AddStairs( CClient * pClientSrc, ITEMID_TYPE id, signed short x, signed short y, signed char z = SCHAR_MIN, short iStairID = -1 );
@@ -1853,8 +1853,8 @@ public:
 	size_t GetFixtureCount(DesignDetails * pDesign = NULL);
 	size_t GetComponentsAt(signed short dx, signed short dy, signed char dz, Component ** pComponents, DesignDetails * pDesign = NULL);
 	int GetRevision(const CClient * pClientSrc = NULL) const;
-	DWORD GetLevelCount();
-	short GetStairCount();
+	BYTE GetLevelCount();
+	WORD GetStairID();
 
 	static BYTE GetPlane( signed char z );
 	static BYTE GetPlane( Component * pComponent );
@@ -3090,7 +3090,7 @@ public:
 	bool CanUse( CItem * pItem, bool fMoveOrConsume ) const;
 	bool IsMountCapable() const;
 
-	short  Food_CanEat( CObjBase * pObj ) const;
+	WORD   Food_CanEat( CObjBase * pObj ) const;
 	short  Food_GetLevelPercent() const;
 	LPCTSTR Food_GetLevelMessage( bool fPet, bool fHappy ) const;
 
@@ -3791,7 +3791,7 @@ private:
 	bool Fight_IsActive() const;
 	bool Fight_IsAttackable() const;
 public:
-	int CalcArmorDefense() const;
+	WORD CalcArmorDefense() const;
 
 	void Memory_Fight_Start( const CChar * pTarg );
 	bool Memory_Fight_OnTick( CItemMemory * pMemory );
@@ -3837,7 +3837,7 @@ public:
 
 	//
 	bool Player_OnVerb( CScript &s, CTextConsole * pSrc );
-	void InitPlayer(CClient *pClient, const char *pszCharname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE iProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, ITEMID_TYPE idFace, int iStartLoc);
+	void InitPlayer(CClient *pClient, const char *pszCharname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE iProf, SKILL_TYPE skSkill1, BYTE iSkillVal1, SKILL_TYPE skSkill2, BYTE iSkillVal2, SKILL_TYPE skSkill3, BYTE iSkillVal3, SKILL_TYPE skSkill4, BYTE iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, ITEMID_TYPE idFace, int iStartLoc);
 	bool ReadScriptTrig(CCharBase * pCharDef, CTRIG_TYPE trig, bool bVendor = false);
 	bool ReadScript(CResourceLock &s, bool bVendor = false);
 	void NPC_LoadScript( bool fRestock );
@@ -3856,7 +3856,7 @@ public:
 	CItem * NPC_Shrink();
 	bool FollowersUpdate( CChar * pChar, short iFollowerSlots = 0, bool bCheckOnly = false );
 
-	int  ItemPickup( CItem * pItem, int amount );
+	int  ItemPickup( CItem * pItem, WORD amount );
 	bool ItemEquip( CItem * pItem, CChar * pCharMsg = NULL, bool fFromDClick = false );
 	bool ItemEquipWeapon( bool fForce );
 	bool ItemEquipArmor( bool fForce );
@@ -3910,8 +3910,8 @@ public:
 	LPCTSTR Guild_Abbrev( MEMORY_TYPE memtype ) const;
 	LPCTSTR Guild_AbbrevBracket( MEMORY_TYPE memtype ) const;
 
-	bool Use_EatQty( CItem * pFood, short iQty = 1 );
-	bool Use_Eat( CItem * pItem, short iQty = 1 );
+	bool Use_EatQty( CItem * pFood, WORD iQty = 1 );
+	bool Use_Eat( CItem * pItem, WORD iQty = 1 );
 	bool Use_MultiLockDown( CItem * pItemTarg );
 	bool Use_CarveCorpse( CItemCorpse * pCorpse );
 	bool Use_Repair( CItem * pItem );

@@ -1703,7 +1703,7 @@ bool CObjBase::r_LoadVal(CScript &s)
 			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
 			if ( pChar )
 			{
-				pChar->m_defense = static_cast<WORD>(pChar->CalcArmorDefense());
+				pChar->m_defense = pChar->CalcArmorDefense();
 				pChar->UpdateStatsFlag();
 			}
 			break;

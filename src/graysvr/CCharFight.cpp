@@ -1653,7 +1653,7 @@ static const CArmorLayerType sm_ArmorLayers[ARMOR_QTY] =
 // When armor is added or subtracted check this.
 // This is the general AC number printed.
 // Tho not really used to compute damage.
-int CChar::CalcArmorDefense() const
+WORD CChar::CalcArmorDefense() const
 {
 	ADDTOCALLSTACK("CChar::CalcArmorDefense");
 
@@ -1678,7 +1678,6 @@ int CChar::CalcArmorDefense() const
 					ArmorRegionMax[ARMOR_HEAD] += iDefense;
 				else
 					ArmorRegionMax[ARMOR_HEAD] = maximum(ArmorRegionMax[ARMOR_HEAD], iDefense);
-
 				break;
 			case LAYER_COLLAR:
 				if ( IsSetCombatFlags(COMBAT_STACKARMOR) )

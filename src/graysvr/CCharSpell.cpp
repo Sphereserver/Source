@@ -872,7 +872,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 			}
 			else
 			{
-				m_defense = static_cast<WORD>(CalcArmorDefense());
+				m_defense = CalcArmorDefense();
 			}
 			if ( m_pClient )
 			{
@@ -1707,8 +1707,8 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 		case SPELL_Protection:
 		case SPELL_Arch_Prot:
 		{
-			int iPhysicalResist = 0;
-			int iMagicResist = 0;
+			WORD iPhysicalResist = 0;
+			WORD iMagicResist = 0;
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
 				iStatEffect = minimum(75, (pCaster->Skill_GetBase(SKILL_EVALINT) + pCaster->Skill_GetBase(SKILL_MEDITATION) + pCaster->Skill_GetBase(SKILL_INSCRIPTION)) / 40);
@@ -1725,7 +1725,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 			}
 			else
 			{
-				m_defense = static_cast<WORD>(CalcArmorDefense());
+				m_defense = CalcArmorDefense();
 			}
 			if ( m_pClient && IsSetOF(OF_Buffs) )
 			{

@@ -1395,11 +1395,11 @@ bool CScriptObj::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 				}
 				
 				if ( ppCmd[1] )
-					pItem->SetAmount(Exp_GetVal(ppCmd[1]));
+					pItem->SetAmount(static_cast<WORD>(Exp_GetVal(ppCmd[1])));
 				
 				if ( ppCmd[2] )
 				{
-					CGrayUID uidEquipper = Exp_GetVal(ppCmd[2]);
+					CGrayUID uidEquipper = static_cast<CGrayUID>(Exp_GetVal(ppCmd[2]));
 					bool bTriggerEquip = ppCmd[3] != NULL ? (Exp_GetVal(ppCmd[3]) != 0) : false;
 
 					if ( !bTriggerEquip || uidEquipper.IsItem() )

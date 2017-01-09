@@ -1605,7 +1605,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			{
 				HUE_TYPE hue = HUE_TEXT_DEF;
 				if ( ppArgs[0] )
-					hue = Exp_GetVal(ppArgs[0]);
+					hue = static_cast<HUE_TYPE>(Exp_GetVal(ppArgs[0]));
 
 				DWORD iClilocId = Exp_GetVal(ppArgs[1]);
 
@@ -1631,7 +1631,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				HUE_TYPE hue = HUE_TEXT_DEF;
 				int affix = 0;
 				if ( ppArgs[0] )
-					hue = Exp_GetVal(ppArgs[0]);
+					hue = static_cast<HUE_TYPE>(Exp_GetVal(ppArgs[0]));
 
 				DWORD iClilocId = Exp_GetVal(ppArgs[1]);
 

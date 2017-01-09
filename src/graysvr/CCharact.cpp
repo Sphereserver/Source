@@ -188,7 +188,7 @@ void CChar::AddGoldToPack( DWORD iAmount, CItemContainer *pPack )
 	WORD iGoldStack = 0;
 	while ( iAmount > 0 )
 	{
-		iGoldStack = minimum(iAmount, g_Cfg.m_iItemsMaxAmount);
+		iGoldStack = minimum(static_cast<WORD>(iAmount), g_Cfg.m_iItemsMaxAmount);
 		pGold = CItem::CreateScript(ITEMID_GOLD_C1, this);
 		pGold->SetAmount(iGoldStack);
 		pPack->ContentAdd(pGold);
@@ -275,7 +275,7 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 			else if ( pItem->IsTypeArmor())
 			{
 				// Shield of some sort.
-				m_defense = static_cast<WORD>(CalcArmorDefense());
+				m_defense = CalcArmorDefense();
 				StatFlag_Set( STATF_HasShield );
 				UpdateStatsFlag();
 			}
@@ -295,7 +295,7 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 		case LAYER_SKIRT:
 		case LAYER_LEGS:
 			// If armor or clothing = change in defense rating.
-			m_defense = static_cast<WORD>(CalcArmorDefense());
+			m_defense = CalcArmorDefense();
 			UpdateStatsFlag();
 			break;
 
@@ -382,7 +382,7 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 			else if ( pItem->IsTypeArmor())
 			{
 				// Shield
-				m_defense = static_cast<WORD>(CalcArmorDefense());
+				m_defense = CalcArmorDefense();
 				StatFlag_Clear( STATF_HasShield );
 				UpdateStatsFlag();
 			}
@@ -403,7 +403,7 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 		case LAYER_ROBE:		// 22 = robe over all.
 		case LAYER_SKIRT:
 		case LAYER_LEGS:
-			m_defense = static_cast<WORD>(CalcArmorDefense());
+			m_defense = CalcArmorDefense();
 			UpdateStatsFlag();
 			break;
 
@@ -1521,7 +1521,7 @@ void CChar::SoundChar( CRESND_TYPE type )
 // RETURN:
 //  amount we can pick up.
 //	-1 = we cannot pick this up.
-int CChar::ItemPickup(CItem * pItem, int amount)
+int CChar::ItemPickup(CItem * pItem, WORD amount)
 {
 	ADDTOCALLSTACK("CChar::ItemPickup");
 
@@ -1624,7 +1624,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 		}
 	}
 
-	int iAmountMax = pItem->GetAmount();
+	WORD iAmountMax = pItem->GetAmount();
 	if ( iAmountMax <= 0 )
 		return -1;
 
@@ -1634,7 +1634,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 		amount = maximum(1, minimum(amount, iAmountMax));
 
 	//int iItemWeight = ( amount == iAmountMax ) ? pItem->GetWeight() : pItem->Item_GetDef()->GetWeight() * amount;
-	int iItemWeight = pItem->GetWeight(static_cast<WORD>(amount));
+	int iItemWeight = pItem->GetWeight(amount);
 
 	// Is it too heavy to even drag ?
 	bool fDrop = false;

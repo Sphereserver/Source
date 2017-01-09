@@ -211,7 +211,7 @@ void CItemMultiCustom::EndCustomize(bool bForced)
 	}
 }
 
-void CItemMultiCustom::SwitchToLevel( CClient * pClientSrc, DWORD iLevel )
+void CItemMultiCustom::SwitchToLevel( CClient * pClientSrc, BYTE iLevel )
 {
 	ADDTOCALLSTACK("CItemMultiCustom::SwitchToLevel");
 	// switch the client to the given level of the building
@@ -220,7 +220,7 @@ void CItemMultiCustom::SwitchToLevel( CClient * pClientSrc, DWORD iLevel )
 	if ( pChar == NULL )
 		return;
 
-	DWORD iMaxLevel = GetLevelCount();
+	BYTE iMaxLevel = GetLevelCount();
 	if ( iLevel < 0 )
 		iLevel = 0;
 	else if ( iLevel > iMaxLevel )
@@ -488,7 +488,7 @@ void CItemMultiCustom::AddStairs(CClient * pClientSrc, ITEMID_TYPE id, signed sh
 	}
 
 	if ( iStairID == -1 )
-		iStairID = GetStairCount() + 1;
+		iStairID = GetStairID() + 1;
 
 	size_t iQty = pMulti->GetItemCount();
 	for ( size_t i = 0; i < iQty; i++ )
@@ -903,7 +903,7 @@ int CItemMultiCustom::GetRevision(const CClient * pClientSrc) const
 	return m_designMain.m_iRevision;
 }
 
-DWORD CItemMultiCustom::GetLevelCount()
+BYTE CItemMultiCustom::GetLevelCount()
 {
 	ADDTOCALLSTACK("CItemMultiCustom::GetLevelCount");
 	// return how many levels (including the roof) there are
@@ -915,20 +915,20 @@ DWORD CItemMultiCustom::GetLevelCount()
 	return 3;
 }
 
-short CItemMultiCustom::GetStairCount()
+WORD CItemMultiCustom::GetStairID()
 {
 	ADDTOCALLSTACK("CItemMultiCustom::GetStairCount");
 	// find and return the highest stair id
-	short iCount = 0;
+	WORD count = 0;
 	for (ComponentsContainer::iterator i = m_designWorking.m_vectorComponents.begin(); i != m_designWorking.m_vectorComponents.end(); ++i)
 	{
 		if ((*i)->m_isStair == 0)
 			continue;
 
-		iCount = maximum(iCount, (*i)->m_isStair);
+		count = maximum(count, (*i)->m_isStair);
 	}
 
-	return iCount;
+	return count;
 }
 
 size_t CItemMultiCustom::GetFixtureCount(DesignDetails * pDesign)
