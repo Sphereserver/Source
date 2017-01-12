@@ -2795,7 +2795,7 @@ bool CChar::Death()
 	for ( size_t count = 0; count < m_lastAttackers.size(); count++ )
 	{
 		pKiller = CGrayUID(m_lastAttackers.at(count).charUID).CharFind();
-		if ( pKiller )
+		if ( pKiller && (m_lastAttackers.at(count).amountDone > 0) )
 		{
 			if ( IsTrigUsed(TRIGGER_KILL) )
 			{
