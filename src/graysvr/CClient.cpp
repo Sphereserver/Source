@@ -444,12 +444,12 @@ void CClient::UpdateFeatureFlags()
 	if ( iResdisp >= RDS_AOS )
 	{
 		if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_A )
-			m_FeatureFlags |= (0x8000|0x10);
+			m_FeatureFlags |= (0x10|0x8000);
 	}
 
 	if ( iResdisp >= RDS_SE )
 	{
-		if ( g_Cfg.m_iFeatureSE & FEATURE_SE_NINJASAM )
+		if ( g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE )
 			m_FeatureFlags |= 0x40;
 	}
 
@@ -538,7 +538,7 @@ void CClient::UpdateCharacterListFlags()
 
 	if ( iResdisp >= RDS_SE )
 	{
-		if ( g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE )
+		if ( g_Cfg.m_iFeatureSE & FEATURE_SE_NINJASAM )
 			m_CharacterListFlags |= 0x80;
 	}
 

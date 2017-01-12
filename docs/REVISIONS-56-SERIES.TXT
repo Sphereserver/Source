@@ -333,3 +333,4 @@ Fixed: Function 'CRIMINAL 0' not updating char notoriety/buff when removing crim
 
 12-01-2017, Coruja
 Fixed: Char death counting kill/fame/karma gain for killers that started the attack but don't have caused any damage yet.
+Fixed: FeatureSE setting on sphere.ini not working correctly.
