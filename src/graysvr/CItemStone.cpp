@@ -1732,10 +1732,6 @@ bool CItemStone::IsAlliedWith( const CItemStone * pStone) const
 		}
 	}
 
-	// Just based on align type.
-	if ( GetAlignType() != STONEALIGN_STANDARD && GetAlignType() == pStone->GetAlignType() )
-		return true;
-
 	// we have declared or they declared.
 	CStoneMember * pAllyMember = GetMember(pStone);
 	if ( pAllyMember ) // Ok, we might be ally
