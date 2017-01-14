@@ -1059,7 +1059,7 @@ bool CItem::Stack( CItem * pItem )
 	ADDTOCALLSTACK("CItem::Stack");
 	// RETURN:
 	//  true = the item got stacked. (it is gone)
-	//  false = the item will not stack. (do somethjing else with it)
+	//  false = the item will not stack. (do something else with it)
 	// pItem is the item stacking on.
 
 	if ( !pItem )
@@ -1068,40 +1068,28 @@ bool CItem::Stack( CItem * pItem )
 		return true;
 	if ( !IsStackable(pItem) )
 		return false;
+	if ( m_Attr != pItem->m_Attr )
+		return false;
 	if ( !m_TagDefs.Compare(&pItem->m_TagDefs) )
 		return false;
 	if ( !m_BaseDefs.CompareAll(&pItem->m_BaseDefs) )
 		return false;
 
-	// Lost newbie status.
-	if ( IsAttr(ATTR_NEWBIE) != pItem->IsAttr(ATTR_NEWBIE) )
-		return false;
-	if ( IsAttr(ATTR_MOVE_NEVER) != pItem->IsAttr(ATTR_MOVE_NEVER) )
-		return false;
-	if ( IsAttr(ATTR_STATIC) != pItem->IsAttr(ATTR_STATIC) )
-		return false;
-	if ( IsAttr(ATTR_LOCKEDDOWN) != pItem->IsAttr(ATTR_LOCKEDDOWN) )
-		return false;
-
-	WORD amount = pItem->GetAmount() + GetAmount();
-	if ( amount > pItem->GetMaxAmount() )
+	DWORD amount = pItem->GetAmount() + GetAmount();
+	WORD amountMax = pItem->GetMaxAmount();
+	if ( amount > amountMax )
 	{
-		amount = pItem->GetMaxAmount() - pItem->GetAmount();
-		pItem->SetAmount(pItem->GetAmount() + amount);
-		pItem->Update();
-		SetAmount(GetAmount() - amount);
-		//Update();
-		ResendTooltip();
-		pItem->ResendTooltip();
+		amount = amountMax - pItem->GetAmount();
+		pItem->SetAmountUpdate(pItem->GetAmount() + amount);
+		SetAmountUpdate(GetAmount() - amount);
 		return false;
 	}
 	else
 	{
-		SetAmount(pItem->GetAmount() + GetAmount());
-		ResendTooltip();
+		SetAmountUpdate(pItem->GetAmount() + GetAmount());
 		pItem->Delete();
+		return true;
 	}
-	return true;
 }
 
 INT64 CItem::GetDecayTime() const
@@ -2776,7 +2764,7 @@ bool CItem::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from s
 			pCharSrc->ItemBounce( this );
 			break;
 		case CIV_CONSUME:
-			ConsumeAmount(s.HasArgs() ? static_cast<WORD>(s.GetArgVal()) : 1);
+			ConsumeAmount(s.HasArgs() ? static_cast<DWORD>(s.GetArgVal()) : 1);
 			break;
 		case CIV_CONTCONSUME:
 			{
@@ -3335,7 +3323,7 @@ void CItem::ConvertBolttoCloth()
 	}
 }
 
-WORD CItem::ConsumeAmount( WORD iQty, bool fTest )
+DWORD CItem::ConsumeAmount( DWORD iQty, bool fTest )
 {
 	ADDTOCALLSTACK("CItem::ConsumeAmount");
 	// Eat or drink specific item. delete it when gone.

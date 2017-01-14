@@ -2916,24 +2916,24 @@ do_default:
 
 		case CHC_GOLD:
 		{
-			DWORD currentGold = ContentCount(RESOURCE_ID(RES_TYPEDEF, IT_GOLD));
-			DWORD newGold = static_cast<DWORD>(s.GetArgVal());
+			long iAmount = s.GetArgVal();
+			if ( iAmount <= 0 )
+				iAmount = 0;
 
-			if ( newGold >= 0 )
+			DWORD currentGold = ContentCount(RESOURCE_ID(RES_TYPEDEF, IT_GOLD));
+			DWORD newGold = static_cast<DWORD>(iAmount);
+			if ( newGold < currentGold )
 			{
-				if ( newGold < currentGold )
-				{
-					ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), currentGold - newGold);
-				}
-				else if ( newGold > currentGold )
-				{
-					CItemContainer *pBank = GetContainerCreate(LAYER_BANKBOX);
-					if ( !pBank )
-						return false;
-					AddGoldToPack(newGold - currentGold, pBank);
-				}
-				UpdateStatsFlag();
+				ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), currentGold - newGold);
 			}
+			else if ( newGold > currentGold )
+			{
+				CItemContainer *pBank = GetContainerCreate(LAYER_BANKBOX);
+				if ( !pBank )
+					return false;
+				AddGoldToPack(newGold - currentGold, pBank, false);
+			}
+			UpdateStatsFlag();
 			break;
 		}
 
@@ -3586,22 +3586,15 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			break;
 
 		case CHV_NEWGOLD:
+		{
+			long iAmount = s.GetArgVal();
+			if ( iAmount > 0 )
 			{
-				CItemContainer *pPack = GetContainerCreate(LAYER_PACK);
-				CItem *pGold = NULL;
-				WORD iGoldStack = 0;
-				DWORD iAmount = static_cast<DWORD>(s.GetArgLLVal());
-				while ( iAmount > 0 )
-				{
-					iGoldStack = minimum(static_cast<WORD>(iAmount), g_Cfg.m_iItemsMaxAmount);
-					pGold = CItem::CreateScript(ITEMID_GOLD_C1, this);
-					pGold->SetAmount(iGoldStack);
-					pPack->ContentAdd(pGold);
-					iAmount -= iGoldStack;
-				}
+				AddGoldToPack(static_cast<DWORD>(iAmount), NULL, false);
 				UpdateStatsFlag();
-			} break;
-
+			}
+			break;
+		}
 		case CHV_NEWLOOT:
 			{
 				if ( m_pNPC && !m_pPlayer && !IsStatFlag(STATF_Conjured) )

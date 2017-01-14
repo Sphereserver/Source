@@ -3538,13 +3538,13 @@ bool PacketHouseDesignDestroyItem::onReceive(NetState* net)
 	skip(1); // 0x00
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt32());
 	skip(1); // 0x00
-	WORD x = static_cast<WORD>(readInt32());
+	short x = static_cast<short>(readInt32());
 	skip(1); // 0x00
-	WORD y = static_cast<WORD>(readInt32());
+	short y = static_cast<short>(readInt32());
 	skip(1); // 0x00
-	WORD z = static_cast<WORD>(readInt32());
+	char z = static_cast<char>(readInt32());
 
-	house->RemoveItem(client, id, x, y, static_cast<signed char>(z));
+	house->RemoveItem(client, id, x, y, z);
 	return true;
 }
 
@@ -3574,9 +3574,9 @@ bool PacketHouseDesignPlaceItem::onReceive(NetState* net)
 	skip(1); // 0x00
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt32());
 	skip(1); // 0x00
-	WORD x = static_cast<WORD>(readInt32());
+	short x = static_cast<short>(readInt32());
 	skip(1); // 0x00
-	WORD y = static_cast<WORD>(readInt32());
+	short y = static_cast<short>(readInt32());
 
 	house->AddItem(client, id, x, y);
 	return true;
@@ -3635,9 +3635,9 @@ bool PacketHouseDesignPlaceStair::onReceive(NetState* net)
 	skip(1); // 0x00
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt32() + ITEMID_MULTI);
 	skip(1); // 0x00
-	WORD x = static_cast<WORD>(readInt32());
+	short x = static_cast<short>(readInt32());
 	skip(1); // 0x00
-	WORD y = static_cast<WORD>(readInt32());
+	short y = static_cast<short>(readInt32());
 
 	house->AddStairs(client, id, x, y);
 	return true;
@@ -3753,13 +3753,13 @@ bool PacketHouseDesignPlaceRoof::onReceive(NetState* net)
 	skip(1); // 0x00
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt32());
 	skip(1); // 0x00
-	WORD x = static_cast<WORD>(readInt32());
+	short x = static_cast<short>(readInt32());
 	skip(1); // 0x00
-	WORD y = static_cast<WORD>(readInt32());
+	short y = static_cast<short>(readInt32());
 	skip(1); // 0x00
-	WORD z = static_cast<WORD>(readInt32());
+	char z = static_cast<char>(readInt32());
 
-	house->AddRoof(client, id, x, y, static_cast<signed char>(z));
+	house->AddRoof(client, id, x, y, z);
 	return true;
 }
 
@@ -3789,13 +3789,13 @@ bool PacketHouseDesignDestroyRoof::onReceive(NetState* net)
 	skip(1); // 0x00
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt32());
 	skip(1); // 0x00
-	WORD x = static_cast<WORD>(readInt32());
+	short x = static_cast<short>(readInt32());
 	skip(1); // 0x00
-	WORD y = static_cast<WORD>(readInt32());
+	short y = static_cast<short>(readInt32());
 	skip(1); // 0x00
-	WORD z = static_cast<WORD>(readInt32());
+	char z = static_cast<char>(readInt32());
 
-	house->RemoveRoof(client, id, x, y, static_cast<signed char>(z));
+	house->RemoveRoof(client, id, x, y, z);
 	return true;
 }
 

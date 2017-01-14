@@ -177,7 +177,7 @@ void CChar::Jail( CTextConsole *pSrc, bool fSet, int iCell )
 }
 
 // A vendor is giving me gold. put it in my pack or other place.
-void CChar::AddGoldToPack( DWORD iAmount, CItemContainer *pPack )
+void CChar::AddGoldToPack( DWORD iAmount, CItemContainer *pPack, bool bSound )
 {
 	ADDTOCALLSTACK("CChar::AddGoldToPack");
 
@@ -188,14 +188,14 @@ void CChar::AddGoldToPack( DWORD iAmount, CItemContainer *pPack )
 	WORD iGoldStack = 0;
 	while ( iAmount > 0 )
 	{
-		iGoldStack = minimum(static_cast<WORD>(iAmount), g_Cfg.m_iItemsMaxAmount);
+		iGoldStack = minimum(iAmount, g_Cfg.m_iItemsMaxAmount);
 		pGold = CItem::CreateScript(ITEMID_GOLD_C1, this);
 		pGold->SetAmount(iGoldStack);
 		pPack->ContentAdd(pGold);
 		iAmount -= iGoldStack;
 	}
 
-	if ( pGold && (pPack->GetEquipLayer() == LAYER_PACK) )
+	if ( bSound && pGold )
 		Sound(pGold->GetDropSound(pPack));
 }
 

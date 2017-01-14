@@ -1016,7 +1016,7 @@ public:
 	virtual bool  IsSameType( const CObjBase * pObj ) const;
 	virtual bool  IsIdentical( const CObjBase * pObj );
 	bool Stack( CItem * pItem );
-	WORD ConsumeAmount( WORD iQty = 1, bool fTest = false );
+	DWORD ConsumeAmount( DWORD iQty = 1, bool fTest = false );
 
 	CREID_TYPE GetCorpseType() const
 	{
@@ -3320,16 +3320,16 @@ public:
 	}
 	int GetWeightLoadPercent( int iWeight ) const;
 
-	CItem * GetSpellbook(SPELL_TYPE iSpell = SPELL_Clumsy) const;
-	int GetSpellbookExtra(CItem * pBooks[], int &count) const;
-	CItem * GetSpellbookRandom(SPELL_TYPE iSpell = SPELL_Clumsy) const;
+	CItem *GetSpellbook(SPELL_TYPE iSpell = SPELL_Clumsy) const;
+	int GetSpellbookExtra(CItem *pBooks[], int &count) const;
+	CItem *GetSpellbookRandom(SPELL_TYPE iSpell = SPELL_Clumsy) const;
 	CItemContainer *GetContainer(LAYER_TYPE layer) const
 	{
 		return dynamic_cast<CItemContainer *>(LayerFind(layer));
 	}
 	CItemContainer *GetContainerCreate(LAYER_TYPE layer);
-	CItem * GetBackpackItem(ITEMID_TYPE item);
-	void AddGoldToPack( DWORD iAmount, CItemContainer * pPack=NULL );
+	CItem *GetBackpackItem(ITEMID_TYPE item);
+	void AddGoldToPack(DWORD iAmount, CItemContainer *pPack = NULL, bool bSound = true);
 
 //private:
 	virtual TRIGRET_TYPE OnTrigger( LPCTSTR pTrigName, CTextConsole * pSrc, CScriptTriggerArgs * pArgs );

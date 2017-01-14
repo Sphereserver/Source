@@ -244,7 +244,7 @@ DWORD CContainer::ContentConsume( RESOURCE_ID_BASE rid, DWORD amount, bool fTest
 		pItemNext = pItem->GetNext();
 		if ( pItem->IsResourceMatch(rid, dwArg) )
 		{
-			amount -= pItem->ConsumeAmount(static_cast<WORD>(amount), fTest);
+			amount -= pItem->ConsumeAmount(amount, fTest);
 			if ( amount <= 0 )
 				break;
 		}
