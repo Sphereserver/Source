@@ -1,7 +1,7 @@
 #ifndef SQL_COMMON_INCLUDED
 #define SQL_COMMON_INCLUDED
 
-/* Copyright (c) 2003, 2015, Oracle and/or its affiliates. All rights reserved.
+/* Copyright (c) 2003, 2016, Oracle and/or its affiliates. All rights reserved.
    
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -103,8 +103,10 @@ struct st_mysql_options_extention {
   char *server_public_key_path;
   size_t connection_attributes_length;
   my_bool enable_cleartext_plugin;
-  /** false if it is possible to fall back on unencrypted connections */
-  my_bool ssl_enforce;
+  my_bool unused0;                              /* Former ssl_enforce */
+  char *tls_version; /* TLS version option */
+  long ssl_ctx_flags; /* SSL ctx options flag */
+  unsigned int ssl_mode;
 };
 
 typedef struct st_mysql_methods
@@ -155,7 +157,8 @@ MYSQL_FIELD *unpack_fields(MYSQL *mysql, MYSQL_ROWS *data,MEM_ROOT *alloc,
                            uint fields, my_bool default_value,
                            uint server_capabilities);
 MYSQL_FIELD * cli_read_metadata_ex(MYSQL *mysql, MEM_ROOT *alloc,
-                                unsigned long field_count, unsigned int fields);
+                                   unsigned long field_count,
+                                   unsigned int fields);
 MYSQL_FIELD * cli_read_metadata(MYSQL *mysql, unsigned long field_count,
                                unsigned int fields);
 void free_rows(MYSQL_DATA *cur);

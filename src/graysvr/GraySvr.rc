@@ -121,7 +121,7 @@ BEGIN
 	LTEXT		"DEELX Regular Expression Engine (v1.2)\nCopyright (C) 2006 RegExLab.com", 8, 20, 56, 300, 16
 	LTEXT		"Libev library (v4.24)\nCopyright (C) 2007-2016 Marc Alexander Lehmann", 9, 20, 80, 300, 16
 	LTEXT		"Mersenne Twister random number generator (v1.1)\nCopyright (C) 1997-2002 Makoto Matsumoto, Takuji Nishimura\nCopyright (C) 2000-2009 Richard J. Wagner", 10, 20, 104, 300, 24
-	LTEXT		"MySQL Connector/C (v6.1.6)\nGeneral Public License (GPL) 2000-2015 Oracle", 11, 20, 136, 300, 16
+	LTEXT		"MySQL Connector/C (v6.1.9)\nGeneral Public License (GPL) 2000-2017 Oracle", 11, 20, 136, 300, 16
 	LTEXT		"SQLite library (v3.16.1)\nGeneral Public License (GPL) 2000-2017", 12, 20, 160, 300, 16
 	LTEXT		"Twofish encryption library (v1.0)\nCopyright (C) 1998 Bruce Schneier, Doug Whiting, John Kelsey, Chris Hall, David Wagner", 14, 20, 184, 300, 16
 	LTEXT		"Zlib data compression library (v1.2.10)\nCopyright (C) 1995-2017 Jean-loup Gailly, Mark Adler", 15, 20, 208, 300, 16

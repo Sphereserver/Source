@@ -336,3 +336,7 @@ Fixed: Char death counting kill/fame/karma gain for killers that started the att
 Fixed: FeatureSE setting on sphere.ini not working correctly.
 Changed: Guild function ISALLY won't consider guild alignment on alliances anymore.
 [sphere_genericstone_functions.scp]: Updated f_stonesys_internal_isalliedwith function
+
+15-01-2017, Coruja
+Changed: Updated internal MySQL libs v6.1.6 to v6.1.9.
+	-IMPORTANT: It's HIGHLY recommended update libmysql.dll file on Sphere folder (Windows users) or MySQL packages (Linux users) to prevent errors when using MySQL.
