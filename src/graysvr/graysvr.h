@@ -1418,7 +1418,7 @@ public:
 	bool addShopMenuSell( CChar * pVendor );
 	void addBankOpen( CChar * pChar, LAYER_TYPE layer = LAYER_BANKBOX );
 
-	void addSpellbookOpen( CItem * pBook, WORD offset = 1 );
+	void addSpellbookOpen( CItem * pBook );
 	void addCustomSpellbookOpen( CItem * pBook, GUMP_TYPE gumpID );
 	bool addBookOpen( CItem * pBook );
 	void addBookPage( const CItem * pBook, size_t iPage, size_t iCount );

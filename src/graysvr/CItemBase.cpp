@@ -13,7 +13,7 @@ CItemBase::CItemBase( ITEMID_TYPE id ) :
 	SetDefNum("RANGE",1); //m_range = 1;
 	m_type = IT_NORMAL;
 	m_layer = LAYER_NONE;
-	m_CanUse = 0;
+	m_CanUse = CAN_U_ALL;
 
 	// Just applies to equippable weapons/armor.
 	m_ttNormal.m_tData1 = 0;
@@ -292,7 +292,7 @@ bool CItemBase::IsTypeSpellbook( IT_TYPE type )  // static
 		case IT_SPELLBOOK_NINJITSU:
 		case IT_SPELLBOOK_ARCANIST:
 		case IT_SPELLBOOK_MYSTIC:
-		case IT_SPELLBOOK_BARD:
+		case IT_SPELLBOOK_MASTERY:
 			return( true );
 		default:
 			return( false );

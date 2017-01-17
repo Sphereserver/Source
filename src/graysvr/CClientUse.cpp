@@ -467,35 +467,14 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 		}
 
 		case IT_SPELLBOOK:
-			addSpellbookOpen(pItem);
-			return true;
-
 		case IT_SPELLBOOK_NECRO:
-			addSpellbookOpen(pItem, 101);
-			return true;
-
 		case IT_SPELLBOOK_PALA:
-			addSpellbookOpen(pItem, 201);
-			return true;
-
 		case IT_SPELLBOOK_BUSHIDO:
-			addSpellbookOpen(pItem, 401);
-			return true;
-
 		case IT_SPELLBOOK_NINJITSU:
-			addSpellbookOpen(pItem, 501);
-			return true;
-
 		case IT_SPELLBOOK_ARCANIST:
-			addSpellbookOpen(pItem, 601);
-			return true;
-
 		case IT_SPELLBOOK_MYSTIC:
-			addSpellbookOpen(pItem, 678);
-			return true;
-
-		case IT_SPELLBOOK_BARD:
-			addSpellbookOpen(pItem, 701);
+		case IT_SPELLBOOK_MASTERY:
+			addSpellbookOpen(pItem);
 			return true;
 
 		case IT_HAIR_DYE:

@@ -1992,7 +1992,7 @@ void CClient::addBondedStatus( const CChar * pChar, bool bIsDead )
 	new PacketBondedStatus(this, pChar, bIsDead);
 }
 
-void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
+void CClient::addSpellbookOpen( CItem * pBook )
 {
 	ADDTOCALLSTACK("CClient::addSpellbookOpen");
 	// Open the spellbook content and fill it with some data.
@@ -2014,7 +2014,7 @@ void CClient::addSpellbookOpen( CItem * pBook, WORD offset )
 	addOpenGump(pBook, GUMP_NONE);
 
 	if ( PacketSpellbookContent::CanSendTo(m_NetState) )
-		new PacketSpellbookContent(this, pBook, offset);
+		new PacketSpellbookContent(this, pBook, pBook->m_itSpellbook.m_baseid + 1);
 	else
 		new PacketItemContents(this, pBook);
 }
@@ -3055,14 +3055,10 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 						case IT_SPELLBOOK_NINJITSU:
 						case IT_SPELLBOOK_ARCANIST:
 						case IT_SPELLBOOK_MYSTIC:
-						case IT_SPELLBOOK_BARD:
+						case IT_SPELLBOOK_MASTERY:
 						{
-							int count = pItem->GetSpellcountInBook();
-							if ( count > 0 )
-							{
-								m_TooltipData.Add(t = new CClientTooltip(1042886)); // ~1_NUMBERS_OF_SPELLS~ Spells
-								t->FormatArgs("%d", count);
-							}
+							m_TooltipData.Add(t = new CClientTooltip(1042886)); // ~1_NUMBERS_OF_SPELLS~ Spells
+							t->FormatArgs("%d", pItem->GetSpellcountInBook());
 							break;
 						}
 

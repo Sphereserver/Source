@@ -3395,8 +3395,11 @@ int CItem::GetSpellcountInBook() const
 	if ( !IsTypeSpellbook() )
 		return -1;
 
+	WORD min = m_itSpellbook.m_baseid + 1;
+	WORD max = m_itSpellbook.m_baseid + m_itSpellbook.m_maxspells;
+
 	int count = 0;
-	for ( int i = SPELL_Clumsy; i <= SPELL_MAGERY_QTY; i++ )
+	for ( int i = min; i <= max; i++ )
 	{
 		if ( IsSpellInBook(static_cast<SPELL_TYPE>(i)) )
 			count++;
@@ -3409,7 +3412,7 @@ SKILL_TYPE CItem::GetSpellBookSkill()
 {
 	ADDTOCALLSTACK("CItem::GetSpellBookSkill");
 	ASSERT(IsTypeSpellbook());
-	switch (GetType())
+	switch ( GetType() )
 	{
 		case IT_SPELLBOOK:
 			return SKILL_MAGERY;
@@ -3425,12 +3428,9 @@ SKILL_TYPE CItem::GetSpellBookSkill()
 			return SKILL_SPELLWEAVING;
 		case IT_SPELLBOOK_MYSTIC:
 			return SKILL_MYSTICISM;
-		case IT_SPELLBOOK_BARD:
-		case IT_SPELLBOOK_EXTRA:
 		default:
-			break;
+			return SKILL_NONE;		// SKILL_NONE returns 1000+index in CChar::Spell_GetIndex()
 	}
-	return SKILL_NONE;// SKILL_NONE returns 1000+ index in CChar::Spell_GetIndex()
 }
 
 int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )

@@ -1133,6 +1133,7 @@ enum SPELL_TYPE	// List of spell numbers in spell book.
 	// Mysticism (SA)
 	SPELL_Nether_Bolt = 678,
 	SPELL_Healing_Stone,
+	SPELL_Purge_Magic,
 	SPELL_Enchant_Weapon,
 	SPELL_Sleep,
 	SPELL_Eagle_Strike,
@@ -1145,17 +1146,59 @@ enum SPELL_TYPE	// List of spell numbers in spell book.
 	SPELL_Spell_Plague,
 	SPELL_Hail_Storm,
 	SPELL_Nether_Cyclone,
-	SPELL_Rising_Collossus,
-	SPELL_MYSTICISM_QTY = SPELL_Rising_Collossus,
+	SPELL_Rising_Colossus,
+	SPELL_MYSTICISM_QTY = SPELL_Rising_Colossus,
 
-	// Bard (SA)
+	// Bard Masteries (SA)
 	SPELL_Inspire = 701,
 	SPELL_Invigorate,
 	SPELL_Resilience,
 	SPELL_Perseverance,
 	SPELL_Tribulation,
 	SPELL_Despair,
-	SPELL_BARD_QTY = SPELL_Despair,
+	SPELL_BARDMASTERIES_QTY = SPELL_Despair,
+
+	// Skill Masteries (TOL)
+	SPELL_Death_Ray = 707,
+	SPELL_Ethereal_Burst,
+	SPELL_Nether_Blast,
+	SPELL_Mystic_Weapon,
+	SPELL_Command_Undead,
+	SPELL_Conduit,
+	SPELL_Mana_Shield,
+	SPELL_Summon_Reaper,
+	SPELL_Enchanted_Summoning,	// Passive
+	SPELL_Anticipate_Hit,		// Passive
+	SPELL_Warcry,
+	SPELL_Intuition,			// Passive
+	SPELL_Rejuvinate,
+	SPELL_Holy_Fist,
+	SPELL_Shadow,
+	SPELL_White_Tiger_Form,
+	SPELL_Flaming_Shot,
+	SPELL_Playing_The_Odds,
+	SPELL_Thrust,
+	SPELL_Pierce,
+	SPELL_Stagger,
+	SPELL_Toughness,
+	SPELL_Onslaught,
+	SPELL_Focused_Eye,
+	SPELL_Elemental_Fury,
+	SPELL_Called_Shot,
+	SPELL_Saving_Throw,			// Passive
+	SPELL_Shield_Bash,
+	SPELL_Body_Guard,
+	SPELL_Heightened_Senses,
+	SPELL_Tolerance,
+	SPELL_Injected_Strike,
+	SPELL_Potency,				// Passive
+	SPELL_Rampage,
+	SPELL_Fists_Of_Fury,
+	SPELL_Knockout,				// Passive
+	SPELL_Whispering,
+	SPELL_Combat_Training,
+	SPELL_Boarding,				// Passive
+	SPELL_SKILLMASTERIES_QTY = SPELL_Boarding,
 
 	// Custom Sphere spells (used by some monsters)
 	SPELL_Summon_Undead = 1000,
