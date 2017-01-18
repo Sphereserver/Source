@@ -5,62 +5,6 @@
 #include "graysvr.h"	// predef header.
 #include "../network/send.h"
 
-SPELL_TYPE CChar::Spell_GetIndex(SKILL_TYPE skill)	// Returns the first spell for the given skill
-{
-	if ( skill == SKILL_NONE )	// providing no skill returns first monster's custom spell.
-		return SPELL_Summon_Undead;
-	if ( !g_Cfg.IsSkillFlag(skill, SKF_MAGIC) )
-		return SPELL_NONE;
-
-	switch ( skill )
-	{
-		case SKILL_MAGERY:
-			return SPELL_Clumsy;
-		case SKILL_NECROMANCY:
-			return SPELL_Animate_Dead_AOS;
-		case SKILL_CHIVALRY:
-			return SPELL_Cleanse_by_Fire;
-		case SKILL_BUSHIDO:
-			return SPELL_Honorable_Execution;
-		case SKILL_NINJITSU:
-			return SPELL_Focus_Attack;
-		case SKILL_SPELLWEAVING:
-			return SPELL_Arcane_Circle;
-		case SKILL_MYSTICISM:
-			return SPELL_Nether_Bolt;
-		default:
-			return SPELL_NONE;
-	}
-}
-
-SPELL_TYPE CChar::Spell_GetMax(SKILL_TYPE skill)
-{
-	if ( skill == SKILL_NONE )	// providing no skill returns the last spell for monsters.
-		return SPELL_CUSTOM_QTY;
-	if ( !g_Cfg.IsSkillFlag(skill, SKF_MAGIC) )
-		return SPELL_NONE;
-
-	switch ( skill )
-	{
-		case SKILL_MAGERY:
-			return SPELL_MAGERY_QTY;
-		case SKILL_NECROMANCY:
-			return SPELL_NECROMANCY_QTY;
-		case SKILL_CHIVALRY:
-			return SPELL_CHIVALRY_QTY;
-		case SKILL_BUSHIDO:
-			return SPELL_BUSHIDO_QTY;
-		case SKILL_NINJITSU:
-			return SPELL_NINJITSU_QTY;
-		case SKILL_SPELLWEAVING:
-			return SPELL_SPELLWEAVING_QTY;
-		case SKILL_MYSTICISM:
-			return SPELL_MYSTICISM_QTY;
-		default:
-			return SPELL_NONE;
-	}
-}
-
 void CChar::Spell_Dispel(int iLevel)
 {
 	ADDTOCALLSTACK("CChar::Spell_Dispel");

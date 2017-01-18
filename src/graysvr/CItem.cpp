@@ -3408,31 +3408,6 @@ int CItem::GetSpellcountInBook() const
 	return count;
 }
 
-SKILL_TYPE CItem::GetSpellBookSkill()
-{
-	ADDTOCALLSTACK("CItem::GetSpellBookSkill");
-	ASSERT(IsTypeSpellbook());
-	switch ( GetType() )
-	{
-		case IT_SPELLBOOK:
-			return SKILL_MAGERY;
-		case IT_SPELLBOOK_NECRO:
-			return SKILL_NECROMANCY;
-		case IT_SPELLBOOK_PALA:
-			return SKILL_CHIVALRY;
-		case IT_SPELLBOOK_BUSHIDO:
-			return SKILL_BUSHIDO;
-		case IT_SPELLBOOK_NINJITSU:
-			return SKILL_NINJITSU;
-		case IT_SPELLBOOK_ARCANIST:
-			return SKILL_SPELLWEAVING;
-		case IT_SPELLBOOK_MYSTIC:
-			return SKILL_MYSTICISM;
-		default:
-			return SKILL_NONE;		// SKILL_NONE returns 1000+index in CChar::Spell_GetIndex()
-	}
-}
-
 int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
 {
 	ADDTOCALLSTACK("CItem::AddSpellbookSpell");

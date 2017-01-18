@@ -1242,7 +1242,6 @@ public:
 	void ConvertBolttoCloth();
 
 	// Spells
-	SKILL_TYPE GetSpellBookSkill();
 	SPELL_TYPE GetScrollSpell() const;
 	bool IsSpellInBook( SPELL_TYPE spell ) const;
 	int GetSpellcountInBook() const;
@@ -3320,9 +3319,7 @@ public:
 	}
 	int GetWeightLoadPercent( int iWeight ) const;
 
-	CItem *GetSpellbook(SPELL_TYPE iSpell = SPELL_Clumsy) const;
-	int GetSpellbookExtra(CItem *pBooks[], int &count) const;
-	CItem *GetSpellbookRandom(SPELL_TYPE iSpell = SPELL_Clumsy) const;
+	CItem *GetSpellbook(SPELL_TYPE iSpell) const;
 	CItemContainer *GetContainer(LAYER_TYPE layer) const
 	{
 		return dynamic_cast<CItemContainer *>(LayerFind(layer));
@@ -3709,19 +3706,17 @@ private:
 	int Skill_Act_Breath(SKTRIG_TYPE stage);
 	int Skill_Act_Training( SKTRIG_TYPE stage );
 
-	void Spell_Dispel( int iskilllevel );
-	CChar * Spell_Summon( CREID_TYPE id, CPointMap pt );
-	bool Spell_Recall(CItem * pRune, bool fGate);
-	SPELL_TYPE Spell_GetIndex(SKILL_TYPE skill = SKILL_NONE);	//gets first spell for the magic skill given.
-	SPELL_TYPE Spell_GetMax(SKILL_TYPE skill = SKILL_NONE);	//gets first spell for the magic skill given.
-	CItem * Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSkillLevel, int iDuration, CObjBase * pSrc = NULL, bool bEquip = true );
-	bool Spell_Equip_OnTick( CItem * pItem );
+	void Spell_Dispel(int iskilllevel);
+	CChar *Spell_Summon(CREID_TYPE id, CPointMap pt);
+	bool Spell_Recall(CItem *pRune, bool fGate);
+	CItem *Spell_Effect_Create(SPELL_TYPE spell, LAYER_TYPE layer, int iSkillLevel, int iDuration, CObjBase *pSrc = NULL, bool bEquip = true);
+	bool Spell_Equip_OnTick(CItem *pItem);
 
-	void Spell_Field(CPointMap pt, ITEMID_TYPE idEW, ITEMID_TYPE idNS, unsigned int fieldWidth, unsigned int fieldGauge, int iSkill, CChar * pCharSrc = NULL, ITEMID_TYPE idnewEW = static_cast<ITEMID_TYPE>(NULL), ITEMID_TYPE idnewNS = static_cast<ITEMID_TYPE>(NULL), int iDuration = 0, HUE_TYPE iColor = HUE_DEFAULT);
-	void Spell_Area( CPointMap pt, int iDist, int iSkill );
+	void Spell_Field(CPointMap pt, ITEMID_TYPE idEW, ITEMID_TYPE idNS, unsigned int fieldWidth, unsigned int fieldGauge, int iSkill, CChar *pCharSrc = NULL, ITEMID_TYPE idnewEW = ITEMID_NOTHING, ITEMID_TYPE idnewNS = ITEMID_NOTHING, int iDuration = 0, HUE_TYPE iColor = HUE_DEFAULT);
+	void Spell_Area(CPointMap pt, int iDist, int iSkill);
 	bool Spell_TargCheck_Face();
 	bool Spell_TargCheck();
-	bool Spell_Unequip( LAYER_TYPE layer );
+	bool Spell_Unequip(LAYER_TYPE layer);
 
 	int  Spell_CastStart();
 	void Spell_CastFail();
@@ -3981,7 +3976,7 @@ private:
 	bool NPC_FightCast(CObjBase * &pChar ,CObjBase * pSrc, SPELL_TYPE &spell, SKILL_TYPE skill = SKILL_NONE);
 	bool NPC_FightArchery( CChar * pChar );
 	bool NPC_FightMayCast(bool fCheckSkill = true) const;
-	bool NPC_GetAllSpellbookSpells();
+	void NPC_GetAllSpellbookSpells();
 
 	bool NPC_Act_Follow( bool fFlee = false, int maxDistance = 1, bool fMoveAway = false );
 	void NPC_Act_Guard();
@@ -4003,12 +3998,12 @@ public:
 	void NPC_Pathfinding();		//	NPC thread AI - pathfinding
 	void NPC_Food();			//	NPC thread AI - search for food
 	void NPC_ExtraAI();			//	NPC thread AI - some general extra operations
-	bool NPC_AddSpellsFromBook(CItem * pBook);
+	void NPC_AddSpellsFromBook(CItem * pBook);
 
 	void NPC_PetDesert();	
 	void NPC_PetClearOwners();
 	bool NPC_PetSetOwner( CChar * pChar );
-	CChar * NPC_PetGetOwner() const;
+	CChar *NPC_PetGetOwner() const;
 	bool NPC_IsOwnedBy( const CChar * pChar, bool fAllowGM = true ) const;
 	bool NPC_CanSpeak() const;
 

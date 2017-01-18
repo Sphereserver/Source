@@ -1692,48 +1692,41 @@ int CCharNPC::Spells_FindSpell(SPELL_TYPE spellID)
 	return -1;
 }
 
-bool CChar::NPC_GetAllSpellbookSpells()	// Retrieves a spellbook from the magic school given in iSpell
+// Add all spells found on spellbooks to the NPC internal spell list
+void CChar::NPC_GetAllSpellbookSpells()
 {
-	ADDTOCALLSTACK("CChar::GetSpellbook");
-	//	search for suitable book in hands first
+	ADDTOCALLSTACK("CChar::NPC_GetAllSpellbookSpells");
+	// Search in hands
 	for ( CItem *pBook = GetContentHead(); pBook != NULL; pBook = pBook->GetNext() )
 	{
-		if (pBook->IsTypeSpellbook())
-		{
-			if (!NPC_AddSpellsFromBook(pBook))
-				continue;
-		}
+		if ( pBook->IsTypeSpellbook() )
+			NPC_AddSpellsFromBook(pBook);
 	}
 
-	//	then search in the top level of the pack
+	// Search in the top level of backpack
 	CItemContainer *pPack = GetContainer(LAYER_PACK);
 	if (pPack)
 	{
 		for ( CItem *pBook = pPack->GetContentHead(); pBook != NULL; pBook = pBook->GetNext() )
 		{
-			if (pBook->IsTypeSpellbook())
-			{
-				if (!NPC_AddSpellsFromBook(pBook))
-					continue;
-			}
+			if ( pBook->IsTypeSpellbook() )
+				NPC_AddSpellsFromBook(pBook);
 		}
 	}
-	return true;
 }
 
-bool CChar::NPC_AddSpellsFromBook(CItem * pBook)
+void CChar::NPC_AddSpellsFromBook(CItem * pBook)
 {
-	if (!m_pNPC)
-		return false;
-	SKILL_TYPE skill = pBook->GetSpellBookSkill();
-	int max = Spell_GetMax(skill);
-	for (int i = 0; i <= max; i++)
+	ADDTOCALLSTACK("CChar::NPC_AddSpellsFromBook");
+	WORD min = pBook->m_itSpellbook.m_baseid + 1;
+	WORD max = pBook->m_itSpellbook.m_baseid + pBook->m_itSpellbook.m_maxspells;
+
+	for ( int i = min; i <= max; i++ )
 	{
 		SPELL_TYPE spell = static_cast<SPELL_TYPE>(i);
-		if (pBook->IsSpellInBook(spell))
+		if ( pBook->IsSpellInBook(spell) )
 			m_pNPC->Spells_Add(spell);
 	}
-	return true;
 }
 
 // cast a spell if i can ?
