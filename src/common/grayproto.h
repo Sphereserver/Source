@@ -928,6 +928,25 @@ enum MAPCMD_TYPE
 	MAP_SENT = 7
 };
 
+enum MAPWAYPOINT_TYPE
+{
+	Corpse				= 0x1,
+	PartyMember			= 0x2,
+	Unk1				= 0x3,
+	QuestGiver			= 0x4,
+	NewPlayerQuest		= 0x5,
+	Healer				= 0x6,
+	Unk2				= 0x7,
+	Unk3				= 0x8,
+	Unk4				= 0x9,
+	Unk5				= 0xA,
+	Shrine				= 0xB,
+	Moongate			= 0xC,
+	Unk6				= 0xD,
+	GreenDot			= 0xE,
+	GreenDotFlashing	= 0xF
+};
+
 enum WEATHER_TYPE
 {
 	WEATHER_DEFAULT = 0xFE,

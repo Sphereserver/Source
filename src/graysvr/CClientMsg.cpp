@@ -1856,15 +1856,15 @@ void CClient::addMapDiff()
 	new PacketEnableMapDiffs(this);
 }
 
-void CClient::addMapWaypoint( CObjBase *pObj, BYTE type )
+void CClient::addMapWaypoint( CObjBase *pObj, MAPWAYPOINT_TYPE type )
 {
 	ADDTOCALLSTACK("CClient::addMapWaypoint");
 	// Add/remove map waypoints on enhanced clients
 
-	if ( type > 0 )
+	if ( type )
 	{
 		if ( PacketWaypointAdd::CanSendTo(m_NetState) )
-			new PacketWaypointAdd(this, pObj, static_cast<PacketWaypointAdd::WaypointType>(type));
+			new PacketWaypointAdd(this, pObj, type);
 	}
 	else
 	{

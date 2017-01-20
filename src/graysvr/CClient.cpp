@@ -1387,7 +1387,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			Str_ParseCmds(s.GetArgRaw(), piVal, COUNTOF(piVal));
 
 			CObjBase *pObj = static_cast<CGrayUID>(piVal[0]).ObjFind();
-			addMapWaypoint(pObj, static_cast<BYTE>(piVal[1]));
+			addMapWaypoint(pObj, static_cast<MAPWAYPOINT_TYPE>(piVal[1]));
 			break;
 		}
 		case CV_MENU:

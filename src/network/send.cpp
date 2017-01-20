@@ -3833,17 +3833,14 @@ PacketEnableMapDiffs::PacketEnableMapDiffs(const CClient* target) : PacketExtend
 {
 	ADDTOCALLSTACK("PacketEnableMapDiffs::PacketEnableMapDiffs");
 
-	int mapCount = 1;
-	int map;
+	BYTE map;
+	BYTE mapCount = 0;
 
 	// find map count
-	for (map = 255; map >= 0; map--)
+	for (map = 0; map < 256; map++)
 	{
-		if (g_MapList.m_maps[map] == false)
-			continue;
-
-		mapCount = map;
-		break;
+		if (g_MapList.m_maps[map])
+			mapCount++;
 	}
 
 	writeInt32(mapCount);
@@ -4643,7 +4640,7 @@ PacketKREncryption::PacketKREncryption(const CClient* target) : PacketSend(XCMD_
 *
 *
 ***************************************************************************/
-PacketWaypointAdd::PacketWaypointAdd(const CClient *target, CObjBase *object, WaypointType type) : PacketSend(XCMD_WaypointShow, 25, g_Cfg.m_fUsePacketPriorities ? PRI_LOW : PRI_NORMAL)
+PacketWaypointAdd::PacketWaypointAdd(const CClient *target, CObjBase *object, MAPWAYPOINT_TYPE type) : PacketSend(XCMD_WaypointShow, 25, g_Cfg.m_fUsePacketPriorities ? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketWaypointAdd::PacketWaypointAdd");
 
@@ -4651,7 +4648,7 @@ PacketWaypointAdd::PacketWaypointAdd(const CClient *target, CObjBase *object, Wa
 		return;
 
 	CPointMap pt = object->GetTopPoint();
-	DWORD cliloc = (type == WaypointType::Corpse) ? 1046414 : 1062613;	// the remains of ~1_NAME~ : "~1_NAME~"
+	DWORD cliloc = (type == MAPWAYPOINT_TYPE::Corpse) ? 1046414 : 1062613;	// the remains of ~1_NAME~ : "~1_NAME~"
 
 	initLength();
 	writeInt32(object->GetUID());
