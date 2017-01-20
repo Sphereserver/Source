@@ -62,10 +62,10 @@ PacketWeb::PacketWeb(const CClient * target, const BYTE * data, size_t length) :
 {
 	ADDTOCALLSTACK("PacketWeb::PacketWeb");
 
-	if (data != NULL && length > 0)
+	if (data && (length > 0))
 		setData(data, length);
 
-	if (target != NULL)
+	if (target)
 		push(target);
 }
 
@@ -465,7 +465,7 @@ void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_
 	}
 	else
 	{
-		if (character->CanSee(item) == false)
+		if (!character->CanSee(item))
 			flags |= ITEMF_INVIS;
 
 		if (item->Item_GetDef()->Can(CAN_I_LIGHT))
@@ -539,18 +539,16 @@ PacketMessageASCII::PacketMessageASCII(const CClient* target, LPCTSTR pszText, c
 
 	initLength();
 
-	if (source == NULL)
+	if (!source)
 		writeInt32(0xFFFFFFFF);
 	else
 		writeInt32(source->GetUID());
 	
-	if (source == NULL || source->IsChar() == false)
-	{
+	if (!source || !source->IsChar())
 		writeInt16(0xFFFF);
-	}
 	else
 	{
-		const CChar* sourceCharacter = dynamic_cast<const CChar*>(source);
+		const CChar* sourceCharacter = dynamic_cast<const CChar *>(source);
 		ASSERT(sourceCharacter);
 		writeInt16(static_cast<WORD>(sourceCharacter->GetDispID()));
 	}
@@ -561,10 +559,10 @@ PacketMessageASCII::PacketMessageASCII(const CClient* target, LPCTSTR pszText, c
 
 	// we need to ensure that the name is null terminated here when using TALKMODE_ITEM, otherwise
 	// the journal can freeze and crash older client versions
-	if (source == NULL)
-		writeStringFixedASCII("System", 30);
-	else
+	if (source)
 		writeStringFixedASCII(source->GetName(), 30, true);
+	else
+		writeStringFixedASCII("System", 30);
 
 	writeStringASCII(pszText);
 
@@ -682,7 +680,7 @@ PacketDragAnimation::PacketDragAnimation(const CChar* source, const CItem* item,
 
 	const CPointMap& sourcepos = source->GetTopPoint();
 
-	if (container != NULL)
+	if (container)
 	{
 		// item is being dragged into a container
 		const CObjBaseTemplate* target = container->GetTopLevelObj();
@@ -785,7 +783,7 @@ PacketItemContainer::PacketItemContainer(const CClient* target, const CItem* ite
 {
 	ADDTOCALLSTACK("PacketItemContainer::PacketItemContainer");
 
-	const CItemContainer* container = dynamic_cast<CItemContainer*>( item->GetParent() );
+	const CItemContainer* container = dynamic_cast<CItemContainer *>(item->GetParent());
 	const CPointBase& pt = item->GetContainedPoint();
 
 	const CItemBase* itemDefinition = item->Item_GetDef();
@@ -942,7 +940,7 @@ PacketItemEquipped::PacketItemEquipped(const CClient* target, const CItem* item)
 {
 	ADDTOCALLSTACK("PacketItemEquipped::PacketItemEquipped");
 
-	const CChar* parent = dynamic_cast<CChar*>(item->GetParent());
+	const CChar* parent = dynamic_cast<CChar *>(item->GetParent());
 	ASSERT(parent);
 
 	LAYER_TYPE layer = item->GetEquipLayer();
@@ -992,7 +990,7 @@ PacketSkills::PacketSkills(const CClient* target, const CChar* character, SKILL_
 
 	initLength();
 
-	if (character == NULL)
+	if (!character)
 		character = target->GetChar();
 
 	bool includeCaps = target->m_NetState->isClientVersion(MINCLIVER_AOS);
@@ -1006,7 +1004,7 @@ PacketSkills::PacketSkills(const CClient* target, const CChar* character, SKILL_
 
 		for (size_t i = 0; i < g_Cfg.m_iMaxSkill; i++)
 		{
-			if (g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) == false)
+			if (!g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)))
 				continue;
 
 			writeInt16(static_cast<WORD>(i + 1));
@@ -1095,7 +1093,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 		if ( isShop )
 		{
 			const CItemVendable* vendorItem = static_cast<const CItemVendable *>(item);
-			if ( vendorItem == NULL || vendorItem->GetAmount() == 0 || vendorItem->IsType(IT_GOLD) )
+			if ( !vendorItem || (vendorItem->GetAmount() == 0) || vendorItem->IsType(IT_GOLD) )
 				continue;
 
 			amount = minimum(static_cast<WORD>(g_Cfg.m_iVendorMaxSell), amount);
@@ -1127,7 +1125,7 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 			}
 		}
 
-		if ( itemDefinition != NULL && target->GetResDisp() < itemDefinition->GetResLevel() )
+		if ( itemDefinition && (target->GetResDisp() < itemDefinition->GetResLevel()) )
 		{
 			id = static_cast<ITEMID_TYPE>(itemDefinition->GetResDispDnId());
 
@@ -1176,7 +1174,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItem* spell
 	WORD count = 0;
 	for (int i = SPELL_Clumsy; i <= SPELL_MAGERY_QTY; i++)
 	{
-		if (spellbook->IsSpellInBook(static_cast<SPELL_TYPE>(i)) == false)
+		if (!spellbook->IsSpellInBook(static_cast<SPELL_TYPE>(i)))
 			continue;
 
 		writeInt32(UID_F_ITEM + UID_O_INDEX_FREE + i);
@@ -1214,11 +1212,11 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItemContain
 	WORD count = 0;
 	for (CItem* item = spellbook->GetContentHead(); item != NULL; item = item->GetNext())
 	{
-		if (item->IsType(IT_SCROLL) == false)
+		if (!item->IsType(IT_SCROLL))
 			continue;
 
 		spellDefinition = g_Cfg.GetSpellDef(static_cast<SPELL_TYPE>(item->m_itSpell.m_spell));
-		if (spellDefinition == NULL)
+		if (!spellDefinition)
 			continue;
 
 		writeInt32(item->GetUID());
@@ -1519,7 +1517,7 @@ void PacketBookPageContent::addPage(const CItem* book, size_t page)
 	if (book->IsBookSystem())
 	{
 		CResourceLock s;
-		if (g_Cfg.ResourceLock(s, RESOURCE_ID(RES_BOOK, book->m_itBook.m_ResID.GetResIndex(), static_cast<int>(page))) == true)
+		if (g_Cfg.ResourceLock(s, RESOURCE_ID(RES_BOOK, book->m_itBook.m_ResID.GetResIndex(), static_cast<int>(page))))
 		{
 			while (s.ReadKey(false))
 			{
@@ -1531,8 +1529,8 @@ void PacketBookPageContent::addPage(const CItem* book, size_t page)
 	else
 	{
 		// user written book pages
-		const CItemMessage* message = dynamic_cast<const CItemMessage*>(book);
-		if (message != NULL)
+		const CItemMessage* message = dynamic_cast<const CItemMessage *>(book);
+		if (message)
 		{
 			if (page > 0 && page <= message->GetPageCount())
 			{
@@ -1805,7 +1803,7 @@ void PacketEffect::writeBasicEffect(EFFECT_TYPE motion, ITEMID_TYPE id, const CO
 	CPointMap dstpos = dst->GetTopPoint();
 
 	CPointMap srcpos;
-	if (src != NULL && motion == EFFECT_BOLT)
+	if (src && (motion == EFFECT_BOLT))
 	{
 		src = src->GetTopLevelObj();
 		srcpos = src->GetTopPoint();
@@ -1819,7 +1817,7 @@ void PacketEffect::writeBasicEffect(EFFECT_TYPE motion, ITEMID_TYPE id, const CO
 	switch (motion)
 	{
 		case EFFECT_BOLT: // a targeted bolt
-			if (src == NULL)
+			if (!src)
 				src = dst;
 
 			oneDirection = false;
@@ -2020,7 +2018,7 @@ PacketVendorBuyList::PacketVendorBuyList(const CClient* target, const CItemConta
 	for ( CItem *item = (bIsClientEnhanced ? contParent->GetContentHead() : contParent->GetContentTail()); item != NULL; item = (bIsClientEnhanced ? item->GetNext() : item->GetPrev()) )
 	{
 		CItemVendable* vendorItem = static_cast<CItemVendable *>(item);
-		if (vendorItem == NULL || vendorItem->GetAmount() == 0)
+		if (!vendorItem || (vendorItem->GetAmount() == 0))
 			continue;
 
 		DWORD price = vendorItem->GetVendorPrice(convertFactor);
@@ -2146,7 +2144,7 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 
 	bool isNewMobilePacket = target->m_NetState->isClientVersion(MINCLIVER_NEWMOBINCOMING);
 
-	if (character->IsStatFlag(STATF_Sleeping) == false)
+	if (!character->IsStatFlag(STATF_Sleeping))
 	{
 		bool isLayerSent[LAYER_HORSE + 1];
 		memset(isLayerSent, 0, sizeof(isLayerSent));
@@ -2154,9 +2152,9 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 		for (CItem* item = character->GetContentHead(); item != NULL; item = item->GetNext())
 		{
 			LAYER_TYPE layer = item->GetEquipLayer();
-			if (CItemBase::IsVisibleLayer(layer) == false)
+			if (!CItemBase::IsVisibleLayer(layer))
 				continue;
-			if (viewer->CanSeeItem(item) == false && viewer != character)
+			if (!viewer->CanSeeItem(item) && (viewer != character))
 				continue;
 
 			// prevent same layer being sent twice
@@ -2393,7 +2391,7 @@ PacketCorpseEquipment::PacketCorpseEquipment(CClient* target, const CItemContain
 
 	for (CItem* item = corpse->GetContentHead(); item != NULL; item = item->GetNext())
 	{
-		if (item->IsAttr(ATTR_INVIS) && viewer->CanSee(item) == false)
+		if (item->IsAttr(ATTR_INVIS) && !viewer->CanSee(item))
 			continue;
 		
 		layer = static_cast<LAYER_TYPE>(item->GetContainedLayer());
@@ -2525,7 +2523,7 @@ PacketDisplayMap::PacketDisplayMap(const CClient* target, const CItemMap* map, c
 	ADDTOCALLSTACK("PacketDisplayMap::PacketDisplayMap");
 
 	const CItemBase* itemDef = map->Item_GetDef();
-	ASSERT(itemDef != NULL);
+	ASSERT(itemDef);
 
 	WORD width = static_cast<WORD>(itemDef->m_ttMap.m_iGumpWidth > 0 ? itemDef->m_ttMap.m_iGumpWidth : CItemMap::DEFAULT_SIZE);
 	WORD height = static_cast<WORD>(itemDef->m_ttMap.m_iGumpHeight > 0 ? itemDef->m_ttMap.m_iGumpHeight : CItemMap::DEFAULT_SIZE);
@@ -2587,14 +2585,14 @@ PacketDisplayBook::PacketDisplayBook(const CClient* target, CItem* book) : Packe
 		}
 
 		// make sure book is named
-		if (title.IsEmpty() == false)
+		if (!title.IsEmpty())
 			book->SetName(static_cast<LPCTSTR>(title));
 	}
 	else
 	{
 		// user written book
-		const CItemMessage* message = dynamic_cast<const CItemMessage*>(book);
-		if (message != NULL)
+		const CItemMessage* message = dynamic_cast<const CItemMessage *>(book);
+		if (message)
 		{
 			isWritable = message->IsBookWritable();
 			pages = isWritable? MAX_BOOK_PAGES : message->GetPageCount();
@@ -2629,14 +2627,14 @@ PacketShowDyeWindow::PacketShowDyeWindow(const CClient* target, const CObjBase* 
 	ITEMID_TYPE id;
 	if (object->IsItem())
 	{
-		const CItem* item = dynamic_cast<const CItem*>(object);
+		const CItem* item = dynamic_cast<const CItem *>(object);
 		ASSERT(item);
 		id = item->GetDispID();
 	}
 	else
 	{
 		// get the item equiv for the creature
-		const CChar* character = dynamic_cast<const CChar*>(object);
+		const CChar* character = dynamic_cast<const CChar *>(object);
 		ASSERT(character);
 		id = character->Char_GetDef()->m_trackID;
 	}
@@ -2686,7 +2684,7 @@ PacketAddPrompt::PacketAddPrompt(const CClient* target, CGrayUID context1, CGray
 	writeInt32(context2);
 	writeInt32(0);
 
-	if (useUnicode == true)
+	if (useUnicode)
 	{
 		writeStringFixedASCII("", 4);
 		writeCharUNICODE('\0');
@@ -2722,12 +2720,12 @@ PacketVendorSellList::PacketVendorSellList(const CClient* target, const CChar* v
 	if (!item)
 		return;
 
-	std::deque<const CItemContainer*> otherBoxes;
+	std::deque<const CItemContainer *> otherBoxes;
 	for (;;)
 	{
 		if (item)
 		{
-			contParent = dynamic_cast<CItemContainer*>(item);
+			contParent = dynamic_cast<CItemContainer *>(item);
 			if (contParent && (contParent->GetCount() > 0))
 			{
 				if (contParent->IsSearchable())
@@ -2735,7 +2733,7 @@ PacketVendorSellList::PacketVendorSellList(const CClient* target, const CChar* v
 			}
 			else
 			{
-				CItemVendable* vendItem = dynamic_cast<CItemVendable*>(item);
+				CItemVendable* vendItem = dynamic_cast<CItemVendable *>(item);
 				if (vendItem)
 				{
 					CItemVendable* vendSell = CChar::NPC_FindVendableItem(vendItem, contBuy);
@@ -3127,7 +3125,7 @@ PacketGumpValueInput::PacketGumpValueInput(const CClient* target, bool cancel, I
 	writeByte(static_cast<BYTE>(style));
 	writeInt32(maxLength);
 
-	TCHAR* z(NULL);
+	TCHAR* z = NULL;
 	switch (style)
 	{
 		case INPVAL_STYLE_NOEDIT: // None
@@ -3168,18 +3166,16 @@ PacketMessageUNICODE::PacketMessageUNICODE(const CClient* target, const NWORD* p
 
 	initLength();
 
-	if (source == NULL)
+	if (!source)
 		writeInt32(0xFFFFFFFF);
 	else
 		writeInt32(source->GetUID());
 	
-	if (source == NULL || source->IsChar() == false)
-	{
+	if (!source || !source->IsChar())
 		writeInt16(0xFFFF);
-	}
 	else
 	{
-		const CChar* sourceCharacter = dynamic_cast<const CChar*>(source);
+		const CChar* sourceCharacter = dynamic_cast<const CChar *>(source);
 		ASSERT(sourceCharacter);
 		writeInt16(static_cast<WORD>(sourceCharacter->GetDispID()));
 	}
@@ -3189,12 +3185,12 @@ PacketMessageUNICODE::PacketMessageUNICODE(const CClient* target, const NWORD* p
 	writeInt16(static_cast<WORD>(font));
 	writeStringFixedASCII(language.GetStr(), 4);
 
-	if (source == NULL)
-		writeStringFixedASCII("System", 30);
-	else
+	if (source)
 		writeStringFixedASCII(source->GetName(), 30);
+	else
+		writeStringFixedASCII("System", 30);
 
-	writeStringUNICODE(reinterpret_cast<const WCHAR*>(pszText));
+	writeStringUNICODE(reinterpret_cast<const WCHAR *>(pszText));
 
 	push(target);
 }
@@ -3617,9 +3613,9 @@ PacketPartyRemoveMember::PacketPartyRemoveMember(const CChar* member, const CCha
 {
 	ADDTOCALLSTACK("PacketPartyRemoveMember::PacketPartyRemoveMember");
 
-	ASSERT(member != NULL);
+	ASSERT(member);
 
-	size_t iQty = members == NULL? 0 : members->GetCharCount();
+	size_t iQty = !members ? 0 : members->GetCharCount();
 
 	writeByte(static_cast<BYTE>(iQty));
 	writeInt32(member->GetUID());
@@ -3641,7 +3637,7 @@ PacketPartyChat::PacketPartyChat(const CChar* source, const NCHAR* text) : Packe
 	ADDTOCALLSTACK("PacketPartyChat::PacketPartyChat");
 
 	writeInt32(source->GetUID());
-	writeStringUNICODE(reinterpret_cast<const WCHAR*>(text));
+	writeStringUNICODE(reinterpret_cast<const WCHAR *>(text));
 }
 
 
@@ -3695,7 +3691,7 @@ PacketPropertyListVersionOld::PacketPropertyListVersionOld(const CClient* target
 	writeInt32(object->GetUID());
 	writeInt32(version);
 
-	if (target != NULL)
+	if (target)
 		push(target, false);
 }
 
@@ -3710,7 +3706,7 @@ bool PacketPropertyListVersionOld::onSend(const CClient* client)
 		return true;
 
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	return true;
@@ -3882,15 +3878,15 @@ PacketStatLocks::PacketStatLocks(const CClient* target, const CChar* character) 
 {
 	ADDTOCALLSTACK("PacketStatLocks::PacketStatLocks");
 
-	BYTE status(0);
-	if (character->m_pPlayer != NULL)
+	BYTE status = 0;
+	if (character->m_pPlayer)
 	{
-		status |= (BYTE)character->m_pPlayer->Stat_GetLock(STAT_INT);
-		status |= (BYTE)character->m_pPlayer->Stat_GetLock(STAT_DEX) << 2;
-		status |= (BYTE)character->m_pPlayer->Stat_GetLock(STAT_STR) << 4;
+		status |= static_cast<BYTE>(character->m_pPlayer->Stat_GetLock(STAT_INT));
+		status |= static_cast<BYTE>(character->m_pPlayer->Stat_GetLock(STAT_DEX)) << 2;
+		status |= static_cast<BYTE>(character->m_pPlayer->Stat_GetLock(STAT_STR)) << 4;
 	}
 
-	writeByte(0x02);
+	writeByte(0x2);
 	writeInt32(character->GetUID());
 	writeByte(0);
 	writeByte(status);
@@ -4056,18 +4052,16 @@ PacketMessageLocalised::PacketMessageLocalised(const CClient* target, DWORD clil
 
 	initLength();
 
-	if (source == NULL)
+	if (!source)
 		writeInt32(0xFFFFFFFF);
 	else
 		writeInt32(source->GetUID());
 
-	if (source == NULL || source->IsChar() == false)
-	{
+	if (!source || !source->IsChar())
 		writeInt16(0xFFFF);
-	}
 	else
 	{
-		const CChar* sourceCharacter = dynamic_cast<const CChar*>(source);
+		const CChar* sourceCharacter = dynamic_cast<const CChar *>(source);
 		ASSERT(sourceCharacter);
 		writeInt16(static_cast<WORD>(sourceCharacter->GetDispID()));
 	}
@@ -4077,10 +4071,10 @@ PacketMessageLocalised::PacketMessageLocalised(const CClient* target, DWORD clil
 	writeInt16(static_cast<WORD>(font));
 	writeInt32(cliloc);
 
-	if (source == NULL)
-		writeStringFixedASCII("System", 30);
-	else
+	if (source)
 		writeStringFixedASCII(source->GetName(), 30);
+	else
+		writeStringFixedASCII("System", 30);
 
 	writeStringUNICODE(args);
 
@@ -4117,18 +4111,16 @@ PacketMessageLocalisedEx::PacketMessageLocalisedEx(const CClient* target, DWORD 
 
 	initLength();
 
-	if (source == NULL)
+	if (!source)
 		writeInt32(0xFFFFFFFF);
 	else
 		writeInt32(source->GetUID());
 
-	if (source == NULL || source->IsChar() == false)
-	{
+	if (!source || !source->IsChar())
 		writeInt16(0xFFFF);
-	}
 	else
 	{
-		const CChar* sourceCharacter = dynamic_cast<const CChar*>(source);
+		const CChar* sourceCharacter = dynamic_cast<const CChar *>(source);
 		ASSERT(sourceCharacter);
 		writeInt16(static_cast<WORD>(sourceCharacter->GetDispID()));
 	}
@@ -4139,10 +4131,10 @@ PacketMessageLocalisedEx::PacketMessageLocalisedEx(const CClient* target, DWORD 
 	writeInt32(cliloc);
 	writeByte(static_cast<BYTE>(affixType));
 
-	if (source == NULL)
-		writeStringFixedASCII("System", 30);
-	else
+	if (source)
 		writeStringFixedASCII(source->GetName(), 30);
+	else
+		writeStringFixedASCII("System", 30);
 
 	writeStringASCII(affix);
 	writeStringUNICODE(args);
@@ -4211,14 +4203,14 @@ PacketDisplayBookNew::PacketDisplayBookNew(const CClient* target, CItem* book) :
 		}
 
 		// make sure book is named
-		if (title.IsEmpty() == false)
+		if (!title.IsEmpty())
 			book->SetName(static_cast<LPCTSTR>(title));
 	}
 	else
 	{
 		// user written book
-		const CItemMessage* message = dynamic_cast<const CItemMessage*>(book);
-		if (message != NULL)
+		const CItemMessage* message = dynamic_cast<const CItemMessage *>(book);
+		if (message)
 		{
 			isWritable = message->IsBookWritable();
 			pages = isWritable? MAX_BOOK_PAGES : message->GetPageCount();
@@ -4249,7 +4241,7 @@ PacketDisplayBookNew::PacketDisplayBookNew(const CClient* target, CItem* book) :
  *
  *
  ***************************************************************************/
-PacketPropertyList::PacketPropertyList(const CObjBase* object, DWORD version, const CGObArray<CClientTooltip*>* data) : PacketSend(XCMD_AOSTooltip, 48, PRI_IDLE)
+PacketPropertyList::PacketPropertyList(const CObjBase* object, DWORD version, const CGObArray<CClientTooltip *> *data) : PacketSend(XCMD_AOSTooltip, 48, PRI_IDLE)
 {
 	ADDTOCALLSTACK("PacketPropertyList::PacketPropertyList");
 
@@ -4300,7 +4292,7 @@ bool PacketPropertyList::onSend(const CClient* client)
 		return true;
 
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	if (hasExpired(TICK_PER_SEC * 30))
@@ -4504,7 +4496,7 @@ PacketPropertyListVersion::PacketPropertyListVersion(const CClient* target, cons
 	writeInt32(object->GetUID());
 	writeInt32(version);
 
-	if (target != NULL)
+	if (target)
 		push(target);
 }
 
@@ -4519,7 +4511,7 @@ bool PacketPropertyListVersion::onSend(const CClient* client)
 		return true;
 
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	return true;
@@ -4539,7 +4531,7 @@ PacketBuff::PacketBuff(const CClient* target, const BUFF_ICONS iconId, const DWO
 	// At date of 04/2015 RUOSI seems to have a different structure than the one we have with one more argument and different order... however this one seems to keep working: http://ruosi.org/packetguide/index.xml#serverDF
 
 	const CChar* character = target->GetChar();
-	ASSERT(character != NULL);
+	ASSERT(character);
 
 	initLength();
 
@@ -4599,7 +4591,7 @@ PacketBuff::PacketBuff(const CClient* target, const BUFF_ICONS iconId) : PacketS
 	ADDTOCALLSTACK("PacketBuff::PacketBuff(2)");
 
 	const CChar* character = target->GetChar();
-	ASSERT(character != NULL);
+	ASSERT(character);
 
 	initLength();
 
@@ -4648,7 +4640,7 @@ PacketWaypointAdd::PacketWaypointAdd(const CClient *target, CObjBase *object, MA
 		return;
 
 	CPointMap pt = object->GetTopPoint();
-	DWORD cliloc = (type == MAPWAYPOINT_TYPE::Corpse) ? 1046414 : 1062613;	// the remains of ~1_NAME~ : "~1_NAME~"
+	DWORD cliloc = (type == Corpse) ? 1046414 : 1062613;	// the remains of ~1_NAME~ : "~1_NAME~"
 
 	initLength();
 	writeInt32(object->GetUID());
@@ -4820,7 +4812,7 @@ PacketDisplayMapNew::PacketDisplayMapNew(const CClient* target, const CItemMap* 
 	ADDTOCALLSTACK("PacketDisplayMapNew::PacketDisplayMapNew");
 
 	const CItemBase* itemDef = map->Item_GetDef();
-	ASSERT(itemDef != NULL);
+	ASSERT(itemDef);
 
 	WORD width = static_cast<WORD>(itemDef->m_ttMap.m_iGumpWidth > 0 ? itemDef->m_ttMap.m_iGumpWidth : CItemMap::DEFAULT_SIZE);
 	WORD height = static_cast<WORD>(itemDef->m_ttMap.m_iGumpHeight > 0 ? itemDef->m_ttMap.m_iGumpHeight : CItemMap::DEFAULT_SIZE);
@@ -4899,7 +4891,7 @@ PacketContainer::PacketContainer(const CClient* target, CObjBase** objects, size
 		CObjBase* object = objects[i];
 		if (object->IsItem())
 		{
-			CItem* item = dynamic_cast<CItem*>(object);
+			CItem* item = dynamic_cast<CItem *>(object);
 			DataSource source = TileData;
 			ITEMID_TYPE id = item->GetDispID();
 			HUE_TYPE hue = item->GetHue();
@@ -4934,7 +4926,7 @@ PacketContainer::PacketContainer(const CClient* target, CObjBase** objects, size
 		}
 		else
 		{
-			CChar* mobile = dynamic_cast<CChar*>(object);
+			CChar* mobile = dynamic_cast<CChar *>(object);
 			DataSource source = Character;
 			CREID_TYPE id = mobile->GetDispID();
 			HUE_TYPE hue = mobile->GetHue();

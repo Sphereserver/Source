@@ -151,7 +151,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 	const CAccountRef account = client->m_pAccount;
 	ASSERT(account);
 
-	if (client->GetChar() != NULL)
+	if (client->GetChar())
 	{
 		// logging in as a new player whilst already online !
 		client->addSysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ALREADYONLINE));
@@ -161,7 +161,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 
 	// make sure they don't have an idling character
 	const CChar* pCharLast = account->m_uidLastChar.CharFind();
-	if (pCharLast != NULL && account->IsMyAccountChar(pCharLast) && account->GetPrivLevel() <= PLEVEL_GM && !pCharLast->IsDisconnected() )
+	if (pCharLast && account->IsMyAccountChar(pCharLast) && (account->GetPrivLevel() <= PLEVEL_GM) && !pCharLast->IsDisconnected())
 	{
 		client->addIdleWarning(PacketWarningMessage::CharacterInWorld);
 		client->addLoginErr(PacketLoginError::CharIdle);
@@ -265,7 +265,7 @@ bool PacketSpeakReq::onReceive(NetState* net)
 
 	CClient* client = net->m_client;
 	ASSERT(client);
-	if (client->GetChar() == NULL)
+	if (!client->GetChar())
 		return false;
 
 	size_t packetLength = readInt16();
@@ -495,11 +495,11 @@ bool PacketItemEquipReq::onReceive(NetState* net)
 	CGrayUID targetSerial(readInt32());
 
 	CChar* source = client->GetChar();
-	if (source == NULL)
+	if (!source)
 		return false;
 
 	CItem* item = source->LayerFind(LAYER_DRAGGING);
-	if ( item == NULL || client->GetTargMode() != CLIMODE_DRAG || item->GetUID() != itemSerial )
+	if ( !item || (client->GetTargMode() != CLIMODE_DRAG) || (item->GetUID() != itemSerial) )
 	{
 		// I have no idea why i got here.
 		new PacketDragCancel(client, PacketDragCancel::Other);
@@ -510,7 +510,7 @@ bool PacketItemEquipReq::onReceive(NetState* net)
 
 	CChar* target = targetSerial.CharFind();
 	bool bCanCarry = target->CanCarry(item);
-	if ( target == NULL || (itemLayer >= LAYER_HORSE) || !target->NPC_IsOwnedBy(source) || !bCanCarry || !target->ItemEquip(item, source) )
+	if ( !target || (itemLayer >= LAYER_HORSE) || !target->NPC_IsOwnedBy(source) || !bCanCarry || !target->ItemEquip(item, source) )
 	{
 		client->Event_Item_Drop_Fail(item);		//cannot equip
 		if ( !bCanCarry )
@@ -586,7 +586,7 @@ bool PacketDeathStatus::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* ghost = client->GetChar();
-	if (ghost == NULL)
+	if (!ghost)
 		return false;
 
 	DEATH_MODE_TYPE mode = static_cast<DEATH_MODE_TYPE>(readByte());
@@ -659,7 +659,7 @@ bool PacketSkillLockChange::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL || character->m_pPlayer == NULL)
+	if (!character || !character->m_pPlayer)
 		return false;
 
 	int len = readInt16();
@@ -674,8 +674,7 @@ bool PacketSkillLockChange::onReceive(NetState* net)
 		SKILLLOCK_TYPE state = static_cast<SKILLLOCK_TYPE>(readByte());
 		len -= 3;
 		
-		if (index <= SKILL_NONE || index >= SKILL_QTY ||
-			state < SKILLLOCK_UP || state > SKILLLOCK_LOCK)
+		if ((index <= SKILL_NONE) || (index >= SKILL_QTY) || (state < SKILLLOCK_UP) || (state > SKILLLOCK_LOCK))
 			continue;
 
 		character->m_pPlayer->Skill_SetLock(index, state);
@@ -703,7 +702,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* buyer = client->GetChar();
-	if (buyer == NULL)
+	if (!buyer)
 		return false;
 
 	WORD packetLength = readInt16();
@@ -713,13 +712,13 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 		return true;
 
 	CChar* vendor = vendorSerial.CharFind();
-	if (vendor == NULL || vendor->m_pNPC == NULL || !vendor->NPC_IsVendor())
+	if (!vendor || !vendor->m_pNPC || !vendor->NPC_IsVendor())
 	{
 		client->Event_VendorBuy_Cheater(0x1);
 		return true;
 	}
 
-	if (buyer->CanTouch(vendor) == false)
+	if (!buyer->CanTouch(vendor))
 	{
 		client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTREACH));
 		return true;
@@ -733,7 +732,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 
 	// check buying speed
 	const CVarDefCont* vardef = g_Cfg.m_bAllowBuySellAgent ? NULL : client->m_TagDefs.GetKey("BUYSELLTIME");
-	if (vardef != NULL)
+	if (vardef)
 	{
 		CServTime allowsell;
 		allowsell.InitTime(vardef->GetValNum() + (itemCount * 3));
@@ -753,7 +752,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 		WORD amount = readInt16();
 
 		item = dynamic_cast<CItemVendable*>(serial.ItemFind());
-		if (item == NULL || item->IsValidSaleItem(true) == false)
+		if (!item || !item->IsValidSaleItem(true))
 		{
 			client->Event_VendorBuy_Cheater(0x2);
 			return true;
@@ -833,11 +832,11 @@ bool PacketMapEdit::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	CItemMap* map = dynamic_cast<CItemMap*>(mapSerial.ItemFind());
-	if (map == NULL || character->CanTouch(map) == false) // sanity check
+	if (!map || !character->CanTouch(map)) // sanity check
 	{
 		client->SysMessage("You can't reach it");
 		return true;
@@ -846,7 +845,7 @@ bool PacketMapEdit::onReceive(NetState* net)
 	if (map->m_itMap.m_fPinsGlued)
 	{
 		client->SysMessage("The pins seem to be glued in place");
-		if (client->IsPriv(PRIV_GM) == false)
+		if (!client->IsPriv(PRIV_GM))
 			return true;
 	}
 
@@ -958,7 +957,7 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(2); // packet length
@@ -966,7 +965,7 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 	WORD pageCount = readInt16();
 
 	CItem* book = bookSerial.ItemFind();
-	if (character->CanSee(book) == false)
+	if (!character->CanSee(book))
 	{
 		client->addObjectRemoveCantSee(bookSerial, "the book");
 		return true;
@@ -982,7 +981,7 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 
 	// trying to write to the book
 	CItemMessage* text = dynamic_cast<CItemMessage*>( book );
-	if (text == NULL || book->IsBookWritable() == false)
+	if (!text || !book->IsBookWritable())
 		return true;
 
 	skip(-4);
@@ -995,7 +994,7 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 		// read next page to change with line count
 		page = readInt16();
 		lineCount = readInt16();
-		if (page < 1 || page > MAX_BOOK_PAGES || lineCount <= 0)
+		if ((page < 1) || (page > MAX_BOOK_PAGES) || (lineCount <= 0))
 			continue;
 
 		page--;
@@ -1045,7 +1044,7 @@ bool PacketTarget::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(1); // target type
@@ -1081,7 +1080,7 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(2); // length
@@ -1089,7 +1088,7 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 	CGrayUID containerSerial(readInt32());
 
 	CItemContainer* container = dynamic_cast<CItemContainer*>( containerSerial.ItemFind() );
-	if (container == NULL)
+	if (!container)
 		return true;
 	else if (character != container->GetParent())
 		return true;
@@ -1150,7 +1149,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(2);
@@ -1159,13 +1158,13 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 	CGrayUID messageSerial(readInt32());
 
 	CItemContainer* board = dynamic_cast<CItemContainer*>( boardSerial.ItemFind() );
-	if (character->CanSee(board) == false)
+	if (!character->CanSee(board))
 	{
 		client->addObjectRemoveCantSee(boardSerial, "the board");
 		return true;
 	}
 
-	if (board->IsType(IT_BBOARD) == false)
+	if (!board->IsType(IT_BBOARD))
 		return true;
 
 	switch (action)
@@ -1178,7 +1177,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 				DEBUG_ERR(( "%lx:BBoard feed back message bad length %" FMTSIZE_T "\n", net->id(), getLength()));
 				return true;
 			}
-			if (client->addBBoardMessage(board, action, messageSerial) == false)
+			if (!client->addBBoardMessage(board, action, messageSerial))
 			{
 				// sanity check fails
 				client->addObjectRemoveCantSee(messageSerial, "the message");
@@ -1192,7 +1191,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 			if (getLength() < 0x0c)
 				return true;
 
-			if (character->CanTouch(board) == false)
+			if (!character->CanTouch(board))
 			{
 				character->SysMessageDefault(DEFMSG_ITEMUSE_BBOARD_REACH);
 				return true;
@@ -1212,7 +1211,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 
 			// if 
 			CItemMessage* newMessage = dynamic_cast<CItemMessage*>( CItem::CreateBase(ITEMID_BBOARD_MSG) );
-			if (newMessage == NULL)
+			if (!newMessage)
 			{
 				DEBUG_ERR(("%lx:BBoard can't create message item\n", net->id()));
 				return true;
@@ -1231,7 +1230,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 			{
 				lenstr = readByte();
 				readStringASCII(str, lenstr, false);
-				if (Str_Check(str) == false)
+				if (!Str_Check(str))
 					newMessage->AddPageText(str);
 			}
 
@@ -1243,13 +1242,13 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 		{
 			// remove the message
 			CItemMessage* message = dynamic_cast<CItemMessage*>( messageSerial.ItemFind() );
-			if (board->IsItemInside(message) == false)
+			if (!board->IsItemInside(message))
 			{
 				client->SysMessageDefault(DEFMSG_ITEMUSE_BBOARD_COR);
 				return true;
 			}
 
-			if (client->IsPriv(PRIV_GM) == false && message->m_uidLink != character->GetUID())
+			if (!client->IsPriv(PRIV_GM) && (message->m_uidLink != character->GetUID()))
 			{
 				client->SysMessageDefault(DEFMSG_ITEMUSE_BBOARD_DEL);
 				return true;
@@ -1353,7 +1352,7 @@ bool PacketMenuChoice::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	CGrayUID serial(readInt32());
@@ -1722,16 +1721,14 @@ bool PacketAllNamesReq::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	const CObjBase* object;
 	for (WORD length = readInt16(); length > sizeof(DWORD); length -= sizeof(DWORD))
 	{
 		object = CGrayUID(readInt32()).ObjFind();
-		if (object == NULL)
-			continue;
-		else if (character->CanSee(object) == false)
+		if (!object || !character->CanSee(object))
 			continue;
 
 		new PacketAllNamesResponse(client, object);
@@ -1794,7 +1791,7 @@ bool PacketHelpPageReq::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	CScript script("HelpPage");
@@ -1821,7 +1818,7 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* seller = client->GetChar();
-	if (seller == NULL)
+	if (!seller)
 		return false;
 
 	skip(2); // length
@@ -1829,13 +1826,13 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 	size_t itemCount = readInt16();
 
 	CChar* vendor = vendorSerial.CharFind();
-	if (vendor == NULL || vendor->m_pNPC == NULL || !vendor->NPC_IsVendor())
+	if (!vendor || !vendor->m_pNPC || !vendor->NPC_IsVendor())
 	{
 		client->Event_VendorBuy_Cheater(0x1);
 		return true;
 	}
 	
-	if (seller->CanTouch(vendor) == false)
+	if (!seller->CanTouch(vendor))
 	{
 		client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTREACH));
 		return true;
@@ -1854,7 +1851,7 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 
 	// check selling speed
 	const CVarDefCont* vardef = g_Cfg.m_bAllowBuySellAgent ? NULL : client->m_TagDefs.GetKey("BUYSELLTIME");
-	if (vardef != NULL)
+	if (vardef)
 	{
 		CServTime allowsell;
 		allowsell.InitTime(vardef->GetValNum() + (itemCount * 3));
@@ -1995,7 +1992,7 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
 	client->ClearTargMode();
 
 	CObjBase* object = uid.ObjFind();
-	if (object == NULL)
+	if (!object)
 		return true;
 
 	// take action based on the parent context
@@ -2007,20 +2004,16 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
 
 		CScript script(client->m_Targ_Text, text);
 		bool ret = object->r_Verb(script, client->GetChar());
-		if (ret == false)
-		{
-			client->SysMessagef("Invalid set: %s = %s", static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text));
-		}
-		else
+		if (ret)
 		{
 			if (client->IsPriv(PRIV_DETAIL))
-			{
 				client->SysMessagef("Set: %s = %s", static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text));
-			}
 
 			object->RemoveFromView(); // weird client thing
 			object->Update();
 		}
+		else
+			client->SysMessagef("Invalid set: %s = %s", static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text));
 
 		g_Log.Event(LOGM_GM_CMDS, "%lx:'%s' tweak uid=0%lx (%s) to '%s %s'=%d\n", net->id(), client->GetName(), static_cast<DWORD>(object->GetUID()), object->GetName(), static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text), ret);
 	}
@@ -2046,7 +2039,7 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 
 	CClient* client = net->m_client;
 	ASSERT(client);
-	if (client->GetChar() == NULL)
+	if (!client->GetChar())
 		return false;
 
 	size_t packetLength = readInt16();
@@ -2114,7 +2107,7 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(2); // length
@@ -2135,7 +2128,7 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 		if (button == 1 && checkCount > 0)
 		{
 			viewed = CGrayUID(readInt32()).CharFind();
-			if (viewed == NULL)
+			if (!viewed)
 				viewed = character;
 		}
 
@@ -2153,16 +2146,16 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 #ifdef _DEBUG
 	{
 		const CResourceDef* resource = g_Cfg.ResourceGetDef(RESOURCE_ID(RES_DIALOG, context));
-		if (resource == NULL)
-			g_Log.Event(LOGL_EVENT, "Gump: %lu (%s), Uid: 0x%lx, Button: %lu.\n", context, "undef", (DWORD)serial, button);
-		else
+		if (resource)
 		{
 			const CDialogDef* dialog = dynamic_cast<const CDialogDef*>(resource);
-			if (dialog == NULL)
-				g_Log.Event(LOGL_EVENT, "Gump: %lu (%s), Uid: 0x%lx, Button: %lu.\n", context, "undef", (DWORD)serial, button);
+			if (dialog)
+				g_Log.Event(LOGL_EVENT, "Gump: %lu (%s), Uid: 0x%lx, Button: %lu.\n", context, dialog->GetName(), static_cast<DWORD>(serial), button);
 			else
-				g_Log.Event(LOGL_EVENT, "Gump: %lu (%s), Uid: 0x%lx, Button: %lu.\n", context, (LPCTSTR)dialog->GetName(), (DWORD)serial, button);
+				g_Log.Event(LOGL_EVENT, "Gump: %lu (%s), Uid: 0x%lx, Button: %lu.\n", context, "undef", static_cast<DWORD>(serial), button);
 		}
+		else
+			g_Log.Event(LOGL_EVENT, "Gump: %lu (%s), Uid: 0x%lx, Button: %lu.\n", context, "undef", static_cast<DWORD>(serial), button);
 	}
 #endif
 
@@ -2325,9 +2318,9 @@ bool PacketProfileReq::onReceive(NetState* net)
 	bool write = readBool();
 	CGrayUID serial(readInt32());
 	WORD textLength(0);
-	TCHAR* text(NULL);
+	TCHAR* text = NULL;
 
-	if (write == true && packetLength > 12)
+	if (write && (packetLength > 12))
 	{
 		skip(1); // unknown
 		skip(1); // unknown-return code?
@@ -2443,7 +2436,7 @@ bool PacketExtendedCommand::onReceive(NetState* net)
 
 	CClient* client = net->m_client;
 	ASSERT(client);
-	if (client->GetChar() == NULL)
+	if (!client->GetChar())
 		return false;
 
 	WORD packetLength = readInt16();
@@ -2455,7 +2448,7 @@ bool PacketExtendedCommand::onReceive(NetState* net)
 #else
 	Packet* handler = g_NetworkManager.getPacketManager().getExtendedHandler(type);
 #endif
-	if (handler == NULL)
+	if (!handler)
 		return false;
 
 	handler->seek();
@@ -2517,7 +2510,7 @@ bool PacketPartyMessage::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	PARTYMSG_TYPE code = static_cast<PARTYMSG_TYPE>(readByte());
@@ -2529,7 +2522,7 @@ bool PacketPartyMessage::onReceive(NetState* net)
 			break;
 
 		case PARTYMSG_Disband:
-			if (character->m_pParty == NULL)
+			if (!character->m_pParty)
 				return false;
 
 			character->m_pParty->Disband(character->GetUID());
@@ -2538,7 +2531,7 @@ bool PacketPartyMessage::onReceive(NetState* net)
 		case PARTYMSG_Remove:
 		{
 			// request to remove this member of the party
-			if (character->m_pParty == NULL)
+			if (!character->m_pParty)
 				return false;
 
 			CGrayUID serial(readInt32());
@@ -2548,7 +2541,7 @@ bool PacketPartyMessage::onReceive(NetState* net)
 		case PARTYMSG_MsgMember:
 		{
 			// message a specific member of my party
-			if (character->m_pParty == NULL)
+			if (!character->m_pParty)
 				return false;
 
 			CGrayUID serial(readInt32());
@@ -2560,7 +2553,7 @@ bool PacketPartyMessage::onReceive(NetState* net)
 		case PARTYMSG_Msg:
 		{
 			// send message to the whole party
-			if (character->m_pParty == NULL)
+			if (!character->m_pParty)
 				return false;
 
 			NWORD * text = reinterpret_cast<NWORD *>(Str_GetTemp());
@@ -2571,7 +2564,7 @@ bool PacketPartyMessage::onReceive(NetState* net)
 		case PARTYMSG_Option:
 		{
 			// set the loot flag
-			if (character->m_pParty == NULL)
+			if (!character->m_pParty)
 				return false;
 
 			character->m_pParty->SetLootFlag(character, readBool());
@@ -2618,7 +2611,7 @@ bool PacketArrowClick::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	bool rightClick = readBool();
@@ -2628,7 +2621,7 @@ bool PacketArrowClick::onReceive(NetState* net)
 	if ( IsTrigUsed(TRIGGER_USERQUESTARROWCLICK) )
 	{
 		CScriptTriggerArgs Args;
-		Args.m_iN1 = (rightClick == true? 1 : 0);
+		Args.m_iN1 = (rightClick ? 1 : 0);
 #ifdef _ALPHASPHERE
 		Args.m_iN2 = character->GetKeyNum("ARROWQUEST_X");
 		Args.m_iN3 = character->GetKeyNum("ARROWQUEST_Y");
@@ -2743,7 +2736,7 @@ bool PacketAnimationReq::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	static int validAnimations[] =
@@ -2763,10 +2756,10 @@ bool PacketAnimationReq::onReceive(NetState* net)
 
 	ANIM_TYPE anim = static_cast<ANIM_TYPE>(readInt32());
 	bool ok = false;
-	for (size_t i = 0; ok == false && i < COUNTOF(validAnimations); i++)
+	for (size_t i = 0; !ok && i < COUNTOF(validAnimations); i++)
 		ok = (anim == validAnimations[i]);
 
-	if (ok == false)
+	if (!ok)
 		return false;
 
 	character->UpdateAnimate(anim);
@@ -2814,11 +2807,11 @@ bool PacketAosTooltipInfo::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	const CObjBase* object = CGrayUID(readInt32()).ObjFind();
-	if (object != NULL && character->CanSee(object))
+	if (object && character->CanSee(object))
 		client->addAOSTooltip(object, true);
 
 	return true;
@@ -2892,7 +2885,7 @@ bool PacketChangeStatLock::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* character = client->GetChar();
-	if (character == NULL || character->m_pPlayer == NULL)
+	if (!character || !character->m_pPlayer)
 		return false;
 
 	BYTE code = readByte();
@@ -2946,7 +2939,7 @@ bool PacketSpellSelect::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(2); // unknown
@@ -2955,18 +2948,18 @@ bool PacketSpellSelect::onReceive(NetState* net)
 		 return false;
 
 	const CSpellDef* spellDef = g_Cfg.GetSpellDef(spell);
-	if (spellDef == NULL)
+	if (!spellDef)
 		return true;
 
 	int skill;
-	if (spellDef->GetPrimarySkill(&skill, NULL) == false)
+	if ( !spellDef->GetPrimarySkill(&skill, NULL) )
 		return true;
 	if ( !character->Skill_CanUse(static_cast<SKILL_TYPE>(skill)) )
 		return true;
 
 	if (IsSetMagicFlags(MAGICF_PRECAST))
 	{
-		if (spellDef->IsSpellType(SPELLFLAG_NOPRECAST) == false)
+		if (!spellDef->IsSpellType(SPELLFLAG_NOPRECAST))
 		{
 			client->m_tmSkillMagery.m_Spell = spell;
 			character->m_atMagery.m_Spell = spell;
@@ -3001,11 +2994,11 @@ bool PacketHouseDesignReq::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItem* house = CGrayUID(readInt32()).ItemFind();
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	CItemMultiCustom* multi = dynamic_cast<CItemMultiCustom*>(house);
-	if (multi == NULL)
+	if (!multi)
 		return true;
 
 	multi->SendStructureTo(client);
@@ -3051,23 +3044,23 @@ bool PacketBandageMacro::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	CItem* bandage = CGrayUID(readInt32()).ItemFind();
 	CObjBase* target = CGrayUID(readInt32()).ObjFind();
-	if (bandage == NULL || target == NULL)
+	if (!bandage || !target)
 		return true;
 
 	// check the client can see the bandage they're trying to use
-	if (character->CanSee(bandage) == false)
+	if (!character->CanSee(bandage))
 	{
 		client->addObjectRemoveCantSee(bandage->GetUID(), "the target");
 		return true;
 	}
 
 	// check the client is capable of using the bandage
-	if (character->CanUse(bandage, false) == false)
+	if (!character->CanUse(bandage, false))
 		return true;
 
 	// check the bandage is in the possession of the client
@@ -3075,7 +3068,7 @@ bool PacketBandageMacro::onReceive(NetState* net)
 		return true;
 
 	// make sure the macro isn't used for other types of items
-	if (bandage->IsType(IT_BANDAGE) == false)
+	if (!bandage->IsType(IT_BANDAGE))
 		return true;
 
 	// clear previous target
@@ -3120,7 +3113,7 @@ bool PacketGargoyleFly::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if ( character == NULL || !character->IsGargoyle() || character->IsStatFlag(STATF_DEAD) )
+	if ( !character || !character->IsGargoyle() || character->IsStatFlag(STATF_DEAD) )
 		return false;
 
 	// The client always send these 2 values to server, but they're not really used
@@ -3190,7 +3183,7 @@ bool PacketWheelBoatMove::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(4);
@@ -3361,16 +3354,14 @@ bool PacketAOSTooltipReq::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	const CObjBase* object;
 	for (WORD length = readInt16(); length > sizeof(DWORD); length -= sizeof(DWORD))
 	{
 		object = CGrayUID(readInt32()).ObjFind();
-		if (object == NULL)
-			continue;
-		else if (character->CanSee(object) == false)
+		if (!object || !character->CanSee(object))
 			continue;
 
 		client->addAOSTooltip(object, true);
@@ -3399,7 +3390,7 @@ bool PacketEncodedCommand::onReceive(NetState* net)
 	ASSERT(client);
 
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	WORD packetLength = readInt16();
@@ -3416,7 +3407,7 @@ bool PacketEncodedCommand::onReceive(NetState* net)
 #else
 	Packet* handler = g_NetworkManager.getPacketManager().getEncodedHandler(type);
 #endif
-	if (handler == NULL)
+	if (!handler)
 		return false;
 
 	handler->seek();
@@ -3451,7 +3442,7 @@ bool PacketHouseDesignBackup::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	house->BackupStructure();
@@ -3478,7 +3469,7 @@ bool PacketHouseDesignRestore::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	house->RestoreStructure(client);
@@ -3505,7 +3496,7 @@ bool PacketHouseDesignCommit::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	house->CommitChanges(client);
@@ -3532,7 +3523,7 @@ bool PacketHouseDesignDestroyItem::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	skip(1); // 0x00
@@ -3568,7 +3559,7 @@ bool PacketHouseDesignPlaceItem::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	skip(1); // 0x00
@@ -3602,7 +3593,7 @@ bool PacketHouseDesignExit::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	house->EndCustomize();
@@ -3629,7 +3620,7 @@ bool PacketHouseDesignPlaceStair::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	skip(1); // 0x00
@@ -3663,7 +3654,7 @@ bool PacketHouseDesignSync::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	house->SendStructureTo(client);
@@ -3690,7 +3681,7 @@ bool PacketHouseDesignClear::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	house->ResetStructure(client);
@@ -3717,7 +3708,7 @@ bool PacketHouseDesignSwitch::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	skip(1); // 0x00
@@ -3747,7 +3738,7 @@ bool PacketHouseDesignPlaceRoof::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	skip(1); // 0x00
@@ -3783,7 +3774,7 @@ bool PacketHouseDesignDestroyRoof::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	skip(1); // 0x00
@@ -3818,7 +3809,7 @@ bool PacketSpecialMove::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(1);
@@ -3853,7 +3844,7 @@ bool PacketHouseDesignRevert::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	house->RevertChanges(client);
@@ -3899,7 +3890,7 @@ bool PacketGuildButton::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	if ( IsTrigUsed(TRIGGER_USERGUILDBUTTON) )
@@ -3926,7 +3917,7 @@ bool PacketQuestButton::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	if ( IsTrigUsed(TRIGGER_USERQUESTBUTTON) )
@@ -4083,7 +4074,7 @@ bool PacketUseHotbar::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(2); // 1
@@ -4115,7 +4106,7 @@ bool PacketEquipItemMacro::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(2); // packet length
@@ -4123,16 +4114,14 @@ bool PacketEquipItemMacro::onReceive(NetState* net)
 	if ( itemCount > 3 )	// prevent packet exploit sending fake values just to create heavy loops and overload server CPU
 		itemCount = 3;
 
-	CItem* item;
+	CItem* item = NULL;
 	for (BYTE i = 0; i < itemCount; i++)
 	{
 		item = CGrayUID(readInt32()).ItemFind();
-		if (item == NULL)
+		if (!item)
 			continue;
-
-		if (item->GetTopLevelObj() != character || item->IsItemEquipped())
+		if ((item->GetTopLevelObj() != character) || item->IsItemEquipped())
 			continue;
-
 		if (character->ItemPickup(item, item->GetAmount()) < 1)
 			continue;
 
@@ -4161,7 +4150,7 @@ bool PacketUnEquipItemMacro::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(2); // packet length
@@ -4176,9 +4165,8 @@ bool PacketUnEquipItemMacro::onReceive(NetState* net)
 		layer = static_cast<LAYER_TYPE>(readInt16());
 
 		item = character->LayerFind(layer);
-		if (item == NULL)
+		if (!item)
 			continue;
-
 		if (character->ItemPickup(item, item->GetAmount()) < 1)
 			continue;
 
