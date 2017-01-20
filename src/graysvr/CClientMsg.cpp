@@ -1856,6 +1856,23 @@ void CClient::addMapDiff()
 	new PacketEnableMapDiffs(this);
 }
 
+void CClient::addMapWaypoint( CObjBase *pObj, BYTE type )
+{
+	ADDTOCALLSTACK("CClient::addMapWaypoint");
+	// Add/remove map waypoints on enhanced clients
+
+	if ( type > 0 )
+	{
+		if ( PacketWaypointAdd::CanSendTo(m_NetState) )
+			new PacketWaypointAdd(this, pObj, static_cast<PacketWaypointAdd::WaypointType>(type));
+	}
+	else
+	{
+		if ( PacketWaypointRemove::CanSendTo(m_NetState) )
+			new PacketWaypointRemove(this, pObj);
+	}
+}
+
 void CClient::addChangeServer()
 {
 	ADDTOCALLSTACK("CClient::addChangeServer");

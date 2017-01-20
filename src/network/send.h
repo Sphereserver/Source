@@ -1780,6 +1780,64 @@ public:
 };
 
 /***************************************************************************
+*
+*
+*	Packet 0xE5 : PacketWaypointAdd			add waypoint on KR/SA radar map (LOW)
+*
+*
+***************************************************************************/
+class PacketWaypointAdd : public PacketSend
+{
+public:
+	enum WaypointType
+	{
+		Remove				= 0x0,
+		Corpse				= 0x1,
+		PartyMember			= 0x2,
+		Unk1				= 0x3,
+		QuestGiver			= 0x4,
+		NewPlayerQuest		= 0x5,
+		Healer				= 0x6,
+		Unk2				= 0x7,
+		Unk3				= 0x8,
+		Unk4				= 0x9,
+		Unk5				= 0xA,
+		Shrine				= 0xB,
+		Moongate			= 0xC,
+		Unk6				= 0xD,
+		GreenDot			= 0xE,
+		GreenDotFlashing	= 0xF
+	};
+
+	PacketWaypointAdd(const CClient *target, CObjBase *object, WaypointType type);
+
+	virtual bool canSendTo(const NetState *state) const { return CanSendTo(state); }
+	static bool CanSendTo(const NetState *state)
+	{
+		return state->isClientKR() || state->isClientEnhanced();
+	}
+};
+
+/***************************************************************************
+*
+*
+*	Packet 0xE6 : PacketWaypointRemove		remove waypoint on KR/SA radar map (LOW)
+*
+*
+***************************************************************************/
+class PacketWaypointRemove : public PacketSend
+{
+public:
+	PacketWaypointRemove(const CClient *target, CObjBase *object);
+
+	virtual bool canSendTo(const NetState *state) const { return CanSendTo(state); }
+	static bool CanSendTo(const NetState *state)
+	{
+		return state->isClientKR() || state->isClientEnhanced();
+	}
+};
+
+/***************************************************************************
  *
  *
  *	Packet 0xEA : PacketToggleHotbar		toggle kr hotbar (NORMAL)
@@ -1813,7 +1871,7 @@ public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
-		return state->isClientVersion(MINCLIVER_SA) || state->isClientEnhanced() || state->isClientKR();
+		return state->isClientVersion(MINCLIVER_SA) || state->isClientKR() || state->isClientEnhanced();
 	}
 };
 

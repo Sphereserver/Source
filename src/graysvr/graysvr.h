@@ -1385,6 +1385,7 @@ public:
 	void addReSync();
 	void addMap();
 	void addMapDiff();
+	void addMapWaypoint( CObjBase *pObj, BYTE type );
 	void addChangeServer();
 	void addPlayerUpdate();
 
