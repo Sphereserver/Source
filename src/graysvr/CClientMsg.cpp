@@ -3628,10 +3628,6 @@ BYTE CClient::Setup_Start(CChar *pChar) // Send character startup stuff to playe
 		pChar->StatFlag_Set(STATF_INVUL);
 	}
 
-	// Max sight range on classic clients is 18, so lower it if for some reason it was higher
-	if ( (pChar->GetSight() > 18) && (m_NetState->getClientType() <= CLIENTTYPE_3D) )
-		pChar->SetSight(18);
-
 	addPlayerStart(pChar);
 	ASSERT(m_pChar);
 

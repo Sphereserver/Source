@@ -366,17 +366,13 @@ enum ITEMID_TYPE	// InsideUO is great for this stuff.
 	ITEMID_GARG_HORN_6			= 0x425D,
 	ITEMID_GARG_HORN_7			= 0x425E,
 	ITEMID_GARG_HORN_8			= 0x425F,
-
 	ITEMID_GARG_HORN_FEMALE_1	= 0x4261,
 	ITEMID_GARG_HORN_FEMALE_2	= 0x4262,
-
 	ITEMID_GARG_HORN_FEMALE_3	= 0x4273,
 	ITEMID_GARG_HORN_FEMALE_4	= 0x4274,
 	ITEMID_GARG_HORN_FEMALE_5	= 0x4275,
-
 	ITEMID_GARG_HORN_FEMALE_6	= 0x42AA,
 	ITEMID_GARG_HORN_FEMALE_7	= 0x42AB,
-
 	ITEMID_GARG_HORN_FACIAL_1	= 0x42AD,
 	ITEMID_GARG_HORN_FACIAL_2	= 0x42AE,
 	ITEMID_GARG_HORN_FACIAL_3	= 0x42AF,
@@ -787,8 +783,6 @@ enum DIR_TYPE	// Walking directions. m_dir
 	DIR_W,
 	DIR_NW,
 	DIR_QTY,		// Also means "Center"
-
-	DIR_ANIM_QTY = 5	// Seems we only need 5 pics for an anim, assume ALL bi-symetrical creatures
 };
 
 enum SKILL_TYPE	// List of skill numbers (things that can be done at a given time)
@@ -1185,7 +1179,7 @@ enum SPELL_TYPE	// List of spell numbers in spell book.
 	SPELL_Focused_Eye,
 	SPELL_Elemental_Fury,
 	SPELL_Called_Shot,
-	SPELL_Saving_Throw,			// Passive
+	SPELL_Warriors_Gifts,		// Passive (previously known as Saving Throw)
 	SPELL_Shield_Bash,
 	SPELL_Body_Guard,
 	SPELL_Heightened_Senses,

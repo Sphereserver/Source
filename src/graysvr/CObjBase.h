@@ -2936,7 +2936,12 @@ public:
 	}
 	void SetSight(BYTE newSight)
 	{
-		m_iVisualRange = minimum(newSight, 31);		// max value is 18 on classic clients and 31 on enhanced clients
+		// NOTE: Client 7.0.55.27 added new screen resolutions on options menu, and it will lock
+		// visual range value based on current resolution, so there's no way to change the value
+		// manually anymore (but enhanced clients still allow changes). This patch also increase
+		// max visual range on both clients (18 -> 24)
+
+		m_iVisualRange = minimum(newSight, 24);
 		if ( m_pClient )
 			m_pClient->addVisualRange(m_iVisualRange);
 	}
