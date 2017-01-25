@@ -244,14 +244,14 @@ void CGString::FormatLLVal(long long iVal)
 	Format("%lld", iVal);
 }
 
-void CGString::FormatULLVal(unsigned long long iVal)
-{
-	Format("%llu", iVal);
-}
-
 void CGString::FormatUVal(unsigned long iVal)
 {
 	Format("%lu", iVal);
+}
+
+void CGString::FormatULLVal(unsigned long long iVal)
+{
+	Format("%llu", iVal);
 }
 
 void CGString::FormatHex(DWORD dwVal)

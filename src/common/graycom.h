@@ -73,7 +73,10 @@
 #endif // !_WIN32
 
 #define INT32		int
+#define UINT32		unsigned int
+
 #define INT64		long long
+#define UINT64		unsigned long long
 
 #ifdef _DEBUG
 	#ifndef ASSERT

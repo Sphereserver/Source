@@ -3103,7 +3103,7 @@ do_default:
 			ChangeExperience();
 			break;
 		case CHC_VIRTUALGOLD:
-			m_virtualGold = static_cast<unsigned long long>(s.GetArgLLVal());
+			m_virtualGold = static_cast<UINT64>(s.GetArgLLVal());
 			UpdateStatsFlag();
 			break;
 		case CHC_VISUALRANGE:

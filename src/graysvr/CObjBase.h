@@ -2679,7 +2679,7 @@ private:
 #define STATF_Ridden		0x40000000	// This is the horse. (don't display me) I am being ridden
 #define STATF_OnHorse		0x80000000	// Mounted on horseback.
 
-	unsigned long long m_StatFlag;		// Flags above
+	UINT64 m_StatFlag;			// Flags above
 
 #define SKILL_VARIANCE 100		// Difficulty modifier for determining success. 10.0 %
 	WORD m_Skill[SKILL_QTY];	// List of skills ( skill * 10 )
@@ -2737,7 +2737,7 @@ public:
 	DIR_TYPE m_dirFace;			// facing this dir.
 	CGString m_sTitle;			// Special title such as "the guard" (replaces the normal skill title).
 	CPointMap m_ptHome;			// What is our "home" region. (towns and bounding of NPC's)
-	unsigned long long m_virtualGold;	// Virtual gold used by TOL clients
+	UINT64 m_virtualGold;		// Virtual gold used by TOL clients
 
 	// Speech
 	FONT_TYPE m_fonttype;		// speech font to use (client send this to server, but it's not used)

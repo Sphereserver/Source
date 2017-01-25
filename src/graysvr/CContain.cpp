@@ -730,7 +730,7 @@ void CItemContainer::Trade_UpdateGold( DWORD platinum, DWORD gold )
 	bool bUpdateChar2 = pChar2->m_pClient->m_NetState->isClientVersion(MINCLIVER_TOL);
 
 	// To prevent cheating, check if the char really have these gold/platinum values
-	unsigned long long iMaxValue = pChar1->m_virtualGold;
+	UINT64 iMaxValue = pChar1->m_virtualGold;
 	if ( gold + (platinum * 1000000000) > iMaxValue )
 	{
 		gold = static_cast<DWORD>(iMaxValue % 1000000000);
