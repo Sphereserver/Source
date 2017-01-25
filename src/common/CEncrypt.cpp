@@ -724,7 +724,7 @@ void CCrypt::RelayGameCryptStart( BYTE * pOutput, const BYTE * pInput, size_t iL
 
 	// assume that clients prior to 2.0.4 do not double encrypt
 	// (note: assumption has been made based on the encryption type in spherecrypt.ini, further testing is required!)
-	if ( GetClientVer() < 2000400 )
+	if ( GetClientVer() < 2000400 )		// 2.0.4
 	{
 		InitBlowFish();
 		InitTwoFish();
@@ -916,11 +916,11 @@ BYTE CCrypt::DecryptBFByte( BYTE bEnc )
 void CCrypt::DecryptOld( BYTE * pOutput, const BYTE * pInput, size_t iLen  )
 {	
 	ADDTOCALLSTACK("CCrypt::DecryptOld");
-	if ( GetClientVer() >= 0x125370 )
+	if ( GetClientVer() >= 1253700 )	//1.25.37
 	{
 		for ( size_t i = 0; i < iLen; i++ )
 		{
-			pOutput[i] = pInput[i] ^ (BYTE) m_CryptMaskLo;
+			pOutput[i] = pInput[i] ^ static_cast<BYTE>(m_CryptMaskLo);
 			DWORD MaskLo = m_CryptMaskLo;
 			DWORD MaskHi = m_CryptMaskHi;
 			m_CryptMaskLo = ((MaskLo >> 1) | (MaskHi << 31)) ^ m_MasterLo;
@@ -929,33 +929,23 @@ void CCrypt::DecryptOld( BYTE * pOutput, const BYTE * pInput, size_t iLen  )
 		}
 		return;
 	}
-
-	if ( GetClientVer() == 0x125360 )
+	else if ( GetClientVer() == 1253600 )	//1.25.36
 	{
 		for ( size_t i = 0; i < iLen; i++ )
 		{
-			pOutput[i] = pInput[i] ^ (BYTE) m_CryptMaskLo;
+			pOutput[i] = pInput[i] ^ static_cast<BYTE>(m_CryptMaskLo);
 			DWORD MaskLo = m_CryptMaskLo;
 			DWORD MaskHi = m_CryptMaskHi;
-			m_CryptMaskHi =
-				(m_MasterHi >> ((5 * MaskHi * MaskHi) & 0xff))
-				+ (MaskHi * m_MasterHi)
-				+ (MaskLo * MaskLo * 0x35ce9581)
-				+ 0x07afcc37;
-			m_CryptMaskLo =
-				(m_MasterLo >> ((3 * MaskLo * MaskLo) & 0xff))
-				+ (MaskLo * m_MasterLo)
-				- (m_CryptMaskHi * m_CryptMaskHi * 0x4c3a1353)
-				+ 0x16ef783f;
+			m_CryptMaskHi = (m_MasterHi >> ((5 * MaskHi * MaskHi) & 0xff)) + (MaskHi * m_MasterHi) + (MaskLo * MaskLo * 0x35ce9581) + 0x07afcc37;
+			m_CryptMaskLo = (m_MasterLo >> ((3 * MaskLo * MaskLo) & 0xff)) + (MaskLo * m_MasterLo) - (m_CryptMaskHi * m_CryptMaskHi * 0x4c3a1353) + 0x16ef783f;
 		}
 		return;
 	}
-		
-	if ( GetClientVer() ) // GRAY_CLIENT_VER <= 0x125350
+	else if ( GetClientVer() )		// GRAY_CLIENT_VER <= 1253500
 	{
 		for ( size_t i = 0; i < iLen; i++ )
 		{
-			pOutput[i] = pInput[i] ^ (BYTE) m_CryptMaskLo;
+			pOutput[i] = pInput[i] ^ static_cast<BYTE>(m_CryptMaskLo);
 			DWORD MaskLo = m_CryptMaskLo;
 			DWORD MaskHi = m_CryptMaskHi;
 			m_CryptMaskLo = ((MaskLo >> 1) | (MaskHi << 31)) ^ m_MasterLo;
@@ -965,9 +955,7 @@ void CCrypt::DecryptOld( BYTE * pOutput, const BYTE * pInput, size_t iLen  )
 	}
 	
 	if ( pOutput != pInput )
-	{
-		memcpy( pOutput, pInput, iLen );
-	}
+		memcpy(pOutput, pInput, iLen);
 }
 
 void CCrypt::InitMD5(BYTE * ucInitialize)

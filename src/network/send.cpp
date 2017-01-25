@@ -3830,13 +3830,16 @@ PacketEnableMapDiffs::PacketEnableMapDiffs(const CClient* target) : PacketExtend
 	ADDTOCALLSTACK("PacketEnableMapDiffs::PacketEnableMapDiffs");
 
 	BYTE map;
-	BYTE mapCount = 0;
+	BYTE mapCount = 1;
 
 	// find map count
-	for (map = 0; map < 256; map++)
+	for (map = 255; map >= 0; map--)
 	{
-		if (g_MapList.m_maps[map])
-			mapCount++;
+		if (!g_MapList.m_maps[map])
+			continue;
+
+		mapCount = map;
+		break;
 	}
 
 	writeInt32(mapCount);

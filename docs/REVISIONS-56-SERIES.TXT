@@ -367,3 +367,6 @@ Added: New function MAPWAYPOINT to add/remove waypoints on client radar map (enh
 		12 = Moongate
 		14 = Green Dot
 		15 = Green Dot (flashing)
+
+25-01-2017, Coruja
+Fixed: Client encryption not being decrypted correctly on login process.
