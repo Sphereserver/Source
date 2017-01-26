@@ -370,3 +370,7 @@ Added: New function MAPWAYPOINT to add/remove waypoints on client radar map (enh
 
 25-01-2017, Coruja
 Fixed: Client encryption not being decrypted correctly on login process.
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.56 and enhanced client 4.0.56
+[sphere_defs.scp]: Renamed 'bufficon_SavingThrow' to 'bufficon_WarriorsGifts' and added new 'mapwaypoint_types' defs
+[sphere_map*.scp]: Updated some few regions and teleports (note: added new file 'sphere_map_points0.scp' and removed 'sphere_map0_tol.scp')
+[spheretables.scp]: Updated map file names on RESOURCES list
