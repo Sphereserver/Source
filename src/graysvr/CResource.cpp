@@ -119,7 +119,7 @@ CResource::CResource()
 	m_iArcheryMinDist	= 2;
 	m_iArcheryMaxDist	= 15;
 	m_iHitsUpdateRate	= TICK_PER_SEC;
-	m_iSpeedScaleFactor	= 80000;
+	m_iSpeedScaleFactor	= 15000;
 	m_iCombatFlags		= 0;
 	m_iCombatDamageEra	= 0;
 	m_iCombatHitChanceEra = 0;
@@ -245,7 +245,7 @@ CResource::CResource()
 	m_iClientLoginTempBan = 3*60*TICK_PER_SEC;
 	m_iMaxShipPlankTeleport = UO_MAP_VIEW_SIZE;
 
-	m_NPCNoFameTitle = false;
+	m_NPCNoFameTitle = true;
 }
 
 CResource::~CResource()
