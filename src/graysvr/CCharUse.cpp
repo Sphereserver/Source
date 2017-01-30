@@ -73,25 +73,20 @@ bool CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 			case IT_FOOD_RAW:
 			case IT_MEAT_RAW:
 				SysMessageDefault(DEFMSG_CARVE_CORPSE_MEAT);
-				//pPart->m_itFood.m_MeatType = CorpseID;
 				break;
 			case IT_HIDE:
 				SysMessageDefault(DEFMSG_CARVE_CORPSE_HIDES);
-				//pPart->m_itSkin.m_creid = CorpseID;
 				if ( (g_Cfg.m_iRacialFlags & RACIALF_HUMAN_WORKHORSE) && IsHuman() )	// humans always find 10% bonus when gathering hides, ores and logs (Workhorse racial trait)
 					iQty = iQty * 110 / 100;
 				break;
 			case IT_FEATHER:
 				SysMessageDefault(DEFMSG_CARVE_CORPSE_FEATHERS);
-				//pPart->m_itSkin.m_creid = CorpseID;
 				break;
 			case IT_WOOL:
 				SysMessageDefault(DEFMSG_CARVE_CORPSE_WOOL);
-				//pPart->m_itSkin.m_creid = CorpseID;
 				break;
 			/*case IT_DRAGON_SCALE:			// TO-DO (typedef IT_DRAGON_SCALE doesn't exist yet)
 				SysMessageDefault(DEFMSG_CARVE_CORPSE_SCALES);
-				//pPart->m_itSkin.m_creid = CorpseID;
 				break;*/
 			default:
 				break;

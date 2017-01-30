@@ -1528,28 +1528,6 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 			}
 			break;
 
-		case IT_MEAT_RAW:
-		case IT_LEATHER:
-		case IT_HIDE:
-		case IT_FEATHER:
-		case IT_FUR:
-		case IT_WOOL:
-		case IT_BLOOD:
-		case IT_BONE:
-			if ( fIdentified )
-			{
-				CREID_TYPE id = static_cast<CREID_TYPE>(RES_GET_INDEX(m_itSkin.m_creid));
-				if ( id)
-				{
-					const CCharBase * pCharDef = CCharBase::FindCharBase( id );
-					if (pCharDef != NULL)
-					{
-						len += sprintf( pTemp+len, " (%s)", pCharDef->GetTradeName());
-					}
-				}
-			}
-			break;
-
 		case IT_LIGHT_LIT:
 		case IT_LIGHT_OUT:
 			// how many charges ?
@@ -1868,13 +1846,6 @@ void CItem::r_WriteMore2( CGString & sVal )
 	// do special processing to represent this.
 	switch ( GetType())
 	{
-		case IT_FRUIT:
-		case IT_FOOD:
-		case IT_FOOD_RAW:
-		case IT_MEAT_RAW:
-			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_CHARDEF, m_itFood.m_MeatType ));
-			return;
-
 		case IT_CROPS:
 		case IT_FOLIAGE:
 			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_ITEMDEF, m_itCrop.m_ReapFruitID ));

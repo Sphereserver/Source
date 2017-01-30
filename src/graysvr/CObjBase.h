@@ -563,7 +563,7 @@ public:
 
 		// IT_ARMOR
 		// IT_ARMOR_LEATHER
-		// IT_SHIELD:
+		// IT_SHIELD
 		// IT_CLOTHING
 		// IT_JEWELRY
 		struct
@@ -592,6 +592,14 @@ public:
 		} m_itSpell;
 
 		// IT_SPELLBOOK
+		// IT_SPELLBOOK_NECRO
+		// IT_SPELLBOOK_PALA
+		// IT_SPELLBOOK_EXTRA
+		// IT_SPELLBOOK_BUSHIDO
+		// IT_SPELLBOOK_NINJITSU
+		// IT_SPELLBOOK_ARCANIST
+		// IT_SPELLBOOK_MYSTIC
+		// IT_SPELLBOOK_MASTERY
 		struct	// Spellbook extra spells.
 		{
 			DWORD m_spells1;	// more1=Mask of avail spells for spell book.
@@ -631,7 +639,7 @@ public:
 		struct
 		{
 			ITEMID_TYPE m_cook_id;		// more1=Cooks into this. (only if raw)
-			CREID_TYPE m_MeatType;		// more2= Meat from what type of creature ?
+			WORD m_junk1;
 			WORD m_spell;				// morex=SPELL_TYPE = The magic spell cast on this. ( effect of eating.)
 			WORD m_spelllevel;			// morey=level of the spell. (0-1000)
 			BYTE m_poison_skill;		// morez=0-100 = Is poisoned ?
@@ -642,7 +650,7 @@ public:
 		struct
 		{
 			ITEMID_TYPE m_cook_id;		// more1=Cooks into this. (only if raw)
-			CREID_TYPE m_MeatType;		// more2= Meat from what type of creature ?
+			WORD m_junk1;
 			WORD m_spell;				// morex=SPELL_TYPE = The magic spell cast on this. ( effect of eating.)
 			WORD m_spelllevel;			// morey=level of the spell. (0-1000)
 			BYTE m_poison_skill;		// morez=0-100 = Is poisoned ?
@@ -910,18 +918,6 @@ public:
 			int m_iAccountGold;			// more2=How much gold has been dropped on me?
 			// ATTR_OWNED = auto promote to member.
 		} m_itStone;
-
-		// IT_LEATHER
-		// IT_FEATHER
-		// IT_FUR
-		// IT_WOOL
-		// IT_BLOOD
-		// IT_BONE
-	 	struct
-		{
-			int m_junk1;
-			CREID_TYPE m_creid;	// more2=the source creature id. (CREID_TYPE)
-		} m_itSkin;
 
 	};	// IT_QTY
 
