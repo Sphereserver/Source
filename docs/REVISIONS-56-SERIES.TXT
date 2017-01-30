@@ -389,3 +389,4 @@ Fixed: Client encryption not being decrypted correctly on login process.
 
 30-01-2017, Coruja
 Fixed: HS/TOL items not showing correctly on client screen.
+Fixed: ML/SA/HS/TOL doors not working correctly.
