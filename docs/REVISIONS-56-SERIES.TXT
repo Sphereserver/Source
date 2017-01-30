@@ -373,4 +373,19 @@ Fixed: Client encryption not being decrypted correctly on login process.
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.56 and enhanced client 4.0.56
 [sphere_defs.scp]: Renamed 'bufficon_SavingThrow' to 'bufficon_WarriorsGifts' and added new 'mapwaypoint_types' defs
 [sphere_map*.scp]: Updated some few regions and teleports (note: added new file 'sphere_map_points0.scp' and removed 'sphere_map0_tol.scp')
-[spheretables.scp]: Updated map file names on RESOURCES list
+[spheretables.scp]: Updated RESOURCES list with the new map files
+
+26-01-2017, Coruja
+[sphere_monsters.scp]: Renamed char 'c_unicorn_rainbow' to 'c_lasher'. Updated 'c_skree', 'c_dragon_turtle_hatchling', 'c_myrmidex_queen'. Added new 'c_palomino', 'c_windrunner'
+[sphere_item_char_icons.scp]: Renamed item 'i_pet_unicorn_rainbow' to 'i_pet_lasher' and added new 'i_pet_myrmidex_queen', 'i_pet_palomino', 'i_pet_windrunner'
+[sphere_defs.scp]: Added mount defs for new TOL mounts Palomino and Windrunner
+
+29-01-2017, Coruja
+[sphere_item_building_doors.scp]: Added Jungle / Shadowguard doors
+[sphere_item_building_roofs.scp]: Added Jungle / Shadowguard roofs
+[sphere_item_building_walls.scp]: Added Jungle / Shadowguard walls
+[sphere_item_building_floors.scp]: Added Jungle / Shadowguard floors
+[sphere_item_building_stairs.scp]: Added Jungle / Shadowguard stairs
+
+30-01-2017, Coruja
+Fixed: HS/TOL items not showing correctly on client screen.

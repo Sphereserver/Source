@@ -4750,7 +4750,7 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : Pac
 	else
 	{
 		source = (item->Can(CAN_I_DAMAGEABLE) && (target->m_NetState->isClientVersion(MINCLIVER_STATUS_V6))) ? Damageable : TileData;
-		id = static_cast<ITEMID_TYPE>(id & 0x7FFF);
+		id = static_cast<ITEMID_TYPE>(id & 0xFFFF);		// SA: 0x7FFF, HS: 0xFFFF
 	}
 
 	writeInt16(1);
