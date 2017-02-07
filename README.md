@@ -22,19 +22,23 @@ Even using 64bit OS, Sphere must be compiled/executed in 32bit mode to work prop
 You can compile using provided CMake files.
 
 ### Linux
-* Open the terminal on sphere source dir and use the command "makefile NIGHTLY=1 -f makefile" to compile using GCC.
+* Open the terminal on sphere source dir and use the command `make NIGHTLY=1 -f makefile` to compile using GCC.
 
 Some libs are required to compile/execute Sphere on Linux. You can install them using these commands:
 
 #### Ubuntu
-* sudo apt-get install libmysqld-dev
-* sudo apt-get install libmysql++ libmysql++-dev
-* sudo apt-get install libmysqlclient-dev:i386
+```bash
+sudo apt-get install libmysqld-dev
+sudo apt-get install libmysql++ libmysql++-dev
+sudo apt-get install libmysqlclient-dev:i386
+```
 
 #### CentOS 7
-* yum install mysql mysql-libs mysql-devel
-* yum install mysql-community-libs-compat.i686
-* yum install glibc-devel.i686
+```bash
+yum install mysql mysql-libs mysql-devel
+yum install mysql-community-libs-compat.i686
+yum install glibc-devel.i686
+```
 
 ## Coding notes for new contributors
 * Make sure you can compile and run the program before pushing a commit.
