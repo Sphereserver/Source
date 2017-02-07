@@ -391,3 +391,6 @@ Fixed: Client encryption not being decrypted correctly on login process.
 Fixed: HS/TOL items not showing correctly on client screen.
 Fixed: ML/SA/HS/TOL doors not working correctly.
 [sphere.ini]: Fixed wrong SpeedScaleFactor default value and changed NPCNoFameTitle to be enabled by default
+
+07-02-2017, Coruja
+Fixed: Char flag 'statf_hovering' (gargoyle fly ability) not clearing when gargoyle chars polymorph into non-gargoyle char ID.
