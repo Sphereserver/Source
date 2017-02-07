@@ -124,7 +124,7 @@ BEGIN
 	LTEXT		"MySQL Connector/C (v6.1.9)\nGeneral Public License (GPL) 2000-2017 Oracle", 11, 20, 136, 300, 16
 	LTEXT		"SQLite library (v3.16.1)\nGeneral Public License (GPL) 2000-2017", 12, 20, 160, 300, 16
 	LTEXT		"Twofish encryption library (v1.0)\nCopyright (C) 1998 Bruce Schneier, Doug Whiting, John Kelsey, Chris Hall, David Wagner", 14, 20, 184, 300, 16
-	LTEXT		"Zlib data compression library (v1.2.10)\nCopyright (C) 1995-2017 Jean-loup Gailly, Mark Adler", 15, 20, 208, 300, 16
+	LTEXT		"Zlib data compression library (v1.2.11)\nCopyright (C) 1995-2017 Jean-loup Gailly, Mark Adler", 15, 20, 208, 300, 16
 	END
 
 /////////////////////////////////////////////////////////////////////////////
