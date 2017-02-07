@@ -2986,7 +2986,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			return NULL;
 		}
 
-		if ( Stat_GetVal(STAT_DEX) <= 0 && !IsStatFlag(STATF_DEAD) )
+		if ( (Stat_GetVal(STAT_DEX) <= 0) && !IsStatFlag(STATF_DEAD) )
 		{
 			SysMessageDefault(DEFMSG_MSG_FATIGUE);
 			return NULL;
@@ -3032,14 +3032,14 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 	short iStamReq = 0;
 	if ( fCheckChars && !IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Insubstantial) )
 	{
-		CItem * pPoly = LayerFind(LAYER_SPELL_Polymorph);
-		CWorldSearch AreaChars( ptDst );
+		CItem *pPoly = LayerFind(LAYER_SPELL_Polymorph);
+		CWorldSearch AreaChars(ptDst);
 		for (;;)
 		{
-			CChar * pChar = AreaChars.GetChar();
-			if ( pChar == NULL )
+			CChar *pChar = AreaChars.GetChar();
+			if ( !pChar )
 				break;
-			if ( pChar == this || abs(pChar->GetTopZ() - ptDst.m_z) > 5 || pChar->IsStatFlag(STATF_Insubstantial) )
+			if ( (pChar == this) || (abs(pChar->GetTopZ() - ptDst.m_z) > 5) || pChar->IsStatFlag(STATF_Insubstantial) )
 				continue;
 			if ( m_pNPC && pChar->m_pNPC )	// NPCs can't walk over another NPC
 				return NULL;
@@ -3047,7 +3047,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			iStamReq = 10;
 			if ( IsPriv(PRIV_GM) || pChar->IsStatFlag(STATF_DEAD|STATF_Invisible|STATF_Hidden) )
 				iStamReq = 0;
-			else if ( pPoly && pPoly->m_itSpell.m_spell == SPELL_Wraith_Form && GetTopMap() == 0 )		// chars under Wraith Form effect can always walk through chars in Felucca
+			else if ( pPoly && (pPoly->m_itSpell.m_spell == SPELL_Wraith_Form) && (GetTopMap() == 0) )		// chars under Wraith Form effect can always walk through chars in Felucca
 				iStamReq = 0;
 
 			TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
@@ -3055,15 +3055,15 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			{
 				CScriptTriggerArgs Args(iStamReq);
 				iRet = pChar->OnTrigger(CTRIG_PersonalSpace, this, &Args);
-				iStamReq = static_cast<short>(Args.m_iN1);
-
 				if ( iRet == TRIGRET_RET_TRUE )
 					return NULL;
+
+				iStamReq = static_cast<short>(Args.m_iN1);
+				if ( iStamReq < 0 )
+					continue;
 			}
 
-			if ( iStamReq <= 0 )
-				continue;
-			if ( Stat_GetVal(STAT_DEX) < Stat_GetMax(STAT_DEX) )
+			if ( (iStamReq > 0) && (Stat_GetVal(STAT_DEX) < Stat_GetMax(STAT_DEX)) )
 				return NULL;
 
 			TCHAR *pszMsg = Str_GetTemp();
@@ -3094,7 +3094,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 	{
 		EXC_SET("Stamina penalty");
 		// Chance to drop more stamina if running or overloaded
-		CVarDefCont * pVal = GetKey("OVERRIDE.RUNNINGPENALTY", true);
+		CVarDefCont *pVal = GetKey("OVERRIDE.RUNNINGPENALTY", true);
 		if ( IsStatFlag(STATF_Fly|STATF_Hovering) )
 			iWeightLoadPercent += pVal ? static_cast<int>(pVal->GetValNum()) : g_Cfg.m_iStamRunningPenalty;
 

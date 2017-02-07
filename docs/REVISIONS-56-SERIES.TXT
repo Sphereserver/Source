@@ -394,3 +394,4 @@ Fixed: ML/SA/HS/TOL doors not working correctly.
 
 07-02-2017, Coruja
 Fixed: Char flag 'statf_hovering' (gargoyle fly ability) not clearing when gargoyle chars polymorph into non-gargoyle char ID.
+Fixed: Hidden/Invisible chars not getting revealed when being stumbled.
