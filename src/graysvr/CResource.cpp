@@ -1589,7 +1589,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		case RC_RTICKS:
 			{
 				if ( pszKey[6] != '.' )
-					sVal.FormatUVal(static_cast<unsigned long>(CGTime::GetCurrentTime().GetTime()));
+					sVal.FormatULLVal(static_cast<UINT64>(CGTime::GetCurrentTime().GetTime()));
 				else
 				{
 					pszKey += 6;
@@ -1601,7 +1601,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 						INT64 piVal[6];
 
 						// year, month, day, hour, minute, second
-						size_t iQty = Str_ParseCmds(const_cast<TCHAR*>(pszKey), piVal, COUNTOF(piVal));
+						size_t iQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), piVal, COUNTOF(piVal));
 						if ( iQty != 6 )
 							return false;
 
@@ -1609,23 +1609,22 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 						if ( datetime.GetTime() == -1 )
 							sVal.FormatVal(-1);
 						else
-							sVal.FormatUVal(static_cast<unsigned long>(datetime.GetTime()));
+							sVal.FormatULLVal(static_cast<UINT64>(datetime.GetTime()));
 					}
 					else if ( !strnicmp("FORMAT", pszKey, 6) )
 					{
 						pszKey += 6;
-						GETNONWHITESPACE( pszKey );
+						GETNONWHITESPACE(pszKey);
 						TCHAR *ppVal[2];
 
 						// timestamp, formatstr
-						size_t iQty = Str_ParseCmds(const_cast<TCHAR*>(pszKey), ppVal, COUNTOF(ppVal));
+						size_t iQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppVal, COUNTOF(ppVal));
 						if ( iQty < 1 )
 							return false;
 
 						time_t lTime = Exp_GetVal(ppVal[0]);
-
 						CGTime datetime(lTime);
-						sVal = datetime.Format(iQty > 1? ppVal[1]: NULL);
+						sVal = datetime.Format(iQty > 1 ? ppVal[1] : NULL);
 					}
 				}
 			}
