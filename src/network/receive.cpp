@@ -1828,7 +1828,7 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 	CChar* vendor = vendorSerial.CharFind();
 	if (!vendor || !vendor->m_pNPC || !vendor->NPC_IsVendor())
 	{
-		client->Event_VendorBuy_Cheater(0x1);
+		client->Event_VendorSell_Cheater(0x1);
 		return true;
 	}
 	

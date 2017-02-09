@@ -894,7 +894,7 @@ void CClient::Event_VendorBuy_Cheater(int iCode)
 		"Bad vendor UID",
 		"Bad item UID",
 		"Requested items out of stock",
-		"Total cost is too great"
+		"Total cost is too high"
 	};
 
 	g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%lx:Cheater '%s' is submitting illegal buy packet (%s)\n", GetSocketID(), m_pAccount->GetName(), sm_BuyPacketCheats[iCode]);
@@ -908,15 +908,16 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 	if ( !m_pChar || !pVendor || !items || (itemCount <= 0) )
 		return;
 
-#define MAX_COST (INT_MAX / 2)
 	bool bPlayerVendor = pVendor->IsStatFlag(STATF_Pet);
 	pVendor->GetContainerCreate(LAYER_VENDOR_STOCK);
 	CItemContainer *pPack = m_pChar->GetContainerCreate(LAYER_PACK);
 
-	CItemVendable *pItem;
+	CItemVendable *pItem = NULL;
+	WORD amount = 0;
 	DWORD costtotal = 0;
+	short iFollowerSlots = 0;
 
-	// Check if the vendor really has so much items
+	// Check if there's something that can block the action
 	for ( size_t i = 0; i < itemCount; ++i )
 	{
 		if ( !items[i].m_serial.IsValidUID() )
@@ -933,38 +934,53 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 			return;
 		}
 
-		costtotal += (items[i].m_amount * items[i].m_price);
-		if ( costtotal > MAX_COST )
+		switch ( pItem->GetType() )
 		{
-			pVendor->Speak("Your order cannot be fulfilled, please try again.");
-			Event_VendorBuy_Cheater(0x4);
-			return;
-		}
-
-		// If it's a pet, check if we have follower slots to control it
-		if ( pItem->GetType() != IT_FIGURINE )
-			continue;
-		if ( IsSetOF(OF_PetSlots) )
-		{
-			CCharBase *pPetDef = CCharBase::FindCharBase(pItem->m_itFigurine.m_ID);
-			if ( pPetDef )
+			case IT_FIGURINE:
 			{
-				if ( !m_pChar->FollowersUpdate(pVendor, static_cast<short>(maximum(1, pPetDef->GetDefNum("FOLLOWERSLOTS")))) )
+				if ( IsSetOF(OF_PetSlots) )
 				{
-					m_pChar->SysMessageDefault(DEFMSG_PETSLOTS_TRY_CONTROL);
+					CCharBase *pPetDef = CCharBase::FindCharBase(pItem->m_itFigurine.m_ID);
+					iFollowerSlots += items[i].m_amount * (pPetDef ? static_cast<short>(maximum(1, pPetDef->GetDefNum("FOLLOWERSLOTS"))) : 1);
+				}
+				break;
+			}
+			case IT_HAIR:
+			{
+				if ( !m_pChar->IsPlayableCharacter() )
+				{
+					pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTBUY));
+					continue;
+				}
+				break;
+			}
+			case IT_BEARD:
+			{
+				if ( (m_pChar->GetDispID() != CREID_MAN) && (m_pChar->GetDispID() != CREID_GARGMAN) )
+				{
+					pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTBUY));
 					return;
 				}
+				break;
 			}
 		}
+
+		costtotal += items[i].m_amount * items[i].m_price;
 	}
 
-	if ( costtotal <= 0 )
+	if ( costtotal > ULONG_MAX / 4 )
 	{
-		pVendor->Speak("Thou hast bought nothing!");
+		pVendor->Speak("Your order cannot be fulfilled, please try again.");
+		Event_VendorBuy_Cheater(0x4);
+		return;
+	}
+	else if ( !m_pChar->FollowersUpdate(pVendor, iFollowerSlots, true) )
+	{
+		m_pChar->SysMessageDefault(DEFMSG_PETSLOTS_TRY_CONTROL);
 		return;
 	}
 
-	// Check for gold being enough to buy this
+	// Check if buyer have enough gold
 	bool bBoss = pVendor->NPC_IsOwnedBy(m_pChar);
 	if ( !bBoss )
 	{
@@ -975,8 +991,6 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 				pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_NOMONEY1));
 				return;
 			}
-			m_pChar->m_virtualGold -= costtotal;
-			m_pChar->UpdateStatsFlag();
 		}
 		else
 		{
@@ -992,27 +1006,27 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 		}
 	}
 
-	// Move the items bought into your pack.
+	// Move bought items to backpack
 	for ( size_t i = 0; i < itemCount; ++i )
 	{
 		if ( !items[i].m_serial.IsValidUID() )
-			break;
+			continue;
 
 		pItem = static_cast<CItemVendable *>(items[i].m_serial.ItemFind());
-		WORD amount = items[i].m_amount;
-
 		if ( !pItem )
 			continue;
 
+		amount = items[i].m_amount;
+
 		if ( IsTrigUsed(TRIGGER_BUY) || IsTrigUsed(TRIGGER_ITEMBUY) )
 		{
-			CScriptTriggerArgs Args(amount, items[i].m_amount * items[i].m_price, pVendor);
+			CScriptTriggerArgs Args(amount, amount * items[i].m_price, pVendor);
 			Args.m_VarsLocal.SetNum("TOTALCOST", costtotal);
 			if ( pItem->OnTrigger(ITRIG_Buy, GetChar(), &Args) == TRIGRET_RET_TRUE )
 				continue;
 		}
 
-		if ( !bPlayerVendor )									//	NPC vendors
+		if ( !bPlayerVendor )		// NPC vendors
 		{
 			pItem->SetAmount(pItem->GetAmount() - amount);
 
@@ -1020,36 +1034,20 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 			{
 				case IT_FIGURINE:
 				{
+					// Pets must be created on ground instead place the figurine on backpack
 					for ( int f = 0; f < amount; f++ )
 						m_pChar->Use_Figurine(pItem);
+					goto do_consume;
 				}
-				goto do_consume;
-				case IT_BEARD:
-					if ( (m_pChar->GetDispID() != CREID_MAN) && !m_pChar->IsPriv(PRIV_GM) )
-					{
-						pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTBUY));
-						continue;
-					}
 				case IT_HAIR:
+				case IT_BEARD:
 				{
-					// Must be added directly. can't exist in pack!
-					if ( !m_pChar->IsPlayableCharacter() )
-					{
-						pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTBUY));
-						continue;
-					}
-
+					// Hair and beard must be placed directly on char instead backpack
 					CItem *pItemNew = CItem::CreateDupeItem(pItem);
 					m_pChar->LayerAdd(pItemNew);
 					pItemNew->m_TagDefs.SetNum("NOSAVE", 0, true);
-					pItemNew->SetTimeout(55000 * TICK_PER_SEC);		// set the grow timer
-					pVendor->UpdateAnimate(ANIM_ATTACK_1H_SLASH);
-					m_pChar->Sound(SOUND_SNIP);
-					continue;
-				}
-
-				default:
 					break;
+				}
 			}
 
 			if ( (amount > 1) && !pItem->Item_GetDef()->IsStackableType() )
@@ -1076,7 +1074,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 					pPack->ContentAdd(pItemNew);
 			}
 		}
-		else													// Player vendors
+		else						// Player vendors
 		{
 			if ( pItem->GetAmount() <= amount )		// buy the whole item
 			{
@@ -1105,7 +1103,6 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 		pItem->Update();
 	}
 
-	// Step #5
 	// Say the message about the bought goods
 	TCHAR *sMsg = Str_GetTemp();
 	TCHAR *pszTemp1 = Str_GetTemp();
@@ -1115,22 +1112,26 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 	sprintf(sMsg, "%s %s %s", pszTemp1, pszTemp2, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_TY));
 	pVendor->Speak(sMsg);
 
-	// Step #6
-	// Take the gold and add it to the vendor
+	// Consume gold
 	if ( !bBoss )
 	{
-		DWORD iGold = m_pChar->GetContainerCreate(LAYER_PACK)->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), costtotal);
-		if ( !g_Cfg.m_fPayFromPackOnly && iGold )
-			m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), iGold);
-
+		if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD )
+		{
+			m_pChar->m_virtualGold -= costtotal;
+			m_pChar->UpdateStatsFlag();
+		}
+		else
+		{
+			DWORD iGold = m_pChar->GetContainerCreate(LAYER_PACK)->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), costtotal);
+			if ( !g_Cfg.m_fPayFromPackOnly && iGold )
+				m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), iGold);
+		}
 		pVendor->GetContainerCreate(LAYER_BANKBOX)->m_itEqBankBox.m_Check_Amount += costtotal;
 	}
 
-	// Clear the vendor display.
+	// Close vendor gump
 	addVendorClose(pVendor);
-
-	if ( costtotal > 0 )	// if anything was sold, sound this
-		addSound(SOUND_USE_CLOTH);
+	addSound(SOUND_DROP_GOLD1);
 }
 
 void CClient::Event_VendorSell_Cheater(int iCode)
@@ -1142,7 +1143,6 @@ void CClient::Event_VendorSell_Cheater(int iCode)
 	{
 		"Other",
 		"Bad vendor UID",
-		"Vendor is off-duty",
 		"Bad item UID"
 	};
 
@@ -1178,7 +1178,7 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 		CItemVendable *pItem = static_cast<CItemVendable *>(items[i].m_serial.ItemFind());
 		if ( !pItem || !pItem->IsValidSaleItem(true) )
 		{
-			Event_VendorSell_Cheater(0x3);
+			Event_VendorSell_Cheater(0x2);
 			return;
 		}
 
@@ -1253,9 +1253,11 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 			m_pChar->UpdateStatsFlag();
 		}
 		else
-			m_pChar->AddGoldToPack(iGold);
+			m_pChar->AddGoldToPack(iGold, NULL, false);
 
 		addVendorClose(pVendor);
+		addSound(SOUND_DROP_GOLD1);
+		addSound(SOUND_DROP_GOLD2);
 	}
 	else
 	{

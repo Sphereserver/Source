@@ -396,3 +396,6 @@ Fixed: ML/SA/HS/TOL doors not working correctly.
 Fixed: Char flag 'statf_hovering' (gargoyle fly ability) not clearing when gargoyle chars polymorph into non-gargoyle char ID.
 Fixed: Hidden/Invisible chars not getting revealed when being stumbled.
 Changed: Updated internal Zlib libs v1.2.10 to v1.2.11.
+
+09-02-2017, Coruja
+Changed: Small fixes and improvements on vendor buy/sell engine.
