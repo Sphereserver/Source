@@ -2219,7 +2219,7 @@ CItem *CChar::Make_Figurine( CGrayUID uidOwner, ITEMID_TYPE id )
 
 // Call Make_Figurine() and place me
 // This will just kill conjured creatures.
-CItem * CChar::NPC_Shrink()
+CItem *CChar::NPC_Shrink()
 {
 	ADDTOCALLSTACK("CChar::NPC_Shrink");
 	if ( IsStatFlag(STATF_Conjured) )
@@ -2228,9 +2228,9 @@ CItem * CChar::NPC_Shrink()
 		return NULL;
 	}
 
-	NPC_PetClearOwners();	// Clear follower slots on pet owner
+	NPC_PetClearOwners();	// clear follower slots on pet owner
 
-	CItem * pItem = Make_Figurine(UID_CLEAR, ITEMID_NOTHING);
+	CItem *pItem = Make_Figurine();
 	if ( !pItem )
 		return NULL;
 

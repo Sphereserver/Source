@@ -400,3 +400,13 @@ Changed: Updated internal Zlib libs v1.2.10 to v1.2.11.
 09-02-2017, Coruja
 Changed: Small fixes and improvements on vendor buy/sell engine.
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.57 and enhanced client 4.0.57
+[sphere_item_wedding.scp]: Added new wedding items from latest UO patch (publish 96 / client 7.0.57)
+[multis_magincia_bazaar.scp]: Updated all stalls to use proper multis instead standalone items
+
+10-02-2017, Coruja
+Fixed: Function SHRINK not working correctly.
+[sphere_monsters.scp]: Added missing data on some monsters
+[sphere_defs.scp]: Updated 'color_*' defs, added new sound def 'snd_monster_wildtiger'
+[sphere_item_resources.scp]: Added new resources 'Tiger Pelt' (found on Wild Tiger) and 'Dragon Scute' (found on Dragon Turtle)
+[sphere_item_profession_tailor_tanner.scp / sphere_item_profession_cook_barkeep_baker.scp]: Removed some obsolete code
+[sphere_item_animations.scp / sphere_item_unsorted.scp]: Changed all t_telepad items to be created using MOREP=-1,-1 instead MOREP=0,0 by default (this will prevent misconfigured t_telepad items teleporting to wrong coord 0,0)
