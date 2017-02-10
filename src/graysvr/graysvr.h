@@ -1211,42 +1211,42 @@ private:
 	bool OnTarg_Pet_Stable( CChar * pCharPet );
 
 	// Commands from client
-	void Event_Skill_Use( SKILL_TYPE x ); // Skill is clicked on the skill list
-	void Event_Talk_Common(TCHAR * szText ); // PC speech
-	bool Event_Command( LPCTSTR pszCommand, TALKMODE_TYPE mode = TALKMODE_SYSTEM ); // Client entered a '/' command like /ADD
+	void Event_Skill_Use(SKILL_TYPE x);	// Skill is clicked on the skill list
+	void Event_Talk_Common(TCHAR *szText);	// PC speech
+	bool Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode = TALKMODE_SYSTEM);	// Client entered a '/' command like /ADD
 
 public:
 	void GetAdjustedCharID( const CChar * pChar, CREID_TYPE & id, HUE_TYPE &wHue ) const;
 	void GetAdjustedItemID( const CChar * pChar, const CItem * pItem, ITEMID_TYPE & id, HUE_TYPE &wHue ) const;
 
 	void Event_Attack(CGrayUID uid);
-	void Event_Book_Title( CGrayUID uid, LPCTSTR pszTitle, LPCTSTR pszAuthor );
-	void Event_BugReport( const TCHAR * pszText, int len, BUGREPORT_TYPE type, CLanguageID lang = 0 );
-	void Event_ChatButton(const NCHAR * pszName); // Client's chat button was pressed
-	void Event_ChatText( const NCHAR * pszText, int len, CLanguageID lang = 0 ); // Text from a client
-	void Event_CombatMode( bool fWar ); // Only for switching to combat mode
-	bool Event_DoubleClick( CGrayUID uid, bool fMacro, bool fTestTouch, bool fScript = false );
-	void Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName );
-	void Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, BYTE gridIndex = 0 ); // Item is dropped on ground
-	void Event_Item_Drop_Fail( CItem *pItem );
-	void Event_Item_Dye( CGrayUID uid, HUE_TYPE wHue );	// Rehue an item
-	void Event_Item_Pickup( CGrayUID uid, int amount ); // Client grabs an item
-	void Event_MailMsg( CGrayUID uid1, CGrayUID uid2 );
-	void Event_Profile( BYTE fWriteMode, CGrayUID uid, LPCTSTR pszProfile, int iProfileLen );
-	void Event_PromptResp( LPCTSTR pszText, size_t len, DWORD context1, DWORD context2, DWORD type, bool bNoStrip = false );
-	void Event_SetName( CGrayUID uid, const char * pszCharName );
-	void Event_SingleClick( CGrayUID uid );
-	void Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bool bNoStrip = false ); // PC speech
-	void Event_TalkUNICODE( NWORD* wszText, int iTextLen, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR pszLang );
-	void Event_Target( CLIMODE_TYPE context, CGrayUID uid, CPointMap pt, BYTE flags = 0, ITEMID_TYPE id = ITEMID_NOTHING );
-	void Event_Tips( WORD i ); // Tip of the day window
-	void Event_ToolTip( CGrayUID uid );
+	void Event_Book_Title(CGrayUID uid, LPCTSTR pszTitle, LPCTSTR pszAuthor);
+	void Event_BugReport(const TCHAR *pszText, int len, BUGREPORT_TYPE type, CLanguageID lang = 0);
+	void Event_ChatButton(const NCHAR *pszName);	// Client's chat button was pressed
+	void Event_ChatText(const NCHAR *pszText, int len, CLanguageID lang = 0);	// Text from a client
+	void Event_CombatMode(bool fWar);	// Only for switching to combat mode
+	bool Event_DoubleClick(CGrayUID uid, bool fMacro, bool fTestTouch, bool fScript = false);
+	void Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszName);
+	void Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, BYTE gridIndex = 0);	// Item is dropped on ground
+	void Event_Item_Drop_Fail(CItem *pItem);
+	void Event_Item_Dye(CGrayUID uid, HUE_TYPE wHue);	// Rehue an item
+	void Event_Item_Pickup(CGrayUID uid, int amount);	// Client grabs an item
+	void Event_MailMsg(CGrayUID uid1, CGrayUID uid2);
+	void Event_Profile(BYTE fWriteMode, CGrayUID uid, LPCTSTR pszProfile, int iProfileLen);
+	void Event_PromptResp(LPCTSTR pszText, size_t len, DWORD context1, DWORD context2, DWORD type, bool bNoStrip = false);
+	void Event_SetName(CGrayUID uid, const char *pszCharName);
+	void Event_SingleClick(CGrayUID uid);
+	void Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bool bNoStrip = false);	// PC speech
+	void Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR pszLang);
+	void Event_Target(CLIMODE_TYPE context, CGrayUID uid, CPointMap pt, BYTE flags = 0, ITEMID_TYPE id = ITEMID_NOTHING);
+	void Event_Tips(WORD i);	// Tip of the day window
+	void Event_ToolTip(CGrayUID uid);
 	void Event_UseToolbar(BYTE bType, DWORD dwArg);
-	void Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t itemCount);
-	void Event_VendorBuy_Cheater( int iCode = 0 );
-	void Event_VendorSell(CChar* pVendor, const VendorItem* items, size_t itemCount);
-	void Event_VendorSell_Cheater( int iCode = 0 );
-	bool Event_Walk( BYTE rawdir, BYTE sequence = 0 ); // Player moves
+	void Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t itemCount);
+	void Event_VendorBuy_Cheater(int iCode = 0);
+	void Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t itemCount);
+	void Event_VendorSell_Cheater(int iCode = 0);
+	bool Event_Walk(BYTE rawdir, BYTE sequence = 0);	// Player moves
 	bool Event_CheckWalkBuffer();
 	
 	TRIGRET_TYPE Menu_OnSelect( RESOURCE_ID_BASE rid, int iSelect, CObjBase * pObj );

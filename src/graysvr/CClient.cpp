@@ -570,7 +570,7 @@ void CClient::UpdateCharacterListFlags()
 
 	// Misc
 	if ( m_NetState->isClientKR() || m_NetState->isClientEnhanced() )		// tooltips must be always enabled on enhanced clients
-		m_CharacterListFlags |= (0x400|0x20);
+		m_CharacterListFlags |= (0x400|0x200|0x20);
 	m_TooltipEnabled = (m_CharacterListFlags & 0x20) ? true : false;
 	m_ContainerGridEnabled = (m_NetState->isClientVersion(MINCLIVER_CONTAINERGRID) || m_NetState->isClientKR() || m_NetState->isClientEnhanced());
 }

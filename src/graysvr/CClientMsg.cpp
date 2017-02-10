@@ -3028,7 +3028,6 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 							break;
 
 						case IT_TELEPAD:
-						case IT_MOONGATE:
 							if ( IsPriv(PRIV_GM) )
 							{
 								m_TooltipData.Add(t = new CClientTooltip(1061114)); // Location: ~1_val~

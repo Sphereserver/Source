@@ -3881,18 +3881,25 @@ PacketStatLocks::PacketStatLocks(const CClient* target, const CChar* character) 
 {
 	ADDTOCALLSTACK("PacketStatLocks::PacketStatLocks");
 
-	BYTE status = 0;
+	BYTE type = (target->m_NetState->isClientKR() || target->m_NetState->isClientEnhanced()) ? 5 : 2;
+	BYTE flags = 0;
 	if (character->m_pPlayer)
 	{
-		status |= static_cast<BYTE>(character->m_pPlayer->Stat_GetLock(STAT_INT));
-		status |= static_cast<BYTE>(character->m_pPlayer->Stat_GetLock(STAT_DEX)) << 2;
-		status |= static_cast<BYTE>(character->m_pPlayer->Stat_GetLock(STAT_STR)) << 4;
+		flags |= static_cast<BYTE>(character->m_pPlayer->Stat_GetLock(STAT_INT));
+		flags |= static_cast<BYTE>(character->m_pPlayer->Stat_GetLock(STAT_DEX)) << 2;
+		flags |= static_cast<BYTE>(character->m_pPlayer->Stat_GetLock(STAT_STR)) << 4;
 	}
 
-	writeByte(0x2);
+	writeByte(type);
 	writeInt32(character->GetUID());
 	writeByte(0);
-	writeByte(status);
+	writeByte(flags);
+
+	if ( type == 5 )
+	{
+		writeByte(0);
+		writeInt32(0);
+	}
 
 	push(target);
 }

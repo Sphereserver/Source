@@ -1465,10 +1465,6 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 			else if ( ! m_itRune.m_Strength )
 				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_FADED ) );
 			break;
-		case IT_TELEPAD:
-			if ( ! m_itTelepad.m_pntMark.IsValidPoint())
-				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_BLANK ) );
-			break;
 		default:
 			break;
 	}
