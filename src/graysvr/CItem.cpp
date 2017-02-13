@@ -2295,10 +2295,7 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			sVal.FormatVal( m_itNormal.m_morep.m_y );
 			break;
 		case IC_MOREZ:
-			if ( IsTypeSpellbook() )
-				sVal.FormatVal(m_itSpellbook.m_baseid);
-			else
-				sVal.FormatVal(m_itNormal.m_morep.m_z);
+			sVal.FormatVal( m_itNormal.m_morep.m_z );
 			break;
 		case IC_P:
 			fDoDefault = true;
@@ -2639,10 +2636,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			m_itNormal.m_morep.m_y = static_cast<short>(s.GetArgVal());
 			break;
 		case IC_MOREZ:
-			if ( IsTypeSpellbook() )
-				m_itSpellbook.m_baseid = static_cast<WORD>(s.GetArgVal());
-			else
-				m_itNormal.m_morep.m_z = static_cast<char>(s.GetArgVal());
+			m_itNormal.m_morep.m_z = static_cast<char>(s.GetArgVal());
 			break;
 		case IC_P:
 			// Loading or import ONLY ! others use the r_Verb
@@ -3334,21 +3328,20 @@ SPELL_TYPE CItem::GetScrollSpell() const
 bool CItem::IsSpellInBook( SPELL_TYPE spell ) const
 {
 	ADDTOCALLSTACK("CItem::IsSpellInBook");
-	int i = spell;
-
-	//	max 96 spells in one spellbook
-	//	convert spell back to format of the book and check whatever it is in
-	if ( i <= m_itSpellbook.m_baseid )
+	CItemBase *pItemDef = Item_GetDef();
+	if ( !pItemDef )
+		return false;
+	if ( spell <= pItemDef->m_ttSpellbook.m_Offset )
 		return false;
 
-	i -= (m_itSpellbook.m_baseid + 1);
-
+	// Convert spell back to format of the book and check whatever it is in
+	int i = spell - (pItemDef->m_ttSpellbook.m_Offset + 1);
 	if ( i < 32 )
 		return ((m_itSpellbook.m_spells1 & (1 << i)) != 0);
 	else if ( i < 64 )
 		return ((m_itSpellbook.m_spells2 & (1 << (i-32))) != 0);
-	else if ( i < 96 )
-		return ((m_itSpellbook.m_spells2 & (1 << (i-64))) != 0);
+	//else if ( i < 96 )
+	//	return ((m_itSpellbook.m_spells2 & (1 << (i-64))) != 0);	//not used anymore?
 	else
 		return false;
 }
@@ -3362,8 +3355,12 @@ int CItem::GetSpellcountInBook() const
 	if ( !IsTypeSpellbook() )
 		return -1;
 
-	WORD min = m_itSpellbook.m_baseid + 1;
-	WORD max = m_itSpellbook.m_baseid + m_itSpellbook.m_maxspells;
+	CItemBase *pItemDef = Item_GetDef();
+	if ( !pItemDef )
+		return -1;
+
+	WORD min = pItemDef->m_ttSpellbook.m_Offset + 1;
+	WORD max = pItemDef->m_ttSpellbook.m_Offset + pItemDef->m_ttSpellbook.m_MaxSpells;
 
 	int count = 0;
 	for ( int i = min; i <= max; i++ )
@@ -3386,21 +3383,19 @@ int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
 
 	if ( !IsTypeSpellbook() )
 		return 3;
-	if ( spell == SPELL_NONE )
+	const CItemBase *pBookDef = Item_GetDef();
+	if ( !pBookDef )
+		return 3;
+	if ( spell <= pBookDef->m_ttSpellbook.m_Offset )
+		return 3;
+	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
+	if ( !pSpellDef )
 		return 2;
-	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
-	if ( pSpellDef == NULL )
-		return 2;
-
 	if ( IsSpellInBook(spell) )
 		return 1;
 
-	//	add spell to a spellbook bitmask
-	int i = spell;
-
-	if ( i <= m_itSpellbook.m_baseid )
-		return 3;
-	i -= (m_itSpellbook.m_baseid + 1);
+	// Add spell to spellbook bitmask
+	int i = spell - (pBookDef->m_ttSpellbook.m_Offset + 1);
 	if ( i < 32 )
 		m_itSpellbook.m_spells1 |= (1 << i);
 	else if ( i < 64 )
@@ -3410,21 +3405,22 @@ int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
 	else
 		return 3;
 
-	if (GetTopLevelObj()->IsChar())	// Intercepting the spell's addition here for NPCs, they store the spells on vector <Spells>m_spells for better access from their AI.
+	if ( GetTopLevelObj()->IsChar() )
 	{
-		CCharNPC * pNPC = dynamic_cast <CObjBase*>(GetTopLevelObj())->GetUID().CharFind()->m_pNPC;// ? dynamic_cast <CObjBase*>(GetTopLevelObj())->GetUID().CharFind()->m_pNPC : NULL;
-		if (pNPC)
+		// Intercepting the spell's addition here for NPCs, they store the spells on vector <Spells>m_spells for better access from their AI
+		CCharNPC *pNPC = dynamic_cast<CObjBase *>(GetTopLevelObj())->GetUID().CharFind()->m_pNPC;
+		if ( pNPC )
 			pNPC->Spells_Add(spell);
 	}
-	// update the spellbook
-	if ( fUpdate)
+
+	if ( fUpdate )
 	{
 		PacketItemContainer cmd(this, pSpellDef);
 
 		ClientIterator it;
-		for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
+		for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 		{
-			if ( ! pClient->CanSee( this ))
+			if ( !pClient->CanSee(this) )
 				continue;
 
 			cmd.completeForTarget(pClient, this);
@@ -4106,7 +4102,7 @@ bool CItem::Use_Light()
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(m_TagDefs.GetKeyNum("OVERRIDE_LIGHTID"));
 	if ( !id )
 	{
-		id = static_cast<ITEMID_TYPE>(Item_GetDef()->m_ttEquippable.m_Light_ID.GetResIndex());
+		id = static_cast<ITEMID_TYPE>(Item_GetDef()->m_ttLightSource.m_Light_ID.GetResIndex());
 		if ( !id )
 			return false;
 	}

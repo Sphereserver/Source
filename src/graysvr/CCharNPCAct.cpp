@@ -1720,8 +1720,12 @@ void CChar::NPC_GetAllSpellbookSpells()
 void CChar::NPC_AddSpellsFromBook(CItem * pBook)
 {
 	ADDTOCALLSTACK("CChar::NPC_AddSpellsFromBook");
-	WORD min = pBook->m_itSpellbook.m_baseid + 1;
-	WORD max = pBook->m_itSpellbook.m_baseid + pBook->m_itSpellbook.m_maxspells;
+	CItemBase *pBookDef = pBook->Item_GetDef();
+	if ( !pBookDef )
+		return;
+
+	WORD min = pBookDef->m_ttSpellbook.m_Offset + 1;
+	WORD max = pBookDef->m_ttSpellbook.m_Offset + pBookDef->m_ttSpellbook.m_MaxSpells;
 
 	for ( int i = min; i <= max; i++ )
 	{

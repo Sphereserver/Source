@@ -2031,7 +2031,11 @@ void CClient::addSpellbookOpen( CItem * pBook )
 	addOpenGump(pBook, GUMP_NONE);
 
 	if ( PacketSpellbookContent::CanSendTo(m_NetState) )
-		new PacketSpellbookContent(this, pBook, pBook->m_itSpellbook.m_baseid + 1);
+	{
+		CItemBase *pBookDef = pBook->Item_GetDef();
+		if ( pBookDef )
+			new PacketSpellbookContent(this, pBook, pBookDef->m_ttSpellbook.m_Offset + 1);
+	}
 	else
 		new PacketItemContents(this, pBook);
 }

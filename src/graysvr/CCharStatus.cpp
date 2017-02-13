@@ -601,32 +601,34 @@ CItem *CChar::GetSpellbook(SPELL_TYPE iSpell) const
 
 	// Search in hands
 	CItem *pReturn = NULL;
-	for ( CItem *pBook = GetContentHead(); pBook != NULL; pBook = pBook->GetNext() )
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		if ( !pBook->IsTypeSpellbook() )
+		CItemBase *pItemDef = pItem->Item_GetDef();
+		if ( !pItemDef->IsTypeSpellbook(pItem->GetType()) )
 			continue;
-		if ( (iSpell < pBook->m_itSpellbook.m_baseid) || (iSpell > pBook->m_itSpellbook.m_baseid + pBook->m_itSpellbook.m_maxspells) )
+		if ( (iSpell < pItemDef->m_ttSpellbook.m_Offset) || (iSpell > pItemDef->m_ttSpellbook.m_Offset + pItemDef->m_ttSpellbook.m_MaxSpells) )
 			continue;
-		if ( pBook->IsSpellInBook(iSpell) )
-			return pBook;
+		if ( pItem->IsSpellInBook(iSpell) )
+			return pItem;
 
-		pReturn = pBook;		// spellbook found, but it doesn't have the spell... return this book if nothing better is found
+		pReturn = pItem;		// spellbook found, but it doesn't have the spell... return this book if nothing better is found
 	}
 
 	// Search in the top level of backpack
 	CItemContainer *pPack = GetContainer(LAYER_PACK);
 	if ( pPack )
 	{
-		for ( CItem *pBook = pPack->GetContentHead(); pBook != NULL; pBook = pBook->GetNext() )
+		for ( CItem *pItem = pPack->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 		{
-			if ( !pBook->IsTypeSpellbook() )
+			CItemBase *pItemDef = pItem->Item_GetDef();
+			if ( !pItemDef->IsTypeSpellbook(pItem->GetType()) )
 				continue;
-			if ( (iSpell < pBook->m_itSpellbook.m_baseid) || (iSpell > pBook->m_itSpellbook.m_baseid + pBook->m_itSpellbook.m_maxspells) )
+			if ( (iSpell < pItemDef->m_ttSpellbook.m_Offset) || (iSpell > pItemDef->m_ttSpellbook.m_Offset + pItemDef->m_ttSpellbook.m_MaxSpells) )
 				continue;
-			if ( pBook->IsSpellInBook(iSpell) )
-				return pBook;	
+			if ( pItem->IsSpellInBook(iSpell) )
+				return pItem;
 
-			pReturn = pBook;	// spellbook found, but it doesn't have the spell... return this book if nothing better is found
+			pReturn = pItem;	// spellbook found, but it doesn't have the spell... return this book if nothing better is found
 		}
 	}
 	return pReturn;
