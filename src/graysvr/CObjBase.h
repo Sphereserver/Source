@@ -3780,7 +3780,6 @@ private:
 	// Armor, weapons and combat ------------------------------------
 	int	CalcFightRange( CItem * pWeapon = NULL );
 
-	SKILL_TYPE Fight_GetWeaponSkill() const;
 	bool Fight_IsActive() const;
 	bool Fight_IsAttackable() const;
 public:
@@ -3793,6 +3792,7 @@ public:
 	void Fight_Clear();
 	void Fight_HitTry();
 	WAR_SWING_TYPE Fight_Hit( CChar * pCharTarg );
+	SKILL_TYPE Fight_GetWeaponSkill() const;
 	int  Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom = false, bool bGetMax = true ) const;
 
 	// Attacker System

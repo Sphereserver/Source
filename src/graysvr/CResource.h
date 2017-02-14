@@ -1182,8 +1182,8 @@ public:
 
 	int Calc_MaxCarryWeight( const CChar * pChar ) const;
 	int Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon );
-	int Calc_CombatChanceToHit( CChar * pChar, CChar * pCharTarg, SKILL_TYPE skill );
-	int  Calc_StealingItem( CChar * pCharThief, CItem * pItem, CChar * pCharMark );
+	int Calc_CombatChanceToHit( CChar * pChar, CChar * pCharTarg );
+	int Calc_StealingItem( CChar * pCharThief, CItem * pItem, CChar * pCharMark );
 	bool Calc_CrimeSeen( CChar * pCharThief, CChar * pCharViewer, SKILL_TYPE SkillToSee, bool fBonus );
 	int Calc_FameKill( CChar * pKill );
 	int Calc_KarmaKill( CChar * pKill, NOTO_TYPE NotoThem );

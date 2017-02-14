@@ -406,8 +406,8 @@ Fixed: Function SHRINK not working correctly.
 [sphere_item_animations.scp / sphere_item_unsorted.scp]: Changed all t_telepad items to be created using MOREP=-1,-1 instead MOREP=0,0 by default (this will prevent misconfigured t_telepad items teleporting to wrong coord 0,0)
 
 13-02-2017, Coruja
-Changed: Spellbooks now store spell offset / max spells using TDATA3/TDATA4 instead MOREZ/MOREX.
-	-This will optimize worldsave files, because MORE* must be set and saved on every created item, but TDATA* can be used directly from itemdef script and doesn't need to be saved on worldfiles.
+Changed: Spellbooks now store spell offset / max spells using TDATA3/TDATA4 instead MOREZ/MOREX. This will optimize worldsave files, because TDATA* can be used directly from itemdef script and doesn't need to be saved on worldfiles.
+	-IMPORTANT: It's HIGHLY recommended update these scripts above, otherwise spellbooks will stop working.
 [sphere_item_magic_magery.scp]: Updated i_spellbook
 [sphere_item_magic_necromancer_aos.scp]: Updated i_spellbook_necromancy
 [sphere_item_magic_chivalry.scp]: Updated i_spellbook_chivalry
@@ -415,3 +415,6 @@ Changed: Spellbooks now store spell offset / max spells using TDATA3/TDATA4 inst
 [sphere_item_magic_spellweaving.scp]: Updated i_spellbook_spellweaving
 [sphere_item_magic_mysticism.scp]: Updated i_spellbook_mystic
 [sphere_item_magic_skillmasteries.scp]: Updated i_spellbook_mastery
+
+14-02-2017, Coruja
+Fixed: Combat Hit Chance formulas incorrectly assuming that defender is always using the same combat skill as the attacker.

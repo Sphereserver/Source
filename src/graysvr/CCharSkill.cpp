@@ -3083,7 +3083,7 @@ int CChar::Skill_Fighting( SKTRIG_TYPE stage )
 			iRemainingDelay = 0;
 
 		SetTimeout(iRemainingDelay);
-		return g_Cfg.Calc_CombatChanceToHit(this, m_Fight_Targ.CharFind(), Skill_GetActive());
+		return g_Cfg.Calc_CombatChanceToHit(this, m_Fight_Targ.CharFind());
 	}
 
 	if ( stage == SKTRIG_STROKE )
