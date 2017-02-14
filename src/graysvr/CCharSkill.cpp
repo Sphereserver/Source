@@ -462,27 +462,6 @@ bool CChar::Skill_CanUse( SKILL_TYPE skill )
 	return true;
 }
 
-SKILL_TYPE CChar::Skill_GetMagicBest()
-{
-	ADDTOCALLSTACK("CChar::Skill_GetMagicBest");
-	SKILL_TYPE skill = SKILL_NONE;
-	WORD value = 0;
-	for ( BYTE i = 0; i < g_Cfg.m_iMaxSkill; i++ )
-	{
-		if (!g_Cfg.IsSkillFlag(skill, SKF_MAGIC))
-			continue;
-
-		SKILL_TYPE test = static_cast<SKILL_TYPE>(i);
-		WORD iVal = Skill_GetBase(test);
-		if (iVal > value)
-		{
-			skill = test;
-			value = iVal;
-		}
-	}
-	return skill;
-}
-
 WORD CChar::Skill_GetAdjusted( SKILL_TYPE skill ) const
 {
 	ADDTOCALLSTACK("CChar::Skill_GetAdjusted");
