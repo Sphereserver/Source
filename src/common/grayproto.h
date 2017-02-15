@@ -930,6 +930,7 @@ enum MAPCMD_TYPE
 
 enum MAPWAYPOINT_TYPE
 {
+	Remove				= 0x0,
 	Corpse				= 0x1,
 	PartyMember			= 0x2,
 	Unk1				= 0x3,

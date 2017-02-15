@@ -86,8 +86,16 @@ bool CItem::NotifyDelete()
 void CItem::Delete(bool bforce)
 {
 
-	if (( NotifyDelete() == false ) && !bforce)
+	if ( !NotifyDelete() && !bforce )
 		return;
+
+	// Remove corpse map waypoint on enhanced clients
+	if ( IsType(IT_CORPSE) && m_uidLink )
+	{
+		CChar *pChar = m_uidLink.CharFind();
+		if ( pChar && pChar->m_pClient )
+			pChar->m_pClient->addMapWaypoint(this, Remove);
+	}
 
 	CObjBase::Delete();
 }
@@ -4846,13 +4854,16 @@ bool CItem::OnTick()
 		case IT_CORPSE:
 			{
 				EXC_SET("default behaviour::IT_CORPSE");
-				// turn player corpse into bones
-				CChar * pSrc = m_uidLink.CharFind();
+				// Turn player corpse into bones
+				CChar *pSrc = m_uidLink.CharFind();
 				if ( pSrc && pSrc->m_pPlayer )
 				{
+					if ( pSrc->m_pClient )
+						pSrc->m_pClient->addMapWaypoint(this, Remove);	// remove corpse map waypoint on enhanced clients
+
 					SetID(static_cast<ITEMID_TYPE>(Calc_GetRandVal2(ITEMID_SKELETON_1, ITEMID_SKELETON_9)));
 					SetHue(static_cast<HUE_TYPE>(HUE_DEFAULT));
-					SetTimeout(static_cast<long long>(g_Cfg.m_iDecay_CorpsePlayer));
+					SetTimeout(static_cast<INT64>(g_Cfg.m_iDecay_CorpsePlayer));
 					m_itCorpse.m_carved = 1;	// the corpse can't be carved anymore
 					m_uidLink.InitUID();		// and also it's not linked to the char anymore (others players can loot it without get flagged criminal)
 					RemoveFromView();

@@ -421,3 +421,4 @@ Fixed: Combat Hit Chance formulas incorrectly assuming that defender is always u
 
 15-02-2017, Coruja
 Fixed: Enhanced clients not updating backpack content on death.
+Added: Enhanced clients now will show an map waypoint of player own corpse when it die.
