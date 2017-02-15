@@ -3829,10 +3829,10 @@ PacketEnableMapDiffs::PacketEnableMapDiffs(const CClient* target) : PacketExtend
 {
 	ADDTOCALLSTACK("PacketEnableMapDiffs::PacketEnableMapDiffs");
 
-	BYTE map;
-	BYTE mapCount = 1;
+	DWORD map;
+	DWORD mapCount = 1;
 
-	// find map count
+	// Find map count
 	for (map = 255; map >= 0; map--)
 	{
 		if (!g_MapList.m_maps[map])
@@ -3846,21 +3846,13 @@ PacketEnableMapDiffs::PacketEnableMapDiffs(const CClient* target) : PacketExtend
 
 	for (map = 0; map < mapCount; map++)
 	{
-		if (g_Cfg.m_fUseMapDiffs && g_MapList.m_maps[map])
+		if (g_MapList.m_maps[map] && g_Cfg.m_fUseMapDiffs)
 		{
-			if (g_Install.m_Mapdifl[map].IsFileOpen())
-				writeInt32(g_Install.m_Mapdifl[map].GetLength() / 4);
-			else
-				writeInt32(0);
-
-			if (g_Install.m_Stadifl[map].IsFileOpen())
-				writeInt32(g_Install.m_Stadifl[map].GetLength() / 4);
-			else
-				writeInt32(0);
+			writeInt32(g_Install.m_Mapdifl[map].IsFileOpen() ? g_Install.m_Mapdifl[map].GetLength() / 4 : 0);
+			writeInt32(g_Install.m_Stadifl[map].IsFileOpen() ? g_Install.m_Stadifl[map].GetLength() / 4 : 0);
 		}
 		else
 		{
-			// mapdiffs are disabled or map does not exist
 			writeInt32(0);
 			writeInt32(0);
 		}
@@ -4650,7 +4642,7 @@ PacketWaypointAdd::PacketWaypointAdd(const CClient *target, CObjBase *object, MA
 		return;
 
 	CPointMap pt = object->GetTopPoint();
-	DWORD cliloc = (type == Corpse) ? 1046414 : 1062613;	// the remains of ~1_NAME~ : "~1_NAME~"
+	DWORD cliloc = 1062613;			//DWORD cliloc = (type == Corpse) ? 1046414 : 1062613;	// the remains of ~1_NAME~ : "~1_NAME~"
 
 	initLength();
 	writeInt32(object->GetUID());
