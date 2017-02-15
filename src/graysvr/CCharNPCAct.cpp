@@ -1014,7 +1014,7 @@ bool CChar::NPC_LookAtCharGuard( CChar * pChar )
 	else if ( !IsStatFlag(STATF_War) || m_Act_Targ != pChar->GetUID() )
 	{
 		Speak(g_Cfg.GetDefaultMsg(sm_szSpeakGuardStrike[Calc_GetRandVal(COUNTOF(sm_szSpeakGuardStrike))]));
-		Fight_Attack(pChar);
+		Fight_Attack(pChar, true);
 		Attacker_SetThreat(Attacker_GetID(pChar), 10000);
 	}
 	return true;

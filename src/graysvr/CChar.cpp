@@ -2803,7 +2803,7 @@ do_default:
 						CChar *pChar = static_cast<CChar *>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
 						if ( !pChar )
 							return false;
-						Fight_Attack(pChar);
+						Fight_Attack(pChar, true);
 						return true;
 					}
 					else if ( !strnicmp(pszKey, "TARGET", 6) )
@@ -3360,7 +3360,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			break;
 		case CHV_ATTACK:
 		{
-			Fight_Attack(CGrayUID(s.GetArgVal()).CharFind());
+			Fight_Attack(CGrayUID(s.GetArgVal()).CharFind(), true);
 			break;
 		}
 		case CHV_BANK:

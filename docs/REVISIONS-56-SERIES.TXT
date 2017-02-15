@@ -420,6 +420,7 @@ Changed: Spellbooks now store spell offset / max spells using TDATA3/TDATA4 inst
 Fixed: Combat Hit Chance formulas incorrectly assuming that defender is always using the same combat skill as the attacker.
 
 15-02-2017, Coruja
+Fixed: Functions ATTACK / ATTACKER.ADD not working correctly on NPCs.
 Fixed: Enhanced clients not updating backpack content on death.
 Added: Enhanced clients now will show an map waypoint of player own corpse when it die.
 Added: Better LOS support for bigger screen resolutions of TOL clients 7.0.55.27+ that uses char VISUALRANGE > 18.
