@@ -2896,9 +2896,9 @@ bool CChar::Death()
 
 		if ( m_pClient )
 		{
-			if ( g_Cfg.m_iPacketDeathAnimation )
+			if ( g_Cfg.m_iPacketDeathAnimation || m_pClient->m_NetState->isClientKR() || m_pClient->m_NetState->isClientEnhanced() )
 			{
-				// Display death animation to client ("You are dead")
+				// Display the "You are dead" screen animation (this must be always enabled on enhanced clients)
 				new PacketDeathMenu(m_pClient, PacketDeathMenu::ServerSent);
 				new PacketDeathMenu(m_pClient, PacketDeathMenu::Ghost);
 			}
@@ -2908,23 +2908,31 @@ bool CChar::Death()
 				// the client must be updated manually using these others packets as workaround
 				m_pClient->addPlayerUpdate();
 				m_pClient->addPlayerWarMode();
-				m_pClient->addContainerSetup(GetContainer(LAYER_PACK));	// update backpack contents
 			}
-			m_pClient->addSeason(SEASON_Desolate);
-		}
 
-		// Remove the characters which I can't see as dead from the screen
-		if ( g_Cfg.m_fDeadCannotSeeLiving )
-		{
-			CWorldSearch AreaChars(GetTopPoint(), UO_MAP_VIEW_SIZE);
-			AreaChars.SetSearchSquare(true);
-			for (;;)
+			m_pClient->addSeason(SEASON_Desolate);
+
+			// Force client to update backpack content
+			CItem *pPack = LayerFind(LAYER_PACK);
+			if ( pPack )
 			{
-				CChar *pChar = AreaChars.GetChar();
-				if ( !pChar )
-					break;
-				if ( !CanSeeAsDead(pChar) )
-					m_pClient->addObjectRemove(pChar);
+				pPack->RemoveFromView();
+				pPack->Update();
+			}
+
+			// Remove the characters which I can't see as dead from the screen
+			if ( g_Cfg.m_fDeadCannotSeeLiving )
+			{
+				CWorldSearch AreaChars(GetTopPoint(), UO_MAP_VIEW_SIZE);
+				AreaChars.SetSearchSquare(true);
+				for (;;)
+				{
+					CChar *pChar = AreaChars.GetChar();
+					if ( !pChar )
+						break;
+					if ( !CanSeeAsDead(pChar) )
+						m_pClient->addObjectRemove(pChar);
+				}
 			}
 		}
 	}

@@ -418,3 +418,6 @@ Changed: Spellbooks now store spell offset / max spells using TDATA3/TDATA4 inst
 
 14-02-2017, Coruja
 Fixed: Combat Hit Chance formulas incorrectly assuming that defender is always using the same combat skill as the attacker.
+
+15-02-2017, Coruja
+Fixed: Enhanced clients not updating backpack content on death.
