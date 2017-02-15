@@ -1101,7 +1101,7 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 
 		case SECURE_TRADE_CHANGE:		// change check marks. possible conclude trade
 		{
-			if ( character->GetDist(container) > UO_MAP_VIEW_SIZE )
+			if ( character->GetDist(container) > character->GetSight() )
 			{
 				client->SysMessageDefault(DEFMSG_MSG_TRADE_TOOFAR);
 				return true;

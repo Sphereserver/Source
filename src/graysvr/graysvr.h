@@ -1491,7 +1491,7 @@ public:
 
 	void addShowDamage( CGrayUID uid, int damage );
 	void addSpeedMode( BYTE speedMode = 0 );
-	void addVisualRange( BYTE visualRange = UO_MAP_VIEW_SIZE );
+	void addVisualRange( BYTE visualRange );
 	void addIdleWarning( BYTE message );
 	void addKRToolbar( bool bEnable );
 

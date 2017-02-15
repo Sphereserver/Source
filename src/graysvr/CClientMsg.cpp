@@ -314,7 +314,7 @@ void CClient::addRemoveAll( bool fItems, bool fChars )
 	if ( fChars )
 	{
 		CChar * pCharSrc = GetChar();
-		CWorldSearch AreaChars(GetChar()->GetTopPoint(), UO_MAP_VIEW_SIZE);
+		CWorldSearch AreaChars(GetChar()->GetTopPoint(), GetChar()->GetSight());
 		AreaChars.SetAllShow(IsPriv(PRIV_ALLSHOW));
 		AreaChars.SetSearchSquare(true);
 		for (;;)
@@ -345,16 +345,14 @@ void CClient::addItem_OnGround( CItem * pItem ) // Send items (on ground)
 		new PacketDropAccepted(this);
 
 	// send item sound
-	if (pItem->IsType(IT_SOUND))
-	{
-		addSound(static_cast<SOUND_TYPE>(pItem->m_itSound.m_Sound), pItem, pItem->m_itSound.m_Repeat );
-	}
+	if ( pItem->IsType(IT_SOUND) )
+		addSound(static_cast<SOUND_TYPE>(pItem->m_itSound.m_Sound), pItem, pItem->m_itSound.m_Repeat);
 
 	// send corpse clothing
-	if (IsPriv(PRIV_DEBUG) == false && (pItem->GetDispID() == ITEMID_CORPSE && CCharBase::IsPlayableID(pItem->GetCorpseType())) )	// cloths on corpse
+	if ( !IsPriv(PRIV_DEBUG) && ((pItem->GetDispID() == ITEMID_CORPSE) && CCharBase::IsPlayableID(pItem->GetCorpseType())) )	// cloths on corpse
 	{
 		CItemCorpse *pCorpse = static_cast<CItemCorpse *>(pItem);
-		if (pCorpse)
+		if ( pCorpse )
 		{
 			addContents(pCorpse, false, true);	// send all corpse items
 			addContents(pCorpse, true, true);	// equip proper items on corpse
@@ -364,11 +362,11 @@ void CClient::addItem_OnGround( CItem * pItem ) // Send items (on ground)
 	// send item tooltip
 	addAOSTooltip(pItem);
 
-	if ( (pItem->IsType(IT_MULTI_CUSTOM)) && (m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= UO_MAP_VIEW_SIZE) )
+	if ( pItem->IsType(IT_MULTI_CUSTOM) && (m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= m_pChar->GetSight()) )
 	{
 		// send house design version
 		CItemMultiCustom *pItemMulti = static_cast<CItemMultiCustom *>(pItem);
-		if (pItemMulti != NULL)
+		if ( pItemMulti )
 			pItemMulti->SendVersionTo(this);
 	}
 }
@@ -2323,7 +2321,7 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 
 	// Don't send tooltips for items out of LOS
 	const CObjBaseTemplate *pObjTop = pObj->GetTopLevelObj();
-	if ( !pObjTop || (GetChar()->GetTopPoint().GetDistSight(pObjTop->GetTopPoint()) > UO_MAP_VIEW_SIZE + 1) )
+	if ( !pObjTop || (GetChar()->GetTopPoint().GetDistSight(pObjTop->GetTopPoint()) > GetChar()->GetSight() + 1) )
 		return;
 
 	// We check here if we are sending a tooltip for a static/non-movable items

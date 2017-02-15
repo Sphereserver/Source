@@ -2025,7 +2025,7 @@ void CClient::Event_Target(CLIMODE_TYPE context, CGrayUID uid, CPointMap pt, BYT
 		}
 		else
 		{
-			if ( m_pChar->GetTopPoint().GetDistSight(pt) > UO_MAP_VIEW_SIZE )
+			if ( m_pChar->GetTopPoint().GetDistSight(pt) > m_pChar->GetSight() )
 				return;
 		}
 	}

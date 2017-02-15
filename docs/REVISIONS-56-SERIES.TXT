@@ -422,3 +422,5 @@ Fixed: Combat Hit Chance formulas incorrectly assuming that defender is always u
 15-02-2017, Coruja
 Fixed: Enhanced clients not updating backpack content on death.
 Added: Enhanced clients now will show an map waypoint of player own corpse when it die.
+Added: Better LOS support for bigger screen resolutions of TOL clients 7.0.55.27+ that uses char VISUALRANGE > 18.
+[sphere.ini]: Removed 'DistanceTalk' setting, it's no longer needed because talk distance is now set automatically based on char VISUALRANGE.

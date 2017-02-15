@@ -858,7 +858,6 @@ public:
 
 	int		m_iDistanceYell;
 	int		m_iDistanceWhisper;
-	int		m_iDistanceTalk;
 
 	CGString	m_sSpeechSelf;
 	CGString	m_sSpeechPet;

@@ -892,8 +892,7 @@ bool CChar::CanSee( const CObjBaseTemplate *pObj ) const
 		return false;
 
 	// First check the distance since if this will fail, we do not need to scan all subcontainers to find this result ;)
-	int iVisualRange = GetSight();
-	if ( pObj->GetTopLevelObj()->GetTopPoint().GetDistSight(GetTopPoint()) > iVisualRange )
+	if ( pObj->GetTopLevelObj()->GetTopPoint().GetDistSight(GetTopPoint()) > GetSight() )
 		return false;
 
 	if ( pObj->IsItem() )
@@ -995,7 +994,7 @@ bool CChar::CanSee( const CObjBaseTemplate *pObj ) const
 	}
 
 	if ( IsPriv(PRIV_ALLSHOW) && (pObj->IsTopLevel() || pObj->IsDisconnected()) )		// don't exclude for logged out and diff maps
-		return (GetTopPoint().GetDistSightBase(pObj->GetTopPoint()) <= UO_MAP_VIEW_SIZE);
+		return (GetTopPoint().GetDistSightBase(pObj->GetTopPoint()) <= GetSight());
 
 	return true;
 }
@@ -1830,9 +1829,7 @@ bool CChar::CanHear( const CObjBaseTemplate *pSrc, TALKMODE_TYPE mode ) const
 			iHearRange = g_Cfg.m_iDistanceWhisper;
 			break;
 		default:
-			if ( g_Cfg.m_iDistanceTalk < 0 )
-				return true;
-			iHearRange = g_Cfg.m_iDistanceTalk;
+			iHearRange = GetSight();
 			break;
 	}
 

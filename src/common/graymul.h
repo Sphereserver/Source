@@ -18,7 +18,7 @@
 // NOTE: !!! ALL Multi bytes in file ASSUME big endian !!!!
 
 #define UO_MAP_VIEW_SIGHT	14	// True max sight distance of creatures is 14
-#define UO_MAP_VIEW_SIZE	18	// Visibility for normal items
+#define UO_MAP_VIEW_SIZE	18	// Visibility for normal items (on old clients it's always 18, and since client 7.0.55.27 it's now dynamic 18~24 based on client screen resolution)
 #define UO_MAP_VIEW_RADAR	31	// Visibility for castles, keeps and boats
 
 ////////////////////////////////////////////////////////////////////////
