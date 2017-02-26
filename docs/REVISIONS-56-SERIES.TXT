@@ -425,3 +425,10 @@ Fixed: Enhanced clients not updating backpack content on death.
 Added: Enhanced clients now will show an map waypoint of player own corpse when it die.
 Added: Better LOS support for bigger screen resolutions of TOL clients 7.0.55.27+ that uses char VISUALRANGE > 18.
 [sphere.ini]: Removed 'DistanceTalk' setting, it's no longer needed because talk distance is now set automatically based on char VISUALRANGE.
+
+20-02-2017, Coruja
+[sphere_item_ship_parts.scp]: Added missing i_mt_* mount defnames
+[sphere_item_building_other.scp]: Fixed Winch using wrong animation list
+
+26-02-2017, Coruja
+Added: Support to map waypoints of party members on enhanced clients.
