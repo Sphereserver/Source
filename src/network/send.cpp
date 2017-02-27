@@ -1376,13 +1376,13 @@ PacketWarningMessage::PacketWarningMessage(const CClient* target, PacketWarningM
  *
  *
  ***************************************************************************/
-PacketPlaySound::PacketPlaySound(const CClient* target, SOUND_TYPE sound, int flags, int volume, const CPointMap& pos) : PacketSend(XCMD_Sound, 12, PRI_NORMAL)
+PacketPlaySound::PacketPlaySound(const CClient *target, SOUND_TYPE sound, BYTE flags, WORD volume, const CPointMap &pos) : PacketSend(XCMD_Sound, 12, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketPlaySound::PacketPlaySound");
 
-	writeByte(static_cast<BYTE>(flags));
+	writeByte(flags);
 	writeInt16(static_cast<WORD>(sound));
-	writeInt16(static_cast<WORD>(volume));
+	writeInt16(volume);
 	writeInt16(pos.m_x);
 	writeInt16(pos.m_y);
 	writeInt16(pos.m_z);
@@ -1451,13 +1451,13 @@ void PacketMapPlot::setPin(WORD x, WORD y)
  *
  *
  ***************************************************************************/
-PacketGameTime::PacketGameTime(const CClient* target, int hours, int minutes, int seconds) : PacketSend(XCMD_Time, 4, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
+PacketGameTime::PacketGameTime(const CClient *target, BYTE hours, BYTE minutes, BYTE seconds) : PacketSend(XCMD_Time, 4, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketGameTime::PacketGameTime");
 
-	writeByte(static_cast<BYTE>(hours));
-	writeByte(static_cast<BYTE>(minutes));
-	writeByte(static_cast<BYTE>(seconds));
+	writeByte(hours);
+	writeByte(minutes);
+	writeByte(seconds);
 	push(target);
 }
 
@@ -1469,13 +1469,13 @@ PacketGameTime::PacketGameTime(const CClient* target, int hours, int minutes, in
  *
  *
  ***************************************************************************/
-PacketWeather::PacketWeather(const CClient* target, WEATHER_TYPE weather, int severity, int temperature) : PacketSend(XCMD_Weather, 4, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
+PacketWeather::PacketWeather(const CClient *target, WEATHER_TYPE weather, BYTE severity, BYTE temperature) : PacketSend(XCMD_Weather, 4, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketWeather::PacketWeather");
 
 	writeByte(static_cast<BYTE>(weather));
-	writeByte(static_cast<BYTE>(severity));
-	writeByte(static_cast<BYTE>(temperature));
+	writeByte(severity);
+	writeByte(temperature);
 	push(target);
 }
 
@@ -2556,7 +2556,7 @@ PacketDisplayBook::PacketDisplayBook(const CClient* target, CItem* book) : Packe
 		return;
 
 	bool isWritable = false;
-	int pages = 0;
+	WORD pages = 0;
 	CGString title;
 	CGString author;
 
@@ -2575,7 +2575,7 @@ PacketDisplayBook::PacketDisplayBook(const CClient* target, CItem* book) : Packe
 						author = s.GetArgStr();
 						break;
 					case CIC_PAGES:
-						pages = s.GetArgVal();
+						pages = static_cast<WORD>(s.GetArgVal());
 						break;
 					case CIC_TITLE:
 						title = s.GetArgStr();
@@ -2605,7 +2605,7 @@ PacketDisplayBook::PacketDisplayBook(const CClient* target, CItem* book) : Packe
 	writeInt32(book->GetUID());
 	writeBool(isWritable);
 	writeBool(isWritable);
-	writeInt16(static_cast<WORD>(pages));
+	writeInt16(pages);
 	writeStringFixedASCII(static_cast<LPCTSTR>(title), 60);
 	writeStringFixedASCII(static_cast<LPCTSTR>(author), 30);
 
@@ -2969,22 +2969,21 @@ PacketServerList::PacketServerList(const CClient* target) : PacketSend(XCMD_Serv
 	push(target);
 }
 
-void PacketServerList::writeServerEntry(const CServerRef& server, int index, bool reverseIp)
+void PacketServerList::writeServerEntry(const CServerRef &server, WORD index, bool reverseIp)
 {
 	ADDTOCALLSTACK("PacketServerList::writeServerEntry");
 
-	int percentFull;
+	BYTE percentFull = 0;
+	DWORD ip = server->m_ip.GetAddrIP();
+
 	if (server == &g_Serv)
 		percentFull = maximum(0, minimum((server->StatGet(SERV_STAT_CLIENTS) * 100) / maximum(1, g_Cfg.m_iClientsMax), 100));
 	else
 		percentFull = minimum(server->StatGet(SERV_STAT_CLIENTS), 100);
 
-	DWORD ip = server->m_ip.GetAddrIP();
-
-
-	writeInt16(static_cast<WORD>(index));
+	writeInt16(index);
 	writeStringFixedASCII(server->GetName(), 32);
-	writeByte(static_cast<BYTE>(percentFull));
+	writeByte(percentFull);
 	writeByte(server->m_TimeZone);
 
 	if (reverseIp)
@@ -3221,7 +3220,7 @@ PacketDeath::PacketDeath(CChar *dead, CItemCorpse *corpse, bool bFrontFall) : Pa
  *
  *
  ***************************************************************************/
-PacketGumpDialog::PacketGumpDialog(int x, int y, CObjBase* object, DWORD context) : PacketSend(XCMD_GumpDialog, 24, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketGumpDialog::PacketGumpDialog(DWORD x, DWORD y, CObjBase *object, DWORD context) : PacketSend(XCMD_GumpDialog, 24, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketGumpDialog::PacketGumpDialog");
 
@@ -3556,7 +3555,7 @@ PacketExtended::PacketExtended(EXTDATA_TYPE type, size_t len, Priority priority)
  *
  *
  ***************************************************************************/
-PacketGumpChange::PacketGumpChange(const CClient* target, DWORD context, int buttonId) : PacketExtended(EXTDATA_GumpChange, 13, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketGumpChange::PacketGumpChange(const CClient *target, DWORD context, DWORD buttonId) : PacketExtended(EXTDATA_GumpChange, 13, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketGumpChange::PacketGumpChange");
 
@@ -3665,11 +3664,11 @@ PacketPartyInvite::PacketPartyInvite(const CClient* target, const CChar* inviter
  *
  *
  ***************************************************************************/
-PacketMapChange::PacketMapChange(const CClient* target, int map) : PacketExtended(EXTDATA_Map_Change, 6, PRI_NORMAL)
+PacketMapChange::PacketMapChange(const CClient *target, BYTE map) : PacketExtended(EXTDATA_Map_Change, 6, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMapChange::PacketMapChange");
 
-	writeByte(static_cast<BYTE>(map));
+	writeByte(map);
 
 	push(target);
 }
@@ -4176,7 +4175,7 @@ PacketDisplayBookNew::PacketDisplayBookNew(const CClient* target, CItem* book) :
 		return;
 
 	bool isWritable = false;
-	int pages = 0;
+	WORD pages = 0;
 	CGString title;
 	CGString author;
 
@@ -4195,7 +4194,7 @@ PacketDisplayBookNew::PacketDisplayBookNew(const CClient* target, CItem* book) :
 						author = s.GetArgStr();
 						break;
 					case CIC_PAGES:
-						pages = s.GetArgVal();
+						pages = static_cast<WORD>(s.GetArgVal());
 						break;
 					case CIC_TITLE:
 						title = s.GetArgStr();
@@ -4226,7 +4225,7 @@ PacketDisplayBookNew::PacketDisplayBookNew(const CClient* target, CItem* book) :
 	writeInt32(book->GetUID());
 	writeBool(isWritable);
 	writeBool(isWritable);
-	writeInt16(static_cast<WORD>(pages));
+	writeInt16(pages);
 	writeInt16(static_cast<WORD>(title.GetLength() + 1));
 	writeStringFixedASCII(title.GetPtr(), title.GetLength() + 1);
 	writeInt16(static_cast<WORD>(author.GetLength() + 1));
@@ -4317,7 +4316,7 @@ bool PacketPropertyList::hasExpired(int timeout) const
  *
  *
  ***************************************************************************/
-PacketHouseDesign::PacketHouseDesign(const CItemMultiCustom* house, int revision) : PacketSend(XCMD_AOSCustomHouse, 64, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
+PacketHouseDesign::PacketHouseDesign(const CItemMultiCustom *house, DWORD revision) : PacketSend(XCMD_AOSCustomHouse, 64, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketHouseDesign::PacketHouseDesign");
 
@@ -4325,8 +4324,8 @@ PacketHouseDesign::PacketHouseDesign(const CItemMultiCustom* house, int revision
 
 	initLength();
 
-	writeByte(0x03);
-	writeByte(0x00);
+	writeByte(0x3);
+	writeByte(0x0);
 	writeInt32(house->GetUID());
 	writeInt32(revision);
 	writeInt16(0); // item count
@@ -4343,7 +4342,7 @@ PacketHouseDesign::PacketHouseDesign(const CItemMultiCustom* house, int revision
 	m_stairCount = 0;
 }
 
-PacketHouseDesign::PacketHouseDesign(const PacketHouseDesign* other) : PacketSend(other)
+PacketHouseDesign::PacketHouseDesign(const PacketHouseDesign *other) : PacketSend(other)
 {
 	ADDTOCALLSTACK("PacketHouseDesign::PacketHouseDesign(2)");
 
@@ -4367,7 +4366,7 @@ PacketHouseDesign::~PacketHouseDesign(void)
 	}
 }
 
-bool PacketHouseDesign::writePlaneData(int plane, int itemCount, BYTE* data, int dataSize)
+bool PacketHouseDesign::writePlaneData(BYTE plane, WORD itemCount, BYTE *data, BYTE dataSize)
 {
 	ADDTOCALLSTACK("PacketHouseDesign::writePlaneData");
 
@@ -4380,21 +4379,21 @@ bool PacketHouseDesign::writePlaneData(int plane, int itemCount, BYTE* data, int
 	{
 		// an error occured with this floor, but we should be able to continue to the next without problems
 		delete[] compressBuffer;
-		g_Log.EventError("Compress failed with error %d when generating house design for floor %d on building 0%lx.\n", error, plane, static_cast<DWORD>(m_house->GetUID()));
+		g_Log.EventError("Compress failed with error %d when generating house design for floor %hhu on building 0%lx.\n", error, plane, static_cast<DWORD>(m_house->GetUID()));
 		return false;
 	}
-	else if ( compressLength <= 0 || compressLength >= PLANEDATA_BUFFER )
+	else if ( (compressLength <= 0) || (compressLength >= PLANEDATA_BUFFER) )
 	{
 		// too much data, but we should be able to continue to the next floor without problems
 		delete[] compressBuffer;
-		g_Log.EventWarn("Floor %d on building 0%lx too large with compressed length of %lu.\n", plane, static_cast<DWORD>(m_house->GetUID()), compressLength);
+		g_Log.EventWarn("Floor %hhu on building 0%lx too large with compressed length of %lu.\n", plane, static_cast<DWORD>(m_house->GetUID()), compressLength);
 		return false;
 	}
 
-	writeByte(static_cast<BYTE>(plane | 0x20));
-	writeByte(static_cast<BYTE>(dataSize));
+	writeByte(plane|0x20);
+	writeByte(dataSize);
 	writeByte((BYTE)compressLength);
-	writeByte(((dataSize >> 4) & 0xF0) | ((compressLength >> 8) & 0x0F));
+	writeByte(((dataSize >> 4) & 0xF0) | ((compressLength >> 8) & 0xF));
 	writeData(compressBuffer, compressLength);
 	delete[] compressBuffer;
 
@@ -4404,14 +4403,14 @@ bool PacketHouseDesign::writePlaneData(int plane, int itemCount, BYTE* data, int
 	return true;
 }
 
-bool PacketHouseDesign::writeStairData(ITEMID_TYPE id, int x, int y, int z)
+bool PacketHouseDesign::writeStairData(ITEMID_TYPE id, BYTE x, BYTE y, BYTE z)
 {
 	ADDTOCALLSTACK("PacketHouseDesign::writeStairData");
 
 	m_stairBuffer[m_stairCount].m_id = static_cast<WORD>(id);
-	m_stairBuffer[m_stairCount].m_x = static_cast<BYTE>(x);
-	m_stairBuffer[m_stairCount].m_y = static_cast<BYTE>(y);
-	m_stairBuffer[m_stairCount].m_z = static_cast<BYTE>(z);
+	m_stairBuffer[m_stairCount].m_x = x;
+	m_stairBuffer[m_stairCount].m_y = y;
+	m_stairBuffer[m_stairCount].m_z = z;
 	m_stairCount++;
 
 	if (m_stairCount >= STAIRSPERBLOCK)
@@ -4452,10 +4451,10 @@ void PacketHouseDesign::flushStairData(void)
 		return;
 	}
 
-	writeByte(static_cast<BYTE>(9 + m_stairPlaneCount));
+	writeByte(9 + m_stairPlaneCount);
 	writeByte(static_cast<BYTE>(stairSize));
 	writeByte((BYTE)compressLength);
-	writeByte(((stairSize >> 4) & 0xF0) | ((compressLength >> 8) & 0x0F));
+	writeByte(((stairSize >> 4) & 0xF0) | ((compressLength >> 8) & 0xF));
 	writeData(compressBuffer, compressLength);
 	delete[] compressBuffer;
 
@@ -4474,9 +4473,9 @@ void PacketHouseDesign::finalise(void)
 	size_t endPosition(getPosition());
 
 	seek(13);
-	writeInt16(static_cast<WORD>(m_itemCount));
-	writeInt16(static_cast<WORD>(m_dataSize));
-	writeByte(static_cast<BYTE>(m_planeCount + m_stairPlaneCount));
+	writeInt16(m_itemCount);
+	writeInt16(m_dataSize);
+	writeByte(m_planeCount + m_stairPlaneCount);
 
 	seek(endPosition);
 }

@@ -249,11 +249,8 @@ void CClient::addTime( bool bCurrent )
 
 	if ( bCurrent )
 	{
-		long long lCurrentTime = (CServTime::GetCurrentTime()).GetTimeRaw();
-		new PacketGameTime(this, 
-								( lCurrentTime / ( 60*60*TICK_PER_SEC )) % 24,
-								( lCurrentTime / ( 60*TICK_PER_SEC )) % 60,
-								( lCurrentTime / ( TICK_PER_SEC )) % 60);
+		INT64 lCurrentTime = CServTime::GetCurrentTime().GetTimeRaw();
+		new PacketGameTime(this, static_cast<BYTE>((lCurrentTime / (60 * 60 * TICK_PER_SEC)) % 24), static_cast<BYTE>((lCurrentTime / (60 * TICK_PER_SEC)) % 60), static_cast<BYTE>((lCurrentTime / (TICK_PER_SEC)) % 60));
 	}
 	else
 	{
@@ -590,7 +587,7 @@ bool CClient::addKick( CTextConsole * pSrc, bool fBlock )
 	return true;
 }
 
-void CClient::addSound( SOUND_TYPE id, const CObjBaseTemplate * pBase, int iOnce )
+void CClient::addSound( SOUND_TYPE id, const CObjBaseTemplate *pBase, BYTE iRepeat )
 {
 	ADDTOCALLSTACK("CClient::addSound");
 	if ( !g_Cfg.m_fGenericSounds )
@@ -605,10 +602,10 @@ void CClient::addSound( SOUND_TYPE id, const CObjBaseTemplate * pBase, int iOnce
 	else
 		pt = m_pChar->GetTopPoint();
 
-	if (( id > 0 ) && !iOnce && !pBase )
+	if ( (id > 0) && !iRepeat && !pBase )
 		return;
 
-	new PacketPlaySound(this, id, iOnce, 0, pt);
+	new PacketPlaySound(this, id, iRepeat, 0, pt);
 }
 
 void CClient::addBarkUNICODE( const NCHAR * pwText, const CObjBaseTemplate * pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang )
@@ -1968,7 +1965,7 @@ void CClient::addManaUpdate( CChar *pChar )
 	if ( pChar->m_pParty )
 	{
 		PacketManaUpdate cmd2(pChar, false);
-		pChar->m_pParty->AddStatsUpdate(pChar, &cmd2);
+		pChar->m_pParty->StatsUpdateAll(pChar, &cmd2);
 	}
 }
 
@@ -1984,7 +1981,7 @@ void CClient::addStamUpdate( CChar *pChar )
 	if ( pChar->m_pParty )
 	{
 		PacketStaminaUpdate cmd2(pChar, false);
-		pChar->m_pParty->AddStatsUpdate(pChar, &cmd2);
+		pChar->m_pParty->StatsUpdateAll(pChar, &cmd2);
 	}
 }
 

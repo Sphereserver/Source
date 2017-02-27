@@ -727,7 +727,7 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 		int iWidth = rectDesign.GetWidth();
 		int iHeight = rectDesign.GetHeight();
 
-		int iMaxPlane = 0;
+		BYTE iMaxPlane = 0;
 		ComponentsContainer vectorStairs;
 		Component * pComp;
 		CItemBase * pItemBase;
@@ -743,7 +743,7 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 
 		NWORD wPlaneBuffer[PLANEDATA_BUFFER];
 
-		for (int iCurrentPlane = 0; iCurrentPlane <= iMaxPlane; iCurrentPlane++)
+		for (BYTE iCurrentPlane = 0; iCurrentPlane <= iMaxPlane; iCurrentPlane++)
 		{
 			// for each plane, generate a list of items
 			bool bFoundItems = false;

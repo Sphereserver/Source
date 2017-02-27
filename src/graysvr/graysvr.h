@@ -1381,7 +1381,7 @@ public:
 	void addMusic( MIDI_TYPE id );
 	void addArrowQuest( WORD x, WORD y, DWORD id );
 	void addEffect( EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate * pDst, const CObjBaseTemplate * pSrc, BYTE speed = 5, BYTE loop = 1, bool explode = false, DWORD color = 0, DWORD render = 0, WORD effectid = 0, DWORD explodeid = 0, WORD explodesound = 0, DWORD effectuid = 0, BYTE type = 0 );
-	void addSound( SOUND_TYPE id, const CObjBaseTemplate * pBase = NULL, int iRepeat = 1 );
+	void addSound( SOUND_TYPE id, const CObjBaseTemplate *pBase = NULL, BYTE iRepeat = 1 );
 	void addReSync();
 	void addMap();
 	void addMapDiff();
@@ -1441,7 +1441,7 @@ public:
 	void addGumpInpVal( bool fcancel, INPVAL_STYLE style, DWORD dwmask, LPCTSTR ptext1, LPCTSTR ptext2, CObjBase * pObj );
 
 	void addItemMenu( CLIMODE_TYPE mode, const CMenuItem * item, size_t count, CObjBase * pObj = NULL );
-	void addGumpDialog( CLIMODE_TYPE mode, const CGString * sControls, size_t iControls, const CGString * psText, size_t iTexts, int x, int y, CObjBase * pObj = NULL, DWORD rid = 0 );
+	void addGumpDialog( CLIMODE_TYPE mode, const CGString * sControls, size_t iControls, const CGString * psText, size_t iTexts, DWORD x, DWORD y, CObjBase * pObj = NULL, DWORD rid = 0 );
 
 	bool addGumpDialogProps( CGrayUID uid );
 
@@ -1560,7 +1560,7 @@ public:
 	bool CanHear( const CObjBaseTemplate * pSrc, TALKMODE_TYPE mode ) const;
 
 	bool Dialog_Setup( CLIMODE_TYPE mode, RESOURCE_ID_BASE rid, int iPage, CObjBase * pObj, LPCTSTR Arguments = "" );
-	bool Dialog_Close( CObjBase * pObj, DWORD rid, int buttonID );
+	bool Dialog_Close( CObjBase * pObj, DWORD rid, DWORD buttonID );
 	void Menu_Setup( RESOURCE_ID_BASE rid, CObjBase * pObj = NULL );
 
 	int OnSkill_Info( SKILL_TYPE skill, CGrayUID uid, int iTestLevel, bool fTest );

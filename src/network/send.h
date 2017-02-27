@@ -473,7 +473,7 @@ public:
 class PacketPlaySound : public PacketSend
 {
 public:
-	PacketPlaySound(const CClient* target, SOUND_TYPE sound, int flags, int volume, const CPointMap& pos);
+	PacketPlaySound(const CClient *target, SOUND_TYPE sound, BYTE flags, WORD volume, const CPointMap &pos);
 };
 
 /***************************************************************************
@@ -515,7 +515,7 @@ public:
 class PacketGameTime : public PacketSend
 {
 public:
-	PacketGameTime(const CClient* target, int hours = 0, int minutes = 0, int seconds = 0);
+	PacketGameTime(const CClient *target, BYTE hours = 0, BYTE minutes = 0, BYTE seconds = 0);
 };
 
 /***************************************************************************
@@ -528,7 +528,7 @@ public:
 class PacketWeather : public PacketSend
 {
 public:
-	PacketWeather(const CClient* target, WEATHER_TYPE weather, int severity, int temperature);
+	PacketWeather(const CClient *target, WEATHER_TYPE weather, BYTE severity, BYTE temperature);
 };
 
 /***************************************************************************
@@ -1072,7 +1072,7 @@ class PacketServerList : public PacketSend
 {
 public:
 	PacketServerList(const CClient* target);
-	void writeServerEntry(const CServerRef& server, int index, bool reverseIp);
+	void writeServerEntry(const CServerRef &server, WORD index, bool reverseIp);
 };
 
 /***************************************************************************
@@ -1151,7 +1151,7 @@ public:
 class PacketGumpDialog : public PacketSend
 {
 public:
-	PacketGumpDialog(int x, int y, CObjBase* object, DWORD context);
+	PacketGumpDialog(DWORD x, DWORD y, CObjBase *object, DWORD context);
 	void writeControls(const CClient* target, const CGString* controls, size_t controlCount, const CGString* texts, size_t textCount);
 
 protected:
@@ -1273,7 +1273,7 @@ public:
 class PacketGumpChange : public PacketExtended
 {
 public:
-	PacketGumpChange(const CClient* target, DWORD context, int buttonId);
+	PacketGumpChange(const CClient *target, DWORD context, DWORD buttonId);
 };
 
 /***************************************************************************
@@ -1351,7 +1351,7 @@ public:
 class PacketMapChange : public PacketExtended
 {
 public:
-	PacketMapChange(const CClient* target, int map);
+	PacketMapChange(const CClient *target, BYTE map);
 };
 
 /***************************************************************************
@@ -1690,7 +1690,7 @@ class PacketHouseDesign : public PacketSend
 private:
 	struct StairData
 	{
-		NWORD m_id;
+		WORD m_id;
 		BYTE m_x;
 		BYTE m_y;
 		BYTE m_z;
@@ -1700,19 +1700,19 @@ private:
 	int m_stairCount;
 
 protected:
-	int m_itemCount;
-	int m_dataSize;
-	int m_planeCount;
-	int m_stairPlaneCount;
+	WORD m_itemCount;
+	WORD m_dataSize;
+	BYTE m_planeCount;
+	BYTE m_stairPlaneCount;
 	const CItemMultiCustom* m_house;
 
 public:
-	PacketHouseDesign(const CItemMultiCustom* house, int revision);
+	PacketHouseDesign(const CItemMultiCustom *house, DWORD revision);
 	PacketHouseDesign(const PacketHouseDesign* other);
 	virtual ~PacketHouseDesign(void);
 
-	bool writePlaneData(int plane, int itemCount, BYTE* data, int dataSize);
-	bool writeStairData(ITEMID_TYPE id, int x, int y, int z);
+	bool writePlaneData(BYTE plane, WORD itemCount, BYTE *data, BYTE dataSize);
+	bool writeStairData(ITEMID_TYPE id, BYTE x, BYTE y, BYTE z);
 	void flushStairData(void);
 	void finalise(void);
 

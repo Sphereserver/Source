@@ -309,7 +309,7 @@ public:
 	void inline SetNamePool_Fail( TCHAR * ppTitles );
 	bool SetNamePool( LPCTSTR pszName );
 
-	void Sound( SOUND_TYPE id, int iRepeat = 1 ) const; // Play sound effect from this location.
+	void Sound(SOUND_TYPE id, BYTE iRepeat = 1) const; // Play sound effect from this location.
 	void Effect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBase * pSource = NULL, BYTE bspeedseconds = 5, BYTE bloop = 1, bool fexplode = false, DWORD color = 0, DWORD render = 0, WORD effectid = 0, WORD explodeid = 0, WORD explodesound = 0, DWORD effectuid = 0, BYTE type = 0) const;
 
 	void r_WriteSafe( CScript & s );
@@ -904,7 +904,7 @@ public:
 		struct
 		{
 			DWORD	m_Sound;	// more1 = SOUND_TYPE
-			int		m_Repeat;	// more2 =
+			BYTE	m_Repeat;	// more2 =
 		} m_itSound;
 
 		// IT_STONE_GUILD
@@ -1767,9 +1767,9 @@ private:
 	typedef std::vector<Component*> ComponentsContainer;
 	struct DesignDetails
 	{
-		int m_iRevision;
+		DWORD m_iRevision;
 		ComponentsContainer m_vectorComponents;
-		PacketHouseDesign* m_pData;
+		PacketHouseDesign *m_pData;
 		int m_iDataRevision;
 	};
 	
