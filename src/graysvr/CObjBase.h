@@ -1764,13 +1764,13 @@ public:
 	};
 
 private:
-	typedef std::vector<Component*> ComponentsContainer;
+	typedef std::vector<Component *> ComponentsContainer;
 	struct DesignDetails
 	{
 		DWORD m_iRevision;
 		ComponentsContainer m_vectorComponents;
 		PacketHouseDesign *m_pData;
-		int m_iDataRevision;
+		DWORD m_iDataRevision;
 	};
 	
 	class CGrayMultiCustom : public CGrayMulti
@@ -1844,7 +1844,7 @@ public:
 	const CGRect GetDesignArea();
 	size_t GetFixtureCount(DesignDetails * pDesign = NULL);
 	size_t GetComponentsAt(signed short dx, signed short dy, signed char dz, Component ** pComponents, DesignDetails * pDesign = NULL);
-	int GetRevision(const CClient * pClientSrc = NULL) const;
+	DWORD GetRevision(const CClient * pClientSrc = NULL) const;
 	BYTE GetLevelCount();
 	WORD GetStairID();
 
