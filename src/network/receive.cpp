@@ -122,78 +122,237 @@ bool PacketCreate::onReceive(NetState* net, bool hasExtraSkill)
 			rtRace = RACETYPE_ELF;
 	}
 
-	// validate race against resdisp
-	RESDISPLAY_VERSION resdisp = net->m_client->m_pAccount ? static_cast<RESDISPLAY_VERSION>(net->m_client->m_pAccount->GetResDisp()) : RDS_NONE;
-	if (resdisp < RDS_ML) // prior to ML, only human
-	{
-		if (rtRace >= RACETYPE_ELF)
-			rtRace = RACETYPE_HUMAN;
-	}
-	else if (resdisp < RDS_SA) // prior to SA, only human and elf
-	{
-		if (rtRace >= RACETYPE_GARGOYLE)
-			rtRace = RACETYPE_HUMAN;
-	}
-	
-	return doCreate(net, charname, isFemale, rtRace,
-		strength, dexterity, intelligence, prof,
-		skill1, skillval1, skill2, skillval2, skill3, skillval3, skill4, skillval4,
-		hue, hairid, hairhue, beardid, beardhue, shirthue, pantshue,
-		ITEMID_NOTHING, startloc, flags);
+	return doCreate(net, charname, isFemale, rtRace, strength, dexterity, intelligence, prof, skill1, skillval1, skill2, skillval2, skill3, skillval3, skill4, skillval4, hue, hairid, hairhue, beardid, beardhue, shirthue, pantshue, ITEMID_NOTHING, startloc, flags);
 }
 
 bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, BYTE iSkillVal1, SKILL_TYPE skSkill2, BYTE iSkillVal2, SKILL_TYPE skSkill3, BYTE iSkillVal3, SKILL_TYPE skSkill4, BYTE iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, ITEMID_TYPE idFace, int iStartLoc, DWORD iFlags)
 {
 	ADDTOCALLSTACK("PacketCreate::doCreate");
 
-	CClient* client = net->m_client;
+	CClient *client = net->m_client;
 	ASSERT(client);
 	const CAccountRef account = client->m_pAccount;
 	ASSERT(account);
 
-	if (client->GetChar())
+	// Check if the account is already connected using another character
+	if ( client->GetChar() )
 	{
-		// logging in as a new player whilst already online !
 		client->addSysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ALREADYONLINE));
 		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' already in use\n", net->id(), account->GetName());
 		return false;
 	}
 
-	// make sure they don't have an idling character
-	const CChar* pCharLast = account->m_uidLastChar.CharFind();
-	if (pCharLast && account->IsMyAccountChar(pCharLast) && (account->GetPrivLevel() <= PLEVEL_GM) && !pCharLast->IsDisconnected())
+	// Check if the account have an idling character
+	const CChar *pCharLast = account->m_uidLastChar.CharFind();
+	if ( pCharLast && account->IsMyAccountChar(pCharLast) && !pCharLast->IsDisconnected() )
 	{
 		client->addIdleWarning(PacketWarningMessage::CharacterInWorld);
 		client->addLoginErr(PacketLoginError::CharIdle);
 		return false;
 	}
 
-	// make sure they don't already have too many characters
+	// Validate free character slots
+	size_t iChars = account->m_Chars.GetCharCount();
 	BYTE iMaxChars = account->GetMaxChars();
-	size_t iQtyChars = account->m_Chars.GetCharCount();
-	if (iQtyChars >= iMaxChars)
+	if ( iChars >= iMaxChars )
 	{
-		client->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_MAXCHARS), static_cast<int>(iQtyChars));
-		if (client->GetPrivLevel() < PLEVEL_Seer)
+		client->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_MAXCHARS), static_cast<int>(iChars));
+		client->addLoginErr(PacketLoginError::TooManyChars);
+		return false;
+	}
+
+	// Validate all info sent by client to prevent exploits
+	if ( !strlen(charname) || g_Cfg.IsObscene(charname) || Str_CheckName(charname) || !strnicmp(charname, "lord ", 5) || !strnicmp(charname, "lady ", 5) || !strnicmp(charname, "counselor ", 10) || !strnicmp(charname, "seer ", 5) || !strnicmp(charname, "gm ", 3) || !strnicmp(charname, "admin ", 6) )
+		goto InvalidInfo;
+
+	if ( (wStr > 60) || (wDex > 60) || (wInt > 60) )
+		goto InvalidInfo;
+	if ( (iSkillVal1 > 50) || (iSkillVal2 > 50) || (iSkillVal3 > 50) || (iSkillVal4 > 50) )
+		goto InvalidInfo;
+	if ( skSkill4 != SKILL_NONE )
+	{
+		if ( wStr + wDex + wInt > 90 )
+			goto InvalidInfo;
+		if ( iSkillVal1 + iSkillVal2 + iSkillVal3 + iSkillVal4 > 120 )
+			goto InvalidInfo;
+	}
+	else
+	{
+		if ( wStr + wDex + wInt > 80 )
+			goto InvalidInfo;
+		if ( iSkillVal1 + iSkillVal2 + iSkillVal3 > 100 )
+			goto InvalidInfo;
+	}
+
+	RESDISPLAY_VERSION resdisp = static_cast<RESDISPLAY_VERSION>(account->GetResDisp());
+	if ( (resdisp < RDS_AOS) || (!(g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_A)) )
+	{
+		if ( (prProf == PROFESSION_NECROMANCER) || (prProf == PROFESSION_PALADIN) )
+			goto InvalidInfo;
+	}
+	if ( (resdisp < RDS_SE) || (!(g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE)) )
+	{
+		if ( (prProf == PROFESSION_SAMURAI) || (prProf == PROFESSION_NINJA) )
+			goto InvalidInfo;
+	}
+	if ( (resdisp < RDS_ML) || (!(g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE)) )
+	{
+		if ( rtRace == RACETYPE_ELF )
+			goto InvalidInfo;
+	}
+	if ( (resdisp < RDS_SA) || (!(g_Cfg.m_iFeatureSA & FEATURE_SA_UPDATE)) )
+	{
+		if ( rtRace == RACETYPE_GARGOYLE )
+			goto InvalidInfo;
+	}
+
+	switch ( rtRace )
+	{
+		default:
+		case RACETYPE_HUMAN:
 		{
-			client->addLoginErr(PacketLoginError::TooManyChars);
-			return false;
+			if ( (wSkinHue < HUE_SKIN_LOW) || (wSkinHue > HUE_SKIN_HIGH) )
+				goto InvalidInfo;
+
+			if ( idHair )
+			{
+				if ( !(((idHair >= ITEMID_HAIR_SHORT) && (idHair <= ITEMID_HAIR_PONYTAIL)) || ((idHair >= ITEMID_HAIR_MOHAWK) && (idHair <= ITEMID_HAIR_TOPKNOT))) )
+					goto InvalidInfo;
+				if ( bFemale && (idHair == ITEMID_HAIR_RECEDING) )
+					goto InvalidInfo;
+				if ( !bFemale && (idHair == ITEMID_HAIR_BUNS) )
+					goto InvalidInfo;
+
+				if ( (wHairHue < HUE_HAIR_LOW) || (wHairHue > HUE_HAIR_HIGH) )
+					goto InvalidInfo;
+			}
+
+			if ( idBeard )
+			{
+				if ( bFemale )
+					goto InvalidInfo;
+				if ( !(((idBeard >= ITEMID_BEARD_LONG) && (idBeard <= ITEMID_BEARD_MOUSTACHE)) || ((idBeard >= ITEMID_BEARD_SH_M) && (idBeard <= ITEMID_BEARD_GO_M))) )
+					goto InvalidInfo;
+
+				if ( (wBeardHue < HUE_HAIR_LOW) || (wBeardHue > HUE_HAIR_HIGH) )
+					goto InvalidInfo;
+			}
+
+			if ( idFace )
+			{
+				if ( !(((idFace >= ITEMID_FACE_1) && (idFace <= ITEMID_FACE_10)) || ((idFace >= ITEMID_FACE_ANIME) && (idFace <= ITEMID_FACE_VAMPIRE))) )
+					goto InvalidInfo;
+			}
+			break;
 		}
+		case RACETYPE_ELF:
+		{
+			const HUE_TYPE sm_ElfSkinHues[] = { 0xBF, 0x24D, 0x24E, 0x24F, 0x353, 0x361, 0x367, 0x374, 0x375, 0x376, 0x381, 0x382, 0x383, 0x384, 0x385, 0x389, 0x3DE, 0x3E5, 0x3E6, 0x3E8, 0x3E9, 0x430, 0x4A7, 0x4DE, 0x51D, 0x53F, 0x579, 0x76B, 0x76C, 0x76D, 0x835, 0x903 };
+			if ( !isValidHue(wSkinHue, sm_ElfSkinHues, COUNTOF(sm_ElfSkinHues)) )
+				goto InvalidInfo;
+
+			if ( idHair )
+			{
+				if ( !(((idHair >= ITEMID_HAIR_ML_ELF) && (idHair <= ITEMID_HAIR_ML_MULLET)) || ((idHair >= ITEMID_HAIR_ML_FLOWER) && (idHair <= ITEMID_HAIR_ML_SPYKE))) )
+					goto InvalidInfo;
+				if ( bFemale && ((idHair == ITEMID_HAIR_ML_LONG2) || (idHair == ITEMID_HAIR_ML_ELF)) )
+					goto InvalidInfo;
+				if ( !bFemale && ((idHair == ITEMID_HAIR_ML_FLOWER) || (idHair == ITEMID_HAIR_ML_LONG4)) )
+					goto InvalidInfo;
+
+				const HUE_TYPE sm_ElfHairHues[] = { 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x58, 0x8E, 0x8F, 0x90, 0x91, 0x92, 0x101, 0x159, 0x15A, 0x15B, 0x15C, 0x15D, 0x15E, 0x128, 0x12F, 0x1BD, 0x1E4, 0x1F3, 0x207, 0x211, 0x239, 0x251, 0x26C, 0x2C3, 0x2C9, 0x31D, 0x31E, 0x31F, 0x320, 0x321, 0x322, 0x323, 0x324, 0x325, 0x326, 0x369, 0x386, 0x387, 0x388, 0x389, 0x38A, 0x59D, 0x6B8, 0x725, 0x853 };
+				if ( !isValidHue(wHairHue, sm_ElfHairHues, COUNTOF(sm_ElfHairHues)) )
+					goto InvalidInfo;
+			}
+
+			if ( idBeard )
+				goto InvalidInfo;
+
+			if ( idFace )
+			{
+				if ( !(((idFace >= ITEMID_FACE_1) && (idFace <= ITEMID_FACE_10)) || ((idFace >= ITEMID_FACE_ANIME) && (idFace <= ITEMID_FACE_VAMPIRE))) )
+					goto InvalidInfo;
+			}
+			break;
+		}
+		case RACETYPE_GARGOYLE:
+		{
+			if ( (wSkinHue < HUE_GARGSKIN_LOW) || (wSkinHue > HUE_GARGSKIN_HIGH) )
+				goto InvalidInfo;
+
+			if ( idHair )
+			{
+				if ( bFemale && !((idHair == ITEMID_GARG_HORN_FEMALE_1) || (idHair == ITEMID_GARG_HORN_FEMALE_2) || ((idHair >= ITEMID_GARG_HORN_FEMALE_3) && (idHair <= ITEMID_GARG_HORN_FEMALE_5)) || (idHair == ITEMID_GARG_HORN_FEMALE_6) || (idHair == ITEMID_GARG_HORN_FEMALE_7) || (idHair == ITEMID_GARG_HORN_FEMALE_8)) )
+					goto InvalidInfo;
+				if ( !bFemale && !((idHair >= ITEMID_GARG_HORN_1) && (idHair <= ITEMID_GARG_HORN_8)) )
+					goto InvalidInfo;
+
+				const HUE_TYPE sm_GargoyleHornHues[] = { 0x709, 0x70B, 0x70D, 0x70F, 0x711, 0x763, 0x765, 0x768, 0x76B, 0x6F3, 0x6F1, 0x6EF, 0x6E4, 0x6E2, 0x6E0, 0x709, 0x70B, 0x70D };
+				if ( !isValidHue(wHairHue, sm_GargoyleHornHues, COUNTOF(sm_GargoyleHornHues)) )
+					goto InvalidInfo;
+			}
+
+			if ( idBeard )
+			{
+				if ( bFemale )
+					goto InvalidInfo;
+				if ( !((idBeard >= ITEMID_GARG_HORN_FACIAL_1) && (idBeard <= ITEMID_GARG_HORN_FACIAL_4)) )
+					goto InvalidInfo;
+
+				const HUE_TYPE sm_GargoyleFacialHornHues[] = { 0x709, 0x70B, 0x70D, 0x70F, 0x711, 0x763, 0x765, 0x768, 0x76B, 0x6F3, 0x6F1, 0x6EF, 0x6E4, 0x6E2, 0x6E0, 0x709, 0x70B, 0x70D };
+				if ( !isValidHue(wBeardHue, sm_GargoyleFacialHornHues, COUNTOF(sm_GargoyleFacialHornHues)) )
+					goto InvalidInfo;
+			}
+
+			if ( idFace )
+			{
+				if ( !((idFace >= ITEMID_FACE_1_GARG) && (idFace <= ITEMID_FACE_6_GARG)) )
+					goto InvalidInfo;
+			}
+			break;
+		}
+	}
+
+	if ( (wShirtHue < HUE_BLUE_LOW) || (wShirtHue > HUE_DYE_HIGH) )
+		goto InvalidInfo;
+	if ( (wPantsHue < HUE_BLUE_LOW) || (wPantsHue > HUE_DYE_HIGH) )
+		goto InvalidInfo;
+
+	if ( 0 )
+	{
+	InvalidInfo:
+		client->addLoginErr(PacketLoginError::CreationBlocked);
+		return false;
+	}
+
+	// Create the character
+	CChar *pChar = CChar::CreateBasic(CREID_MAN);
+	ASSERT(pChar);
+	pChar->SetName(charname);
+	pChar->SetPlayerAccount(account);
+	pChar->SetHue(wSkinHue|HUE_MASK_UNDERWEAR);
+
+	switch ( rtRace )
+	{
+		default:
+		case RACETYPE_HUMAN:
+			pChar->SetID(bFemale ? CREID_WOMAN : CREID_MAN);
+			break;
+		case RACETYPE_ELF:
+			pChar->SetID(bFemale ? CREID_ELFWOMAN : CREID_ELFMAN);
+			break;
+		case RACETYPE_GARGOYLE:
+			pChar->SetID(bFemale ? CREID_GARGWOMAN : CREID_GARGMAN);
+			break;
 	}
 
 	CScriptTriggerArgs createArgs;
 	createArgs.m_iN1 = iFlags;
 	createArgs.m_iN2 = prProf;
 	createArgs.m_iN3 = rtRace;
-	createArgs.m_s1 = account->GetName();
 	createArgs.m_pO1 = client;
-	
-	//Creating the pChar
-	CChar *pChar = CChar::CreateBasic(CREID_MAN);
-	ASSERT(pChar);
-	pChar->InitPlayer(client, charname, bFemale, rtRace, wStr, wDex, wInt, prProf, skSkill1, iSkillVal1, skSkill2, iSkillVal2, skSkill3, iSkillVal3, skSkill4, iSkillVal4, wSkinHue, idHair, wHairHue, idBeard, wBeardHue, wShirtHue, wPantsHue, idFace, iStartLoc);
+	createArgs.m_s1 = account->GetName();
 
-	//Calling the function after the char creation, it can't be done before or the function won't have SRC
 	TRIGRET_TYPE tr;
 	client->r_Call("f_onchar_create", pChar, &createArgs, NULL, &tr);
 	if ( tr == TRIGRET_RET_TRUE )
@@ -203,9 +362,182 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 		return false;
 	}
 
+	if ( IsTrigUsed(TRIGGER_RENAME) )
+	{
+		CScriptTriggerArgs args;
+		args.m_s1 = charname;
+		args.m_pO1 = pChar;
+		if ( pChar->OnTrigger(CTRIG_Rename, pChar, &args) == TRIGRET_RET_TRUE )
+			pChar->SetNamePool(bFemale ? "#NAMES_HUMANFEMALE" : "#NAMES_HUMANMALE");
+	}
+
+	// Set starting position
+	if ( g_Cfg.m_StartDefs.IsValidIndex(iStartLoc) )
+		pChar->m_ptHome = g_Cfg.m_StartDefs[iStartLoc]->m_pt;
+	else
+		pChar->m_ptHome.InitPoint();
+
+	if ( !pChar->m_ptHome.IsValidPoint() )
+		DEBUG_ERR(("Invalid start location '%d' for character!\n", iStartLoc));
+
+	pChar->SetUnkPoint(pChar->m_ptHome);	// don't put me in the world yet
+
+	// Set stats
+	pChar->Stat_SetBase(STAT_STR, wStr);
+	pChar->Stat_SetBase(STAT_DEX, wDex);
+	pChar->Stat_SetBase(STAT_INT, wInt);
+	pChar->CreateNewCharCheck();
+
+	// Set skills
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
+	{
+		if ( g_Cfg.m_SkillIndexDefs.IsValidIndex(i) )
+			pChar->Skill_SetBase(static_cast<SKILL_TYPE>(i), static_cast<WORD>(Calc_GetRandVal(g_Cfg.m_iMaxBaseSkill)));
+	}
+	if ( pChar->IsSkillBase(skSkill1) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill1) )
+		pChar->Skill_SetBase(skSkill1, iSkillVal1 * 10);
+	if ( pChar->IsSkillBase(skSkill2) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill2) )
+		pChar->Skill_SetBase(skSkill2, iSkillVal2 * 10);
+	if ( pChar->IsSkillBase(skSkill3) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill3) )
+		pChar->Skill_SetBase(skSkill3, iSkillVal3 * 10);
+	if ( pChar->IsSkillBase(skSkill4) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill4) )
+		pChar->Skill_SetBase(skSkill4, iSkillVal4 * 10);
+
+	// Create basic resources
+	pChar->GetContainerCreate(LAYER_PACK);
+	pChar->GetContainerCreate(LAYER_BANKBOX);
+
+	if ( idHair )
+	{
+		CItem *pHair = CItem::CreateScript(idHair, pChar);
+		ASSERT(pHair);
+		if ( pHair->IsType(IT_HAIR) )
+		{
+			pHair->SetHue(wHairHue);
+			pHair->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
+			pChar->LayerAdd(pHair);
+		}
+		else
+			pHair->Delete();
+	}
+	if ( idBeard )
+	{
+		CItem *pBeard = CItem::CreateScript(idBeard, pChar);
+		ASSERT(pBeard);
+		if ( pBeard->IsType(IT_BEARD) )
+		{
+			pBeard->SetHue(wBeardHue);
+			pBeard->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
+			pChar->LayerAdd(pBeard);
+		}
+		else
+			pBeard->Delete();
+	}
+	if ( idFace )
+	{
+		CItem *pFace = CItem::CreateScript(idFace, pChar);
+		ASSERT(pFace);
+		pFace->SetHue(wSkinHue);
+		pFace->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
+		pChar->LayerAdd(pFace);
+	}
+
+	// Get starting items for the profession / skills.
+	int iProfession = INT_MAX;
+	bool bCreateSkillItems = true;
+	switch ( prProf )
+	{
+		case PROFESSION_ADVANCED:
+			iProfession = RES_NEWBIE_PROF_ADVANCED;
+			break;
+		case PROFESSION_WARRIOR:
+			iProfession = RES_NEWBIE_PROF_WARRIOR;
+			break;
+		case PROFESSION_MAGE:
+			iProfession = RES_NEWBIE_PROF_MAGE;
+			break;
+		case PROFESSION_BLACKSMITH:
+			iProfession = RES_NEWBIE_PROF_BLACKSMITH;
+			break;
+		case PROFESSION_NECROMANCER:
+			iProfession = RES_NEWBIE_PROF_NECROMANCER;
+			bCreateSkillItems = false;
+			break;
+		case PROFESSION_PALADIN:
+			iProfession = RES_NEWBIE_PROF_PALADIN;
+			bCreateSkillItems = false;
+			break;
+		case PROFESSION_SAMURAI:
+			iProfession = RES_NEWBIE_PROF_SAMURAI;
+			bCreateSkillItems = false;
+			break;
+		case PROFESSION_NINJA:
+			iProfession = RES_NEWBIE_PROF_NINJA;
+			bCreateSkillItems = false;
+			break;
+	}
+
+	CResourceLock s;
+	if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, bFemale ? RES_NEWBIE_FEMALE_DEFAULT : RES_NEWBIE_MALE_DEFAULT, rtRace)) )
+		pChar->ReadScript(s);
+	else if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, bFemale ? RES_NEWBIE_FEMALE_DEFAULT : RES_NEWBIE_MALE_DEFAULT)) )
+		pChar->ReadScript(s);
+
+	CItem *pLayer = pChar->LayerFind(LAYER_SHIRT);
+	if ( pLayer )
+		pLayer->SetHue(wShirtHue);
+
+	pLayer = bFemale ? pChar->LayerFind(LAYER_SKIRT) : pChar->LayerFind(LAYER_PANTS);
+	if ( pLayer )
+		pLayer->SetHue(wPantsHue);
+
+	if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iProfession, rtRace)) )
+		pChar->ReadScript(s);
+	else if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iProfession)) )
+		pChar->ReadScript(s);
+
+	if ( bCreateSkillItems )
+	{
+		for ( BYTE i = 1; i < 5; i++ )
+		{
+			int iSkill = INT_MAX;
+			switch ( i )
+			{
+				case 1:
+					iSkill = skSkill1;
+					break;
+				case 2:
+					iSkill = skSkill2;
+					break;
+				case 3:
+					iSkill = skSkill3;
+					break;
+				case 4:
+					iSkill = skSkill4;
+					break;
+			}
+
+			if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iSkill, rtRace)) )
+				pChar->ReadScript(s);
+			else if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iSkill)) )
+				pChar->ReadScript(s);
+		}
+	}
+	s.Close();
+
 	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' created new char '%s' [0%lx]\n", net->id(), account->GetName(), pChar->GetName(), static_cast<DWORD>(pChar->GetUID()));
 	client->Setup_Start(pChar);
 	return true;
+}
+
+bool PacketCreate::isValidHue(HUE_TYPE hue, const HUE_TYPE sm_Array[], size_t iArraySize)
+{
+	for ( size_t i = 0; i < iArraySize; i++ )
+	{
+		if ( sm_Array[i] == hue )
+			return true;
+	}
+	return false;
 }
 
 
@@ -1511,10 +1843,10 @@ bool PacketCreateNew::onReceive(NetState* net)
 	skip(1);
 	HUE_TYPE beardhue = static_cast<HUE_TYPE>(readInt16());
 	ITEMID_TYPE beardid = static_cast<ITEMID_TYPE>(readInt16());
-	
+
 	// Since client 7.0.16.0 the new creation packet does not contain skills and values if
 	// a profession is selected, so here we must translate the selected profession -> skills
-	switch (profession)
+	switch ( profession )
 	{
 		case PROFESSION_WARRIOR:
 			strength = 45;
@@ -1614,11 +1946,7 @@ bool PacketCreateNew::onReceive(NetState* net)
 			break;
 	}
 
-	return doCreate(net, charname, sex > 0, race,
-		strength, dexterity, intelligence, profession,
-		skill1, skillval1, skill2, skillval2, skill3, skillval3, skill4, skillval4,
-		hue, hairid, hairhue, beardid, beardhue, HUE_DEFAULT, HUE_DEFAULT,
-		faceid, 0, flags);
+	return doCreate(net, charname, sex > 0, race, strength, dexterity, intelligence, profession, skill1, skillval1, skill2, skillval2, skill3, skillval3, skill4, skillval4, hue, hairid, hairhue, beardid, beardhue, HUE_DEFAULT, HUE_DEFAULT, faceid, 0, flags);
 }
 
 

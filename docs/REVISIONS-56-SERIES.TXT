@@ -433,3 +433,6 @@ Added: Better LOS support for bigger screen resolutions of TOL clients 7.0.55.27
 26-02-2017, Coruja
 Added: Support to map waypoints of party members on enhanced clients.
 Fixed: Linked doors not opening at the same time on DClick.
+
+28-02-2017, Coruja
+Changed: Optimized and added new security checks on account character creation to block the character creation if the client try to exploit it sending fake packets.
