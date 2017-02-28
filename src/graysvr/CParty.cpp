@@ -88,17 +88,14 @@ void CCharRefArray::WritePartyChars( CScript &s )
 //*****************************************************************
 // -CPartyDef
 
-CPartyDef::CPartyDef( CChar *pChar1, CChar *pChar2 )
+CPartyDef::CPartyDef( CChar *pCharInvite, CChar *pCharAccept )
 {
-	// pChar1 = the master.
-	ASSERT(pChar1);
-	ASSERT(pChar2);
-	pChar1->m_pParty = this;
-	pChar2->m_pParty = this;
-	AttachChar(pChar1);
-	AttachChar(pChar2);
+	// pCharInviter = the master.
+	AcceptMember(pCharInvite);
+	AcceptMember(pCharAccept);
 	SendAddList(NULL);		// send full list to all
-	m_sName.Format("Party_0%lx", static_cast<DWORD>(pChar1->GetUID()));
+	UpdateWaypointAll(pCharInvite, PartyMember);
+	m_sName.Format("Party_0%lx", static_cast<DWORD>(pCharInvite->GetUID()));
 }
 
 // ---------------------------------------------------------
@@ -109,6 +106,7 @@ size_t CPartyDef::AttachChar( CChar *pChar )
 	//  index of the char in the group. BadIndex = not in group.
 	size_t i = m_Chars.AttachChar(pChar);
 	pChar->NotoSave_Update();
+	UpdateWaypointAll(pChar, PartyMember);
 	return i;
 }
 
@@ -120,6 +118,21 @@ size_t CPartyDef::DetachChar( CChar *pChar )
 	size_t i = m_Chars.DetachChar(pChar);
 	if ( i != m_Chars.BadIndex() )
 	{
+		// Remove map waypoint of party members
+		if ( pChar->m_pClient )
+		{
+			size_t iQty = m_Chars.GetCharCount();
+			CChar *pPartyMember = NULL;
+			for ( size_t i = 0; i < iQty; i++ )
+			{
+				pPartyMember = m_Chars.GetChar(i).CharFind();
+				if ( !pPartyMember )
+					continue;
+				pChar->m_pClient->addMapWaypoint(pPartyMember, Remove);
+			}
+		}
+		UpdateWaypointAll(pChar, Remove);
+
 		pChar->m_pParty = NULL;
 		pChar->DeleteKey("PARTY_LASTINVITE");
 		pChar->DeleteKey("PARTY_LASTINVITETIME");
@@ -367,7 +380,6 @@ void CPartyDef::AcceptMember( CChar *pChar )
 	pChar->m_pParty = this;
 	AttachChar(pChar);
 	SendAddList(NULL);
-	UpdateWaypointAll(pChar, PartyMember);
 }
 
 bool CPartyDef::RemoveMember( CGrayUID uidRemove, CGrayUID uidCommand )
@@ -409,7 +421,6 @@ bool CPartyDef::RemoveMember( CGrayUID uidRemove, CGrayUID uidCommand )
 
 	// Remove it from the party
 	SendRemoveList(pCharRemove, true);
-	UpdateWaypointAll(pCharRemove, Remove);
 	DetachChar(pCharRemove);
 	pCharRemove->SysMessageDefault(DEFMSG_PARTY_LEAVE_2);
 
