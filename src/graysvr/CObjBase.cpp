@@ -312,12 +312,12 @@ void CObjBase::SetTimeout(INT64 iDelayInTicks)
 		m_timeout = CServTime::GetCurrentTime() + iDelayInTicks;
 }
 
-void CObjBase::Sound(SOUND_TYPE id, int iOnce) const
+void CObjBase::Sound(SOUND_TYPE id, BYTE iRepeat) const
 {
 	ADDTOCALLSTACK("CObjBase::Sound");
 	// play for everyone near by.
 
-	if ( (id <= SOUND_NONE) || !g_Cfg.m_fGenericSounds )
+	if ( !g_Cfg.m_fGenericSounds || (id <= SOUND_NONE) )
 		return;
 
 	ClientIterator it;
@@ -325,7 +325,7 @@ void CObjBase::Sound(SOUND_TYPE id, int iOnce) const
 	{
 		if ( !pClient->CanHear(this, TALKMODE_OBJ) )
 			continue;
-		pClient->addSound(id, this, iOnce);
+		pClient->addSound(id, this, iRepeat);
 	}
 }
 

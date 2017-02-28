@@ -743,6 +743,9 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 			new PacketMovementAck(this, sequence);
 			m_pChar->UpdateMove(ptOld, this);	// Who now sees me ?
 			addPlayerSee(ptOld);				// What new stuff do I now see ?
+
+			if ( m_pChar->m_pParty && ((m_iWalkStepCount % 10) == 0) )	// Send map waypoint location to party members at each 10 steps taken (enhanced clients only)
+				m_pChar->m_pParty->UpdateWaypointAll(m_pChar, PartyMember);
 		}
 
 		m_timeLastEventWalk = CServTime::GetCurrentTime();

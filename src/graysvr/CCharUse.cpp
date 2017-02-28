@@ -1591,7 +1591,8 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 		case IT_DOOR_OPEN:
 		case IT_DOOR:
 		{
-			if ( fLink || !pItem->Use_DoorNew(fLink) )	// don't link if we are just closing the door
+			bool fOpen = pItem->Use_DoorNew(fLink);
+			if ( fLink || !fOpen )	// don't link if we are just closing the door
 				return true;
 		}
 		break;

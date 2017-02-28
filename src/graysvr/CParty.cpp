@@ -88,17 +88,14 @@ void CCharRefArray::WritePartyChars( CScript &s )
 //*****************************************************************
 // -CPartyDef
 
-CPartyDef::CPartyDef( CChar *pChar1, CChar *pChar2 )
+CPartyDef::CPartyDef( CChar *pCharInvite, CChar *pCharAccept )
 {
-	// pChar1 = the master.
-	ASSERT(pChar1);
-	ASSERT(pChar2);
-	pChar1->m_pParty = this;
-	pChar2->m_pParty = this;
-	AttachChar(pChar1);
-	AttachChar(pChar2);
+	// pCharInviter = the master.
+	AcceptMember(pCharInvite);
+	AcceptMember(pCharAccept);
 	SendAddList(NULL);		// send full list to all
-	m_sName.Format("Party_0%lx", static_cast<DWORD>(pChar1->GetUID()));
+	UpdateWaypointAll(pCharInvite, PartyMember);
+	m_sName.Format("Party_0%lx", static_cast<DWORD>(pCharInvite->GetUID()));
 }
 
 // ---------------------------------------------------------
@@ -109,6 +106,7 @@ size_t CPartyDef::AttachChar( CChar *pChar )
 	//  index of the char in the group. BadIndex = not in group.
 	size_t i = m_Chars.AttachChar(pChar);
 	pChar->NotoSave_Update();
+	UpdateWaypointAll(pChar, PartyMember);
 	return i;
 }
 
@@ -120,6 +118,21 @@ size_t CPartyDef::DetachChar( CChar *pChar )
 	size_t i = m_Chars.DetachChar(pChar);
 	if ( i != m_Chars.BadIndex() )
 	{
+		// Remove map waypoint of party members
+		if ( pChar->m_pClient )
+		{
+			size_t iQty = m_Chars.GetCharCount();
+			CChar *pPartyMember = NULL;
+			for ( size_t i = 0; i < iQty; i++ )
+			{
+				pPartyMember = m_Chars.GetChar(i).CharFind();
+				if ( !pPartyMember )
+					continue;
+				pChar->m_pClient->addMapWaypoint(pPartyMember, Remove);
+			}
+		}
+		UpdateWaypointAll(pChar, Remove);
+
 		pChar->m_pParty = NULL;
 		pChar->DeleteKey("PARTY_LASTINVITE");
 		pChar->DeleteKey("PARTY_LASTINVITETIME");
@@ -162,34 +175,56 @@ bool CPartyDef::GetLootFlag( const CChar *pChar )
 }
 
 // ---------------------------------------------------------
-void CPartyDef::AddStatsUpdate( CChar *pChar, PacketSend *pPacket )
+void CPartyDef::StatsUpdateAll( CChar *pCharSrc, PacketSend *pPacket )
 {
-	ADDTOCALLSTACK("CPartyDef::AddStatsUpdate");
+	ADDTOCALLSTACK("CPartyDef::StatsUpdateAll");
 	size_t iQty = m_Chars.GetCharCount();
 	if ( iQty <= 0 )
 		return;
 
+	CChar *pChar = NULL;
 	for ( size_t i = 0; i < iQty; i++ )
 	{
-		CChar *pCharNow = m_Chars.GetChar(i).CharFind();
-		if ( pCharNow && pCharNow != pChar )
-		{
-			if ( pCharNow->m_pClient && pCharNow->CanSee(pChar) )
-				pPacket->send(pCharNow->m_pClient);
-		}
+		pChar = m_Chars.GetChar(i).CharFind();
+		if ( !pChar || !pChar->m_pClient || (pChar == pCharSrc) || !pChar->CanSee(pCharSrc) )
+			continue;
+		pPacket->send(pChar->m_pClient);
 	}
 }
 
-// ---------------------------------------------------------
 void CPartyDef::SysMessageAll( LPCTSTR pText )
 {
 	ADDTOCALLSTACK("CPartyDef::SysMessageAll");
-	// SysMessage to all members of the party.
+	// SysMessage to all party members.
 	size_t iQty = m_Chars.GetCharCount();
+	if ( iQty <= 0 )
+		return;
+
+	CChar *pChar = NULL;
 	for ( size_t i = 0; i < iQty; i++ )
 	{
-		CChar *pChar = m_Chars.GetChar(i).CharFind();
-		pChar->SysMessage(pText);
+		pChar = m_Chars.GetChar(i).CharFind();
+		if ( !pChar || !pChar->m_pClient )
+			continue;
+		pChar->m_pClient->SysMessage(pText);
+	}
+}
+
+void CPartyDef::UpdateWaypointAll( CChar *pCharSrc, MAPWAYPOINT_TYPE type )
+{
+	ADDTOCALLSTACK("CPartyDef::UpdateWaypointAll");
+	// Send pCharSrc map waypoint location to all party members (enhanced client only)
+	size_t iQty = m_Chars.GetCharCount();
+	if ( iQty <= 0 )
+		return;
+
+	CChar *pChar = NULL;
+	for ( size_t i = 0; i < iQty; i++ )
+	{
+		pChar = m_Chars.GetChar(i).CharFind();
+		if ( !pChar || !pChar->m_pClient || (pChar == pCharSrc) )
+			continue;
+		pChar->m_pClient->addMapWaypoint(pCharSrc, type);
 	}
 }
 
@@ -229,12 +264,17 @@ bool CPartyDef::SendMemberMsg( CChar *pCharDest, PacketSend *pPacket )
 void CPartyDef::SendAll( PacketSend *pPacket )
 {
 	ADDTOCALLSTACK("CPartyDef::SendAll");
-	// Send this to all members of the party.
+	// Send this to all party members.
 	size_t iQty = m_Chars.GetCharCount();
+	if ( iQty <= 0 )
+		return;
+
+	CChar *pChar = NULL;
 	for ( size_t i = 0; i < iQty; i++ )
 	{
-		CChar *pChar = m_Chars.GetChar(i).CharFind();
-		ASSERT(pChar);
+		pChar = m_Chars.GetChar(i).CharFind();
+		if ( !pChar )
+			continue;
 		if ( !SendMemberMsg(pChar, pPacket) )
 		{
 			iQty--;
@@ -420,9 +460,10 @@ bool CPartyDef::Disband( CGrayUID uidMaster )
 	CChar *pSrc = uidMaster.CharFind();
 	size_t iQty = m_Chars.GetCharCount();
 	ASSERT(iQty > 0);
+	CChar *pChar = NULL;
 	for ( size_t i = 0; i < iQty; i++ )
 	{
-		CChar *pChar = m_Chars.GetChar(i).CharFind();
+		pChar = m_Chars.GetChar(i).CharFind();
 		if ( !pChar )
 			continue;
 
