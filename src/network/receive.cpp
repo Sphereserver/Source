@@ -133,6 +133,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 	ASSERT(client);
 	const CAccountRef account = client->m_pAccount;
 	ASSERT(account);
+	RESDISPLAY_VERSION resdisp = static_cast<RESDISPLAY_VERSION>(account->GetResDisp());
 
 	// Check if the account is already connected using another character
 	if ( client->GetChar() )
@@ -184,7 +185,6 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 			goto InvalidInfo;
 	}
 
-	RESDISPLAY_VERSION resdisp = static_cast<RESDISPLAY_VERSION>(account->GetResDisp());
 	if ( (resdisp < RDS_AOS) || (!(g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_A)) )
 	{
 		if ( (prProf == PROFESSION_NECROMANCER) || (prProf == PROFESSION_PALADIN) )
