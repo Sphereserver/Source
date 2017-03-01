@@ -313,10 +313,13 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 		}
 	}
 
-	if ( (wShirtHue < HUE_BLUE_LOW) || (wShirtHue > HUE_DYE_HIGH) )
-		goto InvalidInfo;
-	if ( (wPantsHue < HUE_BLUE_LOW) || (wPantsHue > HUE_DYE_HIGH) )
-		goto InvalidInfo;
+	if ( !(net->isClientKR() || net->isClientEnhanced()) )
+	{
+		if ( (wShirtHue < HUE_BLUE_LOW) || (wShirtHue > HUE_DYE_HIGH) )
+			goto InvalidInfo;
+		if ( (wPantsHue < HUE_BLUE_LOW) || (wPantsHue > HUE_DYE_HIGH) )
+			goto InvalidInfo;
+	}
 
 	if ( 0 )
 	{
