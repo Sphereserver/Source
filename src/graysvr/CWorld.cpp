@@ -1029,14 +1029,14 @@ void CWorldThread::GarbageCollection_UIDs()
 //////////////////////////////////////////////////////////////////
 // -CWorldClock
 
-INT64 CWorldClock::GetSystemClock()
+UINT64 CWorldClock::GetSystemClock()
 {
 	ADDTOCALLSTACK("CWorldClock::GetSystemClock");
 	// Return system wall-clock using high resolution value (milliseconds)
 #ifdef _WIN32
 	FILETIME ft;
 	GetSystemTimeAsFileTime(&ft);
-	return ((static_cast<INT64>(ft.dwHighDateTime) << 32) + ft.dwLowDateTime) / 10000;
+	return ((static_cast<UINT64>(ft.dwHighDateTime) << 32) + ft.dwLowDateTime) / 10000;
 #else
 	struct timespec ts;
 	clock_gettime(CLOCK_REALTIME, &ts);
@@ -1044,7 +1044,7 @@ INT64 CWorldClock::GetSystemClock()
 #endif
 }
 
-void CWorldClock::InitTime( INT64 lTimeBase )
+void CWorldClock::InitTime( UINT64 lTimeBase )
 {
 	ADDTOCALLSTACK("CWorldClock::InitTime");
 	m_Clock_SysPrev = GetSystemClock();
@@ -1061,7 +1061,7 @@ void CWorldClock::Init()
 bool CWorldClock::Advance()
 {
 	ADDTOCALLSTACK("CWorldClock::Advance");
-	INT64 Clock_Sys = GetSystemClock();
+	UINT64 Clock_Sys = GetSystemClock();
 
 	INT64 iTimeDiff = Clock_Sys - m_Clock_SysPrev;
 	iTimeDiff = IMULDIVDOWN(TICK_PER_SEC, iTimeDiff, CLOCKS_PER_SEC);

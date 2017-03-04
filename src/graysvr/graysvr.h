@@ -35,9 +35,9 @@ class CServTime
 	// A time stamp in the server/game world.
 public:
 	static const char *m_sClassName;
-	INT64 m_lPrivateTime;
+	UINT64 m_lPrivateTime;
 public:
-	INT64 GetTimeRaw() const
+	UINT64 GetTimeRaw() const
 	{
 		if ( m_lPrivateTime < 0 )
 			return 0;
@@ -52,7 +52,7 @@ public:
 	{
 		m_lPrivateTime = 0;
 	}
-	void InitTime( INT64 lTimeBase )
+	void InitTime( UINT64 lTimeBase )
 	{
 		if ( lTimeBase < 0 )
 			lTimeBase = 0;
@@ -1057,7 +1057,7 @@ public:
 	CServTime m_timeLastEvent;				// Last time we got event from client.
 	CServTime m_timeLastEventItemPickup;	// Last time we had picked up an item (used by fastloot prevention)
 	CServTime m_timeLastEventWalk;			// Last time we got a walk event from client (only used to handle STATF_Fly char flag)
-	INT64 m_timeNextEventWalk;				// Fastwalk prevention: only allow more walk requests after this timer
+	UINT64 m_timeNextEventWalk;				// Fastwalk prevention: only allow more walk requests after this timer
 
 	// GM only stuff.
 	CGMPage * m_pGMPage;		// Current GM page we are connected to.

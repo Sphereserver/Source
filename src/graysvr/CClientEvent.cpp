@@ -680,14 +680,14 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 			// read the value already stored by Sphere main timer. But this value is only updated at
 			// tenths of second precision, which won't work here because we need millisecs precision.
 			// So to reach this precision we must get the system clock manually at each walk request.
-			INT64 iCurTime = CWorldClock::GetSystemClock();
+			UINT64 iCurTime = CWorldClock::GetSystemClock();
 			if ( iCurTime < m_timeNextEventWalk )		// fastwalk detected
 			{
 				new PacketMovementRej(this, sequence);
 				return false;
 			}
 
-			INT64 iDelay = 0;
+			UINT64 iDelay = 0;
 			if ( m_pChar->IsStatFlag(STATF_OnHorse|STATF_Hovering) )
 				iDelay = (rawdir & 0x80) ? 100 : 200;
 			else
@@ -1605,7 +1605,7 @@ void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, boo
 	if ( mode == 1 || mode == 3 || mode == 4 || mode == 5 || mode == 6 || mode == 7 || mode == 10 || mode == 11 || mode == 12 )		// these modes are server->client only
 		return;
 
-	if ( (wHue < 2) || (wHue > HUE_DYE_HIGH) )
+	if ( (wHue < HUE_BLUE_LOW) || (wHue > HUE_DYE_HIGH) )
 		wHue = HUE_TEXT_DEF;
 
 	m_pAccount->m_lang.Set(NULL);		// default
@@ -1697,7 +1697,7 @@ void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TAL
 	if ( mMode == 1 || mMode == 3 || mMode == 4 || mMode == 5 || mMode == 6 || mMode == 7 || mMode == 10 || mMode == 11 || mMode == 12 )	// these modes are server->client only
 		return;
 
-	if ( (wHue < 0) || (wHue > HUE_DYE_HIGH) )
+	if ( (wHue < HUE_BLUE_LOW) || (wHue > HUE_DYE_HIGH) )
 		wHue = HUE_TEXT_DEF;
 
 	m_pAccount->m_lang.Set(pszLang);

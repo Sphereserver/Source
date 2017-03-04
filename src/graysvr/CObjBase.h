@@ -99,7 +99,7 @@ public:
 	{
 		return m_timestamp;
 	}
-	void SetTimeStamp( INT64 t_time)
+	void SetTimeStamp( UINT64 t_time )
 	{
 		m_timestamp.InitTime(t_time);
 	}
