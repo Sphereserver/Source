@@ -4305,7 +4305,7 @@ bool PacketPropertyList::onSend(const CClient* client)
 bool PacketPropertyList::hasExpired(int timeout) const
 {
 	ADDTOCALLSTACK("PacketPropertyList::hasExpired");
-	return (g_World.GetCurrentTime().GetTimeRaw() > static_cast<INT64>(m_time + timeout));
+	return (g_World.GetCurrentTime().GetTimeRaw() > m_time + static_cast<UINT64>(timeout));
 }
 
 

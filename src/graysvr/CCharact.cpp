@@ -2948,7 +2948,7 @@ bool CChar::OnFreezeCheck()
 
 	if ( IsStatFlag(STATF_Freeze|STATF_Stone) && !IsPriv(PRIV_GM) )
 		return true;
-	if ( GetKeyNum("NoMoveTill") > g_World.GetCurrentTime().GetTimeRaw() )
+	if ( static_cast<UINT64>(GetKeyNum("NoMoveTill")) > g_World.GetCurrentTime().GetTimeRaw() )
 		return true;
 
 	if ( m_pPlayer )
