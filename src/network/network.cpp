@@ -1504,16 +1504,19 @@ void NetworkIn::acceptConnection(void)
 
 			CLOSESOCKET(h);
 
-			if (ip.m_blocked)
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (Blocked IP)\n", (LPCTSTR)client_addr.GetAddrStr());
-			else if ( maxIp && ip.m_connecting > maxIp )
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CONNECTINGMAXIP reached %ld/%ld)\n", (LPCTSTR)client_addr.GetAddrStr(), ip.m_connecting, maxIp);
-			else if ( climaxIp && ip.m_connected > climaxIp )
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CLIENTMAXIP reached %ld/%ld)\n", (LPCTSTR)client_addr.GetAddrStr(), ip.m_connected, climaxIp);
-			else if ( ip.m_pings >= NETHISTORY_MAXPINGS )
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (MAXPINGS reached %ld/%ld)\n", (LPCTSTR)client_addr.GetAddrStr(), ip.m_pings, static_cast<long>(NETHISTORY_MAXPINGS));
-			else
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected.\n", (LPCTSTR)client_addr.GetAddrStr());
+			if ( g_Log.GetLogMask() & LOGM_CLIENTS_LOG )
+			{
+				if ( ip.m_blocked )
+					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected. (Blocked IP)\n", (LPCTSTR)client_addr.GetAddrStr());
+				else if ( maxIp && (ip.m_connecting > maxIp) )
+					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected. (CONNECTINGMAXIP reached %ld/%ld)\n", (LPCTSTR)client_addr.GetAddrStr(), ip.m_connecting, maxIp);
+				else if ( climaxIp && (ip.m_connected > climaxIp) )
+					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected. (CLIENTMAXIP reached %ld/%ld)\n", (LPCTSTR)client_addr.GetAddrStr(), ip.m_connected, climaxIp);
+				else if ( ip.m_pings >= NETHISTORY_MAXPINGS )
+					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected. (MAXPINGS reached %ld/%ld)\n", (LPCTSTR)client_addr.GetAddrStr(), ip.m_pings, static_cast<long>(NETHISTORY_MAXPINGS));
+				else
+					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected.\n", (LPCTSTR)client_addr.GetAddrStr());
+			}
 		}
 		else
 		{
@@ -2586,17 +2589,19 @@ void NetworkManager::acceptNewConnection(void)
 
 		CLOSESOCKET(h);
 
-		if (ip.m_blocked)
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (Blocked IP)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()));
-		else if ( maxIp && ip.m_connecting > maxIp )
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CONNECTINGMAXIP reached %ld/%ld)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()), ip.m_connecting, maxIp);
-		else if ( climaxIp && ip.m_connected > climaxIp )
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CLIENTMAXIP reached %ld/%ld)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()), ip.m_connected, climaxIp);
-		else if ( ip.m_pings >= NETHISTORY_MAXPINGS )
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (MAXPINGS reached %ld/%ld)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()), ip.m_pings, static_cast<long>(NETHISTORY_MAXPINGS) );
-		else
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected.\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()));
-
+		if ( g_Log.GetLogMask() & LOGM_CLIENTS_LOG )
+		{
+			if ( ip.m_blocked )
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected. (Blocked IP)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()));
+			else if ( maxIp && (ip.m_connecting > maxIp) )
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected. (CONNECTINGMAXIP reached %ld/%ld)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()), ip.m_connecting, maxIp);
+			else if ( climaxIp && (ip.m_connected > climaxIp) )
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected. (CLIENTMAXIP reached %ld/%ld)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()), ip.m_connected, climaxIp);
+			else if ( ip.m_pings >= NETHISTORY_MAXPINGS )
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected. (MAXPINGS reached %ld/%ld)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()), ip.m_pings, static_cast<long>(NETHISTORY_MAXPINGS));
+			else
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected.\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()));
+		}
 		return;
 	}
 

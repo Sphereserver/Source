@@ -835,7 +835,7 @@ void CAccount::ClearPasswordTries(bool bAll)
 	for ( BlockLocalTime_t::iterator itData = m_BlockIP.begin(); itData != m_BlockIP.end(); ++itData )
 	{
 		BlockLocalTimePair_t itResult = (*itData).second;
-		if ( timeCurrent - itResult.first.m_Last > g_Cfg.m_iClientLoginTempBan )
+		if ( timeCurrent - itResult.first.m_Last > static_cast<UINT64>(g_Cfg.m_iClientLoginTempBan) )
 			m_BlockIP.erase(itData);
 
 		if ( itData != m_BlockIP.begin() )
