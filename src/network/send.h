@@ -1690,28 +1690,28 @@ class PacketHouseDesign : public PacketSend
 private:
 	struct StairData
 	{
-		WORD m_id;
+		NWORD m_id;
 		BYTE m_x;
 		BYTE m_y;
 		BYTE m_z;
 	};
 
-	StairData* m_stairBuffer;
-	int m_stairCount;
+	StairData *m_stairBuffer;
+	WORD m_stairCount;
 
 protected:
 	WORD m_itemCount;
 	WORD m_dataSize;
 	BYTE m_planeCount;
 	BYTE m_stairPlaneCount;
-	const CItemMultiCustom* m_house;
+	const CItemMultiCustom *m_house;
 
 public:
 	PacketHouseDesign(const CItemMultiCustom *house, DWORD revision);
-	PacketHouseDesign(const PacketHouseDesign* other);
+	PacketHouseDesign(const PacketHouseDesign *other);
 	virtual ~PacketHouseDesign(void);
 
-	bool writePlaneData(BYTE plane, WORD itemCount, BYTE *data, BYTE dataSize);
+	bool writePlaneData(BYTE plane, WORD itemCount, BYTE *data, DWORD dataSize);
 	bool writeStairData(ITEMID_TYPE id, BYTE x, BYTE y, BYTE z);
 	void flushStairData(void);
 	void finalise(void);

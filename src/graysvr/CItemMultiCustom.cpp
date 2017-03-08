@@ -788,7 +788,7 @@ void CItemMultiCustom::SendStructureTo(CClient * pClientSrc)
 			if ( !bFoundItems )
 				continue;
 
-			BYTE iPlaneSize = (iMaxIndex + 1) * sizeof(NWORD);
+			DWORD iPlaneSize = (iMaxIndex + 1) * sizeof(DWORD);
 			cmd->writePlaneData(iCurrentPlane, iItemCount, (BYTE*)wPlaneBuffer, iPlaneSize);
 		}
 

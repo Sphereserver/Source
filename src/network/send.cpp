@@ -4366,13 +4366,13 @@ PacketHouseDesign::~PacketHouseDesign(void)
 	}
 }
 
-bool PacketHouseDesign::writePlaneData(BYTE plane, WORD itemCount, BYTE *data, BYTE dataSize)
+bool PacketHouseDesign::writePlaneData(BYTE plane, WORD itemCount, BYTE *data, DWORD dataSize)
 {
 	ADDTOCALLSTACK("PacketHouseDesign::writePlaneData");
 
 	// compress data
 	z_uLong compressLength = z_compressBound(dataSize);
-	BYTE* compressBuffer = new BYTE[compressLength];
+	BYTE *compressBuffer = new BYTE[compressLength];
 
 	int error = z_compress2(compressBuffer, &compressLength, data, dataSize, Z_DEFAULT_COMPRESSION);
 	if ( error != Z_OK )
@@ -4391,9 +4391,9 @@ bool PacketHouseDesign::writePlaneData(BYTE plane, WORD itemCount, BYTE *data, B
 	}
 
 	writeByte(plane|0x20);
-	writeByte(dataSize);
-	writeByte((BYTE)compressLength);
-	writeByte(((dataSize >> 4) & 0xF0) | ((compressLength >> 8) & 0xF));
+	writeByte(static_cast<BYTE>(dataSize));
+	writeByte(static_cast<BYTE>(compressLength));
+	writeByte(static_cast<BYTE>(((dataSize >> 4) & 0xF0) | ((compressLength >> 8) & 0xF)));
 	writeData(compressBuffer, compressLength);
 	delete[] compressBuffer;
 
@@ -4426,14 +4426,13 @@ void PacketHouseDesign::flushStairData(void)
 	if (m_stairCount <= 0)
 		return;
 
-	int stairCount = m_stairCount;
-	int stairSize = stairCount * sizeof(StairData);
-
+	WORD stairCount = m_stairCount;
+	DWORD stairSize = stairCount * sizeof(StairData);
 	m_stairCount = 0;
 
 	// compress data
 	z_uLong compressLength = z_compressBound(stairSize);
-	BYTE* compressBuffer = new BYTE[compressLength];
+	BYTE *compressBuffer = new BYTE[compressLength];
 
 	int error = z_compress2(compressBuffer, &compressLength, (BYTE*)m_stairBuffer, stairSize, Z_DEFAULT_COMPRESSION);
 	if ( error != Z_OK )
@@ -4443,7 +4442,7 @@ void PacketHouseDesign::flushStairData(void)
 		g_Log.EventError("Compress failed with error %d when generating house design on building 0%lx.\n", error, static_cast<DWORD>(m_house->GetUID()));
 		return;
 	}
-	else if (compressLength <= 0 || compressLength >= STAIRDATA_BUFFER)
+	else if ( (compressLength <= 0) || (compressLength >= STAIRDATA_BUFFER) )
 	{
 		// too much data, but we should be able to continue to the next block without problems
 		delete[] compressBuffer;
@@ -4451,10 +4450,10 @@ void PacketHouseDesign::flushStairData(void)
 		return;
 	}
 
-	writeByte(9 + m_stairPlaneCount);
+	writeByte(m_stairPlaneCount + 9);
 	writeByte(static_cast<BYTE>(stairSize));
-	writeByte((BYTE)compressLength);
-	writeByte(((stairSize >> 4) & 0xF0) | ((compressLength >> 8) & 0xF));
+	writeByte(static_cast<BYTE>(compressLength));
+	writeByte(static_cast<BYTE>(((stairSize >> 4) & 0xF0) | ((compressLength >> 8) & 0xF)));
 	writeData(compressBuffer, compressLength);
 	delete[] compressBuffer;
 
