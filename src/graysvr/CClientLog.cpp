@@ -65,8 +65,8 @@ bool CClient::addLoginErr(BYTE code)
 	// 3 = no password
 	// LOGIN_ERR_OTHER
 
-	if (code == PacketLoginError::Success)
-		return( true );
+	if ( code == PacketLoginError::Success )
+		return true;
 
 	// console message to display for each login error code
 	static LPCTSTR const sm_Login_ErrMsg[] =
@@ -94,13 +94,14 @@ bool CClient::addLoginErr(BYTE code)
 		"The maximum number of password tries has been reached"
 	};
 
-	if (code >= COUNTOF(sm_Login_ErrMsg))
+	if ( code >= COUNTOF(sm_Login_ErrMsg) )
 		code = PacketLoginError::Other;
-	
-	g_Log.EventWarn( "%lx:Bad Login %d (%s)\n", GetSocketID(), code, sm_Login_ErrMsg[static_cast<size_t>(code)] );
+
+	if ( g_Log.GetLogMask() & LOGM_CLIENTS_LOG )
+		g_Log.EventWarn("%lx:Bad Login %d (%s)\n", GetSocketID(), code, sm_Login_ErrMsg[static_cast<size_t>(code)]);
 
 	// translate the code into a code the client will understand
-	switch (code)
+	switch ( code )
 	{
 		case PacketLoginError::Invalid:
 			code = PacketLoginError::Invalid;
@@ -137,7 +138,7 @@ bool CClient::addLoginErr(BYTE code)
 
 	new PacketLoginError(this, static_cast<PacketLoginError::Reason>(code));
 	m_NetState->markReadClosed();
-	return( false );
+	return false;
 }
 
 
