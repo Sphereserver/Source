@@ -3449,6 +3449,12 @@ bool NetworkInput::processUnknownClientData(NetState* state, Packet* buffer)
 	CClient* client = state->m_client;
 	ASSERT(client != NULL);
 
+	if ( buffer->getRemainingLength() > SCHAR_MAX )
+	{
+		DEBUGNETWORK(("%lx:Client connected with a seed length of %" FMTSIZE_T " exceeding max length limit of %d, disconnecting.\n", state->id(), buffer->getRemainingLength(), SCHAR_MAX));
+		return false;
+	}
+
 	if (state->m_seeded == false)
 	{
 		// check for HTTP connection
