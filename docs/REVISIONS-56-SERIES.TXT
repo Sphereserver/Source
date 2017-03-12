@@ -439,3 +439,4 @@ Changed: Optimized and added new security checks on account character creation t
 
 12-03-2017, Coruja
 Added: Basic internal packet filters that will make Sphere avoid crash or consume excessive resources when under DDoS attack.
+Changed: Updated internal SQLite libs v3.16.1 to v3.17.0.
