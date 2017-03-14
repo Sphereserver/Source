@@ -1212,20 +1212,21 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 	}
 
 	// Loot nearby corpses
-	if ( pItem->IsType(IT_CORPSE) && (NPC_GetAiFlags() & NPC_AI_LOOTING) && (Memory_FindObj(pItem) == NULL) )
+	if ( pItem->IsType(IT_CORPSE) )
 	{
+		if ( (!(NPC_GetAiFlags() & NPC_AI_LOOTING)) || Memory_FindObj(pItem) )
+			return false;
+
 		m_Act_Targ = pItem->GetUID();
 		NPC_Act_Looting();
 		return true;
 	}
 
 	// Check for doors we can open
-	if ( pItem->IsType(IT_DOOR) && GetDist(pItem) <= 1 && CanTouch(pItem) && !Calc_GetRandVal(2) )
+	if ( pItem->IsType(IT_DOOR) )
 	{
-		if ( pItem->IsDoorOpen() )	// door is already open
+		if ( !Calc_GetRandVal(2) || (GetDist(pItem) > 1) || pItem->IsDoorOpen() )
 			return false;
-
-		UpdateDir(pItem);
 		if ( !Use_Item(pItem) )	// try to open it
 			return false;
 
@@ -1420,11 +1421,10 @@ bool CChar::NPC_LookAround( bool fForceCheckItems )
 				break;
 
 			iDist = GetTopDist3D(pItem);
-			if ( iDist > iRangeBlur )
-			{
-				if ( Calc_GetRandVal(iDist) )
-					continue;	// can't see them.
-			}
+			if ( (iDist > iRangeBlur) && Calc_GetRandVal(iDist) )
+				continue;	// can't see them.
+			if ( abs(GetTopZ() - pItem->GetTopZ()) > 5 )
+				continue;
 			if ( NPC_LookAtItem(pItem, iDist) )
 				return true;
 		}
