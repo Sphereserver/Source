@@ -443,3 +443,4 @@ Changed: Updated internal SQLite libs v3.16.1 to v3.17.0.
 
 14-03-2017, Coruja
 Fixed: NPCs AI interacting with items out of range (eg: loot unreachable corpses, open doors on different floors, etc).
+Fixed: Skill triggers not reading ARGN1 (skill number) correctly.

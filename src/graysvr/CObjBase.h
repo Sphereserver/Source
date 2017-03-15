@@ -3641,8 +3641,10 @@ public:
 	ANIM_TYPE Skill_GetAnim( SKILL_TYPE skill);
 	SOUND_TYPE Skill_GetSound( SKILL_TYPE skill);
 	int Skill_Stage( SKTRIG_TYPE stage );
-	TRIGRET_TYPE Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScriptTriggerArgs *pArgs = NULL);		//pArgs.m_iN1 will be rewritten with skill
-	TRIGRET_TYPE Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig, CScriptTriggerArgs *pArgs = NULL);	//pArgs.m_iN1 will be rewritten with skill
+	TRIGRET_TYPE Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE stage );
+	TRIGRET_TYPE Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE stage, CScriptTriggerArgs *pArgs );		//pArgs.m_iN1 will be rewritten with skill
+	TRIGRET_TYPE Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig );
+	TRIGRET_TYPE Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig, CScriptTriggerArgs *pArgs );	//pArgs.m_iN1 will be rewritten with skill
 
 	bool Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg );
 	bool Skill_Tracking( CGrayUID uidTarg, int iDistMax = SHRT_MAX );

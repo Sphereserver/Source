@@ -3734,7 +3734,13 @@ void CChar::Skill_Fail( bool fCancel )
 	Skill_Cleanup();
 }
 
-TRIGRET_TYPE CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScriptTriggerArgs *pArgs )
+TRIGRET_TYPE CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE stage )
+{
+	CScriptTriggerArgs pArgs;
+	return Skill_OnTrigger(skill, stage, &pArgs);
+}
+
+TRIGRET_TYPE CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE stage, CScriptTriggerArgs *pArgs )
 {
 	ADDTOCALLSTACK("CChar::Skill_OnTrigger");
 	if ( !IsSkillBase(skill) )
@@ -3743,12 +3749,9 @@ TRIGRET_TYPE CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScri
 	if ( !(stage == SKTRIG_SELECT || stage == SKTRIG_GAIN || stage == SKTRIG_USEQUICK || stage == SKTRIG_WAIT || stage == SKTRIG_TARGETCANCEL) )
 		m_Act_SkillCurrent = skill;
 
-	if ( pArgs )
-	{
-		pArgs->m_iN1 = skill;
-		if ( g_Cfg.IsSkillFlag(skill, SKF_MAGIC) )
-			pArgs->m_VarsLocal.SetNum("spell", m_atMagery.m_Spell, true);
-	}
+	pArgs->m_iN1 = skill;
+	if ( g_Cfg.IsSkillFlag(skill, SKF_MAGIC) )
+		pArgs->m_VarsLocal.SetNum("spell", m_atMagery.m_Spell, true);
 
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
@@ -3764,6 +3767,12 @@ TRIGRET_TYPE CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScri
 	return iRet;
 }
 
+TRIGRET_TYPE CChar::Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE stage )
+{
+	CScriptTriggerArgs pArgs;
+	return Skill_OnCharTrigger(skill, stage, &pArgs);
+}
+
 TRIGRET_TYPE CChar::Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig, CScriptTriggerArgs *pArgs )
 {
 	ADDTOCALLSTACK("CChar::Skill_OnCharTrigger");
@@ -3773,12 +3782,9 @@ TRIGRET_TYPE CChar::Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig, CSc
 	if ( !(ctrig == CTRIG_SkillSelect || ctrig == CTRIG_SkillGain || ctrig == CTRIG_SkillUseQuick || ctrig == CTRIG_SkillWait || ctrig == CTRIG_SkillTargetCancel) )
 		m_Act_SkillCurrent = skill;
 
-	if ( pArgs )
-	{
-		pArgs->m_iN1 = skill;
-		if ( g_Cfg.IsSkillFlag(skill, SKF_MAGIC) )
-			pArgs->m_VarsLocal.SetNum("spell", m_atMagery.m_Spell, true);
-	}
+	pArgs->m_iN1 = skill;
+	if ( g_Cfg.IsSkillFlag(skill, SKF_MAGIC) )
+		pArgs->m_VarsLocal.SetNum("spell", m_atMagery.m_Spell, true);
 
 	return OnTrigger(ctrig, this, pArgs);
 }
