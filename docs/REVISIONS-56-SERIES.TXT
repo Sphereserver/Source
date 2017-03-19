@@ -447,3 +447,7 @@ Fixed: Skill triggers not reading ARGN1 (skill number) correctly.
 
 19-03-2017, Coruja
 Fixed: Swing Speed calculation making combat stop suddenly when swing speed < attack anim speed.
+Fixed: NPC_AI_LOOTING not working correctly.
+Fixed: NPCs not clearing 'statf_war' char flag at combat end.
+Fixed: NPCs not running away from threats like fire/fields/traps after step on them.
+Fixed: NPCs keeping trying to attack his target even when the target is out of sight.

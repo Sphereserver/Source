@@ -1123,8 +1123,7 @@ bool CChar::CheckCrimeSeen( SKILL_TYPE SkillToSee, CChar * pCharMark, const CObj
 			continue;	// I saw myself before.
 		if ( ! pChar->CanSeeLOS( this, LOS_NB_WINDOWS )) //what if I was standing behind a window when I saw a crime? :)
 			continue;
-		// If a GM sees you it it not a crime.
-		if ( pChar->GetPrivLevel() > GetPrivLevel())
+		if ( pChar->GetPrivLevel() >= PLEVEL_Counsel ) // if a GM sees you it's not a crime
 			continue;
 
 		bool fYour = ( pCharMark == pChar );
@@ -2328,11 +2327,11 @@ void CChar::Fight_Clear()
 	{
 		Skill_Start(SKILL_NONE);
 		m_Fight_Targ.InitUID();
-		if ( m_pNPC )
-		{
-			StatFlag_Clear(STATF_War);
-			UpdateModeFlag();
-		}
+	}
+	if ( m_pNPC )
+	{
+		StatFlag_Clear(STATF_War);
+		UpdateModeFlag();
 	}
 }
 
@@ -2351,6 +2350,12 @@ bool CChar::Fight_Attack( const CChar *pCharTarg, bool btoldByMaster )
 		Attacker_Delete(const_cast<CChar *>(pCharTarg), true);
 		return false;
 	}
+	if ( m_pNPC && !CanSeeLOS(pCharTarg) )
+	{
+		// The NPC can't see his target, just forget it temporarily instead try to keep attacking it
+		Skill_Start(SKILL_NONE);
+		return false;
+	}
 
 	CChar *pTarget = const_cast<CChar *>(pCharTarg);
 	if ( pCharTarg->m_pPlayer && (GetPrivLevel() <= PLEVEL_Guest) && (pCharTarg->GetPrivLevel() > PLEVEL_Guest) )
@@ -2359,18 +2364,9 @@ bool CChar::Fight_Attack( const CChar *pCharTarg, bool btoldByMaster )
 		Attacker_Delete(pTarget);
 		return false;
 	}
-	else if ( m_pNPC && !CanSee(pCharTarg) )
-	{
-		Attacker_Delete(pTarget);
-		Skill_Start(SKILL_NONE);
-		return false;
-	}
 
-	if ( g_Cfg.m_fAttackingIsACrime )
-	{
-		if ( pCharTarg->Noto_GetFlag(this) == NOTO_GOOD )
-			CheckCrimeSeen(SKILL_NONE, pTarget, NULL, NULL);
-	}
+	if ( g_Cfg.m_fAttackingIsACrime && (pCharTarg->Noto_GetFlag(this) == NOTO_GOOD) )
+		CheckCrimeSeen(SKILL_NONE, pTarget, NULL, NULL);
 
 	INT64 threat = 0;
 	if ( btoldByMaster )
