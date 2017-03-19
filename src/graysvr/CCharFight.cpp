@@ -3079,7 +3079,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		}
 
 		m_atFight.m_Swing_State = WAR_SWING_SWINGING;
-		m_atFight.m_Swing_Delay = iSwingDelay - animDelay;
+		m_atFight.m_Swing_Delay = maximum(0, iSwingDelay - animDelay);
 
 		if ( IsSetCombatFlags(COMBAT_PREHIT) )
 		{
