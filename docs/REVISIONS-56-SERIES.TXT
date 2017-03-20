@@ -451,3 +451,6 @@ Fixed: NPC_AI_LOOTING not working correctly.
 Fixed: NPCs not clearing 'statf_war' char flag at combat end.
 Fixed: NPCs not running away from threats like fire/fields/traps after step on them.
 Fixed: NPCs keeping trying to attack his target even when the target is out of sight.
+
+20-03-2017, Coruja
+Fixed: Message 'World save completed in X seconds' not showing correct timing precision on Linux builds.

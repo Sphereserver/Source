@@ -84,15 +84,18 @@ typedef unsigned int	ERROR_CODE;
 extern ULONGLONG llTimeProfileFrequency;
 
 #ifdef _WIN32
-	#define	TIME_PROFILE_START	if (!QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER *>(&llTicksStart)))	llTicksStart = GetTickCount64()
-	#define TIME_PROFILE_END	if (!QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER *>(&llTicksEnd)))	llTicksEnd = GetTickCount64()
-#else
-	#define	TIME_PROFILE_START	llTicksStart = GetTickCount64()
-	#define TIME_PROFILE_END	llTicksEnd = GetTickCount64();
-#endif
+	#define	TIME_PROFILE_START		if (!QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER *>(&llTicksStart)))	llTicksStart = GetTickCount64()
+	#define TIME_PROFILE_END		if (!QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER *>(&llTicksEnd)))	llTicksEnd = GetTickCount64()
 
-#define TIME_PROFILE_GET_HI		((llTicksEnd - llTicksStart) / (llTimeProfileFrequency / 1000))
-#define	TIME_PROFILE_GET_LO		((((llTicksEnd - llTicksStart) * 10000) / (llTimeProfileFrequency / 1000)) % 10000)
+	#define TIME_PROFILE_GET_HI		((llTicksEnd - llTicksStart) / (llTimeProfileFrequency / 1000))
+	#define	TIME_PROFILE_GET_LO		((((llTicksEnd - llTicksStart) * 10000) / (llTimeProfileFrequency / 1000)) % 10000)
+#else
+	#define	TIME_PROFILE_START		llTicksStart = GetTickCount64()
+	#define TIME_PROFILE_END		llTicksEnd = GetTickCount64();
+
+	#define TIME_PROFILE_GET_HI		(llTicksEnd - llTicksStart)
+	#define	TIME_PROFILE_GET_LO		(((llTicksEnd - llTicksStart) * 10) % 10000)
+#endif
 
 // -----------------------------
 //	CEventLog
