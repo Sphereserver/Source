@@ -1338,7 +1338,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 		case SV_HEARALL:	// "HEARALL" = Hear all said.
 			{
 				pszMsg = Str_GetTemp();
-				g_Log.SetLogMask( s.GetArgFlag( g_Log.GetLogMask(), LOGM_PLAYER_SPEAK ));
+				g_Log.SetLogMask(static_cast<DWORD>(s.GetArgFlag(g_Log.GetLogMask(), LOGM_PLAYER_SPEAK)));
 				sprintf(pszMsg, "Hear All %s.\n", g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) ? "Enabled" : "Disabled" );
 			}
 			break;
@@ -1439,7 +1439,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 			break;
 		case SV_SECURE: // "SECURE"
 			pszMsg = Str_GetTemp();
-			g_Cfg.m_fSecure = s.GetArgFlag( g_Cfg.m_fSecure, true ) != 0;
+			g_Cfg.m_fSecure = (s.GetArgFlag(g_Cfg.m_fSecure, true) != 0);
 			SetSignals();
 			sprintf(pszMsg, "Secure mode %s.\n", g_Cfg.m_fSecure ? "enabled" : "disabled" );
 			break;
@@ -1448,7 +1448,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 #ifdef _WIN32
 				if ( GRAY_GetOSInfo()->dwPlatformId != 2 )
 				{
-					g_Log.EventError( "Command not avaible on Windows 95/98/ME.\n" );
+					g_Log.EventError( "Command not available on Windows 95/98/ME.\n" );
 					return( false );
 				}
 
@@ -1460,7 +1460,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 
 				pSrc->SysMessage( "Memory shrinked succesfully.\n" );
 #else
-				g_Log.EventError( "Command not avaible on *NIX os.\n" );
+				g_Log.EventError( "Command not available on *NIX os.\n" );
 				return false;
 #endif
 			} break;

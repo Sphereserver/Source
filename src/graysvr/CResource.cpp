@@ -1012,7 +1012,7 @@ bool CResource::r_LoadVal( CScript &s )
 			m_iGuardLingerTime = s.GetArgVal() * 60 * TICK_PER_SEC;
 			break;
 		case RC_HEARALL:
-			g_Log.SetLogMask( s.GetArgFlag( g_Log.GetLogMask(), LOGM_PLAYER_SPEAK ));
+			g_Log.SetLogMask(static_cast<DWORD>(s.GetArgFlag(g_Log.GetLogMask(), LOGM_PLAYER_SPEAK)));
 			break;
 		case RC_HITSUPDATERATE:
 			m_iHitsUpdateRate = s.GetArgVal() * TICK_PER_SEC;

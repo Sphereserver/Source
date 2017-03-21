@@ -37,7 +37,7 @@ TCHAR * CScriptKey::GetArgStr( bool * fQuoted )	// this could be a quoted string
 	return( pStr );
 }
 
-DWORD CScriptKey::GetArgFlag( DWORD dwStart, DWORD dwMask )
+UINT64 CScriptKey::GetArgFlag( UINT64 dwStart, UINT64 dwMask )
 {
 	ADDTOCALLSTACK("CScriptKey::GetArgFlag");
 	// No args = toggle the flag.
@@ -47,12 +47,12 @@ DWORD CScriptKey::GetArgFlag( DWORD dwStart, DWORD dwMask )
 	ASSERT(m_pszKey);
 	ASSERT(m_pszArg);
 
-	if ( ! HasArgs())
-		return( dwStart ^ dwMask );
-	else if ( GetArgVal())
-		return( dwStart | dwMask );
+	if ( !HasArgs() )
+		return (dwStart ^ dwMask);
+	else if ( GetArgVal() )
+		return (dwStart | dwMask);
 	else
-		return( dwStart &~ dwMask );
+		return (dwStart & ~dwMask);
 }
 
 long long CScriptKey::GetArgLLVal()
