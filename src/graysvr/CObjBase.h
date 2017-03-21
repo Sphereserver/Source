@@ -2281,19 +2281,17 @@ public:
 	virtual bool r_LoadVal( CScript & s );
 	virtual bool r_Verb( CScript & s, CTextConsole * pSrc ); // Execute command from script
 
-	size_t GetPageCount() const
+	WORD GetPageCount() const
 	{
-		return m_sBodyLines.GetCount();
+		return static_cast<WORD>(m_sBodyLines.GetCount());
 	}
-	LPCTSTR GetPageText( size_t iPage ) const
+	LPCTSTR GetPageText( WORD iPage ) const
 	{
-		if ( m_sBodyLines.IsValidIndex(iPage) == false )
-			return NULL;
-		if ( m_sBodyLines[iPage] == NULL )
+		if ( !m_sBodyLines.IsValidIndex(iPage) || (m_sBodyLines[iPage] == NULL) )
 			return NULL;
 		return m_sBodyLines[iPage]->GetPtr();
 	}
-	void SetPageText( size_t iPage, LPCTSTR pszText )
+	void SetPageText( WORD iPage, LPCTSTR pszText )
 	{
 		if ( pszText == NULL )
 			return;

@@ -1422,7 +1422,7 @@ public:
 	void addSpellbookOpen( CItem * pBook );
 	void addCustomSpellbookOpen( CItem * pBook, GUMP_TYPE gumpID );
 	bool addBookOpen( CItem * pBook );
-	void addBookPage( const CItem * pBook, size_t iPage, size_t iCount );
+	void addBookPage( const CItem * pBook, WORD iPage, WORD iCount );
 	void addHealthBarInfo( CObjBase * pObj, bool fRequested = false );
 	void addHitsUpdate( CChar * pChar );
 	void addManaUpdate( CChar * pChar );

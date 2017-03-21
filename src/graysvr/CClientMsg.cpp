@@ -1359,7 +1359,7 @@ bool CClient::addBookOpen( CItem * pBook )
 	if (pBook == NULL)
 		return false;
 
-	size_t iPagesNow = 0;
+	WORD iPages = 0;
 	bool bNewPacket = PacketDisplayBookNew::CanSendTo(m_NetState);
 
 	if (pBook->IsBookSystem() == false)
@@ -1370,7 +1370,7 @@ bool CClient::addBookOpen( CItem * pBook )
 			return false;
 
 		if (pMsgItem->IsBookWritable())
-			iPagesNow = pMsgItem->GetPageCount(); // for some reason we must send them now
+			iPages = pMsgItem->GetPageCount(); // for some reason we must send them now
 	}
 
 	if (bNewPacket)
@@ -1379,13 +1379,13 @@ bool CClient::addBookOpen( CItem * pBook )
 		new PacketDisplayBook(this, pBook);
 
 	// We could just send all the pages now if we want.
-	if (iPagesNow > 0)
-		addBookPage(pBook, 1, iPagesNow);
+	if (iPages > 0)
+		addBookPage(pBook, 1, iPages);
 
 	return( true );
 }
 
-void CClient::addBookPage( const CItem * pBook, size_t iPage, size_t iCount )
+void CClient::addBookPage( const CItem * pBook, WORD iPage, WORD iCount )
 {
 	ADDTOCALLSTACK("CClient::addBookPage");
 	// ARGS:
@@ -1395,7 +1395,7 @@ void CClient::addBookPage( const CItem * pBook, size_t iPage, size_t iCount )
 	if ( iCount < 1 )
 		iCount = 1;
 
-	new PacketBookPageContent(this, pBook, iPage, iCount );
+	new PacketBookPageContent(this, pBook, iPage, iCount);
 }
 
 BYTE CClient::Setup_FillCharList(Packet *pPacket)

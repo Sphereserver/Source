@@ -1487,7 +1487,7 @@ PacketWeather::PacketWeather(const CClient *target, WEATHER_TYPE weather, BYTE s
  *
  *
  ***************************************************************************/
-PacketBookPageContent::PacketBookPageContent(const CClient* target, const CItem* book, size_t startpage, size_t pagecount) : PacketSend(XCMD_BookPage, 8, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketBookPageContent::PacketBookPageContent(const CClient *target, const CItem *book, WORD startpage, WORD pagecount) : PacketSend(XCMD_BookPage, 8, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketBookPageContent::PacketBookPageContent");
 
@@ -1497,21 +1497,21 @@ PacketBookPageContent::PacketBookPageContent(const CClient* target, const CItem*
 	writeInt32(book->GetUID());
 	writeInt16(0);
 
-	for (size_t i = 0; i < pagecount; i++)
+	for (WORD i = 0; i < pagecount; i++)
 		addPage(book, startpage + i);
 
 	push(target);
 }
 
-void PacketBookPageContent::addPage(const CItem* book, size_t page)
+void PacketBookPageContent::addPage(const CItem *book, WORD page)
 {
 	ADDTOCALLSTACK("PacketBookPageContent::addPage");
 
-	writeInt16(static_cast<WORD>(page));
+	writeInt16(page);
 
 	// skip line count for now
 	size_t linesPos = getPosition();
-	size_t lines = 0;
+	WORD lines = 0;
 	writeInt16(0);
 
 	if (book->IsBookSystem())
@@ -1560,11 +1560,11 @@ void PacketBookPageContent::addPage(const CItem* book, size_t page)
 
 	// seek back to write line count
 	seek(linesPos);
-	writeInt16(static_cast<WORD>(lines));
+	writeInt16(lines);
 
 	// seek further back to increment page count
 	seek(7);
-	writeInt16(static_cast<WORD>(++m_pages));
+	writeInt16(++m_pages);
 
 	// return to end
 	seek(endPos);
@@ -1936,10 +1936,10 @@ PacketBulletinBoard::PacketBulletinBoard(const CClient* target, BBOARDF_TYPE act
 		// requesst for full message body
 		writeInt32(0);
 
-		size_t lines = message->GetPageCount();
-		writeInt16(static_cast<WORD>(lines));
+		WORD lines = message->GetPageCount();
+		writeInt16(lines);
 
-		for (size_t i = 0; i < lines; i++)
+		for (WORD i = 0; i < lines; i++)
 		{
 			LPCTSTR text = message->GetPageText(i);
 			if (text == NULL)

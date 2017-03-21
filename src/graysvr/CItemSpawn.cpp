@@ -729,9 +729,9 @@ void CItemMessage::r_Write(CScript & s)
 
 	// Store the message body lines. MAX_BOOK_PAGES
 	TemporaryString pszTemp;
-	for ( size_t i = 0; i < GetPageCount(); ++i )
+	for ( WORD i = 0; i < GetPageCount(); ++i )
 	{
-		sprintf(pszTemp, "BODY.%" FMTSIZE_T, i);
+		sprintf(pszTemp, "BODY.%hu", i);
 		LPCTSTR pszText = GetPageText(i);
 		s.WriteKey(pszTemp, pszText != NULL ? pszText : "");
 	}
@@ -803,7 +803,7 @@ bool CItemMessage::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 		case CIC_BODY:		// handled above
 			return false;
 		case CIC_PAGES:		// not settable (used for resource stuff)
-			sVal.FormatVal(m_sBodyLines.GetCount());
+			sVal.FormatUVal(GetPageCount());
 			return true;
 		case CIC_TITLE:
 			sVal = GetName();
@@ -833,13 +833,13 @@ bool CItemMessage::r_Verb(CScript & s, CTextConsole *pSrc)
 	if ( s.IsKey(sm_szVerbKeys[0]) )
 	{
 		// 1 based pages
-		size_t iPage = (s.GetArgStr()[0] && toupper(s.GetArgStr()[0]) != 'A') ? s.GetArgVal() : 0;
+		WORD iPage = (s.GetArgStr()[0] && (toupper(s.GetArgStr()[0]) != 'A')) ? static_cast<WORD>(s.GetArgVal()) : 0;
 		if ( iPage <= 0 )
 		{
 			m_sBodyLines.RemoveAll();
 			return true;
 		}
-		else if ( iPage <= m_sBodyLines.GetCount() )
+		else if ( iPage <= GetPageCount() )
 		{
 			m_sBodyLines.RemoveAt(iPage - 1);
 			return true;
@@ -847,7 +847,7 @@ bool CItemMessage::r_Verb(CScript & s, CTextConsole *pSrc)
 	}
 	if ( s.IsKeyHead("PAGE", 4) )
 	{
-		size_t iPage = ATOI(s.GetKey() + 4);
+		WORD iPage = ATOI(s.GetKey() + 4);
 		if ( iPage <= 0 )
 			return false;
 
@@ -869,11 +869,11 @@ void CItemMessage::DupeCopy(const CItem *pItem)
 	CItemVendable::DupeCopy(pItem);
 
 	const CItemMessage *pMsgItem = dynamic_cast<const CItemMessage *>(pItem);
-	if ( pMsgItem == NULL )
+	if ( !pMsgItem )
 		return;
 
 	m_sAuthor = pMsgItem->m_sAuthor;
-	for ( size_t i = 0; i < pMsgItem->GetPageCount(); i++ )
+	for ( WORD i = 0; i < pMsgItem->GetPageCount(); i++ )
 		SetPageText(i, pMsgItem->GetPageText(i));
 }
 
