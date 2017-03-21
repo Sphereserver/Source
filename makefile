@@ -19,12 +19,12 @@ DEBUG	= -s
 endif
 
 # DB includes + libs
-DBINCL	= -I/usr/include/mysql
+DBINCL	= -I/usr/include/mysql -L/usr/lib/mysql
 DBLIBS	= -lmysqlclient
 
 # Linux
 INCLUDE	= -I./src/common $(DBINCL)
-LIBS	= -dynamic -L/usr/lib -lpthread $(DBLIBS) -lrt -ldl
+LIBS	= -dynamic -lpthread -lrt -ldl $(DBLIBS)
 DEFNIX  = -D_LINUX
 
 ifdef NIGHTLY
