@@ -2977,9 +2977,9 @@ void PacketServerList::writeServerEntry(const CServerRef &server, WORD index, bo
 	DWORD ip = server->m_ip.GetAddrIP();
 
 	if (server == &g_Serv)
-		percentFull = maximum(0, minimum((server->StatGet(SERV_STAT_CLIENTS) * 100) / maximum(1, g_Cfg.m_iClientsMax), 100));
+		percentFull = maximum(0, minimum(static_cast<BYTE>((server->StatGet(SERV_STAT_CLIENTS) * 100) / maximum(1, g_Cfg.m_iClientsMax)), 100));
 	else
-		percentFull = minimum(server->StatGet(SERV_STAT_CLIENTS), 100);
+		percentFull = minimum(static_cast<BYTE>(server->StatGet(SERV_STAT_CLIENTS)), 100);
 
 	writeInt16(index);
 	writeStringFixedASCII(server->GetName(), 32);
@@ -4399,7 +4399,7 @@ bool PacketHouseDesign::writePlaneData(BYTE plane, WORD itemCount, BYTE *data, D
 
 	m_planeCount++;
 	m_itemCount += itemCount;
-	m_dataSize += (4 + compressLength);
+	m_dataSize += static_cast<WORD>(4 + compressLength);
 	return true;
 }
 
@@ -4459,7 +4459,7 @@ void PacketHouseDesign::flushStairData(void)
 
 	m_stairPlaneCount++;
 	m_itemCount += stairCount;
-	m_dataSize += (4 + compressLength);
+	m_dataSize += static_cast<WORD>(4 + compressLength);
 	return;
 }
 

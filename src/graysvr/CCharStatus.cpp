@@ -606,7 +606,7 @@ CItem *CChar::GetSpellbook(SPELL_TYPE iSpell) const
 		CItemBase *pItemDef = pItem->Item_GetDef();
 		if ( !pItemDef->IsTypeSpellbook(pItem->GetType()) )
 			continue;
-		if ( (iSpell < pItemDef->m_ttSpellbook.m_Offset) || (iSpell > pItemDef->m_ttSpellbook.m_Offset + pItemDef->m_ttSpellbook.m_MaxSpells) )
+		if ( (iSpell < static_cast<SPELL_TYPE>(pItemDef->m_ttSpellbook.m_Offset)) || (iSpell > static_cast<SPELL_TYPE>(pItemDef->m_ttSpellbook.m_Offset + pItemDef->m_ttSpellbook.m_MaxSpells)) )
 			continue;
 		if ( pItem->IsSpellInBook(iSpell) )
 			return pItem;
@@ -623,7 +623,7 @@ CItem *CChar::GetSpellbook(SPELL_TYPE iSpell) const
 			CItemBase *pItemDef = pItem->Item_GetDef();
 			if ( !pItemDef->IsTypeSpellbook(pItem->GetType()) )
 				continue;
-			if ( (iSpell < pItemDef->m_ttSpellbook.m_Offset) || (iSpell > pItemDef->m_ttSpellbook.m_Offset + pItemDef->m_ttSpellbook.m_MaxSpells) )
+			if ( (iSpell < static_cast<SPELL_TYPE>(pItemDef->m_ttSpellbook.m_Offset)) || (iSpell > static_cast<SPELL_TYPE>(pItemDef->m_ttSpellbook.m_Offset + pItemDef->m_ttSpellbook.m_MaxSpells)) )
 				continue;
 			if ( pItem->IsSpellInBook(iSpell) )
 				return pItem;

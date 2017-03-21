@@ -1729,12 +1729,13 @@ void CChar::NPC_AddSpellsFromBook(CItem * pBook)
 	if ( !pBookDef )
 		return;
 
-	WORD min = pBookDef->m_ttSpellbook.m_Offset + 1;
-	WORD max = pBookDef->m_ttSpellbook.m_Offset + pBookDef->m_ttSpellbook.m_MaxSpells;
+	DWORD min = pBookDef->m_ttSpellbook.m_Offset + 1;
+	DWORD max = pBookDef->m_ttSpellbook.m_Offset + pBookDef->m_ttSpellbook.m_MaxSpells;
 
-	for ( int i = min; i <= max; i++ )
+	SPELL_TYPE spell = SPELL_NONE;
+	for ( DWORD i = min; i <= max; i++ )
 	{
-		SPELL_TYPE spell = static_cast<SPELL_TYPE>(i);
+		spell = static_cast<SPELL_TYPE>(i);
 		if ( pBook->IsSpellInBook(spell) )
 			m_pNPC->Spells_Add(spell);
 	}
@@ -2651,8 +2652,7 @@ bool CChar::NPC_Act_Food()
 		if ( iClosestFood <= 1 )
 		{
 			//	can take and eat just in place
-			WORD iEaten = pClosestFood->ConsumeAmount(iEatAmount);
-			EatAnim(pClosestFood->GetName(), iEaten);
+			EatAnim(pClosestFood->GetName(), static_cast<short>(pClosestFood->ConsumeAmount(iEatAmount)));
 			if ( !pClosestFood->GetAmount() )
 				pClosestFood->Plant_CropReset();	// set growth if this is a plant
 		}
@@ -2714,8 +2714,7 @@ bool CChar::NPC_Act_Food()
 			CItem	*pResBit = g_World.CheckNaturalResource(GetTopPoint(), IT_GRASS, true, this);
 			if ( pResBit && pResBit->GetAmount() && ( pResBit->GetTopPoint().m_z == iMyZ ) )
 			{
-				WORD iEaten = pResBit->ConsumeAmount(10);
-				EatAnim("grass", iEaten/10);
+				EatAnim("grass", static_cast<short>(pResBit->ConsumeAmount(10) / 10));
 
 				//	the bit is not needed in a worldsave, timeout of 10 minutes
 				pResBit->m_TagDefs.SetNum("NOSAVE", 1);
@@ -3278,8 +3277,7 @@ void CChar::NPC_Food()
 		{
 			//	can take and eat just in place
 			EXC_SET("eating nearby");
-			WORD iEaten = pClosestFood->ConsumeAmount(iEatAmount);
-			EatAnim(pClosestFood->GetName(), iEaten);
+			EatAnim(pClosestFood->GetName(), static_cast<short>(pClosestFood->ConsumeAmount(iEatAmount)));
 			if ( !pClosestFood->GetAmount() )
 				pClosestFood->Plant_CropReset();	// set growth if this is a plant
 		}
@@ -3333,8 +3331,7 @@ void CChar::NPC_Food()
 			if ( pResBit && pResBit->GetAmount() && ( pResBit->GetTopPoint().m_z == iMyZ ) )
 			{
 				EXC_SET("eating grass");
-				WORD iEaten = pResBit->ConsumeAmount(15);
-				EatAnim("grass", iEaten/10);
+				EatAnim("grass", static_cast<short>(pResBit->ConsumeAmount(15) / 10));
 
 				//	the bit is not needed in a worldsave, timeout of 10 minutes
 				pResBit->m_TagDefs.SetNum("NOSAVE", 1);

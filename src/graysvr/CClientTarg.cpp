@@ -2257,7 +2257,7 @@ bool CClient::OnTarg_Use_Item( CObjBase * pObjTarg, CPointMap & pt, ITEMID_TYPE 
 			if ( iHave < iNeed )
 			{
 				iNeed -= iHave;
-				iUsed = pItemUse->ConsumeAmount( iNeed );
+				iUsed = static_cast<WORD>(pItemUse->ConsumeAmount(iNeed));
 			}
 
 			if ( iHave + iUsed < COUNTOF(sm_Txt_LoomUse) - 1 )

@@ -928,7 +928,7 @@ bool CChar::Stat_Decrease( STAT_TYPE stat, SKILL_TYPE skill )
 		{
 			if ( static_cast<STAT_TYPE>(i) == stat )
 				continue;
-			if ( !Stat_GetLock(static_cast<STAT_TYPE>(i)) == SKILLLOCK_DOWN )
+			if ( Stat_GetLock(static_cast<STAT_TYPE>(i)) != SKILLLOCK_DOWN )
 				continue;
 
 			if ( skill )

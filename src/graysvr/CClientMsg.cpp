@@ -2029,7 +2029,7 @@ void CClient::addSpellbookOpen( CItem * pBook )
 	{
 		CItemBase *pBookDef = pBook->Item_GetDef();
 		if ( pBookDef )
-			new PacketSpellbookContent(this, pBook, pBookDef->m_ttSpellbook.m_Offset + 1);
+			new PacketSpellbookContent(this, pBook, static_cast<WORD>(pBookDef->m_ttSpellbook.m_Offset + 1));
 	}
 	else
 		new PacketItemContents(this, pBook);

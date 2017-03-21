@@ -1083,7 +1083,7 @@ bool CItem::Stack( CItem * pItem )
 	if ( !m_BaseDefs.CompareAll(&pItem->m_BaseDefs) )
 		return false;
 
-	DWORD amount = pItem->GetAmount() + GetAmount();
+	WORD amount = pItem->GetAmount() + GetAmount();
 	WORD amountMax = pItem->GetMaxAmount();
 	if ( amount > amountMax )
 	{
@@ -3300,11 +3300,11 @@ DWORD CItem::ConsumeAmount( DWORD iQty, bool fTest )
 	if ( this == NULL )	// can use none if there is nothing? or can we use all?
 		return iQty;
 
-	WORD iQtyMax = GetAmount();
+	DWORD iQtyMax = GetAmount();
 	if ( iQty < iQtyMax )
 	{
 		if ( !fTest )
-			SetAmountUpdate(iQtyMax - iQty);
+			SetAmountUpdate(static_cast<WORD>(iQtyMax - iQty));
 		return iQty;
 	}
 
@@ -3339,7 +3339,7 @@ bool CItem::IsSpellInBook( SPELL_TYPE spell ) const
 	CItemBase *pItemDef = Item_GetDef();
 	if ( !pItemDef )
 		return false;
-	if ( spell <= pItemDef->m_ttSpellbook.m_Offset )
+	if ( spell <= static_cast<SPELL_TYPE>(pItemDef->m_ttSpellbook.m_Offset) )
 		return false;
 
 	// Convert spell back to format of the book and check whatever it is in
@@ -3367,11 +3367,11 @@ int CItem::GetSpellcountInBook() const
 	if ( !pItemDef )
 		return -1;
 
-	WORD min = pItemDef->m_ttSpellbook.m_Offset + 1;
-	WORD max = pItemDef->m_ttSpellbook.m_Offset + pItemDef->m_ttSpellbook.m_MaxSpells;
+	DWORD min = pItemDef->m_ttSpellbook.m_Offset + 1;
+	DWORD max = pItemDef->m_ttSpellbook.m_Offset + pItemDef->m_ttSpellbook.m_MaxSpells;
 
 	int count = 0;
-	for ( int i = min; i <= max; i++ )
+	for ( DWORD i = min; i <= max; i++ )
 	{
 		if ( IsSpellInBook(static_cast<SPELL_TYPE>(i)) )
 			count++;
@@ -3394,7 +3394,7 @@ int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
 	const CItemBase *pBookDef = Item_GetDef();
 	if ( !pBookDef )
 		return 3;
-	if ( spell <= pBookDef->m_ttSpellbook.m_Offset )
+	if ( spell <= static_cast<SPELL_TYPE>(pBookDef->m_ttSpellbook.m_Offset) )
 		return 3;
 	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
 	if ( !pSpellDef )
