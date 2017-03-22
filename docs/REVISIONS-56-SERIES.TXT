@@ -454,3 +454,6 @@ Fixed: NPCs keeping trying to attack his target even when the target is out of s
 
 20-03-2017, Coruja
 Fixed: Message 'World save completed in X seconds' not showing correct timing precision on Linux builds.
+
+22-03-2017, Coruja
+Changed: Small improvements on EF_FastWalkPrevention experimental feature.

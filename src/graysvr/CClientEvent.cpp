@@ -692,11 +692,11 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 				iDelay = (rawdir & 0x80) ? 100 : 200;
 			else
 				iDelay = (rawdir & 0x80) ? 200 : 400;
-#ifdef _WIN32
-			// Windows OS doesn't use high precision timing, so values must be lowered in a few milliseconds
-			// to avoid false-positives results. But this will also decrease the fastwalk detection accuracy
-			iDelay -= 40;
-#endif
+
+			// Decrease it a bit (2x16ms ticks) to avoid false-positive results if GetSystemClock()
+			// lacks accuracy for some reason, which often happens on CPUs with dynamic clock speed
+			iDelay -= 32;
+
 			m_timeNextEventWalk = iCurTime + iDelay;
 		}
 		else if ( !Event_CheckWalkBuffer() )
