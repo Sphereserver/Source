@@ -843,7 +843,7 @@ bool CClient::r_LoadVal( CScript & s )
 			m_pAccount->TogPrivFlags(PRIV_ALLMOVE, s.GetArgStr());
 			if ( IsSetOF(OF_Command_Sysmsgs) )
 				m_pChar->SysMessage(IsPriv(PRIV_ALLMOVE) ? "Allmove ON" : "Allmove OFF");
-			addPlayerView(NULL);
+			addPlayerSee(NULL);
 			break;
 		}
 		case CC_ALLSHOW:
@@ -852,7 +852,7 @@ bool CClient::r_LoadVal( CScript & s )
 			m_pAccount->TogPrivFlags(PRIV_ALLSHOW, s.GetArgStr());
 			if ( IsSetOF(OF_Command_Sysmsgs) )
 				m_pChar->SysMessage(IsPriv(PRIV_ALLSHOW) ? "Allshow ON" : "Allshow OFF");
-			addPlayerView(NULL);
+			addPlayerSee(NULL);
 			break;
 		}
 		case CC_DEBUG:
@@ -861,7 +861,7 @@ bool CClient::r_LoadVal( CScript & s )
 			m_pAccount->TogPrivFlags(PRIV_DEBUG, s.GetArgStr());
 			if ( IsSetOF(OF_Command_Sysmsgs) )
 				m_pChar->SysMessage(IsPriv(PRIV_DEBUG) ? "Debug ON" : "Debug OFF");
-			addPlayerView(NULL);
+			addPlayerSee(NULL);
 			break;
 		}
 		case CC_DETAIL:

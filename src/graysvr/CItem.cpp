@@ -1083,13 +1083,13 @@ bool CItem::Stack( CItem * pItem )
 	if ( !m_BaseDefs.CompareAll(&pItem->m_BaseDefs) )
 		return false;
 
-	WORD amount = pItem->GetAmount() + GetAmount();
+	DWORD amount = pItem->GetAmount() + GetAmount();
 	WORD amountMax = pItem->GetMaxAmount();
 	if ( amount > amountMax )
 	{
 		amount = amountMax - pItem->GetAmount();
-		pItem->SetAmountUpdate(pItem->GetAmount() + amount);
-		SetAmountUpdate(GetAmount() - amount);
+		pItem->SetAmountUpdate(pItem->GetAmount() + static_cast<WORD>(amount));
+		SetAmountUpdate(GetAmount() - static_cast<WORD>(amount));
 		return false;
 	}
 	else
