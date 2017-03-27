@@ -1,45 +1,33 @@
 SHELL   = /bin/bash
 
 # Generic makefile
-#ifdef FORCE32
-MARCH = -march=i686 -m32
-#endif
+MARCH	= -march=i686 -m32
 
-OPTDEFAULT = -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
-COPTDEFAULT = -fno-omit-frame-pointer -ffast-math $(MARCH)
-OPT 	= -O0 -fno-expensive-optimizations $(OPTDEFAULT)
-COPT	= -O0 -fno-expensive-optimizations $(COPTDEFAULT)
-WARN	= -Wall -Wno-unknown-pragmas -Wno-invalid-offsetof -Wno-unused-but-set-variable -Wno-switch
-CWARN	= -Wall -Wno-unknown-pragmas -Wno-unused-but-set-variable -Wno-switch -Wno-implicit-function-declaration
-
-ifdef DBG
-DEBUG	= -s -ggdb3
-else
-DEBUG	= -s
-endif
+OPTDEFAULT	= -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
+COPTDEFAULT	= -fno-omit-frame-pointer -ffast-math $(MARCH)
+OPT 		= -O0 -fno-expensive-optimizations $(OPTDEFAULT)
+COPT		= -O0 -fno-expensive-optimizations $(COPTDEFAULT)
+WARN		= -Wall -Wno-unknown-pragmas -Wno-invalid-offsetof -Wno-unused-but-set-variable -Wno-switch
+CWARN		= -Wall -Wno-unknown-pragmas -Wno-unused-but-set-variable -Wno-switch -Wno-implicit-function-declaration
 
 # DB includes + libs
-DBINCL	= -I/usr/include/mysql -L/usr/lib/mysql
-DBLIBS	= -lmysqlclient
+DBINCLUDE	= -I/usr/include/mysql -L/usr/lib/mysql
+DBLIBS		= -lmysqlclient
 
 # Linux
-INCLUDE	= -I./src/common $(DBINCL)
-LIBS	= -dynamic -lpthread -lrt -ldl $(DBLIBS)
-DEFNIX  = -D_LINUX
+INCLUDE		= -I./src/common $(DBINCLUDE)
+LIBS		= -dynamic -lpthread -lrt -ldl $(DBLIBS)
 
 ifdef NIGHTLY
-NIGHTLYDEFS = -D_NIGHTLYBUILD
-# NIGHTLYDEFS = -D_NIGHTLYBUILD -DTHREAD_TRACK_CALLSTACK
+	NIGHTLYDEFS = -D_NIGHTLYBUILD		# -DTHREAD_TRACK_CALLSTACK
 endif
 
 ifdef DBG
-DEBUGDEFS = -D_DEBUG -DTHREAD_TRACK_CALLSTACK
-DBGWARN = -Wno-unused-variable
-# DEBUGDEFS = -D_DEBUG -D_PACKETDUMP -D_TESTEXCEPTION -DDEBUG_CRYPT_MSGS
+	DBGDEFS = -D_DEBUG -DTHREAD_TRACK_CALLSTACK		# -D_PACKETDUMP -D_TESTEXCEPTION -DDEBUG_CRYPT_MSGS
+	DBGWARN = -ggdb3
 endif
 
-EXTRADEFS = -D_MTNETWORK
-DEFINES = -DGRAY_SVR -D_CONSOLE -D_REENTRANT $(DEFNIX) $(NIGHTLYDEFS) $(EXTRADEFS) $(DEBUGDEFS)
+DEFINES	= -D_MTNETWORK $(NIGHTLYDEFS) $(DBGDEFS)
 
 EXE	= spheresvr
 
@@ -48,10 +36,10 @@ CCO	= gcc
 
 NO	= -fno-rtti -fno-exceptions
 EX	= -fexceptions -fnon-call-exceptions
-SPECIAL = $(EX) $(DEBUG)
+SPECIAL	= -s $(EX) $(DBGWARN)
 
-GITREVISION = $(shell expr $(shell git rev-list --count HEAD) - 2406)
-GITHASH = $(shell git rev-parse --short HEAD)
+GITREVISION	= $(shell expr $(shell git rev-list --count HEAD) - 2406)
+GITHASH		= $(shell git rev-parse --short HEAD)
 
 PROF	= -pg
 PIPE	= -pipe
@@ -179,15 +167,15 @@ clean:	tidy
 
 tidy:
 	rm -f ./src/graysvr/*~ ./src/graysvr/*orig ./src/graysvr/*bak ./src/graysvr/*rej \
-	 			 ./src/common/*~ ./src/common/*orig ./src/common*bak \
-				 ./src/common/mtrand/*~ ./src/common/mtrand/*orig ./src/common/mtrand/*bak \
-				 ./src/common/twofish/*~ ./src/common/twofish/*orig ./src/common/twofish/*bak \
-				 ./src/common/libev/*~ ./src/common/libev/*orig ./src/common/libev/*bak \
-				 ./src/common/zlib/*~ ./src/common/zlib/*orig ./src/common/zlib/*bak \
-				 ./src/common/sqlite/*~ ./src/common/sqlite/*orig ./src/common/sqlite/*bak \
-				 ./src/sphere/*~ ./src/sphere/*orig ./src/sphere/*bak \
-				 ./src/network/*~ ./src/network/*orig ./src/network/*bak \
-				 ./src/tests/*~ ./src/tests/*orig ./src/tests/*bak
+		./src/common/*~ ./src/common/*orig ./src/common*bak \
+		./src/common/mtrand/*~ ./src/common/mtrand/*orig ./src/common/mtrand/*bak \
+		./src/common/twofish/*~ ./src/common/twofish/*orig ./src/common/twofish/*bak \
+		./src/common/libev/*~ ./src/common/libev/*orig ./src/common/libev/*bak \
+		./src/common/zlib/*~ ./src/common/zlib/*orig ./src/common/zlib/*bak \
+		./src/common/sqlite/*~ ./src/common/sqlite/*orig ./src/common/sqlite/*bak \
+		./src/sphere/*~ ./src/sphere/*orig ./src/sphere/*bak \
+		./src/network/*~ ./src/network/*orig ./src/network/*bak \
+		./src/tests/*~ ./src/tests/*orig ./src/tests/*bak
 
 tags:	$(SRC)
 	ctags $(SRC)
