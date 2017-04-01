@@ -49,18 +49,18 @@ sudo apt-get install make:i386
 sudo apt-get install libmysqld-dev:i386 libmysql++:i386 libmysql++-dev:i386
 ```
 
-#### CentOS 6 / 7
+#### CentOS 6 / 7 - Red Hat 6 / 7
+If you're using CentOS 7 / Red Hat 7, the default package repository only have support to MariaDB instead MySQL, so add back MySQL support using:
+```
+sudo rpm -Uvh https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm
+sudo yum-config-manager --disable mysql57-community
+sudo yum-config-manager --enable mysql56-community
+```
 Install required packages:
 ```bash
 sudo yum install git
 sudo yum install gcc-c++
 sudo yum install glibc-devel.i686
-```
-CentOS replaced default MySQL packages with MariaDB packages, so add back MySQL packages:
-```
-sudo rpm -Uvh https://dev.mysql.com/get/mysql57-community-release-{version}-9.noarch.rpm	// replace {version} with 'el6' for CentOS 6 or 'el7' for CentOS 7
-sudo yum-config-manager --disable mysql57-community
-sudo yum-config-manager --enable mysql56-community
 sudo yum install mysql-community-devel.i686 mysql-community-libs.i686
 ```
 
