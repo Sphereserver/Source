@@ -22,39 +22,24 @@ NetworkManager g_NetworkManager;
 //
 // Packet logging
 //
-#if defined(_PACKETDUMP) || defined(_DUMPSUPPORT)
+#ifdef _DEBUG
 
-void xRecordPacketData(const CClient* client, const BYTE* data, size_t length, LPCTSTR heading)
+void xRecordPacketData(const CClient *client, const BYTE *data, size_t length, LPCTSTR heading)
 {
-#ifdef _DUMPSUPPORT
-	if (client->m_pAccount && strnicmp(client->m_pAccount->GetName(), (LPCTSTR)g_Cfg.m_sDumpAccPackets, strlen(client->m_pAccount->GetName())))
+	if ( !(g_Cfg.m_wDebugFlags & DEBUGF_PACKETS) )
 		return;
-#else
-	if (!(g_Cfg.m_wDebugFlags & DEBUGF_PACKETS))
-		return;
-#endif
 
 	Packet packet(data, length);
 	xRecordPacket(client, &packet, heading);
 }
 
-void xRecordPacket(const CClient* client, Packet* packet, LPCTSTR heading)
+void xRecordPacket(const CClient *client, Packet *packet, LPCTSTR heading)
 {
-#ifdef _DUMPSUPPORT
-	if (client->m_pAccount && strnicmp(client->m_pAccount->GetName(), (LPCTSTR)g_Cfg.m_sDumpAccPackets, strlen(client->m_pAccount->GetName())))
+	if ( !(g_Cfg.m_wDebugFlags & DEBUGF_PACKETS) )
 		return;
-#else
-	if (!(g_Cfg.m_wDebugFlags & DEBUGF_PACKETS))
-		return;
-#endif
 
 	TemporaryString dump;
 	packet->dump(dump);
-
-#ifdef _DEBUG
-	// write to console
-	g_Log.EventDebug("%lx:%s %s\n", client->GetSocketID(), heading, (LPCTSTR)dump);
-#endif
 
 	// build file name
 	TCHAR fname[64];
@@ -67,18 +52,19 @@ void xRecordPacket(const CClient* client, Packet* packet, LPCTSTR heading)
 		strcat(fname, client->GetPeerStr());
 		strcat(fname, ")");
 	}
-
 	strcat(fname, ".log");
-
 	CGString sFullFileName = CGFile::GetMergedFileName(g_Log.GetLogDir(), fname);
 	
 	// write to file
 	CFileText out;
 	if (out.Open(sFullFileName, OF_READWRITE|OF_TEXT))
 	{
-		out.Printf("%s %s\n\n", heading, (LPCTSTR)dump);
+		out.Printf("%s %s\n\n", heading, static_cast<LPCTSTR>(dump));
 		out.Close();
 	}
+
+	// write to console
+	g_Log.EventDebug("%lx:%s %s\n", client->GetSocketID(), heading, static_cast<LPCTSTR>(dump));
 }
 #endif
 
@@ -1269,7 +1255,9 @@ void NetworkIn::tick(void)
 		size_t len = packet->getRemainingLength();
 
 		EXC_SET("record message");
+#ifdef _DEBUG
 		xRecordPacket(client->m_client, packet, "client->server");
+#endif
 
 		// process the message
 		EXC_TRYSUB("ProcessMessage");
@@ -2168,7 +2156,9 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 
 	EXC_TRY("proceedQueue");
 
+#ifdef _DEBUG
 	xRecordPacket(client, packet, "server->client");
+#endif
 
 	EXC_SET("send trigger");
 	if (packet->onSend(client))
@@ -3269,7 +3259,9 @@ bool NetworkInput::processGameClientData(NetState* state, Packet* buffer)
 	size_t remainingLength = packet->getRemainingLength();
 
 	EXC_SET("record message");
+#ifdef _DEBUG
 	xRecordPacket(client, packet, "client->server");
+#endif
 
 	// process the message
 	EXC_TRYSUB("ProcessMessage");
@@ -3956,7 +3948,9 @@ bool NetworkOutput::sendPacketData(NetState* state, PacketSend* packet)
 	ASSERT(client != NULL);
 
 	EXC_TRY("sendPacketData");
+#ifdef _DEBUG
 	xRecordPacket(client, packet, "server->client");
+#endif
 
 	EXC_SET("send trigger");
 	if (packet->onSend(client) == false)

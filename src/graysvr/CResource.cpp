@@ -420,9 +420,6 @@ enum RC_TYPE
 	RC_DEFAULTCOMMANDLEVEL,		//m_iDefaultCommandLevel
 	RC_DISTANCEWHISPER,
 	RC_DISTANCEYELL,
-#ifdef _DUMPSUPPORT
-	RC_DUMPPACKETSFORACC,
-#endif
 	RC_DUNGEONLIGHT,
 	RC_EQUIPPEDCAST,			// m_fEquippedCast
 	RC_EVENTSITEM,				// m_sEventsItem
@@ -648,9 +645,6 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "DEFAULTCOMMANDLEVEL",	{ ELEM_INT,		OFFSETOF(CResource,m_iDefaultCommandLevel),	0 }},
 	{ "DISTANCEWHISPER",		{ ELEM_INT,		OFFSETOF(CResource,m_iDistanceWhisper ),	0 }},
 	{ "DISTANCEYELL",			{ ELEM_INT,		OFFSETOF(CResource,m_iDistanceYell ),		0 }},
-#ifdef _DUMPSUPPORT
-	{ "DUMPPACKETSFORACC",		{ ELEM_CSTRING,	OFFSETOF(CResource,m_sDumpAccPackets),		0 }},
-#endif
 	{ "DUNGEONLIGHT",			{ ELEM_INT,		OFFSETOF(CResource,m_iLightDungeon),		0 }},
 	{ "EQUIPPEDCAST",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fEquippedCast),		0 }},
 	{ "EVENTSITEM",				{ ELEM_CSTRING, OFFSETOF(CResource,m_sEventsItem),			0 }},

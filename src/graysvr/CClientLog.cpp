@@ -795,10 +795,10 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 
 	if ( !m_Crypt.Init(m_NetState->m_seed, bincopy.m_Raw, iLen, m_NetState->isClientKR()) )
 	{
-		DEBUG_MSG(("%lx:Odd login message length %" FMTSIZE_T "?\n", GetSocketID(), iLen));
 #ifdef _DEBUG
 		xRecordPacketData(this, (const BYTE *)pEvent, iLen, "client->server");
 #endif
+		DEBUG_MSG(("%lx:Odd login message length %" FMTSIZE_T "?\n", GetSocketID(), iLen));
 		addLoginErr(PacketLoginError::BadEncLength);
 		return false;
 	}
@@ -922,7 +922,9 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 #endif
 	}
 	
+#ifdef _DEBUG
 	xRecordPacketData(this, (const BYTE *)pEvent, iLen, "client->server");
+#endif
 
 	if ( lErr != PacketLoginError::Success )	// it never matched any crypt format.
 		addLoginErr(lErr);
