@@ -17,7 +17,6 @@ CResource::CResource()
 	m_wDebugFlags = 0; //DEBUGF_NPC_EMOTE
 	m_fSecure = true;
 	m_iFreezeRestartTime = 60;
-	m_bAgree = false;
 	m_fMd5Passwords = false;
 
 	//Magic
@@ -120,7 +119,7 @@ CResource::CResource()
 	m_iArcheryMinDist	= 2;
 	m_iArcheryMaxDist	= 15;
 	m_iHitsUpdateRate	= TICK_PER_SEC;
-	m_iSpeedScaleFactor	= 80000;
+	m_iSpeedScaleFactor	= 15000;
 	m_iCombatFlags		= 0;
 	m_iCombatDamageEra	= 0;
 	m_iCombatHitChanceEra = 0;
@@ -135,7 +134,6 @@ CResource::CResource()
 	m_iExperimental		= 0;
 	m_iDistanceYell		= UO_MAP_VIEW_RADAR;
 	m_iDistanceWhisper	= 3;
-	m_iDistanceTalk		= UO_MAP_VIEW_SIZE;
 	m_iOptionFlags		= (OF_Command_Sysmsgs|OF_NoHouseMuteSpeech);
 
 	m_iMaxSkill			= SKILL_QTY;
@@ -246,7 +244,7 @@ CResource::CResource()
 	m_iClientLoginTempBan = 3*60*TICK_PER_SEC;
 	m_iMaxShipPlankTeleport = UO_MAP_VIEW_SIZE;
 
-	m_NPCNoFameTitle = false;
+	m_NPCNoFameTitle = true;
 }
 
 CResource::~CResource()
@@ -365,7 +363,6 @@ enum RC_TYPE
 {
 	RC_ACCTFILES,				// m_sAcctBaseDir
 	RC_ADVANCEDLOS,				// m_iAdvancedLos
-	RC_AGREE,
 	RC_ALLOWBUYSELLAGENT,		// m_bAllowBuySellAgent
 	RC_ALLOWLIGHTOVERRIDE,		// m_bAllowLightOverride
 	RC_ALLOWNEWBTRANSFER,		// m_bAllowNewbTransfer
@@ -421,12 +418,8 @@ enum RC_TYPE
 	RC_DEBUGFLAGS,
 	RC_DECAYTIMER,
 	RC_DEFAULTCOMMANDLEVEL,		//m_iDefaultCommandLevel
-	RC_DISTANCETALK,
 	RC_DISTANCEWHISPER,
 	RC_DISTANCEYELL,
-#ifdef _DUMPSUPPORT
-	RC_DUMPPACKETSFORACC,
-#endif
 	RC_DUNGEONLIGHT,
 	RC_EQUIPPEDCAST,			// m_fEquippedCast
 	RC_EVENTSITEM,				// m_sEventsItem
@@ -552,7 +545,7 @@ enum RC_TYPE
 	RC_SPELLTIMEOUT,
 	RC_STAMINALOSSATWEIGHT,		// m_iStaminaLossAtWeight
 	RC_STATSFLAGS,				// m_iStatFlag
-	RC_STRIPPATH,				// for TNG
+	RC_STRIPPATH,				// m_sStripPath
 	RC_SUPPRESSCAPITALS,
 	RC_TELEPORTEFFECTNPC,		// m_iSpell_Teleport_Effect_NPC
 	RC_TELEPORTEFFECTPLAYERS,	// m_iSpell_Teleport_Effect_Players
@@ -595,7 +588,6 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 {
 	{ "ACCTFILES",				{ ELEM_CSTRING,	OFFSETOF(CResource,m_sAcctBaseDir),			0 }},
 	{ "ADVANCEDLOS",			{ ELEM_INT,		OFFSETOF(CResource,m_iAdvancedLos),			0 }},
-	{ "AGREE",					{ ELEM_BOOL,	OFFSETOF(CResource,m_bAgree),				0 }},
 	{ "ALLOWBUYSELLAGENT",		{ ELEM_BOOL,	OFFSETOF(CResource,m_bAllowBuySellAgent),	0 }},
 	{ "ALLOWLIGHTOVERRIDE",		{ ELEM_BOOL,	OFFSETOF(CResource,m_bAllowLightOverride),	0 }},
 	{ "ALLOWNEWBTRANSFER",		{ ELEM_BOOL,	OFFSETOF(CResource,m_bAllowNewbTransfer),	0 }},
@@ -651,12 +643,8 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "DEBUGFLAGS",				{ ELEM_WORD,	OFFSETOF(CResource,m_wDebugFlags),			0 }},
 	{ "DECAYTIMER",				{ ELEM_INT,		OFFSETOF(CResource,m_iDecay_Item),			0 }},
 	{ "DEFAULTCOMMANDLEVEL",	{ ELEM_INT,		OFFSETOF(CResource,m_iDefaultCommandLevel),	0 }},
-	{ "DISTANCETALK",			{ ELEM_INT,		OFFSETOF(CResource,m_iDistanceTalk ),		0 }},
 	{ "DISTANCEWHISPER",		{ ELEM_INT,		OFFSETOF(CResource,m_iDistanceWhisper ),	0 }},
 	{ "DISTANCEYELL",			{ ELEM_INT,		OFFSETOF(CResource,m_iDistanceYell ),		0 }},
-#ifdef _DUMPSUPPORT
-	{ "DUMPPACKETSFORACC",		{ ELEM_CSTRING,	OFFSETOF(CResource,m_sDumpAccPackets),		0 }},
-#endif
 	{ "DUNGEONLIGHT",			{ ELEM_INT,		OFFSETOF(CResource,m_iLightDungeon),		0 }},
 	{ "EQUIPPEDCAST",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fEquippedCast),		0 }},
 	{ "EVENTSITEM",				{ ELEM_CSTRING, OFFSETOF(CResource,m_sEventsItem),			0 }},
@@ -917,11 +905,11 @@ bool CResource::r_LoadVal( CScript &s )
 			{
 				char *args = s.GetArgRaw();
 				if ( !args || ( strlen(args) >= 31 ))
-					g_Log.EventError("Invalid function name for packet filtering (limit is 30 chars).\n");
+					g_Log.EventError("Invalid function name for packet filtering (limit is 30 chars)\n");
 				else
 				{
 					strcpy(g_Serv.m_PacketFilter[index], args);
-					DEBUG_MSG(("PACKET FILTER: Hooked packet 0x%x with function %s.\n", index, args));
+					DEBUG_MSG(("PACKET FILTER: Hooked packet 0x%x with function %s\n", index, args));
 					return true;
 				}
 			}
@@ -935,11 +923,11 @@ bool CResource::r_LoadVal( CScript &s )
 			{
 				char *args = s.GetArgRaw();
 				if ( !args || ( strlen(args) >= 31 ))
-					g_Log.EventError("Invalid function name for outgoing packet filtering (limit is 30 chars).\n");
+					g_Log.EventError("Invalid function name for outgoing packet filtering (limit is 30 chars)\n");
 				else
 				{
 					strcpy(g_Serv.m_OutPacketFilter[index], args);
-					DEBUG_MSG(("OUTGOING PACKET FILTER: Hooked packet 0x%x with function %s.\n", index, args));
+					DEBUG_MSG(("OUTGOING PACKET FILTER: Hooked packet 0x%x with function %s\n", index, args));
 					return true;
 				}
 			}
@@ -952,9 +940,6 @@ bool CResource::r_LoadVal( CScript &s )
 
 	switch (i)
 	{
-		case RC_AGREE:
-			m_bAgree = (s.GetArgVal() != 0);
-			break;
 		case RC_ACCTFILES:	// Put acct files here.
 			m_sAcctBaseDir = CGFile::GetMergedFileName( s.GetArgStr(), "" );
 			break;
@@ -1021,7 +1006,7 @@ bool CResource::r_LoadVal( CScript &s )
 			m_iGuardLingerTime = s.GetArgVal() * 60 * TICK_PER_SEC;
 			break;
 		case RC_HEARALL:
-			g_Log.SetLogMask( s.GetArgFlag( g_Log.GetLogMask(), LOGM_PLAYER_SPEAK ));
+			g_Log.SetLogMask(static_cast<DWORD>(s.GetArgFlag(g_Log.GetLogMask(), LOGM_PLAYER_SPEAK)));
 			break;
 		case RC_HITSUPDATERATE:
 			m_iHitsUpdateRate = s.GetArgVal() * TICK_PER_SEC;
@@ -1039,7 +1024,7 @@ bool CResource::r_LoadVal( CScript &s )
 			m_iMapCacheTime = s.GetArgVal() * TICK_PER_SEC;
 			break;
 		case RC_MAXCHARSPERACCOUNT:
-			m_iMaxCharsPerAccount = static_cast<unsigned char>(s.GetArgVal());
+			m_iMaxCharsPerAccount = static_cast<BYTE>(s.GetArgVal());
 			if ( m_iMaxCharsPerAccount > MAX_CHARS_PER_ACCT )
 				m_iMaxCharsPerAccount = MAX_CHARS_PER_ACCT;
 			break;
@@ -1163,13 +1148,12 @@ bool CResource::r_LoadVal( CScript &s )
 
 		case RC_EXPERIMENTAL:
 			g_Cfg.m_iExperimental = s.GetArgVal();
-			//PrintEFOFFlags(true, false);
 			break;
 
 		case RC_OPTIONFLAGS:
 			g_Cfg.m_iOptionFlags = s.GetArgVal();
-			//PrintEFOFFlags(false, true);
 			break;
+
 		case RC_TIMERCALL:
 			m_iTimerCall = s.GetArgVal() * 60 * TICK_PER_SEC;
 			break;
@@ -1284,7 +1268,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 					case 4:
 						if ( IsDigit(ppVal[3][0]) )
 						{
-							pt.m_map = static_cast<unsigned char>(ATOI(ppVal[3]));
+							pt.m_map = static_cast<BYTE>(ATOI(ppVal[3]));
 						}
 					case 3:
 						if ( IsDigit(ppVal[2][0]) || (( iArgs == 4 ) && ( ppVal[2][0] == '-' )) )
@@ -1292,7 +1276,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 							pt.m_z = static_cast<signed char>(( iArgs == 4 ) ? ATOI(ppVal[2]) : 0);
 							if ( iArgs == 3 )
 							{
-								pt.m_map = static_cast<unsigned char>(ATOI(ppVal[2]));
+								pt.m_map = static_cast<BYTE>(ATOI(ppVal[2]));
 							}
 						}
 					case 2:
@@ -1381,12 +1365,12 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 
 			if ( !strnicmp( pszCmd, "COUNT", 5 ))
 			{
-				sVal.FormatVal(static_cast<size_t>(m_Functions.GetCount()));
-				return( true );
+				sVal.FormatVal(m_Functions.GetCount());
+				return true;
 			}
 			else if ( m_Functions.ContainsKey(pszCmd) )
 			{
-				sVal.FormatVal(static_cast<int>(GetPrivCommandLevel(pszCmd)));
+				sVal.FormatVal(static_cast<long>(GetPrivCommandLevel(pszCmd)));
 				return true;
 			}
 
@@ -1407,7 +1391,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			}
 			else if ( !strnicmp( pszCmd, "PLEVEL", 5 ))
 			{
-				sVal.FormatVal(static_cast<int>(GetPrivCommandLevel(m_Functions.GetAt(iNumber)->GetName())));
+				sVal.FormatVal(static_cast<long>(GetPrivCommandLevel(m_Functions.GetAt(iNumber)->GetName())));
 				return true;
 			}
 		}
@@ -1596,7 +1580,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		case RC_RTICKS:
 			{
 				if ( pszKey[6] != '.' )
-					sVal.FormatUVal(static_cast<unsigned long>(CGTime::GetCurrentTime().GetTime()));
+					sVal.FormatULLVal(static_cast<UINT64>(CGTime::GetCurrentTime().GetTime()));
 				else
 				{
 					pszKey += 6;
@@ -1608,7 +1592,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 						INT64 piVal[6];
 
 						// year, month, day, hour, minute, second
-						size_t iQty = Str_ParseCmds(const_cast<TCHAR*>(pszKey), piVal, COUNTOF(piVal));
+						size_t iQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), piVal, COUNTOF(piVal));
 						if ( iQty != 6 )
 							return false;
 
@@ -1616,23 +1600,22 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 						if ( datetime.GetTime() == -1 )
 							sVal.FormatVal(-1);
 						else
-							sVal.FormatUVal(static_cast<unsigned long>(datetime.GetTime()));
+							sVal.FormatULLVal(static_cast<UINT64>(datetime.GetTime()));
 					}
 					else if ( !strnicmp("FORMAT", pszKey, 6) )
 					{
 						pszKey += 6;
-						GETNONWHITESPACE( pszKey );
+						GETNONWHITESPACE(pszKey);
 						TCHAR *ppVal[2];
 
 						// timestamp, formatstr
-						size_t iQty = Str_ParseCmds(const_cast<TCHAR*>(pszKey), ppVal, COUNTOF(ppVal));
+						size_t iQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppVal, COUNTOF(ppVal));
 						if ( iQty < 1 )
 							return false;
 
 						time_t lTime = Exp_GetVal(ppVal[0]);
-
 						CGTime datetime(lTime);
-						sVal = datetime.Format(iQty > 1? ppVal[1]: NULL);
+						sVal = datetime.Format(iQty > 1 ? ppVal[1] : NULL);
 					}
 				}
 			}
@@ -1691,11 +1674,9 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			break;
 		case RC_EXPERIMENTAL:
 			sVal.FormatHex( g_Cfg.m_iExperimental );
-			//PrintEFOFFlags(true, false, pSrc);
 			break;
 		case RC_OPTIONFLAGS:
 			sVal.FormatHex( g_Cfg.m_iOptionFlags );
-			//PrintEFOFFlags(false, true, pSrc);
 			break;
 		case RC_CLIENTS:		// this is handled by CServerDef as SV_CLIENTS
 			return false;
@@ -1916,7 +1897,7 @@ bool CResource::SetKRDialogMap(DWORD rid, DWORD idKRDialog)
 		if ( it->second == idKRDialog )	// already mapped to this kr dialog
 			return true;
 
-		g_Log.Event( LOGL_WARN, "Dialog '%s' is already mapped to KR dialog '%lu'.\n", ResourceGetName(RESOURCE_ID(RES_DIALOG, rid)), it->second);
+		g_Log.Event(LOGL_WARN, "Dialog '%s' is already mapped to KR dialog '%lu'\n", ResourceGetName(RESOURCE_ID(RES_DIALOG, rid)), it->second);
 	}
 
 	// prevent double mapping of KR dialog
@@ -1925,7 +1906,7 @@ bool CResource::SetKRDialogMap(DWORD rid, DWORD idKRDialog)
 		if (it->second != idKRDialog)
 			continue;
 
-		DEBUG_ERR(("KR Dialog '%lu' is already mapped to dialog '%s'.\n", idKRDialog, ResourceGetName(RESOURCE_ID(RES_DIALOG, it->first))));
+		DEBUG_ERR(("KR Dialog '%lu' is already mapped to dialog '%s'\n", idKRDialog, ResourceGetName(RESOURCE_ID(RES_DIALOG, it->first))));
 		return false;
 	}
 
@@ -2292,7 +2273,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 
 	if ( restype < 0 )
 	{
-		g_Log.Event( LOGL_WARN|LOGM_INIT, "Unknown section '%s' in '%s'\n", static_cast<LPCTSTR>(pScript->GetKey()), static_cast<LPCTSTR>(pScript->GetFileTitle()));
+		g_Log.Event(LOGL_WARN|LOGM_INIT, "Unknown section '%s' in '%s'\n", pScript->GetKey(), static_cast<LPCTSTR>(pScript->GetFileTitle()));
 		return false;
 	}
 	else
@@ -2442,7 +2423,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		{
 			if (pScript->ReadKey() == false)
 			{
-				g_Log.Event(LOGM_INIT|LOGL_ERROR, "NOTOTITLES section is missing the list of karma levels.\n");
+				g_Log.Event(LOGM_INIT|LOGL_ERROR, "NOTOTITLES section is missing the list of karma levels\n");
 				return true;
 			}
 
@@ -2458,7 +2439,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 
 			if (pScript->ReadKey() == false)
 			{
-				g_Log.Event(LOGM_INIT|LOGL_ERROR, "NOTOTITLES section is missing the list of fame levels.\n");
+				g_Log.Event(LOGM_INIT|LOGL_ERROR, "NOTOTITLES section is missing the list of fame levels\n");
 				return true;
 			}
 
@@ -2482,7 +2463,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			}
 
 			if (m_NotoTitles.GetCount() != ((m_NotoKarmaLevels.GetCount() + 1) * (m_NotoFameLevels.GetCount() + 1)))
-				g_Log.Event(LOGM_INIT|LOGL_WARN, "Expected %" FMTSIZE_T " titles in NOTOTITLES section but found %" FMTSIZE_T ".\n", (m_NotoKarmaLevels.GetCount() + 1) * (m_NotoFameLevels.GetCount() + 1), m_NotoTitles.GetCount());
+				g_Log.Event(LOGM_INIT|LOGL_WARN, "Expected %" FMTSIZE_T " titles in NOTOTITLES section but found %" FMTSIZE_T "\n", (m_NotoKarmaLevels.GetCount() + 1) * (m_NotoFameLevels.GetCount() + 1), m_NotoTitles.GetCount());
 		}
 		return( true );
 	case RES_OBSCENE:
@@ -2494,7 +2475,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 	case RES_PLEVEL:
 		{
 			int index = rid.GetResIndex();
-			if ( index < 0 || static_cast<unsigned int>(index) >= COUNTOF(m_PrivCommands) )
+			if ( (index < 0) || (static_cast<size_t>(index) >= COUNTOF(m_PrivCommands)) )
 				return false;
 			while ( pScript->ReadKey() )
 			{
@@ -2962,7 +2943,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 
 			if ( !pListBase )
 			{
-				DEBUG_ERR(("Unable to create list '%s'...\n", pScript->GetArgStr()));
+				DEBUG_ERR(("Unable to create list '%s'\n", pScript->GetArgStr()));
 
 				return false;
 			}
@@ -2970,7 +2951,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			while ( pScript->ReadKeyParse() )
 			{
 				if ( !pListBase->r_LoadVal(*pScript) )
-					DEBUG_ERR(("Unable to add element '%s' to list '%s'...\n", pScript->GetArgStr(), pListBase->GetKey()));
+					DEBUG_ERR(("Unable to add element '%s' to list '%s'\n", pScript->GetArgStr(), pListBase->GetKey()));
 			}
 		}
 		return true;
@@ -3004,7 +2985,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			}
 			else
 			{
-				DEBUG_ERR(("Dialog '%s' not found...\n", pScript->GetKey()));
+				DEBUG_ERR(("Dialog '%s' not found\n", pScript->GetKey()));
 			}
 		}
 		return true;
@@ -3271,11 +3252,11 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 							return( ResourceGetNewID(restype, pVarStr->GetValStr(), ppVarNum, fNewStyleDef) );
 					}
 					default:
-						DEBUG_ERR(( "Re-Using name '%s' to define block\n", static_cast<LPCTSTR>(pszName) ));
+						DEBUG_ERR(("Re-Using name '%s' to define block\n", pszName));
 						return( ridinvalid );
 				}
 			}
-			rid.SetPrivateUID( static_cast<unsigned long>(pVarNum->GetValNum()));
+			rid.SetPrivateUID(static_cast<DWORD>(pVarNum->GetValNum()));
 			if ( restype != rid.GetResType())
 			{
 				switch ( restype )
@@ -3289,11 +3270,11 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 						// These are not truly defining a new DEFNAME
 						break;
 					default:
-						DEBUG_ERR(( "Redefined name '%s' from %s to %s\n", static_cast<LPCTSTR>(pszName), static_cast<LPCTSTR>(GetResourceBlockName(rid.GetResType())), static_cast<LPCTSTR>(GetResourceBlockName(restype)) ));
-						return( ridinvalid );
+						DEBUG_ERR(("Redefined name '%s' from %s to %s\n", pszName, GetResourceBlockName(rid.GetResType()), GetResourceBlockName(restype)));
+						return ridinvalid;
 				}
 			}
-			else if ( fNewStyleDef && static_cast<DWORD>(pVarNum->GetValNum()) != rid.GetPrivateUID() )
+			else if ( fNewStyleDef && (static_cast<DWORD>(pVarNum->GetValNum()) != rid.GetPrivateUID()) )
 			{
 				DEBUG_ERR(( "WARNING: region redefines DEFNAME '%s' for another region!\n", pszName ));
 			}
@@ -3304,13 +3285,9 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 				if ( g_Serv.m_iModeCode != SERVMODE_ResyncLoad )
 				{
 					if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
-					{
-						g_pLog->EventWarn("Redef resource '%s'\n", static_cast<LPCTSTR>(pszName));
-					}
+						g_pLog->EventWarn("Redef resource '%s'\n", pszName);
 					else
-					{
-						DEBUG_WARN(( "Redef resource '%s'\n", static_cast<LPCTSTR>(pszName) ));
-					}
+						DEBUG_WARN(("Redef resource '%s'\n", pszName));
 				}
 			}
 			rid = RESOURCE_ID( restype, rid.GetResIndex(), iPage );
@@ -3548,79 +3525,12 @@ void CResource::OnTick( bool fNow )
 	strcat(a, b); \
 }
 
-void CResource::PrintEFOFFlags(bool bEF, bool bOF, CTextConsole *pSrc)
-{
-	ADDTOCALLSTACK("CResource::PrintEFOFFlags");
-	if ( g_Serv.IsLoading() ) return;
-	if ( bOF )
-	{
-		TCHAR zOptionFlags[512];
-		zOptionFlags[0] = '\0';
-
-		if ( IsSetOF(OF_NoDClickTarget) ) catresname(zOptionFlags, "NoDClickTarget");
-		if ( IsSetOF(OF_NoSmoothSailing) ) catresname(zOptionFlags, "NoSmoothSailing");
-		if ( IsSetOF(OF_ScaleDamageByDurability) ) catresname(zOptionFlags, "ScaleDamageByDurability");
-		if ( IsSetOF(OF_Command_Sysmsgs) ) catresname(zOptionFlags, "CommandSysmessages");
-		if ( IsSetEF(OF_PetSlots) ) catresname(zOptionFlags, "PetSlots");
-		if ( IsSetOF(OF_OSIMultiSight) ) catresname(zOptionFlags, "OSIMultiSight");
-		if ( IsSetOF(OF_Items_AutoName) ) catresname(zOptionFlags, "ItemsAutoName");
-		if ( IsSetOF(OF_FileCommands) ) catresname(zOptionFlags, "FileCommands");
-		if ( IsSetOF(OF_NoItemNaming) ) catresname(zOptionFlags, "NoItemNaming");
-		if ( IsSetOF(OF_NoHouseMuteSpeech) ) catresname(zOptionFlags, "NoHouseMuteSpeech");
-		if ( IsSetOF(OF_NoContextMenuLOS) ) catresname(zOptionFlags, "NoContextMenuLOS");
-		if ( IsSetOF(OF_Flood_Protection) ) catresname(zOptionFlags, "FloodProtection");
-		if ( IsSetOF(OF_Buffs) ) catresname(zOptionFlags, "Buffs");
-		if ( IsSetOF(OF_NoPrefix) ) catresname(zOptionFlags, "NoPrefix");
-		if ( IsSetOF(OF_DyeType) ) catresname(zOptionFlags, "DyeType");
-		if ( IsSetOF(OF_DrinkIsFood) ) catresname(zOptionFlags, "DrinkIsFood");
-		if ( IsSetOF(OF_DClickNoTurn) ) catresname(zOptionFlags, "DClickNoTurn");
-
-		if ( zOptionFlags[0] != '\0' )
-		{
-			if ( pSrc ) pSrc->SysMessagef("Option flags: %s\n", zOptionFlags);
-			else g_Log.Event(LOGM_INIT, "Option flags: %s\n", zOptionFlags);
-		}
-	}
-	if ( bEF )
-	{
-		TCHAR zExperimentalFlags[512];
-		zExperimentalFlags[0] = '\0';
-
-		if ( IsSetEF(EF_NoDiagonalCheckLOS) ) catresname(zExperimentalFlags, "NoDiagonalCheckLOS");
-		if ( IsSetEF(EF_ItemStacking) ) catresname(zExperimentalFlags, "ItemStacking");
-		if ( IsSetEF(EF_ItemStackDrop) ) catresname(zExperimentalFlags, "ItemStackDrop");
-		if ( IsSetEF(EF_Intrinsic_Locals) ) catresname(zExperimentalFlags, "IntrinsicLocals");
-		if ( IsSetEF(EF_Item_Strict_Comparison) ) catresname(zExperimentalFlags, "ItemStrictComparison");
-		if ( IsSetEF(EF_AllowTelnetPacketFilter) ) catresname(zExperimentalFlags, "TelnetPacketFilter");
-		if ( IsSetEF(EF_Script_Profiler) ) catresname(zExperimentalFlags, "ScriptProfiler");
-		if ( IsSetEF(EF_DamageTools) ) catresname(zExperimentalFlags, "DamageTools");
-		if ( IsSetEF(EF_UsePingServer) ) catresname(zExperimentalFlags, "UsePingServer");
-		if ( IsSetEF(EF_FixCanSeeInClosedConts) ) catresname(zExperimentalFlags, "FixCanSeeInClosedConts");
-#ifndef _MTNETWORK
-		if ( IsSetEF(EF_NetworkOutThread) ) catresname(zExperimentalFlags, "NetworkOutThread");
-#endif
-
-		if ( zExperimentalFlags[0] != '\0' )
-		{
-			if ( pSrc ) pSrc->SysMessagef("Experimental flags: %s\n", zExperimentalFlags);
-			else g_Log.Event(LOGM_INIT, "Experimental flags: %s\n", zExperimentalFlags);
-		}
-	}
-}
-
 bool CResource::LoadIni( bool fTest )
 {
 	ADDTOCALLSTACK("CResource::LoadIni");
 	// Load my INI file first.
-	if ( ! OpenResourceFind( m_scpIni, GRAY_FILE ".ini", !fTest )) // Open script file
-	{
-		if( !fTest )
-		{
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing, server probably would be not usable.\n");
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Navigate to http://prerelease.sphereserver.net/ to download sample config.\n");
-		}
-		return( false );
-	}
+	if ( !OpenResourceFind(m_scpIni, GRAY_FILE ".ini", !fTest) ) // Open script file
+		return false;
 
 	LoadResourcesOpen(&m_scpIni);
 	m_scpIni.Close();
@@ -3632,19 +3542,18 @@ bool CResource::LoadIni( bool fTest )
 bool CResource::LoadCryptIni( void )
 {
 	ADDTOCALLSTACK("CResource::LoadCryptIni");
-	if ( ! OpenResourceFind( m_scpCryptIni, GRAY_FILE "Crypt.ini", false ))
+	if ( !OpenResourceFind(m_scpCryptIni, GRAY_FILE "Crypt.ini", false) )
 	{
-		g_Log.Event(LOGL_WARN|LOGM_INIT, "File " GRAY_FILE "Crypt.ini is corrupt or missing, client encryption list might not be available.\n");
-		return( false );
+		g_Log.Event(LOGL_WARN|LOGM_INIT, "File " GRAY_FILE "Crypt.ini is corrupt or missing\n");
+		return false;
 	}
 
 	LoadResourcesOpen(&m_scpCryptIni);
 	m_scpCryptIni.Close();
 	m_scpCryptIni.CloseForce();
 
-	g_Log.Event( LOGM_INIT, "Loaded %" FMTSIZE_T " client encryption keys.\n", CCrypt::client_keys.size() );
-
-	return( true );
+	//g_Log.Event(LOGM_INIT, "Loaded %" FMTSIZE_T " client encryption keys\n", CCrypt::client_keys.size());
+	return true;
 }
 
 void CResource::Unload( bool fResync )
@@ -3710,23 +3619,22 @@ bool CResource::Load( bool fResync )
 	else
 	{
 		g_Install.FindInstall();
+
+		CGString sMulPath = g_Install.GetMulFilesPath();
+		if ( sMulPath.IsEmpty() )
+		{
+			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to find Ultima Online MUL files automatically, please insert 'MulFiles' path manually on " GRAY_FILE ".ini\n");
+			return false;
+		}
+		g_Log.Event(LOGM_INIT, "Loading MUL files from path: '%s'\n", static_cast<LPCTSTR>(sMulPath));
 	}
 
 	// Open the MUL files I need.
-	VERFILE_TYPE i = g_Install.OpenFiles(
-		(1<<VERFILE_MAP)|
-		(1<<VERFILE_STAIDX)|
-		(1<<VERFILE_STATICS)|
-		(1<<VERFILE_TILEDATA)|
-		(1<<VERFILE_MULTIIDX)|
-		(1<<VERFILE_MULTI)|
-		(1<<VERFILE_VERDATA)
-		);
+	VERFILE_TYPE i = g_Install.OpenFiles((1 << VERFILE_MAP)|(1 << VERFILE_STAIDX)|(1 << VERFILE_STATICS)|(1 << VERFILE_TILEDATA)|(1 << VERFILE_MULTIIDX)|(1 << VERFILE_MULTI)|(1 << VERFILE_VERDATA));
 	if ( i != VERFILE_QTY )
 	{
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing.\n");
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "MUL File '%s' not found...\n", static_cast<LPCTSTR>(g_Install.GetBaseFileName(i)));
-		return( false );
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "MUL file '%s' is corrupt or missing\n", g_Install.GetBaseFileName(i));
+		return false;
 	}
 
 	// Load the optional verdata cache. (modifies MUL stuff)
@@ -3736,14 +3644,14 @@ bool CResource::Load( bool fResync )
 	}
 	catch ( const CGrayError& e )
 	{
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing.\n");
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing\n");
 		g_Log.CatchEvent( &e, "g_VerData.Load" );
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return( false );
 	}
 	catch(...)
 	{
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing.\n");
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing\n");
 		g_Log.CatchEvent( NULL, "g_VerData.Load" );
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return( false );
@@ -3758,9 +3666,8 @@ bool CResource::Load( bool fResync )
 	{
 		if ( !OpenResourceFind(m_scpTables, GRAY_FILE "tables") )
 		{
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE ".ini is corrupt or missing.\n");
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Error opening table definitions file...\n");
-			return( false );
+			g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " GRAY_FILE "tables." GRAY_SCRIPT " is corrupt or missing\n");
+			return false;
 		}
 
 		LoadResourcesOpen(&m_scpTables);
@@ -3816,7 +3723,7 @@ bool CResource::Load( bool fResync )
 
 	if ( m_StartDefs.GetCount() <= 0 )
 	{
-		g_Log.Event(LOGM_INIT|LOGL_ERROR, "No START locations specified. Add them and try again.\n");
+		g_Log.Event(LOGM_INIT|LOGL_ERROR, "No START locations specified. Add them and try again\n");
 		return false;
 	}
 
@@ -3872,9 +3779,9 @@ bool CResource::Load( bool fResync )
 
 	long total, used;
 	Triglist(total, used);
-	g_Serv.SysMessagef("Done loading scripts (%ld of %ld triggers used)\n\n", used, total);
+	g_Log.Event(LOGM_INIT, "Done loading scripts (%ld of %ld triggers used)\n", used, total);
 
-	// Load crypt keys from SphereCrypt.ini
+	// Load client crypt keys from sphereCrypt.ini
 	if ( fResync )
 	{
 		m_scpCryptIni.ReSync();
@@ -3883,9 +3790,8 @@ bool CResource::Load( bool fResync )
 	else
 	{
 		LoadCryptIni();
+		g_Log.Event(LOGM_INIT, "\n");
 	}
-
-	// Yay for crypt version
 	g_Serv.SetCryptVersion();
 
 	return true;

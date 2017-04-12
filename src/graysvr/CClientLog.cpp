@@ -65,8 +65,8 @@ bool CClient::addLoginErr(BYTE code)
 	// 3 = no password
 	// LOGIN_ERR_OTHER
 
-	if (code == PacketLoginError::Success)
-		return( true );
+	if ( code == PacketLoginError::Success )
+		return true;
 
 	// console message to display for each login error code
 	static LPCTSTR const sm_Login_ErrMsg[] =
@@ -94,13 +94,14 @@ bool CClient::addLoginErr(BYTE code)
 		"The maximum number of password tries has been reached"
 	};
 
-	if (code >= COUNTOF(sm_Login_ErrMsg))
+	if ( code >= COUNTOF(sm_Login_ErrMsg) )
 		code = PacketLoginError::Other;
-	
-	g_Log.EventWarn( "%lx:Bad Login %d (%s)\n", GetSocketID(), code, sm_Login_ErrMsg[static_cast<size_t>(code)] );
+
+	if ( g_Log.GetLogMask() & LOGM_CLIENTS_LOG )
+		g_Log.EventWarn("%lx:Bad Login %d (%s)\n", GetSocketID(), code, sm_Login_ErrMsg[static_cast<size_t>(code)]);
 
 	// translate the code into a code the client will understand
-	switch (code)
+	switch ( code )
 	{
 		case PacketLoginError::Invalid:
 			code = PacketLoginError::Invalid;
@@ -135,9 +136,11 @@ bool CClient::addLoginErr(BYTE code)
 			break;
 	}
 
-	new PacketLoginError(this, static_cast<PacketLoginError::Reason>(code));
+	if ( m_NetState->m_clientVersion || m_NetState->m_reportedVersion )		// only reply the packet to valid clients
+		new PacketLoginError(this, static_cast<PacketLoginError::Reason>(code));
+
 	m_NetState->markReadClosed();
-	return( false );
+	return false;
 }
 
 
@@ -792,10 +795,10 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 
 	if ( !m_Crypt.Init(m_NetState->m_seed, bincopy.m_Raw, iLen, m_NetState->isClientKR()) )
 	{
-		DEBUG_MSG(("%lx:Odd login message length %" FMTSIZE_T "?\n", GetSocketID(), iLen));
 #ifdef _DEBUG
 		xRecordPacketData(this, (const BYTE *)pEvent, iLen, "client->server");
 #endif
+		DEBUG_MSG(("%lx:Odd login message length %" FMTSIZE_T "?\n", GetSocketID(), iLen));
 		addLoginErr(PacketLoginError::BadEncLength);
 		return false;
 	}
@@ -893,7 +896,7 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 			{
 				if ( pAcc )
 				{
-					DEBUG_MSG(("%lx:xProcessClientSetup for %s, with AuthId %lu and CliVersion %lu / CliVersionReported %lu\n", GetSocketID(), pAcc->GetName(), CustomerID, m_Crypt.GetClientVer(), m_NetState->getReportedVersion()));
+					DEBUG_MSG(("%lx:xProcessClientSetup for %s, with AuthId %lu and CliVersion %lu / CliVersionReported %lu\n", GetSocketID(), pAcc->GetName(), dwCustomerID, m_Crypt.GetClientVer(), m_NetState->getReportedVersion()));
 
 					if ( (dwCustomerID != 0) && (dwCustomerID == pEvent->CharListReq.m_Account) )
 					{
@@ -919,7 +922,9 @@ bool CClient::xProcessClientSetup( CEvent * pEvent, size_t iLen )
 #endif
 	}
 	
+#ifdef _DEBUG
 	xRecordPacketData(this, (const BYTE *)pEvent, iLen, "client->server");
+#endif
 
 	if ( lErr != PacketLoginError::Success )	// it never matched any crypt format.
 		addLoginErr(lErr);

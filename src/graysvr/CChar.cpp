@@ -1160,15 +1160,15 @@ void CChar::SetID( CREID_TYPE id )
 {
 	ADDTOCALLSTACK("CChar::SetID");
 
-	CCharBase * pCharDef = CCharBase::FindCharBase(id);
-	if ( pCharDef == NULL )
+	CCharBase *pCharDef = CCharBase::FindCharBase(id);
+	if ( !pCharDef )
 	{
-		if ( id != -1 && id != CREID_INVALID )
-			DEBUG_ERR(("Create Invalid Char 0%x\n", id));
+		if ( (id != -1) && (id != CREID_INVALID) )
+			DEBUG_ERR(("Creating invalid chardef 0%x\n", id));
 
 		id = static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, "DEFAULTCHAR"));
-		if ( id < 0 )
-			id = CREID_OGRE;
+		if ( id <= CREID_INVALID )
+			id = CREID_MAN;
 
 		pCharDef = CCharBase::FindCharBase(id);
 	}
@@ -1180,10 +1180,13 @@ void CChar::SetID( CREID_TYPE id )
 	if ( m_prev_id == CREID_INVALID )
 		m_prev_id = GetID();
 
-	if ( !IsMountCapable() )	// new body may not be capable of riding mounts
+	if ( !IsMountCapable() )	// new body may not be capable of ride mounts
 		Horse_UnMount();
 
-	if ( !pCharDef->Can(CAN_C_EQUIP) )	// new body may not be capable of equipping items (except maybe on hands)
+	if ( !IsGargoyle() )		// new body may not be capable of use gargoyle fly ability
+		StatFlag_Clear(STATF_Hovering);
+
+	if ( !pCharDef->Can(CAN_C_EQUIP) )	// new body may not be capable of equip items (except maybe on hands)
 	{
 		UnEquipAllItems(NULL, pCharDef->Can(CAN_C_USEHANDS));
 	}
@@ -1198,417 +1201,6 @@ void CChar::SetID( CREID_TYPE id )
 			GetContainerCreate(LAYER_PACK)->ContentAdd(pHand);
 	}
 	UpdateMode(NULL, true);
-}
-
-// Create a brand new Player char. Called directly from the packet.
-void CChar::InitPlayer( CClient *pClient, const char *pszCharname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc )
-{
-	ADDTOCALLSTACK("CChar::InitPlayer");
-	ASSERT(pClient);
-
-	CAccount *pAccount = pClient->m_pAccount;
-	if ( pAccount )
-		SetPlayerAccount(pAccount);
-
-	switch ( rtRace )
-	{
-		default:
-		case RACETYPE_HUMAN:
-			SetID(bFemale ? CREID_WOMAN : CREID_MAN);
-			break;
-		case RACETYPE_ELF:
-			SetID(bFemale ? CREID_ELFWOMAN : CREID_ELFMAN);
-			break;
-		case RACETYPE_GARGOYLE:
-			SetID(bFemale ? CREID_GARGWOMAN : CREID_GARGMAN);
-			break;
-	}
-
-	// Set name
-	bool bNameIsAccepted = true;
-	TCHAR *zCharName = Str_GetTemp();
-	strcpylen(zCharName, pszCharname, MAX_NAME_SIZE);
-
-	if ( !strlen(zCharName) || g_Cfg.IsObscene(zCharName) || Str_CheckName(zCharName) || !strnicmp(zCharName, "lord ", 5) || !strnicmp(zCharName, "lady ", 5) || !strnicmp(zCharName, "seer ", 5) || !strnicmp(zCharName, "gm ", 3) || !strnicmp(zCharName, "admin ", 6) || !strnicmp(zCharName, "counselor ", 10) )
-		bNameIsAccepted = false;
-
-	if ( bNameIsAccepted && IsTrigUsed(TRIGGER_RENAME) )
-	{
-		CScriptTriggerArgs args;
-		args.m_s1 = zCharName;
-		args.m_pO1 = this;
-		if ( OnTrigger(CTRIG_Rename, this, &args) == TRIGRET_RET_TRUE )
-			bNameIsAccepted = false;
-	}
-
-	if ( bNameIsAccepted )
-		SetName(zCharName);
-	else
-		SetNamePool(bFemale ? "#NAMES_HUMANFEMALE" : "#NAMES_HUMANMALE");
-
-	if ( g_Cfg.m_StartDefs.IsValidIndex(iStartLoc) )
-		m_ptHome = g_Cfg.m_StartDefs[iStartLoc]->m_pt;
-	else
-		m_ptHome.InitPoint();
-
-	if ( !m_ptHome.IsValidPoint() )
-		DEBUG_ERR(("Invalid start location '%d' for character!\n", iStartLoc));
-
-	SetUnkPoint(m_ptHome);	// don't actually put me in the world yet.
-
-	// randomize the skills first.
-	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
-	{
-		if ( g_Cfg.m_SkillIndexDefs.IsValidIndex(i) )
-			Skill_SetBase(static_cast<SKILL_TYPE>(i), static_cast<WORD>(Calc_GetRandVal(g_Cfg.m_iMaxBaseSkill)));
-	}
-
-	if ( wStr > 60 )		wStr = 60;
-	if ( wDex > 60 )		wDex = 60;
-	if ( wInt > 60 )		wInt = 60;
-	if ( iSkillVal1 > 50 )	iSkillVal1 = 50;
-	if ( iSkillVal2 > 50 )	iSkillVal2 = 50;
-	if ( iSkillVal3 > 50 )	iSkillVal3 = 50;
-	if ( iSkillVal4 > 50 )	iSkillVal4 = 50;
-
-	if ( skSkill4 != SKILL_NONE )
-	{
-		if ( (wStr + wDex + wInt) > 90 )
-			wStr = wDex = wInt = 30;
-
-		if ( (iSkillVal1 + iSkillVal2 + iSkillVal3 + iSkillVal4) > 120 )
-			iSkillVal4 = 1;
-	}
-	else
-	{
-		if ( (wStr + wDex + wInt) > 80 )
-			wStr = wDex = wInt = 26;
-
-		if ( (iSkillVal1 + iSkillVal2 + iSkillVal3) > 100 )
-			iSkillVal3 = 1;
-	}
-
-	Stat_SetBase(STAT_STR, wStr);
-	Stat_SetBase(STAT_DEX, wDex);
-	Stat_SetBase(STAT_INT, wInt);
-
-	if ( IsSkillBase(skSkill1) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill1) )
-		Skill_SetBase(skSkill1, iSkillVal1 * 10);
-	if ( IsSkillBase(skSkill2) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill2) )
-		Skill_SetBase(skSkill2, iSkillVal2 * 10);
-	if ( IsSkillBase(skSkill3) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill3) )
-		Skill_SetBase(skSkill3, iSkillVal3 * 10);
-	if ( skSkill4 != SKILL_NONE )
-	{
-		if ( IsSkillBase(skSkill4) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill4) )
-			Skill_SetBase(skSkill4, iSkillVal4 * 10);
-	}
-
-	m_fonttype = FONT_NORMAL;		// Set speech font type
-	m_SpeechHue = HUE_TEXT_DEF;		// Set speech color
-	m_sTitle.Empty();				// Set title
-
-	GetContainerCreate(LAYER_BANKBOX);		// Create bankbox
-	GetContainerCreate(LAYER_PACK);			// Create backpack
-
-	// Check skin hue
-	switch ( rtRace )
-	{
-		default:
-		case RACETYPE_HUMAN:
-			if ( wSkinHue < HUE_SKIN_LOW )
-				wSkinHue = static_cast<HUE_TYPE>(HUE_SKIN_LOW);
-			if ( wSkinHue > HUE_SKIN_HIGH )
-				wSkinHue = static_cast<HUE_TYPE>(HUE_SKIN_HIGH);
-			break;
-
-		case RACETYPE_ELF:
-		{
-			static const HUE_TYPE sm_ElfSkinHues[] = { 0xBF, 0x24D, 0x24E, 0x24F, 0x353, 0x361, 0x367, 0x374, 0x375, 0x376, 0x381, 0x382, 0x383, 0x384, 0x385, 0x389, 0x3DE, 0x3E5, 0x3E6, 0x3E8, 0x3E9, 0x430, 0x4A7, 0x4DE, 0x51D, 0x53F, 0x579, 0x76B, 0x76C, 0x76D, 0x835, 0x903 };
-			bool bValid = false;
-			for ( size_t i = 0; i < COUNTOF(sm_ElfSkinHues); i++ )
-			{
-				if ( sm_ElfSkinHues[i] == wSkinHue )
-				{
-					bValid = true;
-					break;
-				}
-			}
-			if ( !bValid )
-				wSkinHue = sm_ElfSkinHues[0];
-			break;
-		}
-
-		case RACETYPE_GARGOYLE:
-			if ( wSkinHue < HUE_GARGSKIN_LOW )
-				wSkinHue = static_cast<HUE_TYPE>(HUE_GARGSKIN_LOW);
-			if ( wSkinHue > HUE_GARGSKIN_HIGH )
-				wSkinHue = static_cast<HUE_TYPE>(HUE_GARGSKIN_HIGH);
-			break;
-	}
-	SetHue((wSkinHue|HUE_UNDERWEAR));
-
-	// Create hair
-	switch ( rtRace )
-	{
-		default:
-		case RACETYPE_HUMAN:
-			if ( !(((idHair >= ITEMID_HAIR_SHORT) && (idHair <= ITEMID_HAIR_PONYTAIL)) || ((idHair >= ITEMID_HAIR_MOHAWK) && (idHair <= ITEMID_HAIR_TOPKNOT))) )
-				idHair = ITEMID_NOTHING;	// human can use only a restricted subset of hairs
-			if ( bFemale )
-			{
-				if ( idHair == ITEMID_HAIR_RECEDING )
-					idHair = ITEMID_NOTHING;
-			}
-			else
-			{
-				if ( idHair == ITEMID_HAIR_BUNS )
-					idHair = ITEMID_NOTHING;
-			}
-			break;
-
-		case RACETYPE_ELF:
-			if ( !(((idHair >= ITEMID_HAIR_ML_ELF) && (idHair <= ITEMID_HAIR_ML_MULLET)) || ((idHair >= ITEMID_HAIR_ML_FLOWER) && (idHair <= ITEMID_HAIR_ML_SPYKE))) )
-				idHair = ITEMID_NOTHING;	// elf can use only a restricted subset of hairs
-			if ( bFemale )
-			{
-				if ( idHair == ITEMID_HAIR_ML_LONG2 || idHair == ITEMID_HAIR_ML_ELF )
-					idHair = ITEMID_NOTHING;
-			}
-			else
-			{
-				if ( idHair == ITEMID_HAIR_ML_FLOWER || idHair == ITEMID_HAIR_ML_LONG4 )
-					idHair = ITEMID_NOTHING;
-			}
-			break;
-
-		case RACETYPE_GARGOYLE:
-			if ( bFemale )
-			{
-				if ( !((idHair == 0x4261 || idHair == 0x4262) || (idHair >= 0x4273 && idHair <= 0x4275) || (idHair == 0x42B0 || idHair == 0x42B1) || (idHair == 0x42AA || idHair == 0x42AB)) )
-					idHair = ITEMID_NOTHING;
-			}
-			else
-			{
-				if ( !((idHair >= 0x4258) && (idHair <= 0x425F)) )
-					idHair = ITEMID_NOTHING;
-			}
-			break;
-	}
-
-	if ( idHair )
-	{
-		CItem *pHair = CItem::CreateScript(idHair, this);
-		ASSERT(pHair);
-		if ( !pHair->IsType(IT_HAIR) )
-			pHair->Delete();
-		else
-		{
-			switch ( rtRace )
-			{
-				default:
-				case RACETYPE_HUMAN:
-					if ( wHairHue < HUE_HAIR_LOW )
-						wHairHue = static_cast<HUE_TYPE>(HUE_HAIR_LOW);
-					if ( wHairHue > HUE_HAIR_HIGH )
-						wHairHue = static_cast<HUE_TYPE>(HUE_HAIR_HIGH);
-					break;
-
-				case RACETYPE_ELF:
-				{
-					static const HUE_TYPE sm_ElfHairHues[] = { 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x58, 0x8E, 0x8F, 0x90, 0x91, 0x92, 0x101, 0x159, 0x15A, 0x15B, 0x15C, 0x15D, 0x15E, 0x128, 0x12F, 0x1BD, 0x1E4, 0x1F3, 0x207, 0x211, 0x239, 0x251, 0x26C, 0x2C3, 0x2C9, 0x31D, 0x31E, 0x31F, 0x320, 0x321, 0x322, 0x323, 0x324, 0x325, 0x326, 0x369, 0x386, 0x387, 0x388, 0x389, 0x38A, 0x59D, 0x6B8, 0x725, 0x853 };
-					bool bValid = false;
-					for ( size_t i = 0; i < COUNTOF(sm_ElfHairHues); i++ )
-					{
-						if ( sm_ElfHairHues[i] == wHairHue )
-						{
-							bValid = true;
-							break;
-						}
-					}
-					if ( !bValid )
-						wHairHue = sm_ElfHairHues[0];
-					break;
-				}
-
-				case RACETYPE_GARGOYLE:
-				{
-					static const HUE_TYPE sm_GargoyleHornHues[] = { 0x709, 0x70B, 0x70D, 0x70F, 0x711, 0x763, 0x765, 0x768, 0x76B, 0x6F3, 0x6F1, 0x6EF, 0x6E4, 0x6E2, 0x6E0, 0x709, 0x70B, 0x70D };
-					bool bValid = false;
-					for ( size_t i = 0; i < COUNTOF(sm_GargoyleHornHues); i++ )
-					{
-						if ( sm_GargoyleHornHues[i] == wHairHue )
-						{
-							bValid = true;
-							break;
-						}
-					}
-					if ( !bValid )
-						wHairHue = sm_GargoyleHornHues[0];
-					break;
-				}
-			}
-			pHair->SetHue(wHairHue);
-			pHair->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
-			LayerAdd(pHair);	// add content
-		}
-	}
-
-	// Create beard
-	switch ( rtRace )
-	{
-		case RACETYPE_HUMAN:
-			if ( !(((idBeard >= ITEMID_BEARD_LONG) && (idBeard <= ITEMID_BEARD_MOUSTACHE)) || ((idBeard >= ITEMID_BEARD_SH_M) && (idBeard <= ITEMID_BEARD_GO_M))) )
-				idBeard = ITEMID_NOTHING;
-
-		case RACETYPE_GARGOYLE:
-			if ( !((idBeard >= 0x42ad) && (idBeard <= 0x42b0)) )
-				idBeard = ITEMID_NOTHING;
-			break;
-
-		default:
-			break;
-	}
-
-	if ( bFemale || rtRace == RACETYPE_ELF )
-		idBeard = ITEMID_NOTHING;
-
-	if ( idBeard )
-	{
-		CItem *pBeard = CItem::CreateScript(idBeard, this);
-		ASSERT(pBeard);
-		if ( !pBeard->IsType(IT_BEARD) )
-			pBeard->Delete();
-		else
-		{
-			switch ( rtRace )
-			{
-				case RACETYPE_HUMAN:
-					if ( wBeardHue < HUE_HAIR_LOW )
-						wBeardHue = static_cast<HUE_TYPE>(HUE_HAIR_LOW);
-					if ( wBeardHue > HUE_HAIR_HIGH )
-						wBeardHue = static_cast<HUE_TYPE>(HUE_HAIR_HIGH);
-					break;
-
-				case RACETYPE_GARGOYLE:
-				{
-					static const HUE_TYPE sm_GargoyleBeardHues[] = { 0x709, 0x70B, 0x70D, 0x70F, 0x711, 0x763, 0x765, 0x768, 0x76B, 0x6F3, 0x6F1, 0x6EF, 0x6E4, 0x6E2, 0x6E0, 0x709, 0x70B, 0x70D };
-					bool bValid = false;
-					for ( size_t i = 0; i < COUNTOF(sm_GargoyleBeardHues); i++ )
-					{
-						if ( sm_GargoyleBeardHues[i] == wHairHue )
-						{
-							bValid = true;
-							break;
-						}
-					}
-					if ( !bValid )
-						wHairHue = sm_GargoyleBeardHues[0];
-					break;
-				}
-
-				default:
-					break;
-			}
-			pBeard->SetHue(wBeardHue);
-			pBeard->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
-			LayerAdd(pBeard);	// add content
-		}
-	}
-
-	// Get starting items for the profession / skills.
-	int iProfession = INT_MAX;
-	bool bCreateSkillItems = true;
-	switch ( prProf )
-	{
-		case PROFESSION_ADVANCED:
-			iProfession = RES_NEWBIE_PROF_ADVANCED;
-			break;
-		case PROFESSION_WARRIOR:
-			iProfession = RES_NEWBIE_PROF_WARRIOR;
-			break;
-		case PROFESSION_MAGE:
-			iProfession = RES_NEWBIE_PROF_MAGE;
-			break;
-		case PROFESSION_BLACKSMITH:
-			iProfession = RES_NEWBIE_PROF_BLACKSMITH;
-			break;
-		case PROFESSION_NECROMANCER:
-			iProfession = RES_NEWBIE_PROF_NECROMANCER;
-			bCreateSkillItems = false;
-			break;
-		case PROFESSION_PALADIN:
-			iProfession = RES_NEWBIE_PROF_PALADIN;
-			bCreateSkillItems = false;
-			break;
-		case PROFESSION_SAMURAI:
-			iProfession = RES_NEWBIE_PROF_SAMURAI;
-			bCreateSkillItems = false;
-			break;
-		case PROFESSION_NINJA:
-			iProfession = RES_NEWBIE_PROF_NINJA;
-			bCreateSkillItems = false;
-			break;
-	}
-
-	CResourceLock s;
-	if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, bFemale ? RES_NEWBIE_FEMALE_DEFAULT : RES_NEWBIE_MALE_DEFAULT, rtRace)) )
-		ReadScript(s);
-	else if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, bFemale ? RES_NEWBIE_FEMALE_DEFAULT : RES_NEWBIE_MALE_DEFAULT)) )
-		ReadScript(s);
-
-	if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iProfession, rtRace)) )
-		ReadScript(s);
-	else if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iProfession)) )
-		ReadScript(s);
-
-	if ( bCreateSkillItems )
-	{
-		for ( int i = 1; i < 5; i++ )
-		{
-			int iSkill = INT_MAX;
-			switch ( i )
-			{
-				case 1:
-					iSkill = skSkill1;
-					break;
-				case 2:
-					iSkill = skSkill2;
-					break;
-				case 3:
-					iSkill = skSkill3;
-					break;
-				case 4:
-					iSkill = skSkill4;
-					break;
-			}
-
-			if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iSkill, rtRace)) )
-				ReadScript(s);
-			else if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iSkill)) )
-				ReadScript(s);
-		}
-	}
-
-	CItem *pLayer = LayerFind(LAYER_SHIRT);
-	if ( pLayer )
-	{
-		if ( wShirtHue < HUE_BLUE_LOW )
-			wShirtHue = HUE_BLUE_LOW;
-		if ( wShirtHue > HUE_DYE_HIGH )
-			wShirtHue = HUE_DYE_HIGH;
-		pLayer->SetHue(wShirtHue);
-	}
-	pLayer = bFemale ? LayerFind(LAYER_SKIRT) : LayerFind(LAYER_PANTS);
-	if ( pLayer )
-	{
-		if ( wPantsHue < HUE_BLUE_LOW )
-			wPantsHue = HUE_BLUE_LOW;
-		if ( wPantsHue > HUE_DYE_HIGH )
-			wPantsHue = HUE_DYE_HIGH;
-		pLayer->SetHue(wPantsHue);
-	}
-	CreateNewCharCheck();
 }
 
 enum CHR_TYPE
@@ -2778,7 +2370,7 @@ do_default:
 						CChar *pChar = static_cast<CChar *>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
 						if ( !pChar )
 							return false;
-						Fight_Attack(pChar);
+						Fight_Attack(pChar, true);
 						return true;
 					}
 					else if ( !strnicmp(pszKey, "TARGET", 6) )
@@ -2894,24 +2486,24 @@ do_default:
 
 		case CHC_GOLD:
 		{
-			DWORD currentGold = ContentCount(RESOURCE_ID(RES_TYPEDEF, IT_GOLD));
-			DWORD newGold = static_cast<DWORD>(s.GetArgVal());
+			long iAmount = s.GetArgVal();
+			if ( iAmount <= 0 )
+				iAmount = 0;
 
-			if ( newGold >= 0 )
+			DWORD currentGold = ContentCount(RESOURCE_ID(RES_TYPEDEF, IT_GOLD));
+			DWORD newGold = static_cast<DWORD>(iAmount);
+			if ( newGold < currentGold )
 			{
-				if ( newGold < currentGold )
-				{
-					ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), currentGold - newGold);
-				}
-				else if ( newGold > currentGold )
-				{
-					CItemContainer *pBank = GetContainerCreate(LAYER_BANKBOX);
-					if ( !pBank )
-						return false;
-					AddGoldToPack(newGold - currentGold, pBank);
-				}
-				UpdateStatsFlag();
+				ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), currentGold - newGold);
 			}
+			else if ( newGold > currentGold )
+			{
+				CItemContainer *pBank = GetContainerCreate(LAYER_BANKBOX);
+				if ( !pBank )
+					return false;
+				AddGoldToPack(newGold - currentGold, pBank, false);
+			}
+			UpdateStatsFlag();
 			break;
 		}
 
@@ -3081,7 +2673,7 @@ do_default:
 			ChangeExperience();
 			break;
 		case CHC_VIRTUALGOLD:
-			m_virtualGold = static_cast<unsigned long long>(s.GetArgLLVal());
+			m_virtualGold = static_cast<UINT64>(s.GetArgLLVal());
 			UpdateStatsFlag();
 			break;
 		case CHC_VISUALRANGE:
@@ -3131,6 +2723,10 @@ void CChar::r_Write( CScript & s )
 		s.WriteKeyHex("FLAGS", m_StatFlag);
 	if ( m_LocalLight )
 		s.WriteKeyHex("LIGHT", m_LocalLight);
+	if ( m_attackBase )
+		s.WriteKeyFormat("DAM", "%hu,%hu", m_attackBase, m_attackBase + m_attackRange);
+	if ( m_defense )
+		s.WriteKeyVal("ARMOR", m_defense);
 
 	if ( Skill_GetActive() != SKILL_NONE )
 	{
@@ -3331,7 +2927,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			break;
 		case CHV_ATTACK:
 		{
-			Fight_Attack(CGrayUID(s.GetArgVal()).CharFind());
+			Fight_Attack(CGrayUID(s.GetArgVal()).CharFind(), true);
 			break;
 		}
 		case CHV_BANK:
@@ -3364,9 +2960,22 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			}
 			break;
 		case CHV_CRIMINAL:
-			if ( s.HasArgs() && ! s.GetArgVal())
+			if ( s.HasArgs() && !s.GetArgVal() )
 			{
-				StatFlag_Clear( STATF_Criminal );
+				CItem *pCriminal = LayerFind(LAYER_FLAG_Criminal);
+				if ( pCriminal )
+				{
+					// Removing criminal memory will already clear flag, noto and buff
+					pCriminal->Delete();
+				}
+				else
+				{
+					// Otherwise clear it manually if there's no memory set
+					StatFlag_Clear(STATF_Criminal);
+					NotoSave_Update();
+					if ( m_pClient )
+						m_pClient->removeBuff(BI_CRIMINALSTATUS);
+				}
 			}
 			else
 			{
@@ -3403,7 +3012,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 					pItem->Item_GetDef()->m_ttNormal.m_tData4 = 0;
 				}
 				pItem->SetAttr(ATTR_MOVE_NEVER);
-				LayerAdd( pItem, LAYER_NEWLIGHT );
+				LayerAdd(pItem, LAYER_HAND2);
 			}
 			return( true );
 		case CHV_EQUIPARMOR:
@@ -3515,12 +3124,12 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			strcpy( psTmp, s.GetArgRaw() );
 			GETNONWHITESPACE( psTmp );
 			TCHAR * ttVal[2];
-			DWORD iReplicationQty = 1;
+			WORD iReplicationQty = 1;
 			size_t iArg = Str_ParseCmds( psTmp, ttVal, COUNTOF( ttVal ), " ,\t" );
 			if ( iArg == 2 )
 			{
 				if ( IsDigit(ttVal[1][0]) )
-					iReplicationQty = static_cast<DWORD>(ATOI(ttVal[1]));
+					iReplicationQty = static_cast<WORD>(ATOI(ttVal[1]));
 			}
  
 			if ( m_pClient )
@@ -3547,22 +3156,15 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			break;
 
 		case CHV_NEWGOLD:
+		{
+			long iAmount = s.GetArgVal();
+			if ( iAmount > 0 )
 			{
-				CItemContainer *pPack = GetContainerCreate(LAYER_PACK);
-				CItem *pGold = NULL;
-				WORD iGoldStack = 0;
-				DWORD iAmount = s.GetArgLLVal();
-				while ( iAmount > 0 )
-				{
-					iGoldStack = minimum(iAmount, g_Cfg.m_iItemsMaxAmount);
-					pGold = CItem::CreateScript(ITEMID_GOLD_C1, this);
-					pGold->SetAmount(iGoldStack);
-					pPack->ContentAdd(pGold);
-					iAmount -= iGoldStack;
-				}
+				AddGoldToPack(static_cast<DWORD>(iAmount), NULL, false);
 				UpdateStatsFlag();
-			} break;
-
+			}
+			break;
+		}
 		case CHV_NEWLOOT:
 			{
 				if ( m_pNPC && !m_pPlayer && !IsStatFlag(STATF_Conjured) )
@@ -3738,7 +3340,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 		case CHV_UNDERWEAR:
 			if ( ! IsPlayableCharacter())
 				return( false );
-			SetHue( GetHue() ^ HUE_UNDERWEAR /*, false, pSrc*/ ); //call @Dye on underwear?
+			SetHue( GetHue() ^ HUE_MASK_UNDERWEAR /*, false, pSrc*/ ); //call @Dye on underwear?
 			UpdateMode();
 			break;
 		case CHV_UNEQUIP:	// uid
@@ -4042,8 +3644,8 @@ void CChar::ChangeExperience(int delta, CChar *pCharDead)
 WORD CChar::GetSkillTotal(int what, bool how)
 {
 	ADDTOCALLSTACK("CChar::GetSkillTotal");
-	int iTotal = 0;
-	int	iBase;
+	WORD iTotal = 0;
+	WORD iBase = 0;
 
 	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
@@ -4053,7 +3655,7 @@ WORD CChar::GetSkillTotal(int what, bool how)
 			if ( what < 0 )
 			{
 				if ( iBase >= -what )
-				continue;
+					continue;
 			}
 			else if ( iBase < what )
 				continue;
@@ -4064,12 +3666,11 @@ WORD CChar::GetSkillTotal(int what, bool how)
 			const CSkillDef * pSkill = g_Cfg.GetSkillDef(static_cast<SKILL_TYPE>(i));
 			if ( !pSkill )
 				continue;
-			if ( !( pSkill->m_dwGroup & what ) )
+			if ( !(pSkill->m_dwGroup & what) )
 				continue;
 		}
 		iTotal += iBase;
 	}
-
 	return iTotal;
 }
 

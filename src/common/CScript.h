@@ -87,7 +87,7 @@ public:
 	long long GetArgLLVal();
 	long GetArgVal();
 	long GetArgRange();
-	DWORD GetArgFlag( DWORD dwStart, DWORD dwMask );
+	UINT64 GetArgFlag( UINT64 dwStart, UINT64 dwMask );
 
 public:
 	CScriptKey() : m_pszKey(NULL), m_pszArg(NULL)

@@ -68,6 +68,9 @@ bool CAccounts::Account_LoadAll( bool fChanges, bool fClearChanges )
 	strcpy(z, pszBaseDir);
 	strcat(z, pszBaseName);
 
+	if ( !fChanges )
+		g_Log.Event(LOGM_INIT, "Loading %s%s\n", z, GRAY_SCRIPT);
+
 	CScript s;
 	if ( ! s.Open(z, OF_READ|OF_TEXT|OF_DEFAULTMODE| ( fChanges ? OF_NONCRIT : 0) ))
 	{
@@ -793,7 +796,7 @@ bool CAccount::CheckPasswordTries(CSocketAddress csaPeerName)
 				}
 				else if ( itResult.second == iAccountMaxTries )
 				{
-					ttsData.m_Delay = ttsData.m_Last + static_cast<INT64>(g_Cfg.m_iClientLoginTempBan);
+					ttsData.m_Delay = ttsData.m_Last + static_cast<UINT64>(g_Cfg.m_iClientLoginTempBan);
 					bReturn = false;
 				}
 			}
@@ -828,11 +831,11 @@ void CAccount::ClearPasswordTries(bool bAll)
 		return;
 	}
 
-	INT64 timeCurrent = CServTime::GetCurrentTime().GetTimeRaw();
+	UINT64 timeCurrent = CServTime::GetCurrentTime().GetTimeRaw();
 	for ( BlockLocalTime_t::iterator itData = m_BlockIP.begin(); itData != m_BlockIP.end(); ++itData )
 	{
 		BlockLocalTimePair_t itResult = (*itData).second;
-		if ( timeCurrent - itResult.first.m_Last > g_Cfg.m_iClientLoginTempBan )
+		if ( timeCurrent - itResult.first.m_Last > static_cast<UINT64>(g_Cfg.m_iClientLoginTempBan) )
 			m_BlockIP.erase(itData);
 
 		if ( itData != m_BlockIP.begin() )

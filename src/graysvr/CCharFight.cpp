@@ -1123,8 +1123,7 @@ bool CChar::CheckCrimeSeen( SKILL_TYPE SkillToSee, CChar * pCharMark, const CObj
 			continue;	// I saw myself before.
 		if ( ! pChar->CanSeeLOS( this, LOS_NB_WINDOWS )) //what if I was standing behind a window when I saw a crime? :)
 			continue;
-		// If a GM sees you it it not a crime.
-		if ( pChar->GetPrivLevel() > GetPrivLevel())
+		if ( pChar->GetPrivLevel() >= PLEVEL_Counsel ) // if a GM sees you it's not a crime
 			continue;
 
 		bool fYour = ( pCharMark == pChar );
@@ -1148,7 +1147,7 @@ bool CChar::CheckCrimeSeen( SKILL_TYPE SkillToSee, CChar * pCharMark, const CObj
 			if (IsTrigUsed(TRIGGER_SEESNOOP))
 			{
 				CScriptTriggerArgs Args(pAction);
-				Args.m_iN1 = SkillToSee ? SkillToSee : pCharMark->Skill_GetActive();;
+				Args.m_iN1 = SkillToSee ? SkillToSee : pCharMark->Skill_GetActive();
 				Args.m_iN2 = pItem ? (DWORD)pItem->GetUID() : 0;
 				Args.m_pO1 = pCharMark;
 				TRIGRET_TYPE iRet = pChar->OnTrigger(CTRIG_SeeSnoop, this, &Args);
@@ -1349,12 +1348,6 @@ cantsteal:
 			SysMessageDefault( DEFMSG_STEALING_TRADE );
 			return( -SKTRIG_ABORT );
 		}
-	}
-	CItemCorpse * pCorpse = static_cast<CItemCorpse *>(pItem);
-	if ( pCorpse )
-	{
-		SysMessageDefault( DEFMSG_STEALING_CORPSE );
-		return( -SKTRIG_ABORT );
 	}
 	if ( pItem->IsType(IT_TRAIN_PICKPOCKET))
 	{
@@ -1659,7 +1652,7 @@ static const CArmorLayerType sm_ArmorLayers[ARMOR_QTY] =
 // When armor is added or subtracted check this.
 // This is the general AC number printed.
 // Tho not really used to compute damage.
-int CChar::CalcArmorDefense() const
+WORD CChar::CalcArmorDefense() const
 {
 	ADDTOCALLSTACK("CChar::CalcArmorDefense");
 
@@ -1684,7 +1677,6 @@ int CChar::CalcArmorDefense() const
 					ArmorRegionMax[ARMOR_HEAD] += iDefense;
 				else
 					ArmorRegionMax[ARMOR_HEAD] = maximum(ArmorRegionMax[ARMOR_HEAD], iDefense);
-
 				break;
 			case LAYER_COLLAR:
 				if ( IsSetCombatFlags(COMBAT_STACKARMOR) )
@@ -2335,11 +2327,11 @@ void CChar::Fight_Clear()
 	{
 		Skill_Start(SKILL_NONE);
 		m_Fight_Targ.InitUID();
-		if ( m_pNPC )
-		{
-			StatFlag_Clear(STATF_War);
-			UpdateModeFlag();
-		}
+	}
+	if ( m_pNPC )
+	{
+		StatFlag_Clear(STATF_War);
+		UpdateModeFlag();
 	}
 }
 
@@ -2358,6 +2350,12 @@ bool CChar::Fight_Attack( const CChar *pCharTarg, bool btoldByMaster )
 		Attacker_Delete(const_cast<CChar *>(pCharTarg), true);
 		return false;
 	}
+	if ( m_pNPC && !CanSeeLOS(pCharTarg) )
+	{
+		// The NPC can't see his target, just forget it temporarily instead try to keep attacking it
+		Skill_Start(SKILL_NONE);
+		return false;
+	}
 
 	CChar *pTarget = const_cast<CChar *>(pCharTarg);
 	if ( pCharTarg->m_pPlayer && (GetPrivLevel() <= PLEVEL_Guest) && (pCharTarg->GetPrivLevel() > PLEVEL_Guest) )
@@ -2366,18 +2364,9 @@ bool CChar::Fight_Attack( const CChar *pCharTarg, bool btoldByMaster )
 		Attacker_Delete(pTarget);
 		return false;
 	}
-	else if ( m_pNPC && !CanSee(pCharTarg) )
-	{
-		Attacker_Delete(pTarget);
-		Skill_Start(SKILL_NONE);
-		return false;
-	}
 
-	if ( g_Cfg.m_fAttackingIsACrime )
-	{
-		if ( pCharTarg->Noto_GetFlag(this) == NOTO_GOOD )
-			CheckCrimeSeen(SKILL_NONE, pTarget, NULL, NULL);
-	}
+	if ( g_Cfg.m_fAttackingIsACrime && (pCharTarg->Noto_GetFlag(this) == NOTO_GOOD) )
+		CheckCrimeSeen(SKILL_NONE, pTarget, NULL, NULL);
 
 	INT64 threat = 0;
 	if ( btoldByMaster )
@@ -3086,7 +3075,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		}
 
 		m_atFight.m_Swing_State = WAR_SWING_SWINGING;
-		m_atFight.m_Swing_Delay = iSwingDelay - animDelay;
+		m_atFight.m_Swing_Delay = maximum(0, iSwingDelay - animDelay);
 
 		if ( IsSetCombatFlags(COMBAT_PREHIT) )
 		{

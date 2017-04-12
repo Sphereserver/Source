@@ -787,7 +787,7 @@ size_t CPointBase::Read( TCHAR * pszVal )
 				m_map = static_cast<unsigned char>(ATOI(ppVal[3]));
 				if ( !g_MapList.m_maps[m_map] )
 				{
-					g_Log.EventError("Unsupported map #%d specified. Auto-fixing that to 0.\n", m_map);
+					g_Log.EventError("Unsupported map #%d specified. Auto-fixing that to 0\n", m_map);
 					m_map = 0;
 				}
 			}
@@ -811,7 +811,7 @@ CSector * CPointBase::GetSector() const
 	ADDTOCALLSTACK("CPointBase::GetSector");
 	if ( !IsValidXY() )
 	{
-		g_Log.Event(LOGL_ERROR, "Point(%d,%d): trying to get a sector for point on map #%d out of bounds for this map(%d,%d). Defaulting to sector 0 of the map.\n",
+		g_Log.Event(LOGL_ERROR, "Point(%d,%d): trying to get a sector for point on map #%d out of bounds for this map(%d,%d). Defaulting to sector 0 of the map\n",
 			m_x, m_y, m_map, g_MapList.GetX(m_map), g_MapList.GetY(m_map));
 		return g_World.GetSector(m_map, 0);
 	}
@@ -865,7 +865,7 @@ size_t CGRect::Read( LPCTSTR pszVal )
 			m_map = ATOI(ppVal[4]);
 			if (( m_map < 0 ) || ( m_map >= 256 ) || !g_MapList.m_maps[m_map] )
 			{
-				g_Log.EventError("Unsupported map #%d specified. Auto-fixing that to 0.\n", m_map);
+				g_Log.EventError("Unsupported map #%d specified. Auto-fixing that to 0\n", m_map);
 				m_map = 0;
 			}
 			m_bottom = ATOI(ppVal[3]);

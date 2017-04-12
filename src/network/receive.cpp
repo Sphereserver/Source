@@ -122,94 +122,425 @@ bool PacketCreate::onReceive(NetState* net, bool hasExtraSkill)
 			rtRace = RACETYPE_ELF;
 	}
 
-	// validate race against resdisp
-	RESDISPLAY_VERSION resdisp = net->m_client->m_pAccount ? static_cast<RESDISPLAY_VERSION>(net->m_client->m_pAccount->GetResDisp()) : RDS_NONE;
-	if (resdisp < RDS_ML) // prior to ML, only human
-	{
-		if (rtRace >= RACETYPE_ELF)
-			rtRace = RACETYPE_HUMAN;
-	}
-	else if (resdisp < RDS_SA) // prior to SA, only human and elf
-	{
-		if (rtRace >= RACETYPE_GARGOYLE)
-			rtRace = RACETYPE_HUMAN;
-	}
-	
-	return doCreate(net, charname, isFemale, rtRace,
-		strength, dexterity, intelligence, prof,
-		skill1, skillval1, skill2, skillval2, skill3, skillval3, skill4, skillval4,
-		hue, hairid, hairhue, beardid, beardhue, shirthue, pantshue,
-		startloc, 0, flags);
+	return doCreate(net, charname, isFemale, rtRace, strength, dexterity, intelligence, prof, skill1, skillval1, skill2, skillval2, skill3, skillval3, skill4, skillval4, hue, hairid, hairhue, beardid, beardhue, shirthue, pantshue, ITEMID_NOTHING, startloc, flags);
 }
 
-bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc, int iPortrait, int iFlags)
+bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, BYTE iSkillVal1, SKILL_TYPE skSkill2, BYTE iSkillVal2, SKILL_TYPE skSkill3, BYTE iSkillVal3, SKILL_TYPE skSkill4, BYTE iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, ITEMID_TYPE idFace, int iStartLoc, DWORD iFlags)
 {
 	ADDTOCALLSTACK("PacketCreate::doCreate");
 
-	CClient* client = net->m_client;
+	CClient *client = net->m_client;
 	ASSERT(client);
 	const CAccountRef account = client->m_pAccount;
 	ASSERT(account);
+	RESDISPLAY_VERSION resdisp = static_cast<RESDISPLAY_VERSION>(account->GetResDisp());
 
-	if (client->GetChar() != NULL)
+	// Check if the account is already connected using another character
+	if ( client->GetChar() )
 	{
-		// logging in as a new player whilst already online !
 		client->addSysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ALREADYONLINE));
-		DEBUG_ERR(("%lx:Setup_CreateDialog acct='%s' already online!\n", net->id(), account->GetName()));
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' already in use\n", net->id(), account->GetName());
 		return false;
 	}
 
-	// make sure they don't have an idling character
-	const CChar* pCharLast = account->m_uidLastChar.CharFind();
-	if (pCharLast != NULL && account->IsMyAccountChar(pCharLast) && account->GetPrivLevel() <= PLEVEL_GM && !pCharLast->IsDisconnected() )
+	// Check if the account have an idling character
+	const CChar *pCharLast = account->m_uidLastChar.CharFind();
+	if ( pCharLast && account->IsMyAccountChar(pCharLast) && !pCharLast->IsDisconnected() )
 	{
 		client->addIdleWarning(PacketWarningMessage::CharacterInWorld);
 		client->addLoginErr(PacketLoginError::CharIdle);
 		return false;
 	}
 
-	// make sure they don't already have too many characters
+	// Validate free character slots
+	size_t iChars = account->m_Chars.GetCharCount();
 	BYTE iMaxChars = account->GetMaxChars();
-	size_t iQtyChars = account->m_Chars.GetCharCount();
-	if (iQtyChars >= iMaxChars)
+	if ( iChars >= iMaxChars )
 	{
-		client->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_MAXCHARS), static_cast<int>(iQtyChars));
-		if (client->GetPrivLevel() < PLEVEL_Seer)
+		client->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_MAXCHARS), static_cast<int>(iChars));
+		client->addLoginErr(PacketLoginError::TooManyChars);
+		return false;
+	}
+
+	// Validate all info sent by client to prevent exploits
+	if ( !strlen(charname) || g_Cfg.IsObscene(charname) || Str_CheckName(charname) || !strnicmp(charname, "lord ", 5) || !strnicmp(charname, "lady ", 5) || !strnicmp(charname, "counselor ", 10) || !strnicmp(charname, "seer ", 5) || !strnicmp(charname, "gm ", 3) || !strnicmp(charname, "admin ", 6) )
+		goto InvalidInfo;
+
+	if ( (wStr > 60) || (wDex > 60) || (wInt > 60) )
+		goto InvalidInfo;
+	if ( (iSkillVal1 > 50) || (iSkillVal2 > 50) || (iSkillVal3 > 50) || (iSkillVal4 > 50) )
+		goto InvalidInfo;
+	if ( skSkill4 != SKILL_NONE )
+	{
+		if ( wStr + wDex + wInt > 90 )
+			goto InvalidInfo;
+		if ( iSkillVal1 + iSkillVal2 + iSkillVal3 + iSkillVal4 > 120 )
+			goto InvalidInfo;
+	}
+	else
+	{
+		if ( wStr + wDex + wInt > 80 )
+			goto InvalidInfo;
+		if ( iSkillVal1 + iSkillVal2 + iSkillVal3 > 100 )
+			goto InvalidInfo;
+	}
+
+	if ( (resdisp < RDS_AOS) || (!(g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_A)) )
+	{
+		if ( (prProf == PROFESSION_NECROMANCER) || (prProf == PROFESSION_PALADIN) )
+			goto InvalidInfo;
+	}
+	if ( (resdisp < RDS_SE) || (!(g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE)) )
+	{
+		if ( (prProf == PROFESSION_SAMURAI) || (prProf == PROFESSION_NINJA) )
+			goto InvalidInfo;
+	}
+	if ( (resdisp < RDS_ML) || (!(g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE)) )
+	{
+		if ( rtRace == RACETYPE_ELF )
+			goto InvalidInfo;
+	}
+	if ( (resdisp < RDS_SA) || (!(g_Cfg.m_iFeatureSA & FEATURE_SA_UPDATE)) )
+	{
+		if ( rtRace == RACETYPE_GARGOYLE )
+			goto InvalidInfo;
+	}
+
+	switch ( rtRace )
+	{
+		default:
+		case RACETYPE_HUMAN:
 		{
-			client->addLoginErr(PacketLoginError::TooManyChars);
-			return false;
+			if ( (wSkinHue < HUE_SKIN_LOW) || (wSkinHue > HUE_SKIN_HIGH) )
+				goto InvalidInfo;
+
+			if ( idHair )
+			{
+				if ( !(((idHair >= ITEMID_HAIR_SHORT) && (idHair <= ITEMID_HAIR_PONYTAIL)) || ((idHair >= ITEMID_HAIR_MOHAWK) && (idHair <= ITEMID_HAIR_TOPKNOT))) )
+					goto InvalidInfo;
+				if ( bFemale && (idHair == ITEMID_HAIR_RECEDING) )
+					goto InvalidInfo;
+				if ( !bFemale && (idHair == ITEMID_HAIR_BUNS) )
+					goto InvalidInfo;
+
+				if ( (wHairHue < HUE_HAIR_LOW) || (wHairHue > HUE_HAIR_HIGH) )
+					goto InvalidInfo;
+			}
+
+			if ( idBeard )
+			{
+				if ( bFemale )
+					goto InvalidInfo;
+				if ( !(((idBeard >= ITEMID_BEARD_LONG) && (idBeard <= ITEMID_BEARD_MOUSTACHE)) || ((idBeard >= ITEMID_BEARD_SH_M) && (idBeard <= ITEMID_BEARD_GO_M))) )
+					goto InvalidInfo;
+
+				if ( (wBeardHue < HUE_HAIR_LOW) || (wBeardHue > HUE_HAIR_HIGH) )
+					goto InvalidInfo;
+			}
+
+			if ( idFace )
+			{
+				if ( !(((idFace >= ITEMID_FACE_1) && (idFace <= ITEMID_FACE_10)) || ((idFace >= ITEMID_FACE_ANIME) && (idFace <= ITEMID_FACE_VAMPIRE))) )
+					goto InvalidInfo;
+			}
+			break;
+		}
+		case RACETYPE_ELF:
+		{
+			const HUE_TYPE sm_ElfSkinHues[] = { 0xBF, 0x24D, 0x24E, 0x24F, 0x353, 0x361, 0x367, 0x374, 0x375, 0x376, 0x381, 0x382, 0x383, 0x384, 0x385, 0x389, 0x3DE, 0x3E5, 0x3E6, 0x3E8, 0x3E9, 0x430, 0x4A7, 0x4DE, 0x51D, 0x53F, 0x579, 0x76B, 0x76C, 0x76D, 0x835, 0x903 };
+			if ( !isValidHue(wSkinHue, sm_ElfSkinHues, COUNTOF(sm_ElfSkinHues)) )
+				goto InvalidInfo;
+
+			if ( idHair )
+			{
+				if ( !(((idHair >= ITEMID_HAIR_ML_ELF) && (idHair <= ITEMID_HAIR_ML_MULLET)) || ((idHair >= ITEMID_HAIR_ML_FLOWER) && (idHair <= ITEMID_HAIR_ML_SPYKE))) )
+					goto InvalidInfo;
+				if ( bFemale && ((idHair == ITEMID_HAIR_ML_LONG2) || (idHair == ITEMID_HAIR_ML_ELF)) )
+					goto InvalidInfo;
+				if ( !bFemale && ((idHair == ITEMID_HAIR_ML_FLOWER) || (idHair == ITEMID_HAIR_ML_LONG4)) )
+					goto InvalidInfo;
+
+				const HUE_TYPE sm_ElfHairHues[] = { 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x58, 0x8E, 0x8F, 0x90, 0x91, 0x92, 0x101, 0x159, 0x15A, 0x15B, 0x15C, 0x15D, 0x15E, 0x128, 0x12F, 0x1BD, 0x1E4, 0x1F3, 0x207, 0x211, 0x239, 0x251, 0x26C, 0x2C3, 0x2C9, 0x31D, 0x31E, 0x31F, 0x320, 0x321, 0x322, 0x323, 0x324, 0x325, 0x326, 0x369, 0x386, 0x387, 0x388, 0x389, 0x38A, 0x59D, 0x6B8, 0x725, 0x853 };
+				if ( !isValidHue(wHairHue, sm_ElfHairHues, COUNTOF(sm_ElfHairHues)) )
+					goto InvalidInfo;
+			}
+
+			if ( idBeard )
+				goto InvalidInfo;
+
+			if ( idFace )
+			{
+				if ( !(((idFace >= ITEMID_FACE_1) && (idFace <= ITEMID_FACE_10)) || ((idFace >= ITEMID_FACE_ANIME) && (idFace <= ITEMID_FACE_VAMPIRE))) )
+					goto InvalidInfo;
+			}
+			break;
+		}
+		case RACETYPE_GARGOYLE:
+		{
+			if ( (wSkinHue < HUE_GARGSKIN_LOW) || (wSkinHue > HUE_GARGSKIN_HIGH) )
+				goto InvalidInfo;
+
+			if ( idHair )
+			{
+				if ( bFemale && !((idHair == ITEMID_GARG_HORN_FEMALE_1) || (idHair == ITEMID_GARG_HORN_FEMALE_2) || ((idHair >= ITEMID_GARG_HORN_FEMALE_3) && (idHair <= ITEMID_GARG_HORN_FEMALE_5)) || (idHair == ITEMID_GARG_HORN_FEMALE_6) || (idHair == ITEMID_GARG_HORN_FEMALE_7) || (idHair == ITEMID_GARG_HORN_FEMALE_8)) )
+					goto InvalidInfo;
+				if ( !bFemale && !((idHair >= ITEMID_GARG_HORN_1) && (idHair <= ITEMID_GARG_HORN_8)) )
+					goto InvalidInfo;
+
+				const HUE_TYPE sm_GargoyleHornHues[] = { 0x709, 0x70B, 0x70D, 0x70F, 0x711, 0x763, 0x765, 0x768, 0x76B, 0x6F3, 0x6F1, 0x6EF, 0x6E4, 0x6E2, 0x6E0, 0x709, 0x70B, 0x70D };
+				if ( !isValidHue(wHairHue, sm_GargoyleHornHues, COUNTOF(sm_GargoyleHornHues)) )
+					goto InvalidInfo;
+			}
+
+			if ( idBeard )
+			{
+				if ( bFemale )
+					goto InvalidInfo;
+				if ( !((idBeard >= ITEMID_GARG_HORN_FACIAL_1) && (idBeard <= ITEMID_GARG_HORN_FACIAL_4)) )
+					goto InvalidInfo;
+
+				const HUE_TYPE sm_GargoyleFacialHornHues[] = { 0x709, 0x70B, 0x70D, 0x70F, 0x711, 0x763, 0x765, 0x768, 0x76B, 0x6F3, 0x6F1, 0x6EF, 0x6E4, 0x6E2, 0x6E0, 0x709, 0x70B, 0x70D };
+				if ( !isValidHue(wBeardHue, sm_GargoyleFacialHornHues, COUNTOF(sm_GargoyleFacialHornHues)) )
+					goto InvalidInfo;
+			}
+
+			if ( idFace )
+			{
+				if ( !((idFace >= ITEMID_FACE_1_GARG) && (idFace <= ITEMID_FACE_6_GARG)) )
+					goto InvalidInfo;
+			}
+			break;
 		}
 	}
-	
 
-	CChar* pChar = CChar::CreateBasic(CREID_MAN);
-	ASSERT(pChar != NULL);
+	if ( !(net->isClientKR() || net->isClientEnhanced()) )
+	{
+		if ( (wShirtHue < HUE_BLUE_LOW) || (wShirtHue > HUE_DYE_HIGH) )
+			goto InvalidInfo;
+		if ( (wPantsHue < HUE_BLUE_LOW) || (wPantsHue > HUE_DYE_HIGH) )
+			goto InvalidInfo;
+	}
 
-	TRIGRET_TYPE tr;
+	if ( 0 )
+	{
+	InvalidInfo:
+		client->addLoginErr(PacketLoginError::CreationBlocked);
+		return false;
+	}
+
+	// Create the character
+	CChar *pChar = CChar::CreateBasic(CREID_MAN);
+	ASSERT(pChar);
+	pChar->SetName(charname);
+	pChar->SetPlayerAccount(account);
+	pChar->SetHue(wSkinHue|HUE_MASK_UNDERWEAR);
+
+	switch ( rtRace )
+	{
+		default:
+		case RACETYPE_HUMAN:
+			pChar->SetID(bFemale ? CREID_WOMAN : CREID_MAN);
+			break;
+		case RACETYPE_ELF:
+			pChar->SetID(bFemale ? CREID_ELFWOMAN : CREID_ELFMAN);
+			break;
+		case RACETYPE_GARGOYLE:
+			pChar->SetID(bFemale ? CREID_GARGWOMAN : CREID_GARGMAN);
+			break;
+	}
+
 	CScriptTriggerArgs createArgs;
 	createArgs.m_iN1 = iFlags;
 	createArgs.m_iN2 = prProf;
 	createArgs.m_iN3 = rtRace;
-	createArgs.m_VarsLocal.SetNum("PORTRAIT", iPortrait);
-	createArgs.m_s1 = account->GetName();
 	createArgs.m_pO1 = client;
-	
-	//Creating the pChar
-	pChar->InitPlayer(client, charname, bFemale, rtRace, wStr, wDex, wInt, prProf, skSkill1, iSkillVal1, skSkill2, iSkillVal2, skSkill3, iSkillVal3, skSkill4, iSkillVal4, wSkinHue, idHair, wHairHue, idBeard, wBeardHue, wShirtHue, wPantsHue, iStartLoc);
+	createArgs.m_s1 = account->GetName();
 
-	//Calling the function after the char creation, it can't be done before or the function won't have SRC
+	TRIGRET_TYPE tr;
 	client->r_Call("f_onchar_create", pChar, &createArgs, NULL, &tr);
-	
-	if ( tr == 1 )
+	if ( tr == TRIGRET_RET_TRUE )
 	{
 		client->addLoginErr(PacketLoginError::CreationBlocked);
-		pChar->Delete();	//Delete it if function is returning 1 or the char will remain created
+		pChar->Delete();
 		return false;
 	}
 
-	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Setup_CreateDialog acct='%s', char='%s'\n", net->id(), account->GetName(), pChar->GetName());
+	if ( IsTrigUsed(TRIGGER_RENAME) )
+	{
+		CScriptTriggerArgs args;
+		args.m_s1 = charname;
+		args.m_pO1 = pChar;
+		if ( pChar->OnTrigger(CTRIG_Rename, pChar, &args) == TRIGRET_RET_TRUE )
+			pChar->SetNamePool(bFemale ? "#NAMES_HUMANFEMALE" : "#NAMES_HUMANMALE");
+	}
+
+	// Set starting position
+	if ( g_Cfg.m_StartDefs.IsValidIndex(iStartLoc) )
+		pChar->m_ptHome = g_Cfg.m_StartDefs[iStartLoc]->m_pt;
+	else
+		pChar->m_ptHome.InitPoint();
+
+	if ( !pChar->m_ptHome.IsValidPoint() )
+		DEBUG_ERR(("Invalid start location '%d' for character!\n", iStartLoc));
+
+	pChar->SetUnkPoint(pChar->m_ptHome);	// don't put me in the world yet
+
+	// Set stats
+	pChar->Stat_SetBase(STAT_STR, wStr);
+	pChar->Stat_SetBase(STAT_DEX, wDex);
+	pChar->Stat_SetBase(STAT_INT, wInt);
+	pChar->CreateNewCharCheck();
+
+	// Set skills
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
+	{
+		if ( g_Cfg.m_SkillIndexDefs.IsValidIndex(i) )
+			pChar->Skill_SetBase(static_cast<SKILL_TYPE>(i), static_cast<WORD>(Calc_GetRandVal(g_Cfg.m_iMaxBaseSkill)));
+	}
+	if ( pChar->IsSkillBase(skSkill1) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill1) )
+		pChar->Skill_SetBase(skSkill1, iSkillVal1 * 10);
+	if ( pChar->IsSkillBase(skSkill2) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill2) )
+		pChar->Skill_SetBase(skSkill2, iSkillVal2 * 10);
+	if ( pChar->IsSkillBase(skSkill3) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill3) )
+		pChar->Skill_SetBase(skSkill3, iSkillVal3 * 10);
+	if ( pChar->IsSkillBase(skSkill4) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill4) )
+		pChar->Skill_SetBase(skSkill4, iSkillVal4 * 10);
+
+	// Create basic resources
+	pChar->GetContainerCreate(LAYER_PACK);
+	pChar->GetContainerCreate(LAYER_BANKBOX);
+
+	if ( idHair )
+	{
+		CItem *pHair = CItem::CreateScript(idHair, pChar);
+		ASSERT(pHair);
+		if ( pHair->IsType(IT_HAIR) )
+		{
+			pHair->SetHue(wHairHue);
+			pHair->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
+			pChar->LayerAdd(pHair);
+		}
+		else
+			pHair->Delete();
+	}
+	if ( idBeard )
+	{
+		CItem *pBeard = CItem::CreateScript(idBeard, pChar);
+		ASSERT(pBeard);
+		if ( pBeard->IsType(IT_BEARD) )
+		{
+			pBeard->SetHue(wBeardHue);
+			pBeard->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
+			pChar->LayerAdd(pBeard);
+		}
+		else
+			pBeard->Delete();
+	}
+	if ( idFace )
+	{
+		CItem *pFace = CItem::CreateScript(idFace, pChar);
+		ASSERT(pFace);
+		pFace->SetHue(wSkinHue);
+		pFace->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
+		pChar->LayerAdd(pFace);
+	}
+
+	// Get starting items for the profession / skills.
+	int iProfession = INT_MAX;
+	bool bCreateSkillItems = true;
+	switch ( prProf )
+	{
+		case PROFESSION_ADVANCED:
+			iProfession = RES_NEWBIE_PROF_ADVANCED;
+			break;
+		case PROFESSION_WARRIOR:
+			iProfession = RES_NEWBIE_PROF_WARRIOR;
+			break;
+		case PROFESSION_MAGE:
+			iProfession = RES_NEWBIE_PROF_MAGE;
+			break;
+		case PROFESSION_BLACKSMITH:
+			iProfession = RES_NEWBIE_PROF_BLACKSMITH;
+			break;
+		case PROFESSION_NECROMANCER:
+			iProfession = RES_NEWBIE_PROF_NECROMANCER;
+			bCreateSkillItems = false;
+			break;
+		case PROFESSION_PALADIN:
+			iProfession = RES_NEWBIE_PROF_PALADIN;
+			bCreateSkillItems = false;
+			break;
+		case PROFESSION_SAMURAI:
+			iProfession = RES_NEWBIE_PROF_SAMURAI;
+			bCreateSkillItems = false;
+			break;
+		case PROFESSION_NINJA:
+			iProfession = RES_NEWBIE_PROF_NINJA;
+			bCreateSkillItems = false;
+			break;
+	}
+
+	CResourceLock s;
+	if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, bFemale ? RES_NEWBIE_FEMALE_DEFAULT : RES_NEWBIE_MALE_DEFAULT, rtRace)) )
+		pChar->ReadScript(s);
+	else if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, bFemale ? RES_NEWBIE_FEMALE_DEFAULT : RES_NEWBIE_MALE_DEFAULT)) )
+		pChar->ReadScript(s);
+
+	CItem *pLayer = pChar->LayerFind(LAYER_SHIRT);
+	if ( pLayer )
+		pLayer->SetHue(wShirtHue);
+
+	pLayer = bFemale ? pChar->LayerFind(LAYER_SKIRT) : pChar->LayerFind(LAYER_PANTS);
+	if ( pLayer )
+		pLayer->SetHue(wPantsHue);
+
+	if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iProfession, rtRace)) )
+		pChar->ReadScript(s);
+	else if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iProfession)) )
+		pChar->ReadScript(s);
+
+	if ( bCreateSkillItems )
+	{
+		for ( BYTE i = 1; i < 5; i++ )
+		{
+			int iSkill = INT_MAX;
+			switch ( i )
+			{
+				case 1:
+					iSkill = skSkill1;
+					break;
+				case 2:
+					iSkill = skSkill2;
+					break;
+				case 3:
+					iSkill = skSkill3;
+					break;
+				case 4:
+					iSkill = skSkill4;
+					break;
+			}
+
+			if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iSkill, rtRace)) )
+				pChar->ReadScript(s);
+			else if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iSkill)) )
+				pChar->ReadScript(s);
+		}
+	}
+	s.Close();
+
+	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' created new char '%s' [0%lx]\n", net->id(), account->GetName(), pChar->GetName(), static_cast<DWORD>(pChar->GetUID()));
 	client->Setup_Start(pChar);
 	return true;
+}
+
+bool PacketCreate::isValidHue(HUE_TYPE hue, const HUE_TYPE sm_Array[], size_t iArraySize)
+{
+	for ( size_t i = 0; i < iArraySize; i++ )
+	{
+		if ( sm_Array[i] == hue )
+			return true;
+	}
+	return false;
 }
 
 
@@ -269,7 +600,7 @@ bool PacketSpeakReq::onReceive(NetState* net)
 
 	CClient* client = net->m_client;
 	ASSERT(client);
-	if (client->GetChar() == NULL)
+	if (!client->GetChar())
 		return false;
 
 	size_t packetLength = readInt16();
@@ -359,7 +690,7 @@ bool PacketItemPickupReq::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketItemPickupReq::onReceive");
 
 	CGrayUID serial(readInt32());
-	int amount = readInt16();
+	WORD amount = readInt16();
 	
 	CClient* client = net->m_client;
 	ASSERT(client);
@@ -499,11 +830,11 @@ bool PacketItemEquipReq::onReceive(NetState* net)
 	CGrayUID targetSerial(readInt32());
 
 	CChar* source = client->GetChar();
-	if (source == NULL)
+	if (!source)
 		return false;
 
 	CItem* item = source->LayerFind(LAYER_DRAGGING);
-	if ( item == NULL || client->GetTargMode() != CLIMODE_DRAG || item->GetUID() != itemSerial )
+	if ( !item || (client->GetTargMode() != CLIMODE_DRAG) || (item->GetUID() != itemSerial) )
 	{
 		// I have no idea why i got here.
 		new PacketDragCancel(client, PacketDragCancel::Other);
@@ -514,7 +845,7 @@ bool PacketItemEquipReq::onReceive(NetState* net)
 
 	CChar* target = targetSerial.CharFind();
 	bool bCanCarry = target->CanCarry(item);
-	if ( target == NULL || (itemLayer >= LAYER_HORSE) || !target->NPC_IsOwnedBy(source) || !bCanCarry || !target->ItemEquip(item, source) )
+	if ( !target || (itemLayer >= LAYER_HORSE) || !target->NPC_IsOwnedBy(source) || !bCanCarry || !target->ItemEquip(item, source) )
 	{
 		client->Event_Item_Drop_Fail(item);		//cannot equip
 		if ( !bCanCarry )
@@ -590,7 +921,7 @@ bool PacketDeathStatus::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* ghost = client->GetChar();
-	if (ghost == NULL)
+	if (!ghost)
 		return false;
 
 	DEATH_MODE_TYPE mode = static_cast<DEATH_MODE_TYPE>(readByte());
@@ -638,7 +969,7 @@ bool PacketCharStatusReq::onReceive(NetState* net)
 	CGrayUID targetSerial = static_cast<CGrayUID>(readInt32());
 
 	if ( requestType == 4 )
-		client->addCharStatWindow(targetSerial.CharFind(), true);
+		client->addHealthBarInfo(targetSerial.ObjFind(), true);
 	else if ( requestType == 5 )
 		client->addSkillWindow(SKILL_QTY);
 	return true;
@@ -663,7 +994,7 @@ bool PacketSkillLockChange::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL || character->m_pPlayer == NULL)
+	if (!character || !character->m_pPlayer)
 		return false;
 
 	int len = readInt16();
@@ -678,8 +1009,7 @@ bool PacketSkillLockChange::onReceive(NetState* net)
 		SKILLLOCK_TYPE state = static_cast<SKILLLOCK_TYPE>(readByte());
 		len -= 3;
 		
-		if (index <= SKILL_NONE || index >= SKILL_QTY ||
-			state < SKILLLOCK_UP || state > SKILLLOCK_LOCK)
+		if ((index <= SKILL_NONE) || (index >= SKILL_QTY) || (state < SKILLLOCK_UP) || (state > SKILLLOCK_LOCK))
 			continue;
 
 		character->m_pPlayer->Skill_SetLock(index, state);
@@ -707,7 +1037,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* buyer = client->GetChar();
-	if (buyer == NULL)
+	if (!buyer)
 		return false;
 
 	WORD packetLength = readInt16();
@@ -717,13 +1047,13 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 		return true;
 
 	CChar* vendor = vendorSerial.CharFind();
-	if (vendor == NULL || vendor->m_pNPC == NULL || !vendor->NPC_IsVendor())
+	if (!vendor || !vendor->m_pNPC || !vendor->NPC_IsVendor())
 	{
 		client->Event_VendorBuy_Cheater(0x1);
 		return true;
 	}
 
-	if (buyer->CanTouch(vendor) == false)
+	if (!buyer->CanTouch(vendor))
 	{
 		client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTREACH));
 		return true;
@@ -737,7 +1067,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 
 	// check buying speed
 	const CVarDefCont* vardef = g_Cfg.m_bAllowBuySellAgent ? NULL : client->m_TagDefs.GetKey("BUYSELLTIME");
-	if (vardef != NULL)
+	if (vardef)
 	{
 		CServTime allowsell;
 		allowsell.InitTime(vardef->GetValNum() + (itemCount * 3));
@@ -757,7 +1087,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 		WORD amount = readInt16();
 
 		item = dynamic_cast<CItemVendable*>(serial.ItemFind());
-		if (item == NULL || item->IsValidSaleItem(true) == false)
+		if (!item || !item->IsValidSaleItem(true))
 		{
 			client->Event_VendorBuy_Cheater(0x2);
 			return true;
@@ -837,11 +1167,11 @@ bool PacketMapEdit::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	CItemMap* map = dynamic_cast<CItemMap*>(mapSerial.ItemFind());
-	if (map == NULL || character->CanTouch(map) == false) // sanity check
+	if (!map || !character->CanTouch(map)) // sanity check
 	{
 		client->SysMessage("You can't reach it");
 		return true;
@@ -850,7 +1180,7 @@ bool PacketMapEdit::onReceive(NetState* net)
 	if (map->m_itMap.m_fPinsGlued)
 	{
 		client->SysMessage("The pins seem to be glued in place");
-		if (client->IsPriv(PRIV_GM) == false)
+		if (!client->IsPriv(PRIV_GM))
 			return true;
 	}
 
@@ -962,7 +1292,7 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(2); // packet length
@@ -970,7 +1300,7 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 	WORD pageCount = readInt16();
 
 	CItem* book = bookSerial.ItemFind();
-	if (character->CanSee(book) == false)
+	if (!character->CanSee(book))
 	{
 		client->addObjectRemoveCantSee(bookSerial, "the book");
 		return true;
@@ -986,7 +1316,7 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 
 	// trying to write to the book
 	CItemMessage* text = dynamic_cast<CItemMessage*>( book );
-	if (text == NULL || book->IsBookWritable() == false)
+	if (!text || !book->IsBookWritable())
 		return true;
 
 	skip(-4);
@@ -999,7 +1329,7 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 		// read next page to change with line count
 		page = readInt16();
 		lineCount = readInt16();
-		if (page < 1 || page > MAX_BOOK_PAGES || lineCount <= 0)
+		if ((page < 1) || (page > MAX_BOOK_PAGES) || (lineCount <= 0))
 			continue;
 
 		page--;
@@ -1049,11 +1379,11 @@ bool PacketTarget::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(1); // target type
-	DWORD context = readInt32();
+	CLIMODE_TYPE context = static_cast<CLIMODE_TYPE>(readInt32());
 	BYTE flags = readByte();
 	CGrayUID targetSerial(readInt32());
 	WORD x = readInt16();
@@ -1085,7 +1415,7 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(2); // length
@@ -1093,7 +1423,7 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 	CGrayUID containerSerial(readInt32());
 
 	CItemContainer* container = dynamic_cast<CItemContainer*>( containerSerial.ItemFind() );
-	if (container == NULL)
+	if (!container)
 		return true;
 	else if (character != container->GetParent())
 		return true;
@@ -1106,7 +1436,7 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 
 		case SECURE_TRADE_CHANGE:		// change check marks. possible conclude trade
 		{
-			if ( character->GetDist(container) > UO_MAP_VIEW_SIZE )
+			if ( character->GetDist(container) > character->GetSight() )
 			{
 				client->SysMessageDefault(DEFMSG_MSG_TRADE_TOOFAR);
 				return true;
@@ -1154,7 +1484,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(2);
@@ -1163,13 +1493,13 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 	CGrayUID messageSerial(readInt32());
 
 	CItemContainer* board = dynamic_cast<CItemContainer*>( boardSerial.ItemFind() );
-	if (character->CanSee(board) == false)
+	if (!character->CanSee(board))
 	{
 		client->addObjectRemoveCantSee(boardSerial, "the board");
 		return true;
 	}
 
-	if (board->IsType(IT_BBOARD) == false)
+	if (!board->IsType(IT_BBOARD))
 		return true;
 
 	switch (action)
@@ -1182,7 +1512,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 				DEBUG_ERR(( "%lx:BBoard feed back message bad length %" FMTSIZE_T "\n", net->id(), getLength()));
 				return true;
 			}
-			if (client->addBBoardMessage(board, action, messageSerial) == false)
+			if (!client->addBBoardMessage(board, action, messageSerial))
 			{
 				// sanity check fails
 				client->addObjectRemoveCantSee(messageSerial, "the message");
@@ -1196,7 +1526,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 			if (getLength() < 0x0c)
 				return true;
 
-			if (character->CanTouch(board) == false)
+			if (!character->CanTouch(board))
 			{
 				character->SysMessageDefault(DEFMSG_ITEMUSE_BBOARD_REACH);
 				return true;
@@ -1216,7 +1546,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 
 			// if 
 			CItemMessage* newMessage = dynamic_cast<CItemMessage*>( CItem::CreateBase(ITEMID_BBOARD_MSG) );
-			if (newMessage == NULL)
+			if (!newMessage)
 			{
 				DEBUG_ERR(("%lx:BBoard can't create message item\n", net->id()));
 				return true;
@@ -1235,7 +1565,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 			{
 				lenstr = readByte();
 				readStringASCII(str, lenstr, false);
-				if (Str_Check(str) == false)
+				if (!Str_Check(str))
 					newMessage->AddPageText(str);
 			}
 
@@ -1247,13 +1577,13 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 		{
 			// remove the message
 			CItemMessage* message = dynamic_cast<CItemMessage*>( messageSerial.ItemFind() );
-			if (board->IsItemInside(message) == false)
+			if (!board->IsItemInside(message))
 			{
 				client->SysMessageDefault(DEFMSG_ITEMUSE_BBOARD_COR);
 				return true;
 			}
 
-			if (client->IsPriv(PRIV_GM) == false && message->m_uidLink != character->GetUID())
+			if (!client->IsPriv(PRIV_GM) && (message->m_uidLink != character->GetUID()))
 			{
 				client->SysMessageDefault(DEFMSG_ITEMUSE_BBOARD_DEL);
 				return true;
@@ -1357,7 +1687,7 @@ bool PacketMenuChoice::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	CGrayUID serial(readInt32());
@@ -1492,7 +1822,7 @@ bool PacketCreateNew::onReceive(NetState* net)
 	readStringASCII(charname, MAX_NAME_SIZE);
 	skip(30);
 	PROFESSION_TYPE profession = static_cast<PROFESSION_TYPE>(readByte());
-	skip(1);
+	BYTE flags = readByte();
 	BYTE sex = readByte();
 	RACE_TYPE race = static_cast<RACE_TYPE>(readByte());
 	BYTE strength = readByte();
@@ -1504,22 +1834,22 @@ bool PacketCreateNew::onReceive(NetState* net)
 	BYTE skillval1 = readByte();
 	SKILL_TYPE skill2 = static_cast<SKILL_TYPE>(readByte());
 	BYTE skillval2 = readByte();
-	SKILL_TYPE skill4 = static_cast<SKILL_TYPE>(readByte());
-	BYTE skillval4 = readByte();
 	SKILL_TYPE skill3 = static_cast<SKILL_TYPE>(readByte());
 	BYTE skillval3 = readByte();
+	SKILL_TYPE skill4 = static_cast<SKILL_TYPE>(readByte());
+	BYTE skillval4 = readByte();
 	skip(26);
 	HUE_TYPE hairhue = static_cast<HUE_TYPE>(readInt16());
 	ITEMID_TYPE hairid = static_cast<ITEMID_TYPE>(readInt16());
-	skip(14); // unk
-	BYTE portrait = readByte();
+	skip(13);
+	ITEMID_TYPE faceid = static_cast<ITEMID_TYPE>(readInt16());
 	skip(1);
 	HUE_TYPE beardhue = static_cast<HUE_TYPE>(readInt16());
 	ITEMID_TYPE beardid = static_cast<ITEMID_TYPE>(readInt16());
-	
+
 	// Since client 7.0.16.0 the new creation packet does not contain skills and values if
 	// a profession is selected, so here we must translate the selected profession -> skills
-	switch (profession)
+	switch ( profession )
 	{
 		case PROFESSION_WARRIOR:
 			strength = 45;
@@ -1549,8 +1879,8 @@ bool PacketCreateNew::onReceive(NetState* net)
 			break;
 		case PROFESSION_BLACKSMITH:
 			strength = 60;
-			dexterity = 10;
-			intelligence = 10;
+			dexterity = 15;
+			intelligence = 15;
 			skill1 = SKILL_BLACKSMITHING;
 			skillval1 = 30;
 			skill2 = SKILL_MINING;
@@ -1568,7 +1898,7 @@ bool PacketCreateNew::onReceive(NetState* net)
 			skillval1 = 30;
 			skill2 = SKILL_SPIRITSPEAK;
 			skillval2 = 30;
-			skill3 = SKILL_FENCING;
+			skill3 = SKILL_SWORDSMANSHIP;
 			skillval3 = 30;
 			skill4 = SKILL_MEDITATION;
 			skillval4 = 30;
@@ -1589,7 +1919,7 @@ bool PacketCreateNew::onReceive(NetState* net)
 		case PROFESSION_SAMURAI:
 			strength = 40;
 			dexterity = 30;
-			intelligence = 10;
+			intelligence = 20;
 			skill1 = SKILL_BUSHIDO;
 			skillval1 = 30;
 			skill2 = SKILL_SWORDSMANSHIP;
@@ -1602,7 +1932,7 @@ bool PacketCreateNew::onReceive(NetState* net)
 		case PROFESSION_NINJA:
 			strength = 40;
 			dexterity = 30;
-			intelligence = 10;
+			intelligence = 20;
 			skill1 = SKILL_NINJITSU;
 			skillval1 = 30;
 			skill2 = SKILL_FENCING;
@@ -1615,15 +1945,11 @@ bool PacketCreateNew::onReceive(NetState* net)
 		case PROFESSION_ADVANCED:
 			break;
 		default:
-			DEBUG_WARN(("Unknown profession '%d' selected.\n", profession));
+			g_Log.Event(LOGL_ERROR, "%lx:Invalid profession '%d' selected on character creation screen\n", net->id(), profession);
 			break;
 	}
 
-	return doCreate(net, charname, sex > 0, race,
-		strength, dexterity, intelligence, profession,
-		skill1, skillval1, skill2, skillval2, skill3, skillval3, skill4, skillval4,
-		hue, hairid, hairhue, beardid, beardhue, HUE_DEFAULT, HUE_DEFAULT,
-		0, portrait, 0xFFFFFFFF);
+	return doCreate(net, charname, sex > 0, race, strength, dexterity, intelligence, profession, skill1, skillval1, skill2, skillval2, skill3, skillval3, skill4, skillval4, hue, hairid, hairhue, beardid, beardhue, HUE_DEFAULT, HUE_DEFAULT, faceid, 0, flags);
 }
 
 
@@ -1726,17 +2052,14 @@ bool PacketAllNamesReq::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	const CObjBase* object;
-
 	for (WORD length = readInt16(); length > sizeof(DWORD); length -= sizeof(DWORD))
 	{
 		object = CGrayUID(readInt32()).ObjFind();
-		if (object == NULL)
-			continue;
-		else if (character->CanSee(object) == false)
+		if (!object || !character->CanSee(object))
 			continue;
 
 		new PacketAllNamesResponse(client, object);
@@ -1799,7 +2122,7 @@ bool PacketHelpPageReq::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	CScript script("HelpPage");
@@ -1826,7 +2149,7 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* seller = client->GetChar();
-	if (seller == NULL)
+	if (!seller)
 		return false;
 
 	skip(2); // length
@@ -1834,13 +2157,13 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 	size_t itemCount = readInt16();
 
 	CChar* vendor = vendorSerial.CharFind();
-	if (vendor == NULL || vendor->m_pNPC == NULL || !vendor->NPC_IsVendor())
+	if (!vendor || !vendor->m_pNPC || !vendor->NPC_IsVendor())
 	{
-		client->Event_VendorBuy_Cheater(0x1);
+		client->Event_VendorSell_Cheater(0x1);
 		return true;
 	}
 	
-	if (seller->CanTouch(vendor) == false)
+	if (!seller->CanTouch(vendor))
 	{
 		client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTREACH));
 		return true;
@@ -1859,7 +2182,7 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 
 	// check selling speed
 	const CVarDefCont* vardef = g_Cfg.m_bAllowBuySellAgent ? NULL : client->m_TagDefs.GetKey("BUYSELLTIME");
-	if (vardef != NULL)
+	if (vardef)
 	{
 		CServTime allowsell;
 		allowsell.InitTime(vardef->GetValNum() + (itemCount * 3));
@@ -2000,7 +2323,7 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
 	client->ClearTargMode();
 
 	CObjBase* object = uid.ObjFind();
-	if (object == NULL)
+	if (!object)
 		return true;
 
 	// take action based on the parent context
@@ -2012,20 +2335,16 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
 
 		CScript script(client->m_Targ_Text, text);
 		bool ret = object->r_Verb(script, client->GetChar());
-		if (ret == false)
-		{
-			client->SysMessagef("Invalid set: %s = %s", static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text));
-		}
-		else
+		if (ret)
 		{
 			if (client->IsPriv(PRIV_DETAIL))
-			{
 				client->SysMessagef("Set: %s = %s", static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text));
-			}
 
 			object->RemoveFromView(); // weird client thing
 			object->Update();
 		}
+		else
+			client->SysMessagef("Invalid set: %s = %s", static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text));
 
 		g_Log.Event(LOGM_GM_CMDS, "%lx:'%s' tweak uid=0%lx (%s) to '%s %s'=%d\n", net->id(), client->GetName(), static_cast<DWORD>(object->GetUID()), object->GetName(), static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text), ret);
 	}
@@ -2051,7 +2370,7 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 
 	CClient* client = net->m_client;
 	ASSERT(client);
-	if (client->GetChar() == NULL)
+	if (!client->GetChar())
 		return false;
 
 	size_t packetLength = readInt16();
@@ -2119,7 +2438,7 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(2); // length
@@ -2140,7 +2459,7 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 		if (button == 1 && checkCount > 0)
 		{
 			viewed = CGrayUID(readInt32()).CharFind();
-			if (viewed == NULL)
+			if (!viewed)
 				viewed = character;
 		}
 
@@ -2158,16 +2477,16 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 #ifdef _DEBUG
 	{
 		const CResourceDef* resource = g_Cfg.ResourceGetDef(RESOURCE_ID(RES_DIALOG, context));
-		if (resource == NULL)
-			g_Log.Event(LOGL_EVENT, "Gump: %lu (%s), Uid: 0x%lx, Button: %lu.\n", context, "undef", (DWORD)serial, button);
-		else
+		if (resource)
 		{
 			const CDialogDef* dialog = dynamic_cast<const CDialogDef*>(resource);
-			if (dialog == NULL)
-				g_Log.Event(LOGL_EVENT, "Gump: %lu (%s), Uid: 0x%lx, Button: %lu.\n", context, "undef", (DWORD)serial, button);
+			if (dialog)
+				g_Log.Event(LOGL_EVENT, "Gump: %lu (%s), Uid: 0x%lx, Button: %lu.\n", context, dialog->GetName(), static_cast<DWORD>(serial), button);
 			else
-				g_Log.Event(LOGL_EVENT, "Gump: %lu (%s), Uid: 0x%lx, Button: %lu.\n", context, (LPCTSTR)dialog->GetName(), (DWORD)serial, button);
+				g_Log.Event(LOGL_EVENT, "Gump: %lu (%s), Uid: 0x%lx, Button: %lu.\n", context, "undef", static_cast<DWORD>(serial), button);
 		}
+		else
+			g_Log.Event(LOGL_EVENT, "Gump: %lu (%s), Uid: 0x%lx, Button: %lu.\n", context, "undef", static_cast<DWORD>(serial), button);
 	}
 #endif
 
@@ -2330,9 +2649,9 @@ bool PacketProfileReq::onReceive(NetState* net)
 	bool write = readBool();
 	CGrayUID serial(readInt32());
 	WORD textLength(0);
-	TCHAR* text(NULL);
+	TCHAR* text = NULL;
 
-	if (write == true && packetLength > 12)
+	if (write && (packetLength > 12))
 	{
 		skip(1); // unknown
 		skip(1); // unknown-return code?
@@ -2448,7 +2767,7 @@ bool PacketExtendedCommand::onReceive(NetState* net)
 
 	CClient* client = net->m_client;
 	ASSERT(client);
-	if (client->GetChar() == NULL)
+	if (!client->GetChar())
 		return false;
 
 	WORD packetLength = readInt16();
@@ -2460,7 +2779,7 @@ bool PacketExtendedCommand::onReceive(NetState* net)
 #else
 	Packet* handler = g_NetworkManager.getPacketManager().getExtendedHandler(type);
 #endif
-	if (handler == NULL)
+	if (!handler)
 		return false;
 
 	handler->seek();
@@ -2522,7 +2841,7 @@ bool PacketPartyMessage::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	PARTYMSG_TYPE code = static_cast<PARTYMSG_TYPE>(readByte());
@@ -2534,7 +2853,7 @@ bool PacketPartyMessage::onReceive(NetState* net)
 			break;
 
 		case PARTYMSG_Disband:
-			if (character->m_pParty == NULL)
+			if (!character->m_pParty)
 				return false;
 
 			character->m_pParty->Disband(character->GetUID());
@@ -2543,7 +2862,7 @@ bool PacketPartyMessage::onReceive(NetState* net)
 		case PARTYMSG_Remove:
 		{
 			// request to remove this member of the party
-			if (character->m_pParty == NULL)
+			if (!character->m_pParty)
 				return false;
 
 			CGrayUID serial(readInt32());
@@ -2553,7 +2872,7 @@ bool PacketPartyMessage::onReceive(NetState* net)
 		case PARTYMSG_MsgMember:
 		{
 			// message a specific member of my party
-			if (character->m_pParty == NULL)
+			if (!character->m_pParty)
 				return false;
 
 			CGrayUID serial(readInt32());
@@ -2565,7 +2884,7 @@ bool PacketPartyMessage::onReceive(NetState* net)
 		case PARTYMSG_Msg:
 		{
 			// send message to the whole party
-			if (character->m_pParty == NULL)
+			if (!character->m_pParty)
 				return false;
 
 			NWORD * text = reinterpret_cast<NWORD *>(Str_GetTemp());
@@ -2576,7 +2895,7 @@ bool PacketPartyMessage::onReceive(NetState* net)
 		case PARTYMSG_Option:
 		{
 			// set the loot flag
-			if (character->m_pParty == NULL)
+			if (!character->m_pParty)
 				return false;
 
 			character->m_pParty->SetLootFlag(character, readBool());
@@ -2623,7 +2942,7 @@ bool PacketArrowClick::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	bool rightClick = readBool();
@@ -2633,7 +2952,7 @@ bool PacketArrowClick::onReceive(NetState* net)
 	if ( IsTrigUsed(TRIGGER_USERQUESTARROWCLICK) )
 	{
 		CScriptTriggerArgs Args;
-		Args.m_iN1 = (rightClick == true? 1 : 0);
+		Args.m_iN1 = (rightClick ? 1 : 0);
 #ifdef _ALPHASPHERE
 		Args.m_iN2 = character->GetKeyNum("ARROWQUEST_X");
 		Args.m_iN3 = character->GetKeyNum("ARROWQUEST_Y");
@@ -2748,7 +3067,7 @@ bool PacketAnimationReq::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	static int validAnimations[] =
@@ -2768,10 +3087,10 @@ bool PacketAnimationReq::onReceive(NetState* net)
 
 	ANIM_TYPE anim = static_cast<ANIM_TYPE>(readInt32());
 	bool ok = false;
-	for (size_t i = 0; ok == false && i < COUNTOF(validAnimations); i++)
+	for (size_t i = 0; !ok && i < COUNTOF(validAnimations); i++)
 		ok = (anim == validAnimations[i]);
 
-	if (ok == false)
+	if (!ok)
 		return false;
 
 	character->UpdateAnimate(anim);
@@ -2819,11 +3138,11 @@ bool PacketAosTooltipInfo::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	const CObjBase* object = CGrayUID(readInt32()).ObjFind();
-	if (object != NULL && character->CanSee(object))
+	if (object && character->CanSee(object))
 		client->addAOSTooltip(object, true);
 
 	return true;
@@ -2897,7 +3216,7 @@ bool PacketChangeStatLock::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* character = client->GetChar();
-	if (character == NULL || character->m_pPlayer == NULL)
+	if (!character || !character->m_pPlayer)
 		return false;
 
 	BYTE code = readByte();
@@ -2951,7 +3270,7 @@ bool PacketSpellSelect::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(2); // unknown
@@ -2960,18 +3279,18 @@ bool PacketSpellSelect::onReceive(NetState* net)
 		 return false;
 
 	const CSpellDef* spellDef = g_Cfg.GetSpellDef(spell);
-	if (spellDef == NULL)
+	if (!spellDef)
 		return true;
 
 	int skill;
-	if (spellDef->GetPrimarySkill(&skill, NULL) == false)
+	if ( !spellDef->GetPrimarySkill(&skill, NULL) )
 		return true;
 	if ( !character->Skill_CanUse(static_cast<SKILL_TYPE>(skill)) )
 		return true;
 
 	if (IsSetMagicFlags(MAGICF_PRECAST))
 	{
-		if (spellDef->IsSpellType(SPELLFLAG_NOPRECAST) == false)
+		if (!spellDef->IsSpellType(SPELLFLAG_NOPRECAST))
 		{
 			client->m_tmSkillMagery.m_Spell = spell;
 			character->m_atMagery.m_Spell = spell;
@@ -3006,11 +3325,11 @@ bool PacketHouseDesignReq::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItem* house = CGrayUID(readInt32()).ItemFind();
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	CItemMultiCustom* multi = dynamic_cast<CItemMultiCustom*>(house);
-	if (multi == NULL)
+	if (!multi)
 		return true;
 
 	multi->SendStructureTo(client);
@@ -3056,23 +3375,23 @@ bool PacketBandageMacro::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	CItem* bandage = CGrayUID(readInt32()).ItemFind();
 	CObjBase* target = CGrayUID(readInt32()).ObjFind();
-	if (bandage == NULL || target == NULL)
+	if (!bandage || !target)
 		return true;
 
 	// check the client can see the bandage they're trying to use
-	if (character->CanSee(bandage) == false)
+	if (!character->CanSee(bandage))
 	{
 		client->addObjectRemoveCantSee(bandage->GetUID(), "the target");
 		return true;
 	}
 
 	// check the client is capable of using the bandage
-	if (character->CanUse(bandage, false) == false)
+	if (!character->CanUse(bandage, false))
 		return true;
 
 	// check the bandage is in the possession of the client
@@ -3080,7 +3399,7 @@ bool PacketBandageMacro::onReceive(NetState* net)
 		return true;
 
 	// make sure the macro isn't used for other types of items
-	if (bandage->IsType(IT_BANDAGE) == false)
+	if (!bandage->IsType(IT_BANDAGE))
 		return true;
 
 	// clear previous target
@@ -3125,7 +3444,7 @@ bool PacketGargoyleFly::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if ( character == NULL || !character->IsGargoyle() || character->IsStatFlag(STATF_DEAD) )
+	if ( !character || !character->IsGargoyle() || character->IsStatFlag(STATF_DEAD) )
 		return false;
 
 	// The client always send these 2 values to server, but they're not really used
@@ -3195,7 +3514,7 @@ bool PacketWheelBoatMove::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(4);
@@ -3366,16 +3685,14 @@ bool PacketAOSTooltipReq::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	const CObjBase* object;
 	for (WORD length = readInt16(); length > sizeof(DWORD); length -= sizeof(DWORD))
 	{
 		object = CGrayUID(readInt32()).ObjFind();
-		if (object == NULL)
-			continue;
-		else if (character->CanSee(object) == false)
+		if (!object || !character->CanSee(object))
 			continue;
 
 		client->addAOSTooltip(object, true);
@@ -3404,7 +3721,7 @@ bool PacketEncodedCommand::onReceive(NetState* net)
 	ASSERT(client);
 
 	const CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	WORD packetLength = readInt16();
@@ -3421,7 +3738,7 @@ bool PacketEncodedCommand::onReceive(NetState* net)
 #else
 	Packet* handler = g_NetworkManager.getPacketManager().getEncodedHandler(type);
 #endif
-	if (handler == NULL)
+	if (!handler)
 		return false;
 
 	handler->seek();
@@ -3456,7 +3773,7 @@ bool PacketHouseDesignBackup::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	house->BackupStructure();
@@ -3483,7 +3800,7 @@ bool PacketHouseDesignRestore::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	house->RestoreStructure(client);
@@ -3510,7 +3827,7 @@ bool PacketHouseDesignCommit::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	house->CommitChanges(client);
@@ -3537,19 +3854,19 @@ bool PacketHouseDesignDestroyItem::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	skip(1); // 0x00
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt32());
 	skip(1); // 0x00
-	WORD x = static_cast<WORD>(readInt32());
+	short x = static_cast<short>(readInt32());
 	skip(1); // 0x00
-	WORD y = static_cast<WORD>(readInt32());
+	short y = static_cast<short>(readInt32());
 	skip(1); // 0x00
-	WORD z = static_cast<WORD>(readInt32());
+	char z = static_cast<char>(readInt32());
 
-	house->RemoveItem(client, id, x, y, static_cast<signed char>(z));
+	house->RemoveItem(client, id, x, y, z);
 	return true;
 }
 
@@ -3573,15 +3890,15 @@ bool PacketHouseDesignPlaceItem::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	skip(1); // 0x00
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt32());
 	skip(1); // 0x00
-	WORD x = static_cast<WORD>(readInt32());
+	short x = static_cast<short>(readInt32());
 	skip(1); // 0x00
-	WORD y = static_cast<WORD>(readInt32());
+	short y = static_cast<short>(readInt32());
 
 	house->AddItem(client, id, x, y);
 	return true;
@@ -3607,7 +3924,7 @@ bool PacketHouseDesignExit::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	house->EndCustomize();
@@ -3634,15 +3951,15 @@ bool PacketHouseDesignPlaceStair::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	skip(1); // 0x00
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt32() + ITEMID_MULTI);
 	skip(1); // 0x00
-	WORD x = static_cast<WORD>(readInt32());
+	short x = static_cast<short>(readInt32());
 	skip(1); // 0x00
-	WORD y = static_cast<WORD>(readInt32());
+	short y = static_cast<short>(readInt32());
 
 	house->AddStairs(client, id, x, y);
 	return true;
@@ -3668,7 +3985,7 @@ bool PacketHouseDesignSync::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	house->SendStructureTo(client);
@@ -3695,7 +4012,7 @@ bool PacketHouseDesignClear::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	house->ResetStructure(client);
@@ -3722,11 +4039,11 @@ bool PacketHouseDesignSwitch::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	skip(1); // 0x00
-	DWORD level = readInt32();
+	BYTE level = static_cast<BYTE>(readInt32());
 
 	house->SwitchToLevel(client, level);
 	return true;
@@ -3752,19 +4069,19 @@ bool PacketHouseDesignPlaceRoof::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	skip(1); // 0x00
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt32());
 	skip(1); // 0x00
-	WORD x = static_cast<WORD>(readInt32());
+	short x = static_cast<short>(readInt32());
 	skip(1); // 0x00
-	WORD y = static_cast<WORD>(readInt32());
+	short y = static_cast<short>(readInt32());
 	skip(1); // 0x00
-	WORD z = static_cast<WORD>(readInt32());
+	char z = static_cast<char>(readInt32());
 
-	house->AddRoof(client, id, x, y, static_cast<signed char>(z));
+	house->AddRoof(client, id, x, y, z);
 	return true;
 }
 
@@ -3788,19 +4105,19 @@ bool PacketHouseDesignDestroyRoof::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	skip(1); // 0x00
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt32());
 	skip(1); // 0x00
-	WORD x = static_cast<WORD>(readInt32());
+	short x = static_cast<short>(readInt32());
 	skip(1); // 0x00
-	WORD y = static_cast<WORD>(readInt32());
+	short y = static_cast<short>(readInt32());
 	skip(1); // 0x00
-	WORD z = static_cast<WORD>(readInt32());
+	char z = static_cast<char>(readInt32());
 
-	house->RemoveRoof(client, id, x, y, static_cast<signed char>(z));
+	house->RemoveRoof(client, id, x, y, z);
 	return true;
 }
 
@@ -3823,7 +4140,7 @@ bool PacketSpecialMove::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(1);
@@ -3858,7 +4175,7 @@ bool PacketHouseDesignRevert::onReceive(NetState* net)
 	ASSERT(client);
 
 	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (house == NULL)
+	if (!house)
 		return true;
 
 	house->RevertChanges(client);
@@ -3904,7 +4221,7 @@ bool PacketGuildButton::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	if ( IsTrigUsed(TRIGGER_USERGUILDBUTTON) )
@@ -3931,7 +4248,7 @@ bool PacketQuestButton::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	if ( IsTrigUsed(TRIGGER_USERQUESTBUTTON) )
@@ -4088,7 +4405,7 @@ bool PacketUseHotbar::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(2); // 1
@@ -4120,7 +4437,7 @@ bool PacketEquipItemMacro::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(2); // packet length
@@ -4128,16 +4445,14 @@ bool PacketEquipItemMacro::onReceive(NetState* net)
 	if ( itemCount > 3 )	// prevent packet exploit sending fake values just to create heavy loops and overload server CPU
 		itemCount = 3;
 
-	CItem* item;
+	CItem* item = NULL;
 	for (BYTE i = 0; i < itemCount; i++)
 	{
 		item = CGrayUID(readInt32()).ItemFind();
-		if (item == NULL)
+		if (!item)
 			continue;
-
-		if (item->GetTopLevelObj() != character || item->IsItemEquipped())
+		if ((item->GetTopLevelObj() != character) || item->IsItemEquipped())
 			continue;
-
 		if (character->ItemPickup(item, item->GetAmount()) < 1)
 			continue;
 
@@ -4166,7 +4481,7 @@ bool PacketUnEquipItemMacro::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 	CChar* character = client->GetChar();
-	if (character == NULL)
+	if (!character)
 		return false;
 
 	skip(2); // packet length
@@ -4181,9 +4496,8 @@ bool PacketUnEquipItemMacro::onReceive(NetState* net)
 		layer = static_cast<LAYER_TYPE>(readInt16());
 
 		item = character->LayerFind(layer);
-		if (item == NULL)
+		if (!item)
 			continue;
-
 		if (character->ItemPickup(item, item->GetAmount()) < 1)
 			continue;
 

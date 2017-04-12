@@ -5,6 +5,7 @@
 #include "../common/CAssoc.h"
 #include "../common/CFileList.h"
 #include "../network/network.h"
+#include "../graysvr/PingServer.h"
 
 #ifdef _WIN32
 	#include "ntservice.h"	// g_Service
@@ -490,7 +491,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 				"L         Toggle log file (%s)\n"
 				"P         Profile Info (%s) (P# to dump to profiler_dump.txt)\n"
 				"R         Resync Pause\n"
-				"S         Secure mode toggle (%s)\n"
+				"S         Toggle Secure mode (%s)\n"
 				"STRIP     Dump all script templates to external file\n"
 				"T         List of active Threads\n"
 				"U         List used triggers\n"
@@ -650,7 +651,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 				{
 					IThread *thrCurrent = ThreadHolder::getThreadAt(iThreads);
 					if ( thrCurrent )
-						pSrc->SysMessagef("%" FMTSIZE_T " - ID: %u, Priority: %d, Name: %s\n", iThreads + 1, thrCurrent->getId(), thrCurrent->getPriority(), thrCurrent->getName());
+						pSrc->SysMessagef("Thread %" FMTSIZE_T ": %s (ID=%u, Priority=%d)\n", iThreads + 1, thrCurrent->getName(), thrCurrent->getId(), thrCurrent->getPriority());
 				}
 			} break;
 		case 'u':
@@ -740,140 +741,75 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 	goto endconsole;
 
 longcommand:
-	if ((( len > 1 ) && ( sText[1] != ' ' )) || ( low == 'b' ))
+	if ( ((len > 1) && (sText[1] != ' ')) || (low == 'b') )
 	{
 		LPCTSTR	pszText = sText;
-		
-		if ( !strnicmp(pszText, "strip", 5) || !strnicmp(pszText, "tngstrip", 8))
-		{
-			size_t			i = 0;
-			CResourceScript	*script;
-			FILE			*f, *f1;
-			char			*z = Str_GetTemp();
-			char			*y = Str_GetTemp();
-			char			*x;
-			LPCTSTR			dirname;
 
+		if ( !strnicmp(pszText, "strip", 5) )
+		{
 			if ( g_Cfg.m_sStripPath.IsEmpty() )
 			{
-				pSrc->SysMessage("StripPath not defined, function aborted.\n");
-				return( false );
+				pSrc->SysMessage("StripPath not defined on " GRAY_FILE ".ini, function aborted.\n");
+				return false;
 			}
 
-			dirname = g_Cfg.m_sStripPath;
+			FILE *stripFile, *scriptFile;
+			char *x;
+			char *y = Str_GetTemp();
+			char *z = Str_GetTemp();
 
+			strcpy(z, g_Cfg.m_sStripPath);
+			strcat(z, "sphere_strip" GRAY_SCRIPT);
+			pSrc->SysMessagef("StripPath is %s\n", z);
 
-			if ( !strnicmp(pszText, "strip tng", 9) || !strnicmp(pszText, "tngstrip", 8))
+			stripFile = fopen(z, "w");
+			if ( !stripFile )
 			{
-				strcpy(z, dirname);
-				strcat(z, "sphere_strip_tng" GRAY_SCRIPT);
-				pSrc->SysMessagef("StripFile is %s.\n", z);
-			
-				f1 = fopen(z, "w");
-			
-				if ( !f1 )
-				{
-					pSrc->SysMessagef("Cannot open file %s for writing.\n", z);
-					return( false );
-				}
-
-				while ( (script = g_Cfg.GetResourceFile(i++)) != NULL )
-				{
-					strcpy(z, script->GetFilePath());
-					f = fopen(z, "r");
-					if ( !f )
-					{
-						pSrc->SysMessagef("Cannot open file %s for reading.\n", z);
-						continue;
-					}
-
-					while ( !feof(f) )
-					{
-						z[0] = 0;
-						y[0] = 0;
-						fgets(y, SCRIPT_MAX_LINE_LEN, f);
-
-						x = y;
-						GETNONWHITESPACE(x);
-						strcpy(z,x);
-
-						_strlwr(z);
-
-						if ( (( z[0] == '[' ) && strnicmp(z, "[eof]", 5) != 0) || !strnicmp(z, "defname", 7) ||
-							!strnicmp(z, "name", 4) || !strnicmp(z, "type", 4) || !strnicmp(z, "id", 2) ||
-							!strnicmp(z, "weight", 6) || !strnicmp(z, "value", 5) || !strnicmp(z, "dam", 3) ||
-							!strnicmp(z, "armor", 5) || !strnicmp(z, "skillmake", 9) || !strnicmp(z, "on=@", 4) ||
-							!strnicmp(z, "dupeitem", 8) || !strnicmp(z, "dupelist", 8) || !strnicmp(z, "p=", 2) ||
-							!strnicmp(z, "can", 3) || !strnicmp(z, "tevents", 7) || !strnicmp(z, "subsection", 10) ||
-							!strnicmp(z, "description", 11) || !strnicmp(z, "category", 8) || !strnicmp(z, "color", 5) ||
-							!strnicmp(z, "resources", 9) )
-						{
-							fputs(y, f1);
-						}
-					}
-					fclose(f);
-				}
-				fclose(f1);
-				pSrc->SysMessagef("Scripts have just been stripped.\n");
-				return( true );
+				pSrc->SysMessagef("Cannot open file %s for writing.\n", z);
+				return false;
 			}
-			else if ( !strnicmp(pszText, "strip axis", 10) || !strnicmp(pszText, "strip", 5) )
+
+			size_t i = 0;
+			CResourceScript	*script;
+			while ( (script = g_Cfg.GetResourceFile(i++)) != NULL )
 			{
-				strcpy(z, dirname);
-				strcat(z, "sphere_strip_axis" GRAY_SCRIPT);
-				pSrc->SysMessagef("StripFile is %s.\n", z);
-			
-				f1 = fopen(z, "w");
-			
-				if ( !f1 )
+				strcpy(z, script->GetFilePath());
+				scriptFile = fopen(z, "r");
+				if ( !scriptFile )
 				{
-					pSrc->SysMessagef("Cannot open file %s for writing.\n", z);
-					return( false );
+					pSrc->SysMessagef("Cannot open file %s for reading.\n", z);
+					continue;
 				}
 
-				while ( (script = g_Cfg.GetResourceFile(i++)) != NULL )
+				while ( !feof(scriptFile) )
 				{
-					strcpy(z, script->GetFilePath());
-					f = fopen(z, "r");
-					if ( !f )
+					z[0] = 0;
+					y[0] = 0;
+					fgets(y, SCRIPT_MAX_LINE_LEN, scriptFile);
+
+					x = y;
+					GETNONWHITESPACE(x);
+					strcpy(z, x);
+
+					if ( ((z[0] == '[') && strnicmp(z, "[EOF]", 5) != 0) || !strnicmp(z, "DEFNAME", 7) || !strnicmp(z, "NAME", 4) ||
+						!strnicmp(z, "ID", 2) || !strnicmp(z, "TYPE", 4) || !strnicmp(z, "WEIGHT", 6) || !strnicmp(z, "VALUE", 5) ||
+						!strnicmp(z, "DAM", 3) || !strnicmp(z, "ARMOR", 5) || !strnicmp(z, "SKILLMAKE", 9) || !strnicmp(z, "RESOURCES", 9) ||
+						!strnicmp(z, "DUPEITEM", 8) || !strnicmp(z, "DUPELIST", 8) || !strnicmp(z, "CAN", 3) || !strnicmp(z, "TEVENTS", 7) ||
+						!strnicmp(z, "CATEGORY", 8) || !strnicmp(z, "SUBSECTION", 10) || !strnicmp(z, "DESCRIPTION", 11) || !strnicmp(z, "COLOR", 5) ||
+						!strnicmp(z, "GROUP", 5) || !strnicmp(z, "P=", 2) || !strnicmp(z, "RECT=", 5) || !strnicmp(z, "ON=@", 4) )
 					{
-						pSrc->SysMessagef("Cannot open file %s for reading.\n", z);
-						continue;
+						fputs(y, stripFile);
 					}
-
-					while ( !feof(f) )
-					{
-						z[0] = 0;
-						y[0] = 0;
-						fgets(y, SCRIPT_MAX_LINE_LEN, f);
-
-						x = y;
-						GETNONWHITESPACE(x);
-						strcpy(z,x);
-
-						_strlwr(z);
-
-						if ( (( z[0] == '[' ) && strnicmp(z, "[eof]", 5) != 0) || !strnicmp(z, "defname", 7) ||
-							!strnicmp(z, "name", 4) || !strnicmp(z, "type", 4) || !strnicmp(z, "id", 2) ||
-							!strnicmp(z, "weight", 6) || !strnicmp(z, "value", 5) || !strnicmp(z, "dam", 3) ||
-							!strnicmp(z, "armor", 5) || !strnicmp(z, "skillmake", 9) || !strnicmp(z, "on=@", 4) ||
-							!strnicmp(z, "dupeitem", 8) || !strnicmp(z, "dupelist", 8) || !strnicmp(z, "can", 3) ||
-							!strnicmp(z, "tevents", 7) || !strnicmp(z, "subsection", 10) || !strnicmp(z, "description", 11) ||
-							!strnicmp(z, "category", 8) || !strnicmp(z, "p=", 2) || !strnicmp(z, "resources", 9) ||
-							!strnicmp(z, "group", 5) || !strnicmp(z, "rect=", 5) )
-						{
-							fputs(y, f1);
-						}
-					}
-					fclose(f);
 				}
-				fclose(f1);
-				pSrc->SysMessagef("Scripts have just been stripped.\n");
-				return( true );
+				fclose(scriptFile);
 			}
+			fclose(stripFile);
+			pSrc->SysMessagef("Scripts have just been stripped.\n");
+			return true;
 		}
 
-		if ( g_Cfg.IsConsoleCmd(low) ) pszText++;
+		if ( g_Cfg.IsConsoleCmd(low) )
+			pszText++;
 
 		CScript	script(pszText);
 		if ( !g_Cfg.CanUsePrivVerb(this, pszText, pSrc) )
@@ -895,7 +831,7 @@ longcommand:
 
 endconsole:
 	sText.Empty();
-	return( fRet );
+	return fRet;
 }
 
 //************************************************
@@ -1402,7 +1338,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 		case SV_HEARALL:	// "HEARALL" = Hear all said.
 			{
 				pszMsg = Str_GetTemp();
-				g_Log.SetLogMask( s.GetArgFlag( g_Log.GetLogMask(), LOGM_PLAYER_SPEAK ));
+				g_Log.SetLogMask(static_cast<DWORD>(s.GetArgFlag(g_Log.GetLogMask(), LOGM_PLAYER_SPEAK)));
 				sprintf(pszMsg, "Hear All %s.\n", g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) ? "Enabled" : "Disabled" );
 			}
 			break;
@@ -1503,7 +1439,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 			break;
 		case SV_SECURE: // "SECURE"
 			pszMsg = Str_GetTemp();
-			g_Cfg.m_fSecure = s.GetArgFlag( g_Cfg.m_fSecure, true ) != 0;
+			g_Cfg.m_fSecure = (s.GetArgFlag(g_Cfg.m_fSecure, true) != 0);
 			SetSignals();
 			sprintf(pszMsg, "Secure mode %s.\n", g_Cfg.m_fSecure ? "enabled" : "disabled" );
 			break;
@@ -1512,7 +1448,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 #ifdef _WIN32
 				if ( GRAY_GetOSInfo()->dwPlatformId != 2 )
 				{
-					g_Log.EventError( "Command not avaible on Windows 95/98/ME.\n" );
+					g_Log.EventError( "Command not available on Windows 95/98/ME.\n" );
 					return( false );
 				}
 
@@ -1524,7 +1460,7 @@ bool CServer::r_Verb( CScript &s, CTextConsole * pSrc )
 
 				pSrc->SysMessage( "Memory shrinked succesfully.\n" );
 #else
-				g_Log.EventError( "Command not avaible on *NIX os.\n" );
+				g_Log.EventError( "Command not available on *NIX os.\n" );
 				return false;
 #endif
 			} break;
@@ -1798,7 +1734,7 @@ bool CServer::SocketsInit() // Initialize sockets
 			strcpy(szName, pHost->h_name);
 	}
 
-	g_Log.Event( LOGM_INIT, "Server started on hostname '%s'\n", szName);
+	g_Log.Event(LOGM_INIT, "\nServer started on hostname '%s'\n", szName);
 	if ( !iRet && pHost && pHost->h_addr )
 	{
 		for ( size_t i = 0; pHost->h_addr_list[i] != NULL; i++ )
@@ -1807,7 +1743,9 @@ bool CServer::SocketsInit() // Initialize sockets
 			ip.SetAddrIP(*((DWORD*)(pHost->h_addr_list[i]))); // 0.1.2.3
 			if ( !m_ip.IsLocalAddr() && !m_ip.IsSameIP(ip) )
 				continue;
-			g_Log.Event(LOGM_INIT, "Monitoring IP %s:%d\n", ip.GetAddrStr(), m_ip.GetPort());
+			g_Log.Event(LOGM_INIT, "Monitoring IP %s:%d (TCP) - Main server\n", ip.GetAddrStr(), m_ip.GetPort());
+			if ( IsSetEF(EF_UsePingServer) )
+				g_Log.Event(LOGM_INIT, "Monitoring IP %s:%d (UDP) - Ping server\n", ip.GetAddrStr(), PINGSERVER_PORT);
 		}
 	}
 	return true;
@@ -1899,7 +1837,7 @@ bool CServer::Load()
 			}
 			else
 			{
-nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
+nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "WinSock 1.1 not found!\n");
 				return( false );
 			}
 			sprintf(wSockInfo, "Using WinSock ver %d.%d (%s)\n", HIBYTE(wsaData.wVersion), LOBYTE(wsaData.wVersion), wsaData.szDescription);
@@ -1908,15 +1846,16 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 #endif
 
 	EXC_SET("loading ini");
-	g_Cfg.LoadIni(false);
+	if ( !g_Cfg.LoadIni(false) )
+		return false;
 
 	EXC_SET("log write");
 	g_Log.WriteString("\n");
 
 #if defined(__GITREVISION__) && defined(__GITHASH__)
-	g_Log.Event(LOGM_INIT, "%s, compiled at %s (%s) [build %d / GIT hash %s]\n", g_szServerDescription, __DATE__, __TIME__, __GITREVISION__, __GITHASH__);
+	g_Log.Event(LOGM_INIT, "%s\nCompiled: %s (%s) [build %d / GIT hash %s]\n\n", g_szServerDescription, __DATE__, __TIME__, __GITREVISION__, __GITHASH__);
 #else
-	g_Log.Event(LOGM_INIT, "%s, compiled at %s (%s)\n", g_szServerDescription, __DATE__, __TIME__);
+	g_Log.Event(LOGM_INIT, "%s\nCompiled: %s (%s)\n\n", g_szServerDescription, __DATE__, __TIME__);
 #endif
 
 #ifdef _WIN32
@@ -1924,22 +1863,26 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 		g_Log.Event(LOGM_INIT, wSockInfo);
 #endif
 
-
 #ifdef _NIGHTLYBUILD
-	g_Log.EventWarn("\r\n"
-					"This is a nightly build of SphereServer. This build is to be used\r\n"
-					"for testing and/or bug reporting ONLY. DO NOT run this build on a\r\n"
-					"live shard unless you know what you are doing!\r\n"
-					"Nightly builds are automatically made every night from source and\r\n"
-					"might contain errors, might be unstable or even destroy your\r\n"
-					"shard as they are mostly untested!\r\n"
-					"-----------------------------------------------------------------\r\n\r\n");
-
-	if (!g_Cfg.m_bAgree)
-	{
-		g_Log.EventError("Please write AGREE=1 in " GRAY_FILE ".ini file to acknowledge that\nyou understand the terms of use for nightly builds.\n");
-		return false;
-	}
+	g_Log.EventWarn("\n"
+					"This is a NIGHTLY build of SphereServer. Nightly builds are compiled automatically\n"
+					"from the source code with the latest updates, but might contain errors or might be\n"
+					"unstable. Take caution when using it on live servers.\n"
+					"----------------------------------------------------------------------------------\n\n");
+#endif
+#ifdef _DEBUG
+	g_Log.EventWarn("\n"
+					"This is a DEBUG build of SphereServer. Debug builds are compiled manually by developers\n"
+					"for testing purposes. It have extra debug behaviors that are useful for development but\n"
+					"will decrease server performance. Do not use it on live servers.\n"
+					"---------------------------------------------------------------------------------------\n\n");
+#endif
+#ifdef _PRIVATEBUILD
+	g_Log.EventWarn("\n"
+					"This is a CUSTOM build of SphereServer. Custom builds are non-official builds, which\n"
+					"have custom changes on source code not verified by official Sphere development team.\n"
+					"Use it as your own risk.\n"
+					"------------------------------------------------------------------------------------\n\n");
 #endif
 
 	EXC_SET("setting signals");
@@ -1948,21 +1891,9 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Winsock 1.1 not found!\n");
 	EXC_SET("loading scripts");
 	TriglistInit();
 	if ( !g_Cfg.Load(false) )
-		return( false );
+		return false;
 
-	EXC_SET("init encryption");
-	if ( m_ClientVersion.GetClientVer() )
-	{
-		TCHAR szVersion[128];
-		g_Log.Event(LOGM_INIT, "ClientVersion=%s\n", static_cast<LPCTSTR>(m_ClientVersion.WriteClientVerString(m_ClientVersion.GetClientVer(), szVersion)));
-		if ( !m_ClientVersion.IsValid() )
-		{
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Bad Client Version '%s'\n", szVersion);
-			return false;
-		}
-	}
-
-	EXC_SET("finilizing");
+	EXC_SET("finalizing");
 #ifdef _WIN32
 	TCHAR *pszTemp = Str_GetTemp();
 	sprintf(pszTemp, GRAY_TITLE " V" GRAY_VERSION " - %s", GetName());

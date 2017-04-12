@@ -75,6 +75,7 @@ CClient::~CClient()
 		history.m_connecting--;
 	history.m_connected--;
 
+	bool bWasChar = (m_pChar != NULL);
 	CharDisconnect();	// am i a char in game ?
 	Cmd_GM_PageClear();
 
@@ -84,7 +85,7 @@ CClient::~CClient()
 
 	if ( m_pAccount )
 	{
-		m_pAccount->OnLogout(this, (m_pChar != NULL));
+		m_pAccount->OnLogout(this, bWasChar);
 		m_pAccount = NULL;
 	}
 
@@ -194,14 +195,14 @@ void CClient::SysMessage( LPCTSTR pszMsg ) const	// system message (in lower lef
 		case CONNECT_TELNET:
 		case CONNECT_AXIS:
 		{
-			if ( ISINTRESOURCE(pszMsg) || *pszMsg == '\0' )
+			if ( ISINTRESOURCE(pszMsg) || (*pszMsg == '\0') )
 				return;
 			new PacketTelnet(this, pszMsg);
 			return;
 		}
 		case CONNECT_UOG:
 		{
-			if ( ISINTRESOURCE(pszMsg) || *pszMsg == '\0' )
+			if ( ISINTRESOURCE(pszMsg) || (*pszMsg == '\0') )
 				return;
 			new PacketTelnet(this, pszMsg, true);
 			return;
@@ -222,7 +223,7 @@ void CClient::SysMessage( LPCTSTR pszMsg ) const	// system message (in lower lef
 void CClient::Announce( bool fArrive ) const
 {
 	ADDTOCALLSTACK("CClient::Announce");
-	if ( !m_pAccount || !GetChar() || !GetChar()->m_pPlayer )
+	if ( !m_pAccount || !m_pChar || !m_pChar->m_pPlayer )
 		return;
 
 	// We have logged in or disconnected.
@@ -408,7 +409,7 @@ void CClient::UpdateFeatureFlags()
 	// 0x000400		10th age
 	// 0x000800		Increased house/bank storage
 	// 0x001000		Seventh character slot
-	// 0x002000		KR custom character faces
+	// 0x002000		Enable extra roleplay face styles on character creation	(enhanced clients only)
 	// 0x004000		Trial account
 	// 0x008000		Live account (required on clients 4.0.0+, otherwise bits 3..14 will be ignored)
 	// 0x010000		Enable SA features
@@ -446,12 +447,12 @@ void CClient::UpdateFeatureFlags()
 	if ( iResdisp >= RDS_AOS )
 	{
 		if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_A )
-			m_FeatureFlags |= (0x8000|0x10);
+			m_FeatureFlags |= (0x10|0x8000);
 	}
 
 	if ( iResdisp >= RDS_SE )
 	{
-		if ( g_Cfg.m_iFeatureSE & FEATURE_SE_NINJASAM )
+		if ( g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE )
 			m_FeatureFlags |= 0x40;
 	}
 
@@ -491,6 +492,13 @@ void CClient::UpdateFeatureFlags()
 		m_FeatureFlags |= 0x100000;
 	if ( g_Cfg.m_iFeatureExtra & FEATURE_EXTRA_SHADOWGUARD )
 		m_FeatureFlags |= 0x200000;
+
+	// Misc
+	if ( m_NetState->isClientKR() || m_NetState->isClientEnhanced() )
+	{
+		if ( g_Cfg.m_iFeatureExtra & FEATURE_EXTRA_ROLEPLAYFACES )
+			m_FeatureFlags |= 0x2000;
+	}
 }
 
 void CClient::UpdateCharacterListFlags()
@@ -533,7 +541,7 @@ void CClient::UpdateCharacterListFlags()
 
 	if ( iResdisp >= RDS_SE )
 	{
-		if ( g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE )
+		if ( g_Cfg.m_iFeatureSE & FEATURE_SE_NINJASAM )
 			m_CharacterListFlags |= 0x80;
 	}
 
@@ -565,8 +573,8 @@ void CClient::UpdateCharacterListFlags()
 
 	// Misc
 	if ( m_NetState->isClientKR() || m_NetState->isClientEnhanced() )		// tooltips must be always enabled on enhanced clients
-		m_CharacterListFlags |= (0x400|0x20);
-	m_TooltipEnabled = (m_CharacterListFlags & 0x20);
+		m_CharacterListFlags |= (0x400|0x200|0x20);
+	m_TooltipEnabled = (m_CharacterListFlags & 0x20) ? true : false;
 	m_ContainerGridEnabled = (m_NetState->isClientVersion(MINCLIVER_CONTAINERGRID) || m_NetState->isClientKR() || m_NetState->isClientEnhanced());
 }
 
@@ -630,7 +638,7 @@ bool CClient::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 						return false;
 					if ( !pChar->m_pClient )
 						return false;
-					CPartyDef::AcceptEvent(pChar, GetChar()->GetUID(), true);
+					CPartyDef::AcceptEvent(pChar, m_pChar->GetUID(), true);
 					if ( !m_pChar->m_pParty )
 						return false;
 					pszKey = oldKey;	// restoring back to real pszKey, so we don't get errors for giving an uid instead of PDV_CREATE
@@ -838,7 +846,7 @@ bool CClient::r_LoadVal( CScript & s )
 			m_pAccount->TogPrivFlags(PRIV_ALLMOVE, s.GetArgStr());
 			if ( IsSetOF(OF_Command_Sysmsgs) )
 				m_pChar->SysMessage(IsPriv(PRIV_ALLMOVE) ? "Allmove ON" : "Allmove OFF");
-			addPlayerView(NULL);
+			addPlayerSee(NULL);
 			break;
 		}
 		case CC_ALLSHOW:
@@ -847,7 +855,7 @@ bool CClient::r_LoadVal( CScript & s )
 			m_pAccount->TogPrivFlags(PRIV_ALLSHOW, s.GetArgStr());
 			if ( IsSetOF(OF_Command_Sysmsgs) )
 				m_pChar->SysMessage(IsPriv(PRIV_ALLSHOW) ? "Allshow ON" : "Allshow OFF");
-			addPlayerView(NULL);
+			addPlayerSee(NULL);
 			break;
 		}
 		case CC_DEBUG:
@@ -856,7 +864,7 @@ bool CClient::r_LoadVal( CScript & s )
 			m_pAccount->TogPrivFlags(PRIV_DEBUG, s.GetArgStr());
 			if ( IsSetOF(OF_Command_Sysmsgs) )
 				m_pChar->SysMessage(IsPriv(PRIV_DEBUG) ? "Debug ON" : "Debug OFF");
-			addPlayerView(NULL);
+			addPlayerSee(NULL);
 			break;
 		}
 		case CC_DETAIL:
@@ -997,7 +1005,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			else
 			{
 				if ( IsValidDef("d_add") )
-					Dialog_Setup(CLIMODE_DIALOG, g_Cfg.ResourceGetIDType(RES_DIALOG, "d_add"), 0, GetChar());
+					Dialog_Setup(CLIMODE_DIALOG, g_Cfg.ResourceGetIDType(RES_DIALOG, "d_add"), 0, m_pChar);
 				else
 					Menu_Setup(g_Cfg.ResourceGetIDType(RES_MENU, "MENU_ADDITEM"));
 			}
@@ -1038,7 +1046,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		case CV_REMOVEBUFF:
 		{
 			BUFF_ICONS IconId = static_cast<BUFF_ICONS>(s.GetArgVal());
-			if ( IconId < BI_START || IconId > BI_QTY )
+			if ( (IconId < BI_START) || (IconId > BI_QTY) )
 			{
 				DEBUG_ERR(("Invalid RemoveBuff icon ID\n"));
 				break;
@@ -1081,7 +1089,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 
 			for ( int i = 0; i < 4; i++ )
 			{
-				if ( i > 1 && IsStrEmpty(ppLocArgs[i]) )
+				if ( (i > 1) && IsStrEmpty(ppLocArgs[i]) )
 					continue;
 
 				if ( !IsStrNumeric(ppLocArgs[i]) )
@@ -1124,19 +1132,19 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		{
 			// Loop the world searching for bad spawns
 			bool bFound = false;
-			for ( int m = 0; m < 256 && !bFound; m++ )
+			for ( int m = 0; (m < 256) && !bFound; m++ )
 			{
 				if ( !g_MapList.m_maps[m] )
 					continue;
 
-				for ( int d = 0; d < g_MapList.GetSectorQty(m) && !bFound; d++ )
+				for ( int d = 0; (d < g_MapList.GetSectorQty(m)) && !bFound; d++ )
 				{
 					CSector *pSector = g_World.GetSector(m, d);
 					if ( !pSector )
 						continue;
 
 					CItem *pItem = static_cast<CItem *>(pSector->m_Items_Inert.GetHead());
-					for ( ; pItem != NULL && !bFound; pItem = pItem->GetNext() )
+					for ( ; (pItem != NULL) && !bFound; pItem = pItem->GetNext() )
 					{
 						if ( pItem->IsType(IT_SPAWN_ITEM) || pItem->IsType(IT_SPAWN_CHAR) )
 						{
@@ -1199,8 +1207,9 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		}
 		case CV_CHARLIST:		// usually just a gm command
 		{
+			if ( !PacketChangeCharacter::CanSendTo(m_NetState) )
+				break;
 			new PacketChangeCharacter(this);
-
 			CharDisconnect();	// since there is no undoing this in the client.
 			SetTargMode(CLIMODE_SETUP_CHARLIST);
 			break;
@@ -1373,6 +1382,15 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		{
 			m_Targ_UID.InitUID();
 			addTarget(CLIMODE_TARG_LINK, g_Cfg.GetDefaultMsg(DEFMSG_SELECT_LINK_ITEM));
+			break;
+		}
+		case CV_MAPWAYPOINT:
+		{
+			INT64 piVal[2];
+			Str_ParseCmds(s.GetArgRaw(), piVal, COUNTOF(piVal));
+
+			CObjBase *pObj = static_cast<CGrayUID>(piVal[0]).ObjFind();
+			addMapWaypoint(pObj, static_cast<MAPWAYPOINT_TYPE>(piVal[1]));
 			break;
 		}
 		case CV_MENU:
@@ -1597,11 +1615,9 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
 			if ( iArgQty > 1 )
 			{
-				HUE_TYPE hue = -1;
-				if ( ppArgs[0] )
-					hue = Exp_GetVal(ppArgs[0]);
-				if ( hue == -1 )
-					hue = HUE_TEXT_DEF;
+				HUE_TYPE hue = HUE_TEXT_DEF;
+				if ( ATOI(ppArgs[0]) > 0 )
+					hue = static_cast<HUE_TYPE>(Exp_GetVal(ppArgs[0]));
 
 				DWORD iClilocId = Exp_GetVal(ppArgs[1]);
 
@@ -1624,12 +1640,10 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
 			if ( iArgQty > 2 )
 			{
-				HUE_TYPE hue = -1;
+				HUE_TYPE hue = HUE_TEXT_DEF;
 				int affix = 0;
-				if ( ppArgs[0] )
-					hue = Exp_GetVal(ppArgs[0]);
-				if ( hue == -1 )
-					hue = HUE_TEXT_DEF;
+				if ( ATOI(ppArgs[0]) > 0 )
+					hue = static_cast<HUE_TYPE>(Exp_GetVal(ppArgs[0]));
 
 				DWORD iClilocId = Exp_GetVal(ppArgs[1]);
 
@@ -1677,7 +1691,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				if ( r_WriteVal(s.GetKey(), sVal, pSrc) )
 				{
 					//if ( !s.IsKeyHead("CTAG.", 5) && !s.IsKeyHead("CTAG0.", 6) )	// We don't want output related to CTAG
-					//	SysMessagef("%s = %s", (LPCTSTR)s.GetKey(), (LPCTSTR)sVal);	// feedback on what we just did.
+					//	SysMessagef("%s = %s", s.GetKey(), static_cast<LPCTSTR>(sVal));	// feedback on what we just did.
 					return true;
 				}
 			}

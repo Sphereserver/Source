@@ -117,18 +117,20 @@ bool CChar::NPC_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command fro
 		break;
 	}
 	case NV_SHRINK:
+	{
+		if ( !NPC_IsOwnedBy(pCharSrc) )
+			return false;
+
+		CItem *pItem = NPC_Shrink();
+		if ( pCharSrc && (pCharSrc != this) )
 		{
-			// we must own it.
-			if ( ! NPC_IsOwnedBy( pCharSrc ))
-				return( false );
-			CItem * pItem = NPC_Shrink(); // this delete's the char !!!
 			if ( pItem )
 				pCharSrc->m_Act_Targ = pItem->GetUID();
-			if (s.GetArgStr())
+			if ( s.GetArgVal() )
 				pCharSrc->ItemBounce(pItem);
-		
-			return( pItem != NULL );
 		}
+		return (pItem != NULL);
+	}
 	case NV_TRAIN:
 		return( NPC_OnTrainHear( pCharSrc, s.GetArgStr()));
 	case NV_WALK:
@@ -438,7 +440,7 @@ void CChar::NPC_OnHear( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
 	// hard code some default reactions.
 	if ( m_pNPC->m_Brain == NPCBRAIN_HEALER	|| Skill_GetBase( SKILL_SPIRITSPEAK ) >= 1000 )
 	{
-		if ( NPC_LookAtChar( pSrc, 1 ))
+		if ( NPC_LookAtChar(pSrc) )
 			return;
 	}
 
@@ -1012,7 +1014,7 @@ bool CChar::NPC_LookAtCharGuard( CChar * pChar )
 	else if ( !IsStatFlag(STATF_War) || m_Act_Targ != pChar->GetUID() )
 	{
 		Speak(g_Cfg.GetDefaultMsg(sm_szSpeakGuardStrike[Calc_GetRandVal(COUNTOF(sm_szSpeakGuardStrike))]));
-		Fight_Attack(pChar);
+		Fight_Attack(pChar, true);
 		Attacker_SetThreat(Attacker_GetID(pChar), 10000);
 	}
 	return true;
@@ -1201,29 +1203,35 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 		}
 	}
 
-	// Loot nearby items on ground
-	if ( iWantThisItem > Calc_GetRandVal(100) )
+	if ( NPC_GetAiFlags() & NPC_AI_LOOTING )
 	{
-		m_Act_Targ = pItem->GetUID();
-		NPC_Act_Looting();
-		return true;
-	}
+		// Loot nearby items on ground
+		if ( iWantThisItem > Calc_GetRandVal(100) )
+		{
+			m_Act_p = pItem->GetTopPoint();
+			m_Act_Targ = pItem->GetUID();
+			NPC_Act_Looting();
+			return true;
+		}
 
-	// Loot nearby corpses
-	if ( pItem->IsType(IT_CORPSE) && (NPC_GetAiFlags() & NPC_AI_LOOTING) && (Memory_FindObj(pItem) == NULL) )
-	{
-		m_Act_Targ = pItem->GetUID();
-		NPC_Act_Looting();
-		return true;
+		// Loot nearby corpses
+		if ( pItem->IsType(IT_CORPSE) )
+		{
+			if ( Memory_FindObj(pItem) )
+				return false;
+
+			m_Act_p = pItem->GetTopPoint();
+			m_Act_Targ = pItem->GetUID();
+			NPC_Act_Looting();
+			return true;
+		}
 	}
 
 	// Check for doors we can open
-	if ( pItem->IsType(IT_DOOR) && GetDist(pItem) <= 1 && CanTouch(pItem) && !Calc_GetRandVal(2) )
+	if ( pItem->IsType(IT_DOOR) )
 	{
-		if ( pItem->IsDoorOpen() )	// door is already open
+		if ( !Calc_GetRandVal(2) || (GetDist(pItem) > 1) || pItem->IsDoorOpen() )
 			return false;
-
-		UpdateDir(pItem);
 		if ( !Use_Item(pItem) )	// try to open it
 			return false;
 
@@ -1243,7 +1251,7 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 
 
 
-bool CChar::NPC_LookAtChar( CChar * pChar, int iDist )
+bool CChar::NPC_LookAtChar( CChar *pChar )
 {
 	ADDTOCALLSTACK("CChar::NPC_LookAtChar");
 	// I see a char.
@@ -1399,7 +1407,7 @@ bool CChar::NPC_LookAround( bool fForceCheckItems )
 			if ( Calc_GetRandVal(iDist) )
 				continue;	// can't see them.
 		}
-		if ( NPC_LookAtChar(pChar, iDist) )
+		if ( NPC_LookAtChar(pChar) )
 			return true;
 	}
 
@@ -1418,11 +1426,10 @@ bool CChar::NPC_LookAround( bool fForceCheckItems )
 				break;
 
 			iDist = GetTopDist3D(pItem);
-			if ( iDist > iRangeBlur )
-			{
-				if ( Calc_GetRandVal(iDist) )
-					continue;	// can't see them.
-			}
+			if ( (iDist > iRangeBlur) && Calc_GetRandVal(iDist) )
+				continue;	// can't see them.
+			if ( abs(GetTopZ() - pItem->GetTopZ()) > 5 )
+				continue;
 			if ( NPC_LookAtItem(pItem, iDist) )
 				return true;
 		}
@@ -1488,7 +1495,7 @@ void CChar::NPC_Act_Guard()
 	}
 
 	// Target is out of range or doesn't need protecting, so just follow for now
-	//NPC_LookAtChar(pChar, 1);
+	//NPC_LookAtChar(pChar);
 	NPC_Act_Follow();
 }
 
@@ -1627,17 +1634,6 @@ int CCharNPC::Spells_GetCount()
 	if (m_spells.empty())
 		return -1;
 	return m_spells.size();
-
-	// This code was meant to check if found spells does really exist
-	int total = 0;
-	for (size_t count = 0; count < m_spells.size() ; count++)
-	{
-		Spells refSpell = m_spells.at(count);
-		if (!refSpell.id)
-			continue;
-		total++;
-	}
-	return total;
 }
 
 // Retrieve the spell stored at index = n
@@ -1703,48 +1699,46 @@ int CCharNPC::Spells_FindSpell(SPELL_TYPE spellID)
 	return -1;
 }
 
-bool CChar::NPC_GetAllSpellbookSpells()	// Retrieves a spellbook from the magic school given in iSpell
+// Add all spells found on spellbooks to the NPC internal spell list
+void CChar::NPC_GetAllSpellbookSpells()
 {
-	ADDTOCALLSTACK("CChar::GetSpellbook");
-	//	search for suitable book in hands first
+	ADDTOCALLSTACK("CChar::NPC_GetAllSpellbookSpells");
+	// Search in hands
 	for ( CItem *pBook = GetContentHead(); pBook != NULL; pBook = pBook->GetNext() )
 	{
-		if (pBook->IsTypeSpellbook())
-		{
-			if (!NPC_AddSpellsFromBook(pBook))
-				continue;
-		}
+		if ( pBook->IsTypeSpellbook() )
+			NPC_AddSpellsFromBook(pBook);
 	}
 
-	//	then search in the top level of the pack
+	// Search in the top level of backpack
 	CItemContainer *pPack = GetContainer(LAYER_PACK);
 	if (pPack)
 	{
 		for ( CItem *pBook = pPack->GetContentHead(); pBook != NULL; pBook = pBook->GetNext() )
 		{
-			if (pBook->IsTypeSpellbook())
-			{
-				if (!NPC_AddSpellsFromBook(pBook))
-					continue;
-			}
+			if ( pBook->IsTypeSpellbook() )
+				NPC_AddSpellsFromBook(pBook);
 		}
 	}
-	return true;
 }
 
-bool CChar::NPC_AddSpellsFromBook(CItem * pBook)
+void CChar::NPC_AddSpellsFromBook(CItem * pBook)
 {
-	if (!m_pNPC)
-		return false;
-	SKILL_TYPE skill = pBook->GetSpellBookSkill();
-	int max = Spell_GetMax(skill);
-	for (int i = 0; i <= max; i++)
+	ADDTOCALLSTACK("CChar::NPC_AddSpellsFromBook");
+	CItemBase *pBookDef = pBook->Item_GetDef();
+	if ( !pBookDef )
+		return;
+
+	DWORD min = pBookDef->m_ttSpellbook.m_Offset + 1;
+	DWORD max = pBookDef->m_ttSpellbook.m_Offset + pBookDef->m_ttSpellbook.m_MaxSpells;
+
+	SPELL_TYPE spell = SPELL_NONE;
+	for ( DWORD i = min; i <= max; i++ )
 	{
-		SPELL_TYPE spell = static_cast<SPELL_TYPE>(i);
-		if (pBook->IsSpellInBook(spell))
+		spell = static_cast<SPELL_TYPE>(i);
+		if ( pBook->IsSpellInBook(spell) )
 			m_pNPC->Spells_Add(spell);
 	}
-	return true;
 }
 
 // cast a spell if i can ?
@@ -2145,7 +2139,7 @@ void CChar::NPC_Act_Fight()
 	{
 		// If a guard is ever too far away (missed a chance to swing)
 		// Teleport me closer.
-		NPC_LookAtChar( pChar, iDist );
+		NPC_LookAtChar(pChar);
 	}
 
 
@@ -2426,8 +2420,6 @@ void CChar::NPC_Act_Looting()
 	//
 	// m_Act_Targ = UID of the item/corpse that we trying to loot
 
-	if ( !(NPC_GetAiFlags() & NPC_AI_LOOTING) )
-		return;
 	if ( !m_pNPC || m_pNPC->m_Brain != NPCBRAIN_MONSTER || !Can(CAN_C_USEHANDS) || IsStatFlag(STATF_Conjured|STATF_Pet) || (m_TagDefs.GetKeyNum("DEATHFLAGS") & DEATH_NOCORPSE) )
 		return;
 	if ( m_pArea->IsFlag(REGION_FLAG_SAFE|REGION_FLAG_GUARDED) )
@@ -2583,7 +2575,7 @@ bool CChar::NPC_Act_Food()
 
 	m_pNPC->m_Act_Motivation = static_cast<BYTE>((50 - (iFoodLevel / 2)));
 
-	short	iEatAmount = 1;
+	WORD	iEatAmount = 1;
 	int		iSearchDistance = 2;
 	CItem	*pClosestFood = NULL;
 	int		iClosestFood = 100;
@@ -2660,12 +2652,9 @@ bool CChar::NPC_Act_Food()
 		if ( iClosestFood <= 1 )
 		{
 			//	can take and eat just in place
-			short iEaten = static_cast<short>(pClosestFood->ConsumeAmount(iEatAmount));
-			EatAnim(pClosestFood->GetName(), iEaten);
+			EatAnim(pClosestFood->GetName(), static_cast<short>(pClosestFood->ConsumeAmount(iEatAmount)));
 			if ( !pClosestFood->GetAmount() )
-			{
 				pClosestFood->Plant_CropReset();	// set growth if this is a plant
-			}
 		}
 		else
 		{
@@ -2725,8 +2714,7 @@ bool CChar::NPC_Act_Food()
 			CItem	*pResBit = g_World.CheckNaturalResource(GetTopPoint(), IT_GRASS, true, this);
 			if ( pResBit && pResBit->GetAmount() && ( pResBit->GetTopPoint().m_z == iMyZ ) )
 			{
-				short iEaten = static_cast<short>(pResBit->ConsumeAmount(10));
-				EatAnim("grass", iEaten/10);
+				EatAnim("grass", static_cast<short>(pResBit->ConsumeAmount(10) / 10));
 
 				//	the bit is not needed in a worldsave, timeout of 10 minutes
 				pResBit->m_TagDefs.SetNum("NOSAVE", 1);
@@ -3058,7 +3046,7 @@ void CChar::NPC_OnTickAction()
 			case NPCACT_FOLLOW_TARG:
 				// continue to follow our target.
 				EXC_SET("look at char");
-				NPC_LookAtChar( m_Act_Targ.CharFind(), 1 );
+				NPC_LookAtChar(m_Act_Targ.CharFind());
 				EXC_SET("follow char");
 				NPC_Act_Follow();
 				break;
@@ -3223,7 +3211,7 @@ void CChar::NPC_Food()
 
 	int		iFood = Stat_GetVal(STAT_FOOD);
 	int		iFoodLevel = Food_GetLevelPercent();
-	short		iEatAmount = 1;
+	WORD	iEatAmount = 1;
 	int		iSearchDistance = 2;
 	CItem	*pClosestFood = NULL;
 	int		iClosestFood = 100;
@@ -3289,12 +3277,9 @@ void CChar::NPC_Food()
 		{
 			//	can take and eat just in place
 			EXC_SET("eating nearby");
-			short iEaten = static_cast<short>(pClosestFood->ConsumeAmount(iEatAmount));
-			EatAnim(pClosestFood->GetName(), iEaten);
+			EatAnim(pClosestFood->GetName(), static_cast<short>(pClosestFood->ConsumeAmount(iEatAmount)));
 			if ( !pClosestFood->GetAmount() )
-			{
 				pClosestFood->Plant_CropReset();	// set growth if this is a plant
-			}
 		}
 		else
 		{
@@ -3346,8 +3331,7 @@ void CChar::NPC_Food()
 			if ( pResBit && pResBit->GetAmount() && ( pResBit->GetTopPoint().m_z == iMyZ ) )
 			{
 				EXC_SET("eating grass");
-				short iEaten = static_cast<short>(pResBit->ConsumeAmount(15));
-				EatAnim("grass", iEaten/10);
+				EatAnim("grass", static_cast<short>(pResBit->ConsumeAmount(15) / 10));
 
 				//	the bit is not needed in a worldsave, timeout of 10 minutes
 				pResBit->m_TagDefs.SetNum("NOSAVE", 1);

@@ -110,6 +110,7 @@ public:
 #define CAN_I_RECYCLE		0x400000	// Can items be recycled.
 #define CAN_I_REFORGE		0x800000	// Can items be Runic Reforged.
 #define CAN_I_FORCEDC		0x1000000	// Can force DClick skipping other checks (LOS,Distance, Cont...).
+#define CAN_I_DAMAGEABLE	0x2000000	// Display item health bar on HS clients >= 7.0.30.0 (MORE1L = cur hitpoints / MORE1H = max hitpoints)
 
 #define CAN_U_ALL			0x000
 #define CAN_U_MALE			0x001
@@ -173,9 +174,9 @@ public:
 		GETNONWHITESPACE( pszName );
 		m_sName = pszName;
 	}
-	bool Can( WORD wCan ) const
+	bool Can(DWORD wCan) const
 	{
-		return(( m_Can & wCan ) ? true : false );
+		return (m_Can & wCan) ? true : false;
 	}
 	virtual void UnLink()
 	{
@@ -443,7 +444,7 @@ enum IT_TYPE		// double click type action.
 	IT_MULTI_CUSTOM,	// 190 = Customisable multi
 	IT_SPELLBOOK_MYSTIC,	// 191 = SA Mysticism spellbook (should have MOREX=677 by default)
 	IT_HOVEROVER,		// 192 = Hover-over item (CAN_C_HOVER can hover over blocking items)
-	IT_SPELLBOOK_BARD,	// 193 = Bard spellbook (should have MOREZ=700 by default)
+	IT_SPELLBOOK_MASTERY,	// 193 = SA/TOL Masteries spellbook (should have MOREZ=700 by default)
 	IT_WEAPON_THROWING,	// 194 = Throwing Weapon
 	IT_CARTOGRAPHY,		// 195 = cartography tool
 	IT_COOKING,			// 196 = cooking tool
@@ -492,26 +493,31 @@ public:
 		// IT_ARMOR_LEATHER
 		// IT_SHIELD
 		// IT_CLOTHING
-		// IT_LIGHT_OUT
-		// IT_LIGHT_LIT
-		// IT_SPELLBOOK
 		// IT_JEWELRY
 		// IT_EQ_SCRIPT
 		// Container pack is the only exception here. IT_CONTAINER
 		struct	// ALL equippable items ex. Weapons and armor
 		{
-			int	m_junk1;
-			int		   m_StrReq;	// REQSTR= Strength required to weild weapons/armor.
-			RESOURCE_ID_BASE m_Light_ID;	// TDATA3=Change light state to on/off
+			int m_junk1;
+			int m_StrReq;			// REQSTR= Strength required to weild weapons/armor.
 		} m_ttEquippable;
+
+		// IT_LIGHT_OUT
+		// IT_LIGHT_LIT
+		struct
+		{
+			int	m_junk1;
+			int m_junk2;					// REQSTR= Strength required to weild weapons/armor.
+			RESOURCE_ID_BASE m_Light_ID;	// TDATA3=Change light state to on/off
+		} m_ttLightSource;
 
 		// IT_WEAPON_BOW
 		// IT_WEAPON_XBOW
 		// IT_WEAPON_THROWING
 		struct	// ALL equippable items ex. Weapons and armor
 		{
-			int		m_junk1;	// TDATA1= Sound it makes ?
-			int		m_StrReq;	// REQSTR= Strength required to weild weapons/armor.
+			int m_junk1;				// TDATA1= Sound it makes ?
+			int m_StrReq;				// REQSTR= Strength required to weild weapons/armor.
 			RESOURCE_ID_BASE m_idAmmo;	// TDATA3= required source ammo.
 			RESOURCE_ID_BASE m_idAmmoX;	// TDATA4= fired ammo fx.
 		} m_ttWeaponBow;
@@ -538,10 +544,26 @@ public:
 		// IT_EQ_HORSE
 		struct
 		{
-			int	m_junk1;
-			int		   m_StrReq;	// REQSTR= Strength required to mount
+			int m_junk1;
+			int m_StrReq;				// REQSTR= Strength required to mount
 			RESOURCE_ID_BASE m_charid;	// TDATA3= (CREID_TYPE)
 		} m_ttFigurine;
+
+		// IT_SPELLBOOK
+		// IT_SPELLBOOK_NECRO
+		// IT_SPELLBOOK_PALA
+		// IT_SPELLBOOK_BUSHIDO
+		// IT_SPELLBOOK_NINJITSU
+		// IT_SPELLBOOK_ARCANIST
+		// IT_SPELLBOOK_MYSTIC
+		// IT_SPELLBOOK_MASTERY
+		struct
+		{
+			int	m_junk1;
+			int	m_junk2;
+			DWORD m_Offset;		// TDATA3= First spell number of this book type
+			DWORD m_MaxSpells;	// TDATA4= Max spells that this book type can handle
+		} m_ttSpellbook;
 
 		// IT_MUSICAL
 		struct
@@ -560,7 +582,7 @@ public:
 		struct
 		{
 			int m_iSkillMin;	// tdata1= what is the lowest skill
-			int m_iSkillMax;	// tdata1= what is the highest skill for max yield
+			int m_iSkillMax;	// tdata2= what is the highest skill for max yield
 		} m_ttIngot;
 
 		// IT_DOOR
@@ -815,8 +837,8 @@ public:
 	};
 	struct ShipSpeed // speed of a ship
 	{
-		unsigned char period;	// time between movement
-		unsigned char tiles;	// distance to move
+		BYTE period;	// time between movement
+		BYTE tiles;		// distance to move
 	};
 
 	CGTypedArray<CMultiComponentItem,CMultiComponentItem&> m_Components;

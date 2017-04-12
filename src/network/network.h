@@ -45,12 +45,9 @@ class NetworkOutput;
 struct HistoryIP;
 typedef std::deque<HistoryIP> IPHistoryList;
 
-#if defined(_PACKETDUMP) || defined(_DUMPSUPPORT)
-	void xRecordPacketData(const CClient* client, const BYTE* data, size_t length, LPCTSTR heading);
-	void xRecordPacket(const CClient* client, Packet* packet, LPCTSTR heading);
-#else
-	#define xRecordPacketData(_client_, _data_, _length, _heading_)
-	#define xRecordPacket(_client_, _packet_, _heading_)
+#ifdef _DEBUG
+	void xRecordPacketData(const CClient *client, const BYTE *data, size_t length, LPCTSTR heading);
+	void xRecordPacket(const CClient *client, Packet *packet, LPCTSTR heading);
 #endif
 
 /***************************************************************************

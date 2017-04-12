@@ -68,14 +68,14 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0x11 : PacketCharacterStatus		sends status window data (LOW)
+ *	Packet 0x11 : PacketHealthBarInfo		sends health bar info (LOW)
  *
  *
  ***************************************************************************/
-class PacketCharacterStatus : public PacketSend
+class PacketHealthBarInfo : public PacketSend
 {
 public:
-	PacketCharacterStatus(const CClient* target, CChar* other);
+	PacketHealthBarInfo(const CClient* target, CObjBase* other);
 };
 
 /***************************************************************************
@@ -447,17 +447,17 @@ class PacketWarningMessage : public PacketSend
 public:
 	enum Message
 	{
-		BadPassword = 0x00,
-		NoCharacter = 0x01,
-		CharacterExists = 0x02,
-		Other = 0x03,
-		Other2 = 0x04,
-		CharacterInWorld = 0x05,
-		SyncError = 0x06,
-		Idle = 0x07,
-		CouldntAttachServer = 0x08,
-		CharacterTransfer = 0x09,
-		InvalidName = 0x0A
+		BadPassword =			0x00,
+		NoCharacter =			0x01,
+		CharacterExists =		0x02,
+		NoFreeCharacterSlots =	0x03,	// enhanced client only
+		AuthenticationError =	0x04,	// enhanced client only
+		CharacterInWorld =		0x05,
+		SyncError =				0x06,
+		Idle =					0x07,
+		CouldntAttachServer =	0x08,
+		CharacterTransfer =		0x09,
+		InvalidName =			0x0A
 	};
 
 	PacketWarningMessage(const CClient* target, Message code);
@@ -473,7 +473,7 @@ public:
 class PacketPlaySound : public PacketSend
 {
 public:
-	PacketPlaySound(const CClient* target, SOUND_TYPE sound, int flags, int volume, const CPointMap& pos);
+	PacketPlaySound(const CClient *target, SOUND_TYPE sound, BYTE flags, WORD volume, const CPointMap &pos);
 };
 
 /***************************************************************************
@@ -515,7 +515,7 @@ public:
 class PacketGameTime : public PacketSend
 {
 public:
-	PacketGameTime(const CClient* target, int hours = 0, int minutes = 0, int seconds = 0);
+	PacketGameTime(const CClient *target, BYTE hours = 0, BYTE minutes = 0, BYTE seconds = 0);
 };
 
 /***************************************************************************
@@ -528,7 +528,7 @@ public:
 class PacketWeather : public PacketSend
 {
 public:
-	PacketWeather(const CClient* target, WEATHER_TYPE weather, int severity, int temperature);
+	PacketWeather(const CClient *target, WEATHER_TYPE weather, BYTE severity, BYTE temperature);
 };
 
 /***************************************************************************
@@ -541,11 +541,11 @@ public:
 class PacketBookPageContent : public PacketSend
 {
 protected:
-	size_t m_pages;
+	WORD m_pages;
 
 public:
-	PacketBookPageContent(const CClient* target, const CItem* book, size_t startpage, size_t pagecount = 1);
-	void addPage(const CItem* book, size_t page);
+	PacketBookPageContent(const CClient *target, const CItem *book, WORD startpage, WORD pagecount = 1);
+	void addPage(const CItem *book, WORD page);
 };
 
 /***************************************************************************
@@ -696,7 +696,7 @@ public:
 class PacketVendorBuyList : public PacketSend
 {
 public:
-	PacketVendorBuyList(const CClient* target, const CChar* vendor, const CItemContainer* contParent, int convertFactor);
+	PacketVendorBuyList(const CClient* target, const CItemContainer* contParent, int convertFactor);
 };
 
 /***************************************************************************
@@ -767,6 +767,12 @@ class PacketChangeCharacter : public PacketSend
 {
 public:
 	PacketChangeCharacter(CClient* target);
+
+	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
+	static bool CanSendTo(const NetState* state)
+	{
+		return !(state->isClientKR() || state->isClientEnhanced());
+	}
 };
 
 /***************************************************************************
@@ -1066,7 +1072,7 @@ class PacketServerList : public PacketSend
 {
 public:
 	PacketServerList(const CClient* target);
-	void writeServerEntry(const CServerRef& server, int index, bool reverseIp);
+	void writeServerEntry(const CServerRef &server, WORD index, bool reverseIp);
 };
 
 /***************************************************************************
@@ -1145,7 +1151,7 @@ public:
 class PacketGumpDialog : public PacketSend
 {
 public:
-	PacketGumpDialog(int x, int y, CObjBase* object, DWORD context);
+	PacketGumpDialog(DWORD x, DWORD y, CObjBase *object, DWORD context);
 	void writeControls(const CClient* target, const CGString* controls, size_t controlCount, const CGString* texts, size_t textCount);
 
 protected:
@@ -1267,7 +1273,7 @@ public:
 class PacketGumpChange : public PacketExtended
 {
 public:
-	PacketGumpChange(const CClient* target, DWORD context, int buttonId);
+	PacketGumpChange(const CClient *target, DWORD context, DWORD buttonId);
 };
 
 /***************************************************************************
@@ -1345,7 +1351,7 @@ public:
 class PacketMapChange : public PacketExtended
 {
 public:
-	PacketMapChange(const CClient* target, int map);
+	PacketMapChange(const CClient *target, BYTE map);
 };
 
 /***************************************************************************
@@ -1645,7 +1651,7 @@ class PacketPropertyList : public PacketSend
 {
 protected:
 	CGrayUID m_object;
-	long long m_time;
+	UINT64 m_time;
 	DWORD m_version;
 	int m_entryCount;
 
@@ -1690,23 +1696,23 @@ private:
 		BYTE m_z;
 	};
 
-	StairData* m_stairBuffer;
-	int m_stairCount;
+	StairData *m_stairBuffer;
+	WORD m_stairCount;
 
 protected:
-	int m_itemCount;
-	int m_dataSize;
-	int m_planeCount;
-	int m_stairPlaneCount;
-	const CItemMultiCustom* m_house;
+	WORD m_itemCount;
+	WORD m_dataSize;
+	BYTE m_planeCount;
+	BYTE m_stairPlaneCount;
+	const CItemMultiCustom *m_house;
 
 public:
-	PacketHouseDesign(const CItemMultiCustom* house, int revision);
-	PacketHouseDesign(const PacketHouseDesign* other);
+	PacketHouseDesign(const CItemMultiCustom *house, DWORD revision);
+	PacketHouseDesign(const PacketHouseDesign *other);
 	virtual ~PacketHouseDesign(void);
 
-	bool writePlaneData(int plane, int itemCount, BYTE* data, int dataSize);
-	bool writeStairData(ITEMID_TYPE id, int x, int y, int z);
+	bool writePlaneData(BYTE plane, WORD itemCount, BYTE *data, DWORD dataSize);
+	bool writeStairData(ITEMID_TYPE id, BYTE x, BYTE y, BYTE z);
 	void flushStairData(void);
 	void finalise(void);
 
@@ -1774,6 +1780,44 @@ public:
 };
 
 /***************************************************************************
+*
+*
+*	Packet 0xE5 : PacketWaypointAdd			add waypoint on KR/SA radar map (LOW)
+*
+*
+***************************************************************************/
+class PacketWaypointAdd : public PacketSend
+{
+public:
+	PacketWaypointAdd(const CClient *target, CObjBase *object, MAPWAYPOINT_TYPE type);
+
+	virtual bool canSendTo(const NetState *state) const { return CanSendTo(state); }
+	static bool CanSendTo(const NetState *state)
+	{
+		return state->isClientKR() || state->isClientEnhanced();
+	}
+};
+
+/***************************************************************************
+*
+*
+*	Packet 0xE6 : PacketWaypointRemove		remove waypoint on KR/SA radar map (LOW)
+*
+*
+***************************************************************************/
+class PacketWaypointRemove : public PacketSend
+{
+public:
+	PacketWaypointRemove(const CClient *target, CObjBase *object);
+
+	virtual bool canSendTo(const NetState *state) const { return CanSendTo(state); }
+	static bool CanSendTo(const NetState *state)
+	{
+		return state->isClientKR() || state->isClientEnhanced();
+	}
+};
+
+/***************************************************************************
  *
  *
  *	Packet 0xEA : PacketToggleHotbar		toggle kr hotbar (NORMAL)
@@ -1807,7 +1851,7 @@ public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
-		return state->isClientVersion(MINCLIVER_SA) || state->isClientEnhanced() || state->isClientKR();
+		return state->isClientVersion(MINCLIVER_SA) || state->isClientKR() || state->isClientEnhanced();
 	}
 };
 
@@ -1826,9 +1870,10 @@ protected:
 public:
 	enum DataSource
 	{
-		TileData = 0x0,
-		Character = 0x1,
-		Multi = 0x2
+		TileData	= 0x0,
+		Character	= 0x1,
+		Multi		= 0x2,
+		Damageable	= 0x3
 	};
 
 	PacketItemWorldNew(const CClient* target, CItem* item);

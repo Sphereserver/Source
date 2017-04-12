@@ -5,6 +5,18 @@ pull_requests:
 build:
   project: GraySvr.vcxproj
   verbosity: minimal
+after_build:
+- cmd: mkdir accounts logs save scripts
+- cmd: 7z a SphereSvr-Win32.zip accounts\ logs\ save\ scripts\ %APPVEYOR_BUILD_FOLDER%\%CONFIGURATION%\SphereSvr.exe %APPVEYOR_BUILD_FOLDER%\src\sphere.ini %APPVEYOR_BUILD_FOLDER%\src\sphereCrypt.ini %APPVEYOR_BUILD_FOLDER%\src\common\mysql\lib\libmysql.dll
 artifacts:
-- path: $(configuration)\SphereSvr.exe
+- path: SphereSvr-Win32.zip
   name: SphereSvr
+deploy:
+  provider: FTP
+  protocol: ftp
+  host: spherecommunity.net
+  username:
+    secure: UAZaqnbj2s8C/ObEXIg6xA==
+  password:
+    secure: 0tC8NEgCp8IBChlZ0ssFdzgwkD+iX3FykjKaRQe+03k=
+  artifact: SphereSvr-Win32.zip

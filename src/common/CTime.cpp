@@ -12,9 +12,9 @@
 
 ULONGLONG GetTickCount64()
 {
-	struct timeval tv;
-	gettimeofday(&tv, NULL);
-	return static_cast<ULONGLONG>((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+	struct timespec ts;
+	clock_gettime(CLOCK_MONOTONIC, &ts);
+	return ((ts.tv_sec * 10000) + (ts.tv_nsec / 100000)) / 10;
 }
 #endif
 

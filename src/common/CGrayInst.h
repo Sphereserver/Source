@@ -53,6 +53,19 @@ public:
 	{
 		return( CGFile::GetMergedFileName( m_sCDPath, pszName ));
 	}
+	CGString GetMulFilesPath() const
+	{
+		CGString sPath = GetPreferPath();
+		if ( !sPath.IsEmpty() )
+			return sPath;
+		sPath = GetFullExePath();
+		if ( !sPath.IsEmpty() )
+			return sPath;
+		sPath = GetFullCDPath();
+		if ( !sPath.IsEmpty() )
+			return sPath;
+		return NULL;
+	}
 
 public:
 	bool FindInstall();

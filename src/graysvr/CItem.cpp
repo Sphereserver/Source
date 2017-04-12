@@ -86,8 +86,16 @@ bool CItem::NotifyDelete()
 void CItem::Delete(bool bforce)
 {
 
-	if (( NotifyDelete() == false ) && !bforce)
+	if ( !NotifyDelete() && !bforce )
 		return;
+
+	// Remove corpse map waypoint on enhanced clients
+	if ( IsType(IT_CORPSE) && m_uidLink )
+	{
+		CChar *pChar = m_uidLink.CharFind();
+		if ( pChar && pChar->m_pClient )
+			pChar->m_pClient->addMapWaypoint(this, Remove);
+	}
 
 	CObjBase::Delete();
 }
@@ -325,12 +333,12 @@ CItem * CItem::CreateHeader( TCHAR * pArg, CObjBase * pCont, bool fDupeCheck, CC
 	if ( rid.GetResIndex() == 0 )
 		return( NULL );
 
-	int amount = 1;
+	WORD amount = 1;
 	if ( Str_Parse( pArg, &pArg ))
 	{
 		if ( pArg[0] != 'R' )
 		{
-			amount = Exp_GetVal( pArg );
+			amount = static_cast<WORD>(Exp_GetVal(pArg));
 			Str_Parse( pArg, &pArg );
 		}
 		if ( pArg[0] == 'R' )
@@ -1059,7 +1067,7 @@ bool CItem::Stack( CItem * pItem )
 	ADDTOCALLSTACK("CItem::Stack");
 	// RETURN:
 	//  true = the item got stacked. (it is gone)
-	//  false = the item will not stack. (do somethjing else with it)
+	//  false = the item will not stack. (do something else with it)
 	// pItem is the item stacking on.
 
 	if ( !pItem )
@@ -1068,40 +1076,28 @@ bool CItem::Stack( CItem * pItem )
 		return true;
 	if ( !IsStackable(pItem) )
 		return false;
+	if ( m_Attr != pItem->m_Attr )
+		return false;
 	if ( !m_TagDefs.Compare(&pItem->m_TagDefs) )
 		return false;
 	if ( !m_BaseDefs.CompareAll(&pItem->m_BaseDefs) )
 		return false;
 
-	// Lost newbie status.
-	if ( IsAttr(ATTR_NEWBIE) != pItem->IsAttr(ATTR_NEWBIE) )
-		return false;
-	if ( IsAttr(ATTR_MOVE_NEVER) != pItem->IsAttr(ATTR_MOVE_NEVER) )
-		return false;
-	if ( IsAttr(ATTR_STATIC) != pItem->IsAttr(ATTR_STATIC) )
-		return false;
-	if ( IsAttr(ATTR_LOCKEDDOWN) != pItem->IsAttr(ATTR_LOCKEDDOWN) )
-		return false;
-
-	int amount = pItem->GetAmount() + GetAmount();
-	if ( amount > pItem->GetMaxAmount() )
+	DWORD amount = pItem->GetAmount() + GetAmount();
+	WORD amountMax = pItem->GetMaxAmount();
+	if ( amount > amountMax )
 	{
-		amount = pItem->GetMaxAmount() - pItem->GetAmount();
-		pItem->SetAmount(pItem->GetAmount() + amount);
-		pItem->Update();
-		SetAmount(GetAmount() - amount);
-		//Update();
-		ResendTooltip();
-		pItem->ResendTooltip();
+		amount = amountMax - pItem->GetAmount();
+		pItem->SetAmountUpdate(pItem->GetAmount() + static_cast<WORD>(amount));
+		SetAmountUpdate(GetAmount() - static_cast<WORD>(amount));
 		return false;
 	}
 	else
 	{
-		SetAmount(pItem->GetAmount() + GetAmount());
-		ResendTooltip();
+		SetAmountUpdate(pItem->GetAmount() + GetAmount());
 		pItem->Delete();
+		return true;
 	}
-	return true;
 }
 
 INT64 CItem::GetDecayTime() const
@@ -1477,10 +1473,6 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 			else if ( ! m_itRune.m_Strength )
 				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_FADED ) );
 			break;
-		case IT_TELEPAD:
-			if ( ! m_itTelepad.m_pntMark.IsValidPoint())
-				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_BLANK ) );
-			break;
 		default:
 			break;
 	}
@@ -1537,28 +1529,6 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 				const CItemStone *pStone = static_cast<const CItemStone*>(this);
 				ASSERT(pStone);
 				len += sprintf( pTemp+len, " (pop:%" FMTSIZE_T ")", pStone->GetCount());
-			}
-			break;
-
-		case IT_MEAT_RAW:
-		case IT_LEATHER:
-		case IT_HIDE:
-		case IT_FEATHER:
-		case IT_FUR:
-		case IT_WOOL:
-		case IT_BLOOD:
-		case IT_BONE:
-			if ( fIdentified )
-			{
-				CREID_TYPE id = static_cast<CREID_TYPE>(RES_GET_INDEX(m_itSkin.m_creid));
-				if ( id)
-				{
-					const CCharBase * pCharDef = CCharBase::FindCharBase( id );
-					if (pCharDef != NULL)
-					{
-						len += sprintf( pTemp+len, " (%s)", pCharDef->GetTradeName());
-					}
-				}
 			}
 			break;
 
@@ -1880,13 +1850,6 @@ void CItem::r_WriteMore2( CGString & sVal )
 	// do special processing to represent this.
 	switch ( GetType())
 	{
-		case IT_FRUIT:
-		case IT_FOOD:
-		case IT_FOOD_RAW:
-		case IT_MEAT_RAW:
-			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_CHARDEF, m_itFood.m_MeatType ));
-			return;
-
 		case IT_CROPS:
 		case IT_FOLIAGE:
 			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_ITEMDEF, m_itCrop.m_ReapFruitID ));
@@ -1933,6 +1896,10 @@ void CItem::r_Write( CScript & s )
 		s.WriteKeyHex("LINK", m_uidLink);
 	if ( m_Attr )
 		s.WriteKeyHex("ATTR", m_Attr);
+	if ( m_attackBase )
+		s.WriteKeyFormat("DAM", "%hu,%hu", m_attackBase, m_attackBase + m_attackRange);
+	if ( m_defenseBase )
+		s.WriteKeyFormat("ARMOR", "%hu,%hu", m_defenseBase, m_defenseBase + m_defenseRange);
 
 	if ( m_itNormal.m_more1 )
 	{
@@ -2336,10 +2303,7 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			sVal.FormatVal( m_itNormal.m_morep.m_y );
 			break;
 		case IC_MOREZ:
-			if ( IsTypeSpellbook() )
-				sVal.FormatVal(m_itSpellbook.m_baseid);
-			else
-				sVal.FormatVal(m_itNormal.m_morep.m_z);
+			sVal.FormatVal( m_itNormal.m_morep.m_z );
 			break;
 		case IC_P:
 			fDoDefault = true;
@@ -2680,10 +2644,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			m_itNormal.m_morep.m_y = static_cast<short>(s.GetArgVal());
 			break;
 		case IC_MOREZ:
-			if ( IsTypeSpellbook() )
-				m_itSpellbook.m_baseid = static_cast<WORD>(s.GetArgVal());
-			else
-				m_itNormal.m_morep.m_z = static_cast<char>(s.GetArgVal());
+			m_itNormal.m_morep.m_z = static_cast<char>(s.GetArgVal());
 			break;
 		case IC_P:
 			// Loading or import ONLY ! others use the r_Verb
@@ -2772,7 +2733,7 @@ bool CItem::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from s
 			pCharSrc->ItemBounce( this );
 			break;
 		case CIV_CONSUME:
-			ConsumeAmount( s.HasArgs() ? static_cast<DWORD>(s.GetArgVal()) : 1 );
+			ConsumeAmount(s.HasArgs() ? static_cast<DWORD>(s.GetArgVal()) : 1);
 			break;
 		case CIV_CONTCONSUME:
 			{
@@ -3339,26 +3300,22 @@ DWORD CItem::ConsumeAmount( DWORD iQty, bool fTest )
 	if ( this == NULL )	// can use none if there is nothing? or can we use all?
 		return iQty;
 
-	WORD iQtyMax = GetAmount();
+	DWORD iQtyMax = GetAmount();
 	if ( iQty < iQtyMax )
 	{
-		if ( ! fTest )
-		{
-			SetAmountUpdate( iQtyMax - iQty );
-		}
-		return( iQty );
+		if ( !fTest )
+			SetAmountUpdate(static_cast<WORD>(iQtyMax - iQty));
+		return iQty;
 	}
 
-	if ( ! fTest )
+	if ( !fTest )
 	{
-		SetAmount( 0 );	// let there be 0 amount here til decay.
-		if ( ! IsTopLevel() || ! IsAttr( ATTR_INVIS ))	// don't delete resource locators.
-		{
+		SetAmount(0);	// let there be 0 amount here til decay.
+		if ( !IsTopLevel() || !IsAttr(ATTR_INVIS) )	// don't delete resource locators.
 			Delete();
-		}
 	}
 
-	return( iQtyMax );
+	return iQtyMax;
 }
 
 SPELL_TYPE CItem::GetScrollSpell() const
@@ -3379,21 +3336,20 @@ SPELL_TYPE CItem::GetScrollSpell() const
 bool CItem::IsSpellInBook( SPELL_TYPE spell ) const
 {
 	ADDTOCALLSTACK("CItem::IsSpellInBook");
-	int i = spell;
-
-	//	max 96 spells in one spellbook
-	//	convert spell back to format of the book and check whatever it is in
-	if ( i <= m_itSpellbook.m_baseid )
+	CItemBase *pItemDef = Item_GetDef();
+	if ( !pItemDef )
+		return false;
+	if ( spell <= static_cast<SPELL_TYPE>(pItemDef->m_ttSpellbook.m_Offset) )
 		return false;
 
-	i -= (m_itSpellbook.m_baseid + 1);
-
+	// Convert spell back to format of the book and check whatever it is in
+	int i = spell - (pItemDef->m_ttSpellbook.m_Offset + 1);
 	if ( i < 32 )
 		return ((m_itSpellbook.m_spells1 & (1 << i)) != 0);
 	else if ( i < 64 )
 		return ((m_itSpellbook.m_spells2 & (1 << (i-32))) != 0);
-	else if ( i < 96 )
-		return ((m_itSpellbook.m_spells2 & (1 << (i-64))) != 0);
+	//else if ( i < 96 )
+	//	return ((m_itSpellbook.m_spells2 & (1 << (i-64))) != 0);	//not used anymore?
 	else
 		return false;
 }
@@ -3407,42 +3363,21 @@ int CItem::GetSpellcountInBook() const
 	if ( !IsTypeSpellbook() )
 		return -1;
 
+	CItemBase *pItemDef = Item_GetDef();
+	if ( !pItemDef )
+		return -1;
+
+	DWORD min = pItemDef->m_ttSpellbook.m_Offset + 1;
+	DWORD max = pItemDef->m_ttSpellbook.m_Offset + pItemDef->m_ttSpellbook.m_MaxSpells;
+
 	int count = 0;
-	for ( int i = SPELL_Clumsy; i <= SPELL_MAGERY_QTY; i++ )
+	for ( DWORD i = min; i <= max; i++ )
 	{
 		if ( IsSpellInBook(static_cast<SPELL_TYPE>(i)) )
 			count++;
 	}
 
 	return count;
-}
-
-SKILL_TYPE CItem::GetSpellBookSkill()
-{
-	ADDTOCALLSTACK("CItem::GetSpellBookSkill");
-	ASSERT(IsTypeSpellbook());
-	switch (GetType())
-	{
-		case IT_SPELLBOOK:
-			return SKILL_MAGERY;
-		case IT_SPELLBOOK_NECRO:
-			return SKILL_NECROMANCY;
-		case IT_SPELLBOOK_PALA:
-			return SKILL_CHIVALRY;
-		case IT_SPELLBOOK_BUSHIDO:
-			return SKILL_BUSHIDO;
-		case IT_SPELLBOOK_NINJITSU:
-			return SKILL_NINJITSU;
-		case IT_SPELLBOOK_ARCANIST:
-			return SKILL_SPELLWEAVING;
-		case IT_SPELLBOOK_MYSTIC:
-			return SKILL_MYSTICISM;
-		case IT_SPELLBOOK_BARD:
-		case IT_SPELLBOOK_EXTRA:
-		default:
-			break;
-	}
-	return SKILL_NONE;// SKILL_NONE returns 1000+ index in CChar::Spell_GetIndex()
 }
 
 int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
@@ -3456,21 +3391,19 @@ int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
 
 	if ( !IsTypeSpellbook() )
 		return 3;
-	if ( spell == SPELL_NONE )
+	const CItemBase *pBookDef = Item_GetDef();
+	if ( !pBookDef )
+		return 3;
+	if ( spell <= static_cast<SPELL_TYPE>(pBookDef->m_ttSpellbook.m_Offset) )
+		return 3;
+	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
+	if ( !pSpellDef )
 		return 2;
-	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
-	if ( pSpellDef == NULL )
-		return 2;
-
 	if ( IsSpellInBook(spell) )
 		return 1;
 
-	//	add spell to a spellbook bitmask
-	int i = spell;
-
-	if ( i <= m_itSpellbook.m_baseid )
-		return 3;
-	i -= (m_itSpellbook.m_baseid + 1);
+	// Add spell to spellbook bitmask
+	int i = spell - (pBookDef->m_ttSpellbook.m_Offset + 1);
 	if ( i < 32 )
 		m_itSpellbook.m_spells1 |= (1 << i);
 	else if ( i < 64 )
@@ -3480,21 +3413,22 @@ int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
 	else
 		return 3;
 
-	if (GetTopLevelObj()->IsChar())	// Intercepting the spell's addition here for NPCs, they store the spells on vector <Spells>m_spells for better access from their AI.
+	if ( GetTopLevelObj()->IsChar() )
 	{
-		CCharNPC * pNPC = dynamic_cast <CObjBase*>(GetTopLevelObj())->GetUID().CharFind()->m_pNPC;// ? dynamic_cast <CObjBase*>(GetTopLevelObj())->GetUID().CharFind()->m_pNPC : NULL;
-		if (pNPC)
+		// Intercepting the spell's addition here for NPCs, they store the spells on vector <Spells>m_spells for better access from their AI
+		CCharNPC *pNPC = dynamic_cast<CObjBase *>(GetTopLevelObj())->GetUID().CharFind()->m_pNPC;
+		if ( pNPC )
 			pNPC->Spells_Add(spell);
 	}
-	// update the spellbook
-	if ( fUpdate)
+
+	if ( fUpdate )
 	{
 		PacketItemContainer cmd(this, pSpellDef);
 
 		ClientIterator it;
-		for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
+		for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 		{
-			if ( ! pClient->CanSee( this ))
+			if ( !pClient->CanSee(this) )
 				continue;
 
 			cmd.completeForTarget(pClient, this);
@@ -4176,7 +4110,7 @@ bool CItem::Use_Light()
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(m_TagDefs.GetKeyNum("OVERRIDE_LIGHTID"));
 	if ( !id )
 	{
-		id = static_cast<ITEMID_TYPE>(Item_GetDef()->m_ttEquippable.m_Light_ID.GetResIndex());
+		id = static_cast<ITEMID_TYPE>(Item_GetDef()->m_ttLightSource.m_Light_ID.GetResIndex());
 		if ( !id )
 			return false;
 	}
@@ -4734,7 +4668,7 @@ forcedamage:
 		{
 			if ( previousDefense != Armor_GetDefense() )
 			{
-				pChar->m_defense = static_cast<WORD>(pChar->CalcArmorDefense());
+				pChar->m_defense = pChar->CalcArmorDefense();
 				pChar->UpdateStatsFlag();
 			}
 			else if ( previousDamage != Weapon_GetAttack() )
@@ -4920,13 +4854,16 @@ bool CItem::OnTick()
 		case IT_CORPSE:
 			{
 				EXC_SET("default behaviour::IT_CORPSE");
-				// turn player corpse into bones
-				CChar * pSrc = m_uidLink.CharFind();
+				// Turn player corpse into bones
+				CChar *pSrc = m_uidLink.CharFind();
 				if ( pSrc && pSrc->m_pPlayer )
 				{
+					if ( pSrc->m_pClient )
+						pSrc->m_pClient->addMapWaypoint(this, Remove);	// remove corpse map waypoint on enhanced clients
+
 					SetID(static_cast<ITEMID_TYPE>(Calc_GetRandVal2(ITEMID_SKELETON_1, ITEMID_SKELETON_9)));
 					SetHue(static_cast<HUE_TYPE>(HUE_DEFAULT));
-					SetTimeout(static_cast<long long>(g_Cfg.m_iDecay_CorpsePlayer));
+					SetTimeout(static_cast<INT64>(g_Cfg.m_iDecay_CorpsePlayer));
 					m_itCorpse.m_carved = 1;	// the corpse can't be carved anymore
 					m_uidLink.InitUID();		// and also it's not linked to the char anymore (others players can loot it without get flagged criminal)
 					RemoveFromView();

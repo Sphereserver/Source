@@ -650,7 +650,7 @@ void CClient::addGumpInpVal( bool fCancel, INPVAL_STYLE style,
 }
 
 
-void CClient::addGumpDialog( CLIMODE_TYPE mode, const CGString * psControls, size_t iControls, const CGString * psText, size_t iTexts, int x, int y, CObjBase * pObj, DWORD rid )
+void CClient::addGumpDialog( CLIMODE_TYPE mode, const CGString * psControls, size_t iControls, const CGString * psText, size_t iTexts, DWORD x, DWORD y, CObjBase * pObj, DWORD rid )
 {
 	ADDTOCALLSTACK("CClient::addGumpDialog");
 	// Add a generic GUMP menu.
@@ -658,23 +658,19 @@ void CClient::addGumpDialog( CLIMODE_TYPE mode, const CGString * psControls, siz
 	// NOTE: These packets can get rather LARGE.
 	// x,y = where on the screen ?
 
-	if ( pObj == NULL )
+	if ( !pObj )
 		pObj = m_pChar;
 
-	int	context_mode = mode;
-	if ( mode == CLIMODE_DIALOG && rid != 0 )
-	{
-		context_mode = rid & 0x00FFFFFF;
-	}
+	DWORD context_mode = mode;
+	if ( (mode == CLIMODE_DIALOG) && (rid != 0) )
+		context_mode = (rid & 0xFFFFFF);
 
-	PacketGumpDialog* cmd = new PacketGumpDialog(x, y, pObj, context_mode);
+	PacketGumpDialog *cmd = new PacketGumpDialog(x, y, pObj, context_mode);
 	cmd->writeControls(this, psControls, iControls, psText, iTexts);
 	cmd->push(this);
 	
 	if ( m_pChar )
-	{
 		m_mapOpenedGumps[context_mode]++;
-	}
 }
 
 bool CClient::addGumpDialogProps( CGrayUID uid )
@@ -752,10 +748,10 @@ TRIGRET_TYPE CClient::Dialog_OnButton( RESOURCE_ID_BASE rid, DWORD dwButtonID, C
 }
 
 
-bool CClient::Dialog_Close( CObjBase * pObj, DWORD rid, int buttonID )
+bool CClient::Dialog_Close( CObjBase * pObj, DWORD rid, DWORD buttonID )
 {
 	ADDTOCALLSTACK("CClient::Dialog_Close");
-	int gumpContext = rid & 0x00FFFFFF;
+	DWORD gumpContext = (rid & 0xFFFFFF);
 
 	new PacketGumpChange(this, gumpContext, buttonID);
 

@@ -850,60 +850,62 @@ enum EXTCMD_TYPE
 
 enum CHATMSG_TYPE	// Chat system messages.
 {
-	CHATMSG_NoError = -1,				// -1 = Our return code for no error, but no message either
-	CHATMSG_Error = 0,					// 0 - Error
-	CHATMSG_AlreadyIgnoringMax,			// 1 - You are already ignoring the maximum amount of people
-	CHATMSG_AlreadyIgnoringPlayer,		// 2 - You are already ignoring <name>
-	CHATMSG_NowIgnoring,				// 3 - You are now ignoring <name>
-	CHATMSG_NoLongerIgnoring,			// 4 - You no longer ignoring <name>
-	CHATMSG_NotIgnoring,				// 5 - You are not ignoring <name>
-	CHATMSG_NoLongerIgnoringAnyone,		// 6 - You are no longer ignoring anyone
-	CHATMSG_InvalidConferenceName,		// 7 - That is not a valid conference name
-	CHATMSG_AlreadyAConference,			// 8 - There is already a conference of that name
-	CHATMSG_MustHaveOps,				// 9 - You must have operator status to do this
-	CHATMSG_ConferenceRenamed,			// a - Conference <name> renamed to .
-	CHATMSG_MustBeInAConference,		// b - You must be in a conference to do this. To join a conference, select one from the Conference menu
-	CHATMSG_NoPlayer,					// c - There is no player named <name>
-	CHATMSG_NoConference,				// d - There is no conference named <name>
-	CHATMSG_IncorrectPassword,			// e - That is not the correct password
-	CHATMSG_PlayerIsIgnoring,			// f - <name> has chosen to ignore you. None of your messages to them will get through
-	CHATMSG_RevokedSpeaking,			// 10 - The moderator of this conference has not given you speaking priveledges.
-	CHATMSG_ReceivingPrivate,			// 11 - You can now receive private messages
-	CHATMSG_NoLongerReceivingPrivate,	// 12 - You will no longer receive private messages. Those who send you a message will be notified that you are blocking incoming messages
-	CHATMSG_ShowingName,				// 13 - You are now showing your character name to any players who inquire with the whois command
-	CHATMSG_NotShowingName,				// 14 - You are no long showing your character name to any players who inquire with the whois command
-	CHATMSG_PlayerIsAnonymous,			// 15 - <name> is remaining anonymous
-	CHATMSG_PlayerNotReceivingPrivate,	// 16 - <name> has chosen to not receive private messages at the moment
-	CHATMSG_PlayerKnownAs,				// 17 - <name> is known in the lands of britania as .
-	CHATMSG_PlayerIsKicked,				// 18 - <name> has been kicked out of the conference
-	CHATMSG_ModeratorHasKicked,			// 19 - <name>, a conference moderator, has kicked you out of the conference
-	CHATMSG_AlreadyInConference,		// 1a - You are already in the conference <name>
-	CHATMSG_PlayerNoLongerModerator,	// 1b - <name> is no longer a conference moderator
-	CHATMSG_PlayerIsAModerator,			// 1c - <name> is now a conference moderator
-	CHATMSG_RemovedListModerators,		// 1d - <name> has removed you from the list of conference moderators.
-	CHATMSG_YouAreAModerator,			// 1e - <name> has made you a conference moderator
-	CHATMSG_PlayerNoSpeaking,			// 1f - <name> no longer has speaking priveledges in this conference.
-	CHATMSG_PlayerNowSpeaking,			// 20 - <name> now has speaking priveledges in this conference
-	CHATMSG_ModeratorRemovedSpeaking,	// 21 - <name>, a channel moderator, has removed your speaking priveledges for this conference.
-	CHATMSG_ModeratorGrantSpeaking,		// 22 - <name>, a channel moderator, has granted you speaking priveledges for this conference.
-	CHATMSG_SpeakingByDefault,			// 23 - From now on, everyone in the conference will have speaking priviledges by default.
-	CHATMSG_ModeratorsSpeakDefault,		// 24 - From now on, only moderators in this conference will have speaking priviledges by default.
-	CHATMSG_PlayerTalk,					// 25 - <name>:
-	CHATMSG_PlayerEmote,				// 26 - *<name>*
-	CHATMSG_PlayerPrivate,				// 27 - [<name>]:
-	CHATMSG_PasswordChanged,			// 28 - The password to the conference has been changed
-	CHATMSG_NoMorePlayersAllowed,		// 29 - Sorry--the conference named <name> is full and no more players are allowed in.
+	CHATMSG_NoError = -1,				// Our return code for no error, but no message either
+	CHATMSG_Error,						// 0x00 - Error
+	CHATMSG_AlreadyIgnoringMax,			// 0x01 - You are already ignoring the maximum amount of people
+	CHATMSG_AlreadyIgnoringPlayer,		// 0x02 - You are already ignoring <name>
+	CHATMSG_NowIgnoring,				// 0x03 - You are now ignoring <name>
+	CHATMSG_NoLongerIgnoring,			// 0x04 - You no longer ignoring <name>
+	CHATMSG_NotIgnoring,				// 0x05 - You are not ignoring <name>
+	CHATMSG_NoLongerIgnoringAnyone,		// 0x06 - You are no longer ignoring anyone
+	CHATMSG_InvalidConferenceName,		// 0x07 - That is not a valid conference name
+	CHATMSG_AlreadyAConference,			// 0x08 - There is already a conference of that name
+	CHATMSG_MustHaveOps,				// 0x09 - You must have operator status to do this
+	CHATMSG_ConferenceRenamed,			// 0x0A - Conference <name> renamed to .
+	CHATMSG_MustBeInAConference,		// 0x0B - You must be in a conference to do this. To join a conference, select one from the Conference menu
+	CHATMSG_NoPlayer,					// 0x0C - There is no player named <name>
+	CHATMSG_NoConference,				// 0x0D - There is no conference named <name>
+	CHATMSG_IncorrectPassword,			// 0x0E - That is not the correct password
+	CHATMSG_PlayerIsIgnoring,			// 0x0F - <name> has chosen to ignore you. None of your messages to them will get through
+	CHATMSG_RevokedSpeaking,			// 0x10 - The moderator of this conference has not given you speaking priveledges.
+	CHATMSG_ReceivingPrivate,			// 0x11 - You can now receive private messages
+	CHATMSG_NoLongerReceivingPrivate,	// 0x12 - You will no longer receive private messages. Those who send you a message will be notified that you are blocking incoming messages
+	CHATMSG_ShowingName,				// 0x13 - You are now showing your character name to any players who inquire with the whois command
+	CHATMSG_NotShowingName,				// 0x14 - You are no long showing your character name to any players who inquire with the whois command
+	CHATMSG_PlayerIsAnonymous,			// 0x15 - <name> is remaining anonymous
+	CHATMSG_PlayerNotReceivingPrivate,	// 0x16 - <name> has chosen to not receive private messages at the moment
+	CHATMSG_PlayerKnownAs,				// 0x17 - <name> is known in the lands of britania as .
+	CHATMSG_PlayerIsKicked,				// 0x18 - <name> has been kicked out of the conference
+	CHATMSG_ModeratorHasKicked,			// 0x19 - <name>, a conference moderator, has kicked you out of the conference
+	CHATMSG_AlreadyInConference,		// 0x1A - You are already in the conference <name>
+	CHATMSG_PlayerNoLongerModerator,	// 0x1B - <name> is no longer a conference moderator
+	CHATMSG_PlayerIsAModerator,			// 0x1C - <name> is now a conference moderator
+	CHATMSG_RemovedListModerators,		// 0x1D - <name> has removed you from the list of conference moderators.
+	CHATMSG_YouAreAModerator,			// 0x1E - <name> has made you a conference moderator
+	CHATMSG_PlayerNoSpeaking,			// 0x1F - <name> no longer has speaking priveledges in this conference.
+	CHATMSG_PlayerNowSpeaking,			// 0x20 - <name> now has speaking priveledges in this conference
+	CHATMSG_ModeratorRemovedSpeaking,	// 0x21 - <name>, a channel moderator, has removed your speaking priveledges for this conference.
+	CHATMSG_ModeratorGrantSpeaking,		// 0x22 - <name>, a channel moderator, has granted you speaking priveledges for this conference.
+	CHATMSG_SpeakingByDefault,			// 0x23 - From now on, everyone in the conference will have speaking priviledges by default.
+	CHATMSG_ModeratorsSpeakDefault,		// 0x24 - From now on, only moderators in this conference will have speaking priviledges by default.
+	CHATMSG_PlayerTalk,					// 0x25 - <name>:
+	CHATMSG_PlayerEmote,				// 0x26 - *<name>*
+	CHATMSG_PlayerPrivate,				// 0x27 - [<name>]:
+	CHATMSG_PasswordChanged,			// 0x28 - The password to the conference has been changed
+	CHATMSG_NoMorePlayersAllowed,		// 0x29 - Sorry--the conference named <name> is full and no more players are allowed in.
+	CHATMSG_Banning,					// 0x2A - You are banning <name> from this conference.
+	CHATMSG_ModeratorHasBanned,			// 0x2B - <name>, a conference moderator, has banned you from the conference.
+	CHATMSG_Banned,						// 0x2C - You have been banned from this conference.
 
-	CHATMSG_SendChannelName =	0x03e8, // Message to send a channel name and mode to client's channel list
-	CHATMSG_RemoveChannelName =	0x03e9, // Message to remove a channel name from client's channel list
-	CHATMSG_GetChatName =		0x03eb,	// Ask the client for a permanent chat name
-	CHATMSG_CloseChatWindow =	0x03ec,	// Close the chat system dialogs on the client???
-	CHATMSG_OpenChatWindow =	0x03ed,	// Open the chat system dialogs on the client
-	CHATMSG_SendPlayerName =	0x03ee,	// Message to add a player out to client (prefixed with a "1" if they are the moderator or a "0" if not
-	CHATMSG_RemoveMember =		0x03ef,	// Message to remove a player from clients channel member list
-	CHATMSG_ClearMemberList =	0x03f0,	// This message clears the list of channel participants (for when leaving a channel)
-	CHATMSG_UpdateChannelBar =	0x03f1,	// This message changes the name in the channel name bar
-	CHATMSG_QTY							// Error (but does 0x03f1 anyways)
+	CHATMSG_SendChannelName =	0x3E8,	// Message to send a channel name and mode to client's channel list
+	CHATMSG_RemoveChannelName,			// Message to remove a channel name from client's channel list
+	CHATMSG_GetChatName =		0x3EB,	// Ask the client for a permanent chat name
+	CHATMSG_CloseChatWindow,			// Close the chat system dialogs on the client???
+	CHATMSG_OpenChatWindow,				// Open the chat system dialogs on the client
+	CHATMSG_SendPlayerName,				// Message to add a player out to client (prefixed with a "1" if they are the moderator or a "0" if not
+	CHATMSG_RemoveMember,				// Message to remove a player from clients channel member list
+	CHATMSG_ClearMemberList,			// This message clears the list of channel participants (for when leaving a channel)
+	CHATMSG_UpdateChannelBar,			// This message changes the name in the channel name bar
 };
 
 enum INPVAL_STYLE	// for the various styles for InpVal box.
@@ -924,6 +926,26 @@ enum MAPCMD_TYPE
 	MAP_CLEAR = 5,
 	MAP_TOGGLE = 6,
 	MAP_SENT = 7
+};
+
+enum MAPWAYPOINT_TYPE
+{
+	Remove				= 0x0,
+	Corpse				= 0x1,
+	PartyMember			= 0x2,
+	Unk1				= 0x3,
+	QuestGiver			= 0x4,
+	NewPlayerQuest		= 0x5,
+	Healer				= 0x6,
+	Unk2				= 0x7,
+	Unk3				= 0x8,
+	Unk4				= 0x9,
+	Unk5				= 0xA,
+	Shrine				= 0xB,
+	Moongate			= 0xC,
+	Unk6				= 0xD,
+	GreenDot			= 0xE,
+	GreenDotFlashing	= 0xF
 };
 
 enum WEATHER_TYPE

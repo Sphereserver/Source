@@ -48,7 +48,7 @@ private:
 	BYTE m_ResDisp; ///< current CAccount resdisp.
 	BYTE m_MaxChars; ///< Max chars allowed for this CAccount.
 	
-	typedef struct { INT64 m_First; INT64 m_Last; INT64 m_Delay; } TimeTriesStruct_t;
+	typedef struct { UINT64 m_First; UINT64 m_Last; UINT64 m_Delay; } TimeTriesStruct_t;
 	typedef std::pair<TimeTriesStruct_t, int> BlockLocalTimePair_t;
 	typedef std::map<DWORD,BlockLocalTimePair_t> BlockLocalTime_t;
 	BlockLocalTime_t m_BlockIP; ///< Password tries.

@@ -18,7 +18,7 @@
 // NOTE: !!! ALL Multi bytes in file ASSUME big endian !!!!
 
 #define UO_MAP_VIEW_SIGHT	14	// True max sight distance of creatures is 14
-#define UO_MAP_VIEW_SIZE	18	// Visibility for normal items
+#define UO_MAP_VIEW_SIZE	18	// Visibility for normal items (on old clients it's always 18, and since client 7.0.55.27 it's now dynamic 18~24 based on client screen resolution)
 #define UO_MAP_VIEW_RADAR	31	// Visibility for castles, keeps and boats
 
 ////////////////////////////////////////////////////////////////////////
@@ -32,38 +32,29 @@ typedef WORD HUE_TYPE;		// Index into the hues.mul table.
 
 enum HUE_CODE
 {
-	HUE_DEFAULT			= 0x0,
-
-	HUE_BLUE_LOW		= 0x2,		// lowest dyeable color
-	HUE_BLUE_NAVY		= 0x3,
-	HUE_RED_DARK		= 0x20,
-	HUE_RED				= 0x22,
-	HUE_YELLOW			= 0x35,
-	HUE_GRAY			= 0x387,
-
-	HUE_TEXT_DEF		= 0x3B2,	// light gray color
-
-	HUE_DYE_HIGH		= 0x3E9,	// highest dyeable color
-
-	HUE_SKIN_LOW		= 0x3EA,
-	HUE_SKIN_HIGH		= 0x422,
-
-	// Strange mixed colors.
-	HUE_HAIR_LOW		= 0x44E,
-	HUE_HAIR_HIGH		= 0x47D,
-	HUE_WHITE			= 0x481,
-	HUE_STONE			= 0x482,
-
-	HUE_GARGSKIN_LOW	= 0x6DB,
-	HUE_GARGSKIN_HIGH	= 0x6F3,
-
-	HUE_MASK_LO			= 0x7FF,	// mask for items. (not really a valid thing to do i know)
-
-	HUE_QTY				= 0xBB8,	// number of valid colors in hue table
-	HUE_MASK_HI			= 0xFFF,
-
-	HUE_TRANSLUCENT		= 0x4000,	// almost invis. may crash if not equipped ?
-	HUE_UNDERWEAR		= 0x8000	// Only can be used on humans.
+	HUE_DEFAULT				= 0x0,
+	HUE_BLUE_LOW			= 0x2,		// lowest dyeable color
+	HUE_BLUE_NAVY			= 0x3,
+	HUE_RED_DARK			= 0x20,
+	HUE_RED					= 0x22,
+	HUE_YELLOW				= 0x35,
+	HUE_GRAY				= 0x387,
+	HUE_TEXT_DEF			= 0x3B2,	// light gray color
+	HUE_DYE_HIGH			= 0x3E9,	// highest dyeable color
+	HUE_SKIN_LOW			= 0x3EA,
+	HUE_SKIN_HIGH			= 0x422,
+	HUE_HAIR_LOW			= 0x44E,
+	HUE_HAIR_HIGH			= 0x47D,
+	HUE_WHITE				= 0x481,
+	HUE_STONE				= 0x482,
+	HUE_GARGSKIN_LOW		= 0x6DB,
+	HUE_GARGSKIN_HIGH		= 0x6F3,
+	HUE_MASK_LO				= 0x7FF,	// mask for items. (not really a valid thing to do i know)
+	HUE_QTY					= 0xBB8,	// number of valid colors in hue table
+	HUE_MASK_HI				= 0xFFF,
+	HUE_MASK_TRANSLUCENT	= 0x4000,
+	HUE_TRANSLUCENT			= 0x4001,
+	HUE_MASK_UNDERWEAR		= 0x8000	// can be used only on chars
 };
 
 typedef WORD SOUND_TYPE;	// Sound ID
@@ -71,6 +62,8 @@ typedef WORD SOUND_TYPE;	// Sound ID
 enum SOUND_CODE
 {
 	SOUND_NONE			= 0x0,
+	SOUND_DROP_GOLD1	= 0x32,
+	SOUND_DROP_GOLD2	= 0x37,
 	SOUND_HAMMER		= 0x42,
 	SOUND_LEATHER		= 0x48,
 	SOUND_RUSTLE		= 0x4F,
@@ -339,14 +332,75 @@ enum ITEMID_TYPE	// InsideUO is great for this stuff.
 	ITEMID_FX_FIRE_F_EW			= 0x398C,
 	ITEMID_FX_FIRE_F_NS			= 0x3996,
 
+	ITEMID_FACE_1				= 0x3B44,
+	ITEMID_FACE_2				= 0x3B45,
+	ITEMID_FACE_3				= 0x3B46,
+	ITEMID_FACE_4				= 0x3B47,
+	ITEMID_FACE_5				= 0x3B48,
+	ITEMID_FACE_6				= 0x3B49,
+	ITEMID_FACE_7				= 0x3B4A,
+	ITEMID_FACE_8				= 0x3B4B,
+	ITEMID_FACE_9				= 0x3B4C,
+	ITEMID_FACE_10				= 0x3B4D,
+	ITEMID_FACE_ANIME			= 0x3B4E,
+	ITEMID_FACE_HELLIAN			= 0x3B4F,
+	ITEMID_FACE_JUKA			= 0x3B50,
+	ITEMID_FACE_UNDEAD			= 0x3B51,
+	ITEMID_FACE_MEER			= 0x3B52,
+	ITEMID_FACE_ELDER			= 0x3B53,
+	ITEMID_FACE_ORC				= 0x3B54,
+	ITEMID_FACE_PIRATE			= 0x3B55,
+	ITEMID_FACE_NATIVE_PAPUAN	= 0x3B56,
+	ITEMID_FACE_VAMPIRE			= 0x3B57,
+
 	ITEMID_HEALING_STONE		= 0x4078,
-	ITEMID_DOOR_WALLSET3		= 0x409B,
+	ITEMID_DOOR_GARGISH_GREEN	= 0x409B,
 
-	ITEMID_DOOR_GARGOYLE		= 0x410C,
-	ITEMID_DOOR_WALLSET2		= 0x41C2,
-	ITEMID_DOOR_WALLSET1		= 0x41CF,
+	ITEMID_DOOR_GARGISH_BROWN	= 0x410C,
+	ITEMID_DOOR_SUN				= 0x41C2,
+	ITEMID_DOOR_GARGISH_GREY	= 0x41CF,
 
-	ITEMID_DOOR_QUEEN			= 0x4D1A,
+	ITEMID_GARG_HORN_1			= 0x4258,
+	ITEMID_GARG_HORN_2			= 0x4259,
+	ITEMID_GARG_HORN_3			= 0x425A,
+	ITEMID_GARG_HORN_4			= 0x425B,
+	ITEMID_GARG_HORN_5			= 0x425C,
+	ITEMID_GARG_HORN_6			= 0x425D,
+	ITEMID_GARG_HORN_7			= 0x425E,
+	ITEMID_GARG_HORN_8			= 0x425F,
+	ITEMID_GARG_HORN_FEMALE_1	= 0x4261,
+	ITEMID_GARG_HORN_FEMALE_2	= 0x4262,
+	ITEMID_GARG_HORN_FEMALE_3	= 0x4273,
+	ITEMID_GARG_HORN_FEMALE_4	= 0x4274,
+	ITEMID_GARG_HORN_FEMALE_5	= 0x4275,
+	ITEMID_GARG_HORN_FEMALE_6	= 0x42AA,
+	ITEMID_GARG_HORN_FEMALE_7	= 0x42AB,
+	ITEMID_GARG_HORN_FACIAL_1	= 0x42AD,
+	ITEMID_GARG_HORN_FACIAL_2	= 0x42AE,
+	ITEMID_GARG_HORN_FACIAL_3	= 0x42AF,
+	ITEMID_GARG_HORN_FACIAL_4	= 0x42B0,
+	ITEMID_GARG_HORN_FEMALE_8	= 0x42B1,
+
+	ITEMID_DOOR_GARGISH_SET		= 0x436E,
+
+	ITEMID_DOOR_RUINED			= 0x46DD,
+
+	ITEMID_DOOR_GARGISH_BLUE	= 0x4D1A,
+
+	ITEMID_DOOR_GARGISH_RED		= 0x50C8,
+
+	ITEMID_DOOR_GARGISH_PRISON	= 0x5142,
+
+	ITEMID_FACE_1_GARG			= 0x5679,
+	ITEMID_FACE_2_GARG			= 0x567A,
+	ITEMID_FACE_3_GARG			= 0x567B,
+	ITEMID_FACE_4_GARG			= 0x567C,
+	ITEMID_FACE_5_GARG			= 0x567D,
+	ITEMID_FACE_6_GARG			= 0x567E,
+
+	ITEMID_DOOR_JUNGLE			= 0x9AD7,
+
+	ITEMID_DOOR_SHADOWGUARD		= 0x9B3C,
 
 	// Large composite objects here.
 	ITEMID_MULTI_LEGACY			= 0x4000,	// ITEMID_MULTI for old clients (< 7.0.0.0)
@@ -489,18 +543,17 @@ enum CREID_TYPE		// enum the creature art work. (dont allow any others !) also k
 	CREID_Sheep_Sheered		= 0xDF,
 	CREID_HORSE2			= 0xE2,
 	CREID_HORSE3			= 0xE4,
-	CREID_Reaper_Form		= 0xE6,
 	CREID_Cow2				= 0xE7,
 	CREID_Bull_Brown		= 0xE8,		// light brown
 	CREID_Bull2				= 0xE9,		// dark brown
 	CREID_Hart				= 0xEA,
 	CREID_Deer				= 0xED,
 
+	CREID_REAPER_FORM		= 0x11D,
+
 	CREID_Boar				= 0x122,	// large pig
 	CREID_HORSE_PACK		= 0x123,
 	CREID_LLAMA_PACK		= 0x124,
-
-	CREID_Vampire_Bat		= 0x13D,
 
 	// all below here are humanish or clothing
 	CREID_MAN				= 0x190,
@@ -523,10 +576,15 @@ enum CREID_TYPE		// enum the creature art work. (dont allow any others !) also k
 	CREID_GARGGHOSTMAN		= 0x2B6,
 	CREID_GARGGHOSTWOMAN	= 0x2B7,
 
-	CREID_Stone_Form		= 0x2C1,
+	CREID_STONE_FORM		= 0x2C1,
 
-	CREID_Horrific_Beast	= 0x2EA,
-	CREID_Revenant			= 0x2EE,
+	CREID_VAMPIREMAN		= 0x2E8,
+	CREID_VAMPIREWOMAN		= 0x2E9,
+	CREID_HORRIFIC_BEAST	= 0x2EA,
+	CREID_WAILING_BANSHEE2	= 0x2EB,
+	CREID_WRAITH			= 0x2EC,
+	CREID_LICH_FORM			= 0x2ED,
+	CREID_REVENANT			= 0x2EE,
 
 	CREID_IRON_GOLEM		= 0x2F0,
 
@@ -739,8 +797,6 @@ enum DIR_TYPE	// Walking directions. m_dir
 	DIR_W,
 	DIR_NW,
 	DIR_QTY,		// Also means "Center"
-
-	DIR_ANIM_QTY = 5	// Seems we only need 5 pics for an anim, assume ALL bi-symetrical creatures
 };
 
 enum SKILL_TYPE	// List of skill numbers (things that can be done at a given time)
@@ -840,20 +896,20 @@ enum LAYER_TYPE		// defined by UO. Only one item can be in a slot.
 {
 	LAYER_NONE = 0,	// spells that are layed on the CChar ?
 	LAYER_HAND1,	// 1 = spellbook or weapon.
-	LAYER_HAND2,	// 2 = other hand or 2 handed thing. = shield
+	LAYER_HAND2,	// 2 = other hand or 2 handed thing. = shield (also used for light halo 'ITEMID_LIGHT_SRC')
 	LAYER_SHOES,	// 3
 	LAYER_PANTS,	// 4 = bone legs + pants.
 	LAYER_SHIRT,
 	LAYER_HELM,		// 6
 	LAYER_GLOVES,	// 7
 	LAYER_RING,
-	LAYER_TALISMAN,	// 9 = talisman item (it was _LIGHT)
+	LAYER_TALISMAN,	// 9 = talisman item
 	LAYER_COLLAR,	// 10 = gorget or necklace.
 	LAYER_HAIR,		// 11 = 0x0b =
 	LAYER_HALF_APRON,// 12 = 0x0c =
 	LAYER_CHEST,	// 13 = 0x0d = armor chest
 	LAYER_WRIST,	// 14 = 0x0e = watch
-	LAYER_NEWLIGHT,	// 15 = Unused (use it for: a ITEMID_LIGHT_SRC equip item can be put here.)
+	LAYER_FACE,		// 15 = character face style on enhanced clients
 	LAYER_BEARD,	// 16 = try to have only men have this.
 	LAYER_TUNIC,	// 17 = jester suit or full apron.
 	LAYER_EARS,		// 18 = earrings
@@ -1085,6 +1141,7 @@ enum SPELL_TYPE	// List of spell numbers in spell book.
 	// Mysticism (SA)
 	SPELL_Nether_Bolt = 678,
 	SPELL_Healing_Stone,
+	SPELL_Purge_Magic,
 	SPELL_Enchant_Weapon,
 	SPELL_Sleep,
 	SPELL_Eagle_Strike,
@@ -1097,17 +1154,59 @@ enum SPELL_TYPE	// List of spell numbers in spell book.
 	SPELL_Spell_Plague,
 	SPELL_Hail_Storm,
 	SPELL_Nether_Cyclone,
-	SPELL_Rising_Collossus,
-	SPELL_MYSTICISM_QTY = SPELL_Rising_Collossus,
+	SPELL_Rising_Colossus,
+	SPELL_MYSTICISM_QTY = SPELL_Rising_Colossus,
 
-	// Bard (SA)
+	// Bard Masteries (SA)
 	SPELL_Inspire = 701,
 	SPELL_Invigorate,
 	SPELL_Resilience,
 	SPELL_Perseverance,
 	SPELL_Tribulation,
 	SPELL_Despair,
-	SPELL_BARD_QTY = SPELL_Despair,
+	SPELL_BARDMASTERIES_QTY = SPELL_Despair,
+
+	// Skill Masteries (TOL)
+	SPELL_Death_Ray = 707,
+	SPELL_Ethereal_Burst,
+	SPELL_Nether_Blast,
+	SPELL_Mystic_Weapon,
+	SPELL_Command_Undead,
+	SPELL_Conduit,
+	SPELL_Mana_Shield,
+	SPELL_Summon_Reaper,
+	SPELL_Enchanted_Summoning,	// Passive
+	SPELL_Anticipate_Hit,		// Passive
+	SPELL_Warcry,
+	SPELL_Intuition,			// Passive
+	SPELL_Rejuvinate,
+	SPELL_Holy_Fist,
+	SPELL_Shadow,
+	SPELL_White_Tiger_Form,
+	SPELL_Flaming_Shot,
+	SPELL_Playing_The_Odds,
+	SPELL_Thrust,
+	SPELL_Pierce,
+	SPELL_Stagger,
+	SPELL_Toughness,
+	SPELL_Onslaught,
+	SPELL_Focused_Eye,
+	SPELL_Elemental_Fury,
+	SPELL_Called_Shot,
+	SPELL_Warriors_Gifts,		// Passive (previously known as Saving Throw)
+	SPELL_Shield_Bash,
+	SPELL_Body_Guard,
+	SPELL_Heightened_Senses,
+	SPELL_Tolerance,
+	SPELL_Injected_Strike,
+	SPELL_Potency,				// Passive
+	SPELL_Rampage,
+	SPELL_Fists_Of_Fury,
+	SPELL_Knockout,				// Passive
+	SPELL_Whispering,
+	SPELL_Combat_Training,
+	SPELL_Boarding,				// Passive
+	SPELL_SKILLMASTERIES_QTY = SPELL_Boarding,
 
 	// Custom Sphere spells (used by some monsters)
 	SPELL_Summon_Undead = 1000,
@@ -1199,6 +1298,8 @@ enum GUMP_TYPE	// The gumps. (most of these are not useful to the server.)
 	GUMP_GIFT_BOX_ANGEL			= 0x11f,
 	GUMP_HEART_SHAPED			= 0x120,
 	GUMP_GIFT_BOX_TALL			= 0x121,
+	GUMP_GIFT_BOX_CHRISTMAS		= 0x122,
+	GUMP_WALL_SAFE				= 0x123,
 	GUMP_CHEST_PIRATE			= 0x423,
 	GUMP_FOUNTAIN_LIFE			= 0x484,
 	GUMP_SECRET_CHEST			= 0x58e,
@@ -1208,10 +1309,11 @@ enum GUMP_TYPE	// The gumps. (most of these are not useful to the server.)
 	GUMP_MAP_2_NORTH			= 0x139d,
 	GUMP_PLAGUE_BEAST			= 0x2a63,
 	GUMP_KING_COLLECTION_BOX	= 0x4d0c,
-	GUMP_BACKPACK_UNK1			= 0x775e,
-	GUMP_BACKPACK_UNK2			= 0x7760,
-	GUMP_BACKPACK_UNK3			= 0x7762,
-	GUMP_GIFT_BOX_CHRISTMAS		= 0x777a
+	GUMP_BACKPACK_SUEDE			= 0x775e,
+	GUMP_BACKPACK_POLAR_BEAR	= 0x7760,
+	GUMP_BACKPACK_GHOUL_SKIN	= 0x7762,
+	GUMP_GIFT_BOX_SQUARE		= 0x777a,
+	GUMP_BOW_WOODEN_STAND		= 0x9bfe
 };
 
 typedef WORD		TERRAIN_TYPE;

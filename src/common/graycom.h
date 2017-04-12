@@ -73,7 +73,10 @@
 #endif // !_WIN32
 
 #define INT32		int
+#define UINT32		unsigned int
+
 #define INT64		long long
+#define UINT64		unsigned long long
 
 #ifdef _DEBUG
 	#ifndef ASSERT
@@ -138,6 +141,7 @@
 #define FEATURE_EXTRA_RUSTIC		0x04	// 0x80000 feature (unlock SA rustic items on house design)
 #define FEATURE_EXTRA_JUNGLE		0x08	// 0x100000 feature (unlock TOL jungle items on house design)
 #define FEATURE_EXTRA_SHADOWGUARD	0x10	// 0x200000 feature (unlock TOL shadowguard items on house design)
+#define FEATURE_EXTRA_ROLEPLAYFACES	0x20	// 0x2000 feature (unlock extra roleplay face styles on character creation) - enhanced clients only
 
 #include "common.h"
 #include "CException.h"

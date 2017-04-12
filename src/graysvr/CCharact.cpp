@@ -177,7 +177,7 @@ void CChar::Jail( CTextConsole *pSrc, bool fSet, int iCell )
 }
 
 // A vendor is giving me gold. put it in my pack or other place.
-void CChar::AddGoldToPack( DWORD iAmount, CItemContainer *pPack )
+void CChar::AddGoldToPack( DWORD iAmount, CItemContainer *pPack, bool bSound )
 {
 	ADDTOCALLSTACK("CChar::AddGoldToPack");
 
@@ -195,7 +195,7 @@ void CChar::AddGoldToPack( DWORD iAmount, CItemContainer *pPack )
 		iAmount -= iGoldStack;
 	}
 
-	if ( pGold && (pPack->GetEquipLayer() == LAYER_PACK) )
+	if ( bSound && pGold )
 		Sound(pGold->GetDropSound(pPack));
 }
 
@@ -275,7 +275,7 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 			else if ( pItem->IsTypeArmor())
 			{
 				// Shield of some sort.
-				m_defense = static_cast<WORD>(CalcArmorDefense());
+				m_defense = CalcArmorDefense();
 				StatFlag_Set( STATF_HasShield );
 				UpdateStatsFlag();
 			}
@@ -295,7 +295,7 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 		case LAYER_SKIRT:
 		case LAYER_LEGS:
 			// If armor or clothing = change in defense rating.
-			m_defense = static_cast<WORD>(CalcArmorDefense());
+			m_defense = CalcArmorDefense();
 			UpdateStatsFlag();
 			break;
 
@@ -304,6 +304,8 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 		case LAYER_FLAG_Criminal:
 			StatFlag_Set( STATF_Criminal );
 			NotoSave_Update();
+			if ( m_pClient )
+				m_pClient->addBuff(BI_CRIMINALSTATUS, 1153802, 1153828);
 			return;
 		case LAYER_FLAG_SpiritSpeak:
 			StatFlag_Set( STATF_SpiritSpeak );
@@ -339,8 +341,6 @@ void CChar::LayerAdd( CItem * pItem, LAYER_TYPE layer )
 			default:
 				break;
 		}
-
-		
 	}
 
 	pItem->Update();
@@ -382,7 +382,7 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 			else if ( pItem->IsTypeArmor())
 			{
 				// Shield
-				m_defense = static_cast<WORD>(CalcArmorDefense());
+				m_defense = CalcArmorDefense();
 				StatFlag_Clear( STATF_HasShield );
 				UpdateStatsFlag();
 			}
@@ -403,13 +403,15 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 		case LAYER_ROBE:		// 22 = robe over all.
 		case LAYER_SKIRT:
 		case LAYER_LEGS:
-			m_defense = static_cast<WORD>(CalcArmorDefense());
+			m_defense = CalcArmorDefense();
 			UpdateStatsFlag();
 			break;
 
 		case LAYER_FLAG_Criminal:
 			StatFlag_Clear( STATF_Criminal );
 			NotoSave_Update();
+			if ( m_pClient )
+				m_pClient->removeBuff(BI_CRIMINALSTATUS);
 			break;
 
 		case LAYER_FLAG_SpiritSpeak:
@@ -1184,7 +1186,7 @@ void CChar::UpdateMode( CClient * pExcludeClient, bool fFull )
 			continue;
 		if ( pClient->GetChar() == NULL )
 			continue;
-		if ( GetTopPoint().GetDistSight(pClient->GetChar()->GetTopPoint()) > UO_MAP_VIEW_SIZE )
+		if ( GetTopPoint().GetDistSight(pClient->GetChar()->GetTopPoint()) > pClient->GetChar()->GetSight() )
 			continue;
 		if ( !pClient->CanSee(this) )
 		{
@@ -1330,7 +1332,7 @@ void CChar::Update(const CClient * pClientExclude )
 			continue;
 		if ( pClient->GetChar() == NULL )
 			continue;
-		if ( GetTopPoint().GetDistSight(pClient->GetChar()->GetTopPoint()) > UO_MAP_VIEW_SIZE )
+		if ( GetTopPoint().GetDistSight(pClient->GetChar()->GetTopPoint()) > pClient->GetChar()->GetSight() )
 			continue;
 		if ( !pClient->CanSee(this) )
 		{
@@ -1519,7 +1521,7 @@ void CChar::SoundChar( CRESND_TYPE type )
 // RETURN:
 //  amount we can pick up.
 //	-1 = we cannot pick this up.
-int CChar::ItemPickup(CItem * pItem, int amount)
+int CChar::ItemPickup(CItem * pItem, WORD amount)
 {
 	ADDTOCALLSTACK("CChar::ItemPickup");
 
@@ -1622,7 +1624,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 		}
 	}
 
-	int iAmountMax = pItem->GetAmount();
+	WORD iAmountMax = pItem->GetAmount();
 	if ( iAmountMax <= 0 )
 		return -1;
 
@@ -1632,7 +1634,7 @@ int CChar::ItemPickup(CItem * pItem, int amount)
 		amount = maximum(1, minimum(amount, iAmountMax));
 
 	//int iItemWeight = ( amount == iAmountMax ) ? pItem->GetWeight() : pItem->Item_GetDef()->GetWeight() * amount;
-	int iItemWeight = pItem->GetWeight(static_cast<WORD>(amount));
+	int iItemWeight = pItem->GetWeight(amount);
 
 	// Is it too heavy to even drag ?
 	bool fDrop = false;
@@ -1862,31 +1864,25 @@ bool CChar::ItemDrop( CItem * pItem, const CPointMap & pt )
 
 // Equip visible stuff. else throw into our pack.
 // Pay no attention to where this came from.
-// Bounce anything in the slot we want to go to. (if possible)
-// Adding 'equip benefics' to the char
+// If items not placed on world fail to get equipped, bounce it to char pack.
 // NOTE: This can be used from scripts as well to equip memories etc.
 // ASSUME this is ok for me to use. (movable etc)
 bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 {
 	ADDTOCALLSTACK("CChar::ItemEquip");
-
 	if ( !pItem )
 		return false;
-
-	if ( pItem->GetParent() == this )
-	{
-		if ( pItem->GetEquipLayer() != LAYER_DRAGGING ) // already equipped.
-			return true;
-	}
-
+	if ( (pItem->GetParent() == this) && (pItem->GetEquipLayer() != LAYER_DRAGGING) )	// item is already equipped
+		return true;
 
 	if ( IsTrigUsed(TRIGGER_EQUIPTEST) || IsTrigUsed(TRIGGER_ITEMEQUIPTEST) )
 	{
 		if ( pItem->OnTrigger(ITRIG_EQUIPTEST, this) == TRIGRET_RET_TRUE )
+		{
+			if ( !pItem->IsDeleted() && (!pCharMsg || !pCharMsg->m_pClient) )
+				ItemBounce(pItem);
 			return false;
-
-		if ( pItem->IsDeleted() )
-			return false;
+		}
 	}
 
 	// strong enough to equip this . etc ?
@@ -1897,8 +1893,6 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 	LAYER_TYPE layer = CanEquipLayer(pItem, LAYER_QTY, pCharMsg, false);
 	if ( layer == LAYER_NONE )
 	{
-		// When the item is being moved by an client, just call 'return false' to make CClient::Event_Item_Drop_Fail() return
-		// the item to it's previous location. Otherwise bounce the item on backpack to prevent it stay unplaced on world.
 		if ( !pCharMsg || !pCharMsg->m_pClient )
 			ItemBounce(pItem);
 		return false;
@@ -1910,10 +1904,14 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 	if ( !pItem->IsItemEquipped() )	// Equip failed ? (cursed?) Did it just go into pack ?
 		return false;
 
-	if (( IsTrigUsed(TRIGGER_EQUIP) ) || ( IsTrigUsed(TRIGGER_ITEMEQUIP) ))
+	if ( IsTrigUsed(TRIGGER_EQUIP) || IsTrigUsed(TRIGGER_ITEMEQUIP) )
 	{
 		if ( pItem->OnTrigger(ITRIG_EQUIP, this) == TRIGRET_RET_TRUE )
+		{
+			if ( !pItem->IsDeleted() && (!pCharMsg || !pCharMsg->m_pClient) )
+				ItemBounce(pItem);
 			return false;
+		}
 	}
 
 	if ( !pItem->IsItemEquipped() )	// Equip failed ? (cursed?) Did it just go into pack ?
@@ -1923,7 +1921,7 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 
 	if ( CItemBase::IsVisibleLayer(layer) )
 	{
-		SOUND_TYPE iSound = 0x57;
+		SOUND_TYPE iSound = SOUND_USE_CLOTH;
 		CVarDefCont *pVar = GetDefKey("EQUIPSOUND", true);
 		if ( pVar )
 			iSound = static_cast<SOUND_TYPE>(pVar->GetValNum());
@@ -2221,7 +2219,7 @@ CItem *CChar::Make_Figurine( CGrayUID uidOwner, ITEMID_TYPE id )
 
 // Call Make_Figurine() and place me
 // This will just kill conjured creatures.
-CItem * CChar::NPC_Shrink()
+CItem *CChar::NPC_Shrink()
 {
 	ADDTOCALLSTACK("CChar::NPC_Shrink");
 	if ( IsStatFlag(STATF_Conjured) )
@@ -2230,9 +2228,9 @@ CItem * CChar::NPC_Shrink()
 		return NULL;
 	}
 
-	NPC_PetClearOwners();	// Clear follower slots on pet owner
+	NPC_PetClearOwners();	// clear follower slots on pet owner
 
-	CItem * pItem = Make_Figurine(UID_CLEAR, ITEMID_NOTHING);
+	CItem *pItem = Make_Figurine();
 	if ( !pItem )
 		return NULL;
 
@@ -2446,12 +2444,6 @@ bool CChar::OnTickEquip( CItem * pItem )
 				pItem->SetTimeout( TICK_PER_SEC );
 				return true;
 			}
-
-		case LAYER_FLAG_Criminal:
-			// update char notoriety when criminal timer goes off
-			StatFlag_Clear( STATF_Criminal );
-			NotoSave_Update();
-			return( false );
 
 		case LAYER_FLAG_Murders:
 			// decay the murder count.
@@ -2803,7 +2795,7 @@ bool CChar::Death()
 	for ( size_t count = 0; count < m_lastAttackers.size(); count++ )
 	{
 		pKiller = CGrayUID(m_lastAttackers.at(count).charUID).CharFind();
-		if ( pKiller )
+		if ( pKiller && (m_lastAttackers.at(count).amountDone > 0) )
 		{
 			if ( IsTrigUsed(TRIGGER_KILL) )
 			{
@@ -2904,9 +2896,9 @@ bool CChar::Death()
 
 		if ( m_pClient )
 		{
-			if ( g_Cfg.m_iPacketDeathAnimation )
+			if ( g_Cfg.m_iPacketDeathAnimation || m_pClient->m_NetState->isClientKR() || m_pClient->m_NetState->isClientEnhanced() )
 			{
-				// Display death animation to client ("You are dead")
+				// Display the "You are dead" screen animation (this must be always enabled on enhanced clients)
 				new PacketDeathMenu(m_pClient, PacketDeathMenu::ServerSent);
 				new PacketDeathMenu(m_pClient, PacketDeathMenu::Ghost);
 			}
@@ -2916,22 +2908,32 @@ bool CChar::Death()
 				// the client must be updated manually using these others packets as workaround
 				m_pClient->addPlayerUpdate();
 				m_pClient->addPlayerWarMode();
-				m_pClient->addContainerSetup(GetContainer(LAYER_PACK));	// update backpack contents
 			}
-		}
 
-		// Remove the characters which I can't see as dead from the screen
-		if ( g_Cfg.m_fDeadCannotSeeLiving )
-		{
-			CWorldSearch AreaChars(GetTopPoint(), UO_MAP_VIEW_SIZE);
-			AreaChars.SetSearchSquare(true);
-			for (;;)
+			m_pClient->addSeason(SEASON_Desolate);
+			m_pClient->addMapWaypoint(pCorpse, Corpse);		// add corpse map waypoint on enhanced clients
+
+			// Force client to update backpack content
+			CItem *pPack = LayerFind(LAYER_PACK);
+			if ( pPack )
 			{
-				CChar *pChar = AreaChars.GetChar();
-				if ( !pChar )
-					break;
-				if ( !CanSeeAsDead(pChar) )
-					m_pClient->addObjectRemove(pChar);
+				pPack->RemoveFromView();
+				pPack->Update();
+			}
+
+			// Remove the characters which I can't see as dead from the screen
+			if ( g_Cfg.m_fDeadCannotSeeLiving )
+			{
+				CWorldSearch AreaChars(GetTopPoint(), GetSight());
+				AreaChars.SetSearchSquare(true);
+				for (;;)
+				{
+					CChar *pChar = AreaChars.GetChar();
+					if ( !pChar )
+						break;
+					if ( !CanSeeAsDead(pChar) )
+						m_pClient->addObjectRemove(pChar);
+				}
 			}
 		}
 	}
@@ -2946,7 +2948,7 @@ bool CChar::OnFreezeCheck()
 
 	if ( IsStatFlag(STATF_Freeze|STATF_Stone) && !IsPriv(PRIV_GM) )
 		return true;
-	if ( GetKeyNum("NoMoveTill") > g_World.GetCurrentTime().GetTimeRaw() )
+	if ( static_cast<UINT64>(GetKeyNum("NoMoveTill")) > g_World.GetCurrentTime().GetTimeRaw() )
 		return true;
 
 	if ( m_pPlayer )
@@ -2993,7 +2995,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			return NULL;
 		}
 
-		if ( Stat_GetVal(STAT_DEX) <= 0 && !IsStatFlag(STATF_DEAD) )
+		if ( (Stat_GetVal(STAT_DEX) <= 0) && !IsStatFlag(STATF_DEAD) )
 		{
 			SysMessageDefault(DEFMSG_MSG_FATIGUE);
 			return NULL;
@@ -3039,14 +3041,14 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 	short iStamReq = 0;
 	if ( fCheckChars && !IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Insubstantial) )
 	{
-		CItem * pPoly = LayerFind(LAYER_SPELL_Polymorph);
-		CWorldSearch AreaChars( ptDst );
+		CItem *pPoly = LayerFind(LAYER_SPELL_Polymorph);
+		CWorldSearch AreaChars(ptDst);
 		for (;;)
 		{
-			CChar * pChar = AreaChars.GetChar();
-			if ( pChar == NULL )
+			CChar *pChar = AreaChars.GetChar();
+			if ( !pChar )
 				break;
-			if ( pChar == this || abs(pChar->GetTopZ() - ptDst.m_z) > 5 || pChar->IsStatFlag(STATF_Insubstantial) )
+			if ( (pChar == this) || (abs(pChar->GetTopZ() - ptDst.m_z) > 5) || pChar->IsStatFlag(STATF_Insubstantial) )
 				continue;
 			if ( m_pNPC && pChar->m_pNPC )	// NPCs can't walk over another NPC
 				return NULL;
@@ -3054,7 +3056,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			iStamReq = 10;
 			if ( IsPriv(PRIV_GM) || pChar->IsStatFlag(STATF_DEAD|STATF_Invisible|STATF_Hidden) )
 				iStamReq = 0;
-			else if ( pPoly && pPoly->m_itSpell.m_spell == SPELL_Wraith_Form && GetTopMap() == 0 )		// chars under Wraith Form effect can always walk through chars in Felucca
+			else if ( pPoly && (pPoly->m_itSpell.m_spell == SPELL_Wraith_Form) && (GetTopMap() == 0) )		// chars under Wraith Form effect can always walk through chars in Felucca
 				iStamReq = 0;
 
 			TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
@@ -3062,15 +3064,15 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 			{
 				CScriptTriggerArgs Args(iStamReq);
 				iRet = pChar->OnTrigger(CTRIG_PersonalSpace, this, &Args);
-				iStamReq = static_cast<short>(Args.m_iN1);
-
 				if ( iRet == TRIGRET_RET_TRUE )
 					return NULL;
+
+				iStamReq = static_cast<short>(Args.m_iN1);
+				if ( iStamReq < 0 )
+					continue;
 			}
 
-			if ( iStamReq <= 0 )
-				continue;
-			if ( Stat_GetVal(STAT_DEX) < Stat_GetMax(STAT_DEX) )
+			if ( (iStamReq > 0) && (Stat_GetVal(STAT_DEX) < Stat_GetMax(STAT_DEX)) )
 				return NULL;
 
 			TCHAR *pszMsg = Str_GetTemp();
@@ -3101,7 +3103,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 	{
 		EXC_SET("Stamina penalty");
 		// Chance to drop more stamina if running or overloaded
-		CVarDefCont * pVal = GetKey("OVERRIDE.RUNNINGPENALTY", true);
+		CVarDefCont *pVal = GetKey("OVERRIDE.RUNNINGPENALTY", true);
 		if ( IsStatFlag(STATF_Fly|STATF_Hovering) )
 			iWeightLoadPercent += pVal ? static_cast<int>(pVal->GetValNum()) : g_Cfg.m_iStamRunningPenalty;
 
@@ -3223,6 +3225,7 @@ TRIGRET_TYPE CChar::CheckLocation( bool fStanding )
 						Sound(SOUND_FLAMESTRIKE);
 						if ( m_pNPC && fStanding )
 						{
+							m_Act_p = GetTopPoint();
 							m_Act_p.Move(static_cast<DIR_TYPE>(Calc_GetRandVal(DIR_QTY)));
 							NPC_WalkToPoint(true);		// run away from the threat
 						}
@@ -3244,6 +3247,7 @@ TRIGRET_TYPE CChar::CheckLocation( bool fStanding )
 					bSpellHit = true;
 					if ( m_pNPC && fStanding )
 					{
+						m_Act_p = GetTopPoint();
 						m_Act_p.Move(static_cast<DIR_TYPE>(Calc_GetRandVal(DIR_QTY)));
 						NPC_WalkToPoint(true);		// run away from the threat
 					}
@@ -3255,6 +3259,7 @@ TRIGRET_TYPE CChar::CheckLocation( bool fStanding )
 				{
 					if ( m_pNPC && fStanding )
 					{
+						m_Act_p = GetTopPoint();
 						m_Act_p.Move(static_cast<DIR_TYPE>(Calc_GetRandVal(DIR_QTY)));
 						NPC_WalkToPoint(true);		// run away from the threat
 					}

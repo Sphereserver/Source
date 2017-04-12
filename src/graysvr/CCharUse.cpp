@@ -73,25 +73,20 @@ bool CChar::Use_CarveCorpse( CItemCorpse * pCorpse )
 			case IT_FOOD_RAW:
 			case IT_MEAT_RAW:
 				SysMessageDefault(DEFMSG_CARVE_CORPSE_MEAT);
-				//pPart->m_itFood.m_MeatType = CorpseID;
 				break;
 			case IT_HIDE:
 				SysMessageDefault(DEFMSG_CARVE_CORPSE_HIDES);
-				//pPart->m_itSkin.m_creid = CorpseID;
 				if ( (g_Cfg.m_iRacialFlags & RACIALF_HUMAN_WORKHORSE) && IsHuman() )	// humans always find 10% bonus when gathering hides, ores and logs (Workhorse racial trait)
 					iQty = iQty * 110 / 100;
 				break;
 			case IT_FEATHER:
 				SysMessageDefault(DEFMSG_CARVE_CORPSE_FEATHERS);
-				//pPart->m_itSkin.m_creid = CorpseID;
 				break;
 			case IT_WOOL:
 				SysMessageDefault(DEFMSG_CARVE_CORPSE_WOOL);
-				//pPart->m_itSkin.m_creid = CorpseID;
 				break;
 			/*case IT_DRAGON_SCALE:			// TO-DO (typedef IT_DRAGON_SCALE doesn't exist yet)
 				SysMessageDefault(DEFMSG_CARVE_CORPSE_SCALES);
-				//pPart->m_itSkin.m_creid = CorpseID;
 				break;*/
 			default:
 				break;
@@ -831,7 +826,7 @@ bool CChar::Use_Repair( CItem * pItemArmor )
 	return fSuccess;
 }
 
-bool CChar::Use_EatQty( CItem * pFood, short iQty )
+bool CChar::Use_EatQty( CItem * pFood, WORD iQty )
 {
 	ADDTOCALLSTACK("CChar::Use_EatQty");
 	// low level eat
@@ -842,20 +837,20 @@ bool CChar::Use_EatQty( CItem * pFood, short iQty )
 	if ( iQty > pFood->GetAmount() )
 		iQty = pFood->GetAmount();
 
-	short iRestore = 0;
+	WORD iRestore = 0;
 	if ( pFood->m_itFood.m_foodval )
-		iRestore = static_cast<short>(pFood->m_itFood.m_foodval);
+		iRestore = static_cast<WORD>(pFood->m_itFood.m_foodval);
 	else
 		iRestore = pFood->Item_GetDef()->GetVolume();	// some food should have more value than other !
 
 	if ( iRestore < 1 )
 		iRestore = 1;
 
-	short iSpace = Stat_GetMax(STAT_FOOD) - Stat_GetVal(STAT_FOOD);
+	WORD iSpace = static_cast<WORD>(Stat_GetMax(STAT_FOOD) - Stat_GetVal(STAT_FOOD));
 	if ( iSpace <= 0 )
 		return false;
 
-	if ( iQty > 1 && (iRestore * iQty > iSpace) )
+	if ( (iQty > 1) && (iRestore * iQty > iSpace) )
 		iQty = maximum(1, iSpace / iRestore);
 
 	switch ( pFood->GetType() )
@@ -876,7 +871,7 @@ bool CChar::Use_EatQty( CItem * pFood, short iQty )
 	return true;
 }
 
-bool CChar::Use_Eat( CItem * pItemFood, short iQty )
+bool CChar::Use_Eat( CItem * pItemFood, WORD iQty )
 {
 	ADDTOCALLSTACK("CChar::Use_Eat");
 	// What we can eat should depend on body type.
@@ -1596,7 +1591,8 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 		case IT_DOOR_OPEN:
 		case IT_DOOR:
 		{
-			if ( fLink || !pItem->Use_DoorNew(fLink) )	// don't link if we are just closing the door
+			bool fOpen = pItem->Use_DoorNew(fLink);
+			if ( fLink || !fOpen )	// don't link if we are just closing the door
 				return true;
 		}
 		break;

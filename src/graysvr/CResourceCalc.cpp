@@ -119,7 +119,7 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 	}
 }
 
-int CResource::Calc_CombatChanceToHit( CChar * pChar, CChar * pCharTarg, SKILL_TYPE skill )
+int CResource::Calc_CombatChanceToHit( CChar * pChar, CChar * pCharTarg )
 {
 	ADDTOCALLSTACK("CResource::Calc_CombatChanceToHit");
 	// Combat: Compare attacker skill vs target skill
@@ -130,8 +130,11 @@ int CResource::Calc_CombatChanceToHit( CChar * pChar, CChar * pCharTarg, SKILL_T
 
 	if ( !pCharTarg )	// must be a training dummy
 		return 50;
-	if ( pChar->m_pNPC && pChar->m_pNPC->m_Brain == NPCBRAIN_GUARD && m_fGuardsInstantKill )
+	if ( pChar->m_pNPC && (pChar->m_pNPC->m_Brain == NPCBRAIN_GUARD) && m_fGuardsInstantKill )
 		return 100;
+
+	SKILL_TYPE skillAttacker = pChar->Fight_GetWeaponSkill();
+	SKILL_TYPE skillTarget = pCharTarg->Fight_GetWeaponSkill();
 
 	switch ( g_Cfg.m_iCombatHitChanceEra )
 	{
@@ -142,11 +145,10 @@ int CResource::Calc_CombatChanceToHit( CChar * pChar, CChar * pCharTarg, SKILL_T
 			if ( pCharTarg->IsStatFlag(STATF_Sleeping|STATF_Freeze) )
 				return Calc_GetRandVal(10);
 
-			int iSkillVal = pChar->Skill_GetAdjusted(skill);
+			int iSkillVal = pChar->Skill_GetAdjusted(skillAttacker);
 
 			// Offensive value mostly based on your skill and TACTICS (0 - 1000)
 			int iAttackerSkill = (iSkillVal + pChar->Skill_GetAdjusted(SKILL_TACTICS)) / 2;
-			//int iAttackerSkill = (iSkillVal * 3 + pChar->Skill_GetAdjusted(SKILL_TACTICS)) / 4;
 
 			// Defensive value mostly based on your tactics value and random DEX (0 - 1000)
 			int iTargetSkill = pCharTarg->Skill_GetAdjusted(SKILL_TACTICS);
@@ -156,7 +158,7 @@ int CResource::Calc_CombatChanceToHit( CChar * pChar, CChar * pCharTarg, SKILL_T
 			// a fight etc. Just use 90% of the statvalue when defending so its easier to
 			// hit than defend == more fun in combat.
 			int iTargetStam = pCharTarg->Stat_GetVal(STAT_DEX);
-			if ( g_Cfg.IsSkillFlag(pCharTarg->Skill_GetActive(), SKF_RANGED) && !g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
+			if ( g_Cfg.IsSkillFlag(skillTarget, SKF_RANGED) && !g_Cfg.IsSkillFlag(skillAttacker, SKF_RANGED) )
 				iTargetSkill = (iTargetSkill + iTargetStam * 9) / 2;		// the defender uses ranged weapon and the attacker is not. Make just a bit easier to hit.
 			else
 				iTargetSkill = (iTargetSkill + iTargetStam * 10) / 2;		// the defender is using a nonranged, or they both use bows.
@@ -173,8 +175,8 @@ int CResource::Calc_CombatChanceToHit( CChar * pChar, CChar * pCharTarg, SKILL_T
 		case 1:
 		{
 			// pre-AOS formula
-			int iAttackerSkill = pChar->Skill_GetBase(skill) + 500;
-			int iTargetSkill = pCharTarg->Skill_GetBase(skill) + 500;
+			int iAttackerSkill = pChar->Skill_GetBase(skillAttacker) + 500;
+			int iTargetSkill = pCharTarg->Skill_GetBase(skillTarget) + 500;
 
 			int iChance = iAttackerSkill * 100 / (iTargetSkill * 2);
 			if ( iChance < 0 )
@@ -187,17 +189,17 @@ int CResource::Calc_CombatChanceToHit( CChar * pChar, CChar * pCharTarg, SKILL_T
 		case 2:
 		{
 			// AOS formula
-			int iAttackerSkill = pChar->Skill_GetBase(skill);
+			int iAttackerSkill = pChar->Skill_GetBase(skillAttacker);
 			int iAttackerHitChance = static_cast<int>(pChar->GetDefNum("INCREASEHITCHANCE"));
 			if ( (g_Cfg.m_iRacialFlags & RACIALF_GARG_DEADLYAIM) && pChar->IsGargoyle() )
 			{
 				// Racial traits: Deadly Aim. Gargoyles always have +5 Hit Chance Increase and a minimum of 20.0 Throwing skill (not shown in skills gump)
-				if ( skill == SKILL_THROWING && iAttackerSkill < 200 )
+				if ( (skillAttacker == SKILL_THROWING) && (iAttackerSkill < 200) )
 					iAttackerSkill = 200;
 				iAttackerHitChance += 5;
 			}
 			iAttackerSkill = ((iAttackerSkill / 10) + 20) * (100 + minimum(iAttackerHitChance, 45));
-			int iTargetSkill = ((pCharTarg->Skill_GetBase(skill) / 10) + 20) * (100 + minimum(static_cast<int>(pCharTarg->GetDefNum("INCREASEDEFCHANCE")), 45));
+			int iTargetSkill = ((pCharTarg->Skill_GetBase(skillTarget) / 10) + 20) * (100 + minimum(static_cast<int>(pCharTarg->GetDefNum("INCREASEDEFCHANCE")), 45));
 
 			int iChance = iAttackerSkill * 100 / (iTargetSkill * 2);
 			if ( iChance < 2 )

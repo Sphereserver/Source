@@ -1,10 +1,53 @@
 MySQL Connector/C 6.1 - Release Notes / ChangeLog
-Copyright (c) 2013, 2015, Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2013, 2017, Oracle and/or its affiliates. All rights reserved.
  
 Full release notes:
 http://dev.mysql.com/doc/relnotes/connector-c/en/
+
   
-Changes in MySQL Connector/C 6.1.6
+Changes in MySQL Connector/C 6.1.9
+=====================================================================
+
+  Security Notes
+
+    * Connector/C 6.1.9 upgrades the linked OpenSSL library to
+      version 1.0.2j. Issues fixed in the new version are
+      described at
+      http://www.openssl.org/news/vulnerabilities.html
+
+   Functionality Added or Changed
+
+     * (Bug #22932026) - TLS version option
+     * (Bug #22931973) - SSL mode option
+     * (Bug #21040741) - GTID session tracker
+
+   Bugs Fixed
+
+     * (Bug #22931954) - user names longer than 16 chars
+     * (Bug #21040703) - support for new 5.7 error codes
+
+
+Changes in MySQL Connector/C 6.1.8
+=====================================================================
+
+  Security Notes
+
+    * Connector/C 6.1.8 upgrades the linked OpenSSL library to
+      version 1.0.1p. Issues fixed in the new version are
+      described at
+      http://www.openssl.org/news/vulnerabilities.html
+  
+Changes in MySQL Connector/C 6.1.7
+=====================================================================
+
+   Security Notes
+
+     * Connector/C 6.1.7 upgrades the linked OpenSSL library to
+       version 1.0.1m. Issues fixed in the new version are
+       described at
+       http://www.openssl.org/news/vulnerabilities.html.
+
+Changes in MySQL Connector/C 6.1.6 (2015-03-20)
 =====================================================================
 
    Security Notes

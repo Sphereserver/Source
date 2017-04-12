@@ -858,16 +858,11 @@ public:
 
 	int		m_iDistanceYell;
 	int		m_iDistanceWhisper;
-	int		m_iDistanceTalk;
 
 	CGString	m_sSpeechSelf;
 	CGString	m_sSpeechPet;
 	CGString	m_sSpeechOther;
 	CGString	m_sCommandTrigger;
-
-#ifdef _DUMPSUPPORT
-	CGString	m_sDumpAccPackets;
-#endif
 
 	CGString	m_sEventsPet;
 	CResourceRefArray m_pEventsPetLink;
@@ -1024,7 +1019,6 @@ public:
 
 	bool		m_NPCNoFameTitle;
 
-	bool		m_bAgree;
 	int			m_iMaxPolyStats;
 
 	// End INI file options.
@@ -1092,10 +1086,6 @@ public:
 	bool LoadResourceSection( CScript * pScript );
 	void LoadSortSpells();
 	CResourceDef * ResourceGetDef( RESOURCE_ID_BASE rid ) const;
-	
-	// Print EF/OF Flags
-	
-	void PrintEFOFFlags( bool bEF = true, bool bOF = true, CTextConsole *pSrc = NULL );
 
 	// Specialized resource accessors.
 
@@ -1187,8 +1177,8 @@ public:
 
 	int Calc_MaxCarryWeight( const CChar * pChar ) const;
 	int Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon );
-	int Calc_CombatChanceToHit( CChar * pChar, CChar * pCharTarg, SKILL_TYPE skill );
-	int  Calc_StealingItem( CChar * pCharThief, CItem * pItem, CChar * pCharMark );
+	int Calc_CombatChanceToHit( CChar * pChar, CChar * pCharTarg );
+	int Calc_StealingItem( CChar * pCharThief, CItem * pItem, CChar * pCharMark );
 	bool Calc_CrimeSeen( CChar * pCharThief, CChar * pCharViewer, SKILL_TYPE SkillToSee, bool fBonus );
 	int Calc_FameKill( CChar * pKill );
 	int Calc_KarmaKill( CChar * pKill, NOTO_TYPE NotoThem );

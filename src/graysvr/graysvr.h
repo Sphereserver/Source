@@ -35,9 +35,9 @@ class CServTime
 	// A time stamp in the server/game world.
 public:
 	static const char *m_sClassName;
-	INT64 m_lPrivateTime;
+	UINT64 m_lPrivateTime;
 public:
-	INT64 GetTimeRaw() const
+	UINT64 GetTimeRaw() const
 	{
 		if ( m_lPrivateTime < 0 )
 			return 0;
@@ -52,7 +52,7 @@ public:
 	{
 		m_lPrivateTime = 0;
 	}
-	void InitTime( INT64 lTimeBase )
+	void InitTime( UINT64 lTimeBase )
 	{
 		if ( lTimeBase < 0 )
 			lTimeBase = 0;
@@ -399,7 +399,7 @@ private:
 	CChatChannel * m_pChannel;	// I can only be a member of one chan at a time.
 public:
 	static const char *m_sClassName;
-	CGObArray< CGString * > m_IgnoredMembers;	// Player's list of ignored members
+	CGObArray<CGString *> m_IgnoredMembers;	// Player's list of ignored members
 private:
 	friend class CChatChannel;
 	friend class CChat;
@@ -431,8 +431,6 @@ private:
 
 public:
 	CClient *m_pClient;
-	CClient *GetClient();
-	const CClient *GetClient() const;
 
 	bool IsChatActive() const
 	{
@@ -476,9 +474,9 @@ private:
 	bool m_fVoiceDefault;	// give others voice by default.
 public:
 	static const char *m_sClassName;
-	CGObArray< CGString * > m_NoVoices;// Current list of channel members with no voice
-	CGObArray< CGString * > m_Moderators;// Current list of channel's moderators (may or may not be currently in the channel)
-	CGPtrTypeArray< CChatChanMember* > m_Members;	// Current list of members in this channel
+	CGObArray<CGString *> m_NoVoices;	// Current list of channel members with no voice
+	CGObArray<CGString *> m_Moderators;	// Current list of channel's moderators (may or may not be currently in the channel)
+	CGPtrTypeArray<CChatChanMember *> m_Members;	// Current list of members in this channel
 private:
 	void SetModerator(LPCTSTR pszName, bool fFlag = true);
 	void SetVoice(LPCTSTR pszName, bool fFlag = true);
@@ -586,7 +584,6 @@ private:
 	void KillChannels();
 	bool JoinChannel(CChatChanMember * pMember, LPCTSTR pszChannel, LPCTSTR pszPassword);
 	bool CreateChannel(LPCTSTR pszName, LPCTSTR pszPassword, CChatChanMember * pMember);
-	void CreateJoinChannel(CChatChanMember * pByMember, LPCTSTR pszName, LPCTSTR pszPassword);
 	CChatChannel * FindChannel(LPCTSTR pszChannel) const
 	{
 		CChatChannel * pChannel = GetFirstChannel();
@@ -788,7 +785,7 @@ enum CLIMODE_TYPE	// What mode is the client to server connection in ? (waiting 
 enum BUFF_ICONS
 {
 	BI_START,
-	BI_NODISMOUNT = 0x3E9,
+	BI_NOREMOUNT = 0x3E9,
 	BI_NOREARM = 0x3EA,
 	BI_NIGHTSIGHT = 0x3ED,
 	BI_DEATHSTRIKE,
@@ -839,15 +836,13 @@ enum BUFF_ICONS
 	BI_SPELLPLAGUE,
 	BI_GARGOYLEBERSERK,
 	BI_GARGOYLEFLY = 0x41E,
-	// All icons below were added only on client patch 7.0.29.0
 	BI_INSPIRE,
 	BI_INVIGORATE,
 	BI_RESILIENCE,
 	BI_PERSEVERANCE,
 	BI_TRIBULATIONDEBUFF,
 	BI_DESPAIR,
-	// BI_ARCANEEMPOWERMENT //already added 1026
-	BI_FISHBUFF = 1062,
+	BI_FISHPIE = 0x426,
 	BI_HITLOWERATTACK,
 	BI_HITLOWERDEFENSE,
 	BI_HITDUALWIELD,
@@ -864,9 +859,9 @@ enum BUFF_ICONS
 	BI_FORCEARROW,
 	BI_DISARM,
 	BI_SURGE,
-	BI_FEIT,
+	BI_FEINT,
 	BI_TALONSTRIKE,
-	BI_OHYSICATTACK,	//STRACTICS SAY PHYCHICATTACK?
+	BI_PHYSICATTACK,
 	BI_CONSECRATE,
 	BI_GRAPESOFWRATH,
 	BI_ENEMYOFONEDEBUFF,
@@ -884,7 +879,7 @@ enum BUFF_ICONS
 	BI_LIGHTNINGSTRIKE,
 	BI_MOMENTUMSTRIKE,
 	BI_ORANGEPETALS,
-	BI_ROTPETALS,
+	BI_ROSEOFTRINSIC,
 	BI_POISONIMMUNITY,
 	BI_VETERINARY,
 	BI_PERFECTION,
@@ -908,11 +903,59 @@ enum BUFF_ICONS
 	BI_CRIMINALSTATUS,
 	BI_ARMORPIERCE,
 	BI_SPLINTERINGEFFECT,
-	BI_SWINGSPEEDSWING,
+	BI_SWINGSPEEDDEBUFF,
 	BI_WRAITHFORM,
-	//BI_HONORABLEEXECUTION	// already added on 1092
-	BI_CITYTRADEDEAL = 1126,
-	BI_QTY = 1126
+	BI_CITYTRADEDEAL = 0x466,
+	BI_HUMILITYDEBUFF,
+	BI_SPIRITUALITY,
+	BI_HUMILITY,
+	BI_RAMPAGE,
+	BI_STAGGERDEBUFF,
+	BI_TOUGHNESS,
+	BI_THRUST,
+	BI_PIERCEDEBUFF,
+	BI_PLAYINGTHEODDS,
+	BI_FOCUSEDEYE,
+	BI_ONSLAUGHTDEBUFF,
+	BI_ELEMENTALFURY,
+	BI_ELEMENTALFURYDEBUFF,
+	BI_CALLEDSHOT,
+	BI_KNOCKOUT,
+	BI_WARRIORSGIFTS,		// Previously known as Saving Throw
+	BI_CONDUIT,
+	BI_ETHEREALBURST,
+	BI_MYSTICWEAPON,
+	BI_MANASHIELD,
+	BI_ANTICIPATEHIT,
+	BI_WARCRY,
+	BI_SHADOW,
+	BI_WHITETIGERFORM,
+	BI_BODYGUARD,
+	BI_HEIGHTENEDSENSES,
+	BI_TOLERANCE,
+	BI_DEATHRAY,
+	BI_DEATHRAYDEBUFF,
+	BI_INTUITION,
+	BI_ENCHANTEDSUMMONING,
+	BI_SHIELDBASH,
+	BI_WHISPERING,
+	BI_COMBATTRAINING,
+	BI_INJECTEDSTRIKEDEBUFF,
+	BI_INJECTEDSTRIKE,
+	BI_UNKNOWNTOMATO,
+	BI_PLAYINGTHEODDSDEBUFF,
+	BI_DRAGONTURTLEDEBUFF,
+	BI_BOARDING,
+	BI_POTENCY,
+	BI_THRUSTDEBUFF,
+	BI_FISTSOFFURY,
+	BI_BARRABHEMOLYMPHCONCENTRATE,
+	BI_JUKARIBURNPOULTICE,
+	BI_KURAKAMBUSHERSESSENCE,
+	BI_BARAKODRAFTOFMIGHT,
+	BI_URALITRANCETONIC,
+	BI_SAKKHRAPROPHYLAXIS,
+	BI_QTY = BI_SAKKHRAPROPHYLAXIS
 };
 // ---------------------------------------------------------------------------------------------
 
@@ -1014,7 +1057,7 @@ public:
 	CServTime m_timeLastEvent;				// Last time we got event from client.
 	CServTime m_timeLastEventItemPickup;	// Last time we had picked up an item (used by fastloot prevention)
 	CServTime m_timeLastEventWalk;			// Last time we got a walk event from client (only used to handle STATF_Fly char flag)
-	INT64 m_timeNextEventWalk;				// Fastwalk prevention: only allow more walk requests after this timer
+	UINT64 m_timeNextEventWalk;				// Fastwalk prevention: only allow more walk requests after this timer
 
 	// GM only stuff.
 	CGMPage * m_pGMPage;		// Current GM page we are connected to.
@@ -1168,42 +1211,42 @@ private:
 	bool OnTarg_Pet_Stable( CChar * pCharPet );
 
 	// Commands from client
-	void Event_Skill_Use( SKILL_TYPE x ); // Skill is clicked on the skill list
-	void Event_Talk_Common(TCHAR * szText ); // PC speech
-	bool Event_Command( LPCTSTR pszCommand, TALKMODE_TYPE mode = TALKMODE_SYSTEM ); // Client entered a '/' command like /ADD
+	void Event_Skill_Use(SKILL_TYPE x);	// Skill is clicked on the skill list
+	void Event_Talk_Common(TCHAR *szText);	// PC speech
+	bool Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode = TALKMODE_SYSTEM);	// Client entered a '/' command like /ADD
 
 public:
 	void GetAdjustedCharID( const CChar * pChar, CREID_TYPE & id, HUE_TYPE &wHue ) const;
 	void GetAdjustedItemID( const CChar * pChar, const CItem * pItem, ITEMID_TYPE & id, HUE_TYPE &wHue ) const;
 
 	void Event_Attack(CGrayUID uid);
-	void Event_Book_Title( CGrayUID uid, LPCTSTR pszTitle, LPCTSTR pszAuthor );
-	void Event_BugReport( const TCHAR * pszText, int len, BUGREPORT_TYPE type, CLanguageID lang = 0 );
-	void Event_ChatButton(const NCHAR * pszName); // Client's chat button was pressed
-	void Event_ChatText( const NCHAR * pszText, int len, CLanguageID lang = 0 ); // Text from a client
-	void Event_CombatMode( bool fWar ); // Only for switching to combat mode
-	bool Event_DoubleClick( CGrayUID uid, bool fMacro, bool fTestTouch, bool fScript = false );
-	void Event_ExtCmd( EXTCMD_TYPE type, TCHAR * pszName );
-	void Event_Item_Drop( CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, BYTE gridIndex = 0 ); // Item is dropped on ground
-	void Event_Item_Drop_Fail( CItem *pItem );
-	void Event_Item_Dye( CGrayUID uid, HUE_TYPE wHue );	// Rehue an item
-	void Event_Item_Pickup( CGrayUID uid, int amount ); // Client grabs an item
-	void Event_MailMsg( CGrayUID uid1, CGrayUID uid2 );
-	void Event_Profile( BYTE fWriteMode, CGrayUID uid, LPCTSTR pszProfile, int iProfileLen );
-	void Event_PromptResp( LPCTSTR pszText, size_t len, DWORD context1, DWORD context2, DWORD type, bool bNoStrip = false );
-	void Event_SetName( CGrayUID uid, const char * pszCharName );
-	void Event_SingleClick( CGrayUID uid );
-	void Event_Talk( LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bool bNoStrip = false ); // PC speech
-	void Event_TalkUNICODE( NWORD* wszText, int iTextLen, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR pszLang );
-	void Event_Target( DWORD context, CGrayUID uid, CPointMap pt, BYTE flags = 0, ITEMID_TYPE id = ITEMID_NOTHING );
-	void Event_Tips( WORD i ); // Tip of the day window
-	void Event_ToolTip( CGrayUID uid );
+	void Event_Book_Title(CGrayUID uid, LPCTSTR pszTitle, LPCTSTR pszAuthor);
+	void Event_BugReport(const TCHAR *pszText, int len, BUGREPORT_TYPE type, CLanguageID lang = 0);
+	void Event_ChatButton(const NCHAR *pszName);	// Client's chat button was pressed
+	void Event_ChatText(const NCHAR *pszText, int len, CLanguageID lang = 0);	// Text from a client
+	void Event_CombatMode(bool fWar);	// Only for switching to combat mode
+	bool Event_DoubleClick(CGrayUID uid, bool fMacro, bool fTestTouch, bool fScript = false);
+	void Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszName);
+	void Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, BYTE gridIndex = 0);	// Item is dropped on ground
+	void Event_Item_Drop_Fail(CItem *pItem);
+	void Event_Item_Dye(CGrayUID uid, HUE_TYPE wHue);	// Rehue an item
+	void Event_Item_Pickup(CGrayUID uid, int amount);	// Client grabs an item
+	void Event_MailMsg(CGrayUID uid1, CGrayUID uid2);
+	void Event_Profile(BYTE fWriteMode, CGrayUID uid, LPCTSTR pszProfile, int iProfileLen);
+	void Event_PromptResp(LPCTSTR pszText, size_t len, DWORD context1, DWORD context2, DWORD type, bool bNoStrip = false);
+	void Event_SetName(CGrayUID uid, const char *pszCharName);
+	void Event_SingleClick(CGrayUID uid);
+	void Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bool bNoStrip = false);	// PC speech
+	void Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR pszLang);
+	void Event_Target(CLIMODE_TYPE context, CGrayUID uid, CPointMap pt, BYTE flags = 0, ITEMID_TYPE id = ITEMID_NOTHING);
+	void Event_Tips(WORD i);	// Tip of the day window
+	void Event_ToolTip(CGrayUID uid);
 	void Event_UseToolbar(BYTE bType, DWORD dwArg);
-	void Event_VendorBuy(CChar* pVendor, const VendorItem* items, size_t itemCount);
-	void Event_VendorBuy_Cheater( int iCode = 0 );
-	void Event_VendorSell(CChar* pVendor, const VendorItem* items, size_t itemCount);
-	void Event_VendorSell_Cheater( int iCode = 0 );
-	bool Event_Walk( BYTE rawdir, BYTE sequence = 0 ); // Player moves
+	void Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t itemCount);
+	void Event_VendorBuy_Cheater(int iCode = 0);
+	void Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t itemCount);
+	void Event_VendorSell_Cheater(int iCode = 0);
+	bool Event_Walk(BYTE rawdir, BYTE sequence = 0);	// Player moves
 	bool Event_CheckWalkBuffer();
 	
 	TRIGRET_TYPE Menu_OnSelect( RESOURCE_ID_BASE rid, int iSelect, CObjBase * pObj );
@@ -1212,7 +1255,7 @@ public:
 	bool Login_Relay( WORD iServer ); // Relay player to a certain IP
 	BYTE Login_ServerList( const char * pszAccount, const char * pszPassword ); // Initial login (Login on "loginserver", new format)
 
-	int Setup_FillCharList(Packet* pPacket, const CChar * pCharFirst); // Write character list to packet
+	BYTE Setup_FillCharList(Packet *pPacket); // Write character list to packet
 	BYTE Setup_ListReq(const char *pszAccount, const char *pszPassword, bool bTest); // Gameserver login and character listing
 	BYTE Setup_Delete(DWORD iSlot); // Deletion of character
 	BYTE Setup_Play(DWORD iSlot); // After hitting "Play Character" button
@@ -1338,10 +1381,11 @@ public:
 	void addMusic( MIDI_TYPE id );
 	void addArrowQuest( WORD x, WORD y, DWORD id );
 	void addEffect( EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate * pDst, const CObjBaseTemplate * pSrc, BYTE speed = 5, BYTE loop = 1, bool explode = false, DWORD color = 0, DWORD render = 0, WORD effectid = 0, DWORD explodeid = 0, WORD explodesound = 0, DWORD effectuid = 0, BYTE type = 0 );
-	void addSound( SOUND_TYPE id, const CObjBaseTemplate * pBase = NULL, int iRepeat = 1 );
+	void addSound( SOUND_TYPE id, const CObjBaseTemplate *pBase = NULL, BYTE iRepeat = 1 );
 	void addReSync();
 	void addMap();
 	void addMapDiff();
+	void addMapWaypoint( CObjBase *pObj, MAPWAYPOINT_TYPE type );
 	void addChangeServer();
 	void addPlayerUpdate();
 
@@ -1375,11 +1419,11 @@ public:
 	bool addShopMenuSell( CChar * pVendor );
 	void addBankOpen( CChar * pChar, LAYER_TYPE layer = LAYER_BANKBOX );
 
-	void addSpellbookOpen( CItem * pBook, WORD offset = 1 );
+	void addSpellbookOpen( CItem * pBook );
 	void addCustomSpellbookOpen( CItem * pBook, GUMP_TYPE gumpID );
 	bool addBookOpen( CItem * pBook );
-	void addBookPage( const CItem * pBook, size_t iPage, size_t iCount );
-	void addCharStatWindow( CChar * pChar, bool fRequested = false ); // Opens the status window
+	void addBookPage( const CItem * pBook, WORD iPage, WORD iCount );
+	void addHealthBarInfo( CObjBase * pObj, bool fRequested = false );
 	void addHitsUpdate( CChar * pChar );
 	void addManaUpdate( CChar * pChar );
 	void addStamUpdate( CChar * pChar );
@@ -1397,7 +1441,7 @@ public:
 	void addGumpInpVal( bool fcancel, INPVAL_STYLE style, DWORD dwmask, LPCTSTR ptext1, LPCTSTR ptext2, CObjBase * pObj );
 
 	void addItemMenu( CLIMODE_TYPE mode, const CMenuItem * item, size_t count, CObjBase * pObj = NULL );
-	void addGumpDialog( CLIMODE_TYPE mode, const CGString * sControls, size_t iControls, const CGString * psText, size_t iTexts, int x, int y, CObjBase * pObj = NULL, DWORD rid = 0 );
+	void addGumpDialog( CLIMODE_TYPE mode, const CGString * sControls, size_t iControls, const CGString * psText, size_t iTexts, DWORD x, DWORD y, CObjBase * pObj = NULL, DWORD rid = 0 );
 
 	bool addGumpDialogProps( CGrayUID uid );
 
@@ -1447,7 +1491,7 @@ public:
 
 	void addShowDamage( CGrayUID uid, int damage );
 	void addSpeedMode( BYTE speedMode = 0 );
-	void addVisualRange( BYTE visualRange = UO_MAP_VIEW_SIZE );
+	void addVisualRange( BYTE visualRange );
 	void addIdleWarning( BYTE message );
 	void addKRToolbar( bool bEnable );
 
@@ -1516,7 +1560,7 @@ public:
 	bool CanHear( const CObjBaseTemplate * pSrc, TALKMODE_TYPE mode ) const;
 
 	bool Dialog_Setup( CLIMODE_TYPE mode, RESOURCE_ID_BASE rid, int iPage, CObjBase * pObj, LPCTSTR Arguments = "" );
-	bool Dialog_Close( CObjBase * pObj, DWORD rid, int buttonID );
+	bool Dialog_Close( CObjBase * pObj, DWORD rid, DWORD buttonID );
 	void Menu_Setup( RESOURCE_ID_BASE rid, CObjBase * pObj = NULL );
 
 	int OnSkill_Info( SKILL_TYPE skill, CGrayUID uid, int iTestLevel, bool fTest );

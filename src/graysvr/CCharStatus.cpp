@@ -296,8 +296,11 @@ LAYER_TYPE CChar::CanEquipLayer( CItem *pItem, LAYER_TYPE layer, CChar *pCharMsg
 		{
 			if ( !pItemDef->IsTypeEquippable() || !pCharDef->Can(CAN_C_USEHANDS) )
 			{
-				fCantEquip = true;
-				break;
+				if ( pItemDef->GetDispID() != ITEMID_LIGHT_SRC )	// this light source item is a memory equipped on LAYER_HAND2, so it's ok to equip it even without proper TYPE/CAN
+				{
+					fCantEquip = true;
+					break;
+				}
 			}
 
 			if ( layer == LAYER_HAND2 )
@@ -316,8 +319,7 @@ LAYER_TYPE CChar::CanEquipLayer( CItem *pItem, LAYER_TYPE layer, CChar *pCharMsg
 			break;
 		}
 
-		case LAYER_NEWLIGHT:
-			// DEBUG_ERR(( "ALERT: Weird layer %d used for '%s' check this\n", LAYER_HIDDEN, pItem->GetResourceName()));
+		case LAYER_FACE:
 		case LAYER_COLLAR:
 		case LAYER_RING:
 		case LAYER_EARS:
@@ -592,98 +594,44 @@ BYTE CChar::GetLightLevel() const
 	return GetTopSector()->GetLight();
 }
 
-CItem *CChar::GetSpellbook(SPELL_TYPE iSpell) const	// Retrieves a spellbook from the magic school given in iSpell
+CItem *CChar::GetSpellbook(SPELL_TYPE iSpell) const
 {
 	ADDTOCALLSTACK("CChar::GetSpellbook");
-	// Search for suitable book in hands first
+	// Check if the char have any spellbook to cast iSpell
+
+	// Search in hands
 	CItem *pReturn = NULL;
-	for ( CItem *pBook = GetContentHead(); pBook != NULL; pBook = pBook->GetNext() )
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		if ( !pBook->IsTypeSpellbook() )
+		CItemBase *pItemDef = pItem->Item_GetDef();
+		if ( !pItemDef->IsTypeSpellbook(pItem->GetType()) )
 			continue;
-		if ( (iSpell > pBook->m_itSpellbook.m_baseid) && (iSpell - (pBook->m_itSpellbook.m_baseid + 1) < 96) )
-		{
-			if ( pBook->IsSpellInBook(iSpell) )	//We found a book with this same spell, nothing more to do.
-				return pBook;	
-			else
-				pReturn = pBook;	// We did not find the spell, but this book is of the same school ... we'll return this book if none better is found (NOTE: some book must be returned or the code will think that we don't have a book).
-		}
+		if ( (iSpell < static_cast<SPELL_TYPE>(pItemDef->m_ttSpellbook.m_Offset)) || (iSpell > static_cast<SPELL_TYPE>(pItemDef->m_ttSpellbook.m_Offset + pItemDef->m_ttSpellbook.m_MaxSpells)) )
+			continue;
+		if ( pItem->IsSpellInBook(iSpell) )
+			return pItem;
+
+		pReturn = pItem;		// spellbook found, but it doesn't have the spell... return this book if nothing better is found
 	}
 
-	// Then search in the top level of the pack
+	// Search in the top level of backpack
 	CItemContainer *pPack = GetContainer(LAYER_PACK);
 	if ( pPack )
 	{
-		for ( CItem *pBook = pPack->GetContentHead(); pBook != NULL; pBook = pBook->GetNext() )
+		for ( CItem *pItem = pPack->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 		{
-			if ( !pBook->IsTypeSpellbook() )
+			CItemBase *pItemDef = pItem->Item_GetDef();
+			if ( !pItemDef->IsTypeSpellbook(pItem->GetType()) )
 				continue;
-			if ( (iSpell > pBook->m_itSpellbook.m_baseid) && (iSpell - (pBook->m_itSpellbook.m_baseid + 1) < 96) )
-			{
-				if ( pBook->IsSpellInBook(iSpell) )	//We found a book with this same spell, nothing more to do.
-					return pBook;	
-				else
-					pReturn = pBook;	// We did not find the spell, but this book is of the same school ... we'll return this book if none better is found (NOTE: some book must be returned or the code will think that we don't have a book).
-			}
+			if ( (iSpell < static_cast<SPELL_TYPE>(pItemDef->m_ttSpellbook.m_Offset)) || (iSpell > static_cast<SPELL_TYPE>(pItemDef->m_ttSpellbook.m_Offset + pItemDef->m_ttSpellbook.m_MaxSpells)) )
+				continue;
+			if ( pItem->IsSpellInBook(iSpell) )
+				return pItem;
+
+			pReturn = pItem;	// spellbook found, but it doesn't have the spell... return this book if nothing better is found
 		}
 	}
 	return pReturn;
-}
-
-int CChar::GetSpellbookExtra(CItem *pBooks[], int &count) const	// Retrieves a spellbook from the magic school given in iSpell
-{
-	ADDTOCALLSTACK("CChar::GetSpellbook");
-	// Search for suitable book in hands first
-	for ( CItem *pBook = GetContentHead(); pBook != NULL; pBook = pBook->GetNext() )
-	{
-		if ( pBook->GetType() != IT_SPELLBOOK_EXTRA )
-			continue;
-		if ( pBook->m_itSpellbook.m_baseid )
-			pBooks[++count] = pBook;
-	}
-
-	// Then search in the top level of the pack
-	CItemContainer *pPack = GetContainer(LAYER_PACK);
-	if ( pPack )
-	{
-		for ( CItem *pBook = pPack->GetContentHead(); pBook != NULL; pBook = pBook->GetNext() )
-		{
-			if ( pBook->GetType() != IT_SPELLBOOK_EXTRA )
-				continue;
-			if ( pBook->m_itSpellbook.m_baseid )
-				pBooks[++count] = pBook;
-		}
-	}
-	return count;
-}
-
-CItem *CChar::GetSpellbookRandom(SPELL_TYPE iSpell) const	// Retrieves a spellbook from the magic school given in iSpell
-{
-	ADDTOCALLSTACK("CChar::GetSpellbook");
-	CItem *pBook = NULL;
-	CItem *pBooks[static_cast<int>(SKILL_QTY)];
-	// Search for suitable book in hands first
-	int count = 0;
-	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
-	{
-		SKILL_TYPE skill = static_cast<SKILL_TYPE>(i);
-		CSkillDef *pSkillDef = g_Cfg.GetSkillDef(skill);
-		if ( !pSkillDef )
-			continue;
-		if ( g_Cfg.IsSkillFlag(skill, SKF_MAGIC) && (Skill_GetBase(skill) > 1) )	//only selecting skills with value > 0.1
-		{
-			pBook = GetSpellbook(iSpell ? iSpell : const_cast<CChar*>(this)->Spell_GetIndex(skill));
-			if ( pBook )
-				pBooks[++count] = pBook;
-		}
-	}
-	GetSpellbookExtra(pBooks, count);	// add extra spellbooks to the list 
-	if ( count > 0 )
-	{
-		int rand = Calc_GetRandVal2(1, count);
-		return pBooks[rand];
-	}
-	return NULL;
 }
 
 short CChar::Food_GetLevelPercent() const
@@ -753,7 +701,7 @@ LPCTSTR CChar::Food_GetLevelMessage(bool fPet, bool fHappy) const
 	return sm_szFoodLevel[index];
 }
 
-short CChar::Food_CanEat( CObjBase *pObj ) const
+WORD CChar::Food_CanEat( CObjBase *pObj ) const
 {
 	ADDTOCALLSTACK("CChar::Food_CanEat");
 	// Would i want to eat this creature ? hehe
@@ -770,7 +718,7 @@ short CChar::Food_CanEat( CObjBase *pObj ) const
 
 	size_t iRet = pCharDef->m_FoodType.FindResourceMatch(pObj);
 	if ( iRet != pCharDef->m_FoodType.BadIndex() )
-		return static_cast<short>(pCharDef->m_FoodType[iRet].GetResQty());	// how bad do i want it?
+		return static_cast<WORD>(pCharDef->m_FoodType[iRet].GetResQty());	// how bad do i want it?
 
 	return 0;
 }
@@ -944,8 +892,7 @@ bool CChar::CanSee( const CObjBaseTemplate *pObj ) const
 		return false;
 
 	// First check the distance since if this will fail, we do not need to scan all subcontainers to find this result ;)
-	int iVisualRange = GetSight();
-	if ( pObj->GetTopLevelObj()->GetTopPoint().GetDistSight(GetTopPoint()) > iVisualRange )
+	if ( pObj->GetTopLevelObj()->GetTopPoint().GetDistSight(GetTopPoint()) > GetSight() )
 		return false;
 
 	if ( pObj->IsItem() )
@@ -1047,7 +994,7 @@ bool CChar::CanSee( const CObjBaseTemplate *pObj ) const
 	}
 
 	if ( IsPriv(PRIV_ALLSHOW) && (pObj->IsTopLevel() || pObj->IsDisconnected()) )		// don't exclude for logged out and diff maps
-		return (GetTopPoint().GetDistSightBase(pObj->GetTopPoint()) <= UO_MAP_VIEW_SIZE);
+		return (GetTopPoint().GetDistSightBase(pObj->GetTopPoint()) <= GetSight());
 
 	return true;
 }
@@ -1882,9 +1829,7 @@ bool CChar::CanHear( const CObjBaseTemplate *pSrc, TALKMODE_TYPE mode ) const
 			iHearRange = g_Cfg.m_iDistanceWhisper;
 			break;
 		default:
-			if ( g_Cfg.m_iDistanceTalk < 0 )
-				return true;
-			iHearRange = g_Cfg.m_iDistanceTalk;
+			iHearRange = GetSight();
 			break;
 	}
 

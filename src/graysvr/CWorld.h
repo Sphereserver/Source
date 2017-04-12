@@ -287,7 +287,7 @@ class CWorldClock
 
 private:
 	CServTime m_timeClock;		// the current relative tick time (in TICK_PER_SEC)
-	INT64 m_Clock_SysPrev;		// System time of the last OnTick() (in CLOCKS_PER_SEC)
+	UINT64 m_Clock_SysPrev;		// System time of the last OnTick() (in CLOCKS_PER_SEC)
 public:
 	static const char *m_sClassName;
 	CWorldClock()
@@ -301,13 +301,13 @@ private:
 
 public:
 	void Init();
-	void InitTime( INT64 lTimeBase );
+	void InitTime( UINT64 lTimeBase );
 	bool Advance();
 	CServTime GetCurrentTime() const	// TICK_PER_SEC
 	{
-		return( m_timeClock );
+		return m_timeClock;
 	}
-	static INT64 GetSystemClock();		// CLOCKS_PER_SEC
+	static UINT64 GetSystemClock();		// CLOCKS_PER_SEC
 };
 
 class CTimedFunctionHandler
@@ -396,8 +396,8 @@ public:
 	CGPtrTypeArray<CObjBase*> m_ObjStatusUpdates; // objects that need OnTickStatusUpdate called
 
 private:
-	bool LoadFile( LPCTSTR pszName, bool fError = true );
-	bool LoadWorld();
+	bool LoadFile(LPCTSTR pszName);
+	void LoadWorld();
 
 	bool SaveTry(bool fForceImmediate); // Save world state
 	bool SaveStage();
@@ -498,7 +498,7 @@ public:
 	bool Import( LPCTSTR pszFilename, const CChar* pSrc, WORD iModeFlags = IMPFLAGS_ITEMS, int iDist = SHRT_MAX, TCHAR *pszAgs1 = NULL, TCHAR *pszAgs2 = NULL );
 	bool Save( bool fForceImmediate ); // Save world state
 	void SaveStatics();
-	bool LoadAll();
+	void LoadAll();
 	bool DumpAreas( CTextConsole * pSrc, LPCTSTR pszFilename );
 	void Close();
 

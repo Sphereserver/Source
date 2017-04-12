@@ -99,7 +99,7 @@ public:
 	{
 		return m_timestamp;
 	}
-	void SetTimeStamp( INT64 t_time)
+	void SetTimeStamp( UINT64 t_time )
 	{
 		m_timestamp.InitTime(t_time);
 	}
@@ -309,7 +309,7 @@ public:
 	void inline SetNamePool_Fail( TCHAR * ppTitles );
 	bool SetNamePool( LPCTSTR pszName );
 
-	void Sound( SOUND_TYPE id, int iRepeat = 1 ) const; // Play sound effect from this location.
+	void Sound(SOUND_TYPE id, BYTE iRepeat = 1) const; // Play sound effect from this location.
 	void Effect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBase * pSource = NULL, BYTE bspeedseconds = 5, BYTE bloop = 1, bool fexplode = false, DWORD color = 0, DWORD render = 0, WORD effectid = 0, WORD explodeid = 0, WORD explodesound = 0, DWORD effectuid = 0, BYTE type = 0) const;
 
 	void r_WriteSafe( CScript & s );
@@ -563,7 +563,7 @@ public:
 
 		// IT_ARMOR
 		// IT_ARMOR_LEATHER
-		// IT_SHIELD:
+		// IT_SHIELD
 		// IT_CLOTHING
 		// IT_JEWELRY
 		struct
@@ -592,13 +592,18 @@ public:
 		} m_itSpell;
 
 		// IT_SPELLBOOK
-		struct	// Spellbook extra spells.
+		// IT_SPELLBOOK_NECRO
+		// IT_SPELLBOOK_PALA
+		// IT_SPELLBOOK_EXTRA
+		// IT_SPELLBOOK_BUSHIDO
+		// IT_SPELLBOOK_NINJITSU
+		// IT_SPELLBOOK_ARCANIST
+		// IT_SPELLBOOK_MYSTIC
+		// IT_SPELLBOOK_MASTERY
+		struct
 		{
 			DWORD m_spells1;	// more1=Mask of avail spells for spell book.
 			DWORD m_spells2;	// more2=Mask of avail spells for spell book.
-			WORD m_maxspells;	// morex = max amount of spells.
-			WORD m_junk1;
-			WORD m_baseid;		// morez
 		} m_itSpellbook;
 
 		// IT_POTION
@@ -631,7 +636,7 @@ public:
 		struct
 		{
 			ITEMID_TYPE m_cook_id;		// more1=Cooks into this. (only if raw)
-			CREID_TYPE m_MeatType;		// more2= Meat from what type of creature ?
+			WORD m_junk1;
 			WORD m_spell;				// morex=SPELL_TYPE = The magic spell cast on this. ( effect of eating.)
 			WORD m_spelllevel;			// morey=level of the spell. (0-1000)
 			BYTE m_poison_skill;		// morez=0-100 = Is poisoned ?
@@ -642,7 +647,7 @@ public:
 		struct
 		{
 			ITEMID_TYPE m_cook_id;		// more1=Cooks into this. (only if raw)
-			CREID_TYPE m_MeatType;		// more2= Meat from what type of creature ?
+			WORD m_junk1;
 			WORD m_spell;				// morex=SPELL_TYPE = The magic spell cast on this. ( effect of eating.)
 			WORD m_spelllevel;			// morey=level of the spell. (0-1000)
 			BYTE m_poison_skill;		// morez=0-100 = Is poisoned ?
@@ -821,14 +826,14 @@ public:
 		struct
 		{
 			ITEMID_TYPE m_ClothID;	// more1 = the cloth type currenctly loaded here.
-			int m_ClothQty;			// more2 = IS the loom loaded with cloth ?
+			WORD m_ClothQty;		// more2 = IS the loom loaded with cloth ?
 		} m_itLoom;
 
 		// IT_ARCHERY_BUTTE
 		struct
 		{
 			ITEMID_TYPE m_AmmoType;	// more1 = arrow or bolt currently stuck in it.
-			int m_AmmoCount;		// more2 = how many arrows or bolts ?
+			WORD m_AmmoCount;		// more2 = how many arrows or bolts ?
 		} m_itArcheryButte;
 
 		// IT_CANNON_MUZZLE
@@ -865,12 +870,6 @@ public:
 			DWORD m_Hits_Cur;	// more1 = how much damage the web can take.
 		} m_itWeb;
 
-		// IT_DREAM_GATE
-		struct
-		{
-			int m_index;	// more1 = how much damage the web can take.
-		} m_itDreamGate;
-
 		// IT_TRAP
 		// IT_TRAP_ACTIVE
 		// IT_TRAP_INACTIVE
@@ -905,7 +904,7 @@ public:
 		struct
 		{
 			DWORD	m_Sound;	// more1 = SOUND_TYPE
-			int		m_Repeat;	// more2 =
+			BYTE	m_Repeat;	// more2 =
 		} m_itSound;
 
 		// IT_STONE_GUILD
@@ -916,18 +915,6 @@ public:
 			int m_iAccountGold;			// more2=How much gold has been dropped on me?
 			// ATTR_OWNED = auto promote to member.
 		} m_itStone;
-
-		// IT_LEATHER
-		// IT_FEATHER
-		// IT_FUR
-		// IT_WOOL
-		// IT_BLOOD
-		// IT_BONE
-	 	struct
-		{
-			int m_junk1;
-			CREID_TYPE m_creid;	// more2=the source creature id. (CREID_TYPE)
-		} m_itSkin;
 
 	};	// IT_QTY
 
@@ -1000,18 +987,6 @@ public:
 	{
 		return (m_Attr & dwAttr) ? true : false;
 	}
-	void SetCanUse( DWORD dwCanUse )
-	{
-		m_CanUse |= dwCanUse;
-	}
-	void ClrCanUse( DWORD dwCanUse )
-	{
-		m_CanUse &= ~dwCanUse;
-	}
-	bool IsCanUse( DWORD dwCanUse ) const	// CanUse_None
-	{
-		return (m_CanUse & dwCanUse) ? true : false;
-	}
 
 	height_t GetHeight() const;
 	INT64  GetDecayTime() const;
@@ -1027,13 +1002,13 @@ public:
 		return Can(CAN_I_PILE);
 	}
 
-	bool Can(WORD wCan) const
+	bool Can(DWORD wCan) const
 	{
 		return (m_Can & wCan) ? true : false;
 	}
 	virtual bool  IsSameType( const CObjBase * pObj ) const;
 	virtual bool  IsIdentical( const CObjBase * pObj );
-	bool  Stack( CItem * pItem );
+	bool Stack( CItem * pItem );
 	DWORD ConsumeAmount( DWORD iQty = 1, bool fTest = false );
 
 	CREID_TYPE GetCorpseType() const
@@ -1260,7 +1235,6 @@ public:
 	void ConvertBolttoCloth();
 
 	// Spells
-	SKILL_TYPE GetSpellBookSkill();
 	SPELL_TYPE GetScrollSpell() const;
 	bool IsSpellInBook( SPELL_TYPE spell ) const;
 	int GetSpellcountInBook() const;
@@ -1790,13 +1764,13 @@ public:
 	};
 
 private:
-	typedef std::vector<Component*> ComponentsContainer;
+	typedef std::vector<Component *> ComponentsContainer;
 	struct DesignDetails
 	{
-		int m_iRevision;
+		DWORD m_iRevision;
 		ComponentsContainer m_vectorComponents;
-		PacketHouseDesign* m_pData;
-		int m_iDataRevision;
+		PacketHouseDesign *m_pData;
+		DWORD m_iDataRevision;
 	};
 	
 	class CGrayMultiCustom : public CGrayMulti
@@ -1851,7 +1825,7 @@ private:
 public:
 	void BeginCustomize( CClient * pClientSrc );
 	void EndCustomize( bool bForce = false );
-	void SwitchToLevel( CClient * pClientSrc, DWORD iLevel );
+	void SwitchToLevel( CClient * pClientSrc, BYTE iLevel );
 	void CommitChanges( CClient * pClientSrc = NULL );
 	void AddItem( CClient * pClientSrc, ITEMID_TYPE id, signed short x, signed short y, signed char z = SCHAR_MIN, short iStairID = 0 );
 	void AddStairs( CClient * pClientSrc, ITEMID_TYPE id, signed short x, signed short y, signed char z = SCHAR_MIN, short iStairID = -1 );
@@ -1870,9 +1844,9 @@ public:
 	const CGRect GetDesignArea();
 	size_t GetFixtureCount(DesignDetails * pDesign = NULL);
 	size_t GetComponentsAt(signed short dx, signed short dy, signed char dz, Component ** pComponents, DesignDetails * pDesign = NULL);
-	int GetRevision(const CClient * pClientSrc = NULL) const;
-	DWORD GetLevelCount();
-	short GetStairCount();
+	DWORD GetRevision(const CClient * pClientSrc = NULL) const;
+	BYTE GetLevelCount();
+	WORD GetStairID();
 
 	static BYTE GetPlane( signed char z );
 	static BYTE GetPlane( Component * pComponent );
@@ -2307,19 +2281,17 @@ public:
 	virtual bool r_LoadVal( CScript & s );
 	virtual bool r_Verb( CScript & s, CTextConsole * pSrc ); // Execute command from script
 
-	size_t GetPageCount() const
+	WORD GetPageCount() const
 	{
-		return m_sBodyLines.GetCount();
+		return static_cast<WORD>(m_sBodyLines.GetCount());
 	}
-	LPCTSTR GetPageText( size_t iPage ) const
+	LPCTSTR GetPageText( WORD iPage ) const
 	{
-		if ( m_sBodyLines.IsValidIndex(iPage) == false )
-			return NULL;
-		if ( m_sBodyLines[iPage] == NULL )
+		if ( !m_sBodyLines.IsValidIndex(iPage) || (m_sBodyLines[iPage] == NULL) )
 			return NULL;
 		return m_sBodyLines[iPage]->GetPtr();
 	}
-	void SetPageText( size_t iPage, LPCTSTR pszText )
+	void SetPageText( WORD iPage, LPCTSTR pszText )
 	{
 		if ( pszText == NULL )
 			return;
@@ -2698,7 +2670,7 @@ private:
 #define STATF_Ridden		0x40000000	// This is the horse. (don't display me) I am being ridden
 #define STATF_OnHorse		0x80000000	// Mounted on horseback.
 
-	unsigned long long m_StatFlag;		// Flags above
+	UINT64 m_StatFlag;			// Flags above
 
 #define SKILL_VARIANCE 100		// Difficulty modifier for determining success. 10.0 %
 	WORD m_Skill[SKILL_QTY];	// List of skills ( skill * 10 )
@@ -2756,7 +2728,7 @@ public:
 	DIR_TYPE m_dirFace;			// facing this dir.
 	CGString m_sTitle;			// Special title such as "the guard" (replaces the normal skill title).
 	CPointMap m_ptHome;			// What is our "home" region. (towns and bounding of NPC's)
-	unsigned long long m_virtualGold;	// Virtual gold used by TOL clients
+	UINT64 m_virtualGold;		// Virtual gold used by TOL clients
 
 	// Speech
 	FONT_TYPE m_fonttype;		// speech font to use (client send this to server, but it's not used)
@@ -2955,18 +2927,19 @@ public:
 	}
 	void SetSight(BYTE newSight)
 	{
-		m_iVisualRange = minimum(newSight, 31);		// max value is 18 on classic clients and 31 on enhanced clients
+		// NOTE: Client 7.0.55.27 added new screen resolutions on options menu, and it will lock
+		// visual range value based on current resolution, so there's no way to change the value
+		// manually anymore (but enhanced clients still allow changes). This patch also increase
+		// max visual range on both clients (18 -> 24)
+
+		m_iVisualRange = minimum(newSight, 24);
 		if ( m_pClient )
 			m_pClient->addVisualRange(m_iVisualRange);
 	}
 	
-	bool Can( WORD wCan ) const
+	bool Can(DWORD wCan) const
 	{
 		return (m_Can & wCan) ? true : false;
-	}
-	bool Can( int wCan ) const
-	{
-		return (m_Can & static_cast<DWORD>(wCan)) ? true : false;
 	}
 	bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg );
 	bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg, DWORD dwArgResearch );
@@ -3112,7 +3085,7 @@ public:
 	bool CanUse( CItem * pItem, bool fMoveOrConsume ) const;
 	bool IsMountCapable() const;
 
-	short  Food_CanEat( CObjBase * pObj ) const;
+	WORD   Food_CanEat( CObjBase * pObj ) const;
 	short  Food_GetLevelPercent() const;
 	LPCTSTR Food_GetLevelMessage( bool fPet, bool fHappy ) const;
 
@@ -3342,16 +3315,14 @@ public:
 	}
 	int GetWeightLoadPercent( int iWeight ) const;
 
-	CItem * GetSpellbook(SPELL_TYPE iSpell = SPELL_Clumsy) const;
-	int GetSpellbookExtra(CItem * pBooks[], int &count) const;
-	CItem * GetSpellbookRandom(SPELL_TYPE iSpell = SPELL_Clumsy) const;
+	CItem *GetSpellbook(SPELL_TYPE iSpell) const;
 	CItemContainer *GetContainer(LAYER_TYPE layer) const
 	{
 		return dynamic_cast<CItemContainer *>(LayerFind(layer));
 	}
 	CItemContainer *GetContainerCreate(LAYER_TYPE layer);
-	CItem * GetBackpackItem(ITEMID_TYPE item);
-	void AddGoldToPack( DWORD iAmount, CItemContainer * pPack=NULL );
+	CItem *GetBackpackItem(ITEMID_TYPE item);
+	void AddGoldToPack(DWORD iAmount, CItemContainer *pPack = NULL, bool bSound = true);
 
 //private:
 	virtual TRIGRET_TYPE OnTrigger( LPCTSTR pTrigName, CTextConsole * pSrc, CScriptTriggerArgs * pArgs );
@@ -3648,7 +3619,6 @@ public:
 	}
 	WORD Skill_GetAdjusted(SKILL_TYPE skill) const;
 	SKILL_TYPE Skill_GetMagicRandom(WORD iMinValue = 0);
-	SKILL_TYPE Skill_GetMagicBest();
 
 	/**
 	* @brief Checks if the given skill can be used.
@@ -3663,14 +3633,16 @@ public:
 
 	bool Skill_CheckSuccess( SKILL_TYPE skill, int difficulty, bool bUseBellCurve = true ) const;
 	bool Skill_Wait( SKILL_TYPE skilltry );
-	bool Skill_Start( SKILL_TYPE skill, int iDifficulty = 0 ); // calc skill progress.
+	bool Skill_Start( SKILL_TYPE skill );
 	void Skill_Fail( bool fCancel = false );
 	int Skill_Stroke( bool fResource);				// Strokes in crafting skills, calling for SkillStroke trig
 	ANIM_TYPE Skill_GetAnim( SKILL_TYPE skill);
 	SOUND_TYPE Skill_GetSound( SKILL_TYPE skill);
 	int Skill_Stage( SKTRIG_TYPE stage );
-	TRIGRET_TYPE Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE  stage, CScriptTriggerArgs *pArgs = NULL);		//pArgs.m_iN1 will be rewritten with skill
-	TRIGRET_TYPE Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig, CScriptTriggerArgs *pArgs = NULL);	//pArgs.m_iN1 will be rewritten with skill
+	TRIGRET_TYPE Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE stage );
+	TRIGRET_TYPE Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE stage, CScriptTriggerArgs *pArgs );		//pArgs.m_iN1 will be rewritten with skill
+	TRIGRET_TYPE Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig );
+	TRIGRET_TYPE Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig, CScriptTriggerArgs *pArgs );	//pArgs.m_iN1 will be rewritten with skill
 
 	bool Skill_Mining_Smelt( CItem * pItemOre, CItem * pItemTarg );
 	bool Skill_Tracking( CGrayUID uidTarg, int iDistMax = SHRT_MAX );
@@ -3731,19 +3703,17 @@ private:
 	int Skill_Act_Breath(SKTRIG_TYPE stage);
 	int Skill_Act_Training( SKTRIG_TYPE stage );
 
-	void Spell_Dispel( int iskilllevel );
-	CChar * Spell_Summon( CREID_TYPE id, CPointMap pt );
-	bool Spell_Recall(CItem * pRune, bool fGate);
-	SPELL_TYPE Spell_GetIndex(SKILL_TYPE skill = SKILL_NONE);	//gets first spell for the magic skill given.
-	SPELL_TYPE Spell_GetMax(SKILL_TYPE skill = SKILL_NONE);	//gets first spell for the magic skill given.
-	CItem * Spell_Effect_Create( SPELL_TYPE spell, LAYER_TYPE layer, int iSkillLevel, int iDuration, CObjBase * pSrc = NULL, bool bEquip = true );
-	bool Spell_Equip_OnTick( CItem * pItem );
+	void Spell_Dispel(int iskilllevel);
+	CChar *Spell_Summon(CREID_TYPE id, CPointMap pt);
+	bool Spell_Recall(CItem *pRune, bool fGate);
+	CItem *Spell_Effect_Create(SPELL_TYPE spell, LAYER_TYPE layer, int iSkillLevel, int iDuration, CObjBase *pSrc = NULL, bool bEquip = true);
+	bool Spell_Equip_OnTick(CItem *pItem);
 
-	void Spell_Field(CPointMap pt, ITEMID_TYPE idEW, ITEMID_TYPE idNS, unsigned int fieldWidth, unsigned int fieldGauge, int iSkill, CChar * pCharSrc = NULL, ITEMID_TYPE idnewEW = static_cast<ITEMID_TYPE>(NULL), ITEMID_TYPE idnewNS = static_cast<ITEMID_TYPE>(NULL), int iDuration = 0, HUE_TYPE iColor = HUE_DEFAULT);
-	void Spell_Area( CPointMap pt, int iDist, int iSkill );
+	void Spell_Field(CPointMap pt, ITEMID_TYPE idEW, ITEMID_TYPE idNS, unsigned int fieldWidth, unsigned int fieldGauge, int iSkill, CChar *pCharSrc = NULL, ITEMID_TYPE idnewEW = ITEMID_NOTHING, ITEMID_TYPE idnewNS = ITEMID_NOTHING, int iDuration = 0, HUE_TYPE iColor = HUE_DEFAULT);
+	void Spell_Area(CPointMap pt, int iDist, int iSkill);
 	bool Spell_TargCheck_Face();
 	bool Spell_TargCheck();
-	bool Spell_Unequip( LAYER_TYPE layer );
+	bool Spell_Unequip(LAYER_TYPE layer);
 
 	int  Spell_CastStart();
 	void Spell_CastFail();
@@ -3809,11 +3779,10 @@ private:
 	// Armor, weapons and combat ------------------------------------
 	int	CalcFightRange( CItem * pWeapon = NULL );
 
-	SKILL_TYPE Fight_GetWeaponSkill() const;
 	bool Fight_IsActive() const;
 	bool Fight_IsAttackable() const;
 public:
-	int CalcArmorDefense() const;
+	WORD CalcArmorDefense() const;
 
 	void Memory_Fight_Start( const CChar * pTarg );
 	bool Memory_Fight_OnTick( CItemMemory * pMemory );
@@ -3822,6 +3791,7 @@ public:
 	void Fight_Clear();
 	void Fight_HitTry();
 	WAR_SWING_TYPE Fight_Hit( CChar * pCharTarg );
+	SKILL_TYPE Fight_GetWeaponSkill() const;
 	int  Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom = false, bool bGetMax = true ) const;
 
 	// Attacker System
@@ -3859,7 +3829,6 @@ public:
 
 	//
 	bool Player_OnVerb( CScript &s, CTextConsole * pSrc );
-	void InitPlayer( CClient * pClient, const char * pszCharname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE iProf, SKILL_TYPE skSkill1, int iSkillVal1, SKILL_TYPE skSkill2, int iSkillVal2, SKILL_TYPE skSkill3, int iSkillVal3, SKILL_TYPE skSkill4, int iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, int iStartLoc  );
 	bool ReadScriptTrig(CCharBase * pCharDef, CTRIG_TYPE trig, bool bVendor = false);
 	bool ReadScript(CResourceLock &s, bool bVendor = false);
 	void NPC_LoadScript( bool fRestock );
@@ -3874,11 +3843,11 @@ private:
 	CChar * Horse_GetMountChar() const;
 public:
 	CChar * Use_Figurine( CItem * pItem, bool bCheckFollowerSlots = true );
-	CItem * Make_Figurine( CGrayUID uidOwner, ITEMID_TYPE id = ITEMID_NOTHING );
+	CItem * Make_Figurine( CGrayUID uidOwner = (UID_F_ITEM|UID_O_INDEX_MASK), ITEMID_TYPE id = ITEMID_NOTHING );
 	CItem * NPC_Shrink();
 	bool FollowersUpdate( CChar * pChar, short iFollowerSlots = 0, bool bCheckOnly = false );
 
-	int  ItemPickup( CItem * pItem, int amount );
+	int  ItemPickup( CItem * pItem, WORD amount );
 	bool ItemEquip( CItem * pItem, CChar * pCharMsg = NULL, bool fFromDClick = false );
 	bool ItemEquipWeapon( bool fForce );
 	bool ItemEquipArmor( bool fForce );
@@ -3932,8 +3901,8 @@ public:
 	LPCTSTR Guild_Abbrev( MEMORY_TYPE memtype ) const;
 	LPCTSTR Guild_AbbrevBracket( MEMORY_TYPE memtype ) const;
 
-	bool Use_EatQty( CItem * pFood, short iQty = 1 );
-	bool Use_Eat( CItem * pItem, short iQty = 1 );
+	bool Use_EatQty( CItem * pFood, WORD iQty = 1 );
+	bool Use_Eat( CItem * pItem, WORD iQty = 1 );
 	bool Use_MultiLockDown( CItem * pItemTarg );
 	bool Use_CarveCorpse( CItemCorpse * pCorpse );
 	bool Use_Repair( CItem * pItem );
@@ -3994,7 +3963,7 @@ private:
 	bool NPC_LookAtCharHealer( CChar * pChar );
 	bool NPC_LookAtCharHuman( CChar * pChar );
 	bool NPC_LookAtCharMonster( CChar * pChar );
-	bool NPC_LookAtChar( CChar * pChar, int iDist );
+	bool NPC_LookAtChar( CChar * pChar );
 	bool NPC_LookAtItem( CItem * pItem, int iDist );
 	bool NPC_LookAround( bool fForceCheckItems = false );
 	int  NPC_WalkToPoint(bool fRun = false);
@@ -4003,7 +3972,7 @@ private:
 	bool NPC_FightCast(CObjBase * &pChar ,CObjBase * pSrc, SPELL_TYPE &spell, SKILL_TYPE skill = SKILL_NONE);
 	bool NPC_FightArchery( CChar * pChar );
 	bool NPC_FightMayCast(bool fCheckSkill = true) const;
-	bool NPC_GetAllSpellbookSpells();
+	void NPC_GetAllSpellbookSpells();
 
 	bool NPC_Act_Follow( bool fFlee = false, int maxDistance = 1, bool fMoveAway = false );
 	void NPC_Act_Guard();
@@ -4025,12 +3994,12 @@ public:
 	void NPC_Pathfinding();		//	NPC thread AI - pathfinding
 	void NPC_Food();			//	NPC thread AI - search for food
 	void NPC_ExtraAI();			//	NPC thread AI - some general extra operations
-	bool NPC_AddSpellsFromBook(CItem * pBook);
+	void NPC_AddSpellsFromBook(CItem * pBook);
 
 	void NPC_PetDesert();	
 	void NPC_PetClearOwners();
 	bool NPC_PetSetOwner( CChar * pChar );
-	CChar * NPC_PetGetOwner() const;
+	CChar *NPC_PetGetOwner() const;
 	bool NPC_IsOwnedBy( const CChar * pChar, bool fAllowGM = true ) const;
 	bool NPC_CanSpeak() const;
 
