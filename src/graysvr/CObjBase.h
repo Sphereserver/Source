@@ -3629,7 +3629,7 @@ public:
 	bool Skill_CanUse( SKILL_TYPE skill );
 
 	void Skill_SetBase( SKILL_TYPE skill, WORD iValue );
-	bool Skill_UseQuick( SKILL_TYPE skill, INT64 difficulty, bool bAllowGain = true, bool bUseBellCurve = true );
+	bool Skill_UseQuick( SKILL_TYPE skill, int difficulty, bool bAllowGain = true, bool bUseBellCurve = true );
 
 	bool Skill_CheckSuccess( SKILL_TYPE skill, int difficulty, bool bUseBellCurve = true ) const;
 	bool Skill_Wait( SKILL_TYPE skilltry );

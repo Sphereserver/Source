@@ -1115,7 +1115,7 @@ bool CClient::Cmd_Skill_Tracking( WORD track_sel, bool bExec )
 		// Some credit for trying
 		if ( count > 0 )
 		{
-			m_pChar->Skill_UseQuick(SKILL_TRACKING, 20 + Calc_GetRandLLVal(30));
+			m_pChar->Skill_UseQuick(SKILL_TRACKING, 20 + Calc_GetRandVal(30));
 			ASSERT(count < COUNTOF(item));
 			addItemMenu(CLIMODE_MENU_SKILL_TRACK, item, count);
 			return true;
@@ -1123,7 +1123,7 @@ bool CClient::Cmd_Skill_Tracking( WORD track_sel, bool bExec )
 		else
 		{
 			// Tracking failed or cancelled
-			m_pChar->Skill_UseQuick(SKILL_TRACKING, 10 + Calc_GetRandLLVal(30));
+			m_pChar->Skill_UseQuick(SKILL_TRACKING, 10 + Calc_GetRandVal(30));
 
 			static LPCTSTR const sm_Track_FailMsg[] =
 			{

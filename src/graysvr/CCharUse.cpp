@@ -183,7 +183,7 @@ bool CChar::Use_Kindling( CItem * pKindling )
 		return false;
 	}
 
-	if ( !Skill_UseQuick(SKILL_CAMPING, Calc_GetRandLLVal(30)) )
+	if ( !Skill_UseQuick(SKILL_CAMPING, Calc_GetRandVal(30)) )
 	{
 		SysMessageDefault(DEFMSG_ITEMUSE_KINDLING_FAIL);
 		return false;
@@ -297,7 +297,7 @@ bool CChar::Use_Train_Dummy( CItem * pItem, bool fSetup )
 		static const SOUND_TYPE sm_TrainingDummySounds[] = { 0x3A4, 0x3A6, 0x3A9, 0x3AE, 0x3B4, 0x3B6 };
 		pItem->Sound(sm_TrainingDummySounds[Calc_GetRandVal(COUNTOF(sm_TrainingDummySounds))]);
 		pItem->SetAnim(static_cast<ITEMID_TYPE>(pItem->GetID() + 1), 3 * TICK_PER_SEC);
-		Skill_UseQuick(skill, Calc_GetRandLLVal(40));
+		Skill_UseQuick(skill, Calc_GetRandVal(40));
 	}
 	return true;
 }
@@ -344,7 +344,7 @@ bool CChar::Use_Train_PickPocketDip( CItem *pItem, bool fSetup )
 		m_Act_Targ = pItem->GetUID();
 		Skill_Start(NPCACT_TRAINING);
 	}
-	else if ( !Skill_UseQuick(SKILL_STEALING, Calc_GetRandLLVal(40)) )
+	else if ( !Skill_UseQuick(SKILL_STEALING, Calc_GetRandVal(40)) )
 	{
 		pItem->Sound(SOUND_RUSTLE);
 		pItem->Sound(SOUND_GLASS_BREAK4);
@@ -508,7 +508,7 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 
 	// OK...go ahead and fire at the target
 	// Check the skill
-	bool fSuccess = Skill_UseQuick(skill, Calc_GetRandLLVal(40));
+	bool fSuccess = Skill_UseQuick(skill, Calc_GetRandVal(40));
 
 	// determine animation parameters
 	CVarDefCont *pVarAnim = pWeapon->GetDefKey("AMMOANIM", true);
@@ -1152,7 +1152,7 @@ bool CChar::Use_Key( CItem * pKey, CItem * pItemTarg )
 		}
 
 		// Need tinkering tools ???
-		if ( !Skill_UseQuick(SKILL_TINKERING, 30 + Calc_GetRandLLVal(40)) )
+		if ( !Skill_UseQuick(SKILL_TINKERING, 30 + Calc_GetRandVal(40)) )
 		{
 			SysMessageDefault(DEFMSG_MSG_KEY_FAILC);
 			return false;
