@@ -2523,24 +2523,10 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 			pParalyze->Delete();
 	}
 
-	CItem *pPoison = LayerFind(LAYER_FLAG_Poison);
-	if ( pPoison )
-	{
-		if ( !IsSetMagicFlags(MAGICF_OSIFORMULAS) )		// strengthen the poison
-		{
-			pPoison->m_itSpell.m_spellcharges += iTicks;
-			return true;
-		}
-	}
-	else
-	{
-		pPoison = Spell_Effect_Create(SPELL_Poison, LAYER_FLAG_Poison, iSkill, 1 + Calc_GetRandVal(2) * TICK_PER_SEC, pCharSrc, false);
-		if ( !pPoison )
-			return false;
-		LayerAdd(pPoison, LAYER_FLAG_Poison);
-	}
-
-	pPoison->SetTimeout((5 + Calc_GetRandLLVal(4)) * TICK_PER_SEC);
+	CItem *pPoison = Spell_Effect_Create(SPELL_Poison, LAYER_FLAG_Poison, iSkill, 1 + Calc_GetRandVal(2) * TICK_PER_SEC, pCharSrc, false);
+	if ( !pPoison )
+		return false;
+	LayerAdd(pPoison, LAYER_FLAG_Poison);
 
 	if ( IsSetMagicFlags(MAGICF_OSIFORMULAS) )
 	{
@@ -2552,6 +2538,7 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 				pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(16, 33), 100));
 				pPoison->m_itSpell.m_spelllevel = 4;
 				pPoison->m_itSpell.m_spellcharges = 80;		//1 min, 20 sec
+				pPoison->SetTimeout(50);
 			}
 			else
 			{
@@ -2559,6 +2546,7 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 				pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(15, 30), 100));
 				pPoison->m_itSpell.m_spelllevel = 3;
 				pPoison->m_itSpell.m_spellcharges = 60;
+				pPoison->SetTimeout(50);
 			}
 		}
 		else if ( iSkill >= 851 )
@@ -2567,6 +2555,7 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 			pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(7, 15), 100));
 			pPoison->m_itSpell.m_spelllevel = 2;
 			pPoison->m_itSpell.m_spellcharges = 60;
+			pPoison->SetTimeout(40);
 		}
 		else if ( iSkill >= 600 )
 		{
@@ -2574,12 +2563,14 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 			pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(5, 10), 100));
 			pPoison->m_itSpell.m_spelllevel = 1;
 			pPoison->m_itSpell.m_spellcharges = 30;
+			pPoison->SetTimeout(30);
 		}
 		else
 		{
 			// Lesser poison
 			pPoison->m_itSpell.m_spelllevel = 0;
 			pPoison->m_itSpell.m_spellcharges = 30;
+			pPoison->SetTimeout(20);
 		}
 
 		if ( iTicks > 0 )
@@ -2588,6 +2579,7 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 	else
 	{
 		pPoison->m_itSpell.m_spellcharges = iTicks;		// effect duration
+		pPoison->SetTimeout((5 + Calc_GetRandLLVal(4)) * TICK_PER_SEC);
 	}
 
 	if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B )
