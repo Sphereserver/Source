@@ -2594,11 +2594,23 @@ bool PacketChatButton::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 
-	skip(1); // 0x00
-	NCHAR name[MAX_NAME_SIZE+1];
-	readStringUNICODE(reinterpret_cast<WCHAR *>(name), COUNTOF(name));
+	if ( !(g_Cfg.m_iFeatureT2A & FEATURE_T2A_CHAT) )
+		return true;
 
-	client->Event_ChatButton(name);
+	if ( client->m_UseNewChatSystem )
+	{
+		// On new chat system, the chat button is hardcoded on client-side and client will send
+		// this packet only a single time after login complete to get initial chat channel list
+		client->Event_ChatButton();
+	}
+	else
+	{
+		// On old chat system, client will always send this packet when click on chat button
+		skip(1);	// 0x0
+		NCHAR chatname[MAX_NAME_SIZE * 2 + 2];
+		readStringUNICODE(reinterpret_cast<WCHAR *>(chatname), COUNTOF(chatname));
+		client->Event_ChatButton(chatname);
+	}
 	return true;
 }
 

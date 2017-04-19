@@ -389,244 +389,220 @@ public:
 
 class CChat;
 class CChatChannel;
-class CChatChanMember
+class CChatMember
 {
 	// This is a member of the CClient.
 private:
-	bool m_fChatActive;
-	bool m_fReceiving;
-	bool m_fAllowWhoIs;
-	CChatChannel * m_pChannel;	// I can only be a member of one chan at a time.
-public:
-	static const char *m_sClassName;
-	CGObArray<CGString *> m_IgnoredMembers;	// Player's list of ignored members
-private:
 	friend class CChatChannel;
 	friend class CChat;
-	// friend CClient;
-	bool GetWhoIs() const { return m_fAllowWhoIs; }
-	void SetWhoIs(bool fAllowWhoIs) { m_fAllowWhoIs = fAllowWhoIs; }
-	bool IsReceivingAllowed() const { return m_fReceiving; }
-	LPCTSTR GetChatName() const;
+	bool m_bReceiving;
+	bool m_bAllowWhoIs;
+	CChatChannel *m_pChannel;
 
-	size_t FindIgnoringIndex( LPCTSTR pszName) const;
+	CChatMember(const CChatMember &copy);
+	CChatMember &operator=(const CChatMember &other);
+
+public:
+	static const char *m_sClassName;
+	CGObArray<CGString *> m_IgnoredMembers;
+	bool m_bChatActive;
+
+	CChatMember()
+	{
+		m_bChatActive = false;
+		m_bReceiving = true;
+		m_bAllowWhoIs = true;
+		m_pChannel = NULL;
+	}
+	virtual ~CChatMember();
 
 protected:
-	void SetChatActive();
-	void SetChatInactive();
-public:
-	CChatChanMember()
-	{
-		m_fChatActive = false;
-		m_pChannel = NULL;
-		m_fReceiving = true;
-		m_fAllowWhoIs = true;
-	}
-
-	virtual ~CChatChanMember();
+	void addChatWindow();
 
 private:
-	CChatChanMember(const CChatChanMember& copy);
-	CChatChanMember& operator=(const CChatChanMember& other);
+	void SendChatMsg(CHATMSG_TYPE iType, LPCTSTR pszName1 = NULL, LPCTSTR pszName2 = NULL, CLanguageID lang = 0);
 
-public:
-	CClient *m_pClient;
-
-	bool IsChatActive() const
+	void SetReceiving(bool bToggle)
 	{
-		return( m_fChatActive );
-	}
-
-	void SetReceiving(bool fOnOff)
-	{
-		if (m_fReceiving != fOnOff)
+		if ( m_bReceiving != bToggle )
 			ToggleReceiving();
 	}
 	void ToggleReceiving();
 
-	void PermitWhoIs();
-	void ForbidWhoIs();
-	void ToggleWhoIs();
+	void ShowCharacterName();
+	void HideCharacterName();
+	void ToggleCharacterName();
 
-	CChatChannel * GetChannel() const { return m_pChannel; }
-	void SetChannel(CChatChannel * pChannel) { m_pChannel = pChannel; }
-	void SendChatMsg( CHATMSG_TYPE iType, LPCTSTR pszName1 = NULL, LPCTSTR pszName2 = NULL, CLanguageID lang = 0 );
+	CChatChannel *GetChannel() const { return m_pChannel; }
+	void SetChannel(CChatChannel *pChannel)
+	{
+		m_pChannel = pChannel;
+		m_bChatActive = (m_pChannel != NULL);
+	}
 	void RenameChannel(LPCTSTR pszName);
 
-	void Ignore(LPCTSTR pszName);
-	void DontIgnore(LPCTSTR pszName);
-	void ToggleIgnore(LPCTSTR pszName);
-	void ClearIgnoreList();
 	bool IsIgnoring(LPCTSTR pszName) const
 	{
-		return( FindIgnoringIndex( pszName ) != m_IgnoredMembers.BadIndex() );
+		return (FindIgnoringIndex(pszName) != m_IgnoredMembers.BadIndex());
 	}
+	void AddIgnore(LPCTSTR pszName);
+	void RemoveIgnore(LPCTSTR pszName);
+	void ToggleIgnore(LPCTSTR pszName);
+	void ClearIgnoreList();
+	size_t FindIgnoringIndex(LPCTSTR pszName) const;
+
+	CClient *GetClient();
+	LPCTSTR GetChatName();
 };
 
 class CChatChannel : public CGObListRec
 {
 	// a number of clients can be attached to this chat channel.
 private:
-	friend class CChatChanMember;
+	friend class CChatMember;
 	friend class CChat;
 	CGString m_sName;
 	CGString m_sPassword;
-	bool m_fVoiceDefault;	// give others voice by default.
+	bool m_bDefaultVoice;	// give others voice by default.
+
 public:
 	static const char *m_sClassName;
-	CGObArray<CGString *> m_NoVoices;	// Current list of channel members with no voice
-	CGObArray<CGString *> m_Moderators;	// Current list of channel's moderators (may or may not be currently in the channel)
-	CGPtrTypeArray<CChatChanMember *> m_Members;	// Current list of members in this channel
+	CGObArray<CGString *> m_NoVoices;			// current list of channel members with no voice (muted)
+	CGObArray<CGString *> m_Moderators;			// current list of channel moderators (may or may not be currently in the channel)
+	CGPtrTypeArray<CChatMember *> m_Members;	// current list of channel members
+
 private:
-	void SetModerator(LPCTSTR pszName, bool fFlag = true);
-	void SetVoice(LPCTSTR pszName, bool fFlag = true);
-	void RenameChannel(CChatChanMember * pBy, LPCTSTR pszName);
-	size_t FindMemberIndex( LPCTSTR pszName ) const;
+	bool AddMember(CChatMember *pMember);
+	void RemoveMember(CChatMember *pMember);
+
+	void KickMember(CChatMember *pByMember, CChatMember *pMember);
+	void KickAll(CChatMember *pMember = NULL);
+
+	bool IsModerator(LPCTSTR pszName);
+	void SetModerator(LPCTSTR pszName, bool bRemoveAccess = false);
+	void AddModerator(CChatMember *pByMember, LPCTSTR pszName);
+	void RemoveModerator(CChatMember *pByMember, LPCTSTR pszName);
+	void ToggleModerator(CChatMember *pByMember, LPCTSTR pszName);
+
+	bool HasVoice(LPCTSTR pszName);
+	void SetVoice(LPCTSTR pszName, bool bRemoveAccess = false);
+	void AddVoice(CChatMember *pByMember, LPCTSTR pszName);
+	void RemoveVoice(CChatMember *pByMember, LPCTSTR pszName);
+	void ToggleVoice(CChatMember *pByMember, LPCTSTR pszName);
+
+	void EnableDefaultVoice(LPCTSTR pszName);
+	void DisableDefaultVoice(LPCTSTR pszName);
+	void ToggleDefaultVoice(LPCTSTR pszName);
+
+	void MemberTalk(CChatMember *pByMember, LPCTSTR pszText, CLanguageID lang);
+	void Emote(LPCTSTR pszBy, LPCTSTR pszMsg, CLanguageID lang);
+	void PrivateMessage(CChatMember *pFrom, LPCTSTR pszTo, LPCTSTR pszMsg, CLanguageID lang);
+
+	void WhoIs(LPCTSTR pszBy, LPCTSTR pszMember);
+	void RenameChannel(CChatMember *pByMember, LPCTSTR pszName);
+
+	void ChangePassword(CChatMember *pByMember, LPCTSTR pszPassword);
+	LPCTSTR GetPasswordString() const
+	{
+		// (client needs this) "0" = not passworded, "1" = passworded
+		return m_sPassword.IsEmpty() ? "0" : "1";
+	}
 
 public:
 	explicit CChatChannel(LPCTSTR pszName, LPCTSTR pszPassword = NULL)
 	{
 		m_sName = pszName;
 		m_sPassword = pszPassword;
-		m_fVoiceDefault = true;
+		m_bDefaultVoice = true;
 	};
 
 private:
-	CChatChannel(const CChatChannel& copy);
-	CChatChannel& operator=(const CChatChannel& other);
+	CChatChannel(const CChatChannel &copy);
+	CChatChannel &operator=(const CChatChannel &other);
 
-public:
-	CChatChannel* GetNext() const
+	size_t FindMemberIndex(LPCTSTR pszName) const;
+	CChatChannel *GetNext() const
 	{
-		return( static_cast <CChatChannel *>( CGObListRec::GetNext()));
-	}
-	LPCTSTR GetName() const
-	{
-		return( m_sName );
-	}
-	LPCTSTR GetModeString() const
-	{
-		// (client needs this) "0" = not passworded, "1" = passworded
-		return(( IsPassworded()) ? "1" : "0" );
+		return static_cast<CChatChannel *>(CGObListRec::GetNext());
 	}
 
-	LPCTSTR GetPassword() const
+	CChatMember *FindMember(LPCTSTR pszName) const
 	{
-		return( m_sPassword );
-	}
-	void SetPassword( LPCTSTR pszPassword)
-	{
-		m_sPassword = pszPassword;
-		return;
-	}
-	bool IsPassworded() const
-	{
-		return ( !m_sPassword.IsEmpty());
-	}
-
-	bool GetVoiceDefault()  const { return m_fVoiceDefault; }
-	void SetVoiceDefault(bool fVoiceDefault) { m_fVoiceDefault = fVoiceDefault; }
-	void ToggleVoiceDefault(LPCTSTR  pszBy);
-	void DisableVoiceDefault(LPCTSTR  pszBy);
-	void EnableVoiceDefault(LPCTSTR  pszBy);
-	void Emote(LPCTSTR pszBy, LPCTSTR pszMsg, CLanguageID lang = 0 );
-	void WhoIs(LPCTSTR pszBy, LPCTSTR pszMember);
-	bool AddMember(CChatChanMember * pMember);
-	void KickMember( CChatChanMember *pByMember, CChatChanMember * pMember );
-	void Broadcast(CHATMSG_TYPE iType, LPCTSTR pszName, LPCTSTR pszText, CLanguageID lang = 0, bool fOverride = false);
-	void SendThisMember(CChatChanMember * pMember, CChatChanMember * pToMember = NULL);
-	void SendMembers(CChatChanMember * pMember);
-	void RemoveMember(CChatChanMember * pMember);
-	CChatChanMember * FindMember(LPCTSTR pszName) const
-	{
-		size_t i = FindMemberIndex( pszName );
+		size_t i = FindMemberIndex(pszName);
 		if ( i == m_Members.BadIndex() )
 			return NULL;
 		return m_Members[i];
 	}
 	bool RemoveMember(LPCTSTR pszName)
 	{
-		CChatChanMember * pMember = FindMember(pszName);
-		if ( pMember == NULL )
+		CChatMember *pMember = FindMember(pszName);
+		if ( !pMember )
 			return false;
 		RemoveMember(pMember);
 		return true;
 	}
-	void SetName(LPCTSTR pszName)
-	{
-		m_sName = pszName;
-	}
-	bool IsModerator(LPCTSTR pszName) const;
-	bool HasVoice(LPCTSTR pszName) const;
 
-	void MemberTalk(CChatChanMember * pByMember, LPCTSTR pszText, CLanguageID lang );
-	void ChangePassword(CChatChanMember * pByMember, LPCTSTR pszPassword);
-	void GrantVoice(CChatChanMember * pByMember, LPCTSTR pszName);
-	void RevokeVoice(CChatChanMember * pByMember, LPCTSTR pszName);
-	void ToggleVoice(CChatChanMember * pByMember, LPCTSTR pszName);
-	void GrantModerator(CChatChanMember * pByMember, LPCTSTR pszName);
-	void RevokeModerator(CChatChanMember * pByMember, LPCTSTR pszName);
-	void ToggleModerator(CChatChanMember * pByMember, LPCTSTR pszName);
-	void SendPrivateMessage(CChatChanMember * pFrom, LPCTSTR pszTo, LPCTSTR  pszMsg);
-	void KickAll(CChatChanMember * pMember = NULL);
+	void Broadcast(CHATMSG_TYPE iType, LPCTSTR pszName = NULL, LPCTSTR pszText = NULL, CLanguageID lang = 0, bool bOverride = false);
+	void SendMember(CChatMember *pMember, CChatMember *pToMember = NULL);
+	void FillMembersList(CChatMember *pMember);
 };
 
 class CChat
 {
 	// All the chat channels.
 private:
-	bool m_fChatsOK;	// allowed to create new chats ?
-	CGObList m_Channels;		// CChatChannel // List of chat channels.
-private:
-	void DoCommand(CChatChanMember * pBy, LPCTSTR szMsg);
-	void DeleteChannel(CChatChannel * pChannel);
-	void WhereIs(CChatChanMember * pBy, LPCTSTR pszName) const;
-	void KillChannels();
-	bool JoinChannel(CChatChanMember * pMember, LPCTSTR pszChannel, LPCTSTR pszPassword);
-	bool CreateChannel(LPCTSTR pszName, LPCTSTR pszPassword, CChatChanMember * pMember);
-	CChatChannel * FindChannel(LPCTSTR pszChannel) const
-	{
-		CChatChannel * pChannel = GetFirstChannel();
-		for ( ; pChannel != NULL; pChannel = pChannel->GetNext())
-		{
-			if (strcmp(pChannel->GetName(), pszChannel) == 0)
-				break;
-		}
-		return pChannel;
-	};
+	bool m_bAllowChannelCreation;
+
+	CChat(const CChat &copy);
+	CChat &operator=(const CChat &other);
+
 public:
 	static const char *m_sClassName;
+	CGObList m_Channels;		// CChatChannel // List of chat channels.
+
 	CChat()
 	{
-		m_fChatsOK = true;
+		m_bAllowChannelCreation = true;
 	}
 
-private:
-	CChat(const CChat& copy);
-	CChat& operator=(const CChat& other);
+	bool CreateChannel(LPCTSTR pszName, LPCTSTR pszPassword, CChatMember *pMember);
+	void DeleteChannel(CChatChannel *pChannel);
 
-public:
+	bool JoinChannel(CChatMember *pMember, LPCTSTR pszChannel, LPCTSTR pszPassword);
+	void KillChannels();
+
+	void Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID lang);
+	void QuitChat(CChatMember *pClient);
+
+	void DoCommand(CChatMember *pBy, LPCTSTR pszMsg);
+	void WhereIs(CChatMember *pBy, LPCTSTR pszName);
+
+	static void FormatName(CGString &sName, const CChatMember *pMember = NULL, bool bSystem = false);
+	static bool IsValidName(LPCTSTR pszName, bool bPlayer);
+	bool IsDuplicateChannelName(const char *pszName) const
+	{
+		return (FindChannel(pszName) != NULL);
+	}
+
+	void Broadcast(CChatMember *pFrom, LPCTSTR pszText, CLanguageID lang = 0, bool bOverride = false);
+	void BroadcastAddChannel(CChatChannel *pChannel);
+	void BroadcastRemoveChannel(CChatChannel *pChannel);
+
 	CChatChannel *GetFirstChannel() const
 	{
 		return static_cast<CChatChannel *>(m_Channels.GetHead());
 	}
 
-	void EventMsg( CClient * pClient, const NCHAR * pszText, int len, CLanguageID lang ); // Text from a client
-
-	static bool IsValidName(LPCTSTR pszName, bool fPlayer);
-
-	void SendDeleteChannel(CChatChannel * pChannel);
-	void SendNewChannel(CChatChannel * pNewChannel);
-	bool IsDuplicateChannelName(const char * pszName) const
+	CChatChannel *FindChannel(LPCTSTR pszChannel) const
 	{
-		return FindChannel(pszName) != NULL;
-	}
-
-	void Broadcast(CChatChanMember * pFrom, LPCTSTR pszText, CLanguageID lang = 0, bool fOverride = false);
-	void QuitChat(CChatChanMember * pClient);
-
-	static void DecorateName(CGString & sName, const CChatChanMember * pMember = NULL, bool fSystem = false);
-	static void GenerateChatName(CGString & sName, const CClient * pClient);
+		CChatChannel *pChannel = GetFirstChannel();
+		for ( ; pChannel != NULL; pChannel = pChannel->GetNext() )
+		{
+			if ( strcmpi(static_cast<LPCTSTR>(pChannel->m_sName), pszChannel) == 0 )
+				break;
+		}
+		return pChannel;
+	};
 };
 
 class CDialogResponseArgs : public CScriptTriggerArgs
@@ -955,7 +931,13 @@ enum BUFF_ICONS
 	BI_BARAKODRAFTOFMIGHT,
 	BI_URALITRANCETONIC,
 	BI_SAKKHRAPROPHYLAXIS,
-	BI_QTY = BI_SAKKHRAPROPHYLAXIS
+	BI_HITSPARKSDEBUFF,
+	BI_SWARMDEBUFF,
+	BI_BROKENBONEDEBUFF,
+	BI_HITSPARKS,
+	BI_SWARM,
+	BI_BROKENBONE,
+	BI_QTY = BI_BROKENBONE
 };
 // ---------------------------------------------------------------------------------------------
 
@@ -1008,7 +990,7 @@ class NetworkInput;
 class NetworkOutput;
 #endif
 
-class CClient : public CGObListRec, public CScriptObj, public CChatChanMember, public CTextConsole
+class CClient : public CGObListRec, public CScriptObj, public CChatMember, public CTextConsole
 {
 	// TCP/IP connection to the player or console.
 private:
@@ -1052,6 +1034,7 @@ public:
 	DWORD m_CharacterListFlags;		// character list features enabled on this client
 	bool m_TooltipEnabled;			// is tooltip feature enabled on this client?
 	bool m_ContainerGridEnabled;	// is container grid feature enabled on this client?
+	bool m_UseNewChatSystem;		// is this client compatible with new SA+ chat system?
 
 	CServTime m_timeLogin;					// World clock of login time. "LASTCONNECTTIME"
 	CServTime m_timeLastEvent;				// Last time we got event from client.
@@ -1222,7 +1205,7 @@ public:
 	void Event_Attack(CGrayUID uid);
 	void Event_Book_Title(CGrayUID uid, LPCTSTR pszTitle, LPCTSTR pszAuthor);
 	void Event_BugReport(const TCHAR *pszText, int len, BUGREPORT_TYPE type, CLanguageID lang = 0);
-	void Event_ChatButton(const NCHAR *pszName);	// Client's chat button was pressed
+	void Event_ChatButton(const NCHAR *pszName = NULL);	// Client's chat button was pressed
 	void Event_ChatText(const NCHAR *pszText, int len, CLanguageID lang = 0);	// Text from a client
 	void Event_CombatMode(bool fWar);	// Only for switching to combat mode
 	bool Event_DoubleClick(CGrayUID uid, bool fMacro, bool fTestTouch, bool fScript = false);

@@ -473,3 +473,6 @@ Changed: Updated internal SQLite libs v3.17.0 to v3.18.0.
 16-04-2017, Coruja
 Fixed: Poisoning spell not working correctly.
 Fixed: Poisoning effect causing damage on items equipped on char.
+
+19-04-2017, Coruja
+Changed: Huge improvements on internal chat system, now it works fine on both SA (new chat system) and pre-SA (old chat system) clients.
