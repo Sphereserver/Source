@@ -238,7 +238,7 @@ CChar *CChar::Spell_Summon(CREID_TYPE id, CPointMap pntTarg)
 	pChar->m_ptHome = pntTarg;
 	pChar->m_pNPC->m_Home_Dist_Wander = 10;
 	pChar->NPC_CreateTrigger();		// removed from NPC_LoadScript() and triggered after char placement
-	pChar->NPC_PetSetOwner(this);
+	pChar->NPC_PetSetOwner(this, false);
 	pChar->OnSpellEffect(SPELL_Summon, this, Skill_GetAdjusted(static_cast<SKILL_TYPE>(skill)), NULL);
 
 	pChar->Update();

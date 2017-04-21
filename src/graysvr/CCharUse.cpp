@@ -1079,7 +1079,7 @@ CChar * CChar::Use_Figurine( CItem * pItem, bool bCheckFollowerSlots )
 
 	pItem->m_itFigurine.m_UID.InitUID();
 	pPet->m_dirFace = m_dirFace;
-	pPet->NPC_PetSetOwner(this);
+	pPet->NPC_PetSetOwner(this, false);
 	pPet->MoveToChar(pItem->GetTopLevelObj()->GetTopPoint());
 	pPet->Update();
 	pPet->Skill_Start(SKILL_NONE);

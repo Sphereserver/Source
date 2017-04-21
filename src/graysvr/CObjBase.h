@@ -3988,20 +3988,20 @@ private:
 	void NPC_Act_Runto(int iDist = 30);
 	bool NPC_Act_Food();
 
-	void NPC_ActStart_SpeakTo( CChar * pSrc );
+	void NPC_ActStart_SpeakTo(CChar *pSrc);
 	void NPC_OnTickAction();
 
 public:
 	void NPC_Pathfinding();		//	NPC thread AI - pathfinding
 	void NPC_Food();			//	NPC thread AI - search for food
 	void NPC_ExtraAI();			//	NPC thread AI - some general extra operations
-	void NPC_AddSpellsFromBook(CItem * pBook);
+	void NPC_AddSpellsFromBook(CItem *pBook);
 
 	void NPC_PetDesert();	
-	void NPC_PetClearOwners();
-	bool NPC_PetSetOwner( CChar * pChar );
+	void NPC_PetClearOwners(bool bResendTooltip = true);
+	bool NPC_PetSetOwner(CChar *pChar, bool bResendTooltip = true);
 	CChar *NPC_PetGetOwner() const;
-	bool NPC_IsOwnedBy( const CChar * pChar, bool fAllowGM = true ) const;
+	bool NPC_IsOwnedBy(const CChar *pChar, bool fAllowGM = true) const;
 	bool NPC_CanSpeak() const;
 
 	static CItemVendable *NPC_FindVendableItem(CItemVendable *pVendItem, CItemContainer *pContBuy);

@@ -1149,23 +1149,21 @@ bool CChar::UpdateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward , BY
 		default:
 			break;
 	}
-	PacketActionBasic* cmdnew = new PacketActionBasic(this, action1, subaction, variation);
-	PacketAction* cmd = new PacketAction(this, action, 1, fBackward, iFrameDelay, iAnimLen);
+	PacketAction *cmd = new PacketAction(this, action, 1, fBackward, iFrameDelay, iAnimLen);
+	PacketActionNew *cmdnew = new PacketActionNew(this, action1, subaction, variation);
 
 	ClientIterator it;
-	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
+	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
-		if (!pClient->CanSee(this))
+		if ( !pClient->CanSee(this) )
 			continue;
-		if (pClient->m_NetState->isClientEnhanced() && pClient->m_NetState->m_reportedVersion < 6700351)	//Enhanced client always used this packet, at least until ~ 4.0.35 (6700351)
-			cmdnew->send(pClient);
-		else if (pClient->m_NetState->isClientVersion(MINCLIVER_SA) && (IsGargoyle()) && (action1 >= 0))	// On classic clients only send new packets for gargoyles
+		if ( PacketActionNew::CanSendTo(pClient->m_NetState) && IsGargoyle() && (action1 >= 0) )		// new animation packet
 			cmdnew->send(pClient);
 		else
-			cmd->send(pClient);
+			cmd->send(pClient);		// old animation packet
 	}
-	delete cmdnew;
 	delete cmd;	
+	delete cmdnew;
 	return true;
 }
 
@@ -2228,7 +2226,7 @@ CItem *CChar::NPC_Shrink()
 		return NULL;
 	}
 
-	NPC_PetClearOwners();	// clear follower slots on pet owner
+	NPC_PetClearOwners(false);	// clear follower slots on pet owner
 
 	CItem *pItem = Make_Figurine();
 	if ( !pItem )
@@ -2349,7 +2347,7 @@ bool CChar::Horse_Mount(CChar *pHorse)
 
 	// Set a new owner if it is not us (check first to prevent friends taking ownership)
 	if ( !pHorse->NPC_IsOwnedBy(this, false) )
-		pHorse->NPC_PetSetOwner(this);
+		pHorse->NPC_PetSetOwner(this, false);
 
 	Horse_UnMount();					// unmount if already mounted
 	pItem->SetType(IT_EQ_HORSE);
@@ -2850,7 +2848,7 @@ bool CChar::Death()
 		if ( pCorpse )
 			pCorpse->m_uidLink.InitUID();
 
-		NPC_PetClearOwners();
+		NPC_PetClearOwners(false);
 		return false;	// delete the NPC
 	}
 
