@@ -2299,19 +2299,28 @@ bool CChar::Horse_Mount(CChar *pHorse)
 
 	if ( !CanTouch(pHorse) )
 	{
-		if ( pHorse->m_pNPC->m_bonded && pHorse->IsStatFlag(STATF_DEAD) )
-			SysMessageDefault(DEFMSG_MSG_BONDED_DEAD_CANTMOUNT);
-		else
-			SysMessageDefault(DEFMSG_MSG_MOUNT_DIST);
+		SysMessageDefault(DEFMSG_MSG_MOUNT_DIST);
 		return false;
 	}
 
-	ITEMID_TYPE id;
-	TCHAR * sMountDefname = Str_GetTemp();
-	sprintf(sMountDefname, "mount_0x%x", pHorse->GetDispID());
-	id = static_cast<ITEMID_TYPE>(g_Exp.m_VarDefs.GetKeyNum(sMountDefname));
+	TCHAR * sMountID = Str_GetTemp();
+	sprintf(sMountID, "mount_0x%x", pHorse->GetDispID());
+
+	LPCTSTR sMemoryID = g_Exp.m_VarDefs.GetKeyStr(sMountID);
+	RESOURCE_ID rid = g_Cfg.ResourceGetID(RES_QTY, sMemoryID);
+
+	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 	if ( id <= ITEMID_NOTHING )
 		return false;
+
+	if ( m_pClient && m_pClient->m_pHouseDesign )
+		return false;
+
+	if ( pHorse->m_pNPC->m_bonded && pHorse->IsStatFlag(STATF_DEAD) )
+	{
+		SysMessageDefault(DEFMSG_MSG_BONDED_DEAD_CANTMOUNT);
+		return false;
+	}
 
 	if ( !IsMountCapable() )
 	{
@@ -2362,7 +2371,7 @@ bool CChar::Horse_Mount(CChar *pHorse)
 bool CChar::Horse_UnMount() 
 {
 	ADDTOCALLSTACK("CChar::Horse_UnMount");
-	if ( !IsStatFlag(STATF_OnHorse) || (IsStatFlag(STATF_Stone) && !IsPriv(PRIV_GM)) )
+	if ( !IsStatFlag(STATF_OnHorse) || (IsStatFlag(STATF_Stone) && !IsPriv(PRIV_GM)) || (m_pClient && m_pClient->m_pHouseDesign) )
 		return false;
 
 	CItem * pItem = LayerFind(LAYER_HORSE);

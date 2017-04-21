@@ -479,6 +479,11 @@ Changed: Huge improvements on internal chat system, now it works fine on both SA
 
 21-04-2017, Coruja
 Fixed: Tooltip "(tame)" not being updated correctly when pets got tamed/released.
+Changed: Mount memories now can have their own i_mt_* ITEMDEFs instead use DEFNAME=i_mt_* directly on base items (usually 'boat parts').
 Changed: Small improvements on gargoyle fly ability.
 Changed: Function WEBLINK now will show an message telling the web browser is starting.
 [sphere_msgs.scp]: Added new messages 'gargoyle_fly_cantcurrentform', 'gargoyle_fly_cantdead', 'web_browser_start'
+[sphere_defs.scp]: Updated 'mount_items' section to use the new mount memories format (i_mt_* DEFNAME instead hex BASEID)
+[sphere_item_ship_parts.scp]: Removed all i_mt_* mount memories DEFNAME from boat items to make these items be considered only boat items
+[sphere_item_memories.scp]: Added all updated i_mt_* mount memories here
+	-IMPORTANT: It's HIGHLY recommended update these scripts above to prevent conflicts between mount memories and boat items.
