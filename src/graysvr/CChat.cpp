@@ -471,7 +471,7 @@ void CChat::DoCommand(CChatMember *pBy, LPCTSTR pszMsg)
 			if ( !pByClient->IsPriv(PRIV_GM) )
 				goto NeedGMPrivs;
 
-			Broadcast(pBy, pszText, NULL, true);
+			Broadcast(pBy, pszText, 0, true);
 			return;
 		}
 		case 3:		// CHATSOK
@@ -516,7 +516,7 @@ void CChat::DoCommand(CChatMember *pBy, LPCTSTR pszMsg)
 			if ( !pByClient->IsPriv(PRIV_GM) )
 				goto NeedGMPrivs;
 
-			Broadcast(NULL, pszText, NULL, true);
+			Broadcast(NULL, pszText, 0, true);
 			return;
 		}
 		case 8:		// WHEREIS

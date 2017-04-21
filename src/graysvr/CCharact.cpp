@@ -2627,7 +2627,7 @@ void CChar::Wake()
 void CChar::SleepStart( bool fFrontFall )
 {
 	ADDTOCALLSTACK("CChar::SleepStart");
-	if (IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Polymorph))
+	if (IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Polymorph|STATF_Hovering))
 		return;
 
 	CItemCorpse *pCorpse = MakeCorpse(fFrontFall);
@@ -2957,6 +2957,53 @@ bool CChar::OnFreezeCheck()
 	}
 
 	return false;
+}
+
+// Toggle gargoyle flying mode
+void CChar::ToggleFlying()
+{
+	ADDTOCALLSTACK("CChar::ToggleFlying");
+
+	if ( IsTrigUsed(TRIGGER_TOGGLEFLYING) )
+	{
+		if ( OnTrigger(CTRIG_ToggleFlying, this, 0) == TRIGRET_RET_TRUE )
+			return;
+	}
+
+	if ( IsStatFlag(STATF_Hovering) )
+	{
+		// Stop hovering
+		StatFlag_Clear(STATF_Hovering);
+		if ( m_pClient )
+			m_pClient->removeBuff(BI_GARGOYLEFLY);
+	}
+	else
+	{
+		// Begin hovering
+		StatFlag_Set(STATF_Hovering);
+		if ( m_pClient )
+			m_pClient->addBuff(BI_GARGOYLEFLY, 1112193, 1112567);
+		if ( IsStatFlag(STATF_Sleeping) )
+			Wake();
+
+		// Float char up to the hover Z
+		CPointMap ptHover = g_World.FindItemTypeNearby(GetTopPoint(), IT_HOVEROVER, 0);
+		if ( ptHover.IsValidPoint() )
+			MoveTo(ptHover);
+	}
+
+	// NANIM_TAKEOFF and NANIM_LANDING animations are only available on the new animation packet (PacketAnimationBasic),
+	// so we must use it instead the old PacketAnimation which will translate these values into an wrong animation
+	PacketActionNew *cmd = new PacketActionNew(this, IsStatFlag(STATF_Hovering) ? NANIM_TAKEOFF : NANIM_LANDING, static_cast<ANIM_TYPE_NEW>(0), static_cast<BYTE>(0));
+	ClientIterator it;
+	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
+	{
+		if ( !PacketActionNew::CanSendTo(pClient->m_NetState) || !pClient->CanSee(this) )
+			continue;
+		pClient->addCharMove(this);
+		cmd->send(pClient);
+	}
+	delete cmd;
 }
 
 // Flip around

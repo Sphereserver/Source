@@ -476,3 +476,8 @@ Fixed: Poisoning effect causing damage on items equipped on char.
 
 19-04-2017, Coruja
 Changed: Huge improvements on internal chat system, now it works fine on both SA (new chat system) and pre-SA (old chat system) clients.
+
+21-04-2017, Coruja
+Changed: Small improvements on gargoyle fly ability.
+Changed: Function WEBLINK now will show an message telling the web browser is starting.
+[sphere_msgs.scp]: Added new messages 'gargoyle_fly_cantcurrentform', 'gargoyle_fly_cantdead', 'web_browser_start'

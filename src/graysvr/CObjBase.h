@@ -3890,6 +3890,7 @@ public:
 	virtual void SpeakUTF8Ex( const NWORD * pText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang );
 
 	bool OnFreezeCheck();
+	void ToggleFlying();
 	void DropAll( CItemContainer * pCorpse = NULL, DWORD dwAttr = 0 );
 	void UnEquipAllItems( CItemContainer * pCorpse = NULL, bool bLeaveHands = false );
 	void Wake();

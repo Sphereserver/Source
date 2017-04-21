@@ -3453,54 +3453,33 @@ bool PacketGargoyleFly::onReceive(NetState* net)
 	if ( !(g_Cfg.m_iRacialFlags & RACIALF_GARG_FLY) )
 		return false;
 
-	CClient* client = net->m_client;
-	ASSERT(client);
-	CChar* character = client->GetChar();
-	if ( !character || !character->IsGargoyle() || character->IsStatFlag(STATF_DEAD) )
-		return false;
-
 	// The client always send these 2 values to server, but they're not really used
 	//WORD one = readInt16();
 	//DWORD zero = readInt32();
-	
-	if ( IsTrigUsed(TRIGGER_TOGGLEFLYING) )
+
+	CClient* client = net->m_client;
+	ASSERT(client);
+	CChar* character = client->GetChar();
+	if ( !character )
+		return false;
+
+	if ( !character->IsGargoyle() )
 	{
-		if ( character->OnTrigger(CTRIG_ToggleFlying,character,0) == TRIGRET_RET_TRUE )
-			return false;
+		client->SysMessageDefault(DEFMSG_GARGOYLE_FLY_CANTCURRENTFORM);
+		return false;
+	}
+	if ( character->IsStatFlag(STATF_DEAD) )
+	{
+		client->SysMessageDefault(DEFMSG_GARGOYLE_FLY_CANTDEAD);
+		return false;
+	}
+	if ( character->IsStatFlag(STATF_Freeze|STATF_Stone) )
+	{
+		client->SysMessageDefault(DEFMSG_MSG_FROZEN);
+		return false;
 	}
 
-	if ( character->IsStatFlag(STATF_Hovering) )
-	{
-		// stop hovering
-		character->StatFlag_Clear(STATF_Hovering);
-		client->removeBuff(BI_GARGOYLEFLY);
-	}
-	else
-	{
-		// begin hovering
-		character->StatFlag_Set(STATF_Hovering);
-		client->addBuff(BI_GARGOYLEFLY, 1112193, 1112567);
-
-		// float player up to the hover Z
-		CPointMap ptHover = g_World.FindItemTypeNearby(character->GetTopPoint(), IT_HOVEROVER, 0);
-		if ( ptHover.IsValidPoint() )
-			character->MoveTo(ptHover);
-	}
-
-	// Sending this packet here instead of calling UpdateAnimate because of conversions, NANIM_TAKEOFF = 9 and the function
-	// is reading 9 from old ANIM_TYPE to know when the character is attacking and modifying its animation accordingly
-	PacketActionBasic *cmd = new PacketActionBasic(character, character->IsStatFlag(STATF_Hovering) ? NANIM_TAKEOFF : NANIM_LANDING, static_cast<ANIM_TYPE_NEW>(0), static_cast<BYTE>(0));
-	ClientIterator it;
-	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
-	{
-		if ( !pClient->m_NetState->isClientVersion(MINCLIVER_SA) )
-			continue;
-		if ( !pClient->CanSee(character) )
-			continue;
-		pClient->addCharMove(character);
-		cmd->send(pClient);
-	}
-	delete cmd;
+	character->ToggleFlying();
 	return true;
 }
 

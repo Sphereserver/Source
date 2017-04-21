@@ -1183,8 +1183,8 @@ void CChar::SetID( CREID_TYPE id )
 	if ( !IsMountCapable() )	// new body may not be capable of ride mounts
 		Horse_UnMount();
 
-	if ( !IsGargoyle() )		// new body may not be capable of use gargoyle fly ability
-		StatFlag_Clear(STATF_Hovering);
+	if ( IsStatFlag(STATF_Hovering) && !IsGargoyle() )		// new body may not be capable of use gargoyle fly ability
+		ToggleFlying();
 
 	if ( !pCharDef->Can(CAN_C_EQUIP) )	// new body may not be capable of equip items (except maybe on hands)
 	{

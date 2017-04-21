@@ -593,8 +593,8 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0x6E : PacketAction				plays an animation (LOW)
- *	Packet 0xE2 : PacketActionBasic			plays an animation (client > 7.0.0.0) (LOW)
+ *	Packet 0x6E : PacketAction				plays an animation (pre-SA clients) (LOW)
+ *	Packet 0xE2 : PacketActionNew			plays an animation (SA+ clients) (LOW)
  *
  *
  ***************************************************************************/
@@ -604,10 +604,16 @@ public:
 	PacketAction(const CChar* character, ANIM_TYPE action, WORD repeat, bool backward, BYTE delay, BYTE len);
 };
 
-class PacketActionBasic : public PacketSend
+class PacketActionNew : public PacketSend
 {
 public:
-	PacketActionBasic(const CChar* character, ANIM_TYPE_NEW action, ANIM_TYPE_NEW subaction, BYTE variation);
+	PacketActionNew(const CChar* character, ANIM_TYPE_NEW action, ANIM_TYPE_NEW subaction, BYTE variation);
+
+	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
+	static bool CanSendTo(const NetState* state)
+	{
+		return state->isClientVersion(MINCLIVER_SA) || state->isClientKR() || state->isClientEnhanced();
+	}
 };
 
 /***************************************************************************
