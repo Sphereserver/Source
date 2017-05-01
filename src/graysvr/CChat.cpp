@@ -122,7 +122,7 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 	TCHAR szFullText[MAX_TALK_BUFFER * 2];
 	CvtNUNICODEToSystem(szFullText, sizeof(szFullText), pszText, len);
 
-	TCHAR *szMsg = szFullText + 1;
+	TCHAR *pszMsg = szFullText + 1;
 	switch ( szFullText[0] )	// the 1st character is a command byte (join channel, leave channel, etc)
 	{
 		case CHATACT_ChangeChannelPassword:		// client shortcut: /pw
@@ -130,7 +130,7 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 			if ( !pChannel )
 				goto NoConference;
 
-			pChannel->ChangePassword(pMe, szMsg);
+			pChannel->ChangePassword(pMe, pszMsg);
 			break;
 		}
 		case CHATACT_LeaveChannel:
@@ -149,14 +149,14 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 		}
 		case CHATACT_ChannelMessage:
 		{
-			if ( !pClient->m_UseNewChatSystem && (szMsg[0] == '/') )	// check for chat commands
+			if ( !pClient->m_UseNewChatSystem && (pszMsg[0] == '/') )	// check for chat commands
 			{
-				DoCommand(pMe, szMsg + 1);
+				DoCommand(pMe, pszMsg + 1);
 				break;
 			}
 			if ( pChannel )
 			{
-				pChannel->MemberTalk(pMe, pClient->m_UseNewChatSystem ? szFullText : szMsg, lang);
+				pChannel->MemberTalk(pMe, pClient->m_UseNewChatSystem ? szFullText : pszMsg, lang);
 				break;
 			}
 		NoConference:
@@ -167,28 +167,28 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 		{
 			// Look for second double quote to separate channel from password
 			size_t i = 1;
-			for ( ; szMsg[i] != '\0'; i++ )
+			for ( ; pszMsg[i] != '\0'; i++ )
 			{
-				if ( szMsg[i] == '"' )
+				if ( pszMsg[i] == '"' )
 					break;
 			}
-			szMsg[i] = '\0';
-			TCHAR *pszPassword = szMsg + i + 1;
+			pszMsg[i] = '\0';
+			TCHAR *pszPassword = pszMsg + i + 1;
 			if ( pszPassword[0] == ' ' )	// skip whitespaces
 				pszPassword++;
-			JoinChannel(pMe, szMsg + 1, pszPassword);
+			JoinChannel(pMe, pszMsg + 1, pszPassword);
 			break;
 		}
 		case CHATACT_CreateChannel:				// client shortcut: /newconf
 		{
 			TCHAR *pszPassword = NULL;
-			size_t iMsgLength = strlen(szMsg);
+			size_t iMsgLength = strlen(pszMsg);
 			for ( size_t i = 0; i < iMsgLength; i++ )
 			{
-				if ( szMsg[i] == '{' )	// there's a password here
+				if ( pszMsg[i] == '{' )	// there's a password here
 				{
-					szMsg[i] = 0;
-					pszPassword = szMsg + i + 1;
+					pszMsg[i] = 0;
+					pszPassword = pszMsg + i + 1;
 					size_t iPasswordLength = strlen(pszPassword);
 					for ( i = 0; i < iPasswordLength; i++ )
 					{
@@ -201,8 +201,8 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 					break;
 				}
 			}
-			if ( CreateChannel(szMsg, pszPassword, pMe) )
-				JoinChannel(pMe, szMsg, pszPassword);
+			if ( CreateChannel(pszMsg, pszPassword, pMe) )
+				JoinChannel(pMe, pszMsg, pszPassword);
 			break;
 		}
 		case CHATACT_RenameChannel:				// client shortcut: /rename
@@ -210,7 +210,7 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 			if ( !pChannel )
 				goto NoConference;
 
-			pMe->RenameChannel(szMsg);
+			pMe->RenameChannel(pszMsg);
 			break;
 		}
 		case CHATACT_PrivateMessage:			// client shortcut: /msg
@@ -220,7 +220,7 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 
 			// Split the recipient from the message (look for a space)
 			TCHAR buffer[2048];
-			strcpy(buffer, szMsg);
+			strcpy(buffer, pszMsg);
 			size_t bufferLength = strlen(buffer);
 			size_t i = 0;
 			for ( ; i < bufferLength; i++ )
@@ -236,17 +236,17 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 		}
 		case CHATACT_AddIgnore:					// client shortcut: +ignore
 		{
-			pMe->AddIgnore(szMsg);
+			pMe->AddIgnore(pszMsg);
 			break;
 		}
 		case CHATACT_RemoveIgnore:				// client shortcut: -ignore
 		{
-			pMe->RemoveIgnore(szMsg);
+			pMe->RemoveIgnore(pszMsg);
 			break;
 		}
 		case CHATACT_ToggleIgnore:				// client shortcut: /ignore
 		{
-			pMe->ToggleIgnore(szMsg);
+			pMe->ToggleIgnore(pszMsg);
 			break;
 		}
 		case CHATACT_AddVoice:					// client shortcut: +voice
@@ -254,7 +254,7 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 			if ( !pChannel )
 				goto NoConference;
 
-			pChannel->AddVoice(pMe, szMsg);
+			pChannel->AddVoice(pMe, pszMsg);
 			break;
 		}
 		case CHATACT_RemoveVoice:				// client shortcut: -voice
@@ -262,7 +262,7 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 			if ( !pChannel )
 				goto NoConference;
 
-			pChannel->RemoveVoice(pMe, szMsg);
+			pChannel->RemoveVoice(pMe, pszMsg);
 			break;
 		}
 		case CHATACT_ToggleVoice:				// client shortcut: /voice
@@ -270,7 +270,7 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 			if ( !pChannel )
 				goto NoConference;
 
-			pChannel->ToggleVoice(pMe, szMsg);
+			pChannel->ToggleVoice(pMe, pszMsg);
 			break;
 		}
 		case CHATACT_AddModerator:				// client shortcut: +ops
@@ -278,7 +278,7 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 			if ( !pChannel )
 				goto NoConference;
 
-			pChannel->AddModerator(pMe, szMsg);
+			pChannel->AddModerator(pMe, pszMsg);
 			break;
 		}
 		case CHATACT_RemoveModerator:			// client shortcut: -ops
@@ -286,7 +286,7 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 			if ( !pChannel )
 				goto NoConference;
 
-			pChannel->RemoveModerator(pMe, szMsg);
+			pChannel->RemoveModerator(pMe, pszMsg);
 			break;
 		}
 		case CHATACT_ToggleModerator:			// client shortcut: /ops
@@ -294,7 +294,7 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 			if ( !pChannel )
 				goto NoConference;
 
-			pChannel->ToggleModerator(pMe, szMsg);
+			pChannel->ToggleModerator(pMe, pszMsg);
 			break;
 		}
 		case CHATACT_EnablePrivateMessages:		// client shortcut: +receive
@@ -332,7 +332,7 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 			if ( !pChannel )
 				goto NoConference;
 
-			pChannel->WhoIs(pMe->GetChatName(), szMsg);
+			pChannel->WhoIs(pMe->GetChatName(), pszMsg);
 			break;
 		}
 		case CHATACT_Kick:						// client shortcut: /kick
@@ -340,11 +340,11 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 			if ( !pChannel )
 				goto NoConference;
 
-			CChatMember *pMember = pChannel->FindMember(szMsg);
+			CChatMember *pMember = pChannel->FindMember(pszMsg);
 			if ( pMember )
 				pChannel->KickMember(pMe, pMember);
 			else
-				pMe->SendChatMsg(CHATMSG_NoPlayer, szMsg);
+				pMe->SendChatMsg(CHATMSG_NoPlayer, pszMsg);
 			break;
 		}
 		case CHATACT_EnableDefaultVoice:		// client shortcut: +defaultvoice
@@ -376,7 +376,7 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 			if ( !pChannel )
 				goto NoConference;
 
-			pChannel->Emote(pMe->GetChatName(), szMsg, lang);
+			pChannel->Emote(pMe->GetChatName(), pszMsg, lang);
 			break;
 		}
 	}
@@ -409,10 +409,10 @@ void CChat::DoCommand(CChatMember *pBy, LPCTSTR pszMsg)
 	};
 
 	ASSERT(pBy);
-	ASSERT(szMsg != NULL);
+	ASSERT(pszMsg != NULL);
 
 	TCHAR buffer[2048];
-	ASSERT(strlen(szMsg) < COUNTOF(buffer));
+	ASSERT(strlen(pszMsg) < COUNTOF(buffer));
 	strcpy(buffer, pszMsg);
 
 	TCHAR *pszCommand = buffer;

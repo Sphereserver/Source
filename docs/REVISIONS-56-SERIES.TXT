@@ -487,3 +487,14 @@ Changed: Function WEBLINK now will show an message telling the web browser is st
 [sphere_item_ship_parts.scp]: Removed all i_mt_* mount memories DEFNAME from boat items to make these items be considered only boat items
 [sphere_item_memories.scp]: Added all updated i_mt_* mount memories here
 	-IMPORTANT: It's HIGHLY recommended update these scripts above to prevent conflicts between mount memories and boat items.
+
+01-05-2017, Coruja
+[sphere_item_char_icons.scp]: Fixed Crimson/Platinum/Stygian Dragon icons using wrong defname
+[sphere_item_deco_carvings_statues.scp]: Added swan statues
+[sphere_item_deco_furniture.scp]: Added vice/virtue pillows
+[sphere_item_deco_wall_hangings.scp]: Added TOL trophies/banners/paintings
+[sphere_item_provisions_jewelry.scp]: Added craftsman talismans
+[sphere_item_provisions_misc.scp]: Added fletching/woodworking containers
+[sphere_item_unsorted.scp]: Added new easter eggs (2017)
+[sphere_item_wedding.scp]: Added missing tables
+[sphere_monsters.scp]: Updated many chardefs
