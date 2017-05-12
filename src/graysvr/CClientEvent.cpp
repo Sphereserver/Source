@@ -700,7 +700,7 @@ TRIGRET_TYPE CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 				return TRIGRET_RET_FALSE;
 			}
 		}
-		else
+		else if ( iRet == TRIGRET_RET_DEFAULT )
 		{
 			return TRIGRET_RET_DEFAULT;
 		}
