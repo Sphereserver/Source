@@ -2,7 +2,7 @@
 10-04-2016, Coruja
 Changed: Food level won't decrease on GM chars anymore.
 [sphere_msgs.scp]: Removed messages 'npc_text_murd_*'.
-[sphere_speech.scp]: Moved hardcoded speech commands 'I must consider my sins', 'I resign from my guild' and 'I resign from my town' to scripts.
+[speech/sphere_speech.scp]: Moved hardcoded speech commands 'I must consider my sins', 'I resign from my guild' and 'I resign from my town' to scripts.
 	-IMPORTANT: It's HIGHLY recommended update this script, or these speech commands will stop working.
 
 18-04-2016, XuN
@@ -52,8 +52,8 @@ Changed: Updated internal SQLite libs v3.8.11 to v3.12.2.
 Fixed #62: High value FLAGS showing wrong value when retrieved.
 
 21-05-2016, Coruja
-[sphere_item_unsorted.scp]: Updated giftbox itemdefs.
-[sphere_map_points0/1.scp]: Fixed Hythloth entrance and updated Covetous teleports.
+[items/sphere_item_unsorted.scp]: Updated giftbox itemdefs.
+[maps/sphere_map_points0/1.scp]: Fixed Hythloth entrance and updated Covetous teleports.
 
 24-05-2016, Coruja
 Fixed: Tooltips not showing on disconnected chars when ALLSHOW is enabled.
@@ -100,13 +100,13 @@ Fixed: EF_FastWalkPrevention not working correctly.
 Fixed: Popup menu on players returning parsing error when send Party clilocs to unsupported clients < 6.0.0.0
 
 28-06-2016, Coruja
-[sphere_item_unsorted.scp]: Fixed wrong TYPE / TDATA2 on i_fountain_life, i_chest_combination.
-[sphere_item_deco_carvings_statues.scp]: Fixed wrong TYPE / TDATA2 on i_statue_stone_blessed.
-[sphere_item_deco_furniture.scp]: Fixed wrong TDATA2 on i_chest_kings_collection.
+[items/sphere_item_unsorted.scp]: Fixed wrong TYPE / TDATA2 on i_fountain_life, i_chest_combination.
+[items/sphere_item_deco_carvings_statues.scp]: Fixed wrong TYPE / TDATA2 on i_statue_stone_blessed.
+[items/sphere_item_deco_furniture.scp]: Fixed wrong TDATA2 on i_chest_kings_collection.
+[speech/speakhuman.scp]: Fixed 'train' command returning console error when used on guards NPCs.
 [sphere_serv_triggers.scp]: Updated 'f_onchar_delete' comments.
 [sphere_defs.scp]: Updated 'mount_items' and 'mem_flags' values.
 [sphere_skills.scp]: Reordered properties to follow the same default order on all skills (nothing was changed, just reordered).
-[speakhuman.scp]: Fixed 'train' command returning console error when used on guards NPCs.
 
 29-06-2016, Coruja
 Fixed: Attack/Kill command on pets allowing select the pet itself as target, making it attack his owner.
@@ -114,7 +114,7 @@ Fixed: WOP flood when casting spells using extremely short delays.
 Fixed: Containers using wrong rect area.
 
 30-06-2016, Coruja / azmanomer
-[sphere_item_unsorted.scp/sphere_template.scp]: Updated more giftbox itemdefs.
+[items/sphere_item_unsorted.scp/sphere_template.scp]: Updated more giftbox itemdefs.
 
 08-07-2016, Coruja
 Changed: Some misc improvements and optimizations on combat engine.
@@ -153,7 +153,7 @@ Fixed: ARGN1 on char trigger @SkillPreStart not working correctly.
 
 10-08-2016, Coruja
 [sphereCrypt.ini]: Added crypt keys for clients 7.0.51 and 7.0.52.
-[sphere_monsters.scp]: Added new TOL chardefs (Turanchula, Myrmidex Drone, Myrmidex Warrior, Myrmidex Queen, Dr. Spector, Golem Aztec).
+[npcs/sphere_monsters.scp]: Added new TOL chardefs (Turanchula, Myrmidex Drone, Myrmidex Warrior, Myrmidex Queen, Dr. Spector, Golem Aztec).
 
 12-08-2016, Coruja
 Fixed: SA+ clients showing corpses on wrong direction.
@@ -257,19 +257,19 @@ Changed: Updated internal SQLite libs v3.14.2 to v3.15.0.
 
 06-11-2016, Coruja
 Changed: Updated internal SQLite libs v3.15.0 to v3.15.1.
-[sphere_item_char_icons.scp]: Added char icons for Tarantula, Dr. Spector, Tyrannosaurus Rex, Unicorn (Rainbow)
-[sphere_item_unsorted.scp]: Added ITEMDEF for TOL christmas giftbox (i_giftbox_christmas)
-[sphere_monsters.scp]: Updated some TOL chardefs
-[sphere_map0_ml.scp]: Added TOL regions
-[sphere_map5.scp]: Moved a_valley_of_eodon, a_shadowguard to sphere_map0_ml.scp
+[items/sphere_item_char_icons.scp]: Added char icons for Tarantula, Dr. Spector, Tyrannosaurus Rex, Unicorn (Rainbow)
+[items/sphere_item_unsorted.scp]: Added ITEMDEF for TOL christmas giftbox (i_giftbox_christmas)
+[npcs/sphere_monsters.scp]: Updated some TOL chardefs
+[maps/sphere_map0_ml.scp]: Added TOL regions
+[maps/sphere_map5.scp]: Moved a_valley_of_eodon, a_shadowguard to sphere_map0_ml.scp
 [sphere_defs.scp]: Added mount memory for Ancient Hellhound, Tarantula, Unicorn (Rainbow)
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.53 and enhanced clients 4.0.33 ~ 4.0.53
 
 12-11-2016, Coruja
 Fixed: Resurrect, Reveal, Meteor Swarm and Lightning spells showing effect animation even when EFFECT_ID=0 is set
 [sphereCrypt.ini]: Added crypt key for classic clients 7.0.54 ~ 7.0.55 and enhanced clients 4.0.54 ~ 4.0.55
-[sphere_map0.scp]: Added missing 'region_flag_guarded' on a_townOcclo
-[sphere_map1.scp]: Added missing 'region_flag_guarded' on a_old_haven_town and a_new_haven_town
+[maps/sphere_map0.scp]: Added missing 'region_flag_guarded' on a_townOcclo
+[maps/sphere_map1.scp]: Added missing 'region_flag_guarded' on a_old_haven_town and a_new_haven_town
 
 27-11-2016, Coruja
 Fixed: Console error related to client internal chat engine when some clients connect on server
@@ -303,11 +303,11 @@ Fixed: Enhanced clients not able to login on accounts with no created chars.
 Changed: Improved console startup messages to provide more user-friendly information.
 [sphere_defs.scp]: Updated DEFs 'passive_buff_icons', 'debuff_icons', 'buff_icons', 'buff_clilocs'
 [sphere_admin.scp]: Dialog 'd_sphereplayertweak' now show the client type (classic/enhanced) being used
-[sphere_monsters.scp]: Updated some chardefs (Turkey, Giant Turkey, Tyrannosaurus Rex)
+[npcs/sphere_monsters.scp]: Updated some chardefs (Turkey, Giant Turkey, Tyrannosaurus Rex)
 
 24-12-2016, Coruja
 Added: Support for character face style on enhanced clients. It works like hairs/beards, just create the item and equip it on character.
-[sphere_item_profession_barber.scp]: Added character face styles ITEMDEFs
+[items/sphere_item_profession_barber.scp]: Added character face styles ITEMDEFs
 [sphere.ini]: Added new FEATURE_EXTRA_ROLEPLAYFACES feature to enable extra roleplay face styles on character creation
 [sphere_defs.scp]: Renamed layer 'layer_light' to 'layer_face'
 [sphere_newb.scp]: Fixed wrong ITEMDEF on elf templates (i_leaf_tunic -> i_leaf_chest)
@@ -318,12 +318,12 @@ Removed: Support for CHARLIST function on enhanced clients, they don't have supp
 05-01-2017, Coruja
 Changed: Updated internal SQLite libs v3.15.2 to v3.16.1.
 Changed: Item i_light_source (function EQUIPHALO) now will be equipped on layer_hand2 (2) instead layer_face (15), which previously was an unused layer but now is used by character faces on enhanced clients.
-[sphere_item_unsorted.scp]: Updated LAYER value on i_dark_source / i_light_source
+[items/sphere_item_unsorted.scp]: Updated LAYER value on i_dark_source / i_light_source
 [sphere_spells.scp]: Fixed Blade Spirits spell using wrong RUNES value
 [sphere_newb.scp]: Fixed typo i_sword_dream -> i_sword_dread
 
 07-01-2017, Coruja
-[sphere_map*.scp]: Reworked all maps files moving regions/teleports to new files based on map/expansion, and also added many missing SE/ML/SA/TOL info.
+[maps/sphere_map*.scp]: Reworked all maps files moving regions/teleports to new files based on map/expansion, and also added many missing SE/ML/SA/TOL info.
 [spheretables.scp]: Updated RESOURCES list with the new map files.
 
 08-01-2017, Coruja
@@ -335,7 +335,7 @@ Fixed: Function 'CRIMINAL 0' not updating char notoriety/buff when removing crim
 Fixed: Char death counting kill/fame/karma gain for killers that started the attack but don't have caused any damage yet.
 Fixed: FeatureSE setting on sphere.ini not working correctly.
 Changed: Guild function ISALLY won't consider guild alignment on alliances anymore.
-[sphere_genericstone_functions.scp]: Updated f_stonesys_internal_isalliedwith function
+[stones/sphere_genericstone_functions.scp]: Updated f_stonesys_internal_isalliedwith function
 
 15-01-2017, Coruja
 Changed: Updated internal MySQL libs v6.1.6 to v6.1.9.
@@ -343,8 +343,8 @@ Changed: Updated internal MySQL libs v6.1.6 to v6.1.9.
 
 17-01-2017, Coruja
 Fixed: Functions SYSMESSAGELOC / SYSMESSAGELOCEX using wrong default color.
-[sphere_item_magic_skillmasteries.scp]: Added new file with basic i_spellbook_mastery functionality
-[sphere_item_unsorted.scp]: Removed i_spellbook_bard (Bard Masteries is now Skill Masteries)
+[items/sphere_item_magic_skillmasteries.scp]: Added new file with basic i_spellbook_mastery functionality
+[items/sphere_item_unsorted.scp]: Removed i_spellbook_bard (Bard Masteries is now Skill Masteries)
 [sphere_defs.scp]: Renamed typedef 't_spellbook_bard' to 't_spellbook_mastery'
 
 20-01-2017, Coruja
@@ -364,22 +364,22 @@ Added: New function MAPWAYPOINT to add/remove waypoints on client radar map (enh
 
 25-01-2017, Coruja
 Fixed: Client encryption not being decrypted correctly on login process.
+[maps/sphere_map*.scp]: Updated some few regions and teleports (note: added new file 'sphere_map_points0_hs.scp' and removed 'sphere_map0_tol.scp')
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.56 and enhanced client 4.0.56
 [sphere_defs.scp]: Renamed 'bufficon_SavingThrow' to 'bufficon_WarriorsGifts' and added new 'mapwaypoint_types' defs
-[sphere_map*.scp]: Updated some few regions and teleports (note: added new file 'sphere_map_points0_hs.scp' and removed 'sphere_map0_tol.scp')
 [spheretables.scp]: Updated RESOURCES list with the new map files
 
 26-01-2017, Coruja
-[sphere_monsters.scp]: Renamed char 'c_unicorn_rainbow' to 'c_lasher'. Updated 'c_skree', 'c_dragon_turtle_hatchling', 'c_myrmidex_queen'. Added new 'c_palomino', 'c_windrunner'
-[sphere_item_char_icons.scp]: Renamed item 'i_pet_unicorn_rainbow' to 'i_pet_lasher' and added new 'i_pet_myrmidex_queen', 'i_pet_palomino', 'i_pet_windrunner'
+[npcs/sphere_monsters.scp]: Renamed char 'c_unicorn_rainbow' to 'c_lasher'. Updated 'c_skree', 'c_dragon_turtle_hatchling', 'c_myrmidex_queen'. Added new 'c_palomino', 'c_windrunner'
+[items/sphere_item_char_icons.scp]: Renamed item 'i_pet_unicorn_rainbow' to 'i_pet_lasher' and added new 'i_pet_myrmidex_queen', 'i_pet_palomino', 'i_pet_windrunner'
 [sphere_defs.scp]: Added mount defs for new TOL mounts Palomino and Windrunner
 
 29-01-2017, Coruja
-[sphere_item_building_doors.scp]: Added Jungle / Shadowguard doors
-[sphere_item_building_roofs.scp]: Added Jungle / Shadowguard roofs
-[sphere_item_building_walls.scp]: Added Jungle / Shadowguard walls
-[sphere_item_building_floors.scp]: Added Jungle / Shadowguard floors
-[sphere_item_building_stairs.scp]: Added Jungle / Shadowguard stairs
+[items/sphere_item_building_doors.scp]: Added Jungle / Shadowguard doors
+[items/sphere_item_building_roofs.scp]: Added Jungle / Shadowguard roofs
+[items/sphere_item_building_walls.scp]: Added Jungle / Shadowguard walls
+[items/sphere_item_building_floors.scp]: Added Jungle / Shadowguard floors
+[items/sphere_item_building_stairs.scp]: Added Jungle / Shadowguard stairs
 
 30-01-2017, Coruja
 Fixed: HS/TOL items not showing correctly on client screen.
@@ -394,27 +394,27 @@ Changed: Updated internal Zlib libs v1.2.10 to v1.2.11.
 09-02-2017, Coruja
 Changed: Small fixes and improvements on vendor buy/sell engine.
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.57 and enhanced client 4.0.57
-[sphere_item_wedding.scp]: Added new wedding items from latest UO patch (publish 96 / client 7.0.57)
-[multis_magincia_bazaar.scp]: Updated all stalls to use proper multis instead standalone items
+[items/sphere_item_wedding.scp]: Added new wedding items from latest UO patch (publish 96 / client 7.0.57)
+[items/multis/multis_magincia_bazaar.scp]: Updated all stalls to use proper multis instead standalone items
 
 10-02-2017, Coruja
 Fixed: Function SHRINK not working correctly.
-[sphere_monsters.scp]: Added missing data on some monsters
+[items/sphere_item_resources.scp]: Added new resources 'Tiger Pelt' (found on Wild Tiger) and 'Dragon Scute' (found on Dragon Turtle)
+[items/sphere_item_profession_tailor_tanner.scp / sphere_item_profession_cook_barkeep_baker.scp]: Removed some obsolete code
+[items/sphere_item_animations.scp / sphere_item_unsorted.scp]: Changed all t_telepad items to be created using MOREP=-1,-1 instead MOREP=0,0 by default (this will prevent misconfigured t_telepad items teleporting to wrong coord 0,0)
+[npcs/sphere_monsters.scp]: Added missing data on some monsters
 [sphere_defs.scp]: Updated 'color_*' defs, added new sound def 'snd_monster_wildtiger'
-[sphere_item_resources.scp]: Added new resources 'Tiger Pelt' (found on Wild Tiger) and 'Dragon Scute' (found on Dragon Turtle)
-[sphere_item_profession_tailor_tanner.scp / sphere_item_profession_cook_barkeep_baker.scp]: Removed some obsolete code
-[sphere_item_animations.scp / sphere_item_unsorted.scp]: Changed all t_telepad items to be created using MOREP=-1,-1 instead MOREP=0,0 by default (this will prevent misconfigured t_telepad items teleporting to wrong coord 0,0)
 
 13-02-2017, Coruja
 Changed: Spellbooks now store spell offset / max spells using TDATA3/TDATA4 instead MOREZ/MOREX. This will optimize worldsave files, because TDATA* can be used directly from itemdef script and doesn't need to be saved on worldfiles.
 	-IMPORTANT: It's HIGHLY recommended update these scripts above, otherwise spellbooks will stop working.
-[sphere_item_magic_magery.scp]: Updated i_spellbook
-[sphere_item_magic_necromancer_aos.scp]: Updated i_spellbook_necromancy
-[sphere_item_magic_chivalry.scp]: Updated i_spellbook_chivalry
-[sphere_item_magic_ninjitsu_bushido.scp]: Updated i_spellbook_bushido, i_spellbook_ninjitsu
-[sphere_item_magic_spellweaving.scp]: Updated i_spellbook_spellweaving
-[sphere_item_magic_mysticism.scp]: Updated i_spellbook_mystic
-[sphere_item_magic_skillmasteries.scp]: Updated i_spellbook_mastery
+[items/sphere_item_magic_magery.scp]: Updated i_spellbook
+[items/sphere_item_magic_necromancer_aos.scp]: Updated i_spellbook_necromancy
+[items/sphere_item_magic_chivalry.scp]: Updated i_spellbook_chivalry
+[items/sphere_item_magic_ninjitsu_bushido.scp]: Updated i_spellbook_bushido, i_spellbook_ninjitsu
+[items/sphere_item_magic_spellweaving.scp]: Updated i_spellbook_spellweaving
+[items/sphere_item_magic_mysticism.scp]: Updated i_spellbook_mystic
+[items/sphere_item_magic_skillmasteries.scp]: Updated i_spellbook_mastery
 
 14-02-2017, Coruja
 Fixed: Combat Hit Chance formulas incorrectly assuming that defender is always using the same combat skill as the attacker.
@@ -427,8 +427,8 @@ Added: Better LOS support for bigger screen resolutions of TOL clients 7.0.55.27
 [sphere.ini]: Removed 'DistanceTalk' setting, it's no longer needed because talk distance is now set automatically based on char VISUALRANGE.
 
 20-02-2017, Coruja
-[sphere_item_ship_parts.scp]: Added missing i_mt_* mount defnames
-[sphere_item_building_other.scp]: Fixed Winch using wrong animation list
+[items/sphere_item_ship_parts.scp]: Added missing i_mt_* mount defnames
+[items/sphere_item_building_other.scp]: Fixed Winch using wrong animation list
 
 26-02-2017, Coruja
 Added: Support to map waypoints of party members on enhanced clients.
@@ -463,11 +463,11 @@ Changed: Updated internal SQLite libs v3.17.0 to v3.18.0.
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.58 and enhanced client 4.0.58
 
 12-04-2017, Coruja
-[sphere_map*.scp]: Updated some regions and teleports
 [sphere_defs.scp]: Added sound def 'snd_animal_llama1' and buff/debuff defs for Sparks, Swarm and Bone Breaker
-[sphere_item_char_icons.scp]: Added new char icons from publish 97
 [sphere_serv_triggers.scp]: Added missing function 'f_onserver_timer' and updated description of all others functions
-[sphere_monsters.scp / sphere_events_human.scp]: Fixed missing ENDDO line making sphere crash on infinite loop
+[items/sphere_item_char_icons.scp]: Added new char icons from publish 97
+[maps/sphere_map*.scp]: Updated some regions and teleports
+[npcs/sphere_monsters.scp / sphere_events_human.scp]: Fixed missing ENDDO line making sphere crash on infinite loop
 	-IMPORTANT: It's HIGHLY recommended update these scripts above to prevent server crash.
 
 16-04-2017, Coruja
@@ -484,17 +484,47 @@ Changed: Small improvements on gargoyle fly ability.
 Changed: Function WEBLINK now will show an message telling the web browser is starting.
 [sphere_msgs.scp]: Added new messages 'gargoyle_fly_cantcurrentform', 'gargoyle_fly_cantdead', 'web_browser_start'
 [sphere_defs.scp]: Updated 'mount_items' section to use the new mount memories format (i_mt_* DEFNAME instead hex BASEID)
-[sphere_item_ship_parts.scp]: Removed all i_mt_* mount memories DEFNAME from boat items to make these items be considered only boat items
-[sphere_item_memories.scp]: Added all updated i_mt_* mount memories here
+[items/sphere_item_ship_parts.scp]: Removed all i_mt_* mount memories DEFNAME from boat items to make these items be considered only boat items
+[items/sphere_item_memories.scp]: Added all updated i_mt_* mount memories here
 	-IMPORTANT: It's HIGHLY recommended update these scripts above to prevent conflicts between mount memories and boat items.
 
 01-05-2017, Coruja
-[sphere_item_char_icons.scp]: Fixed Crimson/Platinum/Stygian Dragon icons using wrong defname
-[sphere_item_deco_carvings_statues.scp]: Added swan statues
-[sphere_item_deco_furniture.scp]: Added vice/virtue pillows
-[sphere_item_deco_wall_hangings.scp]: Added TOL trophies/banners/paintings
-[sphere_item_provisions_jewelry.scp]: Added craftsman talismans
-[sphere_item_provisions_misc.scp]: Added fletching/woodworking containers
-[sphere_item_unsorted.scp]: Added new easter eggs (2017)
-[sphere_item_wedding.scp]: Added missing tables
-[sphere_monsters.scp]: Updated many chardefs
+[items/sphere_item_char_icons.scp]: Fixed Crimson/Platinum/Stygian Dragon icons using wrong defname
+[items/sphere_item_deco_carvings_statues.scp]: Added swan statues
+[items/sphere_item_deco_furniture.scp]: Added vice/virtue pillows
+[items/sphere_item_deco_wall_hangings.scp]: Added TOL trophies/banners/paintings
+[items/sphere_item_provisions_jewelry.scp]: Added craftsman talismans
+[items/sphere_item_provisions_misc.scp]: Added fletching/woodworking containers
+[items/sphere_item_unsorted.scp]: Added new easter eggs (2017)
+[items/sphere_item_wedding.scp]: Added missing tables
+[maps/sphere_map_points5.scp]: Fixed teleport 'tp_StygianDragonsLair1_Teleport7' using wrong P
+[speech/job*]: Removed many job*.scp unused speech files
+[npcs/sphere_monsters.scp]: Updated status of many chardefs
+[npcs/sphere_citizens.scp]: Removed unused speeches from NPCs
+[npcs/sphere_guildmasters.scp]: Removed unused speeches from NPCs
+[npcs/sphere_vendors.scp]: Removed unused speeches from NPCs
+[npcs/spherechar_evil.scp]: Removed unused speeches from NPCs
+[npcs/spherechar_human]: Removed unused speeches from NPCs
+[sphere_defs.scp]: Added new sound def 'sound_monster_shadows'
+
+06-05-2017, Coruja
+[items/sphere_item_magic_armor.scp]: Removed RESOURCES from all items
+[items/sphere_item_magic_leather.scp]: Removed RESOURCES from all items
+[sphere_skillmenu.scp]: Removed Sphere custom menu 'sm_magic_armor', 'sm_magic_defense_armor', 'sm_magic_guarding_armor', 'sm_magic_hardening_armor', 'sm_magic_fortification_armor', 'sm_magic_invulnerability_armor', 'sm_leather_armor_magic', 'sm_leather_studded_magic'
+[sphere_template_magic.scp]: Updated TEMPLATE 'random_magic_custom_greater'
+
+07-05-2017, Coruja
+[npcs/sphere_vendors.scp]: Updated CHARDEFs 'c_beekeeper', 'c_beekeeper_f', 'c_scribe', 'c_scribe_f'
+[sphere_menu.scp]: Updated menu 'm_addi_weparm_vanq'
+[sphere_skillmenu.scp]: Updated skillmenu 'sm_bowcraft', 'sm_wood_misc', 'sm_jewelry', and removed 'sm_bows_excep'
+[sphere_template_misc.scp]: Updated template 'random_item_misc_rare'
+[sphere_template_vend.scp]: Updated vendor template 'vendor_s_tavernkeeper', 'vendor_b_tavernkeeper', 'vendor_s_mage_1st'
+
+08-05-2017, Coruja
+[items/sphere_item_artifacts.scp]: Updated all artifacts info
+[items/sphere_item_artifacts_minor.scp]: Updated all artifacts info
+[items/sphere_item_artifacts_tokuno.scp]: Updated all artifacts info
+
+12-05-2017, Coruja
+Changed: Updated internal MySQL libs v6.1.9 to v6.1.10.
+	-IMPORTANT: It's HIGHLY recommended update libmysql.dll file on Sphere folder (Windows users) or MySQL packages (Linux users) to prevent errors when using MySQL.
