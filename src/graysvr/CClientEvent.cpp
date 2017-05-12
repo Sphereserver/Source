@@ -621,7 +621,7 @@ bool CClient::Event_CheckWalkBuffer()
 }
 
 // Client sent a walk request to server
-bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
+TRIGRET_TYPE CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 {
 	ADDTOCALLSTACK("CClient::Event_Walk");
 	// The client is sending a walk request to server, so the server must check
@@ -635,13 +635,12 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 	//	walking (the invalid non zeros happen when you log off and don't exit the
 	//	client.exe all the way and then log back in, XXX doesn't clear the stack)
 	if ( !m_pChar )
-		return false;
+		return TRIGRET_RET_FALSE;
 
 	DIR_TYPE dir = static_cast<DIR_TYPE>(rawdir & 0x0F);
 	if ( dir >= DIR_QTY )
 	{
-		new PacketMovementRej(this, sequence);
-		return false;
+		return TRIGRET_RET_FALSE;
 	}
 
 	CPointMap pt = m_pChar->GetTopPoint();
@@ -658,8 +657,7 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 			UINT64 iCurTime = CWorldClock::GetSystemClock();
 			if ( iCurTime < m_timeNextEventWalk )		// fastwalk detected
 			{
-				new PacketMovementRej(this, sequence);
-				return false;
+				return TRIGRET_RET_FALSE;
 			}
 
 			UINT64 iDelay = 0;
@@ -676,8 +674,7 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 		}
 		else if ( !Event_CheckWalkBuffer() )
 		{
-			new PacketMovementRej(this, sequence);
-			return false;
+			return TRIGRET_RET_FALSE;
 		}
 
 		pt.Move(dir);
@@ -685,14 +682,12 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 		// Check Z height. The client already knows this but doesn't tell us.
 		if ( m_pChar->CanMoveWalkTo(pt, true, false, dir) == NULL )
 		{
-			new PacketMovementRej(this, sequence);
-			return false;
+			return TRIGRET_RET_FALSE;
 		}
 
 		if ( !m_pChar->MoveToChar(pt) )
 		{
-			new PacketMovementRej(this, sequence);
-			return false;
+			return TRIGRET_RET_FALSE;
 		}
 
 		// Check if I stepped on any item/teleport
@@ -702,9 +697,12 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 			if ( m_pChar->GetTopPoint() == pt )	// check if position still the same, because the movement can't be rejected if the char already got moved/teleported
 			{
 				m_pChar->SetUnkPoint(ptOld);	// we already moved, so move back to previous location
-				new PacketMovementRej(this, sequence);
-				return false;
+				return TRIGRET_RET_FALSE;
 			}
+		}
+		else
+		{
+			return TRIGRET_RET_DEFAULT;
 		}
 
 		// Check if invisible chars will be revealed
@@ -733,7 +731,7 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 		m_pChar->m_dirFace = dir;
 		m_pChar->UpdateMove(ptOld, this);	// Who now sees me ?
 	}
-	return true;
+	return TRIGRET_RET_TRUE;
 }
 
 // Client changed peace/war mode
