@@ -316,9 +316,9 @@ CChar::~CChar()
 		m_pParty->RemoveMember(GetUID(), GetUID());
 		m_pParty = NULL;
 	}
-	Attacker_RemoveChar();	// Remove me from enemies attacker list (I assume that if he is on my list, I'm on his one and no one have me on their list if I dont have them)
-	NPC_PetClearOwners();	// Clear follower slots on pet owner
-	DeleteAll();			// Remove me early so virtuals will work
+	Attacker_RemoveChar();		// Remove me from enemies attacker list (I assume that if he is on my list, I'm on his one and no one have me on their list if I dont have them)
+	NPC_PetClearOwners(false);	// Clear follower slots on pet owner
+	DeleteAll();				// Remove me early so virtuals will work
 	ClearNPC();
 	ClearPlayer();
 	g_Serv.StatDec( SERV_STAT_CHARS );
@@ -875,7 +875,7 @@ bool CChar::DupeFrom( CChar * pChar, bool fNewbieItems )
 					CChar * pChar2 = CreateNPC( pTest2->GetID());
 					pChar2->SetTopPoint( pChar->GetTopPoint() );	// Moving the mount again because the dupe will place it in the same place as the 'invisible & disconnected' original (usually far away from where the guy will be, so the duped char can't touch the mount).
 					pChar2->DupeFrom(pTest2,fNewbieItems);
-					pChar2->NPC_PetSetOwner(this);
+					pChar2->NPC_PetSetOwner(this, false);
 					Horse_Mount(pChar2);
 				}
 			}
@@ -1183,8 +1183,8 @@ void CChar::SetID( CREID_TYPE id )
 	if ( !IsMountCapable() )	// new body may not be capable of ride mounts
 		Horse_UnMount();
 
-	if ( !IsGargoyle() )		// new body may not be capable of use gargoyle fly ability
-		StatFlag_Clear(STATF_Hovering);
+	if ( IsStatFlag(STATF_Hovering) && !IsGargoyle() )		// new body may not be capable of use gargoyle fly ability
+		ToggleFlying();
 
 	if ( !pCharDef->Can(CAN_C_EQUIP) )	// new body may not be capable of equip items (except maybe on hands)
 	{

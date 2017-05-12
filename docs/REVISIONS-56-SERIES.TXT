@@ -366,7 +366,7 @@ Added: New function MAPWAYPOINT to add/remove waypoints on client radar map (enh
 Fixed: Client encryption not being decrypted correctly on login process.
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.56 and enhanced client 4.0.56
 [sphere_defs.scp]: Renamed 'bufficon_SavingThrow' to 'bufficon_WarriorsGifts' and added new 'mapwaypoint_types' defs
-[sphere_map*.scp]: Updated some few regions and teleports (note: added new file 'sphere_map_points0.scp' and removed 'sphere_map0_tol.scp')
+[sphere_map*.scp]: Updated some few regions and teleports (note: added new file 'sphere_map_points0_hs.scp' and removed 'sphere_map0_tol.scp')
 [spheretables.scp]: Updated RESOURCES list with the new map files
 
 26-01-2017, Coruja
@@ -461,3 +461,40 @@ Changed: Small improvements on EF_FastWalkPrevention experimental feature.
 01-04-2017, Coruja
 Changed: Updated internal SQLite libs v3.17.0 to v3.18.0.
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.58 and enhanced client 4.0.58
+
+12-04-2017, Coruja
+[sphere_map*.scp]: Updated some regions and teleports
+[sphere_defs.scp]: Added sound def 'snd_animal_llama1' and buff/debuff defs for Sparks, Swarm and Bone Breaker
+[sphere_item_char_icons.scp]: Added new char icons from publish 97
+[sphere_serv_triggers.scp]: Added missing function 'f_onserver_timer' and updated description of all others functions
+[sphere_monsters.scp / sphere_events_human.scp]: Fixed missing ENDDO line making sphere crash on infinite loop
+	-IMPORTANT: It's HIGHLY recommended update these scripts above to prevent server crash.
+
+16-04-2017, Coruja
+Fixed: Poisoning spell not working correctly.
+Fixed: Poisoning effect causing damage on items equipped on char.
+
+19-04-2017, Coruja
+Changed: Huge improvements on internal chat system, now it works fine on both SA (new chat system) and pre-SA (old chat system) clients.
+
+21-04-2017, Coruja
+Fixed: Tooltip "(tame)" not being updated correctly when pets got tamed/released.
+Changed: Mount memories now can have their own i_mt_* ITEMDEFs instead use DEFNAME=i_mt_* directly on base items (usually 'boat parts').
+Changed: Small improvements on gargoyle fly ability.
+Changed: Function WEBLINK now will show an message telling the web browser is starting.
+[sphere_msgs.scp]: Added new messages 'gargoyle_fly_cantcurrentform', 'gargoyle_fly_cantdead', 'web_browser_start'
+[sphere_defs.scp]: Updated 'mount_items' section to use the new mount memories format (i_mt_* DEFNAME instead hex BASEID)
+[sphere_item_ship_parts.scp]: Removed all i_mt_* mount memories DEFNAME from boat items to make these items be considered only boat items
+[sphere_item_memories.scp]: Added all updated i_mt_* mount memories here
+	-IMPORTANT: It's HIGHLY recommended update these scripts above to prevent conflicts between mount memories and boat items.
+
+01-05-2017, Coruja
+[sphere_item_char_icons.scp]: Fixed Crimson/Platinum/Stygian Dragon icons using wrong defname
+[sphere_item_deco_carvings_statues.scp]: Added swan statues
+[sphere_item_deco_furniture.scp]: Added vice/virtue pillows
+[sphere_item_deco_wall_hangings.scp]: Added TOL trophies/banners/paintings
+[sphere_item_provisions_jewelry.scp]: Added craftsman talismans
+[sphere_item_provisions_misc.scp]: Added fletching/woodworking containers
+[sphere_item_unsorted.scp]: Added new easter eggs (2017)
+[sphere_item_wedding.scp]: Added missing tables
+[sphere_monsters.scp]: Updated many chardefs

@@ -1149,23 +1149,21 @@ bool CChar::UpdateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward , BY
 		default:
 			break;
 	}
-	PacketActionBasic* cmdnew = new PacketActionBasic(this, action1, subaction, variation);
-	PacketAction* cmd = new PacketAction(this, action, 1, fBackward, iFrameDelay, iAnimLen);
+	PacketAction *cmd = new PacketAction(this, action, 1, fBackward, iFrameDelay, iAnimLen);
+	PacketActionNew *cmdnew = new PacketActionNew(this, action1, subaction, variation);
 
 	ClientIterator it;
-	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
+	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
-		if (!pClient->CanSee(this))
+		if ( !pClient->CanSee(this) )
 			continue;
-		if (pClient->m_NetState->isClientEnhanced() && pClient->m_NetState->m_reportedVersion < 6700351)	//Enhanced client always used this packet, at least until ~ 4.0.35 (6700351)
-			cmdnew->send(pClient);
-		else if (pClient->m_NetState->isClientVersion(MINCLIVER_SA) && (IsGargoyle()) && (action1 >= 0))	// On classic clients only send new packets for gargoyles
+		if ( PacketActionNew::CanSendTo(pClient->m_NetState) && IsGargoyle() && (action1 >= 0) )		// new animation packet
 			cmdnew->send(pClient);
 		else
-			cmd->send(pClient);
+			cmd->send(pClient);		// old animation packet
 	}
-	delete cmdnew;
 	delete cmd;	
+	delete cmdnew;
 	return true;
 }
 
@@ -2228,7 +2226,7 @@ CItem *CChar::NPC_Shrink()
 		return NULL;
 	}
 
-	NPC_PetClearOwners();	// clear follower slots on pet owner
+	NPC_PetClearOwners(false);	// clear follower slots on pet owner
 
 	CItem *pItem = Make_Figurine();
 	if ( !pItem )
@@ -2301,19 +2299,28 @@ bool CChar::Horse_Mount(CChar *pHorse)
 
 	if ( !CanTouch(pHorse) )
 	{
-		if ( pHorse->m_pNPC->m_bonded && pHorse->IsStatFlag(STATF_DEAD) )
-			SysMessageDefault(DEFMSG_MSG_BONDED_DEAD_CANTMOUNT);
-		else
-			SysMessageDefault(DEFMSG_MSG_MOUNT_DIST);
+		SysMessageDefault(DEFMSG_MSG_MOUNT_DIST);
 		return false;
 	}
 
-	ITEMID_TYPE id;
-	TCHAR * sMountDefname = Str_GetTemp();
-	sprintf(sMountDefname, "mount_0x%x", pHorse->GetDispID());
-	id = static_cast<ITEMID_TYPE>(g_Exp.m_VarDefs.GetKeyNum(sMountDefname));
+	TCHAR * sMountID = Str_GetTemp();
+	sprintf(sMountID, "mount_0x%x", pHorse->GetDispID());
+
+	LPCTSTR sMemoryID = g_Exp.m_VarDefs.GetKeyStr(sMountID);
+	RESOURCE_ID rid = g_Cfg.ResourceGetID(RES_QTY, sMemoryID);
+
+	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 	if ( id <= ITEMID_NOTHING )
 		return false;
+
+	if ( m_pClient && m_pClient->m_pHouseDesign )
+		return false;
+
+	if ( pHorse->m_pNPC->m_bonded && pHorse->IsStatFlag(STATF_DEAD) )
+	{
+		SysMessageDefault(DEFMSG_MSG_BONDED_DEAD_CANTMOUNT);
+		return false;
+	}
 
 	if ( !IsMountCapable() )
 	{
@@ -2349,7 +2356,7 @@ bool CChar::Horse_Mount(CChar *pHorse)
 
 	// Set a new owner if it is not us (check first to prevent friends taking ownership)
 	if ( !pHorse->NPC_IsOwnedBy(this, false) )
-		pHorse->NPC_PetSetOwner(this);
+		pHorse->NPC_PetSetOwner(this, false);
 
 	Horse_UnMount();					// unmount if already mounted
 	pItem->SetType(IT_EQ_HORSE);
@@ -2364,7 +2371,7 @@ bool CChar::Horse_Mount(CChar *pHorse)
 bool CChar::Horse_UnMount() 
 {
 	ADDTOCALLSTACK("CChar::Horse_UnMount");
-	if ( !IsStatFlag(STATF_OnHorse) || (IsStatFlag(STATF_Stone) && !IsPriv(PRIV_GM)) )
+	if ( !IsStatFlag(STATF_OnHorse) || (IsStatFlag(STATF_Stone) && !IsPriv(PRIV_GM)) || (m_pClient && m_pClient->m_pHouseDesign) )
 		return false;
 
 	CItem * pItem = LayerFind(LAYER_HORSE);
@@ -2523,24 +2530,10 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 			pParalyze->Delete();
 	}
 
-	CItem *pPoison = LayerFind(LAYER_FLAG_Poison);
-	if ( pPoison )
-	{
-		if ( !IsSetMagicFlags(MAGICF_OSIFORMULAS) )		// strengthen the poison
-		{
-			pPoison->m_itSpell.m_spellcharges += iTicks;
-			return true;
-		}
-	}
-	else
-	{
-		pPoison = Spell_Effect_Create(SPELL_Poison, LAYER_FLAG_Poison, iSkill, 1 + Calc_GetRandVal(2) * TICK_PER_SEC, pCharSrc, false);
-		if ( !pPoison )
-			return false;
-		LayerAdd(pPoison, LAYER_FLAG_Poison);
-	}
-
-	pPoison->SetTimeout((5 + Calc_GetRandLLVal(4)) * TICK_PER_SEC);
+	CItem *pPoison = Spell_Effect_Create(SPELL_Poison, LAYER_FLAG_Poison, iSkill, 1 + Calc_GetRandVal(2) * TICK_PER_SEC, pCharSrc, false);
+	if ( !pPoison )
+		return false;
+	LayerAdd(pPoison, LAYER_FLAG_Poison);
 
 	if ( IsSetMagicFlags(MAGICF_OSIFORMULAS) )
 	{
@@ -2552,6 +2545,7 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 				pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(16, 33), 100));
 				pPoison->m_itSpell.m_spelllevel = 4;
 				pPoison->m_itSpell.m_spellcharges = 80;		//1 min, 20 sec
+				pPoison->SetTimeout(50);
 			}
 			else
 			{
@@ -2559,6 +2553,7 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 				pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(15, 30), 100));
 				pPoison->m_itSpell.m_spelllevel = 3;
 				pPoison->m_itSpell.m_spellcharges = 60;
+				pPoison->SetTimeout(50);
 			}
 		}
 		else if ( iSkill >= 851 )
@@ -2567,6 +2562,7 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 			pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(7, 15), 100));
 			pPoison->m_itSpell.m_spelllevel = 2;
 			pPoison->m_itSpell.m_spellcharges = 60;
+			pPoison->SetTimeout(40);
 		}
 		else if ( iSkill >= 600 )
 		{
@@ -2574,12 +2570,14 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 			pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(5, 10), 100));
 			pPoison->m_itSpell.m_spelllevel = 1;
 			pPoison->m_itSpell.m_spellcharges = 30;
+			pPoison->SetTimeout(30);
 		}
 		else
 		{
 			// Lesser poison
 			pPoison->m_itSpell.m_spelllevel = 0;
 			pPoison->m_itSpell.m_spellcharges = 30;
+			pPoison->SetTimeout(20);
 		}
 
 		if ( iTicks > 0 )
@@ -2588,6 +2586,7 @@ bool CChar::SetPoison( int iSkill, int iTicks, CChar * pCharSrc )
 	else
 	{
 		pPoison->m_itSpell.m_spellcharges = iTicks;		// effect duration
+		pPoison->SetTimeout((5 + Calc_GetRandLLVal(4)) * TICK_PER_SEC);
 	}
 
 	if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B )
@@ -2635,7 +2634,7 @@ void CChar::Wake()
 void CChar::SleepStart( bool fFrontFall )
 {
 	ADDTOCALLSTACK("CChar::SleepStart");
-	if (IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Polymorph))
+	if (IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Polymorph|STATF_Hovering))
 		return;
 
 	CItemCorpse *pCorpse = MakeCorpse(fFrontFall);
@@ -2858,7 +2857,7 @@ bool CChar::Death()
 		if ( pCorpse )
 			pCorpse->m_uidLink.InitUID();
 
-		NPC_PetClearOwners();
+		NPC_PetClearOwners(false);
 		return false;	// delete the NPC
 	}
 
@@ -2965,6 +2964,53 @@ bool CChar::OnFreezeCheck()
 	}
 
 	return false;
+}
+
+// Toggle gargoyle flying mode
+void CChar::ToggleFlying()
+{
+	ADDTOCALLSTACK("CChar::ToggleFlying");
+
+	if ( IsTrigUsed(TRIGGER_TOGGLEFLYING) )
+	{
+		if ( OnTrigger(CTRIG_ToggleFlying, this, 0) == TRIGRET_RET_TRUE )
+			return;
+	}
+
+	if ( IsStatFlag(STATF_Hovering) )
+	{
+		// Stop hovering
+		StatFlag_Clear(STATF_Hovering);
+		if ( m_pClient )
+			m_pClient->removeBuff(BI_GARGOYLEFLY);
+	}
+	else
+	{
+		// Begin hovering
+		StatFlag_Set(STATF_Hovering);
+		if ( m_pClient )
+			m_pClient->addBuff(BI_GARGOYLEFLY, 1112193, 1112567);
+		if ( IsStatFlag(STATF_Sleeping) )
+			Wake();
+
+		// Float char up to the hover Z
+		CPointMap ptHover = g_World.FindItemTypeNearby(GetTopPoint(), IT_HOVEROVER, 0);
+		if ( ptHover.IsValidPoint() )
+			MoveTo(ptHover);
+	}
+
+	// NANIM_TAKEOFF and NANIM_LANDING animations are only available on the new animation packet (PacketAnimationBasic),
+	// so we must use it instead the old PacketAnimation which will translate these values into an wrong animation
+	PacketActionNew *cmd = new PacketActionNew(this, IsStatFlag(STATF_Hovering) ? NANIM_TAKEOFF : NANIM_LANDING, static_cast<ANIM_TYPE_NEW>(0), static_cast<BYTE>(0));
+	ClientIterator it;
+	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
+	{
+		if ( !PacketActionNew::CanSendTo(pClient->m_NetState) || !pClient->CanSee(this) )
+			continue;
+		pClient->addCharMove(this);
+		cmd->send(pClient);
+	}
+	delete cmd;
 }
 
 // Flip around

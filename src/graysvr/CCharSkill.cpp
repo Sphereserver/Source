@@ -977,14 +977,13 @@ bool CChar::Skill_CheckSuccess( SKILL_TYPE skill, int difficulty, bool bUseBellC
 		return false;
 
 	difficulty *= 10;
-	int iSuccessChance = difficulty;
 	if ( bUseBellCurve )
-		iSuccessChance = Calc_GetSCurve(Skill_GetAdjusted(skill) - difficulty, SKILL_VARIANCE);
+		difficulty = Calc_GetSCurve(Skill_GetAdjusted(skill) - difficulty, SKILL_VARIANCE);
 
-	return (iSuccessChance >= Calc_GetRandVal(1000));
+	return (difficulty >= Calc_GetRandVal(1000));
 }
 
-bool CChar::Skill_UseQuick(SKILL_TYPE skill, INT64 difficulty, bool bAllowGain, bool bUseBellCurve)
+bool CChar::Skill_UseQuick(SKILL_TYPE skill, int difficulty, bool bAllowGain, bool bUseBellCurve)
 {
 	ADDTOCALLSTACK("CChar::Skill_UseQuick");
 	// ARGS:
@@ -998,14 +997,14 @@ bool CChar::Skill_UseQuick(SKILL_TYPE skill, INT64 difficulty, bool bAllowGain, 
 	if ( g_Cfg.IsSkillFlag(skill, SKF_SCRIPTED) )
 		return false;
 
-	INT64 result = Skill_CheckSuccess(skill, static_cast<int>(difficulty), bUseBellCurve);
+	INT64 result = Skill_CheckSuccess(skill, difficulty, bUseBellCurve);
 	CScriptTriggerArgs pArgs(0, difficulty, result);
 	TRIGRET_TYPE ret = TRIGRET_RET_DEFAULT;
 
 	if ( IsTrigUsed(TRIGGER_SKILLUSEQUICK) )
 	{
 		ret = Skill_OnCharTrigger(skill, CTRIG_SkillUseQuick, &pArgs);
-		pArgs.getArgNs(0, &difficulty, &result);
+		pArgs.getArgNs(0, reinterpret_cast<INT64 *>(&difficulty), &result);
 
 		if ( ret == TRIGRET_RET_TRUE )
 			return true;
@@ -1015,7 +1014,7 @@ bool CChar::Skill_UseQuick(SKILL_TYPE skill, INT64 difficulty, bool bAllowGain, 
 	if ( IsTrigUsed(TRIGGER_USEQUICK) )
 	{
 		ret = Skill_OnTrigger(skill, SKTRIG_USEQUICK, &pArgs);
-		pArgs.getArgNs(0, &difficulty, &result);
+		pArgs.getArgNs(0, reinterpret_cast<INT64 *>(&difficulty), &result);
 
 		if ( ret == TRIGRET_RET_TRUE )
 			return true;
@@ -1023,16 +1022,16 @@ bool CChar::Skill_UseQuick(SKILL_TYPE skill, INT64 difficulty, bool bAllowGain, 
 			return false;
 	}
 
-	if ( result )	// success
+	if ( result > 0 )	// success
 	{
 		if ( bAllowGain )
-			Skill_Experience(skill, static_cast<int>(difficulty));
+			Skill_Experience(skill, difficulty);
 		return true;
 	}
-	else			// fail
+	else				// fail
 	{
 		if ( bAllowGain )
-			Skill_Experience(skill, static_cast<int>(-difficulty));
+			Skill_Experience(skill, -difficulty);
 		return false;
 	}
 }

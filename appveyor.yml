@@ -14,7 +14,8 @@ artifacts:
 deploy:
   provider: FTP
   protocol: ftp
-  host: spherecommunity.net
+  host:
+    secure: LjYrCGlwCyEGfBJ2fVvCF9pAlSlsob0eZaUnKrFWJTs=
   username:
     secure: UAZaqnbj2s8C/ObEXIg6xA==
   password:

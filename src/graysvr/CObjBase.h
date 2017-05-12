@@ -3629,7 +3629,7 @@ public:
 	bool Skill_CanUse( SKILL_TYPE skill );
 
 	void Skill_SetBase( SKILL_TYPE skill, WORD iValue );
-	bool Skill_UseQuick( SKILL_TYPE skill, INT64 difficulty, bool bAllowGain = true, bool bUseBellCurve = true );
+	bool Skill_UseQuick( SKILL_TYPE skill, int difficulty, bool bAllowGain = true, bool bUseBellCurve = true );
 
 	bool Skill_CheckSuccess( SKILL_TYPE skill, int difficulty, bool bUseBellCurve = true ) const;
 	bool Skill_Wait( SKILL_TYPE skilltry );
@@ -3890,6 +3890,7 @@ public:
 	virtual void SpeakUTF8Ex( const NWORD * pText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang );
 
 	bool OnFreezeCheck();
+	void ToggleFlying();
 	void DropAll( CItemContainer * pCorpse = NULL, DWORD dwAttr = 0 );
 	void UnEquipAllItems( CItemContainer * pCorpse = NULL, bool bLeaveHands = false );
 	void Wake();
@@ -3987,20 +3988,20 @@ private:
 	void NPC_Act_Runto(int iDist = 30);
 	bool NPC_Act_Food();
 
-	void NPC_ActStart_SpeakTo( CChar * pSrc );
+	void NPC_ActStart_SpeakTo(CChar *pSrc);
 	void NPC_OnTickAction();
 
 public:
 	void NPC_Pathfinding();		//	NPC thread AI - pathfinding
 	void NPC_Food();			//	NPC thread AI - search for food
 	void NPC_ExtraAI();			//	NPC thread AI - some general extra operations
-	void NPC_AddSpellsFromBook(CItem * pBook);
+	void NPC_AddSpellsFromBook(CItem *pBook);
 
 	void NPC_PetDesert();	
-	void NPC_PetClearOwners();
-	bool NPC_PetSetOwner( CChar * pChar );
+	void NPC_PetClearOwners(bool bResendTooltip = true);
+	bool NPC_PetSetOwner(CChar *pChar, bool bResendTooltip = true);
 	CChar *NPC_PetGetOwner() const;
-	bool NPC_IsOwnedBy( const CChar * pChar, bool fAllowGM = true ) const;
+	bool NPC_IsOwnedBy(const CChar *pChar, bool fAllowGM = true) const;
 	bool NPC_CanSpeak() const;
 
 	static CItemVendable *NPC_FindVendableItem(CItemVendable *pVendItem, CItemContainer *pContBuy);

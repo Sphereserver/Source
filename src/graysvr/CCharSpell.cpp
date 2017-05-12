@@ -238,7 +238,7 @@ CChar *CChar::Spell_Summon(CREID_TYPE id, CPointMap pntTarg)
 	pChar->m_ptHome = pntTarg;
 	pChar->m_pNPC->m_Home_Dist_Wander = 10;
 	pChar->NPC_CreateTrigger();		// removed from NPC_LoadScript() and triggered after char placement
-	pChar->NPC_PetSetOwner(this);
+	pChar->NPC_PetSetOwner(this, false);
 	pChar->OnSpellEffect(SPELL_Summon, this, Skill_GetAdjusted(static_cast<SKILL_TYPE>(skill)), NULL);
 
 	pChar->Update();
@@ -1123,17 +1123,6 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 			StatFlag_Set(STATF_Polymorph);
 			return;
 		}
-		case LAYER_FLAG_Poison:
-		{
-			StatFlag_Set(STATF_Poisoned);
-			UpdateModeFlag();
-			if ( m_pClient && IsSetOF(OF_Buffs) )
-			{
-				m_pClient->removeBuff(BI_POISON);
-				m_pClient->addBuff(BI_POISON, 1017383, 1070722, 2);
-			}
-			return;
-		}
 		case LAYER_SPELL_Night_Sight:
 		{
 			StatFlag_Set(STATF_NightSight);
@@ -1860,9 +1849,6 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 			static const int sm_iPoisonMax[] = { 2, 4, 6, 8, 10 };
 			OnTakeDamage(maximum(sm_iPoisonMax[iLevel], iDmg), pItem->m_uidLink.CharFind(), DAMAGE_MAGIC|DAMAGE_POISON|DAMAGE_NODISTURB|DAMAGE_NOREVEAL, 0, 0, 0, 100, 0);
 
-			// g_Cfg.GetSpellEffect( SPELL_Poison,
-			// We will have this effect again.
-
 			if ( IsSetOF(OF_Buffs) && m_pClient )
 			{
 				m_pClient->removeBuff(BI_POISON);
@@ -1906,7 +1892,7 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 		case SPELL_Pain_Spike:
 		{
 			// Receives x amount (stored in pItem->m_itSpell.m_spelllevel) of damage in 10 seconds, so damage each second is equal to total / 10
-			OnTakeDamage(pItem->m_itSpell.m_spelllevel / 10, pItem->m_uidLink.CharFind(), DAMAGE_MAGIC|DAMAGE_GOD);	// DIRECT? damage
+			OnTakeDamage(pItem->m_itSpell.m_spelllevel / 10, pItem->m_uidLink.CharFind(), DAMAGE_MAGIC|DAMAGE_FIXED);
 			pItem->SetTimeout(TICK_PER_SEC);
 			break;
 		}
@@ -1942,7 +1928,7 @@ CItem *CChar::Spell_Effect_Create(SPELL_TYPE spell, LAYER_TYPE layer, int iSkill
 			continue;
 
 		// Some spells create the memory using TIMER=-1 to make the effect last until cast again,
-		// die or logout. So casting this same spell again will just remove the current effect.
+		// death or logout. So casting this same spell again will just remove the current effect.
 		if ( pSpellPrev->GetTimerAdjusted() == -1 )
 		{
 			pSpellPrev->Delete();
@@ -1950,7 +1936,7 @@ CItem *CChar::Spell_Effect_Create(SPELL_TYPE spell, LAYER_TYPE layer, int iSkill
 		}
 
 		// Check if stats spells can stack
-		if ( layer == LAYER_SPELL_STATS && spell != pSpellPrev->m_itSpell.m_spell && IsSetMagicFlags(MAGICF_STACKSTATS) )
+		if ( (layer == LAYER_SPELL_STATS) && (spell != pSpellPrev->m_itSpell.m_spell) && IsSetMagicFlags(MAGICF_STACKSTATS) )
 			continue;
 
 		pSpellPrev->Delete();
@@ -3260,7 +3246,8 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 		}
 		else if ( GetPrivLevel() == PLEVEL_Guest )
 		{
-			pCharSrc->SysMessageDefault(DEFMSG_MSG_ACC_GUESTHIT);
+			if ( pCharSrc )
+				pCharSrc->SysMessageDefault(DEFMSG_MSG_ACC_GUESTHIT);
 			Effect(EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 16);
 			return false;
 		}
@@ -3394,7 +3381,9 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 
 		case SPELL_Poison:
 		case SPELL_Poison_Field:
-			Spell_Effect_Create(spell, LAYER_FLAG_Poison, iSkillLevel, iDuration, pCharSrc);
+			if ( pCharSrc && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
+				iSkillLevel = (pCharSrc->Skill_GetBase(SKILL_MAGERY) + pCharSrc->Skill_GetBase(SKILL_POISONING)) / 2;
+			SetPoison(iSkillLevel, iSkillLevel / 50, pCharSrc);
 			break;
 
 		case SPELL_Cure:
@@ -3444,7 +3433,7 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 		case SPELL_Mana_Vamp:
 		{
 			int iMax = Stat_GetVal(STAT_INT);
-			if ( IsSetMagicFlags(MAGICF_OSIFORMULAS) )
+			if ( pCharSrc && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
 			{
 				// AOS formula
 				iSkillLevel = (pCharSrc->Skill_GetBase(SKILL_EVALINT) - Skill_GetBase(SKILL_MAGICRESISTANCE)) / 10;
@@ -3462,7 +3451,8 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 				iSkillLevel = iMax;
 			}
 			UpdateStatVal(STAT_INT, static_cast<short>(-iSkillLevel));
-			pCharSrc->UpdateStatVal(STAT_INT, static_cast<short>(+iSkillLevel));
+			if ( pCharSrc )
+				pCharSrc->UpdateStatVal(STAT_INT, static_cast<short>(+iSkillLevel));
 			break;
 		}
 
@@ -3501,7 +3491,7 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 				pSourceItem->Delete();
 
 			CItem *pItem = NPC_Shrink(); // this delete's the char !!!
-			if ( pItem )
+			if ( pCharSrc && pItem )
 				pCharSrc->m_Act_Targ = pItem->GetUID();
 			break;
 		}
@@ -3577,7 +3567,8 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 		}
 
 		case SPELL_Blood_Oath:		// Blood Oath is a pact created between the casted and the target, memory is stored on the caster because one caster can have only 1 enemy, but one target can have the effect from various spells.
-			pCharSrc->Spell_Effect_Create(spell, LAYER_SPELL_Blood_Oath, iSkillLevel, iDuration, this);
+			if ( pCharSrc )
+				pCharSrc->Spell_Effect_Create(spell, LAYER_SPELL_Blood_Oath, iSkillLevel, iDuration, this);
 			break;
 
 		case SPELL_Corpse_Skin:
