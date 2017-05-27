@@ -1229,7 +1229,7 @@ public:
 	void Event_VendorBuy_Cheater(int iCode = 0);
 	void Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t itemCount);
 	void Event_VendorSell_Cheater(int iCode = 0);
-	bool Event_Walk(BYTE rawdir, BYTE sequence = 0);	// Player moves
+	TRIGRET_TYPE Event_Walk(BYTE rawdir, BYTE sequence = 0);	// Player moves
 	bool Event_CheckWalkBuffer();
 	
 	TRIGRET_TYPE Menu_OnSelect( RESOURCE_ID_BASE rid, int iSelect, CObjBase * pObj );
