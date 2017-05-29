@@ -528,3 +528,68 @@ Changed: Function WEBLINK now will show an message telling the web browser is st
 12-05-2017, Coruja
 Changed: Updated internal MySQL libs v6.1.9 to v6.1.10.
 	-IMPORTANT: It's HIGHLY recommended update libmysql.dll file on Sphere folder (Windows users) or MySQL packages (Linux users) to prevent errors when using MySQL.
+
+14-05-2017, Coruja
+[items/sphere_item_building_roofs.scp]: Removed RESOURCES of non-crafted items
+[items/sphere_item_building_walls.scp]: Removed RESOURCES of non-crafted items
+[items/sphere_item_buildings.scp]: Removed RESOURCES of non-crafted items
+[items/sphere_item_deco_carpet_rugs.scp]: Removed RESOURCES/SKILLMAKE of non-crafted items
+[items/sphere_item_deco_carvings_statues.scp]: Removed RESOURCES/SKILLMAKE of non-crafted items
+[items/sphere_item_deco_dungeons_traps_dead.scp]: Removed RESOURCES/SKILLMAKE of non-crafted items
+[items/sphere_item_deco_furniture.scp]: Removed RESOURCES/SKILLMAKE of non-crafted items
+[items/sphere_item_deco_wall_hangings.scp]: Removed RESOURCES/SKILLMAKE of non-crafted items
+[items/sphere_item_profession.scp]: Removed RESOURCES/SKILLMAKE of non-crafted items
+[items/sphere_item_profession_alchemist.scp]: Removed RESOURCES/SKILLMAKE of non-crafted items
+[items/sphere_item_provisions_jewelry.scp]: Removed RESOURCES/SKILLMAKE of non-crafted items
+[items/sphere_item_unsorted.scp]: Removed RESOURCES/SKILLMAKE of non-crafted items
+[items/sphere_item_vegetation.scp]: Removed RESOURCES/SKILLMAKE of non-crafted items
+
+16-05-2017, Coruja
+[items/sphere_item_artifacts.scp]: Updated ID of itemdef 'i_yomotsu_mines_tower_lantern'
+[items/sphere_item_deco_furniture.scp]: Added new items 'i_bar_marble'
+[items/sphere_item_deco_lightsources.scp]: Updated RESOURCES/SKILLMAKE of many items and renamed all generic defnames 'i_lantern_paper*' (1, 2, 3, ...) to correct lantern names
+[items/sphere_item_deco_signs.scp]: Added new items 'i_sign_customizable' and 'i_sign_bar'
+[items/sphere_item_magic_weapon.scp]: Removed all custom weapons
+[items/sphere_item_misc.scp]: Removed all custom resources
+[items/sphere_item_profession.scp]: Removed all custom items
+[items/sphere_item_profession_barber.scp]: Updated RESOURCES/SKILLMAKE of item 'i_scissors_barber' and removed custom item 'i_hair_dyes'
+[items/sphere_item_profession_cook_barkeep_baker.scp]: Removed custom resources and updated RESOURCES/SKILLMAKE of many items
+[items/sphere_item_provisions_armor.scp]: Removed RESOURCES/SKILLMAKE and armor properties of decorative armors that can't be crafted and weared
+[items/sphere_item_provisions_clothing.scp]: Removed custom item 'i_hat_wizards_magic' and updated RESOURCES/SKILLMAKE of many items
+[items/sphere_item_provisions_deed.scp]: Removed RESOURCES of non-crafted deeds
+[items/sphere_item_provisions_misc.scp]: Removed RESOURCES of item 'i_bedroll_open'
+[items/sphere_item_provisions_weapons.scp]: Updated RESOURCES/SKILLMAKE of many weapons
+[items/sphere_item_resources.scp]: Removed all custom resources
+[sphere_backward_compatibility.scp]: Added backward compatibility defs for Bonsai and Paper Lantern items
+[sphere_template_misc.scp]: Removed unused items and templates
+
+21-05-2017, Coruja
+[items/sphere_item_deco_furniture.scp]: Fixed item 'i_chest_kings_collection' using wrong ID
+[items/sphere_item_profession.scp]: Updated item 'i_book_giant' to 'i_unabridged_atlas_eodon' and added its dialog 'd_unabridged_atlas_eodon'
+[items/sphere_item_unsorted.scp]: Updated item 'i_chest_gothic' to 'i_chest_sending'
+[items/sphere_item_vegetation.scp]: Updated item 'i_bonsai_tree' to 'i_bonsai_ancient_oak'
+[sphere_backward_compatibility.scp]: Added some few itemdefs on backward compatibility list
+[sphere_template.scp]: Fixed wrong itemdefs on def 'random_other_food'
+
+22-05-2017, Coruja
+[items/multis/multis_foundations.scp]: Updated code syntax
+[items/multis/multis_houses.scp]: Updated code syntax
+[items/multis/multis_misc.scp]: Updated code syntax
+[items/multis/multis_ships.scp]: Updated code syntax
+[items/multis/multis_stairs.scp]: Updated code syntax
+[items/multis/multis_wandering_camps.scp]: Updated code syntax
+
+24-05-2017, Coruja
+[items/sphere_item_char_icons.scp]: Added new icon 'i_pet_kotl_automaton'
+[items/sphere_item_deco_wall_hangings.scp]: Removed items 'i_tapestry_elven_3' and 'i_tapestry_map_eodon' (these items got moved to the script above using correct defname)
+[items/sphere_item_profession_cartographer.scp]: Added items 'i_tattered_wall_map', 'i_wall_map_eodon', renamed 'i_map' to 'i_map_blank', and removed all custom map items
+[npcs/sphere_monsters.scp]: Updated some chardefs (Gallusaurus, Kotl Automaton, Lasher, Palomino, Windrunner) and added new publish 97 monsters (Triceratops, Saber-Toothed Tiger, Platinum Drake, Crimson Drake, Stygian Drake, Blood Fox, Frost Mite, Ossein Ram, Lion)
+[sphere_defs.scp]: Added new sound defs 'snd_monster_blade' and 'snd_animal_lion'
+
+28-05-2017, Coruja
+Changed: Updated internal SQLite libs v3.18.0 to v3.19.2.
+[maps/sphere_map0_hs.scp]: Renamed region 'Wreck of the Ararat' to 'Underwater World'
+[maps/sphere_map3.scp]: Added missing region 'Gravewater Lake'
+[maps/sphere_map5.scp]: Fixed 'Royal City' region RECT
+[maps/sphere_map_points5.scp]: Removed moongate def 'mg_valley_of_eodon' (it got moved to the script above)
+[maps/sphere_map_points5_tol.scp]: Added moongate def 'mg_valley_of_eodon'
