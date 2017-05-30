@@ -1470,7 +1470,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 		case IT_RUNE:
 			if ( !m_itRune.m_pntMark.IsValidPoint() )
 				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_BLANK ) );
-			else if ( ! m_itRune.m_Strength )
+			else if ( ! m_itRune.m_Charges )
 				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_FADED ) );
 			break;
 		default:
@@ -4432,6 +4432,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				Delete();
 			}
 			break;
+
 		case SPELL_Dispel:
 		case SPELL_Mass_Dispel:
 			if ( GetType() == IT_SPELL )
@@ -4441,12 +4442,15 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				Delete();
 			}
 			break;
+
 		case SPELL_Bless:
 		case SPELL_Curse:
 			return false;
+
 		case SPELL_Lightning:
 			Effect( EFFECT_LIGHTNING, ITEMID_NOTHING, pCharSrc );
 			break;
+
 		case SPELL_Explosion:
 		case SPELL_Fireball:
 		case SPELL_Fire_Bolt:
@@ -4458,7 +4462,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 		case SPELL_Magic_Lock:
 			if ( !SetMagicLock( pCharSrc, iSkillLevel ) )
-				return( false );
+				return false;
 			break;
 
 		case SPELL_Unlock:
@@ -4468,38 +4472,32 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 				int iDifficulty = Use_LockPick( pCharSrc, true, false );
 				if ( iDifficulty < 0 )
-					return( false );
+					return false;
 				bool fSuccess = pCharSrc->Skill_CheckSuccess( SKILL_MAGERY, iDifficulty );
 				Use_LockPick( pCharSrc, false, ! fSuccess );
 				return fSuccess;
 			}
 
 		case SPELL_Mark:
-			if ( !pCharSrc )
+			if ( !pCharSrc || !pCharSrc->m_pArea )
 				return false;
 
-			if ( !pCharSrc->IsPriv(PRIV_GM))
+			if ( !IsType(IT_RUNE) )
 			{
-				if ( !IsType(IT_RUNE) && ! IsType(IT_TELEPAD) )
-				{
-					pCharSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_SPELL_RECALL_NOTRUNE) );
-					return false;
-				}
-				if ( GetTopLevelObj() != pCharSrc )
-				{
-					// Prevent people from remarking GM teleport pads if they can't pick it up.
-					pCharSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_SPELL_MARK_CONT) );
-					return false;
-				}
+				pCharSrc->SysMessageDefault(DEFMSG_SPELL_MARK_CANTMARKOBJ);
+				return false;
+			}
+			else if ( (GetTopLevelObj() != pCharSrc) && !pCharSrc->IsPriv(PRIV_GM) )
+			{
+				pCharSrc->SysMessageDefault(DEFMSG_SPELL_MARK_CONT);
+				return false;
 			}
 
 			m_itRune.m_pntMark = pCharSrc->GetTopPoint();
-			if ( IsType(IT_RUNE) )
-			{
-				m_itRune.m_Strength = pSpellDef->m_Effect.GetLinear( iSkillLevel );
-				SetName( pCharSrc->m_pArea->GetName() );
-			}
+			m_itRune.m_Charges = pSpellDef->m_Effect.GetLinear(iSkillLevel);
+			SetName(pCharSrc->m_pArea->GetName());
 			break;
+
 		default:
 			break;
 	}

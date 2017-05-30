@@ -174,6 +174,83 @@ bool CChar::Spell_Teleport(CPointMap ptNew, bool bTakePets, bool bCheckAntiMagic
 	return true;
 }
 
+bool CChar::Spell_CreateGate(CPointMap ptNew, bool bCheckAntiMagic)
+{
+	ADDTOCALLSTACK("CChar::Spell_CreateGate");
+	// Create moongate between current pt and destination pt
+	// RETURN: true = it worked.
+
+	if ( !ptNew.IsValidPoint() )
+		return false;
+
+	ptNew.m_z = GetFixZ(ptNew);
+
+	if ( IsPriv(PRIV_JAILED) )
+	{
+		// Must be /PARDONed to leave jail area
+		static LPCTSTR const sm_szPunishMsg[] =
+		{
+			g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TELE_JAILED_1),
+			g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TELE_JAILED_2)
+		};
+		SysMessage(sm_szPunishMsg[Calc_GetRandVal(COUNTOF(sm_szPunishMsg))]);
+		return false;
+	}
+
+	CRegionBase *pAreaDest = ptNew.GetRegion(REGION_TYPE_AREA|REGION_TYPE_ROOM|REGION_TYPE_MULTI);
+	if ( !pAreaDest )
+		return false;
+
+	if ( pAreaDest->IsFlag(REGION_FLAG_SHIP) )
+	{
+		SysMessageDefault(DEFMSG_SPELL_GATE_SOMETHINGBLOCKING);
+		return false;
+	}
+
+	if ( bCheckAntiMagic )
+	{
+		if ( pAreaDest->IsFlag(REGION_ANTIMAGIC_ALL|REGION_ANTIMAGIC_GATE) )
+		{
+			SysMessageDefault(DEFMSG_SPELL_GATE_AM);
+			if ( !IsPriv(PRIV_GM) )
+				return false;
+		}
+	}
+
+	if ( g_World.IsItemTypeNear(GetTopPoint(), IT_TELEPAD, 0, false, true) || g_World.IsItemTypeNear(ptNew, IT_TELEPAD, 0, false, true) )
+	{
+		SysMessageDefault(DEFMSG_SPELL_GATE_ALREADYTHERE);
+		if ( !IsPriv(PRIV_GM) )
+			return false;
+	}
+
+	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Gate_Travel);
+	ASSERT(pSpellDef);
+	int iDuration = pSpellDef->m_Duration.GetLinear(0);
+
+	CItem *pGate = CItem::CreateBase(pSpellDef->m_idEffect);
+	ASSERT(pGate);
+	pGate->m_uidLink = GetUID();
+	pGate->SetType(IT_TELEPAD);
+	pGate->SetAttr(ATTR_MAGIC|ATTR_MOVE_NEVER|ATTR_CAN_DECAY);
+	pGate->SetHue(static_cast<HUE_TYPE>(pAreaDest->IsGuarded() ? HUE_DEFAULT : HUE_RED));
+	pGate->m_itTelepad.m_pntMark = ptNew;
+	pGate->MoveToDecay(GetTopPoint(), iDuration);
+	pGate->Effect(EFFECT_OBJ, ITEMID_MOONGATE_FX_BLUE, pGate, 2);
+	pGate->Sound(pSpellDef->m_sound);
+
+	pGate = CItem::CreateDupeItem(pGate);
+	ASSERT(pGate);
+	pGate->SetHue(static_cast<HUE_TYPE>((m_pArea && m_pArea->IsGuarded()) ? HUE_DEFAULT : HUE_RED));
+	pGate->m_itTelepad.m_pntMark = GetTopPoint();
+	pGate->MoveToDecay(ptNew, iDuration);
+	pGate->Effect(EFFECT_OBJ, ITEMID_MOONGATE_FX_BLUE, pGate, 2);
+	pGate->Sound(pSpellDef->m_sound);
+
+	SysMessageDefault(DEFMSG_SPELL_GATE_OPEN);
+	return true;
+}
+
 CChar *CChar::Spell_Summon(CREID_TYPE id, CPointMap pntTarg)
 {
 	ADDTOCALLSTACK("CChar::Spell_Summon");
@@ -248,89 +325,75 @@ CChar *CChar::Spell_Summon(CREID_TYPE id, CPointMap pntTarg)
 	return pChar;
 }
 
-bool CChar::Spell_Recall(CItem *pRune, bool fGate)
+bool CChar::Spell_Recall(CItem *pTarg, bool bGate)
 {
 	ADDTOCALLSTACK("CChar::Spell_Recall");
-	if ( pRune && (IsTrigUsed(TRIGGER_SPELLEFFECT) || IsTrigUsed(TRIGGER_ITEMSPELL)) )
+	if ( !pTarg )
+		return false;
+
+	if ( IsTrigUsed(TRIGGER_SPELLEFFECT) || IsTrigUsed(TRIGGER_ITEMSPELL) )
 	{
 		CScriptTriggerArgs Args;
-		Args.m_iN1 = fGate ? SPELL_Gate_Travel : SPELL_Recall;
+		Args.m_iN1 = bGate ? SPELL_Gate_Travel : SPELL_Recall;
 
-		if ( pRune->OnTrigger(ITRIG_SPELLEFFECT, this, &Args) == TRIGRET_RET_FALSE )
+		if ( pTarg->OnTrigger(ITRIG_SPELLEFFECT, this, &Args) == TRIGRET_RET_FALSE )
 			return true;
 	}
 
-	if ( !pRune || (!pRune->IsType(IT_RUNE) && !pRune->IsType(IT_TELEPAD)) )
+	if ( pTarg->IsType(IT_RUNE) )
 	{
-		SysMessageDefault(DEFMSG_SPELL_RECALL_NOTRUNE);
-		return false;
-	}
-	if ( !pRune->m_itRune.m_pntMark.IsValidPoint() )
-	{
-		SysMessageDefault(DEFMSG_SPELL_RECALL_BLANK);
-		return false;
-	}
-	if ( pRune->IsType(IT_RUNE) && (pRune->m_itRune.m_Strength <= 0) )
-	{
-		SysMessageDefault(DEFMSG_SPELL_RECALL_FADED);
-		if ( !IsPriv(PRIV_GM) )
-			return false;
-	}
-
-	if ( fGate )
-	{
-		CRegionBase *pArea = pRune->m_itRune.m_pntMark.GetRegion(REGION_TYPE_AREA|REGION_TYPE_MULTI|REGION_TYPE_ROOM);
-		if ( !pArea )
-			return false;
-
-		if ( pArea->IsFlag(REGION_ANTIMAGIC_ALL|REGION_ANTIMAGIC_GATE|REGION_ANTIMAGIC_RECALL_IN|REGION_ANTIMAGIC_RECALL_OUT) )
+		if ( !pTarg->m_itRune.m_pntMark.IsValidPoint() )
 		{
-			SysMessageDefault(DEFMSG_SPELL_GATE_AM);
+			SysMessageDefault(DEFMSG_SPELL_RECALL_RUNENOTMARKED);
+			return false;
+		}
+		else if ( pTarg->m_itRune.m_Charges <= 0 )
+		{
+			SysMessageDefault(DEFMSG_SPELL_RECALL_NOCHARGES);
 			if ( !IsPriv(PRIV_GM) )
 				return false;
 		}
 
-		const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Gate_Travel);
-		ASSERT(pSpellDef);
-		int iDuration = pSpellDef->m_Duration.GetLinear(0);
+		if ( bGate )
+		{
+			if ( !Spell_CreateGate(pTarg->m_itRune.m_pntMark) )
+				return false;
+		}
+		else
+		{
+			if ( !Spell_Teleport(pTarg->m_itRune.m_pntMark, true) )
+				return false;
+		}
 
-		CItem *pGate = CItem::CreateBase(pSpellDef->m_idEffect);
-		ASSERT(pGate);
-		pGate->m_uidLink = GetUID();
-		pGate->SetType(IT_TELEPAD);
-		pGate->SetAttr(ATTR_MAGIC|ATTR_MOVE_NEVER|ATTR_CAN_DECAY);
-		pGate->SetHue(static_cast<HUE_TYPE>(pArea->IsGuarded() ? HUE_DEFAULT : HUE_RED));
-		pGate->m_itTelepad.m_pntMark = pRune->m_itRune.m_pntMark;
-		pGate->MoveToDecay(GetTopPoint(), iDuration);
-		pGate->Effect(EFFECT_OBJ, ITEMID_MOONGATE_FX_BLUE, pGate, 2);
-		pGate->Sound(pSpellDef->m_sound);
-
-		// Far end gate.
-		pGate = CItem::CreateDupeItem(pGate);
-		ASSERT(pGate);
-		pGate->SetHue(static_cast<HUE_TYPE>((m_pArea && m_pArea->IsGuarded()) ? HUE_DEFAULT : HUE_RED));
-		pGate->m_itTelepad.m_pntMark = GetTopPoint();
-		pGate->MoveToDecay(pRune->m_itRune.m_pntMark, iDuration);
-		pGate->Effect(EFFECT_OBJ, ITEMID_MOONGATE_FX_BLUE, pGate, 2);
-		pGate->Sound(pSpellDef->m_sound);
-	}
-	else
-	{
-		if ( !Spell_Teleport(pRune->m_itRune.m_pntMark, true, true) )
-			return false;
-	}
-
-	if ( pRune->IsType(IT_RUNE) )	// wear out the rune
-	{
 		if ( !IsPriv(PRIV_GM) )
-			pRune->m_itRune.m_Strength--;
-		if ( pRune->m_itRune.m_Strength < 10 )
-			SysMessageDefault(DEFMSG_SPELL_RECALL_SFADE);
-		else if ( !pRune->m_itRune.m_Strength )
-			SysMessageDefault(DEFMSG_SPELL_RECALL_FADEC);
+		{
+			pTarg->m_itRune.m_Charges--;
+			pTarg->ResendTooltip();
+		}
+		return true;
+	}
+	else if ( pTarg->IsType(IT_KEY) )
+	{
+		CItemShip *pBoat = dynamic_cast<CItemShip *>(pTarg->m_uidLink.ItemFind());
+		if ( pBoat )
+		{
+			if ( bGate )
+			{
+				SysMessageDefault(DEFMSG_SPELL_GATE_SOMETHINGBLOCKING);
+				return false;
+			}
+			else
+			{
+				CItemContainer *pHatch = pBoat->GetShipHold();
+				if ( !pHatch || !Spell_Teleport(pHatch->GetTopPoint(), true) )
+					return false;
+			}
+			return true;
+		}
 	}
 
-	return true;
+	SysMessageDefault(DEFMSG_SPELL_RECALL_CANTRECALLOBJ);
+	return false;
 }
 
 bool CChar::Spell_Resurrection(CItemCorpse *pCorpse, CChar *pCharSrc, bool bNoFail)

@@ -600,3 +600,9 @@ Changed: Misc improvements on cartography maps packets.
 [systems/]: Added this new folder to store Sphere default systems
 [systems/sphere_system_treasure_maps.scp]: Added new treasure maps system. The script got entirely redone, now easy to customize and updated with latest OSI features
 [spheretables.scp]: Added scripts/systems/ folder on RESOURCES list
+
+30-05-2017, Coruja
+Changed: Misc improvements on spells Recall, Gate Travel and Mark
+	-Recall now can be used on ship keys to recall to boats
+	-Gate Travel now will fail if there's already another moongate/teleport on the same spot where moongates will be created
+[sphere_msgs.scp]: Updated messages 'spell_gate_*', 'spell_recall_*' and 'spell_mark_*'

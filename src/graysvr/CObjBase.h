@@ -762,7 +762,7 @@ public:
 		// IT_RUNE
 		struct
 		{
-			int m_Strength;			// more1 = How many uses til a rune will wear out ?
+			int m_Charges;			// more1 = How many uses til a rune will wear out ?
 			DWORD m_junk2;
 			CPointBase m_pntMark;	// morep = rune marked to a location or a teleport ?
 		} m_itRune;
@@ -3704,7 +3704,7 @@ private:
 
 	void Spell_Dispel(int iskilllevel);
 	CChar *Spell_Summon(CREID_TYPE id, CPointMap pt);
-	bool Spell_Recall(CItem *pRune, bool fGate);
+	bool Spell_Recall(CItem *pTarg, bool bGate);
 	CItem *Spell_Effect_Create(SPELL_TYPE spell, LAYER_TYPE layer, int iSkillLevel, int iDuration, CObjBase *pSrc = NULL, bool bEquip = true);
 	bool Spell_Equip_OnTick(CItem *pItem);
 
@@ -3722,6 +3722,7 @@ public:
 	bool OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, CItem * pSourceItem, bool bReflecting = false );
 	bool Spell_Resurrection(CItemCorpse * pCorpse = NULL, CChar * pCharSrc = NULL, bool bNoFail = false);
 	bool Spell_Teleport( CPointMap pt, bool bTakePets = false, bool bCheckAntiMagic = true, bool bDisplayEffect = true, ITEMID_TYPE iEffect = ITEMID_NOTHING, SOUND_TYPE iSound = SOUND_NONE );
+	bool Spell_CreateGate( CPointMap pt, bool bCheckAntiMagic = true );
 	bool Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool fFailMsg, bool fCheckAntiMagic = true );
 	int	GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, CChar * pCharSrc = NULL );
 	
