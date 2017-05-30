@@ -951,15 +951,13 @@ enum INPVAL_STYLE	// for the various styles for InpVal box.
 
 enum MAPCMD_TYPE
 {
-	MAP_ADD = 1,
-	MAP_PIN = 1,
-	MAP_INSERT = 2,
-	MAP_MOVE = 3,
-	MAP_DELETE = 4,
-	MAP_UNSENT = 5,
-	MAP_CLEAR = 5,
-	MAP_TOGGLE = 6,
-	MAP_SENT = 7
+	MAPCMD_AddPin				= 0x1,
+	MAPCMD_InsertPin			= 0x2,
+	MAPCMD_MovePin				= 0x3,
+	MAPCMD_RemovePin			= 0x4,
+	MAPCMD_ClearPins			= 0x5,
+	MAPCMD_ToggleEdit_Request	= 0x6,
+	MAPCMD_ToggleEdit_Reply		= 0x7
 };
 
 enum MAPWAYPOINT_TYPE
@@ -1054,7 +1052,7 @@ enum NOTO_TYPE
 #define MINCLIVER_BUFFS				5000202	// minimum client to receive buff packets (5.0.2b)
 #define MINCLIVER_NEWCONTEXTMENU	6000000	// minimun client to receive 0xBF.0x14.0x02 packet instead of 0xBF.0x14.0x01 (6.0.0.0)
 #define MINCLIVER_EXTRAFEATURES		6001402	// minimum client to receive 4-byte feature mask (6.0.14.2)
-#define MINCLIVER_NEWMAPDISPLAY		7001300	// minimum client to receive 0xF5 packet (7.0.13.0)
+#define MINCLIVER_NEWMAPDISPLAY		7000800	// minimum client to receive 0xF5 packet (7.0.8.0)
 #define MINCLIVER_EXTRASTARTINFO 	7001300	// minimum client to receive extra start info (7.0.13.0)
 #define MINCLIVER_NEWMOBINCOMING	7003301	// minimun client to receive 0x78 packet (7.0.33.1)
 

@@ -591,5 +591,12 @@ Changed: Updated internal SQLite libs v3.18.0 to v3.19.2.
 [maps/sphere_map0_hs.scp]: Renamed region 'Wreck of the Ararat' to 'Underwater World'
 [maps/sphere_map3.scp]: Added missing region 'Gravewater Lake'
 [maps/sphere_map5.scp]: Fixed 'Royal City' region RECT
-[maps/sphere_map_points5.scp]: Removed moongate def 'mg_valley_of_eodon' (it got moved to the script above)
+[maps/sphere_map_points5.scp]: Removed moongate def 'mg_valley_of_eodon' (it got moved to the script below)
 [maps/sphere_map_points5_tol.scp]: Added moongate def 'mg_valley_of_eodon'
+
+29-05-2017, Coruja
+Changed: Misc improvements on cartography maps packets.
+[items/sphere_item_treasure_maps.scp]: File removed (this old system got replaced by the new system below)
+[systems/]: Added this new folder to store Sphere default systems
+[systems/sphere_system_treasure_maps.scp]: Added new treasure maps system. The script got entirely redone, now easy to customize and updated with latest OSI features
+[spheretables.scp]: Added scripts/systems/ folder on RESOURCES list

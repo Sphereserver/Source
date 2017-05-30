@@ -1158,86 +1158,77 @@ bool PacketMapEdit::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketMapEdit::onReceive");
 
-	CGrayUID mapSerial(readInt32());
+	CGrayUID mapSerial = readInt32();
 	MAPCMD_TYPE action = static_cast<MAPCMD_TYPE>(readByte());
 	BYTE pin = readByte();
 	WORD x = readInt16();
 	WORD y = readInt16();
 
-	CClient* client = net->m_client;
+	CClient *client = net->m_client;
 	ASSERT(client);
-	const CChar* character = client->GetChar();
-	if (!character)
+	const CChar *character = client->GetChar();
+	if ( !character )
 		return false;
 
-	CItemMap* map = dynamic_cast<CItemMap*>(mapSerial.ItemFind());
-	if (!map || !character->CanTouch(map)) // sanity check
+	CItemMap *map = static_cast<CItemMap *>(mapSerial.ItemFind());
+	if ( !map || !character->CanTouch(map) )
 	{
-		client->SysMessage("You can't reach it");
-		return true;
+		client->SysMessageDefault(DEFMSG_REACH_FAIL);
+		return false;
 	}
 
-	if (map->m_itMap.m_fPinsGlued)
+	if ( map->m_itMap.m_fPinsGlued && !client->IsPriv(PRIV_GM) )
 	{
-		client->SysMessage("The pins seem to be glued in place");
-		if (!client->IsPriv(PRIV_GM))
-			return true;
+		client->SysMessageDefault(DEFMSG_CANT_MAKE);
+		return false;
 	}
 
-	// NOTE: while in edit mode, right click canceling of the
-	// dialog sends the same msg as
-	// request to edit in either mode...strange huh?
-	switch (action)
+	switch ( action )
 	{
-		case MAP_ADD: // add pin
+		case MAPCMD_AddPin:
 		{
-			if (map->m_Pins.GetCount() > CItemMap::MAX_PINS)
-				return true;
-
-			CMapPinRec mapPin(x, y);
-			map->m_Pins.Add(mapPin);
-		} break;
-
-		case MAP_INSERT: // insert between 2 pins
+			if ( map->m_Pins.GetCount() < CItemMap::MAX_PINS )
+			{
+				CMapPinRec mapPin(x, y);
+				map->m_Pins.Add(mapPin);
+			}
+			break;
+		}
+		case MAPCMD_InsertPin:
 		{
-			if (map->m_Pins.GetCount() > CItemMap::MAX_PINS)
-				return true;
-
-			CMapPinRec mapPin(x, y);
-			map->m_Pins.InsertAt(pin, mapPin);
-		} break;
-
-		case MAP_MOVE: // move pin
-			if (pin >= map->m_Pins.GetCount())
+			if ( map->m_Pins.GetCount() < CItemMap::MAX_PINS )
 			{
-				client->SysMessage("That's strange... (bad pin)");
-				return true;
+				CMapPinRec mapPin(x, y);
+				map->m_Pins.InsertAt(pin, mapPin);
 			}
-			map->m_Pins[pin].m_x = x;
-			map->m_Pins[pin].m_y = y;
 			break;
-
-		case MAP_DELETE: // delete pin
-			if (pin >= map->m_Pins.GetCount())
+		}
+		case MAPCMD_MovePin:
+		{
+			if ( pin < map->m_Pins.GetCount() )
 			{
-				client->SysMessage("That's strange... (bad pin)");
-				return true;
+				map->m_Pins[pin].m_x = x;
+				map->m_Pins[pin].m_y = y;
 			}
-			map->m_Pins.RemoveAt(pin);
 			break;
-
-		case MAP_CLEAR: // clear all pins
+		}
+		case MAPCMD_RemovePin:
+		{
+			if ( pin < map->m_Pins.GetCount() )
+				map->m_Pins.RemoveAt(pin);
+			break;
+		}
+		case MAPCMD_ClearPins:
+		{
 			map->m_Pins.RemoveAll();
 			break;
-
-		case MAP_TOGGLE: // edit req/cancel
-			client->addMapMode(map, MAP_SENT, !map->m_fPlotMode);
+		}
+		case MAPCMD_ToggleEdit_Request:
+		{
+			client->addMapMode(map, MAPCMD_ToggleEdit_Reply, !map->m_fPlotMode);
 			break;
-
-		default:
-			break;
+		}
 	}
-
 	return true;
 }
 

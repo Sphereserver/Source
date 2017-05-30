@@ -1956,12 +1956,11 @@ public:
 
 struct CMapPinRec // Pin on a map
 {
-	short m_x;
-	short m_y;
+	WORD m_x;
+	WORD m_y;
 
 public:
-	CMapPinRec( short x, short y )
-		: m_x(x), m_y(y)
+	CMapPinRec(WORD x, WORD y) : m_x(x), m_y(y)
 	{
 	}
 };
