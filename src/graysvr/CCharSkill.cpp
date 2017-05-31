@@ -547,13 +547,6 @@ WORD CChar::Skill_GetMax( SKILL_TYPE skill, bool ignoreLock ) const
 	{
 		const CSkillClassDef *pSkillClass = m_pPlayer->GetSkillClass();
 		ASSERT(pSkillClass);
-
-		if ( skill == static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill) )
-		{
-			pTagStorage = GetKey("OVERRIDE.SKILLSUM", true);
-			return pTagStorage ? static_cast<WORD>(pTagStorage->GetValNum()) : static_cast<WORD>(pSkillClass->m_SkillSumMax);
-		}
-
 		ASSERT(IsSkillBase(skill));
 
 		sprintf(sSkillName, "OVERRIDE.SKILLCAP_%d", static_cast<int>(skill));
@@ -590,6 +583,20 @@ WORD CChar::Skill_GetMax( SKILL_TYPE skill, bool ignoreLock ) const
 
 		return iSkillMax;
 	}
+}
+
+DWORD CChar::Skill_GetSumMax() const
+{
+	ADDTOCALLSTACK("CChar::Skill_GetSumMax");
+	const CVarDefCont *pTagStorage = GetKey("OVERRIDE.SKILLSUM", true);
+	if ( pTagStorage )
+		return static_cast<DWORD>(pTagStorage->GetValNum());
+
+	const CSkillClassDef *pSkillClass = m_pPlayer->GetSkillClass();
+	if ( pSkillClass )
+		return pSkillClass->m_SkillSumMax;
+
+	return 0;
 }
 
 void CChar::Skill_Decay()
@@ -667,7 +674,7 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 			iSkillSum += Skill_GetBase(static_cast<SKILL_TYPE>(i));
 
-		if ( iSkillSum >= Skill_GetMax(static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill)) )
+		if ( iSkillSum >= Skill_GetSumMax() )
 			difficulty = 0;
 	}
 
@@ -709,10 +716,10 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 	if ( iChance <= 0 )
 		return;
 
-	int iRoll = Calc_GetRandVal(1000);
 	if ( iSkillLevelFixed < static_cast<WORD>(iSkillMax) )	// are we in position to gain skill ?
 	{
 		// slightly more chance of decay than gain
+		int iRoll = Calc_GetRandVal(1000);
 		if ( (iRoll * 3) <= (iChance * 4) )
 			Skill_Decay();
 

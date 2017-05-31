@@ -606,3 +606,6 @@ Changed: Misc improvements on spells Recall, Gate Travel and Mark
 	-Recall now can be used on ship keys to recall to boats
 	-Gate Travel now will fail if there's already another moongate/teleport on the same spot where moongates will be created
 [sphere_msgs.scp]: Updated messages 'spell_gate_*', 'spell_recall_*' and 'spell_mark_*'
+
+31-05-2017, Coruja
+Fixed: Skillgain not working correctly when SKILLSUM value is > 6553.5 on sphere_skills.scp.

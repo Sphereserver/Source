@@ -3610,11 +3610,10 @@ public:
 		return m_Skill[skill];
 	}
 	WORD Skill_GetMax( SKILL_TYPE skill, bool ignoreLock = false ) const;
-	SKILLLOCK_TYPE Skill_GetLock( SKILL_TYPE skill ) const
+	DWORD Skill_GetSumMax() const;
+	SKILLLOCK_TYPE Skill_GetLock(SKILL_TYPE skill) const
 	{
-		if ( !m_pPlayer )
-			return SKILLLOCK_UP;
-		return m_pPlayer->Skill_GetLock(skill);
+		return m_pPlayer ? m_pPlayer->Skill_GetLock(skill) : SKILLLOCK_UP;
 	}
 	WORD Skill_GetAdjusted(SKILL_TYPE skill) const;
 	SKILL_TYPE Skill_GetMagicRandom(WORD iMinValue = 0);

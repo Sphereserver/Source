@@ -482,7 +482,7 @@ WORD CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 
 	// Train npc skill cap
 	WORD iMaxDecrease = 0;
-	if ( (pCharSrc->GetSkillTotal() + iTrainVal) > pCharSrc->Skill_GetMax(static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill)) )
+	if ( (pCharSrc->GetSkillTotal() + iTrainVal) > pCharSrc->Skill_GetSumMax() )
 	{	
 		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 		{
@@ -572,7 +572,7 @@ bool CChar::NPC_TrainSkill( CChar * pCharSrc, SKILL_TYPE skill, WORD toTrain )
 {
 	ADDTOCALLSTACK("CChar::NPC_TrainSkill");
 	WORD iTrain = toTrain;
-	if ( (pCharSrc->GetSkillTotal() + toTrain) > pCharSrc->Skill_GetMax(static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill)) )
+	if ( (pCharSrc->GetSkillTotal() + toTrain) > pCharSrc->Skill_GetSumMax() )
 	{	
 		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 		{
