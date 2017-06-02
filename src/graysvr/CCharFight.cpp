@@ -3111,7 +3111,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( pCharTarg->IsPriv(PRIV_DETAIL) )
 			pCharTarg->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_MISSO), GetName());
 
-		Sound(pWeapon->Weapon_GetSoundMiss(skill));
+		Sound(pWeapon->Weapon_GetSoundMiss());
 		return WAR_SWING_EQUIPPING;
 	}
 

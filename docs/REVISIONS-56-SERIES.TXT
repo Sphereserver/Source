@@ -609,3 +609,8 @@ Changed: Misc improvements on spells Recall, Gate Travel and Mark
 
 31-05-2017, Coruja
 Fixed: Skillgain not working correctly when SKILLSUM value is > 6553.5 on sphere_skills.scp.
+
+02-06-2017, Coruja
+Changed: Misc fixes and improvements on training items (Training Dummy, Pickpocket Dip and Archery Butte)
+[items\sphere_item_profession.scp]: Added CAN=can_i_dcignoredist on item 'i_archery_butte' and fixed 'i_pickpocket_dip' using wrong ID
+[sphere_msgs.scp]: Replaced messages 'itemuse_archb_*' with 'itemuse_archbutte_*', 'itemuse_pdummy_*' with 'itemuse_pickpocket_*', 'itemuse_tdummy_*' with 'itemuse_trainingdummy_*'

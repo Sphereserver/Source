@@ -242,118 +242,113 @@ bool CChar::Use_Train_Dummy( CItem * pItem, bool fSetup )
 	ADDTOCALLSTACK("CChar::Use_Train_Dummy");
 	// IT_TRAIN_DUMMY
 	// Dummy animation timer prevents over dclicking.
-
 	ASSERT(pItem);
+
+	if ( !pItem->IsTopLevel() || (GetDist(pItem) > 1) )
+	{
+		SysMessageDefault(DEFMSG_ITEMUSE_TRAININGDUMMY_TOOFAR);
+		return false;
+	}
+	else if ( IsStatFlag(STATF_OnHorse) )
+	{
+		SysMessageDefault(DEFMSG_ITEMUSE_TRAININGDUMMY_MOUNT);
+		return false;
+	}
+
 	SKILL_TYPE skill = Fight_GetWeaponSkill();
-	if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )		// do not allow archery training on dummys
+	if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
 	{
-		SysMessageDefault(DEFMSG_ITEMUSE_TDUMMY_ARCH);
+		SysMessageDefault(DEFMSG_ITEMUSE_TRAININGDUMMY_RANGED);
 		return false;
 	}
 
-	char skilltag[32];
-	sprintf(skilltag, "OVERRIDE.PracticeMax.SKILL_%d", skill &~0xD2000000);
-	CVarDefCont *pSkillTag = pItem->GetKey(skilltag, true);
-	WORD iMaxSkill = pSkillTag ? static_cast<WORD>(pSkillTag->GetValNum()) : g_Cfg.m_iSkillPracticeMax;
-
-	if ( Skill_GetBase(skill) > iMaxSkill )
-	{
-		SysMessageDefault(DEFMSG_ITEMUSE_TDUMMY_SKILL);
-		return false;
-	}
-	if ( !pItem->IsTopLevel() )
-	{
-	baddumy:
-		SysMessageDefault(DEFMSG_ITEMUSE_TDUMMY_P);
-		return false ;
-	}
-
-	// Check location
-	int dx = GetTopPoint().m_x - pItem->GetTopPoint().m_x;
-	int dy = GetTopPoint().m_y - pItem->GetTopPoint().m_y;
-
-	if ( pItem->GetDispID() == ITEMID_DUMMY1 )
-	{
-		if ( !(!dx && abs(dy) < 2) )
-			goto baddumy;
-	}
-	else
-	{
-		if ( !(!dy && abs(dx) < 2) )
-			goto baddumy;
-	}
-
+	// Start action
 	if ( fSetup )
 	{
 		if ( Skill_GetActive() == NPCACT_TRAINING )
 			return true;
+
+		char skilltag[32];
+		sprintf(skilltag, "OVERRIDE.PracticeMax.SKILL_%d", skill & ~0xD2000000);
+		CVarDefCont *pSkillTag = pItem->GetKey(skilltag, true);
+		WORD iMaxSkill = pSkillTag ? static_cast<WORD>(pSkillTag->GetValNum()) : g_Cfg.m_iSkillPracticeMax;
+		if ( Skill_GetBase(skill) > iMaxSkill )
+		{
+			SysMessageDefault(DEFMSG_ITEMUSE_TRAININGDUMMY_SKILL);
+			return false;
+		}
+
 		UpdateAnimate(ANIM_ATTACK_WEAPON);
 		m_Act_TargPrv = m_uidWeapon;
 		m_Act_Targ = pItem->GetUID();
 		Skill_Start(NPCACT_TRAINING);
+		return true;
 	}
-	else
-	{
-		static const SOUND_TYPE sm_TrainingDummySounds[] = { 0x3A4, 0x3A6, 0x3A9, 0x3AE, 0x3B4, 0x3B6 };
-		pItem->Sound(sm_TrainingDummySounds[Calc_GetRandVal(COUNTOF(sm_TrainingDummySounds))]);
-		pItem->SetAnim(static_cast<ITEMID_TYPE>(pItem->GetID() + 1), 3 * TICK_PER_SEC);
-		Skill_UseQuick(skill, Calc_GetRandVal(40));
-	}
+
+	// Finish action
+	if ( Skill_GetActive() != NPCACT_TRAINING )
+		return false;
+
+	static const SOUND_TYPE sm_TrainingDummySounds[] = { 0x3A4, 0x3A6, 0x3A9, 0x3AE, 0x3B4, 0x3B6 };
+	pItem->Sound(sm_TrainingDummySounds[Calc_GetRandVal(COUNTOF(sm_TrainingDummySounds))]);
+	pItem->SetAnim(static_cast<ITEMID_TYPE>(pItem->GetDispID() + 1), 3 * TICK_PER_SEC);
+	Skill_Experience(skill, Calc_GetRandVal(40));
 	return true;
 }
 
-bool CChar::Use_Train_PickPocketDip( CItem *pItem, bool fSetup )
+bool CChar::Use_Train_PickPocketDip( CItem * pItem, bool fSetup )
 {
 	ADDTOCALLSTACK("CChar::Use_Train_PickPocketDip");
 	// IT_TRAIN_PICKPOCKET
 	// Train dummy.
-
 	ASSERT(pItem);
-	if ( Skill_GetBase(SKILL_STEALING) > g_Cfg.m_iSkillPracticeMax )
+
+	if ( !pItem->IsTopLevel() || (GetDist(pItem) > 1) )
 	{
-		SysMessageDefault(DEFMSG_ITEMUSE_PDUMMY_SKILL);
+		SysMessageDefault(DEFMSG_ITEMUSE_PICKPOCKET_TOOFAR);
 		return true;
 	}
-	if ( !pItem->IsTopLevel() )
+	else if ( IsStatFlag(STATF_OnHorse) )
 	{
-	badpickpocket:
-		SysMessageDefault(DEFMSG_ITEMUSE_PDUMMY_P);
-		return true;
+		SysMessageDefault(DEFMSG_ITEMUSE_PICKPOCKET_MOUNT);
+		return false;
 	}
 
-	int dx = GetTopPoint().m_x - pItem->GetTopPoint().m_x;
-	int dy = GetTopPoint().m_y - pItem->GetTopPoint().m_y;
-
-	bool fNS = (pItem->GetDispID() == ITEMID_PICKPOCKET_NS || pItem->GetDispID() == ITEMID_PICKPOCKET_NS2);
-	if ( fNS )
-	{
-		if ( !(!dx && abs(dy) < 2) )
-			goto badpickpocket;
-	}
-	else
-	{
-		if ( !(!dy && abs(dx) < 2) )
-			goto badpickpocket;
-	}
-
+	// Start action
 	if ( fSetup )
 	{
 		if ( Skill_GetActive() == NPCACT_TRAINING )
 			return true;
+
+		if ( Skill_GetBase(SKILL_STEALING) > g_Cfg.m_iSkillPracticeMax )
+		{
+			SysMessageDefault(DEFMSG_ITEMUSE_PICKPOCKET_SKILL);
+			return true;
+		}
+
 		m_Act_TargPrv = m_uidWeapon;
 		m_Act_Targ = pItem->GetUID();
 		Skill_Start(NPCACT_TRAINING);
+		return true;
 	}
-	else if ( !Skill_UseQuick(SKILL_STEALING, Calc_GetRandVal(40)) )
+
+	// Finish action
+	if ( Skill_GetActive() != NPCACT_TRAINING )
+		return false;
+
+	pItem->Sound(SOUND_RUSTLE);
+	if ( Skill_UseQuick(SKILL_STEALING, Calc_GetRandVal(40)) )
 	{
-		pItem->Sound(SOUND_RUSTLE);
-		pItem->Sound(SOUND_GLASS_BREAK4);
-		pItem->SetAnim(fNS ? ITEMID_PICKPOCKET_NS_FX : ITEMID_PICKPOCKET_EW_FX, 3 * TICK_PER_SEC);
-		UpdateAnimate(ANIM_ATTACK_WEAPON);
+		SysMessageDefault(DEFMSG_ITEMUSE_PICKPOCKET_SUCCESS);
+		pItem->SetAnim(pItem->GetDispID(), 3 * TICK_PER_SEC);
 	}
 	else
-		SysMessageDefault(DEFMSG_ITEMUSE_PDUMMY_OK);
-
+	{
+		SysMessageDefault(DEFMSG_ITEMUSE_PICKPOCKET_FAIL);
+		pItem->Sound(SOUND_GLASS_BREAK4);
+		pItem->SetAnim(static_cast<ITEMID_TYPE>(pItem->GetDispID() + 1), 3 * TICK_PER_SEC);
+	}
+	Skill_Experience(SKILL_STEALING, Calc_GetRandVal(40));
 	return true;
 }
 
@@ -363,109 +358,87 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 	// IT_ARCHERY_BUTTE
 	ASSERT(pButte);
 
-	ITEMID_TYPE AmmoID;
-	if ( GetDist(pButte) < 2 )		// if we are standing right next to the butte, retrieve the arrows/bolts
+	// If standing right next to the butte, gather the arrows/bolts
+	int iDist = GetDist(pButte);
+	if ( (iDist < 2) && pButte->m_itArcheryButte.m_AmmoCount )
 	{
-		if ( pButte->m_itArcheryButte.m_AmmoCount == 0 )
-		{
-			SysMessageDefault(DEFMSG_ITEMUSE_ARCHB_EMPTY);
-			return true;
-		}
+		CItem *pRemovedAmmo = CItem::CreateBase(pButte->m_itArcheryButte.m_AmmoType);
+		ASSERT(pRemovedAmmo);
+		pRemovedAmmo->SetAmount(pButte->m_itArcheryButte.m_AmmoCount);
+		ItemBounce(pRemovedAmmo, false);
+		SysMessageDefault(DEFMSG_ITEMUSE_ARCHBUTTE_GATHER);
 
-		AmmoID = pButte->m_itArcheryButte.m_AmmoType;
-		CItemBase *pAmmoDef = CItemBase::FindItemBase(AmmoID);
-		if ( pAmmoDef )
-		{
-			TCHAR *pszMsg = Str_GetTemp();
-			sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHB_REM), pAmmoDef->GetName(), (pButte->m_itArcheryButte.m_AmmoCount == 1) ? "" : g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHB_REMS));
-			Emote(pszMsg);
-
-			CItem *pRemovedAmmo = CItem::CreateBase(AmmoID);
-			ASSERT(pRemovedAmmo);
-			pRemovedAmmo->SetAmount(pButte->m_itArcheryButte.m_AmmoCount);
-			ItemBounce(pRemovedAmmo);
-		}
-
-		// Clear the target
 		pButte->m_itArcheryButte.m_AmmoType = ITEMID_NOTHING;
 		pButte->m_itArcheryButte.m_AmmoCount = 0;
 		return true;
 	}
 
-	SKILL_TYPE skill = Fight_GetWeaponSkill();
+	CItem *pWeapon = m_uidWeapon.ItemFind();
+	SKILL_TYPE skill = pWeapon ? pWeapon->Weapon_GetSkill() : SKILL_NONE;
 	if ( !g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
 	{
-		SysMessageDefault(DEFMSG_ITEMUSE_ARCHB_WS);
-		return true;
-	}
-	if ( Skill_GetBase(skill) > g_Cfg.m_iSkillPracticeMax )
-	{
-		SysMessageDefault(DEFMSG_ITEMUSE_ARCHB_SKILL);
+		SysMessageDefault(DEFMSG_ITEMUSE_ARCHBUTTE_RANGED);
 		return true;
 	}
 
-	// Make sure we have some ammo
-	CItem *pWeapon = m_uidWeapon.ItemFind();
-	ASSERT(pWeapon);
-	const CItemBase *pWeaponDef = pWeapon->Item_GetDef();
-
-	// Determine ammo type
-	CVarDefCont *pVarAmmoType = pWeapon->GetDefKey("AMMOTYPE", true);
-	RESOURCE_ID_BASE rid;
-	LPCTSTR t_Str;
-
-	if ( pVarAmmoType )
+	// Check distance
+	if ( iDist < 5 )
 	{
-		t_Str = pVarAmmoType->GetValStr();
-		rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, t_Str));
+		SysMessageDefault(DEFMSG_ITEMUSE_ARCHBUTTE_TOOCLOSE);
+		return false;
+	}
+	else if ( iDist > 6 )
+	{
+		SysMessageDefault(DEFMSG_ITEMUSE_ARCHBUTTE_TOOFAR);
+		return false;
+	}
+
+	// Check position alignment
+	CPointMap ptChar = GetTopPoint();
+	CPointMap ptButte = pButte->GetTopPoint();
+	if ( pButte->GetID() == ITEMID_ARCHERYBUTTE_S )
+	{
+		if ( ptChar.m_x != ptButte.m_x )
+		{
+			SysMessageDefault(DEFMSG_ITEMUSE_ARCHBUTTE_WRONGALIGN);
+			return false;
+		}
+		else if ( ptChar.m_y > ptButte.m_y )
+		{
+			SysMessageDefault(DEFMSG_ITEMUSE_ARCHBUTTE_WRONGPOS);
+			return false;
+		}
 	}
 	else
 	{
-		rid = pWeaponDef->m_ttWeaponBow.m_idAmmo;
-	}
-	AmmoID = static_cast<ITEMID_TYPE>(rid.GetResIndex());
-
-	// If there is a different ammo type on the butte currently, tell us to remove the current type first
-	if ( (pButte->m_itArcheryButte.m_AmmoType != ITEMID_NOTHING) && (pButte->m_itArcheryButte.m_AmmoType != AmmoID) )
-	{
-		SysMessageDefault(DEFMSG_ITEMUSE_ARCHB_X);
-		return true;
-	}
-
-	// We need to be correctly aligned with the target before we can use it
-	// For the south facing butte, we need to have the same X value and a Y > 2
-	// For the east facing butte, we need to have the same Y value and an X > 2
-	if ( !pButte->IsTopLevel() )
-	{
-	badalign:
-		SysMessageDefault(DEFMSG_ITEMUSE_ARCHB_P);
-		return true;
+		if ( ptChar.m_y != ptButte.m_y )
+		{
+			SysMessageDefault(DEFMSG_ITEMUSE_ARCHBUTTE_WRONGALIGN);
+			return false;
+		}
+		else if ( ptChar.m_x < ptButte.m_x )
+		{
+			SysMessageDefault(DEFMSG_ITEMUSE_ARCHBUTTE_WRONGPOS);
+			return false;
+		}
 	}
 
-	int targDistX = GetTopPoint().m_x - pButte->GetTopPoint().m_x;
-	int targDistY = GetTopPoint().m_y - pButte->GetTopPoint().m_y;
-
-	if ( (pButte->GetID() == ITEMID_ARCHERYBUTTE_S) || (pButte->GetID() == ITEMID_MONGBATTARGET_S) )
-	{
-		if ( !(targDistX == 0 && targDistY > 2) )
-			goto badalign;
-	}
-	else
-	{
-		if ( !(targDistY == 0 && targDistX > 2) )
-			goto badalign;
-	}
-
-	if ( !CanSeeLOS(pButte, LOS_NB_WINDOWS) )	//we should be able to shoot through a window
-	{
-		SysMessageDefault(DEFMSG_ITEMUSE_ARCHB_BLOCK);
-		return true;
-	}
-
+	// Start action
 	if ( fSetup )
 	{
-		if ( Skill_GetActive() == NPCACT_TRAINING )
+		if ( (Skill_GetActive() == NPCACT_TRAINING) || (m_atFight.m_Swing_NextAction > CServTime::GetCurrentTime()) )
 			return true;
+
+		char skilltag[32];
+		sprintf(skilltag, "OVERRIDE.PracticeMax.SKILL_%d", skill & ~0xD2000000);
+		CVarDefCont *pSkillTag = pButte->GetKey(skilltag, true);
+		WORD iMaxSkill = pSkillTag ? static_cast<WORD>(pSkillTag->GetValNum()) : g_Cfg.m_iSkillPracticeMax;
+		if ( Skill_GetBase(skill) > iMaxSkill )
+		{
+			SysMessageDefault(DEFMSG_ITEMUSE_ARCHBUTTE_SKILL);
+			return false;
+		}
+
 		UpdateAnimate(ANIM_ATTACK_WEAPON);
 		m_Act_TargPrv = m_uidWeapon;
 		m_Act_Targ = pButte->GetUID();
@@ -473,115 +446,52 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 		return true;
 	}
 
-	CVarDefCont *pCont = pWeapon->GetDefKey("AMMOCONT",true);
+	// Finish action
+	if ( Skill_GetActive() != NPCACT_TRAINING )
+		return false;
 
-	if ( m_pPlayer && AmmoID )
+	CItem *pAmmo = pWeapon->Weapon_FindRangedAmmo();
+	if ( !pAmmo )
 	{
-		DWORD iFound = 1;
-		if ( pCont )
-		{
-			//check for UID
-			CGrayUID uidCont = static_cast<CGrayUID>(pCont->GetValNum());
-			CItemContainer *pNewCont = dynamic_cast<CItemContainer *>(uidCont.ItemFind());
-			if ( !pNewCont )	//if no UID, check for ITEMID_TYPE
-			{
-				t_Str = pCont->GetValStr();
-				RESOURCE_ID_BASE rContid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, t_Str));
-				ITEMID_TYPE ContID = static_cast<ITEMID_TYPE>(rContid.GetResIndex());
-				if ( ContID )
-					pNewCont = dynamic_cast<CItemContainer *>(ContentFind(rContid));
-			}
-
-			if ( pNewCont )
-				iFound = pNewCont->ContentConsume(RESOURCE_ID(RES_ITEMDEF, AmmoID));
-			else
-				iFound = ContentConsume(RESOURCE_ID(RES_ITEMDEF, AmmoID));
-		}
-		else
-			iFound = ContentConsume(RESOURCE_ID(RES_ITEMDEF, AmmoID));
-		if ( iFound )
-		{
-			SysMessageDefault(DEFMSG_ITEMUSE_ARCHB_NOAMMO);
-			return true;
-		}
+		SysMessageDefault(DEFMSG_COMBAT_ARCH_NOAMMO);
+		return false;
 	}
 
-	// OK...go ahead and fire at the target
-	// Check the skill
-	bool fSuccess = Skill_UseQuick(skill, Calc_GetRandVal(40));
-
-	// determine animation parameters
-	CVarDefCont *pVarAnim = pWeapon->GetDefKey("AMMOANIM", true);
-	CVarDefCont *pVarAnimColor = pWeapon->GetDefKey("AMMOANIMHUE", true);
-	CVarDefCont *pVarAnimRender = pWeapon->GetDefKey("AMMOANIMRENDER", true);
-	ITEMID_TYPE AmmoAnim;
-	DWORD AmmoHue = pVarAnimColor ? static_cast<DWORD>(pVarAnimColor->GetValNum()) : 0;
-	DWORD AmmoRender = pVarAnimRender ? static_cast<DWORD>(pVarAnimRender->GetValNum()) : 0;
-
-	if ( pVarAnim )
+	// If there is a different ammo type on the butte, it must be removed first
+	LPCTSTR pszButteAmmo = g_Cfg.ResourceGetName(RESOURCE_ID(RES_ITEMDEF, pButte->m_itArcheryButte.m_AmmoType));
+	RESOURCE_ID rid = g_Cfg.ResourceGetID(RES_ITEMDEF, pszButteAmmo);
+	ITEMID_TYPE ButteAmmoID = static_cast<ITEMID_TYPE>(rid.GetResIndex());
+	ITEMID_TYPE WeaponAmmoID = pAmmo->GetID();
+	if ( ButteAmmoID && (ButteAmmoID != WeaponAmmoID) )
 	{
-		t_Str = pVarAnim->GetValStr();
-		rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, t_Str));
-		AmmoAnim = static_cast<ITEMID_TYPE>(rid.GetResIndex());
+		SysMessageDefault(DEFMSG_ITEMUSE_ARCHBUTTE_CLEAN);
+		return false;
 	}
-	else
-		AmmoAnim = static_cast<ITEMID_TYPE>(pWeaponDef->m_ttWeaponBow.m_idAmmoX.GetResIndex());
 
-	pButte->Effect(EFFECT_BOLT, AmmoAnim, this, 16, 0, false, AmmoHue, AmmoRender);
-	pButte->Sound(SOUND_CROSSBOW);
+	Sound(SOUND_CROSSBOW);
+	Fight_RangedWeaponAnim(pWeapon, pButte);
+	m_atFight.m_Swing_NextAction = CServTime::GetCurrentTime() + (2 * TICK_PER_SEC);
 
-	// Did we destroy the ammo?
-	const CItemBase *pAmmoDef = NULL;
-	if ( AmmoID )
-		pAmmoDef = CItemBase::FindItemBase(AmmoID);
-
-	if ( !fSuccess )
+	if ( Skill_UseQuick(skill, Calc_GetRandVal(40)) )
 	{
-		// Small chance of destroying the ammo
-		if ( pAmmoDef && !Calc_GetRandVal(10) )
-		{
-			TCHAR *pszMsg = Str_GetTemp();
-			sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHB_DEST), pAmmoDef->GetName());
-			Emote(pszMsg, NULL, true);
-			return true;
-		}
-
-		static LPCTSTR const sm_Txt_ArcheryButte_Failure[] =
-		{
-			g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHB_MISS_1),
-			g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHB_MISS_2),
-			g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHB_MISS_3),
-			g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHB_MISS_4)
-		};
-		Emote(sm_Txt_ArcheryButte_Failure[Calc_GetRandVal(COUNTOF(sm_Txt_ArcheryButte_Failure))]);
-	}
-	else
-	{
-		// Very small chance of destroying another arrow
-		if ( pAmmoDef && !Calc_GetRandVal(50) && pButte->m_itArcheryButte.m_AmmoCount )
-		{
-			TCHAR *pszMsg = Str_GetTemp();
-			sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHB_SPLIT), pAmmoDef->GetName());
-			Emote(pszMsg, NULL, true);
-			return true;
-		}
-
 		static LPCTSTR const sm_Txt_ArcheryButte_Success[] =
 		{
-			g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHB_HIT_1),
-			g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHB_HIT_2),
-			g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHB_HIT_3),
-			g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHB_HIT_4)
+			g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHBUTTE_HIT1),
+			g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHBUTTE_HIT2),
+			g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHBUTTE_HIT3),
+			g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHBUTTE_HIT4)
 		};
 		Emote(sm_Txt_ArcheryButte_Success[Calc_GetRandVal(COUNTOF(sm_Txt_ArcheryButte_Success))]);
-	}
-
-	// Update the target
-	if ( AmmoID )
-	{
-		pButte->m_itArcheryButte.m_AmmoType = AmmoID;
+		pButte->m_itArcheryButte.m_AmmoType = WeaponAmmoID;
 		pButte->m_itArcheryButte.m_AmmoCount++;
 	}
+	else
+	{
+		Emote(g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHBUTTE_MISS));
+		Sound(pWeapon->Weapon_GetSoundMiss());
+	}
+	pAmmo->ConsumeAmount();
+	Skill_Experience(skill, Calc_GetRandVal(40));
 	return true;
 }
 
@@ -1215,10 +1125,12 @@ bool CChar::Use_KeyChange( CItem * pItemTarg )
 			return true;
 		case IT_CONTAINER:
 			pItemTarg->SetType(IT_CONTAINER_LOCKED);
+			pItemTarg->ResendTooltip();
 			SysMessageDefault(DEFMSG_MSG_KEY_TARG_CONT_LOCK);
 			break;
 		case IT_CONTAINER_LOCKED:
 			pItemTarg->SetType(IT_CONTAINER);
+			pItemTarg->ResendTooltip();
 			SysMessageDefault(DEFMSG_MSG_KEY_TARG_CONT_ULOCK);
 			break;
 		case IT_SHIP_HOLD:
