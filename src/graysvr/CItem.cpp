@@ -74,9 +74,9 @@ CItem::CItem( ITEMID_TYPE id, CItemBase * pItemDef ) : CObjBase( true )
 
 bool CItem::NotifyDelete()
 {
-	if (( IsTrigUsed(TRIGGER_DESTROY) ) || ( IsTrigUsed(TRIGGER_ITEMDESTROY) ))
+	if ( IsTrigUsed(TRIGGER_DESTROY) || IsTrigUsed(TRIGGER_ITEMDESTROY) )
 	{
-		if (CItem::OnTrigger(ITRIG_DESTROY, &g_Serv) == TRIGRET_RET_TRUE)
+		if ( CItem::OnTrigger(ITRIG_DESTROY, &g_Serv) == TRIGRET_RET_TRUE )
 			return false;
 	}
 
@@ -2528,7 +2528,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_HITS:
 			{
 				int maxHits = HIWORD(m_itNormal.m_more1);
-				if( maxHits == 0 )
+				if ( maxHits == 0 )
 					maxHits = s.GetArgVal();
 				m_itNormal.m_more1 = MAKEDWORD(s.GetArgVal(), maxHits);
 			}
@@ -2854,14 +2854,14 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	int iCharAction = (CTRIG_TYPE) FindTableSorted( sCharTrigName, CChar::sm_szTrigName, COUNTOF(CChar::sm_szTrigName)-1 );
 
 	// 1) Triggers installed on character, sensitive to actions on all items
-	if (( IsTrigUsed(sCharTrigName) ) && ( iCharAction > XTRIG_UNKNOWN ))
+	if ( IsTrigUsed(sCharTrigName) && (iCharAction > XTRIG_UNKNOWN) )
 	{
 		EXC_SET("chardef");
 		if ( pChar != NULL )
 		{
 			CGrayUID uidOldAct = pChar->m_Act_Targ;
 			pChar->m_Act_Targ = GetUID();
-			iRet = pChar->OnTrigger(sCharTrigName,  pSrc, pArgs );
+			iRet = pChar->OnTrigger(sCharTrigName, pSrc, pArgs);
 			pChar->m_Act_Targ = uidOldAct;
 			if ( iRet == TRIGRET_RET_TRUE )
 				goto stopandret;//return iRet;	// Block further action.
@@ -3035,14 +3035,14 @@ TRIGRET_TYPE CItem::OnTriggerCreate( CTextConsole * pSrc, CScriptTriggerArgs * p
 	}
 
 	// 2) Triggers installed on character, sensitive to actions on all items
-	if (( IsTrigUsed(sCharTrigName) ) && ( iCharAction > XTRIG_UNKNOWN ))
+	if ( IsTrigUsed(sCharTrigName) && (iCharAction > XTRIG_UNKNOWN) )
 	{
 		EXC_SET("chardef");
 		if ( pChar != NULL )
 		{
 			CGrayUID uidOldAct = pChar->m_Act_Targ;
 			pChar->m_Act_Targ = GetUID();
-			iRet = pChar->OnTrigger(sCharTrigName,  pSrc, pArgs );
+			iRet = pChar->OnTrigger(sCharTrigName, pSrc, pArgs);
 			pChar->m_Act_Targ = uidOldAct;
 			if ( iRet == TRIGRET_RET_TRUE )
 				return iRet;	// Block further action.
@@ -3149,13 +3149,20 @@ void CItem::DupeCopy( const CItem * pItem )
 void CItem::SetAnim( ITEMID_TYPE id, int iTime )
 {
 	ADDTOCALLSTACK("CItem::SetAnim");
-	// Set this to an active anim that will revert to old form when done.
-	// ??? use addEffect instead !!!
-	m_itAnim.m_PrevID = GetID(); // save old id.
-	m_itAnim.m_PrevType = m_type;
-	SetDispID( id );
+	// Animate the item temporarily
+	// Use it in cases where animation affects functionality of items placed on world (eg: items that can't be used
+	// again while animated, etc). If just the visual effect is needed, consider using CClient::addEffect() instead
+
+	if ( !IsTopLevel() )
+		return;
+	if ( !IsType(IT_ANIM_ACTIVE) )
+	{
+		m_itAnim.m_PrevID = GetID();
+		m_itAnim.m_PrevType = m_type;
+	}
+	SetDispID(id);
 	m_type = IT_ANIM_ACTIVE;
-	SetTimeout( iTime );
+	SetTimeout(iTime);
 	Update();
 }
 
@@ -3939,7 +3946,6 @@ CItem *CItem::Weapon_FindRangedAmmo()
 
 	// Get the container to search
 	CContainer *pParent = dynamic_cast<CContainer *>(GetParentObj());
-	CContainer *pCont = NULL;
 	CVarDefCont *pVarCont = GetKey("AMMOCONT", true);
 	if ( pVarCont )
 	{
@@ -4627,10 +4633,11 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		if ( m_itArmor.m_Hits_Cur > m_itArmor.m_Hits_Max )
 			m_itArmor.m_Hits_Cur = m_itArmor.m_Hits_Max;
 
+		UpdatePropertyFlag(AUTOTOOLTIP_FLAG_DURABILITY);
 		return( 0 );
 	}
 
-	if (( IsTrigUsed(TRIGGER_DAMAGE) ) || ( IsTrigUsed(TRIGGER_ITEMDAMAGE) ))
+	if ( IsTrigUsed(TRIGGER_DAMAGE) || IsTrigUsed(TRIGGER_ITEMDAMAGE) )
 	{
 		CScriptTriggerArgs Args(iDmg, static_cast<int>(uType));
 		if ( OnTrigger( ITRIG_DAMAGE, pSrc, &Args ) == TRIGRET_RET_TRUE )
@@ -4905,10 +4912,10 @@ bool CItem::OnTick()
 	SetTimeout(-1);
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
-	if (( IsTrigUsed(TRIGGER_TIMER) ) || ( IsTrigUsed(TRIGGER_ITEMTIMER) ))
+	if ( IsTrigUsed(TRIGGER_TIMER) || IsTrigUsed(TRIGGER_ITEMTIMER) )
 	{
 		iRet = OnTrigger( ITRIG_TIMER, &g_Serv );
-		if( iRet == TRIGRET_RET_TRUE )
+		if ( iRet == TRIGRET_RET_TRUE )
 			return true;
 	}
 
