@@ -3899,6 +3899,75 @@ SKILL_TYPE CItem::Weapon_GetSkill() const
 	}
 }
 
+SOUND_TYPE CItem::Weapon_GetSoundMiss() const
+{
+	ADDTOCALLSTACK("CItem::Weapon_GetSoundMiss");
+	// Get weapon miss sound
+
+	CVarDefCont *pVar = GetKey("AMMOSOUNDMISS", true);
+	if ( pVar )
+		return static_cast<SOUND_TYPE>(pVar->GetValNum());
+	if ( IsType(IT_WEAPON_THROWING) )
+		return static_cast<SOUND_TYPE>(0x5D3);
+
+	static const SOUND_TYPE sm_Snd_Miss[] = { 0x238, 0x239, 0x23a };
+	return sm_Snd_Miss[Calc_GetRandVal(COUNTOF(sm_Snd_Miss))];
+}
+
+CItem *CItem::Weapon_FindRangedAmmo()
+{
+	ADDTOCALLSTACK("CItem::Weapon_FindRangedAmmo");
+	// Find ammo used by this ranged weapon
+
+	// Get ammo ID to search for
+	RESOURCE_ID_BASE rid;
+	CVarDefCont *pVarType = GetKey("AMMOTYPE", true);
+	if ( pVarType )
+	{
+		LPCTSTR pszAmmoID = pVarType->GetValStr();
+		rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, pszAmmoID));
+	}
+	else
+	{
+		CItemBase *pItemDef = Item_GetDef();
+		rid = pItemDef->m_ttWeaponBow.m_idAmmo;
+	}
+
+	ITEMID_TYPE AmmoID = static_cast<ITEMID_TYPE>(rid.GetResIndex());
+	if ( !AmmoID )
+		return NULL;
+
+	// Get the container to search
+	CContainer *pParent = dynamic_cast<CContainer *>(GetParentObj());
+	CContainer *pCont = NULL;
+	CVarDefCont *pVarCont = GetKey("AMMOCONT", true);
+	if ( pVarCont )
+	{
+		// Search container using UID
+		CGrayUID uidCont = static_cast<CGrayUID>(pVarCont->GetValNum());
+		CContainer *pCont = dynamic_cast<CContainer *>(uidCont.ItemFind());
+		if ( pCont )
+			return pCont->ContentFind(rid);
+
+		// Search container using ITEMID_TYPE
+		if ( pParent )
+		{
+			LPCTSTR pszContID = pVarCont->GetValStr();
+			RESOURCE_ID_BASE ridCont = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, pszContID));
+			pCont = dynamic_cast<CContainer *>(pParent->ContentFind(ridCont));
+			if ( pCont )
+				return pCont->ContentFind(rid);
+		}
+		return NULL;
+	}
+
+	// Search on parent container if there's no specific container to search
+	if ( pParent )
+		return pParent->ContentFind(rid);
+
+	return NULL;
+}
+
 LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 {
 	ADDTOCALLSTACK("CItem::Use_SpyGlass");

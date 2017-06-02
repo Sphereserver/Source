@@ -1473,7 +1473,6 @@ void CChar::SoundChar( CRESND_TYPE type )
 						// 0x232 = axe01 swing. (miss?)
 						id = 0x232;
 						break;
-					case IT_WEAPON_THROWING:
 					case IT_WEAPON_SWORD:
 					case IT_WEAPON_AXE:
 						if ( pWeapon->Item_GetDef()->GetEquipLayer() == LAYER_HAND2 )
@@ -1492,6 +1491,10 @@ void CChar::SoundChar( CRESND_TYPE type )
 					case IT_WEAPON_XBOW:
 						// 0x234 = xbow (hit)
 						id = 0x234;
+						break;
+					case IT_WEAPON_THROWING:
+						// 0x5D2 = throwH
+						id = 0x5D2;
 						break;
 					default:
 						break;
