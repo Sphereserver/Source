@@ -334,8 +334,6 @@ LPCTSTR CChar::Noto_GetFameTitle() const
 					return g_Cfg.GetDefaultMsg( DEFMSG_TITLE_DEV );	//"Dev ";
 				case PLEVEL_GM:
 					return g_Cfg.GetDefaultMsg( DEFMSG_TITLE_GM );	//"GM ";
-				default:
-					break;
 			}
 		}
 		switch ( GetPrivLevel() )
@@ -344,8 +342,6 @@ LPCTSTR CChar::Noto_GetFameTitle() const
 				return g_Cfg.GetDefaultMsg( DEFMSG_TITLE_SEER );	//"Seer ";
 			case PLEVEL_Counsel:
 				return g_Cfg.GetDefaultMsg( DEFMSG_TITLE_COUNSEL );	//"Counselor ";
-			default:
-				break;
 		}
 	}
 
@@ -1206,8 +1202,6 @@ bool CChar::Skill_Snoop_Check( const CItemContainer * pItem )
 		case IT_EQ_BANK_BOX:
 			// Some sort of cheater.
 			return( false );
-		default:
-			break;
 	}
 
 	CChar * pCharMark;
@@ -2150,14 +2144,18 @@ void CChar::Memory_Fight_Start( const CChar * pTarg )
 SKILL_TYPE CChar::Fight_GetWeaponSkill() const
 {
 	ADDTOCALLSTACK("CChar::Fight_GetWeaponSkill");
-	CItem * pWeapon = m_uidWeapon.ItemFind();
-	if ( pWeapon == NULL )
-		return( SKILL_WRESTLING );
-	return( pWeapon->Weapon_GetSkill());
+	CItem *pWeapon = m_uidWeapon.ItemFind();
+	if ( pWeapon )
+		return pWeapon->Weapon_GetSkill();
+	return SKILL_WRESTLING;
 }
 
 void CChar::Fight_RangedWeaponAnim(CItem *pWeapon, CObjBase *pTarg) const
 {
+	ADDTOCALLSTACK("CChar::Fight_RangedWeaponAnim");
+	if ( !pWeapon || !pTarg )
+		return;
+
 	ITEMID_TYPE AmmoID;
 	CVarDefCont *pVarAnim = pWeapon->GetDefKey("AMMOANIM", true);
 	CVarDefCont *pVarAnimColor = pWeapon->GetDefKey("AMMOANIMHUE", true);
@@ -2178,7 +2176,6 @@ void CChar::Fight_RangedWeaponAnim(CItem *pWeapon, CObjBase *pTarg) const
 			return;
 		AmmoID = static_cast<ITEMID_TYPE>(pWeaponDef->m_ttWeaponBow.m_idAmmoX.GetResIndex());
 	}
-
 	pTarg->Effect(EFFECT_BOLT, AmmoID, this, 18, 1, false, AmmoHue, AmmoRender);
 }
 
@@ -2186,8 +2183,8 @@ void CChar::Fight_RangedWeaponAnim(CItem *pWeapon, CObjBase *pTarg) const
 bool CChar::Fight_IsActive() const
 {
 	ADDTOCALLSTACK("CChar::Fight_IsActive");
-	if ( ! IsStatFlag(STATF_War))
-		return( false );
+	if ( !IsStatFlag(STATF_War) )
+		return false;
 
 	SKILL_TYPE iSkillActive = Skill_GetActive();
 	switch ( iSkillActive )
@@ -2198,16 +2195,13 @@ bool CChar::Fight_IsActive() const
 		case SKILL_SWORDSMANSHIP:
 		case SKILL_WRESTLING:
 		case SKILL_THROWING:
-			return( true );
-
-		default:
-			break;
+			return true;
 	}
 
 	if ( iSkillActive == Fight_GetWeaponSkill() )
 		return true;
 
-	return g_Cfg.IsSkillFlag( iSkillActive, SKF_FIGHT );
+	return g_Cfg.IsSkillFlag(iSkillActive, SKF_FIGHT);
 }
 
 bool CChar::Fight_IsAttackable() const
@@ -2482,8 +2476,6 @@ void CChar::Fight_HitTry()
 		}
 		case WAR_SWING_SWINGING:	// must come back here again to complete
 			return;
-		default:
-			break;
 	}
 
 	ASSERT(0);
@@ -2893,8 +2885,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 							case IT_WEAPON_XBOW:
 								iTyp |= DAMAGE_HIT_PIERCE;
 								break;
-							default:
-								break;
 						}
 					}
 				}
@@ -2982,8 +2972,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				case IT_WEAPON_XBOW:
 					iTyp |= DAMAGE_HIT_PIERCE;
 					break;
-				default:
-					break;
 			}
 		}
 	}
@@ -3018,7 +3006,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( iDist > iMaxDist )
 			return IsSetCombatFlags(COMBAT_STAYINRANGE) ? WAR_SWING_EQUIPPING : WAR_SWING_READY;
 
-		pAmmo = pWeapon->Weapon_FindRangedAmmo();
+		if ( pWeapon )
+			pAmmo = pWeapon->Weapon_FindRangedAmmo();
 		if ( !pAmmo && m_pPlayer )
 		{
 			SysMessageDefault(DEFMSG_COMBAT_ARCH_NOAMMO);
@@ -3082,7 +3071,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	m_atFight.m_Swing_State = WAR_SWING_EQUIPPING;
 	m_atFight.m_Swing_NextAction = CServTime::GetCurrentTime() + m_atFight.m_Swing_Delay;
 
-	if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
+	if ( pWeapon && g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
 		Fight_RangedWeaponAnim(pWeapon, pCharTarg);
 
 	// We missed
@@ -3111,8 +3100,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( pCharTarg->IsPriv(PRIV_DETAIL) )
 			pCharTarg->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_MISSO), GetName());
 
-		Sound(pWeapon->Weapon_GetSoundMiss());
-		return WAR_SWING_EQUIPPING;
+		static const SOUND_TYPE sm_SoundMiss_Generic[] = { 0x238, 0x239, 0x23a };
+		Sound(pWeapon ? pWeapon->Weapon_GetSoundMiss() : sm_SoundMiss_Generic[Calc_GetRandVal(COUNTOF(sm_SoundMiss_Generic))]);
 	}
 
 	// We hit

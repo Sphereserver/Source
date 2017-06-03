@@ -3911,14 +3911,12 @@ SOUND_TYPE CItem::Weapon_GetSoundMiss() const
 	ADDTOCALLSTACK("CItem::Weapon_GetSoundMiss");
 	// Get weapon miss sound
 
-	CVarDefCont *pVar = GetKey("AMMOSOUNDMISS", true);
-	if ( pVar )
-		return static_cast<SOUND_TYPE>(pVar->GetValNum());
+	INT64 iVar = GetDefNum("AMMOSOUNDMISS", true);
+	if ( iVar )
+		return static_cast<SOUND_TYPE>(iVar);
 	if ( IsType(IT_WEAPON_THROWING) )
 		return static_cast<SOUND_TYPE>(0x5D3);
-
-	static const SOUND_TYPE sm_Snd_Miss[] = { 0x238, 0x239, 0x23a };
-	return sm_Snd_Miss[Calc_GetRandVal(COUNTOF(sm_Snd_Miss))];
+	return SOUND_NONE;
 }
 
 CItem *CItem::Weapon_FindRangedAmmo()
@@ -3928,7 +3926,7 @@ CItem *CItem::Weapon_FindRangedAmmo()
 
 	// Get ammo ID to search for
 	RESOURCE_ID_BASE rid;
-	CVarDefCont *pVarType = GetKey("AMMOTYPE", true);
+	CVarDefCont *pVarType = GetDefKey("AMMOTYPE", true);
 	if ( pVarType )
 	{
 		LPCTSTR pszAmmoID = pVarType->GetValStr();
@@ -3946,7 +3944,7 @@ CItem *CItem::Weapon_FindRangedAmmo()
 
 	// Get the container to search
 	CContainer *pParent = dynamic_cast<CContainer *>(GetParentObj());
-	CVarDefCont *pVarCont = GetKey("AMMOCONT", true);
+	CVarDefCont *pVarCont = GetDefKey("AMMOCONT", true);
 	if ( pVarCont )
 	{
 		// Search container using UID
