@@ -1263,18 +1263,26 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 			StatFlag_Set(STATF_Conjured);
 			return;
 		}
-		case LAYER_SPELL_Strangle:	// TO-DO: NumBuff[0] and NumBuff[1] to hold the damage range values.
+		case LAYER_SPELL_Strangle:
 		{
-			if ( m_pClient && IsSetOF(OF_Buffs) )
-			{
-				m_pClient->removeBuff(BI_STRANGLE);
-				m_pClient->addBuff(BI_STRANGLE, 1075794, 1075795, iTimerEffect);
-			}
-			iStatEffect = (pCaster->Skill_GetBase(SKILL_SPIRITSPEAK) / 100);
+			iStatEffect = pCaster->Skill_GetBase(SKILL_SPIRITSPEAK) / 100;
 			if ( iStatEffect < 4 )
 				iStatEffect = 4;
 			pSpell->m_itSpell.m_spelllevel = iStatEffect;
 			pSpell->m_itSpell.m_spellcharges = iStatEffect;
+
+			if ( m_pClient && IsSetOF(OF_Buffs) )
+			{
+				double iStamPenalty = 3 - ((Stat_GetVal(STAT_DEX) / Stat_GetAdjusted(STAT_DEX)) * 2);
+				WORD iTimerTotal = 0;
+				for ( int i = 0; i < iStatEffect; i++ )
+					iTimerTotal += (iStatEffect - i) * TICK_PER_SEC;
+
+				ITOA(static_cast<int>((iStatEffect - 2) * iStamPenalty), NumBuff[0], 10);
+				ITOA(static_cast<int>((iStatEffect + 1) * iStamPenalty), NumBuff[1], 10);
+				m_pClient->removeBuff(BI_STRANGLE);
+				m_pClient->addBuff(BI_STRANGLE, 1075794, 1075795, iTimerTotal, pNumBuff, 2);
+			}
 			return;
 		}
 		case LAYER_SPELL_Gift_Of_Renewal:
@@ -1910,7 +1918,7 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 			}
 
 			static const int sm_iPoisonMax[] = { 2, 4, 6, 8, 10 };
-			OnTakeDamage(maximum(sm_iPoisonMax[iLevel], iDmg), pItem->m_uidLink.CharFind(), DAMAGE_MAGIC|DAMAGE_POISON|DAMAGE_NODISTURB|DAMAGE_NOREVEAL, 0, 0, 0, 100, 0);
+			OnTakeDamage(maximum(sm_iPoisonMax[iLevel], iDmg), pItem->m_uidLink.CharFind(), DAMAGE_MAGIC|DAMAGE_POISON|DAMAGE_NODISTURB|DAMAGE_NOREVEAL|DAMAGE_NOUNPARALYZE, 0, 0, 0, 100, 0);
 
 			if ( IsSetOF(OF_Buffs) && m_pClient )
 			{
@@ -1921,35 +1929,12 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 		}
 		case SPELL_Strangle:
 		{
-			int iDiff = pItem->m_itSpell.m_spelllevel - pItem->m_itSpell.m_spellcharges;	// Retrieves the total amount of ticks done substracting spellcharges from spelllevel.
-			switch ( iDiff )	// First tick is in 5 seconds (when mem was created), second one in 4, next one in 3, 2 ... and following ones in each second.
-			{
-				case 0:
-					pItem->SetTimeout(4 * TICK_PER_SEC);
-					break;
-				case 1:
-					pItem->SetTimeout(3 * TICK_PER_SEC);
-					break;
-				case 2:
-					pItem->SetTimeout(2 * TICK_PER_SEC);
-					break;
-				default:
-					pItem->SetTimeout(TICK_PER_SEC);
-					break;
-			}
+			double iStamPenalty = 3 - ((Stat_GetVal(STAT_DEX) / Stat_GetAdjusted(STAT_DEX)) * 2);
+			int iDmg = static_cast<int>(Calc_GetRandLLVal2(pItem->m_itSpell.m_spelllevel - 2, pItem->m_itSpell.m_spelllevel + 1) * iStamPenalty);
+			int iRemainingTicks = pItem->m_itSpell.m_spelllevel - pItem->m_itSpell.m_spellcharges;
 
-			int iSpellPower = static_cast<int>(Calc_GetRandLLVal2(pItem->m_itSpell.m_spelllevel - 2, pItem->m_itSpell.m_spelllevel + 1));
-			int iDmg = iSpellPower * (3 - ((Stat_GetBase(STAT_DEX) / Stat_GetAdjusted(STAT_DEX)) * 2));
-			/*Chokes an enemy with poison, doing more damage as their Stamina drops.The power of the effect is equal to the Caster's Spirit Speak skill divided by 10.
-			The minimum power is 4. The power number determines the duration and base damage of the Strangle effect.
-			Each point of power causes the Strangle effect to damage the target one time.The first round of damage is done after five seconds.
-			Four seconds later, the second round hits.Each round after that comes one second more quickly than the last, until there is only 1 second between hits.
-			Damage is calculated as follows : The range of damage is between power - 2 and power + 1.
-			Then the damage is multiplied based on the victim's current and maximum Stamina values.
-			The more the victim is fatigued, the more damage this spell deals.
-			The damage is multiplied by the result of this formula: 3 - (Cur Stamina ÷ Max Stamina x 2.
-			For example, suppose the base damage for a Strangle hit is 5. The target currently has 40 out of a maximum of 80 stamina. Final damage for that hit is: 5 x (3 - (40 ÷ 80 x 2) = 10.*/
-			OnTakeDamage(maximum(1, iDmg), pItem->m_uidLink.CharFind(), DAMAGE_MAGIC|DAMAGE_POISON|DAMAGE_NOREVEAL, 0, 0, 0, 100, 0);
+			OnTakeDamage(maximum(1, iDmg), pItem->m_uidLink.CharFind(), DAMAGE_MAGIC|DAMAGE_POISON|DAMAGE_NODISTURB|DAMAGE_NOREVEAL|DAMAGE_NOUNPARALYZE, 0, 0, 0, 100, 0);
+			pItem->SetTimeout(maximum(1, (4 - iRemainingTicks) * TICK_PER_SEC));
 			break;
 		}
 		case SPELL_Pain_Spike:
