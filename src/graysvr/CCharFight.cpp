@@ -2150,35 +2150,6 @@ SKILL_TYPE CChar::Fight_GetWeaponSkill() const
 	return SKILL_WRESTLING;
 }
 
-void CChar::Fight_RangedWeaponAnim(CItem *pWeapon, CObjBase *pTarg) const
-{
-	ADDTOCALLSTACK("CChar::Fight_RangedWeaponAnim");
-	if ( !pWeapon || !pTarg )
-		return;
-
-	ITEMID_TYPE AmmoID;
-	CVarDefCont *pVarAnim = pWeapon->GetDefKey("AMMOANIM", true);
-	CVarDefCont *pVarAnimColor = pWeapon->GetDefKey("AMMOANIMHUE", true);
-	CVarDefCont *pVarAnimRender = pWeapon->GetDefKey("AMMOANIMRENDER", true);
-	DWORD AmmoHue = pVarAnimColor ? static_cast<DWORD>(pVarAnimColor->GetValNum()) : 0;
-	DWORD AmmoRender = pVarAnimRender ? static_cast<DWORD>(pVarAnimRender->GetValNum()) : 0;
-
-	if ( pVarAnim )
-	{
-		LPCTSTR t_Str = pVarAnim->GetValStr();
-		RESOURCE_ID_BASE rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, t_Str));
-		AmmoID = static_cast<ITEMID_TYPE>(rid.GetResIndex());
-	}
-	else
-	{
-		const CItemBase *pWeaponDef = pWeapon->Item_GetDef();
-		if ( !pWeaponDef )
-			return;
-		AmmoID = static_cast<ITEMID_TYPE>(pWeaponDef->m_ttWeaponBow.m_idAmmoX.GetResIndex());
-	}
-	pTarg->Effect(EFFECT_BOLT, AmmoID, this, 18, 1, false, AmmoHue, AmmoRender);
-}
-
 // Am i in an active fight mode ?
 bool CChar::Fight_IsActive() const
 {
@@ -3006,12 +2977,15 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( iDist > iMaxDist )
 			return IsSetCombatFlags(COMBAT_STAYINRANGE) ? WAR_SWING_EQUIPPING : WAR_SWING_READY;
 
-		if ( pWeapon )
-			pAmmo = pWeapon->Weapon_FindRangedAmmo();
-		if ( !pAmmo && m_pPlayer )
+		if ( skill != SKILL_THROWING )		// throwing weapons doesn't need ammo
 		{
-			SysMessageDefault(DEFMSG_COMBAT_ARCH_NOAMMO);
-			return WAR_SWING_INVALID;
+			if ( pWeapon )
+				pAmmo = pWeapon->Weapon_FindRangedAmmo();
+			if ( !pAmmo && m_pPlayer )
+			{
+				SysMessageDefault(DEFMSG_COMBAT_ARCH_NOAMMO);
+				return WAR_SWING_INVALID;
+			}
 		}
 	}
 	else
@@ -3071,8 +3045,20 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	m_atFight.m_Swing_State = WAR_SWING_EQUIPPING;
 	m_atFight.m_Swing_NextAction = CServTime::GetCurrentTime() + m_atFight.m_Swing_Delay;
 
-	if ( pWeapon && g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
-		Fight_RangedWeaponAnim(pWeapon, pCharTarg);
+	if ( pWeapon )
+	{
+		ITEMID_TYPE AnimID = ITEMID_NOTHING;
+		DWORD AnimHue = 0, AnimRender = 0;
+		pWeapon->Weapon_GetRangedAmmoAnim(AnimID, AnimHue, AnimRender);
+		pCharTarg->Effect(EFFECT_BOLT, AnimID, this, 18, 1, false, AnimHue, AnimRender);
+
+		if ( skill == SKILL_THROWING )		// throwing weapons also have anim of the weapon returning after throw it
+		{
+			TCHAR *anim = Str_GetTemp();
+			sprintf(anim, "TRYSRC %d EFFECT %d,%d,%d,%d,%d,%d,%d", static_cast<int>(pCharTarg->GetUID()), EFFECT_BOLT, AnimID, 18, 1, 0, AnimHue, AnimRender);
+			g_World.m_TimedFunctions.Add(GetUID(), 1, anim);	// TIMERF function
+		}
+	}
 
 	// We missed
 	if ( m_Act_Difficulty < 0 )
@@ -3100,8 +3086,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( pCharTarg->IsPriv(PRIV_DETAIL) )
 			pCharTarg->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_MISSO), GetName());
 
-		static const SOUND_TYPE sm_SoundMiss_Generic[] = { 0x238, 0x239, 0x23a };
-		Sound(pWeapon ? pWeapon->Weapon_GetSoundMiss() : sm_SoundMiss_Generic[Calc_GetRandVal(COUNTOF(sm_SoundMiss_Generic))]);
+		static const SOUND_TYPE sm_SoundMiss_Wrestling[] = { 0x238, 0x239, 0x23a };
+		Sound(pWeapon ? pWeapon->Weapon_GetSoundMiss() : sm_SoundMiss_Wrestling[Calc_GetRandVal(COUNTOF(sm_SoundMiss_Wrestling))]);
 	}
 
 	// We hit
@@ -3187,15 +3173,19 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	if ( pAmmo )
 	{
-		pAmmo->UnStackSplit(1);
 		if ( pCharTarg->m_pNPC && (40 >= Calc_GetRandVal(100)) )
+		{
+			pAmmo->UnStackSplit(1);
 			pCharTarg->ItemBounce(pAmmo, false);
+		}
 		else
-			pAmmo->Delete();
+			pAmmo->ConsumeAmount(1);
 	}
 
-	// Hit noise (based on weapon type)
-	SoundChar(CRESND_HIT);
+	if ( pWeapon )
+		Sound(pWeapon->Weapon_GetSoundHit());
+	else
+		SoundChar(CRESND_HIT);
 
 	if ( pWeapon )
 	{

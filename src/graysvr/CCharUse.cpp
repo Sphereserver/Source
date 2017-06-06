@@ -450,26 +450,46 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 	if ( Skill_GetActive() != NPCACT_TRAINING )
 		return false;
 
-	CItem *pAmmo = pWeapon->Weapon_FindRangedAmmo();
-	if ( !pAmmo )
+	CItem *pAmmo = NULL;
+	if ( skill != SKILL_THROWING )		// throwing weapons doesn't need ammo
 	{
-		SysMessageDefault(DEFMSG_COMBAT_ARCH_NOAMMO);
-		return false;
+		pAmmo = pWeapon->Weapon_FindRangedAmmo();
+		if ( !pAmmo )
+		{
+			SysMessageDefault(DEFMSG_COMBAT_ARCH_NOAMMO);
+			return false;
+		}
 	}
 
 	// If there is a different ammo type on the butte, it must be removed first
 	LPCTSTR pszButteAmmo = g_Cfg.ResourceGetName(RESOURCE_ID(RES_ITEMDEF, pButte->m_itArcheryButte.m_AmmoType));
 	RESOURCE_ID rid = g_Cfg.ResourceGetID(RES_ITEMDEF, pszButteAmmo);
 	ITEMID_TYPE ButteAmmoID = static_cast<ITEMID_TYPE>(rid.GetResIndex());
-	ITEMID_TYPE WeaponAmmoID = pAmmo->GetID();
-	if ( ButteAmmoID && (ButteAmmoID != WeaponAmmoID) )
+	ITEMID_TYPE WeaponAmmoID = ITEMID_NOTHING;
+	if ( pAmmo )
 	{
-		SysMessageDefault(DEFMSG_ITEMUSE_ARCHBUTTE_CLEAN);
-		return false;
+		WeaponAmmoID = pAmmo->GetID();
+		if ( ButteAmmoID && (ButteAmmoID != WeaponAmmoID) )
+		{
+			SysMessageDefault(DEFMSG_ITEMUSE_ARCHBUTTE_CLEAN);
+			return false;
+		}
 	}
 
-	Sound(SOUND_CROSSBOW);
-	Fight_RangedWeaponAnim(pWeapon, pButte);
+	ITEMID_TYPE AnimID = ITEMID_NOTHING;
+	DWORD AnimHue = 0, AnimRender = 0;
+	pWeapon->Weapon_GetRangedAmmoAnim(AnimID, AnimHue, AnimRender);
+	pButte->Effect(EFFECT_BOLT, AnimID, this, 18, 1, false, AnimHue, AnimRender);
+
+	// TO-DO: Find a way to make this code work here. It inherits from CChar::Fight_Hit() and works using
+	// TIMERF function to call TRYSRC with the EFFECT to send, but TRYSRC can't be used with items as SRC
+	/*if ( skill == SKILL_THROWING )		// throwing weapons also have anim of the weapon returning after throw it
+	{
+		TCHAR *anim = Str_GetTemp();
+		sprintf(anim, "TRYSRC %d EFFECT %d,%d,%d,%d,%d,%d,%d", static_cast<int>(pButte->GetUID()), EFFECT_BOLT, AnimID, 18, 1, 0, AnimHue, AnimRender);
+		g_World.m_TimedFunctions.Add(GetUID(), 1, anim);	// TIMERF function
+	}*/
+
 	m_atFight.m_Swing_NextAction = CServTime::GetCurrentTime() + (2 * TICK_PER_SEC);
 
 	if ( Skill_UseQuick(skill, Calc_GetRandVal(40)) )
@@ -482,8 +502,13 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 			g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHBUTTE_HIT4)
 		};
 		Emote(sm_Txt_ArcheryButte_Success[Calc_GetRandVal(COUNTOF(sm_Txt_ArcheryButte_Success))]);
-		pButte->m_itArcheryButte.m_AmmoType = WeaponAmmoID;
-		pButte->m_itArcheryButte.m_AmmoCount++;
+		Sound(pWeapon->Weapon_GetSoundHit());
+
+		if ( WeaponAmmoID )
+		{
+			pButte->m_itArcheryButte.m_AmmoType = WeaponAmmoID;
+			pButte->m_itArcheryButte.m_AmmoCount++;
+		}
 	}
 	else
 	{

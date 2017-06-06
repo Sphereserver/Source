@@ -617,3 +617,7 @@ Changed: Misc fixes and improvements on training items (Training Dummy, Pickpock
 
 04-06-2017, Coruja
 Fixed: Added missing 'dam_nounparalyze' flag on damage of Poison spell.
+
+06-06-2017, Coruja
+Fixed: Throwing weapons not working correctly.
+Added: Missing animation of throwing weapons returning after throw it.

@@ -1276,7 +1276,9 @@ public:
 	int Armor_GetDefense() const;
 	int Weapon_GetAttack(bool bGetRange = true) const;
 	SKILL_TYPE Weapon_GetSkill() const;
+	SOUND_TYPE Weapon_GetSoundHit() const;
 	SOUND_TYPE Weapon_GetSoundMiss() const;
+	void Weapon_GetRangedAmmoAnim(ITEMID_TYPE &id, DWORD &hue, DWORD &render);
 	CItem *Weapon_FindRangedAmmo();
 
 	bool IsMemoryTypes( WORD wType ) const
@@ -3793,7 +3795,6 @@ public:
 	void Fight_HitTry();
 	WAR_SWING_TYPE Fight_Hit( CChar * pCharTarg );
 	SKILL_TYPE Fight_GetWeaponSkill() const;
-	void Fight_RangedWeaponAnim(CItem *pWeapon, CObjBase *pTarg) const;
 	int  Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom = false, bool bGetMax = true ) const;
 
 	// Attacker System

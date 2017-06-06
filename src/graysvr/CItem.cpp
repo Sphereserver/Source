@@ -2687,9 +2687,8 @@ bool CItem::r_Load( CScript & s ) // Load an item from script
 	int iResultCode = CObjBase::IsWeird();
 	if ( iResultCode )
 	{
-		DEBUG_ERR(("Item 0%lx Invalid, id=%s, code=0%x\n", static_cast<DWORD>(GetUID()), GetResourceName(), iResultCode));
+		DEBUG_ERR(("Item 0%lx Invalid, id='%s', code=0%x\n", static_cast<DWORD>(GetUID()), GetResourceName(), iResultCode));
 		Delete();
-		return true;
 	}
 
 	return true;
@@ -3906,17 +3905,54 @@ SKILL_TYPE CItem::Weapon_GetSkill() const
 	}
 }
 
+SOUND_TYPE CItem::Weapon_GetSoundHit() const
+{
+	ADDTOCALLSTACK("CItem::Weapon_GetSoundHit");
+	// Get weapon hit sound
+
+	CVarDefCont *pVar = GetDefKey("AMMOSOUNDHIT", true);
+	if ( pVar )
+		return static_cast<SOUND_TYPE>(pVar->GetValNum());
+	return SOUND_NONE;
+}
+
 SOUND_TYPE CItem::Weapon_GetSoundMiss() const
 {
 	ADDTOCALLSTACK("CItem::Weapon_GetSoundMiss");
 	// Get weapon miss sound
 
-	INT64 iVar = GetDefNum("AMMOSOUNDMISS", true);
-	if ( iVar )
-		return static_cast<SOUND_TYPE>(iVar);
-	if ( IsType(IT_WEAPON_THROWING) )
-		return static_cast<SOUND_TYPE>(0x5D3);
+	CVarDefCont *pVar = GetDefKey("AMMOSOUNDMISS", true);
+	if ( pVar )
+		return static_cast<SOUND_TYPE>(pVar->GetValNum());
 	return SOUND_NONE;
+}
+
+void CItem::Weapon_GetRangedAmmoAnim(ITEMID_TYPE &id, DWORD &hue, DWORD &render)
+{
+	ADDTOCALLSTACK("CItem::Weapon_GetRangedAmmoAnim");
+	// Get animation properties of ranged weapons (archery/throwing)
+
+	CVarDefCont *pVarAnim = GetDefKey("AMMOANIM", true);
+	if ( pVarAnim )
+	{
+		LPCTSTR t_Str = pVarAnim->GetValStr();
+		RESOURCE_ID_BASE rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, t_Str));
+		id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
+	}
+	else
+	{
+		const CItemBase *pWeaponDef = Item_GetDef();
+		if ( pWeaponDef )
+			id = static_cast<ITEMID_TYPE>(pWeaponDef->m_ttWeaponBow.m_idAmmoX.GetResIndex());
+	}
+
+	CVarDefCont *pVarAnimHue = GetDefKey("AMMOANIMHUE", true);
+	if ( pVarAnimHue )
+		hue = static_cast<DWORD>(pVarAnimHue->GetValNum());
+
+	CVarDefCont *pVarAnimRender = GetDefKey("AMMOANIMRENDER", true);
+	if ( pVarAnimRender )
+		render = static_cast<DWORD>(pVarAnimRender->GetValNum());
 }
 
 CItem *CItem::Weapon_FindRangedAmmo()
