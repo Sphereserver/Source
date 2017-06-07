@@ -170,6 +170,7 @@ void CClient::addWebLaunch( LPCTSTR pPage )
 	if ( !pPage || !pPage[0] )
 		return;
 
+	SysMessageDefault(DEFMSG_WEB_BROWSER_START);
 	new PacketWebPage(this, pPage);
 }
 

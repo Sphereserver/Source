@@ -762,7 +762,7 @@ public:
 		// IT_RUNE
 		struct
 		{
-			int m_Strength;			// more1 = How many uses til a rune will wear out ?
+			int m_Charges;			// more1 = How many uses til a rune will wear out ?
 			DWORD m_junk2;
 			CPointBase m_pntMark;	// morep = rune marked to a location or a teleport ?
 		} m_itRune;
@@ -1276,6 +1276,10 @@ public:
 	int Armor_GetDefense() const;
 	int Weapon_GetAttack(bool bGetRange = true) const;
 	SKILL_TYPE Weapon_GetSkill() const;
+	SOUND_TYPE Weapon_GetSoundHit() const;
+	SOUND_TYPE Weapon_GetSoundMiss() const;
+	void Weapon_GetRangedAmmoAnim(ITEMID_TYPE &id, DWORD &hue, DWORD &render);
+	CItem *Weapon_FindRangedAmmo();
 
 	bool IsMemoryTypes( WORD wType ) const
 	{
@@ -1956,12 +1960,11 @@ public:
 
 struct CMapPinRec // Pin on a map
 {
-	short m_x;
-	short m_y;
+	WORD m_x;
+	WORD m_y;
 
 public:
-	CMapPinRec( short x, short y )
-		: m_x(x), m_y(y)
+	CMapPinRec(WORD x, WORD y) : m_x(x), m_y(y)
 	{
 	}
 };
@@ -3611,11 +3614,10 @@ public:
 		return m_Skill[skill];
 	}
 	WORD Skill_GetMax( SKILL_TYPE skill, bool ignoreLock = false ) const;
-	SKILLLOCK_TYPE Skill_GetLock( SKILL_TYPE skill ) const
+	DWORD Skill_GetSumMax() const;
+	SKILLLOCK_TYPE Skill_GetLock(SKILL_TYPE skill) const
 	{
-		if ( !m_pPlayer )
-			return SKILLLOCK_UP;
-		return m_pPlayer->Skill_GetLock(skill);
+		return m_pPlayer ? m_pPlayer->Skill_GetLock(skill) : SKILLLOCK_UP;
 	}
 	WORD Skill_GetAdjusted(SKILL_TYPE skill) const;
 	SKILL_TYPE Skill_GetMagicRandom(WORD iMinValue = 0);
@@ -3629,7 +3631,7 @@ public:
 	bool Skill_CanUse( SKILL_TYPE skill );
 
 	void Skill_SetBase( SKILL_TYPE skill, WORD iValue );
-	bool Skill_UseQuick( SKILL_TYPE skill, INT64 difficulty, bool bAllowGain = true, bool bUseBellCurve = true );
+	bool Skill_UseQuick( SKILL_TYPE skill, int difficulty, bool bAllowGain = true, bool bUseBellCurve = true );
 
 	bool Skill_CheckSuccess( SKILL_TYPE skill, int difficulty, bool bUseBellCurve = true ) const;
 	bool Skill_Wait( SKILL_TYPE skilltry );
@@ -3705,7 +3707,7 @@ private:
 
 	void Spell_Dispel(int iskilllevel);
 	CChar *Spell_Summon(CREID_TYPE id, CPointMap pt);
-	bool Spell_Recall(CItem *pRune, bool fGate);
+	bool Spell_Recall(CItem *pTarg, bool bGate);
 	CItem *Spell_Effect_Create(SPELL_TYPE spell, LAYER_TYPE layer, int iSkillLevel, int iDuration, CObjBase *pSrc = NULL, bool bEquip = true);
 	bool Spell_Equip_OnTick(CItem *pItem);
 
@@ -3723,6 +3725,7 @@ public:
 	bool OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, CItem * pSourceItem, bool bReflecting = false );
 	bool Spell_Resurrection(CItemCorpse * pCorpse = NULL, CChar * pCharSrc = NULL, bool bNoFail = false);
 	bool Spell_Teleport( CPointMap pt, bool bTakePets = false, bool bCheckAntiMagic = true, bool bDisplayEffect = true, ITEMID_TYPE iEffect = ITEMID_NOTHING, SOUND_TYPE iSound = SOUND_NONE );
+	bool Spell_CreateGate( CPointMap pt, bool bCheckAntiMagic = true );
 	bool Spell_CanCast( SPELL_TYPE &spell, bool fTest, CObjBase * pSrc, bool fFailMsg, bool fCheckAntiMagic = true );
 	int	GetSpellDuration( SPELL_TYPE spell, int iSkillLevel, CChar * pCharSrc = NULL );
 	
@@ -3890,6 +3893,7 @@ public:
 	virtual void SpeakUTF8Ex( const NWORD * pText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang );
 
 	bool OnFreezeCheck();
+	void ToggleFlying();
 	void DropAll( CItemContainer * pCorpse = NULL, DWORD dwAttr = 0 );
 	void UnEquipAllItems( CItemContainer * pCorpse = NULL, bool bLeaveHands = false );
 	void Wake();
@@ -3987,20 +3991,20 @@ private:
 	void NPC_Act_Runto(int iDist = 30);
 	bool NPC_Act_Food();
 
-	void NPC_ActStart_SpeakTo( CChar * pSrc );
+	void NPC_ActStart_SpeakTo(CChar *pSrc);
 	void NPC_OnTickAction();
 
 public:
 	void NPC_Pathfinding();		//	NPC thread AI - pathfinding
 	void NPC_Food();			//	NPC thread AI - search for food
 	void NPC_ExtraAI();			//	NPC thread AI - some general extra operations
-	void NPC_AddSpellsFromBook(CItem * pBook);
+	void NPC_AddSpellsFromBook(CItem *pBook);
 
 	void NPC_PetDesert();	
-	void NPC_PetClearOwners();
-	bool NPC_PetSetOwner( CChar * pChar );
+	void NPC_PetClearOwners(bool bResendTooltip = true);
+	bool NPC_PetSetOwner(CChar *pChar, bool bResendTooltip = true);
 	CChar *NPC_PetGetOwner() const;
-	bool NPC_IsOwnedBy( const CChar * pChar, bool fAllowGM = true ) const;
+	bool NPC_IsOwnedBy(const CChar *pChar, bool fAllowGM = true) const;
 	bool NPC_CanSpeak() const;
 
 	static CItemVendable *NPC_FindVendableItem(CItemVendable *pVendItem, CItemContainer *pContBuy);

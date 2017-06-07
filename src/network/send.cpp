@@ -26,7 +26,7 @@ PacketGeneric::PacketGeneric(const CClient* target, BYTE *data, size_t length) :
 /***************************************************************************
  *
  *
- *	Packet **** : PacketTelnet				send message to telnet client (NORMAL)
+ *	Packet **** : PacketTelnet				send message to telnet client (HIGHEST)
  *
  *
  ***************************************************************************/
@@ -1652,8 +1652,8 @@ PacketPlayMusic::PacketPlayMusic(const CClient* target, WORD musicID) : PacketSe
 /***************************************************************************
  *
  *
- *	Packet 0x6E : PacketAction				plays an animation (LOW)
- *  Packet 0xE2 : PacketActionBasic			plays an animation (client > 7.0.0.0) (LOW)
+ *	Packet 0x6E : PacketAction				plays an animation (pre-SA clients) (LOW)
+ *	Packet 0xE2 : PacketActionNew			plays an animation (SA+ clients) (LOW)
  *
  ***************************************************************************/
 PacketAction::PacketAction(const CChar* character, ANIM_TYPE action, WORD repeat, bool backward, BYTE delay, BYTE len) : PacketSend(XCMD_CharAction, 14, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
@@ -1669,9 +1669,9 @@ PacketAction::PacketAction(const CChar* character, ANIM_TYPE action, WORD repeat
 	writeByte(delay);
 }
 
-PacketActionBasic::PacketActionBasic(const CChar* character, ANIM_TYPE_NEW action, ANIM_TYPE_NEW subaction, BYTE variation) : PacketSend(XCMD_NewAnimUpdate, 10, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketActionNew::PacketActionNew(const CChar* character, ANIM_TYPE_NEW action, ANIM_TYPE_NEW subaction, BYTE variation) : PacketSend(XCMD_NewAnimUpdate, 10, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
-	ADDTOCALLSTACK("PacketActionBasic::PacketActionBasic");
+	ADDTOCALLSTACK("PacketActionNew::PacketActionNew");
 
 	writeInt32(character->GetUID());
 	writeInt16(static_cast<WORD>(action));
@@ -2650,7 +2650,7 @@ PacketShowDyeWindow::PacketShowDyeWindow(const CClient* target, const CObjBase* 
 /***************************************************************************
  *
  *
- *	Packet 0x98 : PacketAllNamesResponse	all names macro response (PRI_IDLE)
+ *	Packet 0x98 : PacketAllNamesResponse	all names macro response (IDLE)
  *
  *
  ***************************************************************************/
@@ -4544,7 +4544,7 @@ PacketBuff::PacketBuff(const CClient* target, const BUFF_ICONS iconId, const DWO
 	writeInt16(0x1);	// show
 
 	writeInt32(0);
-	writeInt16(time);	//simple countdown without automatic remove
+	writeInt16(time);	// simple countdown without automatic remove
 	writeInt16(0);
 	writeByte(0);
 
@@ -4605,7 +4605,7 @@ PacketBuff::PacketBuff(const CClient* target, const BUFF_ICONS iconId) : PacketS
 /***************************************************************************
  *
  *
- *	Packet 0xE3 : PacketKREncryption		Sends encryption data to KR client
+ *	Packet 0xE3 : PacketKREncryption		Sends encryption data to KR client (HIGH)
  *
  *
  ***************************************************************************/
@@ -4640,7 +4640,7 @@ PacketWaypointAdd::PacketWaypointAdd(const CClient *target, CObjBase *object, MA
 		return;
 
 	CPointMap pt = object->GetTopPoint();
-	DWORD cliloc = 1062613;			//DWORD cliloc = (type == Corpse) ? 1046414 : 1062613;	// the remains of ~1_NAME~ : "~1_NAME~"
+	DWORD cliloc = (type == Corpse) ? 1028198 : 1062613;	// corpse : "~1_NAME~"
 
 	initLength();
 	writeInt32(object->GetUID());

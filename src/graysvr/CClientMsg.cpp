@@ -1325,12 +1325,12 @@ void CClient::addPlayerStart( CChar * pChar )
 	addPlayerWarMode();
 	addLoginComplete();
 	addTime(true);
-	if ( pSector != NULL )
+	if ( pSector )
 		addSeason(pSector->GetSeason());
-	if (pChar->m_pParty)
-		pChar->m_pParty->SendAddList(NULL);
+	if ( m_pChar->m_pParty )
+		m_pChar->m_pParty->SendAddList(NULL);
 
-	addKRToolbar(pChar->m_pPlayer->getKrToolbarStatus());
+	addKRToolbar(m_pChar->m_pPlayer->getKrToolbarStatus());
 	resendBuffs();
 }
 
@@ -1786,9 +1786,9 @@ void CClient::addPlayerSee( const CPointMap & ptOld )
 	for (;;)
 	{
 		pChar = AreaChars.GetChar();
-		if ( !pChar || iSeeCurrent > iSeeMax )
+		if ( !pChar || (iSeeCurrent > iSeeMax) )
 			break;
-		if ( m_pChar == pChar || !CanSee(pChar) )
+		if ( (m_pChar == pChar) || !CanSee(pChar) )
 			continue;
 
 		if ( ptOld.GetDistSight(pChar->GetTopPoint()) > iViewDist )
@@ -2167,41 +2167,38 @@ void CClient::addBankOpen( CChar * pChar, LAYER_TYPE layer )
 void CClient::addDrawMap( CItemMap * pMap )
 {
 	ADDTOCALLSTACK("CClient::addDrawMap");
-	// Make player drawn maps possible. (m_map_type=0) ???
+	// Open cartography map on client screen
+	// NOTE: Clients 7.0.8.0+ can draw maps of all facets, previous clients can only draw maps of Felucca/Trammel
 
-	if ( pMap == NULL )
+	if ( !pMap )
 	{
 blank_map:
-		addSysMessage( g_Cfg.GetDefaultMsg(DEFMSG_MAP_IS_BLANK) );
+		addSysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MAP_IS_BLANK));
 		return;
 	}
-	if ( pMap->IsType(IT_MAP_BLANK))
+	if ( pMap->IsType(IT_MAP_BLANK) )
 		goto blank_map;
 
 	CRectMap rect;
-	rect.SetRect( pMap->m_itMap.m_left,
-		pMap->m_itMap.m_top,
-		pMap->m_itMap.m_right,
-		pMap->m_itMap.m_bottom,
-		g_MapList.m_mapid[pMap->m_itMap.m_map]);
+	rect.SetRect(pMap->m_itMap.m_left, pMap->m_itMap.m_top, pMap->m_itMap.m_right, pMap->m_itMap.m_bottom, g_MapList.m_mapid[pMap->m_itMap.m_map]);
 
-	if ( ! rect.IsValid())
+	if ( !rect.IsValid() )
 		goto blank_map;
-	if ( rect.IsRectEmpty())
+	if ( rect.IsRectEmpty() )
 		goto blank_map;
 
+	// Open map
 	if ( PacketDisplayMapNew::CanSendTo(m_NetState) )
 		new PacketDisplayMapNew(this, pMap, rect);
 	else
 		new PacketDisplayMap(this, pMap, rect);
 
-	addMapMode( pMap, MAP_UNSENT, false );
-
-	// Now show all the pins
-	PacketMapPlot plot(pMap, MAP_ADD, false);
+	// Draw pins
+	addMapMode(pMap, MAPCMD_ClearPins, false);
+	PacketMapPlot plot(pMap, MAPCMD_AddPin, false);
 	for ( size_t i = 0; i < pMap->m_Pins.GetCount(); i++ )
 	{
-		plot.setPin(static_cast<WORD>(pMap->m_Pins[i].m_x), static_cast<WORD>(pMap->m_Pins[i].m_y));
+		plot.setPin(pMap->m_Pins[i].m_x, pMap->m_Pins[i].m_y);
 		plot.send(this);
 	}
 }

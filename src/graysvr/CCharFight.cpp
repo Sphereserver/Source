@@ -334,8 +334,6 @@ LPCTSTR CChar::Noto_GetFameTitle() const
 					return g_Cfg.GetDefaultMsg( DEFMSG_TITLE_DEV );	//"Dev ";
 				case PLEVEL_GM:
 					return g_Cfg.GetDefaultMsg( DEFMSG_TITLE_GM );	//"GM ";
-				default:
-					break;
 			}
 		}
 		switch ( GetPrivLevel() )
@@ -344,8 +342,6 @@ LPCTSTR CChar::Noto_GetFameTitle() const
 				return g_Cfg.GetDefaultMsg( DEFMSG_TITLE_SEER );	//"Seer ";
 			case PLEVEL_Counsel:
 				return g_Cfg.GetDefaultMsg( DEFMSG_TITLE_COUNSEL );	//"Counselor ";
-			default:
-				break;
 		}
 	}
 
@@ -1206,8 +1202,6 @@ bool CChar::Skill_Snoop_Check( const CItemContainer * pItem )
 		case IT_EQ_BANK_BOX:
 			// Some sort of cheater.
 			return( false );
-		default:
-			break;
 	}
 
 	CChar * pCharMark;
@@ -1899,8 +1893,11 @@ effect_bounce:
 	}
 
 	CScriptTriggerArgs Args( iDmg, uType, static_cast<INT64>(0) );
-	Args.m_VarsLocal.SetNum("ItemDamageLayer", sm_ArmorDamageLayers[Calc_GetRandVal(COUNTOF(sm_ArmorDamageLayers))]);
-	Args.m_VarsLocal.SetNum("ItemDamageChance", 40);
+	if ( !(uType & DAMAGE_POISON) )
+	{
+		Args.m_VarsLocal.SetNum("ItemDamageLayer", sm_ArmorDamageLayers[Calc_GetRandVal(COUNTOF(sm_ArmorDamageLayers))]);
+		Args.m_VarsLocal.SetNum("ItemDamageChance", 40);
+	}
 
 	if ( IsTrigUsed(TRIGGER_GETHIT) )
 	{
@@ -1911,10 +1908,10 @@ effect_bounce:
 	}
 
 	int iItemDamageChance = static_cast<int>(Args.m_VarsLocal.GetKeyNum("ItemDamageChance"));
-	if ( (iItemDamageChance > Calc_GetRandVal(100)) && !pCharDef->Can(CAN_C_NONHUMANOID) )
+	LAYER_TYPE iItemDamageLayer = static_cast<LAYER_TYPE>(Args.m_VarsLocal.GetKeyNum("ItemDamageLayer"));
+	if ( iItemDamageLayer && (iItemDamageChance > Calc_GetRandVal(100)) && !pCharDef->Can(CAN_C_NONHUMANOID) )
 	{
-		LAYER_TYPE iHitLayer = static_cast<LAYER_TYPE>(Args.m_VarsLocal.GetKeyNum("ItemDamageLayer"));
-		CItem *pItemHit = LayerFind(iHitLayer);
+		CItem *pItemHit = LayerFind(iItemDamageLayer);
 		if ( pItemHit )
 			pItemHit->OnTakeDamage(iDmg, pSrc, uType);
 	}
@@ -2147,18 +2144,18 @@ void CChar::Memory_Fight_Start( const CChar * pTarg )
 SKILL_TYPE CChar::Fight_GetWeaponSkill() const
 {
 	ADDTOCALLSTACK("CChar::Fight_GetWeaponSkill");
-	CItem * pWeapon = m_uidWeapon.ItemFind();
-	if ( pWeapon == NULL )
-		return( SKILL_WRESTLING );
-	return( pWeapon->Weapon_GetSkill());
+	CItem *pWeapon = m_uidWeapon.ItemFind();
+	if ( pWeapon )
+		return pWeapon->Weapon_GetSkill();
+	return SKILL_WRESTLING;
 }
 
 // Am i in an active fight mode ?
 bool CChar::Fight_IsActive() const
 {
 	ADDTOCALLSTACK("CChar::Fight_IsActive");
-	if ( ! IsStatFlag(STATF_War))
-		return( false );
+	if ( !IsStatFlag(STATF_War) )
+		return false;
 
 	SKILL_TYPE iSkillActive = Skill_GetActive();
 	switch ( iSkillActive )
@@ -2169,16 +2166,13 @@ bool CChar::Fight_IsActive() const
 		case SKILL_SWORDSMANSHIP:
 		case SKILL_WRESTLING:
 		case SKILL_THROWING:
-			return( true );
-
-		default:
-			break;
+			return true;
 	}
 
 	if ( iSkillActive == Fight_GetWeaponSkill() )
 		return true;
 
-	return g_Cfg.IsSkillFlag( iSkillActive, SKF_FIGHT );
+	return g_Cfg.IsSkillFlag(iSkillActive, SKF_FIGHT);
 }
 
 bool CChar::Fight_IsAttackable() const
@@ -2453,8 +2447,6 @@ void CChar::Fight_HitTry()
 		}
 		case WAR_SWING_SWINGING:	// must come back here again to complete
 			return;
-		default:
-			break;
 	}
 
 	ASSERT(0);
@@ -2864,8 +2856,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 							case IT_WEAPON_XBOW:
 								iTyp |= DAMAGE_HIT_PIERCE;
 								break;
-							default:
-								break;
 						}
 					}
 				}
@@ -2933,25 +2923,14 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	CItem *pWeapon = m_uidWeapon.ItemFind();
 	CItem *pAmmo = NULL;
-	CItemBase *pWeaponDef = NULL;
-	CVarDefCont *pType = NULL;
-	CVarDefCont *pCont = NULL;
-	CVarDefCont *pAnim = NULL;
-	CVarDefCont *pColor = NULL;
-	CVarDefCont *pRender = NULL;
 	if ( pWeapon )
 	{
-		pType = pWeapon->GetDefKey("AMMOTYPE", true);
-		pCont = pWeapon->GetDefKey("AMMOCONT", true);
-		pAnim = pWeapon->GetDefKey("AMMOANIM", true);
-		pColor = pWeapon->GetDefKey("AMMOANIMHUE", true);
-		pRender = pWeapon->GetDefKey("AMMOANIMRENDER", true);
 		CVarDefCont *pDamTypeOverride = pWeapon->GetKey("OVERRIDE.DAMAGETYPE", true);
 		if ( pDamTypeOverride )
 			iTyp = static_cast<DAMAGE_TYPE>(pDamTypeOverride->GetValNum());
 		else
 		{
-			pWeaponDef = pWeapon->Item_GetDef();
+			CItemBase *pWeaponDef = pWeapon->Item_GetDef();
 			switch ( pWeaponDef->GetType() )
 			{
 				case IT_WEAPON_SWORD:
@@ -2964,16 +2943,11 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				case IT_WEAPON_XBOW:
 					iTyp |= DAMAGE_HIT_PIERCE;
 					break;
-				default:
-					break;
 			}
 		}
 	}
 
 	SKILL_TYPE skill = Skill_GetActive();
-	RESOURCE_ID_BASE rid;
-	LPCTSTR t_Str;
-
 	if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
 	{
 		if ( IsStatFlag(STATF_HasShield) )		// this should never happen
@@ -3003,35 +2977,10 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( iDist > iMaxDist )
 			return IsSetCombatFlags(COMBAT_STAYINRANGE) ? WAR_SWING_EQUIPPING : WAR_SWING_READY;
 
-		if ( pType )
+		if ( skill != SKILL_THROWING )		// throwing weapons doesn't need ammo
 		{
-			t_Str = pType->GetValStr();
-			rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, t_Str));
-		}
-		else
-			rid = pWeaponDef->m_ttWeaponBow.m_idAmmo;
-
-		ITEMID_TYPE AmmoID = static_cast<ITEMID_TYPE>(rid.GetResIndex());
-		if ( AmmoID )
-		{
-			if ( pCont )
-			{
-				CGrayUID uidCont = static_cast<CGrayUID>(static_cast<DWORD>(pCont->GetValNum()));
-				CItemContainer *pNewCont = static_cast<CItemContainer *>(uidCont.ItemFind());
-				if ( !pNewCont )	//if no UID, check for ITEMID_TYPE
-				{
-					t_Str = pCont->GetValStr();
-					RESOURCE_ID_BASE rContid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, t_Str));
-					ITEMID_TYPE ContID = static_cast<ITEMID_TYPE>(rContid.GetResIndex());
-					if ( ContID )
-						pNewCont = static_cast<CItemContainer *>(ContentFind(rContid));
-				}
-
-				pAmmo = (pNewCont) ? pNewCont->ContentFind(rid) : ContentFind(rid);
-			}
-			else
-				pAmmo = ContentFind(rid);
-
+			if ( pWeapon )
+				pAmmo = pWeapon->Weapon_FindRangedAmmo();
 			if ( !pAmmo && m_pPlayer )
 			{
 				SysMessageDefault(DEFMSG_COMBAT_ARCH_NOAMMO);
@@ -3092,34 +3041,24 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		return WAR_SWING_SWINGING;
 	}
 
+	// We made our swing, so we must recoil
+	m_atFight.m_Swing_State = WAR_SWING_EQUIPPING;
 	m_atFight.m_Swing_NextAction = CServTime::GetCurrentTime() + m_atFight.m_Swing_Delay;
 
-	if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
+	if ( pWeapon )
 	{
-		// Post-swing behavior
-		ITEMID_TYPE AmmoAnim;
-		if ( pAnim )
+		ITEMID_TYPE AnimID = ITEMID_NOTHING;
+		DWORD AnimHue = 0, AnimRender = 0;
+		pWeapon->Weapon_GetRangedAmmoAnim(AnimID, AnimHue, AnimRender);
+		pCharTarg->Effect(EFFECT_BOLT, AnimID, this, 18, 1, false, AnimHue, AnimRender);
+
+		if ( skill == SKILL_THROWING )		// throwing weapons also have anim of the weapon returning after throw it
 		{
-			t_Str = pAnim->GetValStr();
-			rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, t_Str));
-			AmmoAnim = static_cast<ITEMID_TYPE>(rid.GetResIndex());
+			TCHAR *anim = Str_GetTemp();
+			sprintf(anim, "TRYSRC %d EFFECT %d,%d,%d,%d,%d,%d,%d", static_cast<int>(pCharTarg->GetUID()), EFFECT_BOLT, AnimID, 18, 1, 0, AnimHue, AnimRender);
+			g_World.m_TimedFunctions.Add(GetUID(), 1, anim);	// TIMERF function
 		}
-		else
-			AmmoAnim = static_cast<ITEMID_TYPE>(pWeaponDef->m_ttWeaponBow.m_idAmmoX.GetResIndex());
-
-		DWORD AmmoHue = 0;
-		if ( pColor )
-			AmmoHue = static_cast<DWORD>(pColor->GetValNum());
-
-		DWORD AmmoRender = 0;
-		if ( pRender )
-			AmmoRender = static_cast<DWORD>(pRender->GetValNum());
-
-		pCharTarg->Effect(EFFECT_BOLT, AmmoAnim, this, 18, 1, false, AmmoHue, AmmoRender);
 	}
-
-	// We made our swing. so we must recoil.
-	m_atFight.m_Swing_State = WAR_SWING_EQUIPPING;
 
 	// We missed
 	if ( m_Act_Difficulty < 0 )
@@ -3142,30 +3081,13 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			pAmmo->MoveToDecay(pCharTarg->GetTopPoint(), g_Cfg.m_iDecay_Item);
 		}
 
-		SOUND_TYPE iSound = 0;
-		if ( pWeapon )
-			iSound = static_cast<SOUND_TYPE>(pWeapon->GetDefNum("AMMOSOUNDMISS"));
-		if ( !iSound )
-		{
-			if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
-			{
-				static const SOUND_TYPE sm_Snd_Miss[] = { 0x233, 0x238 };
-				iSound = sm_Snd_Miss[Calc_GetRandVal(COUNTOF(sm_Snd_Miss))];
-			}
-			else
-			{
-				static const SOUND_TYPE sm_Snd_Miss[] = { 0x238, 0x239, 0x23a };
-				iSound = sm_Snd_Miss[Calc_GetRandVal(COUNTOF(sm_Snd_Miss))];
-			}
-		}
-
 		if ( IsPriv(PRIV_DETAIL) )
 			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_MISSS), pCharTarg->GetName());
 		if ( pCharTarg->IsPriv(PRIV_DETAIL) )
 			pCharTarg->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_MISSO), GetName());
 
-		Sound(iSound);
-		return WAR_SWING_EQUIPPING;
+		static const SOUND_TYPE sm_SoundMiss_Wrestling[] = { 0x238, 0x239, 0x23a };
+		Sound(pWeapon ? pWeapon->Weapon_GetSoundMiss() : sm_SoundMiss_Wrestling[Calc_GetRandVal(COUNTOF(sm_SoundMiss_Wrestling))]);
 	}
 
 	// We hit
@@ -3251,15 +3173,19 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	if ( pAmmo )
 	{
-		pAmmo->UnStackSplit(1);
 		if ( pCharTarg->m_pNPC && (40 >= Calc_GetRandVal(100)) )
+		{
+			pAmmo->UnStackSplit(1);
 			pCharTarg->ItemBounce(pAmmo, false);
+		}
 		else
-			pAmmo->Delete();
+			pAmmo->ConsumeAmount(1);
 	}
 
-	// Hit noise (based on weapon type)
-	SoundChar(CRESND_HIT);
+	if ( pWeapon )
+		Sound(pWeapon->Weapon_GetSoundHit());
+	else
+		SoundChar(CRESND_HIT);
 
 	if ( pWeapon )
 	{

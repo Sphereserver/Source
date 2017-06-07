@@ -174,6 +174,83 @@ bool CChar::Spell_Teleport(CPointMap ptNew, bool bTakePets, bool bCheckAntiMagic
 	return true;
 }
 
+bool CChar::Spell_CreateGate(CPointMap ptNew, bool bCheckAntiMagic)
+{
+	ADDTOCALLSTACK("CChar::Spell_CreateGate");
+	// Create moongate between current pt and destination pt
+	// RETURN: true = it worked.
+
+	if ( !ptNew.IsValidPoint() )
+		return false;
+
+	ptNew.m_z = GetFixZ(ptNew);
+
+	if ( IsPriv(PRIV_JAILED) )
+	{
+		// Must be /PARDONed to leave jail area
+		static LPCTSTR const sm_szPunishMsg[] =
+		{
+			g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TELE_JAILED_1),
+			g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TELE_JAILED_2)
+		};
+		SysMessage(sm_szPunishMsg[Calc_GetRandVal(COUNTOF(sm_szPunishMsg))]);
+		return false;
+	}
+
+	CRegionBase *pAreaDest = ptNew.GetRegion(REGION_TYPE_AREA|REGION_TYPE_ROOM|REGION_TYPE_MULTI);
+	if ( !pAreaDest )
+		return false;
+
+	if ( pAreaDest->IsFlag(REGION_FLAG_SHIP) )
+	{
+		SysMessageDefault(DEFMSG_SPELL_GATE_SOMETHINGBLOCKING);
+		return false;
+	}
+
+	if ( bCheckAntiMagic )
+	{
+		if ( pAreaDest->IsFlag(REGION_ANTIMAGIC_ALL|REGION_ANTIMAGIC_GATE) )
+		{
+			SysMessageDefault(DEFMSG_SPELL_GATE_AM);
+			if ( !IsPriv(PRIV_GM) )
+				return false;
+		}
+	}
+
+	if ( g_World.IsItemTypeNear(GetTopPoint(), IT_TELEPAD, 0, false, true) || g_World.IsItemTypeNear(ptNew, IT_TELEPAD, 0, false, true) )
+	{
+		SysMessageDefault(DEFMSG_SPELL_GATE_ALREADYTHERE);
+		if ( !IsPriv(PRIV_GM) )
+			return false;
+	}
+
+	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Gate_Travel);
+	ASSERT(pSpellDef);
+	int iDuration = pSpellDef->m_Duration.GetLinear(0);
+
+	CItem *pGate = CItem::CreateBase(pSpellDef->m_idEffect);
+	ASSERT(pGate);
+	pGate->m_uidLink = GetUID();
+	pGate->SetType(IT_TELEPAD);
+	pGate->SetAttr(ATTR_MAGIC|ATTR_MOVE_NEVER|ATTR_CAN_DECAY);
+	pGate->SetHue(static_cast<HUE_TYPE>(pAreaDest->IsGuarded() ? HUE_DEFAULT : HUE_RED));
+	pGate->m_itTelepad.m_pntMark = ptNew;
+	pGate->MoveToDecay(GetTopPoint(), iDuration);
+	pGate->Effect(EFFECT_OBJ, ITEMID_MOONGATE_FX_BLUE, pGate, 2);
+	pGate->Sound(pSpellDef->m_sound);
+
+	pGate = CItem::CreateDupeItem(pGate);
+	ASSERT(pGate);
+	pGate->SetHue(static_cast<HUE_TYPE>((m_pArea && m_pArea->IsGuarded()) ? HUE_DEFAULT : HUE_RED));
+	pGate->m_itTelepad.m_pntMark = GetTopPoint();
+	pGate->MoveToDecay(ptNew, iDuration);
+	pGate->Effect(EFFECT_OBJ, ITEMID_MOONGATE_FX_BLUE, pGate, 2);
+	pGate->Sound(pSpellDef->m_sound);
+
+	SysMessageDefault(DEFMSG_SPELL_GATE_OPEN);
+	return true;
+}
+
 CChar *CChar::Spell_Summon(CREID_TYPE id, CPointMap pntTarg)
 {
 	ADDTOCALLSTACK("CChar::Spell_Summon");
@@ -238,7 +315,7 @@ CChar *CChar::Spell_Summon(CREID_TYPE id, CPointMap pntTarg)
 	pChar->m_ptHome = pntTarg;
 	pChar->m_pNPC->m_Home_Dist_Wander = 10;
 	pChar->NPC_CreateTrigger();		// removed from NPC_LoadScript() and triggered after char placement
-	pChar->NPC_PetSetOwner(this);
+	pChar->NPC_PetSetOwner(this, false);
 	pChar->OnSpellEffect(SPELL_Summon, this, Skill_GetAdjusted(static_cast<SKILL_TYPE>(skill)), NULL);
 
 	pChar->Update();
@@ -248,89 +325,75 @@ CChar *CChar::Spell_Summon(CREID_TYPE id, CPointMap pntTarg)
 	return pChar;
 }
 
-bool CChar::Spell_Recall(CItem *pRune, bool fGate)
+bool CChar::Spell_Recall(CItem *pTarg, bool bGate)
 {
 	ADDTOCALLSTACK("CChar::Spell_Recall");
-	if ( pRune && (IsTrigUsed(TRIGGER_SPELLEFFECT) || IsTrigUsed(TRIGGER_ITEMSPELL)) )
+	if ( !pTarg )
+		return false;
+
+	if ( IsTrigUsed(TRIGGER_SPELLEFFECT) || IsTrigUsed(TRIGGER_ITEMSPELL) )
 	{
 		CScriptTriggerArgs Args;
-		Args.m_iN1 = fGate ? SPELL_Gate_Travel : SPELL_Recall;
+		Args.m_iN1 = bGate ? SPELL_Gate_Travel : SPELL_Recall;
 
-		if ( pRune->OnTrigger(ITRIG_SPELLEFFECT, this, &Args) == TRIGRET_RET_FALSE )
+		if ( pTarg->OnTrigger(ITRIG_SPELLEFFECT, this, &Args) == TRIGRET_RET_FALSE )
 			return true;
 	}
 
-	if ( !pRune || (!pRune->IsType(IT_RUNE) && !pRune->IsType(IT_TELEPAD)) )
+	if ( pTarg->IsType(IT_RUNE) )
 	{
-		SysMessageDefault(DEFMSG_SPELL_RECALL_NOTRUNE);
-		return false;
-	}
-	if ( !pRune->m_itRune.m_pntMark.IsValidPoint() )
-	{
-		SysMessageDefault(DEFMSG_SPELL_RECALL_BLANK);
-		return false;
-	}
-	if ( pRune->IsType(IT_RUNE) && (pRune->m_itRune.m_Strength <= 0) )
-	{
-		SysMessageDefault(DEFMSG_SPELL_RECALL_FADED);
-		if ( !IsPriv(PRIV_GM) )
-			return false;
-	}
-
-	if ( fGate )
-	{
-		CRegionBase *pArea = pRune->m_itRune.m_pntMark.GetRegion(REGION_TYPE_AREA|REGION_TYPE_MULTI|REGION_TYPE_ROOM);
-		if ( !pArea )
-			return false;
-
-		if ( pArea->IsFlag(REGION_ANTIMAGIC_ALL|REGION_ANTIMAGIC_GATE|REGION_ANTIMAGIC_RECALL_IN|REGION_ANTIMAGIC_RECALL_OUT) )
+		if ( !pTarg->m_itRune.m_pntMark.IsValidPoint() )
 		{
-			SysMessageDefault(DEFMSG_SPELL_GATE_AM);
+			SysMessageDefault(DEFMSG_SPELL_RECALL_RUNENOTMARKED);
+			return false;
+		}
+		else if ( pTarg->m_itRune.m_Charges <= 0 )
+		{
+			SysMessageDefault(DEFMSG_SPELL_RECALL_NOCHARGES);
 			if ( !IsPriv(PRIV_GM) )
 				return false;
 		}
 
-		const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Gate_Travel);
-		ASSERT(pSpellDef);
-		int iDuration = pSpellDef->m_Duration.GetLinear(0);
+		if ( bGate )
+		{
+			if ( !Spell_CreateGate(pTarg->m_itRune.m_pntMark) )
+				return false;
+		}
+		else
+		{
+			if ( !Spell_Teleport(pTarg->m_itRune.m_pntMark, true) )
+				return false;
+		}
 
-		CItem *pGate = CItem::CreateBase(pSpellDef->m_idEffect);
-		ASSERT(pGate);
-		pGate->m_uidLink = GetUID();
-		pGate->SetType(IT_TELEPAD);
-		pGate->SetAttr(ATTR_MAGIC|ATTR_MOVE_NEVER|ATTR_CAN_DECAY);
-		pGate->SetHue(static_cast<HUE_TYPE>(pArea->IsGuarded() ? HUE_DEFAULT : HUE_RED));
-		pGate->m_itTelepad.m_pntMark = pRune->m_itRune.m_pntMark;
-		pGate->MoveToDecay(GetTopPoint(), iDuration);
-		pGate->Effect(EFFECT_OBJ, ITEMID_MOONGATE_FX_BLUE, pGate, 2);
-		pGate->Sound(pSpellDef->m_sound);
-
-		// Far end gate.
-		pGate = CItem::CreateDupeItem(pGate);
-		ASSERT(pGate);
-		pGate->SetHue(static_cast<HUE_TYPE>((m_pArea && m_pArea->IsGuarded()) ? HUE_DEFAULT : HUE_RED));
-		pGate->m_itTelepad.m_pntMark = GetTopPoint();
-		pGate->MoveToDecay(pRune->m_itRune.m_pntMark, iDuration);
-		pGate->Effect(EFFECT_OBJ, ITEMID_MOONGATE_FX_BLUE, pGate, 2);
-		pGate->Sound(pSpellDef->m_sound);
-	}
-	else
-	{
-		if ( !Spell_Teleport(pRune->m_itRune.m_pntMark, true, true) )
-			return false;
-	}
-
-	if ( pRune->IsType(IT_RUNE) )	// wear out the rune
-	{
 		if ( !IsPriv(PRIV_GM) )
-			pRune->m_itRune.m_Strength--;
-		if ( pRune->m_itRune.m_Strength < 10 )
-			SysMessageDefault(DEFMSG_SPELL_RECALL_SFADE);
-		else if ( !pRune->m_itRune.m_Strength )
-			SysMessageDefault(DEFMSG_SPELL_RECALL_FADEC);
+		{
+			pTarg->m_itRune.m_Charges--;
+			pTarg->ResendTooltip();
+		}
+		return true;
+	}
+	else if ( pTarg->IsType(IT_KEY) )
+	{
+		CItemShip *pBoat = dynamic_cast<CItemShip *>(pTarg->m_uidLink.ItemFind());
+		if ( pBoat )
+		{
+			if ( bGate )
+			{
+				SysMessageDefault(DEFMSG_SPELL_GATE_SOMETHINGBLOCKING);
+				return false;
+			}
+			else
+			{
+				CItemContainer *pHatch = pBoat->GetShipHold();
+				if ( !pHatch || !Spell_Teleport(pHatch->GetTopPoint(), true) )
+					return false;
+			}
+			return true;
+		}
 	}
 
-	return true;
+	SysMessageDefault(DEFMSG_SPELL_RECALL_CANTRECALLOBJ);
+	return false;
 }
 
 bool CChar::Spell_Resurrection(CItemCorpse *pCorpse, CChar *pCharSrc, bool bNoFail)
@@ -1123,17 +1186,6 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 			StatFlag_Set(STATF_Polymorph);
 			return;
 		}
-		case LAYER_FLAG_Poison:
-		{
-			StatFlag_Set(STATF_Poisoned);
-			UpdateModeFlag();
-			if ( m_pClient && IsSetOF(OF_Buffs) )
-			{
-				m_pClient->removeBuff(BI_POISON);
-				m_pClient->addBuff(BI_POISON, 1017383, 1070722, 2);
-			}
-			return;
-		}
 		case LAYER_SPELL_Night_Sight:
 		{
 			StatFlag_Set(STATF_NightSight);
@@ -1211,18 +1263,26 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 			StatFlag_Set(STATF_Conjured);
 			return;
 		}
-		case LAYER_SPELL_Strangle:	// TO-DO: NumBuff[0] and NumBuff[1] to hold the damage range values.
+		case LAYER_SPELL_Strangle:
 		{
-			if ( m_pClient && IsSetOF(OF_Buffs) )
-			{
-				m_pClient->removeBuff(BI_STRANGLE);
-				m_pClient->addBuff(BI_STRANGLE, 1075794, 1075795, iTimerEffect);
-			}
-			iStatEffect = (pCaster->Skill_GetBase(SKILL_SPIRITSPEAK) / 100);
+			iStatEffect = pCaster->Skill_GetBase(SKILL_SPIRITSPEAK) / 100;
 			if ( iStatEffect < 4 )
 				iStatEffect = 4;
 			pSpell->m_itSpell.m_spelllevel = iStatEffect;
 			pSpell->m_itSpell.m_spellcharges = iStatEffect;
+
+			if ( m_pClient && IsSetOF(OF_Buffs) )
+			{
+				double iStamPenalty = 3 - ((Stat_GetVal(STAT_DEX) / Stat_GetAdjusted(STAT_DEX)) * 2);
+				WORD iTimerTotal = 0;
+				for ( int i = 0; i < iStatEffect; i++ )
+					iTimerTotal += (iStatEffect - i) * TICK_PER_SEC;
+
+				ITOA(static_cast<int>((iStatEffect - 2) * iStamPenalty), NumBuff[0], 10);
+				ITOA(static_cast<int>((iStatEffect + 1) * iStamPenalty), NumBuff[1], 10);
+				m_pClient->removeBuff(BI_STRANGLE);
+				m_pClient->addBuff(BI_STRANGLE, 1075794, 1075795, iTimerTotal, pNumBuff, 2);
+			}
 			return;
 		}
 		case LAYER_SPELL_Gift_Of_Renewal:
@@ -1858,10 +1918,7 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 			}
 
 			static const int sm_iPoisonMax[] = { 2, 4, 6, 8, 10 };
-			OnTakeDamage(maximum(sm_iPoisonMax[iLevel], iDmg), pItem->m_uidLink.CharFind(), DAMAGE_MAGIC|DAMAGE_POISON|DAMAGE_NODISTURB|DAMAGE_NOREVEAL, 0, 0, 0, 100, 0);
-
-			// g_Cfg.GetSpellEffect( SPELL_Poison,
-			// We will have this effect again.
+			OnTakeDamage(maximum(sm_iPoisonMax[iLevel], iDmg), pItem->m_uidLink.CharFind(), DAMAGE_MAGIC|DAMAGE_POISON|DAMAGE_NODISTURB|DAMAGE_NOREVEAL|DAMAGE_NOUNPARALYZE, 0, 0, 0, 100, 0);
 
 			if ( IsSetOF(OF_Buffs) && m_pClient )
 			{
@@ -1872,41 +1929,18 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 		}
 		case SPELL_Strangle:
 		{
-			int iDiff = pItem->m_itSpell.m_spelllevel - pItem->m_itSpell.m_spellcharges;	// Retrieves the total amount of ticks done substracting spellcharges from spelllevel.
-			switch ( iDiff )	// First tick is in 5 seconds (when mem was created), second one in 4, next one in 3, 2 ... and following ones in each second.
-			{
-				case 0:
-					pItem->SetTimeout(4 * TICK_PER_SEC);
-					break;
-				case 1:
-					pItem->SetTimeout(3 * TICK_PER_SEC);
-					break;
-				case 2:
-					pItem->SetTimeout(2 * TICK_PER_SEC);
-					break;
-				default:
-					pItem->SetTimeout(TICK_PER_SEC);
-					break;
-			}
+			double iStamPenalty = 3 - ((Stat_GetVal(STAT_DEX) / Stat_GetAdjusted(STAT_DEX)) * 2);
+			int iDmg = static_cast<int>(Calc_GetRandLLVal2(pItem->m_itSpell.m_spelllevel - 2, pItem->m_itSpell.m_spelllevel + 1) * iStamPenalty);
+			int iRemainingTicks = pItem->m_itSpell.m_spelllevel - pItem->m_itSpell.m_spellcharges;
 
-			int iSpellPower = static_cast<int>(Calc_GetRandLLVal2(pItem->m_itSpell.m_spelllevel - 2, pItem->m_itSpell.m_spelllevel + 1));
-			int iDmg = iSpellPower * (3 - ((Stat_GetBase(STAT_DEX) / Stat_GetAdjusted(STAT_DEX)) * 2));
-			/*Chokes an enemy with poison, doing more damage as their Stamina drops.The power of the effect is equal to the Caster's Spirit Speak skill divided by 10.
-			The minimum power is 4. The power number determines the duration and base damage of the Strangle effect.
-			Each point of power causes the Strangle effect to damage the target one time.The first round of damage is done after five seconds.
-			Four seconds later, the second round hits.Each round after that comes one second more quickly than the last, until there is only 1 second between hits.
-			Damage is calculated as follows : The range of damage is between power - 2 and power + 1.
-			Then the damage is multiplied based on the victim's current and maximum Stamina values.
-			The more the victim is fatigued, the more damage this spell deals.
-			The damage is multiplied by the result of this formula: 3 - (Cur Stamina ÷ Max Stamina x 2.
-			For example, suppose the base damage for a Strangle hit is 5. The target currently has 40 out of a maximum of 80 stamina. Final damage for that hit is: 5 x (3 - (40 ÷ 80 x 2) = 10.*/
-			OnTakeDamage(maximum(1, iDmg), pItem->m_uidLink.CharFind(), DAMAGE_MAGIC|DAMAGE_POISON|DAMAGE_NOREVEAL, 0, 0, 0, 100, 0);
+			OnTakeDamage(maximum(1, iDmg), pItem->m_uidLink.CharFind(), DAMAGE_MAGIC|DAMAGE_POISON|DAMAGE_NODISTURB|DAMAGE_NOREVEAL|DAMAGE_NOUNPARALYZE, 0, 0, 0, 100, 0);
+			pItem->SetTimeout(maximum(1, (4 - iRemainingTicks) * TICK_PER_SEC));
 			break;
 		}
 		case SPELL_Pain_Spike:
 		{
 			// Receives x amount (stored in pItem->m_itSpell.m_spelllevel) of damage in 10 seconds, so damage each second is equal to total / 10
-			OnTakeDamage(pItem->m_itSpell.m_spelllevel / 10, pItem->m_uidLink.CharFind(), DAMAGE_MAGIC|DAMAGE_GOD);	// DIRECT? damage
+			OnTakeDamage(pItem->m_itSpell.m_spelllevel / 10, pItem->m_uidLink.CharFind(), DAMAGE_MAGIC|DAMAGE_FIXED);
 			pItem->SetTimeout(TICK_PER_SEC);
 			break;
 		}
@@ -1942,7 +1976,7 @@ CItem *CChar::Spell_Effect_Create(SPELL_TYPE spell, LAYER_TYPE layer, int iSkill
 			continue;
 
 		// Some spells create the memory using TIMER=-1 to make the effect last until cast again,
-		// die or logout. So casting this same spell again will just remove the current effect.
+		// death or logout. So casting this same spell again will just remove the current effect.
 		if ( pSpellPrev->GetTimerAdjusted() == -1 )
 		{
 			pSpellPrev->Delete();
@@ -1950,7 +1984,7 @@ CItem *CChar::Spell_Effect_Create(SPELL_TYPE spell, LAYER_TYPE layer, int iSkill
 		}
 
 		// Check if stats spells can stack
-		if ( layer == LAYER_SPELL_STATS && spell != pSpellPrev->m_itSpell.m_spell && IsSetMagicFlags(MAGICF_STACKSTATS) )
+		if ( (layer == LAYER_SPELL_STATS) && (spell != pSpellPrev->m_itSpell.m_spell) && IsSetMagicFlags(MAGICF_STACKSTATS) )
 			continue;
 
 		pSpellPrev->Delete();
@@ -3260,7 +3294,8 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 		}
 		else if ( GetPrivLevel() == PLEVEL_Guest )
 		{
-			pCharSrc->SysMessageDefault(DEFMSG_MSG_ACC_GUESTHIT);
+			if ( pCharSrc )
+				pCharSrc->SysMessageDefault(DEFMSG_MSG_ACC_GUESTHIT);
 			Effect(EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 16);
 			return false;
 		}
@@ -3394,7 +3429,9 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 
 		case SPELL_Poison:
 		case SPELL_Poison_Field:
-			Spell_Effect_Create(spell, LAYER_FLAG_Poison, iSkillLevel, iDuration, pCharSrc);
+			if ( pCharSrc && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
+				iSkillLevel = (pCharSrc->Skill_GetBase(SKILL_MAGERY) + pCharSrc->Skill_GetBase(SKILL_POISONING)) / 2;
+			SetPoison(iSkillLevel, iSkillLevel / 50, pCharSrc);
 			break;
 
 		case SPELL_Cure:
@@ -3444,7 +3481,7 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 		case SPELL_Mana_Vamp:
 		{
 			int iMax = Stat_GetVal(STAT_INT);
-			if ( IsSetMagicFlags(MAGICF_OSIFORMULAS) )
+			if ( pCharSrc && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
 			{
 				// AOS formula
 				iSkillLevel = (pCharSrc->Skill_GetBase(SKILL_EVALINT) - Skill_GetBase(SKILL_MAGICRESISTANCE)) / 10;
@@ -3462,7 +3499,8 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 				iSkillLevel = iMax;
 			}
 			UpdateStatVal(STAT_INT, static_cast<short>(-iSkillLevel));
-			pCharSrc->UpdateStatVal(STAT_INT, static_cast<short>(+iSkillLevel));
+			if ( pCharSrc )
+				pCharSrc->UpdateStatVal(STAT_INT, static_cast<short>(+iSkillLevel));
 			break;
 		}
 
@@ -3501,7 +3539,7 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 				pSourceItem->Delete();
 
 			CItem *pItem = NPC_Shrink(); // this delete's the char !!!
-			if ( pItem )
+			if ( pCharSrc && pItem )
 				pCharSrc->m_Act_Targ = pItem->GetUID();
 			break;
 		}
@@ -3577,7 +3615,8 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 		}
 
 		case SPELL_Blood_Oath:		// Blood Oath is a pact created between the casted and the target, memory is stored on the caster because one caster can have only 1 enemy, but one target can have the effect from various spells.
-			pCharSrc->Spell_Effect_Create(spell, LAYER_SPELL_Blood_Oath, iSkillLevel, iDuration, this);
+			if ( pCharSrc )
+				pCharSrc->Spell_Effect_Create(spell, LAYER_SPELL_Blood_Oath, iSkillLevel, iDuration, this);
 			break;
 
 		case SPELL_Corpse_Skin:

@@ -1,5 +1,5 @@
 ===== Information about the build process: =====
-Build was run at Wed 01/04/2017 on host 'VITRO50'
+Build was run at Fri 04/21/2017 on host 'VITRO41'
 
 Build was done on  Windows-6.2 using AMD64
 Build was done using cmake 3.2.3 
@@ -11,7 +11,7 @@ Pointer size: 4
 
 ===== Feature flags used: =====
 -- Cache values
-CANDLE_EXECUTABLE:FILEPATH=C:/Program Files (x86)/WiX Toolset v3.8/bin/candle.exe
+CANDLE_EXECUTABLE:FILEPATH=C:/Program Files (x86)/WiX Toolset v3.10/candle.exe
 CMAKE_CONFIGURATION_TYPES:STRING=DebugReleaseMinSizeRelRelWithDebInfo
 CMAKE_INSTALL_PREFIX:PATH=C:/Program Files (x86)/LibMySQL
 COMMUNITY_BUILD:BOOL=ON
@@ -20,11 +20,11 @@ ENABLED_PROFILING:BOOL=ON
 ENABLE_DEBUG_SYNC:BOOL=ON
 ENABLE_GCOV:BOOL=OFF
 ENABLE_GPROF:BOOL=OFF
-EXTRA_INSTALL:BOOL=G:\ade\build\sb_0-21735111-1483539493.84/mysql-connector-c-6.1.9-vs11-win32/lib/mysqlclient.liblib/vs11DevelopmentG:\ade\build\sb_0-21735111-1483539493.84/mysql-connector-c-6.1.9-vs12-win32/lib/mysqlclient.liblib/vs12Development
+EXTRA_INSTALL:BOOL=G:\ade\build\sb_0-23186284-1492796805.01/mysql-connector-c-6.1.10-vs12-win32/lib/mysqlclient.liblib/vs12DevelopmentG:\ade\build\sb_0-23186284-1492796805.01/mysql-connector-c-6.1.10-vs12-win32/lib/debug/mysqlclient.liblib/vs12/debugDebugBinariesG:\ade\build\sb_0-23186284-1492796805.01/mysql-connector-c-6.1.10-vs14-win32/lib/mysqlclient.liblib/vs14DevelopmentG:\ade\build\sb_0-23186284-1492796805.01/mysql-connector-c-6.1.10-vs14-win32/lib/debug/mysqlclient.liblib/vs14/debugDebugBinaries
 FEATURE_SET:STRING=community
-HEAT_EXECUTABLE:FILEPATH=C:/Program Files (x86)/WiX Toolset v3.8/bin/heat.exe
+HEAT_EXECUTABLE:FILEPATH=C:/Program Files (x86)/WiX Toolset v3.10/heat.exe
 INSTALL_LAYOUT:STRING=STANDALONE
-LIGHT_EXECUTABLE:FILEPATH=C:/Program Files (x86)/WiX Toolset v3.8/bin/light.exe
+LIGHT_EXECUTABLE:FILEPATH=C:/Program Files (x86)/WiX Toolset v3.10/light.exe
 MYSQL_DATADIR:PATH=C:/Program Files/MySQL/MySQL Server 6.1/data
 MYSQL_KEYRINGDIR:PATH=C:/Program Files/MySQL/MySQL Server 6.1/keyring
 MYSQL_MAINTAINER_MODE:BOOL=OFF
@@ -51,6 +51,6 @@ WITH_TEST_TRACE_PLUGIN:BOOL=OFF
 WITH_UBSAN:BOOL=OFF
 WITH_UNIT_TESTS:BOOL=OFF
 WITH_ZLIB:STRING=bundled
-WIX_DIR:PATH=C:/Program Files (x86)/WiX Toolset v3.8/bin
+WIX_DIR:PATH=C:/Program Files (x86)/WiX Toolset v3.10
 
 ===== EOF =====

@@ -504,7 +504,7 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar *pSrc, CObjBase *pObj, const C
 	return bSuccess;
 }
 
-void CChar::NPC_PetClearOwners()
+void CChar::NPC_PetClearOwners(bool bResendTooltip)
 {
 	ADDTOCALLSTACK("CChar::NPC_PetClearOwners");
 	CChar * pOwner = NPC_PetGetOwner();
@@ -546,11 +546,16 @@ void CChar::NPC_PetClearOwners()
 			pCharRider->Horse_UnMount();
 	}
 
-	if ( pOwner && IsSetOF(OF_PetSlots) )
-		pOwner->FollowersUpdate(this, static_cast<short>(-maximum(1, GetDefNum("FOLLOWERSLOTS", true))));
+	if ( pOwner )
+	{
+		if ( IsSetOF(OF_PetSlots) )
+			pOwner->FollowersUpdate(this, static_cast<short>(-maximum(1, GetDefNum("FOLLOWERSLOTS", true))));
+		if ( bResendTooltip )
+			ResendTooltip();
+	}
 }
 
-bool CChar::NPC_PetSetOwner( CChar * pChar )
+bool CChar::NPC_PetSetOwner(CChar *pChar, bool bResendTooltip)
 {
 	ADDTOCALLSTACK("CChar::NPC_PetSetOwner");
 	// m_pNPC may not be set yet if this is a conjured creature.
@@ -561,13 +566,15 @@ bool CChar::NPC_PetSetOwner( CChar * pChar )
 	if ( pOwner == pChar )
 		return false;
 
-	NPC_PetClearOwners();	// clear previous owner before set the new owner
+	NPC_PetClearOwners(false);	// clear previous owner before set the new owner
 	m_ptHome.InitPoint();	// no longer homed
 	CItemSpawn * pSpawn = static_cast<CItemSpawn*>( m_uidSpawnItem.ItemFind() );
 	if ( pSpawn )
 		pSpawn->DelObj( GetUID() );
+
 	Memory_AddObjTypes(pChar, MEMORY_IPET);
 	NPC_Act_Follow();
+
 	if ( NPC_IsVendor() )
 	{
 		// Clear my cash total.
@@ -578,6 +585,8 @@ bool CChar::NPC_PetSetOwner( CChar * pChar )
 
 	if ( IsSetOF(OF_PetSlots) )
 		pChar->FollowersUpdate(this, static_cast<short>(maximum(1, GetDefNum("FOLLOWERSLOTS", true))));
+	if ( bResendTooltip )
+		ResendTooltip();
 
 	return true;
 }

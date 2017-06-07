@@ -74,9 +74,9 @@ CItem::CItem( ITEMID_TYPE id, CItemBase * pItemDef ) : CObjBase( true )
 
 bool CItem::NotifyDelete()
 {
-	if (( IsTrigUsed(TRIGGER_DESTROY) ) || ( IsTrigUsed(TRIGGER_ITEMDESTROY) ))
+	if ( IsTrigUsed(TRIGGER_DESTROY) || IsTrigUsed(TRIGGER_ITEMDESTROY) )
 	{
-		if (CItem::OnTrigger(ITRIG_DESTROY, &g_Serv) == TRIGRET_RET_TRUE)
+		if ( CItem::OnTrigger(ITRIG_DESTROY, &g_Serv) == TRIGRET_RET_TRUE )
 			return false;
 	}
 
@@ -1470,7 +1470,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 		case IT_RUNE:
 			if ( !m_itRune.m_pntMark.IsValidPoint() )
 				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_BLANK ) );
-			else if ( ! m_itRune.m_Strength )
+			else if ( ! m_itRune.m_Charges )
 				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_FADED ) );
 			break;
 		default:
@@ -2528,7 +2528,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_HITS:
 			{
 				int maxHits = HIWORD(m_itNormal.m_more1);
-				if( maxHits == 0 )
+				if ( maxHits == 0 )
 					maxHits = s.GetArgVal();
 				m_itNormal.m_more1 = MAKEDWORD(s.GetArgVal(), maxHits);
 			}
@@ -2687,9 +2687,8 @@ bool CItem::r_Load( CScript & s ) // Load an item from script
 	int iResultCode = CObjBase::IsWeird();
 	if ( iResultCode )
 	{
-		DEBUG_ERR(("Item 0%lx Invalid, id=%s, code=0%x\n", static_cast<DWORD>(GetUID()), GetResourceName(), iResultCode));
+		DEBUG_ERR(("Item 0%lx Invalid, id='%s', code=0%x\n", static_cast<DWORD>(GetUID()), GetResourceName(), iResultCode));
 		Delete();
-		return true;
 	}
 
 	return true;
@@ -2854,14 +2853,14 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	int iCharAction = (CTRIG_TYPE) FindTableSorted( sCharTrigName, CChar::sm_szTrigName, COUNTOF(CChar::sm_szTrigName)-1 );
 
 	// 1) Triggers installed on character, sensitive to actions on all items
-	if (( IsTrigUsed(sCharTrigName) ) && ( iCharAction > XTRIG_UNKNOWN ))
+	if ( IsTrigUsed(sCharTrigName) && (iCharAction > XTRIG_UNKNOWN) )
 	{
 		EXC_SET("chardef");
 		if ( pChar != NULL )
 		{
 			CGrayUID uidOldAct = pChar->m_Act_Targ;
 			pChar->m_Act_Targ = GetUID();
-			iRet = pChar->OnTrigger(sCharTrigName,  pSrc, pArgs );
+			iRet = pChar->OnTrigger(sCharTrigName, pSrc, pArgs);
 			pChar->m_Act_Targ = uidOldAct;
 			if ( iRet == TRIGRET_RET_TRUE )
 				goto stopandret;//return iRet;	// Block further action.
@@ -3035,14 +3034,14 @@ TRIGRET_TYPE CItem::OnTriggerCreate( CTextConsole * pSrc, CScriptTriggerArgs * p
 	}
 
 	// 2) Triggers installed on character, sensitive to actions on all items
-	if (( IsTrigUsed(sCharTrigName) ) && ( iCharAction > XTRIG_UNKNOWN ))
+	if ( IsTrigUsed(sCharTrigName) && (iCharAction > XTRIG_UNKNOWN) )
 	{
 		EXC_SET("chardef");
 		if ( pChar != NULL )
 		{
 			CGrayUID uidOldAct = pChar->m_Act_Targ;
 			pChar->m_Act_Targ = GetUID();
-			iRet = pChar->OnTrigger(sCharTrigName,  pSrc, pArgs );
+			iRet = pChar->OnTrigger(sCharTrigName, pSrc, pArgs);
 			pChar->m_Act_Targ = uidOldAct;
 			if ( iRet == TRIGRET_RET_TRUE )
 				return iRet;	// Block further action.
@@ -3149,13 +3148,20 @@ void CItem::DupeCopy( const CItem * pItem )
 void CItem::SetAnim( ITEMID_TYPE id, int iTime )
 {
 	ADDTOCALLSTACK("CItem::SetAnim");
-	// Set this to an active anim that will revert to old form when done.
-	// ??? use addEffect instead !!!
-	m_itAnim.m_PrevID = GetID(); // save old id.
-	m_itAnim.m_PrevType = m_type;
-	SetDispID( id );
+	// Animate the item temporarily
+	// Use it in cases where animation affects functionality of items placed on world (eg: items that can't be used
+	// again while animated, etc). If just the visual effect is needed, consider using CClient::addEffect() instead
+
+	if ( !IsTopLevel() )
+		return;
+	if ( !IsType(IT_ANIM_ACTIVE) )
+	{
+		m_itAnim.m_PrevID = GetID();
+		m_itAnim.m_PrevType = m_type;
+	}
+	SetDispID(id);
 	m_type = IT_ANIM_ACTIVE;
-	SetTimeout( iTime );
+	SetTimeout(iTime);
 	Update();
 }
 
@@ -3899,6 +3905,109 @@ SKILL_TYPE CItem::Weapon_GetSkill() const
 	}
 }
 
+SOUND_TYPE CItem::Weapon_GetSoundHit() const
+{
+	ADDTOCALLSTACK("CItem::Weapon_GetSoundHit");
+	// Get weapon hit sound
+
+	CVarDefCont *pVar = GetDefKey("AMMOSOUNDHIT", true);
+	if ( pVar )
+		return static_cast<SOUND_TYPE>(pVar->GetValNum());
+	return SOUND_NONE;
+}
+
+SOUND_TYPE CItem::Weapon_GetSoundMiss() const
+{
+	ADDTOCALLSTACK("CItem::Weapon_GetSoundMiss");
+	// Get weapon miss sound
+
+	CVarDefCont *pVar = GetDefKey("AMMOSOUNDMISS", true);
+	if ( pVar )
+		return static_cast<SOUND_TYPE>(pVar->GetValNum());
+	return SOUND_NONE;
+}
+
+void CItem::Weapon_GetRangedAmmoAnim(ITEMID_TYPE &id, DWORD &hue, DWORD &render)
+{
+	ADDTOCALLSTACK("CItem::Weapon_GetRangedAmmoAnim");
+	// Get animation properties of ranged weapons (archery/throwing)
+
+	CVarDefCont *pVarAnim = GetDefKey("AMMOANIM", true);
+	if ( pVarAnim )
+	{
+		LPCTSTR t_Str = pVarAnim->GetValStr();
+		RESOURCE_ID_BASE rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, t_Str));
+		id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
+	}
+	else
+	{
+		const CItemBase *pWeaponDef = Item_GetDef();
+		if ( pWeaponDef )
+			id = static_cast<ITEMID_TYPE>(pWeaponDef->m_ttWeaponBow.m_idAmmoX.GetResIndex());
+	}
+
+	CVarDefCont *pVarAnimHue = GetDefKey("AMMOANIMHUE", true);
+	if ( pVarAnimHue )
+		hue = static_cast<DWORD>(pVarAnimHue->GetValNum());
+
+	CVarDefCont *pVarAnimRender = GetDefKey("AMMOANIMRENDER", true);
+	if ( pVarAnimRender )
+		render = static_cast<DWORD>(pVarAnimRender->GetValNum());
+}
+
+CItem *CItem::Weapon_FindRangedAmmo()
+{
+	ADDTOCALLSTACK("CItem::Weapon_FindRangedAmmo");
+	// Find ammo used by this ranged weapon
+
+	// Get ammo ID to search for
+	RESOURCE_ID_BASE rid;
+	CVarDefCont *pVarType = GetDefKey("AMMOTYPE", true);
+	if ( pVarType )
+	{
+		LPCTSTR pszAmmoID = pVarType->GetValStr();
+		rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, pszAmmoID));
+	}
+	else
+	{
+		CItemBase *pItemDef = Item_GetDef();
+		rid = pItemDef->m_ttWeaponBow.m_idAmmo;
+	}
+
+	ITEMID_TYPE AmmoID = static_cast<ITEMID_TYPE>(rid.GetResIndex());
+	if ( !AmmoID )
+		return NULL;
+
+	// Get the container to search
+	CContainer *pParent = dynamic_cast<CContainer *>(GetParentObj());
+	CVarDefCont *pVarCont = GetDefKey("AMMOCONT", true);
+	if ( pVarCont )
+	{
+		// Search container using UID
+		CGrayUID uidCont = static_cast<CGrayUID>(pVarCont->GetValNum());
+		CContainer *pCont = dynamic_cast<CContainer *>(uidCont.ItemFind());
+		if ( pCont )
+			return pCont->ContentFind(rid);
+
+		// Search container using ITEMID_TYPE
+		if ( pParent )
+		{
+			LPCTSTR pszContID = pVarCont->GetValStr();
+			RESOURCE_ID_BASE ridCont = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, pszContID));
+			pCont = dynamic_cast<CContainer *>(pParent->ContentFind(ridCont));
+			if ( pCont )
+				return pCont->ContentFind(rid);
+		}
+		return NULL;
+	}
+
+	// Search on parent container if there's no specific container to search
+	if ( pParent )
+		return pParent->ContentFind(rid);
+
+	return NULL;
+}
+
 LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 {
 	ADDTOCALLSTACK("CItem::Use_SpyGlass");
@@ -4432,6 +4541,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				Delete();
 			}
 			break;
+
 		case SPELL_Dispel:
 		case SPELL_Mass_Dispel:
 			if ( GetType() == IT_SPELL )
@@ -4441,12 +4551,15 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				Delete();
 			}
 			break;
+
 		case SPELL_Bless:
 		case SPELL_Curse:
 			return false;
+
 		case SPELL_Lightning:
 			Effect( EFFECT_LIGHTNING, ITEMID_NOTHING, pCharSrc );
 			break;
+
 		case SPELL_Explosion:
 		case SPELL_Fireball:
 		case SPELL_Fire_Bolt:
@@ -4458,7 +4571,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 		case SPELL_Magic_Lock:
 			if ( !SetMagicLock( pCharSrc, iSkillLevel ) )
-				return( false );
+				return false;
 			break;
 
 		case SPELL_Unlock:
@@ -4468,38 +4581,32 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 				int iDifficulty = Use_LockPick( pCharSrc, true, false );
 				if ( iDifficulty < 0 )
-					return( false );
+					return false;
 				bool fSuccess = pCharSrc->Skill_CheckSuccess( SKILL_MAGERY, iDifficulty );
 				Use_LockPick( pCharSrc, false, ! fSuccess );
 				return fSuccess;
 			}
 
 		case SPELL_Mark:
-			if ( !pCharSrc )
+			if ( !pCharSrc || !pCharSrc->m_pArea )
 				return false;
 
-			if ( !pCharSrc->IsPriv(PRIV_GM))
+			if ( !IsType(IT_RUNE) )
 			{
-				if ( !IsType(IT_RUNE) && ! IsType(IT_TELEPAD) )
-				{
-					pCharSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_SPELL_RECALL_NOTRUNE) );
-					return false;
-				}
-				if ( GetTopLevelObj() != pCharSrc )
-				{
-					// Prevent people from remarking GM teleport pads if they can't pick it up.
-					pCharSrc->SysMessage( g_Cfg.GetDefaultMsg(DEFMSG_SPELL_MARK_CONT) );
-					return false;
-				}
+				pCharSrc->SysMessageDefault(DEFMSG_SPELL_MARK_CANTMARKOBJ);
+				return false;
+			}
+			else if ( (GetTopLevelObj() != pCharSrc) && !pCharSrc->IsPriv(PRIV_GM) )
+			{
+				pCharSrc->SysMessageDefault(DEFMSG_SPELL_MARK_CONT);
+				return false;
 			}
 
 			m_itRune.m_pntMark = pCharSrc->GetTopPoint();
-			if ( IsType(IT_RUNE) )
-			{
-				m_itRune.m_Strength = pSpellDef->m_Effect.GetLinear( iSkillLevel );
-				SetName( pCharSrc->m_pArea->GetName() );
-			}
+			m_itRune.m_Charges = pSpellDef->m_Effect.GetLinear(iSkillLevel);
+			SetName(pCharSrc->m_pArea->GetName());
 			break;
+
 		default:
 			break;
 	}
@@ -4560,10 +4667,11 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		if ( m_itArmor.m_Hits_Cur > m_itArmor.m_Hits_Max )
 			m_itArmor.m_Hits_Cur = m_itArmor.m_Hits_Max;
 
+		UpdatePropertyFlag(AUTOTOOLTIP_FLAG_DURABILITY);
 		return( 0 );
 	}
 
-	if (( IsTrigUsed(TRIGGER_DAMAGE) ) || ( IsTrigUsed(TRIGGER_ITEMDAMAGE) ))
+	if ( IsTrigUsed(TRIGGER_DAMAGE) || IsTrigUsed(TRIGGER_ITEMDAMAGE) )
 	{
 		CScriptTriggerArgs Args(iDmg, static_cast<int>(uType));
 		if ( OnTrigger( ITRIG_DAMAGE, pSrc, &Args ) == TRIGRET_RET_TRUE )
@@ -4838,10 +4946,10 @@ bool CItem::OnTick()
 	SetTimeout(-1);
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
-	if (( IsTrigUsed(TRIGGER_TIMER) ) || ( IsTrigUsed(TRIGGER_ITEMTIMER) ))
+	if ( IsTrigUsed(TRIGGER_TIMER) || IsTrigUsed(TRIGGER_ITEMTIMER) )
 	{
 		iRet = OnTrigger( ITRIG_TIMER, &g_Serv );
-		if( iRet == TRIGRET_RET_TRUE )
+		if ( iRet == TRIGRET_RET_TRUE )
 			return true;
 	}
 
