@@ -486,7 +486,7 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 	/*if ( skill == SKILL_THROWING )		// throwing weapons also have anim of the weapon returning after throw it
 	{
 		TCHAR *anim = Str_GetTemp();
-		sprintf(anim, "TRYSRC %d EFFECT %d,%d,%d,%d,%d,%d,%d", static_cast<int>(pButte->GetUID()), EFFECT_BOLT, AnimID, 18, 1, 0, AnimHue, AnimRender);
+		sprintf(anim, "TRYSRC %d EFFECT %d,%d,%d,%d,%d,%d,%d", static_cast<int>(pButte->GetUID()), EFFECT_BOLT, AnimID, 18, 1, 0, static_cast<int>(AnimHue), static_cast<int>(AnimRender));
 		g_World.m_TimedFunctions.Add(GetUID(), 1, anim);	// TIMERF function
 	}*/
 
