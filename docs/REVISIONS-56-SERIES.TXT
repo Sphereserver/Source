@@ -624,3 +624,9 @@ Added: Missing animation of throwing weapons returning after throw it.
 
 08-06-2017, Coruja
 Fixed: NPCs canceling combat immediately when its target get out of LOS.
+Fixed: NPCs vendors not calculating skill train price correctly.
+
+Changed: Renamed weapon properties AMMOSOUNDHIT/AMMOSOUNDMISS to SOUNDHIT/SOUNDMISS.
+Changed: Now weapons must have SOUNDHIT/SOUNDMISS set on scripts to play hit/miss sound. If no value is set, it will not play any sound.
+	-Previous hardcoded sounds were based on weapon type, now each weapon can have its own sound.
+	-This will require an update on weapons scripts, which will be released on next commits.
