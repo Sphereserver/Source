@@ -622,5 +622,13 @@ Fixed: Added missing 'dam_nounparalyze' flag on damage of Poison spell.
 Fixed: Throwing weapons not working correctly.
 Added: Missing animation of throwing weapons returning after throw it.
 
-07-06-2017, Ares
+08-06-2017, Coruja
+Fixed: NPCs canceling combat immediately when its target get out of LOS.
+Fixed: NPCs vendors not calculating skill train price correctly.
+[sphere_events_npcs.scp]: Fixed event 'e_trainer' showing wrong trainable skill list on vendor's context menu
+
+09-06-2017, Coruja
+Changed: Updated internal SQLite libs v3.19.2 to v3.19.3.
+
+09-06-2017, Ares
 Added: f_onchar_login/f_onchar_logout functions (usually placed in sphere_serv_triggers.scp) are now called for clients login/-out at characters. This is independent from character definition or events to be more reliable. SRC is the character.

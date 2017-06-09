@@ -2346,9 +2346,12 @@ bool CChar::Fight_Attack( const CChar *pCharTarg, bool btoldByMaster )
 	}
 	if ( m_pNPC && !CanSeeLOS(pCharTarg) )
 	{
-		// The NPC can't see his target, just forget it temporarily instead try to keep attacking it
-		Skill_Start(SKILL_NONE);
-		return false;
+		// The NPC can't see his target
+		if ( !Calc_GetRandVal(20) )		// give up if target still out of LOS after many tries
+		{
+			Skill_Start(SKILL_NONE);
+			return false;
+		}
 	}
 
 	CChar *pTarget = const_cast<CChar *>(pCharTarg);
@@ -2948,7 +2951,8 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	}
 
 	SKILL_TYPE skill = Skill_GetActive();
-	if ( g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
+	bool bSkillRanged = g_Cfg.IsSkillFlag(skill, SKF_RANGED);
+	if ( bSkillRanged )
 	{
 		if ( IsStatFlag(STATF_HasShield) )		// this should never happen
 		{
@@ -3045,7 +3049,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	m_atFight.m_Swing_State = WAR_SWING_EQUIPPING;
 	m_atFight.m_Swing_NextAction = CServTime::GetCurrentTime() + m_atFight.m_Swing_Delay;
 
-	if ( pWeapon )
+	if ( bSkillRanged && pWeapon )
 	{
 		ITEMID_TYPE AnimID = ITEMID_NOTHING;
 		DWORD AnimHue = 0, AnimRender = 0;
@@ -3055,7 +3059,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( skill == SKILL_THROWING )		// throwing weapons also have anim of the weapon returning after throw it
 		{
 			TCHAR *anim = Str_GetTemp();
-			sprintf(anim, "TRYSRC %d EFFECT %d,%d,%d,%d,%d,%d,%d", static_cast<int>(pCharTarg->GetUID()), EFFECT_BOLT, AnimID, 18, 1, 0, AnimHue, AnimRender);
+			sprintf(anim, "TRYSRC %d EFFECT %d,%d,%d,%d,%d,%d,%d", static_cast<int>(pCharTarg->GetUID()), EFFECT_BOLT, AnimID, 18, 1, 0, static_cast<int>(AnimHue), static_cast<int>(AnimRender));
 			g_World.m_TimedFunctions.Add(GetUID(), 1, anim);	// TIMERF function
 		}
 	}

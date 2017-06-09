@@ -478,7 +478,7 @@ WORD CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 
 	WORD iSkillSrcVal = pCharSrc->Skill_GetBase(Skill);
 	WORD iSkillVal = Skill_GetBase(Skill);
-	WORD iTrainVal = NPC_GetTrainMax(pCharSrc, Skill) - iSkillSrcVal;
+	WORD iTrainVal = maximum(0, NPC_GetTrainMax(pCharSrc, Skill) - iSkillSrcVal);
 
 	// Train npc skill cap
 	WORD iMaxDecrease = 0;
@@ -668,7 +668,7 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
 			continue;
 
-		WORD iDiff = NPC_GetTrainMax(pCharSrc, static_cast<SKILL_TYPE>(i)) - pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i));
+		WORD iDiff = maximum(0, NPC_GetTrainMax(pCharSrc, static_cast<SKILL_TYPE>(i)) - pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i)));
 		if ( iDiff <= 0 )
 			continue;
 
