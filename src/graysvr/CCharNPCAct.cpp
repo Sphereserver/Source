@@ -2565,13 +2565,11 @@ void CChar::NPC_Act_Goto(int iDist)
 bool CChar::NPC_Act_Food()
 {
 	ADDTOCALLSTACK("CChar::NPC_Act_Food");
-	int		iFood = Stat_GetVal(STAT_FOOD);
-	int		iFoodLevel = Food_GetLevelPercent();
+	// Search for food when hungry
 
-	if ( iFood >= 10 )
-		return false;							//	search for food is starving or very hungry
-	if ( iFoodLevel > 40 )
-		return false;							// and it is at least 60% hungry
+	int iFoodLevel = Food_GetLevelPercent();
+	if ( iFoodLevel > 40 )		// only search for food when hungry
+		return false;
 
 	m_pNPC->m_Act_Motivation = static_cast<BYTE>((50 - (iFoodLevel / 2)));
 
@@ -3209,17 +3207,17 @@ void CChar::NPC_Food()
 	ADDTOCALLSTACK("CChar::NPC_Food");
 	EXC_TRY("FoodAI");
 
+	int iFoodLevel = Food_GetLevelPercent();
+	if ( iFoodLevel > 40 )		// only search for food when hungry
+		return;
+
 	int		iFood = Stat_GetVal(STAT_FOOD);
-	int		iFoodLevel = Food_GetLevelPercent();
 	WORD	iEatAmount = 1;
 	int		iSearchDistance = 2;
 	CItem	*pClosestFood = NULL;
 	int		iClosestFood = 100;
 	int		iMyZ = GetTopPoint().m_z;
 	bool	bSearchGrass = false;
-
-	if ( iFood >= 10 ) return;							//	search for food is starving or very hungry
-	if ( iFoodLevel > 40 ) return;						// and it is at least 60% hungry
 
 	CItemContainer *pPack = GetContainer(LAYER_PACK);
 	if ( pPack )

@@ -631,4 +631,5 @@ Fixed: NPCs vendors not calculating skill train price correctly.
 Changed: Updated internal SQLite libs v3.19.2 to v3.19.3.
 
 16-06-2017, Coruja
+Changed: NPCAI flags NPC_AI_FOOD/NPC_AI_INTFOOD on sphere.ini now will make NPCs search for food only when food level percent (<FOOD>*100/<MAXFOOD>) is < 40% instead (<FOOD> < 10).
 [sphere.ini]: Removed unused 'AutoPrivFlags' setting and updated description of NPCAI flags

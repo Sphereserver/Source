@@ -180,11 +180,11 @@ int CChar::GetWeightLoadPercent( int iWeight ) const
 	if ( IsPriv(PRIV_GM) )
 		return 1;
 	
-	int	MaxCarry = g_Cfg.Calc_MaxCarryWeight(this);
-	if ( !MaxCarry )
+	int	iMaxCarry = g_Cfg.Calc_MaxCarryWeight(this);
+	if ( !iMaxCarry )
 		return 1000;	// suppose self extra-overloaded
 
-	return IMULDIV( iWeight, 100, MaxCarry);
+	return IMULDIV(iWeight, 100, iMaxCarry);
 }
 
 bool CChar::CanCarry( const CItem *pItem ) const
@@ -637,20 +637,20 @@ CItem *CChar::GetSpellbook(SPELL_TYPE iSpell) const
 short CChar::Food_GetLevelPercent() const
 {
 	ADDTOCALLSTACK("CChar::Food_GetLevelPercent");
-	short max = Stat_GetMax(STAT_FOOD);
-	if ( max == 0 )
+	short iMax = Stat_GetMax(STAT_FOOD);
+	if ( iMax == 0 )
 		return 100;
-	return static_cast<short>(IMULDIV(Stat_GetVal(STAT_FOOD), 100, max));
+	return static_cast<short>(IMULDIV(Stat_GetVal(STAT_FOOD), 100, iMax));
 }
 
 LPCTSTR CChar::Food_GetLevelMessage(bool fPet, bool fHappy) const
 {
 	ADDTOCALLSTACK("CChar::Food_GetLevelMessage");
-	short max = Stat_GetMax(STAT_FOOD);
-	if ( max == 0 )
+	short iMax = Stat_GetMax(STAT_FOOD);
+	if ( iMax == 0 )
 		return g_Cfg.GetDefaultMsg(DEFMSG_PET_HAPPY_UNAFFECTED);
 
-	size_t index = IMULDIV(Stat_GetVal(STAT_FOOD), 8, max);
+	size_t index = IMULDIV(Stat_GetVal(STAT_FOOD), 8, iMax);
 
 	if ( fPet )
 	{
@@ -723,7 +723,7 @@ WORD CChar::Food_CanEat( CObjBase *pObj ) const
 	return 0;
 }
 
-LPCTSTR CChar::GetTradeTitle() const // Paperdoll title for character p (2)
+LPCTSTR CChar::GetTradeTitle() const
 {
 	ADDTOCALLSTACK("CChar::GetTradeTitle");
 	if ( !m_sTitle.IsEmpty() )
