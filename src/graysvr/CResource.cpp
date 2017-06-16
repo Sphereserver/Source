@@ -171,7 +171,6 @@ CResource::CResource()
 	m_iMaxLoopTimes = 100000;
 
 	m_bAutoResDisp = true;
-	m_iAutoPrivFlags = PRIV_DETAIL;
 
 	// Third Party Tools
 	m_fCUOStatus = true;
@@ -372,7 +371,6 @@ enum RC_TYPE
 	RC_ATTACKERTIMEOUT,			// m_iAttackerTimeout
 	RC_ATTACKINGISACRIME,		// m_fAttackingIsACrime
 	RC_AUTONEWBIEKEYS,			// m_fAutoNewbieKeys
-	RC_AUTOPRIVFLAGS,			// m_iAutoPrivFlags
 	RC_AUTORESDISP,				// m_bAutoResDisp
 	RC_AUTOTOOLTIPRESEND,		// m_iAutoTooltipResend
 	RC_BACKUPLEVELS,			// m_iSaveBackupLevels
@@ -597,7 +595,6 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "ATTACKERTIMEOUT",		{ ELEM_INT,		OFFSETOF(CResource,m_iAttackerTimeout),		0 }},
 	{ "ATTACKINGISACRIME",		{ ELEM_BOOL,	OFFSETOF(CResource,m_fAttackingIsACrime),	0 }},
 	{ "AUTONEWBIEKEYS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fAutoNewbieKeys),		0 }},
-	{ "AUTOPRIVFLAGS",			{ ELEM_INT,		OFFSETOF(CResource,m_iAutoPrivFlags),		0 }},
 	{ "AUTORESDISP",			{ ELEM_BOOL,	OFFSETOF(CResource,m_bAutoResDisp),			0 }},
 	{ "AUTOTOOLTIPRESEND",		{ ELEM_INT,		OFFSETOF(CResource,m_iAutoTooltipResend),	0 }},
 	{ "BACKUPLEVELS",			{ ELEM_INT,		OFFSETOF(CResource,m_iSaveBackupLevels),	0 }},

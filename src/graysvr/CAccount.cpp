@@ -551,9 +551,7 @@ CAccount::CAccount( LPCTSTR pszName, bool fGuest )
 	else
 		SetPrivLevel(PLEVEL_Player);
 
-	m_PrivFlags = static_cast<WORD>(g_Cfg.m_iAutoPrivFlags);
 	m_MaxChars = 0;
-
 	m_Total_Connect_Time = 0;
 	m_Last_Connect_Time = 0;
 	// Add myself to the list.

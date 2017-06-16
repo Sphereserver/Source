@@ -917,18 +917,16 @@ public:
 #define STAT_FLAG_DENYMAXN	0x04	//		.. for npcs
 	int		m_iStatFlag;
 
-#define NPC_AI_PATH				0x00001		//	NPC pathfinding
-#define	NPC_AI_FOOD				0x00002		//	NPC food search (objects + grass)
-#define	NPC_AI_EXTRA			0x00004		//	NPC magics, combat, etc
-#define NPC_AI_ALWAYSINT		0x00008		//	NPC pathfinding does not check int, always smart
-#define NPC_AI_INTFOOD			0x00010		//  NPC food search (more intelligent and trusworthy)
-#define NPC_AI_COMBAT			0x00040
-#define NPC_AI_VEND_TIME		0x00080
-#define NPC_AI_LOOTING			0x00100
-#define	NPC_AI_MOVEOBSTACLES	0x00200
-#define NPC_AI_PERSISTENTPATH	0x00400
-#define NPC_AI_THREAT			0x00800
-#define NPC_AI_OLDSPEED			0x01000		// Enable backwards MoveSpeed formula ()
+#define NPC_AI_PATH				0x001	// Enable advanced NPC pathfinding engine (this can significantly increase server CPU usage)
+#define	NPC_AI_FOOD				0x002	// Enable basic NPC food search (objects + grass) when hungry
+#define	NPC_AI_EXTRA			0x004	// Make NPCs human (brain_human) equip/unequip weapons on combat or light sources at night
+#define NPC_AI_ALWAYSINT		0x008	// Make NPC_AI_PATH consider all NPCs as smart as possible to find better paths
+#define NPC_AI_INTFOOD			0x010	// Enable advanced NPC food search (more intelligent and trusworthy) when hungry
+#define NPC_AI_COMBAT			0x040	// Make NPCs cast good spells in his friends while in combat
+#define NPC_AI_LOOTING			0x100	// Make NPCs loot nearby corpses and items on ground
+#define	NPC_AI_MOVEOBSTACLES	0x200	// Make NPCs with CAN=mt_usehands able to move items blocking its way
+#define NPC_AI_PERSISTENTPATH	0x400	// Make NPCs try to follow its target even when it is unreachable instead give up
+#define NPC_AI_THREAT			0x800	// Make NPCs switch targets based on target threat level while in combat
 	int		m_iNpcAi;
 
 	//	Experience system
@@ -948,7 +946,6 @@ public:
 	unsigned int m_iLevelNextAt;
 
 	bool	m_bAutoResDisp;
-	int		m_iAutoPrivFlags;
 
 	char	m_cCommandPrefix;
 
