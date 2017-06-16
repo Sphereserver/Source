@@ -129,6 +129,9 @@ void CClient::CharDisconnect()
 		return;
 
 	Announce(false);
+	CScriptTriggerArgs LogoutArgs;
+	m_pChar->r_Call("f_onchar_logout", m_pChar, &LogoutArgs);
+
 	bool bCanInstaLogOut = CanInstantLogOut();
 	int	iLingerTime = g_Cfg.m_iClientLingerTime;
 
