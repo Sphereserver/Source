@@ -3056,11 +3056,13 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		pWeapon->Weapon_GetRangedAmmoAnim(AnimID, AnimHue, AnimRender);
 		pCharTarg->Effect(EFFECT_BOLT, AnimID, this, 18, 1, false, AnimHue, AnimRender);
 
-		if ( skill == SKILL_THROWING )		// throwing weapons also have anim of the weapon returning after throw it
+		if ( m_pClient && (skill == SKILL_THROWING) )		// throwing weapons also have anim of the weapon returning after throw it
 		{
-			TCHAR *anim = Str_GetTemp();
-			sprintf(anim, "TRYSRC %d EFFECT %d,%d,%d,%d,%d,%d,%d", static_cast<int>(pCharTarg->GetUID()), EFFECT_BOLT, AnimID, 18, 1, 0, static_cast<int>(AnimHue), static_cast<int>(AnimRender));
-			g_World.m_TimedFunctions.Add(GetUID(), 1, anim);	// TIMERF function
+			m_pClient->m_timeLastSkillThrowing = CServTime::GetCurrentTime();
+			m_pClient->m_pSkillThrowingTarg = pCharTarg;
+			m_pClient->m_SkillThrowingAnimID = AnimID;
+			m_pClient->m_SkillThrowingAnimHue = AnimHue;
+			m_pClient->m_SkillThrowingAnimRender = AnimRender;
 		}
 	}
 

@@ -1050,6 +1050,13 @@ public:
 	typedef std::map<int,int> OpenedGumpsMap_t;
 	OpenedGumpsMap_t m_mapOpenedGumps;
 
+	// Throwing weapons stuff (this is used to play weapon returning anim after throw it)
+	CServTime m_timeLastSkillThrowing;		// Last time we throw the weapon
+	CObjBase *m_pSkillThrowingTarg;			// Object from where the anim will return from
+	ITEMID_TYPE m_SkillThrowingAnimID;		// Weapon anim ID (AMMOANIM)
+	DWORD m_SkillThrowingAnimHue;			// Weapon anim hue (AMMOANIMHUE)
+	DWORD m_SkillThrowingAnimRender;		// Weapon anim render (AMMOANIMRENDER)
+
 	// Current operation context args for modal async operations..
 private:
 	CLIMODE_TYPE m_Targ_Mode;	// Type of async operation under way.

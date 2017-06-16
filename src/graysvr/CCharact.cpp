@@ -3975,8 +3975,20 @@ bool CChar::OnTick()
 	if ( IsDisconnected() )
 		return true;
 
-	if ( m_pClient && -g_World.GetTimeDiff(m_pClient->m_timeLastEventWalk) > 2 )	// clear 'running' flag when the client stop running
-		StatFlag_Clear(STATF_Fly);
+	if ( m_pClient )
+	{
+		// Clear 'running' flag when the client stop running
+		if ( -g_World.GetTimeDiff(m_pClient->m_timeLastEventWalk) > 2 )
+			StatFlag_Clear(STATF_Fly);
+
+		// Show returning anim for thowing weapons after throw it
+		if ( m_pClient->m_timeLastSkillThrowing.IsTimeValid() && -g_World.GetTimeDiff(m_pClient->m_timeLastSkillThrowing) > 2 )
+		{
+			m_pClient->m_timeLastSkillThrowing.Init();
+			if ( m_pClient->m_pSkillThrowingTarg->IsValidUID() )
+				Effect(EFFECT_BOLT, m_pClient->m_SkillThrowingAnimID, m_pClient->m_pSkillThrowingTarg, 18, 1, false, m_pClient->m_SkillThrowingAnimHue, m_pClient->m_SkillThrowingAnimRender);
+		}
+	}
 
 	if ( iTimeDiff >= TICK_PER_SEC )		// don't bother with < 1 sec timers on the checks below
 	{

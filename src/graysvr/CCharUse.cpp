@@ -396,14 +396,14 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 	// Check position alignment
 	CPointMap ptChar = GetTopPoint();
 	CPointMap ptButte = pButte->GetTopPoint();
-	if ( pButte->GetID() == ITEMID_ARCHERYBUTTE_S )
+	if ( pButte->GetDispID() == ITEMID_ARCHERYBUTTE_S )
 	{
 		if ( ptChar.m_x != ptButte.m_x )
 		{
 			SysMessageDefault(DEFMSG_ITEMUSE_ARCHBUTTE_WRONGALIGN);
 			return false;
 		}
-		else if ( ptChar.m_y > ptButte.m_y )
+		else if ( ptChar.m_y < ptButte.m_y )
 		{
 			SysMessageDefault(DEFMSG_ITEMUSE_ARCHBUTTE_WRONGPOS);
 			return false;
@@ -481,14 +481,14 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 	pWeapon->Weapon_GetRangedAmmoAnim(AnimID, AnimHue, AnimRender);
 	pButte->Effect(EFFECT_BOLT, AnimID, this, 18, 1, false, AnimHue, AnimRender);
 
-	// TO-DO: Find a way to make this code work here. It inherits from CChar::Fight_Hit() and works using
-	// TIMERF function to call TRYSRC with the EFFECT to send, but TRYSRC can't be used with items as SRC
-	/*if ( skill == SKILL_THROWING )		// throwing weapons also have anim of the weapon returning after throw it
+	if ( m_pClient && (skill == SKILL_THROWING) )		// throwing weapons also have anim of the weapon returning after throw it
 	{
-		TCHAR *anim = Str_GetTemp();
-		sprintf(anim, "TRYSRC %d EFFECT %d,%d,%d,%d,%d,%d,%d", static_cast<int>(pButte->GetUID()), EFFECT_BOLT, AnimID, 18, 1, 0, static_cast<int>(AnimHue), static_cast<int>(AnimRender));
-		g_World.m_TimedFunctions.Add(GetUID(), 1, anim);	// TIMERF function
-	}*/
+		m_pClient->m_timeLastSkillThrowing = CServTime::GetCurrentTime();
+		m_pClient->m_pSkillThrowingTarg = pButte;
+		m_pClient->m_SkillThrowingAnimID = AnimID;
+		m_pClient->m_SkillThrowingAnimHue = AnimHue;
+		m_pClient->m_SkillThrowingAnimRender = AnimRender;
+	}
 
 	m_atFight.m_Swing_NextAction = CServTime::GetCurrentTime() + (2 * TICK_PER_SEC);
 
