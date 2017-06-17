@@ -818,24 +818,21 @@ bool CChar::CanDisturb( const CChar *pChar ) const
 	return true;
 }
 
-bool CChar::CanSeeAsDead( const CChar *pChar) const
+bool CChar::CanSeeAsDead( const CChar *pChar ) const
 {
 	ADDTOCALLSTACK("CChar::CanSeeAsDead");
-	int iDeadCannotSee = g_Cfg.m_fDeadCannotSeeLiving;
-	if ( iDeadCannotSee && !pChar->IsStatFlag(STATF_DEAD) && !IsPriv(PRIV_GM) )
-	{
-		if ( pChar->m_pPlayer )
-		{
-			if ( iDeadCannotSee == 2 )
-				return false;
-		}
-		else
-		{
-			if ( (pChar->NPC_PetGetOwner() != this) && (pChar->m_pNPC->m_Brain != NPCBRAIN_HEALER) )
-				return false;
-		}
-	}
-	return true;
+	// Check if an dead char can see pChar
+	if ( !pChar )
+		return false;
+
+	if ( !g_Cfg.m_fDeadCannotSeeLiving )
+		return true;
+	if ( pChar->m_pPlayer && ((g_Cfg.m_fDeadCannotSeeLiving != 2) || pChar->IsStatFlag(STATF_DEAD) || pChar->IsPriv(PRIV_GM)) )
+		return true;
+	if ( pChar->m_pNPC && ((pChar->NPC_PetGetOwner() == this) || (pChar->m_pNPC->m_Brain == NPCBRAIN_HEALER)) )
+		return true;
+
+	return false;
 }
 
 bool CChar::CanSeeInContainer( const CItemContainer *pContItem ) const
