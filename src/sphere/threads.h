@@ -171,7 +171,7 @@ private:
 	struct STACK_INFO_REC
 	{
 		const char *functionName;
-		LONGLONG	startTime;
+		ULONGLONG startTime;
 	};
 
 	STACK_INFO_REC m_stackInfo[0x1000];
@@ -201,25 +201,13 @@ public:
 		m_freezeCallStack = freeze;
 	}
 
-	inline void pushStackCall(const char *name)
-	{
-		if (m_freezeCallStack == false)
-		{
-			m_stackInfo[m_stackPos].functionName = name;
-			m_stackInfo[m_stackPos].startTime = ::GetTickCount();
-			m_stackPos++;
-			m_stackInfo[m_stackPos].startTime = 0;
-		}
-	}
-
 	inline void popStackCall(void)
 	{
-		if (m_freezeCallStack == false)
-		{
+		if (!m_freezeCallStack)
 			m_stackPos--;
-		}
 	}
 
+	void pushStackCall(const char *name);
 	void printStackTrace(void);
 #endif
 

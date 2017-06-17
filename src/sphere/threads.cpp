@@ -541,7 +541,7 @@ TemporaryStringStorage *AbstractSphereThread::allocateStringBuffer()
 void AbstractSphereThread::allocateString(TemporaryString &string)
 {
 	SimpleThreadLock stlBuffer(g_tmpTemporaryStringMutex);
-    
+
 	TemporaryStringStorage * store = allocateStringBuffer();
 	string.init(store->m_buffer, &store->m_state);
 }
@@ -555,13 +555,24 @@ bool AbstractSphereThread::shouldExit()
 }
 
 #ifdef THREAD_TRACK_CALLSTACK
+void AbstractSphereThread::pushStackCall(const char *name)
+{
+	if ( !m_freezeCallStack )
+	{
+		m_stackInfo[m_stackPos].functionName = name;
+		m_stackInfo[m_stackPos].startTime = GetTickCount64();
+		m_stackPos++;
+		m_stackInfo[m_stackPos].startTime = 0;
+	}
+}
+
 void AbstractSphereThread::printStackTrace()
 {
 	// don't allow call stack to be modified whilst we're printing it
 	freezeCallStack(true);
 
-	LONGLONG startTime = m_stackInfo[0].startTime;
-	long timedelta;
+	ULONGLONG startTime = m_stackInfo[0].startTime;
+	ULONGLONG timedelta;
 	unsigned int threadId = getId();
 
 	g_Log.EventDebug("__ thread (%u) __ |  # | _____________ function _____________ | __ ticks passed from previous function start __\n", threadId);
@@ -570,8 +581,8 @@ void AbstractSphereThread::printStackTrace()
 		if ( m_stackInfo[i].startTime == 0 )
 			break;
 
-		timedelta = static_cast<long>(m_stackInfo[i].startTime - startTime);
-		g_Log.EventDebug(">>         %u     | %2d | %36s | +%ld %s\n", threadId, i, m_stackInfo[i].functionName, timedelta, (i == (m_stackPos - 1)) ? "<-- exception catch point (below is guessed and could be incorrect!)" : "");
+		timedelta = m_stackInfo[i].startTime - startTime;
+		g_Log.EventDebug(">>         %u     | %2d | %36s | +%llu %s\n", threadId, i, m_stackInfo[i].functionName, timedelta, (i == (m_stackPos - 1)) ? "<-- exception catch point (below is guessed and could be incorrect!)" : "");
 		startTime = m_stackInfo[i].startTime;
 	}
 
