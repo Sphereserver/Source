@@ -3094,6 +3094,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 		static const SOUND_TYPE sm_SoundMiss_Wrestling[] = { 0x238, 0x239, 0x23a };
 		Sound(pWeapon ? pWeapon->Weapon_GetSoundMiss() : sm_SoundMiss_Wrestling[Calc_GetRandVal(COUNTOF(sm_SoundMiss_Wrestling))]);
+		return WAR_SWING_EQUIPPING;
 	}
 
 	// We hit
@@ -3222,16 +3223,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	}
 
 	// Took my swing. Do Damage !
-	iDmg = pCharTarg->OnTakeDamage(
-		iDmg,
-		this,
-		iTyp,
-		static_cast<int>(GetDefNum("DAMPHYSICAL", true)),
-		static_cast<int>(GetDefNum("DAMFIRE", true)),
-		static_cast<int>(GetDefNum("DAMCOLD", true)),
-		static_cast<int>(GetDefNum("DAMPOISON", true)),
-		static_cast<int>(GetDefNum("DAMENERGY", true))
-		);
+	iDmg = pCharTarg->OnTakeDamage(iDmg, this, iTyp, static_cast<int>(GetDefNum("DAMPHYSICAL", true)), static_cast<int>(GetDefNum("DAMFIRE", true)), static_cast<int>(GetDefNum("DAMCOLD", true)), static_cast<int>(GetDefNum("DAMPOISON", true)), static_cast<int>(GetDefNum("DAMENERGY", true)));
 
 	if ( iDmg > 0 )
 	{
