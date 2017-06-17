@@ -537,25 +537,20 @@ PLEVEL_TYPE CAccount::GetPrivLevelText( LPCTSTR pszFlags ) // static
 
 CAccount::CAccount( LPCTSTR pszName, bool fGuest )
 {
-	g_Serv.StatInc( SERV_STAT_ACCOUNTS );
+	g_Serv.StatInc(SERV_STAT_ACCOUNTS);
 
-	TCHAR szName[ MAX_ACCOUNT_NAME_SIZE ];
-	if ( !CAccount::NameStrip( szName, pszName ) )
-	{
+	TCHAR szName[MAX_ACCOUNT_NAME_SIZE];
+	if ( !CAccount::NameStrip(szName, pszName) )
 		g_Log.Event(LOGL_ERROR|LOGM_INIT, "Account '%s': BAD name\n", pszName);
-	}
+
 	m_sName = szName;
-
-	if ( !strnicmp(m_sName, "GUEST", 5) || fGuest )
-		SetPrivLevel(PLEVEL_Guest);
-	else
-		SetPrivLevel(PLEVEL_Player);
-
+	SetPrivLevel((!strnicmp(m_sName, "GUEST", 5) || fGuest) ? PLEVEL_Guest : PLEVEL_Player);
+	m_PrivFlags = 0;
 	m_MaxChars = 0;
 	m_Total_Connect_Time = 0;
 	m_Last_Connect_Time = 0;
-	// Add myself to the list.
-	g_Accounts.Account_Add( this );
+
+	g_Accounts.Account_Add(this);
 }
 
 void CAccount::DeleteChars()
@@ -1366,9 +1361,9 @@ void CAccount::r_Write(CScript &s)
 	{
 		s.WriteKey( "PLEVEL", sm_szPrivLevels[ GetPrivLevel() ] );
 	}
-	if ( m_PrivFlags != PRIV_DETAIL )
+	if ( m_PrivFlags )
 	{
-		s.WriteKeyHex( "PRIV", m_PrivFlags &~( PRIV_BLOCKED | PRIV_JAILED ));
+		s.WriteKeyHex( "PRIV", m_PrivFlags & ~(PRIV_BLOCKED|PRIV_JAILED) );
 	}
 	if ( GetResDisp() )
 	{
