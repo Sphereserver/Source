@@ -109,7 +109,7 @@ bool PacketCreate::onReceive(NetState* net, bool hasExtraSkill)
 				break;
 		}
 	}
-	else 
+	else
 	{
 		/*
 			m_sex values from clients pre-7.0.0.0
@@ -349,31 +349,6 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 			break;
 	}
 
-	CScriptTriggerArgs createArgs;
-	createArgs.m_iN1 = iFlags;
-	createArgs.m_iN2 = prProf;
-	createArgs.m_iN3 = rtRace;
-	createArgs.m_pO1 = client;
-	createArgs.m_s1 = account->GetName();
-
-	TRIGRET_TYPE tr;
-	client->r_Call("f_onchar_create", pChar, &createArgs, NULL, &tr);
-	if ( tr == TRIGRET_RET_TRUE )
-	{
-		client->addLoginErr(PacketLoginError::CreationBlocked);
-		pChar->Delete();
-		return false;
-	}
-
-	if ( IsTrigUsed(TRIGGER_RENAME) )
-	{
-		CScriptTriggerArgs args;
-		args.m_s1 = charname;
-		args.m_pO1 = pChar;
-		if ( pChar->OnTrigger(CTRIG_Rename, pChar, &args) == TRIGRET_RET_TRUE )
-			pChar->SetNamePool(bFemale ? "#NAMES_HUMANFEMALE" : "#NAMES_HUMANMALE");
-	}
-
 	// Set starting position
 	if ( g_Cfg.m_StartDefs.IsValidIndex(iStartLoc) )
 		pChar->m_ptHome = g_Cfg.m_StartDefs[iStartLoc]->m_pt;
@@ -445,7 +420,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 		pChar->LayerAdd(pFace);
 	}
 
-	// Get starting items for the profession / skills.
+	// Get starting items for the profession / skills
 	int iProfession = INT_MAX;
 	bool bCreateSkillItems = true;
 	switch ( prProf )
@@ -527,6 +502,36 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 		}
 	}
 	s.Close();
+
+	// Call triggers
+	CScriptTriggerArgs createArgs;
+	createArgs.m_iN1 = iFlags;
+	createArgs.m_iN2 = prProf;
+	createArgs.m_iN3 = rtRace;
+	createArgs.m_pO1 = client;
+	createArgs.m_s1 = account->GetName();
+
+	TRIGRET_TYPE tr;
+	client->r_Call("f_onchar_create", pChar, &createArgs, NULL, &tr);
+	if ( tr == TRIGRET_RET_TRUE )
+	{
+		client->addLoginErr(PacketLoginError::CreationBlocked);
+		pChar->Delete();
+		return false;
+	}
+
+	if ( IsTrigUsed(TRIGGER_RENAME) )
+	{
+		CScriptTriggerArgs args;
+		args.m_s1 = charname;
+		args.m_pO1 = pChar;
+		if ( pChar->OnTrigger(CTRIG_Rename, pChar, &args) == TRIGRET_RET_TRUE )
+		{
+			client->addIdleWarning(PacketWarningMessage::InvalidName);
+			pChar->Delete();
+			return false;
+		}
+	}
 
 	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' created new char '%s' [0%lx]\n", net->id(), account->GetName(), pChar->GetName(), static_cast<DWORD>(pChar->GetUID()));
 	client->Setup_Start(pChar);
@@ -1497,10 +1502,11 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 	{
 		case BBOARDF_REQ_FULL:
 		case BBOARDF_REQ_HEAD:
+		{
 			// request for message header and/or body
-			if (getLength() != 0x0c)
+			if (getLength() != 0xC)
 			{
-				DEBUG_ERR(( "%lx:BBoard feed back message bad length %" FMTSIZE_T "\n", net->id(), getLength()));
+				DEBUG_ERR(("%lx:BBoard feed back message bad length %" FMTSIZE_T "\n", net->id(), getLength()));
 				return true;
 			}
 			if (!client->addBBoardMessage(board, action, messageSerial))
@@ -1510,11 +1516,11 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 				return true;
 			}
 			break;
-
+		}
 		case BBOARDF_NEW_MSG:
 		{
 			// submit a message
-			if (getLength() < 0x0c)
+			if (getLength() < 0xC)
 				return true;
 
 			if (!character->CanTouch(board))
@@ -1563,7 +1569,6 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 			board->ContentAdd(newMessage);
 			break;
 		}
-
 		case BBOARDF_DELETE:
 		{
 			// remove the message
@@ -1583,7 +1588,6 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 			message->Delete();
 			break;
 		}
-
 		default:
 			DEBUG_ERR(( "%lx:BBoard unknown flag %d\n", net->id(), action));
 			return true;
@@ -2851,17 +2855,19 @@ bool PacketPartyMessage::onReceive(NetState* net)
 	switch (code)
 	{
 		case PARTYMSG_Add:
+		{
 			// request to add a new member
-			client->addTarget( CLIMODE_TARG_PARTY_ADD, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_TARG_WHO), false, false);
+			client->addTarget(CLIMODE_TARG_PARTY_ADD, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_TARG_WHO), false, false);
 			break;
-
+		}
 		case PARTYMSG_Disband:
+		{
 			if (!character->m_pParty)
 				return false;
 
 			character->m_pParty->Disband(character->GetUID());
 			break;
-
+		}
 		case PARTYMSG_Remove:
 		{
 			// request to remove this member of the party
@@ -2870,8 +2876,8 @@ bool PacketPartyMessage::onReceive(NetState* net)
 
 			CGrayUID serial(readInt32());
 			character->m_pParty->RemoveMember(serial, character->GetUID());
-		} break;
-
+			break;
+		}
 		case PARTYMSG_MsgMember:
 		{
 			// message a specific member of my party
@@ -2882,8 +2888,8 @@ bool PacketPartyMessage::onReceive(NetState* net)
 			NWORD * text = reinterpret_cast<NWORD *>(Str_GetTemp());
 			int length = readStringNullUNICODE(reinterpret_cast<WCHAR *>(text), MAX_TALK_BUFFER);
 			character->m_pParty->MessageEvent(serial, character->GetUID(), text, length);
-		} break;
-
+			break;
+		}
 		case PARTYMSG_Msg:
 		{
 			// send message to the whole party
@@ -2893,8 +2899,8 @@ bool PacketPartyMessage::onReceive(NetState* net)
 			NWORD * text = reinterpret_cast<NWORD *>(Str_GetTemp());
 			int length = readStringNullUNICODE(reinterpret_cast<WCHAR *>(text), MAX_TALK_BUFFER);
 			character->m_pParty->MessageEvent(CGrayUID(0), character->GetUID(), text, length);
-		} break;
-
+			break;
+		}
 		case PARTYMSG_Option:
 		{
 			// set the loot flag
@@ -2903,24 +2909,26 @@ bool PacketPartyMessage::onReceive(NetState* net)
 
 			character->m_pParty->SetLootFlag(character, readBool());
 			character->NotoSave_Update();
-		} break;
-
+			break;
+		}
 		case PARTYMSG_Accept:
 		{
 			// we accept or decline the offer of an invite
 			CGrayUID serial(readInt32());
 			CPartyDef::AcceptEvent(character, serial);
-		} break;
-
+			break;
+		}
 		case PARTYMSG_Decline:
 		{
 			CGrayUID serial(readInt32());
 			CPartyDef::DeclineEvent(character, serial);
-		} break;
-
+			break;
+		}
 		default:
+		{
 			client->SysMessagef("Unknown party system msg %d", code);
 			break;
+		}
 	}
 
 	return true;

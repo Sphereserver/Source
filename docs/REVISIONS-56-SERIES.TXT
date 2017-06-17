@@ -635,3 +635,8 @@ Added: New item property PICKUPSOUND to override default pickup sound for items 
 Changed: DeadCannotSeeLiving setting on sphere.ini now will always show GM chars.
 Changed: NPCAI flags NPC_AI_FOOD/NPC_AI_INTFOOD on sphere.ini now will make NPCs search for food only when food level percent (<FOOD>*100/<MAXFOOD>) is < 40% instead (<FOOD> < 10).
 [sphere.ini]: Removed unused 'AutoPrivFlags' setting and updated description of NPCAI flags
+
+17-06-2017, Coruja
+Changed: 'return 1' on char trigger @Rename of account characters being created now will block the character creation instead create the character using generic names.
+Changed: Server trigger 'f_onchar_create' now is called after skills/stats are already set on the character being created.
+	-This will allow users to create characters with custom skills/stats without get these values overridden by default values later.
