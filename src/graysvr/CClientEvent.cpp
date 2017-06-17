@@ -190,7 +190,9 @@ void CClient::Event_Item_Pickup(CGrayUID uid, int amount)
 		new PacketDragCancel(this, PacketDragCancel::CannotLift);
 		return;
 	}
-	addSound(SOUND_USE_CLOTH);
+
+	SOUND_TYPE iSnd = static_cast<SOUND_TYPE>(pItem->GetDefNum("PICKUPSOUND", true));
+	addSound(iSnd ? iSnd : SOUND_USE_CLOTH);
 
 	EXC_SET("TargMode");
 	SetTargMode(CLIMODE_DRAG);
