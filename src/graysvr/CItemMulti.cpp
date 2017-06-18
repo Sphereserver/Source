@@ -94,13 +94,9 @@ bool CItemMulti::MultiRealizeRegion()
 	m_pRegion->SetRegionRect(rect);
 	m_pRegion->m_pt = pt;
 
-	DWORD dwFlags;
-	if ( IsType(IT_SHIP) )
-		dwFlags = REGION_FLAG_SHIP;
-	else
-		dwFlags = pRegionBack->GetRegionFlags();	// houses get some of the attribs of the land around it
-
-	dwFlags |= pMultiDef->m_dwRegionFlags;
+	DWORD dwFlags = pMultiDef->m_dwRegionFlags;
+	if ( !IsType(IT_SHIP) )		// ships are multis that can be moved, so to avoid region flag conflicts they won't inherit parent region flags
+		dwFlags |= pRegionBack->GetRegionFlags();
 	m_pRegion->SetRegionFlags(dwFlags);
 
 	TCHAR *pszTemp = Str_GetTemp();
@@ -155,6 +151,10 @@ bool CItemMulti::Multi_CreateComponent( ITEMID_TYPE id, signed short dx, signed 
 			break;
 		case IT_DOOR:
 			pItem->SetType(IT_DOOR_LOCKED);
+			fNeedKey = true;
+			break;
+		case IT_PORTCULIS:
+			pItem->SetType(IT_PORT_LOCKED);
 			fNeedKey = true;
 			break;
 		case IT_CONTAINER:
