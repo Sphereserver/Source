@@ -637,6 +637,7 @@ Changed: NPCAI flags NPC_AI_FOOD/NPC_AI_INTFOOD on sphere.ini now will make NPCs
 [sphere.ini]: Removed unused 'AutoPrivFlags' setting and updated description of NPCAI flags
 
 17-06-2017, Coruja
+Fixed: Function BADSPAWN not working correctly.
 Changed: Default region flags for MULTIDEF items without REGIONFLAGS set is now 'region_flag_nobuilding' instead 'region_flag_nodecay|region_antimagic_teleport|region_antimagic_recall_in|region_flag_nobuilding'.
 Changed: 'return 1' on char trigger @Rename of account characters being created now will block the character creation instead create the character using generic names.
 Changed: Server trigger 'f_onchar_create' now is called after skills/stats are already set on the character being created.

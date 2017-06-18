@@ -1130,6 +1130,9 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		{
 			// Loop the world searching for bad spawns
 			bool bFound = false;
+			CItem *pItem = NULL;
+			CSector *pSector = NULL;
+			CResourceDef *pSpawnDef = NULL;
 			for ( int m = 0; (m < 256) && !bFound; m++ )
 			{
 				if ( !g_MapList.m_maps[m] )
@@ -1137,18 +1140,16 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 
 				for ( int d = 0; (d < g_MapList.GetSectorQty(m)) && !bFound; d++ )
 				{
-					CSector *pSector = g_World.GetSector(m, d);
+					pSector = g_World.GetSector(m, d);
 					if ( !pSector )
 						continue;
 
-					CItem *pItem = static_cast<CItem *>(pSector->m_Items_Inert.GetHead());
-					for ( ; (pItem != NULL) && !bFound; pItem = pItem->GetNext() )
+					for ( pItem = static_cast<CItem *>(pSector->m_Items_Timer.GetHead()); (pItem != NULL) && !bFound; pItem = pItem->GetNext() )
 					{
 						if ( pItem->IsType(IT_SPAWN_ITEM) || pItem->IsType(IT_SPAWN_CHAR) )
 						{
-							CItemSpawn *pSpawn = static_cast<CItemSpawn *>(pItem);
-							CResourceDef *pDef = pSpawn->FixDef();
-							if ( !pDef )
+							pSpawnDef = static_cast<CItemSpawn *>(pItem)->FixDef();
+							if ( !pSpawnDef )
 							{
 								RESOURCE_ID_BASE rid = pItem->IsType(IT_SPAWN_ITEM) ? pItem->m_itSpawnItem.m_ItemID : pItem->m_itSpawnChar.m_CharID;
 								CPointMap pt = pItem->GetTopPoint();
