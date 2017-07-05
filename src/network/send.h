@@ -104,7 +104,7 @@ public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
-	    return state->isClientVersion(MINCLIVER_SA) || state->isClientEnhanced();
+		return state->isClientVersion(MINCLIVER_SA) || state->isClientEnhanced();
 	}
 };
 
@@ -287,12 +287,12 @@ class PacketDragCancel : public PacketSend
 public:
 	enum Reason
 	{
-		CannotLift = 0x00,
-		OutOfRange = 0x01,
-		OutOfSight = 0x02,
-		TryToSteal = 0x03,
-		AreHolding = 0x04,
-		Other = 0x05
+		CannotLift	= 0x0,
+		OutOfRange	= 0x1,
+		OutOfSight	= 0x2,
+		TryToSteal	= 0x3,
+		AreHolding	= 0x4,
+		Other		= 0x5
 	};
 
 	PacketDragCancel(const CClient* target, Reason code);
@@ -329,9 +329,9 @@ class PacketDeathMenu : public PacketSend
 public:
 	enum Reason
 	{
-		ServerSent = 0x00,
-		Resurrect = 0x01,
-		Ghost = 0x02
+		ServerSent	= 0x0,
+		Resurrect	= 0x1,
+		Ghost		= 0x2
 	};
 
 	PacketDeathMenu(const CClient* target, Reason reason);
@@ -447,17 +447,17 @@ class PacketWarningMessage : public PacketSend
 public:
 	enum Message
 	{
-		BadPassword =			0x00,
-		NoCharacter =			0x01,
-		CharacterExists =		0x02,
-		NoFreeCharacterSlots =	0x03,	// enhanced client only
-		AuthenticationError =	0x04,	// enhanced client only
-		CharacterInWorld =		0x05,
-		SyncError =				0x06,
-		Idle =					0x07,
-		CouldntAttachServer =	0x08,
-		CharacterTransfer =		0x09,
-		InvalidName =			0x0A
+		BadPassword				= 0x0,
+		NoCharacter				= 0x1,
+		CharacterExists			= 0x2,
+		NoFreeCharacterSlots	= 0x3,	// enhanced client only
+		AuthenticationError		= 0x4,	// enhanced client only
+		CharacterInWorld		= 0x5,
+		SyncError				= 0x6,
+		Idle					= 0x7,
+		CouldntAttachServer		= 0x8,
+		CharacterTransfer		= 0x9,
+		InvalidName				= 0xA
 	};
 
 	PacketWarningMessage(const CClient* target, Message code);
@@ -561,16 +561,16 @@ class PacketAddTarget : public PacketSend
 public:
 	enum TargetType
 	{
-		Object = 0x00, // items/chars only
-		Ground = 0x01  // also allow ground
+		Object		= 0x0,
+		Ground		= 0x1
 	};
 
 	enum Flags
 	{
-		None = 0x00,
-		Harmful = 0x01,
-		Beneficial = 0x02,
-		Cancel = 0x03
+		None		= 0x0,
+		Harmful		= 0x1,
+		Beneficial	= 0x2,
+		Cancel		= 0x3
 	};
 
 	PacketAddTarget(const CClient* target, TargetType type, DWORD context, Flags flags);
@@ -793,33 +793,32 @@ class PacketLoginError : public PacketSend
 public:
 	enum Reason
 	{
-		Invalid = 0x00, // no account
-		InUse	= 0x01, // already in use
-		Blocked = 0x02, // client blocked
-		BadPass = 0x03, // incorrect password
-		Other	= 0x04, // other (e.g. timeout)
+		Invalid	= 0x00,		// no account
+		InUse	= 0x01,		// already in use
+		Blocked	= 0x02,		// client blocked
+		BadPass	= 0x03,		// incorrect password
+		Other	= 0x04,		// other (e.g. timeout)
 
 		// the error codes below are not sent to or understood by the client,
 		// and should be translated into one of the codes above
-		BadVersion,     // version not permitted
-		BadCharacter,   // invalid character selected
-		BadAuthID,      // incorrect auth id
-		BadAccount,     // bad account name (length, characters)
-		BadPassword,    // bad password (length, characters)
-		BadEncLength,   // bad message length
-		EncUnknown,     // unknown encryption
-		EncCrypt,       // crypted client not allowed
-		EncNoCrypt,     // non-crypted client not allowed
-		CharIdle,       // character is already ingame
-		TooManyChars,   // account has too many characters
-		CreationBlocked,// character creation is blocked in this moments.
-		BlockedIP,      // ip is blocked
-		MaxClients,     // max clients reached
-		MaxGuests,      // max guests reached
-		MaxPassTries,   // max password tries reached
+		BadVersion,			// version not permitted
+		BadCharacter,		// invalid character selected
+		BadAuthID,			// incorrect auth id
+		BadAccount,			// bad account name (length, characters)
+		BadPassword,		// bad password (length, characters)
+		BadEncLength,		// bad message length
+		EncUnknown,			// unknown encryption
+		EncCrypt,			// crypted client not allowed
+		EncNoCrypt,			// non-crypted client not allowed
+		CharIdle,			// character is already ingame
+		TooManyChars,		// account has too many characters
+		CreationBlocked,	// character creation is blocked in this moments.
+		BlockedIP,			// ip is blocked
+		MaxClients,			// max clients reached
+		MaxGuests,			// max guests reached
+		MaxPassTries,		// max password tries reached
 
-
-		Success = 0xFF  // no error
+		Success	= 0xFF		// no error
 	};
 
 	PacketLoginError(const CClient* target, Reason reason);
@@ -837,14 +836,13 @@ class PacketDeleteError : public PacketSend
 public:
 	enum Reason
 	{
-		BadPass        = 0x00, // incorrect password
-		NotExist       = 0x01, // character does not exist
-		InUse          = 0x02, // character is being played right now
-		NotOldEnough   = 0x03, // character is not old enough to delete
-		BackupQueue    = 0x04, // character is currently queued for backup
-		InvalidRequest = 0x05, // couldn't carry out the request
-
-		Success        = 0xFF  // no error
+		BadPass			= 0x00,	// incorrect password
+		NotExist		= 0x01,	// character does not exist
+		InUse			= 0x02,	// character is being played right now
+		NotOldEnough	= 0x03,	// character is not old enough to delete
+		BackupQueue		= 0x04,	// character is currently queued for backup
+		InvalidRequest	= 0x05,	// couldn't carry out the request
+		Success			= 0xFF	// no error
 	};
 
 	PacketDeleteError(const CClient* target, Reason reason);
@@ -1494,7 +1492,7 @@ public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
-	    return state->m_client->m_TooltipEnabled;
+		return state->m_client->m_TooltipEnabled;
 	}
 };
 
@@ -1691,7 +1689,7 @@ class PacketHouseDesign : public PacketSend
 {
 #define PLANEDATA_BUFFER	1024	// bytes reserved for plane data
 #define STAIRSPERBLOCK		750		// number of stair items per block
-#define STAIRDATA_BUFFER    (sizeof(StairData) * STAIRSPERBLOCK) // bytes reserved for stair data
+#define STAIRDATA_BUFFER	(sizeof(StairData) * STAIRSPERBLOCK) // bytes reserved for stair data
 
 private:
 	struct StairData
@@ -1907,7 +1905,7 @@ public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
-	    return state->isClientVersion(MINCLIVER_NEWMAPDISPLAY) || state->isClientEnhanced();
+		return state->isClientVersion(MINCLIVER_NEWMAPDISPLAY) || state->isClientEnhanced();
 	}
 };
 

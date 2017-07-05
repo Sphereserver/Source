@@ -513,10 +513,9 @@ public:
 
 		// IT_WEAPON_BOW
 		// IT_WEAPON_XBOW
-		// IT_WEAPON_THROWING
-		struct	// ALL equippable items ex. Weapons and armor
+		struct
 		{
-			int m_junk1;				// TDATA1= Sound it makes ?
+			int m_junk1;
 			int m_StrReq;				// REQSTR= Strength required to weild weapons/armor.
 			RESOURCE_ID_BASE m_idAmmo;	// TDATA3= required source ammo.
 			RESOURCE_ID_BASE m_idAmmoX;	// TDATA4= fired ammo fx.

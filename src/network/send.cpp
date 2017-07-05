@@ -2525,17 +2525,14 @@ PacketDisplayMap::PacketDisplayMap(const CClient* target, const CItemMap* map, c
 	const CItemBase* itemDef = map->Item_GetDef();
 	ASSERT(itemDef);
 
-	WORD width = static_cast<WORD>(itemDef->m_ttMap.m_iGumpWidth > 0 ? itemDef->m_ttMap.m_iGumpWidth : CItemMap::DEFAULT_SIZE);
-	WORD height = static_cast<WORD>(itemDef->m_ttMap.m_iGumpHeight > 0 ? itemDef->m_ttMap.m_iGumpHeight : CItemMap::DEFAULT_SIZE);
-
 	writeInt32(map->GetUID());
 	writeInt16(GUMP_MAP_2_NORTH);
 	writeInt16(static_cast<WORD>(rect.m_left));
 	writeInt16(static_cast<WORD>(rect.m_top));
 	writeInt16(static_cast<WORD>(rect.m_right));
 	writeInt16(static_cast<WORD>(rect.m_bottom));
-	writeInt16(width);
-	writeInt16(height);
+	writeInt16(static_cast<WORD>(itemDef->m_ttMap.m_iGumpWidth > 0 ? itemDef->m_ttMap.m_iGumpWidth : CItemMap::DEFAULT_SIZE));
+	writeInt16(static_cast<WORD>(itemDef->m_ttMap.m_iGumpHeight > 0 ? itemDef->m_ttMap.m_iGumpHeight : CItemMap::DEFAULT_SIZE));
 
 	push(target);
 }
@@ -4800,6 +4797,7 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CChar* mobile) : P
 	push(target);
 }
 
+
 /***************************************************************************
  *
  *
@@ -4814,17 +4812,14 @@ PacketDisplayMapNew::PacketDisplayMapNew(const CClient* target, const CItemMap* 
 	const CItemBase* itemDef = map->Item_GetDef();
 	ASSERT(itemDef);
 
-	WORD width = static_cast<WORD>(itemDef->m_ttMap.m_iGumpWidth > 0 ? itemDef->m_ttMap.m_iGumpWidth : CItemMap::DEFAULT_SIZE);
-	WORD height = static_cast<WORD>(itemDef->m_ttMap.m_iGumpHeight > 0 ? itemDef->m_ttMap.m_iGumpHeight : CItemMap::DEFAULT_SIZE);
-
 	writeInt32(map->GetUID());
 	writeInt16(GUMP_MAP_2_NORTH);
 	writeInt16(static_cast<WORD>(rect.m_left));
 	writeInt16(static_cast<WORD>(rect.m_top));
 	writeInt16(static_cast<WORD>(rect.m_right));
 	writeInt16(static_cast<WORD>(rect.m_bottom));
-	writeInt16(width);
-	writeInt16(height);
+	writeInt16(static_cast<WORD>(itemDef->m_ttMap.m_iGumpWidth > 0 ? itemDef->m_ttMap.m_iGumpWidth : CItemMap::DEFAULT_SIZE));
+	writeInt16(static_cast<WORD>(itemDef->m_ttMap.m_iGumpHeight > 0 ? itemDef->m_ttMap.m_iGumpHeight : CItemMap::DEFAULT_SIZE));
 	writeInt16(static_cast<WORD>(rect.m_map));
 
 	push(target);

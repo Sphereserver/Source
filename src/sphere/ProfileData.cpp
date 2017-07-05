@@ -176,7 +176,7 @@ LPCTSTR ProfileData::GetDescription(PROFILE_TYPE id) const
 		sprintf(pszTmp, "%llu (avg: %llu) bytes", m_PreviousTimes[id].m_Time, m_AverageTimes[id].m_Time);
 	else
 	{
-		sprintf(pszTmp, "%3i.%04is  avg: %3i.%04is  [samples:%6i  avg:%6i]  runtime: %is",
+		sprintf(pszTmp, "%3i.%04is  avg: %3i.%04is  [samples: %7i  avg: %7i]  runtime: %is",
 			static_cast<int>(m_PreviousTimes[id].m_Time / llTimeProfileFrequency),
 			static_cast<int>(((m_PreviousTimes[id].m_Time * 10000) / llTimeProfileFrequency) % 10000),
 			static_cast<int>(m_AverageTimes[id].m_Time / llTimeProfileFrequency),
