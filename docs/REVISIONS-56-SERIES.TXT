@@ -642,3 +642,16 @@ Changed: Default region flags for MULTIDEF items without REGIONFLAGS set is now 
 Changed: 'return 1' on char trigger @Rename of account characters being created now will block the character creation instead create the character using generic names.
 Changed: Server trigger 'f_onchar_create' now is called after skills/stats are already set on the character being created.
 	-This will allow users to create characters with custom skills/stats without get these values overridden by default values later.
+
+20-06-2017, Coruja
+[items/sphere_item_provisions_armor.scp]: Fixed item 'i_gargish_leather_leggings' returning console error calling an undefined function
+[npcs/sphere_citizens.scp]: Fixed NAME/TITLE of all CHARDEFs
+[npcs/sphere_guildmasters.scp]: Fixed NAME/TITLE of all CHARDEFs
+[npcs/sphere_vendors.scp]: Fixed NAME/TITLE of all CHARDEFs
+[sphere_region.scp]: Fixed REGIONTYPE 'r_default' making the client play the same region music again when walking through regions that have the same music
+
+05-07-2017, Coruja
+Changed: Reverted Energy Vortex new chardef '023d' to old '0a4' (OSI created this new chardef on AOS age but it was never really used).
+[npcs/sphere_monsters.scp]: Removed chardef 023d (the new/broken AOS Energy Vortex) and renamed old chardef 0a4 'c_elemental_swamp' back to 'c_energy_vortex'. Also updated Blade Spirit and Energy Vortex stats
+[sphere_spawns.scp]: Removed 'c_elemental_swamp' from spawn lists
+[sphere_template_loot.scp]: Removed template 'loot_elem_swamp'

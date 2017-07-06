@@ -520,6 +520,8 @@ enum CREID_TYPE		// enum the creature art work. (dont allow any others !) also k
 
 	CREID_Dolphin			= 0x97,
 
+	CREID_VORTEX			= 0xA4,
+
 	// Animals (Low detail critters)
 
 	CREID_HORSE1			= 0xC8,		// white
@@ -555,7 +557,6 @@ enum CREID_TYPE		// enum the creature art work. (dont allow any others !) also k
 	CREID_GHOSTMAN			= 0x192,
 	CREID_GHOSTWOMAN		= 0x193,
 
-	CREID_VORTEX			= 0x23D,
 	CREID_BLADES			= 0x23E,
 
 	CREID_ELFMAN			= 0x25D,
@@ -1298,6 +1299,7 @@ enum GUMP_TYPE	// The gumps. (most of these are not useful to the server.)
 	GUMP_FOUNTAIN_LIFE			= 0x484,
 	GUMP_SECRET_CHEST			= 0x58e,
 	GUMP_SECURE_TRADE			= 0x866,
+	GUMP_SECURE_TRADE_TOL		= 0x88a,
 	GUMP_BOARD_CHECKER			= 0x91a,
 	GUMP_BOARD_BACKGAMMON		= 0x92e,
 	GUMP_MAP_2_NORTH			= 0x139d,
@@ -1307,7 +1309,8 @@ enum GUMP_TYPE	// The gumps. (most of these are not useful to the server.)
 	GUMP_BACKPACK_POLAR_BEAR	= 0x7760,
 	GUMP_BACKPACK_GHOUL_SKIN	= 0x7762,
 	GUMP_GIFT_BOX_SQUARE		= 0x777a,
-	GUMP_BOW_WOODEN_STAND		= 0x9bfe
+	GUMP_WALL_SAFE2				= 0x9bf2,
+	GUMP_CRATE_FLETCHING		= 0x9bfe
 };
 
 typedef WORD		TERRAIN_TYPE;

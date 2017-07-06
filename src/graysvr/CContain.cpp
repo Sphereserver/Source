@@ -902,7 +902,7 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		{ GUMP_BACKPACK_POLAR_BEAR, 44, 65, 186, 159 },
 		{ GUMP_BACKPACK_GHOUL_SKIN, 44, 65, 186, 159 },
 		//{ GUMP_GIFT_BOX_SQUARE, 0, 0, 0, 0 },		// TO-DO: confirm gump size
-		{ GUMP_BOW_WOODEN_STAND, 24, 96, 196, 152 }
+		{ GUMP_CRATE_FLETCHING, 24, 96, 196, 152 }
 	};
 
 	for ( size_t i = 0; i < COUNTOF(sm_ContainerRect); i++ )
