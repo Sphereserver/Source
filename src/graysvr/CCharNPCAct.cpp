@@ -533,7 +533,7 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem * pGold)
 		return false;
 	}
 
-	WORD iTrainCost = static_cast<WORD>(GetKeyNum("OVERRIDE.TRAINSKILLCOST"));
+	DWORD iTrainCost = static_cast<DWORD>(GetKeyNum("OVERRIDE.TRAINSKILLCOST"));
 	if ( !iTrainCost )
 		iTrainCost = g_Cfg.m_iTrainSkillCost;
 
@@ -561,7 +561,7 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem * pGold)
 		// Give change back.
 		pGold->UnStackSplit( iTrainCost, pCharSrc );
 	}
-	GetContainerCreate(LAYER_PACK)->ContentAdd(pGold);		// take my cash
+	GetContainerCreate(LAYER_BANKBOX)->m_itEqBankBox.m_Check_Amount += iTrainCost;
 
 	// Give credit for training.
 	NPC_TrainSkill( pCharSrc, skill, iTrainCost );
@@ -614,12 +614,9 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 	ADDTOCALLSTACK("CChar::NPC_OnTrainHear");
 	// We are asking for training ?
 
-	if ( ! m_pNPC )
-		return( false );
-
 	// Check the NPC is capable of teaching
-	if ( (m_pNPC->m_Brain < NPCBRAIN_HUMAN) || (m_pNPC->m_Brain > NPCBRAIN_STABLE) || (m_pNPC->m_Brain == NPCBRAIN_GUARD) )
-		return( false );
+	if ( !m_pNPC || (m_pNPC->m_Brain < NPCBRAIN_HUMAN) || (m_pNPC->m_Brain > NPCBRAIN_STABLE) || (m_pNPC->m_Brain == NPCBRAIN_GUARD) )
+		return false;
 
 	// Check the NPC isn't busy fighting
 	if ( Memory_FindObjTypes( pCharSrc, MEMORY_FIGHT|MEMORY_HARMEDBY|MEMORY_IRRITATEDBY|MEMORY_AGGREIVED ))
@@ -631,6 +628,10 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 	// Did they mention a skill name i recognize ?
 	TemporaryString pszMsg;
 
+	DWORD iTrainCost = static_cast<DWORD>(GetKeyNum("OVERRIDE.TRAINSKILLCOST"));
+	if ( !iTrainCost )
+		iTrainCost = g_Cfg.m_iTrainSkillCost;
+
 	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
 		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
@@ -640,8 +641,7 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 		if ( FindStrWord( pszCmd, pSkillKey ) <= 0)
 			continue;
 
-		// Can we train in this ?
-		WORD iTrainCost = NPC_OnTrainCheck(pCharSrc, static_cast<SKILL_TYPE>(i)) * g_Cfg.m_iTrainSkillCost;
+		iTrainCost *= NPC_OnTrainCheck(pCharSrc, static_cast<SKILL_TYPE>(i));
 		if ( iTrainCost <= 0 )
 			return true;
 

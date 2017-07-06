@@ -655,3 +655,9 @@ Changed: Reverted Energy Vortex new chardef '023d' to old '0a4' (OSI created thi
 [npcs/sphere_monsters.scp]: Removed chardef 023d (the new/broken AOS Energy Vortex) and renamed old chardef 0a4 'c_elemental_swamp' back to 'c_energy_vortex'. Also updated Blade Spirit and Energy Vortex stats
 [sphere_spawns.scp]: Removed 'c_elemental_swamp' from spawn lists
 [sphere_template_loot.scp]: Removed template 'loot_elem_swamp'
+
+06-07-2017, Coruja
+Fixed: Vendor NPCs not training player skills correctly.
+[npcs/spherechar_evil.scp]: Replaced CAN 'mt_fly' with 'mt_run' on all chardefs that doesn't have flying animations
+[npcs/sphere_monsters.scp]: Replaced CAN 'mt_fly' with 'mt_run' on all chardefs that doesn't have flying animations
+[npcs/sphere_monsters_custom.scp]: Replaced CAN 'mt_fly' with 'mt_run' on all chardefs that doesn't have flying animations
