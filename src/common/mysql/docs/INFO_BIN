@@ -1,5 +1,5 @@
 ===== Information about the build process: =====
-Build was run at Fri 04/21/2017 on host 'VITRO41'
+Build was run at Mon 07/17/2017 on host 'VITRO41'
 
 Build was done on  Windows-6.2 using AMD64
 Build was done using cmake 3.2.3 
@@ -20,7 +20,7 @@ ENABLED_PROFILING:BOOL=ON
 ENABLE_DEBUG_SYNC:BOOL=ON
 ENABLE_GCOV:BOOL=OFF
 ENABLE_GPROF:BOOL=OFF
-EXTRA_INSTALL:BOOL=G:\ade\build\sb_0-23186284-1492796805.01/mysql-connector-c-6.1.10-vs12-win32/lib/mysqlclient.liblib/vs12DevelopmentG:\ade\build\sb_0-23186284-1492796805.01/mysql-connector-c-6.1.10-vs12-win32/lib/debug/mysqlclient.liblib/vs12/debugDebugBinariesG:\ade\build\sb_0-23186284-1492796805.01/mysql-connector-c-6.1.10-vs14-win32/lib/mysqlclient.liblib/vs14DevelopmentG:\ade\build\sb_0-23186284-1492796805.01/mysql-connector-c-6.1.10-vs14-win32/lib/debug/mysqlclient.liblib/vs14/debugDebugBinaries
+EXTRA_INSTALL:BOOL=G:\ade\build\sb_0-24199034-1500308147.76/mysql-connector-c-6.1.11-vs12-win32/lib/mysqlclient.liblib/vs12DevelopmentG:\ade\build\sb_0-24199034-1500308147.76/mysql-connector-c-6.1.11-vs12-win32/lib/debug/mysqlclient.liblib/vs12/debugDebugBinariesG:\ade\build\sb_0-24199034-1500308147.76/mysql-connector-c-6.1.11-vs14-win32/lib/mysqlclient.liblib/vs14DevelopmentG:\ade\build\sb_0-24199034-1500308147.76/mysql-connector-c-6.1.11-vs14-win32/lib/debug/mysqlclient.liblib/vs14/debugDebugBinaries
 FEATURE_SET:STRING=community
 HEAT_EXECUTABLE:FILEPATH=C:/Program Files (x86)/WiX Toolset v3.10/heat.exe
 INSTALL_LAYOUT:STRING=STANDALONE

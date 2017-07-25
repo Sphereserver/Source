@@ -389,15 +389,15 @@
 #define DOT_FRM_VERSION 6
 #define MYSQL_VERSION_MAJOR 6
 #define MYSQL_VERSION_MINOR 1
-#define MYSQL_VERSION_PATCH 10
+#define MYSQL_VERSION_PATCH 11
 #define MYSQL_VERSION_EXTRA ""
 #define PACKAGE "mysql"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "MySQL Server"
-#define PACKAGE_STRING "MySQL Server 6.1.10"
+#define PACKAGE_STRING "MySQL Server 6.1.11"
 #define PACKAGE_TARNAME "mysql"
-#define PACKAGE_VERSION "6.1.10"
-#define VERSION "6.1.10"
+#define PACKAGE_VERSION "6.1.11"
+#define VERSION "6.1.11"
 #define PROTOCOL_VERSION 10
 
 /*

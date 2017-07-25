@@ -661,3 +661,7 @@ Fixed: Vendor NPCs not training player skills correctly.
 [npcs/spherechar_evil.scp]: Replaced CAN 'mt_fly' with 'mt_run' on all chardefs that doesn't have flying animations
 [npcs/sphere_monsters.scp]: Replaced CAN 'mt_fly' with 'mt_run' on all chardefs that doesn't have flying animations
 [npcs/sphere_monsters_custom.scp]: Replaced CAN 'mt_fly' with 'mt_run' on all chardefs that doesn't have flying animations
+
+25-07-2017, Coruja
+Changed: Updated internal MySQL libs v6.1.10 to v6.1.11.
+	-IMPORTANT: It's HIGHLY recommended update libmysql.dll file on Sphere folder (Windows users) or MySQL packages (Linux users) to prevent errors when using MySQL.
