@@ -1023,7 +1023,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				}
 				iArgs[idx] = Exp_GetVal(ppArgs[idx]);
 			}
-			if ( (iArgs[0] < BI_START) || (iArgs[0] > BI_QTY) )
+			if ( (iArgs[0] < 0) || (iArgs[0] > USHRT_MAX) )
 			{
 				DEBUG_ERR(("Invalid AddBuff icon ID\n"));
 				break;
@@ -1044,7 +1044,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		case CV_REMOVEBUFF:
 		{
 			BUFF_ICONS IconId = static_cast<BUFF_ICONS>(s.GetArgVal());
-			if ( (IconId < BI_START) || (IconId > BI_QTY) )
+			if ( (IconId < 0) || (IconId > USHRT_MAX) )
 			{
 				DEBUG_ERR(("Invalid RemoveBuff icon ID\n"));
 				break;

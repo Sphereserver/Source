@@ -665,3 +665,6 @@ Fixed: Vendor NPCs not training player skills correctly.
 25-07-2017, Coruja
 Changed: Updated internal MySQL libs v6.1.10 to v6.1.11.
 	-IMPORTANT: It's HIGHLY recommended update libmysql.dll file on Sphere folder (Windows users) or MySQL packages (Linux users) to prevent errors when using MySQL.
+
+26-07-2017, Coruja
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.59 and enhanced client 4.0.59
