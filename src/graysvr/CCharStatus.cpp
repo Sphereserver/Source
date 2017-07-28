@@ -1670,7 +1670,6 @@ bool CChar::CanTouch( const CObjBase *pObj ) const
 				return (iDist <= UO_MAP_VIEW_SIGHT);
 
 			case IT_SHRINE:		// We can use shrines when dead !!
-			case IT_TELESCOPE:
 				bDeathImmune = true;
 				break;
 

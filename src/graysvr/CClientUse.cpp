@@ -417,10 +417,6 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 			SysMessageDefault(DEFMSG_ITEMUSE_FISH_FAIL);
 			return true;
 
-		case IT_TELESCOPE:
-			SysMessageDefault(DEFMSG_ITEMUSE_TELESCOPE);
-			return true;
-
 		case IT_MAP:
 			addDrawMap(static_cast<CItemMap *>(pItem));
 			return true;
@@ -476,17 +472,6 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 		case IT_SPELLBOOK_MASTERY:
 			addSpellbookOpen(pItem);
 			return true;
-
-		case IT_HAIR_DYE:
-		{
-			if ( !m_pChar->LayerFind(LAYER_BEARD) && !m_pChar->LayerFind(LAYER_HAIR) )
-			{
-				SysMessageDefault(DEFMSG_ITEMUSE_DYE_NOHAIR);
-				return true;
-			}
-			Dialog_Setup(CLIMODE_DIALOG, g_Cfg.ResourceGetIDType(RES_DIALOG, "d_hair_dye"), 0, pItem);
-			return true;
-		}
 
 		case IT_DYE:
 			addTarget(CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_DYE_VAT));

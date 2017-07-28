@@ -252,7 +252,7 @@ enum IT_TYPE		// double click type action.
 	// NOTE: Never change this list as it will mess up the RES_ITEMDEF or RES_WORLDITEM already stored.
 	// Just add stuff to end.
 	IT_NORMAL = 0,
-	IT_CONTAINER = 1,		// any unlocked container or corpse. CContainer based
+	IT_CONTAINER,			// 1 = any unlocked container or corpse. CContainer based
 	IT_CONTAINER_LOCKED,	// 2 =
 	IT_DOOR,				// 3 = door can be opened
 	IT_DOOR_LOCKED,		// 4 = a locked door.
@@ -291,7 +291,7 @@ enum IT_TYPE		// double click type action.
 	IT_FIGURINE,			// 37 = magic figure that turns into a creature when activated.
 	IT_SHRINE,			// 38 = can res you
 	IT_MOONGATE,			// 39 = linked to other moon gates (hard coded locations)
-	IT_CHAIR,				// 40 = Any sort of a chair item. we can sit on.
+	IT_UNUSED_40,			// 40
 	IT_FORGE,				// 41 = used to smelt ore, blacksmithy etc.
 	IT_ORE,				// 42 = smelt to ingots.
 	IT_LOG,				// 43 = make into furniture etc. lumber,logs,
@@ -309,7 +309,7 @@ enum IT_TYPE		// double click type action.
 	IT_FISH,				// 55 = fish can be cut up.
 	IT_SIGN_GUMP,			// 56 = Things like grave stones and sign plaques
 	IT_STONE_GUILD,		// 57 = Guild stones
-	IT_ANIM_ACTIVE,		// 58 = active anium that will recycle when done.
+	IT_ANIM_ACTIVE,		// 58 = active anim that will recycle when done.
 	IT_SAND,			// 59 = sand
 	IT_CLOTH,				// 60 = bolt or folded cloth
 	IT_HAIR,				// 61
@@ -321,8 +321,8 @@ enum IT_TYPE		// double click type action.
 	IT_ANVIL,				// 67 = for repair.
 	IT_PORT_LOCKED,			// 68 = this portcullis must be triggered.
 	IT_SPAWN_ITEM,		// 69 = spawn other items.
-	IT_TELESCOPE,			// 70 = big telescope pic.
-	IT_BED,					// 71 = bed. facing either way
+	IT_UNUSED_70,			// 70
+	IT_UNUSED_71,			// 71
 	IT_GOLD,				// 72 = Gold Coin
 	IT_MAP,				// 73 = Map object with pins.
 	IT_EQ_MEMORY_OBJ,		// 74 = A Char has a memory link to some object. (I am fighting with someone. This records the fight.)
@@ -333,18 +333,18 @@ enum IT_TYPE		// double click type action.
 	IT_TRASH_CAN,			// 79 = delete any object dropped on it.
 	IT_CANNON_MUZZLE,		// 80 = cannon muzzle. NOT the other cannon parts.
 	IT_CANNON,			// 81 = the rest of the cannon.
-	IT_CANNON_BALL,
+	IT_CANNON_BALL,			// 82
 	IT_ARMOR_LEATHER,		// 83 = Non metallic armor.
 	IT_SEED,				// 84 = seed from fruit
 	IT_JUNK,		// 85 = ring of reagents.
 	IT_CRYSTAL_BALL,		// 86
 	IT_SWAMP,			// 87 = swamp
-	IT_MESSAGE,			// 88 = user written message item. (for bboard ussually)
+	IT_MESSAGE,			// 88 = user written message item (for bboard usually)
 	IT_REAGENT_RAW,		// 89 = Freshly grown reagents...not processed yet. NOT USED!
 	IT_EQ_CLIENT_LINGER,	// 90 = Change player to NPC for a while.
 	IT_SNOW,			// 91 = snow
-	IT_ITEM_STONE,			// 92 = Double click for items
-	IT_UNUSED_93,			// 93 = <unused> (was IT_METRONOME ticks once every n secs)
+	IT_UNUSED_92,			// 92
+	IT_UNUSED_93,			// 93
 	IT_EXPLOSION,			// 94 = async explosion.
 	IT_EQ_NPC_SCRIPT,		// [OFF] 95 = Script npc actions in the form of a book.
 	IT_WEB,				// 96 = walk on this and transform into some other object. (stick to it)
@@ -373,7 +373,7 @@ enum IT_TYPE		// double click type action.
 	IT_EQ_MURDER_COUNT,	// 119 = my murder count flag.
 	IT_EQ_STUCK,		// 120
 	IT_TRAP_INACTIVE,	// 121 = a safe trap.
-	IT_UNUSED_122,		// 122 = <unused> (was IT_STONE_ROOM for mapped house regions)
+	IT_UNUSED_122,		// 122
 	IT_BANDAGE,			// 123 = can be used for healing.
 	IT_CAMPFIRE,		// 124 = this is a fire but a small one.
 	IT_MAP_BLANK,		// 125 = blank map.
@@ -387,9 +387,9 @@ enum IT_TYPE		// double click type action.
 	IT_SPELLICON,		// 133
 	IT_DOOR_OPEN,		// 134 = You can walk through doors that are open.
 	IT_MEAT_RAW,		// 135 = raw (uncooked meat) or part of a corpse.
-	IT_GARBAGE,			// 136 = this is junk.
+	IT_UNUSED_136,		// 136
 	IT_KEYRING,			// 137
-	IT_TABLE,			// 138 = a table top
+	IT_UNUSED_138,		// 138
 	IT_FLOOR,			// 139
 	IT_ROOF,			// 140
 	IT_FEATHER,			// 141 = a birds feather
@@ -420,7 +420,7 @@ enum IT_TYPE		// double click type action.
 	IT_DYE,				// 166
 	IT_POTION_EMPTY,	// 167 = empty bottle.
 	IT_MORTAR,			// 168
-	IT_HAIR_DYE,		// 169
+	IT_UNUSED_169,		// 169
 	IT_SEWING_KIT,		// 170
 	IT_TINKER_TOOLS,	// 171
 	IT_WALL,			// 172 = wall of a structure.

@@ -68,18 +68,9 @@ CItemBase::CItemBase( ITEMID_TYPE id ) :
 
 	// Do some special processing for certain items.
 
-	if ( IsType(IT_CHAIR))
-	{
-		SetHeight( 0 ); // have no effective height if they don't block.
-	}
-	else
-	{
-		//CBaseBaseDef * pBaseBaseDef = dynamic_cast<CBaseBaseDef*>(this);
-		//pBaseBaseDef->SetHeight( GetItemHeightFlags( tiledata, m_Can ));
-		SetHeight( GetItemHeightFlags( tiledata, m_Can ));
-		//DEBUG_WARN(("GetItemHeightFlags( tiledata, m_Can )(%d),tiledata.m_height(%d),m_dwDispIndex(0%x),GetHeight()(%d),pBaseBaseDef->GetHeight()(%d)\n",GetItemHeightFlags( tiledata, m_Can ),tiledata.m_height,m_wDispIndex,GetHeight(),pBaseBaseDef->GetHeight()));
-	}
-	//DEBUG_ERR(("ID: 0%x; this (0x%x), m_dwFlags (0%x), tiledata.m_flags (0%x), tiledata.m_height (%d) GetHeight() (%d)\n",id,this,m_dwFlags,tiledata.m_flags,tiledata.m_height,GetHeight()));
+	//CBaseBaseDef *pBaseBaseDef = dynamic_cast<CBaseBaseDef *>(this);
+	//pBaseBaseDef->SetHeight(GetItemHeightFlags(tiledata, m_Can));
+	SetHeight(GetItemHeightFlags(tiledata, m_Can));
 
 	GetItemSpecificFlags( tiledata, m_Can, m_type, id );
 
@@ -800,8 +791,6 @@ IT_TYPE CItemBase::GetTypeBase( ITEMID_TYPE id, const CUOItemTypeRec2 &tiledata 
 
 	if ( IsID_WaterWash( id ))
 		return IT_WATER_WASH;
-	else if ( IsID_Chair( id ))
-		return IT_CHAIR;
 	else if ( IsID_Track( id ))
 		return IT_FIGURINE;
 	else if ( IsID_GamePiece( id ))

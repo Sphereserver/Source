@@ -668,3 +668,12 @@ Changed: Updated internal MySQL libs v6.1.10 to v6.1.11.
 
 26-07-2017, Coruja
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.59 and enhanced client 4.0.59
+
+27-07-2017, Coruja
+[sphere_defs.scp]: Added missing sounds 'snd_monster_orc2', 'snd_animals_panther2', and removed unused typedefs 't_telescope', 't_bed', 't_it_stone', 't_garbage', 't_table', 't_hair_dye'
+[items/sphere_item_buildings.scp]: Removed typedef 't_telescope' from items
+[items/sphere_item_deco_furniture.scp]: Removed typedef 't_table', 't_bed' from items
+[items/sphere_item_profession.scp]: Removed typedef 't_table' from items
+[items/sphere_item_profession_alchemist.scp]: Removed typedef 't_table' from items
+[items/sphere_item_provisions_misc.scp]: Removed typedef 't_garbage' from items
+[items/sphere_item_unsorted.scp]: Removed typedef 't_garbage' from items

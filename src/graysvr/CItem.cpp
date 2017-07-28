@@ -1825,7 +1825,6 @@ void CItem::r_WriteMore1( CGString & sVal )
 		case IT_DEED:
 		case IT_LOOM:
 		case IT_ARCHERY_BUTTE:
-		case IT_ITEM_STONE:
 			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_ITEMDEF, m_itNormal.m_more1 ));
 			return;
 

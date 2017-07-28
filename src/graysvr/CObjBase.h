@@ -849,15 +849,6 @@ public:
 			DWORD m_Decay_Balance;	// more1 = For the murder flag, how much time is left ?
 		} m_itEqMurderCount;
 
-		// IT_ITEM_STONE
-		struct
-		{
-			ITEMID_TYPE m_ItemID;	// more1= generate this item or template.
-			int m_iPrice;			// more2= ??? gold to purchase / sellback. (vending machine)
-			WORD m_wRegenTime;		// morex=regen time in seconds. 0 = no regen required.
-			WORD m_wAmount;			// morey=Total amount to deliver. 0 = infinite, 0xFFFF=none left
-		} m_itItemStone;
-
 		// IT_EQ_STUCK
 		struct
 		{

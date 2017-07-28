@@ -1334,33 +1334,6 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 	int fAction = true;
 	switch ( pItem->GetType() )
 	{
-		case IT_ITEM_STONE:
-		{
-			// Give them this item
-			if ( pItem->m_itItemStone.m_wAmount == USHRT_MAX )
-			{
-				SysMessageDefault(DEFMSG_MSG_IT_IS_DEAD);
-				return true;
-			}
-			if ( pItem->m_itItemStone.m_wRegenTime )
-			{
-				if ( pItem->IsTimerSet() )
-				{
-					SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_STONEREG_TIME), pItem->GetTimerDiff() / TICK_PER_SEC);
-					return true;
-				}
-				pItem->SetTimeout(pItem->m_itItemStone.m_wRegenTime * TICK_PER_SEC);
-			}
-			ItemBounce(CItem::CreateTemplate(pItem->m_itItemStone.m_ItemID, GetContainerCreate(LAYER_PACK), this));
-			if ( pItem->m_itItemStone.m_wAmount != 0 )
-			{
-				pItem->m_itItemStone.m_wAmount--;
-				if ( pItem->m_itItemStone.m_wAmount == 0 )
-					pItem->m_itItemStone.m_wAmount = USHRT_MAX;
-			}
-			return true;
-		}
-
 		case IT_SEED:
 			return Use_Seed(pItem, NULL);
 
@@ -1569,7 +1542,6 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 
 		case IT_GRAIN:
 		case IT_GRASS:
-		case IT_GARBAGE:
 		case IT_FRUIT:
 		case IT_FOOD:
 		case IT_FOOD_RAW:
