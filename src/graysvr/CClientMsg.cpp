@@ -874,7 +874,7 @@ void CClient::addObjMessage( LPCTSTR pMsg, const CObjBaseTemplate * pSrc, HUE_TY
 	addBarkParse(pMsg, pSrc, wHue, mode);
 }
 
-void CClient::addEffect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate * pDst, const CObjBaseTemplate * pSrc, BYTE bSpeedSeconds, BYTE bLoop, bool fExplode, DWORD color, DWORD render, WORD effectid, DWORD explodeid, WORD explodesound, DWORD effectuid, BYTE type)
+void CClient::addEffect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate * pDst, const CObjBaseTemplate * pSrc, BYTE bSpeedSeconds, BYTE bLoop, bool fExplode, DWORD color, DWORD render, WORD effectid, WORD explodeid, WORD explodesound, DWORD effectuid, BYTE type)
 {
 	ADDTOCALLSTACK("CClient::addEffect");
 	// bSpeedSeconds = seconds = 0=very fast, 7=slow.
@@ -883,7 +883,7 @@ void CClient::addEffect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTempla
 	ASSERT(m_pChar);
 	ASSERT(pDst);
 
-	if (pSrc == NULL && motion == EFFECT_BOLT) // source required for bolt effect
+	if (!pSrc && (motion == EFFECT_BOLT))	// source required for bolt effect
 		return;
 
 	PacketSend* cmd(NULL);
@@ -2728,9 +2728,11 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 					switch ( pItem->GetType() )
 					{
 						case IT_CONTAINER_LOCKED:
+						case IT_SHIP_HOLD_LOCK:
 							m_TooltipData.Add(new CClientTooltip(3005142)); // Locked
 						case IT_CONTAINER:
 						case IT_TRASH_CAN:
+						case IT_SHIP_HOLD:
 							if ( pItem->IsContainer() )
 							{
 								const CContainer *pContainer = dynamic_cast<const CContainer *>(pItem);

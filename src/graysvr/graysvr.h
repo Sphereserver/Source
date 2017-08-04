@@ -1370,7 +1370,7 @@ public:
 	void addLight();
 	void addMusic( MIDI_TYPE id );
 	void addArrowQuest( WORD x, WORD y, DWORD id );
-	void addEffect( EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate * pDst, const CObjBaseTemplate * pSrc, BYTE speed = 5, BYTE loop = 1, bool explode = false, DWORD color = 0, DWORD render = 0, WORD effectid = 0, DWORD explodeid = 0, WORD explodesound = 0, DWORD effectuid = 0, BYTE type = 0 );
+	void addEffect( EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate * pDst, const CObjBaseTemplate * pSrc, BYTE speed = 5, BYTE loop = 1, bool explode = false, DWORD color = 0, DWORD render = 0, WORD effectid = 0, WORD explodeid = 0, WORD explodesound = 0, DWORD effectuid = 0, BYTE type = 0 );
 	void addSound( SOUND_TYPE id, const CObjBaseTemplate *pBase = NULL, BYTE iRepeat = 1 );
 	void addReSync();
 	void addMap();

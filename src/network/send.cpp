@@ -1756,6 +1756,7 @@ void PacketTradeAction::prepareUpdateLedger(const CItemContainer *container, DWO
  *
  *	Packet 0x70 : PacketEffect				displays a visual effect (NORMAL)
  *	Packet 0xC0 : PacketEffect				displays a hued visual effect (NORMAL)
+ *	Packet 0xC7 : PacketEffect				displays a particle visual effect (NORMAL)
  *
  *
  ***************************************************************************/
@@ -1778,7 +1779,7 @@ PacketEffect::PacketEffect(const CClient* target, EFFECT_TYPE motion, ITEMID_TYP
 	push(target);
 }
 
-PacketEffect::PacketEffect(const CClient* target, EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate* dst, const CObjBaseTemplate* src, BYTE speed, BYTE loop, bool explode, DWORD hue, DWORD render, WORD effectid, DWORD explodeid, WORD explodesound, DWORD effectuid, BYTE type) : PacketSend(XCMD_EffectParticle, 49, PRI_NORMAL)
+PacketEffect::PacketEffect(const CClient* target, EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate* dst, const CObjBaseTemplate* src, BYTE speed, BYTE loop, bool explode, DWORD hue, DWORD render, WORD effectid, WORD explodeid, WORD explodesound, DWORD effectuid, BYTE type) : PacketSend(XCMD_EffectParticle, 49, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketEffect::PacketEffect(3)");
 
@@ -1786,11 +1787,11 @@ PacketEffect::PacketEffect(const CClient* target, EFFECT_TYPE motion, ITEMID_TYP
 	writeHuedEffect(hue, render);
 
 	writeInt16(effectid);
-	writeInt16(static_cast<WORD>(explodeid));
+	writeInt16(explodeid);
 	writeInt16(explodesound);
 	writeInt32(effectuid);
-	writeByte(type == 0 ? 0xFF : 0x03 );	// (0xFF or 0x03)
-	writeInt16(0x0);
+	writeByte((type == 0) ? 0xFF : 0x03);
+	writeInt16(0);
 	push(target);
 }
 
@@ -3905,7 +3906,7 @@ PacketBondedStatus::PacketBondedStatus(const CClient * target, const CChar * pCh
 {
 	ADDTOCALLSTACK("PacketBondedStatus::PacketBondedStatus");
 
-	writeByte(0x0);
+	writeByte(0);
 	writeInt32(pChar->GetUID());
 	writeByte(IsGhost);
 
@@ -4322,7 +4323,7 @@ PacketHouseDesign::PacketHouseDesign(const CItemMultiCustom *house, DWORD revisi
 	initLength();
 
 	writeByte(0x3);
-	writeByte(0x0);
+	writeByte(0);
 	writeInt32(house->GetUID());
 	writeInt32(revision);
 	writeInt16(0); // item count
