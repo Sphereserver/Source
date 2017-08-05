@@ -700,7 +700,8 @@ enum CLIMODE_TYPE	// What mode is the client to server connection in ? (waiting 
 	CLIMODE_DIALOG,					// from RES_DIALOG
 
 	// Hard-coded (internal) dialogs
-	CLIMODE_DIALOG_VIRTUE = 0x1CD,
+	CLIMODE_DIALOG_VIRTUE			= 0x1CD,
+	CLIMODE_DIALOG_FACESELECTION	= 0x2B0,	// enhanced clients only
 
 	// Making a selection from a menu  -----------------------------------------------
 	CLIMODE_MENU,					// from RES_MENU

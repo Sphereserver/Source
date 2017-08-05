@@ -2447,26 +2447,44 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 	// maybe keep a memory for each gump?
 	CObjBase* object = serial.ObjFind();
 
-	// virtue button -- Handling this here because the packet is a little different
-	if ((context == CLIMODE_DIALOG_VIRTUE) && (character == object))
+	// Check client internal dialogs first (they must be handled separately because packets can be a bit different on these dialogs)
+	if (character == object)
 	{
-		CChar* viewed = character;
-		if (button == 1 && checkCount > 0)
+		if (context == CLIMODE_DIALOG_VIRTUE)
 		{
-			viewed = CGrayUID(readInt32()).CharFind();
-			if (!viewed)
-				viewed = character;
+			CChar *viewed = character;
+			if ((button == 1) && (checkCount > 0))
+			{
+				viewed = CGrayUID(readInt32()).CharFind();
+				if (!viewed)
+					viewed = character;
+			}
+			if (IsTrigUsed(TRIGGER_USERVIRTUE))
+			{
+				CScriptTriggerArgs Args(viewed);
+				Args.m_iN1 = button;
+				character->OnTrigger(CTRIG_UserVirtue, static_cast<CTextConsole *>(character), &Args);
+			}
+			return true;
 		}
-
-		if ( IsTrigUsed(TRIGGER_USERVIRTUE) )
+		else if (context == CLIMODE_DIALOG_FACESELECTION)
 		{
-			CScriptTriggerArgs Args(viewed);
-			Args.m_iN1 = button;
+			DWORD maxID = (g_Cfg.m_iFeatureExtra & FEATURE_EXTRA_ROLEPLAYFACES) ? ITEMID_FACE_VAMPIRE : ITEMID_FACE_10;
+			if ((button >= ITEMID_FACE_1) && (button <= maxID))
+			{
+				CItem *pFace = character->LayerFind(LAYER_FACE);
+				if (pFace)
+					pFace->Delete();
 
-			character->OnTrigger(CTRIG_UserVirtue, static_cast<CTextConsole *>(character), &Args);
+				pFace = CItem::CreateBase(static_cast<ITEMID_TYPE>(button));
+				if (pFace)
+				{
+					pFace->SetHue(character->GetHue());
+					character->LayerAdd(pFace, LAYER_FACE);
+				}
+			}
+			return true;
 		}
-
-		return true;
 	}
 
 #ifdef _DEBUG

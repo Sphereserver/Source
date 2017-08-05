@@ -680,3 +680,10 @@ Changed: Updated internal MySQL libs v6.1.10 to v6.1.11.
 
 04-08-2017, Coruja
 Changed: Updated internal SQLite libs v3.19.3 to v3.20.0.
+Added: New function CHANGEFACE to open client internal 'Face Selection' dialog (enhanced clients only).
+[items/sphere_item_profession_barber.scp]: Updated all items
+[npcs/sphere_vendors.scp]: Removed obsolete vendor 'c_barber' and added new 'c_body_sculptor', 'c_hairstylist'
+[speech/speakshopkeep.scp]: Updated speech 'spk_shopkeep' and added new 'spk_bodysculptor', 'spk_hairstylist'
+[sphere_dialog.scp]: Updated dialog 'd_hair_dye' and added new 'd_body_sculptor', 'd_hairstylist', 'd_hair_style', 'd_beard_style'
+[sphere_menu.scp]: Removed obsolete 'i_bottle_hair_dye' from menus
+[sphere_template_vend.scp]: Removed obsolete 'i_bottle_hair_dye' from vendor templates
