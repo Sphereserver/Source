@@ -687,3 +687,6 @@ Added: New function CHANGEFACE to open client internal 'Face Selection' dialog (
 [sphere_dialog.scp]: Updated dialog 'd_hair_dye' and added new 'd_body_sculptor', 'd_hairstylist', 'd_hair_style', 'd_beard_style'
 [sphere_menu.scp]: Removed obsolete 'i_bottle_hair_dye' from menus
 [sphere_template_vend.scp]: Removed obsolete 'i_bottle_hair_dye' from vendor templates
+
+10-08-2017, Coruja
+Fixed: Weapons not playing hit/miss sounds on combat.

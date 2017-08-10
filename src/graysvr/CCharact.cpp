@@ -357,10 +357,10 @@ void CChar::OnRemoveOb( CGObListRec* pObRec )	// Override this = called when rem
 		return;
 
 	LAYER_TYPE layer = pItem->GetEquipLayer();
-	if (( IsTrigUsed(TRIGGER_UNEQUIP) ) || ( IsTrigUsed(TRIGGER_ITEMUNEQUIP) ))
+	if ( IsTrigUsed(TRIGGER_UNEQUIP) || IsTrigUsed(TRIGGER_ITEMUNEQUIP) )
 	{
-		if ( layer != LAYER_DRAGGING && ! g_Serv.IsLoading())
-			pItem->OnTrigger( ITRIG_UNEQUIP, this );
+		if ( (layer != LAYER_DRAGGING) && !g_Serv.IsLoading() )
+			pItem->OnTrigger(ITRIG_UNEQUIP, this);
 	}
 
 	CContainer::OnRemoveOb( pObRec );
@@ -1354,8 +1354,8 @@ void CChar::SoundChar( CRESND_TYPE type )
 		return;
 
 	SOUND_TYPE id;
+	CCharBase *pCharDef = Char_GetDef();
 
-	CCharBase* pCharDef = Char_GetDef();
 	switch ( GetDispID() )
 	{
 		case CREID_BLADES:
@@ -1375,7 +1375,7 @@ void CChar::SoundChar( CRESND_TYPE type )
 		case CREID_GARGGHOSTMAN:
 		case CREID_GARGGHOSTWOMAN:
 		{
-			id = 0;
+			id = SOUND_NONE;
 			if ( pCharDef->IsFemale())
 			{
 				switch ( type )
@@ -1416,7 +1416,8 @@ void CChar::SoundChar( CRESND_TYPE type )
 						break;
 				}
 			}
-		} break;
+			break;
+		}
 
 		default:
 		{
@@ -1443,21 +1444,17 @@ void CChar::SoundChar( CRESND_TYPE type )
 				default:
 					break;
 			}
-		} break;
+			break;
+		}
 	}
 
 	if ( type == CRESND_HIT )
 	{
-		CItem * pWeapon = m_uidWeapon.ItemFind();
-		if ( pWeapon != NULL )
+		CItem *pWeapon = m_uidWeapon.ItemFind();
+		if ( pWeapon )
 		{
-			CVarDefCont * pVar = pWeapon->GetDefKey("AMMOSOUNDHIT", true);
-			if ( pVar )
-			{
-				if ( pVar->GetValNum() )
-					id = static_cast<SOUND_TYPE>(pVar->GetValNum());
-			}
-			else
+			id = pWeapon->Weapon_GetSoundHit();
+			if ( !id )
 			{
 				// weapon type strike noise based on type of weapon and how hard hit.
 				switch ( pWeapon->GetType() )

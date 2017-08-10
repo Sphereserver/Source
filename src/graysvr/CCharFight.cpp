@@ -3092,8 +3092,15 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( pCharTarg->IsPriv(PRIV_DETAIL) )
 			pCharTarg->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_MISSO), GetName());
 
-		static const SOUND_TYPE sm_SoundMiss_Wrestling[] = { 0x238, 0x239, 0x23a };
-		Sound(pWeapon ? pWeapon->Weapon_GetSoundMiss() : sm_SoundMiss_Wrestling[Calc_GetRandVal(COUNTOF(sm_SoundMiss_Wrestling))]);
+		SOUND_TYPE iSound;
+		if ( pWeapon )
+			iSound = pWeapon->Weapon_GetSoundMiss();
+		if ( !iSound )
+		{
+			static const SOUND_TYPE sm_SoundMiss_Wrestling[] = { 0x238, 0x239, 0x23a };
+			iSound = sm_SoundMiss_Wrestling[Calc_GetRandVal(COUNTOF(sm_SoundMiss_Wrestling))];
+		}
+		Sound(iSound);
 		return WAR_SWING_EQUIPPING;
 	}
 
@@ -3189,10 +3196,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			pAmmo->ConsumeAmount(1);
 	}
 
-	if ( pWeapon )
-		Sound(pWeapon->Weapon_GetSoundHit());
-	else
-		SoundChar(CRESND_HIT);
+	SoundChar(CRESND_HIT);
 
 	if ( pWeapon )
 	{
