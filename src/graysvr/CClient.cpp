@@ -1206,7 +1206,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		}
 		case CV_CHANGEFACE:		// open 'face selection' dialog (enhanced clients only)
 		{
-			addGumpDialog(CLIMODE_DIALOG, NULL, NULL, NULL, NULL, 50, 50, m_pChar, CLIMODE_DIALOG_FACESELECTION);
+			addGumpDialog(CLIMODE_DIALOG, NULL, 0, NULL, 0, 0, 0, m_pChar, CLIMODE_DIALOG_FACESELECTION);
 			break;
 		}
 		case CV_CHARLIST:		// usually just a gm command

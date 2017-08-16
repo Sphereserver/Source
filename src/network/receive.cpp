@@ -571,7 +571,7 @@ bool PacketMovementReq::onReceive(NetState* net)
 	BYTE sequence = readByte();
 	//DWORD crypt = readInt32();	// client fastwalk crypt (not used anymore)
 
-	if ( net->m_sequence == 0 && sequence != 0 )
+	if ( (net->m_sequence == 0) && (sequence != 0) )
 		direction = DIR_QTY;	// setting invalid direction to intentionally reject the walk request
 
 	if ( client->Event_Walk(direction, sequence) )
@@ -1004,7 +1004,7 @@ bool PacketSkillLockChange::onReceive(NetState* net)
 
 	int len = readInt16();
 	len -= 3;
-	if (len <= 0 || (len % 3) != 0)
+	if ((len <= 0) || ((len % 3) != 0))
 		return false;
 
 	while (len > 0)
@@ -1304,7 +1304,7 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 
 	WORD page = readInt16();
 	WORD lineCount = readInt16();
-	if (lineCount == 0xFFFF || getLength() <= 0x0D)
+	if ((lineCount == 0xFFFF) || (getLength() <= 0x0D))
 	{
 		client->addBookPage(book, page, 1); // just a request for a page
 		return true;
@@ -1689,7 +1689,7 @@ bool PacketMenuChoice::onReceive(NetState* net)
 	WORD context = readInt16();
 	WORD select = readInt16();
 
-	if (context != client->GetTargMode() || serial != client->m_tmMenu.m_UID)
+	if ((context != client->GetTargMode()) || (serial != client->m_tmMenu.m_UID))
 	{
 		client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MENU_UNEXPECTED));
 		return true;
@@ -2309,7 +2309,7 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
 	if ((fix = strchr(text, '\t')) != NULL)
 		*fix = ' ';
 
-	if (client->GetTargMode() != CLIMODE_INPVAL || uid != client->m_Targ_UID)
+	if ((client->GetTargMode() != CLIMODE_INPVAL) || (uid != client->m_Targ_UID))
 	{
 		client->SysMessage("Unexpected text input");
 		return true;
@@ -3116,7 +3116,7 @@ bool PacketAnimationReq::onReceive(NetState* net)
 
 	ANIM_TYPE anim = static_cast<ANIM_TYPE>(readInt32());
 	bool ok = false;
-	for (size_t i = 0; !ok && i < COUNTOF(validAnimations); i++)
+	for (size_t i = 0; !ok && (i < COUNTOF(validAnimations)); i++)
 		ok = (anim == validAnimations[i]);
 
 	if (!ok)
@@ -3253,7 +3253,7 @@ bool PacketChangeStatLock::onReceive(NetState* net)
 
 	if (code >= STAT_BASE_QTY)
 		return false;
-	else if (state < SKILLLOCK_UP || state > SKILLLOCK_LOCK)
+	else if ((state < SKILLLOCK_UP) || (state > SKILLLOCK_LOCK))
 		return false;
 
 	// translate UO stat to Sphere stat
@@ -3538,7 +3538,7 @@ bool PacketWheelBoatMove::onReceive(NetState* net)
 	if (area && area->IsFlag(REGION_FLAG_SHIP))
 	{
 		CItemShip *pShipItem = dynamic_cast<CItemShip *>(area->GetResourceID().ItemFind());
-		if (pShipItem && pShipItem->m_itShip.m_Pilot == character->GetUID())
+		if (pShipItem && (pShipItem->m_itShip.m_Pilot == character->GetUID()))
 		{
 			//direction of movement = moving - ship_face
 			//	moving = read from packet
@@ -3547,7 +3547,7 @@ bool PacketWheelBoatMove::onReceive(NetState* net)
 			//Ship_* need to be private? there is another way to ask the ship to move?
 			//pShipItem->Ship_Move(static_cast<DIR_TYPE>((moving - pShipItem->m_itShip.m_DirFace)), pShipItem->m_shipSpeed.tiles);
 
-			if ((facing == DIR_N || facing == DIR_E || facing == DIR_S || facing == DIR_W) && pShipItem->m_itShip.m_DirFace != facing) //boat cannot face intermediate directions
+			if (((facing == DIR_N) || (facing == DIR_E) || (facing == DIR_S) || (facing == DIR_W)) && (pShipItem->m_itShip.m_DirFace != facing)) //boat cannot face intermediate directions
 				pShipItem->Ship_Face(moving);
 
 			if (pShipItem->Ship_SetMoveDir(facing, speed, true))//pShipItem->m_itShip.m_DirMove = static_cast<BYTE>(facing);

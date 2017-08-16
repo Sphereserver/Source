@@ -790,7 +790,7 @@ PacketItemContainer::PacketItemContainer(const CClient* target, const CItem* ite
 	ITEMID_TYPE id = item->GetDispID();
 	HUE_TYPE hue = item->GetHue() & HUE_MASK_HI;
 
-	if (itemDefinition && target->GetResDisp() < itemDefinition->GetResLevel())
+	if (itemDefinition && (target->GetResDisp() < itemDefinition->GetResLevel()))
 	{
 		id = static_cast<ITEMID_TYPE>(itemDefinition->GetResDispDnId());
 		if (itemDefinition->GetResDispDnHue() != HUE_DEFAULT)
@@ -1532,7 +1532,7 @@ void PacketBookPageContent::addPage(const CItem *book, WORD page)
 		const CItemMessage* message = dynamic_cast<const CItemMessage *>(book);
 		if (message)
 		{
-			if (page > 0 && page <= message->GetPageCount())
+			if ((page > 0) && (page <= message->GetPageCount()))
 			{
 				// copy the pages from the book
 				LPCTSTR text = message->GetPageText(page - 1);
@@ -1608,7 +1608,7 @@ PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetT
 
 	WORD y = 0;
 	CItemBaseMulti *pMultiDef = static_cast<CItemBaseMulti *>(pItemDef);
-	if ( pMultiDef && pMultiDef->m_rect.m_bottom > 0 && (pMultiDef->IsType(IT_MULTI) || pMultiDef->IsType(IT_MULTI_CUSTOM)) )
+	if ( pMultiDef && (pMultiDef->m_rect.m_bottom > 0) && (pMultiDef->IsType(IT_MULTI) || pMultiDef->IsType(IT_MULTI_CUSTOM)) )
 		y = static_cast<WORD>(pMultiDef->m_rect.m_bottom) - 1;
 
 	writeByte(static_cast<BYTE>(type));
@@ -1851,8 +1851,8 @@ void PacketEffect::writeBasicEffect(EFFECT_TYPE motion, ITEMID_TYPE id, const CO
 	writeByte(speed); // 0=very fast, 7=slow
 	writeByte(loop); // 0=really long, 1=shortest, 6=longer
 	writeInt16(0);
-	writeByte(oneDirection);
-	writeByte(explode);
+	writeBool(oneDirection);
+	writeBool(explode);
 
 }
 
@@ -2028,7 +2028,7 @@ PacketVendorBuyList::PacketVendorBuyList(const CClient* target, const CItemConta
 			vendorItem->Item_GetDef()->ResetMakeValue();
 			price = vendorItem->GetVendorPrice(convertFactor);
 
-			if (price == 0 && vendorItem->IsValidNPCSaleItem())
+			if ((price == 0) && vendorItem->IsValidNPCSaleItem())
 				price = vendorItem->GetBasePrice();
 			if (price == 0)
 				price = 100000;
@@ -2357,7 +2357,7 @@ PacketPaperdoll::PacketPaperdoll(const CClient* target, const CChar* character) 
 		flags |= target->m_NetState->isClientVersion(MINCLIVER_AOS) ? 0x1 : 0x40;
 	if (target->m_NetState->isClientVersion(MINCLIVER_AOS))
 	{
-		if (character == target->GetChar() || (g_Cfg.m_fCanUndressPets ? character->NPC_IsOwnedBy(target->GetChar()) : (target->IsPriv(PRIV_GM) && target->GetPrivLevel() > character->GetPrivLevel())))
+		if (character == target->GetChar() || (g_Cfg.m_fCanUndressPets ? character->NPC_IsOwnedBy(target->GetChar()) : (target->IsPriv(PRIV_GM) && (target->GetPrivLevel() > character->GetPrivLevel()))))
 			flags |= 0x2;
 	}
 
@@ -3271,7 +3271,7 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, size_t 
 		int error = z_compress2(compressBuffer, &compressLength, (BYTE*)toCompress, controlLengthActual, Z_DEFAULT_COMPRESSION);
 		delete[] toCompress;
 
-		if (error != Z_OK || compressLength <= 0)
+		if ((error != Z_OK) || (compressLength <= 0))
 		{
 			delete[] compressBuffer;
 			g_Log.EventError("Compress failed with error %d when generating gump. Using old packet.\n", error);
@@ -3303,7 +3303,7 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, size_t 
 		BYTE* compressBuffer = new BYTE[compressLength];
 
 		int error = z_compress2(compressBuffer, &compressLength, &m_buffer[textsPosition], textsLength, Z_DEFAULT_COMPRESSION);
-		if (error != Z_OK || compressLength <= 0)
+		if ((error != Z_OK) || (compressLength <= 0))
 		{
 			delete[] compressBuffer;
 
@@ -3908,7 +3908,7 @@ PacketBondedStatus::PacketBondedStatus(const CClient * target, const CChar * pCh
 
 	writeByte(0);
 	writeInt32(pChar->GetUID());
-	writeByte(IsGhost);
+	writeBool(IsGhost);
 
 	push(target);
 }

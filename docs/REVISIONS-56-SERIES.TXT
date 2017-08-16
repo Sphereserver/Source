@@ -690,3 +690,29 @@ Added: New function CHANGEFACE to open client internal 'Face Selection' dialog (
 
 10-08-2017, Coruja
 Fixed: Weapons not playing hit/miss sounds on combat.
+[npcs/sphere_monsters_custom.scp]: Changed obsolete MODAR to RESPHYSICAL
+[npcs/sphere_monsters.scp]: Changed obsolete MODAR to RESPHYSICAL and updated NAME of some named NPCs
+[npcs/spherechar_evil.scp]: Changed obsolete MODAR to RESPHYSICAL and updated NAME of some named NPCs
+[sphere_name.scp]: Updated many names lists
+
+11-08-2017, Coruja
+[items/sphere_item_deco_furniture.scp]: Renamed some defnames (i_table_elven_ornate_2 -> i_table_hardwood, i_table_elven_storage -> i_chest_ornate_elven, i_chest_gargoyle -> i_chest_gargish)
+[items/sphere_item_unsorted.scp]: Renamed some defnames (i_chest_ornate_elven -> i_chest_rarewood, i_chest_ornate_elven_2 -> i_box_decorative)
+[items/sphere_item_misc.scp]: Added missing TDATA2 on items 'i_checkerboard' and 'i_chessboard'
+[sphere_backward_compatibility.scp]: Added some few itemdefs on backward compatibility list
+
+12-08-2017, Coruja
+[items/sphere_item_ship_parts_britannian.scp]: Fixed ship hatches type (t_container -> t_ship_hold) and added its missing TDATA2
+[items/sphere_item_ship_parts_gargish.scp]: Fixed ship hatches type (t_container -> t_ship_hold) and added its missing TDATA2
+[items/sphere_item_ship_parts_orcish.scp]: Fixed ship hatches type (t_container -> t_ship_hold) and added its missing TDATA2
+[items/sphere_item_ship_parts_tokuno.scp]: Fixed ship hatches type (t_container -> t_ship_hold) and added its missing TDATA2
+[items/sphere_item_unsorted.scp]: Fixed item 'i_dice_cup' not working correctly and removed unused triggers from items 'i_person_lord_british', 'i_person_black_thorne', 'i_deathshroud', 'i_robe_gm'
+
+15-08-2017, Coruja
+[items/sphere_item_deco_carvings_statues.scp]: Added publish 98 statues
+[items/sphere_item_halloween.scp]: Added new file with publish 98 halloween items
+[items/sphere_item_provisions_armor.scp]: Added publish 90 armors
+[items/sphere_item_provisions_clothing.scp]: Added publish 90 clothes
+[items/sphere_item_provisions_misc.scp]: Added publish 98 items
+[items/sphere_item_vegetation.scp]: Added publish 94 plants
+[items/sphere_item_wedding.scp]: Added publish 98 wedding items
