@@ -92,7 +92,7 @@ bool CChar::Spell_Teleport(CPointMap ptNew, bool bTakePets, bool bCheckAntiMagic
 		}
 	}
 
-	if ( !IsStatFlag(STATF_Insubstantial) )
+	if ( bDisplayEffect && !IsStatFlag(STATF_Insubstantial) && (iEffect == ITEMID_NOTHING) && (iSound == SOUND_NONE) )
 	{
 		if ( m_pPlayer )
 		{
@@ -236,7 +236,6 @@ bool CChar::Spell_CreateGate(CPointMap ptNew, bool bCheckAntiMagic)
 	pGate->SetHue(static_cast<HUE_TYPE>(pAreaDest->IsGuarded() ? HUE_DEFAULT : HUE_RED));
 	pGate->m_itTelepad.m_pntMark = ptNew;
 	pGate->MoveToDecay(GetTopPoint(), iDuration);
-	pGate->Effect(EFFECT_OBJ, ITEMID_MOONGATE_FX_BLUE, pGate, 2);
 	pGate->Sound(pSpellDef->m_sound);
 
 	pGate = CItem::CreateDupeItem(pGate);
@@ -244,7 +243,6 @@ bool CChar::Spell_CreateGate(CPointMap ptNew, bool bCheckAntiMagic)
 	pGate->SetHue(static_cast<HUE_TYPE>((m_pArea && m_pArea->IsGuarded()) ? HUE_DEFAULT : HUE_RED));
 	pGate->m_itTelepad.m_pntMark = GetTopPoint();
 	pGate->MoveToDecay(ptNew, iDuration);
-	pGate->Effect(EFFECT_OBJ, ITEMID_MOONGATE_FX_BLUE, pGate, 2);
 	pGate->Sound(pSpellDef->m_sound);
 
 	SysMessageDefault(DEFMSG_SPELL_GATE_OPEN);
@@ -361,7 +359,9 @@ bool CChar::Spell_Recall(CItem *pTarg, bool bGate)
 		}
 		else
 		{
-			if ( !Spell_Teleport(pTarg->m_itRune.m_pntMark, true) )
+			const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Recall);
+			ASSERT(pSpellDef);
+			if ( !Spell_Teleport(pTarg->m_itRune.m_pntMark, true, true, true, pSpellDef->m_idEffect, pSpellDef->m_sound) )
 				return false;
 		}
 
@@ -516,8 +516,8 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 				return;
 			if ( !g_Serv.IsLoading() )
 			{
-				Effect(EFFECT_XYZ, ITEMID_FX_TELE_VANISH, this, 8, 20);
-				Sound(0x201);
+				Effect(EFFECT_XYZ, ITEMID_FX_TELE_VANISH, this, 10, 15);
+				Sound(SOUND_TELEPORT);
 			}
 			if ( !IsStatFlag(STATF_DEAD) )	// fix for double @Destroy trigger
 				Delete();
@@ -528,14 +528,9 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 			SetHue(m_prev_Hue);
 			SetID(m_prev_id);
 
-			BUFF_ICONS iBuffIcon = BI_START;
+			BUFF_ICONS iBuffIcon = BI_POLYMORPH;
 			switch ( spell )
 			{
-				case SPELL_Polymorph:
-				case SPELL_BeastForm:
-				case SPELL_Monster_Form:
-					iBuffIcon = BI_POLYMORPH;
-					break;
 				case SPELL_Horrific_Beast:
 					iBuffIcon = BI_HORRIFICBEAST;
 					SetDefNum("RegenHits", GetDefNum("RegenHits") - pSpell->m_itSpell.m_PolyStr);
@@ -1796,7 +1791,7 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 				Speak(g_Cfg.GetDefaultMsg(DEFMSG_SPELL_ALCOHOL_HIC));
 				if ( !IsStatFlag(STATF_OnHorse) )
 				{
-					UpdateDir(static_cast<DIR_TYPE>(Calc_GetRandVal(8)));
+					UpdateDir(static_cast<DIR_TYPE>(Calc_GetRandVal(DIR_QTY)));
 					UpdateAnimate(ANIM_BOW);
 				}
 			}
@@ -1934,7 +1929,7 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 			int iRemainingTicks = pItem->m_itSpell.m_spelllevel - pItem->m_itSpell.m_spellcharges;
 
 			OnTakeDamage(maximum(1, iDmg), pItem->m_uidLink.CharFind(), DAMAGE_MAGIC|DAMAGE_POISON|DAMAGE_NODISTURB|DAMAGE_NOREVEAL|DAMAGE_NOUNPARALYZE, 0, 0, 0, 100, 0);
-			pItem->SetTimeout(maximum(1, (4 - iRemainingTicks) * TICK_PER_SEC));
+			pItem->SetTimeout(maximum(1, iRemainingTicks * TICK_PER_SEC));
 			break;
 		}
 		case SPELL_Pain_Spike:

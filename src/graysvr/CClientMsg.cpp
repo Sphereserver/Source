@@ -2022,6 +2022,7 @@ void CClient::addSpellbookOpen( CItem * pBook )
 			return;
 	}
 
+	addItem(pBook);
 	OpenPacketTransaction transaction(this, PacketSend::PRI_NORMAL);
 	addOpenGump(pBook, GUMP_NONE);
 

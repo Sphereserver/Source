@@ -716,3 +716,99 @@ Fixed: Weapons not playing hit/miss sounds on combat.
 [items/sphere_item_provisions_misc.scp]: Added publish 98 items
 [items/sphere_item_vegetation.scp]: Added publish 94 plants
 [items/sphere_item_wedding.scp]: Added publish 98 wedding items
+
+16-08-2017, Coruja
+[speech/jobbanker.scp]: File removed
+[speech/speakshopkeep.scp]: Added new speech 'spk_banker' with updated commands: bank, balance, check, withdraw (all commands are fully compatible with FEATURE_TOL_VIRTUALGOLD setting)
+[npcs/sphere_vendors.scp]: Renamed speech 'jobBanker' to 'spk_banker' on Banker/Minter NPCs
+[items/sphere_item_provisions_deed.scp]: Added new item 'i_bank_check'
+
+18-08-2017, Coruja
+[items/sphere_item_deco_carvings_statues.scp]: Moved all halloween items to sphere_item_halloween.scp
+[items/sphere_item_deco_dungeons_traps_dead.scp]: Moved all halloween items to sphere_item_halloween.scp
+[items/sphere_item_deco_lightsources.scp]: Moved all halloween items to sphere_item_halloween.scp
+[items/sphere_item_deco_wall_hangings.scp]: Moved all halloween items to sphere_item_halloween.scp
+[items/sphere_item_halloween.scp]: Added publish 98 halloween items
+[items/sphere_item_profession.scp]: Moved all halloween items to sphere_item_halloween.scp
+[items/sphere_item_profession_cook_barkeep_baker.scp]: Moved all halloween items to sphere_item_halloween.scp
+[sphere_backward_compatibility.scp]: Added some few itemdefs on backward compatibility list
+
+21-08-2017, Coruja
+[items/sphere_item_christmas.scp]: File renamed to 'sphere_item_holiday_christmas.scp' 
+[items/sphere_item_halloween.scp]: File renamed to 'sphere_item_holiday_halloween.scp'
+
+26-08-2017, Coruja
+[items/sphere_item_theme_pack_kings_collection.scp]: Added new file with King's Collection theme pack items
+[items/sphere_item_deco_furniture.scp]: Moved all Kings's Collection items to sphere_item_theme_pack_kings_collection.scp  
+[items/sphere_item_deco_lightsources.scp]: Moved all Kings's Collection items to sphere_item_theme_pack_kings_collection.scp
+[items/sphere_item_deco_wall_hangings.scp]: Moved all Kings's Collection items to sphere_item_theme_pack_kings_collection.scp
+[items/sphere_item_resources.scp]: Added missing itemdef 'i_workable_glass'
+[items/sphere_item_unsorted.scp]: Moved all Kings's Collection items to sphere_item_theme_pack_kings_collection.scp
+[sphere_backward_compatibility.scp]: Added some few itemdefs on backward compatibility list
+
+27-08-2017, Coruja
+[items/sphere_item_theme_pack_gothic.scp]: Added new file with Gothic theme pack items
+[items/sphere_item_building_stairs.scp]: Moved all Gothic items to sphere_item_theme_pack_gothic.scp
+[items/sphere_item_building_walls.scp]: Moved all Gothic items to sphere_item_theme_pack_gothic.scp
+[items/sphere_item_deco_carvings_statues.scp]: Moved all Gothic items to sphere_item_theme_pack_gothic.scp
+[items/sphere_item_deco_furniture.scp]: Moved all Gothic items to sphere_item_theme_pack_gothic.scp
+[items/sphere_item_profession.scp]: Moved all Gothic items to sphere_item_theme_pack_gothic.scp
+[items/sphere_item_unsorted.scp]: Moved all Gothic items to sphere_item_theme_pack_gothic.scp
+
+28-08-2017, Coruja
+[items/sphere_item_theme_pack_rustic.scp]: Added new file with Rustic theme pack items
+[items/sphere_item_building_stairs.scp]: Moved all Rustic items to sphere_item_theme_pack_rustic.scp
+[items/sphere_item_building_walls.scp]: Moved all Rustic items to sphere_item_theme_pack_rustic.scp
+[items/sphere_item_deco_carvings_statues.scp]: Moved all Rustic items to sphere_item_theme_pack_rustic.scp
+[items/sphere_item_deco_furniture.scp]: Moved all Rustic items to sphere_item_theme_pack_rustic.scp
+[items/sphere_item_profession_cook_barkeep_baker.scp]: Moved all Rustic items to sphere_item_theme_pack_rustic.scp
+[items/sphere_item_unsorted.scp]: Moved all Rustic items to sphere_item_theme_pack_rustic.scp
+
+02-09-2017, Coruja
+[items/sphere_item_holiday_valentines.scp]: Added new file with Valentine's Day items
+[items/sphere_item_animations.scp]: Moved all Valentine's items to sphere_item_holiday_valentines.scp
+[items/sphere_item_deco_carvings_statues.scp]: Moved all Valentine's items to sphere_item_holiday_valentines.scp
+[items/sphere_item_unsorted.scp]: Moved all Valentine's items to sphere_item_holiday_valentines.scp
+[items/sphere_item_vegetation.scp]: Moved all Valentine's items to sphere_item_holiday_valentines.scp
+
+04-09-2017, Coruja
+[items/sphere_item_animations.scp]: Add publish 98 items
+[items/sphere_item_deco_lightsources.scp]: Update all lightsource items with correct light pattern and others misc infos
+[items/sphere_item_holiday_christmas.scp]: Fixed some wrong ITEMDEF names
+
+09-09-2017, Coruja
+[items/sphere_item_char_icons.scp]: Added publish 98 items
+[items/sphere_item_provisions_jewelry.scp]: Updated gargish jewelry properties
+[items/sphere_item_unsorted.scp]: Removed some duplicated ITEMDEFs
+[items/sphere_item_vegetation.scp]: Added some missing trees and potted plants
+
+17-09-2017, Coruja
+[items/sphere_item_theme_pack_shadow.scp]: Added new file with Shadow theme pack items
+[items/sphere_item_animations.scp]: Moved all Shadow items to sphere_item_theme_pack_shadow.scp
+[items/sphere_item_boulders_rocks.scp]: Moved all Shadow items to sphere_item_theme_pack_shadow.scp
+[items/sphere_item_building_doors.scp]: Moved all Shadow items to sphere_item_theme_pack_shadow.scp
+[items/sphere_item_building_floors.scp]: Moved all Shadow items to sphere_item_theme_pack_shadow.scp
+[items/sphere_item_building_roofs.scp]: Moved all Shadow items to sphere_item_theme_pack_shadow.scp
+[items/sphere_item_building_stairs.scp]: Moved all Shadow items to sphere_item_theme_pack_shadow.scp
+[items/sphere_item_building_walls.scp]: Moved all Shadow items to sphere_item_theme_pack_shadow.scp
+[items/sphere_item_deco_carvings_statues.scp]: Moved all Shadow items to sphere_item_theme_pack_shadow.scp
+[items/sphere_item_deco_fireplace_chimney_oven.scp]: Moved all Shadow items to sphere_item_theme_pack_shadow.scp
+[items/sphere_item_profession_cartographer.scp]: Moved all Shadow items to sphere_item_theme_pack_shadow.scp
+[items/sphere_item_unsorted.scp]: Moved all Shadow items to sphere_item_theme_pack_shadow.scp
+
+18-09-2017, Coruja
+[items/sphere_item_theme_pack_crystal.scp]: Added new file with Crystal theme pack items
+[items/sphere_item_building_doors.scp]: Moved all Crystal items to sphere_item_theme_pack_crystal.scp
+[items/sphere_item_building_floors.scp]: Moved all Crystal items to sphere_item_theme_pack_crystal.scp
+[items/sphere_item_building_roofs.scp]: Moved all Crystal items to sphere_item_theme_pack_crystal.scp
+[items/sphere_item_building_stairs.scp]: Moved all Crystal items to sphere_item_theme_pack_crystal.scp
+[items/sphere_item_building_walls.scp]: Moved all Crystal items to sphere_item_theme_pack_crystal.scp
+[items/sphere_item_deco_carvings_statues.scp]: Moved all Crystal items to sphere_item_theme_pack_crystal.scp
+[items/sphere_item_deco_furniture.scp]: Moved all Crystal items to sphere_item_theme_pack_crystal.scp
+[items/sphere_item_profession.scp]: Moved all Crystal items to sphere_item_theme_pack_crystal.scp
+[items/sphere_item_unsorted.scp]: Moved all Crystal items to sphere_item_theme_pack_crystal.scp
+
+19-09-2017, Coruja
+Fixed: Client 'Open Spellbook' macro making the client crash if it try to open the requested spellbook gump when the spellbook item is not loaded yet.
+Fixed: Recall spell always using default teleport effect/sound values set on sphere.ini instead EFFECT_ID/SOUND values set on sphere_spells.scp.
+[sphere_spells.scp]: Added missing EFFECT_ID value on Recall spell
