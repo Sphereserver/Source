@@ -1241,10 +1241,10 @@ enum SPELL_TYPE	// List of spell numbers in spell book.
 
 enum LIGHT_PATTERN	// What pattern (m_light_pattern) does the light source (CAN_LIGHT) take.
 {
-	LIGHT_LARGE = 1,
-	// ... etc
-	// Colored light is in here some place as well.
-	LIGHT_QTY = 56	// This makes it go black.
+	LIGHT_LARGE		= 1,
+	LIGHT_SMALL		= 2,
+	LIGHT_LARGEST	= 29,
+	LIGHT_QTY		= 56	// this makes it go black
 };
 
 enum GUMP_TYPE	// The gumps. (most of these are not useful to the server.)

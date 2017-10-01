@@ -4225,6 +4225,7 @@ bool CItem::Use_Light()
 
 	SetID(id);
 	Update();
+	ResendTooltip();
 
 	if ( IsType(IT_LIGHT_LIT) )
 	{
@@ -5115,8 +5116,9 @@ bool CItem::OnTick()
 				EXC_SET("default behaviour::IT_CAMPFIRE");
 				if ( GetID() == ITEMID_EMBERS )
 					break;
-				SetID( ITEMID_EMBERS );
-				SetDecayTime( 2*60*TICK_PER_SEC );
+				SetID(ITEMID_EMBERS);
+				SetDecayTime(2 * 60 * TICK_PER_SEC);
+				m_itLight.m_pattern = LIGHT_SMALL;
 				Update();
 			}
 			return true;

@@ -193,7 +193,7 @@ bool CChar::Use_Kindling( CItem * pKindling )
 	pKindling->SetAttr(ATTR_MOVE_NEVER|ATTR_CAN_DECAY);
 	pKindling->SetTimeout((4 + pKindling->GetAmount()) * 60 * TICK_PER_SEC);
 	pKindling->SetAmount(1);	// all kindling is set to one fire
-	pKindling->m_itLight.m_pattern = LIGHT_LARGE;
+	pKindling->m_itLight.m_pattern = LIGHT_LARGEST;
 	pKindling->Update();
 	return true;
 }
