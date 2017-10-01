@@ -27,19 +27,16 @@ void CClient::resendBuffs()
 	if ( !PacketBuff::CanSendTo(m_NetState) )
 		return;
 
-	CChar *pChar = GetChar();
-	ASSERT(pChar);
-
 	// NOTE: If the player logout and login again without close the client, buffs with remaining
 	// time will stay cached on client, making it not display the remaining time if the server
 	// send this same buff again. To avoid this, we must remove the buff before send it.
 
-	if ( pChar->IsStatFlag(STATF_NightSight) )
+	if ( m_pChar->IsStatFlag(STATF_NightSight) )
 		addBuff(BI_NIGHTSIGHT, 1075643, 1075644);
-	if ( pChar->IsStatFlag(STATF_Hidden|STATF_Insubstantial) )
+	if ( m_pChar->IsStatFlag(STATF_Hidden|STATF_Insubstantial) )
 		addBuff(BI_HIDDEN, 1075655, 1075656);
 
-	CItem *pStuck = pChar->LayerFind(LAYER_FLAG_Stuck);
+	CItem *pStuck = m_pChar->LayerFind(LAYER_FLAG_Stuck);
 	if ( pStuck )
 	{
 		removeBuff(BI_PARALYZE);
@@ -53,7 +50,7 @@ void CClient::resendBuffs()
 	WORD iStatEffect = 0;
 	WORD iTimerEffect = 0;
 
-	for ( CItem *pItem = pChar->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
+	for ( CItem *pItem = m_pChar->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
 		if ( !pItem->IsType(IT_SPELL) )
 			continue;
@@ -298,28 +295,27 @@ void CClient::addRemoveAll( bool fItems, bool fChars )
 	if ( fItems )
 	{
 		// Remove any multi objects first ! or client will hang
-		CWorldSearch AreaItems(GetChar()->GetTopPoint(), UO_MAP_VIEW_RADAR);
+		CWorldSearch AreaItems(m_pChar->GetTopPoint(), UO_MAP_VIEW_RADAR);
 		AreaItems.SetSearchSquare(true);
 		for (;;)
 		{
-			CItem * pItem = AreaItems.GetItem();
-			if ( pItem == NULL )
+			CItem *pItem = AreaItems.GetItem();
+			if ( !pItem )
 				break;
 			addObjectRemove(pItem);
 		}
 	}
 	if ( fChars )
 	{
-		CChar * pCharSrc = GetChar();
-		CWorldSearch AreaChars(GetChar()->GetTopPoint(), GetChar()->GetSight());
+		CWorldSearch AreaChars(m_pChar->GetTopPoint(), m_pChar->GetSight());
 		AreaChars.SetAllShow(IsPriv(PRIV_ALLSHOW));
 		AreaChars.SetSearchSquare(true);
 		for (;;)
 		{
-			CChar * pChar = AreaChars.GetChar();
-			if ( pChar == NULL )
+			CChar *pChar = AreaChars.GetChar();
+			if ( !pChar )
 				break;
-			if ( pChar == pCharSrc )
+			if ( pChar == m_pChar )
 				continue;
 			addObjectRemove(pChar);
 		}
@@ -1456,7 +1452,7 @@ void CClient::SetTargMode( CLIMODE_TYPE targmode, LPCTSTR pPrompt, int iTimeout 
 			{
 				CScriptTriggerArgs Args;
 				Args.m_s1 = m_Targ_Text;
-				if ( GetChar()->OnTrigger( CTRIG_Targon_Cancel, m_pChar, &Args ) == TRIGRET_RET_TRUE )
+				if ( m_pChar->OnTrigger(CTRIG_Targon_Cancel, m_pChar, &Args) == TRIGRET_RET_TRUE )
 					bSuppressCancelMessage = true;
 			}
 		} break;
@@ -2148,21 +2144,15 @@ bool CClient::addShopMenuSell( CChar * pVendor )
 void CClient::addBankOpen( CChar * pChar, LAYER_TYPE layer )
 {
 	ADDTOCALLSTACK("CClient::addBankOpen");
-	// open it up for this pChar.
-	ASSERT( pChar );
+	// Open bankbox of this pChar.
+	ASSERT(pChar);
 
 	CItemContainer *pBankBox = pChar->GetContainerCreate(layer);
 	ASSERT(pBankBox);
-	addItem( pBankBox );	// may crash client if we dont do this.
+	addItem(pBankBox);		//client will crash client if it try to open the gump without load the item first
 
-	if ( pChar != GetChar())
-	{
-		// xbank verb on others needs this ?
-		// addChar( pChar );
-	}
-
-	pBankBox->OnOpenEvent( m_pChar, pChar );
-	addContainerSetup( pBankBox );
+	pBankBox->OnOpenEvent(m_pChar, pChar);
+	addContainerSetup(pBankBox);
 }
 
 void CClient::addDrawMap( CItemMap * pMap )
@@ -2316,7 +2306,7 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 
 	// Don't send tooltips for items out of LOS
 	const CObjBaseTemplate *pObjTop = pObj->GetTopLevelObj();
-	if ( !pObjTop || (GetChar()->GetTopPoint().GetDistSight(pObjTop->GetTopPoint()) > GetChar()->GetSight() + 1) )
+	if ( !pObjTop || (m_pChar->GetTopPoint().GetDistSight(pObjTop->GetTopPoint()) > m_pChar->GetSight() + 1) )
 		return;
 
 	// We check here if we are sending a tooltip for a static/non-movable items
@@ -2326,7 +2316,7 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 		const CItem *pItem = static_cast<const CItem *>(pObj);
 		if ( !pItem->GetParentObj() && pItem->IsAttr(/*ATTR_MOVE_NEVER|*/ATTR_STATIC) )
 		{
-			if ( !GetChar()->IsPriv(PRIV_GM) && !GetChar()->IsPriv(PRIV_ALLMOVE) )
+			if ( !m_pChar->IsPriv(PRIV_GM) && !m_pChar->IsPriv(PRIV_ALLMOVE) )
 				return;
 		}
 	}
@@ -2363,7 +2353,7 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 			{
 				CScriptTriggerArgs args(const_cast<CObjBase *>(pObj));
 				args.m_iN1 = bRequested;
-				iRet = const_cast<CObjBase *>(pObj)->OnTrigger("@ClientTooltip", GetChar(), &args); //ITRIG_CLIENTTOOLTIP , CTRIG_ClientTooltip
+				iRet = const_cast<CObjBase *>(pObj)->OnTrigger("@ClientTooltip", m_pChar, &args); //ITRIG_CLIENTTOOLTIP , CTRIG_ClientTooltip
 			}
 
 			if ( iRet != TRIGRET_RET_TRUE )
@@ -3427,7 +3417,7 @@ BYTE CClient::LogIn(CAccountRef pAccount, CGString &sMsg)
 		else
 		{
 			// Same IP - allow reconnect if the old char is lingering out
-			CChar *pCharOld = pClientPrev->GetChar();
+			CChar *pCharOld = pClientPrev->m_pChar;
 			if ( pCharOld )
 			{
 				CItem *pItem = pCharOld->LayerFind(LAYER_FLAG_ClientLinger);
