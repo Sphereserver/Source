@@ -812,3 +812,10 @@ Fixed: Weapons not playing hit/miss sounds on combat.
 Fixed: Client 'Open Spellbook' macro making the client crash if it try to open the requested spellbook gump when the spellbook item is not loaded yet.
 Fixed: Recall spell always using default teleport effect/sound values set on sphere.ini instead EFFECT_ID/SOUND values set on sphere_spells.scp.
 [sphere_spells.scp]: Added missing EFFECT_ID value on Recall spell
+
+29-09-2017, Coruja
+[items/sphere_item_quests.scp]: Added new file with The Shattered Obelisk (publish 98) quest items
+[items/sphere_item_deco_wall_hangings.scp]: Added missing publish 97/98 items
+
+01-10-2017, Coruja
+Changed: Updated internal SQLite libs v3.20.0 to v3.20.1.
