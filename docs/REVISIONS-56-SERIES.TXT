@@ -820,3 +820,6 @@ Fixed: Recall spell always using default teleport effect/sound values set on sph
 01-10-2017, Coruja
 Changed: Updated internal SQLite libs v3.20.0 to v3.20.1.
 Fixed: Lightsource items not updating tooltip after toggle light state.
+
+03-10-2017, Coruja
+Fixed: Summoned NPCs not showing smoke effect when they got released.

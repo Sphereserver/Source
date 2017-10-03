@@ -203,12 +203,14 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 			break;
 
 		case PC_RELEASE:
-			SoundChar(CRESND_RAND2);
 			if ( IsStatFlag(STATF_Conjured) || (m_pNPC->m_bonded && IsStatFlag(STATF_DEAD)) )
 			{
+				Effect(EFFECT_XYZ, ITEMID_FX_TELE_VANISH, this, 10, 15);
+				Sound(SOUND_TELEPORT);
 				Delete();
 				return true;
 			}
+			SoundChar(CRESND_RAND2);
 			Skill_Start(SKILL_NONE);
 			NPC_PetClearOwners();
 			ResendTooltip();
