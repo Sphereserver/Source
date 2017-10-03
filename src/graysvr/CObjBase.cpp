@@ -2612,17 +2612,14 @@ DWORD CObjBase::UpdatePropertyRevision(DWORD hash)
 void CObjBase::UpdatePropertyFlag(int mask)
 {
 	ADDTOCALLSTACK("CObjBase::UpdatePropertyFlag");
-	if ( g_Serv.IsLoading() )
+	if ( g_Serv.IsLoading() || ((g_Cfg.m_iAutoTooltipResend & mask) == 0) )
 		return;
-	if ( (mask != 0) && ((g_Cfg.m_iAutoTooltipResend & mask) == 0) )
-		return;
-
-	// contained items don't receive ticks and need to be added to a
-	// list of items to be processed separately
-	if ( IsItemInContainer() && !g_World.m_ObjStatusUpdates.ContainsPtr(this) )
-		g_World.m_ObjStatusUpdates.Add(this);
 
 	m_fStatusUpdate |= SU_UPDATE_TOOLTIP;
+
+	// Items equipped or inside containers doesn't receive ticks and need to be added to a list of items to be processed separately
+	if ( !IsTopLevel() && !g_World.m_ObjStatusUpdates.ContainsPtr(this) )
+		g_World.m_ObjStatusUpdates.Add(this);
 }
 
 void CObjBase::OnTickStatusUpdate()
