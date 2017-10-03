@@ -580,50 +580,41 @@ bool CDialogDef::GumpSetup( int iPage, CClient * pClient, CObjBase * pObjSrc, LP
 }
 
 
-
 bool CClient::Dialog_Setup( CLIMODE_TYPE mode, RESOURCE_ID_BASE rid, int iPage, CObjBase * pObj, LPCTSTR Arguments )
 {
 	ADDTOCALLSTACK("CClient::Dialog_Setup");
-	if ( pObj == NULL )
-		return( false );
+	if ( !pObj )
+		return false;
 
-	CResourceDef *	pRes	= g_Cfg.ResourceGetDef( rid );
-	CDialogDef *	pDlg	= dynamic_cast <CDialogDef*>(pRes);
+	CResourceDef *pRes = g_Cfg.ResourceGetDef(rid);
+	CDialogDef *pDlg = dynamic_cast<CDialogDef *>(pRes);
 	if ( !pRes )
 	{
 		DEBUG_ERR(("Invalid RES_DIALOG.\n"));
 		return false;
 	}
 
-	if ( !pDlg->GumpSetup( iPage, this, pObj, Arguments ) )
+	if ( !pDlg->GumpSetup(iPage, this, pObj, Arguments) )
 		return false;
 
 	// Now pack it up to send,
 	// m_tmGumpDialog.m_ResourceID = rid;
-	DWORD context = (DWORD)rid;
+	DWORD context = static_cast<DWORD>(rid);
 	if ( m_NetState->isClientKR() )
 	{
-		// translate to KR's equivalent DialogID
-		context = g_Cfg.GetKRDialog( context );
-
+		// KR enhanced clients can use only client internal dialogs, so check if the dialog can be translated into KR equivalent DialogID.
+		// SA+ enhanced clients doesn't need this translation anymore because OSI had added back support for server dynamic dialogs again.
+		context = g_Cfg.GetKRDialog(context);
 		if ( context == 0 )
-		{
-			g_Log.Event( LOGL_WARN, "A Kingdom Reborn equivalent of dialog '%s' has not been defined.\n", pDlg->GetResourceName());
-		}
+			g_Log.Event(LOGL_WARN, "A Kingdom Reborn equivalent of dialog '%s' has not been defined.\n", pDlg->GetResourceName());
 	}
 
-	addGumpDialog( mode, pDlg->m_sControls, pDlg->m_iControls, pDlg->m_sText, pDlg->m_iTexts, pDlg->m_x, pDlg->m_y, pObj, context );
-	return( true );
+	addGumpDialog(mode, pDlg->m_sControls, pDlg->m_iControls, pDlg->m_sText, pDlg->m_iTexts, pDlg->m_x, pDlg->m_y, pObj, context);
+	return true;
 }
 
 
-
-
-void CClient::addGumpInpVal( bool fCancel, INPVAL_STYLE style,
-	DWORD iMaxLength,
-	LPCTSTR pszText1,
-	LPCTSTR pszText2,
-	CObjBase * pObj )
+void CClient::addGumpInpVal( bool fCancel, INPVAL_STYLE style, DWORD iMaxLength, LPCTSTR pszText1, LPCTSTR pszText2, CObjBase * pObj )
 {
 	ADDTOCALLSTACK("CClient::addGumpInpVal");
 	// CLIMODE_INPVAL
@@ -634,19 +625,14 @@ void CClient::addGumpInpVal( bool fCancel, INPVAL_STYLE style,
 	// 	m_Targ_UID = pObj->GetUID();
 	//  m_Targ_Text = verb
 
-	if (pObj == NULL)
+	if ( !pObj )
 		return;
-
-	ASSERT( pObj );
 
 	new PacketGumpValueInput(this, fCancel, style, iMaxLength, pszText1, pszText2, pObj);
 
-	// m_tmInpVal.m_UID = pObj->GetUID();
-	// m_tmInpVal.m_PrvGumpID = m_tmGumpDialog.m_ResourceID;
-
+	//m_Targ_Text = verb
 	m_Targ_UID = pObj->GetUID();
-	// m_Targ_Text = verb
-	SetTargMode( CLIMODE_INPVAL );
+	SetTargMode(CLIMODE_INPVAL);
 }
 
 
@@ -704,18 +690,12 @@ TRIGRET_TYPE CClient::Dialog_OnButton( RESOURCE_ID_BASE rid, DWORD dwButtonID, C
 {
 	ADDTOCALLSTACK("CClient::Dialog_OnButton");
 	// one of the gump dialog buttons was pressed.
-	if ( pObj == NULL )		// object is gone ?
+	if ( !pObj )		// object is gone ?
 		return TRIGRET_ENDIF;
 
 	CResourceLock s;
-	if ( ! g_Cfg.ResourceLock( s, RESOURCE_ID( RES_DIALOG, rid.GetResIndex(), RES_DIALOG_BUTTON )))
-	{
+	if ( !g_Cfg.ResourceLock(s, RESOURCE_ID(RES_DIALOG, rid.GetResIndex(), RES_DIALOG_BUTTON)) )
 		return TRIGRET_ENDIF;
-	}
-
-	// Set the auxiliary stuff for INPDLG here
-	// m_tmInpVal.m_PrvGumpID	= rid;
-	// m_tmInpVal.m_UID		= pObj ? pObj->GetUID() : (CGrayUID) 0;
 
 	INT64 piCmd[3];
 	while ( s.ReadKeyParse())

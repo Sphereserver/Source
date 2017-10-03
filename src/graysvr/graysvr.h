@@ -1083,13 +1083,6 @@ public:
 		// CLIMODE_SETUP_CHARLIST
 		CGrayUIDBase m_tmSetupCharList[MAX_CHARS_PER_ACCT];
 
-		// CLIMODE_INPVAL
-		struct
-		{
-			CGrayUIDBase m_UID;
-			RESOURCE_ID_BASE m_PrvGumpID;	// the gump that was up before this
-		} m_tmInpVal;
-
 		// CLIMODE_MENU_*
 		// CLIMODE_MENU_SKILL
 		// CLIMODE_MENU_GM_PAGES
