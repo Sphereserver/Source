@@ -1770,6 +1770,8 @@ void CObjBase::r_Write(CScript &s)
 		s.WriteKeyHex("SPAWNITEM", m_uidSpawnItem);
 	if ( m_ModAr )
 		s.WriteKeyVal("MODAR", m_ModAr);
+	if ( m_ModMaxWeight )
+		s.WriteKeyVal("MODMAXWEIGHT", m_ModMaxWeight);
 
 	// Write New variables
 	m_BaseDefs.r_WritePrefix(s);

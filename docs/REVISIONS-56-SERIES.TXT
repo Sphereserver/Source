@@ -824,3 +824,14 @@ Fixed: Lightsource items not updating tooltip after toggle light state.
 03-10-2017, Coruja
 Fixed: AutoTooltipResend .ini setting not working on equipped items.
 Fixed: Summoned NPCs not showing smoke effect when they got released.
+
+08-10-2017, Coruja
+[maps/sphere_map0_hs.scp]: Updated 'Sea Market' region
+[maps/sphere_map1_tol.scp]: Added new file with 'Event Arenas' regions
+[maps/sphere_map1.scp]: Updated 'New Haven' regions
+[maps/sphere_map_points1.scp]: Added missing 'New Haven Mine' teleports
+[npcs/sphere_monsters.scp]: Added publish 98 monsters
+
+15-10-2017, Coruja
+Fixed: MODMAXWEIGHT property not working correctly
+Changed: Updated 'weight' tooltip on containers

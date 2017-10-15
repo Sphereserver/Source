@@ -1205,11 +1205,11 @@ bool CItemContainer::CanContainerHold( const CItem *pItem, const CChar *pCharMsg
 		return false;
 	}
 
-	if (m_ModMaxWeight)
+	if ( m_ModMaxWeight )
 	{
-		if (( GetWeight( GetType() ==  IT_CORPSE ? 1 : 0 ) + pItem->GetWeight() ) > ( m_ModMaxWeight * WEIGHT_UNITS ))
+		if ( GetTotalWeight() + pItem->GetWeight() > m_ModMaxWeight )
 		{
-			pCharMsg->SysMessageDefault( DEFMSG_CONT_FULL_WEIGHT );
+			pCharMsg->SysMessageDefault(DEFMSG_CONT_FULL_WEIGHT);
 			return false;
 		}
 	}

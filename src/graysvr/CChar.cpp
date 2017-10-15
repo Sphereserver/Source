@@ -2747,8 +2747,6 @@ void CChar::r_Write( CScript & s )
 	if ( m_level )
 		s.WriteKeyVal("LEVEL", m_level);
 
-	if ( m_ModMaxWeight )
-		s.WriteKeyVal("MODMAXWEIGHT", m_ModMaxWeight);
 	if ( m_height )
 		s.WriteKeyVal("HEIGHT", m_height);
 	if ( m_ptHome.IsValidPoint() )
