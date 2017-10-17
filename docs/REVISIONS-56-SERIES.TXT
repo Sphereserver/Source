@@ -835,3 +835,14 @@ Fixed: Summoned NPCs not showing smoke effect when they got released.
 15-10-2017, Coruja
 Fixed: MODMAXWEIGHT property not working correctly
 Changed: Updated 'weight' tooltip on containers
+
+17-10-2017, Coruja
+[items/multis/multis_misc.scp]: Added publish 98 / 98.2 multis
+[items/sphere_item_char_icons.scp]: Added publish 98.2 items
+[items/sphere_item_holiday_christmas.scp]: Updated some item names
+[items/sphere_item_memories.scp]: Added publish 98.2 items
+[items/sphere_item_provisions_misc.scp]: Added publish 98 / 98.2 items
+[items/sphere_item_wedding.scp]: Added 'undead wedding veil/hat' missing functionality
+[npcs/sphere_monsters.scp]: Added publish 98.2 mount (Ethereal Serpentine Dragon)
+[sphere_defs.scp]: Added mount def for 'Ethereal Serpentine Dragon'
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.60 and enhanced client 4.0.60
