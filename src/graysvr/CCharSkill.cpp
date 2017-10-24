@@ -1005,40 +1005,41 @@ bool CChar::Skill_UseQuick(SKILL_TYPE skill, int difficulty, bool bAllowGain, bo
 		return false;
 
 	INT64 result = Skill_CheckSuccess(skill, difficulty, bUseBellCurve);
-	CScriptTriggerArgs pArgs(0, difficulty, result);
+	INT64 diff = difficulty;
+	CScriptTriggerArgs pArgs(0, diff, result);
 	TRIGRET_TYPE ret = TRIGRET_RET_DEFAULT;
 
 	if ( IsTrigUsed(TRIGGER_SKILLUSEQUICK) )
 	{
 		ret = Skill_OnCharTrigger(skill, CTRIG_SkillUseQuick, &pArgs);
-		pArgs.getArgNs(0, reinterpret_cast<INT64 *>(&difficulty), &result);
 
 		if ( ret == TRIGRET_RET_TRUE )
 			return true;
 		if ( ret == TRIGRET_RET_FALSE )
 			return false;
+		pArgs.getArgNs(0, &diff, &result);
 	}
 	if ( IsTrigUsed(TRIGGER_USEQUICK) )
 	{
 		ret = Skill_OnTrigger(skill, SKTRIG_USEQUICK, &pArgs);
-		pArgs.getArgNs(0, reinterpret_cast<INT64 *>(&difficulty), &result);
 
 		if ( ret == TRIGRET_RET_TRUE )
 			return true;
 		if ( ret == TRIGRET_RET_FALSE )
 			return false;
+		pArgs.getArgNs(0, &diff, &result);
 	}
 
 	if ( result > 0 )	// success
 	{
 		if ( bAllowGain )
-			Skill_Experience(skill, difficulty);
+			Skill_Experience(skill, diff);
 		return true;
 	}
 	else				// fail
 	{
 		if ( bAllowGain )
-			Skill_Experience(skill, -difficulty);
+			Skill_Experience(skill, -diff);
 		return false;
 	}
 }

@@ -846,3 +846,6 @@ Changed: Updated 'weight' tooltip on containers
 [npcs/sphere_monsters.scp]: Added publish 98.2 mount (Ethereal Serpentine Dragon)
 [sphere_defs.scp]: Added mount def for 'Ethereal Serpentine Dragon'
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.60 and enhanced client 4.0.60
+
+24-10-2017, Nolok
+Fixed: Skillgain never occurred when using SkillUseQuick.
