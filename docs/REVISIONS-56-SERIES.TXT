@@ -847,5 +847,59 @@ Changed: Updated 'weight' tooltip on containers
 [sphere_defs.scp]: Added mount def for 'Ethereal Serpentine Dragon'
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.60 and enhanced client 4.0.60
 
+18-10-2017, Coruja
+[items/sphere_item_vice_virtue.scp]: Added new file with Vice vs Virtue items
+[items/sphere_item_animations.scp]: Fixed wrong lightsource pattern (MOREZ) on energy/fire/paralyze field items
+[items/sphere_item_deco_wall_hangings.scp]: Moved all Vice vs Virtue items to sphere_item_vice_virtue.scp
+
+21-10-2017, Coruja
+[items/sphere_item_veteran_rewards.scp]: Added new file with Veteran Rewards items
+[items/sphere_item_deco_furniture.scp]: Moved all Veteran Rewards items to sphere_item_veteran_rewards.scp
+[items/sphere_item_deco_wall_hangings.scp]: Moved all Veteran Rewards items to sphere_item_veteran_rewards.scp
+[items/sphere_item_provisions_misc.scp]: Moved all Veteran Rewards items to sphere_item_veteran_rewards.scp
+[items/sphere_item_unsorted.scp]: Moved all Veteran Rewards items to sphere_item_veteran_rewards.scp
+
+23-10-2017, Coruja
+[items/sphere_item_holiday_anniversary.scp]: Added new file with Anniversary items
+[items/sphere_item_deco_carvings_statues.scp]: Moved all Anniversary items to sphere_item_holiday_anniversary.scp
+[items/sphere_item_deco_furniture.scp]: Moved all Anniversary items to sphere_item_holiday_anniversary.scp
+[items/sphere_item_deco_signs.scp]: Moved all Anniversary items to sphere_item_holiday_anniversary.scp
+[items/sphere_item_deco_virtues.scp]: Moved all Anniversary items to sphere_item_holiday_anniversary.scp
+[items/sphere_item_deco_wall_hangings.scp]: Moved all Anniversary items to sphere_item_holiday_anniversary.scp
+[items/sphere_item_holiday_halloween.scp]: Moved all Anniversary items to sphere_item_holiday_anniversary.scp
+[items/sphere_item_profession.scp]: Moved all Anniversary items to sphere_item_holiday_anniversary.scp
+[items/sphere_item_profession_cook_barkeep_baker.scp]: Moved all Anniversary items to sphere_item_holiday_anniversary.scp
+[items/sphere_item_provisions_clothing.scp]: Moved all Anniversary items to sphere_item_holiday_anniversary.scp
+[items/sphere_item_provisions_shields.scp]: Moved all Anniversary items to sphere_item_holiday_anniversary.scp
+[items/sphere_item_unsorted.scp]: Moved all Anniversary items to sphere_item_holiday_anniversary.scp
+[items/sphere_item_vegetation.scp]: Moved all Anniversary items to sphere_item_holiday_anniversary.scp
+
 24-10-2017, Nolok
 Fixed: Skillgain never occurred when using SkillUseQuick.
+
+28-10-2017, Coruja
+[items/sphere_item_deco_themed_collections.scp]: Added new file with themed collection items (Spring Decor / Evil Home Decor)
+[items/sphere_item_deco_carvings_statues.scp]: Moved all themed collection items to sphere_item_deco_themed_collections.scp
+[items/sphere_item_deco_furniture.scp]: Moved all themed collection items to sphere_item_deco_themed_collections.scp
+[items/sphere_item_deco_lightsources.scp]: Moved all themed collection items to sphere_item_deco_themed_collections.scp
+[items/sphere_item_deco_wall_hangings.scp]: Moved all themed collection items to sphere_item_deco_themed_collections.scp
+[items/sphere_item_profession.scp]: Moved all themed collection items to sphere_item_deco_themed_collections.scp
+[items/sphere_item_profession_cook_barkeep_baker.scp]: Moved all themed collection items to sphere_item_deco_themed_collections.scp
+[items/sphere_item_unsorted.scp]: Moved all themed collection items to sphere_item_deco_themed_collections.scp
+
+05-11-2017, Coruja
+[items/sphere_item_holiday_easter.scp]: Added new file with Easter items
+[items/sphere_item_deco_carvings_statues.scp]: Moved all Easter items to sphere_item_holiday_easter.scp
+[items/sphere_item_deco_wall_hangings.scp]: Moved all Easter items to sphere_item_holiday_easter.scp
+[items/sphere_item_unsorted.scp]: Moved all Easter items to sphere_item_holiday_easter.scp
+[items/sphere_item_vegetation.scp]: Moved all Easter items to sphere_item_holiday_easter.scp
+
+12-11-2017, Coruja
+[items/sphere_item_holiday_thanksgiving.scp]: Added new file with Thanksgiving items
+[items/sphere_item_profession_cook_barkeep_baker.scp]: Moved all Thanksgiving items to sphere_item_holiday_thanksgiving.scp
+
+26-11-2017, Coruja
+Changed: Updated internal SQLite libs v3.20.1 to v3.21.0.
+[items/sphere_item_artifacts.scp]: Added missing Doom, Shadowguard and Enchanted Origin artifacts
+[items/sphere_item_deco_furniture.scp]: Fixed wrong info on many gargish items and also removed unused typedef 't_chair' lines
+[items/sphere_item_deco_wall_hangings.scp]: Fixed wrong info on some few items
