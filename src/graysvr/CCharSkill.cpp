@@ -757,7 +757,7 @@ void CChar::Skill_Experience( SKILL_TYPE skill, int difficulty )
 		if ( iStatVal <= 0 )	// some odd condition
 			continue;
 
-		if ( iStatSum >= iStatCap )	// stat cap already reached
+		if ( iStatSum > iStatCap )	// stat cap already reached
 			break;
 
 		short iStatMax = Stat_GetLimit(static_cast<STAT_TYPE>(i));
@@ -914,7 +914,7 @@ bool CChar::Stat_Decrease( STAT_TYPE stat, SKILL_TYPE skill )
 	// Check for stats degrade.
 	short iStatSumAvg = Stat_GetLimit(STAT_QTY);
 	short iStatSum = Stat_GetSum() + 1;	// +1 here assuming we are going to have +1 stat at some point thus we are calling this function
-	if ( iStatSum < iStatSumAvg )		// no need to lower any stat
+	if ( iStatSum <= iStatSumAvg )		// no need to lower any stat
 		return true;
 
 	short iMinVal;
@@ -2709,12 +2709,10 @@ int CChar::Skill_Meditation(SKTRIG_TYPE stage)
 
 		if ( m_atTaming.m_Stroke_Count == 0 )
 		{
+			if ( m_pClient )
+				m_pClient->addBuff(BI_ACTIVEMEDITATION, 1075657, 1075658);
 			if ( !g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_NOSFX) )
-			{
-				if ( m_pClient )
-					m_pClient->addBuff(BI_ACTIVEMEDITATION, 1075657, 1075658);
 				Sound(SOUND_SFX6);
-			}
 		}
 		m_atTaming.m_Stroke_Count++;
 		UpdateStatVal(STAT_INT, 1);

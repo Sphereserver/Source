@@ -903,3 +903,23 @@ Changed: Updated internal SQLite libs v3.20.1 to v3.21.0.
 [items/sphere_item_artifacts.scp]: Added missing Doom, Shadowguard and Enchanted Origin artifacts
 [items/sphere_item_deco_furniture.scp]: Fixed wrong info on many gargish items and also removed unused typedef 't_chair' lines
 [items/sphere_item_deco_wall_hangings.scp]: Fixed wrong info on some few items
+
+05-12-2017, Coruja
+[systems/sphere_system_aquarium.scp]: Added new file with aquarium system (still incomplete yet)
+[items/sphere_item_deco_furniture.scp]: Moved all aquarium items to sphere_system_aquarium.scp
+[items/sphere_item_profession_cook_barkeep_baker.scp]: Moved all aquarium items to sphere_system_aquarium.scp
+[items/sphere_item_unsorted.scp]: Moved all aquarium items to sphere_system_aquarium.scp
+
+10-12-2017, Coruja
+[systems/sphere_system_secret_chest.scp]: Added new file with 'secret chest' system
+[items/sphere_item_deco_lightsources.scp]: Fixed lantern items using wrong id
+[items/sphere_item_theme_pack_kings_collection.scp]: Added missing King's Collection items
+[items/sphere_item_unsorted.scp]: Moved 'secret chest' item to sphere_system_secret_chest.scp
+
+12-12-2017, Coruja
+[items/multis/multis_houses.scp]: Updated COMPONENT/DUPEITEM of some MULTIDEFs and moved m_blue_tent, m_green_tent, m_wheat_cottage to multis_misc.scp
+[items/multis/multis_ships.scp]: Updated VALUE of some MULTIDEFs
+[items/sphere_item_provisions_deed.scp]: Added missing VALUE of vendable deeds
+
+13-12-2017, Drk84
+Possible fix for stat cap issue when the sum of the char stats reach StatCap - 1.
