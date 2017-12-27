@@ -952,7 +952,7 @@ int CItemMemory::FixWeirdness()
 	if ( !pChar )
 		return 0x4223;	// get rid of it.
 
-	// If it is my guild make sure I am linked to it correctly !
+	// Make sure guild/town memories are linked correctly
 	if ( IsMemoryTypes(MEMORY_GUILD|MEMORY_TOWN) )
 	{
 		const CItemStone *pStone = pChar->Guild_Find(static_cast<MEMORY_TYPE>(GetMemoryTypes()));
@@ -960,6 +960,13 @@ int CItemMemory::FixWeirdness()
 			return 0x4224;	// get rid of it.
 		if ( !pStone->GetMember(pChar) )
 			return 0x4225;	// get rid of it.
+	}
+
+	// Make sure guard memories are linked correctly (this is not an ERROR, just make the item decay on next tick)
+	if ( IsMemoryTypes(MEMORY_GUARD) && !m_uidLink.ObjFind() )
+	{
+		SetAttr(ATTR_DECAY);
+		SetTimeout(0);
 	}
 	return 0;
 }
