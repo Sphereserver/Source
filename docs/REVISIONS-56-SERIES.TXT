@@ -923,3 +923,12 @@ Changed: Updated internal SQLite libs v3.20.1 to v3.21.0.
 
 13-12-2017, Drk84
 Possible fix for stat cap issue when the sum of the char stats reach StatCap - 1.
+
+20-12-2017, Coruja
+[items/sphere_item_boulders_rocks.scp]: Updated crystals/geodes and added new moonstone items
+[items/sphere_item_deco_carvings_statues.scp]: Updated all items with correct info
+[items/sphere_item_deco_dungeons_traps_dead.scp]: Added missing Kotl City items
+
+26-12-2017, Coruja
+Fixed: Deeds not setting ATTR=attr_move_never on multi parent item after create it.
+Fixed: Deeds showing multi targets on wrong Y position.

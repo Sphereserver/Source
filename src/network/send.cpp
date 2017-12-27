@@ -1608,7 +1608,7 @@ PacketAddTarget::PacketAddTarget(const CClient* target, PacketAddTarget::TargetT
 
 	WORD y = 0;
 	CItemBaseMulti *pMultiDef = static_cast<CItemBaseMulti *>(pItemDef);
-	if ( pMultiDef && (pMultiDef->m_rect.m_bottom > 0) && (pMultiDef->IsType(IT_MULTI) || pMultiDef->IsType(IT_MULTI_CUSTOM)) )
+	if ( pMultiDef && CItemBase::IsID_Multi(id) )
 		y = static_cast<WORD>(pMultiDef->m_rect.m_bottom) - 1;
 
 	writeByte(static_cast<BYTE>(type));
