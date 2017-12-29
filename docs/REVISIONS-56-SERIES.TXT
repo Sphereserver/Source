@@ -933,3 +933,6 @@ Possible fix for stat cap issue when the sum of the char stats reach StatCap - 1
 Fixed: Deeds not setting ATTR=attr_move_never on multi parent item after create it.
 Fixed: Deeds showing multi targets on wrong Y position.
 Fixed: 'memory_guard' memories not being removed after its linked item get deleted.
+
+29-12-2017, Drk84
+- Fix for the spellchanneling item property.
