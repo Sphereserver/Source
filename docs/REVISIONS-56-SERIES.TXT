@@ -935,4 +935,8 @@ Fixed: Deeds showing multi targets on wrong Y position.
 Fixed: 'memory_guard' memories not being removed after its linked item get deleted.
 
 29-12-2017, Drk84
-- Fix for the spellchanneling item property.
+Fixed: SPELLCHANNELING item property not working correctly.
+
+02-01-2018, Coruja
+Changed: Improved how ranged weapons handle ammo.
+Fixed: ENHANCEPOTIONS item property only working when FEATURE_AOS_UPDATE_B .ini feature is enabled.

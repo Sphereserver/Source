@@ -2981,14 +2981,17 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		if ( iDist > iMaxDist )
 			return IsSetCombatFlags(COMBAT_STAYINRANGE) ? WAR_SWING_EQUIPPING : WAR_SWING_READY;
 
-		if ( skill != SKILL_THROWING )		// throwing weapons doesn't need ammo
+		if ( pWeapon )
 		{
-			if ( pWeapon )
-				pAmmo = pWeapon->Weapon_FindRangedAmmo();
-			if ( !pAmmo && m_pPlayer )
+			RESOURCE_ID_BASE ridAmmo = pWeapon->Weapon_GetRangedAmmoRes();
+			if ( ridAmmo )
 			{
-				SysMessageDefault(DEFMSG_COMBAT_ARCH_NOAMMO);
-				return WAR_SWING_INVALID;
+				pAmmo = pWeapon->Weapon_FindRangedAmmo(ridAmmo);
+				if ( !pAmmo && m_pPlayer )
+				{
+					SysMessageDefault(DEFMSG_COMBAT_ARCH_NOAMMO);
+					return WAR_SWING_INVALID;
+				}
 			}
 		}
 	}

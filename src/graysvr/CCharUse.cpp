@@ -451,9 +451,10 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 		return false;
 
 	CItem *pAmmo = NULL;
-	if ( skill != SKILL_THROWING )		// throwing weapons doesn't need ammo
+	RESOURCE_ID_BASE ridAmmo = pWeapon->Weapon_GetRangedAmmoRes();
+	if ( ridAmmo )
 	{
-		pAmmo = pWeapon->Weapon_FindRangedAmmo();
+		pAmmo = pWeapon->Weapon_FindRangedAmmo(ridAmmo);
 		if ( !pAmmo )
 		{
 			SysMessageDefault(DEFMSG_COMBAT_ARCH_NOAMMO);
@@ -474,6 +475,7 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 			SysMessageDefault(DEFMSG_ITEMUSE_ARCHBUTTE_CLEAN);
 			return false;
 		}
+		pAmmo->ConsumeAmount();
 	}
 
 	ITEMID_TYPE AnimID = ITEMID_NOTHING;
@@ -489,8 +491,6 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 		m_pClient->m_SkillThrowingAnimHue = AnimHue;
 		m_pClient->m_SkillThrowingAnimRender = AnimRender;
 	}
-
-	m_atFight.m_Swing_NextAction = CServTime::GetCurrentTime() + (2 * TICK_PER_SEC);
 
 	if ( Skill_UseQuick(skill, Calc_GetRandVal(40)) )
 	{
@@ -515,7 +515,8 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 		Emote(g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHBUTTE_MISS));
 		Sound(pWeapon->Weapon_GetSoundMiss());
 	}
-	pAmmo->ConsumeAmount();
+
+	m_atFight.m_Swing_NextAction = CServTime::GetCurrentTime() + (2 * TICK_PER_SEC);
 	Skill_Experience(skill, Calc_GetRandVal(40));
 	return true;
 }
@@ -902,8 +903,7 @@ bool CChar::Use_Drink( CItem * pItem )
 		if ( pDrunkLayer->m_itSpell.m_spellcharges > 60 )
 			pDrunkLayer->m_itSpell.m_spellcharges = 60;
 	}
-
-	if ( pItem->IsType(IT_POTION) )
+	else if ( pItem->IsType(IT_POTION) )
 	{
 		// Time limit on using potions.
 		if ( LayerFind(LAYER_FLAG_PotionUsed) )
@@ -914,20 +914,16 @@ bool CChar::Use_Drink( CItem * pItem )
 
 		// Convey the effect of the potion.
 		int iSkillQuality = pItem->m_itPotion.m_skillquality;
-		if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B )
-		{
-			int iEnhance = static_cast<int>(GetDefNum("EnhancePotions"));
-			if ( iEnhance )
-				iSkillQuality += IMULDIV(iSkillQuality, iEnhance, 100);
-		}
+		int iEnhance = static_cast<int>(GetDefNum("EnhancePotions"));
+		if ( iEnhance )
+			iSkillQuality += IMULDIV(iSkillQuality, iEnhance, 100);
 
 		OnSpellEffect(static_cast<SPELL_TYPE>(RES_GET_INDEX(pItem->m_itPotion.m_Type)), this, iSkillQuality, pItem);
 
 		// Give me the marker that i've used a potion.
 		Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_PotionUsed, iSkillQuality, 15 * TICK_PER_SEC, this);
 	}
-
-	if ( pItem->IsType(IT_DRINK) && IsSetOF(OF_DrinkIsFood) )
+	else if ( pItem->IsType(IT_DRINK) && IsSetOF(OF_DrinkIsFood) )
 	{
 		short iRestore = 0;
 		if ( pItem->m_itDrink.m_foodval )

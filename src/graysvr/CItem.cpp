@@ -3929,7 +3929,7 @@ SOUND_TYPE CItem::Weapon_GetSoundMiss() const
 void CItem::Weapon_GetRangedAmmoAnim(ITEMID_TYPE &id, DWORD &hue, DWORD &render)
 {
 	ADDTOCALLSTACK("CItem::Weapon_GetRangedAmmoAnim");
-	// Get animation properties of ranged weapons (archery/throwing)
+	// Get animation properties of this ranged weapon (archery/throwing)
 
 	CVarDefCont *pVarAnim = GetDefKey("AMMOANIM", true);
 	if ( pVarAnim )
@@ -3954,28 +3954,26 @@ void CItem::Weapon_GetRangedAmmoAnim(ITEMID_TYPE &id, DWORD &hue, DWORD &render)
 		render = static_cast<DWORD>(pVarAnimRender->GetValNum());
 }
 
-CItem *CItem::Weapon_FindRangedAmmo()
+RESOURCE_ID_BASE CItem::Weapon_GetRangedAmmoRes()
 {
-	ADDTOCALLSTACK("CItem::Weapon_FindRangedAmmo");
-	// Find ammo used by this ranged weapon
+	ADDTOCALLSTACK("CItem::Weapon_GetRangedAmmoRes");
+	// Get ammo resource id of this ranged weapon (archery/throwing)
 
-	// Get ammo ID to search for
-	RESOURCE_ID_BASE rid;
 	CVarDefCont *pVarType = GetDefKey("AMMOTYPE", true);
 	if ( pVarType )
 	{
 		LPCTSTR pszAmmoID = pVarType->GetValStr();
-		rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, pszAmmoID));
-	}
-	else
-	{
-		CItemBase *pItemDef = Item_GetDef();
-		rid = pItemDef->m_ttWeaponBow.m_idAmmo;
+		return static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, pszAmmoID));
 	}
 
-	ITEMID_TYPE AmmoID = static_cast<ITEMID_TYPE>(rid.GetResIndex());
-	if ( !AmmoID )
-		return NULL;
+	CItemBase *pItemDef = Item_GetDef();
+	return pItemDef->m_ttWeaponBow.m_idAmmo;
+}
+
+CItem *CItem::Weapon_FindRangedAmmo(RESOURCE_ID_BASE id)
+{
+	ADDTOCALLSTACK("CItem::Weapon_FindRangedAmmo");
+	// Find ammo used by this ranged weapon (archery/throwing)
 
 	// Get the container to search
 	CContainer *pParent = dynamic_cast<CContainer *>(GetParentObj());
@@ -3986,7 +3984,7 @@ CItem *CItem::Weapon_FindRangedAmmo()
 		CGrayUID uidCont = static_cast<CGrayUID>(pVarCont->GetValNum());
 		CContainer *pCont = dynamic_cast<CContainer *>(uidCont.ItemFind());
 		if ( pCont )
-			return pCont->ContentFind(rid);
+			return pCont->ContentFind(id);
 
 		// Search container using ITEMID_TYPE
 		if ( pParent )
@@ -3995,14 +3993,14 @@ CItem *CItem::Weapon_FindRangedAmmo()
 			RESOURCE_ID_BASE ridCont = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, pszContID));
 			pCont = dynamic_cast<CContainer *>(pParent->ContentFind(ridCont));
 			if ( pCont )
-				return pCont->ContentFind(rid);
+				return pCont->ContentFind(id);
 		}
 		return NULL;
 	}
 
 	// Search on parent container if there's no specific container to search
 	if ( pParent )
-		return pParent->ContentFind(rid);
+		return pParent->ContentFind(id);
 
 	return NULL;
 }

@@ -640,7 +640,7 @@ public:
 			WORD m_spell;				// morex=SPELL_TYPE = The magic spell cast on this. ( effect of eating.)
 			WORD m_spelllevel;			// morey=level of the spell. (0-1000)
 			BYTE m_poison_skill;		// morez=0-100 = Is poisoned ?
-			BYTE m_foodval;	
+			BYTE m_foodval;				// morem=food value to restore
 		} m_itFood;
 
 		// IT_DRINK
@@ -651,7 +651,7 @@ public:
 			WORD m_spell;				// morex=SPELL_TYPE = The magic spell cast on this. ( effect of eating.)
 			WORD m_spelllevel;			// morey=level of the spell. (0-1000)
 			BYTE m_poison_skill;		// morez=0-100 = Is poisoned ?
-			BYTE m_foodval;	
+			BYTE m_foodval;				// morem=food value to restore
 		} m_itDrink;
 
 		// IT_CORPSE
@@ -788,6 +788,7 @@ public:
 		} m_itEqMemory;
 
 		// IT_MULTI
+		// IT_MULTI_CUSTOM
 		// IT_SHIP
 		struct
 		{
@@ -1270,7 +1271,8 @@ public:
 	SOUND_TYPE Weapon_GetSoundHit() const;
 	SOUND_TYPE Weapon_GetSoundMiss() const;
 	void Weapon_GetRangedAmmoAnim(ITEMID_TYPE &id, DWORD &hue, DWORD &render);
-	CItem *Weapon_FindRangedAmmo();
+	RESOURCE_ID_BASE Weapon_GetRangedAmmoRes();
+	CItem *Weapon_FindRangedAmmo(RESOURCE_ID_BASE id);
 
 	bool IsMemoryTypes( WORD wType ) const
 	{
@@ -4002,17 +4004,17 @@ public:
 
 	bool NPC_IsVendor() const
 	{
-		return (m_pNPC && (m_pNPC->m_Brain == NPCBRAIN_HEALER || m_pNPC->m_Brain == NPCBRAIN_BANKER || m_pNPC->m_Brain == NPCBRAIN_VENDOR || m_pNPC->m_Brain == NPCBRAIN_STABLE));
+		return (m_pNPC && ((m_pNPC->m_Brain == NPCBRAIN_HEALER) || (m_pNPC->m_Brain == NPCBRAIN_BANKER) || (m_pNPC->m_Brain == NPCBRAIN_VENDOR) || (m_pNPC->m_Brain == NPCBRAIN_STABLE)));
 	}
 
 	bool NPC_IsMonster() const
 	{
-		return (m_pNPC && (m_pNPC->m_Brain == NPCBRAIN_MONSTER || m_pNPC->m_Brain == NPCBRAIN_BERSERK || m_pNPC->m_Brain == NPCBRAIN_DRAGON));
+		return (m_pNPC && ((m_pNPC->m_Brain == NPCBRAIN_MONSTER) || (m_pNPC->m_Brain == NPCBRAIN_BERSERK) || (m_pNPC->m_Brain == NPCBRAIN_DRAGON)));
 	}
 
 	int NPC_GetAiFlags()
 	{
-		if( !m_pNPC )
+		if ( !m_pNPC )
 			return 0;
 		return m_pNPC->GetNpcAiFlags(this);
 	}
@@ -4048,13 +4050,13 @@ public:
 inline bool CChar::IsSkillBase( SKILL_TYPE skill ) // static
 {
 	// Is this in the base set of skills.
-	return (skill > SKILL_NONE && skill < static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill));
+	return ((skill > SKILL_NONE) && (skill < static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill)));
 }
 
 inline bool CChar::IsSkillNPC( SKILL_TYPE skill )  // static
 {
 	// Is this in the NPC set of skills.
-	return (skill >= NPCACT_FOLLOW_TARG && skill < NPCACT_QTY);
+	return ((skill >= NPCACT_FOLLOW_TARG) && (skill < NPCACT_QTY));
 }
 
 #endif
