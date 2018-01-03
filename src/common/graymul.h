@@ -82,7 +82,15 @@ enum SOUND_CODE
 	SOUND_DROP_MONEY1	= 0x2E4,
 	SOUND_DROP_MONEY2	= 0x2E5,
 	SOUND_DROP_MONEY3	= 0x2E6,
-	SOUND_GLASS_BREAK4	= 0x390
+	SOUND_GLASS_BREAK4	= 0x390,
+
+	// Special sounds: they are internally converted to the right sound.
+	//	These are used because some creatures do not have sound IDs sequentially ordered in the sound file
+	//	(or they do not have a sound, so we mix different sounds).
+	SOUND_SPECIAL_HUMAN = 0x900,
+	SOUND_SPECIAL_MONSTER_JUKA,
+	SOUND_SPECIAL_MONSTER_MEER,
+	SOUND_SPECIAL_MONSTER_EXODUSMINION
 };
 
 typedef WORD MIDI_TYPE;	// Music id
@@ -750,10 +758,12 @@ enum ANIM_TYPE_NEW	// not all creatures animate the same for some reason. http:/
 
 };
 
-enum CRESND_TYPE	// Creature sound offset types.
-{	// Some creatures have no random sounds. others (humans,birds) have many sounds.
-	CRESND_RAND1 = 0,	// just random noise. or "yes"
-	CRESND_RAND2,		// "no" response
+enum CRESND_TYPE	// Placeholders (not real sound IDs): the SoundChar method chooses the best sound for each creature
+{
+	CRESND_RAND = -1,	// pick up randomly CRESND_IDLE or CRESND_NOTICE
+	CRESND_IDLE = 0,	// just random noise. or default "no" response
+	CRESND_NOTICE,			// just random noise. or default "yes" response
+
 	CRESND_HIT,
 	CRESND_GETHIT,
 	CRESND_DIE

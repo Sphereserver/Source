@@ -1357,7 +1357,7 @@ bool CChar::NPC_LookAround( bool fForceCheckItems )
 		return false;
 
 	if ( m_pNPC->m_Brain == NPCBRAIN_BERSERK || !Calc_GetRandVal(6) )
-		SoundChar(Calc_GetRandVal(2) ? CRESND_RAND1 : CRESND_RAND2);		// Make some random noise
+		SoundChar(CRESND_RAND);		// Make some random noise
 
 	int iRange = GetSight();
 	int iRangeBlur = UO_MAP_VIEW_SIGHT;

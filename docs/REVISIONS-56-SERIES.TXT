@@ -940,3 +940,19 @@ Fixed: SPELLCHANNELING item property not working correctly.
 02-01-2018, Coruja
 Changed: Improved how ranged weapons handle ammo.
 Fixed: ENHANCEPOTIONS item property only working when FEATURE_AOS_UPDATE_B .ini feature is enabled.
+
+03-01-2018, Nolok
+Fixed: when playing a sound from a character from Samurai Empire and later expansions, it was chosen the wrong sound ID for the given action.
+	This is caused by the different order of IDs in the sound file after that expansion.
+[sphere_defs.scp + npcs/sphere_monsters.scp]: Updated lots of old sounds, added new ones. Still, some are missing.
+[sphere_defs.scp]: Added SOUNDTYPE_RAND, SOUNDTYPE_IDLE, SOUNDTYPE_NOTICE, SOUNDTYPE_HIT, SOUNDTYPE_GETHIT, SOUNDTYPE_DIE defs. They are meant to be used with BARK,
+	which has always accepted as parameter the sound type (even if the wiki at this day doesn't say so), not the sound ID (use SOUND for this).
+
+[items/sphere_item_deco_dungeons_traps_dead.scp]: Fixed typo (09cdc item).
+[items/sphere_item_deco_furniture.scp]: Changed defname of 03d8a from i_bed_ruined to i_bed_ruined_dupe, because there was already a i_bed_ruined (0c26),
+	plus they look very similar, if not identical.
+[items/sphere_item_provisions_armor.scp + items/sphere_item_provisions_clothing.scp]: Added to the defname the suffix "_3d" to the items which gumpart is only
+	available in the old 3D Client. This also solves the presence of two i_shoes_jester.
+[items/sphere_item_vegetation.scp]: Changed 026ef (plum blossoms) defname from i_foliage_plum to i_blossoms_plum, because there was already another i_foliage_plum.
+[sphere_backward_compatibility.scp]: Removed duplicate defnames i_post_stone, i_rail_stone_4, i_floor_cracks, i_wall_cracks, i_ladder_wood_tall,
+	i_chest_ornate_elven, i_fountain_splash, i_fx_oil_flask, i_chest_gothic.

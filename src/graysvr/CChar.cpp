@@ -2935,7 +2935,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			pCharSrc->m_pClient->addBankOpen(this, s.HasArgs() ? static_cast<LAYER_TYPE>(s.GetArgVal()) : LAYER_BANKBOX);
 			break;
 		case CHV_BARK:
-			SoundChar( ( s.HasArgs() ? static_cast<CRESND_TYPE>(s.GetArgVal()) : ( Calc_GetRandVal(2) ? CRESND_RAND1 : CRESND_RAND2 )));
+			SoundChar(s.HasArgs() ? (CRESND_TYPE)s.GetArgVal() : CRESND_RAND);
 			break;
 		case CHV_BOUNCE: // uid
 			return ItemBounce( CGrayUID( s.GetArgVal()).ItemFind());
@@ -3231,7 +3231,7 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 		case CHV_RELEASE:
 			Skill_Start( SKILL_NONE );
 			NPC_PetClearOwners();
-			SoundChar( CRESND_RAND2 );	// No noise
+			SoundChar( CRESND_NOTICE );
 			return( true );
 		case CHV_REMOVE:	// remove this char from the world instantly.
 			if ( m_pPlayer )

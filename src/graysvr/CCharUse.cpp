@@ -1014,7 +1014,7 @@ CChar * CChar::Use_Figurine( CItem * pItem, bool bCheckFollowerSlots )
 	pPet->MoveToChar(pItem->GetTopLevelObj()->GetTopPoint());
 	pPet->Update();
 	pPet->Skill_Start(SKILL_NONE);
-	pPet->SoundChar(CRESND_RAND1);
+	pPet->SoundChar(CRESND_IDLE);
 	return pPet;
 }
 

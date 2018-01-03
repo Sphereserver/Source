@@ -20,7 +20,7 @@ void CChar::NPC_OnPetCommand( bool fSuccess, CChar * pMaster )
 	}
 	else
 	{
-		SoundChar( fSuccess? CRESND_RAND1 : CRESND_RAND2 );
+		SoundChar( fSuccess ? CRESND_IDLE : CRESND_NOTICE );
 	}
 }
 
@@ -210,7 +210,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 				Delete();
 				return true;
 			}
-			SoundChar(CRESND_RAND2);
+			SoundChar(CRESND_NOTICE);
 			Skill_Start(SKILL_NONE);
 			NPC_PetClearOwners();
 			ResendTooltip();
