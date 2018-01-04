@@ -8,14 +8,19 @@ CCharBase::CCharBase( CREID_TYPE id ) :
 {
 	m_iHireDayWage = 0;
 	m_trackID = ITEMID_TRACK_WISP;
-	m_soundbase = 0;
+	m_soundBase = SOUND_NONE;
+	m_soundIdle = SOUND_NONE;
+	m_soundNotice = SOUND_NONE;
+	m_soundHit = SOUND_NONE;
+	m_soundGetHit = SOUND_NONE;
+	m_soundDie = SOUND_NONE;
 	m_defense = 0;
 	m_defenseBase = 0;
 	m_defenseRange = 0;
 	m_Anims = 0xFFFFFF;
-  	m_MaxFood = 0;			// Default value
-	m_wBloodHue = 0;
-	m_wColor = 0;
+  	m_MaxFood = 0;
+	m_wBloodHue = HUE_DEFAULT;
+	m_wColor = HUE_DEFAULT;
 	m_Str = 0;
 	m_Dex = 0;
 	m_Int = 0;
@@ -58,7 +63,12 @@ void CCharBase::CopyBasic( const CCharBase * pCharDef )
 {
 	ADDTOCALLSTACK("CCharBase::CopyBasic");
 	m_trackID = pCharDef->m_trackID;
-	m_soundbase = pCharDef->m_soundbase;
+	m_soundBase = pCharDef->m_soundBase;
+	m_soundIdle = pCharDef->m_soundIdle;
+	m_soundNotice = pCharDef->m_soundNotice;
+	m_soundHit = pCharDef->m_soundHit;
+	m_soundGetHit = pCharDef->m_soundGetHit;
+	m_soundDie = pCharDef->m_soundDie;
 
 	m_wBloodHue = pCharDef->m_wBloodHue;
 	m_MaxFood = pCharDef->m_MaxFood;
@@ -216,7 +226,22 @@ bool CCharBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_CHARDEF, GetResDispDnId()));
 			break;
 		case CBC_SOUND:
-			sVal.FormatHex( m_soundbase );
+			sVal.FormatHex(m_soundBase);
+			break;
+		case CBC_SOUNDDIE:
+			sVal.FormatHex(m_soundDie);
+			break;
+		case CBC_SOUNDGETHIT:
+			sVal.FormatHex(m_soundGetHit);
+			break;
+		case CBC_SOUNDHIT:
+			sVal.FormatHex(m_soundHit);
+			break;
+		case CBC_SOUNDIDLE:
+			sVal.FormatHex(m_soundIdle);
+			break;
+		case CBC_SOUNDNOTICE:
+			sVal.FormatHex(m_soundNotice);
 			break;
 		case CBC_STR:
 			sVal.FormatVal( m_Str );
@@ -320,7 +345,22 @@ bool CCharBase::r_LoadVal( CScript & s )
 			SetResDispDnId(static_cast<WORD>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, s.GetArgStr())));
 			break;
 		case CBC_SOUND:
-			m_soundbase = static_cast<SOUND_TYPE>(s.GetArgVal());
+			m_soundBase = static_cast<SOUND_TYPE>(s.GetArgVal());
+			break;
+		case CBC_SOUNDDIE:
+			m_soundDie = static_cast<SOUND_TYPE>(s.GetArgVal());
+			break;
+		case CBC_SOUNDGETHIT:
+			m_soundGetHit = static_cast<SOUND_TYPE>(s.GetArgVal());
+			break;
+		case CBC_SOUNDHIT:
+			m_soundHit = static_cast<SOUND_TYPE>(s.GetArgVal());
+			break;
+		case CBC_SOUNDIDLE:
+			m_soundIdle = static_cast<SOUND_TYPE>(s.GetArgVal());
+			break;
+		case CBC_SOUNDNOTICE:
+			m_soundNotice = static_cast<SOUND_TYPE>(s.GetArgVal());
 			break;
 		case CBC_STR:
 			m_Str = static_cast<short>(s.GetArgVal());

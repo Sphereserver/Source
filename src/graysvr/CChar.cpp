@@ -2935,8 +2935,20 @@ bool CChar::r_Verb( CScript &s, CTextConsole * pSrc ) // Execute command from sc
 			pCharSrc->m_pClient->addBankOpen(this, s.HasArgs() ? static_cast<LAYER_TYPE>(s.GetArgVal()) : LAYER_BANKBOX);
 			break;
 		case CHV_BARK:
-			SoundChar(s.HasArgs() ? (CRESND_TYPE)s.GetArgVal() : CRESND_RAND);
+		{
+			CRESND_TYPE id = CRESND_RAND;
+			if ( s.HasArgs() )
+			{
+				id = static_cast<CRESND_TYPE>(s.GetArgVal());
+				if ( (id < CRESND_RAND) || (id > CRESND_DIE) )
+				{
+					DEBUG_ERR(("Invalid Bark args '%d'\n", static_cast<int>(id)));
+					return false;
+				}
+			}
+			SoundChar(id);
 			break;
+		}
 		case CHV_BOUNCE: // uid
 			return ItemBounce( CGrayUID( s.GetArgVal()).ItemFind());
 		case CHV_BOW:

@@ -82,15 +82,7 @@ enum SOUND_CODE
 	SOUND_DROP_MONEY1	= 0x2E4,
 	SOUND_DROP_MONEY2	= 0x2E5,
 	SOUND_DROP_MONEY3	= 0x2E6,
-	SOUND_GLASS_BREAK4	= 0x390,
-
-	// Special sounds: they are internally converted to the right sound.
-	//	These are used because some creatures do not have sound IDs sequentially ordered in the sound file
-	//	(or they do not have a sound, so we mix different sounds).
-	SOUND_SPECIAL_HUMAN = 0x900,
-	SOUND_SPECIAL_MONSTER_JUKA,
-	SOUND_SPECIAL_MONSTER_MEER,
-	SOUND_SPECIAL_MONSTER_EXODUSMINION
+	SOUND_GLASS_BREAK4	= 0x390
 };
 
 typedef WORD MIDI_TYPE;	// Music id

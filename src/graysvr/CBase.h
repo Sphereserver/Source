@@ -619,7 +619,7 @@ public:
 		// IT_WATER_WASH
 		struct
 		{
-			ITEMID_TYPE m_idEmpty;	// tdata1= the empty container. IT_POTION_EMPTY IT_PITCHER_EMPTY
+			ITEMID_TYPE m_idEmpty;	// tdata1= the empty pitcher. IT_POTION_EMPTY IT_PITCHER_EMPTY
 		} m_ttDrink;
 
 		// IT_SHIP_PLANK
@@ -885,8 +885,13 @@ class CCharBase : public CBaseBaseDef // define basic info about each "TYPE" of 
 	// RES_CHARDEF
 public:
 	static const char *m_sClassName;
-	ITEMID_TYPE m_trackID;	// ITEMID_TYPE what look like on tracking.
-	SOUND_TYPE m_soundbase;	// sounds ( typically 5 sounds per creature, humans and birds have more.)
+	ITEMID_TYPE m_trackID;		// ITEMID_TYPE what look like on tracking.
+	SOUND_TYPE m_soundBase;		// sounds ( typically 5 sounds per creature, humans and birds have more.)
+	SOUND_TYPE m_soundIdle;
+	SOUND_TYPE m_soundNotice;
+	SOUND_TYPE m_soundHit;
+	SOUND_TYPE m_soundGetHit;
+	SOUND_TYPE m_soundDie;
 
 	CResourceQtyArray m_FoodType; // FOODTYPE=MEAT 15 (3)
 	short m_MaxFood;	// Derived from foodtype...this is the max amount of food we can eat. (based on str ?)

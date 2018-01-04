@@ -1350,247 +1350,112 @@ void CChar::Update(const CClient * pClientExclude )
 void CChar::SoundChar(CRESND_TYPE type)
 {
 	ADDTOCALLSTACK("CChar::SoundChar");
-	if (!g_Cfg.m_fGenericSounds)
+	if ( !g_Cfg.m_fGenericSounds )
 		return;
 
-	if ((type < CRESND_RAND) || (type > CRESND_DIE))
-	{
-		DEBUG_WARN(("Invalid SoundChar type: %d.\n", (int)type));
-		return;
-	}
+	const CCharBase *pCharDef = Char_GetDef();
 
-	SOUND_TYPE id = SOUND_NONE;
+	if ( type == CRESND_RAND )
+		type = Calc_GetRandVal(2) ? CRESND_IDLE : CRESND_NOTICE;
 
-	// Am i hitting with a weapon?
-	if (type == CRESND_HIT)
+	switch ( type )
 	{
-		CItem * pWeapon = m_uidWeapon.ItemFind();
-		if (pWeapon != NULL)
+		case CRESND_IDLE:
 		{
-			CVarDefCont * pVar = pWeapon->GetDefKey("AMMOSOUNDHIT", true);
-			if (pVar)
+			if ( pCharDef->m_soundIdle )
+				return Sound(pCharDef->m_soundIdle);
+			break;
+		}
+		case CRESND_NOTICE:
+		{
+			if ( pCharDef->m_soundNotice )
+				return Sound(pCharDef->m_soundNotice);
+			break;
+		}
+		case CRESND_HIT:
+		{
+			CItem *pWeapon = m_uidWeapon.ItemFind();
+			if ( pWeapon )
 			{
-				if (pVar->GetValNum())
-					id = (SOUND_TYPE)(pVar->GetValNum());
-			}
-			else
-			{
-				// weapon type strike noise based on type of weapon and how hard hit.
-				switch (pWeapon->GetType())
+				CVarDefCont *pVar = pWeapon->GetDefKey("AMMOSOUNDHIT", true);
+				if ( pVar )
+					return Sound(static_cast<SOUND_TYPE>(pVar->GetValNum()));
+
+				switch ( pWeapon->GetType() )
 				{
 					case IT_WEAPON_MACE_CROOK:
 					case IT_WEAPON_MACE_PICK:
-					case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
+					case IT_WEAPON_MACE_SMITH:
 					case IT_WEAPON_MACE_STAFF:
-						// 0x233 = blunt01 (miss?)
-						id = 0x233;
-						break;
-					case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
-						// 0x232 = axe01 swing. (miss?)
-						id = 0x232;
-						break;
+						return Sound(static_cast<SOUND_TYPE>(0x233));		//blunt01
+					case IT_WEAPON_MACE_SHARP:
+						return Sound(static_cast<SOUND_TYPE>(0x232));		//axe01
 					case IT_WEAPON_SWORD:
 					case IT_WEAPON_AXE:
-						if (pWeapon->Item_GetDef()->GetEquipLayer() == LAYER_HAND2)
-						{
-							// 0x236 = hvyswrd1 = (heavy strike)
-							// 0x237 = hvyswrd4 = (heavy strike)
-							id = Calc_GetRandVal(2) ? 0x236 : 0x237;
-							break;
-						}
-						// if not two handed, don't break, just fall through and use the same sound ID as a fencing weapon
+						if ( pWeapon->Item_GetDef()->GetEquipLayer() == LAYER_HAND2 )	//if not two handed, don't break, just fall through and use same sound as fencing weapons
+							return Sound(Calc_GetRandVal(2) ? static_cast<SOUND_TYPE>(0x236) : static_cast<SOUND_TYPE>(0x237));		//hvyswrd1 : hvyswrd4
 					case IT_WEAPON_FENCE:
-						// 0x23b = sword1
-						// 0x23c = sword7
-						id = Calc_GetRandVal(2) ? 0x23b : 0x23c;
-						break;
+						return Sound(Calc_GetRandVal(2) ? static_cast<SOUND_TYPE>(0x23b) : static_cast<SOUND_TYPE>(0x23c));			//sword1 : sword7
 					case IT_WEAPON_BOW:
 					case IT_WEAPON_XBOW:
-						// 0x234 = xbow (hit)
-						id = 0x234;
-						break;
+						return Sound(static_cast<SOUND_TYPE>(0x234));		//xbow
 					case IT_WEAPON_THROWING:
-						// 0x5D2 = throwH
-						id = 0x5D2;
-						break;
+						return Sound(static_cast<SOUND_TYPE>(0x5D2));		//throwH
 					default:
 						break;
 				}
 			}
-
+			else if ( pCharDef->m_soundHit )
+				return Sound(pCharDef->m_soundHit);
+			break;
 		}
-	}
-
-	if (id == SOUND_NONE)	// i'm not hitting with a weapon
-	{
-		const CCharBase* pCharDef = Char_GetDef();
-		switch (GetDispID())
+		case CRESND_GETHIT:
 		{
-			// Special creatures
-			case CREID_BLADES:
-				id = pCharDef->m_soundbase;
-				if (!Calc_GetRandVal(2))
-					++id;
-				break;
-
-			// Every other creature
-			default:
-			{
-				id = pCharDef->m_soundbase;
-				if (type == CRESND_RAND)
-					type = Calc_GetRandVal(2) ? CRESND_IDLE : CRESND_NOTICE;		// pick randomly CRESND_IDLE or CRESND_NOTICE
-
-				switch (id)
-				{
-					case 0:		// some creatures have no base sounds, in this case i shouldn't attempt to play them.
-						id = SOUND_NONE;
-						DEBUG_MSG(("CHARDEF %s has no base SOUND!\n", GetResourceName()));
-						break;
-
-					// SOUND values used in old scripts?
-					case 128:	// 0x80: crow3
-					case 181:	// 0xb5: lion3
-					case 199:	// 0xc7: pig3
-						id -= (SOUND_TYPE)2;
-						break;
-
-					// Creatures that have only 3 types of sound (hit, gethit, die).
-					case 130: // snd_ANIMALS_DEER3
-					case 183: // snd_ANIMALS_LLAMA3
-					case 201: // snd_ANIMALS_RABBIT3
-					case 702: // another deer
-						if (type < CRESND_HIT)
-						{
-							id = SOUND_NONE;
-							break;
-						}
-						id -= 2;
-						break;
-
-					case 1127: // snd_MONSTER_PIXIE1
-					case 1134: // snd_MONSTER_PIXIE2_1
-						switch (type)
-						{
-							case CRESND_IDLE:	id += (SOUND_TYPE)5;	break;
-							case CRESND_NOTICE:	id += (SOUND_TYPE)3;	break;
-							case CRESND_HIT:							break;
-							case CRESND_GETHIT:	id += (SOUND_TYPE)4;	break;
-							case CRESND_DIE:	id += (SOUND_TYPE)2;	break;
-							default: break;
-						}
-						break;
-					case 1541: // snd_monster_homunculous1
-						break;	// homunculous has only 1 sound.
-					case SOUND_SPECIAL_MONSTER_JUKA:
-						switch (type)
-						{
-							case CRESND_IDLE:	id = (SOUND_TYPE)0/*0x1AC*/;	break;
-							case CRESND_NOTICE:	id = (SOUND_TYPE)0/*0x1CD*/;	break;
-							case CRESND_HIT:	id = (SOUND_TYPE)0x1B0;	break;
-							case CRESND_GETHIT:	id = (SOUND_TYPE)0x1D0;	break;
-							case CRESND_DIE:	id = (SOUND_TYPE)0x28D;	break;
-							default: break;
-						}
-						break;
-					case SOUND_SPECIAL_MONSTER_MEER:
-						switch (type)
-						{
-							case CRESND_IDLE:	id = (SOUND_TYPE)0;		break;
-							case CRESND_NOTICE:	id = (SOUND_TYPE)0;		break;
-							case CRESND_HIT:	id = (SOUND_TYPE)0x28B;	break;
-							case CRESND_GETHIT:	id = (SOUND_TYPE)0x167;	break;
-							case CRESND_DIE:	id = (SOUND_TYPE)0xBC;	break;
-							default: break;
-						}
-						break;
-					case SOUND_SPECIAL_MONSTER_EXODUSMINION:
-						switch (type)
-						{
-							case CRESND_IDLE:	id = (SOUND_TYPE)0xFD;	break;
-							case CRESND_NOTICE:	id = (SOUND_TYPE)0x26C;	break;
-							case CRESND_HIT:	id = (SOUND_TYPE)0x23B;	break;
-							case CRESND_GETHIT:	id = (SOUND_TYPE)0x140;	break;
-							case CRESND_DIE:	id = (SOUND_TYPE)0x211;	break;
-							default: break;
-						}
-						break;
-
-					case SOUND_SPECIAL_HUMAN:
-					{
-						static const SOUND_TYPE sm_Snd_Hit[] =
-						{
-							0x135,	//= hit01 = (slap)
-							0x137,	//= hit03 = (hit sand)
-							0x13b	//= hit07 = (hit slap)
-						};
-						static const SOUND_TYPE sm_Snd_Man_Die[] = { 0x15a, 0x15b, 0x15c, 0x15d };
-						static const SOUND_TYPE sm_Snd_Man_Omf[] = { 0x154, 0x155, 0x156, 0x157, 0x158, 0x159 };
-						static const SOUND_TYPE sm_Snd_Wom_Die[] = { 0x150, 0x151, 0x152, 0x153 };
-						static const SOUND_TYPE sm_Snd_Wom_Omf[] = { 0x14b, 0x14c, 0x14d, 0x14e, 0x14f };
-
-						if (type == CRESND_HIT)
-						{
-							id = sm_Snd_Hit[Calc_GetRandVal(COUNTOF(sm_Snd_Hit))];		// same sound for every race and sex
-						}
-						else if (pCharDef->IsFemale())
-						{
-							switch (type)
-							{
-								case CRESND_GETHIT:	id = sm_Snd_Wom_Omf[Calc_GetRandVal(COUNTOF(sm_Snd_Wom_Omf))];	break;
-								case CRESND_DIE:	id = sm_Snd_Wom_Die[Calc_GetRandVal(COUNTOF(sm_Snd_Wom_Die))];	break;
-								default:	break;
-							}
-						}
-						else	// not CRESND_HIT and male character
-						{
-							switch (type)
-							{
-								case CRESND_GETHIT:	id = sm_Snd_Man_Omf[Calc_GetRandVal(COUNTOF(sm_Snd_Man_Omf))];	break;
-								case CRESND_DIE:	id = sm_Snd_Man_Die[Calc_GetRandVal(COUNTOF(sm_Snd_Man_Die))];	break;
-								default:	break;
-							}
-						}
-					}
-					// No idle/notice sounds for this.
-					break;
-
-					// Every other sound
-					default:
-						if (id < 0x4D6)			// before the crane sound the sound IDs are ordered in a way...
-							id += (SOUND_TYPE)type;
-						else if (id < 0x5D5)	// starting with the crane and ending before absymal infernal there's another scheme
-						{
-							switch (type)
-							{
-								case CRESND_IDLE:	id += (SOUND_TYPE)2;	break;
-								case CRESND_NOTICE:	id += (SOUND_TYPE)3;	break;
-								case CRESND_HIT:	id += (SOUND_TYPE)1;	break;
-								case CRESND_GETHIT:	id += (SOUND_TYPE)4;	break;
-								case CRESND_DIE:							break;
-								default: break;
-							}
-						}
-						else					// staring with absymal infernal there's another scheme (and they have 4 sounds instead of 5)
-						{
-							switch (type)
-							{
-								case CRESND_IDLE:	id += (SOUND_TYPE)3;	break;
-								case CRESND_NOTICE:	id += (SOUND_TYPE)3;	break;
-								case CRESND_HIT:							break;
-								case CRESND_GETHIT:	id += (SOUND_TYPE)2;	break;
-								case CRESND_DIE:	id += (SOUND_TYPE)1;	break;
-								default: break;
-							}
-						}
-						break;
-				}
-			}
+			if ( pCharDef->m_soundGetHit )
+				return Sound(pCharDef->m_soundGetHit);
+			break;
+		}
+		case CRESND_DIE:
+		{
+			if ( pCharDef->m_soundDie )
+				return Sound(pCharDef->m_soundDie);
 			break;
 		}
 	}
 
-	if (id != SOUND_NONE)
-		Sound(id);
+	SOUND_TYPE id = pCharDef->m_soundBase;
+	if ( id == SOUND_NONE )
+	{
+		DEBUG_MSG(("CHARDEF %s has no base SOUND!\n", GetResourceName()));
+		return;
+	}
+	else if ( id < 0x4D6 )	//before Crane sound, sound IDs are ordered in a way...
+	{
+		id += static_cast<SOUND_TYPE>(type);
+	}
+	else if ( id < 0x5D5 )	//between Crane and Abyssal Infernal sounds, there's another scheme
+	{
+		switch ( type )
+		{
+			case CRESND_IDLE:	id += static_cast<SOUND_TYPE>(2);	break;
+			case CRESND_NOTICE:	id += static_cast<SOUND_TYPE>(3);	break;
+			case CRESND_HIT:	id += static_cast<SOUND_TYPE>(1);	break;
+			case CRESND_GETHIT:	id += static_cast<SOUND_TYPE>(4);	break;
+			default: break;
+		}
+	}
+	else	//after Abyssal Infernal sound, there's another scheme (and NPCs have 4 sounds instead of 5)
+	{
+		switch ( type )
+		{
+			case CRESND_IDLE:	id += static_cast<SOUND_TYPE>(3);	break;
+			case CRESND_NOTICE:	id += static_cast<SOUND_TYPE>(3);	break;
+			case CRESND_GETHIT:	id += static_cast<SOUND_TYPE>(2);	break;
+			case CRESND_DIE:	id += static_cast<SOUND_TYPE>(1);	break;
+			default: break;
+		}
+	}
+	Sound(id);
 }
 
 // Pickup off the ground or remove my own equipment. etc..

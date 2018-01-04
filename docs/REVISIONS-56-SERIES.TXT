@@ -956,3 +956,7 @@ Fixed: when playing a sound from a character from Samurai Empire and later expan
 [items/sphere_item_vegetation.scp]: Changed 026ef (plum blossoms) defname from i_foliage_plum to i_blossoms_plum, because there was already another i_foliage_plum.
 [sphere_backward_compatibility.scp]: Removed duplicate defnames i_post_stone, i_rail_stone_4, i_floor_cracks, i_wall_cracks, i_ladder_wood_tall,
 	i_chest_ornate_elven, i_fountain_splash, i_fx_oil_flask, i_chest_gothic.
+
+04-01-2018, Coruja
+Added: SOUND property on chars now can be splitted into SOUNDHIT, SOUNDGETHIT, SOUNDDIE, SOUNDIDLE, SOUNDNOTICE
+	-SOUND* splitted values are optional, and when set it will have priority over default SOUND value
