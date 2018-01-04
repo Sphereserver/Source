@@ -959,4 +959,7 @@ Fixed: when playing a sound from a character from Samurai Empire and later expan
 
 04-01-2018, Coruja
 Added: SOUND property on chars now can be splitted into SOUNDHIT, SOUNDGETHIT, SOUNDDIE, SOUNDIDLE, SOUNDNOTICE
-	-SOUND* splitted values are optional, and when set it will have priority over default SOUND value
+	-SOUND* splitted values are optional, and when set it will have priority over default SOUND value.
+	
+04-01-2018, Nolok
+Added: SOUNDIDLE, SOUNDNOTICE, SOUNDHIT, SOUNDGETHIT, SOUNDDIE CharDef properties can now have -1 as value: this value prevents	that action-related sound to be played.

@@ -1362,13 +1362,17 @@ void CChar::SoundChar(CRESND_TYPE type)
 	{
 		case CRESND_IDLE:
 		{
-			if ( pCharDef->m_soundIdle )
+			if ( pCharDef->m_soundIdle == static_cast<SOUND_TYPE>(-1) )
+				return;
+			else if ( pCharDef->m_soundIdle )
 				return Sound(pCharDef->m_soundIdle);
 			break;
 		}
 		case CRESND_NOTICE:
 		{
-			if ( pCharDef->m_soundNotice )
+			if ( pCharDef->m_soundNotice == static_cast<SOUND_TYPE>(-1) )
+				return;
+			else if ( pCharDef->m_soundNotice )
 				return Sound(pCharDef->m_soundNotice);
 			break;
 		}
@@ -1405,6 +1409,8 @@ void CChar::SoundChar(CRESND_TYPE type)
 						break;
 				}
 			}
+			else if ( pCharDef->m_soundHit == static_cast<SOUND_TYPE>(-1) )
+				return;
 			else if ( pCharDef->m_soundHit )
 				return Sound(pCharDef->m_soundHit);
 			break;
@@ -1417,7 +1423,9 @@ void CChar::SoundChar(CRESND_TYPE type)
 		}
 		case CRESND_DIE:
 		{
-			if ( pCharDef->m_soundDie )
+			if ( pCharDef->m_soundDie == static_cast<SOUND_TYPE>(-1) )
+				return;
+			else if ( pCharDef->m_soundDie )
 				return Sound(pCharDef->m_soundDie);
 			break;
 		}
@@ -1428,6 +1436,43 @@ void CChar::SoundChar(CRESND_TYPE type)
 	{
 		DEBUG_MSG(("CHARDEF %s has no base SOUND!\n", GetResourceName()));
 		return;
+	}
+	else if (id == SOUND_SPECIAL_HUMAN)	// Special (hardcoded) sound. Try to keep less hardcoded stuff possible, but this is useful
+	{
+		static const SOUND_TYPE sm_Snd_Hit[] =
+		{
+			0x135,	//= hit01 = (slap)
+			0x137,	//= hit03 = (hit sand)
+			0x13b	//= hit07 = (hit slap)
+		};
+		static const SOUND_TYPE sm_Snd_Man_Die[] = { 0x15a, 0x15b, 0x15c, 0x15d };
+		static const SOUND_TYPE sm_Snd_Man_Omf[] = { 0x154, 0x155, 0x156, 0x157, 0x158, 0x159 };
+		static const SOUND_TYPE sm_Snd_Wom_Die[] = { 0x150, 0x151, 0x152, 0x153 };
+		static const SOUND_TYPE sm_Snd_Wom_Omf[] = { 0x14b, 0x14c, 0x14d, 0x14e, 0x14f };
+
+		if (type == CRESND_HIT)
+		{
+			id = sm_Snd_Hit[Calc_GetRandVal(COUNTOF(sm_Snd_Hit))];		// same sound for every race and sex
+		}
+		else if (pCharDef->IsFemale())
+		{
+			switch (type)
+			{
+				case CRESND_GETHIT:	id = sm_Snd_Wom_Omf[Calc_GetRandVal(COUNTOF(sm_Snd_Wom_Omf))];	break;
+				case CRESND_DIE:	id = sm_Snd_Wom_Die[Calc_GetRandVal(COUNTOF(sm_Snd_Wom_Die))];	break;
+				default:	break;
+			}
+		}
+		else	// not CRESND_HIT and male character
+		{
+			switch (type)
+			{
+				case CRESND_GETHIT:	id = sm_Snd_Man_Omf[Calc_GetRandVal(COUNTOF(sm_Snd_Man_Omf))];	break;
+				case CRESND_DIE:	id = sm_Snd_Man_Die[Calc_GetRandVal(COUNTOF(sm_Snd_Man_Die))];	break;
+				default:	break;
+			}
+		}
+		// No idle/notice sounds for this.
 	}
 	else if ( id < 0x4D6 )	//before Crane sound, sound IDs are ordered in a way...
 	{

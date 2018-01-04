@@ -82,7 +82,8 @@ enum SOUND_CODE
 	SOUND_DROP_MONEY1	= 0x2E4,
 	SOUND_DROP_MONEY2	= 0x2E5,
 	SOUND_DROP_MONEY3	= 0x2E6,
-	SOUND_GLASS_BREAK4	= 0x390
+	SOUND_GLASS_BREAK4	= 0x390,
+	SOUND_SPECIAL_HUMAN = 0x900		// custom (hardcoded) sound, to be played with SoundChar
 };
 
 typedef WORD MIDI_TYPE;	// Music id
