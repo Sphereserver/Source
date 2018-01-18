@@ -8,8 +8,8 @@
 #include "graycom.h"
 #include "CScriptObj.h"
 #include "../sphere/mutex.h"
-#include <mysql.h>
-#include <errmsg.h>
+#include "mysql/include/mysql.h"
+#include "mysql/include/errmsg.h"
 
 #ifdef _WIN32
 	#pragma comment(lib, "libmysql")

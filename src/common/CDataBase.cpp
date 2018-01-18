@@ -1,6 +1,5 @@
 #include "CDataBase.h"
 #include "../sphere/asyncdb.h"
-#include <mysql_version.h>
 
 extern CDataBaseAsyncHelper g_asyncHdb;
 
