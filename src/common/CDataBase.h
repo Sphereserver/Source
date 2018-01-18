@@ -9,7 +9,6 @@
 #include "CScriptObj.h"
 #include "../sphere/mutex.h"
 #include <mysql.h>
-#include <mysql_version.h>
 #include <errmsg.h>
 
 #ifdef _WIN32
