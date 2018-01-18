@@ -1,4 +1,3 @@
-#include "../common/graycom.h"
 #include "asyncdb.h"
 
 CDataBaseAsyncHelper g_asyncHdb;
@@ -20,42 +19,33 @@ void CDataBaseAsyncHelper::tick()
 {
 	if ( !m_queriesTodo.empty() )
 	{
-		QueryBlob_t currentPair;
-		{
-			SimpleThreadLock lock(m_queryMutex);
-			currentPair = m_queriesTodo.front();
-			m_queriesTodo.pop_front();
-		}
-
+		SimpleThreadLock lock(m_queryMutex);
+		QueryBlob_t currentPair = m_queriesTodo.front();
+		m_queriesTodo.pop_front();
 		FunctionQueryPair_t currentFunctionPair = currentPair.second;
 
-		CScriptTriggerArgs * theArgs = new CScriptTriggerArgs();
-		theArgs->m_iN1 = currentPair.first;
-		theArgs->m_s1 = currentFunctionPair.second;
+		CScriptTriggerArgs *args = new CScriptTriggerArgs();
+		args->m_iN1 = currentPair.first;
+		args->m_s1 = currentFunctionPair.second;
 
 		if ( currentPair.first )
-			theArgs->m_iN2 = g_Serv.m_hdb.query(currentFunctionPair.second, theArgs->m_VarsLocal);
+			args->m_iN2 = g_Serv.m_hdb.Query(currentFunctionPair.second, args->m_VarsLocal);
 		else
-			theArgs->m_iN2 = g_Serv.m_hdb.exec(currentFunctionPair.second);
+			args->m_iN2 = g_Serv.m_hdb.Exec(currentFunctionPair.second);
 
-		g_Serv.m_hdb.addQueryResult(currentFunctionPair.first, theArgs);
+		g_Serv.m_hdb.AsyncQueueCallback(currentFunctionPair.first, args);
 	}
 }
 
 void CDataBaseAsyncHelper::waitForClose()
 {
-	{
-		SimpleThreadLock stlThelock(m_queryMutex);
-
-		m_queriesTodo.clear();
-	}
-
+	SimpleThreadLock lock(m_queryMutex);
+	m_queriesTodo.clear();
 	AbstractSphereThread::waitForClose();
 }
 
-void CDataBaseAsyncHelper::addQuery(bool isQuery, LPCTSTR sFunction, LPCTSTR sQuery)
+void CDataBaseAsyncHelper::addQuery(bool isQuery, LPCTSTR function, LPCTSTR query)
 {
-	SimpleThreadLock stlThelock(m_queryMutex);
-
-	m_queriesTodo.push_back( QueryBlob_t(isQuery, FunctionQueryPair_t(CGString(sFunction), CGString(sQuery))) );
+	SimpleThreadLock lock(m_queryMutex);
+	m_queriesTodo.push_back(QueryBlob_t(isQuery, FunctionQueryPair_t(CGString(function), CGString(query))));
 }

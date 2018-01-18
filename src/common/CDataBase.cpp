@@ -1,166 +1,157 @@
-#include "../common/CDataBase.h"
-#include "../graysvr/graysvr.h"
+#include "CDataBase.h"
 #include "../sphere/asyncdb.h"
 
 extern CDataBaseAsyncHelper g_asyncHdb;
 
 CDataBase::CDataBase()
 {
-	_bConnected = false;
-	_myData = NULL;
+	m_connected = false;
+	m_socket = NULL;
 }
 
 CDataBase::~CDataBase()
 {
-	if ( isConnected() )
+	if ( m_connected )
 		Close();
 }
 
-bool CDataBase::Connect(const char *user, const char *password, const char *base, const char *host)
+void CDataBase::Connect()
 {
 	ADDTOCALLSTACK("CDataBase::Connect");
 	SimpleThreadLock lock(m_connectionMutex);
+	if ( m_connected )
+		return;
 
-	_bConnected = false;
-
-	long ver = mysql_get_client_version();
-	if ( ver < MIN_MYSQL_VERSION_ALLOW )
+	if ( mysql_get_client_version() < LIBMYSQL_VERSION_ID )
 	{
-		g_Log.Event(LOGM_NOCONTEXT|LOGL_ERROR, "Your MySQL client library is too old (version %ld). Minimal allowed version is %d. MySQL support disabled.\n", ver, MIN_MYSQL_VERSION_ALLOW);
-		g_Cfg.m_bMySql = false;
-		return false;
+#ifdef _WIN32
+		g_Log.EventWarn("Your MySQL client library %s is outdated. For better compatibility, update your 'libmysql.dll' file to version %s\n", mysql_get_client_info(), LIBMYSQL_VERSION);
+#else
+		g_Log.EventWarn("Your MySQL client library %s is outdated. For better compatibility, update your 'libmysqlclient' package to version %s\n", mysql_get_client_info(), LIBMYSQL_VERSION);
+#endif
 	}
 
-	_myData = mysql_init(NULL);
-	if ( !_myData )
-		return false;
+	m_socket = mysql_init(NULL);
+	if ( !m_socket )
+	{
+		g_Log.EventError("Insufficient memory to initialize MySQL client socket\n");
+		return;
+	}
 
-	int portnum = 0;
-	const char *port = NULL;
-	if ( (port = strchr(host, ':')) != NULL )
+	const char *user = g_Cfg.m_sMySqlUser;
+	const char *password = g_Cfg.m_sMySqlPass;
+	const char *db = g_Cfg.m_sMySqlDB;
+	const char *host = g_Cfg.m_sMySqlHost;
+	unsigned int port = MYSQL_PORT;
+
+	// If user define server port using hostname:port format, split values into different variables
+	const char *pszArgs = strchr(host, ':');
+	if ( pszArgs != NULL )
 	{
 		char *pszTemp = Str_GetTemp();
 		strcpy(pszTemp, host);
 		*(strchr(pszTemp, ':')) = 0;
-		portnum = ATOI(port+1);
+		port = ATOI(pszArgs + 1);
 		host = pszTemp;
 	}
 
-	if ( !mysql_real_connect(_myData, host, user, password, base, portnum, NULL, CLIENT_MULTI_STATEMENTS ) )
+	if ( mysql_real_connect(m_socket, host, user, password, db, port, NULL, CLIENT_MULTI_STATEMENTS) )
 	{
-		const char *error = mysql_error(_myData);
-		g_Log.Event(LOGM_NOCONTEXT|LOGL_ERROR, "MySQL connect fail: %s\n", error);
-		g_Log.Event(LOGM_NOCONTEXT|LOGL_ERROR, "Visit this link for more information: http://dev.mysql.com/doc/mysql/search.php?q=%s\n", error);
-		mysql_close(_myData);
-		_myData = NULL;
-		return false;
+		m_connected = true;
+		if ( mysql_get_server_version(m_socket) < MYSQL_VERSION_ID )
+			g_Log.EventWarn("Your MySQL server %s is outdated. For better compatibility, update your MySQL server to version %s\n", mysql_get_server_info(m_socket), MYSQL_SERVER_VERSION);
 	}
-
-	return (_bConnected = true);
-}
-
-bool CDataBase::Connect()
-{
-	ADDTOCALLSTACK("CDataBase::Connect");
-	return Connect(g_Cfg.m_sMySqlUser, g_Cfg.m_sMySqlPass, g_Cfg.m_sMySqlDB, g_Cfg.m_sMySqlHost);
-}
-
-bool CDataBase::isConnected()
-{
-	ADDTOCALLSTACK("CDataBase::isConnected");
-	return _bConnected;
+	else
+	{
+		g_Log.EventError("MySQL error #%u: %s\n", mysql_errno(m_socket), mysql_error(m_socket));
+		mysql_close(m_socket);
+		m_socket = NULL;
+	}
 }
 
 void CDataBase::Close()
 {
 	ADDTOCALLSTACK("CDataBase::Close");
 	SimpleThreadLock lock(m_connectionMutex);
-	mysql_close(_myData);
-	_myData = NULL;
-	_bConnected = false;
+	mysql_close(m_socket);
+	m_connected = false;
+	m_socket = NULL;
 }
 
-bool CDataBase::query(const char *query, CVarDefMap & mapQueryResult)
+bool CDataBase::Query(const char *query, CVarDefMap &mapQueryResult)
 {
-	ADDTOCALLSTACK("CDataBase::query");
+	ADDTOCALLSTACK("CDataBase::Query");
 	mapQueryResult.Empty();
 	mapQueryResult.SetNumNew("NUMROWS", 0);
 
-	if ( !isConnected() )
+	if ( !m_connected )
 		return false;
 
-	int result;
-	MYSQL_RES * m_res = NULL;
-	const char * myErr = NULL;
+	// Connection can only handle one query at a time, so lock the thread until the query finishes
+	SimpleThreadLock lock(m_connectionMutex);
 
+	int resultCode = mysql_query(m_socket, query);
+	if ( resultCode == 0 )
 	{
-		// connection can only handle one query at a time, so we need to lock until we
-		// finish the query -and- retrieve the results
-		SimpleThreadLock lock(m_connectionMutex);
-		result = mysql_query(_myData, query);
+		MYSQL_RES *result = mysql_store_result(m_socket);
+		if ( !result )
+			return false;
 
-		if ( result == 0 )
+		unsigned int num_fields = mysql_num_fields(result);
+		char key[64];
+		if ( num_fields > COUNTOF(key) )
 		{
-			m_res = mysql_store_result(_myData);
-			if ( m_res == NULL )
-				return false;
+			// This check is not really needed, MySQL client should be able to handle the same columns amount of MySQL server (4096).
+			// But since this value is too big and create an 4096 char array at -every- query call is not performance-friendly, maybe
+			// it's better just use an smaller array to prioritize performance.
+			g_Log.EventError("MySQL query returned too many columns [Max: %" FMTSIZE_T " / Cmd: \"%s\"]\n", COUNTOF(key), query);
+			mysql_free_result(result);
+			return false;
 		}
-		else
-		{
-			myErr = mysql_error(_myData);
-		}
-	}
 
-	if ( m_res != NULL )
-	{
-		MYSQL_FIELD * fields = mysql_fetch_fields(m_res);
-		int num_fields = mysql_num_fields(m_res);
-
-		mapQueryResult.SetNum("NUMROWS", mysql_num_rows(m_res));
+		MYSQL_FIELD *fields = mysql_fetch_fields(result);
+		mapQueryResult.SetNum("NUMROWS", mysql_num_rows(result));
 		mapQueryResult.SetNum("NUMCOLS", num_fields);
 
-		char	key[12];
-		char	**trow = NULL;
-		int		rownum = 0;
-		char	*zStore = Str_GetTemp();
-		while ( (trow = mysql_fetch_row(m_res)) != NULL )
+		int rownum = 0;
+		char **row = NULL;
+		char *pszKey = Str_GetTemp();
+		char *pszVal = NULL;
+		while ( (row = mysql_fetch_row(result)) != NULL )
 		{
-			for ( int i = 0; i < num_fields; i++ )
+			for ( unsigned int i = 0; i < num_fields; i++ )
 			{
-				char	*z = trow[i];
+				pszVal = row[i];
 				if ( !rownum )
 				{
-					mapQueryResult.SetStr(ITOA(i, key, 10), true, z);
-					mapQueryResult.SetStr(fields[i].name, true, z);
+					mapQueryResult.SetStr(ITOA(i, key, 10), true, pszVal);
+					mapQueryResult.SetStr(fields[i].name, true, pszVal);
 				}
 
-				sprintf(zStore, "%d.%d", rownum, i);
-				mapQueryResult.SetStr(zStore, true, z);
-				sprintf(zStore, "%d.%s", rownum, fields[i].name);
-				mapQueryResult.SetStr(zStore, true, z);
+				sprintf(pszKey, "%d.%u", rownum, i);
+				mapQueryResult.SetStr(pszKey, true, pszVal);
+				sprintf(pszKey, "%d.%s", rownum, fields[i].name);
+				mapQueryResult.SetStr(pszKey, true, pszVal);
 			}
 			rownum++;
 		}
 
-		mysql_free_result(m_res);
+		mysql_free_result(result);
 		return true;
 	}
 	else
 	{
-		g_Log.Event(LOGM_NOCONTEXT|LOGL_ERROR,
-			"MySQL query \"%s\" failed due to \"%s\"\n",
-			query, ( *myErr ? myErr : "unknown reason"));
+		g_Log.EventError("MySQL error #%u: %s [Cmd: \"%s\"]\n", mysql_errno(m_socket), mysql_error(m_socket), query);
+		if ( (resultCode == CR_SERVER_GONE_ERROR) || (resultCode == CR_SERVER_LOST) )
+			Close();
+
+		return false;
 	}
-
-	if (( result == CR_SERVER_GONE_ERROR ) || ( result == CR_SERVER_LOST ))
-		Close();
-
-	return false;
 }
 
-bool __cdecl CDataBase::queryf(CVarDefMap & mapQueryResult, char *fmt, ...)
+bool __cdecl CDataBase::Queryf(CVarDefMap &mapQueryResult, char *fmt, ...)
 {
-	ADDTOCALLSTACK("CDataBase::queryf");
+	ADDTOCALLSTACK("CDataBase::Queryf");
 	TemporaryString buf;
 	va_list	marker;
 
@@ -168,48 +159,42 @@ bool __cdecl CDataBase::queryf(CVarDefMap & mapQueryResult, char *fmt, ...)
 	_vsnprintf(buf, buf.realLength(), fmt, marker);
 	va_end(marker);
 
-	return this->query(buf, mapQueryResult);
+	return Query(buf, mapQueryResult);
 }
 
-bool CDataBase::exec(const char *query)
+bool CDataBase::Exec(const char *query)
 {
-	ADDTOCALLSTACK("CDataBase::exec");
-	if ( !isConnected() )
+	ADDTOCALLSTACK("CDataBase::Exec");
+	if ( !m_connected )
 		return false;
 
-	int result = 0;
+	// Connection can only handle one query at a time, so lock the thread until the query finishes
+	SimpleThreadLock lock(m_connectionMutex);
 
+	int resultCode = mysql_query(m_socket, query);
+	if ( resultCode == 0 )
 	{
-		// connection can only handle one query at a time, so we need to lock until we finish
-		SimpleThreadLock lock(m_connectionMutex);
-		result = mysql_query(_myData, query);
-		if (result == 0)
-		{
-			// even though we don't want (or expect) any result data, we must retrieve
-			// is anyway otherwise we will lose our connection to the server
-			MYSQL_RES* res = mysql_store_result(_myData);
-			if (res != NULL)
-				mysql_free_result(res);
+		// Result must be retrieved from server even when no data is expected, otherwise the server will think the client has lost connection
+		MYSQL_RES *result = mysql_store_result(m_socket);
+		if ( !result )
+			return false;
 
-			return true;
-		}
-		else
-		{
-			const char *myErr = mysql_error(_myData);
-			g_Log.Event(LOGM_NOCONTEXT|LOGL_ERROR, "MySQL query \"%s\" failed due to \"%s\"\n",
-				query, ( *myErr ? myErr : "unknown reason"));
-		}
+		mysql_free_result(result);
+		return true;
 	}
-	
-	if (( result == CR_SERVER_GONE_ERROR ) || ( result == CR_SERVER_LOST ))
-		Close();
+	else
+	{
+		g_Log.EventError("MySQL error #%u: %s [Cmd: \"%s\"]\n", mysql_errno(m_socket), mysql_error(m_socket), query);
+		if ( (resultCode == CR_SERVER_GONE_ERROR) || (resultCode == CR_SERVER_LOST) )
+			Close();
 
-	return false;
+		return false;
+	}
 }
 
-bool __cdecl CDataBase::execf(char *fmt, ...)
+bool __cdecl CDataBase::Execf(char *fmt, ...)
 {
-	ADDTOCALLSTACK("CDataBase::execf");
+	ADDTOCALLSTACK("CDataBase::Execf");
 	TemporaryString buf;
 	va_list	marker;
 
@@ -217,31 +202,31 @@ bool __cdecl CDataBase::execf(char *fmt, ...)
 	_vsnprintf(buf, buf.realLength(), fmt, marker);
 	va_end(marker);
 
-	return this->exec(buf);
+	return Exec(buf);
 }
 
-bool CDataBase::addQuery(bool isQuery, LPCTSTR theFunction, LPCTSTR theQuery)
+bool CDataBase::AsyncQueue(bool isQuery, LPCTSTR function, LPCTSTR query)
 {
-	if ( g_Cfg.m_Functions.ContainsKey( theFunction ) == false )
+	ADDTOCALLSTACK("CDataBase::AsyncQueue");
+	if ( !g_Cfg.m_Functions.ContainsKey(function) )
 	{
-		DEBUG_ERR(("Invalid callback function (%s) for AEXECUTE/AQUERY.\n", theFunction));
+		g_Log.EventError("Invalid %s callback function '%s'\n", isQuery ? "AQUERY" : "AEXECUTE", function);
 		return false;
 	}
-	else
-	{
-		if ( !g_asyncHdb.isActive() )
-			g_asyncHdb.start();
 
-		g_asyncHdb.addQuery(isQuery,theFunction,theQuery);
-		return true;
-	}
+	if ( !g_asyncHdb.isActive() )
+		g_asyncHdb.start();
+
+	g_asyncHdb.addQuery(isQuery, function, query);
+	return true;
 }
 
-void CDataBase::addQueryResult(CGString & theFunction, CScriptTriggerArgs * theResult)
+void CDataBase::AsyncQueueCallback(CGString &function, CScriptTriggerArgs *result)
 {
-	SimpleThreadLock stlThelock(m_resultMutex);
+	ADDTOCALLSTACK("CDataBase::AsyncQueueCallback");
+	SimpleThreadLock lock(m_resultMutex);
 
-	m_QueryArgs.push(FunctionArgsPair_t(theFunction, theResult));
+	m_QueryArgs.push(FunctionArgsPair_t(function, result));
 }
 
 bool CDataBase::OnTick()
@@ -250,44 +235,32 @@ bool CDataBase::OnTick()
 	static int tickcnt = 0;
 	EXC_TRY("Tick");
 
-	if ( !g_Cfg.m_bMySql )	//	mySQL is not supported
+	if ( !g_Cfg.m_bMySql )
 		return true;
 
-	//	do not ping sql server too heavily
+	// Periodically check if connection still active
 	if ( ++tickcnt >= 1000 )
 	{
 		tickcnt = 0;
-
-		if ( isConnected() )	//	currently connected - just check that the link is alive
+		if ( m_connected )
 		{
 			SimpleThreadLock lock(m_connectionMutex);
-			if ( mysql_ping(_myData) )
+			if ( mysql_ping(m_socket) != 0 )
 			{
-				g_Log.EventError("MySQL server link has been lost. Trying to reattach to it.\n");
+				g_Log.EventError("MySQL server connection has been lost. Trying to reconnect...\n");
 				Close();
-
-				if ( !Connect() )
-				{
-					g_Log.EventError("MySQL reattach failed/timed out. SQL operations disabled.\n");
-				}
+				Connect();
 			}
 		}
 	}
 
 	if ( !m_QueryArgs.empty() && !(tickcnt % TICK_PER_SEC) )
 	{
-		FunctionArgsPair_t currentPair;
-		{
-			SimpleThreadLock lock(m_resultMutex);
-			currentPair = m_QueryArgs.front();
-			m_QueryArgs.pop();
-		}
-		
-		if ( !g_Serv.r_Call(currentPair.first, &g_Serv, currentPair.second) )
-		{
-			// error
-		}
-		
+		SimpleThreadLock lock(m_resultMutex);
+		FunctionArgsPair_t currentPair = m_QueryArgs.front();
+		m_QueryArgs.pop();
+
+		g_Serv.r_Call(currentPair.first, &g_Serv, currentPair.second);
 		ASSERT(currentPair.second != NULL);
 		delete currentPair.second;
 	}
@@ -310,7 +283,7 @@ enum DBO_TYPE
 	DBO_QTY
 };
 
-LPCTSTR const CDataBase::sm_szLoadKeys[DBO_QTY+1] =
+LPCTSTR const CDataBase::sm_szLoadKeys[DBO_QTY + 1] =
 {
 	"AEXECUTE",
 	"AQUERY",
@@ -329,7 +302,7 @@ enum DBOV_TYPE
 	DBOV_QTY
 };
 
-LPCTSTR const CDataBase::sm_szVerbKeys[DBOV_QTY+1] =
+LPCTSTR const CDataBase::sm_szVerbKeys[DBOV_QTY + 1] =
 {
 	"CLOSE",
 	"CONNECT",
@@ -338,7 +311,7 @@ LPCTSTR const CDataBase::sm_szVerbKeys[DBOV_QTY+1] =
 	NULL
 };
 
-bool CDataBase::r_GetRef(LPCTSTR & pszKey, CScriptObj * & pRef)
+bool CDataBase::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 {
 	ADDTOCALLSTACK("CDataBase::r_GetRef");
 	UNREFERENCED_PARAMETER(pszKey);
@@ -346,31 +319,11 @@ bool CDataBase::r_GetRef(LPCTSTR & pszKey, CScriptObj * & pRef)
 	return false;
 }
 
-bool CDataBase::r_LoadVal(CScript & s)
+bool CDataBase::r_LoadVal(CScript &s)
 {
 	ADDTOCALLSTACK("CDataBase::r_LoadVal");
 	UNREFERENCED_PARAMETER(s);
 	return false;
-/*
-	LPCTSTR pszKey = s.GetKey();
-	EXC_TRY("LoadVal");
-
-	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1);
-
-	switch ( index )
-	{
-		default:
-			return false;
-	}
-
-	return true;
-	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	EXC_ADD_SCRIPT;
-	EXC_DEBUG_END;
-	return false;
-*/
 }
 
 bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
@@ -378,45 +331,36 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	ADDTOCALLSTACK("CDataBase::r_WriteVal");
 	EXC_TRY("WriteVal");
 
-	// Just return 0 if MySQL is disabled
-	if (!g_Cfg.m_bMySql)
+	if ( !g_Cfg.m_bMySql )
 	{
-		sVal.FormatVal( 0 );
+		sVal.FormatVal(0);
 		return true;
 	}
 
-	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1);
+	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
 	switch ( index )
 	{
 		case DBO_AEXECUTE:
 		case DBO_AQUERY:
+		{
+			pszKey += strlen(sm_szLoadKeys[index]);
+			GETNONWHITESPACE(pszKey);
+
+			TCHAR *ppArgs[2];
+			if ( (pszKey[0] != '\0') && (Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs)) == 2) )
+				sVal.FormatVal(AsyncQueue((index == DBO_AQUERY), ppArgs[0], ppArgs[1]));
+			else
 			{
-				pszKey += strlen(sm_szLoadKeys[index]);
-				GETNONWHITESPACE(pszKey);
+				g_Log.EventError("Invalid %s arguments\n", CDataBase::sm_szLoadKeys[index]);
 				sVal.FormatVal(0);
-
-				if ( pszKey[0] != '\0' )
-				{
-					TCHAR * ppArgs[2];
-					if ( Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF( ppArgs )) != 2) 
-					{
-						DEBUG_ERR(("Not enough arguments for %s\n", CDataBase::sm_szLoadKeys[index]));
-					}
-					else
-					{
-						sVal.FormatVal( addQuery((index == DBO_AQUERY), ppArgs[0], ppArgs[1]) );
-					}
-				}
-				else
-				{
-					DEBUG_ERR(("Not enough arguments for %s\n", CDataBase::sm_szLoadKeys[index]));
-				}
-			} break;
-
-		case DBO_CONNECTED:
-			sVal.FormatVal(isConnected());
+			}
 			break;
-
+		}
+		case DBO_CONNECTED:
+		{
+			sVal.FormatVal(m_connected);
+			break;
+		}
 		case DBO_ESCAPEDATA:
 		{
 			pszKey += strlen(sm_szLoadKeys[index]);
@@ -425,23 +369,20 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 			if ( pszKey[0] != '\0' )
 			{
-				TCHAR * escapedString = Str_GetTemp();
-				
+				TCHAR *escapedString = Str_GetTemp();
 				SimpleThreadLock lock(m_connectionMutex);
-				if ( isConnected() && mysql_real_escape_string(_myData, escapedString, pszKey, static_cast<unsigned long>(strlen(pszKey))) )
-				{
+				if ( m_connected && mysql_real_escape_string(m_socket, escapedString, pszKey, static_cast<unsigned long>(strlen(pszKey))) )
 					sVal = escapedString;
-				}
 			}
-		} break;
-
+			break;
+		}
 		case DBO_ROW:
 		{
 			pszKey += strlen(sm_szLoadKeys[index]);
 			SKIP_SEPARATORS(pszKey);
 			sVal = m_QueryResult.GetKeyStr(pszKey);
-		} break;
-
+			break;
+		}
 		default:
 			return false;
 	}
@@ -455,36 +396,33 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	return false;
 }
 
-bool CDataBase::r_Verb(CScript & s, CTextConsole * pSrc)
+bool CDataBase::r_Verb(CScript &s, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CDataBase::r_Verb");
 	EXC_TRY("Verb");
 
-	// Just return true if MySQL is disabled
-	if (!g_Cfg.m_bMySql)
+	if ( !g_Cfg.m_bMySql )
 		return true;
 
-	int index = FindTableSorted(s.GetKey(), sm_szVerbKeys, COUNTOF(sm_szVerbKeys)-1);
+	int index = FindTableSorted(s.GetKey(), sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
 	switch ( index )
 	{
 		case DBOV_CLOSE:
-			if ( isConnected() )
+			if ( m_connected )
 				Close();
 			break;
 
 		case DBOV_CONNECT:
-			if ( isConnected() )
-				Close();
-
-			Connect();
+			if ( !m_connected )
+				Connect();
 			break;
 
 		case DBOV_EXECUTE:
-			exec(s.GetArgRaw());
+			Exec(s.GetArgRaw());
 			break;
 
 		case DBOV_QUERY:
-			query(s.GetArgRaw(), m_QueryResult);
+			Query(s.GetArgRaw(), m_QueryResult);
 			break;
 
 		default:

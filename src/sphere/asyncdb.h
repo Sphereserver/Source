@@ -1,35 +1,33 @@
 #ifndef _INC_ASYNCDB_H
 #define _INC_ASYNCDB_H
 
-	#include "threads.h"
-	#include "mutex.h"
-	#include "../graysvr/graysvr.h"
+#include "threads.h"
+#include "mutex.h"
+#include "../graysvr/graysvr.h"
 
-	class CDataBaseAsyncHelper : public AbstractSphereThread
-	{
-	private:
-		typedef std::pair<CGString, CGString> FunctionQueryPair_t;
-		typedef std::pair<bool, FunctionQueryPair_t> QueryBlob_t;
-		typedef std::deque<QueryBlob_t> QueueQuery_t;
+class CDataBaseAsyncHelper : public AbstractSphereThread
+{
+public:
+	CDataBaseAsyncHelper(void);
+	~CDataBaseAsyncHelper(void);
 
-	private:
-		SimpleMutex m_queryMutex;
-		QueueQuery_t m_queriesTodo;
+private:
+	CDataBaseAsyncHelper(const CDataBaseAsyncHelper &copy);
+	CDataBaseAsyncHelper &operator=(const CDataBaseAsyncHelper &other);
 
-	public:
-		CDataBaseAsyncHelper(void);
-		~CDataBaseAsyncHelper(void);
-	private:
-		CDataBaseAsyncHelper(const CDataBaseAsyncHelper& copy);
-		CDataBaseAsyncHelper& operator=(const CDataBaseAsyncHelper& other);
+public:
+	virtual void onStart();
+	virtual void tick();
+	virtual void waitForClose();
+	void addQuery(bool isQuery, LPCTSTR function, LPCTSTR query);
 
-	public:
-		virtual void onStart();
-		virtual void tick();
-		virtual void waitForClose();
+private:
+	typedef std::pair<CGString, CGString> FunctionQueryPair_t;
+	typedef std::pair<bool, FunctionQueryPair_t> QueryBlob_t;
+	typedef std::deque<QueryBlob_t> QueueQuery_t;
 
-	public:
-		void addQuery(bool isQuery, LPCTSTR sFunction, LPCTSTR sQuery);
-	};
+	SimpleMutex m_queryMutex;
+	QueueQuery_t m_queriesTodo;
+};
 
 #endif
