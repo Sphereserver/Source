@@ -1,8 +1,6 @@
 #ifndef _INC_ASYNCDB_H
 #define _INC_ASYNCDB_H
 
-#include "threads.h"
-#include "mutex.h"
 #include "../graysvr/graysvr.h"
 
 class CDataBaseAsyncHelper : public AbstractSphereThread
