@@ -145,7 +145,6 @@ enum RESDISPLAY_VERSION
 	RDS_QTY
 };
 
-//#include "../common/graycom.h"
 #include "../common/graymul.h"
 #include "../common/grayproto.h"
 #include "../common/CGrayInst.h"
@@ -301,9 +300,8 @@ public:
 		m_fLockOpen = false;
 		m_pScriptContext = NULL;
 		m_pObjectContext = NULL;
-		m_dwMsgMask = LOGL_ERROR |
-			LOGM_INIT | LOGM_CLIENTS_LOG | LOGM_GM_PAGE;
-		SetFilePath( GRAY_FILE "log.log" );	// default name to go to.
+		m_dwMsgMask = LOGL_ERROR|LOGM_INIT|LOGM_CLIENTS_LOG|LOGM_GM_PAGE;
+		SetFilePath(SPHERE_FILE "log.log");	// default name to go to.
 	}
 
 private:

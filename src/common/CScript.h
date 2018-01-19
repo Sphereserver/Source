@@ -7,9 +7,8 @@
 #include "CFile.h"
 #include "CacheableScriptFile.h"
 
-#define GRAY_SCRIPT		".scp"
-
-#define SCRIPT_MAX_SECTION_LEN 128
+#define SPHERE_SCRIPT	".scp"
+#define SCRIPT_MAX_SECTION_LEN	128
 
 struct CScriptLineContext
 {

@@ -146,7 +146,7 @@ commandtoolong:
 ////////////////////////////////////////////////////////////////////////////////////////
 // -CServer
 
-CServer::CServer() : CServerDef( GRAY_TITLE, CSocketAddressIP( SOCKET_LOCAL_ADDRESS ))
+CServer::CServer() : CServerDef(SPHERE_TITLE, CSocketAddressIP(SOCKET_LOCAL_ADDRESS))
 {
 	m_iExitFlag = 0;
 	m_fResyncPause = false;
@@ -355,7 +355,7 @@ LPCTSTR CServer::GetStatusString( BYTE iIndex ) const
 			// typical (first time) poll response.
 			{
 				TCHAR szVersion[128];
-				sprintf(pTemp, GRAY_TITLE ", Name=%s, Port=%d, Ver=" GRAY_VERSION ", TZ=%d, EMail=%s, URL=%s, Lang=%s, CliVer=%s\n",
+				sprintf(pTemp, SPHERE_TITLE ", Name=%s, Port=%d, Ver=" SPHERE_VERSION ", TZ=%d, EMail=%s, URL=%s, Lang=%s, CliVer=%s\n",
 					GetName(), m_ip.GetPort(), m_TimeZone, static_cast<LPCTSTR>(m_sEMail), static_cast<LPCTSTR>(m_sURL), static_cast<LPCTSTR>(m_sLang),
 					m_ClientVersion.WriteClientVerString(m_ClientVersion.GetClientVer(), szVersion));
 			}
@@ -363,7 +363,7 @@ LPCTSTR CServer::GetStatusString( BYTE iIndex ) const
 		case 0x22: // '"'
 			{
 			// shown in the INFO page in game.
-			sprintf(pTemp, GRAY_TITLE ", Name=%s, Age=%lld, Clients=%lu, Items=%lu, Chars=%lu, Mem=%luK\n",
+			sprintf(pTemp, SPHERE_TITLE ", Name=%s, Age=%lld, Clients=%lu, Items=%lu, Chars=%lu, Mem=%luK\n",
 				GetName(), iHours, iClients, StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_MEM));
 			}
 			break;
@@ -373,7 +373,7 @@ LPCTSTR CServer::GetStatusString( BYTE iIndex ) const
 			break;
 		case 0x25: // '%'
 			// ConnectUO Status string
-			sprintf(pTemp, GRAY_TITLE " Items=%lu, Mobiles=%lu, Clients=%lu, Mem=%lu", StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), iClients, StatGet(SERV_STAT_MEM));
+			sprintf(pTemp, SPHERE_TITLE " Items=%lu, Mobiles=%lu, Clients=%lu, Mem=%lu", StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), iClients, StatGet(SERV_STAT_MEM));
 			break;
 	}
 
@@ -492,7 +492,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 				"P         View Profile info (%s) (P# to dump to profiler_dump.txt)\n"
 				"R         Resync pause\n"
 				"S         Toggle Secure mode (%s)\n"
-				"STRIP     Dump all script templates to external file (path defined by StripPath setting on " GRAY_FILE ".ini)\n"
+				"STRIP     Dump all script templates to external file (path defined by StripPath setting on " SPHERE_FILE ".ini)\n"
 				"T         View list of active Threads\n"
 				"U         View list of Used triggers\n"
 				"X         Immediate exit the server (X# to save world and statics before exit)\n"
@@ -585,7 +585,7 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 				}
 				else
 				{
-					pSrc->SysMessage("Script profiler feature is not enabled on " GRAY_FILE ".ini.\n");
+					pSrc->SysMessage("Script profiler feature is not enabled on " SPHERE_FILE ".ini.\n");
 				}
 			} break;
 		case 'g':
@@ -749,7 +749,7 @@ longcommand:
 		{
 			if ( g_Cfg.m_sStripPath.IsEmpty() )
 			{
-				pSrc->SysMessage("StripPath not defined on " GRAY_FILE ".ini, function aborted.\n");
+				pSrc->SysMessage("StripPath not defined on " SPHERE_FILE ".ini, function aborted.\n");
 				return false;
 			}
 
@@ -759,7 +759,7 @@ longcommand:
 			char *z = Str_GetTemp();
 
 			strcpy(z, g_Cfg.m_sStripPath);
-			strcat(z, "sphere_strip" GRAY_SCRIPT);
+			strcat(z, "sphere_strip" SPHERE_SCRIPT);
 			pSrc->SysMessagef("StripPath is %s\n", z);
 
 			stripFile = fopen(z, "w");
@@ -991,7 +991,7 @@ void CServer::ProfileDump( CTextConsole *pSrc, bool bDump )
 	}
 	else
 	{
-		pSrc->SysMessage("Script profiler feature is not enabled on " GRAY_FILE ".ini.\n");
+		pSrc->SysMessage("Script profiler feature is not enabled on " SPHERE_FILE ".ini.\n");
 	}
 
 	if ( ftDump )
@@ -1537,10 +1537,10 @@ bool CServer::CommandLine( int argc, TCHAR * argv[] )
 		switch ( toupper(pArg[0]) )
 		{
 			case '?':
-				PrintStr( GRAY_TITLE " \n"
+				PrintStr(SPHERE_TITLE " \n"
 					"Command Line Switches:\n"
 #ifdef _WIN32
-					"-cClassName Setup custom window class name for sphere (default: " GRAY_TITLE "Svr)\n"
+					"-cClassName Setup custom window class name for sphere (default: " SPHERE_TITLE "Svr)\n"
 #else
 					"-c use colored console output (default: off)\n"
 #endif
@@ -1896,7 +1896,7 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "WinSock 1.1 not found!\n");
 	EXC_SET("finalizing");
 #ifdef _WIN32
 	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, GRAY_TITLE " V" GRAY_VERSION " - %s", GetName());
+	sprintf(pszTemp, SPHERE_TITLE " V" SPHERE_VERSION " - %s", GetName());
 	SetConsoleTitle(pszTemp);
 #endif
 

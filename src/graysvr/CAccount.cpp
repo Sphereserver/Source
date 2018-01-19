@@ -63,13 +63,13 @@ bool CAccounts::Account_LoadAll( bool fChanges, bool fClearChanges )
 	char	*z = Str_GetTemp();
 
 	pszBaseDir = g_Cfg.m_sAcctBaseDir.IsEmpty() ? g_Cfg.m_sWorldBaseDir : g_Cfg.m_sAcctBaseDir;
-	pszBaseName = ( fChanges ) ? (GRAY_FILE "acct") : (GRAY_FILE "accu");
+	pszBaseName = fChanges ? (SPHERE_FILE "acct") : (SPHERE_FILE "accu");
 
 	strcpy(z, pszBaseDir);
 	strcat(z, pszBaseName);
 
 	if ( !fChanges )
-		g_Log.Event(LOGM_INIT, "Loading %s%s\n", z, GRAY_SCRIPT);
+		g_Log.Event(LOGM_INIT, "Loading %s%s\n", z, SPHERE_SCRIPT);
 
 	CScript s;
 	if ( ! s.Open(z, OF_READ|OF_TEXT|OF_DEFAULTMODE| ( fChanges ? OF_NONCRIT : 0) ))
@@ -94,7 +94,7 @@ bool CAccounts::Account_LoadAll( bool fChanges, bool fClearChanges )
 		// empty the changes file.
 		s.Close();
 		s.Open(NULL, OF_WRITE|OF_TEXT|OF_DEFAULTMODE);
-		s.WriteString( "// Accounts are periodically moved to the " GRAY_FILE "accu" GRAY_SCRIPT " file.\n"
+		s.WriteString( "// Accounts are periodically moved to the " SPHERE_FILE "accu" SPHERE_SCRIPT " file.\n"
 			"// All account changes should be made here.\n"
 			"// Use the /ACCOUNT UPDATE command to force accounts to update.\n"
 			);
@@ -129,9 +129,9 @@ bool CAccounts::Account_SaveAll()
 	if ( !CWorld::OpenScriptBackup(s, pszBaseDir, "accu", g_World.m_iSaveCountID) )
 		return false;
 
-	s.Printf("// " GRAY_TITLE " %s accounts file\n"
+	s.Printf("// " SPHERE_TITLE " %s accounts file\n"
 		"// NOTE: This file cannot be edited while the server is running.\n"
-		"// Any file changes must be made to " GRAY_FILE "accu" GRAY_SCRIPT ". This is read in at save time.\n",
+		"// Any file changes must be made to " SPHERE_FILE "accu" SPHERE_SCRIPT ". This is read in at save time.\n",
 		g_Serv.GetName());
 
 	for ( size_t i = 0; i < m_Accounts.GetCount(); i++ )

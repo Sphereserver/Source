@@ -1500,7 +1500,7 @@ size_t CScriptObj::ParseText( TCHAR * pszResponse, CTextConsole * pSrc, int iFla
 	// ARGS:
 	// iFlags = 2=Allow recusive bracket count. 1=use HTML %% as the delimiters.
 	// NOTE:
-	//  html will have opening <script language="GRAY_FILE"> and then closing </script>
+	//  html will have opening <script language="SPHERE_FILE"> and then closing </script>
 	// RETURN:
 	//  New length of the string.
 	//

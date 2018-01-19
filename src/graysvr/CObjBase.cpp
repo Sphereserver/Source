@@ -1345,7 +1345,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatLLVal(GetTimeStamp().GetTimeRaw());
 			break;
 		case OC_VERSION:
-			sVal = GRAY_VERSION;
+			sVal = SPHERE_VERSION;
 			break;
 		case OC_WEIGHT:
 			sVal.FormatVal(GetWeight());

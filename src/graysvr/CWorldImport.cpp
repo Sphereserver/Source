@@ -740,7 +740,7 @@ bool CWorld::DumpAreas( CTextConsole * pSrc, LPCTSTR pszFilename )
 		return( false );
 
 	if ( pszFilename == NULL || *pszFilename == '\0' )
-		pszFilename	= "map_all" GRAY_SCRIPT;
+		pszFilename	= "map_all" SPHERE_SCRIPT;
 	else if ( strlen( pszFilename ) <= 4 )
 		return( false );
 

@@ -32,8 +32,7 @@
 //////////////////////////////////////////////////////////////////////
 // -CServerDef
 
-CServerDef::CServerDef( LPCTSTR pszName, CSocketAddressIP dwIP ) :
-	m_ip( dwIP, GRAY_DEF_PORT )	// SOCKET_LOCAL_ADDRESS
+CServerDef::CServerDef(LPCTSTR pszName, CSocketAddressIP dwIP) : m_ip(dwIP, SPHERE_DEF_PORT)	// SOCKET_LOCAL_ADDRESS
 {
 	// Statistics.
 	memset( m_dwStat, 0, sizeof( m_dwStat ));	// THIS MUST BE FIRST !
@@ -445,7 +444,7 @@ bool CServerDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 		sVal.Format("<a href=\"http://%s\">%s</a>", static_cast<LPCTSTR>(m_sURL), GetName());
 		break;
 	case SC_VERSION:
-		sVal = GRAY_VERSION;
+		sVal = SPHERE_VERSION;
 		break;
 	default:
 		{

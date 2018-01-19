@@ -29,10 +29,10 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #include "../common/grayver.h"
 
 VS_VERSION_INFO		VERSIONINFO
-FILEVERSION			GRAY_VER_FILEVERSION
-FILEOS				GRAY_VER_FILEOS
+FILEVERSION			SPHERE_VER_FILEVERSION
+FILEOS				SPHERE_VER_FILEOS
 FILETYPE			0x1L	//VFT_APP
-FILEFLAGS			GRAY_VER_FILEFLAGS
+FILEFLAGS			SPHERE_VER_FILEFLAGS
 FILEFLAGSMASK		0x1fL
 BEGIN
 	BLOCK "StringFileInfo"
@@ -40,13 +40,13 @@ BEGIN
 		BLOCK "040904b0"
 		BEGIN
 			VALUE "CompanyName",		"Menasoft"
-			VALUE "FileDescription",	"SphereServer " GRAY_VER_STR
-			VALUE "FileVersion",		GRAY_VERSION
+			VALUE "FileDescription",	"SphereServer " SPHERE_VER_STR
+			VALUE "FileVersion",		SPHERE_VERSION
 			VALUE "InternalName",		"SphereSvr"
 			VALUE "LegalCopyright",		"Copyright 1998-2017 by Menasoft"
 			VALUE "OriginalFilename",	"SphereSvr.exe"
 			VALUE "ProductName",		"SphereServer"
-			VALUE "ProductVersion",		GRAY_VERSION
+			VALUE "ProductVersion",		SPHERE_VERSION
 		END
 	END
 

@@ -113,11 +113,11 @@ CResourceScript * CResourceBase::AddResourceFile( LPCTSTR pszName )
 	if ( pszExt == NULL )
 	{
 		// No file extension provided, so append .scp to the filename
-		strcat( szName, GRAY_SCRIPT );
-		strcat( szTitle, GRAY_SCRIPT );
+		strcat(szName, SPHERE_SCRIPT);
+		strcat(szTitle, SPHERE_SCRIPT);
 	}
 
-	if ( ! strnicmp( szTitle, GRAY_FILE "tables", strlen(GRAY_FILE "tables")))
+	if ( !strnicmp(szTitle, SPHERE_FILE "tables", strlen(SPHERE_FILE "tables")) )
 	{
 		// Don't dupe this.
 		return NULL;
@@ -146,7 +146,7 @@ void CResourceBase::AddResourceDir( LPCTSTR pszDirName )
 	if ( pszDirName[0] == '\0' )
 		return;
 
-	CGString sFilePath = CGFile::GetMergedFileName( pszDirName, "*" GRAY_SCRIPT );
+	CGString sFilePath = CGFile::GetMergedFileName(pszDirName, "*" SPHERE_SCRIPT);
 
 	CFileList filelist;
 	int iRet = filelist.ReadDir( sFilePath, false );
@@ -1107,22 +1107,22 @@ bool CResourceRefArray::r_LoadVal( CScript & s, RES_TYPE restype )
 			}
 			if ( g_Cfg.m_pEventsPetLink.ContainsPtr(pResourceLink) )
 			{
-				DEBUG_ERR(("'%s' already defined in " GRAY_FILE ".ini - skipping\n", pResourceLink->GetName()));
+				DEBUG_ERR(("'%s' already defined in " SPHERE_FILE ".ini - skipping\n", pResourceLink->GetName()));
 				continue;
 			}
 			else if ( g_Cfg.m_pEventsPlayerLink.ContainsPtr(pResourceLink) )
 			{
-				DEBUG_ERR(("'%s' already defined in " GRAY_FILE ".ini - skipping\n", pResourceLink->GetName()));
+				DEBUG_ERR(("'%s' already defined in " SPHERE_FILE ".ini - skipping\n", pResourceLink->GetName()));
 				continue;
 			}
 			else if ( (restype == RES_REGIONTYPE) && g_Cfg.m_pEventsRegionLink.ContainsPtr(pResourceLink) )
 			{
-				DEBUG_ERR(("'%s' already defined in " GRAY_FILE ".ini - skipping\n", pResourceLink->GetName()));
+				DEBUG_ERR(("'%s' already defined in " SPHERE_FILE ".ini - skipping\n", pResourceLink->GetName()));
 				continue;
 			}
 			else if ( g_Cfg.m_iEventsItemLink.ContainsPtr(pResourceLink) )
 			{
-				DEBUG_ERR(("'%s' already defined in " GRAY_FILE ".ini - skipping\n", pResourceLink->GetName()));
+				DEBUG_ERR(("'%s' already defined in " SPHERE_FILE ".ini - skipping\n", pResourceLink->GetName()));
 				continue;
 			}
 

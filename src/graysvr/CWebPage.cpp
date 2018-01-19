@@ -76,11 +76,11 @@ CWebPageDef::CWebPageDef( RESOURCE_ID rid ) :
 	// default source name
 	if ( rid.GetResIndex())
 	{
-		m_sSrcFilePath.Format( GRAY_FILE "statusbase%d.htm", rid.GetResIndex());
+		m_sSrcFilePath.Format(SPHERE_FILE "statusbase%d.htm", rid.GetResIndex());
 	}
 	else
 	{
-		m_sSrcFilePath = GRAY_FILE "statusbase.htm";
+		m_sSrcFilePath = SPHERE_FILE "statusbase.htm";
 	}
 }
 
@@ -582,7 +582,7 @@ int CWebPageDef::ServPageRequest( CClient * pClient, LPCTSTR pszURLArgs, CGTime 
 	if ( !fGenerate && !pdateIfModifiedSince && (pdateIfModifiedSince->IsTimeValid() && pdateIfModifiedSince->GetTime() > dateChange) )
 	{
 		TCHAR *pszTemp = Str_GetTemp();
-		sprintf(pszTemp, "HTTP/1.1 304 Not Modified\r\nDate: %s\r\nServer: " GRAY_TITLE " V " GRAY_VERSION "\r\nContent-Length: 0\r\n\r\n", sDate);
+		sprintf(pszTemp, "HTTP/1.1 304 Not Modified\r\nDate: %s\r\nServer: " SPHERE_TITLE " V " SPHERE_VERSION "\r\nContent-Length: 0\r\n\r\n", sDate);
 		new PacketWeb(pClient, (BYTE*)pszTemp, strlen(pszTemp));
 		return 0;
 	}
@@ -597,7 +597,7 @@ int CWebPageDef::ServPageRequest( CClient * pClient, LPCTSTR pszURLArgs, CGTime 
 	size_t iLen = sprintf(szTmp,
 		"HTTP/1.1 200 OK\r\n" // 100 Continue
 		"Date: %s\r\n"
-		"Server: " GRAY_TITLE " V " GRAY_VERSION "\r\n"
+		"Server: " SPHERE_TITLE " V " SPHERE_VERSION "\r\n"
 		"Accept-Ranges: bytes\r\n"
 		"Content-Type: %s\r\n",
 		static_cast<LPCTSTR>(sDate),
@@ -801,7 +801,7 @@ bool CWebPageDef::ServPage( CClient * pClient, TCHAR * pszPage, CGTime * pdateIf
 	pClient->m_Targ_Text = pszPage;
 
 	TCHAR	*pszTemp = Str_GetTemp();
-	sprintf(pszTemp, GRAY_FILE "%d.htm", iError);
+	sprintf(pszTemp, SPHERE_FILE "%d.htm", iError);
 	pWebPage = g_Cfg.FindWebPage(pszTemp);
 	if ( pWebPage )
 	{
@@ -832,7 +832,7 @@ bool CWebPageDef::ServPage( CClient * pClient, TCHAR * pszPage, CGTime * pdateIf
 		"<meta name=robots content=noindex>"
 		"</head><body>"
 		"<h2>HTTP Error %d</h2><p><strong>%d %s</strong></p>"
-		"<p>The " GRAY_TITLE " server cannot deliver the file or script you asked for.</p>"
+		"<p>The " SPHERE_TITLE " server cannot deliver the file or script you asked for.</p>"
 		"<p>Please contact the server's administrator if this problem persists.</p>"
 		"</body></html>",
 		iError,
@@ -843,7 +843,7 @@ bool CWebPageDef::ServPage( CClient * pClient, TCHAR * pszPage, CGTime * pdateIf
 	sMsgHead.Format(
 		"HTTP/1.1 %d %s\r\n"
 		"Date: %s\r\n"
-		"Server: " GRAY_TITLE " V " GRAY_VERSION "\r\n"
+		"Server: " SPHERE_TITLE " V " SPHERE_VERSION "\r\n"
 		"Content-Type: text/html\r\n"
 		"Content-Length: %d\r\n"
 		"Connection: close\r\n"

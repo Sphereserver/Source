@@ -296,7 +296,7 @@ void CMapList::Init()
 
 bool WritePidFile(int iMode = 0)
 {
-	LPCTSTR	file = GRAY_FILE ".pid";
+	LPCTSTR	file = SPHERE_FILE ".pid";
 	FILE	*pidFile;
 
 	if ( iMode == 1 )		// delete
@@ -308,7 +308,7 @@ bool WritePidFile(int iMode = 0)
 		pidFile = fopen(file, "r");
 		if ( pidFile )
 		{
-			g_Log.Event(LOGM_INIT, GRAY_FILE ".pid already exists. Secondary launch or unclean shutdown?\n");
+			g_Log.Event(LOGM_INIT, SPHERE_FILE ".pid already exists. Secondary launch or unclean shutdown?\n");
 			fclose(pidFile);
 		}
 		return true;
@@ -356,7 +356,7 @@ LPCTSTR const g_Stat_Name[STAT_QTY] =	// not sorted obviously.
 	"FAME",
 };
 
-LPCTSTR g_szServerDescription =	GRAY_TITLE " Version " GRAY_VERSION " " GRAY_VER_FILEOS_STR	" by www.spherecommunity.net";
+LPCTSTR g_szServerDescription = SPHERE_TITLE " Version " SPHERE_VERSION " " SPHERE_VER_FILEOS_STR " by www.spherecommunity.net";
 
 size_t CObjBase::sm_iCount = 0;	// UID table.
 ULONGLONG llTimeProfileFrequency = 1000;	// time profiler
@@ -623,7 +623,7 @@ int Sphere_InitServer( int argc, char *argv[] )
 	EXC_SET("auto-complete");
 	{
 		CFileText	dict;
-		if ( dict.Open(GRAY_FILE ".dic", OF_READ|OF_TEXT|OF_DEFAULTMODE) )
+		if ( dict.Open(SPHERE_FILE ".dic", OF_READ|OF_TEXT|OF_DEFAULTMODE) )
 		{
 			TCHAR * pszTemp = Str_GetTemp();
 			size_t count = 0;
@@ -917,18 +917,18 @@ void defragSphere(char *path)
 #define	MAX_UID	5000000L	// limit to 5mln of objects, takes 5mln*4 = 20mb
 	DWORD	*uids;
 
-	g_Log.Event(LOGM_INIT,	"Defragmentation (UID alteration) of " GRAY_TITLE " saves.\n"
+	g_Log.Event(LOGM_INIT, "Defragmentation (UID alteration) of " SPHERE_TITLE " saves.\n"
 		"Use it on your risk and if you know what you are doing since it can possibly harm your server.\n"
 		"The process can take up to several hours depending on the CPU you have.\n"
-		"After finished, you will have your '" GRAY_FILE "*.scp' files converted and saved as '" GRAY_FILE "*.scp.new'.\n");
+		"After finished, you will have your '" SPHERE_FILE "*.scp' files converted and saved as '" SPHERE_FILE "*.scp.new'.\n");
 
 	uids = (DWORD*)calloc(MAX_UID, sizeof(DWORD));
 	for ( i = 0; i < 3; i++ )
 	{
 		strcpy(z, path);
-		if ( i == 0 ) strcat(z, GRAY_FILE "statics" GRAY_SCRIPT);
-		else if ( i == 1 ) strcat(z, GRAY_FILE "world" GRAY_SCRIPT);
-		else strcat(z, GRAY_FILE "chars" GRAY_SCRIPT);
+		if ( i == 0 ) strcat(z, SPHERE_FILE "statics" SPHERE_SCRIPT);
+		else if ( i == 1 ) strcat(z, SPHERE_FILE "world" SPHERE_SCRIPT);
+		else strcat(z, SPHERE_FILE "chars" SPHERE_SCRIPT);
 
 		g_Log.Event(LOGM_INIT, "Reading current UIDs: %s\n", z);
 		if ( !inf.Open(z, OF_READ|OF_TEXT|OF_DEFAULTMODE) )
@@ -973,11 +973,11 @@ void defragSphere(char *path)
 	for ( i = 0; i < 5; i++ )
 	{
 		strcpy(z, path);
-		if ( !i ) strcat(z, GRAY_FILE "accu.scp");
-		else if ( i == 1 ) strcat(z, GRAY_FILE "chars" GRAY_SCRIPT);
-		else if ( i == 2 ) strcat(z, GRAY_FILE "data" GRAY_SCRIPT);
-		else if ( i == 3 ) strcat(z, GRAY_FILE "world" GRAY_SCRIPT);
-		else if ( i == 4 ) strcat(z, GRAY_FILE "statics" GRAY_SCRIPT);
+		if ( !i ) strcat(z, SPHERE_FILE "accu.scp");
+		else if ( i == 1 ) strcat(z, SPHERE_FILE "chars" SPHERE_SCRIPT);
+		else if ( i == 2 ) strcat(z, SPHERE_FILE "data" SPHERE_SCRIPT);
+		else if ( i == 3 ) strcat(z, SPHERE_FILE "world" SPHERE_SCRIPT);
+		else if ( i == 4 ) strcat(z, SPHERE_FILE "statics" SPHERE_SCRIPT);
 		g_Log.Event(LOGM_INIT, "Updating UID-s in %s to %s.new\n", z, z);
 		if ( !inf.Open(z, OF_READ|OF_TEXT|OF_DEFAULTMODE) )
 		{

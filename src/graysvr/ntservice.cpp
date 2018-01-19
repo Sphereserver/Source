@@ -109,7 +109,7 @@ void CNTService::ServiceStartMain(DWORD dwArgc, LPTSTR *lpszArgv)
 {
 	TCHAR *pszMsg = Str_GetTemp();
 
-	sprintf(pszMsg, GRAY_TITLE " V" GRAY_VERSION " - %s", g_Serv.GetName());
+	sprintf(pszMsg, SPHERE_TITLE " V" SPHERE_VERSION " - %s", g_Serv.GetName());
 
 	m_hStatusHandle = RegisterServiceCtrlHandler(pszMsg, service_ctrl);
 	if ( !m_hStatusHandle )	// Not much we can do about this.
@@ -193,7 +193,7 @@ bailout3:
 	// only one instance of this application runs on the machine at a time.  If there is an instance
 	// running, it will own this pipe, and any further attempts to create the same named pipe will fail.
 	char lpszPipeName[80];
-	sprintf(lpszPipeName, "\\\\.\\pipe\\" GRAY_FILE "svr\\%s", g_Serv.GetName());
+	sprintf(lpszPipeName, "\\\\.\\pipe\\" SPHERE_FILE "svr\\%s", g_Serv.GetName());
 
 	char szErr[256];
 
@@ -265,7 +265,7 @@ void CNTService::CmdInstallService()
 
 	// Try to create the service
 	char szInternalName[MAX_PATH];
-	sprintf(szInternalName, GRAY_TITLE " - %s", g_Serv.GetName());
+	sprintf(szInternalName, SPHERE_TITLE " - %s", g_Serv.GetName());
 
 	SC_HANDLE schService = CreateService(
 		schSCManager,					// handle of the Service Control Manager
@@ -325,7 +325,7 @@ bailout1:
 	// Register the application for event logging
 	DWORD dwData;
 	// Try to create the registry key containing information about this application
-	strcpy(szKey, "System\\CurrentControlSet\\Services\\EventLog\\Application\\" GRAY_FILE "svr");
+	strcpy(szKey, "System\\CurrentControlSet\\Services\\EventLog\\Application\\" SPHERE_FILE "svr");
 
 	if (RegCreateKey(HKEY_LOCAL_MACHINE, szKey, &hKey))
 		ReportEvent(EVENTLOG_ERROR_TYPE, 0, "Install RegCreateKey", GetLastErrorText(szErr, sizeof(szErr)));
@@ -346,7 +346,7 @@ bailout1:
 	}
 
 	// Set the working path for the application
-	sprintf(szKey, "System\\CurrentControlSet\\Services\\" GRAY_TITLE " - %s\\Parameters", g_Serv.GetName());
+	sprintf(szKey, "System\\CurrentControlSet\\Services\\" SPHERE_TITLE " - %s\\Parameters", g_Serv.GetName());
 	if ( RegCreateKey(HKEY_LOCAL_MACHINE, szKey, &hKey) )
 	{
 		ReportEvent(EVENTLOG_ERROR_TYPE, 0, "Install RegCreateKey", GetLastErrorText(szErr, sizeof(szErr)));
@@ -379,7 +379,7 @@ void CNTService::CmdRemoveService()
 
 	// Try to obtain the handle of this service
 	char szInternalName[MAX_PATH];
-	sprintf(szInternalName, GRAY_TITLE " - %s", g_Serv.GetName());
+	sprintf(szInternalName, SPHERE_TITLE " - %s", g_Serv.GetName());
 
 	SC_HANDLE schService = OpenService(schSCManager, szInternalName, SERVICE_ALL_ACCESS);
 	if ( !schService )
@@ -425,7 +425,7 @@ void CNTService::CmdMainStart()
 	m_fIsNTService = true;
 
 	char szTmp[256];
-	sprintf(szTmp, GRAY_TITLE " - %s", g_Serv.GetName());
+	sprintf(szTmp, SPHERE_TITLE " - %s", g_Serv.GetName());
 	SERVICE_TABLE_ENTRY dispatchTable[] =
 	{
 		{ szTmp, (LPSERVICE_MAIN_FUNCTION)service_main },

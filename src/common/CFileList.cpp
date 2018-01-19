@@ -106,7 +106,7 @@ int CFileList::ReadDir( LPCTSTR pszFileDir, bool bShowError )
 
 		sprintf(szFilename, "%s%s", szFileDir, fileinfo->d_name);
 		len = strlen(szFilename);
-		if ( len > 4 && !strcmpi(&szFilename[len - 4], GRAY_SCRIPT) )
+		if ( (len > 4) && !strcmpi(&szFilename[len - 4], SPHERE_SCRIPT) )
 			AddHead(fileinfo->d_name);
 #endif
 	}

@@ -44,10 +44,10 @@
 
 typedef THREAD_ENTRY_RET ( _cdecl * PTHREAD_ENTRY_PROC )(void *);
 
-#define GRAY_DEF_PORT	2593
-#define GRAY_FILE		"sphere"	// file name prefix
-#define GRAY_TITLE		"Sphere"
-#define GRAY_SCRIPT		".scp"
+#define SPHERE_DEF_PORT		2593
+#define SPHERE_FILE			"sphere"	// file name prefix
+#define SPHERE_TITLE		"Sphere"
+#define SPHERE_SCRIPT		".scp"
 
 #define SCRIPT_MAX_LINE_LEN 4096	// default size.
 

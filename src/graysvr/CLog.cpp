@@ -30,7 +30,7 @@ bool CLog::OpenLog( LPCTSTR pszBaseDirName )	// name set previously.
 	// Get the new name based on date.
 	m_dateStamp = CGTime::GetCurrentTime();
 	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, GRAY_FILE "%d-%02d-%02d.log", m_dateStamp.GetYear(), m_dateStamp.GetMonth(), m_dateStamp.GetDay());
+	sprintf(pszTemp, SPHERE_FILE "%d-%02d-%02d.log", m_dateStamp.GetYear(), m_dateStamp.GetMonth(), m_dateStamp.GetDay());
 	CGString sFileName = GetMergedFileName(m_sBaseDir, pszTemp);
 
 	// Use the OF_READWRITE to append to an existing file.
