@@ -8,13 +8,13 @@ addons:
     - libmysql++3:i386
     - gcc-4.8-multilib
     - g++-4.8-multilib
-before_install:
-  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+git:
+  depth: false
+notifications:
+  email: false
 script:
   - make NIGHTLY=1 -f makefile
 after_success:
   - mkdir accounts logs save scripts
   - tar -czvf SphereSvr-Linux32.tar.gz accounts/ logs/ save/ scripts/ spheresvr -C src/ sphere.ini sphereCrypt.ini
   - curl -T SphereSvr-Linux32.tar.gz -u $FTP_USER:$FTP_PASSWORD $FTP_SERVER
-notifications:
-  email: false
