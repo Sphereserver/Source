@@ -724,7 +724,7 @@
     <Text Include="docs\REVISIONS-56-SERIES.TXT" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="src\graysvr\GraySvr.rc">
+    <ResourceCompile Include="src\graysvr\SphereSvr.rc">
       <Filter>graysvr</Filter>
     </ResourceCompile>
   </ItemGroup>

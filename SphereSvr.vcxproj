@@ -427,7 +427,7 @@ if defined GitRev (
     <Text Include="docs\REVISIONS-56c-Pre_release.TXT" />
     <Text Include="docs\REVISIONS-56-Pre_release.TXT" />
     <Text Include="docs\REVISIONS-56-SERIES.TXT" />
-    <ResourceCompile Include="src\graysvr\GraySvr.rc" />
+    <ResourceCompile Include="src\graysvr\SphereSvr.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

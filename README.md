@@ -16,11 +16,11 @@ Even using 64bit OS, Sphere must be compiled/executed in 32bit mode to work prop
 
 ### Windows
 #### Visual Studio (VS)
-* Open the project file `GraySvr.vcxproj` using Visual Studio
+* Open the project file `SphereSvr.vcxproj` using Visual Studio
 * On top menu, select the build configuration (Debug/Local/Nightly/Release) and click on `Build > Build Solution` to compile
 
 **NOTES:**
-* **VS > 2010 users:** When opening `GraySvr.vcxproj` for the first time it will request an update on project file, just click OK to update
+* **VS > 2010 users:** When opening `SphereSvr.vcxproj` for the first time it will request an update on project file, just click OK to update
 * **VS 2017 users:** VS 2017 have an modular installation, it comes with just basic components and extra components must be installed as needed. To use Sphere source you must open **Visual Studio Installer** to install `Desktop Development with C++` workload and `Windows Universal CRT SDK` individual component
 
 #### CMake / MinGW
@@ -78,7 +78,7 @@ make NIGHTLY=1 -f makefile
 * Removing/Changing/Adding anything that was working in one way for years should be followed by an ini setting if the changes cannot be replicated from script to keep some backwards compatibility.
 
 ## Licensing
-Copyright 2017 SphereServer development team
+Copyright 2018 SphereServer development team
 
 Licensed under the Apache License, Version 2.0 (the "License").<br>
 You may not use any file of this project except in compliance with the License.<br>

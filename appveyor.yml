@@ -3,7 +3,7 @@ configuration: Nightly
 pull_requests:
   do_not_increment_build_number: true
 build:
-  project: GraySvr.vcxproj
+  project: SphereSvr.vcxproj
   verbosity: minimal
 after_build:
 - cmd: mkdir accounts logs save scripts
