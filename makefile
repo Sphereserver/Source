@@ -1,21 +1,21 @@
-SHELL   = /bin/bash
+SHELL	= /bin/bash
 
 # Generic makefile
 MARCH	= -march=i686 -m32
 
-OPTDEFAULT	= -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
-COPTDEFAULT	= -fno-omit-frame-pointer -ffast-math $(MARCH)
+OPTDEFAULT	= -fno-strict-aliasing -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
+COPTDEFAULT	= -fno-strict-aliasing -fno-omit-frame-pointer -ffast-math $(MARCH)
 OPT 		= -Os $(OPTDEFAULT)
 COPT		= -Os $(COPTDEFAULT)
-WARN		= -Wall -Wno-unknown-pragmas -Wno-invalid-offsetof -Wno-unused-but-set-variable -Wno-switch
-CWARN		= -Wall -Wno-unknown-pragmas -Wno-unused-but-set-variable -Wno-switch -Wno-implicit-function-declaration
+WARN		= -Wall -Wno-unknown-pragmas -Wno-unused-but-set-variable -Wno-unused-result -Wno-maybe-uninitialized -Wno-switch -Wno-invalid-offsetof
+CWARN		= -Wall -Wno-unknown-pragmas -Wno-unused-but-set-variable -Wno-unused-result -Wno-maybe-uninitialized -Wno-switch -Wno-implicit-function-declaration
 
 # DB includes + libs
 DBINCLUDE	= -L/usr/lib/mysql
 DBLIBS		= -lmysqlclient
 
 # Linux
-INCLUDE		= -I./src/common $(DBINCLUDE)
+INCLUDE		= $(DBINCLUDE)
 LIBS		= -dynamic -lpthread -lrt -ldl $(DBLIBS)
 
 ifdef NIGHTLY
@@ -190,7 +190,7 @@ endif
 gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
 
 
-flags:  
+flags:
 	@echo "Compiler Flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)"
 
 $(EXE): git flags gray
