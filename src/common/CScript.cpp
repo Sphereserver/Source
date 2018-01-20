@@ -500,7 +500,7 @@ bool CScript::ReadKeyParse() // Read line from script
 bool CScript::FindKey( LPCTSTR pszName ) // Find a key in the current section
 {
 	ADDTOCALLSTACK("CScript::FindKey");
-	if ( strlen( pszName ) > SCRIPT_MAX_SECTION_LEN )
+	if ( strlen(pszName) > EXPRESSION_MAX_KEY_LEN )
 	{
 		DEBUG_ERR(( "Bad script key name\n" ));
 		return( false );
