@@ -5,13 +5,13 @@ MARCH	= -march=i686 -m32
 
 OPTDEFAULT	= -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
 COPTDEFAULT	= -fno-omit-frame-pointer -ffast-math $(MARCH)
-OPT 		= -O0 -fno-expensive-optimizations $(OPTDEFAULT)
-COPT		= -O0 -fno-expensive-optimizations $(COPTDEFAULT)
+OPT 		= -Os $(OPTDEFAULT)
+COPT		= -Os $(COPTDEFAULT)
 WARN		= -Wall -Wno-unknown-pragmas -Wno-invalid-offsetof -Wno-unused-but-set-variable -Wno-switch
 CWARN		= -Wall -Wno-unknown-pragmas -Wno-unused-but-set-variable -Wno-switch -Wno-implicit-function-declaration
 
 # DB includes + libs
-DBINCLUDE	= -I/usr/include/mysql -L/usr/lib/mysql
+DBINCLUDE	= -L/usr/lib/mysql
 DBLIBS		= -lmysqlclient
 
 # Linux
