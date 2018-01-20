@@ -515,7 +515,7 @@ void CClient::addWeather( WEATHER_TYPE weather ) // Send new weather to player
 		return;
 
 	m_Env.m_Weather = weather;
-	new PacketWeather(this, weather, Calc_GetRandVal2(10, 70), 0x10);
+	new PacketWeather(this, weather, static_cast<BYTE>(Calc_GetRandVal2(10, 70)), 0x10);
 }
 
 void CClient::addLight()
@@ -1833,7 +1833,7 @@ void CClient::addMap()
 		return;
 
 	CPointMap pt = m_pChar->GetTopPoint();
-	new PacketMapChange(this, g_MapList.m_mapid[pt.m_map]);
+	new PacketMapChange(this, static_cast<BYTE>(g_MapList.m_mapid[pt.m_map]));
 }
 
 void CClient::addMapDiff()
@@ -2732,12 +2732,12 @@ void CClient::addAOSTooltip( const CObjBase *pObj, bool bRequested, bool bShop )
 									if ( pItem->m_ModMaxWeight )
 									{
 										m_TooltipData.Add(t = new CClientTooltip(1072241)); // Contents: ~1_COUNT~/~2_MAXCOUNT~ items, ~3_WEIGHT~/~4_MAXWEIGHT~ stones
-										t->FormatArgs("%d\t%d\t%d\t%d", pContainer->GetCount(), MAX_ITEMS_CONT, pContainer->GetTotalWeight() / WEIGHT_UNITS, pItem->m_ModMaxWeight / WEIGHT_UNITS);
+										t->FormatArgs("%" FMTSIZE_T "\t%d\t%d\t%d", pContainer->GetCount(), MAX_ITEMS_CONT, pContainer->GetTotalWeight() / WEIGHT_UNITS, pItem->m_ModMaxWeight / WEIGHT_UNITS);
 									}
 									else
 									{
 										m_TooltipData.Add(t = new CClientTooltip(1073841)); // Contents: ~1_COUNT~/~2_MAXCOUNT~ items, ~3_WEIGHT~ stones
-										t->FormatArgs("%d\t%d\t%d", pContainer->GetCount(), MAX_ITEMS_CONT, pContainer->GetTotalWeight() / WEIGHT_UNITS);
+										t->FormatArgs("%" FMTSIZE_T "\t%d\t%d", pContainer->GetCount(), MAX_ITEMS_CONT, pContainer->GetTotalWeight() / WEIGHT_UNITS);
 									}
 								}
 								else

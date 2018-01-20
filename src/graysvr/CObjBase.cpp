@@ -2117,7 +2117,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			EXC_SET("SOUND");
 			INT64 piCmd[2];
 			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), piCmd, COUNTOF(piCmd));
-			Sound(static_cast<SOUND_TYPE>(piCmd[0]), (iArgQty > 1) ? static_cast<int>(piCmd[1]) : 1);
+			Sound(static_cast<SOUND_TYPE>(piCmd[0]), (iArgQty > 1) ? static_cast<BYTE>(piCmd[1]) : 1);
 			break;
 		}
 		case OV_SPELLEFFECT:	// spell, strength, noresist

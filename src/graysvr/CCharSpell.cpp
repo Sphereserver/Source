@@ -535,7 +535,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 					iBuffIcon = BI_HORRIFICBEAST;
 					SetDefNum("RegenHits", GetDefNum("RegenHits") - pSpell->m_itSpell.m_PolyStr);
 					SetDefNum("IncreaseDam", GetDefNum("IncreaseDam") - pSpell->m_itSpell.m_PolyDex);
-					m_attackBase -= pSpell->m_itSpell.m_spellcharges;
+					m_attackBase -= static_cast<WORD>(pSpell->m_itSpell.m_spellcharges);
 					m_attackRange -= pSpell->m_itSpell.m_spelllevel;
 					break;
 				case SPELL_Lich_Form:
@@ -889,7 +889,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 		//	return;
 		case SPELL_Trance:			// 111 // temporarily increases your meditation skill.
 		{
-			Skill_SetBase(SKILL_MEDITATION, Skill_GetBase(SKILL_MEDITATION) - g_Cfg.GetSpellEffect(spell, iStatEffect));
+			Skill_SetBase(SKILL_MEDITATION, Skill_GetBase(SKILL_MEDITATION) - static_cast<WORD>(g_Cfg.GetSpellEffect(spell, iStatEffect)));
 			return;
 		}
 		//case SPELL_Shield:		// 113 // erects a temporary force field around you. Nobody approaching will be able to get within 1 tile of you, though you can move close to them if you wish.
@@ -989,7 +989,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 					pSpell->m_itSpell.m_spelllevel = 10 - m_attackRange;	// Char max base damage
 					SetDefNum("RegenHits", GetDefNum("RegenHits") + pSpell->m_itSpell.m_PolyStr);
 					SetDefNum("IncreaseDam", GetDefNum("IncreaseDam") + pSpell->m_itSpell.m_PolyDex);
-					m_attackBase += pSpell->m_itSpell.m_spellcharges;
+					m_attackBase += static_cast<WORD>(pSpell->m_itSpell.m_spellcharges);
 					m_attackRange += pSpell->m_itSpell.m_spelllevel;
 
 					if ( m_pClient && IsSetOF(OF_Buffs) )
@@ -1270,7 +1270,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 			{
 				double iStamPenalty = 3 - ((Stat_GetVal(STAT_DEX) / Stat_GetAdjusted(STAT_DEX)) * 2);
 				WORD iTimerTotal = 0;
-				for ( int i = 0; i < iStatEffect; i++ )
+				for ( WORD i = 0; i < iStatEffect; i++ )
 					iTimerTotal += (iStatEffect - i) * TICK_PER_SEC;
 
 				ITOA(static_cast<int>((iStatEffect - 2) * iStamPenalty), NumBuff[0], 10);

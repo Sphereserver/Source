@@ -123,9 +123,9 @@ size_t CPartyDef::DetachChar( CChar *pChar )
 		{
 			size_t iQty = m_Chars.GetCharCount();
 			CChar *pPartyMember = NULL;
-			for ( size_t i = 0; i < iQty; i++ )
+			for ( size_t n = 0; n < iQty; n++ )
 			{
-				pPartyMember = m_Chars.GetChar(i).CharFind();
+				pPartyMember = m_Chars.GetChar(n).CharFind();
 				if ( !pPartyMember )
 					continue;
 				pChar->m_pClient->addMapWaypoint(pPartyMember, Remove);

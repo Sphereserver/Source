@@ -526,11 +526,10 @@ void CChat::DoCommand(CChatMember *pBy, LPCTSTR pszMsg)
 		}
 		default:
 		{
-			TCHAR *pszMsg = Str_GetTemp();
-			sprintf(pszMsg, "Unknown command: '%s'", pszCommand);
-
 			FormatName(sFrom, NULL, true);
-			pBy->SendChatMsg(CHATMSG_PlayerMessage, sFrom, pszMsg);
+			TCHAR *pszMsgError = Str_GetTemp();
+			sprintf(pszMsgError, "Unknown command: '%s'", pszCommand);
+			pBy->SendChatMsg(CHATMSG_PlayerMessage, sFrom, pszMsgError);
 			return;
 		}
 	}
@@ -1164,7 +1163,7 @@ void CChatMember::addChatWindow()
 	// On new chat system this is not needed because the chat button is hardcoded on client-side, and
 	// PacketChatButton packet is sent by client after login complete only to get initial channel list
 	if ( !pClient->m_UseNewChatSystem )
-		pClient->addChatSystemMessage(CHATCMD_OpenChatWindow, pClient->m_UseNewChatSystem ? NULL : GetChatName());
+		pClient->addChatSystemMessage(CHATCMD_OpenChatWindow, GetChatName());
 
 	// Send channel names
 	CChatChannel *pChannel = g_Serv.m_Chats.GetFirstChannel();
@@ -1311,7 +1310,10 @@ LPCTSTR CChatMember::GetChatName()
 {
 	ADDTOCALLSTACK("CChatMember::GetChatName");
 	CClient *pClient = GetClient();
-	if ( pClient && pClient->m_UseNewChatSystem )
+	if ( !pClient )
+		return NULL;
+
+	if ( pClient->m_UseNewChatSystem )
 	{
 		CChar *pChar = pClient->GetChar();
 		return pChar ? pChar->GetName() : "<NA>";

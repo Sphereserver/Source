@@ -1033,13 +1033,13 @@ bool CChar::Skill_UseQuick(SKILL_TYPE skill, int difficulty, bool bAllowGain, bo
 	if ( result > 0 )	// success
 	{
 		if ( bAllowGain )
-			Skill_Experience(skill, diff);
+			Skill_Experience(skill, static_cast<int>(diff));
 		return true;
 	}
 	else				// fail
 	{
 		if ( bAllowGain )
-			Skill_Experience(skill, -diff);
+			Skill_Experience(skill, static_cast<int>(-diff));
 		return false;
 	}
 }
@@ -1208,7 +1208,7 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 
 		m_Act_Targ = uidTarg;	// targetted item to start the make process
 		m_atCreate.m_ItemID = id;
-		m_atCreate.m_Amount = iReplicationQty;
+		m_atCreate.m_Amount = static_cast<WORD>(iReplicationQty);
 
 		CResourceQty RetMainSkill = pItemDef->m_SkillMake[i];
 		return Skill_Start(static_cast<SKILL_TYPE>(RetMainSkill.GetResIndex()));
@@ -1216,7 +1216,7 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 
 	if ( stage == SKTRIG_SUCCESS )
 	{
-		m_atCreate.m_Amount = iReplicationQty;	// how much resources we really consumed
+		m_atCreate.m_Amount = static_cast<WORD>(iReplicationQty);	// how much resources we really consumed
 		return Skill_MakeItem_Success();
 	}
 
@@ -1441,7 +1441,7 @@ CItem *CChar::Skill_NaturalResource_Create( CItem *pResBit, SKILL_TYPE skill )
 	if ( tRet == TRIGRET_RET_TRUE )
 		return NULL;
 
-	iAmount = pResBit->ConsumeAmount(static_cast<WORD>(Args.m_iN1));	// amount i used up.
+	iAmount = static_cast<WORD>(pResBit->ConsumeAmount(static_cast<WORD>(Args.m_iN1)));	// amount i used up.
 	if ( iAmount <= 0 )
 		return NULL;
 

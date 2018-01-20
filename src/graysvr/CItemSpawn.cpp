@@ -847,7 +847,7 @@ bool CItemMessage::r_Verb(CScript & s, CTextConsole *pSrc)
 	}
 	if ( s.IsKeyHead("PAGE", 4) )
 	{
-		WORD iPage = ATOI(s.GetKey() + 4);
+		WORD iPage = static_cast<WORD>(ATOI(s.GetKey() + 4));
 		if ( iPage <= 0 )
 			return false;
 
