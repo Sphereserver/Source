@@ -2210,7 +2210,7 @@ int CChar::Skill_Provocation(SKTRIG_TYPE stage)
 			pCharProv->Emote(g_Cfg.GetDefaultMsg(DEFMSG_PROVOCATION_EMOTE_2));
 
 			// He realizes that you are the real bad guy as well.
-			if ( !pCharTarg->OnAttackedBy(this, 1, true) )
+			if ( !pCharTarg->OnAttackedBy(this, true) )
 				return -SKTRIG_ABORT;
 
 			pCharProv->Memory_AddObjTypes(this, MEMORY_AGGREIVED|MEMORY_IRRITATEDBY);

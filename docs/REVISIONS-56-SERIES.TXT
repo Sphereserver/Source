@@ -968,4 +968,5 @@ Changed: Updated MySQL engine
 	-Fixed some console exceptions
 
 22-01-2018, Coruja
-Changed: Updated internal SQLite libs v3.21.0 to v3.22.0
+Changed: Updated internal SQLite libs v3.21.0 to v3.22.0.
+Fixed: Spells being disturbed even when they have INTERRUPT=0.0 set.

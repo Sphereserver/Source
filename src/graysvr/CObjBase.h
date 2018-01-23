@@ -4031,29 +4031,29 @@ public:
 	bool OnTriggerSpeech(bool bIsPet, LPCTSTR pszText, CChar * pSrc, TALKMODE_TYPE & mode, HUE_TYPE wHue = HUE_DEFAULT);
 
 	// Outside events that occur to us.
-	int  OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType, int iDmgPhysical = 0, int iDmgFire = 0, int iDmgCold = 0, int iDmgPoison = 0, int iDmgEnergy = 0 );
-	void OnHarmedBy( CChar * pCharSrc );
-	bool OnAttackedBy( CChar * pCharSrc, int iHarmQty, bool fPetsCommand = false, bool fShouldReveal = true );
+	int OnTakeDamage(int iDmg, CChar *pSrc, DAMAGE_TYPE uType, int iDmgPhysical = 0, int iDmgFire = 0, int iDmgCold = 0, int iDmgPoison = 0, int iDmgEnergy = 0);
+	void OnHarmedBy(CChar *pCharSrc);
+	bool OnAttackedBy(CChar *pCharSrc, bool bPetsCommand = false, bool bShouldReveal = true);
 
-	bool OnTickEquip( CItem * pItem );
-	void OnTickFood( short iVal, int HitsHungerLoss );
+	bool OnTickEquip(CItem *pItem);
+	void OnTickFood(short iVal, int HitsHungerLoss);
 	void OnTickStatusUpdate();
 	bool OnTick();
 
-	static CChar * CreateBasic( CREID_TYPE baseID );
-	static CChar * CreateNPC( CREID_TYPE id );
+	static CChar *CreateBasic(CREID_TYPE baseID);
+	static CChar *CreateNPC(CREID_TYPE id);
 
 	int GetAbilityFlags() const;
 
 };
 
-inline bool CChar::IsSkillBase( SKILL_TYPE skill ) // static
+inline bool CChar::IsSkillBase(SKILL_TYPE skill) // static
 {
 	// Is this in the base set of skills.
 	return ((skill > SKILL_NONE) && (skill < static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill)));
 }
 
-inline bool CChar::IsSkillNPC( SKILL_TYPE skill )  // static
+inline bool CChar::IsSkillNPC(SKILL_TYPE skill)  // static
 {
 	// Is this in the NPC set of skills.
 	return ((skill >= NPCACT_FOLLOW_TARG) && (skill < NPCACT_QTY));
