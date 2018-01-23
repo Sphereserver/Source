@@ -966,3 +966,6 @@ Changed: Updated MySQL engine
 	-Function DB.QUERY now can handle results with up to 64 columns instead 12
 	-Added more info on error messages
 	-Fixed some console exceptions
+
+22-01-2018, Coruja
+Changed: Updated internal SQLite libs v3.21.0 to v3.22.0
