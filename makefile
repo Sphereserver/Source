@@ -1,22 +1,14 @@
-SHELL	= /bin/bash
-
 # Generic makefile
 MARCH	= -march=i686 -m32
 
-OPTDEFAULT	= -fno-strict-aliasing -fno-omit-frame-pointer -ffast-math -fpermissive $(MARCH)
-COPTDEFAULT	= -fno-strict-aliasing -fno-omit-frame-pointer -ffast-math $(MARCH)
-OPT 		= -Os $(OPTDEFAULT)
-COPT		= -Os $(COPTDEFAULT)
-WARN		= -Wall -Wno-unknown-pragmas -Wno-unused-but-set-variable -Wno-unused-result -Wno-maybe-uninitialized -Wno-switch -Wno-invalid-offsetof
-CWARN		= -Wall -Wno-unknown-pragmas -Wno-unused-but-set-variable -Wno-unused-result -Wno-maybe-uninitialized -Wno-switch -Wno-implicit-function-declaration
+OPT 	= -Os -fno-strict-aliasing -fno-omit-frame-pointer -ffast-math $(MARCH)
+COPT	= -Os -fno-strict-aliasing -fno-omit-frame-pointer -ffast-math $(MARCH)
 
-# DB includes + libs
-DBINCLUDE	= -L/usr/lib/mysql
-DBLIBS		= -lmysqlclient
+WARN	= -Wall -Wno-unknown-pragmas -Wno-unused-result -Wno-maybe-uninitialized -Wno-switch -Wno-invalid-offsetof
+CWARN	= -Wall -Wno-unknown-pragmas -Wno-unused-result -Wno-maybe-uninitialized -Wno-switch -Wno-implicit-function-declaration
 
-# Linux
-INCLUDE		= $(DBINCLUDE)
-LIBS		= -dynamic -lpthread -lrt -ldl $(DBLIBS)
+INCLUDE	= -L/usr/lib/mysql
+LIBS	= -lmysqlclient -lpthread -ldl
 
 ifdef NIGHTLY
 	NIGHTLYDEFS = -D_NIGHTLYBUILD		# -DTHREAD_TRACK_CALLSTACK
