@@ -2146,10 +2146,9 @@ void CChar::NPC_Act_Fight()
 	// If i'm horribly damaged and smart enough to know it.
 	int iMotivation = NPC_GetAttackMotivation( pChar );
 
-	bool		fSkipHardcoded	= false;
+	bool fSkipHardcoded	= false;
 	if ( IsTrigUsed(TRIGGER_NPCACTFIGHT) )
 	{
-		CGrayUID m_oldAct = m_Act_Targ;
 		CScriptTriggerArgs Args( iDist, iMotivation );
 		switch ( OnTrigger( CTRIG_NPCActFight, pChar, &Args ) )
 		{

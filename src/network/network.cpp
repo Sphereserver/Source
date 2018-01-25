@@ -1748,7 +1748,7 @@ void NetworkOut::tick(void)
 		proceedFlush();
 	}
 
-	int packetsSent = 0;
+	size_t packetsSent = 0;
 	
 	SafeClientIterator clients;
 	while (CClient* client = clients.next())
@@ -1852,8 +1852,7 @@ void NetworkOut::scheduleOnce(PacketTransaction* transaction)
 		{
 			if (state->m_outgoing.queue[priority].size() >= maxClientPackets)
 			{
-//				DEBUGNETWORK(("%x:Packet decreased priority due to overal amount %d overlapping %d.\n", state->id(), state->m_outgoing.queue[priority].size(), maxClientPackets));
-
+				//DEBUGNETWORK(("%lx:Packet decreased priority due to overal amount %d overlapping %" FMTSIZE_T ".\n", state->id(), state->m_outgoing.queue[priority].size(), maxClientPackets));
 				transaction->setPriority(priority-1);
 				scheduleOnce(transaction);
 				return;
@@ -1927,13 +1926,9 @@ void NetworkOut::proceedFlush(void)
 	}
 }
 
-int NetworkOut::proceedQueue(CClient* client, long priority)
+size_t NetworkOut::proceedQueue(CClient* client, unsigned int priority)
 {
 	ADDTOCALLSTACK("NetworkOut::proceedQueue");
-
-	long maxClientPackets = NETWORK_MAXPACKETS;
-	long maxClientLength = NETWORK_MAXPACKETLEN;
-	CServTime time = CServTime::GetCurrentTime();
 
 	NetState* state = client->m_NetState;
 	ASSERT(state != NULL);
@@ -1941,11 +1936,13 @@ int NetworkOut::proceedQueue(CClient* client, long priority)
 	if (state->isWriteClosed() || (state->m_outgoing.queue[priority].empty() && state->m_outgoing.currentTransaction == NULL))
 		return 0;
 
-	long length = 0;
+	size_t maxPacketsToProcess = NETWORK_MAXPACKETS;
+	size_t maxLengthToProcess = NETWORK_MAXPACKETLEN;
+	size_t packetsProcessed = 0;
+	size_t lengthProcessed = 0;
 
 	// send N transactions from the queue
-	int i = 0;
-	for (i = 0; i < maxClientPackets; i++)
+	for (packetsProcessed = 0; packetsProcessed < maxPacketsToProcess; packetsProcessed++)
 	{
 		// select next transaction
 		while (state->m_outgoing.currentTransaction == NULL)
@@ -1976,12 +1973,12 @@ int NetworkOut::proceedQueue(CClient* client, long priority)
 		{
 			// don't count this towards the limit, allow an extra packet to be processed
 			delete packet;
-			maxClientPackets++;
+			maxPacketsToProcess++;
 			continue;
 		}
 
 		EXC_TRY("proceedQueue");
-		length += packet->getLength();
+		lengthProcessed += packet->getLength();
 
 		EXC_SET("sending");
 		if (sendPacket(client, packet) == false)
@@ -1992,23 +1989,21 @@ int NetworkOut::proceedQueue(CClient* client, long priority)
 		}
 
 		EXC_SET("check length");
-		if (length > maxClientLength)
+		if (lengthProcessed > maxLengthToProcess)
 		{
-//			DEBUGNETWORK(("%x:Packets sending stopped at %d packet due to overall length %d overlapping %d.\n", state->id(), i, length, maxClientLength));
-
+			//DEBUGNETWORK(("%lx:Packets sending stopped at %" FMTSIZE_T " packet due to overall length %" FMTSIZE_T " overlapping %" FMTSIZE_T ".\n", state->id(), packetsProcessed, lengthProcessed, maxLengthToProcess));
 			break;
 		}
 
 		EXC_CATCH;
 		EXC_DEBUG_START;
-		g_Log.EventDebug("id='%lx', pri='%ld', packet '%d' of '%ld' to send, length '%ld' of '%ld'\n",
-			state->id(), priority, i, maxClientPackets, length, maxClientLength);
+		g_Log.EventDebug("id='%lx', pri='%u', packet '%" FMTSIZE_T "' of '%" FMTSIZE_T "' to send, length '%" FMTSIZE_T "' of '%" FMTSIZE_T "'\n", state->id(), priority, packetsProcessed, maxPacketsToProcess, lengthProcessed, maxLengthToProcess);
 		EXC_DEBUG_END;
 	}
-	return i;
+	return packetsProcessed;
 }
 
-int NetworkOut::proceedQueueAsync(CClient* client)
+size_t NetworkOut::proceedQueueAsync(CClient* client)
 {
 	ADDTOCALLSTACK("NetworkOut::proceedQueueAsync");
 
@@ -2257,13 +2252,12 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 
 	EXC_CATCH;
 	EXC_DEBUG_START;
-	g_Log.EventDebug("id='%lx', packet '0x%x', length '%" FMTSIZE_T "'\n",
-		state->id(), *packet->getData(), packet->getLength());
+	g_Log.EventDebug("id='%lx', packet '0x%x', length '%" FMTSIZE_T "'\n", state->id(), *packet->getData(), packet->getLength());
 	EXC_DEBUG_END;
 	return false;
 }
 
-int NetworkOut::sendBytesNow(CClient* client, const BYTE* data, DWORD length)
+size_t NetworkOut::sendBytesNow(CClient* client, const BYTE* data, DWORD length)
 {
 	ADDTOCALLSTACK("NetworkOut::sendBytesNow");
 
@@ -2271,7 +2265,7 @@ int NetworkOut::sendBytesNow(CClient* client, const BYTE* data, DWORD length)
 	ASSERT(state != NULL);
 
 	EXC_TRY("sendBytesNow");
-	int ret = 0;
+	size_t result = 0;
 
 	// send data
 	EXC_SET("sending");
@@ -2288,21 +2282,21 @@ int NetworkOut::sendBytesNow(CClient* client, const BYTE* data, DWORD length)
 		DWORD bytesSent;
 		if (state->m_socket.SendAsync(&state->m_bufferWSA, 1, &bytesSent, 0, &state->m_overlapped, SendCompleted) == 0)
 		{
-			ret = bytesSent;
+			result = bytesSent;
 			state->setSendingAsync(true);
 		}
 		else
-			ret = 0;
+			result = 0;
 	}
 	else
 #endif
 	{
 		// send via standard api
-		ret = state->m_socket.Send(data, length);
+		result = state->m_socket.Send(data, length);
 	}
 
 	// check for error
-	if (ret <= 0)
+	if (result <= 0)
 	{
 		EXC_SET("error parse");
 		int errCode = CGSocket::GetLastError(true);
@@ -2311,7 +2305,7 @@ int NetworkOut::sendBytesNow(CClient* client, const BYTE* data, DWORD length)
 		if (state->isAsyncMode() && errCode == WSA_IO_PENDING)
 		{
 			// safe to ignore this, data has actually been sent
-			ret = length;
+			result = length;
 		}
 		else if (state->isAsyncMode() == false && errCode == WSAEWOULDBLOCK)
 #else
@@ -2319,7 +2313,7 @@ int NetworkOut::sendBytesNow(CClient* client, const BYTE* data, DWORD length)
 #endif
 		{
 			// send failed but it is safe to ignore and try again later
-			ret = 0;
+			result = 0;
 		}
 #ifdef _WIN32
 		else if (errCode == WSAECONNRESET || errCode == WSAECONNABORTED)
@@ -2328,7 +2322,7 @@ int NetworkOut::sendBytesNow(CClient* client, const BYTE* data, DWORD length)
 #endif
 		{
 			// connection has been lost, client should be cleared
-			ret = INT_MIN;
+			result = INT_MIN;
 		}
 		else
 		{
@@ -2340,15 +2334,15 @@ int NetworkOut::sendBytesNow(CClient* client, const BYTE* data, DWORD length)
 #ifndef _WIN32
 			return INT_MIN;
 #else
-			ret = 0;
+			result = 0;
 #endif
 		}
 	}
 
-	if (ret > 0)
-		CurrentProfileData.Count(PROFILE_DATA_TX, ret);
+	if (result > 0)
+		CurrentProfileData.Count(PROFILE_DATA_TX, result);
 
-	return ret;
+	return result;
 
 	EXC_CATCH;
 	EXC_DEBUG_START;
@@ -3758,8 +3752,6 @@ size_t NetworkOutput::processPacketQueue(NetState* state, unsigned int priority)
 	CClient* client = state->m_client;
 	ASSERT(client != NULL);
 
-	CServTime time = CServTime::GetCurrentTime();
-
 	size_t maxPacketsToProcess = NETWORK_MAXPACKETS;
 	size_t maxLengthToProcess = NETWORK_MAXPACKETLEN;
 	size_t packetsProcessed = 0;
@@ -3814,8 +3806,7 @@ size_t NetworkOutput::processPacketQueue(NetState* state, unsigned int priority)
 
 		EXC_CATCH;
 		EXC_DEBUG_START;
-		g_Log.EventDebug("id='%lx', pri='%u', packet '%" FMTSIZE_T "' of '%" FMTSIZE_T "' to send, length '%" FMTSIZE_T "' of '%" FMTSIZE_T "'\n",
-			state->id(), priority, packetsProcessed, maxPacketsToProcess, lengthProcessed, maxLengthToProcess);
+		g_Log.EventDebug("id='%lx', pri='%u', packet '%" FMTSIZE_T "' of '%" FMTSIZE_T "' to send, length '%" FMTSIZE_T "' of '%" FMTSIZE_T "'\n", state->id(), priority, packetsProcessed, maxPacketsToProcess, lengthProcessed, maxLengthToProcess);
 		EXC_DEBUG_END;
 	}
 
@@ -4012,8 +4003,7 @@ bool NetworkOutput::sendPacketData(NetState* state, PacketSend* packet)
 
 	EXC_CATCH;
 	EXC_DEBUG_START;
-	g_Log.EventDebug("id='%lx', packet '0x%x', length '%" FMTSIZE_T "'\n",
-		state->id(), *packet->getData(), packet->getLength());
+	g_Log.EventDebug("id='%lx', packet '0x%x', length '%" FMTSIZE_T "'\n", state->id(), *packet->getData(), packet->getLength());
 	EXC_DEBUG_END;
 	return false;
 }
@@ -4030,7 +4020,7 @@ size_t NetworkOutput::sendData(NetState* state, const BYTE* data, size_t length)
 	ASSERT(!m_thread->isActive() || m_thread->isCurrentThread());
 #endif
 
-	EXC_TRY("SendData");
+	EXC_TRY("sendData");
 	size_t result = 0;
 
 	EXC_SET("sending");

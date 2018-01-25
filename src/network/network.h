@@ -436,13 +436,13 @@ public:
 	void flush(CClient* client); // forces immediate send of all packets
 
 protected:
-	int proceedQueue(CClient* client, long priority); // send next set of packets with the specified priority (returns number of packets sent)
-	int proceedQueueAsync(CClient* client); // send next set of asynchronous packets (returns number of packets sent, 1 max)
+	size_t proceedQueue(CClient* client, unsigned int priority); // send next set of packets with the specified priority (returns number of packets sent)
+	size_t proceedQueueAsync(CClient* client); // send next set of asynchronous packets (returns number of packets sent, 1 max)
 	void proceedQueueBytes(CClient* client); // send next set of bytes
 	void proceedFlush(void); // flush data to pending sockets
 	bool sendPacket(CClient* client, PacketSend* packet); // send packet to a client
 	bool sendPacketNow(CClient* client, PacketSend* packet); // send packet to a client now
-	int sendBytesNow(CClient* client, const BYTE* data, DWORD length); // send bytes to a client (returns number of bytes sent, < 0 for failure)
+	size_t sendBytesNow(CClient* client, const BYTE* data, DWORD length); // send bytes to a client (returns number of bytes sent, < 0 for failure)
 
 public:
 	void onAsyncSendComplete(NetState* state, bool success); // handle completion of async send
