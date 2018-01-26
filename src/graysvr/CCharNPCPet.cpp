@@ -1,27 +1,18 @@
 // Actions specific to an NPC.
 #include "graysvr.h"	// predef header.
 
-void CChar::NPC_OnPetCommand( bool fSuccess, CChar * pMaster )
+void CChar::NPC_PetConfirmCommand(bool bSuccess, CChar *pMaster)
 {
-	ADDTOCALLSTACK("CChar::NPC_OnPetCommand");
-	if ( m_pPlayer )	// players don't respond
+	ADDTOCALLSTACK("CChar::NPC_PetConfirmCommand");
+	// I take a command from my master
+
+	if ( !m_pNPC || !g_Cfg.m_sSpeechPet.IsEmpty() || !CanSee(pMaster) )
 		return;
 
-	if (  !g_Cfg.m_sSpeechPet.IsEmpty() )
-		return;
-
-	if ( !CanSee( pMaster ) )
-		return;
-
-	// i take a command from my master.
-	if ( NPC_CanSpeak())
-	{
-		Speak( fSuccess? g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_SUCCESS ) : g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_FAILURE ) );
-	}
+	if ( NPC_CanSpeak() )
+		Speak(bSuccess ? g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_SUCCESS) : g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_FAILURE));
 	else
-	{
-		SoundChar( fSuccess ? CRESND_IDLE : CRESND_NOTICE );
-	}
+		SoundChar(bSuccess ? CRESND_IDLE : CRESND_NOTICE);
 }
 
 enum PC_TYPE
@@ -53,7 +44,7 @@ enum PC_TYPE
 	PC_QTY
 };
 
-bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
+bool CChar::NPC_OnHearPetCmd(LPCTSTR pszCmd, CChar *pSrc, bool bAllPets)
 {
 	ADDTOCALLSTACK("CChar::NPC_OnHearPetCmd");
 	// This should just be another speech block !!!
@@ -65,24 +56,24 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 	//  false = this is not a command we know.
 	//  if ( GetTargMode() == CLIMODE_TARG_PET_CMD ) it needs a target.
 
-	if ( !pSrc->m_pClient || !m_pNPC )
+	if ( !m_pNPC || !pSrc->m_pClient )
 		return false;
 
-	m_fIgnoreNextPetCmd = false;	// We clear this incase it's true from previous pet cmds.
+	m_fIgnoreNextPetCmd = false;	// we clear this incase it's true from previous pet commands
 	TALKMODE_TYPE mode = TALKMODE_SAY;
 	if ( OnTriggerSpeech(true, pszCmd, pSrc, mode) )
 	{
-		m_fIgnoreNextPetCmd = !fAllPets;
+		m_fIgnoreNextPetCmd = !bAllPets;
 		return true;
 	}
 
-	static LPCTSTR const sm_Pet_table[] =
+	static LPCTSTR const sm_PetCommands[] =
 	{
 		"ATTACK",
 		"BOUGHT",
 		"CASH",
 		"COME",
-		"DROP",	// "GIVE" ?
+		"DROP",
 		"DROP ALL",
 		"EQUIP",
 		"FOLLOW",
@@ -92,7 +83,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 		"GUARD",
 		"GUARD ME",
 		"KILL",
-		"PRICE",	// may have args ?
+		"PRICE",
 		"RELEASE",
 		"SAMPLES",
 		"SPEAK",
@@ -104,40 +95,17 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 		"UNFRIEND"
 	};
 
-	PC_TYPE iCmd = static_cast<PC_TYPE>(FindTableSorted(pszCmd, sm_Pet_table, COUNTOF(sm_Pet_table)));
+	PC_TYPE iCmd = static_cast<PC_TYPE>(FindTableSorted(pszCmd, sm_PetCommands, COUNTOF(sm_PetCommands)));
 	if ( iCmd < 0 )
 	{
-		if ( !strnicmp(pszCmd, sm_Pet_table[PC_PRICE], 5) )
+		if ( !strnicmp(pszCmd, sm_PetCommands[PC_PRICE], 5) )
 			iCmd = PC_PRICE;
 		else
 			return false;
 	}
 
-	switch ( iCmd )
-	{
-		case PC_FOLLOW:
-		case PC_STAY:
-		case PC_STOP:
-		{
-			// Pet friends can use only these commands
-			if ( Memory_FindObjTypes(pSrc, MEMORY_FRIEND) )
-				break;
-		}
-		default:
-		{
-			// All others commands are avaible only to pet owner
-			if ( !NPC_IsOwnedBy(pSrc, true) )
-				return false;
-		}
-	}
-
-	if ( IsStatFlag(STATF_DEAD) )
-	{
-		// Bonded NPCs still placed on world even when dead.
-		// They can listen to commands, but not to these commands below
-		if ( iCmd == PC_GUARD || iCmd == PC_GUARD_ME || iCmd == PC_ATTACK || iCmd == PC_KILL || iCmd == PC_TRANSFER || iCmd == PC_DROP || iCmd == PC_DROP_ALL )
-			return true;
-	}
+	if ( !NPC_PetCheckAccess(iCmd, pSrc) )
+		return true;
 
 	bool bTargAllowGround = false;
 	bool bCheckCrime = false;
@@ -215,7 +183,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 			NPC_PetClearOwners();
 			ResendTooltip();
 			break;
-			
+
 		case PC_DROP:
 		{
 			// Drop backpack items on ground
@@ -236,7 +204,7 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 			break;
 
 		case PC_SPEAK:
-			NPC_OnPetCommand(true, pSrc);
+			NPC_PetConfirmCommand(true, pSrc);
 			return true;
 
 		case PC_EQUIP:
@@ -249,7 +217,6 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 			if ( !NPC_CanSpeak() )
 				break;
 
-			unsigned int iWage = pCharDef->GetHireDayWage();
 			CItemContainer *pBank = GetContainerCreate(LAYER_BANKBOX);
 			TCHAR *pszMsg = Str_GetTemp();
 			if ( NPC_IsVendor() )
@@ -258,10 +225,10 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 				TCHAR *pszTemp1 = Str_GetTemp();
 				TCHAR *pszTemp2 = Str_GetTemp();
 				TCHAR *pszTemp3 = Str_GetTemp();
-				if ( iWage )
+				if ( pCharDef->m_iHireDayWage )
 				{
 					sprintf(pszTemp1, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_STAT_GOLD_1), pBank->m_itEqBankBox.m_Check_Amount);
-					sprintf(pszTemp2, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_STAT_GOLD_2), pBank->m_itEqBankBox.m_Check_Amount / iWage);
+					sprintf(pszTemp2, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_STAT_GOLD_2), pBank->m_itEqBankBox.m_Check_Amount / pCharDef->m_iHireDayWage);
 					sprintf(pszTemp3, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_STAT_GOLD_3), static_cast<int>(pCont->GetCount()));
 				}
 				else
@@ -272,9 +239,9 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 				}
 				sprintf(pszMsg, "%s %s %s", pszTemp1, pszTemp2, pszTemp3);
 			}
-			else if ( iWage )
+			else if ( pCharDef->m_iHireDayWage )
 			{
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DAYS_LEFT), pBank->m_itEqBankBox.m_Check_Amount / iWage);
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DAYS_LEFT), pBank->m_itEqBankBox.m_Check_Amount / pCharDef->m_iHireDayWage);
 			}
 			Speak(pszMsg);
 			return true;
@@ -289,13 +256,12 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 			CItemContainer *pBank = GetContainerCreate(LAYER_BANKBOX);
 			if ( pBank )
 			{
-				unsigned int iWage = pCharDef->GetHireDayWage();
 				TCHAR *pszMsg = Str_GetTemp();
-				if ( pBank->m_itEqBankBox.m_Check_Amount > iWage )
+				if ( pBank->m_itEqBankBox.m_Check_Amount > pCharDef->m_iHireDayWage )
 				{
-					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_GETGOLD_1), pBank->m_itEqBankBox.m_Check_Amount - iWage);
-					pSrc->AddGoldToPack(pBank->m_itEqBankBox.m_Check_Amount - iWage);
-					pBank->m_itEqBankBox.m_Check_Amount = iWage;
+					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_GETGOLD_1), pBank->m_itEqBankBox.m_Check_Amount - pCharDef->m_iHireDayWage);
+					pSrc->AddGoldToPack(pBank->m_itEqBankBox.m_Check_Amount - pCharDef->m_iHireDayWage);
+					pBank->m_itEqBankBox.m_Check_Amount = pCharDef->m_iHireDayWage;
 				}
 				else
 					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_GETGOLD_2), pBank->m_itEqBankBox.m_Check_Amount);
@@ -338,10 +304,10 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 
 	if ( pTargPrompt )
 	{
-		pszCmd += strlen(sm_Pet_table[iCmd]);
+		pszCmd += strlen(sm_PetCommands[iCmd]);
 		GETNONWHITESPACE(pszCmd);
 		pSrc->m_pClient->m_tmPetCmd.m_iCmd = iCmd;
-		pSrc->m_pClient->m_tmPetCmd.m_fAllPets = fAllPets;
+		pSrc->m_pClient->m_tmPetCmd.m_fAllPets = bAllPets;
 		pSrc->m_pClient->m_Targ_UID = GetUID();
 		pSrc->m_pClient->m_Targ_Text = pszCmd;
 		pSrc->m_pClient->addTarget(CLIMODE_TARG_PET_CMD, pTargPrompt, bTargAllowGround, bCheckCrime);
@@ -349,11 +315,11 @@ bool CChar::NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar *pSrc, bool fAllPets )
 	}
 
 	// Make some sound to confirm we heard it
-	NPC_OnPetCommand(true, pSrc);
+	NPC_PetConfirmCommand(true, pSrc);
 	return true;
 }
 
-bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar *pSrc, CObjBase *pObj, const CPointMap &pt, LPCTSTR pszArgs )
+bool CChar::NPC_OnHearPetCmdTarg(int iCmd, CChar *pSrc, CObjBase *pObj, const CPointMap &pt, LPCTSTR pszArgs)
 {
 	ADDTOCALLSTACK("CChar::NPC_OnHearPetCmdTarg");
 	// Pet commands that required a target.
@@ -364,31 +330,8 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar *pSrc, CObjBase *pObj, const C
 		return false;
 	}
 
-	switch ( iCmd )
-	{
-		case PC_FOLLOW:
-		case PC_STAY:
-		case PC_STOP:
-		{
-			// Pet friends can use only these commands
-			if ( Memory_FindObjTypes(pSrc, MEMORY_FRIEND) )
-				break;
-		}
-		default:
-		{
-			// All others commands are avaible only to pet owner
-			if ( !NPC_IsOwnedBy(pSrc, true) )
-				return false;
-		}
-	}
-
-	if ( IsStatFlag(STATF_DEAD) )
-	{
-		// Bonded NPCs still placed on world even when dead.
-		// They can listen to commands, but not to these commands below
-		if ( iCmd == PC_GUARD || iCmd == PC_GUARD_ME || iCmd == PC_ATTACK || iCmd == PC_KILL || iCmd == PC_TRANSFER || iCmd == PC_DROP || iCmd == PC_DROP_ALL )
-			return true;
-	}
+	if ( !NPC_PetCheckAccess(iCmd, pSrc) )
+		return true;
 
 	bool bSuccess = false;
 	CItem *pItemTarg = dynamic_cast<CItem *>(pObj);
@@ -399,16 +342,16 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar *pSrc, CObjBase *pObj, const C
 		case PC_ATTACK:
 		case PC_KILL:
 		{
-			if ( !pCharTarg || pCharTarg == this || pCharTarg == pSrc )
+			if ( !pCharTarg || (pCharTarg == this) || (pCharTarg == pSrc) )
 				break;
-			bSuccess = pCharTarg->OnAttackedBy(pSrc, true);	// we know who told them to do this.
+			bSuccess = pCharTarg->OnAttackedBy(pSrc, true);
 			if ( bSuccess )
 				bSuccess = Fight_Attack(pCharTarg, true);
 			break;
 		}
 
 		case PC_FOLLOW:
-			if ( !pCharTarg )
+			if ( !pCharTarg || (pCharTarg == this) )
 				break;
 			m_Act_Targ = pCharTarg->GetUID();
 			bSuccess = Skill_Start(NPCACT_FOLLOW_TARG);
@@ -416,7 +359,7 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar *pSrc, CObjBase *pObj, const C
 
 		case PC_FRIEND:
 		{
-			if ( !pCharTarg || !pCharTarg->m_pPlayer || pCharTarg == pSrc )
+			if ( !pCharTarg || !pCharTarg->m_pPlayer || (pCharTarg == pSrc) )
 			{
 				Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_CONFUSED));
 				break;
@@ -466,7 +409,7 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar *pSrc, CObjBase *pObj, const C
 			break;
 
 		case PC_GUARD:
-			if ( !pCharTarg )
+			if ( !pCharTarg || (pCharTarg == this) )
 				break;
 			pCharTarg->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_TARG_GUARD_SUCCESS), GetName());
 			m_Act_Targ = pCharTarg->GetUID();
@@ -484,10 +427,10 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar *pSrc, CObjBase *pObj, const C
 					break;
 				}
 			}
-			bSuccess = NPC_PetSetOwner( pCharTarg );
+			bSuccess = NPC_PetSetOwner(pCharTarg);
 			break;
 
-		case PC_PRICE:	// "PRICE" the vendor item.
+		case PC_PRICE:
 			if ( !pItemTarg || !NPC_IsVendor() || !pSrc->m_pClient )
 				break;
 			if ( IsDigit(pszArgs[0]) )	// did they name a price
@@ -502,14 +445,51 @@ bool CChar::NPC_OnHearPetCmdTarg( int iCmd, CChar *pSrc, CObjBase *pObj, const C
 	}
 
 	// Make some sound to confirm we heard it
-	NPC_OnPetCommand(bSuccess, pSrc);
+	NPC_PetConfirmCommand(bSuccess, pSrc);
 	return bSuccess;
+}
+
+bool CChar::NPC_PetCheckAccess(int iCmd, CChar *pChar)
+{
+	ADDTOCALLSTACK("CChar::NPC_PetCheckAccess");
+	// Check if pChar can use the required pet command
+	if ( !m_pNPC || !pChar )
+		return false;
+
+	switch ( iCmd )
+	{
+		case PC_COME:
+		case PC_FOLLOW:
+		case PC_FOLLOW_ME:
+		case PC_STAY:
+		case PC_STOP:
+		{
+			// Pet friends can use only these commands
+			if ( Memory_FindObjTypes(pChar, MEMORY_FRIEND) )
+				break;
+		}
+		default:
+		{
+			// All others commands are available only to pet owner
+			if ( !NPC_IsOwnedBy(pChar) )
+				return false;
+		}
+	}
+
+	if ( IsStatFlag(STATF_DEAD) )
+	{
+		// Dead bonded pets can only listen to these commands
+		if ( !((iCmd == PC_COME) || (iCmd == PC_FOLLOW) || (iCmd == PC_FOLLOW_ME) || (iCmd == PC_STAY) || (iCmd == PC_STOP) || (iCmd == PC_RELEASE)) )
+			return false;
+	}
+
+	return true;
 }
 
 void CChar::NPC_PetClearOwners(bool bResendTooltip)
 {
 	ADDTOCALLSTACK("CChar::NPC_PetClearOwners");
-	CChar * pOwner = NPC_PetGetOwner();
+	CChar *pOwner = NPC_PetGetOwner();
 	Memory_ClearTypes(MEMORY_IPET|MEMORY_FRIEND);
 
 	if ( m_pNPC )
@@ -522,7 +502,7 @@ void CChar::NPC_PetClearOwners(bool bResendTooltip)
 		{
 			CItemContainer *pBankVendor = GetContainerCreate(LAYER_BANKBOX);
 			CItemContainer *pBankOwner = pOwner->GetContainerCreate(LAYER_BANKBOX);
-			pOwner->AddGoldToPack( pBankVendor->m_itEqBankBox.m_Check_Amount, pBankOwner );
+			pOwner->AddGoldToPack(pBankVendor->m_itEqBankBox.m_Check_Amount, pBankOwner);
 			pBankVendor->m_itEqBankBox.m_Check_Amount = 0;
 
 			for ( size_t i = 0; i < COUNTOF(sm_VendorLayers); i++ )
@@ -561,18 +541,18 @@ bool CChar::NPC_PetSetOwner(CChar *pChar, bool bResendTooltip)
 {
 	ADDTOCALLSTACK("CChar::NPC_PetSetOwner");
 	// m_pNPC may not be set yet if this is a conjured creature.
-	if ( m_pPlayer || pChar == this || pChar == NULL )
+	if ( !m_pNPC || !pChar || (pChar == this) )
 		return false;
 
-	CChar * pOwner = NPC_PetGetOwner();
+	CChar *pOwner = NPC_PetGetOwner();
 	if ( pOwner == pChar )
 		return false;
 
 	NPC_PetClearOwners(false);	// clear previous owner before set the new owner
 	m_ptHome.InitPoint();	// no longer homed
-	CItemSpawn * pSpawn = static_cast<CItemSpawn*>( m_uidSpawnItem.ItemFind() );
+	CItemSpawn *pSpawn = static_cast<CItemSpawn *>(m_uidSpawnItem.ItemFind());
 	if ( pSpawn )
-		pSpawn->DelObj( GetUID() );
+		pSpawn->DelObj(GetUID());
 
 	Memory_AddObjTypes(pChar, MEMORY_IPET);
 	NPC_Act_Follow();
@@ -604,18 +584,16 @@ bool CChar::NPC_CheckHirelingStatus()
 	// RETURN:
 	//  true = happy.
 
-	if ( ! IsStatFlag( STATF_Pet ))
-		return( true );
+	if ( !IsStatFlag(STATF_Pet) )
+		return true;
 
-	CCharBase * pCharDef = Char_GetDef();
+	CCharBase *pCharDef = Char_GetDef();
 	int iFoodConsumeRate = g_Cfg.m_iRegenRate[STAT_FOOD];
 
-	unsigned int iWage = pCharDef->GetHireDayWage();
-	if ( ! iWage || ! iFoodConsumeRate )
-		return( true );
+	if ( !pCharDef->m_iHireDayWage || !iFoodConsumeRate )
+		return true;
 
-	// I am hired for money not for food.
-	unsigned int iPeriodWage = IMULDIV( iWage, iFoodConsumeRate, 24 * 60 * g_Cfg.m_iGameMinuteLength );
+	DWORD iPeriodWage = IMULDIV(pCharDef->m_iHireDayWage, iFoodConsumeRate, 24 * 60 * g_Cfg.m_iGameMinuteLength);
 	if ( iPeriodWage <= 0 )
 		iPeriodWage = 1;
 
@@ -626,16 +604,16 @@ bool CChar::NPC_CheckHirelingStatus()
 	}
 	else
 	{
-		TCHAR* pszMsg = Str_GetTemp();
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_WAGE_COST ), iWage);
+		TCHAR *pszMsg = Str_GetTemp();
+		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_WAGE_COST), pCharDef->m_iHireDayWage);
 		Speak(pszMsg);
 
-		CChar * pOwner = NPC_PetGetOwner();
+		CChar *pOwner = NPC_PetGetOwner();
 		if ( pOwner )
 		{
-			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_HIRE_TIMEUP ) );
+			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_HIRE_TIMEUP));
 
-			CItem * pMemory = Memory_AddObjTypes( pOwner, MEMORY_SPEAK );
+			CItem *pMemory = Memory_AddObjTypes(pOwner, MEMORY_SPEAK);
 			if ( pMemory )
 				pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_SPEAK_HIRE;
 
@@ -644,193 +622,181 @@ bool CChar::NPC_CheckHirelingStatus()
 		}
 
 		// Some sort of strange bug to get here.
-		Memory_ClearTypes( MEMORY_IPET );
-		StatFlag_Clear( STATF_Pet );
+		Memory_ClearTypes(MEMORY_IPET);
+		StatFlag_Clear(STATF_Pet);
 	}
 
-	return( true );
+	return true;
 }
 
-void CChar::NPC_OnHirePayMore( CItem * pGold, bool fHire )
+void CChar::NPC_OnHirePayMore(CItem *pGold, bool bHire)
 {
 	ADDTOCALLSTACK("CChar::NPC_OnHirePayMore");
 	// We have been handed money.
 	// similar to PC_STATUS
 
 	CCharBase *pCharDef = Char_GetDef();
-	unsigned int iWage = pCharDef->GetHireDayWage();
 	CItemContainer *pBank = GetContainerCreate(LAYER_BANKBOX);
-	if ( !iWage || !pBank )
+	if ( !pCharDef->m_iHireDayWage || !pBank )
 		return;
 
 	if ( pGold )
 	{
-		if ( fHire )
+		if ( bHire )
 			pBank->m_itEqBankBox.m_Check_Amount = 0;	// clear previous balance
 
 		pBank->m_itEqBankBox.m_Check_Amount += pGold->GetAmount();
-		Sound( pGold->GetDropSound( NULL ));
+		Sound(pGold->GetDropSound(NULL));
 		pGold->Delete();
 	}
 
 	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_HIRE_TIME), pBank->m_itEqBankBox.m_Check_Amount / iWage);
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_HIRE_TIME), pBank->m_itEqBankBox.m_Check_Amount / pCharDef->m_iHireDayWage);
 	Speak(pszMsg);
 }
 
-bool CChar::NPC_OnHirePay( CChar * pCharSrc, CItemMemory * pMemory, CItem * pGold )
+bool CChar::NPC_OnHirePay(CChar *pCharSrc, CItemMemory *pMemory, CItem *pGold)
 {
 	ADDTOCALLSTACK("CChar::NPC_OnHirePay");
 	if ( !m_pNPC || !pCharSrc || !pMemory )
 		return false;
 
-	CCharBase * pCharDef = Char_GetDef();
-	if ( IsStatFlag( STATF_Pet ))
+	CCharBase *pCharDef = Char_GetDef();
+	if ( IsStatFlag(STATF_Pet) )
 	{
-		if ( ! pMemory->IsMemoryTypes(MEMORY_IPET|MEMORY_FRIEND))
+		if ( !pMemory->IsMemoryTypes(MEMORY_IPET|MEMORY_FRIEND) )
 		{
-			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_EMPLOYED ) );
+			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_EMPLOYED));
 			return false;
 		}
 	}
 	else
 	{
-		unsigned int iWage = pCharDef->GetHireDayWage();
-		if ( iWage <= 0 )
+		if ( pCharDef->m_iHireDayWage <= 0 )
 		{
-			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_NOT_FOR_HIRE ) );
+			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_NOT_FOR_HIRE));
 			return false;
 		}
-		if ( pGold->GetAmount() < iWage )
+		else if ( pGold->GetAmount() < pCharDef->m_iHireDayWage )
 		{
-			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_NOT_ENOUGH ) );
+			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_NOT_ENOUGH));
 			return false;
 		}
-		// NOTO_TYPE ?
-		if ( pMemory->IsMemoryTypes( MEMORY_FIGHT|MEMORY_HARMEDBY|MEMORY_IRRITATEDBY ))
+		else if ( pMemory->IsMemoryTypes(MEMORY_FIGHT|MEMORY_HARMEDBY|MEMORY_IRRITATEDBY) )
 		{
-			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_NOT_WORK ) );
+			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_NOT_WORK));
 			return false;
 		}
 
-		// Put all my loot cash away.
-		ContentConsume( RESOURCE_ID(RES_TYPEDEF,IT_GOLD), ULONG_MAX, false, 0 );
-		// Mark all my stuff ATTR_OWNED - i won't give it away.
-		ContentAttrMod( ATTR_OWNED, true );
-
-		NPC_PetSetOwner( pCharSrc );
+		ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), ULONG_MAX, false, 0);		// put all my loot cash away
+		ContentAttrMod(ATTR_OWNED, true);		// mark all my stuff ATTR_OWNED - i won't give it away
+		NPC_PetSetOwner(pCharSrc);
 	}
 
 	pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_NONE;
-	NPC_OnHirePayMore( pGold, true );
+	NPC_OnHirePayMore(pGold, true);
 	return true;
 }
 
-bool CChar::NPC_OnHireHear( CChar * pCharSrc )
+bool CChar::NPC_OnHireHear(CChar *pCharSrc)
 {
 	ADDTOCALLSTACK("CChar::NPC_OnHireHear");
 	if ( !m_pNPC )
 		return false;
 
-	CCharBase * pCharDef = Char_GetDef();
-	unsigned int iWage = pCharDef->GetHireDayWage();
-	if ( ! iWage )
+	CCharBase *pCharDef = Char_GetDef();
+	if ( !pCharDef->m_iHireDayWage )
 	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_NOT_FOR_HIRE ) );
+		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_NOT_FOR_HIRE));
 		return false;
 	}
 
-	CItemMemory * pMemory = Memory_FindObj( pCharSrc );
+	CItemMemory *pMemory = Memory_FindObj(pCharSrc);
 	if ( pMemory )
 	{
-		if ( pMemory->IsMemoryTypes(MEMORY_IPET|MEMORY_FRIEND))
+		if ( pMemory->IsMemoryTypes(MEMORY_IPET|MEMORY_FRIEND) )
 		{
 			// Next gold i get goes toward hire.
 			pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_SPEAK_HIRE;
-			NPC_OnHirePayMore( NULL, false );
+			NPC_OnHirePayMore(NULL);
 			return true;
 		}
-		if ( pMemory->IsMemoryTypes( MEMORY_FIGHT|MEMORY_HARMEDBY|MEMORY_IRRITATEDBY ))
+		if ( pMemory->IsMemoryTypes(MEMORY_FIGHT|MEMORY_HARMEDBY|MEMORY_IRRITATEDBY) )
 		{
-			Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_NOT_WORK ) );
+			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_NOT_WORK));
 			return false;
 		}
 	}
-	if ( IsStatFlag( STATF_Pet ))
+	if ( IsStatFlag(STATF_Pet) )
 	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_EMPLOYED ) );
+		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_EMPLOYED));
 		return false;
 	}
 
 	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, Calc_GetRandVal(2) ?
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_HIRE_AMNT ) :
-		g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_HIRE_RATE ), iWage );
+	sprintf(pszMsg, Calc_GetRandVal(2) ? g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_HIRE_AMNT) : g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_HIRE_RATE), pCharDef->m_iHireDayWage);
 	Speak(pszMsg);
 
-	pMemory = Memory_AddObjTypes( pCharSrc, MEMORY_SPEAK );
+	pMemory = Memory_AddObjTypes(pCharSrc, MEMORY_SPEAK);
 	if ( pMemory )
 		pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_SPEAK_HIRE;
 	return true;
 }
 
-bool CChar::NPC_SetVendorPrice( CItem * pItem, int iPrice )
+bool CChar::NPC_SetVendorPrice(CItem *pItem, int iPrice)
 {
 	ADDTOCALLSTACK("CChar::NPC_SetVendorPrice");
 	// player vendors.
 	// CLIMODE_PROMPT_VENDOR_PRICE
 	// This does not check who is setting the price if if it is valid for them to do so.
 
-	if ( ! NPC_IsVendor())
-		return( false );
+	if ( !NPC_IsVendor() )
+		return false;
 
-	if ( pItem == NULL ||
-		pItem->GetTopLevelObj() != this ||
-		pItem->GetParent() == this )
+	if ( !pItem || (pItem->GetTopLevelObj() != this) || (pItem->GetParent() == this) )
 	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_INV_ONLY ) );
-		return( false );
+		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_INV_ONLY));
+		return false;
 	}
 
-	CItemVendable * pVendItem = dynamic_cast <CItemVendable *> (pItem);
-	if ( pVendItem == NULL )
+	CItemVendable *pVendItem = static_cast<CItemVendable *>(pItem);
+	if ( !pVendItem )
 	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_PET_CANTSELL ) );
-		return( false );
+		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_CANTSELL));
+		return false;
 	}
 
 	if ( iPrice < 0 )	// just a test.
-		return( true );
+		return true;
 
 	TCHAR *pszMsg = Str_GetTemp();
 	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SETPRICE_1), pVendItem->GetName(), iPrice);
 	Speak(pszMsg);
 
-	pVendItem->SetPlayerVendorPrice( iPrice );
-	return( true );
+	pVendItem->SetPlayerVendorPrice(iPrice);
+	return true;
 }
 
 void CChar::NPC_PetDesert()
 {
 	ADDTOCALLSTACK("CChar::NPC_PetDesert");
-	CChar * pCharOwn = NPC_PetGetOwner();
+	CChar *pCharOwn = NPC_PetGetOwner();
 	if ( !pCharOwn )
 		return;
 
 	if ( IsTrigUsed(TRIGGER_PETDESERT) )
 	{
-		if ( OnTrigger( CTRIG_PetDesert, pCharOwn, NULL ) == TRIGRET_RET_TRUE )
+		if ( OnTrigger(CTRIG_PetDesert, pCharOwn) == TRIGRET_RET_TRUE )
 			return;
 	}
 
 	NPC_PetClearOwners();
-	if ( ! pCharOwn->CanSee(this))
+	if ( !pCharOwn->CanSee(this) )
 		pCharOwn->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DESERTED), GetName());
 
-	TCHAR	*pszMsg = Str_GetTemp();
+	TCHAR *pszMsg = Str_GetTemp();
 	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DECIDE_MASTER), GetName());
 	Speak(pszMsg);
 
-	// free to do as i wish !
-	Skill_Start( SKILL_NONE );
+	Skill_Start(SKILL_NONE);
 }

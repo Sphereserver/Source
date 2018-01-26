@@ -3943,7 +3943,7 @@ private:
 	WORD NPC_GetTrainMax( const CChar *pStudent, SKILL_TYPE Skill ) const;
 
 	bool NPC_OnVerb( CScript &s, CTextConsole * pSrc = NULL );
-	void NPC_OnHirePayMore( CItem * pGold, bool fHire = false );
+	void NPC_OnHirePayMore(CItem *pGold, bool bHire = false);
 public:
 	bool NPC_OnHirePay( CChar * pCharSrc, CItemMemory * pMemory, CItem * pGold );
 	bool NPC_OnHireHear( CChar * pCharSrc );
@@ -3993,7 +3993,9 @@ public:
 	void NPC_ExtraAI();			//	NPC thread AI - some general extra operations
 	void NPC_AddSpellsFromBook(CItem *pBook);
 
-	void NPC_PetDesert();	
+	bool NPC_PetCheckAccess(int iCmd, CChar *pChar);
+	void NPC_PetConfirmCommand(bool bSuccess, CChar *pMaster);
+	void NPC_PetDesert();
 	void NPC_PetClearOwners(bool bResendTooltip = true);
 	bool NPC_PetSetOwner(CChar *pChar, bool bResendTooltip = true);
 	CChar *NPC_PetGetOwner() const;
@@ -4021,14 +4023,13 @@ public:
 	bool NPC_Vendor_Restock(bool bForce = false, bool bFillStock = false);
 	int NPC_GetVendorMarkup() const;
 
-	void NPC_OnPetCommand( bool fSuccess, CChar * pMaster );
-	bool NPC_OnHearPetCmd( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets = false );
-	bool NPC_OnHearPetCmdTarg( int iCmd, CChar * pSrc, CObjBase * pObj, const CPointMap & pt, LPCTSTR pszArgs );
-	size_t  NPC_OnHearName( LPCTSTR pszText ) const;
-	void NPC_OnHear( LPCTSTR pCmd, CChar * pSrc, bool fAllPets = false );
-	bool NPC_OnItemGive( CChar * pCharSrc, CItem * pItem );
-	bool NPC_SetVendorPrice( CItem * pItem, int iPrice );
-	bool OnTriggerSpeech(bool bIsPet, LPCTSTR pszText, CChar * pSrc, TALKMODE_TYPE & mode, HUE_TYPE wHue = HUE_DEFAULT);
+	bool NPC_OnHearPetCmd(LPCTSTR pszCmd, CChar *pSrc, bool bAllPets = false);
+	bool NPC_OnHearPetCmdTarg(int iCmd, CChar *pSrc, CObjBase *pObj, const CPointMap &pt, LPCTSTR pszArgs);
+	size_t NPC_OnHearName(LPCTSTR pszText) const;
+	void NPC_OnHear(LPCTSTR pCmd, CChar *pSrc, bool fAllPets = false);
+	bool NPC_OnItemGive(CChar *pCharSrc, CItem *pItem);
+	bool NPC_SetVendorPrice(CItem *pItem, int iPrice);
+	bool OnTriggerSpeech(bool bIsPet, LPCTSTR pszText, CChar *pSrc, TALKMODE_TYPE &mode, HUE_TYPE wHue = HUE_DEFAULT);
 
 	// Outside events that occur to us.
 	int OnTakeDamage(int iDmg, CChar *pSrc, DAMAGE_TYPE uType, int iDmgPhysical = 0, int iDmgFire = 0, int iDmgCold = 0, int iDmgPoison = 0, int iDmgEnergy = 0);

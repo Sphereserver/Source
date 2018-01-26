@@ -907,13 +907,9 @@ public:
 	short m_iMoveRate;	// move rate percent
 
 	// NPC info ----------------------------------------------------
-private:
-	unsigned int m_iHireDayWage;		// if applicable. (NPC)
-public:
-	//SHELTER=FORESTS (P), MOUNTAINS (P)
-	//AVERSIONS=TRAPS, CIVILIZATION
-	CResourceQtyArray m_Aversions;
-	CResourceQtyArray m_Desires;	// DESIRES= that are typical for the char class. see also m_sNeed
+	CResourceQtyArray m_Aversions;	// traps, civilization
+	CResourceQtyArray m_Desires;	// desires that are typical for the char class. see also m_sNeed
+	unsigned int m_iHireDayWage;	// gold required to hire an player vendor
 
 	// If this is an NPC.
 	// We respond to what we here with this.
@@ -951,8 +947,6 @@ public:
 		return static_cast<CREID_TYPE>(m_dwDispIndex);
 	}
 	bool SetDispID( CREID_TYPE id );
-
-	unsigned int GetHireDayWage() const { return( m_iHireDayWage ); }
 
 	static CCharBase * FindCharBase( CREID_TYPE id );
 	static bool IsValidDispID( CREID_TYPE id );
