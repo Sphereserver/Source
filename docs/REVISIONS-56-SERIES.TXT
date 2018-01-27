@@ -970,3 +970,6 @@ Changed: Updated MySQL engine
 22-01-2018, Coruja
 Changed: Updated internal SQLite libs v3.21.0 to v3.22.0.
 Fixed: Spells being disturbed even when they have INTERRUPT=0.0 set.
+
+27-01-2018, Coruja
+Fixed: Items placed on char backpack not checking char weight limit correctly before get equipped.
