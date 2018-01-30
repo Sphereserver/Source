@@ -976,3 +976,4 @@ Fixed: Items placed on char backpack not checking char weight limit correctly be
 
 30-01-2018, Coruja
 Fixed: Ship commands not working correctly.
+Fixed: Items not getting amount stacked when dropped on ground.

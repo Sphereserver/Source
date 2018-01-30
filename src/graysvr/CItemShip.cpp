@@ -745,7 +745,7 @@ bool CItemShip::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fr
 
 	int iCmd = FindTableSorted(s.GetKey(), sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
 	if ( iCmd < 0 )
-		return CItemMulti::r_Verb(s, pSrc));
+		return CItemMulti::r_Verb(s, pSrc);
 
 	if ( !pSrc || !IsTopLevel() )
 		return false;
