@@ -275,7 +275,7 @@ Fixed: Resurrect, Reveal, Meteor Swarm and Lightning spells showing effect anima
 Fixed: Console error related to client internal chat engine when some clients connect on server
 Fixed: Worldsave not saving DAM/ARMOR properties set manually on chars/items already placed on world
 	-NOTE: Changing DAM/ARMOR directly on ITEMDEF/CHARDEF scripts won't update all objects already created anymore, because Sphere will now read DAM/ARMOR values from save files instead read from scripts.
-	 To update DAM/ARMOR on objects already created, it will be needed an function like FORINSTANCES to loop through all objects where the value must be updated
+	To update DAM/ARMOR on objects already created, it will be needed an function like FORINSTANCES to loop through all objects where the value must be updated
 Added: Support for items health bar on HS clients >= 7.0.30.0
 [sphere_defs.scp]: Added new CAN flag 'can_i_damageable' to enable health bar on items (MORE1L = cur hitpoints / MORE1H = max hitpoints)
 
@@ -739,7 +739,7 @@ Fixed: Weapons not playing hit/miss sounds on combat.
 
 26-08-2017, Coruja
 [items/sphere_item_theme_pack_kings_collection.scp]: Added new file with King's Collection theme pack items
-[items/sphere_item_deco_furniture.scp]: Moved all Kings's Collection items to sphere_item_theme_pack_kings_collection.scp  
+[items/sphere_item_deco_furniture.scp]: Moved all Kings's Collection items to sphere_item_theme_pack_kings_collection.scp
 [items/sphere_item_deco_lightsources.scp]: Moved all Kings's Collection items to sphere_item_theme_pack_kings_collection.scp
 [items/sphere_item_deco_wall_hangings.scp]: Moved all Kings's Collection items to sphere_item_theme_pack_kings_collection.scp
 [items/sphere_item_resources.scp]: Added missing itemdef 'i_workable_glass'
@@ -955,9 +955,9 @@ Fixed: when playing a sound from a character from Samurai Empire and later expan
 04-01-2018, Coruja
 Added: SOUND property on chars now can be splitted into SOUNDHIT, SOUNDGETHIT, SOUNDDIE, SOUNDIDLE, SOUNDNOTICE
 	-SOUND* splitted values are optional, and when set it will have priority over default SOUND value.
-	
+
 04-01-2018, Nolok
-Added: SOUNDIDLE, SOUNDNOTICE, SOUNDHIT, SOUNDGETHIT, SOUNDDIE CharDef properties can now have -1 as value: this value prevents	that action-related sound to be played.
+Added: SOUNDIDLE, SOUNDNOTICE, SOUNDHIT, SOUNDGETHIT, SOUNDDIE CharDef properties can now have -1 as value: this value prevents that action-related sound to be played.
 
 18-01-2018, Coruja
 Changed: Updated MySQL engine
@@ -973,3 +973,6 @@ Fixed: Spells being disturbed even when they have INTERRUPT=0.0 set.
 
 27-01-2018, Coruja
 Fixed: Items placed on char backpack not checking char weight limit correctly before get equipped.
+
+30-01-2018, Coruja
+Fixed: Ship commands not working correctly.

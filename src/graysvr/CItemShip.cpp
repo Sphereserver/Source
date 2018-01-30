@@ -743,16 +743,11 @@ bool CItemShip::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fr
 	//"One (direction*)", " (Direction*), one" Moves ship one tile in desired direction and stops.
 	//"Slow (direction*)" Moves ship slowly in desired direction (see below for possible directions).
 
-	int iCmd = FindTableSorted( s.GetKey(), sm_szVerbKeys, COUNTOF( sm_szVerbKeys )-1 );
+	int iCmd = FindTableSorted(s.GetKey(), sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
 	if ( iCmd < 0 )
-	{
-		return( CItemMulti::r_Verb( s, pSrc ));
-	}
+		return CItemMulti::r_Verb(s, pSrc));
 
-	if ( ! pSrc )
-		return( false );
-
-	if ( IsAttr(ATTR_MOVE_NEVER|ATTR_LOCKEDDOWN) || ! IsTopLevel() )
+	if ( !pSrc || !IsTopLevel() )
 		return false;
 
 	CChar * pChar = pSrc->GetChar();
