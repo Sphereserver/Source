@@ -1809,44 +1809,38 @@ bool CChar::ItemBounce( CItem * pItem, bool bDisplayMsg )
 }
 
 // A char actively drops an item on the ground.
-bool CChar::ItemDrop( CItem * pItem, const CPointMap & pt )
+bool CChar::ItemDrop( CItem *pItem, const CPointMap &pt )
 {
 	ADDTOCALLSTACK("CChar::ItemDrop");
-	if ( pItem == NULL )
-		return( false );
+	if ( !pItem )
+		return false;
 
-	if ( IsSetEF( EF_ItemStacking ) )
+	if ( IsSetEF(EF_ItemStacking) )
 	{
-		CGrayMapBlockState block( CAN_C_WALK, pt.m_z, pt.m_z, pt.m_z, maximum(pItem->GetHeight(), 1) );
-		//g_World.GetHeightPoint( pt, block, true );
-		//DEBUG_ERR(("Drop: %d / Min: %d / Max: %d\n", pItem->GetFixZ(pt), block.m_Bottom.m_z, block.m_Top.m_z));
-
 		CPointMap ptStack = pt;
-		signed char iStackMaxZ = block.m_Top.m_z;	//pt.m_z + 16;
-		CItem * pStack = NULL;
+		CItem *pStack = NULL;
 		CWorldSearch AreaItems(ptStack);
 		for (;;)
 		{
 			pStack = AreaItems.GetItem();
-			if ( pStack == NULL )
+			if ( !pStack )
 				break;
-			if ( pStack->GetTopZ() < pt.m_z || pStack->GetTopZ() > iStackMaxZ )
+			if ( (pStack->GetTopZ() < pt.m_z) || (pStack->GetTopZ() > pt.m_z + 20) )
 				continue;
-
 			ptStack.m_z += maximum(pStack->GetHeight(), 1);
-			//DEBUG_ERR(("(%d > %d) || (%d > %d)\n", ptStack.m_z, iStackMaxZ, ptStack.m_z + maximum(pItem->GetHeight(), 1), iStackMaxZ + 3));
-			if ( (ptStack.m_z > iStackMaxZ) || (ptStack.m_z + maximum(pItem->GetHeight(), 1) > iStackMaxZ + 3) )
-				return false;
 		}
-		return( pItem->MoveToCheck( ptStack, this ));	// don't flip the item if it got stacked
+
+		if ( !CanSeeLOS(ptStack) )
+			return false;
+		return pItem->MoveToCheck(ptStack, this);	// don't flip the item if it got stacked
 	}
 
 	// Does this item have a flipped version?
-	CItemBase * pItemDef = pItem->Item_GetDef();
-	if (( g_Cfg.m_fFlipDroppedItems || pItemDef->Can(CAN_I_FLIP)) && pItem->IsMovableType() && !pItemDef->IsStackableType())
-		pItem->SetDispID( pItemDef->GetNextFlipID( pItem->GetDispID()));
+	CItemBase *pItemDef = pItem->Item_GetDef();
+	if ( (g_Cfg.m_fFlipDroppedItems || pItemDef->Can(CAN_I_FLIP)) && pItem->IsMovableType() && !pItemDef->IsStackableType() )
+		pItem->SetDispID(pItemDef->GetNextFlipID(pItem->GetDispID()));
 
-	return( pItem->MoveToCheck( pt, this ));
+	return pItem->MoveToCheck(pt, this);
 }
 
 // Equip visible stuff. else throw into our pack.

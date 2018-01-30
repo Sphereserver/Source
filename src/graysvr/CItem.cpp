@@ -1076,7 +1076,7 @@ bool CItem::Stack( CItem * pItem )
 		return true;
 	if ( !IsStackable(pItem) )
 		return false;
-	if ( m_Attr &~ ATTR_DECAY != pItem->m_Attr &~ ATTR_DECAY )
+	if ( (m_Attr &~ ATTR_DECAY) != (pItem->m_Attr &~ ATTR_DECAY) )
 		return false;
 	if ( !m_TagDefs.Compare(&pItem->m_TagDefs) )
 		return false;
