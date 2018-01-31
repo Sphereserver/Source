@@ -411,22 +411,22 @@ bool CChar::Spell_Resurrection(CItemCorpse *pCorpse, CChar *pCharSrc, bool bNoFa
 		return false;
 	}
 
-	short hits = IMULDIV(Stat_GetMax(STAT_STR), static_cast<short>(g_Cfg.m_iHitpointPercentOnRez), 100);
+	int iHits = IMULDIV(Stat_GetMax(STAT_STR), g_Cfg.m_iHitpointPercentOnRez, 100);
 	if ( !pCorpse )
 		pCorpse = FindMyCorpse();
 
 	if ( IsTrigUsed(TRIGGER_RESURRECT) )
 	{
-		CScriptTriggerArgs Args(hits, 0, pCorpse);
+		CScriptTriggerArgs Args(iHits, 0, pCorpse);
 		if ( OnTrigger(CTRIG_Resurrect, pCharSrc, &Args) == TRIGRET_RET_TRUE )
 			return false;
-		hits = static_cast<short>(Args.m_iN1);
+		iHits = static_cast<int>(Args.m_iN1);
 	}
 
 	SetID(m_prev_id);
 	SetHue(m_prev_Hue);
 	StatFlag_Clear(STATF_DEAD|STATF_Insubstantial);
-	Stat_SetVal(STAT_STR, maximum(hits, 1));
+	Stat_SetVal(STAT_STR, maximum(iHits, 1));
 
 	if ( m_pNPC && m_pNPC->m_bonded )
 		m_Can &= ~CAN_C_GHOST;
@@ -496,7 +496,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 	if ( !spell || !pSpellDef )
 		return;
 
-	short iStatEffect = static_cast<short>(pSpell->m_itSpell.m_spelllevel);
+	WORD iStatEffect = pSpell->m_itSpell.m_spelllevel;
 
 	switch ( pSpellDef->m_idLayer )	// spell effects that are common for the same layer fits here
 	{
@@ -870,7 +870,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 			{
 				SetDefNum("ResPhysical", GetDefNum("ResPhysical") + pSpell->m_itSpell.m_PolyStr);
 				SetDefNum("FasterCasting", GetDefNum("FasterCasting") + 2);
-				Skill_SetBase(SKILL_MAGICRESISTANCE, minimum(Skill_GetMax(SKILL_MAGICRESISTANCE, true), Skill_GetBase(SKILL_MAGICRESISTANCE) + pSpell->m_itSpell.m_PolyDex));
+				Skill_SetBase(SKILL_MAGICRESISTANCE, minimum(Skill_GetMax(SKILL_MAGICRESISTANCE, true), Skill_GetBase(SKILL_MAGICRESISTANCE) + static_cast<WORD>(pSpell->m_itSpell.m_PolyDex)));
 			}
 			else
 			{
@@ -1150,14 +1150,13 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 			// set to creature type stats
 			if ( (spell == SPELL_Polymorph) && IsSetMagicFlags(MAGICF_POLYMORPHSTATS) )
 			{
-				short SPELL_MAX_POLY_STAT = static_cast<short>(g_Cfg.m_iMaxPolyStats);
 				if ( pCharDef->m_Str )
 				{
-					short iChange = pCharDef->m_Str - Stat_GetBase(STAT_STR);
-					if ( iChange > SPELL_MAX_POLY_STAT )			// Can't pass from SPELL_MAX_POLY_STAT defined in .ini (MaxPolyStats)
-						iChange = SPELL_MAX_POLY_STAT;
-					else if ( (iChange < 0) && (iChange * -1 > SPELL_MAX_POLY_STAT) )	// Limit it to negative values too
-						iChange = -SPELL_MAX_POLY_STAT;
+					int iChange = pCharDef->m_Str - Stat_GetBase(STAT_STR);
+					if ( iChange > g_Cfg.m_iMaxPolyStats )
+						iChange = g_Cfg.m_iMaxPolyStats;
+					else if ( iChange < -g_Cfg.m_iMaxPolyStats )
+						iChange = -g_Cfg.m_iMaxPolyStats;
 					if ( iChange + Stat_GetBase(STAT_STR) < 0 )
 						iChange = -Stat_GetBase(STAT_STR);
 					Stat_AddMod(STAT_STR, iChange);
@@ -1165,11 +1164,11 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				}
 				if ( pCharDef->m_Dex )
 				{
-					short iChange = pCharDef->m_Dex - Stat_GetBase(STAT_DEX);
-					if ( iChange > SPELL_MAX_POLY_STAT )
-						iChange = SPELL_MAX_POLY_STAT;
-					else if ( (iChange < 0) && (iChange * -1 > SPELL_MAX_POLY_STAT) )	// Limit it to negative values too
-						iChange = -SPELL_MAX_POLY_STAT;
+					int iChange = pCharDef->m_Dex - Stat_GetBase(STAT_DEX);
+					if ( iChange > g_Cfg.m_iMaxPolyStats )
+						iChange = g_Cfg.m_iMaxPolyStats;
+					else if ( iChange < -g_Cfg.m_iMaxPolyStats )
+						iChange = -g_Cfg.m_iMaxPolyStats;
 					if ( iChange + Stat_GetBase(STAT_DEX) < 0 )
 						iChange = -Stat_GetBase(STAT_DEX);
 					Stat_AddMod(STAT_DEX, iChange);
@@ -1661,8 +1660,8 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				iStatEffect = (400 + pCaster->Skill_GetBase(SKILL_EVALINT) - Skill_GetBase(SKILL_MAGICRESISTANCE)) / 10;
 				if ( iStatEffect < 0 )
 					iStatEffect = 0;
-				else if ( iStatEffect > Stat_GetVal(STAT_INT) )
-					iStatEffect = static_cast<short>(Stat_GetVal(STAT_INT));
+				else if ( static_cast<int>(iStatEffect) > Stat_GetVal(STAT_INT) )
+					iStatEffect = Stat_GetVal(STAT_INT);
 
 				pSpell->m_itSpell.m_spelllevel = iStatEffect;
 			}
@@ -1715,8 +1714,8 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				iMagicResist = minimum(Skill_GetBase(SKILL_MAGICRESISTANCE), 350 - (Skill_GetBase(SKILL_INSCRIPTION) / 20));
 
 				pSpell->m_itSpell.m_spelllevel = iStatEffect;
-				pSpell->m_itSpell.m_PolyStr = static_cast<short>(iPhysicalResist);
-				pSpell->m_itSpell.m_PolyDex = static_cast<short>(iMagicResist);
+				pSpell->m_itSpell.m_PolyStr = static_cast<int>(iPhysicalResist);
+				pSpell->m_itSpell.m_PolyDex = static_cast<int>(iMagicResist);
 
 				SetDefNum("ResPhysical", GetDefNum("ResPhysical") - iPhysicalResist);
 				SetDefNum("FasterCasting", GetDefNum("FasterCasting") - 2);
@@ -1806,7 +1805,7 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 				return false;
 
 			// Gain HP.
-			UpdateStatVal(STAT_STR, static_cast<short>(g_Cfg.GetSpellEffect(spell, iLevel)));
+			UpdateStatVal(STAT_STR, g_Cfg.GetSpellEffect(spell, iLevel));
 			pItem->SetTimeout(2 * TICK_PER_SEC);
 			break;
 		}
@@ -2241,8 +2240,8 @@ bool CChar::Spell_CanCast(SPELL_TYPE &spell, bool fTest, CObjBase *pSrc, bool fF
 	if ( !Skill_CanUse(static_cast<SKILL_TYPE>(skill)) )
 		return false;
 
-	short wManaUse = static_cast<short>(pSpellDef->m_wManaUse * (100 - minimum(GetDefNum("LowerManaCost", true), 40)) / 100);
-	short wTithingUse = static_cast<short>(pSpellDef->m_wTithingUse * (100 - minimum(GetDefNum("LowerReagentCost", true), 40)) / 100);
+	int iManaUse = pSpellDef->m_wManaUse * (100 - minimum(GetDefNum("LowerManaCost", true), 40)) / 100;
+	int iTithingUse = pSpellDef->m_wTithingUse * (100 - minimum(GetDefNum("LowerReagentCost", true), 40)) / 100;
 
 	if ( pSrc != this )
 	{
@@ -2251,23 +2250,23 @@ bool CChar::Spell_CanCast(SPELL_TYPE &spell, bool fTest, CObjBase *pSrc, bool fF
 		{
 			if ( pItem->GetType() == IT_WAND )
 			{
-				wManaUse = 0;
-				wTithingUse = 0;
+				iManaUse = 0;
+				iTithingUse = 0;
 			}
 			else if ( pItem->GetType() == IT_SCROLL )
 			{
-				wManaUse /= 2;
-				wTithingUse /= 2;
+				iManaUse /= 2;
+				iTithingUse /= 2;
 			}
 		}
 	}
 
-	CScriptTriggerArgs Args(spell, wManaUse, pSrc);
+	CScriptTriggerArgs Args(spell, iManaUse, pSrc);
 	if ( fTest )
 		Args.m_iN3 |= 0x0001;
 	if ( fFailMsg )
 		Args.m_iN3 |= 0x0002;
-	Args.m_VarsLocal.SetNum("TithingUse", wTithingUse);
+	Args.m_VarsLocal.SetNum("TithingUse", iTithingUse);
 
 	if ( IsTrigUsed(TRIGGER_SELECT) )
 	{
@@ -2296,8 +2295,8 @@ bool CChar::Spell_CanCast(SPELL_TYPE &spell, bool fTest, CObjBase *pSrc, bool fF
 			return false;
 		spell = static_cast<SPELL_TYPE>(Args.m_iN1);
 	}
-	wManaUse = static_cast<short>(Args.m_iN2);
-	wTithingUse = static_cast<short>(Args.m_VarsLocal.GetKeyNum("TithingUse"));
+	iManaUse = static_cast<int>(Args.m_iN2);
+	iTithingUse = static_cast<int>(Args.m_VarsLocal.GetKeyNum("TithingUse"));
 
 	if ( pSrc != this )
 	{
@@ -2405,33 +2404,33 @@ bool CChar::Spell_CanCast(SPELL_TYPE &spell, bool fTest, CObjBase *pSrc, bool fF
 	}
 
 	// Check required mana
-	if ( Stat_GetVal(STAT_INT) < wManaUse )
+	if ( Stat_GetVal(STAT_INT) < iManaUse )
 	{
 		if ( fFailMsg )
 			SysMessageDefault(DEFMSG_SPELL_TRY_NOMANA);
 		return false;
 	}
-	if ( !fTest && wManaUse )
+	if ( !fTest && iManaUse )
 	{
 		if ( m_Act_Difficulty < 0 )	// use diff amount of mana if we fail.
-			wManaUse = wManaUse / 2 + static_cast<short>(Calc_GetRandVal(wManaUse / 2 + wManaUse / 4));
-		UpdateStatVal(STAT_INT, -wManaUse);
+			iManaUse = iManaUse / 2 + Calc_GetRandVal(iManaUse / 2 + iManaUse / 4);
+		UpdateStatVal(STAT_INT, -iManaUse);
 	}
 
 	// Check Tithing
-	int wTithing = static_cast<int>(GetDefNum("Tithing"));
-	if ( wTithing < wTithingUse )
+	int iTithing = static_cast<int>(GetDefNum("Tithing"));
+	if ( iTithing < iTithingUse )
 	{
 		if ( fFailMsg )
-			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TRY_NOTITHING), wTithingUse);
+			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TRY_NOTITHING), iTithingUse);
 		return false;
 	}
-	if ( !fTest && wTithingUse )
+	if ( !fTest && iTithingUse )
 	{
 		// Consume points
 		if ( m_Act_Difficulty < 0 )	// use diff amount of points if we fail.
-			wTithingUse = wTithingUse / 2 + static_cast<short>(Calc_GetRandVal(wTithingUse / 2 + wTithingUse / 4));
-		SetDefNum("Tithing", wTithing - wTithingUse);
+			iTithingUse = iTithingUse / 2 + Calc_GetRandVal(iTithingUse / 2 + iTithingUse / 4);
+		SetDefNum("Tithing", iTithing - iTithingUse);
 	}
 	return true;
 }
@@ -3213,21 +3212,21 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 				iEffect *= ((pCharSrc->Skill_GetBase(SKILL_EVALINT) * 3) / 1000) + 1;
 
 				// Spell Damage Increase bonus
-				int DamageBonus = static_cast<int>(pCharSrc->GetDefNum("IncreaseSpellDam"));
-				if ( (DamageBonus > 15) && m_pPlayer && pCharSrc->m_pPlayer )		// Spell Damage Increase is capped at 15% on PvP
-					DamageBonus = 15;
+				int iDamageBonus = static_cast<int>(pCharSrc->GetDefNum("IncreaseSpellDam"));
+				if ( (iDamageBonus > 15) && m_pPlayer && pCharSrc->m_pPlayer )		// Spell Damage Increase is capped at 15% on PvP
+					iDamageBonus = 15;
 
 				// INT bonus
-				DamageBonus += pCharSrc->Stat_GetAdjusted(STAT_INT) / 10;
+				iDamageBonus += pCharSrc->Stat_GetAdjusted(STAT_INT) / 10;
 
 				// Inscription bonus
-				DamageBonus += pCharSrc->Skill_GetBase(SKILL_INSCRIPTION) / 100;
+				iDamageBonus += pCharSrc->Skill_GetBase(SKILL_INSCRIPTION) / 100;
 
 				// Racial Bonus (Berserk), gargoyles gains +3% Spell Damage Increase per each 20 HP lost
 				if ( (g_Cfg.m_iRacialFlags & RACIALF_GARG_BERSERK) && IsGargoyle() )
-					DamageBonus += minimum(3 * ((Stat_GetMax(STAT_STR) - Stat_GetVal(STAT_STR)) / 20), 12);		// value is capped at 12%
+					iDamageBonus += minimum(3 * ((Stat_GetMax(STAT_STR) - Stat_GetVal(STAT_STR)) / 20), 12);		// value is capped at 12%
 
-				iEffect += iEffect * DamageBonus / 100;
+				iEffect += iEffect * iDamageBonus / 100;
 			}
 		}
 	}
@@ -3407,7 +3406,7 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 
 		case SPELL_Heal:
 		case SPELL_Great_Heal:
-			UpdateStatVal(STAT_STR, static_cast<short>(iEffect));
+			UpdateStatVal(STAT_STR, iEffect);
 			break;
 
 		case SPELL_Night_Sight:
@@ -3493,9 +3492,9 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 				// Pre-AOS formula
 				iSkillLevel = iMax;
 			}
-			UpdateStatVal(STAT_INT, static_cast<short>(-iSkillLevel));
+			UpdateStatVal(STAT_INT, -iSkillLevel);
 			if ( pCharSrc )
-				pCharSrc->UpdateStatVal(STAT_INT, static_cast<short>(+iSkillLevel));
+				pCharSrc->UpdateStatVal(STAT_INT, +iSkillLevel);
 			break;
 		}
 
@@ -3540,16 +3539,16 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 		}
 
 		case SPELL_Mana:
-			UpdateStatVal(STAT_INT, static_cast<short>(iEffect));
+			UpdateStatVal(STAT_INT, iEffect);
 			break;
 
 		case SPELL_Refresh:
-			UpdateStatVal(STAT_DEX, static_cast<short>(iEffect));
+			UpdateStatVal(STAT_DEX, iEffect);
 			break;
 
 		case SPELL_Restore:		// increases both your hit points and your stamina.
-			UpdateStatVal(STAT_DEX, static_cast<short>(iEffect));
-			UpdateStatVal(STAT_STR, static_cast<short>(iEffect));
+			UpdateStatVal(STAT_DEX, iEffect);
+			UpdateStatVal(STAT_STR, iEffect);
 			break;
 
 		case SPELL_Sustenance:		// 105 // serves to fill you up. (Remember, healing rate depends on how well fed you are!)

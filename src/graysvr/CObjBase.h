@@ -583,12 +583,12 @@ public:
 		// IT_LAVA
 		struct
 		{
-			short m_PolyStr;	// more1l=polymorph effect of this. (on strength)
-			short m_PolyDex;	// more1h=polymorph effect of this. (on dex)
-			int  m_spellcharges; // more2=not sure how used here..
-			WORD m_spell;		// morex=SPELL_TYPE = The magic spell cast on this. (daemons breath)(boots of strength) etc
-			WORD m_spelllevel;	// morey=0-1000=level of the spell.
-			BYTE m_pattern;		// morez = light pattern - CAN_I_LIGHT LIGHT_QTY
+			int  m_PolyStr;			// more1l=polymorph effect of this. (on strength)
+			int  m_PolyDex;			// more1h=polymorph effect of this. (on dex)
+			int  m_spellcharges;	// more2=not sure how used here..
+			WORD m_spell;			// morex=SPELL_TYPE = The magic spell cast on this. (daemons breath)(boots of strength) etc
+			WORD m_spelllevel;		// morey=0-1000=level of the spell.
+			BYTE m_pattern;			// morez = light pattern - CAN_I_LIGHT LIGHT_QTY
 		} m_itSpell;
 
 		// IT_SPELLBOOK
@@ -2745,10 +2745,10 @@ public:
 	// Skills, Stats and health
 	struct
 	{
-		short	m_base;
-		short	m_mod;			// signed for modifier
-		short	m_val;			// signed for karma
-		short	m_max;			// max
+		int		m_base;
+		int		m_mod;			// signed for modifier
+		int		m_val;			// signed for karma
+		int		m_max;			// max
 		WORD	m_regen;		// Tick time since last regen.
 	} m_Stat[STAT_QTY];
 
@@ -3081,31 +3081,30 @@ public:
 	bool CanUse( CItem * pItem, bool fMoveOrConsume ) const;
 	bool IsMountCapable() const;
 
-	WORD   Food_CanEat( CObjBase * pObj ) const;
-	short  Food_GetLevelPercent() const;
+	WORD Food_CanEat( CObjBase * pObj ) const;
+	int Food_GetLevelPercent() const;
 	LPCTSTR Food_GetLevelMessage( bool fPet, bool fHappy ) const;
 
 public:
-	short	Stat_GetAdjusted( STAT_TYPE i ) const;
+	int Stat_GetAdjusted(STAT_TYPE i) const;
 
-	void	Stat_SetBase( STAT_TYPE i, short iVal );
-	short	Stat_GetBase( STAT_TYPE i ) const;
-	void	Stat_AddBase( STAT_TYPE i, short iVal );
+	void Stat_SetBase(STAT_TYPE i, int iVal);
+	int Stat_GetBase(STAT_TYPE i) const;
 
-	void	Stat_AddMod( STAT_TYPE i, short iVal );
-	void	Stat_SetMod( STAT_TYPE i, short iVal );
-	short	Stat_GetMod( STAT_TYPE i ) const;
+	void Stat_AddMod(STAT_TYPE i, int iVal);
+	void Stat_SetMod(STAT_TYPE i, int iVal);
+	int Stat_GetMod(STAT_TYPE i) const;
 
-	void	Stat_SetVal( STAT_TYPE i, short iVal );
-	short	Stat_GetVal( STAT_TYPE i ) const;
+	void Stat_SetVal(STAT_TYPE i, int iVal);
+	int Stat_GetVal(STAT_TYPE i) const;
 
-	void	Stat_SetMax( STAT_TYPE i, short iVal );
-	short	Stat_GetMax( STAT_TYPE i ) const;
-	short	Stat_GetSum() const;
+	void Stat_SetMax(STAT_TYPE i, int iVal);
+	int Stat_GetMax(STAT_TYPE i) const;
 
-	short	Stat_GetLimit( STAT_TYPE i ) const;
+	int Stat_GetSum() const;
+	int Stat_GetLimit(STAT_TYPE i) const;
 
-	bool Stat_Decrease( STAT_TYPE stat, SKILL_TYPE skill = (SKILL_TYPE)NULL);
+	bool Stat_Decrease( STAT_TYPE stat, SKILL_TYPE skill);
 	bool Stats_Regen(INT64 iTimeDiff);
 	WORD Stats_GetRegenVal(STAT_TYPE iStat, bool bGetTicks);
 
@@ -3208,12 +3207,12 @@ public:
 	}
 
 	void UpdateStatsFlag() const;
-	void UpdateStatVal( STAT_TYPE type, short iChange = 0, short iLimit = 0 );
+	void UpdateStatVal(STAT_TYPE type, int iChange = 0, int iLimit = 0);
 	void UpdateHitsFlag();
 	void UpdateModeFlag();
 	void UpdateManaFlag() const;
 	void UpdateStamFlag() const;
-	void UpdateRegenTimers( STAT_TYPE iStat, short iVal);
+	void UpdateRegenTimers(STAT_TYPE iStat, WORD iVal);
 	ANIM_TYPE GenerateAnimate(ANIM_TYPE action, bool fTranslate = true, bool fBackward = false, BYTE iFrameDelay = 0, BYTE iAnimLen = 7);
 	bool UpdateAnimate(ANIM_TYPE action, bool fTranslate = true, bool fBackward = false, BYTE iFrameDelay = 0, BYTE iAnimLen = 7);
 
@@ -3860,7 +3859,7 @@ public:
 	bool Death();
 	bool Reveal( DWORD dwFlags = 0 );
 	void Jail( CTextConsole * pSrc, bool fSet, int iCell );
-	void EatAnim( LPCTSTR pszName, short iQty );
+	void EatAnim( LPCTSTR pszName, int iQty );
 	/**
 	* @Brief I'm calling guards (Player speech)
 	*
@@ -4037,7 +4036,7 @@ public:
 	bool OnAttackedBy(CChar *pCharSrc, bool bPetsCommand = false, bool bShouldReveal = true);
 
 	bool OnTickEquip(CItem *pItem);
-	void OnTickFood(short iVal, int HitsHungerLoss);
+	void OnTickFood(int iVal, int iHitsHungerLoss);
 	void OnTickStatusUpdate();
 	bool OnTick();
 

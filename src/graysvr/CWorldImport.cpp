@@ -602,12 +602,12 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			}
 			else if ( s.IsKey("KARMA" ))
 			{
-				pChar->Stat_SetBase(STAT_KARMA, static_cast<short>(ATOI(pArg)));
+				pChar->Stat_SetBase(STAT_KARMA, ATOI(pArg));
 				continue;
 			}
 			else if ( s.IsKey("FAME" ))
 			{
-				pChar->Stat_SetBase(STAT_FAME, static_cast<short>(ATOI(pArg)));
+				pChar->Stat_SetBase(STAT_FAME, ATOI(pArg));
 				continue;
 			}
 			else if ( s.IsKey("TITLE" ))
@@ -617,27 +617,27 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			}
 			else if ( s.IsKey("STRENGTH" ))
 			{
-				pChar->Stat_SetBase(STAT_STR, static_cast<short>(ATOI(pArg)));
+				pChar->Stat_SetBase(STAT_STR, ATOI(pArg));
 			}
 			else if ( s.IsKey("DEXTERITY" ))
 			{
-				pChar->Stat_SetBase(STAT_DEX, static_cast<short>(ATOI(pArg)));
+				pChar->Stat_SetBase(STAT_DEX, ATOI(pArg));
 			}
 			else if ( s.IsKey("INTELLIGENCE" ))
 			{
-				pChar->Stat_SetBase(STAT_INT, static_cast<short>(ATOI(pArg)));
+				pChar->Stat_SetBase(STAT_INT, ATOI(pArg));
 			}
 			else if ( s.IsKey("HITPOINTS" ))
 			{
-				pChar->Stat_SetVal(STAT_STR,static_cast<short>(ATOI(pArg)));
+				pChar->Stat_SetVal(STAT_STR, ATOI(pArg));
 			}
 			else if ( s.IsKey("STAMINA" ))
 			{
-				pChar->Stat_SetVal(STAT_DEX,static_cast<short>(ATOI(pArg)));
+				pChar->Stat_SetVal(STAT_DEX, ATOI(pArg));
 			}
 			else if ( s.IsKey( "MANA" ))
 			{
-				pChar->Stat_SetVal(STAT_INT,static_cast<short>(ATOI(pArg)));
+				pChar->Stat_SetVal(STAT_INT, ATOI(pArg));
 			}
 			else if ( s.IsKeyHead( "SKILL", 5 ))
 			{

@@ -141,15 +141,15 @@ PacketHealthBarInfo::PacketHealthBarInfo(const CClient *target, CObjBase *object
 			version = 1;
 		writeByte(version);
 
-		short strength = objectChar->Stat_GetAdjusted(STAT_STR);
+		int strength = objectChar->Stat_GetAdjusted(STAT_STR);
 		if (strength < 0)
 			strength = 0;
 
-		short dexterity = objectChar->Stat_GetAdjusted(STAT_DEX);
+		int dexterity = objectChar->Stat_GetAdjusted(STAT_DEX);
 		if (dexterity < 0)
 			dexterity = 0;
 
-		short intelligence = objectChar->Stat_GetAdjusted(STAT_INT);
+		int intelligence = objectChar->Stat_GetAdjusted(STAT_INT);
 		if (intelligence < 0)
 			intelligence = 0;
 
@@ -207,11 +207,11 @@ PacketHealthBarInfo::PacketHealthBarInfo(const CClient *target, CObjBase *object
 
 		if (version >= 2) // T2A attributes
 		{
-			WORD statcap = objectChar->Stat_GetLimit(STAT_QTY);
+			int statcap = objectChar->Stat_GetLimit(STAT_QTY);
 			if (statcap < 0)
 				statcap = 0;
 
-			writeInt16(statcap);
+			writeInt16(static_cast<WORD>(statcap));
 		}
 
 		if (version >= 3) // Renaissance attributes
@@ -932,7 +932,7 @@ PacketDeathMenu::PacketDeathMenu(const CClient* target, Reason reason) : PacketS
 /***************************************************************************
  *
  *
- *	Packet 0x2E : PacketItemEquipped		sends equipped item  (NORMAL)
+ *	Packet 0x2E : PacketItemEquipped		sends equipped item (NORMAL)
  *
  *
  ***************************************************************************/
@@ -1273,13 +1273,13 @@ PacketQueryClient::PacketQueryClient(CClient* target, BYTE bCmd) : PacketSend(XC
 		{
 			//Update Map Definitions Command
 			int length = 2 * 9; //map count * 9
-            int count = length / 7;
-            int padding = 0;
-            if (length - (count * 7) > 0)
-            {
-                count++;
-                padding = (count * 7) - length; 
-            }
+			int count = length / 7;
+			int padding = 0;
+			if (length - (count * 7) > 0)
+			{
+				count++;
+				padding = (count * 7) - length; 
+			}
 
 			writeInt32(0);
 			writeInt32(4);
@@ -1294,11 +1294,10 @@ PacketQueryClient::PacketQueryClient(CClient* target, BYTE bCmd) : PacketSend(XC
 				writeInt16(static_cast<WORD>(g_MapList.GetY(i)));
 				writeInt16(static_cast<WORD>(g_MapList.GetX(i)));
 				writeInt16(static_cast<WORD>(g_MapList.GetY(i)));
-            }
+			}
 
-            for (int i = 0; i < padding; i++)
-                writeByte(0);
-			
+			for (int i = 0; i < padding; i++)
+				writeByte(0);
 		}
 		case 0x02:
 		{
@@ -4161,7 +4160,7 @@ PacketLogoutAck::PacketLogoutAck(const CClient* target) : PacketSend(XCMD_Logout
 /***************************************************************************
  *
  *
- *	Packet 0xD4 : PacketDisplayBookNew		display book  (LOW)
+ *	Packet 0xD4 : PacketDisplayBookNew		display book (LOW)
  *
  *
  ***************************************************************************/
@@ -4648,7 +4647,7 @@ PacketWaypointAdd::PacketWaypointAdd(const CClient *target, CObjBase *object, MA
 	writeByte(pt.m_z);
 	writeByte(pt.m_map);
 
-	writeInt16(type);
+	writeInt16(static_cast<WORD>(type));
 	writeInt16(0);
 
 	writeInt32(cliloc);

@@ -91,7 +91,7 @@ bool CChar::Noto_IsMurderer() const
 bool CChar::Noto_IsEvil() const
 {
 	ADDTOCALLSTACK("CChar::Noto_IsEvil");
-	short iKarma = Stat_GetAdjusted(STAT_KARMA);
+	int iKarma = Stat_GetAdjusted(STAT_KARMA);
 
 	//	guarded areas could be both RED and BLUE ones.
 	if ( m_pArea && m_pArea->IsGuarded() && m_pArea->m_TagDefs.GetKeyNum("RED") )
@@ -130,7 +130,7 @@ bool CChar::Noto_IsEvil() const
 bool CChar::Noto_IsNeutral() const
 {
 	ADDTOCALLSTACK("CChar::Noto_IsNeutral");
-	short iKarma = Stat_GetAdjusted(STAT_KARMA);
+	int iKarma = Stat_GetAdjusted(STAT_KARMA);
 	if ( m_pPlayer )
 		return (iKarma < g_Cfg.m_iPlayerKarmaNeutral);
 
@@ -497,7 +497,7 @@ void CChar::Noto_Fame( int iFameChange )
 
 	iFame += iFameChange;
 	Noto_ChangeDeltaMsg( iFame - Stat_GetAdjusted(STAT_FAME), g_Cfg.GetDefaultMsg( DEFMSG_NOTO_FAME ) );
-	Stat_SetBase(STAT_FAME, static_cast<short>(iFame));
+	Stat_SetBase(STAT_FAME, iFame);
 }
 
 void CChar::Noto_Karma( int iKarmaChange, int iBottom, bool bMessage )
@@ -535,9 +535,9 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom, bool bMessage )
 
 	iKarma += iKarmaChange;
 	Noto_ChangeDeltaMsg( iKarma - Stat_GetAdjusted(STAT_KARMA), g_Cfg.GetDefaultMsg( DEFMSG_NOTO_KARMA ) );
-	Stat_SetBase(STAT_KARMA, static_cast<short>(iKarma));
+	Stat_SetBase(STAT_KARMA, iKarma);
 	NotoSave_Update();
-	if ( bMessage == true )
+	if ( bMessage )
 	{
 		int iPrvLevel = Noto_GetLevel();
 		Noto_ChangeNewMsg( iPrvLevel );
@@ -2006,7 +2006,7 @@ effect_bounce:
 
 	// Apply damage
 	SoundChar(CRESND_GETHIT);
-	UpdateStatVal(STAT_STR, static_cast<short>(-iDmg));
+	UpdateStatVal(STAT_STR, -iDmg);
 	if ( pSrc->m_pClient )
 		pSrc->m_pClient->addHitsUpdate(this);		// always send updates to src
 
@@ -3230,33 +3230,33 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	if ( iDmg > 0 )
 	{
 		CItem *pCurseWeapon = LayerFind(LAYER_SPELL_Curse_Weapon);
-		short iHitLifeLeech = static_cast<short>(GetDefNum("HitLeechLife"));
+		int iHitLifeLeech = static_cast<int>(GetDefNum("HitLeechLife"));
 		if ( pWeapon && pCurseWeapon )
 			iHitLifeLeech += pCurseWeapon->m_itSpell.m_spelllevel;
 
 		bool bMakeLeechSound = false;
 		if ( iHitLifeLeech )
 		{
-			iHitLifeLeech = static_cast<short>(Calc_GetRandVal2(0, (iDmg * iHitLifeLeech * 30) / 10000));	// leech 0% ~ 30% of damage value
+			iHitLifeLeech = Calc_GetRandVal2(0, (iDmg * iHitLifeLeech * 30) / 10000);	// leech 0% ~ 30% of damage value
 			UpdateStatVal(STAT_STR, iHitLifeLeech, Stat_GetMax(STAT_STR));
 			bMakeLeechSound = true;
 		}
 
-		short iHitManaLeech = static_cast<short>(GetDefNum("HitLeechMana"));
+		int iHitManaLeech = static_cast<int>(GetDefNum("HitLeechMana"));
 		if ( iHitManaLeech )
 		{
-			iHitManaLeech = static_cast<short>(Calc_GetRandVal2(0, (iDmg * iHitManaLeech * 40) / 10000));	// leech 0% ~ 40% of damage value
+			iHitManaLeech = Calc_GetRandVal2(0, (iDmg * iHitManaLeech * 40) / 10000);	// leech 0% ~ 40% of damage value
 			UpdateStatVal(STAT_INT, iHitManaLeech, Stat_GetMax(STAT_INT));
 			bMakeLeechSound = true;
 		}
 
 		if ( GetDefNum("HitLeechStam") > Calc_GetRandLLVal(100) )
 		{
-			UpdateStatVal(STAT_DEX, static_cast<short>(iDmg), Stat_GetMax(STAT_DEX));	// leech 100% of damage value
+			UpdateStatVal(STAT_DEX, iDmg, Stat_GetMax(STAT_DEX));	// leech 100% of damage value
 			bMakeLeechSound = true;
 		}
 
-		short iManaDrain = 0;
+		int iManaDrain = 0;
 		if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B )
 		{
 			CItem *pPoly = LayerFind(LAYER_SPELL_Polymorph);
@@ -3264,9 +3264,9 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				iManaDrain += 5 + (15 * Skill_GetBase(SKILL_SPIRITSPEAK) / 1000);
 		}
 		if ( GetDefNum("HitManaDrain") > Calc_GetRandLLVal(100) )
-			iManaDrain += IMULDIV(static_cast<short>(iDmg), 20, 100);	// leech 20% of damage value
+			iManaDrain += IMULDIV(iDmg, 20, 100);	// leech 20% of damage value
 
-		short iTargMana = pCharTarg->Stat_GetVal(STAT_INT);
+		int iTargMana = pCharTarg->Stat_GetVal(STAT_INT);
 		if ( iManaDrain > iTargMana )
 			iManaDrain = iTargMana;
 

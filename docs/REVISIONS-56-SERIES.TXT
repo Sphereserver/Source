@@ -978,3 +978,6 @@ Fixed: Items placed on char backpack not checking char weight limit correctly be
 Fixed: Ship commands not working correctly.
 Fixed: Items not getting amount stacked when dropped on ground.
 Fixed: EF_ItemStacking .ini feature stacking items on unreachable Z heights.
+
+31-01-2018, Coruja
+Changed: Increased char max stats value from 32.767 to 65.535.

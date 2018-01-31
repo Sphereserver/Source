@@ -2649,7 +2649,7 @@ bool CChar::NPC_Act_Food()
 		if ( iClosestFood <= 1 )
 		{
 			//	can take and eat just in place
-			EatAnim(pClosestFood->GetName(), static_cast<short>(pClosestFood->ConsumeAmount(iEatAmount)));
+			EatAnim(pClosestFood->GetName(), static_cast<int>(pClosestFood->ConsumeAmount(iEatAmount)));
 			if ( !pClosestFood->GetAmount() )
 				pClosestFood->Plant_CropReset();	// set growth if this is a plant
 		}
@@ -2711,7 +2711,7 @@ bool CChar::NPC_Act_Food()
 			CItem	*pResBit = g_World.CheckNaturalResource(GetTopPoint(), IT_GRASS, true, this);
 			if ( pResBit && pResBit->GetAmount() && ( pResBit->GetTopPoint().m_z == iMyZ ) )
 			{
-				EatAnim("grass", static_cast<short>(pResBit->ConsumeAmount(10) / 10));
+				EatAnim("grass", static_cast<int>(pResBit->ConsumeAmount(10)) / 10);
 
 				//	the bit is not needed in a worldsave, timeout of 10 minutes
 				pResBit->m_TagDefs.SetNum("NOSAVE", 1);
@@ -3274,7 +3274,7 @@ void CChar::NPC_Food()
 		{
 			//	can take and eat just in place
 			EXC_SET("eating nearby");
-			EatAnim(pClosestFood->GetName(), static_cast<short>(pClosestFood->ConsumeAmount(iEatAmount)));
+			EatAnim(pClosestFood->GetName(), static_cast<int>(pClosestFood->ConsumeAmount(iEatAmount)));
 			if ( !pClosestFood->GetAmount() )
 				pClosestFood->Plant_CropReset();	// set growth if this is a plant
 		}
@@ -3328,7 +3328,7 @@ void CChar::NPC_Food()
 			if ( pResBit && pResBit->GetAmount() && ( pResBit->GetTopPoint().m_z == iMyZ ) )
 			{
 				EXC_SET("eating grass");
-				EatAnim("grass", static_cast<short>(pResBit->ConsumeAmount(15) / 10));
+				EatAnim("grass", static_cast<int>(pResBit->ConsumeAmount(15)) / 10);
 
 				//	the bit is not needed in a worldsave, timeout of 10 minutes
 				pResBit->m_TagDefs.SetNum("NOSAVE", 1);

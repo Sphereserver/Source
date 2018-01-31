@@ -925,11 +925,11 @@ bool CChar::Use_Drink( CItem * pItem )
 	}
 	else if ( pItem->IsType(IT_DRINK) && IsSetOF(OF_DrinkIsFood) )
 	{
-		short iRestore = 0;
+		int iRestore = 0;
 		if ( pItem->m_itDrink.m_foodval )
-			iRestore = static_cast<short>(pItem->m_itDrink.m_foodval);
+			iRestore = pItem->m_itDrink.m_foodval;
 		else
-			iRestore = static_cast<short>(pItem->Item_GetDef()->GetVolume());
+			iRestore = pItem->Item_GetDef()->GetVolume();
 
 		if ( iRestore < 1 )
 			iRestore = 1;

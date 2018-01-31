@@ -656,8 +656,8 @@ int CChar::FixWeirdness()
 				for ( int j = STAT_STR; j < STAT_BASE_QTY; j++ )
 				{
 					int iStatMax = Stat_GetLimit(static_cast<STAT_TYPE>(j));
-					if ( Stat_GetAdjusted(static_cast<STAT_TYPE>(j)) > iStatMax*g_Cfg.m_iOverSkillMultiply )
-						Stat_SetBase(static_cast<STAT_TYPE>(j), static_cast<short>(iStatMax));
+					if ( Stat_GetAdjusted(static_cast<STAT_TYPE>(j)) > iStatMax * g_Cfg.m_iOverSkillMultiply )
+						Stat_SetBase(static_cast<STAT_TYPE>(j), iStatMax);
 				}
 			}
 		}
@@ -692,18 +692,17 @@ void CChar::CreateNewCharCheck()
 	Stat_SetVal(STAT_DEX, Stat_GetMax(STAT_DEX));
 	Stat_SetVal(STAT_INT, Stat_GetMax(STAT_INT));
 
-	if ( !m_pPlayer )	// need a starting brain tick.
+	if ( m_pNPC )	// need a starting brain tick.
 	{
 		//	auto-set EXP/LEVEL level
-		if ( g_Cfg.m_bExperienceSystem && g_Cfg.m_iExperienceMode&EXP_MODE_AUTOSET_EXP )
+		if ( g_Cfg.m_bExperienceSystem && (g_Cfg.m_iExperienceMode & EXP_MODE_AUTOSET_EXP) )
 		{
 			if ( !m_exp )
 			{
 				CCharBase *pCharDef = Char_GetDef();
 
 				int mult = (Stat_GetMax(STAT_STR) + (Stat_GetMax(STAT_DEX) / 2) + Stat_GetMax(STAT_INT)) / 3;
-				m_exp = maximum(
-						Skill_GetBase(SKILL_ARCHERY),
+				m_exp = maximum(Skill_GetBase(SKILL_ARCHERY),
 						maximum(Skill_GetBase(SKILL_THROWING),
 						maximum(Skill_GetBase(SKILL_SWORDSMANSHIP),
 						maximum(Skill_GetBase(SKILL_MACEFIGHTING),
@@ -1694,7 +1693,6 @@ do_default:
 				strcpylen(pszKarmaAt0, pKarmaAt0->GetPtr());
 
 				int iKarma = Stat_GetAdjusted(STAT_KARMA);
-
 				size_t i = Str_ParseCmds( pszKarmaAt0, ppLevel_sep, COUNTOF(ppLevel_sep), "," ) - 1; //range
 				for (;;)
 				{
@@ -2203,13 +2201,7 @@ do_default:
 			i = g_Cfg.FindStatKey( pszKey );
 			if ( i >= 0 )
 			{
-				int iVal = s.GetArgVal();
-				if (iVal > SHRT_MAX)
-					iVal = SHRT_MAX;
-				else if (iVal < SHRT_MIN)
-					iVal = SHRT_MIN;
-
-				Stat_SetBase(static_cast<STAT_TYPE>(i), static_cast<short>(iVal));
+				Stat_SetBase(static_cast<STAT_TYPE>(i), static_cast<int>(s.GetArgVal()));
 				return true;
 			}
 
@@ -2218,7 +2210,7 @@ do_default:
 				i = g_Cfg.FindStatKey( pszKey+1 );
 				if ( i >= 0 )
 				{
-					Stat_SetBase(static_cast<STAT_TYPE>(i), static_cast<short>(s.GetArgVal()));
+					Stat_SetBase(static_cast<STAT_TYPE>(i), static_cast<int>(s.GetArgVal()));
 					return true;
 				}
 			}
@@ -2227,7 +2219,7 @@ do_default:
 				i = g_Cfg.FindStatKey( pszKey+3 );
 				if ( i >= 0 )
 				{
-					Stat_SetMod(static_cast<STAT_TYPE>(i), static_cast<short>(s.GetArgVal()));
+					Stat_SetMod(static_cast<STAT_TYPE>(i), static_cast<int>(s.GetArgVal()));
 					return true;
 				}
 			}
@@ -2242,19 +2234,19 @@ do_default:
 		case CHC_REGENHITS:
 			{
 				SetDefNum(s.GetKey(), s.GetArgVal(), false);
-				UpdateRegenTimers(STAT_STR, static_cast<short>(s.GetArgVal()));
+				UpdateRegenTimers(STAT_STR, static_cast<WORD>(s.GetArgVal()));
 			}
 			break;
 		case CHC_REGENSTAM:
 			{
 				SetDefNum(s.GetKey(), s.GetArgVal(), false);
-				UpdateRegenTimers(STAT_DEX, static_cast<short>(s.GetArgVal()));
+				UpdateRegenTimers(STAT_DEX, static_cast<WORD>(s.GetArgVal()));
 			}
 			break;
 		case CHC_REGENMANA:
 			{
 				SetDefNum(s.GetKey(), s.GetArgVal(), false);
-				UpdateRegenTimers(STAT_INT, static_cast<short>(s.GetArgVal()));
+				UpdateRegenTimers(STAT_INT, static_cast<WORD>(s.GetArgVal()));
 			}
 			break;
 		case CHC_INCREASEHITCHANCE:
@@ -2302,16 +2294,16 @@ do_default:
 			m_wBloodHue = static_cast<HUE_TYPE>(s.GetArgVal());
 			break;
 		case CHC_MAXFOOD:
-			Stat_SetMax(STAT_FOOD, static_cast<short>(s.GetArgVal()));
+			Stat_SetMax(STAT_FOOD, static_cast<int>(s.GetArgVal()));
 			break;
 		case CHC_MAXHITS:
-			Stat_SetMax(STAT_STR, static_cast<short>(s.GetArgVal()));
+			Stat_SetMax(STAT_STR, static_cast<int>(s.GetArgVal()));
 			break;
 		case CHC_MAXMANA:
-			Stat_SetMax(STAT_INT, static_cast<short>(s.GetArgVal()));
+			Stat_SetMax(STAT_INT, static_cast<int>(s.GetArgVal()));
 			break;
 		case CHC_MAXSTAM:
-			Stat_SetMax(STAT_DEX, static_cast<short>(s.GetArgVal()));
+			Stat_SetMax(STAT_DEX, static_cast<int>(s.GetArgVal()));
 			break;
 		case CHC_ACCOUNT:
 			return SetPlayerAccount( s.GetArgStr());
@@ -2481,7 +2473,7 @@ do_default:
 			m_SpeechHue = static_cast<HUE_TYPE>(s.GetArgVal());
 			break;
 		case CHC_FOOD:
-			Stat_SetVal(STAT_FOOD, static_cast<short>(s.GetArgVal()));
+			Stat_SetVal(STAT_FOOD, static_cast<int>(s.GetArgVal()));
 			break;
 
 		case CHC_GOLD:
@@ -2509,16 +2501,16 @@ do_default:
 
 		case CHC_HITPOINTS:
 		case CHC_HITS:
-			Stat_SetVal(STAT_STR, static_cast<short>(s.GetArgVal()));
+			Stat_SetVal(STAT_STR, static_cast<int>(s.GetArgVal()));
 			UpdateHitsFlag();
 			break;
 		case CHC_MANA:
-			Stat_SetVal(STAT_INT, static_cast<short>(s.GetArgVal()));
+			Stat_SetVal(STAT_INT, static_cast<int>(s.GetArgVal()));
 			UpdateManaFlag();
 			break;
 		case CHC_STAM:
 		case CHC_STAMINA:
-			Stat_SetVal(STAT_DEX, static_cast<short>(s.GetArgVal()));
+			Stat_SetVal(STAT_DEX, static_cast<int>(s.GetArgVal()));
 			UpdateStamFlag();
 			break;
 		case CHC_STEPSTEALTH:

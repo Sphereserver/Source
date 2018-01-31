@@ -894,16 +894,16 @@ public:
 	SOUND_TYPE m_soundDie;
 
 	CResourceQtyArray m_FoodType; // FOODTYPE=MEAT 15 (3)
-	short m_MaxFood;	// Derived from foodtype...this is the max amount of food we can eat. (based on str ?)
+	int m_MaxFood;	// Derived from foodtype...this is the max amount of food we can eat. (based on str ?)
 
 	WORD  m_defense;	// base defense. (basic to body type) can be modified by armor.
 	DWORD m_Anims;	// Bitmask of animations available for monsters. ANIM_TYPE
 	HUE_TYPE m_wBloodHue;	// when damaged , what color is the blood (-1) = no blood
 	HUE_TYPE m_wColor;
 
-	short m_Str;	// Base Str for type. (in case of polymorph)
-	short m_Dex;
-	short m_Int;
+	int m_Str;	// Base Str for type. (in case of polymorph)
+	int m_Dex;
+	int m_Int;
 	short m_iMoveRate;	// move rate percent
 
 	// NPC info ----------------------------------------------------

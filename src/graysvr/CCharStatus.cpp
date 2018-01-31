@@ -435,10 +435,10 @@ CItemCorpse *CChar::FindMyCorpse( bool ignoreLOS, int iRadius ) const
 int CChar::GetHealthPercent() const
 {
 	ADDTOCALLSTACK("CChar::GetHealthPercent");
-	short str = Stat_GetAdjusted(STAT_STR);
-	if ( !str )
+	int iStr = Stat_GetAdjusted(STAT_STR);
+	if ( !iStr )
 		return 0;
-	return IMULDIV(Stat_GetVal(STAT_STR), 100, str);
+	return IMULDIV(Stat_GetVal(STAT_STR), 100, iStr);
 }
 
 bool CChar::IsSwimming() const
@@ -634,19 +634,19 @@ CItem *CChar::GetSpellbook(SPELL_TYPE iSpell) const
 	return pReturn;
 }
 
-short CChar::Food_GetLevelPercent() const
+int CChar::Food_GetLevelPercent() const
 {
 	ADDTOCALLSTACK("CChar::Food_GetLevelPercent");
-	short iMax = Stat_GetMax(STAT_FOOD);
+	int iMax = Stat_GetMax(STAT_FOOD);
 	if ( iMax == 0 )
 		return 100;
-	return static_cast<short>(IMULDIV(Stat_GetVal(STAT_FOOD), 100, iMax));
+	return IMULDIV(Stat_GetVal(STAT_FOOD), 100, iMax);
 }
 
 LPCTSTR CChar::Food_GetLevelMessage(bool fPet, bool fHappy) const
 {
 	ADDTOCALLSTACK("CChar::Food_GetLevelMessage");
-	short iMax = Stat_GetMax(STAT_FOOD);
+	int iMax = Stat_GetMax(STAT_FOOD);
 	if ( iMax == 0 )
 		return g_Cfg.GetDefaultMsg(DEFMSG_PET_HAPPY_UNAFFECTED);
 
