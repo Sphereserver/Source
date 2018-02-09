@@ -985,3 +985,4 @@ Changed: Increased char max stats value from 32.767 to 65.535.
 09-02-2018, Coruja
 Changed: Linux builds now will require MySQL libs package 'libmysqlclient20' (MySQL 5.7) instead obsolete 'libmysqlclient18' (MySQL 5.5).
 	-This doesn't affect Windows builds, because libmysql.dll is already updated since a long time ago.
+[sphere.ini]: Added new ChatStaticChannels and ChatFlags settings to set server static channels and customize chat features.

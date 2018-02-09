@@ -82,6 +82,14 @@ enum REVEALFLAGS_TYPE
 	REVEALF_SPELLCAST			= 0x10			// Reveal when cast spells
 };
 
+enum CHATFLAGS_TYPE
+{
+	CHATF_AUTOJOIN				= 0x1,			// Auto join first static channel available (new chat system: join after client login / old chat system: join after open chat window)
+	CHATF_CHANNELCREATION		= 0x2,			// Enable channel creation
+	CHATF_CHANNELMODERATION		= 0x4,			// Enable channel moderation (old chat system only)
+	CHATF_CUSTOMNAMES			= 0x8			// Enable custom name selection when open chat window for the first time (old chat system only)
+};
+
 enum RACIALFLAGS_TYPE
 {
 	RACIALF_HUMAN_STRONGBACK	= 0x001,		// Increase carrying capacity (+60 stones of weight)
@@ -961,17 +969,21 @@ public:
 	HUE_TYPE	m_iColorNotoInvul;
 	HUE_TYPE	m_iColorNotoInvulGameMaster;
 	HUE_TYPE	m_iColorNotoDefault;
-	
+
 	HUE_TYPE	m_iColorInvis;
 	HUE_TYPE	m_iColorInvisSpell;
 	HUE_TYPE	m_iColorHidden;
 
 	// notoriety inheritance
-	int     m_iPetsInheritNotoriety;
+	int		m_iPetsInheritNotoriety;
 
 	int		m_iClientLoginMaxTries;
 	int		m_iClientLoginTempBan;
 	int		m_iMaxShipPlankTeleport;
+
+	// Chat system
+	CGString	m_sChatStaticChannels;
+	int			m_iChatFlags;
 
 	//	MySQL features
 	bool		m_bMySql;
@@ -1019,7 +1031,7 @@ public:
 	int			m_iMaxPolyStats;
 
 	// End INI file options.
-	
+
 	CResourceScript m_scpIni;	// Keep this around so we can link to it.
 	CResourceScript m_scpCryptIni; // Encryption keys are in here
 

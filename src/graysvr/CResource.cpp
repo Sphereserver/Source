@@ -242,6 +242,8 @@ CResource::CResource()
 	m_iClientLoginMaxTries = 0;		// maximum bad password tries before a temp ip ban
 	m_iClientLoginTempBan = 3*60*TICK_PER_SEC;
 	m_iMaxShipPlankTeleport = UO_MAP_VIEW_SIZE;
+	m_sChatStaticChannels = "General, Help, Trade, Looking For Group";
+	m_iChatFlags = (CHATF_AUTOJOIN|CHATF_CHANNELCREATION|CHATF_CHANNELMODERATION|CHATF_CUSTOMNAMES);
 
 	m_NPCNoFameTitle = true;
 }
@@ -379,6 +381,8 @@ enum RC_TYPE
 	RC_BUILD,
 	RC_CANUNDRESSPETS,			// m_fCanUndressPets
 	RC_CHARTAGS,				// m_fCharTags
+	RC_CHATFLAGS,				// m_iChatFlags
+	RC_CHATSTATICCHANNELS,		// m_sChatStaticChannels
 	RC_CLIENTLINGER,
 	RC_CLIENTLOGINMAXTRIES,		// m_iClientLoginMaxTries
 	RC_CLIENTLOGINTEMPBAN,		// m_iClientLoginTempBan
@@ -603,6 +607,8 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "BUILD",					{ ELEM_VOID,	0,											0 }},
 	{ "CANUNDRESSPETS",			{ ELEM_BOOL,	OFFSETOF(CResource,m_fCanUndressPets),		0 }},
 	{ "CHARTAGS",				{ ELEM_BOOL,	OFFSETOF(CResource,m_fCharTags),			0 }},
+	{ "CHATFLAGS",				{ ELEM_INT,		OFFSETOF(CResource,m_iChatFlags),			0 }},
+	{ "CHATSTATICCHANNELS",		{ ELEM_CSTRING,	OFFSETOF(CResource,m_sChatStaticChannels),	0 }},
 	{ "CLIENTLINGER",			{ ELEM_INT,		OFFSETOF(CResource,m_iClientLingerTime),	0 }},
 	{ "CLIENTLOGINMAXTRIES",	{ ELEM_INT,		OFFSETOF(CResource,m_iClientLoginMaxTries),	0 }},
 	{ "CLIENTLOGINTEMPBAN",		{ ELEM_INT,		OFFSETOF(CResource,m_iClientLoginTempBan),	0 }},
@@ -946,6 +952,12 @@ bool CResource::r_LoadVal( CScript &s )
 		case RC_BANKMAXWEIGHT:
 			m_iBankWMax = s.GetArgVal() * WEIGHT_UNITS;
 			break;
+		case RC_CHATFLAGS:
+			m_iChatFlags = s.GetArgVal();
+			break;
+		case RC_CHATSTATICCHANNELS:
+			m_sChatStaticChannels = s.GetArgStr();
+			break;
 		case RC_CLIENTLINGER:
 			m_iClientLingerTime = s.GetArgVal() * TICK_PER_SEC;
 			break;
@@ -1144,11 +1156,11 @@ bool CResource::r_LoadVal( CScript &s )
 			break;
 
 		case RC_EXPERIMENTAL:
-			g_Cfg.m_iExperimental = s.GetArgVal();
+			m_iExperimental = s.GetArgVal();
 			break;
 
 		case RC_OPTIONFLAGS:
-			g_Cfg.m_iOptionFlags = s.GetArgVal();
+			m_iOptionFlags = s.GetArgVal();
 			break;
 
 		case RC_TIMERCALL:
@@ -1156,7 +1168,7 @@ bool CResource::r_LoadVal( CScript &s )
 			break;
 
 		case RC_TOOLTIPCACHE:
-			g_Cfg.m_iTooltipCache = s.GetArgVal() * TICK_PER_SEC;
+			m_iTooltipCache = s.GetArgVal() * TICK_PER_SEC;
 			break;
 			
 #ifdef _MTNETWORK
@@ -1495,6 +1507,12 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			#else
 			 sVal = __DATE__;
 			#endif
+			break;
+		case RC_CHATFLAGS:
+			sVal.FormatHex(m_iChatFlags);
+			break;
+		case RC_CHATSTATICCHANNELS:
+			sVal = m_sChatStaticChannels;
 			break;
 		case RC_CLIENTLINGER:
 			sVal.FormatVal( m_iClientLingerTime / TICK_PER_SEC );
@@ -3740,36 +3758,45 @@ bool CResource::Load( bool fResync )
 		g_Serv.m_fResyncMultiRegions = false;
 	}
 
-	// parse eventsitem
+	// Parse EventsItem
 	m_iEventsItemLink.Empty();
-	if ( ! m_sEventsItem.IsEmpty() )
+	if ( !m_sEventsItem.IsEmpty() )
 	{
 		CScript script("EVENTSITEM", m_sEventsItem);
 		m_iEventsItemLink.r_LoadVal(script, RES_EVENTS);
 	}
 	
-	// parse eventspet
+	// Parse EventsPet
 	m_pEventsPetLink.Empty();
-	if ( ! m_sEventsPet.IsEmpty() )
+	if ( !m_sEventsPet.IsEmpty() )
 	{
 		CScript script("EVENTSPET", m_sEventsPet);
 		m_pEventsPetLink.r_LoadVal(script, RES_EVENTS);
 	}
 
-	// parse eventsplayer
+	// Parse EventsPlayer
 	m_pEventsPlayerLink.Empty();
-	if ( ! m_sEventsPlayer.IsEmpty() )
+	if ( !m_sEventsPlayer.IsEmpty() )
 	{
 		CScript script("EVENTSPLAYER", m_sEventsPlayer);
 		m_pEventsPlayerLink.r_LoadVal(script, RES_EVENTS);
 	}
 
-	// parse eventsregion
+	// Parse EventsRegion
 	m_pEventsRegionLink.Empty();
-	if ( ! m_sEventsRegion.IsEmpty() )
+	if ( !m_sEventsRegion.IsEmpty() )
 	{
 		CScript script("EVENTSREGION", m_sEventsRegion);
 		m_pEventsRegionLink.r_LoadVal(script, RES_REGIONTYPE);
+	}
+
+	// Parse ChatStaticChannels
+	if ( !m_sChatStaticChannels.IsEmpty() )
+	{
+		TCHAR *ppArgs[32];
+		size_t iChannels = Str_ParseCmds(const_cast<TCHAR *>(g_Cfg.m_sChatStaticChannels.GetPtr()), ppArgs, COUNTOF(ppArgs), ",");
+		for ( size_t i = 0; i < iChannels; i++ )
+			g_Serv.m_Chats.CreateChannel(ppArgs[i]);
 	}
 
 	LoadSortSpells();

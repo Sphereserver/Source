@@ -461,20 +461,19 @@ private:
 	friend class CChat;
 	CGString m_sName;
 	CGString m_sPassword;
+	bool m_bStatic;			// static channel created on server startup
 	bool m_bDefaultVoice;	// give others voice by default.
 
 public:
 	static const char *m_sClassName;
-	CGObArray<CGString *> m_NoVoices;			// current list of channel members with no voice (muted)
-	CGObArray<CGString *> m_Moderators;			// current list of channel moderators (may or may not be currently in the channel)
-	CGPtrTypeArray<CChatMember *> m_Members;	// current list of channel members
+	CGPtrTypeArray<CChatMember *> m_Members;	// list of channel members
+	CGObArray<CGString *> m_Moderators;			// list of channel moderators (may or may not be currently in the channel)
+	CGObArray<CGString *> m_Muted;				// list of channel muted members
 
 private:
-	bool AddMember(CChatMember *pMember);
+	void AddMember(CChatMember *pMember);
 	void RemoveMember(CChatMember *pMember);
-
 	void KickMember(CChatMember *pByMember, CChatMember *pMember);
-	void KickAll(CChatMember *pMember = NULL);
 
 	bool IsModerator(LPCTSTR pszName);
 	void SetModerator(LPCTSTR pszName, bool bRemoveAccess = false);
@@ -507,10 +506,11 @@ private:
 	}
 
 public:
-	explicit CChatChannel(LPCTSTR pszName, LPCTSTR pszPassword = NULL)
+	explicit CChatChannel(LPCTSTR pszName, LPCTSTR pszPassword = NULL, bool bStatic = false)
 	{
 		m_sName = pszName;
 		m_sPassword = pszPassword;
+		m_bStatic = bStatic;
 		m_bDefaultVoice = true;
 	};
 
@@ -549,8 +549,6 @@ class CChat
 {
 	// All the chat channels.
 private:
-	bool m_bAllowChannelCreation;
-
 	CChat(const CChat &copy);
 	CChat &operator=(const CChat &other);
 
@@ -558,48 +556,30 @@ public:
 	static const char *m_sClassName;
 	CGObList m_Channels;		// CChatChannel // List of chat channels.
 
-	CChat()
-	{
-		m_bAllowChannelCreation = true;
-	}
+	CChat() { };
 
-	bool CreateChannel(LPCTSTR pszName, LPCTSTR pszPassword, CChatMember *pMember);
+	bool CreateChannel(LPCTSTR pszName, LPCTSTR pszPassword = NULL, CChatMember *pMember = NULL);
 	void DeleteChannel(CChatChannel *pChannel);
-
-	bool JoinChannel(CChatMember *pMember, LPCTSTR pszChannel, LPCTSTR pszPassword);
-	void KillChannels();
+	void JoinChannel(LPCTSTR pszName, LPCTSTR pszPassword, CChatMember *pMember);
 
 	void Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID lang);
 	void QuitChat(CChatMember *pClient);
 
-	void DoCommand(CChatMember *pBy, LPCTSTR pszMsg);
-	void WhereIs(CChatMember *pBy, LPCTSTR pszName);
-
 	static void FormatName(CGString &sName, const CChatMember *pMember = NULL, bool bSystem = false);
 	static bool IsValidName(LPCTSTR pszName, bool bPlayer);
-	bool IsDuplicateChannelName(const char *pszName) const
-	{
-		return (FindChannel(pszName) != NULL);
-	}
 
 	void Broadcast(CChatMember *pFrom, LPCTSTR pszText, CLanguageID lang = 0, bool bOverride = false);
 	void BroadcastAddChannel(CChatChannel *pChannel);
 	void BroadcastRemoveChannel(CChatChannel *pChannel);
 
-	CChatChannel *GetFirstChannel() const
-	{
-		return static_cast<CChatChannel *>(m_Channels.GetHead());
-	}
-
 	CChatChannel *FindChannel(LPCTSTR pszChannel) const
 	{
-		CChatChannel *pChannel = GetFirstChannel();
-		for ( ; pChannel != NULL; pChannel = pChannel->GetNext() )
+		for ( CChatChannel *pChannel = static_cast<CChatChannel *>(m_Channels.GetHead()); pChannel != NULL; pChannel = pChannel->GetNext() )
 		{
 			if ( strcmpi(static_cast<LPCTSTR>(pChannel->m_sName), pszChannel) == 0 )
-				break;
+				return pChannel;
 		}
-		return pChannel;
+		return NULL;
 	};
 };
 

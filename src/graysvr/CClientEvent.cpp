@@ -36,7 +36,7 @@ void CClient::Event_ChatButton(const NCHAR *pszName)
 			return;
 	}
 
-	if ( !m_UseNewChatSystem && m_pAccount && m_pAccount->m_sChatName.IsEmpty() )
+	if ( !m_UseNewChatSystem && m_pAccount->m_sChatName.IsEmpty() && (g_Cfg.m_iChatFlags & CHATF_CUSTOMNAMES) )
 	{
 		// Client doesn't had sent any chat name to server yet, so ask for a permanent chat name (account based)
 		if ( (pszName == NULL) || (pszName[0] == 0) )
