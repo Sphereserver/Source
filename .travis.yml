@@ -2,10 +2,11 @@ language: cpp
 compiler: gcc
 addons:
   apt:
+    sources:
+    - mysql-5.7-trusty
     packages:
+    - libmysql++-dev:i386
     - linux-libc-dev:i386
-    - libmysqlclient-dev:i386
-    - libmysql++3:i386
     - gcc-4.8-multilib
     - g++-4.8-multilib
 git:

@@ -19,7 +19,7 @@ Even using 64bit OS, Sphere must be compiled/executed in 32bit mode to work prop
 * Open the project file `SphereSvr.vcxproj` using Visual Studio
 * On top menu, select the build configuration (Debug/Local/Nightly/Release) and click on `Build > Build Solution` to compile
 
-**NOTES:**
+##### NOTES:
 * **VS > 2010 users:** When opening `SphereSvr.vcxproj` for the first time it will request an update on project file, just click OK to update
 * **VS 2017 users:** VS 2017 have an modular installation, it comes with just basic components and extra components must be installed as needed. To use Sphere source you must open **Visual Studio Installer** to install `Desktop Development with C++` workload and `Windows Universal CRT SDK` individual component
 
@@ -29,35 +29,37 @@ You can compile using provided files.
 ### Linux
 Some libs are required to compile/execute Sphere on Linux. Use these commands to install:
 
-#### Ubuntu 12.x ~ 16.x
-If your OS is 64bit, enable 32bit support using:
-```bash
+#### Ubuntu 12.x ~ 18.x
+If you're using 64bit OS, enable 32bit support using:
+```
 sudo dpkg --add-architecture i386
 sudo apt-get update
 sudo apt-get dist-upgrade
 ```
-If you're using Ubuntu 16.x (or later), the default package repository only have MySQL 5.7 (and later) packages but Sphere needs MySQL 5.6, so add back the old package repository:
+If you're using Ubuntu 14.x (or older), the default package repository only have support up to MySQL 5.6, so add support for MySQL 5.7 packages using:
 ```
-sudo add-apt-repository 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.6'
+sudo add-apt-repository 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7'
 sudo apt-get update
 ```
 Install required packages:
-```bash
+```
 sudo apt-get install git
 sudo apt-get install g++:i386
 sudo apt-get install make:i386
-sudo apt-get install libmysqld-dev:i386 libmysql++:i386 libmysql++-dev:i386
+sudo apt-get install libmysql++-dev:i386
 ```
 
 #### CentOS 6 / 7 - Red Hat 6 / 7
-If you're using CentOS 7 / Red Hat 7, the default package repository only have support to MariaDB instead MySQL, so add back MySQL support using:
+If you're using CentOS 6 / Red Hat 6, the default package repository only have support up to MySQL 5.6, so add support for MySQL 5.7 packages using:
 ```
-sudo rpm -Uvh https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm
-sudo yum-config-manager --disable mysql57-community
-sudo yum-config-manager --enable mysql56-community
+sudo rpm -Uvh https://dev.mysql.com/get/mysql57-community-release-el6-11.noarch.rpm
+```
+If you're using CentOS 7 / Red Hat 7, the default package repository only have support to MariaDB instead MySQL, so add support for MySQL 5.7 packages using:
+```
+sudo rpm -Uvh https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
 ```
 Install required packages:
-```bash
+```
 sudo yum install git
 sudo yum install gcc-c++
 sudo yum install glibc-devel.i686
