@@ -456,9 +456,9 @@ bool CAccounts::Account_OnCmd( TCHAR * pszArgs, CTextConsole * pSrc )
 	{
 		CClient	*pClient = pAccount->FindClient();
 
-		char	*z = Str_GetTemp();
+		char *z = Str_GetTemp();
 		sprintf(z, "Account '%s': PLEVEL:%d, BLOCK:%d, IP:%s, CONNECTED:%s, ONLINE:%s\n",
-			pAccount->GetName(), pAccount->GetPrivLevel(), pAccount->IsPriv(PRIV_BLOCKED),
+			pAccount->GetName(), pAccount->GetPrivLevel(), static_cast<int>(pAccount->IsPriv(PRIV_BLOCKED)),
 			pAccount->m_Last_IP.GetAddrStr(), pAccount->m_dateLastConnect.Format(NULL),
 			( pClient ? ( pClient->GetChar() ? pClient->GetChar()->GetName() : "<not logged>" ) : "no" ));
 		pSrc->SysMessage(z);

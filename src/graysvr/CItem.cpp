@@ -1507,7 +1507,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 				const CItemBase * pAmmoDef = CItemBase::FindItemBase(AmmoID);
 				if ( pAmmoDef )
 				{
-					len += sprintf( pTemp+len, " (%d %ss)", m_itLoom.m_ClothQty, pAmmoDef->GetName());
+					len += sprintf( pTemp+len, " (%hu %ss)", m_itLoom.m_ClothQty, pAmmoDef->GetName());
 				}
 			}
 			break;
@@ -1519,7 +1519,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 				const CItemBase * pAmmoDef = CItemBase::FindItemBase(AmmoID);
 				if ( pAmmoDef )
 				{
-					len += sprintf( pTemp+len, " %d %ss", m_itArcheryButte.m_AmmoCount, pAmmoDef->GetName());
+					len += sprintf( pTemp+len, " %hu %ss", m_itArcheryButte.m_AmmoCount, pAmmoDef->GetName());
 				}
 			}
 			break;
@@ -4754,14 +4754,11 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	if ( IsTypeArmorWeapon())
 	{
 forcedamage:
-		CChar * pChar = dynamic_cast <CChar*> ( GetTopLevelObj());
-
 		if ( m_itArmor.m_Hits_Cur <= 1 )
 		{
-			m_itArmor.m_Hits_Cur = 0;
-			Emote( g_Cfg.GetDefaultMsg( DEFMSG_ITEM_DMG_DESTROYED ) );
+			Emote(g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DESTROYED));
 			Delete();
-			return( INT_MAX );
+			return INT_MAX;
 		}
 
 		int previousDefense = Armor_GetDefense();
@@ -4770,7 +4767,8 @@ forcedamage:
 		--m_itArmor.m_Hits_Cur;
 		UpdatePropertyFlag(AUTOTOOLTIP_FLAG_DURABILITY);
 
-		if (pChar != NULL && IsItemEquipped() )
+		CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
+		if ( pChar && IsItemEquipped() )
 		{
 			if ( previousDefense != Armor_GetDefense() )
 			{

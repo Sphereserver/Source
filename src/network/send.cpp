@@ -111,7 +111,7 @@ PacketHealthBarInfo::PacketHealthBarInfo(const CClient *target, CObjBase *object
 	ADDTOCALLSTACK("PacketHealthBarInfo::PacketHealthBarInfo");
 
 	const CChar *character = target->GetChar();
-	const CChar *objectChar = object->IsChar() ? static_cast<const CChar *>(object) : NULL;
+	const CChar *objectChar = static_cast<const CChar *>(object);
 	bool canRename = false;
 	BYTE version = 0;
 
@@ -120,7 +120,7 @@ PacketHealthBarInfo::PacketHealthBarInfo(const CClient *target, CObjBase *object
 	writeInt32(object->GetUID());
 	writeStringFixedASCII(object->GetName(), 30);
 
-	if (objectChar == character)
+	if (objectChar && (objectChar == character))
 	{
 		writeInt16(static_cast<WORD>(objectChar->Stat_GetVal(STAT_STR)));
 		writeInt16(static_cast<WORD>(objectChar->Stat_GetMax(STAT_STR)));
@@ -291,7 +291,7 @@ PacketHealthBarInfo::PacketHealthBarInfo(const CClient *target, CObjBase *object
 		}
 		else
 		{
-			const CItem *objectItem = object->IsItem() ? static_cast<const CItem *>(object) : NULL;
+			const CItem *objectItem = static_cast<const CItem *>(object);
 			if ( objectItem )
 				writeInt16(static_cast<WORD>((objectItem->m_itArmor.m_Hits_Cur * 100) / maximum(objectItem->m_itArmor.m_Hits_Max, 1)));
 		}
@@ -3825,8 +3825,8 @@ PacketEnableMapDiffs::PacketEnableMapDiffs(const CClient* target) : PacketExtend
 {
 	ADDTOCALLSTACK("PacketEnableMapDiffs::PacketEnableMapDiffs");
 
-	DWORD map;
-	DWORD mapCount = 1;
+	int map = 0;
+	int mapCount = 1;
 
 	// Find map count
 	for (map = 255; map >= 0; map--)
@@ -3838,7 +3838,7 @@ PacketEnableMapDiffs::PacketEnableMapDiffs(const CClient* target) : PacketExtend
 		break;
 	}
 
-	writeInt32(mapCount);
+	writeInt32(static_cast<DWORD>(mapCount));
 
 	for (map = 0; map < mapCount; map++)
 	{

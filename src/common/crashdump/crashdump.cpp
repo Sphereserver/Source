@@ -59,7 +59,7 @@ void CrashDump::StartCrashDump( DWORD processID, DWORD threadID, struct _EXCEPTI
 	char buf[128] = "";
 	SYSTEMTIME st;
 	GetSystemTime(&st);
-	sprintf(buf, "sphereCrash_%02i%02i-%02i%02i%02i%04i.dmp", st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+	sprintf(buf, "sphereCrash_%02hu%02hu-%02hu%02hu%02hu%04hu.dmp", st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
 	dumpFile = CreateFile(buf, GENERIC_WRITE, FILE_SHARE_WRITE, 0, CREATE_ALWAYS, 0, 0);
 	if (dumpFile == INVALID_HANDLE_VALUE)
 		return;

@@ -14,12 +14,12 @@ int CResource::Calc_MaxCarryWeight( const CChar * pChar ) const
 	//  Weight in tenths of stones i should be able to carry.
 
 	ASSERT(pChar);
-	signed int iQty = 40 + ( pChar->Stat_GetAdjusted(STAT_STR) * 35 / 10 ) + pChar->m_ModMaxWeight;
+	int iQty = 40 + (pChar->Stat_GetAdjusted(STAT_STR) * 35 / 10) + pChar->m_ModMaxWeight;
 	if ( iQty < 0 )
 		iQty = 0;
-	if ( (m_iRacialFlags & RACIALF_HUMAN_STRONGBACK) && pChar->IsHuman())
+	if ( (m_iRacialFlags & RACIALF_HUMAN_STRONGBACK) && pChar->IsHuman() )
 		iQty += 60;		//Humans can always carry +60 stones (Strong Back racial trait)
-	return( iQty * WEIGHT_UNITS );
+	return iQty * WEIGHT_UNITS;
 }
 
 //********************************
@@ -381,17 +381,14 @@ LPCTSTR CResource::Calc_MaptoSextant( CPointMap pntCoords )
 	CPointMap zeroPoint;
 	zeroPoint.Read(strcpy(z, g_Cfg.m_sZeroPoint));
 
-	long lLat = (pntCoords.m_y - zeroPoint.m_y) * 360 * 60 / g_MapList.GetY(zeroPoint.m_map);
-	long lLong;
+	int iLat = (pntCoords.m_y - zeroPoint.m_y) * 360 * 60 / g_MapList.GetY(zeroPoint.m_map);
+	int iLong;
 	if ( pntCoords.m_map <= 1 )
-		lLong = (pntCoords.m_x - zeroPoint.m_x) * 360 * 60 / UO_SIZE_X_REAL;
+		iLong = (pntCoords.m_x - zeroPoint.m_x) * 360 * 60 / UO_SIZE_X_REAL;
 	else
-		lLong = (pntCoords.m_x - zeroPoint.m_x) * 360 * 60 / g_MapList.GetX(pntCoords.m_map);
+		iLong = (pntCoords.m_x - zeroPoint.m_x) * 360 * 60 / g_MapList.GetX(pntCoords.m_map);
 
-	TCHAR * pTemp = Str_GetTemp();
-	sprintf( pTemp, "%io %i'%s, %io %i'%s",
-		abs(lLat / 60),  abs(lLat % 60),  (lLat <= 0) ? "N" : "S",
-		abs(lLong / 60), abs(lLong % 60), (lLong >= 0) ? "E" : "W");
-
+	TCHAR *pTemp = Str_GetTemp();
+	sprintf(pTemp, "%do %d'%s, %do %d'%s", abs(iLat / 60), abs(iLat % 60), (iLat <= 0) ? "N" : "S", abs(iLong / 60), abs(iLong % 60), (iLong >= 0) ? "E" : "W");
 	return pTemp;
 }

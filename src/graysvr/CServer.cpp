@@ -355,7 +355,7 @@ LPCTSTR CServer::GetStatusString( BYTE iIndex ) const
 			// typical (first time) poll response.
 			{
 				TCHAR szVersion[128];
-				sprintf(pTemp, SPHERE_TITLE ", Name=%s, Port=%d, Ver=" SPHERE_VERSION ", TZ=%d, EMail=%s, URL=%s, Lang=%s, CliVer=%s\n",
+				sprintf(pTemp, SPHERE_TITLE ", Name=%s, Port=%hu, Ver=" SPHERE_VERSION ", TZ=%d, Email=%s, URL=%s, Lang=%s, CliVer=%s\n",
 					GetName(), m_ip.GetPort(), m_TimeZone, static_cast<LPCTSTR>(m_sEMail), static_cast<LPCTSTR>(m_sURL), static_cast<LPCTSTR>(m_sLang),
 					m_ClientVersion.WriteClientVerString(m_ClientVersion.GetClientVer(), szVersion));
 			}
@@ -1840,7 +1840,7 @@ bool CServer::Load()
 nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "WinSock 1.1 not found!\n");
 				return( false );
 			}
-			sprintf(wSockInfo, "Using WinSock ver %d.%d (%s)\n", HIBYTE(wsaData.wVersion), LOBYTE(wsaData.wVersion), wsaData.szDescription);
+			sprintf(wSockInfo, "Using WinSock ver %hu.%hu (%s)\n", HIBYTE(wsaData.wVersion), LOBYTE(wsaData.wVersion), wsaData.szDescription);
 		}
 	}
 #endif

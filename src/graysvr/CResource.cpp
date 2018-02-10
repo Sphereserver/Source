@@ -3795,8 +3795,8 @@ bool CResource::Load( bool fResync )
 	{
 		TCHAR *ppArgs[32];
 		size_t iChannels = Str_ParseCmds(const_cast<TCHAR *>(g_Cfg.m_sChatStaticChannels.GetPtr()), ppArgs, COUNTOF(ppArgs), ",");
-		for ( size_t i = 0; i < iChannels; i++ )
-			g_Serv.m_Chats.CreateChannel(ppArgs[i]);
+		for ( size_t n = 0; n < iChannels; n++ )
+			g_Serv.m_Chats.CreateChannel(ppArgs[n]);
 	}
 
 	LoadSortSpells();

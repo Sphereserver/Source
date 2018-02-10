@@ -268,8 +268,8 @@ bool CChar::Use_Train_Dummy( CItem * pItem, bool fSetup )
 		if ( Skill_GetActive() == NPCACT_TRAINING )
 			return true;
 
-		char skilltag[32];
-		sprintf(skilltag, "OVERRIDE.PracticeMax.SKILL_%d", skill & ~0xD2000000);
+		char skilltag[38];
+		sprintf(skilltag, "OVERRIDE.PracticeMax.SKILL_%d", static_cast<int>(skill & ~0xD2000000));
 		CVarDefCont *pSkillTag = pItem->GetKey(skilltag, true);
 		WORD iMaxSkill = pSkillTag ? static_cast<WORD>(pSkillTag->GetValNum()) : g_Cfg.m_iSkillPracticeMax;
 		if ( Skill_GetBase(skill) > iMaxSkill )
@@ -375,7 +375,7 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 
 	CItem *pWeapon = m_uidWeapon.ItemFind();
 	SKILL_TYPE skill = pWeapon ? pWeapon->Weapon_GetSkill() : SKILL_NONE;
-	if ( !g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
+	if ( !pWeapon || !g_Cfg.IsSkillFlag(skill, SKF_RANGED) )
 	{
 		SysMessageDefault(DEFMSG_ITEMUSE_ARCHBUTTE_RANGED);
 		return true;
@@ -429,8 +429,8 @@ bool CChar::Use_Train_ArcheryButte( CItem * pButte, bool fSetup )
 		if ( (Skill_GetActive() == NPCACT_TRAINING) || (m_atFight.m_Swing_NextAction > CServTime::GetCurrentTime()) )
 			return true;
 
-		char skilltag[32];
-		sprintf(skilltag, "OVERRIDE.PracticeMax.SKILL_%d", skill & ~0xD2000000);
+		char skilltag[38];
+		sprintf(skilltag, "OVERRIDE.PracticeMax.SKILL_%d", static_cast<int>(skill & ~0xD2000000));
 		CVarDefCont *pSkillTag = pButte->GetKey(skilltag, true);
 		WORD iMaxSkill = pSkillTag ? static_cast<WORD>(pSkillTag->GetValNum()) : g_Cfg.m_iSkillPracticeMax;
 		if ( Skill_GetBase(skill) > iMaxSkill )

@@ -158,7 +158,7 @@ bool CPointBase::IsValidXY() const
 
 bool CPointBase::IsValidZ() const
 {
-	return ((m_z > -UO_SIZE_Z) && (m_z < UO_SIZE_Z));
+	return ((m_z > UO_SIZE_MIN_Z) && (m_z < UO_SIZE_Z));
 }
 
 bool CPointBase::IsValidPoint() const
@@ -750,17 +750,12 @@ TCHAR * CPointBase::WriteUsed( TCHAR * pszBuffer ) const
 {
 	ADDTOCALLSTACK_INTENSIVE("CPointBase::WriteUsed");
 	if ( m_map )
-	{
-		sprintf(pszBuffer, "%d,%d,%d,%d", m_x, m_y, m_z, m_map);
-	}
+		sprintf(pszBuffer, "%hd,%hd,%hhd,%hhu", m_x, m_y, m_z, m_map);
 	else if ( m_z )
-	{
-		sprintf(pszBuffer, "%d,%d,%d", m_x, m_y, m_z);
-	}
+		sprintf(pszBuffer, "%hd,%hd,%hhd", m_x, m_y, m_z);
 	else
-	{
-		sprintf(pszBuffer, "%d,%d", m_x, m_y);
-	}
+		sprintf(pszBuffer, "%hd,%hd", m_x, m_y);
+
 	return pszBuffer;
 }
 

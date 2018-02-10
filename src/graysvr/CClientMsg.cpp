@@ -1120,7 +1120,7 @@ void CClient::addItemName( const CItem * pItem )
 		// Show the restock count
 		if ( pMyCont != NULL && pMyCont->IsType(IT_EQ_VENDOR_BOX) )
 		{
-			len += sprintf( szName+len, " (%d restock)", pItem->GetContainedLayer());
+			len += sprintf(szName + len, " (%hhu restock)", pItem->GetContainedLayer());
 		}
 		switch ( pItem->GetType() )
 		{
