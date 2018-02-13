@@ -6,9 +6,8 @@ addons:
     - mysql-5.7-trusty
     packages:
     - libmysql++-dev:i386
-    - linux-libc-dev:i386
-    - gcc:i386
-    - g++:i386
+    - gcc-multilib
+    - g++-multilib
 git:
   depth: false
 notifications:

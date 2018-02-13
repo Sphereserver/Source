@@ -44,7 +44,8 @@ sudo apt-get update
 Install required packages:
 ```
 sudo apt-get install git
-sudo apt-get install gcc:i386 g++:i386
+sudo apt-get install gcc-multilib
+sudo apt-get install g++-multilib
 sudo apt-get install make:i386
 sudo apt-get install libmysql++-dev:i386
 ```
