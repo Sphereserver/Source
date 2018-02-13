@@ -7,8 +7,8 @@ addons:
     packages:
     - libmysql++-dev:i386
     - linux-libc-dev:i386
-    - gcc-4.8-multilib
-    - g++-4.8-multilib
+    - gcc:i386
+    - g++:i386
 git:
   depth: false
 notifications:
