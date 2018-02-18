@@ -153,25 +153,28 @@ NOTO_TYPE CChar::Noto_GetFlag(const CChar *pCharViewer, bool bAllowInvul, bool b
 	if ( !pCharViewer )
 		return NOTO_INVALID;
 
-	CChar *pThis = const_cast<CChar *>(this);
 	CChar *pTarget = const_cast<CChar *>(pCharViewer);
+	CChar *pSrc = const_cast<CChar *>(this);
+	if ( g_Cfg.m_iPetsInheritNotoriety && m_pNPC && NPC_PetGetOwner() )	// If I'm a pet and have owner I redirect noto to him.
+		pSrc = NPC_PetGetOwner();
+
+	if ( pSrc->m_notoSaves.size() )
+	{
+		int id = pSrc->NotoSave_GetID(pTarget);
+		if ( id != -1 )
+		{
+			NotoSaves refNoto = m_notoSaves.at(id);
+			return bGetColor ? refNoto.color : refNoto.value;
+		}
+	}
+
 	NOTO_TYPE iNoto = NOTO_INVALID;
 	NOTO_TYPE iColor = NOTO_INVALID;
-
-	if ( pThis->m_notoSaves.size() )
-	{
-		if ( g_Cfg.m_iPetsInheritNotoriety && pThis->m_pNPC && pThis->NPC_PetGetOwner() )	// If I'm a pet and have owner I redirect noto to him.
-			pThis = pThis->NPC_PetGetOwner();
-
-		int id = pThis->NotoSave_GetID(pTarget);
-		if ( id != -1 )
-			return pThis->NotoSave_GetValue(id, bGetColor);
-	}
 
 	if ( IsTrigUsed(TRIGGER_NOTOSEND) )
 	{
 		CScriptTriggerArgs args;
-		pThis->OnTrigger(CTRIG_NotoSend, pTarget, &args);
+		pSrc->OnTrigger(CTRIG_NotoSend, pTarget, &args);
 		iNoto = static_cast<NOTO_TYPE>(args.m_iN1);
 		iColor = static_cast<NOTO_TYPE>(args.m_iN2);
 		if ( iNoto < NOTO_INVALID )
@@ -179,10 +182,10 @@ NOTO_TYPE CChar::Noto_GetFlag(const CChar *pCharViewer, bool bAllowInvul, bool b
 	}
 
 	if ( iNoto == NOTO_INVALID )
-		iNoto = Noto_CalcFlag(pCharViewer, bAllowInvul);
+		iNoto = Noto_CalcFlag(pTarget, bAllowInvul);
 	if ( iColor == NOTO_INVALID )
 		iColor = iNoto;
-	pThis->NotoSave_Add(pTarget, iNoto, iColor);
+	pSrc->NotoSave_Add(pTarget, iNoto, iColor);
 
 	return bGetColor ? iColor : iNoto;
 }
@@ -639,68 +642,50 @@ void CChar::Noto_Kill(CChar * pKill, bool fPetKill, int iTotalKillers)
 	Noto_ChangeNewMsg(iPrvLevel);	// inform any title changes
 }
 
-int CChar::NotoSave() 
-{ 
-	ADDTOCALLSTACK("CChar::NotoSave");
-	return static_cast<int>(m_notoSaves.size());
-}
-void CChar::NotoSave_Add( CChar * pChar, NOTO_TYPE value, NOTO_TYPE color  )
+void CChar::NotoSave_Add(CChar *pChar, NOTO_TYPE value, NOTO_TYPE color)
 {
 	ADDTOCALLSTACK("CChar::NotoSave_Add");
 	if ( !pChar )
 		return;
-	CGrayUID uid = pChar->GetUID();
-	if  ( m_notoSaves.size() )	// Checking if I already have him in the list, only if there 's any list.
+	if ( m_notoSaves.size() )
 	{
-		for (std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); ++it)
+		for ( std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); ++it )
 		{
-			NotoSaves & refNoto = *it;
-			if ( refNoto.charUID == uid )
+			NotoSaves &refNoto = *it;
+			if ( refNoto.charUID == pChar->GetUID() )
 			{
-				// Found him, no actions needed so I forget about him...
-				// or should I update data ?
-
+				refNoto.elapsed = 0;
 				refNoto.value = value;
 				refNoto.color = color;
 				return;
 			}
 		}
 	}
-	NotoSaves refNoto;
-	refNoto.charUID = pChar->GetUID();
-	refNoto.time = 0;
-	refNoto.value = value;
-	refNoto.color = color;
-	m_notoSaves.push_back(refNoto);
+	NotoSaves refNew;
+	refNew.charUID = pChar->GetUID();
+	refNew.elapsed = 0;
+	refNew.value = value;
+	refNew.color = color;
+	m_notoSaves.push_back(refNew);
 }
 
-NOTO_TYPE CChar::NotoSave_GetValue( int id, bool bGetColor )
+void CChar::NotoSave_Delete(CChar *pChar)
 {
-	ADDTOCALLSTACK("CChar::NotoSave_GetValue");
-	if ( !m_notoSaves.size() )
-		return NOTO_INVALID;
-	if ( id < 0 )
-		return NOTO_INVALID;
-	if ( static_cast<int>(m_notoSaves.size()) <= id )
-		return NOTO_INVALID;
-	NotoSaves & refNotoSave = m_notoSaves.at(id);
-	if ( bGetColor && (refNotoSave.color > 0) )	// retrieving color if requested... only if a color is greater than 0 (to avoid possible crashes).
-		return refNotoSave.color;
-	else
-		return refNotoSave.value;
-}
-
-INT64 CChar::NotoSave_GetTime( int id )
-{
-	ADDTOCALLSTACK("CChar::NotoSave_GetTime");
-	if ( !m_notoSaves.size() )
-		return -1;
-	if ( id < 0 )
-		return NOTO_INVALID;
-	if ( static_cast<int>(m_notoSaves.size()) <= id )
-		return -1;
-	NotoSaves & refNotoSave = m_notoSaves.at(id);
-	return refNotoSave.time;
+	ADDTOCALLSTACK("CChar::NotoSave_Delete");
+	if ( !pChar )
+		return;
+	if ( m_notoSaves.size() )
+	{
+		for ( std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); ++it )
+		{
+			NotoSaves &refNoto = *it;
+			if ( refNoto.charUID == pChar->GetUID() )
+			{
+				m_notoSaves.erase(it);
+				return;
+			}
+		}
+	}
 }
 
 void CChar::NotoSave_Clear()
@@ -717,85 +702,40 @@ void CChar::NotoSave_Update()
 	UpdateMode(NULL, true);
 }
 
-void CChar::NotoSave_CheckTimeout()
+int CChar::NotoSave_GetID(CChar *pChar)
 {
-	ADDTOCALLSTACK("CChar::NotoSave_CheckTimeout");
-	if (m_notoSaves.size())
-	{
-		int count = 0;
-		for (std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); ++it)
-		{
-			NotoSaves & refNoto = *it;
-			if (++refNoto.time > g_Cfg.m_iNotoTimeout)	// updating timer while checking ini's value.
-			{
-				//m_notoSaves.erase(it);
-				NotoSave_Resend(count);
-				break;
-			}
-			count++;
-		}
-	}
-}
-
-void CChar::NotoSave_Resend( int id )
-{
-	ADDTOCALLSTACK("CChar::NotoSave_Resend()");
-	if ( !m_notoSaves.size() )
-		return;
-	if ( static_cast<int>(m_notoSaves.size()) <= id )
-		return;
-	NotoSaves & refNotoSave = m_notoSaves.at( id );
-	CGrayUID uid = refNotoSave.charUID;
-	CChar * pChar = uid.CharFind();
-	if ( ! pChar )
-		return;
-	NotoSave_Delete( pChar );
-	CObjBaseTemplate *pObj = pChar->GetTopLevelObj();
-	if ( GetDist(pObj) < UO_MAP_VIEW_SIGHT )
-		Noto_GetFlag(pChar, true);
-}
-
-int CChar::NotoSave_GetID( CChar * pChar )
-{
-	ADDTOCALLSTACK("CChar::NotoSave_GetID(CChar)");
-	if ( !pChar || !m_notoSaves.size() )
+	ADDTOCALLSTACK("CChar::NotoSave_GetID");
+	if ( !pChar )
 		return -1;
-	if ( NotoSave() )
+	if ( m_notoSaves.size() )
 	{
-		int count = 0;
+		int i = 0;
 		for ( std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); ++it )
 		{
-			NotoSaves & refNotoSave = m_notoSaves.at(count);
-			CGrayUID uid = refNotoSave.charUID;
-			if ( uid.CharFind() && uid == static_cast<DWORD>(pChar->GetUID()) )
-				return count;
-			count++;
+			NotoSaves &refNoto = *it;
+			if ( refNoto.charUID == pChar->GetUID() )
+				return i;
+			i++;
 		}
 	}
 	return -1;
 }
 
-bool CChar::NotoSave_Delete( CChar * pChar )
-{		
-	ADDTOCALLSTACK("CChar::NotoSave_Delete");
-	if ( ! pChar )
-		return false;
-	if ( NotoSave() )
+void CChar::NotoSave_CheckTimeout()
+{
+	ADDTOCALLSTACK("CChar::NotoSave_CheckTimeout");
+	if ( m_notoSaves.size() )
 	{
-		int count = 0;
 		for ( std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); ++it )
 		{
-			NotoSaves & refNotoSave = m_notoSaves.at(count);
-			CGrayUID uid = refNotoSave.charUID;
-			if ( uid.CharFind() && uid == static_cast<DWORD>(pChar->GetUID()) )
+			NotoSaves &refNoto = *it;
+			if ( ++refNoto.elapsed > g_Cfg.m_iNotoTimeout )
 			{
 				m_notoSaves.erase(it);
-				return true;
+				return;
 			}
-			count++;
 		}
 	}
-	return false;
 }
 
 //***************************************************************
@@ -2769,7 +2709,7 @@ void CChar::Attacker_CheckTimeout()
 			CChar *pEnemy = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
 			if ( !pEnemy )
 				continue;
-			if ( (++refAttacker.elapsed > g_Cfg.m_iAttackerTimeout) )
+			if ( ++refAttacker.elapsed > g_Cfg.m_iAttackerTimeout )
 			{
 				Attacker_Delete(static_cast<int>(count), true, ATTACKER_CLEAR_ELAPSED);
 				if ( m_pPlayer && pEnemy->m_pPlayer )	// only show retreat msg on PvP
@@ -2777,6 +2717,7 @@ void CChar::Attacker_CheckTimeout()
 					SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_COWARD_1), pEnemy->GetName());
 					pEnemy->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_COWARD_2), GetName());
 				}
+				return;
 			}
 		}
 	}

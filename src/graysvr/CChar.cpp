@@ -694,7 +694,7 @@ void CChar::CreateNewCharCheck()
 
 	if ( m_pNPC )	// need a starting brain tick.
 	{
-		//	auto-set EXP/LEVEL level
+		// auto-set EXP/LEVEL level
 		if ( g_Cfg.m_bExperienceSystem && (g_Cfg.m_iExperienceMode & EXP_MODE_AUTOSET_EXP) )
 		{
 			if ( !m_exp )
@@ -1529,7 +1529,7 @@ do_default:
 			}
 		case CHC_NOTOSAVE:
 			{
-				if ( strlen( pszKey ) == 8 )
+				if ( strlen(pszKey) == 8 )
 				{
 					sVal.FormatVal(m_notoSaves.size());
 					return true;
@@ -1541,14 +1541,11 @@ do_default:
 				if ( *pszKey == '.' )
 				{
 					pszKey++;
-					if ( !strnicmp(pszKey, "ID", 2 ) )
+					if ( !strnicmp(pszKey, "ID", 2) )
 					{
-						pszKey += 2;	// ID + whitspace
-						CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind());
-						if ( !NotoSave_GetID(pChar) )
-							sVal.FormatVal( -1 );
-						else
-							sVal.FormatVal(NotoSave_GetID(pChar));
+						pszKey += 2;	// ID + whitespace
+						CChar *pChar = static_cast<CChar *>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind());
+						sVal.FormatVal(NotoSave_GetID(pChar));
 						return true;
 					}
 					if ( m_notoSaves.size() )
@@ -1557,37 +1554,33 @@ do_default:
 						SKIP_SEPARATORS(pszKey);
 						if ( notoIndex < m_notoSaves.size() )
 						{
-							NotoSaves & refnoto = m_notoSaves.at(notoIndex);
-
-							if ( !strnicmp(pszKey, "VALUE", 5) )
+							NotoSaves refNoto = m_notoSaves.at(notoIndex);
+							if ( (!strnicmp(pszKey, "UID", 3)) || (*pszKey == '\0') )
 							{
-								sVal.FormatVal(refnoto.value);
+								sVal.FormatHex(refNoto.charUID);
 								return true;
 							}
 							else if ( !strnicmp(pszKey, "ELAPSED", 7) )
 							{
-								sVal.FormatVal(static_cast<long>(refnoto.time));
+								sVal.FormatLLVal(refNoto.elapsed);
 								return true;
 							}
-							else if (( !strnicmp(pszKey, "UID", 3) ) || ( *pszKey == '\0' ))
+							else if ( !strnicmp(pszKey, "VALUE", 5) )
 							{
-								CGrayUID uid = refnoto.charUID;
-								sVal.FormatHex( uid.CharFind() ? refnoto.charUID : 0 );
+								sVal.FormatVal(refNoto.value);
 								return true;
 							}
-							else if (!strnicmp(pszKey, "COLOR", 5))
+							else if ( !strnicmp(pszKey, "COLOR", 5) )
 							{
-								sVal.FormatVal(refnoto.color);
+								sVal.FormatVal(refNoto.color);
 								return true;
 							}
 							return false;
 						}
 					}
 				}
-
 				return true;
 			}
-
 		case CHC_FIGHTRANGE: //RANGE is now writable so this is changed to FIGHTRANGE as readable only
 			sVal.FormatVal( CalcFightRange( m_uidWeapon.ItemFind() ) );
 			return true;
