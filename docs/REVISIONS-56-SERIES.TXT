@@ -986,3 +986,18 @@ Changed: Increased char max stats value from 32.767 to 65.535.
 Changed: Linux builds now will require MySQL libs package 'libmysqlclient20' (MySQL 5.7) instead obsolete 'libmysqlclient18' (MySQL 5.5).
 	-This doesn't affect Windows builds, because libmysql.dll is already updated since a long time ago.
 [sphere.ini]: Added new ChatStaticChannels and ChatFlags settings to set server static channels and customize chat features.
+
+13-02-2018, Coruja
+[items/multis/multis_misc.scp]: Removed duplicated MULTIDEFs
+[items/sphere_item_buildings.scp]: Added 'Dragon Turtle Fountain' MULTIDEFs
+[items/sphere_item_deco_carpet_rugs.scp]: Added 'World Tree' ITEMDEFs/MULTIDEFs
+[items/sphere_item_deco_wall_hangings.scp]: Fixed tribal banners using wrong names
+[items/sphere_item_holiday_anniversary.scp]: Added 'Codex of Virtue' items and fixed color of 'Enormous Venus Flytrap', 'Japanese Maple', 'Harpsichord Deed'
+[items/sphere_item_holiday_thanksgiving.scp]: Added publish 98 items
+[items/sphere_item_profession.scp]: Removed duplicated ITEMDEFs
+[items/sphere_item_provisions_misc.scp]: Added 'Hildebrandt Dragon Rug' MULTIDEFs
+[items/sphere_item_theme_pack_kings_collection.scp]: Fixed 'Dragon Lantern' using wrong ID
+[items/sphere_item_veteran_rewards.scp]: Added missing Veteran Rewards items
+
+19-02-2018, Coruja
+Fixed: Sphere console not closing correctly when it get closed before load startup files.

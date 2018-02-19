@@ -651,9 +651,9 @@ int Sphere_InitServer( int argc, char *argv[] )
 			dict.Close();
 		}
 	}
-	g_Serv.SetServerMode(SERVMODE_Run);	// ready to go.
 
-	EXC_SET("finilizing");
+	EXC_SET("finalizing");
+	g_Serv.SetServerMode(SERVMODE_Run);
 	g_Log.Event(LOGM_INIT, "Startup complete (Items=%lu, Chars=%lu, Accounts=%lu)\nPress '?' for console commands\n\n", g_Serv.StatGet(SERV_STAT_ITEMS), g_Serv.StatGet(SERV_STAT_CHARS), g_Serv.StatGet(SERV_STAT_ACCOUNTS));
 
 	if ( !g_Accounts.Account_GetCount() )
@@ -661,7 +661,7 @@ int Sphere_InitServer( int argc, char *argv[] )
 
 	// Trigger server start
 	g_Serv.r_Call("f_onserver_start", &g_Serv, NULL);
-	return 0;
+	return g_Serv.m_iExitFlag;
 
 	EXC_CATCH;
 
