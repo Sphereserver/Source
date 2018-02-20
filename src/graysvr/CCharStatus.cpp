@@ -888,20 +888,20 @@ bool CChar::CanSee( const CObjBaseTemplate *pObj ) const
 	if ( !pObj || IsDisconnected() || !pObj->GetTopLevelObj()->GetTopPoint().IsValidPoint() )
 		return false;
 
-	// First check the distance since if this will fail, we do not need to scan all subcontainers to find this result ;)
-	if ( pObj->GetTopLevelObj()->GetTopPoint().GetDistSight(GetTopPoint()) > GetSight() )
-		return false;
-
 	if ( pObj->IsItem() )
 	{
-		const CItem *pItem = static_cast<const CItem*>(pObj);
+		const CItem *pItem = static_cast<const CItem *>(pObj);
 		if ( !pItem || !CanSeeItem(pItem) )
+			return false;
+
+		int iDist = pItem->IsTypeMulti() ? UO_MAP_VIEW_RADAR : GetSight();
+		if ( GetTopPoint().GetDistSight(pObj->GetTopLevelObj()->GetTopPoint()) > iDist )
 			return false;
 
 		CObjBase *pObjCont = pItem->GetParentObj();
 		if ( pObjCont )
 		{
-			if ( !CanSeeInContainer(dynamic_cast<const CItemContainer*>(pObjCont)) )
+			if ( !CanSeeInContainer(dynamic_cast<const CItemContainer *>(pObjCont)) )
 				return false;
 
 			if ( IsSetEF(EF_FixCanSeeInClosedConts) )
@@ -909,7 +909,7 @@ bool CChar::CanSee( const CObjBaseTemplate *pObj ) const
 				// A client cannot see the contents of someone else's container, unless they have opened it first
 				if ( m_pClient && pObjCont->IsItem() && (pObjCont->GetTopLevelObj() != this) )
 				{
-					if ( m_pClient && m_pClient->m_openedContainers.find(pObjCont->GetUID().GetPrivateUID()) == m_pClient->m_openedContainers.end() )
+					if ( m_pClient && (m_pClient->m_openedContainers.find(pObjCont->GetUID().GetPrivateUID()) == m_pClient->m_openedContainers.end()) )
 					{
 #ifdef _DEBUG
 						if ( CanSee(pObjCont) )
@@ -934,17 +934,19 @@ bool CChar::CanSee( const CObjBaseTemplate *pObj ) const
 	}
 	else
 	{
-		const CChar *pChar = static_cast<const CChar*>(pObj);
+		const CChar *pChar = static_cast<const CChar *>(pObj);
 		if ( !pChar )
 			return false;
 		if ( pChar == this )
 			return true;
+		if ( GetTopPoint().GetDistSight(pChar->GetTopPoint()) > GetSight() )
+			return false;
 		if ( IsPriv(PRIV_ALLSHOW) )
 			return (GetPrivLevel() < pChar->GetPrivLevel()) ? false : true;
 
 		if ( m_pNPC && pChar->IsStatFlag(STATF_DEAD) )
 		{
-			if ( m_pNPC->m_Brain != NPCBRAIN_HEALER && Skill_GetBase(SKILL_SPIRITSPEAK) < 1000 )
+			if ( m_pNPC->m_Brain != NPCBRAIN_HEALER )
 				return false;
 		}
 		else if ( pChar->IsStatFlag(STATF_Invisible|STATF_Insubstantial|STATF_Hidden) )
@@ -957,8 +959,8 @@ bool CChar::CanSee( const CObjBaseTemplate *pObj ) const
 				{
 					CScriptTriggerArgs Args;
 					Args.m_iN1 = GetPrivLevel() <= pChar->GetPrivLevel();
-					CChar *pChar2 = const_cast<CChar*>(pChar);
-					CChar *this2 = const_cast<CChar*>(this);
+					CChar *pChar2 = const_cast<CChar *>(pChar);
+					CChar *this2 = const_cast<CChar *>(this);
 					this2->OnTrigger(CTRIG_SeeHidden, pChar2, &Args);
 					return (Args.m_iN1 != 0);
 				}
