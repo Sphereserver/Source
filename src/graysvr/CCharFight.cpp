@@ -1424,7 +1424,7 @@ void CChar::CallGuards( CChar * pCriminal )
 	else
 	{
 		// Search for a free guards nearby
-		CWorldSearch AreaGuard(GetTopPoint(), UO_MAP_VIEW_SIGHT);
+		CWorldSearch AreaGuard(GetTopPoint(), UO_MAP_VIEW_SIZE);
 		CChar *pGuardFound = NULL;
 		while ( (pGuardFound = AreaGuard.GetChar()) != NULL )
 		{
@@ -2824,7 +2824,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		return WAR_SWING_INVALID;
 
 	int iDist = GetTopDist3D(pCharTarg);
-	if ( iDist > UO_MAP_VIEW_SIZE )
+	if ( iDist > GetSight() )
 		return IsSetCombatFlags(COMBAT_STAYINRANGE) ? WAR_SWING_EQUIPPING : WAR_SWING_INVALID;
 
 	// I am on ship. Should be able to combat only inside the ship to avoid free sea and ground characters hunting
