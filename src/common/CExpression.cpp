@@ -295,8 +295,8 @@ INT64 Calc_GetRandLLVal(INT64 iQty)
 {
 	if ( iQty <= 0 )
 		return 0;
-	if ( iQty >= INT64_MAX )
-		return IMULDIV(g_World.m_Rand.genrand64_int64(), static_cast<DWORD>(iQty), INT64_MAX);
+	if ( iQty >= LLONG_MAX )
+		return IMULDIV(g_World.m_Rand.genrand64_int64(), static_cast<DWORD>(iQty), LLONG_MAX);
 
 	return g_World.m_Rand.genrand64_int64() % iQty;
 }

@@ -252,12 +252,7 @@ bool CPartyDef::SendMemberMsg( CChar *pCharDest, PacketSend *pPacket )
 	}
 
 	if ( pCharDest->m_pClient )
-	{
 		pPacket->send(pCharDest->m_pClient);
-		if ( *pPacket->getData() == PARTYMSG_Remove )
-			pCharDest->m_pClient->addReSync();
-	}
-
 	return true;
 }
 

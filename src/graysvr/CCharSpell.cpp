@@ -640,12 +640,14 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 		case LAYER_SPELL_Paralyze:
 		{
 			StatFlag_Clear(STATF_Freeze);
-			UpdateMode();	// immediately tell the client that now he's able to move (without this, it will be able to move only on next tick update)
 			if ( m_pClient )
+			{
+				m_pClient->addCharMove(this);	// immediately tell the client that now he's unparalyzed (without this, it will be unparalyzed only on next tick update)
 				m_pClient->removeBuff(BI_PARALYZE);
+			}
 			return;
 		}
-		case LAYER_SPELL_Strangle:	// TO-DO: NumBuff[0] and NumBuff[1] to hold the damage range values.
+		case LAYER_SPELL_Strangle:
 		{
 			if ( m_pClient )
 				m_pClient->removeBuff(BI_STRANGLE);
@@ -1244,11 +1246,14 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 		case LAYER_SPELL_Paralyze:
 		{
 			StatFlag_Set(STATF_Freeze);
-			UpdateMode();
-			if ( m_pClient && IsSetOF(OF_Buffs) )
+			if ( m_pClient )
 			{
-				m_pClient->removeBuff(BI_PARALYZE);
-				m_pClient->addBuff(BI_PARALYZE, 1075827, 1075828, iTimerEffect);
+				m_pClient->addCharMove(this);	// immediately tell the client that now he's paralyzed (without this, it will be paralyzed only on next tick update)
+				if ( IsSetOF(OF_Buffs) )
+				{
+					m_pClient->removeBuff(BI_PARALYZE);
+					m_pClient->addBuff(BI_PARALYZE, 1075827, 1075828, iTimerEffect);
+				}
 			}
 			return;
 		}

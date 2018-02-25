@@ -1003,3 +1003,6 @@ Changed: Linux builds now will require MySQL libs package 'libmysqlclient20' (My
 Fixed: Sphere console not closing correctly when it get closed before load startup files.
 Fixed: Function CANSEELOS not working correctly on clients with increased view distance (screen resolution > 800x600).
 Fixed: Multis (houses/boats) not being loaded at proper distance when client is walking.
+
+25-02-2018, Coruja
+Fixed: Server sending unnecessary 'update' packets to clients.

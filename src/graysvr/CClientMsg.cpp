@@ -1325,6 +1325,7 @@ void CClient::addPlayerStart( CChar * pChar )
 	if ( m_pChar->m_pParty )
 		m_pChar->m_pParty->SendAddList(NULL);
 
+	addSpeedMode(m_pChar->m_pPlayer->m_speedMode);
 	addKRToolbar(m_pChar->m_pPlayer->getKrToolbarStatus());
 	resendBuffs();
 }
@@ -1801,7 +1802,7 @@ void CClient::addPlayerView( const CPointMap & pt, bool bFull )
 
 	addPlayerUpdate();
 
-	if ( pt == m_pChar->GetTopPoint() )
+	if ( m_pChar->GetTopPoint().IsSame2D(pt) )
 		return;		// not a real move i guess. might just have been a change in face dir.
 
 	m_Env.SetInvalid();		// must resend environ stuff
@@ -1813,23 +1814,21 @@ void CClient::addPlayerView( const CPointMap & pt, bool bFull )
 void CClient::addReSync()
 {
 	ADDTOCALLSTACK("CClient::addReSync");
-	if ( m_pChar == NULL )
+	// Reloads the client with all it needs
+	if ( !m_pChar )
 		return;
-	// Reloads the client with all it needs.
+
 	addMap();
 	addChar(m_pChar);
 	addPlayerView(NULL);
-	addLight();		// Current light level where I am.
-	addWeather();	// if any ...
-	addSpeedMode(m_pChar->m_pPlayer->m_speedMode);
+	addLight();
+	addWeather();
 	addHealthBarInfo(m_pChar);
 }
 
 void CClient::addMap()
 {
 	ADDTOCALLSTACK("CClient::addMap");
-	if ( m_pChar == NULL )
-		return;
 
 	CPointMap pt = m_pChar->GetTopPoint();
 	new PacketMapChange(this, static_cast<BYTE>(g_MapList.m_mapid[pt.m_map]));
@@ -1866,8 +1865,8 @@ void CClient::addMapWaypoint( CObjBase *pObj, MAPWAYPOINT_TYPE type )
 void CClient::addChangeServer()
 {
 	ADDTOCALLSTACK("CClient::addChangeServer");
-	CPointMap pt = m_pChar->GetTopPoint();
 
+	CPointMap pt = m_pChar->GetTopPoint();
 	new PacketZoneChange(this, pt);
 }
 
