@@ -470,109 +470,6 @@ bool IsID_WaterWash( ITEMID_TYPE id ) // static
 	return( IsID_WaterFish( id ));
 }
 
-//static bool IsID_Chair( ITEMID_TYPE id ) // static
-bool IsID_Chair( ITEMID_TYPE id ) // static
-{
-	// Strangely there is not chair flag in the statics.mul file ??? !!!
-	// IT_CHAIR
-
-	// todo: consider enum values for these chairs
-	switch (static_cast<WORD>(id))
-	{
-		case 0x0459: // 'marble bench'
-		case 0x045a: // 'marble bench'
-		case 0x045b: // 'stone bench'
-		case 0x045c: // 'stone bench'
-		case 0x0b2c: // 'wooden bench'
-		case 0x0b2d: // 'wooden bench'
-		case 0x0b2e: // 'wooden chair'
-		case 0x0b2f: // 'wooden chair'
-		case 0x0b30: // 'wooden chair'
-		case 0x0b31: // 'wooden chair'
-		case 0x0b32: // 'throne'
-		case 0x0b33: // 'throne'
-		case 0x0b4e: // 'chair'
-		case 0x0b4f: // 'chair'
-		case 0x0b50: // 'chair'
-		case 0x0b51: // 'chair'
-		case 0x0b52: // 'chair'
-		case 0x0b53: // 'chair'
-		case 0x0b54: // 'chair'
-		case 0x0b55: // 'chair'
-		case 0x0b56: // 'chair'
-		case 0x0b57: // 'chair'
-		case 0x0b58: // 'chair'
-		case 0x0b59: // 'chair'
-		case 0x0b5a: // 'chair'
-		case 0x0b5b: // 'chair'
-		case 0x0b5c: // 'chair'
-		case 0x0b5d: // 'chair'
-		case 0x0b5e: // 'foot stool'
-		case 0x0b5f: // 'bench'
-		case 0x0b60: // 'bench'
-		case 0x0b61: // 'bench'
-		case 0x0b62: // 'bench'
-		case 0x0b63: // 'bench'
-		case 0x0b64: // 'bench'
-		case 0x0b65: // 'bench'
-		case 0x0b66: // 'bench'
-		case 0x0b67: // 'bench'
-		case 0x0b68: // 'bench'
-		case 0x0b69: // 'bench'
-		case 0x0b6a: // 'bench'
-		case 0x0b91: // 'bench'
-		case 0x0b92: // 'bench'
-		case 0x0b93: // 'bench'
-		case 0x0b94: // 'bench'
-		case 0x0c17: // 'covered chair'
-		case 0x0c18: // 'covered chair'
-		case 0x1049: // 'loom bench'
-		case 0x104a: // 'loom bench'
-		case 0x1207: // 'stone bench'
-		case 0x1208: // 'stone bench'
-		case 0x1209: // 'stone bench'
-		case 0x120a: // 'stone bench'
-		case 0x120b: // 'stone bench'
-		case 0x120c: // 'stone bench'
-		case 0x1218: // 'stone chair'
-		case 0x1219: // 'stone chair'
-		case 0x121a: // 'stone chair'
-		case 0x121b: // 'stone chair'
-		case 0x1526: // 'throne'
-		case 0x1527: // 'throne'
-		case 0x19f1: // 'woodworker's bench'
-		case 0x19f2: // 'woodworker's bench'
-		case 0x19f3: // 'woodworker's bench'
-		case 0x19f5: // 'woodworker's bench'
-		case 0x19f6: // 'woodworker's bench'
-		case 0x19f7: // 'woodworker's bench'
-		case 0x19f9: // 'cooper's bench'
-		case 0x19fa: // 'cooper's bench'
-		case 0x19fb: // 'cooper's bench'
-		case 0x19fc: // 'cooper's bench'
-		case 0x1dc7: // 'sandstone bench'
-		case 0x1dc8: // 'sandstone bench'
-		case 0x1dc9: // 'sandstone bench'
-		case 0x1dca: // 'sandstone bench'
-		case 0x1dcb: // 'sandstone bench'
-		case 0x1dcc: // 'sandstone bench'
-		case 0x1dcd: // 'marble bench'
-		case 0x1dce: // 'marble bench'
-		case 0x1dcf: // 'marble bench'
-		case 0x1dd0: // 'marble bench'
-		case 0x1dd1: // 'marble bench'
-		case 0x1dd2: // 'marble bench'
-		case 0x1e6f: // 'chair'
-		case 0x1e78: // 'chair'
-		case 0x3dff: // 'bench'
-		case 0x3e00: // 'bench'
-			return( true );
-
-		default:
-			return( false );
-	}
-}
-
 bool CItemBase::GetItemData( ITEMID_TYPE id, CUOItemTypeRec2 * pData ) // static
 {
 	ADDTOCALLSTACK("CItemBase::GetItemData");
@@ -757,11 +654,6 @@ height_t CItemBase::GetItemHeight( ITEMID_TYPE id, DWORD & wBlockThis ) // stati
 	{
 		wBlockThis = CAN_I_MOVEMASK;
 		return( UO_SIZE_Z );
-	}
-	if ( IsID_Chair( id ))
-	{
-		wBlockThis = 0;
-		return 0;	// have no effective height if they don't block.
 	}
 	return( GetItemHeightFlags( tiledata, wBlockThis ));
 }
@@ -971,8 +863,7 @@ int CItemBase::GetMakeValue( int iQualityLevel )
 void CItemBase::ResetMakeValue()
 {
 	ADDTOCALLSTACK("CItemBase::ResetMakeValue");
-	m_values.m_iLo = INT_MIN;
-	m_values.m_iHi = INT_MIN;
+	m_values.Init();
 	GetMakeValue(0);
 }
 
@@ -1728,11 +1619,8 @@ CItemBase * CItemBase::MakeDupeReplacement( CItemBase * pBase, ITEMID_TYPE idmas
 	pBaseDupe = new CItemBaseDupe( id, pBaseNew );
 	if ( CItemBase::GetItemData( id, &tiledata ) )
 	{
-		pBaseDupe->SetTFlags( tiledata.m_flags );
-		height_t Height = CItemBase::GetItemHeightFlags( tiledata, pBaseDupe->m_Can );
-		//Height = ( pBaseDupe->GetTFlags() & 0x400 ) ? ( Height / 2 ) : ( Height ); //should not be done here
-		Height = IsID_Chair( id ) ? 0 : Height;
-		pBaseDupe->SetHeight( Height );
+		pBaseDupe->SetTFlags(tiledata.m_flags);
+		pBaseDupe->SetHeight(CItemBase::GetItemHeightFlags(tiledata, pBaseDupe->m_Can));
 	}
 	ReplaceItemBase( pBase, pBaseDupe );
 
