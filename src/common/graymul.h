@@ -1296,7 +1296,7 @@ enum GUMP_TYPE	// The gumps. (most of these are not useful to the server.)
 	GUMP_GIFT_BOX_OCTOGON		= 0x11d,
 	GUMP_GIFT_BOX_RECTANGLE		= 0x11e,
 	GUMP_GIFT_BOX_ANGEL			= 0x11f,
-	GUMP_HEART_SHAPED			= 0x120,
+	GUMP_GIFT_BOX_HEART_SHAPED	= 0x120,
 	GUMP_GIFT_BOX_TALL			= 0x121,
 	GUMP_GIFT_BOX_CHRISTMAS		= 0x122,
 	GUMP_WALL_SAFE				= 0x123,
@@ -1308,6 +1308,8 @@ enum GUMP_TYPE	// The gumps. (most of these are not useful to the server.)
 	GUMP_BOARD_CHECKER			= 0x91a,
 	GUMP_BOARD_BACKGAMMON		= 0x92e,
 	GUMP_MAP_2_NORTH			= 0x139d,
+	GUMP_CHEST_WEDDING			= 0x266a,
+	GUMP_STONE_BASE				= 0x266b,
 	GUMP_PLAGUE_BEAST			= 0x2a63,
 	GUMP_KING_COLLECTION_BOX	= 0x4d0c,
 	GUMP_BACKPACK_SUEDE			= 0x775e,
@@ -1315,7 +1317,10 @@ enum GUMP_TYPE	// The gumps. (most of these are not useful to the server.)
 	GUMP_BACKPACK_GHOUL_SKIN	= 0x7762,
 	GUMP_GIFT_BOX_SQUARE		= 0x777a,
 	GUMP_WALL_SAFE2				= 0x9bf2,
-	GUMP_CRATE_FLETCHING		= 0x9bfe
+	GUMP_CRATE_FLETCHING		= 0x9bfe,
+	GUMP_CHEST_WOODEN			= 0x9cd9,
+	GUMP_PILLOW_HEART			= 0x9cda,
+	GUMP_CHEST_METAL2			= 0xefe7
 };
 
 typedef WORD		TERRAIN_TYPE;

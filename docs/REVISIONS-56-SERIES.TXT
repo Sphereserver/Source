@@ -1006,3 +1006,6 @@ Fixed: Multis (houses/boats) not being loaded at proper distance when client is 
 
 25-02-2018, Coruja
 Fixed: Server sending unnecessary 'update' packets to clients.
+
+01-03-2018, Coruja
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.61 and enhanced client 4.0.61

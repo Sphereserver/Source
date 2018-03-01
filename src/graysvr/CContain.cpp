@@ -861,24 +861,24 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		{ GUMP_CHEST_METAL, 18, 105, 162, 178 },
 		{ GUMP_BOX_METAL, 16, 51, 184, 124 },
 		{ GUMP_SHIP_HATCH, 46, 74, 196, 184 },
-		{ GUMP_BOOK_SHELF, 76, 12, 140, 68 },
-		{ GUMP_CABINET_DARK, 24, 96, 196, 152 },
-		{ GUMP_CABINET_LIGHT, 24, 96, 196, 152 },
+		{ GUMP_BOOK_SHELF, 76, 12, 110, 68 },
+		{ GUMP_CABINET_DARK, 24, 96, 96, 152 },
+		{ GUMP_CABINET_LIGHT, 24, 96, 96, 152 },
 		{ GUMP_DRAWER_LIGHT, 16, 10, 154, 94 },
 		{ GUMP_BULLETIN_BOARD, 0, 0, 110, 62 },
 		{ GUMP_GIFT_BOX, 35, 10, 190, 95 },
 		{ GUMP_STOCKING, 41, 21, 186, 111 },
 		{ GUMP_ARMOIRE_ELVEN_WASH, 10, 10, 170, 115 },
-		{ GUMP_ARMOIRE_RED, 10, 10, 160, 105 },
-		{ GUMP_ARMOIRE_MAPLE, 10, 10, 160, 105 },
-		{ GUMP_ARMOIRE_CHERRY, 10, 10, 160, 105 },
-		{ GUMP_BASKET_TALL, 10, 10, 126, 81 },
-		{ GUMP_CHEST_WOOD_PLAIN, 10, 10, 160, 105 },
-		{ GUMP_CHEST_WOOD_GILDED, 10, 10, 160, 105 },
-		{ GUMP_CHEST_WOOD_ORNATE, 10, 10, 160, 105 },
-		{ GUMP_TALL_CABINET, 10, 10, 160, 105 },
-		{ GUMP_CHEST_WOOD_FINISH, 10, 10, 160, 105 },
-		{ GUMP_CHEST_WOOD_FINISH2, 10, 10, 160, 105 },
+		{ GUMP_ARMOIRE_RED, 10, 10, 170, 115 },
+		{ GUMP_ARMOIRE_MAPLE, 10, 10, 170, 115 },
+		{ GUMP_ARMOIRE_CHERRY, 10, 10, 170, 115 },
+		{ GUMP_BASKET_TALL, 10, 30, 170, 145 },
+		{ GUMP_CHEST_WOOD_PLAIN, 10, 10, 170, 115 },
+		{ GUMP_CHEST_WOOD_GILDED, 10, 10, 170, 115 },
+		{ GUMP_CHEST_WOOD_ORNATE, 10, 10, 170, 115 },
+		{ GUMP_TALL_CABINET, 10, 10, 170, 115 },
+		{ GUMP_CHEST_WOOD_FINISH, 10, 10, 170, 115 },
+		{ GUMP_CHEST_WOOD_FINISH2, 10, 10, 170, 115 },
 		//{ GUMP_BLESSED_STATUE, 0, 0, 0, 0 },		// TO-DO: confirm gump size
 		//{ GUMP_MAIL_BOX, 0, 0, 0, 0 },			// TO-DO: confirm gump size
 		{ GUMP_GIFT_BOX_CUBE, 23, 51, 163, 151 },
@@ -886,23 +886,28 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		{ GUMP_GIFT_BOX_OCTOGON, 25, 51, 165, 166 },
 		{ GUMP_GIFT_BOX_RECTANGLE, 16, 51, 156, 151 },
 		{ GUMP_GIFT_BOX_ANGEL, 21, 51, 161, 151 },
-		{ GUMP_HEART_SHAPED, 56, 30, 158, 104 },
+		{ GUMP_GIFT_BOX_HEART_SHAPED, 56, 30, 158, 104 },
 		//{ GUMP_GIFT_BOX_TALL, 0, 0, 0, 0 },		// TO-DO: confirm gump size
 		{ GUMP_GIFT_BOX_CHRISTMAS, 16, 51, 156, 166 },
 		//{ GUMP_WALL_SAFE, 0, 0, 0, 0 },			// TO-DO: confirm gump size
 		//{ GUMP_CHEST_PIRATE, 0, 0, 0, 0 },		// TO-DO: confirm gump size
 		//{ GUMP_FOUNTAIN_LIFE, 0, 0, 0, 0 },		// TO-DO: confirm gump size
 		//{ GUMP_SECRET_CHEST, 0, 0, 0, 0 },		// TO-DO: confirm gump size
-		//{ GUMP_SECURE_TRADE, 1, 1, 66, 26 },		// TO-DO: confirm gump size
+		{ GUMP_SECURE_TRADE, 20, 30, 380, 180 },
 		{ GUMP_BOARD_CHECKER, 0, 0, 282, 230 },
 		{ GUMP_BOARD_BACKGAMMON, 0, 0, 282, 210 },
-		{ GUMP_PLAGUE_BEAST, 60, 33, 460, 444 },
+		{ GUMP_CHEST_WEDDING, 16, 51, 184, 124 },
+		{ GUMP_STONE_BASE, 16, 51, 184, 124 },
+		{ GUMP_PLAGUE_BEAST, 60, 33, 460, 348 },
 		//{ GUMP_KING_COLLECTION_BOX, 0, 0, 0, 0 },	// TO-DO: confirm gump size
 		{ GUMP_BACKPACK_SUEDE, 44, 65, 186, 159 },
 		{ GUMP_BACKPACK_POLAR_BEAR, 44, 65, 186, 159 },
 		{ GUMP_BACKPACK_GHOUL_SKIN, 44, 65, 186, 159 },
 		//{ GUMP_GIFT_BOX_SQUARE, 0, 0, 0, 0 },		// TO-DO: confirm gump size
-		{ GUMP_CRATE_FLETCHING, 24, 96, 196, 152 }
+		{ GUMP_CRATE_FLETCHING, 24, 96, 196, 152 },
+		{ GUMP_CHEST_WOODEN, 10, 10, 170, 115 },
+		//{ GUMP_PILLOW_HEART, 0, 0, 0, 0 },		// TO-DO: confirm gump size
+		{ GUMP_CHEST_METAL2, 18, 105, 162, 178 }
 	};
 
 	for ( size_t i = 0; i < COUNTOF(sm_ContainerRect); i++ )
@@ -921,12 +926,20 @@ SOUND_TYPE CItemContainer::GetDropSound() const
 	CItemBase *pItemDef = Item_GetDef();
 	GUMP_TYPE gump = pItemDef->GetContainerGumpID();
 
-	if ( (gump == GUMP_BACKPACK) || (gump == GUMP_BAG) )
-		return SOUND_LEATHER;
-	if ( (gump == GUMP_BASKET_SQUARE) || (gump == GUMP_BASKET_ROUND) || (gump == GUMP_BASKET_TALL) )
-		return SOUND_RUSTLE;
-
-	return SOUND_NONE;
+	switch ( gump )
+	{
+		case GUMP_BACKPACK:
+		case GUMP_BAG:
+			return SOUND_LEATHER;
+		case GUMP_BASKET_SQUARE:
+		case GUMP_BASKET_ROUND:
+		case GUMP_BASKET_TALL:
+			return SOUND_RUSTLE;
+		case GUMP_PLAGUE_BEAST:
+			return SOUND_FISH_SPLASH;
+		default:
+			return SOUND_NONE;
+	}
 }
 
 void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, BYTE gridIndex )
@@ -1031,24 +1044,23 @@ void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, BYTE gridIndex )
 			SetKeyRing();
 			break;
 		case IT_EQ_VENDOR_BOX:
-			if ( !IsItemEquipped() )	// vendor boxes should ALWAYS be equipped !
+		{
+			if ( !IsItemEquipped() )
 			{
 				DEBUG_ERR(("Un-equipped vendor box uid=0%lx is bad\n", static_cast<DWORD>(GetUID())));
 				break;
 			}
+			CItemVendable *pItemVend = static_cast<CItemVendable *>(pItem);
+			if ( !pItemVend )
 			{
-				CItemVendable *pItemVend = dynamic_cast<CItemVendable *>(pItem);
-				if ( !pItemVend )
-				{
-					g_Log.Event(LOGL_WARN, "Vendor non-vendable item: %s uid=0%lx, vendor: %s uid=0%lx\n", pItem->GetResourceName(), pItem->GetUID().GetObjUID(), GetParentObj()->GetName(), GetParentObj()->GetUID().GetObjUID());
-					pItem->Delete();
-					break;
-				}
-
-				pItemVend->SetPlayerVendorPrice(0);	// unpriced yet.
-				pItemVend->SetContainedLayer(static_cast<BYTE>(pItem->GetAmount()));
+				DEBUG_ERR(("Vendor uid=0%lx selling non-vendable item '%s'\n", GetParentObj()->GetUID().GetObjUID(), pItem->GetResourceName()));
+				pItem->Delete();
+				break;
 			}
+			pItemVend->SetPlayerVendorPrice(0);		// unpriced yet
+			pItemVend->SetContainedLayer(static_cast<BYTE>(pItem->GetAmount()));
 			break;
+		}
 		case IT_GAME_BOARD:
 			// Can only place IT_GAME_PIECE inside here
 			if ( pItem->IsType(IT_GAME_PIECE) )
