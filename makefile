@@ -26,14 +26,11 @@ EXE	= spheresvr
 CC	= g++
 CCO	= gcc
 
-NO	= -fno-rtti -fno-exceptions
-EX	= -fexceptions -fnon-call-exceptions
-SPECIAL	= -s $(EX) $(DBGWARN)
+EX	= -s -fexceptions -fnon-call-exceptions
 
 GITREVISION	= $(shell expr $(shell git rev-list --count HEAD) - 2406)
 GITHASH		= $(shell git rev-parse --short HEAD)
 
-PROF	= -pg
 PIPE	= -pipe
 
 SRC	:= 	./src/graysvr/CAccount.cpp \
@@ -144,8 +141,8 @@ SRC	:= 	./src/graysvr/CAccount.cpp \
 		./src/network/send.cpp \
 		./src/network/receive.cpp
 
-O_FLAGS		= $(WARN) $(DBGWARN) $(PIPE) $(SPECIAL)
-CO_FLAGS	= $(CWARN) $(DBGWARN) $(PIPE) $(SPECIAL)
+O_FLAGS		= $(WARN) $(DBGWARN) $(PIPE) $(EX)
+CO_FLAGS	= $(CWARN) $(DBGWARN) $(PIPE) $(EX)
 C_FLAGS		= $(OPT) $(INCLUDE) $(DEFINES)
 CC_FLAGS	= $(COPT) $(INCLUDE) $(DEFINES)
 
@@ -169,9 +166,6 @@ tidy:
 		./src/network/*~ ./src/network/*orig ./src/network/*bak \
 		./src/tests/*~ ./src/tests/*orig ./src/tests/*bak
 
-tags:	$(SRC)
-	ctags $(SRC)
-
 git:
 ifdef GITREVISION
 	@echo 'Current build revision: $(GITREVISION) (GIT hash: $(GITHASH))'
@@ -179,19 +173,19 @@ ifdef GITREVISION
 	@echo '#define __GITHASH__ "$(GITHASH)"' >> ./src/common/version/GitRevision.h
 endif
 
+flags:
+	@echo 'Compiler flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)'
+
 gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
 
-
-flags:
-	@echo "Compiler Flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)"
 
 $(EXE): git flags gray
 	@$(CC) $(O_FLAGS) $(C_FLAGS) -o $(EXE) ./src/graysvr/*.o ./src/common/*.o ./src/common/twofish/*.o ./src/common/libev/*.o ./src/common/zlib/*.o ./src/common/sqlite/*.o ./src/sphere/*.o ./src/network/*.o $(LIBS)
 
 %.o:	%.cpp
-	@echo " Compiling $<"
+	@echo ' Compiling $<'
 	@$(CC) -c $(O_FLAGS) $(C_FLAGS) $< -o $@
 
 %.co:	%.c
-	@echo " Compiling $<"
+	@echo ' Compiling $<'
 	@$(CCO) -c $(CO_FLAGS) $(CC_FLAGS) $< -o $(@:.co=.o)

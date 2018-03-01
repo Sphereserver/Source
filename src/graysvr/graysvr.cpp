@@ -578,7 +578,9 @@ extern CDataBaseAsyncHelper g_asyncHdb;
 
 int Sphere_InitServer( int argc, char *argv[] )
 {
+#ifdef EXCEPTIONS_DEBUG
 	const char *m_sClassName = "Sphere";
+#endif
 	EXC_TRY("Init");
 	ASSERT(MAX_BUFFER >= sizeof(CCommand));
 	ASSERT(MAX_BUFFER >= sizeof(CEvent));
@@ -721,7 +723,9 @@ void Sphere_ExitServer()
 int Sphere_OnTick()
 {
 	// Give the world (CMainTask) a single tick. RETURN: 0 = everything is fine.
+#ifdef EXCEPTIONS_DEBUG
 	const char *m_sClassName = "Sphere";
+#endif
 	EXC_TRY("Tick");
 #ifdef _WIN32
 	EXC_SET("service");
@@ -818,7 +822,9 @@ void CServer::ShipTimers_Delete(CItemShip * ship)
 
 static void Sphere_MainMonitorLoop()
 {
+#ifdef EXCEPTIONS_DEBUG
 	const char *m_sClassName = "Sphere";
+#endif
 	// Just make sure the main loop is alive every so often.
 	// This should be the parent thread. try to restart it if it is not.
 	while ( ! g_Serv.m_iExitFlag )
