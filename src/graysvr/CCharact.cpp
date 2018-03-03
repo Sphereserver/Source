@@ -1742,8 +1742,8 @@ int CChar::ItemPickup(CItem * pItem, WORD amount)
 	// Remove the item from other clients view if the item is
 	// being taken from the ground by a hidden character to
 	// prevent lingering item.
-	if ( ( trigger == ITRIG_PICKUP_GROUND ) && (IsStatFlag( STATF_Insubstantial | STATF_Invisible | STATF_Hidden )) )
-        pItem->RemoveFromView( m_pClient );
+	if ( (trigger == ITRIG_PICKUP_GROUND) && IsStatFlag(STATF_Insubstantial|STATF_Invisible|STATF_Hidden) )
+		pItem->RemoveFromView(m_pClient);
 
 	// Pick it up.
 	pItem->SetDecayTime(-1);	// Kill any decay timer.
@@ -1868,7 +1868,7 @@ bool CChar::ItemEquip( CItem * pItem, CChar * pCharMsg, bool fFromDClick )
 
 	// strong enough to equip this . etc ?
 	// Move stuff already equipped.
-   	if ( pItem->GetAmount() > 1 )
+	if ( pItem->GetAmount() > 1 )
 		pItem->UnStackSplit(1, this);
 
 	LAYER_TYPE layer = CanEquipLayer(pItem, LAYER_QTY, pCharMsg, false);
@@ -2288,8 +2288,8 @@ bool CChar::Horse_Mount(CChar *pHorse)
 
 	TCHAR * sMountID = Str_GetTemp();
 	sprintf(sMountID, "mount_0x%x", pHorse->GetDispID());
-
 	LPCTSTR sMemoryID = g_Exp.m_VarDefs.GetKeyStr(sMountID);
+
 	RESOURCE_ID rid = g_Cfg.ResourceGetID(RES_QTY, sMemoryID);
 
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
@@ -2326,10 +2326,12 @@ bool CChar::Horse_Mount(CChar *pHorse)
 		}
 	}
 
+	Horse_UnMount();		// unmount if already mounted
+
 	if ( IsTrigUsed(TRIGGER_MOUNT) )
 	{
 		CScriptTriggerArgs Args(pHorse);
-   		if ( OnTrigger(CTRIG_Mount, this, &Args) == TRIGRET_RET_TRUE )
+		if ( OnTrigger(CTRIG_Mount, this, &Args) == TRIGRET_RET_TRUE )
 			return false;
 	}
 
@@ -2341,7 +2343,6 @@ bool CChar::Horse_Mount(CChar *pHorse)
 	if ( !pHorse->NPC_IsOwnedBy(this, false) )
 		pHorse->NPC_PetSetOwner(this, false);
 
-	Horse_UnMount();					// unmount if already mounted
 	pItem->SetType(IT_EQ_HORSE);
 	pItem->SetTimeout(TICK_PER_SEC);	// the first time we give it immediately a tick, then give the horse a tick everyone once in a while.
 	LayerAdd(pItem, LAYER_HORSE);		// equip the horse item

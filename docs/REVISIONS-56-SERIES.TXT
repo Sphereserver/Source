@@ -1009,3 +1009,11 @@ Fixed: Server sending unnecessary 'update' packets to clients.
 
 01-03-2018, Coruja
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.61 and enhanced client 4.0.61
+
+02-03-2018, Coruja
+[items/sphere_item_holiday_valentines.scp]: Added new Valentine's Day 2018 items
+[items/sphere_item_provisions_clothing.scp]: Added new Hooded Britannia Robes
+[items/sphere_item_unsorted.scp]: Updated some item names
+
+03-03-2018, Coruja
+Fixed: MOUNT property/function not working correctly.
