@@ -863,20 +863,21 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_CANSEELOS:
 		case OC_CANSEELOSFLAG:
 		{
-			bool bCanSee = (index == OC_CANSEE);
-			bool bFlags = (index == OC_CANSEELOSFLAG);
 			CChar *pChar = pSrc->GetChar();
+			bool bCanSee = (index == OC_CANSEE);
+			bool bUseFlags = (index == OC_CANSEELOSFLAG);
 			WORD flags = 0;
 
-			pszKey += bCanSee ? 6 : (bFlags ? 13 : 9);
+			pszKey += bCanSee ? 6 : (bUseFlags ? 13 : 9);
 			SKIP_SEPARATORS(pszKey);
 			GETNONWHITESPACE(pszKey);
 
-			if ( bFlags && *pszKey )
+			if ( bUseFlags && *pszKey )
 			{
 				flags = static_cast<WORD>(Exp_GetVal(pszKey));
 				SKIP_ARGSEP(pszKey);
 			}
+
 			if ( *pszKey )		// has an argument - UID to see(los) or POS to los only
 			{
 				CPointMap pt;
@@ -895,14 +896,17 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 				pChar = GetUID().CharFind();
 				if ( pChar )
-					sVal.FormatVal(bCanSee ? pChar->CanSee(pObj) : pChar->CanSeeLOS(pt, NULL, UO_MAP_VIEW_SIZE, flags));
+					sVal.FormatVal(bCanSee ? pChar->CanSee(pObj) : pChar->CanSeeLOS(pt, NULL, pChar->GetSight(), flags));
 				else
 					sVal.FormatVal(0);
 			}
-			else if ( !pChar )		// no char -> no see
-				sVal.FormatVal(0);
-			else					// standart way src TO current object
-				sVal.FormatVal(bCanSee ? pChar->CanSee(this) : pChar->CanSeeLOS(this, flags));
+			else
+			{
+				if ( pChar )	// standard way src TO current object
+					sVal.FormatVal(bCanSee ? pChar->CanSee(this) : pChar->CanSeeLOS(this, flags));
+				else
+					sVal.FormatVal(0);
+			}
 			break;
 		}
 		case OC_COLOR:
@@ -931,12 +935,12 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			size_t iArgQty = Str_ParseCmds(key, pszArg, COUNTOF(pszArg));
 			if ( iArgQty < 2 )
 			{
-				g_Log.EventError("SysMessagef with less than 1 args for the given text\n");
+				g_Log.EventError("Textf with less than 1 args for the given text\n");
 				return false;
 			}
 			if ( iArgQty > 4 )
 			{
-				g_Log.EventError("Too many arguments given to SysMessagef (max = text + 3\n");
+				g_Log.EventError("Too many arguments given to Textf (max = text + 3\n");
 				return false;
 			}
 			//strip quotes if any
