@@ -1017,3 +1017,6 @@ Fixed: Server sending unnecessary 'update' packets to clients.
 
 03-03-2018, Coruja
 Fixed: MOUNT property/function not working correctly.
+
+06-03-2018, Coruja
+Fixed: Console error when PetsInheritNotoriety .ini setting is enabled.

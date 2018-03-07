@@ -163,7 +163,7 @@ NOTO_TYPE CChar::Noto_GetFlag(const CChar *pCharViewer, bool bAllowInvul, bool b
 		int id = pSrc->NotoSave_GetID(pTarget);
 		if ( id != -1 )
 		{
-			NotoSaves refNoto = m_notoSaves.at(id);
+			NotoSaves refNoto = pSrc->m_notoSaves.at(id);
 			return bGetColor ? refNoto.color : refNoto.value;
 		}
 	}
@@ -647,26 +647,12 @@ void CChar::NotoSave_Add(CChar *pChar, NOTO_TYPE value, NOTO_TYPE color)
 	ADDTOCALLSTACK("CChar::NotoSave_Add");
 	if ( !pChar )
 		return;
-	if ( m_notoSaves.size() )
-	{
-		for ( std::vector<NotoSaves>::iterator it = m_notoSaves.begin(); it != m_notoSaves.end(); ++it )
-		{
-			NotoSaves &refNoto = *it;
-			if ( refNoto.charUID == pChar->GetUID() )
-			{
-				refNoto.elapsed = 0;
-				refNoto.value = value;
-				refNoto.color = color;
-				return;
-			}
-		}
-	}
-	NotoSaves refNew;
-	refNew.charUID = pChar->GetUID();
-	refNew.elapsed = 0;
-	refNew.value = value;
-	refNew.color = color;
-	m_notoSaves.push_back(refNew);
+	NotoSaves refNoto;
+	refNoto.charUID = pChar->GetUID();
+	refNoto.elapsed = 0;
+	refNoto.value = value;
+	refNoto.color = color;
+	m_notoSaves.push_back(refNoto);
 }
 
 void CChar::NotoSave_Delete(CChar *pChar)
