@@ -1375,7 +1375,7 @@ bool CWorld::SaveStage() // Save world state in stages.
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("stage '%d' qty '%u' time '%lld'\n", m_iSaveStage, m_SectorsQty, m_timeSave.GetTimeRaw());
+	g_Log.EventDebug("stage '%d' qty '%u' time '%llu'\n", m_iSaveStage, m_SectorsQty, m_timeSave.GetTimeRaw());
 	EXC_DEBUG_END;
 
 	m_iSaveStage++;	// to avoid loops, we need to skip the current operation in world save
@@ -2411,7 +2411,7 @@ DWORD CWorld::GetGameWorldTime( CServTime basetime ) const
 	// 8 real world seconds = 1 game minute.
 	// 1 real minute = 7.5 game minutes
 	// 3.2 hours = 1 game day.
-	return( static_cast<unsigned long>(basetime.GetTimeRaw() / g_Cfg.m_iGameMinuteLength) );
+	return static_cast<DWORD>(basetime.GetTimeRaw() / g_Cfg.m_iGameMinuteLength);
 }
 
 CServTime CWorld::GetNextNewMoon( bool bMoonIndex ) const
@@ -2433,7 +2433,7 @@ CServTime CWorld::GetNextNewMoon( bool bMoonIndex ) const
 	return(time);
 }
 
-unsigned int CWorld::GetMoonPhase (bool bMoonIndex) const
+unsigned int CWorld::GetMoonPhase( bool bMoonIndex ) const
 {
 	ADDTOCALLSTACK("CWorld::GetMoonPhase ");
 	// bMoonIndex is FALSE if we are looking for the phase of Trammel,
@@ -2443,23 +2443,14 @@ unsigned int CWorld::GetMoonPhase (bool bMoonIndex) const
 	// Full, Waning Gibbous, Third Quarter, and Waning Crescent
 
 	// To calculate the phase, we use the following formula:
-	//				CurrentTime % SynodicPeriod
-	//	Phase = 	-----------------------------------------     * 8
-	//			              SynodicPeriod
-	//
+	//			CurrentTime % SynodicPeriod
+	//	Phase = --------------------------- * 8
+	//			       SynodicPeriod
 
-	DWORD dwCurrentTime = GetGameWorldTime();	// game world time in minutes
-
-	if (!bMoonIndex)
-	{
-		// Trammel
-		return( IMULDIV( dwCurrentTime % TRAMMEL_SYNODIC_PERIOD, 8, TRAMMEL_SYNODIC_PERIOD ));
-	}
+	if ( bMoonIndex )
+		return IMULDIV(GetGameWorldTime() % FELUCCA_SYNODIC_PERIOD, 8, FELUCCA_SYNODIC_PERIOD);
 	else
-	{
-		// Luna2
-		return( IMULDIV( dwCurrentTime % FELUCCA_SYNODIC_PERIOD, 8, FELUCCA_SYNODIC_PERIOD ));
-	}
+		return IMULDIV(GetGameWorldTime() % TRAMMEL_SYNODIC_PERIOD, 8, TRAMMEL_SYNODIC_PERIOD);
 }
 
 void CWorld::OnTick()
@@ -2480,7 +2471,8 @@ void CWorld::OnTick()
 
 		for ( m = 0; m < 256; m++ )
 		{
-			if ( !g_MapList.m_maps[m] ) continue;
+			if ( !g_MapList.m_maps[m] )
+				continue;
 
 			for ( s = 0; s < g_MapList.GetSectorQty(m); s++ )
 			{

@@ -1230,7 +1230,7 @@ private:
 	int Cmd_Extract( CScript * pScript, CRectMap &rect, int & zlowest );
 	size_t Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuItem* item, size_t iMaxSize, bool &fShowMenu, bool &fLimitReached );
 public:
-	void Cmd_GM_PageMenu( unsigned int iEntryStart = 0 );
+	void Cmd_GM_PageMenu( DWORD iEntryStart = 0 );
 	void Cmd_GM_PageCmd( LPCTSTR pCmd );
 	void Cmd_GM_PageSelect( size_t iSelect );
 	void Cmd_GM_Page( LPCTSTR pszreason); // Help button (Calls GM Call Menus up)
@@ -1706,7 +1706,6 @@ public:
 	virtual bool r_Verb( CScript & s, CTextConsole * pSrc );
 
 	LPCTSTR GetStatusString( BYTE iIndex = 0 ) const;
-	INT64 GetAgeHours() const;
 
 	bool OnConsoleCmd( CGString & sText, CTextConsole * pSrc );
 

@@ -332,12 +332,6 @@ int CServer::PrintPercent( long iCount, long iTotal )
 	return iPercent;
 }
 
-INT64 CServer::GetAgeHours() const
-{
-	ADDTOCALLSTACK("CServer::GetAgeHours");
-	return( CServTime::GetCurrentTime().GetTimeRaw() / (60*60*TICK_PER_SEC));
-}
-
 LPCTSTR CServer::GetStatusString( BYTE iIndex ) const
 {
 	ADDTOCALLSTACK("CServer::GetStatusString");
@@ -345,39 +339,37 @@ LPCTSTR CServer::GetStatusString( BYTE iIndex ) const
 	// A ping will return this as well.
 	// 0 or 0x21 = main status.
 
-	TCHAR * pTemp = Str_GetTemp();
-	DWORD iClients = StatGet(SERV_STAT_CLIENTS);
-	INT64 iHours = GetAgeHours() / 24;
-
+	TCHAR *pTemp = Str_GetTemp();
 	switch ( iIndex )
 	{
 		case 0x21:	// '!'
-			// typical (first time) poll response.
-			{
-				TCHAR szVersion[128];
-				sprintf(pTemp, SPHERE_TITLE ", Name=%s, Port=%hu, Ver=" SPHERE_VERSION ", TZ=%d, Email=%s, URL=%s, Lang=%s, CliVer=%s\n",
-					GetName(), m_ip.GetPort(), m_TimeZone, static_cast<LPCTSTR>(m_sEMail), static_cast<LPCTSTR>(m_sURL), static_cast<LPCTSTR>(m_sLang),
-					m_ClientVersion.WriteClientVerString(m_ClientVersion.GetClientVer(), szVersion));
-			}
+		{
+			// Typical (first time) poll response
+			TCHAR szVersion[128];
+			sprintf(pTemp, SPHERE_TITLE ", Name=%s, Port=%hu, Ver=" SPHERE_VERSION ", TZ=%hhd, Email=%s, URL=%s, Lang=%s, CliVer=%s\n", GetName(), m_ip.GetPort(), m_TimeZone, static_cast<LPCTSTR>(m_sEMail), static_cast<LPCTSTR>(m_sURL), static_cast<LPCTSTR>(m_sLang), m_ClientVersion.WriteClientVerString(m_ClientVersion.GetClientVer(), szVersion));
 			break;
-		case 0x22: // '"'
-			{
-			// shown in the INFO page in game.
-			sprintf(pTemp, SPHERE_TITLE ", Name=%s, Age=%lld, Clients=%lu, Items=%lu, Chars=%lu, Mem=%luK\n",
-				GetName(), iHours, iClients, StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_MEM));
-			}
+		}
+		case 0x22:	// '"'
+		{
+			// Shown in the INFO page in game
+			UINT64 iAgeHours = (CServTime::GetCurrentTime().GetTimeRaw() / (60 * 60 * TICK_PER_SEC)) / 24;
+			sprintf(pTemp, SPHERE_TITLE ", Name=%s, Age=%llu, Clients=%lu, Items=%lu, Chars=%lu, Mem=%luK\n", GetName(), iAgeHours, StatGet(SERV_STAT_CLIENTS), StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_MEM));
 			break;
-		case 0x24: // '$'
-			// show at startup.
-			sprintf(pTemp, "Admin=%s, URL=%s, Lang=%s, TZ=%d\n", static_cast<LPCTSTR>(m_sEMail), static_cast<LPCTSTR>(m_sURL), static_cast<LPCTSTR>(m_sLang), m_TimeZone);
+		}
+		case 0x24:	// '$'
+		{
+			// Show at startup
+			sprintf(pTemp, "Admin=%s, URL=%s, Lang=%s, TZ=%hhd\n", static_cast<LPCTSTR>(m_sEMail), static_cast<LPCTSTR>(m_sURL), static_cast<LPCTSTR>(m_sLang), m_TimeZone);
 			break;
-		case 0x25: // '%'
-			// ConnectUO Status string
-			sprintf(pTemp, SPHERE_TITLE " Items=%lu, Mobiles=%lu, Clients=%lu, Mem=%lu", StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), iClients, StatGet(SERV_STAT_MEM));
+		}
+		case 0x25:	// '%'
+		{
+			// ConnectUO status string
+			sprintf(pTemp, SPHERE_TITLE " Items=%lu, Mobiles=%lu, Clients=%lu, Mem=%luK", StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_CLIENTS), StatGet(SERV_STAT_MEM));
 			break;
+		}
 	}
-
-	return( pTemp );
+	return pTemp;
 }
 
 //*********************************************************

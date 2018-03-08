@@ -1438,12 +1438,11 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 				return true;
 			}
 
-			INT64 iWaitTime = container->m_itEqTradeWindow.m_iWaitTime;
-			INT64 iTimestamp = g_World.GetCurrentTime().GetTimeRaw();
+			UINT64 iWaitTime = container->m_itEqTradeWindow.m_iWaitTime;
+			UINT64 iTimestamp = g_World.GetCurrentTime().GetTimeRaw();
 			if ( iWaitTime > iTimestamp )
 			{
-				INT64 iSeconds = (iWaitTime - iTimestamp) / TICK_PER_SEC;
-				client->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_WAIT), iSeconds);
+				client->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_WAIT), (iWaitTime - iTimestamp) / TICK_PER_SEC);
 				return true;
 			}
 

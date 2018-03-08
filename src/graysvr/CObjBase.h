@@ -683,7 +683,7 @@ public:
 		{
 			DWORD	m_iGold;
 			DWORD	m_iPlatinum;
-			INT64	m_iWaitTime;
+			UINT64	m_iWaitTime;
 			BYTE	m_bCheck;		// morez=Check box for trade window.
 		} m_itEqTradeWindow;
 
@@ -994,9 +994,9 @@ public:
 		return Can(CAN_I_PILE);
 	}
 
-	bool Can(DWORD wCan) const
+	bool Can(DWORD dwCan) const
 	{
-		return (m_Can & wCan) ? true : false;
+		return (m_Can & dwCan) ? true : false;
 	}
 	virtual bool  IsSameType( const CObjBase * pObj ) const;
 	virtual bool  IsIdentical( const CObjBase * pObj );
@@ -2755,7 +2755,7 @@ public:
 	CServTime	m_timeLastRegen;	// When did i get my last regen tick ?
 	CServTime	m_timeCreate;		// When was i created ?
 	CServTime	m_timeLastHitsUpdate;
-	INT64		m_timeLastCallGuards;
+	UINT64		m_timeLastCallGuards;
 
 	// Some character action in progress.
 	SKILL_TYPE	m_Act_SkillCurrent;	// Currently using a skill. Could be combat skill.
@@ -2933,9 +2933,9 @@ public:
 			m_pClient->addVisualRange(m_iVisualRange);
 	}
 	
-	bool Can(DWORD wCan) const
+	bool Can(DWORD dwCan) const
 	{
-		return (m_Can & wCan) ? true : false;
+		return (m_Can & dwCan) ? true : false;
 	}
 	bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg );
 	bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg, DWORD dwArgResearch );
@@ -3128,7 +3128,7 @@ private:
 	bool TeleportToCli( int iType, int iArgs );
 	bool TeleportToObj( int iType, TCHAR * pszArgs );
 private:
-	CRegionBase * CheckValidMove( CPointBase & ptDest, WORD * pwBlockFlags, DIR_TYPE dir, height_t * ClimbHeight, bool fPathFinding = false ) const;
+	CRegionBase * CheckValidMove( CPointBase & ptDest, DWORD * pdwBlockFlags, DIR_TYPE dir, height_t * ClimbHeight, bool fPathFinding = false ) const;
 	void FixClimbHeight();
 	bool MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject);
 	bool MoveToRoom( CRegionBase * pNewRoom, bool fAllowReject);
@@ -3919,7 +3919,7 @@ public:
 	bool NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pCmd );
 	bool NPC_TrainSkill( CChar * pCharSrc, SKILL_TYPE skill, WORD toTrain );
 private:
-	bool NPC_CheckWalkHere( const CPointBase & pt, const CRegionBase * pArea, WORD wBlockFlags ) const;
+	bool NPC_CheckWalkHere(const CPointBase &pt, const CRegionBase *pArea) const;
 	void NPC_OnNoticeSnoop( CChar * pCharThief, CChar * pCharMark );
 
 	void NPC_LootMemory( CItem * pItem );

@@ -261,10 +261,9 @@ WORD CChar::NPC_GetTrainMax(const CChar *pStudent, SKILL_TYPE Skill) const
 	return minimum(iMax, pStudent->Skill_GetMax(Skill));
 }
 
-bool CChar::NPC_CheckWalkHere(const CPointBase &pt, const CRegionBase *pArea, WORD wBlockFlags) const
+bool CChar::NPC_CheckWalkHere(const CPointBase &pt, const CRegionBase *pArea) const
 {
 	ADDTOCALLSTACK("CChar::NPC_CheckWalkHere");
-	UNREFERENCED_PARAMETER(wBlockFlags);
 	// Does the NPC want to walk here ? step on this item ?
 	if ( !m_pNPC )
 		return false;
@@ -273,7 +272,7 @@ bool CChar::NPC_CheckWalkHere(const CPointBase &pt, const CRegionBase *pArea, WO
 
 	if ( m_pArea )
 	{
-		if ( m_pNPC->m_Brain == NPCBRAIN_GUARD && !IsStatFlag(STATF_War) )	// guards will want to stay in guard range
+		if ( (m_pNPC->m_Brain == NPCBRAIN_GUARD) && !IsStatFlag(STATF_War) )	// guards will want to stay in guard range
 		{
 			if ( m_pArea->IsGuarded() && !pArea->IsGuarded() )
 				return false;

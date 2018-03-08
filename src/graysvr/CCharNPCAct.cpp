@@ -1372,7 +1372,7 @@ bool CChar::NPC_LookAround( bool fForceCheckItems )
 	else
 	{
 		// I'm mobile. do basic check if i would move here first.
-		if ( !NPC_CheckWalkHere(GetTopPoint(), m_pArea, 0) )
+		if ( !NPC_CheckWalkHere(GetTopPoint(), m_pArea) )
 		{
 			// I should move. Someone lit a fire under me.
 			m_Act_p = GetTopPoint();

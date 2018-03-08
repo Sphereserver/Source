@@ -20,10 +20,7 @@ void CClient::Cmd_GM_Page( LPCTSTR pszReason ) // Help button (Calls GM Call Men
 	const CPointMap & ptPlayerLocation = m_pChar->GetTopPoint();
 
 	TCHAR * pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MSG_GMPAGE_REC ),
-		    m_pChar->GetName(), (DWORD) m_pChar->GetUID(),
-		    ptPlayerLocation.m_x, ptPlayerLocation.m_y, ptPlayerLocation.m_z, ptPlayerLocation.m_map,
-			pszReason);
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_GMPAGE_REC), m_pChar->GetName(), static_cast<DWORD>(m_pChar->GetUID()), ptPlayerLocation.m_x, ptPlayerLocation.m_y, ptPlayerLocation.m_z, ptPlayerLocation.m_map, pszReason);
 
 	g_Log.Event( LOGM_GM_PAGE, "%s\n", pszMsg);
 
@@ -81,7 +78,7 @@ void CClient::Cmd_GM_PageClear()
 	}
 }
 
-void CClient::Cmd_GM_PageMenu( unsigned int iEntryStart )
+void CClient::Cmd_GM_PageMenu( DWORD iEntryStart )
 {
 	ADDTOCALLSTACK("CClient::Cmd_GM_PageMenu");
 	// Just put up the GM page menu.

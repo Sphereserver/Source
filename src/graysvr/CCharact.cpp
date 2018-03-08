@@ -3049,14 +3049,14 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 	}
 
 	// ok to go here ? physical blocking objects ?
-	WORD wBlockFlags = 0;
+	DWORD dwBlockFlags = 0;
 	height_t ClimbHeight = 0;
 	CRegionBase *pArea = NULL;
 
 	EXC_TRY("CanMoveWalkTo");
 
 	EXC_SET("Check Valid Move");
-	pArea = CheckValidMove(ptDst, &wBlockFlags, dir, &ClimbHeight, fPathFinding);
+	pArea = CheckValidMove(ptDst, &dwBlockFlags, dir, &ClimbHeight, fPathFinding);
 	if ( !pArea )
 	{
 		WARNWALK(("CheckValidMove failed\n"));
@@ -3064,7 +3064,7 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 	}
 
 	EXC_SET("NPC's will");
-	if ( !fCheckOnly && m_pNPC && !NPC_CheckWalkHere(ptDst, pArea, wBlockFlags) )	// does the NPC want to walk here?
+	if ( !fCheckOnly && m_pNPC && !NPC_CheckWalkHere(ptDst, pArea) )	// does the NPC want to walk here?
 		return NULL;
 
 	EXC_SET("Creature bumping");
@@ -3145,8 +3145,8 @@ CRegionBase * CChar::CanMoveWalkTo( CPointBase & ptDst, bool fCheckChars, bool f
 		if ( iStamReq )
 			UpdateStatVal(STAT_DEX, -iStamReq);
 
-		StatFlag_Mod(STATF_InDoors, (wBlockFlags & CAN_I_ROOF) || pArea->IsFlag(REGION_FLAG_UNDERGROUND));
-		m_zClimbHeight = (wBlockFlags & CAN_I_CLIMB) ? ClimbHeight : 0;
+		StatFlag_Mod(STATF_InDoors, (dwBlockFlags & CAN_I_ROOF) || pArea->IsFlag(REGION_FLAG_UNDERGROUND));
+		m_zClimbHeight = (dwBlockFlags & CAN_I_CLIMB) ? ClimbHeight : 0;
 	}
 
 	EXC_CATCH;
