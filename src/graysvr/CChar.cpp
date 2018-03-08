@@ -1833,9 +1833,9 @@ do_default:
 					sVal.FormatHex( ULONG_MAX );
 				else
 				{
-					DWORD		wBlockFlags	= 0;
-					g_World.GetHeightPoint2( ptDst, wBlockFlags, true );
-					sVal.FormatHex( wBlockFlags );
+					DWORD		dwBlockFlags	= 0;
+					g_World.GetHeightPoint2( ptDst, dwBlockFlags, true );
+					sVal.FormatHex( dwBlockFlags );
 				}
 			}
 			return true;

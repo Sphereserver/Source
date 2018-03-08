@@ -271,16 +271,16 @@ CChar *CChar::Spell_Summon(CREID_TYPE id, CPointMap pntTarg)
 		if ( IsSetMagicFlags(MAGICF_SUMMONWALKCHECK) )	// check if the target location is valid
 		{
 			CCharBase *pSummonDef = CCharBase::FindCharBase(id);
-			WORD wCan = 0xFFFF;
+			DWORD dwCan = ULONG_MAX;
 			if ( pSummonDef )
-				wCan = pSummonDef->m_Can & CAN_C_MOVEMASK;
+				dwCan = pSummonDef->m_Can & CAN_C_MOVEMASK;
 
-			if ( wCan != 0xFFFF )
+			if ( dwCan != ULONG_MAX )
 			{
-				DWORD wBlockFlags = 0;
-				g_World.GetHeightPoint2(pntTarg, wBlockFlags, true);
+				DWORD dwBlockFlags = 0;
+				g_World.GetHeightPoint2(pntTarg, dwBlockFlags, true);
 
-				if ( wBlockFlags & ~wCan )
+				if ( dwBlockFlags & ~dwCan )
 				{
 					SysMessageDefault(DEFMSG_MSG_SUMMON_INVALIDTARG);
 					pChar->Delete();
@@ -2122,9 +2122,9 @@ void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, u
 					ptg.m_y += static_cast<short>(iy);
 				}
 
-				DWORD wBlockFlags = 0;
-				g_World.GetHeightPoint2(ptg, wBlockFlags, true);
-				if ( wBlockFlags & (CAN_I_BLOCK|CAN_I_DOOR) )
+				DWORD dwBlockFlags = 0;
+				g_World.GetHeightPoint2(ptg, dwBlockFlags, true);
+				if ( dwBlockFlags & (CAN_I_BLOCK|CAN_I_DOOR) )
 				{
 					if ( ix < 0 )	// field cannot extend fully to the left
 						minX = ix + 1;
@@ -2492,7 +2492,7 @@ bool CChar::Spell_TargCheck()
 			SysMessageDefault(DEFMSG_SPELL_TARG_OBJ);
 			return false;
 		}
-		if ( !CanSee(pObj) || !CanSeeLOS(pObj, LOS_NB_WINDOWS) ) //we should be able to cast through a window
+		if ( !CanSeeLOS(pObj, LOS_NB_WINDOWS) )		// we should be able to cast through a window
 		{
 			SysMessageDefault(DEFMSG_SPELL_TARG_LOS);
 			return false;

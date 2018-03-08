@@ -2051,7 +2051,7 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 	ADDTOCALLSTACK("CClient::Event_AOSPopupMenuRequest");
 
 	CObjBaseTemplate *pObj = uid.ObjFind();
-	if ( !m_pChar || m_pChar->IsStatFlag(STATF_DEAD) || !CanSee(pObj) )
+	if ( !m_pChar || m_pChar->IsStatFlag(STATF_DEAD) )
 		return;
 	if ( !IsSetOF(OF_NoContextMenuLOS) && !m_pChar->CanSeeLOS(pObj) )
 		return;
@@ -2208,8 +2208,6 @@ void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD EntryTag)	//do somethi
 		return;
 
 	CObjBase *pObj = uid.ObjFind();
-	if ( !CanSee(pObj) )
-		return;
 	if ( !IsSetOF(OF_NoContextMenuLOS) && !m_pChar->CanSeeLOS(pObj) )
 		return;
 
