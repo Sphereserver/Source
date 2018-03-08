@@ -1732,22 +1732,22 @@ bool CChar::CanTouch( const CObjBase *pObj ) const
 
 	if ( !CanSeeLOS(pObjTop) )
 	{
-		if ( GetAbilityFlags() & CAN_C_DCIGNORELOS )
+		if ( Char_GetDef()->Can(CAN_C_DCIGNORELOS) )
 			return true;
-		else if ( pChar && (pChar->GetAbilityFlags() & CAN_C_DCIGNORELOS) )
+		else if ( pChar && pChar->Char_GetDef()->Can(CAN_C_DCIGNORELOS) )
 			return true;
-		else if ( pItem && (pItem->GetAbilityFlags() & CAN_I_DCIGNORELOS) )
+		else if ( pItem && pItem->Item_GetDef()->Can(CAN_I_DCIGNORELOS) )
 			return true;
 		else
 			return false;
 	}
 	if ( iDist > 3 )
 	{
-		if ( GetAbilityFlags() & CAN_C_DCIGNOREDIST )
+		if ( Char_GetDef()->Can(CAN_C_DCIGNOREDIST) )
 			return true;
-		else if ( pChar && (pChar->GetAbilityFlags() & CAN_C_DCIGNOREDIST) )
+		else if ( pChar && pChar->Char_GetDef()->Can(CAN_C_DCIGNOREDIST) )
 			return true;
-		else if ( pItem && (pItem->GetAbilityFlags() & CAN_I_DCIGNOREDIST) )
+		else if ( pItem && pItem->Item_GetDef()->Can(CAN_I_DCIGNOREDIST) )
 			return true;
 		else
 			return false;
@@ -2067,7 +2067,7 @@ bool CChar::IsMountCapable() const
 
 	if ( IsStatFlag(STATF_DEAD) )
 		return false;
-	if ( IsHuman() || IsElf() || (GetAbilityFlags() & CAN_C_MOUNT) )
+	if ( IsHuman() || IsElf() || Char_GetDef()->Can(CAN_C_MOUNT) )
 		return true;
 
 	return false;
@@ -2162,7 +2162,7 @@ CRegionBase *CChar::CheckValidMove( CPointBase &ptDest, DWORD *pdwBlockFlags, DI
 	{
 		dwBlockFlags |= CAN_I_ROOF;	// we are covered by something.
 
-		WARNWALK(("block.m_Top.m_z(%hhd) > ptDest.m_z(%hhd) + m_zClimbHeight(%hhu) + (block.m_Top.m_dwTile(0x%lx) > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT/2)(%lu)\n", block.m_Top.m_z, ptDest.m_z, m_zClimbHeight, block.m_Top.m_dwTile, ptDest.m_z - (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2))));
+		WARNWALK(("block.m_Top.m_z(%hhd) > ptDest.m_z(%hhd) + m_zClimbHeight(%hhu) + (block.m_Top.m_dwTile(0x%lx) > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2)(%d)\n", block.m_Top.m_z, ptDest.m_z, m_zClimbHeight, block.m_Top.m_dwTile, ptDest.m_z - (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2))));
 		if ( block.m_Top.m_z < block.m_Bottom.m_z + (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? iCharHeight : iCharHeight / 2)) )
 			dwBlockFlags |= CAN_I_BLOCK;		// we can't fit under this!
 	}

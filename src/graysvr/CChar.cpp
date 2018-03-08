@@ -3669,9 +3669,3 @@ WORD CChar::GetSkillTotal(int what, bool how)
 	}
 	return iTotal;
 }
-
-int CChar::GetAbilityFlags() const
-{
-	CCharBase * pCharBase = Char_GetDef();
-	return pCharBase->m_Can;
-}

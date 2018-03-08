@@ -1300,9 +1300,7 @@ public:
 	static CItem * CreateTemplate( ITEMID_TYPE id, CObjBase* pCont = NULL, CChar * pSrc = NULL );
 
 	static CItem * ReadTemplate( CResourceLock & s, CObjBase * pCont );
-
-	int GetAbilityFlags() const;
-
+	
 	virtual void Delete(bool bforce = false);
 	virtual bool NotifyDelete();
 };
@@ -4010,9 +4008,6 @@ public:
 
 	static CChar *CreateBasic(CREID_TYPE baseID);
 	static CChar *CreateNPC(CREID_TYPE id);
-
-	int GetAbilityFlags() const;
-
 };
 
 inline bool CChar::IsSkillBase(SKILL_TYPE skill) // static

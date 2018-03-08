@@ -4949,11 +4949,8 @@ bool CItem::OnTick()
 			return true;
 	}
 
-	EXC_SET("GetType");
-	IT_TYPE type = m_type;
-
 	EXC_SET("default behaviour");
-	switch ( type )
+	switch ( m_type )
 	{
 		case IT_CORPSE:
 			{
@@ -5158,17 +5155,11 @@ bool CItem::OnTick()
 #endif
 #else
 	EXC_CATCH;
-	
+
 	EXC_DEBUG_START;
 	g_Log.EventDebug("'%s' item [0%lx]\n", GetName(), static_cast<DWORD>(GetUID()));
 	EXC_DEBUG_END;
 #endif
 
-	return( true );
-}
-
-int CItem::GetAbilityFlags() const
-{
-	CItemBase * pItemBase = Item_GetDef();
-	return pItemBase->m_Can;
+	return true;
 }
