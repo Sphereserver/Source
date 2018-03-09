@@ -1020,3 +1020,7 @@ Fixed: MOUNT property/function not working correctly.
 
 06-03-2018, Coruja
 Fixed: Console error when PetsInheritNotoriety .ini setting is enabled.
+
+09-03-2018, Coruja
+Fixed: Multi placement making players get stuck when place the multi over his own char.
+Fixed: Multi placement being incorrectly blocked by region flags region_flag_underground, region_flag_guarded, region_flag_safe

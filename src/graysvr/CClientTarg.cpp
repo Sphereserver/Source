@@ -1638,7 +1638,7 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, CPointMap & pt, D
 				}
 
 				CRegionBase * pRegion = ptn.GetRegion( REGION_TYPE_MULTI | REGION_TYPE_AREA | REGION_TYPE_ROOM );
-				if ( pRegion == NULL || ( pRegion->IsFlag(REGION_FLAG_NOBUILDING|REGION_FLAG_UNDERGROUND|REGION_FLAG_GUARDED|REGION_FLAG_SAFE) && ! fShip ))
+				if ( pRegion == NULL || ( pRegion->IsFlag(REGION_FLAG_NOBUILDING) && ! fShip ))
 				{
 					SysMessageDefault( DEFMSG_ITEMUSE_MULTI_FAIL );
 					if ( ! IsPriv( PRIV_GM )) return( NULL );
@@ -1676,24 +1676,16 @@ CItem * CClient::OnTarg_Use_Multi( const CItemBase * pItemDef, CPointMap & pt, D
 			CChar * pChar = Area.GetChar();
 			if ( pChar == NULL )
 				break;
-			if ( pChar == m_pChar )
+			if ( !rect.IsInside2d(pChar->GetTopPoint()) )
 				continue;
-			if ( ! rect.IsInside2d( pChar->GetTopPoint()))
+			if ( pChar->IsPriv(PRIV_GM) && !CanSee(pChar) )
 				continue;
-			if ( pChar->GetPrivLevel() >= PLEVEL_Counsel && !CanSee( pChar ) )
-			{
-				// Don't reveal the presence of hidden staff
-				pChar->Spell_Teleport(m_pChar->GetTopPoint(), false, false, false);
-				continue;
-			}
 
-			SysMessagef( g_Cfg.GetDefaultMsg( DEFMSG_ITEMUSE_MULTI_INTWAY ), pChar->GetName());
-			if ( IsPriv(PRIV_GM) )
-			{
-				//	Teleport the char to self. At least I will be able to move him to someplace
+			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_MULTI_INTWAY), pChar->GetName());
+			if ( !IsPriv(PRIV_GM) )
+				return NULL;
+			if ( pChar != m_pChar )
 				pChar->Spell_Teleport(m_pChar->GetTopPoint(), false, false);
-			}
-			else return( NULL );
 		}
 	}
 
