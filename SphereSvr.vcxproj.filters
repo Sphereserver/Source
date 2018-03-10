@@ -572,6 +572,9 @@
     <ClInclude Include="src\graysvr\CBase.h">
       <Filter>graysvr</Filter>
     </ClInclude>
+    <ClInclude Include="src\graysvr\CChat.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
     <ClInclude Include="src\graysvr\CClient.h">
       <Filter>graysvr</Filter>
     </ClInclude>

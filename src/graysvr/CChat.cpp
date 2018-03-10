@@ -1,5 +1,6 @@
 // Chat system
 #include "graysvr.h"	// predef header.
+#include "CChat.h"
 #include "../network/network.h"
 
 ////////////////////////////////////////////////////////////////////////////
@@ -25,7 +26,7 @@ bool CChat::CreateChannel(LPCTSTR pszName, LPCTSTR pszPassword, CChatMember *pMe
 			pMember->SendChatMsg(CHATMSG_InvalidConferenceName);
 		return false;
 	}
-	else if ( g_Serv.m_Chats.FindChannel(pszName) )
+	else if ( FindChannel(pszName) )
 	{
 		if ( pMember )
 			pMember->SendChatMsg(CHATMSG_DuplicatedConferenceName);
@@ -99,6 +100,17 @@ void CChat::JoinChannel(LPCTSTR pszName, LPCTSTR pszPassword, CChatMember *pMemb
 	if ( !pMemberClient->m_UseNewChatSystem )
 		pNewChannel->FillMembersList(pMember);	// fill the members list on this client
 }
+
+CChatChannel *CChat::FindChannel(LPCTSTR pszChannel) const
+{
+	ADDTOCALLSTACK("CChat::FindChannel");
+	for ( CChatChannel *pChannel = static_cast<CChatChannel *>(m_Channels.GetHead()); pChannel != NULL; pChannel = pChannel->GetNext() )
+	{
+		if ( strcmpi(static_cast<LPCTSTR>(pChannel->m_sName), pszChannel) == 0 )
+			return pChannel;
+	}
+	return NULL;
+};
 
 void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID lang)
 {
@@ -525,6 +537,17 @@ void CChatChannel::RemoveMember(CChatMember *pMember)
 	pMember->SetChannel(NULL);
 }
 
+bool CChatChannel::RemoveMember(LPCTSTR pszName)
+{
+	ADDTOCALLSTACK("CChatChannel::RemoveMember(2)");
+
+	CChatMember *pMember = FindMember(pszName);
+	if ( !pMember )
+		return false;
+	RemoveMember(pMember);
+	return true;
+}
+
 void CChatChannel::KickMember(CChatMember *pByMember, CChatMember *pMember)
 {
 	ADDTOCALLSTACK("CChatChannel::KickMember");
@@ -558,6 +581,16 @@ void CChatChannel::KickMember(CChatMember *pByMember, CChatMember *pMember)
 	pMember->SendChatMsg(CHATMSG_ModeratorHasKicked, pszByName);
 	pMember->SendChatMsg(CHATCMD_ClearMembers);
 	Broadcast(CHATMSG_PlayerKicked, pszName);
+}
+
+CChatMember *CChatChannel::FindMember(LPCTSTR pszName) const
+{
+	ADDTOCALLSTACK("CChatChannel::FindMember");
+
+	size_t i = FindMemberIndex(pszName);
+	if ( i == m_Members.BadIndex() )
+		return NULL;
+	return m_Members[i];
 }
 
 bool CChatChannel::IsModerator(LPCTSTR pszMember)
