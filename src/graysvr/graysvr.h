@@ -262,37 +262,35 @@ public:
 	bool OpenLog( LPCTSTR pszName = NULL );	// name set previously.
 	DWORD GetLogMask() const
 	{
-		return( m_dwMsgMask &~ 0x0f ) ;
+		return (m_dwMsgMask & ~0xF);
 	}
-	void SetLogMask( DWORD dwMask )
+	void SetLogMask(DWORD dwMask)
 	{
-		m_dwMsgMask = GetLogLevel() | ( dwMask &~ 0x0f );
+		m_dwMsgMask = GetLogLevel() | (dwMask & ~0xF);
 	}
-	bool IsLoggedMask( DWORD dwMask ) const
+	bool IsLoggedMask(DWORD dwMask) const
 	{
-		return( ((dwMask &~ (0x0f | LOGM_NOCONTEXT | LOGM_DEBUG)) == 0) ||
-				(( GetLogMask() & ( dwMask &~ 0x0f )) != 0) );
+		return (((dwMask & ~(0xF|LOGM_NOCONTEXT|LOGM_DEBUG)) == 0) || ((GetLogMask() & (dwMask & ~0xF)) != 0));
 	}
 	LOGL_TYPE GetLogLevel() const
 	{
-		return static_cast<LOGL_TYPE>(m_dwMsgMask & 0x0f);
+		return static_cast<LOGL_TYPE>(m_dwMsgMask & 0xF);
 	}
-	void SetLogLevel( LOGL_TYPE level )
+	void SetLogLevel(LOGL_TYPE level)
 	{
-		m_dwMsgMask = GetLogMask() | ( level & 0x0f );
+		m_dwMsgMask = GetLogMask() | (level & 0xF);
 	}
-	bool IsLoggedLevel( LOGL_TYPE level ) const
+	bool IsLoggedLevel(LOGL_TYPE level) const
 	{
-		return ( ((level & 0x0f) != 0) &&
-				 (GetLogLevel() >= ( level & 0x0f ) ) );
+		return (((level & 0xF) != 0) && (GetLogLevel() >= (level & 0xF)));
 	}
-	bool IsLogged( DWORD wMask ) const
+	bool IsLogged(DWORD dwMask) const
 	{
-		return IsLoggedMask(wMask) || IsLoggedLevel(static_cast<LOGL_TYPE>(wMask));
+		return IsLoggedMask(dwMask) || IsLoggedLevel(static_cast<LOGL_TYPE>(dwMask));
 	}
 
-	virtual int EventStr( DWORD wMask, LPCTSTR pszMsg );
-	void _cdecl CatchEvent( const CGrayError * pErr, LPCTSTR pszCatchContext, ...  ) __printfargs(3,4);
+	virtual int EventStr(DWORD dwMask, LPCTSTR pszMsg);
+	void _cdecl CatchEvent(const CGrayError * pErr, LPCTSTR pszCatchContext, ...) __printfargs(3,4);
 
 public:
 	CLog()
@@ -1137,40 +1135,40 @@ private:
 
 	void Announce( bool fArrive ) const;
 
-	// GM stuff.
-	bool OnTarg_Obj_Set( CObjBase * pObj );
-	bool OnTarg_Obj_Info( CObjBase * pObj, const CPointMap & pt, ITEMID_TYPE id );
-	bool OnTarg_Obj_Function( CObjBase * pObj, const CPointMap & pt, ITEMID_TYPE id );
+	// GM stuff
+	bool OnTarg_Obj_Set(CObjBase *pObj);
+	bool OnTarg_Obj_Info(CObjBase *pObj, const CPointMap &pt, ITEMID_TYPE id);
+	bool OnTarg_Obj_Function(CObjBase *pObj, const CPointMap &pt, ITEMID_TYPE id);
 
-	bool OnTarg_UnExtract( CObjBase * pObj, const CPointMap & pt );
-	bool OnTarg_Stone_Recruit( CChar * pChar, bool bFull = false );
-	bool OnTarg_Char_Add( CObjBase * pObj, const CPointMap & pt );
-	bool OnTarg_Item_Add( CObjBase * pObj, CPointMap & pt );
-	bool OnTarg_Item_Link( CObjBase * pObj );
-	bool OnTarg_Tile( CObjBase * pObj, const CPointMap & pt );
+	bool OnTarg_UnExtract(CObjBase *pObj, const CPointMap &pt);
+	bool OnTarg_Stone_Recruit(CChar *pChar, bool bFull = false);
+	bool OnTarg_Char_Add(CObjBase *pObj, const CPointMap &pt);
+	bool OnTarg_Item_Add(CObjBase *pObj, CPointMap &pt);
+	bool OnTarg_Item_Link(CObjBase *pObj);
+	bool OnTarg_Tile(CObjBase *pObj, const CPointMap &pt);
 
-	// Normal user stuff.
-	bool OnTarg_Use_Deed( CItem * pDeed, CPointMap & pt );
-	bool OnTarg_Use_Item( CObjBase * pObj, CPointMap & pt, ITEMID_TYPE id );
-	bool OnTarg_Party_Add( CChar * pChar );
-	CItem *OnTarg_Use_Multi( const CItemBase * pItemDef, CPointMap & pt, DWORD dwAttr, HUE_TYPE wHue );
+	// Player stuff
+	bool OnTarg_Use_Deed(CItem *pDeed, CPointMap &pt);
+	bool OnTarg_Use_Item(CObjBase *pObj, CPointMap &pt, ITEMID_TYPE id);
+	bool OnTarg_Party_Add(CChar *pChar);
+	CItem *OnTarg_Use_Multi(const CItemBase *pItemDef, CPointMap &pt, DWORD dwAttr, HUE_TYPE wHue);
 
-	int OnSkill_AnimalLore( CGrayUID uid, int iTestLevel, bool fTest );
-	int OnSkill_Anatomy( CGrayUID uid, int iTestLevel, bool fTest );
-	int OnSkill_Forensics( CGrayUID uid, int iTestLevel, bool fTest );
-	int OnSkill_EvalInt( CGrayUID uid, int iTestLevel, bool fTest );
-	int OnSkill_ArmsLore( CGrayUID uid, int iTestLevel, bool fTest );
-	int OnSkill_ItemID( CGrayUID uid, int iTestLevel, bool fTest );
-	int OnSkill_TasteID( CGrayUID uid, int iTestLevel, bool fTest );
+	int OnSkill_AnimalLore(CGrayUID uid, int iTestLevel, bool fTest);
+	int OnSkill_Anatomy(CGrayUID uid, int iTestLevel, bool fTest);
+	int OnSkill_Forensics(CGrayUID uid, int iTestLevel, bool fTest);
+	int OnSkill_EvalInt(CGrayUID uid, int iTestLevel, bool fTest);
+	int OnSkill_ArmsLore(CGrayUID uid, int iTestLevel, bool fTest);
+	int OnSkill_ItemID(CGrayUID uid, int iTestLevel, bool fTest);
+	int OnSkill_TasteID(CGrayUID uid, int iTestLevel, bool fTest);
 
-	bool OnTarg_Skill_Magery( CObjBase * pObj, const CPointMap & pt );
-	bool OnTarg_Skill_Herd_Dest( CObjBase * pObj, const CPointMap & pt );
-	bool OnTarg_Skill_Poison( CObjBase * pObj );
-	bool OnTarg_Skill_Provoke( CObjBase * pObj );
-	bool OnTarg_Skill( CObjBase * pObj );
+	bool OnTarg_Skill_Magery(CObjBase *pObj, const CPointMap &pt);
+	bool OnTarg_Skill_Herd_Dest(CObjBase *pObj, const CPointMap &pt);
+	bool OnTarg_Skill_Poison(CObjBase *pObj);
+	bool OnTarg_Skill_Provoke(CObjBase *pObj);
+	bool OnTarg_Skill(CObjBase *pObj);
 
-	bool OnTarg_Pet_Command( CObjBase * pObj, const CPointMap & pt );
-	bool OnTarg_Pet_Stable( CChar * pCharPet );
+	bool OnTarg_Pet_Command(CObjBase *pObj, const CPointMap &pt);
+	bool OnTarg_Pet_Stable(CChar *pCharPet);
 
 	// Commands from client
 	void Event_Skill_Use(SKILL_TYPE x);	// Skill is clicked on the skill list
@@ -1227,7 +1225,7 @@ public:
 	// translated commands.
 private:
 	void Cmd_GM_PageInfo();
-	int Cmd_Extract( CScript * pScript, CRectMap &rect, int & zlowest );
+	int Cmd_Extract(CScript *pScript, CRectMap &rect, signed char &zLowest);
 	size_t Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuItem* item, size_t iMaxSize, bool &fShowMenu, bool &fLimitReached );
 public:
 	void Cmd_GM_PageMenu( DWORD iEntryStart = 0 );
@@ -1241,7 +1239,7 @@ public:
 	bool Cmd_Skill_Tracking( WORD track_type = USHRT_MAX, bool bExec = false ); // Fill menu with specified creature types
 	bool Cmd_Skill_Inscription();
 	bool Cmd_SecureTrade( CChar * pChar, CItem * pItem );
-	bool Cmd_Control( CChar * pChar );
+	bool Cmd_Control(CChar *pChar);
 
 public:
 	CSocketAddress &GetPeer();								// get peer address
@@ -1525,7 +1523,7 @@ public:
 	bool Dialog_Close( CObjBase * pObj, DWORD rid, DWORD buttonID );
 	void Menu_Setup( RESOURCE_ID_BASE rid, CObjBase * pObj = NULL );
 
-	int OnSkill_Info( SKILL_TYPE skill, CGrayUID uid, int iTestLevel, bool fTest );
+	int OnSkill_Info(SKILL_TYPE skill, CGrayUID uid, int iTestLevel, bool fTest);
 
 	bool Cmd_Use_Item( CItem * pItem, bool fTestTouch, bool fScript = false );
 	void Cmd_EditItem( CObjBase * pObj, int iSelect );
