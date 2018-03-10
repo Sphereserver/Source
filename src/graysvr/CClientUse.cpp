@@ -2,7 +2,7 @@
 #include "CClient.h"
 #include "../network/send.h"
 
-bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
+bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 {
 	ADDTOCALLSTACK("CClient::Cmd_Use_Item");
 	// Assume we can see the target.
@@ -22,10 +22,10 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 			CItemContainer *pContainer = dynamic_cast<CItemContainer *>(pItem->GetParent());
 			if ( pContainer )
 			{
-				// protect from ,snoop - disallow picking from not opened containers
-				bool isInOpenedContainer = false;
+				// Protect from ,snoop - disallow picking from not opened containers
+				bool bIsInOpenedContainer = false;
 				if ( pContainer->GetType() == IT_EQ_TRADE_WINDOW )
-					isInOpenedContainer = true;
+					bIsInOpenedContainer = true;
 				else
 				{
 					CClient::OpenedContainerMap_t::iterator itContainerFound = m_openedContainers.find(pContainer->GetUID().GetPrivateUID());
@@ -34,34 +34,30 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 						DWORD dwTopContainerUID = (((*itContainerFound).second).first).first;
 						DWORD dwTopMostContainerUID = (((*itContainerFound).second).first).second;
 						CPointMap ptOpenedContainerPosition = ((*itContainerFound).second).second;
-						const CObjBase *pObjParent = pContainer->GetParentObj();
 
-						DWORD dwTopContainerUID_ToCheck = 0;
-						if ( pObjParent )
-							dwTopContainerUID_ToCheck = pObjParent->GetUID().GetPrivateUID();
-						else
-							dwTopContainerUID_ToCheck = pObjTop->GetUID().GetPrivateUID();
+						const CObjBase *pObjParent = pContainer->GetParentObj();
+						DWORD dwTopContainerUID_ToCheck = pObjParent ? pObjParent->GetUID().GetPrivateUID() : pObjTop->GetUID().GetPrivateUID();
 
 						if ( (dwTopMostContainerUID == pObjTop->GetUID().GetPrivateUID()) && (dwTopContainerUID == dwTopContainerUID_ToCheck) )
 						{
 							if ( pObjTop->IsChar() )
 							{
 								// probably a pickup check from pack if pCharTop != this?
-								isInOpenedContainer = true;
+								bIsInOpenedContainer = true;
 							}
 							else
 							{
 								const CItem *pItemTop = static_cast<const CItem *>(pObjTop);
 								if ( pItemTop && (pItemTop->IsType(IT_SHIP_HOLD) || pItemTop->IsType(IT_SHIP_HOLD_LOCK)) && (pItemTop->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == m_pChar->GetTopPoint().GetRegion(REGION_TYPE_MULTI)) )
-									isInOpenedContainer = true;
+									bIsInOpenedContainer = true;
 								else if ( ptOpenedContainerPosition.GetDist(pObjTop->GetTopPoint()) <= 3 )
-									isInOpenedContainer = true;
+									bIsInOpenedContainer = true;
 							}
 						}
 					}
 				}
 
-				if ( !isInOpenedContainer )
+				if ( !bIsInOpenedContainer )
 				{
 					SysMessageDefault(DEFMSG_REACH_UNABLE);
 					return false;
@@ -69,7 +65,6 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 			}
 		}
 
-		// CanTouch handles priv level compares for chars
 		if ( !m_pChar->CanUse(pItem, false) )
 		{
 			if ( !m_pChar->CanTouch(pItem) )
@@ -148,7 +143,7 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 			return Cmd_Skill_Menu(g_Cfg.ResourceGetIDType(RES_SKILLMENU, "sm_bolts"));
 		}
 
-		case IT_FISH_POLE:	// Just be near water ?
+		case IT_FISH_POLE:
 			addTarget(CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg(DEFMSG_FISHING_PROMT), true);
 			return true;
 
@@ -314,7 +309,7 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 			if ( IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
 			{
 				int skill;
-				if ( !pSpellDef->GetPrimarySkill(&skill, NULL) )
+				if ( !pSpellDef->GetPrimarySkill(&skill) )
 					return false;
 
 				m_tmSkillMagery.m_Spell = spell;	// m_atMagery.m_Spell
@@ -327,7 +322,7 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 
 		case IT_RUNE:
 		{
-			if ( !m_pChar->CanMove(pItem, true) )
+			if ( !m_pChar->CanMove(pItem) )
 				return false;
 			addPromptConsole(CLIMODE_PROMPT_NAME_RUNE, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_RUNE_NAME), pItem->GetUID());
 			return true;
@@ -345,7 +340,6 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 		}
 
 		case IT_FORGE:
-			// Solve for the combination of this item with another.
 			addTarget(CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_FORGE));
 			return true;
 
@@ -358,7 +352,7 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 		case IT_KEY:
 		case IT_KEYRING:
 		{
-			if ( pItem->GetTopLevelObj() != m_pChar && !m_pChar->IsPriv(PRIV_GM) )
+			if ( (pItem->GetTopLevelObj() != m_pChar) && !m_pChar->IsPriv(PRIV_GM) )
 			{
 				SysMessageDefault(DEFMSG_ITEMUSE_KEY_FAIL);
 				return false;
@@ -368,7 +362,7 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 		}
 
 		case IT_BANDAGE:		// SKILL_HEALING, or SKILL_VETERINARY
-			addTarget(CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_BANDAGE_PROMT), false, false);
+			addTarget(CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_BANDAGE_PROMT));
 			return true;
 
 		case IT_BANDAGE_BLOOD:	// Clean the bandages.
@@ -377,7 +371,7 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 		case IT_YARN:			// Use this on a loom.
 		case IT_THREAD: 		// Use this on a loom.
 		case IT_COMM_CRYSTAL:
-			addTarget(CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg(DEFMSG_TARGET_PROMT), false, false);
+			addTarget(CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg(DEFMSG_TARGET_PROMT));
 			return true;
 
 		case IT_CARPENTRY_CHOP:
@@ -550,7 +544,7 @@ bool CClient::Cmd_Use_Item( CItem *pItem, bool fTestTouch, bool fScript )
 	return false;
 }
 
-void CClient::Cmd_EditItem( CObjBase *pObj, int iSelect )
+void CClient::Cmd_EditItem(CObjBase *pObj, int iSelect)
 {
 	ADDTOCALLSTACK("CClient::Cmd_EditItem");
 	// ARGS:
@@ -576,12 +570,12 @@ void CClient::Cmd_EditItem( CObjBase *pObj, int iSelect )
 			return;
 
 		if ( m_Targ_Text.IsEmpty() )
-			addGumpDialogProps(m_tmMenu.m_Item[static_cast<size_t>(iSelect)]);
+			addGumpDialogProps(m_tmMenu.m_Item[iSelect]);
 		else
-			OnTarg_Obj_Set(CGrayUID(m_tmMenu.m_Item[static_cast<size_t>(iSelect)]).ObjFind());
+			OnTarg_Obj_Set(CGrayUID(m_tmMenu.m_Item[iSelect]).ObjFind());
 		return;
 	}
-	
+
 	CMenuItem item[minimum(COUNTOF(m_tmMenu.m_Item), MAX_MENU_ITEMS)];	// Most as we want to display at one time.
 	item[0].m_sText.Format("Contents of %s", pObj->GetName());
 
@@ -591,8 +585,7 @@ void CClient::Cmd_EditItem( CObjBase *pObj, int iSelect )
 		count++;
 		m_tmMenu.m_Item[count] = pItem->GetUID();
 		item[count].m_sText = pItem->GetName();
-		ITEMID_TYPE idi = pItem->GetDispID();
-		item[count].m_id = static_cast<WORD>(idi);
+		item[count].m_id = static_cast<WORD>(pItem->GetDispID());
 		item[count].m_color = 0;
 
 		if ( !pItem->IsType(IT_EQ_MEMORY_OBJ) )
@@ -608,12 +601,12 @@ void CClient::Cmd_EditItem( CObjBase *pObj, int iSelect )
 		if ( count >= (COUNTOF(item) - 1) )
 			break;
 	}
-	
+
 	ASSERT(count < COUNTOF(item));
 	addItemMenu(CLIMODE_MENU_EDIT, item, count, pObj);
 }
 
-bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
+bool CClient::Cmd_Skill_Menu(RESOURCE_ID_BASE rid, int iSelect)
 {
 	ADDTOCALLSTACK("CClient::Cmd_Skill_Menu");
 	// Build the skill menu for the curent active skill.
@@ -659,7 +652,7 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 		return false;
 	}
 
-	if ( iShowCount == 1 && fShowMenu && !fLimitReached )
+	if ( (iShowCount == 1) && fShowMenu && !fLimitReached )
 	{
 		static int sm_iReentrant = 0;
 		if ( sm_iReentrant < 12 )
@@ -676,13 +669,13 @@ bool CClient::Cmd_Skill_Menu( RESOURCE_ID_BASE rid, int iSelect )
 		if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
 			g_Log.EventDebug("SCRIPT: Too many empty skill menus to continue seeking through menu '%s'\n", g_Cfg.ResourceGetDef(rid)->GetResourceName());
 	}
-	
+
 	ASSERT(iShowCount < COUNTOF(item));
 	addItemMenu(CLIMODE_MENU_SKILL, item, iShowCount);
 	return true;
 }
 
-size_t CClient::Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuItem *item, size_t iMaxSize, bool &fShowMenu, bool &fLimitReached )
+size_t CClient::Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuItem *item, size_t iMaxSize, bool &fShowMenu, bool &fLimitReached)
 {
 	ADDTOCALLSTACK("CClient::Cmd_Skill_Menu_Build");
 	// Build the skill menu for the curent active skill.
@@ -721,13 +714,10 @@ size_t CClient::Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuIt
 		{
 			if ( !s.IsKey("ON") || (*s.GetArgStr() != '@') )
 				continue;
-
 			if ( strcmpi(s.GetArgStr(), "@Cancel") )
 				continue;
-
 			if ( m_pChar->OnTriggerRunVal(s, TRIGRUN_SECTION_TRUE, m_pChar, NULL) == TRIGRET_RET_TRUE )
 				return 0;
-
 			break;
 		}
 		return 1;
@@ -745,7 +735,7 @@ size_t CClient::Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuIt
 	size_t iShowCount = 0;
 	CScriptTriggerArgs Args;
 
-	while ( s.ReadKeyParse())
+	while ( s.ReadKeyParse() )
 	{
 		if ( s.IsKeyHead("ON", 2) )
 		{
@@ -761,7 +751,7 @@ size_t CClient::Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuIt
 
 			if ( iSelect < 0 )	// building up the list.
 			{
-				if ( iSelect < -1 && iShowCount >= 1 )		// just a test. so we are done.
+				if ( (iSelect < -1) && (iShowCount >= 1) )		// just a test. so we are done.
 					return 1;
 
 				iShowCount++;
@@ -789,7 +779,7 @@ size_t CClient::Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuIt
 
 		if ( fSkip )	// we have decided we cant do this option.
 			continue;
-		if ( iSelect > 0 && iOnCount != iSelect )	// only interested in the selected option
+		if ( (iSelect > 0) && (iOnCount != iSelect) )		// only interested in the selected option
 			continue;
 
 		// Check for a skill / non-consumables required.
@@ -872,7 +862,7 @@ size_t CClient::Cmd_Skill_Menu_Build( RESOURCE_ID_BASE rid, int iSelect, CMenuIt
 	return iShowCount;
 }
 
-bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase *pSrc )
+bool CClient::Cmd_Skill_Magery(SPELL_TYPE iSpell, CObjBase *pSrc)
 {
 	ADDTOCALLSTACK("CClient::Cmd_Skill_Magery");
 	// Start casting a spell. Prompt for target.
@@ -883,10 +873,10 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase *pSrc )
 	ASSERT(m_pChar);
 
 	const CSpellDef *pSpellDef;
-	if ( IsSetMagicFlags(MAGICF_PRECAST) && iSpell == m_tmSkillMagery.m_Spell )
+	if ( IsSetMagicFlags(MAGICF_PRECAST) && (iSpell == m_tmSkillMagery.m_Spell) )
 	{
 		pSpellDef = g_Cfg.GetSpellDef(m_tmSkillMagery.m_Spell);
-		if ( pSpellDef != NULL && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
+		if ( pSpellDef && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
 			iSpell = m_tmSkillMagery.m_Spell;
 	}
 	else
@@ -973,20 +963,20 @@ bool CClient::Cmd_Skill_Magery( SPELL_TYPE iSpell, CObjBase *pSrc )
 	else
 	{
 		int skill;
-		if ( !pSpellDef->GetPrimarySkill(&skill, NULL) )
+		if ( !pSpellDef->GetPrimarySkill(&skill) )
 			return false;
 
 		return m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
 	}
 }
 
-bool CClient::Cmd_Skill_Tracking( WORD track_sel, bool bExec )
+bool CClient::Cmd_Skill_Tracking(WORD wTrackType, bool bExec)
 {
 	ADDTOCALLSTACK("CClient::Cmd_Skill_Tracking");
 	// look around for stuff.
 
 	ASSERT(m_pChar);
-	if ( track_sel == USHRT_MAX )
+	if ( wTrackType == USHRT_MAX )
 	{
 		// Unlike others skills, Tracking is used during menu setup
 		m_pChar->Skill_Cleanup();	// clean up current skill
@@ -1012,14 +1002,14 @@ bool CClient::Cmd_Skill_Tracking( WORD track_sel, bool bExec )
 		return true;
 	}
 
-	if ( track_sel > 0 ) // Not Cancelled
+	if ( wTrackType > 0 ) // Not Cancelled
 	{
 		ASSERT(track_sel < COUNTOF(m_tmMenu.m_Item));
 		if ( bExec )
 		{
 			// Tracking menu got us here. Start tracking the selected creature.
 			m_pChar->SetTimeout(1 * TICK_PER_SEC);
-			m_pChar->m_Act_Targ = static_cast<CGrayUID>(m_tmMenu.m_Item[track_sel]);
+			m_pChar->m_Act_Targ = static_cast<CGrayUID>(m_tmMenu.m_Item[wTrackType]);
 			m_pChar->Skill_Start(SKILL_TRACKING);
 			return true;
 		}
@@ -1033,15 +1023,15 @@ bool CClient::Cmd_Skill_Tracking( WORD track_sel, bool bExec )
 			NPCBRAIN_NONE	// players
 		};
 
-		if ( track_sel >= COUNTOF(sm_Track_Brain) )
-			track_sel = COUNTOF(sm_Track_Brain) - 1;
+		if ( wTrackType >= COUNTOF(sm_Track_Brain) )
+			wTrackType = COUNTOF(sm_Track_Brain) - 1;
 
-		NPCBRAIN_TYPE track_type = sm_Track_Brain[track_sel];
+		NPCBRAIN_TYPE track_type = sm_Track_Brain[wTrackType];
 		CMenuItem item[minimum(MAX_MENU_ITEMS, COUNTOF(m_tmMenu.m_Item))];
 		size_t count = 0;
 
 		item[0].m_sText = g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_SKILLMENU_TITLE);
-		m_tmMenu.m_Item[0] = track_sel;
+		m_tmMenu.m_Item[0] = wTrackType;
 
 		CWorldSearch AreaChars(m_pChar->GetTopPoint(), m_pChar->Skill_GetBase(SKILL_TRACKING) / 10 + 10);
 		for (;;)
@@ -1064,14 +1054,14 @@ bool CClient::Cmd_Skill_Tracking( WORD track_sel, bool bExec )
 					continue;
 
 				// Check action difficulty when trying to track players
-				int tracking = m_pChar->Skill_GetBase(SKILL_TRACKING);
-				int detectHidden = m_pChar->Skill_GetBase(SKILL_DETECTINGHIDDEN);
+				WORD tracking = m_pChar->Skill_GetBase(SKILL_TRACKING);
+				WORD detectHidden = m_pChar->Skill_GetBase(SKILL_DETECTINGHIDDEN);
 				if ( (g_Cfg.m_iRacialFlags & RACIALF_ELF_DIFFTRACK) && pChar->IsElf() )
 					tracking /= 2;			// elves are more difficult to track (Difficult to Track racial trait)
 
-				int hiding = pChar->Skill_GetBase(SKILL_HIDING);
-				int stealth = pChar->Skill_GetBase(SKILL_STEALTH);
-				int divisor = maximum(hiding + stealth, 1);
+				WORD hiding = pChar->Skill_GetBase(SKILL_HIDING);
+				WORD stealth = pChar->Skill_GetBase(SKILL_STEALTH);
+				WORD divisor = maximum(hiding + stealth, 1);
 
 				int chance;
 				if ( g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE )
@@ -1118,14 +1108,14 @@ bool CClient::Cmd_Skill_Tracking( WORD track_sel, bool bExec )
 				g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_FAIL_PEOPLE)
 			};
 
-			if ( sm_Track_FailMsg[track_sel - 1] )
-				SysMessage(sm_Track_FailMsg[track_sel - 1]);
+			if ( sm_Track_FailMsg[wTrackType - 1] )
+				SysMessage(sm_Track_FailMsg[wTrackType - 1]);
 		}
 	}
 	return false;
 }
 
-bool CClient::Cmd_Skill_Smith( CItem *pIngots )
+bool CClient::Cmd_Skill_Smith(CItem *pIngots)
 {
 	ADDTOCALLSTACK("CClient::Cmd_Skill_Smith");
 	ASSERT(m_pChar);
@@ -1196,11 +1186,11 @@ bool CClient::Cmd_Skill_Inscription()
 	return Cmd_Skill_Menu(g_Cfg.ResourceGetIDType(RES_SKILLMENU, "sm_inscription"));
 }
 
-bool CClient::Cmd_SecureTrade( CChar *pChar, CItem *pItem )
+bool CClient::Cmd_SecureTrade(CChar *pChar, CItem *pItem)
 {
 	ADDTOCALLSTACK("CClient::Cmd_SecureTrade");
 	// Begin secure trading with a char. (Make the initial offer)
-	if ( !pChar || pChar == m_pChar )
+	if ( !pChar || (pChar == m_pChar) )
 		return false;
 
 	// Make sure both clients can see each other, because trade window is an container
@@ -1248,7 +1238,7 @@ bool CClient::Cmd_SecureTrade( CChar *pChar, CItem *pItem )
 				if ( pItem->OnTrigger(ITRIG_DROPON_TRADE, this, &Args1) == TRIGRET_RET_TRUE )
 					return false;
 			}
-			CItemContainer *pCont = dynamic_cast<CItemContainer *>(pItemCont);
+			CItemContainer *pCont = static_cast<CItemContainer *>(pItemCont);
 			if ( pCont )
 				pCont->ContentAdd(pItem);
 		}
