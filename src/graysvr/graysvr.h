@@ -160,12 +160,13 @@ enum RESDISPLAY_VERSION
 #include "../common/CQueue.h"
 #include "../common/CSectorTemplate.h"
 #include "../common/CDataBase.h"
-#include "../common/sqlite/SQLite.h" //New Database
+#include "../common/sqlite/SQLite.h"
 
 #include "CResource.h"
 #include "CServRef.h"
 #include "CAccount.h"
 #include "CChat.h"
+#include "CGMPage.h"
 
 #include <vector>
 #include <string>
@@ -326,63 +327,6 @@ private:
 } g_Log;		// Log file
 
 //////////////////
-
-class CGMPage : public CGObListRec, public CScriptObj
-{
-	// RES_GMPAGE
-	// ONly one page allowed per account at a time.
-	static LPCTSTR const sm_szLoadKeys[];
-private:
-	CGString m_sAccount;	// The account that paged me.
-	CClient * m_pGMClient;	// assigned to a GM
-	CGString m_sReason;		// Players Description of reason for call.
-
-public:
-	static const char *m_sClassName;
-	// Queue a GM page. (based on account)
-	CServTime  m_timePage;	// Time of the last call.
-	CPointMap  m_ptOrigin;		// Origin Point of call.
-
-public:
-	CGMPage( LPCTSTR pszAccount );
-	~CGMPage();
-
-private:
-	CGMPage(const CGMPage& copy);
-	CGMPage& operator=(const CGMPage& other);
-
-public:
-	CAccountRef FindAccount() const;
-	LPCTSTR GetAccountStatus() const;
-	LPCTSTR GetName() const
-	{
-		return( m_sAccount );
-	}
-	LPCTSTR GetReason() const
-	{
-		return( m_sReason );
-	}
-	void SetReason( LPCTSTR pszReason )
-	{
-		m_sReason = pszReason;
-	}
-	CClient * FindGMHandler() const
-	{
-		return( m_pGMClient );
-	}
-	void ClearGMHandler();
-	void SetGMHandler( CClient * pClient );
-	INT64 GetAge() const;
-
-	bool r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc );
-	void r_Write( CScript & s ) const;
-	bool r_LoadVal( CScript & s );
-
-	CGMPage *GetNext() const
-	{
-		return static_cast<CGMPage *>(CGObListRec::GetNext());
-	}
-};
 
 class CDialogResponseArgs : public CScriptTriggerArgs
 {

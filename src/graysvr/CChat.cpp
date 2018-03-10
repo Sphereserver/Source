@@ -1,6 +1,5 @@
 // Chat system
 #include "graysvr.h"	// predef header.
-#include "CChat.h"
 #include "../network/network.h"
 
 ////////////////////////////////////////////////////////////////////////////
