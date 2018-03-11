@@ -941,7 +941,7 @@ public:
 	CVarDefMap m_TagDefs;
 	CVarDefMap m_BaseDefs;		// new variable storage system
 
-	typedef std::map<DWORD, std::pair<std::pair<DWORD, DWORD>, CPointMap>> OpenedContainerMap_t;
+	typedef std::map<DWORD, std::pair<std::pair<DWORD, DWORD>, CPointMap> > OpenedContainerMap_t;
 	OpenedContainerMap_t m_openedContainers;	// UID list of all containers opened by the client
 
 	CGObArray<CClientTooltip *> m_TooltipData;	// storage for tooltip data while in trigger
