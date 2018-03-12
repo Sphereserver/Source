@@ -2105,63 +2105,63 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 	{
 
 		if ( pChar->IsPlayableCharacter() )
-			m_pPopupPacket->addOption(POPUP_PAPERDOLL, 6123, POPUPFLAG_COLOR, 0xFFFF);
+			m_pPopupPacket->addOption(POPUP_PAPERDOLL, 6123);
 
 		if ( pChar->m_pNPC )
 		{
 			if ( pChar->m_pNPC->m_Brain == NPCBRAIN_BANKER )
-				m_pPopupPacket->addOption(POPUP_BANKBOX, 6105, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_BANKBOX, 6105);
 			else if ( pChar->m_pNPC->m_Brain == NPCBRAIN_STABLE )
 			{
-				m_pPopupPacket->addOption(POPUP_STABLESTABLE, 6126, POPUPFLAG_COLOR, 0xFFFF);
-				m_pPopupPacket->addOption(POPUP_STABLERETRIEVE, 6127, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_STABLESTABLE, 6126);
+				m_pPopupPacket->addOption(POPUP_STABLERETRIEVE, 6127);
 			}
 
 			if ( pChar->NPC_IsVendor() )
 			{
-				m_pPopupPacket->addOption(POPUP_VENDORBUY, 6103, POPUPFLAG_COLOR, 0xFFFF);
-				m_pPopupPacket->addOption(POPUP_VENDORSELL, 6104, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_VENDORBUY, 6103);
+				m_pPopupPacket->addOption(POPUP_VENDORSELL, 6104);
 			}
 
-			WORD wFlag = pChar->IsStatFlag(STATF_DEAD) ? POPUPFLAG_LOCKED : POPUPFLAG_COLOR;
+			WORD wFlag = pChar->IsStatFlag(STATF_DEAD) ? POPUPFLAG_DISABLED : 0;
 			if ( pChar->NPC_IsOwnedBy(m_pChar, false) )
 			{
 				CREID_TYPE id = pChar->GetID();
-				bool bBackpack = (id == CREID_LLAMA_PACK || id == CREID_HORSE_PACK || id == CREID_GIANT_BEETLE);
+				bool bBackpack = ((id == CREID_LLAMA_PACK) || (id == CREID_HORSE_PACK) || (id == CREID_GIANT_BEETLE));
 
-				m_pPopupPacket->addOption(POPUP_PETGUARD, 6107, wFlag, 0xFFFF);
-				m_pPopupPacket->addOption(POPUP_PETFOLLOW, 6108, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETGUARD, 6107, wFlag);
+				m_pPopupPacket->addOption(POPUP_PETFOLLOW, 6108, POPUPFLAG_COLOR);
 				if ( bBackpack )
-					m_pPopupPacket->addOption(POPUP_PETDROP, 6109, wFlag, 0xFFFF);
-				m_pPopupPacket->addOption(POPUP_PETKILL, 6111, wFlag, 0xFFFF);
-				m_pPopupPacket->addOption(POPUP_PETSTOP, 6112, POPUPFLAG_COLOR, 0xFFFF);
-				m_pPopupPacket->addOption(POPUP_PETSTAY, 6114, POPUPFLAG_COLOR, 0xFFFF);
+					m_pPopupPacket->addOption(POPUP_PETDROP, 6109, wFlag);
+				m_pPopupPacket->addOption(POPUP_PETKILL, 6111, wFlag);
+				m_pPopupPacket->addOption(POPUP_PETSTOP, 6112);
+				m_pPopupPacket->addOption(POPUP_PETSTAY, 6114);
 				if ( !pChar->IsStatFlag(STATF_Conjured) )
 				{
-					m_pPopupPacket->addOption(POPUP_PETFRIEND_ADD, 6110, wFlag, 0xFFFF);
-					m_pPopupPacket->addOption(POPUP_PETFRIEND_REMOVE, 6099, wFlag, 0xFFFF);
-					m_pPopupPacket->addOption(POPUP_PETTRANSFER, 6113, POPUPFLAG_COLOR, 0xFFFF);
+					m_pPopupPacket->addOption(POPUP_PETFRIEND_ADD, 6110, wFlag);
+					m_pPopupPacket->addOption(POPUP_PETFRIEND_REMOVE, 6099, wFlag);
+					m_pPopupPacket->addOption(POPUP_PETTRANSFER, 6113);
 				}
-				m_pPopupPacket->addOption(POPUP_PETRELEASE, 6118, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETRELEASE, 6118);
 				if ( bBackpack )
-					m_pPopupPacket->addOption(POPUP_BACKPACK, 6145, wFlag, 0xFFFF);
+					m_pPopupPacket->addOption(POPUP_BACKPACK, 6145, wFlag);
 			}
 			else if ( pChar->Memory_FindObjTypes(m_pChar, MEMORY_FRIEND) )
 			{
-				m_pPopupPacket->addOption(POPUP_PETFOLLOW, 6108, wFlag, 0xFFFF);
-				m_pPopupPacket->addOption(POPUP_PETSTOP, 6112, wFlag, 0xFFFF);
-				m_pPopupPacket->addOption(POPUP_PETSTAY, 6114, wFlag, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_PETFOLLOW, 6108, wFlag);
+				m_pPopupPacket->addOption(POPUP_PETSTOP, 6112, wFlag);
+				m_pPopupPacket->addOption(POPUP_PETSTAY, 6114, wFlag);
 			}
 		}
 		else if ( pChar == m_pChar )
 		{
-			m_pPopupPacket->addOption(POPUP_BACKPACK, 6145, POPUPFLAG_COLOR, 0xFFFF);
+			m_pPopupPacket->addOption(POPUP_BACKPACK, 6145);
 			if ( m_NetState->isClientVersion(MINCLIVER_STATUS_V6) )
 			{
 				if ( pChar->GetDefNum("REFUSETRADES") )
-					m_pPopupPacket->addOption(POPUP_TRADE_ALLOW, 1154112, POPUPFLAG_COLOR, 0xFFFF);
+					m_pPopupPacket->addOption(POPUP_TRADE_ALLOW, 1154112);
 				else
-					m_pPopupPacket->addOption(POPUP_TRADE_REFUSE, 1154113, POPUPFLAG_COLOR, 0xFFFF);
+					m_pPopupPacket->addOption(POPUP_TRADE_REFUSE, 1154113);
 			}
 		}
 		else
@@ -2169,17 +2169,17 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 			if ( m_NetState->isClientVersion(MINCLIVER_NEWCONTEXTMENU) )
 			{
 				if ( !m_pChar->m_pParty && !pChar->m_pParty )
-					m_pPopupPacket->addOption(POPUP_PARTY_ADD, 197, POPUPFLAG_COLOR, 0xFFFF);
+					m_pPopupPacket->addOption(POPUP_PARTY_ADD, 197);
 				else if ( m_pChar->m_pParty && m_pChar->m_pParty->IsPartyMaster(m_pChar) )
 				{
 					if ( !pChar->m_pParty )
-						m_pPopupPacket->addOption(POPUP_PARTY_ADD, 197, POPUPFLAG_COLOR, 0xFFFF);
+						m_pPopupPacket->addOption(POPUP_PARTY_ADD, 197);
 					else if ( pChar->m_pParty == m_pChar->m_pParty )
-						m_pPopupPacket->addOption(POPUP_PARTY_REMOVE, 198, POPUPFLAG_COLOR, 0xFFFF);
+						m_pPopupPacket->addOption(POPUP_PARTY_REMOVE, 198);
 				}
 			}
 			if ( m_NetState->isClientVersion(MINCLIVER_TOL) && (m_pChar->GetDist(pChar) <= 2) )
-				m_pPopupPacket->addOption(POPUP_TRADE_OPEN, 1077728, POPUPFLAG_COLOR, 0xFFFF);
+				m_pPopupPacket->addOption(POPUP_TRADE_OPEN, 1077728);
 		}
 
 		if ( IsTrigUsed(TRIGGER_CONTEXTMENUREQUEST) && (Args.m_iN1 != 1) )

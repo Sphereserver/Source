@@ -1024,3 +1024,6 @@ Fixed: Console error when PetsInheritNotoriety .ini setting is enabled.
 09-03-2018, Coruja
 Fixed: Multi placement making players get stuck when place the multi over his own char.
 Fixed: Multi placement being incorrectly blocked by region flags region_flag_underground, region_flag_guarded, region_flag_safe
+
+12-03-2018, Coruja
+[sphere.ini]: Removed unused ContextMenuLimit setting

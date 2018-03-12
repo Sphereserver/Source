@@ -792,11 +792,10 @@ public:
 	void addAOSTooltip(const CObjBase *pObj, bool bRequested = false, bool bShop = false);
 
 private:
-	#define MAX_POPUPS				15
-
-	#define POPUPFLAG_LOCKED		0x1
-	#define POPUPFLAG_ARROW			0x2
-	#define POPUPFLAG_COLOR			0x20
+	#define POPUPFLAG_DISABLED		0x01
+	#define POPUPFLAG_ARROW			0x02	// classic clients only
+	#define POPUPFLAG_HIGHLIGHT		0x04	// enhanced clients only
+	#define POPUPFLAG_COLOR			0x20	// classic clients only (< 6.0.0.0)
 
 	#define POPUP_REQUEST			0
 	#define POPUP_PAPERDOLL			11
@@ -821,7 +820,6 @@ private:
 	#define POPUP_PETRELEASE		50
 	#define POPUP_STABLESTABLE		51
 	#define POPUP_STABLERETRIEVE	52
-	#define POPUP_TRAINSKILL		100
 
 	PacketDisplayPopup *m_pPopupPacket;
 

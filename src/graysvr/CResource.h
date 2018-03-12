@@ -470,9 +470,9 @@ public:
 	CValueCurveDef	m_Interrupt;	// chance to interrupt a spell
 	
 public:
-	bool IsSpellType( DWORD wFlags ) const
+	bool IsSpellType(DWORD dwFlags) const
 	{
-		return(( m_dwFlags & wFlags ) ? true : false );
+		return (m_dwFlags & dwFlags) ? true : false;
 	}
 
 public:
@@ -785,7 +785,7 @@ public:
 	SOUND_TYPE m_iSpell_Teleport_Sound_Players;
 	ITEMID_TYPE m_iSpell_Teleport_Effect_Staff;
 	SOUND_TYPE m_iSpell_Teleport_Sound_Staff;
-	int m_iSpellTimeout; // Timeout for spell targeting
+	int m_iSpellTimeout;		// Length of time (in seconds) for a player to choose a target when casting
 
 	// In Game Effects
 	int	 m_iLightDungeon;
@@ -837,14 +837,14 @@ public:
 	int  m_iRevealFlags;		///* reveal flags used for SPELL_REVEAL (mostly for backwards).
 
 	// Criminal/Karma
-	bool m_fAttackingIsACrime;		// Is attacking (even before hitting) a crime?
+	bool m_fAttackingIsACrime;	// Is attacking (even before hitting) a crime?
 	bool m_fGuardsInstantKill;	// Will guards kill instantly or follow normal combat rules?
 	bool m_fGuardsOnMurderers;	// should guards be only called on criminals ?
 	int	 m_iGuardLingerTime;	// How long do guards linger about.
 	int  m_iSnoopCriminal;		// 1 in # chance of getting criminalflagged when succesfully snooping.
 	bool m_iTradeWindowSnooping;// 1 means opening a container in trade window needs to use snooping, 0 direct open.
 	int  m_iMurderMinCount;		// amount of murders before we get title.
-	int	 m_iMurderDecayTime;	// (minutes) Roll murder counts off this often.
+	int	 m_iMurderDecayTime;	// Length of time (in seconds) to decay a murder count
 	bool m_fHelpingCriminalsIsACrime;// If I help (rez, heal, etc) a criminal, do I become one too?
 	bool m_fLootingIsACrime;	// Looting a blue corpse is bad.
 	int  m_iCriminalTimer;		// How many minutes are criminals flagged for?
@@ -859,9 +859,9 @@ public:
 	int		m_iLostNPCTeleport;
 	int		m_iExperimental;
 	int		m_iOptionFlags;
-	int		m_iWoolGrowthTime;	// how long till wool grows back on sheared sheep, in minutes
-	unsigned int m_iAttackerTimeout;	// Timeout for attacker.*
-	unsigned int m_iNotoTimeout;	// Timeout for NOTOriety checks.*
+	int		m_iWoolGrowthTime;			// Length of time (in minutes) to regen wool on sheep NPCs
+	unsigned int m_iAttackerTimeout;	// Length of time (in seconds) for a char to remember his attacker (used for attacker keyword)
+	unsigned int m_iNotoTimeout;		// Length of time (in seconds) to cache character on notoriety list
 	unsigned int m_iMaxSkill;
 
 	int		m_iDistanceYell;
@@ -934,7 +934,7 @@ public:
 #define NPC_AI_LOOTING			0x100	// Make NPCs loot nearby corpses and items on ground
 #define	NPC_AI_MOVEOBSTACLES	0x200	// Make NPCs with CAN=mt_usehands able to move items blocking its way
 #define NPC_AI_PERSISTENTPATH	0x400	// Make NPCs try to follow its target even when it is unreachable instead give up
-#define NPC_AI_THREAT			0x800	// Make NPCs switch targets based on target threat level while in combat
+#define NPC_AI_THREAT			0x800	// Make NPCs select combat target based on highest threat level (damage done) instead closest distance
 	int		m_iNpcAi;
 
 	//	Experience system
@@ -1008,7 +1008,6 @@ public:
 
 	int			m_iTooltipCache;			// time to cache tooltip for
 	int			m_iTooltipMode;				// tooltip mode (TOOLTIP_TYPE)
-	int			m_iContextMenuLimit;		// max amount of options per context menu
 #define AUTOTOOLTIP_FLAG_NAME          0x0001
 #define AUTOTOOLTIP_FLAG_AMOUNT        0x0002
 #define AUTOTOOLTIP_FLAG_WEIGHT        0x0004

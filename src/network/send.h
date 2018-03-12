@@ -1398,7 +1398,7 @@ private:
 public:
 	PacketDisplayPopup(const CClient* target, CGrayUID uid);
 
-	void addOption(WORD entryTag, DWORD textId, WORD flags, WORD color);
+	void addOption(WORD entryTag, DWORD textId, WORD flags = 0, WORD color = 0);
 	void finalise(void);
 
 	int getOptionCount(void) const

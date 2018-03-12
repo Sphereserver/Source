@@ -132,8 +132,8 @@ CResource::CResource()
 	m_fNoResRobe		= 0;
 	m_iLostNPCTeleport	= 50;
 	m_iExperimental		= 0;
+	m_iDistanceWhisper	= 1;
 	m_iDistanceYell		= UO_MAP_VIEW_RADAR;
-	m_iDistanceWhisper	= 3;
 	m_iOptionFlags		= (OF_Command_Sysmsgs|OF_NoHouseMuteSpeech);
 
 	m_iMaxSkill			= SKILL_QTY;
@@ -236,7 +236,6 @@ CResource::CResource()
 	m_iTooltipCache = 30*TICK_PER_SEC;
 	m_iTooltipMode = TOOLTIPMODE_SENDVERSION;
 	m_iAutoTooltipResend = (AUTOTOOLTIP_FLAG_NAME|AUTOTOOLTIP_FLAG_AMOUNT|AUTOTOOLTIP_FLAG_WEIGHT|AUTOTOOLTIP_FLAG_DURABILITY|AUTOTOOLTIP_FLAG_POISON|AUTOTOOLTIP_FLAG_WANDCHARGES|AUTOTOOLTIP_FLAG_SPELLBOOK);
-	m_iContextMenuLimit = 15;
 
 	m_iClientLoginMaxTries = 0;		// maximum bad password tries before a temp ip ban
 	m_iClientLoginTempBan = 3*60*TICK_PER_SEC;
@@ -409,7 +408,6 @@ enum RC_TYPE
 	RC_COMMANDTRIGGER,			// m_sCommandTrigger
 	RC_CONNECTINGMAX,			// m_iConnectingMax
 	RC_CONNECTINGMAXIP,			// m_iConnectingMaxIP
-	RC_CONTEXTMENULIMIT,		// m_iContextMenuLimit
 	RC_CORPSENPCDECAY,
 	RC_CORPSEPLAYERDECAY,
 	RC_CRIMINALTIMER,			// m_iCriminalTimer
@@ -635,7 +633,6 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY+1] =
 	{ "COMMANDTRIGGER",			{ ELEM_CSTRING,	OFFSETOF(CResource,m_sCommandTrigger),		0 }},
 	{ "CONNECTINGMAX",			{ ELEM_INT,		OFFSETOF(CResource,m_iConnectingMax),		0 }},
 	{ "CONNECTINGMAXIP",		{ ELEM_INT,		OFFSETOF(CResource,m_iConnectingMaxIP),		0 }},
-	{ "CONTEXTMENULIMIT",		{ ELEM_INT,		OFFSETOF(CResource,m_iContextMenuLimit),	0 }},
 	{ "CORPSENPCDECAY",			{ ELEM_INT,		OFFSETOF(CResource,m_iDecay_CorpseNPC),		0 }},
 	{ "CORPSEPLAYERDECAY",		{ ELEM_INT,		OFFSETOF(CResource,m_iDecay_CorpsePlayer),	0 }},
 	{ "CRIMINALTIMER",			{ ELEM_INT,		OFFSETOF(CResource,m_iCriminalTimer),		0 }},
@@ -1094,10 +1091,6 @@ bool CResource::r_LoadVal( CScript &s )
 
 		case RC_GUARDSONMURDERERS:
 			m_fGuardsOnMurderers = s.GetArgVal() ? true : false;
-			break;
-
-		case RC_CONTEXTMENULIMIT:
-			m_iContextMenuLimit = s.GetArgVal();
 			break;
 
 		case RC_SCPFILES: // Get SCP files from here.
@@ -1703,17 +1696,11 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		case RC_TOOLTIPCACHE:
 			sVal.FormatVal( m_iTooltipCache / (TICK_PER_SEC) );
 			break;
-
 		case RC_GUARDSINSTANTKILL:
 			sVal.FormatVal(g_Cfg.m_fGuardsInstantKill);
 			break;
-
 		case RC_GUARDSONMURDERERS:
 			sVal.FormatVal(g_Cfg.m_fGuardsOnMurderers);
-			break;
-
-		case RC_CONTEXTMENULIMIT:
-			sVal.FormatVal(g_Cfg.m_iContextMenuLimit);
 			break;
 		case RC_WALKBUFFER:
 			sVal.FormatVal(m_iWalkBuffer / TICK_PER_SEC);

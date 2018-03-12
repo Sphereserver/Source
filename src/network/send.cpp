@@ -3737,15 +3737,15 @@ void PacketDisplayPopup::addOption(WORD entryTag, DWORD textId, WORD flags, WORD
 {
 	ADDTOCALLSTACK("PacketDisplayPopup::addOption");
 
-	if (m_popupCount >= g_Cfg.m_iContextMenuLimit)
+	if (m_popupCount >= UCHAR_MAX)
 	{
-		DEBUG_ERR(("Bad AddContextEntry usage: Too many entries, max = %d\n", MAX_POPUPS));
+		DEBUG_ERR(("Bad AddContextEntry usage: Too many entries, max = %d\n", UCHAR_MAX));
 		return;
 	}
 
 	if (m_newPacketFormat)
 	{
-		if ( textId <= 32767 )
+		if (textId <= USHRT_MAX)
 			textId += 3000000;
 		if (flags & POPUPFLAG_COLOR)
 			flags &= ~POPUPFLAG_COLOR;
@@ -3756,10 +3756,12 @@ void PacketDisplayPopup::addOption(WORD entryTag, DWORD textId, WORD flags, WORD
 	}
 	else
 	{
+		if (flags & POPUPFLAG_HIGHLIGHT)
+			flags &= ~POPUPFLAG_HIGHLIGHT;
+
 		writeInt16(entryTag);
 		writeInt16(static_cast<WORD>(textId));
 		writeInt16(flags);
-
 		if (flags & POPUPFLAG_COLOR)
 			writeInt16(color);
 	}
