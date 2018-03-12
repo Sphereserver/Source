@@ -1882,28 +1882,13 @@ effect_bounce:
 	if ( pSrc && (pSrc != this) )
 	{
 		// Update attacker list
-		bool bAttackerExists = false;
-		for (std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it)
+		int id = Attacker_GetID(pSrc);
+		if ( id != -1 )
 		{
-			LastAttackers & refAttacker = *it;
-			if ( refAttacker.charUID == pSrc->GetUID().GetPrivateUID() )
-			{
-				refAttacker.elapsed = 0;
-				refAttacker.amountDone += maximum( 0, iDmg );
-				refAttacker.threat += maximum( 0, iDmg );
-				bAttackerExists = true;
-				break;
-			}
-		}
-
-		if (bAttackerExists == false)
-		{
-			LastAttackers attacker;
-			attacker.charUID = pSrc->GetUID().GetPrivateUID();
-			attacker.elapsed = 0;
-			attacker.amountDone = maximum( 0, iDmg );
-			attacker.threat = maximum( 0, iDmg );
-			m_lastAttackers.push_back(attacker);
+			LastAttackers &refAttacker = m_lastAttackers.at(id);
+			refAttacker.elapsed = 0;
+			refAttacker.damage += maximum(0, iDmg);
+			refAttacker.threat += maximum(0, iDmg);
 		}
 
 		// A physical blow of some sort.
@@ -2035,7 +2020,7 @@ void CChar::Memory_Fight_Start( const CChar * pTarg )
 	}
 	else
 	{
-		if ( Attacker_GetID(pTarg->GetUID()) )	// I'm already in fight against pTarg, no need of more code
+		if ( Attacker_GetID(const_cast<CChar *>(pTarg)) )	// I'm already in fight against pTarg, no need of more code
 			return;
 		if ( pMemory->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_SAWCRIME|MEMORY_AGGREIVED))
 			MemTypes = 0;	// I am defending myself rightly.
@@ -2233,7 +2218,7 @@ void CChar::Fight_Clear()
 {
 	ADDTOCALLSTACK("CChar::Fight_Clear");
 	if ( IsTrigUsed(TRIGGER_COMBATEND) )
-		OnTrigger(CTRIG_CombatEnd, this, 0);
+		OnTrigger(CTRIG_CombatEnd, this);
 
 	m_lastAttackers.clear();
 	if ( Fight_IsActive() )
@@ -2286,7 +2271,7 @@ bool CChar::Fight_Attack( const CChar *pCharTarg, bool btoldByMaster )
 
 	INT64 threat = 0;
 	if ( btoldByMaster )
-		threat = 1000 + Attacker_GetHighestThreat();
+		threat = LLONG_MAX;
 
 	if ( (IsTrigUsed(TRIGGER_ATTACK) || IsTrigUsed(TRIGGER_CHARATTACK)) && (m_Fight_Targ != pCharTarg->GetUID()) )
 	{
@@ -2376,24 +2361,16 @@ void CChar::Fight_HitTry()
 	ASSERT(0);
 }
 
-// Add some enemy to my Attacker list
-bool CChar::Attacker_Add( CChar * pChar, INT64 threat )
+bool CChar::Attacker_Add(CChar *pChar, INT64 threat)
 {
 	ADDTOCALLSTACK("CChar::Attacker_Add");
-	CGrayUID uid = pChar->GetUID();
-	if ( m_lastAttackers.size() )	// Must only check for existing attackers if there are any attacker already.
+	int id = Attacker_GetID(pChar);
+	if ( id != -1 )		// char is already on attacker list
+		return true;
+
+	if ( IsTrigUsed(TRIGGER_COMBATSTART) )
 	{
-		for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it )
-		{
-			LastAttackers & refAttacker = *it;
-			if ( refAttacker.charUID == uid )
-				return true;	// found one, no actions needed so we skip
-		}
-	}
-	else if ( IsTrigUsed(TRIGGER_COMBATSTART) )
-	{
-		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatStart, pChar, 0);
-		if ( tRet == TRIGRET_RET_TRUE )
+		if ( OnTrigger(CTRIG_CombatStart, pChar) == TRIGRET_RET_TRUE )
 			return false;
 	}
 
@@ -2401,28 +2378,24 @@ bool CChar::Attacker_Add( CChar * pChar, INT64 threat )
 	Args.m_iN1 = threat;
 	if ( IsTrigUsed(TRIGGER_COMBATADD) )
 	{
-		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatAdd, pChar, &Args);
-		if ( tRet == TRIGRET_RET_TRUE )
+		if ( OnTrigger(CTRIG_CombatAdd, pChar, &Args) == TRIGRET_RET_TRUE )
 			return false;
 		threat = Args.m_iN1;
 	}
 
-	LastAttackers attacker;
-	attacker.amountDone = 0;
-	attacker.charUID = uid;
-	attacker.elapsed = 0;
-	attacker.threat = m_pPlayer ? 0 : threat;
-	m_lastAttackers.push_back(attacker);
+	LastAttackers refAttacker;
+	refAttacker.charUID = pChar->GetUID();
+	refAttacker.elapsed = 0;
+	refAttacker.damage = 0;
+	refAttacker.threat = m_pPlayer ? 0 : threat;
+	m_lastAttackers.push_back(refAttacker);
 
-	// Record the start of the fight.
+	// Record the start of the fight
 	Memory_Fight_Start(pChar);
-	char *z = Str_GetTemp();
 
-	//if ( GetTopSector()->GetCharComplexity() < 7 )
-	//{
-		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKO), GetName(), pChar->GetName());
-		UpdateObjMessage(z, NULL, pChar->m_pClient, HUE_TEXT_DEF, TALKMODE_EMOTE);
-	//}
+	char *z = Str_GetTemp();
+	sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKO), GetName(), pChar->GetName());
+	UpdateObjMessage(z, NULL, pChar->m_pClient, HUE_TEXT_DEF, TALKMODE_EMOTE);
 
 	if ( pChar->m_pClient && pChar->CanSee(this) )
 	{
@@ -2432,217 +2405,26 @@ bool CChar::Attacker_Add( CChar * pChar, INT64 threat )
 	return true;
 }
 
-// Retrieves damage done to nID enemy
-INT64 CChar::Attacker_GetDam( int id)
+bool CChar::Attacker_Delete(int id, bool bForced, ATTACKER_CLEAR_TYPE type)
 {
-	ADDTOCALLSTACK("CChar::Attacker_GetDam");
-	if ( ! m_lastAttackers.size() )
-		return -1;
-	if (  static_cast<int>(m_lastAttackers.size()) <= id )
-		return -1;
-	LastAttackers & refAttacker = m_lastAttackers.at(id);
-	return refAttacker.amountDone;
-}
-
-// Retrieves the amount of time elapsed since the last hit to nID enemy
-INT64 CChar::Attacker_GetElapsed( int id)
-{
-	ADDTOCALLSTACK("CChar::Attacker_GetElapsed");
-	if ( ! m_lastAttackers.size() )
-		return -1;
-	if ( static_cast<int>(m_lastAttackers.size()) <= id )
-		return -1;
-	if ( id < 0 )
-		return -1;
-	LastAttackers & refAttacker = m_lastAttackers.at(id);
-	return refAttacker.elapsed;
-}
-
-// Retrieves Threat value that nID enemy represents against me
-INT64 CChar::Attacker_GetThreat( int id)
-{
-	ADDTOCALLSTACK("CChar::Attacker_GetThreat");
-	if ( ! m_lastAttackers.size() )
-		return -1;
-	if ( static_cast<int>(m_lastAttackers.size()) <= id )
-		return -1;
-	LastAttackers & refAttacker = m_lastAttackers.at(id);
-	return refAttacker.threat ? refAttacker.threat : 0;
-}
-
-// Retrieves the character with most Threat
-INT64 CChar::Attacker_GetHighestThreat()
-{
-	if ( !m_lastAttackers.size() )
-		return -1;
-	INT64 highThreat = 0;
-	for ( size_t count = 0; count < m_lastAttackers.size(); count++ )
-	{
-		LastAttackers & refAttacker = m_lastAttackers.at(count);
-		if ( refAttacker.threat > highThreat )
-			highThreat = refAttacker.threat;
-	}
-	return highThreat;
-}
-
-// Retrieves the last character that I hit
-CChar * CChar::Attacker_GetLast()
-{
-	INT64 dwLastTime = INT_MAX, dwCurTime = 0;
-
-	CChar * retChar = NULL;
-	for (size_t iAttacker = 0; iAttacker < m_lastAttackers.size(); ++iAttacker)
-	{
-		LastAttackers & refAttacker = m_lastAttackers.at(iAttacker);
-		dwCurTime = refAttacker.elapsed;
-		if (dwCurTime <= dwLastTime)
-		{
-			dwLastTime = dwCurTime;
-			retChar = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
-		}
-	}
-	return retChar;
-}
-
-// Set elapsed time (refreshing it?)
-void CChar::Attacker_SetElapsed( CChar * pChar, INT64 value)
-{
-	ADDTOCALLSTACK("CChar::Attacker_SetElapsed(CChar)");
-
-	return Attacker_SetElapsed( Attacker_GetID(pChar), value);
-}
-
-
-// Set elapsed time (refreshing it?)
-void CChar::Attacker_SetElapsed( int pChar, INT64 value)
-{
-	ADDTOCALLSTACK("CChar::Attacker_SetElapsed(int)");
-	if (pChar < 0)
-		return;
-	if ( ! m_lastAttackers.size() )
-		return;
-	if ( static_cast<int>(m_lastAttackers.size()) <= pChar )
-		return;
-	LastAttackers & refAttacker = m_lastAttackers.at( pChar );
-	refAttacker.elapsed = value;
-}
-
-// Damaged pChar
-void CChar::Attacker_SetDam( CChar * pChar, INT64 value)
-{
-	ADDTOCALLSTACK("CChar::Attacker_SetDam(CChar)");
-
-	return Attacker_SetDam( Attacker_GetID(pChar), value );
-}
-
-
-// Damaged pChar
-void CChar::Attacker_SetDam( int pChar, INT64 value)
-{
-	ADDTOCALLSTACK("CChar::Attacker_SetDam(int)");
-	if (pChar < 0)
-		return;
-	if ( ! m_lastAttackers.size() )
-		return;
-	if ( static_cast<int>(m_lastAttackers.size()) <= pChar )
-		return;
-	LastAttackers & refAttacker = m_lastAttackers.at( pChar );
-	refAttacker.amountDone = value;
-}
-
-// New Treat level
-void CChar::Attacker_SetThreat(CChar * pChar, INT64 value)
-{
-	ADDTOCALLSTACK("CChar::Attacker_SetThreat(CChar)");
-
-	return Attacker_SetThreat(Attacker_GetID(pChar), value);
-}
-
-// New Treat level
-void CChar::Attacker_SetThreat(int pChar, INT64 value)
-{
-	ADDTOCALLSTACK("CChar::Attacker_SetThreat(int)");
-	if (pChar < 0)
-		return;
-	if (m_pPlayer)
-		return;
-	if (!m_lastAttackers.size())
-		return;
-	if (static_cast<int>(m_lastAttackers.size()) <= pChar)
-		return;
-	LastAttackers & refAttacker = m_lastAttackers.at(pChar);
-	refAttacker.threat = value;
-}
-
-// Get nID value of attacker list from the given pChar
-int CChar::Attacker_GetID( CChar * pChar )
-{
-	ADDTOCALLSTACK("CChar::Attacker_GetID(CChar)");
-	if ( !pChar )
-		return -1;
-	if ( ! m_lastAttackers.size() )
-		return -1;
-	int count = 0;
-	for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it )
-	{
-		LastAttackers & refAttacker = m_lastAttackers.at(count);
-		CGrayUID uid = refAttacker.charUID;
-		if ( ! uid || !uid.CharFind() )
-			continue;
-		CChar * pMe = uid.CharFind()->GetChar();
-		if ( ! pMe )
-			continue;
-		if ( pMe == pChar )
-			return count;
-	
-		count++;
-	}
-	return -1;
-}
-
-// Get nID value of attacker list from the given pChar
-int CChar::Attacker_GetID( CGrayUID pChar )
-{
-	ADDTOCALLSTACK("CChar::Attacker_GetID(CGrayUID)");
-	return Attacker_GetID( pChar.CharFind()->GetChar() );
-}
-
-// Get UID value of attacker list from the given pChar
-CChar * CChar::Attacker_GetUID( int index )
-{
-	ADDTOCALLSTACK("CChar::Attacker_GetUID");
-	if ( ! m_lastAttackers.size() )
-		return NULL;
-	if ( static_cast<int>(m_lastAttackers.size()) <= index )
-		return NULL;
-	LastAttackers & refAttacker = m_lastAttackers.at(index);
-	CChar * pChar = static_cast<CChar*>( static_cast<CGrayUID>( refAttacker.charUID ).CharFind() );
-	return pChar;
-}
-
-// Removing nID from list
-bool CChar::Attacker_Delete( int index, bool bForced, ATTACKER_CLEAR_TYPE type )
-{
-	ADDTOCALLSTACK("CChar::Attacker_Delete(int)");
-	if ( !m_lastAttackers.size() || index < 0 || static_cast<int>(m_lastAttackers.size()) <= index )
+	ADDTOCALLSTACK("CChar::Attacker_Delete");
+	if ( (id < 0) || (id >= static_cast<int>(m_lastAttackers.size())) )
 		return false;
-	LastAttackers &refAttacker = m_lastAttackers.at(index);
+	LastAttackers &refAttacker = m_lastAttackers.at(id);
 	CChar *pChar = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
 	if ( !pChar )
 		return false;
-	
+
 	if ( IsTrigUsed(TRIGGER_COMBATDELETE) )
 	{
 		CScriptTriggerArgs Args;
 		Args.m_iN1 = bForced;
-		Args.m_iN2 = static_cast<int>(type);
-		TRIGRET_TYPE tRet = OnTrigger(CTRIG_CombatDelete,pChar,&Args);
-		if ( tRet == TRIGRET_RET_TRUE )
+		Args.m_iN2 = static_cast<INT64>(type);
+		if ( OnTrigger(CTRIG_CombatDelete, pChar, &Args) == TRIGRET_RET_TRUE )
 			return false;
 	}
 
-	std::vector<LastAttackers>::iterator it = m_lastAttackers.begin() + index;
-	m_lastAttackers.erase(it);
+	m_lastAttackers.erase(m_lastAttackers.begin() + id);
 
 	CItemMemory *pMemory = Memory_FindObj(pChar);
 	if ( pMemory )
@@ -2654,50 +2436,106 @@ bool CChar::Attacker_Delete( int index, bool bForced, ATTACKER_CLEAR_TYPE type )
 		if ( m_pNPC )
 			Fight_Attack(NPC_FightFindBestTarget());
 	}
+
 	if ( !m_lastAttackers.size() )
 		Fight_Clear();
 	return true;
 }
 
-// Removing pChar from list
 bool CChar::Attacker_Delete(CChar *pChar, bool bForced, ATTACKER_CLEAR_TYPE type)
-{		
-	ADDTOCALLSTACK("CChar::Attacker_Delete(CChar)");
+{
+	ADDTOCALLSTACK("CChar::Attacker_Delete(2)");
 	return Attacker_Delete(Attacker_GetID(pChar), bForced, type);
 }
 
-// Removing everyone
-void CChar::Attacker_RemoveChar()
+int CChar::Attacker_GetID(CChar *pChar)
 {
-	ADDTOCALLSTACK("CChar::Attacker_RemoveChar");
-	if ( m_lastAttackers.size() )
+	ADDTOCALLSTACK("CChar::Attacker_GetID");
+	if ( pChar )
 	{
-		for ( size_t count = 0; count < m_lastAttackers.size(); count++ )
+		for ( size_t i = 0; i < m_lastAttackers.size(); i++ )
 		{
-			LastAttackers &refAttacker = m_lastAttackers.at(count);
-			CChar *pEnemy = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
-			if ( !pEnemy )
-				continue;
-			pEnemy->Attacker_Delete(pEnemy->Attacker_GetID(this), false, ATTACKER_CLEAR_REMOVEDCHAR);
+			LastAttackers &refAttacker = m_lastAttackers.at(i);
+			if ( refAttacker.charUID == pChar->GetUID() )
+				return i;
 		}
 	}
+	return -1;
 }
 
-// Checking if Elapsed > serv.AttackerTimeout
+CChar *CChar::Attacker_GetHighestDam()
+{
+	ADDTOCALLSTACK("CChar::Attacker_GetHighestDam");
+	CChar *pChar = NULL;
+	INT64 iHighestDam = -1;
+	for ( size_t i = 0; i < m_lastAttackers.size(); i++ )
+	{
+		LastAttackers &refAttacker = m_lastAttackers.at(i);
+		if ( refAttacker.damage > iHighestDam )
+		{
+			pChar = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
+			iHighestDam = refAttacker.damage;
+		}
+	}
+	return pChar;
+}
+
+CChar *CChar::Attacker_GetLowestElapsed()
+{
+	ADDTOCALLSTACK("CChar::Attacker_GetLowestElapsed");
+	CChar *pChar = NULL;
+	INT64 iLowestElapsed = LLONG_MAX;
+	for ( size_t i = 0; i < m_lastAttackers.size(); i++ )
+	{
+		LastAttackers &refAttacker = m_lastAttackers.at(i);
+		if ( refAttacker.elapsed <= iLowestElapsed )
+		{
+			pChar = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
+			iLowestElapsed = refAttacker.elapsed;
+		}
+	}
+	return pChar;
+}
+
+void CChar::Attacker_SetElapsed(int id, INT64 value)
+{
+	ADDTOCALLSTACK("CChar::Attacker_SetElapsed");
+	if ( (id < 0) || (id >= static_cast<int>(m_lastAttackers.size())) )
+		return;
+	LastAttackers &refAttacker = m_lastAttackers.at(id);
+	refAttacker.elapsed = value;
+}
+
+void CChar::Attacker_SetDamage(int id, INT64 value)
+{
+	ADDTOCALLSTACK("CChar::Attacker_SetDamage");
+	if ( (id < 0) || (id >= static_cast<int>(m_lastAttackers.size())) )
+		return;
+	LastAttackers &refAttacker = m_lastAttackers.at(id);
+	refAttacker.damage = value;
+}
+
+void CChar::Attacker_SetThreat(int id, INT64 value)
+{
+	ADDTOCALLSTACK("CChar::Attacker_SetThreat");
+	if ( (id < 0) || (id >= static_cast<int>(m_lastAttackers.size())) )
+		return;
+	LastAttackers &refAttacker = m_lastAttackers.at(id);
+	refAttacker.threat = value;
+}
+
 void CChar::Attacker_CheckTimeout()
 {
 	ADDTOCALLSTACK("CChar::Attacker_CheckTimeout");
-	if ( m_lastAttackers.size() )
+	for ( size_t i = 0; i < m_lastAttackers.size(); i++ )
 	{
-		for ( size_t count = 0; count < m_lastAttackers.size(); count++ )
+		LastAttackers &refAttacker = m_lastAttackers.at(i);
+		if ( ++refAttacker.elapsed > g_Cfg.m_iAttackerTimeout )
 		{
-			LastAttackers &refAttacker = m_lastAttackers.at(count);
 			CChar *pEnemy = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
-			if ( !pEnemy )
-				continue;
-			if ( ++refAttacker.elapsed > g_Cfg.m_iAttackerTimeout )
+			if ( pEnemy )
 			{
-				Attacker_Delete(static_cast<int>(count), true, ATTACKER_CLEAR_ELAPSED);
+				Attacker_Delete(static_cast<int>(i), true, ATTACKER_CLEAR_ELAPSED);
 				if ( m_pPlayer && pEnemy->m_pPlayer )	// only show retreat msg on PvP
 				{
 					SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_COWARD_1), pEnemy->GetName());
@@ -2705,6 +2543,8 @@ void CChar::Attacker_CheckTimeout()
 				}
 				return;
 			}
+			m_lastAttackers.erase(m_lastAttackers.begin() + i);
+			return;
 		}
 	}
 }

@@ -2675,8 +2675,10 @@ CItemCorpse * CChar::MakeCorpse( bool fFrontFall )
 	{
 		iDecayTimer = m_pPlayer ? g_Cfg.m_iDecay_CorpsePlayer : g_Cfg.m_iDecay_CorpseNPC;
 		pCorpse->SetTimeStamp(CServTime::GetCurrentTime().GetTimeRaw());	// death time
-		if (Attacker_GetLast())
-			pCorpse->m_itCorpse.m_uidKiller = Attacker_GetLast()->GetUID();
+
+		CChar *pKiller = Attacker_GetLowestElapsed();
+		if ( pKiller )
+			pCorpse->m_itCorpse.m_uidKiller = pKiller->GetUID();
 		else
 			pCorpse->m_itCorpse.m_uidKiller.InitUID();
 	}
@@ -2775,21 +2777,22 @@ bool CChar::Death()
 	TCHAR * pszKillStr = Str_GetTemp();
 	int iKillStrLen = sprintf( pszKillStr, g_Cfg.GetDefaultMsg(DEFMSG_MSG_KILLED_BY), (m_pPlayer)? 'P':'N', GetNameWithoutIncognito() );
 
-	for ( size_t count = 0; count < m_lastAttackers.size(); count++ )
+	for ( size_t i = 0; i < m_lastAttackers.size(); i++ )
 	{
-		pKiller = CGrayUID(m_lastAttackers.at(count).charUID).CharFind();
-		if ( pKiller && (m_lastAttackers.at(count).amountDone > 0) )
+		LastAttackers &refAttacker = m_lastAttackers.at(i);
+		pKiller = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
+		if ( pKiller && (refAttacker.damage > 0) )
 		{
 			if ( IsTrigUsed(TRIGGER_KILL) )
 			{
 				CScriptTriggerArgs args(this);
-				args.m_iN1 = Attacker();
+				args.m_iN1 = static_cast<INT64>(m_lastAttackers.size());
 				if ( pKiller->OnTrigger(CTRIG_Kill, pKiller, &args) == TRIGRET_RET_TRUE )
 					continue;
 			}
 
-			pKiller->Noto_Kill( this, IsStatFlag(STATF_Pet), Attacker() );
-			iKillStrLen += sprintf( pszKillStr+iKillStrLen, "%s%c'%s'", iKillers ? ", " : "", (pKiller->m_pPlayer) ? 'P':'N', pKiller->GetNameWithoutIncognito() );
+			pKiller->Noto_Kill(this, IsStatFlag(STATF_Pet), static_cast<int>(m_lastAttackers.size()));
+			iKillStrLen += sprintf(pszKillStr + iKillStrLen, "%s%c'%s'", iKillers ? ", " : "", pKiller->m_pPlayer ? 'P' : 'N', pKiller->GetNameWithoutIncognito());
 			++iKillers;
 		}
 	}
@@ -3609,20 +3612,20 @@ bool CChar::MoveToValidSpot(DIR_TYPE dir, int iDist, int iDistStart, bool bFromS
 				continue;
 			}
 
-			DWORD wBlockFlags = wCan;
+			DWORD dwBlockFlags = wCan;
 			// Reset Z back to start Z + PLAYER_HEIGHT so we don't climb buildings
 			pt.m_z = startZ;
 			// Set new Z so we don't end up floating or underground
-			pt.m_z = g_World.GetHeightPoint( pt, wBlockFlags, true );
+			pt.m_z = g_World.GetHeightPoint(pt, dwBlockFlags, true);
 
 			// don't allow characters to pass through walls or other blocked
 			// paths when they're disembarking from a ship
-			if ( bFromShip && (wBlockFlags & CAN_I_BLOCK) && !(wCan & CAN_C_PASSWALLS) && (pt.m_z > startZ) )
+			if ( bFromShip && (dwBlockFlags & CAN_I_BLOCK) && !(wCan & CAN_C_PASSWALLS) && (pt.m_z > startZ) )
 			{
 				break;
 			}
 
-			if ( ! ( wBlockFlags &~ wCan ))
+			if ( !(dwBlockFlags & ~wCan) )
 			{
 				// we can go here. (maybe)
 				if ( Spell_Teleport(pt, true, !bFromShip, false) )

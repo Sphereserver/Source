@@ -1011,11 +1011,10 @@ bool CChar::NPC_LookAtCharGuard( CChar * pChar )
 		pChar->Stat_SetVal(STAT_STR, 1);
 		Fight_Hit(pChar);
 	}
-	else if ( !IsStatFlag(STATF_War) || m_Act_Targ != pChar->GetUID() )
+	else if ( !IsStatFlag(STATF_War) || (m_Act_Targ != pChar->GetUID()) )
 	{
 		Speak(g_Cfg.GetDefaultMsg(sm_szSpeakGuardStrike[Calc_GetRandVal(COUNTOF(sm_szSpeakGuardStrike))]));
 		Fight_Attack(pChar, true);
-		Attacker_SetThreat(Attacker_GetID(pChar), 10000);
 	}
 	return true;
 }
@@ -2054,21 +2053,18 @@ CChar * CChar::NPC_FightFindBestTarget()
 	if ( !m_pNPC )
 		return NULL;
 
-	if ( Attacker() )
+	CChar *pTarg = NULL;
+	if ( m_lastAttackers.size() )
 	{
-		if ( !m_lastAttackers.size() )
-			return NULL;
-
-		INT64 threat = 0;
 		int iClosest = INT_MAX;
+		INT64 iThreat = 0;
 		CChar *pChar = NULL;
-		CChar *pClosest = NULL;
 		SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
 
-		for ( std::vector<LastAttackers>::iterator it = m_lastAttackers.begin(); it != m_lastAttackers.end(); ++it )
+		for ( size_t i = 0; i < m_lastAttackers.size(); i++ )
 		{
-			LastAttackers &refAttacker = *it;
-			pChar = static_cast<CChar*>(static_cast<CGrayUID>(refAttacker.charUID).CharFind());
+			LastAttackers &refAttacker = m_lastAttackers.at(i);
+			pChar = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
 			if ( !pChar )
 				continue;
 			if ( !pChar->Fight_IsAttackable() )
@@ -2076,36 +2072,34 @@ CChar * CChar::NPC_FightFindBestTarget()
 				pChar = NULL;
 				continue;
 			}
-			if ( !pClosest )
-				pClosest = pChar;
+			if ( !pTarg )
+				pTarg = pChar;
 
 			int iDist = GetDist(pChar);
-			if ( iDist > UO_MAP_VIEW_SIGHT )
-				continue;
-			if ( g_Cfg.IsSkillFlag(skillWeapon, SKF_RANGED) && (iDist < g_Cfg.m_iArcheryMinDist || iDist > g_Cfg.m_iArcheryMaxDist) )
+			if ( g_Cfg.IsSkillFlag(skillWeapon, SKF_RANGED) && ((iDist < g_Cfg.m_iArcheryMinDist) || (iDist > g_Cfg.m_iArcheryMaxDist)) )
 				continue;
 			if ( !CanSeeLOS(pChar) )
 				continue;
 
-			if ( (NPC_GetAiFlags() & NPC_AI_THREAT) && (threat < refAttacker.threat) )	// this char has more threat than others, let's switch to this target
+			if ( (NPC_GetAiFlags() & NPC_AI_THREAT) && (refAttacker.threat > iThreat) )	// this char has more threat than others, let's switch to this target
 			{
-				pClosest = pChar;
+				pTarg = pChar;
 				iClosest = iDist;
-				threat = refAttacker.threat;
+				iThreat = refAttacker.threat;
 			}
 			else if ( iDist < iClosest )	// this char is more closer to me than my current target, let's switch to this target
 			{
-				pClosest = pChar;
+				pTarg = pChar;
 				iClosest = iDist;
 			}
 		}
-		return pClosest ? pClosest : pChar;
+		return pTarg;
 	}
 
 	// New target not found, check if I can keep attacking my current target
-	CChar *pTarget = m_Fight_Targ.CharFind();
-	if ( pTarget )
-		return pTarget;
+	pTarg = m_Fight_Targ.CharFind();
+	if ( pTarg )
+		return pTarg;
 
 	return NULL;
 }

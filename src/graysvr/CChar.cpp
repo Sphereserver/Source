@@ -312,11 +312,8 @@ CChar::~CChar()
 	Guild_Resign(MEMORY_TOWN);
 
 	if ( m_pParty )
-	{
 		m_pParty->RemoveMember(GetUID(), GetUID());
-		m_pParty = NULL;
-	}
-	Attacker_RemoveChar();		// Remove me from enemies attacker list (I assume that if he is on my list, I'm on his one and no one have me on their list if I dont have them)
+
 	NPC_PetClearOwners(false);	// Clear follower slots on pet owner
 	DeleteAll();				// Remove me early so virtuals will work
 	ClearNPC();
@@ -840,25 +837,25 @@ bool CChar::DupeFrom( CChar * pChar, bool fNewbieItems )
 				{
 					pItemCont->SetAttr(ATTR_NEWBIE);
 
-					CChar *pTest = static_cast<CChar*>(static_cast<CGrayUID>(pItemCont->m_itNormal.m_more1).CharFind());
+					CChar *pTest = static_cast<CGrayUID>(pItemCont->m_itNormal.m_more1).CharFind();
 					if ( pTest && pTest == pChar )
 						pItemCont->m_itNormal.m_more1 = static_cast<DWORD>(GetUID());
 
-					CChar *pTest2 = static_cast<CChar*>(static_cast<CGrayUID>(pItemCont->m_itNormal.m_more2).CharFind());
+					CChar *pTest2 = static_cast<CGrayUID>(pItemCont->m_itNormal.m_more2).CharFind();
 					if ( pTest2 && pTest2 == pChar )
 						pItemCont->m_itNormal.m_more2 = static_cast<DWORD>(GetUID());
 
-					CChar *pTest3 = static_cast<CChar*>(static_cast<CGrayUID>(pItemCont->m_uidLink).CharFind());
+					CChar *pTest3 = static_cast<CGrayUID>(pItemCont->m_uidLink).CharFind();
 					if ( pTest3 && pTest3 == pChar )
 						pItemCont->m_uidLink = GetUID();
 				}
 			}
 		}
-		CChar * pTest = static_cast<CChar*>(static_cast<CGrayUID>(pItem->m_itNormal.m_more1).CharFind());
+		CChar *pTest = static_cast<CGrayUID>(pItem->m_itNormal.m_more1).CharFind();
 		if ( pTest && pTest == pChar)
 			pItem->m_itNormal.m_more1 = static_cast<DWORD>(GetUID());
 
-		CChar * pTest2 = static_cast<CChar*>(static_cast<CGrayUID>(pItem->m_itNormal.m_more2).CharFind());
+		CChar *pTest2 = static_cast<CGrayUID>(pItem->m_itNormal.m_more2).CharFind();
 		if ( pTest2)
 		{
 			if ( pTest2 == pChar)
@@ -880,7 +877,7 @@ bool CChar::DupeFrom( CChar * pChar, bool fNewbieItems )
 			}
 		}
 
-		CChar * pTest3 = static_cast<CChar*>(static_cast<CGrayUID>(pItem->m_uidLink).CharFind());
+		CChar *pTest3 = static_cast<CGrayUID>(pItem->m_uidLink).CharFind();
 		if ( pTest3 && pTest3 == pChar)
 			pItem->m_uidLink = GetUID();
 		
@@ -1414,7 +1411,7 @@ do_default:
 			break;
 		case CHC_ATTACKER:
 			{
-				if ( strlen( pszKey ) == 8 )
+				if ( strlen(pszKey) == 8 )
 				{
 					sVal.FormatVal(m_lastAttackers.size());
 					return true;
@@ -1426,53 +1423,34 @@ do_default:
 				if ( *pszKey == '.' )
 				{
 					pszKey++;
-					if ( !strnicmp(pszKey, "ID", 2 ) )
+					if ( !strnicmp(pszKey, "ID", 2) )
 					{
 						pszKey += 3;	// ID + whitspace
-						CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind());
+						CChar *pChar = static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind();
 						sVal.FormatVal(Attacker_GetID(pChar));
 						return true;
-					}else if ( !strnicmp(pszKey, "TARGET", 6 ) )
+					}
+					else if ( !strnicmp(pszKey, "TARGET", 6) )
 					{
 						pszKey += 6;
 						if ( m_Act_Targ )
-							sVal.FormatHex(static_cast<DWORD>(m_Fight_Targ));
+							sVal.FormatHex(m_Fight_Targ);
 						else
 							sVal.FormatVal(-1);
 						return true;
 					}
 					if ( m_lastAttackers.size() )
 					{
-						size_t attackerIndex = m_lastAttackers.size();
-						if( !strnicmp(pszKey, "MAX", 3) )
+						size_t attackerIndex;
+						if ( !strnicmp(pszKey, "MAX", 3) )
 						{
 							pszKey += 3;
-							INT64 iMaxDmg = -1, iCurDmg = 0;
-
-							for ( size_t iAttacker = 0; iAttacker < m_lastAttackers.size(); ++iAttacker )
-							{
-								iCurDmg = m_lastAttackers.at(iAttacker).amountDone;
-								if ( iCurDmg > iMaxDmg )
-								{
-									iMaxDmg = iCurDmg;
-									attackerIndex = iAttacker;
-								}
-							}
+							attackerIndex = Attacker_GetID(Attacker_GetHighestDam());
 						}
-						else if( !strnicmp(pszKey, "LAST", 4) )
+						else if ( !strnicmp(pszKey, "LAST", 4) )
 						{
 							pszKey += 4;
-							INT64 dwLastTime = INT_MAX, dwCurTime = 0;
-
-							for ( size_t iAttacker = 0; iAttacker < m_lastAttackers.size(); ++iAttacker )
-							{
-								dwCurTime = m_lastAttackers.at(iAttacker).elapsed;
-								if ( dwCurTime <= dwLastTime )
-								{
-									dwLastTime = dwCurTime;
-									attackerIndex = iAttacker;
-								}
-							}
+							attackerIndex = Attacker_GetID(Attacker_GetLowestElapsed());
 						}
 						else
 						{
@@ -1482,25 +1460,24 @@ do_default:
 						SKIP_SEPARATORS(pszKey);
 						if ( attackerIndex < m_lastAttackers.size() )
 						{
-							LastAttackers & refAttacker = m_lastAttackers.at(attackerIndex);
-
-							if( !strnicmp(pszKey, "DAM", 3) )
+							LastAttackers &refAttacker = m_lastAttackers.at(attackerIndex);
+							if ( !strnicmp(pszKey, "UID", 3) || (*pszKey == '\0') )
 							{
-								sVal.FormatLLVal(refAttacker.amountDone);
+								CGrayUID uid = refAttacker.charUID;
+								sVal.FormatHex(uid.CharFind() ? refAttacker.charUID : 0);
 								return true;
 							}
-							else if( !strnicmp(pszKey, "ELAPSED", 7) )
+							else if ( !strnicmp(pszKey, "ELAPSED", 7) )
 							{
 								sVal.FormatLLVal(refAttacker.elapsed);
 								return true;
 							}
-							else if (( !strnicmp(pszKey, "UID", 3) ) || ( *pszKey == '\0' ))
+							else if ( !strnicmp(pszKey, "DAM", 3) )
 							{
-								CGrayUID uid = refAttacker.charUID;
-								sVal.FormatHex( uid.CharFind() ? refAttacker.charUID : 0 );
+								sVal.FormatLLVal(refAttacker.damage);
 								return true;
 							}
-							else if ((!strnicmp(pszKey, "THREAT", 6)))
+							else if ( (!strnicmp(pszKey, "THREAT", 6)) )
 							{
 								sVal.FormatLLVal(refAttacker.threat);
 								return true;
@@ -1508,7 +1485,6 @@ do_default:
 						}
 					}
 				}
-
 				return true;
 			}
 		case CHC_BREATH:
@@ -1544,7 +1520,7 @@ do_default:
 					if ( !strnicmp(pszKey, "ID", 2) )
 					{
 						pszKey += 2;	// ID + whitespace
-						CChar *pChar = static_cast<CChar *>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind());
+						CChar *pChar = static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind();
 						sVal.FormatVal(NotoSave_GetID(pChar));
 						return true;
 					}
@@ -2025,7 +2001,7 @@ do_default:
 		case CHC_DIR:
 			{
 				pszKey +=3;
-				CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind());
+				CChar *pChar = static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind();
 				if ( pChar )
 					sVal.FormatVal( GetDir(pChar));
 				else
@@ -2335,38 +2311,34 @@ do_default:
 				if ( *pszKey == '.' )
 				{
 					pszKey++;
-					if ( !strnicmp(pszKey, "CLEAR", 5) )
+					if ( !strnicmp(pszKey, "ADD", 3) )
 					{
-						if ( m_lastAttackers.size() )
-							Fight_Clear();
-						return true;
-					}
-					else if ( !strnicmp(pszKey, "DELETE", 6) )
-					{
-						if ( m_lastAttackers.size() )
-						{
-							CChar *pChar = static_cast<CChar *>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
-							Attacker_Delete(pChar, false, ATTACKER_CLEAR_SCRIPT);
-						}
-						return true;
-					}
-					else if ( !strnicmp(pszKey, "ADD", 3) )
-					{
-						CChar *pChar = static_cast<CChar *>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
+						CChar *pChar = static_cast<CGrayUID>(s.GetArgVal()).CharFind();
 						if ( !pChar )
 							return false;
 						Fight_Attack(pChar, true);
 						return true;
 					}
+					else if ( !strnicmp(pszKey, "DELETE", 6) )
+					{
+						CChar *pChar = static_cast<CGrayUID>(s.GetArgVal()).CharFind();
+						if ( !pChar )
+							return false;
+						Attacker_Delete(pChar, false, ATTACKER_CLEAR_SCRIPT);
+						return true;
+					}
 					else if ( !strnicmp(pszKey, "TARGET", 6) )
 					{
-						CChar *pChar = static_cast<CChar *>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
-						if ( !pChar || pChar == this )	// can't set ourself as target
-						{
-							m_Fight_Targ.InitUID();
+						CChar *pChar = static_cast<CGrayUID>(s.GetArgVal()).CharFind();
+						if ( !pChar || (pChar == this) )	// can't set ourself as target
 							return false;
-						}
 						m_Fight_Targ = pChar->GetUID();
+						return true;
+					}
+					else if ( !strnicmp(pszKey, "CLEAR", 5) )
+					{
+						if ( m_lastAttackers.size() )
+							Fight_Clear();
 						return true;
 					}
 
@@ -2375,27 +2347,26 @@ do_default:
 						return false;
 
 					SKIP_SEPARATORS(pszKey);
-					if ( attackerIndex < Attacker() )
+					if ( attackerIndex < static_cast<int>(m_lastAttackers.size()) )
 					{
-						CChar *pChar = Attacker_GetUID(attackerIndex);
-						if ( !strnicmp(pszKey, "DAM", 3) )
+						if ( !strnicmp(pszKey, "ELAPSED", 7) )
 						{
-							Attacker_SetDam(pChar, s.GetArgVal());
+							Attacker_SetElapsed(attackerIndex, s.GetArgLLVal());
 							return true;
 						}
-						else if ( !strnicmp(pszKey, "ELAPSED", 7) )
+						else if ( !strnicmp(pszKey, "DAM", 3) )
 						{
-							Attacker_SetElapsed(pChar, s.GetArgVal());
+							Attacker_SetDamage(attackerIndex, s.GetArgLLVal());
 							return true;
 						}
 						else if ( !strnicmp(pszKey, "THREAT", 6) )
 						{
-							Attacker_SetThreat(pChar, s.GetArgVal());
+							Attacker_SetThreat(attackerIndex, s.GetArgLLVal());
 							return true;
 						}
 						else if ( !strnicmp(pszKey, "DELETE", 6) )
 						{
-							Attacker_Delete(pChar, false, ATTACKER_CLEAR_SCRIPT);
+							Attacker_Delete(attackerIndex, false, ATTACKER_CLEAR_SCRIPT);
 							return true;
 						}
 					}

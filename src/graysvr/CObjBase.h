@@ -2676,7 +2676,7 @@ public:
 	struct LastAttackers {
 		DWORD	charUID;
 		INT64	elapsed;
-		INT64	amountDone;
+		INT64	damage;
 		INT64	threat;
 	};
 	std::vector<LastAttackers> m_lastAttackers;
@@ -3756,37 +3756,25 @@ public:
 	int  Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom = false, bool bGetMax = true ) const;
 
 	// Attacker System
-
 	enum ATTACKER_CLEAR_TYPE
 	{
-		ATTACKER_CLEAR_FORCED		= 0,
-		ATTACKER_CLEAR_ELAPSED		= 1,
-		ATTACKER_CLEAR_DISTANCE		= 2,
-		ATTACKER_CLEAR_REMOVEDCHAR	= 3,
-		ATTACKER_CLEAR_SCRIPT		= 4,
-		//ATTACKER_CLEAR_DEATH		= 3,
+		ATTACKER_CLEAR_FORCED,
+		ATTACKER_CLEAR_ELAPSED,
+		ATTACKER_CLEAR_DISTANCE,
+		ATTACKER_CLEAR_REMOVEDCHAR,
+		ATTACKER_CLEAR_SCRIPT
 	};
 
-	int	 Attacker() { return static_cast<int>(m_lastAttackers.size()); }
-	bool Attacker_Add(CChar * pChar, INT64 threat = 0);
-	CChar * Attacker_GetLast();
-	bool Attacker_Delete(CChar *pChar, bool bForced = false, ATTACKER_CLEAR_TYPE type = ATTACKER_CLEAR_FORCED);
+	bool Attacker_Add(CChar *pChar, INT64 threat = 0);
 	bool Attacker_Delete(int id, bool bForced = false, ATTACKER_CLEAR_TYPE type = ATTACKER_CLEAR_FORCED);
-	void Attacker_RemoveChar();
+	bool Attacker_Delete(CChar *pChar, bool bForced = false, ATTACKER_CLEAR_TYPE type = ATTACKER_CLEAR_FORCED);
+	int Attacker_GetID(CChar *pChar);
+	CChar *Attacker_GetHighestDam();
+	CChar *Attacker_GetLowestElapsed();
+	void Attacker_SetElapsed(int id, INT64 value);
+	void Attacker_SetDamage(int id, INT64 value);
+	void Attacker_SetThreat(int id, INT64 value);
 	void Attacker_CheckTimeout();
-	INT64 Attacker_GetDam( int attacker );
-	void  Attacker_SetDam( CChar * pChar, INT64 value );
-	void  Attacker_SetDam( int attacker, INT64 value );
-	CChar * Attacker_GetUID( int attacker);
-	INT64  Attacker_GetElapsed( int attacker );
-	void  Attacker_SetElapsed( CChar * pChar, INT64 value );
-	void  Attacker_SetElapsed( int pChar, INT64 value );
-	INT64  Attacker_GetThreat( int attacker );
-	void  Attacker_SetThreat( CChar * pChar, INT64 value );
-	void  Attacker_SetThreat(int pChar, INT64 value);
-	INT64 Attacker_GetHighestThreat();
-	int  Attacker_GetID( CChar * pChar );
-	int  Attacker_GetID( CGrayUID pChar );
 
 	//
 	bool Player_OnVerb( CScript &s, CTextConsole * pSrc );
