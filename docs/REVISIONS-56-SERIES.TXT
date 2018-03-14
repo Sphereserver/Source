@@ -1030,3 +1030,4 @@ Fixed: Multi placement being incorrectly blocked by region flags region_flag_und
 
 14-03-2018, Coruja
 Fixed: Combat swing speed formula not working correctly.
+Fixed: Server function 'f_onaccount_connect' not being called correctly when AccApp=2 (free/auto account) is set on sphere.ini.

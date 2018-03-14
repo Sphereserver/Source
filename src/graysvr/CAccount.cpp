@@ -841,15 +841,11 @@ bool CAccount::CheckPassword( LPCTSTR pszPassword )
 	ADDTOCALLSTACK("CAccount::CheckPassword");
 	ASSERT(pszPassword);
 
-	if ( m_sCurPassword.IsEmpty())
+	if ( m_sCurPassword.IsEmpty() )
 	{
-		// First guy in sets the password.
-		// check the account in use first.
-		if ( *pszPassword == '\0' )
-			return( false );
-
-		SetPassword( pszPassword );
-		return( true );
+		// If account password is empty, set the password given by the client trying to connect
+		if ( !SetPassword(pszPassword) )
+			return false;
 	}
 	
 	CScriptTriggerArgs Args;

@@ -3385,17 +3385,17 @@ BYTE CClient::LogIn(CAccountRef pAccount, CGString &sMsg)
 			return PacketLoginError::MaxClients;
 		}
 	}
-	if ( g_Cfg.m_iClientsMax <= 1 )
+	else if ( g_Cfg.m_iClientsMax == 1 )
 	{
-		// Only allow admin connections
-		if ( pAccount->GetPrivLevel() < PLEVEL_Admin )
+		// Only allow GM connections
+		if ( pAccount->GetPrivLevel() < PLEVEL_GM )
 		{
-			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' can't connect, server maximum clients reached (only administrators allowed)\n", GetSocketID(), pAccount->GetName());
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' can't connect, server maximum clients reached (only GM accounts allowed)\n", GetSocketID(), pAccount->GetName());
 			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_AO);
 			return PacketLoginError::MaxClients;
 		}
 	}
-	if ( (g_Serv.StatGet(SERV_STAT_CLIENTS) > g_Cfg.m_iClientsMax) && (pAccount->GetPrivLevel() < PLEVEL_GM) )
+	else if ( (g_Serv.StatGet(SERV_STAT_CLIENTS) > g_Cfg.m_iClientsMax) && (pAccount->GetPrivLevel() < PLEVEL_GM) )
 	{
 		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' can't connect, server maximum clients reached\n", GetSocketID(), pAccount->GetName());
 		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_FULL);
