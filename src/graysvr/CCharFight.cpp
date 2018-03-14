@@ -2773,7 +2773,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 		ANIM_TYPE anim = GenerateAnimate(ANIM_ATTACK_WEAPON);
 		int animDelay = 7;		// attack speed is always 7ms and then the char keep waiting the remaining time
-		int iSwingDelay = g_Cfg.Calc_CombatAttackSpeed(this, pWeapon) - 1;	// swings are started only on the next tick, so substract -1 to compensate that
+		int iSwingDelay = g_Cfg.Calc_CombatAttackSpeed(this, pWeapon);
 
 		if ( IsTrigUsed(TRIGGER_HITTRY) )
 		{
@@ -2793,7 +2793,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		}
 
 		m_atFight.m_Swing_State = WAR_SWING_SWINGING;
-		m_atFight.m_Swing_Delay = maximum(0, static_cast<BYTE>(iSwingDelay - animDelay));
+		m_atFight.m_Swing_Delay = static_cast<BYTE>(maximum(0, iSwingDelay - animDelay));
 
 		if ( IsSetCombatFlags(COMBAT_PREHIT) )
 		{

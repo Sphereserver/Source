@@ -1027,3 +1027,6 @@ Fixed: Multi placement being incorrectly blocked by region flags region_flag_und
 
 12-03-2018, Coruja
 [sphere.ini]: Removed unused ContextMenuLimit setting
+
+14-03-2018, Coruja
+Fixed: Combat swing speed formula not working correctly.
