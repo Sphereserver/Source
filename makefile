@@ -28,6 +28,11 @@ CCO	= gcc
 
 EX	= -s -fexceptions -fnon-call-exceptions
 
+O_FLAGS		= $(WARN) $(DBGWARN) $(PIPE) $(EX)
+CO_FLAGS	= $(CWARN) $(DBGWARN) $(PIPE) $(EX)
+C_FLAGS		= $(OPT) $(INCLUDE) $(DEFINES)
+CC_FLAGS	= $(COPT) $(INCLUDE) $(DEFINES)
+
 GITREVISION	= $(shell expr $(shell git rev-list --count HEAD) - 2406)
 GITHASH		= $(shell git rev-parse --short HEAD)
 
@@ -141,30 +146,14 @@ SRC	:= 	./src/graysvr/CAccount.cpp \
 		./src/network/send.cpp \
 		./src/network/receive.cpp
 
-O_FLAGS		= $(WARN) $(DBGWARN) $(PIPE) $(EX)
-CO_FLAGS	= $(CWARN) $(DBGWARN) $(PIPE) $(EX)
-C_FLAGS		= $(OPT) $(INCLUDE) $(DEFINES)
-CC_FLAGS	= $(COPT) $(INCLUDE) $(DEFINES)
+.PHONY:	build clean
 
+build:	git flags gray
+	@$(CC) $(O_FLAGS) $(C_FLAGS) -o $(EXE) ./src/common/*.o ./src/common/libev/*.o ./src/common/sqlite/*.o ./src/common/twofish/*.o ./src/common/zlib/*.o ./src/graysvr/*.o ./src/network/*.o ./src/sphere/*.o $(LIBS)
 
-.PHONY:	all clean tidy
+clean:
+	rm -f ./src/common/*.o ./src/common/libev/*.o ./src/common/sqlite/*.o ./src/common/twofish/*.o ./src/common/zlib/*.o ./src/graysvr/*.o ./src/network/*.o ./src/sphere/*.o
 
-all:	$(EXE)
-
-clean:	tidy
-	rm -f ./src/graysvr/*.o ./src/common/*.o ./src/common/mtrand/*.o ./src/common/twofish/*.o ./src/common/libev/*.o ./src/common/zlib/*.o ./src/common/sqlite/*.o ./src/sphere/*.o ./src/network/*.o ./src/tests/*.o $(EXE)
-
-tidy:
-	rm -f ./src/graysvr/*~ ./src/graysvr/*orig ./src/graysvr/*bak ./src/graysvr/*rej \
-		./src/common/*~ ./src/common/*orig ./src/common*bak \
-		./src/common/mtrand/*~ ./src/common/mtrand/*orig ./src/common/mtrand/*bak \
-		./src/common/twofish/*~ ./src/common/twofish/*orig ./src/common/twofish/*bak \
-		./src/common/libev/*~ ./src/common/libev/*orig ./src/common/libev/*bak \
-		./src/common/zlib/*~ ./src/common/zlib/*orig ./src/common/zlib/*bak \
-		./src/common/sqlite/*~ ./src/common/sqlite/*orig ./src/common/sqlite/*bak \
-		./src/sphere/*~ ./src/sphere/*orig ./src/sphere/*bak \
-		./src/network/*~ ./src/network/*orig ./src/network/*bak \
-		./src/tests/*~ ./src/tests/*orig ./src/tests/*bak
 
 git:
 ifdef GITREVISION
@@ -177,10 +166,6 @@ flags:
 	@echo 'Compiler flags: $(CC) -c $(O_FLAGS) $(C_FLAGS)'
 
 gray:	$(SRC:.cpp=.o) $(SRC:.c=.co)
-
-
-$(EXE): git flags gray
-	@$(CC) $(O_FLAGS) $(C_FLAGS) -o $(EXE) ./src/graysvr/*.o ./src/common/*.o ./src/common/twofish/*.o ./src/common/libev/*.o ./src/common/zlib/*.o ./src/common/sqlite/*.o ./src/sphere/*.o ./src/network/*.o $(LIBS)
 
 %.o:	%.cpp
 	@echo ' Compiling $<'
