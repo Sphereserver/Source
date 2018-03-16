@@ -1,5 +1,5 @@
 //
-// CContain.CPP
+// CContain.cpp
 //
 #include "graysvr.h"	// predef header.
 #include "../network/send.h"
@@ -7,17 +7,17 @@
 //***************************************************************************
 // -CContainer
 
-void CContainer::OnWeightChange( int iChange )
+void CContainer::OnWeightChange(int iChange)
 {
 	ADDTOCALLSTACK("CContainer::OnWeightChange");
-	// Propagate the weight change up the stack if there is one.
+	// Propagate the weight change up the stack if there is one
 	m_totalweight += iChange;
 }
 
 int CContainer::FixWeight()
 {
 	ADDTOCALLSTACK("CContainer::FixWeight");
-	// If there is some sort of ASSERT during item add then this is used to fix it.
+	// If there is some sort of ASSERT during item add then this is used to fix it
 	m_totalweight = 0;
 
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
@@ -26,7 +26,7 @@ int CContainer::FixWeight()
 		if ( pCont )
 		{
 			pCont->FixWeight();
-			if ( !pCont->IsWeighed() )	// bank box doesn't count for weight.
+			if ( !pCont->IsWeighed() )
 				continue;
 		}
 		m_totalweight += pItem->GetWeight();
@@ -34,12 +34,12 @@ int CContainer::FixWeight()
 	return m_totalweight;
 }
 
-void CContainer::ContentAddPrivate( CItem *pItem )
+void CContainer::ContentAddPrivate(CItem *pItem)
 {
 	ADDTOCALLSTACK("CContainer::ContentAddPrivate");
 	// We are adding to a CChar or a CItemContainer
 	ASSERT(pItem);
-	ASSERT(pItem->IsValidUID());	// it should be valid at this point.
+	ASSERT(pItem->IsValidUID());	// it should be valid at this point
 	if ( pItem->GetParent() == this )
 		return;
 	if ( !CGObList::GetCount() )
@@ -55,31 +55,31 @@ void CContainer::ContentAddPrivate( CItem *pItem )
 		}
 		CGObList::InsertAfter(pItem, pPrevItem);
 	}
-	//CGObList::InsertTail( pItem );//Reversing the order in which things are added into a container
+	//CGObList::InsertTail(pItem);		// reversing the order in which things are added into a container
 	OnWeightChange(pItem->GetWeight());
 }
 
-void CContainer::OnRemoveOb( CGObListRec *pObRec )	// Override this = called when removed from list.
+void CContainer::OnRemoveOb(CGObListRec *pObRec)	// override this = called when removed from list
 {
 	ADDTOCALLSTACK("CContainer::OnRemoveOb");
-	// remove this object from the container list.
-	// Overload the RemoveAt for general lists to come here.
+	// Remove this object from the container list
+	// Overload the RemoveAt for general lists to come here
 	CItem *pItem = static_cast<CItem *>(pObRec);
 	ASSERT(pItem);
 
 	CGObList::OnRemoveOb(pItem);
 	ASSERT(pItem->GetParent() == NULL);
 
-	pItem->SetContainerFlags(UID_O_DISCONNECT);		// It is no place for the moment.
+	pItem->SetContainerFlags(UID_O_DISCONNECT);		// it is no place for the moment
 	OnWeightChange(-pItem->GetWeight());
 }
 
-void CContainer::r_WriteContent( CScript &s ) const
+void CContainer::r_WriteContent(CScript &s) const
 {
 	ADDTOCALLSTACK("CContainer::r_WriteContent");
 	ASSERT(dynamic_cast<const CGObList *>(this) != NULL);
 
-	// Write out all the items in me.
+	// Write out all the items in me
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
 		ASSERT(pItem->GetParent() == this);
@@ -87,10 +87,10 @@ void CContainer::r_WriteContent( CScript &s ) const
 	}
 }
 
-CItem *CContainer::ContentFind( RESOURCE_ID_BASE rid, DWORD dwArg, int iDecendLevels ) const
+CItem *CContainer::ContentFind(RESOURCE_ID_BASE rid, DWORD dwArg, int iDecendLevels) const
 {
 	ADDTOCALLSTACK("CContainer::ContentFind");
-	// send all the items in the container.
+	// Send all the items in the container
 
 	if ( rid.GetResIndex() == 0 )
 		return NULL;
@@ -116,7 +116,7 @@ CItem *CContainer::ContentFind( RESOURCE_ID_BASE rid, DWORD dwArg, int iDecendLe
 	return pItem;
 }
 
-TRIGRET_TYPE CContainer::OnContTriggerForLoop( CScript &s, CTextConsole *pSrc, CScriptTriggerArgs *pArgs, CGString *pResult, CScriptLineContext &StartContext, CScriptLineContext &EndContext, RESOURCE_ID_BASE rid, DWORD dwArg, int iDecendLevels )
+TRIGRET_TYPE CContainer::OnContTriggerForLoop(CScript &s, CTextConsole *pSrc, CScriptTriggerArgs *pArgs, CGString *pResult, CScriptLineContext &StartContext, CScriptLineContext &EndContext, RESOURCE_ID_BASE rid, DWORD dwArg, int iDecendLevels)
 {
 	ADDTOCALLSTACK("CContainer::OnContTriggerForLoop");
 	if ( rid.GetResIndex() != 0 )
@@ -154,7 +154,7 @@ TRIGRET_TYPE CContainer::OnContTriggerForLoop( CScript &s, CTextConsole *pSrc, C
 					if ( iRet != TRIGRET_ENDIF )
 						return iRet;
 
-					// Since the previous call has already found the EndContext, set it.
+					// Since the previous call has already found the EndContext, set it
 					EndContext = s.GetContext();
 				}
 			}
@@ -172,7 +172,7 @@ TRIGRET_TYPE CContainer::OnContTriggerForLoop( CScript &s, CTextConsole *pSrc, C
 	return TRIGRET_ENDIF;
 }
 
-TRIGRET_TYPE CContainer::OnGenericContTriggerForLoop( CScript &s, CTextConsole *pSrc, CScriptTriggerArgs *pArgs, CGString *pResult, CScriptLineContext &StartContext, CScriptLineContext &EndContext, int iDecendLevels )
+TRIGRET_TYPE CContainer::OnGenericContTriggerForLoop(CScript &s, CTextConsole *pSrc, CScriptTriggerArgs *pArgs, CGString *pResult, CScriptLineContext &StartContext, CScriptLineContext &EndContext, int iDecendLevels)
 {
 	ADDTOCALLSTACK("CContainer::OnGenericContTriggerForLoop");
 	CItem *pItemNext = NULL;
@@ -203,7 +203,7 @@ TRIGRET_TYPE CContainer::OnGenericContTriggerForLoop( CScript &s, CTextConsole *
 			if ( iRet != TRIGRET_ENDIF )
 				return iRet;
 
-			// Since the previous call has already found the EndContext, set it.
+			// Since the previous call has already found the EndContext, set it
 			EndContext = s.GetContext();
 		}
 	}
@@ -219,24 +219,24 @@ TRIGRET_TYPE CContainer::OnGenericContTriggerForLoop( CScript &s, CTextConsole *
 	return TRIGRET_ENDIF;
 }
 
-bool CContainer::ContentFindKeyFor( CItem *pLocked ) const
+bool CContainer::ContentFindKeyFor(CItem *pLocked) const
 {
 	ADDTOCALLSTACK("CContainer::ContentFindKeyFor");
 	// Look for the key that fits this in my possesion.
 	return (pLocked->m_itContainer.m_lockUID && (ContentFind(RESOURCE_ID(RES_TYPEDEF, IT_KEY), pLocked->m_itContainer.m_lockUID) != NULL));
 }
 
-DWORD CContainer::ContentConsume( RESOURCE_ID_BASE rid, DWORD amount, bool fTest, DWORD dwArg )
+DWORD CContainer::ContentConsume(RESOURCE_ID_BASE rid, DWORD dwQty, bool fTest, DWORD dwArg)
 {
 	ADDTOCALLSTACK("CContainer::ContentConsume");
 	// ARGS:
-	//  dwArg = a hack for ores.
+	//	dwArg = a hack for ores
 	// RETURN:
-	//  0 = all consumed ok.
-	//  # = number left to be consumed. (still required)
+	//	0 = all consumed ok
+	//	# = number left to be consumed (still required)
 
 	if ( rid.GetResIndex() == 0 )
-		return amount;	// from skills menus.
+		return dwQty;	// from skills menus
 
 	CItem *pItemNext = NULL;
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
@@ -244,13 +244,13 @@ DWORD CContainer::ContentConsume( RESOURCE_ID_BASE rid, DWORD amount, bool fTest
 		pItemNext = pItem->GetNext();
 		if ( pItem->IsResourceMatch(rid, dwArg) )
 		{
-			amount -= pItem->ConsumeAmount(amount, fTest);
-			if ( amount <= 0 )
+			dwQty -= pItem->ConsumeAmount(dwQty, fTest);
+			if ( dwQty <= 0 )
 				break;
 		}
 
 		CItemContainer *pCont = dynamic_cast<CItemContainer *>(pItem);
-		if ( pCont )	// this is a sub-container.
+		if ( pCont )	// this is a sub-container
 		{
 			if ( rid == RESOURCE_ID(RES_TYPEDEF, IT_GOLD) )
 			{
@@ -262,22 +262,22 @@ DWORD CContainer::ContentConsume( RESOURCE_ID_BASE rid, DWORD amount, bool fTest
 				if ( !pCont->IsSearchable() )
 					continue;
 			}
-			amount = pCont->ContentConsume(rid, amount, fTest, dwArg);
-			if ( amount <= 0 )
+			dwQty = pCont->ContentConsume(rid, dwQty, fTest, dwArg);
+			if ( dwQty <= 0 )
 				break;
 		}
 	}
-	return amount;
+	return dwQty;
 }
 
-DWORD CContainer::ContentCount( RESOURCE_ID_BASE rid, DWORD dwArg )
+DWORD CContainer::ContentCount(RESOURCE_ID_BASE rid, DWORD dwArg)
 {
 	ADDTOCALLSTACK("CContainer::ContentCount");
 	// Calculate total (gold or other items) in this recursed container
 	return ULONG_MAX - ContentConsume(rid, ULONG_MAX, true, dwArg);
 }
 
-void CContainer::ContentAttrMod( DWORD dwAttr, bool fSet )
+void CContainer::ContentAttrMod(DWORD dwAttr, bool fSet)
 {
 	ADDTOCALLSTACK("CContainer::ContentAttrMod");
 	// Mark the attr
@@ -289,7 +289,7 @@ void CContainer::ContentAttrMod( DWORD dwAttr, bool fSet )
 			pItem->ClrAttr(dwAttr);
 
 		CItemContainer *pCont = dynamic_cast<CItemContainer *>(pItem);
-		if ( pCont )	// this is a sub-container.
+		if ( pCont )	// this is a sub-container
 			pCont->ContentAttrMod(dwAttr, fSet);
 	}
 }
@@ -297,7 +297,7 @@ void CContainer::ContentAttrMod( DWORD dwAttr, bool fSet )
 void CContainer::ContentNotifyDelete()
 {
 	ADDTOCALLSTACK("CContainer::ContentNotifyDelete");
-	if ( !IsTrigUsed(TRIGGER_DESTROY) ) // no point entering this loop if the trigger is disabled
+	if ( !IsTrigUsed(TRIGGER_DESTROY) )		// no point entering this loop if the trigger is disabled
 		return;
 
 	// Trigger @Destroy on contained items
@@ -314,26 +314,26 @@ void CContainer::ContentNotifyDelete()
 	}
 }
 
-void CContainer::ContentsDump( const CPointMap &pt, DWORD dwAttrLeave )
+void CContainer::ContentsDump(const CPointMap &pt, DWORD dwAttrLeave)
 {
 	ADDTOCALLSTACK("CContainer::ContentsDump");
-	// Just dump the contents onto the ground.
+	// Just dump the contents onto the ground
 	dwAttrLeave |= (ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_CURSED2|ATTR_BLESSED2);
 	CItem *pItemNext = NULL;
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
 		pItemNext = pItem->GetNext();
-		if ( pItem->IsAttr(dwAttrLeave) )	// hair and newbie stuff.
+		if ( pItem->IsAttr(dwAttrLeave) )	// hair and newbie stuff
 			continue;
 		// ??? scatter a little ?
 		pItem->MoveToCheck(pt);
 	}
 }
 
-void CContainer::ContentsTransfer( CItemContainer *pCont, bool fNoNewbie )
+void CContainer::ContentsTransfer(CItemContainer *pCont, bool fNoNewbie)
 {
 	ADDTOCALLSTACK("CContainer::ContentsTransfer");
-	// Move all contents to another container. (pCont)
+	// Move all contents to another container
 	if ( !pCont )
 		return;
 
@@ -341,22 +341,22 @@ void CContainer::ContentsTransfer( CItemContainer *pCont, bool fNoNewbie )
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
 		pItemNext = pItem->GetNext();
-		if ( fNoNewbie && pItem->IsAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_CURSED2|ATTR_BLESSED2) )	// keep newbie stuff.
+		if ( fNoNewbie && pItem->IsAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_CURSED2|ATTR_BLESSED2) )
 			continue;
-		pCont->ContentAdd(pItem);	// add content
+		pCont->ContentAdd(pItem);
 	}
 }
 
-size_t CContainer::ResourceConsumePart( const CResourceQtyArray *pResources, DWORD iReplicationQty, int iDamagePercent, bool fTest, DWORD dwArg )
+size_t CContainer::ResourceConsumePart(const CResourceQtyArray *pResources, DWORD dwReplicationQty, int iDamagePercent, bool fTest, DWORD dwArg)
 {
 	ADDTOCALLSTACK("CContainer::ResourceConsumePart");
-	// Consume just some of the resources.
+	// Consume just some of the resources
 	// ARGS:
-	//	pResources = the resources i need to make 1 replication of this end product.
-	//  iDamagePercent = 0-100
+	//	pResources = the resources i need to make 1 replication of this end product
+	//	iDamagePercent = 0-100
 	// RETURN:
-	//  BadIndex = all needed items where present.
-	// index of the item we did not have.
+	//	BadIndex = all needed items where present
+	//	Index of the item we did not have
 
 	if ( iDamagePercent <= 0 )
 		return pResources->BadIndex();
@@ -365,99 +365,97 @@ size_t CContainer::ResourceConsumePart( const CResourceQtyArray *pResources, DWO
 	size_t iQtyRes = pResources->GetCount();
 	for ( size_t i = 0; i < iQtyRes; i++ )
 	{
-		int iResQty = static_cast<int>(pResources->GetAt(i).GetResQty());
-		if ( iResQty <= 0 ) // not sure why this would be true
+		DWORD dwResQty = static_cast<DWORD>(pResources->GetAt(i).GetResQty());
+		if ( dwResQty <= 0 ) // not sure why this would be true
 			continue;
 
-		DWORD iQtyTotal = iResQty * iReplicationQty;
-		if ( iQtyTotal <= 0 )
+		DWORD dwQtyTotal = dwResQty * dwReplicationQty;
+		if ( dwQtyTotal <= 0 )
 			continue;
-		iQtyTotal = IMULDIV(iQtyTotal, iDamagePercent, 100);
-		if ( iQtyTotal <= 0 )
+		dwQtyTotal = IMULDIV(dwQtyTotal, iDamagePercent, 100);
+		if ( dwQtyTotal <= 0 )
 			continue;
 
 		RESOURCE_ID rid = pResources->GetAt(i).GetResourceID();
-		DWORD iRet = ContentConsume(rid, iQtyTotal, fTest, dwArg);
-		if ( iRet )
+		DWORD dwRet = ContentConsume(rid, dwQtyTotal, fTest, dwArg);
+		if ( dwRet )
 			iMissing = i;
 	}
 
 	return iMissing;
 }
 
-DWORD CContainer::ResourceConsume( const CResourceQtyArray *pResources, DWORD iReplicationQty, bool fTest, DWORD dwArg )
+DWORD CContainer::ResourceConsume(const CResourceQtyArray *pResources, DWORD dwReplicationQty, bool fTest, DWORD dwArg)
 {
 	ADDTOCALLSTACK("CContainer::ResourceConsume");
-	// Consume or test all the required resources.
+	// Consume or test all the required resources
 	// ARGS:
-	//	pResources = the resources i need to make 1 replication of this end product.
+	//	pResources = the resources i need to make 1 replication of this end product
 	// RETURN:
-	//  how many whole objects can be made. <= iReplicationQty
+	//	How many whole objects can be made
 
-	if ( iReplicationQty <= 0 )
-		iReplicationQty = 1;
-	if ( !fTest && iReplicationQty > 1 )
+	if ( dwReplicationQty < 1 )
+		dwReplicationQty = 1;
+	if ( !fTest && (dwReplicationQty > 1) )
 	{
-		// Test what the max number we can really make is first !
-		// All resources must be consumed with the same number.
-		iReplicationQty = ResourceConsume(pResources, iReplicationQty, true, dwArg);
+		// Test what the max number we can really make is first (all resources must be consumed with the same number)
+		dwReplicationQty = ResourceConsume(pResources, dwReplicationQty, true, dwArg);
 	}
 
-	DWORD iQtyMin = ULONG_MAX;
+	DWORD dwQtyMin = ULONG_MAX;
 	for ( size_t i = 0; i < pResources->GetCount(); i++ )
 	{
-		WORD iResQty = static_cast<WORD>(pResources->GetAt(i).GetResQty());
-		if ( iResQty <= 0 ) // not sure why this would be true
+		DWORD dwResQty = static_cast<DWORD>(pResources->GetAt(i).GetResQty());
+		if ( dwResQty <= 0 )	// not sure why this would be true
 			continue;
 
-		DWORD iQtyTotal = iResQty * iReplicationQty;
+		DWORD dwQtyTotal = dwResQty * dwReplicationQty;
 		RESOURCE_ID rid = pResources->GetAt(i).GetResourceID();
 		if ( rid.GetResType() == RES_SKILL )
 		{
 			CChar *pChar = dynamic_cast<CChar *>(this);
 			if ( !pChar )
 				continue;
-			if ( pChar->Skill_GetBase(static_cast<SKILL_TYPE>(rid.GetResIndex())) < iResQty )
+			if ( pChar->Skill_GetBase(static_cast<SKILL_TYPE>(rid.GetResIndex())) < dwResQty )
 				return 0;
 			continue;
 		}
 
-		DWORD iQtyCur = iQtyTotal - ContentConsume(rid, iQtyTotal, fTest, dwArg);
-		iQtyCur /= iResQty;
-		if ( iQtyCur < iQtyMin )
-			iQtyMin = iQtyCur;
+		DWORD dwQtyCur = (dwQtyTotal - ContentConsume(rid, dwQtyTotal, fTest, dwArg)) / dwResQty;
+		if ( dwQtyCur < dwQtyMin )
+			dwQtyMin = dwQtyCur;
 	}
 
-	if ( iQtyMin == ULONG_MAX )		// it has no resources ? So i guess we can make it from nothing ?
-		return iReplicationQty;
+	if ( dwQtyMin == ULONG_MAX )	// it has no resources, so I guess we can make it from nothing?
+		return dwReplicationQty;
 
-	return iQtyMin;
+	return dwQtyMin;
 }
 
 DWORD CContainer::ContentCountAll() const
 {
 	ADDTOCALLSTACK("CContainer::ContentCountAll");
 	// RETURN:
-	//  A count of all the items in this container and sub contianers.
-	DWORD iTotal = 0;
+	//	A count of all the items in this container and sub containers
+	DWORD dwTotal = 0;
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		iTotal++;
-		const CItemContainer *pCont = dynamic_cast<const CItemContainer *>(pItem);
+		dwTotal++;
+		CItemContainer *pCont = dynamic_cast<CItemContainer *>(pItem);
 		if ( !pCont )
 			continue;
-		iTotal += pCont->ContentCountAll();
+		dwTotal += pCont->ContentCountAll();
 	}
-	return iTotal;
+	return dwTotal;
 }
 
-bool CContainer::r_GetRefContainer( LPCTSTR &pszKey, CScriptObj *&pRef )
+bool CContainer::r_GetRefContainer(LPCTSTR &pszKey, CScriptObj *&pRef)
 {
 	ADDTOCALLSTACK("CContainer::r_GetRefContainer");
-	if ( !strnicmp(pszKey, "FIND", 4) )				// find*
+	if ( !strnicmp(pszKey, "FIND", 4) )				// FIND*
 	{
 		pszKey += 4;
-		if ( !strnicmp(pszKey, "ID", 2) )			// findid
+		if ( !strnicmp(pszKey, "ID", 2) )			// FINDID
 		{
 			pszKey += 2;
 			SKIP_SEPARATORS(pszKey);
@@ -465,7 +463,7 @@ bool CContainer::r_GetRefContainer( LPCTSTR &pszKey, CScriptObj *&pRef )
 			SKIP_SEPARATORS(pszKey);
 			return true;
 		}
-		else if ( !strnicmp(pszKey, "CONT", 4) )	// findcont
+		else if ( !strnicmp(pszKey, "CONT", 4) )	// FINDCONT
 		{
 			pszKey += 4;
 			SKIP_SEPARATORS(pszKey);
@@ -473,7 +471,7 @@ bool CContainer::r_GetRefContainer( LPCTSTR &pszKey, CScriptObj *&pRef )
 			SKIP_SEPARATORS(pszKey);
 			return true;
 		}
-		else if ( !strnicmp(pszKey, "TYPE", 4) )	// findtype
+		else if ( !strnicmp(pszKey, "TYPE", 4) )	// FINDTYPE
 		{
 			pszKey += 4;
 			SKIP_SEPARATORS(pszKey);
@@ -485,52 +483,52 @@ bool CContainer::r_GetRefContainer( LPCTSTR &pszKey, CScriptObj *&pRef )
 	return false;
 }
 
-bool CContainer::r_WriteValContainer( LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc )
+bool CContainer::r_WriteValContainer(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CContainer::r_WriteValContainer");
 	EXC_TRY("WriteVal");
 
 	static LPCTSTR const sm_szParams[] =
 	{
-		"count",
-		"fcount",
-		"rescount",
-		"restest"
+		"COUNT",
+		"FCOUNT",
+		"RESCOUNT",
+		"RESTEST"
 	};
 
 	int i = FindTableHeadSorted(pszKey, sm_szParams, COUNTOF(sm_szParams));
 	if ( i < 0 )
 		return false;
 
-	LPCTSTR	pKey = pszKey + strlen(sm_szParams[i]);
-	SKIP_SEPARATORS(pKey);
+	LPCTSTR	pszTemp = pszKey + strlen(sm_szParams[i]);
+	SKIP_SEPARATORS(pszTemp);
 	switch ( i )
 	{
-		case 0:			//	count
+		case 0:		// COUNT
 		{
-			WORD iTotal = 0;
+			WORD wTotal = 0;
 			for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
-				iTotal++;
+				wTotal++;
 
-			sVal.FormatUVal(iTotal);
+			sVal.FormatUVal(wTotal);
 			break;
 		}
-
-		case 1:			//	fcount
+		case 1:		// FCOUNT
+		{
 			sVal.FormatUVal(ContentCountAll());
 			break;
-
-		case 2:			//	rescount
-			sVal.FormatUVal(*pKey ? ContentCount(g_Cfg.ResourceGetID(RES_ITEMDEF, pKey)) : GetCount());
-			break;
-
-		case 3:			//	restest
+		}
+		case 2:		// RESCOUNT
 		{
-			CResourceQtyArray Resources;
-			sVal.FormatUVal(Resources.Load(pKey) ? ResourceConsume(&Resources, 1, true) : 0);
+			sVal.FormatUVal(*pszTemp ? ContentCount(g_Cfg.ResourceGetID(RES_ITEMDEF, pszTemp)) : GetCount());
 			break;
 		}
-
+		case 3:		// RESTEST
+		{
+			CResourceQtyArray Resources;
+			sVal.FormatUVal(Resources.Load(pszTemp) ? ResourceConsume(&Resources, 1, true) : 0);
+			break;
+		}
 		default:
 			return false;
 	}
@@ -546,18 +544,14 @@ bool CContainer::r_WriteValContainer( LPCTSTR pszKey, CGString &sVal, CTextConso
 //----------------------------------------------------
 // -CItemContainer
 
-CItemContainer::CItemContainer( ITEMID_TYPE id, CItemBase *pItemDef ) :	CItemVendable( id, pItemDef )
-{
-	// m_fTinkerTrapped = false;
-}
-
 bool CItemContainer::NotifyDelete()
 {
-	// notify destruction of the container before its contents
-	if ( CItem::NotifyDelete() == false )
+	ADDTOCALLSTACK("CItemContainer::NotifyDelete");
+	// Notify destruction of the container before its contents
+	if ( !CItem::NotifyDelete() )
 		return false;
 
-	// ensure trade contents are moved out
+	// Ensure trade contents are moved out
 	if ( IsType(IT_EQ_TRADE_WINDOW) )
 		Trade_Delete();
 
@@ -565,23 +559,22 @@ bool CItemContainer::NotifyDelete()
 	return true;
 }
 
-void CItemContainer::r_Write( CScript &s )
+void CItemContainer::r_Write(CScript &s)
 {
 	ADDTOCALLSTACK_INTENSIVE("CItemContainer::r_Write");
 	CItemVendable::r_Write(s);
 	r_WriteContent(s);
 }
 
-bool CItemContainer::r_GetRef( LPCTSTR &pszKey, CScriptObj *&pRef )
+bool CItemContainer::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 {
 	ADDTOCALLSTACK("CItemContainer::r_GetRef");
 	if ( r_GetRefContainer(pszKey, pRef) )
 		return true;
-
 	return CItemVendable::r_GetRef(pszKey, pRef);
 }
 
-bool CItemContainer::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc )
+bool CItemContainer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CItemContainer::r_WriteVal");
 	if ( r_WriteValContainer(pszKey, sVal, pSrc) )
@@ -591,21 +584,19 @@ bool CItemContainer::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole *p
 
 bool CItemContainer::IsItemInTrade()
 {
-	// recursively get the item that is at "top" level.
-	CItemContainer *pObj = dynamic_cast<CItemContainer *>(this);
-	if ( !pObj )
-		return false;
-	if ( pObj->IsType(IT_EQ_TRADE_WINDOW) )
-		return true;
-	CItemContainer *pObj2 = dynamic_cast<CItemContainer *>(GetParentObj());
-	return pObj2->IsItemInTrade();
+	ADDTOCALLSTACK("CItemContainer::IsItemInTrade");
+	// Recursively get the item on "top" level
+	CItemContainer *pParent = dynamic_cast<CItemContainer *>(GetParentObj());
+	if ( pParent )
+		return pParent->IsItemInTrade();
+	return IsType(IT_EQ_TRADE_WINDOW);
 }
 
-void CItemContainer::Trade_Status( bool bCheck )
+void CItemContainer::Trade_Status(bool bCheck)
 {
 	ADDTOCALLSTACK("CItemContainer::Trade_Status");
-	// Update trade status check boxes to both sides.
-	CItemContainer *pPartner = dynamic_cast<CItemContainer*>(m_uidLink.ItemFind());
+	// Update trade status check boxes to both sides
+	CItemContainer *pPartner = dynamic_cast<CItemContainer *>(m_uidLink.ItemFind());
 	if ( !pPartner )
 		return;
 
@@ -628,7 +619,7 @@ void CItemContainer::Trade_Status( bool bCheck )
 	cmd.send(pChar2->m_pClient);
 
 	// Check if both clients had pressed the 'accept' buttom
-	if ( pPartner->m_itEqTradeWindow.m_bCheck == 0 || m_itEqTradeWindow.m_bCheck == 0 )
+	if ( (pPartner->m_itEqTradeWindow.m_bCheck == 0) || (m_itEqTradeWindow.m_bCheck == 0) )
 		return;
 
 	if ( IsTrigUsed(TRIGGER_TRADEACCEPTED) || IsTrigUsed(TRIGGER_CHARTRADEACCEPTED) )
@@ -708,11 +699,11 @@ void CItemContainer::Trade_Status( bool bCheck )
 		pChar2->UpdateStatsFlag();
 	}
 
-	// done with trade.
+	// Done with trade
 	Delete();
 }
 
-void CItemContainer::Trade_UpdateGold( DWORD platinum, DWORD gold )
+void CItemContainer::Trade_UpdateGold(DWORD dwPlatinum, DWORD dwGold)
 {
 	ADDTOCALLSTACK("CItemContainer::Trade_UpdateGold");
 	// Update trade gold/platinum values on TOL clients
@@ -731,18 +722,18 @@ void CItemContainer::Trade_UpdateGold( DWORD platinum, DWORD gold )
 
 	// To prevent cheating, check if the char really have these gold/platinum values
 	UINT64 iMaxValue = pChar1->m_virtualGold;
-	if ( gold + (platinum * 1000000000) > iMaxValue )
+	if ( dwGold + (dwPlatinum * 1000000000) > iMaxValue )
 	{
-		gold = static_cast<DWORD>(iMaxValue % 1000000000);
-		platinum = static_cast<DWORD>(iMaxValue / 1000000000);
+		dwGold = static_cast<DWORD>(iMaxValue % 1000000000);
+		dwPlatinum = static_cast<DWORD>(iMaxValue / 1000000000);
 		bUpdateChar1 = true;
 	}
 
-	m_itEqTradeWindow.m_iGold = gold;
-	m_itEqTradeWindow.m_iPlatinum = platinum;
+	m_itEqTradeWindow.m_iGold = dwGold;
+	m_itEqTradeWindow.m_iPlatinum = dwPlatinum;
 
 	PacketTradeAction cmd(SECURE_TRADE_UPDATEGOLD);
-	cmd.prepareUpdateGold(this, gold, platinum);
+	cmd.prepareUpdateGold(this, dwGold, dwPlatinum);
 	if ( bUpdateChar1 )
 		cmd.send(pChar1->m_pClient);
 	if ( bUpdateChar2 )
@@ -752,8 +743,7 @@ void CItemContainer::Trade_UpdateGold( DWORD platinum, DWORD gold )
 void CItemContainer::Trade_Delete()
 {
 	ADDTOCALLSTACK("CItemContainer::Trade_Delete");
-	// Called when object deleted.
-
+	// Called when object deleted
 	ASSERT(IsType(IT_EQ_TRADE_WINDOW));
 
 	CChar *pChar = dynamic_cast<CChar *>(GetParent());
@@ -762,13 +752,13 @@ void CItemContainer::Trade_Delete()
 
 	if ( pChar->m_pClient )
 	{
-		// Send the cancel trade message.
+		// Send the cancel trade message
 		PacketTradeAction cmd(SECURE_TRADE_CLOSE);
 		cmd.prepareClose(this);
 		cmd.send(pChar->m_pClient);
 	}
 
-	// Drop items back in my pack.
+	// Drop items back in my pack
 	CItem *pItemNext = NULL;
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
@@ -776,7 +766,7 @@ void CItemContainer::Trade_Delete()
 		pChar->ItemBounce(pItem, false);
 	}
 
-	// Kill my trading partner.
+	// Kill my trading partner
 	CItemContainer *pPartner = dynamic_cast<CItemContainer *>(m_uidLink.ItemFind());
 	if ( !pPartner )
 		return;
@@ -790,35 +780,35 @@ void CItemContainer::Trade_Delete()
 		pChar2->OnTrigger(CTRIG_TradeClose, pChar, &Args2);
 	}
 
-	m_uidLink.InitUID();	// unlink.
+	m_uidLink.InitUID();	// unlink
 	pPartner->m_uidLink.InitUID();
 	pPartner->Delete();
 }
 
-void CItemContainer::OnWeightChange( int iChange )
+void CItemContainer::OnWeightChange(int iChange)
 {
 	ADDTOCALLSTACK("CItemContainer::OnWeightChange");
 	CContainer::OnWeightChange(iChange);
 	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_WEIGHT);
 
 	if ( iChange == 0 )
-		return;	// no change
+		return;		// no change
 
-	// some containers do not add weight to you.
+	// Some containers do not add weight to you
 	if ( !IsWeighed() )
 		return;
 
-	// Propagate the weight change up the stack if there is one.
+	// Propagate the weight change up the stack if there is one
 	CContainer *pCont = dynamic_cast<CContainer *>(GetParent());
 	if ( !pCont )
-		return;	// on ground.
+		return;		// on ground
 	pCont->OnWeightChange(iChange);
 }
 
 CPointMap CItemContainer::GetRandContainerLoc() const
 {
 	ADDTOCALLSTACK("CItemContainer::GetRandContainerLoc");
-	// Get a random location inside container rect.
+	// Get a random location inside container rect
 	CItemBase *pItemDef = Item_GetDef();
 	GUMP_TYPE gump = pItemDef->GetContainerGumpID();
 
@@ -833,7 +823,7 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		return CPointMap(static_cast<WORD>(Calc_GetRandVal2(tmp_MinX, tmp_MaxX)), static_cast<WORD>(Calc_GetRandVal2(tmp_MinY, tmp_MaxY)));
 	}
 
-	static const struct // we can probably get this from MUL file some place.
+	static const struct		// we can probably get this from MUL file some place
 	{
 		GUMP_TYPE m_gump;
 		WORD m_minx;
@@ -923,10 +913,8 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 
 SOUND_TYPE CItemContainer::GetDropSound() const
 {
-	CItemBase *pItemDef = Item_GetDef();
-	GUMP_TYPE gump = pItemDef->GetContainerGumpID();
-
-	switch ( gump )
+	ADDTOCALLSTACK("CItemContainer::GetDropSound");
+	switch ( Item_GetDef()->GetContainerGumpID() )
 	{
 		case GUMP_BACKPACK:
 		case GUMP_BAG:
@@ -942,14 +930,14 @@ SOUND_TYPE CItemContainer::GetDropSound() const
 	}
 }
 
-void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, BYTE gridIndex )
+void CItemContainer::ContentAdd(CItem *pItem, CPointMap pt, BYTE gridIndex)
 {
 	ADDTOCALLSTACK("CItemContainer::ContentAdd");
 	// Add to CItemContainer
 	if ( !pItem )
 		return;
 	if ( pItem == this )
-		return;	// infinite loop.
+		return;		// infinite loop
 
 	if ( !g_Serv.IsLoading() )
 	{
@@ -959,13 +947,14 @@ void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, BYTE gridIndex )
 		switch ( pItem->GetType() )
 		{
 			case IT_LIGHT_LIT:
-				// Douse the light in a pack ! (if possible)
+			{
+				// Douse the light in a pack (if possible)
 				pItem->Use_Light();
 				break;
+			}
 			case IT_GAME_BOARD:
 			{
-				// Can't be put into any sort of a container.
-				// delete all it's pieces.
+				// Can't be put into any sort of a container, delete all it's pieces
 				CItemContainer *pCont = dynamic_cast<CItemContainer *>(pItem);
 				ASSERT(pCont);
 				pCont->DeleteAll();
@@ -976,10 +965,10 @@ void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, BYTE gridIndex )
 		}
 	}
 
-	if ( pt.m_x <= 0 || pt.m_y <= 0 || pt.m_x > 512 || pt.m_y > 512 )	// invalid container location ?
+	if ( (pt.m_x < 0) || (pt.m_x > 512) || (pt.m_y < 0) || (pt.m_y > 512) )		// invalid container location
 	{
 		bool fInsert = false;
-		// Try to stack it.
+		// Try to stack it
 		if ( !g_Serv.IsLoading() && pItem->Item_GetDef()->IsStackableType() )
 		{
 			for ( CItem *pTry = GetContentHead(); pTry != NULL; pTry = pTry->GetNext() )
@@ -996,7 +985,7 @@ void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, BYTE gridIndex )
 			pt = GetRandContainerLoc();
 	}
 
-	// check that the grid index isn't already in use
+	// Check if the grid index is already in use
 	bool bValidGrid = true;
 	for ( CItem *pTry = GetContentHead(); pTry != NULL; pTry = pTry->GetNext() )
 	{
@@ -1009,9 +998,8 @@ void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, BYTE gridIndex )
 
 	if ( !bValidGrid )
 	{
-		// the grid index we've been given is already in use, so find the
-		// first unused grid index
-		for ( gridIndex = 0; (gridIndex < 255 && !bValidGrid); gridIndex++ )
+		// The grid index we've been given is already in use, so find the first unused grid index
+		for ( gridIndex = 0; (gridIndex < UCHAR_MAX) && !bValidGrid; gridIndex++ )
 		{
 			bValidGrid = true;
 			for ( CItem *pTry = GetContentHead(); pTry != NULL; pTry = pTry->GetNext() )
@@ -1032,22 +1020,22 @@ void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, BYTE gridIndex )
 	pItem->SetContainedPoint(pt);
 	pItem->SetContainedGridIndex(gridIndex);
 
-	// if an item needs OnTickStatusUpdate called on the next tick, it needs
-	// to be added to a separate list since it won't receive ticks whilst in
-	// this container
+	// If an item needs OnTickStatusUpdate called on the next tick, it needs to be added to a separate list since it won't receive ticks whilst in this container
 	if ( pItem->m_fStatusUpdate && !g_World.m_ObjStatusUpdates.ContainsPtr(pItem) )
 		g_World.m_ObjStatusUpdates.Add(pItem);
 
 	switch ( GetType() )
 	{
-		case IT_KEYRING: // empty key ring.
+		case IT_KEYRING:
+		{
 			SetKeyRing();
 			break;
+		}
 		case IT_EQ_VENDOR_BOX:
 		{
 			if ( !IsItemEquipped() )
 			{
-				DEBUG_ERR(("Un-equipped vendor box uid=0%lx is bad\n", static_cast<DWORD>(GetUID())));
+				DEBUG_ERR(("Un-equipped vendor box uid=0%lx is bad\n", GetUID().GetObjUID()));
 				break;
 			}
 			CItemVendable *pItemVend = static_cast<CItemVendable *>(pItem);
@@ -1062,12 +1050,14 @@ void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, BYTE gridIndex )
 			break;
 		}
 		case IT_GAME_BOARD:
+		{
 			// Can only place IT_GAME_PIECE inside here
 			if ( pItem->IsType(IT_GAME_PIECE) )
 				break;
 			g_Log.Event(LOGL_WARN, "Game board contains invalid item: %s uid=0%lx, board: %s uid=0%lx\n", pItem->GetResourceName(), pItem->GetUID().GetObjUID(), GetResourceName(), GetUID().GetObjUID());
 			pItem->Delete();
 			break;
+		}
 		default:
 			break;
 	}
@@ -1076,8 +1066,7 @@ void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, BYTE gridIndex )
 	{
 		case ITEMID_BEDROLL_O_EW:
 		case ITEMID_BEDROLL_O_NS:
-			// Close the bedroll
-			pItem->SetDispID(ITEMID_BEDROLL_C);
+			pItem->SetDispID(ITEMID_BEDROLL_C);		// close the bedroll
 			break;
 		default:
 			break;
@@ -1086,26 +1075,25 @@ void CItemContainer::ContentAdd( CItem *pItem, CPointMap pt, BYTE gridIndex )
 	pItem->Update();
 }
 
-void CItemContainer::ContentAdd( CItem *pItem )
+void CItemContainer::ContentAdd(CItem *pItem)
 {
 	ADDTOCALLSTACK("CItemContainer::ContentAdd");
 	if ( !pItem )
 		return;
 	if ( pItem->GetParent() == this )
-		return;	// already here.
-	CPointMap pt;	// invalid point.
+		return;		// already here
+
+	CPointMap pt;
 	if ( g_Serv.IsLoading() )
 		pt = pItem->GetTopPoint();
 
 	ContentAdd(pItem, pt);
 }
 
-bool CItemContainer::IsItemInside( const CItem *pItem ) const
+bool CItemContainer::IsItemInside(const CItem *pItem) const
 {
 	ADDTOCALLSTACK("CItemContainer::IsItemInside");
-	// Checks if a particular item is in a container or one of
-	// it's subcontainers.
-
+	// Checks if a particular item is in a container or one of it's subcontainers
 	for (;;)
 	{
 		if ( !pItem )
@@ -1116,19 +1104,18 @@ bool CItemContainer::IsItemInside( const CItem *pItem ) const
 	}
 }
 
-void CItemContainer::OnRemoveOb( CGObListRec *pObRec )	// Override this = called when removed from list.
+void CItemContainer::OnRemoveOb(CGObListRec *pObRec)	// override this = called when removed from list
 {
 	ADDTOCALLSTACK("CItemContainer::OnRemoveOb");
-	// remove this object from the container list.
+	// Remove this object from the container list
 	CItem *pItem = static_cast<CItem *>(pObRec);
 	ASSERT(pItem);
 	if ( IsType(IT_EQ_TRADE_WINDOW) )
 	{
-		// Remove from a trade window.
 		Trade_Status(false);
 		m_itEqTradeWindow.m_iWaitTime = g_World.GetCurrentTime().GetTimeRaw() + (10 * TICK_PER_SEC);
 	}
-	if ( IsType(IT_EQ_VENDOR_BOX) && IsItemEquipped() )	// vendor boxes should ALWAYS be equipped !
+	if ( IsType(IT_EQ_VENDOR_BOX) && IsItemEquipped() )		// vendor boxes should ALWAYS be equipped
 	{
 		CItemVendable *pItemVend = dynamic_cast<CItemVendable *>(pItem);
 		if ( pItemVend )
@@ -1136,14 +1123,14 @@ void CItemContainer::OnRemoveOb( CGObListRec *pObRec )	// Override this = called
 	}
 
 	CContainer::OnRemoveOb(pObRec);
-	if ( IsType(IT_KEYRING) )	// key ring.
+	if ( IsType(IT_KEYRING) )
 		SetKeyRing();
 }
 
-void CItemContainer::DupeCopy( const CItem *pItem )
+void CItemContainer::DupeCopy(const CItem *pItem)
 {
 	ADDTOCALLSTACK("CItemContainer::DupeCopy");
-	// Copy the contents of this item.
+	// Copy the contents of this item
 
 	CItemVendable::DupeCopy(pItem);
 
@@ -1171,10 +1158,10 @@ void CItemContainer::MakeKey()
 void CItemContainer::SetKeyRing()
 {
 	ADDTOCALLSTACK("CItemContainer::SetKeyRing");
-	// Look of a key ring depends on how many keys it has in it.
+	// Look of a key ring depends on how many keys it has in it
 	static const ITEMID_TYPE sm_Item_Keyrings[] =
 	{
-		ITEMID_KEY_RING0, // empty key ring.
+		ITEMID_KEY_RING0,
 		ITEMID_KEY_RING1,
 		ITEMID_KEY_RING1,
 		ITEMID_KEY_RING3,
@@ -1189,22 +1176,21 @@ void CItemContainer::SetKeyRing()
 	ITEMID_TYPE id = sm_Item_Keyrings[iQty];
 	if ( id != GetID() )
 	{
-		SetID(id);	// change the type as well.
+		SetID(id);
 		Update();
 	}
 }
 
-bool CItemContainer::CanContainerHold( const CItem *pItem, const CChar *pCharMsg )
+bool CItemContainer::CanContainerHold(const CItem *pItem, const CChar *pCharMsg)
 {
 	ADDTOCALLSTACK("CItemContainer::CanContainerHold");
 	if ( !pCharMsg || !pItem )
 		return false;
-	if ( pCharMsg->IsPriv(PRIV_GM) )	// a gm can doing anything.
+	if ( pCharMsg->IsPriv(PRIV_GM) )
 		return true;
 
 	if ( IsAttr(ATTR_MAGIC) )
 	{
-		// Put stuff in a magic box
 		pCharMsg->SysMessageDefault(DEFMSG_CONT_MAGIC);
 		return false;
 	}
@@ -1226,11 +1212,9 @@ bool CItemContainer::CanContainerHold( const CItem *pItem, const CChar *pCharMsg
 		}
 	}
 
-	if ( !IsItemEquipped() &&	// does not apply to my pack.
-		pItem->IsContainer() &&
-		pItem->Item_GetDef()->GetVolume() >= Item_GetDef()->GetVolume() )
+	if ( !IsItemEquipped() && pItem->IsContainer() && (pItem->Item_GetDef()->GetVolume() >= Item_GetDef()->GetVolume()) )
 	{
-		// is the container too small ? can't put barrels in barrels.
+		// Is the container too small? Can't put barrels inside barrels
 		pCharMsg->SysMessageDefault(DEFMSG_CONT_TOOSMALL);
 		return false;
 	}
@@ -1239,58 +1223,49 @@ bool CItemContainer::CanContainerHold( const CItem *pItem, const CChar *pCharMsg
 	{
 		case IT_EQ_BANK_BOX:
 		{
-			// Check if the bankbox will allow this item to be dropped into it.
-			// Too many items or too much weight?
-
-			DWORD iBankIMax = g_Cfg.m_iBankIMax;
+			// Check if the bankbox will allow this item to be dropped into it
+			DWORD dwBankIMax = g_Cfg.m_iBankIMax;
 			CVarDefCont *pTagTemp = GetKey("OVERRIDE.MAXITEMS", false);
 			if ( pTagTemp )
-				iBankIMax = static_cast<DWORD>(pTagTemp->GetValNum());
+				dwBankIMax = static_cast<DWORD>(pTagTemp->GetValNum());
 
-			// Check if the item dropped in the bank is a container. If it is
-			// we need to calculate the number of items in that too.
-			DWORD iItemsInContainer = 0;
+			DWORD dwItemsInContainer = 0;
 			const CItemContainer *pContItem = dynamic_cast<const CItemContainer *>(pItem);
 			if ( pContItem )
-				iItemsInContainer = pContItem->ContentCountAll();
+				dwItemsInContainer = pContItem->ContentCountAll();
 
-			// Check the total number of items in the bankbox and the ev.
-			// container put into it.
-			if ( (ContentCountAll() + iItemsInContainer) > iBankIMax )
+			if ( ContentCountAll() + dwItemsInContainer > dwBankIMax )
 			{
 				pCharMsg->SysMessageDefault(DEFMSG_BVBOX_FULL_ITEMS);
 				return false;
 			}
 
-			int iBankWMax = g_Cfg.m_iBankWMax;
-			iBankWMax += m_ModMaxWeight * WEIGHT_UNITS;
-
+			int iBankWMax = g_Cfg.m_iBankWMax + (m_ModMaxWeight * WEIGHT_UNITS);
 			if ( iBankWMax >= 0 )
 			{
-				// Check the weightlimit on bankboxes.
-				if ( (GetWeight() + pItem->GetWeight()) > iBankWMax )
+				if ( GetWeight() + pItem->GetWeight() > iBankWMax )
 				{
 					pCharMsg->SysMessageDefault(DEFMSG_BVBOX_FULL_WEIGHT);
 					return false;
 				}
 			}
+			break;
 		}
-		break;
-
 		case IT_GAME_BOARD:
+		{
 			if ( !pItem->IsType(IT_GAME_PIECE) )
 			{
 				pCharMsg->SysMessageDefault(DEFMSG_MSG_ERR_NOTGAMEPIECE);
 				return false;
 			}
 			break;
-		case IT_BBOARD:		// This is a trade window or a bboard.
+		}
+		case IT_BBOARD:		// bulletin boards are containers but we can't put stuff in them this way
 			return false;
 		case IT_EQ_TRADE_WINDOW:
-			// BBoards are containers but you can't put stuff in them this way.
 			return true;
-
-		case IT_KEYRING: // empty key ring.
+		case IT_KEYRING:
+		{
 			if ( !pItem->IsType(IT_KEY) )
 			{
 				pCharMsg->SysMessageDefault(DEFMSG_MSG_ERR_NOTKEY);
@@ -1302,8 +1277,9 @@ bool CItemContainer::CanContainerHold( const CItem *pItem, const CChar *pCharMsg
 				return false;
 			}
 			break;
-
+		}
 		case IT_EQ_VENDOR_BOX:
+		{
 			if ( pItem->IsTimerSet() && !pItem->IsAttr(ATTR_DECAY) )
 			{
 				pCharMsg->SysMessageDefault(DEFMSG_MSG_ERR_NOT4SALE);
@@ -1317,20 +1293,21 @@ bool CItemContainer::CanContainerHold( const CItem *pItem, const CChar *pCharMsg
 				return false;
 			}
 
-			// Check that this vendor box hasn't already reached its content limit
+			// Check if this vendor box hasn't already reached its content limit
 			if ( GetCount() >= MAX_ITEMS_CONT )
 			{
 				pCharMsg->SysMessageDefault(DEFMSG_CONT_FULL);
 				return false;
 			}
 			break;
-
+		}
 		case IT_TRASH_CAN:
-			Sound(0x235); // a little sound so we know it "ate" it.
+		{
+			Sound(0x235);
 			pCharMsg->SysMessageDefault(DEFMSG_ITEMUSE_TRASHCAN);
 			SetTimeout(15 * TICK_PER_SEC);
 			break;
-
+		}
 		default:
 			break;
 	}
@@ -1341,54 +1318,53 @@ bool CItemContainer::CanContainerHold( const CItem *pItem, const CChar *pCharMsg
 void CItemContainer::Restock()
 {
 	ADDTOCALLSTACK("CItemContainer::Restock");
-	// Check for vendor type containers.
+	// Check for vendor type containers
 
 	if ( IsItemEquipped() )
 	{
-		// Part of a vendor.
+		// Part of a vendor
 		CChar *pChar = dynamic_cast<CChar *>(GetParent());
 		if ( pChar && !pChar->IsStatFlag(STATF_Pet) )
 		{
 			switch ( GetEquipLayer() )
 			{
 				case LAYER_VENDOR_STOCK:
-					// Magic restock the vendors container.
 				{
+					// Reset vendor stock
 					for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 					{
 						CItemVendable *pVendItem = dynamic_cast<CItemVendable *>(pItem);
 						if ( pVendItem )
 							pVendItem->Restock(true);
 					}
+					break;
 				}
-				break;
-
 				case LAYER_VENDOR_EXTRA:
-					// clear all this junk periodically.
-					// sell it back for cash value ?
+				{
+					// Clear all this junk periodically
 					DeleteAll();
 					break;
-
+				}
 				case LAYER_VENDOR_BUYS:
 				{
-					// Reset what we will buy from players.
+					// Reset what we bought from players
 					for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 					{
 						CItemVendable *pVendItem = dynamic_cast<CItemVendable *>(pItem);
 						if ( pVendItem )
 							pVendItem->Restock(false);
 					}
+					break;
 				}
-				break;
-
 				case LAYER_BANKBOX:
-					// Restock petty cash.
+				{
+					// Restock cash
 					if ( !m_itEqBankBox.m_Check_Restock )
 						m_itEqBankBox.m_Check_Restock = 10000;
 					if ( m_itEqBankBox.m_Check_Amount < m_itEqBankBox.m_Check_Restock )
 						m_itEqBankBox.m_Check_Amount = m_itEqBankBox.m_Check_Restock;
-					return;
-
+					break;
+				}
 				default:
 					break;
 			}
@@ -1396,15 +1372,15 @@ void CItemContainer::Restock()
 	}
 }
 
-void CItemContainer::OnOpenEvent( CChar *pCharOpener, const CObjBaseTemplate *pObjTop )
+void CItemContainer::OnOpenEvent(CChar *pCharOpener, const CObjBaseTemplate *pObjTop)
 {
 	ADDTOCALLSTACK("CItemContainer::OnOpenEvent");
-	// The container is being opened. Explode ? etc ?
+	// The container is being opened
 
 	if ( !pCharOpener )
 		return;
 
-	if ( IsType(IT_EQ_BANK_BOX) || IsType(IT_EQ_VENDOR_BOX) )
+	if ( IsType(IT_EQ_VENDOR_BOX) || IsType(IT_EQ_BANK_BOX) )
 	{
 		const CChar *pCharTop = dynamic_cast<const CChar *>(pObjTop);
 		if ( !pCharTop )
@@ -1419,8 +1395,7 @@ void CItemContainer::OnOpenEvent( CChar *pCharOpener, const CObjBaseTemplate *pO
 
 		pCharOpener->SysMessage(pszMsg);
 
-		// these are special. they can only be opened near the designated opener.
-		// see CanTouch
+		// To avoid exploits, bank box should store char P when opened and only allow access from this P (see CanTouch)
 		m_itEqBankBox.m_pntOpen = pCharOpener->GetTopPoint();
 	}
 }
@@ -1431,7 +1406,7 @@ void CItemContainer::Game_Create()
 	ASSERT(IsType(IT_GAME_BOARD));
 
 	if ( GetCount() > 0 )
-		return;	// already here.
+		return;		// already here
 
 	static const ITEMID_TYPE sm_Item_ChessPieces[] =
 	{
@@ -1471,8 +1446,6 @@ void CItemContainer::Game_Create()
 		ITEMID_GAME2_KNIGHT,
 		ITEMID_GAME2_ROOK		// 218, 183
 	};
-
-	CPointMap pt;
 
 	// Chess has 2 rows of 8 pieces on each side
 	static const WORD sm_ChessRow[] =
@@ -1540,11 +1513,13 @@ void CItemContainer::Game_Create()
 		38
 	};
 
-	if ( m_itGameBoard.m_GameType == 0 )	// Chess
+	CPointMap pt;
+
+	if ( m_itGameBoard.m_GameType == 0 )	// chess
 	{
 		for ( size_t i = 0; i < COUNTOF(sm_Item_ChessPieces); i++ )
 		{
-			// Add all it's pieces. (if not already added)
+			// Add all it's pieces (if not already added)
 			CItem *pPiece = CItem::CreateBase(sm_Item_ChessPieces[i]);
 			if ( !pPiece )
 				break;
@@ -1558,23 +1533,23 @@ void CItemContainer::Game_Create()
 			}
 			else
 			{
+				// Skip white squares
 				pt.m_x += 25;
 			}
 			ContentAdd(pPiece, pt);
 		}
 	}
-	else if ( m_itGameBoard.m_GameType == 1 )	// Checkers
+	else if ( m_itGameBoard.m_GameType == 1 )	// checkers
 	{
-		for ( int i = 0; i < 24; i++ )
+		for ( size_t i = 0; i < 24; i++ )
 		{
-			// Add all it's pieces. (if not already added)
+			// Add all it's pieces (if not already added)
 			CItem *pPiece = CItem::CreateBase(((i >= (3 * 4)) ? ITEMID_GAME1_CHECKER : ITEMID_GAME2_CHECKER));
 			if ( !pPiece )
 				break;
 			pPiece->SetType(IT_GAME_PIECE);
 
-			// Move to the next row after 4 pieces
-			// In checkers the pieces are placed on the black squares
+			// Move to the next row after 4 pieces (in checkers the pieces are placed on the black squares)
 			if ( (i & 3) == 0 )
 			{
 				pt.m_x = ((i / 4) & 1) ? 67 : 42;
@@ -1588,19 +1563,17 @@ void CItemContainer::Game_Create()
 			ContentAdd(pPiece, pt);
 		}
 	}
-	else if ( m_itGameBoard.m_GameType == 2 )	// Backgammon
+	else if ( m_itGameBoard.m_GameType == 2 )	// backgammon
 	{
-		for ( int i = 0; i < 30; i++ )
+		for ( size_t i = 0; i < 30; i++ )
 		{
-			// Add all it's pieces. (if not already added)
+			// Add all it's pieces (if not already added)
 			CItem *pPiece = CItem::CreateBase(((i >= 15) ? ITEMID_GAME1_CHECKER : ITEMID_GAME2_CHECKER));
 			if ( !pPiece )
 				break;
 			pPiece->SetType(IT_GAME_PIECE);
 
-			// Backgammon has a strange setup.
-			// Someone more familiar with the game may be able
-			// to improve the code for this
+			// Backgammon has a strange setup (someone more familiar with the game may be able to improve the code for this)
 			if ( (i == 12) || (i == 27) )
 				pt.m_x = 107;
 			else if ( (i == 10) || (i == 25) )
@@ -1625,7 +1598,7 @@ enum ICV_TYPE
 	ICV_QTY
 };
 
-LPCTSTR const CItemContainer::sm_szVerbKeys[ICV_QTY+1] =
+LPCTSTR const CItemContainer::sm_szVerbKeys[ICV_QTY + 1] =
 {
 	"CLOSE",
 	"DELETE",
@@ -1635,34 +1608,49 @@ LPCTSTR const CItemContainer::sm_szVerbKeys[ICV_QTY+1] =
 	NULL
 };
 
-bool CItemContainer::r_Verb( CScript &s, CTextConsole *pSrc )
+bool CItemContainer::r_Verb(CScript &s, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CItemContainer::r_Verb");
 	EXC_TRY("Verb");
 	ASSERT(pSrc);
 	switch ( FindTableSorted(s.GetKey(), sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1) )
 	{
+		case ICV_CLOSE:
+		{
+			if ( pSrc->GetChar() )
+			{
+				CChar *pChar = pSrc->GetChar();
+				if ( pChar->m_pClient )
+					pChar->m_pClient->closeContainer(this);
+			}
+			return true;
+		}
 		case ICV_DELETE:
+		{
 			if ( s.HasArgs() )
 			{
-				// 1 based pages.
+				// 1 based pages
 				size_t index = s.GetArgVal();
-				if ( index > 0 && index <= GetCount() )
+				if ( (index > 0) && (index <= GetCount()) )
 				{
 					delete GetAt(index - 1);
 					return true;
 				}
 			}
 			return false;
+		}
 		case ICV_EMPTY:
 		{
 			DeleteAll();
 			return true;
 		}
 		case ICV_FIXWEIGHT:
+		{
 			FixWeight();
 			return true;
+		}
 		case ICV_OPEN:
+		{
 			if ( pSrc->GetChar() )
 			{
 				CChar *pChar = pSrc->GetChar();
@@ -1674,20 +1662,13 @@ bool CItemContainer::r_Verb( CScript &s, CTextConsole *pSrc )
 						pChar->m_pClient->addCustomSpellbookOpen(this, static_cast<GUMP_TYPE>(s.GetArgVal()));
 						return true;
 					}
-					pChar->m_pClient->addItem(this);	// may crash client if we dont do this.
+					pChar->m_pClient->addItem(this);
 					pChar->m_pClient->addContainerSetup(this);
 					OnOpenEvent(pChar, GetTopLevelObj());
 				}
 			}
 			return true;
-		case ICV_CLOSE:
-			if ( pSrc->GetChar() )
-			{
-				CChar *pChar = pSrc->GetChar();
-				if ( pChar->m_pClient )
-					pChar->m_pClient->closeContainer(this);
-			}
-			return true;
+		}
 	}
 	return CItemVendable::r_Verb(s, pSrc);
 	EXC_CATCH;
@@ -1701,28 +1682,30 @@ bool CItemContainer::r_Verb( CScript &s, CTextConsole *pSrc )
 bool CItemContainer::OnTick()
 {
 	ADDTOCALLSTACK("CItemContainer::OnTick");
-	// equipped or not.
+	// Item is equipped or not
 	switch ( GetType() )
 	{
-		case IT_TRASH_CAN:
-			// Empty it !
-			DeleteAll();
-			return true;
 		case IT_CONTAINER:
+		{
 			if ( IsAttr(ATTR_MAGIC) )
 			{
-				// Magic restocking container.
 				Restock();
 				return true;
 			}
 			break;
-		case IT_EQ_BANK_BOX:
+		}
+		case IT_TRASH_CAN:
+		{
+			DeleteAll();
+			return true;
+		}
 		case IT_EQ_VENDOR_BOX:
-			// Restock this box.
-			// Magic restocking container.
+		case IT_EQ_BANK_BOX:
+		{
 			Restock();
 			SetTimeout(-1);
 			return true;
+		}
 		default:
 			break;
 	}
@@ -1735,11 +1718,10 @@ bool CItemContainer::OnTick()
 CChar *CItemCorpse::IsCorpseSleeping() const
 {
 	ADDTOCALLSTACK("CItemCorpse::IsCorpseSleeping");
-	// Is this corpse really a sleeping person ?
-	// CItemCorpse
+	// Is this corpse really a sleeping person?
 	if ( !IsType(IT_CORPSE) )
 	{
-		DEBUG_ERR(("Corpse (0%lx) doesn't have type T_CORPSE! (it has %d)\n", static_cast<DWORD>(GetUID()), GetType()));
+		DEBUG_ERR(("Corpse uid=0%lx doesn't have type t_corpse set\n", GetUID().GetObjUID()));
 		return NULL;
 	}
 

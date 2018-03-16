@@ -1456,19 +1456,8 @@ public:
 	virtual bool  r_LoadVal( CScript & s  );
 };
 
-class CContainer : public CGObList	// This class contains a list of items but may or may not be an item itself.
+class CContainer : public CGObList	// this class contains a list of items but may or may not be an item itself
 {
-private:
-	int	m_totalweight;	// weight of all the items it has. (1/WEIGHT_UNITS pound)
-protected:
-	virtual void OnRemoveOb( CGObListRec* pObRec );	// Override this = called when removed from list.
-	void ContentAddPrivate( CItem * pItem );
-
-	void r_WriteContent( CScript & s ) const;
-
-	bool r_WriteValContainer(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc);
-	bool r_GetRefContainer( LPCTSTR & pszKey, CScriptObj * & pRef );
-
 public:
 	static const char *m_sClassName;
 	CContainer()
@@ -1477,21 +1466,29 @@ public:
 	}
 	virtual ~CContainer()
 	{
-		DeleteAll(); // call this early so the virtuals will work.
+		DeleteAll();	// call this early so the virtuals will work
 	}
 
 private:
-	CContainer(const CContainer& copy);
-	CContainer& operator=(const CContainer& other);
+	int	m_totalweight;	// weight of all the items it has (1 / WEIGHT_UNITS stones)
+
+protected:
+	virtual void OnRemoveOb(CGObListRec *pObRec);	// override this = called when removed from list
+	void ContentAddPrivate(CItem *pItem);
+
+	void r_WriteContent(CScript &s) const;
+
+	bool r_WriteValContainer(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc);
+	bool r_GetRefContainer(LPCTSTR &pszKey, CScriptObj *&pRef);
+
+private:
+	CContainer(const CContainer &copy);
+	CContainer &operator=(const CContainer &other);
 
 public:
-	CItem *GetAt( size_t index ) const
+	CItem *GetAt(size_t index) const
 	{
 		return dynamic_cast<CItem *>(CGObList::GetAt(index));
-	}
-	int	GetTotalWeight() const
-	{
-		return m_totalweight;
 	}
 	CItem *GetContentHead() const
 	{
@@ -1501,106 +1498,100 @@ public:
 	{
 		return static_cast<CItem *>(GetTail());
 	}
+	int	GetTotalWeight() const
+	{
+		return m_totalweight;
+	}
 	int FixWeight();
 
-	bool ContentFindKeyFor( CItem * pLocked ) const;
-	// bool IsItemInside( CItem * pItem ) const;
+	bool ContentFindKeyFor(CItem *pLocked) const;
 
-	void ContentsDump( const CPointMap & pt, DWORD dwAttr = 0 );
-	void ContentsTransfer( CItemContainer * pCont, bool fNoNewbie );
-	void ContentAttrMod( DWORD dwAttr, bool fSet );
+	void ContentsDump(const CPointMap &pt, DWORD dwAttrLeave = 0);
+	void ContentsTransfer(CItemContainer *pCont, bool fNoNewbie);
+	void ContentAttrMod(DWORD dwAttr, bool fSet);
 	void ContentNotifyDelete();
 
 	// For resource usage and gold.
-	CItem *ContentFind( RESOURCE_ID_BASE rid, DWORD dwArg = 0, int iDecendLevels = 255 ) const;
-	TRIGRET_TYPE OnContTriggerForLoop( CScript &s, CTextConsole *pSrc, CScriptTriggerArgs *pArgs, CGString *pResult, CScriptLineContext &StartContext, CScriptLineContext &EndContext, RESOURCE_ID_BASE rid, DWORD dwArg = 0, int iDecendLevels = 255 );
-	TRIGRET_TYPE OnGenericContTriggerForLoop( CScript &s, CTextConsole *pSrc, CScriptTriggerArgs *pArgs, CGString *pResult, CScriptLineContext &StartContext, CScriptLineContext &EndContext, int iDecendLevels = 255 );
-	DWORD ContentCount( RESOURCE_ID_BASE rid, DWORD dwArg = 0 );
+	CItem *ContentFind(RESOURCE_ID_BASE rid, DWORD dwArg = 0, int iDecendLevels = 255) const;
+	TRIGRET_TYPE OnContTriggerForLoop(CScript &s, CTextConsole *pSrc, CScriptTriggerArgs *pArgs, CGString *pResult, CScriptLineContext &StartContext, CScriptLineContext &EndContext, RESOURCE_ID_BASE rid, DWORD dwArg = 0, int iDecendLevels = 255);
+	TRIGRET_TYPE OnGenericContTriggerForLoop(CScript &s, CTextConsole *pSrc, CScriptTriggerArgs *pArgs, CGString *pResult, CScriptLineContext &StartContext, CScriptLineContext &EndContext, int iDecendLevels = 255);
+	DWORD ContentCount(RESOURCE_ID_BASE rid, DWORD dwArg = 0);
 	DWORD ContentCountAll() const;
-	DWORD ContentConsume( RESOURCE_ID_BASE rid, DWORD iQty = 1, bool fTest = false, DWORD dwArg = 0 );
+	DWORD ContentConsume(RESOURCE_ID_BASE rid, DWORD dwQty = 1, bool fTest = false, DWORD dwArg = 0);
 
-	DWORD ResourceConsume( const CResourceQtyArray *pResources, DWORD iReplicationQty, bool fTest = false, DWORD dwArg = 0 );
-	size_t ResourceConsumePart( const CResourceQtyArray *pResources, DWORD iReplicationQty, int iFailPercent, bool fTest = false, DWORD dwArg = 0 );
+	DWORD ResourceConsume(const CResourceQtyArray *pResources, DWORD dwReplicationQty, bool fTest = false, DWORD dwArg = 0);
+	size_t ResourceConsumePart(const CResourceQtyArray *pResources, DWORD dwReplicationQty, int iDamagePercent, bool fTest = false, DWORD dwArg = 0);
 
-	virtual void OnWeightChange( int iChange );
-	virtual void ContentAdd( CItem * pItem ) = 0;
+	virtual void OnWeightChange(int iChange);
+	virtual void ContentAdd(CItem *pItem) = 0;
 };
 
 class CItemContainer : public CItemVendable, public CContainer
 {
-	// This item has other items inside it.
+	// This item has other items inside it
 	static LPCTSTR const sm_szVerbKeys[];
 public:
 	static const char *m_sClassName;
-	// bool m_fTinkerTrapped;	// magic trap is diff.
-	bool NotifyDelete();
-	void DeletePrepare()
+	CItemContainer(ITEMID_TYPE id, CItemBase *pItemDef) : CItemVendable(id, pItemDef)
 	{
-		if ( IsType( IT_EQ_TRADE_WINDOW ))
-		{
-			Trade_Delete();
-		}
-		CItem::DeletePrepare();
 	}
-
-public:
-	CItemContainer( ITEMID_TYPE id, CItemBase * pItemDef );
 	virtual ~CItemContainer()
 	{
-		DeleteAll();	// get rid of my contents first to protect against weight calc errors.
+		DeleteAll();	// get rid of my contents first to protect against weight calc errors
 		DeletePrepare();
 	}
 
 private:
-	CItemContainer(const CItemContainer& copy);
-	CItemContainer& operator=(const CItemContainer& other);
+	CItemContainer(const CItemContainer &copy);
+	CItemContainer &operator=(const CItemContainer &other);
 
 public:
+	bool NotifyDelete();
+	void DeletePrepare()
+	{
+		if ( IsType(IT_EQ_TRADE_WINDOW) )
+			Trade_Delete();
+		CItem::DeletePrepare();
+	}
+
 	bool IsWeighed() const
 	{
-		if ( IsType(IT_EQ_BANK_BOX ))
-			return false;
-		if ( IsType(IT_EQ_VENDOR_BOX))
-			return false;
-		if ( IsAttr(ATTR_MAGIC))	// magic containers have no weight.
+		if ( IsType(IT_EQ_BANK_BOX) || IsType(IT_EQ_VENDOR_BOX) || IsAttr(ATTR_MAGIC) )		// magic containers have no weight
 			return false;
 		return true;
 	}
 	bool IsSearchable() const
 	{
-		if ( IsType(IT_EQ_BANK_BOX) )
-			return false;
-		if ( IsType(IT_EQ_VENDOR_BOX) )
-			return false;
-		if ( IsType(IT_CONTAINER_LOCKED) )
-			return false;
-		if ( IsType(IT_EQ_TRADE_WINDOW) )
+		if ( IsType(IT_EQ_BANK_BOX) || IsType(IT_EQ_VENDOR_BOX) || IsType(IT_CONTAINER_LOCKED) || IsType(IT_EQ_TRADE_WINDOW) )
 			return false;
 		return true;
 	}
 
-	bool IsItemInside(const CItem * pItem) const;
-	bool CanContainerHold(const CItem * pItem, const CChar * pCharMsg );
+	bool IsItemInside(const CItem *pItem) const;
+	bool CanContainerHold(const CItem *pItem, const CChar *pCharMsg);
 
-	virtual bool r_Verb( CScript & s, CTextConsole * pSrc );
-	virtual void  r_Write( CScript & s );
-	virtual bool r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc );
-	virtual bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
+	virtual bool r_Verb(CScript &s, CTextConsole *pSrc);
+	virtual void r_Write(CScript &s);
+	virtual bool r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc);
+	virtual bool r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef);
 
-	virtual int GetWeight(WORD amount = 0) const
-	{	// true weight == container item + contents.
-		return CItem::GetWeight(amount) + CContainer::GetTotalWeight();
+	virtual int GetWeight(WORD wAmount = 0) const
+	{
+		// True weight = container weight + contents weight
+		return CItem::GetWeight(wAmount) + CContainer::GetTotalWeight();
 	}
-	void OnWeightChange( int iChange );
+	void OnWeightChange(int iChange);
 
-	void ContentAdd( CItem *pItem );
-	void ContentAdd( CItem *pItem, CPointMap pt, BYTE gridIndex = 0 );
+	void ContentAdd(CItem *pItem);
+	void ContentAdd(CItem *pItem, CPointMap pt, BYTE gridIndex = 0);
+
 protected:
-	void OnRemoveOb( CGObListRec* pObRec );	// Override this = called when removed from list.
+	void OnRemoveOb(CGObListRec *pObRec);	// override this = called when removed from list
+
 public:
 	bool IsItemInTrade();
-	void Trade_Status( bool bCheck );
-	void Trade_UpdateGold( DWORD platinum, DWORD gold );
+	void Trade_Status(bool bCheck);
+	void Trade_UpdateGold(DWORD dwPlatinum, DWORD dwGold);
 	void Trade_Delete();
 
 	void MakeKey();
@@ -1609,12 +1600,12 @@ public:
 	void Restock();
 	bool OnTick();
 
-	virtual void DupeCopy( const CItem * pItem );
+	virtual void DupeCopy(const CItem *pItem);
 
 	CPointMap GetRandContainerLoc() const;
 	SOUND_TYPE GetDropSound() const;
 
-	void OnOpenEvent( CChar * pCharOpener, const CObjBaseTemplate * pObjTop );
+	void OnOpenEvent(CChar *pCharOpener, const CObjBaseTemplate *pObjTop);
 };
 
 class CItemScript : public CItemVendable	// A message for a bboard or book text.
@@ -1647,31 +1638,29 @@ public:
 
 class CItemCorpse : public CItemContainer
 {
-	// IT_CORPSE
-	// A corpse is a special type of item.
+	// A corpse is a special type of item (IT_CORPSE)
 public:
 	static const char *m_sClassName;
-	CItemCorpse( ITEMID_TYPE id, CItemBase * pItemDef ) :
-		CItemContainer( id, pItemDef )
+	CItemCorpse(ITEMID_TYPE id, CItemBase *pItemDef) : CItemContainer(id, pItemDef)
 	{
 	}
 	virtual ~CItemCorpse()
 	{
-		DeletePrepare();	// Must remove early because virtuals will fail in child destructor.
+		DeletePrepare();	// must remove early because virtuals will fail in child destructor
 	}
 
 private:
-	CItemCorpse(const CItemCorpse& copy);
-	CItemCorpse& operator=(const CItemCorpse& other);
+	CItemCorpse(const CItemCorpse &copy);
+	CItemCorpse &operator=(const CItemCorpse &other);
 
 public:
-	CChar * IsCorpseSleeping() const;
+	CChar *IsCorpseSleeping() const;
 
-	int GetWeight(WORD amount = 0) const
+	int GetWeight(WORD wAmount = 0) const
 	{
-		UNREFERENCED_PARAMETER(amount);
-		// GetAmount is messed up.
-		// true weight == container item + contents.
+		UNREFERENCED_PARAMETER(wAmount);
+		// GetAmount is messed up
+		// True weight = corpse weight + contents weight
 		return 1 + CContainer::GetTotalWeight();
 	}
 };
