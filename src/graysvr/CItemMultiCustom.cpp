@@ -203,8 +203,8 @@ void CItemMultiCustom::EndCustomize(bool bForced)
 			CPointMap ptDest = Multi_GetSign()->GetTopPoint();
 
 			// find ground height, since the signpost is usually raised
-			DWORD wBlockFlags = 0;
-			ptDest.m_z = g_World.GetHeightPoint2(ptDest, wBlockFlags, true);
+			DWORD dwBlockFlags = 0;
+			ptDest.m_z = g_World.GetHeightPoint2(ptDest, dwBlockFlags, true);
 
 			pChar->MoveToChar(ptDest);
 			pChar->UpdateMove(ptOld);
@@ -321,7 +321,7 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 				if ( (*j)->m_item.GetDispID() != (*i)->m_item.GetDispID() )
 					continue;
 
-				pItem->m_itTelepad.m_pntMark = GetComponentPoint(*j);
+				pItem->m_itTelepad.m_ptMark = GetComponentPoint(*j);
 				break;
 			}
 		}

@@ -531,7 +531,7 @@ public:
 		{
 			DWORD m_Check_Amount;		// more1=Current amount of gold in account..
 			DWORD m_Check_Restock;		// more2= amount to restock the bank account to
-			CPointBase m_pntOpen;	// morep=point we are standing on when opened bank box.
+			CPointBase m_ptOpen;		// morep=point we are standing on when opened bank box.
 		} m_itEqBankBox;
 
 		// IT_EQ_VENDOR_BOX
@@ -539,7 +539,7 @@ public:
 		{
 			DWORD m_junk1;
 			DWORD m_junk2;
-			CPointBase m_pntOpen;	// morep=point we are standing on when opened vendor box.
+			CPointBase m_ptOpen;	// morep=point we are standing on when opened vendor box.
 		} m_itEqVendorBox;
 
 		// IT_GAME_BOARD
@@ -687,6 +687,7 @@ public:
 			BYTE	m_bCheck;		// morez=Check box for trade window.
 		} m_itEqTradeWindow;
 
+		// IT_SPAWN_CHAR
 		// IT_SPAWN_ITEM
 		struct
 		{
@@ -696,13 +697,12 @@ public:
 			WORD	m_TimeHiMin;		// morey=Hi time in minutes.
 			BYTE	m_DistMax;			// morez=How far from this will it spawn?
 		} m_itSpawnItem;
-			// Remember that you can access the same bytes from both m_itSpawnChar and m_itSpawnItem, it doesn't matter if it's IT_SPAWN_ITEM or IT_SPAWN_CHAR.
 
 		// IT_SPAWN_CHAR
 		struct
 		{
 			RESOURCE_ID_BASE m_CharID;	// more1=CREID_*,  or SPAWNTYPE_*,
-			DWORD	m_unused;		// more2=used only by IT_SPAWN_ITEM, keeping it only for mantaining the structure of the union.
+			DWORD	m_junk1;		// more2=used only by IT_SPAWN_ITEM, keeping it only for mantaining the structure of the union.
 			WORD	m_TimeLoMin;		// morex=Lo time in minutes.
 			WORD	m_TimeHiMin;		// morey=Hi time in minutes.
 			BYTE	m_DistMax;			// morez=How far from this will they wander?
@@ -764,7 +764,7 @@ public:
 		{
 			int m_Charges;			// more1 = How many uses til a rune will wear out ?
 			DWORD m_junk2;
-			CPointBase m_pntMark;	// morep = rune marked to a location or a teleport ?
+			CPointBase m_ptMark;	// morep = rune marked to a location or a teleport ?
 		} m_itRune;
 
 		// IT_TELEPAD
@@ -773,7 +773,7 @@ public:
 		{
 			int m_fPlayerOnly;		// more1 = The gate is player only. (no npcs, xcept pets)
 			int m_fQuiet;			// more2 = The gate/telepad makes no noise.
-			CPointBase m_pntMark;	// morep = marked to a location or a teleport ?
+			CPointBase m_ptMark;	// morep = marked to a location or a teleport ?
 		} m_itTelepad;
 
 		// IT_EQ_MEMORY_OBJ

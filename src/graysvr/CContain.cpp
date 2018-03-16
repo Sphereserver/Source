@@ -1396,7 +1396,7 @@ void CItemContainer::OnOpenEvent(CChar *pCharOpener, const CObjBaseTemplate *pOb
 		pCharOpener->SysMessage(pszMsg);
 
 		// To avoid exploits, bank box should store char P when opened and only allow access from this P (see CanTouch)
-		m_itEqBankBox.m_pntOpen = pCharOpener->GetTopPoint();
+		m_itEqBankBox.m_ptOpen = pCharOpener->GetTopPoint();
 	}
 }
 

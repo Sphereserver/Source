@@ -234,14 +234,14 @@ bool CChar::Spell_CreateGate(CPointMap ptNew, bool bCheckAntiMagic)
 	pGate->SetType(IT_TELEPAD);
 	pGate->SetAttr(ATTR_MAGIC|ATTR_MOVE_NEVER|ATTR_CAN_DECAY);
 	pGate->SetHue(static_cast<HUE_TYPE>(pAreaDest->IsGuarded() ? HUE_DEFAULT : HUE_RED));
-	pGate->m_itTelepad.m_pntMark = ptNew;
+	pGate->m_itTelepad.m_ptMark = ptNew;
 	pGate->MoveToDecay(GetTopPoint(), iDuration);
 	pGate->Sound(pSpellDef->m_sound);
 
 	pGate = CItem::CreateDupeItem(pGate);
 	ASSERT(pGate);
 	pGate->SetHue(static_cast<HUE_TYPE>((m_pArea && m_pArea->IsGuarded()) ? HUE_DEFAULT : HUE_RED));
-	pGate->m_itTelepad.m_pntMark = GetTopPoint();
+	pGate->m_itTelepad.m_ptMark = GetTopPoint();
 	pGate->MoveToDecay(ptNew, iDuration);
 	pGate->Sound(pSpellDef->m_sound);
 
@@ -340,7 +340,7 @@ bool CChar::Spell_Recall(CItem *pTarg, bool bGate)
 
 	if ( pTarg->IsType(IT_RUNE) )
 	{
-		if ( !pTarg->m_itRune.m_pntMark.IsValidPoint() )
+		if ( !pTarg->m_itRune.m_ptMark.IsValidPoint() )
 		{
 			SysMessageDefault(DEFMSG_SPELL_RECALL_RUNENOTMARKED);
 			return false;
@@ -354,14 +354,14 @@ bool CChar::Spell_Recall(CItem *pTarg, bool bGate)
 
 		if ( bGate )
 		{
-			if ( !Spell_CreateGate(pTarg->m_itRune.m_pntMark) )
+			if ( !Spell_CreateGate(pTarg->m_itRune.m_ptMark) )
 				return false;
 		}
 		else
 		{
 			const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Recall);
 			ASSERT(pSpellDef);
-			if ( !Spell_Teleport(pTarg->m_itRune.m_pntMark, true, true, true, pSpellDef->m_idEffect, pSpellDef->m_sound) )
+			if ( !Spell_Teleport(pTarg->m_itRune.m_ptMark, true, true, true, pSpellDef->m_idEffect, pSpellDef->m_sound) )
 				return false;
 		}
 

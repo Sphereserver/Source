@@ -1468,7 +1468,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_BLANK ) );
 			break;
 		case IT_RUNE:
-			if ( !m_itRune.m_pntMark.IsValidPoint() )
+			if ( !m_itRune.m_ptMark.IsValidPoint() )
 				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_BLANK ) );
 			else if ( ! m_itRune.m_Charges )
 				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_FADED ) );
@@ -4600,7 +4600,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				return false;
 			}
 
-			m_itRune.m_pntMark = pCharSrc->GetTopPoint();
+			m_itRune.m_ptMark = pCharSrc->GetTopPoint();
 			m_itRune.m_Charges = pSpellDef->m_Effect.GetLinear(iSkillLevel);
 			SetName(pCharSrc->m_pArea->GetName());
 			break;

@@ -289,7 +289,7 @@ void CClient::Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, BY
 			{
 				// Dropped on bank box
 				// Only accept items if the client already had opened the bank box
-				if ( pBankBox->m_itEqBankBox.m_pntOpen != pChar->GetTopPoint() )
+				if ( pBankBox->m_itEqBankBox.m_ptOpen != pChar->GetTopPoint() )
 					return Event_Item_Drop_Fail(pItem);
 
 				// Convert physical gold into virtual gold

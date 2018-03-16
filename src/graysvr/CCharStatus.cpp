@@ -875,7 +875,7 @@ bool CChar::CanSeeInContainer( const CItemContainer *pContItem ) const
 	{
 		// must be in the same position i opened it legitimately.
 		// see addBankOpen
-		if ( pContItem->m_itEqBankBox.m_pntOpen != GetTopPoint() )
+		if ( pContItem->m_itEqBankBox.m_ptOpen != GetTopPoint() )
 			return false;
 	}
 	return true;

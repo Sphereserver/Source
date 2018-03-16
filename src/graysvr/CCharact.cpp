@@ -1530,7 +1530,7 @@ int CChar::ItemPickup(CItem * pItem, WORD amount)
 		if ( pItemCont != NULL )
 		{
 			// Don't allow taking items from the bank unless we opened it here
-			if ( pItemCont->IsType( IT_EQ_BANK_BOX ) && ( pItemCont->m_itEqBankBox.m_pntOpen != GetTopPoint() ) )
+			if ( pItemCont->IsType( IT_EQ_BANK_BOX ) && ( pItemCont->m_itEqBankBox.m_ptOpen != GetTopPoint() ) )
 				return -1;
 
 			// Check sub containers too
@@ -1538,7 +1538,7 @@ int CChar::ItemPickup(CItem * pItem, WORD amount)
 			if ( pCharTop != NULL )
 			{
 				CItemContainer *pBank = pCharTop->GetContainerCreate(LAYER_BANKBOX);
-				if ( pBank->IsItemInside(pItemCont) && (pBank->m_itEqBankBox.m_pntOpen != GetTopPoint()) )
+				if ( pBank->IsItemInside(pItemCont) && (pBank->m_itEqBankBox.m_ptOpen != GetTopPoint()) )
 					return -1;
 			}
 
@@ -2960,7 +2960,7 @@ void CChar::ToggleFlying()
 
 	if ( IsTrigUsed(TRIGGER_TOGGLEFLYING) )
 	{
-		if ( OnTrigger(CTRIG_ToggleFlying, this, 0) == TRIGRET_RET_TRUE )
+		if ( OnTrigger(CTRIG_ToggleFlying, this) == TRIGRET_RET_TRUE )
 			return;
 	}
 

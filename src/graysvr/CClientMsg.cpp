@@ -2951,14 +2951,14 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							if ( IsPriv(PRIV_GM) )
 							{
 								m_TooltipData.Add(t = new CClientTooltip(1061114)); // Location: ~1_val~
-								t->FormatArgs("%s", pItem->m_itTelepad.m_pntMark.WriteUsed());
+								t->FormatArgs("%s", pItem->m_itTelepad.m_ptMark.WriteUsed());
 							}
 							break;
 						}
 
 						case IT_RUNE:
 						{
-							const CPointMap pt = pItem->m_itTelepad.m_pntMark;
+							const CPointMap pt = pItem->m_itTelepad.m_ptMark;
 							if ( !pt.IsValidPoint() )
 								break;
 

@@ -124,7 +124,7 @@ bool CChar::Use_MoonGate( CItem * pItem )
 	ADDTOCALLSTACK("CChar::Use_MoonGate");
 	ASSERT(pItem);
 
-	CPointBase pt = pItem->m_itTelepad.m_pntMark;
+	CPointBase pt = pItem->m_itTelepad.m_ptMark;
 
 	if ( pItem->IsType(IT_MOONGATE) )
 	{
