@@ -78,9 +78,9 @@ public:
 		return &m_TagDefs;
 	}
 	virtual void DeletePrepare();
-	bool IsTriggerActive(LPCTSTR trig) ;
+	bool IsTriggerActive(LPCTSTR pszTrig) ;
 	LPCTSTR GetTriggerActive();
-	void SetTriggerActive(LPCTSTR trig = NULL); 
+	void SetTriggerActive(LPCTSTR pszTrig = NULL); 
 
 public:
 	BYTE	RangeL() const
@@ -212,7 +212,7 @@ protected:
 public:
 	virtual bool OnTick() = 0;
 	virtual int FixWeirdness() = 0;
-	virtual int GetWeight(WORD amount = 0) const = 0;
+	virtual int GetWeight(WORD wAmount = 0) const = 0;
 	virtual bool IsResourceMatch( RESOURCE_ID_BASE rid, DWORD dwArg ) = 0;
 
 	virtual int IsWeird() const;
@@ -320,20 +320,20 @@ public:
 	virtual bool r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc );
 	virtual bool r_Verb( CScript & s, CTextConsole * pSrc );	// some command on this object as a target
 
-	void Emote(LPCTSTR pText, CClient * pClientExclude = NULL, bool fPossessive = false);
-	void Emote2(LPCTSTR pText, LPCTSTR pText2, CClient * pClientExclude = NULL, bool fPossessive = false);
+	void Emote(LPCTSTR pszText, CClient * pClientExclude = NULL, bool fPossessive = false);
+	void Emote2(LPCTSTR pszText, LPCTSTR pszText2, CClient * pClientExclude = NULL, bool fPossessive = false);
 
-	virtual void Speak( LPCTSTR pText, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL );
-	virtual void SpeakUTF8( LPCTSTR pText, HUE_TYPE wHue= HUE_TEXT_DEF, TALKMODE_TYPE mode= TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL, CLanguageID lang = 0 );
-	virtual void SpeakUTF8Ex( const NWORD * pText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang );
+	virtual void Speak( LPCTSTR pszText, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL );
+	virtual void SpeakUTF8( LPCTSTR pszText, HUE_TYPE wHue= HUE_TEXT_DEF, TALKMODE_TYPE mode= TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL, CLanguageID lang = 0 );
+	virtual void SpeakUTF8Ex( const NWORD * pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang );
 	
 	void RemoveFromView( CClient * pClientExclude = NULL , bool fHardcoded = true );	// remove this item from all clients.
 	void ResendOnEquip( bool fAllClients = false );	// Fix for Enhanced Client when equipping items via DClick, these must be removed from where they are and sent again.
 	void ResendTooltip( bool bSendFull = false, bool bUseCache = false );	// force reload of tooltip for this object
 	void UpdateCanSee( PacketSend * pPacket, CClient * pClientExclude = NULL ) const;
-	void UpdateObjMessage( LPCTSTR pTextThem, LPCTSTR pTextYou, CClient * pClientExclude, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font = FONT_NORMAL, bool bUnicode = false ) const;
+	void UpdateObjMessage( LPCTSTR pszTextThem, LPCTSTR pszTextYou, CClient * pClientExclude, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font = FONT_NORMAL, bool bUnicode = false ) const;
 
-	TRIGRET_TYPE OnHearTrigger(CResourceLock &s, LPCTSTR pCmd, CChar *pSrc, TALKMODE_TYPE &mode, HUE_TYPE wHue = HUE_DEFAULT);
+	TRIGRET_TYPE OnHearTrigger(CResourceLock &s, LPCTSTR pszCmd, CChar *pSrc, TALKMODE_TYPE &mode, HUE_TYPE wHue = HUE_DEFAULT);
 
 	bool IsContainer() const;
 
@@ -489,8 +489,8 @@ public:
 	// NOTE: If this link is set but not valid -> then delete the whole object !
 	CGrayUID m_uidLink;		// Linked to this other object in the world. (owned, key, etc)
 
-	bool IsTriggerActive(LPCTSTR trig) { return static_cast<CObjBase*>(const_cast<CItem*>(this))->IsTriggerActive(trig); }
-	void SetTriggerActive(LPCTSTR trig = NULL) { static_cast<CObjBase*>(const_cast<CItem*>(this))->SetTriggerActive(trig); }
+	bool IsTriggerActive(LPCTSTR pszTrig) { return static_cast<CObjBase *>(const_cast<CItem *>(this))->IsTriggerActive(pszTrig); }
+	void SetTriggerActive(LPCTSTR pszTrig = NULL) { static_cast<CObjBase *>(const_cast<CItem *>(this))->SetTriggerActive(pszTrig); }
 
 	// Type specific info. IT_TYPE
 	union // 4(more1) + 4(more2) + 6(morep: (2 morex) (2 morey) (1 morez) (1morem) ) = 14 bytes
@@ -1023,13 +1023,13 @@ public:
 
 	virtual bool SetName( LPCTSTR pszName );
 
-	virtual int GetWeight(WORD amount = 0) const
+	virtual int GetWeight(WORD wAmount = 0) const
 	{
-		WORD iWeight = m_weight * (amount ? amount : GetAmount());
+		WORD wWeight = m_weight * (wAmount ? wAmount : GetAmount());
 		CVarDefCont *pReduction = GetDefKey("WEIGHTREDUCTION", true);
 		if ( pReduction )
-			iWeight -= static_cast<WORD>(IMULDIV(iWeight, maximum(pReduction->GetValNum(), 0), 100));
-		return iWeight;
+			wWeight -= static_cast<WORD>(IMULDIV(wWeight, maximum(pReduction->GetValNum(), 0), 100));
+		return wWeight;
 	}
 
 	void SetTimeout( INT64 iDelay );
@@ -2071,7 +2071,7 @@ private:
 
 public:
 	static const char *m_sClassName;
-	CStoneMember( CItemStone * pStone, CGrayUID uid, STONEPRIV_TYPE iType, LPCTSTR pTitle = "", CGrayUID loyaluidLink = 0, bool fArg1 = false, bool fArg2 = false, int nAccountGold = 0);
+	CStoneMember( CItemStone * pStone, CGrayUID uid, STONEPRIV_TYPE iType, LPCTSTR pszTitle = "", CGrayUID loyaluidLink = 0, bool fArg1 = false, bool fArg2 = false, int nAccountGold = 0);
 	virtual ~CStoneMember();
 
 private:
@@ -2108,7 +2108,7 @@ public:
 	void SetAbbrev(bool mode);
 
 	LPCTSTR GetTitle() const;
-	void SetTitle( LPCTSTR pTitle );
+	void SetTitle( LPCTSTR pszTitle );
 	CGrayUID GetLoyalToUID() const;
 	bool SetLoyalTo( const CChar * pChar);
 	int GetAccountGold() const;
@@ -2120,7 +2120,7 @@ public:
 
 	LPCTSTR GetName() const { return m_sClassName; }
 	virtual bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
-	virtual bool r_WriteVal( LPCTSTR pKey, CGString & sVal, CTextConsole * pSrc );
+	virtual bool r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc );
 	virtual bool r_Verb( CScript & s, CTextConsole * pSrc ); // Execute command from script
 	virtual bool r_LoadVal( CScript & s );
 };
@@ -2170,9 +2170,9 @@ private:
 	MEMORY_TYPE GetMemoryType() const;
 
 	LPCTSTR GetCharter(unsigned int iLine) const;
-	void SetCharter( unsigned int iLine, LPCTSTR pCharter );
+	void SetCharter( unsigned int iLine, LPCTSTR pszCharter );
 	LPCTSTR GetWebPageURL() const;
-	void SetWebPageURL( LPCTSTR pWebPage );
+	void SetWebPageURL( LPCTSTR pszWebPage );
 	void ElectMaster();
 public:
 	static const char *m_sClassName;
@@ -2207,7 +2207,7 @@ public:
 	virtual bool r_Verb( CScript & s, CTextConsole * pSrc ); // Execute command from script
 
 	LPCTSTR GetTypeName() const;
-	static bool IsUniqueName( LPCTSTR pName );
+	static bool IsUniqueName( LPCTSTR pszName );
 	CChar * GetMaster() const;
 	bool NoMembers() const;
 	CStoneMember * GetMasterMember() const;
@@ -2219,7 +2219,7 @@ public:
 	void SetAlignType(STONEALIGN_TYPE iAlign);
 	LPCTSTR GetAlignName() const;
 	LPCTSTR GetAbbrev() const;
-	void SetAbbrev( LPCTSTR pAbbrev );
+	void SetAbbrev( LPCTSTR pszAbbrev );
 };
 
 enum CIC_TYPE
@@ -2268,21 +2268,21 @@ public:
 	{
 		return static_cast<WORD>(m_sBodyLines.GetCount());
 	}
-	LPCTSTR GetPageText( WORD iPage ) const
+	LPCTSTR GetPageText(WORD wPage) const
 	{
-		if ( !m_sBodyLines.IsValidIndex(iPage) || (m_sBodyLines[iPage] == NULL) )
+		if ( !m_sBodyLines.IsValidIndex(wPage) || !m_sBodyLines[wPage] )
 			return NULL;
-		return m_sBodyLines[iPage]->GetPtr();
+		return m_sBodyLines[wPage]->GetPtr();
 	}
-	void SetPageText( WORD iPage, LPCTSTR pszText )
+	void SetPageText(WORD wPage, LPCTSTR pszText)
 	{
-		if ( pszText == NULL )
+		if ( !pszText )
 			return;
-		m_sBodyLines.SetAtGrow( iPage, new CGString( pszText ));
+		m_sBodyLines.SetAtGrow(wPage, new CGString(pszText));
 	}
-	void AddPageText( LPCTSTR pszText )
+	void AddPageText(LPCTSTR pszText)
 	{
-		m_sBodyLines.Add( new CGString( pszText ));
+		m_sBodyLines.Add(new CGString(pszText));
 	}
 
 	virtual void DupeCopy( const CItem * pItem );
@@ -2721,8 +2721,8 @@ public:
 	CREID_TYPE m_prev_id;		// Backup of body type for ghosts and poly
 	HUE_TYPE m_prev_Hue;		// Backup of skin color. in case of polymorph etc.
 	HUE_TYPE m_wBloodHue;		// Replicating CharDef's BloodColor on the char, or overriding it.
-	bool IsTriggerActive(LPCTSTR trig) { return static_cast<CObjBase*>(const_cast<CChar*>(this))->IsTriggerActive(trig); }
-	void SetTriggerActive(LPCTSTR trig = NULL) { static_cast<CObjBase*>(const_cast<CChar*>(this))->SetTriggerActive(trig); }
+	bool IsTriggerActive(LPCTSTR pszTrig) { return static_cast<CObjBase *>(const_cast<CChar *>(this))->IsTriggerActive(pszTrig); }
+	void SetTriggerActive(LPCTSTR pszTrig = NULL) { static_cast<CObjBase *>(const_cast<CChar *>(this))->SetTriggerActive(pszTrig); }
 
 	// Client's local light
 	BYTE m_LocalLight;
@@ -2878,11 +2878,11 @@ public:
 		else
 			m_StatFlag &= ~dwStatFlag;
 	}
-	bool IsPriv( WORD flag ) const
-	{	// PRIV_GM flags
+	bool IsPriv(WORD wPrivFlags) const
+	{
 		if ( !m_pPlayer )
-			return false;	// NPC's have no privs.
-		return m_pPlayer->m_pAccount->IsPriv(flag);
+			return false;
+		return m_pPlayer->m_pAccount->IsPriv(wPrivFlags);
 	}
 	PLEVEL_TYPE GetPrivLevel() const
 	{
@@ -3003,9 +3003,9 @@ public:
 	{
 		if ( fAllowAlt )
 		{
-			LPCTSTR pAltName = GetKeyStr("NAME.ALT");
-			if ( pAltName && *pAltName )
-				return pAltName;
+			LPCTSTR pszAltName = GetKeyStr("NAME.ALT");
+			if ( pszAltName && *pszAltName )
+				return pszAltName;
 		}
 		if ( !IsIndividualName() )			// allow some creatures to go unnamed.
 		{
@@ -3016,7 +3016,7 @@ public:
 		return CObjBase::GetName();
 	}
 
-	bool SetName( LPCTSTR pName );
+	bool SetName( LPCTSTR pszName );
 	height_t GetHeightMount( bool fEyeSubstract = false ) const;
 	height_t GetHeight() const;
 
@@ -3112,14 +3112,14 @@ public:
 
 	// Location and movement ------------------------------------
 private:
-	bool TeleportToCli( int iType, int iArgs );
-	bool TeleportToObj( int iType, TCHAR * pszArgs );
+	bool TeleportToCli(int iType, int iArgs);
+	bool TeleportToObj(int iType, TCHAR *pszArgs);
 private:
-	CRegionBase * CheckValidMove( CPointBase & ptDest, DWORD * pdwBlockFlags, DIR_TYPE dir, height_t * ClimbHeight, bool fPathFinding = false ) const;
+	CRegionBase *CheckValidMove(CPointBase &ptDest, DWORD *pdwBlockFlags, DIR_TYPE dir, height_t *ClimbHeight, bool fPathFinding = false) const;
 	void FixClimbHeight();
-	bool MoveToRegion( CRegionWorld * pNewArea, bool fAllowReject);
-	bool MoveToRoom( CRegionBase * pNewRoom, bool fAllowReject);
-	bool IsVerticalSpace( CPointMap ptDest, bool fForceMount = false );
+	bool MoveToRegion(CRegionWorld *pNewArea, bool fAllowReject);
+	bool MoveToRoom(CRegionBase *pNewRoom, bool fAllowReject);
+	bool IsVerticalSpace(CPointMap ptDest, bool fForceMount = false);
 
 public:
 	CChar *GetNext() const
@@ -3128,68 +3128,68 @@ public:
 	}
 	CObjBaseTemplate *GetTopLevelObj() const
 	{
-		// Get the object that has a location in the world. (Ground level)
+		// Get the object that has a location in the world (ground level)
 		return const_cast<CChar *>(this);
 	}
 
 	bool IsSwimming() const;
 
-	bool MoveToRegionReTest( DWORD dwType )
+	bool MoveToRegionReTest(DWORD dwType)
 	{
 		return MoveToRegion(dynamic_cast<CRegionWorld *>(GetTopPoint().GetRegion(dwType)), false);
 	}
 	bool MoveToChar(CPointMap pt, bool bForceFix = false);
 	bool MoveTo(CPointMap pt, bool bForceFix = false)
 	{
-		m_fClimbUpdated = false; // update climb height
-		return MoveToChar( pt, bForceFix);
+		m_fClimbUpdated = false;	// update climb height
+		return MoveToChar(pt, bForceFix);
 	}
-	virtual void SetTopZ( signed char z )
+	virtual void SetTopZ(signed char z)
 	{
-		CObjBaseTemplate::SetTopZ( z );
-		m_fClimbUpdated = false; // update climb height
+		CObjBaseTemplate::SetTopZ(z);
+		m_fClimbUpdated = false;	// update climb height
 		FixClimbHeight();
 	}
 	bool MoveToValidSpot(DIR_TYPE dir, int iDist, int iDistStart = 1, bool bFromShip = false);
-	virtual bool MoveNearObj( const CObjBaseTemplate *pObj, WORD iSteps = 0 )
+	virtual bool MoveNearObj(const CObjBaseTemplate *pObj, WORD wSteps = 0)
 	{
-		return CObjBase::MoveNearObj(pObj, iSteps);
+		return CObjBase::MoveNearObj(pObj, wSteps);
 	}
-	bool MoveNear( CPointMap pt, WORD iSteps = 0 )
+	bool MoveNear(CPointMap pt, WORD wSteps = 0)
 	{
-		return CObjBase::MoveNear(pt, iSteps);
+		return CObjBase::MoveNear(pt, wSteps);
 	}
 
-	CRegionBase * CanMoveWalkTo( CPointBase & pt, bool fCheckChars = true, bool fCheckOnly = false, DIR_TYPE dir = DIR_QTY, bool fPathFinding = false );
+	CRegionBase *CanMoveWalkTo(CPointBase &ptDst, bool fCheckChars = true, bool fCheckOnly = false, DIR_TYPE dir = DIR_QTY, bool fPathFinding = false);
 	void CheckRevealOnMove();
-	TRIGRET_TYPE CheckLocation( bool fStanding = false );
+	TRIGRET_TYPE CheckLocation(bool fStanding = false);
 
 public:
 	// Client Player specific stuff. -------------------------
-	void ClientAttach( CClient * pClient );
+	void ClientAttach(CClient *pClient);
 	void ClientDetach();
 
-	bool SetPrivLevel( CTextConsole * pSrc, LPCTSTR pszFlags );
-	bool CanDisturb( const CChar * pChar ) const;
+	bool SetPrivLevel(CTextConsole *pSrc, LPCTSTR pszFlags);
+	bool CanDisturb(const CChar *pChar) const;
 	void SetDisconnected();
-	bool SetPlayerAccount( CAccount * pAccount );
-	bool SetPlayerAccount( LPCTSTR pszAccount );
-	bool SetNPCBrain( NPCBRAIN_TYPE NPCBrain );
+	bool SetPlayerAccount(CAccount *pAccount);
+	bool SetPlayerAccount(LPCTSTR pszAccount);
+	bool SetNPCBrain(NPCBRAIN_TYPE NPCBrain);
 	NPCBRAIN_TYPE GetNPCBrain(bool bGroupTypes = true) const;
 	void ClearNPC();
 	void ClearPlayer();
 
 public:
-	void ObjMessage( LPCTSTR pMsg, const CObjBase * pSrc ) const
+	void ObjMessage(LPCTSTR pszMsg, const CObjBase *pSrc) const
 	{
 		if ( m_pClient )
-			m_pClient->addObjMessage(pMsg, pSrc);
+			m_pClient->addObjMessage(pszMsg, pSrc);
 		return;
 	}
-	void SysMessage( LPCTSTR pMsg ) const	// Push a message back to the client if there is one.
+	void SysMessage(LPCTSTR pszMsg) const
 	{
 		if ( m_pClient )
-			m_pClient->SysMessage(pMsg);
+			m_pClient->SysMessage(pszMsg);
 		return;
 	}
 
@@ -3199,24 +3199,24 @@ public:
 	void UpdateModeFlag();
 	void UpdateManaFlag() const;
 	void UpdateStamFlag() const;
-	void UpdateRegenTimers(STAT_TYPE iStat, WORD iVal);
+	void UpdateRegenTimers(STAT_TYPE iStat, WORD wVal);
 	ANIM_TYPE GenerateAnimate(ANIM_TYPE action, bool fTranslate = true, bool fBackward = false, BYTE iFrameDelay = 0, BYTE iAnimLen = 7);
 	bool UpdateAnimate(ANIM_TYPE action, bool fTranslate = true, bool fBackward = false, BYTE iFrameDelay = 0, BYTE iAnimLen = 7);
 
-	void UpdateMode( CClient * pExcludeClient = NULL, bool fFull= false );
+	void UpdateMode(CClient *pExcludeClient = NULL, bool fFull = false);
 	void UpdateSpeedMode();
 	void UpdateVisualRange();
-	void UpdateMove( const CPointMap & ptOld, CClient * pClientExclude = NULL, bool bFull = false );
-	void UpdateDir( DIR_TYPE dir );
-	void UpdateDir( const CPointMap & pt );
-	void UpdateDir( const CObjBaseTemplate * pObj );
-	void UpdateDrag( CItem * pItem, CObjBase * pCont = NULL, CPointMap * pt = NULL );
-	void Update(const CClient * pClientExclude = NULL);
+	void UpdateMove(const CPointMap &ptOld, CClient *pClientExclude = NULL, bool bFull = false);
+	void UpdateDir(DIR_TYPE dir);
+	void UpdateDir(const CPointMap &pt);
+	void UpdateDir(const CObjBaseTemplate *pObj);
+	void UpdateDrag(CItem *pItem, CObjBase *pCont = NULL, CPointMap *pt = NULL);
+	void Update(const CClient *pClientExclude = NULL);
 
 public:
 	LPCTSTR GetPronoun() const;	// he
 	LPCTSTR GetPossessPronoun() const;	// his
-	BYTE GetModeFlag( const CClient *pViewer = NULL ) const;
+	BYTE GetModeFlag(const CClient *pViewer = NULL) const;
 	BYTE GetDirFlag(bool fSquelchForwardStep = false) const
 	{
 		// future: strongly typed enums will remove the need for this cast
@@ -3272,30 +3272,30 @@ public:
 
 private:
 	// Contents/Carry stuff. ---------------------------------
-	void ContentAdd( CItem * pItem )
+	void ContentAdd(CItem *pItem)
 	{
 		ItemEquip(pItem);
-		//LayerAdd( pItem, LAYER_QTY );
+		//LayerAdd(pItem, LAYER_QTY);
 	}
 protected:
-	void OnRemoveOb( CGObListRec* pObRec );	// Override this = called when removed from list.
+	void OnRemoveOb(CGObListRec *pObRec);	// override this = called when removed from list
 public:
-	bool CanCarry( const CItem * pItem ) const;
-	bool CanEquipStr( CItem * pItem ) const;
-	LAYER_TYPE CanEquipLayer( CItem * pItem, LAYER_TYPE layer, CChar * pCharMsg, bool fTest );
-	CItem * LayerFind( LAYER_TYPE layer ) const;
-	void LayerAdd( CItem * pItem, LAYER_TYPE layer = LAYER_QTY );
+	bool CanCarry(const CItem *pItem) const;
+	bool CanEquipStr(CItem *pItem) const;
+	LAYER_TYPE CanEquipLayer(CItem *pItem, LAYER_TYPE layer, CChar *pCharMsg, bool fTest);
+	CItem *LayerFind(LAYER_TYPE layer) const;
+	void LayerAdd(CItem *pItem, LAYER_TYPE layer = LAYER_QTY);
 	
-	TRIGRET_TYPE OnCharTrigForLayerLoop( CScript &s, CTextConsole * pSrc, CScriptTriggerArgs * pArgs, CGString * pResult, LAYER_TYPE layer );
-	TRIGRET_TYPE OnCharTrigForMemTypeLoop( CScript &s, CTextConsole * pSrc, CScriptTriggerArgs * pArgs, CGString * pResult, WORD wMemType );
+	TRIGRET_TYPE OnCharTrigForLayerLoop(CScript &s, CTextConsole *pSrc, CScriptTriggerArgs *pArgs, CGString *pResult, LAYER_TYPE layer);
+	TRIGRET_TYPE OnCharTrigForMemTypeLoop(CScript &s, CTextConsole *pSrc, CScriptTriggerArgs *pArgs, CGString *pResult, WORD wMemType);
 
-	void OnWeightChange( int iChange );
-	int GetWeight(WORD amount = 0) const
+	void OnWeightChange(int iChange);
+	int GetWeight(WORD wAmount = 0) const
 	{
-		UNREFERENCED_PARAMETER(amount);
+		UNREFERENCED_PARAMETER(wAmount);
 		return CContainer::GetTotalWeight();
 	}
-	int GetWeightLoadPercent( int iWeight ) const;
+	int GetWeightLoadPercent(int iWeight) const;
 
 	CItem *GetSpellbook(SPELL_TYPE iSpell) const;
 	CItemContainer *GetContainer(LAYER_TYPE layer) const
@@ -3304,10 +3304,10 @@ public:
 	}
 	CItemContainer *GetContainerCreate(LAYER_TYPE layer);
 	CItem *GetBackpackItem(ITEMID_TYPE item);
-	void AddGoldToPack(DWORD iAmount, CItemContainer *pPack = NULL, bool bSound = true);
+	void AddGoldToPack(DWORD dwAmount, CItemContainer *pPack = NULL, bool bSound = true);
 
 //private:
-	virtual TRIGRET_TYPE OnTrigger( LPCTSTR pTrigName, CTextConsole * pSrc, CScriptTriggerArgs * pArgs );
+	virtual TRIGRET_TYPE OnTrigger(LPCTSTR pszTrigName, CTextConsole *pSrc, CScriptTriggerArgs *pArgs);
 
 public:
 	// Load/Save----------------------------------
@@ -3773,36 +3773,36 @@ public:
 	void NPC_CreateTrigger();
 
 	// Mounting and figurines
-	bool Horse_Mount( CChar * pHorse ); // Remove horse char and give player a horse item
-	bool Horse_UnMount(); // Remove horse char and give player a horse item
+	bool Horse_Mount(CChar *pHorse);
+	bool Horse_UnMount();
 
 private:
-	CItem * Horse_GetMountItem() const;
-	CChar * Horse_GetMountChar() const;
+	CItem *Horse_GetMountItem() const;
+	CChar *Horse_GetMountChar() const;
 public:
-	CChar * Use_Figurine( CItem * pItem, bool bCheckFollowerSlots = true );
-	CItem * Make_Figurine( CGrayUID uidOwner = (UID_F_ITEM|UID_O_INDEX_MASK), ITEMID_TYPE id = ITEMID_NOTHING );
-	CItem * NPC_Shrink();
-	bool FollowersUpdate( CChar * pChar, short iFollowerSlots = 0, bool bCheckOnly = false );
+	CChar * Use_Figurine(CItem *pItem, bool bCheckFollowerSlots = true);
+	CItem *Make_Figurine(CGrayUID uidOwner = (UID_F_ITEM|UID_O_INDEX_MASK), ITEMID_TYPE id = ITEMID_NOTHING);
+	CItem *NPC_Shrink();
+	bool FollowersUpdate(CChar *pChar, short iFollowerSlots = 0, bool bCheckOnly = false);
 
-	int  ItemPickup( CItem * pItem, WORD amount );
-	bool ItemEquip( CItem * pItem, CChar * pCharMsg = NULL, bool fFromDClick = false );
-	bool ItemEquipWeapon( bool fForce );
-	bool ItemEquipArmor( bool fForce );
-	bool ItemBounce( CItem * pItem, bool bDisplayMsg = true );
-	bool ItemDrop( CItem * pItem, const CPointMap & pt );
+	int ItemPickup(CItem *pItem, WORD wAmount);
+	bool ItemEquip(CItem *pItem, CChar *pCharMsg = NULL, bool fFromDClick = false);
+	bool ItemEquipWeapon(bool fForce);
+	bool ItemEquipArmor(bool fForce);
+	bool ItemBounce(CItem *pItem, bool bDisplayMsg = true);
+	bool ItemDrop(CItem *pItem, const CPointMap &pt);
 
 	void Flip();
-	bool SetPoison( int iLevel, int iTicks, CChar * pCharSrc );
-	bool SetPoisonCure( int iLevel, bool fExtra );
-	bool CheckCorpseCrime( const CItemCorpse *pCorpse, bool fLooting, bool fTest );
-	CItemCorpse * FindMyCorpse( bool ignoreLOS = false, int iRadius = 2) const;
-	CItemCorpse * MakeCorpse( bool fFrontFall );
-	bool RaiseCorpse( CItemCorpse * pCorpse );
+	bool SetPoison(int iSkill, int iTicks, CChar *pCharSrc);
+	bool SetPoisonCure(int iSkill, bool fExtra);
+	bool CheckCorpseCrime(const CItemCorpse *pCorpse, bool fLooting, bool fTest);
+	CItemCorpse *FindMyCorpse(bool ignoreLOS = false, int iRadius = 2) const;
+	CItemCorpse *MakeCorpse(bool fFrontFall);
+	bool RaiseCorpse(CItemCorpse *pCorpse);
 	bool Death();
-	bool Reveal( DWORD dwFlags = 0 );
-	void Jail( CTextConsole * pSrc, bool fSet, int iCell );
-	void EatAnim( LPCTSTR pszName, int iQty );
+	bool Reveal(DWORD dwFlags = 0);
+	void Jail(CTextConsole *pSrc, bool fSet, int iCell);
+	void EatAnim(LPCTSTR pszName, int iQty);
 	/**
 	* @Brief I'm calling guards (Player speech)
 	*
@@ -3823,16 +3823,16 @@ public:
 	#define DEATH_NOCONJUREDEFFECT 0x08
 	#define DEATH_HASCORPSE 0x010
 
-	virtual void Speak( LPCTSTR pText, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL );
-	virtual void SpeakUTF8( LPCTSTR pText, HUE_TYPE wHue= HUE_TEXT_DEF, TALKMODE_TYPE mode= TALKMODE_SAY, FONT_TYPE font= FONT_NORMAL, CLanguageID lang = 0 );
-	virtual void SpeakUTF8Ex( const NWORD * pText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang );
+	virtual void Speak(LPCTSTR pszText, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL);
+	virtual void SpeakUTF8(LPCTSTR pszText, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL, CLanguageID lang = 0);
+	virtual void SpeakUTF8Ex(const NWORD *pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang);
 
 	bool OnFreezeCheck();
 	void ToggleFlying();
-	void DropAll( CItemContainer * pCorpse = NULL, DWORD dwAttr = 0 );
-	void UnEquipAllItems( CItemContainer * pCorpse = NULL, bool bLeaveHands = false );
+	void DropAll(CItemContainer *pDest = NULL, DWORD dwAttr = 0);
+	void UnEquipAllItems(CItemContainer *pDest = NULL, bool bLeaveHands = false);
 	void Wake();
-	void SleepStart( bool fFrontFall );
+	void SleepStart(bool fFrontFall);
 
 	void Guild_Resign( MEMORY_TYPE memtype );
 	CItemStone * Guild_Find( MEMORY_TYPE memtype ) const;
@@ -3891,7 +3891,7 @@ public:
 	bool NPC_OnHireHear( CChar * pCharSrc );
 	WORD NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill );
 	bool NPC_OnTrainPay( CChar * pCharSrc, CItemMemory * pMemory, CItem * pGold );
-	bool NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pCmd );
+	bool NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd );
 	bool NPC_TrainSkill( CChar * pCharSrc, SKILL_TYPE skill, WORD toTrain );
 private:
 	bool NPC_CheckWalkHere(const CPointBase &pt, const CRegionBase *pArea) const;
@@ -3968,7 +3968,7 @@ public:
 	bool NPC_OnHearPetCmd(LPCTSTR pszCmd, CChar *pSrc, bool bAllPets = false);
 	bool NPC_OnHearPetCmdTarg(int iCmd, CChar *pSrc, CObjBase *pObj, const CPointMap &pt, LPCTSTR pszArgs);
 	size_t NPC_OnHearName(LPCTSTR pszText) const;
-	void NPC_OnHear(LPCTSTR pCmd, CChar *pSrc, bool fAllPets = false);
+	void NPC_OnHear(LPCTSTR pszCmd, CChar *pSrc, bool fAllPets = false);
 	bool NPC_OnItemGive(CChar *pCharSrc, CItem *pItem);
 	bool NPC_SetVendorPrice(CItem *pItem, int iPrice);
 	bool OnTriggerSpeech(bool bIsPet, LPCTSTR pszText, CChar *pSrc, TALKMODE_TYPE &mode, HUE_TYPE wHue = HUE_DEFAULT);
