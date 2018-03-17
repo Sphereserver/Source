@@ -4,7 +4,7 @@ graysvr/CAccount.cpp
 graysvr/CAccount.h
 graysvr/CBase.cpp
 graysvr/CBase.h
-graysvr/CCharact.cpp
+graysvr/CCharAct.cpp
 graysvr/CCharBase.cpp
 graysvr/CChar.cpp
 graysvr/CCharFight.cpp
@@ -17,6 +17,7 @@ graysvr/CCharSpell.cpp
 graysvr/CCharStatus.cpp
 graysvr/CCharUse.cpp
 graysvr/CChat.cpp
+graysvr/CChat.h
 graysvr/CClient.cpp
 graysvr/CClientDialog.cpp
 graysvr/CClientEvent.cpp
@@ -28,6 +29,7 @@ graysvr/CClientTarg.cpp
 graysvr/CClientUse.cpp
 graysvr/CContain.cpp
 graysvr/CGMPage.cpp
+graysvr/CGMPage.h
 graysvr/CItemBase.cpp
 graysvr/CItem.cpp
 graysvr/CItemMulti.cpp
@@ -48,6 +50,7 @@ graysvr/CResourceDef.cpp
 graysvr/CResource.h
 graysvr/CSector.cpp
 graysvr/CServer.cpp
+graysvr/CServer.h
 graysvr/CServRef.cpp
 graysvr/CServRef.h
 graysvr/CWebPage.cpp
@@ -168,7 +171,7 @@ graysvr/ntservice.h
 graysvr/ntwindow.cpp
 graysvr/UnixTerminal.cpp
 graysvr/UnixTerminal.h
-graysvr/GraySvr.rc
+graysvr/SphereSvr.rc
 )
 SOURCE_GROUP (Sphere FILES ${sphere_SRCS})
 

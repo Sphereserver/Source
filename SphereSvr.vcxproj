@@ -177,7 +177,7 @@ if defined GitRev (
     <ClCompile Include="src\graysvr\CAccount.cpp" />
     <ClCompile Include="src\graysvr\CBase.cpp" />
     <ClCompile Include="src\graysvr\CChar.cpp" />
-    <ClCompile Include="src\graysvr\CCharact.cpp" />
+    <ClCompile Include="src\graysvr\CCharAct.cpp" />
     <ClCompile Include="src\graysvr\CCharBase.cpp" />
     <ClCompile Include="src\graysvr\CCharFight.cpp" />
     <ClCompile Include="src\graysvr\CCharNPC.cpp" />

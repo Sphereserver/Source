@@ -41,7 +41,7 @@ PIPE	= -pipe
 SRC	:= 	./src/graysvr/CAccount.cpp \
 		./src/graysvr/CBase.cpp \
 		./src/graysvr/CChar.cpp \
-		./src/graysvr/CCharact.cpp \
+		./src/graysvr/CCharAct.cpp \
 		./src/graysvr/CCharBase.cpp \
 		./src/graysvr/CCharFight.cpp \
 		./src/graysvr/CCharNPC.cpp \

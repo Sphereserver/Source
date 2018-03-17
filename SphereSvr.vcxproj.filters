@@ -225,7 +225,7 @@
     <ClCompile Include="src\graysvr\CChar.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="src\graysvr\CCharact.cpp">
+    <ClCompile Include="src\graysvr\CCharAct.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
     <ClCompile Include="src\graysvr\CCharBase.cpp">
