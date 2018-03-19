@@ -2009,7 +2009,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(IsStatFlag(STATF_Stone));
 			break;
 		case CHC_TITLE:
-			sVal = (strlen(pszKey) == 5) ? m_sTitle : GetTradeTitle();
+			sVal = (strlen(pszKey) == 5) ? m_sTitle : static_cast<CGString>(GetTradeTitle());
 			break;
 		case CHC_LIGHT:
 			sVal.FormatHex(m_LocalLight);
@@ -3248,34 +3248,34 @@ bool CChar::OnTriggerSpeech(bool bIsPet, LPCTSTR pszText, CChar *pSrc, TALKMODE_
 		pszName = g_Cfg.m_sSpeechPet;
 	else if ( !bIsPet && !g_Cfg.m_sSpeechSelf.IsEmpty() )
 		pszName = g_Cfg.m_sSpeechSelf;
-	else
-		goto lbl_cchar_ontriggerspeech;
 
-	CScriptObj *pDef = g_Cfg.ResourceGetDefByName(RES_SPEECH, pszName);
-	if ( pDef )
+	if ( pszName )
 	{
-		CResourceLink *pLink = dynamic_cast<CResourceLink *>(pDef);
-		if ( pLink )
+		CScriptObj *pDef = g_Cfg.ResourceGetDefByName(RES_SPEECH, pszName);
+		if ( pDef )
 		{
-			CResourceLock s;
-			if ( pLink->ResourceLock(s) && pLink->HasTrigger(XTRIG_UNKNOWN) )
+			CResourceLink *pLink = dynamic_cast<CResourceLink *>(pDef);
+			if ( pLink )
 			{
-				TRIGRET_TYPE iRet = OnHearTrigger(s, pszText, pSrc, mode, wHue);
-				if ( iRet == TRIGRET_RET_TRUE )
-					return true;
-				else if ( iRet == TRIGRET_RET_HALFBAKED )
-					return false;
+				CResourceLock s;
+				if ( pLink->ResourceLock(s) && pLink->HasTrigger(XTRIG_UNKNOWN) )
+				{
+					TRIGRET_TYPE iRet = OnHearTrigger(s, pszText, pSrc, mode, wHue);
+					if ( iRet == TRIGRET_RET_TRUE )
+						return true;
+					else if ( iRet == TRIGRET_RET_HALFBAKED )
+						return false;
+				}
+				else
+					DEBUG_ERR(("Couldn't run script for speech %s\n", pszName));
 			}
 			else
-				DEBUG_ERR(("Couldn't run script for speech %s\n", pszName));
+				DEBUG_ERR(("Couldn't find speech %s\n", pszName));
 		}
 		else
-			DEBUG_ERR(("Couldn't find speech %s\n", pszName));
+			DEBUG_ERR(("Couldn't find speech resource %s\n", pszName));
 	}
-	else
-		DEBUG_ERR(("Couldn't find speech resource %s\n", pszName));
 
-lbl_cchar_ontriggerspeech:
 	if ( bIsPet || !m_pPlayer )
 		return false;
 

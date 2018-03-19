@@ -1106,15 +1106,15 @@ bool CChar::CanSeeLOS_New( const CPointMap &ptDst, CPointMap *pptBlock, int iMax
 	}
 		
 	CPointMap ptSrc = GetTopPoint();
-	CPointMap ptNow(ptSrc);
+	CPointMap ptNow = ptSrc;
 
 	if ( ptSrc.m_map != ptDst.m_map )
 		return CanSeeLOS_New_Failed(pptBlock, ptNow);
 	if ( ptSrc == ptDst )
 		return true;
 
-	ptSrc.m_z = minimum(ptSrc.m_z + GetHeightMount(true), UO_SIZE_Z);	//true - substract one from the height because of eyes height
-	WARNLOS(("Total Z: %d\n", ptSrc.m_z));
+	ptSrc.m_z = minimum(ptSrc.m_z + GetHeightMount(), UO_SIZE_Z);
+	WARNLOS(("Total Z: %hhd\n", ptSrc.m_z));
 
 	int dx, dy, dz;
 	dx = ptDst.m_x - ptSrc.m_x;
@@ -1626,7 +1626,7 @@ bool CChar::CanSeeLOS( const CObjBaseTemplate *pObj, WORD wFlags ) const
 		CPointMap pt = pObj->GetTopPoint();
 		const CChar *pChar = dynamic_cast<const CChar*>(pObj);
 		if ( pChar )
-			pt.m_z = minimum(pt.m_z + pChar->GetHeightMount(true), UO_SIZE_Z);
+			pt.m_z = minimum(pt.m_z + pChar->GetHeightMount(), UO_SIZE_Z);
 		return CanSeeLOS_New(pt, NULL, GetSight(), wFlags);
 	}
 	else
