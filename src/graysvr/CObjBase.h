@@ -83,16 +83,16 @@ public:
 	void SetTriggerActive(LPCTSTR pszTrig = NULL); 
 
 public:
-	BYTE	RangeL() const
+	BYTE RangeL() const
 	{
-		CVarDefCont * pRange = GetDefKey("RANGE", true);
-		return static_cast<BYTE>((pRange ? pRange->GetValNum() : 0) & 0xff);
+		CVarDefCont *pRange = GetDefKey("RANGE", true);
+		return static_cast<BYTE>((pRange ? pRange->GetValNum() : 0) & UCHAR_MAX);
 	}
 
-	BYTE	RangeH() const
+	BYTE RangeH() const
 	{
-		CVarDefCont * pRange = GetDefKey("RANGE", true);
-		return static_cast<BYTE>(((pRange ? pRange->GetValNum() : 0)>>8) & 0xff);
+		CVarDefCont *pRange = GetDefKey("RANGE", true);
+		return static_cast<BYTE>(((pRange ? pRange->GetValNum() : 0) >> 8) & UCHAR_MAX);
 	}
 
 	CServTime GetTimeStamp() const
@@ -386,40 +386,39 @@ enum STONEALIGN_TYPE // Types of Guild/Town stones
 enum ITRIG_TYPE
 {
 	// XTRIG_UNKNOWN = some named trigger not on this list.
-	ITRIG_AfterClick=1,
-	ITRIG_Buy,
-	ITRIG_Click,
-	ITRIG_CLIENTTOOLTIP, // Sending tooltip to client for this item
+	ITRIG_AfterClick = 1,
+	ITRIG_Buy,					// Item got bought from a vendor
+	ITRIG_Click,				// Item got single clicked by someone
+	ITRIG_CLIENTTOOLTIP,		// Item tooltip got requested by someone
 	ITRIG_ContextMenuRequest,
 	ITRIG_ContextMenuSelect,
-	ITRIG_Create,		// Item is being created.
-	ITRIG_DAMAGE,		// I have been damaged in some way
-	ITRIG_DCLICK,		// I have been dclicked.
-	ITRIG_DESTROY,		//+I am nearly destroyed
-	ITRIG_DROPON_CHAR,		// I have been dropped on this char
-	ITRIG_DROPON_GROUND,		// I have been dropped on the ground here
-	ITRIG_DROPON_ITEM,		// An item has been 
-	ITRIG_DROPON_SELF,		// An item has been dropped upon me
-	ITRIG_DROPON_TRADE,		// Droping an item in a trade window
-	//ITRIG_DYE,
-	ITRIG_EQUIP,		// I have been equipped.
+	ITRIG_Create,				// Item got created (not placed in the world yet)
+	ITRIG_DAMAGE,				// Item have been damaged
+	ITRIG_DCLICK,				// Item got double clicked by someone
+	ITRIG_DESTROY,				// Item got destroyed (removed)
+	ITRIG_DROPON_CHAR,			// Item got dropped over an char
+	ITRIG_DROPON_GROUND,		// Item got dropped on ground
+	ITRIG_DROPON_ITEM,			// Item got dropped over an item
+	ITRIG_DROPON_SELF,			// Item got dropped inside an container itself
+	ITRIG_DROPON_TRADE,			// Item got dropped on trade window
+	ITRIG_EQUIP,				// Item got equipped
 	ITRIG_EQUIPTEST,
 	ITRIG_MemoryEquip,
-	ITRIG_PICKUP_GROUND,
-	ITRIG_PICKUP_PACK,	// picked up from inside some container.
-	ITRIG_PICKUP_SELF,	// picked up from this container
-	ITRIG_PICKUP_STACK,	// picked up from a stack (ARGO)
-	ITRIG_Sell,
+	ITRIG_PICKUP_GROUND,		// Item got picked up from the ground
+	ITRIG_PICKUP_PACK,			// Item got picked up from inside an container
+	ITRIG_PICKUP_SELF,			// Item got picked up from inside an container itself
+	ITRIG_PICKUP_STACK,			// Item got picked up from an stack
+	ITRIG_Sell,					// Item got sold to a vendor
 	ITRIG_Ship_Turn,
-	ITRIG_SPELLEFFECT,		// cast some spell on me.
-	ITRIG_STEP,			// I have been walked on. (or shoved)
+	ITRIG_SPELLEFFECT,			// Item got hit by a spell
+	ITRIG_STEP,					// Item got stepped by someone
 	ITRIG_TARGON_CANCEL,
 	ITRIG_TARGON_CHAR,
 	ITRIG_TARGON_GROUND,
-	ITRIG_TARGON_ITEM,	// I am being combined with an item
-	ITRIG_TIMER,		// My timer has expired.
-	ITRIG_ToolTip,
-	ITRIG_UNEQUIP,
+	ITRIG_TARGON_ITEM,
+	ITRIG_TIMER,				// Item timer got expired
+	ITRIG_ToolTip,				// Item tooltip got requested by someone
+	ITRIG_UNEQUIP,				// Item got unequipped
 	ITRIG_QTY
 };
 
@@ -2419,155 +2418,136 @@ private:
 	CCharPlayer& operator=(const CCharPlayer& other);
 };
 
-enum WAR_SWING_TYPE	// m_Act_War_Swing_State
+enum WAR_SWING_TYPE		// m_atFight.m_Swing_State
 {
 	WAR_SWING_INVALID = -1,
-	WAR_SWING_EQUIPPING = 0,	// we are recoiling our weapon.
-	WAR_SWING_READY,			// we can swing at any time.
-	WAR_SWING_SWINGING			// we are swinging our weapon.
+	WAR_SWING_EQUIPPING,		// Char is recoiling the weapon
+	WAR_SWING_READY,			// Char is ready to swing
+	WAR_SWING_SWINGING			// Char is swinging the weapon
 };
 
 enum CTRIG_TYPE
 {
-	CTRIG_AAAUNUSED		= 0,
+	CTRIG_AAAUNUSED,
 	CTRIG_AfterClick,
-	CTRIG_Attack,			// I am attacking someone (SRC)
+	CTRIG_Attack,				// Char attacked someone (SRC)
 	CTRIG_CallGuards,
-
-	CTRIG_charAttack,		// Here starts @charXXX section
+	CTRIG_charAttack,
 	CTRIG_charClick,
 	CTRIG_charClientTooltip,
 	CTRIG_charContextMenuRequest,
 	CTRIG_charContextMenuSelect,
 	CTRIG_charDClick,
 	CTRIG_charTradeAccepted,
-
-	CTRIG_Click,			// I got clicked on by someone.
-	CTRIG_ClientTooltip,	 // Sending tooltips for me to someone
-	CTRIG_CombatAdd,		// I add someone to my attacker list
-	CTRIG_CombatDelete,		// delete someone from my list
-	CTRIG_CombatEnd,		// I finished fighting
-	CTRIG_CombatStart,		// I begin fighting
+	CTRIG_Click,				// Char got single clicked by someone
+	CTRIG_ClientTooltip,		// Char tooltip got requested by someone
+	CTRIG_CombatAdd,			// Char added someone on attacker list
+	CTRIG_CombatDelete,			// Char deleted someone from attacker list
+	CTRIG_CombatEnd,			// Char had end an combat
+	CTRIG_CombatStart,			// Char had started an combat
 	CTRIG_ContextMenuRequest,
 	CTRIG_ContextMenuSelect,
-	CTRIG_Create,			// Newly created (not in the world yet)
-	CTRIG_Criminal,			// Called before someone becomes 'gray' for someone
-	CTRIG_DClick,			// Someone has dclicked on me.
-	CTRIG_Death,			//+I just got killed.
-	CTRIG_DeathCorpse,		// Corpse
-	CTRIG_Destroy,			//+I am nearly destroyed
+	CTRIG_Create,				// Char got created (not placed in the world yet)
+	CTRIG_Criminal,				// Char got flagged criminal for someone
+	CTRIG_DClick,				// Char got double clicked by someone
+	CTRIG_Death,				// Char got killed
+	CTRIG_DeathCorpse,			// Char dead corpse is being created
+	CTRIG_Destroy,				// Char got destroyed (removed)
 	CTRIG_Dismount,
-	//CTRIG_DYE,
 	CTRIG_Eat,
 	CTRIG_EffectAdd,
-	CTRIG_EnvironChange,	// my environment changed somehow (light,weather,season,region)
-	CTRIG_ExpChange,		// EXP is going to change
-	CTRIG_ExpLevelChange,	// Experience LEVEL is going to change
-
-	CTRIG_FameChange,		// Fame chaged
-
-	CTRIG_FollowersUpdate,	// Adding or removing CurFollowers.
-
-	CTRIG_GetHit,			// I just got hit.
-	CTRIG_Hit,				// I just hit someone. (TARG)
+	CTRIG_EnvironChange,		// Char environment has changed (region, light, weather, season)
+	CTRIG_ExpChange,			// Char EXP got changed
+	CTRIG_ExpLevelChange,		// Char LEVEL got changed
+	CTRIG_FameChange,			// Char FAME got changed
+	CTRIG_FollowersUpdate,		// Char CURFOLLOWER got changed
+	CTRIG_GetHit,				// Char got hit by someone
+	CTRIG_Hit,					// Char hit someone
 	CTRIG_HitCheck,
 	CTRIG_HitIgnore,
-	CTRIG_HitMiss,			// I just missed.
-	CTRIG_HitTry,			// I am trying to hit someone. starting swing.,
-	CTRIG_HouseDesignCommit,	// I committed a new house design
-	CTRIG_HouseDesignExit,	// I exited house design mode
-
+	CTRIG_HitMiss,
+	CTRIG_HitTry,				// Char is trying to hit someone
+	CTRIG_HouseDesignCommit,	// Char committed a new house design
+	CTRIG_HouseDesignExit,		// Char exited house design mode
 	CTRIG_itemAfterClick,
 	CTRIG_itemBuy,
-	CTRIG_itemClick,		// I clicked on an item
+	CTRIG_itemClick,			// Char single clicked an item
 	CTRIG_itemClientTooltip,
 	CTRIG_itemContextMenuRequest,
 	CTRIG_itemContextMenuSelect,
-	CTRIG_itemCreate,		//?
-	CTRIG_itemDamage,		//?
-	CTRIG_itemDCLICK,		// I have dclicked item
-	CTRIG_itemDestroy,		//+Item is nearly destroyed
-	CTRIG_itemDROPON_CHAR,		// I have been dropped on this char
-	CTRIG_itemDROPON_GROUND,	// I dropped an item on the ground
-	CTRIG_itemDROPON_ITEM,		// I have been dropped on this item
-	CTRIG_itemDROPON_SELF,		// I have been dropped on this item
-	CTRIG_itemDROPON_TRADE,
-	CTRIG_itemEQUIP,		// I have equipped an item
+	CTRIG_itemCreate,
+	CTRIG_itemDamage,
+	CTRIG_itemDCLICK,			// Char double clicked an item
+	CTRIG_itemDestroy,			// Char destroyed an item
+	CTRIG_itemDROPON_CHAR,		// Char dropped an item over an char
+	CTRIG_itemDROPON_GROUND,	// Char dropped an item on ground
+	CTRIG_itemDROPON_ITEM,		// Char dropped an item over an item
+	CTRIG_itemDROPON_SELF,		// Char dropped an item inside an container itself
+	CTRIG_itemDROPON_TRADE,		// Char dropped an item on trade window
+	CTRIG_itemEQUIP,			// Char equipped an item
 	CTRIG_itemEQUIPTEST,
 	CTRIG_itemMemoryEquip,
-	CTRIG_itemPICKUP_GROUND,
-	CTRIG_itemPICKUP_PACK,	// picked up from inside some container.
-	CTRIG_itemPICKUP_SELF,	// picked up from this (ACT) container.
-	CTRIG_itemPICKUP_STACK,	// was picked up from a stack
+	CTRIG_itemPICKUP_GROUND,	// Char picked up an item on the ground
+	CTRIG_itemPICKUP_PACK,		// Char picked up an item inside an container
+	CTRIG_itemPICKUP_SELF,		// Char picked up an item inside an container itself
+	CTRIG_itemPICKUP_STACK,		// Char picked up an item from an stack
 	CTRIG_itemSell,
-	CTRIG_itemSPELL,		// cast some spell on the item.
-	CTRIG_itemSTEP,			// stepped on an item
+	CTRIG_itemSPELL,			// Char casted an spell on an item
+	CTRIG_itemSTEP,				// Char stepped on an item
 	CTRIG_itemTARGON_CANCEL,
 	CTRIG_itemTARGON_CHAR,
 	CTRIG_itemTARGON_GROUND,
-	CTRIG_itemTARGON_ITEM,	// I am being combined with an item
-	CTRIG_itemTimer,		//?
-	CTRIG_itemToolTip,		// Did tool tips on an item
-	CTRIG_itemUNEQUIP,		// i have unequipped (or try to unequip) an item
-
-	CTRIG_Jailed,			// I'm up to be send to jail, or to be forgiven
-
-	CTRIG_KarmaChange,			// Karma chaged
-
-	CTRIG_Kill,				//+I have just killed someone
-	CTRIG_LogIn,			// Client logs in
-	CTRIG_LogOut,			// Client logs out (21)
+	CTRIG_itemTARGON_ITEM,
+	CTRIG_itemTimer,
+	CTRIG_itemToolTip,			// Char requested an item tooltip
+	CTRIG_itemUNEQUIP,			// Char unequipped an item
+	CTRIG_Jailed,				// Char got jailed/forgived
+	CTRIG_KarmaChange,			// Char KARMA got changed
+	CTRIG_Kill,					// Char killed someone
+	CTRIG_LogIn,				// Char client is logging in
+	CTRIG_LogOut,				// Char client is logging out
 	CTRIG_Mount,
-	CTRIG_MurderDecay,		// I have decayed one of my kills
-	CTRIG_MurderMark,		// I am gonna to be marked as a murder
-	CTRIG_NotoSend,			// sending notoriety
-
-	CTRIG_NPCAcceptItem,		// (NPC only) i've been given an item i like (according to DESIRES)
+	CTRIG_MurderDecay,			// Char got an murder count (KILL) decayed
+	CTRIG_MurderMark,			// Char got flagged as murderer
+	CTRIG_NotoSend,				// Char notoriety got requested by someone
+	CTRIG_NPCAcceptItem,		// NPC accepted an item given by someone (according to DESIRES)
 	CTRIG_NPCActFight,
-	CTRIG_NPCActFollow,		// (NPC only) decided to follow someone
+	CTRIG_NPCActFollow,			// NPC decided to follow someone
 	CTRIG_NPCAction,
-	CTRIG_NPCHearGreeting,		// (NPC only) i have been spoken to for the first time. (no memory of previous hearing)
-	CTRIG_NPCHearUnknown,		//+(NPC only) I heard something i don't understand.
-	CTRIG_NPCLookAtChar,		//
-	CTRIG_NPCLookAtItem,		//
-	CTRIG_NPCLostTeleport,		//+(NPC only) ready to teleport back to spawn
-	CTRIG_NPCRefuseItem,		// (NPC only) i've been given an item i don't want.
-	CTRIG_NPCRestock,			// (NPC only) 
-	CTRIG_NPCSeeNewPlayer,		//+(NPC only) i see u for the first time. (in 20 minutes) (check memory time)
-	CTRIG_NPCSeeWantItem,		// (NPC only) i see something good.
+	CTRIG_NPCHearGreeting,		// NPC heared someone for the first time
+	CTRIG_NPCHearUnknown,		// NPC heared something that it doesn't understand
+	CTRIG_NPCLookAtChar,
+	CTRIG_NPCLookAtItem,
+	CTRIG_NPCLostTeleport,		// NPC got teleported back to spawn point after walk too far
+	CTRIG_NPCRefuseItem,		// NPC refused an item given by someone
+	CTRIG_NPCRestock,
+	CTRIG_NPCSeeNewPlayer,		// NPC saw an new player for the first time
+	CTRIG_NPCSeeWantItem,		// NPC saw an wanted item when looting corpses
 	CTRIG_NPCSpecialAction,
-	
-	CTRIG_PartyDisband,			//I just disbanded my party
-	CTRIG_PartyInvite,			//SRC invited me to join a party, so I may chose
-	CTRIG_PartyLeave,
-	CTRIG_PartyRemove,			//I have ben removed from the party by SRC
-
-	CTRIG_PersonalSpace,	//+i just got stepped on.
-	CTRIG_PetDesert,
-	CTRIG_Profile,			// someone hit the profile button for me.
-	CTRIG_ReceiveItem,		// I was just handed an item (Not yet checked if i want it)
-	CTRIG_RegenStat,		// Hits/mana/stam/food regeneration
-
+	CTRIG_PartyDisband,			// Char disbanded his party
+	CTRIG_PartyInvite,			// Char invited someone to join his party
+	CTRIG_PartyLeave,			// Char had left an party
+	CTRIG_PartyRemove,			// Char got removed from an party
+	CTRIG_PersonalSpace,		// Char got stepped by someone
+	CTRIG_PetDesert,			// NPC deserted his master after get attacked by him or get starving for too long
+	CTRIG_Profile,				// Char profile got requested by someone
+	CTRIG_ReceiveItem,			// NPC is receiving an item from someone
+	CTRIG_RegenStat,			// Char stats got regenerated (hits, mana, stam, food)
 	CTRIG_RegionEnter,
 	CTRIG_RegionLeave,
-	CTRIG_RegionResourceFound,	// I just discovered a resource
-	CTRIG_RegionResourceGather,
-
-	CTRIG_Rename,			// Changing my name or pets one
-
-	CTRIG_Resurrect,		// I'm going to resurrect via function or spell.
-
-	CTRIG_SeeCrime,			// I am seeing a crime
-	CTRIG_SeeHidden,		// I'm about to see a hidden char
-	CTRIG_SeeSnoop,			// I see someone Snooping something.
-
-	// SKTRIG_QTY
+	CTRIG_RegionResourceFound,	// Char found an resource using an gathering skill
+	CTRIG_RegionResourceGather,	// Char gathered an resource using an gathering skill
+	CTRIG_Rename,				// Char got renamed
+	CTRIG_Resurrect,			// Char got resurrected
+	CTRIG_SeeCrime,				// Char saw someone nearby committing a crime
+	CTRIG_SeeHidden,			// Char saw someone hidden
+	CTRIG_SeeSnoop,				// Char saw someone nearby snooping an item
 	CTRIG_SkillAbort,			// SKTRIG_ABORT
 	CTRIG_SkillChange,
 	CTRIG_SkillFail,			// SKTRIG_FAIL
 	CTRIG_SkillGain,			// SKTRIG_GAIN
 	CTRIG_SkillMakeItem,
-	CTRIG_SkillMemu,
+	CTRIG_SkillMenu,
 	CTRIG_SkillPreStart,		// SKTRIG_PRESTART
 	CTRIG_SkillSelect,			// SKTRIG_SELECT
 	CTRIG_SkillStart,			// SKTRIG_START
@@ -2576,24 +2556,21 @@ enum CTRIG_TYPE
 	CTRIG_SkillTargetCancel,	// SKTRIG_TARGETCANCEL
 	CTRIG_SkillUseQuick,		// SKTRIG_USEQUICK
 	CTRIG_SkillWait,			// SKTRIG_WAIT
-
-	CTRIG_SpellBook,
-	CTRIG_SpellCast,		//+Char is casting a spell.
-	CTRIG_SpellEffect,		//+A spell just hit me.
-	CTRIG_SpellFail,		// The spell failed
-	CTRIG_SpellSelect,		// selected a spell
-	CTRIG_SpellSuccess,		// The spell succeeded
-	CTRIG_SpellTargetCancel,	//  cancelled spell target
-	CTRIG_StatChange,
-	CTRIG_StepStealth,		//+Made a step while being in stealth 
-	CTRIG_Targon_Cancel,		// Cancel target from TARGETF
-	CTRIG_ToggleFlying,
-	CTRIG_ToolTip,			// someone did tool tips on me.
-	CTRIG_TradeAccepted,	// Everything went well, and we are about to exchange trade items
-	CTRIG_TradeClose,		// Fired when a Trade Window is being deleted, no returns
-	CTRIG_TradeCreate,		// Trade window is going to be created
-
-	// Packet related triggers
+	CTRIG_SpellBook,			// Char opened a spellbook
+	CTRIG_SpellCast,			// Char casted a spell
+	CTRIG_SpellEffect,			// Char got hit by a spell
+	CTRIG_SpellFail,			// Char failed an spell cast
+	CTRIG_SpellSelect,			// Char selected a spell to cast
+	CTRIG_SpellSuccess,			// Char succeeded an spell cast
+	CTRIG_SpellTargetCancel,	// Char cancelled spell target
+	CTRIG_StatChange,			// Char stats got changed (STR/hits, INT/mana, DEX/stam, food)
+	CTRIG_StepStealth,			// Char is walking/running while hidden
+	CTRIG_Targon_Cancel,		// Char cancelled current TARGETF
+	CTRIG_ToggleFlying,			// Char toggled flying mode (gargoyle only)
+	CTRIG_ToolTip,				// Char tooltip got requested by someone
+	CTRIG_TradeAccepted,		// Char accepted a trade window
+	CTRIG_TradeClose,			// Char closed a trade window
+	CTRIG_TradeCreate,			// Char created a trade window
 	CTRIG_UserBugReport,
 	CTRIG_UserChatButton,
 	CTRIG_UserExtCmd,
@@ -2609,8 +2586,7 @@ enum CTRIG_TYPE
 	CTRIG_UserVirtue,
 	CTRIG_UserVirtueInvoke,
 	CTRIG_UserWarmode,
-
-	CTRIG_QTY				// 130
+	CTRIG_QTY
 };
 
 class CPartyDef;
@@ -2845,9 +2821,9 @@ public:
 	};
 
 public:
-	CChar( CREID_TYPE id );
-	virtual ~CChar(); // Delete character
-	bool DupeFrom( CChar * pChar, bool fNewbieItems);
+	CChar(CREID_TYPE id);
+	virtual ~CChar();
+	bool DupeFrom(CChar *pChar, bool fNewbieItems);
 
 private:
 	CChar(const CChar& copy);
@@ -2857,7 +2833,7 @@ public:
 	// Status and attributes ------------------------------------
 	int IsWeird() const;
 	signed char GetFixZ(CPointMap pt, DWORD dwBlockFlags = 0);
-	virtual void Delete(bool bforce = false, CClient *pClient = NULL);
+	virtual void Delete(bool bForce = false, CClient *pClient = NULL);
 	virtual bool NotifyDelete(CClient *pClient = NULL);
 	bool IsStatFlag( DWORD dwStatFlag ) const
 	{
@@ -2977,11 +2953,11 @@ public:
 		ASSERT(pCharDef);
 		return pCharDef->GetDispID();
 	}
-	void SetID( CREID_TYPE id );
+	void SetID(CREID_TYPE id);
 
 	LPCTSTR GetName() const
 	{
-		return GetName( true );
+		return GetName(true);
 	}
 
 	LPCTSTR GetNameWithoutIncognito() const
@@ -3016,8 +2992,8 @@ public:
 		return CObjBase::GetName();
 	}
 
-	bool SetName( LPCTSTR pszName );
-	height_t GetHeightMount( bool fEyeSubstract = false ) const;
+	bool SetName(LPCTSTR pszName);
+	height_t GetHeightMount() const;
 	height_t GetHeight() const;
 
 	bool CanSeeAsDead( const CChar * pChar = NULL ) const;
@@ -3240,7 +3216,7 @@ public:
 		}
 
 		if ( IsStatFlag(STATF_Fly) )
-			dir |= 0x80;	// running/flying ?
+			dir |= 0x80;	// running/flying
 		
 		return dir;
 	}
@@ -3248,7 +3224,7 @@ public:
 	{
 		// What things block us ?
 		if ( !bIgnoreGM && IsPriv(PRIV_GM|PRIV_ALLMOVE) )	// nothing blocks us.
-			return 0xFFFF;
+			return ULONG_MAX;
 
 		DWORD dwCan = m_Can;
 		CCharBase *pCharDef = Char_GetDef();
@@ -3312,14 +3288,14 @@ public:
 public:
 	// Load/Save----------------------------------
 
-	virtual bool r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef );
-	virtual bool r_Verb( CScript & s, CTextConsole * pSrc );
-	virtual bool r_LoadVal( CScript & s );
-	virtual bool r_Load( CScript & s );  // Load a character from Script
-	virtual bool r_WriteVal( LPCTSTR pszKey, CGString & s, CTextConsole * pSrc = NULL );
-	virtual void r_Write( CScript & s );
+	virtual bool r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef);
+	virtual bool r_Verb(CScript &s, CTextConsole *pSrc);
+	virtual bool r_LoadVal(CScript &s);
+	virtual bool r_Load(CScript &s);
+	virtual bool r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc = NULL);
+	virtual void r_Write(CScript &s);
 
-	void r_WriteParity( CScript & s );	
+	void r_WriteParity(CScript &s);
 
 	TRIGRET_TYPE OnTrigger( CTRIG_TYPE trigger, CTextConsole * pSrc, CScriptTriggerArgs * pArgs = NULL )
 	{
@@ -3539,11 +3515,11 @@ public:
 	*
 	* Main function for default Level system.
 	* Triggers @ExpChange and @LevelChange if needed
-	* @param delta, amount of exp gaining (or losing?)
-	* @param ppCharDead from who we gained the experience.
+	* @param iDelta, amount of exp gaining (or losing?)
+	* @param pCharDead from who we gained the experience.
 	*/
-	void ChangeExperience(int delta = 0, CChar *pCharDead = NULL);
-	WORD GetSkillTotal(int what = 0, bool how = true);
+	void ChangeExperience(int iDelta = 0, CChar *pCharDead = NULL);
+	WORD GetSkillTotal(int iWhat = 0, bool iHow = true);
 
 	// skills and actions. -------------------------------------------
 	static bool IsSkillBase( SKILL_TYPE skill );
@@ -3577,7 +3553,7 @@ public:
 	*/
 	bool Skill_CanUse( SKILL_TYPE skill );
 
-	void Skill_SetBase( SKILL_TYPE skill, WORD iValue );
+	void Skill_SetBase( SKILL_TYPE skill, WORD wValue );
 	bool Skill_UseQuick( SKILL_TYPE skill, int difficulty, bool bAllowGain = true, bool bUseBellCurve = true );
 
 	bool Skill_CheckSuccess( SKILL_TYPE skill, int difficulty, bool bUseBellCurve = true ) const;
@@ -3767,9 +3743,9 @@ public:
 
 	//
 	bool Player_OnVerb( CScript &s, CTextConsole * pSrc );
-	bool ReadScriptTrig(CCharBase * pCharDef, CTRIG_TYPE trig, bool bVendor = false);
+	bool ReadScriptTrig(CCharBase *pCharDef, CTRIG_TYPE trig, bool bVendor = false);
 	bool ReadScript(CResourceLock &s, bool bVendor = false);
-	void NPC_LoadScript( bool fRestock );
+	void NPC_LoadScript(bool fRestock);
 	void NPC_CreateTrigger();
 
 	// Mounting and figurines
@@ -3983,7 +3959,7 @@ public:
 	void OnTickStatusUpdate();
 	bool OnTick();
 
-	static CChar *CreateBasic(CREID_TYPE baseID);
+	static CChar *CreateBasic(CREID_TYPE id);
 	static CChar *CreateNPC(CREID_TYPE id);
 };
 
