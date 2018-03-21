@@ -7,6 +7,7 @@ graysvr/CBase.h
 graysvr/CCharAct.cpp
 graysvr/CCharBase.cpp
 graysvr/CChar.cpp
+graysvr/CChar.h
 graysvr/CCharFight.cpp
 graysvr/CCharNPCAct.cpp
 graysvr/CCharNPC.cpp
