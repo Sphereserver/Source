@@ -104,7 +104,7 @@ bool CObjBase::IsContainer() const
 	return (dynamic_cast<const CContainer *>(this) != NULL);
 }
 
-void CObjBase::SetHue(HUE_TYPE wHue, bool bAvoidTrigger, CTextConsole *pSrc, CObjBase *SourceObj, long long sound)
+void CObjBase::SetHue(HUE_TYPE wHue, bool bAvoidTrigger, CTextConsole *pSrc, CObjBase *pObj, SOUND_TYPE wSound)
 {
 	ADDTOCALLSTACK("CObjBase::SetHue");
 	if ( g_Serv.IsLoading() )	// we do not want tons of @Dye being called during world load, just set the hue then continue...
@@ -115,7 +115,7 @@ void CObjBase::SetHue(HUE_TYPE wHue, bool bAvoidTrigger, CTextConsole *pSrc, COb
 
 	CScriptTriggerArgs args;
 	args.m_iN1 = wHue;
-	args.m_iN2 = sound;
+	args.m_iN2 = wSound;
 
 	/*	@Dye is now more universal, it is called on EVERY CObjBase color change.
 		Sanity checks are recommended and if possible, avoid using it on universal events.
@@ -130,8 +130,8 @@ void CObjBase::SetHue(HUE_TYPE wHue, bool bAvoidTrigger, CTextConsole *pSrc, COb
 
 	if ( IsTrigUsed("@Dye") && !bAvoidTrigger )
 	{
-		if ( SourceObj )
-			args.m_pO1 = SourceObj;
+		if ( pObj )
+			args.m_pO1 = pObj;
 		if ( OnTrigger("@Dye", pSrc, &args) == TRIGRET_RET_TRUE )
 			return;
 	}
@@ -146,7 +146,7 @@ void CObjBase::SetHue(HUE_TYPE wHue, bool bAvoidTrigger, CTextConsole *pSrc, COb
 		// When changing body hue, check if face hue must be changed too
 		CItem *pFace = static_cast<CChar *>(this)->LayerFind(LAYER_FACE);
 		if ( pFace )
-			pFace->SetHue(m_wHue, bAvoidTrigger, pSrc, SourceObj);
+			pFace->SetHue(m_wHue, bAvoidTrigger, pSrc, pObj);
 	}
 }
 
@@ -187,11 +187,11 @@ void CObjBase::SetUID(DWORD dwIndex, bool fItem)
 	CObjBaseTemplate::SetUID(dwIndex);
 }
 
-void inline CObjBase::SetNamePool_Fail(TCHAR *ppTitles)
+void inline CObjBase::SetNamePool_Fail(TCHAR *pszTitles)
 {
 	ADDTOCALLSTACK("CObjBase::SetNamePool_Fail");
-	DEBUG_ERR(("Name pool '%s' could not be found\n", ppTitles));
-	CObjBase::SetName(ppTitles);
+	DEBUG_ERR(("Name pool '%s' could not be found\n", pszTitles));
+	CObjBase::SetName(pszTitles);
 }
 
 bool CObjBase::SetNamePool(LPCTSTR pszName)
@@ -260,7 +260,7 @@ bool CObjBase::SetNamePool(LPCTSTR pszName)
 	return true;
 }
 
-bool CObjBase::MoveNearObj(const CObjBaseTemplate *pObj, WORD iSteps)
+bool CObjBase::MoveNearObj(const CObjBaseTemplate *pObj, WORD wSteps)
 {
 	ADDTOCALLSTACK("CObjBase::MoveNearObj");
 	ASSERT(pObj);
@@ -268,7 +268,7 @@ bool CObjBase::MoveNearObj(const CObjBaseTemplate *pObj, WORD iSteps)
 		return false;
 
 	pObj = pObj->GetTopLevelObj();
-	return MoveNear(pObj->GetTopPoint(), iSteps);
+	return MoveNear(pObj->GetTopPoint(), wSteps);
 }
 
 void CObjBase::r_WriteSafe(CScript &s)
@@ -460,7 +460,7 @@ void CObjBase::SpeakUTF8Ex(const NWORD *pText, HUE_TYPE wHue, TALKMODE_TYPE mode
 	g_World.SpeakUNICODE(this, pText, wHue, mode, font, lang);
 }
 
-bool CObjBase::MoveNear(CPointMap pt, WORD iSteps)
+bool CObjBase::MoveNear(CPointMap pt, WORD wSteps)
 {
 	ADDTOCALLSTACK("CObjBase::MoveNear");
 	// Move to nearby this other object.
@@ -472,8 +472,8 @@ bool CObjBase::MoveNear(CPointMap pt, WORD iSteps)
 	for ( WORD i = 0; i < 20; i++ )
 	{
 		pt = ptOld;
-		pt.m_x += static_cast<signed short>(Calc_GetRandVal2(-iSteps, iSteps));
-		pt.m_y += static_cast<signed short>(Calc_GetRandVal2(-iSteps, iSteps));
+		pt.m_x += static_cast<signed short>(Calc_GetRandVal2(-wSteps, wSteps));
+		pt.m_y += static_cast<signed short>(Calc_GetRandVal2(-wSteps, wSteps));
 
 		if ( !MoveTo(pt) )
 			continue;
@@ -2577,16 +2577,16 @@ void CObjBase::ResendOnEquip(bool fAllClients)
 	}
 }
 
-void CObjBase::SetPropertyList(PacketPropertyList *propertyList)
+void CObjBase::SetPropertyList(PacketPropertyList *pPropertyList)
 {
 	ADDTOCALLSTACK("CObjBase::SetPropertyList");
 	// set the property list for this object
 
-	if ( propertyList == GetPropertyList() )
+	if ( pPropertyList == GetPropertyList() )
 		return;
 
 	FreePropertyList();
-	m_PropertyList = propertyList;
+	m_PropertyList = pPropertyList;
 }
 
 void CObjBase::FreePropertyList()
@@ -2601,24 +2601,24 @@ void CObjBase::FreePropertyList()
 	m_PropertyList = NULL;
 }
 
-DWORD CObjBase::UpdatePropertyRevision(DWORD hash)
+DWORD CObjBase::UpdatePropertyRevision(DWORD dwHash)
 {
 	ADDTOCALLSTACK("CObjBase::UpdatePropertyRevision");
 
-	if ( hash != m_PropertyHash )
+	if ( dwHash != m_PropertyHash )
 	{
 		// the property list has changed, increment the revision number
-		m_PropertyHash = hash;
+		m_PropertyHash = dwHash;
 		m_PropertyRevision++;
 	}
 
 	return m_PropertyRevision;
 }
 
-void CObjBase::UpdatePropertyFlag(int mask)
+void CObjBase::UpdatePropertyFlag(int iMask)
 {
 	ADDTOCALLSTACK("CObjBase::UpdatePropertyFlag");
-	if ( g_Serv.IsLoading() || ((g_Cfg.m_iAutoTooltipResend & mask) == 0) )
+	if ( g_Serv.IsLoading() || ((g_Cfg.m_iAutoTooltipResend & iMask) == 0) )
 		return;
 
 	m_fStatusUpdate |= SU_UPDATE_TOOLTIP;
@@ -2693,10 +2693,10 @@ void CObjBase::SetTriggerActive(LPCTSTR trig)
 	m_RunningTrigger = trig ? trig : NULL;
 }
 
-void CObjBase::Delete(bool bforce)
+void CObjBase::Delete(bool bForce)
 {
 	ADDTOCALLSTACK("CObjBase::Delete");
-	UNREFERENCED_PARAMETER(bforce);		// CObjBase doesnt use it, but CItem and CChar does use it, do not remove
+	UNREFERENCED_PARAMETER(bForce);		// CObjBase doesnt use it, but CItem and CChar does use it, do not remove
 
 	if ( m_uidSpawnItem.ItemFind() )
 		static_cast<CItemSpawn *>(m_uidSpawnItem.ItemFind())->DelObj(GetUID());
@@ -2723,12 +2723,12 @@ TRIGRET_TYPE CObjBase::Spell_OnTrigger(SPELL_TYPE spell, SPTRIG_TYPE stage, CCha
 	return TRIGRET_RET_DEFAULT;
 }
 
-inline bool CObjBase::CallPersonalTrigger(TCHAR *pArgs, CTextConsole *pSrc, TRIGRET_TYPE &trResult, bool bFull)
+inline bool CObjBase::CallPersonalTrigger(TCHAR *pszArgs, CTextConsole *pSrc, TRIGRET_TYPE &trResult, bool bFull)
 {
 	ADDTOCALLSTACK("CObjBase::CallPersonalTrigger");
 	UNREFERENCED_PARAMETER(bFull);
 	TCHAR *ppCmdTrigger[3];
-	size_t iResultArgs = Str_ParseCmds(pArgs, ppCmdTrigger, COUNTOF(ppCmdTrigger), ",");
+	size_t iResultArgs = Str_ParseCmds(pszArgs, ppCmdTrigger, COUNTOF(ppCmdTrigger), ",");
 	if ( iResultArgs > 0 )
 	{
 		LPCTSTR callTrigger = ppCmdTrigger[0];

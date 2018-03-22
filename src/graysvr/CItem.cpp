@@ -83,10 +83,10 @@ bool CItem::NotifyDelete()
 	return true;
 }
 
-void CItem::Delete(bool bforce)
+void CItem::Delete(bool bForce)
 {
 
-	if ( !NotifyDelete() && !bforce )
+	if ( !NotifyDelete() && !bForce )
 		return;
 
 	// Remove corpse map waypoint on enhanced clients
@@ -319,13 +319,13 @@ CItem * CItem::GenerateScript( CChar * pSrc)
 	return this;
 }
 
-CItem * CItem::CreateHeader( TCHAR * pArg, CObjBase * pCont, bool fDupeCheck, CChar * pSrc )
+CItem * CItem::CreateHeader( TCHAR * pszArg, CObjBase * pCont, bool fDupeCheck, CChar * pSrc )
 {
 	ADDTOCALLSTACK("CItem::CreateHeader");
 	// Just read info on a single item carryed by a CChar.
 	// ITEM=#id,#amount,R#chance
 
-	RESOURCE_ID rid = g_Cfg.ResourceGetID( RES_ITEMDEF, const_cast<LPCTSTR &>(reinterpret_cast<LPTSTR &>(pArg)) );
+	RESOURCE_ID rid = g_Cfg.ResourceGetID( RES_ITEMDEF, const_cast<LPCTSTR &>(reinterpret_cast<LPTSTR &>(pszArg)) );
 	if ( ! rid.IsValidUID())
 		return( NULL );
 	if ( rid.GetResType() != RES_ITEMDEF && rid.GetResType() != RES_TEMPLATE )
@@ -333,23 +333,23 @@ CItem * CItem::CreateHeader( TCHAR * pArg, CObjBase * pCont, bool fDupeCheck, CC
 	if ( rid.GetResIndex() == 0 )
 		return( NULL );
 
-	WORD amount = 1;
-	if ( Str_Parse( pArg, &pArg ))
+	WORD wAmount = 1;
+	if ( Str_Parse( pszArg, &pszArg ))
 	{
-		if ( pArg[0] != 'R' )
+		if ( pszArg[0] != 'R' )
 		{
-			amount = static_cast<WORD>(Exp_GetVal(pArg));
-			Str_Parse( pArg, &pArg );
+			wAmount = static_cast<WORD>(Exp_GetVal(pszArg));
+			Str_Parse( pszArg, &pszArg );
 		}
-		if ( pArg[0] == 'R' )
+		if ( pszArg[0] == 'R' )
 		{
 			// 1 in x chance of creating this.
-			if ( Calc_GetRandVal( ATOI( pArg+1 )))
+			if ( Calc_GetRandVal( ATOI( pszArg+1 )))
 				return( NULL );	// don't create it
 		}
 	}
 
-	if ( amount == 0 )
+	if ( wAmount == 0 )
 		return( NULL );
 
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
@@ -378,10 +378,8 @@ CItem * CItem::CreateHeader( TCHAR * pArg, CObjBase * pCont, bool fDupeCheck, CC
 			return( NULL );
 		}
 
-		if ( amount != 1 )
-		{
-			pItem->SetAmount( amount );
-		}
+		if ( wAmount != 1 )
+			pItem->SetAmount(wAmount);
 
 		// Items should have their container set after their amount to
 		// avoid stacking issues.
@@ -931,7 +929,7 @@ int CItem::FixWeirdness()
 	return IsWeird();
 }
 
-CItem * CItem::UnStackSplit( WORD amount, CChar * pCharSrc )
+CItem * CItem::UnStackSplit( WORD wAmount, CChar * pCharSrc )
 {
 	ADDTOCALLSTACK("CItem::UnStackSplit");
 	// Set this item to have this amount.
@@ -942,13 +940,13 @@ CItem * CItem::UnStackSplit( WORD amount, CChar * pCharSrc )
 	// RETURN: 
 	//  The newly created item.
 
-	if ( amount >= GetAmount() )
+	if ( wAmount >= GetAmount() )
 		return( NULL );
 
 	ASSERT( amount <= GetAmount());
 	CItem * pItemNew = CreateDupeItem( this );
-	pItemNew->SetAmount( GetAmount() - amount );
-	SetAmountUpdate( amount );
+	pItemNew->SetAmount( GetAmount() - wAmount );
+	SetAmountUpdate( wAmount );
 
 	if ( ! pItemNew->MoveNearObj( this ))
 	{
@@ -1296,7 +1294,7 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 	return true;
 }
 
-bool CItem::MoveNearObj( const CObjBaseTemplate *pObj, WORD iSteps )
+bool CItem::MoveNearObj( const CObjBaseTemplate *pObj, WORD wSteps )
 {
 	ADDTOCALLSTACK("CItem::MoveNearObj");
 	// Put in the same container as another item.
@@ -1311,7 +1309,7 @@ bool CItem::MoveNearObj( const CObjBaseTemplate *pObj, WORD iSteps )
 	else 
 	{
 		// Equipped or on the ground so put on ground nearby.
-		return CObjBase::MoveNearObj(pObj, iSteps);
+		return CObjBase::MoveNearObj(pObj, wSteps);
 	}
 }
 
@@ -1378,8 +1376,8 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 	CItemBase * pItemDef = Item_GetDef();
 	ASSERT(pItemDef);
 
-	bool fSingular = (GetAmount()==1 || IsType(IT_CORPSE));
-	if (fSingular) // m_corpse_DispID is m_amount
+	bool fSingular = ((GetAmount() == 1) || IsType(IT_CORPSE));
+	if (fSingular)
 	{
 		if ( ! IsIndividualName())
 			len += strcpylen( pTemp+len, pItemDef->GetArticleAndSpace());
@@ -1697,17 +1695,17 @@ bool CItem::SetDispID( ITEMID_TYPE id )
 	return( true );
 }
 
-void CItem::SetAmount( WORD amount )
+void CItem::SetAmount( WORD wAmount )
 {
 	ADDTOCALLSTACK("CItem::SetAmount");
 	// propagate the weight change.
 	// Setting to 0 might be legal if we are deleteing it ?
 
-	WORD oldamount = GetAmount();
-	if ( oldamount == amount )
+	WORD wAmountOld = GetAmount();
+	if ( wAmountOld == wAmount )
 		return;
 
-	m_amount = amount;
+	m_amount = wAmount;
 	// sometimes the diff graphics for the types are not in the client.
 	if ( IsType(IT_ORE))
 	{
@@ -1725,7 +1723,7 @@ void CItem::SetAmount( WORD amount )
 	if (pParentCont)
 	{
 		ASSERT( IsItemEquipped() || IsItemInContainer());
-		pParentCont->OnWeightChange(GetWeight(amount) - GetWeight(oldamount));
+		pParentCont->OnWeightChange(GetWeight(wAmount) - GetWeight(wAmountOld));
 	}
 	
 	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_AMOUNT);
@@ -1742,24 +1740,25 @@ WORD CItem::GetMaxAmount()
 	return pMax ? static_cast<WORD>(pMax->GetValNum()) : g_Cfg.m_iItemsMaxAmount;
 };
 
-bool CItem::SetMaxAmount(WORD amount)
+bool CItem::SetMaxAmount(WORD wAmount)
 {
 	ADDTOCALLSTACK("CItem::SetMaxAmount");
 	if (!IsStackableType())
 		return false;
 
-	if (amount > USHRT_MAX)
-		amount = USHRT_MAX;
-	SetDefNum("MaxAmount", amount);
+	if (wAmount > USHRT_MAX)
+		wAmount = USHRT_MAX;
+	SetDefNum("MaxAmount", wAmount);
 	return true;
 }
 
-void CItem::SetAmountUpdate( WORD amount )
+void CItem::SetAmountUpdate(WORD wAmount)
 {
 	ADDTOCALLSTACK("CItem::SetAmountUpdate");
-	WORD oldamount = GetAmount();
-	SetAmount(amount);
-	if ( oldamount < 5 || amount < 5 )	// beyond this make no visual diff
+	WORD wAmountOld = GetAmount();
+	SetAmount(wAmount);
+
+	if ( (wAmountOld < 5) || (wAmount < 5) )	// beyond this make no visual diff
 		RemoveFromView();		// strange client thing, you have to remove before it will update this
 	Update();
 }
@@ -3290,20 +3289,20 @@ void CItem::ConvertBolttoCloth()
 	}
 }
 
-DWORD CItem::ConsumeAmount( DWORD iQty, bool fTest )
+DWORD CItem::ConsumeAmount( DWORD dwQty, bool fTest )
 {
 	ADDTOCALLSTACK("CItem::ConsumeAmount");
 	// Eat or drink specific item. delete it when gone.
 	// return: the amount we used.
 	if ( this == NULL )	// can use none if there is nothing? or can we use all?
-		return iQty;
+		return dwQty;
 
-	DWORD iQtyMax = GetAmount();
-	if ( iQty < iQtyMax )
+	DWORD dwQtyMax = GetAmount();
+	if ( dwQty < dwQtyMax )
 	{
 		if ( !fTest )
-			SetAmountUpdate(static_cast<WORD>(iQtyMax - iQty));
-		return iQty;
+			SetAmountUpdate(static_cast<WORD>(dwQtyMax - dwQty));
+		return dwQty;
 	}
 
 	if ( !fTest )
@@ -3313,7 +3312,7 @@ DWORD CItem::ConsumeAmount( DWORD iQty, bool fTest )
 			Delete();
 	}
 
-	return iQtyMax;
+	return dwQtyMax;
 }
 
 SPELL_TYPE CItem::GetScrollSpell() const
@@ -3438,7 +3437,7 @@ int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
 	return 0;
 }
 
-int CItem::AddSpellbookScroll( CItem * pScroll )
+int CItem::AddSpellbookScroll( CItem * pItem )
 {
 	ADDTOCALLSTACK("CItem::AddSpellbookScroll");
 	// Add  this scroll to the spellbook.
@@ -3447,10 +3446,10 @@ int CItem::AddSpellbookScroll( CItem * pScroll )
 	// 2 = not a scroll i know about.
 
 	ASSERT(pScroll);
-	int iRet = AddSpellbookSpell( pScroll->GetScrollSpell(), true );
+	int iRet = AddSpellbookSpell( pItem->GetScrollSpell(), true );
 	if ( iRet )
 		return( iRet );
-	pScroll->ConsumeAmount(1);	// we only need 1 scroll.
+	pItem->ConsumeAmount(1);	// we only need 1 scroll.
 	return( 0 );
 }
 
@@ -3506,10 +3505,7 @@ bool CItem::Use_Portculis()
 		return false;
 
 	CPointMap pt = GetTopPoint();
-	if ( pt.m_z == m_itPortculis.m_z1 )
-		pt.m_z = static_cast<signed char>(m_itPortculis.m_z2);
-	else
-		pt.m_z = static_cast<signed char>(m_itPortculis.m_z1);
+	pt.m_z = (pt.m_z == m_itPortculis.m_zDown) ? static_cast<signed char>(m_itPortculis.m_zUp) : static_cast<signed char>(m_itPortculis.m_zDown);
 
 	if ( pt.m_z == GetTopZ() )
 		return false;
@@ -3919,7 +3915,7 @@ SOUND_TYPE CItem::Weapon_GetSoundMiss() const
 	return SOUND_NONE;
 }
 
-void CItem::Weapon_GetRangedAmmoAnim(ITEMID_TYPE &id, DWORD &hue, DWORD &render)
+void CItem::Weapon_GetRangedAmmoAnim(ITEMID_TYPE &id, DWORD &dwHue, DWORD &dwRender)
 {
 	ADDTOCALLSTACK("CItem::Weapon_GetRangedAmmoAnim");
 	// Get animation properties of this ranged weapon (archery/throwing)
@@ -3940,11 +3936,11 @@ void CItem::Weapon_GetRangedAmmoAnim(ITEMID_TYPE &id, DWORD &hue, DWORD &render)
 
 	CVarDefCont *pVarAnimHue = GetDefKey("AMMOANIMHUE", true);
 	if ( pVarAnimHue )
-		hue = static_cast<DWORD>(pVarAnimHue->GetValNum());
+		dwHue = static_cast<DWORD>(pVarAnimHue->GetValNum());
 
 	CVarDefCont *pVarAnimRender = GetDefKey("AMMOANIMRENDER", true);
 	if ( pVarAnimRender )
-		render = static_cast<DWORD>(pVarAnimRender->GetValNum());
+		dwRender = static_cast<DWORD>(pVarAnimRender->GetValNum());
 }
 
 RESOURCE_ID_BASE CItem::Weapon_GetRangedAmmoRes()
@@ -4191,11 +4187,11 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 	return pResult;
 }
 
-LPCTSTR CItem::Use_Sextant( CPointMap pntCoords ) const
+LPCTSTR CItem::Use_Sextant(CPointMap ptCoords) const
 {
 	ADDTOCALLSTACK("CItem::Use_Sextant");
 	// IT_SEXTANT
-	return g_Cfg.Calc_MaptoSextant(pntCoords);
+	return g_Cfg.Calc_MaptoSextant(ptCoords);
 }
 
 bool CItem::Use_Light()
