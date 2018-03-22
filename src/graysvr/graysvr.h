@@ -155,6 +155,7 @@ enum RESDISPLAY_VERSION
 #include "CClient.h"
 #include "CGMPage.h"
 #include "CObjBase.h"
+#include "CItem.h"
 #include "CChar.h"
 #include "CServRef.h"
 #include "CServer.h"

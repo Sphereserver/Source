@@ -630,13 +630,6 @@ signed char CItem::GetFixZ( CPointMap pt, DWORD dwBlockFlags )
 	return block.m_Bottom.m_z;
 }
 
-CItem * CItem::SetType(IT_TYPE type)
-{
-	ADDTOCALLSTACK("CItem::SetType");
-	m_type = type;
-	return this;
-}
-
 int CItem::FixWeirdness()
 {
 	ADDTOCALLSTACK("CItem::FixWeirdness");

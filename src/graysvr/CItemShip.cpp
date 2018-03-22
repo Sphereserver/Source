@@ -7,6 +7,8 @@
 
 /////////////////////////////////////////////////////////////////////////////
 
+#define MAX_MULTI_LIST_OBJS 128
+
 CItemShip::CItemShip( ITEMID_TYPE id, CItemBase * pItemDef ) : CItemMulti( id, pItemDef )
 {
 	m_NextMove = CServTime::GetCurrentTime();
@@ -282,16 +284,12 @@ bool CItemShip::Ship_CanMoveTo( const CPointMap & pt ) const
 {
 	ADDTOCALLSTACK("CItemShip::Ship_CanMoveTo");
 	// Can we move to the new location ? all water type ?
-	if ( IsAttr(ATTR_MAGIC ))
-		return( true );
-
-	DWORD wBlockFlags = CAN_I_WATER;
-
-	g_World.GetHeightPoint2( pt, wBlockFlags, true );
-	if ( wBlockFlags & CAN_I_WATER )
+	if ( IsAttr(ATTR_MAGIC) )
 		return true;
 
-	return false;
+	DWORD dwBlockFlags = CAN_I_WATER;
+	g_World.GetHeightPoint2(pt, dwBlockFlags, true);
+	return (dwBlockFlags & CAN_I_WATER);
 }
 
 static const DIR_TYPE sm_Ship_FaceDir[] =
@@ -979,8 +977,8 @@ dodirmovechange:
 			CPointMap pt = GetTopPoint();
 			pt.m_z = zold;
 			SetTopZ( -UO_SIZE_Z );	// bottom of the world where i won't get in the way.
-			DWORD wBlockFlags = CAN_I_WATER;
-			signed char z = g_World.GetHeightPoint2( pt, wBlockFlags );
+			DWORD dwBlockFlags = CAN_I_WATER;
+			signed char z = g_World.GetHeightPoint2(pt, dwBlockFlags);
 			SetTopZ( zold );	// restore z for now.
 			pt.InitPoint();
 			pt.m_z = z - zold;
