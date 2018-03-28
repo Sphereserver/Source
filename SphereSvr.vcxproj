@@ -320,26 +320,26 @@ if defined GitRev (
     <ClInclude Include="src\common\twofish\platform.h" />
     <ClInclude Include="src\common\twofish\table.h" />
     <ClInclude Include="src\common\regex\deelx.h" />
-    <ClInclude Include="src\common\carray.h" />
+    <ClInclude Include="src\common\CArray.h" />
     <ClInclude Include="src\common\CAssoc.h" />
     <ClInclude Include="src\common\CDataBase.h" />
     <ClInclude Include="src\common\CException.h" />
     <ClInclude Include="src\common\CExpression.h" />
     <ClInclude Include="src\common\CFile.h" />
     <ClInclude Include="src\common\CFileList.h" />
-    <ClInclude Include="src\common\cgrayinst.h" />
+    <ClInclude Include="src\common\CGrayInst.h" />
     <ClInclude Include="src\common\CGrayMap.h" />
     <ClInclude Include="src\common\CMemBlock.h" />
     <ClInclude Include="src\common\common.h" />
     <ClInclude Include="src\common\CQueue.h" />
-    <ClInclude Include="src\common\crect.h" />
-    <ClInclude Include="src\common\cregion.h" />
+    <ClInclude Include="src\common\CRect.h" />
+    <ClInclude Include="src\common\CRegion.h" />
     <ClInclude Include="src\common\CResourceBase.h" />
-    <ClInclude Include="src\common\cscript.h" />
+    <ClInclude Include="src\common\CScript.h" />
     <ClInclude Include="src\common\CScriptObj.h" />
-    <ClInclude Include="src\common\cSectorTemplate.h" />
+    <ClInclude Include="src\common\CSectorTemplate.h" />
     <ClInclude Include="src\common\CSocket.h" />
-    <ClInclude Include="src\common\cstring.h" />
+    <ClInclude Include="src\common\CString.h" />
     <ClInclude Include="src\common\CTime.h" />
     <ClInclude Include="src\common\CVarDefMap.h" />
     <ClInclude Include="src\common\ListDefContMap.h" />
@@ -351,84 +351,37 @@ if defined GitRev (
     <ClInclude Include="src\common\os_windows.h" />
     <ClInclude Include="src\graysvr\resource.h" />
     <ClInclude Include="src\graysvr\UnixTerminal.h" />
-    <CustomBuild Include="src\tables\CBaseBaseDef_props.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CChar_functions.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CChar_props.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CCharBase_props.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CCharNpc_props.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CCharPlayer_props.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CClient_functions.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CClient_props.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CFile_functions.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CFile_props.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CFileObjContainer_functions.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CFileObjContainer_props.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\classnames.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CObjBase_functions.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CObjBase_props.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CParty_functions.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CParty_props.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CScriptObj_functions.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CSector_functions.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\defmessages.tbl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="src\sphere.ini">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <None Include="src\common\twofish\Makefile" />
-    <None Include="src\common\zlib\ChangeLog" />
-    <None Include="src\common\zlib\FAQ" />
-    <None Include="src\common\zlib\INDEX" />
-    <None Include="src\common\zlib\README" />
-    <None Include="src\sphereCrypt.ini" />
+    <None Include="src\tables\CBaseBaseDef_props.tbl" />
+    <None Include="src\tables\CCharBase_props.tbl" />
+    <None Include="src\tables\CCharNpc_props.tbl" />
     <None Include="src\tables\CCharPlayer_functions.tbl" />
+    <None Include="src\tables\CCharPlayer_props.tbl" />
+    <None Include="src\tables\CChar_functions.tbl" />
+    <None Include="src\tables\CChar_props.tbl" />
+    <None Include="src\tables\CClient_functions.tbl" />
+    <None Include="src\tables\CClient_props.tbl" />
+    <None Include="src\tables\CFileObjContainer_functions.tbl" />
+    <None Include="src\tables\CFileObjContainer_props.tbl" />
+    <None Include="src\tables\CFile_functions.tbl" />
+    <None Include="src\tables\CFile_props.tbl" />
     <None Include="src\tables\CItemBase_props.tbl" />
     <None Include="src\tables\CItemStone_functions.tbl" />
     <None Include="src\tables\CItemStone_props.tbl" />
     <None Include="src\tables\CItem_functions.tbl" />
     <None Include="src\tables\CItem_props.tbl" />
+    <None Include="src\tables\classnames.tbl" />
+    <None Include="src\tables\CObjBase_functions.tbl" />
+    <None Include="src\tables\CObjBase_props.tbl" />
+    <None Include="src\tables\CParty_functions.tbl" />
+    <None Include="src\tables\CParty_props.tbl" />
+    <None Include="src\tables\CScriptObj_functions.tbl" />
+    <None Include="src\tables\CSector_functions.tbl" />
     <None Include="src\tables\CStoneMember_functions.tbl" />
     <None Include="src\tables\CStoneMember_props.tbl" />
+    <None Include="src\tables\defmessages.tbl" />
     <None Include="src\tables\triggers.tbl" />
+    <Text Include="src\sphere.ini" />
+    <Text Include="src\sphereCrypt.ini" />
     <Text Include="docs\REVISIONS-51-54-SERIES.TXT" />
     <Text Include="docs\REVISIONS-55-SERIES.TXT" />
     <Text Include="docs\REVISIONS-56a-Pre_release.TXT" />

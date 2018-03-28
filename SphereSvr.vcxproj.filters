@@ -413,7 +413,7 @@
     <ClInclude Include="src\common\regex\deelx.h">
       <Filter>common\regex</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\carray.h">
+    <ClInclude Include="src\common\CArray.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\CAssoc.h">
@@ -434,7 +434,7 @@
     <ClInclude Include="src\common\CFileList.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\cgrayinst.h">
+    <ClInclude Include="src\common\CGrayInst.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\CGrayMap.h">
@@ -449,28 +449,28 @@
     <ClInclude Include="src\common\CQueue.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\crect.h">
+    <ClInclude Include="src\common\CRect.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\cregion.h">
+    <ClInclude Include="src\common\CRegion.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\CResourceBase.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\cscript.h">
+    <ClInclude Include="src\common\CScript.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\CScriptObj.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\cSectorTemplate.h">
+    <ClInclude Include="src\common\CSectorTemplate.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\CSocket.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\cstring.h">
+    <ClInclude Include="src\common\CString.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\CTime.h">
@@ -622,80 +622,46 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="src\tables\CBaseBaseDef_props.tbl">
+    <None Include="src\tables\CBaseBaseDef_props.tbl">
       <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CChar_functions.tbl">
+    </None>
+    <None Include="src\tables\CCharBase_props.tbl">
       <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CChar_props.tbl">
+    </None>
+    <None Include="src\tables\CCharNpc_props.tbl">
       <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CCharBase_props.tbl">
-      <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CCharNpc_props.tbl">
-      <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CCharPlayer_props.tbl">
-      <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CClient_functions.tbl">
-      <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CClient_props.tbl">
-      <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CFile_functions.tbl">
-      <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CFile_props.tbl">
-      <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CFileObjContainer_functions.tbl">
-      <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CFileObjContainer_props.tbl">
-      <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\classnames.tbl">
-      <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CObjBase_functions.tbl">
-      <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CObjBase_props.tbl">
-      <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CParty_functions.tbl">
-      <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CParty_props.tbl">
-      <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CScriptObj_functions.tbl">
-      <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\CSector_functions.tbl">
-      <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\tables\defmessages.tbl">
-      <Filter>tables</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\sphere.ini" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\sphereCrypt.ini" />
+    </None>
     <None Include="src\tables\CCharPlayer_functions.tbl">
       <Filter>tables</Filter>
     </None>
+    <None Include="src\tables\CCharPlayer_props.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="src\tables\CChar_functions.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="src\tables\CChar_props.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="src\tables\CClient_functions.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="src\tables\CClient_props.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="src\tables\CFileObjContainer_functions.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="src\tables\CFileObjContainer_props.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="src\tables\CFile_functions.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="src\tables\CFile_props.tbl">
+      <Filter>tables</Filter>
+    </None>
     <None Include="src\tables\CItemBase_props.tbl">
-      <Filter>tables</Filter>
-    </None>
-    <None Include="src\tables\CItem_functions.tbl">
-      <Filter>tables</Filter>
-    </None>
-    <None Include="src\tables\CItem_props.tbl">
       <Filter>tables</Filter>
     </None>
     <None Include="src\tables\CItemStone_functions.tbl">
@@ -704,32 +670,49 @@
     <None Include="src\tables\CItemStone_props.tbl">
       <Filter>tables</Filter>
     </None>
+    <None Include="src\tables\CItem_functions.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="src\tables\CItem_props.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="src\tables\classnames.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="src\tables\CObjBase_functions.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="src\tables\CObjBase_props.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="src\tables\CParty_functions.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="src\tables\CParty_props.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="src\tables\CScriptObj_functions.tbl">
+      <Filter>tables</Filter>
+    </None>
+    <None Include="src\tables\CSector_functions.tbl">
+      <Filter>tables</Filter>
+    </None>
     <None Include="src\tables\CStoneMember_functions.tbl">
       <Filter>tables</Filter>
     </None>
     <None Include="src\tables\CStoneMember_props.tbl">
       <Filter>tables</Filter>
     </None>
+    <None Include="src\tables\defmessages.tbl">
+      <Filter>tables</Filter>
+    </None>
     <None Include="src\tables\triggers.tbl">
       <Filter>tables</Filter>
     </None>
-    <None Include="src\common\twofish\Makefile">
-      <Filter>common\twofish</Filter>
-    </None>
-    <None Include="src\common\zlib\ChangeLog">
-      <Filter>common\zlib</Filter>
-    </None>
-    <None Include="src\common\zlib\FAQ">
-      <Filter>common\zlib</Filter>
-    </None>
-    <None Include="src\common\zlib\INDEX">
-      <Filter>common\zlib</Filter>
-    </None>
-    <None Include="src\common\zlib\README">
-      <Filter>common\zlib</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
+    <Text Include="src\sphere.ini" />
+    <Text Include="src\sphereCrypt.ini" />
     <Text Include="docs\REVISIONS-51-54-SERIES.TXT" />
     <Text Include="docs\REVISIONS-55-SERIES.TXT" />
     <Text Include="docs\REVISIONS-56a-Pre_release.TXT" />
