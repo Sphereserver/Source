@@ -1031,3 +1031,13 @@ Fixed: Multi placement being incorrectly blocked by region flags region_flag_und
 14-03-2018, Coruja
 Fixed: Combat swing speed formula not working correctly.
 Fixed: Server function 'f_onaccount_connect' not being called correctly when AccApp=2 (free/auto account) is set on sphere.ini.
+
+24-03-2018, Coruja
+[items/sphere_item_deco_wall_hangings.scp]: Updated city banners and added missing shard symbols
+[items/sphere_item_quests.scp]: Added Prism of Light and Twisted Weald quest items
+[items/sphere_item_resources.scp]: Added some missing SA resources
+[items/sphere_item_unsorted.scp]: Removed duplicated ITEMDEFs
+[items/sphere_item_veteran_rewards.scp]: Added some missing items
+
+02-04-2018, Coruja
+Changed: Updated internal SQLite libs v3.22.0 to v3.23.0.
