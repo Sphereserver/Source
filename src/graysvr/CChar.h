@@ -99,7 +99,6 @@ public:
 	WORD m_wMurders;		// Murder count
 	WORD m_wDeaths;			// Death count
 	BYTE m_speedMode;		// speed mode (0x0 = default, 0x1 = fast, 0x2 = slow, 0x3 = hybrid)
-	DWORD m_pflag;			// PFLAG
 
 	static LPCTSTR const sm_szLoadKeys[];
 

@@ -135,9 +135,9 @@ LPCTSTR const CCharPlayer::sm_szLoadKeys[CPC_QTY+1] =
 
 CCharPlayer::CCharPlayer(CChar *pChar, CAccount *pAccount) : m_pAccount(pAccount)
 {
-	m_wDeaths = m_wMurders = 0;
+	m_wMurders = 0;
+	m_wDeaths = 0;
 	m_speedMode = 0;
-	m_pflag = 0;
 	m_bKrToolbarEnabled = false;
 	m_timeLastUsed.Init();
 
@@ -326,9 +326,6 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 		case CPC_LASTUSED:
 			sVal.FormatLLVal( - g_World.GetTimeDiff( m_timeLastUsed ) / TICK_PER_SEC );
 			return( true );
-		case CPC_PFLAG:
-			sVal.FormatVal(m_pflag);
-			return( true );
 		case CPC_PROFILE:
 			{
 				TCHAR szLine[SCRIPT_MAX_LINE_LEN-16];
@@ -469,10 +466,6 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 		case CPC_LASTUSED:
 			m_timeLastUsed = CServTime::GetCurrentTime() - ( s.GetArgVal() * TICK_PER_SEC );
 			return( true );
-		case CPC_PFLAG:
-			{
-				m_pflag = s.GetArgVal();
-			} return( true );
 		case CPC_PROFILE:
 			m_sProfile = Str_MakeFiltered( s.GetArgStr());
 			return( true );
@@ -541,8 +534,6 @@ void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s )
 		s.WriteKeyVal( "KILLS", m_wMurders );
 	if ( GetSkillClass()->GetResourceID().GetResIndex() )
 		s.WriteKey( "SKILLCLASS", GetSkillClass()->GetResourceName());
-	if ( m_pflag )
-		s.WriteKeyVal( "PFLAG", m_pflag );
 	if ( m_speedMode )
 		s.WriteKeyVal("SPEEDMODE", m_speedMode);
 	if ( (m_pAccount->GetResDisp() >= RDS_KR) && m_bKrToolbarEnabled )
