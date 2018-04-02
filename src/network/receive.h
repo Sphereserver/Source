@@ -1447,8 +1447,6 @@ public:
 	virtual bool onReceive(NetState* net);
 };
 
-#endif
-
 /***************************************************************************
  *
  *
@@ -1462,3 +1460,19 @@ public:
 	PacketCreateHS();
 	virtual bool onReceive(NetState* net);
 };
+
+/***************************************************************************
+*
+*
+*	Packet 0xFA : PacketUltimaStoreButton			ultima store button pressed
+*
+*
+***************************************************************************/
+class PacketUltimaStoreButton : public Packet
+{
+public:
+	PacketUltimaStoreButton();
+	virtual bool onReceive(NetState* net);
+};
+
+#endif

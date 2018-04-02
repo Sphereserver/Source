@@ -297,6 +297,7 @@ enum CTRIG_TYPE
 	CTRIG_UserSkills,
 	CTRIG_UserSpecialMove,
 	CTRIG_UserStats,
+	CTRIG_UserUltimaStoreButton,
 	CTRIG_UserVirtue,
 	CTRIG_UserVirtueInvoke,
 	CTRIG_UserWarmode,

@@ -304,7 +304,7 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_MoveShip			= 0xf6,
 	XCMD_PacketCont			= 0xf7,
 	XCMD_CreateHS			= 0xf8,
-	XCMD_QTY				= 0xf9
+	XCMD_UltimaStoreButton	= 0xfa
 };
 
 #define SEEDLENGTH_OLD (sizeof( DWORD ))

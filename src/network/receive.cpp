@@ -1125,6 +1125,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 	return true;
 }
 
+
 /***************************************************************************
  *
  *
@@ -1766,6 +1767,7 @@ bool PacketServersReq::onReceive(NetState* net)
 	client->addLoginErr(lErr);
 	return true;
 }
+
 
 /***************************************************************************
  *
@@ -2990,6 +2992,7 @@ bool PacketArrowClick::onReceive(NetState* net)
 	}
 	return true;
 }
+
 
 /***************************************************************************
  *
@@ -4581,6 +4584,7 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 	return true;
 }
 
+
 /***************************************************************************
  *
  *
@@ -4648,6 +4652,7 @@ bool PacketCrashReport::onReceive(NetState* net)
 	return true;
 }
 
+
 /***************************************************************************
  *
  *
@@ -4667,3 +4672,29 @@ bool PacketCreateHS::onReceive(NetState* net)
 	return PacketCreate::onReceive(net, true);
 }
 
+
+/***************************************************************************
+*
+*
+*	Packet 0xFA : PacketUltimaStoreButton			ultima store button pressed (SA)
+*
+*
+***************************************************************************/
+PacketUltimaStoreButton::PacketUltimaStoreButton() : Packet(1)
+{
+}
+
+bool PacketUltimaStoreButton::onReceive(NetState *net)
+{
+	ADDTOCALLSTACK("PacketUltimaStoreButton::onReceive");
+
+	CClient *client = net->m_client;
+	ASSERT(client);
+	CChar *character = client->GetChar();
+	if ( !character )
+		return false;
+
+	if ( IsTrigUsed(TRIGGER_USERULTIMASTOREBUTTON) )
+		character->OnTrigger(CTRIG_UserUltimaStoreButton, character, NULL);
+	return true;
+}
