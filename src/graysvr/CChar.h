@@ -29,6 +29,14 @@ struct CCharNPC
 {
 	// This is basically the unique "brains" for any character
 public:
+	CCharNPC(CChar *pChar, NPCBRAIN_TYPE NPCBrain);
+	~CCharNPC();
+
+private:
+	CCharNPC(const CCharNPC &copy);
+	CCharNPC &operator=(const CCharNPC &other);
+
+public:
 	static const char *m_sClassName;
 	// Stuff that is specific to an NPC character instance (not an NPC type see CCharBase for that)
 	// Any NPC AI stuff will go here
@@ -68,24 +76,22 @@ public:
 	bool r_LoadVal(CChar *pChar, CScript &s);
 
 	int GetNpcAiFlags(const CChar *pChar) const;
-
-public:
-	CCharNPC(CChar *pChar, NPCBRAIN_TYPE NPCBrain);
-	~CCharNPC();
-
-private:
-	CCharNPC(const CCharNPC &copy);
-	CCharNPC &operator=(const CCharNPC &other);
 };
 
 struct CCharPlayer
 {
 	// Stuff that is specific to a player character
+public:
+	CCharPlayer(CChar *pChar, CAccount *pAccount);
+	~CCharPlayer();
+
 private:
+	CCharPlayer(const CCharPlayer &copy);
+	CCharPlayer &operator=(const CCharPlayer &other);
+
 	BYTE m_SkillLock[SKILL_QTY];	// List of skills lock state
 	BYTE m_StatLock[STAT_BASE_QTY];	// List of stats lock state
 	CResourceRef m_SkillClass;		// What skill class group we have selected
-	bool m_bKrToolbarEnabled;
 
 public:
 	static const char *m_sClassName;
@@ -99,6 +105,8 @@ public:
 	WORD m_wMurders;		// Murder count
 	WORD m_wDeaths;			// Death count
 	BYTE m_speedMode;		// speed mode (0x0 = default, 0x1 = fast, 0x2 = slow, 0x3 = hybrid)
+	bool m_bRefuseTrades;
+	bool m_bKrToolbarEnabled;
 
 	static LPCTSTR const sm_szLoadKeys[];
 
@@ -119,16 +127,6 @@ public:
 
 	bool SetSkillClass(CChar *pChar, RESOURCE_ID rid);
 	CSkillClassDef *GetSkillClass() const;
-
-	bool getKrToolbarStatus();
-
-public:
-	CCharPlayer(CChar *pChar, CAccount *pAccount);
-	~CCharPlayer();
-
-private:
-	CCharPlayer(const CCharPlayer &copy);
-	CCharPlayer &operator=(const CCharPlayer &other);
 };
 
 enum WAR_SWING_TYPE		// m_atFight.m_Swing_State
@@ -306,6 +304,14 @@ enum CTRIG_TYPE
 class CChar : public CObjBase, public CContainer, public CTextConsole
 {
 	// RES_WORLDCHAR
+public:
+	CChar(CREID_TYPE id);
+	~CChar();
+
+private:
+	CChar(const CChar &copy);
+	CChar &operator=(const CChar &other);
+
 private:
 	// Spell type effects
 	#define STATF_INVUL			0x00000001	// Invulnerability
@@ -530,15 +536,6 @@ public:
 			// m_Act_Targ = who am i fleeing from ?
 		} m_atFlee;
 	};
-
-public:
-	CChar(CREID_TYPE id);
-	virtual ~CChar();
-	bool DupeFrom(CChar *pChar, bool fNewbieItems);
-
-private:
-	CChar(const CChar &copy);
-	CChar &operator=(const CChar &other);
 
 public:
 	// Status and attributes
@@ -934,6 +931,7 @@ public:
 
 	int FixWeirdness();
 	void CreateNewCharCheck();
+	bool DupeFrom(CChar *pChar, bool fNewbieItems);
 
 private:
 	// Contents stuff

@@ -138,6 +138,7 @@ CCharPlayer::CCharPlayer(CChar *pChar, CAccount *pAccount) : m_pAccount(pAccount
 	m_wMurders = 0;
 	m_wDeaths = 0;
 	m_speedMode = 0;
+	m_bRefuseTrades = false;
 	m_bKrToolbarEnabled = false;
 	m_timeLastUsed.Init();
 
@@ -149,11 +150,6 @@ CCharPlayer::CCharPlayer(CChar *pChar, CAccount *pAccount) : m_pAccount(pAccount
 CCharPlayer::~CCharPlayer()
 {
 	m_Speech.RemoveAll();
-}
-
-bool CCharPlayer::getKrToolbarStatus()
-{
-	return m_bKrToolbarEnabled;
 }
 
 bool CCharPlayer::SetSkillClass( CChar * pChar, RESOURCE_ID rid )
@@ -319,10 +315,10 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 			return true;
 		case CPC_ISDSPEECH:
 			if ( pszKey[9] != '.' )
-				return( false );
+				return false;
 			pszKey += 10;
-			sVal = m_Speech.ContainsResourceName(RES_SPEECH, pszKey) ? "1" : "0";
-			return( true );
+			sVal.FormatVal(m_Speech.ContainsResourceName(RES_SPEECH, pszKey));
+			return true;
 		case CPC_LASTUSED:
 			sVal.FormatLLVal( - g_World.GetTimeDiff( m_timeLastUsed ) / TICK_PER_SEC );
 			return( true );
@@ -334,11 +330,8 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 			}
 			return( true );
 		case CPC_REFUSETRADES:
-			{
-				CVarDefCont * pVar = pChar->GetDefKey(pszKey, true);
-				sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
-			}
-			return( true );
+			sVal.FormatVal(m_bRefuseTrades);
+			return true;
 		case CPC_SKILLCLASS:
 			sVal = GetSkillClass()->GetResourceName();
 			return( true );
@@ -470,8 +463,8 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 			m_sProfile = Str_MakeFiltered( s.GetArgStr());
 			return( true );
 		case CPC_REFUSETRADES:
-			pChar->SetDefNum(s.GetKey(), s.GetArgVal() > 0 ? 1 : 0, false);
-			return( true );
+			m_bRefuseTrades = (s.GetArgVal() != 0);
+			return true;
 		case CPC_SKILLCLASS:
 			return SetSkillClass( pChar, g_Cfg.ResourceGetIDType( RES_SKILLCLASS, s.GetArgStr()));
 		case CPC_SKILLLOCK:
@@ -536,6 +529,8 @@ void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s )
 		s.WriteKey( "SKILLCLASS", GetSkillClass()->GetResourceName());
 	if ( m_speedMode )
 		s.WriteKeyVal("SPEEDMODE", m_speedMode);
+	if ( m_bRefuseTrades )
+		s.WriteKeyVal("REFUSETRADES", m_bRefuseTrades);
 	if ( (m_pAccount->GetResDisp() >= RDS_KR) && m_bKrToolbarEnabled )
 		s.WriteKeyVal("KRTOOLBARSTATUS", m_bKrToolbarEnabled);
 

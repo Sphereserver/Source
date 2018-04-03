@@ -1277,7 +1277,7 @@ void CClient::addPlayerStart(CChar *pChar)
 		m_pChar->m_pParty->SendAddList(NULL);
 
 	addSpeedMode(m_pChar->m_pPlayer->m_speedMode);
-	addKRToolbar(m_pChar->m_pPlayer->getKrToolbarStatus());
+	addKRToolbar(m_pChar->m_pPlayer->m_bKrToolbarEnabled);
 	resendBuffs();
 }
 

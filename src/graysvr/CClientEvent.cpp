@@ -2153,12 +2153,12 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 				m_pPopupPacket->addOption(POPUP_PETSTAY, 6114, wFlag);
 			}
 		}
-		else if ( pChar == m_pChar )
+		else if ( pChar->m_pPlayer && (pChar == m_pChar) )
 		{
 			m_pPopupPacket->addOption(POPUP_BACKPACK, 6145);
 			if ( m_NetState->isClientVersion(MINCLIVER_STATUS_V6) )
 			{
-				if ( pChar->GetDefNum("REFUSETRADES") )
+				if ( pChar->m_pPlayer->m_bRefuseTrades )
 					m_pPopupPacket->addOption(POPUP_TRADE_ALLOW, 1154112);
 				else
 					m_pPopupPacket->addOption(POPUP_TRADE_REFUSE, 1154113);
@@ -2325,11 +2325,13 @@ void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD EntryTag)	//do somethi
 			break;
 
 		case POPUP_TRADE_ALLOW:
-			m_pChar->SetDefNum("REFUSETRADES", 0);
+			if ( m_pChar->m_pPlayer )
+				m_pChar->m_pPlayer->m_bRefuseTrades = false;
 			break;
 
 		case POPUP_TRADE_REFUSE:
-			m_pChar->SetDefNum("REFUSETRADES", 1);
+			if ( m_pChar->m_pPlayer )
+				m_pChar->m_pPlayer->m_bRefuseTrades = true;
 			break;
 
 		case POPUP_TRADE_OPEN:
