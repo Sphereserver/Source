@@ -169,7 +169,7 @@ PacketHealthBarInfo::PacketHealthBarInfo(const CClient *target, CObjBase *object
 			writeInt32(const_cast<CChar *>(objectChar)->ContentCount(RESOURCE_ID(RES_TYPEDEF,IT_GOLD)));
 		
 		if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
-			writeInt16(static_cast<WORD>(object->GetDefNum("RESPHYSICAL", true)));
+			writeInt16(static_cast<WORD>(object->m_ResPhysical));
 		else
 			writeInt16(objectChar->m_defense + objectCharDef->m_defense);
 
@@ -222,10 +222,10 @@ PacketHealthBarInfo::PacketHealthBarInfo(const CClient *target, CObjBase *object
 
 		if (version >= 4) // AOS attributes
 		{
-			writeInt16(static_cast<WORD>(object->GetDefNum("RESFIRE", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("RESCOLD", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("RESPOISON", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("RESENERGY", true)));
+			writeInt16(static_cast<WORD>(object->m_ResFire));
+			writeInt16(static_cast<WORD>(object->m_ResCold));
+			writeInt16(static_cast<WORD>(object->m_ResPoison));
+			writeInt16(static_cast<WORD>(object->m_ResEnergy));
 			writeInt16(static_cast<WORD>(object->GetDefNum("LUCK", true)));
 
 			const CItem *weapon = objectChar->m_uidWeapon.ItemFind();

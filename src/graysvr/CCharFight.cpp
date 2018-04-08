@@ -1787,11 +1787,11 @@ effect_bounce:
 			if ( iDmgPhysical == 0 )		// if physical damage is not set, let's assume it as the remaining value
 				iDmgPhysical = 100 - (iDmgFire + iDmgCold + iDmgPoison + iDmgEnergy);
 
-			int iPhysicalDamage = iDmg * iDmgPhysical * (100 - static_cast<int>(GetDefNum("RESPHYSICAL")));
-			int iFireDamage = iDmg * iDmgFire * (100 - static_cast<int>(GetDefNum("RESFIRE")));
-			int iColdDamage = iDmg * iDmgCold * (100 - static_cast<int>(GetDefNum("RESCOLD")));
-			int iPoisonDamage = iDmg * iDmgPoison * (100 - static_cast<int>(GetDefNum("RESPOISON")));
-			int iEnergyDamage = iDmg * iDmgEnergy * (100 - static_cast<int>(GetDefNum("RESENERGY")));
+			int iPhysicalDamage = iDmg * iDmgPhysical * (100 - m_ResPhysical);
+			int iFireDamage = iDmg * iDmgFire * (100 - m_ResFire);
+			int iColdDamage = iDmg * iDmgCold * (100 - m_ResCold);
+			int iPoisonDamage = iDmg * iDmgPoison * (100 - m_ResPoison);
+			int iEnergyDamage = iDmg * iDmgEnergy * (100 - m_ResEnergy);
 
 			iDmg = (iPhysicalDamage + iFireDamage + iColdDamage + iPoisonDamage + iEnergyDamage) / 10000;
 		}
@@ -2628,17 +2628,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			if ( iTyp & DAMAGE_FIXED )
 				iTyp &= ~DAMAGE_FIXED;
 
-			pCharTarg->OnTakeDamage(
-				Fight_CalcDamage(m_uidWeapon.ItemFind()),
-				this,
-				iTyp,
-				static_cast<int>(GetDefNum("DAMPHYSICAL")),
-				static_cast<int>(GetDefNum("DAMFIRE")),
-				static_cast<int>(GetDefNum("DAMCOLD")),
-				static_cast<int>(GetDefNum("DAMPOISON")),
-				static_cast<int>(GetDefNum("DAMENERGY"))
-				);
-
+			pCharTarg->OnTakeDamage(Fight_CalcDamage(m_uidWeapon.ItemFind()), this, iTyp, m_DamPhysical, m_DamFire, m_DamCold, m_DamPoison, m_DamEnergy);
 			return WAR_SWING_EQUIPPING;
 		}
 	}
@@ -2992,7 +2982,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	}
 
 	// Took my swing. Do Damage !
-	iDmg = pCharTarg->OnTakeDamage(iDmg, this, iTyp, static_cast<int>(GetDefNum("DAMPHYSICAL", true)), static_cast<int>(GetDefNum("DAMFIRE", true)), static_cast<int>(GetDefNum("DAMCOLD", true)), static_cast<int>(GetDefNum("DAMPOISON", true)), static_cast<int>(GetDefNum("DAMENERGY", true)));
+	iDmg = pCharTarg->OnTakeDamage(iDmg, this, iTyp, m_DamPhysical, m_DamFire, m_DamCold, m_DamPoison, m_DamEnergy);
 
 	if ( iDmg > 0 )
 	{

@@ -1633,6 +1633,18 @@ bool CItem::SetBase( CItemBase * pItemDef )
 	m_defenseBase = pItemDef->m_defenseBase;
 	m_defenseRange = pItemDef->m_defenseRange;
 
+	m_DamPhysical = pItemDef->m_DamPhysical;
+	m_DamFire = pItemDef->m_DamFire;
+	m_DamCold = pItemDef->m_DamCold;
+	m_DamPoison = pItemDef->m_DamPoison;
+	m_DamEnergy = pItemDef->m_DamEnergy;
+
+	m_ResPhysical = pItemDef->m_ResPhysical;
+	m_ResFire = pItemDef->m_ResFire;
+	m_ResCold = pItemDef->m_ResCold;
+	m_ResPoison = pItemDef->m_ResPoison;
+	m_ResEnergy = pItemDef->m_ResEnergy;
+
 	if (pParentCont)
 	{
 		ASSERT( IsItemEquipped() || IsItemInContainer());

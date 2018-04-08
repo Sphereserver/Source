@@ -457,17 +457,17 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 
 		if ( pItem->IsTypeArmorWeapon() )
 		{
-			SetDefNum("DAMPHYSICAL", GetDefNum("DAMPHYSICAL") - pItem->GetDefNum("DAMPHYSICAL", true));
-			SetDefNum("DAMFIRE", GetDefNum("DAMFIRE") - pItem->GetDefNum("DAMFIRE", true));
-			SetDefNum("DAMCOLD", GetDefNum("DAMCOLD") - pItem->GetDefNum("DAMCOLD", true));
-			SetDefNum("DAMPOISON", GetDefNum("DAMPOISON") - pItem->GetDefNum("DAMPOISON", true));
-			SetDefNum("DAMENERGY", GetDefNum("DAMENERGY") - pItem->GetDefNum("DAMENERGY", true));
+			m_DamPhysical -= pItem->m_DamPhysical;
+			m_DamFire -= pItem->m_DamFire;
+			m_DamCold -= pItem->m_DamCold;
+			m_DamPoison -= pItem->m_DamPoison;
+			m_DamEnergy -= pItem->m_DamEnergy;
 
-			SetDefNum("RESPHYSICAL", GetDefNum("RESPHYSICAL") - pItem->GetDefNum("RESPHYSICAL", true));
-			SetDefNum("RESFIRE", GetDefNum("RESFIRE") - pItem->GetDefNum("RESFIRE", true));
-			SetDefNum("RESCOLD", GetDefNum("RESCOLD") - pItem->GetDefNum("RESCOLD", true));
-			SetDefNum("RESPOISON", GetDefNum("RESPOISON") - pItem->GetDefNum("RESPOISON", true));
-			SetDefNum("RESENERGY", GetDefNum("RESENERGY") - pItem->GetDefNum("RESENERGY", true));
+			m_ResPhysical -= pItem->m_ResPhysical;
+			m_ResFire -= pItem->m_ResFire;
+			m_ResCold -= pItem->m_ResCold;
+			m_ResPoison -= pItem->m_ResPoison;
+			m_ResEnergy -= pItem->m_ResEnergy;
 		}
 
 		if ( pItem->IsTypeWeapon() )
@@ -1873,17 +1873,17 @@ bool CChar::ItemEquip(CItem *pItem, CChar *pCharMsg, bool fFromDClick)
 
 	if ( pItem->IsTypeArmorWeapon() )
 	{
-		SetDefNum("DAMPHYSICAL", GetDefNum("DAMPHYSICAL") + pItem->GetDefNum("DAMPHYSICAL", true));
-		SetDefNum("DAMFIRE", GetDefNum("DAMFIRE") + pItem->GetDefNum("DAMFIRE", true));
-		SetDefNum("DAMCOLD", GetDefNum("DAMCOLD") + pItem->GetDefNum("DAMCOLD", true));
-		SetDefNum("DAMPOISON", GetDefNum("DAMPOISON") + pItem->GetDefNum("DAMPOISON", true));
-		SetDefNum("DAMENERGY", GetDefNum("DAMENERGY") + pItem->GetDefNum("DAMENERGY", true));
+		m_DamPhysical += pItem->m_DamPhysical;
+		m_DamFire += pItem->m_DamFire;
+		m_DamCold += pItem->m_DamCold;
+		m_DamPoison += pItem->m_DamPoison;
+		m_DamEnergy += pItem->m_DamEnergy;
 
-		SetDefNum("RESPHYSICAL", GetDefNum("RESPHYSICAL") + pItem->GetDefNum("RESPHYSICAL", true));
-		SetDefNum("RESFIRE", GetDefNum("RESFIRE") + pItem->GetDefNum("RESFIRE", true));
-		SetDefNum("RESCOLD", GetDefNum("RESCOLD") + pItem->GetDefNum("RESCOLD", true));
-		SetDefNum("RESPOISON", GetDefNum("RESPOISON") + pItem->GetDefNum("RESPOISON", true));
-		SetDefNum("RESENERGY", GetDefNum("RESENERGY") + pItem->GetDefNum("RESENERGY", true));
+		m_ResPhysical += pItem->m_ResPhysical;
+		m_ResFire += pItem->m_ResFire;
+		m_ResCold += pItem->m_ResCold;
+		m_ResPoison += pItem->m_ResPoison;
+		m_ResEnergy += pItem->m_ResEnergy;
 	}
 
 	if ( pItem->IsTypeWeapon() )

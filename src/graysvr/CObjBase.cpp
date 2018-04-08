@@ -702,13 +702,8 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_BLOODDRINKER:
 		case OC_CASTINGFOCUS:
 		case OC_DAMCHAOS:
-		case OC_DAMCOLD:
 		case OC_DAMDIRECT:
-		case OC_DAMENERGY:
-		case OC_DAMFIRE:
 		case OC_DAMMODIFIER:
-		case OC_DAMPHYSICAL:
-		case OC_DAMPOISON:
 		case OC_DECREASEHITCHANCE:
 		case OC_EATERCOLD:
 		case OC_EATERDAM:
@@ -766,15 +761,11 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_REGENVALHITS:
 		case OC_REGENVALMANA:
 		case OC_REGENVALSTAM:
-		case OC_RESCOLD:
-		case OC_RESFIRE:
 		case OC_COMBATBONUSSTAT:
 		case OC_COMBATBONUSPERCENT:
-		case OC_RESENERGY:
-		case OC_RESPOISON:
 		case OC_RESCOLDMAX:
-		case OC_RESFIREMAX:
 		case OC_RESENERGYMAX:
+		case OC_RESFIREMAX:
 		case OC_RESPHYSICALMAX:
 		case OC_RESPOISONMAX:
 		case OC_RESONANCECOLD:
@@ -794,7 +785,6 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_SPLINTERINGWEAPON:
 		case OC_VELOCITY:
 		case OC_WEIGHTREDUCTION:
-		case OC_RESPHYSICAL:
 		{
 			CVarDefCont *pVar = GetDefKey(pszKey, true);
 			sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
@@ -838,6 +828,21 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				sVal.Format("%d,%d", m_attackBase, m_attackBase + m_attackRange);
 			break;
 		}
+		case OC_DAMCOLD:
+			sVal.FormatVal(m_DamCold);
+			break;
+		case OC_DAMENERGY:
+			sVal.FormatVal(m_DamEnergy);
+			break;
+		case OC_DAMFIRE:
+			sVal.FormatVal(m_DamFire);
+			break;
+		case OC_DAMPHYSICAL:
+			sVal.FormatVal(m_DamPhysical);
+			break;
+		case OC_DAMPOISON:
+			sVal.FormatVal(m_DamPoison);
+			break;
 		case OC_RANGE:
 		{
 			if ( RangeH() == 0 )
@@ -1263,6 +1268,21 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal = GetTopPoint().WriteUsed();
 			break;
 		}
+		case OC_RESCOLD:
+			sVal.FormatVal(m_ResCold);
+			break;
+		case OC_RESENERGY:
+			sVal.FormatVal(m_ResEnergy);
+			break;
+		case OC_RESFIRE:
+			sVal.FormatVal(m_ResFire);
+			break;
+		case OC_RESPHYSICAL:
+			sVal.FormatVal(m_ResPhysical);
+			break;
+		case OC_RESPOISON:
+			sVal.FormatVal(m_ResPoison);
+			break;
 		case OC_TAG0:
 			fZero = true;
 			pszKey++;
@@ -1492,13 +1512,8 @@ bool CObjBase::r_LoadVal(CScript &s)
 		case OC_BLOODDRINKER:
 		case OC_CASTINGFOCUS:
 		case OC_DAMCHAOS:
-		case OC_DAMCOLD:
 		case OC_DAMDIRECT:
-		case OC_DAMENERGY:
-		case OC_DAMFIRE:
 		case OC_DAMMODIFIER:
-		case OC_DAMPHYSICAL:
-		case OC_DAMPOISON:
 		case OC_DECREASEHITCHANCE:
 		case OC_EATERCOLD:
 		case OC_EATERDAM:
@@ -1567,15 +1582,10 @@ bool CObjBase::r_LoadVal(CScript &s)
 		case OC_INCREASEDEFCHANCEMAX:
 		case OC_INCREASESPELLDAM:
 		case OC_RESCOLDMAX:
-		case OC_RESFIREMAX:
 		case OC_RESENERGYMAX:
-		case OC_RESPOISONMAX:
-		case OC_RESPHYSICAL:
+		case OC_RESFIREMAX:
 		case OC_RESPHYSICALMAX:
-		case OC_RESFIRE:
-		case OC_RESCOLD:
-		case OC_RESPOISON:
-		case OC_RESENERGY:
+		case OC_RESPOISONMAX:
 		case OC_LUCK:
 		case OC_REGENFOOD:
 		case OC_REGENHITS:
@@ -1627,6 +1637,21 @@ bool CObjBase::r_LoadVal(CScript &s)
 				pChar->UpdateStatsFlag();
 			break;
 		}
+		case OC_DAMCOLD:
+			m_DamCold = static_cast<int>(s.GetArgVal());
+			break;
+		case OC_DAMENERGY:
+			m_DamEnergy = static_cast<int>(s.GetArgVal());
+			break;
+		case OC_DAMFIRE:
+			m_DamFire = static_cast<int>(s.GetArgVal());
+			break;
+		case OC_DAMPHYSICAL:
+			m_DamPhysical = static_cast<int>(s.GetArgVal());
+			break;
+		case OC_DAMPOISON:
+			m_DamPoison = static_cast<int>(s.GetArgVal());
+			break;
 		case OC_WEIGHTREDUCTION:
 		{
 			int oldweight = GetWeight();
@@ -1717,6 +1742,51 @@ bool CObjBase::r_LoadVal(CScript &s)
 			break;
 		case OC_P:
 			return false;	// must set the point via the CItem or CChar methods
+		case OC_RESCOLD:
+		{
+			m_ResCold = static_cast<int>(s.GetArgVal());
+
+			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
+			if ( pChar )
+				pChar->UpdateStatsFlag();
+			return true;
+		}
+		case OC_RESENERGY:
+		{
+			m_ResEnergy = static_cast<int>(s.GetArgVal());
+
+			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
+			if ( pChar )
+				pChar->UpdateStatsFlag();
+			return true;
+		}
+		case OC_RESFIRE:
+		{
+			m_ResFire = static_cast<int>(s.GetArgVal());
+
+			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
+			if ( pChar )
+				pChar->UpdateStatsFlag();
+			return true;
+		}
+		case OC_RESPHYSICAL:
+		{
+			m_ResPhysical = static_cast<int>(s.GetArgVal());
+
+			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
+			if ( pChar )
+				pChar->UpdateStatsFlag();
+			return true;
+		}
+		case OC_RESPOISON:
+		{
+			m_ResPoison = static_cast<int>(s.GetArgVal());
+
+			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
+			if ( pChar )
+				pChar->UpdateStatsFlag();
+			return true;
+		}
 		case OC_SPEED:
 		{
 			if ( !IsItem() )
@@ -1777,9 +1847,32 @@ void CObjBase::r_Write(CScript &s)
 	if ( m_ModMaxWeight )
 		s.WriteKeyVal("MODMAXWEIGHT", m_ModMaxWeight);
 
-	// Write New variables
-	m_BaseDefs.r_WritePrefix(s);
+	CBaseBaseDef *pBaseDef = Base_GetDef();
+	ASSERT(pBaseDef);
 
+	if ( m_DamPhysical != pBaseDef->m_DamPhysical )
+		s.WriteKeyVal("DAMPHYSICAL", m_DamPhysical);
+	if ( m_DamFire != pBaseDef->m_DamFire )
+		s.WriteKeyVal("DAMFIRE", m_DamFire);
+	if ( m_DamCold != pBaseDef->m_DamCold )
+		s.WriteKeyVal("DAMCOLD", m_DamCold);
+	if ( m_DamPoison != pBaseDef->m_DamPoison )
+		s.WriteKeyVal("DAMPOISON", m_DamPoison);
+	if ( m_DamEnergy != pBaseDef->m_DamEnergy )
+		s.WriteKeyVal("DAMENERGY", m_DamEnergy);
+
+	if ( m_ResPhysical != pBaseDef->m_ResPhysical )
+		s.WriteKeyVal("RESPHYSICAL", m_ResPhysical);
+	if ( m_ResFire != pBaseDef->m_ResFire )
+		s.WriteKeyVal("RESFIRE", m_ResFire);
+	if ( m_ResCold != pBaseDef->m_ResCold )
+		s.WriteKeyVal("RESCOLD", m_ResCold);
+	if ( m_ResPoison != pBaseDef->m_ResPoison )
+		s.WriteKeyVal("RESPOISON", m_ResPoison);
+	if ( m_ResEnergy != pBaseDef->m_ResEnergy )
+		s.WriteKeyVal("RESENERGY", m_ResEnergy);
+
+	m_BaseDefs.r_WritePrefix(s);	// new variable storage system
 	m_TagDefs.r_WritePrefix(s, "TAG");
 	m_OEvents.r_Write(s, "EVENTS");
 }

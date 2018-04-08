@@ -46,6 +46,18 @@ public:
 	WORD m_defenseBase;
 	WORD m_defenseRange;
 
+	int m_DamPhysical;
+	int m_DamFire;
+	int m_DamCold;
+	int m_DamPoison;
+	int m_DamEnergy;
+
+	int m_ResPhysical;
+	int m_ResFire;
+	int m_ResCold;
+	int m_ResPoison;
+	int m_ResEnergy;
+
 	CGrayUID m_uidSpawnItem;	// SpawnItem for this item
 
 	CResourceRefArray m_OEvents;

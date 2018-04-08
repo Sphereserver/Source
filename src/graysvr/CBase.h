@@ -41,6 +41,18 @@ public:
 	WORD	m_defenseBase;
 	WORD	m_defenseRange;
 
+	int m_DamPhysical;
+	int m_DamFire;
+	int m_DamCold;
+	int m_DamPoison;
+	int m_DamEnergy;
+
+	int m_ResPhysical;
+	int m_ResFire;
+	int m_ResCold;
+	int m_ResPoison;
+	int m_ResEnergy;
+
 	DWORD	m_Can;			// Base attribute flags. CAN_C_GHOST
 
 public:
@@ -140,6 +152,16 @@ public:
 		m_attackRange		= 0;
 		m_defenseBase		= 0;
 		m_defenseRange		= 0;
+		m_DamPhysical		= 0;
+		m_DamFire			= 0;
+		m_DamCold			= 0;
+		m_DamPoison			= 0;
+		m_DamEnergy			= 0;
+		m_ResPhysical		= 0;
+		m_ResFire			= 0;
+		m_ResCold			= 0;
+		m_ResPoison			= 0;
+		m_ResEnergy			= 0;
 		m_Height			= 0;
 		m_Can			= CAN_C_INDOORS;	// most things can cover us from the weather.
 		SetDefNum("RANGE",1); //m_range			= 1;

@@ -542,43 +542,43 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 					iBuffIcon = BI_LICHFORM;
 					SetDefNum("RegenHits", GetDefNum("RegenHits") + pSpell->m_itSpell.m_PolyStr);
 					SetDefNum("RegenMana", GetDefNum("RegenMana") - pSpell->m_itSpell.m_PolyDex);
-					SetDefNum("ResFire", GetDefNum("ResFire") + pSpell->m_itSpell.m_spellcharges);
-					SetDefNum("ResPoison", GetDefNum("ResPoison") - pSpell->m_itSpell.m_spellcharges);
-					SetDefNum("ResCold", GetDefNum("ResCold") - pSpell->m_itSpell.m_spellcharges);
+					m_ResFire += pSpell->m_itSpell.m_spellcharges;
+					m_ResPoison -= pSpell->m_itSpell.m_spellcharges;
+					m_ResCold -= pSpell->m_itSpell.m_spellcharges;
 					break;
 				case SPELL_Vampiric_Embrace:
 					iBuffIcon = BI_VAMPIRICEMBRACE;
 					SetDefNum("HitLeechLife", GetDefNum("HitLeechLife") - pSpell->m_itSpell.m_PolyStr);
 					SetDefNum("RegenStam", GetDefNum("RegenStam") - pSpell->m_itSpell.m_PolyDex);
 					SetDefNum("RegenMana", GetDefNum("RegenMana") - pSpell->m_itSpell.m_spellcharges);
-					SetDefNum("ResFire", GetDefNum("ResFire") + pSpell->m_itSpell.m_spelllevel);
+					m_ResFire += pSpell->m_itSpell.m_spelllevel;
 					break;
 				case SPELL_Wraith_Form:
 					iBuffIcon = BI_WRAITHFORM;
-					SetDefNum("ResPhysical", GetDefNum("ResPhysical") - pSpell->m_itSpell.m_PolyStr);
-					SetDefNum("ResEnergy", GetDefNum("ResEnergy") + pSpell->m_itSpell.m_PolyDex);
-					SetDefNum("ResFire", GetDefNum("ResFire") + pSpell->m_itSpell.m_PolyDex);
+					m_ResPhysical -= pSpell->m_itSpell.m_PolyStr;
+					m_ResEnergy += pSpell->m_itSpell.m_PolyDex;
+					m_ResFire += pSpell->m_itSpell.m_PolyDex;
 					SetDefNum("HitLeechMana", GetDefNum("HitLeechMana") - pSpell->m_itSpell.m_spellcharges);
 					break;
 				case SPELL_Reaper_Form:
 					iBuffIcon = BI_REAPERFORM;
 					SetDefNum("IncreaseSwingSpeed", GetDefNum("IncreaseSwingSpeed") - pSpell->m_itSpell.m_PolyStr);
 					SetDefNum("IncreaseSpellDam", GetDefNum("IncreaseSpellDam") - pSpell->m_itSpell.m_PolyStr);
-					SetDefNum("ResPhysical", GetDefNum("ResPhysical") - pSpell->m_itSpell.m_PolyDex);
-					SetDefNum("ResCold", GetDefNum("ResCold") - pSpell->m_itSpell.m_PolyDex);
-					SetDefNum("ResPoison", GetDefNum("ResPoison") - pSpell->m_itSpell.m_PolyDex);
-					SetDefNum("ResEnergy", GetDefNum("ResEnergy") - pSpell->m_itSpell.m_PolyDex);
-					SetDefNum("ResFire", GetDefNum("ResFire") + pSpell->m_itSpell.m_spellcharges);
+					m_ResPhysical -= pSpell->m_itSpell.m_PolyDex;
+					m_ResCold -= pSpell->m_itSpell.m_PolyDex;
+					m_ResPoison -= pSpell->m_itSpell.m_PolyDex;
+					m_ResEnergy -= pSpell->m_itSpell.m_PolyDex;
+					m_ResFire += pSpell->m_itSpell.m_spellcharges;
 					break;
 				case SPELL_Stone_Form:
 					iBuffIcon = BI_STONEFORM;
 					SetDefNum("IncreaseSwingSpeed", GetDefNum("IncreaseSwingSpeed") + pSpell->m_itSpell.m_PolyStr);
 					SetDefNum("FasterCasting", GetDefNum("FasterCasting") + pSpell->m_itSpell.m_PolyDex);
-					SetDefNum("ResPhysical", GetDefNum("ResPhysical") - pSpell->m_itSpell.m_spellcharges);
-					SetDefNum("ResFire", GetDefNum("ResFire") - pSpell->m_itSpell.m_spellcharges);
-					SetDefNum("ResCold", GetDefNum("ResCold") - pSpell->m_itSpell.m_spellcharges);
-					SetDefNum("ResPoison", GetDefNum("ResPoison") - pSpell->m_itSpell.m_spellcharges);
-					SetDefNum("ResEnergy", GetDefNum("ResEnergy") - pSpell->m_itSpell.m_spellcharges);
+					m_ResPhysical -= pSpell->m_itSpell.m_spellcharges;
+					m_ResFire -= pSpell->m_itSpell.m_spellcharges;
+					m_ResCold -= pSpell->m_itSpell.m_spellcharges;
+					m_ResPoison -= pSpell->m_itSpell.m_spellcharges;
+					m_ResEnergy -= pSpell->m_itSpell.m_spellcharges;
 					SetDefNum("ResPhysicalMax", GetDefNum("ResPhysicalMax") - pSpell->m_itSpell.m_spelllevel);
 					SetDefNum("ResFireMax", GetDefNum("ResFireMax") - pSpell->m_itSpell.m_spelllevel);
 					SetDefNum("ResColdMax", GetDefNum("ResColdMax") - pSpell->m_itSpell.m_spelllevel);
@@ -712,10 +712,10 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 		}
 		case LAYER_SPELL_Corpse_Skin:
 		{
-			SetDefNum("ResPhysical", GetDefNum("ResPhysical") - pSpell->m_itSpell.m_PolyStr, true);
-			SetDefNum("ResFire", GetDefNum("ResFire") + pSpell->m_itSpell.m_PolyDex, true);
-			SetDefNum("ResCold", GetDefNum("ResCold") - pSpell->m_itSpell.m_PolyStr, true);
-			SetDefNum("ResPoison", GetDefNum("ResPoison") + pSpell->m_itSpell.m_PolyDex, true);
+			m_ResPhysical -= pSpell->m_itSpell.m_PolyStr;
+			m_ResFire += pSpell->m_itSpell.m_PolyDex;
+			m_ResCold -= pSpell->m_itSpell.m_PolyStr;
+			m_ResPoison += pSpell->m_itSpell.m_PolyDex;
 			if ( m_pClient )
 				m_pClient->removeBuff(BI_CORPSESKIN);
 			return;
@@ -832,11 +832,11 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 		{
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
-				SetDefNum("ResPhysical", GetDefNum("ResPhysical") - pSpell->m_itSpell.m_spelllevel);
-				SetDefNum("ResFire", GetDefNum("ResFire") + 5);
-				SetDefNum("ResCold", GetDefNum("ResCold") + 5);
-				SetDefNum("ResPoison", GetDefNum("ResPoison") + 5);
-				SetDefNum("ResEnergy", GetDefNum("ResEnergy") + 5);
+				m_ResPhysical -= pSpell->m_itSpell.m_spelllevel;
+				m_ResFire += 5;
+				m_ResCold += 5;
+				m_ResPoison += 5;
+				m_ResEnergy += 5;
 			}
 			else
 			{
@@ -851,11 +851,11 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 			StatFlag_Clear(STATF_Reflection);
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
-				SetDefNum("ResPhysical", GetDefNum("ResPhysical") + pSpell->m_itSpell.m_spelllevel);
-				SetDefNum("ResFire", GetDefNum("ResFire") - 10);
-				SetDefNum("ResCold", GetDefNum("ResCold") - 10);
-				SetDefNum("ResPoison", GetDefNum("ResPoison") - 10);
-				SetDefNum("ResEnergy", GetDefNum("ResEnergy") - 10);
+				m_ResPhysical += pSpell->m_itSpell.m_spelllevel;
+				m_ResFire -= 10;
+				m_ResCold -= 10;
+				m_ResPoison -= 10;
+				m_ResEnergy -= 10;
 			}
 			if ( m_pClient )
 				m_pClient->removeBuff(BI_MAGICREFLECTION);
@@ -870,7 +870,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 			Effect(EFFECT_OBJ, ITEMID_FX_SPARKLE, this, 9, 20);
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
-				SetDefNum("ResPhysical", GetDefNum("ResPhysical") + pSpell->m_itSpell.m_PolyStr);
+				m_ResPhysical += pSpell->m_itSpell.m_PolyStr;
 				SetDefNum("FasterCasting", GetDefNum("FasterCasting") + 2);
 				Skill_SetBase(SKILL_MAGICRESISTANCE, minimum(Skill_GetMax(SKILL_MAGICRESISTANCE, true), Skill_GetBase(SKILL_MAGICRESISTANCE) + static_cast<WORD>(pSpell->m_itSpell.m_PolyDex)));
 			}
@@ -1011,9 +1011,9 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 					pSpell->m_itSpell.m_spellcharges = 10;	// Fire/Poison/Cold Resist
 					SetDefNum("RegenHits", GetDefNum("RegenHits") - pSpell->m_itSpell.m_PolyStr);
 					SetDefNum("RegenMana", GetDefNum("RegenMana") + pSpell->m_itSpell.m_PolyDex);
-					SetDefNum("ResFire", GetDefNum("ResFire") - pSpell->m_itSpell.m_spellcharges);
-					SetDefNum("ResPoison", GetDefNum("ResPoison") + pSpell->m_itSpell.m_spellcharges);
-					SetDefNum("ResCold", GetDefNum("ResCold") + pSpell->m_itSpell.m_spellcharges);
+					m_ResFire -= pSpell->m_itSpell.m_spellcharges;
+					m_ResPoison += pSpell->m_itSpell.m_spellcharges;
+					m_ResCold += pSpell->m_itSpell.m_spellcharges;
 
 					if ( m_pClient && IsSetOF(OF_Buffs) )
 					{
@@ -1042,7 +1042,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 					SetDefNum("HitLeechLife", GetDefNum("HitLeechLife") + pSpell->m_itSpell.m_PolyStr);
 					SetDefNum("RegenStam", GetDefNum("RegenStam") + pSpell->m_itSpell.m_PolyDex);
 					SetDefNum("RegenMana", GetDefNum("RegenMana") + pSpell->m_itSpell.m_spellcharges);
-					SetDefNum("ResFire", GetDefNum("ResFire") - pSpell->m_itSpell.m_spelllevel);
+					m_ResFire -= pSpell->m_itSpell.m_spelllevel;
 
 					if ( m_pClient && IsSetOF(OF_Buffs) )
 					{
@@ -1068,9 +1068,9 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 					pSpell->m_itSpell.m_PolyStr = 15;		// Physical Resist
 					pSpell->m_itSpell.m_PolyDex = 5;		// Energy/Fire Resist
 					pSpell->m_itSpell.m_spellcharges = 5 + (15 * pCaster->Skill_GetBase(SKILL_SPIRITSPEAK) / 1000);		// Hit Mana Drain
-					SetDefNum("ResPhysical", GetDefNum("ResPhysical") + pSpell->m_itSpell.m_PolyStr);
-					SetDefNum("ResEnergy", GetDefNum("ResEnergy") - pSpell->m_itSpell.m_PolyDex);
-					SetDefNum("ResFire", GetDefNum("ResFire") - pSpell->m_itSpell.m_PolyDex);
+					m_ResPhysical += pSpell->m_itSpell.m_PolyStr;
+					m_ResEnergy -= pSpell->m_itSpell.m_PolyDex;
+					m_ResFire -= pSpell->m_itSpell.m_PolyDex;
 					SetDefNum("HitLeechMana", GetDefNum("HitLeechMana") + pSpell->m_itSpell.m_spellcharges);
 
 					if ( m_pClient && IsSetOF(OF_Buffs) )
@@ -1092,11 +1092,11 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 					pSpell->m_itSpell.m_spellcharges = 25;	// Fire Resist
 					SetDefNum("IncreaseSwingSpeed", GetDefNum("IncreaseSwingSpeed") + pSpell->m_itSpell.m_PolyStr);
 					SetDefNum("IncreaseSpellDam", GetDefNum("IncreaseSpellDam") + pSpell->m_itSpell.m_PolyStr);
-					SetDefNum("ResPhysical", GetDefNum("ResPhysical") + pSpell->m_itSpell.m_PolyDex);
-					SetDefNum("ResCold", GetDefNum("ResCold") + pSpell->m_itSpell.m_PolyDex);
-					SetDefNum("ResPoison", GetDefNum("ResPoison") + pSpell->m_itSpell.m_PolyDex);
-					SetDefNum("ResEnergy", GetDefNum("ResEnergy") + pSpell->m_itSpell.m_PolyDex);
-					SetDefNum("ResFire", GetDefNum("ResFire") - pSpell->m_itSpell.m_spellcharges);
+					m_ResPhysical += pSpell->m_itSpell.m_PolyDex;
+					m_ResCold += pSpell->m_itSpell.m_PolyDex;
+					m_ResPoison += pSpell->m_itSpell.m_PolyDex;
+					m_ResEnergy += pSpell->m_itSpell.m_PolyDex;
+					m_ResFire -= pSpell->m_itSpell.m_spellcharges;
 
 					if ( m_pClient && IsSetOF(OF_Buffs) )
 					{
@@ -1121,11 +1121,11 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 					pSpell->m_itSpell.m_spelllevel = maximum(2, (pCaster->Skill_GetBase(SKILL_MYSTICISM) + pCaster->Skill_GetBase(SKILL_IMBUING)) / 480);		// All Resists Max
 					SetDefNum("IncreaseSwingSpeed", GetDefNum("IncreaseSwingSpeed") - pSpell->m_itSpell.m_PolyStr);
 					SetDefNum("FasterCasting", GetDefNum("FasterCasting") - pSpell->m_itSpell.m_PolyDex);
-					SetDefNum("ResPhysical", GetDefNum("ResPhysical") + pSpell->m_itSpell.m_spellcharges);
-					SetDefNum("ResFire", GetDefNum("ResFire") + pSpell->m_itSpell.m_spellcharges);
-					SetDefNum("ResCold", GetDefNum("ResCold") + pSpell->m_itSpell.m_spellcharges);
-					SetDefNum("ResPoison", GetDefNum("ResPoison") + pSpell->m_itSpell.m_spellcharges);
-					SetDefNum("ResEnergy", GetDefNum("ResEnergy") + pSpell->m_itSpell.m_spellcharges);
+					m_ResPhysical += pSpell->m_itSpell.m_spellcharges;
+					m_ResFire += pSpell->m_itSpell.m_spellcharges;
+					m_ResCold += pSpell->m_itSpell.m_spellcharges;
+					m_ResPoison += pSpell->m_itSpell.m_spellcharges;
+					m_ResEnergy += pSpell->m_itSpell.m_spellcharges;
 					SetDefNum("ResPhysicalMax", GetDefNum("ResPhysicalMax") + pSpell->m_itSpell.m_spelllevel);
 					SetDefNum("ResFireMax", GetDefNum("ResFireMax") + pSpell->m_itSpell.m_spelllevel);
 					SetDefNum("ResColdMax", GetDefNum("ResColdMax") + pSpell->m_itSpell.m_spelllevel);
@@ -1412,10 +1412,10 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 			}
 			pSpell->m_itSpell.m_PolyDex = 15;
 			pSpell->m_itSpell.m_PolyStr = 10;
-			SetDefNum("ResFire", GetDefNum("ResFire") - pSpell->m_itSpell.m_PolyDex, true);
-			SetDefNum("ResPoison", GetDefNum("ResPoison") - pSpell->m_itSpell.m_PolyDex, true);
-			SetDefNum("ResCold", GetDefNum("ResCold") + pSpell->m_itSpell.m_PolyStr, true);
-			SetDefNum("ResPhysical", GetDefNum("ResPhysical") + pSpell->m_itSpell.m_PolyStr, true);
+			m_ResFire -= pSpell->m_itSpell.m_PolyDex;
+			m_ResPoison -= pSpell->m_itSpell.m_PolyDex;
+			m_ResCold += pSpell->m_itSpell.m_PolyStr;
+			m_ResPhysical += pSpell->m_itSpell.m_PolyStr;
 			return;
 		}
 		case LAYER_SPELL_Mind_Rot:
@@ -1451,11 +1451,11 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				iStatEffect = 15 + (pCaster->Skill_GetBase(SKILL_INSCRIPTION) / 200);
 				pSpell->m_itSpell.m_spelllevel = iStatEffect;
 
-				SetDefNum("ResPhysical", GetDefNum("ResPhysical") + iStatEffect);
-				SetDefNum("ResFire", GetDefNum("ResFire") - 5);
-				SetDefNum("ResCold", GetDefNum("ResCold") - 5);
-				SetDefNum("ResPoison", GetDefNum("ResPoison") - 5);
-				SetDefNum("ResEnergy", GetDefNum("ResEnergy") - 5);
+				m_ResPhysical += iStatEffect;
+				m_ResFire -= 5;
+				m_ResCold -= 5;
+				m_ResPoison -= 5;
+				m_ResEnergy -= 5;
 			}
 			else
 			{
@@ -1681,11 +1681,11 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				iStatEffect = 25 - (pCaster->Skill_GetBase(SKILL_INSCRIPTION) / 200);
 				pSpell->m_itSpell.m_spelllevel = iStatEffect;
 
-				SetDefNum("ResPhysical", GetDefNum("ResPhysical") - iStatEffect);
-				SetDefNum("ResFire", GetDefNum("ResFire") + 10);
-				SetDefNum("ResCold", GetDefNum("ResCold") + 10);
-				SetDefNum("ResPoison", GetDefNum("ResPoison") + 10);
-				SetDefNum("ResEnergy", GetDefNum("ResEnergy") + 10);
+				m_ResPhysical -= iStatEffect;
+				m_ResFire += 10;
+				m_ResCold += 10;
+				m_ResPoison += 10;
+				m_ResEnergy += 10;
 			}
 			if ( m_pClient && IsSetOF(OF_Buffs) )
 			{
@@ -1722,7 +1722,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				pSpell->m_itSpell.m_PolyStr = static_cast<int>(iPhysicalResist);
 				pSpell->m_itSpell.m_PolyDex = static_cast<int>(iMagicResist);
 
-				SetDefNum("ResPhysical", GetDefNum("ResPhysical") - iPhysicalResist);
+				m_ResPhysical -= iPhysicalResist;
 				SetDefNum("FasterCasting", GetDefNum("FasterCasting") - 2);
 				Skill_SetBase(SKILL_MAGICRESISTANCE, Skill_GetBase(SKILL_MAGICRESISTANCE) - iMagicResist);
 			}

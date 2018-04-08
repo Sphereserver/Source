@@ -51,14 +51,9 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 		case OBC_BLOODDRINKER:
 		case OBC_CASTINGFOCUS:
 		case OBC_DAMCHAOS:
-		case OBC_DAMCOLD:
 		case OBC_DAMDIRECT:
-		case OBC_DAMENERGY:
-		case OBC_DAMFIRE:
 		case OBC_DAMMODIFIER:
-		case OBC_DAMPHYSICAL:
 		case OBC_DECREASEHITCHANCE:
-		case OBC_DAMPOISON:
 		case OBC_EATERCOLD:
 		case OBC_EATERDAM:
 		case OBC_EATERENERGY:
@@ -114,11 +109,6 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 		case OBC_REGENVALHITS:
 		case OBC_REGENVALMANA:
 		case OBC_REGENVALSTAM:
-		case OBC_RESCOLD:
-		case OBC_RESFIRE:
-		case OBC_RESENERGY:
-		case OBC_RESPHYSICAL:
-		case OBC_RESPOISON:
 		case OBC_RESCOLDMAX:
 		case OBC_RESFIREMAX:
 		case OBC_RESENERGYMAX:
@@ -186,6 +176,21 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 					sVal.Format( "%hu,%hu", m_attackBase, m_attackBase+m_attackRange );
 				}
 			} break;
+		case OBC_DAMCOLD:
+			sVal.FormatVal(m_DamCold);
+			break;
+		case OBC_DAMENERGY:
+			sVal.FormatVal(m_DamEnergy);
+			break;
+		case OBC_DAMFIRE:
+			sVal.FormatVal(m_DamFire);
+			break;
+		case OBC_DAMPHYSICAL:
+			sVal.FormatVal(m_DamPhysical);
+			break;
+		case OBC_DAMPOISON:
+			sVal.FormatVal(m_DamPoison);
+			break;
 		case OBC_BASEID:
 			sVal = g_Cfg.ResourceGetName( GetResourceID());
 			break;
@@ -264,6 +269,21 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 		case OBC_RESDISPDNHUE:
 			sVal.FormatHex( GetResDispDnHue() );
 			break;
+		case OBC_RESCOLD:
+			sVal.FormatVal(m_ResCold);
+			break;
+		case OBC_RESENERGY:
+			sVal.FormatVal(m_ResEnergy);
+			break;
+		case OBC_RESFIRE:
+			sVal.FormatVal(m_ResFire);
+			break;
+		case OBC_RESPHYSICAL:
+			sVal.FormatVal(m_ResPhysical);
+			break;
+		case OBC_RESPOISON:
+			sVal.FormatVal(m_ResPoison);
+			break;
 		case OBC_TAG0:
 			fZero	= true;
 			pszKey++;
@@ -328,14 +348,9 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 		case OBC_BLOODDRINKER:
 		case OBC_CASTINGFOCUS:
 		case OBC_DAMCHAOS:
-		case OBC_DAMCOLD:
 		case OBC_DAMDIRECT:
-		case OBC_DAMENERGY:
-		case OBC_DAMFIRE:
 		case OBC_DAMMODIFIER:
-		case OBC_DAMPHYSICAL:
 		case OBC_DECREASEHITCHANCE:
-		case OBC_DAMPOISON:
 		case OBC_EATERCOLD:
 		case OBC_EATERDAM:
 		case OBC_EATERENERGY:
@@ -391,11 +406,6 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 		case OBC_REGENVALHITS:
 		case OBC_REGENVALMANA:
 		case OBC_REGENVALSTAM:
-		case OBC_RESCOLD:
-		case OBC_RESFIRE:
-		case OBC_RESENERGY:
-		case OBC_RESPHYSICAL:
-		case OBC_RESPOISON:
 		case OBC_RESCOLDMAX:
 		case OBC_RESFIREMAX:
 		case OBC_RESENERGYMAX:
@@ -458,6 +468,21 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 					m_attackRange = 0;
 			}
 			return( true );
+		case OBC_DAMCOLD:
+			m_DamCold = static_cast<int>(s.GetArgVal());
+			return true;
+		case OBC_DAMENERGY:
+			m_DamEnergy = static_cast<int>(s.GetArgVal());
+			return true;
+		case OBC_DAMFIRE:
+			m_DamFire = static_cast<int>(s.GetArgVal());
+			return true;
+		case OBC_DAMPHYSICAL:
+			m_DamPhysical = static_cast<int>(s.GetArgVal());
+			return true;
+		case OBC_DAMPOISON:
+			m_DamPoison = static_cast<int>(s.GetArgVal());
+			return true;
 		case OBC_BASEID:
 			return( false );
 		case OBC_CAN:
@@ -502,6 +527,21 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 		case OBC_RESDISPDNHUE:
 			SetResDispDnHue(static_cast<HUE_TYPE>(s.GetArgVal()));
 			return( true );
+		case OBC_RESCOLD:
+			m_ResCold = static_cast<int>(s.GetArgVal());
+			return true;
+		case OBC_RESENERGY:
+			m_ResEnergy = static_cast<int>(s.GetArgVal());
+			return true;
+		case OBC_RESFIRE:
+			m_ResFire = static_cast<int>(s.GetArgVal());
+			return true;
+		case OBC_RESPHYSICAL:
+			m_ResPhysical = static_cast<int>(s.GetArgVal());
+			return true;
+		case OBC_RESPOISON:
+			m_ResPoison = static_cast<int>(s.GetArgVal());
+			return true;
 		case OBC_TEVENTS:
 			return( m_TEvents.r_LoadVal( s, RES_EVENTS ));
 	}
@@ -535,6 +575,16 @@ void CBaseBaseDef::CopyBasic( const CBaseBaseDef * pBase )
 	m_attackRange = pBase->m_attackRange;
 	m_defenseBase = pBase->m_defenseBase;
 	m_defenseRange = pBase->m_defenseRange;
+	m_DamPhysical = pBase->m_DamPhysical;
+	m_DamFire = pBase->m_DamFire;
+	m_DamCold = pBase->m_DamCold;
+	m_DamPoison = pBase->m_DamPoison;
+	m_DamEnergy = pBase->m_DamEnergy;
+	m_ResPhysical = pBase->m_ResPhysical;
+	m_ResFire = pBase->m_ResFire;
+	m_ResCold = pBase->m_ResCold;
+	m_ResPoison = pBase->m_ResPoison;
+	m_ResEnergy = pBase->m_ResEnergy;
 	m_Can = pBase->m_Can;
 }
 

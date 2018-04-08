@@ -2667,39 +2667,34 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 						{
 							if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 							{
-								INT64 PhysicalResist = pItem->GetDefNum("RESPHYSICAL", true);
-								if ( PhysicalResist != 0 )
+								if ( pItem->m_ResPhysical != 0 )
 								{
 									m_TooltipData.Add(t = new CClientTooltip(1060448)); // physical resist ~1_val~%
-									t->FormatArgs("%lld", PhysicalResist);
+									t->FormatArgs("%d", pItem->m_ResPhysical);
 								}
 
-								INT64 FireResist = pItem->GetDefNum("RESFIRE", true);
-								if ( FireResist != 0 )
+								if ( pItem->m_ResFire != 0 )
 								{
 									m_TooltipData.Add(t = new CClientTooltip(1060447)); // fire resist ~1_val~%
-									t->FormatArgs("%lld", FireResist);
+									t->FormatArgs("%d", pItem->m_ResFire);
 								}
 
-								INT64 ColdResist = pItem->GetDefNum("RESCOLD", true);
-								if ( ColdResist != 0 )
+								if ( pItem->m_ResCold != 0 )
 								{
 									m_TooltipData.Add(t = new CClientTooltip(1060445)); // cold resist ~1_val~%
-									t->FormatArgs("%lld", ColdResist);
+									t->FormatArgs("%d", pItem->m_ResCold);
 								}
 
-								INT64 PoisonResist = pItem->GetDefNum("RESPOISON", true);
-								if ( PoisonResist != 0 )
+								if ( pItem->m_ResPoison != 0 )
 								{
 									m_TooltipData.Add(t = new CClientTooltip(1060449)); // poison resist ~1_val~%
-									t->FormatArgs("%lld", PoisonResist);
+									t->FormatArgs("%d", pItem->m_ResPoison);
 								}
 
-								INT64 EnergyResist = pItem->GetDefNum("RESENERGY", true);
-								if ( EnergyResist != 0 )
+								if ( pItem->m_ResEnergy != 0 )
 								{
 									m_TooltipData.Add(t = new CClientTooltip(1060446)); // energy resist ~1_val~%
-									t->FormatArgs("%lld", EnergyResist);
+									t->FormatArgs("%d", pItem->m_ResEnergy);
 								}
 							}
 							else
@@ -2847,39 +2842,34 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 								t->FormatArgs("%lld", HitStaminaLeech);
 							}
 
-							INT64 PhysicalDamage = pItem->GetDefNum("DAMPHYSICAL", true);
-							if ( PhysicalDamage != 0 )
+							if ( pItem->m_DamPhysical != 0 )
 							{
 								m_TooltipData.Add(t = new CClientTooltip(1060403)); // physical damage ~1_val~%
-								t->FormatArgs("%lld", PhysicalDamage);
+								t->FormatArgs("%d", pItem->m_DamPhysical);
 							}
 
-							INT64 FireDamage = pItem->GetDefNum("DAMFIRE", true);
-							if ( FireDamage != 0 )
+							if ( pItem->m_DamFire != 0 )
 							{
 								m_TooltipData.Add(t = new CClientTooltip(1060405)); // fire damage ~1_val~%
-								t->FormatArgs("%lld", FireDamage);
+								t->FormatArgs("%d", pItem->m_DamFire);
 							}
 
-							INT64 ColdDamage = pItem->GetDefNum("DAMCOLD", true);
-							if ( ColdDamage != 0 )
+							if ( pItem->m_DamCold != 0 )
 							{
 								m_TooltipData.Add(t = new CClientTooltip(1060404)); // cold damage ~1_val~%
-								t->FormatArgs("%lld", ColdDamage);
+								t->FormatArgs("%d", pItem->m_DamCold);
 							}
 
-							INT64 PoisonDamage = pItem->GetDefNum("DAMPOISON", true);
-							if ( PoisonDamage != 0 )
+							if ( pItem->m_DamPoison != 0 )
 							{
 								m_TooltipData.Add(t = new CClientTooltip(1060406)); // poison damage ~1_val~%
-								t->FormatArgs("%lld", PoisonDamage);
+								t->FormatArgs("%d", pItem->m_DamPoison);
 							}
 
-							INT64 EnergyDamage = pItem->GetDefNum("DAMENERGY", true);
-							if ( EnergyDamage != 0 )
+							if ( pItem->m_DamEnergy != 0 )
 							{
 								m_TooltipData.Add(t = new CClientTooltip(1060407)); // energy damage ~1_val~%
-								t->FormatArgs("%lld", EnergyDamage);
+								t->FormatArgs("%d", pItem->m_DamEnergy);
 							}
 
 							INT64 ChaosDamage = pItem->GetDefNum("DAMCHAOS", true);

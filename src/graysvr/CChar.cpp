@@ -237,6 +237,19 @@ CChar::CChar(CREID_TYPE id) : CObjBase(false)
 	m_attackRange = pCharDef->m_attackRange;
 	m_defenseBase = pCharDef->m_defenseBase;
 	m_defenseRange = pCharDef->m_defenseRange;
+
+	m_DamPhysical = pCharDef->m_DamPhysical;
+	m_DamFire = pCharDef->m_DamFire;
+	m_DamCold = pCharDef->m_DamCold;
+	m_DamPoison = pCharDef->m_DamPoison;
+	m_DamEnergy = pCharDef->m_DamEnergy;
+
+	m_ResPhysical = pCharDef->m_ResPhysical;
+	m_ResFire = pCharDef->m_ResFire;
+	m_ResCold = pCharDef->m_ResCold;
+	m_ResPoison = pCharDef->m_ResPoison;
+	m_ResEnergy = pCharDef->m_ResEnergy;
+
 	m_Can = pCharDef->m_Can;
 	m_wBloodHue = pCharDef->m_wBloodHue;
 
@@ -1321,15 +1334,10 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CHC_LUCK:
 		case CHC_CURFOLLOWER:
 		case CHC_MAXFOLLOWER:
-		case CHC_RESPHYSICAL:
 		case CHC_RESPHYSICALMAX:
-		case CHC_RESFIRE:
 		case CHC_RESFIREMAX:
-		case CHC_RESCOLD:
 		case CHC_RESCOLDMAX:
-		case CHC_RESPOISON:
 		case CHC_RESPOISONMAX:
-		case CHC_RESENERGY:
 		case CHC_RESENERGYMAX:
 		case CHC_REGENFOOD:
 		case CHC_REGENHITS:
@@ -2103,15 +2111,10 @@ bool CChar::r_LoadVal(CScript &s)
 		case CHC_INCREASEDEFCHANCE:
 		case CHC_INCREASEDEFCHANCEMAX:
 		case CHC_INCREASESPELLDAM:
-		case CHC_RESPHYSICAL:
 		case CHC_RESPHYSICALMAX:
-		case CHC_RESFIRE:
 		case CHC_RESFIREMAX:
-		case CHC_RESCOLD:
 		case CHC_RESCOLDMAX:
-		case CHC_RESPOISON:
 		case CHC_RESPOISONMAX:
-		case CHC_RESENERGY:
 		case CHC_RESENERGYMAX:
 		case CHC_LUCK:
 		case CHC_CURFOLLOWER:
