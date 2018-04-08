@@ -464,10 +464,15 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 			m_DamEnergy -= pItem->m_DamEnergy;
 
 			m_ResPhysical -= pItem->m_ResPhysical;
+			m_ResPhysicalMax -= pItem->m_ResPhysicalMax;
 			m_ResFire -= pItem->m_ResFire;
+			m_ResFireMax -= pItem->m_ResFireMax;
 			m_ResCold -= pItem->m_ResCold;
+			m_ResColdMax -= pItem->m_ResColdMax;
 			m_ResPoison -= pItem->m_ResPoison;
+			m_ResPoisonMax -= pItem->m_ResPoisonMax;
 			m_ResEnergy -= pItem->m_ResEnergy;
+			m_ResEnergyMax -= pItem->m_ResEnergyMax;
 		}
 
 		if ( pItem->IsTypeWeapon() )
@@ -1880,10 +1885,15 @@ bool CChar::ItemEquip(CItem *pItem, CChar *pCharMsg, bool fFromDClick)
 		m_DamEnergy += pItem->m_DamEnergy;
 
 		m_ResPhysical += pItem->m_ResPhysical;
+		m_ResPhysicalMax += pItem->m_ResPhysicalMax;
 		m_ResFire += pItem->m_ResFire;
+		m_ResFireMax += pItem->m_ResFireMax;
 		m_ResCold += pItem->m_ResCold;
+		m_ResColdMax += pItem->m_ResColdMax;
 		m_ResPoison += pItem->m_ResPoison;
+		m_ResPoisonMax += pItem->m_ResPoisonMax;
 		m_ResEnergy += pItem->m_ResEnergy;
+		m_ResEnergyMax += pItem->m_ResEnergyMax;
 	}
 
 	if ( pItem->IsTypeWeapon() )

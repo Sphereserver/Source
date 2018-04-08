@@ -1787,11 +1787,11 @@ effect_bounce:
 			if ( iDmgPhysical == 0 )		// if physical damage is not set, let's assume it as the remaining value
 				iDmgPhysical = 100 - (iDmgFire + iDmgCold + iDmgPoison + iDmgEnergy);
 
-			int iPhysicalDamage = iDmg * iDmgPhysical * (100 - m_ResPhysical);
-			int iFireDamage = iDmg * iDmgFire * (100 - m_ResFire);
-			int iColdDamage = iDmg * iDmgCold * (100 - m_ResCold);
-			int iPoisonDamage = iDmg * iDmgPoison * (100 - m_ResPoison);
-			int iEnergyDamage = iDmg * iDmgEnergy * (100 - m_ResEnergy);
+			int iPhysicalDamage = iDmg * iDmgPhysical * (100 - (m_ResPhysicalMax ? minimum(m_ResPhysical, m_ResPhysicalMax) : m_ResPhysical));
+			int iFireDamage = iDmg * iDmgFire * (100 - (m_ResFireMax ? minimum(m_ResFire, m_ResFireMax) : m_ResFire));
+			int iColdDamage = iDmg * iDmgCold * (100 - (m_ResColdMax ? minimum(m_ResCold, m_ResColdMax) : m_ResCold));
+			int iPoisonDamage = iDmg * iDmgPoison * (100 - (m_ResPoisonMax ? minimum(m_ResPoison, m_ResPoisonMax) : m_ResPoison));
+			int iEnergyDamage = iDmg * iDmgEnergy * (100 - (m_ResEnergyMax ? minimum(m_ResEnergy, m_ResEnergyMax) : m_ResEnergy));
 
 			iDmg = (iPhysicalDamage + iFireDamage + iColdDamage + iPoisonDamage + iEnergyDamage) / 10000;
 		}

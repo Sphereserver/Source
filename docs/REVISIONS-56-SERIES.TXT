@@ -1043,3 +1043,7 @@ Fixed: Server function 'f_onaccount_connect' not being called correctly when Acc
 Changed: Updated internal SQLite libs v3.22.0 to v3.23.0.
 Added: New char trigger @UserUltimaStoreButton, fired when click on 'Ultima Store' button on new clients 7.0.62+
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.62 and enhanced client 4.0.62
+
+08-04-2018, Coruja
+Added: RES*MAX properties functionality, now they are fully working
+	-When RES*MAX is set on chars, RES* will be limited to RES*MAX value

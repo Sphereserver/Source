@@ -2667,31 +2667,56 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 						{
 							if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 							{
-								if ( pItem->m_ResPhysical != 0 )
+								if ( pItem->m_ResPhysicalMax != 0 )
+								{
+									m_TooltipData.Add(t = new CClientTooltip(1153735)); // physical resist ~1_val~% / ~2_symb~~3_val~% Max
+									t->FormatArgs("%d\t\t%d", pItem->m_ResPhysical, pItem->m_ResPhysicalMax);
+								}
+								else if ( pItem->m_ResPhysical != 0 )
 								{
 									m_TooltipData.Add(t = new CClientTooltip(1060448)); // physical resist ~1_val~%
 									t->FormatArgs("%d", pItem->m_ResPhysical);
 								}
 
-								if ( pItem->m_ResFire != 0 )
+								if ( pItem->m_ResFireMax != 0 )
+								{
+									m_TooltipData.Add(t = new CClientTooltip(1153737)); // fire resist ~1_val~% / ~2_symb~~3_val~% Max
+									t->FormatArgs("%d\t\t%d", pItem->m_ResFire, pItem->m_ResFireMax);
+								}
+								else if ( pItem->m_ResFire != 0 )
 								{
 									m_TooltipData.Add(t = new CClientTooltip(1060447)); // fire resist ~1_val~%
 									t->FormatArgs("%d", pItem->m_ResFire);
 								}
 
-								if ( pItem->m_ResCold != 0 )
+								if ( pItem->m_ResColdMax != 0 )
+								{
+									m_TooltipData.Add(t = new CClientTooltip(1153739)); // cold resist ~1_val~% / ~2_symb~~3_val~% Max
+									t->FormatArgs("%d\t\t%d", pItem->m_ResCold, pItem->m_ResColdMax);
+								}
+								else if ( pItem->m_ResCold != 0 )
 								{
 									m_TooltipData.Add(t = new CClientTooltip(1060445)); // cold resist ~1_val~%
 									t->FormatArgs("%d", pItem->m_ResCold);
 								}
 
-								if ( pItem->m_ResPoison != 0 )
+								if ( pItem->m_ResPoisonMax != 0 )
+								{
+									m_TooltipData.Add(t = new CClientTooltip(1153736)); // poison resist ~1_val~% / ~2_symb~~3_val~% Max
+									t->FormatArgs("%d\t\t%d", pItem->m_ResPoison, pItem->m_ResPoisonMax);
+								}
+								else if ( pItem->m_ResPoison != 0 )
 								{
 									m_TooltipData.Add(t = new CClientTooltip(1060449)); // poison resist ~1_val~%
 									t->FormatArgs("%d", pItem->m_ResPoison);
 								}
 
-								if ( pItem->m_ResEnergy != 0 )
+								if ( pItem->m_ResEnergyMax != 0 )
+								{
+									m_TooltipData.Add(t = new CClientTooltip(1153738)); // energy resist ~1_val~% / ~2_symb~~3_val~% Max
+									t->FormatArgs("%d\t\t%d", pItem->m_ResEnergy, pItem->m_ResEnergyMax);
+								}
+								else if ( pItem->m_ResEnergy != 0 )
 								{
 									m_TooltipData.Add(t = new CClientTooltip(1060446)); // energy resist ~1_val~%
 									t->FormatArgs("%d", pItem->m_ResEnergy);
