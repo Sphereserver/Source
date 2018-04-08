@@ -1640,10 +1640,15 @@ bool CItem::SetBase( CItemBase * pItemDef )
 	m_DamEnergy = pItemDef->m_DamEnergy;
 
 	m_ResPhysical = pItemDef->m_ResPhysical;
+	m_ResPhysicalMax = pItemDef->m_ResPhysicalMax;
 	m_ResFire = pItemDef->m_ResFire;
+	m_ResFireMax = pItemDef->m_ResFireMax;
 	m_ResCold = pItemDef->m_ResCold;
+	m_ResColdMax = pItemDef->m_ResColdMax;
 	m_ResPoison = pItemDef->m_ResPoison;
+	m_ResPoisonMax = pItemDef->m_ResPoisonMax;
 	m_ResEnergy = pItemDef->m_ResEnergy;
+	m_ResEnergyMax = pItemDef->m_ResEnergyMax;
 
 	if (pParentCont)
 	{

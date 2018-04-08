@@ -48,10 +48,15 @@ public:
 	int m_DamEnergy;
 
 	int m_ResPhysical;
+	int m_ResPhysicalMax;
 	int m_ResFire;
+	int m_ResFireMax;
 	int m_ResCold;
+	int m_ResColdMax;
 	int m_ResPoison;
+	int m_ResPoisonMax;
 	int m_ResEnergy;
+	int m_ResEnergyMax;
 
 	DWORD	m_Can;			// Base attribute flags. CAN_C_GHOST
 
@@ -158,10 +163,15 @@ public:
 		m_DamPoison			= 0;
 		m_DamEnergy			= 0;
 		m_ResPhysical		= 0;
+		m_ResPhysicalMax	= 0;
 		m_ResFire			= 0;
+		m_ResFireMax		= 0;
 		m_ResCold			= 0;
+		m_ResColdMax		= 0;
 		m_ResPoison			= 0;
+		m_ResPoisonMax		= 0;
 		m_ResEnergy			= 0;
+		m_ResEnergyMax		= 0;
 		m_Height			= 0;
 		m_Can			= CAN_C_INDOORS;	// most things can cover us from the weather.
 		SetDefNum("RANGE",1); //m_range			= 1;

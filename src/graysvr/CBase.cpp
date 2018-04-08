@@ -109,11 +109,6 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 		case OBC_REGENVALHITS:
 		case OBC_REGENVALMANA:
 		case OBC_REGENVALSTAM:
-		case OBC_RESCOLDMAX:
-		case OBC_RESFIREMAX:
-		case OBC_RESENERGYMAX:
-		case OBC_RESPHYSICALMAX:
-		case OBC_RESPOISONMAX:
 		case OBC_RESONANCECOLD:
 		case OBC_RESONANCEENERGY:
 		case OBC_RESONANCEFIRE:
@@ -272,17 +267,32 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 		case OBC_RESCOLD:
 			sVal.FormatVal(m_ResCold);
 			break;
+		case OBC_RESCOLDMAX:
+			sVal.FormatVal(m_ResColdMax);
+			break;
 		case OBC_RESENERGY:
 			sVal.FormatVal(m_ResEnergy);
+			break;
+		case OBC_RESENERGYMAX:
+			sVal.FormatVal(m_ResEnergyMax);
 			break;
 		case OBC_RESFIRE:
 			sVal.FormatVal(m_ResFire);
 			break;
+		case OBC_RESFIREMAX:
+			sVal.FormatVal(m_ResFireMax);
+			break;
 		case OBC_RESPHYSICAL:
 			sVal.FormatVal(m_ResPhysical);
 			break;
+		case OBC_RESPHYSICALMAX:
+			sVal.FormatVal(m_ResPhysicalMax);
+			break;
 		case OBC_RESPOISON:
 			sVal.FormatVal(m_ResPoison);
+			break;
+		case OBC_RESPOISONMAX:
+			sVal.FormatVal(m_ResPoisonMax);
 			break;
 		case OBC_TAG0:
 			fZero	= true;
@@ -406,11 +416,6 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 		case OBC_REGENVALHITS:
 		case OBC_REGENVALMANA:
 		case OBC_REGENVALSTAM:
-		case OBC_RESCOLDMAX:
-		case OBC_RESFIREMAX:
-		case OBC_RESENERGYMAX:
-		case OBC_RESPHYSICALMAX:
-		case OBC_RESPOISONMAX:
 		case OBC_RESONANCECOLD:
 		case OBC_RESONANCEENERGY:
 		case OBC_RESONANCEFIRE:
@@ -530,17 +535,32 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 		case OBC_RESCOLD:
 			m_ResCold = static_cast<int>(s.GetArgVal());
 			return true;
+		case OBC_RESCOLDMAX:
+			m_ResColdMax = static_cast<int>(s.GetArgVal());
+			return true;
 		case OBC_RESENERGY:
 			m_ResEnergy = static_cast<int>(s.GetArgVal());
+			return true;
+		case OBC_RESENERGYMAX:
+			m_ResEnergyMax = static_cast<int>(s.GetArgVal());
 			return true;
 		case OBC_RESFIRE:
 			m_ResFire = static_cast<int>(s.GetArgVal());
 			return true;
+		case OBC_RESFIREMAX:
+			m_ResFireMax = static_cast<int>(s.GetArgVal());
+			return true;
 		case OBC_RESPHYSICAL:
 			m_ResPhysical = static_cast<int>(s.GetArgVal());
 			return true;
+		case OBC_RESPHYSICALMAX:
+			m_ResPhysicalMax = static_cast<int>(s.GetArgVal());
+			return true;
 		case OBC_RESPOISON:
 			m_ResPoison = static_cast<int>(s.GetArgVal());
+			return true;
+		case OBC_RESPOISONMAX:
+			m_ResPoisonMax = static_cast<int>(s.GetArgVal());
 			return true;
 		case OBC_TEVENTS:
 			return( m_TEvents.r_LoadVal( s, RES_EVENTS ));
@@ -581,10 +601,15 @@ void CBaseBaseDef::CopyBasic( const CBaseBaseDef * pBase )
 	m_DamPoison = pBase->m_DamPoison;
 	m_DamEnergy = pBase->m_DamEnergy;
 	m_ResPhysical = pBase->m_ResPhysical;
+	m_ResPhysicalMax = pBase->m_ResPhysicalMax;
 	m_ResFire = pBase->m_ResFire;
+	m_ResFireMax = pBase->m_ResFireMax;
 	m_ResCold = pBase->m_ResCold;
+	m_ResColdMax = pBase->m_ResColdMax;
 	m_ResPoison = pBase->m_ResPoison;
+	m_ResPoisonMax = pBase->m_ResPoisonMax;
 	m_ResEnergy = pBase->m_ResEnergy;
+	m_ResEnergyMax = pBase->m_ResEnergyMax;
 	m_Can = pBase->m_Can;
 }
 

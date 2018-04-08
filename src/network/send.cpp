@@ -237,11 +237,11 @@ PacketHealthBarInfo::PacketHealthBarInfo(const CClient *target, CObjBase *object
 
 		if (version >= 6)	// SA attributes
 		{
-			writeInt16(static_cast<WORD>(object->GetDefNum("RESPHYSICALMAX", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("RESFIREMAX", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("RESCOLDMAX", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("RESPOISONMAX", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("RESENERGYMAX", true)));
+			writeInt16(static_cast<WORD>(object->m_ResPhysicalMax));
+			writeInt16(static_cast<WORD>(object->m_ResFireMax));
+			writeInt16(static_cast<WORD>(object->m_ResColdMax));
+			writeInt16(static_cast<WORD>(object->m_ResPoisonMax));
+			writeInt16(static_cast<WORD>(object->m_ResEnergyMax));
 			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASEDEFCHANCE", true)));
 			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASEDEFCHANCEMAX", true)));
 			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASEHITCHANCE", true)));

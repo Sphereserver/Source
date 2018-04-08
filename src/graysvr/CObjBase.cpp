@@ -763,11 +763,6 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_REGENVALSTAM:
 		case OC_COMBATBONUSSTAT:
 		case OC_COMBATBONUSPERCENT:
-		case OC_RESCOLDMAX:
-		case OC_RESENERGYMAX:
-		case OC_RESFIREMAX:
-		case OC_RESPHYSICALMAX:
-		case OC_RESPOISONMAX:
 		case OC_RESONANCECOLD:
 		case OC_RESONANCEENERGY:
 		case OC_RESONANCEFIRE:
@@ -1271,17 +1266,32 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_RESCOLD:
 			sVal.FormatVal(m_ResCold);
 			break;
+		case OC_RESCOLDMAX:
+			sVal.FormatVal(m_ResColdMax);
+			break;
 		case OC_RESENERGY:
 			sVal.FormatVal(m_ResEnergy);
+			break;
+		case OC_RESENERGYMAX:
+			sVal.FormatVal(m_ResEnergyMax);
 			break;
 		case OC_RESFIRE:
 			sVal.FormatVal(m_ResFire);
 			break;
+		case OC_RESFIREMAX:
+			sVal.FormatVal(m_ResFireMax);
+			break;
 		case OC_RESPHYSICAL:
 			sVal.FormatVal(m_ResPhysical);
 			break;
+		case OC_RESPHYSICALMAX:
+			sVal.FormatVal(m_ResPhysicalMax);
+			break;
 		case OC_RESPOISON:
 			sVal.FormatVal(m_ResPoison);
+			break;
+		case OC_RESPOISONMAX:
+			sVal.FormatVal(m_ResPoisonMax);
 			break;
 		case OC_TAG0:
 			fZero = true;
@@ -1581,11 +1591,6 @@ bool CObjBase::r_LoadVal(CScript &s)
 		case OC_INCREASEDEFCHANCE:
 		case OC_INCREASEDEFCHANCEMAX:
 		case OC_INCREASESPELLDAM:
-		case OC_RESCOLDMAX:
-		case OC_RESENERGYMAX:
-		case OC_RESFIREMAX:
-		case OC_RESPHYSICALMAX:
-		case OC_RESPOISONMAX:
 		case OC_LUCK:
 		case OC_REGENFOOD:
 		case OC_REGENHITS:
@@ -1751,9 +1756,27 @@ bool CObjBase::r_LoadVal(CScript &s)
 				pChar->UpdateStatsFlag();
 			return true;
 		}
+		case OC_RESCOLDMAX:
+		{
+			m_ResColdMax = static_cast<int>(s.GetArgVal());
+
+			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
+			if ( pChar )
+				pChar->UpdateStatsFlag();
+			return true;
+		}
 		case OC_RESENERGY:
 		{
 			m_ResEnergy = static_cast<int>(s.GetArgVal());
+
+			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
+			if ( pChar )
+				pChar->UpdateStatsFlag();
+			return true;
+		}
+		case OC_RESENERGYMAX:
+		{
+			m_ResEnergyMax = static_cast<int>(s.GetArgVal());
 
 			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
 			if ( pChar )
@@ -1769,6 +1792,15 @@ bool CObjBase::r_LoadVal(CScript &s)
 				pChar->UpdateStatsFlag();
 			return true;
 		}
+		case OC_RESFIREMAX:
+		{
+			m_ResFireMax = static_cast<int>(s.GetArgVal());
+
+			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
+			if ( pChar )
+				pChar->UpdateStatsFlag();
+			return true;
+		}
 		case OC_RESPHYSICAL:
 		{
 			m_ResPhysical = static_cast<int>(s.GetArgVal());
@@ -1778,9 +1810,27 @@ bool CObjBase::r_LoadVal(CScript &s)
 				pChar->UpdateStatsFlag();
 			return true;
 		}
+		case OC_RESPHYSICALMAX:
+		{
+			m_ResPhysicalMax = static_cast<int>(s.GetArgVal());
+
+			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
+			if ( pChar )
+				pChar->UpdateStatsFlag();
+			return true;
+		}
 		case OC_RESPOISON:
 		{
 			m_ResPoison = static_cast<int>(s.GetArgVal());
+
+			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
+			if ( pChar )
+				pChar->UpdateStatsFlag();
+			return true;
+		}
+		case OC_RESPOISONMAX:
+		{
+			m_ResPoisonMax = static_cast<int>(s.GetArgVal());
 
 			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
 			if ( pChar )
@@ -1863,14 +1913,24 @@ void CObjBase::r_Write(CScript &s)
 
 	if ( m_ResPhysical != pBaseDef->m_ResPhysical )
 		s.WriteKeyVal("RESPHYSICAL", m_ResPhysical);
+	if ( m_ResPhysicalMax != pBaseDef->m_ResPhysicalMax )
+		s.WriteKeyVal("RESPHYSICALMAX", m_ResPhysicalMax);
 	if ( m_ResFire != pBaseDef->m_ResFire )
 		s.WriteKeyVal("RESFIRE", m_ResFire);
+	if ( m_ResFireMax != pBaseDef->m_ResFireMax )
+		s.WriteKeyVal("RESFIREMAX", m_ResFireMax);
 	if ( m_ResCold != pBaseDef->m_ResCold )
 		s.WriteKeyVal("RESCOLD", m_ResCold);
+	if ( m_ResColdMax != pBaseDef->m_ResColdMax )
+		s.WriteKeyVal("RESCOLDMAX", m_ResColdMax);
 	if ( m_ResPoison != pBaseDef->m_ResPoison )
 		s.WriteKeyVal("RESPOISON", m_ResPoison);
+	if ( m_ResPoisonMax != pBaseDef->m_ResPoisonMax )
+		s.WriteKeyVal("RESPOISONMAX", m_ResPoisonMax);
 	if ( m_ResEnergy != pBaseDef->m_ResEnergy )
 		s.WriteKeyVal("RESENERGY", m_ResEnergy);
+	if ( m_ResEnergyMax != pBaseDef->m_ResEnergyMax )
+		s.WriteKeyVal("RESENERGYMAX", m_ResEnergyMax);
 
 	m_BaseDefs.r_WritePrefix(s);	// new variable storage system
 	m_TagDefs.r_WritePrefix(s, "TAG");

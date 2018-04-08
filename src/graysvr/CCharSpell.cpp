@@ -575,15 +575,15 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 					SetDefNum("IncreaseSwingSpeed", GetDefNum("IncreaseSwingSpeed") + pSpell->m_itSpell.m_PolyStr);
 					SetDefNum("FasterCasting", GetDefNum("FasterCasting") + pSpell->m_itSpell.m_PolyDex);
 					m_ResPhysical -= pSpell->m_itSpell.m_spellcharges;
+					m_ResPhysicalMax -= pSpell->m_itSpell.m_spelllevel;
 					m_ResFire -= pSpell->m_itSpell.m_spellcharges;
+					m_ResFireMax -= pSpell->m_itSpell.m_spelllevel;
 					m_ResCold -= pSpell->m_itSpell.m_spellcharges;
+					m_ResColdMax -= pSpell->m_itSpell.m_spelllevel;
 					m_ResPoison -= pSpell->m_itSpell.m_spellcharges;
+					m_ResPoisonMax -= pSpell->m_itSpell.m_spelllevel;
 					m_ResEnergy -= pSpell->m_itSpell.m_spellcharges;
-					SetDefNum("ResPhysicalMax", GetDefNum("ResPhysicalMax") - pSpell->m_itSpell.m_spelllevel);
-					SetDefNum("ResFireMax", GetDefNum("ResFireMax") - pSpell->m_itSpell.m_spelllevel);
-					SetDefNum("ResColdMax", GetDefNum("ResColdMax") - pSpell->m_itSpell.m_spelllevel);
-					SetDefNum("ResPoisonMax", GetDefNum("ResPoisonMax") - pSpell->m_itSpell.m_spelllevel);
-					SetDefNum("ResEnergyMax", GetDefNum("ResEnergyMax") - pSpell->m_itSpell.m_spelllevel);
+					m_ResEnergyMax -= pSpell->m_itSpell.m_spelllevel;
 					SetDefNum("IncreaseDam", GetDefNum("IncreaseDam") - pSpell->m_itSpell.m_PolyStr);
 					break;
 				default:
@@ -774,12 +774,12 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 		case SPELL_Curse:
 		case SPELL_Mass_Curse:
 		{
-			if ( m_pPlayer && (spell == SPELL_Curse) )
+			if ( (spell == SPELL_Curse) && IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) && m_pPlayer )
 			{
-				SetDefNum("ResFireMax", GetDefNum("ResFireMax", true) + 10);
-				SetDefNum("ResColdMax", GetDefNum("ResColdMax", true) + 10);
-				SetDefNum("ResPoisonMax", GetDefNum("ResPoisonMax", true) + 10);
-				SetDefNum("ResEnergyMax", GetDefNum("ResEnergyMax", true) + 10);
+				m_ResFireMax += 10;
+				m_ResColdMax += 10;
+				m_ResPoisonMax += 10;
+				m_ResEnergyMax += 10;
 			}
 			for ( int i = STAT_STR; i < STAT_BASE_QTY; i++ )
 				Stat_AddMod(static_cast<STAT_TYPE>(i), iStatEffect);
@@ -1122,15 +1122,15 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 					SetDefNum("IncreaseSwingSpeed", GetDefNum("IncreaseSwingSpeed") - pSpell->m_itSpell.m_PolyStr);
 					SetDefNum("FasterCasting", GetDefNum("FasterCasting") - pSpell->m_itSpell.m_PolyDex);
 					m_ResPhysical += pSpell->m_itSpell.m_spellcharges;
+					m_ResPhysicalMax += pSpell->m_itSpell.m_spelllevel;
 					m_ResFire += pSpell->m_itSpell.m_spellcharges;
+					m_ResFireMax += pSpell->m_itSpell.m_spelllevel;
 					m_ResCold += pSpell->m_itSpell.m_spellcharges;
+					m_ResColdMax += pSpell->m_itSpell.m_spelllevel;
 					m_ResPoison += pSpell->m_itSpell.m_spellcharges;
+					m_ResPoisonMax += pSpell->m_itSpell.m_spelllevel;
 					m_ResEnergy += pSpell->m_itSpell.m_spellcharges;
-					SetDefNum("ResPhysicalMax", GetDefNum("ResPhysicalMax") + pSpell->m_itSpell.m_spelllevel);
-					SetDefNum("ResFireMax", GetDefNum("ResFireMax") + pSpell->m_itSpell.m_spelllevel);
-					SetDefNum("ResColdMax", GetDefNum("ResColdMax") + pSpell->m_itSpell.m_spelllevel);
-					SetDefNum("ResPoisonMax", GetDefNum("ResPoisonMax") + pSpell->m_itSpell.m_spelllevel);
-					SetDefNum("ResEnergyMax", GetDefNum("ResEnergyMax") + pSpell->m_itSpell.m_spelllevel);
+					m_ResEnergyMax += pSpell->m_itSpell.m_spelllevel;
 					SetDefNum("IncreaseDam", GetDefNum("IncreaseDam") + pSpell->m_itSpell.m_PolyStr);
 
 					if ( m_pClient && IsSetOF(OF_Buffs) )
@@ -1555,10 +1555,10 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 			}
 			if ( (spell == SPELL_Curse) && IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) && m_pPlayer )		// Curse also decrease max resistances on players (not applied to Mass Curse)
 			{
-				SetDefNum("ResFireMax", GetDefNum("ResFireMax", true) - 10);
-				SetDefNum("ResColdMax", GetDefNum("ResColdMax", true) - 10);
-				SetDefNum("ResPoisonMax", GetDefNum("ResPoisonMax", true) - 10);
-				SetDefNum("ResEnergyMax", GetDefNum("ResEnergyMax", true) - 10);
+				m_ResFireMax -= 10;
+				m_ResColdMax -= 10;
+				m_ResPoisonMax -= 10;
+				m_ResEnergyMax -= 10;
 			}
 			for ( int i = STAT_STR; i < STAT_BASE_QTY; i++ )
 				Stat_AddMod(static_cast<STAT_TYPE>(i), -iStatEffect);

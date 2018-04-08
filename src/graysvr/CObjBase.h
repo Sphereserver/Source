@@ -53,10 +53,15 @@ public:
 	int m_DamEnergy;
 
 	int m_ResPhysical;
+	int m_ResPhysicalMax;
 	int m_ResFire;
+	int m_ResFireMax;
 	int m_ResCold;
+	int m_ResColdMax;
 	int m_ResPoison;
+	int m_ResPoisonMax;
 	int m_ResEnergy;
+	int m_ResEnergyMax;
 
 	CGrayUID m_uidSpawnItem;	// SpawnItem for this item
 
