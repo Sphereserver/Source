@@ -11,48 +11,46 @@ void CScriptKey::InitKey()
 	m_pszArg = m_pszKey = NULL;
 }
 
-TCHAR * CScriptKey::GetArgStr( bool * fQuoted )	// this could be a quoted string ?
+TCHAR *CScriptKey::GetArgStr(bool *fQuoted)
 {
 	ADDTOCALLSTACK("CScriptKey::GetArgStr");
 	ASSERT(m_pszKey);
 
-	TCHAR * pStr = GetArgRaw();
-	if ( *pStr != '"' )
-		return( pStr );
+	TCHAR *pszStr = GetArgRaw();
+	if ( *pszStr != '"' )
+		return pszStr;
 
-	pStr++;
-	//TCHAR * pEnd = strchr( pStr, '"' );
-	// search for last qoute sybol starting from the end
-	for (TCHAR * pEnd = pStr + strlen( pStr ) - 1; pEnd >= pStr; pEnd-- )
+	pszStr++;
+
+	// Search for last quote symbol starting from the end
+	for ( TCHAR *pszEnd = pszStr + strlen(pszStr) - 1; pszEnd >= pszStr; pszEnd-- )
 	{
-		if ( *pEnd == '"' )
+		if ( *pszEnd == '"' )
 		{
-			*pEnd = '\0';
+			*pszEnd = '\0';
 			if ( fQuoted )
 				*fQuoted = true;
 			break;
 		}
 	}
-
-	return( pStr );
+	return pszStr;
 }
 
-UINT64 CScriptKey::GetArgFlag( UINT64 dwStart, UINT64 dwMask )
+UINT64 CScriptKey::GetArgFlag(UINT64 uiStart, UINT64 uiMask)
 {
 	ADDTOCALLSTACK("CScriptKey::GetArgFlag");
-	// No args = toggle the flag.
-	// 1 = set the flag.
-	// 0 = clear the flag.
-
+	// No args = toggle the flag
+	// 1 = set the flag
+	// 0 = clear the flag
 	ASSERT(m_pszKey);
 	ASSERT(m_pszArg);
 
 	if ( !HasArgs() )
-		return (dwStart ^ dwMask);
+		return (uiStart ^ uiMask);
 	else if ( GetArgVal() )
-		return (dwStart | dwMask);
+		return (uiStart | uiMask);
 	else
-		return (dwStart & ~dwMask);
+		return (uiStart & ~uiMask);
 }
 
 long long CScriptKey::GetArgLLVal()
@@ -60,7 +58,7 @@ long long CScriptKey::GetArgLLVal()
 	ADDTOCALLSTACK("CScriptKey::GetArgLLVal");
 	ASSERT(m_pszKey);
 	ASSERT(m_pszArg);
-	return( Exp_GetLLVal( m_pszArg ));
+	return Exp_GetLLVal(m_pszArg);
 }
 
 long CScriptKey::GetArgVal()
@@ -68,7 +66,7 @@ long CScriptKey::GetArgVal()
 	ADDTOCALLSTACK("CScriptKey::GetArgVal");
 	ASSERT(m_pszKey);
 	ASSERT(m_pszArg);
-	return( Exp_GetVal( m_pszArg ));
+	return Exp_GetVal(m_pszArg);
 }
 
 long CScriptKey::GetArgRange()
@@ -76,116 +74,106 @@ long CScriptKey::GetArgRange()
 	ADDTOCALLSTACK("CScriptKey::GetArgRange");
 	ASSERT(m_pszKey);
 	ASSERT(m_pszArg);
-	return( Exp_GetRange( m_pszArg ));
+	return Exp_GetRange(m_pszArg);
 }
 
 ///////////////////////////////////////////////////////////////
 // -CScriptKeyAlloc
 
-TCHAR * CScriptKeyAlloc::GetKeyBufferRaw( size_t iLen )
+TCHAR *CScriptKeyAlloc::GetKeyBufferRaw(size_t iLen)
 {
 	ADDTOCALLSTACK("CScriptKeyAlloc::GetKeyBufferRaw");
-	// iLen = length of the string we want to hold.
+	// ARGS: iLen = length of the string to hold
 	if ( iLen > SCRIPT_MAX_LINE_LEN )
 		iLen = SCRIPT_MAX_LINE_LEN;
-	iLen ++;	// add null.
+	iLen++;		// add null
 
 	if ( m_Mem.GetDataLength() < iLen )
-	{
-		m_Mem.Alloc( iLen );
-	}
+		m_Mem.Alloc(iLen);
 
 	m_pszKey = m_pszArg = GetKeyBuffer();
 	m_pszKey[0] = '\0';
-
 	return m_pszKey;
 }
 
-bool CScriptKeyAlloc::ParseKey( LPCTSTR pszKey )
+bool CScriptKeyAlloc::ParseKey(LPCTSTR pszKey)
 {
 	ADDTOCALLSTACK("CScriptKeyAlloc::ParseKey");
-	// Skip leading white space 
-	if ( ! pszKey )
+	// Skip leading whitespace 
+	if ( !pszKey )
 	{
 		GetKeyBufferRaw(0);
 		return false;
 	}
 
-	GETNONWHITESPACE( pszKey );
+	GETNONWHITESPACE(pszKey);
 
-	TCHAR * pBuffer = GetKeyBufferRaw( strlen( pszKey ));
-	ASSERT(pBuffer);
+	TCHAR *pszBuffer = GetKeyBufferRaw(strlen(pszKey));
+	ASSERT(pszBuffer);
 
 	size_t iLen = m_Mem.GetDataLength() - 1;
-	strncpy( pBuffer, pszKey, iLen );
-	pBuffer[iLen] = '\0';
+	strncpy(pszBuffer, pszKey, iLen);
+	pszBuffer[iLen] = '\0';
 
-	Str_Parse( pBuffer, &m_pszArg );
-	return( true );
+	Str_Parse(pszBuffer, &m_pszArg);
+	return true;
 }
 
-bool CScriptKeyAlloc::ParseKey( LPCTSTR pszKey, LPCTSTR pszVal )
+bool CScriptKeyAlloc::ParseKey(LPCTSTR pszKey, LPCTSTR pszVal)
 {
 	ADDTOCALLSTACK("CScriptKeyAlloc::ParseKey");
 	ASSERT(pszKey);
 
-	size_t lenkey = strlen( pszKey );
-	if ( ! lenkey )
-	{
+	size_t iLenKey = strlen(pszKey);
+	if ( !iLenKey )
 		return ParseKey(pszVal);
-	}
 
-	ASSERT( lenkey < SCRIPT_MAX_LINE_LEN-2 );
+	ASSERT(lenkey < SCRIPT_MAX_LINE_LEN - 2);
 
-	size_t lenval = 0;
+	size_t iLenVal = 0;
 	if ( pszVal )
-	{
-		lenval = strlen( pszVal );
-	}
+		iLenVal = strlen(pszVal);
 
-	m_pszKey = GetKeyBufferRaw( lenkey + lenval + 1 );
+	m_pszKey = GetKeyBufferRaw(iLenKey + iLenVal + 1);
 
-	strcpy( m_pszKey, pszKey );
-	m_pszArg = m_pszKey + lenkey;
+	strcpy(m_pszKey, pszKey);
+	m_pszArg = m_pszKey + iLenKey;
 
 	if ( pszVal )
 	{
-		m_pszArg ++;
-		lenval = m_Mem.GetDataLength() - 2;
-		strcpylen( m_pszArg, pszVal, ( lenval - lenkey ) + 1 );	// strcpylen
+		m_pszArg++;
+		iLenVal = m_Mem.GetDataLength() - 2;
+		strcpylen(m_pszArg, pszVal, (iLenVal - iLenKey) + 1);
 	}
 
-	return( true );
+	return true;
 }
 
 size_t CScriptKeyAlloc::ParseKeyEnd()
 {
 	ADDTOCALLSTACK("CScriptKeyAlloc::ParseKeyEnd");
 	// Now parse the line for comments and trailing whitespace junk
-	// NOTE: leave leading whitespace for now.
+	// NOTE: leave leading whitespace for now
 
 	ASSERT(m_pszKey);
 
-	size_t len = 0;
-	for ( ; len < SCRIPT_MAX_LINE_LEN; len++ )
+	size_t iLen = 0;
+	for ( ; iLen < SCRIPT_MAX_LINE_LEN; iLen++ )
 	{
-		TCHAR ch = m_pszKey[len];
+		TCHAR ch = m_pszKey[iLen];
 		if ( ch == '\0' )
 			break;
-		if ( ch == '/' && m_pszKey[len + 1] == '/' )
-		{
-			// Remove comment at end of line.
+		if ( (ch == '/') && (m_pszKey[iLen + 1] == '/') )	// remove comment at end of line
 			break;
-		}
 	}
 
-	// Remove CR and LF from the end of the line.
-	len = Str_TrimEndWhitespace( m_pszKey, len );
-	if ( len <= 0 )		// fRemoveBlanks &&
+	// Remove CR and LF from the end of the line
+	iLen = Str_TrimEndWhitespace(m_pszKey, iLen);
+	if ( iLen <= 0 )
 		return 0;
 
-	m_pszKey[len] = '\0';
-	return( len );
+	m_pszKey[iLen] = '\0';
+	return iLen;
 }
 
 void CScriptKeyAlloc::ParseKeyLate()
@@ -205,79 +193,70 @@ CScript::CScript()
 	InitBase();
 }
 
-CScript::CScript( LPCTSTR pszKey )
+CScript::CScript(LPCTSTR pszKey)
 {
 	InitBase();
 	ParseKey(pszKey);
 }
 
-CScript::CScript( LPCTSTR pszKey, LPCTSTR pszVal )
+CScript::CScript(LPCTSTR pszKey, LPCTSTR pszVal)
 {
 	InitBase();
-	ParseKey( pszKey, pszVal );
+	ParseKey(pszKey, pszVal);
 }
 
 void CScript::InitBase()
 {
 	ADDTOCALLSTACK("CScript::InitBase");
-	m_iLineNum		= 0;
-	m_fSectionHead	= false;
-	m_lSectionData	= 0;
+	m_iLineNum = 0;
+	m_fSectionHead = false;
+	m_lSectionData = 0;
 	InitKey();
 }
 
-bool CScript::Open( LPCTSTR pszFilename, UINT wFlags )
+bool CScript::Open(LPCTSTR pszFilename, UINT uiFlags)
 {
 	ADDTOCALLSTACK("CScript::Open");
-	// If we are in read mode and we have no script file.
-	// ARGS: wFlags = OF_READ, OF_NONCRIT etc
-	// RETURN: true = success.
+	// If we are in read mode and we have no script file
+	// RETURN: true = success
 
 	InitBase();
 
 	if ( pszFilename == NULL )
-	{
 		pszFilename = GetFilePath();
-	}
 	else
-	{
-		SetFilePath( pszFilename );
-	}
+		SetFilePath(pszFilename);
 
 	LPCTSTR pszTitle = GetFileTitle();
-	if ( pszTitle == NULL || pszTitle[0] == '\0' )
-		return( false );
+	if ( (pszTitle == NULL) || (pszTitle[0] == '\0') )
+		return false;
 
-	LPCTSTR pszExt = GetFilesExt( GetFilePath() ); 
+	LPCTSTR pszExt = GetFilesExt(GetFilePath());
 	if ( pszExt == NULL )
 	{
-		TCHAR szTemp[ _MAX_PATH ];
-		strcpy( szTemp, GetFilePath() );
-		strcat( szTemp, SPHERE_SCRIPT );
-		SetFilePath( szTemp );
-		wFlags |= OF_TEXT;
+		TCHAR szTemp[_MAX_PATH];
+		strcpy(szTemp, GetFilePath());
+		strcat(szTemp, SPHERE_SCRIPT);
+		SetFilePath(szTemp);
+		uiFlags |= OF_TEXT;
 	}
 
-	if ( !PhysicalScriptFile::Open( GetFilePath(), wFlags ))
+	if ( !CacheableScriptFile::Open(GetFilePath(), uiFlags) )
 	{
-		if ( ! ( wFlags & OF_NONCRIT ))
-		{
+		if ( !(uiFlags & OF_NONCRIT) )
 			g_Log.Event(LOGL_WARN, "'%s' not found\n", static_cast<LPCTSTR>(GetFilePath()));
-		}
-		return( false );
+		return false;
 	}
 
-	return( true );
+	return true;
 }
 
-bool CScript::ReadTextLine( bool fRemoveBlanks ) // Read a line from the opened script file
+bool CScript::ReadTextLine(bool fRemoveBlanks)
 {
 	ADDTOCALLSTACK("CScript::ReadTextLine");
-	// ARGS:
-	// fRemoveBlanks = Don't report any blank lines, (just keep reading)
-	//
+	// ARGS: fRemoveBlanks = Don't report any blank lines (just keep reading)
 
-	while ( PhysicalScriptFile::ReadString( GetKeyBufferRaw(SCRIPT_MAX_LINE_LEN), SCRIPT_MAX_LINE_LEN ))
+	while ( CacheableScriptFile::ReadString(GetKeyBufferRaw(SCRIPT_MAX_LINE_LEN), SCRIPT_MAX_LINE_LEN) )
 	{
 		m_iLineNum++;
 		if ( fRemoveBlanks )
@@ -285,62 +264,57 @@ bool CScript::ReadTextLine( bool fRemoveBlanks ) // Read a line from the opened 
 			if ( ParseKeyEnd() <= 0 )
 				continue;
 		}
-		return( true );
+		return true;
 	}
 
 	m_pszKey[0] = '\0';
-	return( false );
+	return false;
 }
 
-bool CScript::FindTextHeader( LPCTSTR pszName ) // Find a section in the current script
+bool CScript::FindTextHeader(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CScript::FindTextHeader");
-	// RETURN: false = EOF reached.
+	// RETURN: false = EOF reached
 	ASSERT(pszName);
-	ASSERT( ! IsBinaryMode());
+	ASSERT(!IsBinaryMode());
 
 	SeekToBegin();
 
-	size_t len = strlen( pszName );
-	ASSERT(len);
+	size_t iLen = strlen(pszName);
+	ASSERT(iLen);
 	do
 	{
-		if ( ! ReadTextLine(false))
-		{
-			return( false );
-		}
-		if ( IsKeyHead( "[EOF]", 5 ))
-		{
-			return( false );
-		}
-	}
-	while ( ! IsKeyHead( pszName, len ));
-	return( true );
+		if ( !ReadTextLine(false) )
+			return false;
+		if ( IsKeyHead("[EOF]", 5) )
+			return false;
+	} while (!IsKeyHead(pszName, iLen));
+	return true;
 }
 
-DWORD CScript::Seek( long offset, UINT origin )
+DWORD CScript::Seek(long lOffset, UINT uiOrigin)
 {
 	ADDTOCALLSTACK("CScript::Seek");
-	// Go to the start of a new section.
-	// RETURN: the new offset in bytes from start of file.
-	if ( offset == 0 && origin == SEEK_SET )
-	{
-		m_iLineNum = 0;	// so we don't have to override SeekToBegin
-	}
-	m_fSectionHead = false;		// unknown , so start at the beginning.
-	m_lSectionData = offset;
-	return( PhysicalScriptFile::Seek(offset,origin));
+	// Go to the start of a new section
+	// RETURN: the new offset in bytes from start of file
+
+	if ( (lOffset == 0) && (uiOrigin == SEEK_SET) )
+		m_iLineNum = 0;		// so we don't have to override SeekToBegin
+
+	m_fSectionHead = false;		// unknown, so start at the beginning
+	m_lSectionData = lOffset;
+	return CacheableScriptFile::Seek(lOffset, uiOrigin);
 }
 
 bool CScript::FindNextSection()
 {
 	ADDTOCALLSTACK("CScript::FindNextSection");
 	EXC_TRY("FindNextSection");
-	// RETURN: false = EOF.
+	// RETURN: false = EOF reached
 
-	if ( m_fSectionHead )	// we have read a section already., (not at the start)
+	if ( m_fSectionHead )	// we have read a section already (not at the start)
 	{
-		// Start from the previous line. It was the line that ended the last read.
+		// Start from the previous line, it was the line that ended the last read
 		m_pszKey = GetKeyBuffer();
 		ASSERT(m_pszKey);
 		m_fSectionHead = false;
@@ -353,17 +327,17 @@ bool CScript::FindNextSection()
 		if ( !ReadTextLine(true) )
 		{
 			m_lSectionData = GetPosition();
-			return( false );
+			return false;
 		}
 		if ( m_pszKey[0] == '[' )
 			break;
 	}
 
 foundit:
-	// Parse up the section name.
+	// Parse section name
 	m_pszKey++;
-	size_t len = strlen( m_pszKey );
-	for ( size_t i = 0; i < len; i++ )
+	size_t iLen = strlen(m_pszKey);
+	for ( size_t i = 0; i < iLen; i++ )
 	{
 		if ( m_pszKey[i] == ']' )
 		{
@@ -373,122 +347,82 @@ foundit:
 	}
 
 	m_lSectionData = GetPosition();
-	if ( IsSectionType( "EOF" ))
-		return( false );
+	if ( IsSectionType("EOF") )
+		return false;
 
-	Str_Parse( m_pszKey, &m_pszArg );
+	Str_Parse(m_pszKey, &m_pszArg);
 	return true;
 	EXC_CATCH;
 	return false;
 }
 
-bool CScript::FindSection( LPCTSTR pszName, UINT uModeFlags )
-{
-	ADDTOCALLSTACK("CScript::FindSection");
-	// Find a section in the current script
-	// RETURN: true = success
-
-	ASSERT(pszName);
-	if ( strlen( pszName ) > 32 )
-	{
-		DEBUG_ERR(( "Bad script section name\n" ));
-		return( false );
-	}
-
-	TemporaryString pszSec;
-	sprintf(static_cast<TCHAR *>(pszSec), "[%s]", pszName);
-	if ( FindTextHeader(pszSec))
-	{
-		// Success
-		m_lSectionData = GetPosition();
-		return( true );
-	}
-
-	// Failure Error display. (default)
-
-	if ( ! ( uModeFlags & OF_NONCRIT ))
-	{
-		g_Log.Event(LOGL_WARN, "Did not find '%s' section '%s'\n", static_cast<LPCTSTR>(GetFileTitle()), static_cast<LPCTSTR>(pszName));
-	}
-	return( false );
-}
-
-bool CScript::ReadKey( bool fRemoveBlanks )
+bool CScript::ReadKey(bool fRemoveBlanks)
 {
 	ADDTOCALLSTACK("CScript::ReadKey");
-	if ( ! ReadTextLine(fRemoveBlanks))
-		return( false );
-	if ( m_pszKey[0] == '[' )	// hit the end of our section.
+	if ( !ReadTextLine(fRemoveBlanks) )
+		return false;
+	if ( m_pszKey[0] == '[' )	// hit the end of section
 	{
 		m_fSectionHead = true;
-		return( false );
+		return false;
 	}
-	return( true );
+	return true;
 }
 
-bool CScript::ReadKeyParse() // Read line from script
+bool CScript::ReadKeyParse()
 {
 	ADDTOCALLSTACK("CScript::ReadKeyParse");
 	EXC_TRY("ReadKeyParse");
 	EXC_SET("read");
-	if ( !ReadKey(true) )
+	if ( !ReadKey() )
 	{
 		EXC_SET("init");
 		InitKey();
-		return false;	// end of section.
+		return false;	// end of section
 	}
 
 	ASSERT(m_pszKey);
-	GETNONWHITESPACE( m_pszKey );
+	GETNONWHITESPACE(m_pszKey);
 	EXC_SET("parse");
-	Str_Parse( m_pszKey, &m_pszArg );
+	Str_Parse(m_pszKey, &m_pszArg);
 
-	//if ( !m_pszArg[0] || m_pszArg[1] != '=' || !strchr( ".*+-/%|&!^", m_pszArg[0] ) )
-	if ( !m_pszArg[0] || ( m_pszArg[1] != '=' && m_pszArg[1] != '+' && m_pszArg[1] != '-' ) || !strchr( ".*+-/%|&!^", m_pszArg[0] ) )
+	if ( !m_pszArg[0] || ((m_pszArg[1] != '=') && (m_pszArg[1] != '+') && (m_pszArg[1] != '-')) || !strchr(".*+-/%|&!^", m_pszArg[0]) )
 		return true;
 
-	static LPCTSTR const sm_szEvalTypes[] =
-	{
-		"eval",
-		"floatval"
-	};
-
 	EXC_SET("parse");
-	LPCTSTR	pszArgs	= m_pszArg;
+	LPCTSTR	pszArgs = m_pszArg;
 	pszArgs += 2;
-	GETNONWHITESPACE( pszArgs );
+	GETNONWHITESPACE(pszArgs);
 	TemporaryString buf;
-
-	int iKeyIndex = (strnicmp(m_pszKey, "float.", 6) == 0) ? 1 : 0;
 
 	if ( m_pszArg[0] == '.' )
 	{
 		if ( *pszArgs == '"' )
 		{
-			TCHAR *	pQuote	= const_cast<TCHAR*>(strchr( pszArgs+1, '"' ));
-			if ( pQuote )
+			TCHAR *pszQuote = const_cast<TCHAR *>(strchr(pszArgs + 1, '"'));
+			if ( pszQuote )
 			{
 				pszArgs++;
-				*pQuote	= '\0';
+				*pszQuote = '\0';
 			}
 		}
 		sprintf(buf, "<%s>%s", m_pszKey, pszArgs);
 	}
-	else if ( m_pszArg[0] == m_pszArg[1] && m_pszArg[1] == '+' )
+	else if ( (m_pszArg[0] == m_pszArg[1]) && (m_pszArg[1] == '+') )
 	{
 		if ( m_pszArg[2] != '\0' )
 			return true;
-		sprintf(buf, "<eval (<%s> +1)>", m_pszKey);
+		sprintf(buf, "<eval (<%s> + 1)>", m_pszKey);
 	}
-	else if ( m_pszArg[0] == m_pszArg[1] && m_pszArg[1] == '-' )
+	else if ( (m_pszArg[0] == m_pszArg[1]) && (m_pszArg[1] == '-') )
 	{
 		if ( m_pszArg[2] != '\0' )
 			return true;
-		sprintf(buf, "<eval (<%s> -1)>", m_pszKey);
+		sprintf(buf, "<eval (<%s> - 1)>", m_pszKey);
 	}
 	else
 	{
-		sprintf(buf, "<%s (<%s> %c (%s))>", sm_szEvalTypes[iKeyIndex], m_pszKey, *m_pszArg, pszArgs);
+		sprintf(buf, "<%s (<%s> %c (%s))>", (strnicmp(m_pszKey, "float.", 6) == 0) ? "floatval" : "eval", m_pszKey, *m_pszArg, pszArgs);
 	}
 	strcpy(m_pszArg, buf);
 
@@ -497,119 +431,82 @@ bool CScript::ReadKeyParse() // Read line from script
 	return false;
 }
 
-bool CScript::FindKey( LPCTSTR pszName ) // Find a key in the current section
-{
-	ADDTOCALLSTACK("CScript::FindKey");
-	if ( strlen(pszName) > EXPRESSION_MAX_KEY_LEN )
-	{
-		DEBUG_ERR(( "Bad script key name\n" ));
-		return( false );
-	}
-	Seek( m_lSectionData );
-	while ( ReadKeyParse())
-	{
-		if ( IsKey( pszName ))
-		{
-			m_pszArg = Str_TrimWhitespace( m_pszArg );
-			return true;
-		}
-	}
-	return( false );
-}
-
 void CScript::Close()
 {
 	ADDTOCALLSTACK("CScript::Close");
-	// EndSection();
-	PhysicalScriptFile::Close();
+	CacheableScriptFile::Close();
 }
 
-bool _cdecl CScript::WriteSection( LPCTSTR pszSection, ... )
+bool _cdecl CScript::WriteSection(LPCTSTR pszSection, ...)
 {
 	ADDTOCALLSTACK_INTENSIVE("CScript::WriteSection");
-	// Write out the section header.
+	// Write section header
 	va_list vargs;
-	va_start( vargs, pszSection );
+	va_start(vargs, pszSection);
 
-	// EndSection();	// End any previous section.
-	Printf( "\n[");
-	VPrintf( pszSection, vargs );
-	Printf( "]\n" );
-	va_end( vargs );
-
-	return( true );
+	Printf("\n[");
+	VPrintf(pszSection, vargs);
+	Printf("]\n");
+	va_end(vargs);
+	return true;
 }
 
-bool CScript::WriteKey( LPCTSTR pszKey, LPCTSTR pszVal )
+bool CScript::WriteKey(LPCTSTR pszKey, LPCTSTR pszVal)
 {
 	ADDTOCALLSTACK_INTENSIVE("CScript::WriteKey");
-	if ( pszKey == NULL || pszKey[0] == '\0' )
-	{
+	if ( (pszKey == NULL) || (pszKey[0] == '\0') )
 		return false;
-	}
 
 	TCHAR ch = '\0';
-	TCHAR * pszSep;
-	if ( pszVal == NULL || pszVal[0] == '\0' )
+	TCHAR *pszSep;
+	if ( (pszVal == NULL) || (pszVal[0] == '\0') )
 	{
-		pszSep = const_cast<TCHAR*>(strchr( pszKey, '\n' ));
+		pszSep = const_cast<TCHAR *>(strchr(pszKey, '\n'));
 		if ( pszSep == NULL )
-			pszSep = const_cast<TCHAR*>(strchr( pszKey, '\r' )); // acts like const_cast
+			pszSep = const_cast<TCHAR *>(strchr(pszKey, '\r'));
 
 		if ( pszSep != NULL )
 		{
-			g_Log.Event( LOGL_WARN|LOGM_CHEAT, "carriage return in key (book?) - truncating\n" );
+			g_Log.Event(LOGL_WARN|LOGM_CHEAT, "carriage return in key (book?) - truncating\n");
 			ch = *pszSep;
-			*pszSep	= '\0';
+			*pszSep = '\0';
 		}
 
-		// Books are like this. No real keys.
-		Printf( "%s\n", pszKey );
+		// Books are like this, no real keys
+		Printf("%s\n", pszKey);
 
 		if ( pszSep != NULL )
-			*pszSep	= ch;
+			*pszSep = ch;
 	}
 	else
 	{
-		pszSep = const_cast<TCHAR*>(strchr( pszVal, '\n' ));
+		pszSep = const_cast<TCHAR *>(strchr(pszVal, '\n'));
 		if ( pszSep == NULL )
-			pszSep = const_cast<TCHAR*>(strchr( pszVal, '\r' )); // acts like const_cast
+			pszSep = const_cast<TCHAR *>(strchr(pszVal, '\r'));
 
 		if ( pszSep != NULL )
 		{
-			g_Log.Event( LOGL_WARN|LOGM_CHEAT, "carriage return in key value - truncating\n" );
+			g_Log.Event(LOGL_WARN|LOGM_CHEAT, "carriage return in key value - truncating\n");
 			ch = *pszSep;
-			*pszSep	= '\0';
+			*pszSep = '\0';
 		}
 
-		Printf( "%s=%s\n", pszKey, pszVal );
+		Printf("%s=%s\n", pszKey, pszVal);
 
 		if ( pszSep != NULL )
-			*pszSep	= ch;
+			*pszSep = ch;
 	}
 
-	return( true );
+	return true;
 }
 
-//void _cdecl CScript::WriteKeyFormat( LPCTSTR pszKey, LPCTSTR pszVal, ... )
-//{
-//	ADDTOCALLSTACK("CScript::WriteKeyFormat");
-//	TCHAR	*pszTemp = Str_GetTemp();
-//	va_list vargs;
-//	va_start( vargs, pszVal );
-//	vsprintf(pszTemp, pszVal, vargs);
-//	WriteKey(pszKey, pszTemp);
-//	va_end( vargs );
-//}
-
-void _cdecl CScript::WriteKeyFormat( LPCTSTR pszKey, LPCTSTR pszVal, ... )
+void _cdecl CScript::WriteKeyFormat(LPCTSTR pszKey, LPCTSTR pszVal, ...)
 {
 	ADDTOCALLSTACK_INTENSIVE("CScript::WriteKeyFormat");
 	TemporaryString pszTemp;
 	va_list vargs;
-	va_start( vargs, pszVal );
+	va_start(vargs, pszVal);
 	_vsnprintf(pszTemp, pszTemp.realLength(), pszVal, vargs);
 	WriteKey(pszKey, pszTemp);
-	va_end( vargs );
+	va_end(vargs);
 }
-
