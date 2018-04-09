@@ -1,45 +1,38 @@
 #ifndef _CSV_FILE_H
 #define _CSV_FILE_H
+#pragma once
 
-//
-// CsvFile.h
-//
-
-#include "CFile.h"
-
-#define MAX_COLUMNS	64	// maximum number of columns in a file
+#define FILE_MAX_COLUMNS	64	// maximum number of columns in a file
 
 typedef std::map<std::string, std::string> CSVRowData;
 
 class CSVFile : public CacheableScriptFile
 {
-private:
-	TCHAR * m_pszColumnTypes[MAX_COLUMNS];
-	TCHAR * m_pszColumnNames[MAX_COLUMNS];
-	size_t m_iColumnCount;
-	size_t m_iCurrentRow;
-
-private:
-	virtual bool OpenBase(void *pExtra);
-
 public:
 	CSVFile();
 	~CSVFile();
 
 private:
-	CSVFile(const CSVFile& copy);
-	CSVFile& operator=(const CSVFile& other);
+	CSVFile(const CSVFile &copy);
+	CSVFile &operator=(const CSVFile &other);
+
+private:
+	TCHAR *m_pszColumnTypes[FILE_MAX_COLUMNS];
+	TCHAR *m_pszColumnNames[FILE_MAX_COLUMNS];
+	size_t m_iColumnCount;
+	size_t m_iCurrentRow;
+
+	virtual bool OpenBase(void *pExtra);
 
 public:
 	size_t GetColumnCount() const { return m_iColumnCount; }
 	size_t GetCurrentRow() const { return m_iCurrentRow; }
 
-public:
-	size_t ReadRowContent(TCHAR ** ppOutput, size_t row, size_t columns = MAX_COLUMNS);
-	bool ReadRowContent(size_t row, CSVRowData& target);
+	size_t ReadRowContent(TCHAR **ppOutput, size_t rowIndex, size_t columns = FILE_MAX_COLUMNS);
+	bool ReadRowContent(size_t rowIndex, CSVRowData &target);
 
-	size_t ReadNextRowContent(TCHAR ** ppOutput);
-	bool ReadNextRowContent(CSVRowData& target);
+	size_t ReadNextRowContent(TCHAR **ppOutput);
+	bool ReadNextRowContent(CSVRowData &target);
 };
 
 #endif
