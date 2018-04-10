@@ -1047,3 +1047,13 @@ Added: New char trigger @UserUltimaStoreButton, fired when click on 'Ultima Stor
 08-04-2018, Coruja
 Added: RES*MAX properties functionality, now they are fully working
 	-When RES*MAX is set on chars, RES* will be limited to RES*MAX value
+
+09-04-2018, Coruja
+[items/sphere_item_holiday_halloween.scp]: Added missing item 'shackled heart'
+[items/sphere_item_magic_magery.scp]: Fixed 'recall rune' being created using wrong MOREP value
+[items/sphere_item_profession.scp]: Removed duplicated ITEMDEFs
+[items/sphere_item_profession_cartographer.scp]: Added missing TYPE=t_map on cartography maps
+[npcs/sphere_monsters.scp]: Fixed NPCs with 'spawn creature' special ability summoning too many creatures
+
+10-04-2018, Coruja
+Changed: Updated internal SQLite libs v3.23.0 to v3.23.1.
