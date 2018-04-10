@@ -1,7 +1,5 @@
 // Game server messages. (No login stuff)
 #include "graysvr.h"	// predef header.
-#include "CClient.h"
-#include "../network/network.h"
 #include "../network/send.h"
 
 // Simple string hashing algorithm function

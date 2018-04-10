@@ -1,6 +1,5 @@
 // Fight/Criminal actions/Noto.
 #include "graysvr.h"	// predef header.
-#include "CClient.h"
 #include "../network/send.h"
 
 // Get my guild stone for my guild. even if i'm just a STONEPRIV_CANDIDATE ?

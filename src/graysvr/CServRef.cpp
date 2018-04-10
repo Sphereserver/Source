@@ -3,8 +3,6 @@
 
 //	Memory profiling
 #ifdef _WIN32	// (Win32)
-	#include <process.h>
-
 	//	grabbed from platform SDK, psapi.h
 	typedef struct _PROCESS_MEMORY_COUNTERS {
 		DWORD cb;

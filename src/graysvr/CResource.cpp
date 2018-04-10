@@ -1,6 +1,4 @@
 ﻿#include "graysvr.h"	// predef header.
-#include "../common/grayver.h"
-#include "../common/CFileList.h"
 #include "../network/network.h"
 
 CResource::CResource()

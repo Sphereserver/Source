@@ -1,6 +1,5 @@
 // A variety of resource blocks.
 #include "graysvr.h"	// predef header.
-#include "../common/CAssoc.h"
 
 //*******************************************
 // -CValueRangeDef

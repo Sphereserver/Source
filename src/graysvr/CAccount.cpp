@@ -1,5 +1,4 @@
 #include "graysvr.h"	// predef header.
-#include "../common/CMD5.h"
 #include "../network/network.h"
 
 extern "C"
@@ -131,7 +130,7 @@ bool CAccounts::Account_SaveAll()
 
 	s.Printf("// " SPHERE_TITLE " %s accounts file\n"
 		"// NOTE: This file cannot be edited while the server is running.\n"
-		"// Any file changes must be made to " SPHERE_FILE "accu" SPHERE_SCRIPT ". This is read in at save time.\n",
+		"// Any file changes must be made to " SPHERE_FILE "acct" SPHERE_SCRIPT ". This is read in at save time.\n",
 		g_Serv.GetName());
 
 	for ( size_t i = 0; i < m_Accounts.GetCount(); i++ )

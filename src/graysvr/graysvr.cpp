@@ -9,12 +9,11 @@
 #endif
 
 #if !defined(pid_t)
-#define pid_t int
+	#define pid_t int
 #endif
 
 #ifdef _WIN32
 	#include "ntservice.h"	// g_Service
-	#include <process.h>	// getpid()
 #endif
 
 //Trigger function start

@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Developer Studio generated include file.
-// Used by GraySvr.rc
+// Used by SphereSvr.rc
 //
 
 #ifndef IDC_STATIC

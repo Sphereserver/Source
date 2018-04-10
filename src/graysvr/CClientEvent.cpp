@@ -1,9 +1,6 @@
 #include "graysvr.h"	// predef header.
-#include "CClient.h"
-#include "../network/network.h"
 #include "../network/send.h"
 #include "../network/receive.h"
-#include <wchar.h>
 
 /////////////////////////////////
 // Events from the Client.
@@ -1658,7 +1655,7 @@ void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, boo
 }
 
 // Client sent UNICODE speech text
-void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TALKMODE_TYPE mMode, FONT_TYPE font, LPCTSTR pszLang)
+void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR pszLang)
 {
 	ADDTOCALLSTACK("CClient::Event_TalkUNICODE");
 	// Get the text in wide bytes.
@@ -1669,16 +1666,16 @@ void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TAL
 		return;
 	if ( iTextLen <= 0 )
 		return;
-	if ( mMode < 0 || mMode > 14 ) // less or greater is an exploit
+	if ( mode < 0 || mode > 14 ) // less or greater is an exploit
 		return;
-	if ( mMode == 1 || mMode == 3 || mMode == 4 || mMode == 5 || mMode == 6 || mMode == 7 || mMode == 10 || mMode == 11 || mMode == 12 )	// these modes are server->client only
+	if ( mode == 1 || mode == 3 || mode == 4 || mode == 5 || mode == 6 || mode == 7 || mode == 10 || mode == 11 || mode == 12 )	// these modes are server->client only
 		return;
 
 	if ( (wHue < HUE_BLUE_LOW) || (wHue > HUE_DYE_HIGH) )
 		wHue = HUE_TEXT_DEF;
 
 	m_pAccount->m_lang.Set(pszLang);
-	if ( mMode == TALKMODE_SYSTEM )
+	if ( mode == TALKMODE_SYSTEM )
 		m_pChar->m_SpeechHue = wHue;
 
 	TCHAR szText[MAX_TALK_BUFFER];
@@ -1691,18 +1688,18 @@ void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TAL
 	TCHAR *pszText = szText;
 	GETNONWHITESPACE(pszText);
 
-	if ( !Event_Command(pszText, mMode) )
+	if ( !Event_Command(pszText, mode) )
 	{
 		bool bCancelSpeech = false;
-		if ( m_pChar->OnTriggerSpeech(false, pszText, m_pChar, mMode, wHue) )
+		if ( m_pChar->OnTriggerSpeech(false, pszText, m_pChar, mode, wHue) )
 			bCancelSpeech = true;
 
 		if ( g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) )
-			g_Log.Event(LOGM_PLAYER_SPEAK, "%lx:'%s' Says UNICODE '%s' '%s' mode=%d%s\n", GetSocketID(), m_pChar->GetName(), m_pAccount->m_lang.GetStr(), pszText, mMode, bCancelSpeech ? " (muted)" : "");
+			g_Log.Event(LOGM_PLAYER_SPEAK, "%lx:'%s' Says UNICODE '%s' '%s' mode=%d%s\n", GetSocketID(), m_pChar->GetName(), m_pAccount->m_lang.GetStr(), pszText, mode, bCancelSpeech ? " (muted)" : "");
 
 		if ( bCancelSpeech )
 			return;
-		if ( mMode == 13 || mMode == 14 )	// guild/alliance mode will not pass this
+		if ( mode == 13 || mode == 14 )	// guild/alliance mode will not pass this
 			return;
 
 		if ( g_Cfg.m_fSuppressCapitals )
@@ -1726,7 +1723,7 @@ void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TAL
 
 		if ( iLen <= 128 )	// from this point max 128 chars
 		{
-			m_pChar->SpeakUTF8Ex(puText, wHue, mMode, font, m_pAccount->m_lang);
+			m_pChar->SpeakUTF8Ex(puText, wHue, mode, font, m_pAccount->m_lang);
 			Event_Talk_Common(pszText);
 		}
 	}

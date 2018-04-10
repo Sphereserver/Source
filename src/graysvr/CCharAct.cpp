@@ -3,8 +3,6 @@
 //
 
 #include "graysvr.h"	// predef header.
-#include "CClient.h"
-#include "../network/network.h"
 #include "../network/send.h"
 
 bool CChar::TeleportToObj(int iType, TCHAR *pszArgs)

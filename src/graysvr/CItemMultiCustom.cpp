@@ -3,7 +3,6 @@
 //
 
 #include "graysvr.h"	// predef header.
-#include "../network/network.h"
 #include "../network/send.h"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -930,7 +929,7 @@ size_t CItemMultiCustom::GetFixtureCount(DesignDetails * pDesign)
 	return count;
 }
 
-size_t CItemMultiCustom::GetComponentsAt(signed short x, signed short y, signed char z, Component ** pComponents, DesignDetails * pDesign)
+size_t CItemMultiCustom::GetComponentsAt(signed short x, signed short y, signed char z, Component **ppComponents, DesignDetails *pDesign)
 {
 	ADDTOCALLSTACK("CItemMultiCustom::GetComponentsAt");
 	// find a list of components that are located at the given
@@ -950,7 +949,7 @@ size_t CItemMultiCustom::GetComponentsAt(signed short x, signed short y, signed 
 		if ( (z != SCHAR_MIN) && (GetPlane(z) != GetPlane(static_cast<signed char>(pComponent->m_item.m_dz))) )
 			continue;
 
-		pComponents[count++] = pComponent;
+		ppComponents[count++] = pComponent;
 	}
 
 	return count;

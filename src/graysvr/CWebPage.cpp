@@ -1,7 +1,6 @@
 #include "graysvr.h"	// predef header.
 #include "../common/grayver.h"	// sphere version
 #include "../common/CFileList.h"
-#include "../network/network.h"
 #include "../network/send.h"
 
 enum WV_TYPE

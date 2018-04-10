@@ -1,5 +1,7 @@
 #include "graysvr.h"	// predef header.
-#include "UnixTerminal.h"
+#ifndef _WIN32
+	#include "UnixTerminal.h"
+#endif
 
 ///////////////////////////////////////////////////////////////
 // -CLog
@@ -80,10 +82,10 @@ void CLog::SetColor( Color color )
 	}
 }
 
-int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
+int CLog::EventStr( DWORD dwMask, LPCTSTR pszMsg )
 {
 	// NOTE: This could be called in odd interrupt context so don't use dynamic stuff
-	if ( !IsLogged(wMask) )	// I don't care about these.
+	if ( !IsLogged(dwMask) )	// I don't care about these.
 		return 0;
 	else if ( !pszMsg || !*pszMsg )
 		return 0;
@@ -112,7 +114,7 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 		m_dateStamp = datetime;
 
 		LPCTSTR pszLabel = NULL;
-		switch ( wMask & 0x07 )
+		switch ( dwMask & 0x7 )
 		{
 			case LOGL_FATAL:
 				pszLabel = "FATAL:";
@@ -127,12 +129,12 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 				pszLabel = "WARNING:";
 				break;
 		}
-		if ( !pszLabel && (wMask & LOGM_DEBUG) && !(wMask & LOGM_INIT) )
+		if ( !pszLabel && (dwMask & LOGM_DEBUG) && !(dwMask & LOGM_INIT) )
 			pszLabel = "DEBUG:";
 
 		// Get the script context. (if there is one)
 		TCHAR szScriptContext[_MAX_PATH + 16];
-		if ( !(wMask & LOGM_NOCONTEXT) && m_pScriptContext )
+		if ( !(dwMask & LOGM_NOCONTEXT) && m_pScriptContext )
 		{
 			CScriptLineContext LineContext = m_pScriptContext->GetContext();
 			sprintf(szScriptContext, "(%s,%d)", m_pScriptContext->GetFileTitle(), LineContext.m_iLineNum);
@@ -143,7 +145,7 @@ int CLog::EventStr( DWORD wMask, LPCTSTR pszMsg )
 		}
 
 		// Print to screen.
-		if ( !(wMask & LOGM_INIT) && !g_Serv.IsLoading() )
+		if ( !(dwMask & LOGM_INIT) && !g_Serv.IsLoading() )
 		{
 			SetColor(YELLOW);
 			g_Serv.PrintStr(szTime);

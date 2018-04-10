@@ -1,4 +1,3 @@
-#include "../common/graycom.h"
 #include "PingServer.h"
 
 PingServer g_PingServer;

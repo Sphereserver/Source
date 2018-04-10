@@ -2,7 +2,6 @@
 #ifdef _WIN32
 
 #include "graysvr.h"	// predef header.
-#include <commctrl.h>	// NM_RCLICK
 #include "resource.h"
 #include "../common/cwindow.h"
 #include "../common/grayver.h"	// sphere version

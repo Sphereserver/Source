@@ -1,6 +1,5 @@
 #include "graysvr.h"	// predef header.
 #include "../common/grayver.h"
-#include "../network/network.h"
 #include "../network/send.h"
 
 bool CObjBaseTemplate::IsDeleted() const
@@ -1088,7 +1087,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( pszKey[7] != '.' )
 				return false;
 			pszKey += 8;
-			sVal = m_OEvents.ContainsResourceName(RES_EVENTS, pszKey) ? "1" : "0";
+			sVal.FormatVal(m_OEvents.ContainsResourceName(RES_EVENTS, pszKey));
 			return true;
 		}
 		case OC_ISTEVENT:
@@ -1096,7 +1095,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( pszKey[8] != '.' )
 				return false;
 			pszKey += 9;
-			sVal = Base_GetDef()->m_TEvents.ContainsResourceName(RES_EVENTS, pszKey) ? "1" : "0";
+			sVal.FormatVal(Base_GetDef()->m_TEvents.ContainsResourceName(RES_EVENTS, pszKey));
 			return true;
 		}
 		case OC_ISITEM:

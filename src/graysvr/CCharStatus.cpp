@@ -1,5 +1,4 @@
 //  CChar is either an NPC or a Player.
-#include <cmath>
 #include "graysvr.h"	// predef header.
 #include "../network/network.h"
 
@@ -408,7 +407,7 @@ bool CChar::CheckCorpseCrime( const CItemCorpse *pCorpse, bool fLooting, bool fT
 	return false;
 }
 
-CItemCorpse *CChar::FindMyCorpse( bool ignoreLOS, int iRadius ) const
+CItemCorpse *CChar::FindMyCorpse( bool bIgnoreLOS, int iRadius ) const
 {
 	ADDTOCALLSTACK("CChar::FindMyCorpse");
 	// If they are standing on their own corpse then res the corpse !
@@ -425,7 +424,7 @@ CItemCorpse *CChar::FindMyCorpse( bool ignoreLOS, int iRadius ) const
 			continue;
 		if ( pCorpse->m_itCorpse.m_BaseID != m_prev_id )	// not morphed type
 			continue;
-		if ( !ignoreLOS && !CanSeeLOS(pCorpse) )
+		if ( !bIgnoreLOS && !CanSeeLOS(pCorpse) )
 			continue;
 		return pCorpse;
 	}
@@ -594,7 +593,7 @@ BYTE CChar::GetLightLevel() const
 	return GetTopSector()->GetLight();
 }
 
-CItem *CChar::GetSpellbook(SPELL_TYPE iSpell) const
+CItem *CChar::GetSpellbook(SPELL_TYPE spell) const
 {
 	ADDTOCALLSTACK("CChar::GetSpellbook");
 	// Check if the char have any spellbook to cast iSpell
@@ -606,9 +605,9 @@ CItem *CChar::GetSpellbook(SPELL_TYPE iSpell) const
 		CItemBase *pItemDef = pItem->Item_GetDef();
 		if ( !pItemDef->IsTypeSpellbook(pItem->GetType()) )
 			continue;
-		if ( (iSpell < static_cast<SPELL_TYPE>(pItemDef->m_ttSpellbook.m_Offset)) || (iSpell > static_cast<SPELL_TYPE>(pItemDef->m_ttSpellbook.m_Offset + pItemDef->m_ttSpellbook.m_MaxSpells)) )
+		if ( (spell < static_cast<SPELL_TYPE>(pItemDef->m_ttSpellbook.m_Offset)) || (spell > static_cast<SPELL_TYPE>(pItemDef->m_ttSpellbook.m_Offset + pItemDef->m_ttSpellbook.m_MaxSpells)) )
 			continue;
-		if ( pItem->IsSpellInBook(iSpell) )
+		if ( pItem->IsSpellInBook(spell) )
 			return pItem;
 
 		pReturn = pItem;		// spellbook found, but it doesn't have the spell... return this book if nothing better is found
@@ -623,9 +622,9 @@ CItem *CChar::GetSpellbook(SPELL_TYPE iSpell) const
 			CItemBase *pItemDef = pItem->Item_GetDef();
 			if ( !pItemDef->IsTypeSpellbook(pItem->GetType()) )
 				continue;
-			if ( (iSpell < static_cast<SPELL_TYPE>(pItemDef->m_ttSpellbook.m_Offset)) || (iSpell > static_cast<SPELL_TYPE>(pItemDef->m_ttSpellbook.m_Offset + pItemDef->m_ttSpellbook.m_MaxSpells)) )
+			if ( (spell < static_cast<SPELL_TYPE>(pItemDef->m_ttSpellbook.m_Offset)) || (spell > static_cast<SPELL_TYPE>(pItemDef->m_ttSpellbook.m_Offset + pItemDef->m_ttSpellbook.m_MaxSpells)) )
 				continue;
-			if ( pItem->IsSpellInBook(iSpell) )
+			if ( pItem->IsSpellInBook(spell) )
 				return pItem;
 
 			pReturn = pItem;	// spellbook found, but it doesn't have the spell... return this book if nothing better is found

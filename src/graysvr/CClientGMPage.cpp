@@ -1,5 +1,4 @@
 #include "graysvr.h"	// predef header.
-#include "CClient.h"
 #include "../network/network.h"
 
 /////////////////////////////////////////////

@@ -1,6 +1,5 @@
 // Actions specific to an NPC.
 #include "graysvr.h"	// predef header.
-#include "CClient.h"
 
 enum CNC_TYPE
 {

@@ -1,6 +1,5 @@
 #include "graysvr.h"	// predef header.
 #include "../common/grayver.h"	// sphere version
-#include "../network/network.h"
 #include "../network/send.h"
 
 #if !defined( _WIN32 )

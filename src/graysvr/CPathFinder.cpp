@@ -1,4 +1,4 @@
-#include "../graysvr/CPathFinder.h"
+#include "CPathFinder.h"
 
 unsigned long CPathFinder::Heuristic(CPathFinderPointRef& Pt1,CPathFinderPointRef& Pt2)
 {

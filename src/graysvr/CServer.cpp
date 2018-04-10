@@ -1,9 +1,6 @@
 #include "graysvr.h"	// predef header.
 
 #include "../common/grayver.h"	// sphere version
-#include "../common/version/GitRevision.h"
-#include "../common/CAssoc.h"
-#include "../common/CFileList.h"
 #include "../network/network.h"
 #include "../graysvr/PingServer.h"
 

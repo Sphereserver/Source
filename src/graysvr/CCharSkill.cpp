@@ -1,5 +1,4 @@
 //  CChar is either an NPC or a Player.
-#include <cmath>
 #include "graysvr.h"	// predef header.
 
 //----------------------------------------------------------------------
@@ -435,7 +434,7 @@ SKILL_TYPE CChar::Skill_GetBest( unsigned int iRank ) const
 }
 
 // Retrieves a random magic skill, if iVal is set it will only select from the ones with value > iVal
-SKILL_TYPE CChar::Skill_GetMagicRandom(WORD iMinValue)
+SKILL_TYPE CChar::Skill_GetMagicRandom(WORD wMinValue)
 {
 	ADDTOCALLSTACK("CChar::Skill_GetMagicRandom");
 	SKILL_TYPE skills[SKILL_QTY];
@@ -445,7 +444,7 @@ SKILL_TYPE CChar::Skill_GetMagicRandom(WORD iMinValue)
 		SKILL_TYPE skill = static_cast<SKILL_TYPE>(i);
 		if ( !g_Cfg.IsSkillFlag(skill, SKF_MAGIC) )
 			continue;
-		if ( Skill_GetBase(skill) < iMinValue )
+		if ( Skill_GetBase(skill) < wMinValue )
 			continue;
 
 		++count;
@@ -519,24 +518,24 @@ WORD CChar::Skill_GetAdjusted(SKILL_TYPE skill) const
 	return Skill_GetBase(skill) + iAdjSkill;
 }
 
-void CChar::Skill_SetBase( SKILL_TYPE skill, WORD iValue )
+void CChar::Skill_SetBase( SKILL_TYPE skill, WORD wValue )
 {
 	ADDTOCALLSTACK("CChar::Skill_SetBase");
 	ASSERT(IsSkillBase(skill));
-	if ( iValue < 0 )
-		iValue = 0;
+	if ( wValue < 0 )
+		wValue = 0;
 
 	if ( IsTrigUsed(TRIGGER_SKILLCHANGE) )
 	{
 		CScriptTriggerArgs args;
 		args.m_iN1 = static_cast<INT64>(skill);
-		args.m_iN2 = static_cast<INT64>(iValue);
+		args.m_iN2 = static_cast<INT64>(wValue);
 		if ( OnTrigger(CTRIG_SkillChange, this, &args) == TRIGRET_RET_TRUE )
 			return;
 
-		iValue = static_cast<WORD>(args.m_iN2);
+		wValue = static_cast<WORD>(args.m_iN2);
 	}
-	m_Skill[skill] = iValue;
+	m_Skill[skill] = wValue;
 
 	if ( m_pClient )
 		m_pClient->addSkillWindow(skill);	// update the skills list
@@ -1140,7 +1139,7 @@ int CChar::SkillResourceTest( const CResourceQtyArray *pResources )
 }
 
 
-bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly, DWORD iReplicationQty )
+bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly, DWORD dwReplicationQty )
 {
 	ADDTOCALLSTACK("CChar::Skill_MakeItem");
 	// "MAKEITEM"
@@ -1186,8 +1185,8 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 	if ( pItemDragging )
 		ItemBounce(pItemDragging);
 
-	iReplicationQty = ResourceConsume(&(pItemDef->m_BaseResources), iReplicationQty, stage != SKTRIG_SUCCESS, pItemDef->GetResourceID().GetResIndex());
-	if ( !iReplicationQty )
+	dwReplicationQty = ResourceConsume(&(pItemDef->m_BaseResources), dwReplicationQty, stage != SKTRIG_SUCCESS, pItemDef->GetResourceID().GetResIndex());
+	if ( !dwReplicationQty )
 		return false;
 
 	// Test or consume the needed resources.
@@ -1206,7 +1205,7 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 		if ( iConsumePercent < 0 )
 			iConsumePercent = Calc_GetRandVal(50);
 
-		ResourceConsumePart(&(pItemDef->m_BaseResources), iReplicationQty, iConsumePercent, false, pItemDef->GetResourceID().GetResIndex());
+		ResourceConsumePart(&(pItemDef->m_BaseResources), dwReplicationQty, iConsumePercent, false, pItemDef->GetResourceID().GetResIndex());
 		return false;
 	}
 
@@ -1220,7 +1219,7 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 
 		m_Act_Targ = uidTarg;	// targetted item to start the make process
 		m_atCreate.m_ItemID = id;
-		m_atCreate.m_Amount = static_cast<WORD>(iReplicationQty);
+		m_atCreate.m_Amount = static_cast<WORD>(dwReplicationQty);
 
 		CResourceQty RetMainSkill = pItemDef->m_SkillMake[i];
 		return Skill_Start(static_cast<SKILL_TYPE>(RetMainSkill.GetResIndex()));
@@ -1228,7 +1227,7 @@ bool CChar::Skill_MakeItem( ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage,
 
 	if ( stage == SKTRIG_SUCCESS )
 	{
-		m_atCreate.m_Amount = static_cast<WORD>(iReplicationQty);	// how much resources we really consumed
+		m_atCreate.m_Amount = static_cast<WORD>(dwReplicationQty);	// how much resources we really consumed
 		return Skill_MakeItem_Success();
 	}
 
@@ -3732,10 +3731,10 @@ TRIGRET_TYPE CChar::Skill_OnTrigger( SKILL_TYPE skill, SKTRIG_TYPE stage, CScrip
 	return iRet;
 }
 
-TRIGRET_TYPE CChar::Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE stage )
+TRIGRET_TYPE CChar::Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig )
 {
 	CScriptTriggerArgs pArgs;
-	return Skill_OnCharTrigger(skill, stage, &pArgs);
+	return Skill_OnCharTrigger(skill, ctrig, &pArgs);
 }
 
 TRIGRET_TYPE CChar::Skill_OnCharTrigger( SKILL_TYPE skill, CTRIG_TYPE ctrig, CScriptTriggerArgs *pArgs )

@@ -1,6 +1,4 @@
 ﻿#include "graysvr.h"	// predef header.
-#include "CClient.h"
-#include "../network/network.h"
 #include "../network/send.h"
 
 #if !defined(_WIN32) || defined(_LIBEV)
