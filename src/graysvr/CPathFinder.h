@@ -7,6 +7,9 @@
 #define PATH_FINDER_H
 
 #include "../graysvr/graysvr.h"
+#include <deque>
+#include <list>
+#include <algorithm>
 
 using std::deque;
 using std::list;
