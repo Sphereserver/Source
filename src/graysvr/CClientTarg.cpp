@@ -724,7 +724,7 @@ int CClient::OnSkill_ItemID(CGrayUID uid, int iSkillLevel, bool fTest)
 
 	CItemVendable *pItemVend = static_cast<CItemVendable *>(pItem);
 	if ( pItemVend )
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ITEMID_GOLD), (pItemVend->GetVendorPrice(-15) * pItem->GetAmount()), static_cast<LPCTSTR>(pItemVend->GetNameFull(true)));
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ITEMID_GOLD), (pItemVend->GetVendorPrice(0) * pItem->GetAmount()), pItemVend->GetNameFull(true));
 	else
 		SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_ITEMID_NOVAL));
 
@@ -826,7 +826,7 @@ int CClient::OnSkill_EvalInt(CGrayUID uid, int iSkillLevel, bool fTest)
 		if ( static_cast<size_t>(iManaEntry) >= COUNTOF(sm_szManaDesc) )
 			iManaEntry = COUNTOF(sm_szManaDesc) - 1;
 
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_RESULT_2), static_cast<LPCTSTR>(sm_szMagicDesc[iMagicEntry]), static_cast<LPCTSTR>(sm_szManaDesc[iManaEntry]));
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_RESULT_2), sm_szMagicDesc[iMagicEntry], sm_szManaDesc[iManaEntry]);
 	}
 	return iSkillLevel;
 }
@@ -1083,7 +1083,7 @@ int CClient::OnSkill_TasteID(CGrayUID uid, int iSkillLevel, bool fTest)
 		default:
 		{
 			if ( !fTest )
-				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_TASTEID_RESULT), static_cast<LPCTSTR>(pItem->GetNameFull(false)));
+				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_TASTEID_RESULT), pItem->GetNameFull(false));
 			return 1;
 		}
 	}
@@ -1099,7 +1099,7 @@ int CClient::OnSkill_TasteID(CGrayUID uid, int iSkillLevel, bool fTest)
 		SysMessage(sm_szPoisonMessages[iLevel]);
 	}
 	else
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_TASTEID_RESULT), static_cast<LPCTSTR>(pItem->GetNameFull(false)));
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_TASTEID_RESULT), pItem->GetNameFull(false));
 
 	return iSkillLevel;
 }

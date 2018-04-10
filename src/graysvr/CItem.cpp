@@ -4072,8 +4072,8 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 				}
 			}
 
-			if ( ptLand.IsValidPoint())
-				sSearch.Format( "%s %s. ", g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_LAND), static_cast<LPCTSTR>(CPointBase::sm_szDirs[ ptCoords.GetDir(ptLand) ]) );
+			if ( ptLand.IsValidPoint() )
+				sSearch.Format("%s %s. ", g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_LAND), CPointBase::sm_szDirs[ptCoords.GetDir(ptLand)]);
 			else if (iLight > 3)
 				sSearch = g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_DARK);
 			else if (wtWeather == WEATHER_RAIN)
@@ -4152,17 +4152,17 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 		DIR_TYPE dir = ptCoords.GetDir(pItemSighted->GetTopPoint());
 		if (iItemSighted == 1)
 		{
-			if ( iDist > UO_MAP_VIEW_RADAR) // if beyond ship visibility in the radar window, don't be specific
-				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_STH_DIR), static_cast<LPCTSTR>(CPointBase::sm_szDirs[ dir ]) );
+			if ( iDist > UO_MAP_VIEW_RADAR ) // if beyond ship visibility in the radar window, don't be specific
+				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_STH_DIR), CPointBase::sm_szDirs[dir]);
 			else
-				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_ITEM_DIR), static_cast<LPCTSTR>(pItemSighted->GetNameFull(false)), static_cast<LPCTSTR>(CPointBase::sm_szDirs[ dir ]) );
+				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_ITEM_DIR), pItemSighted->GetNameFull(false), CPointBase::sm_szDirs[dir]);
 		}
 		else
 		{
-			if ( iDist > UO_MAP_VIEW_RADAR) // if beyond ship visibility in the radar window, don't be specific
-				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_ITEM_DIR_MANY), CPointBase::sm_szDirs[ dir ] );
+			if ( iDist > UO_MAP_VIEW_RADAR ) // if beyond ship visibility in the radar window, don't be specific
+				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_ITEM_DIR_MANY), CPointBase::sm_szDirs[dir]);
 			else
-				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SPECIAL_DIR), static_cast<LPCTSTR>(pItemSighted->GetNameFull(false)), static_cast<LPCTSTR>(CPointBase::sm_szDirs[ dir ]));
+				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SPECIAL_DIR), pItemSighted->GetNameFull(false), CPointBase::sm_szDirs[dir]);
 		}
 		strcat( pResult, sSearch);
 	}

@@ -637,15 +637,15 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
 			continue;
 
-		LPCTSTR pSkillKey = g_Cfg.GetSkillKey(static_cast<SKILL_TYPE>(i));
-		if ( FindStrWord( pszCmd, pSkillKey ) <= 0)
+		LPCTSTR pszSkillKey = g_Cfg.GetSkillKey(static_cast<SKILL_TYPE>(i));
+		if ( FindStrWord(pszCmd, pszSkillKey) <= 0 )
 			continue;
 
 		iTrainCost *= NPC_OnTrainCheck(pCharSrc, static_cast<SKILL_TYPE>(i));
 		if ( iTrainCost <= 0 )
 			return true;
 
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE), static_cast<int>(iTrainCost), static_cast<LPCTSTR>(pSkillKey));
+		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE), static_cast<int>(iTrainCost), pszSkillKey);
 		Speak(pszMsg);
 		CItemMemory * pMemory = Memory_AddObjTypes( pCharSrc, MEMORY_SPEAK );
 		if ( pMemory )

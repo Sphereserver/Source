@@ -473,7 +473,7 @@ bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pS
 			if ( pszKey[7] != '.' )
 				return( false );
 			pszKey += 8;
-			sVal = m_Events.ContainsResourceName(RES_EVENTS, pszKey) ? "1" : "0";
+			sVal.FormatVal(m_Events.ContainsResourceName(RES_EVENTS, pszKey));
 			return( true );
 		case RC_FLAGS:
 			sVal.FormatHex( GetRegionFlags() );
@@ -566,12 +566,12 @@ bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pS
 					SKIP_SEPARATORS( pszKey );
 					if ( ! *pszKey )
 					{
-						sVal.Format("%s=%s", static_cast<LPCTSTR>(pTagAt->GetKey()), static_cast<LPCTSTR>(pTagAt->GetValStr()));
+						sVal.Format("%s=%s", pTagAt->GetKey(), pTagAt->GetValStr());
 						return( true );
 					}
 					else if ( !strnicmp( pszKey, "KEY", 3 )) // key?
 					{
-						sVal = static_cast<LPCTSTR>(pTagAt->GetKey());
+						sVal = pTagAt->GetKey();
 						return( true );
 					}
 					else if ( !strnicmp( pszKey, "VAL", 3 )) // val?

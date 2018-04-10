@@ -158,7 +158,7 @@ void CResourceBase::AddResourceDir( LPCTSTR pszDirName )
 		iRet = filelist.ReadDir( sFilePath, true );
 		if ( iRet < 0 )
 		{
-			DEBUG_ERR(( "DirList=%d for '%s'\n", iRet, static_cast<LPCTSTR>(pszDirName) ));
+			DEBUG_ERR(("DirList=%d for '%s'\n", iRet, pszDirName));
 			return;
 		}
 	}
